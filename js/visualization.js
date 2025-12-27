@@ -65,6 +65,42 @@ export function renderChart(canvas, results, visibleCompartments = null) {
         });
     });
 
+    // Add alveolar N2 pressure line (the target tissues equilibrate towards)
+    datasets.push({
+        label: 'Alveolar N₂ (target)',
+        data: results.timePoints.map((t, i) => ({
+            x: t,
+            y: results.alveolarN2Pressures[i]
+        })),
+        borderColor: 'rgba(46, 204, 113, 0.9)',
+        backgroundColor: 'rgba(46, 204, 113, 0.1)',
+        borderDash: [8, 4],
+        fill: false,
+        yAxisID: 'yPressure',
+        tension: 0,
+        pointRadius: 0,
+        borderWidth: 2.5,
+        order: 97
+    });
+
+    // Add ambient pressure line (critical for understanding decompression limits)
+    datasets.push({
+        label: 'Ambient Pressure (bar)',
+        data: results.timePoints.map((t, i) => ({
+            x: t,
+            y: results.ambientPressures[i]
+        })),
+        borderColor: 'rgba(231, 76, 60, 0.8)',
+        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+        borderDash: [10, 5],
+        fill: false,
+        yAxisID: 'yPressure',
+        tension: 0,
+        pointRadius: 0,
+        borderWidth: 2,
+        order: 98
+    });
+
     // Add surface pressure reference line
     const surfaceN2 = results.compartments[1].pressures[0]; // Initial surface saturation
     datasets.push({

@@ -6,16 +6,21 @@
 
 /**
  * Create a default dive profile for demonstration
+ * This is intentionally a DECOMPRESSION DIVE to show tissue supersaturation
  * @returns {Array<{time: number, depth: number}>} Default profile
  */
 export function createDefaultProfile() {
     return [
         { time: 0, depth: 0 },      // Start at surface
-        { time: 2, depth: 30 },     // Descend to 30m over 2 minutes
-        { time: 25, depth: 30 },    // Stay at 30m until 25 minutes
-        { time: 26, depth: 5 },     // Ascend to 5m safety stop
-        { time: 29, depth: 5 },     // 3 minute safety stop
-        { time: 30, depth: 0 }      // Surface
+        { time: 2, depth: 40 },     // Descend to 40m (20 m/min)
+        { time: 22, depth: 40 },    // Stay at 40m for 20 min (exceeds NDL!)
+        { time: 26, depth: 9 },     // Ascent to 9m (7.75 m/min - safe rate)
+        { time: 29, depth: 9 },     // 3 min deco stop at 9m
+        { time: 30, depth: 6 },     // Ascent to 6m
+        { time: 35, depth: 6 },     // 5 min deco stop at 6m
+        { time: 36, depth: 3 },     // Ascent to 3m
+        { time: 41, depth: 3 },     // 5 min deco/safety stop at 3m
+        { time: 42, depth: 0 }      // Surface
     ];
 }
 

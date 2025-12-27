@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head><title>Deco Test</title></head>
+<body>
+<pre id="output" style="font-family: monospace; font-size: 12px;"></pre>
+<script type="module">
+import { calculateTissueLoading, getAlveolarN2Pressure, getAmbientPressure } from './js/decoModel.js';
+
+const profile = [
+    { time: 0, depth: 0 },
+    { time: 2, depth: 40 },
+    { time: 22, depth: 40 },
+    { time: 26, depth: 9 },
+];
+
+const results = calculateTissueLoading(profile, 5);
+const comp1 = results.compartments[1];
+
+let out = "=== Checking tissue saturation during constant depth ===\n";
+out += `At 40m: Alveolar N2 target = ${getAlveolarN2Pressure(getAmbientPressure(40)).toFixed(4)} bar\n\n`;
+
+// Find peak
+let maxP = 0, maxI = 0;
+for (let i = 0; i < comp1.pressures.length; i++) {
+    if (comp1.pressures[i] > maxP) { maxP = comp1.pressures[i]; maxI = i; }
+}
+out += `PEAK: t=${results.timePoints[maxI].toFixed(2)} min, depth=${results.depthPoints[maxI].toFixed(1)}m, tissue=${maxP.toFixed(4)} bar\n\n`;
+
+out += "Time      Depth    Tissue   Alveolar  Diff(alv-tissue)\n";
+out += "-------   ------   -------  --------  ----------------\n";
+
+for (let i = 0; i < results.timePoints.length; i++) {
+    const t = results.timePoints[i];
+    const d = results.depthPoints[i];
+    const tissue = comp1.pressures[i];
+    const alv = getAlveolarN2Pressure(results.ambientPressures[i]);
+    const diff = alv - tissue;
+    
+    // Show key points
+    if (t <= 3 || (t >= 20 && t <= 27)) {
+        out += `${t.toFixed(2).padStart(7)}   ${d.toFixed(1).padStart(5)}m   ${tissue.toFixed(4)}   ${alv.toFixed(4)}    ${diff >= 0 ? '+' : ''}${diff.toFixed(4)}\n`;
+    }
+}
+
+document.getElementById('output').textContent = out;
+</script>
+</body>
+</html>

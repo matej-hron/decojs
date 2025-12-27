@@ -370,7 +370,7 @@ section h2 {
 /* Chart */
 .chart-container {
     position: relative;
-    height: 500px;
+    height: 700px;
     margin: 1rem 0;
 }
 
@@ -412,6 +412,30 @@ section h2 {
     color: var(--text-muted);
     font-style: italic;
     margin-top: 0.5rem;
+}
+
+/* References list */
+.references-list {
+    line-height: 1.8;
+    padding-left: 1.5rem;
+}
+
+.references-list li {
+    margin-bottom: 1rem;
+    padding-left: 0.5rem;
+}
+
+.references-list a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.references-list a:hover {
+    text-decoration: underline;
+}
+
+.references-list em {
+    font-style: italic;
 }
 
 /* Footer */

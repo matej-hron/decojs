@@ -112,9 +112,11 @@ export function calculateTissueLoading(profile, surfaceInterval = 60) {
 
     // Initialize results
     const results = {
-        timePoints: [],      // Time in minutes
-        depthPoints: [],     // Depth at each time point
-        compartments: {}     // Tissue pressures per compartment
+        timePoints: [],       // Time in minutes
+        depthPoints: [],      // Depth at each time point
+        ambientPressures: [], // Ambient pressure at each time point
+        alveolarN2Pressures: [], // Alveolar N2 pressure (what tissues equilibrate towards)
+        compartments: {}      // Tissue pressures per compartment
     };
 
     // Initialize compartment data
@@ -143,25 +145,21 @@ export function calculateTissueLoading(profile, surfaceInterval = 60) {
 
     // Process each time step
     let currentTime = 0;
-    let waypointIndex = 0;
 
     while (currentTime <= totalTime) {
         // Find current segment (between which waypoints are we?)
+        let waypointIndex = 0;
         while (waypointIndex < profile.length - 1 && 
                profile[waypointIndex + 1].time <= currentTime) {
             waypointIndex++;
         }
 
-        // Calculate current depth
+        // Calculate current depth by interpolation
         let currentDepth;
         if (currentTime >= lastWaypoint.time) {
             // Surface interval - at 0 meters
             currentDepth = 0;
-        } else if (waypointIndex >= profile.length - 1) {
-            // At or past last waypoint
-            currentDepth = lastWaypoint.depth;
         } else {
-            // Interpolate between waypoints
             const wp1 = profile[waypointIndex];
             const wp2 = profile[waypointIndex + 1];
             const segmentDuration = wp2.time - wp1.time;
@@ -178,16 +176,36 @@ export function calculateTissueLoading(profile, surfaceInterval = 60) {
         // Store current state
         results.timePoints.push(currentTime);
         results.depthPoints.push(currentDepth);
+        results.ambientPressures.push(getAmbientPressure(currentDepth));
+        results.alveolarN2Pressures.push(getAlveolarN2Pressure(getAmbientPressure(currentDepth)));
 
         // Calculate tissue loading for each compartment
         COMPARTMENTS.forEach(comp => {
             results.compartments[comp.id].pressures.push(currentPressures[comp.id]);
         });
 
-        // Calculate next time step
-        const nextTime = currentTime + intervalMinutes;
+        // Determine the next time step
+        // Key fix: don't cross waypoint boundaries - step TO the waypoint first
+        let nextTime = currentTime + intervalMinutes;
         
-        // Determine depth at next time step for rate calculation
+        // Check if we would cross a waypoint boundary
+        const nextWaypointTime = (waypointIndex < profile.length - 1) 
+            ? profile[waypointIndex + 1].time 
+            : totalTime + 1;
+        
+        // If next regular step would cross a waypoint, step exactly to waypoint instead
+        if (currentTime < nextWaypointTime && nextTime > nextWaypointTime) {
+            nextTime = nextWaypointTime;
+        }
+        
+        // Also handle stepping to end of dive
+        if (currentTime < lastWaypoint.time && nextTime > lastWaypoint.time) {
+            nextTime = lastWaypoint.time;
+        }
+        
+        const stepDuration = nextTime - currentTime;
+        
+        // Calculate depth at next time step
         let nextDepth;
         if (nextTime >= lastWaypoint.time) {
             nextDepth = 0;
@@ -199,30 +217,26 @@ export function calculateTissueLoading(profile, surfaceInterval = 60) {
                 nextWaypointIndex++;
             }
             
-            if (nextWaypointIndex >= profile.length - 1) {
-                nextDepth = lastWaypoint.depth;
+            const wp1 = profile[nextWaypointIndex];
+            const wp2 = profile[nextWaypointIndex + 1];
+            const segmentDuration = wp2.time - wp1.time;
+            const timeInSegment = nextTime - wp1.time;
+            
+            if (segmentDuration > 0) {
+                const fraction = timeInSegment / segmentDuration;
+                nextDepth = wp1.depth + fraction * (wp2.depth - wp1.depth);
             } else {
-                const wp1 = profile[nextWaypointIndex];
-                const wp2 = profile[nextWaypointIndex + 1];
-                const segmentDuration = wp2.time - wp1.time;
-                const timeInSegment = nextTime - wp1.time;
-                
-                if (segmentDuration > 0) {
-                    const fraction = timeInSegment / segmentDuration;
-                    nextDepth = wp1.depth + fraction * (wp2.depth - wp1.depth);
-                } else {
-                    nextDepth = wp1.depth;
-                }
+                nextDepth = wp1.depth;
             }
         }
 
-        // Update tissue pressures for next time step
+        // Update tissue pressures for the step
         const currentAmbient = getAmbientPressure(currentDepth);
         const nextAmbient = getAmbientPressure(nextDepth);
         const currentAlveolar = getAlveolarN2Pressure(currentAmbient);
         
         // Rate of ambient pressure change (bar/min)
-        const ambientRate = (nextAmbient - currentAmbient) / intervalMinutes;
+        const ambientRate = (nextAmbient - currentAmbient) / stepDuration;
         // Rate of alveolar pressure change
         const alveolarRate = ambientRate * N2_FRACTION;
 
@@ -232,7 +246,7 @@ export function calculateTissueLoading(profile, surfaceInterval = 60) {
                 currentPressures[comp.id] = haldaneEquation(
                     currentPressures[comp.id],
                     currentAlveolar,
-                    intervalMinutes,
+                    stepDuration,
                     comp.halfTime
                 );
             } else {
@@ -241,7 +255,7 @@ export function calculateTissueLoading(profile, surfaceInterval = 60) {
                     currentPressures[comp.id],
                     currentAlveolar,
                     alveolarRate,
-                    intervalMinutes,
+                    stepDuration,
                     comp.halfTime
                 );
             }

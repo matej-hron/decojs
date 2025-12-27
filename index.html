@@ -181,7 +181,12 @@
                 <p><strong>Left axis (N₂ Pressure):</strong> Shows nitrogen pressure in each tissue compartment. 
                    Higher values = more nitrogen dissolved.</p>
                 <p><strong>Right axis (Depth):</strong> Shows the dive profile (depth increases downward).</p>
-                <p><strong>Dashed line:</strong> Surface saturation level (~0.74 bar) — the equilibrium N₂ pressure at the surface.</p>
+                <p><strong>Green dashed line (Alveolar N₂):</strong> The N₂ pressure in your lungs — this is what 
+                   tissues are trying to equilibrate towards. When tissue &lt; alveolar, you're on-gassing; 
+                   when tissue &gt; alveolar, you're off-gassing. The crossover is where tissue loading peaks.</p>
+                <p><strong>Red dashed line (Ambient Pressure):</strong> The total pressure at current depth. 
+                   Tissue pressures should stay below this to avoid bubble formation.</p>
+                <p><strong>Gray dashed line (Surface Saturation):</strong> Equilibrium N₂ pressure at surface (~0.74 bar).</p>
             </div>
         </section>
 
@@ -203,6 +208,46 @@
                 </tbody>
             </table>
             <p class="footnote">* Approximate time to reach 98% saturation (6 half-times)</p>
+        </section>
+
+        <!-- References Section -->
+        <section class="reference-section">
+            <h2>📖 References & Sources</h2>
+            <ol class="references-list">
+                <li>
+                    <strong>Bühlmann, A.A.</strong> (1984). 
+                    <em>Decompression–Decompression Sickness.</em> 
+                    Berlin: Springer-Verlag. 
+                    — The original work describing the ZH-L16 algorithm.
+                </li>
+                <li>
+                    <strong>Wikipedia</strong>. 
+                    <a href="https://en.wikipedia.org/wiki/B%C3%BChlmann_decompression_algorithm" target="_blank" rel="noopener">
+                        Bühlmann decompression algorithm
+                    </a> 
+                    — Overview of the algorithm, tissue compartment half-times, and M-values.
+                </li>
+                <li>
+                    <strong>Wienke, B.R.</strong> 
+                    <a href="https://aquatec.wordpress.com/wp-content/uploads/2011/03/decompression-theory.pdf" target="_blank" rel="noopener">
+                        Decompression Theory (PDF)
+                    </a> 
+                    — Comprehensive introduction to decompression physics and physiology.
+                </li>
+                <li>
+                    <strong>Alveolar Gas Equation</strong>: 
+                    The model accounts for water vapor pressure at body temperature (37°C) = 47 mmHg ≈ 0.0627 bar, 
+                    which reduces the effective partial pressure of inspired gases. 
+                    <a href="https://en.wikipedia.org/wiki/Alveolar_gas_equation" target="_blank" rel="noopener">
+                        Wikipedia: Alveolar gas equation
+                    </a>
+                </li>
+                <li>
+                    <strong>Schreiner, H.R.</strong> (1971). 
+                    <em>Safe Limits of Exposure to Increased Pressure.</em> 
+                    — Derivation of the Schreiner equation for calculating gas loading during linear pressure changes.
+                </li>
+            </ol>
         </section>
     </main>
 
