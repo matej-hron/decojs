@@ -82,9 +82,16 @@ open http://localhost:8080
 
 ## References
 
+- **Powell, Mark.** *Deco for Divers.* — The primary inspiration for this project. An excellent, accessible guide to decompression theory for recreational and technical divers.
 - Bühlmann, A.A. (1984). *Decompression–Decompression Sickness*
 - [Wikipedia: Bühlmann decompression algorithm](https://en.wikipedia.org/wiki/B%C3%BChlmann_decompression_algorithm)
 - [Aquatec: Decompression Theory PDF](https://aquatec.wordpress.com/wp-content/uploads/2011/03/decompression-theory.pdf)
+
+## Acknowledgments
+
+Special thanks to **Mark Powell** for writing *Deco for Divers* — the book that made decompression theory click for me and inspired this project. If you want to truly understand what your dive computer is doing, read his book.
+
+Built with the help of **Claude Opus 4.5** (Anthropic) — my AI pair-programming buddy who helped bring this visualization to life. 🤖
 
 ## License
 

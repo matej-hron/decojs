@@ -724,6 +724,11 @@ footer p {
     font-size: 0.9rem;
 }
 
+footer .thank-you {
+    font-style: italic;
+    opacity: 0.9;
+}
+
 footer a {
     color: #85c1e9;
 }
