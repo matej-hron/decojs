@@ -14,7 +14,8 @@ import { renderChart, toggleCompartment, showAllCompartments, hideAllCompartment
 // ============================================================================
 
 let currentProfile = [];
-let visibleCompartments = new Set(COMPARTMENTS.map(c => c.id));
+// Default: only show fastest compartment (id=1, 5-min half-time)
+let visibleCompartments = new Set([1]);
 
 // ============================================================================
 // DOM ELEMENTS
@@ -105,10 +106,11 @@ function readProfileFromTable() {
  */
 function initCompartmentToggles() {
     COMPARTMENTS.forEach(comp => {
+        const isChecked = visibleCompartments.has(comp.id);
         const label = document.createElement('label');
         label.className = 'compartment-toggle';
         label.innerHTML = `
-            <input type="checkbox" data-compartment="${comp.id}" checked>
+            <input type="checkbox" data-compartment="${comp.id}" ${isChecked ? 'checked' : ''}>
             <span class="color-dot" style="background-color: ${comp.color}"></span>
             <span>${comp.label}</span>
         `;

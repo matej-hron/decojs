@@ -3,266 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Decompression Model Visualizer</title>
-    
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- KaTeX for math formulas -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
-    
-    <!-- App styles -->
+    <title>Decompression Theory - Interactive Learning</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <!-- Disclaimer Banner -->
-    <div class="disclaimer-banner">
-        ⚠️ <strong>Educational Use Only</strong> — This tool is NOT intended for real dive planning. 
-        Never use this for actual dives. Always use certified dive computers, tables, and proper training.
-    </div>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">🫧 Deco Theory</a>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="tissue-loading.html">Tissue Loading</a></li>
+            </ul>
+        </div>
+    </nav>
 
-    <header>
-        <h1>🤿 Decompression Model Visualizer</h1>
-        <p class="subtitle">Understand how nitrogen saturates and desaturates in your body during a dive</p>
+    <!-- Hero Section -->
+    <header class="hero">
+        <h1>Understanding Decompression Theory</h1>
+        <p class="hero-subtitle">Interactive visualizations to help you understand how dissolved gases behave in your body during diving</p>
     </header>
 
-    <main>
-        <!-- Educational Section -->
-        <section class="education-section">
-            <h2>📚 Understanding Decompression Theory</h2>
-            
-            <div class="concept-card">
-                <h3>Why Does This Matter?</h3>
-                <p>
-                    When you dive, the increased pressure causes nitrogen from the air you breathe to dissolve 
-                    into your body tissues. The deeper you go and the longer you stay, the more nitrogen 
-                    accumulates. If you ascend too quickly, this nitrogen can form bubbles in your tissues — 
-                    causing <strong>decompression sickness (DCS)</strong>, also known as "the bends."
-                </p>
-            </div>
-
-            <div class="concept-card">
-                <h3>Tissue Compartments</h3>
-                <p>
-                    Your body isn't uniform — different tissues absorb and release nitrogen at different rates:
-                </p>
-                <ul>
-                    <li><strong>Fast tissues</strong> (brain, blood, spinal cord) — saturate in minutes, but also release gas quickly</li>
-                    <li><strong>Medium tissues</strong> (muscles, skin) — take longer to saturate</li>
-                    <li><strong>Slow tissues</strong> (fat, bones, cartilage) — can take hours to fully saturate</li>
-                </ul>
-                <p>
-                    The Bühlmann ZH-L16 model uses <strong>16 theoretical compartments</strong> with half-times 
-                    ranging from 5 to 635 minutes to simulate this behavior.
-                </p>
-            </div>
-
-            <div class="concept-card">
-                <h3>The Half-Time Concept</h3>
-                <p>
-                    A tissue's <strong>half-time</strong> is how long it takes to become 50% saturated (or 50% desaturated) 
-                    at a given pressure. After each half-time period:
-                </p>
-                <div class="half-time-visual">
-                    <div class="half-time-bar">
-                        <span class="bar-fill" style="width: 50%;">1 half-time: 50%</span>
-                    </div>
-                    <div class="half-time-bar">
-                        <span class="bar-fill" style="width: 75%;">2 half-times: 75%</span>
-                    </div>
-                    <div class="half-time-bar">
-                        <span class="bar-fill" style="width: 87.5%;">3 half-times: 87.5%</span>
-                    </div>
-                    <div class="half-time-bar">
-                        <span class="bar-fill" style="width: 98.4%;">6 half-times: ~98% (saturated)</span>
-                    </div>
-                </div>
-                <p>A 5-minute compartment reaches 50% saturation in 5 minutes; a 635-minute compartment takes over 10 hours!</p>
-            </div>
-
-            <details class="learn-more">
-                <summary>🔬 Learn More: The Mathematics</summary>
-                <div class="math-content">
-                    <h4>Haldane Equation (constant depth)</h4>
-                    <p>When staying at a constant depth, tissue pressure changes according to:</p>
-                    <div class="formula" id="formula-haldane">
-                        P_t(t) = P_{alv} + (P_{t0} - P_{alv}) \cdot e^{-kt}
-                    </div>
-                    <p>Where:</p>
-                    <ul>
-                        <li><span class="formula-inline">P_t(t)</span> = tissue N₂ pressure at time t</li>
-                        <li><span class="formula-inline">P_{alv}</span> = inspired (alveolar) N₂ pressure</li>
-                        <li><span class="formula-inline">P_{t0}</span> = initial tissue N₂ pressure</li>
-                        <li><span class="formula-inline">k = \frac{\ln(2)}{t_{1/2}}</span> = rate constant</li>
-                    </ul>
-
-                    <h4>Schreiner Equation (depth change)</h4>
-                    <p>During ascent or descent at a constant rate:</p>
-                    <div class="formula" id="formula-schreiner">
-                        P_t(t) = P_{alv0} + R \cdot (t - \frac{1}{k}) - (P_{alv0} - P_{t0} - \frac{R}{k}) \cdot e^{-kt}
-                    </div>
-                    <p>Where <span class="formula-inline">R</span> is the rate of change of alveolar pressure (positive for descent).</p>
-
-                    <h4>Pressure at Depth</h4>
-                    <div class="formula" id="formula-pressure">
-                        P_{amb} = 1.0 + \frac{depth}{10} \text{ bar}
-                    </div>
-                    <p>Every 10 meters of seawater adds approximately 1 bar of pressure.</p>
-                </div>
-            </details>
+    <main class="landing-main">
+        <!-- Introduction -->
+        <section class="intro-section">
+            <h2>Why Learn Decompression Theory?</h2>
+            <p>
+                Every diver relies on decompression models to stay safe underwater. Whether you're using dive tables, 
+                a dive computer, or planning software, these tools are all built on the same fundamental principles.
+            </p>
+            <p>
+                Understanding how your body absorbs and releases inert gases helps you become a safer, more confident diver. 
+                These interactive lessons will take you from the basics to advanced concepts, step by step.
+            </p>
         </section>
 
-        <!-- Dive Profile Input Section -->
-        <section class="input-section">
-            <h2>📊 Dive Profile Input</h2>
-            <p>Enter your dive profile as a series of time/depth waypoints. The simulator will interpolate linear depth changes between points.</p>
-            
-            <div class="profile-controls">
-                <table id="profile-table">
-                    <thead>
-                        <tr>
-                            <th>Time (min)</th>
-                            <th>Depth (m)</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="profile-body">
-                        <!-- Rows added by JavaScript -->
-                    </tbody>
-                </table>
+        <!-- Topics Grid -->
+        <section class="topics-section">
+            <h2>Topics</h2>
+            <div class="topics-grid">
                 
-                <div class="button-row">
-                    <button id="add-waypoint" class="btn btn-secondary">+ Add Waypoint</button>
-                    <button id="load-example" class="btn btn-secondary">Load Example Dive</button>
+                <!-- Topic 1: Tissue Loading -->
+                <a href="tissue-loading.html" class="topic-card available">
+                    <div class="topic-icon">📊</div>
+                    <h3>Tissue Loading & Saturation</h3>
+                    <p>
+                        Visualize how nitrogen dissolves into different tissue compartments during a dive 
+                        and releases during ascent. Explore the Bühlmann ZH-L16 model.
+                    </p>
+                    <span class="topic-status">Available</span>
+                </a>
+
+                <!-- Topic 2: M-Values (Coming Soon) -->
+                <div class="topic-card coming-soon">
+                    <div class="topic-icon">📈</div>
+                    <h3>M-Values & Surfacing Limits</h3>
+                    <p>
+                        Learn about maximum tolerated tissue pressures and how they define 
+                        safe ascent limits for each compartment.
+                    </p>
+                    <span class="topic-status">Coming Soon</span>
                 </div>
 
-                <div class="surface-interval-input">
-                    <label for="surface-interval">
-                        Post-dive surface time to show (minutes):
-                        <input type="number" id="surface-interval" value="60" min="0" max="720" step="10">
-                    </label>
+                <!-- Topic 3: Gradient Factors (Coming Soon) -->
+                <div class="topic-card coming-soon">
+                    <div class="topic-icon">🎚️</div>
+                    <h3>Gradient Factors</h3>
+                    <p>
+                        Explore how GF Low and GF High settings add conservatism 
+                        to your decompression schedule.
+                    </p>
+                    <span class="topic-status">Coming Soon</span>
                 </div>
 
-                <div id="validation-errors" class="errors"></div>
-                
-                <button id="calculate-btn" class="btn btn-primary">Calculate Tissue Loading</button>
-            </div>
+                <!-- Topic 4: Multi-Gas (Coming Soon) -->
+                <div class="topic-card coming-soon">
+                    <div class="topic-icon">🧪</div>
+                    <h3>Multi-Gas Diving</h3>
+                    <p>
+                        See how switching to oxygen-rich gases during ascent 
+                        accelerates decompression.
+                    </p>
+                    <span class="topic-status">Coming Soon</span>
+                </div>
 
-            <div id="dive-stats" class="dive-stats"></div>
-        </section>
+                <!-- Placeholder topics -->
+                <div class="topic-card coming-soon">
+                    <div class="topic-icon">💡</div>
+                    <h3>More Topics</h3>
+                    <p>
+                        Additional educational content coming soon.
+                    </p>
+                    <span class="topic-status">Planned</span>
+                </div>
 
-        <!-- Compartment Selection -->
-        <section class="compartment-section">
-            <h2>🎛️ Compartment Selection</h2>
-            <p>Toggle which tissue compartments to display on the chart:</p>
-            
-            <div class="compartment-controls">
-                <button id="show-all" class="btn btn-small">Show All</button>
-                <button id="hide-all" class="btn btn-small">Hide All</button>
-                <button id="show-fast" class="btn btn-small">Fast Only</button>
-                <button id="show-medium" class="btn btn-small">Medium Only</button>
-                <button id="show-slow" class="btn btn-small">Slow Only</button>
-            </div>
-            
-            <div id="compartment-toggles" class="compartment-toggles">
-                <!-- Checkboxes added by JavaScript -->
             </div>
         </section>
 
-        <!-- Chart Section -->
-        <section class="chart-section">
-            <h2>📈 Tissue Loading Chart</h2>
-            <div class="chart-container">
-                <canvas id="tissue-chart"></canvas>
+        <!-- About Section -->
+        <section class="about-section">
+            <h2>About This Project</h2>
+            <p>
+                This is an educational resource for divers who want to understand the science behind their dive computers. 
+                All visualizations are based on the <strong>Bühlmann ZH-L16</strong> decompression model, one of the most 
+                widely used algorithms in recreational and technical diving.
+            </p>
+            <div class="disclaimer-box">
+                <strong>⚠️ Educational Use Only</strong>
+                <p>
+                    These tools are for learning purposes only. Never use them for actual dive planning. 
+                    Always rely on properly certified dive computers and tables for real-world diving.
+                </p>
             </div>
-            <div class="chart-legend">
-                <p><strong>Left axis (N₂ Pressure):</strong> Shows nitrogen pressure in each tissue compartment. 
-                   Higher values = more nitrogen dissolved.</p>
-                <p><strong>Right axis (Depth):</strong> Shows the dive profile (depth increases downward).</p>
-                <p><strong>Green dashed line (Alveolar N₂):</strong> The N₂ pressure in your lungs — this is what 
-                   tissues are trying to equilibrate towards. When tissue &lt; alveolar, you're on-gassing; 
-                   when tissue &gt; alveolar, you're off-gassing. The crossover is where tissue loading peaks.</p>
-                <p><strong>Red dashed line (Ambient Pressure):</strong> The total pressure at current depth. 
-                   Tissue pressures should stay below this to avoid bubble formation.</p>
-                <p><strong>Gray dashed line (Surface Saturation):</strong> Equilibrium N₂ pressure at surface (~0.74 bar).</p>
-            </div>
-        </section>
-
-        <!-- Compartment Reference Table -->
-        <section class="reference-section">
-            <h2>📋 Bühlmann ZH-L16A Compartments Reference</h2>
-            <table class="reference-table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Half-Time</th>
-                        <th>Category</th>
-                        <th>Tissue Type</th>
-                        <th>Time to Saturate*</th>
-                    </tr>
-                </thead>
-                <tbody id="reference-body">
-                    <!-- Rows added by JavaScript -->
-                </tbody>
-            </table>
-            <p class="footnote">* Approximate time to reach 98% saturation (6 half-times)</p>
-        </section>
-
-        <!-- References Section -->
-        <section class="reference-section">
-            <h2>📖 References & Sources</h2>
-            <ol class="references-list">
-                <li>
-                    <strong>Bühlmann, A.A.</strong> (1984). 
-                    <em>Decompression–Decompression Sickness.</em> 
-                    Berlin: Springer-Verlag. 
-                    — The original work describing the ZH-L16 algorithm.
-                </li>
-                <li>
-                    <strong>Wikipedia</strong>. 
-                    <a href="https://en.wikipedia.org/wiki/B%C3%BChlmann_decompression_algorithm" target="_blank" rel="noopener">
-                        Bühlmann decompression algorithm
-                    </a> 
-                    — Overview of the algorithm, tissue compartment half-times, and M-values.
-                </li>
-                <li>
-                    <strong>Wienke, B.R.</strong> 
-                    <a href="https://aquatec.wordpress.com/wp-content/uploads/2011/03/decompression-theory.pdf" target="_blank" rel="noopener">
-                        Decompression Theory (PDF)
-                    </a> 
-                    — Comprehensive introduction to decompression physics and physiology.
-                </li>
-                <li>
-                    <strong>Alveolar Gas Equation</strong>: 
-                    The model accounts for water vapor pressure at body temperature (37°C) = 47 mmHg ≈ 0.0627 bar, 
-                    which reduces the effective partial pressure of inspired gases. 
-                    <a href="https://en.wikipedia.org/wiki/Alveolar_gas_equation" target="_blank" rel="noopener">
-                        Wikipedia: Alveolar gas equation
-                    </a>
-                </li>
-                <li>
-                    <strong>Schreiner, H.R.</strong> (1971). 
-                    <em>Safe Limits of Exposure to Increased Pressure.</em> 
-                    — Derivation of the Schreiner equation for calculating gas loading during linear pressure changes.
-                </li>
-            </ol>
         </section>
     </main>
 
+    <!-- Footer -->
     <footer>
         <p>
-            <strong>Disclaimer:</strong> This is an educational tool only. Do not use for actual dive planning. 
-            Always use certified dive computers and tables, and follow proper training.
-        </p>
-        <p>
-            Based on the Bühlmann ZH-L16A decompression algorithm. 
-            <a href="https://aquatec.wordpress.com/wp-content/uploads/2011/03/decompression-theory.pdf" target="_blank">Learn more about decompression theory</a>
+            <strong>Educational Use Only</strong> — Not for dive planning.
+            <br>
+            <a href="https://en.wikipedia.org/wiki/B%C3%BChlmann_decompression_algorithm" target="_blank">
+                Learn more about the Bühlmann algorithm
+            </a>
         </p>
     </footer>
-
-    <!-- Main application script -->
-    <script type="module" src="js/main.js"></script>
 </body>
 </html>
