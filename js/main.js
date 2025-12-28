@@ -38,6 +38,11 @@ const showFastBtn = document.getElementById('show-fast');
 const showMediumBtn = document.getElementById('show-medium');
 const showSlowBtn = document.getElementById('show-slow');
 
+// Fullscreen controls
+const chartContainer = document.getElementById('chart-container');
+const fullscreenBtn = document.getElementById('fullscreen-btn');
+const exitFullscreenBtn = document.getElementById('exit-fullscreen-btn');
+
 // ============================================================================
 // PROFILE TABLE MANAGEMENT
 // ============================================================================
@@ -240,8 +245,8 @@ function runCalculation() {
         // Show stats
         showDiveStats(profile);
         
-        // Render chart
-        renderChart(chartCanvas, results, visibleCompartments);
+        // Render chart and store reference for fullscreen resize
+        window.tissueChart = renderChart(chartCanvas, results, visibleCompartments);
         
         // Scroll to chart
         chartCanvas.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -340,6 +345,34 @@ function initEventListeners() {
         }
         syncCheckboxes();
     });
+    
+    // Fullscreen toggle
+    fullscreenBtn.addEventListener('click', toggleFullscreen);
+    exitFullscreenBtn.addEventListener('click', toggleFullscreen);
+    
+    // Exit fullscreen on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && chartContainer.classList.contains('fullscreen')) {
+            toggleFullscreen();
+        }
+    });
+}
+
+/**
+ * Toggle fullscreen mode for the chart
+ */
+function toggleFullscreen() {
+    const isFullscreen = chartContainer.classList.toggle('fullscreen');
+    
+    // Prevent body scroll when fullscreen
+    document.body.style.overflow = isFullscreen ? 'hidden' : '';
+    
+    // Resize chart to fit new container size
+    if (window.tissueChart) {
+        setTimeout(() => {
+            window.tissueChart.resize();
+        }, 50);
+    }
 }
 
 // ============================================================================

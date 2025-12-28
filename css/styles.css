@@ -582,10 +582,69 @@ section h2 {
 }
 
 /* Chart */
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.chart-header h2 {
+    margin: 0;
+}
+
+.btn-icon {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.fullscreen-icon {
+    font-size: 1.1rem;
+}
+
 .chart-container {
     position: relative;
     height: 700px;
     margin: 1rem 0;
+}
+
+/* Fullscreen mode */
+.chart-container.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 1rem;
+    background: var(--background-color);
+    z-index: 9999;
+    border-radius: 0;
+}
+
+.btn-fullscreen-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 44px;
+    height: 44px;
+    font-size: 1.5rem;
+    padding: 0;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    box-shadow: var(--shadow);
+    z-index: 10000;
+}
+
+.chart-container.fullscreen .btn-fullscreen-close {
+    display: flex;
 }
 
 .chart-legend {
@@ -724,6 +783,20 @@ footer a {
 
     .chart-container {
         height: 400px;
+    }
+
+    .chart-container.fullscreen {
+        height: 100vh;
+        padding: 0.5rem;
+    }
+
+    .chart-header {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .fullscreen-text {
+        display: none;
     }
 
     .compartment-toggles {

@@ -14,7 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
     
     <!-- App styles -->
-    <link rel="stylesheet" href="css/styles.css?v=2">
+    <link rel="stylesheet" href="css/styles.css?v=3">
 </head>
 <body>
     <!-- Navigation -->
@@ -187,9 +187,16 @@
 
         <!-- Chart Section -->
         <section class="chart-section">
-            <h2>📈 Tissue Loading Chart</h2>
-            <div class="chart-container">
+            <div class="chart-header">
+                <h2>📈 Tissue Loading Chart</h2>
+                <button id="fullscreen-btn" class="btn btn-small btn-icon" title="Fullscreen">
+                    <span class="fullscreen-icon">⛶</span>
+                    <span class="fullscreen-text">Fullscreen</span>
+                </button>
+            </div>
+            <div class="chart-container" id="chart-container">
                 <canvas id="tissue-chart"></canvas>
+                <button id="exit-fullscreen-btn" class="btn btn-fullscreen-close" title="Exit Fullscreen">✕</button>
             </div>
             <div class="chart-legend">
                 <p><strong>Left axis (N₂ Pressure):</strong> Shows nitrogen pressure in each tissue compartment. 
