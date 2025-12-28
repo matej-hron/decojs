@@ -218,8 +218,9 @@ function showDiveStats(profile) {
 
 /**
  * Run calculation and update chart
+ * @param {boolean} scrollToChart - Whether to scroll to chart after calculation (default: true)
  */
-function runCalculation() {
+function runCalculation(scrollToChart = true) {
     const profile = readProfileFromTable();
     const validation = validateProfile(profile);
     
@@ -248,8 +249,10 @@ function runCalculation() {
         // Render chart and store reference for fullscreen resize
         window.tissueChart = renderChart(chartCanvas, results, visibleCompartments);
         
-        // Scroll to chart
-        chartCanvas.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Scroll to chart (only when user clicks Calculate, not on initial load)
+        if (scrollToChart) {
+            chartCanvas.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
         
     } catch (error) {
         validationErrors.innerHTML = `<div>Calculation error: ${error.message}</div>`;
@@ -391,8 +394,8 @@ function init() {
     // Render math formulas
     renderMathFormulas();
     
-    // Run initial calculation
-    runCalculation();
+    // Run initial calculation (without scrolling to chart)
+    runCalculation(false);
 }
 
 // Start the app when DOM is ready

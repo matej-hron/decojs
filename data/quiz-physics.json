@@ -525,7 +525,7 @@
       ],
       "correct": "c",
       "explanation": "Bod tuhnutí vody je 0 °C, což odpovídá 273 K (přesněji 273,15 K). Převod: T[K] = T[°C] + 273. Možnost d) 373 K odpovídá bodu varu vody (100 °C).",
-      "category": "plynove-zakony"
+      "category": "fyzika-plynu"
     },
     {
       "id": 22,
@@ -550,7 +550,7 @@
       ],
       "correct": "c",
       "explanation": "Stavové proměnné ideálního plynu jsou tlak (p), objem (V) a teplota (T). Tyto veličiny jsou propojeny stavovou rovnicí pV = nRT.",
-      "category": "plynove-zakony"
+      "category": "fyzika-plynu"
     },
     {
       "id": 23,
@@ -575,7 +575,7 @@
       ],
       "correct": "d",
       "explanation": "Boyle-Mariottův zákon: p₁·V₁ = p₀·V₀ při konstantní teplotě. Tlak a objem jsou nepřímo úměrné – když se tlak zdvojnásobí, objem klesne na polovinu. Klíčový zákon pro potápění!",
-      "category": "plynove-zakony"
+      "category": "fyzika-plynu"
     },
     {
       "id": 24,
@@ -600,7 +600,7 @@
       ],
       "correct": "c",
       "explanation": "Gay-Lussacův zákon: V₁/T₁ = V₂/T₂ při konstantním tlaku (izobarický děj). Objem plynu je přímo úměrný jeho absolutní teplotě.",
-      "category": "plynove-zakony"
+      "category": "fyzika-plynu"
     },
     {
       "id": 25,
@@ -625,7 +625,7 @@
       ],
       "correct": "a",
       "explanation": "Izochorický děj (V = konst.): p₁/T₁ = p₂/T₂, tedy p₂ = p₁·T₂/T₁. Musíme použít absolutní teploty: T₁ = 47+273 = 320 K, T₂ = 17+273 = 290 K. Výsledek: p₂ = 20·290/320 = 18,1 MPa.",
-      "category": "plynove-zakony"
+      "category": "fyzika-plynu"
     },
     {
       "id": 26,
@@ -650,7 +650,7 @@
       ],
       "correct": "b",
       "explanation": "Izochorický děj: p₂ = p₁·T₂/T₁. T₁ = 27+273 = 300 K, T₂ = 327+273 = 600 K. p₂ = 10·600/300 = 20 MPa. Teplota se zdvojnásobila (v Kelvinech), proto se zdvojnásobil i tlak.",
-      "category": "plynove-zakony"
+      "category": "fyzika-plynu"
     },
     {
       "id": 27,
@@ -675,7 +675,7 @@
       ],
       "correct": "b",
       "explanation": "Stavová rovnice pV/T = konst. nepopisuje teplotní změny při stlačování/rozpínání – to vyžaduje znalost typu děje (adiabatický, izotermický atd.). Rovnice pouze spojuje stavy před a po změně.",
-      "category": "plynove-zakony"
+      "category": "fyzika-plynu"
     },
     {
       "id": 28,
@@ -700,7 +700,7 @@
       ],
       "correct": "b",
       "explanation": "Při ochlazení lahví klesá tlak (izochorický děj). To je nejdůležitější pro potápěče, protože tlak určuje skutečnou zásobu vzduchu. Po naplnění a ochlazení bude v lahvi méně vzduchu, než by odpovídalo tlaku při plnění.",
-      "category": "plynove-zakony"
+      "category": "fyzika-plynu"
     },
     {
       "id": 29,
