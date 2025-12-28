@@ -57,16 +57,19 @@
             <div class="concept-card">
                 <h3>Tissue Compartments</h3>
                 <p>
-                    Your body isn't uniform — different tissues absorb and release nitrogen at different rates:
+                    Your body isn't uniform — different tissues absorb and release nitrogen at different rates.
+                    Decompression models represent this using <strong>theoretical compartments</strong> — these are
+                    mathematical constructs fit to experimental data, not literal anatomical tissues:
                 </p>
                 <ul>
-                    <li><strong>Fast tissues</strong> (brain, blood, spinal cord) — saturate in minutes, but also release gas quickly</li>
-                    <li><strong>Medium tissues</strong> (muscles, skin) — take longer to saturate</li>
-                    <li><strong>Slow tissues</strong> (fat, bones, cartilage) — can take hours to fully saturate</li>
+                    <li><strong>Fast compartments</strong> — saturate in minutes, but also release gas quickly</li>
+                    <li><strong>Medium compartments</strong> — take longer to saturate</li>
+                    <li><strong>Slow compartments</strong> — can take hours to fully saturate</li>
                 </ul>
                 <p>
                     The Bühlmann ZH-L16 model uses <strong>16 theoretical compartments</strong> with half-times 
-                    ranging from 5 to 635 minutes to simulate this behavior.
+                    on the order of ~4–5 to 635 minutes (depending on the specific ZH-L16 variant).
+                    The "fast/slow" labels are useful intuition for understanding time constants.
                 </p>
             </div>
 
@@ -196,7 +199,9 @@
                    tissues are trying to equilibrate towards. When tissue &lt; alveolar, you're on-gassing; 
                    when tissue &gt; alveolar, you're off-gassing. The crossover is where tissue loading peaks.</p>
                 <p><strong>Red dashed line (Ambient Pressure):</strong> The total pressure at current depth. 
-                   Tissue pressures should stay below this to avoid bubble formation.</p>
+                   Bubble risk increases when tissue inert-gas tension exceeds ambient pressure beyond an 
+                   allowable gradient (defined by M-values / gradient factors). Some supersaturation is normal 
+                   and permitted during controlled ascents.</p>
                 <p><strong>Gray dashed line (Surface Saturation):</strong> Equilibrium N₂ pressure at surface (~0.74 bar).</p>
             </div>
         </section>
