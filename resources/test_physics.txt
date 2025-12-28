@@ -1,0 +1,727 @@
+FYZIKA Zkušební testy SPČR 2018
+1. Které z uvedených jednotek udávají přibližně stejnou hodnotu tlaku?
+a) 0,1 MPa = 100 kPa = 1 bar
+b) 1 MPa = 1 000 kPa = 10 mbar
+c) 0,1 MPa = 1 000 kPa = 10 bar
+d) 1 MPa = 1 000 mbar
+2. Hydrostatický tlak v jezeře závisí kromě gravitačního zrychlení:
+a) na tlaku atmosférickém a hustotě vody
+b) na hustotě vody a hloubce
+c) na nadmořské výšce a hloubce
+d) na teplotě a tlaku vzduchu nad hladinou
+3. Který údaj o průměrném tlaku ovzduší (normálním atmosférickém
+tlaku) je nesprávný?
+a) kolem 100 000 N/m2
+, tj. kolem 100 kPa
+b) mezi 900 a 1 100 milibary, tj. kolem 1 baru
+c) asi 0,1 MPa, tj. 1 000 hPa
+d) okolo 100 kbar, tj. 0,1 Mbar
+4. Tlak 1 kPa odpovídá tlaku vyvolanému na povrchu Země vodním
+sloupcem o výšce:
+a) 1 milimetru
+b) 1 decimetru
+c) 1centimetru
+d) 1 metru
+5. Složení suchého atmosférického vzduchu je přibližně následující:
+a) 21 % O2, 78 % CO2, 1 % N2 a vzácných plynů
+b) 78 O2, 21 CO2, 1 % N2 a vzácných plynů
+c) 21 % O2, 78 % N2, 1 % vzácných plynů a CO2
+d) 78 % O2, 21 % N2, 1 % vzácných plynů a CO2
+6. Hustota suchého vzduchu:
+a) nezávisí na tlaku a teplotě a je vždy asi 1,25 kg/m3
+b) je za normálních podmínek rovna 1,25 kg/l
+c) závisí na tlaku a teplotě; při normálním tlaku a teplotě 10 °C činí
+přibližně 1,25 kg/m3
+d) je rovna nule, poněvadž vzduch nic neváží
+7. Které tvrzení je zcela správné? U dna se zdržuje:
+a) nejchladnější voda
+b) voda o největší hustotě
+c) nejteplejší voda
+d) voda o nejmenší hustotě
+8. Jaká bude v našich podmínkách přibližná teplota u dna zamrzlého
+jezera, hlubokého 50 m?
+a) –1 °C
+b) 0 °C
+c) 1 °C
+d) 4 °C
+9. Které z následujících tvrzení je nesprávné?
+a) Odvod tepla prouděním je nejúčinnější.
+b) Odpařováním kapaliny z povrchu tělesa se snižuje jeho teplota.
+c) Ohřátá voda mezi tělem a neoprenem zabraňuje odvodu tepla.
+d) Prostup tepla pěněným neoprenem snižují uzavřené komůrky
+vyplněné plynem.
+10. Porovnáme-li odvod tepla z povrchu těla vzduchem a vodou za stejných
+podmínek, je odvod tepla ve vodě:
+a) větší v důsledku větší tepelné vodivosti a kapacity vody
+b) větší v důsledku fyziologických změn v organismu
+c) menší, poněvadž tělem ohřátá voda např. v obleku nás zahřeje
+d) menší, poněvadž voda působí jako tepelný izolátor
+11. Předměty viděné ve vodě se potápěči s maskou jeví oproti skutečné
+velikosti a vzdálenosti:
+a) větší o 1/4, vzdálenější o 1/3
+b) větší o 1/3, bližší o 1/3
+c) menší o 1/3, bližší o 1/4
+d) větší o 1/3, bližší o 1/4
+12. Které z následujících tvrzení je nesprávné? Paprsek vycházející ze
+svítilny pod vodou po dopadu na hladinu se:
+a) láme od kolmice k rozhraní (pokud nedopadá kolmo)
+b) při určitém úhlu (úhel úplného odrazu) láme tak, že pokračuje
+rovnoběžně s hladinou
+c) vždy láme a přechází do vzduchu
+d) někdy odráží a vrací se do vody
+13. Které z následujících tvrzení o vidění (zdravým okem v čisté vodě)
+je nesprávné?
+a) Ve velkých hloubkách vidíme všechny barvy v odstínech šedi.
+b) Do hloubek přes 10 metrů již neproniká červená barva denního
+světla.
+c) Barvy denního světla začínají vyhasínat s rostoucí hloubkou od
+červeného konce barevného spektra
+d) V čiré vodě proniká nejhlouběji žlutá barva denního světla.
+14. Paprsek přicházející ve vodě od předmětu k potápěči se na výstupu ze
+skla masky do vzduchu uvnitř masky vůči směru dopadu na sklo láme:
+a) ke kolmici a tím zdánlivě zvětšuje pozorovaný objekt
+b) od kolmice a tím zdánlivě zvětšuje pozorovaný objekt
+c) ke kolmici a tím zdánlivě zmenšuje pozorovaný objekt
+d) od kolmice a tím zdánlivě zmenšuje pozorovaný objekt
+15. Které z následujících tvrzení je nesprávné? Potápěčská svítilna:
+a) umožňuje vidět barevně i v hloubce
+b) zvětšuje dohlednost v kalné vodě
+c) umožňuje dohlédnout do zákoutí štěrbin
+d) umožňuje vidění za sníženého osvětlení
+16. Světelný paprsek přecházející pod určitým ostrým úhlem ze vzduchu do
+vody se na rozhraní obou prostředí lomí:
+a) rovnoběžně s rozhraním
+b) ke kolmici k rozhraní
+c) od kolmice k rozhraní
+d) kolmo k rozhraní
+17. Které z následujících tvrzení je nesprávné? Osvětlení pod vodou závisí:
+a) na úhlu dopadu slunečního světla na hladinu
+b) na době pobytu pod vodou, tj. na přivyknutí oka na šero
+c) na stupni znečištění vody
+d) na hloubce
+18. Které z následujících tvrzení je nesprávné?
+a) Paprsek dopadající na hladinu kolmo se lomí o úhel 68° (90°/1,33).
+b) Paprsek dopadající ze vzduchu na hladinu pod úhlem 24° od kolmice
+bude ve vodě pokračovat pod úhlem přibližně 18° od kolmice.
+c) Index lomu vody je 1,33.
+d) Poměr rychlosti světla ve vodě k rychlosti ve vzduchu je přibližně roven 3 : 4.
+19. Pálení očí v kontaktu s vodou pociťujeme:
+a) ve sladké i slané vodě, pokud se jejich osmotický tlak liší od
+osmotického tlaku tělesných tekutin
+b) jen v mořské vodě s osmotickým tlakem větším než je osmotický
+tlak tělesných tekutin
+c) jen ve sladké vodě s osmotickým tlakem menším než je osmotický
+tlak tělesných tekutin
+d) jen v bazénu v důsledku přítomnosti chemikálií regulujících
+hygienickou nezávadnost vody
+20. Osmotický tlak sladké vody v porovnání s osmotickým tlakem krve: 
+a) je vyšší, proto při tonutí prostupuje do krve, kterou zřeďuje
+b) je nižší, proto při tonutí prostupuje do krve, kterou zřeďuje
+c) je vyšší, proto při tonutí zůstává v plicích
+d) je nižší, proto při tonutí zůstává v plicích
+21. Termodynamická teplota T bodu tuhnutí vody je přibližně:
+a) 0 K
+b) –273 °C
+c) 273 K
+d) 373 K
+22. Veličiny určující okamžitý stav určitého množství ideálního plynu
+(stavové proměnné) jsou:
+a) tlak, objem a hmotnost
+b) objem, teplota a molekulová hmotnost
+c) tlak, objem a teplota
+d) objem a tlak
+
+23. Boyle-Mariottův zákon pro izotermický děj se dá vyjádřit takto:
+a) p1 / V1 = p0 / V0 a říká, že kolikrát se zvětší tlak plynu, tolikrát se
+zvětší jeho objem
+b) p0 . V1 = p1 . V0 a říká, že kolikrát se zvětší tlak plynu, tolikrát se
+zvětší jeho objem
+c) p1 . T1 = p0 . T0 a říká, že kolikrát se zvětší teplota plynu, tolikrát se
+zmenší jeho tlak
+d) p1 . V1 = p0 . V0 a říká, že kolikrát se zvětší tlak plynu, tolikrát se
+zmenší jeho objem
+24. Gay-Lussacův zákon pro izobarický děj se dá vyjádřit takto:
+a) p1 . V1 = p0 . V0 a říká, že kolikrát se zvětší tlak plynu, tolikrát se
+zmenší jeho objem
+b) p0 . V1 = p1 . V0 a říká, že kolikrát se zvětší tlak plynu, tolikrát se
+zvětší jeho objem
+c) V1 / T1 = V2 / T2 a říká, že kolikrát se zvětší objem plynu, tolikrát se
+zvětší jeho termodynamická teplota
+d) p1 . T1 = p0 . T0 a říká, že kolikrát se zvětší teplota plynu, tolikrát se
+zmenší jeho tlak
+25. Tlaková lahev o objemu 15 l byla naplněna na 20 MPa a vzduch v ní se
+zahřál na 47 °C. Který z výpočtů je správný pro určení tlaku v lahvi po
+poklesu teploty vzduchu v ní na 17 °C?
+a) p2 = p1 . T2 / T1 = 20 . 290 / 320 = atd.
+b) p2 = p1 . T1 / T2 = 20 . 47 / 17 = atd.
+c) p2 = p1 . V1 . T1 = 20 . 15 . 17 = atd.
+d) p2 = p1 . V1 . T2 / T1 = 20 . 15 . 290 / 320 = atd. 
+26. Lahev o vodním obsahu 10 l obsahovala při 27 °C vzduch stlačený na
+10 MPa. Při požáru se ohřála na 327 °C a tím se tlak vzduchu v ní zvýšil
+přibližně:
+a) na 12,7 MPa
+b) na 20 MPa
+c) na 30 MPa
+d) na 32,7 MPa
+27. Které z následujících tvrzení o stavové rovnici plynu
+p . V / T = p0 . V0 / T0 je nesprávné?
+a) Tato rovnice platí pro určité hmotové množství plynu.
+b) Touto rovnicí lze popsat teplotní změny při stlačování a
+rozpínání vzduchu.
+c) Z této rovnice lze odvodit základní zákony pro změny stavu
+plynu (izotermickou, izobarickou, izochorickou).
+d) Touto rovnicí lze popsat stavové změny ideálního plynu.
+28. Při ochlazení vzduchu v právě naplněných lahvích dýchacích přístrojů
+dojde ke změnám, z nichž nejpodstatnější pro potápěče je:
+a) změna hmotnosti vzduchu v tlakových lahvích
+b) změna tlaku vzduchu (ke stanovení zásoby vzduchu)
+c) nižší teplota dýchaného vzduchu
+d) změna objemu tlakových lahví (pro dimenzi těsnicích vložek)
+29. Tlak p lze stanovit pomocí:
+a) tlakové síly F dělené plochou S, tj. p = F / S
+b) tlakové síly F násobené plochou S, tj. p = F . S
+c) tlakové síly F dělené objemem V, tj. p = F / V
+d) tlakové síly F, které se přímo rovná, tj. P = F
+30. Kompresor má výkon charakterizovaný stlačením 300 l vzduchu o
+normálním tlaku za minutu a maximální dodávaný tlak 20 MPa. Kolik
+prázdných lahví o objemu 15 l je za hodinu možno tímto kompresorem
+naplnit na 20 MPa? (Vzduch v lahvích má stejnou teplotu jako vzduch
+nasávaný do kompresoru.)
+a) 2 lahve
+b) 3 lahve
+c) 4 lahve
+d) 6 lahví
+31. Vyberte z možné nabídky zvedací vak o minimálním objemu
+potřebný k vyzvednutí litinového bloku o hmotnosti 750 kg (hustota
+litiny je 8 000 kg/m3
+) volně ležícího na dně v hloubce 10 m. Hmotnost
+vaku se závěsem je 10 – 15 kg:
+a) 1 000 l
+b) 800 l
+c) 700 l
+d) 600 l 
+32. Ke změně hmotnosti potápěče s dýchacím přístrojem během ponoru ve
+stálé hloubce dochází hlavně vlivem:
+a) stlačení obleku
+b) úbytku vzduchu v zásobníku přístroje
+c) změny tlaku
+d) změny teploty
+33. Do jaké maximální hloubky se může teoreticky ponořit na nádech
+potápěč s vitální kapacitou plic 4,5 litru a se zbytkovým objemem
+plic 1,5 litru, aniž by mu hrozilo poškození plic?
+a) 70 metrů
+b) 60 metrů
+c) 30 metrů
+d) 45 metrů
+34. Potápěč na nádech má na sobě neoprenový oblek, jehož objem při
+normálním tlaku činí 10 litrů a hmotnost 2 kg. Kolik zátěže bude
+potřebovat, aby byl na hladině vyvážen?
+a) 12 kg
+b) 10 kg
+c) 6 kg
+d) 8 kg
+35. Objem vzduchové bubliny vypuštěné z hloubky 300 m se těsně pod
+hladinou zvětšil oproti objemu v hloubce za předpokladu stejné teploty:
+a) 31krát
+b) 310krát
+c) 301krát
+d) 300krát
+36. Zaplavený dutý válec z ocelového plechu o hmotnosti 2 400 kg a o
+vnitřním objemu 3 000 l (hustota oceli je 8 000 kg/m3
+) leží volně na dně v
+hloubce 20 m. Na hladinu je možné jej vyzvednout po naplnění
+vzduchem. Vyberte nejmenší možný počet k tomu potřebných lahví o
+objemu 12 l naplněných na 18 MPa:
+a) 1 lahev
+b) 3 lahve
+c) 2 lahve
+d) 4 lahve
+37. Na hladině byl potápěč vyvážen s kompenzátorem vztlaku naplněným 6
+litry vzduchu. Kdyby nyní bez doplňování či vypouštění tohoto
+kompenzátoru sestoupil do hloubky 20 m a chtěl by se vyvážit
+odhozením zátěže (neuvažujeme stlačení obleku), musel by odhodit:
+a) 4 kg zátěže
+b) 2 kg zátěže
+c) 3 kg zátěže
+d) 6 kg zátěže 
+38. Potápěčská kabina byla spuštěna do hloubky 60 m, přičemž uvnitř
+byl zachován normální atmosférický tlak. Jakou výslednou silou
+působí na těsnicí plochu kabiny víko výstupového otvoru o ploše 1 m2
+?
+a) 700 000 N
+b) 70 000 N
+c) 6 000 N
+d) 600 000 N
+39. Potápěčský zvon bez přívodu vzduchu, spuštěný do hloubky 20 m, se
+naplní vodou přibližně:
+a) do 1/2 objemu
+b) do 2/3 objemu
+c) do 1/3 objemu
+d) do 3/4 objemu
+40. Dutý válcový potápěčský zvon o výšce 10 m je ponořen bez doplňování
+vzduch do hloubky 30 m. Jak vysoko bude hladina vody uvnitř zvonu?
+a) 2,5 m
+b) 3,3 m
+c) 7,5 m
+ d) 6,6 m
+41. Kompenzátor vztlaku o maximálním objemu 16 litrů je v hloubce 40 m
+naplněn na polovinu. V jaké hloubce by bez vypouštění při výstupu
+začal unikat vzduch přetlakovým ventilem seřízeným na přetlak 30 kPa?
+a) 37 metrů
+b) 22 metrů
+c) 17 metrů
+d) 12 metrů
+42. Potápěčský zvon má plný vnitřní objem 900 l, hmotnost se závažím
+1 010 kg a objem materiálu samotného 100 l. Jakou silou bude v
+hloubce 20 m ve sladké vodě působit na závěsné lano, jestliže při
+spouštění:
+A. byl stále doplňován vzduchem?
+ B. nebyl doplňován vzduchem?
+a) A = 100 N, B = 400 N
+b) A = 100 N, B = 6 100 N
+c) A = 6 000 N, B = 7 000 N
+d) A = 100 N, B = 3 100 N
+43. Kompenzátor vztlaku o maximálním objemu 20 l je v hloubce 30 m
+naplněn vzduchem na polovinu. V jaké hloubce by se při výstupu
+bez vypouštění rozepnul vzduch uvnitř tohoto kompenzátoru tak, že by
+začal unikat přetlakovým ventilem seřízeným na přetlak 0,03 MPa?
+a) 17 metrů
+b) 12 metrů
+c) 7 metrů
+d) 3 metry 
+44. Hustota mořské vody je:
+a) závislá na teplotě, koncentraci solí a slabě i na tlaku
+b) závislá pouze na teplotě
+c) závislá na teplotě a tlaku, nezávisí na koncentraci solí
+d) stálá 1 020 kg/m3
+bez ohledu na teplotu, tlak a koncentraci solí
+45. Jak a o kolik kg se přibližně změní hmotnost 20litrového přístroje
+původně naplněného na tlak 20 MPa po vydýchání 3/4 zásoby vzduchu?
+a) bude lehčí asi o 5 kg
+b) bude těžší asi o 3,7 kg
+c) bude lehčí asi o 3,7 kg
+d) nezmění se
+46. Jakou silou je v hloubce 40 m sladké vody nadlehčován volně ležící
+litinový předmět o objemu 10 l (hustota litiny je 7 500 kg/m3
+)?
+a) 0,75 MPa
+b) 750 N
+c) 850 N
+d) 100 N
+47. V hloubce 10 m leží volně na dně ocelové kostky, každá o hmotnosti
+160 kg. Přibližně kolik takových kostek je možno vyzvednout pomocí
+zvedacího vaku a vzduchové lahve o objemu 10 l naplněné na tlak
+18 MPa? (hustota oceli je 8 000kg/m3
+)
+a) 6 kostek
+b) 2 kostky
+c) 8 kostek
+d) 10 kostek
+48. Hustotu dutého uzavřeného předmětu stanovíme:
+a) vydělíme-li jeho tíhu plochou, na kterou působí
+b) vynásobíme-li jeho hmotnost jeho objemem
+c) tak, že v tabulkách vyhledáme hustotu látky, ze které je vyroben
+d) vydělíme-li jeho hmotnost jeho objemem
+49. Těleso s vodotěsným povrchem má hmotnost 250 kg a objem 245 l.
+Stanovte hustotu tohoto tělesa a vyjádřete se k jeho chování v mořské
+vodě o hustotě 1 030 kg/m3
+:
+a) bude plovat jako málo ponořené těleso (např. loď)
+b) bude se vznášet
+c) bude plovat u hladiny (téměř zcela ponořené)
+d) bude klesat ke dnu 
+50. Při teplotě 22 °C je absolutní vlhkost vzduchu nasyceného vodními
+parami 18 g/m3
+. Kolik vody by muselo zůstat v odlučovači kompresoru
+po úplném odstranění vody ze vzduchu a po naplnění 10 původně
+prázdných lahví o objemu 15 l na 20 MPa při této teplotě nasávaného
+vzduchu o relativní vlhkosti 33 %?
+a) 18 g
+b) 54 g
+c) 178,2 g
+d) 540 g
+51. Jak velká musí přibližně být síla řídicí pružiny vyváženého 1. stupně
+plicní automatiky, aby pod membránou o pracovním průměru 40 mm
+vznikl středotlak o přetlaku 1 MPa?
+a) 130 N
+b) 650 N
+c) 1 260 N
+d) 65 N
+52. Stejný tlak, jaký vyvolává vzduchový obal Země u hladiny moře,
+vyvolává samotný sloupec vody vysoký:
+a) průměrně kolem 1 metru
+b) 100 metrů
+c) přesně 20 metrů
+d) přibližně 10 metrů
+53. Tlak vyvolaný vzduchovým obalem Země u hladiny moře (normální
+atmosférický tlak) je přibližně:
+a) 0,1 MPa, tj. 1 bar
+b) 1 MPa, tj. 1 000 mbar
+c) 10 MPa, tj. 1 bar
+d) 0,01 MPa, tj. 1 bar
+54. Při potápění v jezeře, jehož hladina leží asi 5 500 m nad mořem a u níž
+je atmosférický tlak asi 50 kPa, bude v hloubce 20 metrů celkový tlak
+přibližně roven:
+a) 200 kPa
+b) 250 kPa
+c) 300 kPa
+d) 350 kPa
+55. Dekompresní komora na palubě lodi je naplněna na tlak odpovídající
+hloubce 50 m. Jakou výslednou silou je na přírubu komory dotlačováno
+víko komory o ploše 1 m2
+?
+a) 600 000 N
+b) 400 000 N
+c) 500 000 N
+d) 50 000 N 
+56. Důvod, proč je při potápění ve větších nadmořských výškách oproti
+moři ke stanovení dekomprese brán v úvahu nižší atmosférický tlak,
+spočívá:
+a) ve větším obsahu dusíku ve vzduchu
+b) v menším obsahu kyslíku ve vzduchu
+c) v menším celkovém tlaku v hloubce
+d) v jiném poměru atmosférického tlaku k celkovému tlaku v hloubce
+57. Které z následujících tvrzení je nesprávné?
+a) Objem 1 krychlového metru (1 m3
+) obsahuje 1 000 litrů.
+b) Tlak 1 MPa je stejný jako tlak 100 kPa.
+c) Teplota 20 °C odpovídá přibližně teplotě 293 K.
+d) Těleso o hmotnosti 1 kg působí na povrchu Země silou přibližně
+ 10 newtonů (N).
+58. Stanovte sílu jakou je dotlačována do sedla trysky o průřezu 10 mm2
+kuželka 2. stupně plicní automatiky otevíraného proti proudu při
+středotlaku nastaveném na přetlak 1 MPa:
+a) 0,1 N
+b) 1 N
+c) 10 N
+d) 100 N
+59. Celkový tlak v určité hloubce horského jezera:
+a) je rozdílem tlaku hydrostatického a tlaku atmosférického
+b) je roven hydrostatickému tlaku v této hloubce
+c) je součtem tlaku hydrostatického a tlaku atmosférického
+d) je nezávislý na tlaku hydrostatickém a atmosférickém
+60. Stanovte výslednou tlakovou sílu, kterou působí v hloubce 30 m průzor
+pouzdra videokamery o průměru 40 mm na dosedací plochu pouzdra:
+a) 3 770 N
+b) 503 N
+c) 50,3 N
+d) 377 N
+61. Za jak dlouho by byla v hloubce 10 m při hladinové spotřebě 30 l za
+minutu teoreticky zcela spotřebována zásoba vzduchu v tlakové
+lahvi o objemu 15 l naplněné na tlak 20 MPa?
+a) za 100 minut
+b) za 75 minut
+c) za 50 minut
+d) za 25 minut
+62. Jak dlouho může setrvat v hloubce 20 m potápěč s přístrojem o objemu
+18 l, tlaku 20 MPa a s hladinovou spotřebou 30 l/min, než tlak v přístroji
+poklesne na 5 MPa?
+a) 45 minut
+b) 30 minut
+c) 40 minut
+d) 20 minut
+63. Dva potápěči poplavou v hloubce 20 m tak dlouho, dokud první z nich
+nespotřebuje polovinu své zásoby vzduchu, a pak se budou vracet
+nazpět v hloubce 10 m. Potápěč A má přístroj o objemu 15 l a
+hladinovou spotřebu 25 l/min, potápěč B má přístroj o objemu 20 l a
+hladinovou spotřebu 30 l/min; přístroje obou potápěčů jsou naplněny
+na tlak 20 MPa. Stanovte okamžik obratu:
+a) 33 minut
+b) 30 minut
+c) 20 minut
+d) 22 minut
+64. Naplánujte dobu pobytu v hloubce 30 m pro potápěče s přístrojem o
+objemu 15 l naplněným na tlak 20 MPa a s hladinovou spotřebou
+25 l/min tak, aby zahájil výstup po poklesu zásoby vzduchu na 1/3
+původní zásoby:
+a) 30 minut
+b) 27 minut
+c) 20 minut
+d) 10 minut
+65. Naplánujte okamžik zahájení návratu při potápění pod ledem v hloubce
+20 m za dodržení zásady třetinové spotřeby z celkové zásoby vzduchu.
+Oba potápěči mají přístroje o objemu 15 l naplněné na tlak 18 MPa a
+hladinovou spotřebu 30 l/min:
+a) 15 minut
+b) 20 minut
+c) 30 minut
+d) 10 minut
+66. Jakou hladinovou spotřebu vzduchu má potápěč, kterému v průběhu
+20 minut strávených v hloubce 10 m poklesl tlak v přístroji o objemu
+10 l z 15 MPa na 5 MPa?
+a) 20 litrů za minutu
+b) 30 litrů za minutu
+c) 35 litrů za minutu
+d) 25 litrů za minutu 
+67. Jak dlouho může pobýt v hloubce 15 m potápěč s přístrojem o objemu
+10 l, tlaku 20 MPa a s hladinovou spotřebou 30 l/min, než mu tlak v
+přístroji poklesne na 5 MPa?
+a) 17 minut
+b) 20 minut
+c) 25 minut
+d) 33 minut
+68. Za jak dlouho poklesne tlak v přístroji o objemu 12 l z počátečních
+20 MPa na tlak 5 MPa v hloubce 20 m a při hladinové spotřebě 30 l/min?
+a) za 15 minut
+b) za 25 minut
+c) za 20 minut
+d) za 30 minut
+69. Před potápěním byl v 15 litrovém přístroji tlak jen 5 MPa. Ve druhém,
+18litrovém přístroji, byl tlak 20 MPa. Potápěči přepustili vzduch mezi
+přístroji a chystají se k ponoru. Oba mají hladinovou spotřebu 30 l/min.
+Jak dlouho mohou setrvat v hloubce 15 m, než prvnímu z nich poklesne
+tlak v přístroji na 3 MPa?
+a) 25 minut
+b) 32 minut
+c) 20 minut
+d) 44 minut
+70. Ve 12litrovém přístroji zůstal zbytkový tlak 5 MPa. Jaký bude v tomto
+přístroji výsledný tlak po doplnění ze 40litrové lahve o původním tlaku
+20 MPa?
+a) 11, 5 MPa
+b) 15,4 MPa
+c) 16,5 MPa
+d) 19,3 MPa
+71. Jaký minimální tlak by musel mít potápěč v přístroji o objemu 10 l
+pro výstup z hloubky 20 m předepsanou rychlostí 10 m/min s
+dekompresí 3 minuty v 5 m při hladinové spotřebě 30 l/min?
+a) 1,6 MPa
+b) 2 MPa
+c) 2,36 MPa
+d) 4 MPa
+72. Vypočtěte minimální objem přístroje, naplněného na 20 MPa pro ponor
+30 m/10 minut, 20 m/5 minut a 10 m/10 minut s rezervou 5 MPa
+zahrnutou do výstupů. Hladinová spotřeba je 30 l/min:
+a) 12 litrů
+b) 15 litrů
+c) 18 litrů
+d) 20 litrů 
+73. Dva potápěči se dohodli, že při ponoru do 30 m zahájí výstup do menší
+hloubky když prvnímu z nich poklesne tlak vzduchu v přístroji na 10
+MPa.
+Potápěč A má přístroj o objemu 18 l a hladinovou spotřebu 30 l/min.
+Potápěč B má přístroj o objemu 15 l a hladinovou spotřebu 25 l/min.
+Oba přístroje jsou naplněny na 20 MPa.
+Kterému potápěči dříve poklesne tlak na 10 MPa, a za jak dlouho to bude?
+a) B, za 20 minut
+b) B, za 10 minut
+c) oběma stejně, za 20 minut
+d) oběma stejně, za 15 minut
+74. Jakou hladinovou spotřebu vzduchu má potápěč, kterému v průběhu 10
+minut strávených v hloubce 20 m poklesl tlak v přístroji o objemu
+18 l tlak z 16 MPa na 11 MPa?
+a) 20 litrů za minutu
+b) 30 litrů za minutu
+c) 25 litrů za minutu
+d) 35 litrů za minutu
+75. Stačila by k výstupu předepsanou rychlostí 10 m/min z hloubky 30 m
+a pro dekompresi 3 minuty v 5 m zásoba vzduchu z přístroje o objemu
+15 l s tlakem 5 MPa, jestliže by z tohoto přístroje dýchali dva potápěči,
+oba s hladinovou spotřebou 40 l/min?
+a) nestačila by ani k výstupu na zastávku
+b) stačila by pouze k výstupu přímo na hladinu
+c) stačila by k výstupu na zastávku a k pobytu na ní v trvání přibližně
+1,5 minuty
+d) stačila by k výstupu na zastávku i na 3 minuty dekomprese na ní
+76. Potápěč plaval v hloubce 30 m jedním směrem tak dlouho, až tlak v jeho
+přístroji poklesl z 20 MPa na 10 MPa. Pak vystoupil do hloubky 10 m a
+plaval zpět. Stanovte přibližný tlak v přístroji po návratu na místo
+zahájení ponoru (spotřeba vzduchu byla po celý ponor stálá):
+a) 1 MPa
+b) 3 MPa
+c) 5 MPa
+d) 7,5 MPa
+77. Jaký minimální objem musí mít dýchací přístroj naplněný na 20 MPa,
+aby s ním potápěč při hladinové spotřebě 30 l/min mohl strávit 17 minut
+v hloubce 30 m, absolvovat dekompresní zastávku 3 min/5 m a vynořit
+se s rezervou 4 MPa?
+a) 12 litrů
+b) 18 litrů
+c) 15 litrů
+d) 20 litrů
+78. Potápěči se dohodli, že na vraku v hloubce 25 m setrvají tak dlouho, až
+- buď prvnímu z nich poklesne tlak v přístroji na 5 MPa,
+- nebo na čas 30 minut s dekompresní zastávkou 5 min/5 m.
+Potápěč A má 18litrový přístroj a hladinovou spotřebu 25 l/min,
+potápěč B má 20litrový přístroj a hladinovou spotřebu 30 l/min;
+oba přístroje jsou naplněny na 20 MPa.
+ Která z podmínek bude splněna dříve (případně u kterého potápěče)?
+a) tlak 5 MPa (potápěč A)
+b) tlak 5 MPa (potápěč B)
+c) 30 minut (potápěč B)
+d) obě podmínky budou splněny současně (5 MPa za 30 minut)
+79. Potápěči se nacházejí v hloubce 25 m, přičemž potápěč A s hladinovou
+spotřebou 25 l/min má přístroj o objemu 12 l a potápěč B s hladinovou
+spotřebou 30 l/min má přístroj o objemu 18 l. Jaký minimální tlak musí
+mít každý v přístroji, aby jim vzduch stačil k výstupu na dekompresní
+zastávku v 5 metrech, dekompresi 5 min/5 m a k vynoření s rezervou
+3 MPa?
+a) A: 5,6 MPa, B: 5,1 MPa
+b) A: 7,5 MPa, B: 7 MPa
+c) A: 7 MPa, B: 7,3 MPa
+d) A: 4,8 MPa, B: 4,2 MPa
+80. Organismus potápěče, jehož hladinová spotřeba vzduchu je 30 l/min,
+spotřebuje za 1 minutu přibližně:
+a) 0,5 l kyslíku
+b) 3 l kyslíku
+c) 1,5 l kyslíku
+d) 6 l kyslíku
+81. Která odpověď je zcela nesprávná? Parciální tlak kyslíku ve vzduchu:
+a) Vyjadřuje dílčí tlak O2 ve vzduchu.
+b) Je dán procentuálním zastoupením O2 ve vzduchu.
+c) Součet parciálních tlaků jednotlivých složek vzduchu je roven tlaku
+vzduchu.
+d) Parciální tlaky plynů ve vzduchu nezávisí na celkovém tlaku
+vzduchu.
+82. Od jaké hloubky je možno dýchat směs 4 % kyslíku a 96 % vodíku,
+nesmí-li parciální tlak kyslíku klesnout pod 16 kPa?
+a) 6 metrů
+b) 16 metrů
+c) 40 metrů
+d) 30 metrů 
+83. Které z následujících tvrzení je nesprávné?
+ S rostoucí nadmořskou výškou:
+a) klesá atmosférický tlak
+b) po předchozím dekompresním ponoru v moři roste i
+pravděpodobnost výskytu dekompresní nemoci
+c) klesá dílčí tlak kyslíku, avšak stoupá dílčí tlak dusíku
+ (proto jsme více ohroženi dekompresní nemocí)
+d) se musí oproti ponoru v moři změnit hloubky i trvání dekompresních
+zastávek
+84. Jaký je parciální tlak kyslíku ve vaku kyslíkového přístroje v hloubce
+15 metrů?
+a) 250 kPa
+b) 21 kPa
+c) 52,5 kPa
+d) 150 kPa
+85. U vysokohorského jezera je atmosférický tlak 70 kPa. Stanovte parciální
+tlaky kyslíku při dýchání vzduchu na hladině tohoto jezera a v hloubce
+20 metrů:
+a) 14,7 kPa a 42 kPa
+b) 14,7 kPa a 56,7 kPa
+c) 21 kPa a 63 kPa
+d) 14,7 kPa a 63 kPa
+86. Do jaké hloubky se smí použít pro dýchání směs 32 % kyslíku a 68 %
+dusíku, aby nebyl překročen maximální parciální tlak kyslíku 160 kPa?
+a) 40 metrů
+b) 50 metrů
+c) 30 metrů
+d) 6 metrů
+87. Dýchací směs se skládá z 20 % kyslíku, 50 % dusíku a 30 % hélia.
+Stanovte parciální tlaky jednotlivých plynů při použití této směsi v
+hloubce 70 metrů:
+a) kyslík 160 kPa, dusík 400 kPa, hélium 240 kPa
+b) kyslík 140 kPa, dusík 350 kPa, hélium 210 kPa
+c) kyslík 180 kPa, dusík 450 kPa, hélium 270 kPa
+d) kyslík 200 kPa, dusík 500 kPa, hélium 300 kPa
+88. V jaké hloubce by parciální tlak kyslíku při dýchání vzduchu dosáhl
+hranice 160 kPa?
+a) 55 metrů
+b) 77 metrů
+c) 66 metrů
+d) 88 metrů
+89. Stanovte parciální tlaky kyslíku a dusíku v lahvi dýchacího přístroje
+o objemu 15 l, naplněné vzduchem na 15 MPa:
+a) kyslík 21 kPa, dusík 78 kPa
+b) kyslík 3,15 MPa, dusík 11,7 MPa
+c) kyslík 315 kPa, dusík 1 170 kPa
+d) podle hloubky (např. v 10 m kyslík 42 kPa, dusík 156 kPa)
+90. Jaký by směl být maximální objemový podíl kyslíku ve směsi
+kyslík-dusík určené do hloubky 30 m, aby v této hloubce dílčí tlak
+kyslíku nepřekročil 160 kPa?
+a) 4 %
+b) 53 %
+c) 40 %
+d) 16 %
+91. Jaký by směl být objemový podíl dusíku ve směsi hélium-kyslík-dusík,
+určené do hloubky 150 m, aby v této hloubce dílčí tlak dusíku
+nepřekročil 400 kPa?
+a) 50 %
+b) 35 %
+c) 25 %
+d) 60 %
+92. V jaké hloubce by s dýchací směsí složené ze 40 % dusíku, 16 % kyslíku
+a 34 % hélia bylo dosaženo parciálních tlaků dusíku 400 kPa a kyslíku
+160 kPa?
+a) N2 70 m, O2 66 m
+b) N2 80 m, O2 80 m
+c) N2 100 m, O2 90 m
+d) N2 90 m, O2 90 m
+93. Proč je výhodné dýchat na dekompresních zastávkách kyslík?
+a) Zmenšuje se rychlost vylučování dusíku z těla.
+b) Je vytvořen větší tlakový spád pro vylučování dusíku z organismu.
+c) Kyslík dráždí čidla dýchacího centra a tím zvyšuje ventilaci.
+d) Kyslík se váže na hemoglobin a tím vytěsňuje navázaný dusík.
+94. Poločas sycení nejrychlejších tkání odpovídá přibližně:
+a) 4 minutám
+b) 12 minutám
+c) 25 minutám
+d) 40 minutám 
+95. Stanovte parciální tlak dusíku ve tkáni o poločasu sycení 15 minut v
+moři v hloubce 40 m po 30 minutách dýchání vzduchu:
+a) 253,5 kPa
+b) 292,5 kPa
+c) 273 kPa
+d) 312 kPa
+96. Stanovte parciální tlak dusíku ve tkáni po prvním poločase sycení v
+moři v hloubce 30 m při dýchání vzduchu:
+a) 117 kPa
+b) 156 kPa
+c) 234 kPa
+d) 195 kPa
+97. Stanovte parciální tlak dusíku po 40 minutách pobytu v moři v hloubce
+30 m při dýchání vzduchu ve tkáních o poločasech sycení 20 minut ( a
+40 minut (B):
+a) A: 312 kPa, B: 156 kPa
+b) A: 234 kPa, B: 195 kPa
+c) A: 156 kPa, B: 312 kPa
+d) A: 253,5 kPa, B: 195 kPa
+98. Stanovte parciální tlak dusíku ve tkáni po dvou poločasech sycení v
+moři v hloubce 30 m při dýchání vzduchu:
+a) 234 kPa
+b) 253,5 kPa
+c) 273 kPa
+d) 312 kPa
+99. Stanovte parciální tlak dusíku ve tkáni o poločasu sycení 15 minut v
+moři v hloubce 70 m po 30 minutách při dýchání směsi obsahující
+50 % dusíku. Směs je dýchána od okamžiku zanoření, do zanoření
+byl dýchán vzduch:
+a) 378 kPa
+b) 340,5 kPa
+c) 253 kPa
+d) 319,5 kPa
+100. Při normálním atmosférickém tlaku je v krvi rozpuštěno přibližně
+10 mililitrů dusíku na 1 litr krve (10 ml/l). Kolik dusíku bude v krvi
+rozpuštěno po uplynutí 1 poločasu sycení v hloubce 30 m při dýchání
+vzduchu?
+a) 40 ml/l
+b) 30 ml/l
+c) 20 ml/l
+d) 25 ml/l
+FY – TABULKA SPRÁVNÝCH ODPOVĚDÍ
+Zkušební testy SPČR 2018
+1a 26b 51c 76c
+2b 27b 52d 77c
+3d 28b 53a 78b
+4b 29a 54b 79a
+5c 30d 55c 80c
+6c 31c 56d 81d
+7b 32b 57b 82d
+8d 33c 58c 83c
+9c 34d 59c 84a
+10a 35a 60d 85b
+11d 36b 61c 86a
+12c 37a 62b 87a
+13d 38d 63c 88c
+14b 39b 64c 89b
+15b 40c 65d 90c
+16b 41d 66d 91c
+17b 42b 67b 92d
+18a 43c 68c 93b
+19a 44a 69c 94a
+20b 45c 70c 95d
+21c 46d 71c 96d
+22c 47a 72b 97d
+23d 48d 73d 98b
+24c 49c 74b 99d
+25a 50c 75c 100d

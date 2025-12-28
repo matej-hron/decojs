@@ -1,0 +1,2506 @@
+{
+  "title": "Fyzika - Zkušební testy SPČR 2018",
+  "description": "Zkušební otázky z fyziky pro potápěče",
+  "questions": [
+    {
+      "id": 1,
+      "category": "tlak-jednotky",
+      "question": "Které z uvedených jednotek udávají přibližně stejnou hodnotu tlaku?",
+      "options": [
+        {
+          "key": "a",
+          "text": "0,1 MPa = 100 kPa = 1 bar"
+        },
+        {
+          "key": "b",
+          "text": "1 MPa = 1 000 kPa = 10 mbar"
+        },
+        {
+          "key": "c",
+          "text": "0,1 MPa = 1 000 kPa = 10 bar"
+        },
+        {
+          "key": "d",
+          "text": "1 MPa = 1 000 mbar"
+        }
+      ],
+      "correct": "a",
+      "explanation": "0,1 MPa = 100 kPa = 1 bar jsou ekvivalentní hodnoty tlaku. 1 MPa = 1000 kPa = 10 bar, takže ostatní možnosti obsahují chybné převody."
+    },
+    {
+      "id": 2,
+      "question": "Hydrostatický tlak v jezeře závisí kromě gravitačního zrychlení:",
+      "options": [
+        {
+          "key": "a",
+          "text": "na tlaku atmosférickém a hustotě vody"
+        },
+        {
+          "key": "b",
+          "text": "na hustotě vody a hloubce"
+        },
+        {
+          "key": "c",
+          "text": "na nadmořské výšce a hloubce"
+        },
+        {
+          "key": "d",
+          "text": "na teplotě a tlaku vzduchu nad hladinou"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Hydrostatický tlak se počítá jako p = ρ·g·h, tedy závisí na hustotě vody (ρ) a hloubce (h). Atmosférický tlak ovlivňuje celkový tlak, ale ne samotný hydrostatický tlak.",
+      "category": "tlak-jednotky"
+    },
+    {
+      "id": 3,
+      "question": "Který údaj o průměrném tlaku ovzduší (normálním atmosférickém tlaku) je nesprávný?",
+      "options": [
+        {
+          "key": "a",
+          "text": "kolem 100 000 N/m², tj. kolem 100 kPa"
+        },
+        {
+          "key": "b",
+          "text": "mezi 900 a 1 100 milibary, tj. kolem 1 baru"
+        },
+        {
+          "key": "c",
+          "text": "asi 0,1 MPa, tj. 1 000 hPa"
+        },
+        {
+          "key": "d",
+          "text": "okolo 100 kbar, tj. 0,1 Mbar"
+        }
+      ],
+      "correct": "d",
+      "explanation": "100 kbar = 10 000 MPa, což je obrovský tlak (100 000× vyšší než atmosférický). Normální atmosférický tlak je přibližně 1 bar = 0,1 MPa = 100 kPa.",
+      "category": "tlak-jednotky"
+    },
+    {
+      "id": 4,
+      "question": "Tlak 1 kPa odpovídá tlaku vyvolanému na povrchu Země vodním sloupcem o výšce:",
+      "options": [
+        {
+          "key": "a",
+          "text": "1 milimetru"
+        },
+        {
+          "key": "b",
+          "text": "1 decimetru"
+        },
+        {
+          "key": "c",
+          "text": "1 centimetru"
+        },
+        {
+          "key": "d",
+          "text": "1 metru"
+        }
+      ],
+      "correct": "b",
+      "explanation": "1 kPa = 1000 Pa. Tlak vodního sloupce p = ρ·g·h. Pro vodu: 1000 kg/m³ × 10 m/s² × 0,1 m = 1000 Pa = 1 kPa. Tedy 1 decimetr (0,1 m) vodního sloupce vytváří tlak 1 kPa.",
+      "category": "tlak-jednotky"
+    },
+    {
+      "id": 5,
+      "question": "Složení suchého atmosférického vzduchu je přibližně následující:",
+      "options": [
+        {
+          "key": "a",
+          "text": "21 % O₂, 78 % CO₂, 1 % N₂ a vzácných plynů"
+        },
+        {
+          "key": "b",
+          "text": "78 O₂, 21 CO₂, 1 % N₂ a vzácných plynů"
+        },
+        {
+          "key": "c",
+          "text": "21 % O₂, 78 % N₂, 1 % vzácných plynů a CO₂"
+        },
+        {
+          "key": "d",
+          "text": "78 % O₂, 21 % N₂, 1 % vzácných plynů a CO₂"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Vzduch obsahuje přibližně 78 % dusíku (N₂), 21 % kyslíku (O₂) a 1 % ostatních plynů včetně argonu a CO₂. Toto složení je klíčové pro pochopení dekompresní teorie.",
+      "category": "vlastnosti-vody-vzduchu"
+    },
+    {
+      "id": 6,
+      "question": "Hustota suchého vzduchu:",
+      "options": [
+        {
+          "key": "a",
+          "text": "nezávisí na tlaku a teplotě a je vždy asi 1,25 kg/m³"
+        },
+        {
+          "key": "b",
+          "text": "je za normálních podmínek rovna 1,25 kg/l"
+        },
+        {
+          "key": "c",
+          "text": "závisí na tlaku a teplotě; při normálním tlaku a teplotě 10 °C činí přibližně 1,25 kg/m³"
+        },
+        {
+          "key": "d",
+          "text": "je rovna nule, poněvadž vzduch nic neváží"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Hustota vzduchu závisí na tlaku a teplotě podle stavové rovnice ideálního plynu. Při normálních podmínkách (cca 10 °C, 1 atm) je hustota přibližně 1,25 kg/m³.",
+      "category": "vlastnosti-vody-vzduchu"
+    },
+    {
+      "id": 7,
+      "question": "Které tvrzení je zcela správné? U dna se zdržuje:",
+      "options": [
+        {
+          "key": "a",
+          "text": "nejchladnější voda"
+        },
+        {
+          "key": "b",
+          "text": "voda o největší hustotě"
+        },
+        {
+          "key": "c",
+          "text": "nejteplejší voda"
+        },
+        {
+          "key": "d",
+          "text": "voda o nejmenší hustotě"
+        }
+      ],
+      "correct": "b",
+      "explanation": "U dna se zdržuje voda o největší hustotě. Voda má největší hustotu při 4 °C. V zimě může být u dna teplejší voda než u povrchu, protože hustší voda klesá ke dnu.",
+      "category": "vlastnosti-vody-vzduchu"
+    },
+    {
+      "id": 8,
+      "question": "Jaká bude v našich podmínkách přibližná teplota u dna zamrzlého jezera, hlubokého 50 m?",
+      "options": [
+        {
+          "key": "a",
+          "text": "–1 °C"
+        },
+        {
+          "key": "b",
+          "text": "0 °C"
+        },
+        {
+          "key": "c",
+          "text": "1 °C"
+        },
+        {
+          "key": "d",
+          "text": "4 °C"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Voda má největší hustotu při 4 °C. Proto se v zamrzlém jezeře tato nejtěžší voda hromadí u dna, zatímco chladnější (a lehčí) voda zůstává u povrchu a zamrzá.",
+      "category": "vlastnosti-vody-vzduchu"
+    },
+    {
+      "id": 9,
+      "question": "Které z následujících tvrzení je nesprávné?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Odvod tepla prouděním je nejúčinnější."
+        },
+        {
+          "key": "b",
+          "text": "Odpařováním kapaliny z povrchu tělesa se snižuje jeho teplota."
+        },
+        {
+          "key": "c",
+          "text": "Ohřátá voda mezi tělem a neoprenem zabraňuje odvodu tepla."
+        },
+        {
+          "key": "d",
+          "text": "Prostup tepla pěněným neoprenem snižují uzavřené komůrky vyplněné plynem."
+        }
+      ],
+      "correct": "c",
+      "explanation": "Voda má vysokou tepelnou vodivost a kapacitu, takže ohřátá voda mezi tělem a oblekem NEZABRAŇUJE odvodu tepla – naopak voda rychle odvádí teplo. Proto jsou suché obleky účinnější.",
+      "category": "prenos-tepla"
+    },
+    {
+      "id": 10,
+      "question": "Porovnáme-li odvod tepla z povrchu těla vzduchem a vodou za stejných podmínek, je odvod tepla ve vodě:",
+      "options": [
+        {
+          "key": "a",
+          "text": "větší v důsledku větší tepelné vodivosti a kapacity vody"
+        },
+        {
+          "key": "b",
+          "text": "větší v důsledku fyziologických změn v organismu"
+        },
+        {
+          "key": "c",
+          "text": "menší, poněvadž tělem ohřátá voda např. v obleku nás zahřeje"
+        },
+        {
+          "key": "d",
+          "text": "menší, poněvadž voda působí jako tepelný izolátor"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Voda odvádí teplo přibližně 25× rychleji než vzduch díky své vyšší tepelné vodivosti a tepelné kapacitě. Proto je v chladné vodě riziko hypotermie mnohem větší.",
+      "category": "prenos-tepla"
+    },
+    {
+      "id": 11,
+      "question": "Předměty viděné ve vodě se potápěči s maskou jeví oproti skutečné velikosti a vzdálenosti:",
+      "options": [
+        {
+          "key": "a",
+          "text": "větší o 1/4, vzdálenější o 1/3"
+        },
+        {
+          "key": "b",
+          "text": "větší o 1/3, bližší o 1/3"
+        },
+        {
+          "key": "c",
+          "text": "menší o 1/3, bližší o 1/4"
+        },
+        {
+          "key": "d",
+          "text": "větší o 1/3, bližší o 1/4"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Kvůli lomu světla na rozhraní voda-vzduch v masce se předměty jeví přibližně o 1/3 větší a o 1/4 bližší. Index lomu vody je 1,33, což způsobuje tyto optické iluze.",
+      "category": "optika"
+    },
+    {
+      "id": 12,
+      "question": "Které z následujících tvrzení je nesprávné? Paprsek vycházející ze svítilny pod vodou po dopadu na hladinu se:",
+      "options": [
+        {
+          "key": "a",
+          "text": "láme od kolmice k rozhraní (pokud nedopadá kolmo)"
+        },
+        {
+          "key": "b",
+          "text": "při určitém úhlu (úhel úplného odrazu) láme tak, že pokračuje rovnoběžně s hladinou"
+        },
+        {
+          "key": "c",
+          "text": "vždy láme a přechází do vzduchu"
+        },
+        {
+          "key": "d",
+          "text": "někdy odráží a vrací se do vody"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Tvrzení c) je nesprávné, protože při dopadu pod úhlem větším než kritický úhel (asi 48,6° pro vodu) dochází k úplnému odrazu a paprsek nepřechází do vzduchu.",
+      "category": "optika"
+    },
+    {
+      "id": 13,
+      "question": "Které z následujících tvrzení o vidění (zdravým okem v čisté vodě) je nesprávné?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Ve velkých hloubkách vidíme všechny barvy v odstínech šedi."
+        },
+        {
+          "key": "b",
+          "text": "Do hloubek přes 10 metrů již neproniká červená barva denního světla."
+        },
+        {
+          "key": "c",
+          "text": "Barvy denního světla začínají vyhasínat s rostoucí hloubkou od červeného konce barevného spektra."
+        },
+        {
+          "key": "d",
+          "text": "V čiré vodě proniká nejhlouběji žlutá barva denního světla."
+        }
+      ],
+      "correct": "d",
+      "explanation": "Nesprávné je tvrzení d). V čiré vodě proniká nejhlouběji modrá barva, nikoliv žlutá. Proto se ve velkých hloubkách vše jeví modře.",
+      "category": "optika"
+    },
+    {
+      "id": 14,
+      "question": "Paprsek přicházející ve vodě od předmětu k potápěči se na výstupu ze skla masky do vzduchu uvnitř masky vůči směru dopadu na sklo láme:",
+      "options": [
+        {
+          "key": "a",
+          "text": "ke kolmici a tím zdánlivě zvětšuje pozorovaný objekt"
+        },
+        {
+          "key": "b",
+          "text": "od kolmice a tím zdánlivě zvětšuje pozorovaný objekt"
+        },
+        {
+          "key": "c",
+          "text": "ke kolmici a tím zdánlivě zmenšuje pozorovaný objekt"
+        },
+        {
+          "key": "d",
+          "text": "od kolmice a tím zdánlivě zmenšuje pozorovaný objekt"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Při přechodu z opticky hustšího prostředí (voda/sklo) do řidšího (vzduch) se paprsek láme od kolmice. Výsledkem je zdánlivé zvětšení pozorovaných objektů.",
+      "category": "optika"
+    },
+    {
+      "id": 15,
+      "question": "Které z následujících tvrzení je nesprávné? Potápěčská svítilna:",
+      "options": [
+        {
+          "key": "a",
+          "text": "umožňuje vidět barevně i v hloubce"
+        },
+        {
+          "key": "b",
+          "text": "zvětšuje dohlednost v kalné vodě"
+        },
+        {
+          "key": "c",
+          "text": "umožňuje dohlédnout do zákoutí štěrbin"
+        },
+        {
+          "key": "d",
+          "text": "umožňuje vidění za sníženého osvětlení"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Svítilna v kalné vodě dohlednost NEzvětšuje – naopak, světlo se odráží od částic v kalné vodě a může zhoršit viditelnost (podobně jako dálková světla v mlze).",
+      "category": "optika"
+    },
+    {
+      "id": 16,
+      "question": "Světelný paprsek přecházející pod určitým ostrým úhlem ze vzduchu do vody se na rozhraní obou prostředí lomí:",
+      "options": [
+        {
+          "key": "a",
+          "text": "rovnoběžně s rozhraním"
+        },
+        {
+          "key": "b",
+          "text": "ke kolmici k rozhraní"
+        },
+        {
+          "key": "c",
+          "text": "od kolmice k rozhraní"
+        },
+        {
+          "key": "d",
+          "text": "kolmo k rozhraní"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Při přechodu z opticky řidšího prostředí (vzduch) do hustšího (voda) se světlo láme ke kolmici. Voda má vyšší index lomu (1,33) než vzduch (1,0).",
+      "category": "optika"
+    },
+    {
+      "id": 17,
+      "question": "Které z následujících tvrzení je nesprávné? Osvětlení pod vodou závisí:",
+      "options": [
+        {
+          "key": "a",
+          "text": "na úhlu dopadu slunečního světla na hladinu"
+        },
+        {
+          "key": "b",
+          "text": "na době pobytu pod vodou, tj. na přivyknutí oka na šero"
+        },
+        {
+          "key": "c",
+          "text": "na stupni znečištění vody"
+        },
+        {
+          "key": "d",
+          "text": "na hloubce"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Přivyknutí oka na šero je fyziologická vlastnost oka, nikoliv faktor ovlivňující samotné osvětlení pod vodou. Osvětlení závisí na fyzikálních faktorech jako hloubka, úhel dopadu světla a čistota vody.",
+      "category": "optika"
+    },
+    {
+      "id": 18,
+      "question": "Které z následujících tvrzení je nesprávné?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Paprsek dopadající na hladinu kolmo se lomí o úhel 68° (90°/1,33)."
+        },
+        {
+          "key": "b",
+          "text": "Paprsek dopadající ze vzduchu na hladinu pod úhlem 24° od kolmice bude ve vodě pokračovat pod úhlem přibližně 18° od kolmice."
+        },
+        {
+          "key": "c",
+          "text": "Index lomu vody je 1,33."
+        },
+        {
+          "key": "d",
+          "text": "Poměr rychlosti světla ve vodě k rychlosti ve vzduchu je přibližně roven 3 : 4."
+        }
+      ],
+      "correct": "a",
+      "explanation": "Paprsek dopadající kolmo na hladinu se NELÁME vůbec – pokračuje přímo. K lomu dochází pouze při šikmém dopadu. Tvrzení a) je tedy nesprávné.",
+      "category": "optika"
+    },
+    {
+      "id": 19,
+      "question": "Pálení očí v kontaktu s vodou pociťujeme:",
+      "options": [
+        {
+          "key": "a",
+          "text": "ve sladké i slané vodě, pokud se jejich osmotický tlak liší od osmotického tlaku tělesných tekutin"
+        },
+        {
+          "key": "b",
+          "text": "jen v mořské vodě s osmotickým tlakem větším než je osmotický tlak tělesných tekutin"
+        },
+        {
+          "key": "c",
+          "text": "jen ve sladké vodě s osmotickým tlakem menším než je osmotický tlak tělesných tekutin"
+        },
+        {
+          "key": "d",
+          "text": "jen v bazénu v důsledku přítomnosti chemikálií regulujících hygienickou nezávadnost vody"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Pálení očí je způsobeno rozdílem osmotického tlaku. Jak sladká voda (hypotonická), tak mořská voda (hypertonická) mají odlišný osmotický tlak než slzy, což dráždí oči.",
+      "category": "vlastnosti-vody-vzduchu"
+    },
+    {
+      "id": 20,
+      "question": "Osmotický tlak sladké vody v porovnání s osmotickým tlakem krve:",
+      "options": [
+        {
+          "key": "a",
+          "text": "je vyšší, proto při tonutí prostupuje do krve, kterou zřeďuje"
+        },
+        {
+          "key": "b",
+          "text": "je nižší, proto při tonutí prostupuje do krve, kterou zřeďuje"
+        },
+        {
+          "key": "c",
+          "text": "je vyšší, proto při tonutí zůstává v plicích"
+        },
+        {
+          "key": "d",
+          "text": "je nižší, proto při tonutí zůstává v plicích"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Sladká voda má nižší osmotický tlak (je hypotonická) než krev. Při tonutí voda prostupuje přes plicní membránu do krve a zřeďuje ji, což může vést k hemolýze a srdečním arytmiím.",
+      "category": "vlastnosti-vody-vzduchu"
+    },
+    {
+      "id": 21,
+      "question": "Termodynamická teplota T bodu tuhnutí vody je přibližně:",
+      "options": [
+        {
+          "key": "a",
+          "text": "0 K"
+        },
+        {
+          "key": "b",
+          "text": "–273 °C"
+        },
+        {
+          "key": "c",
+          "text": "273 K"
+        },
+        {
+          "key": "d",
+          "text": "373 K"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Bod tuhnutí vody je 0 °C, což odpovídá 273 K (přesněji 273,15 K). Převod: T[K] = T[°C] + 273. Možnost d) 373 K odpovídá bodu varu vody (100 °C).",
+      "category": "plynove-zakony"
+    },
+    {
+      "id": 22,
+      "question": "Veličiny určující okamžitý stav určitého množství ideálního plynu (stavové proměnné) jsou:",
+      "options": [
+        {
+          "key": "a",
+          "text": "tlak, objem a hmotnost"
+        },
+        {
+          "key": "b",
+          "text": "objem, teplota a molekulová hmotnost"
+        },
+        {
+          "key": "c",
+          "text": "tlak, objem a teplota"
+        },
+        {
+          "key": "d",
+          "text": "objem a tlak"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Stavové proměnné ideálního plynu jsou tlak (p), objem (V) a teplota (T). Tyto veličiny jsou propojeny stavovou rovnicí pV = nRT.",
+      "category": "plynove-zakony"
+    },
+    {
+      "id": 23,
+      "question": "Boyle-Mariottův zákon pro izotermický děj se dá vyjádřit takto:",
+      "options": [
+        {
+          "key": "a",
+          "text": "p₁ / V₁ = p₀ / V₀ a říká, že kolikrát se zvětší tlak plynu, tolikrát se zvětší jeho objem"
+        },
+        {
+          "key": "b",
+          "text": "p₀ · V₁ = p₁ · V₀ a říká, že kolikrát se zvětší tlak plynu, tolikrát se zvětší jeho objem"
+        },
+        {
+          "key": "c",
+          "text": "p₁ · T₁ = p₀ · T₀ a říká, že kolikrát se zvětší teplota plynu, tolikrát se zmenší jeho tlak"
+        },
+        {
+          "key": "d",
+          "text": "p₁ · V₁ = p₀ · V₀ a říká, že kolikrát se zvětší tlak plynu, tolikrát se zmenší jeho objem"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Boyle-Mariottův zákon: p₁·V₁ = p₀·V₀ při konstantní teplotě. Tlak a objem jsou nepřímo úměrné – když se tlak zdvojnásobí, objem klesne na polovinu. Klíčový zákon pro potápění!",
+      "category": "plynove-zakony"
+    },
+    {
+      "id": 24,
+      "question": "Gay-Lussacův zákon pro izobarický děj se dá vyjádřit takto:",
+      "options": [
+        {
+          "key": "a",
+          "text": "p₁ · V₁ = p₀ · V₀ a říká, že kolikrát se zvětší tlak plynu, tolikrát se zmenší jeho objem"
+        },
+        {
+          "key": "b",
+          "text": "p₀ · V₁ = p₁ · V₀ a říká, že kolikrát se zvětší tlak plynu, tolikrát se zvětší jeho objem"
+        },
+        {
+          "key": "c",
+          "text": "V₁ / T₁ = V₂ / T₂ a říká, že kolikrát se zvětší objem plynu, tolikrát se zvětší jeho termodynamická teplota"
+        },
+        {
+          "key": "d",
+          "text": "p₁ · T₁ = p₀ · T₀ a říká, že kolikrát se zvětší teplota plynu, tolikrát se zmenší jeho tlak"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Gay-Lussacův zákon: V₁/T₁ = V₂/T₂ při konstantním tlaku (izobarický děj). Objem plynu je přímo úměrný jeho absolutní teplotě.",
+      "category": "plynove-zakony"
+    },
+    {
+      "id": 25,
+      "question": "Tlaková lahev o objemu 15 l byla naplněna na 20 MPa a vzduch v ní se zahřál na 47 °C. Který z výpočtů je správný pro určení tlaku v lahvi po poklesu teploty vzduchu v ní na 17 °C?",
+      "options": [
+        {
+          "key": "a",
+          "text": "p₂ = p₁ · T₂ / T₁ = 20 · 290 / 320 = atd."
+        },
+        {
+          "key": "b",
+          "text": "p₂ = p₁ · T₁ / T₂ = 20 · 47 / 17 = atd."
+        },
+        {
+          "key": "c",
+          "text": "p₂ = p₁ · V₁ · T₁ = 20 · 15 · 17 = atd."
+        },
+        {
+          "key": "d",
+          "text": "p₂ = p₁ · V₁ · T₂ / T₁ = 20 · 15 · 290 / 320 = atd."
+        }
+      ],
+      "correct": "a",
+      "explanation": "Izochorický děj (V = konst.): p₁/T₁ = p₂/T₂, tedy p₂ = p₁·T₂/T₁. Musíme použít absolutní teploty: T₁ = 47+273 = 320 K, T₂ = 17+273 = 290 K. Výsledek: p₂ = 20·290/320 = 18,1 MPa.",
+      "category": "plynove-zakony"
+    },
+    {
+      "id": 26,
+      "question": "Lahev o vodním obsahu 10 l obsahovala při 27 °C vzduch stlačený na 10 MPa. Při požáru se ohřála na 327 °C a tím se tlak vzduchu v ní zvýšil přibližně:",
+      "options": [
+        {
+          "key": "a",
+          "text": "na 12,7 MPa"
+        },
+        {
+          "key": "b",
+          "text": "na 20 MPa"
+        },
+        {
+          "key": "c",
+          "text": "na 30 MPa"
+        },
+        {
+          "key": "d",
+          "text": "na 32,7 MPa"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Izochorický děj: p₂ = p₁·T₂/T₁. T₁ = 27+273 = 300 K, T₂ = 327+273 = 600 K. p₂ = 10·600/300 = 20 MPa. Teplota se zdvojnásobila (v Kelvinech), proto se zdvojnásobil i tlak.",
+      "category": "plynove-zakony"
+    },
+    {
+      "id": 27,
+      "question": "Které z následujících tvrzení o stavové rovnici plynu p · V / T = p₀ · V₀ / T₀ je nesprávné?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Tato rovnice platí pro určité hmotové množství plynu."
+        },
+        {
+          "key": "b",
+          "text": "Touto rovnicí lze popsat teplotní změny při stlačování a rozpínání vzduchu."
+        },
+        {
+          "key": "c",
+          "text": "Z této rovnice lze odvodit základní zákony pro změny stavu plynu (izotermickou, izobarickou, izochorickou)."
+        },
+        {
+          "key": "d",
+          "text": "Touto rovnicí lze popsat stavové změny ideálního plynu."
+        }
+      ],
+      "correct": "b",
+      "explanation": "Stavová rovnice pV/T = konst. nepopisuje teplotní změny při stlačování/rozpínání – to vyžaduje znalost typu děje (adiabatický, izotermický atd.). Rovnice pouze spojuje stavy před a po změně.",
+      "category": "plynove-zakony"
+    },
+    {
+      "id": 28,
+      "question": "Při ochlazení vzduchu v právě naplněných lahvích dýchacích přístrojů dojde ke změnám, z nichž nejpodstatnější pro potápěče je:",
+      "options": [
+        {
+          "key": "a",
+          "text": "změna hmotnosti vzduchu v tlakových lahvích"
+        },
+        {
+          "key": "b",
+          "text": "změna tlaku vzduchu (ke stanovení zásoby vzduchu)"
+        },
+        {
+          "key": "c",
+          "text": "nižší teplota dýchaného vzduchu"
+        },
+        {
+          "key": "d",
+          "text": "změna objemu tlakových lahví (pro dimenzi těsnicích vložek)"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Při ochlazení lahví klesá tlak (izochorický děj). To je nejdůležitější pro potápěče, protože tlak určuje skutečnou zásobu vzduchu. Po naplnění a ochlazení bude v lahvi méně vzduchu, než by odpovídalo tlaku při plnění.",
+      "category": "plynove-zakony"
+    },
+    {
+      "id": 29,
+      "question": "Tlak p lze stanovit pomocí:",
+      "options": [
+        {
+          "key": "a",
+          "text": "tlakové síly F dělené plochou S, tj. p = F / S"
+        },
+        {
+          "key": "b",
+          "text": "tlakové síly F násobené plochou S, tj. p = F · S"
+        },
+        {
+          "key": "c",
+          "text": "tlakové síly F dělené objemem V, tj. p = F / V"
+        },
+        {
+          "key": "d",
+          "text": "tlakové síly F, které se přímo rovná, tj. P = F"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Tlak je definován jako síla působící kolmo na plochu dělená velikostí této plochy: p = F/S. Jednotkou je Pascal (Pa) = N/m².",
+      "category": "tlak-jednotky"
+    },
+    {
+      "id": 30,
+      "question": "Kompresor má výkon charakterizovaný stlačením 300 l vzduchu o normálním tlaku za minutu a maximální dodávaný tlak 20 MPa. Kolik prázdných lahví o objemu 15 l je za hodinu možno tímto kompresorem naplnit na 20 MPa? (Vzduch v lahvích má stejnou teplotu jako vzduch nasávaný do kompresoru.)",
+      "options": [
+        {
+          "key": "a",
+          "text": "2 lahve"
+        },
+        {
+          "key": "b",
+          "text": "3 lahve"
+        },
+        {
+          "key": "c",
+          "text": "4 lahve"
+        },
+        {
+          "key": "d",
+          "text": "6 lahví"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Za hodinu kompresor stlačí 300 × 60 = 18 000 l vzduchu o normálním tlaku. Pro jednu lahev 15 l na 20 MPa (= 200 bar) potřebujeme 15 × 200 = 3 000 l vzduchu. Počet lahví: 18 000 / 3 000 = 6 lahví.",
+      "category": "tlak-jednotky"
+    },
+    {
+      "id": 31,
+      "question": "Vyberte z možné nabídky zvedací vak o minimálním objemu potřebný k vyzvednutí litinového bloku o hmotnosti 750 kg (hustota litiny je 8 000 kg/m³) volně ležícího na dně v hloubce 10 m. Hmotnost vaku se závěsem je 10–15 kg:",
+      "options": [
+        {
+          "key": "a",
+          "text": "1 000 l"
+        },
+        {
+          "key": "b",
+          "text": "800 l"
+        },
+        {
+          "key": "c",
+          "text": "700 l"
+        },
+        {
+          "key": "d",
+          "text": "600 l"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Objem litiny: 750/8000 = 0,094 m³ = 94 l. Vztlaková síla litiny: 94 kg. Potřebný vztlak vaku: 750 - 94 + 15 = 671 kg ≈ 671 l. Minimální vak je tedy 700 l.",
+      "category": "vztlak-vystroj"
+    },
+    {
+      "id": 32,
+      "question": "Ke změně hmotnosti potápěče s dýchacím přístrojem během ponoru ve stálé hloubce dochází hlavně vlivem:",
+      "options": [
+        {
+          "key": "a",
+          "text": "stlačení obleku"
+        },
+        {
+          "key": "b",
+          "text": "úbytku vzduchu v zásobníku přístroje"
+        },
+        {
+          "key": "c",
+          "text": "změny tlaku"
+        },
+        {
+          "key": "d",
+          "text": "změny teploty"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Hlavní příčinou změny hmotnosti během ponoru je spotřeba vzduchu z lahví. Vzduch má hmotnost (cca 1,25 kg/m³) a při spotřebě 3000 l vzduchu potápěč ztratí téměř 4 kg.",
+      "category": "vztlak-vystroj"
+    },
+    {
+      "id": 33,
+      "question": "Do jaké maximální hloubky se může teoreticky ponořit na nádech potápěč s vitální kapacitou plic 4,5 litru a se zbytkovým objemem plic 1,5 litru, aniž by mu hrozilo poškození plic?",
+      "options": [
+        {
+          "key": "a",
+          "text": "70 metrů"
+        },
+        {
+          "key": "b",
+          "text": "60 metrů"
+        },
+        {
+          "key": "c",
+          "text": "30 metrů"
+        },
+        {
+          "key": "d",
+          "text": "45 metrů"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Celkový objem plic = 4,5 + 1,5 = 6 l. Maximální stlačení na zbytkový objem 1,5 l = poměr 6/1,5 = 4×. To odpovídá tlaku 4 bar = hloubce 30 m. Při větší hloubce by hrozilo poškození plic (squeeze).",
+      "category": "vztlak-vystroj"
+    },
+    {
+      "id": 34,
+      "question": "Potápěč na nádech má na sobě neoprenový oblek, jehož objem při normálním tlaku činí 10 litrů a hmotnost 2 kg. Kolik zátěže bude potřebovat, aby byl na hladině vyvážen?",
+      "options": [
+        {
+          "key": "a",
+          "text": "12 kg"
+        },
+        {
+          "key": "b",
+          "text": "10 kg"
+        },
+        {
+          "key": "c",
+          "text": "6 kg"
+        },
+        {
+          "key": "d",
+          "text": "8 kg"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Oblek o objemu 10 l vytváří vztlak 10 kg. Hmotnost obleku je 2 kg. Čistý vztlak obleku = 10 - 2 = 8 kg. Pro vyvážení potřebuje potápěč 8 kg zátěže.",
+      "category": "vztlak-vystroj"
+    },
+    {
+      "id": 35,
+      "question": "Objem vzduchové bubliny vypuštěné z hloubky 300 m se těsně pod hladinou zvětšil oproti objemu v hloubce za předpokladu stejné teploty:",
+      "options": [
+        {
+          "key": "a",
+          "text": "31krát"
+        },
+        {
+          "key": "b",
+          "text": "310krát"
+        },
+        {
+          "key": "c",
+          "text": "301krát"
+        },
+        {
+          "key": "d",
+          "text": "300krát"
+        }
+      ],
+      "correct": "a",
+      "explanation": "V 300 m je absolutní tlak 31 bar (1 bar atmosférický + 30 bar hydrostatický, cca 10 m = 1 bar). Na hladině je 1 bar. Podle Boyle-Mariottova zákona se objem zvětší 31×.",
+      "category": "vztlak-vystroj"
+    },
+    {
+      "id": 36,
+      "question": "Zaplavený dutý válec z ocelového plechu o hmotnosti 2 400 kg a o vnitřním objemu 3 000 l (hustota oceli je 8 000 kg/m³) leží volně na dně v hloubce 20 m. Na hladinu je možné jej vyzvednout po naplnění vzduchem. Vyberte nejmenší možný počet k tomu potřebných lahví o objemu 12 l naplněných na 18 MPa:",
+      "options": [
+        {
+          "key": "a",
+          "text": "1 lahev"
+        },
+        {
+          "key": "b",
+          "text": "3 lahve"
+        },
+        {
+          "key": "c",
+          "text": "2 lahve"
+        },
+        {
+          "key": "d",
+          "text": "4 lahve"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Objem oceli: 2400/8000 = 0,3 m³ = 300 l. Celkový objem válce: 3000 + 300 = 3300 l. Pro vztlak potřebujeme vytlačit vodu z válce. Jedna lahev 12 l × 180 bar = 2160 l vzduchu na hladině = 720 l v 20 m. Potřebujeme cca 2400 l → 3 lahve.",
+      "category": "vztlak-vystroj"
+    },
+    {
+      "id": 37,
+      "question": "Na hladině byl potápěč vyvážen s kompenzátorem vztlaku naplněným 6 litry vzduchu. Kdyby nyní bez doplňování či vypouštění tohoto kompenzátoru sestoupil do hloubky 20 m a chtěl by se vyvážit odhozením zátěže (neuvažujeme stlačení obleku), musel by odhodit:",
+      "options": [
+        {
+          "key": "a",
+          "text": "4 kg zátěže"
+        },
+        {
+          "key": "b",
+          "text": "2 kg zátěže"
+        },
+        {
+          "key": "c",
+          "text": "3 kg zátěže"
+        },
+        {
+          "key": "d",
+          "text": "6 kg zátěže"
+        }
+      ],
+      "correct": "a",
+      "explanation": "V 20 m je tlak 3 bar. Objem vzduchu v kompenzátoru se zmenší na 6/3 = 2 l. Ztráta vztlaku = 6 - 2 = 4 l = 4 kg. Pro vyvážení musí odhodit 4 kg zátěže.",
+      "category": "vztlak-vystroj"
+    },
+    {
+      "id": 38,
+      "question": "Potápěčská kabina byla spuštěna do hloubky 60 m, přičemž uvnitř byl zachován normální atmosférický tlak. Jakou výslednou silou působí na těsnicí plochu kabiny víko výstupového otvoru o ploše 1 m²?",
+      "options": [
+        {
+          "key": "a",
+          "text": "700 000 N"
+        },
+        {
+          "key": "b",
+          "text": "70 000 N"
+        },
+        {
+          "key": "c",
+          "text": "6 000 N"
+        },
+        {
+          "key": "d",
+          "text": "600 000 N"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Tlakový rozdíl = hydrostatický tlak v 60 m = 6 bar = 600 000 Pa. Síla F = p × S = 600 000 Pa × 1 m² = 600 000 N (asi 60 tun!).",
+      "category": "vztlak-vystroj"
+    },
+    {
+      "id": 39,
+      "question": "Potápěčský zvon bez přívodu vzduchu, spuštěný do hloubky 20 m, se naplní vodou přibližně:",
+      "options": [
+        {
+          "key": "a",
+          "text": "do 1/2 objemu"
+        },
+        {
+          "key": "b",
+          "text": "do 2/3 objemu"
+        },
+        {
+          "key": "c",
+          "text": "do 1/3 objemu"
+        },
+        {
+          "key": "d",
+          "text": "do 3/4 objemu"
+        }
+      ],
+      "correct": "b",
+      "explanation": "V 20 m je absolutní tlak 3 bar. Vzduch ve zvonu se stlačí na 1/3 původního objemu. Zbývající 2/3 objemu se vyplní vodou.",
+      "category": "vztlak-vystroj"
+    },
+    {
+      "id": 40,
+      "question": "Dutý válcový potápěčský zvon o výšce 10 m je ponořen bez doplňování vzduchu do hloubky 30 m. Jak vysoko bude hladina vody uvnitř zvonu?",
+      "options": [
+        {
+          "key": "a",
+          "text": "2,5 m"
+        },
+        {
+          "key": "b",
+          "text": "3,3 m"
+        },
+        {
+          "key": "c",
+          "text": "7,5 m"
+        },
+        {
+          "key": "d",
+          "text": "6,6 m"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Spodní okraj zvonu je v 30 m (4 bar). Vzduch se stlačí na 1/4 objemu, tedy zabere 2,5 m výšky v horní části. Voda vyplní zbývajících 7,5 m.",
+      "category": "vztlak-vystroj"
+    },
+    {
+      "id": 41,
+      "question": "Kompenzátor vztlaku o maximálním objemu 16 litrů je v hloubce 40 m naplněn na polovinu. V jaké hloubce by bez vypouštění při výstupu začal unikat vzduch přetlakovým ventilem seřízeným na přetlak 30 kPa?",
+      "options": [
+        {
+          "key": "a",
+          "text": "37 metrů"
+        },
+        {
+          "key": "b",
+          "text": "22 metrů"
+        },
+        {
+          "key": "c",
+          "text": "17 metrů"
+        },
+        {
+          "key": "d",
+          "text": "12 metrů"
+        }
+      ],
+      "correct": "d",
+      "explanation": "V 40 m (5 bar) je v BCD 8 l vzduchu. Vzduch se rozpíná na 16 l při tlaku 5×8/16 = 2,5 bar. To odpovídá hloubce 15 m. S přetlakem 30 kPa (0,3 bar) ventil otevře při 2,2 bar ≈ 12 m.",
+      "category": "vztlak-vystroj"
+    },
+    {
+      "id": 42,
+      "question": "Potápěčský zvon má plný vnitřní objem 900 l, hmotnost se závažím 1 010 kg a objem materiálu samotného 100 l. Jakou silou bude v hloubce 20 m ve sladké vodě působit na závěsné lano, jestliže při spouštění:\nA. byl stále doplňován vzduchem?\nB. nebyl doplňován vzduchem?",
+      "options": [
+        {
+          "key": "a",
+          "text": "A = 100 N, B = 400 N"
+        },
+        {
+          "key": "b",
+          "text": "A = 100 N, B = 6 100 N"
+        },
+        {
+          "key": "c",
+          "text": "A = 6 000 N, B = 7 000 N"
+        },
+        {
+          "key": "d",
+          "text": "A = 100 N, B = 3 100 N"
+        }
+      ],
+      "correct": "b",
+      "explanation": "A: Plný vzduch – vztlak = (900+100)×10 = 10 000 N, tíha = 10 100 N, síla na lano = 100 N. B: Vzduch stlačen na 1/3 (300 l), voda vyplní 600 l, vztlak = 400×10 = 4 000 N, síla = 10 100 - 4 000 = 6 100 N.",
+      "category": "vztlak-vystroj"
+    },
+    {
+      "id": 43,
+      "question": "Kompenzátor vztlaku o maximálním objemu 20 l je v hloubce 30 m naplněn vzduchem na polovinu. V jaké hloubce by se při výstupu bez vypouštění rozepnul vzduch uvnitř tohoto kompenzátoru tak, že by začal unikat přetlakovým ventilem seřízeným na přetlak 0,03 MPa?",
+      "options": [
+        {
+          "key": "a",
+          "text": "17 metrů"
+        },
+        {
+          "key": "b",
+          "text": "12 metrů"
+        },
+        {
+          "key": "c",
+          "text": "7 metrů"
+        },
+        {
+          "key": "d",
+          "text": "3 metry"
+        }
+      ],
+      "correct": "c",
+      "explanation": "V 30 m (4 bar) je v BCD 10 l. Vzduch dosáhne 20 l při tlaku 4×10/20 = 2 bar = 10 m. S přetlakem 0,03 MPa (0,3 bar) ventil otevře při 1,7 bar ≈ 7 m.",
+      "category": "vztlak-vystroj"
+    },
+    {
+      "id": 44,
+      "question": "Hustota mořské vody je:",
+      "options": [
+        {
+          "key": "a",
+          "text": "závislá na teplotě, koncentraci solí a slabě i na tlaku"
+        },
+        {
+          "key": "b",
+          "text": "závislá pouze na teplotě"
+        },
+        {
+          "key": "c",
+          "text": "závislá na teplotě a tlaku, nezávisí na koncentraci solí"
+        },
+        {
+          "key": "d",
+          "text": "stálá 1 020 kg/m³ bez ohledu na teplotu, tlak a koncentraci solí"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Hustota mořské vody závisí hlavně na teplotě a salinitě (koncentraci solí). Tlak má menší vliv. Typická hustota je 1020–1030 kg/m³, ale liší se podle lokality.",
+      "category": "vztlak-vystroj"
+    },
+    {
+      "id": 45,
+      "question": "Jak a o kolik kg se přibližně změní hmotnost 20litrového přístroje původně naplněného na tlak 20 MPa po vydýchání 3/4 zásoby vzduchu?",
+      "options": [
+        {
+          "key": "a",
+          "text": "bude lehčí asi o 5 kg"
+        },
+        {
+          "key": "b",
+          "text": "bude těžší asi o 3,7 kg"
+        },
+        {
+          "key": "c",
+          "text": "bude lehčí asi o 3,7 kg"
+        },
+        {
+          "key": "d",
+          "text": "nezmění se"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Celková zásoba = 20 l × 200 bar = 4000 l vzduchu. 3/4 = 3000 l. Hmotnost vzduchu ≈ 1,25 kg/1000 l. Úbytek = 3000 × 1,25/1000 = 3,75 kg ≈ 3,7 kg.",
+      "category": "vztlak-vystroj"
+    },
+    {
+      "id": 46,
+      "question": "Jakou silou je v hloubce 40 m sladké vody nadlehčován volně ležící litinový předmět o objemu 10 l (hustota litiny je 7 500 kg/m³)?",
+      "options": [
+        {
+          "key": "a",
+          "text": "0,75 MPa"
+        },
+        {
+          "key": "b",
+          "text": "750 N"
+        },
+        {
+          "key": "c",
+          "text": "850 N"
+        },
+        {
+          "key": "d",
+          "text": "100 N"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Vztlaková síla = objem × hustota vody × g = 0,01 m³ × 1000 kg/m³ × 10 m/s² = 100 N. Vztlak nezávisí na hloubce, pouze na objemu ponořeného tělesa.",
+      "category": "vztlak-vystroj"
+    },
+    {
+      "id": 47,
+      "question": "V hloubce 10 m leží volně na dně ocelové kostky, každá o hmotnosti 160 kg. Přibližně kolik takových kostek je možno vyzvednout pomocí zvedacího vaku a vzduchové lahve o objemu 10 l naplněné na tlak 18 MPa? (hustota oceli je 8 000 kg/m³)",
+      "options": [
+        {
+          "key": "a",
+          "text": "6 kostek"
+        },
+        {
+          "key": "b",
+          "text": "2 kostky"
+        },
+        {
+          "key": "c",
+          "text": "8 kostek"
+        },
+        {
+          "key": "d",
+          "text": "10 kostek"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Lahev obsahuje 10×180 = 1800 l vzduchu. V 10 m (2 bar) je to 900 l vztlaku. Objem kostky = 160/8000 = 0,02 m³ = 20 l. Čistá tíha kostky pod vodou = 160-20 = 140 kg. Počet kostek = 900/140 ≈ 6.",
+      "category": "vztlak-vystroj"
+    },
+    {
+      "id": 48,
+      "question": "Hustotu dutého uzavřeného předmětu stanovíme:",
+      "options": [
+        {
+          "key": "a",
+          "text": "vydělíme-li jeho tíhu plochou, na kterou působí"
+        },
+        {
+          "key": "b",
+          "text": "vynásobíme-li jeho hmotnost jeho objemem"
+        },
+        {
+          "key": "c",
+          "text": "tak, že v tabulkách vyhledáme hustotu látky, ze které je vyroben"
+        },
+        {
+          "key": "d",
+          "text": "vydělíme-li jeho hmotnost jeho objemem"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Hustota ρ = m/V (hmotnost dělená objemem). Pro dutý předmět musíme použít celkový vnější objem včetně dutiny, ne hustotu materiálu z tabulek.",
+      "category": "vztlak-vystroj"
+    },
+    {
+      "id": 49,
+      "question": "Těleso s vodotěsným povrchem má hmotnost 250 kg a objem 245 l. Stanovte hustotu tohoto tělesa a vyjádřete se k jeho chování v mořské vodě o hustotě 1 030 kg/m³:",
+      "options": [
+        {
+          "key": "a",
+          "text": "bude plovat jako málo ponořené těleso (např. loď)"
+        },
+        {
+          "key": "b",
+          "text": "bude se vznášet"
+        },
+        {
+          "key": "c",
+          "text": "bude plovat u hladiny (téměř zcela ponořené)"
+        },
+        {
+          "key": "d",
+          "text": "bude klesat ke dnu"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Hustota tělesa = 250/0,245 = 1020 kg/m³. Mořská voda má 1030 kg/m³. Těleso je lehčí než voda, bude plovat. Protože hustoty jsou blízké, bude téměř celé ponořené.",
+      "category": "vztlak-vystroj"
+    },
+    {
+      "id": 50,
+      "question": "Při teplotě 22 °C je absolutní vlhkost vzduchu nasyceného vodními parami 18 g/m³. Kolik vody by muselo zůstat v odlučovači kompresoru po úplném odstranění vody ze vzduchu a po naplnění 10 původně prázdných lahví o objemu 15 l na 20 MPa při této teplotě nasávaného vzduchu o relativní vlhkosti 33 %?",
+      "options": [
+        {
+          "key": "a",
+          "text": "18 g"
+        },
+        {
+          "key": "b",
+          "text": "54 g"
+        },
+        {
+          "key": "c",
+          "text": "178,2 g"
+        },
+        {
+          "key": "d",
+          "text": "540 g"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Celkem vzduch: 10 × 15 × 200 = 30 000 l = 30 m³. Vlhkost vzduchu: 18 × 0,33 = 5,94 g/m³. Celková voda: 30 × 5,94 = 178,2 g.",
+      "category": "vztlak-vystroj"
+    },
+    {
+      "id": 51,
+      "question": "Jak velká musí přibližně být síla řídicí pružiny vyváženého 1. stupně plicní automatiky, aby pod membránou o pracovním průměru 40 mm vznikl středotlak o přetlaku 1 MPa?",
+      "options": [
+        {
+          "key": "a",
+          "text": "130 N"
+        },
+        {
+          "key": "b",
+          "text": "650 N"
+        },
+        {
+          "key": "c",
+          "text": "1 260 N"
+        },
+        {
+          "key": "d",
+          "text": "65 N"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Plocha membrány S = π × r² = π × 0,02² = 0,001257 m². Síla F = p × S = 1 000 000 Pa × 0,001257 m² ≈ 1 257 N ≈ 1 260 N.",
+      "category": "tlak-jednotky"
+    },
+    {
+      "id": 52,
+      "question": "Stejný tlak, jaký vyvolává vzduchový obal Země u hladiny moře, vyvolává samotný sloupec vody vysoký:",
+      "options": [
+        {
+          "key": "a",
+          "text": "průměrně kolem 1 metru"
+        },
+        {
+          "key": "b",
+          "text": "100 metrů"
+        },
+        {
+          "key": "c",
+          "text": "přesně 20 metrů"
+        },
+        {
+          "key": "d",
+          "text": "přibližně 10 metrů"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Atmosférický tlak ≈ 1 bar ≈ 100 kPa. Hydrostatický tlak 10 m vodního sloupce = 1000 kg/m³ × 10 m/s² × 10 m = 100 000 Pa = 1 bar. Proto 10 m vody = 1 atmosféra.",
+      "category": "tlak-jednotky"
+    },
+    {
+      "id": 53,
+      "question": "Tlak vyvolaný vzduchovým obalem Země u hladiny moře (normální atmosférický tlak) je přibližně:",
+      "options": [
+        {
+          "key": "a",
+          "text": "0,1 MPa, tj. 1 bar"
+        },
+        {
+          "key": "b",
+          "text": "1 MPa, tj. 1 000 mbar"
+        },
+        {
+          "key": "c",
+          "text": "10 MPa, tj. 1 bar"
+        },
+        {
+          "key": "d",
+          "text": "0,01 MPa, tj. 1 bar"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Normální atmosférický tlak = 0,1 MPa = 100 kPa = 1 bar = 1000 mbar. Ostatní možnosti obsahují nesprávné převody jednotek.",
+      "category": "tlak-jednotky"
+    },
+    {
+      "id": 54,
+      "question": "Při potápění v jezeře, jehož hladina leží asi 5 500 m nad mořem a u níž je atmosférický tlak asi 50 kPa, bude v hloubce 20 metrů celkový tlak přibližně roven:",
+      "options": [
+        {
+          "key": "a",
+          "text": "200 kPa"
+        },
+        {
+          "key": "b",
+          "text": "250 kPa"
+        },
+        {
+          "key": "c",
+          "text": "300 kPa"
+        },
+        {
+          "key": "d",
+          "text": "350 kPa"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Celkový tlak = atmosférický + hydrostatický. Atmosférický = 50 kPa. Hydrostatický v 20 m = 200 kPa. Celkem = 50 + 200 = 250 kPa.",
+      "category": "tlak-jednotky"
+    },
+    {
+      "id": 55,
+      "question": "Dekompresní komora na palubě lodi je naplněna na tlak odpovídající hloubce 50 m. Jakou výslednou silou je na přírubu komory dotlačováno víko komory o ploše 1 m²?",
+      "options": [
+        {
+          "key": "a",
+          "text": "600 000 N"
+        },
+        {
+          "key": "b",
+          "text": "400 000 N"
+        },
+        {
+          "key": "c",
+          "text": "500 000 N"
+        },
+        {
+          "key": "d",
+          "text": "50 000 N"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Přetlak v komoře = 50 m = 5 bar = 500 000 Pa (rozdíl oproti atmosférickému tlaku venku). Síla F = p × S = 500 000 Pa × 1 m² = 500 000 N.",
+      "category": "tlak-jednotky"
+    },
+    {
+      "id": 56,
+      "question": "Důvod, proč je při potápění ve větších nadmořských výškách oproti moři ke stanovení dekomprese brán v úvahu nižší atmosférický tlak, spočívá:",
+      "options": [
+        {
+          "key": "a",
+          "text": "ve větším obsahu dusíku ve vzduchu"
+        },
+        {
+          "key": "b",
+          "text": "v menším obsahu kyslíku ve vzduchu"
+        },
+        {
+          "key": "c",
+          "text": "v menším celkovém tlaku v hloubce"
+        },
+        {
+          "key": "d",
+          "text": "v jiném poměru atmosférického tlaku k celkovému tlaku v hloubce"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Ve výšce je nižší atmosférický tlak, ale hydrostatický tlak zůstává stejný. Proto je poměr tlaku na hladině k tlaku v hloubce jiný a výstup představuje větší relativní změnu tlaku.",
+      "category": "tlak-jednotky"
+    },
+    {
+      "id": 57,
+      "question": "Které z následujících tvrzení je nesprávné?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Objem 1 krychlového metru (1 m³) obsahuje 1 000 litrů."
+        },
+        {
+          "key": "b",
+          "text": "Tlak 1 MPa je stejný jako tlak 100 kPa."
+        },
+        {
+          "key": "c",
+          "text": "Teplota 20 °C odpovídá přibližně teplotě 293 K."
+        },
+        {
+          "key": "d",
+          "text": "Těleso o hmotnosti 1 kg působí na povrchu Země silou přibližně 10 newtonů (N)."
+        }
+      ],
+      "correct": "b",
+      "explanation": "1 MPa = 1 000 kPa, nikoliv 100 kPa. Správně: 0,1 MPa = 100 kPa. Ostatní tvrzení jsou správná.",
+      "category": "tlak-jednotky"
+    },
+    {
+      "id": 58,
+      "question": "Stanovte sílu jakou je dotlačována do sedla trysky o průřezu 10 mm² kuželka 2. stupně plicní automatiky otevíraného proti proudu při středotlaku nastaveném na přetlak 1 MPa:",
+      "options": [
+        {
+          "key": "a",
+          "text": "0,1 N"
+        },
+        {
+          "key": "b",
+          "text": "1 N"
+        },
+        {
+          "key": "c",
+          "text": "10 N"
+        },
+        {
+          "key": "d",
+          "text": "100 N"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Plocha S = 10 mm² = 10 × 10⁻⁶ m² = 0,00001 m². Síla F = p × S = 1 000 000 Pa × 0,00001 m² = 10 N.",
+      "category": "tlak-jednotky"
+    },
+    {
+      "id": 59,
+      "question": "Celkový tlak v určité hloubce horského jezera:",
+      "options": [
+        {
+          "key": "a",
+          "text": "je rozdílem tlaku hydrostatického a tlaku atmosférického"
+        },
+        {
+          "key": "b",
+          "text": "je roven hydrostatickému tlaku v této hloubce"
+        },
+        {
+          "key": "c",
+          "text": "je součtem tlaku hydrostatického a tlaku atmosférického"
+        },
+        {
+          "key": "d",
+          "text": "je nezávislý na tlaku hydrostatickém a atmosférickém"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Celkový (absolutní) tlak = atmosférický tlak + hydrostatický tlak. V horách je atmosférický tlak nižší, takže i celkový tlak v dané hloubce bude nižší než u moře.",
+      "category": "tlak-jednotky"
+    },
+    {
+      "id": 60,
+      "question": "Stanovte výslednou tlakovou sílu, kterou působí v hloubce 30 m průzor pouzdra videokamery o průměru 40 mm na dosedací plochu pouzdra:",
+      "options": [
+        {
+          "key": "a",
+          "text": "3 770 N"
+        },
+        {
+          "key": "b",
+          "text": "503 N"
+        },
+        {
+          "key": "c",
+          "text": "50,3 N"
+        },
+        {
+          "key": "d",
+          "text": "377 N"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Hydrostatický tlak v 30 m = 3 bar = 300 000 Pa. Plocha průzoru S = π × 0,02² = 0,001257 m². Síla F = 300 000 × 0,001257 ≈ 377 N.",
+      "category": "tlak-jednotky"
+    },
+    {
+      "id": 61,
+      "question": "Za jak dlouho by byla v hloubce 10 m při hladinové spotřebě 30 l za minutu teoreticky zcela spotřebována zásoba vzduchu v tlakové lahvi o objemu 15 l naplněné na tlak 20 MPa?",
+      "options": [
+        {
+          "key": "a",
+          "text": "za 100 minut"
+        },
+        {
+          "key": "b",
+          "text": "za 75 minut"
+        },
+        {
+          "key": "c",
+          "text": "za 50 minut"
+        },
+        {
+          "key": "d",
+          "text": "za 25 minut"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Zásoba vzduchu = 15 × 200 = 3000 l. V 10 m (2 bar) je spotřeba 30 × 2 = 60 l/min. Čas = 3000 / 60 = 50 minut.",
+      "category": "spotreba-planovani"
+    },
+    {
+      "id": 62,
+      "question": "Jak dlouho může setrvat v hloubce 20 m potápěč s přístrojem o objemu 18 l, tlaku 20 MPa a s hladinovou spotřebou 30 l/min, než tlak v přístroji poklesne na 5 MPa?",
+      "options": [
+        {
+          "key": "a",
+          "text": "45 minut"
+        },
+        {
+          "key": "b",
+          "text": "30 minut"
+        },
+        {
+          "key": "c",
+          "text": "40 minut"
+        },
+        {
+          "key": "d",
+          "text": "20 minut"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Použitelná zásoba = 18 × (200 - 50) = 18 × 150 = 2700 l. V 20 m (3 bar) spotřeba = 30 × 3 = 90 l/min. Čas = 2700 / 90 = 30 minut.",
+      "category": "spotreba-planovani"
+    },
+    {
+      "id": 63,
+      "question": "Dva potápěči poplavou v hloubce 20 m tak dlouho, dokud první z nich nespotřebuje polovinu své zásoby vzduchu, a pak se budou vracet nazpět v hloubce 10 m. Potápěč A má přístroj o objemu 15 l a hladinovou spotřebu 25 l/min, potápěč B má přístroj o objemu 20 l a hladinovou spotřebu 30 l/min; přístroje obou potápěčů jsou naplněny na tlak 20 MPa. Stanovte okamžik obratu:",
+      "options": [
+        {
+          "key": "a",
+          "text": "33 minut"
+        },
+        {
+          "key": "b",
+          "text": "30 minut"
+        },
+        {
+          "key": "c",
+          "text": "20 minut"
+        },
+        {
+          "key": "d",
+          "text": "22 minut"
+        }
+      ],
+      "correct": "c",
+      "explanation": "A: Zásoba = 15×200 = 3000 l, polovina = 1500 l. V 20 m spotřeba = 25×3 = 75 l/min. Čas = 1500/75 = 20 min. B: Zásoba = 4000 l, polovina = 2000 l. V 20 m spotřeba = 30×3 = 90 l/min. Čas = 2000/90 = 22 min. A spotřebuje polovinu dříve → obrat za 20 min.",
+      "category": "spotreba-planovani"
+    },
+    {
+      "id": 64,
+      "question": "Naplánujte dobu pobytu v hloubce 30 m pro potápěče s přístrojem o objemu 15 l naplněným na tlak 20 MPa a s hladinovou spotřebou 25 l/min tak, aby zahájil výstup po poklesu zásoby vzduchu na 1/3 původní zásoby:",
+      "options": [
+        {
+          "key": "a",
+          "text": "30 minut"
+        },
+        {
+          "key": "b",
+          "text": "27 minut"
+        },
+        {
+          "key": "c",
+          "text": "20 minut"
+        },
+        {
+          "key": "d",
+          "text": "10 minut"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Zásoba = 15×200 = 3000 l. Spotřebovat může 2/3 = 2000 l. V 30 m (4 bar) spotřeba = 25×4 = 100 l/min. Čas = 2000/100 = 20 minut.",
+      "category": "spotreba-planovani"
+    },
+    {
+      "id": 65,
+      "question": "Naplánujte okamžik zahájení návratu při potápění pod ledem v hloubce 20 m za dodržení zásady třetinové spotřeby z celkové zásoby vzduchu. Oba potápěči mají přístroje o objemu 15 l naplněné na tlak 18 MPa a hladinovou spotřebu 30 l/min:",
+      "options": [
+        {
+          "key": "a",
+          "text": "15 minut"
+        },
+        {
+          "key": "b",
+          "text": "20 minut"
+        },
+        {
+          "key": "c",
+          "text": "30 minut"
+        },
+        {
+          "key": "d",
+          "text": "10 minut"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Zásoba = 15×180 = 2700 l. Třetina pro cestu tam = 900 l. V 20 m (3 bar) spotřeba = 30×3 = 90 l/min. Čas = 900/90 = 10 minut.",
+      "category": "spotreba-planovani"
+    },
+    {
+      "id": 66,
+      "question": "Jakou hladinovou spotřebu vzduchu má potápěč, kterému v průběhu 20 minut strávených v hloubce 10 m poklesl tlak v přístroji o objemu 10 l z 15 MPa na 5 MPa?",
+      "options": [
+        {
+          "key": "a",
+          "text": "20 litrů za minutu"
+        },
+        {
+          "key": "b",
+          "text": "30 litrů za minutu"
+        },
+        {
+          "key": "c",
+          "text": "35 litrů za minutu"
+        },
+        {
+          "key": "d",
+          "text": "25 litrů za minutu"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Spotřebovaný vzduch = 10 × (150 - 50) = 1000 l. V 10 m (2 bar) za 20 min. Skutečná spotřeba = 1000/20 = 50 l/min. Hladinová spotřeba = 50/2 = 25 l/min.",
+      "category": "spotreba-planovani"
+    },
+    {
+      "id": 67,
+      "question": "Jak dlouho může pobýt v hloubce 15 m potápěč s přístrojem o objemu 10 l, tlaku 20 MPa a s hladinovou spotřebou 30 l/min, než mu tlak v přístroji poklesne na 5 MPa?",
+      "options": [
+        {
+          "key": "a",
+          "text": "17 minut"
+        },
+        {
+          "key": "b",
+          "text": "20 minut"
+        },
+        {
+          "key": "c",
+          "text": "25 minut"
+        },
+        {
+          "key": "d",
+          "text": "33 minut"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Použitelná zásoba = 10 × (200 - 50) = 1500 l. V 15 m (2,5 bar) spotřeba = 30 × 2,5 = 75 l/min. Čas = 1500/75 = 20 minut.",
+      "category": "spotreba-planovani"
+    },
+    {
+      "id": 68,
+      "question": "Za jak dlouho poklesne tlak v přístroji o objemu 12 l z počátečních 20 MPa na tlak 5 MPa v hloubce 20 m a při hladinové spotřebě 30 l/min?",
+      "options": [
+        {
+          "key": "a",
+          "text": "za 15 minut"
+        },
+        {
+          "key": "b",
+          "text": "za 25 minut"
+        },
+        {
+          "key": "c",
+          "text": "za 20 minut"
+        },
+        {
+          "key": "d",
+          "text": "za 30 minut"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Použitelná zásoba = 12 × (200 - 50) = 1800 l. V 20 m (3 bar) spotřeba = 30 × 3 = 90 l/min. Čas = 1800/90 = 20 minut.",
+      "category": "spotreba-planovani"
+    },
+    {
+      "id": 69,
+      "question": "Před potápěním byl v 15 litrovém přístroji tlak jen 5 MPa. Ve druhém, 18litrovém přístroji, byl tlak 20 MPa. Potápěči přepustili vzduch mezi přístroji a chystají se k ponoru. Oba mají hladinovou spotřebu 30 l/min. Jak dlouho mohou setrvat v hloubce 15 m, než prvnímu z nich poklesne tlak v přístroji na 3 MPa?",
+      "options": [
+        {
+          "key": "a",
+          "text": "25 minut"
+        },
+        {
+          "key": "b",
+          "text": "32 minut"
+        },
+        {
+          "key": "c",
+          "text": "20 minut"
+        },
+        {
+          "key": "d",
+          "text": "44 minut"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Celkem vzduchu = 15×50 + 18×200 = 750 + 3600 = 4350 l. Po vyrovnání tlak v obou = 4350/(15+18) = 132 bar. Menší přístroj (15 l): zásoba = 15×(132-30) = 1530 l. V 15 m spotřeba = 30×2,5 = 75 l/min. Čas = 1530/75 ≈ 20 min.",
+      "category": "spotreba-planovani"
+    },
+    {
+      "id": 70,
+      "question": "Ve 12litrovém přístroji zůstal zbytkový tlak 5 MPa. Jaký bude v tomto přístroji výsledný tlak po doplnění ze 40litrové lahve o původním tlaku 20 MPa?",
+      "options": [
+        {
+          "key": "a",
+          "text": "11,5 MPa"
+        },
+        {
+          "key": "b",
+          "text": "15,4 MPa"
+        },
+        {
+          "key": "c",
+          "text": "16,5 MPa"
+        },
+        {
+          "key": "d",
+          "text": "19,3 MPa"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Celkem vzduchu = 12×50 + 40×200 = 600 + 8000 = 8600 l. Celkový objem = 12 + 40 = 52 l. Výsledný tlak = 8600/52 = 165 bar = 16,5 MPa.",
+      "category": "spotreba-planovani"
+    },
+    {
+      "id": 71,
+      "question": "Jaký minimální tlak by musel mít potápěč v přístroji o objemu 10 l pro výstup z hloubky 20 m předepsanou rychlostí 10 m/min s dekompresí 3 minuty v 5 m při hladinové spotřebě 30 l/min?",
+      "options": [
+        {
+          "key": "a",
+          "text": "1,6 MPa"
+        },
+        {
+          "key": "b",
+          "text": "2 MPa"
+        },
+        {
+          "key": "c",
+          "text": "2,36 MPa"
+        },
+        {
+          "key": "d",
+          "text": "4 MPa"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Výstup 20→5 m (2 min, průměr 2,25 bar): 30×2,25×2 = 135 l. Deko 5 m (3 min, 1,5 bar): 30×1,5×3 = 135 l. Výstup 5→0 m (0,5 min, 1,25 bar): 30×1,25×0,5 = 19 l. Celkem ≈ 289 l. Tlak = 289/10 ≈ 29 bar → s rezervou 2,36 MPa.",
+      "category": "spotreba-planovani"
+    },
+    {
+      "id": 72,
+      "question": "Vypočtěte minimální objem přístroje, naplněného na 20 MPa pro ponor 30 m/10 minut, 20 m/5 minut a 10 m/10 minut s rezervou 5 MPa zahrnutou do výstupů. Hladinová spotřeba je 30 l/min:",
+      "options": [
+        {
+          "key": "a",
+          "text": "12 litrů"
+        },
+        {
+          "key": "b",
+          "text": "15 litrů"
+        },
+        {
+          "key": "c",
+          "text": "18 litrů"
+        },
+        {
+          "key": "d",
+          "text": "20 litrů"
+        }
+      ],
+      "correct": "b",
+      "explanation": "30 m (4 bar, 10 min): 30×4×10 = 1200 l. 20 m (3 bar, 5 min): 30×3×5 = 450 l. 10 m (2 bar, 10 min): 30×2×10 = 600 l. Celkem = 2250 l. Použitelný tlak = 200-50 = 150 bar. Objem = 2250/150 = 15 l.",
+      "category": "spotreba-planovani"
+    },
+    {
+      "id": 73,
+      "question": "Dva potápěči se dohodli, že při ponoru do 30 m zahájí výstup do menší hloubky když prvnímu z nich poklesne tlak vzduchu v přístroji na 10 MPa.\nPotápěč A má přístroj o objemu 18 l a hladinovou spotřebu 30 l/min.\nPotápěč B má přístroj o objemu 15 l a hladinovou spotřebu 25 l/min.\nOba přístroje jsou naplněny na 20 MPa.\nKterému potápěči dříve poklesne tlak na 10 MPa, a za jak dlouho to bude?",
+      "options": [
+        {
+          "key": "a",
+          "text": "B, za 20 minut"
+        },
+        {
+          "key": "b",
+          "text": "B, za 10 minut"
+        },
+        {
+          "key": "c",
+          "text": "oběma stejně, za 20 minut"
+        },
+        {
+          "key": "d",
+          "text": "oběma stejně, za 15 minut"
+        }
+      ],
+      "correct": "d",
+      "explanation": "A: Zásoba do 10 MPa = 18×(200-100) = 1800 l. V 30 m (4 bar): 30×4 = 120 l/min. Čas = 1800/120 = 15 min. B: Zásoba = 15×100 = 1500 l. V 30 m: 25×4 = 100 l/min. Čas = 1500/100 = 15 min. Oběma stejně za 15 min.",
+      "category": "spotreba-planovani"
+    },
+    {
+      "id": 74,
+      "question": "Jakou hladinovou spotřebu vzduchu má potápěč, kterému v průběhu 10 minut strávených v hloubce 20 m poklesl tlak v přístroji o objemu 18 l z 16 MPa na 11 MPa?",
+      "options": [
+        {
+          "key": "a",
+          "text": "20 litrů za minutu"
+        },
+        {
+          "key": "b",
+          "text": "30 litrů za minutu"
+        },
+        {
+          "key": "c",
+          "text": "25 litrů za minutu"
+        },
+        {
+          "key": "d",
+          "text": "35 litrů za minutu"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Spotřebovaný vzduch = 18 × (160 - 110) = 18 × 50 = 900 l. V 20 m (3 bar) za 10 min. Skutečná spotřeba = 900/10 = 90 l/min. Hladinová spotřeba = 90/3 = 30 l/min.",
+      "category": "spotreba-planovani"
+    },
+    {
+      "id": 75,
+      "question": "Stačila by k výstupu předepsanou rychlostí 10 m/min z hloubky 30 m a pro dekompresi 3 minuty v 5 m zásoba vzduchu z přístroje o objemu 15 l s tlakem 5 MPa, jestliže by z tohoto přístroje dýchali dva potápěči, oba s hladinovou spotřebou 40 l/min?",
+      "options": [
+        {
+          "key": "a",
+          "text": "nestačila by ani k výstupu na zastávku"
+        },
+        {
+          "key": "b",
+          "text": "stačila by pouze k výstupu přímo na hladinu"
+        },
+        {
+          "key": "c",
+          "text": "stačila by k výstupu na zastávku a k pobytu na ní v trvání přibližně 1,5 minuty"
+        },
+        {
+          "key": "d",
+          "text": "stačila by k výstupu na zastávku i na 3 minuty dekomprese na ní"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Zásoba = 15×50 = 750 l. Dva potápěči = 80 l/min na hladině. Výstup 30→5 m (2,5 min, průměr 2,75 bar): 80×2,75×2,5 = 550 l. Zbývá 200 l. Na deko v 5 m (1,5 bar): 80×1,5 = 120 l/min. Čas = 200/120 ≈ 1,5 min.",
+      "category": "spotreba-planovani"
+    },
+    {
+      "id": 76,
+      "question": "Potápěč plaval v hloubce 30 m jedním směrem tak dlouho, až tlak v jeho přístroji poklesl z 20 MPa na 10 MPa. Pak vystoupil do hloubky 10 m a plaval zpět. Stanovte přibližný tlak v přístroji po návratu na místo zahájení ponoru (spotřeba vzduchu byla po celý ponor stálá):",
+      "options": [
+        {
+          "key": "a",
+          "text": "1 MPa"
+        },
+        {
+          "key": "b",
+          "text": "3 MPa"
+        },
+        {
+          "key": "c",
+          "text": "5 MPa"
+        },
+        {
+          "key": "d",
+          "text": "7,5 MPa"
+        }
+      ],
+      "correct": "c",
+      "explanation": "V 30 m (4 bar) spotřeboval 100 bar. Hladinová spotřeba za čas t = 100/4 = 25 bar-ekvivalent. V 10 m (2 bar) za stejný čas spotřebuje 25×2 = 50 bar. Zbývá 100 - 50 = 50 bar = 5 MPa.",
+      "category": "spotreba-planovani"
+    },
+    {
+      "id": 77,
+      "question": "Jaký minimální objem musí mít dýchací přístroj naplněný na 20 MPa, aby s ním potápěč při hladinové spotřebě 30 l/min mohl strávit 17 minut v hloubce 30 m, absolvovat dekompresní zastávku 3 min/5 m a vynořit se s rezervou 4 MPa?",
+      "options": [
+        {
+          "key": "a",
+          "text": "12 litrů"
+        },
+        {
+          "key": "b",
+          "text": "18 litrů"
+        },
+        {
+          "key": "c",
+          "text": "15 litrů"
+        },
+        {
+          "key": "d",
+          "text": "20 litrů"
+        }
+      ],
+      "correct": "c",
+      "explanation": "30 m (4 bar, 17 min): 30×4×17 = 2040 l. Výstup 30→5 m (2,5 min, 2,75 bar): 30×2,75×2,5 = 206 l. Deko 5 m (1,5 bar, 3 min): 30×1,5×3 = 135 l. Výstup 5→0 m: ~20 l. Celkem ≈ 2400 l. Použitelný tlak = 200-40 = 160 bar. Objem = 2400/160 = 15 l.",
+      "category": "spotreba-planovani"
+    },
+    {
+      "id": 78,
+      "question": "Potápěči se dohodli, že na vraku v hloubce 25 m setrvají tak dlouho, až\n- buď prvnímu z nich poklesne tlak v přístroji na 5 MPa,\n- nebo na čas 30 minut s dekompresní zastávkou 5 min/5 m.\nPotápěč A má 18litrový přístroj a hladinovou spotřebu 25 l/min,\npotápěč B má 20litrový přístroj a hladinovou spotřebu 30 l/min;\noba přístroje jsou naplněny na 20 MPa.\nKterá z podmínek bude splněna dříve (případně u kterého potápěče)?",
+      "options": [
+        {
+          "key": "a",
+          "text": "tlak 5 MPa (potápěč A)"
+        },
+        {
+          "key": "b",
+          "text": "tlak 5 MPa (potápěč B)"
+        },
+        {
+          "key": "c",
+          "text": "30 minut (potápěč B)"
+        },
+        {
+          "key": "d",
+          "text": "obě podmínky budou splněny současně (5 MPa za 30 minut)"
+        }
+      ],
+      "correct": "b",
+      "explanation": "V 25 m (3,5 bar). A: Zásoba = 18×(200-50) = 2700 l. Spotřeba = 25×3,5 = 87,5 l/min. Čas = 2700/87,5 ≈ 31 min. B: Zásoba = 20×150 = 3000 l. Spotřeba = 30×3,5 = 105 l/min. Čas = 3000/105 ≈ 28,6 min. B dosáhne 5 MPa dříve (před 30 min).",
+      "category": "spotreba-planovani"
+    },
+    {
+      "id": 79,
+      "question": "Potápěči se nacházejí v hloubce 25 m, přičemž potápěč A s hladinovou spotřebou 25 l/min má přístroj o objemu 12 l a potápěč B s hladinovou spotřebou 30 l/min má přístroj o objemu 18 l. Jaký minimální tlak musí mít každý v přístroji, aby jim vzduch stačil k výstupu na dekompresní zastávku v 5 metrech, dekompresi 5 min/5 m a k vynoření s rezervou 3 MPa?",
+      "options": [
+        {
+          "key": "a",
+          "text": "A: 5,6 MPa, B: 5,1 MPa"
+        },
+        {
+          "key": "b",
+          "text": "A: 7,5 MPa, B: 7 MPa"
+        },
+        {
+          "key": "c",
+          "text": "A: 7 MPa, B: 7,3 MPa"
+        },
+        {
+          "key": "d",
+          "text": "A: 4,8 MPa, B: 4,2 MPa"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Výstup 25→5 m (2 min, 2,5 bar): A = 25×2,5×2 = 125 l, B = 30×2,5×2 = 150 l. Deko 5 m (5 min, 1,5 bar): A = 25×1,5×5 = 187 l, B = 30×1,5×5 = 225 l. Celkem: A ≈ 312 l, B ≈ 375 l. Tlak: A = 312/12 + 30 = 56 bar = 5,6 MPa. B = 375/18 + 30 = 51 bar = 5,1 MPa.",
+      "category": "spotreba-planovani"
+    },
+    {
+      "id": 80,
+      "question": "Organismus potápěče, jehož hladinová spotřeba vzduchu je 30 l/min, spotřebuje za 1 minutu přibližně:",
+      "options": [
+        {
+          "key": "a",
+          "text": "0,5 l kyslíku"
+        },
+        {
+          "key": "b",
+          "text": "3 l kyslíku"
+        },
+        {
+          "key": "c",
+          "text": "1,5 l kyslíku"
+        },
+        {
+          "key": "d",
+          "text": "6 l kyslíku"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Při dýchání se spotřebuje asi 5 % kyslíku z vdechnutého vzduchu (z 21 % na 16 %). Spotřeba O₂ = 30 l × 0,05 = 1,5 l/min. Zbytek kyslíku je vydechnut.",
+      "category": "dekomprese-syceni"
+    },
+    {
+      "id": 81,
+      "question": "Která odpověď je zcela nesprávná? Parciální tlak kyslíku ve vzduchu:",
+      "options": [
+        {
+          "key": "a",
+          "text": "Vyjadřuje dílčí tlak O₂ ve vzduchu."
+        },
+        {
+          "key": "b",
+          "text": "Je dán procentuálním zastoupením O₂ ve vzduchu."
+        },
+        {
+          "key": "c",
+          "text": "Součet parciálních tlaků jednotlivých složek vzduchu je roven tlaku vzduchu."
+        },
+        {
+          "key": "d",
+          "text": "Parciální tlaky plynů ve vzduchu nezávisí na celkovém tlaku vzduchu."
+        }
+      ],
+      "correct": "d",
+      "explanation": "Parciální tlak závisí na celkovém tlaku! ppO₂ = fO₂ × P_celkový. S rostoucí hloubkou (tlakem) rostou i parciální tlaky všech plynů. Proto je kyslík v hloubce toxický.",
+      "category": "dekomprese-syceni"
+    },
+    {
+      "id": 82,
+      "question": "Od jaké hloubky je možno dýchat směs 4 % kyslíku a 96 % vodíku, nesmí-li parciální tlak kyslíku klesnout pod 16 kPa?",
+      "options": [
+        {
+          "key": "a",
+          "text": "6 metrů"
+        },
+        {
+          "key": "b",
+          "text": "16 metrů"
+        },
+        {
+          "key": "c",
+          "text": "40 metrů"
+        },
+        {
+          "key": "d",
+          "text": "30 metrů"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Minimální ppO₂ = 16 kPa = 0,16 bar. Potřebný celkový tlak = 0,16 / 0,04 = 4 bar. To odpovídá hloubce 30 m. V menší hloubce by byl ppO₂ příliš nízký (hypoxie).",
+      "category": "dekomprese-syceni"
+    },
+    {
+      "id": 83,
+      "question": "Které z následujících tvrzení je nesprávné?\nS rostoucí nadmořskou výškou:",
+      "options": [
+        {
+          "key": "a",
+          "text": "klesá atmosférický tlak"
+        },
+        {
+          "key": "b",
+          "text": "po předchozím dekompresním ponoru v moři roste i pravděpodobnost výskytu dekompresní nemoci"
+        },
+        {
+          "key": "c",
+          "text": "klesá dílčí tlak kyslíku, avšak stoupá dílčí tlak dusíku (proto jsme více ohroženi dekompresní nemocí)"
+        },
+        {
+          "key": "d",
+          "text": "se musí oproti ponoru v moři změnit hloubky i trvání dekompresních zastávek"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Nesprávné! S rostoucí výškou klesají parciální tlaky VŠECH plynů (i dusíku), protože klesá celkový tlak. Složení vzduchu (poměr plynů) zůstává stejné.",
+      "category": "dekomprese-syceni"
+    },
+    {
+      "id": 84,
+      "question": "Jaký je parciální tlak kyslíku ve vaku kyslíkového přístroje v hloubce 15 metrů?",
+      "options": [
+        {
+          "key": "a",
+          "text": "250 kPa"
+        },
+        {
+          "key": "b",
+          "text": "21 kPa"
+        },
+        {
+          "key": "c",
+          "text": "52,5 kPa"
+        },
+        {
+          "key": "d",
+          "text": "150 kPa"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Kyslíkový přístroj obsahuje 100 % O₂. V 15 m je absolutní tlak 2,5 bar = 250 kPa. ppO₂ = 1,0 × 250 = 250 kPa. To je nebezpečně vysoká hodnota (toxicita O₂)!",
+      "category": "dekomprese-syceni"
+    },
+    {
+      "id": 85,
+      "question": "U vysokohorského jezera je atmosférický tlak 70 kPa. Stanovte parciální tlaky kyslíku při dýchání vzduchu na hladině tohoto jezera a v hloubce 20 metrů:",
+      "options": [
+        {
+          "key": "a",
+          "text": "14,7 kPa a 42 kPa"
+        },
+        {
+          "key": "b",
+          "text": "14,7 kPa a 56,7 kPa"
+        },
+        {
+          "key": "c",
+          "text": "21 kPa a 63 kPa"
+        },
+        {
+          "key": "d",
+          "text": "14,7 kPa a 63 kPa"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Na hladině: ppO₂ = 0,21 × 70 = 14,7 kPa. V 20 m: celkový tlak = 70 + 200 = 270 kPa, ppO₂ = 0,21 × 270 = 56,7 kPa.",
+      "category": "dekomprese-syceni"
+    },
+    {
+      "id": 86,
+      "question": "Do jaké hloubky se smí použít pro dýchání směs 32 % kyslíku a 68 % dusíku, aby nebyl překročen maximální parciální tlak kyslíku 160 kPa?",
+      "options": [
+        {
+          "key": "a",
+          "text": "40 metrů"
+        },
+        {
+          "key": "b",
+          "text": "50 metrů"
+        },
+        {
+          "key": "c",
+          "text": "30 metrů"
+        },
+        {
+          "key": "d",
+          "text": "6 metrů"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Maximální celkový tlak = 160 / 0,32 = 500 kPa = 5 bar. To odpovídá hloubce 40 m. Toto je MOD (Maximum Operating Depth) pro Nitrox 32.",
+      "category": "dekomprese-syceni"
+    },
+    {
+      "id": 87,
+      "question": "Dýchací směs se skládá z 20 % kyslíku, 50 % dusíku a 30 % hélia. Stanovte parciální tlaky jednotlivých plynů při použití této směsi v hloubce 70 metrů:",
+      "options": [
+        {
+          "key": "a",
+          "text": "kyslík 160 kPa, dusík 400 kPa, hélium 240 kPa"
+        },
+        {
+          "key": "b",
+          "text": "kyslík 140 kPa, dusík 350 kPa, hélium 210 kPa"
+        },
+        {
+          "key": "c",
+          "text": "kyslík 180 kPa, dusík 450 kPa, hélium 270 kPa"
+        },
+        {
+          "key": "d",
+          "text": "kyslík 200 kPa, dusík 500 kPa, hélium 300 kPa"
+        }
+      ],
+      "correct": "a",
+      "explanation": "V 70 m je absolutní tlak 8 bar = 800 kPa. ppO₂ = 0,20 × 800 = 160 kPa. ppN₂ = 0,50 × 800 = 400 kPa. ppHe = 0,30 × 800 = 240 kPa.",
+      "category": "dekomprese-syceni"
+    },
+    {
+      "id": 88,
+      "question": "V jaké hloubce by parciální tlak kyslíku při dýchání vzduchu dosáhl hranice 160 kPa?",
+      "options": [
+        {
+          "key": "a",
+          "text": "55 metrů"
+        },
+        {
+          "key": "b",
+          "text": "77 metrů"
+        },
+        {
+          "key": "c",
+          "text": "66 metrů"
+        },
+        {
+          "key": "d",
+          "text": "88 metrů"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Celkový tlak = 160 / 0,21 = 762 kPa ≈ 7,6 bar. Hloubka = (7,6 - 1) × 10 = 66 m. To je MOD pro vzduch při ppO₂ = 1,6 bar.",
+      "category": "dekomprese-syceni"
+    },
+    {
+      "id": 89,
+      "question": "Stanovte parciální tlaky kyslíku a dusíku v lahvi dýchacího přístroje o objemu 15 l, naplněné vzduchem na 15 MPa:",
+      "options": [
+        {
+          "key": "a",
+          "text": "kyslík 21 kPa, dusík 78 kPa"
+        },
+        {
+          "key": "b",
+          "text": "kyslík 3,15 MPa, dusík 11,7 MPa"
+        },
+        {
+          "key": "c",
+          "text": "kyslík 315 kPa, dusík 1 170 kPa"
+        },
+        {
+          "key": "d",
+          "text": "podle hloubky (např. v 10 m kyslík 42 kPa, dusík 156 kPa)"
+        }
+      ],
+      "correct": "b",
+      "explanation": "V lahvi je tlak 15 MPa nezávisle na hloubce. ppO₂ = 0,21 × 15 = 3,15 MPa. ppN₂ = 0,78 × 15 = 11,7 MPa. Parciální tlaky v lahvi jsou konstantní.",
+      "category": "dekomprese-syceni"
+    },
+    {
+      "id": 90,
+      "question": "Jaký by směl být maximální objemový podíl kyslíku ve směsi kyslík-dusík určené do hloubky 30 m, aby v této hloubce dílčí tlak kyslíku nepřekročil 160 kPa?",
+      "options": [
+        {
+          "key": "a",
+          "text": "4 %"
+        },
+        {
+          "key": "b",
+          "text": "53 %"
+        },
+        {
+          "key": "c",
+          "text": "40 %"
+        },
+        {
+          "key": "d",
+          "text": "16 %"
+        }
+      ],
+      "correct": "c",
+      "explanation": "V 30 m je absolutní tlak 4 bar = 400 kPa. Maximální fO₂ = 160 / 400 = 0,40 = 40 %. Směs s vyšším obsahem O₂ by v této hloubce byla toxická.",
+      "category": "dekomprese-syceni"
+    },
+    {
+      "id": 91,
+      "question": "Jaký by směl být objemový podíl dusíku ve směsi hélium-kyslík-dusík, určené do hloubky 150 m, aby v této hloubce dílčí tlak dusíku nepřekročil 400 kPa?",
+      "options": [
+        {
+          "key": "a",
+          "text": "50 %"
+        },
+        {
+          "key": "b",
+          "text": "35 %"
+        },
+        {
+          "key": "c",
+          "text": "25 %"
+        },
+        {
+          "key": "d",
+          "text": "60 %"
+        }
+      ],
+      "correct": "c",
+      "explanation": "V 150 m je absolutní tlak 16 bar = 1600 kPa. Maximální fN₂ = 400 / 1600 = 0,25 = 25 %. Vyšší obsah dusíku by způsobil narkózu.",
+      "category": "dekomprese-syceni"
+    },
+    {
+      "id": 92,
+      "question": "V jaké hloubce by s dýchací směsí složené ze 40 % dusíku, 16 % kyslíku a 34 % hélia bylo dosaženo parciálních tlaků dusíku 400 kPa a kyslíku 160 kPa?",
+      "options": [
+        {
+          "key": "a",
+          "text": "N₂ 70 m, O₂ 66 m"
+        },
+        {
+          "key": "b",
+          "text": "N₂ 80 m, O₂ 80 m"
+        },
+        {
+          "key": "c",
+          "text": "N₂ 100 m, O₂ 90 m"
+        },
+        {
+          "key": "d",
+          "text": "N₂ 90 m, O₂ 90 m"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Pro N₂: tlak = 400/0,40 = 1000 kPa = 10 bar → 90 m. Pro O₂: tlak = 160/0,16 = 1000 kPa = 10 bar → 90 m. Obě limity jsou dosaženy ve stejné hloubce 90 m.",
+      "category": "dekomprese-syceni"
+    },
+    {
+      "id": 93,
+      "question": "Proč je výhodné dýchat na dekompresních zastávkách kyslík?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Zmenšuje se rychlost vylučování dusíku z těla."
+        },
+        {
+          "key": "b",
+          "text": "Je vytvořen větší tlakový spád pro vylučování dusíku z organismu."
+        },
+        {
+          "key": "c",
+          "text": "Kyslík dráždí čidla dýchacího centra a tím zvyšuje ventilaci."
+        },
+        {
+          "key": "d",
+          "text": "Kyslík se váže na hemoglobin a tím vytěsňuje navázaný dusík."
+        }
+      ],
+      "correct": "b",
+      "explanation": "Při dýchání čistého O₂ je ppN₂ v plicích téměř nulový. To vytváří maximální tlakový gradient mezi tkáněmi (nasycenými N₂) a plicemi, což urychluje odbourávání dusíku.",
+      "category": "dekomprese-syceni"
+    },
+    {
+      "id": 94,
+      "question": "Poločas sycení nejrychlejších tkání odpovídá přibližně:",
+      "options": [
+        {
+          "key": "a",
+          "text": "4 minutám"
+        },
+        {
+          "key": "b",
+          "text": "12 minutám"
+        },
+        {
+          "key": "c",
+          "text": "25 minutám"
+        },
+        {
+          "key": "d",
+          "text": "40 minutám"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Nejrychlejší tkáně (dobře prokrvené – mozek, srdce) mají poločas sycení kolem 4–5 minut. Nejpomalejší tkáně (šlachy, chrupavky) mají poločas až 600 minut.",
+      "category": "dekomprese-syceni"
+    },
+    {
+      "id": 95,
+      "question": "Stanovte parciální tlak dusíku ve tkáni o poločasu sycení 15 minut v moři v hloubce 40 m po 30 minutách dýchání vzduchu:",
+      "options": [
+        {
+          "key": "a",
+          "text": "253,5 kPa"
+        },
+        {
+          "key": "b",
+          "text": "292,5 kPa"
+        },
+        {
+          "key": "c",
+          "text": "273 kPa"
+        },
+        {
+          "key": "d",
+          "text": "312 kPa"
+        }
+      ],
+      "correct": "d",
+      "explanation": "ppN₂ na hladině = 78 kPa. V 40 m (5 bar): ppN₂ = 0,78 × 500 = 390 kPa. Za 30 min (2 poločasy) se tkáň nasytí na 75 %. Δp = 390-78 = 312 kPa. Nasycení = 78 + 0,75×312 = 312 kPa.",
+      "category": "dekomprese-syceni"
+    },
+    {
+      "id": 96,
+      "question": "Stanovte parciální tlak dusíku ve tkáni po prvním poločase sycení v moři v hloubce 30 m při dýchání vzduchu:",
+      "options": [
+        {
+          "key": "a",
+          "text": "117 kPa"
+        },
+        {
+          "key": "b",
+          "text": "156 kPa"
+        },
+        {
+          "key": "c",
+          "text": "234 kPa"
+        },
+        {
+          "key": "d",
+          "text": "195 kPa"
+        }
+      ],
+      "correct": "d",
+      "explanation": "ppN₂ na hladině = 78 kPa. V 30 m (4 bar): ppN₂ = 0,78 × 400 = 312 kPa. Po 1 poločase se tkáň nasytí na 50 % rozdílu. Δp = 312-78 = 234 kPa. Nasycení = 78 + 0,5×234 = 195 kPa.",
+      "category": "dekomprese-syceni"
+    },
+    {
+      "id": 97,
+      "question": "Stanovte parciální tlak dusíku po 40 minutách pobytu v moři v hloubce 30 m při dýchání vzduchu ve tkáních o poločasech sycení 20 minut (A) a 40 minut (B):",
+      "options": [
+        {
+          "key": "a",
+          "text": "A: 312 kPa, B: 156 kPa"
+        },
+        {
+          "key": "b",
+          "text": "A: 234 kPa, B: 195 kPa"
+        },
+        {
+          "key": "c",
+          "text": "A: 156 kPa, B: 312 kPa"
+        },
+        {
+          "key": "d",
+          "text": "A: 253,5 kPa, B: 195 kPa"
+        }
+      ],
+      "correct": "d",
+      "explanation": "ppN₂ v 30 m = 312 kPa, Δp = 234 kPa. A (40 min = 2 poločasy, 75 %): 78 + 0,75×234 = 253,5 kPa. B (40 min = 1 poločas, 50 %): 78 + 0,5×234 = 195 kPa.",
+      "category": "dekomprese-syceni"
+    },
+    {
+      "id": 98,
+      "question": "Stanovte parciální tlak dusíku ve tkáni po dvou poločasech sycení v moři v hloubce 30 m při dýchání vzduchu:",
+      "options": [
+        {
+          "key": "a",
+          "text": "234 kPa"
+        },
+        {
+          "key": "b",
+          "text": "253,5 kPa"
+        },
+        {
+          "key": "c",
+          "text": "273 kPa"
+        },
+        {
+          "key": "d",
+          "text": "312 kPa"
+        }
+      ],
+      "correct": "b",
+      "explanation": "ppN₂ v 30 m = 312 kPa, počáteční = 78 kPa, Δp = 234 kPa. Po 2 poločasech: 50 % + 25 % = 75 % nasycení. ppN₂ = 78 + 0,75×234 = 253,5 kPa.",
+      "category": "dekomprese-syceni"
+    },
+    {
+      "id": 99,
+      "question": "Stanovte parciální tlak dusíku ve tkáni o poločasu sycení 15 minut v moři v hloubce 70 m po 30 minutách při dýchání směsi obsahující 50 % dusíku. Směs je dýchána od okamžiku zanoření, do zanoření byl dýchán vzduch:",
+      "options": [
+        {
+          "key": "a",
+          "text": "378 kPa"
+        },
+        {
+          "key": "b",
+          "text": "340,5 kPa"
+        },
+        {
+          "key": "c",
+          "text": "253 kPa"
+        },
+        {
+          "key": "d",
+          "text": "319,5 kPa"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Počáteční ppN₂ = 78 kPa. V 70 m (8 bar) s 50 % N₂: ppN₂ = 0,5 × 800 = 400 kPa. Δp = 322 kPa. Za 30 min (2 poločasy, 75 %): 78 + 0,75×322 = 319,5 kPa.",
+      "category": "dekomprese-syceni"
+    },
+    {
+      "id": 100,
+      "question": "Při normálním atmosférickém tlaku je v krvi rozpuštěno přibližně 10 mililitrů dusíku na 1 litr krve (10 ml/l). Kolik dusíku bude v krvi rozpuštěno po uplynutí 1 poločasu sycení v hloubce 30 m při dýchání vzduchu?",
+      "options": [
+        {
+          "key": "a",
+          "text": "40 ml/l"
+        },
+        {
+          "key": "b",
+          "text": "30 ml/l"
+        },
+        {
+          "key": "c",
+          "text": "20 ml/l"
+        },
+        {
+          "key": "d",
+          "text": "25 ml/l"
+        }
+      ],
+      "correct": "d",
+      "explanation": "V 30 m (4 bar) by bylo při úplném nasycení 4× více N₂ = 40 ml/l. Po 1 poločasu je nasycení 50 % rozdílu. Δ = 40-10 = 30 ml/l. Rozpuštěno = 10 + 0,5×30 = 25 ml/l.",
+      "category": "dekomprese-syceni"
+    }
+  ]
+}

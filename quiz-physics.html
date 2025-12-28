@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Yourself: Physics - Deco Theory</title>
+    <link rel="stylesheet" href="css/styles.css?v=4">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">🫧 Deco Theory</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="tissue-loading.html">Tissue Loading</a></li>
+                <li><a href="quiz-physics.html" class="active">Quiz: Physics</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1>🧪 Test Yourself: Physics</h1>
+        <p class="hero-subtitle">Zkušební otázky z fyziky pro potápěče (CMAS/SPČR)</p>
+        <p class="language-notice">
+            🇨🇿 This quiz is in <strong>Czech language</strong> to match the official CMAS/SPČR certification exam materials. 
+            Translation was avoided to prevent errors in technical terminology.
+        </p>
+    </header>
+
+    <main class="landing-main">
+        <section class="quiz-section">
+            <!-- Category Filter -->
+            <div class="quiz-categories">
+                <h4>Témata:</h4>
+                <div class="category-options">
+                    <label class="category-option">
+                        <input type="checkbox" value="all" id="category-all" checked>
+                        <span>Vše</span>
+                    </label>
+                    <label class="category-option">
+                        <input type="checkbox" value="tlak-jednotky" class="category-checkbox">
+                        <span>Tlak a jednotky</span>
+                    </label>
+                    <label class="category-option">
+                        <input type="checkbox" value="vlastnosti-vody-vzduchu" class="category-checkbox">
+                        <span>Vlastnosti vody a vzduchu</span>
+                    </label>
+                    <label class="category-option">
+                        <input type="checkbox" value="prenos-tepla" class="category-checkbox">
+                        <span>Přenos tepla</span>
+                    </label>
+                    <label class="category-option">
+                        <input type="checkbox" value="optika" class="category-checkbox">
+                        <span>Optika a vidění</span>
+                    </label>
+                    <label class="category-option">
+                        <input type="checkbox" value="plynove-zakony" class="category-checkbox">
+                        <span>Plynové zákony</span>
+                    </label>
+                    <label class="category-option">
+                        <input type="checkbox" value="vztlak-vystroj" class="category-checkbox">
+                        <span>Vztlak a výstroj</span>
+                    </label>
+                    <label class="category-option">
+                        <input type="checkbox" value="spotreba-planovani" class="category-checkbox">
+                        <span>Spotřeba a plánování</span>
+                    </label>
+                    <label class="category-option">
+                        <input type="checkbox" value="dekomprese-syceni" class="category-checkbox">
+                        <span>Dekomprese a sycení</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Quiz Settings -->
+            <div class="quiz-settings">
+                <label class="quiz-setting">
+                    <input type="checkbox" id="shuffle-toggle">
+                    <span>Zamíchat otázky</span>
+                </label>
+                <label class="quiz-setting">
+                    <span>Počet otázek:</span>
+                    <select id="question-count">
+                        <option value="5">5</option>
+                        <option value="10" selected>10 (vše)</option>
+                    </select>
+                </label>
+                <button id="apply-settings-btn" class="btn btn-small">Aplikovat a restartovat</button>
+            </div>
+
+            <div class="quiz-progress">
+                <span id="question-counter">Otázka 1 z 10</span>
+                <span id="score-display">Skóre: 0 / 0</span>
+            </div>
+
+            <div id="quiz-container" class="quiz-container" data-quiz-source="data/quiz-physics.json">
+                <!-- Question will be inserted here by JavaScript -->
+            </div>
+
+            <div id="quiz-controls" class="quiz-controls">
+                <button id="next-btn" class="btn btn-primary" disabled>Další otázka →</button>
+                <button id="restart-btn" class="btn btn-secondary" style="display: none;">Začít znovu</button>
+            </div>
+        </section>
+
+        <section class="quiz-info">
+            <h3>📚 O testu</h3>
+            <p>
+                Tyto otázky pochází z oficiálních zkušebních testů SPČR (Svaz potápěčů České republiky) 
+                z roku 2018. Testují znalosti fyziky relevantní pro potápění.
+            </p>
+            <p>
+                <strong>Aktuálně k dispozici:</strong> 100 otázek ze všech 8 témat.
+            </p>
+            <p>
+                <strong>Zdroj:</strong> 
+                <a href="https://www.cmas.cz/soubor-fyzika-349-.pdf" target="_blank" rel="noopener">
+                    CMAS.cz - Fyzika zkušební testy
+                </a>
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        <p>
+            <strong>Disclaimer:</strong> Toto je vzdělávací nástroj. Pro oficiální certifikaci 
+            kontaktujte CMAS/SPČR.
+        </p>
+    </footer>
+
+    <script type="module" src="js/quiz.js"></script>
+</body>
+</html>
