@@ -97,9 +97,16 @@
 
         <!-- Dive Profile Chart -->
         <section class="chart-section">
-            <h2>📈 Your Dive Profile</h2>
-            <div class="chart-container" style="height: 450px; position: relative;">
+            <div class="chart-header">
+                <h2>📈 Your Dive Profile</h2>
+                <button id="fullscreen-btn" class="btn btn-small btn-icon" title="Fullscreen">
+                    <span class="fullscreen-icon">⛶</span>
+                    <span class="fullscreen-text">Fullscreen</span>
+                </button>
+            </div>
+            <div class="chart-container" id="chart-container">
                 <canvas id="profile-chart"></canvas>
+                <button id="exit-fullscreen-btn" class="btn btn-fullscreen-close" title="Exit Fullscreen">✕</button>
             </div>
             
             <!-- Terminology Legend -->
@@ -176,6 +183,39 @@
         // DOM elements
         const profileSwitcher = document.getElementById('profile-switcher');
         const profileHeaderSummary = document.getElementById('profile-header-summary');
+        
+        // Fullscreen controls
+        const chartContainer = document.getElementById('chart-container');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        const exitFullscreenBtn = document.getElementById('exit-fullscreen-btn');
+        
+        /**
+         * Toggle fullscreen mode for the chart
+         */
+        function toggleFullscreen() {
+            const isFullscreen = chartContainer.classList.toggle('fullscreen');
+            
+            // Prevent body scroll when fullscreen
+            document.body.style.overflow = isFullscreen ? 'hidden' : '';
+            
+            // Resize chart to fit new container size
+            if (profileChart) {
+                setTimeout(() => {
+                    profileChart.resize();
+                }, 50);
+            }
+        }
+        
+        // Setup fullscreen event listeners
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+        exitFullscreenBtn.addEventListener('click', toggleFullscreen);
+        
+        // Exit fullscreen on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && chartContainer.classList.contains('fullscreen')) {
+                toggleFullscreen();
+            }
+        });
         
         // Load and render the dive profile
         async function init() {

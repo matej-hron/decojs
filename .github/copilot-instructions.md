@@ -67,3 +67,52 @@ open http://localhost:8080
 ```
 
 Note: Service workers require HTTPS in production, but work on localhost for testing.
+
+## Chart Standards
+
+### Fullscreen Support
+**All charts MUST include a fullscreen toggle button.** Use this pattern:
+
+**HTML Structure:**
+```html
+<section class="chart-section">
+    <div class="chart-header">
+        <h2>📈 Chart Title</h2>
+        <button id="fullscreen-btn" class="btn btn-small btn-icon" title="Fullscreen">
+            <span class="fullscreen-icon">⛶</span>
+            <span class="fullscreen-text">Fullscreen</span>
+        </button>
+    </div>
+    <div class="chart-container" id="chart-container">
+        <canvas id="chart-canvas"></canvas>
+        <button id="exit-fullscreen-btn" class="btn btn-fullscreen-close" title="Exit Fullscreen">✕</button>
+    </div>
+</section>
+```
+
+**JavaScript (add to page script):**
+```javascript
+// Fullscreen controls
+const chartContainer = document.getElementById('chart-container');
+const fullscreenBtn = document.getElementById('fullscreen-btn');
+const exitFullscreenBtn = document.getElementById('exit-fullscreen-btn');
+
+function toggleFullscreen() {
+    const isFullscreen = chartContainer.classList.toggle('fullscreen');
+    document.body.style.overflow = isFullscreen ? 'hidden' : '';
+    if (chartInstance) {
+        setTimeout(() => chartInstance.resize(), 50);
+    }
+}
+
+fullscreenBtn.addEventListener('click', toggleFullscreen);
+exitFullscreenBtn.addEventListener('click', toggleFullscreen);
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && chartContainer.classList.contains('fullscreen')) {
+        toggleFullscreen();
+    }
+});
+```
+
+The CSS styles for `.chart-header`, `.chart-container.fullscreen`, and `.btn-fullscreen-close` are already defined in `css/styles.css`.

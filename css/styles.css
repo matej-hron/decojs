@@ -794,15 +794,15 @@ section h2 {
 
 /* Fullscreen mode */
 .chart-container.fullscreen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100vw;
-    height: 100vh;
-    margin: 0;
-    padding: 1rem;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    padding: 1rem !important;
     background: var(--background-color);
     z-index: 9999;
     border-radius: 0;
@@ -1212,7 +1212,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.0.1";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.0.2";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* Responsive */
