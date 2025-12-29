@@ -8,7 +8,7 @@ import { COMPARTMENTS, getCompartmentCategory } from './tissueCompartments.js';
 import { calculateTissueLoading, getInitialTissueN2 } from './decoModel.js';
 import { validateProfile, getDiveStats } from './diveProfile.js';
 import { renderChart, toggleCompartment, showAllCompartments, hideAllCompartments, showOnlyCompartments } from './visualization.js';
-import { loadDiveSetup, getDiveSetupWaypoints, getSurfaceInterval, formatDiveSetupSummary } from './diveSetup.js';
+import { loadDiveSetup, getDiveSetupWaypoints, getSurfaceInterval, formatDiveSetupSummary, saveDiveSetup, clearCache } from './diveSetup.js';
 
 // ============================================================================
 // UTILITIES
@@ -36,12 +36,14 @@ function debounce(func, wait) {
 let currentProfile = [];
 // Default: only show fastest compartment (id=1, 5-min half-time)
 let visibleCompartments = new Set([1]);
+// Available dive profiles (loaded from JSON)
+let availableProfiles = [];
 
 // ============================================================================
 // DOM ELEMENTS
 // ============================================================================
 
-const profileHeaderName = document.getElementById('profile-header-name');
+const profileSwitcher = document.getElementById('profile-switcher');
 const profileHeaderSummary = document.getElementById('profile-header-summary');
 const compartmentToggles = document.getElementById('compartment-toggles');
 const chartCanvas = document.getElementById('tissue-chart');
@@ -59,14 +61,103 @@ const fullscreenBtn = document.getElementById('fullscreen-btn');
 const exitFullscreenBtn = document.getElementById('exit-fullscreen-btn');
 
 // ============================================================================
-// PROFILE HEADER DISPLAY
+// PROFILE LOADING & SWITCHING
 // ============================================================================
 
 /**
- * Display the current dive profile in the header bar
+ * Load available dive profiles from JSON
+ */
+async function loadAvailableProfiles() {
+    try {
+        const response = await fetch('data/dive-profiles.json');
+        if (!response.ok) {
+            throw new Error(`Failed to load profiles: ${response.status}`);
+        }
+        const data = await response.json();
+        availableProfiles = data.profiles || [];
+        return data.defaultProfileId || 'deco-dive';
+    } catch (error) {
+        console.error('Error loading dive profiles:', error);
+        availableProfiles = [];
+        return null;
+    }
+}
+
+/**
+ * Initialize the profile switcher dropdown
+ */
+function initProfileSwitcher(currentProfileId) {
+    if (!profileSwitcher) return;
+    
+    // Clear existing options
+    profileSwitcher.innerHTML = '';
+    
+    // Add custom option if current setup doesn't match any predefined profile
+    const customOption = document.createElement('option');
+    customOption.value = 'custom';
+    customOption.textContent = '✏️ Custom Profile';
+    profileSwitcher.appendChild(customOption);
+    
+    // Add separator
+    const separator = document.createElement('option');
+    separator.disabled = true;
+    separator.textContent = '──────────────';
+    profileSwitcher.appendChild(separator);
+    
+    // Add predefined profiles
+    availableProfiles.forEach(profile => {
+        const option = document.createElement('option');
+        option.value = profile.id;
+        option.textContent = profile.name;
+        profileSwitcher.appendChild(option);
+    });
+    
+    // Set current selection
+    if (currentProfileId && availableProfiles.find(p => p.id === currentProfileId)) {
+        profileSwitcher.value = currentProfileId;
+    } else {
+        profileSwitcher.value = 'custom';
+    }
+    
+    // Handle profile switching
+    profileSwitcher.addEventListener('change', handleProfileSwitch);
+}
+
+/**
+ * Handle profile switch from dropdown
+ */
+async function handleProfileSwitch(event) {
+    const selectedId = event.target.value;
+    
+    if (selectedId === 'custom') {
+        // Navigate to dive setup page for custom editing
+        window.location.href = 'dive-setup.html';
+        return;
+    }
+    
+    // Find the selected profile
+    const profile = availableProfiles.find(p => p.id === selectedId);
+    if (!profile) return;
+    
+    // Update current setup
+    currentDiveSetup = profile;
+    
+    // Save to localStorage so it persists
+    saveDiveSetup(profile);
+    clearCache();
+    
+    // Update display
+    displayProfileSummary(profile);
+    
+    // Recalculate
+    runCalculation(false);
+}
+
+/**
+ * Display the current dive profile summary in the header bar
  */
 function displayProfileSummary(setup) {
-    if (!profileHeaderName || !profileHeaderSummary) return;
+    if (!profileHeaderSummary) return;
     
     // Use getDiveSetupWaypoints to handle both single and multi-dive formats
     const waypoints = getDiveSetupWaypoints(setup);
@@ -78,8 +169,13 @@ function displayProfileSummary(setup) {
     const diveCount = setup.dives?.length || 1;
     const diveInfo = diveCount > 1 ? ` (${diveCount} dives)` : '';
     
-    profileHeaderName.textContent = setup.name || 'Custom Dive';
     profileHeaderSummary.textContent = `${maxDepth}m max, ${totalTime} min, ${gasMix}${diveInfo}`;
+    
+    // Update switcher selection if needed
+    if (profileSwitcher) {
+        const matchingProfile = availableProfiles.find(p => p.id === setup.id);
+        profileSwitcher.value = matchingProfile ? setup.id : 'custom';
+    }
 }
 
 // ============================================================================
@@ -325,8 +421,14 @@ function toggleFullscreen() {
 let currentDiveSetup = null;
 
 async function init() {
-    // Load dive profile from shared setup
+    // Load available profiles for the switcher
+    const defaultProfileId = await loadAvailableProfiles();
+    
+    // Load dive profile from shared setup (localStorage or JSON)
     currentDiveSetup = await loadDiveSetup();
+    
+    // Initialize the profile switcher dropdown
+    initProfileSwitcher(currentDiveSetup.id || defaultProfileId);
     
     // Display profile summary
     displayProfileSummary(currentDiveSetup);

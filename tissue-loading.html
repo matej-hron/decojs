@@ -14,7 +14,7 @@
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
     
     <!-- App styles -->
-    <link rel="stylesheet" href="css/styles.css?v=3">
+    <link rel="stylesheet" href="css/styles.css?v=4">
 </head>
 <body>
     <!-- Navigation -->
@@ -26,9 +26,27 @@
                 <li><a href="dive-setup.html">Dive Setup</a></li>
                 <li><a href="tissue-loading.html" class="active">Tissue Loading</a></li>
                 <li><a href="quiz-physics.html">Quiz: Physics</a></li>
+                <li><a href="about.html">About</a></li>
             </ul>
+            <span class="nav-wip-badge">🧪 Experimental</span>
         </div>
     </nav>
+
+    <!-- Dive Profile Header Bar (Sticky) -->
+    <div class="profile-header-bar sticky">
+        <div class="profile-header-content">
+            <div class="profile-header-info">
+                <span class="profile-header-label">Profile:</span>
+                <select id="profile-switcher" class="profile-switcher">
+                    <!-- Options populated by JavaScript -->
+                </select>
+                <span id="profile-header-summary" class="profile-header-summary"></span>
+            </div>
+            <div class="profile-header-actions">
+                <a href="dive-setup.html" class="btn btn-small">✏️ Customize</a>
+            </div>
+        </div>
+    </div>
 
     <!-- Disclaimer Banner -->
     <div class="disclaimer-banner">
@@ -40,20 +58,6 @@
         <h1>🤿 Tissue Loading & Saturation</h1>
         <p class="subtitle">Visualize how nitrogen saturates and desaturates in your body during a dive</p>
     </header>
-
-    <!-- Dive Profile Header Bar -->
-    <div class="profile-header-bar">
-        <div class="profile-header-content">
-            <div class="profile-header-info">
-                <span class="profile-header-label">Current Profile:</span>
-                <strong id="profile-header-name">Loading...</strong>
-                <span id="profile-header-summary" class="profile-header-summary"></span>
-            </div>
-            <div class="profile-header-actions">
-                <a href="dive-setup.html" class="btn btn-small">✏️ Edit</a>
-            </div>
-        </div>
-    </div>
 
     <main>
         <!-- Educational Section -->
@@ -209,65 +213,14 @@
             </table>
             <p class="footnote">* Approximate time to reach 98% saturation (6 half-times)</p>
         </section>
-
-        <!-- References Section -->
-        <section class="reference-section">
-            <h2>📖 References & Sources</h2>
-            <ol class="references-list">
-                <li>
-                    <strong>Powell, Mark.</strong> 
-                    <em>Deco for Divers.</em> 
-                    — The primary inspiration for this project. An excellent, accessible guide to decompression 
-                    theory for recreational and technical divers. Highly recommended!
-                </li>
-                <li>
-                    <strong>Bühlmann, A.A.</strong> (1984). 
-                    <em>Decompression–Decompression Sickness.</em> 
-                    Berlin: Springer-Verlag. 
-                    — The original work describing the ZH-L16 algorithm.
-                </li>
-                <li>
-                    <strong>Wikipedia</strong>. 
-                    <a href="https://en.wikipedia.org/wiki/B%C3%BChlmann_decompression_algorithm" target="_blank" rel="noopener">
-                        Bühlmann decompression algorithm
-                    </a> 
-                    — Overview of the algorithm, tissue compartment half-times, and M-values.
-                </li>
-                <li>
-                    <strong>Wienke, B.R.</strong> 
-                    <a href="https://aquatec.wordpress.com/wp-content/uploads/2011/03/decompression-theory.pdf" target="_blank" rel="noopener">
-                        Decompression Theory (PDF)
-                    </a> 
-                    — Comprehensive introduction to decompression physics and physiology.
-                </li>
-                <li>
-                    <strong>Alveolar Gas Equation</strong>: 
-                    The model accounts for water vapor pressure at body temperature (37°C) = 47 mmHg ≈ 0.0627 bar, 
-                    which reduces the effective partial pressure of inspired gases. 
-                    <a href="https://en.wikipedia.org/wiki/Alveolar_gas_equation" target="_blank" rel="noopener">
-                        Wikipedia: Alveolar gas equation
-                    </a>
-                </li>
-                <li>
-                    <strong>Schreiner, H.R.</strong> (1971). 
-                    <em>Safe Limits of Exposure to Increased Pressure.</em> 
-                    — Derivation of the Schreiner equation for calculating gas loading during linear pressure changes.
-                </li>
-            </ol>
-        </section>
     </main>
 
     <footer>
+        <span class="wip-badge">Experimental</span>
         <p>
-            <strong>Disclaimer:</strong> This is an educational tool only. Do not use for actual dive planning. 
-            Always use certified dive computers and tables, and follow proper training.
-        </p>
-        <p class="thank-you">
-            Special thanks to <strong>Mark Powell</strong> for <em>Deco for Divers</em> — the book that made decompression theory click. 📚
-        </p>
-        <p>
-            Based on the Bühlmann ZH-L16A decompression algorithm. 
-            <a href="https://aquatec.wordpress.com/wp-content/uploads/2011/03/decompression-theory.pdf" target="_blank">Learn more about decompression theory</a>
+            <strong>Educational Use Only</strong> — Not for dive planning.
+            <br>
+            <a href="about.html">Learn more about this project</a>
         </p>
     </footer>
 

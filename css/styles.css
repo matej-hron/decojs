@@ -88,6 +88,18 @@
     background: rgba(255, 255, 255, 0.05);
 }
 
+.nav-wip-badge {
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    color: white;
+    padding: 0.3rem 0.7rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
 /* ==========================================================================
    Landing Page - Hero
    ========================================================================== */
@@ -241,6 +253,73 @@
 .disclaimer-box p {
     margin: 0;
     font-size: 0.95rem;
+}
+
+/* About Page Styles */
+.hero-small {
+    padding: 2.5rem 2rem;
+}
+
+.content-main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.about-disclaimer {
+    margin-bottom: 2rem;
+}
+
+.disclaimer-box.prominent {
+    padding: 2rem;
+}
+
+.disclaimer-box.prominent h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.disclaimer-box.prominent p {
+    margin-bottom: 1rem;
+}
+
+.disclaimer-list {
+    margin: 0;
+    padding-left: 1.25rem;
+}
+
+.disclaimer-list li {
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+}
+
+.disclaimer-list a {
+    color: #991b1b;
+    font-weight: 500;
+}
+
+.about-content {
+    background: var(--card-background);
+    border-radius: var(--radius);
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+.about-content h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.about-content p {
+    margin: 0 0 1rem 0;
+    line-height: 1.6;
+}
+
+.about-content p:last-child {
+    margin-bottom: 0;
 }
 
 /* ==========================================================================
@@ -999,6 +1078,24 @@ footer {
     text-align: center;
 }
 
+footer .wip-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #f39c12, #e67e22);
+    color: white;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+footer .wip-badge::before {
+    content: "🧪 ";
+}
+
 footer p {
     margin: 0.5rem 0;
     font-size: 0.9rem;
@@ -1265,8 +1362,16 @@ textarea.form-input {
 .profile-header-bar {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
     color: white;
-    padding: 0.75rem 1.5rem;
+    padding: 0.6rem 1.5rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Sticky variant - sticks below the nav */
+.profile-header-bar.sticky {
+    position: sticky;
+    top: 52px; /* Height of nav bar */
+    z-index: 999;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .profile-header-content {
@@ -1276,7 +1381,7 @@ textarea.form-input {
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 0.75rem;
 }
 
 .profile-header-info {
@@ -1289,6 +1394,40 @@ textarea.form-input {
 .profile-header-label {
     opacity: 0.9;
     font-size: 0.9rem;
+}
+
+/* Profile Switcher Dropdown */
+.profile-switcher {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    padding: 0.4rem 2rem 0.4rem 0.6rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='white' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    min-width: 180px;
+    transition: background-color 0.2s;
+}
+
+.profile-switcher:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+.profile-switcher:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4);
+}
+
+.profile-switcher option {
+    background: var(--primary-dark);
+    color: white;
+    padding: 0.5rem;
 }
 
 .profile-header-summary {
@@ -1448,9 +1587,31 @@ textarea.form-input {
 }
 
 @media (max-width: 768px) {
+    .profile-header-bar.sticky {
+        top: 48px; /* Adjust for smaller nav on mobile */
+    }
+    
     .profile-header-content {
         flex-direction: column;
         align-items: flex-start;
+    }
+    
+    .profile-header-info {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+    
+    .profile-switcher {
+        width: 100%;
+        min-width: unset;
+    }
+    
+    .profile-header-summary {
+        border-left: none;
+        padding-left: 0;
+        font-size: 0.85rem;
     }
     
     .profile-header-actions {
