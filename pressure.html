@@ -315,18 +315,18 @@
                 <h3>Surface Air Consumption (SAC)</h3>
                 <p>
                     <strong>SAC rate</strong> (also called RMV - Respiratory Minute Volume) is how much gas you breathe 
-                    per minute at the surface. For planning purposes, we use a typical value of <strong>20 L/min</strong> 
+                    per minute at the surface. For planning purposes, we use a typical value of <strong>30 L/min</strong> 
                     for relaxed diving, though actual consumption varies based on exertion, stress, and individual factors.
                 </p>
                 <p>
                     At depth, your actual consumption is: <strong>SAC × Ambient Pressure</strong>
                 </p>
                 <ul>
-                    <li>Surface (1 bar): 20 L/min</li>
-                    <li>10m (2 bar): 40 L/min</li>
-                    <li>20m (3 bar): 60 L/min</li>
-                    <li>30m (4 bar): 80 L/min</li>
-                    <li>40m (5 bar): 100 L/min</li>
+                    <li>Surface (1 bar): 30 L/min</li>
+                    <li>10m (2 bar): 60 L/min</li>
+                    <li>20m (3 bar): 90 L/min</li>
+                    <li>30m (4 bar): 120 L/min</li>
+                    <li>40m (5 bar): 150 L/min</li>
                 </ul>
             </div>
 
@@ -381,7 +381,7 @@
                 </div>
                 <div class="control-group">
                     <label for="gas-sac-input">SAC Rate (L/min):</label>
-                    <input type="number" id="gas-sac-input" class="form-input" value="20" min="10" max="40" step="1">
+                    <input type="number" id="gas-sac-input" class="form-input" value="30" min="10" max="40" step="1">
                 </div>
                 <div class="control-group">
                     <label for="gas-start-pressure">Start Pressure (bar):</label>
@@ -1356,7 +1356,7 @@
             
             // Get parameters from controls
             const cylinderVolume = parseInt(gasCylinderSelect?.value) || getCylinderVolume(currentSetup);
-            const sacRate = parseFloat(gasSacInput?.value) || 20;
+            const sacRate = parseFloat(gasSacInput?.value) || 30;
             const startPressure = parseFloat(gasStartPressure?.value) || 200;
             const reservePressure = parseFloat(gasReservePressure?.value) || getReservePressure(currentSetup);
             
