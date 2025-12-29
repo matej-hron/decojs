@@ -6,8 +6,28 @@
 
 import { COMPARTMENTS, getCompartmentCategory } from './tissueCompartments.js';
 import { calculateTissueLoading, getInitialTissueN2 } from './decoModel.js';
-import { createDefaultProfile, validateProfile, parseProfileInput, getDiveStats } from './diveProfile.js';
+import { validateProfile, getDiveStats } from './diveProfile.js';
 import { renderChart, toggleCompartment, showAllCompartments, hideAllCompartments, showOnlyCompartments } from './visualization.js';
+import { loadDiveSetup, getDiveSetupWaypoints, getSurfaceInterval, formatDiveSetupSummary } from './diveSetup.js';
+
+// ============================================================================
+// UTILITIES
+// ============================================================================
+
+/**
+ * Debounce function - delays execution until after wait ms have elapsed
+ */
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
 
 // ============================================================================
 // STATE
@@ -21,13 +41,8 @@ let visibleCompartments = new Set([1]);
 // DOM ELEMENTS
 // ============================================================================
 
-const profileBody = document.getElementById('profile-body');
-const addWaypointBtn = document.getElementById('add-waypoint');
-const loadExampleBtn = document.getElementById('load-example');
-const calculateBtn = document.getElementById('calculate-btn');
-const surfaceIntervalInput = document.getElementById('surface-interval');
-const validationErrors = document.getElementById('validation-errors');
-const diveStatsDiv = document.getElementById('dive-stats');
+const profileHeaderName = document.getElementById('profile-header-name');
+const profileHeaderSummary = document.getElementById('profile-header-summary');
 const compartmentToggles = document.getElementById('compartment-toggles');
 const chartCanvas = document.getElementById('tissue-chart');
 
@@ -44,62 +59,27 @@ const fullscreenBtn = document.getElementById('fullscreen-btn');
 const exitFullscreenBtn = document.getElementById('exit-fullscreen-btn');
 
 // ============================================================================
-// PROFILE TABLE MANAGEMENT
+// PROFILE HEADER DISPLAY
 // ============================================================================
 
 /**
- * Add a row to the profile table
+ * Display the current dive profile in the header bar
  */
-function addProfileRow(time = '', depth = '') {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-        <td><input type="number" class="time-input" value="${time}" min="0" step="1" placeholder="0"></td>
-        <td><input type="number" class="depth-input" value="${depth}" min="0" step="1" placeholder="0"></td>
-        <td><button class="btn btn-danger remove-row">×</button></td>
-    `;
+function displayProfileSummary(setup) {
+    if (!profileHeaderName || !profileHeaderSummary) return;
     
-    // Add remove handler
-    row.querySelector('.remove-row').addEventListener('click', () => {
-        if (profileBody.children.length > 2) {
-            row.remove();
-        } else {
-            alert('Profile must have at least 2 waypoints');
-        }
-    });
+    // Use getDiveSetupWaypoints to handle both single and multi-dive formats
+    const waypoints = getDiveSetupWaypoints(setup);
+    const maxDepth = waypoints.length > 0 ? Math.max(...waypoints.map(wp => wp.depth)) : 0;
+    const totalTime = waypoints[waypoints.length - 1]?.time || 0;
+    const gasMix = setup.gasMix?.name || 'Air';
     
-    profileBody.appendChild(row);
-}
-
-/**
- * Clear and reload the profile table
- */
-function loadProfileToTable(profile) {
-    profileBody.innerHTML = '';
-    profile.forEach(wp => {
-        addProfileRow(wp.time, wp.depth);
-    });
-}
-
-/**
- * Read profile from table inputs
- */
-function readProfileFromTable() {
-    const rows = profileBody.querySelectorAll('tr');
-    const profile = [];
+    // Check if multi-dive
+    const diveCount = setup.dives?.length || 1;
+    const diveInfo = diveCount > 1 ? ` (${diveCount} dives)` : '';
     
-    rows.forEach(row => {
-        const timeInput = row.querySelector('.time-input');
-        const depthInput = row.querySelector('.depth-input');
-        
-        if (timeInput && depthInput) {
-            profile.push({
-                time: parseFloat(timeInput.value) || 0,
-                depth: parseFloat(depthInput.value) || 0
-            });
-        }
-    });
-    
-    return profile;
+    profileHeaderName.textContent = setup.name || 'Custom Dive';
+    profileHeaderSummary.textContent = `${maxDepth}m max, ${totalTime} min, ${gasMix}${diveInfo}`;
 }
 
 // ============================================================================
@@ -177,39 +157,10 @@ function initReferenceTable() {
 // ============================================================================
 
 /**
- * Validate current profile and show errors
- */
-function validateAndShowErrors() {
-    const profile = readProfileFromTable();
-    const result = validateProfile(profile);
-    
-    if (result.errors.length > 0) {
-        validationErrors.innerHTML = result.errors.map(e => `<div>${e}</div>`).join('');
-    } else {
-        validationErrors.innerHTML = '';
-    }
-    
-    return result;
-}
-
-/**
- * Show dive statistics
+ * Show dive statistics (removed - no longer displayed separately)
  */
 function showDiveStats(profile) {
-    const stats = getDiveStats(profile);
-    
-    if (stats) {
-        diveStatsDiv.innerHTML = `
-            <strong>Dive Summary:</strong> 
-            Max Depth: ${stats.maxDepth}m | 
-            Total Time: ${stats.totalTime} min | 
-            Max Descent Rate: ${stats.maxDescentRate.toFixed(1)} m/min | 
-            Max Ascent Rate: ${stats.maxAscentRate.toFixed(1)} m/min
-        `;
-        diveStatsDiv.classList.add('visible');
-    } else {
-        diveStatsDiv.classList.remove('visible');
-    }
+    // Stats are now shown in the header summary
 }
 
 // ============================================================================
@@ -221,23 +172,24 @@ function showDiveStats(profile) {
  * @param {boolean} scrollToChart - Whether to scroll to chart after calculation (default: true)
  */
 function runCalculation(scrollToChart = true) {
-    const profile = readProfileFromTable();
-    const validation = validateProfile(profile);
-    
-    // Show errors
-    if (validation.errors.length > 0) {
-        validationErrors.innerHTML = validation.errors.map(e => `<div>${e}</div>`).join('');
-    } else {
-        validationErrors.innerHTML = '';
-    }
-    
-    // Don't proceed if invalid
-    if (!validation.valid) {
+    // Guard: need dive setup to be loaded
+    if (!currentDiveSetup) {
+        console.warn('Dive setup not loaded yet');
         return;
     }
     
-    // Get surface interval
-    const surfaceInterval = parseFloat(surfaceIntervalInput.value) || 60;
+    // Use stored profile from diveSetup
+    const profile = getDiveSetupWaypoints(currentDiveSetup);
+    const validation = validateProfile(profile);
+    
+    // Don't proceed if invalid
+    if (!validation.valid) {
+        console.warn('Invalid profile:', validation.errors);
+        return;
+    }
+    
+    // Get surface interval from dive setup
+    const surfaceInterval = getSurfaceInterval(currentDiveSetup);
     
     // Run calculation
     try {
@@ -294,19 +246,6 @@ function renderMathFormulas() {
 // ============================================================================
 
 function initEventListeners() {
-    // Add waypoint
-    addWaypointBtn.addEventListener('click', () => {
-        addProfileRow('', '');
-    });
-    
-    // Load example
-    loadExampleBtn.addEventListener('click', () => {
-        loadProfileToTable(createDefaultProfile());
-    });
-    
-    // Calculate
-    calculateBtn.addEventListener('click', runCalculation);
-    
     // Compartment visibility controls
     showAllBtn.addEventListener('click', () => {
         visibleCompartments = new Set(COMPARTMENTS.map(c => c.id));
@@ -382,9 +321,15 @@ function toggleFullscreen() {
 // INITIALIZATION
 // ============================================================================
 
-function init() {
-    // Load default profile
-    loadProfileToTable(createDefaultProfile());
+// Store loaded dive setup for reuse
+let currentDiveSetup = null;
+
+async function init() {
+    // Load dive profile from shared setup
+    currentDiveSetup = await loadDiveSetup();
+    
+    // Display profile summary
+    displayProfileSummary(currentDiveSetup);
     
     // Initialize UI components
     initCompartmentToggles();

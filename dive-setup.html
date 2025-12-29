@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dive Setup - Deco Theory</title>
+    
+    <!-- App styles -->
+    <link rel="stylesheet" href="css/styles.css?v=3">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">🫧 Deco Theory</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="dive-setup.html" class="active">Dive Setup</a></li>
+                <li><a href="tissue-loading.html">Tissue Loading</a></li>
+                <li><a href="quiz-physics.html">Quiz: Physics</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Disclaimer Banner -->
+    <div class="disclaimer-banner">
+        ⚠️ <strong>Educational Use Only</strong> — This tool is NOT intended for real dive planning. 
+        Never use this for actual dives. Always use certified dive computers, tables, and proper training.
+    </div>
+
+    <header>
+        <h1>🎯 Dive Setup</h1>
+        <p class="subtitle">Configure your example dive profile to use across all learning sections</p>
+    </header>
+
+    <main>
+        <!-- Introduction -->
+        <section class="education-section">
+            <h2>📋 About This Setup</h2>
+            
+            <div class="concept-card">
+                <h3>Shared Dive Configuration</h3>
+                <p>
+                    The dive profile you configure here will be used as the example throughout the different 
+                    learning sections. This allows you to explore how the same dive affects tissue loading, 
+                    decompression requirements, and other aspects of dive planning.
+                </p>
+                <p>
+                    Each specialized section (like Tissue Loading) can extend this base configuration with 
+                    topic-specific settings while keeping the core dive profile consistent.
+                </p>
+            </div>
+        </section>
+
+        <!-- Current Setup Display -->
+        <section class="input-section">
+            <h2>📊 Dive Profile Configuration</h2>
+            
+            <!-- Predefined Profile Selector -->
+            <div class="profile-selector">
+                <label for="profile-select">Load a predefined profile:</label>
+                <select id="profile-select" class="profile-dropdown">
+                    <option value="">-- Select a profile --</option>
+                </select>
+            </div>
+            
+            <div id="setup-summary" class="dive-stats">
+                <p>Loading dive setup...</p>
+            </div>
+            
+            <div class="profile-controls">
+                <h3>Dive Details</h3>
+                
+                <div class="form-group">
+                    <label for="profile-name-input">Profile Name</label>
+                    <input type="text" id="profile-name-input" class="form-input" value="">
+                </div>
+                
+                <div class="form-group">
+                    <label for="profile-description-input">Description</label>
+                    <textarea id="profile-description-input" class="form-input form-textarea" rows="3" placeholder="Describe this dive profile..."></textarea>
+                </div>
+
+                <details class="advanced-section">
+                    <summary>⚗️ Gas Mix (Advanced)</summary>
+                    <div class="gas-mix-inputs">
+                        <div class="info-row">
+                            <label for="gas-name-input">Gas Name:</label>
+                            <input type="text" id="gas-name-input" class="text-input" value="Air">
+                        </div>
+                        <div class="info-row">
+                            <label for="gas-o2-input">O₂ (%):</label>
+                            <input type="number" id="gas-o2-input" min="0" max="100" step="1" value="21">
+                        </div>
+                        <div class="info-row">
+                            <label for="gas-n2-input">N₂ (%):</label>
+                            <input type="number" id="gas-n2-input" min="0" max="100" step="1" value="79" readonly>
+                            <span class="hint">(auto-calculated)</span>
+                        </div>
+                        <div class="info-row">
+                            <label for="gas-he-input">He (%):</label>
+                            <input type="number" id="gas-he-input" min="0" max="100" step="1" value="0">
+                        </div>
+                    </div>
+                </details>
+
+                <h3>Surface Interval (post-dive)</h3>
+                <div class="surface-interval-input">
+                    <label for="surface-interval-input">
+                        Time at surface after final dive for off-gassing display (minutes):
+                        <input type="number" id="surface-interval-input" value="60" min="0" max="720" step="10">
+                    </label>
+                </div>
+
+                <!-- Dive 1 Waypoints -->
+                <div id="dive1-section" class="dive-section">
+                    <h3>🤿 Dive 1 Waypoints</h3>
+                    <table class="profile-table">
+                        <thead>
+                            <tr>
+                                <th>Time (min)</th>
+                                <th>Depth (m)</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="waypoints-body">
+                            <!-- Filled by JavaScript -->
+                        </tbody>
+                    </table>
+                    <button id="add-waypoint" class="btn btn-secondary btn-small">+ Add Waypoint</button>
+                </div>
+
+                <!-- Add Repetitive Dive Button -->
+                <div id="add-dive-section" class="add-dive-section">
+                    <button id="add-repetitive-dive" class="btn btn-secondary">
+                        ➕ Add Repetitive Dive
+                    </button>
+                    <span class="hint">Add a second dive after a surface interval</span>
+                </div>
+
+                <!-- Dive 2 Section (hidden by default) -->
+                <div id="dive2-section" class="dive-section dive2-section" style="display: none;">
+                    <div class="dive2-header">
+                        <h3>🤿 Dive 2 Waypoints</h3>
+                        <button id="remove-dive2" class="btn btn-danger btn-small">✕ Remove</button>
+                    </div>
+                    <div class="form-group surface-interval-between">
+                        <label for="dive2-surface-interval">Surface Interval Before Dive 2 (minutes):</label>
+                        <input type="number" id="dive2-surface-interval" class="form-input" value="60" min="1" max="720" step="5">
+                    </div>
+                    <table class="profile-table">
+                        <thead>
+                            <tr>
+                                <th>Time (min)</th>
+                                <th>Depth (m)</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="waypoints-body-2">
+                            <!-- Filled by JavaScript -->
+                        </tbody>
+                    </table>
+                    <button id="add-waypoint-2" class="btn btn-secondary btn-small">+ Add Waypoint</button>
+                </div>
+
+                <div class="button-row">
+                    <button id="reset-default" class="btn btn-secondary">Reset to Default</button>
+                </div>
+
+                <div id="validation-errors" class="errors"></div>
+
+                <div class="button-row">
+                    <button id="save-setup" class="btn btn-primary">✅ Use Setup</button>
+                </div>
+                <p id="save-status" class="save-status"></p>
+            </div>
+        </section>
+
+        <!-- Use This Setup Section -->
+        <section class="education-section">
+            <h2>🚀 Use This Setup</h2>
+            
+            <div class="topics-grid">
+                <a href="tissue-loading.html" class="topic-card available">
+                    <div class="topic-icon">📊</div>
+                    <h3>Tissue Loading</h3>
+                    <p>See how this dive profile affects nitrogen loading in your tissue compartments.</p>
+                    <span class="topic-status">Explore →</span>
+                </a>
+
+                <div class="topic-card coming-soon">
+                    <div class="topic-icon">📈</div>
+                    <h3>M-Values</h3>
+                    <p>Analyze ceiling depths and surfacing limits for this profile.</p>
+                    <span class="topic-status">Coming Soon</span>
+                </div>
+
+                <div class="topic-card coming-soon">
+                    <div class="topic-icon">🎚️</div>
+                    <h3>Gradient Factors</h3>
+                    <p>Apply different GF settings to see their effect on deco schedules.</p>
+                    <span class="topic-status">Coming Soon</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>
+            <strong>Disclaimer:</strong> This is an educational tool only. Do not use for actual dive planning. 
+            Always use certified dive computers and tables, and follow proper training.
+        </p>
+    </footer>
+
+    <!-- Dive Setup Script -->
+    <script type="module">
+        import { loadDiveSetup, saveDiveSetup, clearCache, formatDiveSetupSummary, getDiveSetupWaypoints } from './js/diveSetup.js';
+
+        let currentSetup = null;
+        let predefinedProfiles = [];
+        let hasDive2 = false;
+        const PROFILES_PATH = 'data/dive-profiles.json';
+
+        // DOM elements
+        const profileSelect = document.getElementById('profile-select');
+        const profileNameInput = document.getElementById('profile-name-input');
+        const profileDescInput = document.getElementById('profile-description-input');
+        const gasNameInput = document.getElementById('gas-name-input');
+        const gasO2Input = document.getElementById('gas-o2-input');
+        const gasN2Input = document.getElementById('gas-n2-input');
+        const gasHeInput = document.getElementById('gas-he-input');
+        const surfaceIntervalInput = document.getElementById('surface-interval-input');
+        const waypointsBody = document.getElementById('waypoints-body');
+        const addWaypointBtn = document.getElementById('add-waypoint');
+        const resetDefaultBtn = document.getElementById('reset-default');
+        const saveSetupBtn = document.getElementById('save-setup');
+        const saveStatus = document.getElementById('save-status');
+        const validationErrors = document.getElementById('validation-errors');
+        const setupSummary = document.getElementById('setup-summary');
+        
+        // Dive 2 DOM elements
+        const dive2Section = document.getElementById('dive2-section');
+        const addDiveSection = document.getElementById('add-dive-section');
+        const addRepetitiveDiveBtn = document.getElementById('add-repetitive-dive');
+        const removeDive2Btn = document.getElementById('remove-dive2');
+        const waypointsBody2 = document.getElementById('waypoints-body-2');
+        const addWaypoint2Btn = document.getElementById('add-waypoint-2');
+        const dive2SurfaceIntervalInput = document.getElementById('dive2-surface-interval');
+
+        // Load predefined profiles
+        async function loadPredefinedProfiles() {
+            try {
+                const response = await fetch(PROFILES_PATH);
+                const data = await response.json();
+                predefinedProfiles = data.profiles || [];
+                
+                // Populate dropdown
+                profileSelect.innerHTML = '<option value="">-- Select a predefined profile --</option>';
+                predefinedProfiles.forEach(profile => {
+                    const option = document.createElement('option');
+                    option.value = profile.id;
+                    option.textContent = profile.name;
+                    profileSelect.appendChild(option);
+                });
+                
+                return data.defaultProfileId;
+            } catch (error) {
+                console.error('Error loading predefined profiles:', error);
+                return null;
+            }
+        }
+
+        // Handle profile selection from dropdown - auto-apply
+        profileSelect.addEventListener('change', () => {
+            const selectedId = profileSelect.value;
+            if (!selectedId) return;
+            
+            const profile = predefinedProfiles.find(p => p.id === selectedId);
+            if (profile) {
+                currentSetup = { ...profile };
+                populateForm(profile);
+                
+                // Auto-save the selected profile
+                saveDiveSetup(currentSetup);
+                clearCache();
+                
+                saveStatus.textContent = `✓ Now using "${profile.name}"`;
+                saveStatus.className = 'save-status success';
+                setTimeout(() => { saveStatus.textContent = ''; }, 3000);
+            }
+        });
+
+        // Auto-calculate N2 when O2 or He changes
+        function updateN2() {
+            const o2 = parseFloat(gasO2Input.value) || 0;
+            const he = parseFloat(gasHeInput.value) || 0;
+            const n2 = Math.max(0, 100 - o2 - he);
+            gasN2Input.value = n2;
+        }
+
+        gasO2Input.addEventListener('input', updateN2);
+        gasHeInput.addEventListener('input', updateN2);
+
+        // Add waypoint row to a specific table
+        function addWaypointRow(time = '', depth = '', targetBody = waypointsBody) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><input type="number" class="time-input" value="${time}" min="0" step="1" placeholder="0"></td>
+                <td><input type="number" class="depth-input" value="${depth}" min="0" step="1" placeholder="0"></td>
+                <td><button class="btn btn-danger remove-row">×</button></td>
+            `;
+            row.querySelector('.remove-row').addEventListener('click', () => {
+                if (targetBody.children.length > 2) {
+                    row.remove();
+                    updateSummary();
+                } else {
+                    alert('Profile must have at least 2 waypoints');
+                }
+            });
+            targetBody.appendChild(row);
+        }
+
+        // Load waypoints into table
+        function loadWaypointsToTable(waypoints, targetBody = waypointsBody) {
+            targetBody.innerHTML = '';
+            waypoints.forEach(wp => addWaypointRow(wp.time, wp.depth, targetBody));
+        }
+
+        // Read waypoints from table
+        function readWaypointsFromTable(targetBody = waypointsBody) {
+            const rows = targetBody.querySelectorAll('tr');
+            const waypoints = [];
+            rows.forEach(row => {
+                const timeInput = row.querySelector('.time-input');
+                const depthInput = row.querySelector('.depth-input');
+                if (timeInput && depthInput) {
+                    waypoints.push({
+                        time: parseFloat(timeInput.value) || 0,
+                        depth: parseFloat(depthInput.value) || 0
+                    });
+                }
+            });
+            return waypoints;
+        }
+
+        // Build setup object from form
+        function buildSetupFromForm() {
+            const baseSetup = {
+                name: profileNameInput.value || 'Custom Dive',
+                description: profileDescInput.value || '',
+                gasMix: {
+                    name: gasNameInput.value || 'Air',
+                    o2: (parseFloat(gasO2Input.value) || 21) / 100,
+                    n2: (parseFloat(gasN2Input.value) || 79) / 100,
+                    he: (parseFloat(gasHeInput.value) || 0) / 100
+                },
+                surfaceInterval: parseFloat(surfaceIntervalInput.value) || 60,
+                units: currentSetup?.units || { depth: 'meters', time: 'minutes', pressure: 'bar' }
+            };
+            
+            // Check if we have dive 2
+            if (hasDive2) {
+                baseSetup.dives = [
+                    { waypoints: readWaypointsFromTable(waypointsBody) },
+                    { 
+                        surfaceIntervalBefore: parseFloat(dive2SurfaceIntervalInput.value) || 60,
+                        waypoints: readWaypointsFromTable(waypointsBody2) 
+                    }
+                ];
+            } else {
+                baseSetup.waypoints = readWaypointsFromTable(waypointsBody);
+            }
+            
+            return baseSetup;
+        }
+
+        // Validate a single dive's waypoints
+        function validateWaypoints(waypoints, diveLabel = '') {
+            const errors = [];
+            const prefix = diveLabel ? `${diveLabel}: ` : '';
+            
+            if (waypoints.length < 2) {
+                errors.push(`${prefix}Must have at least 2 waypoints`);
+            }
+            if (waypoints.length > 0 && waypoints[0].time !== 0) {
+                errors.push(`${prefix}First waypoint must be at time 0`);
+            }
+            if (waypoints.length > 0 && waypoints[0].depth !== 0) {
+                errors.push(`${prefix}First waypoint should be at surface (0m)`);
+            }
+            // Check time is ascending
+            for (let i = 1; i < waypoints.length; i++) {
+                if (waypoints[i].time <= waypoints[i-1].time) {
+                    errors.push(`${prefix}Waypoint ${i+1}: Time must be greater than previous`);
+                }
+            }
+            return errors;
+        }
+
+        // Validate setup
+        function validateSetup(setup) {
+            const errors = [];
+            
+            // Validate waypoints (handles both formats)
+            if (setup.dives && setup.dives.length > 0) {
+                setup.dives.forEach((dive, i) => {
+                    errors.push(...validateWaypoints(dive.waypoints, `Dive ${i+1}`));
+                });
+            } else if (setup.waypoints) {
+                errors.push(...validateWaypoints(setup.waypoints));
+            }
+            // Check gas mix totals 100%
+            const total = setup.gasMix.o2 + setup.gasMix.n2 + setup.gasMix.he;
+            if (Math.abs(total - 1) > 0.01) {
+                errors.push('Gas mix must total 100%');
+            }
+            return errors;
+        }
+
+        // Update summary display
+        function updateSummary() {
+            const setup = buildSetupFromForm();
+            setupSummary.innerHTML = `<p><strong>${formatDiveSetupSummary(setup)}</strong></p>`;
+        }
+
+        // Show/hide dive 2 section
+        function showDive2(show) {
+            hasDive2 = show;
+            dive2Section.style.display = show ? 'block' : 'none';
+            addDiveSection.style.display = show ? 'none' : 'block';
+            updateSummary();
+        }
+
+        // Populate form from setup object
+        function populateForm(setup) {
+            profileNameInput.value = setup.name || '';
+            profileDescInput.value = setup.description || '';
+            gasNameInput.value = setup.gasMix?.name || 'Air';
+            gasO2Input.value = Math.round((setup.gasMix?.o2 || 0.21) * 100);
+            gasHeInput.value = Math.round((setup.gasMix?.he || 0) * 100);
+            updateN2();
+            surfaceIntervalInput.value = setup.surfaceInterval || 60;
+            
+            // Handle multi-dive vs single dive format
+            if (setup.dives && setup.dives.length > 0) {
+                // Multi-dive format
+                loadWaypointsToTable(setup.dives[0].waypoints || [], waypointsBody);
+                
+                if (setup.dives.length > 1) {
+                    const dive2 = setup.dives[1];
+                    dive2SurfaceIntervalInput.value = dive2.surfaceIntervalBefore || 60;
+                    loadWaypointsToTable(dive2.waypoints || [], waypointsBody2);
+                    showDive2(true);
+                } else {
+                    showDive2(false);
+                }
+            } else {
+                // Legacy single waypoints format
+                loadWaypointsToTable(setup.waypoints || [], waypointsBody);
+                showDive2(false);
+            }
+            
+            updateSummary();
+            
+            // Reset dropdown selection
+            profileSelect.value = '';
+        }
+
+        // Save setup
+        saveSetupBtn.addEventListener('click', () => {
+            const setup = buildSetupFromForm();
+            const errors = validateSetup(setup);
+            
+            if (errors.length > 0) {
+                validationErrors.innerHTML = errors.map(e => `<div>${e}</div>`).join('');
+                return;
+            }
+            
+            validationErrors.innerHTML = '';
+            saveDiveSetup(setup);
+            clearCache(); // Clear cache so other pages load fresh
+            currentSetup = setup;
+            updateSummary();
+            
+            saveStatus.textContent = '✓ Setup saved! Other sections will use this profile.';
+            saveStatus.className = 'save-status success';
+            setTimeout(() => { saveStatus.textContent = ''; }, 3000);
+        });
+
+        // Add waypoint to dive 1
+        addWaypointBtn.addEventListener('click', () => {
+            addWaypointRow('', '', waypointsBody);
+            updateSummary();
+        });
+
+        // Add waypoint to dive 2
+        addWaypoint2Btn.addEventListener('click', () => {
+            addWaypointRow('', '', waypointsBody2);
+            updateSummary();
+        });
+
+        // Add repetitive dive
+        addRepetitiveDiveBtn.addEventListener('click', () => {
+            // Add default waypoints for dive 2
+            loadWaypointsToTable([
+                { time: 0, depth: 0 },
+                { time: 2, depth: 18 },
+                { time: 25, depth: 18 },
+                { time: 28, depth: 5 },
+                { time: 31, depth: 5 },
+                { time: 33, depth: 0 }
+            ], waypointsBody2);
+            dive2SurfaceIntervalInput.value = 60;
+            showDive2(true);
+        });
+
+        // Remove dive 2
+        removeDive2Btn.addEventListener('click', () => {
+            showDive2(false);
+            waypointsBody2.innerHTML = '';
+        });
+
+        // Update summary when dive 2 surface interval changes
+        dive2SurfaceIntervalInput.addEventListener('input', updateSummary);
+
+        // Reset to default
+        resetDefaultBtn.addEventListener('click', async () => {
+            if (confirm('Reset to default dive profile? Your changes will be lost.')) {
+                localStorage.removeItem('diveSetup');
+                clearCache();
+                
+                // Load the default from predefined profiles
+                const defaultProfile = predefinedProfiles.find(p => p.id === 'deco-dive') || predefinedProfiles[0];
+                if (defaultProfile) {
+                    currentSetup = { ...defaultProfile };
+                    populateForm(defaultProfile);
+                }
+                
+                saveStatus.textContent = 'Reset to default profile.';
+                saveStatus.className = 'save-status';
+                setTimeout(() => { saveStatus.textContent = ''; }, 3000);
+            }
+        });
+
+        // Update summary on input changes
+        [profileNameInput, profileDescInput, gasO2Input, gasHeInput, surfaceIntervalInput].forEach(el => {
+            el.addEventListener('input', updateSummary);
+        });
+
+        async function init() {
+            // Load predefined profiles first
+            const defaultProfileId = await loadPredefinedProfiles();
+            
+            // Try to load saved setup from localStorage
+            currentSetup = await loadDiveSetup();
+            
+            // Check if setup has valid waypoints (either format)
+            const hasWaypoints = currentSetup && (
+                (currentSetup.waypoints && currentSetup.waypoints.length > 0) ||
+                (currentSetup.dives && currentSetup.dives.length > 0)
+            );
+            
+            // If no saved setup, use default from predefined profiles
+            if (!hasWaypoints) {
+                const defaultProfile = predefinedProfiles.find(p => p.id === defaultProfileId) || predefinedProfiles[0];
+                if (defaultProfile) {
+                    currentSetup = { ...defaultProfile };
+                }
+            }
+            
+            populateForm(currentSetup);
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+{
+  "profiles": [
+    {
+      "id": "recreational",
+      "name": "Recreational Dive",
+      "description": "A safe recreational dive to 18m staying well within no-decompression limits. Perfect for beginners and casual diving.",
+      "gasMix": {
+        "name": "Air",
+        "o2": 0.21,
+        "n2": 0.79,
+        "he": 0
+      },
+      "surfaceInterval": 60,
+      "units": {
+        "depth": "meters",
+        "time": "minutes",
+        "pressure": "bar"
+      },
+      "waypoints": [
+        { "time": 0, "depth": 0 },
+        { "time": 2, "depth": 18 },
+        { "time": 35, "depth": 18 },
+        { "time": 38, "depth": 5 },
+        { "time": 41, "depth": 5 },
+        { "time": 43, "depth": 0 }
+      ]
+    },
+    {
+      "id": "deco-dive",
+      "name": "Decompression Dive",
+      "description": "A 40m dive with planned decompression stops. This profile intentionally exceeds no-decompression limits to demonstrate tissue supersaturation and required deco stops.",
+      "gasMix": {
+        "name": "Air",
+        "o2": 0.21,
+        "n2": 0.79,
+        "he": 0
+      },
+      "surfaceInterval": 60,
+      "units": {
+        "depth": "meters",
+        "time": "minutes",
+        "pressure": "bar"
+      },
+      "waypoints": [
+        { "time": 0, "depth": 0 },
+        { "time": 2, "depth": 40 },
+        { "time": 22, "depth": 40 },
+        { "time": 26, "depth": 9 },
+        { "time": 29, "depth": 9 },
+        { "time": 30, "depth": 6 },
+        { "time": 35, "depth": 6 },
+        { "time": 36, "depth": 3 },
+        { "time": 41, "depth": 3 },
+        { "time": 42, "depth": 0 }
+      ]
+    },
+    {
+      "id": "dangerous-ascent",
+      "name": "⚠️ Dangerous Fast Ascent",
+      "description": "WARNING: This dive violates safe ascent rates! Demonstrates what happens when ascending too fast from depth without proper stops. NEVER do this in real diving!",
+      "gasMix": {
+        "name": "Air",
+        "o2": 0.21,
+        "n2": 0.79,
+        "he": 0
+      },
+      "surfaceInterval": 30,
+      "units": {
+        "depth": "meters",
+        "time": "minutes",
+        "pressure": "bar"
+      },
+      "waypoints": [
+        { "time": 0, "depth": 0 },
+        { "time": 1, "depth": 40 },
+        { "time": 25, "depth": 40 },
+        { "time": 27, "depth": 0 }
+      ]
+    },
+    {
+      "id": "repeated-dive",
+      "name": "Repeated Dives",
+      "description": "Two dives with a surface interval. Shows how residual nitrogen from the first dive affects tissue loading on the second dive. The second dive has reduced no-deco time.",
+      "gasMix": {
+        "name": "Air",
+        "o2": 0.21,
+        "n2": 0.79,
+        "he": 0
+      },
+      "surfaceInterval": 60,
+      "units": {
+        "depth": "meters",
+        "time": "minutes",
+        "pressure": "bar"
+      },
+      "dives": [
+        {
+          "waypoints": [
+            { "time": 0, "depth": 0 },
+            { "time": 2, "depth": 25 },
+            { "time": 30, "depth": 25 },
+            { "time": 33, "depth": 5 },
+            { "time": 36, "depth": 5 },
+            { "time": 38, "depth": 0 }
+          ]
+        },
+        {
+          "surfaceIntervalBefore": 60,
+          "waypoints": [
+            { "time": 0, "depth": 0 },
+            { "time": 2, "depth": 20 },
+            { "time": 25, "depth": 20 },
+            { "time": 28, "depth": 5 },
+            { "time": 31, "depth": 5 },
+            { "time": 33, "depth": 0 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "deep-technical",
+      "name": "Deep Technical Dive",
+      "description": "A deep technical dive to 55m requiring extended decompression. Uses trimix for reduced narcosis. For experienced technical divers only.",
+      "gasMix": {
+        "name": "Trimix 18/45",
+        "o2": 0.18,
+        "n2": 0.37,
+        "he": 0.45
+      },
+      "surfaceInterval": 90,
+      "units": {
+        "depth": "meters",
+        "time": "minutes",
+        "pressure": "bar"
+      },
+      "waypoints": [
+        { "time": 0, "depth": 0 },
+        { "time": 3, "depth": 55 },
+        { "time": 18, "depth": 55 },
+        { "time": 22, "depth": 21 },
+        { "time": 25, "depth": 21 },
+        { "time": 26, "depth": 18 },
+        { "time": 29, "depth": 18 },
+        { "time": 30, "depth": 15 },
+        { "time": 34, "depth": 15 },
+        { "time": 35, "depth": 12 },
+        { "time": 40, "depth": 12 },
+        { "time": 41, "depth": 9 },
+        { "time": 48, "depth": 9 },
+        { "time": 49, "depth": 6 },
+        { "time": 60, "depth": 6 },
+        { "time": 61, "depth": 3 },
+        { "time": 75, "depth": 3 },
+        { "time": 78, "depth": 0 }
+      ]
+    }
+  ],
+  "defaultProfileId": "deco-dive"
+}

@@ -1,0 +1,28 @@
+{
+  "name": "Example Decompression Dive",
+  "description": "A 40m dive with planned decompression stops. This profile intentionally exceeds no-decompression limits to demonstrate tissue supersaturation and off-gassing behavior.",
+  "gasMix": {
+    "name": "Air",
+    "o2": 0.21,
+    "n2": 0.79,
+    "he": 0
+  },
+  "surfaceInterval": 60,
+  "units": {
+    "depth": "meters",
+    "time": "minutes",
+    "pressure": "bar"
+  },
+  "waypoints": [
+    { "time": 0, "depth": 0, "note": "Start at surface" },
+    { "time": 2, "depth": 40, "note": "Descend to 40m (20 m/min)" },
+    { "time": 22, "depth": 40, "note": "Stay at 40m for 20 min (exceeds NDL)" },
+    { "time": 26, "depth": 9, "note": "Ascent to 9m deco stop" },
+    { "time": 29, "depth": 9, "note": "3 min deco stop at 9m" },
+    { "time": 30, "depth": 6, "note": "Ascent to 6m" },
+    { "time": 35, "depth": 6, "note": "5 min deco stop at 6m" },
+    { "time": 36, "depth": 3, "note": "Ascent to 3m" },
+    { "time": 41, "depth": 3, "note": "5 min safety stop at 3m" },
+    { "time": 42, "depth": 0, "note": "Surface" }
+  ]
+}

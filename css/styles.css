@@ -1096,3 +1096,365 @@ footer a {
         flex-direction: column;
     }
 }
+
+/* ==========================================================================
+   Dive Setup Page - Editable Form Styles
+   ========================================================================== */
+
+.text-input {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-size: 1rem;
+    width: 200px;
+}
+
+.text-input.wide {
+    width: 100%;
+    max-width: 500px;
+}
+
+.gas-mix-inputs .info-row {
+    margin-bottom: 0.75rem;
+}
+
+.gas-mix-inputs .hint {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-left: 0.5rem;
+}
+
+.profile-table {
+    width: 100%;
+    max-width: 500px;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+
+.profile-table th,
+.profile-table td {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    text-align: left;
+}
+
+.profile-table input {
+    width: 80px;
+    padding: 0.4rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+.save-status {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.save-status.success {
+    color: var(--secondary-color);
+    font-weight: 500;
+}
+
+/* Profile Summary in Tissue Loading */
+.profile-summary-content {
+    line-height: 1.6;
+}
+
+.profile-summary-content details {
+    margin-top: 1rem;
+}
+
+.profile-summary-content summary {
+    cursor: pointer;
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.waypoints-preview {
+    margin-top: 0.5rem;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.waypoints-preview th,
+.waypoints-preview td {
+    padding: 0.25rem 0.75rem;
+    border: 1px solid var(--border-color);
+    text-align: right;
+}
+
+.waypoints-preview th {
+    background: var(--background-color);
+}
+
+/* Profile Selector */
+.profile-selector {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.profile-selector label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.profile-selector select {
+    width: 100%;
+    max-width: 400px;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background-color: var(--card-background);
+    cursor: pointer;
+}
+
+.profile-selector select:hover {
+    border-color: var(--primary-color);
+}
+
+/* Textarea for description */
+textarea.form-input {
+    min-height: 80px;
+    resize: vertical;
+    font-family: inherit;
+}
+
+/* Advanced/Collapsible Sections */
+.advanced-section {
+    margin-top: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background: var(--background-color);
+}
+
+.advanced-section summary {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--text-color);
+    list-style: none;
+}
+
+.advanced-section summary::-webkit-details-marker {
+    display: none;
+}
+
+.advanced-section summary::before {
+    content: '▶';
+    display: inline-block;
+    margin-right: 0.5rem;
+    transition: transform 0.2s;
+    font-size: 0.8rem;
+}
+
+.advanced-section[open] summary::before {
+    transform: rotate(90deg);
+}
+
+.advanced-section .gas-mix-grid {
+    padding: 1rem;
+    padding-top: 0.5rem;
+}
+
+/* Profile Header Bar (for theory pages) */
+.profile-header-bar {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.profile-header-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.profile-header-label {
+    opacity: 0.9;
+    font-size: 0.9rem;
+}
+
+.profile-header-summary {
+    opacity: 0.85;
+    font-size: 0.9rem;
+    padding-left: 0.75rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.profile-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.surface-interval-inline {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.surface-interval-inline input {
+    width: 70px;
+    padding: 0.35rem 0.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.profile-header-bar .btn-small {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.profile-header-bar .btn-small:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Chart Controls */
+.chart-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.surface-interval-control {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.surface-interval-control input {
+    width: 70px;
+    padding: 0.35rem 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* Form Group Styles (for dive-setup) */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.form-input {
+    width: 100%;
+    max-width: 500px;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(41, 128, 185, 0.1);
+}
+
+.form-textarea {
+    min-height: 80px;
+    resize: vertical;
+    font-family: inherit;
+    line-height: 1.5;
+}
+
+/* Dive Sections (multi-dive support) */
+.dive-section {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background: var(--card-background);
+}
+
+.dive-section h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.dive2-section {
+    border-color: var(--primary-color);
+    background: linear-gradient(to bottom, rgba(41, 128, 185, 0.05), var(--card-background));
+}
+
+.dive2-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.dive2-header h3 {
+    margin: 0;
+}
+
+.surface-interval-between {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: var(--background-color);
+    border-radius: var(--radius);
+}
+
+.surface-interval-between input {
+    width: 100px;
+}
+
+.add-dive-section {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    text-align: center;
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius);
+    background: var(--background-color);
+}
+
+.add-dive-section .hint {
+    display: block;
+    margin-top: 0.5rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .profile-header-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .profile-header-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
