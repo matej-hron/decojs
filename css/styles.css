@@ -242,6 +242,58 @@ section[id] {
     padding: 2rem 1.5rem;
 }
 
+/* Featured Quote Section */
+.quote-section {
+    margin-bottom: 2.5rem;
+    text-align: center;
+}
+
+.featured-quote {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-left: 4px solid var(--primary-color);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 1.5rem 2rem;
+    margin: 0 0 1rem 0;
+    font-style: italic;
+    position: relative;
+}
+
+.featured-quote::before {
+    content: '"';
+    font-size: 4rem;
+    color: var(--primary-color);
+    opacity: 0.2;
+    position: absolute;
+    top: -0.5rem;
+    left: 0.5rem;
+    font-family: Georgia, serif;
+    line-height: 1;
+}
+
+.featured-quote p {
+    font-size: 1.15rem;
+    line-height: 1.6;
+    color: var(--text-color);
+    margin: 0;
+    position: relative;
+    z-index: 1;
+}
+
+.featured-quote cite {
+    display: block;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    font-style: normal;
+}
+
+.quote-context {
+    font-size: 1.05rem;
+    color: var(--primary-dark);
+    font-weight: 500;
+    margin: 0;
+}
+
 .intro-section,
 .topics-section,
 .about-section {
@@ -1300,7 +1352,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.0.19";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.0.21";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* Responsive */
