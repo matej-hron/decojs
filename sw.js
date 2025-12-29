@@ -3,27 +3,27 @@ const CACHE_NAME = 'deco-theory-v1';
 
 // Files to cache for offline use
 const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/about.html',
-  '/dive-setup.html',
-  '/pressure.html',
-  '/tissue-loading.html',
-  '/quiz-anatomy.html',
-  '/quiz-physics.html',
-  '/css/styles.css',
-  '/js/main.js',
-  '/js/decoModel.js',
-  '/js/diveProfile.js',
-  '/js/diveSetup.js',
-  '/js/quiz.js',
-  '/js/tissueCompartments.js',
-  '/js/visualization.js',
-  '/data/dive-profiles.json',
-  '/data/dive-setup.json',
-  '/data/quiz-anatomy.json',
-  '/data/quiz-physics.json',
-  '/manifest.json'
+  './',
+  './index.html',
+  './about.html',
+  './dive-setup.html',
+  './pressure.html',
+  './tissue-loading.html',
+  './quiz-anatomy.html',
+  './quiz-physics.html',
+  './css/styles.css',
+  './js/main.js',
+  './js/decoModel.js',
+  './js/diveProfile.js',
+  './js/diveSetup.js',
+  './js/quiz.js',
+  './js/tissueCompartments.js',
+  './js/visualization.js',
+  './data/dive-profiles.json',
+  './data/dive-setup.json',
+  './data/quiz-anatomy.json',
+  './data/quiz-physics.json',
+  './manifest.json'
 ];
 
 // Install event - cache static assets
