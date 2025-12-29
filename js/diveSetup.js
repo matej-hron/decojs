@@ -183,6 +183,15 @@ export function getCylinderVolume(setup) {
 }
 
 /**
+ * Get reserve pressure in bar
+ * @param {Object} setup - Dive setup object
+ * @returns {number} Reserve pressure in bar
+ */
+export function getReservePressure(setup) {
+    return setup.reservePressure || 50;
+}
+
+/**
  * Clear cached setup (useful for reloading)
  */
 export function clearCache() {

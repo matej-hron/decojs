@@ -8,6 +8,7 @@
     "he": 0
   },
   "cylinderVolume": 12,
+  "reservePressure": 50,
   "surfaceInterval": 60,
   "units": {
     "depth": "meters",

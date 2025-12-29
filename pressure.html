@@ -382,6 +382,10 @@
                     <label for="gas-start-pressure">Start Pressure (bar):</label>
                     <input type="number" id="gas-start-pressure" class="form-input" value="200" min="100" max="300" step="10">
                 </div>
+                <div class="control-group">
+                    <label for="gas-reserve-pressure">Reserve (bar):</label>
+                    <input type="number" id="gas-reserve-pressure" class="form-input" value="50" min="30" max="100" step="10">
+                </div>
             </div>
             
             <div class="chart-container" id="gas-chart-container">
@@ -413,7 +417,7 @@
     </footer>
 
     <script type="module">
-        import { loadDiveSetup, getDiveSetupWaypoints, saveDiveSetup, clearCache, getCylinderVolume } from './js/diveSetup.js';
+        import { loadDiveSetup, getDiveSetupWaypoints, saveDiveSetup, clearCache, getCylinderVolume, getReservePressure } from './js/diveSetup.js';
         
         // State
         let profileChart = null;
@@ -576,6 +580,8 @@
             updateProfileHeader();
             renderProfileChart();
             renderPressureChart();
+            initGasControls();
+            renderGasConsumptionChart();
         }
         
         function updateProfileHeader() {
@@ -1303,6 +1309,7 @@
         const gasCylinderSelect = document.getElementById('gas-cylinder-select');
         const gasSacInput = document.getElementById('gas-sac-input');
         const gasStartPressure = document.getElementById('gas-start-pressure');
+        const gasReservePressure = document.getElementById('gas-reserve-pressure');
         
         function toggleGasFullscreen() {
             const isFullscreen = gasChartContainer.classList.toggle('fullscreen');
@@ -1325,29 +1332,30 @@
         gasCylinderSelect?.addEventListener('change', renderGasConsumptionChart);
         gasSacInput?.addEventListener('input', renderGasConsumptionChart);
         gasStartPressure?.addEventListener('input', renderGasConsumptionChart);
+        gasReservePressure?.addEventListener('input', renderGasConsumptionChart);
+        
+        // Initialize gas controls from setup
+        function initGasControls() {
+            if (gasCylinderSelect) gasCylinderSelect.value = getCylinderVolume(currentSetup);
+            if (gasReservePressure) gasReservePressure.value = getReservePressure(currentSetup);
+        }
         
         function renderGasConsumptionChart() {
             const canvas = document.getElementById('gas-consumption-canvas');
-            if (!canvas) return;
+            if (!canvas || !currentSetup) return;
             
             const ctx = canvas.getContext('2d');
             const waypoints = getDiveSetupWaypoints(currentSetup);
             
             if (waypoints.length === 0) return;
             
-            // Get parameters
+            // Get parameters from controls
             const cylinderVolume = parseInt(gasCylinderSelect?.value) || getCylinderVolume(currentSetup);
             const sacRate = parseFloat(gasSacInput?.value) || 20;
             const startPressure = parseFloat(gasStartPressure?.value) || 200;
-            const reservePressure = 50; // bar
-            
-            // Set cylinder select to match setup if not manually changed
-            if (gasCylinderSelect && !gasCylinderSelect.dataset.userChanged) {
-                gasCylinderSelect.value = getCylinderVolume(currentSetup);
-            }
+            const reservePressure = parseFloat(gasReservePressure?.value) || getReservePressure(currentSetup);
             
             const totalGasAvailable = cylinderVolume * startPressure; // liters
-            const reserveGas = cylinderVolume * reservePressure;
             
             const totalTime = waypoints[waypoints.length - 1].time;
             
@@ -1462,6 +1470,7 @@
             }
             
             const maxDepth = Math.max(...waypoints.map(w => w.depth));
+            const maxConsumptionRate = Math.max(...gasData.map(d => d.consumptionRate));
             
             const data = {
                 datasets: [{
@@ -1484,6 +1493,17 @@
                     pointRadius: 0,
                     borderWidth: 3,
                     yAxisID: 'yPressure'
+                }, {
+                    label: 'Consumption Rate (L/min)',
+                    data: gasData.map(p => ({ x: p.x, y: p.consumptionRate })),
+                    borderColor: '#e67e22',
+                    backgroundColor: 'rgba(230, 126, 34, 0.1)',
+                    fill: true,
+                    tension: 0,
+                    pointRadius: 0,
+                    borderWidth: 2,
+                    borderDash: [4, 4],
+                    yAxisID: 'yRate'
                 }]
             };
             
@@ -1544,6 +1564,17 @@
                             ticks: {
                                 color: '#27ae60'
                             }
+                        },
+                        yRate: {
+                            type: 'linear',
+                            position: 'right',
+                            reverse: false,
+                            display: false,
+                            min: 0,
+                            max: maxConsumptionRate * 1.5,
+                            grid: {
+                                drawOnChartArea: false
+                            }
                         }
                     },
                     interaction: {
@@ -1572,8 +1603,10 @@
                                 label: (context) => {
                                     if (context.dataset.label === 'Dive Profile (Depth)') {
                                         return `Depth: ${context.parsed.y.toFixed(1)}m`;
-                                    } else {
+                                    } else if (context.dataset.label === 'Tank Pressure') {
                                         return `Tank: ${context.parsed.y.toFixed(0)} bar`;
+                                    } else {
+                                        return `Rate: ${context.parsed.y.toFixed(0)} L/min`;
                                     }
                                 }
                             }

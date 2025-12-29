@@ -131,6 +131,10 @@
                                 <option value="24">2×12 L (Doubles - 24 L)</option>
                             </select>
                         </div>
+                        <div class="info-row">
+                            <label for="reserve-pressure-input">Reserve Pressure (bar):</label>
+                            <input type="number" id="reserve-pressure-input" class="text-input" value="50" min="30" max="100" step="10">
+                        </div>
                         <p class="hint">Used for gas consumption calculations. Assumes 200 bar fill pressure.</p>
                     </div>
                 </details>
@@ -270,6 +274,7 @@
         const gasN2Input = document.getElementById('gas-n2-input');
         const gasHeInput = document.getElementById('gas-he-input');
         const cylinderVolumeInput = document.getElementById('cylinder-volume-input');
+        const reservePressureInput = document.getElementById('reserve-pressure-input');
         const surfaceIntervalInput = document.getElementById('surface-interval-input');
         const waypointsBody = document.getElementById('waypoints-body');
         const addWaypointBtn = document.getElementById('add-waypoint');
@@ -396,6 +401,7 @@
                     he: (parseFloat(gasHeInput.value) || 0) / 100
                 },
                 cylinderVolume: parseInt(cylinderVolumeInput.value) || 12,
+                reservePressure: parseInt(reservePressureInput.value) || 50,
                 surfaceInterval: parseFloat(surfaceIntervalInput.value) || 60,
                 units: currentSetup?.units || { depth: 'meters', time: 'minutes', pressure: 'bar' }
             };
@@ -481,6 +487,7 @@
             gasO2Input.value = Math.round((setup.gasMix?.o2 || 0.21) * 100);
             gasHeInput.value = Math.round((setup.gasMix?.he || 0) * 100);
             updateN2();
+            reservePressureInput.value = setup.reservePressure || 50;
             cylinderVolumeInput.value = setup.cylinderVolume || 12;
             surfaceIntervalInput.value = setup.surfaceInterval || 60;
             

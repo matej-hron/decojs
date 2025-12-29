@@ -1380,7 +1380,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.0.23";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.0.24";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* Responsive */
@@ -1808,8 +1808,65 @@ textarea.form-input {
 /* Chart Controls */
 .chart-controls {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 1rem;
+    padding: 1rem;
+    background: var(--card-background);
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+}
+
+.chart-controls .control-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.chart-controls .control-group label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.chart-controls .form-select,
+.chart-controls .form-input {
+    padding: 0.4rem 0.6rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    min-width: 80px;
+}
+
+.chart-controls .form-select {
+    min-width: 120px;
+}
+
+/* Stats Summary */
+.stats-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    padding: 1rem;
+    background: var(--card-background);
+    border-radius: var(--radius);
+    margin-top: 1rem;
+}
+
+.stats-summary .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stats-summary .stat-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.stats-summary .stat-value {
+    font-size: 1rem;
+    font-weight: 600;
 }
 
 .surface-interval-control {
