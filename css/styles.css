@@ -1203,6 +1203,18 @@ footer a {
     color: #85c1e9;
 }
 
+/* Version number in footer - keep in sync with sw.js CACHE_NAME */
+.version-number {
+    display: block;
+    margin-top: 1rem;
+    font-size: 0.75rem;
+    opacity: 0.6;
+}
+
+.version-number::after {
+    content: "v2";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     /* Navigation - Hamburger Menu */
