@@ -1,0 +1,923 @@
+FYZIKA P*, P**
+
+Fyzika - plán
+- Fyzika, teorie (dnes)
+Fyziologie
+- Plánování ponorů, dekompresní postupy
+-
+
+Fyzika – osnova výcviku
+
+Fyzika – osnova výcviku
+
+Fyzika - literatura
+Fyzika (Jahns)
+▪ Potápění s přístrojem (Vrbovský, Jahns,
+Štětina, Růžička, Nachtigal, Hrdina)
+▪ Přístrojové potápění
+▪ Deco for Divers (Powel)
+▪
+
+Fyzika - proč
+▪
+
+Praktické situace
+🢭
+
+Jak hluboko můžu?
+🢭 Co mám dělat když chci hloub?
+🢭 Jak dlouho tam můžu být?
+🢭 Jak mám naplánovat ponor? Jak rychle dolů, jak
+zpátky?
+🢭 Jak dlouho mi vydrží vzduch v lahvi?
+🢭 Jak předcházet nehodám
+…..
+
+Obsah:
+▪ Hustota
+▪ Tlak
+▪ Stlačování plynů
+▪ Archimedův zákon a kontrola vztlaku
+▪ Složení vzduchu
+▪ Daltonův zákon
+▪ Rozpouštění plynů v kapalinách
+▪ Vidění pod vodou
+▪ Slyšení pod vodou
+▪ Přenos tepla
+
+Hustota
+Definována jako hmotnost tělesa na jednotku
+objemu
+
+Příklady látek:
+Látka
+
+Hustota [kg/m3]
+
+Voda sladká
+
+1000
+
+Voda slaná
+
+1020 - 1030
+
+Led
+
+920
+
+Vzduch
+
+1,25
+
+Olovo
+
+11 340
+
+Ocel
+
+7850
+
+Závislost hustoty na
+teplotě
+
+▪ Většina látek při ochlazování zvětšuje hustotu
+
+▪ Anomálie vody
+Voda má největší hustotu při 4°
+
+“Těžká“ voda vlivem gravitace klesá dolů
+Proto V zimě promrzá voda od hladiny a
+To umožňuje rybám přežít zimu
+Led je lehčí než voda, plave na hladině
+a dokonce funguje jako izolace proti
+ochlazování vody výměnou tepla se
+vzduchem
+
+NATIONAL A
+S S O C I A TDES
+I O N ACTIVITÉS
+O F U N D E SUBAQUATIQUES
+RWATE R
+NSTRUC
+T O R S UNDERWATER FEDERATION
+CMAS - CONFÉDÉRATION
+MONDIALE
+WORLD
+
+Fyzika
+
+Tlak
+
+Hron
+
+Svaz potápěčů České republiky
+
+číslo:
+
+CMAS - CONFÉDÉRATION MONDIALE DES ACTIVITÉS SUBAQUATIQUES
+
+WORLD UNDERWATER FEDERATION
+
+Fyzika
+
+Tlak
+Tlaková síla (zkráceně tlak) je nejzávažnější ze všech
+vlivů působících při potápění.
+Tlak je definován velikostí síly púsobící na plochu
+
+Hron
+
+Svaz potápěčů České republiky
+
+číslo:
+
+CMAS - CONFÉDÉRATION MONDIALE DES ACTIVITÉS SUBAQUATIQUES
+
+WORLD UNDERWATER FEDERATION
+
+Fyzika
+
+Tlak – jednotky, příklady
+
+Stejná síla působící na různě
+velkých plochách
+
+Síla 5 N na ploše hrotu jehly 0,1 mm 2
+vyvine tlak 50 MPa
+
+Jednotka Pascal (Pa) je (nejen) pro účely potápění malá
+1 MPa = 1 000 kPa = 1 000 000 Pa
+100 kPa = 0,1 MPa = 1 bar
+1 atm = 101.325 KPa ~= 1bar
+Hron
+
+Svaz potápěčů České republiky
+
+číslo:
+
+CMAS - CONFÉDÉRATION MONDIALE DES ACTIVITÉS SUBAQUATIQUES
+
+WORLD UNDERWATER FEDERATION
+
+Fyzika
+
+Tlak a skupenství
+• Pevné látky
+•
+•
+
+Částice blízko sebe, vázány v krystalické mřížce
+
+Při působení tlaku nemění tvar ani objem
+
+• Kapaliny
+• Částice víc od sebe vzdáleny než u pevných látek
+• Tvoří hladinu
+• Mají stálý objem, ale tvar mění podle nádoby,
+kde jsou umístěny
+
+• Tlak vyvolaný vnější silou, která působí na kapalné
+těleso v uzavřené nádobě, je ve všech místech kapaliny
+stejný (Pascalův zákon)
+
+• Jsou nestlačitelné
+
+Hron
+
+Svaz potápěčů České republiky
+
+číslo:
+
+CMAS - CONFÉDÉRATION MONDIALE DES ACTIVITÉS SUBAQUATIQUES
+
+WORLD UNDERWATER FEDERATION
+
+Fyzika
+
+Tlak a skupenství
+• Plyny
+•
+•
+•
+
+Hron
+
+Částice daleko od sebe, menší hustota
+
+Částice plynu se volně pohybují celým prostorem
+Jsou stlačitelné
+
+Svaz potápěčů České republiky
+
+číslo:
+
+CMAS - CONFÉDÉRATION MONDIALE DES ACTIVITÉS SUBAQUATIQUES
+
+WORLD UNDERWATER FEDERATION
+
+Fyzika
+
+Tlak působící na potápěče
+
+Hron
+
+Svaz potápěčů České republiky
+
+číslo:
+
+CMAS - CONFÉDÉRATION MONDIALE DES ACTIVITÉS SUBAQUATIQUES
+
+WORLD UNDERWATER FEDERATION
+
+Fyzika
+
+Atmosférický tlak
+
+Závisí na nadmořské výšce
+Pro potápění důležité
+
+Závisí na počasí
+Pro potápění nedůležité
+
+Hron
+
+Svaz potápěčů České republiky
+
+číslo:
+
+CMAS - CONFÉDÉRATION MONDIALE DES ACTIVITÉS SUBAQUATIQUES
+
+WORLD UNDERWATER FEDERATION
+
+Fyzika
+
+Atmosférický tlak
+výška
+tlak vzduchu
+[m]
+[kPa]
+10 000
+26
+9 000
+30,3
+8 000
+35,1
+7 000
+40,5
+6 000
+46,5
+5 500
+49,8
+5 000
+53,3
+4 000
+60,8
+3 000
+69,1
+2 000
+78,4
+1 000
+88,6
+500
+94,2
+200
+97,6
+100
+98,8
+0
+100
+
+Hron
+
+Proč je pro potápěče důležitý
+• Odlišný dekompresní postup při
+potápění > 300 m. n. m.
+
+• Přejezd přes horská sedla
+• Odlet letadlem po potápění
+
+• Tlak v přetlakové kabině letadla
+jako ve výšce asi 2 200 m
+
+Svaz potápěčů České republiky
+
+číslo:
+
+CMAS - CONFÉDÉRATION MONDIALE DES ACTIVITÉS SUBAQUATIQUES
+
+WORLD UNDERWATER FEDERATION
+
+Fyzika
+
+Hydrostatický tlak
+• Vyvolán tíhou kapaliny (vody)
+• Tlak není závislý na množství vody,
+
+Závisí na:
+-
+
+Hloubce
+Hustotě (salinita, teplota)
+Gravitační konstantě
+
+ale pouze ne výšce vodního sloupce
+Hydrostatický paradox
+
+Pascalův překvapivý pokus na náměstí v Ruenu.
+Sud se roztrhl, přestože tíha vody byla nepatrná.
+
+Hron
+
+Svaz potápěčů České republiky
+
+číslo:
+
+CMAS - CONFÉDÉRATION MONDIALE DES ACTIVITÉS SUBAQUATIQUES
+
+WORLD UNDERWATER FEDERATION
+
+Fyzika
+
+Celkový tlak
+• Příklad:
+• Jaký je tlak v moři v hloubce 10 m ?
+
+Hron
+
+Svaz potápěčů České republiky
+
+číslo:
+
+CMAS - CONFÉDÉRATION MONDIALE DES ACTIVITÉS SUBAQUATIQUES
+
+WORLD UNDERWATER FEDERATION
+
+Fyzika
+
+Celkový tlak
+• Příklad: doplňme hodnoty celkového tlaku v hloubce
+h [m]
+
+p [bar]
+
+h [m]
+
+p [bar]
+
+0
+
+0
+
+0.5
+
+10
+
+10
+
+20
+
+20
+
+22
+
+30
+
+28
+
+40
+
+30
+
+45
+
+33
+
+51
+
+40.5
+
+55.5
+
+66
+(Los Gigantes, Cannary Islands)
+Hron
+
+(Lago Di Sassolo 5 500 m.n.m.)
+
+Svaz potápěčů České republiky
+
+číslo:
+
+Důsledky zvýšeného tlaku
+Proti tlakové síle vyvolané okolním tlakem lze potápěče chránit:
+
+▪ Pevnými vnějšími stěnami
+(ponorka, pouzdro na foťák)
+
+▪ Vnitřním tlakem (náš případ)
+
+Obličejové dutiny
+
+Tlak nemá žádný vliv na ty části těla, které jsou
+vyplněny tekutinami
+
+Dýchací cesty
+Plíce
+Trávicí systém
+
+V dutinách s plynným obsahem je nutno
+vyrovnávat tlak s tlakem okolí
+
+CMAS - CONFÉDÉRATION MONDIALE DES ACTIVITÉS SUBAQUATIQUES
+
+WORLD UNDERWATER FEDERATION
+
+Fyzika
+
+Tlaku v plynu
+Tlak je vyvolán nárazy částic
+plynu do stěn
+Ale na čem závisí? p = ?
+•
+
+Větší počet částic plynu (n)
+
+Větší tlak
+
+•
+
+Větší energie částic (T)
+
+Větší tlak
+
+•
+
+Čím větší objem (V)
+
+Menší tlak
+
+Stavová rovnice
+ideálního plynu
+
+Hron
+
+Svaz potápěčů České republiky
+
+číslo:
+
+Stlačování plynů
+▪ Vlivem zvětšujícího tlaku se plyny stlačují a
+přitom zmenšují svůj objem. Při poklesu
+okolního tlaku se opět rozpínají
+▪
+
+Boyle – Marriotův zákon říká, že součin tlaku a oběmu plynu je stálý.
+
+Kolikrát se zvětší tlak, tolikrát se zmenší objem
+Kolikrát se zmenší tlak, tolikrát se zvětší objem
+
+Platí pro:
+ideální plyn,
+stálé množství,
+isotermický děj
+
+Stlačování plynů
+Příklad: V potápěčském zvonu na hladině je 1000 litrů vzduchu. Spočítejte objem
+Vzduchu po spuštění kesonu do 10 a do 20 m.
+Tlak v hloubce 0 m p = 1 bar
+Objem vzduchu v kesonu V = 1000 l
+Tlak v hloubce 10 m p =
+
+2 bar
+
+Objem vzduchu v kesonu V =
+Tlak v hloubce 20 m p =
+
+500 l
+
+3 bar
+
+Objem vzduchu v kesonu V =
+
+333,33 l
+
+Stlačování plynů
+▪
+
+Příklad: Balónek o objemu 6 litrů vypuštěný z hloubky 40 metrů stoupá k
+hladině. Vypočtěte jeho objem v hloubkách 30m, 20m, 10m a na hladině
+
+Hloubka [m]
+
+Tlak [Bar]
+
+Objem [l]
+
+0
+
+1
+
+30
+
+10
+
+2
+
+15
+
+20
+
+3
+
+10
+
+30
+
+4
+
+7,5
+
+40
+
+5
+
+6
+
+Stlačování plynů
+▪ Nebezpečí malých hloubek
+Při výstupu ze 40 do 30 m se balónek zvětšil pouze o 1,5l, rotože poměr
+tlaků je pouze 5/4
+Při výstupu z 10m na hladinu o stejnou vzdálenost se ale jeho oběm zvýšil
+2x (odpovídá poměru snížení tlaku 2/1)
+
+Nikdy nezadržujte dech !
+Dýchejte normálně !
+
+Stlačování plynů, tělní
+dutiny
+Obličejové dutiny
+
+Prostor uvnitř
+masky
+Dýchací cesty
+
+Plíce
+
+Trávicí systém
+
+Viz stran SP, pan Eustach
+
+Automatické
+
+Násilné
+
+Stlačování plynů, výpočet
+spotřeby
+Příklad: Kolik litrů vzduchu spotřebuje potápěč za 20 min. v
+hloubce 25 m, je-li jeho hladinová spotřeba 30 l/min?
+
+Stlačování plynů, výpočet
+spotřeby
+Příklad: Jak dlouho vydrží potápěči 15l láhev naplněná na
+začátku ponoru na 200 barů, tak aby se vynořil s rezervou
+50 barů v hloubce:
+a) 10m b) 30m
+
+Hladinová spotřeba 30l/min
+
+Stlačování plynů, výpočet
+spotřeby
+Příklad: Potápěč vydýchal z 10 l přístroje za 20 minut 100
+barů v hloubce 20 m. Stanovte jeho hladinovou spotřebu.
+
+Archimédův zákon
+▪ Těleso ponořené do kapaliny je nadlehčováno
+silou rovnající se tíze kapaliny tělesem
+vytlačené
+Pokud je tíha tělesem vytlačené vody větší než tíha
+tělesa samotného (resp. hustota tělesa je menší než
+hustota vody), pak těleso plove.
+
+Pokud je tíha tělesem vytlačené vody menší než tíha
+těles (resp. hustota tělesa je větší než hustotoa vody),
+pak těleso klesá ke dnu.
+
+Archimédův zákon
+
+Archimédův zákon
+▪ Neoprenový oblek o hmotnosti 4kg má u
+hladiny objem 12l kolik zátěže potřebujeme
+na kompenzaci vztlakové síly kterou vyvolá?
+
+Archimédův zákon
+Jaké množství vzduchu budeme potřebovat abychom s pomocí
+zvedacího vaku vynesli na hladinu utopenou kotvu z hloubky 20m,
+pokud kotva váží 15 kg?
+
+▪ Nikdy nic nevynášíme vlastní silou ani na
+vlastní BCD !
+
+Kontrola vztlaku
+Pomocí BCD snadno měníme svůj objem a tedy
+vztlak
+
+Zátěžovým opaskem kompenzujeme vztlak neoprénu
+Během ponoru odhazujeme zátěž jen v nejvyšší nouzi
+Vyvážení na hladině:
+Plně ustrojení vstoupíme do vody s malým množstvím
+Vzduchu v BC. Seřídíme hmotnost zátěže tak abchom při
+Nádechu zůstali na hladině a při výdechu zvolna klesali.
+
+Změna vztlaku během ponoru
+V důsledku změny hloubky
+Během sestupu:
+• Vlivem zvyšování tlaku dochází ke stlačení neoprénu,
+• stlačení vzduchu v BC
+Důsledkem je ztráta vztlaku => zrychlení sestupu. Potápěč si proto do BC
+doplňuje vzduch, aby mírnil rychlost sestupu.
+Během výstupu:
+• Vlivem snižování tlaku dochází k rozpínání neoprénu,
+• rozpínání vzduchu v BC
+Důsledkem je zvýšení vztlaku => zrychlení výstupu. Potápěč si proto z
+BC upouští vzduch, aby mírnil rychlost výstupu.
+
+Změna vztlaku během ponoru
+V důsledku úbytku dýchané směsi (vzduchu)
+Příklad: Vypočtěte hmotnost vzduchu v potápěčské lahvi s vnitřním objemem
+12l naplněné původně na 200 barů. (Hustota vzduchu je 1,25 kg/m3)
+
+Hmotnost vzduchu, který během ponoru vydýcháme není zanedbatelná! Je
+důležité se vyvážit tak aby na konci ponoru bylo možné provézt případnou
+dekompresní / bezpečnostní zastávku v malé hloubce.
+
+Složení vzduchu
+
+Dusík
+78 %
+
+21 %
+
+Kyslík
+Oxid uhličitý
+Vzácné plyny
+
+Daltonův zákon
+Říká že celkový tlak pc směsi n plynů můžeme
+definovat jako součet dílčích tlaků jednotlivých
+plynů obsažených ve směsi.
+pc = pn + po
+Výpočet dílčího tlaku složky směsi
+p n = p c x fn
+p o = p c x fo
+
+CMAS - CONFÉDÉRATION MONDIALE DES ACTIVITÉS SUBAQUATIQUES
+
+WORLD UNDERWATER FEDERATION
+
+Fyzika
+
+Tlaku v plynu
+Tlak je vyvolán nárazy částic
+plynu do stěn
+Ale na čem závisí? p = ?
+•
+
+Větší počet částic plynu (n)
+
+Větší tlak
+
+•
+
+Větší energie částic (T)
+
+Větší tlak
+
+•
+
+Čím větší objem (V)
+
+Menší tlak
+
+Stavová rovnice
+ideálního plynu
+
+Hron
+
+Svaz potápěčů České republiky
+
+číslo:
+
+Daltonův zákon, použití
+Mezní limity parciálního tlaku kyslíku v dýchané směsi:
+p02 min = 0.16 bar (16 kPa)
+p02 max = 1.6 bar (160 kPa)
+Mezní hodnota parciálního tlaku dusíku ve směsi
+pN max = 4 bar (400 kPa)
+Příklad:
+a) Vypočítejte maximální hloubku pro ponor se vzduchem aby
+nedošlo k překročení mezního parciálního tlaku kyslíku.
+b) maximální hloubku aby nedošlo k překročení hranice parciálního
+tlaku dusíku
+
+Henryho zákon
+Množství plynu rozpuštěného v
+kapalině je přímo úměrné tlaku plynu
+nad kapalinou
+
+Henryho zákon
+Analogie - během ponoru se organismus potápěče
+sytí dýchacími plyny (dusík).
+
+Vyšší
+vnitřní
+tlak
+
++
+
+Rozpuštěný
+plyn
+
+Henryho zákon
+Analogie - při nedodržení dekompresního režimu
+může dojít k vytvoření bublin dusíku v těle potápěče.
+Při ponorech v nulovém čase je dekomrese zajištěna
+dodržením výstupové rychlosti
+
+Únik plynu
+
+Henryho zákon - sycení
+Plíce
+
+Vysycení
+(off gasing)
+
+Tepenná
+krev
+
+Žilní krev
+
+Tkáně
+
+Sycení
+(on gassing)
+
+Saturace v čase
+T = 4 min – 600 min
+6 x T => 98.4 % sat
+
+Rozpouštění plynu v kapalině
+dusík
+
+helium
+
+kyslík
+
+Voda (krev)
+
+12.3
+
+8.6
+
+23.9
+
+Olivový olej (tuk)
+
+66.1
+
+15.7
+
+110.5
+
+ml / l / 1 bar při 37 stupńů celsia
+
+Vidění pod vodou
+Intenzita světla
+k
+
+kolmice
+dopadu
+
+α
+
+• Paprsek dopadající na vodní
+hladinu se částečně odráží.
+
+• Světlo se při přechodu z prostředí
+opticky řišího do hustšího láme ke
+kolmici
+
+vzduch
+
+• Naopak při přechodu z vody na
+vzduch se světlo láme od kolmice
+
+voda
+β
+
+Vidění pod vodou
+Pohlcování světla
+• Nejdříve se ztrácejí teplé složky spektra
+• Nejhlouběji proniká modrá
+• Při nízké intenzitě světla ale oko vnímá černobíle
+• Vyplatí se nosit si baterku i ve dne
+
+5
+
+1
+0
+
+1
+2
+
+2
+0
+
+2
+2
+
+3
+0
+
+Množství světla které pronikne pod
+hladinu je silně závislé na úhlu
+dopadu
+
+Při pohledu zpod hladiny se do oka
+sbíhají paprsky přicházející jak ze
+vzduchu tak i z vody.
+
+Tyč do vody ponořená ...
+
+Zdá se býti nalomená
+
+Vidění pod vodou
+Předměty se jeví o 1/3 větší a o
+1/4 blíž
+
+Voda
+
+Voda
+
+Vzduch
+
+Slyšení pod vodou
+
+330 m/s
+
+1.500 m/s
+
+Slyšení pod vodou
+
+RYCHLEJŠÍ
+Není jasné
+odkud zvuk přichází
+
+Přenos tepla
+Proč je nám ve vodě zima?
+• Voda má velkou tepelnou kapacitu – k ohřátí 1 kg vody o 1
+stupeň Celsia je v porovnání se vzduchem potřeba 3000x
+větžího množství tepla
+
+• Voda velmi dobře vede teplo (asi 30x lépe než vzduch)
+
+Přenos tepla
+Základní způsoby přenosu tepla:
+▪ Vyzařováním
+
+🢭 Teplo je do okolí odváděno pomocí elektromagnetického záření.
+
+Pro potápění je bezvýznamné
+
+▪ Vedením
+
+🢭 Uplatňuje se hlavně v tuhých tělesech, např.: prostup tepla
+
+izolačním oblekem
+
+▪ Prouděním
+
+🢭 Velmi účinné. Proudění vody kolem těla plavce by měl zabránit
+
+izolační oblek
+
+Přenos tepla
+Prostup tepla mokrým neoprenovým oblekem
+Teplo je vedeno jednak plynem v bublinkách,
+jednak materiálem
+Bublinky mají trojí význam. Prodlouží dráhu,
+kterou musí teplo procházet, zmenší průřez pryže,
+který vede teplo a mají podstatně nižší tepelnou
+vodivost než pryž
+Při stlačení neoprénu se nezmění délka dráhy,
+kterou prochází teplo pryží. Proto tepelná funkce
+neoprénu se významně nezmění
+Nemá cenu vylézat z vody na malou chvíli, dojde
+ke zbytečné výměně ohřáté vody za studenou.
+Je dobré před ponorem zalít oblek teplou vodou.
+
+Konec ...
+
+A hurá do vody ....
+
+

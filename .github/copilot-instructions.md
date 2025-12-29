@@ -14,6 +14,19 @@ When looking into decompression theory concepts, follow these primary sources:
    The definitive reference for recreational and technical diving decompression. 
    Physical copy only - not available online.
 
+3. **CMAS P*/P** Physics Course** (local file):
+   `resources/FyzikaP12_2025.txt` - Czech diving physics course material covering:
+   - Density (Hustota) - water density, temperature anomaly
+   - Pressure (Tlak) - atmospheric, hydrostatic, total pressure with altitude tables
+   - Gas compression (Stlačování plynů) - Boyle-Mariotte's Law, gas consumption calculations
+   - Buoyancy (Archimedův zákon) - weight calculations, BCD control
+   - Air composition (Složení vzduchu) - N₂ 78%, O₂ 21%
+   - Dalton's Law (Daltonův zákon) - partial pressures, ppO₂ limits (0.16-1.6 bar), ppN₂ max 4 bar
+   - Henry's Law (Henryho zákon) - gas dissolution, on/off-gassing, tissue saturation
+   - Vision underwater (Vidění) - light refraction, objects appear 1/3 larger, 1/4 closer
+   - Hearing underwater (Slyšení) - sound speed 1500 m/s vs 330 m/s in air
+   - Heat transfer (Přenos tepla) - water conducts heat 25x better than air
+
 ## ⚠️ IMPORTANT: Before Every Push
 
 ### 1. Bump the Cache Version
@@ -69,13 +82,7 @@ If you add new files, add them to this array.
 
 ## Testing PWA Locally
 
-```bash
-# Start local server
-python3 -m http.server 8080
-
-# Open in browser
-open http://localhost:8080
-```
+Use the **Live Server** VS Code extension (already installed) - just right-click on any HTML file and select "Open with Live Server".
 
 Note: Service workers require HTTPS in production, but work on localhost for testing.
 

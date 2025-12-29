@@ -1380,7 +1380,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.0.31";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.0.32";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* Responsive */
@@ -2176,4 +2176,167 @@ textarea.form-input {
     .stat-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+}
+
+/* ==========================================================================
+   Partial Pressure & Gas Composition Styles
+   ========================================================================== */
+
+/* Warning/Info Card Variants */
+.concept-card.warning-card {
+    border-left: 4px solid var(--warning-color);
+    background: linear-gradient(135deg, #fff5f5 0%, var(--card-background) 100%);
+}
+
+.concept-card.info-card {
+    border-left: 4px solid var(--primary-color);
+    background: linear-gradient(135deg, #f0f8ff 0%, var(--card-background) 100%);
+}
+
+/* Highlight Box (Martini Rule etc) */
+.highlight-box {
+    background: linear-gradient(135deg, #fef9e7 0%, #fcf3cf 100%);
+    border: 1px solid #f9e79f;
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin: 1rem 0;
+}
+
+.highlight-box h4 {
+    margin: 0 0 0.75rem 0;
+    color: #9a7b4f;
+    font-size: 1.1rem;
+}
+
+.highlight-box p {
+    margin: 0.5rem 0;
+}
+
+.highlight-box ul {
+    margin: 0.75rem 0;
+    padding-left: 1.5rem;
+}
+
+/* Table Row Status Colors */
+.data-table tr.safe-row {
+    background-color: rgba(46, 204, 113, 0.1);
+}
+
+.data-table tr.warning-row {
+    background-color: rgba(241, 196, 15, 0.15);
+}
+
+.data-table tr.danger-row {
+    background-color: rgba(231, 76, 60, 0.1);
+}
+
+/* Small Chart Container */
+.chart-container-small {
+    max-width: 350px;
+    margin: 1.5rem auto;
+}
+
+/* Stat Value Status Colors */
+.stat-value.safe {
+    color: #27ae60;
+}
+
+.stat-value.warning {
+    color: #f39c12;
+}
+
+.stat-value.danger {
+    color: #e74c3c;
+    font-weight: 600;
+}
+
+/* Gas Display in Controls */
+.control-group.gas-display {
+    background: var(--background-color);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+
+/* Collapsible Section with Toggle */
+.concept-card.collapsible .collapsible-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.concept-card.collapsible .collapsible-content {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.toggle-switch input {
+    display: none;
+}
+
+.toggle-slider {
+    width: 44px;
+    height: 24px;
+    background-color: #ccc;
+    border-radius: 24px;
+    position: relative;
+    transition: background-color 0.2s;
+}
+
+.toggle-slider::before {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background-color: white;
+    border-radius: 50%;
+    top: 3px;
+    left: 3px;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background-color: var(--primary-color);
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+    transform: translateX(20px);
+}
+
+.toggle-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+/* Small Table Variant */
+.data-table.small-table {
+    font-size: 0.85rem;
+}
+
+.data-table.small-table th,
+.data-table.small-table td {
+    padding: 0.4rem 0.75rem;
+}
+
+/* Warning Text */
+.warning-text {
+    color: var(--warning-color);
+    font-weight: 500;
+    padding: 0.75rem;
+    background: rgba(231, 76, 60, 0.1);
+    border-radius: var(--radius);
+    margin-top: 1rem;
 }

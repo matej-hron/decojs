@@ -79,6 +79,12 @@
                 <li><a href="#dive-profile">📈 Your Dive Profile</a></li>
                 <li><a href="#total-pressure">🌊 Total Pressure Underwater</a></li>
                 <li><a href="#gas-consumption">⛽ Gas Consumption</a></li>
+                <li><a href="#air-composition">🌬️ Air Composition</a></li>
+                <li><a href="#daltons-law">⚗️ Dalton's Law</a></li>
+                <li><a href="#partial-pressure-limits">⚠️ Partial Pressure Limits</a></li>
+                <li><a href="#end-calculation">🧠 Equivalent Narcotic Depth</a></li>
+                <li><a href="#oxygen-toxicity">☠️ Oxygen Toxicity</a></li>
+                <li><a href="#partial-pressure-chart">📊 Partial Pressure Chart</a></li>
             </ul>
         </nav>
 
@@ -257,11 +263,6 @@
                     <div class="formula" id="formula-simplified-pressure">
                         P_{amb} = 1 + \frac{depth}{10} \text{ bar}
                     </div>
-                    <p>
-                        <em>Note: The general physics formula (P = ρgh) produces pressure in Pascals. 
-                        Since 100,000 Pa = 1 bar, and ρ·g ≈ 10,000 Pa/m for seawater, 
-                        every 10 meters adds approximately 1 bar — hence the "depth ÷ 10" simplification.</em>
-                    </p>
                     <p>This approximation works well for recreational diving calculations.</p>
 
                     <h4>Atmospheric Pressure vs Altitude</h4>
@@ -315,18 +316,18 @@
                 <h3>Surface Air Consumption (SAC)</h3>
                 <p>
                     <strong>SAC rate</strong> (also called RMV - Respiratory Minute Volume) is how much gas you breathe 
-                    per minute at the surface. For planning purposes, we use a typical value of <strong>30 L/min</strong> 
+                    per minute at the surface. For planning purposes, we use a typical value of <strong>20 L/min</strong> 
                     for relaxed diving, though actual consumption varies based on exertion, stress, and individual factors.
                 </p>
                 <p>
                     At depth, your actual consumption is: <strong>SAC × Ambient Pressure</strong>
                 </p>
                 <ul>
-                    <li>Surface (1 bar): 30 L/min</li>
-                    <li>10m (2 bar): 60 L/min</li>
-                    <li>20m (3 bar): 90 L/min</li>
-                    <li>30m (4 bar): 120 L/min</li>
-                    <li>40m (5 bar): 150 L/min</li>
+                    <li>Surface (1 bar): 20 L/min</li>
+                    <li>10m (2 bar): 40 L/min</li>
+                    <li>20m (3 bar): 60 L/min</li>
+                    <li>30m (4 bar): 80 L/min</li>
+                    <li>40m (5 bar): 100 L/min</li>
                 </ul>
             </div>
 
@@ -381,15 +382,11 @@
                 </div>
                 <div class="control-group">
                     <label for="gas-sac-input">SAC Rate (L/min):</label>
-                    <input type="number" id="gas-sac-input" class="form-input" value="30" min="10" max="40" step="1">
+                    <input type="number" id="gas-sac-input" class="form-input" value="20" min="10" max="40" step="1">
                 </div>
                 <div class="control-group">
                     <label for="gas-start-pressure">Start Pressure (bar):</label>
                     <input type="number" id="gas-start-pressure" class="form-input" value="200" min="100" max="300" step="10">
-                </div>
-                <div class="control-group">
-                    <label for="gas-reserve-pressure">Reserve (bar):</label>
-                    <input type="number" id="gas-reserve-pressure" class="form-input" value="50" min="30" max="100" step="10">
                 </div>
             </div>
             
@@ -414,6 +411,464 @@
                 </div>
             </div>
         </section>
+
+        <!-- Air Composition Section -->
+        <section id="air-composition" class="education-section">
+            <h2>🌬️ Air Composition</h2>
+            
+            <div class="concept-card">
+                <h3>What's in the Air You Breathe?</h3>
+                <p>
+                    The air we breathe is a mixture of gases. Understanding this composition is fundamental 
+                    to diving because each gas behaves differently under pressure. The main components are:
+                </p>
+                <ul>
+                    <li><strong>Nitrogen (N₂)</strong> — 78% — inert gas, does not participate in metabolism</li>
+                    <li><strong>Oxygen (O₂)</strong> — 21% — essential for life, but toxic at high partial pressures</li>
+                    <li><strong>Other gases</strong> — 1% — primarily Argon, CO₂, and trace gases</li>
+                </ul>
+            </div>
+
+            <div class="chart-container-small">
+                <canvas id="air-composition-chart"></canvas>
+            </div>
+
+            <div class="concept-card">
+                <h3>Breathing Gas Mixtures</h3>
+                <p>
+                    Divers often use modified gas mixtures to extend bottom time or reduce narcosis:
+                </p>
+                <ul>
+                    <li><strong>Nitrox (EAN)</strong> — Enriched Air Nitrox, oxygen 22-40%, rest nitrogen. Reduces nitrogen loading.</li>
+                    <li><strong>Trimix</strong> — Oxygen, nitrogen, and helium. Helium reduces narcosis at depth.</li>
+                    <li><strong>Heliox</strong> — Oxygen and helium only. Used for very deep dives.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Dalton's Law Section -->
+        <section id="daltons-law" class="education-section">
+            <h2>⚗️ Dalton's Law of Partial Pressures</h2>
+            
+            <div class="concept-card">
+                <h3>The Foundation of Dive Gas Physics</h3>
+                <p>
+                    <strong>Dalton's Law</strong> states that the total pressure of a gas mixture equals 
+                    the sum of the partial pressures of each component gas. The <em>partial pressure</em> 
+                    of a gas is the pressure it would exert if it occupied the same volume alone.
+                </p>
+            </div>
+
+            <details class="learn-more" open>
+                <summary>🔬 Dalton's Law Formula</summary>
+                <div class="math-content">
+                    <h4>Total Pressure</h4>
+                    <div class="formula" id="formula-dalton-total">
+                        P_{total} = P_{O_2} + P_{N_2} + P_{He} + \ldots
+                    </div>
+                    
+                    <h4>Partial Pressure Calculation</h4>
+                    <div class="formula" id="formula-partial-pressure">
+                        pp_x = f_x \times P_{amb}
+                    </div>
+                    <p>Where:</p>
+                    <ul>
+                        <li><span class="formula-inline">pp_x</span> = partial pressure of gas x (bar)</li>
+                        <li><span class="formula-inline">f_x</span> = fraction of gas x in the mixture (decimal, e.g., 0.21 for 21%)</li>
+                        <li><span class="formula-inline">P_{amb}</span> = ambient pressure (bar), calculated as 1 + depth/10</li>
+                    </ul>
+                </div>
+            </details>
+
+            <div class="concept-card">
+                <h3>Example: Air at 30 Meters</h3>
+                <p>At 30 meters, the ambient pressure is <strong>4 bar</strong> (1 + 30/10). For air:</p>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Gas</th>
+                            <th>Fraction</th>
+                            <th>Calculation</th>
+                            <th>Partial Pressure</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>O₂</td>
+                            <td>0.21</td>
+                            <td>0.21 × 4</td>
+                            <td><strong>0.84 bar</strong></td>
+                        </tr>
+                        <tr>
+                            <td>N₂</td>
+                            <td>0.79</td>
+                            <td>0.79 × 4</td>
+                            <td><strong>3.16 bar</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Partial Pressure Limits Section -->
+        <section id="partial-pressure-limits" class="education-section">
+            <h2>⚠️ Partial Pressure Limits</h2>
+            
+            <div class="concept-card warning-card">
+                <h3>🔴 Oxygen Limits (ppO₂)</h3>
+                <p>
+                    Oxygen becomes toxic at elevated partial pressures. The body responds differently 
+                    to various ppO₂ levels:
+                </p>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ppO₂ (bar)</th>
+                            <th>Status</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="danger-row">
+                            <td>&lt; 0.16</td>
+                            <td>⚫ Hypoxia</td>
+                            <td>Loss of consciousness, death. Minimum for survival.</td>
+                        </tr>
+                        <tr class="safe-row">
+                            <td>0.16 – 0.50</td>
+                            <td>🟢 Normal</td>
+                            <td>Surface breathing range.</td>
+                        </tr>
+                        <tr class="safe-row">
+                            <td>0.50 – 1.40</td>
+                            <td>🟢 Safe for diving</td>
+                            <td>Recommended working limit for recreational diving.</td>
+                        </tr>
+                        <tr class="warning-row">
+                            <td>1.40 – 1.60</td>
+                            <td>🟡 Caution</td>
+                            <td>Acceptable for decompression stops only. Limited exposure time.</td>
+                        </tr>
+                        <tr class="danger-row">
+                            <td>&gt; 1.60</td>
+                            <td>🔴 Danger</td>
+                            <td>High risk of CNS oxygen toxicity (seizures).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="concept-card">
+                <h3>Maximum Operating Depth (MOD)</h3>
+                <p>
+                    The MOD is the deepest you can safely dive with a specific gas mix without exceeding 
+                    the ppO₂ limit. It's calculated from the oxygen fraction and desired maximum ppO₂.
+                </p>
+                <details class="learn-more" open>
+                    <summary>🔬 MOD Formula</summary>
+                    <div class="math-content">
+                        <div class="formula" id="formula-mod">
+                            MOD = \left(\frac{ppO_{2,max}}{f_{O_2}} - 1\right) \times 10
+                        </div>
+                        <p>Where:</p>
+                        <ul>
+                            <li><span class="formula-inline">ppO_{2,max}</span> = maximum allowed partial pressure (typically 1.4 bar)</li>
+                            <li><span class="formula-inline">f_{O_2}</span> = oxygen fraction in the gas (decimal)</li>
+                        </ul>
+                        <p><strong>Example:</strong> For EAN32 (32% O₂) with ppO₂ limit of 1.4 bar:</p>
+                        <p>MOD = ((1.4 / 0.32) - 1) × 10 = <strong>33.75m</strong></p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="concept-card warning-card">
+                <h3>🟡 Nitrogen Limits (ppN₂) — Narcosis</h3>
+                <p>
+                    Nitrogen becomes narcotic at elevated partial pressures, causing impaired judgment, 
+                    euphoria, and slowed reactions—similar to alcohol intoxication.
+                </p>
+                
+                <div class="highlight-box">
+                    <h4>🍸 The "Martini Rule"</h4>
+                    <p>
+                        A popular rule of thumb: every 10 meters of depth on air is roughly equivalent 
+                        to drinking one martini on an empty stomach. At 30m, you might feel like 
+                        you've had 3 martinis!
+                    </p>
+                    <ul>
+                        <li>10m — 1 martini</li>
+                        <li>20m — 2 martinis</li>
+                        <li>30m — 3 martinis</li>
+                        <li>40m — 4 martinis</li>
+                    </ul>
+                    <p><em>Note: Individual susceptibility varies greatly. Some divers feel effects 
+                    earlier, others later. Cold, stress, and fatigue increase narcosis.</em></p>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ppN₂ (bar)</th>
+                            <th>Equivalent Depth (Air)</th>
+                            <th>Effects</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="safe-row">
+                            <td>&lt; 2.4</td>
+                            <td>&lt; 20m</td>
+                            <td>Minimal effects for most divers.</td>
+                        </tr>
+                        <tr class="warning-row">
+                            <td>2.4 – 3.2</td>
+                            <td>20 – 30m</td>
+                            <td>Mild euphoria, slight impairment.</td>
+                        </tr>
+                        <tr class="warning-row">
+                            <td>3.2 – 4.0</td>
+                            <td>30 – 40m</td>
+                            <td>Noticeable impairment, reduced judgment.</td>
+                        </tr>
+                        <tr class="danger-row">
+                            <td>&gt; 4.0</td>
+                            <td>&gt; 40m</td>
+                            <td>Severe narcosis. Maximum limit for recreational diving.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- END Calculation Section -->
+        <section id="end-calculation" class="education-section">
+            <h2>🧠 Equivalent Narcotic Depth (END)</h2>
+            
+            <div class="concept-card">
+                <h3>Why END Matters</h3>
+                <p>
+                    When diving with helium-based gases (Trimix, Heliox), helium replaces some nitrogen 
+                    and oxygen. Since helium is <em>not</em> narcotic, the narcotic effect is reduced 
+                    compared to air at the same depth.
+                </p>
+                <p>
+                    <strong>END</strong> tells you the depth at which you would experience the same 
+                    narcotic effect if breathing air. It's a way to compare narcotic load across 
+                    different gas mixtures.
+                </p>
+            </div>
+
+            <details class="learn-more" open>
+                <summary>🔬 END Formula</summary>
+                <div class="math-content">
+                    <div class="formula" id="formula-end">
+                        END = (D + 10) \times (1 - f_{He}) - 10
+                    </div>
+                    <p>Where:</p>
+                    <ul>
+                        <li><span class="formula-inline">D</span> = actual depth in meters</li>
+                        <li><span class="formula-inline">f_{He}</span> = fraction of helium in the gas (decimal)</li>
+                        <li>The formula assumes O₂ is also narcotic (conservative approach)</li>
+                    </ul>
+                    
+                    <h4>Example: TX 18/45 at 60 meters</h4>
+                    <p>Trimix with 18% O₂, 45% He (therefore 37% N₂):</p>
+                    <p>END = (60 + 10) × (1 - 0.45) - 10 = 70 × 0.55 - 10 = <strong>28.5m</strong></p>
+                    <p>So at 60m on this Trimix, you'd feel like you're at ~29m on air!</p>
+                </div>
+            </details>
+
+            <div class="concept-card">
+                <h3>END Examples for Common Gases</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Depth</th>
+                            <th>Air (0% He)</th>
+                            <th>TX 21/35</th>
+                            <th>TX 18/45</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>40m</td>
+                            <td>40m</td>
+                            <td>22.5m</td>
+                            <td>17.5m</td>
+                        </tr>
+                        <tr>
+                            <td>50m</td>
+                            <td>50m</td>
+                            <td>29m</td>
+                            <td>23m</td>
+                        </tr>
+                        <tr>
+                            <td>60m</td>
+                            <td>60m</td>
+                            <td>35.5m</td>
+                            <td>28.5m</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Oxygen Toxicity Section -->
+        <section id="oxygen-toxicity" class="education-section">
+            <h2>☠️ Oxygen Toxicity</h2>
+            
+            <div class="concept-card warning-card">
+                <h3>Two Types of Oxygen Toxicity</h3>
+                <p>
+                    Breathing oxygen at elevated partial pressures can cause two distinct types of toxicity:
+                </p>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Cause</th>
+                            <th>Symptoms</th>
+                            <th>Diving Relevance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="danger-row">
+                            <td><strong>CNS Toxicity</strong></td>
+                            <td>High ppO₂ (&gt;1.6 bar)</td>
+                            <td>Seizures, convulsions, tunnel vision, twitching</td>
+                            <td>Immediate danger, can cause drowning</td>
+                        </tr>
+                        <tr class="warning-row">
+                            <td><strong>Pulmonary Toxicity</strong></td>
+                            <td>Prolonged exposure (ppO₂ &gt;0.5 bar)</td>
+                            <td>Chest pain, coughing, breathing difficulty</td>
+                            <td>Relevant for long exposures, rebreathers</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="concept-card collapsible" id="cns-otu-section">
+                <div class="collapsible-header">
+                    <h3>📊 CNS & OTU Tracking</h3>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="cns-tracking-toggle">
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-label">Show Details</span>
+                    </label>
+                </div>
+                
+                <div class="collapsible-content" id="cns-otu-content" style="display: none;">
+                    <p>
+                        <em>⚠️ This is advanced content. For recreational diving, simply staying below 
+                        1.4 bar ppO₂ is sufficient. CNS/OTU tracking is primarily used in technical 
+                        diving with extended oxygen exposures.</em>
+                    </p>
+                    
+                    <h4>CNS (Central Nervous System) Clock</h4>
+                    <p>
+                        The CNS clock tracks your exposure as a percentage of the maximum allowable 
+                        time at each ppO₂ level. At 100%, you've reached the recommended limit.
+                    </p>
+                    <table class="data-table small-table">
+                        <thead>
+                            <tr>
+                                <th>ppO₂ (bar)</th>
+                                <th>NOAA Max Time</th>
+                                <th>CNS% per min</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1.60</td><td>45 min</td><td>2.22%</td></tr>
+                            <tr><td>1.55</td><td>83 min</td><td>1.20%</td></tr>
+                            <tr><td>1.50</td><td>120 min</td><td>0.83%</td></tr>
+                            <tr><td>1.45</td><td>135 min</td><td>0.74%</td></tr>
+                            <tr><td>1.40</td><td>150 min</td><td>0.67%</td></tr>
+                            <tr><td>1.35</td><td>165 min</td><td>0.61%</td></tr>
+                            <tr><td>1.30</td><td>180 min</td><td>0.56%</td></tr>
+                            <tr><td>1.20</td><td>210 min</td><td>0.48%</td></tr>
+                            <tr><td>1.10</td><td>240 min</td><td>0.42%</td></tr>
+                        </tbody>
+                    </table>
+                    
+                    <h4>OTU (Oxygen Tolerance Units)</h4>
+                    <p>
+                        OTU tracks cumulative pulmonary (lung) oxygen exposure. The formula applies 
+                        when ppO₂ exceeds 0.5 bar:
+                    </p>
+                    <div class="formula" id="formula-otu">
+                        OTU = t \times \left(\frac{ppO_2 - 0.5}{0.5}\right)^{0.83}
+                    </div>
+                    <p>Daily limits: <strong>300 OTU</strong> (single dive), <strong>850 OTU</strong> (total daily)</p>
+                </div>
+            </div>
+
+            <div class="concept-card">
+                <h3>Symptoms of CNS Oxygen Toxicity</h3>
+                <p>Remember the mnemonic <strong>VENTID-C</strong>:</p>
+                <ul>
+                    <li><strong>V</strong>isual disturbances (tunnel vision)</li>
+                    <li><strong>E</strong>ar ringing (tinnitus)</li>
+                    <li><strong>N</strong>ausea</li>
+                    <li><strong>T</strong>witching (especially facial muscles)</li>
+                    <li><strong>I</strong>rritability, anxiety</li>
+                    <li><strong>D</strong>izziness</li>
+                    <li><strong>C</strong>onvulsions (the most dangerous)</li>
+                </ul>
+                <p class="warning-text">
+                    ⚠️ If you experience any of these symptoms, immediately signal your buddy and 
+                    begin ascending. Underwater convulsions are often fatal.
+                </p>
+            </div>
+        </section>
+
+        <!-- Partial Pressure Chart Section -->
+        <section id="partial-pressure-chart" class="chart-section">
+            <div class="chart-header">
+                <h2>📊 Partial Pressures During Dive</h2>
+                <button id="pp-fullscreen-btn" class="btn btn-small btn-icon" title="Fullscreen">
+                    <span class="fullscreen-icon">⛶</span>
+                    <span class="fullscreen-text">Fullscreen</span>
+                </button>
+            </div>
+            
+            <!-- Gas Selection Controls -->
+            <div class="chart-controls">
+                <div class="control-group">
+                    <label for="pp-gas-select">Breathing Gas:</label>
+                    <select id="pp-gas-select" class="form-select">
+                        <!-- Populated by JavaScript -->
+                    </select>
+                </div>
+                <div class="control-group gas-display">
+                    <span id="pp-gas-details">O₂: 21% | N₂: 79% | He: 0%</span>
+                </div>
+            </div>
+            
+            <div class="chart-container" id="pp-chart-container">
+                <canvas id="partial-pressure-canvas"></canvas>
+                <button id="pp-exit-fullscreen-btn" class="btn btn-fullscreen-close" title="Exit Fullscreen">✕</button>
+            </div>
+            
+            <!-- Partial Pressure Summary -->
+            <div id="pp-summary" class="stats-summary">
+                <div class="stat-item">
+                    <span class="stat-label">Max ppO₂:</span>
+                    <span id="max-ppo2" class="stat-value">-- bar</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Max ppN₂:</span>
+                    <span id="max-ppn2" class="stat-value">-- bar</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">MOD (1.4 bar):</span>
+                    <span id="pp-mod-display" class="stat-value">-- m</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">END at max depth:</span>
+                    <span id="pp-end-display" class="stat-value">-- m</span>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer>
@@ -422,12 +877,15 @@
     </footer>
 
     <script type="module">
-        import { loadDiveSetup, getDiveSetupWaypoints, saveDiveSetup, clearCache, getCylinderVolume, getReservePressure } from './js/diveSetup.js';
+        import { loadDiveSetup, getDiveSetupWaypoints, saveDiveSetup, clearCache, getCylinderVolume, PREDEFINED_GASES, getPredefinedGas, calculateMOD, calculateEND, calculatePartialPressure } from './js/diveSetup.js';
         
         // State
         let profileChart = null;
+        let airCompositionChart = null;
+        let partialPressureChart = null;
         let currentSetup = null;
         let availableProfiles = [];
+        let selectedGas = { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 };
         
         // DOM elements
         const profileSwitcher = document.getElementById('profile-switcher');
@@ -585,8 +1043,9 @@
             updateProfileHeader();
             renderProfileChart();
             renderPressureChart();
-            initGasControls();
             renderGasConsumptionChart();
+            renderAirCompositionChart();
+            initPartialPressureChart();
         }
         
         function updateProfileHeader() {
@@ -1314,7 +1773,6 @@
         const gasCylinderSelect = document.getElementById('gas-cylinder-select');
         const gasSacInput = document.getElementById('gas-sac-input');
         const gasStartPressure = document.getElementById('gas-start-pressure');
-        const gasReservePressure = document.getElementById('gas-reserve-pressure');
         
         function toggleGasFullscreen() {
             const isFullscreen = gasChartContainer.classList.toggle('fullscreen');
@@ -1337,30 +1795,29 @@
         gasCylinderSelect?.addEventListener('change', renderGasConsumptionChart);
         gasSacInput?.addEventListener('input', renderGasConsumptionChart);
         gasStartPressure?.addEventListener('input', renderGasConsumptionChart);
-        gasReservePressure?.addEventListener('input', renderGasConsumptionChart);
-        
-        // Initialize gas controls from setup
-        function initGasControls() {
-            if (gasCylinderSelect) gasCylinderSelect.value = getCylinderVolume(currentSetup);
-            if (gasReservePressure) gasReservePressure.value = getReservePressure(currentSetup);
-        }
         
         function renderGasConsumptionChart() {
             const canvas = document.getElementById('gas-consumption-canvas');
-            if (!canvas || !currentSetup) return;
+            if (!canvas) return;
             
             const ctx = canvas.getContext('2d');
             const waypoints = getDiveSetupWaypoints(currentSetup);
             
             if (waypoints.length === 0) return;
             
-            // Get parameters from controls
+            // Get parameters
             const cylinderVolume = parseInt(gasCylinderSelect?.value) || getCylinderVolume(currentSetup);
-            const sacRate = parseFloat(gasSacInput?.value) || 30;
+            const sacRate = parseFloat(gasSacInput?.value) || 20;
             const startPressure = parseFloat(gasStartPressure?.value) || 200;
-            const reservePressure = parseFloat(gasReservePressure?.value) || getReservePressure(currentSetup);
+            const reservePressure = 50; // bar
+            
+            // Set cylinder select to match setup if not manually changed
+            if (gasCylinderSelect && !gasCylinderSelect.dataset.userChanged) {
+                gasCylinderSelect.value = getCylinderVolume(currentSetup);
+            }
             
             const totalGasAvailable = cylinderVolume * startPressure; // liters
+            const reserveGas = cylinderVolume * reservePressure;
             
             const totalTime = waypoints[waypoints.length - 1].time;
             
@@ -1421,44 +1878,20 @@
             const finalGasRemaining = gasData[gasData.length - 1].gasRemaining;
             const finalPressure = finalGasRemaining / cylinderVolume;
             
-            // Find ascent start point (last point at max depth before ascending)
-            const maxDepth = Math.max(...waypoints.map(w => w.depth));
-            let ascentStartTime = 0;
-            for (let i = 0; i < waypoints.length - 1; i++) {
-                if (waypoints[i].depth === maxDepth && waypoints[i + 1].depth < maxDepth) {
-                    ascentStartTime = waypoints[i].time;
-                    break;
-                }
-            }
-            
-            // Find tank pressure at ascent start
-            const ascentStartData = gasData.find(d => d.x >= ascentStartTime) || gasData[gasData.length - 1];
-            const pressureAtAscentStart = ascentStartData.pressureRemaining;
-            
-            // Check if tank ever goes empty
-            const minPressure = Math.min(...gasData.map(d => d.pressureRemaining));
-            
             // Update summary
             document.getElementById('total-gas-used').textContent = `${Math.round(totalGasUsed)} L`;
             document.getElementById('remaining-pressure').textContent = `${Math.round(finalPressure)} bar`;
             
             const statusEl = document.getElementById('gas-status');
-            if (minPressure <= 0) {
-                statusEl.textContent = '🚨 OUT OF GAS!';
+            if (finalPressure < reservePressure) {
+                statusEl.textContent = '⚠️ Exceeds reserve!';
                 statusEl.style.color = '#e74c3c';
-                statusEl.style.fontWeight = 'bold';
-            } else if (pressureAtAscentStart < reservePressure) {
-                statusEl.textContent = `⚠️ Only ${Math.round(pressureAtAscentStart)} bar at ascent start!`;
-                statusEl.style.color = '#e74c3c';
-                statusEl.style.fontWeight = 'normal';
-            } else if (pressureAtAscentStart < reservePressure + 30) {
-                statusEl.textContent = `⚠️ ${Math.round(pressureAtAscentStart)} bar at ascent - close to reserve`;
+            } else if (finalPressure < reservePressure + 30) {
+                statusEl.textContent = '⚠️ Close to reserve';
                 statusEl.style.color = '#f39c12';
-                statusEl.style.fontWeight = 'normal';
             } else {
-                statusEl.textContent = `✅ ${Math.round(pressureAtAscentStart)} bar at ascent start`;
+                statusEl.textContent = '✅ OK';
                 statusEl.style.color = '#27ae60';
-                statusEl.style.fontWeight = 'normal';
             }
             
             // Build annotations
@@ -1498,7 +1931,7 @@
                 };
             }
             
-            const maxConsumptionRate = Math.max(...gasData.map(d => d.consumptionRate));
+            const maxDepth = Math.max(...waypoints.map(w => w.depth));
             
             const data = {
                 datasets: [{
@@ -1521,17 +1954,6 @@
                     pointRadius: 0,
                     borderWidth: 3,
                     yAxisID: 'yPressure'
-                }, {
-                    label: 'Consumption Rate (L/min)',
-                    data: gasData.map(p => ({ x: p.x, y: p.consumptionRate })),
-                    borderColor: '#e67e22',
-                    backgroundColor: 'rgba(230, 126, 34, 0.1)',
-                    fill: true,
-                    tension: 0,
-                    pointRadius: 0,
-                    borderWidth: 2,
-                    borderDash: [4, 4],
-                    yAxisID: 'yRate'
                 }]
             };
             
@@ -1592,17 +2014,6 @@
                             ticks: {
                                 color: '#27ae60'
                             }
-                        },
-                        yRate: {
-                            type: 'linear',
-                            position: 'right',
-                            reverse: false,
-                            display: false,
-                            min: 0,
-                            max: maxConsumptionRate * 1.5,
-                            grid: {
-                                drawOnChartArea: false
-                            }
                         }
                     },
                     interaction: {
@@ -1631,10 +2042,8 @@
                                 label: (context) => {
                                     if (context.dataset.label === 'Dive Profile (Depth)') {
                                         return `Depth: ${context.parsed.y.toFixed(1)}m`;
-                                    } else if (context.dataset.label === 'Tank Pressure') {
-                                        return `Tank: ${context.parsed.y.toFixed(0)} bar`;
                                     } else {
-                                        return `Rate: ${context.parsed.y.toFixed(0)} L/min`;
+                                        return `Tank: ${context.parsed.y.toFixed(0)} bar`;
                                     }
                                 }
                             }
@@ -1651,6 +2060,328 @@
             }
             
             gasChart = new Chart(ctx, config);
+        }
+
+        // ========================================
+        // AIR COMPOSITION DONUT CHART
+        // ========================================
+        function renderAirCompositionChart() {
+            const canvas = document.getElementById('air-composition-chart');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            
+            if (airCompositionChart) {
+                airCompositionChart.destroy();
+            }
+            
+            airCompositionChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Nitrogen (N₂)', 'Oxygen (O₂)', 'Other gases'],
+                    datasets: [{
+                        data: [78, 21, 1],
+                        backgroundColor: [
+                            '#3498db',  // Blue for N₂
+                            '#2ecc71',  // Green for O₂
+                            '#95a5a6'   // Gray for other
+                        ],
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { size: 14 },
+                                padding: 20
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ========================================
+        // PARTIAL PRESSURE CHART
+        // ========================================
+        
+        // DOM elements for partial pressure chart
+        const ppGasSelect = document.getElementById('pp-gas-select');
+        const ppGasDetails = document.getElementById('pp-gas-details');
+        const ppChartContainer = document.getElementById('pp-chart-container');
+        const ppFullscreenBtn = document.getElementById('pp-fullscreen-btn');
+        const ppExitFullscreenBtn = document.getElementById('pp-exit-fullscreen-btn');
+        
+        // CNS tracking toggle
+        const cnsTrackingToggle = document.getElementById('cns-tracking-toggle');
+        const cnsOtuContent = document.getElementById('cns-otu-content');
+        
+        if (cnsTrackingToggle && cnsOtuContent) {
+            cnsTrackingToggle.addEventListener('change', () => {
+                cnsOtuContent.style.display = cnsTrackingToggle.checked ? 'block' : 'none';
+            });
+        }
+        
+        // Partial pressure fullscreen
+        function togglePPFullscreen() {
+            if (!ppChartContainer) return;
+            const isFullscreen = ppChartContainer.classList.toggle('fullscreen');
+            document.body.style.overflow = isFullscreen ? 'hidden' : '';
+            if (partialPressureChart) {
+                setTimeout(() => partialPressureChart.resize(), 50);
+            }
+        }
+        
+        if (ppFullscreenBtn) ppFullscreenBtn.addEventListener('click', togglePPFullscreen);
+        if (ppExitFullscreenBtn) ppExitFullscreenBtn.addEventListener('click', togglePPFullscreen);
+        
+        function initPartialPressureChart() {
+            if (!ppGasSelect) return;
+            
+            // Populate gas selector
+            ppGasSelect.innerHTML = '';
+            
+            PREDEFINED_GASES.forEach(gas => {
+                const option = document.createElement('option');
+                option.value = gas.id;
+                option.textContent = gas.name;
+                ppGasSelect.appendChild(option);
+            });
+            
+            // Set initial selection based on current setup
+            if (currentSetup?.gasMix) {
+                const match = PREDEFINED_GASES.find(g => 
+                    Math.round(g.o2 * 100) === Math.round((currentSetup.gasMix.o2 || 0.21) * 100) &&
+                    Math.round(g.he * 100) === Math.round((currentSetup.gasMix.he || 0) * 100)
+                );
+                if (match) {
+                    ppGasSelect.value = match.id;
+                    selectedGas = match;
+                }
+            }
+            
+            // Handle gas selection change
+            ppGasSelect.addEventListener('change', () => {
+                const gas = getPredefinedGas(ppGasSelect.value);
+                if (gas) {
+                    selectedGas = gas;
+                    updateGasDetails();
+                    renderPartialPressureChart();
+                }
+            });
+            
+            updateGasDetails();
+            renderPartialPressureChart();
+        }
+        
+        function updateGasDetails() {
+            if (!ppGasDetails) return;
+            const o2 = Math.round(selectedGas.o2 * 100);
+            const n2 = Math.round(selectedGas.n2 * 100);
+            const he = Math.round(selectedGas.he * 100);
+            ppGasDetails.textContent = `O₂: ${o2}% | N₂: ${n2}% | He: ${he}%`;
+        }
+        
+        function renderPartialPressureChart() {
+            const canvas = document.getElementById('partial-pressure-canvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const waypoints = getDiveSetupWaypoints(currentSetup);
+            
+            if (waypoints.length === 0) return;
+            
+            // Calculate partial pressures at each point
+            const labels = waypoints.map(w => w.time);
+            const depths = waypoints.map(w => w.depth);
+            const ppO2Data = waypoints.map(w => calculatePartialPressure(w.depth, selectedGas.o2));
+            const ppN2Data = waypoints.map(w => calculatePartialPressure(w.depth, selectedGas.n2));
+            const ppHeData = waypoints.map(w => calculatePartialPressure(w.depth, selectedGas.he));
+            
+            // Calculate stats
+            const maxDepth = Math.max(...depths);
+            const maxPpO2 = Math.max(...ppO2Data);
+            const maxPpN2 = Math.max(...ppN2Data);
+            const mod = calculateMOD(selectedGas.o2, 1.4);
+            const end = calculateEND(maxDepth, selectedGas.he);
+            
+            // Update summary
+            document.getElementById('max-ppo2').textContent = `${maxPpO2.toFixed(2)} bar`;
+            document.getElementById('max-ppo2').className = maxPpO2 > 1.6 ? 'stat-value danger' : 
+                                                            maxPpO2 > 1.4 ? 'stat-value warning' : 'stat-value safe';
+            document.getElementById('max-ppn2').textContent = `${maxPpN2.toFixed(2)} bar`;
+            document.getElementById('max-ppn2').className = maxPpN2 > 4.0 ? 'stat-value danger' :
+                                                            maxPpN2 > 3.2 ? 'stat-value warning' : 'stat-value safe';
+            document.getElementById('pp-mod-display').textContent = `${mod.toFixed(0)}m`;
+            document.getElementById('pp-end-display').textContent = `${end.toFixed(0)}m`;
+            
+            // Define limit lines
+            const annotations = {
+                ppO2Min: {
+                    type: 'line',
+                    yMin: 0.16,
+                    yMax: 0.16,
+                    borderColor: 'rgba(0, 0, 0, 0.5)',
+                    borderWidth: 1,
+                    borderDash: [4, 4],
+                    label: {
+                        display: true,
+                        content: 'Hypoxia 0.16',
+                        position: 'start',
+                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                        font: { size: 10 }
+                    }
+                },
+                ppO2Working: {
+                    type: 'line',
+                    yMin: 1.4,
+                    yMax: 1.4,
+                    borderColor: 'rgba(241, 196, 15, 0.8)',
+                    borderWidth: 2,
+                    borderDash: [6, 4],
+                    label: {
+                        display: true,
+                        content: 'ppO₂ limit 1.4',
+                        position: 'end',
+                        backgroundColor: 'rgba(241, 196, 15, 0.9)',
+                        font: { size: 10 }
+                    }
+                },
+                ppO2Max: {
+                    type: 'line',
+                    yMin: 1.6,
+                    yMax: 1.6,
+                    borderColor: 'rgba(231, 76, 60, 0.8)',
+                    borderWidth: 2,
+                    label: {
+                        display: true,
+                        content: 'ppO₂ max 1.6',
+                        position: 'end',
+                        backgroundColor: 'rgba(231, 76, 60, 0.9)',
+                        font: { size: 10 }
+                    }
+                },
+                ppN2Max: {
+                    type: 'line',
+                    yMin: 4.0,
+                    yMax: 4.0,
+                    borderColor: 'rgba(155, 89, 182, 0.8)',
+                    borderWidth: 2,
+                    borderDash: [6, 4],
+                    label: {
+                        display: true,
+                        content: 'ppN₂ max 4.0',
+                        position: 'start',
+                        backgroundColor: 'rgba(155, 89, 182, 0.9)',
+                        font: { size: 10 }
+                    }
+                }
+            };
+            
+            // Build datasets
+            const datasets = [
+                {
+                    label: 'ppO₂',
+                    data: ppO2Data,
+                    borderColor: '#2ecc71',
+                    backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.1
+                },
+                {
+                    label: 'ppN₂',
+                    data: ppN2Data,
+                    borderColor: '#3498db',
+                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.1
+                }
+            ];
+            
+            // Add helium if present
+            if (selectedGas.he > 0) {
+                datasets.push({
+                    label: 'ppHe',
+                    data: ppHeData,
+                    borderColor: '#9b59b6',
+                    backgroundColor: 'rgba(155, 89, 182, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.1
+                });
+            }
+            
+            // Add depth on secondary axis
+            datasets.push({
+                label: 'Depth',
+                data: depths,
+                borderColor: 'rgba(127, 140, 141, 0.5)',
+                borderWidth: 1,
+                borderDash: [3, 3],
+                fill: false,
+                yAxisID: 'y1',
+                pointRadius: 0
+            });
+            
+            const config = {
+                type: 'line',
+                data: { labels, datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Time (min)' }
+                        },
+                        y: {
+                            title: { display: true, text: 'Partial Pressure (bar)' },
+                            min: 0,
+                            max: Math.max(5, Math.ceil(Math.max(maxPpO2, maxPpN2) + 0.5))
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: { display: true, text: 'Depth (m)' },
+                            reverse: true,
+                            min: 0,
+                            grid: { drawOnChartArea: false }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        },
+                        annotation: {
+                            annotations
+                        }
+                    }
+                }
+            };
+            
+            if (partialPressureChart) {
+                partialPressureChart.destroy();
+            }
+            
+            partialPressureChart = new Chart(ctx, config);
         }
         
         // Initialize on load

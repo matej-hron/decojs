@@ -13,6 +13,30 @@ const DEFAULT_SETUP_PATH = 'data/dive-setup.json';
 let cachedSetup = null;
 
 /**
+ * Predefined gas mixes commonly used in diving
+ * Each gas has: name, o2 (oxygen fraction), n2 (nitrogen fraction), he (helium fraction)
+ */
+export const PREDEFINED_GASES = [
+    { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 },
+    { id: 'ean32', name: 'Nitrox 32 (EAN32)', o2: 0.32, n2: 0.68, he: 0 },
+    { id: 'ean36', name: 'Nitrox 36 (EAN36)', o2: 0.36, n2: 0.64, he: 0 },
+    { id: 'ean50', name: 'Nitrox 50 (EAN50)', o2: 0.50, n2: 0.50, he: 0 },
+    { id: 'tx21_35', name: 'Trimix 21/35', o2: 0.21, n2: 0.44, he: 0.35 },
+    { id: 'tx18_45', name: 'Trimix 18/45', o2: 0.18, n2: 0.37, he: 0.45 },
+    { id: 'tx10_70', name: 'Trimix 10/70', o2: 0.10, n2: 0.20, he: 0.70 },
+    { id: 'o2', name: 'Pure Oxygen (100%)', o2: 1.0, n2: 0, he: 0 }
+];
+
+/**
+ * Get a predefined gas by ID
+ * @param {string} id - Gas ID (e.g., 'air', 'ean32')
+ * @returns {Object|null} Gas object or null if not found
+ */
+export function getPredefinedGas(id) {
+    return PREDEFINED_GASES.find(g => g.id === id) || null;
+}
+
+/**
  * Load dive setup from localStorage first, then fall back to JSON file
  * @param {string} [path] - Path to JSON file (defaults to data/dive-setup.json)
  * @returns {Promise<Object>} Dive setup configuration
@@ -174,6 +198,69 @@ export function getN2Fraction(setup) {
 }
 
 /**
+ * Get O2 fraction from gas mix
+ * @param {Object} setup - Dive setup object
+ * @returns {number} O2 fraction (0-1)
+ */
+export function getO2Fraction(setup) {
+    return setup.gasMix?.o2 || 0.21;
+}
+
+/**
+ * Get He fraction from gas mix
+ * @param {Object} setup - Dive setup object
+ * @returns {number} He fraction (0-1)
+ */
+export function getHeFraction(setup) {
+    return setup.gasMix?.he || 0;
+}
+
+/**
+ * Get gas mix object from setup
+ * @param {Object} setup - Dive setup object
+ * @returns {Object} Gas mix object with name, o2, n2, he
+ */
+export function getGasMix(setup) {
+    return setup.gasMix || { name: 'Air', o2: 0.21, n2: 0.79, he: 0 };
+}
+
+/**
+ * Calculate Maximum Operating Depth (MOD) for a gas mix
+ * @param {number} o2Fraction - Oxygen fraction (0-1)
+ * @param {number} maxPpO2 - Maximum ppO2 limit (default 1.4 bar)
+ * @returns {number} MOD in meters
+ */
+export function calculateMOD(o2Fraction, maxPpO2 = 1.4) {
+    if (o2Fraction <= 0) return Infinity;
+    const maxAmbient = maxPpO2 / o2Fraction;
+    return Math.floor((maxAmbient - 1) * 10);
+}
+
+/**
+ * Calculate Equivalent Narcotic Depth (END)
+ * Assumes O2 and N2 are narcotic, He is not
+ * @param {number} depth - Actual depth in meters
+ * @param {number} heFraction - Helium fraction (0-1)
+ * @returns {number} END in meters
+ */
+export function calculateEND(depth, heFraction = 0) {
+    // END = (depth + 10) × (1 - fHe) - 10
+    const narcoticFraction = 1 - heFraction;
+    return Math.round((depth + 10) * narcoticFraction - 10);
+}
+
+/**
+ * Calculate partial pressure of a gas at depth
+ * @param {number} depth - Depth in meters
+ * @param {number} gasFraction - Gas fraction (0-1)
+ * @returns {number} Partial pressure in bar
+ */
+export function calculatePartialPressure(depth, gasFraction) {
+    const ambient = 1 + depth / 10;
+    return gasFraction * ambient;
+}
+
+/**
  * Get cylinder volume in liters
  * @param {Object} setup - Dive setup object
  * @returns {number} Cylinder volume in liters
@@ -243,3 +330,66 @@ export function formatDiveSetupSummary(setup) {
     
     return `${setup.name}: ${maxDepth}m max depth, ${totalTime} min total, ${gasMix}${diveInfo}`;
 }
+/**
+ * NOAA CNS Oxygen Toxicity Limits
+ * Maps ppO2 (bar) to maximum single exposure time (minutes)
+ * Used for calculating CNS% accumulation
+ */
+export const NOAA_CNS_LIMITS = [
+    { ppO2: 1.60, maxTime: 45 },
+    { ppO2: 1.55, maxTime: 83 },
+    { ppO2: 1.50, maxTime: 120 },
+    { ppO2: 1.45, maxTime: 135 },
+    { ppO2: 1.40, maxTime: 150 },
+    { ppO2: 1.35, maxTime: 165 },
+    { ppO2: 1.30, maxTime: 180 },
+    { ppO2: 1.25, maxTime: 195 },
+    { ppO2: 1.20, maxTime: 210 },
+    { ppO2: 1.10, maxTime: 240 },
+    { ppO2: 1.00, maxTime: 300 },
+    { ppO2: 0.90, maxTime: 360 },
+    { ppO2: 0.80, maxTime: 450 },
+    { ppO2: 0.70, maxTime: 570 },
+    { ppO2: 0.60, maxTime: 720 }
+];
+
+/**
+ * Get CNS% accumulation rate per minute for a given ppO2
+ * @param {number} ppO2 - Partial pressure of oxygen in bar
+ * @returns {number} CNS% per minute (0 if ppO2 < 0.5)
+ */
+export function getCNSPerMinute(ppO2) {
+    if (ppO2 < 0.5) return 0;
+    
+    // Find the appropriate limit from the NOAA table
+    for (const limit of NOAA_CNS_LIMITS) {
+        if (ppO2 >= limit.ppO2) {
+            return 100 / limit.maxTime;
+        }
+    }
+    
+    // Below 0.6 bar, use the 0.6 limit (720 min)
+    return 100 / 720;
+}
+
+/**
+ * Calculate OTU (Oxygen Toxicity Units) for an exposure
+ * Formula: OTU = t × ((ppO2 - 0.5) / 0.5)^0.83
+ * Only applies when ppO2 > 0.5 bar
+ * @param {number} ppO2 - Partial pressure of oxygen in bar
+ * @param {number} timeMinutes - Exposure time in minutes
+ * @returns {number} OTU accumulated
+ */
+export function calculateOTU(ppO2, timeMinutes) {
+    if (ppO2 <= 0.5) return 0;
+    return timeMinutes * Math.pow((ppO2 - 0.5) / 0.5, 0.83);
+}
+
+/**
+ * NOAA recommended OTU limits
+ */
+export const OTU_LIMITS = {
+    singleDive: 300,      // Max OTU for a single dive
+    daily: 300,           // Max OTU per day (normal operations)
+    dailyExceptional: 600 // Max OTU per day (exceptional exposure)
+};

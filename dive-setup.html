@@ -97,8 +97,14 @@
                     <summary>⚗️ Gas Mix (Advanced)</summary>
                     <div class="gas-mix-inputs">
                         <div class="info-row">
-                            <label for="gas-name-input">Gas Name:</label>
-                            <input type="text" id="gas-name-input" class="text-input" value="Air">
+                            <label for="gas-preset-select">Preset Gas:</label>
+                            <select id="gas-preset-select" class="form-select">
+                                <!-- Options populated by JavaScript from PREDEFINED_GASES -->
+                            </select>
+                        </div>
+                        <div class="info-row gas-custom-row" id="gas-custom-section" style="display: none;">
+                            <label for="gas-name-input">Custom Name:</label>
+                            <input type="text" id="gas-name-input" class="text-input" value="Custom">
                         </div>
                         <div class="info-row">
                             <label for="gas-o2-input">O₂ (%):</label>
@@ -112,6 +118,11 @@
                         <div class="info-row">
                             <label for="gas-he-input">He (%):</label>
                             <input type="number" id="gas-he-input" min="0" max="100" step="1" value="0">
+                        </div>
+                        <div class="info-row mod-display">
+                            <label>MOD (ppO₂ 1.4):</label>
+                            <span id="mod-value" class="mod-value">--</span>
+                            <span class="hint">Maximum Operating Depth</span>
                         </div>
                     </div>
                 </details>
@@ -130,10 +141,6 @@
                                 <option value="20">2×10 L (Doubles - 20 L)</option>
                                 <option value="24">2×12 L (Doubles - 24 L)</option>
                             </select>
-                        </div>
-                        <div class="info-row">
-                            <label for="reserve-pressure-input">Reserve Pressure (bar):</label>
-                            <input type="number" id="reserve-pressure-input" class="text-input" value="50" min="30" max="100" step="10">
                         </div>
                         <p class="hint">Used for gas consumption calculations. Assumes 200 bar fill pressure.</p>
                     </div>
@@ -258,7 +265,7 @@
 
     <!-- Dive Setup Script -->
     <script type="module">
-        import { loadDiveSetup, saveDiveSetup, clearCache, formatDiveSetupSummary, getDiveSetupWaypoints } from './js/diveSetup.js';
+        import { loadDiveSetup, saveDiveSetup, clearCache, formatDiveSetupSummary, getDiveSetupWaypoints, PREDEFINED_GASES, getPredefinedGas, calculateMOD } from './js/diveSetup.js';
 
         let currentSetup = null;
         let predefinedProfiles = [];
@@ -269,12 +276,14 @@
         const profileSelect = document.getElementById('profile-select');
         const profileNameInput = document.getElementById('profile-name-input');
         const profileDescInput = document.getElementById('profile-description-input');
+        const gasPresetSelect = document.getElementById('gas-preset-select');
+        const gasCustomSection = document.getElementById('gas-custom-section');
         const gasNameInput = document.getElementById('gas-name-input');
         const gasO2Input = document.getElementById('gas-o2-input');
         const gasN2Input = document.getElementById('gas-n2-input');
         const gasHeInput = document.getElementById('gas-he-input');
+        const modValueSpan = document.getElementById('mod-value');
         const cylinderVolumeInput = document.getElementById('cylinder-volume-input');
-        const reservePressureInput = document.getElementById('reserve-pressure-input');
         const surfaceIntervalInput = document.getElementById('surface-interval-input');
         const waypointsBody = document.getElementById('waypoints-body');
         const addWaypointBtn = document.getElementById('add-waypoint');
@@ -292,6 +301,56 @@
         const waypointsBody2 = document.getElementById('waypoints-body-2');
         const addWaypoint2Btn = document.getElementById('add-waypoint-2');
         const dive2SurfaceIntervalInput = document.getElementById('dive2-surface-interval');
+
+        // Initialize gas preset dropdown
+        function initGasPresetDropdown() {
+            gasPresetSelect.innerHTML = '';
+            
+            // Add predefined gases
+            PREDEFINED_GASES.forEach(gas => {
+                const option = document.createElement('option');
+                option.value = gas.id;
+                option.textContent = gas.name;
+                gasPresetSelect.appendChild(option);
+            });
+            
+            // Add custom option
+            const customOption = document.createElement('option');
+            customOption.value = 'custom';
+            customOption.textContent = '✏️ Custom Mix...';
+            gasPresetSelect.appendChild(customOption);
+        }
+
+        // Handle gas preset selection
+        gasPresetSelect.addEventListener('change', () => {
+            const selectedId = gasPresetSelect.value;
+            
+            if (selectedId === 'custom') {
+                gasCustomSection.style.display = 'flex';
+                gasO2Input.readOnly = false;
+                gasHeInput.readOnly = false;
+            } else {
+                const gas = getPredefinedGas(selectedId);
+                if (gas) {
+                    gasCustomSection.style.display = 'none';
+                    gasNameInput.value = gas.name;
+                    gasO2Input.value = Math.round(gas.o2 * 100);
+                    gasHeInput.value = Math.round(gas.he * 100);
+                    gasO2Input.readOnly = true;
+                    gasHeInput.readOnly = true;
+                    updateN2();
+                    updateMOD();
+                }
+            }
+        });
+
+        // Update MOD display
+        function updateMOD() {
+            const o2Fraction = (parseFloat(gasO2Input.value) || 21) / 100;
+            const mod14 = calculateMOD(o2Fraction, 1.4);
+            const mod16 = calculateMOD(o2Fraction, 1.6);
+            modValueSpan.textContent = `${mod14}m (deco: ${mod16}m)`;
+        }
 
         // Load predefined profiles
         async function loadPredefinedProfiles() {
@@ -342,6 +401,7 @@
             const he = parseFloat(gasHeInput.value) || 0;
             const n2 = Math.max(0, 100 - o2 - he);
             gasN2Input.value = n2;
+            updateMOD();
         }
 
         gasO2Input.addEventListener('input', updateN2);
@@ -401,7 +461,6 @@
                     he: (parseFloat(gasHeInput.value) || 0) / 100
                 },
                 cylinderVolume: parseInt(cylinderVolumeInput.value) || 12,
-                reservePressure: parseInt(reservePressureInput.value) || 50,
                 surfaceInterval: parseFloat(surfaceIntervalInput.value) || 60,
                 units: currentSetup?.units || { depth: 'meters', time: 'minutes', pressure: 'bar' }
             };
@@ -483,11 +542,33 @@
         function populateForm(setup) {
             profileNameInput.value = setup.name || '';
             profileDescInput.value = setup.description || '';
-            gasNameInput.value = setup.gasMix?.name || 'Air';
-            gasO2Input.value = Math.round((setup.gasMix?.o2 || 0.21) * 100);
-            gasHeInput.value = Math.round((setup.gasMix?.he || 0) * 100);
+            
+            // Set gas values
+            const gasName = setup.gasMix?.name || 'Air';
+            const o2 = Math.round((setup.gasMix?.o2 || 0.21) * 100);
+            const he = Math.round((setup.gasMix?.he || 0) * 100);
+            
+            // Find matching preset
+            const matchingPreset = PREDEFINED_GASES.find(g => 
+                Math.round(g.o2 * 100) === o2 && Math.round(g.he * 100) === he
+            );
+            
+            if (matchingPreset) {
+                gasPresetSelect.value = matchingPreset.id;
+                gasCustomSection.style.display = 'none';
+                gasO2Input.readOnly = true;
+                gasHeInput.readOnly = true;
+            } else {
+                gasPresetSelect.value = 'custom';
+                gasCustomSection.style.display = 'flex';
+                gasO2Input.readOnly = false;
+                gasHeInput.readOnly = false;
+            }
+            
+            gasNameInput.value = gasName;
+            gasO2Input.value = o2;
+            gasHeInput.value = he;
             updateN2();
-            reservePressureInput.value = setup.reservePressure || 50;
             cylinderVolumeInput.value = setup.cylinderVolume || 12;
             surfaceIntervalInput.value = setup.surfaceInterval || 60;
             
@@ -598,6 +679,9 @@
         });
 
         async function init() {
+            // Initialize gas preset dropdown
+            initGasPresetDropdown();
+            
             // Load predefined profiles first
             const defaultProfileId = await loadPredefinedProfiles();
             
