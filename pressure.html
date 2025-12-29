@@ -1295,6 +1295,303 @@
             pressureChart = new Chart(ctx, config);
         }
         
+        // Gas Consumption Chart
+        let gasChart = null;
+        const gasChartContainer = document.getElementById('gas-chart-container');
+        const gasFullscreenBtn = document.getElementById('gas-fullscreen-btn');
+        const gasExitFullscreenBtn = document.getElementById('gas-exit-fullscreen-btn');
+        const gasCylinderSelect = document.getElementById('gas-cylinder-select');
+        const gasSacInput = document.getElementById('gas-sac-input');
+        const gasStartPressure = document.getElementById('gas-start-pressure');
+        
+        function toggleGasFullscreen() {
+            const isFullscreen = gasChartContainer.classList.toggle('fullscreen');
+            document.body.style.overflow = isFullscreen ? 'hidden' : '';
+            if (gasChart) {
+                setTimeout(() => gasChart.resize(), 50);
+            }
+        }
+        
+        gasFullscreenBtn?.addEventListener('click', toggleGasFullscreen);
+        gasExitFullscreenBtn?.addEventListener('click', toggleGasFullscreen);
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && gasChartContainer?.classList.contains('fullscreen')) {
+                toggleGasFullscreen();
+            }
+        });
+        
+        // Update gas chart when controls change
+        gasCylinderSelect?.addEventListener('change', renderGasConsumptionChart);
+        gasSacInput?.addEventListener('input', renderGasConsumptionChart);
+        gasStartPressure?.addEventListener('input', renderGasConsumptionChart);
+        
+        function renderGasConsumptionChart() {
+            const canvas = document.getElementById('gas-consumption-canvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const waypoints = getDiveSetupWaypoints(currentSetup);
+            
+            if (waypoints.length === 0) return;
+            
+            // Get parameters
+            const cylinderVolume = parseInt(gasCylinderSelect?.value) || getCylinderVolume(currentSetup);
+            const sacRate = parseFloat(gasSacInput?.value) || 20;
+            const startPressure = parseFloat(gasStartPressure?.value) || 200;
+            const reservePressure = 50; // bar
+            
+            // Set cylinder select to match setup if not manually changed
+            if (gasCylinderSelect && !gasCylinderSelect.dataset.userChanged) {
+                gasCylinderSelect.value = getCylinderVolume(currentSetup);
+            }
+            
+            const totalGasAvailable = cylinderVolume * startPressure; // liters
+            const reserveGas = cylinderVolume * reservePressure;
+            
+            const totalTime = waypoints[waypoints.length - 1].time;
+            
+            // Interpolate depth at any time
+            function interpolateDepth(time) {
+                for (let i = 0; i < waypoints.length - 1; i++) {
+                    const w1 = waypoints[i];
+                    const w2 = waypoints[i + 1];
+                    if (time >= w1.time && time <= w2.time) {
+                        const t = (time - w1.time) / (w2.time - w1.time);
+                        return w1.depth + t * (w2.depth - w1.depth);
+                    }
+                }
+                if (time <= waypoints[0].time) return waypoints[0].depth;
+                return waypoints[waypoints.length - 1].depth;
+            }
+            
+            // Calculate gas consumption over time
+            const gasData = [];
+            let totalGasUsed = 0;
+            const interval = 0.5; // minutes
+            
+            for (let t = 0; t <= totalTime; t += interval) {
+                const depth = interpolateDepth(t);
+                const pressure = 1 + depth / 10;
+                const consumptionRate = sacRate * pressure; // L/min at this depth
+                
+                if (t > 0) {
+                    totalGasUsed += consumptionRate * interval;
+                }
+                
+                const remainingGas = totalGasAvailable - totalGasUsed;
+                const remainingPressure = remainingGas / cylinderVolume;
+                
+                gasData.push({
+                    x: t,
+                    depth: depth,
+                    gasRemaining: remainingGas,
+                    pressureRemaining: remainingPressure,
+                    consumptionRate: consumptionRate
+                });
+            }
+            
+            // Ensure final point
+            if (gasData[gasData.length - 1].x < totalTime) {
+                const depth = interpolateDepth(totalTime);
+                const pressure = 1 + depth / 10;
+                const remainingGas = totalGasAvailable - totalGasUsed;
+                gasData.push({
+                    x: totalTime,
+                    depth: depth,
+                    gasRemaining: remainingGas,
+                    pressureRemaining: remainingGas / cylinderVolume,
+                    consumptionRate: sacRate * pressure
+                });
+            }
+            
+            const finalGasRemaining = gasData[gasData.length - 1].gasRemaining;
+            const finalPressure = finalGasRemaining / cylinderVolume;
+            
+            // Update summary
+            document.getElementById('total-gas-used').textContent = `${Math.round(totalGasUsed)} L`;
+            document.getElementById('remaining-pressure').textContent = `${Math.round(finalPressure)} bar`;
+            
+            const statusEl = document.getElementById('gas-status');
+            if (finalPressure < reservePressure) {
+                statusEl.textContent = '⚠️ Exceeds reserve!';
+                statusEl.style.color = '#e74c3c';
+            } else if (finalPressure < reservePressure + 30) {
+                statusEl.textContent = '⚠️ Close to reserve';
+                statusEl.style.color = '#f39c12';
+            } else {
+                statusEl.textContent = '✅ OK';
+                statusEl.style.color = '#27ae60';
+            }
+            
+            // Build annotations
+            const annotations = {
+                reserveLine: {
+                    type: 'line',
+                    yMin: reservePressure,
+                    yMax: reservePressure,
+                    yScaleID: 'yPressure',
+                    borderColor: 'rgba(231, 76, 60, 0.8)',
+                    borderWidth: 2,
+                    borderDash: [6, 4],
+                    label: {
+                        display: true,
+                        content: `Reserve: ${reservePressure} bar`,
+                        position: 'end',
+                        backgroundColor: 'rgba(231, 76, 60, 0.9)',
+                        color: 'white',
+                        font: { size: 10, weight: 'bold' },
+                        padding: { top: 3, bottom: 3, left: 6, right: 6 }
+                    }
+                }
+            };
+            
+            // Add danger zone if gas drops below reserve
+            const belowReserveStart = gasData.find(d => d.pressureRemaining < reservePressure);
+            if (belowReserveStart) {
+                annotations.dangerZone = {
+                    type: 'box',
+                    xMin: belowReserveStart.x,
+                    xMax: totalTime,
+                    yMin: 0,
+                    yMax: reservePressure,
+                    yScaleID: 'yPressure',
+                    backgroundColor: 'rgba(231, 76, 60, 0.2)',
+                    borderWidth: 0
+                };
+            }
+            
+            const maxDepth = Math.max(...waypoints.map(w => w.depth));
+            
+            const data = {
+                datasets: [{
+                    label: 'Dive Profile (Depth)',
+                    data: gasData.map(p => ({ x: p.x, y: p.depth })),
+                    borderColor: '#2980b9',
+                    backgroundColor: 'rgba(41, 128, 185, 0.15)',
+                    fill: true,
+                    tension: 0,
+                    pointRadius: 0,
+                    borderWidth: 3,
+                    yAxisID: 'yDepth'
+                }, {
+                    label: 'Tank Pressure',
+                    data: gasData.map(p => ({ x: p.x, y: p.pressureRemaining })),
+                    borderColor: '#27ae60',
+                    backgroundColor: 'transparent',
+                    fill: false,
+                    tension: 0,
+                    pointRadius: 0,
+                    borderWidth: 3,
+                    yAxisID: 'yPressure'
+                }]
+            };
+            
+            const config = {
+                type: 'line',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            title: {
+                                display: true,
+                                text: 'Time (minutes)',
+                                font: { size: 14, weight: 'bold' }
+                            },
+                            min: 0,
+                            max: Math.ceil(totalTime * 1.05),
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        yDepth: {
+                            type: 'linear',
+                            position: 'left',
+                            reverse: true,
+                            title: {
+                                display: true,
+                                text: 'Depth (meters)',
+                                font: { size: 14, weight: 'bold' },
+                                color: '#2980b9'
+                            },
+                            min: -5,
+                            max: Math.ceil(maxDepth * 1.1),
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            ticks: {
+                                color: '#2980b9'
+                            }
+                        },
+                        yPressure: {
+                            type: 'linear',
+                            position: 'right',
+                            reverse: false,
+                            title: {
+                                display: true,
+                                text: 'Tank Pressure (bar)',
+                                font: { size: 14, weight: 'bold' },
+                                color: '#27ae60'
+                            },
+                            min: 0,
+                            max: startPressure + 20,
+                            grid: {
+                                drawOnChartArea: false
+                            },
+                            ticks: {
+                                color: '#27ae60'
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'right',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 12,
+                                font: { size: 12 }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: `Gas Consumption (${cylinderVolume}L @ ${startPressure} bar, SAC: ${sacRate} L/min)`,
+                            font: { size: 16, weight: 'bold' }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: (items) => `Time: ${items[0].parsed.x.toFixed(1)} min`,
+                                label: (context) => {
+                                    if (context.dataset.label === 'Dive Profile (Depth)') {
+                                        return `Depth: ${context.parsed.y.toFixed(1)}m`;
+                                    } else {
+                                        return `Tank: ${context.parsed.y.toFixed(0)} bar`;
+                                    }
+                                }
+                            }
+                        },
+                        annotation: {
+                            annotations: annotations
+                        }
+                    }
+                }
+            };
+            
+            if (gasChart) {
+                gasChart.destroy();
+            }
+            
+            gasChart = new Chart(ctx, config);
+        }
+        
         // Initialize on load
         init();
     </script>
