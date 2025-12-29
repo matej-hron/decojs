@@ -88,6 +88,64 @@
     background: rgba(255, 255, 255, 0.05);
 }
 
+/* Navigation Dropdown */
+.nav-dropdown {
+    position: relative;
+}
+
+.nav-dropdown > a {
+    cursor: pointer;
+}
+
+.nav-dropdown > a::after {
+    content: ' ▾';
+    font-size: 0.7em;
+    opacity: 0.7;
+}
+
+.nav-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--primary-dark);
+    min-width: 160px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border-radius: 0 0 6px 6px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
+    list-style: none;
+    margin: 0;
+    padding: 0.5rem 0;
+    z-index: 1001;
+}
+
+.nav-dropdown:hover .nav-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.nav-dropdown-menu li {
+    margin: 0;
+}
+
+.nav-dropdown-menu a {
+    padding: 0.75rem 1.25rem;
+    border-bottom: none;
+    white-space: nowrap;
+}
+
+.nav-dropdown-menu a:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.nav-dropdown-menu a.active {
+    border-bottom: none;
+    background: rgba(255, 255, 255, 0.1);
+}
+
 .nav-wip-badge {
     background: linear-gradient(135deg, #f39c12, #e67e22);
     color: white;
@@ -1586,6 +1644,163 @@ textarea.form-input {
     font-size: 0.9rem;
 }
 
+/* ==========================================================================
+   Terminology Legend (Pressure page)
+   ========================================================================== */
+
+.terminology-legend {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: var(--card-background);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.terminology-legend h3 {
+    margin: 0 0 1rem 0;
+    color: var(--primary-dark);
+}
+
+.term-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.term-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: var(--background-color);
+    border-radius: var(--radius);
+    border-left: 4px solid var(--border-color);
+}
+
+.term-marker {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    margin-top: 4px;
+    flex-shrink: 0;
+}
+
+.term-marker.descent {
+    background: #2ecc71;
+    border-left-color: #2ecc71;
+}
+
+.term-item:has(.term-marker.descent) {
+    border-left-color: #2ecc71;
+}
+
+.term-marker.bottom-time {
+    background: #f1c40f;
+}
+
+.term-item:has(.term-marker.bottom-time) {
+    border-left-color: #f1c40f;
+}
+
+.term-marker.max-depth {
+    background: #e74c3c;
+}
+
+.term-item:has(.term-marker.max-depth) {
+    border-left-color: #e74c3c;
+}
+
+.term-marker.ascent {
+    background: #9b59b6;
+}
+
+.term-item:has(.term-marker.ascent) {
+    border-left-color: #9b59b6;
+}
+
+.term-marker.deco-stop {
+    background: #e67e22;
+}
+
+.term-item:has(.term-marker.deco-stop) {
+    border-left-color: #e67e22;
+}
+
+.term-marker.safety-stop {
+    background: #3498db;
+}
+
+.term-item:has(.term-marker.safety-stop) {
+    border-left-color: #3498db;
+}
+
+.term-marker.surface-interval {
+    background: #3498db;
+    border: 2px dashed #3498db;
+    background: rgba(52, 152, 219, 0.3);
+}
+
+.term-item:has(.term-marker.surface-interval) {
+    border-left-color: #3498db;
+    border-left-style: dashed;
+}
+
+.term-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.term-content strong {
+    color: var(--text-color);
+    font-size: 0.95rem;
+}
+
+.term-content span {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+/* Stat Grid */
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    background: var(--background-color);
+    border-radius: var(--radius);
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* Stats Section */
+.stats-section {
+    margin-top: 2rem;
+}
+
+.stats-section h2 {
+    margin-bottom: 1rem;
+}
+
 @media (max-width: 768px) {
     .profile-header-bar.sticky {
         top: 48px; /* Adjust for smaller nav on mobile */
@@ -1617,5 +1832,13 @@ textarea.form-input {
     .profile-header-actions {
         width: 100%;
         justify-content: space-between;
+    }
+    
+    .term-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 }

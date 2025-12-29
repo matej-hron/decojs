@@ -1,0 +1,2506 @@
+{
+  "title": "Anatomie a fyziologie - Zkušební testy SPČR 2018",
+  "description": "Zkušební otázky z anatomie a fyziologie pro potápěče",
+  "questions": [
+    {
+      "id": 1,
+      "category": "metabolismus",
+      "question": "Organismus získává energii:",
+      "options": [
+        {
+          "key": "a",
+          "text": "z dýchání"
+        },
+        {
+          "key": "b",
+          "text": "z hormonů"
+        },
+        {
+          "key": "c",
+          "text": "z živin"
+        },
+        {
+          "key": "d",
+          "text": "ze svalové práce"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Organismus získává energii z živin (sacharidy, tuky, bílkoviny), které jsou zpracovány v procesu metabolismu. Dýchání je proces, který tuto přeměnu umožňuje dodáním kyslíku."
+    },
+    {
+      "id": 2,
+      "category": "metabolismus",
+      "question": "Nejpohotovější zdroj energie představují:",
+      "options": [
+        {
+          "key": "a",
+          "text": "tuky"
+        },
+        {
+          "key": "b",
+          "text": "cukry"
+        },
+        {
+          "key": "c",
+          "text": "bílkoviny"
+        },
+        {
+          "key": "d",
+          "text": "vitamíny"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Cukry (sacharidy) jsou nejpohotovějším zdrojem energie, protože se nejrychleji rozkládají a uvolňují energii. Tuky poskytují více energie, ale jejich zpracování trvá déle."
+    },
+    {
+      "id": 3,
+      "category": "travici-system",
+      "question": "K trávicímu systému nepatří:",
+      "options": [
+        {
+          "key": "a",
+          "text": "zuby"
+        },
+        {
+          "key": "b",
+          "text": "hltan"
+        },
+        {
+          "key": "c",
+          "text": "hrtan"
+        },
+        {
+          "key": "d",
+          "text": "jícen"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Hrtan (larynx) je součástí dýchacího systému, nikoliv trávicího. Zuby, hltan a jícen jsou součástí trávicího traktu."
+    },
+    {
+      "id": 4,
+      "category": "anatomie",
+      "question": "Hrudní dutina je od břišní dutiny oddělena:",
+      "options": [
+        {
+          "key": "a",
+          "text": "pohrudnicí"
+        },
+        {
+          "key": "b",
+          "text": "poplicnicí"
+        },
+        {
+          "key": "c",
+          "text": "pobřišnicí"
+        },
+        {
+          "key": "d",
+          "text": "bránicí"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Bránice (diaphragma) je plochý sval, který odděluje hrudní dutinu od břišní. Je klíčová pro dýchání - při nádechu se stahuje a plíce se roztahují."
+    },
+    {
+      "id": 5,
+      "category": "smysly",
+      "question": "Rovnovážné ústrojí je uloženo:",
+      "options": [
+        {
+          "key": "a",
+          "text": "ve vnitřním uchu"
+        },
+        {
+          "key": "b",
+          "text": "ve středním uchu"
+        },
+        {
+          "key": "c",
+          "text": "v zevním uchu"
+        },
+        {
+          "key": "d",
+          "text": "v prodloužené míše"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Rovnovážné ústrojí (vestibulární aparát) je uloženo ve vnitřním uchu společně se sluchovým ústrojím. Pro potápěče je důležité vědět, že problémy s vyrovnáváním tlaku mohou ovlivnit rovnováhu."
+    },
+    {
+      "id": 6,
+      "category": "metabolismus",
+      "question": "Na celkové hmotnosti dospělého člověka se voda podílí:",
+      "options": [
+        {
+          "key": "a",
+          "text": "přibližně z 10 %"
+        },
+        {
+          "key": "b",
+          "text": "přibližně ze 30 %"
+        },
+        {
+          "key": "c",
+          "text": "přibližně ze 60 %"
+        },
+        {
+          "key": "d",
+          "text": "přibližně z 90 %"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Lidské tělo obsahuje přibližně 60 % vody. Toto je důležité pro pochopení fyziologie potápění, včetně dehydratace a sycení tkání inertními plyny."
+    },
+    {
+      "id": 7,
+      "category": "travici-system",
+      "question": "Vstřebávání živin z potravy probíhá především:",
+      "options": [
+        {
+          "key": "a",
+          "text": "v žaludku"
+        },
+        {
+          "key": "b",
+          "text": "v tenkém střevě"
+        },
+        {
+          "key": "c",
+          "text": "v tlustém střevě"
+        },
+        {
+          "key": "d",
+          "text": "v jícnu"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Většina vstřebávání živin probíhá v tenkém střevě, které má velký povrch díky klkům. V žaludku probíhá hlavně trávení, v tlustém střevě vstřebávání vody."
+    },
+    {
+      "id": 8,
+      "category": "metabolismus",
+      "question": "Na celkové hmotnosti dospělého člověka se voda podílí:",
+      "options": [
+        {
+          "key": "a",
+          "text": "přibližně z 90 %"
+        },
+        {
+          "key": "b",
+          "text": "přibližně ze 60 %"
+        },
+        {
+          "key": "c",
+          "text": "přibližně ze 30 %"
+        },
+        {
+          "key": "d",
+          "text": "přibližně z 10 %"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Lidské tělo obsahuje přibližně 60 % vody. Tato otázka má pouze jiné pořadí odpovědí než otázka 6."
+    },
+    {
+      "id": 9,
+      "category": "smysly",
+      "question": "Prostor mezi čočkou a sítnicí oka je vyplněn:",
+      "options": [
+        {
+          "key": "a",
+          "text": "krví"
+        },
+        {
+          "key": "b",
+          "text": "mízou (lymfou)"
+        },
+        {
+          "key": "c",
+          "text": "sklivcem"
+        },
+        {
+          "key": "d",
+          "text": "vzduchem"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Sklivec je průhledná rosolovitá hmota, která vyplňuje prostor mezi čočkou a sítnicí. Udržuje tvar oční koule a umožňuje průchod světla."
+    },
+    {
+      "id": 10,
+      "category": "zakladni-funkce",
+      "question": "Základní životní funkce jsou:",
+      "options": [
+        {
+          "key": "a",
+          "text": "dýchání a zažívání"
+        },
+        {
+          "key": "b",
+          "text": "vědomí, dýchání a krevní oběh"
+        },
+        {
+          "key": "c",
+          "text": "zažívání a krevní oběh"
+        },
+        {
+          "key": "d",
+          "text": "vidění, krevní oběh, slyšení"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Základní životní funkce jsou vědomí, dýchání a krevní oběh. Jejich kontrola je zásadní při první pomoci - pokud některá chybí, je třeba okamžitě jednat."
+    },
+    {
+      "id": 11,
+      "category": "anatomie",
+      "question": "Ledviny jsou součástí systému:",
+      "options": [
+        {
+          "key": "a",
+          "text": "vylučovacího"
+        },
+        {
+          "key": "b",
+          "text": "trávicího"
+        },
+        {
+          "key": "c",
+          "text": "oběhového"
+        },
+        {
+          "key": "d",
+          "text": "žláz s vnitřní sekrecí"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Ledviny jsou hlavním orgánem vylučovacího systému. Filtrují krev a odstraňují odpadní látky z těla ve formě moči."
+    },
+    {
+      "id": 12,
+      "category": "smysly",
+      "question": "Rohovka je součástí:",
+      "options": [
+        {
+          "key": "a",
+          "text": "pokožky"
+        },
+        {
+          "key": "b",
+          "text": "kloubů"
+        },
+        {
+          "key": "c",
+          "text": "ucha"
+        },
+        {
+          "key": "d",
+          "text": "oka"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Rohovka (cornea) je průhledná přední část oka, která láme světlo a chrání vnitřní struktury oka."
+    },
+    {
+      "id": 13,
+      "category": "smysly",
+      "question": "Ve vnitřním uchu jsou uloženy:",
+      "options": [
+        {
+          "key": "a",
+          "text": "sluchové kůstky (kladívko, kovadlinka, třmínek)"
+        },
+        {
+          "key": "b",
+          "text": "sluchové ústrojí a rovnovážné ústrojí"
+        },
+        {
+          "key": "c",
+          "text": "sluchová (Eustachova) trubice a zevní zvukovod"
+        },
+        {
+          "key": "d",
+          "text": "sluchová (Eustachova) trubice a ušní bubínek"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Ve vnitřním uchu jsou uloženy sluchové ústrojí (hlemýžď) a rovnovážné ústrojí (vestibulární aparát). Sluchové kůstky jsou ve středním uchu."
+    },
+    {
+      "id": 14,
+      "category": "zakladni-funkce",
+      "question": "Označte nesprávné tvrzení:",
+      "options": [
+        {
+          "key": "a",
+          "text": "Základní životní funkce jsou vědomí, dýchání a krevní oběh."
+        },
+        {
+          "key": "b",
+          "text": "Oční koule je vyplněna sklivcem."
+        },
+        {
+          "key": "c",
+          "text": "Odkysličená krev je přiváděna do srdce žilou vrátnicí."
+        },
+        {
+          "key": "d",
+          "text": "Dýchacími plyny rozumíme kyslík a oxid uhličitý."
+        }
+      ],
+      "correct": "c",
+      "explanation": "Nesprávné je tvrzení c) - odkysličená krev je přiváděna do srdce horní a dolní dutou žílou, nikoliv žílou vrátnicí (portální žílou), která odvádí krev z trávicího traktu do jater."
+    },
+    {
+      "id": 15,
+      "category": "anatomie",
+      "question": "Pohybový aparát člověka je tvořen systémy:",
+      "options": [
+        {
+          "key": "a",
+          "text": "kosterním a svalovým"
+        },
+        {
+          "key": "b",
+          "text": "svalovým a oběhovým"
+        },
+        {
+          "key": "c",
+          "text": "kosterním a nervovým"
+        },
+        {
+          "key": "d",
+          "text": "svalovým a nervovým"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Pohybový aparát je tvořen kosterním systémem (kosti, klouby) a svalovým systémem. Nervový systém řídí pohyb, ale není součástí pohybového aparátu."
+    },
+    {
+      "id": 16,
+      "category": "obehovy-system",
+      "question": "Krev:",
+      "options": [
+        {
+          "key": "a",
+          "text": "odvádí z tkání zplodiny látkové přeměny"
+        },
+        {
+          "key": "b",
+          "text": "roznáší hormony"
+        },
+        {
+          "key": "c",
+          "text": "přenáší dýchací plyny"
+        },
+        {
+          "key": "d",
+          "text": "všechny odpovědi jsou správné"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Krev plní všechny uvedené funkce - transportuje kyslík a oxid uhličitý, hormony i odpadní látky metabolismu."
+    },
+    {
+      "id": 17,
+      "category": "zakladni-funkce",
+      "question": "Mezi základní životní funkce nezahrnujeme:",
+      "options": [
+        {
+          "key": "a",
+          "text": "vědomí"
+        },
+        {
+          "key": "b",
+          "text": "dýchání"
+        },
+        {
+          "key": "c",
+          "text": "krevní oběh"
+        },
+        {
+          "key": "d",
+          "text": "zažívání"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Základní životní funkce jsou vědomí, dýchání a krevní oběh. Zažívání mezi ně nepatří - člověk může bez jídla přežít dny až týdny."
+    },
+    {
+      "id": 18,
+      "category": "travici-system",
+      "question": "Jícen vyúsťuje:",
+      "options": [
+        {
+          "key": "a",
+          "text": "ve dvanáctníku"
+        },
+        {
+          "key": "b",
+          "text": "v žaludku"
+        },
+        {
+          "key": "c",
+          "text": "v tenkém střevě"
+        },
+        {
+          "key": "d",
+          "text": "v tlustém střevě"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Jícen (esofagus) spojuje hltan se žaludkem. Dvanáctník je první část tenkého střeva, která navazuje na žaludek."
+    },
+    {
+      "id": 19,
+      "category": "smysly",
+      "question": "Sluchové kůstky (kladívko, kovadlinka, třmínek) se nacházejí:",
+      "options": [
+        {
+          "key": "a",
+          "text": "v zevním uchu"
+        },
+        {
+          "key": "b",
+          "text": "ve sluchové (Eustachově) trubici"
+        },
+        {
+          "key": "c",
+          "text": "ve vnitřním uchu"
+        },
+        {
+          "key": "d",
+          "text": "ve středním uchu"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Sluchové kůstky jsou umístěny ve středním uchu a přenášejí vibrace z bubínku do vnitřního ucha. Pro potápěče je důležité vyrovnávání tlaku ve středouší."
+    },
+    {
+      "id": 20,
+      "category": "obehovy-system",
+      "question": "Označte nesprávné tvrzení:",
+      "options": [
+        {
+          "key": "a",
+          "text": "Krev rozkládá potravu na živiny."
+        },
+        {
+          "key": "b",
+          "text": "Krev přenáší kyslík z plic do tkání."
+        },
+        {
+          "key": "c",
+          "text": "Krev se uplatňuje při řízení tělesné teploty."
+        },
+        {
+          "key": "d",
+          "text": "Krev odvádí oxid uhličitý z tkání do plic."
+        }
+      ],
+      "correct": "a",
+      "explanation": "Nesprávné je tvrzení a) - krev nerozkládá potravu, to je úkolem trávicího systému. Krev pouze transportuje již vstřebané živiny."
+    },
+    {
+      "id": 21,
+      "category": "dychaci-system",
+      "question": "V pohrudniční štěrbině se nachází:",
+      "options": [
+        {
+          "key": "a",
+          "text": "sklípkový vzduch"
+        },
+        {
+          "key": "b",
+          "text": "atmosférický tlak"
+        },
+        {
+          "key": "c",
+          "text": "přetlak"
+        },
+        {
+          "key": "d",
+          "text": "podtlak"
+        }
+      ],
+      "correct": "d",
+      "explanation": "V pohrudniční štěrbině (mezi poplicnicí a pohrudnicí) je podtlak, který udržuje plíce v rozepjatém stavu a umožňuje dýchání."
+    },
+    {
+      "id": 22,
+      "category": "dychaci-system",
+      "question": "Tlak vzduchu v plicích a dýchacích cestách je při ponoru na nádech:",
+      "options": [
+        {
+          "key": "a",
+          "text": "závislý na fyzické námaze"
+        },
+        {
+          "key": "b",
+          "text": "shodný s tlakem na hladině"
+        },
+        {
+          "key": "c",
+          "text": "shodný s okolním tlakem"
+        },
+        {
+          "key": "d",
+          "text": "závislý na tepové frekvenci"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Při potápění s dýchacím přístrojem je tlak vzduchu v plicích vždy shodný s okolním (ambientním) tlakem. To zajišťuje plicní automat."
+    },
+    {
+      "id": 23,
+      "category": "dychaci-system",
+      "question": "Objem vzduchu, který lze vydechnout po maximálním nádechu, se nazývá:",
+      "options": [
+        {
+          "key": "a",
+          "text": "nádechový objem plic"
+        },
+        {
+          "key": "b",
+          "text": "zbytkový objem plic"
+        },
+        {
+          "key": "c",
+          "text": "vitální kapacita plic"
+        },
+        {
+          "key": "d",
+          "text": "celkový objem plic"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Vitální kapacita plic je maximální objem vzduchu, který lze vydechnout po maximálním nádechu. U dospělého člověka činí přibližně 4-5 litrů."
+    },
+    {
+      "id": 24,
+      "category": "dychaci-system",
+      "question": "Hrtan je součástí:",
+      "options": [
+        {
+          "key": "a",
+          "text": "horních cest dýchacích"
+        },
+        {
+          "key": "b",
+          "text": "trávicího systému"
+        },
+        {
+          "key": "c",
+          "text": "plic"
+        },
+        {
+          "key": "d",
+          "text": "jícnu"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Hrtan (larynx) je součástí horních cest dýchacích. Obsahuje hlasivky a spojuje hltan s průdušnicí."
+    },
+    {
+      "id": 25,
+      "category": "dychaci-system",
+      "question": "Objem vzduchu, který nelze vydechnout ani usilovným výdechem, se nazývá:",
+      "options": [
+        {
+          "key": "a",
+          "text": "mrtvý prostor dýchacích cest"
+        },
+        {
+          "key": "b",
+          "text": "vitální kapacita plic"
+        },
+        {
+          "key": "c",
+          "text": "celkový objem plic"
+        },
+        {
+          "key": "d",
+          "text": "zbytkový objem plic"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Zbytkový objem plic (reziduální objem) je objem vzduchu, který zůstává v plicích i po maximálním výdechu. Činí přibližně 1,5 litru."
+    },
+    {
+      "id": 26,
+      "category": "dychaci-system",
+      "question": "Zbytkový objem plic představuje objem vzduchu:",
+      "options": [
+        {
+          "key": "a",
+          "text": "ve kterém nedochází k výměně dýchacích plynů"
+        },
+        {
+          "key": "b",
+          "text": "který lze vydechnout po maximálním nádechu"
+        },
+        {
+          "key": "c",
+          "text": "který nelze vydechnout ani usilovným výdechem"
+        },
+        {
+          "key": "d",
+          "text": "který se nachází mezi pohrudnicí a poplicnicí"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Zbytkový objem plic je objem vzduchu, který nelze vydechnout ani při maximálním usilovném výdechu. Je důležitý pro výpočty při potápění na nádech."
+    },
+    {
+      "id": 27,
+      "category": "dychaci-system",
+      "question": "Bránice se významně uplatňuje:",
+      "options": [
+        {
+          "key": "a",
+          "text": "při zažívání"
+        },
+        {
+          "key": "b",
+          "text": "při dýchání"
+        },
+        {
+          "key": "c",
+          "text": "při řízení tělesné teploty"
+        },
+        {
+          "key": "d",
+          "text": "při obraně organismu před infekcí"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Bránice (diaphragma) je hlavní dýchací sval. Při nádechu se stahuje a klesá dolů, čímž zvětšuje objem hrudní dutiny a umožňuje nasátí vzduchu do plic."
+    },
+    {
+      "id": 28,
+      "category": "dychaci-system",
+      "question": "Podtlak v pohrudniční štěrbině:",
+      "options": [
+        {
+          "key": "a",
+          "text": "udržuje plíce v rozepjatém stavu"
+        },
+        {
+          "key": "b",
+          "text": "slouží k filtraci vydechovaného vzduchu"
+        },
+        {
+          "key": "c",
+          "text": "slouží k ohřevu vdechovaného vzduchu"
+        },
+        {
+          "key": "d",
+          "text": "všechny odpovědi jsou správné"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Podtlak v pohrudniční štěrbině udržuje plíce v rozepjatém stavu. Při pneumotoraxu (proniknutí vzduchu do pohrudniční štěrbiny) se plíce mohou zkolabovat."
+    },
+    {
+      "id": 29,
+      "category": "dychaci-system",
+      "question": "Plíce jsou udržovány v rozepjatém stavu:",
+      "options": [
+        {
+          "key": "a",
+          "text": "vlastní pružností"
+        },
+        {
+          "key": "b",
+          "text": "podtlakem v pohrudniční štěrbině"
+        },
+        {
+          "key": "c",
+          "text": "parciálním tlakem kyslíku"
+        },
+        {
+          "key": "d",
+          "text": "parciálním tlakem oxidu uhličitého"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Plíce jsou udržovány v rozepjatém stavu podtlakem v pohrudniční štěrbině. Vlastní pružnost plic by je naopak stahovala."
+    },
+    {
+      "id": 30,
+      "category": "dychaci-system",
+      "question": "Mrtvý prostor dýchacích cest zaujímá přibližně:",
+      "options": [
+        {
+          "key": "a",
+          "text": "0,15 litru"
+        },
+        {
+          "key": "b",
+          "text": "1,5 litru"
+        },
+        {
+          "key": "c",
+          "text": "4,5 litru"
+        },
+        {
+          "key": "d",
+          "text": "6 litrů"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Mrtvý prostor dýchacích cest (prostor, kde nedochází k výměně plynů) činí přibližně 0,15 litru (150 ml). Potápěčská výstroj tento mrtvý prostor zvětšuje."
+    },
+    {
+      "id": 31,
+      "category": "dychaci-system",
+      "question": "Zbytkový objem plic zaujímá přibližně:",
+      "options": [
+        {
+          "key": "a",
+          "text": "0,15 litru"
+        },
+        {
+          "key": "b",
+          "text": "1,5 litru"
+        },
+        {
+          "key": "c",
+          "text": "4,5 litru"
+        },
+        {
+          "key": "d",
+          "text": "6 litrů"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Zbytkový objem plic činí přibližně 1,5 litru. Tento objem vzduchu zůstává v plicích i po maximálním výdechu."
+    },
+    {
+      "id": 32,
+      "category": "dychaci-system",
+      "question": "Označte nesprávné tvrzení:",
+      "options": [
+        {
+          "key": "a",
+          "text": "Dýchací systém sestává z dýchacích cest a z plic."
+        },
+        {
+          "key": "b",
+          "text": "Na povrchu plic se nachází pohrudnice."
+        },
+        {
+          "key": "c",
+          "text": "Celkový objem plic je součtem vitální kapacity plic a zbytkového objemu plic."
+        },
+        {
+          "key": "d",
+          "text": "Mrtvý prostor dýchacích cest činí přibližně 0,15 litru."
+        }
+      ],
+      "correct": "b",
+      "explanation": "Nesprávné je tvrzení b) - na povrchu plic se nachází poplicnice (viscerální pleura), nikoliv pohrudnice. Pohrudnice (parietální pleura) vystýlá vnitřní stěnu hrudníku."
+    },
+    {
+      "id": 33,
+      "category": "dychaci-system",
+      "question": "Vitální kapacita plic představuje objem vzduchu:",
+      "options": [
+        {
+          "key": "a",
+          "text": "ve kterém nedochází k výměně dýchacích plynů"
+        },
+        {
+          "key": "b",
+          "text": "který se nachází mezi poplicnicí a pohrudnicí"
+        },
+        {
+          "key": "c",
+          "text": "který nelze vydechnout ani usilovným výdechem"
+        },
+        {
+          "key": "d",
+          "text": "který lze vydechnout po maximálním nádechu"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Vitální kapacita plic je objem vzduchu, který lze vydechnout po maximálním nádechu. U dospělého člověka činí přibližně 4-5 litrů."
+    },
+    {
+      "id": 34,
+      "category": "dychaci-system",
+      "question": "Celkový objem plic je součtem:",
+      "options": [
+        {
+          "key": "a",
+          "text": "vitální kapacity plic a zbytkového objemu plic"
+        },
+        {
+          "key": "b",
+          "text": "vitální kapacity plic a mrtvého prostoru dýchacích cest"
+        },
+        {
+          "key": "c",
+          "text": "zbytkového objemu plic a rezervního výdechového objemu plic"
+        },
+        {
+          "key": "d",
+          "text": "zbytkového objemu plic a mrtvého prostoru dýchacích cest"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Celkový objem plic = vitální kapacita + zbytkový objem. U dospělého člověka je to přibližně 6 litrů (4,5 l vitální kapacita + 1,5 l zbytkový objem)."
+    },
+    {
+      "id": 35,
+      "category": "dychaci-system",
+      "question": "Mrtvým prostorem dýchacích cest rozumíme:",
+      "options": [
+        {
+          "key": "a",
+          "text": "objem vzduchu, který zůstává v plicích i po usilovném výdechu"
+        },
+        {
+          "key": "b",
+          "text": "prostor, v němž nedochází k výměně dýchacích plynů"
+        },
+        {
+          "key": "c",
+          "text": "rozdíl mezi normálním a usilovným nádechem"
+        },
+        {
+          "key": "d",
+          "text": "rozdíl objemů plic při maximálním nádechu a maximálním výdechu"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Mrtvý prostor je část dýchacích cest (nos, hrtan, průdušnice, průdušky), kde nedochází k výměně dýchacích plynů. Výměna probíhá až v plicních sklípcích."
+    },
+    {
+      "id": 36,
+      "category": "dychaci-system",
+      "question": "K dýchacím cestám patří:",
+      "options": [
+        {
+          "key": "a",
+          "text": "plicní cévy"
+        },
+        {
+          "key": "b",
+          "text": "plicní sklípky"
+        },
+        {
+          "key": "c",
+          "text": "průdušky a průdušinky"
+        },
+        {
+          "key": "d",
+          "text": "všechny odpovědi jsou správné"
+        }
+      ],
+      "correct": "c",
+      "explanation": "K dýchacím cestám patří průdušky (bronchy) a průdušinky (bronchioly). Plicní sklípky jsou součástí plic, plicní cévy jsou součástí oběhového systému."
+    },
+    {
+      "id": 37,
+      "category": "dychaci-system",
+      "question": "Součástí dýchacího systému není:",
+      "options": [
+        {
+          "key": "a",
+          "text": "hrtan"
+        },
+        {
+          "key": "b",
+          "text": "jícen"
+        },
+        {
+          "key": "c",
+          "text": "průdušnice"
+        },
+        {
+          "key": "d",
+          "text": "průduška"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Jícen (esofagus) je součástí trávicího systému, nikoliv dýchacího. Spojuje hltan se žaludkem a vede paralelně s průdušnicí."
+    },
+    {
+      "id": 38,
+      "category": "dychaci-system",
+      "question": "Označte nesprávné tvrzení:",
+      "options": [
+        {
+          "key": "a",
+          "text": "Mezi poplicnicí (povrchem plic) a pohrudnicí (vnitřní stěnou hrudníku) se nachází pohrudniční štěrbina."
+        },
+        {
+          "key": "b",
+          "text": "V pohrudniční štěrbině je podtlak."
+        },
+        {
+          "key": "c",
+          "text": "Plíce jsou uloženy po stranách mezihrudní přepážky."
+        },
+        {
+          "key": "d",
+          "text": "Plíce jsou udržovány v rozepjatém stavu vlastní pružností."
+        }
+      ],
+      "correct": "d",
+      "explanation": "Nesprávné je tvrzení d) - plíce jsou udržovány v rozepjatém stavu podtlakem v pohrudniční štěrbině, nikoliv vlastní pružností. Vlastní pružnost plic by je naopak stahovala."
+    },
+    {
+      "id": 39,
+      "category": "dychaci-system",
+      "question": "Plicní sklípky:",
+      "options": [
+        {
+          "key": "a",
+          "text": "měří v průměru okolo čtvrtiny milimetru"
+        },
+        {
+          "key": "b",
+          "text": "se nacházejí na konci dýchacích cest"
+        },
+        {
+          "key": "c",
+          "text": "jsou opředeny krevními vlásečnicemi"
+        },
+        {
+          "key": "d",
+          "text": "všechny odpovědi jsou správné"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Všechna tvrzení jsou správná. Plicní sklípky (alveoly) jsou drobné váčky na konci dýchacích cest, opředené vlásečnicemi, kde probíhá výměna dýchacích plynů."
+    },
+    {
+      "id": 40,
+      "category": "dychaci-system",
+      "question": "Dýchací cesty začínají:",
+      "options": [
+        {
+          "key": "a",
+          "text": "průdušnicí"
+        },
+        {
+          "key": "b",
+          "text": "hrtanem"
+        },
+        {
+          "key": "c",
+          "text": "dutinou nosní"
+        },
+        {
+          "key": "d",
+          "text": "průduškami"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Dýchací cesty začínají dutinou nosní (a ústní). Vzduch pak pokračuje přes hltan, hrtan, průdušnici a průdušky až do plicních sklípků."
+    },
+    {
+      "id": 41,
+      "category": "obehovy-system",
+      "question": "Označte nesprávné tvrzení:",
+      "options": [
+        {
+          "key": "a",
+          "text": "Tepnami je vždy vedena okysličená krev."
+        },
+        {
+          "key": "b",
+          "text": "Tepna srdečnice (aorta) odvádí krev z levé srdeční komory."
+        },
+        {
+          "key": "c",
+          "text": "Tepénky se rozvětvují na krevní vlásečnice."
+        },
+        {
+          "key": "d",
+          "text": "Krevní vlásečnice se spojují v žilky."
+        }
+      ],
+      "correct": "a",
+      "explanation": "Nesprávné je tvrzení a) - tepna plicnice vede odkysličenou krev z pravé srdeční komory do plic. Tepny jsou definovány směrem toku (od srdce), nikoliv okysličením krve."
+    },
+    {
+      "id": 42,
+      "category": "obehovy-system",
+      "question": "Tepnou plicnicí je vedena:",
+      "options": [
+        {
+          "key": "a",
+          "text": "odkysličená krev z pravé srdeční komory do plic"
+        },
+        {
+          "key": "b",
+          "text": "okysličená krev z levé srdeční komory do plic"
+        },
+        {
+          "key": "c",
+          "text": "okysličená krev z plic do levé srdeční síně"
+        },
+        {
+          "key": "d",
+          "text": "odkysličená krev z plic do pravé srdeční síně."
+        }
+      ],
+      "correct": "a",
+      "explanation": "Tepna plicnice vede odkysličenou krev z pravé srdeční komory do plic, kde se krev okysličí. Je to jediná tepna vedoucí odkysličenou krev."
+    },
+    {
+      "id": 43,
+      "category": "obehovy-system",
+      "question": "Dospělý člověk má přibližně:",
+      "options": [
+        {
+          "key": "a",
+          "text": "10 – 12 litrů krve"
+        },
+        {
+          "key": "b",
+          "text": "8 – 10 litrů krve"
+        },
+        {
+          "key": "c",
+          "text": "5 – 6 litrů krve"
+        },
+        {
+          "key": "d",
+          "text": "2 – 3 litry krve"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Dospělý člověk má přibližně 5-6 litrů krve, což představuje asi 7-8 % tělesné hmotnosti."
+    },
+    {
+      "id": 44,
+      "category": "obehovy-system",
+      "question": "Srdce dospělého člověka přečerpá v klidu 5 litrů krve přibližně:",
+      "options": [
+        {
+          "key": "a",
+          "text": "za 1 sekundu"
+        },
+        {
+          "key": "b",
+          "text": "za 10 sekund"
+        },
+        {
+          "key": "c",
+          "text": "za 5 minut"
+        },
+        {
+          "key": "d",
+          "text": "za 1 minutu"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Srdce přečerpá v klidu přibližně 5 litrů krve za minutu (minutový srdeční výdej). Při námaze se tento objem může zvýšit až na 25-30 litrů."
+    },
+    {
+      "id": 45,
+      "category": "obehovy-system",
+      "question": "Okysličená krev je přiváděna z plic:",
+      "options": [
+        {
+          "key": "a",
+          "text": "do levé srdeční síně"
+        },
+        {
+          "key": "b",
+          "text": "do levé srdeční komory"
+        },
+        {
+          "key": "c",
+          "text": "do pravé srdeční síně"
+        },
+        {
+          "key": "d",
+          "text": "do pravé srdeční komory"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Okysličená krev se z plic vrací plicními žílami do levé srdeční síně. Odtud pokračuje do levé komory a pak aortou do celého těla."
+    },
+    {
+      "id": 46,
+      "category": "obehovy-system",
+      "question": "Z pravé srdeční komory je vypuzována krev:",
+      "options": [
+        {
+          "key": "a",
+          "text": "okysličená"
+        },
+        {
+          "key": "b",
+          "text": "odkysličená"
+        },
+        {
+          "key": "c",
+          "text": "do aorty"
+        },
+        {
+          "key": "d",
+          "text": "do hlavy, trupu a končetin"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Z pravé srdeční komory je vypuzována odkysličená krev tepnou plicnicí do plic, kde se okysličí."
+    },
+    {
+      "id": 47,
+      "category": "obehovy-system",
+      "question": "Odkysličená krev je přiváděna z velkého (systémového) krevního oběhu:",
+      "options": [
+        {
+          "key": "a",
+          "text": "do levé srdeční síně"
+        },
+        {
+          "key": "b",
+          "text": "do levé srdeční komory"
+        },
+        {
+          "key": "c",
+          "text": "do pravé srdeční síně"
+        },
+        {
+          "key": "d",
+          "text": "do pravé srdeční komory"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Odkysličená krev z těla se vrací horní a dolní dutou žílou do pravé srdeční síně. Odtud pokračuje do pravé komory a do plic."
+    },
+    {
+      "id": 48,
+      "category": "obehovy-system",
+      "question": "Tepová frekvence zdravého dospělého člověka je v klidu přibližně:",
+      "options": [
+        {
+          "key": "a",
+          "text": "30 tepů za minutu"
+        },
+        {
+          "key": "b",
+          "text": "70 tepů za minutu"
+        },
+        {
+          "key": "c",
+          "text": "110 tepů za minutu"
+        },
+        {
+          "key": "d",
+          "text": "140 tepů za minutu"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Klidová tepová frekvence zdravého dospělého člověka je přibližně 60-80 tepů za minutu, typicky kolem 70. U trénovaných sportovců může být nižší."
+    },
+    {
+      "id": 49,
+      "category": "obehovy-system",
+      "question": "Malý (plicní) krevní oběh tvoří okruh:",
+      "options": [
+        {
+          "key": "a",
+          "text": "mezi levou srdeční komorou, plicemi a pravou srdeční síní"
+        },
+        {
+          "key": "b",
+          "text": "mezi pravou srdeční komorou, plicemi a levou srdeční síní"
+        },
+        {
+          "key": "c",
+          "text": "mezi levou srdeční komorou, levou srdeční síní, plicemi a pravou srdeční síní"
+        },
+        {
+          "key": "d",
+          "text": "mezi pravou srdeční síní, plicemi a pravou srdeční komorou"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Malý (plicní) oběh: pravá komora → tepna plicnice → plíce → plicní žíly → levá síň. Slouží k okysličení krve."
+    },
+    {
+      "id": 50,
+      "category": "obehovy-system",
+      "question": "Tepna srdečnice (aorta):",
+      "options": [
+        {
+          "key": "a",
+          "text": "vystupuje z levé srdeční komory"
+        },
+        {
+          "key": "b",
+          "text": "vede okysličenou krev"
+        },
+        {
+          "key": "c",
+          "text": "je součástí velkého (systémového) krevního oběhu"
+        },
+        {
+          "key": "d",
+          "text": "všechny odpovědi jsou správné"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Všechna tvrzení jsou správná. Aorta je největší tepna v těle, vystupuje z levé komory a rozvádí okysličenou krev do celého těla (velký oběh)."
+    },
+    {
+      "id": 51,
+      "category": "obehovy-system",
+      "question": "Označte nesprávné tvrzení:",
+      "options": [
+        {
+          "key": "a",
+          "text": "Srdečnice (aorta) vede krev z levé srdeční komory do velkého (systémového) krevního oběhu."
+        },
+        {
+          "key": "b",
+          "text": "Srdce přečerpá v klidu za 1 minutu přibližně 5 litrů krve."
+        },
+        {
+          "key": "c",
+          "text": "Tepna plicnice vede krev ze srdce do plic."
+        },
+        {
+          "key": "d",
+          "text": "Okysličená krev je přiváděna do pravé srdeční síně."
+        }
+      ],
+      "correct": "d",
+      "explanation": "Nesprávné je tvrzení d) - okysličená krev je přiváděna do levé srdeční síně (z plic). Do pravé srdeční síně přichází odkysličená krev z těla."
+    },
+    {
+      "id": 52,
+      "category": "obehovy-system",
+      "question": "Tepna srdečnice (aorta):",
+      "options": [
+        {
+          "key": "a",
+          "text": "vystupuje z pravé srdeční komory"
+        },
+        {
+          "key": "b",
+          "text": "je součástí malého (plicního) krevního oběhu"
+        },
+        {
+          "key": "c",
+          "text": "vede okysličenou krev"
+        },
+        {
+          "key": "d",
+          "text": "všechny odpovědi jsou správné"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Správná je pouze odpověď c) - aorta vede okysličenou krev. Vystupuje z levé (nikoliv pravé) komory a je součástí velkého (nikoliv malého) oběhu."
+    },
+    {
+      "id": 53,
+      "category": "obehovy-system",
+      "question": "Nejvíce rozvětvená část krevního řečiště je tvořena:",
+      "options": [
+        {
+          "key": "a",
+          "text": "tepnami"
+        },
+        {
+          "key": "b",
+          "text": "tepénkami"
+        },
+        {
+          "key": "c",
+          "text": "žilkami"
+        },
+        {
+          "key": "d",
+          "text": "krevními vlásečnicemi"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Krevní vlásečnice (kapiláry) tvoří nejrozvětvenější síť krevního řečiště. Jejich celková délka v lidském těle je odhadována na 100 000 km."
+    },
+    {
+      "id": 54,
+      "category": "obehovy-system",
+      "question": "Nejmenšími cévami jsou:",
+      "options": [
+        {
+          "key": "a",
+          "text": "mízovody"
+        },
+        {
+          "key": "b",
+          "text": "krevní vlásečnice"
+        },
+        {
+          "key": "c",
+          "text": "žilky"
+        },
+        {
+          "key": "d",
+          "text": "tepénky"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Krevní vlásečnice (kapiláry) jsou nejmenší cévy s průměrem asi 5-10 mikrometrů. Jejich stěna je tvořena jednou vrstvou buněk, což umožňuje výměnu látek s tkáněmi."
+    },
+    {
+      "id": 55,
+      "category": "obehovy-system",
+      "question": "Srdce dospělého člověka přečerpá v klidu za 1 minutu přibližně:",
+      "options": [
+        {
+          "key": "a",
+          "text": "0,1 litru krve"
+        },
+        {
+          "key": "b",
+          "text": "1 litr krve"
+        },
+        {
+          "key": "c",
+          "text": "5 litrů krve"
+        },
+        {
+          "key": "d",
+          "text": "10 litrů krve"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Minutový srdeční výdej v klidu je přibližně 5 litrů. To znamená, že celý objem krve projde srdcem přibližně jednou za minutu."
+    },
+    {
+      "id": 56,
+      "category": "obehovy-system",
+      "question": "Odkysličená krev je vedena do plic:",
+      "options": [
+        {
+          "key": "a",
+          "text": "tepnou srdečnicí (aortou) z levé srdeční komory"
+        },
+        {
+          "key": "b",
+          "text": "tepnou plicnicí z pravé srdeční komory"
+        },
+        {
+          "key": "c",
+          "text": "žílou vrátnicí"
+        },
+        {
+          "key": "d",
+          "text": "horní dutou žílou"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Odkysličená krev je vedena do plic tepnou plicnicí (truncus pulmonalis) z pravé srdeční komory. V plicích se krev okysličí."
+    },
+    {
+      "id": 57,
+      "category": "obehovy-system",
+      "question": "Portální žíla (vrátnice) odvádí krev:",
+      "options": [
+        {
+          "key": "a",
+          "text": "z břišních orgánů do jater"
+        },
+        {
+          "key": "b",
+          "text": "z plic do jater"
+        },
+        {
+          "key": "c",
+          "text": "z jater do ledvin"
+        },
+        {
+          "key": "d",
+          "text": "ze srdce do velkého (systémového) krevního oběhu"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Portální žíla (vena portae) odvádí krev z trávicího traktu a sleziny do jater. Játra tak zpracovávají živiny vstřebané ze střev."
+    },
+    {
+      "id": 58,
+      "category": "obehovy-system",
+      "question": "Tepna plicnice:",
+      "options": [
+        {
+          "key": "a",
+          "text": "vystupuje z pravé srdeční komory"
+        },
+        {
+          "key": "b",
+          "text": "vede odkysličenou krev"
+        },
+        {
+          "key": "c",
+          "text": "je součástí malého (plicního) krevního oběhu"
+        },
+        {
+          "key": "d",
+          "text": "všechny odpovědi jsou správné"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Všechna tvrzení jsou správná. Tepna plicnice vystupuje z pravé komory, vede odkysličenou krev a je součástí malého (plicního) oběhu."
+    },
+    {
+      "id": 59,
+      "category": "obehovy-system",
+      "question": "Z pravé srdeční komory je krev vypuzována:",
+      "options": [
+        {
+          "key": "a",
+          "text": "do malého (plicního) krevního oběhu"
+        },
+        {
+          "key": "b",
+          "text": "do velkého (systémového) krevního oběhu"
+        },
+        {
+          "key": "c",
+          "text": "do tzv. vrátnicového oběhu"
+        },
+        {
+          "key": "d",
+          "text": "do jater"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Z pravé srdeční komory je krev vypuzována tepnou plicnicí do malého (plicního) krevního oběhu, kde se v plicích okysličí."
+    },
+    {
+      "id": 60,
+      "category": "obehovy-system",
+      "question": "Srdce dospělého člověka přečerpá při námaze za 1 minutu:",
+      "options": [
+        {
+          "key": "a",
+          "text": "až 5 litrů krve"
+        },
+        {
+          "key": "b",
+          "text": "až 10 litrů krve"
+        },
+        {
+          "key": "c",
+          "text": "až 30 litrů krve"
+        },
+        {
+          "key": "d",
+          "text": "až 100 litrů krve"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Při intenzivní námaze může srdeční výdej vzrůst až na 25-30 litrů za minutu (u trénovaných sportovců). V klidu je to přibližně 5 litrů."
+    },
+    {
+      "id": 61,
+      "category": "dychani",
+      "question": "Impulzem k nádechu je především podráždění dýchacího centra:",
+      "options": [
+        {
+          "key": "a",
+          "text": "nedostatkem kyslíku v organismu"
+        },
+        {
+          "key": "b",
+          "text": "přebytkem kyslíku v organismu"
+        },
+        {
+          "key": "c",
+          "text": "nedostatkem oxidu uhličitého v organismu"
+        },
+        {
+          "key": "d",
+          "text": "přebytkem oxidu uhličitého v organismu"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Hlavním podnětem k nádechu je zvýšená hladina CO₂ v krvi. Proto je hyperventilace nebezpečná - snižuje CO₂ a potápěč nemusí cítit potřebu nadechnout se."
+    },
+    {
+      "id": 62,
+      "category": "dychani",
+      "question": "Oxid uhličitý přestupuje z tkání do krve a z krve do plic:",
+      "options": [
+        {
+          "key": "a",
+          "text": "vlivem zvýšeného parciálního tlaku dusíku"
+        },
+        {
+          "key": "b",
+          "text": "difuzí na základě rozdílu parciálních tlaků"
+        },
+        {
+          "key": "c",
+          "text": "na základě vytěsňování kyslíkem"
+        },
+        {
+          "key": "d",
+          "text": "působením bílých krvinek"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Výměna plynů probíhá difuzí - plyny přestupují z místa s vyšším parciálním tlakem do místa s nižším parciálním tlakem."
+    },
+    {
+      "id": 63,
+      "category": "dychani",
+      "question": "Dospělý člověk se v klidu za 1 minutu nadechne přibližně:",
+      "options": [
+        {
+          "key": "a",
+          "text": "8krát"
+        },
+        {
+          "key": "b",
+          "text": "10krát"
+        },
+        {
+          "key": "c",
+          "text": "16krát"
+        },
+        {
+          "key": "d",
+          "text": "30krát"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Klidová dechová frekvence dospělého člověka je přibližně 12-20 dechů za minutu, typicky kolem 16."
+    },
+    {
+      "id": 64,
+      "category": "krev",
+      "question": "Krevní plazma:",
+      "options": [
+        {
+          "key": "a",
+          "text": "je nažloutlá tekutina"
+        },
+        {
+          "key": "b",
+          "text": "obsahuje přibližně 90 % vody"
+        },
+        {
+          "key": "c",
+          "text": "nese červené krvinky, bílé krvinky a krevní destičky"
+        },
+        {
+          "key": "d",
+          "text": "všechny odpovědi jsou správné"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Všechna tvrzení jsou správná. Krevní plazma je nažloutlá tekutina tvořící asi 55 % objemu krve, obsahuje 90 % vody a nese krevní buňky."
+    },
+    {
+      "id": 65,
+      "category": "dychani",
+      "question": "Dýchacími plyny rozumíme:",
+      "options": [
+        {
+          "key": "a",
+          "text": "kyslík a oxid uhličitý"
+        },
+        {
+          "key": "b",
+          "text": "kyslík, hélium a vodík"
+        },
+        {
+          "key": "c",
+          "text": "kyslík a dusík"
+        },
+        {
+          "key": "d",
+          "text": "kyslík, dusík a oxid uhličitý"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Dýchacími plyny rozumíme kyslík (O₂) a oxid uhličitý (CO₂) - plyny, které se vyměňují mezi organismem a prostředím při dýchání."
+    },
+    {
+      "id": 66,
+      "category": "krev",
+      "question": "Krevní plazma:",
+      "options": [
+        {
+          "key": "a",
+          "text": "váže kyslík chemickou vratnou vazbou"
+        },
+        {
+          "key": "b",
+          "text": "obsahuje přibližně 90 % vody"
+        },
+        {
+          "key": "c",
+          "text": "vzniká v kostní dřeni"
+        },
+        {
+          "key": "d",
+          "text": "všechny odpovědi jsou správné"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Správná je pouze odpověď b). Kyslík váže hemoglobin v červených krvinkách (nikoliv plazma) a v kostní dřeni vznikají krevní buňky, nikoliv plazma."
+    },
+    {
+      "id": 67,
+      "category": "krev",
+      "question": "Červené krvinky vznikají:",
+      "options": [
+        {
+          "key": "a",
+          "text": "v kostní dřeni"
+        },
+        {
+          "key": "b",
+          "text": "v játrech"
+        },
+        {
+          "key": "c",
+          "text": "v míše"
+        },
+        {
+          "key": "d",
+          "text": "v krvi z krevní plazmy"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Červené krvinky (erytrocyty) vznikají v červené kostní dřeni. U dospělých hlavně v plochých kostech (pánev, hrudní kost, lebka)."
+    },
+    {
+      "id": 68,
+      "category": "krev",
+      "question": "Označte nesprávné tvrzení:",
+      "options": [
+        {
+          "key": "a",
+          "text": "Bílé krvinky se uplatňují při zástavě krvácení."
+        },
+        {
+          "key": "b",
+          "text": "Červené krvinky vznikají v kostní dřeni."
+        },
+        {
+          "key": "c",
+          "text": "Červené krvinky se uplatňují při přenosu kyslíku."
+        },
+        {
+          "key": "d",
+          "text": "Krev je přibližně z poloviny tvořena krevní plazmou."
+        }
+      ],
+      "correct": "a",
+      "explanation": "Nesprávné je tvrzení a) - při zástavě krvácení se uplatňují krevní destičky (trombocyty), nikoliv bílé krvinky. Bílé krvinky bojují s infekcí."
+    },
+    {
+      "id": 69,
+      "category": "krev",
+      "question": "Na krvi je z hlediska přenosu kyslíku nejdůležitější:",
+      "options": [
+        {
+          "key": "a",
+          "text": "přítomnost bílých krvinek"
+        },
+        {
+          "key": "b",
+          "text": "schopnost vázat kyslík chemickou vratnou vazbou"
+        },
+        {
+          "key": "c",
+          "text": "přibližně 50procentní obsah krevní plazmy"
+        },
+        {
+          "key": "d",
+          "text": "přítomnost krevních destiček"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Pro přenos kyslíku je klíčová schopnost hemoglobinu v červených krvinkách vázat kyslík chemickou vratnou vazbou - v plicích ho naváže, v tkáních uvolní."
+    },
+    {
+      "id": 70,
+      "category": "krev",
+      "question": "Při přenosu kyslíku se uplatňují:",
+      "options": [
+        {
+          "key": "a",
+          "text": "krevní destičky"
+        },
+        {
+          "key": "b",
+          "text": "bílé krvinky"
+        },
+        {
+          "key": "c",
+          "text": "červené krvinky"
+        },
+        {
+          "key": "d",
+          "text": "všechny odpovědi jsou správné"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Při přenosu kyslíku se uplatňují červené krvinky (erytrocyty), které obsahují hemoglobin - barvivo schopné vázat kyslík."
+    },
+    {
+      "id": 71,
+      "category": "krev",
+      "question": "Kyslík se navazuje na červené krevní barvivo:",
+      "options": [
+        {
+          "key": "a",
+          "text": "chemickou vratnou vazbou"
+        },
+        {
+          "key": "b",
+          "text": "chemickou nevratnou vazbou"
+        },
+        {
+          "key": "c",
+          "text": "fyzikálně"
+        },
+        {
+          "key": "d",
+          "text": "hormonálně"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Kyslík se váže na hemoglobin chemickou vratnou vazbou. V plicích se naváže (vysoký pO₂), v tkáních se uvolní (nízký pO₂). Oxid uhelnatý se váže nevratně, proto je jedovatý."
+    },
+    {
+      "id": 72,
+      "category": "krev",
+      "question": "Krevní destičky se uplatňují:",
+      "options": [
+        {
+          "key": "a",
+          "text": "při přenosu kyslíku"
+        },
+        {
+          "key": "b",
+          "text": "při obraně organismu proti infekci"
+        },
+        {
+          "key": "c",
+          "text": "při zažívání"
+        },
+        {
+          "key": "d",
+          "text": "při zástavě krvácení"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Krevní destičky (trombocyty) se uplatňují při zástavě krvácení - shlukují se v místě poranění cévy a podílejí se na tvorbě krevní sraženiny."
+    },
+    {
+      "id": 73,
+      "category": "krev",
+      "question": "Bílé krvinky se uplatňují:",
+      "options": [
+        {
+          "key": "a",
+          "text": "při přenosu kyslíku"
+        },
+        {
+          "key": "b",
+          "text": "při zástavě krvácení"
+        },
+        {
+          "key": "c",
+          "text": "při obraně organismu proti infekci"
+        },
+        {
+          "key": "d",
+          "text": "při zažívání"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Bílé krvinky (leukocyty) jsou součástí imunitního systému a chrání organismus před infekcí - ničí bakterie, viry a jiné patogeny."
+    },
+    {
+      "id": 74,
+      "category": "krev",
+      "question": "Červené krvinky se uplatňují:",
+      "options": [
+        {
+          "key": "a",
+          "text": "při obraně organismu proti infekci"
+        },
+        {
+          "key": "b",
+          "text": "při přenosu kyslíku"
+        },
+        {
+          "key": "c",
+          "text": "při zástavě krvácení"
+        },
+        {
+          "key": "d",
+          "text": "při zažívání"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Červené krvinky (erytrocyty) obsahují hemoglobin a jejich hlavní funkcí je přenos kyslíku z plic do tkání a odvod CO₂ zpět do plic."
+    },
+    {
+      "id": 75,
+      "category": "dychani",
+      "question": "Vnitřním dýcháním rozumíme výměnu dýchacích plynů:",
+      "options": [
+        {
+          "key": "a",
+          "text": "mezi krví a tkáněmi"
+        },
+        {
+          "key": "b",
+          "text": "mezi plicemi a krví"
+        },
+        {
+          "key": "c",
+          "text": "mezi okolním prostředím a plicemi"
+        },
+        {
+          "key": "d",
+          "text": "mezi jednotlivými úseky dýchacích cest"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Vnitřní (tkáňové) dýchání je výměna plynů mezi krví a tkáněmi. Kyslík přestupuje z krve do buněk, CO₂ opačným směrem."
+    },
+    {
+      "id": 76,
+      "category": "dychani",
+      "question": "Zevním dýcháním rozumíme výměnu dýchacích plynů:",
+      "options": [
+        {
+          "key": "a",
+          "text": "mezi jednotlivými úseky dýchacích cest"
+        },
+        {
+          "key": "b",
+          "text": "mezi okolním prostředím a plicemi"
+        },
+        {
+          "key": "c",
+          "text": "mezi krví a tkáněmi"
+        },
+        {
+          "key": "d",
+          "text": "mezi plicemi a krví"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Zevní (plicní) dýchání je výměna plynů mezi plicními sklípky a krví v plicních kapilárách. Kyslík přestupuje do krve, CO₂ do sklípků."
+    },
+    {
+      "id": 77,
+      "category": "dychani",
+      "question": "Dýchací centrum je umístěno:",
+      "options": [
+        {
+          "key": "a",
+          "text": "v plicích"
+        },
+        {
+          "key": "b",
+          "text": "v mozkové kůře"
+        },
+        {
+          "key": "c",
+          "text": "v prodloužené míše"
+        },
+        {
+          "key": "d",
+          "text": "v krčních tepnách"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Dýchací centrum je umístěno v prodloužené míše (medulla oblongata). Reaguje především na hladinu CO₂ v krvi a řídí frekvenci a hloubku dýchání."
+    },
+    {
+      "id": 78,
+      "category": "dychani",
+      "question": "Sklípkový vzduch obsahuje za normálního tlaku přibližně:",
+      "options": [
+        {
+          "key": "a",
+          "text": "10 % kyslíku a 0 % oxidu uhličitého"
+        },
+        {
+          "key": "b",
+          "text": "15 % kyslíku a 5 % oxidu uhličitého"
+        },
+        {
+          "key": "c",
+          "text": "21 % kyslíku a 0,03 % oxidu uhličitého při nádechu, 16 % kyslíku a 4 % oxidu uhličitého při výdechu"
+        },
+        {
+          "key": "d",
+          "text": "5 % kyslíku a 15 % oxidu uhličitého"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Sklípkový vzduch obsahuje přibližně 15 % O₂ a 5 % CO₂. Liší se od vdechovaného vzduchu (21 % O₂, 0,03 % CO₂), protože probíhá výměna plynů."
+    },
+    {
+      "id": 79,
+      "category": "dychani",
+      "question": "Dospělý člověk vdechne v klidu na jeden nádech:",
+      "options": [
+        {
+          "key": "a",
+          "text": "5 – 6 litrů vzduchu"
+        },
+        {
+          "key": "b",
+          "text": "3 – 4 litry vzduchu"
+        },
+        {
+          "key": "c",
+          "text": "1 – 2 litry vzduchu"
+        },
+        {
+          "key": "d",
+          "text": "0,3 – 0,5 litru vzduchu"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Klidový dechový objem je přibližně 0,5 litru (500 ml). Při námaze se zvyšuje. Vitální kapacita (maximální nádech) je 4-5 litrů."
+    },
+    {
+      "id": 80,
+      "category": "dychani",
+      "question": "Kyslík přestupuje z plic do krve a z krve do tkání:",
+      "options": [
+        {
+          "key": "a",
+          "text": "vlivem zvýšeného parciálního tlaku dusíku"
+        },
+        {
+          "key": "b",
+          "text": "na základě vytěsňování oxidem uhličitým"
+        },
+        {
+          "key": "c",
+          "text": "difuzí na základě rozdílu parciálních tlaků"
+        },
+        {
+          "key": "d",
+          "text": "ve formě uhličitanů"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Kyslík přestupuje difuzí z místa s vyšším parciálním tlakem (plíce, krev) do místa s nižším parciálním tlakem (krev, tkáně)."
+    },
+    {
+      "id": 81,
+      "category": "smysly",
+      "question": "Vedlejší dutiny nosní jsou spojeny:",
+      "options": [
+        {
+          "key": "a",
+          "text": "s dutinou nosní"
+        },
+        {
+          "key": "b",
+          "text": "s nosohltanem"
+        },
+        {
+          "key": "c",
+          "text": "se středouším"
+        },
+        {
+          "key": "d",
+          "text": "s vnitřním uchem"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Vedlejší dutiny nosní (čelní, čichové, klínová, čelistní) jsou spojeny s dutinou nosní. Při potápění se v nich vyrovnává tlak automaticky."
+    },
+    {
+      "id": 82,
+      "category": "smysly",
+      "question": "Vedlejší dutiny nosní jsou u zdravého člověka:",
+      "options": [
+        {
+          "key": "a",
+          "text": "uzavřeny"
+        },
+        {
+          "key": "b",
+          "text": "volně spojeny s dutinami středoušními"
+        },
+        {
+          "key": "c",
+          "text": "volně spojeny s dutinou nosní"
+        },
+        {
+          "key": "d",
+          "text": "spojeny s dýchacími cestami ventilovým uzávěrem"
+        }
+      ],
+      "correct": "c",
+      "explanation": "U zdravého člověka jsou vedlejší dutiny nosní volně spojeny s dutinou nosní, takže se tlak vyrovnává automaticky. Při rýmě může být spojení zúžené."
+    },
+    {
+      "id": 83,
+      "category": "potapeni",
+      "question": "Nástup otravy dusíkem (hloubkového opojení) se projevuje:",
+      "options": [
+        {
+          "key": "a",
+          "text": "depresemi"
+        },
+        {
+          "key": "b",
+          "text": "lepší soustředěností na vykonávanou činnost"
+        },
+        {
+          "key": "c",
+          "text": "rozjařením (euforií)"
+        },
+        {
+          "key": "d",
+          "text": "neovladatelným svalovým třesem"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Nástup hloubkového opojení (narkózy z dusíku) se typicky projevuje euforií a pocitem rozjaření, podobně jako opilost. To je nebezpečné, protože potápěč nemusí rozpoznat problém."
+    },
+    {
+      "id": 84,
+      "category": "potapeni",
+      "question": "Nástup otravy dusíkem (hloubkového opojení) může být uspíšen:",
+      "options": [
+        {
+          "key": "a",
+          "text": "stresem"
+        },
+        {
+          "key": "b",
+          "text": "tělesnou námahou"
+        },
+        {
+          "key": "c",
+          "text": "nesprávnou technikou dýchání"
+        },
+        {
+          "key": "d",
+          "text": "všechny odpovědi jsou správné"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Všechny uvedené faktory mohou uspíšit nástup hloubkového opojení: stres, námaha, špatná technika dýchání (hromadění CO₂), ale i únava, chlad nebo alkohol."
+    },
+    {
+      "id": 85,
+      "category": "termoregulace",
+      "question": "Dlouhodobý pobyt bez izolačního obleku je možný ve vodě o teplotě minimálně:",
+      "options": [
+        {
+          "key": "a",
+          "text": "42 °C"
+        },
+        {
+          "key": "b",
+          "text": "35 °C"
+        },
+        {
+          "key": "c",
+          "text": "30 °C"
+        },
+        {
+          "key": "d",
+          "text": "18 °C"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Dlouhodobý pobyt bez neoprenu je možný ve vodě o teplotě minimálně 35 °C (termoneutrální zóna). Voda odvádí teplo 25× rychleji než vzduch."
+    },
+    {
+      "id": 86,
+      "category": "termoregulace",
+      "question": "Mezi reakce organismu na chlad nepatří:",
+      "options": [
+        {
+          "key": "a",
+          "text": "stažení cév (vazokonstrikce)"
+        },
+        {
+          "key": "b",
+          "text": "zvýšené vylučování moči (polyurie)"
+        },
+        {
+          "key": "c",
+          "text": "neovladatelný svalový třes"
+        },
+        {
+          "key": "d",
+          "text": "rozjaření (euforie)"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Rozjaření (euforie) není reakcí na chlad. Naopak vazokonstrikce, polyurie (imerze) a svalový třes jsou typické obranné reakce organismu na chlad."
+    },
+    {
+      "id": 87,
+      "category": "dychani",
+      "question": "Označte nesprávné tvrzení:",
+      "options": [
+        {
+          "key": "a",
+          "text": "Oxid uhličitý je krví přenášen ve formě uhličitanů."
+        },
+        {
+          "key": "b",
+          "text": "Usilovné rozdýchávání (hyperventilace) vede k hromadění kyslíku v organismu."
+        },
+        {
+          "key": "c",
+          "text": "Zevním dýcháním rozumíme výměnu dýchacích plynů mezi plicemi a krví."
+        },
+        {
+          "key": "d",
+          "text": "Vnitřním dýcháním rozumíme výměnu dýchacích plynů mezi krví a tkáněmi."
+        }
+      ],
+      "correct": "b",
+      "explanation": "Nesprávné je tvrzení b) - hyperventilace nevede k hromadění kyslíku, ale k odvětrání CO₂. Zásoby O₂ se téměř nezvýší, ale sníží se podnět k nádechu."
+    },
+    {
+      "id": 88,
+      "category": "smysly",
+      "question": "Sluchová (Eustachova) trubice spojuje:",
+      "options": [
+        {
+          "key": "a",
+          "text": "střední ucho s vedlejšími dutinami nosními"
+        },
+        {
+          "key": "b",
+          "text": "střední ucho s vnitřním uchem"
+        },
+        {
+          "key": "c",
+          "text": "střední ucho s nosohltanem"
+        },
+        {
+          "key": "d",
+          "text": "vnitřní ucho s nosohltanem"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Eustachova trubice spojuje střední ucho s nosohltanem. Umožňuje vyrovnávání tlaku ve středouší - klíčové pro potápěče při sestupu."
+    },
+    {
+      "id": 89,
+      "category": "dychani",
+      "question": "Důsledkem usilovného rozdýchávání (hyperventilace) je:",
+      "options": [
+        {
+          "key": "a",
+          "text": "pokles hladiny oxidu uhličitého v organismu"
+        },
+        {
+          "key": "b",
+          "text": "hromadění oxidu uhličitého v organismu"
+        },
+        {
+          "key": "c",
+          "text": "pokles hladiny kyslíku v organismu"
+        },
+        {
+          "key": "d",
+          "text": "hromadění kyslíku v organismu"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Hyperventilace vede k odvětrání CO₂ a poklesu jeho hladiny v krvi. To je nebezpečné při potápění na nádech - potápěč nemusí cítit potřebu nadechnout se a může ztratit vědomí."
+    },
+    {
+      "id": 90,
+      "category": "smysly",
+      "question": "Vyrovnání tlaku ve středouší docílíme:",
+      "options": [
+        {
+          "key": "a",
+          "text": "pootevřením ústí vedlejších dutin nosních"
+        },
+        {
+          "key": "b",
+          "text": "uzavřením vnějších zvukovodů"
+        },
+        {
+          "key": "c",
+          "text": "uzavřením ústí sluchových (Eustachových) trubic"
+        },
+        {
+          "key": "d",
+          "text": "pootevřením ústí sluchových (Eustachových) trubic"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Vyrovnání tlaku ve středouší docílíme pootevřením Eustachových trubic (Valsalvův manévr, polykání, pohyb čelistí). Při sestupu je nutné vyrovnávat tlak průběžně."
+    },
+    {
+      "id": 91,
+      "category": "potapeni",
+      "question": "Při dýchání stlačeného vzduchu nastupuje otrava dusíkem (hloubkové opojení) přibližně v hloubce:",
+      "options": [
+        {
+          "key": "a",
+          "text": "10 – 20 metrů"
+        },
+        {
+          "key": "b",
+          "text": "30 – 40 metrů"
+        },
+        {
+          "key": "c",
+          "text": "okolo 50 metrů"
+        },
+        {
+          "key": "d",
+          "text": "přes 60 metrů"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Hloubkové opojení při dýchání vzduchu nastupuje typicky v hloubce 30-40 metrů. Individuální citlivost se liší a může být ovlivněna dalšími faktory."
+    },
+    {
+      "id": 92,
+      "category": "potapeni",
+      "question": "Hloubkové opojení je způsobováno:",
+      "options": [
+        {
+          "key": "a",
+          "text": "dusíkem a oxidem uhličitým"
+        },
+        {
+          "key": "b",
+          "text": "zvýšeným parciálním tlakem kyslíku"
+        },
+        {
+          "key": "c",
+          "text": "tlakem výstroje na krční tepny"
+        },
+        {
+          "key": "d",
+          "text": "héliem, případně vodíkem"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Hloubkové opojení je způsobováno především dusíkem (narkotický účinek) a může být zesíleno zvýšenou hladinou CO₂. Hélium narkotický účinek nemá."
+    },
+    {
+      "id": 93,
+      "category": "potapeni",
+      "question": "Při pobytu pod vodou se nejrychleji nasytí dusíkem:",
+      "options": [
+        {
+          "key": "a",
+          "text": "kosterní svalstvo"
+        },
+        {
+          "key": "b",
+          "text": "mozek"
+        },
+        {
+          "key": "c",
+          "text": "krev"
+        },
+        {
+          "key": "d",
+          "text": "srdce"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Krev se sytí dusíkem nejrychleji, protože je v přímém kontaktu s plicními sklípky. Rychlé tkáně (mozek, srdce) se sytí také rychle díky dobrému prokrvení."
+    },
+    {
+      "id": 94,
+      "category": "potapeni",
+      "question": "Zbytkový dusík:",
+      "options": [
+        {
+          "key": "a",
+          "text": "je množství dusíku, které chybí do úplného nasycení dané tkáně"
+        },
+        {
+          "key": "b",
+          "text": "se z organismu vysycuje i řadu hodin po vynoření"
+        },
+        {
+          "key": "c",
+          "text": "je množství dusíku, který se rozpustí ve tkáních od zanoření do zahájení výstupu předepsanou rychlostí"
+        },
+        {
+          "key": "d",
+          "text": "se z organismu vysytí při pobytu na dekompresní zastávce (dekompresních zastávkách)"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Zbytkový dusík je dusík rozpuštěný v tkáních po ponoru. Vysycuje se i řadu hodin po vynoření - proto je důležitý povrchový interval před dalším ponorem nebo létáním."
+    },
+    {
+      "id": 95,
+      "category": "potapeni",
+      "question": "Při pobytu pod vodou se nejpomaleji nasytí dusíkem:",
+      "options": [
+        {
+          "key": "a",
+          "text": "vazy, šlachy a kosti"
+        },
+        {
+          "key": "b",
+          "text": "ledviny"
+        },
+        {
+          "key": "c",
+          "text": "kosterní svalstvo"
+        },
+        {
+          "key": "d",
+          "text": "krev"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Vazy, šlachy a kosti (pomalé tkáně) se sytí dusíkem nejpomaleji kvůli špatnému prokrvení. Proto jsou ohroženy při dlouhých nebo opakovaných ponorech."
+    },
+    {
+      "id": 96,
+      "category": "potapeni",
+      "question": "Označte nesprávné tvrzení:",
+      "options": [
+        {
+          "key": "a",
+          "text": "Dusík je při sestupu rozváděn krví do celého těla."
+        },
+        {
+          "key": "b",
+          "text": "Ve srovnání s většinou tělesných struktur se v tukových tkáních rozpustí pětkrát více dusíku."
+        },
+        {
+          "key": "c",
+          "text": "Zbytkový dusík se z organismu vysycuje i řadu hodin po vynoření."
+        },
+        {
+          "key": "d",
+          "text": "Tkáně, které se při sestupu sytí dusíkem rychleji, se při výstupu pomaleji vysycují."
+        }
+      ],
+      "correct": "d",
+      "explanation": "Nesprávné je tvrzení d) - tkáně, které se rychle sytí, se také rychle vysycují (rychlé tkáně). Pomalé tkáně se pomalu sytí i pomalu vysycují."
+    },
+    {
+      "id": 97,
+      "category": "termoregulace",
+      "question": "Normální průměrná teplota tzv. tělesného jádra je přibližně:",
+      "options": [
+        {
+          "key": "a",
+          "text": "18 °C"
+        },
+        {
+          "key": "b",
+          "text": "30 °C"
+        },
+        {
+          "key": "c",
+          "text": "37 °C"
+        },
+        {
+          "key": "d",
+          "text": "42 °C"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Normální teplota tělesného jádra je přibližně 37 °C (36,5-37,5 °C). Teplota nad 42 °C nebo pod 28 °C je život ohrožující."
+    },
+    {
+      "id": 98,
+      "category": "smysly",
+      "question": "Označte nesprávné tvrzení:",
+      "options": [
+        {
+          "key": "a",
+          "text": "Sluchové (Eustachovy) trubice spojují dutiny středoušní s nosohltanem."
+        },
+        {
+          "key": "b",
+          "text": "Pro vyrovnání tlaku ve středouší je nutno pootevřít ústí sluchových (Eustachových) trubic."
+        },
+        {
+          "key": "c",
+          "text": "Ústrojí rovnováhy se nachází ve vnitřním uchu."
+        },
+        {
+          "key": "d",
+          "text": "Vedlejší dutiny nosní nejsou u zdravého člověka spojeny s dýchacími cestami."
+        }
+      ],
+      "correct": "d",
+      "explanation": "Nesprávné je tvrzení d) - vedlejší dutiny nosní jsou u zdravého člověka volně spojeny s dutinou nosní (a tedy s dýchacími cestami)."
+    },
+    {
+      "id": 99,
+      "category": "smysly",
+      "question": "Vyrovnávání tlaku ve vedlejších dutinách nosních:",
+      "options": [
+        {
+          "key": "a",
+          "text": "je podmíněno pootevřením ústí sluchových (Eustachových) trubic"
+        },
+        {
+          "key": "b",
+          "text": "je u zdravého člověka samovolné"
+        },
+        {
+          "key": "c",
+          "text": "je nutné pouze při potápění s dýchacím přístrojem"
+        },
+        {
+          "key": "d",
+          "text": "je zajištěno poddajností jejich stěn"
+        }
+      ],
+      "correct": "b",
+      "explanation": "U zdravého člověka je vyrovnávání tlaku ve vedlejších dutinách nosních samovolné díky volnému spojení s dutinou nosní. Problémy mohou nastat při rýmě nebo zánětu."
+    },
+    {
+      "id": 100,
+      "category": "termoregulace",
+      "question": "Rozšíření cév je projevem ochrany organismu:",
+      "options": [
+        {
+          "key": "a",
+          "text": "před přehřátím"
+        },
+        {
+          "key": "b",
+          "text": "před podchlazením"
+        },
+        {
+          "key": "c",
+          "text": "před hyperventilací"
+        },
+        {
+          "key": "d",
+          "text": "před šokem"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Rozšíření cév (vazodilatace) je ochranná reakce před přehřátím - více krve proudí k povrchu těla a teplo se odvádí do okolí. Při chladu se naopak cévy stahují (vazokonstrikce)."
+    }
+  ]
+}
