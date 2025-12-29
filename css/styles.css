@@ -1212,7 +1212,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "v2";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.0.1";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* Responsive */

@@ -10,13 +10,13 @@ Before pushing ANY changes, update the version number in **two places**:
 
 **File: `sw.js` (line 2)**
 ```javascript
-const CACHE_NAME = 'deco-theory-v1';  // ← Increment this (v1 → v2 → v3...)
+const CACHE_NAME = 'deco-theory-0.0.1';  // ← Increment this (0.0.1 → 0.0.2 → 0.0.3...)
 ```
 
 **File: `css/styles.css` (search for `.version-number::after`)**
 ```css
 .version-number::after {
-    content: "v1";  /* ← Keep in sync with sw.js */
+    content: "0.0.1";  /* ← Keep in sync with sw.js */
 }
 ```
 
