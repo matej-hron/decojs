@@ -3,6 +3,17 @@
 ## Project Overview
 This is a Progressive Web App (PWA) for learning decompression theory. It runs on GitHub Pages at https://matej-hron.github.io/decojs/
 
+## Theoretical References
+
+When looking into decompression theory concepts, follow these primary sources:
+
+1. **Decompression Theory PDF** (freely available online):
+   https://aquatec.wordpress.com/wp-content/uploads/2011/03/decompression-theory.pdf
+
+2. **"Deco for Divers" by Mark Powell** (book, no online version available):
+   The definitive reference for recreational and technical diving decompression. 
+   Physical copy only - not available online.
+
 ## ⚠️ IMPORTANT: Before Every Push
 
 ### 1. Bump the Cache Version

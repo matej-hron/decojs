@@ -116,6 +116,25 @@
                     </div>
                 </details>
 
+                <details class="advanced-section">
+                    <summary>🛢️ Cylinder Size</summary>
+                    <div class="gas-mix-inputs">
+                        <div class="info-row">
+                            <label for="cylinder-volume-input">Cylinder Volume:</label>
+                            <select id="cylinder-volume-input" class="form-select">
+                                <option value="10">10 L (Single)</option>
+                                <option value="12" selected>12 L (Single)</option>
+                                <option value="15">15 L (Single)</option>
+                                <option value="18">18 L (Single)</option>
+                                <option value="14">2×7 L (Doubles - 14 L)</option>
+                                <option value="20">2×10 L (Doubles - 20 L)</option>
+                                <option value="24">2×12 L (Doubles - 24 L)</option>
+                            </select>
+                        </div>
+                        <p class="hint">Used for gas consumption calculations. Assumes 200 bar fill pressure.</p>
+                    </div>
+                </details>
+
                 <h3>Surface Interval (post-dive)</h3>
                 <div class="surface-interval-input">
                     <label for="surface-interval-input">
@@ -250,6 +269,7 @@
         const gasO2Input = document.getElementById('gas-o2-input');
         const gasN2Input = document.getElementById('gas-n2-input');
         const gasHeInput = document.getElementById('gas-he-input');
+        const cylinderVolumeInput = document.getElementById('cylinder-volume-input');
         const surfaceIntervalInput = document.getElementById('surface-interval-input');
         const waypointsBody = document.getElementById('waypoints-body');
         const addWaypointBtn = document.getElementById('add-waypoint');
@@ -375,6 +395,7 @@
                     n2: (parseFloat(gasN2Input.value) || 79) / 100,
                     he: (parseFloat(gasHeInput.value) || 0) / 100
                 },
+                cylinderVolume: parseInt(cylinderVolumeInput.value) || 12,
                 surfaceInterval: parseFloat(surfaceIntervalInput.value) || 60,
                 units: currentSetup?.units || { depth: 'meters', time: 'minutes', pressure: 'bar' }
             };
@@ -460,6 +481,7 @@
             gasO2Input.value = Math.round((setup.gasMix?.o2 || 0.21) * 100);
             gasHeInput.value = Math.round((setup.gasMix?.he || 0) * 100);
             updateN2();
+            cylinderVolumeInput.value = setup.cylinderVolume || 12;
             surfaceIntervalInput.value = setup.surfaceInterval || 60;
             
             // Handle multi-dive vs single dive format

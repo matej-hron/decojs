@@ -78,6 +78,7 @@
                 <li><a href="#terminology">📚 Dive Profile Terminology</a></li>
                 <li><a href="#dive-profile">📈 Your Dive Profile</a></li>
                 <li><a href="#total-pressure">🌊 Total Pressure Underwater</a></li>
+                <li><a href="#gas-consumption">⛽ Gas Consumption</a></li>
             </ul>
         </nav>
 
@@ -287,6 +288,123 @@
                 <button id="pressure-exit-fullscreen-btn" class="btn btn-fullscreen-close" title="Exit Fullscreen">✕</button>
             </div>
         </section>
+
+        <!-- Gas Consumption Section -->
+        <section id="gas-consumption" class="education-section">
+            <h2>⛽ Gas Consumption</h2>
+            
+            <div class="concept-card">
+                <h3>Why Depth Matters for Gas Supply</h3>
+                <p>
+                    According to <strong>Boyle-Mariotte's Law</strong>, as pressure increases, the volume of gas decreases proportionally. 
+                    Underwater, this means you breathe <em>compressed</em> air from your tank. At 10m depth (2 bar), 
+                    each breath draws twice the amount of gas molecules compared to the surface.
+                </p>
+                <p>
+                    This is why deeper dives consume your gas supply faster—you're breathing the same volume of air, 
+                    but it contains more gas molecules due to compression.
+                </p>
+            </div>
+
+            <div class="concept-card">
+                <h3>Surface Air Consumption (SAC)</h3>
+                <p>
+                    <strong>SAC rate</strong> (also called RMV - Respiratory Minute Volume) is how much gas you breathe 
+                    per minute at the surface. For planning purposes, we use a typical value of <strong>20 L/min</strong> 
+                    for relaxed diving, though actual consumption varies based on exertion, stress, and individual factors.
+                </p>
+                <p>
+                    At depth, your actual consumption is: <strong>SAC × Ambient Pressure</strong>
+                </p>
+                <ul>
+                    <li>Surface (1 bar): 20 L/min</li>
+                    <li>10m (2 bar): 40 L/min</li>
+                    <li>20m (3 bar): 60 L/min</li>
+                    <li>30m (4 bar): 80 L/min</li>
+                    <li>40m (5 bar): 100 L/min</li>
+                </ul>
+            </div>
+
+            <details class="learn-more">
+                <summary>🔬 Gas Consumption Formula</summary>
+                <div class="math-content">
+                    <h4>Gas Consumed at Depth</h4>
+                    <p>The gas consumption at any depth can be calculated as:</p>
+                    <div class="formula" id="formula-gas-consumption">
+                        \text{Consumption} = SAC \times P_{amb} \times t
+                    </div>
+                    <p>Where:</p>
+                    <ul>
+                        <li><span class="formula-inline">SAC</span> = Surface Air Consumption (L/min at surface)</li>
+                        <li><span class="formula-inline">P_{amb}</span> = Ambient pressure in bar (1 + depth/10)</li>
+                        <li><span class="formula-inline">t</span> = Time at depth (minutes)</li>
+                    </ul>
+
+                    <h4>Available Gas in Cylinder</h4>
+                    <div class="formula" id="formula-gas-available">
+                        \text{Gas Available} = V_{cylinder} \times (P_{start} - P_{reserve})
+                    </div>
+                    <p>For a 12L cylinder at 200 bar with 50 bar reserve:</p>
+                    <p>Available gas = 12 × (200 - 50) = <strong>1800 liters</strong></p>
+                </div>
+            </details>
+        </section>
+
+        <!-- Gas Consumption Chart Section -->
+        <section id="gas-consumption-chart" class="chart-section">
+            <div class="chart-header">
+                <h2>📈 Gas Consumption During Dive</h2>
+                <button id="gas-fullscreen-btn" class="btn btn-small btn-icon" title="Fullscreen">
+                    <span class="fullscreen-icon">⛶</span>
+                    <span class="fullscreen-text">Fullscreen</span>
+                </button>
+            </div>
+            
+            <!-- Local Overrides -->
+            <div class="chart-controls">
+                <div class="control-group">
+                    <label for="gas-cylinder-select">Cylinder:</label>
+                    <select id="gas-cylinder-select" class="form-select">
+                        <option value="10">10 L</option>
+                        <option value="12">12 L</option>
+                        <option value="15">15 L</option>
+                        <option value="18">18 L</option>
+                        <option value="14">2×7 L (14 L)</option>
+                        <option value="20">2×10 L (20 L)</option>
+                        <option value="24">2×12 L (24 L)</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="gas-sac-input">SAC Rate (L/min):</label>
+                    <input type="number" id="gas-sac-input" class="form-input" value="20" min="10" max="40" step="1">
+                </div>
+                <div class="control-group">
+                    <label for="gas-start-pressure">Start Pressure (bar):</label>
+                    <input type="number" id="gas-start-pressure" class="form-input" value="200" min="100" max="300" step="10">
+                </div>
+            </div>
+            
+            <div class="chart-container" id="gas-chart-container">
+                <canvas id="gas-consumption-canvas"></canvas>
+                <button id="gas-exit-fullscreen-btn" class="btn btn-fullscreen-close" title="Exit Fullscreen">✕</button>
+            </div>
+            
+            <!-- Gas Summary -->
+            <div id="gas-summary" class="stats-summary">
+                <div class="stat-item">
+                    <span class="stat-label">Total Gas Used:</span>
+                    <span id="total-gas-used" class="stat-value">-- L</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Remaining Pressure:</span>
+                    <span id="remaining-pressure" class="stat-value">-- bar</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Status:</span>
+                    <span id="gas-status" class="stat-value">--</span>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer>
@@ -295,7 +413,7 @@
     </footer>
 
     <script type="module">
-        import { loadDiveSetup, getDiveSetupWaypoints, saveDiveSetup, clearCache } from './js/diveSetup.js';
+        import { loadDiveSetup, getDiveSetupWaypoints, saveDiveSetup, clearCache, getCylinderVolume } from './js/diveSetup.js';
         
         // State
         let profileChart = null;

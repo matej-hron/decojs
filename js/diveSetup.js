@@ -174,6 +174,15 @@ export function getN2Fraction(setup) {
 }
 
 /**
+ * Get cylinder volume in liters
+ * @param {Object} setup - Dive setup object
+ * @returns {number} Cylinder volume in liters
+ */
+export function getCylinderVolume(setup) {
+    return setup.cylinderVolume || 12;
+}
+
+/**
  * Clear cached setup (useful for reloading)
  */
 export function clearCache() {
