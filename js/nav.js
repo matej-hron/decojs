@@ -14,7 +14,8 @@ const NAV_ITEMS = [
         submenu: [
             { href: 'pressure.html#terminology', label: 'Terminology' },
             { href: 'pressure.html#dive-profile', label: 'Dive Profile' },
-            { href: 'pressure.html#total-pressure', label: 'Total Pressure' }
+            { href: 'pressure.html#total-pressure', label: 'Total Pressure' },
+            { href: 'pressure.html#gas-consumption', label: 'Gas Consumption' }
         ]
     },
     { href: 'tissue-loading.html', label: 'Tissue Loading' },
