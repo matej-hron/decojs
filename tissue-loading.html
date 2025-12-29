@@ -14,13 +14,18 @@
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
     
     <!-- App styles -->
-    <link rel="stylesheet" href="css/styles.css?v=4">
+    <link rel="stylesheet" href="css/styles.css?v=6">
 </head>
 <body>
     <!-- Navigation -->
     <nav class="main-nav">
         <div class="nav-container">
             <a href="index.html" class="nav-logo">🫧 Deco Theory</a>
+            <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="dive-setup.html">Dive Setup</a></li>
@@ -233,5 +238,29 @@
 
     <!-- Main application script -->
     <script type="module" src="js/main.js"></script>
+
+    <!-- Mobile Navigation Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.querySelector('.nav-hamburger');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (hamburger && navLinks) {
+                hamburger.addEventListener('click', function() {
+                    const isOpen = navLinks.classList.toggle('nav-open');
+                    hamburger.classList.toggle('is-active');
+                    hamburger.setAttribute('aria-expanded', isOpen);
+                });
+                
+                navLinks.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        navLinks.classList.remove('nav-open');
+                        hamburger.classList.remove('is-active');
+                        hamburger.setAttribute('aria-expanded', 'false');
+                    });
+                });
+            }
+        });
+    </script>
 </body>
 </html>
