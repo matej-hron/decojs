@@ -15,7 +15,13 @@ const NAV_ITEMS = [
             { href: 'pressure.html#terminology', label: 'Terminology' },
             { href: 'pressure.html#dive-profile', label: 'Dive Profile' },
             { href: 'pressure.html#total-pressure', label: 'Total Pressure' },
-            { href: 'pressure.html#gas-consumption', label: 'Gas Consumption' }
+            { href: 'pressure.html#gas-consumption', label: 'Gas Consumption' },
+            { href: 'pressure.html#air-composition', label: 'Air Composition' },
+            { href: 'pressure.html#daltons-law', label: "Dalton's Law" },
+            { href: 'pressure.html#partial-pressure-limits', label: 'Partial Pressure Limits' },
+            { href: 'pressure.html#end-calculation', label: 'END Calculation' },
+            { href: 'pressure.html#oxygen-toxicity', label: 'Oxygen Toxicity' },
+            { href: 'pressure.html#partial-pressure-chart', label: 'Partial Pressure Chart' }
         ]
     },
     { href: 'tissue-loading.html', label: 'Tissue Loading' },
