@@ -1416,20 +1416,44 @@
             const finalGasRemaining = gasData[gasData.length - 1].gasRemaining;
             const finalPressure = finalGasRemaining / cylinderVolume;
             
+            // Find ascent start point (last point at max depth before ascending)
+            const maxDepth = Math.max(...waypoints.map(w => w.depth));
+            let ascentStartTime = 0;
+            for (let i = 0; i < waypoints.length - 1; i++) {
+                if (waypoints[i].depth === maxDepth && waypoints[i + 1].depth < maxDepth) {
+                    ascentStartTime = waypoints[i].time;
+                    break;
+                }
+            }
+            
+            // Find tank pressure at ascent start
+            const ascentStartData = gasData.find(d => d.x >= ascentStartTime) || gasData[gasData.length - 1];
+            const pressureAtAscentStart = ascentStartData.pressureRemaining;
+            
+            // Check if tank ever goes empty
+            const minPressure = Math.min(...gasData.map(d => d.pressureRemaining));
+            
             // Update summary
             document.getElementById('total-gas-used').textContent = `${Math.round(totalGasUsed)} L`;
             document.getElementById('remaining-pressure').textContent = `${Math.round(finalPressure)} bar`;
             
             const statusEl = document.getElementById('gas-status');
-            if (finalPressure < reservePressure) {
-                statusEl.textContent = '⚠️ Exceeds reserve!';
+            if (minPressure <= 0) {
+                statusEl.textContent = '🚨 OUT OF GAS!';
                 statusEl.style.color = '#e74c3c';
-            } else if (finalPressure < reservePressure + 30) {
-                statusEl.textContent = '⚠️ Close to reserve';
+                statusEl.style.fontWeight = 'bold';
+            } else if (pressureAtAscentStart < reservePressure) {
+                statusEl.textContent = `⚠️ Only ${Math.round(pressureAtAscentStart)} bar at ascent start!`;
+                statusEl.style.color = '#e74c3c';
+                statusEl.style.fontWeight = 'normal';
+            } else if (pressureAtAscentStart < reservePressure + 30) {
+                statusEl.textContent = `⚠️ ${Math.round(pressureAtAscentStart)} bar at ascent - close to reserve`;
                 statusEl.style.color = '#f39c12';
+                statusEl.style.fontWeight = 'normal';
             } else {
-                statusEl.textContent = '✅ OK';
+                statusEl.textContent = `✅ ${Math.round(pressureAtAscentStart)} bar at ascent start`;
                 statusEl.style.color = '#27ae60';
+                statusEl.style.fontWeight = 'normal';
             }
             
             // Build annotations
@@ -1469,7 +1493,6 @@
                 };
             }
             
-            const maxDepth = Math.max(...waypoints.map(w => w.depth));
             const maxConsumptionRate = Math.max(...gasData.map(d => d.consumptionRate));
             
             const data = {
