@@ -877,7 +877,7 @@
     </footer>
 
     <script type="module">
-        import { loadDiveSetup, getDiveSetupWaypoints, saveDiveSetup, clearCache, getCylinderVolume, PREDEFINED_GASES, getPredefinedGas, calculateMOD, calculateEND, calculatePartialPressure } from './js/diveSetup.js';
+        import { loadDiveSetup, getDiveSetupWaypoints, saveDiveSetup, clearCache, getCylinderVolume, PREDEFINED_GASES, getPredefinedGas, calculateMOD, calculateEND, calculatePartialPressure, getGases, getGasAtTime, getGasSwitchEvents } from './js/diveSetup.js';
         
         // State
         let profileChart = null;
@@ -886,6 +886,7 @@
         let currentSetup = null;
         let availableProfiles = [];
         let selectedGas = { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 };
+        let useProfileGases = true; // New: use gases from profile instead of selector
         
         // DOM elements
         const profileSwitcher = document.getElementById('profile-switcher');
@@ -993,10 +994,13 @@
             // Clear existing options
             profileSwitcher.innerHTML = '';
             
-            // Add custom option
+            // Check if current setup is a predefined profile
+            const isPredefined = currentSetup.id && availableProfiles.find(p => p.id === currentSetup.id);
+            
+            // Add custom option - show actual name if it's a custom profile
             const customOption = document.createElement('option');
             customOption.value = 'custom';
-            customOption.textContent = '✏️ Custom Profile';
+            customOption.textContent = isPredefined ? '✏️ Custom Profile' : `✏️ ${currentSetup.name || 'Custom Profile'}`;
             profileSwitcher.appendChild(customOption);
             
             // Add separator
@@ -1014,8 +1018,7 @@
             });
             
             // Set current selection
-            const matchingProfile = availableProfiles.find(p => p.id === currentSetup.id);
-            profileSwitcher.value = matchingProfile ? currentSetup.id : 'custom';
+            profileSwitcher.value = isPredefined ? currentSetup.id : 'custom';
             
             // Handle profile switching
             profileSwitcher.addEventListener('change', handleProfileSwitch);
@@ -1054,14 +1057,31 @@
             const waypoints = getDiveSetupWaypoints(currentSetup);
             const maxDepth = waypoints.length > 0 ? Math.max(...waypoints.map(w => w.depth)) : 0;
             const totalTime = waypoints.length > 0 ? waypoints[waypoints.length - 1].time : 0;
-            const gasMix = currentSetup.gasMix?.name || 'Air';
             
-            profileHeaderSummary.textContent = `${maxDepth}m / ${totalTime} min on ${gasMix}`;
+            // Use getGases for multi-gas support
+            const gases = getGases(currentSetup);
+            const gasNames = gases.map(g => g.name).join(', ');
+            
+            // Update profile name label
+            const profileLabel = document.querySelector('.profile-header-label');
+            if (profileLabel) {
+                profileLabel.textContent = currentSetup.name || 'Profile:';
+            }
+            
+            profileHeaderSummary.textContent = `${maxDepth}m / ${totalTime} min on ${gasNames}`;
             
             // Update switcher selection
             if (profileSwitcher) {
                 const matchingProfile = availableProfiles.find(p => p.id === currentSetup.id);
                 profileSwitcher.value = matchingProfile ? currentSetup.id : 'custom';
+                
+                // Update custom option text if it's a custom profile
+                if (!matchingProfile) {
+                    const customOption = profileSwitcher.querySelector('option[value="custom"]');
+                    if (customOption) {
+                        customOption.textContent = `✏️ ${currentSetup.name || 'Custom Profile'}`;
+                    }
+                }
             }
         }
         
@@ -1158,13 +1178,22 @@
                 }
             }
             
+            // Get gas switch events to exclude from deco stop detection
+            const gases = getGases(currentSetup);
+            const gasSwitchEvents = getGasSwitchEvents(waypoints, gases);
+            const gasSwitchTimes = new Set(gasSwitchEvents.map(e => e.time));
+            
             // Find stops (horizontal segments not at max depth and not at surface) - only for first dive
+            // Exclude gas switch stops - they get separate labels
             const stops = [];
             for (let i = 0; i < waypoints.length - 1; i++) {
                 const curr = waypoints[i];
                 const next = waypoints[i + 1];
                 // Only include stops from first dive
                 if (curr.time >= firstDiveEndTime) break;
+                
+                // Skip if this is a gas switch stop (arrival time matches a gas switch event)
+                if (gasSwitchTimes.has(curr.time)) continue;
                 
                 if (curr.depth > 0 && curr.depth < annotationMaxDepth && next.depth === curr.depth) {
                     const existing = stops.find(s => s.depth === curr.depth && s.end.time === curr.time);
@@ -1390,6 +1419,33 @@
                     padding: { top: 3, bottom: 3, left: 6, right: 6 }
                 };
             }
+            
+            // Gas switch markers for multi-gas profiles (use previously fetched data)
+            gasSwitchEvents.forEach((event, i) => {
+                // Vertical line at switch time
+                annotations[`gasSwitchLine${i}`] = {
+                    type: 'line',
+                    xMin: event.time,
+                    xMax: event.time,
+                    yMin: 0,
+                    yMax: event.depth,
+                    borderColor: 'rgba(155, 89, 182, 0.8)',
+                    borderWidth: 2,
+                    borderDash: [4, 4]
+                };
+                
+                // Gas switch label
+                annotations[`gasSwitchLabel${i}`] = {
+                    type: 'label',
+                    xValue: event.time,
+                    yValue: Math.max(0, event.depth - 3),
+                    content: [`→ Switch to ${event.toGas?.name || 'Gas'}`],
+                    backgroundColor: 'rgba(155, 89, 182, 0.9)',
+                    color: 'white',
+                    font: { size: 9, weight: 'bold' },
+                    padding: { top: 2, bottom: 2, left: 4, right: 4 }
+                };
+            });
             
             // Surface reference - positioned in middle
             annotations.surfaceLabel = {
@@ -2150,9 +2206,27 @@
         function initPartialPressureChart() {
             if (!ppGasSelect) return;
             
-            // Populate gas selector
+            // Get gases from the current profile
+            const profileGases = getGases(currentSetup);
+            const hasMultipleGases = profileGases.length > 1;
+            
+            // Populate gas selector with profile gases first, then predefined
             ppGasSelect.innerHTML = '';
             
+            // Add "Use Profile" option if multi-gas
+            if (hasMultipleGases) {
+                const profileOption = document.createElement('option');
+                profileOption.value = 'profile';
+                profileOption.textContent = `📋 Profile Gases (${profileGases.length})`;
+                ppGasSelect.appendChild(profileOption);
+                
+                const separator = document.createElement('option');
+                separator.disabled = true;
+                separator.textContent = '──────────────';
+                ppGasSelect.appendChild(separator);
+            }
+            
+            // Add predefined gases
             PREDEFINED_GASES.forEach(gas => {
                 const option = document.createElement('option');
                 option.value = gas.id;
@@ -2161,24 +2235,40 @@
             });
             
             // Set initial selection based on current setup
-            if (currentSetup?.gasMix) {
+            if (hasMultipleGases) {
+                ppGasSelect.value = 'profile';
+                useProfileGases = true;
+            } else {
+                // Single gas - use profile gas or find matching predefined
+                const profileGas = profileGases[0];
                 const match = PREDEFINED_GASES.find(g => 
-                    Math.round(g.o2 * 100) === Math.round((currentSetup.gasMix.o2 || 0.21) * 100) &&
-                    Math.round(g.he * 100) === Math.round((currentSetup.gasMix.he || 0) * 100)
+                    Math.round(g.o2 * 100) === Math.round((profileGas?.o2 || 0.21) * 100) &&
+                    Math.round(g.he * 100) === Math.round((profileGas?.he || 0) * 100)
                 );
                 if (match) {
                     ppGasSelect.value = match.id;
                     selectedGas = match;
+                } else {
+                    // No predefined match, use profile gas directly
+                    selectedGas = profileGas || { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 };
                 }
+                useProfileGases = false;
             }
             
             // Handle gas selection change
             ppGasSelect.addEventListener('change', () => {
-                const gas = getPredefinedGas(ppGasSelect.value);
-                if (gas) {
-                    selectedGas = gas;
+                if (ppGasSelect.value === 'profile') {
+                    useProfileGases = true;
                     updateGasDetails();
                     renderPartialPressureChart();
+                } else {
+                    useProfileGases = false;
+                    const gas = getPredefinedGas(ppGasSelect.value);
+                    if (gas) {
+                        selectedGas = gas;
+                        updateGasDetails();
+                        renderPartialPressureChart();
+                    }
                 }
             });
             
@@ -2188,10 +2278,17 @@
         
         function updateGasDetails() {
             if (!ppGasDetails) return;
-            const o2 = Math.round(selectedGas.o2 * 100);
-            const n2 = Math.round(selectedGas.n2 * 100);
-            const he = Math.round(selectedGas.he * 100);
-            ppGasDetails.textContent = `O₂: ${o2}% | N₂: ${n2}% | He: ${he}%`;
+            
+            if (useProfileGases) {
+                const profileGases = getGases(currentSetup);
+                const gasNames = profileGases.map(g => g.name).join(' → ');
+                ppGasDetails.textContent = gasNames;
+            } else {
+                const o2 = Math.round(selectedGas.o2 * 100);
+                const n2 = Math.round(selectedGas.n2 * 100);
+                const he = Math.round(selectedGas.he * 100);
+                ppGasDetails.textContent = `O₂: ${o2}% | N₂: ${n2}% | He: ${he}%`;
+            }
         }
         
         function renderPartialPressureChart() {
@@ -2203,19 +2300,44 @@
             
             if (waypoints.length === 0) return;
             
-            // Calculate partial pressures at each point
-            const labels = waypoints.map(w => w.time);
-            const depths = waypoints.map(w => w.depth);
-            const ppO2Data = waypoints.map(w => calculatePartialPressure(w.depth, selectedGas.o2));
-            const ppN2Data = waypoints.map(w => calculatePartialPressure(w.depth, selectedGas.n2));
-            const ppHeData = waypoints.map(w => calculatePartialPressure(w.depth, selectedGas.he));
+            // Get gases from profile for multi-gas calculations
+            const profileGases = getGases(currentSetup);
+            
+            // Get gas switch events for annotations
+            const gasSwitchEvents = useProfileGases ? getGasSwitchEvents(waypoints, profileGases) : [];
+            
+            // Build data points as {x, y} for proper time-proportional rendering
+            let ppO2Data = [];
+            let ppN2Data = [];
+            let ppHeData = [];
+            let depthData = [];
+            
+            if (useProfileGases && profileGases.length > 0) {
+                waypoints.forEach(w => {
+                    const gas = getGasAtTime(waypoints, profileGases, w.time);
+                    ppO2Data.push({ x: w.time, y: calculatePartialPressure(w.depth, gas.o2) });
+                    ppN2Data.push({ x: w.time, y: calculatePartialPressure(w.depth, gas.n2) });
+                    ppHeData.push({ x: w.time, y: calculatePartialPressure(w.depth, gas.he) });
+                    depthData.push({ x: w.time, y: w.depth });
+                });
+            } else {
+                waypoints.forEach(w => {
+                    ppO2Data.push({ x: w.time, y: calculatePartialPressure(w.depth, selectedGas.o2) });
+                    ppN2Data.push({ x: w.time, y: calculatePartialPressure(w.depth, selectedGas.n2) });
+                    ppHeData.push({ x: w.time, y: calculatePartialPressure(w.depth, selectedGas.he) });
+                    depthData.push({ x: w.time, y: w.depth });
+                });
+            }
             
             // Calculate stats
-            const maxDepth = Math.max(...depths);
-            const maxPpO2 = Math.max(...ppO2Data);
-            const maxPpN2 = Math.max(...ppN2Data);
-            const mod = calculateMOD(selectedGas.o2, 1.4);
-            const end = calculateEND(maxDepth, selectedGas.he);
+            const maxDepth = Math.max(...depthData.map(p => p.y));
+            const maxPpO2 = Math.max(...ppO2Data.map(p => p.y));
+            const maxPpN2 = Math.max(...ppN2Data.map(p => p.y));
+            
+            // For MOD/END, use the bottom gas (first gas in profile, or selected gas)
+            const bottomGas = useProfileGases ? (profileGases[0] || selectedGas) : selectedGas;
+            const mod = calculateMOD(bottomGas.o2, 1.4);
+            const end = calculateEND(maxDepth, bottomGas.he);
             
             // Update summary
             document.getElementById('max-ppo2').textContent = `${maxPpO2.toFixed(2)} bar`;
@@ -2226,6 +2348,8 @@
                                                             maxPpN2 > 3.2 ? 'stat-value warning' : 'stat-value safe';
             document.getElementById('pp-mod-display').textContent = `${mod.toFixed(0)}m`;
             document.getElementById('pp-end-display').textContent = `${end.toFixed(0)}m`;
+            
+            // Define limit lines (gasSwitchEvents already defined earlier for step rendering)
             
             // Define limit lines
             const annotations = {
@@ -2290,6 +2414,27 @@
                 }
             };
             
+            // Add gas switch annotations
+            gasSwitchEvents.forEach((event, index) => {
+                annotations[`gasSwitch${index}`] = {
+                    type: 'line',
+                    xMin: event.time,
+                    xMax: event.time,
+                    borderColor: 'rgba(155, 89, 182, 0.8)',
+                    borderWidth: 2,
+                    borderDash: [4, 4],
+                    label: {
+                        display: true,
+                        content: `Switch to ${event.toGas?.name || 'Gas'}`,
+                        position: 'start',
+                        backgroundColor: 'rgba(155, 89, 182, 0.9)',
+                        font: { size: 9 },
+                        rotation: -90,
+                        yAdjust: -30
+                    }
+                };
+            });
+            
             // Build datasets
             const datasets = [
                 {
@@ -2299,7 +2444,8 @@
                     backgroundColor: 'rgba(46, 204, 113, 0.1)',
                     borderWidth: 2,
                     fill: true,
-                    tension: 0.1
+                    tension: 0,
+                    stepped: gasSwitchEvents.length > 0 ? 'before' : false  // Step function for multi-gas
                 },
                 {
                     label: 'ppN₂',
@@ -2308,12 +2454,17 @@
                     backgroundColor: 'rgba(52, 152, 219, 0.1)',
                     borderWidth: 2,
                     fill: true,
-                    tension: 0.1
+                    tension: 0,
+                    stepped: gasSwitchEvents.length > 0 ? 'before' : false  // Step function for multi-gas
                 }
             ];
             
-            // Add helium if present
-            if (selectedGas.he > 0) {
+            // Add helium if present (check either selected gas or any profile gas has helium)
+            const hasHelium = useProfileGases 
+                ? profileGases.some(g => g.he > 0)
+                : selectedGas.he > 0;
+            
+            if (hasHelium) {
                 datasets.push({
                     label: 'ppHe',
                     data: ppHeData,
@@ -2321,14 +2472,15 @@
                     backgroundColor: 'rgba(155, 89, 182, 0.1)',
                     borderWidth: 2,
                     fill: true,
-                    tension: 0.1
+                    tension: 0,
+                    stepped: gasSwitchEvents.length > 0 ? 'before' : false  // Step function for multi-gas
                 });
             }
             
             // Add depth on secondary axis
             datasets.push({
                 label: 'Depth',
-                data: depths,
+                data: depthData,
                 borderColor: 'rgba(127, 140, 141, 0.5)',
                 borderWidth: 1,
                 borderDash: [3, 3],
@@ -2339,7 +2491,7 @@
             
             const config = {
                 type: 'line',
-                data: { labels, datasets },
+                data: { datasets },  // No labels needed - using {x,y} data format
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -2349,7 +2501,9 @@
                     },
                     scales: {
                         x: {
-                            title: { display: true, text: 'Time (min)' }
+                            type: 'linear',
+                            title: { display: true, text: 'Time (min)' },
+                            min: 0
                         },
                         y: {
                             title: { display: true, text: 'Partial Pressure (bar)' },

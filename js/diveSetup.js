@@ -13,6 +13,13 @@ const DEFAULT_SETUP_PATH = 'data/dive-setup.json';
 let cachedSetup = null;
 
 /**
+ * Time spent at gas switch depth (minutes)
+ * Standard practice: 1-3 minutes to verify gas, take several breaths, signal buddy
+ * Can be moved to UI settings later
+ */
+export const GAS_SWITCH_TIME = 3;
+
+/**
  * Predefined gas mixes commonly used in diving
  * Each gas has: name, o2 (oxygen fraction), n2 (nitrogen fraction), he (helium fraction)
  */
@@ -104,6 +111,50 @@ export function getDefaultSetup() {
 }
 
 /**
+ * Generate a simple dive profile from max depth and bottom time
+ * Uses:
+ *   - Descent speed: 20 m/min
+ *   - Ascent speed: 10 m/min
+ *   - 3 min safety stop at 5m
+ *   - Times rounded up to full minutes
+ * @param {number} maxDepth - Maximum depth in meters
+ * @param {number} bottomTime - Time at max depth in minutes
+ * @returns {Array<{time: number, depth: number}>} Generated waypoints
+ */
+export function generateSimpleProfile(maxDepth, bottomTime) {
+    const DESCENT_SPEED = 20; // m/min
+    const ASCENT_SPEED = 10;  // m/min
+    const SAFETY_STOP_DEPTH = 5; // meters
+    const SAFETY_STOP_TIME = 3;  // minutes
+    
+    // Calculate descent time (rounded up)
+    const descentTime = Math.ceil(maxDepth / DESCENT_SPEED);
+    
+    // Time at bottom ends
+    const bottomEndTime = descentTime + bottomTime;
+    
+    // Ascent from max depth to safety stop depth
+    const ascentToSafetyStop = Math.ceil((maxDepth - SAFETY_STOP_DEPTH) / ASCENT_SPEED);
+    const safetyStopStartTime = bottomEndTime + ascentToSafetyStop;
+    
+    // Safety stop ends
+    const safetyStopEndTime = safetyStopStartTime + SAFETY_STOP_TIME;
+    
+    // Final ascent from 5m to surface
+    const finalAscentTime = Math.ceil(SAFETY_STOP_DEPTH / ASCENT_SPEED);
+    const surfaceTime = safetyStopEndTime + finalAscentTime;
+    
+    return [
+        { time: 0, depth: 0 },                           // Start at surface
+        { time: descentTime, depth: maxDepth },          // Arrive at max depth
+        { time: bottomEndTime, depth: maxDepth },        // End of bottom time
+        { time: safetyStopStartTime, depth: SAFETY_STOP_DEPTH }, // Arrive at safety stop
+        { time: safetyStopEndTime, depth: SAFETY_STOP_DEPTH },   // End of safety stop
+        { time: surfaceTime, depth: 0 }                  // Back at surface
+    ];
+}
+
+/**
  * Extend dive setup with custom overrides
  * Performs deep merge for nested objects like gasMix and units
  * @param {Object} baseSetup - Base dive setup
@@ -144,10 +195,15 @@ function mergeDivesIntoTimeline(dives) {
         }
         
         dive.waypoints.forEach(wp => {
-            merged.push({
+            const mergedWp = {
                 time: wp.time + timeOffset,
                 depth: wp.depth
-            });
+            };
+            // Preserve gasId if present
+            if (wp.gasId) {
+                mergedWp.gasId = wp.gasId;
+            }
+            merged.push(mergedWp);
         });
         
         // Update offset to end of this dive
@@ -172,11 +228,17 @@ export function getDiveSetupWaypoints(setup) {
         return mergeDivesIntoTimeline(setup.dives);
     }
     
-    // Legacy single waypoints format
-    return setup.waypoints.map(wp => ({
-        time: wp.time,
-        depth: wp.depth
-    }));
+    // Legacy single waypoints format - preserve gasId if present
+    return setup.waypoints.map(wp => {
+        const result = {
+            time: wp.time,
+            depth: wp.depth
+        };
+        if (wp.gasId) {
+            result.gasId = wp.gasId;
+        }
+        return result;
+    });
 }
 
 /**
@@ -278,6 +340,297 @@ export function getReservePressure(setup) {
     return setup.reservePressure || 50;
 }
 
+// ============================================================================
+// MULTI-GAS SUPPORT
+// ============================================================================
+
+/**
+ * Get the list of gases for a dive setup
+ * Handles backward compatibility with single gasMix format
+ * @param {Object} setup - Dive setup object
+ * @returns {Array<Object>} Array of gas objects with id, name, o2, n2, he
+ */
+export function getGases(setup) {
+    // New multi-gas format
+    if (setup.gases && setup.gases.length > 0) {
+        return setup.gases;
+    }
+    
+    // Backward compatibility: convert single gasMix to gases array
+    const gasMix = setup.gasMix || { name: 'Air', o2: 0.21, n2: 0.79, he: 0 };
+    return [{
+        id: 'bottom',
+        name: gasMix.name,
+        o2: gasMix.o2,
+        n2: gasMix.n2,
+        he: gasMix.he || 0
+    }];
+}
+
+/**
+ * Get the gas being used at a specific waypoint
+ * Falls back to first gas if waypoint has no gasId
+ * @param {Object} waypoint - Waypoint object with optional gasId
+ * @param {Array<Object>} gases - Array of available gases
+ * @returns {Object} Gas object
+ */
+export function getGasAtWaypoint(waypoint, gases) {
+    if (!gases || gases.length === 0) {
+        return { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 };
+    }
+    
+    if (waypoint.gasId) {
+        const gas = gases.find(g => g.id === waypoint.gasId);
+        if (gas) return gas;
+    }
+    
+    // Default to first gas (bottom gas)
+    return gases[0];
+}
+
+/**
+ * Get the active gas at a specific time in the dive
+ * Finds the most recent waypoint at or before the given time and returns its gas
+ * @param {Array<Object>} waypoints - Array of waypoints with optional gasId
+ * @param {Array<Object>} gases - Array of available gases
+ * @param {number} time - Time in minutes
+ * @returns {Object} Gas object active at that time
+ */
+export function getGasAtTime(waypoints, gases, time) {
+    if (!waypoints || waypoints.length === 0) {
+        return gases?.[0] || { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 };
+    }
+    
+    // Find the last waypoint at or before this time
+    let activeWaypoint = waypoints[0];
+    for (const wp of waypoints) {
+        if (wp.time <= time) {
+            activeWaypoint = wp;
+        } else {
+            break;
+        }
+    }
+    
+    return getGasAtWaypoint(activeWaypoint, gases);
+}
+
+/**
+ * Get all gas switch events from waypoints
+ * Returns array of {time, depth, fromGas, toGas} for each gas change
+ * @param {Array<Object>} waypoints - Array of waypoints with optional gasId
+ * @param {Array<Object>} gases - Array of available gases
+ * @returns {Array<Object>} Array of gas switch events
+ */
+export function getGasSwitchEvents(waypoints, gases) {
+    if (!waypoints || waypoints.length < 2 || !gases || gases.length < 2) {
+        return [];
+    }
+    
+    const switches = [];
+    let currentGas = getGasAtWaypoint(waypoints[0], gases);
+    
+    for (let i = 1; i < waypoints.length; i++) {
+        const wp = waypoints[i];
+        const wpGas = getGasAtWaypoint(wp, gases);
+        
+        if (wpGas.id !== currentGas.id) {
+            switches.push({
+                time: wp.time,
+                depth: wp.depth,
+                fromGas: currentGas,
+                toGas: wpGas
+            });
+            currentGas = wpGas;
+        }
+    }
+    
+    return switches;
+}
+
+/**
+ * Auto-insert gas switch waypoints during ascent based on MOD
+ * Creates new waypoints where deco gases become usable, with time for the switch
+ * @param {Array<Object>} waypoints - Original waypoints
+ * @param {Array<Object>} gases - Available gases (first is bottom gas, rest are deco gases)
+ * @param {number} ascentRate - Ascent rate in m/min (default 10)
+ * @param {number} maxPpO2 - Maximum ppO2 for MOD calculation (default 1.6 for deco)
+ * @returns {Array<Object>} Waypoints with gas switches inserted
+ */
+export function insertGasSwitchWaypoints(waypoints, gases, ascentRate = 10, maxPpO2 = 1.6) {
+    if (!waypoints || waypoints.length < 2 || !gases || gases.length < 2) {
+        return waypoints;
+    }
+    
+    // Calculate MOD for each deco gas
+    const decoGases = gases.slice(1).map(gas => ({
+        ...gas,
+        mod: calculateMOD(gas.o2, maxPpO2)
+    })).sort((a, b) => b.mod - a.mod); // Sort by MOD descending (deeper first)
+    
+    // Find the bottom gas and max depth
+    const bottomGas = gases[0];
+    let maxDepthTime = 0;
+    let maxDepth = 0;
+    waypoints.forEach((wp) => {
+        if (wp.depth > maxDepth) {
+            maxDepth = wp.depth;
+            maxDepthTime = wp.time;
+        }
+    });
+    
+    // Find when ascent begins (after max depth)
+    const ascentStartIndex = waypoints.findIndex((wp, i) => 
+        i > 0 && wp.time > maxDepthTime && wp.depth < maxDepth
+    );
+    
+    if (ascentStartIndex === -1) {
+        return waypoints; // No ascent found
+    }
+    
+    // Pre-scan for existing stops (horizontal segments at same depth)
+    // A stop exists if there are 2+ consecutive waypoints at the same depth
+    const existingStopDepths = new Set();
+    for (let i = 0; i < waypoints.length - 1; i++) {
+        if (waypoints[i].depth === waypoints[i + 1].depth && waypoints[i].depth > 0) {
+            existingStopDepths.add(waypoints[i].depth);
+        }
+    }
+    
+    // Build new waypoints with gas switches and time offsets
+    const newWaypoints = [];
+    const usedDecoGases = new Set();
+    let timeOffset = 0; // Accumulated time offset from gas switch stops
+    let currentGasId = bottomGas.id; // Track current gas during iteration
+    
+    for (let i = 0; i < waypoints.length; i++) {
+        const wp = waypoints[i];
+        
+        // Apply time offset to this waypoint
+        const adjustedTime = wp.time + timeOffset;
+        
+        // Get the previous waypoint from our new list (with adjusted times)
+        const prevWp = newWaypoints.length > 0 ? newWaypoints[newWaypoints.length - 1] : null;
+        
+        // Check if we're ascending and cross a deco gas MOD
+        if (prevWp && prevWp.depth > wp.depth) {
+            // We're ascending - check each unused deco gas
+            for (const decoGas of decoGases) {
+                if (usedDecoGases.has(decoGas.id)) continue;
+                
+                // Switch depth should be at 3m increments (standard deco stops) below MOD
+                const switchDepth = Math.floor(decoGas.mod / 3) * 3;
+                
+                // If we cross this gas's switch depth during this segment
+                if (prevWp.depth > switchDepth && wp.depth <= switchDepth) {
+                    // Check if there's already a deco stop at this depth
+                    const hasExistingStop = existingStopDepths.has(switchDepth);
+                    
+                    // Check if current waypoint is exactly at the switch depth
+                    // If so, we don't need to insert a new waypoint - just mark for gas update
+                    const currentWpIsAtSwitchDepth = wp.depth === switchDepth;
+                    
+                    if (hasExistingStop) {
+                        // Merge with existing stop
+                        if (currentWpIsAtSwitchDepth) {
+                            // The current waypoint is already at the switch depth
+                            // Don't insert a new one - update currentGasId for this and future waypoints
+                            usedDecoGases.add(decoGas.id);
+                            currentGasId = decoGas.id;
+                        } else {
+                            // We're passing through switch depth but current wp is shallower
+                            // Insert arrival waypoint at switch depth
+                            const depthChange = prevWp.depth - switchDepth;
+                            const timeToSwitch = depthChange / ascentRate;
+                            const switchArrivalTime = Math.ceil(prevWp.time + timeToSwitch);
+                            
+                            newWaypoints.push({
+                                time: switchArrivalTime,
+                                depth: switchDepth,
+                                gasId: decoGas.id
+                            });
+                            
+                            usedDecoGases.add(decoGas.id);
+                            currentGasId = decoGas.id;
+                        }
+                        // No time offset added - we're using the existing stop time
+                    } else {
+                        // No existing stop - insert full gas switch stop with time
+                        const depthChange = prevWp.depth - switchDepth;
+                        const timeToSwitch = depthChange / ascentRate;
+                        const switchArrivalTime = Math.ceil(prevWp.time + timeToSwitch);
+                        const switchDepartureTime = switchArrivalTime + GAS_SWITCH_TIME;
+                        
+                        // Insert arrival waypoint (switch to new gas)
+                        newWaypoints.push({
+                            time: switchArrivalTime,
+                            depth: switchDepth,
+                            gasId: decoGas.id
+                        });
+                        
+                        // Insert departure waypoint (end of gas switch stop)
+                        newWaypoints.push({
+                            time: switchDepartureTime,
+                            depth: switchDepth,
+                            gasId: decoGas.id
+                        });
+                        
+                        usedDecoGases.add(decoGas.id);
+                        currentGasId = decoGas.id;
+                        
+                        // Add the gas switch time to the offset for subsequent waypoints
+                        timeOffset += GAS_SWITCH_TIME;
+                    }
+                }
+            }
+        }
+        
+        // Add original waypoint with adjusted time and correct gasId
+        const wpCopy = { 
+            ...wp,
+            time: wp.time + timeOffset
+        };
+        
+        // Determine which gas should be active at this point
+        if (i < ascentStartIndex) {
+            // Before ascent, always use bottom gas
+            wpCopy.gasId = bottomGas.id;
+        } else {
+            // During ascent, use the current tracked gas
+            wpCopy.gasId = currentGasId;
+        }
+        
+        newWaypoints.push(wpCopy);
+    }
+    
+    // Sort by time and return
+    return newWaypoints.sort((a, b) => a.time - b.time);
+}
+
+/**
+ * Normalize a dive setup to the new multi-gas format
+ * Converts legacy single gasMix to gases array
+ * @param {Object} setup - Dive setup object
+ * @returns {Object} Normalized setup with gases array
+ */
+export function normalizeSetupForMultiGas(setup) {
+    if (setup.gases && setup.gases.length > 0) {
+        return setup; // Already normalized
+    }
+    
+    const gasMix = setup.gasMix || { name: 'Air', o2: 0.21, n2: 0.79, he: 0 };
+    
+    return {
+        ...setup,
+        gases: [{
+            id: 'bottom',
+            name: gasMix.name,
+            o2: gasMix.o2,
+            n2: gasMix.n2,
+            he: gasMix.he || 0
+        }]
+    };
+}
+
 /**
  * Clear cached setup (useful for reloading)
  */
@@ -311,6 +664,23 @@ export function loadSavedSetup(key = 'diveSetup') {
         console.warn('Could not load dive setup from localStorage:', error);
         return null;
     }
+}
+
+/**
+ * Generate a descriptive profile name from dive setup
+ * Format: "[depth]m [gas1] [+ gas2...]" e.g., "40m Air + EAN50" or "55m Trimix 18/45 + O2"
+ * @param {Object} setup - Dive setup object
+ * @returns {string} Generated profile name
+ */
+export function generateProfileName(setup) {
+    const waypoints = getDiveSetupWaypoints(setup);
+    const maxDepth = Math.max(...waypoints.map(wp => wp.depth));
+    const gases = getGases(setup);
+    
+    // Format gas names
+    const gasNames = gases.map(g => g.name).join(' + ');
+    
+    return `${maxDepth}m ${gasNames}`;
 }
 
 /**

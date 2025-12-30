@@ -13,8 +13,9 @@ let chart = null;
  * @param {HTMLCanvasElement} canvas - Canvas element for the chart
  * @param {Object} results - Results from calculateTissueLoading()
  * @param {Set<number>} visibleCompartments - Set of compartment IDs to display
+ * @param {Array} gasSwitchEvents - Optional array of gas switch events [{time, depth, fromGas, toGas}]
  */
-export function renderChart(canvas, results, visibleCompartments = null) {
+export function renderChart(canvas, results, visibleCompartments = null, gasSwitchEvents = []) {
     // Default to all compartments visible
     if (!visibleCompartments) {
         visibleCompartments = new Set(COMPARTMENTS.map(c => c.id));
@@ -114,6 +115,37 @@ export function renderChart(canvas, results, visibleCompartments = null) {
         borderWidth: 1,
         order: 99
     });
+
+    // Add gas switch markers if present
+    if (gasSwitchEvents && gasSwitchEvents.length > 0) {
+        // Find max pressure for vertical lines
+        const maxPressure = Math.max(
+            ...Object.values(results.compartments).map(c => Math.max(...c.pressures)),
+            ...results.ambientPressures
+        );
+        
+        gasSwitchEvents.forEach((event, index) => {
+            // Create vertical line at gas switch time
+            datasets.push({
+                label: `Switch to ${event.toGas?.name || 'Gas'}`,
+                data: [
+                    { x: event.time, y: 0 },
+                    { x: event.time, y: maxPressure * 1.1 }
+                ],
+                borderColor: 'rgba(155, 89, 182, 0.8)', // Purple for gas switches
+                borderWidth: 2,
+                borderDash: [4, 4],
+                fill: false,
+                yAxisID: 'yPressure',
+                pointRadius: 4,
+                pointStyle: 'triangle',
+                pointBackgroundColor: 'rgba(155, 89, 182, 0.8)',
+                showLine: true,
+                order: 1,
+                isGasSwitch: true
+            });
+        });
+    }
 
     // Chart configuration
     const config = {

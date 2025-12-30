@@ -8,7 +8,7 @@ import { COMPARTMENTS, getCompartmentCategory } from './tissueCompartments.js';
 import { calculateTissueLoading, getInitialTissueN2 } from './decoModel.js';
 import { validateProfile, getDiveStats } from './diveProfile.js';
 import { renderChart, toggleCompartment, showAllCompartments, hideAllCompartments, showOnlyCompartments } from './visualization.js';
-import { loadDiveSetup, getDiveSetupWaypoints, getSurfaceInterval, formatDiveSetupSummary, saveDiveSetup, clearCache } from './diveSetup.js';
+import { loadDiveSetup, getDiveSetupWaypoints, getSurfaceInterval, formatDiveSetupSummary, saveDiveSetup, clearCache, getGases, getGasSwitchEvents } from './diveSetup.js';
 
 // ============================================================================
 // UTILITIES
@@ -85,17 +85,21 @@ async function loadAvailableProfiles() {
 
 /**
  * Initialize the profile switcher dropdown
+ * @param {Object} setup - Current dive setup with id and name
  */
-function initProfileSwitcher(currentProfileId) {
+function initProfileSwitcher(setup) {
     if (!profileSwitcher) return;
     
     // Clear existing options
     profileSwitcher.innerHTML = '';
     
-    // Add custom option if current setup doesn't match any predefined profile
+    // Check if current setup is a predefined profile
+    const isPredefined = setup.id && availableProfiles.find(p => p.id === setup.id);
+    
+    // Add custom option - show actual name if it's a custom profile
     const customOption = document.createElement('option');
     customOption.value = 'custom';
-    customOption.textContent = '✏️ Custom Profile';
+    customOption.textContent = isPredefined ? '✏️ Custom Profile' : `✏️ ${setup.name || 'Custom Profile'}`;
     profileSwitcher.appendChild(customOption);
     
     // Add separator
@@ -113,8 +117,8 @@ function initProfileSwitcher(currentProfileId) {
     });
     
     // Set current selection
-    if (currentProfileId && availableProfiles.find(p => p.id === currentProfileId)) {
-        profileSwitcher.value = currentProfileId;
+    if (isPredefined) {
+        profileSwitcher.value = setup.id;
     } else {
         profileSwitcher.value = 'custom';
     }
@@ -163,18 +167,35 @@ function displayProfileSummary(setup) {
     const waypoints = getDiveSetupWaypoints(setup);
     const maxDepth = waypoints.length > 0 ? Math.max(...waypoints.map(wp => wp.depth)) : 0;
     const totalTime = waypoints[waypoints.length - 1]?.time || 0;
-    const gasMix = setup.gasMix?.name || 'Air';
+    
+    // Get gases - use getGases for multi-gas support
+    const gases = getGases(setup);
+    const gasNames = gases.map(g => g.name).join(', ');
     
     // Check if multi-dive
     const diveCount = setup.dives?.length || 1;
     const diveInfo = diveCount > 1 ? ` (${diveCount} dives)` : '';
     
-    profileHeaderSummary.textContent = `${maxDepth}m max, ${totalTime} min, ${gasMix}${diveInfo}`;
+    // Update profile name label
+    const profileLabel = document.querySelector('.profile-header-label');
+    if (profileLabel) {
+        profileLabel.textContent = setup.name || 'Profile:';
+    }
+    
+    profileHeaderSummary.textContent = `${maxDepth}m max, ${totalTime} min, ${gasNames}${diveInfo}`;
     
     // Update switcher selection if needed
     if (profileSwitcher) {
         const matchingProfile = availableProfiles.find(p => p.id === setup.id);
         profileSwitcher.value = matchingProfile ? setup.id : 'custom';
+        
+        // Update custom option text if it's a custom profile
+        if (!matchingProfile) {
+            const customOption = profileSwitcher.querySelector('option[value="custom"]');
+            if (customOption) {
+                customOption.textContent = `✏️ ${setup.name || 'Custom Profile'}`;
+            }
+        }
     }
 }
 
@@ -284,18 +305,22 @@ function runCalculation(scrollToChart = true) {
         return;
     }
     
-    // Get surface interval from dive setup
+    // Get surface interval and gases from dive setup
     const surfaceInterval = getSurfaceInterval(currentDiveSetup);
+    const gases = getGases(currentDiveSetup);
     
-    // Run calculation
+    // Run calculation with multi-gas support
     try {
-        const results = calculateTissueLoading(profile, surfaceInterval);
+        const results = calculateTissueLoading(profile, surfaceInterval, { gases });
+        
+        // Get gas switch events for visualization
+        const gasSwitchEvents = getGasSwitchEvents(profile, gases);
         
         // Show stats
         showDiveStats(profile);
         
         // Render chart and store reference for fullscreen resize
-        window.tissueChart = renderChart(chartCanvas, results, visibleCompartments);
+        window.tissueChart = renderChart(chartCanvas, results, visibleCompartments, gasSwitchEvents);
         
         // Scroll to chart (only when user clicks Calculate, not on initial load)
         if (scrollToChart) {
@@ -303,7 +328,6 @@ function runCalculation(scrollToChart = true) {
         }
         
     } catch (error) {
-        validationErrors.innerHTML = `<div>Calculation error: ${error.message}</div>`;
         console.error('Calculation error:', error);
     }
 }
@@ -428,7 +452,7 @@ async function init() {
     currentDiveSetup = await loadDiveSetup();
     
     // Initialize the profile switcher dropdown
-    initProfileSwitcher(currentDiveSetup.id || defaultProfileId);
+    initProfileSwitcher(currentDiveSetup);
     
     // Display profile summary
     displayProfileSummary(currentDiveSetup);

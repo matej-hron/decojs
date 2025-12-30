@@ -20,7 +20,7 @@ export const SURFACE_PRESSURE = 1.0;
 /** Water vapor pressure at body temperature (37°C) in bar */
 export const WATER_VAPOR_PRESSURE = 0.0627;
 
-/** Fraction of nitrogen in breathing gas (air) */
+/** Default fraction of nitrogen in breathing gas (air) - used for backward compatibility */
 export const N2_FRACTION = 0.79;
 
 /** Pressure increase per meter of seawater depth */
@@ -44,18 +44,20 @@ export function getAmbientPressure(depth) {
  * This is what the tissues are trying to equilibrate towards
  * 
  * @param {number} ambientPressure - Ambient pressure in bar
+ * @param {number} [n2Fraction=N2_FRACTION] - Nitrogen fraction in breathing gas (0-1)
  * @returns {number} Alveolar N2 pressure in bar
  */
-export function getAlveolarN2Pressure(ambientPressure) {
-    return (ambientPressure - WATER_VAPOR_PRESSURE) * N2_FRACTION;
+export function getAlveolarN2Pressure(ambientPressure, n2Fraction = N2_FRACTION) {
+    return (ambientPressure - WATER_VAPOR_PRESSURE) * n2Fraction;
 }
 
 /**
  * Calculate initial tissue N2 pressure at surface (saturated at 1 atm)
+ * @param {number} [n2Fraction=N2_FRACTION] - Nitrogen fraction in breathing gas (0-1)
  * @returns {number} Initial tissue N2 pressure in bar
  */
-export function getInitialTissueN2() {
-    return getAlveolarN2Pressure(SURFACE_PRESSURE);
+export function getInitialTissueN2(n2Fraction = N2_FRACTION) {
+    return getAlveolarN2Pressure(SURFACE_PRESSURE, n2Fraction);
 }
 
 /**
@@ -99,16 +101,46 @@ export function schreinerEquation(initialPressure, initialAlveolarPressure, rate
 
 /**
  * Process a dive profile and calculate tissue loading over time
+ * Supports multi-gas diving with gas switches at waypoints
  * 
- * @param {Array<{time: number, depth: number}>} profile - Dive profile waypoints
- *        time in minutes, depth in meters
+ * @param {Array<{time: number, depth: number, gasId?: string}>} profile - Dive profile waypoints
+ *        time in minutes, depth in meters, optional gasId for gas switches
  * @param {number} surfaceInterval - Additional surface time after dive (minutes)
+ * @param {Object} options - Additional options
+ * @param {Array<Object>} [options.gases] - Array of available gases with {id, name, o2, n2, he}
+ * @param {number} [options.n2Fraction] - Legacy: single N2 fraction (used if gases not provided)
  * @returns {Object} Calculation results with time series data
  */
-export function calculateTissueLoading(profile, surfaceInterval = 60) {
+export function calculateTissueLoading(profile, surfaceInterval = 60, options = {}) {
     if (!profile || profile.length < 2) {
         throw new Error("Profile must have at least 2 waypoints");
     }
+
+    // Handle gas configuration
+    const gases = options.gases || null;
+    const defaultN2Fraction = options.n2Fraction || N2_FRACTION;
+    
+    // Helper to get N2 fraction at a given time
+    const getN2FractionAtTime = (time) => {
+        if (!gases || gases.length === 0) {
+            return defaultN2Fraction;
+        }
+        
+        // Find the last waypoint at or before this time
+        let activeWaypoint = profile[0];
+        for (const wp of profile) {
+            if (wp.time <= time) {
+                activeWaypoint = wp;
+            } else {
+                break;
+            }
+        }
+        
+        // Get gas for this waypoint
+        const gasId = activeWaypoint.gasId || gases[0].id;
+        const gas = gases.find(g => g.id === gasId) || gases[0];
+        return gas.n2;
+    };
 
     // Initialize results
     const results = {
@@ -116,8 +148,30 @@ export function calculateTissueLoading(profile, surfaceInterval = 60) {
         depthPoints: [],      // Depth at each time point
         ambientPressures: [], // Ambient pressure at each time point
         alveolarN2Pressures: [], // Alveolar N2 pressure (what tissues equilibrate towards)
+        n2Fractions: [],      // N2 fraction at each time point (for multi-gas)
+        gasNames: [],         // Gas name at each time point
+        gasSwitches: [],      // Array of {time, depth, gasName} for gas switch events
         compartments: {}      // Tissue pressures per compartment
     };
+
+    // Track gas switches
+    if (gases && gases.length > 0) {
+        let currentGasId = profile[0].gasId || gases[0].id;
+        for (let i = 1; i < profile.length; i++) {
+            const wp = profile[i];
+            const wpGasId = wp.gasId || gases[0].id;
+            if (wpGasId !== currentGasId) {
+                const gas = gases.find(g => g.id === wpGasId) || gases[0];
+                results.gasSwitches.push({
+                    time: wp.time,
+                    depth: wp.depth,
+                    gasName: gas.name,
+                    gasId: wpGasId
+                });
+                currentGasId = wpGasId;
+            }
+        }
+    }
 
     // Initialize compartment data
     COMPARTMENTS.forEach(comp => {
@@ -129,9 +183,10 @@ export function calculateTissueLoading(profile, surfaceInterval = 60) {
         };
     });
 
-    // Current tissue pressures (start at surface saturation)
+    // Current tissue pressures (start at surface saturation with initial gas)
     const currentPressures = {};
-    const initialN2 = getInitialTissueN2();
+    const initialN2Fraction = getN2FractionAtTime(0);
+    const initialN2 = getInitialTissueN2(initialN2Fraction);
     COMPARTMENTS.forEach(comp => {
         currentPressures[comp.id] = initialN2;
     });
@@ -173,11 +228,31 @@ export function calculateTissueLoading(profile, surfaceInterval = 60) {
             }
         }
 
+        // Get current N2 fraction (may change at gas switches)
+        const currentN2Fraction = currentTime >= lastWaypoint.time 
+            ? N2_FRACTION  // Surface interval uses air
+            : getN2FractionAtTime(currentTime);
+        
+        // Get current gas name for display
+        let currentGasName = 'Air';
+        if (gases && gases.length > 0 && currentTime < lastWaypoint.time) {
+            let activeWaypoint = profile[0];
+            for (const wp of profile) {
+                if (wp.time <= currentTime) activeWaypoint = wp;
+                else break;
+            }
+            const gasId = activeWaypoint.gasId || gases[0].id;
+            const gas = gases.find(g => g.id === gasId) || gases[0];
+            currentGasName = gas.name;
+        }
+
         // Store current state
         results.timePoints.push(currentTime);
         results.depthPoints.push(currentDepth);
         results.ambientPressures.push(getAmbientPressure(currentDepth));
-        results.alveolarN2Pressures.push(getAlveolarN2Pressure(getAmbientPressure(currentDepth)));
+        results.alveolarN2Pressures.push(getAlveolarN2Pressure(getAmbientPressure(currentDepth), currentN2Fraction));
+        results.n2Fractions.push(currentN2Fraction);
+        results.gasNames.push(currentGasName);
 
         // Calculate tissue loading for each compartment
         COMPARTMENTS.forEach(comp => {
@@ -233,12 +308,22 @@ export function calculateTissueLoading(profile, surfaceInterval = 60) {
         // Update tissue pressures for the step
         const currentAmbient = getAmbientPressure(currentDepth);
         const nextAmbient = getAmbientPressure(nextDepth);
-        const currentAlveolar = getAlveolarN2Pressure(currentAmbient);
+        
+        // Get N2 fraction for current and next time (handles gas switches)
+        const stepN2Fraction = currentTime >= lastWaypoint.time 
+            ? N2_FRACTION  // Surface interval uses air
+            : getN2FractionAtTime(currentTime);
+        const nextN2Fraction = nextTime >= lastWaypoint.time
+            ? N2_FRACTION
+            : getN2FractionAtTime(nextTime);
+            
+        const currentAlveolar = getAlveolarN2Pressure(currentAmbient, stepN2Fraction);
         
         // Rate of ambient pressure change (bar/min)
         const ambientRate = (nextAmbient - currentAmbient) / stepDuration;
-        // Rate of alveolar pressure change
-        const alveolarRate = ambientRate * N2_FRACTION;
+        // Rate of alveolar pressure change (using average N2 fraction for the step)
+        const avgN2Fraction = (stepN2Fraction + nextN2Fraction) / 2;
+        const alveolarRate = ambientRate * avgN2Fraction;
 
         COMPARTMENTS.forEach(comp => {
             if (Math.abs(alveolarRate) < 0.0001) {

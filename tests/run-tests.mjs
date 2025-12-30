@@ -119,7 +119,14 @@ import {
     getSurfaceInterval,
     getN2Fraction,
     formatDiveSetupSummary,
-    clearCache
+    generateSimpleProfile,
+    clearCache,
+    getGases,
+    getGasAtWaypoint,
+    getGasAtTime,
+    getGasSwitchEvents,
+    insertGasSwitchWaypoints,
+    calculateMOD
 } from '../js/diveSetup.js';
 
 import {
@@ -208,6 +215,20 @@ describe('diveSetup', () => {
             expect(waypoints[0]).toEqual({ time: 0, depth: 0 });
         });
 
+        test('preserves gasId in waypoints', () => {
+            const setup = { 
+                waypoints: [
+                    { time: 0, depth: 0, gasId: 'bottom' },
+                    { time: 5, depth: 30, gasId: 'bottom' },
+                    { time: 25, depth: 30, gasId: 'bottom' },
+                    { time: 28, depth: 6, gasId: 'deco' }
+                ] 
+            };
+            const waypoints = getDiveSetupWaypoints(setup);
+            expect(waypoints[0].gasId).toBe('bottom');
+            expect(waypoints[3].gasId).toBe('deco');
+        });
+
         test('merges multi-dive format into timeline', () => {
             const setup = {
                 dives: [
@@ -257,6 +278,343 @@ describe('diveSetup', () => {
             const summary = formatDiveSetupSummary(setup);
             expect(summary).toContain(setup.name);
             expect(summary).toContain('40m');
+        });
+    });
+
+    describe('generateSimpleProfile', () => {
+        test('generates profile with 6 waypoints', () => {
+            const waypoints = generateSimpleProfile(30, 20);
+            expect(waypoints).toHaveLength(6);
+        });
+
+        test('starts and ends at surface', () => {
+            const waypoints = generateSimpleProfile(30, 20);
+            expect(waypoints[0]).toEqual({ time: 0, depth: 0 });
+            expect(waypoints[5].depth).toBe(0);
+        });
+
+        test('reaches max depth', () => {
+            const waypoints = generateSimpleProfile(40, 25);
+            const maxDepth = Math.max(...waypoints.map(wp => wp.depth));
+            expect(maxDepth).toBe(40);
+        });
+
+        test('includes 3 min safety stop at 5m', () => {
+            const waypoints = generateSimpleProfile(30, 20);
+            // Find safety stop waypoints (at 5m)
+            const safetyStopWaypoints = waypoints.filter(wp => wp.depth === 5);
+            expect(safetyStopWaypoints).toHaveLength(2);
+            // Safety stop should be 3 minutes
+            const duration = safetyStopWaypoints[1].time - safetyStopWaypoints[0].time;
+            expect(duration).toBe(3);
+        });
+
+        test('calculates descent time correctly (20 m/min)', () => {
+            // 40m at 20 m/min = 2 min (exactly)
+            const waypoints = generateSimpleProfile(40, 20);
+            expect(waypoints[1].time).toBe(2);
+            // 30m at 20 m/min = 1.5 min, rounded up = 2 min
+            const waypoints2 = generateSimpleProfile(30, 20);
+            expect(waypoints2[1].time).toBe(2);
+        });
+
+        test('rounds times up to full minutes', () => {
+            // 25m at 20 m/min = 1.25 min, should round up to 2 min
+            const waypoints = generateSimpleProfile(25, 15);
+            // All times should be integers
+            for (const wp of waypoints) {
+                expect(Number.isInteger(wp.time)).toBe(true);
+            }
+            expect(waypoints[1].time).toBe(2);
+        });
+
+        test('maintains correct bottom time', () => {
+            const waypoints = generateSimpleProfile(30, 20);
+            // Descent: 30m / 20 = 1.5 → 2 min
+            // Bottom time start at 2 min, end at 2 + 20 = 22 min
+            expect(waypoints[1].time).toBe(2);  // Arrive at depth
+            expect(waypoints[2].time).toBe(22); // Leave depth
+        });
+
+        test('waypoints have ascending time values', () => {
+            const waypoints = generateSimpleProfile(35, 18);
+            for (let i = 1; i < waypoints.length; i++) {
+                expect(waypoints[i].time).toBeGreaterThan(waypoints[i - 1].time);
+            }
+        });
+    });
+
+    // Multi-gas tests
+    describe('getGases', () => {
+        test('returns gases array if present', () => {
+            const setup = {
+                gases: [
+                    { id: 'bottom', name: 'EAN32', o2: 0.32, n2: 0.68, he: 0 },
+                    { id: 'deco', name: 'EAN50', o2: 0.50, n2: 0.50, he: 0 }
+                ]
+            };
+            const gases = getGases(setup);
+            expect(gases.length).toBe(2);
+            expect(gases[0].name).toBe('EAN32');
+            expect(gases[1].name).toBe('EAN50');
+        });
+
+        test('converts single gasMix to gases array', () => {
+            const setup = {
+                gasMix: { name: 'Air', o2: 0.21, n2: 0.79, he: 0 }
+            };
+            const gases = getGases(setup);
+            expect(gases.length).toBe(1);
+            expect(gases[0].name).toBe('Air');
+        });
+
+        test('returns default air if no gases', () => {
+            const setup = {};
+            const gases = getGases(setup);
+            expect(gases.length).toBe(1);
+            expect(gases[0].o2).toBe(0.21);
+            expect(gases[0].n2).toBe(0.79);
+        });
+    });
+
+    describe('getGasAtWaypoint', () => {
+        test('returns gas by gasId on waypoint', () => {
+            const gases = [
+                { id: 'bottom', name: 'Air', o2: 0.21, n2: 0.79, he: 0 },
+                { id: 'deco', name: 'EAN50', o2: 0.50, n2: 0.50, he: 0 }
+            ];
+            const waypoint = { time: 30, depth: 6, gasId: 'deco' };
+            const gas = getGasAtWaypoint(waypoint, gases);
+            expect(gas.name).toBe('EAN50');
+        });
+
+        test('returns first gas if no gasId', () => {
+            const gases = [
+                { id: 'bottom', name: 'Air', o2: 0.21, n2: 0.79, he: 0 },
+                { id: 'deco', name: 'EAN50', o2: 0.50, n2: 0.50, he: 0 }
+            ];
+            const waypoint = { time: 5, depth: 30 };
+            const gas = getGasAtWaypoint(waypoint, gases);
+            expect(gas.name).toBe('Air');
+        });
+    });
+
+    describe('getGasAtTime', () => {
+        test('returns gas active at given time', () => {
+            const waypoints = [
+                { time: 0, depth: 0, gasId: 'bottom' },
+                { time: 5, depth: 30 },
+                { time: 25, depth: 30 },
+                { time: 28, depth: 6, gasId: 'deco' },
+                { time: 31, depth: 6 },
+                { time: 32, depth: 0 }
+            ];
+            const gases = [
+                { id: 'bottom', name: 'Air', o2: 0.21, n2: 0.79, he: 0 },
+                { id: 'deco', name: 'EAN50', o2: 0.50, n2: 0.50, he: 0 }
+            ];
+            // At time 10, should be on bottom gas (Air)
+            expect(getGasAtTime(waypoints, gases, 10).name).toBe('Air');
+            // At time 30, should be on deco gas (EAN50)
+            expect(getGasAtTime(waypoints, gases, 30).name).toBe('EAN50');
+        });
+
+        test('gas changes discretely at switch time, not interpolated', () => {
+            // Gas switch happens at time 49
+            const waypoints = [
+                { time: 0, depth: 0, gasId: 'bottom' },
+                { time: 48, depth: 9, gasId: 'bottom' },
+                { time: 49, depth: 6, gasId: 'deco' },
+                { time: 60, depth: 6, gasId: 'deco' }
+            ];
+            const gases = [
+                { id: 'bottom', name: 'Trimix', o2: 0.18, n2: 0.37, he: 0.45 },
+                { id: 'deco', name: 'Oxygen', o2: 1.0, n2: 0, he: 0 }
+            ];
+            
+            // Just before switch time - should still be on bottom gas
+            expect(getGasAtTime(waypoints, gases, 48).o2).toBe(0.18);
+            expect(getGasAtTime(waypoints, gases, 48.5).o2).toBe(0.18);
+            expect(getGasAtTime(waypoints, gases, 48.9).o2).toBe(0.18);
+            
+            // At and after switch time - should be on deco gas
+            expect(getGasAtTime(waypoints, gases, 49).o2).toBe(1.0);
+            expect(getGasAtTime(waypoints, gases, 49.1).o2).toBe(1.0);
+            expect(getGasAtTime(waypoints, gases, 50).o2).toBe(1.0);
+        });
+    });
+
+    describe('getGasSwitchEvents', () => {
+        test('returns empty array for single gas', () => {
+            const waypoints = [
+                { time: 0, depth: 0, gasId: 'gas-1' },
+                { time: 5, depth: 30 },
+                { time: 25, depth: 30 },
+                { time: 30, depth: 0 }
+            ];
+            const gases = [{ id: 'gas-1', name: 'Air', o2: 0.21, n2: 0.79, he: 0 }];
+            const events = getGasSwitchEvents(waypoints, gases);
+            expect(events.length).toBe(0);
+        });
+
+        test('detects gas switch events', () => {
+            const waypoints = [
+                { time: 0, depth: 0, gasId: 'bottom' },
+                { time: 5, depth: 30, gasId: 'bottom' },
+                { time: 25, depth: 30, gasId: 'bottom' },
+                { time: 28, depth: 6, gasId: 'deco' },
+                { time: 31, depth: 6, gasId: 'deco' },
+                { time: 32, depth: 0, gasId: 'deco' }
+            ];
+            const gases = [
+                { id: 'bottom', name: 'Air', o2: 0.21, n2: 0.79, he: 0 },
+                { id: 'deco', name: 'EAN50', o2: 0.50, n2: 0.50, he: 0 }
+            ];
+            const events = getGasSwitchEvents(waypoints, gases);
+            expect(events.length).toBe(1);
+            expect(events[0].time).toBe(28);
+            expect(events[0].toGas.name).toBe('EAN50');
+            expect(events[0].fromGas.name).toBe('Air');
+        });
+    });
+
+    describe('calculateMOD', () => {
+        test('calculates MOD for EAN32 at 1.4 ppO2', () => {
+            // MOD = floor((1.4 / 0.32 - 1) * 10) = floor(33.75) = 33m
+            const mod = calculateMOD(0.32, 1.4);
+            expect(mod).toBe(33);
+        });
+
+        test('calculates MOD for Oxygen at 1.6 ppO2', () => {
+            // MOD = floor((1.6 / 1.0 - 1) * 10) = 6m
+            const mod = calculateMOD(1.0, 1.6);
+            expect(mod).toBe(6);
+        });
+    });
+
+    describe('insertGasSwitchWaypoints', () => {
+        test('inserts deco gas switch during ascent', () => {
+            const waypoints = [
+                { time: 0, depth: 0, gasId: 'bottom' },
+                { time: 2, depth: 40 },
+                { time: 22, depth: 40 },
+                { time: 28, depth: 5 },
+                { time: 31, depth: 5 },
+                { time: 32, depth: 0 }
+            ];
+            const gases = [
+                { id: 'bottom', name: 'Air', o2: 0.21, n2: 0.79, he: 0 },
+                { id: 'deco', name: 'EAN50', o2: 0.50, n2: 0.50, he: 0 }  // MOD = 22m at 1.6 ppO2
+            ];
+            const result = insertGasSwitchWaypoints(waypoints, gases, 10, 1.6);
+            // Should have inserted a gas switch waypoint
+            const switchWp = result.find(wp => wp.gasId === 'deco');
+            expect(switchWp !== undefined).toBe(true);
+            // EAN50 MOD at 1.6 ppO2 = 22m, rounded down to 3m increment = 21m
+            expect(switchWp.depth).toBe(21);
+        });
+
+        test('merges gas switch with existing deco stop at same depth', () => {
+            // Profile with an existing deco stop at 6m
+            const waypoints = [
+                { time: 0, depth: 0, gasId: 'bottom' },
+                { time: 2, depth: 40 },
+                { time: 22, depth: 40 },
+                { time: 26, depth: 6 },   // Arrive at 6m deco stop
+                { time: 31, depth: 6 },   // End of 6m deco stop (5 min)
+                { time: 32, depth: 0 }
+            ];
+            const gases = [
+                { id: 'bottom', name: 'Air', o2: 0.21, n2: 0.79, he: 0 },
+                { id: 'deco', name: 'Oxygen', o2: 1.0, n2: 0, he: 0 }  // MOD = 6m at 1.6 ppO2
+            ];
+            
+            const result = insertGasSwitchWaypoints(waypoints, gases, 10, 1.6);
+            
+            // Should have gas switch at 6m but no extra time added (merged with existing stop)
+            const switchWp = result.find(wp => wp.gasId === 'deco');
+            expect(switchWp !== undefined).toBe(true);
+            expect(switchWp.depth).toBe(6);
+            
+            // Check that total time is not increased (no extra 3 min for gas switch)
+            const endTime = result[result.length - 1].time;
+            expect(endTime).toBe(32); // Same as original
+        });
+
+        test('does not create duplicate waypoints when gas switch matches existing waypoint time', () => {
+            // Deep technical dive profile - the 6m stop starts at time 49
+            const waypoints = [
+                { time: 0, depth: 0 },
+                { time: 3, depth: 55 },
+                { time: 18, depth: 55 },
+                { time: 22, depth: 21 },
+                { time: 25, depth: 21 },
+                { time: 26, depth: 18 },
+                { time: 29, depth: 18 },
+                { time: 30, depth: 15 },
+                { time: 34, depth: 15 },
+                { time: 35, depth: 12 },
+                { time: 40, depth: 12 },
+                { time: 41, depth: 9 },
+                { time: 48, depth: 9 },
+                { time: 49, depth: 6 },   // Arrival at 6m - this is where O2 switch would happen
+                { time: 60, depth: 6 },   // End of 6m stop
+                { time: 61, depth: 3 },
+                { time: 75, depth: 3 },
+                { time: 78, depth: 0 }
+            ];
+            const gases = [
+                { id: 'bottom', name: 'Trimix 18/45', o2: 0.18, n2: 0.37, he: 0.45 },
+                { id: 'deco', name: 'Oxygen', o2: 1.0, n2: 0, he: 0 }  // MOD = 6m
+            ];
+            
+            const result = insertGasSwitchWaypoints(waypoints, gases, 10, 1.6);
+            
+            // Should not have duplicate waypoints at same time
+            const times = result.map(wp => wp.time);
+            const uniqueTimes = [...new Set(times)];
+            expect(times.length).toBe(uniqueTimes.length);
+            
+            // All waypoints should have ascending times (validation requirement)
+            for (let i = 1; i < result.length; i++) {
+                expect(result[i].time).toBeGreaterThan(result[i-1].time);
+            }
+        });
+
+        test('gas switch events are detected when merged with existing deco stop', () => {
+            // Deep technical dive profile - the 6m stop starts at time 49
+            const waypoints = [
+                { time: 0, depth: 0 },
+                { time: 3, depth: 55 },
+                { time: 18, depth: 55 },
+                { time: 22, depth: 21 },
+                { time: 25, depth: 21 },
+                { time: 48, depth: 9 },
+                { time: 49, depth: 6 },   // Arrival at 6m - this is where O2 switch would happen
+                { time: 60, depth: 6 },   // End of 6m stop
+                { time: 61, depth: 3 },
+                { time: 75, depth: 3 },
+                { time: 78, depth: 0 }
+            ];
+            const gases = [
+                { id: 'bottom', name: 'Trimix 18/45', o2: 0.18, n2: 0.37, he: 0.45 },
+                { id: 'deco', name: 'Oxygen', o2: 1.0, n2: 0, he: 0 }  // MOD = 6m
+            ];
+            
+            const result = insertGasSwitchWaypoints(waypoints, gases, 10, 1.6);
+            
+            // Verify gasId is set correctly on waypoints around the switch
+            const wp48 = result.find(wp => wp.time === 48);
+            const wp49 = result.find(wp => wp.time === 49);
+            expect(wp48.gasId).toBe('bottom');
+            expect(wp49.gasId).toBe('deco');
+            
+            // Verify getGasSwitchEvents detects the switch
+            const gasSwitchEvents = getGasSwitchEvents(result, gases);
+            expect(gasSwitchEvents.length).toBe(1);
+            expect(gasSwitchEvents[0].time).toBe(49);
+            expect(gasSwitchEvents[0].depth).toBe(6);
+            expect(gasSwitchEvents[0].toGas.id).toBe('deco');
         });
     });
 });

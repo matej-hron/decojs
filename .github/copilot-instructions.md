@@ -29,7 +29,13 @@ When looking into decompression theory concepts, follow these primary sources:
 
 ## ⚠️ IMPORTANT: Before Every Push
 
-### 1. Bump the Cache Version
+### 1. Run Tests
+Always run `npm test` before pushing. All tests must pass.
+
+### 2. Add Tests for Bug Fixes
+When fixing a non-UI bug, **always add a test** that would have caught the bug. This prevents regressions.
+
+### 3. Bump the Cache Version
 Before pushing ANY changes, update the version number in **two places**:
 
 **File: `sw.js` (line 2)**

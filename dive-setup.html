@@ -57,9 +57,9 @@
                     learning sections. This allows you to explore how the same dive affects tissue loading, 
                     decompression requirements, and other aspects of dive planning.
                 </p>
-                <p>
-                    Each specialized section (like Tissue Loading) can extend this base configuration with 
-                    topic-specific settings while keeping the core dive profile consistent.
+                <p class="hint" style="margin-top: 0.75rem;">
+                    💡 <strong>Tip:</strong> Feel free to keep the default dive profile and jump straight to the 
+                    <a href="#use-this-setup">learning sections below</a> to start exploring!
                 </p>
             </div>
         </section>
@@ -68,12 +68,12 @@
         <section class="input-section">
             <h2>📊 Dive Profile Configuration</h2>
             
-            <!-- Predefined Profile Selector -->
+            <!-- Profile Selector Cards -->
             <div class="profile-selector">
-                <label for="profile-select">Load a predefined profile:</label>
-                <select id="profile-select" class="profile-dropdown">
-                    <option value="">-- Select a profile --</option>
-                </select>
+                <label>Load a predefined profile:</label>
+                <div id="profile-cards" class="profile-cards">
+                    <!-- Populated by JavaScript -->
+                </div>
             </div>
             
             <div id="setup-summary" class="dive-stats">
@@ -84,8 +84,8 @@
                 <h3>Dive Details</h3>
                 
                 <div class="form-group">
-                    <label for="profile-name-input">Profile Name</label>
-                    <input type="text" id="profile-name-input" class="form-input" value="">
+                    <label for="profile-name-input">Profile Name <span class="hint">(auto-generated)</span></label>
+                    <input type="text" id="profile-name-input" class="form-input" value="" readonly style="background-color: var(--bg-dark); color: var(--text-light);">
                 </div>
                 
                 <div class="form-group">
@@ -93,37 +93,16 @@
                     <textarea id="profile-description-input" class="form-input form-textarea" rows="3" placeholder="Describe this dive profile..."></textarea>
                 </div>
 
-                <details class="advanced-section">
-                    <summary>⚗️ Gas Mix (Advanced)</summary>
-                    <div class="gas-mix-inputs">
-                        <div class="info-row">
-                            <label for="gas-preset-select">Preset Gas:</label>
-                            <select id="gas-preset-select" class="form-select">
-                                <!-- Options populated by JavaScript from PREDEFINED_GASES -->
-                            </select>
+                <details class="advanced-section" id="gases-section" open>
+                    <summary>⚗️ Gases</summary>
+                    <div class="gases-container">
+                        <p class="hint">Define gases for your dive. First gas is used for descent and bottom. Deco gases are auto-switched during ascent at their MOD.</p>
+                        
+                        <div id="gases-list" class="gases-list">
+                            <!-- Gas cards populated by JavaScript -->
                         </div>
-                        <div class="info-row gas-custom-row" id="gas-custom-section" style="display: none;">
-                            <label for="gas-name-input">Custom Name:</label>
-                            <input type="text" id="gas-name-input" class="text-input" value="Custom">
-                        </div>
-                        <div class="info-row">
-                            <label for="gas-o2-input">O₂ (%):</label>
-                            <input type="number" id="gas-o2-input" min="0" max="100" step="1" value="21">
-                        </div>
-                        <div class="info-row">
-                            <label for="gas-n2-input">N₂ (%):</label>
-                            <input type="number" id="gas-n2-input" min="0" max="100" step="1" value="79" readonly>
-                            <span class="hint">(auto-calculated)</span>
-                        </div>
-                        <div class="info-row">
-                            <label for="gas-he-input">He (%):</label>
-                            <input type="number" id="gas-he-input" min="0" max="100" step="1" value="0">
-                        </div>
-                        <div class="info-row mod-display">
-                            <label>MOD (ppO₂ 1.4):</label>
-                            <span id="mod-value" class="mod-value">--</span>
-                            <span class="hint">Maximum Operating Depth</span>
-                        </div>
+                        
+                        <button id="add-gas-btn" class="btn btn-secondary btn-small">+ Add Deco Gas</button>
                     </div>
                 </details>
 
@@ -154,6 +133,26 @@
                     </label>
                 </div>
 
+                <!-- Quick Setup Section -->
+                <details class="advanced-section" id="quick-setup-section" open>
+                    <summary>⚡ Quick Setup</summary>
+                    <div class="quick-setup-inputs">
+                        <p class="hint">Enter max depth and bottom time to auto-generate waypoints.<br>
+                        Uses: descent 20 m/min, ascent 10 m/min, 3 min safety stop at 5m.</p>
+                        <div class="quick-setup-row">
+                            <div class="form-group">
+                                <label for="quick-max-depth">Max Depth (m):</label>
+                                <input type="number" id="quick-max-depth" class="form-input" value="30" min="1" max="100" step="1">
+                            </div>
+                            <div class="form-group">
+                                <label for="quick-bottom-time">Bottom Time (min):</label>
+                                <input type="number" id="quick-bottom-time" class="form-input" value="20" min="1" max="120" step="1">
+                            </div>
+                            <button id="generate-profile-btn" class="btn btn-secondary">🔄 Generate Profile</button>
+                        </div>
+                    </div>
+                </details>
+
                 <!-- Dive 1 Waypoints -->
                 <div id="dive1-section" class="dive-section">
                     <h3>🤿 Dive 1 Waypoints</h3>
@@ -162,6 +161,7 @@
                             <tr>
                                 <th>Time (min)</th>
                                 <th>Depth (m)</th>
+                                <th>Gas</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -169,7 +169,10 @@
                             <!-- Filled by JavaScript -->
                         </tbody>
                     </table>
-                    <button id="add-waypoint" class="btn btn-secondary btn-small">+ Add Waypoint</button>
+                    <div class="waypoint-actions">
+                        <button id="add-waypoint" class="btn btn-secondary btn-small">+ Add Waypoint</button>
+                        <button id="auto-gas-switch-btn" class="btn btn-secondary btn-small" title="Insert gas switch waypoints based on MOD">🔄 Auto Gas Switches</button>
+                    </div>
                 </div>
 
                 <!-- Add Repetitive Dive Button -->
@@ -219,7 +222,7 @@
         </section>
 
         <!-- Use This Setup Section -->
-        <section class="education-section">
+        <section class="education-section" id="use-this-setup">
             <h2>🚀 Use This Setup</h2>
             
             <div class="topics-grid">
@@ -265,24 +268,23 @@
 
     <!-- Dive Setup Script -->
     <script type="module">
-        import { loadDiveSetup, saveDiveSetup, clearCache, formatDiveSetupSummary, getDiveSetupWaypoints, PREDEFINED_GASES, getPredefinedGas, calculateMOD } from './js/diveSetup.js';
+        import { loadDiveSetup, saveDiveSetup, clearCache, formatDiveSetupSummary, getDiveSetupWaypoints, PREDEFINED_GASES, getPredefinedGas, calculateMOD, generateSimpleProfile, getGases, insertGasSwitchWaypoints, normalizeSetupForMultiGas, generateProfileName, getGasSwitchEvents } from './js/diveSetup.js';
 
         let currentSetup = null;
         let predefinedProfiles = [];
+        let customProfile = null; // Store custom profile when created
         let hasDive2 = false;
+        let currentGases = []; // Current gases for the dive
+        let originalProfileId = null; // Track if we started from a predefined profile
         const PROFILES_PATH = 'data/dive-profiles.json';
 
         // DOM elements
-        const profileSelect = document.getElementById('profile-select');
+        const profileCards = document.getElementById('profile-cards');
         const profileNameInput = document.getElementById('profile-name-input');
         const profileDescInput = document.getElementById('profile-description-input');
-        const gasPresetSelect = document.getElementById('gas-preset-select');
-        const gasCustomSection = document.getElementById('gas-custom-section');
-        const gasNameInput = document.getElementById('gas-name-input');
-        const gasO2Input = document.getElementById('gas-o2-input');
-        const gasN2Input = document.getElementById('gas-n2-input');
-        const gasHeInput = document.getElementById('gas-he-input');
-        const modValueSpan = document.getElementById('mod-value');
+        const gasesList = document.getElementById('gases-list');
+        const addGasBtn = document.getElementById('add-gas-btn');
+        const autoGasSwitchBtn = document.getElementById('auto-gas-switch-btn');
         const cylinderVolumeInput = document.getElementById('cylinder-volume-input');
         const surfaceIntervalInput = document.getElementById('surface-interval-input');
         const waypointsBody = document.getElementById('waypoints-body');
@@ -301,55 +303,192 @@
         const waypointsBody2 = document.getElementById('waypoints-body-2');
         const addWaypoint2Btn = document.getElementById('add-waypoint-2');
         const dive2SurfaceIntervalInput = document.getElementById('dive2-surface-interval');
+        
+        // Quick setup DOM elements
+        const quickMaxDepthInput = document.getElementById('quick-max-depth');
+        const quickBottomTimeInput = document.getElementById('quick-bottom-time');
+        const generateProfileBtn = document.getElementById('generate-profile-btn');
 
-        // Initialize gas preset dropdown
-        function initGasPresetDropdown() {
-            gasPresetSelect.innerHTML = '';
+        // ============================================================================
+        // MULTI-GAS MANAGEMENT
+        // ============================================================================
+
+        // Render gas cards
+        function renderGasCards() {
+            gasesList.innerHTML = '';
             
-            // Add predefined gases
-            PREDEFINED_GASES.forEach(gas => {
-                const option = document.createElement('option');
-                option.value = gas.id;
-                option.textContent = gas.name;
-                gasPresetSelect.appendChild(option);
+            currentGases.forEach((gas, index) => {
+                const card = document.createElement('div');
+                card.className = 'gas-card';
+                card.dataset.gasIndex = index;
+                
+                const mod14 = calculateMOD(gas.o2, 1.4);
+                const mod16 = calculateMOD(gas.o2, 1.6);
+                const isBottomGas = index === 0;
+                
+                card.innerHTML = `
+                    <div class="gas-card-header">
+                        <span class="gas-card-label">${isBottomGas ? '🫧 Bottom Gas' : '🔄 Deco Gas ' + index}</span>
+                        ${!isBottomGas ? '<button class="gas-card-remove" title="Remove gas">×</button>' : ''}
+                    </div>
+                    <div class="gas-card-content">
+                        <div class="gas-card-row">
+                            <label>Preset:</label>
+                            <select class="gas-preset-select form-select">
+                                ${PREDEFINED_GASES.map(g => 
+                                    `<option value="${g.id}" ${g.o2 === gas.o2 && g.he === gas.he ? 'selected' : ''}>${g.name}</option>`
+                                ).join('')}
+                                <option value="custom">✏️ Custom...</option>
+                            </select>
+                        </div>
+                        <div class="gas-card-row gas-custom-inputs" style="display: none;">
+                            <label>O₂:</label>
+                            <input type="number" class="gas-o2-input" min="5" max="100" step="1" value="${Math.round(gas.o2 * 100)}">%
+                            <label>He:</label>
+                            <input type="number" class="gas-he-input" min="0" max="95" step="1" value="${Math.round(gas.he * 100)}">%
+                        </div>
+                        <div class="gas-card-row gas-mod">
+                            <span class="hint">MOD: ${mod14}m (deco: ${mod16}m)</span>
+                        </div>
+                    </div>
+                `;
+                
+                // Wire up events
+                const presetSelect = card.querySelector('.gas-preset-select');
+                const customInputs = card.querySelector('.gas-custom-inputs');
+                const o2Input = card.querySelector('.gas-o2-input');
+                const heInput = card.querySelector('.gas-he-input');
+                const modDisplay = card.querySelector('.gas-mod .hint');
+                
+                // Check if current gas matches a preset
+                const matchingPreset = PREDEFINED_GASES.find(g => 
+                    Math.abs(g.o2 - gas.o2) < 0.01 && Math.abs(g.he - gas.he) < 0.01
+                );
+                if (!matchingPreset) {
+                    presetSelect.value = 'custom';
+                    customInputs.style.display = 'flex';
+                }
+                
+                presetSelect.addEventListener('change', () => {
+                    if (presetSelect.value === 'custom') {
+                        customInputs.style.display = 'flex';
+                    } else {
+                        customInputs.style.display = 'none';
+                        const preset = getPredefinedGas(presetSelect.value);
+                        if (preset) {
+                            currentGases[index] = { 
+                                id: isBottomGas ? 'bottom' : `deco${index}`,
+                                name: preset.name,
+                                o2: preset.o2, 
+                                n2: preset.n2, 
+                                he: preset.he 
+                            };
+                            o2Input.value = Math.round(preset.o2 * 100);
+                            heInput.value = Math.round(preset.he * 100);
+                            updateGasModDisplay(modDisplay, preset.o2);
+                            updateWaypointGasDropdowns();
+                        }
+                    }
+                });
+                
+                o2Input.addEventListener('input', () => {
+                    const o2 = (parseFloat(o2Input.value) || 21) / 100;
+                    const he = (parseFloat(heInput.value) || 0) / 100;
+                    const n2 = Math.max(0, 1 - o2 - he);
+                    currentGases[index] = { 
+                        id: currentGases[index].id,
+                        name: `Custom ${Math.round(o2 * 100)}/${Math.round(he * 100)}`,
+                        o2, n2, he 
+                    };
+                    updateGasModDisplay(modDisplay, o2);
+                    updateWaypointGasDropdowns();
+                });
+                
+                heInput.addEventListener('input', () => {
+                    const o2 = (parseFloat(o2Input.value) || 21) / 100;
+                    const he = (parseFloat(heInput.value) || 0) / 100;
+                    const n2 = Math.max(0, 1 - o2 - he);
+                    currentGases[index] = { 
+                        id: currentGases[index].id,
+                        name: `Custom ${Math.round(o2 * 100)}/${Math.round(he * 100)}`,
+                        o2, n2, he 
+                    };
+                    updateGasModDisplay(modDisplay, o2);
+                    updateWaypointGasDropdowns();
+                });
+                
+                if (!isBottomGas) {
+                    card.querySelector('.gas-card-remove').addEventListener('click', () => {
+                        currentGases.splice(index, 1);
+                        renderGasCards();
+                        updateWaypointGasDropdowns();
+                    });
+                }
+                
+                gasesList.appendChild(card);
             });
-            
-            // Add custom option
-            const customOption = document.createElement('option');
-            customOption.value = 'custom';
-            customOption.textContent = '✏️ Custom Mix...';
-            gasPresetSelect.appendChild(customOption);
         }
 
-        // Handle gas preset selection
-        gasPresetSelect.addEventListener('change', () => {
-            const selectedId = gasPresetSelect.value;
-            
-            if (selectedId === 'custom') {
-                gasCustomSection.style.display = 'flex';
-                gasO2Input.readOnly = false;
-                gasHeInput.readOnly = false;
-            } else {
-                const gas = getPredefinedGas(selectedId);
-                if (gas) {
-                    gasCustomSection.style.display = 'none';
-                    gasNameInput.value = gas.name;
-                    gasO2Input.value = Math.round(gas.o2 * 100);
-                    gasHeInput.value = Math.round(gas.he * 100);
-                    gasO2Input.readOnly = true;
-                    gasHeInput.readOnly = true;
-                    updateN2();
-                    updateMOD();
-                }
-            }
-        });
-
-        // Update MOD display
-        function updateMOD() {
-            const o2Fraction = (parseFloat(gasO2Input.value) || 21) / 100;
+        function updateGasModDisplay(modDisplay, o2Fraction) {
             const mod14 = calculateMOD(o2Fraction, 1.4);
             const mod16 = calculateMOD(o2Fraction, 1.6);
-            modValueSpan.textContent = `${mod14}m (deco: ${mod16}m)`;
+            modDisplay.textContent = `MOD: ${mod14}m (deco: ${mod16}m)`;
+        }
+
+        // Add deco gas button handler
+        addGasBtn.addEventListener('click', () => {
+            if (currentGases.length >= 4) {
+                alert('Maximum 4 gases allowed');
+                return;
+            }
+            
+            // Add EAN50 as default deco gas
+            const ean50 = getPredefinedGas('ean50');
+            currentGases.push({
+                id: `deco${currentGases.length}`,
+                name: ean50.name,
+                o2: ean50.o2,
+                n2: ean50.n2,
+                he: ean50.he
+            });
+            renderGasCards();
+            updateWaypointGasDropdowns();
+        });
+
+        // Auto gas switch button handler
+        autoGasSwitchBtn.addEventListener('click', () => {
+            if (currentGases.length < 2) {
+                alert('Add at least one deco gas first');
+                return;
+            }
+            
+            const waypoints = readWaypointsFromTable(waypointsBody);
+            const newWaypoints = insertGasSwitchWaypoints(waypoints, currentGases);
+            loadWaypointsToTable(newWaypoints, waypointsBody);
+            updateSummary();
+            
+            // Count gas switches configured (from getGasSwitchEvents)
+            const gasSwitchEvents = getGasSwitchEvents(newWaypoints, currentGases);
+            const insertedCount = newWaypoints.length - waypoints.length;
+            
+            if (gasSwitchEvents.length > 0) {
+                const switchInfo = gasSwitchEvents.map(e => `${e.toGas?.name} at ${e.depth}m`).join(', ');
+                saveStatus.textContent = `✓ Configured ${gasSwitchEvents.length} gas switch(es): ${switchInfo}. Click Save to apply!`;
+            } else {
+                saveStatus.textContent = `No gas switches configured (deco gases may not be usable in this profile)`;
+            }
+            saveStatus.className = 'save-status success';
+            setTimeout(() => { saveStatus.textContent = ''; }, 5000);
+        });
+
+        // Update gas dropdowns in waypoint rows
+        function updateWaypointGasDropdowns() {
+            document.querySelectorAll('.gas-select').forEach(select => {
+                const currentValue = select.value;
+                select.innerHTML = currentGases.map(gas => 
+                    `<option value="${gas.id}" ${gas.id === currentValue ? 'selected' : ''}>${gas.name}</option>`
+                ).join('');
+            });
         }
 
         // Load predefined profiles
@@ -359,14 +498,7 @@
                 const data = await response.json();
                 predefinedProfiles = data.profiles || [];
                 
-                // Populate dropdown
-                profileSelect.innerHTML = '<option value="">-- Select a predefined profile --</option>';
-                predefinedProfiles.forEach(profile => {
-                    const option = document.createElement('option');
-                    option.value = profile.id;
-                    option.textContent = profile.name;
-                    profileSelect.appendChild(option);
-                });
+                renderProfileCards();
                 
                 return data.defaultProfileId;
             } catch (error) {
@@ -375,12 +507,104 @@
             }
         }
 
-        // Handle profile selection from dropdown - auto-apply
-        profileSelect.addEventListener('change', () => {
-            const selectedId = profileSelect.value;
-            if (!selectedId) return;
+        // Render profile cards
+        function renderProfileCards(selectedId = null) {
+            profileCards.innerHTML = '';
             
-            const profile = predefinedProfiles.find(p => p.id === selectedId);
+            // Add predefined profiles
+            predefinedProfiles.forEach(profile => {
+                const card = createProfileCard(profile, selectedId === profile.id);
+                profileCards.appendChild(card);
+            });
+            
+            // Add custom profile if exists
+            if (customProfile) {
+                const card = createProfileCard(customProfile, selectedId === 'custom');
+                profileCards.appendChild(card);
+            }
+        }
+
+        // Create a profile card element
+        function createProfileCard(profile, isSelected = false) {
+            const card = document.createElement('div');
+            card.className = `profile-card${isSelected ? ' selected' : ''}`;
+            card.dataset.profileId = profile.id;
+            
+            // Get dive stats
+            const waypoints = profile.dives ? 
+                profile.dives[0].waypoints : profile.waypoints;
+            const maxDepth = Math.max(...waypoints.map(wp => wp.depth));
+            const totalTime = waypoints[waypoints.length - 1]?.time || 0;
+            const diveCount = profile.dives?.length || 1;
+            
+            const isCustom = profile.id === 'custom';
+            
+            card.innerHTML = `
+                <div class="profile-card-header">
+                    <span class="profile-card-name">${profile.name}</span>
+                    ${isCustom ? '<span class="profile-card-badge">Custom</span>' : ''}
+                    ${isCustom ? '<button class="profile-card-delete" title="Delete custom profile">×</button>' : ''}
+                </div>
+                <div class="profile-card-stats">
+                    <span>${maxDepth}m</span>
+                    <span>${totalTime} min</span>
+                    ${diveCount > 1 ? `<span>${diveCount} dives</span>` : ''}
+                </div>
+            `;
+            
+            card.addEventListener('click', (e) => {
+                // Don't select if clicking delete button
+                if (!e.target.classList.contains('profile-card-delete')) {
+                    selectProfile(profile.id);
+                }
+            });
+            
+            // Add delete handler for custom profiles
+            if (isCustom) {
+                const deleteBtn = card.querySelector('.profile-card-delete');
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    deleteCustomProfile();
+                });
+            }
+            
+            return card;
+        }
+
+        // Delete custom profile
+        function deleteCustomProfile() {
+            if (!confirm('Delete this custom profile?')) return;
+            
+            customProfile = null;
+            localStorage.removeItem('diveSetup');
+            clearCache();
+            
+            // Switch to default profile
+            const defaultProfile = predefinedProfiles.find(p => p.id === 'deco-dive') || predefinedProfiles[0];
+            if (defaultProfile) {
+                currentSetup = { ...defaultProfile };
+                populateForm(defaultProfile);
+                saveDiveSetup(currentSetup);
+                renderProfileCards(defaultProfile.id);
+            } else {
+                renderProfileCards(null);
+            }
+            
+            saveStatus.textContent = 'Custom profile deleted.';
+            saveStatus.className = 'save-status';
+            setTimeout(() => { saveStatus.textContent = ''; }, 3000);
+        }
+
+        // Handle profile selection
+        function selectProfile(profileId) {
+            let profile;
+            
+            if (profileId === 'custom' && customProfile) {
+                profile = customProfile;
+            } else {
+                profile = predefinedProfiles.find(p => p.id === profileId);
+            }
+            
             if (profile) {
                 currentSetup = { ...profile };
                 populateForm(profile);
@@ -389,30 +613,26 @@
                 saveDiveSetup(currentSetup);
                 clearCache();
                 
+                // Update card selection
+                renderProfileCards(profileId);
+                
                 saveStatus.textContent = `✓ Now using "${profile.name}"`;
                 saveStatus.className = 'save-status success';
                 setTimeout(() => { saveStatus.textContent = ''; }, 3000);
             }
-        });
-
-        // Auto-calculate N2 when O2 or He changes
-        function updateN2() {
-            const o2 = parseFloat(gasO2Input.value) || 0;
-            const he = parseFloat(gasHeInput.value) || 0;
-            const n2 = Math.max(0, 100 - o2 - he);
-            gasN2Input.value = n2;
-            updateMOD();
         }
 
-        gasO2Input.addEventListener('input', updateN2);
-        gasHeInput.addEventListener('input', updateN2);
-
         // Add waypoint row to a specific table
-        function addWaypointRow(time = '', depth = '', targetBody = waypointsBody) {
+        function addWaypointRow(time = '', depth = '', gasId = '', targetBody = waypointsBody) {
             const row = document.createElement('tr');
+            const gasOptions = currentGases.map(gas => 
+                `<option value="${gas.id}" ${gas.id === gasId ? 'selected' : ''}>${gas.name}</option>`
+            ).join('');
+            
             row.innerHTML = `
                 <td><input type="number" class="time-input" value="${time}" min="0" step="1" placeholder="0"></td>
                 <td><input type="number" class="depth-input" value="${depth}" min="0" step="1" placeholder="0"></td>
+                <td><select class="gas-select form-select-small">${gasOptions}</select></td>
                 <td><button class="btn btn-danger remove-row">×</button></td>
             `;
             row.querySelector('.remove-row').addEventListener('click', () => {
@@ -429,7 +649,7 @@
         // Load waypoints into table
         function loadWaypointsToTable(waypoints, targetBody = waypointsBody) {
             targetBody.innerHTML = '';
-            waypoints.forEach(wp => addWaypointRow(wp.time, wp.depth, targetBody));
+            waypoints.forEach(wp => addWaypointRow(wp.time, wp.depth, wp.gasId || currentGases[0]?.id || 'bottom', targetBody));
         }
 
         // Read waypoints from table
@@ -439,10 +659,12 @@
             rows.forEach(row => {
                 const timeInput = row.querySelector('.time-input');
                 const depthInput = row.querySelector('.depth-input');
+                const gasSelect = row.querySelector('.gas-select');
                 if (timeInput && depthInput) {
                     waypoints.push({
                         time: parseFloat(timeInput.value) || 0,
-                        depth: parseFloat(depthInput.value) || 0
+                        depth: parseFloat(depthInput.value) || 0,
+                        gasId: gasSelect?.value || currentGases[0]?.id || 'bottom'
                     });
                 }
             });
@@ -451,31 +673,54 @@
 
         // Build setup object from form
         function buildSetupFromForm() {
-            const baseSetup = {
-                name: profileNameInput.value || 'Custom Dive',
-                description: profileDescInput.value || '',
-                gasMix: {
-                    name: gasNameInput.value || 'Air',
-                    o2: (parseFloat(gasO2Input.value) || 21) / 100,
-                    n2: (parseFloat(gasN2Input.value) || 79) / 100,
-                    he: (parseFloat(gasHeInput.value) || 0) / 100
-                },
-                cylinderVolume: parseInt(cylinderVolumeInput.value) || 12,
-                surfaceInterval: parseFloat(surfaceIntervalInput.value) || 60,
-                units: currentSetup?.units || { depth: 'meters', time: 'minutes', pressure: 'bar' }
-            };
+            // Use first gas as legacy gasMix for backward compatibility
+            const bottomGas = currentGases[0] || { name: 'Air', o2: 0.21, n2: 0.79, he: 0 };
             
-            // Check if we have dive 2
+            // Build waypoints first so we can calculate max depth for name generation
+            let waypoints;
+            let dives;
+            
             if (hasDive2) {
-                baseSetup.dives = [
+                dives = [
                     { waypoints: readWaypointsFromTable(waypointsBody) },
                     { 
                         surfaceIntervalBefore: parseFloat(dive2SurfaceIntervalInput.value) || 60,
                         waypoints: readWaypointsFromTable(waypointsBody2) 
                     }
                 ];
+                // Get max depth from all dives
+                const allWaypoints = dives.flatMap(d => d.waypoints);
+                waypoints = allWaypoints;
             } else {
-                baseSetup.waypoints = readWaypointsFromTable(waypointsBody);
+                waypoints = readWaypointsFromTable(waypointsBody);
+            }
+            
+            // Calculate max depth and generate name from setup data
+            const maxDepth = Math.max(...waypoints.map(wp => wp.depth), 0);
+            const gasNames = currentGases.map(g => g.name).join(' + ');
+            const generatedName = `${maxDepth}m ${gasNames}`;
+            
+            const baseSetup = {
+                id: 'custom', // Always custom when modified
+                name: generatedName, // Auto-generated descriptive name
+                description: profileDescInput.value || '',
+                gasMix: {
+                    name: bottomGas.name,
+                    o2: bottomGas.o2,
+                    n2: bottomGas.n2,
+                    he: bottomGas.he
+                },
+                gases: currentGases, // New multi-gas array
+                cylinderVolume: parseInt(cylinderVolumeInput.value) || 12,
+                surfaceInterval: parseFloat(surfaceIntervalInput.value) || 60,
+                units: currentSetup?.units || { depth: 'meters', time: 'minutes', pressure: 'bar' }
+            };
+            
+            // Add waypoints/dives structure
+            if (hasDive2) {
+                baseSetup.dives = dives;
+            } else {
+                baseSetup.waypoints = waypoints;
             }
             
             return baseSetup;
@@ -524,10 +769,22 @@
             return errors;
         }
 
+        // Update profile name based on current setup data
+        function updateProfileName() {
+            const waypoints = hasDive2 
+                ? [...readWaypointsFromTable(waypointsBody), ...readWaypointsFromTable(waypointsBody2)]
+                : readWaypointsFromTable(waypointsBody);
+            const maxDepth = Math.max(...waypoints.map(wp => wp.depth), 0);
+            const gasNames = currentGases.map(g => g.name).join(' + ');
+            profileNameInput.value = `${maxDepth}m ${gasNames}`;
+        }
+
         // Update summary display
         function updateSummary() {
             const setup = buildSetupFromForm();
             setupSummary.innerHTML = `<p><strong>${formatDiveSetupSummary(setup)}</strong></p>`;
+            // Also update the auto-generated profile name
+            updateProfileName();
         }
 
         // Show/hide dive 2 section
@@ -540,35 +797,12 @@
 
         // Populate form from setup object
         function populateForm(setup) {
-            profileNameInput.value = setup.name || '';
             profileDescInput.value = setup.description || '';
             
-            // Set gas values
-            const gasName = setup.gasMix?.name || 'Air';
-            const o2 = Math.round((setup.gasMix?.o2 || 0.21) * 100);
-            const he = Math.round((setup.gasMix?.he || 0) * 100);
+            // Load gases (new multi-gas or legacy single gas)
+            currentGases = getGases(setup);
+            renderGasCards();
             
-            // Find matching preset
-            const matchingPreset = PREDEFINED_GASES.find(g => 
-                Math.round(g.o2 * 100) === o2 && Math.round(g.he * 100) === he
-            );
-            
-            if (matchingPreset) {
-                gasPresetSelect.value = matchingPreset.id;
-                gasCustomSection.style.display = 'none';
-                gasO2Input.readOnly = true;
-                gasHeInput.readOnly = true;
-            } else {
-                gasPresetSelect.value = 'custom';
-                gasCustomSection.style.display = 'flex';
-                gasO2Input.readOnly = false;
-                gasHeInput.readOnly = false;
-            }
-            
-            gasNameInput.value = gasName;
-            gasO2Input.value = o2;
-            gasHeInput.value = he;
-            updateN2();
             cylinderVolumeInput.value = setup.cylinderVolume || 12;
             surfaceIntervalInput.value = setup.surfaceInterval || 60;
             
@@ -592,9 +826,6 @@
             }
             
             updateSummary();
-            
-            // Reset dropdown selection
-            profileSelect.value = '';
         }
 
         // Save setup
@@ -611,6 +842,16 @@
             saveDiveSetup(setup);
             clearCache(); // Clear cache so other pages load fresh
             currentSetup = setup;
+            
+            // Check if this matches a predefined profile
+            const matchingPredefined = predefinedProfiles.find(p => p.id === setup.id);
+            
+            if (!matchingPredefined) {
+                // This is a custom profile - update or create custom card
+                customProfile = { ...setup, id: 'custom' };
+                renderProfileCards('custom');
+            }
+            
             updateSummary();
             
             saveStatus.textContent = '✓ Setup saved! Other sections will use this profile.';
@@ -645,6 +886,35 @@
             showDive2(true);
         });
 
+        // Generate profile from quick setup
+        generateProfileBtn.addEventListener('click', () => {
+            const maxDepth = parseFloat(quickMaxDepthInput.value) || 30;
+            const bottomTime = parseFloat(quickBottomTimeInput.value) || 20;
+            
+            if (maxDepth < 1 || maxDepth > 100) {
+                alert('Max depth must be between 1 and 100 meters');
+                return;
+            }
+            if (bottomTime < 1 || bottomTime > 120) {
+                alert('Bottom time must be between 1 and 120 minutes');
+                return;
+            }
+            
+            const waypoints = generateSimpleProfile(maxDepth, bottomTime);
+            loadWaypointsToTable(waypoints, waypointsBody);
+            
+            // Update profile name to reflect the quick setup
+            profileNameInput.value = `${maxDepth}m for ${bottomTime}min`;
+            profileDescInput.value = `Quick setup: ${maxDepth}m max depth, ${bottomTime}min bottom time. Auto-generated with 20 m/min descent, 10 m/min ascent, 3 min safety stop at 5m.`;
+            
+            updateSummary();
+            
+            // Show feedback
+            saveStatus.textContent = `✓ Generated profile: ${maxDepth}m for ${bottomTime}min`;
+            saveStatus.className = 'save-status success';
+            setTimeout(() => { saveStatus.textContent = ''; }, 3000);
+        });
+
         // Remove dive 2
         removeDive2Btn.addEventListener('click', () => {
             showDive2(false);
@@ -659,12 +929,14 @@
             if (confirm('Reset to default dive profile? Your changes will be lost.')) {
                 localStorage.removeItem('diveSetup');
                 clearCache();
+                customProfile = null; // Clear custom profile
                 
                 // Load the default from predefined profiles
                 const defaultProfile = predefinedProfiles.find(p => p.id === 'deco-dive') || predefinedProfiles[0];
                 if (defaultProfile) {
                     currentSetup = { ...defaultProfile };
                     populateForm(defaultProfile);
+                    renderProfileCards(defaultProfile.id);
                 }
                 
                 saveStatus.textContent = 'Reset to default profile.';
@@ -674,14 +946,11 @@
         });
 
         // Update summary on input changes
-        [profileNameInput, profileDescInput, gasO2Input, gasHeInput, surfaceIntervalInput].forEach(el => {
+        [profileNameInput, profileDescInput, surfaceIntervalInput].forEach(el => {
             el.addEventListener('input', updateSummary);
         });
 
         async function init() {
-            // Initialize gas preset dropdown
-            initGasPresetDropdown();
-            
             // Load predefined profiles first
             const defaultProfileId = await loadPredefinedProfiles();
             
@@ -700,9 +969,21 @@
                 if (defaultProfile) {
                     currentSetup = { ...defaultProfile };
                 }
+            } else {
+                // Check if saved setup is a custom profile (not matching predefined)
+                const matchingPredefined = predefinedProfiles.find(p => p.id === currentSetup.id);
+                if (!matchingPredefined) {
+                    customProfile = { ...currentSetup, id: 'custom' };
+                }
             }
             
             populateForm(currentSetup);
+            
+            // Highlight the current profile card
+            const currentId = currentSetup.id && predefinedProfiles.find(p => p.id === currentSetup.id) 
+                ? currentSetup.id 
+                : (customProfile ? 'custom' : null);
+            renderProfileCards(currentId);
         }
 
         document.addEventListener('DOMContentLoaded', init);

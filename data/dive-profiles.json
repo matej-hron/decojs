@@ -153,6 +153,62 @@
         { "time": 75, "depth": 3 },
         { "time": 78, "depth": 0 }
       ]
+    },
+    {
+      "id": "30m-deco-air",
+      "name": "30m Deco Dive (Air)",
+      "description": "A 30m dive with 40 min bottom time requiring staged decompression stops. Demonstrates tissue loading on a moderate depth deco dive.",
+      "gasMix": {
+        "name": "Air",
+        "o2": 0.21,
+        "n2": 0.79,
+        "he": 0
+      },
+      "surfaceInterval": 60,
+      "units": {
+        "depth": "meters",
+        "time": "minutes",
+        "pressure": "bar"
+      },
+      "waypoints": [
+        { "time": 0, "depth": 0 },
+        { "time": 2, "depth": 30 },
+        { "time": 42, "depth": 30 },
+        { "time": 44, "depth": 9 },
+        { "time": 45, "depth": 9 },
+        { "time": 46, "depth": 6 },
+        { "time": 49, "depth": 6 },
+        { "time": 50, "depth": 3 },
+        { "time": 55, "depth": 3 },
+        { "time": 56, "depth": 0 }
+      ]
+    },
+    {
+      "id": "30m-deco-o2",
+      "name": "30m Deco Dive (O₂ deco)",
+      "description": "A 30m dive with 40 min bottom time, switching to pure O₂ at 6m for accelerated decompression. Demonstrates the benefit of oxygen deco.",
+      "gases": [
+        { "id": "air", "name": "Air", "o2": 0.21, "n2": 0.79, "he": 0 },
+        { "id": "o2", "name": "Oxygen", "o2": 1.0, "n2": 0, "he": 0, "maxPpO2": 1.6 }
+      ],
+      "surfaceInterval": 60,
+      "units": {
+        "depth": "meters",
+        "time": "minutes",
+        "pressure": "bar"
+      },
+      "waypoints": [
+        { "time": 0, "depth": 0, "gasId": "air" },
+        { "time": 2, "depth": 30, "gasId": "air" },
+        { "time": 42, "depth": 30, "gasId": "air" },
+        { "time": 44, "depth": 9, "gasId": "air" },
+        { "time": 45, "depth": 9, "gasId": "air" },
+        { "time": 46, "depth": 6, "gasId": "o2" },
+        { "time": 49, "depth": 6, "gasId": "o2" },
+        { "time": 50, "depth": 3, "gasId": "o2" },
+        { "time": 55, "depth": 3, "gasId": "o2" },
+        { "time": 56, "depth": 0, "gasId": "o2" }
+      ]
     }
   ],
   "defaultProfileId": "deco-dive"

@@ -1380,7 +1380,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.0.32";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.0.48";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* Responsive */
@@ -1628,26 +1628,241 @@ footer a {
     border-bottom: 1px solid var(--border-color);
 }
 
-.profile-selector label {
+.profile-selector > label {
     display: block;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
     color: var(--text-color);
 }
 
-.profile-selector select {
-    width: 100%;
-    max-width: 400px;
-    padding: 0.75rem;
-    font-size: 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    background-color: var(--card-background);
-    cursor: pointer;
+.profile-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
 }
 
-.profile-selector select:hover {
+.profile-card {
+    flex: 1 1 auto;
+    min-width: 140px;
+    max-width: 200px;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius);
+    background: var(--card-background);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.profile-card:hover {
     border-color: var(--primary-color);
+    background: var(--background-color);
+}
+
+.profile-card.selected {
+    border-color: var(--primary-color);
+    background: linear-gradient(135deg, rgba(41, 128, 185, 0.1) 0%, rgba(41, 128, 185, 0.05) 100%);
+    box-shadow: 0 2px 8px rgba(41, 128, 185, 0.2);
+}
+
+.profile-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.profile-card-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    line-height: 1.2;
+}
+
+.profile-card-badge {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.4rem;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 0.25rem;
+    font-weight: 500;
+}
+
+.profile-card-delete {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    line-height: 1;
+    padding: 0 0.25rem;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all 0.15s ease;
+}
+
+.profile-card-delete:hover {
+    opacity: 1;
+    color: var(--danger-color, #e74c3c);
+}
+
+.profile-card-stats {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.profile-card-stats span {
+    white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+    .profile-card {
+        min-width: 100%;
+        max-width: 100%;
+    }
+}
+
+/* Gas Cards for Multi-Gas Setup */
+.gases-container {
+    margin-bottom: 1.5rem;
+}
+
+.gases-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.gases-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.gases-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.gas-card {
+    flex: 1 1 180px;
+    max-width: 250px;
+    padding: 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius);
+    background: var(--card-background);
+}
+
+.gas-card.bottom-gas {
+    border-color: var(--primary-color);
+    background: linear-gradient(135deg, rgba(41, 128, 185, 0.1) 0%, rgba(41, 128, 185, 0.05) 100%);
+}
+
+.gas-card.deco-gas {
+    border-color: var(--success-color, #27ae60);
+    background: linear-gradient(135deg, rgba(39, 174, 96, 0.1) 0%, rgba(39, 174, 96, 0.05) 100%);
+}
+
+.gas-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.gas-card-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.gas-card-badge {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.35rem;
+    border-radius: 0.25rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.gas-card-badge.bottom {
+    background: var(--primary-color);
+    color: white;
+}
+
+.gas-card-badge.deco {
+    background: var(--success-color, #27ae60);
+    color: white;
+}
+
+.gas-card-delete {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    line-height: 1;
+    padding: 0 0.25rem;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all 0.15s ease;
+}
+
+.gas-card-delete:hover {
+    opacity: 1;
+    color: var(--danger-color, #e74c3c);
+}
+
+.gas-card-content {
+    font-size: 0.85rem;
+}
+
+.gas-card-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.2rem 0;
+    color: var(--text-muted);
+}
+
+.gas-card-row span:last-child {
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.gas-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* Smaller select for waypoint gas dropdown */
+.form-select-small {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.85rem;
+    min-width: 100px;
+}
+
+/* Waypoint actions container */
+.waypoint-actions {
+    display: flex;
+    gap: 0.25rem;
+    justify-content: center;
+}
+
+@media (max-width: 480px) {
+    .gas-card {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+    
+    .gases-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
 }
 
 /* Textarea for description */
@@ -1692,6 +1907,64 @@ textarea.form-input {
 .advanced-section .gas-mix-grid {
     padding: 1rem;
     padding-top: 0.5rem;
+}
+
+/* Quick Setup Section */
+.quick-setup-inputs {
+    padding: 1rem;
+}
+
+.quick-setup-inputs .hint {
+    margin: 0 0 1rem 0;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.quick-setup-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-end;
+}
+
+.quick-setup-row .form-group {
+    flex: 1;
+    min-width: 120px;
+    margin-bottom: 0;
+}
+
+.quick-setup-row .form-group label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.quick-setup-row .form-input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-size: 1rem;
+}
+
+.quick-setup-row .btn {
+    flex-shrink: 0;
+    height: fit-content;
+}
+
+@media (max-width: 600px) {
+    .quick-setup-row {
+        flex-direction: column;
+    }
+    
+    .quick-setup-row .form-group {
+        width: 100%;
+    }
+    
+    .quick-setup-row .btn {
+        width: 100%;
+    }
 }
 
 /* Profile Header Bar (for theory pages) */
