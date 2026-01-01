@@ -23,7 +23,8 @@
 }
 
 /* Scroll offset for anchor links (accounts for sticky nav) */
-section[id] {
+section[id],
+.concept-card[id] {
     scroll-margin-top: 80px;
 }
 
@@ -1380,7 +1381,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.0.63";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.0.65";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* Responsive */
