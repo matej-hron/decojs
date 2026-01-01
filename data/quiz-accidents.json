@@ -1,0 +1,2506 @@
+{
+  "title": "Nehody a nemoci",
+  "description": "Zkušební testy SPČR 2018 - Potápěčské nehody a nemoci, první pomoc, resuscitace",
+  "questions": [
+    {
+      "id": 1,
+      "category": "první pomoc",
+      "question": "Při pomoci postiženému v bezvědomí se doporučuje nejdříve:",
+      "options": [
+        {
+          "key": "a",
+          "text": "dát 4 vdechy umělého dýchání"
+        },
+        {
+          "key": "b",
+          "text": "dát 2 vdechy umělého dýchání"
+        },
+        {
+          "key": "c",
+          "text": "uvolnit dýchací cesty záklonem hlavy a zjistit zda postižený dýchá; pokud nedýchá, volat záchrannou službu"
+        },
+        {
+          "key": "d",
+          "text": "kontrola tepu"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Prvním krokem je vždy uvolnění dýchacích cest záklonem hlavy, kontrola dýchání a přivolání záchranné služby."
+    },
+    {
+      "id": 2,
+      "category": "první pomoc",
+      "question": "Které činnosti dáte přednost u silně krvácejícího postiženého v bezvědomí?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Volání záchranné služby."
+        },
+        {
+          "key": "b",
+          "text": "Dva vdechy umělého dýchání."
+        },
+        {
+          "key": "c",
+          "text": "Intenzivní srdeční masáž."
+        },
+        {
+          "key": "d",
+          "text": "Zástava krvácení."
+        }
+      ],
+      "correct": "d",
+      "explanation": "Masivní krvácení je život ohrožující stav, který musí být zastaven jako první, jinak by resuscitace byla neúčinná."
+    },
+    {
+      "id": 3,
+      "category": "první pomoc",
+      "question": "Resuscitaci zahajujeme, pokud:",
+      "options": [
+        {
+          "key": "a",
+          "text": "je postižený v bezvědomí a nedýchá normálně"
+        },
+        {
+          "key": "b",
+          "text": "postiženému při vědomí nenahmatáme tep"
+        },
+        {
+          "key": "c",
+          "text": "postiženému v bezvědomí nenahmatáme tep"
+        },
+        {
+          "key": "d",
+          "text": "žádná odpověď není správná"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Resuscitaci zahajujeme u osoby v bezvědomí, která nedýchá normálně. Kontrola tepu se u laiků nedoporučuje."
+    },
+    {
+      "id": 4,
+      "category": "první pomoc",
+      "question": "Prvním úkonem při resuscitaci je:",
+      "options": [
+        {
+          "key": "a",
+          "text": "zahájení srdeční masáže"
+        },
+        {
+          "key": "b",
+          "text": "uvolnění dýchacích cest záklonem hlavy a zjištění zda postižený dýchá; pokud nedýchá, voláme záchrannou službu"
+        },
+        {
+          "key": "c",
+          "text": "provedení 4 vdechů umělého dýchání"
+        },
+        {
+          "key": "d",
+          "text": "provedení 2 vdechů umělého dýchání"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Nejprve uvolníme dýchací cesty, zkontrolujeme dýchání a zavoláme záchrannou službu, teprve poté zahájíme resuscitaci."
+    },
+    {
+      "id": 5,
+      "category": "první pomoc",
+      "question": "Nadzdvižení dolních končetin postiženého při resuscitaci:",
+      "options": [
+        {
+          "key": "a",
+          "text": "omezuje účinky srdeční masáže"
+        },
+        {
+          "key": "b",
+          "text": "omezuje účinky umělého dýchání"
+        },
+        {
+          "key": "c",
+          "text": "je nevhodné pro možnost nahromadění krve v trupu"
+        },
+        {
+          "key": "d",
+          "text": "nemá podstatný přínos"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Studie prokázaly, že nadzdvižení dolních končetin během resuscitace nemá významný přínos pro její účinnost."
+    },
+    {
+      "id": 6,
+      "category": "první pomoc",
+      "question": "Místo pro srdeční masáž se nachází:",
+      "options": [
+        {
+          "key": "a",
+          "text": "přibližně uprostřed hrudníku na hrudní kosti"
+        },
+        {
+          "key": "b",
+          "text": "v levé polovině hrudníku"
+        },
+        {
+          "key": "c",
+          "text": "v dolní části hrudníku přibližně tři prsty pod hrudní kostí"
+        },
+        {
+          "key": "d",
+          "text": "v horní části hrudníku na úrovni zakloubení klíčních kostí"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Správné místo pro srdeční masáž je uprostřed hrudníku na hrudní kosti, nikoliv vlevo kde je srdce."
+    },
+    {
+      "id": 7,
+      "category": "první pomoc",
+      "question": "Masáž srdce se provádí stlačováním hrudníku frekvencí:",
+      "options": [
+        {
+          "key": "a",
+          "text": "přesně 12x za minutu"
+        },
+        {
+          "key": "b",
+          "text": "přibližně 70x za minutu"
+        },
+        {
+          "key": "c",
+          "text": "přibližně 100 – 120x za minutu"
+        },
+        {
+          "key": "d",
+          "text": "160 – 180x za minutu"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Doporučená frekvence srdeční masáže je 100-120 stlačení za minutu podle aktuálních resuscitačních guidelines."
+    },
+    {
+      "id": 8,
+      "category": "první pomoc",
+      "question": "Srdeční masáž se provádí:",
+      "options": [
+        {
+          "key": "a",
+          "text": "přibližně uprostřed hrudníku na hrudní kosti"
+        },
+        {
+          "key": "b",
+          "text": "frekvencí přibližně 100 – 120x za minutu"
+        },
+        {
+          "key": "c",
+          "text": "s hloubkou stlačení 5 – 6 cm"
+        },
+        {
+          "key": "d",
+          "text": "všechny odpovědi jsou správné"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Všechny uvedené odpovědi jsou správné - uprostřed hrudníku, frekvencí 100-120/min a hloubkou 5-6 cm."
+    },
+    {
+      "id": 9,
+      "category": "první pomoc",
+      "question": "Označte nesprávné tvrzení:",
+      "options": [
+        {
+          "key": "a",
+          "text": "Při srdeční masáži stlačujeme hrudník postiženého frekvencí přibližně 100 – 120x za minutu."
+        },
+        {
+          "key": "b",
+          "text": "Místo pro srdeční masáž se nachází v levé polovině hrudníku."
+        },
+        {
+          "key": "c",
+          "text": "Masáž srdce provádíme s hloubkou stlačení 5 – 6 cm."
+        },
+        {
+          "key": "d",
+          "text": "Resuscitace se zahajuje 30 stlačeními hrudníku okamžitě po uvolnění dýchacích cest."
+        }
+      ],
+      "correct": "b",
+      "explanation": "Nesprávné je tvrzení b) - místo pro masáž je uprostřed hrudníku na hrudní kosti, nikoliv v levé polovině."
+    },
+    {
+      "id": 10,
+      "category": "první pomoc",
+      "question": "Při srdeční masáži stlačujeme hrudník postiženého:",
+      "options": [
+        {
+          "key": "a",
+          "text": "přibližně uprostřed hrudní kosti, hloubka stlačení je 5 – 6 cm"
+        },
+        {
+          "key": "b",
+          "text": "v jeho levé části frekvencí přibližně 100 – 120x za minutu"
+        },
+        {
+          "key": "c",
+          "text": "tři prsty pod hrudní kostí frekvencí přibližně 100 – 120x za minutu, hloubka stlačení je 4 – 5 cm"
+        },
+        {
+          "key": "d",
+          "text": "přibližně uprostřed hrudní kosti frekvencí 70x za minutu"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Správně stlačujeme uprostřed hrudní kosti do hloubky 5-6 cm frekvencí 100-120/min."
+    },
+    {
+      "id": 11,
+      "category": "první pomoc",
+      "question": "Resuscitace dospělé osoby jedním zachráncem vyžaduje:",
+      "options": [
+        {
+          "key": "a",
+          "text": "5 stlačení hrudníku na 1 vdech umělého dýchání"
+        },
+        {
+          "key": "b",
+          "text": "15 stlačení hrudníku na 1 vdech umělého dýchání"
+        },
+        {
+          "key": "c",
+          "text": "15 stlačení hrudníku na 2 vdechy umělého dýchání"
+        },
+        {
+          "key": "d",
+          "text": "30 stlačení hrudníku na 2 vdechy umělého dýchání"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Standardní poměr pro resuscitaci dospělých je 30:2 (30 stlačení na 2 vdechy), bez ohledu na počet zachránců."
+    },
+    {
+      "id": 12,
+      "category": "první pomoc",
+      "question": "Resuscitace dospělé osoby dvěma zachránci vyžaduje:",
+      "options": [
+        {
+          "key": "a",
+          "text": "15 stlačení hrudníku na 2 vdechy umělého dýchání"
+        },
+        {
+          "key": "b",
+          "text": "30 stlačení hrudníku na 2 vdechy umělého dýchání"
+        },
+        {
+          "key": "c",
+          "text": "15 stlačení hrudníku na 1 vdech umělého dýchání"
+        },
+        {
+          "key": "d",
+          "text": "5 stlačení hrudníku na 1 vdech umělého dýchání"
+        }
+      ],
+      "correct": "b",
+      "explanation": "U dospělých je poměr vždy 30:2, bez ohledu na to, zda resuscituje jeden nebo dva zachránci."
+    },
+    {
+      "id": 13,
+      "category": "první pomoc",
+      "question": "Resuscitace po tonutí vyžaduje:",
+      "options": [
+        {
+          "key": "a",
+          "text": "jako první krok vylití vody z plic"
+        },
+        {
+          "key": "b",
+          "text": "5 vdechů umělého dýchání ihned po uvolnění dýchacích cest"
+        },
+        {
+          "key": "c",
+          "text": "soustředění zachránce (zachránců) pouze na srdeční masáž"
+        },
+        {
+          "key": "d",
+          "text": "pouze volání záchranné služby, protože laická první pomoc je vyloučená"
+        }
+      ],
+      "correct": "b",
+      "explanation": "U tonutí je prioritou okysličení, proto začínáme 5 záchrannými vdechy před zahájením masáže."
+    },
+    {
+      "id": 14,
+      "category": "první pomoc",
+      "question": "Posloupnost úkonů resuscitace dle schématu A-B-C (A-uvolnění dýchacích cest, B-umělé dýchaní, C-srdeční masáž) se uplatňuje:",
+      "options": [
+        {
+          "key": "a",
+          "text": "u seniorů nad 60 let"
+        },
+        {
+          "key": "b",
+          "text": "u dětí od novorozenců po předškolní věk"
+        },
+        {
+          "key": "c",
+          "text": "pokud nemáme možnost volat záchrannou službu"
+        },
+        {
+          "key": "d",
+          "text": "pokud je postižený částečně při vědomí"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Schéma A-B-C (priorita dýchání) se používá u dětí, kde je zástava často způsobena nedostatkem kyslíku, nikoliv srdečním selháním."
+    },
+    {
+      "id": 15,
+      "category": "první pomoc",
+      "question": "Označte nesprávné tvrzení:",
+      "options": [
+        {
+          "key": "a",
+          "text": "Prvním krokem při resuscitaci je uvolnění dýchacích cest postiženého."
+        },
+        {
+          "key": "b",
+          "text": "Srdeční masáž provádíme 30 stlačeními hrudníku."
+        },
+        {
+          "key": "c",
+          "text": "Frekvence stlačování hrudníku při srdeční masáži je 60 – 80x za minutu."
+        },
+        {
+          "key": "d",
+          "text": "Provádí-li resuscitaci více zachránců, je vhodné, aby se u srdeční masáže střídali po přibližně 2 minutách."
+        }
+      ],
+      "correct": "c",
+      "explanation": "Nesprávné je tvrzení c) - správná frekvence je 100-120x za minutu, nikoliv 60-80x."
+    },
+    {
+      "id": 16,
+      "category": "první pomoc",
+      "question": "Zotavovací polohou se rozumí:",
+      "options": [
+        {
+          "key": "a",
+          "text": "jakákoliv poloha vleže na zemi"
+        },
+        {
+          "key": "b",
+          "text": "poloha vleže na boku se zakloněnou hlavou"
+        },
+        {
+          "key": "c",
+          "text": "poloha vleže naznak s podloženou hlavou"
+        },
+        {
+          "key": "d",
+          "text": "poloha vsedě s podepřenými zády"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Zotavovací poloha je na boku se zakloněnou hlavou, což umožňuje odtok tekutin z úst a udržuje průchodné dýchací cesty."
+    },
+    {
+      "id": 17,
+      "category": "první pomoc",
+      "question": "Postiženého v bezvědomí, který dýchá:",
+      "options": [
+        {
+          "key": "a",
+          "text": "uložíme do zotavovací polohy a přikryjeme, aby neprochladl"
+        },
+        {
+          "key": "b",
+          "text": "resuscitujeme až do příjezdu záchranné služby"
+        },
+        {
+          "key": "c",
+          "text": "resuscitujeme 15 stlačeními hrudníku na 1 vdech umělého dýchání"
+        },
+        {
+          "key": "d",
+          "text": "uložíme do polohy naznak a zavoláme záchrannou službu"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Pokud postižený v bezvědomí dýchá, neresuscitujeme, ale uložíme ho do zotavovací polohy a chráníme před prochladnutím."
+    },
+    {
+      "id": 18,
+      "category": "první pomoc",
+      "question": "Pokud postižený dýchá, ale zůstává v bezvědomí:",
+      "options": [
+        {
+          "key": "a",
+          "text": "uložíme jej do zotavovací polohy"
+        },
+        {
+          "key": "b",
+          "text": "nepřetržitě kontrolujeme, jestli nepřestává dýchat"
+        },
+        {
+          "key": "c",
+          "text": "přikryjeme jej, aby neprochladl"
+        },
+        {
+          "key": "d",
+          "text": "všechny odpovědi jsou správné"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Všechny uvedené kroky jsou správné - zotavovací poloha, kontrola dýchání a ochrana před prochladnutím."
+    },
+    {
+      "id": 19,
+      "category": "první pomoc",
+      "question": "Přikrytí postiženého v zotavovací poloze:",
+      "options": [
+        {
+          "key": "a",
+          "text": "se nedoporučuje kvůli znesnadnění kontroly tepu"
+        },
+        {
+          "key": "b",
+          "text": "se nedoporučuje kvůli riziku přehřátí"
+        },
+        {
+          "key": "c",
+          "text": "se doporučuje kvůli zabránění tepelným ztrátám"
+        },
+        {
+          "key": "d",
+          "text": "žádná odpověď není správná"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Přikrytí postiženého je důležité pro prevenci podchlazení, které může zhoršit jeho stav."
+    },
+    {
+      "id": 20,
+      "category": "první pomoc",
+      "question": "Jednotlivé vdechy z úst do úst by měly trvat přibližně:",
+      "options": [
+        {
+          "key": "a",
+          "text": "1 sekundu"
+        },
+        {
+          "key": "b",
+          "text": "2 sekundy"
+        },
+        {
+          "key": "c",
+          "text": "4 sekundy"
+        },
+        {
+          "key": "d",
+          "text": "6 sekund"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Každý vdech by měl trvat přibližně 1 sekundu a měl by být dostatečný k viditelnému zvednutí hrudníku."
+    },
+    {
+      "id": 21,
+      "category": "podchlazení",
+      "question": "Postiženého podchlazením ukládáme do teplé lázně:",
+      "options": [
+        {
+          "key": "a",
+          "text": "dolními končetinami a trupem"
+        },
+        {
+          "key": "b",
+          "text": "tak, aby zpočátku vyčnívala pouze hlava"
+        },
+        {
+          "key": "c",
+          "text": "tak, aby zpočátku byl ponořen pouze trup"
+        },
+        {
+          "key": "d",
+          "text": "trupem a horními končetinami"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Nejprve zahříváme pouze trup, aby se studená krev z končetin nevracela příliš rychle k srdci a nezpůsobila šok."
+    },
+    {
+      "id": 22,
+      "category": "otravy plyny",
+      "question": "Při použití vzduchového dýchacího přístroje se po dosažení hloubky 40 metrů výrazně zhoršila komunikace mezi vámi a vaším partnerem. Za příčinu budete považovat:",
+      "options": [
+        {
+          "key": "a",
+          "text": "nedostatek kyslíku (hypoxii)"
+        },
+        {
+          "key": "b",
+          "text": "otravu dusíkem (hloubkové opojení)"
+        },
+        {
+          "key": "c",
+          "text": "otravu kyslíkem"
+        },
+        {
+          "key": "d",
+          "text": "dekompresní nemoc"
+        }
+      ],
+      "correct": "b",
+      "explanation": "V hloubce 40 m je parciální tlak dusíku dostatečně vysoký pro vznik hloubkového opojení (narkózy), které zhoršuje koordinaci a komunikaci."
+    },
+    {
+      "id": 23,
+      "category": "podchlazení",
+      "question": "Při pomoci podchlazenému potápěči je vhodné:",
+      "options": [
+        {
+          "key": "a",
+          "text": "soustředit se na zahřívání trupu"
+        },
+        {
+          "key": "b",
+          "text": "cvičit s končetinami"
+        },
+        {
+          "key": "c",
+          "text": "masírovat končetiny"
+        },
+        {
+          "key": "d",
+          "text": "všechny odpovědi jsou správné"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Zahříváme pouze trup. Masáž a pohyb končetin by způsobily návrat studené krve k srdci a mohly by vyvolat srdeční zástavu."
+    },
+    {
+      "id": 24,
+      "category": "podchlazení",
+      "question": "Mezi příznaky podchlazení (hypotermie) nepatří:",
+      "options": [
+        {
+          "key": "a",
+          "text": "nesoustředěnost, zvýšená spotřeba vzduchu"
+        },
+        {
+          "key": "b",
+          "text": "třešňově červené zbarvení rtů, sliznic a nehtových lůžek"
+        },
+        {
+          "key": "c",
+          "text": "zvýšené vylučování moči (polyurie)"
+        },
+        {
+          "key": "d",
+          "text": "neovladatelný třes"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Třešňově červené zbarvení je příznakem otravy oxidem uhelnatým, nikoliv podchlazení. Při podchlazení jsou rty naopak modré."
+    },
+    {
+      "id": 25,
+      "category": "otravy plyny",
+      "question": "Označte nesprávné tvrzení:",
+      "options": [
+        {
+          "key": "a",
+          "text": "Hyperventilace vede ke snížení hladiny oxidu uhličitého v organismu."
+        },
+        {
+          "key": "b",
+          "text": "Příznaky nedostatku kyslíku (hypoxie) jsou obtížně rozeznatelné."
+        },
+        {
+          "key": "c",
+          "text": "Soustavný tlak výstroje na krční tepny může vést ke snížení dodávky kyslíku do mozku."
+        },
+        {
+          "key": "d",
+          "text": "Nedostatek kyslíku (hypoxie) nastává při poklesu parciálního tlaku kyslíku ve vdechovaném médiu pod hranici 21 kPa."
+        }
+      ],
+      "correct": "d",
+      "explanation": "Nesprávné je tvrzení d) - hypoxie nastává při poklesu ppO₂ pod cca 16 kPa (0.16 bar), nikoliv 21 kPa. Při 21 kPa je normální atmosférický parciální tlak kyslíku."
+    },
+    {
+      "id": 26,
+      "category": "otravy plyny",
+      "question": "Nedostatek kyslíku (hypoxie) nemůže být důsledkem:",
+      "options": [
+        {
+          "key": "a",
+          "text": "hyperventilace před ponorem na nádech"
+        },
+        {
+          "key": "b",
+          "text": "navázání oxidu uhelnatého na hemoglobin"
+        },
+        {
+          "key": "c",
+          "text": "dýchání směsi s 2% obsahem kyslíku v hloubce 90 metrů"
+        },
+        {
+          "key": "d",
+          "text": "dýchání vzduchu dlouhodobě skladovaného v ocelovém zásobníku"
+        }
+      ],
+      "correct": "c",
+      "explanation": "V 90 m je absolutní tlak 10 bar, takže 2% O₂ dává ppO₂ = 0.2 bar (20 kPa), což je dostatečné pro dýchání a nezpůsobuje hypoxii."
+    },
+    {
+      "id": 27,
+      "category": "otravy plyny",
+      "question": "Označte nesprávné tvrzení o otravě dusíkem (hloubkovém opojení):",
+      "options": [
+        {
+          "key": "a",
+          "text": "První pomoc spočívá ve výstupu do menší hloubky."
+        },
+        {
+          "key": "b",
+          "text": "Nástup hloubkového opojení je urychlován stresem."
+        },
+        {
+          "key": "c",
+          "text": "Hloubkové opojení nehrozí potápěči s kyslíkovým přístrojem."
+        },
+        {
+          "key": "d",
+          "text": "Narkotické účinky dusíku lze omezit zvýšenou fyzickou námahou."
+        }
+      ],
+      "correct": "d",
+      "explanation": "Zvýšená fyzická námaha naopak zhoršuje narkózu kvůli hromadění CO₂, který zesiluje narkotické účinky dusíku."
+    },
+    {
+      "id": 28,
+      "category": "otravy plyny",
+      "question": "Mezi příznaky nedostatku kyslíku (hypoxie) nepatří:",
+      "options": [
+        {
+          "key": "a",
+          "text": "pocit nepohodlí, nevolnost"
+        },
+        {
+          "key": "b",
+          "text": "zrychlení tepu a dechu"
+        },
+        {
+          "key": "c",
+          "text": "pocit rozjaření (euforie)"
+        },
+        {
+          "key": "d",
+          "text": "omezení schopnosti jasného úsudku"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Pocit nepohodlí a nevolnost nejsou typickými příznaky hypoxie. Hypoxie se projevuje euforií, zrychlením tepu/dechu a zhoršeným úsudkem."
+    },
+    {
+      "id": 29,
+      "category": "otravy plyny",
+      "question": "Jestliže váš partner jeví známky otravy dusíkem (hloubkového opojení):",
+      "options": [
+        {
+          "key": "a",
+          "text": "okamžitě jej přimějete k výstupu do menší hloubky"
+        },
+        {
+          "key": "b",
+          "text": "okamžitě zahájíte nouzový výstup na hladinu"
+        },
+        {
+          "key": "c",
+          "text": "setrváte společně na místě, dokud příznaky nepominou"
+        },
+        {
+          "key": "d",
+          "text": "pokračujete v sestupu do hloubky, v níž příznaky pominou"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Správná první pomoc při hloubkovém opojení je výstup do menší hloubky, kde narkotické účinky dusíku rychle odezní."
+    },
+    {
+      "id": 30,
+      "category": "otravy plyny",
+      "question": "Narkotické účinky dusíku zesiluje:",
+      "options": [
+        {
+          "key": "a",
+          "text": "vodík"
+        },
+        {
+          "key": "b",
+          "text": "hélium"
+        },
+        {
+          "key": "c",
+          "text": "oxid uhličitý"
+        },
+        {
+          "key": "d",
+          "text": "oxid uhelnatý"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Oxid uhličitý (CO₂) zesiluje narkotické účinky dusíku. Proto je důležité správně dýchat a vyhýbat se fyzické námaze ve velkých hloubkách."
+    },
+    {
+      "id": 31,
+      "category": "otravy plyny",
+      "question": "Nedostatek kyslíku (hypoxie) hrozí:",
+      "options": [
+        {
+          "key": "a",
+          "text": "při ponoru na nádech po hyperventilaci"
+        },
+        {
+          "key": "b",
+          "text": "při vyjmutí plicní automatiky v suchých prostorách uzavřených pod vodou"
+        },
+        {
+          "key": "c",
+          "text": "při použití dlouhodobě skladované zásoby vzduchu"
+        },
+        {
+          "key": "d",
+          "text": "všechny odpovědi jsou správné"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Všechny uvedené situace mohou vést k hypoxii - hyperventilace snižuje CO₂ a potlačuje dechový reflex, uzavřené prostory mají omezený kyslík, a v dlouhodobě skladovaném vzduchu může kyslík zreagovat s ocelovými stěnami."
+    },
+    {
+      "id": 32,
+      "category": "otravy plyny",
+      "question": "Dýchací směs obsahuje 4 % kyslíku. Bez rizika nedostatku kyslíku (hypoxie) ji můžeme použít teprve od hloubky větší než:",
+      "options": [
+        {
+          "key": "a",
+          "text": "10 metrů"
+        },
+        {
+          "key": "b",
+          "text": "20 metrů"
+        },
+        {
+          "key": "c",
+          "text": "30 metrů"
+        },
+        {
+          "key": "d",
+          "text": "60 metrů"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Pro bezpečné dýchání potřebujeme ppO₂ alespoň 0.16 bar. V 30 m je absolutní tlak 4 bar, takže 4% × 4 = 0.16 bar (16 kPa), což je minimální bezpečná hodnota."
+    },
+    {
+      "id": 33,
+      "category": "otravy plyny",
+      "question": "Bezvědomí hrozí při poklesu parciálního tlaku kyslíku v dýchaném médiu pod hranici:",
+      "options": [
+        {
+          "key": "a",
+          "text": "5 kPa"
+        },
+        {
+          "key": "b",
+          "text": "10 kPa"
+        },
+        {
+          "key": "c",
+          "text": "16 kPa"
+        },
+        {
+          "key": "d",
+          "text": "21 kPa"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Bezvědomí hrozí při poklesu ppO₂ pod 10 kPa (0.1 bar). Hranice 16 kPa je minimum pro normální funkci, pod 10 kPa nastává ztráta vědomí."
+    },
+    {
+      "id": 34,
+      "category": "otravy plyny",
+      "question": "Použití zásoby vzduchu dlouhodobě (např. několik měsíců) skladované v ocelovém zásobníku může vést:",
+      "options": [
+        {
+          "key": "a",
+          "text": "k nedostatku kyslíku"
+        },
+        {
+          "key": "b",
+          "text": "k otravě kyslíkem"
+        },
+        {
+          "key": "c",
+          "text": "k otravě oxidem uhličitým"
+        },
+        {
+          "key": "d",
+          "text": "k rychlejšímu nástupu otravy dusíkem (hloubkového opojení)"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Kyslík v dlouhodobě skladovaném vzduchu může reagovat s ocelovými stěnami zásobníku (oxidace/rez), čímž se jeho obsah snižuje a hrozí hypoxie."
+    },
+    {
+      "id": 35,
+      "category": "otravy plyny",
+      "question": "Nedostatek kyslíku (hypoxie) nastává při poklesu parciálního tlaku kyslíku v dýchacím médiu pod hranici:",
+      "options": [
+        {
+          "key": "a",
+          "text": "21 kPa"
+        },
+        {
+          "key": "b",
+          "text": "16 kPa"
+        },
+        {
+          "key": "c",
+          "text": "12 kPa"
+        },
+        {
+          "key": "d",
+          "text": "10 kPa"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Hypoxie nastává při poklesu ppO₂ pod 16 kPa (0.16 bar). To je minimální parciální tlak kyslíku potřebný pro normální fungování organismu."
+    },
+    {
+      "id": 36,
+      "category": "podchlazení",
+      "question": "Vhodná teplota sprchy či koupele pro podchlazeného potápěče je přibližně:",
+      "options": [
+        {
+          "key": "a",
+          "text": "16 – 18 C"
+        },
+        {
+          "key": "b",
+          "text": "20 – 30 C"
+        },
+        {
+          "key": "c",
+          "text": "37 – 40 C"
+        },
+        {
+          "key": "d",
+          "text": "45 – 50 C"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Optimální teplota pro ohřívání podchlazeného je 37–40 °C, což odpovídá tělesné teplotě a nezpůsobí tepelný šok."
+    },
+    {
+      "id": 37,
+      "category": "podchlazení",
+      "question": "Při pomoci podchlazenému potápěči dáme přednost:",
+      "options": [
+        {
+          "key": "a",
+          "text": "cvičení končetinami"
+        },
+        {
+          "key": "b",
+          "text": "masáži končetin"
+        },
+        {
+          "key": "c",
+          "text": "zahřívání končetin"
+        },
+        {
+          "key": "d",
+          "text": "zahřívání trupu"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Při podchlazení je prioritou zahřívání trupu, kde jsou životně důležité orgány. Zahřívání končetin může způsobit návrat studené krve do srdce."
+    },
+    {
+      "id": 38,
+      "category": "podchlazení",
+      "question": "Při pomoci podchlazenému potápěči je vhodné:",
+      "options": [
+        {
+          "key": "a",
+          "text": "zabalit postiženého do předehřátých přikrývek"
+        },
+        {
+          "key": "b",
+          "text": "použít teplou lázeň"
+        },
+        {
+          "key": "c",
+          "text": "použít teplou sprchu"
+        },
+        {
+          "key": "d",
+          "text": "všechny odpovědi jsou správné"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Všechny uvedené metody jsou vhodné pro zahřívání podchlazeného potápěče – předehřáté přikrývky, teplá lázeň i teplá sprcha."
+    },
+    {
+      "id": 39,
+      "category": "podchlazení",
+      "question": "Při podchlazení je nevhodné:",
+      "options": [
+        {
+          "key": "a",
+          "text": "cvičit s postiženým"
+        },
+        {
+          "key": "b",
+          "text": "použít předehřátý zábal"
+        },
+        {
+          "key": "c",
+          "text": "zahřívat postiženého teplou sprchou či koupelí"
+        },
+        {
+          "key": "d",
+          "text": "zahřívat postiženého tělesným teplem zachránce"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Cvičení s podchlazeným je nevhodné, protože pohyb končetin urychluje návrat studené krve z periferie do srdce, což může způsobit srdeční arytmii."
+    },
+    {
+      "id": 40,
+      "category": "podchlazení",
+      "question": "Neovladatelný třes:",
+      "options": [
+        {
+          "key": "a",
+          "text": "je obvyklý důsledek pobytu ve vodě a není nutné mu věnovat pozornost"
+        },
+        {
+          "key": "b",
+          "text": "je závažný příznak podchlazení"
+        },
+        {
+          "key": "c",
+          "text": "nehrozí potápěči v kompletním izolačním obleku"
+        },
+        {
+          "key": "d",
+          "text": "předchází prvním příznakům podchlazení"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Neovladatelný třes je závažným příznakem podchlazení (hypotermie) a vyžaduje okamžitou pozornost a zahřívání postiženého."
+    },
+    {
+      "id": 41,
+      "category": "otravy plyny",
+      "question": "Promodrání rtů, sliznic a nehtových lůžek je charakteristické:",
+      "options": [
+        {
+          "key": "a",
+          "text": "pro otravu dusíkem (hloubkové opojení)"
+        },
+        {
+          "key": "b",
+          "text": "pro kožní formu dekompresní nemoci"
+        },
+        {
+          "key": "c",
+          "text": "pro otravu oxidem uhelnatým"
+        },
+        {
+          "key": "d",
+          "text": "pro otravu oxidem uhličitým"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Promodrání (cyanóza) rtů, sliznic a nehtových lůžek je charakteristickým příznakem otravy oxidem uhličitým (CO₂), způsobené nedostatečným okysličením krve."
+    },
+    {
+      "id": 42,
+      "category": "otravy plyny",
+      "question": "Charakteristickým příznakem otravy oxidem uhličitým je:",
+      "options": [
+        {
+          "key": "a",
+          "text": "třešňově červené zbarvení rtů, sliznic a nehtových lůžek"
+        },
+        {
+          "key": "b",
+          "text": "promodrání rtů, sliznic a nehtových lůžek"
+        },
+        {
+          "key": "c",
+          "text": "mramorování pokožky"
+        },
+        {
+          "key": "d",
+          "text": "bolest pod očima"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Promodrání (cyanóza) je charakteristickým příznakem otravy CO₂. Třešňově červené zbarvení je naopak typické pro otravu oxidem uhelnatým (CO)."
+    },
+    {
+      "id": 43,
+      "category": "otravy plyny",
+      "question": "Mezi příznaky otravy oxidem uhličitým nepatří:",
+      "options": [
+        {
+          "key": "a",
+          "text": "promodrání rtů, sliznic a nehtových lůžek"
+        },
+        {
+          "key": "b",
+          "text": "zrychlení tepu a dechu"
+        },
+        {
+          "key": "c",
+          "text": "bolest ve svalech a kloubech"
+        },
+        {
+          "key": "d",
+          "text": "pocit horka"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Bolest ve svalech a kloubech je příznakem dekompresní nemoci, nikoliv otravy oxidem uhličitým."
+    },
+    {
+      "id": 44,
+      "category": "otravy plyny",
+      "question": "Otrava oxidem uhličitým nemůže nastat v důsledku:",
+      "options": [
+        {
+          "key": "a",
+          "text": "hyperventilace před ponorem na nádech"
+        },
+        {
+          "key": "b",
+          "text": "nadměrné fyzické námahy při ponoru s dýchacím přístrojem"
+        },
+        {
+          "key": "c",
+          "text": "nesprávné techniky dýchání z dýchacího přístroje"
+        },
+        {
+          "key": "d",
+          "text": "všechny odpovědi jsou správné"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Hyperventilace snižuje hladinu CO₂ v organismu, takže nemůže způsobit otravu oxidem uhličitým. Naopak nadměrná námaha a nesprávné dýchání vedou k hromadění CO₂."
+    },
+    {
+      "id": 45,
+      "category": "otravy plyny",
+      "question": "Otravu oxidem uhličitým může způsobit:",
+      "options": [
+        {
+          "key": "a",
+          "text": "hyperventilace před ponorem na nádech"
+        },
+        {
+          "key": "b",
+          "text": "znečištění zásoby vzduchu výfukovými plyny"
+        },
+        {
+          "key": "c",
+          "text": "používání nevhodné dýchací trubice"
+        },
+        {
+          "key": "d",
+          "text": "soustavný tlak výstroje na krční tepny"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Nevhodná dýchací trubice (příliš dlouhá nebo úzká) způsobuje zvýšený mrtvý prostor a hromadění vydechovaného CO₂, což vede k otravě."
+    },
+    {
+      "id": 46,
+      "category": "otravy plyny",
+      "question": "K příznakům akutní otravy kyslíkem nepatří:",
+      "options": [
+        {
+          "key": "a",
+          "text": "bolest hlavy"
+        },
+        {
+          "key": "b",
+          "text": "záškuby malých svalů na rukou a v obličeji"
+        },
+        {
+          "key": "c",
+          "text": "celkové křeče"
+        },
+        {
+          "key": "d",
+          "text": "rychlý nástup bezvědomí"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Bolest hlavy není typickým příznakem akutní otravy kyslíkem. Typické příznaky zahrnují záškuby svalů, křeče a bezvědomí."
+    },
+    {
+      "id": 47,
+      "category": "otravy plyny",
+      "question": "Promodrání rtů, sliznic a nehtových lůžek je charakteristické:",
+      "options": [
+        {
+          "key": "a",
+          "text": "pro otravu oxidem uhelnatým"
+        },
+        {
+          "key": "b",
+          "text": "pro otravu oxidem uhličitým"
+        },
+        {
+          "key": "c",
+          "text": "pro otravu dusíkem (hloubkové opojení)"
+        },
+        {
+          "key": "d",
+          "text": "pro kožní formu dekompresní nemoci"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Promodrání (cyanóza) rtů, sliznic a nehtových lůžek je charakteristické pro otravu oxidem uhličitým (CO2), která způsobuje nedostatek kyslíku v krvi."
+    },
+    {
+      "id": 48,
+      "category": "otravy plyny",
+      "question": "Charakteristickým příznakem otravy oxidem uhličitým je:",
+      "options": [
+        {
+          "key": "a",
+          "text": "promodrání rtů, sliznic a nehtových lůžek"
+        },
+        {
+          "key": "b",
+          "text": "třešňově červené zbarvení rtů, sliznic a nehtových lůžek"
+        },
+        {
+          "key": "c",
+          "text": "mramorování pokožky"
+        },
+        {
+          "key": "d",
+          "text": "bolest pod očima"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Promodrání (cyanóza) je charakteristickým příznakem otravy CO2, protože dochází k nedostatečnému okysličení krve."
+    },
+    {
+      "id": 49,
+      "category": "otravy plyny",
+      "question": "Mezi příznaky otravy oxidem uhelnatým nepatří:",
+      "options": [
+        {
+          "key": "a",
+          "text": "bodavá bolest za hrudní kostí"
+        },
+        {
+          "key": "b",
+          "text": "bolest hlavy a závrať"
+        },
+        {
+          "key": "c",
+          "text": "nevolnost a zvracení"
+        },
+        {
+          "key": "d",
+          "text": "třešňově červené zbarvení rtů, sliznic a nehtových lůžek"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Bodavá bolest za hrudní kostí není typickým příznakem otravy CO. Typické příznaky zahrnují bolest hlavy, závrať, nevolnost a třešňově červené zbarvení."
+    },
+    {
+      "id": 50,
+      "category": "otravy plyny",
+      "question": "Akutní otrava kyslíkem při použití vzduchového dýchacího přístroje hrozí od hloubky přibližně:",
+      "options": [
+        {
+          "key": "a",
+          "text": "18 metrů"
+        },
+        {
+          "key": "b",
+          "text": "40 metrů"
+        },
+        {
+          "key": "c",
+          "text": "70 metrů"
+        },
+        {
+          "key": "d",
+          "text": "100 metrů"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Při použití vzduchu (21% O2) dosáhne parciální tlak kyslíku toxické hranice 1,6 bar přibližně v hloubce 70 metrů (8 bar × 0,21 = 1,68 bar)."
+    },
+    {
+      "id": 51,
+      "category": "otravy plyny",
+      "question": "Charakteristickým příznakem otravy oxidem uhelnatým je:",
+      "options": [
+        {
+          "key": "a",
+          "text": "třešňově červené zbarvení rtů, sliznic a nehtových lůžek"
+        },
+        {
+          "key": "b",
+          "text": "promodrání rtů, sliznic a nehtových lůžek"
+        },
+        {
+          "key": "c",
+          "text": "mramorování pokožky"
+        },
+        {
+          "key": "d",
+          "text": "bolest ve svalech a kloubech"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Třešňově červené zbarvení je charakteristické pro otravu CO, protože karboxyhemoglobin (CO navázaný na hemoglobin) má jasně červenou barvu."
+    },
+    {
+      "id": 52,
+      "category": "otravy plyny",
+      "question": "Otravu oxidem uhelnatým může způsobit:",
+      "options": [
+        {
+          "key": "a",
+          "text": "hyperventilace před ponorem na nádech"
+        },
+        {
+          "key": "b",
+          "text": "soustavný tlak výstroje na krční tepny"
+        },
+        {
+          "key": "c",
+          "text": "znečištění zásoby vzduchu výfukovými plyny"
+        },
+        {
+          "key": "d",
+          "text": "zvýšený parciální tlak dusíku"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Znečištění zásoby vzduchu výfukovými plyny je hlavní příčinou otravy CO při potápění, protože výfukové plyny obsahují oxid uhelnatý."
+    },
+    {
+      "id": 53,
+      "category": "otravy plyny",
+      "question": "Akutní otrava kyslíkem se projevuje:",
+      "options": [
+        {
+          "key": "a",
+          "text": "promodráním rtů, sliznic a nehtových lůžek"
+        },
+        {
+          "key": "b",
+          "text": "třešňově červeným zbarvením rtů, sliznic a nehtových lůžek"
+        },
+        {
+          "key": "c",
+          "text": "pocitem únavy"
+        },
+        {
+          "key": "d",
+          "text": "záškuby malých svalů, prudkými křečemi, bezvědomím"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Akutní otrava kyslíkem (Lorrain-Smithův syndrom) se projevuje záškuby svalů, prudkými křečemi a následně bezvědomím."
+    },
+    {
+      "id": 54,
+      "category": "otravy plyny",
+      "question": "Podstatou otravy oxidem uhelnatým je:",
+      "options": [
+        {
+          "key": "a",
+          "text": "rozpouštění oxidu uhelnatého ve tkáních"
+        },
+        {
+          "key": "b",
+          "text": "rozpouštění oxidu uhelnatého v krevní plazmě"
+        },
+        {
+          "key": "c",
+          "text": "chemická vazba oxidu uhelnatého na krevní plazmu"
+        },
+        {
+          "key": "d",
+          "text": "chemická vazba oxidu uhelnatého na hemoglobin"
+        }
+      ],
+      "correct": "d",
+      "explanation": "CO se váže na hemoglobin s afinitou 200-250× vyšší než kyslík, čímž blokuje přenos kyslíku krví a způsobuje tkáňovou hypoxii."
+    },
+    {
+      "id": 55,
+      "category": "otravy plyny",
+      "question": "Charakteristickým příznakem otravy oxidem uhelnatým je:",
+      "options": [
+        {
+          "key": "a",
+          "text": "promodrání rtů, sliznic a nehtových lůžek"
+        },
+        {
+          "key": "b",
+          "text": "třešňově červené zbarvení rtů, sliznic a nehtových lůžek"
+        },
+        {
+          "key": "c",
+          "text": "mramorování pokožky"
+        },
+        {
+          "key": "d",
+          "text": "bolest pod očima"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Třešňově červené zbarvení je typické pro otravu CO, způsobené jasně červenou barvou karboxyhemoglobinu v krvi."
+    },
+    {
+      "id": 56,
+      "category": "otravy plyny",
+      "question": "Třešňově červené zbarvení rtů, sliznic a nehtových lůžek je charakteristické:",
+      "options": [
+        {
+          "key": "a",
+          "text": "pro kožní formu dekompresní nemoci"
+        },
+        {
+          "key": "b",
+          "text": "pro otravu dusíkem (hloubkové opojení)"
+        },
+        {
+          "key": "c",
+          "text": "pro otravu oxidem uhelnatým"
+        },
+        {
+          "key": "d",
+          "text": "pro otravu oxidem uhličitým"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Třešňově červené zbarvení je typickým příznakem otravy oxidem uhelnatým (CO), který se váže na hemoglobin a způsobuje toto charakteristické zbarvení."
+    },
+    {
+      "id": 57,
+      "category": "otravy plyny",
+      "question": "Akutní otrava kyslíkem hrozí, jestliže parciální tlak kyslíku v dýchaném médiu překročí přibližně:",
+      "options": [
+        {
+          "key": "a",
+          "text": "100 kPa"
+        },
+        {
+          "key": "b",
+          "text": "160 kPa"
+        },
+        {
+          "key": "c",
+          "text": "420 kPa"
+        },
+        {
+          "key": "d",
+          "text": "500 kPa"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Akutní otrava kyslíkem (hyperoxie) hrozí při parciálním tlaku kyslíku nad 160 kPa (1,6 bar), což je bezpečnostní limit pro potápění."
+    },
+    {
+      "id": 58,
+      "category": "otravy plyny",
+      "question": "Třešňově červené zbarvení rtů, sliznic a nehtových lůžek je charakteristické:",
+      "options": [
+        {
+          "key": "a",
+          "text": "pro otravu oxidem uhličitým"
+        },
+        {
+          "key": "b",
+          "text": "pro otravu oxidem uhelnatým"
+        },
+        {
+          "key": "c",
+          "text": "pro kožní formu dekompresní nemoci"
+        },
+        {
+          "key": "d",
+          "text": "pro otravu dusíkem (hloubkové opojení)"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Třešňově červené zbarvení je charakteristickým příznakem otravy oxidem uhelnatým (CO), protože karboxyhemoglobin má výrazně červenou barvu."
+    },
+    {
+      "id": 59,
+      "category": "otravy plyny",
+      "question": "Označte nesprávné tvrzení:",
+      "options": [
+        {
+          "key": "a",
+          "text": "Oxid uhelnatý blokuje přenos kyslíku tím, že se váže na hemoglobin."
+        },
+        {
+          "key": "b",
+          "text": "K otravě oxidem uhelnatým při potápění vede znečištění zásoby vzduchu výfukovými plyny."
+        },
+        {
+          "key": "c",
+          "text": "Mezi příznaky otravy oxidem uhelnatým patří bolest hlavy, závratě, nevolnost a zvracení."
+        },
+        {
+          "key": "d",
+          "text": "Charakteristickým příznakem otravy oxidem uhelnatým je promodrání rtů, sliznic a nehtových lůžek."
+        }
+      ],
+      "correct": "d",
+      "explanation": "Nesprávné je tvrzení d) - otrava oxidem uhelnatým způsobuje třešňově červené zbarvení, nikoliv promodrání. Promodrání je charakteristické pro otravu oxidem uhličitým."
+    },
+    {
+      "id": 60,
+      "category": "otravy plyny",
+      "question": "Otrava oxidem uhličitým může nastat v důsledku:",
+      "options": [
+        {
+          "key": "a",
+          "text": "dýchání nevhodnou dýchací trubicí"
+        },
+        {
+          "key": "b",
+          "text": "nadměrné fyzické námahy pod vodou"
+        },
+        {
+          "key": "c",
+          "text": "nesprávné techniky dýchání z dýchacího přístroje"
+        },
+        {
+          "key": "d",
+          "text": "všechny odpovědi jsou správné"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Všechny uvedené faktory mohou vést k otravě oxidem uhličitým - nevhodná trubice s velkým mrtvým prostorem, fyzická námaha zvyšující produkci CO2, i nesprávná technika dýchání."
+    },
+    {
+      "id": 61,
+      "category": "barotrauma plic",
+      "question": "Během sestupu se vzduchovým přístrojem začal váš partner v hloubce 15 metrů jevit známky dezorientace, otáčí se dokola, má problémy s koordinací pohybů. Za příčinu budete považovat:",
+      "options": [
+        {
+          "key": "a",
+          "text": "protržení ušního bubínku"
+        },
+        {
+          "key": "b",
+          "text": "vzduchovou embolii"
+        },
+        {
+          "key": "c",
+          "text": "otravu kyslíkem"
+        },
+        {
+          "key": "d",
+          "text": "otravu dusíkem (hloubkové opojení)"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Dezorientace a problémy s koordinací při sestupu v malé hloubce ukazují na poškození vnitřního ucha - protržení bubínku způsobuje vertigo a ztrátu orientace."
+    },
+    {
+      "id": 62,
+      "category": "barotrauma plic",
+      "question": "Mezi příznaky pneumothoraxu nepatří:",
+      "options": [
+        {
+          "key": "a",
+          "text": "bolest na hrudi"
+        },
+        {
+          "key": "b",
+          "text": "ochrnutí"
+        },
+        {
+          "key": "c",
+          "text": "dráždivý kašel"
+        },
+        {
+          "key": "d",
+          "text": "naběhlé krční cévy"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Ochrnutí není příznakem pneumothoraxu. Pneumothorax se projevuje bolestí na hrudi, kašlem a naběhlými krčními cévami. Ochrnutí je spíše příznak dekompresní nemoci nebo vzduchové embolie."
+    },
+    {
+      "id": 63,
+      "category": "barotrauma plic",
+      "question": "Barotrauma očí:",
+      "options": [
+        {
+          "key": "a",
+          "text": "nemůže nastat, poněvadž oční koule je vyplněna tekutým sklivcem"
+        },
+        {
+          "key": "b",
+          "text": "nemůže nastat, poněvadž oko vyrovnává tlakové rozdíly vlastní pružností"
+        },
+        {
+          "key": "c",
+          "text": "může nastat, pokud potápěč při sestupu nevyrovnává tlak v masce"
+        },
+        {
+          "key": "d",
+          "text": "může nastat, pokud potápěč při výstupu nevyrovnává tlak v masce"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Barotrauma očí může nastat při sestupu, pokud potápěč nevyrovnává tlak v masce vydechnutím nosem. Podtlak v masce může poškodit oči a způsobit krvácení."
+    },
+    {
+      "id": 64,
+      "category": "barotrauma plic",
+      "question": "Barotrauma plic z podtlaku se projevuje:",
+      "options": [
+        {
+          "key": "a",
+          "text": "bolestmi u kořene nosu a pod očima"
+        },
+        {
+          "key": "b",
+          "text": "bolestmi na hrudi, případně vykašláváním narůžovělé pěny"
+        },
+        {
+          "key": "c",
+          "text": "středohrudním emfyzémem"
+        },
+        {
+          "key": "d",
+          "text": "třešňově červeným zbarvením rtů, sliznic a nehtových lůžek"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Barotrauma plic z podtlaku se projevuje bolestmi na hrudi a vykašláváním narůžovělé pěny, což je krev smíchaná se vzduchem z poškozených plicních sklípků."
+    },
+    {
+      "id": 65,
+      "category": "barotrauma plic",
+      "question": "Při potápění dochází k emfyzému vniknutím vzduchu z protržené plíce:",
+      "options": [
+        {
+          "key": "a",
+          "text": "do krevního oběhu"
+        },
+        {
+          "key": "b",
+          "text": "do pohrudniční štěrbiny"
+        },
+        {
+          "key": "c",
+          "text": "do mezihrudí nebo do podkoží v oblasti krku a ramen"
+        },
+        {
+          "key": "d",
+          "text": "do žaludku"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Emfyzém vzniká vniknutím vzduchu do mezihrudí (mediastinální emfyzém) nebo do podkoží v oblasti krku a ramen (podkožní emfyzém). Vzduch v krevním oběhu je embolie, v pohrudniční štěrbině pneumothorax."
+    },
+    {
+      "id": 66,
+      "category": "barotrauma plic",
+      "question": "Potápěči s dýchacím přístrojem barotrauma plic z podtlaku:",
+      "options": [
+        {
+          "key": "a",
+          "text": "hrozí po ztrátě kontroly nad dýcháním během pádu do hloubky"
+        },
+        {
+          "key": "b",
+          "text": "hrozí při vynášení těžších předmětů vlastní silou"
+        },
+        {
+          "key": "c",
+          "text": "hrozí při výstupu bez vydechování"
+        },
+        {
+          "key": "d",
+          "text": "nehrozí"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Barotrauma plic z podtlaku hrozí při rychlém pádu do hloubky, kdy potápěč ztratí kontrolu nad dýcháním a nestačí doplňovat vzduch do plic."
+    },
+    {
+      "id": 67,
+      "category": "barotrauma plic",
+      "question": "Bolest u kořene nosu a pod očima je projevem barotraumatu:",
+      "options": [
+        {
+          "key": "a",
+          "text": "zubů"
+        },
+        {
+          "key": "b",
+          "text": "vedlejších dutin nosních"
+        },
+        {
+          "key": "c",
+          "text": "středoušní dutiny"
+        },
+        {
+          "key": "d",
+          "text": "očí"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Bolest u kořene nosu a pod očima je typickým příznakem barotraumatu vedlejších dutin nosních (sinusů)."
+    },
+    {
+      "id": 68,
+      "category": "barotrauma plic",
+      "question": "K barotraumatu plic z přetlaku může dojít při nesprávně provedeném výstupu s dýchacím přístrojem již z hloubky:",
+      "options": [
+        {
+          "key": "a",
+          "text": "menší než 2 metry"
+        },
+        {
+          "key": "b",
+          "text": "3 metrů"
+        },
+        {
+          "key": "c",
+          "text": "5 metrů"
+        },
+        {
+          "key": "d",
+          "text": "10 metrů"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Barotrauma plic z přetlaku může nastat již z velmi malé hloubky (pod 2 metry), protože relativní změna tlaku je největší u hladiny."
+    },
+    {
+      "id": 69,
+      "category": "barotrauma plic",
+      "question": "Barotrauma zubů:",
+      "options": [
+        {
+          "key": "a",
+          "text": "je vyloučeno vzhledem k jejich stavbě"
+        },
+        {
+          "key": "b",
+          "text": "není bolestivé ani nebezpečné"
+        },
+        {
+          "key": "c",
+          "text": "může nastat pouze při ponorech do hloubek přes 40 metrů"
+        },
+        {
+          "key": "d",
+          "text": "je bolestivé a může být nebezpečné především při výstupu"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Barotrauma zubů je bolestivé a nebezpečné, zejména při výstupu, kdy vzduch uzavřený v dutinách zubů expanduje."
+    },
+    {
+      "id": 70,
+      "category": "barotrauma plic",
+      "question": "Mezi příznaky vzduchové embolie nepatří:",
+      "options": [
+        {
+          "key": "a",
+          "text": "závrať"
+        },
+        {
+          "key": "b",
+          "text": "smyslové poruchy"
+        },
+        {
+          "key": "c",
+          "text": "bolest ve svalech kloubech"
+        },
+        {
+          "key": "d",
+          "text": "bezvědomí"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Bolest ve svalech a kloubech je příznakem dekompresní nemoci, nikoliv vzduchové embolie. Vzduchová embolie se projevuje neurologickými příznaky."
+    },
+    {
+      "id": 71,
+      "category": "barotrauma plic",
+      "question": "Při potápění dochází k penumothoraxu vniknutím vzduchu z protržené plíce:",
+      "options": [
+        {
+          "key": "a",
+          "text": "do krevního oběhu"
+        },
+        {
+          "key": "b",
+          "text": "do pohrudniční štěrbiny"
+        },
+        {
+          "key": "c",
+          "text": "do mezihrudí"
+        },
+        {
+          "key": "d",
+          "text": "do podkoží v oblasti krku a ramen"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Pneumothorax vzniká vniknutím vzduchu do pohrudniční štěrbiny, což způsobuje kolaps plíce."
+    },
+    {
+      "id": 72,
+      "category": "barotrauma plic",
+      "question": "K barotraumatu plic z přetlaku může dojít při nesprávně provedeném výstupu s dýchacím přístrojem již z hloubky:",
+      "options": [
+        {
+          "key": "a",
+          "text": "10 metrů"
+        },
+        {
+          "key": "b",
+          "text": "5 metrů"
+        },
+        {
+          "key": "c",
+          "text": "3 metrů"
+        },
+        {
+          "key": "d",
+          "text": "menší než 2 metry"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Barotrauma plic z přetlaku může nastat již z hloubky menší než 2 metry, protože relativní změna tlaku je u hladiny největší."
+    },
+    {
+      "id": 73,
+      "category": "barotrauma plic",
+      "question": "Poškození vnitřního ucha přetlakem:",
+      "options": [
+        {
+          "key": "a",
+          "text": "nemůže nastat, poněvadž vnitřní ucho je od středouší odděleno kostí"
+        },
+        {
+          "key": "b",
+          "text": "nemůže nastat, poněvadž orgány vnitřního ucha jsou vyplněny tekutinou"
+        },
+        {
+          "key": "c",
+          "text": "může nastat při pokusu o násilné vyrovnání tlaku ve středouší"
+        },
+        {
+          "key": "d",
+          "text": "může nastat při rychlém výstupu"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Poškození vnitřního ucha může nastat při násilném Valsalvově manévru, kdy přetlak ve středouší poškodí oválné nebo kulaté okénko."
+    },
+    {
+      "id": 74,
+      "category": "barotrauma plic",
+      "question": "Příčinou závrati při protržení ušního bubínku pod vodou je především:",
+      "options": [
+        {
+          "key": "a",
+          "text": "bodavá bolest"
+        },
+        {
+          "key": "b",
+          "text": "ztráta krve"
+        },
+        {
+          "key": "c",
+          "text": "šok"
+        },
+        {
+          "key": "d",
+          "text": "náhlé ochlazení vnitřního ucha vniknutím vody do středoušní dutiny"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Závrať při protržení bubínku způsobuje náhlé ochlazení vnitřního ucha studenou vodou, která vniká do středoušní dutiny."
+    },
+    {
+      "id": 75,
+      "category": "barotrauma plic",
+      "question": "Při potápění dochází ke vzduchové embolii vniknutím vzduchu z protržené plíce:",
+      "options": [
+        {
+          "key": "a",
+          "text": "do krevního oběhu"
+        },
+        {
+          "key": "b",
+          "text": "do pohrudniční štěrbiny"
+        },
+        {
+          "key": "c",
+          "text": "do mezihrudí"
+        },
+        {
+          "key": "d",
+          "text": "do podkoží v oblasti krku a ramen"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Vzduchová embolie vzniká vniknutím vzduchových bublin z protržené plíce přímo do krevního oběhu."
+    },
+    {
+      "id": 76,
+      "category": "barotrauma plic",
+      "question": "Důsledky barotraumatu plic z přetlaku se dostaví:",
+      "options": [
+        {
+          "key": "a",
+          "text": "do 6 hodin po vynoření"
+        },
+        {
+          "key": "b",
+          "text": "od 30 minut do 3 hodin po vynoření"
+        },
+        {
+          "key": "c",
+          "text": "od 30 minut do 1 hodiny po vynoření"
+        },
+        {
+          "key": "d",
+          "text": "ihned po vynoření, případně již během výstupu"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Barotrauma plic z přetlaku je akutní poranění, jehož příznaky (embolie, pneumothorax, emfyzém) se projeví okamžitě při výstupu nebo ihned po vynoření."
+    },
+    {
+      "id": 77,
+      "category": "barotrauma plic",
+      "question": "Vzduchová embolie je důsledek:",
+      "options": [
+        {
+          "key": "a",
+          "text": "barotraumatu plic z přetlaku"
+        },
+        {
+          "key": "b",
+          "text": "barotraumatu plic z podtlaku"
+        },
+        {
+          "key": "c",
+          "text": "plicní formy dekompresní nemoci"
+        },
+        {
+          "key": "d",
+          "text": "nervové formy dekompresní nemoci"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Vzduchová embolie vzniká vniknutím vzduchu z protržené plíce do krevního oběhu, což je důsledkem barotraumatu plic z přetlaku při výstupu."
+    },
+    {
+      "id": 78,
+      "category": "barotrauma plic",
+      "question": "Pneumothorax je důsledek:",
+      "options": [
+        {
+          "key": "a",
+          "text": "barotraumatu plic z podtlaku"
+        },
+        {
+          "key": "b",
+          "text": "barotraumatu plic z přetlaku"
+        },
+        {
+          "key": "c",
+          "text": "plicní formy dekompresní nemoci"
+        },
+        {
+          "key": "d",
+          "text": "ponoru na nádech po hyperventilaci"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Pneumothorax vzniká vniknutím vzduchu z protržené plíce do pohrudniční štěrbiny, což je důsledkem barotraumatu plic z přetlaku."
+    },
+    {
+      "id": 79,
+      "category": "barotrauma plic",
+      "question": "Příčinou barotraumatu plic z přetlaku je:",
+      "options": [
+        {
+          "key": "a",
+          "text": "přesycení tkání dusíkem při výstupu s dýchacím přístrojem"
+        },
+        {
+          "key": "b",
+          "text": "zadržení dechu při výstupu během ponoru na nádech"
+        },
+        {
+          "key": "c",
+          "text": "nedostatečné vydechování, případně zadržení dechu při výstupu s dýchacím přístrojem"
+        },
+        {
+          "key": "d",
+          "text": "překročení tzv. hraniční hloubky pří ponoru na nádech"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Barotrauma plic z přetlaku nastává při výstupu s dýchacím přístrojem, když potápěč nedostatečně vydechuje nebo zadrží dech - vzduch v plicích se rozpíná a může protrhnout plicní tkáň."
+    },
+    {
+      "id": 80,
+      "category": "barotrauma plic",
+      "question": "Vniknutí vzduchu do mezihrudí, případně do podkoží v oblasti krku a ramen se nazývá:",
+      "options": [
+        {
+          "key": "a",
+          "text": "pneumotorax"
+        },
+        {
+          "key": "b",
+          "text": "vzduchová embolie"
+        },
+        {
+          "key": "c",
+          "text": "syndrom karotických sinů"
+        },
+        {
+          "key": "d",
+          "text": "emfyzém"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Emfyzém (středohrudní nebo podkožní) je stav, kdy vzduch z protržené plíce vnikne do mezihrudí nebo do podkoží v oblasti krku a ramen."
+    },
+    {
+      "id": 81,
+      "category": "dekompresní nemoc",
+      "question": "Označte nesprávné tvrzení:",
+      "options": [
+        {
+          "key": "a",
+          "text": "Dekompresní nemoc nehrozí potápěčům, kteří nevyčerpají nulový čas pro danou hloubku."
+        },
+        {
+          "key": "b",
+          "text": "Kožní forma dekompresní nemoci nevyžaduje léčbu v dekompresní komoře."
+        },
+        {
+          "key": "c",
+          "text": "Parciální tlak kyslíku dýchaného při dekompresi pod vodou nesmí překročit 170 kPa."
+        },
+        {
+          "key": "d",
+          "text": "Doporučuje se, aby povrchový interval byl delší než 2 hodiny."
+        }
+      ],
+      "correct": "a",
+      "explanation": "Toto tvrzení je nesprávné - dekompresní nemoc může vzniknout i při dodržení nulových časů, zejména při opakovaných ponorech nebo přítomnosti rizikových faktorů."
+    },
+    {
+      "id": 82,
+      "category": "dekompresní nemoc",
+      "question": "Mezi příznaky dekompresní nemoci nepatří:",
+      "options": [
+        {
+          "key": "a",
+          "text": "bolest u kořene nosu a pod očima"
+        },
+        {
+          "key": "b",
+          "text": "bolest za hrudní kostí"
+        },
+        {
+          "key": "c",
+          "text": "bolest ve svalech a kloubech"
+        },
+        {
+          "key": "d",
+          "text": "mramorování pokožky"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Bolest u kořene nosu a pod očima je příznakem barotraumatu vedlejších dutin nosních, nikoliv dekompresní nemoci."
+    },
+    {
+      "id": 83,
+      "category": "dekompresní nemoc",
+      "question": "Plicní forma dekompresní nemoci:",
+      "options": [
+        {
+          "key": "a",
+          "text": "je provázena bolestmi ve svalech a kloubech"
+        },
+        {
+          "key": "b",
+          "text": "nevyžaduje léčbu v přetlaku"
+        },
+        {
+          "key": "c",
+          "text": "je způsobena ucpáním krevních vlásečnic v plicích bublinkami dusíku"
+        },
+        {
+          "key": "d",
+          "text": "je charakteristická mramorováním pokožky"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Plicní forma dekompresní nemoci (tzv. chokes) vzniká ucpáním plicních kapilár bublinkami dusíku, což blokuje výměnu dýchacích plynů."
+    },
+    {
+      "id": 84,
+      "category": "dekompresní nemoc",
+      "question": "V případě dekompresní nemoci se nedoporučuje:",
+      "options": [
+        {
+          "key": "a",
+          "text": "dodávat kyslík"
+        },
+        {
+          "key": "b",
+          "text": "podávat léky proti bolesti (analgetika)"
+        },
+        {
+          "key": "c",
+          "text": "uložit postiženého v klidu"
+        },
+        {
+          "key": "d",
+          "text": "zajistit odborné vyšetření postiženého"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Analgetika mohou maskovat příznaky dekompresní nemoci a ztížit diagnostiku. Léčba kyslíkem, klid a odborné vyšetření jsou naopak doporučené postupy."
+    },
+    {
+      "id": 85,
+      "category": "dekompresní nemoc",
+      "question": "Označte nesprávné tvrzení:",
+      "options": [
+        {
+          "key": "a",
+          "text": "Všechny formy dekompresní nemoci vyžadují léčbu v dekompresní komoře."
+        },
+        {
+          "key": "b",
+          "text": "Svalově-kosterní forma je nejčastější formou dekompresní nemoci."
+        },
+        {
+          "key": "c",
+          "text": "Kožní forma dekompresní nemoci je způsobena ucpáním krevních vlásečnic v pokožce bublinkami dusíku."
+        },
+        {
+          "key": "d",
+          "text": "Nejvíce případů dekompresní nemoci se projeví v době od 30 minut do 3 hodin po vynoření."
+        }
+      ],
+      "correct": "a",
+      "explanation": "Toto tvrzení je nesprávné - kožní forma dekompresní nemoci obvykle nevyžaduje léčbu v dekompresní komoře, ale pouze sledování a konzervativní léčbu."
+    },
+    {
+      "id": 86,
+      "category": "dekompresní nemoc",
+      "question": "Plicní forma dekompresní nemoci:",
+      "options": [
+        {
+          "key": "a",
+          "text": "blokuje výměnu dýchacích plynů"
+        },
+        {
+          "key": "b",
+          "text": "ohrožuje srdeční činnost"
+        },
+        {
+          "key": "c",
+          "text": "vyžaduje okamžitou léčbu v dekompresní komoře"
+        },
+        {
+          "key": "d",
+          "text": "všechny odpovědi jsou správné"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Plicní forma DCS blokuje výměnu plynů, ohrožuje srdce a vyžaduje okamžitou léčbu v komoře – všechny odpovědi jsou správné."
+    },
+    {
+      "id": 87,
+      "category": "dekompresní nemoc",
+      "question": "K příznakům svalově-kosterní formy dekompresní nemoci nepatří:",
+      "options": [
+        {
+          "key": "a",
+          "text": "držení končetin v ohnuté poloze"
+        },
+        {
+          "key": "b",
+          "text": "bolest ve svalech"
+        },
+        {
+          "key": "c",
+          "text": "bolest za hrudní kostí"
+        },
+        {
+          "key": "d",
+          "text": "bolest v kloubech"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Bolest za hrudní kostí je příznakem plicní formy DCS, nikoliv svalově-kosterní formy."
+    },
+    {
+      "id": 88,
+      "category": "dekompresní nemoc",
+      "question": "Léčbu v dekompresní komoře vyžaduje:",
+      "options": [
+        {
+          "key": "a",
+          "text": "lymfatická forma dekompresní nemoci"
+        },
+        {
+          "key": "b",
+          "text": "svalově-kosterní forma dekompresní nemoci"
+        },
+        {
+          "key": "c",
+          "text": "kožní forma dekompresní nemoci"
+        },
+        {
+          "key": "d",
+          "text": "všechny odpovědi jsou správné"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Svalově-kosterní forma vyžaduje léčbu v dekompresní komoře. Kožní a lymfatická forma jsou mírnější a komoru nevyžadují."
+    },
+    {
+      "id": 89,
+      "category": "dekompresní nemoc",
+      "question": "Plicní forma dekompresní nemoci:",
+      "options": [
+        {
+          "key": "a",
+          "text": "může vést k selhání srdeční činnosti"
+        },
+        {
+          "key": "b",
+          "text": "může způsobit pneumothorax"
+        },
+        {
+          "key": "c",
+          "text": "je způsobena bublinkami dusíku uvnitř plicních sklípků"
+        },
+        {
+          "key": "d",
+          "text": "všechny odpovědi jsou správné"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Plicní forma DCS může vést k selhání srdce kvůli ucpání plicních kapilár bublinkami dusíku."
+    },
+    {
+      "id": 90,
+      "category": "dekompresní nemoc",
+      "question": "Léčbu v dekompresní komoře nevyžaduje:",
+      "options": [
+        {
+          "key": "a",
+          "text": "svalově-kosterní forma dekompresní nemoci"
+        },
+        {
+          "key": "b",
+          "text": "plicní forma dekompresní nemoci"
+        },
+        {
+          "key": "c",
+          "text": "nervová forma dekompresní nemoci"
+        },
+        {
+          "key": "d",
+          "text": "lymfatická forma dekompresní nemoci"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Lymfatická forma je mírná forma DCS, která nevyžaduje léčbu v dekompresní komoře."
+    },
+    {
+      "id": 91,
+      "category": "dekompresní nemoc",
+      "question": "Nejzávažnější formou dekompresní nemoci je:",
+      "options": [
+        {
+          "key": "a",
+          "text": "kožní forma"
+        },
+        {
+          "key": "b",
+          "text": "nervová forma (postižení centrálního nervového systému)"
+        },
+        {
+          "key": "c",
+          "text": "lymfatická forma"
+        },
+        {
+          "key": "d",
+          "text": "svalově-kosterní forma"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Nervová forma postihuje centrální nervový systém a může způsobit ochrnutí nebo smrt, proto je nejzávažnější."
+    },
+    {
+      "id": 92,
+      "category": "dekompresní nemoc",
+      "question": "Ochrnutím se projevuje:",
+      "options": [
+        {
+          "key": "a",
+          "text": "plicní forma dekompresní nemoci"
+        },
+        {
+          "key": "b",
+          "text": "svalově-kosterní forma dekompresní nemoci"
+        },
+        {
+          "key": "c",
+          "text": "nervová forma dekompresní nemoci"
+        },
+        {
+          "key": "d",
+          "text": "krevní forma dekompresní nemoci"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Ochrnutí je charakteristickým příznakem nervové formy DCS, která postihuje míchu a mozek."
+    },
+    {
+      "id": 93,
+      "category": "dekompresní nemoc",
+      "question": "Dekompresní nemoc se nejčastěji projevuje:",
+      "options": [
+        {
+          "key": "a",
+          "text": "nervovou formou"
+        },
+        {
+          "key": "b",
+          "text": "plicní formou"
+        },
+        {
+          "key": "c",
+          "text": "lymfatickou formou"
+        },
+        {
+          "key": "d",
+          "text": "svalově-kosterní formou"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Svalově-kosterní forma (bolesti kloubů a svalů) je nejčastější formou dekompresní nemoci."
+    },
+    {
+      "id": 94,
+      "category": "dekompresní nemoc",
+      "question": "Charakteristickým příznakem kožní formy dekompresní nemoci je:",
+      "options": [
+        {
+          "key": "a",
+          "text": "promodrání rtů, sliznic a nehtových lůžek"
+        },
+        {
+          "key": "b",
+          "text": "třešňově červené zbarvení rtů, sliznic a nehtových lůžek"
+        },
+        {
+          "key": "c",
+          "text": "mramorování pokožky"
+        },
+        {
+          "key": "d",
+          "text": "neovladatelný třes"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Mramorování pokožky (cutis marmorata) je typický příznak kožní formy dekompresní nemoci."
+    },
+    {
+      "id": 95,
+      "category": "dekompresní nemoc",
+      "question": "Mělký dech, dušnost a bodavá bolest za hrudní kostí patří k projevům:",
+      "options": [
+        {
+          "key": "a",
+          "text": "svalově-kosterní formy dekompresní nemoci"
+        },
+        {
+          "key": "b",
+          "text": "plicní formy dekompresní nemoci"
+        },
+        {
+          "key": "c",
+          "text": "nervové formy dekompresní nemoci"
+        },
+        {
+          "key": "d",
+          "text": "lymfatické formy dekompresní nemoci"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Tyto příznaky jsou typické pro plicní formu DCS způsobenou ucpáním plicních kapilár bublinkami."
+    },
+    {
+      "id": 96,
+      "category": "dekompresní nemoc",
+      "question": "Mramorování pokožky je příznak:",
+      "options": [
+        {
+          "key": "a",
+          "text": "nedostatku kyslíku"
+        },
+        {
+          "key": "b",
+          "text": "otravy oxidem uhličitým"
+        },
+        {
+          "key": "c",
+          "text": "otravy oxidem uhelnatým"
+        },
+        {
+          "key": "d",
+          "text": "kožní formy dekompresní nemoci"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Mramorování pokožky je charakteristický příznak kožní formy dekompresní nemoci."
+    },
+    {
+      "id": 97,
+      "category": "dekompresní nemoc",
+      "question": "Svalově-kosterní forma dekompresní nemoci:",
+      "options": [
+        {
+          "key": "a",
+          "text": "nutí postiženého držet končetiny v ohnuté poloze"
+        },
+        {
+          "key": "b",
+          "text": "vyžaduje léčbu v dekompresní komoře"
+        },
+        {
+          "key": "c",
+          "text": "snese i déletrvající transport do dekompresní komory"
+        },
+        {
+          "key": "d",
+          "text": "všechny odpovědi jsou správné"
+        }
+      ],
+      "correct": "d",
+      "explanation": "Svalově-kosterní forma má všechny tyto vlastnosti – ohnutá poloha zmírňuje bolest, vyžaduje komoru, ale snese delší transport."
+    },
+    {
+      "id": 98,
+      "category": "dekompresní nemoc",
+      "question": "Příznaky dekompresní nemoci se projeví:",
+      "options": [
+        {
+          "key": "a",
+          "text": "do 3 minut po vynoření"
+        },
+        {
+          "key": "b",
+          "text": "ihned po vynoření (případně již při výstupu)"
+        },
+        {
+          "key": "c",
+          "text": "často teprve na břehu či lodi, někdy i za několik hodin"
+        },
+        {
+          "key": "d",
+          "text": "do 10 minut po vynoření"
+        }
+      ],
+      "correct": "c",
+      "explanation": "Příznaky DCS se často projeví až po vynoření, typicky od 30 minut do několika hodin po ponoru."
+    },
+    {
+      "id": 99,
+      "category": "dekompresní nemoc",
+      "question": "Riziko dekompresní nehody zvyšují:",
+      "options": [
+        {
+          "key": "a",
+          "text": "dýchání čistého kyslíku na dekompresi"
+        },
+        {
+          "key": "b",
+          "text": "fyzická námaha a prochlazení pod vodou"
+        },
+        {
+          "key": "c",
+          "text": "povrchové intervaly delší než 2 hodiny"
+        },
+        {
+          "key": "d",
+          "text": "ponory v nulových časech"
+        }
+      ],
+      "correct": "b",
+      "explanation": "Fyzická námaha a prochlazení zvyšují riziko DCS zhoršením odplyňování tkání."
+    },
+    {
+      "id": 100,
+      "category": "dekompresní nemoc",
+      "question": "Nahrazením dusíku v dýchacím médiu héliem odstraníme:",
+      "options": [
+        {
+          "key": "a",
+          "text": "hloubkové opojení"
+        },
+        {
+          "key": "b",
+          "text": "dekompresi"
+        },
+        {
+          "key": "c",
+          "text": "nebezpečí podchlazení (hypotermie)"
+        },
+        {
+          "key": "d",
+          "text": "všechny odpovědi jsou správné"
+        }
+      ],
+      "correct": "a",
+      "explanation": "Hélium nemá narkotické účinky jako dusík, proto jeho použití odstraňuje hloubkové opojení."
+    }
+  ]
+}

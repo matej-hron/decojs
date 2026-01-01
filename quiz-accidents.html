@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fyzika - Deco Theory</title>
+    <title>Nehody a nemoci - Deco Theory</title>
     
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
@@ -34,8 +34,8 @@
     </nav>
 
     <header class="hero">
-        <h1>🧪 Fyzika</h1>
-        <p class="hero-subtitle">Zkušební otázky z fyziky pro potápěče (CMAS/SPČR)</p>
+        <h1>🏥 Nehody a nemoci</h1>
+        <p class="hero-subtitle">Zkušební otázky o potápěčských nehodách a nemocech (CMAS/SPČR)</p>
         <p class="language-notice">
             🇨🇿 This quiz is in <strong>Czech language</strong> to match the official CMAS/SPČR certification exam materials. 
             Translation was avoided to prevent errors in technical terminology.
@@ -53,36 +53,24 @@
                         <span>Vše</span>
                     </label>
                     <label class="category-option">
-                        <input type="checkbox" value="tlak-jednotky" class="category-checkbox">
-                        <span>Tlak a jednotky</span>
+                        <input type="checkbox" value="první pomoc" class="category-checkbox">
+                        <span>První pomoc</span>
                     </label>
                     <label class="category-option">
-                        <input type="checkbox" value="vlastnosti-vody-vzduchu" class="category-checkbox">
-                        <span>Vlastnosti vody a vzduchu</span>
+                        <input type="checkbox" value="otravy plyny" class="category-checkbox">
+                        <span>Otravy plyny</span>
                     </label>
                     <label class="category-option">
-                        <input type="checkbox" value="prenos-tepla" class="category-checkbox">
-                        <span>Přenos tepla</span>
+                        <input type="checkbox" value="barotrauma plic" class="category-checkbox">
+                        <span>Barotrauma plic</span>
                     </label>
                     <label class="category-option">
-                        <input type="checkbox" value="optika" class="category-checkbox">
-                        <span>Optika a vidění</span>
+                        <input type="checkbox" value="podchlazení" class="category-checkbox">
+                        <span>Podchlazení</span>
                     </label>
                     <label class="category-option">
-                        <input type="checkbox" value="fyzika-plynu" class="category-checkbox">
-                        <span>Fyzika plynů</span>
-                    </label>
-                    <label class="category-option">
-                        <input type="checkbox" value="vztlak-vystroj" class="category-checkbox">
-                        <span>Vztlak a výstroj</span>
-                    </label>
-                    <label class="category-option">
-                        <input type="checkbox" value="spotreba-planovani" class="category-checkbox">
-                        <span>Spotřeba a plánování</span>
-                    </label>
-                    <label class="category-option">
-                        <input type="checkbox" value="dekomprese-syceni" class="category-checkbox">
-                        <span>Dekomprese a sycení</span>
+                        <input type="checkbox" value="dekompresní nemoc" class="category-checkbox">
+                        <span>Dekompresní nemoc</span>
                     </label>
                 </div>
             </div>
@@ -97,7 +85,10 @@
                     <span>Počet otázek:</span>
                     <select id="question-count">
                         <option value="5">5</option>
-                        <option value="10" selected>10 (vše)</option>
+                        <option value="10" selected>10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100 (vše)</option>
                     </select>
                 </label>
                 <button id="apply-settings-btn" class="btn btn-small">Aplikovat a restartovat</button>
@@ -108,7 +99,7 @@
                 <span id="score-display">Skóre: 0 / 0</span>
             </div>
 
-            <div id="quiz-container" class="quiz-container" data-quiz-source="data/quiz-physics.json">
+            <div id="quiz-container" class="quiz-container" data-quiz-source="data/quiz-accidents.json">
                 <!-- Question will be inserted here by JavaScript -->
             </div>
 
@@ -122,15 +113,15 @@
             <h3>📚 O testu</h3>
             <p>
                 Tyto otázky pochází z oficiálních zkušebních testů SPČR (Svaz potápěčů České republiky) 
-                z roku 2018. Testují znalosti fyziky relevantní pro potápění.
+                z roku 2018. Testují znalosti o potápěčských nehodách, nemocech a první pomoci.
             </p>
             <p>
-                <strong>Aktuálně k dispozici:</strong> 100 otázek ze všech 8 témat.
+                <strong>Aktuálně k dispozici:</strong> 100 otázek z 5 témat.
             </p>
             <p>
                 <strong>Zdroj:</strong> 
-                <a href="https://www.cmas.cz/soubor-fyzika-349-.pdf" target="_blank" rel="noopener">
-                    CMAS.cz - Fyzika zkušební testy
+                <a href="https://www.cmas.cz/soubor-nehody-a-nemoci-348-.pdf" target="_blank" rel="noopener">
+                    CMAS.cz - Nehody a nemoci zkušební testy
                 </a>
             </p>
         </section>
