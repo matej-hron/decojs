@@ -3,6 +3,10 @@
  * Handles gas pathway visualization and half-time concept charts
  */
 
+// Constants
+const WATER_VAPOR_PRESSURE = 0.0627; // bar at 37°C
+const SURFACE_ALVEOLAR_N2 = (1 - WATER_VAPOR_PRESSURE) * 0.79; // ~0.74 bar
+
 // Wait for DOM to be ready
 document.addEventListener('DOMContentLoaded', () => {
     initGasPathway();
@@ -182,7 +186,7 @@ function initHalfTimeCharts() {
 function getSaturatedTissuePpN2(depth) {
     // Tissue fully saturated at the given depth
     const ambientPressure = 1 + depth / 10;
-    return (ambientPressure - 0.0627) * 0.79;
+    return (ambientPressure - WATER_VAPOR_PRESSURE) * 0.79;
 }
 
 function initOngassingChart() {
@@ -221,7 +225,7 @@ function initOngassingChart() {
                 },
                 {
                     label: 'Initial (Surface)',
-                    data: initialData.halfTimes.map(() => 0.79),
+                    data: initialData.halfTimes.map(() => SURFACE_ALVEOLAR_N2),
                     borderColor: '#95a5a6',
                     borderDash: [3, 3],
                     pointRadius: 0,
@@ -284,7 +288,7 @@ function initOngassingChart() {
     updateOngassingChart();
 }
 
-function calculateOngassing(targetPpN2, initialPpN2 = 0.79) {
+function calculateOngassing(targetPpN2, initialPpN2 = SURFACE_ALVEOLAR_N2) {
     const halfTimes = [];
     const pressures = [];
     
@@ -312,7 +316,7 @@ function updateOngassingChart() {
         ongassingChart.data.labels = data.halfTimes.map(t => t.toFixed(1));
         ongassingChart.data.datasets[0].data = data.pressures;
         ongassingChart.data.datasets[1].data = data.halfTimes.map(() => targetPpN2);
-        ongassingChart.data.datasets[2].data = data.halfTimes.map(() => 0.79);
+        ongassingChart.data.datasets[2].data = data.halfTimes.map(() => SURFACE_ALVEOLAR_N2);
         ongassingChart.options.scales.y.max = Math.max(4, targetPpN2 + 0.5);
         ongassingChart.update('none');
     }
@@ -421,7 +425,7 @@ const DECO_DEPTH = 6; // 6m deco stop
 
 function calculateOffgassing(initialTissuePpN2, n2Fraction) {
     const ambientAtDeco = 1 + DECO_DEPTH / 10; // 1.6 bar
-    const targetPpN2 = (ambientAtDeco - 0.0627) * n2Fraction;
+    const targetPpN2 = (ambientAtDeco - WATER_VAPOR_PRESSURE) * n2Fraction;
     
     const halfTimes = [];
     const pressures = [];
