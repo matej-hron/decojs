@@ -127,27 +127,54 @@ function updatePhase(phase, svg) {
 function animateTissueBars(phase, fast, medium, slow) {
     if (!fast || !medium || !slow) return;
     
-    // Set up transitions
-    fast.style.transition = 'width 1s ease-out';
-    medium.style.transition = 'width 1s ease-out';
-    slow.style.transition = 'width 1s ease-out';
+    // Colors
     fast.style.fill = '#3498db';
     medium.style.fill = '#9b59b6';
     slow.style.fill = '#e67e22';
     
-    // During descent: tissues fill up (fast fills quickest)
-    // During ascent: tissues empty (fast empties quickest)
-    setTimeout(() => {
-        if (phase === 'descent') {
+    if (phase === 'descent') {
+        // Reset to starting position (all same low level - surface saturation)
+        fast.style.transition = 'none';
+        medium.style.transition = 'none';
+        slow.style.transition = 'none';
+        fast.setAttribute('width', '10');
+        medium.setAttribute('width', '10');
+        slow.setAttribute('width', '10');
+        
+        // Force reflow
+        fast.getBoundingClientRect();
+        
+        // Animate at different speeds - fast fills quickly, slow fills slowly
+        setTimeout(() => {
+            fast.style.transition = 'width 0.8s ease-out';    // Fast tissue - quick
+            medium.style.transition = 'width 2s ease-out';    // Medium tissue - moderate
+            slow.style.transition = 'width 4s ease-out';      // Slow tissue - slow
             fast.setAttribute('width', '70');
+            medium.setAttribute('width', '50');
+            slow.setAttribute('width', '30');
+        }, 50);
+    } else {
+        // Ascent - reset to full (saturated at depth)
+        fast.style.transition = 'none';
+        medium.style.transition = 'none';
+        slow.style.transition = 'none';
+        fast.setAttribute('width', '70');
+        medium.setAttribute('width', '70');
+        slow.setAttribute('width', '70');
+        
+        // Force reflow
+        fast.getBoundingClientRect();
+        
+        // Animate at different speeds - fast empties quickly, slow empties slowly
+        setTimeout(() => {
+            fast.style.transition = 'width 0.8s ease-out';    // Fast tissue - quick
+            medium.style.transition = 'width 2s ease-out';    // Medium tissue - moderate
+            slow.style.transition = 'width 4s ease-out';      // Slow tissue - slow
+            fast.setAttribute('width', '10');
             medium.setAttribute('width', '40');
-            slow.setAttribute('width', '20');
-        } else {
-            fast.setAttribute('width', '20');
-            medium.setAttribute('width', '35');
-            slow.setAttribute('width', '18');
-        }
-    }, 50);
+            slow.setAttribute('width', '60');
+        }, 50);
+    }
 }
 
 /* ==========================================================================
