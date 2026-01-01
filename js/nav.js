@@ -24,7 +24,20 @@ const NAV_ITEMS = [
             { href: 'pressure.html#partial-pressure-chart', label: 'Partial Pressure Chart' }
         ]
     },
-    { href: 'tissue-loading.html', label: 'Tissue Loading' },
+    { 
+        href: 'tissue-loading.html', 
+        label: 'Tissue Loading',
+        submenu: [
+            { href: 'tissue-loading.html#henrys-law', label: "Henry's Law" },
+            { href: 'tissue-loading.html#gas-exchange', label: 'Gas Exchange' },
+            { href: 'tissue-loading.html#tissue-heterogeneity', label: 'Tissue Types' },
+            { href: 'tissue-loading.html#saturation-dynamics', label: 'Saturation Dynamics' },
+            { href: 'tissue-loading.html#half-time-concept', label: 'Half-Time Concept' },
+            { href: 'tissue-loading.html#half-time-charts', label: 'Half-Time Charts' },
+            { href: 'tissue-loading.html#buhlmann-compartments', label: 'Bühlmann Compartments' },
+            { href: 'tissue-loading.html#tissue-chart-section', label: 'Interactive Chart' }
+        ]
+    },
     { 
         label: 'Tests',
         submenu: [
