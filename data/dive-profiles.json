@@ -145,7 +145,7 @@
       "name": "30m Deco Dive (Air)",
       "description": "A 30m dive with 40 min bottom time requiring staged decompression stops. Demonstrates tissue loading on a moderate depth deco dive.",
       "gases": [
-        { "id": "bottom", "name": "Air", "o2": 0.21, "n2": 0.79, "he": 0, "cylinderVolume": 12, "startPressure": 200 }
+        { "id": "bottom", "name": "Air", "o2": 0.21, "n2": 0.79, "he": 0, "cylinderVolume": 24, "startPressure": 200 }
       ],
       "reservePressure": 50,
       "surfaceInterval": 60,
@@ -172,7 +172,7 @@
       "name": "30m Deco Dive (O₂ deco)",
       "description": "A 30m dive with 40 min bottom time, switching to pure O₂ at 6m for accelerated decompression. Demonstrates the benefit of oxygen deco.",
       "gases": [
-        { "id": "bottom", "name": "Air", "o2": 0.21, "n2": 0.79, "he": 0, "cylinderVolume": 12, "startPressure": 200 },
+        { "id": "bottom", "name": "Air", "o2": 0.21, "n2": 0.79, "he": 0, "cylinderVolume": 24, "startPressure": 200 },
         { "id": "deco1", "name": "Pure Oxygen (100%)", "o2": 1.0, "n2": 0, "he": 0, "cylinderVolume": 7, "startPressure": 200 }
       ],
       "reservePressure": 50,

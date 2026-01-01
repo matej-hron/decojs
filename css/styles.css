@@ -1380,7 +1380,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.0.53";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.0.60";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* Responsive */
@@ -2675,4 +2675,248 @@ textarea.form-input {
     background: rgba(231, 76, 60, 0.1);
     border-radius: var(--radius);
     margin-top: 1rem;
+}
+
+/* ==========================================================================
+   Gas Pathway Visualization
+   ========================================================================== */
+
+.gas-pathway-container {
+    margin: 1.5rem 0;
+    overflow-x: auto;
+}
+
+.gas-pathway-phase-indicator {
+    text-align: center;
+    margin-bottom: 1rem;
+    padding: 0.5rem 1rem;
+    background: var(--background-color);
+    border-radius: var(--radius);
+}
+
+.gas-pathway-phase-indicator .phase-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2980b9;
+    transition: color 0.3s ease;
+}
+
+.gas-pathway-controls {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.gas-pathway-controls .btn.btn-active {
+    background: var(--primary-color);
+    color: white;
+}
+
+.gas-pathway-svg {
+    width: 100%;
+    max-width: 700px;
+    height: auto;
+    min-height: 200px;
+}
+
+.gas-pathway-svg .stage-box {
+    stroke: var(--primary-color);
+    stroke-width: 2;
+    fill: url(#pressureGradientDescent);
+    transition: fill 0.5s ease;
+}
+
+.gas-pathway-svg .stage-icon {
+    font-size: 24px;
+}
+
+.gas-pathway-svg .stage-label {
+    font-size: 12px;
+    fill: var(--text-color);
+    font-weight: 500;
+}
+
+.gas-pathway-svg .stage-value {
+    font-size: 10px;
+    fill: var(--text-muted);
+    font-family: 'Courier New', monospace;
+}
+
+.gas-pathway-svg .tissue-label {
+    font-size: 10px;
+    fill: var(--text-color);
+}
+
+.gas-pathway-svg .tissue-fill {
+    transition: width 0.5s ease;
+}
+
+.gas-pathway-svg .legend-text {
+    font-size: 11px;
+    fill: var(--text-muted);
+}
+
+.gas-pathway-svg .legend-direction {
+    font-weight: 600;
+    fill: var(--primary-color);
+}
+
+.gas-pathway-svg .gas-particle {
+    opacity: 0.8;
+}
+
+.gas-pathway-svg .arrow-line {
+    transition: stroke 0.3s ease;
+}
+
+.gas-pathway-svg .arrow-head {
+    transition: fill 0.3s ease, display 0.3s ease;
+}
+
+.gas-pathway-svg .gradient-bar {
+    fill: url(#pressureGradientDescent);
+    transition: fill 0.5s ease;
+}
+
+/* ==========================================================================
+   Dive Phase Cards
+   ========================================================================== */
+
+.dive-phases {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.dive-phase {
+    background: var(--background-color);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    border-left: 4px solid var(--primary-color);
+}
+
+.dive-phase:nth-child(1) {
+    border-left-color: #3498db;
+}
+
+.dive-phase:nth-child(2) {
+    border-left-color: #9b59b6;
+}
+
+.dive-phase:nth-child(3) {
+    border-left-color: #e67e22;
+}
+
+.dive-phase h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--primary-dark);
+    font-size: 1rem;
+}
+
+.dive-phase p {
+    margin: 0.5rem 0;
+}
+
+.phase-formula {
+    font-family: 'Courier New', monospace;
+    background: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    display: inline-block;
+    margin-top: 0.5rem;
+}
+
+/* ==========================================================================
+   Half-Time Interactive Charts
+   ========================================================================== */
+
+.half-time-chart-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin: 1.5rem 0;
+}
+
+.half-time-chart-wrapper {
+    background: var(--background-color);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+}
+
+.half-time-chart-wrapper h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--primary-dark);
+}
+
+.half-time-chart-wrapper .chart-description {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+
+.chart-controls-inline {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.chart-controls-inline label {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.chart-controls-inline input[type="range"] {
+    flex: 1;
+    min-width: 100px;
+    max-width: 150px;
+}
+
+.chart-controls-inline select {
+    padding: 0.4rem 0.6rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    background: white;
+    font-size: 0.9rem;
+}
+
+.chart-controls-inline span {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+#ongassing-depth-value,
+#offgassing-ppn2-value,
+#ongassing-ppn2-value {
+    font-family: 'Courier New', monospace;
+    background: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .gas-pathway-svg {
+        min-height: 180px;
+    }
+    
+    .half-time-chart-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .chart-controls-inline {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .chart-controls-inline input[type="range"] {
+        width: 100%;
+        max-width: none;
+    }
 }

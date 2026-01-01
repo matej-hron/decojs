@@ -84,30 +84,335 @@
                 </p>
             </div>
 
-            <div class="concept-card">
-                <h3>Tissue Compartments</h3>
+            <!-- Section 1: Henry's Law -->
+            <div class="concept-card" id="henrys-law">
+                <h3>🧪 Henry's Law: Gas Dissolution</h3>
                 <p>
-                    Your body isn't uniform — different tissues absorb and release nitrogen at different rates.
-                    Decompression models represent this using <strong>theoretical compartments</strong> — these are
-                    mathematical constructs fit to experimental data, not literal anatomical tissues:
+                    <strong>Henry's Law</strong> states that the amount of gas dissolved in a liquid is proportional 
+                    to the pressure of that gas above the liquid. Think of a soda bottle: when sealed under pressure, 
+                    CO₂ stays dissolved. Open the cap (reduce pressure), and bubbles form as gas comes out of solution.
+                </p>
+                <p>
+                    The same principle applies to your body during a dive. As you descend and pressure increases, 
+                    more gas dissolves into your blood and tissues. While this applies to <em>all</em> gases you breathe, 
+                    <strong>oxygen (O₂)</strong> is not a concern for bubble formation because:
                 </p>
                 <ul>
-                    <li><strong>Fast compartments</strong> — saturate in minutes, but also release gas quickly</li>
-                    <li><strong>Medium compartments</strong> — take longer to saturate</li>
-                    <li><strong>Slow compartments</strong> — can take hours to fully saturate</li>
+                    <li>Your body continuously <strong>consumes oxygen</strong> through metabolism</li>
+                    <li>Most oxygen in blood is <strong>bound to hemoglobin</strong> in red blood cells, not freely dissolved</li>
                 </ul>
                 <p>
-                    The Bühlmann ZH-L16 model uses <strong>16 theoretical compartments</strong> with half-times 
-                    on the order of ~4–5 to 635 minutes (depending on the specific ZH-L16 variant).
-                    The "fast/slow" labels are useful intuition for understanding time constants.
+                    The gas we must carefully manage is <strong>nitrogen (N₂)</strong> — it's inert (your body doesn't use it) 
+                    and makes up 78% of air. For technical divers using trimix, <strong>helium (He)</strong> follows the same 
+                    principles but with different solubility characteristics.
+                </p>
+                
+                <table class="data-table small-table">
+                    <thead>
+                        <tr>
+                            <th>Gas</th>
+                            <th>Solubility in Blood<br><small>(ml/L per bar, 37°C)</small></th>
+                            <th>Solubility in Fat<br><small>(ml/L per bar, 37°C)</small></th>
+                            <th>Fat:Blood Ratio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Nitrogen (N₂)</strong></td>
+                            <td>12.3</td>
+                            <td>66.1</td>
+                            <td>5.4×</td>
+                        </tr>
+                        <tr>
+                            <td>Helium (He)</td>
+                            <td>8.6</td>
+                            <td>15.7</td>
+                            <td>1.8×</td>
+                        </tr>
+                        <tr>
+                            <td>Oxygen (O₂)</td>
+                            <td>23.9</td>
+                            <td>110.5</td>
+                            <td>4.6×</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="footnote">
+                    Notice that fatty tissues can hold <strong>5× more nitrogen</strong> than blood — this is why 
+                    "slow" tissues take longer to saturate and desaturate!
                 </p>
             </div>
 
-            <div class="concept-card">
-                <h3>The Half-Time Concept</h3>
+            <!-- Section 2: Gas Exchange Pathway -->
+            <div class="concept-card" id="gas-exchange">
+                <h3>🫁 Gas Exchange Pathway</h3>
+                <p>
+                    Gas flows along the <strong>partial pressure gradient</strong> — from higher pressure to lower pressure. 
+                    During a dive, the pathway is:
+                </p>
+                
+                <!-- Gas Pathway SVG Visualization -->
+                <div class="gas-pathway-container">
+                    <div class="gas-pathway-controls">
+                        <button id="pathway-descent-btn" class="btn btn-small btn-active">⬇️ Descent (On-gassing)</button>
+                        <button id="pathway-ascent-btn" class="btn btn-small">⬆️ Ascent (Off-gassing)</button>
+                    </div>
+                    
+                    <svg class="gas-pathway-svg" viewBox="0 0 700 220" aria-label="Gas exchange pathway diagram">
+                        <defs>
+                            <!-- Gradient for descent (high pressure on left) -->
+                            <linearGradient id="pressureGradientDescent" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:#2980b9;stop-opacity:0.9" />
+                                <stop offset="100%" style="stop-color:#2980b9;stop-opacity:0.2" />
+                            </linearGradient>
+                            <!-- Gradient for ascent (high pressure on right / tissues) - same blue, reversed -->
+                            <linearGradient id="pressureGradientAscent" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:#2980b9;stop-opacity:0.2" />
+                                <stop offset="100%" style="stop-color:#2980b9;stop-opacity:0.9" />
+                            </linearGradient>
+                        </defs>
+                        
+                        <!-- Regulator -->
+                        <g class="pathway-stage" transform="translate(30, 60)">
+                            <rect x="0" y="0" width="100" height="80" rx="8" class="stage-box stage-regulator" />
+                            <text x="50" y="35" text-anchor="middle" class="stage-icon" style="font-size: 14px; font-weight: 600;">TANK</text>
+                            <text x="50" y="55" text-anchor="middle" class="stage-label">Breathing Gas</text>
+                            <text x="50" y="72" text-anchor="middle" class="stage-value" id="reg-pressure">ppN₂ = 3.16</text>
+                        </g>
+                        
+                        <!-- Arrow 1: Regulator → Alveoli -->
+                        <g class="pathway-arrow" transform="translate(140, 90)">
+                            <path d="M 0 10 L 40 10" stroke="#2980b9" stroke-width="3" fill="none" class="arrow-line" />
+                            <polygon points="40,10 30,5 30,15" class="arrow-head arrow-head-right" />
+                            <polygon points="0,10 10,5 10,15" class="arrow-head arrow-head-left" style="display:none" />
+                            <path id="arrow-path-1" d="M 0 10 L 40 10" fill="none" stroke="none" />
+                            <path id="arrow-path-1-rev" d="M 40 10 L 0 10" fill="none" stroke="none" />
+                            <!-- Particles for descent -->
+                            <circle class="gas-particle particle-descent" r="4" fill="#3498db">
+                                <animateMotion dur="1.5s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+                                    <mpath href="#arrow-path-1" />
+                                </animateMotion>
+                            </circle>
+                            <circle class="gas-particle particle-descent" r="4" fill="#3498db">
+                                <animateMotion dur="1.5s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear" begin="0.5s">
+                                    <mpath href="#arrow-path-1" />
+                                </animateMotion>
+                            </circle>
+                            <!-- Particles for ascent (hidden initially) -->
+                            <circle class="gas-particle particle-ascent" r="4" fill="#3498db" style="display:none">
+                                <animateMotion dur="1.5s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear">
+                                    <mpath href="#arrow-path-1-rev" />
+                                </animateMotion>
+                            </circle>
+                            <circle class="gas-particle particle-ascent" r="4" fill="#3498db" style="display:none">
+                                <animateMotion dur="1.5s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear" begin="0.5s">
+                                    <mpath href="#arrow-path-1-rev" />
+                                </animateMotion>
+                            </circle>
+                        </g>
+                        
+                        <!-- Lungs/Alveoli -->
+                        <g class="pathway-stage" transform="translate(190, 60)">
+                            <rect x="0" y="0" width="100" height="80" rx="8" class="stage-box stage-lungs" />
+                            <text x="50" y="30" text-anchor="middle" class="stage-icon">🫁</text>
+                            <text x="50" y="55" text-anchor="middle" class="stage-label">Alveoli</text>
+                            <text x="50" y="72" text-anchor="middle" class="stage-value" id="alv-pressure">ppN₂ = 3.10</text>
+                        </g>
+                        
+                        <!-- Arrow 2: Alveoli → Blood -->
+                        <g class="pathway-arrow" transform="translate(300, 90)">
+                            <path d="M 0 10 L 40 10" stroke="#2980b9" stroke-width="3" fill="none" class="arrow-line" />
+                            <polygon points="40,10 30,5 30,15" class="arrow-head arrow-head-right" />
+                            <polygon points="0,10 10,5 10,15" class="arrow-head arrow-head-left" style="display:none" />
+                            <path id="arrow-path-2" d="M 0 10 L 40 10" fill="none" stroke="none" />
+                            <path id="arrow-path-2-rev" d="M 40 10 L 0 10" fill="none" stroke="none" />
+                            <circle class="gas-particle particle-descent" r="4" fill="#e74c3c">
+                                <animateMotion dur="1.5s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear" begin="0.2s">
+                                    <mpath href="#arrow-path-2" />
+                                </animateMotion>
+                            </circle>
+                            <circle class="gas-particle particle-descent" r="4" fill="#e74c3c">
+                                <animateMotion dur="1.5s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear" begin="0.7s">
+                                    <mpath href="#arrow-path-2" />
+                                </animateMotion>
+                            </circle>
+                            <circle class="gas-particle particle-ascent" r="4" fill="#3498db" style="display:none">
+                                <animateMotion dur="1.5s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear" begin="0.2s">
+                                    <mpath href="#arrow-path-2-rev" />
+                                </animateMotion>
+                            </circle>
+                            <circle class="gas-particle particle-ascent" r="4" fill="#3498db" style="display:none">
+                                <animateMotion dur="1.5s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear" begin="0.7s">
+                                    <mpath href="#arrow-path-2-rev" />
+                                </animateMotion>
+                            </circle>
+                        </g>
+                        
+                        <!-- Blood -->
+                        <g class="pathway-stage" transform="translate(350, 60)">
+                            <rect x="0" y="0" width="100" height="80" rx="8" class="stage-box stage-blood" />
+                            <text x="50" y="30" text-anchor="middle" class="stage-icon">💉</text>
+                            <text x="50" y="55" text-anchor="middle" class="stage-label">Blood</text>
+                            <text x="50" y="72" text-anchor="middle" class="stage-value" id="blood-pressure">ppN₂ = 2.5</text>
+                        </g>
+                        
+                        <!-- Arrow 3: Blood → Tissues -->
+                        <g class="pathway-arrow" transform="translate(460, 90)">
+                            <path d="M 0 10 L 40 10" stroke="#2980b9" stroke-width="3" fill="none" class="arrow-line" />
+                            <polygon points="40,10 30,5 30,15" class="arrow-head arrow-head-right" />
+                            <polygon points="0,10 10,5 10,15" class="arrow-head arrow-head-left" style="display:none" />
+                            <path id="arrow-path-3" d="M 0 10 L 40 10" fill="none" stroke="none" />
+                            <path id="arrow-path-3-rev" d="M 40 10 L 0 10" fill="none" stroke="none" />
+                            <circle class="gas-particle particle-descent" r="4" fill="#27ae60">
+                                <animateMotion dur="1.5s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear" begin="0.4s">
+                                    <mpath href="#arrow-path-3" />
+                                </animateMotion>
+                            </circle>
+                            <circle class="gas-particle particle-descent" r="4" fill="#27ae60">
+                                <animateMotion dur="1.5s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear" begin="1.1s">
+                                    <mpath href="#arrow-path-3" />
+                                </animateMotion>
+                            </circle>
+                            <circle class="gas-particle particle-ascent" r="4" fill="#3498db" style="display:none">
+                                <animateMotion dur="1.5s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear" begin="0.4s">
+                                    <mpath href="#arrow-path-3-rev" />
+                                </animateMotion>
+                            </circle>
+                            <circle class="gas-particle particle-ascent" r="4" fill="#3498db" style="display:none">
+                                <animateMotion dur="1.5s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear" begin="1.1s">
+                                    <mpath href="#arrow-path-3-rev" />
+                                </animateMotion>
+                            </circle>
+                        </g>
+                        
+                        <!-- Tissues -->
+                        <g class="pathway-stage" transform="translate(510, 40)">
+                            <rect x="0" y="0" width="160" height="120" rx="8" class="stage-box stage-tissues" />
+                            <text x="80" y="25" text-anchor="middle" class="stage-label" style="font-weight: 600;">Tissues</text>
+                            <g transform="translate(15, 35)">
+                                <text x="0" y="12" class="tissue-label">🧠 Fast</text>
+                                <rect x="60" y="0" width="80" height="16" rx="3" fill="#ecf0f1" />
+                                <rect x="60" y="0" width="20" height="16" rx="3" class="tissue-fill tissue-fast" />
+                            </g>
+                            <g transform="translate(15, 58)">
+                                <text x="0" y="12" class="tissue-label">💪 Med</text>
+                                <rect x="60" y="0" width="80" height="16" rx="3" fill="#ecf0f1" />
+                                <rect x="60" y="0" width="10" height="16" rx="3" class="tissue-fill tissue-medium" />
+                            </g>
+                            <g transform="translate(15, 81)">
+                                <text x="0" y="12" class="tissue-label">🦴 Slow</text>
+                                <rect x="60" y="0" width="80" height="16" rx="3" fill="#ecf0f1" />
+                                <rect x="60" y="0" width="5" height="16" rx="3" class="tissue-fill tissue-slow" />
+                            </g>
+                        </g>
+                        
+                        <!-- Gradient legend -->
+                        <g transform="translate(30, 175)">
+                            <text x="0" y="12" class="legend-text">Pressure:</text>
+                            <text x="60" y="12" class="legend-text legend-high" style="font-weight: 600;">HIGH</text>
+                            <rect x="95" y="2" width="80" height="14" rx="3" class="gradient-bar" />
+                            <text x="180" y="12" class="legend-text legend-low" style="font-weight: 600;">LOW</text>
+                        </g>
+                        <g transform="translate(30, 195)">
+                            <text x="0" y="12" class="legend-text legend-direction" id="flow-direction">→ Gas flows from HIGH to LOW pressure</text>
+                        </g>
+                    </svg>
+                </div>
+                
+                <details class="learn-more">
+                    <summary>🔬 Alveolar Pressure Formula</summary>
+                    <div class="math-content">
+                        <p>The partial pressure of nitrogen in the alveoli accounts for water vapor pressure:</p>
+                        <div class="formula" id="formula-alveolar">
+                            P_{alv,N_2} = (P_{amb} - P_{H_2O}) \times f_{N_2}
+                        </div>
+                        <p>Where:</p>
+                        <ul>
+                            <li><span class="formula-inline">P_{amb}</span> = ambient pressure at depth (bar)</li>
+                            <li><span class="formula-inline">P_{H_2O}</span> = water vapor pressure ≈ 0.0627 bar at 37°C</li>
+                            <li><span class="formula-inline">f_{N_2}</span> = fraction of nitrogen in breathing gas (0.79 for air)</li>
+                        </ul>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Section 3: Tissue Heterogeneity -->
+            <div class="concept-card" id="tissue-heterogeneity">
+                <h3>🧬 Why Different Tissues Behave Differently</h3>
+                <p>
+                    Your body is <strong>not homogenous</strong> — different tissues have vastly different characteristics 
+                    that affect how quickly they absorb and release inert gas:
+                </p>
+                <ul>
+                    <li><strong>Blood perfusion</strong> — Well-perfused tissues (brain, heart) exchange gas quickly; 
+                        poorly-perfused tissues (cartilage, fat) exchange slowly</li>
+                    <li><strong>Gas solubility</strong> — Fat dissolves 5× more nitrogen than blood (see table above), 
+                        so fatty tissues take longer to saturate</li>
+                    <li><strong>Distance from blood supply</strong> — Gas must diffuse from capillaries into tissue; 
+                        tissues far from blood supply take longer</li>
+                </ul>
+                <p>
+                    This is why decompression models use multiple <strong>theoretical compartments</strong> to simulate 
+                    the full range of tissue behaviors in your body.
+                </p>
+            </div>
+
+            <!-- Section 4: Saturation Dynamics -->
+            <div class="concept-card" id="saturation-dynamics">
+                <h3>📊 Saturation Dynamics During a Dive</h3>
+                <p>Understanding how tissue loading changes throughout a dive is key to safe decompression:</p>
+                
+                <div class="dive-phases">
+                    <div class="dive-phase">
+                        <h4>⬇️ a) Descent — On-gassing</h4>
+                        <p>
+                            As you descend, ambient pressure increases. The partial pressure of nitrogen in your lungs 
+                            becomes <strong>higher than in your tissues</strong>, so gas flows <em>into</em> tissues.
+                            All compartments begin absorbing nitrogen, but <strong>fast tissues fill first</strong>.
+                        </p>
+                        <p class="phase-formula">P<sub>tissue</sub> &lt; P<sub>alveolar</sub> → <strong>On-gassing</strong></p>
+                    </div>
+                    
+                    <div class="dive-phase">
+                        <h4>➡️ b) At Depth — Differential Saturation</h4>
+                        <p>
+                            While at your maximum depth, <strong>fast tissues approach equilibrium</strong> within minutes.
+                            Medium tissues continue loading. Slow tissues (like fat) are still far from saturation — 
+                            they would need hours at depth to fully equilibrate.
+                        </p>
+                    </div>
+                    
+                    <div class="dive-phase">
+                        <h4>⬆️ c) Ascent — Supersaturation & Off-gassing</h4>
+                        <p>
+                            As you ascend, ambient pressure drops. Now your tissues hold <strong>more nitrogen than 
+                            the surrounding pressure</strong> — they are <em>supersaturated</em>. The pressure gradient 
+                            reverses and gas flows <em>out</em> of tissues.
+                        </p>
+                        <p class="phase-formula">P<sub>tissue</sub> &gt; P<sub>ambient</sub> → <strong>Supersaturation</strong> → Off-gassing</p>
+                    </div>
+                </div>
+                
+                <div class="concept-card warning-card" style="margin-top: 1rem;">
+                    <h4>⚠️ Critical Supersaturation</h4>
+                    <p>
+                        Some supersaturation is <strong>necessary and normal</strong> — it's the driving force for off-gassing. 
+                        However, if tissues become <em>too</em> supersaturated, dissolved nitrogen can form bubbles 
+                        instead of diffusing out safely.
+                    </p>
+                    <p>
+                        The maximum allowable supersaturation before bubbles form is called <strong>critical supersaturation</strong>. 
+                        Decompression algorithms calculate ascent profiles that keep all tissues below their critical limits.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Section 5: Half-Time Concept (enhanced) -->
+            <div class="concept-card" id="half-time-concept">
+                <h3>⏱️ The Half-Time Concept</h3>
                 <p>
                     A tissue's <strong>half-time</strong> is how long it takes to become 50% saturated (or 50% desaturated) 
-                    at a given pressure. After each half-time period:
+                    at a given pressure difference. After each half-time period:
                 </p>
                 <div class="half-time-visual">
                     <div class="half-time-bar">
@@ -124,6 +429,66 @@
                     </div>
                 </div>
                 <p>A 5-minute compartment reaches 50% saturation in 5 minutes; a 635-minute compartment takes over 10 hours!</p>
+                
+                <h4 style="margin-top: 1.5rem;">The Pressure Delta Effect</h4>
+                <p>
+                    The key insight is that half-time determines <em>how quickly</em> you move toward equilibrium, 
+                    but the <strong>pressure difference (delta)</strong> determines <em>how much</em> you gain or lose 
+                    in absolute terms per half-time.
+                </p>
+                <p>
+                    <strong>Example:</strong> If a tissue needs to off-gas 2 bar of nitrogen, switching from air 
+                    (79% N₂) to Nitrox 50 (50% N₂) or pure O₂ (0% N₂) creates a much larger pressure gradient, 
+                    so each half-time removes more gas — this is why oxygen-rich mixes accelerate decompression!
+                </p>
+            </div>
+
+            <!-- Interactive Half-Time Charts -->
+            <div class="concept-card" id="half-time-charts">
+                <h3>📈 Interactive: Pressure Delta & Half-Times</h3>
+                <p>These charts demonstrate how the pressure difference affects saturation and desaturation rates.</p>
+                
+                <div class="half-time-chart-grid">
+                    <!-- On-gassing Chart -->
+                    <div class="half-time-chart-wrapper">
+                        <h4>On-gassing (Descent)</h4>
+                        <p class="chart-description">Tissue starts at surface equilibrium (~0.79 bar ppN₂). 
+                           Adjust target depth to see how bigger pressure differences mean faster absolute loading.</p>
+                        <div class="chart-controls-inline">
+                            <label for="ongassing-depth">Target Depth:</label>
+                            <input type="range" id="ongassing-depth" min="10" max="50" value="30" step="5" />
+                            <span id="ongassing-depth-value">30m</span>
+                            <span id="ongassing-ppn2-value">(ppN₂ = 3.16 bar)</span>
+                        </div>
+                        <div class="chart-container-small">
+                            <canvas id="ongassing-chart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Off-gassing Chart -->
+                    <div class="half-time-chart-wrapper">
+                        <h4>Off-gassing (Ascent / Gas Switch)</h4>
+                        <p class="chart-description">Tissue starts saturated at the depth above. 
+                           Adjust the breathing gas to see how richer O₂ mixes create larger gradients for faster off-gassing.</p>
+                        <div class="chart-controls-inline">
+                            <label for="offgassing-gas">Deco Gas @ 6m:</label>
+                            <select id="offgassing-gas">
+                                <option value="0.79" selected>Air (79% N₂)</option>
+                                <option value="0.50">EAN50 (50% N₂)</option>
+                                <option value="0.00">Pure O₂ (0% N₂)</option>
+                            </select>
+                            <span id="offgassing-ppn2-value">(ppN₂ = 0.00 bar @ 6m)</span>
+                        </div>
+                        <div class="chart-container-small">
+                            <canvas id="offgassing-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="footnote" style="margin-top: 1rem;">
+                    ℹ️ Both charts share the same dive depth. The off-gassing chart simulates a deco stop at 6m 
+                    after being saturated at the target depth. Time is shown in half-times (T).
+                </p>
             </div>
 
             <details class="learn-more">
@@ -156,6 +521,25 @@
                     <p>Every 10 meters of seawater adds approximately 1 bar of pressure.</p>
                 </div>
             </details>
+
+            <!-- Section 6: Bühlmann Compartments -->
+            <div class="concept-card" id="buhlmann-compartments">
+                <h3>🔢 Bühlmann's ZH-L16 Compartments</h3>
+                <p>
+                    The Bühlmann ZH-L16 model uses <strong>16 theoretical compartments</strong> — these are 
+                    <em>mathematical constructs</em> fit to experimental data, not literal anatomical tissues.
+                    They span a range of half-times designed to model the full spectrum of tissue behaviors:
+                </p>
+                <ul>
+                    <li><strong>Fast compartments (5–12.5 min)</strong> — saturate in minutes, but also release gas quickly</li>
+                    <li><strong>Medium compartments (18.5–77 min)</strong> — balance between loading and off-gassing</li>
+                    <li><strong>Slow compartments (109–635 min)</strong> — can take hours to fully saturate</li>
+                </ul>
+                <p>
+                    At any point during a dive, the <strong>controlling compartment</strong> is the one closest to 
+                    its critical supersaturation limit — this compartment determines your decompression ceiling.
+                </p>
+            </div>
         </section>
 
         <!-- Compartment Selection -->
@@ -234,6 +618,9 @@
         </p>
         <span class="version-number"></span>
     </footer>
+
+    <!-- Educational interactive components -->
+    <script src="js/tissueEducation.js"></script>
 
     <!-- Main application script -->
     <script type="module" src="js/main.js"></script>
