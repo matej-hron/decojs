@@ -4,95 +4,83 @@
       "id": "recreational",
       "name": "Recreational Dive",
       "description": "A safe recreational dive to 18m staying well within no-decompression limits. Perfect for beginners and casual diving.",
-      "gasMix": {
-        "name": "Air",
-        "o2": 0.21,
-        "n2": 0.79,
-        "he": 0
-      },
+      "gases": [
+        { "id": "bottom", "name": "Air", "o2": 0.21, "n2": 0.79, "he": 0, "cylinderVolume": 12, "startPressure": 200 }
+      ],
+      "reservePressure": 50,
       "surfaceInterval": 60,
-      "units": {
-        "depth": "meters",
-        "time": "minutes",
-        "pressure": "bar"
-      },
-      "waypoints": [
-        { "time": 0, "depth": 0 },
-        { "time": 2, "depth": 18 },
-        { "time": 35, "depth": 18 },
-        { "time": 38, "depth": 5 },
-        { "time": 41, "depth": 5 },
-        { "time": 43, "depth": 0 }
+      "units": { "depth": "meters", "time": "minutes", "pressure": "bar" },
+      "dives": [
+        {
+          "waypoints": [
+            { "time": 0, "depth": 0 },
+            { "time": 2, "depth": 18 },
+            { "time": 35, "depth": 18 },
+            { "time": 38, "depth": 5 },
+            { "time": 41, "depth": 5 },
+            { "time": 43, "depth": 0 }
+          ]
+        }
       ]
     },
     {
       "id": "deco-dive",
       "name": "Decompression Dive",
       "description": "A 40m dive with planned decompression stops. This profile intentionally exceeds no-decompression limits to demonstrate tissue supersaturation and required deco stops.",
-      "gasMix": {
-        "name": "Air",
-        "o2": 0.21,
-        "n2": 0.79,
-        "he": 0
-      },
+      "gases": [
+        { "id": "bottom", "name": "Air", "o2": 0.21, "n2": 0.79, "he": 0, "cylinderVolume": 12, "startPressure": 200 }
+      ],
+      "reservePressure": 50,
       "surfaceInterval": 60,
-      "units": {
-        "depth": "meters",
-        "time": "minutes",
-        "pressure": "bar"
-      },
-      "waypoints": [
-        { "time": 0, "depth": 0 },
-        { "time": 2, "depth": 40 },
-        { "time": 22, "depth": 40 },
-        { "time": 26, "depth": 9 },
-        { "time": 29, "depth": 9 },
-        { "time": 30, "depth": 6 },
-        { "time": 35, "depth": 6 },
-        { "time": 36, "depth": 3 },
-        { "time": 41, "depth": 3 },
-        { "time": 42, "depth": 0 }
+      "units": { "depth": "meters", "time": "minutes", "pressure": "bar" },
+      "dives": [
+        {
+          "waypoints": [
+            { "time": 0, "depth": 0 },
+            { "time": 2, "depth": 40 },
+            { "time": 22, "depth": 40 },
+            { "time": 26, "depth": 9 },
+            { "time": 29, "depth": 9 },
+            { "time": 30, "depth": 6 },
+            { "time": 35, "depth": 6 },
+            { "time": 36, "depth": 3 },
+            { "time": 41, "depth": 3 },
+            { "time": 42, "depth": 0 }
+          ]
+        }
       ]
     },
     {
       "id": "dangerous-ascent",
       "name": "⚠️ Dangerous Fast Ascent",
       "description": "WARNING: This dive violates safe ascent rates! Demonstrates what happens when ascending too fast from depth without proper stops. NEVER do this in real diving!",
-      "gasMix": {
-        "name": "Air",
-        "o2": 0.21,
-        "n2": 0.79,
-        "he": 0
-      },
+      "gases": [
+        { "id": "bottom", "name": "Air", "o2": 0.21, "n2": 0.79, "he": 0, "cylinderVolume": 12, "startPressure": 200 }
+      ],
+      "reservePressure": 50,
       "surfaceInterval": 30,
-      "units": {
-        "depth": "meters",
-        "time": "minutes",
-        "pressure": "bar"
-      },
-      "waypoints": [
-        { "time": 0, "depth": 0 },
-        { "time": 1, "depth": 40 },
-        { "time": 25, "depth": 40 },
-        { "time": 27, "depth": 0 }
+      "units": { "depth": "meters", "time": "minutes", "pressure": "bar" },
+      "dives": [
+        {
+          "waypoints": [
+            { "time": 0, "depth": 0 },
+            { "time": 1, "depth": 40 },
+            { "time": 25, "depth": 40 },
+            { "time": 27, "depth": 0 }
+          ]
+        }
       ]
     },
     {
       "id": "repeated-dive",
       "name": "Repeated Dives",
       "description": "Two dives with a surface interval. Shows how residual nitrogen from the first dive affects tissue loading on the second dive. The second dive has reduced no-deco time.",
-      "gasMix": {
-        "name": "Air",
-        "o2": 0.21,
-        "n2": 0.79,
-        "he": 0
-      },
+      "gases": [
+        { "id": "bottom", "name": "Air", "o2": 0.21, "n2": 0.79, "he": 0, "cylinderVolume": 12, "startPressure": 200 }
+      ],
+      "reservePressure": 50,
       "surfaceInterval": 60,
-      "units": {
-        "depth": "meters",
-        "time": "minutes",
-        "pressure": "bar"
-      },
+      "units": { "depth": "meters", "time": "minutes", "pressure": "bar" },
       "dives": [
         {
           "waypoints": [
@@ -121,66 +109,62 @@
       "id": "deep-technical",
       "name": "Deep Technical Dive",
       "description": "A deep technical dive to 55m requiring extended decompression. Uses trimix for reduced narcosis. For experienced technical divers only.",
-      "gasMix": {
-        "name": "Trimix 18/45",
-        "o2": 0.18,
-        "n2": 0.37,
-        "he": 0.45
-      },
+      "gases": [
+        { "id": "bottom", "name": "Trimix 18/45", "o2": 0.18, "n2": 0.37, "he": 0.45, "cylinderVolume": 24, "startPressure": 200 }
+      ],
+      "reservePressure": 50,
       "surfaceInterval": 90,
-      "units": {
-        "depth": "meters",
-        "time": "minutes",
-        "pressure": "bar"
-      },
-      "waypoints": [
-        { "time": 0, "depth": 0 },
-        { "time": 3, "depth": 55 },
-        { "time": 18, "depth": 55 },
-        { "time": 22, "depth": 21 },
-        { "time": 25, "depth": 21 },
-        { "time": 26, "depth": 18 },
-        { "time": 29, "depth": 18 },
-        { "time": 30, "depth": 15 },
-        { "time": 34, "depth": 15 },
-        { "time": 35, "depth": 12 },
-        { "time": 40, "depth": 12 },
-        { "time": 41, "depth": 9 },
-        { "time": 48, "depth": 9 },
-        { "time": 49, "depth": 6 },
-        { "time": 60, "depth": 6 },
-        { "time": 61, "depth": 3 },
-        { "time": 75, "depth": 3 },
-        { "time": 78, "depth": 0 }
+      "units": { "depth": "meters", "time": "minutes", "pressure": "bar" },
+      "dives": [
+        {
+          "waypoints": [
+            { "time": 0, "depth": 0 },
+            { "time": 3, "depth": 55 },
+            { "time": 18, "depth": 55 },
+            { "time": 22, "depth": 21 },
+            { "time": 25, "depth": 21 },
+            { "time": 26, "depth": 18 },
+            { "time": 29, "depth": 18 },
+            { "time": 30, "depth": 15 },
+            { "time": 34, "depth": 15 },
+            { "time": 35, "depth": 12 },
+            { "time": 40, "depth": 12 },
+            { "time": 41, "depth": 9 },
+            { "time": 48, "depth": 9 },
+            { "time": 49, "depth": 6 },
+            { "time": 60, "depth": 6 },
+            { "time": 61, "depth": 3 },
+            { "time": 75, "depth": 3 },
+            { "time": 78, "depth": 0 }
+          ]
+        }
       ]
     },
     {
       "id": "30m-deco-air",
       "name": "30m Deco Dive (Air)",
       "description": "A 30m dive with 40 min bottom time requiring staged decompression stops. Demonstrates tissue loading on a moderate depth deco dive.",
-      "gasMix": {
-        "name": "Air",
-        "o2": 0.21,
-        "n2": 0.79,
-        "he": 0
-      },
+      "gases": [
+        { "id": "bottom", "name": "Air", "o2": 0.21, "n2": 0.79, "he": 0, "cylinderVolume": 12, "startPressure": 200 }
+      ],
+      "reservePressure": 50,
       "surfaceInterval": 60,
-      "units": {
-        "depth": "meters",
-        "time": "minutes",
-        "pressure": "bar"
-      },
-      "waypoints": [
-        { "time": 0, "depth": 0 },
-        { "time": 2, "depth": 30 },
-        { "time": 42, "depth": 30 },
-        { "time": 44, "depth": 9 },
-        { "time": 45, "depth": 9 },
-        { "time": 46, "depth": 6 },
-        { "time": 49, "depth": 6 },
-        { "time": 50, "depth": 3 },
-        { "time": 55, "depth": 3 },
-        { "time": 56, "depth": 0 }
+      "units": { "depth": "meters", "time": "minutes", "pressure": "bar" },
+      "dives": [
+        {
+          "waypoints": [
+            { "time": 0, "depth": 0 },
+            { "time": 2, "depth": 30 },
+            { "time": 42, "depth": 30 },
+            { "time": 44, "depth": 9 },
+            { "time": 45, "depth": 9 },
+            { "time": 46, "depth": 6 },
+            { "time": 49, "depth": 6 },
+            { "time": 50, "depth": 3 },
+            { "time": 55, "depth": 3 },
+            { "time": 56, "depth": 0 }
+          ]
+        }
       ]
     },
     {
@@ -188,26 +172,27 @@
       "name": "30m Deco Dive (O₂ deco)",
       "description": "A 30m dive with 40 min bottom time, switching to pure O₂ at 6m for accelerated decompression. Demonstrates the benefit of oxygen deco.",
       "gases": [
-        { "id": "air", "name": "Air", "o2": 0.21, "n2": 0.79, "he": 0 },
-        { "id": "o2", "name": "Oxygen", "o2": 1.0, "n2": 0, "he": 0, "maxPpO2": 1.6 }
+        { "id": "bottom", "name": "Air", "o2": 0.21, "n2": 0.79, "he": 0, "cylinderVolume": 12, "startPressure": 200 },
+        { "id": "deco1", "name": "Pure Oxygen (100%)", "o2": 1.0, "n2": 0, "he": 0, "cylinderVolume": 7, "startPressure": 200 }
       ],
+      "reservePressure": 50,
       "surfaceInterval": 60,
-      "units": {
-        "depth": "meters",
-        "time": "minutes",
-        "pressure": "bar"
-      },
-      "waypoints": [
-        { "time": 0, "depth": 0, "gasId": "air" },
-        { "time": 2, "depth": 30, "gasId": "air" },
-        { "time": 42, "depth": 30, "gasId": "air" },
-        { "time": 44, "depth": 9, "gasId": "air" },
-        { "time": 45, "depth": 9, "gasId": "air" },
-        { "time": 46, "depth": 6, "gasId": "o2" },
-        { "time": 49, "depth": 6, "gasId": "o2" },
-        { "time": 50, "depth": 3, "gasId": "o2" },
-        { "time": 55, "depth": 3, "gasId": "o2" },
-        { "time": 56, "depth": 0, "gasId": "o2" }
+      "units": { "depth": "meters", "time": "minutes", "pressure": "bar" },
+      "dives": [
+        {
+          "waypoints": [
+            { "time": 0, "depth": 0, "gasId": "bottom" },
+            { "time": 2, "depth": 30, "gasId": "bottom" },
+            { "time": 42, "depth": 30, "gasId": "bottom" },
+            { "time": 44, "depth": 9, "gasId": "bottom" },
+            { "time": 45, "depth": 9, "gasId": "bottom" },
+            { "time": 46, "depth": 6, "gasId": "deco1" },
+            { "time": 49, "depth": 6, "gasId": "deco1" },
+            { "time": 50, "depth": 3, "gasId": "deco1" },
+            { "time": 55, "depth": 3, "gasId": "deco1" },
+            { "time": 56, "depth": 0, "gasId": "deco1" }
+          ]
+        }
       ]
     }
   ],

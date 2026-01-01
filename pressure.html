@@ -369,25 +369,10 @@
             <!-- Local Overrides -->
             <div class="chart-controls">
                 <div class="control-group">
-                    <label for="gas-cylinder-select">Cylinder:</label>
-                    <select id="gas-cylinder-select" class="form-select">
-                        <option value="10">10 L</option>
-                        <option value="12">12 L</option>
-                        <option value="15">15 L</option>
-                        <option value="18">18 L</option>
-                        <option value="14">2×7 L (14 L)</option>
-                        <option value="20">2×10 L (20 L)</option>
-                        <option value="24">2×12 L (24 L)</option>
-                    </select>
-                </div>
-                <div class="control-group">
                     <label for="gas-sac-input">SAC Rate (L/min):</label>
                     <input type="number" id="gas-sac-input" class="form-input" value="20" min="10" max="40" step="1">
                 </div>
-                <div class="control-group">
-                    <label for="gas-start-pressure">Start Pressure (bar):</label>
-                    <input type="number" id="gas-start-pressure" class="form-input" value="200" min="100" max="300" step="10">
-                </div>
+                <p class="hint" style="margin: 0.5rem 0;">Tank sizes from dive profile. <a href="dive-setup.html">Edit in Dive Setup</a></p>
             </div>
             
             <div class="chart-container" id="gas-chart-container">
@@ -395,18 +380,13 @@
                 <button id="gas-exit-fullscreen-btn" class="btn btn-fullscreen-close" title="Exit Fullscreen">✕</button>
             </div>
             
-            <!-- Gas Summary -->
+            <!-- Gas Summary - per tank -->
             <div id="gas-summary" class="stats-summary">
-                <div class="stat-item">
-                    <span class="stat-label">Total Gas Used:</span>
-                    <span id="total-gas-used" class="stat-value">-- L</span>
+                <div id="gas-tanks-summary" class="gas-tanks-summary">
+                    <!-- Populated by JavaScript -->
                 </div>
                 <div class="stat-item">
-                    <span class="stat-label">Remaining Pressure:</span>
-                    <span id="remaining-pressure" class="stat-value">-- bar</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Status:</span>
+                    <span class="stat-label">Overall Status:</span>
                     <span id="gas-status" class="stat-value">--</span>
                 </div>
             </div>
@@ -877,7 +857,7 @@
     </footer>
 
     <script type="module">
-        import { loadDiveSetup, getDiveSetupWaypoints, saveDiveSetup, clearCache, getCylinderVolume, PREDEFINED_GASES, getPredefinedGas, calculateMOD, calculateEND, calculatePartialPressure, getGases, getGasAtTime, getGasSwitchEvents } from './js/diveSetup.js';
+        import { loadDiveSetup, getDiveSetupWaypoints, saveDiveSetup, clearCache, getGasCylinderVolume, getGasStartPressure, PREDEFINED_GASES, getPredefinedGas, calculateMOD, calculateEND, calculatePartialPressure, getGases, getGasAtTime, getGasSwitchEvents } from './js/diveSetup.js';
         
         // State
         let profileChart = null;
@@ -1826,9 +1806,7 @@
         const gasChartContainer = document.getElementById('gas-chart-container');
         const gasFullscreenBtn = document.getElementById('gas-fullscreen-btn');
         const gasExitFullscreenBtn = document.getElementById('gas-exit-fullscreen-btn');
-        const gasCylinderSelect = document.getElementById('gas-cylinder-select');
         const gasSacInput = document.getElementById('gas-sac-input');
-        const gasStartPressure = document.getElementById('gas-start-pressure');
         
         function toggleGasFullscreen() {
             const isFullscreen = gasChartContainer.classList.toggle('fullscreen');
@@ -1848,9 +1826,15 @@
         });
         
         // Update gas chart when controls change
-        gasCylinderSelect?.addEventListener('change', renderGasConsumptionChart);
         gasSacInput?.addEventListener('input', renderGasConsumptionChart);
-        gasStartPressure?.addEventListener('input', renderGasConsumptionChart);
+        
+        // Colors for different gases
+        const GAS_COLORS = [
+            { border: '#27ae60', bg: 'rgba(39, 174, 96, 0.1)' },   // Green - bottom gas
+            { border: '#9b59b6', bg: 'rgba(155, 89, 182, 0.1)' },  // Purple - deco 1
+            { border: '#e67e22', bg: 'rgba(230, 126, 34, 0.1)' },  // Orange - deco 2
+            { border: '#1abc9c', bg: 'rgba(26, 188, 156, 0.1)' }   // Teal - deco 3
+        ];
         
         function renderGasConsumptionChart() {
             const canvas = document.getElementById('gas-consumption-canvas');
@@ -1858,24 +1842,27 @@
             
             const ctx = canvas.getContext('2d');
             const waypoints = getDiveSetupWaypoints(currentSetup);
+            const gases = getGases(currentSetup);
             
             if (waypoints.length === 0) return;
             
             // Get parameters
-            const cylinderVolume = parseInt(gasCylinderSelect?.value) || getCylinderVolume(currentSetup);
             const sacRate = parseFloat(gasSacInput?.value) || 20;
-            const startPressure = parseFloat(gasStartPressure?.value) || 200;
             const reservePressure = 50; // bar
-            
-            // Set cylinder select to match setup if not manually changed
-            if (gasCylinderSelect && !gasCylinderSelect.dataset.userChanged) {
-                gasCylinderSelect.value = getCylinderVolume(currentSetup);
-            }
-            
-            const totalGasAvailable = cylinderVolume * startPressure; // liters
-            const reserveGas = cylinderVolume * reservePressure;
-            
             const totalTime = waypoints[waypoints.length - 1].time;
+            
+            // Initialize tank state for each gas
+            const tankState = gases.map(gas => ({
+                gas: gas,
+                cylinderVolume: getGasCylinderVolume(gas),
+                startPressure: getGasStartPressure(gas),
+                gasUsed: 0,
+                currentPressure: getGasStartPressure(gas),
+                data: [] // Time series data for this tank
+            }));
+            
+            // Get gas switch events
+            const gasSwitchEvents = getGasSwitchEvents(waypoints, gases);
             
             // Interpolate depth at any time
             function interpolateDepth(time) {
@@ -1891,108 +1878,155 @@
                 return waypoints[waypoints.length - 1].depth;
             }
             
+            // Get active gas at a given time
+            function getActiveGasIndex(time) {
+                const activeGas = getGasAtTime(waypoints, gases, time);
+                return gases.findIndex(g => g.id === activeGas.id);
+            }
+            
             // Calculate gas consumption over time
-            const gasData = [];
-            let totalGasUsed = 0;
+            const depthData = [];
             const interval = 0.5; // minutes
             
             for (let t = 0; t <= totalTime; t += interval) {
                 const depth = interpolateDepth(t);
-                const pressure = 1 + depth / 10;
-                const consumptionRate = sacRate * pressure; // L/min at this depth
+                const ambientPressure = 1 + depth / 10;
+                const consumptionRate = sacRate * ambientPressure; // L/min at this depth
+                const activeGasIdx = getActiveGasIndex(t);
                 
+                // Record depth point
+                depthData.push({ x: t, y: depth });
+                
+                // Update consumption for active gas
                 if (t > 0) {
-                    totalGasUsed += consumptionRate * interval;
+                    const tank = tankState[activeGasIdx];
+                    const gasConsumed = consumptionRate * interval;
+                    tank.gasUsed += gasConsumed;
+                    tank.currentPressure = ((tank.cylinderVolume * tank.startPressure) - tank.gasUsed) / tank.cylinderVolume;
                 }
                 
-                const remainingGas = totalGasAvailable - totalGasUsed;
-                const remainingPressure = remainingGas / cylinderVolume;
-                
-                gasData.push({
-                    x: t,
-                    depth: depth,
-                    gasRemaining: remainingGas,
-                    pressureRemaining: remainingPressure,
-                    consumptionRate: consumptionRate
+                // Record pressure for all tanks at this time
+                tankState.forEach((tank, idx) => {
+                    const totalGas = tank.cylinderVolume * tank.startPressure;
+                    const remaining = totalGas - tank.gasUsed;
+                    const pressure = remaining / tank.cylinderVolume;
+                    tank.data.push({
+                        x: t,
+                        y: pressure,
+                        isActive: idx === activeGasIdx
+                    });
                 });
             }
             
             // Ensure final point
-            if (gasData[gasData.length - 1].x < totalTime) {
+            const lastT = depthData[depthData.length - 1]?.x || 0;
+            if (lastT < totalTime) {
                 const depth = interpolateDepth(totalTime);
-                const pressure = 1 + depth / 10;
-                const remainingGas = totalGasAvailable - totalGasUsed;
-                gasData.push({
-                    x: totalTime,
-                    depth: depth,
-                    gasRemaining: remainingGas,
-                    pressureRemaining: remainingGas / cylinderVolume,
-                    consumptionRate: sacRate * pressure
+                depthData.push({ x: totalTime, y: depth });
+                tankState.forEach(tank => {
+                    const totalGas = tank.cylinderVolume * tank.startPressure;
+                    const remaining = totalGas - tank.gasUsed;
+                    tank.data.push({ x: totalTime, y: remaining / tank.cylinderVolume });
                 });
             }
             
-            const finalGasRemaining = gasData[gasData.length - 1].gasRemaining;
-            const finalPressure = finalGasRemaining / cylinderVolume;
+            // Update per-gas summary
+            const tanksSummaryEl = document.getElementById('gas-tanks-summary');
+            let summaryHtml = '';
+            let anyBelowReserve = false;
+            let anyCloseToReserve = false;
             
-            // Update summary
-            document.getElementById('total-gas-used').textContent = `${Math.round(totalGasUsed)} L`;
-            document.getElementById('remaining-pressure').textContent = `${Math.round(finalPressure)} bar`;
+            tankState.forEach((tank, idx) => {
+                const finalPressure = tank.currentPressure;
+                const usedLiters = Math.round(tank.gasUsed);
+                const statusClass = finalPressure < reservePressure ? 'danger' : 
+                                   finalPressure < reservePressure + 30 ? 'warning' : 'ok';
+                const statusIcon = finalPressure < reservePressure ? '⚠️' : 
+                                   finalPressure < reservePressure + 30 ? '⚡' : '✅';
+                
+                if (finalPressure < reservePressure) anyBelowReserve = true;
+                if (finalPressure < reservePressure + 30) anyCloseToReserve = true;
+                
+                const colorDot = `<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${GAS_COLORS[idx % GAS_COLORS.length].border};margin-right:6px;"></span>`;
+                
+                summaryHtml += `
+                    <div class="tank-summary-item ${statusClass}">
+                        <div class="tank-name">${colorDot}${tank.gas.name}</div>
+                        <div class="tank-details">
+                            <span class="tank-size">${tank.cylinderVolume}L @ ${tank.startPressure}bar</span>
+                            <span class="tank-used">Used: ${usedLiters}L</span>
+                            <span class="tank-remaining">${statusIcon} ${Math.round(finalPressure)} bar</span>
+                        </div>
+                    </div>
+                `;
+            });
             
+            tanksSummaryEl.innerHTML = summaryHtml;
+            
+            // Overall status
             const statusEl = document.getElementById('gas-status');
-            if (finalPressure < reservePressure) {
-                statusEl.textContent = '⚠️ Exceeds reserve!';
+            if (anyBelowReserve) {
+                statusEl.textContent = '⚠️ Gas exceeds reserve!';
                 statusEl.style.color = '#e74c3c';
-            } else if (finalPressure < reservePressure + 30) {
-                statusEl.textContent = '⚠️ Close to reserve';
+            } else if (anyCloseToReserve) {
+                statusEl.textContent = '⚡ Close to reserve';
                 statusEl.style.color = '#f39c12';
             } else {
-                statusEl.textContent = '✅ OK';
+                statusEl.textContent = '✅ All tanks OK';
                 statusEl.style.color = '#27ae60';
             }
             
-            // Build annotations
-            const annotations = {
-                reserveLine: {
+            // Build annotations for gas switches
+            const annotations = {};
+            
+            gasSwitchEvents.forEach((event, idx) => {
+                annotations[`gasSwitch${idx}`] = {
                     type: 'line',
-                    yMin: reservePressure,
-                    yMax: reservePressure,
-                    yScaleID: 'yPressure',
-                    borderColor: 'rgba(231, 76, 60, 0.8)',
+                    xMin: event.time,
+                    xMax: event.time,
+                    borderColor: 'rgba(155, 89, 182, 0.7)',
                     borderWidth: 2,
-                    borderDash: [6, 4],
+                    borderDash: [4, 4],
                     label: {
                         display: true,
-                        content: `Reserve: ${reservePressure} bar`,
-                        position: 'end',
-                        backgroundColor: 'rgba(231, 76, 60, 0.9)',
+                        content: `→ ${event.toGas?.name || 'Switch'}`,
+                        position: 'start',
+                        backgroundColor: 'rgba(155, 89, 182, 0.9)',
                         color: 'white',
-                        font: { size: 10, weight: 'bold' },
-                        padding: { top: 3, bottom: 3, left: 6, right: 6 }
+                        font: { size: 9, weight: 'bold' },
+                        padding: { top: 2, bottom: 2, left: 4, right: 4 }
                     }
+                };
+            });
+            
+            // Add reserve line for first tank (bottom gas)
+            annotations.reserveLine = {
+                type: 'line',
+                yMin: reservePressure,
+                yMax: reservePressure,
+                yScaleID: 'yPressure',
+                borderColor: 'rgba(231, 76, 60, 0.6)',
+                borderWidth: 2,
+                borderDash: [6, 4],
+                label: {
+                    display: true,
+                    content: `Reserve: ${reservePressure} bar`,
+                    position: 'end',
+                    backgroundColor: 'rgba(231, 76, 60, 0.9)',
+                    color: 'white',
+                    font: { size: 10, weight: 'bold' },
+                    padding: { top: 3, bottom: 3, left: 6, right: 6 }
                 }
             };
             
-            // Add danger zone if gas drops below reserve
-            const belowReserveStart = gasData.find(d => d.pressureRemaining < reservePressure);
-            if (belowReserveStart) {
-                annotations.dangerZone = {
-                    type: 'box',
-                    xMin: belowReserveStart.x,
-                    xMax: totalTime,
-                    yMin: 0,
-                    yMax: reservePressure,
-                    yScaleID: 'yPressure',
-                    backgroundColor: 'rgba(231, 76, 60, 0.2)',
-                    borderWidth: 0
-                };
-            }
-            
             const maxDepth = Math.max(...waypoints.map(w => w.depth));
+            const maxStartPressure = Math.max(...tankState.map(t => t.startPressure));
             
-            const data = {
-                datasets: [{
-                    label: 'Dive Profile (Depth)',
-                    data: gasData.map(p => ({ x: p.x, y: p.depth })),
+            // Build datasets
+            const datasets = [
+                {
+                    label: 'Depth',
+                    data: depthData,
                     borderColor: '#2980b9',
                     backgroundColor: 'rgba(41, 128, 185, 0.15)',
                     fill: true,
@@ -2000,22 +2034,36 @@
                     pointRadius: 0,
                     borderWidth: 3,
                     yAxisID: 'yDepth'
-                }, {
-                    label: 'Tank Pressure',
-                    data: gasData.map(p => ({ x: p.x, y: p.pressureRemaining })),
-                    borderColor: '#27ae60',
+                }
+            ];
+            
+            // Add tank pressure lines
+            tankState.forEach((tank, idx) => {
+                const color = GAS_COLORS[idx % GAS_COLORS.length];
+                datasets.push({
+                    label: `${tank.gas.name} (${tank.cylinderVolume}L)`,
+                    data: tank.data.map(d => ({ x: d.x, y: d.y })),
+                    borderColor: color.border,
                     backgroundColor: 'transparent',
                     fill: false,
                     tension: 0,
                     pointRadius: 0,
-                    borderWidth: 3,
-                    yAxisID: 'yPressure'
-                }]
-            };
+                    borderWidth: 2,
+                    yAxisID: 'yPressure',
+                    // Make inactive segments dashed
+                    segment: {
+                        borderDash: ctx => {
+                            const idx = ctx.p0DataIndex;
+                            const point = tank.data[idx];
+                            return point && !point.isActive ? [3, 3] : [];
+                        }
+                    }
+                });
+            });
             
             const config = {
                 type: 'line',
-                data: data,
+                data: { datasets },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -2039,7 +2087,7 @@
                             reverse: true,
                             title: {
                                 display: true,
-                                text: 'Depth (meters)',
+                                text: 'Depth (m)',
                                 font: { size: 14, weight: 'bold' },
                                 color: '#2980b9'
                             },
@@ -2063,7 +2111,7 @@
                                 color: '#27ae60'
                             },
                             min: 0,
-                            max: startPressure + 20,
+                            max: maxStartPressure + 20,
                             grid: {
                                 drawOnChartArea: false
                             },
@@ -2080,26 +2128,26 @@
                     plugins: {
                         legend: {
                             display: true,
-                            position: 'right',
+                            position: 'top',
                             labels: {
                                 usePointStyle: true,
                                 padding: 12,
-                                font: { size: 12 }
+                                font: { size: 11 }
                             }
                         },
                         title: {
                             display: true,
-                            text: `Gas Consumption (${cylinderVolume}L @ ${startPressure} bar, SAC: ${sacRate} L/min)`,
+                            text: `Multi-Gas Consumption (SAC: ${sacRate} L/min)`,
                             font: { size: 16, weight: 'bold' }
                         },
                         tooltip: {
                             callbacks: {
                                 title: (items) => `Time: ${items[0].parsed.x.toFixed(1)} min`,
                                 label: (context) => {
-                                    if (context.dataset.label === 'Dive Profile (Depth)') {
+                                    if (context.dataset.label === 'Depth') {
                                         return `Depth: ${context.parsed.y.toFixed(1)}m`;
                                     } else {
-                                        return `Tank: ${context.parsed.y.toFixed(0)} bar`;
+                                        return `${context.dataset.label}: ${context.parsed.y.toFixed(0)} bar`;
                                     }
                                 }
                             }

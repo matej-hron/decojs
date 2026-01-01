@@ -7,8 +7,15 @@ This is a Progressive Web App (PWA) for learning decompression theory. It runs o
 
 When looking into decompression theory concepts, follow these primary sources:
 
-1. **Decompression Theory PDF** (freely available online):
-   https://aquatec.wordpress.com/wp-content/uploads/2011/03/decompression-theory.pdf
+1. **Decompression Theory** (local text file):
+   `resources/decompression-theory.txt` - Professor A.A. Buehlmann's ZH-L16 Algorithm explanation by Paul Chapman, covering:
+   - Haldane's foundational decompression theory
+   - Tissue compartments and half-times
+   - On-gassing and off-gassing principles
+   - M-values and tolerable supersaturation
+   - Workman's refinements to allowable overpressure
+   - Buehlmann's ZH-L16 algorithm details
+   - Practical dive planning applications
 
 2. **"Deco for Divers" by Mark Powell** (book, no online version available):
    The definitive reference for recreational and technical diving decompression. 

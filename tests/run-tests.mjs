@@ -117,7 +117,6 @@ import {
     extendDiveSetup,
     getDiveSetupWaypoints,
     getSurfaceInterval,
-    getN2Fraction,
     formatDiveSetupSummary,
     generateSimpleProfile,
     clearCache,
@@ -160,26 +159,29 @@ describe('diveSetup', () => {
         test('returns a valid dive setup object', () => {
             const setup = getDefaultSetup();
             expect(setup).toHaveProperty('name');
-            expect(setup).toHaveProperty('gasMix');
-            expect(setup).toHaveProperty('waypoints');
+            expect(setup).toHaveProperty('gases');
+            expect(setup).toHaveProperty('dives');
         });
 
         test('has valid gas mix totaling 100%', () => {
             const setup = getDefaultSetup();
-            const total = setup.gasMix.o2 + setup.gasMix.n2 + setup.gasMix.he;
+            const gas = setup.gases[0];
+            const total = gas.o2 + gas.n2 + gas.he;
             expect(total).toBeCloseTo(1.0, 5);
         });
 
         test('has waypoints starting at surface', () => {
             const setup = getDefaultSetup();
-            expect(setup.waypoints[0].time).toBe(0);
-            expect(setup.waypoints[0].depth).toBe(0);
+            const waypoints = setup.dives[0].waypoints;
+            expect(waypoints[0].time).toBe(0);
+            expect(waypoints[0].depth).toBe(0);
         });
 
         test('waypoints have ascending time values', () => {
             const setup = getDefaultSetup();
-            for (let i = 1; i < setup.waypoints.length; i++) {
-                expect(setup.waypoints[i].time).toBeGreaterThan(setup.waypoints[i - 1].time);
+            const waypoints = setup.dives[0].waypoints;
+            for (let i = 1; i < waypoints.length; i++) {
+                expect(waypoints[i].time).toBeGreaterThan(waypoints[i - 1].time);
             }
         });
     });
@@ -192,37 +194,42 @@ describe('diveSetup', () => {
             expect(extended.surfaceInterval).toBe(120);
         });
 
-        test('deep merges gasMix', () => {
+        test('replaces gases array entirely', () => {
             const base = getDefaultSetup();
-            const extended = extendDiveSetup(base, { gasMix: { name: 'Nitrox 32', o2: 0.32 } });
-            expect(extended.gasMix.name).toBe('Nitrox 32');
-            expect(extended.gasMix.o2).toBe(0.32);
-            expect(extended.gasMix.n2).toBe(0.79); // preserved from base
+            const newGases = [{ id: 'bottom', name: 'EAN32', o2: 0.32, n2: 0.68, he: 0, cylinderVolume: 12, startPressure: 200 }];
+            const extended = extendDiveSetup(base, { gases: newGases });
+            expect(extended.gases).toHaveLength(1);
+            expect(extended.gases[0].name).toBe('EAN32');
         });
 
-        test('replaces waypoints entirely', () => {
+        test('replaces dives array entirely', () => {
             const base = getDefaultSetup();
-            const newWaypoints = [{ time: 0, depth: 0 }, { time: 5, depth: 20 }];
-            const extended = extendDiveSetup(base, { waypoints: newWaypoints });
-            expect(extended.waypoints).toHaveLength(2);
+            const newDives = [{ waypoints: [{ time: 0, depth: 0 }, { time: 5, depth: 20 }] }];
+            const extended = extendDiveSetup(base, { dives: newDives });
+            expect(extended.dives[0].waypoints).toHaveLength(2);
         });
     });
 
     describe('getDiveSetupWaypoints', () => {
-        test('extracts waypoints with only time and depth', () => {
-            const setup = { waypoints: [{ time: 0, depth: 0, note: 'Start' }] };
+        test('extracts waypoints from dives array', () => {
+            const setup = {
+                dives: [{ waypoints: [{ time: 0, depth: 0, note: 'Start' }] }]
+            };
             const waypoints = getDiveSetupWaypoints(setup);
-            expect(waypoints[0]).toEqual({ time: 0, depth: 0 });
+            expect(waypoints[0].time).toBe(0);
+            expect(waypoints[0].depth).toBe(0);
         });
 
         test('preserves gasId in waypoints', () => {
             const setup = { 
-                waypoints: [
-                    { time: 0, depth: 0, gasId: 'bottom' },
-                    { time: 5, depth: 30, gasId: 'bottom' },
-                    { time: 25, depth: 30, gasId: 'bottom' },
-                    { time: 28, depth: 6, gasId: 'deco' }
-                ] 
+                dives: [{
+                    waypoints: [
+                        { time: 0, depth: 0, gasId: 'bottom' },
+                        { time: 5, depth: 30, gasId: 'bottom' },
+                        { time: 25, depth: 30, gasId: 'bottom' },
+                        { time: 28, depth: 6, gasId: 'deco' }
+                    ] 
+                }]
             };
             const waypoints = getDiveSetupWaypoints(setup);
             expect(waypoints[0].gasId).toBe('bottom');
@@ -242,13 +249,10 @@ describe('diveSetup', () => {
             expect(waypoints[5].time).toBe(100); // 80 + 20 = 100
         });
 
-        test('prefers dives array over legacy waypoints', () => {
-            const setup = {
-                waypoints: [{ time: 0, depth: 0 }, { time: 5, depth: 10 }],
-                dives: [{ waypoints: [{ time: 0, depth: 0 }, { time: 10, depth: 30 }] }]
-            };
+        test('returns empty for missing dives', () => {
+            const setup = {};
             const waypoints = getDiveSetupWaypoints(setup);
-            expect(waypoints[1].depth).toBe(30);
+            expect(waypoints).toEqual([]);
         });
     });
 
@@ -259,16 +263,6 @@ describe('diveSetup', () => {
 
         test('returns default 60 if not set', () => {
             expect(getSurfaceInterval({})).toBe(60);
-        });
-    });
-
-    describe('getN2Fraction', () => {
-        test('returns N2 fraction from gas mix', () => {
-            expect(getN2Fraction({ gasMix: { n2: 0.68 } })).toBe(0.68);
-        });
-
-        test('returns default 0.79 if not set', () => {
-            expect(getN2Fraction({})).toBe(0.79);
         });
     });
 
@@ -349,8 +343,8 @@ describe('diveSetup', () => {
         test('returns gases array if present', () => {
             const setup = {
                 gases: [
-                    { id: 'bottom', name: 'EAN32', o2: 0.32, n2: 0.68, he: 0 },
-                    { id: 'deco', name: 'EAN50', o2: 0.50, n2: 0.50, he: 0 }
+                    { id: 'bottom', name: 'EAN32', o2: 0.32, n2: 0.68, he: 0, cylinderVolume: 12, startPressure: 200 },
+                    { id: 'deco', name: 'EAN50', o2: 0.50, n2: 0.50, he: 0, cylinderVolume: 7, startPressure: 200 }
                 ]
             };
             const gases = getGases(setup);
@@ -359,21 +353,19 @@ describe('diveSetup', () => {
             expect(gases[1].name).toBe('EAN50');
         });
 
-        test('converts single gasMix to gases array', () => {
-            const setup = {
-                gasMix: { name: 'Air', o2: 0.21, n2: 0.79, he: 0 }
-            };
-            const gases = getGases(setup);
-            expect(gases.length).toBe(1);
-            expect(gases[0].name).toBe('Air');
-        });
-
         test('returns default air if no gases', () => {
             const setup = {};
             const gases = getGases(setup);
             expect(gases.length).toBe(1);
             expect(gases[0].o2).toBe(0.21);
             expect(gases[0].n2).toBe(0.79);
+        });
+
+        test('gases have cylinder info', () => {
+            const setup = getDefaultSetup();
+            const gases = getGases(setup);
+            expect(gases[0].cylinderVolume).toBe(12);
+            expect(gases[0].startPressure).toBe(200);
         });
     });
 

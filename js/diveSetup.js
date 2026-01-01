@@ -20,27 +20,91 @@ let cachedSetup = null;
 export const GAS_SWITCH_TIME = 3;
 
 /**
- * Predefined gas mixes commonly used in diving
- * Each gas has: name, o2 (oxygen fraction), n2 (nitrogen fraction), he (helium fraction)
+ * Bottom gases - suitable for descent and bottom time
+ * Larger MOD, used with back-mount cylinders
  */
-export const PREDEFINED_GASES = [
+export const BOTTOM_GASES = [
     { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 },
     { id: 'ean32', name: 'Nitrox 32 (EAN32)', o2: 0.32, n2: 0.68, he: 0 },
     { id: 'ean36', name: 'Nitrox 36 (EAN36)', o2: 0.36, n2: 0.64, he: 0 },
-    { id: 'ean50', name: 'Nitrox 50 (EAN50)', o2: 0.50, n2: 0.50, he: 0 },
     { id: 'tx21_35', name: 'Trimix 21/35', o2: 0.21, n2: 0.44, he: 0.35 },
     { id: 'tx18_45', name: 'Trimix 18/45', o2: 0.18, n2: 0.37, he: 0.45 },
-    { id: 'tx10_70', name: 'Trimix 10/70', o2: 0.10, n2: 0.20, he: 0.70 },
+    { id: 'tx10_70', name: 'Trimix 10/70', o2: 0.10, n2: 0.20, he: 0.70 }
+];
+
+/**
+ * Deco gases - high O2 for accelerated decompression
+ * Shallow MOD, used with stage cylinders
+ */
+export const DECO_GASES = [
+    { id: 'ean50', name: 'Nitrox 50 (EAN50)', o2: 0.50, n2: 0.50, he: 0 },
+    { id: 'ean80', name: 'Nitrox 80 (EAN80)', o2: 0.80, n2: 0.20, he: 0 },
     { id: 'o2', name: 'Pure Oxygen (100%)', o2: 1.0, n2: 0, he: 0 }
 ];
 
 /**
- * Get a predefined gas by ID
+ * All predefined gases (combined for backward compatibility)
+ */
+export const PREDEFINED_GASES = [...BOTTOM_GASES, ...DECO_GASES];
+
+/**
+ * Bottom/back-mount cylinder sizes (liters)
+ */
+export const BOTTOM_CYLINDERS = [
+    { value: 10, label: '10 L (Single)' },
+    { value: 12, label: '12 L (Single)' },
+    { value: 15, label: '15 L (Single)' },
+    { value: 18, label: '18 L (Single)' },
+    { value: 14, label: '2×7 L (Doubles)' },
+    { value: 20, label: '2×10 L (Doubles)' },
+    { value: 24, label: '2×12 L (Doubles)' }
+];
+
+/**
+ * Stage/deco cylinder sizes (liters)
+ */
+export const STAGE_CYLINDERS = [
+    { value: 3, label: '3 L (Pony)' },
+    { value: 5.5, label: '5.5 L (AL40)' },
+    { value: 7, label: '7 L (AL50)' },
+    { value: 11, label: '11 L (AL80)' }
+];
+
+/**
+ * Default start pressure for cylinders (bar)
+ */
+export const DEFAULT_START_PRESSURE = 200;
+
+/**
+ * Default reserve pressure (bar)
+ */
+export const DEFAULT_RESERVE_PRESSURE = 50;
+
+/**
+ * Get a predefined gas by ID (searches both bottom and deco gases)
  * @param {string} id - Gas ID (e.g., 'air', 'ean32')
  * @returns {Object|null} Gas object or null if not found
  */
 export function getPredefinedGas(id) {
     return PREDEFINED_GASES.find(g => g.id === id) || null;
+}
+
+/**
+ * Get a bottom gas by ID
+ * @param {string} id - Gas ID
+ * @returns {Object|null} Gas object or null if not found
+ */
+export function getBottomGas(id) {
+    return BOTTOM_GASES.find(g => g.id === id) || null;
+}
+
+/**
+ * Get a deco gas by ID
+ * @param {string} id - Gas ID
+ * @returns {Object|null} Gas object or null if not found
+ */
+export function getDecoGas(id) {
+    return DECO_GASES.find(g => g.id === id) || null;
 }
 
 /**
@@ -83,29 +147,39 @@ export function getDefaultSetup() {
     return {
         name: "Example Decompression Dive",
         description: "A 40m dive with planned decompression stops.",
-        gasMix: {
-            name: "Air",
-            o2: 0.21,
-            n2: 0.79,
-            he: 0
-        },
+        gases: [
+            {
+                id: 'bottom',
+                name: 'Air',
+                o2: 0.21,
+                n2: 0.79,
+                he: 0,
+                cylinderVolume: 12,
+                startPressure: 200
+            }
+        ],
+        reservePressure: 50,
         surfaceInterval: 60,
         units: {
             depth: "meters",
             time: "minutes",
             pressure: "bar"
         },
-        waypoints: [
-            { time: 0, depth: 0 },
-            { time: 2, depth: 40 },
-            { time: 22, depth: 40 },
-            { time: 26, depth: 9 },
-            { time: 29, depth: 9 },
-            { time: 30, depth: 6 },
-            { time: 35, depth: 6 },
-            { time: 36, depth: 3 },
-            { time: 41, depth: 3 },
-            { time: 42, depth: 0 }
+        dives: [
+            {
+                waypoints: [
+                    { time: 0, depth: 0 },
+                    { time: 2, depth: 40 },
+                    { time: 22, depth: 40 },
+                    { time: 26, depth: 9 },
+                    { time: 29, depth: 9 },
+                    { time: 30, depth: 6 },
+                    { time: 35, depth: 6 },
+                    { time: 36, depth: 3 },
+                    { time: 41, depth: 3 },
+                    { time: 42, depth: 0 }
+                ]
+            }
         ]
     };
 }
@@ -156,7 +230,7 @@ export function generateSimpleProfile(maxDepth, bottomTime) {
 
 /**
  * Extend dive setup with custom overrides
- * Performs deep merge for nested objects like gasMix and units
+ * Performs deep merge for nested objects like units
  * @param {Object} baseSetup - Base dive setup
  * @param {Object} overrides - Override values
  * @returns {Object} Merged dive setup
@@ -165,11 +239,11 @@ export function extendDiveSetup(baseSetup, overrides) {
     const merged = { ...baseSetup };
     
     for (const key of Object.keys(overrides)) {
-        if (key === 'gasMix' || key === 'units') {
+        if (key === 'units') {
             // Deep merge for nested objects
             merged[key] = { ...baseSetup[key], ...overrides[key] };
-        } else if (key === 'waypoints') {
-            // Replace waypoints entirely if provided
+        } else if (key === 'gases' || key === 'dives') {
+            // Replace arrays entirely if provided
             merged[key] = [...overrides[key]];
         } else {
             merged[key] = overrides[key];
@@ -217,28 +291,16 @@ function mergeDivesIntoTimeline(dives) {
 }
 
 /**
- * Get waypoints from dive setup (convenience function for backward compatibility)
- * Handles both legacy single-waypoints format and new multi-dive format
- * @param {Object} setup - Dive setup object
- * @returns {Array<{time: number, depth: number}>} Waypoints array
+ * Get waypoints from dive setup, merging multiple dives into single timeline
+ * @param {Object} setup - Dive setup object with dives array
+ * @returns {Array<{time: number, depth: number, gasId?: string}>} Waypoints array
  */
 export function getDiveSetupWaypoints(setup) {
-    // New multi-dive format
-    if (setup.dives && setup.dives.length > 0) {
-        return mergeDivesIntoTimeline(setup.dives);
+    if (!setup.dives || setup.dives.length === 0) {
+        console.warn('Dive setup missing dives array, returning empty waypoints');
+        return [];
     }
-    
-    // Legacy single waypoints format - preserve gasId if present
-    return setup.waypoints.map(wp => {
-        const result = {
-            time: wp.time,
-            depth: wp.depth
-        };
-        if (wp.gasId) {
-            result.gasId = wp.gasId;
-        }
-        return result;
-    });
+    return mergeDivesIntoTimeline(setup.dives);
 }
 
 /**
@@ -248,42 +310,6 @@ export function getDiveSetupWaypoints(setup) {
  */
 export function getSurfaceInterval(setup) {
     return setup.surfaceInterval || 60;
-}
-
-/**
- * Get N2 fraction from gas mix
- * @param {Object} setup - Dive setup object
- * @returns {number} N2 fraction (0-1)
- */
-export function getN2Fraction(setup) {
-    return setup.gasMix?.n2 || 0.79;
-}
-
-/**
- * Get O2 fraction from gas mix
- * @param {Object} setup - Dive setup object
- * @returns {number} O2 fraction (0-1)
- */
-export function getO2Fraction(setup) {
-    return setup.gasMix?.o2 || 0.21;
-}
-
-/**
- * Get He fraction from gas mix
- * @param {Object} setup - Dive setup object
- * @returns {number} He fraction (0-1)
- */
-export function getHeFraction(setup) {
-    return setup.gasMix?.he || 0;
-}
-
-/**
- * Get gas mix object from setup
- * @param {Object} setup - Dive setup object
- * @returns {Object} Gas mix object with name, o2, n2, he
- */
-export function getGasMix(setup) {
-    return setup.gasMix || { name: 'Air', o2: 0.21, n2: 0.79, he: 0 };
 }
 
 /**
@@ -323,12 +349,31 @@ export function calculatePartialPressure(depth, gasFraction) {
 }
 
 /**
- * Get cylinder volume in liters
+ * Get cylinder volume in liters for a specific gas
+ * @param {Object} gas - Gas object with cylinderVolume
+ * @returns {number} Cylinder volume in liters
+ */
+export function getGasCylinderVolume(gas) {
+    return gas?.cylinderVolume || 12;
+}
+
+/**
+ * Get total bottom gas cylinder volume (for backward compatibility)
  * @param {Object} setup - Dive setup object
  * @returns {number} Cylinder volume in liters
  */
 export function getCylinderVolume(setup) {
-    return setup.cylinderVolume || 12;
+    const gases = getGases(setup);
+    return gases[0]?.cylinderVolume || 12;
+}
+
+/**
+ * Get start pressure for a gas
+ * @param {Object} gas - Gas object with startPressure
+ * @returns {number} Start pressure in bar
+ */
+export function getGasStartPressure(gas) {
+    return gas?.startPressure || DEFAULT_START_PRESSURE;
 }
 
 /**
@@ -337,7 +382,7 @@ export function getCylinderVolume(setup) {
  * @returns {number} Reserve pressure in bar
  */
 export function getReservePressure(setup) {
-    return setup.reservePressure || 50;
+    return setup.reservePressure || DEFAULT_RESERVE_PRESSURE;
 }
 
 // ============================================================================
@@ -346,25 +391,44 @@ export function getReservePressure(setup) {
 
 /**
  * Get the list of gases for a dive setup
- * Handles backward compatibility with single gasMix format
+ * Each gas has: id, name, o2, n2, he, cylinderVolume, startPressure
  * @param {Object} setup - Dive setup object
- * @returns {Array<Object>} Array of gas objects with id, name, o2, n2, he
+ * @returns {Array<Object>} Array of gas objects
  */
 export function getGases(setup) {
-    // New multi-gas format
-    if (setup.gases && setup.gases.length > 0) {
-        return setup.gases;
+    if (!setup.gases || setup.gases.length === 0) {
+        // Return default air if no gases defined
+        return [{
+            id: 'bottom',
+            name: 'Air',
+            o2: 0.21,
+            n2: 0.79,
+            he: 0,
+            cylinderVolume: 12,
+            startPressure: DEFAULT_START_PRESSURE
+        }];
     }
-    
-    // Backward compatibility: convert single gasMix to gases array
-    const gasMix = setup.gasMix || { name: 'Air', o2: 0.21, n2: 0.79, he: 0 };
-    return [{
-        id: 'bottom',
-        name: gasMix.name,
-        o2: gasMix.o2,
-        n2: gasMix.n2,
-        he: gasMix.he || 0
-    }];
+    return setup.gases;
+}
+
+/**
+ * Get the bottom gas (first gas in the list)
+ * @param {Object} setup - Dive setup object
+ * @returns {Object} Bottom gas object
+ */
+export function getBottomGasFromSetup(setup) {
+    const gases = getGases(setup);
+    return gases[0];
+}
+
+/**
+ * Get deco gases (all gases except the first one)
+ * @param {Object} setup - Dive setup object
+ * @returns {Array<Object>} Array of deco gas objects
+ */
+export function getDecoGasesFromSetup(setup) {
+    const gases = getGases(setup);
+    return gases.slice(1);
 }
 
 /**
@@ -607,27 +671,27 @@ export function insertGasSwitchWaypoints(waypoints, gases, ascentRate = 10, maxP
 }
 
 /**
- * Normalize a dive setup to the new multi-gas format
- * Converts legacy single gasMix to gases array
- * @param {Object} setup - Dive setup object
- * @returns {Object} Normalized setup with gases array
+ * Create a gas object with cylinder info
+ * @param {string} id - Gas ID
+ * @param {string} presetId - Predefined gas ID (e.g., 'air', 'ean50')
+ * @param {number} cylinderVolume - Cylinder volume in liters
+ * @param {number} startPressure - Start pressure in bar
+ * @returns {Object} Complete gas object
  */
-export function normalizeSetupForMultiGas(setup) {
-    if (setup.gases && setup.gases.length > 0) {
-        return setup; // Already normalized
+export function createGasWithCylinder(id, presetId, cylinderVolume, startPressure = DEFAULT_START_PRESSURE) {
+    const preset = getPredefinedGas(presetId);
+    if (!preset) {
+        console.warn(`Unknown gas preset: ${presetId}, using air`);
+        return createGasWithCylinder(id, 'air', cylinderVolume, startPressure);
     }
-    
-    const gasMix = setup.gasMix || { name: 'Air', o2: 0.21, n2: 0.79, he: 0 };
-    
     return {
-        ...setup,
-        gases: [{
-            id: 'bottom',
-            name: gasMix.name,
-            o2: gasMix.o2,
-            n2: gasMix.n2,
-            he: gasMix.he || 0
-        }]
+        id,
+        name: preset.name,
+        o2: preset.o2,
+        n2: preset.n2,
+        he: preset.he,
+        cylinderVolume,
+        startPressure
     };
 }
 
@@ -690,15 +754,16 @@ export function generateProfileName(setup) {
  */
 export function formatDiveSetupSummary(setup) {
     const waypoints = getDiveSetupWaypoints(setup);
-    const maxDepth = Math.max(...waypoints.map(wp => wp.depth));
+    const maxDepth = waypoints.length > 0 ? Math.max(...waypoints.map(wp => wp.depth)) : 0;
     const totalTime = waypoints[waypoints.length - 1]?.time || 0;
-    const gasMix = setup.gasMix?.name || 'Air';
+    const gases = getGases(setup);
+    const gasNames = gases.map(g => g.name).join(' + ');
     
     // Check if multi-dive
     const diveCount = setup.dives?.length || 1;
     const diveInfo = diveCount > 1 ? ` (${diveCount} dives)` : '';
     
-    return `${setup.name}: ${maxDepth}m max depth, ${totalTime} min total, ${gasMix}${diveInfo}`;
+    return `${setup.name}: ${maxDepth}m max depth, ${totalTime} min total, ${gasNames}${diveInfo}`;
 }
 /**
  * NOAA CNS Oxygen Toxicity Limits

@@ -1380,7 +1380,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.0.48";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.0.52";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* Responsive */
@@ -2140,6 +2140,69 @@ textarea.form-input {
 .stats-summary .stat-value {
     font-size: 1rem;
     font-weight: 600;
+}
+
+/* Multi-Gas Tank Summary */
+.gas-tanks-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    width: 100%;
+    margin-bottom: 0.5rem;
+}
+
+.tank-summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.75rem 1rem;
+    background: var(--bg-light);
+    border-radius: var(--radius);
+    border-left: 4px solid var(--accent-color);
+    min-width: 180px;
+    flex: 1;
+}
+
+.tank-summary-item.ok {
+    border-left-color: #27ae60;
+}
+
+.tank-summary-item.warning {
+    border-left-color: #f39c12;
+    background: rgba(243, 156, 18, 0.1);
+}
+
+.tank-summary-item.danger {
+    border-left-color: #e74c3c;
+    background: rgba(231, 76, 60, 0.1);
+}
+
+.tank-summary-item .tank-name {
+    font-weight: 600;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.tank-summary-item .tank-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.tank-summary-item .tank-remaining {
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.tank-summary-item.warning .tank-remaining {
+    color: #f39c12;
+}
+
+.tank-summary-item.danger .tank-remaining {
+    color: #e74c3c;
 }
 
 .surface-interval-control {

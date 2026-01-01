@@ -1,0 +1,1073 @@
+                           Decompression Theory
+             An Explanation of Professor A.A. Buehlmann's ZH-L16 Algorithm
+
+                                                                                    by Paul Chapman
+
+             The following is a summary of the
+             decompression algorithm described
+             by Dr A.A. Buehlmann in the fourth           Note to new divers and potential
+             edition of his book Tauchmedizin (           new divers:
+             diving medicine ) published in 1995 (
+             only in German. ) The book contains          This information is presented for
+             a considerable amount of other               general interest. Don't be scared off
+             information and is published by              by what you see here - you don't
+             Springer-Verlag ISBN 3-540-58970­            need to learn any of this to become a
+             8. Rumor has it that at the time of          safe and competent scuba diver. You
+             writing ( November 1999 ) an English         will however need to understand
+             translation is being prepared for            dive planning.
+             publishing, so hopefully, in due
+             course, this document will become
+             redundant.
+
+             The algorithm is simply a "recipe" for modeling the behavior of inert gases, which
+             diffuse in and out of our body tissues when breathed under varying pressures. The
+             intention is that if the recipe models the actual processes in our bodies accurately
+             enough, it can be used to plan dives ( and other pressure exposures ) with a view to
+             avoiding decompression sickness.
+
+             It is important to realize that the model is entirely arbitrary in the sense that it in no
+             way represents the actual physical processes which are taking place, it simply attempt
+             to model the real-life results mathematically. This article is intended mainly as a
+                                               description of the algorithm, not as a complete
+                                               description of decompression physiology and
+                                               therefore mentions only physiology principles relevant
+                                               to the algorithm.
+
+                                             Background
+
+                                            Scottish scientist John Scott Haldane ( 1860-1936 )
+                                            is generally considered the founding father of modern
+                                            decompression theory. In the last century ( 1896-1907
+                                            ) Haldane experimented on goats in an attempt to find
+                                            a solution to the problem of caisson disease,
+                                            experienced by men working in pressurized bridge
+                                            and tunnel construction areas. Research suggested that
+             gases breathed under pressure by the workers were diffusing into the body's tissues,
+             and that when these gases came out in the form of bubbles in the body, the workers
+             got caisson disease, or what we now call decompression sickness, or the bends.
+
+
+
+
+PDF created with pdfFactory Pro trial version www.pdffactory.com
+             Haldane's work led him to consider the body as a group of tissues in parallel. This
+             meant the tissues were all exposed simultaneously to the breathing gases at ambient
+             pressure, but able to react to them in their own individual ways. No gas transfer from
+             one tissue to another was considered. This principle is still in use and is the basis of
+             many, but not all, current decompression models. The model used in the production
+             of the British Sub Aqua Club BSAC-88 dive tables, for example, used a single block
+             of tissue along which gas diffused, while the Canadian DCIEM model uses a range
+             of tissues, but arranged in series - only the first of a range of tissues is exposed to the
+             ambient pressure and gas diffusion takes place from one tissue to the next.
+
+             Haldane also noticed that the body could tolerate a certain amount of excess gas with
+             no apparent ill effects. Caisson workers pressurized at two atmospheres ( 33 feet )
+             experienced no problems, no matter how long they worked. These two ideas, gas
+             traveling though the body tissues and the theory of a tolerable overpressure formed
+             the basis of Haldane's work. The tricky bit was to model exactly how the gas moved
+             through the body and exactly what amount of overpressure was acceptable and
+             Haldane actually achieved this with considerable success.
+
+             Others developed Haldane's ideas over the years. In the mid-1960's US Navy Medical
+             Corps Captain Robert Workman refined the idea of allowable overpressure in tissues,
+             discounting oxygen and considering only inert gases in the breathing mix, such as
+             nitrogen and helium. Workman's maximum allowable overpressure values ( what he
+             called M-values ) were more complex than Haldane's, varying with depth and with
+             tissue type.
+
+             At around the same time Professor Albert Buehlmann was working on similar
+             research at the University Hospital in Zurich. Buehlmann's research spanned over 30
+             years and was published as a book, Dekompression - Dekompressionskrankheit in
+             1983. This book, published in English in 1984, made fairly comprehensive
+             instructions on how to calculate decompression available to a wide audience for the
+             first time and therefore Buehlmann's work became the basis for many dive tables,
+             computers and desktop decompression programs. Three other editions were
+             published, the last in 1995, on which this document is based.
+
+             Basic Ideas
+
+             Due to differences in perfusion ( blood flow ) and diffusion ( rate of gas flow from
+             one place to another ) and other factors, the inert gases we breathe are dissolved into
+             our different body tissues at different speeds. Tissues with high rates of diffusion,
+             which have a good blood supply, build up a gas load more quickly. The blood itself,
+             major organs, and central nervous system fall under this heading and we call them
+             fast tissues. Other tissues build up a gas load more slowly. Progressively slower
+             tissues include muscle, skin, fat and bone.
+
+             Many tissues, through good blood supply, are exposed almost immediately to higher
+             inert gas pressures, while others have to wait for gas to reach them by diffusion from
+             other surrounding tissues. In this sense the body tissues are both serial and parallel.
+             Although a fast tissue will build up a higher inert gas load or on-gas more quickly
+             when the pressure increases, it will also be able to get rid of that gas load more
+             quickly than a slower tissue when the pressure drops, a process we call off-gassing. It
+
+
+
+
+PDF created with pdfFactory Pro trial version www.pdffactory.com
+                                                                         is assumed that tissues on-gas
+                                                                         and off-gas according to the
+                                                                         theory of half-times.
+
+                                                                         Many natural phenomena are
+                                                                         described this way, including
+                                                                         radioactive decay. The idea is
+                                                                         that when a tissue is exposed
+                                                                         to a higher inert gas pressure,
+                                                                         gas will flow into that tissue.
+                                                                         After the half-time the
+                                                                         pressure of gas in the tissue
+                                                                         will be half way to equaling
+                                                                         the pressure of the gas
+                                                                         outside. After a second half­
+             time, the gas pressure in the tissue will have risen by half of the remaining difference
+             ( i.e. by a further quarter, ) making it 75%, or three-quarters, of the way to equaling
+             the external gas pressure. After a third half-time, the rise is 12.5% ( 87.5% total ) and
+             so on. By this method the pressure in the tissue never quite reaches the same level as
+             the surrounding gas, but after 6 half-times ( equal to 98.4%, ) it is close enough and
+             we say the tissue is saturated.
+
+             At this point gas will diffuse into the tissue at the same rate that it diffuses out and the
+             tissue experiences no further overall change in gas load. If the pressure then increases
+             ( the diver goes deeper, ) the tissue will begin to on-gas again. If the pressure reduces,
+             the tissue will off-gas, again following the half-time principle. After six half-times,
+             the tissue will again be equilibrated with its surroundings. As well as differing for
+             each tissue, half-times will vary for different gases, since they diffuse at different
+             rates. For real human tissues the nitrogen half-times will vary from a few seconds (
+             blood ) to many hours. For helium, half-times are thought to be about 2.65 times
+             faster than nitrogen, since helium diffuses more quickly.
+
+             If pressure is reduced by too much on a tissue, the gas will be unable to follow the
+             diffusion route, via the bloodstream, back to the lungs and will form bubbles in the
+             actual tissue, leading to many of the symptoms that we know as decompression
+             sickness. So how much pressure reduction is too much? It has been shown by
+             experimentation that faster tissues like blood can tolerate a greater drop in pressure
+             than slower tissues, without bubble formation. One of the challenges to Buehlmann in
+             formulating his algorithm was to quantify this difference in a mathematical formula
+             that could be used to help calculate decompression profiles. We'll look at his solution
+             in a moment.
+
+             The Algorithm
+
+             For his ZH-L16 algorithm Buehlmann chose to split the body into 16 tissues and
+             give them a range of half-times, from several minutes to several hours. It is important
+             to remember that these tissues do not represent any specific real tissues in the body
+             and the half-times are simply chosen to give a representative spread of likely values.
+             They do not represent actual tissues, or the actual half-times for any particular tissue.
+             For this reason the often-used description of the 16 sections as tissues is confusing
+
+
+
+
+PDF created with pdfFactory Pro trial version www.pdffactory.com
+             and they will be referred to in future as compartments. Buehlmann named his
+             algorithm from Zurich ( ZH ), limits ( L ) and the number of M-value sets ( 16 ).
+
+             When exposed to pressure, each compartment on-gasses according to its given half
+             time, so at any point we can calculate how much inert gas pressure exists in each
+             compartment. There is a standard mathematical form for half-time calculation,
+             Buehlmann made some additions to it to make a complete before/after formula for
+             the inert gas pressure in any given compartment after any given exposure time. Here
+             is the formula as published in Tauchmedizin, the names of the constants have been
+             changed to make them more understandable in English, but the formula is the same:
+
+                           Pcomp = Pbegin + [ Pgas - Pbegin ] x [ 1 - 2 ^ ( - te / tht ) ]
+
+             where:
+
+             Pbegin = Inert gas pressure in the compartment before the exposure time ( ATM )
+             Pcomp = Inert gas pressure in the compartment after the exposure time ( ATM )
+             Pgas = Inert gas pressure in the mixture being breathed ( ATM )
+             te     = Length of the exposure time ( minutes )
+             tht    = Half time of the compartment ( minutes )
+
+                      and ^ stands for exponentiation
+
+                      1 ATM = 14.7 psia ( 1 Atmosphere, or sea level standard pressure )
+
+
+
+
+                Example:
+
+                A diver descends from the surface to 100 feet on air and waits there
+                ten minutes. The partial pressure of nitrogen in the breathing gas Pgas
+                is 4 x 0.79 = 3.16 ATM. Let's pick a compartment, say number five.
+                The nitrogen half-time for compartment five tht is 27 minutes. The
+                nitrogen partial pressure in compartment five on the surface Pbegin is
+                0.79 ATM, assuming the diver hasn't already been diving or subject to
+                any altitude changes. The length of the exposure te is ten minutes.
+                Plugging these values into the equation, we get:
+
+                Pcomp = 0.79 + [ 3.16 - 0.79 ] x [ 1 - 2 ^ ( - 10 / 27 ) ]
+                      = 1.33 ATM
+
+                So the partial pressure of nitrogen in compartment five of our diver
+                would be 1.33 ATM. In reality, the diver couldn't have made an
+                instantaneous descent to 100 feet and would have been taking on gas
+                during the descent as well. We could average the pressure during the
+                descent and repeat the above calculation to get an idea of the extra gas,
+                or simply repeat the calculation many times at short intervals during
+
+
+
+
+PDF created with pdfFactory Pro trial version www.pdffactory.com
+                 the descent. A computer makes this easy.
+
+                 You can repeat this calculation, of course, for all the other
+                 compartments, you just need to know the half-times, ( See Table 1 )
+                 Again, a computer is the ideal tool for this job. The beauty of the
+                 equation is its versatility. Absolute pressure ( not depth ) is used
+                 everywhere, as is the actual partial pressure of the inert gas being
+                 breathed, so we can ascend or descend to/from any pressure, breathe
+                 any gas, change gases, go flying after diving, stay on the surface, do a
+                 repetitive dive or anything we can think of.
+
+
+             Now we know the inert gas pressure in any given compartment at any time, we need
+             to know the depth ( or actually the pressure ) that we can ascend to safely. We
+             already mentioned that this would vary for each compartment, with faster
+             compartments tolerating a greater pressure drop than slower ones. Buehlmann
+             decided that the amount of pressure drop that a certain compartment could tolerate
+             without bubble formation could be mathematically linked to its half-time. He first
+             derived two factors, which he called "a" and "b" from the half-time ( so each
+             compartment has its own pair of a and b values ), then he used these factors to
+             calculate the pressure that we could ascend to. The a and b modifiers are obtained
+             from the following formulas:
+
+             a    = 2 x ( tht ^ -1/3 )
+
+             b    = 1.005 - ( tht ^ -1/2 )
+
+             where tht is the half-time for the compartment.
+
+
+                 For example, the half-time for compartment 5 is 27 minutes, so
+
+                 a = 2 x ( 27 ^ -1/3 )
+                   = 0.6667
+
+                 b = 1.005 - ( 27^ -1/2 )
+                   = 0.8125
+
+
+             Remember that the half-times vary for different gases, so each gas will have its own
+             set of half-times, a and b values. ( see Table 1 )
+
+             Now that we know a and b, we can use a formula to calculate the pressure that we
+             can ascend to for each compartment. Here is the formula Buehlmann chose to use:
+
+                                             Pambtol = ( Pcomp - a ) x b
+
+             where:
+
+
+
+
+PDF created with pdfFactory Pro trial version www.pdffactory.com
+             Pcomp = the inert gas pressure in the compartment ( ATM )
+             Pambtol = is the pressure you could drop to ( ATM )
+
+             and a and b are the a and b values for that compartment and the gas in question ( See
+             Table 1 )
+
+
+                Continuing the example above, we found that a exposure for ten
+                minutes to 4 ATM pressure ( 100 feet depth ), led to a nitrogen
+                pressure of 1.33 ATM in compartment 5. The a and b values for
+                compartment 5 were 0.6667 and 0.8125 respectively. Plugging these
+                into the above gives:
+
+                Pambtol = ( 1.33 - 0.6667 ) x 0.8125
+                        = 0.54 ATM
+
+
+             Pressure at sea level is taken to be 1 ATM and the above equation shows us that we
+             can actually ascend to a pressure lower than that ( i.e. above the surface. ) In other
+             words, according to the model, after 10 minutes at 100 feet ( 4 ATM ) we could
+             ascend straight to the surface with no bubble formation in compartment 5 assuming
+             we were breathing air. This is a "no-stop" dive, as we'd expect from looking at our
+             dive tables !
+
+             If we tried our 100 foot exposure for 50 minutes, we would find the nitrogen partial
+             pressure in compartment five was 2.5 ATM ( from the first equation ) and our
+             pressure could drop to 1.49 ATM. This pressure is just under 16 feet depth, so this is
+             the maximum depth that compartment 5 would allow us to ascend to after 50 minutes
+             at 100 feet.
+
+
+                Using the same depth and 50 minutes, if we repeat this method for all
+                the other compartments, we'll find different values, for example:
+
+                Compartment 3: Half-time = 12.5 minutes
+
+                a       = 0.8618
+                b       = 0.7222
+                Pcomp = 3.01 ATM
+                Pambtol = ( 3.01 - 0.8618 ) x 0.7222
+                        = 1.55 ATM ( or approximately 20 feet depth )
+
+                Compartment 10: Half-time = 146 minutes
+
+                a          = 0.3798
+                b          = 0.9222
+                Pcomp      = 1.29 ATM
+
+
+
+
+PDF created with pdfFactory Pro trial version www.pdffactory.com
+                Pambtol = ( 1.29 - 0.3798 ) x 0.9222
+                        = 0.84 ATM ( still above the surface )
+
+
+             Once we've repeated this for each compartment, we cannot ascend any shallower than
+             the deepest of the tolerated depths. In our three-compartment example, this is 20 feet.
+             This is called our decompression ceiling and the compartment concerned (
+             compartment 3 ) is said to "control" the decompression at this point. In general, faster
+             compartments will control short, shallow dives. Long shallow dives and short, deep
+             dives will see a shift towards the middle compartments as controllers while long,
+             deep dives will be controlled by the slower compartments.
+
+             The controlling compartment will often shift during a decompression. For example, a
+             short deep exposure may see the initial ceiling limited by the faster compartments,
+             but as these off-gas quickly the control shifts to the slower, mid-range,
+             compartments. As you can imagine, calculating the gas loads for a sequence of
+             several dives of differing depths and durations is quite involved. Although the math is
+             actually straightforward, as we've seen, the number of calculations and constant
+             shifting of the controlling compartment and its associated decompression ceiling
+             make it a great job for a computer.
+
+             If we were actually planning a decompression for our 100 foot, 50 minute dive, we
+             could ascend right up to the 20 foot ceiling, but it is more usual to choose a
+             convenient interval for decompression stops, say every 10 feet, then you'd ascend to
+             the nearest multiple of 10 feet that is below the decompression ceiling. In this
+             example that is 20 feet. At this point the inert gas pressure in the more highly loaded
+             compartments will be above the inert gas pressure in the breathing mix and those
+             compartments will start to off-gas. Other compartments may have inert gas pressures
+             lower than the breathing gas and these compartments will still be on-gassing.
+
+             We start the half-time calculations again. The formula is identical taking reductions
+             in pressure ( ascents ) into account automatically. During the ascent the inert gas
+             partial pressure being breathed Pgas drops, whereas the pressure in the compartment
+             Pbegin hasn't caught up yet, so the [ Pgas - Pbegin ] part of the equation becomes
+             negative. Don't forget the driving force for the gas diffusion ( in this model, at least )
+             is the difference between the inert gas pressure in the compartment and the ambient
+             partial pressure of the inert gas.
+
+             At 20 feet the PPN2 ( partial pressure of Nitrogen ) in air is 1.26 ATM. In our
+             example, the nitrogen pressure in compartments 3 and 5 was 3.01 ATM and 1.33
+             ATM respectively. These are both higher than the 1.26 ATM ambient PPN2, so
+             compartments 3 and 5 will off-gas at this decompression stop. The PPN2 in
+             compartment 10 however has only reached 0.29 ATM. This compartment will
+             continue to on-gas at 20 feet depth, although at a slower rate than before because the
+             ambient PPN2 is lower than at 100 feet.
+
+             The ceiling will gradually get shallower as the compartments off-gas, eventually
+             reaching our chosen next stop depth of 10 feet. At this point we ascend to this depth
+
+
+
+
+PDF created with pdfFactory Pro trial version www.pdffactory.com
+             and start the process again, until we reach a point where the ambient pressure
+             Pambtol for all compartments is less than, or equal to, one and we can reach the
+             surface.
+
+             That's all there is to it. Calculations can continue while you're on the surface (
+             compartments continue to off-gas ), so we can allow for a surface interval between
+             dives and when we go down for our next dive some compartments may still be
+             partially loaded. This loading will automatically be added to any additional gas
+             gained during the dive, adjusting the decompression accordingly.
+
+             Flying or ascending to altitude is just a matter of ascending through the atmosphere.
+             The calculations are the same, it is just that the pressure changes may take thousands
+             of feet of air as opposed to just a few feet of water. If we know the cabin pressure in
+             an airliner ( say 8000 feet ) we can use this as our ceiling and carry on calculating
+             until we can reach it ... this is our "time to fly".
+
+             The formulas use inert gas partial pressure throughout, so diving with Nitrox is
+             automatically accommodated. Likewise Trimix ( oxygen, nitrogen and helium mixes
+             ) and alternative decompression gases ( usually with lower proportions of inert gas )
+             can all be accommodated within the same basic algorithm as long as we know the
+             half times and the a and b values for the gases. Where multiple inert gases are used,
+             an intermediate set of a and b values are calculated based on the gas proportions.
+
+
+
+             Table 1
+
+                           ZH-L16A Half-times, "a" and "b" values for Nitrogen and Helium
+
+              Compartment                     Nitrogen                         Helium
+
+
+                                    Half-time a Value b Value Half-time a Value b Value
+                       1              4.0     1.2599 0.5050     1.5     1.7435 0.1911
+                       2               8.0      1.0000    0.6514       3.0       1.3838     0.4295
+                       3              12.5      0.8618    0.7222       4.7       1.1925     0.5446
+                       4              18.5      0.7562    0.7725       7.0       1.0465     0.6265
+                       5              27.0      0.6667    0.8125      10.2       0.9226     0.6917
+                       6              38.3      0.5933    0.8434      14.5       0.8211     0.7420
+                       7              54.3      0.5282    0.8693      20.5       0.7309     0.7841
+                       8              77.0      0.4701    0.8910      29.1       0.6506     0.8195
+                       9              109.0     0.4187    0.9092      41.1       0.5794     0.8491
+                       10             146.0     0.3798    0.9222      55.1       0.5256     0.8703
+                       11             187.0     0.3497    0.9319      70.6       0.4840     0.8860
+                       12             239.0     0.3223    0.9403      90.2       0.4460     0.8997
+                       13             305.0     0.2971    0.9477      115.1      0.4112     0.9118
+
+
+
+
+PDF created with pdfFactory Pro trial version www.pdffactory.com
+                     14            390.0      0.2737     0.9544       147.2      0.3788     0.9226
+                     15            498.0      0.2523     0.9602       187.9      0.3492     0.9321
+                     16            635.0      0.2327     0.9653       239.6      0.3220     0.9404
+
+
+
+             Modifications for the Real World
+
+             Take note that all the above is to be read in the context of referring to the ZH-L16
+             model, not to our own bodies. Buehlmann carried out a considerable amount of actual
+             testing to validate the ZH-L16 algorithm, but only using nitrogen as the inert gas.
+             The half times for helium were derived from those for nitrogen, based on the
+             speculative idea that the relative diffusivity of the gases was all that mattered. Since
+             the a and b values are further derived from the half times, these also fall under the
+             heading of educated guesswork.
+
+             Sadly, Buehlmann died before he was able to put his theoretical figures for helium to
+             any extensive tests. It appears that Buehlmann's values for helium may be rather too
+             conservative, and for years the result has been that people have assumed that
+             decompressions from helium would be longer than from nitrogen, simply because
+             that was what the formula told us. In fact helium is generally a much more "deco­
+             friendly" gas than nitrogen, being less soluble in our tissues. The rapidly diffusing
+             gas is more prone to bubble formation, requiring control of ascent rates and
+             decompression stops that start deeper than nitrogen. The payback is shorter shallow
+             stops and a reduced overall time for decompression.
+
+             A huge number of factors affect inert gas absorption, elimination and our
+             susceptibility to decompression sickness. Some of these factors we know, some we
+             guess at and some, no doubt, remain to be discovered. Among the first two categories
+             are:
+
+                •   Repetitive, yo-yo, reverse and bounce dive profiles
+                •   Rapid ascents
+                •   Missed decompression stops
+                •   Heavy workloads
+                •   Exercise, or lack of, during decompression
+                •   Cold
+                •   Flying after diving
+                •   Poor physical conditioning
+                •   Inter-pulmonary shunts
+                •   Drug use (including alcohol)
+                •   Dehydration
+                •   Age
+
+             In an attempt to address some of these factors, Buehlmann suggested and made
+             several modifications to his algorithms. For dive table production, the "a" values
+             were altered to be a little more conservative, principally in the middle compartments,
+             resulting in a variation of the algorithm called ZH-L16B. Further variations to both
+             middle and upper "a" values are used in ZH-L16C, intended for use in dive
+
+
+
+
+PDF created with pdfFactory Pro trial version www.pdffactory.com
+             computers, where the exact depth and time tracking removed some of the natural
+             conservatism associated with table use. Attempts to include the effects of some of the
+             other predisposing factors mentioned above led to the ZH-L8 ADT "adaptive"
+             algorithm, implemented on the latest Aladdin dive computers.
+
+             Dive computers and planning programs for personal computers, typically implement
+             these modifications and/or variations of their own in an attempt to make the dive
+             profiles they generate more realistic, or more usually, just "more conservative".
+             Modifications include:
+
+                •   planning dives deep and/or longer than actual
+                •   further tweaking of the a and b values
+                •   limiting compartment over-pressure Pambtol to a percentage of the
+                    calculated value
+                •   changing the amount of inert gases by some factor
+                •   using longer half-times for the off-gassing phase of the profile
+                •   adding more compartments
+                •   and any number of other factors and combinations of factors.
+
+             It is interesting to note that the model clearly tells us that there is no such thing as a
+             "no-decompression" dive. We begin to on-gas immediately we descend. What we call
+             a no-decompression dive is really one where the ceiling is still above the surface. As
+             the dive goes on and the ceiling reaches the surface, we can factor in the ascent rate
+             and gain a few more minutes "no-decompression time".
+
+             Modern Ideas
+
+             The reality is that we will never get truly accurate decompression tables or
+             computers. The chaotic nature of our own physiology means a certain amount of
+             conservatism will be required. The best we can generally hope for are ones that work
+             most of the time, for most people. It is highly likely that current tables are much too
+             conservative for some individuals, while being overly liberal for others. As our
+             knowledge of decompression physiology improves, this holds out the hope of tables,
+             or more likely computer programs, tailored to some extent for the individual.
+             Organizations such as the Woodville Karst Plain Project, with a large database of
+             extreme dive exposures, and knowledgeable and committed team members, have
+             achieved great advances in this area.
+
+             From Doppler studies, we now know that bubbles form in divers after most dives.
+             Although causing no noticeable symptoms, gas elimination from these so-called
+             silent bubbles occurs differently from gas dissolved in the blood. A reduction in
+             ambient pressure will cause these bubbles to grow regardless of inert gas diffusion.
+             Buehlmann's algorithm assumes all gas is being eliminated in the dissolved phase (
+             i.e. dissolved in the tissues ) and does not take these factors into account. Bubble
+             mechanics formulae such as Bruce Weinke's Reduced Gradient Bubble Model
+             attempt to model gas elimination in the gas-phase ( bubbles ) as well as dissolved gas.
+
+             Finally, helium is becoming accepted as a more deco-friendly gas than nitrogen. As
+             well as the benefits of narcosis reduction, further experimentation holds out the
+             possibility of faster decompressions than were previously thought possible and will
+
+
+
+
+PDF created with pdfFactory Pro trial version www.pdffactory.com
+             probably include the use of helium in decompression gases as well as bottom mixes.
+             Helium is expensive, which has limited its use in sport diving, however rebreathers
+             may eventually become reliable and simple enough for the average scuba diver to
+             take advantage of helium mixtures economically and safely.
+
+             Further Reading
+
+             The Encyclopedia of Recreational Diving
+             PADI - ISBN 1-878663-02-X
+
+             As an introduction to recreational diving, it's hard to beat PADI's encyclopedia.
+             Chemistry, physics, physiology, equipment and the aquatic environment are
+             explained simply and clearly. Offers a great deal more than the information contained
+             in an open water diving course without getting too technical in its language. Recently
+             reprinted with more up-to-date information.
+
+             Diving Physiology in Plain English
+             Jolie Bookspan - Published by UHMS Inc - ISBN 0-930406-13-3
+
+             The natural next-step from the "The Encyclopedia of Recreational Diving" (above),
+             Dr Bookspan takes us to the next level and explodes a few commonly held
+             misconceptions along the way. Some medical terms are used, but they're explained as
+             we go along and topics such as decompression tables, immersion effects, gender
+             issues, diving injuries, exercise and nutrition are introduced in a chatty and easy to
+             read manner.
+
+             Pocket Medical Dictionary
+             Edited by Nancy Roper - Published by Churchill Livingstone - ISBN 0-443-03180-0
+
+             Several of the following books are written with the assumption that the reader is au
+             fait with medical terminology. In fact this is not such a handicap for the lay reader as
+             you may assume. For the most part the terminology is a combination of prefixes, such
+             as "hypo" ( say "high po" = under or below ), a root word, such as "glyc" ( say
+             "glike" = sugar ) and suffixes, such as "ia" ( say "eee aah" = a condition or process ).
+             Thus the medical term "hypoglycemia", becomes the simple "too little (blood)
+             sugar"...easy! As you can imagine, a grasp of the meaning of a few prefixes, roots
+             and suffixes can have you sounding like an extra from ER in no time. The Pocket
+             Medical Dictionary, published in association with the Royal Society of Medicine,
+             fills in the blanks in double-quick time, while "Physiology & Anatomy" (below) adds
+             flesh to the bones.
+
+             Physiology & Anatomy
+             John Clancy & Andrew J. McVicar - Published by Edward Arnold - ISBN 0-340­
+             63190-2
+
+             This is an incredibly interesting book for the non-medical reader. Sub-titled "a
+             homeostatic approach" it not only explains how the systems of the body work, but
+             how they inter-react to maintain the balance ("homeostasis") that we need to sustain
+             life and what happens when that balance is upset. Illustrated in color throughout, it's a
+             must.
+
+
+
+
+PDF created with pdfFactory Pro trial version www.pdffactory.com
+             Resuscitation Handbook
+             Peter J.F. Baskett - Published by Times Mirror International Publishers Ltd - ISBN 1­
+             56375-620-X
+
+             Advanced life support techniques for those already familiar and well practiced in
+             basic life support. The theory presented is valuable but the practical skills can only be
+             developed in conjunction with a properly run advanced life support course.
+
+             The Physiology and Medicine of Diving
+             Peter Bennett & David Elliott - Published by W B Saunders - ISBN 0-7020-1589-X
+
+             Generally known as "Bennett & Elliott" this is the diving medical bible. In fact both
+             Bennett and Elliott are prolific contributors to many other publications, including
+             "Bove & Davis" (below), but this is probably the most comprehensive text on the
+             subject available. It's uncompromisingly directed at the medically-educated reader,
+             but don't let that put you off. Get your copies of the "Pocket Medical Dictionary" and
+             "Physiology & Anatomy" alongside, with a pencil to make notes in the margin and
+             you'll surprise yourself in no time.
+
+             Bove and Davis' Diving Medicine
+             Edited by Alfred A Bove - Published by W B Saunders - ISBN 0-7216-6056-8
+
+             Slimmer and less well known than the previous and following texts ( around 400
+             pages as opposed to 600 and 550 respectively ), Bove & Davis nevertheless fields
+             heavyweight contributions from many of the professions big guns. In common with
+             Bennett & Elliott, B&D's chapters conclude with an extensive reference section
+             which could provide a lifetime's research in their own right. If you don't have a
+             medical degree, keep a copy of the "Pocket Medical Dictionary" to hand.
+
+             Diving and Subaquatic Medicine
+             Edmonds, Lowry & Pennefather - Published by Butterworth Heinmann - ISBN - 0­
+             7506-2131-1
+
+             A personal favorite, "ELP" offers in-depth information with a slightly less clinical
+             approach. Some less-commonly published data is included ( have you had "scuba
+             diver's thigh"? ) and each chapter concludes with a useful "recommended reading"
+             section.
+
+             Tauchmedizin
+             A.A. Buehlmann - Published by Springer-Verlag - ISBN 3-540-58970-4
+
+             "Tauchen" is the German verb "to Dive" and you can guess the rest of the title.
+
+             My thanks to the members of the Woodville Karst Plain Project for providing both
+             valuable information and the inspiration to learn more and do it right. If you have any
+             comments on this document, the author would be pleased to hear from you. Paul
+             Chapman may be contacted at paul@delsys.demon.co.uk or at Professional Diver
+             Training on 0151 343 1601.
+
+
+
+
+PDF created with pdfFactory Pro trial version www.pdffactory.com
+                This excellent article has been reformatted for the web from the
+                original document by Paul Chapman, and "Americanised" with units,
+                spellings, and grammar, but is otherwise unchanged. I could not have
+                written a better description of this subject.
+
+                The inverse-exponential basis of Buehlmann's algorithm is the natural
+                mathematical model for gas diffusion. Decompression involves many
+                factors that are too complex and uncertain to model. Rather than using
+                calculations of ever-increasing complexity and doubtful accuracy and
+                realism, Buehlmann runs 16 simple simulations in parallel, and selects
+                the worst case. This is a very broad-based approach to modeling
+                something that is inherently unpredictable.
+
+                Occam's Razor is a logical principle attributed to the medieval
+                philosopher William of Occam (or Ockham). The principle states that
+                one should not make more assumptions than the minimum needed. In
+                other words, the simplest solution to a problem is usually the right
+                one.
+
+                                                                      -- Editor, NJSD
+
+
+                •   Introductory "Lessons" About Dissolved Gas Decompression Modeling - Erik
+                    Baker
+                •   Calculating the No-Stop Time by Erik Baker
+                •   Understanding M-values by Erik Baker
+                •   Clearing Up The Confusion About "Deep Stops" by Erik Baker
+                •   Oxygen Toxicity Calculations by Erik Baker
+
+                •   DIY Decompression by Stuart Morrison
+                •   The Variable Permeability Model by Dan Reinders & Richard Pyle
+                •   Abyss / Reduced Gradient Bubble Model by Bruce Weinke
+
+             more
+
+
+                           Decompression Theory 2
+
+
+             You can make neat colorful graphs of nitrogen loading curves, so here we go ...
+
+
+
+
+PDF created with pdfFactory Pro trial version www.pdffactory.com
+                    Theoretical nitrogen pressure curves for 16 Buehlmann compartments.
+
+                •   At time = 0, ambient pressure is instantaneously increased from 1 ATA to 5
+                    ATA.
+                    ( or 130ft, PN2 = 3.95 ATA )
+
+                •   At time = 60, ambient pressure is instantaneously reduced back to 1 ATA
+                    (surface)
+
+                •   This is obviously not possible in real life, but is suitable for purposes of
+                    exposition.
+                    If this was a real dive profile, it would kill you in more ways than one !
+
+             From the gas loading curves, it is apparent that the four "fastest" compartments ( 4.0 ­
+             18.5, thin lines ) become largely or completely saturated, and that they also unload
+             very quickly, such that after one hour of off-gassing, they are all back within the
+             "safe" pressure ratio of 1.6:1 ( equal to 1.26:0.79 at the surface. )
+
+
+
+
+PDF created with pdfFactory Pro trial version www.pdffactory.com
+             The five slowest compartments ( 239.0 - 635.0, stippled lines ) pick up so little
+             nitrogen loading that even at t=60 they have not achieved a pressure ratio of 1.6:1
+             with respect to surface pressure. They would therefore seem to present little concern
+             for decompression in this example.
+
+             However, the seven middle compartments ( 27.0 - 187.0, heavy lines ) all become
+             significantly nitrogen-loaded, and off-gas slowly enough that even at the end-time of
+             this plot ( t=120 ) they all still contain more than the "safe" pressure ratio of 1.6:1. In
+             Buehlmann's model of decompression, it is typically these compartments that control
+             decompression schedules for real-world dive profiles.
+
+             Typically, in real decompression schedules, the fast compartments off-gas well
+             within the times required for the middle compartments, while the slow compartments
+             seldom enter into the equation. Perhaps less intuitive is the fact that the heavily­
+             loaded fast compartments may still influence the early part of an extended
+             decompression schedule ( "deep stops" ) before yielding control to the middle
+             compartments. Slow compartments may affect "time to fly" considerations.
+
+             It is also worth noting that off-gassing is a much slower process than on-gassing, as
+             evidenced by the fact that after an equal time of on-gassing and off-gassing, only the
+             two fastest compartments have returned to their original state; all others still contain
+             significant nitrogen loads.
+
+             One might also conclude from this presentation that short "bounce dives" of around 5
+             minutes duration should be relatively safe, since only the fast compartments acquire
+             any significant nitrogen loading, and this can be off-loaded with a brief deco stop or
+             even just a slow ascent. Alas, that is not the case though, as real-life is a lot more
+             complicated than this simple plot.
+
+
+
+
+PDF created with pdfFactory Pro trial version www.pdffactory.com
+             What would the nitrogen pressure curves look like for a more realistic dive profile?
+             Above is a profile taken directly from the PADI Recreational Dive Planner: 100 ft for
+             19 minutes, with a 5 minute safety stop at 15 ft. Ascents and descents are crudely
+             modeled in 1 ATA steps. It becomes clear from this plot that for relatively short, no­
+             decompression dives, the very long compartments of Buehlmann's model are
+             essentially irrelevant - they never reach a high enough pressure to matter. PADI came
+             to this conclusion as well: their model is based on 7 tissue compartments with half­
+             times from 5 to 120 minutes.
+
+             Another point here concerns surface intervals. After 30 minutes, or t=60, several
+             compartments still show significant nitrogen loading. After about 60 minutes, or
+             t=90, all have dropped down to fairly low levels, with little improvement at 90
+             minutes ( t=120 ). This would suggest that a surface interval of around 60 minutes is
+             optimal; shorter is not enough, and much longer is simply a waste of time.
+
+
+
+
+PDF created with pdfFactory Pro trial version www.pdffactory.com
+               The same profile calculated with the seven tissue compartments of PADI's RDP.
+
+             A quick calculation of pressure ratios will demonstrate that according to this graph,
+             the diver will leave the water with a worst-case pressure ratio of about 2.0, or
+             probably bent. That just goes to show that decompression modeling is much more
+             complex than what is depicted in these crude graphs. The PADI RDP has a proven
+             track record of safety. PADI, the US Navy, and others went through reams of real-life
+             data, tweaking, adjusting, testing, and retesting their models. They didn't just crank
+             out a few simplified equations and call it a day, like I have here.
+
+             Most dive computers that utilize Haldane's method use nine to twelve tissue
+             compartments, rather than the full 16 of Buehlmann's model. There are a number of
+             other decompression models besides Haldane's. Some are quite complex and curious.
+             Bubble models concentrate on the physical formation and growth of gas bubbles,
+             while the latest Navy method takes a purely statistics-based approach, and makes no
+             attempt to model any physical process at all. In the end though, they all share one
+             thing: they all tweaked to fit real-world data on scuba diving. Is one model better than
+             another? Given that they all "cheat" in the end to get the right answer, I would say
+
+
+
+
+PDF created with pdfFactory Pro trial version www.pdffactory.com
+             probably not.
+
+
+
+
+                     Decompression Theory 3
+             There is nothing mystical about
+             decompression theory. In fact, it is all
+             rather straightforward. For example,        Note to new divers and potential
+             here is the Buehlmann ZH-L16A               new divers:
+             decompression algorithm ( er, I mean
+             the Modified Haldane algorithm; see         This information is presented for
+             below ) as described previously,            general interest. Don't be scared off
+             implemented in Microsoft Excel. In          by what you see here - you don't
+             addition, versions B and C of the           need to learn any of this to become a
+             algorithm are also presented. If you        safe and competent scuba diver. You
+             have not already done so, you should        will however need to understand
+             read this excellent explanation of          dive planning.
+             Haldane's decompression algorithm
+             before proceeding.
+
+
+
+
+                  Warning:
+
+                  This software should not be used for the planning of actual dives !
+                  This implementation of the modified Haldanean decompression
+                  algorithm is extremely rudimentary and is suitable for educational
+                  purposes only.
+
+                  This software has received no scientific testing or validation. This
+                  software may contain bugs, and the figures which it outputs may be
+                  erroneous. The schedules which it generates are simply the results
+                  of mathematical calculations which do not in any way represent the
+                  mechanics of the human body. Do not use this software in
+                  situations where failure of the software may lead to illness, injury
+                  or death. The designers of this software accept no responsibility for
+                  illness, injury, loss or death of the user or any third party.
+
+
+
+
+PDF created with pdfFactory Pro trial version www.pdffactory.com
+                                    Click image to download spreadsheet.
+
+
+
+             User-enterable dive waypoints and conservatism factors make up the green cells in
+             the sheet. Each waypoint triplet represents a segment of a dive:
+
+                •   depth ( feet, bold red indicates decompression violation )
+                •   time at depth ( minutes )
+                •   fraction of Nitrogen in the breathing gas ( 0.79 = air )
+
+             Fill in your dive profile starting with waypoint 1 and using as many as you need.
+             Unused waypoints can be cleared. All dives are assumed to begin at sea level and
+             breathing air ( FN2 = 0.79 ) and are assumed to be conducted in saltwater.
+
+             Cells A2 and A3 are user-enterable scale factors for the a and b values. Entering
+             values less than 1.00 here will cause the allowable pressure calculations to back off
+             from the theoretical limits, making the algorithm more conservative. The default
+             values are 1.00 - least conservative. Cell A9 is the maximum deep-stop pressure ratio.
+             Cell A10 is a dummy - you can use it for a dive sequence number if you like.
+
+             The blue cells show the cumulative results of the previous and current waypoints:
+
+
+
+
+PDF created with pdfFactory Pro trial version www.pdffactory.com
+                •   PN2 and PO2 are the partial pressures of oxygen and nitrogen at the current
+                    depth and gas mix. This is not strictly part of the algorithm, but is presented to
+                    assist in selection of Nitrox mixes.
+
+                •   Ceiling is the decompression ceiling at the end of the current waypoint,
+                    or the minimum depth that can be ascended to at the next waypoint. Negative
+                    ceilings are above sea level (see below.)
+
+                •   Max P ratio is the worst-case compartment pressure ratio that would result
+                    from ascending to the ceiling depth.
+
+                •   Deep Ceiling is the deep-stop decompression ceiling at the end of the current
+                    waypoint, based on the limiting pressure ratio selected in cell A9.
+
+                •   Offgassing is the minimum depth at which at least one tissue compartment is
+                    offgassing, even if others may still be on-gassing.
+
+             Below each waypoint is the column of calculations for the theoretical tissue
+             compartments. For each compartment, the partial pressure of nitrogen is shown
+             above, and the minimum tolerable ambient pressure is shown below. Results
+             displayed in red indicate that decompression will be required at the next waypoint.
+             The maximum values for each column are bolded, while the controlling compartment
+             for each waypoint is picked out with reverse colors.
+
+             The formatting of the intermediate calculations allows the internal workings of the
+             algorithm to be easily inspected. Changes in compartment pressures at each waypoint
+             are displayed, and the shifting of the controlling compartment is visually obvious,
+             especially when long duration dives or surface intervals are broken up into short
+             equal-depth waypoints.
+
+             Pulmonary Oxygen Toxicity units ( OTU, at the bottom of the sheet ) is not part of
+             the decompression algorithm, but is a simple calculation that is easy to implement in
+             the spreadsheet, and so is included here as an afterthought. BSAC recommends
+             limiting oxygen exposure to 800 OTU / day. CNS oxygen toxicity is not calculated.
+
+
+                Example:
+
+                The spreadsheet is already "seeded" with some interesting waypoint
+                data. The waypoints are as follows:
+
+                 Waypoints 1-5:     An outlandish decompression dive to 130 feet for
+                                    50 minutes on air. This is broken up into five
+                                    segments to show the on-gassing of the 16
+                                    compartments over time.
+                 Waypoints 6-8:     Voluntary deep stops at 60 and 50 feet on air for
+                                    two minutes each. Note that by the regular deco
+                                    algorithm, an ascent directly to 40 feet is allowed,
+
+
+
+
+PDF created with pdfFactory Pro trial version www.pdffactory.com
+                                    but this would incur a very high worst-case
+                                    compartment pressure ratio, and should therefore
+                                    be avoided.
+                 Waypoint 8:        Obligatory decompression stop at 40 feet for two
+                                    minutes on air.
+                 Waypoints 9-11: Obligatory decompression stops at 30, 20, & 10
+                                 feet for a total of 29 minutes, on 80% O2 Nitrox
+                                 decompression mix. Note that these stops are
+                                 following the "normal" decompression ceiling
+                                 rather than the deep stop ceiling.
+                 Waypoint 12:       Surface interval of 2 hours
+                 Waypoint 13:       A no-decompression dive to 90 feet for 40
+                                    minutes on EAN36 or 36% Nitrox
+                 Waypoint 14:       Five minute safety stop at 15 feet on EAN36
+                 Waypoint 15:       24 hour time-to-fly interval
+                 Waypoint 16:       2-1/2 hour airplane flight at a cabin pressure of
+                                    8000 feet ( typical airliner )
+
+                Following the usual practice, the obligatory deco stops ( waypoints 8­
+                11 ) are rounded up to the next ten foot depth. Therefore, a
+                decompression ceiling of 30 feet at waypoint 7 results in a
+                decompression stop of 40 feet. for waypoint 8. The time at waypoint 8
+                is then adjusted to result in the deepest possible ceiling above 30 feet,
+                the next intended deco stop. This process is continued until the ceiling
+                becomes 0 or negative, at which point it is safe to ascend to the
+                surface. One could also follow the deep-stop schedule all the way to
+                the surface, but that would take much longer.
+
+                You may notice that the 50 foot stop slightly violates the deep stop
+                requirements, and really should be three minutes instead of two.
+                However, making all the deep stops the same is a nice simplification
+                for the real dive. You could just as well make all the deep stops three
+                minutes for added conservatism, or 2-3-2 if you are really fussy, but in
+                my opinion that would be placing a great deal of weight on the
+                precision and accuracy of a model that is inherently rough at best.
+                Perhaps the real point of all this is to show that good common sense
+                and understanding are more important than blind reliance on any
+                mathematical model, whether it is this one or the one in your dive
+                computer !
+
+
+             Deep Stops
+             Recall that Haldane originally postulated that a "compartment" could undergo a
+
+
+
+
+PDF created with pdfFactory Pro trial version www.pdffactory.com
+                                              later revised down to 1.6. Therefore the limiting
+                                              pressure ratio of 1.5 (cell A9) for the deep-ceiling
+                                              calculations is somewhat conservative. Note that
+                                              many of the maximum pressure ratio values are
+                                              considerably greater than this: a fast ascent to the
+                                              theoretical ceiling depth of two feet at waypoint
+                                              three would result in a worst-case compartment
+                                              pressure ratio of 3.2 - approximately the same as a
+                                              can of soda ( that's pop, for you midwesterners. )
+                                              and would very likely result in arterial bubbling
+             and bends, even though it is completely within the accepted decompression model !
+
+             The purely mathematical ZH-L16A algorithm was found to be inadequate for real­
+             world use, and so was developed into the more conservative ZH-L16B and ZH-L16C
+             algorithms, which are also presented. ZH-L16B was developed for dive table
+             calculations by empirically tweaking some of the a-values. ZH-L16C was developed
+             in the same way for use in real-time dive computers, and is more conservative again.
+
+             As you can see, the spreadsheet does pretty much everything your dive computer can
+             do, and then some. Nitrox is automatically handled, as are repetitive dives, gas
+             switches, user-selectable conservatism, and high altitude diving. However, rather
+             than giving you a complete decompression schedule for your dive, the spreadsheet
+             merely indicates the ceiling for the next waypoint, based on the allowable
+             overpressure of the current waypoint. This can be used to work out a staged
+             decompression schedule by hand, as I have done in the example. Similarly, the user
+             may incorporate waypoints for deep stops, air breaks, surface intervals, and even
+             time-to-fly.
+
+             Ascents and descents are assumed to be instantaneous - not very realistic. These
+             could instead be modeled using very short waypoints at intermediate depths. A real
+             dive computer probably computes a new waypoint several times a minute, and so
+             automatically handles transients like this. You could do the same in the spreadsheet,
+             but it would use up the available waypoints pretty quickly.
+
+             In fact, there is no reason that the spreadsheet could not have hundreds of waypoints,
+             except that it would become very large and difficult to display, and sixteen points is
+             more than enough for expositional purposes. A much more efficient way of handling
+             hundreds or thousands of waypoints would be to only retain the result of the last set
+             of calculations, as a real dive computer would do. This sort of dynamic programming
+             could be implemented in the spreadsheet as well, using a macro. But that would
+             defeat the purpose of this entire exercise, which is to display the inner workings of
+             the decompression algorithm. Trimix would be handled similarly, and I have done it
+             also, but I will not go into the details.
+
+             For simplicity, all dive profiles are assumed to begin at sea level breathing air,
+             although altitude diving would be easy to implement. In fact, you can do this yourself
+             by setting the first waypoint to the desired altitude for a very long time ( 10,000
+             minutes should do the trick. ) Then just make sure your last waypoint will allow you
+             to ascend to the same altitude. Altitudes above sea level are expressed in feet of water
+             here:
+
+
+
+
+PDF created with pdfFactory Pro trial version www.pdffactory.com
+                              +1000 feet of air = approximately -1 foot of water.
+
+             Try setting up some dive profiles of your own, and compare them with dive tables
+             and your own computer. Set up profiles and surface intervals in increments, and
+             watch how the controlling compartment changes during on-gassing and off-gassing.
+             The profiles you generate here will probably be less conservative than what you will
+             get from a real dive table, but should be in the ballpark. And as I said -
+
+                     DO NOT USE THESE RESULTS FOR REAL DIVE PLANNING !
+
+
+
+
+                                     Abyss - a real decompression program
+
+             Buehlmann's is the simplest decompression algorithm, based on Haldane's ideas. For
+             copyright reasons, most dive software and computers claim to use a Modified
+             Haldane model, which is in fact modified to be Buehlmann's. There are other
+             decompression algorithms as well, such as VPM ( Variable Permeability Model ) and
+             RGBM ( Reduced Gradient Bubble Model. ) These algorithms model decompression
+             based on bubble formation, and are much more complex and computationally
+             intensive than Buehlmann's. If you would like to try one of these, I suggest V-
+             Planner, which is a free download.
+
+             The interesting thing is that all these algorithms, regardless of exactly what they are
+             modeling, generate surprisingly similar schedules, which in the end must all agree
+             with the same empirical data. In fact, most algorithms, including the one shown, are
+             actually tweaked to agree with the empirical data. Some people will dicker over
+             minor variations, but the truth is that decompression calculations are imprecise by
+             nature, and real-world decompression is subject to many other factors, many of which
+             are simply unpredictable.
+
+
+
+
+PDF created with pdfFactory Pro trial version www.pdffactory.com
+             It is my own feeling that the apparent precision of each algorithm, and the small
+             differences between them, are completely overwhelmed by random real-world
+             factors. This renders the choice of algorithm inconsequential, and makes them all
+             somewhat suspect. It is far too easy to look at the complexity of any calculation, and
+             the number of decimal places that a modern computer will carry and display, and get
+             the impression that the result is extremely accurate when in fact it is not.
+
+             The term "undeserved hit" is used to describe cases where a diver did nothing wrong,
+             whether it be by tables or their dive computer, and got bent anyway. Such things
+             happen, and always will. In the end, decompression is still a statistical science, and
+             no model is 100% correct. Given all the unknowns and uncertainties, the best way to
+             be safe is to keep the modeling simple and the calculations error-free, and dive the
+             resulting schedules conservatively, with voluntary deep stops and extended hang
+             times, especially at the shallow end.
+
+             I have also developed a version of this spreadsheet for Trimix, Heliox, and other
+             mixes. That algorithm is computationally much more complex, requiring four
+             interlinked sheets where the Nitrox/Air version used only one. Building this
+             complexity into a dive computer is clearly no easy task - the majority of Trimix dive
+             computers that have been released over the years have proven to be buggy if not
+             outright flawed. I myself would not trust one.
+
+
+
+
+PDF created with pdfFactory Pro trial version www.pdffactory.com
+
