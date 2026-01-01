@@ -166,30 +166,17 @@ export function renderChart(canvas, results, visibleCompartments = null, gasSwit
                 },
                 legend: {
                     display: true,
-                    position: 'right',
+                    position: 'top',
                     labels: {
                         usePointStyle: true,
                         padding: 10,
-                        font: { size: 11 }
-                    },
-                    onClick: (e, legendItem, legend) => {
-                        const index = legendItem.datasetIndex;
-                        const chart = legend.chart;
-                        const meta = chart.getDatasetMeta(index);
-                        
-                        // Toggle visibility
-                        meta.hidden = !meta.hidden;
-                        chart.update();
-                        
-                        // Dispatch event for external toggle sync
-                        const dataset = chart.data.datasets[index];
-                        if (dataset.compartmentId) {
-                            canvas.dispatchEvent(new CustomEvent('compartmentToggle', {
-                                detail: {
-                                    compartmentId: dataset.compartmentId,
-                                    visible: !meta.hidden
-                                }
-                            }));
+                        font: { size: 11 },
+                        // Filter out individual compartment datasets from legend
+                        // (they're controlled by external checkboxes)
+                        filter: function(legendItem, data) {
+                            const dataset = data.datasets[legendItem.datasetIndex];
+                            // Hide compartment datasets from legend (they have compartmentId)
+                            return !dataset.compartmentId;
                         }
                     }
                 },

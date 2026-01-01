@@ -322,12 +322,22 @@ describe('diveSetup', () => {
             expect(waypoints[1].time).toBe(2);
         });
 
-        test('maintains correct bottom time', () => {
+        test('maintains correct bottom time (from dive start)', () => {
             const waypoints = generateSimpleProfile(30, 20);
             // Descent: 30m / 20 = 1.5 → 2 min
-            // Bottom time start at 2 min, end at 2 + 20 = 22 min
+            // Bottom time is from dive start, so we leave depth at time 20
+            // (not descent + 20 = 22)
             expect(waypoints[1].time).toBe(2);  // Arrive at depth
-            expect(waypoints[2].time).toBe(22); // Leave depth
+            expect(waypoints[2].time).toBe(20); // Leave depth at bottom time
+        });
+
+        test('bottom time is measured from dive start, not from reaching depth', () => {
+            // User says "30m for 30min" - they expect ascent to start at minute 30
+            const waypoints = generateSimpleProfile(30, 30);
+            // Descent: 30m / 20 = 1.5 → 2 min
+            expect(waypoints[1].time).toBe(2);  // Arrive at 30m at minute 2
+            expect(waypoints[2].time).toBe(30); // Leave 30m at minute 30 (not 32!)
+            expect(waypoints[2].depth).toBe(30);
         });
 
         test('waypoints have ascending time values', () => {
@@ -773,6 +783,45 @@ describe('decoModel', () => {
         test('fastest compartment is 4-6 minutes', () => {
             expect(COMPARTMENTS[0].halfTime).toBeGreaterThanOrEqual(4);
             expect(COMPARTMENTS[0].halfTime).toBeLessThanOrEqual(6);
+        });
+
+        test('all compartments have M-value coefficients (aN2, bN2)', () => {
+            COMPARTMENTS.forEach(comp => {
+                expect(typeof comp.aN2).toBe('number');
+                expect(typeof comp.bN2).toBe('number');
+                expect(comp.aN2).toBeGreaterThan(0);
+                expect(comp.bN2).toBeGreaterThan(0);
+                expect(comp.bN2).toBeLessThan(1);  // b values are always < 1
+            });
+        });
+
+        test('faster compartments have higher a values (more supersaturation tolerance)', () => {
+            // Fast compartments can tolerate more supersaturation
+            const fastA = COMPARTMENTS[0].aN2;  // TC1
+            const slowA = COMPARTMENTS[15].aN2; // TC16
+            expect(fastA).toBeGreaterThan(slowA);
+        });
+
+        test('slower compartments have higher b values (closer to 1)', () => {
+            // Slow compartments have b values closer to 1
+            const fastB = COMPARTMENTS[0].bN2;  // TC1
+            const slowB = COMPARTMENTS[15].bN2; // TC16
+            expect(slowB).toBeGreaterThan(fastB);
+        });
+
+        test('M-value at surface (M0) is valid for all compartments', () => {
+            // M0 = a + 1/b (ambient = 1 bar at surface)
+            COMPARTMENTS.forEach(comp => {
+                const m0 = comp.aN2 + SURFACE_PRESSURE / comp.bN2;
+                expect(m0).toBeGreaterThan(1);  // Must be > surface pressure
+                expect(m0).toBeLessThan(4);     // Reasonable upper bound
+            });
+        });
+
+        test('TC1 M-value coefficients match ZH-L16A', () => {
+            const tc1 = COMPARTMENTS[0];
+            expect(tc1.aN2).toBeCloseTo(1.1696, 3);
+            expect(tc1.bN2).toBeCloseTo(0.5578, 3);
         });
     });
 });

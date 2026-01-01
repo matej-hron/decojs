@@ -926,6 +926,7 @@ section h2 {
     cursor: pointer;
 }
 
+.compartment-color,
 .color-dot {
     width: 12px;
     height: 12px;
@@ -1381,7 +1382,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.0.70";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.0.85";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* Responsive */
@@ -1587,6 +1588,11 @@ footer a {
 
 .save-status.success {
     color: var(--secondary-color);
+    font-weight: 500;
+}
+
+.save-status.error {
+    color: var(--danger-color);
     font-weight: 500;
 }
 
@@ -1846,11 +1852,73 @@ footer a {
     min-width: 100px;
 }
 
-/* Waypoint actions container */
+/* Waypoint actions container (below table) */
 .waypoint-actions {
     display: flex;
     gap: 0.25rem;
     justify-content: center;
+}
+
+/* Waypoint actions cell (in table row) */
+.waypoint-actions-cell {
+    display: flex;
+    gap: 0.25rem;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+/* Icon button for waypoint actions */
+.btn-icon {
+    padding: 0.25rem 0.5rem;
+    min-width: unset;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.btn-icon.btn-small {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.9rem;
+}
+
+/* Time shift buttons */
+.time-shift-up, .time-shift-down {
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+.time-shift-up:hover, .time-shift-down:hover {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+/* Insert waypoint button */
+.insert-waypoint {
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    color: var(--success-color, #27ae60);
+}
+
+.insert-waypoint:hover {
+    background: var(--success-color, #27ae60);
+    border-color: var(--success-color, #27ae60);
+    color: white;
+}
+
+/* Profile selector header with new profile button */
+.profile-selector-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.profile-selector-header label {
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0;
 }
 
 @media (max-width: 480px) {
@@ -2901,6 +2969,125 @@ textarea.form-input {
     font-weight: 500;
 }
 
+/* ============================================================================
+   M-Values Page - Time Overlay & Timeline Controls
+   ============================================================================ */
+
+/* Time overlay on chart */
+.time-overlay {
+    position: absolute;
+    top: 50px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.75);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.time-overlay #overlay-time {
+    font-size: 2rem;
+}
+
+.time-overlay #overlay-depth {
+    color: #3498db;
+    font-size: 1.5rem;
+}
+
+/* Fullscreen adjustments for overlay */
+.chart-container.fullscreen .time-overlay {
+    top: 20px;
+    right: 30px;
+    font-size: 2rem;
+}
+
+.chart-container.fullscreen .time-overlay #overlay-time {
+    font-size: 3rem;
+}
+
+.chart-container.fullscreen .time-overlay #overlay-depth {
+    font-size: 2rem;
+}
+
+/* Timeline controls inline (below chart) */
+.timeline-controls-inline {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    margin-top: 0.5rem;
+}
+
+.timeline-controls-inline .btn-icon {
+    font-size: 1.5rem;
+    padding: 0.5rem;
+    min-width: 50px;
+    text-align: center;
+}
+
+.timeline-controls-inline .btn-step {
+    font-size: 1rem;
+    min-width: 40px;
+    padding: 0.4rem;
+    opacity: 0.8;
+}
+
+.timeline-controls-inline .btn-step:hover {
+    opacity: 1;
+}
+
+.timeline-controls-inline .timeline-slider {
+    flex: 1;
+    height: 8px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.timeline-controls-inline .timeline-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.timeline-controls-inline .timeline-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+.timeline-info-compact {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    min-width: 100px;
+}
+
+.timeline-hint {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 0.5rem;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .gas-pathway-svg {
@@ -2919,5 +3106,30 @@ textarea.form-input {
     .chart-controls-inline input[type="range"] {
         width: 100%;
         max-width: none;
+    }
+    
+    .time-overlay {
+        top: 40px;
+        left: 50px;
+        font-size: 1rem;
+        padding: 0.3rem 0.6rem;
+    }
+    
+    .time-overlay #overlay-time {
+        font-size: 1.3rem;
+    }
+    
+    .time-overlay #overlay-depth {
+        font-size: 1rem;
+    }
+    
+    .timeline-controls-inline {
+        flex-wrap: wrap;
+    }
+    
+    .timeline-controls-inline .timeline-slider {
+        order: 2;
+        width: 100%;
+        flex: none;
     }
 }

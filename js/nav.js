@@ -38,6 +38,14 @@ const NAV_ITEMS = [
             { href: 'tissue-loading.html#tissue-chart-section', label: 'Interactive Chart' }
         ]
     },
+    {
+        href: 'm-values.html',
+        label: 'M-Values',
+        submenu: [
+            { href: 'm-values.html#compartment-selection', label: 'Compartment Selection' },
+            { href: 'm-values.html#mvalue-chart-section', label: 'M-Value Chart' }
+        ]
+    },
     { 
         label: 'Tests',
         submenu: [

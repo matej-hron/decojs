@@ -378,26 +378,33 @@
                     </div>
                     
                     <div class="dive-phase">
-                        <h4>⬆️ c) Ascent — Supersaturation & Off-gassing</h4>
+                        <h4>⬆️ c) Ascent — Off-gassing & Supersaturation</h4>
                         <p>
-                            As you ascend, ambient pressure drops. Now your tissues hold <strong>more nitrogen than 
-                            the surrounding pressure</strong> — they are <em>supersaturated</em>. The pressure gradient 
-                            reverses and gas flows <em>out</em> of tissues.
+                            As you ascend, the partial pressure of nitrogen in your lungs drops. When tissue nitrogen 
+                            pressure exceeds alveolar pressure, the gradient reverses and gas flows <em>out</em> — 
+                            this is <strong>off-gassing</strong>.
                         </p>
-                        <p class="phase-formula">ppN₂<sub>tissue</sub> &gt; ppN₂<sub>alveolar</sub> → <strong>Supersaturation</strong> → Off-gassing</p>
+                        <p class="phase-formula">ppN₂<sub>tissue</sub> &gt; ppN₂<sub>alveolar</sub> → <strong>Off-gassing</strong></p>
+                        <p>
+                            But there's another threshold: when tissue nitrogen pressure exceeds <strong>ambient pressure</strong>, 
+                            the tissue is <em>supersaturated</em>. This is when we need to be careful — the dissolved gas 
+                            wants to come out of solution and could form bubbles.
+                        </p>
+                        <p class="phase-formula">ppN₂<sub>tissue</sub> &gt; P<sub>ambient</sub> → <strong>Supersaturation</strong> ⚠️</p>
                     </div>
                 </div>
                 
                 <div class="concept-card warning-card" style="margin-top: 1rem;">
                     <h4>⚠️ Critical Supersaturation</h4>
                     <p>
-                        Some supersaturation is <strong>necessary and normal</strong> — it's the driving force for off-gassing. 
-                        However, if tissues become <em>too</em> supersaturated, dissolved nitrogen can form bubbles 
-                        instead of diffusing out safely.
+                        Some supersaturation is <strong>tolerable</strong> — our bodies can handle a certain amount 
+                        of excess dissolved gas without forming bubbles. However, if tissues become <em>too</em> 
+                        supersaturated, dissolved nitrogen can form bubbles instead of diffusing out safely.
                     </p>
                     <p>
-                        The maximum allowable supersaturation before bubbles form is called <strong>critical supersaturation</strong>. 
-                        Decompression algorithms calculate ascent profiles that keep all tissues below their critical limits.
+                        The maximum tolerable supersaturation is called <strong>critical supersaturation</strong> — 
+                        it varies by tissue type and depth. In the <a href="m-values.html">next chapter</a>, 
+                        we'll explore how to calculate these limits.
                     </p>
                 </div>
             </div>
@@ -466,7 +473,7 @@
                         <p class="chart-description">Tissue starts saturated at the selected depth. 
                            Same half-time, same equation—just inverted. The curves are perfect mirrors.</p>
                         <div class="chart-controls-inline">
-                            <span id="offgassing-info">Saturated @ <strong id="offgassing-depth-display">30m</strong> → Surface (0.74 bar)</span>
+                            <span id="offgassing-info">Saturated @ <strong id="offgassing-depth-display">30m</strong> → Surface (~0.79 bar)</span>
                         </div>
                         <div class="chart-container-small">
                             <canvas id="offgassing-chart"></canvas>
@@ -583,6 +590,7 @@
                 <canvas id="tissue-chart"></canvas>
                 <button id="exit-fullscreen-btn" class="btn btn-fullscreen-close" title="Exit Fullscreen">✕</button>
             </div>
+            <p class="timeline-hint">↑↓ move tissues | Shift+↑ expand | Shift+↓ shrink</p>
             <div class="chart-legend">
                 <p><strong>Left axis (N₂ Pressure):</strong> Shows nitrogen pressure in each tissue compartment. 
                    Higher values = more nitrogen dissolved.</p>
@@ -594,7 +602,7 @@
                    Bubble risk increases when tissue inert-gas tension exceeds ambient pressure beyond an 
                    allowable gradient (defined by M-values / gradient factors). Some supersaturation is normal 
                    and permitted during controlled ascents.</p>
-                <p><strong>Gray dashed line (Surface Saturation):</strong> Equilibrium N₂ pressure at surface (~0.74 bar).</p>
+                <p><strong>Gray dashed line (Surface Saturation):</strong> Equilibrium N₂ pressure at surface (~0.79 bar).</p>
             </div>
         </section>
 

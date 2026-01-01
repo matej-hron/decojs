@@ -70,7 +70,10 @@
             
             <!-- Profile Selector Cards -->
             <div class="profile-selector">
-                <label>Load a predefined profile:</label>
+                <div class="profile-selector-header">
+                    <label>Load a predefined profile:</label>
+                    <button id="new-profile-btn" class="btn btn-secondary btn-small" title="Create new empty profile">+ New Profile</button>
+                </div>
                 <div id="profile-cards" class="profile-cards">
                     <!-- Populated by JavaScript -->
                 </div>
@@ -191,6 +194,9 @@
 
                 <div class="button-row">
                     <button id="reset-default" class="btn btn-secondary">Reset to Default</button>
+                    <button id="export-setup" class="btn btn-secondary" title="Download setup as JSON file">📤 Export</button>
+                    <button id="import-setup" class="btn btn-secondary" title="Load setup from JSON file">📥 Import</button>
+                    <input type="file" id="import-file-input" accept=".json" style="display: none;">
                 </div>
 
                 <div id="validation-errors" class="errors"></div>
@@ -288,6 +294,9 @@
         const quickMaxDepthInput = document.getElementById('quick-max-depth');
         const quickBottomTimeInput = document.getElementById('quick-bottom-time');
         const generateProfileBtn = document.getElementById('generate-profile-btn');
+        
+        // New profile button
+        const newProfileBtn = document.getElementById('new-profile-btn');
 
         // ============================================================================
         // MULTI-GAS MANAGEMENT
@@ -624,8 +633,62 @@
             }
         }
 
-        // Add waypoint row to a specific table
-        function addWaypointRow(time = '', depth = '', gasId = '', targetBody = waypointsBody) {
+        // Shift time for a waypoint and all subsequent waypoints
+        function shiftWaypointTimes(row, delta, targetBody = waypointsBody) {
+            const rows = Array.from(targetBody.querySelectorAll('tr'));
+            const rowIndex = rows.indexOf(row);
+            
+            // Don't allow shifting the first waypoint (must stay at time 0)
+            if (rowIndex === 0) {
+                alert('First waypoint must remain at time 0');
+                return;
+            }
+            
+            // Shift this row and all subsequent rows
+            for (let i = rowIndex; i < rows.length; i++) {
+                const timeInput = rows[i].querySelector('.time-input');
+                if (timeInput) {
+                    const currentTime = parseFloat(timeInput.value) || 0;
+                    const newTime = Math.max(0, currentTime + delta);
+                    timeInput.value = newTime;
+                }
+            }
+            
+            updateSummary();
+        }
+
+        // Insert a waypoint after a specific row
+        function insertWaypointAfter(afterRow, targetBody = waypointsBody) {
+            const rows = Array.from(targetBody.querySelectorAll('tr'));
+            const rowIndex = rows.indexOf(afterRow);
+            
+            // Get times from current and next row to calculate midpoint
+            const currentTime = parseFloat(afterRow.querySelector('.time-input').value) || 0;
+            const currentDepth = parseFloat(afterRow.querySelector('.depth-input').value) || 0;
+            const currentGasId = afterRow.querySelector('.gas-select')?.value || currentGases[0]?.id || 'bottom';
+            
+            let nextTime = currentTime + 2; // Default: 2 minutes after
+            let nextDepth = currentDepth;
+            
+            if (rowIndex < rows.length - 1) {
+                const nextRow = rows[rowIndex + 1];
+                nextTime = parseFloat(nextRow.querySelector('.time-input').value) || currentTime + 2;
+                nextDepth = parseFloat(nextRow.querySelector('.depth-input').value) || currentDepth;
+            }
+            
+            // Create midpoint
+            const midTime = Math.round((currentTime + nextTime) / 2);
+            const midDepth = Math.round((currentDepth + nextDepth) / 2);
+            
+            // Create new row and insert after current
+            const newRow = createWaypointRow(midTime, midDepth, currentGasId, targetBody);
+            afterRow.after(newRow);
+            
+            updateSummary();
+        }
+
+        // Create a waypoint row element (without adding to DOM)
+        function createWaypointRow(time = '', depth = '', gasId = '', targetBody = waypointsBody) {
             const row = document.createElement('tr');
             const gasOptions = currentGases.map(gas => 
                 `<option value="${gas.id}" ${gas.id === gasId ? 'selected' : ''}>${gas.name}</option>`
@@ -635,8 +698,28 @@
                 <td><input type="number" class="time-input" value="${time}" min="0" step="1" placeholder="0"></td>
                 <td><input type="number" class="depth-input" value="${depth}" min="0" step="1" placeholder="0"></td>
                 <td><select class="gas-select form-select-small">${gasOptions}</select></td>
-                <td><button class="btn btn-danger remove-row">×</button></td>
+                <td class="waypoint-actions-cell">
+                    <button class="btn btn-icon btn-small time-shift-down" title="Shift this and following waypoints -1 min">−</button>
+                    <button class="btn btn-icon btn-small time-shift-up" title="Shift this and following waypoints +1 min">+</button>
+                    <button class="btn btn-icon btn-small insert-waypoint" title="Insert waypoint after this">⊕</button>
+                    <button class="btn btn-danger btn-small remove-row" title="Remove waypoint">×</button>
+                </td>
             `;
+            
+            // Time shift handlers
+            row.querySelector('.time-shift-down').addEventListener('click', () => {
+                shiftWaypointTimes(row, -1, targetBody);
+            });
+            row.querySelector('.time-shift-up').addEventListener('click', () => {
+                shiftWaypointTimes(row, 1, targetBody);
+            });
+            
+            // Insert waypoint handler
+            row.querySelector('.insert-waypoint').addEventListener('click', () => {
+                insertWaypointAfter(row, targetBody);
+            });
+            
+            // Remove row handler
             row.querySelector('.remove-row').addEventListener('click', () => {
                 if (targetBody.children.length > 2) {
                     row.remove();
@@ -645,6 +728,13 @@
                     alert('Profile must have at least 2 waypoints');
                 }
             });
+            
+            return row;
+        }
+
+        // Add waypoint row to a specific table (at end)
+        function addWaypointRow(time = '', depth = '', gasId = '', targetBody = waypointsBody) {
+            const row = createWaypointRow(time, depth, gasId, targetBody);
             targetBody.appendChild(row);
         }
 
@@ -860,6 +950,46 @@
             updateSummary();
         });
 
+        // Create new empty profile
+        newProfileBtn.addEventListener('click', () => {
+            // Create a new empty profile with basic waypoints
+            const newProfile = {
+                id: 'custom',
+                name: 'New Profile',
+                description: '',
+                gases: [{
+                    id: 'bottom',
+                    name: 'Air',
+                    o2: 0.21,
+                    n2: 0.79,
+                    he: 0,
+                    cylinderVolume: 12,
+                    startPressure: 200
+                }],
+                dives: [{
+                    waypoints: [
+                        { time: 0, depth: 0 },
+                        { time: 2, depth: 20 },
+                        { time: 20, depth: 20 },
+                        { time: 22, depth: 5 },
+                        { time: 25, depth: 5 },
+                        { time: 26, depth: 0 }
+                    ]
+                }],
+                surfaceInterval: 60,
+                units: { depth: 'meters', time: 'minutes', pressure: 'bar' }
+            };
+            
+            currentSetup = newProfile;
+            customProfile = { ...newProfile };
+            populateForm(newProfile);
+            renderProfileCards('custom');
+            
+            saveStatus.textContent = '✓ Created new profile. Customize and save!';
+            saveStatus.className = 'save-status success';
+            setTimeout(() => { saveStatus.textContent = ''; }, 3000);
+        });
+
         // Add repetitive dive
         addRepetitiveDiveBtn.addEventListener('click', () => {
             // Add default waypoints for dive 2
@@ -932,6 +1062,85 @@
                 saveStatus.className = 'save-status';
                 setTimeout(() => { saveStatus.textContent = ''; }, 3000);
             }
+        });
+
+        // Export setup to JSON file
+        const exportSetupBtn = document.getElementById('export-setup');
+        exportSetupBtn.addEventListener('click', () => {
+            // Build the setup object from current form state
+            const setupToExport = buildSetupFromForm();
+            
+            // Create a clean export (remove internal fields)
+            const exportData = {
+                ...setupToExport,
+                exportedAt: new Date().toISOString(),
+                exportVersion: '1.0'
+            };
+            
+            // Create and download JSON file
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const filename = (setupToExport.name || 'dive-setup').replace(/[^a-z0-9]/gi, '-').toLowerCase();
+            a.download = `${filename}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            saveStatus.textContent = 'Setup exported successfully!';
+            saveStatus.className = 'save-status success';
+            setTimeout(() => { saveStatus.textContent = ''; }, 3000);
+        });
+
+        // Import setup from JSON file
+        const importSetupBtn = document.getElementById('import-setup');
+        const importFileInput = document.getElementById('import-file-input');
+        
+        importSetupBtn.addEventListener('click', () => {
+            importFileInput.click();
+        });
+        
+        importFileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            try {
+                const text = await file.text();
+                const importedSetup = JSON.parse(text);
+                
+                // Validate imported data has required fields
+                if (!importedSetup.dives && !importedSetup.waypoints) {
+                    throw new Error('Invalid dive setup: missing dives or waypoints');
+                }
+                
+                // Clean up import metadata
+                delete importedSetup.exportedAt;
+                delete importedSetup.exportVersion;
+                
+                // Mark as custom profile since it's imported
+                importedSetup.id = 'custom';
+                
+                // Update current setup and UI
+                currentSetup = importedSetup;
+                customProfile = { ...importedSetup };
+                populateForm(importedSetup);
+                renderProfileCards('custom');
+                
+                saveStatus.textContent = `Imported: ${importedSetup.name || 'Dive Setup'}`;
+                saveStatus.className = 'save-status success';
+                setTimeout(() => { saveStatus.textContent = ''; }, 3000);
+                
+            } catch (error) {
+                console.error('Import failed:', error);
+                saveStatus.textContent = 'Import failed: ' + error.message;
+                saveStatus.className = 'save-status error';
+                setTimeout(() => { saveStatus.textContent = ''; }, 5000);
+            }
+            
+            // Reset file input so same file can be imported again
+            importFileInput.value = '';
         });
 
         // Update summary on input changes

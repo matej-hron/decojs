@@ -241,6 +241,74 @@ function syncCheckboxes() {
     });
 }
 
+/**
+ * Move all visible compartments up by 1 (toward slower tissues)
+ * Keeps the same number of compartments selected
+ */
+function moveCompartmentsSlower() {
+    const currentIds = Array.from(visibleCompartments).sort((a, b) => a - b);
+    if (currentIds.length === 0) return;
+    
+    // Check if we can move up (slowest compartment not at max)
+    const slowestId = currentIds[currentIds.length - 1];
+    if (slowestId >= 16) return;  // Already at slowest
+    
+    // Shift all compartments up by 1
+    visibleCompartments.clear();
+    currentIds.forEach(id => visibleCompartments.add(id + 1));
+    syncCheckboxes();
+    showOnlyCompartments(visibleCompartments);
+}
+
+/**
+ * Move all visible compartments down by 1 (toward faster tissues)
+ * Keeps the same number of compartments selected
+ */
+function moveCompartmentsFaster() {
+    const currentIds = Array.from(visibleCompartments).sort((a, b) => a - b);
+    if (currentIds.length === 0) return;
+    
+    // Check if we can move down (fastest compartment not at min)
+    const fastestId = currentIds[0];
+    if (fastestId <= 1) return;  // Already at fastest
+    
+    // Shift all compartments down by 1
+    visibleCompartments.clear();
+    currentIds.forEach(id => visibleCompartments.add(id - 1));
+    syncCheckboxes();
+    showOnlyCompartments(visibleCompartments);
+}
+
+/**
+ * Expand selection to include the next slower compartment
+ */
+function expandToSlowerCompartment() {
+    const currentIds = Array.from(visibleCompartments).sort((a, b) => a - b);
+    if (currentIds.length === 0) {
+        visibleCompartments.add(1);  // Start with fastest if none selected
+    } else {
+        const slowestId = currentIds[currentIds.length - 1];
+        if (slowestId < 16) {
+            visibleCompartments.add(slowestId + 1);
+        }
+    }
+    syncCheckboxes();
+    showOnlyCompartments(visibleCompartments);
+}
+
+/**
+ * Remove the slowest compartment from selection
+ */
+function removeSlowestCompartment() {
+    const currentIds = Array.from(visibleCompartments).sort((a, b) => a - b);
+    if (currentIds.length <= 1) return;  // Keep at least one compartment
+    
+    const slowestId = currentIds[currentIds.length - 1];
+    visibleCompartments.delete(slowestId);
+    syncCheckboxes();
+    showOnlyCompartments(visibleCompartments);
+}
+
 // ============================================================================
 // REFERENCE TABLE
 // ============================================================================
@@ -412,10 +480,35 @@ function initEventListeners() {
     fullscreenBtn.addEventListener('click', toggleFullscreen);
     exitFullscreenBtn.addEventListener('click', toggleFullscreen);
     
-    // Exit fullscreen on Escape key
+    // Keyboard controls for tissue navigation and fullscreen
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && chartContainer.classList.contains('fullscreen')) {
-            toggleFullscreen();
+        // Don't handle if typing in an input
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+        
+        switch (e.key) {
+            case 'Escape':
+                if (chartContainer.classList.contains('fullscreen')) {
+                    toggleFullscreen();
+                }
+                break;
+                
+            case 'ArrowUp':
+                e.preventDefault();
+                if (e.shiftKey) {
+                    expandToSlowerCompartment();
+                } else {
+                    moveCompartmentsSlower();
+                }
+                break;
+                
+            case 'ArrowDown':
+                e.preventDefault();
+                if (e.shiftKey) {
+                    removeSlowestCompartment();
+                } else {
+                    moveCompartmentsFaster();
+                }
+                break;
         }
     });
 }

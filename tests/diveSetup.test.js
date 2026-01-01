@@ -333,13 +333,24 @@ describe('diveSetup module', () => {
             expect(waypoints[1].time).toBe(2);
         });
 
-        test('maintains correct bottom time', () => {
+        test('maintains correct bottom time (from dive start)', () => {
             const waypoints = generateSimpleProfile(30, 20);
             
             // Descent: 30m / 20 = 1.5 → 2 min
-            // Bottom time start at 2 min, end at 2 + 20 = 22 min
+            // Bottom time is from dive start, so we leave depth at time 20
+            // (not descent + 20 = 22)
             expect(waypoints[1].time).toBe(2);  // Arrive at depth
-            expect(waypoints[2].time).toBe(22); // Leave depth
+            expect(waypoints[2].time).toBe(20); // Leave depth at bottom time
+        });
+
+        test('bottom time is measured from dive start, not from reaching depth', () => {
+            // User says "30m for 30min" - they expect ascent to start at minute 30
+            const waypoints = generateSimpleProfile(30, 30);
+            
+            // Descent: 30m / 20 = 1.5 → 2 min
+            expect(waypoints[1].time).toBe(2);  // Arrive at 30m at minute 2
+            expect(waypoints[2].time).toBe(30); // Leave 30m at minute 30 (not 32!)
+            expect(waypoints[2].depth).toBe(30);
         });
 
         test('waypoints have ascending time values', () => {
@@ -359,15 +370,15 @@ describe('diveSetup module', () => {
         });
 
         test('handles deep dives', () => {
-            const waypoints = generateSimpleProfile(60, 10);
+            const waypoints = generateSimpleProfile(60, 15);
             
             // Descent: 60m / 20 = 3 min
-            // Bottom: 3 + 10 = 13 min
-            // Ascent to 5m: (60-5) / 10 = 5.5 → 6 min, arrives at 19 min
-            // Safety stop: 19 + 3 = 22 min
-            // Final ascent: 5m / 10 = 0.5 → 1 min, surface at 23 min
+            // Bottom time from dive start = 15 min
+            // Ascent to 5m: (60-5) / 10 = 5.5 → 6 min, arrives at 21 min
+            // Safety stop: 21 + 3 = 24 min
+            // Final ascent: 5m / 10 = 0.5 → 1 min, surface at 25 min
             expect(waypoints[1].time).toBe(3);   // Arrive at 60m
-            expect(waypoints[2].time).toBe(13);  // Leave 60m
+            expect(waypoints[2].time).toBe(15);  // Leave 60m at bottom time
             expect(waypoints[3].depth).toBe(5);  // Safety stop depth
         });
     });

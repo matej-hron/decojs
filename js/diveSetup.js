@@ -191,8 +191,13 @@ export function getDefaultSetup() {
  *   - Ascent speed: 10 m/min
  *   - 3 min safety stop at 5m
  *   - Times rounded up to full minutes
+ * 
+ * Bottom time is measured from the START of the dive (time 0), not from
+ * reaching the bottom. This matches how divers plan dives - "30 min bottom time"
+ * means the ascent starts at minute 30.
+ * 
  * @param {number} maxDepth - Maximum depth in meters
- * @param {number} bottomTime - Time at max depth in minutes
+ * @param {number} bottomTime - Time from dive start until leaving max depth (minutes)
  * @returns {Array<{time: number, depth: number}>} Generated waypoints
  */
 export function generateSimpleProfile(maxDepth, bottomTime) {
@@ -204,8 +209,9 @@ export function generateSimpleProfile(maxDepth, bottomTime) {
     // Calculate descent time (rounded up)
     const descentTime = Math.ceil(maxDepth / DESCENT_SPEED);
     
-    // Time at bottom ends
-    const bottomEndTime = descentTime + bottomTime;
+    // Bottom time is from dive start, so we leave depth at bottomTime
+    // (not descentTime + bottomTime)
+    const bottomEndTime = bottomTime;
     
     // Ascent from max depth to safety stop depth
     const ascentToSafetyStop = Math.ceil((maxDepth - SAFETY_STOP_DEPTH) / ASCENT_SPEED);
@@ -221,7 +227,7 @@ export function generateSimpleProfile(maxDepth, bottomTime) {
     return [
         { time: 0, depth: 0 },                           // Start at surface
         { time: descentTime, depth: maxDepth },          // Arrive at max depth
-        { time: bottomEndTime, depth: maxDepth },        // End of bottom time
+        { time: bottomEndTime, depth: maxDepth },        // End of bottom time (from dive start)
         { time: safetyStopStartTime, depth: SAFETY_STOP_DEPTH }, // Arrive at safety stop
         { time: safetyStopEndTime, depth: SAFETY_STOP_DEPTH },   // End of safety stop
         { time: surfaceTime, depth: 0 }                  // Back at surface
