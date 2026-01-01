@@ -467,17 +467,11 @@
                     
                     <!-- Off-gassing Chart -->
                     <div class="half-time-chart-wrapper">
-                        <h4>Off-gassing (Ascent / Gas Switch)</h4>
-                        <p class="chart-description">Tissue starts saturated at the depth above. 
-                           Adjust the breathing gas to see how richer O₂ mixes create larger gradients for faster off-gassing.</p>
+                        <h4>Off-gassing (Ascent to Surface)</h4>
+                        <p class="chart-description">Tissue starts saturated at the selected depth. 
+                           Same half-time, same equation—just inverted. The curves are perfect mirrors.</p>
                         <div class="chart-controls-inline">
-                            <label for="offgassing-gas">Deco Gas @ 6m:</label>
-                            <select id="offgassing-gas">
-                                <option value="0.79" selected>Air (79% N₂)</option>
-                                <option value="0.50">EAN50 (50% N₂)</option>
-                                <option value="0.00">Pure O₂ (0% N₂)</option>
-                            </select>
-                            <span id="offgassing-ppn2-value">(ppN₂ = 0.00 bar @ 6m)</span>
+                            <span id="offgassing-info">Saturated @ <strong id="offgassing-depth-display">30m</strong> → Surface (0.74 bar)</span>
                         </div>
                         <div class="chart-container-small">
                             <canvas id="offgassing-chart"></canvas>
@@ -486,8 +480,8 @@
                 </div>
                 
                 <p class="footnote" style="margin-top: 1rem;">
-                    ℹ️ Both charts share the same dive depth. The off-gassing chart simulates a deco stop at 6m 
-                    after being saturated at the target depth. Time is shown in half-times (T).
+                    ℹ️ Both charts use the same depth and the same half-time formula. 
+                    On-gassing and off-gassing are symmetrical—only the direction changes.
                 </p>
             </div>
 

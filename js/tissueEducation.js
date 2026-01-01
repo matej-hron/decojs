@@ -157,7 +157,6 @@ function animateTissueBars(phase, fast, medium, slow) {
 let ongassingChart = null;
 let offgassingChart = null;
 let currentDepth = 30; // Shared depth state
-let currentN2Fraction = 0.0; // Shared gas state
 
 function initHalfTimeCharts() {
     initOngassingChart();
@@ -169,15 +168,6 @@ function initHalfTimeCharts() {
         depthSlider.addEventListener('input', (e) => {
             currentDepth = parseInt(e.target.value);
             updateOngassingChart();
-            updateOffgassingChart();
-        });
-    }
-    
-    // Link the gas select to off-gassing chart
-    const gasSelect = document.getElementById('offgassing-gas');
-    if (gasSelect) {
-        gasSelect.addEventListener('change', (e) => {
-            currentN2Fraction = parseFloat(e.target.value);
             updateOffgassingChart();
         });
     }
@@ -324,15 +314,13 @@ function updateOngassingChart() {
 
 function initOffgassingChart() {
     const canvas = document.getElementById('offgassing-chart');
-    const gasSelect = document.getElementById('offgassing-gas');
     
-    if (!canvas || !gasSelect) return;
+    if (!canvas) return;
     
-    currentN2Fraction = parseFloat(gasSelect.value);
     const ctx = canvas.getContext('2d');
     
     const initialTissuePpN2 = getSaturatedTissuePpN2(currentDepth);
-    const initialData = calculateOffgassing(initialTissuePpN2, currentN2Fraction);
+    const initialData = calculateOffgassing(initialTissuePpN2);
     
     offgassingChart = new Chart(ctx, {
         type: 'line',
@@ -342,15 +330,15 @@ function initOffgassingChart() {
                 {
                     label: 'Tissue ppN₂',
                     data: initialData.pressures,
-                    borderColor: '#e67e22',
-                    backgroundColor: 'rgba(230, 126, 34, 0.1)',
+                    borderColor: '#e74c3c',
+                    backgroundColor: 'rgba(231, 76, 60, 0.1)',
                     fill: true,
                     tension: 0.4,
                     pointRadius: 0
                 },
                 {
-                    label: 'Target (Breathing gas)',
-                    data: initialData.halfTimes.map(() => initialData.targetPpN2),
+                    label: 'Target (Surface)',
+                    data: initialData.halfTimes.map(() => SURFACE_ALVEOLAR_N2),
                     borderColor: '#27ae60',
                     borderDash: [5, 5],
                     pointRadius: 0,
@@ -421,11 +409,9 @@ function initOffgassingChart() {
     updateOffgassingChart();
 }
 
-const DECO_DEPTH = 6; // 6m deco stop
-
-function calculateOffgassing(initialTissuePpN2, n2Fraction) {
-    const ambientAtDeco = 1 + DECO_DEPTH / 10; // 1.6 bar
-    const targetPpN2 = (ambientAtDeco - WATER_VAPOR_PRESSURE) * n2Fraction;
+function calculateOffgassing(initialTissuePpN2) {
+    // Off-gassing to surface with air
+    const targetPpN2 = SURFACE_ALVEOLAR_N2;
     
     const halfTimes = [];
     const pressures = [];
@@ -436,22 +422,21 @@ function calculateOffgassing(initialTissuePpN2, n2Fraction) {
         pressures.push(pressure);
     }
     
-    return { halfTimes, pressures, targetPpN2 };
+    return { halfTimes, pressures };
 }
 
 function updateOffgassingChart() {
-    const ppn2Value = document.getElementById('offgassing-ppn2-value');
-    const gasSelect = document.getElementById('offgassing-gas');
+    const depthDisplay = document.getElementById('offgassing-depth-display');
     
     const initialTissuePpN2 = getSaturatedTissuePpN2(currentDepth);
-    const data = calculateOffgassing(initialTissuePpN2, currentN2Fraction);
+    const data = calculateOffgassing(initialTissuePpN2);
     
-    if (ppn2Value) ppn2Value.textContent = `(ppN₂ = ${data.targetPpN2.toFixed(2)} bar @ ${DECO_DEPTH}m)`;
+    if (depthDisplay) depthDisplay.textContent = `${currentDepth}m`;
     
     if (offgassingChart) {
         offgassingChart.data.labels = data.halfTimes.map(t => t.toFixed(1));
         offgassingChart.data.datasets[0].data = data.pressures;
-        offgassingChart.data.datasets[1].data = data.halfTimes.map(() => data.targetPpN2);
+        offgassingChart.data.datasets[1].data = data.halfTimes.map(() => SURFACE_ALVEOLAR_N2);
         offgassingChart.data.datasets[2].data = data.halfTimes.map(() => initialTissuePpN2);
         offgassingChart.data.datasets[2].label = `Initial (Saturated @ ${currentDepth}m)`;
         offgassingChart.options.scales.y.max = Math.max(3.5, initialTissuePpN2 + 0.5);
