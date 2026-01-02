@@ -126,6 +126,68 @@
             </div>
         </section>
 
+        <!-- Gradient Factors Explanation -->
+        <section class="concept-card">
+            <h3>🎚️ Gradient Factors (GF)</h3>
+            <p>
+                Gradient Factors are a way to add <strong>conservatism</strong> to the Bühlmann algorithm. 
+                Instead of allowing tissues to reach the raw M-value limit, we use only a <em>fraction</em> of the allowed supersaturation.
+            </p>
+            
+            <div class="formula-block">
+                <h4>How GF Works</h4>
+                <p>The GF-adjusted M-value is calculated as:</p>
+                <div class="formula" id="formula-gf">M_{adjusted} = P_{amb} + GF \times (M_{raw} - P_{amb})</div>
+                <ul>
+                    <li><strong>GF = 100%</strong> — Use full Bühlmann M-value (no conservatism)</li>
+                    <li><strong>GF = 70%</strong> — Use only 70% of the allowed supersaturation</li>
+                    <li><strong>GF = 0%</strong> — No supersaturation allowed (tissue must equal ambient)</li>
+                </ul>
+            </div>
+
+            <div class="formula-block">
+                <h4>GF Low / GF High</h4>
+                <p>Two gradient factors control different phases of the ascent:</p>
+                <table class="simple-table">
+                    <tr>
+                        <td><strong>GF Low</strong></td>
+                        <td>Applied at the <em>first (deepest) deco stop</em>. Controls how deep your first stop is.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GF High</strong></td>
+                        <td>Applied at the <em>surface</em>. Controls how much supersaturation is allowed when you surface.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Between stops</strong></td>
+                        <td>GF is <em>linearly interpolated</em> between GF Low at first stop and GF High at surface.</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="formula-block">
+                <h4>Common GF Settings</h4>
+                <table class="simple-table">
+                    <tr>
+                        <td><strong>GF 100/100</strong></td>
+                        <td>Raw Bühlmann — theoretical limits, not recommended for diving</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GF 70/85</strong></td>
+                        <td>Moderate conservatism — popular starting point</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GF 50/80</strong></td>
+                        <td>More conservative — deeper first stop, common for technical diving</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GF 30/85</strong></td>
+                        <td>Very deep stops — now considered potentially counterproductive</td>
+                    </tr>
+                </table>
+                <p class="note">⚠️ Recent research (U.S. Navy, NEDU) suggests very low GF Low values may not reduce DCS risk and could increase it.</p>
+            </div>
+        </section>
+
         <!-- Compartment Selection -->
         <section id="compartment-selection" class="compartment-section">
             <h2>🎛️ Compartment Selection</h2>
