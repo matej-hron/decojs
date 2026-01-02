@@ -576,7 +576,7 @@ export function getDiveSetupWaypoints(setup) {
  * @returns {number} Surface interval in minutes
  */
 export function getSurfaceInterval(setup) {
-    return setup.surfaceInterval || 60;
+    return setup.surfaceInterval ?? 60;
 }
 
 /**

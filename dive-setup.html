@@ -820,10 +820,11 @@
             let dives;
             
             if (hasDive2) {
+                const dive2SI = parseFloat(dive2SurfaceIntervalInput.value);
                 dives = [
                     { waypoints: readWaypointsFromTable(waypointsBody) },
                     { 
-                        surfaceIntervalBefore: parseFloat(dive2SurfaceIntervalInput.value) || 60,
+                        surfaceIntervalBefore: isNaN(dive2SI) ? 60 : dive2SI,
                         waypoints: readWaypointsFromTable(waypointsBody2) 
                     }
                 ];
@@ -839,6 +840,8 @@
             const gasNames = currentGases.map(g => g.name).join(' + ');
             const generatedName = `${maxDepth}m ${gasNames}`;
             
+            const surfaceIntervalValue = parseFloat(surfaceIntervalInput.value);
+            
             return {
                 id: 'custom', // Always custom when modified
                 name: generatedName, // Auto-generated descriptive name
@@ -847,7 +850,7 @@
                 dives: dives, // Always use dives format
                 gfLow: parseInt(gfLowInput.value) || DEFAULT_GF_LOW,
                 gfHigh: parseInt(gfHighInput.value) || DEFAULT_GF_HIGH,
-                surfaceInterval: parseFloat(surfaceIntervalInput.value) || 60,
+                surfaceInterval: isNaN(surfaceIntervalValue) ? 60 : surfaceIntervalValue,
                 units: currentSetup?.units || { depth: 'meters', time: 'minutes', pressure: 'bar' }
             };
         }
@@ -925,12 +928,14 @@
             const maxDepth = parseFloat(quickMaxDepthInput.value) || 30;
             const bottomTime = parseFloat(quickBottomTimeInput.value) || 20;
             
-            // Get current gas and GF settings
+            // Get current gas and GF settings - read directly from inputs
+            // getNDLForDepth expects percentage (0-100), generateDecoProfile expects fraction (0-1)
             const gas = currentGases[0] || { n2: 0.79, name: 'Air' };
-            const gfHigh = currentSetup?.gfHigh ?? DEFAULT_GF_HIGH;
+            const gfLowPercent = parseFloat(gfLowInput.value) || 100;
+            const gfHighPercent = parseFloat(gfHighInput.value) || 100;
             
-            // Calculate NDL
-            const { ndl, controllingCompartment } = getNDLForDepth(maxDepth, gas, gfHigh);
+            // Calculate NDL (pass percentage)
+            const { ndl, controllingCompartment } = getNDLForDepth(maxDepth, gas, gfHighPercent);
             
             // Update NDL display
             if (ndl === Infinity) {
@@ -957,9 +962,8 @@
             if (ndl !== Infinity && bottomTime > ndl) {
                 decoInfoSpan.style.display = 'inline';
                 
-                // Calculate estimated deco time
-                const gfLow = currentSetup?.gfLow ?? DEFAULT_GF_LOW;
-                const result = generateDecoProfile(maxDepth, bottomTime, currentGases, gfLow, gfHigh);
+                // Calculate estimated deco time (pass percentages)
+                const result = generateDecoProfile(maxDepth, bottomTime, currentGases, gfLowPercent, gfHighPercent);
                 decoTimeSpan.textContent = result.totalDecoTime;
             } else {
                 decoInfoSpan.style.display = 'none';
@@ -982,7 +986,7 @@
             currentGases = getGases(setup);
             renderGasCards();
             
-            surfaceIntervalInput.value = setup.surfaceInterval || 60;
+            surfaceIntervalInput.value = setup.surfaceInterval ?? 60;
             
             // Load Gradient Factors
             const gfLow = setup.gfLow ?? DEFAULT_GF_LOW;

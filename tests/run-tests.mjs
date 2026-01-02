@@ -278,6 +278,10 @@ describe('diveSetup', () => {
         test('returns default 60 if not set', () => {
             expect(getSurfaceInterval({})).toBe(60);
         });
+
+        test('returns 0 when explicitly set to 0', () => {
+            expect(getSurfaceInterval({ surfaceInterval: 0 })).toBe(0);
+        });
     });
 
     describe('formatDiveSetupSummary', () => {
