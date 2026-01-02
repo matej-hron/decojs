@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart Components Test - Deco Theory</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+    <style>
+        .test-section {
+            margin: 2rem 0;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .chart-wrapper {
+            height: 400px;
+            margin-top: 1rem;
+        }
+        .controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        .controls button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #3498db;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .controls button:hover {
+            background: #3498db;
+            color: white;
+        }
+        .controls button.active {
+            background: #3498db;
+            color: white;
+        }
+        .timeline-control {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .timeline-control input[type="range"] {
+            flex: 1;
+        }
+        .status {
+            font-family: monospace;
+            padding: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <nav id="nav-placeholder"></nav>
+    
+    <main class="container">
+        <h1>🧪 Chart Components Test</h1>
+        <p>Testing the new reusable chart components with a sample dive setup.</p>
+        
+        <!-- Dive Profile Chart Test -->
+        <section class="test-section">
+            <h2>📊 DiveProfileChart Component</h2>
+            <div class="controls">
+                <button id="dpc-depth" class="active">Depth Only</button>
+                <button id="dpc-pressure">+ Ambient Pressure</button>
+                <button id="dpc-pp">+ Partial Pressures</button>
+                <button id="dpc-ceiling">+ Ceiling</button>
+            </div>
+            <div id="dive-profile-container" class="chart-wrapper"></div>
+            <div id="dpc-status" class="status">Loading...</div>
+        </section>
+        
+        <!-- Tissue Pressure Chart Test -->
+        <section class="test-section">
+            <h2>🫁 TissuePressureChart Component</h2>
+            <div class="controls">
+                <button id="tpc-loading" class="active">Loading Mode</button>
+                <button id="tpc-mvalue">M-Value Mode</button>
+                <button id="tpc-ceiling">Ceiling Mode</button>
+            </div>
+            <div class="timeline-control" id="timeline-wrapper" style="display: none;">
+                <span>Time:</span>
+                <input type="range" id="time-slider" min="0" max="100" value="0">
+                <span id="time-display">0.0 min @ 0m</span>
+            </div>
+            <div id="tissue-pressure-container" class="chart-wrapper"></div>
+            <div id="tpc-status" class="status">Loading...</div>
+        </section>
+        
+        <!-- Test with Different Profiles -->
+        <section class="test-section">
+            <h2>🔄 Test Different Profiles</h2>
+            <div class="controls">
+                <button id="profile-simple">Simple 30m/20min</button>
+                <button id="profile-deco">Deco Dive 40m/25min</button>
+                <button id="profile-nitrox">Nitrox 32 @ 30m</button>
+            </div>
+        </section>
+    </main>
+    
+    <script src="js/nav.js"></script>
+    <script type="module">
+        import { DiveProfileChart } from './js/charts/DiveProfileChart.js';
+        import { TissuePressureChart } from './js/charts/TissuePressureChart.js';
+        
+        // Sample dive setups for testing
+        const PROFILES = {
+            simple: {
+                name: 'Simple Recreational Dive',
+                gases: [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 }],
+                gfLow: 100,
+                gfHigh: 100,
+                surfaceInterval: 30,
+                dives: [{
+                    waypoints: [
+                        { time: 0, depth: 0 },
+                        { time: 2, depth: 30 },
+                        { time: 22, depth: 30 },
+                        { time: 25, depth: 5 },
+                        { time: 28, depth: 5 },
+                        { time: 29, depth: 0 }
+                    ]
+                }]
+            },
+            deco: {
+                name: 'Decompression Dive',
+                gases: [
+                    { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 },
+                    { id: 'ean50', name: 'Nitrox 50', o2: 0.50, n2: 0.50, he: 0 }
+                ],
+                gfLow: 70,
+                gfHigh: 85,
+                surfaceInterval: 60,
+                dives: [{
+                    waypoints: [
+                        { time: 0, depth: 0 },
+                        { time: 2, depth: 40, gasId: 'air' },
+                        { time: 27, depth: 40 },
+                        { time: 31, depth: 21 },
+                        { time: 33, depth: 21, gasId: 'ean50' },
+                        { time: 34, depth: 9 },
+                        { time: 37, depth: 9 },
+                        { time: 38, depth: 6 },
+                        { time: 43, depth: 6 },
+                        { time: 44, depth: 3 },
+                        { time: 50, depth: 3 },
+                        { time: 51, depth: 0 }
+                    ]
+                }]
+            },
+            nitrox: {
+                name: 'Nitrox 32 Dive',
+                gases: [{ id: 'ean32', name: 'Nitrox 32', o2: 0.32, n2: 0.68, he: 0 }],
+                gfLow: 85,
+                gfHigh: 85,
+                surfaceInterval: 30,
+                dives: [{
+                    waypoints: [
+                        { time: 0, depth: 0 },
+                        { time: 2, depth: 30 },
+                        { time: 35, depth: 30 },
+                        { time: 38, depth: 5 },
+                        { time: 41, depth: 5 },
+                        { time: 42, depth: 0 }
+                    ]
+                }]
+            }
+        };
+        
+        let currentProfile = PROFILES.simple;
+        let diveProfileChart = null;
+        let tissuePressureChart = null;
+        
+        // Initialize charts
+        function initCharts() {
+            const dpcContainer = document.getElementById('dive-profile-container');
+            const tpcContainer = document.getElementById('tissue-pressure-container');
+            
+            // Create Dive Profile Chart
+            diveProfileChart = new DiveProfileChart(dpcContainer, {
+                diveSetup: currentProfile,
+                options: {
+                    mode: 'depth',
+                    showGasSwitches: true
+                }
+            });
+            document.getElementById('dpc-status').textContent = 
+                `✅ DiveProfileChart initialized with "${currentProfile.name}"`;
+            
+            // Create Tissue Pressure Chart
+            tissuePressureChart = new TissuePressureChart(tpcContainer, {
+                diveSetup: currentProfile,
+                options: {
+                    mode: 'loading',
+                    compartments: [1, 2, 3, 4, 5, 6, 7, 8],
+                    compartmentSelector: true,
+                    showAmbientLine: true
+                }
+            });
+            document.getElementById('tpc-status').textContent = 
+                `✅ TissuePressureChart initialized with "${currentProfile.name}"`;
+        }
+        
+        // DPC mode buttons
+        document.getElementById('dpc-depth').addEventListener('click', () => {
+            setDpcMode('depth', { showAmbientPressure: false, showPartialPressures: false, showCeiling: false });
+        });
+        document.getElementById('dpc-pressure').addEventListener('click', () => {
+            setDpcMode('pressure', { showAmbientPressure: true, showPartialPressures: false, showCeiling: false });
+        });
+        document.getElementById('dpc-pp').addEventListener('click', () => {
+            setDpcMode('partial-pressure', { showAmbientPressure: true, showPartialPressures: true, showCeiling: false });
+        });
+        document.getElementById('dpc-ceiling').addEventListener('click', () => {
+            setDpcMode('all', { showAmbientPressure: true, showPartialPressures: true, showCeiling: true });
+        });
+        
+        function setDpcMode(mode, options) {
+            document.querySelectorAll('#dive-profile-container').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            diveProfileChart.setOptions(options);
+            document.getElementById('dpc-status').textContent = `Mode: ${mode}`;
+        }
+        
+        // TPC mode buttons
+        document.getElementById('tpc-loading').addEventListener('click', () => {
+            setTpcMode('loading');
+            document.getElementById('timeline-wrapper').style.display = 'none';
+        });
+        document.getElementById('tpc-mvalue').addEventListener('click', () => {
+            setTpcMode('mvalue');
+            document.getElementById('timeline-wrapper').style.display = 'flex';
+            updateTimeDisplay();
+        });
+        document.getElementById('tpc-ceiling').addEventListener('click', () => {
+            setTpcMode('ceiling');
+            document.getElementById('timeline-wrapper').style.display = 'none';
+        });
+        
+        function setTpcMode(mode) {
+            document.querySelectorAll('.test-section:nth-child(2) .controls button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            tissuePressureChart.setMode(mode);
+            document.getElementById('tpc-status').textContent = `Mode: ${mode}`;
+        }
+        
+        // Timeline slider for M-value mode
+        document.getElementById('time-slider').addEventListener('input', (e) => {
+            const maxIndex = tissuePressureChart.getTimePointCount() - 1;
+            const index = Math.round((e.target.value / 100) * maxIndex);
+            tissuePressureChart.setTimeIndex(index);
+            updateTimeDisplay();
+        });
+        
+        function updateTimeDisplay() {
+            const time = tissuePressureChart.getCurrentTime();
+            const depth = tissuePressureChart.getCurrentDepth();
+            document.getElementById('time-display').textContent = 
+                `${time.toFixed(1)} min @ ${depth.toFixed(1)}m`;
+        }
+        
+        // Profile buttons
+        document.getElementById('profile-simple').addEventListener('click', () => loadProfile('simple'));
+        document.getElementById('profile-deco').addEventListener('click', () => loadProfile('deco'));
+        document.getElementById('profile-nitrox').addEventListener('click', () => loadProfile('nitrox'));
+        
+        function loadProfile(name) {
+            currentProfile = PROFILES[name];
+            diveProfileChart.update(currentProfile);
+            tissuePressureChart.update(currentProfile);
+            
+            document.getElementById('dpc-status').textContent = 
+                `✅ Updated to "${currentProfile.name}"`;
+            document.getElementById('tpc-status').textContent = 
+                `✅ Updated to "${currentProfile.name}"`;
+            
+            // Reset time slider
+            document.getElementById('time-slider').value = 0;
+            updateTimeDisplay();
+        }
+        
+        // Initialize on load
+        initCharts();
+    </script>
+</body>
+</html>
