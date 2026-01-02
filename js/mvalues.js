@@ -1035,6 +1035,7 @@ function buildDatasets() {
 
 /**
  * Calculate appropriate axis bounds based on dive profile and visible compartments
+ * Y-axis must extend high enough to show M-value lines at max ambient pressure
  */
 function calculateAxisBounds() {
     if (!diveResults) {
@@ -1046,7 +1047,6 @@ function calculateAxisBounds() {
     
     // Find max tissue pressure across ALL visible compartments
     let maxTissue = 0;
-    
     COMPARTMENTS.forEach(comp => {
         if (visibleCompartments.has(comp.id)) {
             const tissueMax = Math.max(...diveResults.compartments[comp.id].pressures);
@@ -1054,11 +1054,34 @@ function calculateAxisBounds() {
         }
     });
     
-    // Scale based on what actually happens in the dive:
-    // - Must show max ambient (deepest point on X-axis)
-    // - Must show max tissue pressure (highest point on Y-axis)
-    // - Add 20% margin for M-value line context above tissue path
-    const maxP = Math.max(maxAmbient, maxTissue) * 1.2;
+    // Find max M-value at max ambient pressure for visible compartments
+    // This ensures the M-value lines are visible at the deepest point
+    let maxMValue = 0;
+    const { gfLow } = currentSetup ? getGradientFactors(currentSetup) : { gfLow: 1 };
+    
+    COMPARTMENTS.forEach(comp => {
+        if (visibleCompartments.has(comp.id)) {
+            // Raw M-value at max ambient
+            const rawM = comp.aN2 + maxAmbient / comp.bN2;
+            maxMValue = Math.max(maxMValue, rawM);
+            
+            // Also check GF-adjusted M-value (in case GF > 100% somehow)
+            const adjustedM = getAdjustedMValue(maxAmbient, comp.aN2, comp.bN2, gfLow);
+            maxMValue = Math.max(maxMValue, adjustedM);
+        }
+    });
+    
+    // Y-axis must show:
+    // - Max tissue pressure (where the diver actually goes)
+    // - M-value lines at max ambient (the theoretical limits)
+    // Add 10% margin for visual clarity
+    const maxY = Math.max(maxTissue, maxMValue) * 1.1;
+    
+    // X-axis just needs to show the dive range
+    const maxX = maxAmbient * 1.1;
+    
+    // Use the larger of the two for a square-ish chart, or allow different scales
+    const maxP = Math.max(maxX, maxY);
     
     return {
         minP: CHART_CONFIG.minPressure,
