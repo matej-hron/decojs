@@ -26,6 +26,10 @@ export const N2_FRACTION = 0.79;
 /** Pressure increase per meter of seawater depth */
 export const PRESSURE_PER_METER = 0.1; // bar per meter
 
+/** Default Gradient Factors (100% = use raw Bühlmann M-values) */
+export const DEFAULT_GF_LOW = 1.0;   // 100%
+export const DEFAULT_GF_HIGH = 1.0;  // 100%
+
 // ============================================================================
 // CORE CALCULATIONS
 // ============================================================================
@@ -93,6 +97,145 @@ export function schreinerEquation(initialPressure, initialAlveolarPressure, rate
     const term1 = initialAlveolarPressure + rate * (time - 1/k);
     const term2 = (initialAlveolarPressure - initialPressure - rate/k) * Math.exp(-k * time);
     return term1 - term2;
+}
+
+// ============================================================================
+// GRADIENT FACTORS & CEILING CALCULATIONS
+// ============================================================================
+
+/**
+ * Calculate M-value (maximum tolerable tissue pressure) at given ambient pressure
+ * Using Bühlmann formula: M = a + P_amb / b
+ * 
+ * @param {number} ambientPressure - Ambient pressure in bar
+ * @param {number} a - Bühlmann 'a' coefficient (bar)
+ * @param {number} b - Bühlmann 'b' coefficient (dimensionless)
+ * @returns {number} Maximum tolerable tissue inert gas pressure in bar
+ */
+export function getMValue(ambientPressure, a, b) {
+    return a + ambientPressure / b;
+}
+
+/**
+ * Calculate GF-adjusted M-value at given ambient pressure
+ * The adjusted M-value is a fraction of the way from ambient to raw M-value:
+ * M_adjusted = P_amb + GF × (M_raw - P_amb)
+ * 
+ * @param {number} ambientPressure - Ambient pressure in bar
+ * @param {number} a - Bühlmann 'a' coefficient (bar)
+ * @param {number} b - Bühlmann 'b' coefficient (dimensionless)
+ * @param {number} gf - Gradient factor (0-1, where 1 = 100% = raw M-value)
+ * @returns {number} GF-adjusted maximum tolerable tissue pressure in bar
+ */
+export function getAdjustedMValue(ambientPressure, a, b, gf) {
+    const mValue = getMValue(ambientPressure, a, b);
+    return ambientPressure + gf * (mValue - ambientPressure);
+}
+
+/**
+ * Calculate ceiling (minimum tolerable ambient pressure) for a single compartment
+ * This is the shallowest depth where the tissue remains within GF-adjusted limits.
+ * 
+ * Derived by solving: P_tissue = P_amb + GF × (a + P_amb/b - P_amb)
+ * for P_amb, giving: P_ceiling = b × (P_tissue - GF × a) / (b × (1 - GF) + GF)
+ * 
+ * @param {number} tissuePressure - Current tissue inert gas pressure in bar
+ * @param {number} a - Bühlmann 'a' coefficient (bar)
+ * @param {number} b - Bühlmann 'b' coefficient (dimensionless)
+ * @param {number} gf - Gradient factor (0-1)
+ * @returns {number} Minimum tolerable ambient pressure in bar (may be < SURFACE_PRESSURE)
+ */
+export function getCompartmentCeiling(tissuePressure, a, b, gf) {
+    // P_ceiling = b × (P_tissue - GF × a) / (b × (1 - GF) + GF)
+    const numerator = b * (tissuePressure - gf * a);
+    const denominator = b * (1 - gf) + gf;
+    return numerator / denominator;
+}
+
+/**
+ * Calculate overall dive ceiling across all compartments
+ * The ceiling is the maximum (deepest) of all individual compartment ceilings.
+ * 
+ * @param {Object} tissuePressures - Map of compartment ID to tissue pressure (bar)
+ * @param {number} gf - Gradient factor to use (0-1)
+ * @returns {{ceiling: number, ceilingDepth: number, controllingCompartment: number}}
+ *          ceiling in bar, ceilingDepth in meters (0 if can surface), controlling compartment ID
+ */
+export function getDiveCeiling(tissuePressures, gf) {
+    let maxCeiling = -Infinity;
+    let controllingComp = null;
+    
+    for (const comp of COMPARTMENTS) {
+        const tissueP = tissuePressures[comp.id];
+        const ceiling = getCompartmentCeiling(tissueP, comp.aN2, comp.bN2, gf);
+        if (ceiling > maxCeiling) {
+            maxCeiling = ceiling;
+            controllingComp = comp.id;
+        }
+    }
+    
+    // Ceiling can't be below surface (above water)
+    const finalCeiling = Math.max(SURFACE_PRESSURE, maxCeiling);
+    
+    // Convert ceiling pressure to depth
+    const ceilingDepth = Math.max(0, (finalCeiling - SURFACE_PRESSURE) / PRESSURE_PER_METER);
+    
+    return {
+        ceiling: finalCeiling,
+        ceilingDepth: ceilingDepth,
+        controllingCompartment: controllingComp
+    };
+}
+
+/**
+ * Interpolate GF based on current depth between first stop and surface
+ * At or below first stop: use GF Low
+ * At surface: use GF High
+ * Between: linear interpolation based on ambient pressure
+ * 
+ * @param {number} currentAmbient - Current ambient pressure in bar
+ * @param {number} firstStopAmbient - Ambient pressure at first/deepest stop in bar
+ * @param {number} gfLow - GF Low value (0-1)
+ * @param {number} gfHigh - GF High value (0-1)
+ * @returns {number} Interpolated GF (0-1)
+ */
+export function interpolateGF(currentAmbient, firstStopAmbient, gfLow, gfHigh) {
+    // At or deeper than first stop: use GF Low
+    if (currentAmbient >= firstStopAmbient) {
+        return gfLow;
+    }
+    
+    // At or above surface: use GF High
+    if (currentAmbient <= SURFACE_PRESSURE) {
+        return gfHigh;
+    }
+    
+    // Linear interpolation between surface and first stop
+    // fraction = 0 at surface, 1 at first stop
+    const fraction = (currentAmbient - SURFACE_PRESSURE) / (firstStopAmbient - SURFACE_PRESSURE);
+    return gfHigh + fraction * (gfLow - gfHigh);
+}
+
+/**
+ * Calculate the first stop depth using GF Low
+ * This establishes the deepest point of the GF line for interpolation.
+ * 
+ * @param {Object} tissuePressures - Map of compartment ID to tissue pressure (bar)
+ * @param {number} gfLow - GF Low value (0-1)
+ * @param {number} stopIncrement - Stop depth increment in meters (default 3m)
+ * @returns {{depth: number, ambient: number, controllingCompartment: number}}
+ */
+export function getFirstStopDepth(tissuePressures, gfLow, stopIncrement = 3) {
+    const { ceiling, ceilingDepth, controllingCompartment } = getDiveCeiling(tissuePressures, gfLow);
+    
+    // Round up to next stop increment
+    const stopDepth = Math.ceil(ceilingDepth / stopIncrement) * stopIncrement;
+    
+    return {
+        depth: stopDepth,
+        ambient: getAmbientPressure(stopDepth),
+        controllingCompartment
+    };
 }
 
 // ============================================================================

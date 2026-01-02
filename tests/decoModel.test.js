@@ -8,11 +8,19 @@ import {
     WATER_VAPOR_PRESSURE,
     N2_FRACTION,
     PRESSURE_PER_METER,
+    DEFAULT_GF_LOW,
+    DEFAULT_GF_HIGH,
     getAmbientPressure,
     getAlveolarN2Pressure,
     getInitialTissueN2,
     haldaneEquation,
-    schreinerEquation
+    schreinerEquation,
+    getMValue,
+    getAdjustedMValue,
+    getCompartmentCeiling,
+    getDiveCeiling,
+    interpolateGF,
+    getFirstStopDepth
 } from '../js/decoModel.js';
 
 import { COMPARTMENTS } from '../js/tissueCompartments.js';
@@ -270,6 +278,305 @@ describe('decoModel module', () => {
             // ZH-L16A values for 5 min half-time (variant)
             expect(tc1.aN2).toBeCloseTo(1.1696, 3);
             expect(tc1.bN2).toBeCloseTo(0.5578, 3);
+        });
+    });
+
+    // ========================================================================
+    // GRADIENT FACTORS TESTS
+    // ========================================================================
+
+    describe('Gradient Factor constants', () => {
+        test('DEFAULT_GF_LOW is 1.0 (100%)', () => {
+            expect(DEFAULT_GF_LOW).toBe(1.0);
+        });
+
+        test('DEFAULT_GF_HIGH is 1.0 (100%)', () => {
+            expect(DEFAULT_GF_HIGH).toBe(1.0);
+        });
+    });
+
+    describe('getMValue', () => {
+        test('calculates M-value using Bühlmann formula M = a + P_amb / b', () => {
+            // TC1: a = 1.1696, b = 0.5578
+            // At surface (1 bar): M = 1.1696 + 1.0 / 0.5578 = 1.1696 + 1.7928 = 2.9624
+            const mValue = getMValue(1.0, 1.1696, 0.5578);
+            expect(mValue).toBeCloseTo(2.9624, 3);
+        });
+
+        test('M-value increases with ambient pressure', () => {
+            const a = 1.1696, b = 0.5578;
+            const mAtSurface = getMValue(1.0, a, b);
+            const mAt10m = getMValue(2.0, a, b);
+            const mAt30m = getMValue(4.0, a, b);
+            
+            expect(mAt10m).toBeGreaterThan(mAtSurface);
+            expect(mAt30m).toBeGreaterThan(mAt10m);
+        });
+
+        test('M-value at 30m depth for TC1', () => {
+            // At 30m (4 bar): M = 1.1696 + 4.0 / 0.5578 = 1.1696 + 7.1711 = 8.3407
+            const mValue = getMValue(4.0, 1.1696, 0.5578);
+            expect(mValue).toBeCloseTo(8.3407, 3);
+        });
+    });
+
+    describe('getAdjustedMValue', () => {
+        test('GF 100% returns raw M-value', () => {
+            const a = 1.1696, b = 0.5578;
+            const rawM = getMValue(1.0, a, b);
+            const adjustedM = getAdjustedMValue(1.0, a, b, 1.0);
+            expect(adjustedM).toBeCloseTo(rawM, 6);
+        });
+
+        test('GF 0% returns ambient pressure (no supersaturation allowed)', () => {
+            const ambientPressure = 2.0; // 10m
+            const adjustedM = getAdjustedMValue(ambientPressure, 1.1696, 0.5578, 0.0);
+            expect(adjustedM).toBeCloseTo(ambientPressure, 6);
+        });
+
+        test('GF 50% returns halfway between ambient and raw M-value', () => {
+            const a = 1.1696, b = 0.5578;
+            const ambient = 1.0;
+            const rawM = getMValue(ambient, a, b);
+            const adjustedM = getAdjustedMValue(ambient, a, b, 0.5);
+            const expected = ambient + 0.5 * (rawM - ambient);
+            expect(adjustedM).toBeCloseTo(expected, 6);
+        });
+
+        test('GF 70/85 typical values work correctly', () => {
+            const a = 1.1696, b = 0.5578;
+            const ambient = 1.0;
+            const rawM = getMValue(ambient, a, b);
+            
+            // GF 70%
+            const m70 = getAdjustedMValue(ambient, a, b, 0.70);
+            expect(m70).toBeCloseTo(ambient + 0.70 * (rawM - ambient), 6);
+            
+            // GF 85%
+            const m85 = getAdjustedMValue(ambient, a, b, 0.85);
+            expect(m85).toBeCloseTo(ambient + 0.85 * (rawM - ambient), 6);
+            
+            // 85% should allow more supersaturation than 70%
+            expect(m85).toBeGreaterThan(m70);
+        });
+    });
+
+    describe('getCompartmentCeiling', () => {
+        test('tissue at surface equilibrium has no ceiling (can surface)', () => {
+            // Surface equilibrium N2 ≈ 0.74 bar, well below any M-value
+            const tissueP = 0.74;
+            const ceiling = getCompartmentCeiling(tissueP, 1.1696, 0.5578, 1.0);
+            expect(ceiling).toBeLessThan(SURFACE_PRESSURE);
+        });
+
+        test('higher tissue pressure requires deeper ceiling', () => {
+            const a = 1.1696, b = 0.5578;
+            const lowP = 1.5;
+            const highP = 3.0;
+            
+            const ceilingLow = getCompartmentCeiling(lowP, a, b, 1.0);
+            const ceilingHigh = getCompartmentCeiling(highP, a, b, 1.0);
+            
+            expect(ceilingHigh).toBeGreaterThan(ceilingLow);
+        });
+
+        test('lower GF requires deeper ceiling for same tissue pressure', () => {
+            const tissueP = 2.5;
+            const a = 1.1696, b = 0.5578;
+            
+            const ceiling100 = getCompartmentCeiling(tissueP, a, b, 1.0);
+            const ceiling70 = getCompartmentCeiling(tissueP, a, b, 0.7);
+            
+            // GF 70% is more conservative, requires deeper ceiling
+            expect(ceiling70).toBeGreaterThan(ceiling100);
+        });
+
+        test('ceiling formula is mathematically correct', () => {
+            // Verify: P_ceiling = b × (P_tissue - GF × a) / (b × (1 - GF) + GF)
+            const tissueP = 2.5;
+            const a = 0.8618, b = 0.7222; // TC3
+            const gf = 0.8;
+            
+            const ceiling = getCompartmentCeiling(tissueP, a, b, gf);
+            
+            // Manually calculate
+            const numerator = b * (tissueP - gf * a);
+            const denominator = b * (1 - gf) + gf;
+            const expected = numerator / denominator;
+            
+            expect(ceiling).toBeCloseTo(expected, 6);
+        });
+
+        test('at GF 100%, tissue at M-value gives ceiling at that ambient', () => {
+            // If tissue pressure equals M-value at a given ambient, ceiling = that ambient
+            const ambient = 2.0; // 10m
+            const a = 1.1696, b = 0.5578;
+            const mValue = getMValue(ambient, a, b);
+            
+            const ceiling = getCompartmentCeiling(mValue, a, b, 1.0);
+            expect(ceiling).toBeCloseTo(ambient, 4);
+        });
+    });
+
+    describe('getDiveCeiling', () => {
+        test('surface-saturated tissues have no ceiling requirement', () => {
+            const tissuePressures = {};
+            COMPARTMENTS.forEach(comp => {
+                tissuePressures[comp.id] = 0.74; // Surface equilibrium
+            });
+            
+            const result = getDiveCeiling(tissuePressures, 1.0);
+            
+            expect(result.ceiling).toBe(SURFACE_PRESSURE);
+            expect(result.ceilingDepth).toBe(0);
+        });
+
+        test('returns controlling compartment', () => {
+            const tissuePressures = {};
+            COMPARTMENTS.forEach(comp => {
+                tissuePressures[comp.id] = 0.74;
+            });
+            // Make TC3 have higher loading
+            tissuePressures[3] = 2.5;
+            
+            const result = getDiveCeiling(tissuePressures, 1.0);
+            
+            expect(result.controllingCompartment).toBe(3);
+        });
+
+        test('ceiling depth is in meters', () => {
+            const tissuePressures = {};
+            COMPARTMENTS.forEach(comp => {
+                tissuePressures[comp.id] = 2.5; // Moderate loading
+            });
+            
+            const result = getDiveCeiling(tissuePressures, 0.7);
+            
+            // Should have a positive ceiling depth with this loading and GF
+            expect(result.ceilingDepth).toBeGreaterThanOrEqual(0);
+            // Ceiling depth should match ceiling pressure
+            expect(result.ceilingDepth).toBeCloseTo(
+                (result.ceiling - SURFACE_PRESSURE) / PRESSURE_PER_METER, 
+                4
+            );
+        });
+
+        test('lower GF produces deeper ceiling', () => {
+            const tissuePressures = {};
+            COMPARTMENTS.forEach(comp => {
+                tissuePressures[comp.id] = 2.0;
+            });
+            
+            const result100 = getDiveCeiling(tissuePressures, 1.0);
+            const result70 = getDiveCeiling(tissuePressures, 0.7);
+            
+            expect(result70.ceilingDepth).toBeGreaterThanOrEqual(result100.ceilingDepth);
+        });
+    });
+
+    describe('interpolateGF', () => {
+        test('returns GF Low at first stop depth', () => {
+            const firstStopAmbient = 2.0; // 10m
+            const gf = interpolateGF(2.0, firstStopAmbient, 0.7, 0.85);
+            expect(gf).toBe(0.7);
+        });
+
+        test('returns GF Low below first stop depth', () => {
+            const firstStopAmbient = 2.0; // 10m
+            const gf = interpolateGF(3.0, firstStopAmbient, 0.7, 0.85); // 20m
+            expect(gf).toBe(0.7);
+        });
+
+        test('returns GF High at surface', () => {
+            const firstStopAmbient = 2.0;
+            const gf = interpolateGF(1.0, firstStopAmbient, 0.7, 0.85);
+            expect(gf).toBe(0.85);
+        });
+
+        test('returns GF High above surface (edge case)', () => {
+            const firstStopAmbient = 2.0;
+            const gf = interpolateGF(0.5, firstStopAmbient, 0.7, 0.85);
+            expect(gf).toBe(0.85);
+        });
+
+        test('interpolates linearly between surface and first stop', () => {
+            const firstStopAmbient = 2.0; // 10m
+            const gfLow = 0.7, gfHigh = 0.85;
+            
+            // Midpoint: 1.5 bar (5m)
+            const gfMid = interpolateGF(1.5, firstStopAmbient, gfLow, gfHigh);
+            // fraction = (1.5 - 1.0) / (2.0 - 1.0) = 0.5
+            // gf = 0.85 + 0.5 * (0.7 - 0.85) = 0.85 - 0.075 = 0.775
+            expect(gfMid).toBeCloseTo(0.775, 6);
+        });
+
+        test('interpolation at 3m (common last stop)', () => {
+            const firstStopAmbient = 2.0; // 10m first stop
+            const gfLow = 0.7, gfHigh = 0.85;
+            
+            // 3m = 1.3 bar
+            const gf3m = interpolateGF(1.3, firstStopAmbient, gfLow, gfHigh);
+            // fraction = (1.3 - 1.0) / (2.0 - 1.0) = 0.3
+            // gf = 0.85 + 0.3 * (0.7 - 0.85) = 0.85 - 0.045 = 0.805
+            expect(gf3m).toBeCloseTo(0.805, 6);
+        });
+
+        test('handles GF Low > GF High (unusual but valid)', () => {
+            const firstStopAmbient = 2.0;
+            const gfLow = 0.9, gfHigh = 0.7; // Inverted
+            
+            expect(interpolateGF(2.0, firstStopAmbient, gfLow, gfHigh)).toBe(0.9);
+            expect(interpolateGF(1.0, firstStopAmbient, gfLow, gfHigh)).toBe(0.7);
+            
+            // Midpoint should be 0.8
+            const gfMid = interpolateGF(1.5, firstStopAmbient, gfLow, gfHigh);
+            expect(gfMid).toBeCloseTo(0.8, 6);
+        });
+    });
+
+    describe('getFirstStopDepth', () => {
+        test('surface-saturated tissues have 0m first stop', () => {
+            const tissuePressures = {};
+            COMPARTMENTS.forEach(comp => {
+                tissuePressures[comp.id] = 0.74;
+            });
+            
+            const result = getFirstStopDepth(tissuePressures, 0.7);
+            expect(result.depth).toBe(0);
+        });
+
+        test('rounds up to 3m increments by default', () => {
+            const tissuePressures = {};
+            COMPARTMENTS.forEach(comp => {
+                tissuePressures[comp.id] = 2.0;
+            });
+            
+            const result = getFirstStopDepth(tissuePressures, 0.5);
+            // Should be divisible by 3
+            expect(result.depth % 3).toBe(0);
+        });
+
+        test('returns ambient pressure at stop depth', () => {
+            const tissuePressures = {};
+            COMPARTMENTS.forEach(comp => {
+                tissuePressures[comp.id] = 2.5;
+            });
+            
+            const result = getFirstStopDepth(tissuePressures, 0.5);
+            expect(result.ambient).toBeCloseTo(
+                SURFACE_PRESSURE + result.depth * PRESSURE_PER_METER, 
+                6
+            );
+        });
+
+        test('supports custom stop increments', () => {
+            const tissuePressures = {};
+            COMPARTMENTS.forEach(comp => {
+                tissuePressures[comp.id] = 2.5;
+            });
+            
+            const result5m = getFirstStopDepth(tissuePressures, 0.5, 5);
+            expect(result5m.depth % 5).toBe(0);
         });
     });
 });
