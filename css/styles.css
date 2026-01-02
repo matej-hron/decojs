@@ -1424,7 +1424,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.0.92";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.0.93";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* Responsive */
@@ -2076,6 +2076,75 @@ textarea.form-input {
     .quick-setup-row .btn {
         width: 100%;
     }
+}
+
+/* NDL Display */
+.ndl-display {
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    background: var(--card-bg);
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+}
+
+.ndl-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ndl-label {
+    color: var(--text-secondary);
+}
+
+.ndl-value {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: var(--primary-color);
+}
+
+.ndl-status {
+    font-size: 0.9em;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+}
+
+.ndl-status.ndl-ok {
+    background: rgba(39, 174, 96, 0.1);
+    color: #27ae60;
+}
+
+.ndl-status.ndl-warning {
+    background: rgba(243, 156, 18, 0.1);
+    color: #f39c12;
+}
+
+.ndl-status.ndl-deco {
+    background: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+}
+
+.deco-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.6rem;
+    background: rgba(231, 76, 60, 0.1);
+    border-radius: 4px;
+}
+
+.deco-warning {
+    color: #e74c3c;
+    font-weight: 500;
+}
+
+.deco-time {
+    font-weight: bold;
+    color: #e74c3c;
 }
 
 /* Profile Header Bar (for theory pages) */

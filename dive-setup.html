@@ -165,6 +165,17 @@
                             </div>
                             <button id="generate-profile-btn" class="btn btn-secondary">🔄 Generate Profile</button>
                         </div>
+                        <div class="ndl-display" id="ndl-display">
+                            <span class="ndl-info">
+                                <span class="ndl-label">NDL at this depth:</span>
+                                <span class="ndl-value" id="ndl-value">--</span> min
+                                <span class="ndl-status" id="ndl-status"></span>
+                            </span>
+                            <span class="deco-info" id="deco-info" style="display: none;">
+                                <span class="deco-warning">⚠️ Deco required:</span>
+                                <span class="deco-time" id="deco-time">--</span> min stops
+                            </span>
+                        </div>
                     </div>
                 </details>
 
@@ -286,7 +297,8 @@
 
     <!-- Dive Setup Script -->
     <script type="module">
-        import { loadDiveSetup, saveDiveSetup, clearCache, formatDiveSetupSummary, getDiveSetupWaypoints, BOTTOM_GASES, DECO_GASES, BOTTOM_CYLINDERS, STAGE_CYLINDERS, getBottomGas, getDecoGas, calculateMOD, generateSimpleProfile, getGases, insertGasSwitchWaypoints, generateProfileName, getGasSwitchEvents, DEFAULT_GF_LOW, DEFAULT_GF_HIGH } from './js/diveSetup.js';
+        import { loadDiveSetup, saveDiveSetup, clearCache, formatDiveSetupSummary, getDiveSetupWaypoints, BOTTOM_GASES, DECO_GASES, BOTTOM_CYLINDERS, STAGE_CYLINDERS, getBottomGas, getDecoGas, calculateMOD, generateSimpleProfile, getGases, insertGasSwitchWaypoints, generateProfileName, getGasSwitchEvents, DEFAULT_GF_LOW, DEFAULT_GF_HIGH, getNDLForDepth, generateDecoProfile } from './js/diveSetup.js';
+        import { COMPARTMENTS } from './js/tissueCompartments.js';
 
         let currentSetup = null;
         let predefinedProfiles = [];
@@ -329,6 +341,10 @@
         const quickMaxDepthInput = document.getElementById('quick-max-depth');
         const quickBottomTimeInput = document.getElementById('quick-bottom-time');
         const generateProfileBtn = document.getElementById('generate-profile-btn');
+        const ndlValueSpan = document.getElementById('ndl-value');
+        const ndlStatusSpan = document.getElementById('ndl-status');
+        const decoInfoSpan = document.getElementById('deco-info');
+        const decoTimeSpan = document.getElementById('deco-time');
         
         // New profile button
         const newProfileBtn = document.getElementById('new-profile-btn');
@@ -904,6 +920,52 @@
             updateProfileName();
         }
 
+        // Update NDL display based on current depth, gas, and GF settings
+        function updateNDLDisplay() {
+            const maxDepth = parseFloat(quickMaxDepthInput.value) || 30;
+            const bottomTime = parseFloat(quickBottomTimeInput.value) || 20;
+            
+            // Get current gas and GF settings
+            const gas = currentGases[0] || { n2: 0.79, name: 'Air' };
+            const gfHigh = currentSetup?.gfHigh ?? DEFAULT_GF_HIGH;
+            
+            // Calculate NDL
+            const { ndl, controllingCompartment } = getNDLForDepth(maxDepth, gas, gfHigh);
+            
+            // Update NDL display
+            if (ndl === Infinity) {
+                ndlValueSpan.textContent = '∞';
+                ndlStatusSpan.textContent = '✅ No limit';
+                ndlStatusSpan.className = 'ndl-status ndl-ok';
+            } else {
+                ndlValueSpan.textContent = ndl;
+                
+                if (bottomTime <= ndl) {
+                    const remaining = ndl - bottomTime;
+                    ndlStatusSpan.textContent = `✅ ${remaining}min remaining`;
+                    ndlStatusSpan.className = 'ndl-status ndl-ok';
+                } else if (bottomTime <= ndl * 1.1) {
+                    ndlStatusSpan.textContent = '⚠️ At limit';
+                    ndlStatusSpan.className = 'ndl-status ndl-warning';
+                } else {
+                    ndlStatusSpan.textContent = '🔴 Deco dive';
+                    ndlStatusSpan.className = 'ndl-status ndl-deco';
+                }
+            }
+            
+            // Update deco info if bottom time exceeds NDL
+            if (ndl !== Infinity && bottomTime > ndl) {
+                decoInfoSpan.style.display = 'inline';
+                
+                // Calculate estimated deco time
+                const gfLow = currentSetup?.gfLow ?? DEFAULT_GF_LOW;
+                const result = generateDecoProfile(maxDepth, bottomTime, currentGases, gfLow, gfHigh);
+                decoTimeSpan.textContent = result.totalDecoTime;
+            } else {
+                decoInfoSpan.style.display = 'none';
+            }
+        }
+
         // Show/hide dive 2 section
         function showDive2(show) {
             hasDive2 = show;
@@ -1064,20 +1126,38 @@
                 return;
             }
             
-            const waypoints = generateSimpleProfile(maxDepth, bottomTime);
-            loadWaypointsToTable(waypoints, waypointsBody);
+            // Get current GF settings
+            const gfLow = currentSetup?.gfLow ?? DEFAULT_GF_LOW;
+            const gfHigh = currentSetup?.gfHigh ?? DEFAULT_GF_HIGH;
             
-            // Update profile name to reflect the quick setup
-            profileNameInput.value = `${maxDepth}m for ${bottomTime}min`;
-            profileDescInput.value = `Quick setup: ${maxDepth}m max depth, ${bottomTime}min bottom time. Auto-generated with 20 m/min descent, 10 m/min ascent, 3 min safety stop at 5m.`;
+            // Generate profile with automatic deco if needed
+            const result = generateDecoProfile(maxDepth, bottomTime, currentGases, gfLow, gfHigh);
+            
+            loadWaypointsToTable(result.waypoints, waypointsBody);
+            
+            // Update profile name and description
+            if (result.requiresDeco) {
+                profileNameInput.value = `${maxDepth}m for ${bottomTime}min (DECO)`;
+                const stopsSummary = result.decoStops.map(s => `${s.depth}m: ${s.time}min`).join(', ');
+                profileDescInput.value = `Deco dive: ${maxDepth}m max depth, ${bottomTime}min bottom time. NDL was ${result.ndl}min. Deco stops: ${stopsSummary}. Total deco: ${result.totalDecoTime}min.`;
+            } else {
+                profileNameInput.value = `${maxDepth}m for ${bottomTime}min`;
+                profileDescInput.value = `Quick setup: ${maxDepth}m max depth, ${bottomTime}min bottom time. Within NDL (${result.ndl}min). Auto-generated with 20 m/min descent, 10 m/min ascent, 3 min safety stop at 5m.`;
+            }
             
             updateSummary();
+            updateNDLDisplay();
             
             // Show feedback
-            saveStatus.textContent = `✓ Generated profile: ${maxDepth}m for ${bottomTime}min`;
+            const decoNote = result.requiresDeco ? ` (DECO: ${result.totalDecoTime}min stops)` : ' (within NDL)';
+            saveStatus.textContent = `✓ Generated profile: ${maxDepth}m for ${bottomTime}min${decoNote}`;
             saveStatus.className = 'save-status success';
             setTimeout(() => { saveStatus.textContent = ''; }, 3000);
         });
+
+        // Update NDL display when depth or bottom time changes
+        quickMaxDepthInput.addEventListener('input', updateNDLDisplay);
+        quickBottomTimeInput.addEventListener('input', updateNDLDisplay);
 
         // Remove dive 2
         removeDive2Btn.addEventListener('click', () => {
@@ -1100,10 +1180,12 @@
         gfHighSlider.addEventListener('input', () => {
             gfHighInput.value = gfHighSlider.value;
             updateSummary();
+            updateNDLDisplay();
         });
         gfHighInput.addEventListener('input', () => {
             gfHighSlider.value = gfHighInput.value;
             updateSummary();
+            updateNDLDisplay();
         });
 
         // GF preset buttons
@@ -1116,6 +1198,7 @@
                 gfHighInput.value = gfHigh;
                 gfHighSlider.value = gfHigh;
                 updateSummary();
+                updateNDLDisplay();
             });
         });
 
@@ -1252,6 +1335,9 @@
             }
             
             populateForm(currentSetup);
+            
+            // Update NDL display with initial values
+            updateNDLDisplay();
             
             // Highlight the current profile card
             const currentId = currentSetup.id && predefinedProfiles.find(p => p.id === currentSetup.id) 

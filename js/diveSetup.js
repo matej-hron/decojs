@@ -6,6 +6,19 @@
  * with page-specific overrides.
  */
 
+import { 
+    calculateNDL, 
+    generateDecoSchedule, 
+    simulateDepthTime, 
+    simulateDepthChange,
+    getInitialTissueN2,
+    N2_FRACTION,
+    SURFACE_PRESSURE,
+    getAmbientPressure
+} from './decoModel.js';
+
+import { COMPARTMENTS } from './tissueCompartments.js';
+
 // Default path to dive setup JSON
 const DEFAULT_SETUP_PATH = 'data/dive-setup.json';
 
@@ -240,6 +253,246 @@ export function generateSimpleProfile(maxDepth, bottomTime) {
         { time: safetyStopEndTime, depth: SAFETY_STOP_DEPTH },   // End of safety stop
         { time: surfaceTime, depth: 0 }                  // Back at surface
     ];
+}
+
+/**
+ * Generate a dive profile with automatic NDL check and deco stops if needed
+ * 
+ * If bottom time <= NDL: generates profile with safety stop
+ * If bottom time > NDL: generates profile with proper deco stops
+ * 
+ * Supports multi-gas diving: will switch to deco gases during ascent
+ * when current depth is within the deco gas MOD.
+ * 
+ * @param {number} maxDepth - Maximum depth in meters
+ * @param {number} bottomTime - Time from dive start until leaving max depth (minutes)
+ * @param {Array} gases - Available gases [{id, name, o2, n2, he}]
+ * @param {number} gfLow - GF Low as percentage (0-100)
+ * @param {number} gfHigh - GF High as percentage (0-100)
+ * @returns {{
+ *   waypoints: Array<{time: number, depth: number, gasId?: string}>,
+ *   ndl: number,
+ *   requiresDeco: boolean,
+ *   decoStops: Array<{depth: number, time: number, gas: string}>,
+ *   totalDecoTime: number,
+ *   controllingCompartment: number
+ * }}
+ */
+export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh) {
+    const DESCENT_SPEED = 20; // m/min
+    const ASCENT_SPEED = 10;  // m/min
+    const SAFETY_STOP_DEPTH = 5;
+    const SAFETY_STOP_TIME = 3;
+    const STOP_INCREMENT = 3;
+    
+    // Convert GF percentages to decimals
+    const gfLowDec = gfLow / 100;
+    const gfHighDec = gfHigh / 100;
+    
+    // Get bottom gas (first gas or air)
+    const bottomGas = gases && gases.length > 0 ? gases[0] : { id: 'air', name: 'Air', o2: 0.21, n2: 0.79 };
+    
+    // Calculate NDL for this depth/gas
+    const { ndl, controllingCompartment } = calculateNDL(maxDepth, bottomGas.n2, gfHighDec);
+    
+    // Calculate descent time
+    const descentTime = Math.ceil(maxDepth / DESCENT_SPEED);
+    
+    // Check if deco is required
+    const requiresDeco = bottomTime > ndl;
+    
+    if (!requiresDeco) {
+        // Within NDL - generate simple profile with safety stop
+        const waypoints = generateSimpleProfile(maxDepth, bottomTime);
+        // Add gasId to first bottom waypoint
+        waypoints[1].gasId = bottomGas.id;
+        
+        return {
+            waypoints,
+            ndl,
+            requiresDeco: false,
+            decoStops: [],
+            totalDecoTime: 0,
+            controllingCompartment
+        };
+    }
+    
+    // Deco required - simulate to end of bottom time and generate deco schedule
+    
+    // Initialize tissue pressures
+    const initialN2 = getInitialTissueN2(bottomGas.n2);
+    let tissues = {};
+    COMPARTMENTS.forEach(comp => {
+        tissues[comp.id] = initialN2;
+    });
+    
+    // Simulate descent
+    tissues = simulateDepthChange(tissues, 0, maxDepth, descentTime, bottomGas.n2);
+    
+    // Simulate bottom time (from end of descent to bottomTime)
+    const actualBottomDuration = bottomTime - descentTime;
+    if (actualBottomDuration > 0) {
+        tissues = simulateDepthTime(tissues, maxDepth, actualBottomDuration, bottomGas.n2);
+    }
+    
+    // Generate deco schedule
+    const { stops, totalTime: ascentTotalTime } = generateDecoSchedule(
+        tissues, maxDepth, bottomGas.n2, gfLowDec, gfHighDec, gases
+    );
+    
+    // Build waypoints from deco schedule
+    const waypoints = [
+        { time: 0, depth: 0 },
+        { time: descentTime, depth: maxDepth, gasId: bottomGas.id },
+        { time: bottomTime, depth: maxDepth }
+    ];
+    
+    let currentTime = bottomTime;
+    let currentDepth = maxDepth;
+    
+    // Add deco stops to waypoints
+    for (const stop of stops) {
+        // Ascend to this stop depth
+        const ascentTime = Math.ceil((currentDepth - stop.depth) / ASCENT_SPEED);
+        currentTime += ascentTime;
+        waypoints.push({ time: currentTime, depth: stop.depth });
+        
+        // Stay at stop
+        currentTime += stop.time;
+        waypoints.push({ time: currentTime, depth: stop.depth });
+        
+        currentDepth = stop.depth;
+    }
+    
+    // Final ascent to surface (if not already there)
+    if (currentDepth > 0) {
+        const finalAscentTime = Math.ceil(currentDepth / ASCENT_SPEED);
+        currentTime += finalAscentTime;
+        waypoints.push({ time: currentTime, depth: 0 });
+    }
+    
+    const totalDecoTime = stops.reduce((sum, s) => sum + s.time, 0);
+    
+    return {
+        waypoints,
+        ndl,
+        requiresDeco: true,
+        decoStops: stops,
+        totalDecoTime,
+        controllingCompartment
+    };
+}
+
+/**
+ * Synchronous version of generateDecoProfile for simpler use cases
+ * Note: For async module loading, use generateDecoProfile instead
+ */
+export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHigh, compartments) {
+    const DESCENT_SPEED = 20;
+    const ASCENT_SPEED = 10;
+    const SAFETY_STOP_DEPTH = 5;
+    const SAFETY_STOP_TIME = 3;
+    
+    // Convert GF percentages to decimals
+    const gfLowDec = gfLow / 100;
+    const gfHighDec = gfHigh / 100;
+    
+    // Get bottom gas
+    const bottomGas = gases && gases.length > 0 ? gases[0] : { id: 'air', name: 'Air', o2: 0.21, n2: 0.79 };
+    
+    // Calculate NDL
+    const { ndl, controllingCompartment } = calculateNDL(maxDepth, bottomGas.n2, gfHighDec);
+    
+    const descentTime = Math.ceil(maxDepth / DESCENT_SPEED);
+    const requiresDeco = bottomTime > ndl;
+    
+    if (!requiresDeco) {
+        const waypoints = generateSimpleProfile(maxDepth, bottomTime);
+        waypoints[1].gasId = bottomGas.id;
+        
+        return {
+            waypoints,
+            ndl,
+            requiresDeco: false,
+            decoStops: [],
+            totalDecoTime: 0,
+            controllingCompartment
+        };
+    }
+    
+    // Deco required - need compartments for simulation
+    if (!compartments) {
+        throw new Error('Compartments required for deco profile generation');
+    }
+    
+    // Initialize tissue pressures
+    const initialN2 = getInitialTissueN2(bottomGas.n2);
+    let tissues = {};
+    compartments.forEach(comp => {
+        tissues[comp.id] = initialN2;
+    });
+    
+    // Simulate descent
+    tissues = simulateDepthChange(tissues, 0, maxDepth, descentTime, bottomGas.n2);
+    
+    // Simulate bottom time
+    const actualBottomDuration = bottomTime - descentTime;
+    if (actualBottomDuration > 0) {
+        tissues = simulateDepthTime(tissues, maxDepth, actualBottomDuration, bottomGas.n2);
+    }
+    
+    // Generate deco schedule
+    const { stops } = generateDecoSchedule(tissues, maxDepth, bottomGas.n2, gfLowDec, gfHighDec, gases);
+    
+    // Build waypoints
+    const waypoints = [
+        { time: 0, depth: 0 },
+        { time: descentTime, depth: maxDepth, gasId: bottomGas.id },
+        { time: bottomTime, depth: maxDepth }
+    ];
+    
+    let currentTime = bottomTime;
+    let currentDepth = maxDepth;
+    
+    for (const stop of stops) {
+        const ascentTime = Math.ceil((currentDepth - stop.depth) / ASCENT_SPEED);
+        currentTime += ascentTime;
+        waypoints.push({ time: currentTime, depth: stop.depth });
+        
+        currentTime += stop.time;
+        waypoints.push({ time: currentTime, depth: stop.depth });
+        
+        currentDepth = stop.depth;
+    }
+    
+    if (currentDepth > 0) {
+        const finalAscentTime = Math.ceil(currentDepth / ASCENT_SPEED);
+        currentTime += finalAscentTime;
+        waypoints.push({ time: currentTime, depth: 0 });
+    }
+    
+    return {
+        waypoints,
+        ndl,
+        requiresDeco: true,
+        decoStops: stops,
+        totalDecoTime: stops.reduce((sum, s) => sum + s.time, 0),
+        controllingCompartment
+    };
+}
+
+/**
+ * Get NDL for a given depth and gas
+ * Wrapper for UI display
+ * 
+ * @param {number} depth - Depth in meters
+ * @param {Object} gas - Gas object with n2 property
+ * @param {number} gfHigh - GF High as percentage (0-100)
+ * @returns {{ndl: number, controllingCompartment: number}}
+ */
+export function getNDLForDepth(depth, gas, gfHigh) {
+    const n2 = gas?.n2 ?? N2_FRACTION;
+    return calculateNDL(depth, n2, gfHigh / 100);
 }
 
 /**

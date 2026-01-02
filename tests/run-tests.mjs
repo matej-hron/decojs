@@ -155,7 +155,11 @@ import {
     interpolateGF,
     getFirstStopDepth,
     calculateCeilingTimeSeries,
-    calculateTissueLoading
+    calculateTissueLoading,
+    calculateNDL,
+    simulateDepthTime,
+    simulateDepthChange,
+    generateDecoSchedule
 } from '../js/decoModel.js';
 
 import { COMPARTMENTS } from '../js/tissueCompartments.js';
@@ -1186,6 +1190,160 @@ describe('decoModel', () => {
             for (let i = 0; i < ceilingsOneParam.length; i++) {
                 expect(ceilingsOneParam[i]).toBeCloseTo(ceilingsTwoParams[i], 5);
             }
+        });
+    });
+
+    describe('calculateNDL', () => {
+        test('returns infinity for very shallow depths', () => {
+            const { ndl } = calculateNDL(0, 0.79, 1.0);
+            expect(ndl).toBe(Infinity);
+        });
+
+        test('returns reasonable NDL for 18m on air', () => {
+            // PADI table: ~56 min, Bühlmann should be similar
+            const { ndl } = calculateNDL(18, 0.79, 1.0);
+            expect(ndl).toBeGreaterThan(40);
+            expect(ndl).toBeLessThan(80);
+        });
+
+        test('returns reasonable NDL for 30m on air', () => {
+            // PADI table: ~20 min, Bühlmann tends to be slightly more conservative
+            const { ndl } = calculateNDL(30, 0.79, 1.0);
+            expect(ndl).toBeGreaterThanOrEqual(15);
+            expect(ndl).toBeLessThan(30);
+        });
+
+        test('returns reasonable NDL for 40m on air', () => {
+            // PADI table: ~8 min
+            const { ndl } = calculateNDL(40, 0.79, 1.0);
+            expect(ndl).toBeGreaterThan(5);
+            expect(ndl).toBeLessThan(15);
+        });
+
+        test('nitrox has longer NDL than air at same depth', () => {
+            const { ndl: ndlAir } = calculateNDL(30, 0.79, 1.0);
+            const { ndl: ndlEan32 } = calculateNDL(30, 0.68, 1.0);  // EAN32
+            expect(ndlEan32).toBeGreaterThan(ndlAir);
+        });
+
+        test('lower GF produces shorter NDL', () => {
+            const { ndl: ndl100 } = calculateNDL(30, 0.79, 1.0);
+            const { ndl: ndl85 } = calculateNDL(30, 0.79, 0.85);
+            expect(ndl85).toBeLessThan(ndl100);
+        });
+
+        test('returns controlling compartment', () => {
+            const { controllingCompartment } = calculateNDL(30, 0.79, 1.0);
+            expect(controllingCompartment).toBeGreaterThanOrEqual(1);
+            expect(controllingCompartment).toBeLessThanOrEqual(16);
+        });
+    });
+
+    describe('simulateDepthTime', () => {
+        test('tissues load at constant depth', () => {
+            const initialN2 = getInitialTissueN2(0.79);
+            const tissues = {};
+            COMPARTMENTS.forEach(c => { tissues[c.id] = initialN2; });
+            
+            const after = simulateDepthTime(tissues, 30, 10, 0.79);
+            
+            // All tissues should have increased pressure
+            COMPARTMENTS.forEach(c => {
+                expect(after[c.id]).toBeGreaterThan(initialN2);
+            });
+        });
+
+        test('fast tissues load faster than slow tissues', () => {
+            const initialN2 = getInitialTissueN2(0.79);
+            const tissues = {};
+            COMPARTMENTS.forEach(c => { tissues[c.id] = initialN2; });
+            
+            const after = simulateDepthTime(tissues, 30, 5, 0.79);
+            
+            // Fastest compartment (TC1) should have highest pressure increase
+            const tc1Increase = after[1] - initialN2;
+            const tc16Increase = after[16] - initialN2;
+            expect(tc1Increase).toBeGreaterThan(tc16Increase);
+        });
+    });
+
+    describe('simulateDepthChange', () => {
+        test('tissues load during descent', () => {
+            const initialN2 = getInitialTissueN2(0.79);
+            const tissues = {};
+            COMPARTMENTS.forEach(c => { tissues[c.id] = initialN2; });
+            
+            const after = simulateDepthChange(tissues, 0, 30, 1.5, 0.79);
+            
+            // All tissues should have increased pressure
+            COMPARTMENTS.forEach(c => {
+                expect(after[c.id]).toBeGreaterThan(initialN2);
+            });
+        });
+
+        test('tissues off-gas during ascent', () => {
+            // First load tissues at depth
+            const initialN2 = getInitialTissueN2(0.79);
+            let tissues = {};
+            COMPARTMENTS.forEach(c => { tissues[c.id] = initialN2; });
+            
+            tissues = simulateDepthTime(tissues, 30, 20, 0.79);
+            const pressureAtDepth = tissues[1];
+            
+            // Now ascend
+            tissues = simulateDepthChange(tissues, 30, 0, 3, 0.79);
+            
+            // Fast compartment should have off-gassed
+            expect(tissues[1]).toBeLessThan(pressureAtDepth);
+        });
+    });
+
+    describe('generateDecoSchedule', () => {
+        test('no stops needed for surface-saturated tissues', () => {
+            const initialN2 = getInitialTissueN2(0.79);
+            const tissues = {};
+            COMPARTMENTS.forEach(c => { tissues[c.id] = initialN2; });
+            
+            const { stops, totalTime } = generateDecoSchedule(tissues, 10, 0.79, 1.0, 1.0);
+            
+            expect(stops).toHaveLength(0);
+            expect(totalTime).toBeGreaterThan(0);  // Still takes time to ascend
+        });
+
+        test('generates stops for loaded tissues', () => {
+            // Simulate a 40m dive for 20 minutes
+            const initialN2 = getInitialTissueN2(0.79);
+            let tissues = {};
+            COMPARTMENTS.forEach(c => { tissues[c.id] = initialN2; });
+            
+            // Descent
+            tissues = simulateDepthChange(tissues, 0, 40, 2, 0.79);
+            // Bottom time
+            tissues = simulateDepthTime(tissues, 40, 18, 0.79);
+            
+            const { stops, totalDecoTime } = generateDecoSchedule(tissues, 40, 0.79, 0.7, 0.85);
+            
+            // Should have deco stops with GF 70/85
+            expect(stops.length).toBeGreaterThan(0);
+            expect(stops[0].depth).toBeGreaterThan(0);
+            expect(stops[0].time).toBeGreaterThan(0);
+        });
+
+        test('deeper first stop with lower GF Low', () => {
+            // Load tissues significantly
+            const initialN2 = getInitialTissueN2(0.79);
+            let tissues = {};
+            COMPARTMENTS.forEach(c => { tissues[c.id] = initialN2; });
+            tissues = simulateDepthChange(tissues, 0, 40, 2, 0.79);
+            tissues = simulateDepthTime(tissues, 40, 20, 0.79);
+            
+            const schedule50 = generateDecoSchedule({ ...tissues }, 40, 0.79, 0.5, 0.85);
+            const schedule70 = generateDecoSchedule({ ...tissues }, 40, 0.79, 0.7, 0.85);
+            
+            // GF 50 should have deeper (or equal) first stop
+            const firstStop50 = schedule50.stops[0]?.depth || 0;
+            const firstStop70 = schedule70.stops[0]?.depth || 0;
+            expect(firstStop50).toBeGreaterThanOrEqual(firstStop70);
         });
     });
 });

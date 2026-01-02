@@ -295,6 +295,276 @@ export function calculateCeilingTimeSeries(results, gfLow, gfHigh = gfLow) {
 }
 
 // ============================================================================
+// NDL & DECO CALCULATIONS
+// ============================================================================
+
+/** Descent speed in m/min for NDL calculations */
+const DESCENT_SPEED = 20;
+
+/** Ascent speed in m/min for deco calculations */
+const ASCENT_SPEED = 10;
+
+/** Deco stop increment in meters */
+const STOP_INCREMENT = 3;
+
+/**
+ * Calculate No-Decompression Limit (NDL) for a given depth
+ * NDL is the maximum bottom time where you can ascend directly to surface
+ * without required decompression stops.
+ * 
+ * Uses binary search to find maximum time where ceiling = 0 (surface).
+ * 
+ * @param {number} depth - Depth in meters
+ * @param {number} n2Fraction - N2 fraction in gas (default 0.79 for air)
+ * @param {number} gfHigh - GF High as decimal (0-1), used for surface tolerance
+ * @returns {{ndl: number, controllingCompartment: number}} NDL in minutes and limiting compartment
+ */
+export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfHigh = 1.0) {
+    // Very shallow depths have effectively unlimited NDL
+    if (depth <= 0) {
+        return { ndl: Infinity, controllingCompartment: null };
+    }
+    
+    const ambientPressure = getAmbientPressure(depth);
+    const alveolarN2 = getAlveolarN2Pressure(ambientPressure, n2Fraction);
+    
+    // Initialize tissue pressures at surface saturation
+    const initialN2 = getInitialTissueN2(n2Fraction);
+    
+    // Simulate descent to depth
+    const descentTime = depth / DESCENT_SPEED;
+    const descentRate = (alveolarN2 - getAlveolarN2Pressure(SURFACE_PRESSURE, n2Fraction)) / descentTime;
+    
+    // Get tissue pressures after descent
+    const afterDescent = {};
+    COMPARTMENTS.forEach(comp => {
+        afterDescent[comp.id] = schreinerEquation(
+            initialN2,
+            getAlveolarN2Pressure(SURFACE_PRESSURE, n2Fraction),
+            descentRate,
+            descentTime,
+            comp.halfTime
+        );
+    });
+    
+    // Binary search for NDL
+    let minTime = 0;
+    let maxTime = 300; // 5 hours max
+    
+    // First check if we can surface immediately after descent
+    const { ceilingDepth: immediateceiling } = getDiveCeiling(afterDescent, gfHigh);
+    if (immediateceiling > 0) {
+        // Already in deco after descent (very deep dive)
+        return { ndl: 0, controllingCompartment: getDiveCeiling(afterDescent, gfHigh).controllingCompartment };
+    }
+    
+    // Check if 5 hours is still within NDL (very shallow)
+    const pressuresAt5Hours = {};
+    COMPARTMENTS.forEach(comp => {
+        pressuresAt5Hours[comp.id] = haldaneEquation(afterDescent[comp.id], alveolarN2, 300, comp.halfTime);
+    });
+    const { ceilingDepth: ceiling5h } = getDiveCeiling(pressuresAt5Hours, gfHigh);
+    if (ceiling5h === 0) {
+        return { ndl: Infinity, controllingCompartment: null };
+    }
+    
+    // Binary search
+    while (maxTime - minTime > 0.5) {
+        const testTime = (minTime + maxTime) / 2;
+        
+        // Simulate time at depth
+        const testPressures = {};
+        COMPARTMENTS.forEach(comp => {
+            testPressures[comp.id] = haldaneEquation(afterDescent[comp.id], alveolarN2, testTime, comp.halfTime);
+        });
+        
+        // Check ceiling using GF High
+        const { ceilingDepth } = getDiveCeiling(testPressures, gfHigh);
+        
+        if (ceilingDepth > 0) {
+            maxTime = testTime; // Needs deco, reduce time
+        } else {
+            minTime = testTime; // No deco, can go longer
+        }
+    }
+    
+    // Get controlling compartment at NDL
+    const ndlPressures = {};
+    COMPARTMENTS.forEach(comp => {
+        ndlPressures[comp.id] = haldaneEquation(afterDescent[comp.id], alveolarN2, minTime, comp.halfTime);
+    });
+    const { controllingCompartment } = getDiveCeiling(ndlPressures, gfHigh);
+    
+    return {
+        ndl: Math.floor(minTime), // Return whole minutes (conservative)
+        controllingCompartment
+    };
+}
+
+/**
+ * Simulate tissue loading at constant depth
+ * Helper function for deco calculations
+ * 
+ * @param {Object} tissuePressures - Current tissue pressures by compartment ID
+ * @param {number} depth - Depth in meters
+ * @param {number} time - Time in minutes
+ * @param {number} n2Fraction - N2 fraction in gas
+ * @returns {Object} Updated tissue pressures
+ */
+export function simulateDepthTime(tissuePressures, depth, time, n2Fraction) {
+    const ambientPressure = getAmbientPressure(depth);
+    const alveolarN2 = getAlveolarN2Pressure(ambientPressure, n2Fraction);
+    
+    const newPressures = {};
+    COMPARTMENTS.forEach(comp => {
+        newPressures[comp.id] = haldaneEquation(tissuePressures[comp.id], alveolarN2, time, comp.halfTime);
+    });
+    
+    return newPressures;
+}
+
+/**
+ * Simulate tissue loading during depth change
+ * 
+ * @param {Object} tissuePressures - Current tissue pressures
+ * @param {number} startDepth - Starting depth in meters
+ * @param {number} endDepth - Ending depth in meters
+ * @param {number} time - Duration of the depth change in minutes
+ * @param {number} n2Fraction - N2 fraction in gas
+ * @returns {Object} Updated tissue pressures
+ */
+export function simulateDepthChange(tissuePressures, startDepth, endDepth, time, n2Fraction) {
+    const startAlveolar = getAlveolarN2Pressure(getAmbientPressure(startDepth), n2Fraction);
+    const endAlveolar = getAlveolarN2Pressure(getAmbientPressure(endDepth), n2Fraction);
+    const rate = (endAlveolar - startAlveolar) / time;
+    
+    const newPressures = {};
+    COMPARTMENTS.forEach(comp => {
+        newPressures[comp.id] = schreinerEquation(tissuePressures[comp.id], startAlveolar, rate, time, comp.halfTime);
+    });
+    
+    return newPressures;
+}
+
+/**
+ * Generate a decompression schedule from current tissue state
+ * Returns the stops needed to safely reach the surface
+ * 
+ * @param {Object} tissuePressures - Current tissue pressures by compartment ID
+ * @param {number} currentDepth - Current depth in meters
+ * @param {number} n2Fraction - N2 fraction in current gas
+ * @param {number} gfLow - GF Low (0-1)
+ * @param {number} gfHigh - GF High (0-1)
+ * @param {Array} [gases] - Available gases for switching [{n2, o2, name, mod}]
+ * @returns {{stops: Array<{depth: number, time: number, gas: string}>, totalTime: number, totalAscentTime: number}}
+ */
+export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, gfLow, gfHigh, gases = null) {
+    const stops = [];
+    let totalAscentTime = 0;
+    
+    // Clone tissue pressures
+    let tissues = { ...tissuePressures };
+    let depth = currentDepth;
+    let currentN2 = n2Fraction;
+    let currentGasName = 'Bottom Gas';
+    
+    // Find first stop depth
+    const { depth: firstStopDepth, ambient: firstStopAmbient } = getFirstStopDepth(tissues, gfLow);
+    
+    // If no deco needed (first stop = 0), just ascend
+    if (firstStopDepth === 0) {
+        const ascentTime = depth / ASCENT_SPEED;
+        tissues = simulateDepthChange(tissues, depth, 0, ascentTime, currentN2);
+        return { stops: [], totalTime: ascentTime, totalAscentTime: ascentTime };
+    }
+    
+    // Ascend to first stop
+    const ascentToFirstStop = (depth - firstStopDepth) / ASCENT_SPEED;
+    tissues = simulateDepthChange(tissues, depth, firstStopDepth, ascentToFirstStop, currentN2);
+    totalAscentTime += ascentToFirstStop;
+    depth = firstStopDepth;
+    
+    // Deco loop: work up from first stop to surface
+    while (depth > 0) {
+        // Check for gas switch (find best gas valid at this depth)
+        if (gases && gases.length > 1) {
+            const bestGas = findBestDecoGas(gases, depth);
+            if (bestGas && bestGas.n2 < currentN2) {
+                currentN2 = bestGas.n2;
+                currentGasName = bestGas.name;
+            }
+        }
+        
+        // Calculate GF at this depth (interpolated)
+        const gfAtDepth = interpolateGF(getAmbientPressure(depth), firstStopAmbient, gfLow, gfHigh);
+        
+        // Wait at this stop until ceiling clears to next stop (or surface)
+        const nextStopDepth = Math.max(0, depth - STOP_INCREMENT);
+        let stopTime = 0;
+        
+        while (true) {
+            const { ceilingDepth } = getDiveCeiling(tissues, gfAtDepth);
+            if (ceilingDepth <= nextStopDepth) {
+                break; // Ceiling cleared, can ascend
+            }
+            
+            // Wait 1 minute at this stop
+            tissues = simulateDepthTime(tissues, depth, 1, currentN2);
+            stopTime += 1;
+            
+            // Safety: prevent infinite loops
+            if (stopTime > 300) {
+                console.warn('Deco stop exceeded 5 hours, breaking');
+                break;
+            }
+        }
+        
+        if (stopTime > 0) {
+            stops.push({
+                depth: depth,
+                time: stopTime,
+                gas: currentGasName
+            });
+        }
+        
+        // Ascend to next stop
+        if (nextStopDepth >= 0) {
+            const ascentTime = STOP_INCREMENT / ASCENT_SPEED;
+            tissues = simulateDepthChange(tissues, depth, nextStopDepth, ascentTime, currentN2);
+            totalAscentTime += ascentTime;
+            depth = nextStopDepth;
+        }
+    }
+    
+    const totalTime = totalAscentTime + stops.reduce((sum, s) => sum + s.time, 0);
+    
+    return { stops, totalTime, totalAscentTime };
+}
+
+/**
+ * Find the best decompression gas valid at given depth
+ * Returns gas with lowest N2 fraction (fastest off-gassing) that's within MOD
+ * 
+ * @param {Array} gases - Available gases [{n2, o2, name}]
+ * @param {number} depth - Current depth in meters
+ * @param {number} maxPpO2 - Maximum ppO2 (default 1.6 for deco)
+ * @returns {Object|null} Best gas or null if none valid
+ */
+function findBestDecoGas(gases, depth, maxPpO2 = 1.6) {
+    const ambientPressure = getAmbientPressure(depth);
+    
+    // Filter gases valid at this depth and sort by N2 (lowest first)
+    const validGases = gases
+        .filter(gas => {
+            const ppO2 = ambientPressure * gas.o2;
+            return ppO2 <= maxPpO2;
+        })
+        .sort((a, b) => a.n2 - b.n2);
+    
+    return validGases[0] || null;
+}
+
+// ============================================================================
 // DIVE PROFILE PROCESSING
 // ============================================================================
 
