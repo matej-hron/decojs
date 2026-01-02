@@ -10,7 +10,7 @@
  */
 
 import { COMPARTMENTS } from './tissueCompartments.js';
-import { calculateTissueLoading, getAmbientPressure, SURFACE_PRESSURE, getAdjustedMValue } from './decoModel.js';
+import { calculateTissueLoading, getAmbientPressure, SURFACE_PRESSURE, getAdjustedMValue, getFirstStopDepth } from './decoModel.js';
 import { loadDiveSetup, getDiveSetupWaypoints, getGases, getGradientFactors } from './diveSetup.js';
 
 // ============================================================================
@@ -867,18 +867,28 @@ function buildDatasets() {
     const { gfLow, gfHigh } = currentSetup ? getGradientFactors(currentSetup) : { gfLow: 1, gfHigh: 1 };
     const hasGF = gfLow < 1 || gfHigh < 1;
     
-    // Find ascent start point (where depth starts decreasing from max depth)
-    let ascentStartIndex = 0;
+    // Find the first stop depth using tissue loading at end of bottom time
+    // GF Low applies at first stop, GF High at surface
+    let firstStopAmbient = SURFACE_PRESSURE;
     let ascentStartAmbient = SURFACE_PRESSURE;
     if (diveResults && diveResults.depthPoints) {
         const maxDepth = Math.max(...diveResults.depthPoints);
         // Find the last point at max depth (start of ascent)
+        let ascentStartIndex = 0;
         for (let i = 0; i < diveResults.depthPoints.length; i++) {
             if (Math.abs(diveResults.depthPoints[i] - maxDepth) < 0.5) {
                 ascentStartIndex = i;
                 ascentStartAmbient = diveResults.ambientPressures[i];
             }
         }
+        
+        // Calculate first stop from tissue loading at ascent start
+        const tissuePressures = {};
+        for (const compId of Object.keys(diveResults.compartments)) {
+            tissuePressures[compId] = diveResults.compartments[compId].pressures[ascentStartIndex];
+        }
+        const { ambient } = getFirstStopDepth(tissuePressures, gfLow);
+        firstStopAmbient = ambient;
     }
     
     // M-value lines for each compartment (raw Bühlmann)
@@ -946,12 +956,12 @@ function buildDatasets() {
             });
         }
         
-        // Vertical line at ascent start (where GF Low applies)
+        // Vertical line at first stop (where GF Low applies)
         datasets.push({
-            label: 'Ascent Start',
+            label: 'First Stop',
             data: [
-                { x: ascentStartAmbient, y: minP },
-                { x: ascentStartAmbient, y: maxP }
+                { x: firstStopAmbient, y: minP },
+                { x: firstStopAmbient, y: maxP }
             ],
             type: 'line',
             borderColor: 'rgba(243, 156, 18, 0.6)',  // Orange
@@ -962,16 +972,16 @@ function buildDatasets() {
             order: 98
         });
         
-        // GF corridor line - from (ascentStartAmbient, M_gfLow) to (1 bar, M_gfHigh)
+        // GF corridor line - from (firstStopAmbient, M_gfLow) to (1 bar, M_gfHigh)
         // This shows the interpolated limit during ascent
         sortedComps.forEach(comp => {
-            const mAtAscentGfLow = getAdjustedMValue(ascentStartAmbient, comp.aN2, comp.bN2, gfLow);
+            const mAtFirstStopGfLow = getAdjustedMValue(firstStopAmbient, comp.aN2, comp.bN2, gfLow);
             const mAtSurfaceGfHigh = getAdjustedMValue(SURFACE_PRESSURE, comp.aN2, comp.bN2, gfHigh);
             
             datasets.push({
                 label: `GF Corridor TC${comp.id}`,
                 data: [
-                    { x: ascentStartAmbient, y: mAtAscentGfLow },
+                    { x: firstStopAmbient, y: mAtFirstStopGfLow },
                     { x: SURFACE_PRESSURE, y: mAtSurfaceGfHigh }
                 ],
                 type: 'line',
