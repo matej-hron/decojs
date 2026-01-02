@@ -5,6 +5,8 @@
     { "id": "bottom", "name": "Air", "o2": 0.21, "n2": 0.79, "he": 0, "cylinderVolume": 12, "startPressure": 200 }
   ],
   "reservePressure": 50,
+  "gfLow": 100,
+  "gfHigh": 100,
   "surfaceInterval": 60,
   "units": {
     "depth": "meters",

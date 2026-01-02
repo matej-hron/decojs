@@ -81,6 +81,12 @@ export const DEFAULT_START_PRESSURE = 200;
 export const DEFAULT_RESERVE_PRESSURE = 50;
 
 /**
+ * Default Gradient Factors (100% = raw Bühlmann M-values)
+ */
+export const DEFAULT_GF_LOW = 100;   // Percentage (100 = 100%)
+export const DEFAULT_GF_HIGH = 100;  // Percentage (100 = 100%)
+
+/**
  * Get a predefined gas by ID (searches both bottom and deco gases)
  * @param {string} id - Gas ID (e.g., 'air', 'ean32')
  * @returns {Object|null} Gas object or null if not found
@@ -159,6 +165,8 @@ export function getDefaultSetup() {
             }
         ],
         reservePressure: 50,
+        gfLow: 100,   // Gradient Factor Low (percentage)
+        gfHigh: 100,  // Gradient Factor High (percentage)
         surfaceInterval: 60,
         units: {
             depth: "meters",
@@ -316,6 +324,36 @@ export function getDiveSetupWaypoints(setup) {
  */
 export function getSurfaceInterval(setup) {
     return setup.surfaceInterval || 60;
+}
+
+/**
+ * Get Gradient Factor Low from dive setup
+ * @param {Object} setup - Dive setup object
+ * @returns {number} GF Low as percentage (0-100)
+ */
+export function getGFLow(setup) {
+    return setup.gfLow ?? DEFAULT_GF_LOW;
+}
+
+/**
+ * Get Gradient Factor High from dive setup
+ * @param {Object} setup - Dive setup object
+ * @returns {number} GF High as percentage (0-100)
+ */
+export function getGFHigh(setup) {
+    return setup.gfHigh ?? DEFAULT_GF_HIGH;
+}
+
+/**
+ * Get Gradient Factors as decimals (0-1) for calculations
+ * @param {Object} setup - Dive setup object
+ * @returns {{gfLow: number, gfHigh: number}} GF values as decimals
+ */
+export function getGradientFactors(setup) {
+    return {
+        gfLow: (setup.gfLow ?? DEFAULT_GF_LOW) / 100,
+        gfHigh: (setup.gfHigh ?? DEFAULT_GF_HIGH) / 100
+    };
 }
 
 /**

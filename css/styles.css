@@ -819,6 +819,48 @@ section h2 {
     text-align: center;
 }
 
+/* Gradient Factors */
+.gf-inputs {
+    padding: 1rem 0;
+}
+
+.gf-row {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.gf-row .form-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.gf-row input[type="range"] {
+    width: 100%;
+    margin: 0.5rem 0;
+}
+
+.gf-input {
+    width: 70px !important;
+    text-align: center;
+}
+
+.gf-presets {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.gf-presets .hint {
+    margin-right: 0.5rem;
+}
+
+.gf-preset {
+    font-family: monospace;
+}
+
 /* Buttons */
 .btn {
     padding: 0.6rem 1.2rem;
@@ -1382,7 +1424,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.0.87";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.0.88";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* Responsive */

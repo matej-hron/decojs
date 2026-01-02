@@ -117,6 +117,37 @@
                     </label>
                 </div>
 
+                <!-- Gradient Factors Section -->
+                <details class="advanced-section" id="gf-section">
+                    <summary>🎚️ Gradient Factors</summary>
+                    <div class="gf-inputs">
+                        <p class="hint">
+                            Gradient Factors add conservatism to Bühlmann M-values. 
+                            GF 100/100 = raw algorithm. Lower values = more conservative.
+                            <a href="m-values.html#gf-section">Learn more</a>
+                        </p>
+                        <div class="gf-row">
+                            <div class="form-group">
+                                <label for="gf-low-input">GF Low (%):</label>
+                                <input type="range" id="gf-low-slider" min="10" max="100" value="100" step="5">
+                                <input type="number" id="gf-low-input" class="form-input gf-input" value="100" min="10" max="100" step="5">
+                            </div>
+                            <div class="form-group">
+                                <label for="gf-high-input">GF High (%):</label>
+                                <input type="range" id="gf-high-slider" min="10" max="100" value="100" step="5">
+                                <input type="number" id="gf-high-input" class="form-input gf-input" value="100" min="10" max="100" step="5">
+                            </div>
+                        </div>
+                        <div class="gf-presets">
+                            <span class="hint">Presets:</span>
+                            <button class="btn btn-small btn-secondary gf-preset" data-gf-low="100" data-gf-high="100">100/100</button>
+                            <button class="btn btn-small btn-secondary gf-preset" data-gf-low="70" data-gf-high="85">70/85</button>
+                            <button class="btn btn-small btn-secondary gf-preset" data-gf-low="50" data-gf-high="80">50/80</button>
+                            <button class="btn btn-small btn-secondary gf-preset" data-gf-low="30" data-gf-high="85">30/85</button>
+                        </div>
+                    </div>
+                </details>
+
                 <!-- Quick Setup Section -->
                 <details class="advanced-section" id="quick-setup-section" open>
                     <summary>⚡ Quick Setup</summary>
@@ -255,7 +286,7 @@
 
     <!-- Dive Setup Script -->
     <script type="module">
-        import { loadDiveSetup, saveDiveSetup, clearCache, formatDiveSetupSummary, getDiveSetupWaypoints, BOTTOM_GASES, DECO_GASES, BOTTOM_CYLINDERS, STAGE_CYLINDERS, getBottomGas, getDecoGas, calculateMOD, generateSimpleProfile, getGases, insertGasSwitchWaypoints, generateProfileName, getGasSwitchEvents } from './js/diveSetup.js';
+        import { loadDiveSetup, saveDiveSetup, clearCache, formatDiveSetupSummary, getDiveSetupWaypoints, BOTTOM_GASES, DECO_GASES, BOTTOM_CYLINDERS, STAGE_CYLINDERS, getBottomGas, getDecoGas, calculateMOD, generateSimpleProfile, getGases, insertGasSwitchWaypoints, generateProfileName, getGasSwitchEvents, DEFAULT_GF_LOW, DEFAULT_GF_HIGH } from './js/diveSetup.js';
 
         let currentSetup = null;
         let predefinedProfiles = [];
@@ -273,6 +304,10 @@
         const addGasBtn = document.getElementById('add-gas-btn');
         const autoGasSwitchBtn = document.getElementById('auto-gas-switch-btn');
         const surfaceIntervalInput = document.getElementById('surface-interval-input');
+        const gfLowInput = document.getElementById('gf-low-input');
+        const gfLowSlider = document.getElementById('gf-low-slider');
+        const gfHighInput = document.getElementById('gf-high-input');
+        const gfHighSlider = document.getElementById('gf-high-slider');
         const waypointsBody = document.getElementById('waypoints-body');
         const addWaypointBtn = document.getElementById('add-waypoint');
         const resetDefaultBtn = document.getElementById('reset-default');
@@ -794,6 +829,8 @@
                 description: profileDescInput.value || '',
                 gases: currentGases, // Gases with cylinder info per gas
                 dives: dives, // Always use dives format
+                gfLow: parseInt(gfLowInput.value) || DEFAULT_GF_LOW,
+                gfHigh: parseInt(gfHighInput.value) || DEFAULT_GF_HIGH,
                 surfaceInterval: parseFloat(surfaceIntervalInput.value) || 60,
                 units: currentSetup?.units || { depth: 'meters', time: 'minutes', pressure: 'bar' }
             };
@@ -884,6 +921,14 @@
             renderGasCards();
             
             surfaceIntervalInput.value = setup.surfaceInterval || 60;
+            
+            // Load Gradient Factors
+            const gfLow = setup.gfLow ?? DEFAULT_GF_LOW;
+            const gfHigh = setup.gfHigh ?? DEFAULT_GF_HIGH;
+            gfLowInput.value = gfLow;
+            gfLowSlider.value = gfLow;
+            gfHighInput.value = gfHigh;
+            gfHighSlider.value = gfHigh;
             
             // Handle multi-dive vs single dive format
             if (setup.dives && setup.dives.length > 0) {
@@ -1042,6 +1087,37 @@
 
         // Update summary when dive 2 surface interval changes
         dive2SurfaceIntervalInput.addEventListener('input', updateSummary);
+
+        // GF slider/input synchronization
+        gfLowSlider.addEventListener('input', () => {
+            gfLowInput.value = gfLowSlider.value;
+            updateSummary();
+        });
+        gfLowInput.addEventListener('input', () => {
+            gfLowSlider.value = gfLowInput.value;
+            updateSummary();
+        });
+        gfHighSlider.addEventListener('input', () => {
+            gfHighInput.value = gfHighSlider.value;
+            updateSummary();
+        });
+        gfHighInput.addEventListener('input', () => {
+            gfHighSlider.value = gfHighInput.value;
+            updateSummary();
+        });
+
+        // GF preset buttons
+        document.querySelectorAll('.gf-preset').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const gfLow = btn.dataset.gfLow;
+                const gfHigh = btn.dataset.gfHigh;
+                gfLowInput.value = gfLow;
+                gfLowSlider.value = gfLow;
+                gfHighInput.value = gfHigh;
+                gfHighSlider.value = gfHigh;
+                updateSummary();
+            });
+        });
 
         // Reset to default
         resetDefaultBtn.addEventListener('click', async () => {

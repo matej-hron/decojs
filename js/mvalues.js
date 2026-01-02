@@ -10,8 +10,8 @@
  */
 
 import { COMPARTMENTS } from './tissueCompartments.js';
-import { calculateTissueLoading, getAmbientPressure, SURFACE_PRESSURE } from './decoModel.js';
-import { loadDiveSetup, getDiveSetupWaypoints, getGases } from './diveSetup.js';
+import { calculateTissueLoading, getAmbientPressure, SURFACE_PRESSURE, getAdjustedMValue } from './decoModel.js';
+import { loadDiveSetup, getDiveSetupWaypoints, getGases, getGradientFactors } from './diveSetup.js';
 
 // ============================================================================
 // CONFIGURATION
@@ -47,6 +47,7 @@ let chart = null;
 let diveResults = null;
 let currentProfile = null;
 let currentGases = null;
+let currentSetup = null;  // Full setup object for GF values
 let visibleCompartments = new Set([1]);  // Start with TC1 visible
 let currentTimeIndex = 0;
 let isPlaying = false;
@@ -661,6 +662,9 @@ async function loadSelectedProfile() {
             return;
         }
         
+        // Store full setup for GF values
+        currentSetup = profileData;
+        
         // Use getDiveSetupWaypoints for consistent waypoint extraction
         currentProfile = getDiveSetupWaypoints(profileData);
         
@@ -674,12 +678,14 @@ async function loadSelectedProfile() {
         // Use gases from the profile if available
         currentGases = getGases(profileData);
         
-        // Update summary
+        // Update summary with GF info
         const summary = document.getElementById('profile-header-summary');
         if (summary) {
             const maxDepth = Math.max(...currentProfile.map(wp => wp.depth));
             const duration = currentProfile[currentProfile.length - 1].time;
-            summary.textContent = `${maxDepth}m / ${duration} min`;
+            const { gfLow, gfHigh } = getGradientFactors(profileData);
+            const gfStr = (gfLow === 1 && gfHigh === 1) ? '' : ` | GF ${Math.round(gfLow*100)}/${Math.round(gfHigh*100)}`;
+            summary.textContent = `${maxDepth}m / ${duration} min${gfStr}`;
         }
         
         // Calculate tissue loading
@@ -851,13 +857,31 @@ function buildDatasets() {
         order: 99
     });
     
-    // 3. For each visible compartment: M-value line, trail, and current point
+    // 3. For each visible compartment: M-value line, GF lines, trail, and current point
     let order = 50;  // M-value lines get middle priority
     
     // Get visible compartments sorted by ID
     const sortedComps = COMPARTMENTS.filter(c => visibleCompartments.has(c.id));
     
-    // M-value lines for each compartment
+    // Get GF values from setup
+    const { gfLow, gfHigh } = currentSetup ? getGradientFactors(currentSetup) : { gfLow: 1, gfHigh: 1 };
+    const hasGF = gfLow < 1 || gfHigh < 1;
+    
+    // Find ascent start point (where depth starts decreasing from max depth)
+    let ascentStartIndex = 0;
+    let ascentStartAmbient = SURFACE_PRESSURE;
+    if (diveResults && diveResults.depthPoints) {
+        const maxDepth = Math.max(...diveResults.depthPoints);
+        // Find the last point at max depth (start of ascent)
+        for (let i = 0; i < diveResults.depthPoints.length; i++) {
+            if (Math.abs(diveResults.depthPoints[i] - maxDepth) < 0.5) {
+                ascentStartIndex = i;
+                ascentStartAmbient = diveResults.ambientPressures[i];
+            }
+        }
+    }
+    
+    // M-value lines for each compartment (raw Bühlmann)
     sortedComps.forEach(comp => {
         const mValuePoints = [];
         for (let x = minP; x <= maxP; x += 0.1) {
@@ -876,6 +900,90 @@ function buildDatasets() {
             order: order--
         });
     });
+    
+    // GF High line at surface (if GF < 100%)
+    if (hasGF) {
+        sortedComps.forEach(comp => {
+            const gfHighPoints = [];
+            for (let x = minP; x <= maxP; x += 0.1) {
+                const y = getAdjustedMValue(x, comp.aN2, comp.bN2, gfHigh);
+                gfHighPoints.push({ x, y });
+            }
+            
+            datasets.push({
+                label: `GF High (${Math.round(gfHigh*100)}%) TC${comp.id}`,
+                data: gfHighPoints,
+                type: 'line',
+                borderColor: comp.color,
+                borderWidth: 1.5,
+                borderDash: [6, 3],  // Dashed line
+                pointRadius: 0,
+                fill: false,
+                order: order--
+            });
+        });
+        
+        // GF Low line (if different from GF High)
+        if (gfLow !== gfHigh) {
+            sortedComps.forEach(comp => {
+                const gfLowPoints = [];
+                for (let x = minP; x <= maxP; x += 0.1) {
+                    const y = getAdjustedMValue(x, comp.aN2, comp.bN2, gfLow);
+                    gfLowPoints.push({ x, y });
+                }
+                
+                datasets.push({
+                    label: `GF Low (${Math.round(gfLow*100)}%) TC${comp.id}`,
+                    data: gfLowPoints,
+                    type: 'line',
+                    borderColor: comp.color,
+                    borderWidth: 1.5,
+                    borderDash: [2, 2],  // Dotted line
+                    pointRadius: 0,
+                    fill: false,
+                    order: order--
+                });
+            });
+        }
+        
+        // Vertical line at ascent start (where GF Low applies)
+        datasets.push({
+            label: 'Ascent Start',
+            data: [
+                { x: ascentStartAmbient, y: minP },
+                { x: ascentStartAmbient, y: maxP }
+            ],
+            type: 'line',
+            borderColor: 'rgba(243, 156, 18, 0.6)',  // Orange
+            borderWidth: 2,
+            borderDash: [4, 4],
+            pointRadius: 0,
+            fill: false,
+            order: 98
+        });
+        
+        // GF corridor line - from (ascentStartAmbient, M_gfLow) to (1 bar, M_gfHigh)
+        // This shows the interpolated limit during ascent
+        sortedComps.forEach(comp => {
+            const mAtAscentGfLow = getAdjustedMValue(ascentStartAmbient, comp.aN2, comp.bN2, gfLow);
+            const mAtSurfaceGfHigh = getAdjustedMValue(SURFACE_PRESSURE, comp.aN2, comp.bN2, gfHigh);
+            
+            datasets.push({
+                label: `GF Corridor TC${comp.id}`,
+                data: [
+                    { x: ascentStartAmbient, y: mAtAscentGfLow },
+                    { x: SURFACE_PRESSURE, y: mAtSurfaceGfHigh }
+                ],
+                type: 'line',
+                borderColor: comp.color,
+                borderWidth: 3,
+                pointRadius: 4,
+                pointBackgroundColor: comp.color,
+                fill: false,
+                order: order--
+            });
+        });
+    }
     
     // Tissue trails for each compartment
     order = 20;
