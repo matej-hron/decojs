@@ -376,14 +376,14 @@ function runCalculation(scrollToChart = true) {
     // Get surface interval and gases from dive setup
     const surfaceInterval = getSurfaceInterval(currentDiveSetup);
     const gases = getGases(currentDiveSetup);
-    const { gfLow } = getGradientFactors(currentDiveSetup);
+    const { gfLow, gfHigh } = getGradientFactors(currentDiveSetup);
     
     // Run calculation with multi-gas support
     try {
         const results = calculateTissueLoading(profile, surfaceInterval, { gases });
         
-        // Calculate ceiling time series using GF Low
-        const ceilingDepths = calculateCeilingTimeSeries(results, gfLow);
+        // Calculate ceiling time series using GF interpolation
+        const ceilingDepths = calculateCeilingTimeSeries(results, gfLow, gfHigh);
         
         // Get gas switch events for visualization
         const gasSwitchEvents = getGasSwitchEvents(profile, gases);

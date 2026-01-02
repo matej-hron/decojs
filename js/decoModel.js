@@ -240,25 +240,55 @@ export function getFirstStopDepth(tissuePressures, gfLow, stopIncrement = 3) {
 
 /**
  * Calculate ceiling depth at each time point from tissue loading results
- * Uses GF Low for the ceiling calculation (most conservative during bottom phase)
+ * Uses GF interpolation: GF Low at/below first stop, GF High at surface,
+ * linearly interpolated during ascent.
  * 
  * @param {Object} results - Results from calculateTissueLoading()
  * @param {number} gfLow - GF Low value (0-1, where 1 = 100%)
+ * @param {number} gfHigh - GF High value (0-1, where 1 = 100%)
  * @returns {number[]} Array of ceiling depths in meters at each time point
  */
-export function calculateCeilingTimeSeries(results, gfLow) {
+export function calculateCeilingTimeSeries(results, gfLow, gfHigh = gfLow) {
     const ceilingDepths = [];
     
+    // Track first stop depth (calculated at start of ascent using GF Low)
+    let firstStopAmbient = null;
+    let previousDepth = results.depthPoints[0];
+    
     for (let i = 0; i < results.timePoints.length; i++) {
+        const currentDepth = results.depthPoints[i];
+        const currentAmbient = results.ambientPressures[i];
+        
         // Get tissue pressures at this time point
         const tissuePressures = {};
         for (const compId of Object.keys(results.compartments)) {
             tissuePressures[compId] = results.compartments[compId].pressures[i];
         }
         
-        // Calculate ceiling using GF Low
-        const { ceilingDepth } = getDiveCeiling(tissuePressures, gfLow);
+        // Detect start of ascent (depth decreasing from maximum)
+        const isAscending = currentDepth < previousDepth;
+        
+        // Calculate first stop using GF Low when we start ascending
+        if (isAscending && firstStopAmbient === null) {
+            const { ambient } = getFirstStopDepth(tissuePressures, gfLow);
+            firstStopAmbient = ambient;
+        }
+        
+        // Determine which GF to use
+        let gf;
+        if (firstStopAmbient === null || currentAmbient >= firstStopAmbient) {
+            // Not yet ascending or at/deeper than first stop: use GF Low
+            gf = gfLow;
+        } else {
+            // During ascent above first stop: interpolate GF
+            gf = interpolateGF(currentAmbient, firstStopAmbient, gfLow, gfHigh);
+        }
+        
+        // Calculate ceiling using interpolated GF
+        const { ceilingDepth } = getDiveCeiling(tissuePressures, gf);
         ceilingDepths.push(ceilingDepth);
+        
+        previousDepth = currentDepth;
     }
     
     return ceilingDepths;

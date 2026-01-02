@@ -1144,6 +1144,49 @@ describe('decoModel', () => {
             // GF 70% should have deeper (higher) ceiling than GF 100%
             expect(ceilingsGF70[endBottomIdx]).toBeGreaterThan(ceilingsGF100[endBottomIdx]);
         });
+
+        test('uses GF interpolation during ascent', () => {
+            // Longer dive to build up tissue loading
+            const profile = [
+                { time: 0, depth: 0 },
+                { time: 2, depth: 40 },
+                { time: 20, depth: 40 },  // Long bottom time
+                { time: 30, depth: 0 }    // Slow ascent
+            ];
+            const results = calculateTissueLoading(profile, 0);
+            
+            // Compare ceiling with only GF Low vs GF Low/High interpolation
+            const ceilingsGFLowOnly = calculateCeilingTimeSeries(results, 0.5, 0.5);  // GF 50/50
+            const ceilingsGFInterp = calculateCeilingTimeSeries(results, 0.5, 0.85); // GF 50/85
+            
+            // During bottom phase (at depth), ceilings should be similar (both use GF Low)
+            const bottomIdx = results.timePoints.findIndex(t => t >= 15);
+            expect(ceilingsGFLowOnly[bottomIdx]).toBeCloseTo(ceilingsGFInterp[bottomIdx], 1);
+            
+            // During ascent near surface, GF 50/85 should have shallower ceiling than GF 50/50
+            // because GF High (85%) allows more supersaturation than GF Low (50%)
+            const nearSurfaceIdx = results.timePoints.findIndex(t => t >= 28);
+            expect(ceilingsGFInterp[nearSurfaceIdx]).toBeLessThan(ceilingsGFLowOnly[nearSurfaceIdx]);
+        });
+
+        test('defaults gfHigh to gfLow if not provided', () => {
+            const profile = [
+                { time: 0, depth: 0 },
+                { time: 2, depth: 30 },
+                { time: 12, depth: 30 },
+                { time: 17, depth: 0 }
+            ];
+            const results = calculateTissueLoading(profile, 0);
+            
+            // Single GF param should behave like GF Low/Low
+            const ceilingsOneParam = calculateCeilingTimeSeries(results, 0.7);
+            const ceilingsTwoParams = calculateCeilingTimeSeries(results, 0.7, 0.7);
+            
+            // Should be identical
+            for (let i = 0; i < ceilingsOneParam.length; i++) {
+                expect(ceilingsOneParam[i]).toBeCloseTo(ceilingsTwoParams[i], 5);
+            }
+        });
     });
 });
 
