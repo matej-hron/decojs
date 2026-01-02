@@ -238,6 +238,32 @@ export function getFirstStopDepth(tissuePressures, gfLow, stopIncrement = 3) {
     };
 }
 
+/**
+ * Calculate ceiling depth at each time point from tissue loading results
+ * Uses GF Low for the ceiling calculation (most conservative during bottom phase)
+ * 
+ * @param {Object} results - Results from calculateTissueLoading()
+ * @param {number} gfLow - GF Low value (0-1, where 1 = 100%)
+ * @returns {number[]} Array of ceiling depths in meters at each time point
+ */
+export function calculateCeilingTimeSeries(results, gfLow) {
+    const ceilingDepths = [];
+    
+    for (let i = 0; i < results.timePoints.length; i++) {
+        // Get tissue pressures at this time point
+        const tissuePressures = {};
+        for (const compId of Object.keys(results.compartments)) {
+            tissuePressures[compId] = results.compartments[compId].pressures[i];
+        }
+        
+        // Calculate ceiling using GF Low
+        const { ceilingDepth } = getDiveCeiling(tissuePressures, gfLow);
+        ceilingDepths.push(ceilingDepth);
+    }
+    
+    return ceilingDepths;
+}
+
 // ============================================================================
 // DIVE PROFILE PROCESSING
 // ============================================================================

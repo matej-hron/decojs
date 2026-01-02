@@ -153,7 +153,9 @@ import {
     getCompartmentCeiling,
     getDiveCeiling,
     interpolateGF,
-    getFirstStopDepth
+    getFirstStopDepth,
+    calculateCeilingTimeSeries,
+    calculateTissueLoading
 } from '../js/decoModel.js';
 
 import { COMPARTMENTS } from '../js/tissueCompartments.js';
@@ -1075,6 +1077,72 @@ describe('decoModel', () => {
             });
             const result5m = getFirstStopDepth(tissuePressures, 0.5, 5);
             expect(result5m.depth % 5).toBe(0);
+        });
+    });
+
+    describe('calculateCeilingTimeSeries', () => {
+        test('returns ceiling depth for each time point', () => {
+            // Simple dive profile
+            const profile = [
+                { time: 0, depth: 0 },
+                { time: 2, depth: 30 },
+                { time: 12, depth: 30 },
+                { time: 17, depth: 0 }
+            ];
+            const results = calculateTissueLoading(profile, 0);
+            const ceilings = calculateCeilingTimeSeries(results, 1.0);
+            
+            expect(ceilings.length).toBe(results.timePoints.length);
+            expect(ceilings.every(c => typeof c === 'number')).toBe(true);
+        });
+
+        test('ceiling starts at 0 for surface-saturated diver', () => {
+            const profile = [
+                { time: 0, depth: 0 },
+                { time: 1, depth: 10 },
+                { time: 5, depth: 0 }
+            ];
+            const results = calculateTissueLoading(profile, 0);
+            const ceilings = calculateCeilingTimeSeries(results, 1.0);
+            
+            // First time point should have no ceiling (0m)
+            expect(ceilings[0]).toBe(0);
+        });
+
+        test('ceiling increases during bottom phase', () => {
+            const profile = [
+                { time: 0, depth: 0 },
+                { time: 2, depth: 40 },
+                { time: 20, depth: 40 },  // Long bottom time
+                { time: 25, depth: 0 }
+            ];
+            const results = calculateTissueLoading(profile, 0);
+            const ceilings = calculateCeilingTimeSeries(results, 0.7);  // GF 70%
+            
+            // Find index at start of bottom and middle of bottom
+            const bottomStartIdx = results.timePoints.findIndex(t => t >= 2);
+            const bottomMidIdx = results.timePoints.findIndex(t => t >= 15);
+            
+            // Ceiling should be higher (deeper) later in the dive
+            expect(ceilings[bottomMidIdx]).toBeGreaterThan(ceilings[bottomStartIdx]);
+        });
+
+        test('lower GF produces deeper ceiling', () => {
+            const profile = [
+                { time: 0, depth: 0 },
+                { time: 2, depth: 30 },
+                { time: 12, depth: 30 },
+                { time: 17, depth: 0 }
+            ];
+            const results = calculateTissueLoading(profile, 0);
+            const ceilingsGF100 = calculateCeilingTimeSeries(results, 1.0);
+            const ceilingsGF70 = calculateCeilingTimeSeries(results, 0.7);
+            
+            // Find ceiling at end of bottom phase
+            const endBottomIdx = results.timePoints.findIndex(t => t >= 12);
+            
+            // GF 70% should have deeper (higher) ceiling than GF 100%
+            expect(ceilingsGF70[endBottomIdx]).toBeGreaterThan(ceilingsGF100[endBottomIdx]);
         });
     });
 });

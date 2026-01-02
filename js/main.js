@@ -5,10 +5,10 @@
  */
 
 import { COMPARTMENTS, getCompartmentCategory } from './tissueCompartments.js';
-import { calculateTissueLoading, getInitialTissueN2 } from './decoModel.js';
+import { calculateTissueLoading, getInitialTissueN2, calculateCeilingTimeSeries } from './decoModel.js';
 import { validateProfile, getDiveStats } from './diveProfile.js';
 import { renderChart, toggleCompartment, showAllCompartments, hideAllCompartments, showOnlyCompartments } from './visualization.js';
-import { loadDiveSetup, getDiveSetupWaypoints, getSurfaceInterval, formatDiveSetupSummary, saveDiveSetup, clearCache, getGases, getGasSwitchEvents } from './diveSetup.js';
+import { loadDiveSetup, getDiveSetupWaypoints, getSurfaceInterval, formatDiveSetupSummary, saveDiveSetup, clearCache, getGases, getGasSwitchEvents, getGradientFactors } from './diveSetup.js';
 
 // ============================================================================
 // UTILITIES
@@ -376,10 +376,14 @@ function runCalculation(scrollToChart = true) {
     // Get surface interval and gases from dive setup
     const surfaceInterval = getSurfaceInterval(currentDiveSetup);
     const gases = getGases(currentDiveSetup);
+    const { gfLow } = getGradientFactors(currentDiveSetup);
     
     // Run calculation with multi-gas support
     try {
         const results = calculateTissueLoading(profile, surfaceInterval, { gases });
+        
+        // Calculate ceiling time series using GF Low
+        const ceilingDepths = calculateCeilingTimeSeries(results, gfLow);
         
         // Get gas switch events for visualization
         const gasSwitchEvents = getGasSwitchEvents(profile, gases);
@@ -388,7 +392,7 @@ function runCalculation(scrollToChart = true) {
         showDiveStats(profile);
         
         // Render chart and store reference for fullscreen resize
-        window.tissueChart = renderChart(chartCanvas, results, visibleCompartments, gasSwitchEvents);
+        window.tissueChart = renderChart(chartCanvas, results, visibleCompartments, gasSwitchEvents, ceilingDepths);
         
         // Scroll to chart (only when user clicks Calculate, not on initial load)
         if (scrollToChart) {

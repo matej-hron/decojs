@@ -14,8 +14,9 @@ let chart = null;
  * @param {Object} results - Results from calculateTissueLoading()
  * @param {Set<number>} visibleCompartments - Set of compartment IDs to display
  * @param {Array} gasSwitchEvents - Optional array of gas switch events [{time, depth, fromGas, toGas}]
+ * @param {number[]} ceilingDepths - Optional array of ceiling depths in meters at each time point
  */
-export function renderChart(canvas, results, visibleCompartments = null, gasSwitchEvents = []) {
+export function renderChart(canvas, results, visibleCompartments = null, gasSwitchEvents = [], ceilingDepths = null) {
     // Default to all compartments visible
     if (!visibleCompartments) {
         visibleCompartments = new Set(COMPARTMENTS.map(c => c.id));
@@ -42,6 +43,26 @@ export function renderChart(canvas, results, visibleCompartments = null, gasSwit
         borderWidth: 2,
         order: 100 // Draw behind tissue lines
     });
+
+    // Add ceiling depth line (if provided)
+    if (ceilingDepths && ceilingDepths.length > 0) {
+        datasets.push({
+            label: 'Ceiling (m)',
+            data: results.timePoints.map((t, i) => ({
+                x: t,
+                y: ceilingDepths[i]
+            })),
+            borderColor: 'rgba(231, 76, 60, 0.9)', // Red color for danger
+            backgroundColor: 'rgba(231, 76, 60, 0.2)',
+            fill: true, // Fill area below ceiling
+            yAxisID: 'yDepth',
+            tension: 0.1,
+            pointRadius: 0,
+            borderWidth: 2,
+            borderDash: [5, 3], // Dashed line
+            order: 99 // Draw just above depth
+        });
+    }
 
     // Add tissue compartment lines
     COMPARTMENTS.forEach(comp => {
