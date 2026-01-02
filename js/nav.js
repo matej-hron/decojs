@@ -48,6 +48,7 @@ const NAV_ITEMS = [
     },
     { 
         label: 'Tests',
+        href: 'quiz-physics.html', // Direct link for mobile (submenus hidden)
         submenu: [
             { href: 'quiz-physics.html', label: 'Physics' },
             { href: 'quiz-anatomy.html', label: 'Anatomy' },
