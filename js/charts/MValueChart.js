@@ -204,6 +204,20 @@ export class MValueChart {
             this.chartContainer.appendChild(this.exitFullscreenBtn);
         }
         
+        // Reset zoom button
+        this.resetZoomBtn = document.createElement('button');
+        this.resetZoomBtn.className = 'mvc-reset-zoom-btn';
+        this.resetZoomBtn.innerHTML = '↺';
+        this.resetZoomBtn.title = 'Reset Zoom (double-click chart)';
+        this.resetZoomBtn.style.cssText = `
+            position: absolute; top: 8px; right: ${this.options.fullscreenButton ? '44px' : '8px'}; z-index: 10;
+            padding: 4px 8px; background: rgba(255,255,255,0.9);
+            border: 1px solid #ccc; border-radius: 4px; cursor: pointer;
+            font-size: 14px; display: none;
+        `;
+        this.resetZoomBtn.addEventListener('click', () => this.resetZoom());
+        this.chartContainer.appendChild(this.resetZoomBtn);
+        
         wrapper.appendChild(this.chartContainer);
         this.container.appendChild(wrapper);
         
@@ -237,6 +251,19 @@ export class MValueChart {
             
             // Tell Chart.js to resize based on container
             this.chart.resize();
+        }
+    }
+    
+    /**
+     * Reset zoom to original scale
+     * @public
+     */
+    resetZoom() {
+        if (this.chart) {
+            this.chart.resetZoom();
+            if (this.resetZoomBtn) {
+                this.resetZoomBtn.style.display = 'none';
+            }
         }
     }
     
@@ -968,6 +995,28 @@ export class MValueChart {
                             label: (context) => {
                                 const label = context.dataset.label || '';
                                 return `${label}: P_amb=${context.parsed.x.toFixed(2)}, P_tissue=${context.parsed.y.toFixed(2)} bar`;
+                            }
+                        }
+                    },
+                    zoom: {
+                        pan: {
+                            enabled: true,
+                            mode: 'xy',
+                            modifierKey: null
+                        },
+                        zoom: {
+                            wheel: {
+                                enabled: true
+                            },
+                            pinch: {
+                                enabled: true
+                            },
+                            mode: 'xy',
+                            onZoomComplete: () => {
+                                // Show reset button when zoomed
+                                if (this.resetZoomBtn) {
+                                    this.resetZoomBtn.style.display = 'block';
+                                }
                             }
                         }
                     }
