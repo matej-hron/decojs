@@ -1002,7 +1002,7 @@ export class MValueChart {
                         pan: {
                             enabled: true,
                             mode: 'xy',
-                            threshold: 5,  // Reduce threshold for easier panning
+                            threshold: 2,
                             onPanComplete: () => {
                                 if (this.resetZoomBtn) {
                                     this.resetZoomBtn.style.display = 'block';
@@ -1012,10 +1012,17 @@ export class MValueChart {
                         zoom: {
                             wheel: {
                                 enabled: true,
-                                speed: 0.03  // Reduced sensitivity (default is 0.1)
+                                speed: 0.015  // Further reduced sensitivity
                             },
                             pinch: {
                                 enabled: true
+                            },
+                            drag: {
+                                enabled: true,
+                                backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                                borderColor: 'rgba(52, 152, 219, 0.8)',
+                                borderWidth: 1,
+                                modifierKey: 'shift'  // Hold Shift + drag to zoom to area
                             },
                             mode: 'xy',
                             onZoomComplete: () => {
