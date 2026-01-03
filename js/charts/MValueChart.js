@@ -97,6 +97,7 @@ export class MValueChart {
         this.isPlaying = false;
         this.playInterval = null;
         this.savedZoomState = null;
+        this.hasUserZoomed = false;
         
         // Merge options with defaults
         this.options = mergeOptions(DEFAULT_MVALUE_OPTIONS, config.options);
@@ -263,6 +264,7 @@ export class MValueChart {
         if (this.chart) {
             this.chart.resetZoom();
             this.savedZoomState = null;
+            this.hasUserZoomed = false;
             if (this.resetZoomBtn) {
                 this.resetZoomBtn.style.display = 'none';
             }
@@ -1006,6 +1008,7 @@ export class MValueChart {
                             mode: 'xy',
                             threshold: 10,
                             onPanComplete: () => {
+                                this.hasUserZoomed = true;
                                 if (this.resetZoomBtn) {
                                     this.resetZoomBtn.style.display = 'block';
                                 }
@@ -1021,6 +1024,7 @@ export class MValueChart {
                             },
                             mode: 'xy',
                             onZoomComplete: () => {
+                                this.hasUserZoomed = true;
                                 if (this.resetZoomBtn) {
                                     this.resetZoomBtn.style.display = 'block';
                                 }
@@ -1045,22 +1049,24 @@ export class MValueChart {
             }
         };
         
-        // Save zoom state before destroying
+        // Save zoom state before destroying (only if user has zoomed)
         if (this.chart) {
-            const xScale = this.chart.scales.x;
-            const yScale = this.chart.scales.y;
-            if (xScale && yScale) {
-                this.savedZoomState = {
-                    x: { min: xScale.min, max: xScale.max },
-                    y: { min: yScale.min, max: yScale.max }
-                };
+            if (this.hasUserZoomed) {
+                const xScale = this.chart.scales.x;
+                const yScale = this.chart.scales.y;
+                if (xScale && yScale) {
+                    this.savedZoomState = {
+                        x: { min: xScale.min, max: xScale.max },
+                        y: { min: yScale.min, max: yScale.max }
+                    };
+                }
             }
             this.chart.destroy();
         }
         this.chart = new Chart(this.canvas, config);
         
-        // Restore zoom state if available
-        if (this.savedZoomState) {
+        // Restore zoom state if user had zoomed
+        if (this.savedZoomState && this.hasUserZoomed) {
             this.chart.zoomScale('x', this.savedZoomState.x, 'none');
             this.chart.zoomScale('y', this.savedZoomState.y, 'none');
             if (this.resetZoomBtn) {

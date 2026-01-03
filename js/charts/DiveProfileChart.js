@@ -70,6 +70,7 @@ export class DiveProfileChart {
         
         // Zoom state preservation
         this.savedZoomState = null;
+        this.hasUserZoomed = false;
         
         // Merge options with defaults
         this.options = mergeOptions(DEFAULT_DIVE_PROFILE_OPTIONS, config.options);
@@ -253,6 +254,7 @@ export class DiveProfileChart {
         if (this.chart) {
             this.chart.resetZoom();
             this.savedZoomState = null;
+            this.hasUserZoomed = false;
             if (this.resetZoomBtn) {
                 this.resetZoomBtn.style.display = 'none';
             }
@@ -1177,6 +1179,7 @@ export class DiveProfileChart {
                             mode: 'xy',
                             threshold: 10,
                             onPanComplete: () => {
+                                this.hasUserZoomed = true;
                                 if (this.resetZoomBtn) {
                                     this.resetZoomBtn.style.display = 'block';
                                 }
@@ -1192,6 +1195,7 @@ export class DiveProfileChart {
                             },
                             mode: 'xy',
                             onZoomComplete: () => {
+                                this.hasUserZoomed = true;
                                 if (this.resetZoomBtn) {
                                     this.resetZoomBtn.style.display = 'block';
                                 }
@@ -1203,12 +1207,14 @@ export class DiveProfileChart {
             }
         };
         
-        // Save zoom state before destroying
+        // Save zoom state before destroying (only if user has zoomed)
         if (this.chart) {
-            const scales = this.chart.scales;
-            this.savedZoomState = {};
-            for (const [key, scale] of Object.entries(scales)) {
-                this.savedZoomState[key] = { min: scale.min, max: scale.max };
+            if (this.hasUserZoomed) {
+                const scales = this.chart.scales;
+                this.savedZoomState = {};
+                for (const [key, scale] of Object.entries(scales)) {
+                    this.savedZoomState[key] = { min: scale.min, max: scale.max };
+                }
             }
             this.chart.destroy();
         }
@@ -1216,8 +1222,8 @@ export class DiveProfileChart {
         // Create new chart
         this.chart = new Chart(this.canvas, config);
         
-        // Restore zoom state if available
-        if (this.savedZoomState) {
+        // Restore zoom state if user had zoomed
+        if (this.savedZoomState && this.hasUserZoomed) {
             for (const [key, range] of Object.entries(this.savedZoomState)) {
                 if (this.chart.scales[key]) {
                     this.chart.zoomScale(key, range, 'none');
