@@ -1171,7 +1171,7 @@ export class DiveProfileChart {
                         pan: {
                             enabled: true,
                             mode: 'xy',
-                            threshold: 2,
+                            modifierKey: 'shift',
                             onPanComplete: () => {
                                 if (this.resetZoomBtn) {
                                     this.resetZoomBtn.style.display = 'block';
