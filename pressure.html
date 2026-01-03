@@ -1046,6 +1046,21 @@
         }
         
         // =====================================================================
+        // CNS/OTU TOGGLE
+        // =====================================================================
+        
+        function setupCNSToggle() {
+            const toggle = document.getElementById('cns-tracking-toggle');
+            const content = document.getElementById('cns-otu-content');
+            
+            if (toggle && content) {
+                toggle.addEventListener('change', () => {
+                    content.style.display = toggle.checked ? 'block' : 'none';
+                });
+            }
+        }
+        
+        // =====================================================================
         // KATEX MATH RENDERING
         // =====================================================================
         
@@ -1076,6 +1091,7 @@
         // =====================================================================
         
         setupSandboxLinks();
+        setupCNSToggle();
         renderMathFormulas();
     </script>
     
