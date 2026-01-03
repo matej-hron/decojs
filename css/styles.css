@@ -537,6 +537,22 @@ section[id],
     text-transform: uppercase;
 }
 
+/* Scope Note */
+.scope-note {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-left: 4px solid var(--primary-color);
+    padding: 1rem 1.5rem;
+    margin: 0 auto 1.5rem;
+    max-width: 900px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.scope-note strong {
+    color: var(--text-color);
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
     line-height: 1.6;
@@ -1518,7 +1534,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.4.10";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.4.11";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
