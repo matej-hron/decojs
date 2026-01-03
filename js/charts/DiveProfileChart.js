@@ -68,6 +68,9 @@ export class DiveProfileChart {
         // Visible compartments for tissue loading mode - default to fastest only
         this.visibleCompartments = new Set([1]);
         
+        // Zoom state preservation
+        this.savedZoomState = null;
+        
         // Merge options with defaults
         this.options = mergeOptions(DEFAULT_DIVE_PROFILE_OPTIONS, config.options);
         this.environment = mergeOptions(DEFAULT_ENVIRONMENT, config.environment);
@@ -249,6 +252,7 @@ export class DiveProfileChart {
     resetZoom() {
         if (this.chart) {
             this.chart.resetZoom();
+            this.savedZoomState = null;
             if (this.resetZoomBtn) {
                 this.resetZoomBtn.style.display = 'none';
             }
@@ -1199,13 +1203,30 @@ export class DiveProfileChart {
             }
         };
         
-        // Destroy existing chart if any
+        // Save zoom state before destroying
         if (this.chart) {
+            const scales = this.chart.scales;
+            this.savedZoomState = {};
+            for (const [key, scale] of Object.entries(scales)) {
+                this.savedZoomState[key] = { min: scale.min, max: scale.max };
+            }
             this.chart.destroy();
         }
         
         // Create new chart
         this.chart = new Chart(this.canvas, config);
+        
+        // Restore zoom state if available
+        if (this.savedZoomState) {
+            for (const [key, range] of Object.entries(this.savedZoomState)) {
+                if (this.chart.scales[key]) {
+                    this.chart.zoomScale(key, range, 'none');
+                }
+            }
+            if (this.resetZoomBtn) {
+                this.resetZoomBtn.style.display = 'block';
+            }
+        }
     }
     
     /**

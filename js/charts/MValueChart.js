@@ -96,6 +96,7 @@ export class MValueChart {
         this.visibleCompartments = new Set();
         this.isPlaying = false;
         this.playInterval = null;
+        this.savedZoomState = null;
         
         // Merge options with defaults
         this.options = mergeOptions(DEFAULT_MVALUE_OPTIONS, config.options);
@@ -261,6 +262,7 @@ export class MValueChart {
     resetZoom() {
         if (this.chart) {
             this.chart.resetZoom();
+            this.savedZoomState = null;
             if (this.resetZoomBtn) {
                 this.resetZoomBtn.style.display = 'none';
             }
@@ -1043,10 +1045,28 @@ export class MValueChart {
             }
         };
         
+        // Save zoom state before destroying
         if (this.chart) {
+            const xScale = this.chart.scales.x;
+            const yScale = this.chart.scales.y;
+            if (xScale && yScale) {
+                this.savedZoomState = {
+                    x: { min: xScale.min, max: xScale.max },
+                    y: { min: yScale.min, max: yScale.max }
+                };
+            }
             this.chart.destroy();
         }
         this.chart = new Chart(this.canvas, config);
+        
+        // Restore zoom state if available
+        if (this.savedZoomState) {
+            this.chart.zoomScale('x', this.savedZoomState.x, 'none');
+            this.chart.zoomScale('y', this.savedZoomState.y, 'none');
+            if (this.resetZoomBtn) {
+                this.resetZoomBtn.style.display = 'block';
+            }
+        }
     }
     
     // ============================================================================
