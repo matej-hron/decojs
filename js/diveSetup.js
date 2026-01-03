@@ -292,8 +292,8 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh) 
     // Get bottom gas (first gas or air)
     const bottomGas = gases && gases.length > 0 ? gases[0] : { id: 'air', name: 'Air', o2: 0.21, n2: 0.79 };
     
-    // Calculate NDL for this depth/gas
-    const { ndl, controllingCompartment } = calculateNDL(maxDepth, bottomGas.n2, gfHighDec);
+    // Calculate NDL for this depth/gas (uses GF Low since that determines first stop)
+    const { ndl, controllingCompartment } = calculateNDL(maxDepth, bottomGas.n2, gfLowDec);
     
     // Calculate descent time
     const descentTime = Math.ceil(maxDepth / DESCENT_SPEED);
@@ -449,8 +449,8 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
     // Get bottom gas
     const bottomGas = gases && gases.length > 0 ? gases[0] : { id: 'air', name: 'Air', o2: 0.21, n2: 0.79 };
     
-    // Calculate NDL
-    const { ndl, controllingCompartment } = calculateNDL(maxDepth, bottomGas.n2, gfHighDec);
+    // Calculate NDL (uses GF Low since that determines first stop)
+    const { ndl, controllingCompartment } = calculateNDL(maxDepth, bottomGas.n2, gfLowDec);
     
     const descentTime = Math.ceil(maxDepth / DESCENT_SPEED);
     const requiresDeco = bottomTime > ndl;
@@ -536,12 +536,12 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
  * 
  * @param {number} depth - Depth in meters
  * @param {Object} gas - Gas object with n2 property
- * @param {number} gfHigh - GF High as percentage (0-100)
+ * @param {number} gfLow - GF Low as percentage (0-100), determines first stop
  * @returns {{ndl: number, controllingCompartment: number}}
  */
-export function getNDLForDepth(depth, gas, gfHigh) {
+export function getNDLForDepth(depth, gas, gfLow) {
     const n2 = gas?.n2 ?? N2_FRACTION;
-    return calculateNDL(depth, n2, gfHigh / 100);
+    return calculateNDL(depth, n2, gfLow / 100);
 }
 
 /**

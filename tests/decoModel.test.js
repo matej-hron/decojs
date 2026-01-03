@@ -23,7 +23,13 @@ import {
     getFirstStopDepth
 } from '../js/decoModel.js';
 
-import { COMPARTMENTS } from '../js/tissueCompartments.js';
+import {
+    COMPARTMENTS,
+    ZHL16_VARIANTS,
+    getZHL16Variant,
+    setZHL16Variant,
+    getCompartmentsForVariant
+} from '../js/tissueCompartments.js';
 
 describe('decoModel module', () => {
     
@@ -275,9 +281,116 @@ describe('decoModel module', () => {
 
         test('TC1 M-value coefficients match ZH-L16A', () => {
             const tc1 = COMPARTMENTS[0];
-            // ZH-L16A values for 5 min half-time (variant)
+            // TC1 a and b values are the same across all ZH-L16 variants (A, B, C)
             expect(tc1.aN2).toBeCloseTo(1.1696, 3);
             expect(tc1.bN2).toBeCloseTo(0.5578, 3);
+        });
+    });
+
+    // ========================================================================
+    // ZH-L16 VARIANT TESTS
+    // ========================================================================
+
+    describe('ZH-L16 variants', () => {
+        // Store original variant to restore after tests
+        let originalVariant;
+        
+        beforeAll(() => {
+            originalVariant = getZHL16Variant();
+        });
+        
+        afterAll(() => {
+            setZHL16Variant(originalVariant);
+        });
+
+        test('ZHL16_VARIANTS has A, B, C options', () => {
+            expect(ZHL16_VARIANTS.A).toBe('ZH-L16A');
+            expect(ZHL16_VARIANTS.B).toBe('ZH-L16B');
+            expect(ZHL16_VARIANTS.C).toBe('ZH-L16C');
+        });
+
+        test('default variant is ZH-L16C', () => {
+            // Reset to ensure we're testing the default
+            setZHL16Variant(ZHL16_VARIANTS.C);
+            expect(getZHL16Variant()).toBe('ZH-L16C');
+        });
+
+        test('setZHL16Variant changes active variant', () => {
+            setZHL16Variant(ZHL16_VARIANTS.A);
+            expect(getZHL16Variant()).toBe('ZH-L16A');
+            
+            setZHL16Variant(ZHL16_VARIANTS.B);
+            expect(getZHL16Variant()).toBe('ZH-L16B');
+            
+            setZHL16Variant(ZHL16_VARIANTS.C);
+            expect(getZHL16Variant()).toBe('ZH-L16C');
+        });
+
+        test('COMPARTMENTS array is updated when variant changes', () => {
+            setZHL16Variant(ZHL16_VARIANTS.A);
+            const tc5_A = COMPARTMENTS.find(c => c.id === 5).aN2;
+            
+            setZHL16Variant(ZHL16_VARIANTS.C);
+            const tc5_C = COMPARTMENTS.find(c => c.id === 5).aN2;
+            
+            // ZH-L16A TC5 a = 0.6667, ZH-L16C TC5 a = 0.5282
+            expect(tc5_A).toBeCloseTo(0.6667, 3);
+            expect(tc5_C).toBeCloseTo(0.5282, 3);
+            expect(tc5_A).toBeGreaterThan(tc5_C);  // A is less conservative
+        });
+
+        test('getCompartmentsForVariant returns correct values without changing state', () => {
+            setZHL16Variant(ZHL16_VARIANTS.C);
+            
+            const variantA = getCompartmentsForVariant(ZHL16_VARIANTS.A);
+            const tc5_A = variantA.find(c => c.id === 5).aN2;
+            
+            // Current variant should still be C
+            expect(getZHL16Variant()).toBe('ZH-L16C');
+            expect(tc5_A).toBeCloseTo(0.6667, 3);
+        });
+
+        test('TC1-4 have same a values across all variants', () => {
+            const variantA = getCompartmentsForVariant(ZHL16_VARIANTS.A);
+            const variantB = getCompartmentsForVariant(ZHL16_VARIANTS.B);
+            const variantC = getCompartmentsForVariant(ZHL16_VARIANTS.C);
+            
+            for (let id = 1; id <= 4; id++) {
+                const a_A = variantA.find(c => c.id === id).aN2;
+                const a_B = variantB.find(c => c.id === id).aN2;
+                const a_C = variantC.find(c => c.id === id).aN2;
+                expect(a_A).toBeCloseTo(a_B, 4);
+                expect(a_B).toBeCloseTo(a_C, 4);
+            }
+        });
+
+        test('TC5-8 have more conservative (lower) a values in B and C', () => {
+            const variantA = getCompartmentsForVariant(ZHL16_VARIANTS.A);
+            const variantB = getCompartmentsForVariant(ZHL16_VARIANTS.B);
+            const variantC = getCompartmentsForVariant(ZHL16_VARIANTS.C);
+            
+            for (let id = 5; id <= 8; id++) {
+                const a_A = variantA.find(c => c.id === id).aN2;
+                const a_B = variantB.find(c => c.id === id).aN2;
+                const a_C = variantC.find(c => c.id === id).aN2;
+                
+                // A >= B >= C (higher a = less conservative)
+                expect(a_A).toBeGreaterThanOrEqual(a_B);
+                expect(a_B).toBeGreaterThanOrEqual(a_C);
+            }
+        });
+
+        test('all variants have same half-times and b values', () => {
+            const variantA = getCompartmentsForVariant(ZHL16_VARIANTS.A);
+            const variantB = getCompartmentsForVariant(ZHL16_VARIANTS.B);
+            const variantC = getCompartmentsForVariant(ZHL16_VARIANTS.C);
+            
+            for (let i = 0; i < 16; i++) {
+                expect(variantA[i].halfTime).toBe(variantB[i].halfTime);
+                expect(variantB[i].halfTime).toBe(variantC[i].halfTime);
+                expect(variantA[i].bN2).toBe(variantB[i].bN2);
+                expect(variantB[i].bN2).toBe(variantC[i].bN2);
+            }
         });
     });
 

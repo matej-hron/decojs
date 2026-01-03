@@ -336,6 +336,29 @@
             border-color: var(--primary-color);
         }
         
+        .chart-controls-separator {
+            color: var(--text-muted);
+            margin: 0 0.25rem;
+            align-self: center;
+        }
+        
+        .algorithm-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .algorithm-selector select {
+            padding: 0.25rem 0.4rem;
+            font-size: 0.8rem;
+            border-radius: var(--radius-small, 4px);
+            border: 1px solid var(--border-color);
+            background: var(--card-background);
+            color: var(--text-color);
+        }
+
         /* Status bar */
         .sandbox-status {
             padding: 0.5rem 1rem;
@@ -423,6 +446,15 @@
                     <button id="dpc-pp" class="btn btn-small btn-secondary">Partial Pressures</button>
                     <button id="dpc-tissue" class="btn btn-small btn-secondary">Tissues</button>
                     <button id="dpc-gas" class="btn btn-small btn-secondary">Gas</button>
+                    <span class="chart-controls-separator">|</span>
+                    <label class="algorithm-selector">
+                        <span>Algorithm:</span>
+                        <select id="zhl-variant">
+                            <option value="ZH-L16A">ZH-L16A (experimental)</option>
+                            <option value="ZH-L16B">ZH-L16B (tables)</option>
+                            <option value="ZH-L16C" selected>ZH-L16C (computers)</option>
+                        </select>
+                    </label>
                 </div>
                 <div class="chart-wrapper" id="dive-profile-container" style="height: 600px;"></div>
                 
@@ -470,6 +502,7 @@
             generateDecoSchedule,
             SURFACE_PRESSURE
         } from '../js/decoModel.js';
+        import { setZHL16Variant, getZHL16Variant, ZHL16_VARIANTS } from '../js/tissueCompartments.js';
         
         // =====================================================================
         // DIVE ANALYSIS - Warnings, Gas Consumption, Safety Checks
@@ -1066,7 +1099,7 @@
             'dpc-depth': { showCeiling: true, showAmbientPressure: false, showPartialPressures: false, showTissueLoading: false, showGasConsumption: false, showLabels: true },
             'dpc-pressure': { showCeiling: false, showAmbientPressure: true, showPartialPressures: false, showTissueLoading: false, showGasConsumption: false, showLabels: false },
             'dpc-pp': { showCeiling: false, showAmbientPressure: false, showPartialPressures: true, showTissueLoading: false, showGasConsumption: false, showLabels: false },
-            'dpc-tissue': { showCeiling: false, showAmbientPressure: true, showPartialPressures: false, showTissueLoading: true, showGasConsumption: false, showLabels: false },
+            'dpc-tissue': { showCeiling: true, showAmbientPressure: true, showPartialPressures: false, showTissueLoading: true, showGasConsumption: false, showLabels: false },
             'dpc-gas': { showCeiling: false, showAmbientPressure: false, showPartialPressures: false, showTissueLoading: false, showGasConsumption: true, showLabels: false }
         };
         
@@ -1081,6 +1114,26 @@
                 // Update chart options
                 diveProfileChart.setOptions(chartButtons[btnId]);
             });
+        });
+        
+        // =====================================================================
+        // ZH-L16 VARIANT SELECTOR
+        // =====================================================================
+        
+        const variantSelector = document.getElementById('zhl-variant');
+        variantSelector.value = getZHL16Variant();
+        
+        variantSelector.addEventListener('change', (e) => {
+            const variant = e.target.value;
+            setZHL16Variant(variant);
+            console.log(`Switched to ${variant}`);
+            
+            // Force recalculation by triggering editor change
+            const currentSetup = editor.getDiveSetup();
+            editor.updateSetup(currentSetup);
+            
+            statusText.innerHTML = `<span class="status-valid">✓ Using ${variant}</span>`;
+            lastUpdate.textContent = new Date().toLocaleTimeString();
         });
         
         // =====================================================================

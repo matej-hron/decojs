@@ -1058,9 +1058,11 @@ export class DiveSetupEditor extends EventTarget {
         const maxDepth = parseFloat(this.elements.quickDepth.value) || 30;
         const bottomTime = parseFloat(this.elements.quickTime.value) || 20;
         const gas = this.currentGases[0] || { n2: 0.79 };
+        const gfLow = parseFloat(this.elements.gfLowInput?.value) || 100;
         const gfHigh = parseFloat(this.elements.gfHighInput?.value) || 100;
         
-        const { ndl } = getNDLForDepth(maxDepth, gas, gfHigh);
+        // NDL uses GF Low since that determines when first stop is required
+        const { ndl } = getNDLForDepth(maxDepth, gas, gfLow);
         
         if (ndl === Infinity) {
             this.elements.ndlValue.textContent = '∞';

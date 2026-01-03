@@ -929,13 +929,13 @@
             const bottomTime = parseFloat(quickBottomTimeInput.value) || 20;
             
             // Get current gas and GF settings - read directly from inputs
-            // getNDLForDepth expects percentage (0-100), generateDecoProfile expects fraction (0-1)
+            // getNDLForDepth expects percentage (0-100), uses GF Low for first stop determination
             const gas = currentGases[0] || { n2: 0.79, name: 'Air' };
             const gfLowPercent = parseFloat(gfLowInput.value) || 100;
             const gfHighPercent = parseFloat(gfHighInput.value) || 100;
             
-            // Calculate NDL (pass percentage)
-            const { ndl, controllingCompartment } = getNDLForDepth(maxDepth, gas, gfHighPercent);
+            // Calculate NDL (pass gfLow since that determines first deco stop)
+            const { ndl, controllingCompartment } = getNDLForDepth(maxDepth, gas, gfLowPercent);
             
             // Update NDL display
             if (ndl === Infinity) {

@@ -31,6 +31,7 @@ import { COMPARTMENTS } from '../tissueCompartments.js';
 import {
     calculateTissueLoading,
     calculateCeilingTimeSeries,
+    calculateCeilingTimeSeriesDetailed,
     calculateNDL,
     getAmbientPressure,
     getAlveolarN2Pressure,
@@ -757,10 +758,17 @@ export class DiveProfileChart {
         // Calculate tissue loading
         const results = calculateTissueLoading(waypoints, surfaceInterval, { gases });
         
-        // Calculate ceiling if needed
+        // Calculate ceiling if needed - use detailed version in tissue mode
         let ceilingDepths = null;
+        let compartmentCeilings = null;
         if (this.options.showCeiling) {
-            ceilingDepths = calculateCeilingTimeSeries(results, gfLow, gfHigh);
+            if (this.options.showTissueLoading) {
+                const detailed = calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh);
+                ceilingDepths = detailed.ceilingDepths;
+                compartmentCeilings = detailed.compartmentCeilings;
+            } else {
+                ceilingDepths = calculateCeilingTimeSeries(results, gfLow, gfHigh);
+            }
         }
         
         // Calculate NDL if needed
@@ -768,7 +776,7 @@ export class DiveProfileChart {
         if (this.options.showNDL) {
             const maxDepth = Math.max(...waypoints.map(wp => wp.depth));
             const bottomGas = gases[0];
-            ndlData = calculateNDL(maxDepth, bottomGas.n2, gfHigh);
+            ndlData = calculateNDL(maxDepth, bottomGas.n2, gfLow);
         }
         
         // Calculate gas consumption if needed
@@ -782,6 +790,7 @@ export class DiveProfileChart {
         return {
             results,
             ceilingDepths,
+            compartmentCeilings,
             ndlData,
             gasConsumption,
             waypoints,
@@ -800,7 +809,7 @@ export class DiveProfileChart {
         const data = this._calculateData();
         if (!data) return;
         
-        const { results, ceilingDepths, gasConsumption, waypoints, gases } = data;
+        const { results, ceilingDepths, compartmentCeilings, gasConsumption, waypoints, gases } = data;
         
         // Calculate axis bounds
         const maxDepth = Math.max(...waypoints.map(wp => wp.depth));
@@ -859,10 +868,37 @@ export class DiveProfileChart {
                     order: 20
                 });
             });
+            
+            // Per-compartment ceiling lines (dashed, same color as tissue)
+            if (this.options.showCeiling && compartmentCeilings) {
+                COMPARTMENTS.forEach(comp => {
+                    if (!this.visibleCompartments.has(comp.id)) return;
+                    
+                    const ceilingData = compartmentCeilings[comp.id];
+                    if (!ceilingData) return;
+                    
+                    datasets.push({
+                        label: `TC${comp.id} ceiling`,
+                        data: results.timePoints.map((t, i) => ({
+                            x: t,
+                            y: ceilingData[i]
+                        })),
+                        borderColor: comp.color,
+                        backgroundColor: 'transparent',
+                        fill: false,
+                        yAxisID: 'yDepth',  // Ceiling is on depth axis
+                        tension: 0.1,
+                        pointRadius: 0,
+                        borderWidth: 1,
+                        borderDash: [3, 3],  // Dashed to distinguish from tissue pressure
+                        order: 21
+                    });
+                });
+            }
         }
         
-        // Ceiling line (if enabled)
-        if (this.options.showCeiling && ceilingDepths) {
+        // Aggregate ceiling line (if enabled, but not in tissue mode where we show per-compartment ceilings)
+        if (this.options.showCeiling && ceilingDepths && !this.options.showTissueLoading) {
             datasets.push({
                 label: 'Ceiling (m)',
                 data: results.timePoints.map((t, i) => ({

@@ -249,7 +249,33 @@ export function getFirstStopDepth(tissuePressures, gfLow, stopIncrement = 3) {
  * @returns {number[]} Array of ceiling depths in meters at each time point
  */
 export function calculateCeilingTimeSeries(results, gfLow, gfHigh = gfLow) {
+    const { ceilingDepths } = calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh);
+    return ceilingDepths;
+}
+
+/**
+ * Calculate detailed ceiling data at each time point from tissue loading results
+ * Returns both overall ceiling and per-compartment ceilings.
+ * Uses GF interpolation: GF Low at/below first stop, GF High at surface,
+ * linearly interpolated during ascent.
+ * 
+ * @param {Object} results - Results from calculateTissueLoading()
+ * @param {number} gfLow - GF Low value (0-1, where 1 = 100%)
+ * @param {number} gfHigh - GF High value (0-1, where 1 = 100%)
+ * @returns {{ceilingDepths: number[], compartmentCeilings: Object, gfValues: number[]}}
+ *          ceilingDepths: overall ceiling at each time point
+ *          compartmentCeilings: {compId: number[]} ceiling depth per compartment at each time point
+ *          gfValues: GF used at each time point (for debugging)
+ */
+export function calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh = gfLow) {
     const ceilingDepths = [];
+    const compartmentCeilings = {};
+    const gfValues = [];
+    
+    // Initialize per-compartment ceiling arrays
+    for (const compId of Object.keys(results.compartments)) {
+        compartmentCeilings[compId] = [];
+    }
     
     // Track first stop depth (calculated at start of ascent using GF Low)
     let firstStopAmbient = null;
@@ -283,15 +309,26 @@ export function calculateCeilingTimeSeries(results, gfLow, gfHigh = gfLow) {
             // During ascent above first stop: interpolate GF
             gf = interpolateGF(currentAmbient, firstStopAmbient, gfLow, gfHigh);
         }
+        gfValues.push(gf);
         
-        // Calculate ceiling using interpolated GF
-        const { ceilingDepth } = getDiveCeiling(tissuePressures, gf);
-        ceilingDepths.push(ceilingDepth);
+        // Calculate ceiling for each compartment
+        let maxCeilingDepth = 0;
+        for (const comp of COMPARTMENTS) {
+            const tissueP = tissuePressures[comp.id];
+            const ceilingPressure = getCompartmentCeiling(tissueP, comp.aN2, comp.bN2, gf);
+            // Convert to depth (0 if can surface)
+            const ceilingDepth = Math.max(0, (ceilingPressure - SURFACE_PRESSURE) / PRESSURE_PER_METER);
+            compartmentCeilings[comp.id].push(ceilingDepth);
+            if (ceilingDepth > maxCeilingDepth) {
+                maxCeilingDepth = ceilingDepth;
+            }
+        }
         
+        ceilingDepths.push(maxCeilingDepth);
         previousDepth = currentDepth;
     }
     
-    return ceilingDepths;
+    return { ceilingDepths, compartmentCeilings, gfValues };
 }
 
 // ============================================================================
@@ -313,13 +350,14 @@ const STOP_INCREMENT = 3;
  * without required decompression stops.
  * 
  * Uses binary search to find maximum time where ceiling = 0 (surface).
+ * NDL uses GF Low because that determines when the first stop is required.
  * 
  * @param {number} depth - Depth in meters
  * @param {number} n2Fraction - N2 fraction in gas (default 0.79 for air)
- * @param {number} gfHigh - GF High as decimal (0-1), used for surface tolerance
+ * @param {number} gfLow - GF Low as decimal (0-1), determines first stop ceiling
  * @returns {{ndl: number, controllingCompartment: number}} NDL in minutes and limiting compartment
  */
-export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfHigh = 1.0) {
+export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0) {
     // Very shallow depths have effectively unlimited NDL
     if (depth <= 0) {
         return { ndl: Infinity, controllingCompartment: null };
@@ -331,8 +369,8 @@ export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfHigh = 1.0) {
     // Initialize tissue pressures at surface saturation
     const initialN2 = getInitialTissueN2(n2Fraction);
     
-    // Simulate descent to depth
-    const descentTime = depth / DESCENT_SPEED;
+    // Simulate descent to depth - use ceil() to match profile generation
+    const descentTime = Math.ceil(depth / DESCENT_SPEED);
     const descentRate = (alveolarN2 - getAlveolarN2Pressure(SURFACE_PRESSURE, n2Fraction)) / descentTime;
     
     // Get tissue pressures after descent
@@ -352,10 +390,11 @@ export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfHigh = 1.0) {
     let maxTime = 300; // 5 hours max
     
     // First check if we can surface immediately after descent
-    const { ceilingDepth: immediateceiling } = getDiveCeiling(afterDescent, gfHigh);
+    // Use GF Low - this determines when first stop is needed
+    const { ceilingDepth: immediateceiling } = getDiveCeiling(afterDescent, gfLow);
     if (immediateceiling > 0) {
         // Already in deco after descent (very deep dive)
-        return { ndl: 0, controllingCompartment: getDiveCeiling(afterDescent, gfHigh).controllingCompartment };
+        return { ndl: 0, controllingCompartment: getDiveCeiling(afterDescent, gfLow).controllingCompartment };
     }
     
     // Check if 5 hours is still within NDL (very shallow)
@@ -363,13 +402,13 @@ export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfHigh = 1.0) {
     COMPARTMENTS.forEach(comp => {
         pressuresAt5Hours[comp.id] = haldaneEquation(afterDescent[comp.id], alveolarN2, 300, comp.halfTime);
     });
-    const { ceilingDepth: ceiling5h } = getDiveCeiling(pressuresAt5Hours, gfHigh);
+    const { ceilingDepth: ceiling5h } = getDiveCeiling(pressuresAt5Hours, gfLow);
     if (ceiling5h === 0) {
         return { ndl: Infinity, controllingCompartment: null };
     }
     
-    // Binary search
-    while (maxTime - minTime > 0.5) {
+    // Binary search with 0.1 min (6 second) precision
+    while (maxTime - minTime > 0.1) {
         const testTime = (minTime + maxTime) / 2;
         
         // Simulate time at depth
@@ -378,8 +417,8 @@ export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfHigh = 1.0) {
             testPressures[comp.id] = haldaneEquation(afterDescent[comp.id], alveolarN2, testTime, comp.halfTime);
         });
         
-        // Check ceiling using GF High
-        const { ceilingDepth } = getDiveCeiling(testPressures, gfHigh);
+        // Check ceiling using GF Low (first stop requirement)
+        const { ceilingDepth } = getDiveCeiling(testPressures, gfLow);
         
         if (ceilingDepth > 0) {
             maxTime = testTime; // Needs deco, reduce time
@@ -393,11 +432,15 @@ export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfHigh = 1.0) {
     COMPARTMENTS.forEach(comp => {
         ndlPressures[comp.id] = haldaneEquation(afterDescent[comp.id], alveolarN2, minTime, comp.halfTime);
     });
-    const { controllingCompartment } = getDiveCeiling(ndlPressures, gfHigh);
+    const { controllingCompartment } = getDiveCeiling(ndlPressures, gfLow);
     
+    // Return NDL as bottom time (time at depth after descent)
+    // Floor to whole minutes for conservative display, but actual value is minTime
     return {
-        ndl: Math.floor(minTime), // Return whole minutes (conservative)
-        controllingCompartment
+        ndl: Math.floor(minTime),
+        ndlExact: minTime,  // Exact value for debugging/comparison
+        controllingCompartment,
+        descentTime: Math.ceil(depth / DESCENT_SPEED)  // So caller knows total dive time = descentTime + ndl
     };
 }
 
