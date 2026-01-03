@@ -8,7 +8,7 @@
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2980b9">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Deco Theory">
     <link rel="apple-touch-icon" href="icons/icon.svg">
@@ -44,22 +44,6 @@
             <span class="nav-wip-badge">🧪 Experimental</span>
         </div>
     </nav>
-
-    <!-- Dive Profile Header Bar (Sticky) -->
-    <div class="profile-header-bar sticky">
-        <div class="profile-header-content">
-            <div class="profile-header-info">
-                <span class="profile-header-label">Profile:</span>
-                <select id="profile-switcher" class="profile-switcher">
-                    <!-- Options populated by JavaScript -->
-                </select>
-                <span id="profile-header-summary" class="profile-header-summary"></span>
-            </div>
-            <div class="profile-header-actions">
-                <a href="dive-setup.html" class="btn btn-small">✏️ Customize</a>
-            </div>
-        </div>
-    </div>
 
     <!-- Disclaimer Banner -->
     <div class="disclaimer-banner">
@@ -108,15 +92,8 @@
         <section id="dive-profile" class="chart-section">
             <div class="chart-header">
                 <h2>📈 Your Dive Profile</h2>
-                <button id="fullscreen-btn" class="btn btn-small btn-icon" title="Fullscreen">
-                    <span class="fullscreen-icon">⛶</span>
-                    <span class="fullscreen-text">Fullscreen</span>
-                </button>
             </div>
-            <div class="chart-container" id="chart-container">
-                <canvas id="profile-chart"></canvas>
-                <button id="exit-fullscreen-btn" class="btn btn-fullscreen-close" title="Exit Fullscreen">✕</button>
-            </div>
+            <div id="chart-container" class="chart-wrapper" style="height: 600px;"></div>
             
             <!-- Terminology Legend -->
             <div class="terminology-legend">
@@ -173,6 +150,9 @@
                     </div>
                 </div>
             </div>
+            <a id="profile-sandbox-link" href="sandbox/" class="sandbox-link" target="_blank">
+                🔬 Open in Sandbox →
+            </a>
         </section>
 
         <!-- Total Pressure Section -->
@@ -286,15 +266,11 @@
         <section id="pressure-chart" class="chart-section">
             <div class="chart-header">
                 <h2>📈 Dive Profile with Total Pressure</h2>
-                <button id="pressure-fullscreen-btn" class="btn btn-small btn-icon" title="Fullscreen">
-                    <span class="fullscreen-icon">⛶</span>
-                    <span class="fullscreen-text">Fullscreen</span>
-                </button>
             </div>
-            <div class="chart-container" id="pressure-chart-container">
-                <canvas id="total-pressure-chart"></canvas>
-                <button id="pressure-exit-fullscreen-btn" class="btn btn-fullscreen-close" title="Exit Fullscreen">✕</button>
-            </div>
+            <div id="pressure-chart-container" class="chart-wrapper" style="height: 600px;"></div>
+            <a id="pressure-sandbox-link" href="sandbox/" class="sandbox-link" target="_blank">
+                🔬 Open in Sandbox →
+            </a>
         </section>
 
         <!-- Gas Consumption Section -->
@@ -362,36 +338,13 @@
         <section id="gas-consumption-chart" class="chart-section">
             <div class="chart-header">
                 <h2>📈 Gas Consumption During Dive</h2>
-                <button id="gas-fullscreen-btn" class="btn btn-small btn-icon" title="Fullscreen">
-                    <span class="fullscreen-icon">⛶</span>
-                    <span class="fullscreen-text">Fullscreen</span>
-                </button>
             </div>
             
-            <!-- Local Overrides -->
-            <div class="chart-controls">
-                <div class="control-group">
-                    <label for="gas-sac-input">SAC Rate (L/min):</label>
-                    <input type="number" id="gas-sac-input" class="form-input" value="20" min="10" max="40" step="1">
-                </div>
-                <p class="hint" style="margin: 0.5rem 0;">Tank sizes from dive profile. <a href="dive-setup.html">Edit in Dive Setup</a></p>
-            </div>
+            <div id="gas-chart-container" class="chart-wrapper" style="height: 600px;"></div>
             
-            <div class="chart-container" id="gas-chart-container">
-                <canvas id="gas-consumption-canvas"></canvas>
-                <button id="gas-exit-fullscreen-btn" class="btn btn-fullscreen-close" title="Exit Fullscreen">✕</button>
-            </div>
-            
-            <!-- Gas Summary - per tank -->
-            <div id="gas-summary" class="stats-summary">
-                <div id="gas-tanks-summary" class="gas-tanks-summary">
-                    <!-- Populated by JavaScript -->
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Overall Status:</span>
-                    <span id="gas-status" class="stat-value">--</span>
-                </div>
-            </div>
+            <a id="gas-sandbox-link" href="sandbox/" class="sandbox-link" target="_blank">
+                🔬 Open in Sandbox →
+            </a>
         </section>
 
         <!-- Air Composition Section -->
@@ -807,49 +760,13 @@
         <section id="partial-pressure-chart" class="chart-section">
             <div class="chart-header">
                 <h2>📊 Partial Pressures During Dive</h2>
-                <button id="pp-fullscreen-btn" class="btn btn-small btn-icon" title="Fullscreen">
-                    <span class="fullscreen-icon">⛶</span>
-                    <span class="fullscreen-text">Fullscreen</span>
-                </button>
             </div>
             
-            <!-- Gas Selection Controls -->
-            <div class="chart-controls">
-                <div class="control-group">
-                    <label for="pp-gas-select">Breathing Gas:</label>
-                    <select id="pp-gas-select" class="form-select">
-                        <!-- Populated by JavaScript -->
-                    </select>
-                </div>
-                <div class="control-group gas-display">
-                    <span id="pp-gas-details">O₂: 21% | N₂: 79% | He: 0%</span>
-                </div>
-            </div>
+            <div id="pp-chart-container" class="chart-wrapper" style="height: 600px;"></div>
             
-            <div class="chart-container" id="pp-chart-container">
-                <canvas id="partial-pressure-canvas"></canvas>
-                <button id="pp-exit-fullscreen-btn" class="btn btn-fullscreen-close" title="Exit Fullscreen">✕</button>
-            </div>
-            
-            <!-- Partial Pressure Summary -->
-            <div id="pp-summary" class="stats-summary">
-                <div class="stat-item">
-                    <span class="stat-label">Max ppO₂:</span>
-                    <span id="max-ppo2" class="stat-value">-- bar</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">Max ppN₂:</span>
-                    <span id="max-ppn2" class="stat-value">-- bar</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">MOD (1.4 bar):</span>
-                    <span id="pp-mod-display" class="stat-value">-- m</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">END at max depth:</span>
-                    <span id="pp-end-display" class="stat-value">-- m</span>
-                </div>
-            </div>
+            <a id="pp-sandbox-link" href="sandbox/" class="sandbox-link" target="_blank">
+                🔬 Open in Sandbox →
+            </a>
         </section>
     </main>
 
@@ -859,1339 +776,148 @@
     </footer>
 
     <script type="module">
-        import { loadDiveSetup, getDiveSetupWaypoints, saveDiveSetup, clearCache, getGasCylinderVolume, getGasStartPressure, PREDEFINED_GASES, getPredefinedGas, calculateMOD, calculateEND, calculatePartialPressure, getGases, getGasAtTime, getGasSwitchEvents } from './js/diveSetup.js';
+        import { DiveProfileChart } from './js/charts/DiveProfileChart.js';
+        import { generateDecoProfile } from './js/diveSetup.js';
+        import { getSandboxUrl } from './js/urlParams.js';
         
-        // State
-        let profileChart = null;
-        let airCompositionChart = null;
-        let partialPressureChart = null;
-        let currentSetup = null;
-        let availableProfiles = [];
-        let selectedGas = { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 };
-        let useProfileGases = true; // New: use gases from profile instead of selector
+        // =====================================================================
+        // DIVE PROFILE DEFINITIONS FOR THIS PAGE
+        // =====================================================================
         
-        // DOM elements
-        const profileSwitcher = document.getElementById('profile-switcher');
-        const profileHeaderSummary = document.getElementById('profile-header-summary');
-        
-        // Fullscreen controls
-        const chartContainer = document.getElementById('chart-container');
-        const fullscreenBtn = document.getElementById('fullscreen-btn');
-        const exitFullscreenBtn = document.getElementById('exit-fullscreen-btn');
-        
-        /**
-         * Toggle fullscreen mode for the chart
-         */
-        function toggleFullscreen() {
-            const isFullscreen = chartContainer.classList.toggle('fullscreen');
-            
-            // Prevent body scroll when fullscreen
-            document.body.style.overflow = isFullscreen ? 'hidden' : '';
-            
-            // Resize chart to fit new container size
-            if (profileChart) {
-                setTimeout(() => {
-                    profileChart.resize();
-                }, 50);
-            }
-        }
-        
-        // Setup fullscreen event listeners
-        fullscreenBtn.addEventListener('click', toggleFullscreen);
-        exitFullscreenBtn.addEventListener('click', toggleFullscreen);
-        
-        // Exit fullscreen on Escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && chartContainer.classList.contains('fullscreen')) {
-                toggleFullscreen();
-            }
-        });
-        
-        // Load and render the dive profile
-        async function init() {
-            // Load available profiles
-            await loadAvailableProfiles();
-            
-            // Load current setup
-            currentSetup = await loadDiveSetup();
-            if (!currentSetup) {
-                document.getElementById('dive-stats').innerHTML = '<p class="error">Failed to load dive setup</p>';
-                return;
-            }
-            
-            // Initialize profile switcher
-            initProfileSwitcher();
-            
-            // Render everything
-            render();
-            
-            // Render KaTeX formulas
-            renderMathFormulas();
-        }
-        
-        /**
-         * Render math formulas using KaTeX
-         */
-        function renderMathFormulas() {
-            // Render block formulas (.formula class)
-            const formulas = document.querySelectorAll('.formula');
-            formulas.forEach(el => {
-                try {
-                    if (typeof katex !== 'undefined') {
-                        katex.render(el.textContent, el, { displayMode: true });
-                    }
-                } catch (e) {
-                    console.warn('KaTeX error:', e);
-                }
-            });
-            
-            // Render inline formulas (.formula-inline class)
-            const inlineFormulas = document.querySelectorAll('.formula-inline');
-            inlineFormulas.forEach(el => {
-                try {
-                    if (typeof katex !== 'undefined') {
-                        katex.render(el.textContent, el, { displayMode: false });
-                    }
-                } catch (e) {
-                    console.warn('KaTeX inline error:', e);
-                }
-            });
-        }
-        
-        async function loadAvailableProfiles() {
-            try {
-                const response = await fetch('data/dive-profiles.json');
-                if (!response.ok) throw new Error(`Failed to load profiles: ${response.status}`);
-                const data = await response.json();
-                availableProfiles = data.profiles || [];
-            } catch (error) {
-                console.error('Error loading dive profiles:', error);
-                availableProfiles = [];
-            }
-        }
-        
-        function initProfileSwitcher() {
-            if (!profileSwitcher) return;
-            
-            // Clear existing options
-            profileSwitcher.innerHTML = '';
-            
-            // Check if current setup is a predefined profile
-            const isPredefined = currentSetup.id && availableProfiles.find(p => p.id === currentSetup.id);
-            
-            // Add custom option - show actual name if it's a custom profile
-            const customOption = document.createElement('option');
-            customOption.value = 'custom';
-            customOption.textContent = isPredefined ? '✏️ Custom Profile' : `✏️ ${currentSetup.name || 'Custom Profile'}`;
-            profileSwitcher.appendChild(customOption);
-            
-            // Add separator
-            const separator = document.createElement('option');
-            separator.disabled = true;
-            separator.textContent = '──────────────';
-            profileSwitcher.appendChild(separator);
-            
-            // Add predefined profiles
-            availableProfiles.forEach(profile => {
-                const option = document.createElement('option');
-                option.value = profile.id;
-                option.textContent = profile.name;
-                profileSwitcher.appendChild(option);
-            });
-            
-            // Set current selection
-            profileSwitcher.value = isPredefined ? currentSetup.id : 'custom';
-            
-            // Handle profile switching
-            profileSwitcher.addEventListener('change', handleProfileSwitch);
-        }
-        
-        async function handleProfileSwitch(event) {
-            const selectedId = event.target.value;
-            
-            if (selectedId === 'custom') {
-                window.location.href = 'dive-setup.html';
-                return;
-            }
-            
-            const profile = availableProfiles.find(p => p.id === selectedId);
-            if (!profile) return;
-            
-            currentSetup = profile;
-            saveDiveSetup(profile);
-            clearCache();
-            
-            render();
-        }
-        
-        function render() {
-            updateProfileHeader();
-            renderProfileChart();
-            renderPressureChart();
-            renderGasConsumptionChart();
-            renderAirCompositionChart();
-            initPartialPressureChart();
-        }
-        
-        function updateProfileHeader() {
-            if (!profileHeaderSummary || !currentSetup) return;
-            
-            const waypoints = getDiveSetupWaypoints(currentSetup);
-            const maxDepth = waypoints.length > 0 ? Math.max(...waypoints.map(w => w.depth)) : 0;
-            const totalTime = waypoints.length > 0 ? waypoints[waypoints.length - 1].time : 0;
-            
-            // Use getGases for multi-gas support
-            const gases = getGases(currentSetup);
-            const gasNames = gases.map(g => g.name).join(', ');
-            
-            // Update profile name label
-            const profileLabel = document.querySelector('.profile-header-label');
-            if (profileLabel) {
-                profileLabel.textContent = currentSetup.name || 'Profile:';
-            }
-            
-            profileHeaderSummary.textContent = `${maxDepth}m / ${totalTime} min on ${gasNames}`;
-            
-            // Update switcher selection
-            if (profileSwitcher) {
-                const matchingProfile = availableProfiles.find(p => p.id === currentSetup.id);
-                profileSwitcher.value = matchingProfile ? currentSetup.id : 'custom';
-                
-                // Update custom option text if it's a custom profile
-                if (!matchingProfile) {
-                    const customOption = profileSwitcher.querySelector('option[value="custom"]');
-                    if (customOption) {
-                        customOption.textContent = `✏️ ${currentSetup.name || 'Custom Profile'}`;
-                    }
-                }
-            }
-        }
-        
-        function renderProfileChart() {
-            const canvas = document.getElementById('profile-chart');
-            const ctx = canvas.getContext('2d');
-            const waypoints = getDiveSetupWaypoints(currentSetup);
-            
-            if (waypoints.length === 0) {
-                return;
-            }
-            
-            // Check if this is a multi-dive profile
-            const isMultiDive = currentSetup.dives && currentSetup.dives.length > 1;
-            
-            // Calculate key metrics
-            const maxDepth = Math.max(...waypoints.map(w => w.depth));
-            const totalTime = waypoints[waypoints.length - 1].time;
-            
-            // Find surface intervals (periods at depth 0 between dives)
-            const surfaceIntervals = [];
-            let inSurfaceInterval = false;
-            let intervalStart = null;
-            
-            for (let i = 0; i < waypoints.length; i++) {
-                const wp = waypoints[i];
-                if (wp.depth === 0) {
-                    if (!inSurfaceInterval && i > 0) {
-                        // Starting a potential surface interval
-                        inSurfaceInterval = true;
-                        intervalStart = wp.time;
-                    }
-                } else {
-                    if (inSurfaceInterval && intervalStart !== null) {
-                        // Ending a surface interval - only count if there's actual time at surface
-                        const prevWp = waypoints[i - 1];
-                        if (prevWp && prevWp.depth === 0 && prevWp.time > intervalStart) {
-                            surfaceIntervals.push({
-                                start: intervalStart,
-                                end: prevWp.time,
-                                duration: prevWp.time - intervalStart
-                            });
-                        }
-                    }
-                    inSurfaceInterval = false;
-                    intervalStart = null;
-                }
-            }
-            
-            // For single dive, add surface interval after dive ends (using setup's surfaceInterval)
-            const singleDiveSurfaceInterval = !isMultiDive && currentSetup.surfaceInterval ? currentSetup.surfaceInterval : null;
-            
-            // For multi-dive profiles, find the end of the first dive (first time we return to surface after going deep)
-            let firstDiveEndTime = totalTime;
-            if (isMultiDive) {
-                // Find first return to surface after leaving it
-                let leftSurface = false;
-                for (let i = 0; i < waypoints.length; i++) {
-                    if (waypoints[i].depth > 0) {
-                        leftSurface = true;
-                    } else if (leftSurface && waypoints[i].depth === 0) {
-                        firstDiveEndTime = waypoints[i].time;
-                        break;
-                    }
-                }
-            }
-            
-            // Find max depth of first dive only
-            let firstDiveMaxDepth = 0;
-            for (let i = 0; i < waypoints.length; i++) {
-                if (waypoints[i].time <= firstDiveEndTime) {
-                    firstDiveMaxDepth = Math.max(firstDiveMaxDepth, waypoints[i].depth);
-                }
-            }
-            
-            // For annotations, use first dive's max depth for multi-dive, or overall for single dive
-            const annotationMaxDepth = isMultiDive ? firstDiveMaxDepth : maxDepth;
-            
-            // Find descent end (first waypoint at annotation max depth within first dive)
-            let descentEnd = null;
-            for (let i = 0; i < waypoints.length; i++) {
-                if (waypoints[i].depth === annotationMaxDepth && waypoints[i].time <= firstDiveEndTime) {
-                    descentEnd = waypoints[i];
-                    break;
-                }
-            }
-            
-            // Find bottom end / ascent start (last waypoint at annotation max depth within first dive)
-            let bottomEnd = null;
-            for (let i = waypoints.length - 1; i >= 0; i--) {
-                if (waypoints[i].depth === annotationMaxDepth && waypoints[i].time <= firstDiveEndTime) {
-                    bottomEnd = waypoints[i];
-                    break;
-                }
-            }
-            
-            // Get gas switch events to exclude from deco stop detection
-            const gases = getGases(currentSetup);
-            const gasSwitchEvents = getGasSwitchEvents(waypoints, gases);
-            const gasSwitchTimes = new Set(gasSwitchEvents.map(e => e.time));
-            
-            // Find stops (horizontal segments not at max depth and not at surface) - only for first dive
-            // Exclude gas switch stops - they get separate labels
-            const stops = [];
-            for (let i = 0; i < waypoints.length - 1; i++) {
-                const curr = waypoints[i];
-                const next = waypoints[i + 1];
-                // Only include stops from first dive
-                if (curr.time >= firstDiveEndTime) break;
-                
-                // Skip if this is a gas switch stop (arrival time matches a gas switch event)
-                if (gasSwitchTimes.has(curr.time)) continue;
-                
-                if (curr.depth > 0 && curr.depth < annotationMaxDepth && next.depth === curr.depth) {
-                    const existing = stops.find(s => s.depth === curr.depth && s.end.time === curr.time);
-                    if (existing) {
-                        existing.end = next;
-                    } else {
-                        stops.push({ start: curr, end: next, depth: curr.depth });
-                    }
-                }
-            }
-            
-            // Prepare chart data
-            const data = {
-                datasets: [{
-                    label: 'Depth',
-                    data: waypoints.map(w => ({ x: w.time, y: w.depth })),
-                    borderColor: '#2980b9',
-                    backgroundColor: 'rgba(41, 128, 185, 0.15)',
-                    fill: true,
-                    tension: 0,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#2980b9',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    borderWidth: 3
-                }]
-            };
-            
-            // Build annotations - positioned to avoid collisions
-            const annotations = {};
-            
-            // Descent label - position at top-left of descent line
-            if (descentEnd && descentEnd.time > 0) {
-                annotations.descentLabel = {
-                    type: 'label',
-                    xValue: 0.5,
-                    yValue: -5,
-                    content: ['DESCENT ⬇'],
-                    backgroundColor: 'rgba(46, 204, 113, 0.9)',
-                    color: 'white',
-                    font: { size: 10, weight: 'bold' },
-                    padding: { top: 3, bottom: 3, left: 6, right: 6 }
-                };
-            }
-            
-            // Bottom time bracket - show as bracket at top spanning the bottom time period
-            if (bottomEnd) {
-                const bottomTimeValue = bottomEnd.time;
-                annotations.bottomTimeBracket = {
-                    type: 'line',
-                    xMin: 0,
-                    xMax: bottomEnd.time,
-                    yMin: -4,
-                    yMax: -4,
-                    borderColor: 'rgba(241, 196, 15, 0.9)',
-                    borderWidth: 3,
-                    label: {
-                        display: true,
-                        content: `BOTTOM TIME: ${bottomTimeValue} min`,
-                        position: 'center',
-                        backgroundColor: 'rgba(241, 196, 15, 0.95)',
-                        color: '#333',
-                        font: { size: 10, weight: 'bold' },
-                        padding: { top: 3, bottom: 3, left: 6, right: 6 },
-                        yAdjust: -12
-                    }
-                };
-                // Left bracket cap
-                annotations.bottomTimeCapLeft = {
-                    type: 'line',
-                    xMin: 0,
-                    xMax: 0,
-                    yMin: -6,
-                    yMax: -2,
-                    borderColor: 'rgba(241, 196, 15, 0.9)',
-                    borderWidth: 3
-                };
-                // Right bracket cap
-                annotations.bottomTimeCapRight = {
-                    type: 'line',
-                    xMin: bottomEnd.time,
-                    xMax: bottomEnd.time,
-                    yMin: -6,
-                    yMax: -2,
-                    borderColor: 'rgba(241, 196, 15, 0.9)',
-                    borderWidth: 3
-                };
-            }
-            
-            // Max depth line - label on the right side
-            annotations.maxDepthLine = {
-                type: 'line',
-                yMin: maxDepth,
-                yMax: maxDepth,
-                borderColor: 'rgba(231, 76, 60, 0.6)',
-                borderWidth: 2,
-                borderDash: [6, 4],
-                label: {
-                    display: true,
-                    content: `MAX: ${maxDepth}m`,
-                    position: 'end',
-                    backgroundColor: 'rgba(231, 76, 60, 0.9)',
-                    color: 'white',
-                    font: { size: 10, weight: 'bold' },
-                    padding: { top: 3, bottom: 3, left: 6, right: 6 }
-                }
-            };
-            
-            // Ascent label - positioned for first dive only
-            if (bottomEnd) {
-                // Position ascent label near end of first dive's ascent
-                const ascentLabelTime = isMultiDive ? firstDiveEndTime - 1 : totalTime - 1;
-                
-                annotations.ascentLabel = {
-                    type: 'label',
-                    xValue: ascentLabelTime,
-                    yValue: -5,
-                    content: ['⬆ ASCENT'],
-                    backgroundColor: 'rgba(155, 89, 182, 0.9)',
-                    color: 'white',
-                    font: { size: 10, weight: 'bold' },
-                    padding: { top: 3, bottom: 3, left: 6, right: 6 }
-                };
-            }
-            
-            // Stop annotations - labels positioned outside the boxes
-            // Determine if this is multi-stage deco (multiple stops = clearly deco)
-            const isMultiStageDeco = stops.length > 1;
-            
-            stops.forEach((stop, i) => {
-                const isDeepStop = stop.depth > 5;
-                // If multi-stage deco, all stops are clearly deco stops
-                // If single stop at shallow depth, it could be safety or deco
-                let label;
-                if (isDeepStop) {
-                    label = 'DECO';
-                } else if (isMultiStageDeco) {
-                    label = 'DECO';  // Multi-stage means it's clearly a deco dive
-                } else {
-                    label = 'SAFETY/DECO';  // Single shallow stop - could be either
-                }
-                const color = isDeepStop ? 'rgba(230, 126, 34, 0.9)' : 'rgba(52, 152, 219, 0.9)';
-                const bgColor = isDeepStop ? 'rgba(230, 126, 34, 0.25)' : 'rgba(52, 152, 219, 0.25)';
-                const boxPadding = Math.max(1.5, maxDepth * 0.04);
-                
-                // Draw the stop box
-                annotations[`stop${i}`] = {
-                    type: 'box',
-                    xMin: stop.start.time,
-                    xMax: stop.end.time,
-                    yMin: stop.depth - boxPadding,
-                    yMax: stop.depth + boxPadding,
-                    backgroundColor: bgColor,
-                    borderColor: color,
-                    borderWidth: 2
-                };
-                
-                // Label positioned to the right of the box
-                annotations[`stopLabel${i}`] = {
-                    type: 'label',
-                    xValue: stop.end.time + 0.5,
-                    yValue: stop.depth,
-                    content: [`${label} ${stop.depth}m`],
-                    backgroundColor: color,
-                    color: 'white',
-                    font: { size: 9, weight: 'bold' },
-                    padding: { top: 2, bottom: 2, left: 4, right: 4 }
-                };
-            });
-            
-            // Surface intervals for multi-dive profiles
-            surfaceIntervals.forEach((si, i) => {
-                if (si.duration > 0) {
-                    // Draw surface interval box
-                    annotations[`surfaceInterval${i}`] = {
-                        type: 'box',
-                        xMin: si.start,
-                        xMax: si.end,
-                        yMin: -8,
-                        yMax: 2,
-                        backgroundColor: 'rgba(52, 152, 219, 0.15)',
-                        borderColor: 'rgba(52, 152, 219, 0.6)',
-                        borderWidth: 2,
-                        borderDash: [4, 4]
-                    };
-                    
-                    // Surface interval label
-                    annotations[`surfaceIntervalLabel${i}`] = {
-                        type: 'label',
-                        xValue: (si.start + si.end) / 2,
-                        yValue: -3,
-                        content: [`⏸ SI: ${si.duration} min`],
-                        backgroundColor: 'rgba(52, 152, 219, 0.9)',
-                        color: 'white',
-                        font: { size: 10, weight: 'bold' },
-                        padding: { top: 3, bottom: 3, left: 6, right: 6 }
-                    };
-                }
-            });
-            
-            // For single dive, show surface interval indicator on the right (without specific time)
-            if (!isMultiDive) {
-                const diveEndTime = totalTime;
-                // Draw a bracket/line indicating surface interval
-                annotations.singleDiveSILine = {
-                    type: 'line',
-                    xMin: diveEndTime,
-                    xMax: diveEndTime + 8,
-                    yMin: 0,
-                    yMax: 0,
-                    borderColor: 'rgba(52, 152, 219, 0.8)',
-                    borderWidth: 2,
-                    borderDash: [4, 4]
-                };
-                annotations.singleDiveSI = {
-                    type: 'label',
-                    xValue: diveEndTime + 4,
-                    yValue: -3,
-                    content: ['⏸ SURFACE INTERVAL'],
-                    backgroundColor: 'rgba(52, 152, 219, 0.9)',
-                    color: 'white',
-                    font: { size: 10, weight: 'bold' },
-                    padding: { top: 3, bottom: 3, left: 6, right: 6 }
-                };
-            }
-            
-            // Gas switch markers for multi-gas profiles (use previously fetched data)
-            gasSwitchEvents.forEach((event, i) => {
-                // Vertical line at switch time
-                annotations[`gasSwitchLine${i}`] = {
-                    type: 'line',
-                    xMin: event.time,
-                    xMax: event.time,
-                    yMin: 0,
-                    yMax: event.depth,
-                    borderColor: 'rgba(155, 89, 182, 0.8)',
-                    borderWidth: 2,
-                    borderDash: [4, 4]
-                };
-                
-                // Gas switch label
-                annotations[`gasSwitchLabel${i}`] = {
-                    type: 'label',
-                    xValue: event.time,
-                    yValue: Math.max(0, event.depth - 3),
-                    content: [`→ Switch to ${event.toGas?.name || 'Gas'}`],
-                    backgroundColor: 'rgba(155, 89, 182, 0.9)',
-                    color: 'white',
-                    font: { size: 9, weight: 'bold' },
-                    padding: { top: 2, bottom: 2, left: 4, right: 4 }
-                };
-            });
-            
-            // Surface reference - positioned in middle
-            annotations.surfaceLabel = {
-                type: 'label',
-                xValue: totalTime * 0.4,
-                yValue: 1.5,
-                content: ['SURFACE (1 bar)'],
-                backgroundColor: 'rgba(100, 100, 100, 0.7)',
-                color: 'white',
-                font: { size: 9 },
-                padding: { top: 2, bottom: 2, left: 4, right: 4 }
-            };
-            
-            // Calculate chart x-axis max to accommodate SI label
-            let xAxisMax = Math.ceil(totalTime * 1.15);
-            if (!isMultiDive) {
-                xAxisMax = Math.max(xAxisMax, totalTime + 15); // Ensure room for SI label
-            }
-            
-            // Chart configuration
-            const config = {
-                type: 'line',
-                data: data,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            type: 'linear',
-                            title: {
-                                display: true,
-                                text: 'Time (minutes)',
-                                font: { size: 14, weight: 'bold' }
-                            },
-                            min: -1,
-                            max: xAxisMax,
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            }
-                        },
-                        y: {
-                            reverse: true,
-                            title: {
-                                display: true,
-                                text: 'Depth (meters)',
-                                font: { size: 14, weight: 'bold' }
-                            },
-                            min: -10,
-                            max: Math.ceil(maxDepth * 1.12),
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        title: {
-                            display: true,
-                            text: currentSetup.name || 'Dive Profile',
-                            font: { size: 16, weight: 'bold' }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: (context) => {
-                                    const depth = context.parsed.y;
-                                    const pressure = (1 + depth / 10).toFixed(2);
-                                    return [
-                                        `Depth: ${depth}m`,
-                                        `Ambient: ${pressure} bar`
-                                    ];
-                                }
-                            }
-                        },
-                        annotation: {
-                            annotations: annotations
-                        }
-                    }
-                }
-            };
-            
-            // Destroy existing chart if any
-            if (profileChart) {
-                profileChart.destroy();
-            }
-            
-            profileChart = new Chart(ctx, config);
-        }
-        
-        // Total Pressure Chart
-        let pressureChart = null;
-        const pressureChartContainer = document.getElementById('pressure-chart-container');
-        const pressureFullscreenBtn = document.getElementById('pressure-fullscreen-btn');
-        const pressureExitFullscreenBtn = document.getElementById('pressure-exit-fullscreen-btn');
-        
-        function togglePressureFullscreen() {
-            const isFullscreen = pressureChartContainer.classList.toggle('fullscreen');
-            document.body.style.overflow = isFullscreen ? 'hidden' : '';
-            if (pressureChart) {
-                setTimeout(() => pressureChart.resize(), 50);
-            }
-        }
-        
-        pressureFullscreenBtn?.addEventListener('click', togglePressureFullscreen);
-        pressureExitFullscreenBtn?.addEventListener('click', togglePressureFullscreen);
-        
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && pressureChartContainer?.classList.contains('fullscreen')) {
-                togglePressureFullscreen();
-            }
-        });
-        
-        function renderPressureChart() {
-            const canvas = document.getElementById('total-pressure-chart');
-            if (!canvas) return;
-            
-            const ctx = canvas.getContext('2d');
-            const waypoints = getDiveSetupWaypoints(currentSetup);
-            
-            if (waypoints.length === 0) return;
-            
-            const maxDepth = Math.max(...waypoints.map(w => w.depth));
-            const totalTime = waypoints[waypoints.length - 1].time;
-            
-            // Interpolate to get data points at regular intervals (every 0.5 minutes)
-            function interpolateDepth(time) {
-                // Find the two waypoints that bracket this time
-                for (let i = 0; i < waypoints.length - 1; i++) {
-                    const w1 = waypoints[i];
-                    const w2 = waypoints[i + 1];
-                    if (time >= w1.time && time <= w2.time) {
-                        // Linear interpolation
-                        const t = (time - w1.time) / (w2.time - w1.time);
-                        return w1.depth + t * (w2.depth - w1.depth);
-                    }
-                }
-                // Edge cases
-                if (time <= waypoints[0].time) return waypoints[0].depth;
-                return waypoints[waypoints.length - 1].depth;
-            }
-            
-            // Generate interpolated data points every 0.5 minutes
-            const interpolatedData = [];
-            const interval = 0.5; // minutes
-            for (let t = 0; t <= totalTime; t += interval) {
-                const depth = interpolateDepth(t);
-                interpolatedData.push({
-                    x: t,
-                    y: depth,
-                    pressure: 1 + depth / 10
-                });
-            }
-            // Ensure we include the final point
-            if (interpolatedData[interpolatedData.length - 1].x < totalTime) {
-                const depth = interpolateDepth(totalTime);
-                interpolatedData.push({
-                    x: totalTime,
-                    y: depth,
-                    pressure: 1 + depth / 10
-                });
-            }
-            
-            // Find key points to annotate with pressure values
-            const annotationPoints = [];
-            
-            // Add surface start
-            if (waypoints.length > 0) {
-                annotationPoints.push({ time: 0, depth: 0, pressure: 1, label: '1.0 bar' });
-            }
-            
-            // Find max depth point
-            const maxDepthWaypoint = waypoints.find(w => w.depth === maxDepth);
-            if (maxDepthWaypoint) {
-                const pressure = 1 + maxDepth / 10;
-                annotationPoints.push({ 
-                    time: maxDepthWaypoint.time, 
-                    depth: maxDepth, 
-                    pressure, 
-                    label: `${pressure.toFixed(1)} bar`
-                });
-            }
-            
-            // Find any decompression stops (horizontal segments at depth)
-            for (let i = 0; i < waypoints.length - 1; i++) {
-                const curr = waypoints[i];
-                const next = waypoints[i + 1];
-                // Horizontal segment (same depth, different time), not at surface or max depth
-                if (curr.depth > 0 && curr.depth < maxDepth && curr.depth === next.depth) {
-                    const pressure = 1 + curr.depth / 10;
-                    // Check if we already have this point
-                    const exists = annotationPoints.some(p => p.depth === curr.depth);
-                    if (!exists) {
-                        annotationPoints.push({
-                            time: curr.time,
-                            depth: curr.depth,
-                            pressure,
-                            label: `${pressure.toFixed(1)} bar`
-                        });
-                    }
-                }
-            }
-            
-            // Build annotations for pressure labels
-            const annotations = {};
-            annotationPoints.forEach((point, index) => {
-                annotations[`pressure${index}`] = {
-                    type: 'label',
-                    xValue: point.time,
-                    yValue: point.depth,
-                    yScaleID: 'yDepth',
-                    content: point.label,
-                    backgroundColor: 'rgba(155, 89, 182, 0.9)',
-                    color: 'white',
-                    font: { size: 11, weight: 'bold' },
-                    padding: { top: 4, bottom: 4, left: 8, right: 8 },
-                    xAdjust: point.time === 0 ? 30 : 0,
-                    yAdjust: point.depth === 0 ? 15 : (point.depth === maxDepth ? -15 : 0)
-                };
-            });
-            
-            const maxPressure = 1 + maxDepth / 10;
-            
-            const data = {
-                datasets: [{
-                    label: 'Dive Profile (Depth)',
-                    data: interpolatedData.map(p => ({ x: p.x, y: p.y })),
-                    borderColor: '#2980b9',
-                    backgroundColor: 'rgba(41, 128, 185, 0.15)',
-                    fill: true,
-                    tension: 0,
-                    pointRadius: 0,
-                    borderWidth: 3,
-                    yAxisID: 'yDepth'
-                }, {
-                    label: 'Total Pressure',
-                    data: interpolatedData.map(p => ({ x: p.x, y: p.pressure })),
-                    borderColor: '#9b59b6',
-                    backgroundColor: 'transparent',
-                    fill: false,
-                    tension: 0,
-                    pointRadius: 0,
-                    borderWidth: 2,
-                    borderDash: [5, 5],
-                    yAxisID: 'yPressure'
-                }]
-            };
-            
-            const config = {
-                type: 'line',
-                data: data,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            type: 'linear',
-                            title: {
-                                display: true,
-                                text: 'Time (minutes)',
-                                font: { size: 14, weight: 'bold' }
-                            },
-                            min: 0,
-                            max: Math.ceil(totalTime * 1.05),
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            }
-                        },
-                        yDepth: {
-                            type: 'linear',
-                            position: 'left',
-                            reverse: true,
-                            title: {
-                                display: true,
-                                text: 'Depth (meters)',
-                                font: { size: 14, weight: 'bold' },
-                                color: '#2980b9'
-                            },
-                            min: -5,
-                            max: Math.ceil(maxDepth * 1.1),
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            },
-                            ticks: {
-                                color: '#2980b9'
-                            }
-                        },
-                        yPressure: {
-                            type: 'linear',
-                            position: 'right',
-                            reverse: false,
-                            title: {
-                                display: true,
-                                text: 'Pressure (bar)',
-                                font: { size: 14, weight: 'bold' },
-                                color: '#9b59b6'
-                            },
-                            min: 1,
-                            max: Math.ceil(maxPressure * 1.1),
-                            grid: {
-                                drawOnChartArea: false
-                            },
-                            ticks: {
-                                color: '#9b59b6'
-                            }
-                        }
-                    },
-                    interaction: {
-                        mode: 'nearest',
-                        axis: 'x',
-                        intersect: false
-                    },
-                    hover: {
-                        mode: 'nearest',
-                        axis: 'x',
-                        intersect: false
-                    },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'right',
-                            labels: {
-                                usePointStyle: true,
-                                padding: 12,
-                                font: { size: 12 }
-                            },
-                            onClick: (e, legendItem, legend) => {
-                                const index = legendItem.datasetIndex;
-                                const chart = legend.chart;
-                                const meta = chart.getDatasetMeta(index);
-                                
-                                // Toggle visibility
-                                meta.hidden = !meta.hidden;
-                                chart.update();
-                            },
-                            onHover: (e, legendItem, legend) => {
-                                e.native.target.style.cursor = 'pointer';
-                            },
-                            onLeave: (e, legendItem, legend) => {
-                                e.native.target.style.cursor = 'default';
-                            }
-                        },
-                        title: {
-                            display: true,
-                            text: 'Dive Profile with Total Pressure',
-                            font: { size: 16, weight: 'bold' }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                title: (items) => `Time: ${items[0].parsed.x.toFixed(1)} min`,
-                                label: (context) => {
-                                    if (context.dataset.label === 'Dive Profile (Depth)') {
-                                        const depth = context.parsed.y;
-                                        return `Depth: ${depth.toFixed(1)}m`;
-                                    } else {
-                                        const pressure = context.parsed.y;
-                                        return `Pressure: ${pressure.toFixed(2)} bar`;
-                                    }
-                                }
-                            }
-                        },
-                        annotation: {
-                            annotations: annotations
-                        }
-                    }
-                }
-            };
-            
-            if (pressureChart) {
-                pressureChart.destroy();
-            }
-            
-            pressureChart = new Chart(ctx, config);
-        }
-        
-        // Gas Consumption Chart
-        let gasChart = null;
-        const gasChartContainer = document.getElementById('gas-chart-container');
-        const gasFullscreenBtn = document.getElementById('gas-fullscreen-btn');
-        const gasExitFullscreenBtn = document.getElementById('gas-exit-fullscreen-btn');
-        const gasSacInput = document.getElementById('gas-sac-input');
-        
-        function toggleGasFullscreen() {
-            const isFullscreen = gasChartContainer.classList.toggle('fullscreen');
-            document.body.style.overflow = isFullscreen ? 'hidden' : '';
-            if (gasChart) {
-                setTimeout(() => gasChart.resize(), 50);
-            }
-        }
-        
-        gasFullscreenBtn?.addEventListener('click', toggleGasFullscreen);
-        gasExitFullscreenBtn?.addEventListener('click', toggleGasFullscreen);
-        
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && gasChartContainer?.classList.contains('fullscreen')) {
-                toggleGasFullscreen();
-            }
-        });
-        
-        // Update gas chart when controls change
-        gasSacInput?.addEventListener('input', renderGasConsumptionChart);
-        
-        // Colors for different gases
-        const GAS_COLORS = [
-            { border: '#27ae60', bg: 'rgba(39, 174, 96, 0.1)' },   // Green - bottom gas
-            { border: '#9b59b6', bg: 'rgba(155, 89, 182, 0.1)' },  // Purple - deco 1
-            { border: '#e67e22', bg: 'rgba(230, 126, 34, 0.1)' },  // Orange - deco 2
-            { border: '#1abc9c', bg: 'rgba(26, 188, 156, 0.1)' }   // Teal - deco 3
+        // Define gases for the deco profile
+        const DECO_GASES = [
+            { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0, cylinderVolume: 12, startPressure: 200 }
         ];
         
-        function renderGasConsumptionChart() {
-            const canvas = document.getElementById('gas-consumption-canvas');
-            if (!canvas) return;
-            
-            const ctx = canvas.getContext('2d');
-            const waypoints = getDiveSetupWaypoints(currentSetup);
-            const gases = getGases(currentSetup);
-            
-            if (waypoints.length === 0) return;
-            
-            // Get parameters
-            const sacRate = parseFloat(gasSacInput?.value) || 20;
-            const reservePressure = 50; // bar
-            const totalTime = waypoints[waypoints.length - 1].time;
-            
-            // Initialize tank state for each gas
-            const tankState = gases.map(gas => ({
-                gas: gas,
-                cylinderVolume: getGasCylinderVolume(gas),
-                startPressure: getGasStartPressure(gas),
-                gasUsed: 0,
-                currentPressure: getGasStartPressure(gas),
-                data: [] // Time series data for this tank
-            }));
-            
-            // Get gas switch events
-            const gasSwitchEvents = getGasSwitchEvents(waypoints, gases);
-            
-            // Interpolate depth at any time
-            function interpolateDepth(time) {
-                for (let i = 0; i < waypoints.length - 1; i++) {
-                    const w1 = waypoints[i];
-                    const w2 = waypoints[i + 1];
-                    if (time >= w1.time && time <= w2.time) {
-                        const t = (time - w1.time) / (w2.time - w1.time);
-                        return w1.depth + t * (w2.depth - w1.depth);
-                    }
-                }
-                if (time <= waypoints[0].time) return waypoints[0].depth;
-                return waypoints[waypoints.length - 1].depth;
-            }
-            
-            // Get active gas at a given time
-            function getActiveGasIndex(time) {
-                const activeGas = getGasAtTime(waypoints, gases, time);
-                return gases.findIndex(g => g.id === activeGas.id);
-            }
-            
-            // Calculate gas consumption over time
-            const depthData = [];
-            const interval = 0.5; // minutes
-            
-            for (let t = 0; t <= totalTime; t += interval) {
-                const depth = interpolateDepth(t);
-                const ambientPressure = 1 + depth / 10;
-                const consumptionRate = sacRate * ambientPressure; // L/min at this depth
-                const activeGasIdx = getActiveGasIndex(t);
-                
-                // Record depth point
-                depthData.push({ x: t, y: depth });
-                
-                // Update consumption for active gas
-                if (t > 0) {
-                    const tank = tankState[activeGasIdx];
-                    const gasConsumed = consumptionRate * interval;
-                    tank.gasUsed += gasConsumed;
-                    tank.currentPressure = ((tank.cylinderVolume * tank.startPressure) - tank.gasUsed) / tank.cylinderVolume;
-                }
-                
-                // Record pressure for all tanks at this time
-                tankState.forEach((tank, idx) => {
-                    const totalGas = tank.cylinderVolume * tank.startPressure;
-                    const remaining = totalGas - tank.gasUsed;
-                    const pressure = remaining / tank.cylinderVolume;
-                    tank.data.push({
-                        x: t,
-                        y: pressure,
-                        isActive: idx === activeGasIdx
-                    });
-                });
-            }
-            
-            // Ensure final point
-            const lastT = depthData[depthData.length - 1]?.x || 0;
-            if (lastT < totalTime) {
-                const depth = interpolateDepth(totalTime);
-                depthData.push({ x: totalTime, y: depth });
-                tankState.forEach(tank => {
-                    const totalGas = tank.cylinderVolume * tank.startPressure;
-                    const remaining = totalGas - tank.gasUsed;
-                    tank.data.push({ x: totalTime, y: remaining / tank.cylinderVolume });
-                });
-            }
-            
-            // Update per-gas summary
-            const tanksSummaryEl = document.getElementById('gas-tanks-summary');
-            let summaryHtml = '';
-            let anyBelowReserve = false;
-            let anyCloseToReserve = false;
-            
-            tankState.forEach((tank, idx) => {
-                const finalPressure = tank.currentPressure;
-                const usedLiters = Math.round(tank.gasUsed);
-                const statusClass = finalPressure < reservePressure ? 'danger' : 
-                                   finalPressure < reservePressure + 30 ? 'warning' : 'ok';
-                const statusIcon = finalPressure < reservePressure ? '⚠️' : 
-                                   finalPressure < reservePressure + 30 ? '⚡' : '✅';
-                
-                if (finalPressure < reservePressure) anyBelowReserve = true;
-                if (finalPressure < reservePressure + 30) anyCloseToReserve = true;
-                
-                const colorDot = `<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${GAS_COLORS[idx % GAS_COLORS.length].border};margin-right:6px;"></span>`;
-                
-                summaryHtml += `
-                    <div class="tank-summary-item ${statusClass}">
-                        <div class="tank-name">${colorDot}${tank.gas.name}</div>
-                        <div class="tank-details">
-                            <span class="tank-size">${tank.cylinderVolume}L @ ${tank.startPressure}bar</span>
-                            <span class="tank-used">Used: ${usedLiters}L</span>
-                            <span class="tank-remaining">${statusIcon} ${Math.round(finalPressure)} bar</span>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            tanksSummaryEl.innerHTML = summaryHtml;
-            
-            // Overall status
-            const statusEl = document.getElementById('gas-status');
-            if (anyBelowReserve) {
-                statusEl.textContent = '⚠️ Gas exceeds reserve!';
-                statusEl.style.color = '#e74c3c';
-            } else if (anyCloseToReserve) {
-                statusEl.textContent = '⚡ Close to reserve';
-                statusEl.style.color = '#f39c12';
-            } else {
-                statusEl.textContent = '✅ All tanks OK';
-                statusEl.style.color = '#27ae60';
-            }
-            
-            // Build annotations for gas switches
-            const annotations = {};
-            
-            gasSwitchEvents.forEach((event, idx) => {
-                annotations[`gasSwitch${idx}`] = {
-                    type: 'line',
-                    xMin: event.time,
-                    xMax: event.time,
-                    borderColor: 'rgba(155, 89, 182, 0.7)',
-                    borderWidth: 2,
-                    borderDash: [4, 4],
-                    label: {
-                        display: true,
-                        content: `→ ${event.toGas?.name || 'Switch'}`,
-                        position: 'start',
-                        backgroundColor: 'rgba(155, 89, 182, 0.9)',
-                        color: 'white',
-                        font: { size: 9, weight: 'bold' },
-                        padding: { top: 2, bottom: 2, left: 4, right: 4 }
-                    }
-                };
-            });
-            
-            // Add reserve line for first tank (bottom gas)
-            annotations.reserveLine = {
-                type: 'line',
-                yMin: reservePressure,
-                yMax: reservePressure,
-                yScaleID: 'yPressure',
-                borderColor: 'rgba(231, 76, 60, 0.6)',
-                borderWidth: 2,
-                borderDash: [6, 4],
-                label: {
-                    display: true,
-                    content: `Reserve: ${reservePressure} bar`,
-                    position: 'end',
-                    backgroundColor: 'rgba(231, 76, 60, 0.9)',
-                    color: 'white',
-                    font: { size: 10, weight: 'bold' },
-                    padding: { top: 3, bottom: 3, left: 6, right: 6 }
-                }
-            };
-            
-            const maxDepth = Math.max(...waypoints.map(w => w.depth));
-            const maxStartPressure = Math.max(...tankState.map(t => t.startPressure));
-            
-            // Build datasets
-            const datasets = [
-                {
-                    label: 'Depth',
-                    data: depthData,
-                    borderColor: '#2980b9',
-                    backgroundColor: 'rgba(41, 128, 185, 0.15)',
-                    fill: true,
-                    tension: 0,
-                    pointRadius: 0,
-                    borderWidth: 3,
-                    yAxisID: 'yDepth'
-                }
-            ];
-            
-            // Add tank pressure lines
-            tankState.forEach((tank, idx) => {
-                const color = GAS_COLORS[idx % GAS_COLORS.length];
-                datasets.push({
-                    label: `${tank.gas.name} (${tank.cylinderVolume}L)`,
-                    data: tank.data.map(d => ({ x: d.x, y: d.y })),
-                    borderColor: color.border,
-                    backgroundColor: 'transparent',
-                    fill: false,
-                    tension: 0,
-                    pointRadius: 0,
-                    borderWidth: 2,
-                    yAxisID: 'yPressure',
-                    // Make inactive segments dashed
-                    segment: {
-                        borderDash: ctx => {
-                            const idx = ctx.p0DataIndex;
-                            const point = tank.data[idx];
-                            return point && !point.isActive ? [3, 3] : [];
-                        }
-                    }
-                });
-            });
-            
-            const config = {
-                type: 'line',
-                data: { datasets },
+        // Generate the deco profile (20m/40min with GF 50/80 creates deco stops)
+        const decoResult = generateDecoProfile(20, 40, DECO_GASES, 50, 80);
+        
+        /**
+         * Default profile for terminology/pressure/consumption charts
+         */
+        const DECO_PROFILE = {
+            id: 'deco-20m-40min',
+            name: '20m Deco Dive',
+            description: 'A 20m dive for 40 minutes with conservative GF 50/80',
+            gases: DECO_GASES,
+            gfLow: 50,
+            gfHigh: 80,
+            surfaceInterval: 0.1,
+            dives: [{
+                waypoints: decoResult.waypoints
+            }]
+        };
+        
+        /**
+         * Multi-gas profile for partial pressure demonstration
+         */
+        const MULTIGAS_GASES = [
+            { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0, cylinderVolume: 18, startPressure: 200 }
+        ];
+        
+        const MULTIGAS_PROFILE = {
+            id: 'multigas-30m',
+            name: '30m Multi-Gas Dive',
+            description: 'A 30m dive with EAN50 deco gas',
+            gases: MULTIGAS_GASES,
+            gfLow: 50,
+            gfHigh: 80,
+            surfaceInterval: 0.1,
+            dives: [{
+                waypoints: [
+                    { time: 0, depth: 0, gasId: 'air'  },
+                    { time: 2, depth: 30, gasId: 'air' },
+                    { time: 25, depth: 30, gasId: 'air'  },
+                    { time: 28, depth: 6, gasId: 'air'  },
+                    { time: 34, depth: 6, gasId: 'air'  },
+                    { time: 35, depth: 3, gasId: 'air'  },
+                    { time: 38, depth: 3, gasId: 'air'  },
+                    { time: 39, depth: 0, gasId: 'air'  }
+                ]
+            }]
+        };
+        
+        // =====================================================================
+        // CHART INSTANCES
+        // =====================================================================
+        
+        // 1. Dive Profile Chart (terminology section) - depth variant
+        const profileChart = new DiveProfileChart(
+            document.getElementById('chart-container'),
+            {
+                diveSetup: DECO_PROFILE,
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            type: 'linear',
-                            title: {
-                                display: true,
-                                text: 'Time (minutes)',
-                                font: { size: 14, weight: 'bold' }
-                            },
-                            min: 0,
-                            max: Math.ceil(totalTime * 1.05),
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            }
-                        },
-                        yDepth: {
-                            type: 'linear',
-                            position: 'left',
-                            reverse: true,
-                            title: {
-                                display: true,
-                                text: 'Depth (m)',
-                                font: { size: 14, weight: 'bold' },
-                                color: '#2980b9'
-                            },
-                            min: -5,
-                            max: Math.ceil(maxDepth * 1.1),
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            },
-                            ticks: {
-                                color: '#2980b9'
-                            }
-                        },
-                        yPressure: {
-                            type: 'linear',
-                            position: 'right',
-                            reverse: false,
-                            title: {
-                                display: true,
-                                text: 'Tank Pressure (bar)',
-                                font: { size: 14, weight: 'bold' },
-                                color: '#27ae60'
-                            },
-                            min: 0,
-                            max: maxStartPressure + 20,
-                            grid: {
-                                drawOnChartArea: false
-                            },
-                            ticks: {
-                                color: '#27ae60'
-                            }
-                        }
-                    },
-                    interaction: {
-                        mode: 'nearest',
-                        axis: 'x',
-                        intersect: false
-                    },
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top',
-                            labels: {
-                                usePointStyle: true,
-                                padding: 12,
-                                font: { size: 11 }
-                            }
-                        },
-                        title: {
-                            display: true,
-                            text: `Multi-Gas Consumption (SAC: ${sacRate} L/min)`,
-                            font: { size: 16, weight: 'bold' }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                title: (items) => `Time: ${items[0].parsed.x.toFixed(1)} min`,
-                                label: (context) => {
-                                    if (context.dataset.label === 'Depth') {
-                                        return `Depth: ${context.parsed.y.toFixed(1)}m`;
-                                    } else {
-                                        return `${context.dataset.label}: ${context.parsed.y.toFixed(0)} bar`;
-                                    }
-                                }
-                            }
-                        },
-                        annotation: {
-                            annotations: annotations
-                        }
-                    }
+                    mode: 'depth',
+                    showLabels: true,
+                    showGasSwitches: true,
+                    showDecoStops: true,
+                    showCeiling: true,
+                    fullscreenButton: true
                 }
-            };
-            
-            if (gasChart) {
-                gasChart.destroy();
             }
-            
-            gasChart = new Chart(ctx, config);
-        }
-
-        // ========================================
-        // AIR COMPOSITION DONUT CHART
-        // ========================================
-        function renderAirCompositionChart() {
-            const canvas = document.getElementById('air-composition-chart');
-            if (!canvas) return;
-            
-            const ctx = canvas.getContext('2d');
-            
-            if (airCompositionChart) {
-                airCompositionChart.destroy();
+        );
+        
+        // 2. Total Pressure Chart - pressure variant
+        const pressureChart = new DiveProfileChart(
+            document.getElementById('pressure-chart-container'),
+            {
+                diveSetup: DECO_PROFILE,
+                options: {
+                    mode: 'depth',
+                    showLabels: false,
+                    showGasSwitches: false,
+                    showDecoStops: false,
+                    showAmbientPressure: true,
+                    fullscreenButton: true
+                }
             }
-            
-            airCompositionChart = new Chart(ctx, {
+        );
+        
+        // 3. Gas Consumption Chart - gas variant
+        const gasChart = new DiveProfileChart(
+            document.getElementById('gas-chart-container'),
+            {
+                diveSetup: DECO_PROFILE,
+                options: {
+                    mode: 'depth',
+                    showLabels: false,
+                    showGasSwitches: true,
+                    showDecoStops: false,
+                    showGasConsumption: true,
+                    fullscreenButton: true
+                }
+            }
+        );
+        
+        // 4. Partial Pressure Chart - partial pressure variant
+        const ppChart = new DiveProfileChart(
+            document.getElementById('pp-chart-container'),
+            {
+                diveSetup: DECO_PROFILE,
+                options: {
+                    mode: 'depth',
+                    showLabels: false,
+                    showGasSwitches: true,
+                    showDecoStops: false,
+                    showPartialPressures: true,
+                    fullscreenButton: true
+                }
+            }
+        );
+        
+        // =====================================================================
+        // AIR COMPOSITION CHART (standalone - not a dive profile variant)
+        // =====================================================================
+        
+        const airCanvas = document.getElementById('air-composition-chart');
+        if (airCanvas && typeof Chart !== 'undefined') {
+            new Chart(airCanvas.getContext('2d'), {
                 type: 'doughnut',
                 data: {
                     labels: ['Nitrogen (N₂)', 'Oxygen (O₂)', 'Other gases'],
                     datasets: [{
                         data: [78, 21, 1],
-                        backgroundColor: [
-                            '#3498db',  // Blue for N₂
-                            '#2ecc71',  // Green for O₂
-                            '#95a5a6'   // Gray for other
-                        ],
+                        backgroundColor: ['#3498db', '#2ecc71', '#95a5a6'],
                         borderColor: '#fff',
                         borderWidth: 2
                     }]
@@ -2202,394 +928,70 @@
                     plugins: {
                         legend: {
                             position: 'bottom',
-                            labels: {
-                                font: { size: 14 },
-                                padding: 20
-                            }
+                            labels: { font: { size: 14 }, padding: 20 }
                         },
                         tooltip: {
                             callbacks: {
-                                label: function(context) {
-                                    return `${context.label}: ${context.raw}%`;
-                                }
+                                label: (ctx) => `${ctx.label}: ${ctx.raw}%`
                             }
                         }
                     }
                 }
             });
         }
-
-        // ========================================
-        // PARTIAL PRESSURE CHART
-        // ========================================
         
-        // DOM elements for partial pressure chart
-        const ppGasSelect = document.getElementById('pp-gas-select');
-        const ppGasDetails = document.getElementById('pp-gas-details');
-        const ppChartContainer = document.getElementById('pp-chart-container');
-        const ppFullscreenBtn = document.getElementById('pp-fullscreen-btn');
-        const ppExitFullscreenBtn = document.getElementById('pp-exit-fullscreen-btn');
+        // =====================================================================
+        // SANDBOX LINKS
+        // =====================================================================
         
-        // CNS tracking toggle
-        const cnsTrackingToggle = document.getElementById('cns-tracking-toggle');
-        const cnsOtuContent = document.getElementById('cns-otu-content');
-        
-        if (cnsTrackingToggle && cnsOtuContent) {
-            cnsTrackingToggle.addEventListener('change', () => {
-                cnsOtuContent.style.display = cnsTrackingToggle.checked ? 'block' : 'none';
-            });
-        }
-        
-        // Partial pressure fullscreen
-        function togglePPFullscreen() {
-            if (!ppChartContainer) return;
-            const isFullscreen = ppChartContainer.classList.toggle('fullscreen');
-            document.body.style.overflow = isFullscreen ? 'hidden' : '';
-            if (partialPressureChart) {
-                setTimeout(() => partialPressureChart.resize(), 50);
-            }
-        }
-        
-        if (ppFullscreenBtn) ppFullscreenBtn.addEventListener('click', togglePPFullscreen);
-        if (ppExitFullscreenBtn) ppExitFullscreenBtn.addEventListener('click', togglePPFullscreen);
-        
-        function initPartialPressureChart() {
-            if (!ppGasSelect) return;
-            
-            // Get gases from the current profile
-            const profileGases = getGases(currentSetup);
-            const hasMultipleGases = profileGases.length > 1;
-            
-            // Populate gas selector with profile gases first, then predefined
-            ppGasSelect.innerHTML = '';
-            
-            // Add "Use Profile" option if multi-gas
-            if (hasMultipleGases) {
-                const profileOption = document.createElement('option');
-                profileOption.value = 'profile';
-                profileOption.textContent = `📋 Profile Gases (${profileGases.length})`;
-                ppGasSelect.appendChild(profileOption);
-                
-                const separator = document.createElement('option');
-                separator.disabled = true;
-                separator.textContent = '──────────────';
-                ppGasSelect.appendChild(separator);
-            }
-            
-            // Add predefined gases
-            PREDEFINED_GASES.forEach(gas => {
-                const option = document.createElement('option');
-                option.value = gas.id;
-                option.textContent = gas.name;
-                ppGasSelect.appendChild(option);
-            });
-            
-            // Set initial selection based on current setup
-            if (hasMultipleGases) {
-                ppGasSelect.value = 'profile';
-                useProfileGases = true;
-            } else {
-                // Single gas - use profile gas or find matching predefined
-                const profileGas = profileGases[0];
-                const match = PREDEFINED_GASES.find(g => 
-                    Math.round(g.o2 * 100) === Math.round((profileGas?.o2 || 0.21) * 100) &&
-                    Math.round(g.he * 100) === Math.round((profileGas?.he || 0) * 100)
-                );
-                if (match) {
-                    ppGasSelect.value = match.id;
-                    selectedGas = match;
-                } else {
-                    // No predefined match, use profile gas directly
-                    selectedGas = profileGas || { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 };
-                }
-                useProfileGases = false;
-            }
-            
-            // Handle gas selection change
-            ppGasSelect.addEventListener('change', () => {
-                if (ppGasSelect.value === 'profile') {
-                    useProfileGases = true;
-                    updateGasDetails();
-                    renderPartialPressureChart();
-                } else {
-                    useProfileGases = false;
-                    const gas = getPredefinedGas(ppGasSelect.value);
-                    if (gas) {
-                        selectedGas = gas;
-                        updateGasDetails();
-                        renderPartialPressureChart();
-                    }
-                }
-            });
-            
-            updateGasDetails();
-            renderPartialPressureChart();
-        }
-        
-        function updateGasDetails() {
-            if (!ppGasDetails) return;
-            
-            if (useProfileGases) {
-                const profileGases = getGases(currentSetup);
-                const gasNames = profileGases.map(g => g.name).join(' → ');
-                ppGasDetails.textContent = gasNames;
-            } else {
-                const o2 = Math.round(selectedGas.o2 * 100);
-                const n2 = Math.round(selectedGas.n2 * 100);
-                const he = Math.round(selectedGas.he * 100);
-                ppGasDetails.textContent = `O₂: ${o2}% | N₂: ${n2}% | He: ${he}%`;
-            }
-        }
-        
-        function renderPartialPressureChart() {
-            const canvas = document.getElementById('partial-pressure-canvas');
-            if (!canvas) return;
-            
-            const ctx = canvas.getContext('2d');
-            const waypoints = getDiveSetupWaypoints(currentSetup);
-            
-            if (waypoints.length === 0) return;
-            
-            // Get gases from profile for multi-gas calculations
-            const profileGases = getGases(currentSetup);
-            
-            // Get gas switch events for annotations
-            const gasSwitchEvents = useProfileGases ? getGasSwitchEvents(waypoints, profileGases) : [];
-            
-            // Build data points as {x, y} for proper time-proportional rendering
-            let ppO2Data = [];
-            let ppN2Data = [];
-            let ppHeData = [];
-            let depthData = [];
-            
-            if (useProfileGases && profileGases.length > 0) {
-                waypoints.forEach(w => {
-                    const gas = getGasAtTime(waypoints, profileGases, w.time);
-                    ppO2Data.push({ x: w.time, y: calculatePartialPressure(w.depth, gas.o2) });
-                    ppN2Data.push({ x: w.time, y: calculatePartialPressure(w.depth, gas.n2) });
-                    ppHeData.push({ x: w.time, y: calculatePartialPressure(w.depth, gas.he) });
-                    depthData.push({ x: w.time, y: w.depth });
-                });
-            } else {
-                waypoints.forEach(w => {
-                    ppO2Data.push({ x: w.time, y: calculatePartialPressure(w.depth, selectedGas.o2) });
-                    ppN2Data.push({ x: w.time, y: calculatePartialPressure(w.depth, selectedGas.n2) });
-                    ppHeData.push({ x: w.time, y: calculatePartialPressure(w.depth, selectedGas.he) });
-                    depthData.push({ x: w.time, y: w.depth });
-                });
-            }
-            
-            // Calculate stats
-            const maxDepth = Math.max(...depthData.map(p => p.y));
-            const maxPpO2 = Math.max(...ppO2Data.map(p => p.y));
-            const maxPpN2 = Math.max(...ppN2Data.map(p => p.y));
-            
-            // For MOD/END, use the bottom gas (first gas in profile, or selected gas)
-            const bottomGas = useProfileGases ? (profileGases[0] || selectedGas) : selectedGas;
-            const mod = calculateMOD(bottomGas.o2, 1.4);
-            const end = calculateEND(maxDepth, bottomGas.he);
-            
-            // Update summary
-            document.getElementById('max-ppo2').textContent = `${maxPpO2.toFixed(2)} bar`;
-            document.getElementById('max-ppo2').className = maxPpO2 > 1.6 ? 'stat-value danger' : 
-                                                            maxPpO2 > 1.4 ? 'stat-value warning' : 'stat-value safe';
-            document.getElementById('max-ppn2').textContent = `${maxPpN2.toFixed(2)} bar`;
-            document.getElementById('max-ppn2').className = maxPpN2 > 4.0 ? 'stat-value danger' :
-                                                            maxPpN2 > 3.2 ? 'stat-value warning' : 'stat-value safe';
-            document.getElementById('pp-mod-display').textContent = `${mod.toFixed(0)}m`;
-            document.getElementById('pp-end-display').textContent = `${end.toFixed(0)}m`;
-            
-            // Define limit lines (gasSwitchEvents already defined earlier for step rendering)
-            
-            // Define limit lines
-            const annotations = {
-                ppO2Min: {
-                    type: 'line',
-                    yMin: 0.16,
-                    yMax: 0.16,
-                    borderColor: 'rgba(0, 0, 0, 0.5)',
-                    borderWidth: 1,
-                    borderDash: [4, 4],
-                    label: {
-                        display: true,
-                        content: 'Hypoxia 0.16',
-                        position: 'start',
-                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                        font: { size: 10 }
-                    }
-                },
-                ppO2Working: {
-                    type: 'line',
-                    yMin: 1.4,
-                    yMax: 1.4,
-                    borderColor: 'rgba(241, 196, 15, 0.8)',
-                    borderWidth: 2,
-                    borderDash: [6, 4],
-                    label: {
-                        display: true,
-                        content: 'ppO₂ limit 1.4',
-                        position: 'end',
-                        backgroundColor: 'rgba(241, 196, 15, 0.9)',
-                        font: { size: 10 }
-                    }
-                },
-                ppO2Max: {
-                    type: 'line',
-                    yMin: 1.6,
-                    yMax: 1.6,
-                    borderColor: 'rgba(231, 76, 60, 0.8)',
-                    borderWidth: 2,
-                    label: {
-                        display: true,
-                        content: 'ppO₂ max 1.6',
-                        position: 'end',
-                        backgroundColor: 'rgba(231, 76, 60, 0.9)',
-                        font: { size: 10 }
-                    }
-                },
-                ppN2Max: {
-                    type: 'line',
-                    yMin: 4.0,
-                    yMax: 4.0,
-                    borderColor: 'rgba(155, 89, 182, 0.8)',
-                    borderWidth: 2,
-                    borderDash: [6, 4],
-                    label: {
-                        display: true,
-                        content: 'ppN₂ max 4.0',
-                        position: 'start',
-                        backgroundColor: 'rgba(155, 89, 182, 0.9)',
-                        font: { size: 10 }
-                    }
-                }
-            };
-            
-            // Add gas switch annotations
-            gasSwitchEvents.forEach((event, index) => {
-                annotations[`gasSwitch${index}`] = {
-                    type: 'line',
-                    xMin: event.time,
-                    xMax: event.time,
-                    borderColor: 'rgba(155, 89, 182, 0.8)',
-                    borderWidth: 2,
-                    borderDash: [4, 4],
-                    label: {
-                        display: true,
-                        content: `Switch to ${event.toGas?.name || 'Gas'}`,
-                        position: 'start',
-                        backgroundColor: 'rgba(155, 89, 182, 0.9)',
-                        font: { size: 9 },
-                        rotation: -90,
-                        yAdjust: -30
-                    }
-                };
-            });
-            
-            // Build datasets
-            const datasets = [
-                {
-                    label: 'ppO₂',
-                    data: ppO2Data,
-                    borderColor: '#2ecc71',
-                    backgroundColor: 'rgba(46, 204, 113, 0.1)',
-                    borderWidth: 2,
-                    fill: true,
-                    tension: 0,
-                    stepped: gasSwitchEvents.length > 0 ? 'before' : false  // Step function for multi-gas
-                },
-                {
-                    label: 'ppN₂',
-                    data: ppN2Data,
-                    borderColor: '#3498db',
-                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                    borderWidth: 2,
-                    fill: true,
-                    tension: 0,
-                    stepped: gasSwitchEvents.length > 0 ? 'before' : false  // Step function for multi-gas
-                }
+        function setupSandboxLinks() {
+            const links = [
+                { id: 'profile-sandbox-link', profile: DECO_PROFILE },
+                { id: 'pressure-sandbox-link', profile: DECO_PROFILE },
+                { id: 'gas-sandbox-link', profile: DECO_PROFILE },
+                { id: 'pp-sandbox-link', profile: DECO_PROFILE }
             ];
             
-            // Add helium if present (check either selected gas or any profile gas has helium)
-            const hasHelium = useProfileGases 
-                ? profileGases.some(g => g.he > 0)
-                : selectedGas.he > 0;
-            
-            if (hasHelium) {
-                datasets.push({
-                    label: 'ppHe',
-                    data: ppHeData,
-                    borderColor: '#9b59b6',
-                    backgroundColor: 'rgba(155, 89, 182, 0.1)',
-                    borderWidth: 2,
-                    fill: true,
-                    tension: 0,
-                    stepped: gasSwitchEvents.length > 0 ? 'before' : false  // Step function for multi-gas
-                });
-            }
-            
-            // Add depth on secondary axis
-            datasets.push({
-                label: 'Depth',
-                data: depthData,
-                borderColor: 'rgba(127, 140, 141, 0.5)',
-                borderWidth: 1,
-                borderDash: [3, 3],
-                fill: false,
-                yAxisID: 'y1',
-                pointRadius: 0
-            });
-            
-            const config = {
-                type: 'line',
-                data: { datasets },  // No labels needed - using {x,y} data format
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false
-                    },
-                    scales: {
-                        x: {
-                            type: 'linear',
-                            title: { display: true, text: 'Time (min)' },
-                            min: 0
-                        },
-                        y: {
-                            title: { display: true, text: 'Partial Pressure (bar)' },
-                            min: 0,
-                            max: Math.max(5, Math.ceil(Math.max(maxPpO2, maxPpN2) + 0.5))
-                        },
-                        y1: {
-                            type: 'linear',
-                            display: true,
-                            position: 'right',
-                            title: { display: true, text: 'Depth (m)' },
-                            reverse: true,
-                            min: 0,
-                            grid: { drawOnChartArea: false }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            position: 'top'
-                        },
-                        annotation: {
-                            annotations
-                        }
-                    }
+            links.forEach(({ id, profile }) => {
+                const link = document.getElementById(id);
+                if (link) {
+                    link.href = getSandboxUrl(profile);
                 }
-            };
-            
-            if (partialPressureChart) {
-                partialPressureChart.destroy();
-            }
-            
-            partialPressureChart = new Chart(ctx, config);
+            });
         }
         
-        // Initialize on load
-        init();
+        // =====================================================================
+        // KATEX MATH RENDERING
+        // =====================================================================
+        
+        function renderMathFormulas() {
+            if (typeof katex === 'undefined') return;
+            
+            // Block formulas
+            document.querySelectorAll('.formula').forEach(el => {
+                try {
+                    katex.render(el.textContent, el, { displayMode: true });
+                } catch (e) {
+                    console.warn('KaTeX error:', e);
+                }
+            });
+            
+            // Inline formulas
+            document.querySelectorAll('.formula-inline').forEach(el => {
+                try {
+                    katex.render(el.textContent, el, { displayMode: false });
+                } catch (e) {
+                    console.warn('KaTeX inline error:', e);
+                }
+            });
+        }
+        
+        // =====================================================================
+        // INITIALIZATION
+        // =====================================================================
+        
+        setupSandboxLinks();
+        renderMathFormulas();
     </script>
     
     <!-- Shared Navigation -->

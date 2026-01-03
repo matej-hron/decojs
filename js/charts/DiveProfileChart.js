@@ -593,6 +593,19 @@ export class DiveProfileChart {
                 padding: { top: 3, bottom: 3, left: 6, right: 6 }
             };
         }
+        
+        // Total Dive Time (TDT) label - top right corner
+        annotations.totalDiveTime = {
+            type: 'label',
+            xValue: totalTime,
+            yValue: -1,
+            content: [`TDT: ${totalTime} min`],
+            backgroundColor: 'rgba(52, 73, 94, 0.9)',
+            color: 'white',
+            font: { size: 11, weight: 'bold' },
+            padding: { top: 4, bottom: 4, left: 8, right: 8 },
+            position: { x: 'end', y: 'center' }
+        };
     }
     
     /**
@@ -1050,6 +1063,15 @@ export class DiveProfileChart {
         
         // Add pressure axis if needed
         if (this.options.showAmbientPressure || this.options.showPartialPressures || this.options.showTissueLoading) {
+            // Calculate appropriate max for pressure axis
+            let pressureAxisMax = Math.ceil(maxTissuePressure) + 1;
+            
+            // If showing partial pressures, ensure the limit lines are visible
+            if (this.options.showPartialPressures) {
+                // ppN2 narcosis limit is 4.0 bar, add padding
+                pressureAxisMax = Math.max(pressureAxisMax, 4.5);
+            }
+            
             scales.yPressure = {
                 type: 'linear',
                 position: 'right',
@@ -1058,7 +1080,7 @@ export class DiveProfileChart {
                     text: 'Pressure (bar)'
                 },
                 min: 0,
-                max: Math.ceil(maxTissuePressure) + 1,  // Round up and add 1 bar padding
+                max: pressureAxisMax,
                 grid: {
                     drawOnChartArea: false
                 }
@@ -1154,6 +1176,23 @@ export class DiveProfileChart {
                     display: true,
                     content: 'ppO₂ max (1.6)',
                     position: 'end',
+                    font: { size: 9 }
+                }
+            };
+            
+            // ppN2 narcosis limit (4 bar)
+            annotations.ppN2Max = {
+                type: 'line',
+                yMin: 4.0,
+                yMax: 4.0,
+                yScaleID: 'yPressure',
+                borderColor: 'rgba(155, 89, 182, 0.5)',
+                borderWidth: 1,
+                borderDash: [3, 3],
+                label: {
+                    display: true,
+                    content: 'ppN₂ narcosis (4.0)',
+                    position: 'start',
                     font: { size: 9 }
                 }
             };
