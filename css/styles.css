@@ -1729,9 +1729,28 @@ footer a {
     color: var(--text-muted);
 }
 
-/* Gradient Factors */
+/* Gradient Factors / Decompression Model */
 .dse-gf-content {
     margin-top: 0.75rem;
+}
+
+.dse-algorithm-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.dse-algorithm-row label {
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.dse-algorithm-select {
+    flex: 1;
+    max-width: 200px;
 }
 
 .dse-gf-row {

@@ -62,6 +62,12 @@ import {
     normalizeDiveSetup
 } from '../charts/chartTypes.js';
 
+import {
+    ZHL16_VARIANTS,
+    getZHL16Variant,
+    setZHL16Variant
+} from '../tissueCompartments.js';
+
 /**
  * Default editor options
  */
@@ -441,8 +447,16 @@ export class DiveSetupEditor extends EventTarget {
         const section = document.createElement('details');
         section.className = 'dse-section dse-gf';
         section.innerHTML = `
-            <summary>🎚️ Gradient Factors</summary>
+            <summary>🎚️ Decompression Model</summary>
             <div class="dse-gf-content">
+                <div class="dse-algorithm-row">
+                    <label>Algorithm:</label>
+                    <select class="dse-algorithm-select form-input">
+                        <option value="ZH-L16A">ZH-L16A (experimental)</option>
+                        <option value="ZH-L16B">ZH-L16B (tables)</option>
+                        <option value="ZH-L16C">ZH-L16C (computers)</option>
+                    </select>
+                </div>
                 <p class="dse-hint">GF 100/100 = raw Bühlmann. Lower values = more conservative.</p>
                 <div class="dse-gf-row">
                     <div class="dse-field">
@@ -470,6 +484,18 @@ export class DiveSetupEditor extends EventTarget {
         this.elements.gfLowInput = section.querySelector('.dse-gf-low-input');
         this.elements.gfHighSlider = section.querySelector('.dse-gf-high-slider');
         this.elements.gfHighInput = section.querySelector('.dse-gf-high-input');
+        this.elements.algorithmSelect = section.querySelector('.dse-algorithm-select');
+        
+        // Set initial algorithm value
+        this.elements.algorithmSelect.value = getZHL16Variant();
+        
+        // Algorithm change handler
+        this.elements.algorithmSelect.addEventListener('change', () => {
+            const variant = this.elements.algorithmSelect.value;
+            setZHL16Variant(variant);
+            this._onInputChange();
+            this._updateNDLDisplay();
+        });
         
         // Sync sliders and inputs
         this.elements.gfLowSlider.addEventListener('input', () => {
@@ -1194,6 +1220,7 @@ export class DiveSetupEditor extends EventTarget {
             description: this.elements.descriptionInput?.value || '',
             gases: this.currentGases,
             dives: dives,
+            algorithm: this.elements.algorithmSelect?.value || getZHL16Variant(),
             gfLow: parseInt(this.elements.gfLowInput?.value) || DEFAULT_GF_LOW,
             gfHigh: parseInt(this.elements.gfHighInput?.value) || DEFAULT_GF_HIGH,
             surfaceInterval: surfaceInterval,
@@ -1224,6 +1251,12 @@ export class DiveSetupEditor extends EventTarget {
         if (this.elements.gfHighInput) {
             this.elements.gfHighInput.value = gfHigh;
             this.elements.gfHighSlider.value = gfHigh;
+        }
+        
+        // Algorithm variant
+        if (this.elements.algorithmSelect && setup.algorithm) {
+            this.elements.algorithmSelect.value = setup.algorithm;
+            setZHL16Variant(setup.algorithm);
         }
         
         // Description
