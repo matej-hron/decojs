@@ -595,7 +595,7 @@ export class DiveProfileChart {
     }
     
     /**
-     * Add stop labels (deco/safety stops) - always shown regardless of showLabels option
+     * Add stop labels (deco stops) - always shown regardless of showLabels option
      * @private
      */
     _addStopLabels(annotations, waypoints) {
@@ -623,16 +623,9 @@ export class DiveProfileChart {
         }
         
         // Stop annotations - just labels, no boxes (boxes can obscure the profile)
-        const isMultiStageDeco = stops.length > 1;
         stops.forEach((stop, i) => {
             const isDeepStop = stop.depth > 5;
             const stopDuration = Math.round(stop.end.time - stop.start.time);
-            let label;
-            if (isDeepStop || isMultiStageDeco) {
-                label = 'DECO';
-            } else {
-                label = 'SAFETY';
-            }
             const color = isDeepStop ? 'rgba(230, 126, 34, 0.9)' : 'rgba(52, 152, 219, 0.9)';
             
             // Label positioned to the right of the stop with depth and time
@@ -641,7 +634,7 @@ export class DiveProfileChart {
                 xValue: stop.end.time + 1,
                 yValue: stop.depth,
                 yAdjust: 20,
-                content: [`${label} ${stop.depth}m · ${stopDuration}min`],
+                content: [`DECO ${stop.depth}m · ${stopDuration}min`],
                 backgroundColor: color,
                 color: 'white',
                 font: { size: 9, weight: 'bold' },
@@ -1065,7 +1058,7 @@ export class DiveProfileChart {
             this._addProfileLabels(annotations, waypoints, results);
         }
         
-        // Stop labels (deco/safety stops) - always shown
+        // Stop labels (deco stops) - always shown
         this._addStopLabels(annotations, waypoints);
         
         // Reserve pressure line (if showing gas consumption)
