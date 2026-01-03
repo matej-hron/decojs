@@ -776,6 +776,21 @@ export class DiveProfileChart {
         
         const { results, ceilingDepths, gasConsumption, waypoints, gases } = data;
         
+        // Calculate axis bounds
+        const maxDepth = Math.max(...waypoints.map(wp => wp.depth));
+        const maxPressure = Math.max(...results.ambientPressures);
+        
+        // For tissue loading, also consider tissue pressures
+        let maxTissuePressure = maxPressure;
+        if (this.options.showTissueLoading) {
+            Object.values(results.compartments).forEach(comp => {
+                const compMax = Math.max(...comp.pressures);
+                if (compMax > maxTissuePressure) {
+                    maxTissuePressure = compMax;
+                }
+            });
+        }
+        
         // Prepare datasets
         const datasets = [];
         
@@ -966,7 +981,8 @@ export class DiveProfileChart {
                     display: true,
                     text: 'Depth (m)'
                 },
-                min: this.options.showLabels ? -10 : 0
+                min: this.options.showLabels ? -10 : 0,
+                max: maxDepth + 5  // Add padding below max depth
             }
         };
         
@@ -980,6 +996,7 @@ export class DiveProfileChart {
                     text: 'Pressure (bar)'
                 },
                 min: 0,
+                max: Math.ceil(maxTissuePressure) + 1,  // Round up and add 1 bar padding
                 grid: {
                     drawOnChartArea: false
                 }
@@ -989,7 +1006,7 @@ export class DiveProfileChart {
         // Add gas consumption axis if needed
         if (this.options.showGasConsumption && gasConsumption) {
             // Find max starting pressure across all gases
-            const maxPressure = Math.max(...Object.values(gasConsumption).map(g => g.startPressure));
+            const maxGasPressure = Math.max(...Object.values(gasConsumption).map(g => g.startPressure));
             const reservePressure = Object.values(gasConsumption)[0]?.reservePressure || 50;
             
             scales.yGas = {
@@ -1000,7 +1017,7 @@ export class DiveProfileChart {
                     text: 'Tank Pressure (bar)'
                 },
                 min: 0,
-                max: maxPressure + 10,
+                max: maxGasPressure + 10,
                 grid: {
                     drawOnChartArea: false
                 }
