@@ -1181,21 +1181,13 @@ export class DiveProfileChart {
                         zoom: {
                             wheel: {
                                 enabled: true,
-                                speed: 0.015  // Further reduced sensitivity
+                                speed: 0.015
                             },
                             pinch: {
                                 enabled: true
                             },
-                            drag: {
-                                enabled: true,
-                                backgroundColor: 'rgba(52, 152, 219, 0.2)',
-                                borderColor: 'rgba(52, 152, 219, 0.8)',
-                                borderWidth: 1,
-                                modifierKey: 'shift'  // Hold Shift + drag to zoom to area
-                            },
                             mode: 'xy',
                             onZoomComplete: () => {
-                                // Show reset button when zoomed
                                 if (this.resetZoomBtn) {
                                     this.resetZoomBtn.style.display = 'block';
                                 }
