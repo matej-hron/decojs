@@ -8,7 +8,7 @@
     <!-- PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2980b9">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Deco Theory">
     <link rel="apple-touch-icon" href="icons/icon.svg">
@@ -84,6 +84,7 @@
                 <li><a href="#half-time-charts">📊 Half-Time Charts</a></li>
                 <li><a href="#tissue-heterogeneity">🧠 Tissue Types</a></li>
                 <li><a href="#buhlmann-compartments">🏗️ Bühlmann Compartments</a></li>
+                <li><a href="#zhl16-variants">🔧 ZH-L16 Variants</a></li>
                 <li><a href="#tissue-chart-section">📈 Interactive Chart</a></li>
             </ul>
         </nav>
@@ -559,6 +560,76 @@
                     its critical supersaturation limit — this compartment determines your decompression ceiling.
                 </p>
             </div>
+
+            <!-- Section 8: ZH-L16 Variants -->
+            <div class="concept-card" id="zhl16-variants">
+                <h3>🔧 ZH-L16 Variants: A, B, and C</h3>
+                <p>
+                    Bühlmann developed <strong>three variants</strong> of the ZH-L16 algorithm, each with different 
+                    levels of conservatism. The variants differ only in their <strong>'a' coefficients</strong> — the 
+                    half-times and 'b' values remain the same.
+                </p>
+                
+                <div class="variant-grid">
+                    <div class="variant-card">
+                        <h4>ZH-L16A <span class="variant-badge">Experimental</span></h4>
+                        <p>
+                            The <strong>original</strong> values derived from experimental data. 
+                            Least conservative — allows the most supersaturation.
+                        </p>
+                        <p class="variant-use">📚 Used for: Research, algorithm comparison</p>
+                    </div>
+                    
+                    <div class="variant-card">
+                        <h4>ZH-L16B <span class="variant-badge">Tables</span></h4>
+                        <p>
+                            Modified 'a' values for <strong>printed dive tables</strong>. More conservative in 
+                            compartments 5–8 and 13 to account for the inherent rounding in table use.
+                        </p>
+                        <p class="variant-use">📋 Used for: Published decompression tables</p>
+                    </div>
+                    
+                    <div class="variant-card variant-card-active">
+                        <h4>ZH-L16C <span class="variant-badge variant-badge-active">Computers</span></h4>
+                        <p>
+                            <strong>Most conservative</strong> — modified 'a' values for compartments 5–15. 
+                            Since dive computers track depth and time precisely (no table rounding), 
+                            additional conservatism was added for real-world safety margins.
+                        </p>
+                        <p class="variant-use">💻 Used for: Dive computers (most common today)</p>
+                    </div>
+                </div>
+                
+                <details class="learn-more">
+                    <summary>📊 Variant Differences in 'a' Coefficients</summary>
+                    <div class="math-content">
+                        <p>
+                            The 'a' coefficient determines the <strong>y-intercept</strong> of the M-value line. 
+                            <em>Lower 'a' values = more conservative</em> (less supersaturation allowed).
+                        </p>
+                        <table class="data-table small-table">
+                            <thead>
+                                <tr>
+                                    <th>Compartment</th>
+                                    <th>ZH-L16A</th>
+                                    <th>ZH-L16B</th>
+                                    <th>ZH-L16C</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>1–4</td><td colspan="3" style="text-align:center;">Same across all variants</td></tr>
+                                <tr class="highlight-row"><td>5</td><td>0.6667</td><td>0.5600</td><td><strong>0.5282</strong></td></tr>
+                                <tr class="highlight-row"><td>6</td><td>0.5933</td><td>0.4947</td><td><strong>0.4701</strong></td></tr>
+                                <tr class="highlight-row"><td>7</td><td>0.5282</td><td>0.4500</td><td><strong>0.4187</strong></td></tr>
+                                <tr class="highlight-row"><td>8</td><td>0.4701</td><td>0.4187</td><td><strong>0.3798</strong></td></tr>
+                                <tr><td>9–15</td><td colspan="2" style="text-align:center;">Various</td><td><strong>More conservative</strong></td></tr>
+                                <tr><td>16</td><td colspan="3" style="text-align:center;">0.2327 (same)</td></tr>
+                            </tbody>
+                        </table>
+                        <p class="footnote">This application uses <strong>ZH-L16C</strong> as the default, matching modern dive computers.</p>
+                    </div>
+                </details>
+            </div>
         </section>
 
         <!-- Compartment Selection -->
@@ -606,11 +677,15 @@
                    and permitted during controlled ascents.</p>
                 <p><strong>Gray dashed line (Surface Saturation):</strong> Equilibrium N₂ pressure at surface (~0.79 bar).</p>
             </div>
+            
+            <a id="tissue-sandbox-link" href="sandbox/" class="sandbox-link" target="_blank">
+                🔬 Open in Sandbox →
+            </a>
         </section>
 
         <!-- Compartment Reference Table -->
         <section id="reference-table" class="reference-section">
-            <h2>📋 Bühlmann ZH-L16A Compartments Reference</h2>
+            <h2>📋 Bühlmann ZH-L16C Compartments Reference</h2>
             <table class="reference-table">
                 <thead>
                     <tr>

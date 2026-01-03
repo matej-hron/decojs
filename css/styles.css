@@ -1518,7 +1518,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.4.7";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.4.8";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -3205,6 +3205,59 @@ textarea.form-input {
 .concept-card.info-card {
     border-left: 4px solid var(--primary-color);
     background: linear-gradient(135deg, #f0f8ff 0%, var(--card-background) 100%);
+}
+
+/* ZH-L16 Variant Cards */
+.variant-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.variant-card {
+    background: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 1rem;
+}
+
+.variant-card h4 {
+    margin: 0 0 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.variant-badge {
+    font-size: 0.7rem;
+    font-weight: 500;
+    padding: 0.15rem 0.5rem;
+    border-radius: 1rem;
+    background: var(--border-color);
+    color: var(--text-muted);
+}
+
+.variant-badge-active {
+    background: var(--primary-color);
+    color: white;
+}
+
+.variant-card-active {
+    border-color: var(--primary-color);
+    background: linear-gradient(135deg, rgba(41, 128, 185, 0.05) 0%, var(--card-background) 100%);
+}
+
+.variant-use {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.75rem;
+    margin-bottom: 0;
+}
+
+.highlight-row {
+    background: rgba(41, 128, 185, 0.08);
 }
 
 /* Highlight Box (Martini Rule etc) */
