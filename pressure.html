@@ -75,7 +75,6 @@
                 <li><a href="#air-composition">🌬️ Air Composition</a></li>
                 <li><a href="#daltons-law">⚗️ Dalton's Law</a></li>
                 <li><a href="#partial-pressure-limits">⚠️ Partial Pressure Limits</a></li>
-                <li><a href="#end-calculation">🧠 Equivalent Narcotic Depth</a></li>
                 <li><a href="#oxygen-toxicity">☠️ Oxygen Toxicity</a></li>
                 <li><a href="#partial-pressure-chart">📊 Partial Pressure Chart</a></li>
             </ul>
@@ -577,79 +576,6 @@
                             <td>&gt; 4.0</td>
                             <td>&gt; 40m</td>
                             <td>Severe narcosis. Maximum limit for recreational diving.</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- END Calculation Section -->
-        <section id="end-calculation" class="education-section">
-            <h2>🧠 Equivalent Narcotic Depth (END)</h2>
-            
-            <div class="concept-card">
-                <h3>Why END Matters</h3>
-                <p>
-                    When diving with helium-based gases (Trimix, Heliox), helium replaces some nitrogen 
-                    and oxygen. Since helium is <em>not</em> narcotic, the narcotic effect is reduced 
-                    compared to air at the same depth.
-                </p>
-                <p>
-                    <strong>END</strong> tells you the depth at which you would experience the same 
-                    narcotic effect if breathing air. It's a way to compare narcotic load across 
-                    different gas mixtures.
-                </p>
-            </div>
-
-            <details class="learn-more" open>
-                <summary>🔬 END Formula</summary>
-                <div class="math-content">
-                    <div class="formula" id="formula-end">
-                        END = (D + 10) \times (1 - f_{He}) - 10
-                    </div>
-                    <p>Where:</p>
-                    <ul>
-                        <li><span class="formula-inline">D</span> = actual depth in meters</li>
-                        <li><span class="formula-inline">f_{He}</span> = fraction of helium in the gas (decimal)</li>
-                        <li>The formula assumes O₂ is also narcotic (conservative approach)</li>
-                    </ul>
-                    
-                    <h4>Example: TX 18/45 at 60 meters</h4>
-                    <p>Trimix with 18% O₂, 45% He (therefore 37% N₂):</p>
-                    <p>END = (60 + 10) × (1 - 0.45) - 10 = 70 × 0.55 - 10 = <strong>28.5m</strong></p>
-                    <p>So at 60m on this Trimix, you'd feel like you're at ~29m on air!</p>
-                </div>
-            </details>
-
-            <div class="concept-card">
-                <h3>END Examples for Common Gases</h3>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Depth</th>
-                            <th>Air (0% He)</th>
-                            <th>TX 21/35</th>
-                            <th>TX 18/45</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>40m</td>
-                            <td>40m</td>
-                            <td>22.5m</td>
-                            <td>17.5m</td>
-                        </tr>
-                        <tr>
-                            <td>50m</td>
-                            <td>50m</td>
-                            <td>29m</td>
-                            <td>23m</td>
-                        </tr>
-                        <tr>
-                            <td>60m</td>
-                            <td>60m</td>
-                            <td>35.5m</td>
-                            <td>28.5m</td>
                         </tr>
                     </tbody>
                 </table>
