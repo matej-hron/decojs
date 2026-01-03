@@ -1171,7 +1171,12 @@ export class DiveProfileChart {
                         pan: {
                             enabled: true,
                             mode: 'xy',
-                            modifierKey: null
+                            threshold: 5,  // Reduce threshold for easier panning
+                            onPanComplete: () => {
+                                if (this.resetZoomBtn) {
+                                    this.resetZoomBtn.style.display = 'block';
+                                }
+                            }
                         },
                         zoom: {
                             wheel: {
