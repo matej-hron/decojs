@@ -1175,7 +1175,8 @@ export class DiveProfileChart {
                         },
                         zoom: {
                             wheel: {
-                                enabled: true
+                                enabled: true,
+                                speed: 0.03  // Reduced sensitivity (default is 0.1)
                             },
                             pinch: {
                                 enabled: true
