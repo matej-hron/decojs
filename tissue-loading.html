@@ -44,22 +44,6 @@
         </div>
     </nav>
 
-    <!-- Dive Profile Header Bar (Sticky) -->
-    <div class="profile-header-bar sticky">
-        <div class="profile-header-content">
-            <div class="profile-header-info">
-                <span class="profile-header-label">Profile:</span>
-                <select id="profile-switcher" class="profile-switcher">
-                    <!-- Options populated by JavaScript -->
-                </select>
-                <span id="profile-header-summary" class="profile-header-summary"></span>
-            </div>
-            <div class="profile-header-actions">
-                <a href="dive-setup.html" class="btn btn-small">✏️ Customize</a>
-            </div>
-        </div>
-    </div>
-
     <!-- Disclaimer Banner -->
     <div class="disclaimer-banner">
         ⚠️ <strong>Educational Use Only</strong> — This tool is NOT intended for real dive planning. 
@@ -632,37 +616,12 @@
             </div>
         </section>
 
-        <!-- Compartment Selection -->
-        <section id="compartment-selection" class="compartment-section">
-            <h2>🎛️ Compartment Selection</h2>
-            <p>Toggle which tissue compartments to display on the chart:</p>
-            
-            <div class="compartment-controls">
-                <button id="show-all" class="btn btn-small">Show All</button>
-                <button id="hide-all" class="btn btn-small">Hide All</button>
-                <button id="show-fast" class="btn btn-small">Fast Only</button>
-                <button id="show-medium" class="btn btn-small">Medium Only</button>
-                <button id="show-slow" class="btn btn-small">Slow Only</button>
-            </div>
-            
-            <div id="compartment-toggles" class="compartment-toggles">
-                <!-- Checkboxes added by JavaScript -->
-            </div>
-        </section>
-
         <!-- Chart Section -->
         <section id="tissue-chart-section" class="chart-section">
             <div class="chart-header">
                 <h2>📈 Tissue Loading Chart</h2>
-                <button id="fullscreen-btn" class="btn btn-small btn-icon" title="Fullscreen">
-                    <span class="fullscreen-icon">⛶</span>
-                    <span class="fullscreen-text">Fullscreen</span>
-                </button>
             </div>
-            <div class="chart-container" id="chart-container">
-                <canvas id="tissue-chart"></canvas>
-                <button id="exit-fullscreen-btn" class="btn btn-fullscreen-close" title="Exit Fullscreen">✕</button>
-            </div>
+            <div id="tissue-chart-container" class="chart-wrapper" style="height: 600px;"></div>
             <p class="timeline-hint">↑↓ move tissues | Shift+↑ expand | Shift+↓ shrink</p>
             <div class="chart-legend">
                 <p><strong>Left axis (N₂ Pressure):</strong> Shows nitrogen pressure in each tissue compartment. 
@@ -717,8 +676,88 @@
     <!-- Educational interactive components -->
     <script src="js/tissueEducation.js"></script>
 
-    <!-- Main application script -->
-    <script type="module" src="js/main.js"></script>
+    <!-- Main chart and reference table -->
+    <script type="module">
+        import { DiveProfileChart } from './js/charts/DiveProfileChart.js';
+        import { generateDecoProfile } from './js/diveSetup.js';
+        import { COMPARTMENTS, getCompartmentCategory } from './js/tissueCompartments.js';
+        import { getSandboxUrl } from './js/urlParams.js';
+        
+        // =====================================================================
+        // DIVE PROFILE DEFINITION FOR THIS PAGE
+        // =====================================================================
+        
+        // Define gases for the deco profile
+        const DECO_GASES = [
+            { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0, cylinderVolume: 18, startPressure: 200 }
+        ];
+        
+        // Generate the deco profile (20m/40min with GF 50/80 creates deco stops)
+        const decoResult = generateDecoProfile(20, 40, DECO_GASES, 50, 80);
+        
+        const TISSUE_PROFILE = {
+            id: 'tissue-20m-40min',
+            name: '20m Deco Dive',
+            description: 'A 20m dive for 40 minutes with conservative GF 50/80',
+            gases: DECO_GASES,
+            gfLow: 50,
+            gfHigh: 80,
+            surfaceInterval: 0.1,
+            dives: [{
+                waypoints: decoResult.waypoints
+            }]
+        };
+        
+        // =====================================================================
+        // TISSUE LOADING CHART
+        // =====================================================================
+        
+        const tissueChart = new DiveProfileChart(
+            document.getElementById('tissue-chart-container'),
+            {
+                diveSetup: TISSUE_PROFILE,
+                options: {
+                    mode: 'depth',
+                    showCeiling: true,
+                    showAmbientPressure: true,
+                    showTissueLoading: true,
+                    showLabels: false,
+                    fullscreenButton: true
+                }
+            }
+        );
+        
+        // Update sandbox link with profile
+        const sandboxLink = document.getElementById('tissue-sandbox-link');
+        if (sandboxLink) {
+            sandboxLink.href = getSandboxUrl(TISSUE_PROFILE);
+        }
+        
+        // =====================================================================
+        // REFERENCE TABLE
+        // =====================================================================
+        
+        const referenceBody = document.getElementById('reference-body');
+        if (referenceBody) {
+            COMPARTMENTS.forEach(comp => {
+                const category = getCompartmentCategory(comp.id);
+                const saturationTime = Math.round(comp.halfTime * 6); // 6 half-times = ~98% saturation
+                const hours = Math.floor(saturationTime / 60);
+                const mins = saturationTime % 60;
+                const timeStr = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${comp.id}</td>
+                    <td>${comp.halfTime} min</td>
+                    <td><span class="category-badge ${category.toLowerCase()}">${category}</span></td>
+                    <td>${comp.label.split(' - ')[1] || comp.label}</td>
+                    <td>${timeStr}</td>
+                `;
+                referenceBody.appendChild(row);
+            });
+        }
+    </script>
 
     <!-- Shared Navigation -->
     <script src="js/nav.js" type="module"></script>
