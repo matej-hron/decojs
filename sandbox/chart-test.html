@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chart Components Test - Deco Theory</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="../css/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
     <style>
@@ -39,6 +39,13 @@
             background: #3498db;
             color: white;
         }
+        kbd {
+            padding: 2px 5px;
+            background: #eee;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-family: monospace;
+        }
         .timeline-control {
             display: flex;
             align-items: center;
@@ -72,26 +79,22 @@
                 <button id="dpc-pressure">+ Ambient Pressure</button>
                 <button id="dpc-pp">+ Partial Pressures</button>
                 <button id="dpc-ceiling">+ Ceiling</button>
+                <button id="dpc-tissue">+ Tissue Loading</button>
             </div>
             <div id="dive-profile-container" class="chart-wrapper"></div>
             <div id="dpc-status" class="status">Loading...</div>
         </section>
         
-        <!-- Tissue Pressure Chart Test -->
+        <!-- M-Value Chart Test -->
         <section class="test-section">
-            <h2>🫁 TissuePressureChart Component</h2>
-            <div class="controls">
-                <button id="tpc-loading" class="active">Loading Mode</button>
-                <button id="tpc-mvalue">M-Value Mode</button>
-                <button id="tpc-ceiling">Ceiling Mode</button>
-            </div>
-            <div class="timeline-control" id="timeline-wrapper" style="display: none;">
-                <span>Time:</span>
-                <input type="range" id="time-slider" min="0" max="100" value="0">
-                <span id="time-display">0.0 min @ 0m</span>
-            </div>
-            <div id="tissue-pressure-container" class="chart-wrapper"></div>
-            <div id="tpc-status" class="status">Loading...</div>
+            <h2>📐 MValueChart Component</h2>
+            <p style="font-size: 0.9em; color: #666; margin-bottom: 1rem;">
+                Pressure-pressure diagram showing tissue loading vs ambient pressure.
+                Use <kbd>←/→</kbd> to step time, <kbd>Space</kbd> to play/pause, 
+                <kbd>↑/↓</kbd> to move compartments.
+            </p>
+            <div id="mvalue-container" class="chart-wrapper" style="height: 500px;"></div>
+            <div id="mvc-status" class="status">Loading...</div>
         </section>
         
         <!-- Test with Different Profiles -->
@@ -103,12 +106,117 @@
                 <button id="profile-nitrox">Nitrox 32 @ 30m</button>
             </div>
         </section>
+        
+        <!-- Usage Examples -->
+        <section class="test-section">
+            <h2>📖 Component Usage</h2>
+            
+            <h3>DiveProfileChart</h3>
+            <p>Time-based visualization: depth profile, pressure, partial pressures, ceiling, and tissue loading.</p>
+            <pre style="background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 13px;"><code><span style="color: #c586c0;">import</span> { DiveProfileChart } <span style="color: #c586c0;">from</span> <span style="color: #ce9178;">'./js/charts/DiveProfileChart.js'</span>;
+
+<span style="color: #6a9955;">// Define your dive setup</span>
+<span style="color: #c586c0;">const</span> diveSetup = {
+    gases: [{ id: <span style="color: #ce9178;">'air'</span>, name: <span style="color: #ce9178;">'Air'</span>, o2: <span style="color: #b5cea8;">0.21</span>, n2: <span style="color: #b5cea8;">0.79</span>, he: <span style="color: #b5cea8;">0</span> }],
+    gfLow: <span style="color: #b5cea8;">70</span>,
+    gfHigh: <span style="color: #b5cea8;">85</span>,
+    dives: [{
+        waypoints: [
+            { time: <span style="color: #b5cea8;">0</span>, depth: <span style="color: #b5cea8;">0</span> },
+            { time: <span style="color: #b5cea8;">2</span>, depth: <span style="color: #b5cea8;">30</span> },
+            { time: <span style="color: #b5cea8;">22</span>, depth: <span style="color: #b5cea8;">30</span> },
+            { time: <span style="color: #b5cea8;">25</span>, depth: <span style="color: #b5cea8;">5</span> },
+            { time: <span style="color: #b5cea8;">28</span>, depth: <span style="color: #b5cea8;">5</span> },
+            { time: <span style="color: #b5cea8;">29</span>, depth: <span style="color: #b5cea8;">0</span> }
+        ]
+    }]
+};
+
+<span style="color: #6a9955;">// Create the chart</span>
+<span style="color: #c586c0;">const</span> chart = <span style="color: #c586c0;">new</span> DiveProfileChart(document.getElementById(<span style="color: #ce9178;">'my-container'</span>), {
+    diveSetup,
+    options: {
+        showLabels: <span style="color: #569cd6;">true</span>,          <span style="color: #6a9955;">// DESCENT, BOTTOM TIME, MAX, ASCENT labels</span>
+        showCeiling: <span style="color: #569cd6;">true</span>,         <span style="color: #6a9955;">// Deco ceiling line</span>
+        showAmbientPressure: <span style="color: #569cd6;">true</span>, <span style="color: #6a9955;">// Ambient pressure on right axis</span>
+        showPartialPressures: <span style="color: #569cd6;">true</span>,<span style="color: #6a9955;">// ppO₂ and ppN₂ curves</span>
+        showTissueLoading: <span style="color: #569cd6;">true</span>,   <span style="color: #6a9955;">// 16 tissue N₂ curves</span>
+        showGasSwitches: <span style="color: #569cd6;">true</span>,     <span style="color: #6a9955;">// Gas switch markers</span>
+        tissueCompartments: [<span style="color: #b5cea8;">1</span>,<span style="color: #b5cea8;">2</span>,<span style="color: #b5cea8;">3</span>,<span style="color: #b5cea8;">4</span>,<span style="color: #b5cea8;">5</span>,<span style="color: #b5cea8;">6</span>,<span style="color: #b5cea8;">7</span>,<span style="color: #b5cea8;">8</span>] <span style="color: #6a9955;">// Which tissues to show</span>
+    }
+});
+
+<span style="color: #6a9955;">// Update with new data</span>
+chart.update(newDiveSetup);
+
+<span style="color: #6a9955;">// Change options dynamically</span>
+chart.setOptions({ showCeiling: <span style="color: #569cd6;">false</span> });</code></pre>
+
+            <h3 style="margin-top: 2rem;">MValueChart</h3>
+            <p>Pressure-pressure diagram showing tissue N₂ vs ambient pressure with M-value lines.</p>
+            <pre style="background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 13px;"><code><span style="color: #c586c0;">import</span> { MValueChart } <span style="color: #c586c0;">from</span> <span style="color: #ce9178;">'./js/charts/MValueChart.js'</span>;
+
+<span style="color: #c586c0;">const</span> chart = <span style="color: #c586c0;">new</span> MValueChart(document.getElementById(<span style="color: #ce9178;">'my-container'</span>), {
+    diveSetup,
+    options: {
+        compartments: [<span style="color: #b5cea8;">1</span>,<span style="color: #b5cea8;">2</span>,<span style="color: #b5cea8;">3</span>,<span style="color: #b5cea8;">4</span>,<span style="color: #b5cea8;">5</span>,<span style="color: #b5cea8;">6</span>,<span style="color: #b5cea8;">7</span>,<span style="color: #b5cea8;">8</span>], <span style="color: #6a9955;">// Visible compartments</span>
+        showMValueLines: <span style="color: #569cd6;">true</span>,  <span style="color: #6a9955;">// Bühlmann M-value limits</span>
+        showGFLines: <span style="color: #569cd6;">true</span>,      <span style="color: #6a9955;">// GF Low/High adjusted lines</span>
+        showAmbientLine: <span style="color: #569cd6;">true</span>,  <span style="color: #6a9955;">// y=x equilibrium line</span>
+        showTrail: <span style="color: #569cd6;">true</span>,        <span style="color: #6a9955;">// Tissue path through dive</span>
+        compartmentSelector: <span style="color: #569cd6;">true</span> <span style="color: #6a9955;">// Show compartment toggles</span>
+    }
+});
+
+<span style="color: #6a9955;">// Keyboard shortcuts (when chart focused):</span>
+<span style="color: #6a9955;">//   ←/→         Step time by 1 frame</span>
+<span style="color: #6a9955;">//   Shift+←/→   Jump to prev/next waypoint</span>
+<span style="color: #6a9955;">//   Home/End    Jump to start/end</span>
+<span style="color: #6a9955;">//   Space       Play/Pause animation</span>
+<span style="color: #6a9955;">//   ↑/↓         Move to slower/faster tissues</span>
+<span style="color: #6a9955;">//   Shift+↑     Expand selection to slower tissue</span>
+<span style="color: #6a9955;">//   Shift+↓     Remove slowest from selection</span>
+
+<span style="color: #6a9955;">// Programmatic control</span>
+chart.setTimeIndex(<span style="color: #b5cea8;">50</span>);           <span style="color: #6a9955;">// Jump to time index</span>
+chart.toggleCompartment(<span style="color: #b5cea8;">9</span>, <span style="color: #569cd6;">true</span>); <span style="color: #6a9955;">// Show compartment 9</span>
+chart.update(newDiveSetup);      <span style="color: #6a9955;">// Update dive data</span></code></pre>
+
+            <h3 style="margin-top: 2rem;">DiveSetup Contract</h3>
+            <p>Both charts accept the same <code>diveSetup</code> object format:</p>
+            <pre style="background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 13px;"><code><span style="color: #c586c0;">const</span> diveSetup = {
+    <span style="color: #6a9955;">// Required</span>
+    gases: [{
+        id: <span style="color: #ce9178;">'air'</span>,           <span style="color: #6a9955;">// Unique identifier</span>
+        name: <span style="color: #ce9178;">'Air'</span>,         <span style="color: #6a9955;">// Display name</span>
+        o2: <span style="color: #b5cea8;">0.21</span>,           <span style="color: #6a9955;">// Oxygen fraction (0-1)</span>
+        n2: <span style="color: #b5cea8;">0.79</span>,           <span style="color: #6a9955;">// Nitrogen fraction (0-1)</span>
+        he: <span style="color: #b5cea8;">0</span>              <span style="color: #6a9955;">// Helium fraction (0-1)</span>
+    }],
+    dives: [{
+        waypoints: [
+            { time: <span style="color: #b5cea8;">0</span>, depth: <span style="color: #b5cea8;">0</span> },                    <span style="color: #6a9955;">// Start at surface</span>
+            { time: <span style="color: #b5cea8;">2</span>, depth: <span style="color: #b5cea8;">30</span> },                   <span style="color: #6a9955;">// Descend to 30m</span>
+            { time: <span style="color: #b5cea8;">22</span>, depth: <span style="color: #b5cea8;">30</span> },                  <span style="color: #6a9955;">// Bottom phase</span>
+            { time: <span style="color: #b5cea8;">25</span>, depth: <span style="color: #b5cea8;">5</span>, gasId: <span style="color: #ce9178;">'ean50'</span> },  <span style="color: #6a9955;">// Gas switch at 5m</span>
+            { time: <span style="color: #b5cea8;">28</span>, depth: <span style="color: #b5cea8;">5</span> },                   <span style="color: #6a9955;">// Safety stop</span>
+            { time: <span style="color: #b5cea8;">29</span>, depth: <span style="color: #b5cea8;">0</span> }                    <span style="color: #6a9955;">// Surface</span>
+        ]
+    }],
+    
+    <span style="color: #6a9955;">// Optional</span>
+    name: <span style="color: #ce9178;">'My Dive'</span>,       <span style="color: #6a9955;">// Profile name</span>
+    gfLow: <span style="color: #b5cea8;">70</span>,            <span style="color: #6a9955;">// Gradient Factor Low (0-100)</span>
+    gfHigh: <span style="color: #b5cea8;">85</span>,           <span style="color: #6a9955;">// Gradient Factor High (0-100)</span>
+    surfaceInterval: <span style="color: #b5cea8;">60</span>   <span style="color: #6a9955;">// Pre-dive SI in minutes</span>
+};</code></pre>
+        </section>
     </main>
     
-    <script src="js/nav.js"></script>
+    <script src="../js/nav.js"></script>
     <script type="module">
-        import { DiveProfileChart } from './js/charts/DiveProfileChart.js';
-        import { TissuePressureChart } from './js/charts/TissuePressureChart.js';
+        import { DiveProfileChart } from '../js/charts/DiveProfileChart.js';
+        import { MValueChart } from '../js/charts/MValueChart.js';
         
         // Sample dive setups for testing
         const PROFILES = {
@@ -176,12 +284,12 @@
         
         let currentProfile = PROFILES.simple;
         let diveProfileChart = null;
-        let tissuePressureChart = null;
+        let mvalueChart = null;
         
         // Initialize charts
         function initCharts() {
             const dpcContainer = document.getElementById('dive-profile-container');
-            const tpcContainer = document.getElementById('tissue-pressure-container');
+            const mvcContainer = document.getElementById('mvalue-container');
             
             // Create Dive Profile Chart
             diveProfileChart = new DiveProfileChart(dpcContainer, {
@@ -194,78 +302,46 @@
             document.getElementById('dpc-status').textContent = 
                 `✅ DiveProfileChart initialized with "${currentProfile.name}"`;
             
-            // Create Tissue Pressure Chart
-            tissuePressureChart = new TissuePressureChart(tpcContainer, {
+            // Create M-Value Chart
+            mvalueChart = new MValueChart(mvcContainer, {
                 diveSetup: currentProfile,
                 options: {
-                    mode: 'loading',
                     compartments: [1, 2, 3, 4, 5, 6, 7, 8],
                     compartmentSelector: true,
-                    showAmbientLine: true
+                    showMValueLines: true,
+                    showGFLines: true,
+                    showAmbientLine: true,
+                    showTrail: true
                 }
             });
-            document.getElementById('tpc-status').textContent = 
-                `✅ TissuePressureChart initialized with "${currentProfile.name}"`;
+            document.getElementById('mvc-status').textContent = 
+                `✅ MValueChart initialized with "${currentProfile.name}"`;
         }
         
         // DPC mode buttons
         document.getElementById('dpc-depth').addEventListener('click', () => {
-            setDpcMode('depth', { showAmbientPressure: false, showPartialPressures: false, showCeiling: false });
+            setDpcMode('depth', { showLabels: true, showAmbientPressure: false, showPartialPressures: false, showCeiling: false, showTissueLoading: false });
         });
         document.getElementById('dpc-pressure').addEventListener('click', () => {
-            setDpcMode('pressure', { showAmbientPressure: true, showPartialPressures: false, showCeiling: false });
+            setDpcMode('pressure', { showLabels: false, showAmbientPressure: true, showPartialPressures: false, showCeiling: false, showTissueLoading: false });
         });
         document.getElementById('dpc-pp').addEventListener('click', () => {
-            setDpcMode('partial-pressure', { showAmbientPressure: true, showPartialPressures: true, showCeiling: false });
+            setDpcMode('partial-pressure', { showLabels: false, showAmbientPressure: true, showPartialPressures: true, showCeiling: false, showTissueLoading: false });
         });
         document.getElementById('dpc-ceiling').addEventListener('click', () => {
-            setDpcMode('all', { showAmbientPressure: true, showPartialPressures: true, showCeiling: true });
+            setDpcMode('ceiling', { showLabels: false, showAmbientPressure: true, showPartialPressures: true, showCeiling: true, showTissueLoading: false });
+        });
+        document.getElementById('dpc-tissue').addEventListener('click', () => {
+            setDpcMode('tissue-loading', { showLabels: false, showAmbientPressure: true, showPartialPressures: false, showCeiling: true, showTissueLoading: true });
         });
         
         function setDpcMode(mode, options) {
-            document.querySelectorAll('#dive-profile-container').forEach(btn => btn.classList.remove('active'));
+            // Remove active from all DPC buttons and add to clicked one
+            document.querySelectorAll('.test-section:first-of-type .controls button').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
             
             diveProfileChart.setOptions(options);
             document.getElementById('dpc-status').textContent = `Mode: ${mode}`;
-        }
-        
-        // TPC mode buttons
-        document.getElementById('tpc-loading').addEventListener('click', () => {
-            setTpcMode('loading');
-            document.getElementById('timeline-wrapper').style.display = 'none';
-        });
-        document.getElementById('tpc-mvalue').addEventListener('click', () => {
-            setTpcMode('mvalue');
-            document.getElementById('timeline-wrapper').style.display = 'flex';
-            updateTimeDisplay();
-        });
-        document.getElementById('tpc-ceiling').addEventListener('click', () => {
-            setTpcMode('ceiling');
-            document.getElementById('timeline-wrapper').style.display = 'none';
-        });
-        
-        function setTpcMode(mode) {
-            document.querySelectorAll('.test-section:nth-child(2) .controls button').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            tissuePressureChart.setMode(mode);
-            document.getElementById('tpc-status').textContent = `Mode: ${mode}`;
-        }
-        
-        // Timeline slider for M-value mode
-        document.getElementById('time-slider').addEventListener('input', (e) => {
-            const maxIndex = tissuePressureChart.getTimePointCount() - 1;
-            const index = Math.round((e.target.value / 100) * maxIndex);
-            tissuePressureChart.setTimeIndex(index);
-            updateTimeDisplay();
-        });
-        
-        function updateTimeDisplay() {
-            const time = tissuePressureChart.getCurrentTime();
-            const depth = tissuePressureChart.getCurrentDepth();
-            document.getElementById('time-display').textContent = 
-                `${time.toFixed(1)} min @ ${depth.toFixed(1)}m`;
         }
         
         // Profile buttons
@@ -276,16 +352,12 @@
         function loadProfile(name) {
             currentProfile = PROFILES[name];
             diveProfileChart.update(currentProfile);
-            tissuePressureChart.update(currentProfile);
+            mvalueChart.update(currentProfile);
             
             document.getElementById('dpc-status').textContent = 
                 `✅ Updated to "${currentProfile.name}"`;
-            document.getElementById('tpc-status').textContent = 
+            document.getElementById('mvc-status').textContent = 
                 `✅ Updated to "${currentProfile.name}"`;
-            
-            // Reset time slider
-            document.getElementById('time-slider').value = 0;
-            updateTimeDisplay();
         }
         
         // Initialize on load

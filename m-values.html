@@ -188,56 +188,12 @@
             </div>
         </section>
 
-        <!-- Compartment Selection -->
-        <section id="compartment-selection" class="compartment-section">
-            <h2>🎛️ Compartment Selection</h2>
-            <p>Toggle which tissue compartments to display:</p>
-            
-            <div class="compartment-controls">
-                <button id="show-all" class="btn btn-small">Show All</button>
-                <button id="hide-all" class="btn btn-small">Hide All</button>
-                <button id="show-fast" class="btn btn-small">Fast Only</button>
-                <button id="show-slow" class="btn btn-small">Slow Only</button>
-            </div>
-            
-            <div id="compartment-toggles" class="compartment-toggles">
-                <!-- Checkboxes added by JavaScript -->
-            </div>
-        </section>
-
         <!-- Chart Section -->
         <section id="mvalue-chart-section" class="chart-section">
-            <div class="chart-header">
-                <h2>📈 M-Value Pressure Diagram</h2>
-                <button id="fullscreen-btn" class="btn btn-small btn-icon" title="Fullscreen">
-                    <span class="fullscreen-icon">⛶</span>
-                    <span class="fullscreen-text">Fullscreen</span>
-                </button>
+            <h2>📈 M-Value Pressure Diagram</h2>
+            <div id="mvalue-chart-container" style="min-height: 500px;">
+                <!-- MValueChart component renders here -->
             </div>
-            <div class="chart-container" id="chart-container">
-                <canvas id="mvalue-chart"></canvas>
-                <!-- Time overlay on chart -->
-                <div id="time-overlay" class="time-overlay">
-                    <span id="overlay-time">0:00</span>
-                    <span id="overlay-depth">0m</span>
-                </div>
-                <button id="exit-fullscreen-btn" class="btn btn-fullscreen-close" title="Exit Fullscreen">✕</button>
-            </div>
-            
-            <!-- Timeline Controls (below chart) -->
-            <div class="timeline-controls-inline">
-                <button id="rewind-btn" class="btn btn-icon btn-step" title="Previous Waypoint (Shift+←)">⏪</button>
-                <button id="step-back-btn" class="btn btn-icon btn-step" title="Step Back (←)">◀️</button>
-                <button id="play-btn" class="btn btn-icon" title="Play/Pause (Space)">▶️</button>
-                <button id="step-fwd-btn" class="btn btn-icon btn-step" title="Step Forward (→)">▶️</button>
-                <button id="fast-fwd-btn" class="btn btn-icon btn-step" title="Next Waypoint (Shift+→)">⏩</button>
-                <input type="range" id="timeline-slider" class="timeline-slider" min="0" max="100" value="0">
-                <div class="timeline-info-compact">
-                    <span id="timeline-tissue">N₂: 0.74 bar</span>
-                </div>
-            </div>
-            <p class="timeline-hint">← → step | ⇧← → waypoints | ⌃←/→ start/end | ↑↓ tissues | ⇧↑↓ expand/shrink | Space play</p>
-
             <div class="chart-legend">
                 <p><strong>X-axis (Ambient Pressure):</strong> Total pressure at current depth. 1 bar = surface, 2 bar = 10m, etc.</p>
                 <p><strong>Y-axis (Tissue N₂ Pressure):</strong> Partial pressure of nitrogen dissolved in the selected tissue compartment.</p>
@@ -283,8 +239,127 @@
         <span class="version-number"></span>
     </footer>
 
-    <!-- M-Values chart script -->
-    <script src="js/mvalues.js" type="module"></script>
+    <!-- M-Values chart using MValueChart component -->
+    <script type="module">
+        import { MValueChart } from './js/charts/MValueChart.js';
+        import { loadDiveSetup, formatDiveSetupSummary } from './js/diveSetup.js';
+        import { COMPARTMENTS } from './js/tissueCompartments.js';
+        
+        let chart = null;
+        let availableProfiles = [];
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async () => {
+            await initProfileSwitcher();
+            await loadSelectedProfile();
+            populateCoefficientsTable();
+        });
+        
+        // Profile switcher initialization
+        async function initProfileSwitcher() {
+            const selector = document.getElementById('profile-switcher');
+            if (!selector) return;
+            
+            try {
+                const [profilesResponse, setupData] = await Promise.all([
+                    fetch('data/dive-profiles.json'),
+                    loadDiveSetup()
+                ]);
+                
+                const profilesData = await profilesResponse.json();
+                availableProfiles = profilesData.profiles || [];
+                
+                // Add "Current Setup" option first
+                const currentOption = document.createElement('option');
+                currentOption.value = 'current-setup';
+                currentOption.textContent = '⚙️ ' + (setupData.name || 'Current Setup');
+                selector.appendChild(currentOption);
+                
+                // Add separator
+                const separator = document.createElement('option');
+                separator.disabled = true;
+                separator.textContent = '──────────';
+                selector.appendChild(separator);
+                
+                // Add preset profiles
+                availableProfiles.forEach(profile => {
+                    const option = document.createElement('option');
+                    option.value = profile.id;
+                    option.textContent = profile.name;
+                    selector.appendChild(option);
+                });
+                
+                selector.value = 'current-setup';
+                selector.addEventListener('change', loadSelectedProfile);
+            } catch (error) {
+                console.error('Failed to load profiles:', error);
+            }
+        }
+        
+        // Load and display selected profile
+        async function loadSelectedProfile() {
+            const selector = document.getElementById('profile-switcher');
+            const summary = document.getElementById('profile-header-summary');
+            
+            let diveSetup;
+            
+            if (selector.value === 'current-setup') {
+                diveSetup = await loadDiveSetup();
+            } else {
+                const profile = availableProfiles.find(p => p.id === selector.value);
+                if (profile) {
+                    diveSetup = profile;
+                } else {
+                    diveSetup = await loadDiveSetup();
+                }
+            }
+            
+            // Update summary
+            if (summary) {
+                summary.textContent = formatDiveSetupSummary(diveSetup);
+            }
+            
+            // Create or update chart
+            const container = document.getElementById('mvalue-chart-container');
+            
+            if (chart) {
+                chart.update(diveSetup);
+            } else {
+                chart = new MValueChart(container, {
+                    diveSetup: diveSetup,
+                    options: {
+                        compartments: [1, 2, 3, 4, 5, 6, 7, 8],
+                        compartmentSelector: true,
+                        showMValueLines: true,
+                        showGFLines: true,
+                        showAmbientLine: true,
+                        showTrail: true,
+                        fullscreenButton: true
+                    }
+                });
+            }
+        }
+        
+        // Populate ZH-L16A coefficients table
+        function populateCoefficientsTable() {
+            const tbody = document.getElementById('coefficients-body');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            COMPARTMENTS.forEach(comp => {
+                const m0 = comp.aN2 + 1 / comp.bN2;
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td style="color: ${comp.color}; font-weight: bold;">TC${comp.id}</td>
+                    <td>${comp.halfTimeN2} min</td>
+                    <td>${comp.aN2.toFixed(4)}</td>
+                    <td>${comp.bN2.toFixed(4)}</td>
+                    <td>${m0.toFixed(2)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+    </script>
 
     <!-- Shared Navigation -->
     <script src="js/nav.js" type="module"></script>

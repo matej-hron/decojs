@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dive Planner Sandbox - Deco Theory</title>
+    
+    <!-- PWA -->
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#2980b9">
+    <link rel="icon" type="image/svg+xml" href="../icons/icon.svg">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+    
+    <!-- App styles -->
+    <link rel="stylesheet" href="../css/styles.css">
+    
+    <style>
+        /* Sandbox-specific layout */
+        .sandbox-layout {
+            display: grid;
+            grid-template-columns: 500px 1fr;
+            gap: 1.5rem;
+            padding: 1rem;
+            max-width: 1800px;
+            margin: 0 auto;
+            min-height: calc(100vh - 200px);
+        }
+        
+        .sandbox-layout.editor-collapsed {
+            grid-template-columns: 48px 1fr !important;
+        }
+        
+        @media (max-width: 1200px) {
+            .sandbox-layout {
+                grid-template-columns: 450px 1fr;
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .sandbox-layout {
+                grid-template-columns: 1fr;
+            }
+            .sandbox-layout.editor-collapsed {
+                grid-template-columns: 1fr !important;
+            }
+            .sandbox-editor-panel.collapsed {
+                display: none;
+            }
+        }
+        
+        .sandbox-editor-panel {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1rem;
+            overflow-y: auto;
+            align-self: start;
+        }
+        
+        .sandbox-editor-panel.collapsed {
+            padding: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .sandbox-editor-panel.collapsed .editor-content {
+            display: none;
+        }
+        
+        .editor-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+        
+        .sandbox-editor-panel.collapsed .editor-header {
+            justify-content: center;
+            margin-bottom: 0;
+        }
+        
+        .editor-header h2 {
+            margin: 0;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .sandbox-editor-panel.collapsed .editor-header h2 {
+            display: none;
+        }
+        
+        .collapse-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 0.3rem 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.15s ease;
+        }
+        
+        .collapse-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .sandbox-charts-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            min-width: 0; /* Allow shrinking in grid */
+            overflow: hidden;
+        }
+        
+        .sandbox-chart-container {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1rem;
+            min-width: 0; /* Allow shrinking */
+            overflow: hidden;
+        }
+        
+        .sandbox-chart-container h3 {
+            margin: 0 0 0.75rem 0;
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Dive Info Panel */
+        .dive-info-panel {
+            margin-top: 1rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        @media (max-width: 900px) {
+            .dive-info-panel {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .dive-warnings {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .dive-warning {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        
+        .dive-warning.critical {
+            background: rgba(231, 76, 60, 0.15);
+            border: 1px solid rgba(231, 76, 60, 0.4);
+            color: #c0392b;
+        }
+        
+        .dive-warning.warning {
+            background: rgba(241, 196, 15, 0.15);
+            border: 1px solid rgba(241, 196, 15, 0.4);
+            color: #9a7b0a;
+        }
+        
+        .dive-warning.info {
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            color: #2980b9;
+        }
+        
+        .dive-warning.success {
+            background: rgba(39, 174, 96, 0.1);
+            border: 1px solid rgba(39, 174, 96, 0.3);
+            color: #27ae60;
+        }
+        
+        .dive-warning-icon {
+            font-size: 1rem;
+        }
+        
+        .dive-gas-summary {
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 4px;
+            padding: 0.75rem;
+        }
+        
+        .dive-gas-summary h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        .gas-tank-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.4rem 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.85rem;
+        }
+        
+        .gas-tank-row:last-child {
+            border-bottom: none;
+        }
+        
+        .gas-tank-name {
+            font-weight: 500;
+        }
+        
+        .gas-tank-stats {
+            display: flex;
+            gap: 1rem;
+            color: var(--text-muted);
+        }
+        
+        .gas-tank-stats .critical {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        
+        .gas-tank-stats .warning {
+            color: #f39c12;
+            font-weight: 600;
+        }
+        
+        .gas-tank-stats .ok {
+            color: #27ae60;
+        }
+        
+        /* Profile library */
+        .profile-library {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .profile-library h3 {
+            margin: 0 0 0.75rem 0;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .profile-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .profile-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.35rem 0.75rem;
+            background: rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        
+        .profile-chip:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .profile-chip.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .profile-chip .chip-delete {
+            margin-left: 0.25rem;
+            opacity: 0.7;
+            font-size: 0.9em;
+        }
+        
+        .profile-chip .chip-delete:hover {
+            opacity: 1;
+        }
+        
+        .save-profile-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+        
+        .save-profile-row input {
+            flex: 1;
+            padding: 0.4rem 0.6rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        
+        /* Chart controls */
+        .chart-controls {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.75rem;
+        }
+        
+        .chart-controls button {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.8rem;
+        }
+        
+        .chart-controls button.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        /* Status bar */
+        .sandbox-status {
+            padding: 0.5rem 1rem;
+            background: rgba(0,0,0,0.03);
+            border-radius: var(--radius);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .status-valid {
+            color: var(--secondary-color);
+        }
+        
+        .status-invalid {
+            color: var(--warning-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">🫧 Deco Theory</a>
+            <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links">
+                <!-- Generated by js/nav.js -->
+            </ul>
+            <span class="nav-wip-badge">🧪 Experimental</span>
+        </div>
+    </nav>
+
+    <!-- Disclaimer Banner -->
+    <div class="disclaimer-banner">
+        ⚠️ <strong>Educational Use Only</strong> — This tool is NOT intended for real dive planning. 
+        Never use this for actual dives. Always use certified dive computers, tables, and proper training.
+    </div>
+
+    <!-- Hero Header -->
+    <header class="hero hero-compact">
+        <h1>🎯 Dive Planner Sandbox</h1>
+        <p class="hero-subtitle">Design dive profiles and visualize decompression in real-time</p>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="sandbox-layout" id="sandbox-layout">
+        <!-- Left Panel: Editor -->
+        <div class="sandbox-editor-panel" id="editor-panel">
+            <div class="editor-header">
+                <h2>⚙️ <span>Dive Setup</span></h2>
+                <button class="collapse-btn" id="collapse-btn" title="Collapse/Expand">◀</button>
+            </div>
+            <div class="editor-content">
+                <!-- Profile Library -->
+                <div class="profile-library">
+                    <h3>📚 Saved Profiles</h3>
+                    <div class="profile-chips" id="profile-chips">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                    <div class="save-profile-row">
+                        <input type="text" id="save-profile-name" placeholder="Profile name...">
+                        <button id="save-profile-btn" class="btn btn-secondary btn-small">💾 Save</button>
+                    </div>
+                </div>
+                
+                <!-- Dive Setup Editor -->
+                <div id="editor-container"></div>
+            </div>
+        </div>
+        
+        <!-- Right Panel: Charts -->
+        <div class="sandbox-charts-panel">
+            <!-- Dive Profile Chart -->
+            <div class="sandbox-chart-container">
+                <h3>📊 Dive Profile</h3>
+                <div class="chart-controls">
+                    <button id="dpc-depth" class="btn btn-small btn-secondary active">Depth</button>
+                    <button id="dpc-pressure" class="btn btn-small btn-secondary">Pressure</button>
+                    <button id="dpc-pp" class="btn btn-small btn-secondary">Partial Pressures</button>
+                    <button id="dpc-tissue" class="btn btn-small btn-secondary">Tissues</button>
+                    <button id="dpc-gas" class="btn btn-small btn-secondary">Gas</button>
+                </div>
+                <div class="chart-wrapper" id="dive-profile-container" style="height: 600px;"></div>
+                
+                <!-- Dive Warnings & Info Panel -->
+                <div class="dive-info-panel" id="dive-info-panel">
+                    <div class="dive-warnings" id="dive-warnings">
+                        <!-- Warnings will be populated here -->
+                    </div>
+                    <div class="dive-gas-summary" id="dive-gas-summary">
+                        <!-- Gas consumption summary will be populated here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- M-Value Chart -->
+            <div class="sandbox-chart-container">
+                <h3>📐 M-Value Diagram</h3>
+                <div class="chart-wrapper" id="mvalue-container" style="height: 700px;"></div>
+            </div>
+            
+            <!-- Status -->
+            <div class="sandbox-status">
+                <span id="status-text">Ready</span>
+                <span id="last-update">--</span>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <span class="wip-badge">Experimental</span>
+        <p>
+            <strong>Disclaimer:</strong> This is an educational tool only. Do not use for actual dive planning.
+        </p>
+        <span class="version-number"></span>
+    </footer>
+
+    <script type="module">
+        import { DiveSetupEditor } from '../js/components/DiveSetupEditor.js';
+        import { DiveProfileChart } from '../js/charts/DiveProfileChart.js';
+        import { MValueChart } from '../js/charts/MValueChart.js';
+        import { 
+            getAmbientPressure, 
+            calculateCeilingTimeSeries,
+            calculateTissueLoading,
+            generateDecoSchedule,
+            SURFACE_PRESSURE
+        } from '../js/decoModel.js';
+        
+        // =====================================================================
+        // DIVE ANALYSIS - Warnings, Gas Consumption, Safety Checks
+        // =====================================================================
+        
+        /**
+         * Analyze a dive setup for warnings and gas consumption
+         * @param {Object} diveSetup - The dive setup to analyze
+         * @returns {Object} { warnings: Array, gasSummary: Object }
+         */
+        function analyzeDive(diveSetup) {
+            const warnings = [];
+            const gasSummary = { tanks: [], totalConsumed: 0 };
+            
+            if (!diveSetup?.dives?.[0]?.waypoints?.length) {
+                return { warnings, gasSummary };
+            }
+            
+            const waypoints = diveSetup.dives[0].waypoints;
+            const gases = diveSetup.gases || [];
+            const gfLow = (diveSetup.gfLow || 100) / 100;
+            const gfHigh = (diveSetup.gfHigh || 100) / 100;
+            const surfaceInterval = diveSetup.surfaceInterval || 0;
+            const sacRate = diveSetup.sacRate || 20; // L/min at surface
+            const reservePressure = diveSetup.reservePressure || 50; // bar
+            
+            // Calculate tissue loading
+            const results = calculateTissueLoading(waypoints, surfaceInterval, { gases });
+            
+            // Calculate ceiling
+            const ceilingDepths = calculateCeilingTimeSeries(results, gfLow, gfHigh);
+            
+            // ===== Analyze ppO2 and ppN2 =====
+            let maxPpO2Bottom = 0;  // During bottom phase (limit 1.4)
+            let maxPpO2BottomDepth = 0;
+            let maxPpO2Deco = 0;    // During deco phase (limit 1.6)
+            let maxPpO2DecoDepth = 0;
+            let minPpO2 = Infinity;
+            let maxPpN2 = 0;
+            let maxPpN2Depth = 0;
+            let ceilingViolationCount = 0;
+            let maxCeilingViolation = 0;
+            
+            // Find max depth to determine bottom phase
+            const maxDepth = Math.max(...results.depthPoints);
+            let reachedMaxDepth = false;
+            let leftMaxDepth = false;
+            
+            // Build gas switch timeline
+            const gasSwitchTimes = new Map();
+            waypoints.forEach(wp => {
+                if (wp.gasId) {
+                    gasSwitchTimes.set(wp.time, wp.gasId);
+                }
+            });
+            
+            let currentGasId = gases[0]?.id || null;
+            
+            for (let i = 0; i < results.timePoints.length; i++) {
+                const time = results.timePoints[i];
+                const depth = results.depthPoints[i];
+                const ceiling = ceilingDepths[i];
+                
+                // Track dive phase
+                if (depth >= maxDepth - 0.5) {
+                    reachedMaxDepth = true;
+                } else if (reachedMaxDepth && depth < maxDepth - 1) {
+                    leftMaxDepth = true;
+                }
+                
+                // Bottom phase = before leaving max depth, Deco phase = ascending with ceiling
+                const isDecoPhase = leftMaxDepth && ceiling > 0;
+                
+                // Check gas switches
+                if (gasSwitchTimes.has(time)) {
+                    currentGasId = gasSwitchTimes.get(time);
+                }
+                
+                const gas = gases.find(g => g.id === currentGasId) || gases[0];
+                if (!gas) continue;
+                
+                const ambient = getAmbientPressure(depth);
+                const ppO2 = ambient * gas.o2;
+                const ppN2 = ambient * gas.n2;
+                
+                // Track ppO2 separately for bottom vs deco
+                if (isDecoPhase) {
+                    if (ppO2 > maxPpO2Deco) {
+                        maxPpO2Deco = ppO2;
+                        maxPpO2DecoDepth = depth;
+                    }
+                } else {
+                    if (ppO2 > maxPpO2Bottom) {
+                        maxPpO2Bottom = ppO2;
+                        maxPpO2BottomDepth = depth;
+                    }
+                }
+                
+                if (ppO2 < minPpO2) {
+                    minPpO2 = ppO2;
+                }
+                
+                if (ppN2 > maxPpN2) {
+                    maxPpN2 = ppN2;
+                    maxPpN2Depth = depth;
+                }
+                
+                // Check ceiling violation
+                if (depth < ceiling - 0.5) { // 0.5m tolerance
+                    ceilingViolationCount++;
+                    maxCeilingViolation = Math.max(maxCeilingViolation, ceiling - depth);
+                }
+            }
+            
+            // ===== ppO2 Warnings =====
+            // Check bottom phase (limit 1.4 for working)
+            if (maxPpO2Bottom > 1.6) {
+                warnings.push({
+                    type: 'critical',
+                    icon: '⚠️',
+                    message: `CNS toxicity risk: ppO₂ = ${maxPpO2Bottom.toFixed(2)} bar at ${maxPpO2BottomDepth.toFixed(0)}m during bottom (max 1.6)`
+                });
+            } else if (maxPpO2Bottom > 1.4) {
+                warnings.push({
+                    type: 'warning',
+                    icon: '⚡',
+                    message: `High ppO₂: ${maxPpO2Bottom.toFixed(2)} bar at ${maxPpO2BottomDepth.toFixed(0)}m during bottom (limit 1.4 for working dives)`
+                });
+            }
+            
+            // Check deco phase (limit 1.6)
+            if (maxPpO2Deco > 1.6) {
+                warnings.push({
+                    type: 'critical',
+                    icon: '⚠️',
+                    message: `CNS toxicity risk: ppO₂ = ${maxPpO2Deco.toFixed(2)} bar at ${maxPpO2DecoDepth.toFixed(0)}m during deco (max 1.6)`
+                });
+            }
+            
+            if (minPpO2 < 0.16) {
+                warnings.push({
+                    type: 'critical',
+                    icon: '💨',
+                    message: `Hypoxia risk: ppO₂ = ${minPpO2.toFixed(2)} bar (min 0.16)`
+                });
+            }
+            
+            // ===== ppN2 Warnings (Narcosis) =====
+            if (maxPpN2 > 4.0) {
+                warnings.push({
+                    type: 'warning',
+                    icon: '🍺',
+                    message: `Narcosis warning: ppN₂ = ${maxPpN2.toFixed(2)} bar at ${maxPpN2Depth.toFixed(0)}m (equivalent to ${((maxPpN2 - 0.79) / 0.079).toFixed(0)}m on air)`
+                });
+            } else if (maxPpN2 > 3.2) {
+                warnings.push({
+                    type: 'info',
+                    icon: '🍻',
+                    message: `Mild narcosis possible: ppN₂ = ${maxPpN2.toFixed(2)} bar at ${maxPpN2Depth.toFixed(0)}m`
+                });
+            }
+            
+            // ===== Ceiling Violations =====
+            if (ceilingViolationCount > 0) {
+                warnings.push({
+                    type: 'critical',
+                    icon: '🚫',
+                    message: `Ceiling violation: Surfaced ${maxCeilingViolation.toFixed(1)}m above ceiling (${ceilingViolationCount} data points)`
+                });
+            }
+            
+            // ===== Gas Consumption =====
+            const tankConsumption = new Map();
+            gases.forEach(gas => {
+                tankConsumption.set(gas.id, {
+                    name: gas.name || `${(gas.o2 * 100).toFixed(0)}/${(gas.he * 100).toFixed(0)}`,
+                    startPressure: gas.startPressure || 200,
+                    cylinderVolume: gas.cylinderVolume || 12,
+                    consumed: 0, // liters
+                    endPressure: 0
+                });
+            });
+            
+            currentGasId = gases[0]?.id || null;
+            
+            for (let i = 1; i < results.timePoints.length; i++) {
+                const time = results.timePoints[i];
+                const prevTime = results.timePoints[i - 1];
+                const depth = results.depthPoints[i];
+                const prevDepth = results.depthPoints[i - 1];
+                
+                // Check gas switches
+                if (gasSwitchTimes.has(time)) {
+                    currentGasId = gasSwitchTimes.get(time);
+                }
+                
+                const tank = tankConsumption.get(currentGasId);
+                if (!tank) continue;
+                
+                const avgDepth = (depth + prevDepth) / 2;
+                const duration = time - prevTime; // minutes
+                const avgPressure = getAmbientPressure(avgDepth) / SURFACE_PRESSURE;
+                const consumed = sacRate * avgPressure * duration; // liters at surface
+                tank.consumed += consumed;
+            }
+            
+            // Calculate end pressures and warnings
+            tankConsumption.forEach((tank, gasId) => {
+                const gas = gases.find(g => g.id === gasId);
+                const totalLiters = tank.startPressure * tank.cylinderVolume;
+                const remainingLiters = totalLiters - tank.consumed;
+                tank.endPressure = Math.max(0, remainingLiters / tank.cylinderVolume);
+                
+                gasSummary.tanks.push({
+                    id: gasId,
+                    name: tank.name,
+                    startPressure: tank.startPressure,
+                    endPressure: Math.round(tank.endPressure),
+                    consumed: Math.round(tank.consumed),
+                    cylinderVolume: tank.cylinderVolume
+                });
+                
+                gasSummary.totalConsumed += tank.consumed;
+                
+                // Gas warnings
+                if (tank.endPressure < 0) {
+                    warnings.push({
+                        type: 'critical',
+                        icon: '🫁',
+                        message: `Out of gas: ${tank.name} runs out during dive (need ${Math.round(tank.consumed)}L, have ${Math.round(totalLiters)}L)`
+                    });
+                } else if (tank.endPressure < reservePressure) {
+                    warnings.push({
+                        type: 'critical',
+                        icon: '⛽',
+                        message: `Below reserve: ${tank.name} ends at ${Math.round(tank.endPressure)} bar (reserve: ${reservePressure} bar)`
+                    });
+                } else if (tank.endPressure < reservePressure * 1.3) {
+                    warnings.push({
+                        type: 'warning',
+                        icon: '📉',
+                        message: `Low gas margin: ${tank.name} ends at ${Math.round(tank.endPressure)} bar (close to ${reservePressure} bar reserve)`
+                    });
+                }
+            });
+            
+            // ===== Success message if no warnings =====
+            if (warnings.length === 0) {
+                warnings.push({
+                    type: 'success',
+                    icon: '✅',
+                    message: 'Dive plan looks good! All parameters within safe limits.'
+                });
+            }
+            
+            return { warnings, gasSummary };
+        }
+        
+        /**
+         * Render warnings in the container
+         */
+        function renderWarnings(container, warnings) {
+            container.innerHTML = warnings.map(w => `
+                <div class="dive-warning ${w.type}">
+                    <span class="dive-warning-icon">${w.icon}</span>
+                    <span>${w.message}</span>
+                </div>
+            `).join('');
+        }
+        
+        /**
+         * Render gas summary in the container
+         */
+        function renderGasSummary(container, gasSummary, reservePressure = 50) {
+            if (!gasSummary.tanks.length) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            const tankRows = gasSummary.tanks.map(tank => {
+                const status = tank.endPressure < 0 ? 'critical' :
+                               tank.endPressure < reservePressure ? 'critical' :
+                               tank.endPressure < reservePressure * 1.3 ? 'warning' : 'ok';
+                return `
+                    <div class="gas-tank-row">
+                        <span class="gas-tank-name">${tank.name}</span>
+                        <span class="gas-tank-stats">
+                            <span>${tank.startPressure} → <span class="${status}">${tank.endPressure} bar</span></span>
+                            <span>(${tank.consumed}L used)</span>
+                        </span>
+                    </div>
+                `;
+            }).join('');
+            
+            container.innerHTML = `
+                <h4>⛽ Gas Summary</h4>
+                ${tankRows}
+                <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">
+                    Total: ${Math.round(gasSummary.totalConsumed)}L consumed
+                </div>
+            `;
+        }
+        
+        // =====================================================================
+        // PROFILE LIBRARY
+        // =====================================================================
+        
+        const STORAGE_KEY = 'sandbox-profiles';
+        const CURRENT_PROFILE_KEY = 'sandbox-current-profile';
+        
+        // Default profiles
+        const defaultProfiles = [
+            {
+                id: 'simple-30',
+                name: 'Simple 30m',
+                description: 'Basic recreational dive',
+                gases: [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0, cylinderVolume: 12, startPressure: 200 }],
+                gfLow: 100, gfHigh: 100,
+                surfaceInterval: 5,
+                dives: [{
+                    waypoints: [
+                        { time: 0, depth: 0 },
+                        { time: 2, depth: 30 },
+                        { time: 20, depth: 30 },
+                        { time: 23, depth: 5 },
+                        { time: 26, depth: 5 },
+                        { time: 27, depth: 0 }
+                    ]
+                }]
+            },
+            {
+                id: 'deco-40',
+                name: 'Deco 40m',
+                description: 'Technical dive with deco',
+                gases: [
+                    { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0, cylinderVolume: 24, startPressure: 200 },
+                    { id: 'ean50', name: 'Nitrox 50', o2: 0.50, n2: 0.50, he: 0, cylinderVolume: 7, startPressure: 200 }
+                ],
+                gfLow: 70, gfHigh: 85,
+                surfaceInterval: 5,
+                dives: [{
+                    waypoints: [
+                        { time: 0, depth: 0 },
+                        { time: 2, depth: 40, gasId: 'air' },
+                        { time: 25, depth: 40 },
+                        { time: 29, depth: 9 },
+                        { time: 32, depth: 9 },
+                        { time: 33, depth: 6, gasId: 'ean50' },
+                        { time: 38, depth: 6 },
+                        { time: 39, depth: 3 },
+                        { time: 44, depth: 3 },
+                        { time: 45, depth: 0 }
+                    ]
+                }]
+            }
+        ];
+        
+        function loadProfiles() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    return JSON.parse(saved);
+                }
+            } catch (e) {
+                console.warn('Failed to load profiles:', e);
+            }
+            return [...defaultProfiles];
+        }
+        
+        function saveProfiles(profiles) {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(profiles));
+            } catch (e) {
+                console.warn('Failed to save profiles:', e);
+            }
+        }
+        
+        function loadCurrentProfile() {
+            try {
+                const saved = localStorage.getItem(CURRENT_PROFILE_KEY);
+                if (saved) {
+                    return JSON.parse(saved);
+                }
+            } catch (e) {
+                console.warn('Failed to load current profile:', e);
+            }
+            return null;
+        }
+        
+        function saveCurrentProfile(setup) {
+            try {
+                localStorage.setItem(CURRENT_PROFILE_KEY, JSON.stringify(setup));
+            } catch (e) {
+                console.warn('Failed to save current profile:', e);
+            }
+        }
+        
+        // =====================================================================
+        // INITIALIZATION
+        // =====================================================================
+        
+        // State
+        let profiles = loadProfiles();
+        let activeProfileId = null;
+        
+        // DOM elements
+        const editorContainer = document.getElementById('editor-container');
+        const diveProfileContainer = document.getElementById('dive-profile-container');
+        const mvalueContainer = document.getElementById('mvalue-container');
+        const profileChips = document.getElementById('profile-chips');
+        const saveProfileName = document.getElementById('save-profile-name');
+        const saveProfileBtn = document.getElementById('save-profile-btn');
+        const statusText = document.getElementById('status-text');
+        const lastUpdate = document.getElementById('last-update');
+        const diveWarningsContainer = document.getElementById('dive-warnings');
+        const diveGasSummaryContainer = document.getElementById('dive-gas-summary');
+        
+        // Load initial setup
+        let initialSetup = loadCurrentProfile() || profiles[0];
+        
+        // Create the editor
+        const editor = new DiveSetupEditor(editorContainer, {
+            diveSetup: initialSetup,
+            options: {
+                showQuickSetup: true,
+                showGradientFactors: true,
+                showProfiles: false,  // We have our own profile library
+                showImportExport: true,
+                showMultiDive: true,
+                showDescription: true,
+                showSurfaceInterval: true,
+                emitOnInput: true
+            }
+        });
+        
+        // Create charts
+        const diveProfileChart = new DiveProfileChart(diveProfileContainer, {
+            diveSetup: initialSetup,
+            options: {
+                showLabels: true,
+                showGasSwitches: true,
+                showCeiling: true,
+                showAmbientPressure: false,
+                showPartialPressures: false,
+                showTissueLoading: false
+            }
+        });
+        
+        const mvalueChart = new MValueChart(mvalueContainer, {
+            diveSetup: initialSetup,
+            options: {
+                compartments: [1, 2, 3, 4, 5, 6, 7, 8],
+                showMValueLines: true,
+                showGFLines: true,
+                showAmbientLine: true,
+                showTrail: true,
+                compartmentSelector: true
+            }
+        });
+        
+        // =====================================================================
+        // EVENT HANDLERS
+        // =====================================================================
+        
+        // Editor changes → update charts
+        editor.addEventListener('change', (e) => {
+            const { diveSetup, valid, errors } = e.detail;
+            
+            // Update charts
+            diveProfileChart.update(diveSetup);
+            mvalueChart.update(diveSetup);
+            
+            // Analyze dive and render warnings/gas summary
+            const { warnings, gasSummary } = analyzeDive(diveSetup);
+            renderWarnings(diveWarningsContainer, warnings);
+            renderGasSummary(diveGasSummaryContainer, gasSummary, diveSetup.reservePressure || 50);
+            
+            // Save to localStorage
+            saveCurrentProfile(diveSetup);
+            
+            // Update status
+            if (valid) {
+                statusText.innerHTML = '<span class="status-valid">✓ Valid</span>';
+            } else {
+                statusText.innerHTML = `<span class="status-invalid">✗ ${errors.length} error(s)</span>`;
+            }
+            lastUpdate.textContent = new Date().toLocaleTimeString();
+            
+            // Clear active profile since we've modified
+            activeProfileId = null;
+            renderProfileChips();
+        });
+        
+        // =====================================================================
+        // PROFILE LIBRARY UI
+        // =====================================================================
+        
+        function renderProfileChips() {
+            profileChips.innerHTML = '';
+            
+            profiles.forEach(profile => {
+                const chip = document.createElement('span');
+                chip.className = `profile-chip ${profile.id === activeProfileId ? 'active' : ''}`;
+                chip.innerHTML = `
+                    ${profile.name}
+                    <span class="chip-delete" title="Delete profile">×</span>
+                `;
+                
+                chip.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('chip-delete')) {
+                        deleteProfile(profile.id);
+                    } else {
+                        loadProfile(profile.id);
+                    }
+                });
+                
+                profileChips.appendChild(chip);
+            });
+            
+            if (profiles.length === 0) {
+                profileChips.innerHTML = '<span style="color: var(--text-muted); font-size: 0.85rem;">No saved profiles</span>';
+            }
+        }
+        
+        function loadProfile(id) {
+            const profile = profiles.find(p => p.id === id);
+            if (profile) {
+                editor.setDiveSetup(profile, true);
+                activeProfileId = id;
+                // Populate the save name input with the profile name
+                saveProfileName.value = profile.name || '';
+                renderProfileChips();
+            }
+        }
+        
+        function deleteProfile(id) {
+            if (!confirm('Delete this profile?')) return;
+            
+            profiles = profiles.filter(p => p.id !== id);
+            saveProfiles(profiles);
+            
+            if (activeProfileId === id) {
+                activeProfileId = null;
+            }
+            
+            renderProfileChips();
+        }
+        
+        saveProfileBtn.addEventListener('click', () => {
+            const name = saveProfileName.value.trim();
+            if (!name) {
+                alert('Please enter a profile name');
+                return;
+            }
+            
+            const setup = editor.getDiveSetup();
+            
+            // Check if we're editing an existing profile
+            if (activeProfileId) {
+                // Update the existing profile
+                const existingIndex = profiles.findIndex(p => p.id === activeProfileId);
+                if (existingIndex >= 0) {
+                    profiles[existingIndex] = {
+                        ...setup,
+                        id: activeProfileId,
+                        name: name
+                    };
+                    saveProfiles(profiles);
+                    renderProfileChips();
+                    return;
+                }
+            }
+            
+            // Create a new profile
+            const newProfile = {
+                ...setup,
+                id: `profile-${Date.now()}`,
+                name: name
+            };
+            
+            profiles.push(newProfile);
+            saveProfiles(profiles);
+            
+            activeProfileId = newProfile.id;
+            
+            renderProfileChips();
+        });
+        
+        // =====================================================================
+        // CHART CONTROL BUTTONS
+        // =====================================================================
+        
+        const chartButtons = {
+            'dpc-depth': { showCeiling: true, showAmbientPressure: false, showPartialPressures: false, showTissueLoading: false, showGasConsumption: false, showLabels: true },
+            'dpc-pressure': { showCeiling: false, showAmbientPressure: true, showPartialPressures: false, showTissueLoading: false, showGasConsumption: false, showLabels: false },
+            'dpc-pp': { showCeiling: false, showAmbientPressure: false, showPartialPressures: true, showTissueLoading: false, showGasConsumption: false, showLabels: false },
+            'dpc-tissue': { showCeiling: false, showAmbientPressure: true, showPartialPressures: false, showTissueLoading: true, showGasConsumption: false, showLabels: false },
+            'dpc-gas': { showCeiling: false, showAmbientPressure: false, showPartialPressures: false, showTissueLoading: false, showGasConsumption: true, showLabels: false }
+        };
+        
+        Object.keys(chartButtons).forEach(btnId => {
+            document.getElementById(btnId).addEventListener('click', (e) => {
+                // Update button states
+                Object.keys(chartButtons).forEach(id => {
+                    document.getElementById(id).classList.remove('active');
+                });
+                e.target.classList.add('active');
+                
+                // Update chart options
+                diveProfileChart.setOptions(chartButtons[btnId]);
+            });
+        });
+        
+        // =====================================================================
+        // INITIALIZE
+        // =====================================================================
+        
+        renderProfileChips();
+        statusText.innerHTML = '<span class="status-valid">✓ Ready</span>';
+        lastUpdate.textContent = new Date().toLocaleTimeString();
+        
+        // Initial dive analysis
+        const initialAnalysis = analyzeDive(initialSetup);
+        renderWarnings(diveWarningsContainer, initialAnalysis.warnings);
+        renderGasSummary(diveGasSummaryContainer, initialAnalysis.gasSummary, initialSetup.reservePressure || 50);
+        
+        // =====================================================================
+        // COLLAPSE FUNCTIONALITY
+        // =====================================================================
+        
+        const collapseBtn = document.getElementById('collapse-btn');
+        const editorPanel = document.getElementById('editor-panel');
+        const sandboxLayout = document.getElementById('sandbox-layout');
+        
+        collapseBtn.addEventListener('click', () => {
+            const isCollapsed = editorPanel.classList.toggle('collapsed');
+            sandboxLayout.classList.toggle('editor-collapsed', isCollapsed);
+            collapseBtn.textContent = isCollapsed ? '▶' : '◀';
+            collapseBtn.title = isCollapsed ? 'Expand editor' : 'Collapse editor';
+            
+            // Resize charts after collapse animation
+            setTimeout(() => {
+                diveProfileChart.chart?.resize();
+                mvalueChart.chart?.resize();
+            }, 250);
+        });
+    </script>
+    
+    <!-- Shared Navigation -->
+    <script src="../js/nav.js" type="module"></script>
+</body>
+</html>

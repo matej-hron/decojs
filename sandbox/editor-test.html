@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiveSetupEditor Component Test - Deco Theory</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .test-page {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        .test-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .test-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .test-section {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1rem;
+        }
+        
+        .test-section h2 {
+            margin-top: 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .output-panel {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1rem;
+            border-radius: var(--radius);
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.8rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .output-panel pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        
+        .event-log {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .event-entry {
+            padding: 0.5rem;
+            border-bottom: 1px solid #333;
+            font-size: 0.8rem;
+        }
+        
+        .event-entry:last-child {
+            border-bottom: none;
+        }
+        
+        .event-time {
+            color: #6a9955;
+        }
+        
+        .event-valid {
+            color: #4ec9b0;
+        }
+        
+        .event-invalid {
+            color: #f14c4c;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        
+        .status-bar {
+            padding: 0.5rem 1rem;
+            background: var(--primary-dark);
+            color: white;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #27ae60;
+        }
+        
+        .status-dot.invalid {
+            background: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <nav id="nav-placeholder"></nav>
+    
+    <main class="test-page">
+        <h1>🧪 DiveSetupEditor Component Test</h1>
+        <p>Testing the reusable DiveSetupEditor component. Changes are logged in real-time.</p>
+        
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-indicator">
+                <span class="status-dot" id="status-dot"></span>
+                <span id="status-text">Ready</span>
+            </div>
+            <span id="change-count">0 changes</span>
+        </div>
+        
+        <!-- Controls -->
+        <div class="controls">
+            <button id="btn-get-setup" class="btn btn-secondary">📋 Get Current Setup</button>
+            <button id="btn-load-simple" class="btn btn-secondary">Load Simple Dive</button>
+            <button id="btn-load-deco" class="btn btn-secondary">Load Deco Dive</button>
+            <button id="btn-load-trimix" class="btn btn-secondary">Load Trimix Dive</button>
+            <button id="btn-validate" class="btn btn-secondary">🔍 Validate</button>
+            <button id="btn-clear-log" class="btn btn-secondary">🗑️ Clear Log</button>
+        </div>
+        
+        <div class="test-layout">
+            <!-- Editor Panel -->
+            <div class="test-section">
+                <h2>📝 DiveSetupEditor</h2>
+                <div id="editor-container"></div>
+            </div>
+            
+            <!-- Output Panel -->
+            <div class="test-section">
+                <h2>📊 Output</h2>
+                
+                <h3>Current DiveSetup</h3>
+                <div class="output-panel">
+                    <pre id="setup-output">Click "Get Current Setup" to see the current configuration.</pre>
+                </div>
+                
+                <h3 style="margin-top: 1rem;">Event Log</h3>
+                <div class="output-panel event-log" id="event-log">
+                    <div class="event-entry">
+                        <span class="event-time">[--:--:--]</span> Waiting for events...
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Usage Examples -->
+        <div class="test-section" style="margin-top: 2rem;">
+            <h2>📖 Component Usage</h2>
+            
+            <pre style="background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 8px; overflow-x: auto; font-size: 13px;"><code><span style="color: #c586c0;">import</span> { DiveSetupEditor } <span style="color: #c586c0;">from</span> <span style="color: #ce9178;">'./js/components/DiveSetupEditor.js'</span>;
+
+<span style="color: #6a9955;">// Create the editor</span>
+<span style="color: #c586c0;">const</span> editor = <span style="color: #c586c0;">new</span> DiveSetupEditor(document.getElementById(<span style="color: #ce9178;">'my-container'</span>), {
+    diveSetup: initialSetup,  <span style="color: #6a9955;">// Optional initial setup</span>
+    profiles: predefinedProfiles,  <span style="color: #6a9955;">// Optional profile presets</span>
+    options: {
+        showQuickSetup: <span style="color: #569cd6;">true</span>,      <span style="color: #6a9955;">// Quick depth/time generator</span>
+        showGradientFactors: <span style="color: #569cd6;">true</span>, <span style="color: #6a9955;">// GF sliders</span>
+        showProfiles: <span style="color: #569cd6;">true</span>,        <span style="color: #6a9955;">// Profile dropdown</span>
+        showImportExport: <span style="color: #569cd6;">true</span>,   <span style="color: #6a9955;">// JSON import/export</span>
+        showMultiDive: <span style="color: #569cd6;">true</span>,      <span style="color: #6a9955;">// Repetitive diving support</span>
+        emitOnInput: <span style="color: #569cd6;">true</span>         <span style="color: #6a9955;">// Emit change on every input</span>
+    }
+});
+
+<span style="color: #6a9955;">// Listen for changes (editor extends EventTarget)</span>
+editor.addEventListener(<span style="color: #ce9178;">'change'</span>, (e) => {
+    <span style="color: #c586c0;">const</span> { diveSetup, valid, errors } = e.detail;
+    console.log(<span style="color: #ce9178;">'Setup changed:'</span>, diveSetup);
+    console.log(<span style="color: #ce9178;">'Valid:'</span>, valid);
+    
+    <span style="color: #6a9955;">// Use diveSetup with chart components</span>
+    diveProfileChart.update(diveSetup);
+    mvalueChart.update(diveSetup);
+});
+
+<span style="color: #6a9955;">// Programmatic control</span>
+editor.setDiveSetup(newSetup);           <span style="color: #6a9955;">// Load new setup</span>
+<span style="color: #c586c0;">const</span> setup = editor.getDiveSetup();     <span style="color: #6a9955;">// Get current setup</span>
+<span style="color: #c586c0;">const</span> { valid, errors } = editor.validate(); <span style="color: #6a9955;">// Validate</span>
+editor.setProfiles(profiles);            <span style="color: #6a9955;">// Load profile presets</span>
+editor.destroy();                        <span style="color: #6a9955;">// Clean up</span></code></pre>
+        </div>
+    </main>
+
+    <footer>
+        <span class="wip-badge">Experimental</span>
+        <p>DiveSetupEditor Component Test Page</p>
+        <span class="version-number"></span>
+    </footer>
+
+    <script type="module">
+        import { DiveSetupEditor } from '../js/components/DiveSetupEditor.js';
+        
+        // Sample profiles for testing
+        const sampleProfiles = [
+            {
+                id: 'simple-30',
+                name: 'Simple 30m NDL',
+                description: 'Basic recreational dive within NDL',
+                gases: [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0, cylinderVolume: 12, startPressure: 200 }],
+                gfLow: 100,
+                gfHigh: 100,
+                surfaceInterval: 60,
+                dives: [{
+                    waypoints: [
+                        { time: 0, depth: 0 },
+                        { time: 2, depth: 30 },
+                        { time: 20, depth: 30 },
+                        { time: 23, depth: 5 },
+                        { time: 26, depth: 5 },
+                        { time: 27, depth: 0 }
+                    ]
+                }]
+            },
+            {
+                id: 'deco-40',
+                name: 'Deco Dive 40m',
+                description: 'Technical dive with deco stops',
+                gases: [
+                    { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0, cylinderVolume: 24, startPressure: 200 },
+                    { id: 'ean50', name: 'Nitrox 50', o2: 0.50, n2: 0.50, he: 0, cylinderVolume: 7, startPressure: 200 }
+                ],
+                gfLow: 70,
+                gfHigh: 85,
+                surfaceInterval: 60,
+                dives: [{
+                    waypoints: [
+                        { time: 0, depth: 0 },
+                        { time: 2, depth: 40, gasId: 'air' },
+                        { time: 25, depth: 40 },
+                        { time: 29, depth: 9 },
+                        { time: 32, depth: 9 },
+                        { time: 33, depth: 6, gasId: 'ean50' },
+                        { time: 38, depth: 6 },
+                        { time: 39, depth: 3 },
+                        { time: 44, depth: 3 },
+                        { time: 45, depth: 0 }
+                    ]
+                }]
+            },
+            {
+                id: 'trimix-60',
+                name: 'Trimix 60m',
+                description: 'Deep trimix dive',
+                gases: [
+                    { id: 'tx18_45', name: 'Trimix 18/45', o2: 0.18, n2: 0.37, he: 0.45, cylinderVolume: 24, startPressure: 200 },
+                    { id: 'ean50', name: 'Nitrox 50', o2: 0.50, n2: 0.50, he: 0, cylinderVolume: 7, startPressure: 200 },
+                    { id: 'o2', name: 'Pure O2', o2: 1.0, n2: 0, he: 0, cylinderVolume: 7, startPressure: 200 }
+                ],
+                gfLow: 30,
+                gfHigh: 85,
+                surfaceInterval: 120,
+                dives: [{
+                    waypoints: [
+                        { time: 0, depth: 0 },
+                        { time: 3, depth: 60, gasId: 'tx18_45' },
+                        { time: 20, depth: 60 },
+                        { time: 25, depth: 21, gasId: 'ean50' },
+                        { time: 30, depth: 21 },
+                        { time: 32, depth: 12 },
+                        { time: 37, depth: 12 },
+                        { time: 38, depth: 6, gasId: 'o2' },
+                        { time: 53, depth: 6 },
+                        { time: 54, depth: 3 },
+                        { time: 69, depth: 3 },
+                        { time: 70, depth: 0 }
+                    ]
+                }]
+            }
+        ];
+        
+        // DOM elements
+        const editorContainer = document.getElementById('editor-container');
+        const setupOutput = document.getElementById('setup-output');
+        const eventLog = document.getElementById('event-log');
+        const statusDot = document.getElementById('status-dot');
+        const statusText = document.getElementById('status-text');
+        const changeCount = document.getElementById('change-count');
+        
+        // State
+        let changes = 0;
+        
+        // Create the editor
+        const editor = new DiveSetupEditor(editorContainer, {
+            diveSetup: sampleProfiles[0],
+            profiles: sampleProfiles,
+            options: {
+                showQuickSetup: true,
+                showGradientFactors: true,
+                showProfiles: true,
+                showImportExport: true,
+                showMultiDive: true,
+                showDescription: true,
+                showSurfaceInterval: true,
+                emitOnInput: true
+            }
+        });
+        
+        // Listen for changes
+        editor.addEventListener('change', (e) => {
+            changes++;
+            changeCount.textContent = `${changes} changes`;
+            
+            const { diveSetup, valid, errors } = e.detail;
+            
+            // Update status
+            statusDot.className = `status-dot ${valid ? '' : 'invalid'}`;
+            statusText.textContent = valid ? 'Valid' : `Invalid (${errors.length} errors)`;
+            
+            // Log event
+            const time = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = 'event-entry';
+            entry.innerHTML = `
+                <span class="event-time">[${time}]</span> 
+                Change detected - 
+                <span class="${valid ? 'event-valid' : 'event-invalid'}">
+                    ${valid ? '✓ Valid' : `✗ ${errors.length} error(s)`}
+                </span>
+                - ${diveSetup.name}
+            `;
+            eventLog.prepend(entry);
+            
+            // Keep log manageable
+            while (eventLog.children.length > 50) {
+                eventLog.removeChild(eventLog.lastChild);
+            }
+        });
+        
+        // Button handlers
+        document.getElementById('btn-get-setup').addEventListener('click', () => {
+            const setup = editor.getDiveSetup();
+            setupOutput.textContent = JSON.stringify(setup, null, 2);
+        });
+        
+        document.getElementById('btn-load-simple').addEventListener('click', () => {
+            editor.setDiveSetup(sampleProfiles[0], true);
+        });
+        
+        document.getElementById('btn-load-deco').addEventListener('click', () => {
+            editor.setDiveSetup(sampleProfiles[1], true);
+        });
+        
+        document.getElementById('btn-load-trimix').addEventListener('click', () => {
+            editor.setDiveSetup(sampleProfiles[2], true);
+        });
+        
+        document.getElementById('btn-validate').addEventListener('click', () => {
+            const { valid, errors } = editor.validate();
+            if (valid) {
+                alert('✓ Setup is valid!');
+            } else {
+                alert('✗ Validation errors:\n\n' + errors.join('\n'));
+            }
+        });
+        
+        document.getElementById('btn-clear-log').addEventListener('click', () => {
+            eventLog.innerHTML = '<div class="event-entry"><span class="event-time">[--:--:--]</span> Log cleared</div>';
+            changes = 0;
+            changeCount.textContent = '0 changes';
+        });
+        
+        // Initial display
+        setupOutput.textContent = JSON.stringify(editor.getDiveSetup(), null, 2);
+    </script>
+    
+    <!-- Shared Navigation -->
+    <script src="../js/nav.js" type="module"></script>
+</body>
+</html>

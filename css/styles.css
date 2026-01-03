@@ -222,6 +222,20 @@ section[id],
     margin: 0 auto;
 }
 
+/* Compact hero for tool pages */
+.hero.hero-compact {
+    padding: 1.5rem 2rem;
+}
+
+.hero.hero-compact h1 {
+    font-size: 1.5rem;
+    margin: 0 0 0.5rem;
+}
+
+.hero.hero-compact .hero-subtitle {
+    font-size: 1rem;
+}
+
 .language-notice {
     font-size: 0.95rem;
     opacity: 0.85;
@@ -1042,6 +1056,86 @@ section h2 {
     display: flex;
 }
 
+/* DiveProfileChart Component */
+.dpc-chart-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.dpc-chart-container canvas {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.dpc-chart-container.dpc-fullscreen {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 1000;
+    background: var(--background-color, white);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.dpc-chart-container .dpc-exit-fullscreen-btn {
+    display: none;
+}
+
+.dpc-chart-container.dpc-fullscreen .dpc-fullscreen-btn {
+    display: none;
+}
+
+.dpc-chart-container.dpc-fullscreen .dpc-exit-fullscreen-btn {
+    display: block !important;
+}
+
+/* MValueChart Component */
+.mvc-chart-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.mvc-chart-container canvas {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.mvc-chart-container .mvc-exit-fullscreen-btn {
+    display: none;
+}
+
+.mvc-chart-container.mvc-fullscreen .mvc-fullscreen-btn {
+    display: none;
+}
+
+.mvc-chart-container.mvc-fullscreen .mvc-exit-fullscreen-btn {
+    display: block !important;
+}
+
+.mvc-chart-container.mvc-fullscreen {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 1000;
+    background: var(--background-color, white);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
 .chart-legend {
     background: var(--background-color);
     padding: 1rem;
@@ -1424,7 +1518,373 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.0.95";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.2.8";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+}
+
+/* ==========================================================================
+   DiveSetupEditor Component
+   ========================================================================== */
+
+.dive-setup-editor {
+    font-size: 0.95rem;
+}
+
+.dse-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Profile Header - shows auto-generated name and key stats */
+.dse-profile-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.dse-profile-name {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dse-profile-icon {
+    font-size: 1.5rem;
+}
+
+.dse-profile-name-text {
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+.dse-profile-stats {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.dse-stat {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.35rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.dse-section {
+    background: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 1rem;
+}
+
+.dse-section summary {
+    cursor: pointer;
+    font-weight: 600;
+    padding: 0.25rem 0;
+    user-select: none;
+}
+
+.dse-section summary:hover {
+    color: var(--primary-color);
+}
+
+.dse-hint {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.dse-label {
+    font-weight: 600;
+    margin-right: 0.5rem;
+}
+
+.dse-row {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.dse-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.dse-field label {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.dse-field input[type="number"],
+.dse-field input[type="text"],
+.dse-field textarea {
+    padding: 0.4rem 0.6rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    width: 100%;
+}
+
+.dse-field input[type="range"] {
+    width: 100%;
+}
+
+/* Quick Setup */
+.dse-quick-inputs {
+    margin-top: 0.75rem;
+}
+
+.dse-ndl-display {
+    margin-top: 0.75rem;
+    padding: 0.5rem;
+    background: rgba(0,0,0,0.03);
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.dse-ndl-ok { color: var(--secondary-color); }
+.dse-ndl-warning { color: #f39c12; }
+.dse-ndl-deco { color: var(--warning-color); }
+
+.dse-deco-warning {
+    color: var(--warning-color);
+    font-weight: 600;
+}
+
+/* Gases */
+.dse-gases-content {
+    margin-top: 0.75rem;
+}
+
+.dse-gases-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.dse-gas-card {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.75rem;
+    background: rgba(0,0,0,0.02);
+}
+
+.dse-gas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.dse-gas-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.dse-gas-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.dse-gas-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.dse-gas-row label {
+    font-size: 0.85rem;
+    min-width: 30px;
+}
+
+.dse-gas-row select,
+.dse-gas-row input {
+    padding: 0.3rem 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.dse-gas-o2,
+.dse-gas-he {
+    width: 50px;
+}
+
+.dse-gas-mod {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Gradient Factors */
+.dse-gf-content {
+    margin-top: 0.75rem;
+}
+
+.dse-gf-row {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.dse-gf-row .dse-field {
+    flex: 1;
+    min-width: 150px;
+}
+
+.dse-gf-row input[type="number"] {
+    width: 60px;
+}
+
+.dse-gf-presets {
+    margin-top: 0.75rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Waypoints Table */
+.dse-waypoints h4 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1rem;
+}
+
+.dse-waypoints-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+}
+
+.dse-waypoints-table th,
+.dse-waypoints-table td {
+    padding: 0.4rem 0.5rem;
+    border: 1px solid var(--border-color);
+    text-align: left;
+}
+
+.dse-waypoints-table th {
+    background: rgba(0,0,0,0.05);
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.dse-waypoints-table input {
+    width: 70px;
+    padding: 0.25rem 0.4rem;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    font-size: 0.85rem;
+}
+
+.dse-waypoints-table select {
+    padding: 0.25rem 0.4rem;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    font-size: 0.85rem;
+}
+
+.dse-wp-actions {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.dse-waypoint-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Multi-dive */
+.dse-dive2 {
+    border-left: 3px solid var(--primary-color);
+}
+
+.dse-dive2-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.dse-dive2-header h4 {
+    margin: 0;
+}
+
+.dse-si-between {
+    margin-bottom: 0.75rem;
+}
+
+.dse-add-dive {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Surface Interval */
+.dse-surface-interval .dse-field {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dse-surface-interval input {
+    width: 80px;
+}
+
+/* Import/Export */
+.dse-import-export {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Validation Errors */
+.dse-validation-errors {
+    display: none;
+}
+
+.dse-error {
+    background: rgba(231, 76, 60, 0.1);
+    border-left: 3px solid var(--warning-color);
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.5rem;
+    border-radius: 0 4px 4px 0;
+    font-size: 0.9rem;
+    color: var(--warning-color);
+}
+
+/* Profile selector */
+.dse-profiles {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dse-profile-select {
+    flex: 1;
+    max-width: 300px;
+}
+
+/* Compact mode */
+.dive-setup-editor.dse-compact .dse-section {
+    padding: 0.75rem;
+}
+
+.dive-setup-editor.dse-compact .dse-hint {
+    display: none;
 }
 
 /* Responsive */

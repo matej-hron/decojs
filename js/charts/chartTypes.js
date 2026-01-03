@@ -44,6 +44,7 @@
  * @property {string} [description] - Profile description
  * @property {Gas[]} gases - Available gases for the dive
  * @property {number} [reservePressure=50] - Reserve pressure in bar
+ * @property {number} [sacRate=20] - Surface Air Consumption rate in liters/min
  * @property {number} [gfLow=100] - Gradient Factor Low (0-100 percentage)
  * @property {number} [gfHigh=100] - Gradient Factor High (0-100 percentage)
  * @property {number} [surfaceInterval=60] - Post-dive surface interval in minutes
@@ -159,6 +160,10 @@ export const DEFAULT_DIVE_PROFILE_OPTIONS = {
     showCeiling: false,
     showAmbientPressure: false,
     showPartialPressures: false,
+    showTissueLoading: false,
+    showGasConsumption: false,
+    showLabels: true,
+    tissueCompartments: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
     interactive: true,
     fullscreenButton: true,
     animationDuration: 500,
@@ -178,9 +183,9 @@ export const DEFAULT_DIVE_PROFILE_OPTIONS = {
 export const DEFAULT_TISSUE_PRESSURE_OPTIONS = {
     mode: 'loading',
     compartments: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
-    showMValueLines: false,
+    showMValueLines: true,
     showAmbientLine: true,
-    showGFLines: false,
+    showGFLines: true,
     animate: false,
     animationSpeed: 1,
     interactive: true,

@@ -460,6 +460,7 @@ export function simulateDepthChange(tissuePressures, startDepth, endDepth, time,
  */
 export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, gfLow, gfHigh, gases = null) {
     const stops = [];
+    const gasSwitches = []; // Track gas switches during ascent
     let totalAscentTime = 0;
     
     // Clone tissue pressures
@@ -468,44 +469,115 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
     let currentN2 = n2Fraction;
     let currentGasName = 'Bottom Gas';
     
+    // Calculate gas switch depths (MOD rounded down to 3m increments)
+    const gasSwitchPoints = [];
+    if (gases && gases.length > 1) {
+        const decoGases = gases.slice(1).map(gas => ({
+            ...gas,
+            switchDepth: Math.floor((1.6 / gas.o2 - 1) * 10 / 3) * 3 // MOD rounded to 3m
+        })).sort((a, b) => b.switchDepth - a.switchDepth); // Deeper first
+        
+        gasSwitchPoints.push(...decoGases);
+    }
+    
+    // Track used gases to avoid duplicate switches
+    const usedGases = new Set();
+    
+    // Helper to switch to best gas at depth
+    const switchToBestGas = (atDepth, recordSwitch = true) => {
+        for (const gas of gasSwitchPoints) {
+            if (atDepth <= gas.switchDepth && gas.n2 < currentN2 && !usedGases.has(gas.id)) {
+                currentN2 = gas.n2;
+                currentGasName = gas.name;
+                usedGases.add(gas.id);
+                if (recordSwitch) {
+                    gasSwitches.push({ depth: atDepth, gas: gas.name, gasId: gas.id });
+                }
+                return true;
+            }
+        }
+        return false;
+    };
+    
     // Find first stop depth
     const { depth: firstStopDepth, ambient: firstStopAmbient } = getFirstStopDepth(tissues, gfLow);
     
-    // If no deco needed (first stop = 0), just ascend
+    // If no deco needed (first stop = 0), just ascend (with gas switches)
     if (firstStopDepth === 0) {
-        const ascentTime = depth / ASCENT_SPEED;
-        tissues = simulateDepthChange(tissues, depth, 0, ascentTime, currentN2);
-        return { stops: [], totalTime: ascentTime, totalAscentTime: ascentTime };
+        // Ascend with gas switches
+        let remainingDepth = depth;
+        for (const gas of gasSwitchPoints) {
+            if (remainingDepth > gas.switchDepth && !usedGases.has(gas.id)) {
+                // Ascend to switch depth
+                const segmentTime = (remainingDepth - gas.switchDepth) / ASCENT_SPEED;
+                tissues = simulateDepthChange(tissues, remainingDepth, gas.switchDepth, segmentTime, currentN2);
+                totalAscentTime += segmentTime;
+                remainingDepth = gas.switchDepth;
+                // Switch gas
+                if (gas.n2 < currentN2) {
+                    currentN2 = gas.n2;
+                    currentGasName = gas.name;
+                    usedGases.add(gas.id);
+                    gasSwitches.push({ depth: gas.switchDepth, gas: gas.name, gasId: gas.id });
+                }
+            }
+        }
+        // Final ascent to surface
+        if (remainingDepth > 0) {
+            const segmentTime = remainingDepth / ASCENT_SPEED;
+            tissues = simulateDepthChange(tissues, remainingDepth, 0, segmentTime, currentN2);
+            totalAscentTime += segmentTime;
+        }
+        return { stops: [], gasSwitches, totalTime: totalAscentTime, totalAscentTime };
     }
     
-    // Ascend to first stop
-    const ascentToFirstStop = (depth - firstStopDepth) / ASCENT_SPEED;
-    tissues = simulateDepthChange(tissues, depth, firstStopDepth, ascentToFirstStop, currentN2);
-    totalAscentTime += ascentToFirstStop;
+    // Ascend to first stop, switching gases at their MOD
+    let remainingDepth = depth;
+    for (const gas of gasSwitchPoints) {
+        if (remainingDepth > gas.switchDepth && gas.switchDepth >= firstStopDepth && !usedGases.has(gas.id)) {
+            // Ascend to switch depth
+            const segmentTime = (remainingDepth - gas.switchDepth) / ASCENT_SPEED;
+            tissues = simulateDepthChange(tissues, remainingDepth, gas.switchDepth, segmentTime, currentN2);
+            totalAscentTime += segmentTime;
+            remainingDepth = gas.switchDepth;
+            // Switch gas
+            if (gas.n2 < currentN2) {
+                currentN2 = gas.n2;
+                currentGasName = gas.name;
+                usedGases.add(gas.id);
+                gasSwitches.push({ depth: gas.switchDepth, gas: gas.name, gasId: gas.id });
+            }
+        }
+    }
+    // Finish ascent to first stop
+    if (remainingDepth > firstStopDepth) {
+        const segmentTime = (remainingDepth - firstStopDepth) / ASCENT_SPEED;
+        tissues = simulateDepthChange(tissues, remainingDepth, firstStopDepth, segmentTime, currentN2);
+        totalAscentTime += segmentTime;
+    }
     depth = firstStopDepth;
     
     // Deco loop: work up from first stop to surface
     while (depth > 0) {
         // Check for gas switch (find best gas valid at this depth)
-        if (gases && gases.length > 1) {
-            const bestGas = findBestDecoGas(gases, depth);
-            if (bestGas && bestGas.n2 < currentN2) {
-                currentN2 = bestGas.n2;
-                currentGasName = bestGas.name;
-            }
-        }
-        
-        // Calculate GF at this depth (interpolated)
-        const gfAtDepth = interpolateGF(getAmbientPressure(depth), firstStopAmbient, gfLow, gfHigh);
+        switchToBestGas(depth);
         
         // Wait at this stop until ceiling clears to next stop (or surface)
         const nextStopDepth = Math.max(0, depth - STOP_INCREMENT);
+        const ascentTime = STOP_INCREMENT / ASCENT_SPEED;
+        
+        // For ceiling check, use GF at the DESTINATION depth, not current depth
+        const gfAtDestination = interpolateGF(getAmbientPressure(nextStopDepth), firstStopAmbient, gfLow, gfHigh);
+        
         let stopTime = 0;
         
         while (true) {
-            const { ceilingDepth } = getDiveCeiling(tissues, gfAtDepth);
+            // Simulate ascent to check if we'd exceed M-value at destination
+            const testTissues = simulateDepthChange({ ...tissues }, depth, nextStopDepth, ascentTime, currentN2);
+            const { ceilingDepth } = getDiveCeiling(testTissues, gfAtDestination);
+            
             if (ceilingDepth <= nextStopDepth) {
-                break; // Ceiling cleared, can ascend
+                break; // Ceiling cleared after simulated ascent, can actually ascend
             }
             
             // Wait 1 minute at this stop
@@ -529,7 +601,6 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
         
         // Ascend to next stop
         if (nextStopDepth >= 0) {
-            const ascentTime = STOP_INCREMENT / ASCENT_SPEED;
             tissues = simulateDepthChange(tissues, depth, nextStopDepth, ascentTime, currentN2);
             totalAscentTime += ascentTime;
             depth = nextStopDepth;
@@ -538,7 +609,7 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
     
     const totalTime = totalAscentTime + stops.reduce((sum, s) => sum + s.time, 0);
     
-    return { stops, totalTime, totalAscentTime };
+    return { stops, gasSwitches, totalTime, totalAscentTime };
 }
 
 /**
@@ -595,19 +666,20 @@ export function calculateTissueLoading(profile, surfaceInterval = 60, options = 
             return defaultN2Fraction;
         }
         
-        // Find the last waypoint at or before this time
-        let activeWaypoint = profile[0];
+        // Find the last gasId that was set at or before this time
+        // Gas "sticks" until another gas switch occurs
+        let currentGasId = gases[0].id;  // Start with first gas (typically air/bottom gas)
         for (const wp of profile) {
             if (wp.time <= time) {
-                activeWaypoint = wp;
+                if (wp.gasId) {
+                    currentGasId = wp.gasId;  // Update when we see an explicit gas switch
+                }
             } else {
                 break;
             }
         }
         
-        // Get gas for this waypoint
-        const gasId = activeWaypoint.gasId || gases[0].id;
-        const gas = gases.find(g => g.id === gasId) || gases[0];
+        const gas = gases.find(g => g.id === currentGasId) || gases[0];
         return gas.n2;
     };
 
@@ -623,21 +695,23 @@ export function calculateTissueLoading(profile, surfaceInterval = 60, options = 
         compartments: {}      // Tissue pressures per compartment
     };
 
-    // Track gas switches
+    // Track gas switches - only detect explicit gasId changes
     if (gases && gases.length > 0) {
         let currentGasId = profile[0].gasId || gases[0].id;
         for (let i = 1; i < profile.length; i++) {
             const wp = profile[i];
-            const wpGasId = wp.gasId || gases[0].id;
-            if (wpGasId !== currentGasId) {
-                const gas = gases.find(g => g.id === wpGasId) || gases[0];
+            // Only trigger switch if gasId is explicitly set AND different
+            if (wp.gasId && wp.gasId !== currentGasId) {
+                const prevGas = gases.find(g => g.id === currentGasId) || gases[0];
+                const newGas = gases.find(g => g.id === wp.gasId) || gases[0];
                 results.gasSwitches.push({
                     time: wp.time,
                     depth: wp.depth,
-                    gasName: gas.name,
-                    gasId: wpGasId
+                    fromGasName: prevGas.name,
+                    gasName: newGas.name,
+                    gasId: wp.gasId
                 });
-                currentGasId = wpGasId;
+                currentGasId = wp.gasId;
             }
         }
     }
@@ -705,13 +779,16 @@ export function calculateTissueLoading(profile, surfaceInterval = 60, options = 
         // Get current gas name for display
         let currentGasName = 'Air';
         if (gases && gases.length > 0 && currentTime < lastWaypoint.time) {
-            let activeWaypoint = profile[0];
+            // Find the last gasId that was set at or before this time
+            let currentGasId = gases[0].id;
             for (const wp of profile) {
-                if (wp.time <= currentTime) activeWaypoint = wp;
-                else break;
+                if (wp.time <= currentTime) {
+                    if (wp.gasId) currentGasId = wp.gasId;
+                } else {
+                    break;
+                }
             }
-            const gasId = activeWaypoint.gasId || gases[0].id;
-            const gas = gases.find(g => g.id === gasId) || gases[0];
+            const gas = gases.find(g => g.id === currentGasId) || gases[0];
             currentGasName = gas.name;
         }
 

@@ -180,7 +180,7 @@ export function getDefaultSetup() {
         reservePressure: 50,
         gfLow: 100,   // Gradient Factor Low (percentage)
         gfHigh: 100,  // Gradient Factor High (percentage)
-        surfaceInterval: 60,
+        surfaceInterval: 5,
         units: {
             depth: "meters",
             time: "minutes",
@@ -335,8 +335,8 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh) 
         tissues = simulateDepthTime(tissues, maxDepth, actualBottomDuration, bottomGas.n2);
     }
     
-    // Generate deco schedule
-    const { stops, totalTime: ascentTotalTime } = generateDecoSchedule(
+    // Generate deco schedule (now returns gasSwitches too)
+    const { stops, gasSwitches, totalTime: ascentTotalTime } = generateDecoSchedule(
         tissues, maxDepth, bottomGas.n2, gfLowDec, gfHighDec, gases
     );
     
@@ -349,19 +349,68 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh) 
     
     let currentTime = bottomTime;
     let currentDepth = maxDepth;
+    let currentGasId = bottomGas.id;
     
-    // Add deco stops to waypoints
+    // Build unified event list: merge gas switches with deco stops at same depth
+    // Each event: { depth, stopTime, gasId?, gas }
+    // Note: Gas switches that happen during ascent (not at a deco stop) don't add time -
+    // the deco algorithm already accounts for off-gassing with the new gas
+    const eventsByDepth = new Map();
+    
+    // First, collect all deco stops
     for (const stop of stops) {
-        // Ascend to this stop depth
-        const ascentTime = Math.ceil((currentDepth - stop.depth) / ASCENT_SPEED);
-        currentTime += ascentTime;
-        waypoints.push({ time: currentTime, depth: stop.depth });
+        const stopGas = gases.find(g => g.name === stop.gas);
+        eventsByDepth.set(stop.depth, {
+            depth: stop.depth,
+            stopTime: stop.time,
+            gasId: stopGas?.id,
+            gas: stop.gas
+        });
+    }
+    
+    // Then, add gas switches that don't coincide with deco stops
+    // These are just waypoints for the profile, no extra time needed
+    for (const sw of gasSwitches) {
+        if (!eventsByDepth.has(sw.depth)) {
+            // Gas switch during ascent - just mark the switch point, no stop time
+            eventsByDepth.set(sw.depth, {
+                depth: sw.depth,
+                stopTime: 0,  // No extra time - just a waypoint
+                gasId: sw.gasId,
+                gas: sw.gas
+            });
+        } else {
+            // Gas switch at a deco stop - just update the gasId
+            const existing = eventsByDepth.get(sw.depth);
+            existing.gasId = sw.gasId;
+        }
+    }
+    
+    // Sort events by depth (descending - deeper first)
+    const events = Array.from(eventsByDepth.values()).sort((a, b) => b.depth - a.depth);
+    
+    // Process events in order
+    for (const event of events) {
+        // Ascend to this event's depth
+        if (currentDepth > event.depth) {
+            const ascentTime = Math.ceil((currentDepth - event.depth) / ASCENT_SPEED);
+            currentTime += ascentTime;
+            currentDepth = event.depth;
+        }
         
-        // Stay at stop
-        currentTime += stop.time;
-        waypoints.push({ time: currentTime, depth: stop.depth });
+        // Add arrival waypoint (with gasId if gas changes)
+        if (event.gasId && event.gasId !== currentGasId) {
+            waypoints.push({ time: currentTime, depth: event.depth, gasId: event.gasId });
+            currentGasId = event.gasId;
+        } else {
+            waypoints.push({ time: currentTime, depth: event.depth });
+        }
         
-        currentDepth = stop.depth;
+        // Add departure waypoint after stop time (if any stop time)
+        if (event.stopTime > 0) {
+            currentTime += event.stopTime;
+            waypoints.push({ time: currentTime, depth: event.depth });
+        }
     }
     
     // Final ascent to surface (if not already there)
@@ -576,7 +625,7 @@ export function getDiveSetupWaypoints(setup) {
  * @returns {number} Surface interval in minutes
  */
 export function getSurfaceInterval(setup) {
-    return setup.surfaceInterval ?? 60;
+    return setup.surfaceInterval ?? 5;
 }
 
 /**

@@ -7,48 +7,19 @@
 
 const NAV_ITEMS = [
     { href: 'index.html', label: 'Home' },
-    { href: 'dive-setup.html', label: 'Dive Setup' },
+    { href: 'sandbox/index.html', label: 'Sandbox' },
     { 
-        href: 'pressure.html', 
-        label: 'Pressure',
+        label: 'Theory',
+        href: 'pressure.html',
         submenu: [
-            { href: 'pressure.html#terminology', label: 'Terminology' },
-            { href: 'pressure.html#dive-profile', label: 'Dive Profile' },
-            { href: 'pressure.html#total-pressure', label: 'Total Pressure' },
-            { href: 'pressure.html#gas-consumption', label: 'Gas Consumption' },
-            { href: 'pressure.html#air-composition', label: 'Air Composition' },
-            { href: 'pressure.html#daltons-law', label: "Dalton's Law" },
-            { href: 'pressure.html#partial-pressure-limits', label: 'Partial Pressure Limits' },
-            { href: 'pressure.html#end-calculation', label: 'END Calculation' },
-            { href: 'pressure.html#oxygen-toxicity', label: 'Oxygen Toxicity' },
-            { href: 'pressure.html#partial-pressure-chart', label: 'Partial Pressure Chart' }
-        ]
-    },
-    { 
-        href: 'tissue-loading.html', 
-        label: 'Tissue Loading',
-        submenu: [
-            { href: 'tissue-loading.html#henrys-law', label: "Henry's Law" },
-            { href: 'tissue-loading.html#gas-exchange', label: 'Gas Exchange' },
-            { href: 'tissue-loading.html#saturation-dynamics', label: 'Saturation Dynamics' },
-            { href: 'tissue-loading.html#half-time-concept', label: 'Half-Time Concept' },
-            { href: 'tissue-loading.html#half-time-charts', label: 'Half-Time Charts' },
-            { href: 'tissue-loading.html#tissue-heterogeneity', label: 'Tissue Types' },
-            { href: 'tissue-loading.html#buhlmann-compartments', label: 'Bühlmann Compartments' },
-            { href: 'tissue-loading.html#tissue-chart-section', label: 'Interactive Chart' }
-        ]
-    },
-    {
-        href: 'm-values.html',
-        label: 'M-Values',
-        submenu: [
-            { href: 'm-values.html#compartment-selection', label: 'Compartment Selection' },
-            { href: 'm-values.html#mvalue-chart-section', label: 'M-Value Chart' }
+            { href: 'pressure.html', label: 'Pressure & Depth' },
+            { href: 'tissue-loading.html', label: 'Tissue Loading' },
+            { href: 'm-values.html', label: 'M-Values' }
         ]
     },
     { 
         label: 'Tests',
-        href: 'quiz-physics.html', // Direct link for mobile (submenus hidden)
+        href: 'quiz-physics.html',
         submenu: [
             { href: 'quiz-physics.html', label: 'Physics' },
             { href: 'quiz-anatomy.html', label: 'Anatomy' },
@@ -59,12 +30,32 @@ const NAV_ITEMS = [
 ];
 
 /**
- * Get the current page filename from the URL
+ * Get the current page path from the URL
+ * Returns path relative to the project root (e.g., 'index.html' or 'sandbox/index.html')
  */
 function getCurrentPage() {
     const path = window.location.pathname;
+    
+    // Check if we're in a subdirectory like /sandbox/
+    if (path.includes('/sandbox/')) {
+        const filename = path.substring(path.lastIndexOf('/') + 1) || 'index.html';
+        return 'sandbox/' + filename;
+    }
+    
     const filename = path.substring(path.lastIndexOf('/') + 1) || 'index.html';
     return filename;
+}
+
+/**
+ * Detect if we're in a subdirectory and return path prefix
+ */
+function getPathPrefix() {
+    const path = window.location.pathname;
+    // Check if we're in a subdirectory like /sandbox/
+    if (path.includes('/sandbox/')) {
+        return '../';
+    }
+    return '';
 }
 
 /**
@@ -85,6 +76,7 @@ function isActiveItem(item, currentPage) {
  */
 function generateNavHTML(currentPage) {
     let html = '';
+    const prefix = getPathPrefix();
     
     for (const item of NAV_ITEMS) {
         const isActive = isActiveItem(item, currentPage);
@@ -96,7 +88,7 @@ function generateNavHTML(currentPage) {
             if (item.href) {
                 // Has both link and submenu (like Pressure)
                 const activeClass = item.href.split('#')[0] === currentPage ? ' class="active"' : '';
-                html += `<a href="${item.href}"${activeClass}>${item.label}</a>`;
+                html += `<a href="${prefix}${item.href}"${activeClass}>${item.label}</a>`;
             } else {
                 // Just a dropdown trigger (like Tests)
                 const activeClass = isActive ? ' class="active"' : '';
@@ -109,6 +101,8 @@ function generateNavHTML(currentPage) {
                 let subHref = sub.href;
                 if (sub.href.split('#')[0] === currentPage && sub.href.includes('#')) {
                     subHref = '#' + sub.href.split('#')[1];
+                } else {
+                    subHref = prefix + sub.href;
                 }
                 const subActiveClass = sub.href.split('#')[0] === currentPage ? ' class="active"' : '';
                 html += `<li><a href="${subHref}"${subActiveClass}>${sub.label}</a></li>`;
@@ -117,7 +111,7 @@ function generateNavHTML(currentPage) {
         } else {
             // Simple link
             const activeClass = isActive ? ' class="active"' : '';
-            html += `<li><a href="${item.href}"${activeClass}>${item.label}</a></li>`;
+            html += `<li><a href="${prefix}${item.href}"${activeClass}>${item.label}</a></li>`;
         }
     }
     

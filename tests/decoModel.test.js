@@ -580,3 +580,125 @@ describe('decoModel module', () => {
         });
     });
 });
+
+// =============================================================================
+// Integration Test: Full Deco Dive
+// =============================================================================
+
+import {
+    calculateTissueLoading,
+    getAdjustedMValue as getAdjustedMValueFn
+} from '../js/decoModel.js';
+
+import { generateDecoProfile } from '../js/diveSetup.js';
+
+describe('Full Deco Dive Integration', () => {
+    
+    describe('50m/20min with Air, EAN50, EAN100 at GF 100/100', () => {
+        // Setup: 50m, 20 min bottom time, air + EAN50 + EAN100, GF 100/100
+        const maxDepth = 50;
+        const bottomTime = 20;
+        const gases = [
+            { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 },
+            { id: 'ean50', name: 'EAN50', o2: 0.50, n2: 0.50, he: 0 },
+            { id: 'ean100', name: 'O2', o2: 1.00, n2: 0.00, he: 0 }
+        ];
+        const gfLow = 100;
+        const gfHigh = 100;
+        
+        let profile;
+        let results;
+        
+        beforeAll(() => {
+            // Generate the deco profile
+            profile = generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh);
+            
+            // Calculate tissue loading through the whole dive
+            results = calculateTissueLoading(profile.waypoints, 0, { gases });
+        });
+        
+        test('generates a valid deco profile', () => {
+            expect(profile).toBeDefined();
+            expect(profile.waypoints).toBeDefined();
+            expect(profile.waypoints.length).toBeGreaterThan(3);
+            expect(profile.requiresDeco).toBe(true);
+        });
+        
+        test('profile starts at surface and ends at surface', () => {
+            expect(profile.waypoints[0].depth).toBe(0);
+            expect(profile.waypoints[profile.waypoints.length - 1].depth).toBe(0);
+        });
+        
+        test('profile reaches max depth', () => {
+            const depths = profile.waypoints.map(wp => wp.depth);
+            expect(Math.max(...depths)).toBe(maxDepth);
+        });
+        
+        test('calculates descent time correctly (20 m/min)', () => {
+            const DESCENT_SPEED = 20;
+            const expectedDescentTime = Math.ceil(maxDepth / DESCENT_SPEED);
+            
+            // First waypoint at depth should be at descent time
+            const atDepthWaypoint = profile.waypoints.find(wp => wp.depth === maxDepth);
+            expect(atDepthWaypoint).toBeDefined();
+            expect(atDepthWaypoint.time).toBe(expectedDescentTime);
+        });
+        
+        test('has deco stops', () => {
+            expect(profile.decoStops).toBeDefined();
+            expect(profile.decoStops.length).toBeGreaterThan(0);
+        });
+        
+        test('no tissue exceeds M-value (GF High) at any point during dive', () => {
+            const gfHighDec = gfHigh / 100;
+            
+            // Check every time point
+            for (let i = 0; i < results.timePoints.length; i++) {
+                const time = results.timePoints[i];
+                const depth = results.depthPoints[i];
+                const ambientPressure = results.ambientPressures[i];
+                
+                // Check each compartment
+                COMPARTMENTS.forEach(comp => {
+                    const tissuePressure = results.compartments[comp.id].pressures[i];
+                    
+                    // Calculate M-value at this ambient pressure with GF High
+                    const mValue = getAdjustedMValueFn(ambientPressure, comp.aN2, comp.bN2, gfHighDec);
+                    
+                    // Tissue pressure should not exceed M-value
+                    // Allow small tolerance for floating point
+                    const exceedsMValue = tissuePressure > mValue + 0.001;
+                    
+                    if (exceedsMValue) {
+                        console.log(`VIOLATION at t=${time.toFixed(1)}min, depth=${depth.toFixed(1)}m`);
+                        console.log(`  Compartment ${comp.id}: tissue=${tissuePressure.toFixed(4)} > M-value=${mValue.toFixed(4)}`);
+                    }
+                    
+                    expect(exceedsMValue).toBe(false);
+                });
+            }
+        });
+        
+        test('uses EAN50 for shallow deco stops', () => {
+            // EAN50 MOD at 1.6 ppO2 is 22m, so it should be used at 21m or shallower
+            const stopsWithEan50 = profile.decoStops.filter(stop => stop.gas === 'EAN50');
+            expect(stopsWithEan50.length).toBeGreaterThan(0);
+            
+            // All EAN50 stops should be at 21m or shallower
+            stopsWithEan50.forEach(stop => {
+                expect(stop.depth).toBeLessThanOrEqual(21);
+            });
+        });
+        
+        test('uses O2 for shallowest deco stops', () => {
+            // O2 MOD at 1.6 ppO2 is 6m
+            const stopsWithO2 = profile.decoStops.filter(stop => stop.gas === 'O2');
+            expect(stopsWithO2.length).toBeGreaterThan(0);
+            
+            // All O2 stops should be at 6m or shallower
+            stopsWithO2.forEach(stop => {
+                expect(stop.depth).toBeLessThanOrEqual(6);
+            });
+        });
+    });
+});
