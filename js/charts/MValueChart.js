@@ -1002,7 +1002,7 @@ export class MValueChart {
                         pan: {
                             enabled: true,
                             mode: 'xy',
-                            modifierKey: 'shift',
+                            threshold: 10,
                             onPanComplete: () => {
                                 if (this.resetZoomBtn) {
                                     this.resetZoomBtn.style.display = 'block';
