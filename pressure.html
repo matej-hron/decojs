@@ -451,6 +451,21 @@
                     </tbody>
                 </table>
             </div>
+
+            <div class="concept-card info-card">
+                <h3>📐 Operational vs Physiological Partial Pressure</h3>
+                <p>There are two common contexts for partial pressure calculations:</p>
+                
+                <h4>Operational (MOD / gas limits)</h4>
+                <div class="formula">ppO_2 = F_{O_2} \times P_{amb}</div>
+                <p>Used for Maximum Operating Depth (MOD) and oxygen toxicity limits. No water vapour subtraction — this is the formula used throughout dive planning.</p>
+                
+                <h4>Physiological (tissue kinetics)</h4>
+                <div class="formula">pp_{inert} = F_{inert} \times (P_{amb} - P_{H_2O})</div>
+                <p>When calculating alveolar gas pressures for tissue loading models, we subtract water vapour pressure because the lungs humidify inspired air:</p>
+                <div class="formula">P_{H_2O} = 0.0627 \text{ bar at 37°C}</div>
+                <p>This ~6% reduction appears in the Bühlmann equations for tissue saturation calculations.</p>
+            </div>
         </section>
 
         <!-- Partial Pressure Limits Section -->
