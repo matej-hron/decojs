@@ -537,22 +537,6 @@ section[id],
     text-transform: uppercase;
 }
 
-/* Scope Note */
-.scope-note {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    border-left: 4px solid var(--primary-color);
-    padding: 1rem 1.5rem;
-    margin: 0 auto 1.5rem;
-    max-width: 900px;
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    line-height: 1.5;
-}
-
-.scope-note strong {
-    color: var(--text-color);
-}
-
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
     line-height: 1.6;
@@ -1534,36 +1518,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.4.12";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
-}
-
-/* ==========================================================================
-   Sandbox Links - "Open in Sandbox" links on theory pages
-   ========================================================================== */
-
-.sandbox-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    margin-top: 0.75rem;
-    padding: 0.4rem 0.75rem;
-    font-size: 0.85rem;
-    color: var(--primary-color);
-    text-decoration: none;
-    border: 1px solid transparent;
-    border-radius: var(--radius);
-    transition: all 0.15s ease;
-    float: right;
-}
-
-.sandbox-link:hover {
-    background: rgba(41, 128, 185, 0.1);
-    border-color: var(--primary-color);
-    text-decoration: none;
-}
-
-.sandbox-link:active {
-    background: rgba(41, 128, 185, 0.2);
+    content: "0.4.18";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -1774,28 +1729,9 @@ footer a {
     color: var(--text-muted);
 }
 
-/* Gradient Factors / Decompression Model */
+/* Gradient Factors */
 .dse-gf-content {
     margin-top: 0.75rem;
-}
-
-.dse-algorithm-row {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.dse-algorithm-row label {
-    font-weight: 500;
-    white-space: nowrap;
-}
-
-.dse-algorithm-select {
-    flex: 1;
-    max-width: 200px;
 }
 
 .dse-gf-row {
@@ -3083,6 +3019,14 @@ textarea.form-input {
     border-left-color: #9b59b6;
 }
 
+.term-marker.tdt {
+    background: #34495e;
+}
+
+.term-item:has(.term-marker.tdt) {
+    border-left-color: #34495e;
+}
+
 .term-marker.deco-stop {
     background: #e67e22;
 }
@@ -3221,59 +3165,6 @@ textarea.form-input {
 .concept-card.info-card {
     border-left: 4px solid var(--primary-color);
     background: linear-gradient(135deg, #f0f8ff 0%, var(--card-background) 100%);
-}
-
-/* ZH-L16 Variant Cards */
-.variant-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-    margin: 1.5rem 0;
-}
-
-.variant-card {
-    background: var(--card-background);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    padding: 1rem;
-}
-
-.variant-card h4 {
-    margin: 0 0 0.5rem 0;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-}
-
-.variant-badge {
-    font-size: 0.7rem;
-    font-weight: 500;
-    padding: 0.15rem 0.5rem;
-    border-radius: 1rem;
-    background: var(--border-color);
-    color: var(--text-muted);
-}
-
-.variant-badge-active {
-    background: var(--primary-color);
-    color: white;
-}
-
-.variant-card-active {
-    border-color: var(--primary-color);
-    background: linear-gradient(135deg, rgba(41, 128, 185, 0.05) 0%, var(--card-background) 100%);
-}
-
-.variant-use {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-top: 0.75rem;
-    margin-bottom: 0;
-}
-
-.highlight-row {
-    background: rgba(41, 128, 185, 0.08);
 }
 
 /* Highlight Box (Martini Rule etc) */
@@ -3809,5 +3700,244 @@ textarea.form-input {
         order: 2;
         width: 100%;
         flex: none;
+    }
+}
+
+/* Sandbox link */
+.sandbox-link {
+    display: block;
+    text-align: center;
+    margin-top: 2.5rem;
+    padding: 0.5rem 1rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.9rem;
+    position: relative;
+    z-index: 1;
+}
+
+.sandbox-link:hover {
+    text-decoration: underline;
+    color: var(--accent-hover, #3498db);
+}
+
+/* ==========================================================================
+   M-Values Page - Educational Components
+   ========================================================================== */
+
+/* Pressure Comparison Layout */
+.pressure-comparison {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: var(--background-color);
+    border-radius: var(--radius);
+}
+
+.pressure-item {
+    text-align: center;
+    padding: 1rem;
+    background: var(--card-background);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    flex: 1;
+    min-width: 150px;
+}
+
+.pressure-item strong {
+    display: block;
+    color: var(--primary-dark);
+    margin-bottom: 0.5rem;
+}
+
+.pressure-comparison-vs {
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    font-weight: bold;
+}
+
+/* Key Insight Box */
+.key-insight {
+    background: linear-gradient(135deg, #e8f6f3 0%, #d5f5e3 100%);
+    border: 1px solid #82e0aa;
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin: 1.5rem 0;
+}
+
+.key-insight h4 {
+    margin: 0 0 1rem 0;
+    color: #1e8449;
+}
+
+.key-insight table {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+/* Ratio Highlight (supersaturation ratios) */
+.ratio-highlight {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+    flex-wrap: wrap;
+}
+
+.ratio-box {
+    background: linear-gradient(135deg, #f4ecf7 0%, #e8daef 100%);
+    border: 1px solid #bb8fce;
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    text-align: center;
+    min-width: 180px;
+}
+
+.ratio-label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+}
+
+.ratio-value {
+    display: block;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #7d3c98;
+    margin: 0.25rem 0;
+}
+
+.ratio-desc {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    margin-top: 0.5rem;
+}
+
+.ratio-math {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.ratio-arrow {
+    font-size: 2rem;
+    color: var(--text-muted);
+}
+
+/* History Content in Learn More */
+.history-content {
+    padding: 1.5rem;
+}
+
+.history-content h4 {
+    color: var(--primary-dark);
+    margin: 1.5rem 0 0.5rem 0;
+    padding-bottom: 0.25rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.history-content h4:first-child {
+    margin-top: 0;
+}
+
+/* Formula Content in Learn More */
+.formula-content {
+    padding: 1.5rem;
+}
+
+.formula-content ul {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+}
+
+.formula-content li {
+    margin-bottom: 0.5rem;
+}
+
+/* Diagram Zones */
+.diagram-zones {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+}
+
+.zone-item {
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius);
+    border-left: 4px solid;
+}
+
+.zone-item .zone-marker {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+.zone-item .zone-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.zone-safe {
+    background: #f0e6f6;
+    border-left-color: #9b59b6;
+}
+
+.zone-offgas {
+    background: #e8f4fc;
+    border-left-color: #3498db;
+}
+
+.zone-super {
+    background: #e8f8f5;
+    border-left-color: #27ae60;
+}
+
+.zone-danger {
+    background: #fdedec;
+    border-left-color: #e74c3c;
+}
+
+/* Movement Guide */
+.movement-guide {
+    padding: 1.5rem;
+}
+
+.movement-guide ul {
+    margin: 0;
+    padding-left: 1.5rem;
+}
+
+.movement-guide li {
+    margin-bottom: 0.75rem;
+}
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+    .pressure-comparison {
+        flex-direction: column;
+    }
+    
+    .pressure-comparison-vs {
+        transform: rotate(90deg);
+        font-size: 1rem;
+    }
+    
+    .ratio-highlight {
+        flex-direction: column;
+    }
+    
+    .ratio-arrow {
+        transform: rotate(90deg);
     }
 }

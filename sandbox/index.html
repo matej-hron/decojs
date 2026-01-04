@@ -680,6 +680,11 @@
             <!-- M-Value Chart -->
             <div class="sandbox-chart-container">
                 <h3>📐 M-Value Diagram</h3>
+                <div class="export-config-panel">
+                    <div class="export-config-actions">
+                        <button id="export-mvalue-config-btn" class="btn btn-small btn-secondary">📋 Export Config</button>
+                    </div>
+                </div>
                 <div class="chart-wrapper" id="mvalue-container" style="height: 700px;"></div>
             </div>
             
@@ -1543,6 +1548,100 @@ const chart = new DiveProfileChart(
         exportConfigBtn.addEventListener('click', () => {
             const config = getCurrentChartConfig();
             showExportModal(config);
+        });
+        
+        // M-Value Chart Export Config
+        const exportMValueConfigBtn = document.getElementById('export-mvalue-config-btn');
+        
+        if (!exportMValueConfigBtn) {
+            console.error('Export M-Value Config button not found!');
+        }
+        
+        function getMValueChartConfig() {
+            // Get current dive setup from editor
+            const diveSetup = editor.getDiveSetup();
+            
+            // Get visible compartments from the chart
+            const visibleCompartments = mvalueChart.visibleCompartments 
+                ? Array.from(mvalueChart.visibleCompartments).sort((a, b) => a - b)
+                : mvalueChart.options?.compartments || [1, 2, 3, 4, 5, 6, 7, 8];
+            
+            // Get current time index
+            const currentTimeIndex = mvalueChart.currentTimeIndex ?? 0;
+            
+            return {
+                diveSetup: diveSetup,
+                options: {
+                    compartments: visibleCompartments,
+                    showMValueLines: mvalueChart.options?.showMValueLines ?? true,
+                    showGFLines: mvalueChart.options?.showGFLines ?? true,
+                    showAmbientLine: mvalueChart.options?.showAmbientLine ?? true,
+                    showSurfaceLine: mvalueChart.options?.showSurfaceLine ?? true,
+                    showTrail: mvalueChart.options?.showTrail ?? true,
+                    compartmentSelector: mvalueChart.options?.compartmentSelector ?? true
+                },
+                // Current playback position
+                timeIndex: currentTimeIndex
+            };
+        }
+        
+        function showMValueExportModal(config) {
+            const modal = document.createElement('div');
+            modal.className = 'export-modal';
+            modal.innerHTML = `
+                <div class="export-modal-content">
+                    <div class="export-modal-header">
+                        <h3>📋 M-Value Chart Configuration</h3>
+                        <button class="export-modal-close" title="Close">&times;</button>
+                    </div>
+                    <div class="export-modal-body">
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                            Copy this configuration to recreate this chart view:
+                        </p>
+                        <textarea id="mvalue-export-textarea" readonly>${JSON.stringify(config, null, 2)}</textarea>
+                    </div>
+                    <div class="export-modal-footer">
+                        <button class="btn btn-secondary copy-btn">📋 Copy to Clipboard</button>
+                        <button class="btn btn-secondary close-btn">Close</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            const textarea = modal.querySelector('#mvalue-export-textarea');
+            const copyBtn = modal.querySelector('.copy-btn');
+            const closeBtn = modal.querySelector('.close-btn');
+            const closeX = modal.querySelector('.export-modal-close');
+            
+            copyBtn.addEventListener('click', () => {
+                textarea.select();
+                navigator.clipboard.writeText(textarea.value).then(() => {
+                    copyBtn.textContent = '✓ Copied!';
+                    setTimeout(() => { copyBtn.textContent = '📋 Copy to Clipboard'; }, 2000);
+                });
+            });
+            
+            function closeModal() {
+                modal.remove();
+            }
+            
+            closeBtn.addEventListener('click', closeModal);
+            closeX.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+            
+            document.addEventListener('keydown', function escHandler(e) {
+                if (e.key === 'Escape') {
+                    closeModal();
+                    document.removeEventListener('keydown', escHandler);
+                }
+            });
+        }
+        
+        exportMValueConfigBtn.addEventListener('click', () => {
+            const config = getMValueChartConfig();
+            showMValueExportModal(config);
         });
         
         // =====================================================================

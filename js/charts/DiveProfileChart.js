@@ -73,6 +73,9 @@ export class DiveProfileChart {
         this.savedZoomState = null;
         this.hasUserZoomed = false;
         
+        // Track first render for animation (only animate initial load)
+        this.isFirstRender = true;
+        
         // Merge options with defaults
         this.options = mergeOptions(DEFAULT_DIVE_PROFILE_OPTIONS, config.options);
         this.environment = mergeOptions(DEFAULT_ENVIRONMENT, config.environment);
@@ -580,17 +583,19 @@ export class DiveProfileChart {
             }
         };
         
-        // Ascent label
+        // Ascent label - positioned at where ascent starts (bottom end)
         if (bottomEnd && bottomEnd.time < totalTime) {
             annotations.ascentLabel = {
                 type: 'label',
-                xValue: totalTime - 1,
-                yValue: -5,
-                content: ['⬆ ASCENT'],
+                xValue: bottomEnd.time + 1,
+                yValue: maxDepth,
+                content: ['ASCENT ⬆'],
                 backgroundColor: 'rgba(155, 89, 182, 0.9)',
                 color: 'white',
                 font: { size: 10, weight: 'bold' },
-                padding: { top: 3, bottom: 3, left: 6, right: 6 }
+                padding: { top: 3, bottom: 3, left: 6, right: 6 },
+                xAdjust: 0,
+                yAdjust: -15
             };
         }
         
@@ -605,6 +610,35 @@ export class DiveProfileChart {
             font: { size: 11, weight: 'bold' },
             padding: { top: 4, bottom: 4, left: 8, right: 8 },
             position: { x: 'end', y: 'center' }
+        };
+    }
+    
+    /**
+     * Add surface interval label if post-dive surface time is shown
+     * @private
+     */
+    _addSurfaceIntervalLabel(annotations, waypoints) {
+        if (!waypoints || waypoints.length < 2) return;
+        if (!this.diveSetup || !this.diveSetup.surfaceInterval) return;
+        
+        const surfaceInterval = this.diveSetup.surfaceInterval;
+        if (surfaceInterval <= 0) return;
+        
+        const lastWaypoint = waypoints[waypoints.length - 1];
+        const diveEndTime = lastWaypoint.time;
+        
+        // Surface interval label - positioned at dive end, to the right
+        // No lines/brackets - just a floating label indicating off-gassing continues
+        annotations.surfaceIntervalLabel = {
+            type: 'label',
+            xValue: diveEndTime,
+            yValue: -3,
+            content: ['SURFACE INTERVAL →'],
+            backgroundColor: 'rgba(52, 152, 219, 0.9)',
+            color: 'white',
+            font: { size: 10, weight: 'bold' },
+            padding: { top: 3, bottom: 3, left: 6, right: 6 },
+            xAdjust: 70
         };
     }
     
@@ -1114,6 +1148,7 @@ export class DiveProfileChart {
         // Profile labels (descent, bottom time, max depth, ascent) - only in depth mode
         if (this.options.showLabels) {
             this._addProfileLabels(annotations, waypoints, results);
+            this._addSurfaceIntervalLabel(annotations, waypoints);
         }
         
         // Stop labels (deco stops) - always shown
@@ -1206,7 +1241,7 @@ export class DiveProfileChart {
                 responsive: true,
                 maintainAspectRatio: false,
                 animation: {
-                    duration: this.options.animationDuration
+                    duration: this.isFirstRender ? this.options.animationDuration : 0
                 },
                 interaction: {
                     mode: 'index',
@@ -1289,6 +1324,9 @@ export class DiveProfileChart {
         
         // Create new chart
         this.chart = new Chart(this.canvas, config);
+        
+        // Mark first render complete (subsequent renders won't animate)
+        this.isFirstRender = false;
         
         // Restore zoom state if user had zoomed
         if (this.savedZoomState && this.hasUserZoomed) {

@@ -45,22 +45,6 @@
         </div>
     </nav>
 
-    <!-- Dive Profile Header Bar (Sticky) -->
-    <div class="profile-header-bar sticky">
-        <div class="profile-header-content">
-            <div class="profile-header-info">
-                <span class="profile-header-label">Profile:</span>
-                <select id="profile-switcher" class="profile-switcher">
-                    <!-- Options populated by JavaScript -->
-                </select>
-                <span id="profile-header-summary" class="profile-header-summary"></span>
-            </div>
-            <div class="profile-header-actions">
-                <a href="dive-setup.html" class="btn btn-small">✏️ Customize</a>
-            </div>
-        </div>
-    </div>
-
     <!-- Disclaimer Banner -->
     <div class="disclaimer-banner">
         ⚠️ <strong>Educational Use Only</strong> — This tool is NOT intended for real dive planning. 
@@ -69,142 +53,321 @@
 
     <header>
         <h1>📈 M-Values & Surfacing Limits</h1>
-        <p class="subtitle">Visualize the relationship between ambient pressure and tissue tolerance limits</p>
+        <p class="subtitle">Understanding the limits of supersaturation</p>
     </header>
 
     <main>
-        <!-- Chart Concept Description -->
-        <section class="concept-card">
-            <h3>📊 Understanding the M-Value Diagram</h3>
-            <p>
-                This chart plots <strong>Ambient Pressure</strong> (X-axis) against <strong>Tissue Inert Gas Pressure</strong> (Y-axis).
-                The chart is divided into zones by key reference lines:
-            </p>
+        <!-- What We Know So Far -->
+        <section class="education-section">
+            <h2>🔄 What We Know So Far</h2>
             
-            <div class="formula-block">
-                <h4>Key Lines</h4>
-                <ul>
-                    <li><strong>Alveolar Line (y = 0.79x)</strong> — Where tissue pressure equals alveolar ppN₂ (for air).
-                        Points above this line are <em>off-gassing</em>.</li>
-                    <li><strong>Ambient Line (y = x)</strong> — Where tissue pressure equals ambient pressure. 
-                        Points above this line are <em>supersaturated</em>.</li>
-                    <li><strong>M-Value Line</strong> — Critical supersaturation limit:
-                        <div class="formula" id="formula-mvalue">P_{tissue,tol} = a + \frac{P_{amb}}{b}</div>
-                    </li>
-                    <li><strong>Surface Line (x = 1 bar)</strong> — Sea level ambient pressure reference.</li>
-                </ul>
-            </div>
+            <div class="concept-card">
+                <h3>The Pressure Relationships</h3>
+                <p>
+                    From the previous sections, we learned about three key pressures and how they relate:
+                </p>
+                
+                <div class="pressure-comparison">
+                    <div class="pressure-item">
+                        <strong>Tissue Inert Gas Pressure</strong>
+                        <p class="hint">The nitrogen (or helium) dissolved in body tissues</p>
+                    </div>
+                    <div class="pressure-comparison-vs">vs</div>
+                    <div class="pressure-item">
+                        <strong>Alveolar Pressure</strong>
+                        <p class="hint">The ppN₂ in our lungs (≈0.79 × ambient for air)</p>
+                    </div>
+                    <div class="pressure-comparison-vs">vs</div>
+                    <div class="pressure-item">
+                        <strong>Ambient Pressure</strong>
+                        <p class="hint">Total pressure at current depth</p>
+                    </div>
+                </div>
 
-            <div class="formula-block">
-                <h4>Chart Zones</h4>
-                <table class="simple-table">
-                    <tr>
-                        <td><strong>Below Alveolar Line</strong></td>
-                        <td>Undersaturated — tissue still absorbing gas (on-gassing)</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Between Alveolar & Ambient</strong></td>
-                        <td>Off-gassing, not yet supersaturated</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Between Ambient & M-Value</strong></td>
-                        <td>Supersaturated but within tolerable limits</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Above M-Value Line</strong></td>
-                        <td>⚠️ Critical supersaturation — bubble formation risk!</td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="formula-block">
-                <h4>Movement During a Dive</h4>
-                <ul>
-                    <li><strong>Descent:</strong> Move <em>right</em> (↑ ambient) and <em>up</em> (↑ tissue loading)</li>
-                    <li><strong>At depth:</strong> Stay at same X, slowly move <em>up</em> toward ambient line (saturation)</li>
-                    <li><strong>Ascent:</strong> Move <em>left</em> (↓ ambient), entering supersaturation zone</li>
-                </ul>
-                <p>⚠️ Ascending too fast moves you left faster than you off-gas down — risking crossing the M-value line!</p>
+                <div class="key-insight">
+                    <h4>💡 The Key Insight</h4>
+                    <table class="simple-table">
+                        <tr>
+                            <td><strong>Tissue &gt; Alveolar</strong></td>
+                            <td>✅ Off-gassing — nitrogen flows from tissue to lungs. <em>This is good!</em></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tissue &gt; Ambient</strong></td>
+                            <td>⚠️ Supersaturation — dissolved gas exceeds what pressure can hold. <em>Bubble risk!</em></td>
+                        </tr>
+                    </table>
+                    <p style="margin-top: 1rem;">
+                        The challenge: during ascent, we <em>want</em> tissue pressure to exceed alveolar (to off-gas), 
+                        but we need to limit how much it exceeds ambient pressure (to avoid bubbles).
+                    </p>
+                </div>
             </div>
         </section>
 
-        <!-- Gradient Factors Explanation -->
-        <section class="concept-card">
-            <h3>🎚️ Gradient Factors (GF)</h3>
-            <p>
-                Gradient Factors are a way to add <strong>conservatism</strong> to the Bühlmann algorithm. 
-                Instead of allowing tissues to reach the raw M-value limit, we use only a <em>fraction</em> of the allowed supersaturation.
-            </p>
+        <!-- The Supersaturation Problem -->
+        <section class="education-section">
+            <h2>🫧 The Supersaturation Problem</h2>
             
-            <div class="formula-block">
-                <h4>How GF Works</h4>
-                <p>The GF-adjusted M-value is calculated as:</p>
-                <div class="formula" id="formula-gf">M_{adjusted} = P_{amb} + GF \times (M_{raw} - P_{amb})</div>
-                <ul>
-                    <li><strong>GF = 100%</strong> — Use full Bühlmann M-value (no conservatism)</li>
-                    <li><strong>GF = 70%</strong> — Use only 70% of the allowed supersaturation</li>
-                    <li><strong>GF = 0%</strong> — No supersaturation allowed (tissue must equal ambient)</li>
-                </ul>
-            </div>
+            <div class="concept-card">
+                <h3>Critical Supersaturation</h3>
+                <p>
+                    When tissue pressure exceeds ambient pressure, we're in a state called <strong>supersaturation</strong>. 
+                    Think of it like a carbonated drink—the CO₂ is dissolved under pressure. Open the bottle (reduce pressure) 
+                    and bubbles form.
+                </p>
+                <p>
+                    The same happens in our tissues if we ascend too fast. But here's the fascinating discovery: 
+                    the body can tolerate <em>some</em> supersaturation without forming dangerous bubbles. 
+                    The question is: <strong>how much?</strong>
+                </p>
+                
+                <div class="ratio-highlight">
+                    <div class="ratio-box">
+                        <span class="ratio-label">Early finding</span>
+                        <span class="ratio-value">2:1</span>
+                        <span class="ratio-desc">Divers could ascend from 10m to surface safely</span>
+                        <span class="ratio-math">(2 bar → 1 bar ambient)</span>
+                    </div>
+                    <div class="ratio-arrow">→</div>
+                    <div class="ratio-box">
+                        <span class="ratio-label">Refined to</span>
+                        <span class="ratio-value">1.58:1</span>
+                        <span class="ratio-desc">More accurate critical ratio</span>
+                        <span class="ratio-math">(accounting for tissue specifics)</span>
+                    </div>
+                </div>
 
-            <div class="formula-block">
-                <h4>GF Low / GF High</h4>
-                <p>Two gradient factors control different phases of the ascent:</p>
-                <table class="simple-table">
-                    <tr>
-                        <td><strong>GF Low</strong></td>
-                        <td>Applied at the <em>first (deepest) deco stop</em>. Controls how deep your first stop is.</td>
-                    </tr>
-                    <tr>
-                        <td><strong>GF High</strong></td>
-                        <td>Applied at the <em>surface</em>. Controls how much supersaturation is allowed when you surface.</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Between stops</strong></td>
-                        <td>GF is <em>linearly interpolated</em> between GF Low at first stop and GF High at surface.</td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="formula-block">
-                <h4>Common GF Settings</h4>
-                <table class="simple-table">
-                    <tr>
-                        <td><strong>GF 100/100</strong></td>
-                        <td>Raw Bühlmann — theoretical limits, not recommended for diving</td>
-                    </tr>
-                    <tr>
-                        <td><strong>GF 70/85</strong></td>
-                        <td>Moderate conservatism — popular starting point</td>
-                    </tr>
-                    <tr>
-                        <td><strong>GF 50/80</strong></td>
-                        <td>More conservative — deeper first stop, common for technical diving</td>
-                    </tr>
-                    <tr>
-                        <td><strong>GF 30/85</strong></td>
-                        <td>Very deep stops — now considered potentially counterproductive</td>
-                    </tr>
-                </table>
-                <p class="note">⚠️ Recent research (U.S. Navy, NEDU) suggests very low GF Low values may not reduce DCS risk and could increase it.</p>
+                <details class="learn-more">
+                    <summary>📚 The History: How We Discovered Safe Limits</summary>
+                    <div class="history-content">
+                        <h4>John Scott Haldane (1908)</h4>
+                        <p>
+                            The Scottish physiologist observed that workers in compressed-air tunnels and caissons could 
+                            safely decompress from 2 atmospheres to 1 (a 2:1 ratio). This became the foundation of 
+                            staged decompression—if the body can tolerate 2:1, we can plan safe depth-ratio ascents.
+                        </p>
+                        
+                        <h4>Robert Workman (1960s)</h4>
+                        <p>
+                            U.S. Navy researcher who discovered the 2:1 ratio wasn't quite accurate and varied by tissue type. 
+                            He coined the term <strong>"M-value"</strong> (Maximum value) for the maximum tolerable tissue 
+                            pressure at any given depth. His refined ratio of approximately 1.58:1 accounted for the fact that 
+                            different tissues have different tolerances.
+                        </p>
+                        <p class="hint">
+                            Workman's key insight: faster tissues (brain, blood) tolerate higher supersaturation than 
+                            slower tissues (fat, bones).
+                        </p>
+                    </div>
+                </details>
             </div>
         </section>
 
-        <!-- Chart Section -->
-        <section id="mvalue-chart-section" class="chart-section">
-            <h2>📈 M-Value Pressure Diagram</h2>
-            <div id="mvalue-chart-container" style="min-height: 500px;">
+        <!-- Bühlmann's Solution -->
+        <section class="education-section">
+            <h2>🧮 Bühlmann's Solution</h2>
+            
+            <div class="concept-card">
+                <h3>Tissue-Specific Limits</h3>
+                <p>
+                    Swiss physician <strong>Prof. Albert A. Bühlmann</strong> took this further in his ZH-L16 algorithm. 
+                    Instead of a single ratio for all tissues, he defined specific tolerance limits for each of the 
+                    16 tissue compartments.
+                </p>
+                
+                <div class="key-insight">
+                    <h4>The Core Concept</h4>
+                    <p>
+                        Each tissue compartment has its own <strong>M-value line</strong> that defines the maximum 
+                        tolerable tissue pressure for any given ambient pressure. This is the limit—cross it, and 
+                        bubble formation becomes likely.
+                    </p>
+                    <ul>
+                        <li><strong>Faster tissues</strong> (short half-times like 5 min) → tolerate MORE supersaturation</li>
+                        <li><strong>Slower tissues</strong> (long half-times like 635 min) → tolerate LESS supersaturation</li>
+                    </ul>
+                </div>
+
+                <details class="learn-more">
+                    <summary>📐 The Formula Behind M-Values</summary>
+                    <div class="formula-content">
+                        <p>Bühlmann's M-value formula for each compartment:</p>
+                        <div class="formula" id="formula-mvalue">M = a + \frac{P_{amb}}{b}</div>
+                        <p>Where:</p>
+                        <ul>
+                            <li><strong>M</strong> = Maximum tolerable tissue inert gas pressure (bar)</li>
+                            <li><strong>P<sub>amb</sub></strong> = Ambient pressure at current depth (bar)</li>
+                            <li><strong>a</strong> = Intercept coefficient (bar) — tissue-specific</li>
+                            <li><strong>b</strong> = Slope coefficient (dimensionless) — tissue-specific</li>
+                        </ul>
+                        <p class="hint" style="margin-top: 1rem;">
+                            The "a" coefficient represents the base tolerance at very low ambient pressure. 
+                            Faster tissues have higher "a" values, meaning they can handle more supersaturation.
+                        </p>
+                    </div>
+                </details>
+            </div>
+        </section>
+
+        <!-- The M-Value Diagram -->
+        <section class="education-section">
+            <h2>📊 The Pressure-Pressure Diagram</h2>
+            
+            <div class="concept-card">
+                <h3>Visualizing the Limits</h3>
+                <p>
+                    The chart below plots <strong>Ambient Pressure</strong> (X-axis) against <strong>Tissue N₂ Pressure</strong> (Y-axis). 
+                    Watch how your tissue compartments move through the different zones during a dive:
+                </p>
+                
+                <div class="diagram-zones">
+                    <div class="zone-item zone-offgas">
+                        <span class="zone-marker">Below blue line (y = x)</span>
+                        <span class="zone-desc">Tissue pressure &lt; ambient (not supersaturated)</span>
+                    </div>
+                    <div class="zone-item zone-super">
+                        <span class="zone-marker">Between blue & M-value lines</span>
+                        <span class="zone-desc">Supersaturated but safe ✓</span>
+                    </div>
+                    <div class="zone-item zone-danger">
+                        <span class="zone-marker">Above tissue's M-value line</span>
+                        <span class="zone-desc">⚠️ Critical supersaturation!</span>
+                    </div>
+                </div>
+
+                <details class="learn-more">
+                    <summary>🎯 How to Read the Movement</summary>
+                    <div class="movement-guide">
+                        <ul>
+                            <li><strong>Descent:</strong> Move <em>right</em> (↑ ambient) and <em>up</em> (↑ tissue loading)</li>
+                            <li><strong>At depth:</strong> Stay at same X position, slowly move <em>up</em> toward equilibrium</li>
+                            <li><strong>Ascent:</strong> Move <em>left</em> (↓ ambient) — this is where you enter supersaturation</li>
+                        </ul>
+                        <p class="hint">
+                            ⚠️ The danger: ascending too fast moves you left faster than you off-gas down — 
+                            risking crossing above the M-value line!
+                        </p>
+                    </div>
+                </details>
+            </div>
+            
+            <!-- Example 1: Safe Dive with Safety Stop -->
+            <h3 style="margin-top: 2rem; margin-bottom: 0.5rem;">✅ Example 1: Safe Dive (30m/28min with Safety Stop)</h3>
+            <p style="margin-bottom: 1rem; color: var(--text-muted);">
+                This dive includes a 10-minute safety stop at 3m. Notice how the tissue pressure 
+                stays well below the M-value line throughout the ascent.
+            </p>
+            
+            <h4 style="margin-top: 1rem; margin-bottom: 0.5rem;">📊 Dive Profile</h4>
+            <div id="profile-chart-container" style="height: 250px;">
+                <!-- DiveProfileChart component renders here -->
+            </div>
+            
+            <h4 style="margin-top: 1.5rem; margin-bottom: 0.5rem;">📈 Pressure-Pressure Diagram</h4>
+            <div id="mvalue-chart-container" style="height: 500px;">
                 <!-- MValueChart component renders here -->
             </div>
-            <div class="chart-legend">
-                <p><strong>X-axis (Ambient Pressure):</strong> Total pressure at current depth. 1 bar = surface, 2 bar = 10m, etc.</p>
-                <p><strong>Y-axis (Tissue N₂ Pressure):</strong> Partial pressure of nitrogen dissolved in the selected tissue compartment.</p>
-                <p><strong>Purple dashed (Alveolar ppN₂):</strong> y = 0.79x. Above this line = tissue is off-gassing.</p>
-                <p><strong>Blue dashed (Ambient Line):</strong> y = x. Above this line = tissue is supersaturated (more N₂ than ambient can hold).</p>
-                <p><strong>Colored line (M-Value):</strong> Maximum tolerable tissue pressure — critical supersaturation. Crossing this = DCS risk.</p>
-                <p><strong>Gray dotted (Surface):</strong> x = 1 bar. The tissue point must be below the M-value line when reaching this.</p>
-                <p><strong>Trail:</strong> The path traced by the tissue point throughout the dive.</p>
+            
+            <a href="sandbox/" class="sandbox-link" target="_blank" id="safe-dive-sandbox-link">
+                🔬 Open in Sandbox →
+            </a>
+            
+            <!-- Example 2: Ceiling Violation -->
+            <h3 style="margin-top: 2.5rem; margin-bottom: 0.5rem;">⚠️ Example 2: Ceiling Violation (DANGEROUS!)</h3>
+            <p style="margin-bottom: 1rem; color: var(--danger-color);">
+                <strong>Same dive, but with a direct ascent to surface.</strong> Watch how the tissue pressure 
+                crosses above the M-value line — this is a decompression sickness risk!
+            </p>
+            
+            <h4 style="margin-top: 1rem; margin-bottom: 0.5rem;">📊 Dive Profile</h4>
+            <div id="violation-profile-chart-container" style="height: 250px;">
+                <!-- DiveProfileChart component renders here -->
             </div>
+            
+            <h4 style="margin-top: 1.5rem; margin-bottom: 0.5rem;">📈 Pressure-Pressure Diagram</h4>
+            <div id="violation-mvalue-chart-container" style="height: 500px;">
+                <!-- MValueChart component renders here -->
+            </div>
+            
+            <a href="sandbox/" class="sandbox-link" target="_blank" id="violation-sandbox-link">
+                🔬 Open in Sandbox →
+            </a>
+            
+            <div class="chart-legend" style="margin-top: 1.5rem;">
+                <details class="learn-more">
+                    <summary>📖 Chart Legend</summary>
+                    <div style="padding: 1rem;">
+                        <p><strong>Blue solid (Ambient Line):</strong> y = x. Above this = tissue is supersaturated.</p>
+                        <p><strong>Gray dashed (Surface):</strong> x = 1 bar. Must be below M-value when reaching this.</p>
+                        <p><strong>Colored dashed (M-Value):</strong> Critical limit for each tissue. Each tissue compartment has its own color.</p>
+                        <p><strong>Trail:</strong> The path traced by the tissue point throughout the dive.</p>
+                    </div>
+                </details>
+            </div>
+        </section>
+
+        <!-- Gradient Factors - Collapsed by Default -->
+        <section class="education-section" id="gf-section">
+            <details class="advanced-section">
+                <summary><h2 style="display: inline;">🎚️ Gradient Factors (Advanced)</h2></summary>
+                
+                <div class="concept-card" style="margin-top: 1rem;">
+                    <h3>Adding Conservatism</h3>
+                    <p>
+                        Gradient Factors (GF) are a way to add <strong>conservatism</strong> to the Bühlmann algorithm. 
+                        Instead of allowing tissues to reach the raw M-value limit, we use only a <em>fraction</em> of the allowed supersaturation.
+                    </p>
+                    
+                    <div class="formula-block">
+                        <h4>GF Low / GF High</h4>
+                        <table class="simple-table">
+                            <tr>
+                                <td><strong>GF Low</strong></td>
+                                <td>Applied at the <em>first (deepest) deco stop</em>. Controls how deep stops start.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>GF High</strong></td>
+                                <td>Applied at the <em>surface</em>. Controls final supersaturation when you surface.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Between</strong></td>
+                                <td>GF is <em>linearly interpolated</em> between GF Low and GF High.</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="formula-block">
+                        <h4>Common Settings</h4>
+                        <table class="simple-table">
+                            <tr>
+                                <td><strong>GF 100/100</strong></td>
+                                <td>Raw Bühlmann — theoretical limits, not recommended</td>
+                            </tr>
+                            <tr>
+                                <td><strong>GF 70/85</strong></td>
+                                <td>Moderate conservatism — popular starting point</td>
+                            </tr>
+                            <tr>
+                                <td><strong>GF 50/80</strong></td>
+                                <td>More conservative — common for technical diving</td>
+                            </tr>
+                        </table>
+                        <p class="note">⚠️ Research suggests very low GF Low values (like 30%) may not reduce DCS risk.</p>
+                    </div>
+
+                    <details class="learn-more">
+                        <summary>📐 The GF Formula</summary>
+                        <div class="formula-content">
+                            <div class="formula" id="formula-gf">M_{adjusted} = P_{amb} + GF \times (M_{raw} - P_{amb})</div>
+                            <ul>
+                                <li><strong>GF = 100%</strong> — Full Bühlmann M-value (no conservatism)</li>
+                                <li><strong>GF = 70%</strong> — Use only 70% of allowed supersaturation</li>
+                                <li><strong>GF = 0%</strong> — No supersaturation allowed</li>
+                            </ul>
+                        </div>
+                    </details>
+                </div>
+            </details>
         </section>
 
         <!-- ZH-L16A Coefficients Reference -->
@@ -244,102 +407,132 @@
     <!-- M-Values chart using MValueChart component -->
     <script type="module">
         import { MValueChart } from './js/charts/MValueChart.js';
-        import { loadDiveSetup, formatDiveSetupSummary } from './js/diveSetup.js';
+        import { DiveProfileChart } from './js/charts/DiveProfileChart.js';
         import { COMPARTMENTS } from './js/tissueCompartments.js';
         
-        let chart = null;
-        let availableProfiles = [];
+        // Default example dive for this educational page: 30m for 28 min + 10 min safety stop at 3m
+        const exampleDiveSetup = {
+            name: "30m Dive with Safety Stop",
+            description: "A 30m dive for 28 minutes with a 10-minute safety stop at 3m",
+            gases: [
+                {
+                    id: "air",
+                    name: "Air",
+                    o2: 0.21,
+                    n2: 0.79,
+                    he: 0,
+                    cylinderVolume: 18,
+                    startPressure: 200
+                }
+            ],
+            dives: [
+                {
+                    waypoints: [
+                        { time: 0, depth: 0, gasId: "air" },
+                        { time: 2, depth: 30, gasId: "air" },
+                        { time: 30, depth: 30, gasId: "air" },
+                        { time: 33, depth: 3, gasId: "air" },
+                        { time: 43, depth: 3, gasId: "air" },
+                        { time: 44, depth: 0, gasId: "air" }
+                    ]
+                }
+            ],
+            algorithm: "ZH-L16C",
+            gfLow: 100,
+            gfHigh: 100,
+            surfaceInterval: 0.1,
+            units: { depth: "meters", time: "minutes", pressure: "bar" }
+        };
+        
+        // Dangerous example: Direct ascent breaking the ceiling
+        const ceilingViolationSetup = {
+            name: "⚠️ Ceiling Violation (Dangerous!)",
+            description: "30m for 28 min with direct ascent - BREAKS THE CEILING",
+            gases: [
+                {
+                    id: "air",
+                    name: "Air",
+                    o2: 0.21,
+                    n2: 0.79,
+                    he: 0,
+                    cylinderVolume: 18,
+                    startPressure: 200
+                }
+            ],
+            dives: [
+                {
+                    waypoints: [
+                        { time: 0, depth: 0, gasId: "air" },
+                        { time: 2, depth: 30, gasId: "air" },
+                        { time: 30, depth: 30, gasId: "air" },
+                        { time: 33, depth: 0, gasId: "air" }
+                    ]
+                }
+            ],
+            algorithm: "ZH-L16C",
+            gfLow: 100,
+            gfHigh: 100,
+            surfaceInterval: 0.1,
+            units: { depth: "meters", time: "minutes", pressure: "bar" }
+        };
         
         // Initialize
-        document.addEventListener('DOMContentLoaded', async () => {
-            await initProfileSwitcher();
-            await loadSelectedProfile();
+        document.addEventListener('DOMContentLoaded', () => {
+            renderExampleCharts();
             populateCoefficientsTable();
         });
         
-        // Profile switcher initialization
-        async function initProfileSwitcher() {
-            const selector = document.getElementById('profile-switcher');
-            if (!selector) return;
+        // Render both example charts
+        function renderExampleCharts() {
+            // Safe dive example
+            const safeProfileContainer = document.getElementById('profile-chart-container');
+            const safeMValueContainer = document.getElementById('mvalue-chart-container');
             
-            try {
-                const [profilesResponse, setupData] = await Promise.all([
-                    fetch('data/dive-profiles.json'),
-                    loadDiveSetup()
-                ]);
-                
-                const profilesData = await profilesResponse.json();
-                availableProfiles = profilesData.profiles || [];
-                
-                // Add "Current Setup" option first
-                const currentOption = document.createElement('option');
-                currentOption.value = 'current-setup';
-                currentOption.textContent = '⚙️ ' + (setupData.name || 'Current Setup');
-                selector.appendChild(currentOption);
-                
-                // Add separator
-                const separator = document.createElement('option');
-                separator.disabled = true;
-                separator.textContent = '──────────';
-                selector.appendChild(separator);
-                
-                // Add preset profiles
-                availableProfiles.forEach(profile => {
-                    const option = document.createElement('option');
-                    option.value = profile.id;
-                    option.textContent = profile.name;
-                    selector.appendChild(option);
-                });
-                
-                selector.value = 'current-setup';
-                selector.addEventListener('change', loadSelectedProfile);
-            } catch (error) {
-                console.error('Failed to load profiles:', error);
-            }
-        }
-        
-        // Load and display selected profile
-        async function loadSelectedProfile() {
-            const selector = document.getElementById('profile-switcher');
-            const summary = document.getElementById('profile-header-summary');
-            
-            let diveSetup;
-            
-            if (selector.value === 'current-setup') {
-                diveSetup = await loadDiveSetup();
-            } else {
-                const profile = availableProfiles.find(p => p.id === selector.value);
-                if (profile) {
-                    diveSetup = profile;
-                } else {
-                    diveSetup = await loadDiveSetup();
+            new DiveProfileChart(safeProfileContainer, {
+                diveSetup: exampleDiveSetup,
+                options: {
+                    fullscreenButton: true
                 }
-            }
+            });
             
-            // Update summary
-            if (summary) {
-                summary.textContent = formatDiveSetupSummary(diveSetup);
-            }
+            new MValueChart(safeMValueContainer, {
+                diveSetup: exampleDiveSetup,
+                options: {
+                    compartments: [1],
+                    compartmentSelector: true,
+                    showMValueLines: true,
+                    showGFLines: true,
+                    showAmbientLine: true,
+                    showSurfaceLine: true,
+                    showTrail: true,
+                    fullscreenButton: true
+                }
+            });
             
-            // Create or update chart
-            const container = document.getElementById('mvalue-chart-container');
+            // Ceiling violation example
+            const violationProfileContainer = document.getElementById('violation-profile-chart-container');
+            const violationMValueContainer = document.getElementById('violation-mvalue-chart-container');
             
-            if (chart) {
-                chart.update(diveSetup);
-            } else {
-                chart = new MValueChart(container, {
-                    diveSetup: diveSetup,
-                    options: {
-                        compartments: [1, 2, 3, 4, 5, 6, 7, 8],
-                        compartmentSelector: true,
-                        showMValueLines: true,
-                        showGFLines: true,
-                        showAmbientLine: true,
-                        showTrail: true,
-                        fullscreenButton: true
-                    }
-                });
-            }
+            new DiveProfileChart(violationProfileContainer, {
+                diveSetup: ceilingViolationSetup,
+                options: {
+                    fullscreenButton: true
+                }
+            });
+            
+            new MValueChart(violationMValueContainer, {
+                diveSetup: ceilingViolationSetup,
+                options: {
+                    compartments: [1],
+                    compartmentSelector: true,
+                    showMValueLines: true,
+                    showGFLines: true,
+                    showAmbientLine: true,
+                    showSurfaceLine: true,
+                    showTrail: true,
+                    fullscreenButton: true
+                }
+            });
         }
         
         // Populate ZH-L16A coefficients table

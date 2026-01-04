@@ -400,6 +400,11 @@
             <div class="concept-card" id="half-time-concept">
                 <h3>⏱️ The Half-Time Concept</h3>
                 <p>
+                    We've seen <em>what</em> happens during on-gassing and off-gassing — now let's explore 
+                    <strong>how these processes unfold over time</strong>. Like radioactive decay and many other 
+                    natural phenomena, gas diffusion in tissues follows a predictable mathematical pattern.
+                </p>
+                <p>
                     A tissue's <strong>half-time</strong> is how long it takes to become 50% saturated (or 50% desaturated) 
                     at a given pressure difference. After each half-time period:
                 </p>
@@ -419,11 +424,11 @@
                 </div>
                 <p>A 5-minute compartment reaches 50% saturation in 5 minutes; a 635-minute compartment takes over 10 hours!</p>
                 
-                <h4 style="margin-top: 1.5rem;">The Pressure Delta Effect</h4>
+                <h4 style="margin-top: 1.5rem;">The Pressure Gradient Effect</h4>
                 <p>
-                    The key insight is that half-time determines <em>how quickly</em> you move toward equilibrium, 
-                    but the <strong>pressure difference (delta)</strong> determines <em>how much</em> you gain or lose 
-                    in absolute terms per half-time.
+                    A tissue's half-time is constant — it always takes the same time to close <strong>50% of the gap</strong> 
+                    between current tissue pressure and the target. But when that gap is larger, 50% represents 
+                    more gas in absolute terms.
                 </p>
                 <p>
                     <strong>Example:</strong> If a tissue needs to off-gas 2 bar of nitrogen, switching from air 
@@ -583,36 +588,6 @@
                         <p class="variant-use">💻 Used for: Dive computers (most common today)</p>
                     </div>
                 </div>
-                
-                <details class="learn-more">
-                    <summary>📊 Variant Differences in 'a' Coefficients</summary>
-                    <div class="math-content">
-                        <p>
-                            The 'a' coefficient determines the <strong>y-intercept</strong> of the M-value line. 
-                            <em>Lower 'a' values = more conservative</em> (less supersaturation allowed).
-                        </p>
-                        <table class="data-table small-table">
-                            <thead>
-                                <tr>
-                                    <th>Compartment</th>
-                                    <th>ZH-L16A</th>
-                                    <th>ZH-L16B</th>
-                                    <th>ZH-L16C</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr><td>1–4</td><td colspan="3" style="text-align:center;">Same across all variants</td></tr>
-                                <tr class="highlight-row"><td>5</td><td>0.6667</td><td>0.5600</td><td><strong>0.5282</strong></td></tr>
-                                <tr class="highlight-row"><td>6</td><td>0.5933</td><td>0.4947</td><td><strong>0.4701</strong></td></tr>
-                                <tr class="highlight-row"><td>7</td><td>0.5282</td><td>0.4500</td><td><strong>0.4187</strong></td></tr>
-                                <tr class="highlight-row"><td>8</td><td>0.4701</td><td>0.4187</td><td><strong>0.3798</strong></td></tr>
-                                <tr><td>9–15</td><td colspan="2" style="text-align:center;">Various</td><td><strong>More conservative</strong></td></tr>
-                                <tr><td>16</td><td colspan="3" style="text-align:center;">0.2327 (same)</td></tr>
-                            </tbody>
-                        </table>
-                        <p class="footnote">This application uses <strong>ZH-L16C</strong> as the default, matching modern dive computers.</p>
-                    </div>
-                </details>
             </div>
         </section>
 
@@ -623,19 +598,6 @@
             </div>
             <div id="tissue-chart-container" class="chart-wrapper" style="height: 600px;"></div>
             <p class="timeline-hint">↑↓ move tissues | Shift+↑ expand | Shift+↓ shrink</p>
-            <div class="chart-legend">
-                <p><strong>Left axis (N₂ Pressure):</strong> Shows nitrogen pressure in each tissue compartment. 
-                   Higher values = more nitrogen dissolved.</p>
-                <p><strong>Right axis (Depth):</strong> Shows the dive profile (depth increases downward).</p>
-                <p><strong>Green dashed line (Alveolar N₂):</strong> The N₂ pressure in your lungs — this is what 
-                   tissues are trying to equilibrate towards. When tissue &lt; alveolar, you're on-gassing; 
-                   when tissue &gt; alveolar, you're off-gassing. The crossover is where tissue loading peaks.</p>
-                <p><strong>Red dashed line (Ambient Pressure):</strong> The total pressure at current depth. 
-                   Bubble risk increases when tissue inert-gas tension exceeds ambient pressure beyond an 
-                   allowable gradient (defined by M-values / gradient factors). Some supersaturation is normal 
-                   and permitted during controlled ascents.</p>
-                <p><strong>Gray dashed line (Surface Saturation):</strong> Equilibrium N₂ pressure at surface (~0.79 bar).</p>
-            </div>
             
             <a id="tissue-sandbox-link" href="sandbox/" class="sandbox-link" target="_blank">
                 🔬 Open in Sandbox →
@@ -761,5 +723,31 @@
 
     <!-- Shared Navigation -->
     <script src="js/nav.js" type="module"></script>
+    
+    <!-- KaTeX auto-render -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof renderMathInElement === 'function') {
+                renderMathInElement(document.body, {
+                    delimiters: [
+                        { left: '$$', right: '$$', display: true },
+                        { left: '$', right: '$', display: false }
+                    ]
+                });
+            }
+            // Also render formulas in .formula elements
+            document.querySelectorAll('.formula').forEach(el => {
+                if (typeof katex !== 'undefined') {
+                    katex.render(el.textContent, el, { displayMode: true });
+                }
+            });
+            // Render inline formulas
+            document.querySelectorAll('.formula-inline').forEach(el => {
+                if (typeof katex !== 'undefined') {
+                    katex.render(el.textContent, el, { displayMode: false });
+                }
+            });
+        });
+    </script>
 </body>
 </html>

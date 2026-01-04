@@ -284,7 +284,8 @@ function initOngassingChart() {
                     ticks: {
                         maxTicksLimit: 7,
                         callback: (value, index) => {
-                            const t = index / 10;
+                            // With 0.5 step data: index 0=0T, 2=1T, 4=2T, etc.
+                            const t = index / 2;
                             return Number.isInteger(t) ? `${t}T` : '';
                         }
                     }
@@ -309,7 +310,8 @@ function calculateOngassing(targetPpN2, initialPpN2 = SURFACE_ALVEOLAR_N2) {
     const halfTimes = [];
     const pressures = [];
     
-    for (let t = 0; t <= 6; t += 0.1) {
+    // Use 0.5 half-time steps for less sensitive hover (0, 0.5, 1, 1.5, ... 6)
+    for (let t = 0; t <= 6; t += 0.5) {
         halfTimes.push(t);
         const pressure = targetPpN2 + (initialPpN2 - targetPpN2) * Math.exp(-Math.LN2 * t);
         pressures.push(pressure);
@@ -415,7 +417,8 @@ function initOffgassingChart() {
                     ticks: {
                         maxTicksLimit: 7,
                         callback: (value, index) => {
-                            const t = index / 10;
+                            // With 0.5 step data: index 0=0T, 2=1T, 4=2T, etc.
+                            const t = index / 2;
                             return Number.isInteger(t) ? `${t}T` : '';
                         }
                     }
@@ -443,7 +446,8 @@ function calculateOffgassing(initialTissuePpN2) {
     const halfTimes = [];
     const pressures = [];
     
-    for (let t = 0; t <= 6; t += 0.1) {
+    // Use 0.5 half-time steps for less sensitive hover (0, 0.5, 1, 1.5, ... 6)
+    for (let t = 0; t <= 6; t += 0.5) {
         halfTimes.push(t);
         const pressure = targetPpN2 + (initialTissuePpN2 - targetPpN2) * Math.exp(-Math.LN2 * t);
         pressures.push(pressure);
