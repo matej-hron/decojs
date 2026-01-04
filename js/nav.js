@@ -14,7 +14,8 @@ const NAV_ITEMS = [
         submenu: [
             { href: 'pressure.html', label: 'Pressure & Depth' },
             { href: 'tissue-loading.html', label: 'Tissue Loading' },
-            { href: 'm-values.html', label: 'M-Values' }
+            { href: 'm-values.html', label: 'M-Values' },
+            { href: 'gradient-factors.html', label: 'Gradient Factors' }
         ]
     },
     { 

@@ -210,7 +210,8 @@ export function mergeOptions(defaults, userOptions) {
     const result = { ...defaults };
     for (const key of Object.keys(userOptions)) {
         if (userOptions[key] !== undefined) {
-            if (typeof defaults[key] === 'object' && !Array.isArray(defaults[key])) {
+            // Note: typeof null === 'object' in JS, so we must check for null explicitly
+            if (defaults[key] !== null && typeof defaults[key] === 'object' && !Array.isArray(defaults[key])) {
                 result[key] = { ...defaults[key], ...userOptions[key] };
             } else {
                 result[key] = userOptions[key];

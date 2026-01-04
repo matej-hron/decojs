@@ -59,6 +59,7 @@ const DEFAULT_MVALUE_OPTIONS = {
     fullscreenButton: true,
     compartmentSelector: true,
     playbackSpeed: 100,  // ms per frame
+    maxPressure: null,   // Override axis max (null = auto-calculate)
     colors: {
         ambient: 'rgba(52, 152, 219, 0.8)',
         surface: 'rgba(128, 128, 128, 0.6)'
@@ -775,7 +776,7 @@ export class MValueChart {
         const maxAmbient = Math.max(...results.ambientPressures);
         const allPressures = Object.values(results.compartments).flatMap(c => c.pressures);
         const maxTissue = Math.max(...allPressures);
-        const maxPressure = Math.max(maxAmbient, maxTissue, 5) * 1.1;
+        const maxPressure = this.options.maxPressure || Math.max(maxAmbient, maxTissue, 5) * 1.1;
         
         const datasets = [];
         
