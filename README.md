@@ -14,8 +14,9 @@ An educational web application for understanding decompression models used in sc
 - **DiveSetupEditor component** — Configure gases, waypoints, gradient factors, and more
 - **DiveProfileChart** — Time-based visualization with depth, pressure, partial pressures, ceiling, and tissue loading
 - **MValueChart** — Pressure-pressure diagram with animated tissue trails and timeline playback
-- **Educational Theory Pages** — Learn about pressure, tissue loading, and M-values with interactive examples
-- **Bühlmann ZH-L16 model** — Industry-standard decompression algorithm
+- **Educational Theory Pages** — Learn about pressure, tissue loading, M-values, and gradient factors with interactive examples
+- **Bühlmann ZH-L16 model** — Industry-standard decompression algorithm with A/B/C variants
+- **Gradient Factor support** — GF Low/High conservatism settings with visual comparison
 - **Mobile-friendly PWA** — Responsive design with offline support
 
 ## Structure
@@ -23,8 +24,8 @@ An educational web application for understanding decompression models used in sc
 | Section | Description |
 |---------|-------------|
 | **Sandbox** | Interactive dive planner with DiveProfileChart and MValueChart |
-| **Theory** | Educational pages: Pressure & Depth, Tissue Loading, M-Values |
-| **Tests** | Physics, Anatomy, and Accidents quizzes |
+| **Theory** | Educational pages: Pressure & Depth, Tissue Loading, M-Values, Gradient Factors |
+| **Tests** | Physics, Anatomy, and Accidents quizzes (CMAS/SPČR exam-style) |
 
 ## Implementation
 
@@ -46,13 +47,14 @@ decojs/
 ├── pressure.html           # Theory: Pressure & Depth
 ├── tissue-loading.html     # Theory: Tissue Loading
 ├── m-values.html           # Theory: M-Values
+├── gradient-factors.html   # Theory: Gradient Factors
 ├── quiz-*.html             # Test quizzes
 ├── css/
 │   └── styles.css          # All styles (CSS variables, responsive)
 ├── js/
 │   ├── decoModel.js        # Core decompression calculations
 │   ├── diveSetup.js        # Dive setup parsing and normalization
-│   ├── tissueCompartments.js # Bühlmann ZH-L16A compartment data
+│   ├── tissueCompartments.js # Bühlmann ZH-L16A/B/C compartment data
 │   ├── charts/
 │   │   ├── DiveProfileChart.js  # Reusable depth/time chart component
 │   │   ├── MValueChart.js       # Reusable M-value chart component
