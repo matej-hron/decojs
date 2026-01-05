@@ -710,8 +710,10 @@ describe('Bottom-Anchored GF', () => {
                 tissuePressures[comp.id] = 0.74; // Surface saturation
             });
             
+            const currentDepth = 50; // 50m
             const anchorAmbient = 6.0; // 50m
-            const result = findFirstStopWithRampedGF(tissuePressures, anchorAmbient, 0.7, 0.85);
+            const currentN2 = 0.79; // Air
+            const result = findFirstStopWithRampedGF(tissuePressures, currentDepth, anchorAmbient, currentN2, 0.7, 0.85);
             expect(result.depth).toBe(0);
         });
         
@@ -723,12 +725,14 @@ describe('Bottom-Anchored GF', () => {
                 tissuePressures[comp.id] = 3.5;
             });
             
-            const anchorAmbient = 5.0; // 40m - bottom-anchored
+            const currentDepth = 40; // 40m - bottom-anchored
+            const anchorAmbient = 5.0; // 40m
+            const currentN2 = 0.79; // Air
             const gfLow = 0.5;
             const gfHigh = 0.85;
             
             // Bottom-anchored first stop with ramped GF
-            const rampedResult = findFirstStopWithRampedGF(tissuePressures, anchorAmbient, gfLow, gfHigh);
+            const rampedResult = findFirstStopWithRampedGF(tissuePressures, currentDepth, anchorAmbient, currentN2, gfLow, gfHigh);
             
             // Constant GF Low first stop (old method)
             const constantResult = getFirstStopDepth(tissuePressures, gfLow);
@@ -744,8 +748,10 @@ describe('Bottom-Anchored GF', () => {
                 tissuePressures[comp.id] = 2.5;
             });
             
+            const currentDepth = 30; // 30m
             const anchorAmbient = 4.0; // 30m
-            const result = findFirstStopWithRampedGF(tissuePressures, anchorAmbient, 0.7, 0.85);
+            const currentN2 = 0.79; // Air
+            const result = findFirstStopWithRampedGF(tissuePressures, currentDepth, anchorAmbient, currentN2, 0.7, 0.85);
             
             expect(result.depth % 3).toBe(0);
         });
