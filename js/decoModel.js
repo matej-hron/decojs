@@ -710,37 +710,14 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
         return { stops: [], gasSwitches, totalTime: totalAscentTime, totalAscentTime };
     }
     
-    // Ascend to first stop
-    // The findFirstStopWithRampedGF already simulated the ascent and returned post-ascent tissues.
-    // We just need to handle gas switches at intermediate depths during the actual ascent.
-    // Get unique switch depths between current depth and first stop
-    const uniqueSwitchDepths = [...new Set(gasSwitchPoints.map(g => g.switchDepth))]
-        .filter(d => d >= firstStopDepth)
-        .sort((a, b) => b - a); // Deepest first
-    
-    let remainingDepth = depth;
-    for (const switchDepth of uniqueSwitchDepths) {
-        if (remainingDepth > switchDepth) {
-            // Ascend to switch depth
-            const segmentTime = (remainingDepth - switchDepth) / ASCENT_SPEED;
-            tissues = simulateDepthChange(tissues, remainingDepth, switchDepth, segmentTime, currentN2);
-            totalAscentTime += segmentTime;
-            remainingDepth = switchDepth;
-            // Switch to best gas at this depth
-            switchToBestGas(switchDepth);
-        }
-    }
-    // Finish ascent to first stop
-    if (remainingDepth > firstStopDepth) {
-        const segmentTime = (remainingDepth - firstStopDepth) / ASCENT_SPEED;
-        tissues = simulateDepthChange(tissues, remainingDepth, firstStopDepth, segmentTime, currentN2);
-        totalAscentTime += segmentTime;
-    }
+    // Ascend to first stop - NO gas switches during this phase
+    // Per convention: when deco is required, gas switches occur only on arrival at stop depths.
+    // findFirstStopWithRampedGF already simulated the full ascent to first stop and returned
+    // the tissue state at arrival. We use that directly as the single source of truth.
+    const ascentToFirstStopTime = (depth - firstStopDepth) / ASCENT_SPEED;
+    totalAscentTime += ascentToFirstStopTime;
+    tissues = tissuesAtFirstStop;
     depth = firstStopDepth;
-    
-    // No recalculation needed: findFirstStopWithRampedGF already simulated the ascent
-    // and determined the correct first stop using identical logic to the deco loop.
-    // The tissues variable now reflects the post-ascent state.
     
     // GF anchor is the ascent start depth (bottom-anchored)
     // GF ramps linearly from gfLow at ascentStartAmbient to gfHigh at surface
