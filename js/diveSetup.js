@@ -100,6 +100,15 @@ export const DEFAULT_GF_LOW = 100;   // Percentage (100 = 100%)
 export const DEFAULT_GF_HIGH = 100;  // Percentage (100 = 100%)
 
 /**
+ * Default Safety Stop settings
+ */
+export const DEFAULT_SAFETY_STOP = {
+    enabled: true,
+    depth: 5,    // meters
+    time: 3      // minutes
+};
+
+/**
  * Get a predefined gas by ID (searches both bottom and deco gases)
  * @param {string} id - Gas ID (e.g., 'air', 'ean32')
  * @returns {Object|null} Gas object or null if not found
@@ -210,7 +219,7 @@ export function getDefaultSetup() {
  * Uses:
  *   - Descent speed: 20 m/min
  *   - Ascent speed: 10 m/min
- *   - 3 min safety stop at 5m
+ *   - Configurable safety stop (default: 3 min at 5m)
  *   - Times rounded up to full minutes
  * 
  * Bottom time is measured from the START of the dive (time 0), not from
@@ -219,13 +228,20 @@ export function getDefaultSetup() {
  * 
  * @param {number} maxDepth - Maximum depth in meters
  * @param {number} bottomTime - Time from dive start until leaving max depth (minutes)
+ * @param {Object} [safetyStop] - Safety stop configuration
+ * @param {boolean} [safetyStop.enabled=true] - Whether to include safety stop
+ * @param {number} [safetyStop.depth=5] - Safety stop depth in meters
+ * @param {number} [safetyStop.time=3] - Safety stop duration in minutes
  * @returns {Array<{time: number, depth: number}>} Generated waypoints
  */
-export function generateSimpleProfile(maxDepth, bottomTime) {
+export function generateSimpleProfile(maxDepth, bottomTime, safetyStop = DEFAULT_SAFETY_STOP) {
     const DESCENT_SPEED = 20; // m/min
     const ASCENT_SPEED = 10;  // m/min
-    const SAFETY_STOP_DEPTH = 5; // meters
-    const SAFETY_STOP_TIME = 3;  // minutes
+    
+    // Get safety stop settings with defaults
+    const safetyStopEnabled = safetyStop?.enabled ?? DEFAULT_SAFETY_STOP.enabled;
+    const safetyStopDepth = safetyStop?.depth ?? DEFAULT_SAFETY_STOP.depth;
+    const safetyStopTime = safetyStop?.time ?? DEFAULT_SAFETY_STOP.time;
     
     // Calculate descent time (rounded up)
     const descentTime = Math.ceil(maxDepth / DESCENT_SPEED);
@@ -234,32 +250,46 @@ export function generateSimpleProfile(maxDepth, bottomTime) {
     // (not descentTime + bottomTime)
     const bottomEndTime = bottomTime;
     
-    // Ascent from max depth to safety stop depth
-    const ascentToSafetyStop = Math.ceil((maxDepth - SAFETY_STOP_DEPTH) / ASCENT_SPEED);
-    const safetyStopStartTime = bottomEndTime + ascentToSafetyStop;
-    
-    // Safety stop ends
-    const safetyStopEndTime = safetyStopStartTime + SAFETY_STOP_TIME;
-    
-    // Final ascent from 5m to surface
-    const finalAscentTime = Math.ceil(SAFETY_STOP_DEPTH / ASCENT_SPEED);
-    const surfaceTime = safetyStopEndTime + finalAscentTime;
-    
-    return [
-        { time: 0, depth: 0 },                           // Start at surface
-        { time: descentTime, depth: maxDepth },          // Arrive at max depth
-        { time: bottomEndTime, depth: maxDepth },        // End of bottom time (from dive start)
-        { time: safetyStopStartTime, depth: SAFETY_STOP_DEPTH }, // Arrive at safety stop
-        { time: safetyStopEndTime, depth: SAFETY_STOP_DEPTH },   // End of safety stop
-        { time: surfaceTime, depth: 0 }                  // Back at surface
-    ];
+    if (safetyStopEnabled && maxDepth > safetyStopDepth) {
+        // Ascent from max depth to safety stop depth
+        const ascentToSafetyStop = Math.ceil((maxDepth - safetyStopDepth) / ASCENT_SPEED);
+        const safetyStopStartTime = bottomEndTime + ascentToSafetyStop;
+        
+        // Safety stop ends
+        const safetyStopEndTime = safetyStopStartTime + safetyStopTime;
+        
+        // Final ascent from safety stop to surface
+        const finalAscentTime = Math.ceil(safetyStopDepth / ASCENT_SPEED);
+        const surfaceTime = safetyStopEndTime + finalAscentTime;
+        
+        return [
+            { time: 0, depth: 0 },                                   // Start at surface
+            { time: descentTime, depth: maxDepth },                  // Arrive at max depth
+            { time: bottomEndTime, depth: maxDepth },                // End of bottom time
+            { time: safetyStopStartTime, depth: safetyStopDepth },   // Arrive at safety stop
+            { time: safetyStopEndTime, depth: safetyStopDepth },     // End of safety stop
+            { time: surfaceTime, depth: 0 }                          // Back at surface
+        ];
+    } else {
+        // No safety stop - direct ascent
+        const ascentTime = Math.ceil(maxDepth / ASCENT_SPEED);
+        const surfaceTime = bottomEndTime + ascentTime;
+        
+        return [
+            { time: 0, depth: 0 },                           // Start at surface
+            { time: descentTime, depth: maxDepth },          // Arrive at max depth
+            { time: bottomEndTime, depth: maxDepth },        // End of bottom time
+            { time: surfaceTime, depth: 0 }                  // Back at surface
+        ];
+    }
 }
 
 /**
  * Generate a dive profile with automatic NDL check and deco stops if needed
  * 
- * If bottom time <= NDL: generates profile with safety stop
+ * If bottom time <= NDL: generates profile with safety stop (if configured)
  * If bottom time > NDL: generates profile with proper deco stops
+ *   - If deco clears before safety stop depth, adds safety stop
  * 
  * Supports multi-gas diving: will switch to deco gases during ascent
  * when current depth is within the deco gas MOD.
@@ -269,6 +299,10 @@ export function generateSimpleProfile(maxDepth, bottomTime) {
  * @param {Array} gases - Available gases [{id, name, o2, n2, he}]
  * @param {number} gfLow - GF Low as percentage (0-100)
  * @param {number} gfHigh - GF High as percentage (0-100)
+ * @param {Object} [safetyStop] - Safety stop configuration
+ * @param {boolean} [safetyStop.enabled=true] - Whether to include safety stop
+ * @param {number} [safetyStop.depth=5] - Safety stop depth in meters
+ * @param {number} [safetyStop.time=3] - Safety stop duration in minutes
  * @returns {{
  *   waypoints: Array<{time: number, depth: number, gasId?: string}>,
  *   ndl: number,
@@ -278,12 +312,15 @@ export function generateSimpleProfile(maxDepth, bottomTime) {
  *   controllingCompartment: number
  * }}
  */
-export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh) {
+export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, safetyStop = DEFAULT_SAFETY_STOP) {
     const DESCENT_SPEED = 20; // m/min
     const ASCENT_SPEED = 10;  // m/min
-    const SAFETY_STOP_DEPTH = 5;
-    const SAFETY_STOP_TIME = 3;
     const STOP_INCREMENT = 3;
+    
+    // Get safety stop settings with defaults
+    const safetyStopEnabled = safetyStop?.enabled ?? DEFAULT_SAFETY_STOP.enabled;
+    const safetyStopDepth = safetyStop?.depth ?? DEFAULT_SAFETY_STOP.depth;
+    const safetyStopTime = safetyStop?.time ?? DEFAULT_SAFETY_STOP.time;
     
     // Convert GF percentages to decimals
     const gfLowDec = gfLow / 100;
@@ -303,7 +340,7 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh) 
     
     if (!requiresDeco) {
         // Within NDL - generate simple profile with safety stop
-        const waypoints = generateSimpleProfile(maxDepth, bottomTime);
+        const waypoints = generateSimpleProfile(maxDepth, bottomTime, safetyStop);
         // Add gasId to first bottom waypoint
         waypoints[1].gasId = bottomGas.id;
         
@@ -364,7 +401,8 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh) 
             depth: stop.depth,
             stopTime: stop.time,
             gasId: stopGas?.id,
-            gas: stop.gas
+            gas: stop.gas,
+            isDecoStop: true
         });
     }
     
@@ -377,12 +415,37 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh) 
                 depth: sw.depth,
                 stopTime: 0,  // No extra time - just a waypoint
                 gasId: sw.gasId,
-                gas: sw.gas
+                gas: sw.gas,
+                isDecoStop: false
             });
         } else {
             // Gas switch at a deco stop - just update the gasId
             const existing = eventsByDepth.get(sw.depth);
             existing.gasId = sw.gasId;
+        }
+    }
+    
+    // Check if we need to add a safety stop (deco cleared before safety stop depth)
+    // Safety stop is added if:
+    // 1. Safety stop is enabled
+    // 2. Max depth is greater than safety stop depth
+    // 3. No deco stop at or below safety stop depth (deco has cleared)
+    const hasDecoAtOrBelowSafetyStop = stops.some(s => s.depth <= safetyStopDepth && s.depth > 0);
+    const needsSafetyStop = safetyStopEnabled && 
+                           maxDepth > safetyStopDepth && 
+                           !hasDecoAtOrBelowSafetyStop;
+    
+    if (needsSafetyStop) {
+        // Add safety stop if not already covered by a deco stop
+        if (!eventsByDepth.has(safetyStopDepth)) {
+            eventsByDepth.set(safetyStopDepth, {
+                depth: safetyStopDepth,
+                stopTime: safetyStopTime,
+                gasId: null,  // Use current gas
+                gas: null,
+                isDecoStop: false,
+                isSafetyStop: true
+            });
         }
     }
     
@@ -436,11 +499,14 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh) 
  * Synchronous version of generateDecoProfile for simpler use cases
  * Note: For async module loading, use generateDecoProfile instead
  */
-export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHigh, compartments) {
+export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHigh, compartments, safetyStop = DEFAULT_SAFETY_STOP) {
     const DESCENT_SPEED = 20;
     const ASCENT_SPEED = 10;
-    const SAFETY_STOP_DEPTH = 5;
-    const SAFETY_STOP_TIME = 3;
+    
+    // Get safety stop settings with defaults
+    const safetyStopEnabled = safetyStop?.enabled ?? DEFAULT_SAFETY_STOP.enabled;
+    const safetyStopDepth = safetyStop?.depth ?? DEFAULT_SAFETY_STOP.depth;
+    const safetyStopTime = safetyStop?.time ?? DEFAULT_SAFETY_STOP.time;
     
     // Convert GF percentages to decimals
     const gfLowDec = gfLow / 100;
@@ -456,7 +522,7 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
     const requiresDeco = bottomTime > ndl;
     
     if (!requiresDeco) {
-        const waypoints = generateSimpleProfile(maxDepth, bottomTime);
+        const waypoints = generateSimpleProfile(maxDepth, bottomTime, safetyStop);
         waypoints[1].gasId = bottomGas.id;
         
         return {
@@ -512,6 +578,22 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
         waypoints.push({ time: currentTime, depth: stop.depth });
         
         currentDepth = stop.depth;
+    }
+    
+    // Check if we need to add a safety stop (deco cleared before safety stop depth)
+    const hasDecoAtOrBelowSafetyStop = stops.some(s => s.depth <= safetyStopDepth && s.depth > 0);
+    const needsSafetyStop = safetyStopEnabled && 
+                           maxDepth > safetyStopDepth && 
+                           !hasDecoAtOrBelowSafetyStop;
+    
+    if (needsSafetyStop && currentDepth > safetyStopDepth) {
+        // Add safety stop
+        const ascentTime = Math.ceil((currentDepth - safetyStopDepth) / ASCENT_SPEED);
+        currentTime += ascentTime;
+        waypoints.push({ time: currentTime, depth: safetyStopDepth });
+        currentTime += safetyStopTime;
+        waypoints.push({ time: currentTime, depth: safetyStopDepth });
+        currentDepth = safetyStopDepth;
     }
     
     if (currentDepth > 0) {

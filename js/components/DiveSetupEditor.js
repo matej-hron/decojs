@@ -45,6 +45,7 @@ import {
     DEFAULT_GF_LOW,
     DEFAULT_GF_HIGH,
     DEFAULT_START_PRESSURE,
+    DEFAULT_SAFETY_STOP,
     getBottomGas,
     getDecoGas,
     getPredefinedGas,
@@ -52,8 +53,6 @@ import {
     generateDecoProfile,
     getNDLForDepth,
     getGases,
-    insertGasSwitchWaypoints,
-    getGasSwitchEvents,
     GAS_SWITCH_TIME
 } from '../diveSetup.js';
 
@@ -79,7 +78,6 @@ const DEFAULT_EDITOR_OPTIONS = {
     showDescription: true,
     showSurfaceInterval: true,
     showMultiDive: true,
-    showAutoGasSwitch: true,
     compact: false,
     maxGases: 4,
     emitOnInput: true  // Emit change events on every input (vs only on save)
@@ -394,6 +392,20 @@ export class DiveSetupEditor extends EventTarget {
                     </div>
                     <button class="dse-generate-btn btn btn-secondary" title="Generate a new profile from depth and bottom time">🔄 Generate</button>
                 </div>
+                <div class="dse-row dse-safety-stop-row">
+                    <label class="dse-checkbox-label">
+                        <input type="checkbox" class="dse-safety-stop-enabled" checked>
+                        Safety Stop
+                    </label>
+                    <div class="dse-field dse-safety-stop-field">
+                        <label>Depth (m):</label>
+                        <input type="number" class="dse-safety-stop-depth form-input" value="5" min="3" max="10" step="1">
+                    </div>
+                    <div class="dse-field dse-safety-stop-field">
+                        <label>Time (min):</label>
+                        <input type="number" class="dse-safety-stop-time form-input" value="3" min="1" max="10" step="1">
+                    </div>
+                </div>
                 <div class="dse-ndl-display">
                     <span class="dse-ndl-label">NDL:</span>
                     <span class="dse-ndl-value">--</span> min
@@ -413,11 +425,22 @@ export class DiveSetupEditor extends EventTarget {
         this.elements.ndlStatus = section.querySelector('.dse-ndl-status');
         this.elements.decoInfo = section.querySelector('.dse-deco-info');
         this.elements.decoTime = section.querySelector('.dse-deco-time');
+        this.elements.safetyStopEnabled = section.querySelector('.dse-safety-stop-enabled');
+        this.elements.safetyStopDepth = section.querySelector('.dse-safety-stop-depth');
+        this.elements.safetyStopTime = section.querySelector('.dse-safety-stop-time');
         
         // Event handlers
         this.elements.quickDepth.addEventListener('input', () => this._updateNDLDisplay());
         this.elements.quickTime.addEventListener('input', () => this._updateNDLDisplay());
         this.elements.generateBtn.addEventListener('click', () => this._generateProfile());
+        
+        // Safety stop toggle - update field visibility
+        this.elements.safetyStopEnabled.addEventListener('change', () => {
+            const enabled = this.elements.safetyStopEnabled.checked;
+            section.querySelectorAll('.dse-safety-stop-field').forEach(el => {
+                el.style.opacity = enabled ? '1' : '0.5';
+            });
+        });
         
         return section;
     }
@@ -567,9 +590,6 @@ export class DiveSetupEditor extends EventTarget {
             </table>
             <div class="dse-waypoint-actions">
                 <button class="dse-add-waypoint-btn btn btn-secondary btn-small">+ Add Waypoint</button>
-                ${!isDive2 && this.options.showAutoGasSwitch ? `
-                    <button class="dse-auto-gas-btn btn btn-secondary btn-small" title="Insert gas switch waypoints based on MOD">🔄 Auto Gas Switches</button>
-                ` : ''}
             </div>
         `;
         
@@ -580,12 +600,6 @@ export class DiveSetupEditor extends EventTarget {
         section.querySelector('.dse-add-waypoint-btn').addEventListener('click', () => {
             this._addWaypointRow(this.elements[bodyKey]);
         });
-        
-        // Auto gas switch button (dive 1 only)
-        const autoGasBtn = section.querySelector('.dse-auto-gas-btn');
-        if (autoGasBtn) {
-            autoGasBtn.addEventListener('click', () => this._autoGasSwitch());
-        }
         
         // Dive 2 specific elements
         if (isDive2) {
@@ -1018,18 +1032,6 @@ export class DiveSetupEditor extends EventTarget {
         this._onInputChange();
     }
     
-    _autoGasSwitch() {
-        if (this.currentGases.length < 2) {
-            console.warn('Add at least one deco gas first');
-            return;
-        }
-        
-        const waypoints = this._readWaypointsFromTable(this.elements.waypointsBody);
-        const newWaypoints = insertGasSwitchWaypoints(waypoints, this.currentGases);
-        this._loadWaypointsToTable(newWaypoints, this.elements.waypointsBody);
-        this._onInputChange();
-    }
-    
     // =========================================================================
     // MULTI-DIVE SUPPORT
     // =========================================================================
@@ -1087,6 +1089,13 @@ export class DiveSetupEditor extends EventTarget {
         const gfLow = parseFloat(this.elements.gfLowInput?.value) || 100;
         const gfHigh = parseFloat(this.elements.gfHighInput?.value) || 100;
         
+        // Get safety stop settings
+        const safetyStop = {
+            enabled: this.elements.safetyStopEnabled?.checked ?? DEFAULT_SAFETY_STOP.enabled,
+            depth: parseFloat(this.elements.safetyStopDepth?.value) || DEFAULT_SAFETY_STOP.depth,
+            time: parseFloat(this.elements.safetyStopTime?.value) || DEFAULT_SAFETY_STOP.time
+        };
+        
         // NDL uses GF Low since that determines when first stop is required
         const { ndl } = getNDLForDepth(maxDepth, gas, gfLow);
         
@@ -1113,8 +1122,7 @@ export class DiveSetupEditor extends EventTarget {
         // Update deco info
         if (ndl !== Infinity && bottomTime > ndl) {
             this.elements.decoInfo.style.display = 'inline';
-            const gfLow = parseFloat(this.elements.gfLowInput?.value) || 100;
-            const result = generateDecoProfile(maxDepth, bottomTime, this.currentGases, gfLow, gfHigh);
+            const result = generateDecoProfile(maxDepth, bottomTime, this.currentGases, gfLow, gfHigh, safetyStop);
             this.elements.decoTime.textContent = result.totalDecoTime;
         } else {
             this.elements.decoInfo.style.display = 'none';
@@ -1137,7 +1145,14 @@ export class DiveSetupEditor extends EventTarget {
         const gfLow = parseFloat(this.elements.gfLowInput?.value) || DEFAULT_GF_LOW;
         const gfHigh = parseFloat(this.elements.gfHighInput?.value) || DEFAULT_GF_HIGH;
         
-        const result = generateDecoProfile(maxDepth, bottomTime, this.currentGases, gfLow, gfHigh);
+        // Get safety stop settings
+        const safetyStop = {
+            enabled: this.elements.safetyStopEnabled?.checked ?? DEFAULT_SAFETY_STOP.enabled,
+            depth: parseFloat(this.elements.safetyStopDepth?.value) || DEFAULT_SAFETY_STOP.depth,
+            time: parseFloat(this.elements.safetyStopTime?.value) || DEFAULT_SAFETY_STOP.time
+        };
+        
+        const result = generateDecoProfile(maxDepth, bottomTime, this.currentGases, gfLow, gfHigh, safetyStop);
         
         this._loadWaypointsToTable(result.waypoints, this.elements.waypointsBody);
         this._onInputChange();

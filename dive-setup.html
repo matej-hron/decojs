@@ -153,7 +153,7 @@
                     <summary>⚡ Quick Setup</summary>
                     <div class="quick-setup-inputs">
                         <p class="hint">Enter max depth and bottom time to auto-generate waypoints.<br>
-                        Uses: descent 20 m/min, ascent 10 m/min, 3 min safety stop at 5m.</p>
+                        Uses: descent 20 m/min, ascent 10 m/min.</p>
                         <div class="quick-setup-row">
                             <div class="form-group">
                                 <label for="quick-max-depth">Max Depth (m):</label>
@@ -164,6 +164,20 @@
                                 <input type="number" id="quick-bottom-time" class="form-input" value="20" min="1" max="120" step="1">
                             </div>
                             <button id="generate-profile-btn" class="btn btn-secondary">🔄 Generate Profile</button>
+                        </div>
+                        <div class="quick-setup-row safety-stop-row">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="safety-stop-enabled" checked>
+                                Safety Stop
+                            </label>
+                            <div class="form-group safety-stop-field">
+                                <label for="safety-stop-depth">Depth (m):</label>
+                                <input type="number" id="safety-stop-depth" class="form-input" value="5" min="3" max="10" step="1">
+                            </div>
+                            <div class="form-group safety-stop-field">
+                                <label for="safety-stop-time">Time (min):</label>
+                                <input type="number" id="safety-stop-time" class="form-input" value="3" min="1" max="10" step="1">
+                            </div>
                         </div>
                         <div class="ndl-display" id="ndl-display">
                             <span class="ndl-info">
@@ -197,7 +211,6 @@
                     </table>
                     <div class="waypoint-actions">
                         <button id="add-waypoint" class="btn btn-secondary btn-small">+ Add Waypoint</button>
-                        <button id="auto-gas-switch-btn" class="btn btn-secondary btn-small" title="Insert gas switch waypoints based on MOD">🔄 Auto Gas Switches</button>
                     </div>
                 </div>
 
@@ -314,7 +327,6 @@
         const profileDescInput = document.getElementById('profile-description-input');
         const gasesList = document.getElementById('gases-list');
         const addGasBtn = document.getElementById('add-gas-btn');
-        const autoGasSwitchBtn = document.getElementById('auto-gas-switch-btn');
         const surfaceIntervalInput = document.getElementById('surface-interval-input');
         const gfLowInput = document.getElementById('gf-low-input');
         const gfLowSlider = document.getElementById('gf-low-slider');
@@ -345,6 +357,11 @@
         const ndlStatusSpan = document.getElementById('ndl-status');
         const decoInfoSpan = document.getElementById('deco-info');
         const decoTimeSpan = document.getElementById('deco-time');
+        
+        // Safety stop DOM elements
+        const safetyStopEnabledCheckbox = document.getElementById('safety-stop-enabled');
+        const safetyStopDepthInput = document.getElementById('safety-stop-depth');
+        const safetyStopTimeInput = document.getElementById('safety-stop-time');
         
         // New profile button
         const newProfileBtn = document.getElementById('new-profile-btn');
@@ -515,32 +532,6 @@
             });
             renderGasCards();
             updateWaypointGasDropdowns();
-        });
-
-        // Auto gas switch button handler
-        autoGasSwitchBtn.addEventListener('click', () => {
-            if (currentGases.length < 2) {
-                alert('Add at least one deco gas first');
-                return;
-            }
-            
-            const waypoints = readWaypointsFromTable(waypointsBody);
-            const newWaypoints = insertGasSwitchWaypoints(waypoints, currentGases);
-            loadWaypointsToTable(newWaypoints, waypointsBody);
-            updateSummary();
-            
-            // Count gas switches configured (from getGasSwitchEvents)
-            const gasSwitchEvents = getGasSwitchEvents(newWaypoints, currentGases);
-            const insertedCount = newWaypoints.length - waypoints.length;
-            
-            if (gasSwitchEvents.length > 0) {
-                const switchInfo = gasSwitchEvents.map(e => `${e.toGas?.name} at ${e.depth}m`).join(', ');
-                saveStatus.textContent = `✓ Configured ${gasSwitchEvents.length} gas switch(es): ${switchInfo}. Click Save to apply!`;
-            } else {
-                saveStatus.textContent = `No gas switches configured (deco gases may not be usable in this profile)`;
-            }
-            saveStatus.className = 'save-status success';
-            setTimeout(() => { saveStatus.textContent = ''; }, 5000);
         });
 
         // Update gas dropdowns in waypoint rows
@@ -1134,19 +1125,27 @@
             const gfLow = currentSetup?.gfLow ?? DEFAULT_GF_LOW;
             const gfHigh = currentSetup?.gfHigh ?? DEFAULT_GF_HIGH;
             
+            // Get safety stop settings
+            const safetyStop = {
+                enabled: safetyStopEnabledCheckbox.checked,
+                depth: parseFloat(safetyStopDepthInput.value) || 5,
+                time: parseFloat(safetyStopTimeInput.value) || 3
+            };
+            
             // Generate profile with automatic deco if needed
-            const result = generateDecoProfile(maxDepth, bottomTime, currentGases, gfLow, gfHigh);
+            const result = generateDecoProfile(maxDepth, bottomTime, currentGases, gfLow, gfHigh, safetyStop);
             
             loadWaypointsToTable(result.waypoints, waypointsBody);
             
             // Update profile name and description
+            const safetyStopNote = safetyStop.enabled ? `, ${safetyStop.time} min safety stop at ${safetyStop.depth}m` : '';
             if (result.requiresDeco) {
                 profileNameInput.value = `${maxDepth}m for ${bottomTime}min (DECO)`;
                 const stopsSummary = result.decoStops.map(s => `${s.depth}m: ${s.time}min`).join(', ');
                 profileDescInput.value = `Deco dive: ${maxDepth}m max depth, ${bottomTime}min bottom time. NDL was ${result.ndl}min. Deco stops: ${stopsSummary}. Total deco: ${result.totalDecoTime}min.`;
             } else {
                 profileNameInput.value = `${maxDepth}m for ${bottomTime}min`;
-                profileDescInput.value = `Quick setup: ${maxDepth}m max depth, ${bottomTime}min bottom time. Within NDL (${result.ndl}min). Auto-generated with 20 m/min descent, 10 m/min ascent, 3 min safety stop at 5m.`;
+                profileDescInput.value = `Quick setup: ${maxDepth}m max depth, ${bottomTime}min bottom time. Within NDL (${result.ndl}min). Auto-generated with 20 m/min descent, 10 m/min ascent${safetyStopNote}.`;
             }
             
             updateSummary();
@@ -1162,6 +1161,17 @@
         // Update NDL display when depth or bottom time changes
         quickMaxDepthInput.addEventListener('input', updateNDLDisplay);
         quickBottomTimeInput.addEventListener('input', updateNDLDisplay);
+        
+        // Safety stop toggle - update field visibility
+        safetyStopEnabledCheckbox.addEventListener('change', () => {
+            const enabled = safetyStopEnabledCheckbox.checked;
+            document.querySelectorAll('.safety-stop-field').forEach(el => {
+                el.style.opacity = enabled ? '1' : '0.5';
+                el.querySelectorAll('input').forEach(input => {
+                    input.disabled = !enabled;
+                });
+            });
+        });
 
         // Remove dive 2
         removeDive2Btn.addEventListener('click', () => {

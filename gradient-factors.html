@@ -270,7 +270,7 @@
                 <!-- MValueChart for GF 100/100 -->
             </div>
             
-            <a href="sandbox/" class="sandbox-link" target="_blank">
+            <a id="sandbox-link-100" href="sandbox/" class="sandbox-link" target="_blank">
                 🔬 Open in Sandbox →
             </a>
             
@@ -288,7 +288,7 @@
                 <!-- MValueChart for GF 50/80 -->
             </div>
             
-            <a href="sandbox/" class="sandbox-link" target="_blank">
+            <a id="sandbox-link-5080" href="sandbox/" class="sandbox-link" target="_blank">
                 🔬 Open in Sandbox →
             </a>
         </section>
@@ -523,6 +523,7 @@
         import { MValueChart } from './js/charts/MValueChart.js';
         import { DiveProfileChart } from './js/charts/DiveProfileChart.js';
         import { COMPARTMENTS } from './js/tissueCompartments.js';
+        import { encodeDiveSetup } from './js/urlParams.js';
         
         // Example dive: 30m for 28 min with safety stop
         const exampleDiveSetup = {
@@ -653,6 +654,12 @@
                     maxPressure: 6
                 }
             });
+            
+            // Update sandbox links with encoded profiles
+            const link100 = document.getElementById('sandbox-link-100');
+            const link5080 = document.getElementById('sandbox-link-5080');
+            if (link100) link100.href = `sandbox/?profile=${encodeDiveSetup(exampleDiveSetup)}`;
+            if (link5080) link5080.href = `sandbox/?profile=${encodeDiveSetup(conservativeSetup)}`;
         }
     </script>
 

@@ -1518,7 +1518,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.4.30";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.4.33";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -2514,6 +2514,51 @@ textarea.form-input {
     height: fit-content;
 }
 
+/* Safety Stop Row */
+.safety-stop-row {
+    margin-top: 0.5rem;
+    align-items: center;
+}
+
+.safety-stop-row .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    min-width: 120px;
+}
+
+.safety-stop-row .safety-stop-field {
+    flex: 0 0 auto;
+    min-width: 80px;
+}
+
+.safety-stop-row .safety-stop-field .form-input {
+    width: 70px;
+}
+
+/* DiveSetupEditor safety stop row */
+.dse-safety-stop-row {
+    margin-top: 0.5rem;
+    align-items: center;
+}
+
+.dse-safety-stop-row .dse-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    min-width: 110px;
+}
+
+.dse-safety-stop-row .dse-safety-stop-field {
+    flex: 0 0 auto;
+}
+
+.dse-safety-stop-row .dse-safety-stop-field .form-input {
+    width: 60px;
+}
+
 @media (max-width: 600px) {
     .quick-setup-row {
         flex-direction: column;
@@ -2525,6 +2570,10 @@ textarea.form-input {
     
     .quick-setup-row .btn {
         width: 100%;
+    }
+    
+    .safety-stop-row {
+        flex-wrap: wrap;
     }
 }
 

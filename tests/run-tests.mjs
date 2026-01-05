@@ -160,6 +160,7 @@ import {
     getDiveCeiling,
     interpolateGF,
     getFirstStopDepth,
+    findFirstStopWithRampedGF,
     calculateCeilingTimeSeries,
     calculateTissueLoading,
     calculateNDL,
@@ -1448,6 +1449,96 @@ describe('decoModel', () => {
             const firstStop50 = schedule50.stops[0]?.depth || 0;
             const firstStop70 = schedule70.stops[0]?.depth || 0;
             expect(firstStop50).toBeGreaterThanOrEqual(firstStop70);
+        });
+    });
+    
+    // =============================================================================
+    // Bottom-Anchored GF Tests
+    // =============================================================================
+    
+    describe('findFirstStopWithRampedGF', () => {
+        test('surface-saturated tissues return 0m first stop', () => {
+            const tissuePressures = {};
+            COMPARTMENTS.forEach(comp => {
+                tissuePressures[comp.id] = 0.74; // Surface saturation
+            });
+            
+            const anchorAmbient = 6.0; // 50m
+            const result = findFirstStopWithRampedGF(tissuePressures, anchorAmbient, 0.7, 0.85);
+            expect(result.depth).toBe(0);
+        });
+        
+        test('uses ramped GF: shallower first stop than constant GF Low', () => {
+            // Create loaded tissues that would require a deep stop
+            const tissuePressures = {};
+            COMPARTMENTS.forEach(comp => {
+                // Simulate tissues loaded at 40m
+                tissuePressures[comp.id] = 3.5;
+            });
+            
+            const anchorAmbient = 5.0; // 40m - bottom-anchored
+            const gfLow = 0.5;
+            const gfHigh = 0.85;
+            
+            // Bottom-anchored first stop with ramped GF
+            const rampedResult = findFirstStopWithRampedGF(tissuePressures, anchorAmbient, gfLow, gfHigh);
+            
+            // Constant GF Low first stop (old method)
+            const constantResult = getFirstStopDepth(tissuePressures, gfLow);
+            
+            // Ramped GF should give shallower or equal first stop
+            // because GF increases (becomes less conservative) as we ascend
+            expect(rampedResult.depth).toBeLessThanOrEqual(constantResult.depth);
+        });
+        
+        test('returns stop at 3m increments', () => {
+            const tissuePressures = {};
+            COMPARTMENTS.forEach(comp => {
+                tissuePressures[comp.id] = 2.5;
+            });
+            
+            const anchorAmbient = 4.0; // 30m
+            const result = findFirstStopWithRampedGF(tissuePressures, anchorAmbient, 0.7, 0.85);
+            
+            expect(result.depth % 3).toBe(0);
+        });
+    });
+    
+    describe('generateDecoSchedule bottom-anchored behavior', () => {
+        test('GF at bottom depth equals GF Low', () => {
+            const bottomDepth = 40;
+            const gfLow = 0.7;
+            const gfHigh = 0.85;
+            
+            // At bottom depth, GF should be exactly gfLow
+            const bottomAmbient = getAmbientPressure(bottomDepth);
+            const gfAtBottom = interpolateGF(bottomAmbient, bottomAmbient, gfLow, gfHigh);
+            
+            expect(gfAtBottom).toBe(gfLow);
+        });
+        
+        test('GF ramps from bottom (not first stop) to surface', () => {
+            const bottomDepth = 50;
+            const firstStopDepth = 21; // Example first stop
+            const midDepth = 10;
+            
+            const bottomAmbient = getAmbientPressure(bottomDepth);
+            const gfLow = 0.5;
+            const gfHigh = 1.0;
+            
+            // GF at first stop should NOT be gfLow (because anchor is at bottom, not first stop)
+            const firstStopAmbient = getAmbientPressure(firstStopDepth);
+            const gfAtFirstStop = interpolateGF(firstStopAmbient, bottomAmbient, gfLow, gfHigh);
+            
+            // GF at first stop should be > gfLow (interpolated up from bottom)
+            expect(gfAtFirstStop).toBeGreaterThan(gfLow);
+            
+            // GF at 10m should be even higher (closer to surface = closer to gfHigh)
+            const midAmbient = getAmbientPressure(midDepth);
+            const gfAtMid = interpolateGF(midAmbient, bottomAmbient, gfLow, gfHigh);
+            
+            expect(gfAtMid).toBeGreaterThan(gfAtFirstStop);
+            expect(gfAtMid).toBeLessThan(gfHigh);
         });
     });
 });
