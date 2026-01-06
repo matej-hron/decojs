@@ -922,22 +922,25 @@ export class MValueChart {
                     order: 52
                 });
                 
-                // GF Corridor line - the ACTUAL critical limit during ascent
-                // Goes from (pAnchor, M_gfLow) to (surfacePressure, M_gfHigh)
-                // This shows the limit from when you reach pAnchor to when you reach surface
-                const mAtPAnchorGfLow = getAdjustedMValue(pAnchor, comp.aN2, comp.bN2, gfLow);
-                const mAtSurfaceGfHigh = getAdjustedMValue(SURFACE_PRESSURE, comp.aN2, comp.bN2, gfHigh);
+                // GF Corridor curve - the ACTUAL critical limit during ascent
+                // This is a CURVE (not a straight line) because M_adj = P + gf(P) × (M₀(P) - P)
+                // where both gf(P) and (M₀(P) - P) are linear in P, making their product quadratic
+                // Sample multiple points to draw the actual curved limit
+                const corridorData = [];
+                const numPoints = 20;
+                for (let i = 0; i <= numPoints; i++) {
+                    const p = pAnchor - (pAnchor - SURFACE_PRESSURE) * (i / numPoints);
+                    const gf = interpolateGF(p, pAnchor, gfLow, gfHigh);
+                    const mAdj = getAdjustedMValue(p, comp.aN2, comp.bN2, gf);
+                    corridorData.push({ x: p, y: mAdj });
+                }
                 
                 datasets.push({
                     label: `GF Corridor TC${comp.id}`,
-                    data: [
-                        { x: pAnchor, y: mAtPAnchorGfLow },
-                        { x: SURFACE_PRESSURE, y: mAtSurfaceGfHigh }
-                    ],
+                    data: corridorData,
                     borderColor: comp.color,
                     borderWidth: 3,
-                    pointRadius: 4,
-                    pointBackgroundColor: comp.color,
+                    pointRadius: 0,  // No points along the curve, just the line
                     fill: false,
                     showLine: true,
                     order: 45  // Draw on top of M-value lines
