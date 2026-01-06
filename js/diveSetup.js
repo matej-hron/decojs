@@ -309,7 +309,9 @@ export function generateSimpleProfile(maxDepth, bottomTime, safetyStop = DEFAULT
  *   requiresDeco: boolean,
  *   decoStops: Array<{depth: number, time: number, gas: string}>,
  *   totalDecoTime: number,
- *   controllingCompartment: number
+ *   controllingCompartment: number,
+ *   pAnchor: number,
+ *   anchorDepth: number
  * }}
  */
 export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, safetyStop = DEFAULT_SAFETY_STOP) {
@@ -372,8 +374,8 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
         tissues = simulateDepthTime(tissues, maxDepth, actualBottomDuration, bottomGas.n2);
     }
     
-    // Generate deco schedule (now returns gasSwitches too)
-    const { stops, gasSwitches, totalTime: ascentTotalTime } = generateDecoSchedule(
+    // Generate deco schedule (now returns gasSwitches and pAnchor too)
+    const { stops, gasSwitches, totalTime: ascentTotalTime, pAnchor, anchorDepth } = generateDecoSchedule(
         tissues, maxDepth, bottomGas.n2, gfLowDec, gfHighDec, gases
     );
     
@@ -491,7 +493,9 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
         requiresDeco: true,
         decoStops: stops,
         totalDecoTime,
-        controllingCompartment
+        controllingCompartment,
+        pAnchor,
+        anchorDepth
     };
 }
 

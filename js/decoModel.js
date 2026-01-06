@@ -132,6 +132,179 @@ export function getAdjustedMValue(ambientPressure, a, b, gf) {
     return ambientPressure + gf * (mValue - ambientPressure);
 }
 
+// ============================================================================
+// INSTANTANEOUS GRADIENT FACTOR CALCULATIONS
+// ============================================================================
+
+/**
+ * Calculate instantaneous Gradient Factor for a single tissue compartment.
+ * 
+ * GF_i(Pamb) = (Pt[i] - Pamb) / (Mi(Pamb) - Pamb)
+ * 
+ * Where:
+ * - Pt[i] is the tissue inert gas pressure
+ * - Mi(Pamb) is the Bühlmann M-value at ambient pressure
+ * - Pamb is the ambient pressure
+ * 
+ * @param {number} tissuePressure - Current tissue inert gas pressure (bar)
+ * @param {number} ambientPressure - Current ambient pressure (bar)
+ * @param {Object} compartment - Compartment object with aN2, bN2
+ * @returns {number} Instantaneous GF for this tissue (-Infinity to +Infinity)
+ *                   Negative if tissue is undersaturated, >1 if exceeds M-value
+ */
+export function calculateInstantGF(tissuePressure, ambientPressure, compartment) {
+    const mValue = getMValue(ambientPressure, compartment.aN2, compartment.bN2);
+    const denominator = mValue - ambientPressure;
+    
+    // Avoid division by zero (though this shouldn't happen with valid coefficients)
+    if (Math.abs(denominator) < 1e-10) {
+        return tissuePressure > ambientPressure ? Infinity : -Infinity;
+    }
+    
+    return (tissuePressure - ambientPressure) / denominator;
+}
+
+/**
+ * Calculate maximum (controlling) Gradient Factor across all tissue compartments.
+ * 
+ * GF_max(Pamb) = max over i of GF_i(Pamb)
+ * 
+ * The leading tissue is the one with the highest instantaneous GF.
+ * Note: The leading tissue may change during ascent and deco.
+ * 
+ * @param {Object} tissuePressures - Map of compartment ID to tissue pressure (bar)
+ * @param {number} ambientPressure - Current ambient pressure (bar)
+ * @returns {{gfMax: number, leadingCompartment: number, allGFs: Object}}
+ *          gfMax: Maximum GF across all tissues
+ *          leadingCompartment: ID of the tissue with highest GF
+ *          allGFs: Map of compartment ID to its instantaneous GF
+ */
+export function calculateMaxGF(tissuePressures, ambientPressure) {
+    let gfMax = -Infinity;
+    let leadingCompartment = null;
+    const allGFs = {};
+    
+    for (const comp of COMPARTMENTS) {
+        const tissueP = tissuePressures[comp.id];
+        const gf = calculateInstantGF(tissueP, ambientPressure, comp);
+        allGFs[comp.id] = gf;
+        
+        if (gf > gfMax) {
+            gfMax = gf;
+            leadingCompartment = comp.id;
+        }
+    }
+    
+    return { gfMax, leadingCompartment, allGFs };
+}
+
+/**
+ * Find the GF Low anchor pressure (pAnchor).
+ * 
+ * The pAnchor is the EXACT ambient pressure during ascent where the maximum
+ * instantaneous gradient factor across all tissues first equals GF_low.
+ * 
+ * This is found by:
+ * 1. Simulating ascent from currentDepth toward the surface using small pressure steps
+ * 2. When GF_max first exceeds GF_low, calculate the EXACT pAnchor for the leading tissue
+ * 
+ * The exact pAnchor for a tissue equals its ceiling at GF_low:
+ * pAnchor = (Pt - GF_low × a) / (GF_low/b + 1 - GF_low)
+ * 
+ * This ensures pAnchor is precise rather than rounded to step boundaries.
+ * 
+ * @param {Object} tissuePressures - Map of compartment ID to tissue pressure (bar)
+ * @param {number} currentDepth - Current depth in meters (ascent start)
+ * @param {number} n2Fraction - N2 fraction in breathing gas
+ * @param {number} gfLow - GF Low value (0-1)
+ * @param {number} ascentRate - Ascent rate in m/min (default 10)
+ * @returns {{pAnchor: number, anchorDepth: number, leadingCompartment: number, tissuesAtAnchor: Object}}
+ *          pAnchor: Ambient pressure where GF_max first equals GF_low (bar)
+ *          anchorDepth: Depth corresponding to pAnchor (meters)
+ *          leadingCompartment: Controlling tissue at anchor
+ *          tissuesAtAnchor: Tissue pressures at anchor point
+ */
+export function findGFLowAnchor(tissuePressures, currentDepth, n2Fraction, gfLow, ascentRate = ASCENT_SPEED) {
+    const STEP_SIZE = 0.1; // bar (~1m precision for simulation)
+    
+    const startAmbient = getAmbientPressure(currentDepth);
+    
+    // First check if we're already at or above GF_low at current depth
+    const { gfMax: initialGfMax, leadingCompartment: initialLeading } = calculateMaxGF(tissuePressures, startAmbient);
+    if (initialGfMax >= gfLow) {
+        // Already at or exceeding GF_low, anchor is at current depth
+        return {
+            pAnchor: startAmbient,
+            anchorDepth: currentDepth,
+            leadingCompartment: initialLeading,
+            tissuesAtAnchor: { ...tissuePressures }
+        };
+    }
+    
+    // Simulate ascent toward surface, checking at each step
+    let currentAmbient = startAmbient;
+    let tissues = { ...tissuePressures };
+    let prevDepth = currentDepth;
+    let prevTissues = { ...tissues };
+    let prevAmbient = currentAmbient;
+    
+    while (currentAmbient > SURFACE_PRESSURE) {
+        // Take a step toward surface
+        const nextAmbient = Math.max(SURFACE_PRESSURE, currentAmbient - STEP_SIZE);
+        const nextDepth = (nextAmbient - SURFACE_PRESSURE) / PRESSURE_PER_METER;
+        
+        // Calculate time for this ascent segment
+        const depthChange = prevDepth - nextDepth;
+        const segmentTime = depthChange / ascentRate;
+        
+        // Simulate tissue off-gassing during ascent
+        if (segmentTime > 0) {
+            tissues = simulateDepthChange(tissues, prevDepth, nextDepth, segmentTime, n2Fraction);
+        }
+        
+        // Check GF_max at this new pressure
+        const { gfMax, leadingCompartment } = calculateMaxGF(tissues, nextAmbient);
+        
+        if (gfMax >= gfLow) {
+            // Found the step where GF_max crosses GF_low
+            // Now calculate the EXACT pAnchor for the leading compartment
+            // The exact pAnchor equals the ceiling at GF_low for this tissue
+            const comp = COMPARTMENTS.find(c => c.id === leadingCompartment);
+            const tissuePressure = tissues[leadingCompartment];
+            
+            // pAnchor = ceiling at GF_low = (Pt - GF_low * a) / (GF_low/b + 1 - GF_low)
+            const exactPAnchor = getCompartmentCeiling(tissuePressure, comp.aN2, comp.bN2, gfLow);
+            const exactAnchorDepth = Math.max(0, (exactPAnchor - SURFACE_PRESSURE) / PRESSURE_PER_METER);
+            
+            // Clamp pAnchor to be at least SURFACE_PRESSURE
+            const finalPAnchor = Math.max(SURFACE_PRESSURE, exactPAnchor);
+            const finalAnchorDepth = Math.max(0, (finalPAnchor - SURFACE_PRESSURE) / PRESSURE_PER_METER);
+            
+            return {
+                pAnchor: finalPAnchor,
+                anchorDepth: finalAnchorDepth,
+                leadingCompartment,
+                tissuesAtAnchor: { ...tissues }
+            };
+        }
+        
+        prevAmbient = currentAmbient;
+        prevTissues = { ...tissues };
+        currentAmbient = nextAmbient;
+        prevDepth = nextDepth;
+    }
+    
+    // Reached surface without hitting GF_low - anchor at surface
+    // This means the dive is within NDL (no deco required)
+    const { leadingCompartment } = calculateMaxGF(tissues, SURFACE_PRESSURE);
+    return {
+        pAnchor: SURFACE_PRESSURE,
+        anchorDepth: 0,
+        leadingCompartment,
+        tissuesAtAnchor: { ...tissues }
+    };
+}
+
 /**
  * Calculate ceiling (minimum tolerable ambient pressure) for a single compartment
  * This is the shallowest depth where the tissue remains within GF-adjusted limits.
@@ -188,20 +361,29 @@ export function getDiveCeiling(tissuePressures, gf) {
 }
 
 /**
- * Interpolate GF based on current depth between anchor (ascent start) and surface
- * At or below anchor depth: use GF Low
- * At surface: use GF High
- * Between: linear interpolation based on ambient pressure
+ * Interpolate GF based on current ambient pressure between pAnchor and surface.
+ * 
+ * Uses the formula:
+ * GF(Pamb) = GF_low + (GF_high - GF_low) × (pAnchor - Pamb) / (pAnchor - 1.0)
+ * 
+ * Where:
+ * - At Pamb >= pAnchor: GF = GF_low
+ * - At Pamb = surface (1.0 bar): GF = GF_high
+ * - Between: linear interpolation
+ * 
+ * This is the pAnchor-based GF interpolation (correct Bühlmann + GF implementation).
+ * The pAnchor is found using findGFLowAnchor() - the first ambient pressure during
+ * ascent where GF_max equals GF_low.
  * 
  * @param {number} currentAmbient - Current ambient pressure in bar
- * @param {number} anchorAmbient - Ambient pressure at GF anchor (ascent start depth) in bar
+ * @param {number} pAnchor - GF Low anchor pressure in bar (from findGFLowAnchor)
  * @param {number} gfLow - GF Low value (0-1)
  * @param {number} gfHigh - GF High value (0-1)
  * @returns {number} Interpolated GF (0-1)
  */
-export function interpolateGF(currentAmbient, anchorAmbient, gfLow, gfHigh) {
+export function interpolateGF(currentAmbient, pAnchor, gfLow, gfHigh) {
     // At or deeper than anchor: use GF Low
-    if (currentAmbient >= anchorAmbient) {
+    if (currentAmbient >= pAnchor) {
         return gfLow;
     }
     
@@ -210,10 +392,15 @@ export function interpolateGF(currentAmbient, anchorAmbient, gfLow, gfHigh) {
         return gfHigh;
     }
     
-    // Linear interpolation between surface and anchor
-    // fraction = 0 at surface, 1 at anchor
-    const fraction = (currentAmbient - SURFACE_PRESSURE) / (anchorAmbient - SURFACE_PRESSURE);
-    return gfHigh + fraction * (gfLow - gfHigh);
+    // Linear interpolation between pAnchor and surface
+    // GF = GF_low + (GF_high - GF_low) × (pAnchor - Pamb) / (pAnchor - 1.0)
+    const range = pAnchor - SURFACE_PRESSURE;
+    if (range <= 0) {
+        return gfHigh; // Edge case: anchor at surface
+    }
+    
+    const fraction = (pAnchor - currentAmbient) / range;
+    return gfLow + fraction * (gfHigh - gfLow);
 }
 
 /**
@@ -240,12 +427,12 @@ export function getFirstStopDepth(tissuePressures, gfLow, stopIncrement = 3) {
 }
 
 /**
- * Find first stop depth using bottom-anchored GF ramp with ascent simulation.
+ * Find first stop depth using pAnchor-based GF ramp with ascent simulation.
  * 
  * This function uses the EXACT same ascent-permission logic as the deco loop:
  * 1. For each candidate depth on the stop grid (shallow to deep)
  * 2. Simulate the actual ascent from currentDepth to candidate depth
- * 3. Compute GF at the destination using bottom-anchored interpolation
+ * 3. Compute GF at the destination using pAnchor-based interpolation
  * 4. Check if ceiling (post-ascent) permits staying at that depth
  * 5. Return the shallowest depth that passes the check
  * 
@@ -253,7 +440,7 @@ export function getFirstStopDepth(tissuePressures, gfLow, stopIncrement = 3) {
  * 
  * @param {Object} tissuePressures - Map of compartment ID to tissue pressure (bar)
  * @param {number} currentDepth - Current depth in meters (where ascent starts)
- * @param {number} ascentStartAmbient - Ambient pressure at GF anchor (ascent start) in bar
+ * @param {number} pAnchor - GF Low anchor pressure in bar (from findGFLowAnchor)
  * @param {number} currentN2 - N2 fraction in current breathing gas
  * @param {number} gfLow - GF Low value (0-1)
  * @param {number} gfHigh - GF High value (0-1)
@@ -263,7 +450,7 @@ export function getFirstStopDepth(tissuePressures, gfLow, stopIncrement = 3) {
  *          ambient: ambient pressure at first stop
  *          tissues: simulated tissue pressures after ascending to first stop
  */
-export function findFirstStopWithRampedGF(tissuePressures, currentDepth, ascentStartAmbient, currentN2, gfLow, gfHigh, stopIncrement = 3) {
+export function findFirstStopWithRampedGF(tissuePressures, currentDepth, pAnchor, currentN2, gfLow, gfHigh, stopIncrement = 3) {
     // Iterate from surface (0m) up to current depth in stop increments
     // Find the shallowest depth where we can ascend to and remain within limits
     for (let candidateDepth = 0; candidateDepth <= currentDepth; candidateDepth += stopIncrement) {
@@ -273,9 +460,9 @@ export function findFirstStopWithRampedGF(tissuePressures, currentDepth, ascentS
             ? simulateDepthChange({ ...tissuePressures }, currentDepth, candidateDepth, ascentTime, currentN2)
             : { ...tissuePressures };
         
-        // Compute GF at the candidate depth using bottom-anchored interpolation
+        // Compute GF at the candidate depth using pAnchor-based interpolation
         const candidateAmbient = getAmbientPressure(candidateDepth);
-        const gf = interpolateGF(candidateAmbient, ascentStartAmbient, gfLow, gfHigh);
+        const gf = interpolateGF(candidateAmbient, pAnchor, gfLow, gfHigh);
         
         // Check ceiling with post-ascent tissue state
         const { ceilingDepth } = getDiveCeiling(simulatedTissues, gf);
@@ -318,18 +505,26 @@ export function calculateCeilingTimeSeries(results, gfLow, gfHigh = gfLow) {
 /**
  * Calculate detailed ceiling data at each time point from tissue loading results
  * Returns both overall ceiling and per-compartment ceilings.
- * Uses bottom-anchored GF interpolation: GF Low at ascent start (max depth),
- * GF High at surface, linearly interpolated during ascent.
+ * 
+ * Uses pAnchor-based GF interpolation:
+ * - Before ascent or when GF_max < GF_low: use GF Low
+ * - At pAnchor (where GF_max = GF_low during ascent): begin GF ramp
+ * - During ascent above pAnchor: interpolate toward GF High at surface
+ * 
+ * The pAnchor is computed dynamically at each time point to ensure
+ * correct ceiling visualization that matches the deco scheduler.
  * 
  * @param {Object} results - Results from calculateTissueLoading()
  * @param {number} gfLow - GF Low value (0-1, where 1 = 100%)
  * @param {number} gfHigh - GF High value (0-1, where 1 = 100%)
- * @returns {{ceilingDepths: number[], compartmentCeilings: Object, gfValues: number[]}}
+ * @param {number} [providedPAnchor] - Pre-computed pAnchor from deco schedule (optional)
+ * @returns {{ceilingDepths: number[], compartmentCeilings: Object, gfValues: number[], pAnchor: number}}
  *          ceilingDepths: overall ceiling at each time point
  *          compartmentCeilings: {compId: number[]} ceiling depth per compartment at each time point
  *          gfValues: GF used at each time point (for debugging)
+ *          pAnchor: the GF Low anchor pressure used (bar)
  */
-export function calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh = gfLow) {
+export function calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh = gfLow, providedPAnchor = null) {
     const ceilingDepths = [];
     const compartmentCeilings = {};
     const gfValues = [];
@@ -339,11 +534,47 @@ export function calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh = gfLo
         compartmentCeilings[compId] = [];
     }
     
-    // Track GF anchor (ascent start = max depth, bottom-anchored GF)
-    let anchorAmbient = null;
+    // Track state for pAnchor detection
     let maxDepthSeen = results.depthPoints[0];
     let previousDepth = results.depthPoints[0];
+    let ascentStarted = false;
+    let pAnchor = providedPAnchor;
     
+    // Find max depth
+    for (let i = 0; i < results.timePoints.length; i++) {
+        if (results.depthPoints[i] > maxDepthSeen) {
+            maxDepthSeen = results.depthPoints[i];
+        }
+    }
+    
+    // Find the LAST index where we're at max depth (start of ascent)
+    // Use a small tolerance to handle floating point
+    let ascentStartIndex = 0;
+    const depthTolerance = 0.1; // meters
+    for (let i = 0; i < results.timePoints.length; i++) {
+        if (Math.abs(results.depthPoints[i] - maxDepthSeen) < depthTolerance) {
+            ascentStartIndex = i;
+        }
+    }
+    
+    // If pAnchor not provided, compute it at the moment ascent starts
+    // This uses the tissue state at the start of ascent (end of bottom time)
+    if (pAnchor === null) {
+        // Get tissue pressures at the start of ascent
+        const tissuesAtAscentStart = {};
+        for (const compId of Object.keys(results.compartments)) {
+            tissuesAtAscentStart[compId] = results.compartments[compId].pressures[ascentStartIndex];
+        }
+        
+        // Get N2 fraction at ascent start
+        const n2Fraction = results.n2Fractions ? results.n2Fractions[ascentStartIndex] : N2_FRACTION;
+        
+        // Find pAnchor from tissue state at ascent start
+        const anchorResult = findGFLowAnchor(tissuesAtAscentStart, maxDepthSeen, n2Fraction, gfLow);
+        pAnchor = anchorResult.pAnchor;
+    }
+    
+    // Process each time point
     for (let i = 0; i < results.timePoints.length; i++) {
         const currentDepth = results.depthPoints[i];
         const currentAmbient = results.ambientPressures[i];
@@ -354,31 +585,24 @@ export function calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh = gfLo
             tissuePressures[compId] = results.compartments[compId].pressures[i];
         }
         
-        // Track maximum depth for bottom-anchored GF
-        if (currentDepth > maxDepthSeen) {
-            maxDepthSeen = currentDepth;
-        }
-        
         // Detect start of ascent (depth decreasing from maximum)
         const isAscending = currentDepth < previousDepth;
-        
-        // Set GF anchor at ascent start (bottom-anchored: max depth seen)
-        if (isAscending && anchorAmbient === null) {
-            anchorAmbient = getAmbientPressure(maxDepthSeen);
+        if (isAscending && !ascentStarted && currentDepth < maxDepthSeen) {
+            ascentStarted = true;
         }
         
-        // Determine which GF to use (bottom-anchored ramp)
+        // Determine which GF to use (pAnchor-based ramp)
         let gf;
-        if (anchorAmbient === null || currentAmbient >= anchorAmbient) {
-            // Not yet ascending or at/deeper than anchor: use GF Low
+        if (!ascentStarted || currentAmbient >= pAnchor) {
+            // Not yet ascending or at/deeper than pAnchor: use GF Low
             gf = gfLow;
         } else {
-            // During ascent above anchor: interpolate GF
-            gf = interpolateGF(currentAmbient, anchorAmbient, gfLow, gfHigh);
+            // During ascent above pAnchor: interpolate GF
+            gf = interpolateGF(currentAmbient, pAnchor, gfLow, gfHigh);
         }
         gfValues.push(gf);
         
-        // Calculate ceiling for each compartment
+        // Calculate ceiling for each compartment using the active GF
         let maxCeilingDepth = 0;
         for (const comp of COMPARTMENTS) {
             const tissueP = tissuePressures[comp.id];
@@ -395,7 +619,7 @@ export function calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh = gfLo
         previousDepth = currentDepth;
     }
     
-    return { ceilingDepths, compartmentCeilings, gfValues };
+    return { ceilingDepths, compartmentCeilings, gfValues, pAnchor };
 }
 
 // ============================================================================
@@ -568,20 +792,19 @@ export function simulateDepthChange(tissuePressures, startDepth, endDepth, time,
  *   the gas's MOD (rounded to 3m grid). This allows using richer gases during
  *   ascent even without mandatory stops.
  * 
- * GF interpolation (bottom-anchored): The GF ramp runs from gfLow at the
- * ascent start depth (currentDepth) to gfHigh at the surface. This applies
- * consistently to first-stop discovery and all ceiling checks during ascent.
- * Bottom-anchored GF is closer to the original Baker/Bühlmann theory.
+ * GF interpolation (pAnchor-based): The pAnchor is the ambient pressure during
+ * ascent where GF_max first equals GF_low. The GF ramp runs from gfLow at pAnchor
+ * to gfHigh at the surface. This is the correct Bühlmann + GF implementation.
  * 
  * @param {Object} tissuePressures - Current tissue pressures by compartment ID
- * @param {number} currentDepth - Current depth in meters (ascent start = GF anchor)
+ * @param {number} currentDepth - Current depth in meters (ascent start)
  * @param {number} n2Fraction - N2 fraction in current gas
  * @param {number} gfLow - GF Low (0-1)
  * @param {number} gfHigh - GF High (0-1)
  * @param {Array} [gases] - Available gases for switching [{id, n2, o2, name, mod}]
  * @param {Object} [options] - Additional options
  * @param {number} [options.switchPpO2=1.6] - ppO2 used to calculate gas switch depths (MOD)
- * @returns {{stops: Array<{depth: number, time: number, gas: string}>, gasSwitches: Array<{depth: number, gas: string, gasId: string}>, totalTime: number, totalAscentTime: number}}
+ * @returns {{stops: Array<{depth: number, time: number, gas: string}>, gasSwitches: Array<{depth: number, gas: string, gasId: string}>, totalTime: number, totalAscentTime: number, pAnchor: number, anchorDepth: number}}
  */
 export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, gfLow, gfHigh, gases = null, options = {}) {
     const { switchPpO2 = 1.6 } = options;
@@ -590,9 +813,11 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
     const gasSwitches = []; // Track gas switches during ascent
     let totalAscentTime = 0;
     
-    // GF anchor: ascent start depth (bottom-anchored GF)
-    // GF ramps linearly from gfLow at this depth to gfHigh at surface
-    const ascentStartAmbient = getAmbientPressure(currentDepth);
+    // Find the GF Low anchor point (pAnchor)
+    // This is the ambient pressure where GF_max first equals GF_low during ascent
+    const { pAnchor, anchorDepth, tissuesAtAnchor } = findGFLowAnchor(
+        tissuePressures, currentDepth, n2Fraction, gfLow
+    );
     
     // Clone tissue pressures
     let tissues = { ...tissuePressures };
@@ -671,10 +896,10 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
         return true;
     };
     
-    // Find first stop depth using bottom-anchored GF ramp with ascent simulation
+    // Find first stop depth using pAnchor-based GF ramp with ascent simulation
     // This uses the exact same logic as the deco loop: simulate ascent, check ceiling at destination GF
     let { depth: firstStopDepth, tissues: tissuesAtFirstStop } = findFirstStopWithRampedGF(
-        tissues, depth, ascentStartAmbient, currentN2, gfLow, gfHigh
+        tissues, depth, pAnchor, currentN2, gfLow, gfHigh
     );
     
     // If no deco needed (first stop = 0), just ascend with mid-ascent gas switches
@@ -707,7 +932,7 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
             currentTissues = simulateDepthChange(currentTissues, remainingDepth, 0, segmentTime, currentN2);
             totalAscentTime += segmentTime;
         }
-        return { stops: [], gasSwitches, totalTime: totalAscentTime, totalAscentTime };
+        return { stops: [], gasSwitches, totalTime: totalAscentTime, totalAscentTime, pAnchor, anchorDepth };
     }
     
     // Ascend to first stop - NO gas switches during this phase
@@ -718,10 +943,6 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
     totalAscentTime += ascentToFirstStopTime;
     tissues = tissuesAtFirstStop;
     depth = firstStopDepth;
-    
-    // GF anchor is the ascent start depth (bottom-anchored)
-    // GF ramps linearly from gfLow at ascentStartAmbient to gfHigh at surface
-    const gfRampAnchorAmbient = ascentStartAmbient;
     
     // Deco loop: work up from first stop to surface
     // Gas switches occur on arrival at each stop depth, before waiting begins
@@ -735,8 +956,8 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
         const ascentTime = delta / ASCENT_SPEED;
         
         // For ceiling check, use GF at the DESTINATION depth
-        // GF interpolates linearly from gfLow at gfRampAnchorAmbient to gfHigh at surface
-        const gfAtDestination = interpolateGF(getAmbientPressure(nextStopDepth), gfRampAnchorAmbient, gfLow, gfHigh);
+        // GF interpolates linearly from gfLow at pAnchor to gfHigh at surface
+        const gfAtDestination = interpolateGF(getAmbientPressure(nextStopDepth), pAnchor, gfLow, gfHigh);
         
         let stopTime = 0;
         
@@ -779,7 +1000,7 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
     
     const totalTime = totalAscentTime + stops.reduce((sum, s) => sum + s.time, 0);
     
-    return { stops, gasSwitches, totalTime, totalAscentTime };
+    return { stops, gasSwitches, totalTime, totalAscentTime, pAnchor, anchorDepth };
 }
 
 /**
@@ -924,9 +1145,12 @@ export function calculateTissueLoading(profile, surfaceInterval = 60, options = 
 
         // Calculate current depth by interpolation
         let currentDepth;
-        if (currentTime >= lastWaypoint.time) {
-            // Surface interval - at 0 meters
+        if (currentTime > lastWaypoint.time) {
+            // Surface interval - at 0 meters (AFTER the last waypoint)
             currentDepth = 0;
+        } else if (currentTime === lastWaypoint.time) {
+            // Exactly at last waypoint - use its depth
+            currentDepth = lastWaypoint.depth;
         } else {
             const wp1 = profile[waypointIndex];
             const wp2 = profile[waypointIndex + 1];
@@ -942,13 +1166,13 @@ export function calculateTissueLoading(profile, surfaceInterval = 60, options = 
         }
 
         // Get current N2 fraction (may change at gas switches)
-        const currentN2Fraction = currentTime >= lastWaypoint.time 
-            ? N2_FRACTION  // Surface interval uses air
+        const currentN2Fraction = currentTime > lastWaypoint.time 
+            ? N2_FRACTION  // Surface interval uses air (AFTER the last waypoint)
             : getN2FractionAtTime(currentTime);
         
         // Get current gas name for display
         let currentGasName = 'Air';
-        if (gases && gases.length > 0 && currentTime < lastWaypoint.time) {
+        if (gases && gases.length > 0 && currentTime <= lastWaypoint.time) {
             // Find the last gasId that was set at or before this time
             let currentGasId = gases[0].id;
             for (const wp of profile) {
@@ -998,8 +1222,12 @@ export function calculateTissueLoading(profile, surfaceInterval = 60, options = 
         
         // Calculate depth at next time step
         let nextDepth;
-        if (nextTime >= lastWaypoint.time) {
+        if (nextTime > lastWaypoint.time) {
+            // Surface interval - at 0 meters (AFTER the last waypoint)
             nextDepth = 0;
+        } else if (nextTime === lastWaypoint.time) {
+            // Exactly at last waypoint - use its depth
+            nextDepth = lastWaypoint.depth;
         } else {
             // Find segment for next time
             let nextWaypointIndex = waypointIndex;
@@ -1026,10 +1254,10 @@ export function calculateTissueLoading(profile, surfaceInterval = 60, options = 
         const nextAmbient = getAmbientPressure(nextDepth);
         
         // Get N2 fraction for current and next time (handles gas switches)
-        const stepN2Fraction = currentTime >= lastWaypoint.time 
-            ? N2_FRACTION  // Surface interval uses air
+        const stepN2Fraction = currentTime > lastWaypoint.time 
+            ? N2_FRACTION  // Surface interval uses air (AFTER the last waypoint)
             : getN2FractionAtTime(currentTime);
-        const nextN2Fraction = nextTime >= lastWaypoint.time
+        const nextN2Fraction = nextTime > lastWaypoint.time
             ? N2_FRACTION
             : getN2FractionAtTime(nextTime);
             

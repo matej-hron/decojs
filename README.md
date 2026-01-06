@@ -86,6 +86,46 @@ Where `k = ln(2) / half-time` is the tissue rate constant.
 
 16 theoretical compartments with N₂ half-times ranging from ~4-5 to 635 minutes (ZH-L16A variant). These are mathematical constructs fit to experimental data, not literal anatomical tissues.
 
+### Gradient Factor Interpolation (pAnchor-based)
+
+The implementation uses pAnchor-based GF interpolation, which is the correct approach per Baker's original gradient factor paper. During ascent, the active GF is not interpolated from bottom depth to surface, but from pAnchor to surface.
+
+**Key Concepts:**
+
+- **Instantaneous GF** — The current gradient factor for a single tissue:
+  ```
+  GF_i(P_amb) = (P_t[i] - P_amb) / (M_i(P_amb) - P_amb)
+  ```
+  Where `P_t[i]` is tissue pressure, `P_amb` is ambient pressure, and `M_i(P_amb)` is the M-value line.
+
+- **Max GF** — The highest instantaneous GF across all 16 compartments:
+  ```
+  GF_max(P_amb) = max(GF_i(P_amb)) for i = 1..16
+  ```
+
+- **pAnchor** — The ambient pressure during ascent where `GF_max` first equals `GF_low`:
+  ```
+  pAnchor: first P_amb during ascent where GF_max(P_amb) >= GF_low
+  ```
+  This is found by simulating ascent in 0.1 bar steps from bottom and off-gassing tissues.
+
+- **GF Interpolation** — The active GF is interpolated from pAnchor to surface:
+  ```
+  GF(P_amb) = GF_low + (GF_high - GF_low) × (pAnchor - P_amb) / (pAnchor - 1.0)
+  ```
+  - At/below pAnchor: GF = GF_low (no ramping yet)
+  - At surface (1.0 bar): GF = GF_high
+  - Between: linear interpolation
+
+**Why pAnchor?**
+
+The traditional "bottom-anchored" approach (GF ramp from max depth to surface) is incorrect because:
+1. At max depth, the diver may be far from any deco obligation
+2. The first stop depth depends on tissue loading, not arbitrary bottom depth
+3. pAnchor represents where the diver's leading tissue first reaches the GF_low limit
+
+This implementation matches how dive computers like Shearwater use gradient factors.
+
 ## Development
 
 ```bash

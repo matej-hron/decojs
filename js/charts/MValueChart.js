@@ -36,6 +36,9 @@ import {
     getMValue,
     getAdjustedMValue,
     getFirstStopDepth,
+    findGFLowAnchor,
+    interpolateGF,
+    N2_FRACTION,
     SURFACE_PRESSURE
 } from '../decoModel.js';
 import {
@@ -809,11 +812,10 @@ export class MValueChart {
             });
         }
         
-        // Calculate first stop depth for GF corridor line
-        // GF Low applies at first stop, GF High at surface, linear interpolation between
+        // Calculate pAnchor for GF corridor line
+        // pAnchor is where GF_max first equals GF_low during ascent
         const hasGF = gfLow < 1 || gfHigh < 1;
-        let firstStopAmbient = SURFACE_PRESSURE;
-        let maxDepthAmbient = maxAmbient;  // Starting point of ascent (max depth)
+        let pAnchor = SURFACE_PRESSURE;
         
         if (hasGF && results.depthPoints) {
             // Find the maximum depth (start of ascent)
@@ -827,34 +829,37 @@ export class MValueChart {
                 }
             }
             
-            // Store the ambient pressure at max depth
-            maxDepthAmbient = results.ambientPressures[ascentStartIndex];
-            
             // Get tissue pressures at ascent start
             const tissuePressures = {};
             for (const compId of Object.keys(results.compartments)) {
                 tissuePressures[compId] = results.compartments[compId].pressures[ascentStartIndex];
             }
             
-            // Calculate first stop from tissue loading at ascent start
-            const { ambient } = getFirstStopDepth(tissuePressures, gfLow);
-            firstStopAmbient = ambient;
+            // Get N2 fraction from dive setup (first gas or air)
+            const gases = this.diveSetup?.gases || [];
+            const n2Fraction = gases[0]?.n2 ?? N2_FRACTION;
             
-            // Draw vertical line at first stop depth
-            datasets.push({
-                label: 'First Stop',
-                data: [
-                    { x: firstStopAmbient, y: 0 },
-                    { x: firstStopAmbient, y: maxPressure }
-                ],
-                borderColor: 'rgba(243, 156, 18, 0.6)',  // Orange
-                borderWidth: 2,
-                borderDash: [4, 4],
-                pointRadius: 0,
-                fill: false,
-                showLine: true,
-                order: 98
-            });
+            // Find pAnchor using the new algorithm
+            const anchorResult = findGFLowAnchor(tissuePressures, maxDepth, n2Fraction, gfLow);
+            pAnchor = anchorResult.pAnchor;
+            
+            // Draw vertical line at pAnchor (GF Low anchor depth)
+            if (pAnchor > SURFACE_PRESSURE) {
+                datasets.push({
+                    label: 'pAnchor (GF Low)',
+                    data: [
+                        { x: pAnchor, y: 0 },
+                        { x: pAnchor, y: maxPressure }
+                    ],
+                    borderColor: 'rgba(243, 156, 18, 0.6)',  // Orange
+                    borderWidth: 2,
+                    borderDash: [4, 4],
+                    pointRadius: 0,
+                    fill: false,
+                    showLine: true,
+                    order: 98
+                });
+            }
         }
         
         // For each visible compartment
@@ -918,15 +923,15 @@ export class MValueChart {
                 });
                 
                 // GF Corridor line - the ACTUAL critical limit during ascent
-                // Goes from (maxDepthAmbient, M_gfLow) to (surfacePressure, M_gfHigh)
-                // This shows the limit from when you leave bottom to when you reach surface
-                const mAtMaxDepthGfLow = getAdjustedMValue(maxDepthAmbient, comp.aN2, comp.bN2, gfLow);
+                // Goes from (pAnchor, M_gfLow) to (surfacePressure, M_gfHigh)
+                // This shows the limit from when you reach pAnchor to when you reach surface
+                const mAtPAnchorGfLow = getAdjustedMValue(pAnchor, comp.aN2, comp.bN2, gfLow);
                 const mAtSurfaceGfHigh = getAdjustedMValue(SURFACE_PRESSURE, comp.aN2, comp.bN2, gfHigh);
                 
                 datasets.push({
                     label: `GF Corridor TC${comp.id}`,
                     data: [
-                        { x: maxDepthAmbient, y: mAtMaxDepthGfLow },
+                        { x: pAnchor, y: mAtPAnchorGfLow },
                         { x: SURFACE_PRESSURE, y: mAtSurfaceGfHigh }
                     ],
                     borderColor: comp.color,

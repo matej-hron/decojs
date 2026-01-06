@@ -166,7 +166,10 @@ import {
     calculateNDL,
     simulateDepthTime,
     simulateDepthChange,
-    generateDecoSchedule
+    generateDecoSchedule,
+    calculateInstantGF,
+    calculateMaxGF,
+    findGFLowAnchor
 } from '../js/decoModel.js';
 
 import { 
@@ -1150,6 +1153,168 @@ describe('decoModel', () => {
         });
     });
 
+    describe('calculateInstantGF', () => {
+        test('returns 0 for surface-saturated tissue at surface', () => {
+            // Tissue at 0.74 bar (surface equilibrium), at surface (1.0 bar ambient)
+            const gf = calculateInstantGF(0.74, 1.0, COMPARTMENTS[0]);
+            expect(gf).toBeLessThan(0);  // Undersaturated
+        });
+
+        test('returns positive GF for supersaturated tissue', () => {
+            // Tissue at 2.0 bar, at surface (1.0 bar ambient)
+            const gf = calculateInstantGF(2.0, 1.0, COMPARTMENTS[0]);
+            expect(gf).toBeGreaterThan(0);  // Supersaturated
+        });
+
+        test('returns 1.0 exactly at M-value', () => {
+            // Calculate what tissue pressure equals M-value at surface
+            // M = a + Pamb/b, so if Pt = M, then GF_i = (M - Pamb) / (M - Pamb) = 1
+            const comp = COMPARTMENTS[0];  // comp 1: a=1.2599, b=0.5240
+            const mValue = comp.aN2 + 1.0 / comp.bN2;
+            const gf = calculateInstantGF(mValue, 1.0, comp);
+            expect(gf).toBeCloseTo(1.0, 6);
+        });
+
+        test('GF increases as ambient pressure decreases', () => {
+            // Same tissue pressure, different ambient
+            const tissuePressure = 3.0;
+            const gfDeep = calculateInstantGF(tissuePressure, 4.0, COMPARTMENTS[0]);
+            const gfShallow = calculateInstantGF(tissuePressure, 2.0, COMPARTMENTS[0]);
+            const gfSurface = calculateInstantGF(tissuePressure, 1.0, COMPARTMENTS[0]);
+            
+            expect(gfDeep).toBeLessThan(gfShallow);
+            expect(gfShallow).toBeLessThan(gfSurface);
+        });
+    });
+
+    describe('calculateMaxGF', () => {
+        test('returns max GF across all compartments', () => {
+            // Create tissue pressures with varying loading
+            const tissuePressures = {};
+            COMPARTMENTS.forEach((comp, i) => {
+                tissuePressures[comp.id] = 1.5 + i * 0.1;  // Increasing loading
+            });
+            
+            const result = calculateMaxGF(tissuePressures, 1.0);
+            
+            expect(result).toHaveProperty('gfMax');
+            expect(result).toHaveProperty('leadingCompartment');
+            expect(result).toHaveProperty('allGFs');
+            expect(typeof result.gfMax).toBe('number');
+        });
+
+        test('identifies the leading (highest GF) compartment', () => {
+            // Create tissues with one clearly higher than others
+            const tissuePressures = {};
+            COMPARTMENTS.forEach(comp => {
+                tissuePressures[comp.id] = 0.74;  // Surface equilibrium
+            });
+            // Make compartment 4 heavily loaded
+            tissuePressures['4'] = 4.0;
+            
+            const result = calculateMaxGF(tissuePressures, 1.0);
+            expect(result.leadingCompartment).toBe(4);
+        });
+
+        test('returns negative GF for undersaturated tissues', () => {
+            const tissuePressures = {};
+            COMPARTMENTS.forEach(comp => {
+                tissuePressures[comp.id] = 0.74;  // Surface equilibrium
+            });
+            
+            const result = calculateMaxGF(tissuePressures, 1.0);
+            expect(result.gfMax).toBeLessThan(0);
+        });
+    });
+
+    describe('findGFLowAnchor', () => {
+        test('returns surface (1.0 bar) for surface-saturated tissues', () => {
+            // Tissues at surface equilibrium
+            const tissuePressures = {};
+            COMPARTMENTS.forEach(comp => {
+                tissuePressures[comp.id] = 0.74;
+            });
+            
+            const result = findGFLowAnchor(tissuePressures, 30, N2_FRACTION, 0.7);
+            
+            // GF_max never reaches GF_low, so pAnchor is at surface
+            expect(result.pAnchor).toBe(1.0);
+            expect(result.anchorDepth).toBe(0);
+        });
+
+        test('returns pAnchor shallower than max depth for loaded tissues', () => {
+            // Simulate tissues loaded at 40m for 20 minutes
+            const profile = [
+                { time: 0, depth: 0 },
+                { time: 2, depth: 40 },
+                { time: 22, depth: 40 }  // 20 min at depth
+            ];
+            const results = calculateTissueLoading(profile, 0);
+            
+            // Get tissue pressures at end
+            const lastIdx = results.timePoints.length - 1;
+            const tissuePressures = {};
+            for (const compId of Object.keys(results.compartments)) {
+                tissuePressures[compId] = results.compartments[compId].pressures[lastIdx];
+            }
+            
+            const result = findGFLowAnchor(tissuePressures, 40, N2_FRACTION, 0.5);
+            
+            // pAnchor should be between surface and max depth
+            expect(result.pAnchor).toBeGreaterThan(1.0);  // Above surface
+            expect(result.pAnchor).toBeLessThan(5.0);     // Below 40m (5 bar)
+            expect(result.anchorDepth).toBeGreaterThan(0);
+            expect(result.anchorDepth).toBeLessThan(40);
+        });
+
+        test('lower GF Low results in deeper pAnchor', () => {
+            // Tissues loaded for deco dive
+            const profile = [
+                { time: 0, depth: 0 },
+                { time: 2, depth: 40 },
+                { time: 22, depth: 40 }
+            ];
+            const results = calculateTissueLoading(profile, 0);
+            
+            const lastIdx = results.timePoints.length - 1;
+            const tissuePressures = {};
+            for (const compId of Object.keys(results.compartments)) {
+                tissuePressures[compId] = results.compartments[compId].pressures[lastIdx];
+            }
+            
+            const result70 = findGFLowAnchor(tissuePressures, 40, N2_FRACTION, 0.7);
+            const result50 = findGFLowAnchor(tissuePressures, 40, N2_FRACTION, 0.5);
+            const result30 = findGFLowAnchor(tissuePressures, 40, N2_FRACTION, 0.3);
+            
+            // Lower GF Low means stricter limit, so pAnchor is reached deeper
+            expect(result50.pAnchor).toBeGreaterThanOrEqual(result70.pAnchor);
+            expect(result30.pAnchor).toBeGreaterThanOrEqual(result50.pAnchor);
+        });
+
+        test('returns leading compartment at pAnchor', () => {
+            const profile = [
+                { time: 0, depth: 0 },
+                { time: 2, depth: 40 },
+                { time: 22, depth: 40 }
+            ];
+            const results = calculateTissueLoading(profile, 0);
+            
+            const lastIdx = results.timePoints.length - 1;
+            const tissuePressures = {};
+            for (const compId of Object.keys(results.compartments)) {
+                tissuePressures[compId] = results.compartments[compId].pressures[lastIdx];
+            }
+            
+            const result = findGFLowAnchor(tissuePressures, 40, N2_FRACTION, 0.5);
+            
+            expect(result.leadingCompartment).toBeGreaterThanOrEqual(1);
+            expect(result.leadingCompartment).toBeLessThanOrEqual(16);
+            expect(typeof result.tissuesAtAnchor).toBe('object');
+            // Verify tissuesAtAnchor has tissue values
+            expect(Object.keys(result.tissuesAtAnchor).length).toBeGreaterThan(0);
+        });
+    });
+
     describe('getFirstStopDepth', () => {
         test('surface-saturated tissues have 0m first stop', () => {
             const tissuePressures = {};
@@ -1254,13 +1419,16 @@ describe('decoModel', () => {
             expect(ceilingsGF70[endBottomIdx]).toBeGreaterThan(ceilingsGF100[endBottomIdx]);
         });
 
-        test('uses GF interpolation during ascent', () => {
+        test('uses GF interpolation during ascent (pAnchor-based)', () => {
             // Longer dive to build up tissue loading
+            // With pAnchor-based GF interpolation, the GF only changes once the diver
+            // ascends past pAnchor (where GF_max first equals GF_low during ascent).
+            // For this profile with GF 50, pAnchor is around 10m depth.
             const profile = [
                 { time: 0, depth: 0 },
                 { time: 2, depth: 40 },
                 { time: 20, depth: 40 },  // Long bottom time
-                { time: 30, depth: 0 }    // Slow ascent
+                { time: 30, depth: 0 }    // Slow ascent (4 m/min)
             ];
             const results = calculateTissueLoading(profile, 0);
             
@@ -1272,10 +1440,16 @@ describe('decoModel', () => {
             const bottomIdx = results.timePoints.findIndex(t => t >= 15);
             expect(ceilingsGFLowOnly[bottomIdx]).toBeCloseTo(ceilingsGFInterp[bottomIdx], 1);
             
-            // During ascent near surface, GF 50/85 should have shallower ceiling than GF 50/50
+            // During ascent BELOW pAnchor (~10m), ceilings should be similar (both use GF Low only)
+            // At t=25, diver is at ~20m which is still below pAnchor (~10m)
+            const belowAnchorIdx = results.timePoints.findIndex(t => t >= 25);
+            expect(ceilingsGFLowOnly[belowAnchorIdx]).toBeCloseTo(ceilingsGFInterp[belowAnchorIdx], 1);
+            
+            // Near surface (above pAnchor), GF 50/85 should have shallower ceiling than GF 50/50
             // because GF High (85%) allows more supersaturation than GF Low (50%)
-            const nearSurfaceIdx = results.timePoints.findIndex(t => t >= 28);
-            expect(ceilingsGFInterp[nearSurfaceIdx]).toBeLessThan(ceilingsGFLowOnly[nearSurfaceIdx]);
+            // At t=29.5, diver is at ~2m which is above pAnchor (~10m)
+            const aboveAnchorIdx = results.timePoints.findIndex(t => t >= 29.5);
+            expect(ceilingsGFInterp[aboveAnchorIdx]).toBeLessThan(ceilingsGFLowOnly[aboveAnchorIdx]);
         });
 
         test('defaults gfHigh to gfLow if not provided', () => {
@@ -1504,41 +1678,132 @@ describe('decoModel', () => {
         });
     });
     
-    describe('generateDecoSchedule bottom-anchored behavior', () => {
-        test('GF at bottom depth equals GF Low', () => {
-            const bottomDepth = 40;
-            const gfLow = 0.7;
-            const gfHigh = 0.85;
+    describe('generateDecoSchedule pAnchor behavior', () => {
+        test('GF at pAnchor equals GF Low', () => {
+            const gfLow = 0.5;
+            const gfHigh = 0.8;
             
-            // At bottom depth, GF should be exactly gfLow
-            const bottomAmbient = getAmbientPressure(bottomDepth);
-            const gfAtBottom = interpolateGF(bottomAmbient, bottomAmbient, gfLow, gfHigh);
+            // For any pAnchor, GF at that ambient should be exactly gfLow
+            const pAnchor = 1.6; // 6m
+            const gfAtAnchor = interpolateGF(pAnchor, pAnchor, gfLow, gfHigh);
             
-            expect(gfAtBottom).toBe(gfLow);
+            expect(gfAtAnchor).toBe(gfLow);
         });
         
-        test('GF ramps from bottom (not first stop) to surface', () => {
-            const bottomDepth = 50;
-            const firstStopDepth = 21; // Example first stop
-            const midDepth = 10;
-            
-            const bottomAmbient = getAmbientPressure(bottomDepth);
+        test('GF is gfLow when deeper than pAnchor', () => {
+            const pAnchor = 1.6; // 6m
             const gfLow = 0.5;
-            const gfHigh = 1.0;
+            const gfHigh = 0.8;
             
-            // GF at first stop should NOT be gfLow (because anchor is at bottom, not first stop)
-            const firstStopAmbient = getAmbientPressure(firstStopDepth);
-            const gfAtFirstStop = interpolateGF(firstStopAmbient, bottomAmbient, gfLow, gfHigh);
+            // At depths deeper than pAnchor, GF should remain gfLow
+            const deeperAmbient = 1.9; // 9m
+            const gfAtDeeper = interpolateGF(deeperAmbient, pAnchor, gfLow, gfHigh);
+            expect(gfAtDeeper).toBe(gfLow);
             
-            // GF at first stop should be > gfLow (interpolated up from bottom)
-            expect(gfAtFirstStop).toBeGreaterThan(gfLow);
+            // Even much deeper
+            const veryDeepAmbient = 4.0; // 30m
+            const gfAtVeryDeep = interpolateGF(veryDeepAmbient, pAnchor, gfLow, gfHigh);
+            expect(gfAtVeryDeep).toBe(gfLow);
+        });
+        
+        test('GF ramps from pAnchor to surface', () => {
+            const pAnchor = 2.0; // 10m
+            const gfLow = 0.5;
+            const gfHigh = 0.8;
             
-            // GF at 10m should be even higher (closer to surface = closer to gfHigh)
-            const midAmbient = getAmbientPressure(midDepth);
-            const gfAtMid = interpolateGF(midAmbient, bottomAmbient, gfLow, gfHigh);
+            // At surface, GF should be gfHigh
+            const gfAtSurface = interpolateGF(1.0, pAnchor, gfLow, gfHigh);
+            expect(gfAtSurface).toBe(gfHigh);
             
-            expect(gfAtMid).toBeGreaterThan(gfAtFirstStop);
-            expect(gfAtMid).toBeLessThan(gfHigh);
+            // At 5m (halfway between pAnchor and surface), GF should be interpolated
+            const midAmbient = 1.5; // 5m
+            const gfAtMid = interpolateGF(midAmbient, pAnchor, gfLow, gfHigh);
+            // fraction = (pAnchor - midAmbient) / (pAnchor - 1.0) = (2.0 - 1.5) / (2.0 - 1.0) = 0.5
+            // GF = gfLow + 0.5 * (gfHigh - gfLow) = 0.5 + 0.5 * 0.3 = 0.65
+            expect(gfAtMid).toBeCloseTo(0.65, 6);
+        });
+        
+        test('30m/20min air GF 50/80: pAnchor is shallower than first stop', () => {
+            // This tests a real-world scenario where:
+            // - pAnchor (where GF_max first equals GF_low) is at 6m
+            // - But first STOP is at 9m because ceiling requires it
+            
+            // Simulate dive: 30m/20min air
+            const descentTime = 30 / 20; // 1.5 min at 20 m/min
+            let tissues = {};
+            COMPARTMENTS.forEach(c => { tissues[c.id] = 0.74; }); // surface sat
+            tissues = simulateDepthChange(tissues, 0, 30, descentTime, N2_FRACTION);
+            tissues = simulateDepthTime(tissues, 30, 20 - descentTime, N2_FRACTION);
+            
+            // Find pAnchor
+            const { pAnchor, anchorDepth } = findGFLowAnchor(tissues, 30, N2_FRACTION, 0.5);
+            
+            // Generate deco schedule
+            const schedule = generateDecoSchedule(tissues, 30, N2_FRACTION, 0.5, 0.8);
+            
+            // pAnchor should be around 6m (1.6 bar)
+            expect(anchorDepth).toBeCloseTo(6, 0);
+            expect(pAnchor).toBeCloseTo(1.6, 1);
+            
+            // First stop should be 9m (deeper than pAnchor due to ceiling constraint)
+            expect(schedule.stops.length).toBeGreaterThan(0);
+            expect(schedule.stops[0].depth).toBe(9);
+            
+            // Schedule should return the pAnchor
+            expect(schedule.pAnchor).toBeCloseTo(1.6, 1);
+            expect(schedule.anchorDepth).toBeCloseTo(6, 0);
+        });
+    });
+    
+    describe('calculateTissueLoading boundary behavior', () => {
+        test('tissue pressure at last waypoint equals manual simulation', () => {
+            // This tests that calculateTissueLoading doesn't prematurely start surface interval
+            // at the exact last waypoint time (was a bug: >= instead of >)
+            const profile = [
+                { time: 0, depth: 0 },
+                { time: 1.5, depth: 30 }, // Descent
+                { time: 20, depth: 30 }   // Bottom time ends exactly here
+            ];
+            
+            const results = calculateTissueLoading(profile, N2_FRACTION);
+            
+            // Find index for t=20 (last waypoint)
+            const idx20 = results.timePoints.indexOf(20);
+            expect(idx20).toBeGreaterThan(0); // Should find it
+            
+            // At t=20, depth should still be 30m (not 0m surface interval)
+            expect(results.depthPoints[idx20]).toBe(30);
+            
+            // Tissue 1 pressure at t=20 should match manual calculation
+            const comp1 = COMPARTMENTS.find(c => c.id === 1);
+            const initialN2 = getInitialTissueN2();
+            const startAlv = getAlveolarN2Pressure(getAmbientPressure(0), N2_FRACTION);
+            const endAlv = getAlveolarN2Pressure(getAmbientPressure(30), N2_FRACTION);
+            const rate = (endAlv - startAlv) / 1.5;
+            
+            const afterDescent = schreinerEquation(initialN2, startAlv, rate, 1.5, comp1.halfTime);
+            const bottomAlv = getAlveolarN2Pressure(getAmbientPressure(30), N2_FRACTION);
+            const afterBottom = haldaneEquation(afterDescent, bottomAlv, 18.5, comp1.halfTime);
+            
+            expect(results.compartments[1].pressures[idx20]).toBeCloseTo(afterBottom, 4);
+        });
+        
+        test('surface interval starts AFTER last waypoint, not AT last waypoint', () => {
+            const profile = [
+                { time: 0, depth: 0 },
+                { time: 1, depth: 10 },
+                { time: 10, depth: 10 } // Last waypoint at t=10
+            ];
+            
+            const results = calculateTissueLoading(profile, N2_FRACTION);
+            
+            // At t=10, should still be at 10m
+            const idx10 = results.timePoints.indexOf(10);
+            expect(results.depthPoints[idx10]).toBe(10);
+            
+            // Just after t=10, should be at surface (0m)
+            const idxAfter10 = results.timePoints.findIndex(t => t > 10);
+            expect(results.depthPoints[idxAfter10]).toBe(0);
         });
     });
 });

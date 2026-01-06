@@ -823,8 +823,8 @@
                     maxPpN2Depth = depth;
                 }
                 
-                // Check ceiling violation
-                if (depth < ceiling - 0.5) { // 0.5m tolerance
+                // Check ceiling violation (no tolerance - any breach is reported)
+                if (depth < ceiling) {
                     ceilingViolationCount++;
                     maxCeilingViolation = Math.max(maxCeilingViolation, ceiling - depth);
                 }

@@ -800,6 +800,151 @@ describe('Bottom-Anchored GF', () => {
             expect(gfAtMid).toBeLessThan(gfHigh);
         });
     });
+    
+    describe('generateDecoSchedule pAnchor behavior', () => {
+        test('GF at pAnchor equals GF Low', () => {
+            // 30m/20min dive - deco required
+            const tissuePressures = {};
+            COMPARTMENTS.forEach(comp => {
+                tissuePressures[comp.id] = 2.5; // Loaded tissues
+            });
+            
+            const gfLow = 0.5;
+            const gfHigh = 0.8;
+            const bottomDepth = 30;
+            
+            // Generate schedule to get pAnchor
+            const schedule = generateDecoSchedule(tissuePressures, bottomDepth, N2_FRACTION, gfLow, gfHigh);
+            
+            // GF at pAnchor should equal GF Low
+            const gfAtAnchor = interpolateGF(schedule.pAnchor, schedule.pAnchor, gfLow, gfHigh);
+            expect(gfAtAnchor).toBeCloseTo(gfLow, 5);
+        });
+        
+        test('GF is gfLow when deeper than pAnchor', () => {
+            const tissuePressures = {};
+            COMPARTMENTS.forEach(comp => {
+                tissuePressures[comp.id] = 2.5;
+            });
+            
+            const gfLow = 0.5;
+            const gfHigh = 0.8;
+            const bottomDepth = 30;
+            
+            const schedule = generateDecoSchedule(tissuePressures, bottomDepth, N2_FRACTION, gfLow, gfHigh);
+            
+            // At bottom (deeper than pAnchor), GF should be gfLow
+            const bottomAmbient = getAmbientPressure(bottomDepth);
+            const gfAtBottom = interpolateGF(bottomAmbient, schedule.pAnchor, gfLow, gfHigh);
+            
+            expect(gfAtBottom).toBe(gfLow);
+        });
+        
+        test('GF ramps from pAnchor to surface', () => {
+            const tissuePressures = {};
+            COMPARTMENTS.forEach(comp => {
+                tissuePressures[comp.id] = 2.5;
+            });
+            
+            const gfLow = 0.5;
+            const gfHigh = 0.8;
+            const bottomDepth = 30;
+            
+            const schedule = generateDecoSchedule(tissuePressures, bottomDepth, N2_FRACTION, gfLow, gfHigh);
+            
+            // At 3m (above pAnchor), GF should be interpolated toward gfHigh
+            const shallowAmbient = getAmbientPressure(3);
+            const gfAt3m = interpolateGF(shallowAmbient, schedule.pAnchor, gfLow, gfHigh);
+            
+            expect(gfAt3m).toBeGreaterThan(gfLow);
+            expect(gfAt3m).toBeLessThan(gfHigh);
+        });
+        
+        test('30m/20min air GF 50/80: pAnchor is shallower than first stop', () => {
+            // This specific dive should have first stop at 9m, pAnchor around 6m
+            const initialTissues = {};
+            COMPARTMENTS.forEach(comp => {
+                initialTissues[comp.id] = getInitialTissueN2();
+            });
+            
+            const descentTime = 30 / 20; // 20m/min descent = 1.5 min
+            const bottomDuration = 20 - descentTime; // 18.5 min at depth
+            
+            // Manual simulation of descent + bottom
+            const startAlv = getAlveolarN2Pressure(getAmbientPressure(0), N2_FRACTION);
+            const endAlv = getAlveolarN2Pressure(getAmbientPressure(30), N2_FRACTION);
+            const rate = (endAlv - startAlv) / descentTime;
+            
+            const tissues = {};
+            COMPARTMENTS.forEach(comp => {
+                // Descent
+                const afterDescent = schreinerEquation(initialTissues[comp.id], startAlv, rate, descentTime, comp.halfTime);
+                // Bottom time
+                tissues[comp.id] = haldaneEquation(afterDescent, endAlv, bottomDuration, comp.halfTime);
+            });
+            
+            const schedule = generateDecoSchedule(tissues, 30, N2_FRACTION, 0.5, 0.8);
+            
+            // pAnchor should be around 6.27m (shallower than 9m first stop)
+            expect(schedule.anchorDepth).toBeGreaterThan(5);
+            expect(schedule.anchorDepth).toBeLessThan(8);
+            
+            // First stop should be at 9m (not 6m) because at 6m ceiling > depth
+            expect(schedule.stops[0].depth).toBe(9);
+        });
+    });
+    
+    describe('calculateTissueLoading boundary behavior', () => {
+        test('tissue pressure at last waypoint equals manual simulation', () => {
+            // This tests that calculateTissueLoading doesn't prematurely start surface interval
+            // at the exact last waypoint time (was a bug: >= instead of >)
+            const profile = [
+                { time: 0, depth: 0 },
+                { time: 1.5, depth: 30 }, // Descent
+                { time: 20, depth: 30 }   // Bottom time ends exactly here
+            ];
+            
+            const results = calculateTissueLoading(profile, N2_FRACTION);
+            
+            // Find index for t=20 (last waypoint)
+            const idx20 = results.timePoints.indexOf(20);
+            expect(idx20).toBeGreaterThan(0); // Should find it
+            
+            // At t=20, depth should still be 30m (not 0m surface interval)
+            expect(results.depthPoints[idx20]).toBe(30);
+            
+            // Tissue 1 pressure at t=20 should match manual calculation
+            const comp1 = COMPARTMENTS.find(c => c.id === 1);
+            const initialN2 = getInitialTissueN2();
+            const startAlv = getAlveolarN2Pressure(getAmbientPressure(0), N2_FRACTION);
+            const endAlv = getAlveolarN2Pressure(getAmbientPressure(30), N2_FRACTION);
+            const rate = (endAlv - startAlv) / 1.5;
+            
+            const afterDescent = schreinerEquation(initialN2, startAlv, rate, 1.5, comp1.halfTime);
+            const bottomAlv = getAlveolarN2Pressure(getAmbientPressure(30), N2_FRACTION);
+            const afterBottom = haldaneEquation(afterDescent, bottomAlv, 18.5, comp1.halfTime);
+            
+            expect(results.compartments[1].pressures[idx20]).toBeCloseTo(afterBottom, 4);
+        });
+        
+        test('surface interval starts AFTER last waypoint, not AT last waypoint', () => {
+            const profile = [
+                { time: 0, depth: 0 },
+                { time: 1, depth: 10 },
+                { time: 10, depth: 10 } // Last waypoint at t=10
+            ];
+            
+            const results = calculateTissueLoading(profile, N2_FRACTION);
+            
+            // At t=10, should still be at 10m
+            const idx10 = results.timePoints.indexOf(10);
+            expect(results.depthPoints[idx10]).toBe(10);
+            
+            // Just after t=10, should be at surface (0m)
+            const idxAfter10 = results.timePoints.findIndex(t => t > 10);
+            expect(results.depthPoints[idxAfter10]).toBe(0);
+        });
+    });
 });
 
 // =============================================================================
