@@ -1656,23 +1656,26 @@ const chart = new DiveProfileChart(
          * @param {string} chartName - Name for the chart (used in feedback)
          */
         async function takeChartScreenshot(sourceCanvas, chartName) {
-            // Create a new canvas with the same dimensions
+            // Scale up for presentation-quality screenshots (2x)
+            const scale = 2;
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
-            canvas.width = sourceCanvas.width;
-            canvas.height = sourceCanvas.height;
+            canvas.width = sourceCanvas.width * scale;
+            canvas.height = sourceCanvas.height * scale;
             
-            // Draw the original chart
+            // Scale and draw the original chart
+            ctx.scale(scale, scale);
             ctx.drawImage(sourceCanvas, 0, 0);
+            ctx.setTransform(1, 0, 0, 1, 0, 0);  // Reset transform for watermark
             
-            // Add subtle watermark
+            // Add subtle watermark (scaled)
             const watermarkText = 'decotheory.eu';
             ctx.save();
-            ctx.font = `${Math.max(12, canvas.width / 50)}px system-ui, sans-serif`;
+            ctx.font = `${Math.max(16, canvas.width / 60)}px system-ui, sans-serif`;
             ctx.fillStyle = 'rgba(128, 128, 128, 0.25)';
             ctx.textAlign = 'right';
             ctx.textBaseline = 'bottom';
-            ctx.fillText(watermarkText, canvas.width - 10, canvas.height - 10);
+            ctx.fillText(watermarkText, canvas.width - 20, canvas.height - 20);
             ctx.restore();
             
             // Convert to blob and copy to clipboard
