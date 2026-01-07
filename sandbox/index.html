@@ -660,6 +660,7 @@
                 <div class="export-config-panel">
                     <div class="export-config-actions">
                         <button id="export-config-btn" class="btn btn-small btn-secondary">📋 Export Config</button>
+                        <button id="screenshot-profile-btn" class="btn btn-small btn-secondary" title="Copy chart as image">📷 Screenshot</button>
                         <span class="copy-success" id="copy-success">✓ Copied!</span>
                     </div>
                 </div>
@@ -683,6 +684,7 @@
                 <div class="export-config-panel">
                     <div class="export-config-actions">
                         <button id="export-mvalue-config-btn" class="btn btn-small btn-secondary">📋 Export Config</button>
+                        <button id="screenshot-mvalue-btn" class="btn btn-small btn-secondary" title="Copy chart as image">📷 Screenshot</button>
                     </div>
                 </div>
                 <div class="chart-wrapper" id="mvalue-container" style="height: 700px;"></div>
@@ -1642,6 +1644,114 @@ const chart = new DiveProfileChart(
         exportMValueConfigBtn.addEventListener('click', () => {
             const config = getMValueChartConfig();
             showMValueExportModal(config);
+        });
+        
+        // =====================================================================
+        // SCREENSHOT FUNCTIONALITY
+        // =====================================================================
+        
+        /**
+         * Take a screenshot of a chart canvas with watermark and copy to clipboard
+         * @param {HTMLCanvasElement} sourceCanvas - The chart canvas element
+         * @param {string} chartName - Name for the chart (used in feedback)
+         */
+        async function takeChartScreenshot(sourceCanvas, chartName) {
+            // Create a new canvas with the same dimensions
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = sourceCanvas.width;
+            canvas.height = sourceCanvas.height;
+            
+            // Draw the original chart
+            ctx.drawImage(sourceCanvas, 0, 0);
+            
+            // Add subtle watermark
+            const watermarkText = 'decotheory.eu';
+            ctx.save();
+            ctx.font = `${Math.max(12, canvas.width / 50)}px system-ui, sans-serif`;
+            ctx.fillStyle = 'rgba(128, 128, 128, 0.25)';
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'bottom';
+            ctx.fillText(watermarkText, canvas.width - 10, canvas.height - 10);
+            ctx.restore();
+            
+            // Convert to blob and copy to clipboard
+            try {
+                const blob = await new Promise((resolve, reject) => {
+                    canvas.toBlob((blob) => {
+                        if (blob) resolve(blob);
+                        else reject(new Error('Failed to create image blob'));
+                    }, 'image/png');
+                });
+                
+                await navigator.clipboard.write([
+                    new ClipboardItem({ 'image/png': blob })
+                ]);
+                
+                // Show success feedback
+                showScreenshotFeedback(`✓ ${chartName} copied to clipboard!`, true);
+            } catch (err) {
+                console.error('Screenshot failed:', err);
+                showScreenshotFeedback('Failed to copy screenshot', false);
+            }
+        }
+        
+        /**
+         * Show temporary feedback message for screenshot
+         */
+        function showScreenshotFeedback(message, success) {
+            const feedback = document.createElement('div');
+            feedback.className = 'screenshot-feedback';
+            feedback.textContent = message;
+            feedback.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                border-radius: 8px;
+                font-weight: 500;
+                z-index: 10000;
+                background: ${success ? 'var(--success-bg, #d4edda)' : 'var(--danger-bg, #f8d7da)'};
+                color: ${success ? 'var(--success-color, #155724)' : 'var(--danger-color, #721c24)'};
+                border: 1px solid ${success ? 'var(--success-border, #c3e6cb)' : 'var(--danger-border, #f5c6cb)'};
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                animation: slideIn 0.3s ease;
+            `;
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                feedback.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => feedback.remove(), 300);
+            }, 2000);
+        }
+        
+        // Add animation styles
+        const screenshotStyles = document.createElement('style');
+        screenshotStyles.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes fadeOut {
+                from { opacity: 1; }
+                to { opacity: 0; }
+            }
+        `;
+        document.head.appendChild(screenshotStyles);
+        
+        // Screenshot button handlers
+        document.getElementById('screenshot-profile-btn').addEventListener('click', () => {
+            const canvas = diveProfileContainer.querySelector('canvas');
+            if (canvas) {
+                takeChartScreenshot(canvas, 'Dive Profile');
+            }
+        });
+        
+        document.getElementById('screenshot-mvalue-btn').addEventListener('click', () => {
+            const canvas = mvalueContainer.querySelector('canvas');
+            if (canvas) {
+                takeChartScreenshot(canvas, 'M-Value Diagram');
+            }
         });
         
         // =====================================================================
