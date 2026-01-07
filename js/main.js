@@ -134,8 +134,8 @@ async function handleProfileSwitch(event) {
     const selectedId = event.target.value;
     
     if (selectedId === 'custom') {
-        // Navigate to dive setup page for custom editing
-        window.location.href = 'dive-setup.html';
+        // Navigate to sandbox for custom editing
+        window.location.href = 'sandbox/index.html';
         return;
     }
     
