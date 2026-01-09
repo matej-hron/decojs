@@ -859,16 +859,16 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
                 switchDepth
             });
         }
-        // Sort by switchDepth descending (deeper first) for iteration order,
-        // but actual selection uses lowest N2 among eligible gases
+        // Sort by switchDepth descending (deeper first) for iteration order
         gasSwitchPoints.sort((a, b) => b.switchDepth - a.switchDepth);
     }
     
     // Track used gases to avoid duplicate switches
     const usedGases = new Set();
     
-    // Helper to switch to best gas at depth (called on arrival at stop or switch point)
-    // "Best" means lowest N2 fraction among eligible gases (fastest off-gassing).
+    // Helper to switch to next best gas at depth (called on arrival at stop or switch point)
+    // "Next best" means the gas with the deepest MOD (highest switchDepth) among eligible gases.
+    // This ensures sequential gas switching: EAN50 at 21m before O2 at 6m.
     // NOTE: This is an N2-only model. For trimix (with He), selection logic would need
     // to consider both inert gas fractions and their respective half-times.
     const switchToBestGas = (atDepth, recordSwitch = true) => {
@@ -883,8 +883,11 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
             return false;
         }
         
-        // Pick the gas with lowest N2 (richest in O2, fastest off-gassing)
-        const best = eligible.reduce((a, b) => (b.n2 < a.n2 ? b : a));
+        // Pick the gas with the deepest MOD (highest switchDepth) - ensures sequential switching
+        // E.g., at 6m, if both EAN50 (MOD 21m) and O2 (MOD 6m) are eligible,
+        // but EAN50 wasn't used yet, this picks EAN50 first.
+        // gasSwitchPoints is already sorted by switchDepth descending, so eligible[0] is deepest
+        const best = eligible.reduce((a, b) => (b.switchDepth > a.switchDepth ? b : a));
         const key = gasKey(best);
         
         currentN2 = best.n2;
@@ -935,13 +938,37 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
         return { stops: [], gasSwitches, totalTime: totalAscentTime, totalAscentTime, pAnchor, anchorDepth };
     }
     
-    // Ascend to first stop - NO gas switches during this phase
-    // Per convention: when deco is required, gas switches occur only on arrival at stop depths.
-    // findFirstStopWithRampedGF already simulated the full ascent to first stop and returned
-    // the tissue state at arrival. We use that directly as the single source of truth.
-    const ascentToFirstStopTime = (depth - firstStopDepth) / ASCENT_SPEED;
-    totalAscentTime += ascentToFirstStopTime;
-    tissues = tissuesAtFirstStop;
+    // Ascend to first stop WITH gas switches at MOD depths
+    // Gas switches occur at the gas's MOD during ascent, not just at stop depths.
+    // This ensures EAN50 is used from 21m even when first stop is at 6m.
+    // Get unique switch depths between current depth and first stop, sorted deepest first
+    const ascentSwitchDepths = [...new Set(gasSwitchPoints.map(g => g.switchDepth))]
+        .filter(d => d < depth && d >= firstStopDepth)
+        .sort((a, b) => b - a);  // deepest first
+    
+    let currentAscentDepth = depth;
+    let currentTissues = { ...tissues };
+    
+    for (const switchDepth of ascentSwitchDepths) {
+        if (currentAscentDepth > switchDepth) {
+            // Ascend to switch depth
+            const segmentTime = (currentAscentDepth - switchDepth) / ASCENT_SPEED;
+            currentTissues = simulateDepthChange(currentTissues, currentAscentDepth, switchDepth, segmentTime, currentN2);
+            totalAscentTime += segmentTime;
+            currentAscentDepth = switchDepth;
+            // Switch to best gas at this depth
+            switchToBestGas(switchDepth);
+        }
+    }
+    
+    // Final segment to first stop
+    if (currentAscentDepth > firstStopDepth) {
+        const finalSegmentTime = (currentAscentDepth - firstStopDepth) / ASCENT_SPEED;
+        currentTissues = simulateDepthChange(currentTissues, currentAscentDepth, firstStopDepth, finalSegmentTime, currentN2);
+        totalAscentTime += finalSegmentTime;
+    }
+    
+    tissues = currentTissues;
     depth = firstStopDepth;
     
     // Deco loop: work up from first stop to surface

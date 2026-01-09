@@ -955,6 +955,164 @@ describe('Bottom-Anchored GF', () => {
 const getAdjustedMValueFn = getAdjustedMValue;
 
 import { generateDecoProfile } from '../js/diveSetup.js';
+import { simulateDepthChange, simulateDepthTime } from '../js/decoModel.js';
+
+// =============================================================================
+// Gas Switching Tests
+// =============================================================================
+
+describe('Gas Switching During Ascent', () => {
+    // Standard deco gases
+    const gases = [
+        { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 },
+        { id: 'ean50', name: 'EAN50', o2: 0.50, n2: 0.50, he: 0 },
+        { id: 'o2', name: 'O2', o2: 1.00, n2: 0.00, he: 0 }
+    ];
+    
+    // EAN50 MOD = (1.6/0.5 - 1) * 10 = 22m -> switch at 21m (rounded to 3m grid)
+    // O2 MOD = (1.6/1.0 - 1) * 10 = 6m -> switch at 6m
+    const EAN50_SWITCH_DEPTH = 21;
+    const O2_SWITCH_DEPTH = 6;
+    
+    // Helper to get initial tissues saturated at surface
+    const getInitialTissues = () => {
+        const tissues = {};
+        for (let i = 1; i <= 16; i++) {
+            tissues[i] = 0.79 * (1.0 - 0.0627); // Surface saturated
+        }
+        return tissues;
+    };
+    
+    // Helper to simulate dive to given depth and bottom time
+    const simulateDive = (maxDepth, bottomTime) => {
+        let tissues = getInitialTissues();
+        const descentTime = maxDepth / 20; // 20 m/min descent
+        tissues = simulateDepthChange(tissues, 0, maxDepth, descentTime, 0.79);
+        const timeAtDepth = bottomTime - descentTime;
+        tissues = simulateDepthTime(tissues, maxDepth, timeAtDepth, 0.79);
+        return tissues;
+    };
+    
+    describe('Shallow deco dive with first stop at 6m (30m/15min GF 30/70)', () => {
+        // This dive has first stop at 6m, which is shallower than EAN50's MOD (21m)
+        // The scheduler should still switch to EAN50 at 21m during ascent
+        let schedule;
+        
+        beforeAll(() => {
+            const tissues = simulateDive(30, 15);
+            schedule = generateDecoSchedule(tissues, 30, 0.79, 0.30, 0.70, gases);
+        });
+        
+        test('first stop is at 6m or shallower', () => {
+            // Verify this test case has first stop at 6m (confirming the bug scenario)
+            expect(schedule.stops.length).toBeGreaterThan(0);
+            expect(schedule.stops[0].depth).toBeLessThanOrEqual(6);
+        });
+        
+        test('switches to EAN50 at 21m during ascent', () => {
+            // EAN50 should be switched at its MOD (21m) even when first stop is shallower
+            const ean50Switch = schedule.gasSwitches.find(sw => sw.gas === 'EAN50');
+            expect(ean50Switch).toBeDefined();
+            expect(ean50Switch.depth).toBe(EAN50_SWITCH_DEPTH);
+        });
+        
+        test('switches to O2 at 6m', () => {
+            const o2Switch = schedule.gasSwitches.find(sw => sw.gas === 'O2');
+            expect(o2Switch).toBeDefined();
+            expect(o2Switch.depth).toBe(O2_SWITCH_DEPTH);
+        });
+        
+        test('EAN50 switch comes before O2 switch', () => {
+            const ean50Index = schedule.gasSwitches.findIndex(sw => sw.gas === 'EAN50');
+            const o2Index = schedule.gasSwitches.findIndex(sw => sw.gas === 'O2');
+            expect(ean50Index).toBeLessThan(o2Index);
+        });
+    });
+    
+    describe('Deep deco dive with first stop at 15m (40m/20min GF 30/70)', () => {
+        // This dive has first stop deeper than EAN50's MOD
+        // EAN50 should switch at 21m during ascent (before first stop)
+        let schedule;
+        
+        beforeAll(() => {
+            const tissues = simulateDive(40, 20);
+            schedule = generateDecoSchedule(tissues, 40, 0.79, 0.30, 0.70, gases);
+        });
+        
+        test('first stop is deeper than EAN50 MOD', () => {
+            expect(schedule.stops.length).toBeGreaterThan(0);
+            expect(schedule.stops[0].depth).toBeGreaterThan(EAN50_SWITCH_DEPTH);
+        });
+        
+        test('switches to EAN50 at exactly 21m', () => {
+            const ean50Switch = schedule.gasSwitches.find(sw => sw.gas === 'EAN50');
+            expect(ean50Switch).toBeDefined();
+            expect(ean50Switch.depth).toBe(EAN50_SWITCH_DEPTH);
+        });
+        
+        test('switches to O2 at exactly 6m', () => {
+            const o2Switch = schedule.gasSwitches.find(sw => sw.gas === 'O2');
+            expect(o2Switch).toBeDefined();
+            expect(o2Switch.depth).toBe(O2_SWITCH_DEPTH);
+        });
+    });
+    
+    describe('NDL dive still gets gas switches during ascent (30m/10min GF 100/100)', () => {
+        // NDL dives should also switch gases at MOD during ascent
+        let schedule;
+        
+        beforeAll(() => {
+            const tissues = simulateDive(30, 10);
+            schedule = generateDecoSchedule(tissues, 30, 0.79, 1.0, 1.0, gases);
+        });
+        
+        test('is an NDL dive (no stops)', () => {
+            expect(schedule.stops.length).toBe(0);
+        });
+        
+        test('switches to EAN50 at 21m during ascent', () => {
+            const ean50Switch = schedule.gasSwitches.find(sw => sw.gas === 'EAN50');
+            expect(ean50Switch).toBeDefined();
+            expect(ean50Switch.depth).toBe(EAN50_SWITCH_DEPTH);
+        });
+        
+        test('switches to O2 at 6m during ascent', () => {
+            const o2Switch = schedule.gasSwitches.find(sw => sw.gas === 'O2');
+            expect(o2Switch).toBeDefined();
+            expect(o2Switch.depth).toBe(O2_SWITCH_DEPTH);
+        });
+    });
+    
+    describe('Dive with first stop between gas MODs (35m/20min GF 50/80)', () => {
+        // First stop around 9-12m: between O2 MOD (6m) and EAN50 MOD (21m)
+        // EAN50 should switch at 21m, O2 should switch at 6m (at a stop)
+        let schedule;
+        
+        beforeAll(() => {
+            const tissues = simulateDive(35, 20);
+            schedule = generateDecoSchedule(tissues, 35, 0.79, 0.50, 0.80, gases);
+        });
+        
+        test('first stop is between 6m and 21m', () => {
+            expect(schedule.stops.length).toBeGreaterThan(0);
+            const firstStopDepth = schedule.stops[0].depth;
+            expect(firstStopDepth).toBeGreaterThan(O2_SWITCH_DEPTH);
+            expect(firstStopDepth).toBeLessThanOrEqual(EAN50_SWITCH_DEPTH);
+        });
+        
+        test('switches to EAN50 at 21m', () => {
+            const ean50Switch = schedule.gasSwitches.find(sw => sw.gas === 'EAN50');
+            expect(ean50Switch).toBeDefined();
+            expect(ean50Switch.depth).toBe(EAN50_SWITCH_DEPTH);
+        });
+        
+        test('switches to O2 at 6m', () => {
+            const o2Switch = schedule.gasSwitches.find(sw => sw.gas === 'O2');
+            expect(o2Switch).toBeDefined();
+            expect(o2Switch.depth).toBe(O2_SWITCH_DEPTH);
+        });
+    });
+});
 
 describe('Full Deco Dive Integration', () => {
     
