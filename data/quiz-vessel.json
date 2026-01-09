@@ -1,0 +1,656 @@
+{
+  "title": "Plavidlo",
+  "description": "Zkušební testy z obsluhy plavidla SPČR 2018 (CMAS/SPČR)",
+  "questions": [
+    {
+      "id": 1,
+      "category": "technika",
+      "question": "Zrcadlem nafukovacího člunu se nazývá:",
+      "options": [
+        {"key": "a", "text": "dno s hladkými podlážkami"},
+        {"key": "b", "text": "pevná záďová svislá část sloužící k uchycení závěsného motoru"},
+        {"key": "c", "text": "zpětné zrcátko na přídi člunu"},
+        {"key": "d", "text": "přední stříška člunu"}
+      ],
+      "correct": "b",
+      "explanation": "Zrcadlo (transom) je pevná záďová část člunu, na kterou se montuje závěsný motor."
+    },
+    {
+      "id": 2,
+      "category": "kotveni",
+      "question": "Ke kotvicí bóji je nejbezpečnější připlout s člunem:",
+      "options": [
+        {"key": "a", "text": "po větru"},
+        {"key": "b", "text": "po proudu"},
+        {"key": "c", "text": "proti proudu nebo větru"},
+        {"key": "d", "text": "kolmo na směr proudu"}
+      ],
+      "correct": "c",
+      "explanation": "Proti proudu nebo větru máme lepší kontrolu nad člunem a můžeme snáze zastavit."
+    },
+    {
+      "id": 3,
+      "category": "kotveni",
+      "question": "Na pokyn kapitána člunu 'Hodit kotvu!' určený člen posádky:",
+      "options": [
+        {"key": "a", "text": "hází připravenou kotvu co nejdále"},
+        {"key": "b", "text": "svrhne připravenou kotvu ihned dolů"},
+        {"key": "c", "text": "spustí opatrně kotvu poté, až uvidí mělčinu"},
+        {"key": "d", "text": "žádná odpověď není správná"}
+      ],
+      "correct": "b",
+      "explanation": "Kotva se svrhne ihned dolů, nehází se - mohla by poškodit člun nebo zranit posádku."
+    },
+    {
+      "id": 4,
+      "category": "navigace",
+      "question": "Z mapy jsme nalezli, že musíme plout kursem KD = 205°. Chceme-li provést korekci na magnetickou deklinaci, kterou jsme stanovili jako +3°, a deviaci, která je pro tento kurs rovna +2°, poplujeme kompasovým kursem:",
+      "options": [
+        {"key": "a", "text": "KK = 200°"},
+        {"key": "b", "text": "KK = 204°"},
+        {"key": "c", "text": "KK = 205°"},
+        {"key": "d", "text": "KK = 210°"}
+      ],
+      "correct": "a",
+      "explanation": "KK = KD - deklinace - deviace = 205° - 3° - 2° = 200°"
+    },
+    {
+      "id": 5,
+      "category": "bezpecnost",
+      "question": "Převržený nafukovací člun:",
+      "options": [
+        {"key": "a", "text": "se pokusíme dostat do normální polohy, ale neopustíme, i když se to nepovede"},
+        {"key": "b", "text": "se pokusíme dostat do normální polohy, a když se to nepovede, plaveme i ke vzdálenému břehu"},
+        {"key": "c", "text": "musíme nutně dostat do normální polohy"},
+        {"key": "d", "text": "se nepokoušíme dostat do normální polohy, abychom se nevyčerpali"}
+      ],
+      "correct": "a",
+      "explanation": "Převržený člun nikdy neopouštíme - poskytuje vztlak a je lépe viditelný pro záchranáře."
+    },
+    {
+      "id": 6,
+      "category": "navigace",
+      "question": "Jeden uzel (1 kn) je jednotka:",
+      "options": [
+        {"key": "a", "text": "rychlosti rovná 1 námořní míli za hodinu"},
+        {"key": "b", "text": "vzdálenosti rovná 1/10 námořní míle"},
+        {"key": "c", "text": "rychlosti rovná 1 km za hodinu"},
+        {"key": "d", "text": "hloubky rovná 1,83 m"}
+      ],
+      "correct": "a",
+      "explanation": "Uzel (knot) je jednotka rychlosti rovná 1 námořní míli za hodinu (1,852 km/h)."
+    },
+    {
+      "id": 7,
+      "category": "navigace",
+      "question": "Zápis 045 v plavebním deníku znamená:",
+      "options": [
+        {"key": "a", "text": "východní směr"},
+        {"key": "b", "text": "severozápadní směr"},
+        {"key": "c", "text": "severovýchodní směr"},
+        {"key": "d", "text": "jihozápadní směr"}
+      ],
+      "correct": "c",
+      "explanation": "045° je severovýchodní směr (mezi severem 0° a východem 90°)."
+    },
+    {
+      "id": 8,
+      "category": "technika",
+      "question": "Při plavbě ve skluzu je oproti výtlačné plavbě:",
+      "options": [
+        {"key": "a", "text": "rychlost plavby větší a spotřeba paliva (na 1 km) větší"},
+        {"key": "b", "text": "rychlost plavby větší a spotřeba paliva (na 1 km) menší"},
+        {"key": "c", "text": "rychlost plavby menší a spotřeba paliva (na 1 km) menší"},
+        {"key": "d", "text": "rychlost plavby menší a spotřeba paliva (na 1 km) větší"}
+      ],
+      "correct": "b",
+      "explanation": "Ve skluzu (planing) je rychlost vyšší a spotřeba na kilometr nižší díky menšímu odporu."
+    },
+    {
+      "id": 9,
+      "category": "pravidla-plavby",
+      "question": "Loď musí vést pozorování:",
+      "options": [
+        {"key": "a", "text": "jen při snížení viditelnosti"},
+        {"key": "b", "text": "vizuální a akustická nepřetržitě"},
+        {"key": "c", "text": "v mlze akustická a v noci vizuální"},
+        {"key": "d", "text": "pouze za plavby v příbřežních vodách"}
+      ],
+      "correct": "b",
+      "explanation": "Loď musí vést vizuální i akustické pozorování nepřetržitě za všech okolností."
+    },
+    {
+      "id": 10,
+      "category": "navigace",
+      "question": "V roce 1998 nalezená magnetická deklinace pro údaj z mapy Var 2°W (1992) incr. 20' annually bude:",
+      "options": [
+        {"key": "a", "text": "-3° (= 3°W)"},
+        {"key": "b", "text": "0° (= 0°)"},
+        {"key": "c", "text": "+2° ( = 2°E)"},
+        {"key": "d", "text": "-4° (= 4°W)"}
+      ],
+      "correct": "d",
+      "explanation": "Za 6 let (1992-1998) se deklinace zvýšila o 6×20' = 2°. Původní 2°W + 2° = 4°W."
+    },
+    {
+      "id": 11,
+      "category": "pocasi",
+      "question": "Na evropských pobřežích probíhají slapové jevy:",
+      "options": [
+        {"key": "a", "text": "přibližně dvakrát za 25 h odliv i příliv"},
+        {"key": "b", "text": "každých 25 h jednou (jeden příliv za 12 h 25 minut)"},
+        {"key": "c", "text": "každých 12 h 25 minut příliv při springu a co 6 hodin při neapu"},
+        {"key": "d", "text": "každých 12 h 25 minut odliv při neapu a co 6 hodin při springu"}
+      ],
+      "correct": "a",
+      "explanation": "Na evropských pobřežích jsou přibližně 2 přílivy a 2 odlivy za cca 25 hodin (slapový den)."
+    },
+    {
+      "id": 12,
+      "category": "kotveni",
+      "question": "Po zakotvení větší lodi v proudu:",
+      "options": [
+        {"key": "a", "text": "kotvíme po proudu"},
+        {"key": "b", "text": "necháme otáčet lodní šroub na nízké otáčky"},
+        {"key": "c", "text": "spustíme ze zádi plovoucí lano s bójí či záchranným kruhem"},
+        {"key": "d", "text": "vystavíme vlajku 'loď v proudu'"}
+      ],
+      "correct": "c",
+      "explanation": "Ze zádi spustíme plovoucí lano s bójí pro případ pádu člověka přes palubu."
+    },
+    {
+      "id": 13,
+      "category": "navigace",
+      "question": "Kompasový kurs při snosu proudem se nejjednodušeji stanoví:",
+      "options": [
+        {"key": "a", "text": "graficky jen z rychlosti a směru proudu"},
+        {"key": "b", "text": "graficky z rychlosti a směru proudu a z rychlosti a kursu proti dnu (KD) plavidla vektorovým rozdílem"},
+        {"key": "c", "text": "vždy přičtením velikosti rychlosti proudu k rychlosti plavidla"},
+        {"key": "d", "text": "vždy odečtením velikosti rychlosti proudu a plavidla"}
+      ],
+      "correct": "b",
+      "explanation": "Kompenzace snosu proudem se stanoví graficky vektorovým rozdílem rychlostí a směrů."
+    },
+    {
+      "id": 14,
+      "category": "pravidla-plavby",
+      "question": "Každá loď musí plout bezpečnou rychlostí, to znamená:",
+      "options": [
+        {"key": "a", "text": "takovou, aby mohla rychle předjet druhou loď"},
+        {"key": "b", "text": "podle své délky (např. 7metrová maximálně 7 uzlů)"},
+        {"key": "c", "text": "takovou, aby mohla okamžitě změnit svůj kurs o 30°"},
+        {"key": "d", "text": "takovou, aby mohla zabránit srážce případně i zastavením za všech okolností"}
+      ],
+      "correct": "d",
+      "explanation": "Bezpečná rychlost je taková, která umožní zabránit srážce za všech okolností."
+    },
+    {
+      "id": 15,
+      "category": "kotveni",
+      "question": "Řetěz mezi kotevním lanem a kotvou:",
+      "options": [
+        {"key": "a", "text": "zvyšuje pevnost lana"},
+        {"key": "b", "text": "zajišťuje tah na kotvu co nejvíce rovnoběžný s dnem a tlumení nárazů na vazák ve vlnách"},
+        {"key": "c", "text": "zvětšuje hmotnost kotvy"},
+        {"key": "d", "text": "nemá pro kotvení význam"}
+      ],
+      "correct": "b",
+      "explanation": "Řetěz zajišťuje horizontální tah na kotvu a tlumí nárazy způsobené vlnami."
+    },
+    {
+      "id": 16,
+      "category": "potapeni-z-lodi",
+      "question": "Při výstupu z vody po ponoru na malý gumový člun nejprve:",
+      "options": [
+        {"key": "a", "text": "odkládáme do člunu masku"},
+        {"key": "b", "text": "posuneme masku na čelo, ale odkládáme ji až na palubě"},
+        {"key": "c", "text": "odkládáme ploutve"},
+        {"key": "d", "text": "podáváme nahoru zátěže"}
+      ],
+      "correct": "d",
+      "explanation": "Nejprve podáváme zátěže, abychom si ulehčili výstup a nezatěžovali člun najednou."
+    },
+    {
+      "id": 17,
+      "category": "navigace",
+      "question": "V roce 2000 nalezená magnetická deklinace pro údaj z mapy Var. 1°W (1994) decr. 30' annually bude:",
+      "options": [
+        {"key": "a", "text": "-4° (= 4°W)"},
+        {"key": "b", "text": "+1° (= 1°E)"},
+        {"key": "c", "text": "-2° (= 2°W)"},
+        {"key": "d", "text": "+2° (= 2°E)"}
+      ],
+      "correct": "d",
+      "explanation": "Za 6 let (1994-2000) se deklinace snížila o 6×30' = 3°. Původní 1°W - 3° = 2°E."
+    },
+    {
+      "id": 18,
+      "category": "potapeni-z-lodi",
+      "question": "Při výstupu z vody po ponoru na loď po žebříku:",
+      "options": [
+        {"key": "a", "text": "neprodleně těsně za sebou lezeme na žebřík"},
+        {"key": "b", "text": "pozorně sledujeme okolí a v teplých mořích dáváme pozor hlavně na žraloky"},
+        {"key": "c", "text": "se přímo pod vystupujícím potápěčem nesmí nikdo zdržovat"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "c",
+      "explanation": "Pod vystupujícím potápěčem se nesmí nikdo zdržovat kvůli riziku pádu výstroje nebo potápěče."
+    },
+    {
+      "id": 19,
+      "category": "pravidla-plavby",
+      "question": "Přiblíží-li se k sobě dvě plavidla se strojním pohonem:",
+      "options": [
+        {"key": "a", "text": "mění každé směr vlevo"},
+        {"key": "b", "text": "plují-li proti sobě, mění každé směr vpravo"},
+        {"key": "c", "text": "má přednost plavidlo mající druhé po své pravé straně"},
+        {"key": "d", "text": "má přednost rychlejší z nich"}
+      ],
+      "correct": "b",
+      "explanation": "Při plavbě proti sobě obě plavidla mění směr vpravo (pravidlo pravé ruky)."
+    },
+    {
+      "id": 20,
+      "category": "navigace",
+      "question": "Zeměpisná šířka je souřadnice bodu měřená jako úhel směrem:",
+      "options": [
+        {"key": "a", "text": "od pólu k rovníku"},
+        {"key": "b", "text": "od rovníku k pólu"},
+        {"key": "c", "text": "od Greenwichského poledníku na východ"},
+        {"key": "d", "text": "od Greenwichského poledníku na západ"}
+      ],
+      "correct": "b",
+      "explanation": "Zeměpisná šířka se měří od rovníku směrem k pólům (0° až 90° N nebo S)."
+    },
+    {
+      "id": 21,
+      "category": "pocasi",
+      "question": "Za výtlačné plavby má na plavbu největší vliv:",
+      "options": [
+        {"key": "a", "text": "proud"},
+        {"key": "b", "text": "vítr"},
+        {"key": "c", "text": "větrné poryvy"},
+        {"key": "d", "text": "teplota vody"}
+      ],
+      "correct": "a",
+      "explanation": "Při výtlačné plavbě (nízká rychlost) má největší vliv proud, protože působí na celý ponor."
+    },
+    {
+      "id": 22,
+      "category": "svetla",
+      "question": "Předepsaná světla musí být vystavována:",
+      "options": [
+        {"key": "a", "text": "jen v noci"},
+        {"key": "b", "text": "kdykoliv se přiblíží druhé plavidlo"},
+        {"key": "c", "text": "pouze za plavby za snížené viditelnosti"},
+        {"key": "d", "text": "od západu do východu slunce, při snížené viditelnosti a je-li to uznáno za nutné"}
+      ],
+      "correct": "d",
+      "explanation": "Světla se vystavují od západu do východu slunce, při snížené viditelnosti a kdykoliv je to nutné."
+    },
+    {
+      "id": 23,
+      "category": "technika",
+      "question": "Příčinou nedostatku paliva v motoru nemůže být:",
+      "options": [
+        {"key": "a", "text": "prázdná palivová nádrž"},
+        {"key": "b", "text": "zkorodovaný kontakt cívky zapalování"},
+        {"key": "c", "text": "uzavřený odvzdušňovací šroub uzávěru nádrže paliva"},
+        {"key": "d", "text": "zanesený palivový filtr"}
+      ],
+      "correct": "b",
+      "explanation": "Zkorodovaný kontakt cívky zapalování je problém elektrické soustavy, ne palivové."
+    },
+    {
+      "id": 24,
+      "category": "navigace",
+      "question": "V roce 1999 nalezená magnetická deklinace pro údaj z mapy Var 1°W (1995) decr. 30' annually bude:",
+      "options": [
+        {"key": "a", "text": "- 3° (= 3°W)"},
+        {"key": "b", "text": "+1° (= 1°E)"},
+        {"key": "c", "text": "- 1° (= 1°W)"},
+        {"key": "d", "text": "+2° (= 2°E)"}
+      ],
+      "correct": "b",
+      "explanation": "Za 4 roky (1995-1999) se deklinace snížila o 4×30' = 2°. Původní 1°W - 2° = 1°E."
+    },
+    {
+      "id": 25,
+      "category": "navigace",
+      "question": "Hlavní výhoda stanovení vlastní pozice z náměrů na 3 body a s využitím vlastností středového úhlu kružnice je:",
+      "options": [
+        {"key": "a", "text": "že získáme třetí průsečík pozičních čar"},
+        {"key": "b", "text": "že není nutno brát v úvahu snos proudem"},
+        {"key": "c", "text": "že stačí brát v úvahu magnetickou deklinaci, nikoliv deviaci"},
+        {"key": "d", "text": "že není nutno provádět opravy kompasového náměru na reálný"}
+      ],
+      "correct": "d",
+      "explanation": "Při metodě tří bodů není nutné provádět korekce kompasového náměru - pracuje se s úhly mezi body."
+    },
+    {
+      "id": 26,
+      "category": "kotveni",
+      "question": "Délka kotevního lana nafukovacího člunu by měla být:",
+      "options": [
+        {"key": "a", "text": "25 m"},
+        {"key": "b", "text": "rovná hloubce nad níž hodláme kotvit"},
+        {"key": "c", "text": "alespoň dvojnásobkem hloubky nad níž hodláme kotvit"},
+        {"key": "d", "text": "300 m"}
+      ],
+      "correct": "c",
+      "explanation": "Kotevní lano by mělo být alespoň dvojnásobkem hloubky pro správný záběr kotvy."
+    },
+    {
+      "id": 27,
+      "category": "navigace",
+      "question": "Odečet vzdáleností mezi dvěma body na mapě provádíme:",
+      "options": [
+        {"key": "a", "text": "na severním okraji mapy"},
+        {"key": "b", "text": "na jižním okraji mapy a na přibližně shodné zeměpisné délce"},
+        {"key": "c", "text": "na východním nebo západním okraji mapy a na přibližně shodné zeměpisné šířce"},
+        {"key": "d", "text": "na měřítku v legendě mapy"}
+      ],
+      "correct": "c",
+      "explanation": "Vzdálenosti odečítáme na bočním okraji mapy (stupnice zeměpisné šířky) v odpovídající výšce."
+    },
+    {
+      "id": 28,
+      "category": "pravidla-plavby",
+      "question": "Činnost, podniknutá k zabránění srážce, se provádí:",
+      "options": [
+        {"key": "a", "text": "postupnou změnou kursu"},
+        {"key": "b", "text": "postupnou změnou rychlosti"},
+        {"key": "c", "text": "změnou kursu a rychlosti tak, aby mohla být druhou lodí snadno zjištěna"},
+        {"key": "d", "text": "změnou kursu o úhel menší než 30°"}
+      ],
+      "correct": "c",
+      "explanation": "Změna musí být dostatečně výrazná, aby byla druhou lodí snadno zjistitelná."
+    },
+    {
+      "id": 29,
+      "category": "technika",
+      "question": "Ustřižený pojistný kolíček vrtule způsobí:",
+      "options": [
+        {"key": "a", "text": "zvýšení otáček motoru a zpomalení člunu"},
+        {"key": "b", "text": "náhlé zvýšení otáček motoru a zrychlení člunu"},
+        {"key": "c", "text": "otáčení člunu"},
+        {"key": "d", "text": "zastavení motoru"}
+      ],
+      "correct": "a",
+      "explanation": "Bez pojistného kolíčku se vrtule protáčí naprázdno - motor se roztočí, ale člun zpomalí."
+    },
+    {
+      "id": 30,
+      "category": "potapeni-z-lodi",
+      "question": "Po ponoru skupiny potápěčů z lodě je před odplutím z lokality nejdůležitější:",
+      "options": [
+        {"key": "a", "text": "udělat podrobný debrífink"},
+        {"key": "b", "text": "stáhnout z počítačů profily ponorů"},
+        {"key": "c", "text": "zkontrolovat, zda všichni účastníci ponoru jsou na palubě"},
+        {"key": "d", "text": "zkontrolovat, že si všichni potápěči dobře upevnili svoji výstroj"}
+      ],
+      "correct": "c",
+      "explanation": "Nejdůležitější je zkontrolovat přítomnost všech potápěčů na palubě před odplutím."
+    },
+    {
+      "id": 31,
+      "category": "navigace",
+      "question": "Pokud se bod, na který bereme náměr, nachází na jihozápad od nás, na kompasu odečteme:",
+      "options": [
+        {"key": "a", "text": "045°"},
+        {"key": "b", "text": "090°"},
+        {"key": "c", "text": "225°"},
+        {"key": "d", "text": "315°"}
+      ],
+      "correct": "c",
+      "explanation": "Jihozápad je 225° (mezi jihem 180° a západem 270°)."
+    },
+    {
+      "id": 32,
+      "category": "navigace",
+      "question": "Pro stanovení polohy při terestrické navigaci (v dohledu pevných orientačních bodů) musíme znát alespoň:",
+      "options": [
+        {"key": "a", "text": "jednu poziční čáru"},
+        {"key": "b", "text": "dvě poziční čáry"},
+        {"key": "c", "text": "tři poziční čáry"},
+        {"key": "d", "text": "rychlost našeho člunu"}
+      ],
+      "correct": "b",
+      "explanation": "Pro jednoznačné určení polohy potřebujeme alespoň dvě poziční čáry (jejich průsečík)."
+    },
+    {
+      "id": 33,
+      "category": "potapeni-z-lodi",
+      "question": "Při výstupu z vody po ponoru na malý gumový člun:",
+      "options": [
+        {"key": "a", "text": "nejprve sundáme ploutve a s maskou je uložíme do člunu"},
+        {"key": "b", "text": "vyndáme na člun zátěž a dýchací přístroj zatím připevníme ke člunu nebo podáme obsluze v lodi"},
+        {"key": "c", "text": "se za pomoci obsluhy vyšplháme do člunu v kompletní výstroji"},
+        {"key": "d", "text": "pozorně sledujeme okolí a dáváme pozor na žraloky"}
+      ],
+      "correct": "b",
+      "explanation": "Nejprve odložíme zátěž a přístroj, pak teprve vystupujeme na člun."
+    },
+    {
+      "id": 34,
+      "category": "navigace",
+      "question": "K vynesení předepsaného kursu KD = 035° a předpokládané vzdálenosti 30 námořních mil z místa naší polohy na mapě využijeme navigačního trojúhelníku a odpichovátka, přičemž tento úhel:",
+      "options": [
+        {"key": "a", "text": "odměříme na trojúhelníku překrytím s nejbližším poledníkem a vzdálenost odečteme na východním okraji mapy"},
+        {"key": "b", "text": "odměříme na trojúhelníku překrytím s nejbližším poledníkem a vzdálenost odečteme na jižním okraji mapy"},
+        {"key": "c", "text": "odměříme na trojúhelníku překrytím s nejbližší rovnoběžkou a vzdálenost odečteme na východním okraji mapy"},
+        {"key": "d", "text": "přeneseme z kompasové růžice na mapě a vzdálenost odečteme na jižním okraji mapy"}
+      ],
+      "correct": "a",
+      "explanation": "Úhel se odměřuje vůči poledníku a vzdálenost na bočním (východním/západním) okraji mapy."
+    },
+    {
+      "id": 35,
+      "category": "pocasi",
+      "question": "Pobřežní bríza obvykle vane:",
+      "options": [
+        {"key": "a", "text": "ráno i večer na moře"},
+        {"key": "b", "text": "ráno na moře, večer k pobřeží"},
+        {"key": "c", "text": "ráno k pobřeží, večer na moře"},
+        {"key": "d", "text": "ráno i večer k pobřeží"}
+      ],
+      "correct": "c",
+      "explanation": "Ráno vane bríza k pobřeží (moře je teplejší), večer na moře (pevnina je teplejší)."
+    },
+    {
+      "id": 36,
+      "category": "navigace",
+      "question": "Které z následujících tvrzení je správné?",
+      "options": [
+        {"key": "a", "text": "východní vítr vane z východu, východní proud teče na východ"},
+        {"key": "b", "text": "východní vítr vane na východ, východní proud teče na východ"},
+        {"key": "c", "text": "východní vítr vane z východu, východní proud teče z východu"},
+        {"key": "d", "text": "východní vítr vane na východ, východní proud teče z východu"}
+      ],
+      "correct": "a",
+      "explanation": "Vítr se označuje podle směru, odkud vane. Proud se označuje podle směru, kam teče."
+    },
+    {
+      "id": 37,
+      "category": "svetla",
+      "question": "Boční světlo na pravoboku je:",
+      "options": [
+        {"key": "a", "text": "zelené viditelné od přímého směru vpřed do 22,5° za traverz"},
+        {"key": "b", "text": "zelené viditelné ze směru traverzu až 22,5° za traverz"},
+        {"key": "c", "text": "červené viditelné od přímého směru vpřed do 22,5° za traverz"},
+        {"key": "d", "text": "červené viditelné ze směru traverzu až 22,5° za traverz"}
+      ],
+      "correct": "a",
+      "explanation": "Pravé boční světlo je zelené a svítí od směru vpřed do 22,5° za traverz (112,5°)."
+    },
+    {
+      "id": 38,
+      "category": "potapeni-z-lodi",
+      "question": "Jsou-li potápěči vyzvedáváni přímo lodí, nastupují na žebřík:",
+      "options": [
+        {"key": "a", "text": "na návětrné straně a když je žebřík nejhlouběji"},
+        {"key": "b", "text": "na návětrné straně a když je žebřík nejvýše"},
+        {"key": "c", "text": "na závětrné straně a když je žebřík nejhlouběji"},
+        {"key": "d", "text": "na závětrné straně a když je žebřík nejvýše"}
+      ],
+      "correct": "c",
+      "explanation": "Nastupujeme na závětrné straně (klidnější voda) a když je žebřík nejhlouběji (snazší nástup)."
+    },
+    {
+      "id": 39,
+      "category": "svetla",
+      "question": "Boční světlo na levoboku je:",
+      "options": [
+        {"key": "a", "text": "zelené viditelné od přímého směru vpřed do 22,5° za traverz"},
+        {"key": "b", "text": "zelené viditelné ze směru traverzu až 22,5° za traverz"},
+        {"key": "c", "text": "červené viditelné od přímého směru vpřed do 22,5° za traverz"},
+        {"key": "d", "text": "červené viditelné ze směru traverzu až 22,5° za traverz"}
+      ],
+      "correct": "c",
+      "explanation": "Levé boční světlo je červené a svítí od směru vpřed do 22,5° za traverz (112,5°)."
+    },
+    {
+      "id": 40,
+      "category": "navigace",
+      "question": "Chceme-li plout podle mapy kursem KD = 270° při stanovené magnetické deklinaci -3°, při snosu proudem -2°, a je-li možno zanedbat deviaci, budeme na kompasu udržovat kurs:",
+      "options": [
+        {"key": "a", "text": "KK = 265°"},
+        {"key": "b", "text": "KK = 270°"},
+        {"key": "c", "text": "KK = 273°"},
+        {"key": "d", "text": "KK = 275°"}
+      ],
+      "correct": "d",
+      "explanation": "KK = KD - deklinace - snos = 270° - (-3°) - (-2°) = 270° + 3° + 2° = 275°"
+    },
+    {
+      "id": 41,
+      "category": "potapeni-z-lodi",
+      "question": "Při driftovém potápění jako vedoucí skupiny:",
+      "options": [
+        {"key": "a", "text": "dbáme na udržení celé skupiny pohromadě"},
+        {"key": "b", "text": "sledujeme spotřebu dýchacího média všech členů skupiny"},
+        {"key": "c", "text": "kontrolujeme kompasem směr pohybu a hlídáme domluvenou dobu ponoru"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Vedoucí skupiny při driftovém potápění musí dělat všechny uvedené činnosti."
+    },
+    {
+      "id": 42,
+      "category": "pravidla-plavby",
+      "question": "Přiblíží-li se k sobě dvě plavidla se strojním pohonem:",
+      "options": [
+        {"key": "a", "text": "mění každé směr vpravo"},
+        {"key": "b", "text": "má přednost plavidlo mající druhé po své pravé straně"},
+        {"key": "c", "text": "má přednost rychlejší z nich"},
+        {"key": "d", "text": "má přednost plavidlo mající druhé po své levé straně"}
+      ],
+      "correct": "d",
+      "explanation": "Přednost má plavidlo, které má druhé po své levé straně (vyhýbá se ten, kdo má druhého vpravo)."
+    },
+    {
+      "id": 43,
+      "category": "bezpecnost",
+      "question": "Které z následujících tvrzení neplatí při činnosti 'muž přes palubu' na nafukovacím člunu ve slapovém proudu a ve větru:",
+      "options": [
+        {"key": "a", "text": "Záď člunu se stočí na opačnou stranu, než na kterou vypadl."},
+        {"key": "b", "text": "Je určen člověk, který ho neustále sleduje."},
+        {"key": "c", "text": "Přiblížení se děje snosem člunu po proudu."},
+        {"key": "d", "text": "Přiblížení se děje proti větru."}
+      ],
+      "correct": "c",
+      "explanation": "Přiblížení se neděje snosem po proudu - to by bylo nebezpečné. Přibližujeme se kontrolovaně."
+    },
+    {
+      "id": 44,
+      "category": "navigace",
+      "question": "Tzv. nula mapy (chart datum, CD) je dána:",
+      "options": [
+        {"key": "a", "text": "jako nejnižší úroveň, pod kterou může hladina při odlivu klesnout jen zřídka"},
+        {"key": "b", "text": "jako nejvyšší úroveň, nad kterou může hladina při přílivu stoupnout jen zřídka"},
+        {"key": "c", "text": "jako výška hladiny v polovině mezi maximálním přílivem a odlivem"},
+        {"key": "d", "text": "jako průměrná výška hladiny za přílivu při springu"}
+      ],
+      "correct": "a",
+      "explanation": "Nula mapy (chart datum) je nejnižší úroveň hladiny - hloubky na mapě jsou od této úrovně."
+    },
+    {
+      "id": 45,
+      "category": "navigace",
+      "question": "Jedna námořní míle (1 Nm) byla stanovena jako vzdálenost odpovídající:",
+      "options": [
+        {"key": "a", "text": "1 úhlové minutě na zemském poledníku"},
+        {"key": "b", "text": "1 úhlové minutě na zemské rovnoběžce"},
+        {"key": "c", "text": "1 stupni na zemském poledníku"},
+        {"key": "d", "text": "1 stupni na zemské rovnoběžce"}
+      ],
+      "correct": "a",
+      "explanation": "Námořní míle odpovídá 1 úhlové minutě na zemském poledníku (přibližně 1852 m)."
+    },
+    {
+      "id": 46,
+      "category": "potapeni-z-lodi",
+      "question": "Co by měla udělat první dvojice při potápění z malého člunu?",
+      "options": [
+        {"key": "a", "text": "Vydat se k cíli ponoru a vzájemně spolupracovat."},
+        {"key": "b", "text": "Zkontrolovat pod hladinou osobně i vzájemně funkčnost výstroje a vydat se k cíli ponoru."},
+        {"key": "c", "text": "Zkontrolovat pod hladinou osobně i vzájemně funkčnost výstroje a počkat u kotevního lana na ostatní dvojice."},
+        {"key": "d", "text": "Zkontrolovat pod hladinou osobně i vzájemně funkčnost výstroje a prověřit (případně vylepšit) zakotvení člunu."}
+      ],
+      "correct": "d",
+      "explanation": "První dvojice zkontroluje výstroj a prověří/vylepší zakotvení člunu pro bezpečnost všech."
+    },
+    {
+      "id": 47,
+      "category": "potapeni-z-lodi",
+      "question": "Při potápění z malého člunu ve vlnách je nejvhodnější místo pro nasazení dýchacího přístroje:",
+      "options": [
+        {"key": "a", "text": "až ve vodě, kdy přístroj plave u člunu na úvazku"},
+        {"key": "b", "text": "na přídi"},
+        {"key": "c", "text": "na zádi"},
+        {"key": "d", "text": "uprostřed člunu"}
+      ],
+      "correct": "a",
+      "explanation": "Ve vlnách je nejbezpečnější nasadit přístroj až ve vodě, kde je stabilnější prostředí."
+    },
+    {
+      "id": 48,
+      "category": "kotveni",
+      "question": "Které z následujících tvrzení neplatí?",
+      "options": [
+        {"key": "a", "text": "Kotva by ve člunu měla ležet pod kotevním lanem."},
+        {"key": "b", "text": "Na konci kotevního lana je vhodné upevnit bóji."},
+        {"key": "c", "text": "Kotevní lano se uvazuje na pevný bod člunu."},
+        {"key": "d", "text": "Kotva by ve člunu měla ležet na kotevním lanu nebo mimo ně."}
+      ],
+      "correct": "d",
+      "explanation": "Kotva by měla ležet pod lanem, ne na něm - aby se lano mohlo volně odvíjet."
+    },
+    {
+      "id": 49,
+      "category": "potapeni-z-lodi",
+      "question": "K bezpečnému vyznačení pozice vystupujícího potápěče před vyzvednutím člunem slouží:",
+      "options": [
+        {"key": "a", "text": "vystupující bubliny"},
+        {"key": "b", "text": "dekompresní bójka"},
+        {"key": "c", "text": "předem dohodnutý akustický signál"},
+        {"key": "d", "text": "signál 'tíseň na hladině'"}
+      ],
+      "correct": "b",
+      "explanation": "Dekompresní bójka spolehlivě označuje pozici potápěče pro vyzvednutí člunem."
+    },
+    {
+      "id": 50,
+      "category": "potapeni-z-lodi",
+      "question": "Sundání ploutví před výstupem na loď po žebříku:",
+      "options": [
+        {"key": "a", "text": "je nutné za všech okolností"},
+        {"key": "b", "text": "je zásadně nepřípustné"},
+        {"key": "c", "text": "je vhodné při použití klasického žebříku"},
+        {"key": "d", "text": "je vhodné při použití žebříku se středovou tyčí"}
+      ],
+      "correct": "c",
+      "explanation": "U klasického žebříku je vhodné sundat ploutve, u žebříku se středovou tyčí to není nutné."
+    }
+  ]
+}

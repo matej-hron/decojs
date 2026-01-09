@@ -27,7 +27,8 @@ const NAV_ITEMS = [
             { href: 'quiz-accidents.html', label: 'Accidents' },
             { href: 'quiz-safety.html', label: 'Safety Guidelines' },
             { href: 'quiz-training.html', label: 'Training Guidelines' },
-            { href: 'quiz-equipment.html', label: 'Equipment' }
+            { href: 'quiz-equipment.html', label: 'Equipment' },
+            { href: 'quiz-vessel.html', label: 'Vessel' }
         ]
     },
     { href: 'about.html', label: 'About' }
