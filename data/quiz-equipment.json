@@ -1,0 +1,1306 @@
+{
+  "title": "Potápěčská výstroj",
+  "description": "Zkušební testy z potápěčské výstroje SPČR 2018 (CMAS/SPČR)",
+  "questions": [
+    {
+      "id": 1,
+      "category": "masky",
+      "question": "Nejvhodnější pro potápění na nádech:",
+      "options": [
+        {"key": "a", "text": "je maska se širokým zorným polem a malým vnitřním objemem"},
+        {"key": "b", "text": "je maska se širokým zorným polem a velkým vnitřním objemem"},
+        {"key": "c", "text": "je jednoduchá maska bez kompenzátoru"},
+        {"key": "d", "text": "jsou plavecké brýle"}
+      ],
+      "correct": "a",
+      "explanation": "Pro potápění na nádech je nejvhodnější maska s malým vnitřním objemem, protože při vyrovnávání tlaku spotřebujeme méně vzduchu."
+    },
+    {
+      "id": 2,
+      "category": "masky",
+      "question": "Dvojitý lem lícnice potápěčské masky:",
+      "options": [
+        {"key": "a", "text": "udržuje v masce vnitřní přetlak"},
+        {"key": "b", "text": "zlepšuje přilnutí masky k obličeji"},
+        {"key": "c", "text": "zabraňuje nežádoucímu úniku vzduchu při výstupu s dýchacím přístrojem"},
+        {"key": "d", "text": "snižuje zamlžování zorníku"}
+      ],
+      "correct": "b",
+      "explanation": "Dvojitý lem lícnice zlepšuje přilnutí masky k obličeji a zajišťuje lepší těsnost."
+    },
+    {
+      "id": 3,
+      "category": "masky",
+      "question": "Plavecké brýle:",
+      "options": [
+        {"key": "a", "text": "je vhodné používat pouze pro potápění na nádech"},
+        {"key": "b", "text": "nejsou vhodné pro potápění"},
+        {"key": "c", "text": "je vhodné používat pouze pro potápění s přístrojem"},
+        {"key": "d", "text": "je vhodné používat pouze při potápění v moři"}
+      ],
+      "correct": "b",
+      "explanation": "Plavecké brýle nejsou vhodné pro potápění, protože neumožňují vyrovnávání tlaku (nelze do nich vydechovat nosem)."
+    },
+    {
+      "id": 4,
+      "category": "masky",
+      "question": "Pro potápění na nádech si vybereme masku s co nejmenším vnitřním objemem:",
+      "options": [
+        {"key": "a", "text": "aby se co nejméně zvětšil zbytkový objem plic"},
+        {"key": "b", "text": "abychom při vyrovnávání tlaku v masce spotřebovali co nejméně vzduchu"},
+        {"key": "c", "text": "aby v masce bylo možno vyrovnávat tlak"},
+        {"key": "d", "text": "aby maska měla co nejmenší hmotnost"}
+      ],
+      "correct": "b",
+      "explanation": "Při potápění na nádech chceme šetřit vzduch, proto volíme masku s malým vnitřním objemem."
+    },
+    {
+      "id": 5,
+      "category": "masky",
+      "question": "Zorníky potápěčských masek se vyrábějí z kaleného skla:",
+      "options": [
+        {"key": "a", "text": "aby nedocházelo k jejich zamlžování"},
+        {"key": "b", "text": "aby vydržely zvýšený tlak při ponoru"},
+        {"key": "c", "text": "aby se minimalizovalo riziko zranění potápěče při rozbití zorníku"},
+        {"key": "d", "text": "aby lépe izolovaly potápěče od okolní vody"}
+      ],
+      "correct": "c",
+      "explanation": "Kalené sklo se při rozbití rozpadá na drobné kousky s tupými hranami, čímž se minimalizuje riziko zranění."
+    },
+    {
+      "id": 6,
+      "category": "ploutve-trubice",
+      "question": "Pružinový efekt kvalitních ploutví umožňuje:",
+      "options": [
+        {"key": "a", "text": "lépe využívat vynaloženou energii při kopu směrem dolů"},
+        {"key": "b", "text": "lépe využívat vynaloženou energii při kopu směrem nahoru"},
+        {"key": "c", "text": "nastavit upínací pásky tzv. rychloposuvem"},
+        {"key": "d", "text": "nastavit tuhost výztužných žeber"}
+      ],
+      "correct": "a",
+      "explanation": "Pružinový efekt umožňuje akumulovat energii při kopu dolů a využít ji při návratu ploutve."
+    },
+    {
+      "id": 7,
+      "category": "ploutve-trubice",
+      "question": "Pro plavání proti proudu si trénovaný potápěč vybere ploutve:",
+      "options": [
+        {"key": "a", "text": "s měkčím listem"},
+        {"key": "b", "text": "s tužším listem"},
+        {"key": "c", "text": "s upínacími pásky"},
+        {"key": "d", "text": "s botičkou"}
+      ],
+      "correct": "b",
+      "explanation": "Pro plavání proti proudu jsou vhodnější ploutve s tužším listem, které poskytují větší záběr."
+    },
+    {
+      "id": 8,
+      "category": "ploutve-trubice",
+      "question": "Dýchací trubice:",
+      "options": [
+        {"key": "a", "text": "musí být vybavena vylévacími ventily"},
+        {"key": "b", "text": "má mít délku do 40 cm a vnitřní průměr asi 2 cm"},
+        {"key": "c", "text": "musí být u náustku ohebná"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "b",
+      "explanation": "Optimální délka dýchací trubice je do 40 cm a vnitřní průměr kolem 2 cm pro minimalizaci mrtvého prostoru."
+    },
+    {
+      "id": 9,
+      "category": "ploutve-trubice",
+      "question": "K výhodám dýchací trubice s vylévacími ventily patří:",
+      "options": [
+        {"key": "a", "text": "zmenšený mrtvý prostor"},
+        {"key": "b", "text": "snadnější vypuzování vody"},
+        {"key": "c", "text": "možnost použití při nouzovém dýchání z plic do plic na hladině"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "b",
+      "explanation": "Hlavní výhodou vylévacích ventilů je snadnější vypuzování vody z trubice."
+    },
+    {
+      "id": 10,
+      "category": "zakladni-vystroj",
+      "question": "Potápěčský nůž je určen především:",
+      "options": [
+        {"key": "a", "text": "k obraně před agresivními živočichy"},
+        {"key": "b", "text": "k vyproštění potápěče např. ze šňůr nebo sítí"},
+        {"key": "c", "text": "k demontáži výstroje"},
+        {"key": "d", "text": "žádná odpověď není správná"}
+      ],
+      "correct": "b",
+      "explanation": "Hlavním účelem potápěčského nože je vyproštění potápěče ze šňůr, sítí nebo jiných překážek."
+    },
+    {
+      "id": 11,
+      "category": "zakladni-vystroj",
+      "question": "Označte nesprávné tvrzení:",
+      "options": [
+        {"key": "a", "text": "Přezka zátěžního opasku se dá rozepnout jednou rukou."},
+        {"key": "b", "text": "Popruh zátěžního opasku ze syntetického materiálu bývá obvykle široký 50 mm."},
+        {"key": "c", "text": "Jako závaží nelze používat plastové sáčky s olověnými broky."},
+        {"key": "d", "text": "Závaží se na zátěžním opasku rozmisťují symetricky."}
+      ],
+      "correct": "c",
+      "explanation": "Plastové sáčky s olověnými broky lze používat jako závaží - toto tvrzení je nesprávné."
+    },
+    {
+      "id": 12,
+      "category": "obleky",
+      "question": "Polosuchý neoprenový oblek oproti mokrému obleku podobného střihu a ze stejného materiálu obvykle izoluje:",
+      "options": [
+        {"key": "a", "text": "lépe díky vzduchové mezeře mezi tělem a oblekem"},
+        {"key": "b", "text": "lépe díky znesnadněnému prostupu tepla materiálem obleku"},
+        {"key": "c", "text": "lépe díky sníženému odvodu tepla výměnou vody v obleku"},
+        {"key": "d", "text": "stejně"}
+      ],
+      "correct": "c",
+      "explanation": "Polosuchý oblek izoluje lépe díky těsnicím prvkům, které omezují výměnu vody a tím snižují odvod tepla."
+    },
+    {
+      "id": 13,
+      "category": "obleky",
+      "question": "Na izolační schopnost mokrého neoprenového obleku má (mají) vliv:",
+      "options": [
+        {"key": "a", "text": "správný střih a odpovídající velikost"},
+        {"key": "b", "text": "hloubka, ve které se potápěč nachází"},
+        {"key": "c", "text": "izolační vlastnosti použitého materiálu"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Na izolační schopnost mokrého neoprenu má vliv střih, velikost, hloubka (stlačení) i vlastnosti materiálu."
+    },
+    {
+      "id": 14,
+      "category": "obleky",
+      "question": "Izolační schopnost neoprenového obleku:",
+      "options": [
+        {"key": "a", "text": "se zvyšuje s narůstající hloubkou"},
+        {"key": "b", "text": "se snižuje s klesající hloubkou"},
+        {"key": "c", "text": "se snižuje s narůstající hloubkou"},
+        {"key": "d", "text": "je ve všech hloubkách stejná"}
+      ],
+      "correct": "c",
+      "explanation": "S rostoucí hloubkou se neopren stlačuje, zmenšuje se objem vzduchových bublinek a snižuje se izolační schopnost."
+    },
+    {
+      "id": 15,
+      "category": "obleky",
+      "question": "Prostup tepla suchým oblekem z pěněného neoprenu:",
+      "options": [
+        {"key": "a", "text": "se s narůstající hloubkou snižuje, neboť oblek je vlivem stlačení kompaktnější"},
+        {"key": "b", "text": "se s narůstající hloubkou zvyšuje, poněvadž se zmenšuje tloušťka neoprenu"},
+        {"key": "c", "text": "není závislý na hloubce, neboť vrstva spodního prádla zůstává stejná"},
+        {"key": "d", "text": "je nejvyšší v malých hloubkách"}
+      ],
+      "correct": "b",
+      "explanation": "Suchý neoprenový oblek se s hloubkou stlačuje, zmenšuje se jeho tloušťka a zvyšuje se prostup tepla."
+    },
+    {
+      "id": 16,
+      "category": "obleky",
+      "question": "Izolační schopnost suchého membránového obleku z trilaminátu:",
+      "options": [
+        {"key": "a", "text": "se snižuje s narůstající hloubkou"},
+        {"key": "b", "text": "není závislá na hloubce ponoru"},
+        {"key": "c", "text": "se zvyšuje s narůstající hloubkou"},
+        {"key": "d", "text": "je menší v menších hloubkách"}
+      ],
+      "correct": "b",
+      "explanation": "Membránový oblek se nestlačuje, izolaci zajišťuje spodní prádlo, takže izolační schopnost není závislá na hloubce."
+    },
+    {
+      "id": 17,
+      "category": "obleky",
+      "question": "Na odvod tepla v suchých neoprenových oblecích nemá vliv:",
+      "options": [
+        {"key": "a", "text": "teplota okolní vody"},
+        {"key": "b", "text": "druh a tloušťka spodního prádla a tloušťka neoprenu"},
+        {"key": "c", "text": "umístění napouštěcího a vypouštěcího ventilu"},
+        {"key": "d", "text": "druh plynu sloužícího k doplňování obleku"}
+      ],
+      "correct": "c",
+      "explanation": "Umístění ventilů nemá vliv na odvod tepla, důležitá je teplota vody, spodní prádlo a plyn v obleku."
+    },
+    {
+      "id": 18,
+      "category": "obleky",
+      "question": "Polosuchý neoprenový oblek se od mokrého liší především:",
+      "options": [
+        {"key": "a", "text": "tloušťkou neoprenu"},
+        {"key": "b", "text": "těsnicími prvky (manžetami) zabraňujícími protékání vody mezi pokožkou a oblekem"},
+        {"key": "c", "text": "volnějším střihem umožňujícím vytvoření izolační vzduchové mezery mezi pokožkou a oblekem"},
+        {"key": "d", "text": "ventilem k doplňování vzduchu"}
+      ],
+      "correct": "b",
+      "explanation": "Polosuchý oblek se od mokrého liší především těsnicími manžetami na zápěstích, kotnících a krku."
+    },
+    {
+      "id": 19,
+      "category": "obleky",
+      "question": "Označte nesprávné tvrzení o mokrém neoprenovém obleku.",
+      "options": [
+        {"key": "a", "text": "Jeho izolační schopnost je dána ohřátím vrstvy vody mezi pokožkou a oblekem."},
+        {"key": "b", "text": "Po vstupu do studené vody se před zahájením ponoru doporučuje již z vody nevystupovat."},
+        {"key": "c", "text": "Jeho izolační schopnost se zmenšuje s rostoucí hloubkou."},
+        {"key": "d", "text": "Jeho izolační schopnost je dána snížením prostupu tepla materiálem s uzavřenými komůrkami plynu."}
+      ],
+      "correct": "a",
+      "explanation": "Izolační schopnost mokrého neoprenu není dána ohřátím vody, ale izolačními vlastnostmi samotného materiálu s bublinkami plynu."
+    },
+    {
+      "id": 20,
+      "category": "obleky",
+      "question": "Speciální kombinézy do suchých obleků (tzv. podobleky):",
+      "options": [
+        {"key": "a", "text": "tepelně izolují a zadržují vlhkost a pot u těla"},
+        {"key": "b", "text": "tepelně izolují a odvádějí vlhkost a pot od těla"},
+        {"key": "c", "text": "aktivně zahřívají pokožku elektrostatickým potenciálem"},
+        {"key": "d", "text": "zabraňují proniknutí vody k pokožce při protržení obleku"}
+      ],
+      "correct": "b",
+      "explanation": "Kvalitní podobleky tepelně izolují a zároveň odvádějí vlhkost a pot od těla."
+    },
+    {
+      "id": 21,
+      "category": "obleky",
+      "question": "Automatické vypouštěcí ventily suchých obleků:",
+      "options": [
+        {"key": "a", "text": "umožňují nastavení konstantní rychlosti výstupu"},
+        {"key": "b", "text": "snižují riziko nekontrolovaného výstupu"},
+        {"key": "c", "text": "nelze ovládat manuálně"},
+        {"key": "d", "text": "automaticky doplňují vzduch do obleku"}
+      ],
+      "correct": "b",
+      "explanation": "Automatické vypouštěcí ventily automaticky vypouštějí expandující vzduch při výstupu a snižují tak riziko nekontrolovaného výstupu."
+    },
+    {
+      "id": 22,
+      "category": "kompenzatory",
+      "question": "Kompenzátorem vztlaku se kompenzuje:",
+      "options": [
+        {"key": "a", "text": "změna objemu izolačního obleku"},
+        {"key": "b", "text": "změna hmotnosti zásoby vzduchu v průběhu ponoru"},
+        {"key": "c", "text": "tíha součástí výstroje"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Kompenzátor vztlaku slouží ke kompenzaci všech uvedených faktorů ovlivňujících vztlak potápěče."
+    },
+    {
+      "id": 23,
+      "category": "kompenzatory",
+      "question": "Kompenzátor vztlaku je určen:",
+      "options": [
+        {"key": "a", "text": "k vyzvedávání předmětů na hladinu"},
+        {"key": "b", "text": "k řízení vztlaku podle momentální potřeby potápěče"},
+        {"key": "c", "text": "pouze k záchraně z hloubky"},
+        {"key": "d", "text": "ke zlepšení izolačních vlastností obleku"}
+      ],
+      "correct": "b",
+      "explanation": "Hlavním účelem kompenzátoru vztlaku je řízení vztlaku podle momentální potřeby potápěče během ponoru."
+    },
+    {
+      "id": 24,
+      "category": "kompenzatory",
+      "question": "Ovládací zařízení kompenzátoru vztlaku (inflátor):",
+      "options": [
+        {"key": "a", "text": "se připojuje k vysokotlakému vývodu 1. stupně plicní automatiky"},
+        {"key": "b", "text": "se připojuje ke středotlakému vývodu 1. stupně plicní automatiky"},
+        {"key": "c", "text": "se používá pouze pro nouzové dýchání"},
+        {"key": "d", "text": "slouží výhradně k urychlení výstupu"}
+      ],
+      "correct": "b",
+      "explanation": "Inflátor se připojuje ke středotlakému (LP) vývodu 1. stupně plicní automatiky."
+    },
+    {
+      "id": 25,
+      "category": "kompenzatory",
+      "question": "Vypouštěcí ventil umístěný v dolní části kompenzátoru vztlaku slouží během ponoru:",
+      "options": [
+        {"key": "a", "text": "k rychlému napouštění vody do kompenzátoru"},
+        {"key": "b", "text": "k vypouštění vody z kompenzátoru"},
+        {"key": "c", "text": "k řízení vztlaku v poloze hlavou dolů"},
+        {"key": "d", "text": "k řízení vztlaku v poloze hlavou nahoru"}
+      ],
+      "correct": "c",
+      "explanation": "Dolní vypouštěcí ventil umožňuje vypouštět vzduch v poloze hlavou dolů, kdy je vzduch v dolní části kompenzátoru."
+    },
+    {
+      "id": 26,
+      "category": "kompenzatory",
+      "question": "Přetlakové rychlovýpustné ventily kompenzátoru vztlaku:",
+      "options": [
+        {"key": "a", "text": "chrání plně nafouknutý kompenzátor vztlaku před roztržením"},
+        {"key": "b", "text": "lze manuálně otevírat tahem za ovládací šňůru"},
+        {"key": "c", "text": "po ponoru usnadňují vylití vody z kompenzátoru vztlaku"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Přetlakové rychlovýpustné ventily plní všechny uvedené funkce."
+    },
+    {
+      "id": 27,
+      "category": "kompenzatory",
+      "question": "K ochraně před roztržením kompenzátoru vztlaku při jeho plném nafouknutí slouží:",
+      "options": [
+        {"key": "a", "text": "přetlakový rychlovýpustný ventil (ventily)"},
+        {"key": "b", "text": "dodržení předepsané rychlosti výstupu"},
+        {"key": "c", "text": "zablokování plnicího ventilu na inflátoru"},
+        {"key": "d", "text": "pevnost materiálu vzduchového vaku"}
+      ],
+      "correct": "a",
+      "explanation": "Přetlakový rychlovýpustný ventil automaticky vypouští přebytečný vzduch a chrání kompenzátor před roztržením."
+    },
+    {
+      "id": 28,
+      "category": "kompenzatory",
+      "question": "Ke spolehlivému vynesení potápěče na hladinu musí kompenzátor vztlaku:",
+      "options": [
+        {"key": "a", "text": "být vybaven alespoň dvěma vypouštěcími ventily"},
+        {"key": "b", "text": "být vybaven třemi vypouštěcími ventily"},
+        {"key": "c", "text": "mít dostatečný objem"},
+        {"key": "d", "text": "mít vhodně umístěný D-kroužek pro pevné uchycení dekompresní bójky."}
+      ],
+      "correct": "c",
+      "explanation": "Pro spolehlivé vynesení potápěče je klíčový dostatečný objem kompenzátoru vztlaku."
+    },
+    {
+      "id": 29,
+      "category": "kompenzatory",
+      "question": "Označení backplate se používá:",
+      "options": [
+        {"key": "a", "text": "pro speciální ventily"},
+        {"key": "b", "text": "pro zařízení k doplňování vzduchu do kompenzátoru vztlaku, případně suchého obleku"},
+        {"key": "c", "text": "pro zádovou desku nosiče dýchacího přístroje"},
+        {"key": "d", "text": "pro zařízení k vypouštění vzduchu z kompenzátoru vztlaku nebo suchého obleku"}
+      ],
+      "correct": "c",
+      "explanation": "Backplate je zádová deska, na kterou se připevňuje lahev a postroj."
+    },
+    {
+      "id": 30,
+      "category": "kompenzatory",
+      "question": "Výhoda kompenzátorů vztlaku s ramenními popruhy opatřenými rozepínatelnými přezkami spočívá:",
+      "options": [
+        {"key": "a", "text": "ve snadnějším nasazování a odkládání"},
+        {"key": "b", "text": "ve schopnosti udržet potápěče na hladině obličejem nad vodou"},
+        {"key": "c", "text": "ve snadnějším napouštění/vypouštění vzduchu do/z kompenzátoru vztlaku"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "a",
+      "explanation": "Hlavní výhodou rozepínatelných přezek na ramenních popruzích je snadnější nasazování a odkládání."
+    },
+    {
+      "id": 31,
+      "category": "kompenzatory",
+      "question": "Minimální objem kompenzátoru vztlaku pro běžné rekreační potápění by měl být přibližně:",
+      "options": [
+        {"key": "a", "text": "5 litrů"},
+        {"key": "b", "text": "15 litrů"},
+        {"key": "c", "text": "25 litrů"},
+        {"key": "d", "text": "35 litrů"}
+      ],
+      "correct": "b",
+      "explanation": "Pro běžné rekreační potápění je doporučený minimální objem kompenzátoru vztlaku přibližně 15 litrů."
+    },
+    {
+      "id": 32,
+      "category": "kompenzatory",
+      "question": "Stabilizační (master) žakety se od běžných žaketů liší:",
+      "options": [
+        {"key": "a", "text": "vybavením D-kroužky"},
+        {"key": "b", "text": "tím, že jejich vzduchový vak obepíná i ramena potápěče"},
+        {"key": "c", "text": "uzavíratelnými kapsami"},
+        {"key": "d", "text": "připojením středotlaké hadice k inflátoru"}
+      ],
+      "correct": "b",
+      "explanation": "Stabilizační žakety mají vzduchový vak, který obepíná i ramena potápěče pro lepší stabilitu."
+    },
+    {
+      "id": 33,
+      "category": "kompenzatory",
+      "question": "Kompenzátor vztlaku typu křídlo se umisťuje:",
+      "options": [
+        {"key": "a", "text": "mezi záda potápěče a zádovou desku (backplate)"},
+        {"key": "b", "text": "mezi zádovou desku (backplate) a zásobník dýchacího přístroje"},
+        {"key": "c", "text": "na zásobník dýchacího přístroje uchycením zezadu za ventil a botku lahve (lahví)"},
+        {"key": "d", "text": "na každé z uvedených míst podle momentální volby potápěče"}
+      ],
+      "correct": "b",
+      "explanation": "Křídlo se umisťuje mezi zádovou desku (backplate) a lahev dýchacího přístroje."
+    },
+    {
+      "id": 34,
+      "category": "kompenzatory",
+      "question": "Inflátor slouží:",
+      "options": [
+        {"key": "a", "text": "k vydávání optických nouzových signálů na hladině"},
+        {"key": "b", "text": "k doplňování vzduchu do kompenzátoru vztlaku"},
+        {"key": "c", "text": "k upevnění dýchacího přístroje na záda potápěče"},
+        {"key": "d", "text": "k zavěšení drobnějších dílů výstroje (svítilna, dekompresní bójka apod.)"}
+      ],
+      "correct": "b",
+      "explanation": "Inflátor slouží k doplňování vzduchu do kompenzátoru vztlaku ze středotlakého vývodu plicní automatiky."
+    },
+    {
+      "id": 35,
+      "category": "kompenzatory",
+      "question": "Mezi obvyklé signální prostředky ve vybavení kompenzátoru vztlaku nepatří:",
+      "options": [
+        {"key": "a", "text": "píšťalka"},
+        {"key": "b", "text": "sirénka"},
+        {"key": "c", "text": "inflátor"},
+        {"key": "d", "text": "zábleskové zařízení"}
+      ],
+      "correct": "c",
+      "explanation": "Inflátor není signální prostředek, slouží k doplňování vzduchu do kompenzátoru vztlaku."
+    },
+    {
+      "id": 36,
+      "category": "plicni-automatiky",
+      "question": "V membránovém 1. stupni plicní automatiky síla řídicí pružiny středotlaku ventil:",
+      "options": [
+        {"key": "a", "text": "vždy otevírá"},
+        {"key": "b", "text": "vždy zavírá"},
+        {"key": "c", "text": "při otevírání proti proudu zavírá, při otevírání po proudu otevírá"},
+        {"key": "d", "text": "při otevírání proti proudu otevírá, při otevírání po proudu zavírá"}
+      ],
+      "correct": "a",
+      "explanation": "V membránovém 1. stupni řídicí pružina vždy otevírá ventil."
+    },
+    {
+      "id": 37,
+      "category": "plicni-automatiky",
+      "question": "V pístovém 1. stupni plicní automatiky síla řídicí pružiny středotlaku ventil:",
+      "options": [
+        {"key": "a", "text": "vždy zavírá"},
+        {"key": "b", "text": "vždy otevírá"},
+        {"key": "c", "text": "při otevírání proti proudu zavírá, při otevírání po proudu otevírá"},
+        {"key": "d", "text": "při otevírání proti proudu otevírá, při otevírání po proudu zavírá"}
+      ],
+      "correct": "b",
+      "explanation": "V pístovém 1. stupni řídicí pružina vždy otevírá ventil."
+    },
+    {
+      "id": 38,
+      "category": "plicni-automatiky",
+      "question": "Ventil v 1. stupni plicní automatiky je:",
+      "options": [
+        {"key": "a", "text": "otevírán středotlakem a uzavírán silou řídicí pružiny a tlakem okolní vody"},
+        {"key": "b", "text": "otevírán spojenou silou středotlaku a řídicí pružiny a uzavírán tlakem okolní vody"},
+        {"key": "c", "text": "otevírán spojenou silou řídicí pružiny a tlaku okolní vody a uzavírán středotlakem"},
+        {"key": "d", "text": "otevírán středotlakem a uzavírán spojenou silou řídicí pružiny a tlaku okolní vody"}
+      ],
+      "correct": "c",
+      "explanation": "Ventil 1. stupně je otevírán spojenou silou řídicí pružiny a okolního tlaku vody a uzavírán středotlakem."
+    },
+    {
+      "id": 39,
+      "category": "plicni-automatiky",
+      "question": "V nevyváženém 1. stupni plicní automatiky otevíraném proti proudu síla vyvolaná vysokým tlakem:",
+      "options": [
+        {"key": "a", "text": "působí proti síle pružiny, proto středotlak s poklesem tlaku v zásobníku klesá"},
+        {"key": "b", "text": "působí proti síle pružiny, proto středotlak s poklesem tlaku v zásobníku stoupá"},
+        {"key": "c", "text": "působí ve směru síly pružiny, proto středotlak s poklesem tlaku v zásobníku stoupá"},
+        {"key": "d", "text": "působí ve směru síly pružiny, proto středotlak s poklesem tlaku v zásobníku klesá"}
+      ],
+      "correct": "b",
+      "explanation": "U nevyváženého 1. stupně otevíraného proti proudu vysoký tlak působí proti pružině, takže s poklesem tlaku v lahvi středotlak stoupá."
+    },
+    {
+      "id": 40,
+      "category": "plicni-automatiky",
+      "question": "V 1. stupni plicní automatiky síla vyvolaná tlakem okolní vody působí ve stejném směru jako síla řídicí pružiny středotlaku:",
+      "options": [
+        {"key": "a", "text": "při otevírání proti proudu (při otevírání po proudu působí opačně)"},
+        {"key": "b", "text": "při otevírání po proudu (při otevírání proti proudu působí opačně)"},
+        {"key": "c", "text": "při otevírání po proudu i při otevírání proti proudu"},
+        {"key": "d", "text": "pouze u vyvážených 1. stupňů"}
+      ],
+      "correct": "c",
+      "explanation": "Tlak okolní vody vždy působí ve směru síly řídicí pružiny (otevírá ventil) u obou typů."
+    },
+    {
+      "id": 41,
+      "category": "plicni-automatiky",
+      "question": "V 1. stupni plicní automatiky síla vyvolaná středotlakem:",
+      "options": [
+        {"key": "a", "text": "otevírá ventil otevíraný po proudu a uzavírá ventil otevíraný proti proudu"},
+        {"key": "b", "text": "otevírá ventil otevíraný proti proudu a uzavírá ventil otevíraný po proudu"},
+        {"key": "c", "text": "otevírá ventil otevíraný proti proudu i ventil otevíraný po proudu"},
+        {"key": "d", "text": "uzavírá ventil otevíraný proti proudu i ventil otevíraný po proudu"}
+      ],
+      "correct": "d",
+      "explanation": "Středotlak vždy uzavírá ventil 1. stupně, a to u obou typů otevírání."
+    },
+    {
+      "id": 42,
+      "category": "plicni-automatiky",
+      "question": "Máme nevyvážený pístový 1. stupeň plicní automatiky. V prostoru, do kterého vyúsťuje dolní část kanálku procházejícího dříkem pístu, se nachází:",
+      "options": [
+        {"key": "a", "text": "středotlak"},
+        {"key": "b", "text": "vysoký tlak"},
+        {"key": "c", "text": "řídicí pružina středotlaku"},
+        {"key": "d", "text": "tlak okolní vody"}
+      ],
+      "correct": "a",
+      "explanation": "Do prostoru pod dříkem pístu vyúsťuje kanálek spojený se středotlakovým prostorem."
+    },
+    {
+      "id": 43,
+      "category": "plicni-automatiky",
+      "question": "O tom, že hodnota středotlaku jako přetlaku vůči okolí zůstává zachována v každé hloubce, rozhoduje obvykle:",
+      "options": [
+        {"key": "a", "text": "přívod okolního tlaku k řídicí pružině 1. stupně"},
+        {"key": "b", "text": "řídicí pružina 1. stupně"},
+        {"key": "c", "text": "plocha většího průřezu pístu nebo membrány 1. stupně"},
+        {"key": "d", "text": "mechanizmus vyvážení 1. stupně"}
+      ],
+      "correct": "a",
+      "explanation": "Přívod okolního tlaku k řídicí pružině zajišťuje, že středotlak jako přetlak vůči okolí zůstává konstantní."
+    },
+    {
+      "id": 44,
+      "category": "plicni-automatiky",
+      "question": "Středotlak plicní automatiky s nevyváženým 1. stupněm s poklesem tlaku v zásobníku:",
+      "options": [
+        {"key": "a", "text": "při otevírání proti proudu klesá, při otevírání po proudu stoupá"},
+        {"key": "b", "text": "při otevírání proti proudu stoupá, při otevírání po proudu klesá"},
+        {"key": "c", "text": "vždy stoupá bez ohledu na způsob otevírání"},
+        {"key": "d", "text": "při otevírání proti proudu stoupá, při otevírání po proudu se nemění"}
+      ],
+      "correct": "b",
+      "explanation": "U nevyváženého 1. stupně středotlak stoupá při otevírání proti proudu a klesá při otevírání po proudu s poklesem tlaku v lahvi."
+    },
+    {
+      "id": 45,
+      "category": "plicni-automatiky",
+      "question": "Na velikost středotlaku jako přetlaku vůči okolí nemá vliv:",
+      "options": [
+        {"key": "a", "text": "tlak vody (hloubka)"},
+        {"key": "b", "text": "způsob otevírání ventilu 1. stupně"},
+        {"key": "c", "text": "síla řídicí pružiny"},
+        {"key": "d", "text": "tlak v zásobníku"}
+      ],
+      "correct": "a",
+      "explanation": "Díky přívodu okolního tlaku k pružině zůstává středotlak jako přetlak vůči okolí konstantní bez ohledu na hloubku."
+    },
+    {
+      "id": 46,
+      "category": "plicni-automatiky",
+      "question": "Při seřizování plicní automatiky se dociluje zvýšení hodnoty středotlaku jako přetlaku vůči okolí:",
+      "options": [
+        {"key": "a", "text": "snížením předpětí řídicí pružiny"},
+        {"key": "b", "text": "zvýšením předpětí řídicí pružiny"},
+        {"key": "c", "text": "přidáním injektoru (Venturi) do nádechového prostoru 2. stupně"},
+        {"key": "d", "text": "odebráním injektoru (Venturi) z nádechového prostoru 2. stupně"}
+      ],
+      "correct": "b",
+      "explanation": "Zvýšením předpětí řídicí pružiny se zvýší síla otevírající ventil a tím i hodnota středotlaku."
+    },
+    {
+      "id": 47,
+      "category": "plicni-automatiky",
+      "question": "Výhodou otevírání 2. stupně plicní automatiky po proudu je:",
+      "options": [
+        {"key": "a", "text": "že umožňuje manuální ovládání ventilu tlačítkem vzduchové sprchy"},
+        {"key": "b", "text": "že zajišťuje stálou hodnotu středotlaku bez ohledu na tlak v zásobníku"},
+        {"key": "c", "text": "že vyžaduje vybavení středotlakého prostoru pojistným přetlakovým ventilem"},
+        {"key": "d", "text": "že nevyžaduje vybavení středotlakého prostoru pojistným přetlakovým ventilem"}
+      ],
+      "correct": "d",
+      "explanation": "2. stupeň otevíraný po proudu se při zvýšení středotlaku sám otevře a vypustí přebytečný vzduch, takže nepotřebuje pojistný ventil."
+    },
+    {
+      "id": 48,
+      "category": "plicni-automatiky",
+      "question": "Snížení výdechového odporu plicní automatiky lze konstrukčně docílit:",
+      "options": [
+        {"key": "a", "text": "zmenšením průtočného průřezu výdechového ventilu"},
+        {"key": "b", "text": "zvětšením průtočného průřezu výdechového ventilu"},
+        {"key": "c", "text": "snížením průtoku vzduchu ventilem 2. stupně"},
+        {"key": "d", "text": "zvýšením průtoku vzduchu ventilem 2. stupně"}
+      ],
+      "correct": "b",
+      "explanation": "Zvětšením průtočného průřezu výdechového ventilu se sníží odpor při výdechu."
+    },
+    {
+      "id": 49,
+      "category": "plicni-automatiky",
+      "question": "Plicní automatika nemusí mít ve středotlakém prostoru pojistný ventil, když:",
+      "options": [
+        {"key": "a", "text": "je 1. stupeň otevírán po proudu a 2. stupeň proti proudu"},
+        {"key": "b", "text": "je 1. stupeň otevírán po proudu"},
+        {"key": "c", "text": "je 2. stupeň vyvážený, otevíraný po proudu"},
+        {"key": "d", "text": "se 2. stupeň otevře zvýšeným středotlakem"}
+      ],
+      "correct": "d",
+      "explanation": "Pokud se 2. stupeň otevře při zvýšeném středotlaku a vypustí přebytečný vzduch, pojistný ventil není nutný."
+    },
+    {
+      "id": 50,
+      "category": "plicni-automatiky",
+      "question": "Potápěč dýchá v hloubce 20 m z plicní automatiky, jejíž první stupeň je seřízen na přetlak 10 bar. Tlak v zásobníku činí 180 bar. Jaké celkové (absolutní) tlaky naměříme za uvedených okolností na středotlakém (A) a na vysokotlakém (B) vývodu z 1. stupně této plicní automatiky?",
+      "options": [
+        {"key": "a", "text": "A = 13 bar, B = 180 bar"},
+        {"key": "b", "text": "A = 10 bar, B = 180 bar"},
+        {"key": "c", "text": "A = 7 bar, B = 177 bar"},
+        {"key": "d", "text": "A = 170 bar, B = 180 bar"}
+      ],
+      "correct": "a",
+      "explanation": "V 20 m je okolní tlak 3 bar. Středotlak jako přetlak 10 bar + okolní 3 bar = 13 bar absolutního tlaku. HP vývod ukazuje tlak v lahvi = 180 bar."
+    },
+    {
+      "id": 51,
+      "category": "plicni-automatiky",
+      "question": "Označení plicní automatiky připojení INT znamená:",
+      "options": [
+        {"key": "a", "text": "připojení k zásobníku vzduchu třmenem"},
+        {"key": "b", "text": "připojení k zásobníku vzduchu šroubením"},
+        {"key": "c", "text": "plicní automatiku určenou pro profesionální použití"},
+        {"key": "d", "text": "plicní automatiku určenou výhradně pro Nitrox"}
+      ],
+      "correct": "a",
+      "explanation": "INT (International) označuje připojení třmenem, na rozdíl od DIN (Deutsche Industrie Norm) se šroubením."
+    },
+    {
+      "id": 52,
+      "category": "plicni-automatiky",
+      "question": "Injektor (ejektor, Venturi) plicní automatiky:",
+      "options": [
+        {"key": "a", "text": "zvlhčuje dýchaný vzduch přisáváním vody"},
+        {"key": "b", "text": "snižuje nádechový odpor v průběhu nádechu"},
+        {"key": "c", "text": "usměrňuje proud vzduchu proti průhybu membrány 2. stupně"},
+        {"key": "d", "text": "pomáhá otevírat výdechový ventil"}
+      ],
+      "correct": "b",
+      "explanation": "Injektor (Venturi efekt) snižuje nádechový odpor tím, že proudící vzduch vytváří podtlak a pomáhá udržovat ventil otevřený."
+    },
+    {
+      "id": 53,
+      "category": "plicni-automatiky",
+      "question": "Ve středotlakém prostoru vyváženého 1. stupně plicní automatiky seřízeného na přetlak 10 bar je při tlaku vzduchu v zásobníku 7 bar v hloubce 10 m celkový tlak:",
+      "options": [
+        {"key": "a", "text": "17 bar"},
+        {"key": "b", "text": "12 bar"},
+        {"key": "c", "text": "11 bar"},
+        {"key": "d", "text": "7 bar"}
+      ],
+      "correct": "d",
+      "explanation": "Když je tlak v lahvi pouze 7 bar, 1. stupeň je plně otevřen a ve středotlaku je stejný tlak jako v lahvi, tedy 7 bar."
+    },
+    {
+      "id": 54,
+      "category": "plicni-automatiky",
+      "question": "Do vývodu z 1. stupně plicní automatiky označeného HP se připojuje:",
+      "options": [
+        {"key": "a", "text": "inflátorová hadice k suchému obleku"},
+        {"key": "b", "text": "hlavní (primární) 2. stupeň"},
+        {"key": "c", "text": "vodotěsný vysokotlaký tlakoměr"},
+        {"key": "d", "text": "záložní 2. stupeň (oktopus)"}
+      ],
+      "correct": "c",
+      "explanation": "HP (High Pressure) vývod je určen pro vysokotlaký tlakoměr, který měří tlak v lahvi."
+    },
+    {
+      "id": 55,
+      "category": "plicni-automatiky",
+      "question": "Označte nesprávné tvrzení o 2. stupních plicních automatik se servořízením (posilovačem):",
+      "options": [
+        {"key": "a", "text": "Kladou vyšší nároky na údržbu než běžné 2. stupně."},
+        {"key": "b", "text": "Kladou vyšší nároky na seřizování než běžné 2. stupně."},
+        {"key": "c", "text": "Mají jednodušší konstrukci než běžné druhé stupně."},
+        {"key": "d", "text": "Dosahují vysokých průtoků dýchacího média při minimálních nádechových odporech."}
+      ],
+      "correct": "c",
+      "explanation": "2. stupně se servořízením mají složitější konstrukci než běžné 2. stupně, nikoliv jednodušší."
+    },
+    {
+      "id": 56,
+      "category": "plicni-automatiky",
+      "question": "Které z uvedených opatření neslouží ke zvýšení odolnosti plicních automatik proti zamrzání?",
+      "options": [
+        {"key": "a", "text": "Umožnění manuálního ovládání ventilu 2. stupně tlačítkem vzduchové sprchy."},
+        {"key": "b", "text": "Zamezení přístupu vody do pružinové komory 1. stupně."},
+        {"key": "c", "text": "Zaplnění pružinové komory 1. stupně nemrznoucí kapalinou."},
+        {"key": "d", "text": "Zvětšení povrchu tělesa 1. stupně žebrováním."}
+      ],
+      "correct": "a",
+      "explanation": "Tlačítko vzduchové sprchy nesouvisí s odolností proti zamrzání, slouží k manuálnímu ovládání ventilu."
+    },
+    {
+      "id": 57,
+      "category": "plicni-automatiky",
+      "question": "Nevýhoda zásobníku dýchacího média osazeného vysokotlakým uzavíracím ventilem s jedním vývodem spočívá v tom:",
+      "options": [
+        {"key": "a", "text": "že s tímto vybavením nelze řešit krizovou situaci „potápěč bez vzduchu" (OOA)"},
+        {"key": "b", "text": "že s tímto vybavením nelze používat kompenzátor vztlaku typu křídlo"},
+        {"key": "c", "text": "že oba 2. stupně plicní automatiky, tlakoměr i plnicí hadice kompenzátoru vztlaku a suchého obleku jsou funkčně závislé na jediném 1. stupni plicní automatiky"},
+        {"key": "d", "text": "že neumožňuje používání plicní automatiky s úpravou zvyšující odolnost proti zamrzání."}
+      ],
+      "correct": "c",
+      "explanation": "Při jednom vývodu je vše závislé na jediném 1. stupni - při jeho poruše přijdeme o všechny funkce."
+    },
+    {
+      "id": 58,
+      "category": "plicni-automatiky",
+      "question": "Zásobník dýchacího média osazený vysokotlakým uzavíracím ventilem se dvěma nezávisle ovladatelnými vývody:",
+      "options": [
+        {"key": "a", "text": "umožňuje montáž dvou kompletních plicních automatik."},
+        {"key": "b", "text": "při správném uspořádání (konfiguraci) dýchacího přístroje umožňuje zachování dodávky dýchacího média i v případě poruchy některého z 1. stupňů"},
+        {"key": "c", "text": "při správném uspořádání (konfiguraci) dýchacího přístroje umožňuje potápěči v suchém obleku řídit svůj vztlak i v případě poruchy některého z 1. stupňů."},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Ventil se dvěma nezávislými vývody umožňuje všechny uvedené výhody - redundanci a nezávislost systémů."
+    },
+    {
+      "id": 59,
+      "category": "plicni-automatiky",
+      "question": "Používáme-li primární 2. stupeň plicní automatiky na hadici, dlouhé okolo 150 cm, vede se od 1. stupně tato hadice:",
+      "options": [
+        {"key": "a", "text": "tak, aby tvořila volný oblouk"},
+        {"key": "b", "text": "pod pravým podpažím, šikmo přes hrudník a zleva kolem šíje tak, aby 2. stupeň přicházel k potápěči z jeho pravé strany"},
+        {"key": "c", "text": "nad pravým ramenem a s omotáním kolem krku potápěče"},
+        {"key": "d", "text": "pod žaketem, aby nehrozilo její zachycení o překážku"}
+      ],
+      "correct": "b",
+      "explanation": "Dlouhá hadice se vede pod pravým podpažím, přes hrudník a kolem šíje - tzv. DIR konfigurace pro snadné sdílení vzduchu."
+    },
+    {
+      "id": 60,
+      "category": "plicni-automatiky",
+      "question": "Pojem sidemount označuje:",
+      "options": [
+        {"key": "a", "text": "systém zátěží v pouzdrech umístěných na bocích monolahve"},
+        {"key": "b", "text": "systém uspořádání dýchacího přístroje se zásobníky dýchacího média nesenými po bocích potápěče"},
+        {"key": "c", "text": "zavěšení dekompresní bójky na boční D-kroužek kompenzátoru vztlaku"},
+        {"key": "d", "text": "upevnění dýchací trubice k upínacímu pásku masky"}
+      ],
+      "correct": "b",
+      "explanation": "Sidemount je konfigurace, kdy jsou lahve neseny po bocích potápěče místo na zádech."
+    },
+    {
+      "id": 61,
+      "category": "lahve",
+      "question": "Připojovací závit ventilu vzduchové tlakové lahve je:",
+      "options": [
+        {"key": "a", "text": "R 3/4\""},
+        {"key": "b", "text": "W 21,8\""},
+        {"key": "c", "text": "G 5/8\""},
+        {"key": "d", "text": "R 1/8\""}
+      ],
+      "correct": "c",
+      "explanation": "Standardní připojovací závit ventilu vzduchové tlakové lahve je G 5/8\"."
+    },
+    {
+      "id": 62,
+      "category": "lahve",
+      "question": "Tlakové lahve určené pro stlačený vzduch nikdy neplníme čistým kyslíkem:",
+      "options": [
+        {"key": "a", "text": "protože při styku s mastnotou může dojít k explozi"},
+        {"key": "b", "text": "protože kyslík dýchaný pod vyšším parciálním tlakem je toxický"},
+        {"key": "c", "text": "protože to nedovolují příslušné předpisy"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Všechny uvedené důvody jsou správné - nebezpečí exploze, toxicita kyslíku pod tlakem i předpisy."
+    },
+    {
+      "id": 63,
+      "category": "lahve",
+      "question": "Ventily tlakových lahví s válcovým závitem:",
+      "options": [
+        {"key": "a", "text": "jsou těsněny „O" kroužkem a vyžadují vyšší dotahovací moment než ventily s kuželovým závitem"},
+        {"key": "b", "text": "jsou těsněny teflonovou páskou a vyžadují vyšší dotahovací moment než ventily s kuželovým závitem"},
+        {"key": "c", "text": "jsou těsněny „O" kroužkem a vyžadují nižší dotahovací moment než ventily s kuželovým závitem"},
+        {"key": "d", "text": "jsou těsněny teflonovou páskou a vyžadují nižší dotahovací moment než ventily s kuželovým závitem"}
+      ],
+      "correct": "c",
+      "explanation": "Válcový závit s O-kroužkem vyžaduje nižší dotahovací moment než kuželový závit."
+    },
+    {
+      "id": 64,
+      "category": "lahve",
+      "question": "Tlaková lahev na stlačený vzduch se zkušebním tlakem 300 bar se plní:",
+      "options": [
+        {"key": "a", "text": "až do 300 bar"},
+        {"key": "b", "text": "až do 200 bar"},
+        {"key": "c", "text": "až do 450 bar"},
+        {"key": "d", "text": "až do 250 bar"}
+      ],
+      "correct": "b",
+      "explanation": "Maximální plnicí tlak je 2/3 zkušebního tlaku. Pro lahev se zkušebním tlakem 300 bar je to 200 bar."
+    },
+    {
+      "id": 65,
+      "category": "lahve",
+      "question": "Tlakové lahve uskladňujeme s přetlakem vzduchu uvnitř. Důvodem pro toto opatření je:",
+      "options": [
+        {"key": "a", "text": "že zachovává těsnost ventilu"},
+        {"key": "b", "text": "že zpevňuje stěny lahve"},
+        {"key": "c", "text": "že zamezuje vniknutí vlhkosti a nečistot do lahve"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "c",
+      "explanation": "Přetlak v lahvi při skladování zamezuje vniknutí vlhkosti a nečistot dovnitř."
+    },
+    {
+      "id": 66,
+      "category": "lahve",
+      "question": "Vzduch, který byl v zásobníku dýchacího přístroje skladován několik měsíců:",
+      "options": [
+        {"key": "a", "text": "můžeme použít, avšak pouze do hloubky 3 metrů"},
+        {"key": "b", "text": "vypustíme, protože mohlo dojít ke změnám v jeho složení"},
+        {"key": "c", "text": "vypustíme, protože může obsahovat oxid uhelnatý jako produkt koroze vnitřku lahve"},
+        {"key": "d", "text": "použijeme, protože obsahuje více kyslíku, který vzniká při korozi vnitřku lahve"}
+      ],
+      "correct": "b",
+      "explanation": "Dlouho skladovaný vzduch by měl být vypuštěn, protože mohlo dojít ke změnám v jeho složení."
+    },
+    {
+      "id": 67,
+      "category": "lahve",
+      "question": "Mezi maximálním plnicím a zkušebním (testovacím) tlakem lahve dýchacího přístroje je tento vztah:",
+      "options": [
+        {"key": "a", "text": "oba tlaky jsou shodné"},
+        {"key": "b", "text": "velikost maximálního plnicího tlaku je rovna polovině zkušebního tlaku"},
+        {"key": "c", "text": "velikost zkušebního tlaku je rovna 1,5násobku maximálního plnicího tlaku"},
+        {"key": "d", "text": "velikost zkušebního tlaku je rovna polovině maximálního plnicího tlaku"}
+      ],
+      "correct": "c",
+      "explanation": "Zkušební tlak je 1,5násobek maximálního plnicího tlaku (např. 300 bar zkušební = 200 bar plnicí)."
+    },
+    {
+      "id": 68,
+      "category": "merici-pristroje",
+      "question": "Analogový vodotěsný tlakoměr bývá konstrukce:",
+      "options": [
+        {"key": "a", "text": "membránové"},
+        {"key": "b", "text": "s Bourdonovou trubicí"},
+        {"key": "c", "text": "pístové"},
+        {"key": "d", "text": "membránové s olejovou náplní"}
+      ],
+      "correct": "b",
+      "explanation": "Vodotěsné tlakoměry pro měření tlaku v lahvi využívají Bourdonovu trubici."
+    },
+    {
+      "id": 69,
+      "category": "merici-pristroje",
+      "question": "Mikrotryska vysokotlakého (HP) výstupu z 1. stupně plicní automatiky:",
+      "options": [
+        {"key": "a", "text": "se používá pouze u digitálních tlakoměrů"},
+        {"key": "b", "text": "slouží pouze ke zpomalení nárůstu tlaku v tlakoměru při otevření ventilu lahve"},
+        {"key": "c", "text": "brání prudkému úniku vzduchu v případě porušení hadice tlakoměru"},
+        {"key": "d", "text": "žádná odpověď není správná"}
+      ],
+      "correct": "c",
+      "explanation": "Mikrotryska (restriktor) v HP vývodu omezuje průtok a brání rychlému úniku vzduchu při poškození hadice."
+    },
+    {
+      "id": 70,
+      "category": "merici-pristroje",
+      "question": "Z dat poskytovaných během ponoru potápěčským počítačem jsou z hlediska bezpečnosti nejdůležitější:",
+      "options": [
+        {"key": "a", "text": "instrukce pro sestup"},
+        {"key": "b", "text": "instrukce pro výstup"},
+        {"key": "c", "text": "informace o povrchovém intervalu"},
+        {"key": "d", "text": "informace o průměrné hloubce ponoru"}
+      ],
+      "correct": "b",
+      "explanation": "Z hlediska bezpečnosti jsou nejdůležitější instrukce pro výstup (rychlost, dekomprese, bezpečnostní zastávka)."
+    },
+    {
+      "id": 71,
+      "category": "merici-pristroje",
+      "question": "Označte nesprávné tvrzení. Potápěčské počítače:",
+      "options": [
+        {"key": "a", "text": "upozorňují na překročení bezpečné rychlosti výstupu"},
+        {"key": "b", "text": "stanovují dekompresní postup na základě konkrétního profilu ponoru"},
+        {"key": "c", "text": "není vhodné používat při ponorech v nulových časech"},
+        {"key": "d", "text": "po ponoru průběžně informují o aktuálním stavu zbytkového dusíku"}
+      ],
+      "correct": "c",
+      "explanation": "Potápěčské počítače jsou vhodné i pro ponory v nulových časech - toto tvrzení je nesprávné."
+    },
+    {
+      "id": 72,
+      "category": "merici-pristroje",
+      "question": "Kapilární hloubkoměr funguje na principu:",
+      "options": [
+        {"key": "a", "text": "objemových změn plynu v důsledku změn vnějšího tlaku"},
+        {"key": "b", "text": "změny průhybu kapiláry vlivem změny okolního tlaku"},
+        {"key": "c", "text": "průhybu membrány"},
+        {"key": "d", "text": "tvarových změn mosazné kapiláry"}
+      ],
+      "correct": "a",
+      "explanation": "Kapilární hloubkoměr funguje na principu Boyle-Mariottova zákona - stlačování vzduchu v kapiláře s rostoucím tlakem."
+    },
+    {
+      "id": 73,
+      "category": "merici-pristroje",
+      "question": "U hloubkoměru s otevřenou Bourdonovou trubicí působí tlaková síla vody:",
+      "options": [
+        {"key": "a", "text": "přímo uvnitř trubice"},
+        {"key": "b", "text": "uvnitř pouzdra hloubkoměru"},
+        {"key": "c", "text": "na pružné pouzdro hloubkoměru"},
+        {"key": "d", "text": "na vakuum uvnitř pevného pouzdra hloubkoměru"}
+      ],
+      "correct": "a",
+      "explanation": "U otevřené Bourdonovy trubice voda vstupuje přímo do trubice a svým tlakem ji narovnává."
+    },
+    {
+      "id": 74,
+      "category": "merici-pristroje",
+      "question": "Hloubkoměr, seřízený pro potápění v moři, bude ve sladké vodě ukazovat:",
+      "options": [
+        {"key": "a", "text": "menší hloubku než v jaké se potápěč nachází"},
+        {"key": "b", "text": "větší hloubku než v jaké se potápěč nachází"},
+        {"key": "c", "text": "stejně jako ve slané vodě"},
+        {"key": "d", "text": "žádná odpověď není správná"}
+      ],
+      "correct": "a",
+      "explanation": "Sladká voda je méně hustá než slaná, takže ve stejné hloubce je nižší tlak a hloubkoměr ukazuje méně."
+    },
+    {
+      "id": 75,
+      "category": "merici-pristroje",
+      "question": "Olejový hloubkoměr používá Bourdonovu trubici, která je:",
+      "options": [
+        {"key": "a", "text": "naplněna olejem, tlak působí na olejovou náplň"},
+        {"key": "b", "text": "otevřena do okolní vody, tlak se přenáší pružným pouzdrem hloubkoměru"},
+        {"key": "c", "text": "oboustranně uzavřena a uložena v olejové náplni, tlak se přenáší pružným pouzdrem hloubkoměru"},
+        {"key": "d", "text": "naplněna olejem, tlak se přenáší pružným pouzdrem hloubkoměru"}
+      ],
+      "correct": "c",
+      "explanation": "U olejového hloubkoměru je Bourdonova trubice uzavřena a uložena v oleji, tlak se přenáší pružným pouzdrem."
+    },
+    {
+      "id": 76,
+      "category": "merici-pristroje",
+      "question": "Označte nesprávné tvrzení. Membránový hloubkoměr:",
+      "options": [
+        {"key": "a", "text": "funguje na principu měření průhybu membrány hydrostatickým tlakem"},
+        {"key": "b", "text": "může registrovat maximální dosaženou hloubku"},
+        {"key": "c", "text": "může být seřiditelný na tlak v dané nadmořské výšce"},
+        {"key": "d", "text": "má na obou stranách membrány okolní tlak"}
+      ],
+      "correct": "d",
+      "explanation": "Membránový hloubkoměr nemá na obou stranách membrány okolní tlak - na jedné straně je referenční tlak."
+    },
+    {
+      "id": 77,
+      "category": "merici-pristroje",
+      "question": "Hloubkoměr, seřízený pro potápění ve sladké vodě, bude v moři ukazovat:",
+      "options": [
+        {"key": "a", "text": "menší hloubku než v jaké se potápěč nachází"},
+        {"key": "b", "text": "větší hloubku než v jaké se potápěč nachází"},
+        {"key": "c", "text": "stejně jako ve sladké vodě"},
+        {"key": "d", "text": "žádná odpověď není správná"}
+      ],
+      "correct": "b",
+      "explanation": "Mořská voda je hustší než sladká, takže ve stejné hloubce je vyšší tlak a hloubkoměr ukazuje více."
+    },
+    {
+      "id": 78,
+      "category": "prislusenstvi",
+      "question": "Potápěčské svítilny vybavené LED diodami mají oproti jiným typům výhodu:",
+      "options": [
+        {"key": "a", "text": "v menší spotřebě energie při srovnatelném světelném výkonu"},
+        {"key": "b", "text": "v delší životnosti"},
+        {"key": "c", "text": "ve větší mechanické odolnosti"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "LED svítilny mají všechny uvedené výhody - nižší spotřebu, delší životnost i větší odolnost."
+    },
+    {
+      "id": 79,
+      "category": "prislusenstvi",
+      "question": "Nejlepší poměr mezi spotřebou energie a světelným výkonem nabízí potápěčská svítilna vybavená:",
+      "options": [
+        {"key": "a", "text": "HID výbojkou"},
+        {"key": "b", "text": "halogenovou žárovkou"},
+        {"key": "c", "text": "LED diodou"},
+        {"key": "d", "text": "záložním zdrojem energie"}
+      ],
+      "correct": "c",
+      "explanation": "LED diody mají nejlepší poměr mezi spotřebou energie a světelným výkonem."
+    },
+    {
+      "id": 80,
+      "category": "prislusenstvi",
+      "question": "Dekompresní bójka:",
+      "options": [
+        {"key": "a", "text": "slouží jako osobní pomůcka při výstupu a dekompresi"},
+        {"key": "b", "text": "označuje pozici vystupujícího potápěče"},
+        {"key": "c", "text": "pro běžné potápění je červená nebo oranžová"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Dekompresní bójka slouží všem uvedeným účelům - pomoc při dekompresi, označení pozice, obvykle v oranžové barvě."
+    },
+    {
+      "id": 81,
+      "category": "prislusenstvi",
+      "question": "Ke spolehlivému označení pozice vystupujícího potápěče slouží:",
+      "options": [
+        {"key": "a", "text": "vystupující bubliny"},
+        {"key": "b", "text": "dekompresní bójka"},
+        {"key": "c", "text": "signalizační zařízení kompenzátoru vztlaku (píšťalka nebo sirénka)"},
+        {"key": "d", "text": "žádná odpověď není správná"}
+      ],
+      "correct": "b",
+      "explanation": "Dekompresní bójka spolehlivě označuje pozici potápěče na hladině, bubliny mohou být rozptýleny a nejsou spolehlivé."
+    },
+    {
+      "id": 82,
+      "category": "prislusenstvi",
+      "question": "Šňůru nebo cívku vypuštěné dekompresní bójky při výstupu:",
+      "options": [
+        {"key": "a", "text": "vždy připínáme či přivazujeme k D-kroužku kompenzátoru vztlaku nebo k jiné části výstroje"},
+        {"key": "b", "text": "připínáme či přivazujeme k D-kroužku kompenzátoru vztlaku nebo k jiné části výstroje, potřebujeme-li mít volné ruce"},
+        {"key": "c", "text": "po celou dobu výstupu držíme tak, aby šňůra nebyla zcela napnutá"},
+        {"key": "d", "text": "zásadně nepřipínáme k D-kroužku ani jinam"}
+      ],
+      "correct": "d",
+      "explanation": "Šňůru dekompresní bójky zásadně nepřipínáme k výstroji, abychom nebyli vytaženi na hladinu např. při zachycení bójky lodí."
+    },
+    {
+      "id": 83,
+      "category": "prislusenstvi",
+      "question": "Potápěčský kompas bývá obvykle vybaven:",
+      "options": [
+        {"key": "a", "text": "ochranným pláštěm proti působení magnetických polí"},
+        {"key": "b", "text": "zařízením k fixaci střelky"},
+        {"key": "c", "text": "otočnou stupnicí, která jej umožňuje používat jako buzolu"},
+        {"key": "d", "text": "kompenzačním zařízením k odstranění deviace"}
+      ],
+      "correct": "c",
+      "explanation": "Potápěčský kompas má otočnou stupnici (lunetu), která umožňuje nastavit kurz a sledovat jeho dodržování."
+    },
+    {
+      "id": 84,
+      "category": "prislusenstvi",
+      "question": "Zvedací vak:",
+      "options": [
+        {"key": "a", "text": "slouží k vyzvedávání předmětů na hladinu"},
+        {"key": "b", "text": "slouží k přemisťování předmětů pod vodou"},
+        {"key": "c", "text": "bývá vybaven vypouštěcím ventilem"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Zvedací vak slouží k vyzvedávání i přemisťování předmětů a bývá vybaven vypouštěcím ventilem."
+    },
+    {
+      "id": 85,
+      "category": "kompresory",
+      "question": "Kompresory pro plnění zásobních lahví dýchacích přístrojů jsou:",
+      "options": [
+        {"key": "a", "text": "membránové vícestupňové"},
+        {"key": "b", "text": "pístové jednostupňové"},
+        {"key": "c", "text": "pístové vícestupňové"},
+        {"key": "d", "text": "rotační vícestupňové"}
+      ],
+      "correct": "c",
+      "explanation": "Pro plnění potápěčských lahví se používají pístové vícestupňové kompresory."
+    },
+    {
+      "id": 86,
+      "category": "kompresory",
+      "question": "Označte nesprávné tvrzení. Chlazení vzduchu mezi jednotlivými stupni vysokotlakých kompresorů:",
+      "options": [
+        {"key": "a", "text": "napomáhá k odstraňování vlhkosti"},
+        {"key": "b", "text": "zmenšuje práci potřebnou ke stlačení vzduchu"},
+        {"key": "c", "text": "se zásadně nepoužívá (chladí se jen pohonná jednotka)"},
+        {"key": "d", "text": "zvyšuje použitelnou zásobu vzduchu po plnění"}
+      ],
+      "correct": "c",
+      "explanation": "Mezichlazení se u vysokotlakých kompresorů běžně používá - tvrzení že se nepoužívá je nesprávné."
+    },
+    {
+      "id": 87,
+      "category": "kompresory",
+      "question": "Filtr na sání kompresoru pro potápěčské dýchací přístroje slouží k zachycení:",
+      "options": [
+        {"key": "a", "text": "oxidu uhličitého"},
+        {"key": "b", "text": "oxidu uhelnatého"},
+        {"key": "c", "text": "vodních par"},
+        {"key": "d", "text": "prachových částic"}
+      ],
+      "correct": "d",
+      "explanation": "Filtr na sání zachytává prachové částice, které by mohly poškodit kompresor a kontaminovat vzduch."
+    },
+    {
+      "id": 88,
+      "category": "kompresory",
+      "question": "Filtr na výtlaku z posledního stupně kompresoru slouží k zachycení:",
+      "options": [
+        {"key": "a", "text": "vlhkosti a oxidu uhličitého"},
+        {"key": "b", "text": "vlhkosti a prachu"},
+        {"key": "c", "text": "vlhkosti a pachových složek"},
+        {"key": "d", "text": "oxidu uhelnatého a oxidu uhličitého"}
+      ],
+      "correct": "c",
+      "explanation": "Výstupní filtr zachytává vlhkost a pachové složky (olej) - používá se silikagel a aktivní uhlí."
+    },
+    {
+      "id": 89,
+      "category": "kompresory",
+      "question": "Filtr na výtlaku z posledního stupně kompresoru může být naplněn:",
+      "options": [
+        {"key": "a", "text": "aktivním uhlím"},
+        {"key": "b", "text": "aktivním uhlím a silikagelem"},
+        {"key": "c", "text": "molekulárním sítem a silikagelem"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Výstupní filtr může obsahovat různé kombinace aktivního uhlí, silikagelu a molekulárního síta."
+    },
+    {
+      "id": 90,
+      "category": "kompresory",
+      "question": "Odlučovač před filtrem na výtlaku z posledního stupně kompresoru slouží k odloučení:",
+      "options": [
+        {"key": "a", "text": "emulze vody a oleje"},
+        {"key": "b", "text": "směsi vody a vzduchu"},
+        {"key": "c", "text": "směsi oleje a oxidu uhličitého"},
+        {"key": "d", "text": "směsi oleje, vody, oxidu uhličitého a oxidu uhelnatého"}
+      ],
+      "correct": "a",
+      "explanation": "Odlučovač (separátor) slouží k oddělení kondenzátu - emulze vody a oleje - před vstupem do filtru."
+    },
+    {
+      "id": 91,
+      "category": "udrzba",
+      "question": "Lícnice masky ze silikonové pryže před uskladněním:",
+      "options": [
+        {"key": "a", "text": "vyžaduje ošetření silikonovým olejem"},
+        {"key": "b", "text": "nevyžaduje zvláštní péči"},
+        {"key": "c", "text": "vyžaduje ošetření běžnými kosmetickými přípravky"},
+        {"key": "d", "text": "vyžaduje ošetření klouzkem (mastkem)"}
+      ],
+      "correct": "b",
+      "explanation": "Silikonová lícnice masky nevyžaduje zvláštní péči před uskladněním, stačí opláchnout a usušit."
+    },
+    {
+      "id": 92,
+      "category": "udrzba",
+      "question": "Označte nesprávné tvrzení o potápěčské masce:",
+      "options": [
+        {"key": "a", "text": "Potápěčskou masku sušíme a uskladňujeme ve stínu."},
+        {"key": "b", "text": "Před prvním použitím je obvykle nutné důkladně odmastit zorník."},
+        {"key": "c", "text": "Masku po použití opláchneme sladkou vodou."},
+        {"key": "d", "text": "Lícnici ze silikonové pryže ošetřujeme silikonovým olejem."}
+      ],
+      "correct": "d",
+      "explanation": "Silikonovou lícnici neošetřujeme silikonovým olejem - toto tvrzení je nesprávné."
+    },
+    {
+      "id": 93,
+      "category": "udrzba",
+      "question": "Aby při ponoru nedocházelo k zamlžování zorníku masky, stačí obvykle:",
+      "options": [
+        {"key": "a", "text": "vypláchnout masku koncentrovaným alkoholem"},
+        {"key": "b", "text": "dbát, aby maska před nasazením na obličej byla suchá"},
+        {"key": "c", "text": "vypláchnout masku vodou"},
+        {"key": "d", "text": "rozetřít po vnitřní straně zorníku trochu vlastních slin (případně prostředku proti mlžení) a vypláchnout masku vodou"}
+      ],
+      "correct": "d",
+      "explanation": "Proti zamlžování pomáhají sliny nebo speciální prostředek rozetřený na zorníku a následně opláchnutý."
+    },
+    {
+      "id": 94,
+      "category": "udrzba",
+      "question": "Znečištěné neoprenové obleky:",
+      "options": [
+        {"key": "a", "text": "necháme chemicky vyčistit"},
+        {"key": "b", "text": "lze prát v běžných pracích prostředcích při teplotě do 40 °C"},
+        {"key": "c", "text": "lze prát v pračce při teplotě do 90 °C"},
+        {"key": "d", "text": "lze čistit jen pomocí dezinfekčních a bělicích prostředků"}
+      ],
+      "correct": "b",
+      "explanation": "Neoprenové obleky lze prát v běžných pracích prostředcích při teplotě do 40 °C."
+    },
+    {
+      "id": 95,
+      "category": "udrzba",
+      "question": "Roztržený neoprenový oblek:",
+      "options": [
+        {"key": "a", "text": "lepíme běžným vteřinovým lepidlem"},
+        {"key": "b", "text": "lepíme k tomu určeným lepidlem tak, že natřeme obě předem odmaštěné plochy, necháme „zavadnout", přitlačíme k sobě a přidržíme"},
+        {"key": "c", "text": "dokáže opravit pouze profesionálně vybavený odborník"},
+        {"key": "d", "text": "se neslepuje, nýbrž pouze vodotěsně sešívá"}
+      ],
+      "correct": "b",
+      "explanation": "Neopren se lepí speciálním lepidlem - obě plochy se odmastí, natřou, nechají zavadnout a pak se přitlačí."
+    },
+    {
+      "id": 96,
+      "category": "udrzba",
+      "question": "Označte nesprávné tvrzení:",
+      "options": [
+        {"key": "a", "text": "Vodotěsný zip suchého obleku po každém ponoru důkladně opláchneme čistou vodou."},
+        {"key": "b", "text": "Vodotěsný zip suchého obleku čas od času vyčistíme kartáčkem."},
+        {"key": "c", "text": "Ventily suchého obleku po každém ponoru demontujeme a uskladníme odděleně."},
+        {"key": "d", "text": "K ošetření kovového vodotěsného zipu suchého obleku se používá včelí vosk nebo parafin."}
+      ],
+      "correct": "c",
+      "explanation": "Ventily suchého obleku se po každém ponoru nedemontují - toto tvrzení je nesprávné."
+    },
+    {
+      "id": 97,
+      "category": "udrzba",
+      "question": "Ventily suchého obleku:",
+      "options": [
+        {"key": "a", "text": "nevyžadují údržbu"},
+        {"key": "b", "text": "po ponoru důkladně očistíme proudem vody"},
+        {"key": "c", "text": "ošetřujeme silikonovou vazelínou"},
+        {"key": "d", "text": "ošetřujeme včelím voskem nebo parafinem"}
+      ],
+      "correct": "b",
+      "explanation": "Ventily suchého obleku se po ponoru důkladně očistí proudem vody."
+    },
+    {
+      "id": 98,
+      "category": "udrzba",
+      "question": "Latexové těsnicí manžety suchých obleků po ponoru:",
+      "options": [
+        {"key": "a", "text": "vyžadují chemické ošetření"},
+        {"key": "b", "text": "očistíme kartáčkem a nastříkáme silikonovým sprejem"},
+        {"key": "c", "text": "opláchneme sladkou vodou, necháme oschnout a naklouzkujeme"},
+        {"key": "d", "text": "necháme oschnout a natřeme saponátem"}
+      ],
+      "correct": "c",
+      "explanation": "Latexové manžety se opláchnou sladkou vodou, nechají oschnout a naklouzkují (mastkem)."
+    },
+    {
+      "id": 99,
+      "category": "udrzba",
+      "question": "Plicní automatiku po ponoru v moři:",
+      "options": [
+        {"key": "a", "text": "ponoříme do sladké vody, několikrát stiskneme tlačítko vzduchové sprchy, vyjmeme z vody a necháme uschnout"},
+        {"key": "b", "text": "ponoříme do sladké vody s odkrytým vstupem do 1. stupně, počkáme na rozpuštění soli, vyjmeme a necháme uschnout"},
+        {"key": "c", "text": "s uzavřeným vstupem do 1. stupně ponoříme do sladké vody, nestlačujeme přitom tlačítko vzduchové sprchy, vyjmeme a necháme uschnout"},
+        {"key": "d", "text": "není třeba ošetřovat, stačí ji nechat oschnout"}
+      ],
+      "correct": "c",
+      "explanation": "Plicní automatiku ponoříme s uzavřeným vstupem do 1. stupně (krytka), nestlačujeme vzduchovou sprchu, abychom nedostali vodu dovnitř."
+    },
+    {
+      "id": 100,
+      "category": "udrzba",
+      "question": "Plicní automatiku před delším uskladněním:",
+      "options": [
+        {"key": "a", "text": "vysušíme a do prostoru 1. stupně nastříkáme konzervační olej"},
+        {"key": "b", "text": "vysušíme, vyměníme poškozené součásti a uložíme v rozebraném stavu"},
+        {"key": "c", "text": "vysušíme a necháme odborně prohlédnout"},
+        {"key": "d", "text": "vysušíme a membránu 2. stupně konzervujeme silikonovým sprejem"}
+      ],
+      "correct": "c",
+      "explanation": "Před delším uskladněním by měla být plicní automatika vysušena a odborně prohlédnuta (servis)."
+    }
+  ]
+}
