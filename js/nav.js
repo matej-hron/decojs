@@ -24,7 +24,9 @@ const NAV_ITEMS = [
         submenu: [
             { href: 'quiz-physics.html', label: 'Physics' },
             { href: 'quiz-anatomy.html', label: 'Anatomy' },
-            { href: 'quiz-accidents.html', label: 'Accidents' }
+            { href: 'quiz-accidents.html', label: 'Accidents' },
+            { href: 'quiz-safety.html', label: 'Safety Guidelines' },
+            { href: 'quiz-training.html', label: 'Training Guidelines' }
         ]
     },
     { href: 'about.html', label: 'About' }

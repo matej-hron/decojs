@@ -1,0 +1,1306 @@
+{
+  "title": "Bezpečnostní směrnice - Zkušební testy SPČR 2018",
+  "description": "Zkušební otázky z Bezpečnostních směrnic SPČR 2016 pro potápěče",
+  "questions": [
+    {
+      "id": 1,
+      "category": "obecne-smernice",
+      "question": "Dodržování Bezpečnostních směrnic SPČR 2016 se důrazně doporučuje:",
+      "options": [
+        {"key": "a", "text": "všem potápěčům s výjimkou účastníků výcviku (cvičenců)"},
+        {"key": "b", "text": "všem účastníkům potápěčské činnosti s výjimkou instruktorů"},
+        {"key": "c", "text": "všem potápěčům"},
+        {"key": "d", "text": "pouze potápěčským instruktorům při výcviku"}
+      ],
+      "correct": "c",
+      "explanation": "Bezpečnostní směrnice SPČR 2016 se důrazně doporučují dodržovat všem potápěčům bez výjimky."
+    },
+    {
+      "id": 2,
+      "category": "obecne-smernice",
+      "question": "Při potápěčském výcviku (není-li v platných Výcvikových směrnicích SPČR uvedeno jinak) a na akcích Svazu potápěčů ČR, Svazu českých potápěčů a Svazu potápěčů Moravy a Slezska:",
+      "options": [
+        {"key": "a", "text": "je dodržování BS povinné, pokud jde o výcvik s účastí více než 10 cvičenců, nebo o akce s účastí více než 20 potápěčů"},
+        {"key": "b", "text": "je dodržování BS ponecháno na úvaze vedoucího potápěče nebo instruktora"},
+        {"key": "c", "text": "je dodržování BS povinné pro účastníky s oprávněním do kvalifikačního stupně Potápěč CMAS P2 včetně"},
+        {"key": "d", "text": "je dodržování BS povinné"}
+      ],
+      "correct": "d",
+      "explanation": "Při potápěčském výcviku a na akcích SPČR je dodržování Bezpečnostních směrnic povinné."
+    },
+    {
+      "id": 3,
+      "category": "obecne-smernice",
+      "question": "Potápěči dodržují:",
+      "options": [
+        {"key": "a", "text": "takový profil ponoru, aby průměrná hloubka nepřekračovala 15 m"},
+        {"key": "b", "text": "používání dýchací trubice při plavání s přístrojem na hladině"},
+        {"key": "c", "text": "omezující podmínky platné pro získaný kvalifikační stupeň"},
+        {"key": "d", "text": "potápěčský režim v rozsahu do dvou ponorů za jeden den"}
+      ],
+      "correct": "c",
+      "explanation": "Potápěči musí dodržovat omezující podmínky platné pro jejich získaný kvalifikační stupeň."
+    },
+    {
+      "id": 4,
+      "category": "obecne-smernice",
+      "question": "Potápěči:",
+      "options": [
+        {"key": "a", "text": "nechávají periodicky kontrolovat svůj zdravotní stav z hlediska způsobilosti k potápění"},
+        {"key": "b", "text": "nepoužívají výstroj starší 6 let od data výroby"},
+        {"key": "c", "text": "musejí být seznámeni s kompletním mezinárodním vlajkovým kódem"},
+        {"key": "d", "text": "žádná odpověď není správná"}
+      ],
+      "correct": "a",
+      "explanation": "Potápěči nechávají periodicky kontrolovat svůj zdravotní stav z hlediska způsobilosti k potápění."
+    },
+    {
+      "id": 5,
+      "category": "obecne-smernice",
+      "question": "Platnost lékařské prohlídky je:",
+      "options": [
+        {"key": "a", "text": "3 měsíce"},
+        {"key": "b", "text": "6 měsíců"},
+        {"key": "c", "text": "9 měsíců"},
+        {"key": "d", "text": "1 rok"}
+      ],
+      "correct": "d",
+      "explanation": "Platnost lékařské prohlídky pro potápěče je 1 rok."
+    },
+    {
+      "id": 6,
+      "category": "obecne-smernice",
+      "question": "Platnost lékařské prohlídky je:",
+      "options": [
+        {"key": "a", "text": "6 měsíců"},
+        {"key": "b", "text": "1 rok"},
+        {"key": "c", "text": "2 roky"},
+        {"key": "d", "text": "do věku 40 let 2 roky, nad 40 let 1 rok"}
+      ],
+      "correct": "b",
+      "explanation": "Platnost lékařské prohlídky je 1 rok."
+    },
+    {
+      "id": 7,
+      "category": "obecne-smernice",
+      "question": "Označte tvrzení, které neodpovídá Bezpečnostním směrnicím SPČR 2016:",
+      "options": [
+        {"key": "a", "text": "Potápěči dodržují omezující podmínky platné pro získaný kvalifikační stupeň."},
+        {"key": "b", "text": "Potápěči nechávají periodicky kontrolovat svůj zdravotní stav z hlediska způsobilosti k potápění."},
+        {"key": "c", "text": "Platnost lékařské prohlídky je 2 roky."},
+        {"key": "d", "text": "Potápěči nesmějí být k potápění nuceni."}
+      ],
+      "correct": "c",
+      "explanation": "Tvrzení 'Platnost lékařské prohlídky je 2 roky' neodpovídá BS - správně je 1 rok."
+    },
+    {
+      "id": 8,
+      "category": "zpusobilost",
+      "question": "Potápěči se zásadně vyvarují potápění:",
+      "options": [
+        {"key": "a", "text": "při nižších teplotách než minus 10 C"},
+        {"key": "b", "text": "jsou-li jejich fyzické a/nebo psychické schopnosti sníženy únavou"},
+        {"key": "c", "text": "jestliže nejsou vybaveni potápěčským počítačem"},
+        {"key": "d", "text": "při snížení viditelnosti pod vodou na méně než 2 m"}
+      ],
+      "correct": "b",
+      "explanation": "Potápěči se zásadně vyvarují potápění, jsou-li jejich fyzické a/nebo psychické schopnosti sníženy únavou."
+    },
+    {
+      "id": 9,
+      "category": "zpusobilost",
+      "question": "Potápěči se zásadně vyvarují potápění v případě, jsou-li jejich fyzické a/nebo psychické schopnosti sníženy:",
+      "options": [
+        {"key": "a", "text": "nemocí"},
+        {"key": "b", "text": "požitím alkoholu nebo drog"},
+        {"key": "c", "text": "únavou"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Potápěči se vyvarují potápění při snížení schopností nemocí, požitím alkoholu/drog i únavou - všechny odpovědi jsou správné."
+    },
+    {
+      "id": 10,
+      "category": "zpusobilost",
+      "question": "Potápěči, jejichž fyzické a/nebo psychické schopnosti jsou sníženy:",
+      "options": [
+        {"key": "a", "text": "musejí před ponorem věnovat zvýšenou pozornost výstroji"},
+        {"key": "b", "text": "musejí věnovat zvýšenou pozornost plánování ponorů"},
+        {"key": "c", "text": "se zásadně vyvarují potápění"},
+        {"key": "d", "text": "se potápějí do omezené hloubky (Potápěč CMAS P1 max. 10m, Potápěč CMAS P2 max. 15 m, Potápěč CMAS P3 nebo instruktor max. 20 m)"}
+      ],
+      "correct": "c",
+      "explanation": "Potápěči se sníženými schopnostmi se zásadně vyvarují potápění."
+    },
+    {
+      "id": 11,
+      "category": "zpusobilost",
+      "question": "K prevenci potápěčských nehod nepatří:",
+      "options": [
+        {"key": "a", "text": "řádné vedení potápěčského deníku"},
+        {"key": "b", "text": "pravidelná potápěčská praxe"},
+        {"key": "c", "text": "procvičování řešení krizových situací"},
+        {"key": "d", "text": "odpovědné plánování ponorů"}
+      ],
+      "correct": "a",
+      "explanation": "Řádné vedení potápěčského deníku nepatří k prevenci nehod - na rozdíl od pravidelné praxe, procvičování krizových situací a odpovědného plánování."
+    },
+    {
+      "id": 12,
+      "category": "zpusobilost",
+      "question": "Označte tvrzení, které neodpovídá Bezpečnostním směrnicím SPČR:",
+      "options": [
+        {"key": "a", "text": "Potápěči se zásadně vyvarují potápění v případě, jsou-li jejich fyzické a/nebo psychické schopnosti sníženy nemocí, únavou, požitím alkoholu, drog či jinými okolnostmi."},
+        {"key": "b", "text": "Potápěči se zásadně vyvarují potápění při poklesu teploty vody pod 6 C."},
+        {"key": "c", "text": "Potápěči průběžně udržují své potápěčské dovednosti a fyzickou kondici."},
+        {"key": "d", "text": "Potápěči předcházejí potápěčským nehodám pravidelnou potápěčskou praxí, procvičováním řešení krizových situací a odpovědným plánováním ponorů."}
+      ],
+      "correct": "b",
+      "explanation": "BS neuvádí omezení potápění při poklesu teploty vody pod 6 C."
+    },
+    {
+      "id": 13,
+      "category": "zpusobilost",
+      "question": "Potápěči předcházejí potápěčským nehodám:",
+      "options": [
+        {"key": "a", "text": "pravidelnou potápěčskou praxí"},
+        {"key": "b", "text": "procvičováním řešení krizových situací"},
+        {"key": "c", "text": "odpovědným plánováním ponorů"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Potápěči předcházejí nehodám všemi uvedenými způsoby - pravidelnou praxí, procvičováním krizových situací a odpovědným plánováním."
+    },
+    {
+      "id": 14,
+      "category": "zpusobilost",
+      "question": "Potápěči:",
+      "options": [
+        {"key": "a", "text": "předcházejí potápěčským nehodám procvičováním řešení krizových situací"},
+        {"key": "b", "text": "v období před každým zvýšením kvalifikace udržují své potápěčské dovednosti a fyzickou kondici"},
+        {"key": "c", "text": "se zásadně vyvarují potápění při poklesu horizontální viditelnosti pod vodou na méně než 2 m"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "a",
+      "explanation": "Potápěči předcházejí nehodám procvičováním řešení krizových situací. Dovednosti udržují průběžně (ne jen před zvýšením kvalifikace) a při nízké viditelnosti se používá úvazek."
+    },
+    {
+      "id": 15,
+      "category": "specialni-potapeni",
+      "question": "Pro potápění s umělými dýchacími směsmi, s regeneračními dýchacími přístroji (rebreathery), potápění v uzavřených prostorách včetně potápění pod ledem a potápění v jinak obtížných podmínkách je zapotřebí:",
+      "options": [
+        {"key": "a", "text": "absolvování výcviku na kvalifikační stupeň Potápěč CMAS P3"},
+        {"key": "b", "text": "absolvování speciálního kurzu nebo školení"},
+        {"key": "c", "text": "zdvojení výstroje, tzv. redundance"},
+        {"key": "d", "text": "potápěčská praxe v rozsahu 150 ponorů za různých podmínek"}
+      ],
+      "correct": "b",
+      "explanation": "Pro speciální druhy potápění je zapotřebí absolvování speciálního kurzu nebo školení."
+    },
+    {
+      "id": 16,
+      "category": "specialni-potapeni",
+      "question": "Pro potápění pod ledem je zapotřebí:",
+      "options": [
+        {"key": "a", "text": "absolvování nejméně 90 ponorů ve volné vodě, z toho nejméně 30 v noci"},
+        {"key": "b", "text": "absolvování speciálního kurzu nebo školení"},
+        {"key": "c", "text": "kvalifikační stupeň nejméně Potápěč CMAS P1"},
+        {"key": "d", "text": "kvalifikační stupeň nejméně Potápěč CMAS P3"}
+      ],
+      "correct": "b",
+      "explanation": "Pro potápění pod ledem je zapotřebí absolvování speciálního kurzu nebo školení."
+    },
+    {
+      "id": 17,
+      "category": "specialni-potapeni",
+      "question": "Potápění pod ledem se vyvarují potápěči:",
+      "options": [
+        {"key": "a", "text": "kteří nejsou vybaveni suchým oblekem"},
+        {"key": "b", "text": "kteří nejsou vybaveni potápěčským počítačem"},
+        {"key": "c", "text": "kteří neabsolvovali speciální kurz nebo školení"},
+        {"key": "d", "text": "bez předchozího otužování"}
+      ],
+      "correct": "c",
+      "explanation": "Potápění pod ledem se vyvarují potápěči, kteří neabsolvovali speciální kurz nebo školení."
+    },
+    {
+      "id": 18,
+      "category": "specialni-potapeni",
+      "question": "Absolvování speciálního kurzu nebo školení a dodržování bezpečnostních pravidel v rámci tohoto kurzu uvedených:",
+      "options": [
+        {"key": "a", "text": "je zapotřebí pro všechny potápěče s kvalifikací Potápěč CMAS P2 a vyšší"},
+        {"key": "b", "text": "je zapotřebí pro potápění v menších skupinách, pro potápění při snížení viditelnosti pod vodou na méně než 2 m a pro potápění ve větší vzdálenosti od břehu"},
+        {"key": "c", "text": "není zapotřebí pro potápění pod ledem"},
+        {"key": "d", "text": "je zapotřebí pro potápění s umělými dýchacími směsmi, s regeneračními dýchacími přístroji (rebreathery), potápění v uzavřených prostorách včetně potápění pod ledem a potápění v jinak obtížných podmínkách"}
+      ],
+      "correct": "d",
+      "explanation": "Speciální kurz je zapotřebí pro potápění s umělými směsmi, rebreathery, v uzavřených prostorách, pod ledem a v obtížných podmínkách."
+    },
+    {
+      "id": 19,
+      "category": "obecne-smernice",
+      "question": "Potápěči podle svých možností:",
+      "options": [
+        {"key": "a", "text": "dbají o ochranu životního prostředí"},
+        {"key": "b", "text": "dbají o propagaci příslušného členského svazu SPČR"},
+        {"key": "c", "text": "dbají o periodickou obměnu výstroje"},
+        {"key": "d", "text": "žádná odpověď není správná"}
+      ],
+      "correct": "a",
+      "explanation": "Potápěči podle svých možností dbají o ochranu životního prostředí."
+    },
+    {
+      "id": 20,
+      "category": "obecne-smernice",
+      "question": "Označte tvrzení, které neodpovídá Bezpečnostním směrnicím SPČR:",
+      "options": [
+        {"key": "a", "text": "Platnost lékařské prohlídky je 1 rok."},
+        {"key": "b", "text": "Dodržování Bezpečnostních směrnic SPČR se důrazně doporučuje všem potápěčům s výjimkou účastníků potápěčského výcviku (cvičenců), kteří se řídí Výcvikovými směrnicemi SPČR."},
+        {"key": "c", "text": "Potápěči předcházejí potápěčským nehodám odpovědným plánováním ponorů."},
+        {"key": "d", "text": "Pro potápění s umělými dýchacími směsmi, potápění s regeneračními dýchacími přístroji (rebreathery), potápění v uzavřených prostorách včetně potápění pod ledem a potápění v jinak obtížných podmínkách je zapotřebí absolvování speciálního kurzu nebo školení a dodržování bezpečnostních pravidel v rámci tohoto kurzu uvedených."}
+      ],
+      "correct": "b",
+      "explanation": "BS se doporučují všem potápěčům bez výjimky, ne s výjimkou cvičenců."
+    },
+    {
+      "id": 21,
+      "category": "vystroj",
+      "question": "Potápěčská výstroj musí být:",
+      "options": [
+        {"key": "a", "text": "funkční a účelná z hlediska plánovaného ponoru"},
+        {"key": "b", "text": "testovaná ve dvojnásobku maximální hloubky pro kterou je určena"},
+        {"key": "c", "text": "schválená členskými prezidii SPČR"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "a",
+      "explanation": "Potápěčská výstroj musí být funkční a účelná z hlediska plánovaného ponoru."
+    },
+    {
+      "id": 22,
+      "category": "vystroj",
+      "question": "Pro potápění ve volné vodě jsou nezbytnými součástmi výstroje:",
+      "options": [
+        {"key": "a", "text": "potápěčský nůž a potápěčský oblek"},
+        {"key": "b", "text": "potápěčský nůž a potápěčský počítač"},
+        {"key": "c", "text": "potápěčský počítač, hloubkoměr a časoměrné zařízení"},
+        {"key": "d", "text": "potápěčský nůž (případně jiný vhodný nástroj) a kompenzátor vztlaku"}
+      ],
+      "correct": "d",
+      "explanation": "Pro potápění ve volné vodě jsou nezbytnými součástmi výstroje potápěčský nůž (nebo jiný vhodný nástroj) a kompenzátor vztlaku."
+    },
+    {
+      "id": 23,
+      "category": "vystroj",
+      "question": "Za kompenzátor vztlaku se nepovažuje:",
+      "options": [
+        {"key": "a", "text": "žaket s rozepínatelnými popruhy"},
+        {"key": "b", "text": "žaket s vkládanou zátěží"},
+        {"key": "c", "text": "suchý potápěčský oblek"},
+        {"key": "d", "text": "křídlo"}
+      ],
+      "correct": "c",
+      "explanation": "Za kompenzátor vztlaku se nepovažuje suchý potápěčský oblek."
+    },
+    {
+      "id": 24,
+      "category": "vystroj",
+      "question": "Za kompenzátor vztlaku:",
+      "options": [
+        {"key": "a", "text": "se považuje také suchý potápěčský oblek"},
+        {"key": "b", "text": "se nepovažuje suchý potápěčský oblek"},
+        {"key": "c", "text": "se považuje také suchý potápěčský oblek z pěněného neoprénu"},
+        {"key": "d", "text": "se nepovažuje tzv. křídlo"}
+      ],
+      "correct": "b",
+      "explanation": "Za kompenzátor vztlaku se nepovažuje suchý potápěčský oblek."
+    },
+    {
+      "id": 25,
+      "category": "vystroj",
+      "question": "Označte tvrzení, které neodpovídá Bezpečnostním směrnicím SPČR:",
+      "options": [
+        {"key": "a", "text": "Potápěčská výstroj musí být funkční a účelná z hlediska plánovaného ponoru."},
+        {"key": "b", "text": "Pro potápění do hloubek přes 10 m lze používat pouze výstroj opatřenou mezinárodním certifikátem CMAS."},
+        {"key": "c", "text": "Pro potápění ve volné vodě jsou nezbytnými součástmi výstroje potápěčský nůž (případně jiný vhodný nástroj) a kompenzátor vztlaku."},
+        {"key": "d", "text": "Za kompenzátor vztlaku se nepovažuje suchý potápěčský oblek."}
+      ],
+      "correct": "b",
+      "explanation": "BS neuvádí požadavek na certifikát CMAS pro výstroj při potápění do hloubek přes 10 m."
+    },
+    {
+      "id": 26,
+      "category": "vystroj",
+      "question": "Výstroj musí být:",
+      "options": [
+        {"key": "a", "text": "nápadně zbarvena pro snazší objevení ztraceného potápěče"},
+        {"key": "b", "text": "označena vlajkou A (alpha) mezinárodního vlajkového kódu"},
+        {"key": "c", "text": "uspořádána tak, aby nehrozilo nebezpečí jejího poškození a/nebo zachycení"},
+        {"key": "d", "text": "opatřena viditelným označením maximální hloubky bezpečné použitelnosti"}
+      ],
+      "correct": "c",
+      "explanation": "Výstroj musí být uspořádána tak, aby nehrozilo nebezpečí jejího poškození a/nebo zachycení."
+    },
+    {
+      "id": 27,
+      "category": "vystroj",
+      "question": "Kompenzátorem vztlaku nelze:",
+      "options": [
+        {"key": "a", "text": "řídit vztlak během ponoru"},
+        {"key": "b", "text": "vynášet na hladinu partnera v nesnázích"},
+        {"key": "c", "text": "nahrazovat zvedací zařízení"},
+        {"key": "d", "text": "stabilizovat na hladině vztlak potápěče v bezvědomí"}
+      ],
+      "correct": "c",
+      "explanation": "Kompenzátorem vztlaku nelze nahrazovat zvedací zařízení."
+    },
+    {
+      "id": 28,
+      "category": "vystroj",
+      "question": "Každý potápěč musí být vybaven alternativním zdrojem:",
+      "options": [
+        {"key": "a", "text": "dýchacího média, tzn. záložní plicní automatikou, záložním druhým stupněm plicní automatiky (oktopus) apod., dále zařízením pro měření tlaku dýchacího média a přístroji pro určení hloubky a doby pobytu pod vodou nebo potápěčským počítačem"},
+        {"key": "b", "text": "měření teploty vody (záložním teploměrem)"},
+        {"key": "c", "text": "osvětlení (záložní svítilnou apod.)"},
+        {"key": "d", "text": "zaznamenání průběhu ponoru (fotoaparátem, kamerou apod.)"}
+      ],
+      "correct": "a",
+      "explanation": "Každý potápěč musí být vybaven alternativním zdrojem dýchacího média (oktopus), zařízením pro měření tlaku a přístroji pro určení hloubky a doby pobytu."
+    },
+    {
+      "id": 29,
+      "category": "vystroj",
+      "question": "Přístroji pro určení hloubky a doby pobytu pod vodou musí být vybaven:",
+      "options": [
+        {"key": "a", "text": "alespoň jeden z dvojice potápěčů"},
+        {"key": "b", "text": "každý potápěč"},
+        {"key": "c", "text": "každý potápěč při potápění do hloubek přes 10 m"},
+        {"key": "d", "text": "alespoň jeden z trojice potápěčů"}
+      ],
+      "correct": "b",
+      "explanation": "Přístroji pro určení hloubky a doby pobytu pod vodou musí být vybaven každý potápěč."
+    },
+    {
+      "id": 30,
+      "category": "vystroj",
+      "question": "Alternativním zdrojem dýchacího média, tzn. záložní plicní automatikou, záložním druhým stupněm plicní automatiky (oktopus) apod., dále zařízením pro měření tlaku dýchacího média a přístroji pro určení hloubky a doby pobytu pod vodou nebo potápěčským počítačem:",
+      "options": [
+        {"key": "a", "text": "musí být vybaven alespoň vždy jeden potápěč ve dvojici (případně trojici)"},
+        {"key": "b", "text": "musí být vybaven každý potápěč"},
+        {"key": "c", "text": "se potápěči vybavují dle svých možností a vlastního uvážení"},
+        {"key": "d", "text": "se potápěči vybavují pro ponory do větších hloubek než 10 m"}
+      ],
+      "correct": "b",
+      "explanation": "Každý potápěč musí být vybaven alternativním zdrojem dýchacího média a dalším uvedeným vybavením."
+    },
+    {
+      "id": 31,
+      "category": "vystroj",
+      "question": "Potápěči:",
+      "options": [
+        {"key": "a", "text": "průběžně udržují své potápěčské dovednosti a fyzickou kondici"},
+        {"key": "b", "text": "pro potápění pod ledem absolvují speciální kurz nebo školení"},
+        {"key": "c", "text": "používají alternativní zdroj dýchacího média, tzn. záložní plicní automatiku, záložní druhý stupeň plicní automatiky (oktopus) apod."},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Všechny uvedené odpovědi jsou správné - potápěči udržují kondici, pro led absolvují kurz a používají alternativní zdroj dýchacího média."
+    },
+    {
+      "id": 32,
+      "category": "vystroj",
+      "question": "Používání alternativního zdroje dýchacího média, tzn. záložní plicní automatiky, záložního druhého stupně plicní automatiky (oktopus) apod., dále zařízení pro měření tlaku dýchacího média a přístrojů pro určení hloubky a doby pobytu pod vodou nebo potápěčského počítače:",
+      "options": [
+        {"key": "a", "text": "se nedoporučuje"},
+        {"key": "b", "text": "se nedoporučuje při provádění potápěčského výcviku"},
+        {"key": "c", "text": "se důrazně doporučuje všem potápěčům"},
+        {"key": "d", "text": "se důrazně doporučuje při provádění potápěčského výcviku na kvalifikační stupně Potápěč CMAS P2 a Potápěč CMAS P3"}
+      ],
+      "correct": "c",
+      "explanation": "Používání alternativního zdroje dýchacího média a dalšího vybavení se důrazně doporučuje všem potápěčům."
+    },
+    {
+      "id": 33,
+      "category": "vystroj",
+      "question": "Potápěčská bóje se používá:",
+      "options": [
+        {"key": "a", "text": "při každém potápění"},
+        {"key": "b", "text": "pokud je to účelné"},
+        {"key": "c", "text": "pouze při potápění v chráněném vodním prostoru"},
+        {"key": "d", "text": "při potápění pod ledem"}
+      ],
+      "correct": "b",
+      "explanation": "Potápěčská bóje se používá pokud je to účelné."
+    },
+    {
+      "id": 34,
+      "category": "vystroj",
+      "question": "Potápěčská výstroj musí být:",
+      "options": [
+        {"key": "a", "text": "řádně upevněná, uspořádaná a používaná tak, aby nehrozilo nebezpečí jejího poškození a/nebo zachycení"},
+        {"key": "b", "text": "výrazně zbarvená pro snadnou lokalizaci potápěče"},
+        {"key": "c", "text": "schválená výcvikovou komisí SPČR"},
+        {"key": "d", "text": "schválená vedením příslušného potápěčského klubu"}
+      ],
+      "correct": "a",
+      "explanation": "Potápěčská výstroj musí být řádně upevněná, uspořádaná a používaná tak, aby nehrozilo nebezpečí jejího poškození a/nebo zachycení."
+    },
+    {
+      "id": 35,
+      "category": "vystroj",
+      "question": "Při nižší horizontální viditelnosti pod vodou než 2 m:",
+      "options": [
+        {"key": "a", "text": "se používá spojovací úvazek"},
+        {"key": "b", "text": "se doporučuje použití výkonné svítilny"},
+        {"key": "c", "text": "se používá stroboskop nebo chemické světlo"},
+        {"key": "d", "text": "je zapotřebí se potápění vyvarovat"}
+      ],
+      "correct": "a",
+      "explanation": "Při nižší horizontální viditelnosti pod vodou než 2 m se používá spojovací úvazek."
+    },
+    {
+      "id": 36,
+      "category": "vystroj",
+      "question": "Spojovací úvazek se používá:",
+      "options": [
+        {"key": "a", "text": "při nočním potápění"},
+        {"key": "b", "text": "při potápění na nádech v chráněném vodním prostoru"},
+        {"key": "c", "text": "při potápění do hloubek přes 30 m"},
+        {"key": "d", "text": "při nižší horizontální viditelnosti pod vodou než 2 m"}
+      ],
+      "correct": "d",
+      "explanation": "Spojovací úvazek se používá při nižší horizontální viditelnosti pod vodou než 2 m."
+    },
+    {
+      "id": 37,
+      "category": "vystroj",
+      "question": "Označte tvrzení, které neodpovídá Bezpečnostním směrnicím SPČR 2016:",
+      "options": [
+        {"key": "a", "text": "Potápěčská výstroj musí být řádně upevněná, uspořádaná a používaná tak, aby nehrozilo nebezpečí jejího poškození a/nebo zachycení."},
+        {"key": "b", "text": "Kompenzátorem vztlaku nelze nahrazovat zvedací zařízení."},
+        {"key": "c", "text": "Přístroji pro určení hloubky a doby pobytu pod vodou nebo potápěčským počítačem musí být vybaven každý potápěč."},
+        {"key": "d", "text": "Při nižší horizontální viditelnosti než 4 m se používá spojovací úvazek."}
+      ],
+      "correct": "d",
+      "explanation": "BS uvádí použití spojovacího úvazku při viditelnosti nižší než 2 m, ne 4 m."
+    },
+    {
+      "id": 38,
+      "category": "buddy-system",
+      "question": "Potápěči jsou obeznámeni:",
+      "options": [
+        {"key": "a", "text": "s předpokládaným vývojem počasí na minimálně dva dny"},
+        {"key": "b", "text": "s potápěčskými signály"},
+        {"key": "c", "text": "s výskytem vodních živočichů v místě potápění"},
+        {"key": "d", "text": "s kompletním mezinárodním vlajkovým kódem"}
+      ],
+      "correct": "b",
+      "explanation": "Potápěči jsou obeznámeni s potápěčskými signály."
+    },
+    {
+      "id": 39,
+      "category": "buddy-system",
+      "question": "Potápěči se potápějí v buddy týmech, tzn. ve dvojicích (v případě nutnosti v trojicích), ve kterých:",
+      "options": [
+        {"key": "a", "text": "předem podrobně proberou plán ponoru"},
+        {"key": "b", "text": "se navzájem seznámí s ovládáním své výstroje"},
+        {"key": "c", "text": "se dohodnou na vzájemné signalizaci"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "V buddy týmech potápěči proberou plán, seznámí se s výstrojí a dohodnou se na signalizaci - všechny odpovědi jsou správné."
+    },
+    {
+      "id": 40,
+      "category": "buddy-system",
+      "question": "Před zanořením provedou potápěči v buddy týmu partnerskou kontrolu (buddy check) zaměřenou:",
+      "options": [
+        {"key": "a", "text": "na řádné vedení svých potápěčských deníků"},
+        {"key": "b", "text": "na znalost aktuálního vývoje potápěčské techniky"},
+        {"key": "c", "text": "na správnost a dostatečnost vybavení dokumentační technikou (fotoaparát, kamera)"},
+        {"key": "d", "text": "na správnost a dostatečnost otevření ventilů lahví, tlaku v lahvích, připojení plnicích hadic kompenzátorů vztlaku a suchých obleků, funkci hlavních (primárních) i záložních 2. stupňů plicních automatik a umístění a upevnění zátěže"}
+      ],
+      "correct": "d",
+      "explanation": "Buddy check je zaměřen na kontrolu ventilů, tlaku, hadic, plicních automatik a zátěže."
+    },
+    {
+      "id": 41,
+      "category": "buddy-system",
+      "question": "Potápěči jsou obeznámeni:",
+      "options": [
+        {"key": "a", "text": "s používáním záložních hloubkoměrů"},
+        {"key": "b", "text": "se zkrácením tzv. nulových časů pro hloubky přes 18 m"},
+        {"key": "c", "text": "s prodloužením dekompresních časů u opakovaných ponorů"},
+        {"key": "d", "text": "s potápěčskými signály"}
+      ],
+      "correct": "d",
+      "explanation": "Potápěči jsou obeznámeni s potápěčskými signály."
+    },
+    {
+      "id": 42,
+      "category": "buddy-system",
+      "question": "Před potápěním se potápěči seznámí:",
+      "options": [
+        {"key": "a", "text": "s místními předpisy regulujícími potápěčskou činnost"},
+        {"key": "b", "text": "s přírodními podmínkami pro potápění"},
+        {"key": "c", "text": "se způsobem přivolání první pomoci a s umístěním barokomory"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Před potápěním se potápěči seznámí se všemi uvedenými informacemi - předpisy, podmínkami i způsobem přivolání pomoci."
+    },
+    {
+      "id": 43,
+      "category": "buddy-system",
+      "question": "Před potápěním se potápěči seznámí:",
+      "options": [
+        {"key": "a", "text": "s výskytem vodní fauny v místě potápění"},
+        {"key": "b", "text": "s historií potápění na dané lokalitě"},
+        {"key": "c", "text": "s umístěním zařízení pro plnění lahví dýchacích přístrojů"},
+        {"key": "d", "text": "s místními předpisy regulujícími potápěčskou činnost"}
+      ],
+      "correct": "d",
+      "explanation": "Před potápěním se potápěči seznámí s místními předpisy regulujícími potápěčskou činnost."
+    },
+    {
+      "id": 44,
+      "category": "buddy-system",
+      "question": "Před potápěním se potápěči seznámí:",
+      "options": [
+        {"key": "a", "text": "s technologií výroby tlakových lahví"},
+        {"key": "b", "text": "s místními předpisy regulujícími potápěčskou činnost"},
+        {"key": "c", "text": "s místními autoritami"},
+        {"key": "d", "text": "žádná odpověď není správná"}
+      ],
+      "correct": "b",
+      "explanation": "Před potápěním se potápěči seznámí s místními předpisy regulujícími potápěčskou činnost."
+    },
+    {
+      "id": 45,
+      "category": "buddy-system",
+      "question": "Před zanořením provedou potápěči v buddy týmu:",
+      "options": [
+        {"key": "a", "text": "partnerskou kontrolu (buddy check)"},
+        {"key": "b", "text": "úkony spojené s podrobným naplánováním ponoru"},
+        {"key": "c", "text": "vzájemnou kontrolu záznamů v potápěčských denících"},
+        {"key": "d", "text": "stručnou rekapitulaci zásad ochrany přírody"}
+      ],
+      "correct": "a",
+      "explanation": "Před zanořením provedou potápěči v buddy týmu partnerskou kontrolu (buddy check)."
+    },
+    {
+      "id": 46,
+      "category": "buddy-system",
+      "question": "Partnerská kontrola před zanořením (buddy check) nezahrnuje:",
+      "options": [
+        {"key": "a", "text": "kontrolu otevření ventilů lahví"},
+        {"key": "b", "text": "kontrolu připojení plnicích hadic kompenzátorů vztlaku a suchých obleků"},
+        {"key": "c", "text": "kontrolu umístění a upevnění dýchací trubice (šnorchlu)"},
+        {"key": "d", "text": "kontrolu umístění a upevnění zátěže"}
+      ],
+      "correct": "c",
+      "explanation": "Buddy check nezahrnuje kontrolu umístění a upevnění dýchací trubice (šnorchlu)."
+    },
+    {
+      "id": 47,
+      "category": "buddy-system",
+      "question": "V buddy týmech, tzn. ve dvojicích (v případně nutnosti v trojicích) se potápěči navzájem seznámí:",
+      "options": [
+        {"key": "a", "text": "s výsledky svých lékařských prohlídek"},
+        {"key": "b", "text": "s ovládáním své výstroje a dohodnou se na vzájemné signalizaci"},
+        {"key": "c", "text": "se svou kvalifikací, délkou potápěčské praxe, počtem uskutečněných ponorů a největší dosaženou hloubkou"},
+        {"key": "d", "text": "s posledním zápisem ve svých potápěčských denících"}
+      ],
+      "correct": "b",
+      "explanation": "V buddy týmech se potápěči seznámí s ovládáním výstroje a dohodnou se na vzájemné signalizaci."
+    },
+    {
+      "id": 48,
+      "category": "buddy-system",
+      "question": "Ve dvojicích (v případě nutnosti v trojicích):",
+      "options": [
+        {"key": "a", "text": "potápěči předem podrobně proberou plán ponoru"},
+        {"key": "b", "text": "se potápěči navzájem seznámí s ovládáním své výstroje"},
+        {"key": "c", "text": "se potápěči dohodnou na vzájemné signalizaci"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Všechny odpovědi jsou správné - ve dvojicích/trojicích potápěči proberou plán, seznámí se s výstrojí a dohodnou se na signalizaci."
+    },
+    {
+      "id": 49,
+      "category": "buddy-system",
+      "question": "Při ponoru i na hladině potápěči mezi sebou udržují:",
+      "options": [
+        {"key": "a", "text": "nepřetržitý vizuální kontakt"},
+        {"key": "b", "text": "takovou vzdálenost, aby si byli schopni vzájemně pomoci v případě problému"},
+        {"key": "c", "text": "vzdálenost odpovídající přibližně polovině horizontální viditelnosti pod vodou"},
+        {"key": "d", "text": "vzdálenost do 2 m"}
+      ],
+      "correct": "b",
+      "explanation": "Potápěči mezi sebou udržují takovou vzdálenost, aby si byli schopni vzájemně pomoci v případě problému."
+    },
+    {
+      "id": 50,
+      "category": "planovani-ponoru",
+      "question": "Potápěči nepřekračují hloubku:",
+      "options": [
+        {"key": "a", "text": "30 m"},
+        {"key": "b", "text": "40 m"},
+        {"key": "c", "text": "50 m"},
+        {"key": "d", "text": "60 m"}
+      ],
+      "correct": "b",
+      "explanation": "Potápěči nepřekračují hloubku 40 m."
+    },
+    {
+      "id": 51,
+      "category": "planovani-ponoru",
+      "question": "Označte tvrzení, které neodpovídá Bezpečnostním směrnicím SPČR 2016:",
+      "options": [
+        {"key": "a", "text": "Potápěči nepřekračují hloubku 30 m."},
+        {"key": "b", "text": "Potápěči jsou obeznámeni s potápěčskými signály."},
+        {"key": "c", "text": "Před potápěním se potápěči seznámí se způsobem přivolání první pomoci a s umístěním barokomory."},
+        {"key": "d", "text": "Při ponoru i na hladině potápěči mezi sebou udržují takovou vzdálenost, aby si byli schopni vzájemně pomoci v případě problému."}
+      ],
+      "correct": "a",
+      "explanation": "BS uvádí maximální hloubku 40 m, ne 30 m."
+    },
+    {
+      "id": 52,
+      "category": "planovani-ponoru",
+      "question": "Ponory se organizují tak, aby se při výstupu nemusela:",
+      "options": [
+        {"key": "a", "text": "vykonávat stupňovitá dekomprese"},
+        {"key": "b", "text": "vykonávat bezpečnostní zastávka"},
+        {"key": "c", "text": "používat dekompresní bójka"},
+        {"key": "d", "text": "používat obsluha na hladině"}
+      ],
+      "correct": "a",
+      "explanation": "Ponory se organizují tak, aby se při výstupu nemusela vykonávat stupňovitá dekomprese."
+    },
+    {
+      "id": 53,
+      "category": "planovani-ponoru",
+      "question": "Ponory:",
+      "options": [
+        {"key": "a", "text": "se zásadně organizují tak, aby nemuselo být použito doprovodné plavidlo"},
+        {"key": "b", "text": "se organizují tak, aby se při výstupu nemusela vykonávat stupňovitá dekomprese"},
+        {"key": "c", "text": "se organizují nejméně v pětičlenném týmu"},
+        {"key": "d", "text": "se zásadně organizují pod dohledem vedoucího potápěče nebo instruktora"}
+      ],
+      "correct": "b",
+      "explanation": "Ponory se organizují tak, aby se při výstupu nemusela vykonávat stupňovitá dekomprese."
+    },
+    {
+      "id": 54,
+      "category": "planovani-ponoru",
+      "question": "V případě, že stupňovitá dekomprese je při daném ponoru nevyhnutelná, je zapotřebí:",
+      "options": [
+        {"key": "a", "text": "zajistit přítomnost dekompresní komory s obsluhou"},
+        {"key": "b", "text": "zajistit přítomnost lékaře obeznámeného s potápěčskou problematikou"},
+        {"key": "c", "text": "organizovat jej tak, aby nemusela být vykonána více než jedna dekompresní zastávka"},
+        {"key": "d", "text": "organizovat jej tak, aby potápěč zůstal nejméně 6 hodin po vynoření pod dohledem lékaře nebo vedoucího potápěče"}
+      ],
+      "correct": "c",
+      "explanation": "Pokud je dekomprese nevyhnutelná, organizuje se ponor tak, aby nemusela být vykonána více než jedna dekompresní zastávka."
+    },
+    {
+      "id": 55,
+      "category": "planovani-ponoru",
+      "question": "Po ponoru se potápěči vyvarují (s ohledem na aktuální stav zbytkového dusíku):",
+      "options": [
+        {"key": "a", "text": "zvýšené fyzické námahy"},
+        {"key": "b", "text": "dehydratace"},
+        {"key": "c", "text": "zvětšování nadmořské výšky svého pobytu nebo letu letadlem"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Po ponoru se potápěči vyvarují zvýšené fyzické námahy, dehydratace i zvětšování nadmořské výšky - všechny odpovědi jsou správné."
+    },
+    {
+      "id": 56,
+      "category": "planovani-ponoru",
+      "question": "Potápěči:",
+      "options": [
+        {"key": "a", "text": "nejméně jednou za dva roky zajistí revizi svých plicních automatik"},
+        {"key": "b", "text": "nejméně jednou za rok zajistí testování tlakových lahví svých dýchacích přístrojů"},
+        {"key": "c", "text": "se vyvarují používání potápěčských počítačů při stanovení dekomprese"},
+        {"key": "d", "text": "se vyvarují zvýšené fyzické námahy po ponoru"}
+      ],
+      "correct": "d",
+      "explanation": "Potápěči se vyvarují zvýšené fyzické námahy po ponoru."
+    },
+    {
+      "id": 57,
+      "category": "planovani-ponoru",
+      "question": "Označte tvrzení, které neodpovídá Bezpečnostním směrnicím SPČR 2016:",
+      "options": [
+        {"key": "a", "text": "Potápěči nepřekračují hloubku 40 m."},
+        {"key": "b", "text": "Ponory se organizují tak, aby se při výstupu nemusela vykonávat stupňovitá dekomprese."},
+        {"key": "c", "text": "Po ponoru se potápěči vyvarují dehydratace."},
+        {"key": "d", "text": "V případě, že stupňovitá dekomprese je při daném ponoru nevyhnutelná, je zapotřebí organizovat jej tak, aby nemusely být vykonány více než dvě dekompresní zastávky."}
+      ],
+      "correct": "d",
+      "explanation": "BS uvádí maximálně jednu dekompresní zastávku, ne dvě."
+    },
+    {
+      "id": 58,
+      "category": "planovani-ponoru",
+      "question": "Potápěčům se důrazně doporučuje:",
+      "options": [
+        {"key": "a", "text": "před ponorem nepřijímat tekutiny (hydratace organizmu)"},
+        {"key": "b", "text": "po ponoru nepřijímat tekutiny (hydratace organizmu)"},
+        {"key": "c", "text": "před ponorem nezvětšovat nadmořskou výšku svého pobytu ani letět letadlem"},
+        {"key": "d", "text": "po ponoru nezvětšovat nadmořskou výšku svého pobytu ani letět letadlem"}
+      ],
+      "correct": "d",
+      "explanation": "Potápěčům se důrazně doporučuje po ponoru nezvětšovat nadmořskou výšku ani letět letadlem."
+    },
+    {
+      "id": 59,
+      "category": "planovani-ponoru",
+      "question": "Potápěči:",
+      "options": [
+        {"key": "a", "text": "se před potápěním seznámí s místními předpisy regulujícími potápěčskou činnost"},
+        {"key": "b", "text": "se před potápěním seznámí se způsobem přivolání první pomoci a s umístěním barokomory"},
+        {"key": "c", "text": "se vyvarují zvýšené fyzické námahy po ponoru"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Všechny uvedené odpovědi jsou správné."
+    },
+    {
+      "id": 60,
+      "category": "planovani-ponoru",
+      "question": "Potápěči:",
+      "options": [
+        {"key": "a", "text": "při ponoru i na hladině mezi sebou udržují takovou vzdálenost, aby si byli schopni vzájemně pomoci v případě problému"},
+        {"key": "b", "text": "nepřekračují hloubku 50 m"},
+        {"key": "c", "text": "před zanořením provedou partnerskou kontrolu zaměřenou na řádné vedení potápěčských deníků"},
+        {"key": "d", "text": "se vyvarují bezpečnostních zastávek u bezdekompresních ponorů"}
+      ],
+      "correct": "a",
+      "explanation": "Potápěči při ponoru i na hladině mezi sebou udržují takovou vzdálenost, aby si byli schopni vzájemně pomoci."
+    },
+    {
+      "id": 61,
+      "category": "organizace-akci",
+      "question": "Všichni účastníci potápěčské akce většího rozsahu musejí být podrobně seznámeni:",
+      "options": [
+        {"key": "a", "text": "s účelem a plánem akce"},
+        {"key": "b", "text": "s používanými signály"},
+        {"key": "c", "text": "s plánem činnosti v případě mimořádné situace"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Účastníci musí být seznámeni s účelem akce, signály i plánem pro mimořádné situace - všechny odpovědi jsou správné."
+    },
+    {
+      "id": 62,
+      "category": "organizace-akci",
+      "question": "Všichni účastníci potápěčské akce většího rozsahu musejí být podrobně seznámeni s účelem a plánem akce:",
+      "options": [
+        {"key": "a", "text": "nejméně 48 hodin před takovou akcí"},
+        {"key": "b", "text": "nejméně 24 hodiny před takovou akcí"},
+        {"key": "c", "text": "kdykoliv v průběhu takové akce"},
+        {"key": "d", "text": "při jejím zahájení"}
+      ],
+      "correct": "d",
+      "explanation": "Účastníci musí být seznámeni s účelem a plánem akce při jejím zahájení."
+    },
+    {
+      "id": 63,
+      "category": "organizace-akci",
+      "question": "S plánem činnosti v případě mimořádné situace na potápěčské akci většího rozsahu musejí být seznámeni:",
+      "options": [
+        {"key": "a", "text": "všichni držitelé kvalifikací od stupně Potápěč CMAS P2"},
+        {"key": "b", "text": "všichni účastníci"},
+        {"key": "c", "text": "účastníci starší 18 let"},
+        {"key": "d", "text": "účastníci starší 14 let"}
+      ],
+      "correct": "b",
+      "explanation": "S plánem činnosti v případě mimořádné situace musejí být seznámeni všichni účastníci."
+    },
+    {
+      "id": 64,
+      "category": "organizace-akci",
+      "question": "Na potápěčských akcích většího rozsahu a náročnějšího charakteru, u kterých zároveň hrozí nebezpečí vzniku dekompresní nemoci, je vhodná přítomnost:",
+      "options": [
+        {"key": "a", "text": "potápěčského instruktora s platným oprávněním"},
+        {"key": "b", "text": "potápěčského lékaře"},
+        {"key": "c", "text": "dekompresní komory a obsluhy seznámené s jejím používáním"},
+        {"key": "d", "text": "zařízení pro poskytování kyslíku a obsluhy seznámené s jeho používáním"}
+      ],
+      "correct": "d",
+      "explanation": "Na náročnějších akcích s rizikem DCS je vhodná přítomnost zařízení pro poskytování kyslíku a obsluhy."
+    },
+    {
+      "id": 65,
+      "category": "organizace-akci",
+      "question": "Přítomnost záložního dýchacího přístroje je vhodná:",
+      "options": [
+        {"key": "a", "text": "na potápěčských akcích většího rozsahu a náročnějšího charakteru"},
+        {"key": "b", "text": "na potápěčských akcích s více než 5 účastníky"},
+        {"key": "c", "text": "při potápění v chráněném vodním prostoru"},
+        {"key": "d", "text": "při potápění na nádech ve volné vodě"}
+      ],
+      "correct": "a",
+      "explanation": "Přítomnost záložního dýchacího přístroje je vhodná na potápěčských akcích většího rozsahu a náročnějšího charakteru."
+    },
+    {
+      "id": 66,
+      "category": "organizace-akci",
+      "question": "Na potápěčských akcích většího rozsahu a náročnějšího charakteru, u kterých zároveň hrozí nebezpečí vzniku dekompresní nemoci, je vhodná přítomnost:",
+      "options": [
+        {"key": "a", "text": "zdravotnického personálu"},
+        {"key": "b", "text": "zařízení pro poskytování kyslíku a obsluhy seznámené s jeho používáním"},
+        {"key": "c", "text": "vozidla záchranné služby"},
+        {"key": "d", "text": "doprovodného plavidla"}
+      ],
+      "correct": "b",
+      "explanation": "Je vhodná přítomnost zařízení pro poskytování kyslíku a obsluhy seznámené s jeho používáním."
+    },
+    {
+      "id": 67,
+      "category": "organizace-akci",
+      "question": "Při potápěčských akcích většího rozsahu je vhodné vybrat z řad účastníků akce:",
+      "options": [
+        {"key": "a", "text": "koordinátora, který dbá o plynulost přípravy k potápění"},
+        {"key": "b", "text": "vedoucího potápěče, který organizuje činnost potápěčů pod vodou"},
+        {"key": "c", "text": "zkušeného potápěče, který po ukončení potápěčské činnosti provede s jejími účastníky analýzu uskutečněných ponorů"},
+        {"key": "d", "text": "zapisovatele průběhu akce, který zároveň dbá o dodržení správného pořadí ponorů"}
+      ],
+      "correct": "b",
+      "explanation": "Při akcích většího rozsahu je vhodné vybrat vedoucího potápěče, který organizuje činnost potápěčů pod vodou."
+    },
+    {
+      "id": 68,
+      "category": "organizace-akci",
+      "question": "Vedoucí potápěč:",
+      "options": [
+        {"key": "a", "text": "musí být starší 21 let"},
+        {"key": "b", "text": "organizuje činnost potápěčů pod vodou"},
+        {"key": "c", "text": "musí být držitelem instruktorské kvalifikace"},
+        {"key": "d", "text": "žádná odpověď není správná"}
+      ],
+      "correct": "b",
+      "explanation": "Vedoucí potápěč organizuje činnost potápěčů pod vodou."
+    },
+    {
+      "id": 69,
+      "category": "organizace-akci",
+      "question": "Vedoucí potápěč:",
+      "options": [
+        {"key": "a", "text": "se vybírá z řad účastníků potápěčské akce většího rozsahu"},
+        {"key": "b", "text": "organizuje činnost potápěčů pod vodou"},
+        {"key": "c", "text": "musí být držitelem kvalifikace minimálně Potápěč CMAS P3"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Všechny odpovědi jsou správné - vedoucí potápěč se vybírá z účastníků, organizuje činnost pod vodou a musí mít min. P3."
+    },
+    {
+      "id": 70,
+      "category": "organizace-akci",
+      "question": "Vedoucí potápěč:",
+      "options": [
+        {"key": "a", "text": "může na dobu nezbytně nutnou zvýšit potápěčskou kvalifikaci účastníka(ů) akce"},
+        {"key": "b", "text": "organizuje průběh potápěčské akce většího rozsahu s výjimkou činnosti potápěčů pod vodou"},
+        {"key": "c", "text": "organizuje činnost potápěčů pod vodou"},
+        {"key": "d", "text": "může ponechat organizaci činnosti potápěčů pod vodou na kolektivním vedení"}
+      ],
+      "correct": "c",
+      "explanation": "Vedoucí potápěč organizuje činnost potápěčů pod vodou."
+    },
+    {
+      "id": 71,
+      "category": "organizace-akci",
+      "question": "Označte tvrzení, které neodpovídá Bezpečnostním směrnicím SPČR 2016:",
+      "options": [
+        {"key": "a", "text": "Vedoucí potápěč se vybírá z řad účastníků potápěčské akce většího rozsahu."},
+        {"key": "b", "text": "Vedoucí potápěč organizuje činnost potápěčů pod vodou."},
+        {"key": "c", "text": "Vedoucí potápěč musí být držitelem kvalifikace minimálně Potápěč CMAS P2."},
+        {"key": "d", "text": "Vedoucí potápěč musí být držitelem kvalifikace minimálně Potápěč CMAS P3."}
+      ],
+      "correct": "c",
+      "explanation": "BS uvádí, že vedoucí potápěč musí mít kvalifikaci minimálně P3, ne P2."
+    },
+    {
+      "id": 72,
+      "category": "organizace-akci",
+      "question": "Vedoucí potápěč se vybírá z řad:",
+      "options": [
+        {"key": "a", "text": "držitelů kvalifikace minimálně Potápěč CMAS P2 s příslušnou specializací"},
+        {"key": "b", "text": "instruktorů CMAS/SPČR s platným oprávněním"},
+        {"key": "c", "text": "účastníků potápěčské akce většího rozsahu"},
+        {"key": "d", "text": "předsedů potápěčských klubů SČP nebo SPMS"}
+      ],
+      "correct": "c",
+      "explanation": "Vedoucí potápěč se vybírá z řad účastníků potápěčské akce většího rozsahu."
+    },
+    {
+      "id": 73,
+      "category": "organizace-akci",
+      "question": "Vybrat z řad účastníků vedoucího potápěče je vhodné:",
+      "options": [
+        {"key": "a", "text": "při snížení viditelnosti pod vodou na méně než 2 m"},
+        {"key": "b", "text": "při potápění ve větší vzdálenosti od břehu"},
+        {"key": "c", "text": "při potápěčských akcích většího rozsahu"},
+        {"key": "d", "text": "v případech, kdy se potápí 4 nebo více potápěčů najednou"}
+      ],
+      "correct": "c",
+      "explanation": "Vybrat vedoucího potápěče je vhodné při potápěčských akcích většího rozsahu."
+    },
+    {
+      "id": 74,
+      "category": "organizace-akci",
+      "question": "Vedoucí potápěč musí být:",
+      "options": [
+        {"key": "a", "text": "držitelem kvalifikace minimálně Potápěč CMAS P2"},
+        {"key": "b", "text": "držitelem kvalifikace minimálně Potápěč CMAS P3"},
+        {"key": "c", "text": "držitelem kvalifikace minimálně Potápěč CMAS P1 se specializací pro potápění s umělými směsmi"},
+        {"key": "d", "text": "držitelem kvalifikace minimálně Potápěč CMAS P2 se specializací pro potápění s regeneračními dýchacími přístroji (rebreathery)"}
+      ],
+      "correct": "b",
+      "explanation": "Vedoucí potápěč musí být držitelem kvalifikace minimálně Potápěč CMAS P3."
+    },
+    {
+      "id": 75,
+      "category": "organizace-akci",
+      "question": "Všichni účastníci potápěčské akce většího rozsahu musí být při jejím zahájení seznámeni:",
+      "options": [
+        {"key": "a", "text": "s potápěčskou historií vedoucího potápěče"},
+        {"key": "b", "text": "s jejím významem individuálně pro každého účastníka"},
+        {"key": "c", "text": "s jejím významem pro rozvoj potápění"},
+        {"key": "d", "text": "s účelem a plánem akce, používanými signály a s plánem činnosti v případě mimořádné situace"}
+      ],
+      "correct": "d",
+      "explanation": "Účastníci musí být seznámeni s účelem a plánem akce, signály a plánem pro mimořádné situace."
+    },
+    {
+      "id": 76,
+      "category": "obecne-smernice",
+      "question": "Potápěči:",
+      "options": [
+        {"key": "a", "text": "podle svých možností dbají o ochranu životního prostředí"},
+        {"key": "b", "text": "průběžně udržují své potápěčské dovednosti a fyzickou kondici"},
+        {"key": "c", "text": "dodržují omezující podmínky pro získaný kvalifikační stupeň"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Všechny odpovědi jsou správné - potápěči dbají o životní prostředí, udržují kondici a dodržují omezení dle kvalifikace."
+    },
+    {
+      "id": 77,
+      "category": "zpusobilost",
+      "question": "Potápěči se zásadně vyvarují potápění:",
+      "options": [
+        {"key": "a", "text": "jsou-li jejich fyzické a/nebo psychické schopnosti sníženy"},
+        {"key": "b", "text": "jsou-li tlakové lahve jejich dýchacích přístrojů naplněny méně než na 80 % maximálního provozního tlaku"},
+        {"key": "c", "text": "nejsou-li vybaveni záložním hloubkoměrem nebo záložním potápěčským počítačem"},
+        {"key": "d", "text": "nejsou-li vybaveni dýchací trubicí (šnorchlem)"}
+      ],
+      "correct": "a",
+      "explanation": "Potápěči se zásadně vyvarují potápění, jsou-li jejich fyzické a/nebo psychické schopnosti sníženy."
+    },
+    {
+      "id": 78,
+      "category": "vystroj",
+      "question": "Potápěčská výstroj musí být:",
+      "options": [
+        {"key": "a", "text": "řádně upevněná"},
+        {"key": "b", "text": "řádně uspořádaná"},
+        {"key": "c", "text": "používaná tak, aby nehrozilo nebezpečí jejího poškození a/nebo zachycení"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Všechny odpovědi jsou správné - výstroj musí být řádně upevněná, uspořádaná a používaná bezpečně."
+    },
+    {
+      "id": 79,
+      "category": "vystroj",
+      "question": "Zařízením pro měření tlaku dýchacího média musí být vybaven:",
+      "options": [
+        {"key": "a", "text": "každý potápěč"},
+        {"key": "b", "text": "každý druhý potápěč (v trojčlenném buddy týmu dva ze tří potápěčů)"},
+        {"key": "c", "text": "vedoucí ponoru"},
+        {"key": "d", "text": "instruktor při potápěčském výcviku v hloubkách přes 10 m"}
+      ],
+      "correct": "a",
+      "explanation": "Zařízením pro měření tlaku dýchacího média musí být vybaven každý potápěč."
+    },
+    {
+      "id": 80,
+      "category": "buddy-system",
+      "question": "Při ponoru a na hladině potápěči mezi sebou udržují takovou vzdálenost:",
+      "options": [
+        {"key": "a", "text": "aby si byli schopni vzájemně pomoci v případě problému"},
+        {"key": "b", "text": "aby byli schopni si spolehlivě přečíst vzájemné vzkazy na poznámkových tabulkách"},
+        {"key": "c", "text": "která nepřekračuje horizontální viditelnost pod vodou"},
+        {"key": "d", "text": "která nepřekračuje jednu čtvrtinu horizontální viditelnosti pod vodou"}
+      ],
+      "correct": "a",
+      "explanation": "Potápěči udržují takovou vzdálenost, aby si byli schopni vzájemně pomoci v případě problému."
+    },
+    {
+      "id": 81,
+      "category": "doprovodne-plavidlo",
+      "question": "Pro zajištění potápění ve větší vzdálenosti od břehu se používá:",
+      "options": [
+        {"key": "a", "text": "dýchací přístroj s kapacitou zásobníku nejméně 4 m3"},
+        {"key": "b", "text": "kompenzátor vztlaku typu křídlo"},
+        {"key": "c", "text": "dekompresní komora s obsluhou"},
+        {"key": "d", "text": "vhodné doprovodné plavidlo"}
+      ],
+      "correct": "d",
+      "explanation": "Pro zajištění potápění ve větší vzdálenosti od břehu se používá vhodné doprovodné plavidlo."
+    },
+    {
+      "id": 82,
+      "category": "doprovodne-plavidlo",
+      "question": "Vhodné doprovodné plavidlo se používá:",
+      "options": [
+        {"key": "a", "text": "pro potápění skupiny potápěčů"},
+        {"key": "b", "text": "pro potápění ve větší vzdálenosti od břehu"},
+        {"key": "c", "text": "pro potápění s dýchacím přístrojem"},
+        {"key": "d", "text": "pro potápění na nádech"}
+      ],
+      "correct": "b",
+      "explanation": "Vhodné doprovodné plavidlo se používá pro potápění ve větší vzdálenosti od břehu."
+    },
+    {
+      "id": 83,
+      "category": "doprovodne-plavidlo",
+      "question": "Dobře viditelná vlajka A (Alpha) mezinárodního vlajkového kódu musí na doprovodném plavidle být vystavena:",
+      "options": [
+        {"key": "a", "text": "nepřetržitě"},
+        {"key": "b", "text": "do 10 minut po vyplutí"},
+        {"key": "c", "text": "po celou dobu plavby"},
+        {"key": "d", "text": "po dobu ponoru potápěčů"}
+      ],
+      "correct": "d",
+      "explanation": "Vlajka A musí být na doprovodném plavidle vystavena po dobu ponoru potápěčů."
+    },
+    {
+      "id": 84,
+      "category": "doprovodne-plavidlo",
+      "question": "Po dobu ponoru potápěčů musí na doprovodném plavidle být vystavena dobře viditelná:",
+      "options": [
+        {"key": "a", "text": "vlajka SPČR"},
+        {"key": "b", "text": "vlajka A (Alpha) mezinárodního vlajkového kódu"},
+        {"key": "c", "text": "vlajka CMAS, případně vlajka jiné mezinárodní potápěčské organizace"},
+        {"key": "d", "text": "vlajka SPČR doplněná vlajkou CMAS, případně vlajkou jiné mezinárodní potápěčské organizace"}
+      ],
+      "correct": "b",
+      "explanation": "Po dobu ponoru musí být vystavena vlajka A (Alpha) mezinárodního vlajkového kódu."
+    },
+    {
+      "id": 85,
+      "category": "doprovodne-plavidlo",
+      "question": "Dobře viditelná vlajka A (Alpha) mezinárodního vlajkového kódu musí být vystavena:",
+      "options": [
+        {"key": "a", "text": "na doprovodném plavidle od vyplutí do přistání"},
+        {"key": "b", "text": "na doprovodném plavidle po dobu ponoru potápěčů"},
+        {"key": "c", "text": "na dekompresní bójce zejména při potápění s dýchacím přístrojem"},
+        {"key": "d", "text": "na potápěčské bóji zejména při potápění na nádech"}
+      ],
+      "correct": "b",
+      "explanation": "Vlajka A musí být vystavena na doprovodném plavidle po dobu ponoru potápěčů."
+    },
+    {
+      "id": 86,
+      "category": "doprovodne-plavidlo",
+      "question": "Na palubě doprovodného plavidla se nachází:",
+      "options": [
+        {"key": "a", "text": "přílivové tabulky"},
+        {"key": "b", "text": "osoba pověřená pozorováním okolí a záložní motor"},
+        {"key": "c", "text": "obsluha potřebná k manipulaci s plavidlem a záložní dýchací přístroj"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "c",
+      "explanation": "Na palubě doprovodného plavidla se nachází obsluha potřebná k manipulaci s plavidlem a záložní dýchací přístroj."
+    },
+    {
+      "id": 87,
+      "category": "doprovodne-plavidlo",
+      "question": "Na palubě doprovodného plavidla se nachází:",
+      "options": [
+        {"key": "a", "text": "záložní zdroj pohonu"},
+        {"key": "b", "text": "záložní dýchací přístroj"},
+        {"key": "c", "text": "záložní maska, ploutve a dýchací trubice"},
+        {"key": "d", "text": "žádná odpověď není správná"}
+      ],
+      "correct": "b",
+      "explanation": "Na palubě doprovodného plavidla se nachází záložní dýchací přístroj."
+    },
+    {
+      "id": 88,
+      "category": "doprovodne-plavidlo",
+      "question": "Označte tvrzení, které neodpovídá Bezpečnostním směrnicím SPČR 2016:",
+      "options": [
+        {"key": "a", "text": "Pro zajištění potápění ve větší vzdálenosti od břehu se používá vhodné doprovodné plavidlo."},
+        {"key": "b", "text": "Po dobu ponoru potápěčů musí na doprovodném plavidle být vystavena dobře viditelná vlajka A (alpha) mezinárodního vlajkového kódu."},
+        {"key": "c", "text": "Na palubě doprovodného plavidla se nachází obsluha potřebná k manipulaci s plavidlem a záložní dýchací přístroj."},
+        {"key": "d", "text": "Na palubě doprovodného plavidla se nachází námořní mapa, přílivové tabulky a záložní motor."}
+      ],
+      "correct": "d",
+      "explanation": "BS neuvádí požadavek na námořní mapu, přílivové tabulky a záložní motor na palubě."
+    },
+    {
+      "id": 89,
+      "category": "doprovodne-plavidlo",
+      "question": "Vyžaduje-li situace použití motoru k pohonu doprovodného plavidla během ponoru:",
+      "options": [
+        {"key": "a", "text": "je nutno plout tak, aby nedošlo k ohrožení potápěčů"},
+        {"key": "b", "text": "je nutno plout tak, aby nedošlo k přemístění plavidla do plavební dráhy"},
+        {"key": "c", "text": "je nutno použít vesla nebo pádla"},
+        {"key": "d", "text": "je nutno se takové činnosti zásadně vyvarovat"}
+      ],
+      "correct": "a",
+      "explanation": "Při použití motoru během ponoru je nutno plout tak, aby nedošlo k ohrožení potápěčů."
+    },
+    {
+      "id": 90,
+      "category": "doprovodne-plavidlo",
+      "question": "Použití motoru k pohonu doprovodného plavidla během ponoru:",
+      "options": [
+        {"key": "a", "text": "vede vždy k ohrožení potápěčů, proto je zásadně nepřípustné"},
+        {"key": "b", "text": "je přípustné kdykoliv"},
+        {"key": "c", "text": "je přípustné, vyžaduje-li to situace; přitom je nutno plout tak, aby nedošlo k ohrožení potápěčů"},
+        {"key": "d", "text": "je přípustné do 10 minut od zanoření"}
+      ],
+      "correct": "c",
+      "explanation": "Použití motoru je přípustné, vyžaduje-li to situace, přitom je nutno plout tak, aby nedošlo k ohrožení potápěčů."
+    },
+    {
+      "id": 91,
+      "category": "doprovodne-plavidlo",
+      "question": "Vyžaduje-li situace použití motoru k pohonu doprovodného plavidla během ponoru, je nutno:",
+      "options": [
+        {"key": "a", "text": "nahradit jej vesly (pádly)"},
+        {"key": "b", "text": "plout tak, aby nedošlo k ohrožení potápěčů"},
+        {"key": "c", "text": "plout pomalu a pouze v přímém směru"},
+        {"key": "d", "text": "setrvat s plavidlem na místě"}
+      ],
+      "correct": "b",
+      "explanation": "Je nutno plout tak, aby nedošlo k ohrožení potápěčů."
+    },
+    {
+      "id": 92,
+      "category": "doprovodne-plavidlo",
+      "question": "Malými čluny není bezpečné vyplouvat na moře a na velké vodní plochy při stavu hladiny způsobené větrem o síle:",
+      "options": [
+        {"key": "a", "text": "3 a více Bf"},
+        {"key": "b", "text": "4 a více Bf"},
+        {"key": "c", "text": "5 a více Bf"},
+        {"key": "d", "text": "žádná odpověď není správná"}
+      ],
+      "correct": "b",
+      "explanation": "Malými čluny není bezpečné vyplouvat při stavu hladiny způsobené větrem o síle 4 a více Bf."
+    },
+    {
+      "id": 93,
+      "category": "doprovodne-plavidlo",
+      "question": "Malými čluny není bezpečné vyplouvat na moře a na velké vodní plochy:",
+      "options": [
+        {"key": "a", "text": "bez ohlášení plavby přístavnímu úřadu (kapitanátu)"},
+        {"key": "b", "text": "bez záložní pohonné jednotky"},
+        {"key": "c", "text": "při stavu hladiny způsobeném větrem o síle 4 a více Bf"},
+        {"key": "d", "text": "při stavu hladiny způsobeném větrem o síle 2 a více Bf"}
+      ],
+      "correct": "c",
+      "explanation": "Malými čluny není bezpečné vyplouvat při stavu hladiny způsobeném větrem o síle 4 a více Bf."
+    },
+    {
+      "id": 94,
+      "category": "doprovodne-plavidlo",
+      "question": "Doprovodné plavidlo:",
+      "options": [
+        {"key": "a", "text": "se používá pro zajištění potápění ve větší vzdálenosti od břehu"},
+        {"key": "b", "text": "musí po dobu ponoru potápěčů mít vystavenu dobře viditelnou vlajku A (alpha) mezinárodního vlajkového kódu"},
+        {"key": "c", "text": "má na palubě záložní dýchací přístroj"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Všechny odpovědi jsou správné - doprovodné plavidlo se používá pro potápění ve vzdálenosti od břehu, má vlajku A a záložní přístroj."
+    },
+    {
+      "id": 95,
+      "category": "nouzove-situace",
+      "question": "Dojde-li pod vodou ke ztrátě kontaktu s partnerem (partnery):",
+      "options": [
+        {"key": "a", "text": "omezí potápěči vzájemné hledání na dobu přibližně 30 sekund a vystoupí na hladinu za dodržení pravidel bezpečného výstupu"},
+        {"key": "b", "text": "omezí potápěči vzájemné hledání na dobu přibližně 5 minut a vystoupí na hladinu za dodržení pravidel bezpečného výstupu"},
+        {"key": "c", "text": "je nutno hledat partnera (partnery) do poklesu tlaku v zásobníku dýchacího média na hranici rezervy"},
+        {"key": "d", "text": "je nutno zahájit okamžitý nouzový výstup na hladinu"}
+      ],
+      "correct": "a",
+      "explanation": "Při ztrátě kontaktu s partnerem se hledání omezí na cca 30 sekund a pak bezpečný výstup na hladinu."
+    },
+    {
+      "id": 96,
+      "category": "nouzove-situace",
+      "question": "Dojde-li pod vodou ke ztrátě kontaktu s partnerem (partnery):",
+      "options": [
+        {"key": "a", "text": "omezí potápěči vzájemné hledání na dobu přibližně 30 sekund a v případě, že nedošlo k obnovení kontaktu, pokračují v ponoru podle původního plánu"},
+        {"key": "b", "text": "omezí potápěči vzájemné hledání na dobu přibližně 30 sekund a vystoupí na hladinu za dodržení pravidel bezpečného výstupu"},
+        {"key": "c", "text": "je nutné okamžité vynoření rychlostí do 10 m/min"},
+        {"key": "d", "text": "je nutné okamžité vynoření rychlostí do 20 m/min"}
+      ],
+      "correct": "b",
+      "explanation": "Při ztrátě kontaktu omezit hledání na cca 30 sekund a vystoupit na hladinu za dodržení pravidel bezpečného výstupu."
+    },
+    {
+      "id": 97,
+      "category": "nouzove-situace",
+      "question": "Označte tvrzení, které neodpovídá Bezpečnostním směrnicím SPČR 2016:",
+      "options": [
+        {"key": "a", "text": "Vyžaduje-li situace použití motoru k pohonu doprovodného plavidla během ponoru, je nutno plout tak, aby nedošlo k ohrožení potápěčů."},
+        {"key": "b", "text": "Malými čluny není bezpečné vyplouvat na moře a na velké vodní plochy při stavu hladiny způsobené větrem o síle 4 a více Bf."},
+        {"key": "c", "text": "Dojde-li pod vodou ke ztrátě kontaktu s partnerem, omezí potápěči vzájemné hledání na dobu přibližně 3 – 5 minut a vystoupí na hladinu za dodržení pravidel bezpečného výstupu."},
+        {"key": "d", "text": "V případě zdravotních potíží po ponoru je postiženému nutno poskytnout co nejrychleji první pomoc, podávat kyslík (pokud je to účelné a je k dispozici), zajistit odbornou zdravotnickou pomoc, případně zajistit léčbu v dekompresní komoře."}
+      ],
+      "correct": "c",
+      "explanation": "BS uvádí omezení hledání na cca 30 sekund, ne 3-5 minut."
+    },
+    {
+      "id": 98,
+      "category": "nouzove-situace",
+      "question": "V případě zdravotních potíží po ponoru je nutno:",
+      "options": [
+        {"key": "a", "text": "s postiženým provést co nejrychleji opětovné zanoření k opravné dekompresní proceduře"},
+        {"key": "b", "text": "nejdříve vyhodnotit záznam z potápěčského počítače postiženého"},
+        {"key": "c", "text": "postiženému poskytnout co nejrychleji první pomoc"},
+        {"key": "d", "text": "aby vedoucí potápěč s postiženým sepsal protokol o nehodě"}
+      ],
+      "correct": "c",
+      "explanation": "V případě zdravotních potíží je nutno postiženému poskytnout co nejrychleji první pomoc."
+    },
+    {
+      "id": 99,
+      "category": "nouzove-situace",
+      "question": "V případě zdravotních potíží po ponoru je postiženému nutno:",
+      "options": [
+        {"key": "a", "text": "podávat léky proti bolesti (analgetika)"},
+        {"key": "b", "text": "podávat kyslík (pokud je to účelné a je k dispozici)"},
+        {"key": "c", "text": "zajistit okamžitý převoz do domácího prostředí"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "b",
+      "explanation": "V případě zdravotních potíží je nutno podávat kyslík (pokud je to účelné a je k dispozici)."
+    },
+    {
+      "id": 100,
+      "category": "nouzove-situace",
+      "question": "V případě zdravotních potíží po ponoru je nutno:",
+      "options": [
+        {"key": "a", "text": "postiženého neprodleně umístit do dekompresní komory"},
+        {"key": "b", "text": "postiženému poskytnout co nejrychleji první pomoc, podávat kyslík (pokud je to účelné a je k dispozici), zajistit odbornou zdravotnickou pomoc, případně zajistit léčbu v dekompresní komoře"},
+        {"key": "c", "text": "zahájit ohleduplný převoz postiženého do nejbližšího zdravotnického zařízení"},
+        {"key": "d", "text": "vyčkat příjezdu lékaře"}
+      ],
+      "correct": "b",
+      "explanation": "Je nutno poskytnout první pomoc, podávat kyslík, zajistit zdravotnickou pomoc, případně léčbu v dekompresní komoře."
+    }
+  ]
+}

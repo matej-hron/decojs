@@ -1,0 +1,1306 @@
+{
+  "title": "Výcvikové směrnice - Zkušební testy SPČR 2018",
+  "description": "Zkušební otázky z Výcvikových směrnic SPČR 2016 pro potápěče",
+  "questions": [
+    {
+      "id": 1,
+      "category": "obecna-pravidla",
+      "question": "Potápěčské kvalifikační stupně Potápěč s doprovodem, Potápěč Junior SPČR, Potápěč CMAS P*, Potápěč CMAS P**, Potápěč CMAS P*** a instruktorské kvalifikační stupně Instruktor CMAS I*, Instruktor CMAS I** a Instruktor CMAS I*** mohou být uděleny:",
+      "options": [
+        {"key": "a", "text": "po úspěšném absolvování nejméně 80 % úkonů praktického výcviku předepsaných těmito směrnicemi"},
+        {"key": "b", "text": "pouze členu organizace CMAS"},
+        {"key": "c", "text": "potápěčské kvalifikační stupně každému občanu ČR, instruktorské kvalifikační stupně pouze předsedovi a/nebo místopředsedovi potápěčského klubu SČP nebo SPMS"},
+        {"key": "d", "text": "potápěčské od věku 18 let, instruktorské od 21 let"}
+      ],
+      "correct": "b",
+      "explanation": "Kvalifikační stupně mohou být uděleny pouze členu organizace CMAS."
+    },
+    {
+      "id": 2,
+      "category": "obecna-pravidla",
+      "question": "Pro Úvod do potápění, pro specializační kurzy CMAS/SPČR a pro potápěčský výcvik dětí:",
+      "options": [
+        {"key": "a", "text": "platí samostatné směrnice"},
+        {"key": "b", "text": "platí právo instruktora zvolit rozsah výcviku dle vyspělosti cvičenců"},
+        {"key": "c", "text": "není stanoven závazný standard"},
+        {"key": "d", "text": "není potřebná instruktorská kvalifikace"}
+      ],
+      "correct": "a",
+      "explanation": "Pro Úvod do potápění, specializační kurzy a výcvik dětí platí samostatné směrnice."
+    },
+    {
+      "id": 3,
+      "category": "obecna-pravidla",
+      "question": "Poskytovatelem výcviku na kvalifikační stupně uvedené ve VS SPČR 2016 mohou být:",
+      "options": [
+        {"key": "a", "text": "SPČR, členské svazy SPČR, kluby registrované těmito členskými svazy, instruktoři SPČR a právnické či fyzické osoby pověřené příslušným členským svazem"},
+        {"key": "b", "text": "pouze SPČR a jeho členské svazy (SČP a SPMS)"},
+        {"key": "c", "text": "pouze členské svazy SPČR a kluby registrované těmito členskými svazy"},
+        {"key": "d", "text": "pouze instruktoři SPČR"}
+      ],
+      "correct": "a",
+      "explanation": "Poskytovatelem výcviku mohou být SPČR, členské svazy, registrované kluby, instruktoři SPČR a pověřené osoby."
+    },
+    {
+      "id": 4,
+      "category": "obecna-pravidla",
+      "question": "Zájemce o účast ve výcviku musí předložit:",
+      "options": [
+        {"key": "a", "text": "doklad o dosaženém vzdělání"},
+        {"key": "b", "text": "psychologický posudek"},
+        {"key": "c", "text": "vlastní potápěčskou výstroj"},
+        {"key": "d", "text": "platné lékařské potvrzení své zdravotní způsobilosti k potápění"}
+      ],
+      "correct": "d",
+      "explanation": "Zájemce o účast ve výcviku musí předložit platné lékařské potvrzení své zdravotní způsobilosti k potápění."
+    },
+    {
+      "id": 5,
+      "category": "obecna-pravidla",
+      "question": "Účast zájemce mladšího 18 let ve výcviku je možná pouze s písemným souhlasem:",
+      "options": [
+        {"key": "a", "text": "ostatních účastníků výcviku"},
+        {"key": "b", "text": "instruktora provádějícího výcvik"},
+        {"key": "c", "text": "libovolného instruktora SPČR s kvalifikací nejméně Instruktor CMAS I2"},
+        {"key": "d", "text": "zákonného zástupce tohoto zájemce"}
+      ],
+      "correct": "d",
+      "explanation": "Účast zájemce mladšího 18 let ve výcviku je možná pouze s písemným souhlasem zákonného zástupce."
+    },
+    {
+      "id": 6,
+      "category": "obecna-pravidla",
+      "question": "Při výcviku musí být dodržována:",
+      "options": [
+        {"key": "a", "text": "ustanovení Bezpečnostních směrnic SPČR týkající se organizace potápění"},
+        {"key": "b", "text": "ustanovení Bezpečnostních směrnic SPČR týkající se potápěčské výstroje"},
+        {"key": "c", "text": "všechna ustanovení Bezpečnostních směrnic SPČR"},
+        {"key": "d", "text": "ta ustanovení Bezpečnostních směrnic SPČR, ve kterých se výslovně hovoří o výcviku"}
+      ],
+      "correct": "c",
+      "explanation": "Při výcviku musí být dodržována všechna ustanovení Bezpečnostních směrnic SPČR."
+    },
+    {
+      "id": 7,
+      "category": "obecna-pravidla",
+      "question": "Vědomosti uchazečů o potápěčské kvalifikační stupně mohou být posuzovány:",
+      "options": [
+        {"key": "a", "text": "pouze formou závěrečných zkoušek"},
+        {"key": "b", "text": "buď v průběhu výcviku, nebo formou závěrečných zkoušek, písemně a/nebo ústně"},
+        {"key": "c", "text": "buď v průběhu výcviku, nebo formou závěrečných zkoušek, a to vždy písemně"},
+        {"key": "d", "text": "pouze v průběhu výcviku, a to vždy ústně"}
+      ],
+      "correct": "b",
+      "explanation": "Vědomosti mohou být posuzovány v průběhu výcviku nebo formou závěrečných zkoušek, písemně a/nebo ústně."
+    },
+    {
+      "id": 8,
+      "category": "obecna-pravidla",
+      "question": "Vědomosti uchazečů o potápěčské kvalifikační stupně mohou být posuzovány:",
+      "options": [
+        {"key": "a", "text": "písemně a/nebo ústně"},
+        {"key": "b", "text": "jen písemně"},
+        {"key": "c", "text": "jen ústně"},
+        {"key": "d", "text": "jen formou závěrečných zkoušek písemně a/nebo ústně"}
+      ],
+      "correct": "a",
+      "explanation": "Vědomosti mohou být posuzovány písemně a/nebo ústně."
+    },
+    {
+      "id": 9,
+      "category": "obecna-pravidla",
+      "question": "Posouzení dovedností uchazečů o potápěčské kvalifikační stupně musí provést:",
+      "options": [
+        {"key": "a", "text": "předseda příslušného potápěčského klubu za asistence instruktora"},
+        {"key": "b", "text": "instruktor, který kvalifikační stupeň uchazeči udělí"},
+        {"key": "c", "text": "nejméně tříčlenná zkušební komise jmenovaná výcvikovou komisí SPČR"},
+        {"key": "d", "text": "nejméně tříčlenná zkušební komise jmenovaná prezidiem SČP nebo SPMS"}
+      ],
+      "correct": "b",
+      "explanation": "Posouzení dovedností musí provést instruktor, který kvalifikační stupeň uchazeči udělí."
+    },
+    {
+      "id": 10,
+      "category": "obecna-pravidla",
+      "question": "Dovednosti uchazečů o potápěčské kvalifikační stupně mohou být posuzovány buď v průběhu výcviku, nebo formou závěrečných zkoušek, avšak zásadně:",
+      "options": [
+        {"key": "a", "text": "před nejméně tříčlennou zkušební komisí"},
+        {"key": "b", "text": "před pověřeným členem prezidia SČP nebo SPMS"},
+        {"key": "c", "text": "musí být splněny všechny požadavky na příslušný kvalifikační stupeň"},
+        {"key": "d", "text": "musí být splněna alespoň nadpoloviční většina požadavků na příslušný kvalifikační stupeň"}
+      ],
+      "correct": "c",
+      "explanation": "Musí být splněny všechny požadavky na příslušný kvalifikační stupeň."
+    },
+    {
+      "id": 11,
+      "category": "obecna-pravidla",
+      "question": "Udělení kvalifikačního stupně sestává:",
+      "options": [
+        {"key": "a", "text": "z písemného (příp. elektronického) potvrzení, jehož kopii instruktor do 10 pracovních dnů od udělení kvalifikačního stupně odešle prezidiu příslušného členského svazu SPČR"},
+        {"key": "b", "text": "z vystavení příslušné kvalifikační karty na jméno držitele kvalifikace; na žádost držitele kvalifikace je možné rovněž potvrdit udělení kvalifikačního stupně do jeho potápěčského průkazu s nalepenou fotografií a řádně vyplněnými osobními údaji"},
+        {"key": "c", "text": "z potvrzení o udělení kvalifikačního stupně do potápěčského průkazu s nalepenou fotografií a řádně vyplněnými osobními údaji držitele kvalifikace; na žádost držitele kvalifikace je možné zajistit rovněž vystavení příslušné kvalifikační karty"},
+        {"key": "d", "text": "z vystavení příslušné kvalifikační karty na jméno držitele kvalifikace a z potvrzení o udělení kvalifikačního stupně do potápěčského průkazu s nalepenou fotografií a řádně vyplněnými osobními údaji držitele kvalifikace"}
+      ],
+      "correct": "d",
+      "explanation": "Udělení sestává z vystavení kvalifikační karty a z potvrzení do potápěčského průkazu."
+    },
+    {
+      "id": 12,
+      "category": "obecna-pravidla",
+      "question": "Udělení kvalifikačního stupně:",
+      "options": [
+        {"key": "a", "text": "sestává z vystavení příslušné kvalifikační karty na jméno držitele kvalifikace a z potvrzení o udělení kvalifikace do jeho potápěčského průkazu"},
+        {"key": "b", "text": "sestává z vystavení příslušné kvalifikační karty"},
+        {"key": "c", "text": "sestává z potvrzení o udělení kvalifikačního stupně do potápěčského průkazu"},
+        {"key": "d", "text": "sestává z ústního sdělení o udělení kvalifikačního stupně jeho držiteli s nabídkou možnosti zajistit vystavení příslušné kvalifikační karty"}
+      ],
+      "correct": "a",
+      "explanation": "Udělení kvalifikačního stupně sestává z vystavení kvalifikační karty a potvrzení do potápěčského průkazu."
+    },
+    {
+      "id": 13,
+      "category": "obecna-pravidla",
+      "question": "Je-li hodnocením znalostí a schopností uchazeče o kvalifikační stupeň pověřena komise instruktorů:",
+      "options": [
+        {"key": "a", "text": "musí být nejméně tříčlenná"},
+        {"key": "b", "text": "vyberou předsedu komise členové komise mezi sebou"},
+        {"key": "c", "text": "předseda komise jedná jménem komise s účastníky zkoušek"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Všechny odpovědi jsou správné - komise musí být tříčlenná, členové vyberou předsedu a ten jedná s účastníky."
+    },
+    {
+      "id": 14,
+      "category": "obecna-pravidla",
+      "question": "Označte nesprávné tvrzení. Je-li hodnocením znalostí a schopností uchazeče o kvalifikační stupeň pověřena komise instruktorů:",
+      "options": [
+        {"key": "a", "text": "musí být nejméně tříčlenná"},
+        {"key": "b", "text": "předsedu komise vyberou členové komise mezi sebou"},
+        {"key": "c", "text": "předsedu komise zvolí uchazeči o kvalifikační stupeň v tajném hlasování"},
+        {"key": "d", "text": "předseda komise jedná jménem komise s účastníky zkoušek"}
+      ],
+      "correct": "c",
+      "explanation": "Nesprávné je tvrzení, že předsedu komise zvolí uchazeči - předsedu vybírají členové komise mezi sebou."
+    },
+    {
+      "id": 15,
+      "category": "obecna-pravidla",
+      "question": "Při každém zvyšování kvalifikace nebo při prodlužování doby její platnosti je uchazeč povinen předložit k posouzení:",
+      "options": [
+        {"key": "a", "text": "doporučení příslušného potápěčského klubu"},
+        {"key": "b", "text": "doporučení instruktora, který uchazeči udělil vstupní kvalifikaci"},
+        {"key": "c", "text": "doklad o požadované vstupní kvalifikaci a řádně vedený deník potápěče"},
+        {"key": "d", "text": "doklad o požadované vstupní kvalifikaci"}
+      ],
+      "correct": "c",
+      "explanation": "Uchazeč musí předložit doklad o požadované vstupní kvalifikaci a řádně vedený deník potápěče."
+    },
+    {
+      "id": 16,
+      "category": "obecna-pravidla",
+      "question": "Doklad o požadované vstupní kvalifikaci a řádně vedený deník potápěče je uchazeč povinen předložit:",
+      "options": [
+        {"key": "a", "text": "při každém potápění vedoucímu potápěči a/nebo vedoucímu ponoru"},
+        {"key": "b", "text": "při každém zvyšování kvalifikace nebo při prodlužování doby její platnosti"},
+        {"key": "c", "text": "před každým ponorem ve ztížených podmínkách (vítr, vlny, proud)"},
+        {"key": "d", "text": "před každým ponorem do hloubek přes 30 m"}
+      ],
+      "correct": "b",
+      "explanation": "Doklady je uchazeč povinen předložit při každém zvyšování kvalifikace nebo při prodlužování její platnosti."
+    },
+    {
+      "id": 17,
+      "category": "obecna-pravidla",
+      "question": "Vědomosti a dovednosti uchazečů o potápěčské kvalifikační stupně:",
+      "options": [
+        {"key": "a", "text": "mohou být posuzovány buď v průběhu výcviku, nebo formou závěrečných zkoušek"},
+        {"key": "b", "text": "musí zásadně splňovat všechny požadavky na příslušný kvalifikační stupeň"},
+        {"key": "c", "text": "musí být posouzeny instruktorem, který kvalifikační stupeň uchazeči udělí"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Všechny odpovědi jsou správné."
+    },
+    {
+      "id": 18,
+      "category": "obecna-pravidla",
+      "question": "Označte nesprávné tvrzení:",
+      "options": [
+        {"key": "a", "text": "Zájemce o účast ve výcviku musí předložit platné lékařské potvrzení své zdravotní způsobilosti k potápění."},
+        {"key": "b", "text": "Účast zájemce mladšího 21 let ve výcviku je možná pouze s písemným souhlasem zákonného zástupce."},
+        {"key": "c", "text": "Je-li hodnocením znalostí a schopností uchazeče o kvalifikační stupeň pověřena komise instruktorů, musí být nejméně tříčlenná."},
+        {"key": "d", "text": "Při každém zvyšování kvalifikace nebo při prodlužování doby její platnosti je uchazeč povinen předložit k posouzení doklad o požadované vstupní kvalifikaci a řádně vedený deník potápěče."}
+      ],
+      "correct": "b",
+      "explanation": "Nesprávné je tvrzení o věku 21 let - správně je 18 let pro nutnost souhlasu zákonného zástupce."
+    },
+    {
+      "id": 19,
+      "category": "prava-povinnosti",
+      "question": "Poskytovatel výcviku má právo:",
+      "options": [
+        {"key": "a", "text": "kontrolovat, zda během výcviku nedochází či nedošlo k porušování bezpečnostních a/nebo výcvikových směrnic SPČR"},
+        {"key": "b", "text": "na základě aktuální potřeby dočasně zvýšit kvalifikaci instruktora provádějícího výcvik"},
+        {"key": "c", "text": "přiměřeně snížit požadavky těchto směrnic na příslušný kvalifikační stupeň v souladu s konkrétním stavem materiálního, finančního a personálního zajištění výcviku"},
+        {"key": "d", "text": "v případě nutnosti dočasně pověřit vedením výcviku držitele kvalifikace Potápěč CMAS P***"}
+      ],
+      "correct": "a",
+      "explanation": "Poskytovatel výcviku má právo kontrolovat dodržování bezpečnostních a/nebo výcvikových směrnic SPČR."
+    },
+    {
+      "id": 20,
+      "category": "prava-povinnosti",
+      "question": "Označte nesprávné tvrzení. Poskytovatel výcviku má právo:",
+      "options": [
+        {"key": "a", "text": "kontrolovat, zda během výcviku nedochází či nedošlo k porušování bezpečnostních a/nebo výcvikových směrnic SPČR"},
+        {"key": "b", "text": "kontrolovat, zda má výcvik požadovanou úroveň"},
+        {"key": "c", "text": "organizovat sled výuky a praktických lekcí podle vlastního uvážení"},
+        {"key": "d", "text": "odvolat z vedení výcviku instruktora, který jakýmkoliv způsobem zneužil svého postavení nebo svým jednáním výcvik znevážil"}
+      ],
+      "correct": "c",
+      "explanation": "Organizovat sled výuky podle vlastního uvážení je právo instruktora, ne poskytovatele výcviku."
+    },
+    {
+      "id": 21,
+      "category": "prava-povinnosti",
+      "question": "Poskytovatel výcviku:",
+      "options": [
+        {"key": "a", "text": "má právo kontrolovat, zda má výcvik požadovanou úroveň"},
+        {"key": "b", "text": "je povinen materiálně, finančně a personálně zajistit bezpečnost, požadovanou úroveň a plynulost výcviku"},
+        {"key": "c", "text": "má právo odvolat z vedení výcviku instruktora, který vědomě porušil Bezpečnostní směrnice SPČR nebo Výcvikové směrnice SPČR"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Všechny odpovědi jsou správné."
+    },
+    {
+      "id": 22,
+      "category": "prava-povinnosti",
+      "question": "Instruktor provádějící výcvik má právo:",
+      "options": [
+        {"key": "a", "text": "vykázat z prostoru určeného pro výcvik osoby, které svým jednáním narušují průběh výcviku nebo ohrožují účastníky výcviku"},
+        {"key": "b", "text": "organizovat sled výuky a praktických lekcí podle vlastního uvážení"},
+        {"key": "c", "text": "organizovat sled výuky a praktických lekcí s přihlédnutím k daným materiálním a technickým možnostem i fyzickým a psychickým schopnostem účastníků výcviku"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Všechny odpovědi jsou správné."
+    },
+    {
+      "id": 23,
+      "category": "prava-povinnosti",
+      "question": "Mezi práva instruktora provádějícího výcvik nepatří organizovat sled výuky a praktických lekcí:",
+      "options": [
+        {"key": "a", "text": "podle kolektivního rozhodnutí účastníků výcviku (cvičenců)"},
+        {"key": "b", "text": "podle vlastního uvážení"},
+        {"key": "c", "text": "s přihlédnutím k daným materiálním a technickým možnostem"},
+        {"key": "d", "text": "s přihlédnutím k fyzickým a psychickým schopnostem účastníků výcviku"}
+      ],
+      "correct": "a",
+      "explanation": "Organizovat sled podle kolektivního rozhodnutí cvičenců nepatří mezi práva instruktora."
+    },
+    {
+      "id": 24,
+      "category": "prava-povinnosti",
+      "question": "Označte nesprávnou odpověď. Instruktor provádějící výcvik je povinen:",
+      "options": [
+        {"key": "a", "text": "přijímat do výcviku pouze uchazeče, kteří splňují podmínky předepsané pro účast ve výcviku"},
+        {"key": "b", "text": "přijímat do výcviku pouze uchazeče, kteří splňují alespoň polovinu podmínek předepsaných pro účast ve výcviku"},
+        {"key": "c", "text": "při zahájení výcviku seznámit účastníky výcviku (cvičence) s právy a povinnostmi instruktora a s právy a povinnostmi jich samotných"},
+        {"key": "d", "text": "při zahájení výcviku seznámit účastníky výcviku (cvičence) s obsahem a organizací kurzu"}
+      ],
+      "correct": "b",
+      "explanation": "Nesprávné je tvrzení o polovině podmínek - uchazeči musí splňovat všechny podmínky."
+    },
+    {
+      "id": 25,
+      "category": "prava-povinnosti",
+      "question": "Instruktor provádějící výcvik má během výcviku povinnost:",
+      "options": [
+        {"key": "a", "text": "řádně vysvětlit i prakticky předvést každý nově nacvičovaný úkol a upozornit cvičence na možná nebezpečí"},
+        {"key": "b", "text": "nepřipustit k plnění zadaných úkolů cvičence, jehož výstroj není úplná, vhodná a/nebo dostatečně funkční"},
+        {"key": "c", "text": "odmítnout potvrdit splnění takových úkonů a zkoušek, které cvičenec nezvládl, nedokončil, nebo vůbec nevykonal"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Všechny odpovědi jsou správné."
+    },
+    {
+      "id": 26,
+      "category": "prava-povinnosti",
+      "question": "Instruktor provádějící výcvik je povinen před každou praktickou lekcí:",
+      "options": [
+        {"key": "a", "text": "seznámit cvičence s kompletním zněním Bezpečnostních směrnic SPČR"},
+        {"key": "b", "text": "vyžádat si od cvičenců písemný souhlas s náplní lekce"},
+        {"key": "c", "text": "zkontrolovat cvičencům výstroj a snížit nároky na plnění zadaných úkolů cvičenci, jehož výstroj není úplná, vhodná a/nebo dostatečně funkční"},
+        {"key": "d", "text": "zkontrolovat cvičencům výstroj a nepřipustit k plnění zadaných úkolů cvičence, jehož výstroj není úplná, vhodná a/nebo dostatečně funkční"}
+      ],
+      "correct": "d",
+      "explanation": "Instruktor je povinen zkontrolovat výstroj a nepřipustit k plnění úkolů cvičence s nevhodnou výstrojí."
+    },
+    {
+      "id": 27,
+      "category": "prava-povinnosti",
+      "question": "Instruktor provádějící výcvik je povinen přerušit výcvik, zjistí-li, že by jeho pokračování vedlo:",
+      "options": [
+        {"key": "a", "text": "k porušení bezpečnostních a/nebo výcvikových směrnic SPČR"},
+        {"key": "b", "text": "k překročení cíle příslušné lekce"},
+        {"key": "c", "text": "k nedosažení cíle příslušné lekce"},
+        {"key": "d", "text": "žádná odpověď není správná"}
+      ],
+      "correct": "a",
+      "explanation": "Instruktor je povinen přerušit výcvik, pokud by jeho pokračování vedlo k porušení směrnic."
+    },
+    {
+      "id": 28,
+      "category": "prava-povinnosti",
+      "question": "Označte nesprávné tvrzení. Instruktor provádějící výcvik je povinen:",
+      "options": [
+        {"key": "a", "text": "při zahájení výcviku seznámit účastníky výcviku (cvičence) s obsahem a organizací kurzu"},
+        {"key": "b", "text": "při zahájení výcviku seznámit účastníky výcviku (cvičence) s právy a povinnostmi poskytovatele výcviku"},
+        {"key": "c", "text": "během výcviku organizovat sled výuky a praktických lekcí za dodržování základních pedagogických zásad"},
+        {"key": "d", "text": "během výcviku řádně vysvětlit i prakticky předvést každý nově nacvičovaný úkol a upozornit cvičence na možná nebezpečí"}
+      ],
+      "correct": "b",
+      "explanation": "Instruktor není povinen seznamovat cvičence s právy a povinnostmi poskytovatele výcviku."
+    },
+    {
+      "id": 29,
+      "category": "prava-povinnosti",
+      "question": "Instruktor provádějící výcvik je povinen seznámit cvičence:",
+      "options": [
+        {"key": "a", "text": "se způsobem sepsání hlášení v případě nehody"},
+        {"key": "b", "text": "se způsobem přivolání lékařské pomoci v případě zdravotního postižení"},
+        {"key": "c", "text": "s termíny zasedání prezidia příslušného členského svazu SPČR"},
+        {"key": "d", "text": "s termíny zasedání výcvikové komise SPČR"}
+      ],
+      "correct": "b",
+      "explanation": "Instruktor je povinen seznámit cvičence se způsobem přivolání lékařské pomoci."
+    },
+    {
+      "id": 30,
+      "category": "prava-povinnosti",
+      "question": "Účastník výcviku (cvičenec) má právo:",
+      "options": [
+        {"key": "a", "text": "organizovat sled výuky a praktických lekcí podle vlastního uvážení"},
+        {"key": "b", "text": "na vybavení výstrojí, která není starší dvou let od data výroby"},
+        {"key": "c", "text": "vyžádat si nové vysvětlení v případě, že neporozuměl výkladu instruktora"},
+        {"key": "d", "text": "vyžádat si osvobození od provádění praktických úkonů, které již ovládá"}
+      ],
+      "correct": "c",
+      "explanation": "Cvičenec má právo vyžádat si nové vysvětlení v případě, že neporozuměl výkladu instruktora."
+    },
+    {
+      "id": 31,
+      "category": "prava-povinnosti",
+      "question": "Účastník výcviku (cvičenec) má právo:",
+      "options": [
+        {"key": "a", "text": "odmítnout plnění úkolu, který neodpovídá jeho současným vědomostem a dovednostem, zdravotnímu stavu nebo fyzické či psychické kondici"},
+        {"key": "b", "text": "odmítnout plnění úkolu, který neodpovídá jeho představě o náplni lekce praktického výcviku"},
+        {"key": "c", "text": "před každou praktickou lekcí zkontrolovat výstroj ostatních účastníků výcviku a nepřipustit k plnění úkolu ty z nich, jejichž výstroj není úplná, vhodná a/nebo dostatečně funkční"},
+        {"key": "d", "text": "před každou praktickou lekcí zkontrolovat lékařská potvrzení cvičenců o jejich zdravotní způsobilosti k potápění"}
+      ],
+      "correct": "a",
+      "explanation": "Cvičenec má právo odmítnout úkol, který neodpovídá jeho vědomostem, dovednostem, zdraví nebo kondici."
+    },
+    {
+      "id": 32,
+      "category": "prava-povinnosti",
+      "question": "Účastník výcviku (cvičenec) je oprávněn:",
+      "options": [
+        {"key": "a", "text": "před každou praktickou lekcí zkontrolovat instruktorovi výstroj"},
+        {"key": "b", "text": "vyžádat si výměnu výstroje, na které zjistil funkční závady"},
+        {"key": "c", "text": "kontrolovat, zda má výcvik požadovanou úroveň a odvolat z výcviku instruktora, který tuto podmínku nesplňuje"},
+        {"key": "d", "text": "doučovat účastníky výcviku (cvičence), kteří zaostávají v osvojování dovedností předepsaných pro příslušný kvalifikační stupeň"}
+      ],
+      "correct": "b",
+      "explanation": "Cvičenec je oprávněn vyžádat si výměnu výstroje, na které zjistil funkční závady."
+    },
+    {
+      "id": 33,
+      "category": "prava-povinnosti",
+      "question": "Účastník výcviku (cvičenec) je povinen:",
+      "options": [
+        {"key": "a", "text": "materiálně a finančně zajistit požadovanou úroveň a plynulost výcviku"},
+        {"key": "b", "text": "organizovat sled výuky a praktických lekcí za dodržování základních pedagogických zásad"},
+        {"key": "c", "text": "pozorně sledovat výklad instruktora"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "c",
+      "explanation": "Cvičenec je povinen pozorně sledovat výklad instruktora."
+    },
+    {
+      "id": 34,
+      "category": "prava-povinnosti",
+      "question": "Účastník výcviku (cvičenec) je při výcviku povinen provádět vždy jen takové úkony:",
+      "options": [
+        {"key": "a", "text": "které uzná za vhodné z hlediska optimálního postupu výcviku"},
+        {"key": "b", "text": "které uzná za nezbytné z hlediska optimálního postupu výcviku"},
+        {"key": "c", "text": "které mu instruktor uloží"},
+        {"key": "d", "text": "které mu uloží účastník výcviku (cvičenec), který tyto úkony již ovládá"}
+      ],
+      "correct": "c",
+      "explanation": "Cvičenec je povinen provádět úkony, které mu instruktor uloží."
+    },
+    {
+      "id": 35,
+      "category": "prava-povinnosti",
+      "question": "Účastník výcviku (cvičenec) je povinen:",
+      "options": [
+        {"key": "a", "text": "na pokyn instruktora zopakovat zadání úkolu a nechat si zkontrolovat výstroj i správnost jejího ustrojení"},
+        {"key": "b", "text": "řádně vysvětlit i prakticky předvést každý nově nacvičovaný úkol"},
+        {"key": "c", "text": "před každou praktickou lekcí zkontrolovat ostatním cvičencům výstroj"},
+        {"key": "d", "text": "odvolat z vedení výcviku instruktora, který jakýmkoliv způsobem zneužil svého postavení"}
+      ],
+      "correct": "a",
+      "explanation": "Cvičenec je povinen na pokyn instruktora zopakovat zadání a nechat si zkontrolovat výstroj."
+    },
+    {
+      "id": 36,
+      "category": "prava-povinnosti",
+      "question": "Označte nesprávné tvrzení. Účastník výcviku (cvičenec) je povinen ohlásit ihned instruktorovi:",
+      "options": [
+        {"key": "a", "text": "jestliže před praktickou lekcí u sebe nemá lékařské potvrzení své zdravotní způsobilosti k potápění"},
+        {"key": "b", "text": "jakékoliv zdravotní potíže"},
+        {"key": "c", "text": "jakékoliv problémy s fyzickou či psychickou kondicí"},
+        {"key": "d", "text": "své zjištění že při výcviku došlo či může dojít k porušení Bezpečnostních směrnic SPČR"}
+      ],
+      "correct": "a",
+      "explanation": "Cvičenec nemusí hlásit, že u sebe nemá lékařské potvrzení - to se předkládá před výcvikem."
+    },
+    {
+      "id": 37,
+      "category": "definice-pravidla",
+      "question": "Pod pojmy malá, střední a velká hloubka se rozumí ve stejném pořadí:",
+      "options": [
+        {"key": "a", "text": "hloubky do 6 m, 6 – 18 m a přes 18 m"},
+        {"key": "b", "text": "hloubky do 10 m, 10 – 20 m a přes 20 m"},
+        {"key": "c", "text": "hloubky do 10 m, 10 – 30 m a přes 30 m"},
+        {"key": "d", "text": "hloubky do 20 m, 20 – 40 m a přes 40 m"}
+      ],
+      "correct": "c",
+      "explanation": "Malá hloubka je do 10 m, střední 10–30 m a velká přes 30 m."
+    },
+    {
+      "id": 38,
+      "category": "definice-pravidla",
+      "question": "Chráněným vodním prostorem se rozumí:",
+      "options": [
+        {"key": "a", "text": "vodní prostor s omezením provozu všech plavidel"},
+        {"key": "b", "text": "vodní prostor s malou hloubkou, v němž je možno neustále dozírat na cvičence a v případě nebezpečí okamžitě zasáhnout"},
+        {"key": "c", "text": "vodní prostor chráněný před větrem a vlnami"},
+        {"key": "d", "text": "vodní prostor celoročně chráněný před zamrznutím"}
+      ],
+      "correct": "b",
+      "explanation": "Chráněný vodní prostor je prostor s malou hloubkou pro neustálý dozor a možnost okamžitého zásahu."
+    },
+    {
+      "id": 39,
+      "category": "definice-pravidla",
+      "question": "Volnou vodou se rozumí:",
+      "options": [
+        {"key": "a", "text": "vodní prostor s volnou hladinou, např. krytý bazén"},
+        {"key": "b", "text": "vodní prostor s jakoukoliv hloubkou, který nelze považovat za chráněný"},
+        {"key": "c", "text": "vodní prostor, který nelze považovat za chráněný, má dostatečnou hloubku k řádnému procvičení předepsaných úkonů a po celou dobu ponoru umožňuje přímý výstup na hladinu"},
+        {"key": "d", "text": "vodní prostor s malou hloubkou, v němž je možno neustále dozírat na cvičence a v případě nebezpečí okamžitě zasáhnout"}
+      ],
+      "correct": "c",
+      "explanation": "Volná voda je prostor s dostatečnou hloubkou pro výcvik a možností přímého výstupu na hladinu."
+    },
+    {
+      "id": 40,
+      "category": "definice-pravidla",
+      "question": "Při výcviku tvoří buddy tým:",
+      "options": [
+        {"key": "a", "text": "kompletní skupina (třída) cvičenců"},
+        {"key": "b", "text": "kompletní skupina (třída) cvičenců a instruktor"},
+        {"key": "c", "text": "instruktor a nejméně dva cvičenci"},
+        {"key": "d", "text": "instruktor a jeden až dva cvičenci"}
+      ],
+      "correct": "d",
+      "explanation": "Při výcviku tvoří buddy tým instruktor a jeden až dva cvičenci."
+    },
+    {
+      "id": 41,
+      "category": "definice-pravidla",
+      "question": "Buddy týmy mohou být rovněž tvořeny dvojicemi (trojicemi) cvičenců sestavenými instruktorem:",
+      "options": [
+        {"key": "a", "text": "na žádost a/nebo podle přání cvičenců"},
+        {"key": "b", "text": "pokud horizontální viditelnost pod vodou dosahuje alespoň 6 m"},
+        {"key": "c", "text": "pokud jsou vybaveni zásobníky dýchacího média s kapacitou nejméně 3,6 m3"},
+        {"key": "d", "text": "v závislosti na postupu výcviku, na konkrétních podmínkách a s ohledem na bezpečnost"}
+      ],
+      "correct": "d",
+      "explanation": "Buddy týmy cvičenců mohou být tvořeny v závislosti na postupu výcviku, podmínkách a s ohledem na bezpečnost."
+    },
+    {
+      "id": 42,
+      "category": "definice-pravidla",
+      "question": "Před vstupem do vody provedou členové buddy týmu partnerskou kontrolu (buddy check) zaměřenou na správnost a dostatečnost:",
+      "options": [
+        {"key": "a", "text": "otevření ventilů lahví, tlaku v lahvích, připojení plnicích hadic kompenzátorů vztlaku a suchých obleků"},
+        {"key": "b", "text": "funkce hlavních (primárních) i záložních 2. stupňů plicních automatik"},
+        {"key": "c", "text": "umístění a upevnění zátěže"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Všechny odpovědi jsou správné - buddy check kontroluje ventily, tlak, hadice, automatiky i zátěž."
+    },
+    {
+      "id": 43,
+      "category": "definice-pravidla",
+      "question": "Označte nesprávné tvrzení:",
+      "options": [
+        {"key": "a", "text": "Při výcviku tvoří buddy tým instruktor a jeden až dva cvičenci."},
+        {"key": "b", "text": "V závislosti na postupu výcviku, na konkrétních podmínkách a s ohledem na bezpečnost mohou buddy týmy být rovněž tvořeny dvojicemi (trojicemi) cvičenců sestavenými instruktorem."},
+        {"key": "c", "text": "Před vstupem do vody provedou členové buddy týmu partnerskou kontrolu (buddy check)."},
+        {"key": "d", "text": "Partnerská kontrola před vstupem do vody (buddy check) je zaměřena na správnost a dostatečnost ustrojení izolačních obleků členů buddy týmu."}
+      ],
+      "correct": "d",
+      "explanation": "Nesprávné je tvrzení o kontrole izolačních obleků - buddy check kontroluje ventily, tlak, automatiky a zátěž."
+    },
+    {
+      "id": 44,
+      "category": "definice-pravidla",
+      "question": "Ponorem s dýchacím přístrojem ve volné vodě se pro účely splnění určitého počtu ponorů předepsaného pro získání potápěčského kvalifikačního stupně rozumí pobyt pod vodou v trvání:",
+      "options": [
+        {"key": "a", "text": "nejméně 15 minut"},
+        {"key": "b", "text": "nejméně 20 minut"},
+        {"key": "c", "text": "20 – 30 minut"},
+        {"key": "d", "text": "pro kvalifikační stupně Potápěč Junior SPČR a Potápěč CMAS P* nejméně 10 min, pro kvalifikační stupeň Potápěč CMAS P** nejméně 20 min a pro kvalifikační stupeň Potápěč CMAS P*** nejméně 30 min"}
+      ],
+      "correct": "a",
+      "explanation": "Ponor pro účely kvalifikace znamená pobyt pod vodou nejméně 15 minut."
+    },
+    {
+      "id": 45,
+      "category": "definice-pravidla",
+      "question": "Za jeden den je do počtu ponorů předepsaného pro získání potápěčského kvalifikačního stupně možno započítat nejvýše:",
+      "options": [
+        {"key": "a", "text": "jeden ponor"},
+        {"key": "b", "text": "dva ponory"},
+        {"key": "c", "text": "tři ponory"},
+        {"key": "d", "text": "čtyři ponory"}
+      ],
+      "correct": "c",
+      "explanation": "Za jeden den lze započítat nejvýše tři ponory."
+    },
+    {
+      "id": 46,
+      "category": "potapec-zakladni",
+      "question": "Držitel kvalifikačního stupně Potápěč s doprovodem je oprávněn:",
+      "options": [
+        {"key": "a", "text": "potápět se ve volné vodě do hloubky maximálně 12 m v doprovodu osoby s kvalifikací vedoucího potápěče"},
+        {"key": "b", "text": "potápět se ve volné vodě do hloubky maximálně 10 m v doprovodu osoby s minimální kvalifikací Potápěč CMAS P**"},
+        {"key": "c", "text": "potápět se ve volné vodě do hloubky maximálně 10 m s držitelem nejméně stejné kvalifikace (Potápěč s doprovodem)"},
+        {"key": "d", "text": "potápět se pouze v chráněném vodním prostoru"}
+      ],
+      "correct": "a",
+      "explanation": "Potápěč s doprovodem se může potápět do 12 m v doprovodu osoby s kvalifikací vedoucího potápěče."
+    },
+    {
+      "id": 47,
+      "category": "potapec-zakladni",
+      "question": "Minimální věk pro přijetí do výcviku na kvalifikační stupeň Potápěč s doprovodem je:",
+      "options": [
+        {"key": "a", "text": "15 let"},
+        {"key": "b", "text": "14 let"},
+        {"key": "c", "text": "12 let"},
+        {"key": "d", "text": "10 let"}
+      ],
+      "correct": "c",
+      "explanation": "Minimální věk pro výcvik na Potápěče s doprovodem je 12 let."
+    },
+    {
+      "id": 48,
+      "category": "potapec-zakladni",
+      "question": "Uchazeč o přijetí do výcviku na kvalifikační stupeň Potápěč s doprovodem musí bez základní potápěčské výstroje nebo jiných pomůcek uplavat na hladině:",
+      "options": [
+        {"key": "a", "text": "50 m"},
+        {"key": "b", "text": "75 m"},
+        {"key": "c", "text": "100 m"},
+        {"key": "d", "text": "200 m"}
+      ],
+      "correct": "a",
+      "explanation": "Uchazeč o Potápěče s doprovodem musí uplavat 50 m bez pomůcek."
+    },
+    {
+      "id": 49,
+      "category": "potapec-zakladni",
+      "question": "Mezi vstupní požadavky pro přijetí do výcviku na kvalifikační stupeň Potápěč s doprovodem nepatří:",
+      "options": [
+        {"key": "a", "text": "minimální věk 12 let"},
+        {"key": "b", "text": "uplavat na hladině 50 m bez základní potápěčské výstroje nebo jiných pomůcek"},
+        {"key": "c", "text": "vydržet nejméně 30 sekund pod vodou se zadrženým dechem"},
+        {"key": "d", "text": "udržet se 5 minut na hladině (šlapáním vody a/nebo splýváním)"}
+      ],
+      "correct": "c",
+      "explanation": "Vydržet 30 sekund pod vodou se zadrženým dechem nepatří mezi vstupní požadavky."
+    },
+    {
+      "id": 50,
+      "category": "potapec-zakladni",
+      "question": "Podmínkou udělení kvalifikace Potápěč s doprovodem je absolvování:",
+      "options": [
+        {"key": "a", "text": "nejméně 2 ponorů s instruktorem nebo 4 ponorů v doprovodu osoby s kvalifikací vedoucího potápěče ve volné vodě do malých hloubek"},
+        {"key": "b", "text": "nejméně 2 ponorů s instruktorem ve volné vodě do malých hloubek"},
+        {"key": "c", "text": "nejméně 4 ponorů s instruktorem ve volné vodě do malých hloubek"},
+        {"key": "d", "text": "nejméně 5 ponorů v chráněném vodním prostoru"}
+      ],
+      "correct": "b",
+      "explanation": "Pro Potápěče s doprovodem je třeba absolvovat nejméně 2 ponory s instruktorem ve volné vodě do malých hloubek."
+    },
+    {
+      "id": 51,
+      "category": "potapec-zakladni",
+      "question": "Držitel kvalifikačního stupně Potápěč Junior SPČR je oprávněn:",
+      "options": [
+        {"key": "a", "text": "potápět se ve volné vodě s držiteli kvalifikací Potápěč CMAS P* a/nebo Potápěč CMAS P** do hloubky maximálně 20 m"},
+        {"key": "b", "text": "po absolvování celkem 10 ponorů ve volné vodě a dovršení věku 14 let se přihlásit k doškolení a přezkoušení na kvalifikační stupeň Potápěč CMAS P*"},
+        {"key": "c", "text": "účastnit se ponorů s držiteli stejné kvalifikace"},
+        {"key": "d", "text": "účastnit se vybraných specializačních kurzů"}
+      ],
+      "correct": "b",
+      "explanation": "Potápěč Junior se může po 10 ponorech a dovršení 14 let přihlásit k doškolení na Potápěče CMAS P*."
+    },
+    {
+      "id": 52,
+      "category": "potapec-zakladni",
+      "question": "Minimální věk pro přijetí do výcviku na kvalifikační stupeň Potápěč Junior SPČR je:",
+      "options": [
+        {"key": "a", "text": "15 let"},
+        {"key": "b", "text": "14 let"},
+        {"key": "c", "text": "13 let"},
+        {"key": "d", "text": "12 let"}
+      ],
+      "correct": "d",
+      "explanation": "Minimální věk pro výcvik na Potápěče Junior SPČR je 12 let."
+    },
+    {
+      "id": 53,
+      "category": "potapec-zakladni",
+      "question": "Uchazeč o přijetí do výcviku na kvalifikační stupeň Potápěč Junior SPČR musí bez základní potápěčské výstroje nebo jiných pomůcek uplavat na hladině:",
+      "options": [
+        {"key": "a", "text": "300 m"},
+        {"key": "b", "text": "200 m"},
+        {"key": "c", "text": "100 m"},
+        {"key": "d", "text": "50 m"}
+      ],
+      "correct": "b",
+      "explanation": "Uchazeč o Potápěče Junior SPČR musí uplavat 200 m bez pomůcek."
+    },
+    {
+      "id": 54,
+      "category": "potapec-zakladni",
+      "question": "Podmínkou udělení kvalifikace Potápěč Junior SPČR je absolvování:",
+      "options": [
+        {"key": "a", "text": "nejméně 2 ponorů s instruktorem ve volné vodě do malých hloubek"},
+        {"key": "b", "text": "nejméně 3 ponorů s instruktorem ve volné vodě do malých hloubek"},
+        {"key": "c", "text": "nejméně 5 ponorů s instruktorem ve volné vodě do malých hloubek"},
+        {"key": "d", "text": "nejméně 10 ponorů v chráněném vodním prostoru"}
+      ],
+      "correct": "c",
+      "explanation": "Pro Potápěče Junior SPČR je třeba absolvovat nejméně 5 ponorů s instruktorem ve volné vodě do malých hloubek."
+    },
+    {
+      "id": 55,
+      "category": "potapec-zakladni",
+      "question": "Výcvik na kvalifikační stupeň Potápěč Junior SPČR vede, hodnocení provádí a kvalifikační stupeň Potápěč Junior SPČR uděluje:",
+      "options": [
+        {"key": "a", "text": "instruktor s kvalifikací nejméně Instruktor CMAS I**"},
+        {"key": "b", "text": "instruktor s kvalifikací nejméně Instruktor CMAS I*"},
+        {"key": "c", "text": "instruktor s kvalifikací nejméně Instruktor CMAS I* nebo držitel kvalifikace Potápěč CMAS P*** tímto instruktorem pověřený"},
+        {"key": "d", "text": "žádná odpověď není správná"}
+      ],
+      "correct": "a",
+      "explanation": "Výcvik na Potápěče Junior SPČR vede a kvalifikaci uděluje instruktor nejméně CMAS I**."
+    },
+    {
+      "id": 56,
+      "category": "potapec-cmas",
+      "question": "Držitel kvalifikačního stupně Potápěč CMAS P* je oprávněn:",
+      "options": [
+        {"key": "a", "text": "potápět se ve volné vodě s držitelem kvalifikace Potápěč Junior SPČR do malých hloubek jako zákonný zástupce nebo jím pověřená osoba"},
+        {"key": "b", "text": "potápět se ve volné vodě s držiteli kvalifikací Potápěč CMAS P* a/nebo Potápěč CMAS P** do hloubky maximálně 20 m"},
+        {"key": "c", "text": "po absolvování 40 ponorů ve volné vodě zažádat o udělení kvalifikačního stupně Potápěč CMAS P**"},
+        {"key": "d", "text": "po dovršení 18 let vykonávat podle pokynů instruktora dozor nad účastníky potápěčského výcviku"}
+      ],
+      "correct": "b",
+      "explanation": "Potápěč CMAS P* se může potápět s držiteli P* a/nebo P** do hloubky max. 20 m."
+    },
+    {
+      "id": 57,
+      "category": "potapec-cmas",
+      "question": "Vstupní požadavky pro přijetí do výcviku na kvalifikační stupeň Potápěč CMAS P* jsou:",
+      "options": [
+        {"key": "a", "text": "minimální věk 14 let"},
+        {"key": "b", "text": "uplavat na hladině 200 m bez základní potápěčské výstroje nebo jiných pomůcek"},
+        {"key": "c", "text": "udržet se 5 minut na hladině (šlapáním vody a/nebo splýváním)"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Všechny odpovědi jsou správné - věk 14 let, 200 m plavání, 5 minut na hladině."
+    },
+    {
+      "id": 58,
+      "category": "potapec-cmas",
+      "question": "Minimální věk pro přijetí do výcviku na kvalifikační stupeň Potápěč CMAS P* je:",
+      "options": [
+        {"key": "a", "text": "14 let"},
+        {"key": "b", "text": "15 let"},
+        {"key": "c", "text": "16 let"},
+        {"key": "d", "text": "18 let"}
+      ],
+      "correct": "a",
+      "explanation": "Minimální věk pro výcvik na Potápěče CMAS P* je 14 let."
+    },
+    {
+      "id": 59,
+      "category": "potapec-cmas",
+      "question": "Výcvik na kvalifikační stupeň Potápěč CMAS P* vede, hodnocení provádí a kvalifikační stupeň uděluje:",
+      "options": [
+        {"key": "a", "text": "instruktor s kvalifikací nejméně CMAS I** k takovému výcviku oprávněný nebo pověřený příslušným zemským svazem SPČR"},
+        {"key": "b", "text": "instruktor s kvalifikací nejméně CMAS I* pod dohledem instruktora s kvalifikací nejméně CMAS I**"},
+        {"key": "c", "text": "instruktor s kvalifikací nejméně CMAS I**"},
+        {"key": "d", "text": "instruktor s kvalifikací nejméně CMAS I*"}
+      ],
+      "correct": "c",
+      "explanation": "Výcvik na Potápěče CMAS P* vede a kvalifikaci uděluje instruktor nejméně CMAS I**."
+    },
+    {
+      "id": 60,
+      "category": "potapec-cmas",
+      "question": "Podmínkou udělení kvalifikace Potápěč CMAS P* je absolvování:",
+      "options": [
+        {"key": "a", "text": "nejméně 5 ponorů s instruktorem ve volné vodě do malých hloubek"},
+        {"key": "b", "text": "nejméně 5 ponorů s instruktorem ve volné vodě, z toho první nejméně 3 ponory do malých hloubek a další nejméně 2 ponory do hloubek 15 – 20 m"},
+        {"key": "c", "text": "nejméně 5 ponorů ve volné vodě do malých hloubek, z toho první nejméně 3 ponory s instruktorem; zbývající nejméně dva ponory je možno absolvovat v doprovodu osoby s kvalifikací vedoucího potápěče"},
+        {"key": "d", "text": "nejméně 5 ponorů ve volné vodě, z toho první nejméně 3 ponory do malých hloubek je možno absolvovat v doprovodu osoby s kvalifikací vedoucího potápěče a zbývající nejméně 2 ponory do hloubek 15 – 20 m je nutno absolvovat s instruktorem"}
+      ],
+      "correct": "b",
+      "explanation": "Pro P* je třeba 5 ponorů s instruktorem - 3 do malých hloubek a 2 do hloubek 15–20 m."
+    },
+    {
+      "id": 61,
+      "category": "potapec-cmas",
+      "question": "Držitel kvalifikačního stupně Potápěč CMAS P** je oprávněn:",
+      "options": [
+        {"key": "a", "text": "doprovázet držitele kvalifikace Potápěč s doprovodem při potápění ve volné vodě do hloubky maximálně 12 m"},
+        {"key": "b", "text": "pomáhat s dozorem nad účastníky výcviku"},
+        {"key": "c", "text": "potápět se ve volné vodě s držiteli kvalifikace Potápěč CMAS P* do hloubky maximálně 20 m"},
+        {"key": "d", "text": "vykonávat funkci vedoucího potápěče"}
+      ],
+      "correct": "c",
+      "explanation": "Potápěč CMAS P** se může potápět s držiteli P* do hloubky max. 20 m."
+    },
+    {
+      "id": 62,
+      "category": "potapec-cmas",
+      "question": "Minimální věk pro přijetí do výcviku na kvalifikační stupeň Potápěč CMAS P** je:",
+      "options": [
+        {"key": "a", "text": "18 let"},
+        {"key": "b", "text": "15 let"},
+        {"key": "c", "text": "14 let"},
+        {"key": "d", "text": "12 let"}
+      ],
+      "correct": "b",
+      "explanation": "Minimální věk pro výcvik na Potápěče CMAS P** je 15 let."
+    },
+    {
+      "id": 63,
+      "category": "potapec-cmas",
+      "question": "Uchazeč o přijetí do výcviku na kvalifikační stupeň Potápěč CMAS P** musí být držitelem kvalifikačního stupně:",
+      "options": [
+        {"key": "a", "text": "Potápěč s doprovodem"},
+        {"key": "b", "text": "Potápěč Junior SPČR"},
+        {"key": "c", "text": "Potápěč CMAS P* nebo potápěčské kvalifikace jiného systému určené SPČR"},
+        {"key": "d", "text": "Potápěč s doprovodem s praxí 15 ponorů ve volné vodě nebo Potápěč Junior SPČR s praxí 10 ponorů ve volné vodě"}
+      ],
+      "correct": "c",
+      "explanation": "Pro výcvik na P** je třeba mít kvalifikaci Potápěč CMAS P* nebo ekvivalentní."
+    },
+    {
+      "id": 64,
+      "category": "potapec-cmas",
+      "question": "Do udělení kvalifikace CMAS P** musí uchazeč uskutečnit:",
+      "options": [
+        {"key": "a", "text": "nejméně 40 ponorů ve volné vodě za různých podmínek"},
+        {"key": "b", "text": "nejméně 20 ponorů ve volné vodě za různých podmínek, z toho nejméně 10 do středních hloubek"},
+        {"key": "c", "text": "nejméně 20 ponorů do středních hloubek"},
+        {"key": "d", "text": "nejméně 10 ponorů do velkých hloubek"}
+      ],
+      "correct": "b",
+      "explanation": "Pro P** je třeba 20 ponorů ve volné vodě, z toho nejméně 10 do středních hloubek."
+    },
+    {
+      "id": 65,
+      "category": "potapec-cmas",
+      "question": "Výcvik na kvalifikační stupeň Potápěč CMAS P** vede, hodnocení provádí a kvalifikační stupeň uděluje:",
+      "options": [
+        {"key": "a", "text": "instruktor s kvalifikací CMAS I***"},
+        {"key": "b", "text": "instruktor s kvalifikací nejméně CMAS I**"},
+        {"key": "c", "text": "instruktor s kvalifikací nejméně CMAS I** pod dohledem instruktora s kvalifikací CMAS I***"},
+        {"key": "d", "text": "instruktor s kvalifikací nejméně CMAS I* k takovému výcviku oprávněný nebo pověřený příslušným členským svazem SPČR"}
+      ],
+      "correct": "b",
+      "explanation": "Výcvik na P** vede a kvalifikaci uděluje instruktor nejméně CMAS I**."
+    },
+    {
+      "id": 66,
+      "category": "potapec-cmas",
+      "question": "Držitel kvalifikačního stupně Potápěč CMAS P*** je oprávněn:",
+      "options": [
+        {"key": "a", "text": "doprovázet držitele kvalifikace Potápěč s doprovodem při potápění ve volné vodě do hloubek přes 20 m"},
+        {"key": "b", "text": "hodnotit vědomosti a/nebo dovednosti cvičenců při výcviku na kvalifikační stupně Potápěč s doprovodem a Potápěč Junior SPČR"},
+        {"key": "c", "text": "podle pokynů instruktora vykonávat dozor nad účastníky potápěčského výcviku"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "c",
+      "explanation": "Potápěč CMAS P*** může podle pokynů instruktora vykonávat dozor nad účastníky výcviku."
+    },
+    {
+      "id": 67,
+      "category": "potapec-cmas",
+      "question": "Minimální věk pro přijetí do výcviku na kvalifikační stupeň Potápěč CMAS P*** je:",
+      "options": [
+        {"key": "a", "text": "14 let"},
+        {"key": "b", "text": "15 let"},
+        {"key": "c", "text": "18 let"},
+        {"key": "d", "text": "21 let"}
+      ],
+      "correct": "c",
+      "explanation": "Minimální věk pro výcvik na Potápěče CMAS P*** je 18 let."
+    },
+    {
+      "id": 68,
+      "category": "potapec-cmas",
+      "question": "Uchazeč o přijetí do výcviku na kvalifikační stupeň Potápěč CMAS P*** musí:",
+      "options": [
+        {"key": "a", "text": "doložit své zkušenosti z potápění v noci, za snížené viditelnosti, do velkých hloubek a z potápění spojeného s navigací pod vodou"},
+        {"key": "b", "text": "být držitelem kvalifikačního stupně minimálně Potápěč CMAS P* nebo kvalifikace jiného systému určené SPČR"},
+        {"key": "c", "text": "být držitelem kvalifikačního stupně minimálně Potápěč CMAS P**, pokud však doloží svou potápěčskou praxi v rozsahu nejméně 60 ponorů ve volné vodě, postačí jako vstupní kvalifikace Potápěč CMAS P*"},
+        {"key": "d", "text": "být držitelem platné licence k vedení malého plavidla na moři"}
+      ],
+      "correct": "a",
+      "explanation": "Uchazeč o P*** musí doložit zkušenosti z potápění v noci, za snížené viditelnosti, do velkých hloubek a s navigací."
+    },
+    {
+      "id": 69,
+      "category": "potapec-cmas",
+      "question": "Do udělení kvalifikace CMAS P*** musí uchazeč uskutečnit:",
+      "options": [
+        {"key": "a", "text": "nejméně 60 ponorů ve volné vodě, z toho nejméně 30 v náročnějších podmínkách"},
+        {"key": "b", "text": "nejméně 50 ponorů ve volné vodě za různých podmínek, z toho nejméně 20 do velkých hloubek"},
+        {"key": "c", "text": "nejméně 50 ponorů do středních a nejméně 20 ponorů do velkých hloubek"},
+        {"key": "d", "text": "nejméně 50 ponorů do velkých hloubek"}
+      ],
+      "correct": "a",
+      "explanation": "Pro P*** je třeba 60 ponorů ve volné vodě, z toho nejméně 30 v náročnějších podmínkách."
+    },
+    {
+      "id": 70,
+      "category": "potapec-cmas",
+      "question": "Z hlediska požadované praxe pro udělení kvalifikace CMAS P*** se za ponory v náročnějších podmínkách považují:",
+      "options": [
+        {"key": "a", "text": "ponory při viditelnosti menší než 2 m"},
+        {"key": "b", "text": "ponory při teplotě vody pod 10 C"},
+        {"key": "c", "text": "ponory do hloubek přes 30 m"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Za náročnější podmínky se považují všechny uvedené - nízká viditelnost, studená voda i velké hloubky."
+    },
+    {
+      "id": 71,
+      "category": "instruktor",
+      "question": "Instruktorem potápění se může stát člen členského svazu SPČR:",
+      "options": [
+        {"key": "a", "text": "který je držitelem kvalifikačního stupně Potápěč CMAS P*** nebo potápěčské kvalifikace jiného systému určené SPČR, a který má dostatečné znalosti a pedagogické schopnosti k vykonávání instruktorské činnosti"},
+        {"key": "b", "text": "na základě doporučení příslušného potápěčského klubu"},
+        {"key": "c", "text": "na základě doporučení příslušného potápěčského svazu"},
+        {"key": "d", "text": "žádná odpověď není správná"}
+      ],
+      "correct": "a",
+      "explanation": "Instruktorem se může stát držitel P*** s dostatečnými znalostmi a pedagogickými schopnostmi."
+    },
+    {
+      "id": 72,
+      "category": "instruktor",
+      "question": "Instruktorem potápění se může stát člen členského svazu SPČR:",
+      "options": [
+        {"key": "a", "text": "který má dostatečné znalosti k vykonávání instruktorské činnosti"},
+        {"key": "b", "text": "který má dostatečné pedagogické schopnosti k vykonávání instruktorské činnosti"},
+        {"key": "c", "text": "který je držitelem kvalifikačního stupně Potápěč CMAS P*** nebo potápěčské kvalifikace jiného systému určené SPČR"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Všechny odpovědi jsou správné - je třeba znalosti, pedagogické schopnosti a kvalifikace P***."
+    },
+    {
+      "id": 73,
+      "category": "instruktor",
+      "question": "Výcvik na instruktorské kvalifikační stupně CMAS pořádá:",
+      "options": [
+        {"key": "a", "text": "SPČR"},
+        {"key": "b", "text": "příslušný členský svaz SPČR"},
+        {"key": "c", "text": "potápěčský klub SČP nebo SPMS"},
+        {"key": "d", "text": "držitel kvalifikace Instruktor CMAS I***"}
+      ],
+      "correct": "a",
+      "explanation": "Výcvik na instruktorské kvalifikační stupně CMAS pořádá SPČR."
+    },
+    {
+      "id": 74,
+      "category": "instruktor",
+      "question": "Součástí zkoušek na instruktorské kvalifikační stupně je prověření:",
+      "options": [
+        {"key": "a", "text": "nejvyššího dosaženého vzdělání uchazeče"},
+        {"key": "b", "text": "potápěčských vědomostí a dovedností uchazeče"},
+        {"key": "c", "text": "požadované délky doby členství uchazeče v příslušném členském svazu SPČR"},
+        {"key": "d", "text": "žádná odpověď není správná"}
+      ],
+      "correct": "b",
+      "explanation": "Součástí zkoušek je prověření potápěčských vědomostí a dovedností uchazeče."
+    },
+    {
+      "id": 75,
+      "category": "instruktor",
+      "question": "Platnost instruktorského kvalifikačního stupně je podmíněna plněním:",
+      "options": [
+        {"key": "a", "text": "všech povinností vyplývajících z Výcvikových směrnic SPČR"},
+        {"key": "b", "text": "všech povinností vyplývajících z Bezpečnostních směrnic SPČR"},
+        {"key": "c", "text": "členských povinností vůči příslušnému členskému svazu SPČR"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Platnost instruktorské kvalifikace je podmíněna plněním všech uvedených povinností."
+    },
+    {
+      "id": 76,
+      "category": "instruktor",
+      "question": "Doba platnosti instruktorského kvalifikačního stupně je:",
+      "options": [
+        {"key": "a", "text": "1 rok"},
+        {"key": "b", "text": "3 roky"},
+        {"key": "c", "text": "5 let"},
+        {"key": "d", "text": "6 let"}
+      ],
+      "correct": "c",
+      "explanation": "Doba platnosti instruktorského kvalifikačního stupně je 5 let."
+    },
+    {
+      "id": 77,
+      "category": "instruktor",
+      "question": "Oprávnění k prodlužování doby platnosti instruktorských kvalifikačních stupňů mají:",
+      "options": [
+        {"key": "a", "text": "všichni držitelé kvalifikace Instruktor CMAS I***"},
+        {"key": "b", "text": "držitelé kvalifikace Instruktor CMAS I*** pověření k této činnosti VK SPČR a/nebo zkušební komise sestavená z držitelů kvalifikace Instruktor CMAS I*** při školení instruktorů SPČR"},
+        {"key": "c", "text": "všichni instruktoři CMAS I***, a dále instruktoři CMAS I** pověření k této činnosti VK SPČR"},
+        {"key": "d", "text": "prezidia členských svazů SPČR"}
+      ],
+      "correct": "b",
+      "explanation": "Oprávnění k prodlužování mají pověření držitelé I*** a/nebo zkušební komise z držitelů I***."
+    },
+    {
+      "id": 78,
+      "category": "instruktor",
+      "question": "K podmínkám prodloužení doby platnosti instruktorského kvalifikačního stupně na dalších 5 let patří vycvičení:",
+      "options": [
+        {"key": "a", "text": "nejméně 20 potápěčů včetně udělení kvalifikace (případně jiná činnost pro potřeby SPČR v oblasti potápěčského výcviku)"},
+        {"key": "b", "text": "nejméně 15 potápěčů"},
+        {"key": "c", "text": "nejméně 10 potápěčů včetně udělení kvalifikace (případně jiná činnost pro potřeby SPČR v oblasti potápěčského výcviku)"},
+        {"key": "d", "text": "nejméně 5 potápěčů; zároveň se v posuzovaném období nesmí vyskytovat více než 2 roky bez alespoň jednoho vycvičeného potápěče"}
+      ],
+      "correct": "c",
+      "explanation": "Pro prodloužení je třeba vycvičit nejméně 10 potápěčů včetně udělení kvalifikace."
+    },
+    {
+      "id": 79,
+      "category": "instruktor",
+      "question": "Pokud uchazeč o prodloužení doby platnosti instruktorského kvalifikačního stupně nevykonává jinou činnost pro potřeby SPČR v oblasti potápěčského výcviku, musí za posuzované období vycvičit nejméně:",
+      "options": [
+        {"key": "a", "text": "5 potápěčů"},
+        {"key": "b", "text": "10 potápěčů"},
+        {"key": "c", "text": "15 potápěčů"},
+        {"key": "d", "text": "20 potápěčů"}
+      ],
+      "correct": "b",
+      "explanation": "Bez jiné činnosti pro SPČR musí instruktor vycvičit nejméně 10 potápěčů."
+    },
+    {
+      "id": 80,
+      "category": "instruktor",
+      "question": "Pokud instruktor za posuzované období vycvičil méně než 10 potápěčů (a nevykonával jinou činnost pro potřeby SPČR v oblasti potápěčského výcviku):",
+      "options": [
+        {"key": "a", "text": "nelze nesplnění této podmínky nijak nahradit, proto následuje ukončení platnosti jeho instruktorské kvalifikace"},
+        {"key": "b", "text": "lze nesplnění této podmínky nahradit absolvováním školení SPČR z metodiky vedení výcviku"},
+        {"key": "c", "text": "lze nesplnění této podmínky nahradit absolvováním více než dvou školení instruktorů SPČR během posuzovaného období"},
+        {"key": "d", "text": "lze nesplnění této podmínky nahradit úspěšným absolvováním zkušebního testu SPČR z potápěčské teorie v rozsahu stanoveném pro příslušný instruktorský kvalifikační stupeň"}
+      ],
+      "correct": "d",
+      "explanation": "Nesplnění lze nahradit úspěšným absolvováním zkušebního testu z potápěčské teorie."
+    },
+    {
+      "id": 81,
+      "category": "instruktor",
+      "question": "Mezi podmínky prodloužení doby platnosti instruktorského kvalifikačního stupně na dalších 5 let nepatří:",
+      "options": [
+        {"key": "a", "text": "absolvování nejméně 2 školení instruktorů SPČR"},
+        {"key": "b", "text": "absolvování praktického zaměstnání z poskytování kyslíku v rámci první pomoci"},
+        {"key": "c", "text": "zanoření se základní výstrojí a vynesení značky z hloubky 10 m"},
+        {"key": "d", "text": "vynesení partnera z hloubky 20 – 30 m pomocí kompenzátoru vztlaku a jeho tažení po hladině na vzdálenost 50 m"}
+      ],
+      "correct": "c",
+      "explanation": "Zanoření se základní výstrojí a vynesení značky z 10 m nepatří mezi podmínky prodloužení."
+    },
+    {
+      "id": 82,
+      "category": "instruktor",
+      "question": "Uchazeči, který za posuzované období v rámci výcvikového systému CMAS/SPČR vycvičil více než 40 potápěčů včetně udělení kvalifikace a nebyly na něho oprávněné a podstatné stížnosti ze strany cvičenců, stačí pro účely prodloužení doby platnosti instruktorského kvalifikačního stupně:",
+      "options": [
+        {"key": "a", "text": "účast na jednom semináři instruktorů SPČR za předpokladu, že při něm absolvoval všechny prezentace"},
+        {"key": "b", "text": "účast na jednom školení instruktorů SPČR za předpokladu, že při něm absolvoval praktické zaměstnání z resuscitace, praktické zaměstnání z poskytování kyslíku v rámci první pomoci a předvedl vynesení partnera z hloubky 20 – 30 m a jeho tažení po hladině na vzdálenost 50 m"},
+        {"key": "c", "text": "písemná žádost adresovaná výcvikové komisi SPČR"},
+        {"key": "d", "text": "žádná odpověď není správná"}
+      ],
+      "correct": "b",
+      "explanation": "Instruktorovi s více než 40 vycvičenými stačí účast na jednom školení se všemi praktickými úkony."
+    },
+    {
+      "id": 83,
+      "category": "instruktor",
+      "question": "Pokud instruktor podmínkám stanoveným pro prodloužení doby platnosti instruktorského kvalifikačního stupně nevyhoví:",
+      "options": [
+        {"key": "a", "text": "bude pozastavena platnost jeho oprávnění; instruktor zároveň dostane možnost vyhovět těmto podmínkám v nejbližším termínu"},
+        {"key": "b", "text": "bude na dobu 2 let pozastavena platnost jeho oprávnění"},
+        {"key": "c", "text": "bude jeho instruktorská kvalifikace snížena na nejbližší nižší kvalifikační stupeň a v případě instruktora CMAS I* na kvalifikaci Potápěč CMAS P***"},
+        {"key": "d", "text": "bude platnost jeho instruktorské kvalifikace ukončena"}
+      ],
+      "correct": "a",
+      "explanation": "Při nesplnění podmínek bude pozastavena platnost oprávnění s možností vyhovět v nejbližším termínu."
+    },
+    {
+      "id": 84,
+      "category": "instruktor",
+      "question": "Označte nesprávné tvrzení:",
+      "options": [
+        {"key": "a", "text": "Pokud instruktor podmínkám stanoveným pro prodloužení doby platnosti instruktorského kvalifikačního stupně nevyhoví, bude platnost jeho instruktorské kvalifikace ukončena."},
+        {"key": "b", "text": "Vyskytnou-li stížnosti na činnost instruktora, VK SPČR ho přizve k jejich projednání, a pokud se instruktor dostaví, poskytne mu prostor pro vyjádření."},
+        {"key": "c", "text": "VK SPČR má právo kontrolovat obsah a kvalitu výcviku dotazováním účastníků výcviku i přímými kontrolami."},
+        {"key": "d", "text": "V případě oprávněné stížnosti na činnost instruktora může VK SPČR s přihlédnutím k její závažnosti pozastavit platnost instruktorské kvalifikace."}
+      ],
+      "correct": "a",
+      "explanation": "Nesprávné je tvrzení o ukončení - při nesplnění se platnost pozastaví, ne ukončí."
+    },
+    {
+      "id": 85,
+      "category": "instruktor",
+      "question": "V případě oprávněné stížnosti na činnost instruktora může VK SPČR s přihlédnutím k její závažnosti:",
+      "options": [
+        {"key": "a", "text": "požadovat odstranění zjištěných nedostatků do zadaného termínu"},
+        {"key": "b", "text": "pozastavit platnost instruktorské kvalifikace"},
+        {"key": "c", "text": "navrhnout příslušnému členskému svazu SPČR ukončení platnosti instruktorské kvalifikace"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "VK SPČR může všechny uvedené kroky - požadovat nápravu, pozastavit nebo navrhnout ukončení."
+    },
+    {
+      "id": 86,
+      "category": "instruktor",
+      "question": "Instruktor CMAS I* je oprávněn:",
+      "options": [
+        {"key": "a", "text": "provádět výcvik na kvalifikační stupeň Potápěč Junior SPČR"},
+        {"key": "b", "text": "vyučovat teorii a hodnotit vědomosti cvičenců na kvalifikační stupeň Potápěč s doprovodem"},
+        {"key": "c", "text": "vést vybrané specializační kurzy"},
+        {"key": "d", "text": "pomáhat při výcviku na instruktorské kvalifikační stupně"}
+      ],
+      "correct": "b",
+      "explanation": "Instruktor CMAS I* je oprávněn vyučovat teorii a hodnotit vědomosti na Potápěče s doprovodem."
+    },
+    {
+      "id": 87,
+      "category": "instruktor",
+      "question": "Instruktor CMAS I* je na základě pověření a pod dohledem instruktora s kvalifikací nejméně Instruktor CMAS I** oprávněn získávat zkušenosti:",
+      "options": [
+        {"key": "a", "text": "při vedení vybraných specializačních kurzů"},
+        {"key": "b", "text": "při výuce teorie a hodnocení vědomostí cvičenců na kvalifikační stupně Potápěč Junior SPČR, Potápěč CMAS P*, Potápěč CMAS P** a Potápěč CMAS P***"},
+        {"key": "c", "text": "při výcviku cvičenců na kvalifikační stupně Potápěč Junior SPČR, Potápěč CMAS P*, Potápěč CMAS P** a Potápěč CMAS P*** ve volné vodě"},
+        {"key": "d", "text": "při výcviku na kvalifikační stupeň Instruktor CMAS I*"}
+      ],
+      "correct": "b",
+      "explanation": "I* může pod dohledem I** získávat zkušenosti při výuce teorie a hodnocení vědomostí na všechny potápěčské stupně."
+    },
+    {
+      "id": 88,
+      "category": "instruktor",
+      "question": "Uchazeč o kvalifikační stupeň Instruktor CMAS I* musí:",
+      "options": [
+        {"key": "a", "text": "mít minimálně 18 let"},
+        {"key": "b", "text": "být držitelem kvalifikačního stupně Potápěč CMAS P*** nebo držitelem kvalifikace vedoucího potápěče IANTD, PADI, SSI, ITD, NAUI a SDI/TDI, případně držitelem potápěčské kvalifikace jiného výcvikového systému určené SPČR"},
+        {"key": "c", "text": "doložit, že v uplynulých třech letech absolvoval školení SPČR z metodiky vedení výcviku"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Všechny odpovědi jsou správné - věk 18 let, kvalifikace P*** nebo ekvivalent, školení z metodiky."
+    },
+    {
+      "id": 89,
+      "category": "instruktor",
+      "question": "Uchazeč o kvalifikační stupeň Instruktor CMAS I* musí doložit:",
+      "options": [
+        {"key": "a", "text": "že v uplynulých 3 letech absolvoval školení SPČR z metodiky vedení výcviku"},
+        {"key": "b", "text": "že v uplynulých 2 letech absolvoval minimálně 80 ponorů"},
+        {"key": "c", "text": "že v uplynulých 5 letech absolvoval nejméně 2 školení instruktorů SPČR"},
+        {"key": "d", "text": "že v uplynulých 5 letech předvedl vynesení partnera z hloubky 20 – 30 m pomocí kompenzátoru vztlaku a jeho tažení po hladině na vzdálenost 50 m"}
+      ],
+      "correct": "a",
+      "explanation": "Uchazeč o I* musí doložit absolvování školení z metodiky vedení výcviku v uplynulých 3 letech."
+    },
+    {
+      "id": 90,
+      "category": "instruktor",
+      "question": "Kvalifikační stupeň Instruktor CMAS I* uděluje:",
+      "options": [
+        {"key": "a", "text": "prezidium příslušného členského svazu SPČR"},
+        {"key": "b", "text": "instruktor s kvalifikací nejméně CMAS I** pověřený prezidiem příslušného členského svazu SPČR"},
+        {"key": "c", "text": "zkušební komise složená z držitelů kvalifikací Instruktor CMAS I*** a CMAS I**, jmenovaná VK SPČR"},
+        {"key": "d", "text": "zkušební komise složená z držitelů kvalifikace Instruktor CMAS I***, jmenovaná prezidiem příslušného členského svazu SPČR"}
+      ],
+      "correct": "c",
+      "explanation": "Kvalifikaci I* uděluje zkušební komise z držitelů I*** a I**, jmenovaná VK SPČR."
+    },
+    {
+      "id": 91,
+      "category": "instruktor",
+      "question": "Instruktor CMAS I** je oprávněn:",
+      "options": [
+        {"key": "a", "text": "provádět výcvik na všechny potápěčské kvalifikační stupně CMAS"},
+        {"key": "b", "text": "provádět výcvik na instruktorské kvalifikační stupně CMAS"},
+        {"key": "c", "text": "vést výcvikové středisko"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "a",
+      "explanation": "Instruktor CMAS I** je oprávněn provádět výcvik na všechny potápěčské kvalifikační stupně CMAS."
+    },
+    {
+      "id": 92,
+      "category": "instruktor",
+      "question": "Instruktor CMAS I** není oprávněn:",
+      "options": [
+        {"key": "a", "text": "provádět výcvik na kvalifikační stupně Potápěč s doprovodem a Potápěč Junior SPČR"},
+        {"key": "b", "text": "provádět výcvik na všechny potápěčské kvalifikační stupně CMAS"},
+        {"key": "c", "text": "provádět výcvik na instruktorské kvalifikační stupně CMAS"},
+        {"key": "d", "text": "vést vybrané specializační kurzy"}
+      ],
+      "correct": "c",
+      "explanation": "Instruktor CMAS I** není oprávněn provádět výcvik na instruktorské kvalifikační stupně."
+    },
+    {
+      "id": 93,
+      "category": "instruktor",
+      "question": "Uchazeč o instruktorský kvalifikační stupeň CMAS I** musí:",
+      "options": [
+        {"key": "a", "text": "mít minimálně 21 let"},
+        {"key": "b", "text": "doložit, že v uplynulých 5 letech absolvoval nejméně 2 školení instruktorů SPČR"},
+        {"key": "c", "text": "být držitelem kvalifikačního stupně Instruktor CMAS I* nebo Potápěč CMAS P*** nebo držitelem kvalifikace vedoucího potápěče IANTD, PADI, SSI, ITD, NAUI a SDI/TDI, případně držitelem potápěčské kvalifikace jiného výcvikového systému určené SPČR"},
+        {"key": "d", "text": "být držitelem kvalifikačního stupně minimálně CMAS P** nebo potápěčské kvalifikace jiného systému určené SPČR"}
+      ],
+      "correct": "c",
+      "explanation": "Uchazeč o I** musí být držitelem I* nebo P*** nebo ekvivalentní kvalifikace jiného systému."
+    },
+    {
+      "id": 94,
+      "category": "instruktor",
+      "question": "Uchazeč o instruktorský kvalifikační stupeň CMAS I** musí doložit:",
+      "options": [
+        {"key": "a", "text": "že v uplynulých 5 letech absolvoval nejméně 2 školení instruktorů SPČR"},
+        {"key": "b", "text": "že v uplynulých 3 letech absolvoval školení SPČR z metodiky vedení výcviku (tento požadavek se nevztahuje na uchazeče s kvalifikací Instruktor CMAS I*)"},
+        {"key": "c", "text": "že od získání instruktorského kvalifikačního stupně CMAS I* vycvičil nejméně 10 potápěčů na kvalifikace Potápěč s doprovodem a/nebo Potápěč Junior SPČR včetně udělení kvalifikace"},
+        {"key": "d", "text": "že od získání instruktorského kvalifikačního stupně CMAS I* vycvičil nejméně 5 potápěčů na kvalifikaci Potápěč CMAS P* včetně udělení kvalifikace"}
+      ],
+      "correct": "b",
+      "explanation": "Uchazeč o I** musí doložit školení z metodiky (pokud již nemá I*)."
+    },
+    {
+      "id": 95,
+      "category": "instruktor",
+      "question": "Kvalifikační stupeň Instruktor CMAS I** uděluje:",
+      "options": [
+        {"key": "a", "text": "prezidium příslušného členského svazu SPČR"},
+        {"key": "b", "text": "instruktor s kvalifikací nejméně CMAS I***, pověřený prezidiem příslušného zemského svazu SPČR"},
+        {"key": "c", "text": "zkušební komise složená z držitelů kvalifikací Instruktor CMAS I*** a Instruktor CMAS I**, jmenovaná VK SPČR"},
+        {"key": "d", "text": "zkušební komise složená z držitelů kvalifikace Instruktor CMAS I***, jmenovaná VK SPČR"}
+      ],
+      "correct": "d",
+      "explanation": "Kvalifikaci I** uděluje zkušební komise z držitelů I***, jmenovaná VK SPČR."
+    },
+    {
+      "id": 96,
+      "category": "instruktor",
+      "question": "Uchazeči o kvalifikační stupeň Instruktor CMAS I*** musí být minimálně:",
+      "options": [
+        {"key": "a", "text": "24 let"},
+        {"key": "b", "text": "21 let"},
+        {"key": "c", "text": "19 let"},
+        {"key": "d", "text": "18 let"}
+      ],
+      "correct": "a",
+      "explanation": "Minimální věk pro uchazeče o I*** je 24 let."
+    },
+    {
+      "id": 97,
+      "category": "instruktor",
+      "question": "Instruktor CMAS I*** není oprávněn:",
+      "options": [
+        {"key": "a", "text": "provádět výcvik na potápěčské kvalifikační stupně CMAS"},
+        {"key": "b", "text": "provádět výcvik na instruktorské kvalifikační stupně CMAS"},
+        {"key": "c", "text": "udělovat instruktorské kvalifikační stupně CMAS"},
+        {"key": "d", "text": "vést vybrané specializační kurzy"}
+      ],
+      "correct": "c",
+      "explanation": "Instruktor I*** není oprávněn udělovat instruktorské kvalifikační stupně (to dělá zkušební komise)."
+    },
+    {
+      "id": 98,
+      "category": "instruktor",
+      "question": "Uchazeč o instruktorský kvalifikační stupeň CMAS I*** musí:",
+      "options": [
+        {"key": "a", "text": "mít minimálně 21 let"},
+        {"key": "b", "text": "doložit, že v průběhu své výcvikové činnosti vycvičil v rámci CMAS/SPČR nejméně 60 potápěčů včetně udělení kvalifikace; v tomto počtu musí být zastoupeny kvalifikační stupně Potápěč CMAS P*, Potápěč CMAS P** a Potápěč CMAS P***"},
+        {"key": "c", "text": "doložit, že v průběhu své výcvikové činnosti vycvičil v rámci CMAS/SPČR nejméně 80 potápěčů včetně udělení kvalifikace; do tohoto počtu může být zahrnuto nejvýše 40 absolventů specializačních kurzů"},
+        {"key": "d", "text": "být držitelem kvalifikačního stupně minimálně Instruktor CMAS I*"}
+      ],
+      "correct": "b",
+      "explanation": "Uchazeč o I*** musí vycvičit nejméně 60 potápěčů včetně P*, P** a P***."
+    },
+    {
+      "id": 99,
+      "category": "instruktor",
+      "question": "Uchazeč o instruktorský kvalifikační stupeň CMAS I*** musí:",
+      "options": [
+        {"key": "a", "text": "mít minimálně 24 let"},
+        {"key": "b", "text": "být držitelem kvalifikačního stupně Instruktor CMAS I**"},
+        {"key": "c", "text": "odevzdat písemnou (případně jiným způsobem připravenou) práci na předem zadané téma"},
+        {"key": "d", "text": "všechny odpovědi jsou správné"}
+      ],
+      "correct": "d",
+      "explanation": "Všechny odpovědi jsou správné - věk 24 let, kvalifikace I**, písemná práce."
+    },
+    {
+      "id": 100,
+      "category": "instruktor",
+      "question": "Kvalifikační stupeň Instruktor CMAS I*** uděluje:",
+      "options": [
+        {"key": "a", "text": "prezidium příslušného členského svazu SPČR"},
+        {"key": "b", "text": "instruktor s kvalifikací nejméně CMAS I***, pověřený prezidiem příslušného členského svazu SPČR"},
+        {"key": "c", "text": "zkušební komise složená z držitelů kvalifikace Instruktor CMAS I***, jmenovaná VK SPČR"},
+        {"key": "d", "text": "zkušební komise složená z držitelů kvalifikací Instruktor CMAS I*** a Instruktor CMAS I**, jmenovaná VK SPČR"}
+      ],
+      "correct": "c",
+      "explanation": "Kvalifikaci I*** uděluje zkušební komise z držitelů I***, jmenovaná VK SPČR."
+    }
+  ]
+}
