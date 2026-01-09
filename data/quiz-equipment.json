@@ -735,7 +735,7 @@
       "category": "plicni-automatiky",
       "question": "Nevýhoda zásobníku dýchacího média osazeného vysokotlakým uzavíracím ventilem s jedním vývodem spočívá v tom:",
       "options": [
-        {"key": "a", "text": "že s tímto vybavením nelze řešit krizovou situaci „potápěč bez vzduchu" (OOA)"},
+        {"key": "a", "text": "že s tímto vybavením nelze řešit krizovou situaci 'potápěč bez vzduchu' (OOA)"},
         {"key": "b", "text": "že s tímto vybavením nelze používat kompenzátor vztlaku typu křídlo"},
         {"key": "c", "text": "že oba 2. stupně plicní automatiky, tlakoměr i plnicí hadice kompenzátoru vztlaku a suchého obleku jsou funkčně závislé na jediném 1. stupni plicní automatiky"},
         {"key": "d", "text": "že neumožňuje používání plicní automatiky s úpravou zvyšující odolnost proti zamrzání."}
@@ -813,9 +813,9 @@
       "category": "lahve",
       "question": "Ventily tlakových lahví s válcovým závitem:",
       "options": [
-        {"key": "a", "text": "jsou těsněny „O" kroužkem a vyžadují vyšší dotahovací moment než ventily s kuželovým závitem"},
+        {"key": "a", "text": "jsou těsněny 'O' kroužkem a vyžadují vyšší dotahovací moment než ventily s kuželovým závitem"},
         {"key": "b", "text": "jsou těsněny teflonovou páskou a vyžadují vyšší dotahovací moment než ventily s kuželovým závitem"},
-        {"key": "c", "text": "jsou těsněny „O" kroužkem a vyžadují nižší dotahovací moment než ventily s kuželovým závitem"},
+        {"key": "c", "text": "jsou těsněny 'O' kroužkem a vyžadují nižší dotahovací moment než ventily s kuželovým závitem"},
         {"key": "d", "text": "jsou těsněny teflonovou páskou a vyžadují nižší dotahovací moment než ventily s kuželovým závitem"}
       ],
       "correct": "c",
@@ -1230,7 +1230,7 @@
       "question": "Roztržený neoprenový oblek:",
       "options": [
         {"key": "a", "text": "lepíme běžným vteřinovým lepidlem"},
-        {"key": "b", "text": "lepíme k tomu určeným lepidlem tak, že natřeme obě předem odmaštěné plochy, necháme „zavadnout", přitlačíme k sobě a přidržíme"},
+        {"key": "b", "text": "lepíme k tomu určeným lepidlem tak, že natřeme obě předem odmaštěné plochy, necháme 'zavadnout', přitlačíme k sobě a přidržíme"},
         {"key": "c", "text": "dokáže opravit pouze profesionálně vybavený odborník"},
         {"key": "d", "text": "se neslepuje, nýbrž pouze vodotěsně sešívá"}
       ],
