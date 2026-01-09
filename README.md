@@ -2,9 +2,9 @@
 
 An educational web application for understanding decompression models used in scuba diving. Visualize how inert gases dissolve into body tissues during a dive and how they're released during ascent.
 
-🔗 **Live Demo:** [https://matej-hron.github.io/decojs/](https://matej-hron.github.io/decojs/)
+**Live:** [https://decotheory.eu](https://decotheory.eu)
 
-## ⚠️ Disclaimer
+## Disclaimer
 
 **Educational Use Only** — This tool is NOT intended for real dive planning. Never use this for actual dives. Always use certified dive computers, tables, and proper training.
 
@@ -15,6 +15,7 @@ An educational web application for understanding decompression models used in sc
 - **DiveProfileChart** — Time-based visualization with depth, pressure, partial pressures, ceiling, and tissue loading
 - **MValueChart** — Pressure-pressure diagram with animated tissue trails and timeline playback
 - **Educational Theory Pages** — Learn about pressure, tissue loading, M-values, and gradient factors with interactive examples
+- **Knowledge Quizzes** — 6 quiz modules with 600+ questions from official CMAS/SPČR exam materials
 - **Bühlmann ZH-L16 model** — Industry-standard decompression algorithm with A/B/C variants
 - **Gradient Factor support** — GF Low/High conservatism settings with visual comparison
 - **Mobile-friendly PWA** — Responsive design with offline support
@@ -25,11 +26,9 @@ An educational web application for understanding decompression models used in sc
 |---------|-------------|
 | **Sandbox** | Interactive dive planner with DiveProfileChart and MValueChart |
 | **Theory** | Educational pages: Pressure & Depth, Tissue Loading, M-Values, Gradient Factors |
-| **Tests** | Physics, Anatomy, and Accidents quizzes (CMAS/SPČR exam-style) |
+| **Tests** | Physics, Anatomy, Accidents, Safety Guidelines, Training Guidelines, Equipment quizzes |
 
-## Implementation
-
-### Tech Stack
+## Tech Stack
 
 - **Pure HTML/CSS/JS** — No build tools, static hosting ready (GitHub Pages)
 - **Chart.js** — Interactive dive profile and M-value charts
@@ -37,36 +36,46 @@ An educational web application for understanding decompression models used in sc
 - **ES Modules** — Clean modular architecture
 - **PWA** — Service worker for offline support
 
-### Project Structure
+## Project Structure
 
 ```
 decojs/
 ├── index.html              # Landing page
+├── about.html              # About page with author info
 ├── sandbox/
 │   └── index.html          # Main dive planner (Sandbox)
 ├── pressure.html           # Theory: Pressure & Depth
 ├── tissue-loading.html     # Theory: Tissue Loading
 ├── m-values.html           # Theory: M-Values
 ├── gradient-factors.html   # Theory: Gradient Factors
-├── quiz-*.html             # Test quizzes
+├── quiz-physics.html       # Quiz: Physics
+├── quiz-anatomy.html       # Quiz: Anatomy
+├── quiz-accidents.html     # Quiz: Accidents
+├── quiz-safety.html        # Quiz: Safety Guidelines (Czech)
+├── quiz-training.html      # Quiz: Training Guidelines (Czech)
+├── quiz-equipment.html     # Quiz: Equipment (Czech)
 ├── css/
 │   └── styles.css          # All styles (CSS variables, responsive)
 ├── js/
 │   ├── decoModel.js        # Core decompression calculations
 │   ├── diveSetup.js        # Dive setup parsing and normalization
-│   ├── tissueCompartments.js # Bühlmann ZH-L16A/B/C compartment data
+│   ├── quiz.js             # Quiz engine
+│   ├── nav.js              # Shared navigation component
 │   ├── charts/
 │   │   ├── DiveProfileChart.js  # Reusable depth/time chart component
 │   │   ├── MValueChart.js       # Reusable M-value chart component
 │   │   └── chartTypes.js        # Shared types and validation
 │   └── components/
 │       └── DiveSetupEditor.js   # Reusable dive setup editor
-└── data/
-    ├── dive-profiles.json  # Preset dive profiles
-    └── dive-setup.json     # Default dive setup
+├── data/
+│   ├── dive-profiles.json  # Preset dive profiles
+│   ├── dive-setup.json     # Default dive setup
+│   └── quiz-*.json         # Quiz question banks
+└── tests/
+    └── run-tests.mjs       # Test suite (174 tests)
 ```
 
-### Core Algorithm
+## Core Algorithm
 
 The decompression model uses:
 
@@ -88,66 +97,38 @@ Where `k = ln(2) / half-time` is the tissue rate constant.
 
 ### Gradient Factor Interpolation (pAnchor-based)
 
-The implementation uses pAnchor-based GF interpolation, which is the correct approach per Baker's original gradient factor paper. During ascent, the active GF is not interpolated from bottom depth to surface, but from pAnchor to surface.
-
-**Key Concepts:**
-
-- **Instantaneous GF** — The current gradient factor for a single tissue:
-  ```
-  GF_i(P_amb) = (P_t[i] - P_amb) / (M_i(P_amb) - P_amb)
-  ```
-  Where `P_t[i]` is tissue pressure, `P_amb` is ambient pressure, and `M_i(P_amb)` is the M-value line.
-
-- **Max GF** — The highest instantaneous GF across all 16 compartments:
-  ```
-  GF_max(P_amb) = max(GF_i(P_amb)) for i = 1..16
-  ```
-
-- **pAnchor** — The ambient pressure during ascent where `GF_max` first equals `GF_low`:
-  ```
-  pAnchor: first P_amb during ascent where GF_max(P_amb) >= GF_low
-  ```
-  This is found by simulating ascent in 0.1 bar steps from bottom and off-gassing tissues.
-
-- **GF Interpolation** — The active GF is interpolated from pAnchor to surface:
-  ```
-  GF(P_amb) = GF_low + (GF_high - GF_low) × (pAnchor - P_amb) / (pAnchor - 1.0)
-  ```
-  - At/below pAnchor: GF = GF_low (no ramping yet)
-  - At surface (1.0 bar): GF = GF_high
-  - Between: linear interpolation
-
-**Why pAnchor?**
-
-The traditional "bottom-anchored" approach (GF ramp from max depth to surface) is incorrect because:
-1. At max depth, the diver may be far from any deco obligation
-2. The first stop depth depends on tissue loading, not arbitrary bottom depth
-3. pAnchor represents where the diver's leading tissue first reaches the GF_low limit
-
-This implementation matches how dive computers like Shearwater use gradient factors.
+The implementation uses pAnchor-based GF interpolation, which is the correct approach per Baker's original gradient factor paper. During ascent, the active GF is interpolated from pAnchor to surface, not from bottom depth.
 
 ## Development
 
 ```bash
-# Serve locally
+# Serve locally (or use VS Code Live Server)
 python3 -m http.server 8080
 
-# Open in browser
-open http://localhost:8080
+# Run tests
+npm test
 ```
+
+## Author
+
+**Matej Hron** — CMAS I** instructor at [Deepblue diving club](https://deepblue.cz)
+
+- [matej.hron@gmail.com](mailto:matej.hron@gmail.com)
+- [LinkedIn](https://www.linkedin.com/in/matejhron/)
+- [GitHub](https://github.com/matej-hron/decojs)
 
 ## References
 
-- **Powell, Mark.** *Deco for Divers.* — The primary inspiration for this project. An excellent, accessible guide to decompression theory for recreational and technical divers.
+- **Powell, Mark.** *Deco for Divers.* — The primary inspiration for this project
+- **Jahns, Jan.** *Fyzika.* — Comprehensive diving physics for Czech divers
 - Bühlmann, A.A. (1984). *Decompression–Decompression Sickness*
 - [Wikipedia: Bühlmann decompression algorithm](https://en.wikipedia.org/wiki/B%C3%BChlmann_decompression_algorithm)
-- [Aquatec: Decompression Theory PDF](https://aquatec.wordpress.com/wp-content/uploads/2011/03/decompression-theory.pdf)
 
 ## Acknowledgments
 
-Special thanks to **Mark Powell** for writing *Deco for Divers* — the book that made decompression theory click for me and inspired this project. If you want to truly understand what your dive computer is doing, read his book.
+Special thanks to **Mark Powell** for writing *Deco for Divers* — the book that made decompression theory click and inspired this project.
 
-Built with the help of **Claude Opus 4.5** (Anthropic) — my AI pair-programming buddy who helped bring this visualization to life. 🤖
+Built with the help of **Claude** (Anthropic).
 
 ## License
 
