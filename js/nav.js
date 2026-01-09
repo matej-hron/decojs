@@ -18,7 +18,7 @@ const NAV_ITEMS = [
             { href: 'gradient-factors.html', label: 'Gradient Factors' }
         ]
     },
-    { 
+    {
         label: 'Tests',
         href: 'quiz-physics.html',
         submenu: [
@@ -26,7 +26,8 @@ const NAV_ITEMS = [
             { href: 'quiz-anatomy.html', label: 'Anatomy' },
             { href: 'quiz-accidents.html', label: 'Accidents' },
             { href: 'quiz-safety.html', label: 'Safety Guidelines' },
-            { href: 'quiz-training.html', label: 'Training Guidelines' }
+            { href: 'quiz-training.html', label: 'Training Guidelines' },
+            { href: 'quiz-equipment.html', label: 'Equipment' }
         ]
     },
     { href: 'about.html', label: 'About' }
