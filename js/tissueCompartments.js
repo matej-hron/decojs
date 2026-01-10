@@ -12,13 +12,13 @@
  * - 'b' coefficient (dimensionless): Related to the slope of the M-value line
  * 
  * Three variants exist:
- * - ZH-L16A: Original experimental values (least conservative)
+ * - ZH-L16A: Original experimental values (least conservative, 4.0 min TC1)
  * - ZH-L16B: Modified for printed dive tables (more conservative a for TC 5-8, 13)
  * - ZH-L16C: Modified for dive computers (most conservative a for TC 5-15)
- * 
- * All variants share the same half-times and b coefficients.
- * The half-times here use a common variant where compartment 1 is 5.0 min 
- * (original Bühlmann used 4.0 min).
+ *
+ * All variants share the same b coefficients.
+ * Half-times are shared except compartment 1: ZH-L16A uses original 4.0 min,
+ * B/C variants use modified 5.0 min.
  * 
  * Sources:
  * - Bühlmann, A.A.; Völlm, E.B.; Nussberger, P. (2002). Tauchmedizin. Springer-Verlag.
@@ -40,12 +40,22 @@ export const ZHL16_VARIANTS = {
 let currentVariant = ZHL16_VARIANTS.C;
 
 /**
+ * Compartment 1 half-time by variant
+ * ZH-L16A uses original 4.0 min, B/C use modified 5.0 min
+ */
+const COMPARTMENT_1_HALFTIME = {
+    [ZHL16_VARIANTS.A]: 4.0,   // Original Bühlmann specification
+    [ZHL16_VARIANTS.B]: 5.0,   // Modified for printed tables
+    [ZHL16_VARIANTS.C]: 5.0    // Modified for dive computers
+};
+
+/**
  * Base compartment data (half-times, b coefficients, labels, colors)
- * These are the same across all ZH-L16 variants
+ * Note: Compartment 1 half-time is variant-specific (see COMPARTMENT_1_HALFTIME)
  */
 const BASE_COMPARTMENTS = [
     // Group 1: Reds/Oranges (Fast - tissues 1-4)
-    { id: 1,  halfTime: 5.0,   bN2: 0.5578, label: "1 - Brain, Spinal Cord",     color: "#e74c3c" },  // Red
+    { id: 1,  halfTime: 5.0,   bN2: 0.5578, label: "1 - Brain, Spinal Cord",     color: "#e74c3c" },  // Red (half-time adjusted per variant)
     { id: 2,  halfTime: 8.0,   bN2: 0.6514, label: "2 - Brain, Spinal Cord",     color: "#c0392b" },  // Dark red
     { id: 3,  halfTime: 12.5,  bN2: 0.7222, label: "3 - Spinal Cord",            color: "#e67e22" },  // Orange
     { id: 4,  halfTime: 18.5,  bN2: 0.7825, label: "4 - Muscle, Skin",           color: "#d35400" },  // Burnt orange
@@ -122,12 +132,15 @@ function getACoefficients(variant) {
 /**
  * Build compartments array for a given variant
  * @param {string} variant - One of ZHL16_VARIANTS values
- * @returns {Array} Compartments with aN2 values for the specified variant
+ * @returns {Array} Compartments with aN2 values and variant-specific half-times
  */
 function buildCompartments(variant) {
     const aCoeffs = getACoefficients(variant);
+    const comp1HalfTime = COMPARTMENT_1_HALFTIME[variant] || 5.0;
+
     return BASE_COMPARTMENTS.map(comp => ({
         ...comp,
+        halfTime: comp.id === 1 ? comp1HalfTime : comp.halfTime,
         aN2: aCoeffs[comp.id]
     }));
 }
