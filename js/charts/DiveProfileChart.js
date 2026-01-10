@@ -719,6 +719,7 @@ export class DiveProfileChart {
                 reservePressure,
                 pressures: [],      // Pressure at each time point
                 consumption: [],    // Cumulative consumption at each time point
+                rates: [],          // Instantaneous consumption rate (L/min) at each point
                 isActive: false     // Whether this gas has been used
             };
         });
@@ -770,15 +771,21 @@ export class DiveProfileChart {
                 }
             }
             
-            // Record pressure for each gas at this time point
+            // Calculate instantaneous rate at current depth
+            const ambientPressure = 1 + depth / 10;
+            const instantRate = sacRate * ambientPressure; // L/min at surface equivalent
+
+            // Record pressure and rate for each gas at this time point
             gases.forEach(gas => {
                 const data = gasData[gas.id];
                 const consumed = cumulativeConsumption[gas.id];
                 const remainingGas = data.totalGas - consumed;
                 const remainingPressure = Math.max(0, remainingGas / data.cylinderVolume);
-                
+
                 data.consumption.push(consumed);
                 data.pressures.push(remainingPressure);
+                // Rate only applies if this gas is currently in use
+                data.rates.push(gas.id === currentGasId ? instantRate : 0);
             });
         }
         
@@ -1058,7 +1065,8 @@ export class DiveProfileChart {
                     label: `${gasData.name} (bar)`,
                     data: results.timePoints.map((t, i) => ({
                         x: t,
-                        y: gasData.pressures[i]
+                        y: gasData.pressures[i],
+                        rate: gasData.rates[i]  // Store rate for tooltip
                     })),
                     borderColor: color,
                     backgroundColor: color + '20',
@@ -1067,7 +1075,8 @@ export class DiveProfileChart {
                     tension: 0,
                     pointRadius: 0,
                     borderWidth: 2.5,
-                    order: 2
+                    order: 2,
+                    isGasConsumption: true  // Flag for tooltip identification
                 });
             });
         }
@@ -1268,6 +1277,12 @@ export class DiveProfileChart {
                                     return `${label}: ${value.toFixed(1)} m`;
                                 } else if (label.includes('Pressure') || label.includes('pp')) {
                                     return `${label}: ${value.toFixed(2)} bar`;
+                                } else if (context.dataset.isGasConsumption) {
+                                    const rate = context.raw.rate || 0;
+                                    if (rate > 0) {
+                                        return `${label}: ${value.toFixed(0)} bar (${rate.toFixed(1)} L/min)`;
+                                    }
+                                    return `${label}: ${value.toFixed(0)} bar`;
                                 }
                                 return `${label}: ${value.toFixed(2)}`;
                             }
