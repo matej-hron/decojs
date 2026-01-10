@@ -181,6 +181,14 @@ export class DiveSetupEditor extends EventTarget {
         this.profiles = profiles || [];
         this._renderProfileSelector();
     }
+
+    /**
+     * Generate profile from current Quick Setup settings
+     * Call this to ensure waypoints are up-to-date with current inputs
+     */
+    generateProfile() {
+        this._generateProfile();
+    }
     
     /**
      * Get validation errors for current setup

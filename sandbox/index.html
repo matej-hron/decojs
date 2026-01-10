@@ -1277,6 +1277,8 @@
                 return;
             }
 
+            // Auto-generate profile to ensure waypoints match current settings
+            editor.generateProfile();
             const setup = editor.getDiveSetup();
 
             // Check if a profile with this name already exists
