@@ -164,6 +164,29 @@ section[id],
     white-space: nowrap;
 }
 
+/* Language Toggle Button */
+.lang-toggle {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-left: 0.5rem;
+}
+
+.lang-toggle:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.lang-toggle:active {
+    transform: scale(0.95);
+}
+
 /* Hamburger Menu Button */
 .nav-hamburger {
     display: none;
@@ -1518,7 +1541,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.4.49";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.4.50";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -1595,6 +1618,59 @@ footer a {
 
 .dse-section summary:hover {
     color: var(--primary-color);
+}
+
+.dse-summary-hint {
+    font-weight: 400;
+    color: var(--text-muted);
+    font-size: 0.9em;
+}
+
+/* Generate Section - prominent button between inputs and outputs */
+.dse-generate-section {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border: none;
+    padding: 1rem;
+    text-align: center;
+}
+
+.dse-generate-section .dse-generate-btn {
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    background: white;
+    color: var(--primary-color);
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dse-generate-section .dse-generate-btn:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.dse-generate-section .dse-ndl-display {
+    margin-top: 0.75rem;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border-radius: 4px;
+}
+
+.dse-generate-section .dse-ndl-status {
+    color: white;
+}
+
+.dse-generate-section .dse-ndl-ok { color: #a7f3d0; }
+.dse-generate-section .dse-ndl-warning { color: #fde68a; }
+.dse-generate-section .dse-ndl-deco { color: #fca5a5; }
+
+.btn-large {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
 }
 
 .dse-hint {

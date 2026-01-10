@@ -47,41 +47,41 @@
 
     <!-- Disclaimer Banner -->
     <div class="disclaimer-banner">
-        ⚠️ <strong>Educational Use Only</strong> — This tool is NOT intended for real dive planning. 
-        Never use this for actual dives. Always use certified dive computers, tables, and proper training.
+        ⚠️ <span data-i18n="disclaimer.text"><strong>Educational Use Only</strong> — This tool is NOT intended for real dive planning.
+        Never use this for actual dives. Always use certified dive computers, tables, and proper training.</span>
     </div>
 
     <header>
-        <h1>📊 Pressure & Partial Pressure</h1>
-        <p class="subtitle">Understanding how pressure changes with depth and affects the gases you breathe</p>
+        <h1>📊 <span data-i18n="header.title">Pressure & Partial Pressure</span></h1>
+        <p class="subtitle" data-i18n="header.subtitle">Understanding how pressure changes with depth and affects the gases you breathe</p>
     </header>
 
     <main>
         <!-- Table of Contents -->
         <nav class="toc">
-            <h2>📑 Contents</h2>
+            <h2>📑 <span data-i18n="toc.title">Contents</span></h2>
             <ul>
-                <li><a href="#terminology">📚 Dive Profile Terminology</a></li>
-                <li><a href="#dive-profile">📈 Your Dive Profile</a></li>
-                <li><a href="#total-pressure">🌊 Total Pressure Underwater</a></li>
-                <li><a href="#gas-consumption">⛽ Gas Consumption</a></li>
-                <li><a href="#air-composition">🌬️ Air Composition</a></li>
-                <li><a href="#daltons-law">⚗️ Dalton's Law</a></li>
-                <li><a href="#partial-pressure-limits">⚠️ Partial Pressure Limits</a></li>
-                <li><a href="#oxygen-toxicity">☠️ Oxygen Toxicity</a></li>
-                <li><a href="#partial-pressure-chart">📊 Partial Pressure Chart</a></li>
+                <li><a href="#terminology">📚 <span data-i18n="toc.terminology">Dive Profile Terminology</span></a></li>
+                <li><a href="#dive-profile">📈 <span data-i18n="toc.diveProfile">Your Dive Profile</span></a></li>
+                <li><a href="#total-pressure">🌊 <span data-i18n="toc.totalPressure">Total Pressure Underwater</span></a></li>
+                <li><a href="#gas-consumption">⛽ <span data-i18n="toc.gasConsumption">Gas Consumption</span></a></li>
+                <li><a href="#air-composition">🌬️ <span data-i18n="toc.airComposition">Air Composition</span></a></li>
+                <li><a href="#daltons-law">⚗️ <span data-i18n="toc.daltonsLaw">Dalton's Law</span></a></li>
+                <li><a href="#partial-pressure-limits">⚠️ <span data-i18n="toc.partialPressureLimits">Partial Pressure Limits</span></a></li>
+                <li><a href="#oxygen-toxicity">☠️ <span data-i18n="toc.oxygenToxicity">Oxygen Toxicity</span></a></li>
+                <li><a href="#partial-pressure-chart">📊 <span data-i18n="toc.partialPressureChart">Partial Pressure Chart</span></a></li>
             </ul>
         </nav>
 
         <!-- Educational Section -->
         <section id="terminology" class="education-section">
-            <h2>📚 Dive Profile Terminology</h2>
-            
+            <h2>📚 <span data-i18n="terminology.title">Dive Profile Terminology</span></h2>
+
             <div class="concept-card">
-                <h3>Reading a Dive Profile</h3>
-                <p>
+                <h3 data-i18n="terminology.reading.title">Reading a Dive Profile</h3>
+                <p data-i18n="terminology.reading.text">
                     A <strong>dive profile</strong> is a graphical representation of your dive, showing depth over time.
-                    Understanding the basic terminology helps you communicate with other divers and interpret 
+                    Understanding the basic terminology helps you communicate with other divers and interpret
                     dive computer data effectively.
                 </p>
             </div>
@@ -90,7 +90,7 @@
         <!-- Dive Profile Chart -->
         <section id="dive-profile" class="chart-section">
             <div class="chart-header">
-                <h2>📈 Your Dive Profile</h2>
+                <h2>📈 <span data-i18n="diveProfile.title">Your Dive Profile</span></h2>
             </div>
             <div id="chart-container" class="chart-wrapper" style="height: 600px;"></div>
             
@@ -722,7 +722,7 @@
     </main>
 
     <footer>
-        <p>Educational visualization only. Not for dive planning.</p>
+        <p data-i18n="footer.text">Educational visualization only. Not for dive planning.</p>
         <span class="version-number"></span>
     </footer>
 
@@ -1046,5 +1046,11 @@
     
     <!-- Shared Navigation -->
     <script src="js/nav.js" type="module"></script>
+
+    <!-- i18n Initialization -->
+    <script type="module">
+        import { initI18n } from './js/i18n.js';
+        initI18n();
+    </script>
 </body>
 </html>
