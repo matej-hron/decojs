@@ -52,7 +52,7 @@ import {
  * Default options for MValueChart
  */
 const DEFAULT_MVALUE_OPTIONS = {
-    compartments: [1, 2, 3, 4, 5, 6, 7, 8],
+    compartments: [1],  // Show only fastest tissue by default
     showMValueLines: true,
     showGFLines: true,
     showAmbientLine: true,
