@@ -164,29 +164,6 @@ section[id],
     white-space: nowrap;
 }
 
-/* Language Toggle Button */
-.lang-toggle {
-    background: rgba(255, 255, 255, 0.15);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 0.3rem 0.6rem;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    margin-left: 0.5rem;
-}
-
-.lang-toggle:hover {
-    background: rgba(255, 255, 255, 0.25);
-    border-color: rgba(255, 255, 255, 0.5);
-}
-
-.lang-toggle:active {
-    transform: scale(0.95);
-}
-
 /* Hamburger Menu Button */
 .nav-hamburger {
     display: none;
@@ -1541,7 +1518,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.4.54";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.4.55";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================

@@ -134,19 +134,6 @@ function initNavigation() {
     const currentPage = getCurrentPage();
     navLinks.innerHTML = generateNavHTML(currentPage);
 
-    // Add language toggle button after nav-links
-    const navContainer = document.querySelector('.nav-container');
-    const wipBadge = document.querySelector('.nav-wip-badge');
-    if (navContainer && wipBadge) {
-        const langToggle = document.createElement('button');
-        langToggle.className = 'lang-toggle';
-        langToggle.setAttribute('aria-label', 'Switch language');
-        // Get current language from localStorage or default to 'en'
-        const currentLang = localStorage.getItem('deco-theory-lang') || 'en';
-        langToggle.textContent = currentLang.toUpperCase();
-        navContainer.insertBefore(langToggle, wipBadge);
-    }
-
     // Setup mobile hamburger menu
     const hamburger = document.querySelector('.nav-hamburger');
     if (hamburger && navLinks) {
