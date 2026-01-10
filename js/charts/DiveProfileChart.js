@@ -1208,7 +1208,24 @@ export class DiveProfileChart {
         
         // ppO2 limit lines (if showing partial pressures)
         if (this.options.showPartialPressures) {
-            annotations.ppO2Max = {
+            // 1.4 bar - working limit (bottom time)
+            annotations.ppO2Working = {
+                type: 'line',
+                yMin: 1.4,
+                yMax: 1.4,
+                yScaleID: 'yPressure',
+                borderColor: 'rgba(241, 196, 15, 0.6)',
+                borderWidth: 1,
+                borderDash: [3, 3],
+                label: {
+                    display: true,
+                    content: 'ppO₂ 1.4 (working)',
+                    position: 'end',
+                    font: { size: 9 }
+                }
+            };
+            // 1.6 bar - deco limit (at rest)
+            annotations.ppO2Deco = {
                 type: 'line',
                 yMin: 1.6,
                 yMax: 1.6,
@@ -1218,7 +1235,7 @@ export class DiveProfileChart {
                 borderDash: [3, 3],
                 label: {
                     display: true,
-                    content: 'ppO₂ max (1.6)',
+                    content: 'ppO₂ 1.6 (deco)',
                     position: 'end',
                     font: { size: 9 }
                 }
