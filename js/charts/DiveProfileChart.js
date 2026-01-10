@@ -1208,7 +1208,7 @@ export class DiveProfileChart {
         
         // ppO2 limit lines (if showing partial pressures)
         if (this.options.showPartialPressures) {
-            // 1.4 bar - working limit (bottom time)
+            // 1.4 bar - limit during bottom time (with exertion)
             annotations.ppO2Working = {
                 type: 'line',
                 yMin: 1.4,
@@ -1219,7 +1219,7 @@ export class DiveProfileChart {
                 borderDash: [3, 3],
                 label: {
                     display: true,
-                    content: 'ppO₂ 1.4 (working)',
+                    content: 'ppO₂ 1.4 (bottom)',
                     position: 'end',
                     font: { size: 9 }
                 }
