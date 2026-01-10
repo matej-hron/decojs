@@ -272,9 +272,6 @@ export class DiveSetupEditor extends EventTarget {
 
         // ===== OUTPUT SECTION =====
 
-        // Profile header with stats and NDL (output display)
-        wrapper.appendChild(this._buildProfileHeader());
-
         // Waypoints section (Dive 1) - output of generation
         wrapper.appendChild(this._buildWaypointsSection(1));
 
@@ -305,58 +302,6 @@ export class DiveSetupEditor extends EventTarget {
         wrapper.appendChild(this._buildValidationErrors());
 
         this.container.appendChild(wrapper);
-    }
-    
-    _buildProfileHeader() {
-        const section = document.createElement('div');
-        section.className = 'dse-profile-header';
-        section.innerHTML = `
-            <div class="dse-profile-name">
-                <span class="dse-profile-icon">🤿</span>
-                <span class="dse-profile-name-text">New Dive</span>
-            </div>
-            <div class="dse-profile-stats">
-                <span class="dse-stat dse-stat-depth" title="Max depth">--m</span>
-                <span class="dse-stat dse-stat-time" title="Total time">--min</span>
-                <span class="dse-stat dse-stat-gf" title="Gradient factors">GF --/--</span>
-            </div>
-        `;
-        
-        this.elements.profileNameText = section.querySelector('.dse-profile-name-text');
-        this.elements.statDepth = section.querySelector('.dse-stat-depth');
-        this.elements.statTime = section.querySelector('.dse-stat-time');
-        this.elements.statGF = section.querySelector('.dse-stat-gf');
-        
-        return section;
-    }
-    
-    _updateProfileHeader() {
-        const waypoints = this._readWaypointsFromTable(this.elements.waypointsBody);
-        const waypoints2 = this.hasDive2 ? this._readWaypointsFromTable(this.elements.waypointsBody2) : [];
-        const allWaypoints = [...waypoints, ...waypoints2];
-        
-        const maxDepth = allWaypoints.length > 0 ? Math.max(...allWaypoints.map(wp => wp.depth), 0) : 0;
-        const totalTime = allWaypoints.length > 0 ? Math.max(...allWaypoints.map(wp => wp.time), 0) : 0;
-        const gasNames = this.currentGases.map(g => g.name).join(' + ');
-        const gfLow = this.elements.gfLowInput?.value || 100;
-        const gfHigh = this.elements.gfHighInput?.value || 100;
-        
-        // Use saved profile name if available, otherwise generate one
-        const displayName = this.currentProfileName || 
-            (maxDepth > 0 ? `${maxDepth}m ${gasNames}` : 'New Dive');
-        
-        if (this.elements.profileNameText) {
-            this.elements.profileNameText.textContent = displayName;
-        }
-        if (this.elements.statDepth) {
-            this.elements.statDepth.textContent = `${maxDepth}m`;
-        }
-        if (this.elements.statTime) {
-            this.elements.statTime.textContent = `${totalTime}min`;
-        }
-        if (this.elements.statGF) {
-            this.elements.statGF.textContent = `GF ${gfLow}/${gfHigh}`;
-        }
     }
     
     _buildProfileSelector() {
@@ -1397,7 +1342,6 @@ export class DiveSetupEditor extends EventTarget {
 
         // Update displays
         this._updateNDLDisplay();
-        this._updateProfileHeader();
         this._updateSummaryHints();
     }
     
@@ -1474,8 +1418,6 @@ export class DiveSetupEditor extends EventTarget {
     // =========================================================================
     
     _onInputChange() {
-        // Update profile header with current values
-        this._updateProfileHeader();
         // Update collapsed section hints
         this._updateSummaryHints();
 

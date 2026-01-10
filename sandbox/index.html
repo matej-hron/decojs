@@ -1276,37 +1276,32 @@
                 alert('Please enter a profile name');
                 return;
             }
-            
+
             const setup = editor.getDiveSetup();
-            
-            // Check if we're editing an existing profile
-            if (activeProfileId) {
-                // Update the existing profile
-                const existingIndex = profiles.findIndex(p => p.id === activeProfileId);
-                if (existingIndex >= 0) {
-                    profiles[existingIndex] = {
-                        ...setup,
-                        id: activeProfileId,
-                        name: name
-                    };
-                    saveProfiles(profiles);
-                    renderProfileChips();
-                    return;
-                }
+
+            // Check if a profile with this name already exists
+            const existingIndex = profiles.findIndex(p => p.name === name);
+
+            if (existingIndex >= 0) {
+                // Update the existing profile (keep its ID)
+                profiles[existingIndex] = {
+                    ...setup,
+                    id: profiles[existingIndex].id,
+                    name: name
+                };
+                activeProfileId = profiles[existingIndex].id;
+            } else {
+                // Create a new profile
+                const newProfile = {
+                    ...setup,
+                    id: `profile-${Date.now()}`,
+                    name: name
+                };
+                profiles.push(newProfile);
+                activeProfileId = newProfile.id;
             }
-            
-            // Create a new profile
-            const newProfile = {
-                ...setup,
-                id: `profile-${Date.now()}`,
-                name: name
-            };
-            
-            profiles.push(newProfile);
+
             saveProfiles(profiles);
-            
-            activeProfileId = newProfile.id;
-            
             renderProfileChips();
         });
         
