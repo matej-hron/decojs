@@ -79,13 +79,71 @@
         <section class="about-content">
             <h2>What Is This?</h2>
             <p>
-                This is an interactive educational resource for divers who want to understand the science 
-                behind their dive computers. All visualizations are based on the <strong>Bühlmann ZH-L16</strong> 
+                This is an interactive educational resource for divers who want to understand the science
+                behind their dive computers. All visualizations are based on the <strong>Bühlmann ZH-L16</strong>
                 decompression model, one of the most widely used algorithms in recreational and technical diving.
             </p>
             <p>
-                The goal is to make abstract concepts like tissue saturation, half-times, and M-values 
+                The goal is to make abstract concepts like tissue saturation, half-times, and M-values
                 more intuitive through hands-on exploration and visualization.
+            </p>
+        </section>
+
+        <!-- Technical Details -->
+        <section class="about-content">
+            <h2>Algorithm Details</h2>
+            <p>
+                The decompression calculations use the <strong>Bühlmann ZH-L16</strong> algorithm with
+                the following parameters and assumptions:
+            </p>
+
+            <h3>Model Variants</h3>
+            <ul>
+                <li><strong>ZH-L16A:</strong> Original experimental values, TC1 half-time = 4.0 min</li>
+                <li><strong>ZH-L16B:</strong> Modified for printed tables, TC1 half-time = 5.0 min</li>
+                <li><strong>ZH-L16C:</strong> Modified for dive computers (default), TC1 half-time = 5.0 min</li>
+            </ul>
+
+            <h3>Constants</h3>
+            <ul>
+                <li>Surface pressure: 1.0 bar</li>
+                <li>Water vapor pressure: 0.0627 bar (47 mmHg at 37°C)</li>
+                <li>Pressure per 10m depth: 1.0 bar (saltwater)</li>
+                <li>Descent rate: 20 m/min</li>
+                <li>Ascent rate: 10 m/min</li>
+                <li>Deco stop increment: 3 m</li>
+            </ul>
+
+            <h3>Gradient Factors</h3>
+            <p>
+                Gradient factors use the <strong>Baker pAnchor method</strong>:
+            </p>
+            <ul>
+                <li>GF Low applies at the pAnchor depth (first stop)</li>
+                <li>Linear interpolation from pAnchor to surface (GF High)</li>
+                <li>Below pAnchor: constant GF Low</li>
+            </ul>
+
+            <h3>Equations</h3>
+            <ul>
+                <li><strong>Haldane equation:</strong> Tissue loading at constant depth</li>
+                <li><strong>Schreiner equation:</strong> Tissue loading during depth changes</li>
+                <li><strong>M-value:</strong> M = a + P<sub>amb</sub> / b</li>
+                <li><strong>Adjusted M-value:</strong> M<sub>adj</sub> = P<sub>amb</sub> + GF × (M - P<sub>amb</sub>)</li>
+            </ul>
+
+            <h3>Validation</h3>
+            <p>
+                The implementation has been validated against:
+            </p>
+            <ul>
+                <li><strong>DecoTengu:</strong> Tissue loading matches within 0.02%</li>
+                <li><strong>Bühlmann printed tables:</strong> Deco schedules match within expected tolerance</li>
+            </ul>
+            <p>
+                <em>Note:</em> Our calculations may produce 10-25% shorter deco times than printed tables.
+                This is expected — printed tables include safety margins and round up conservatively.
+                This tool shows the raw algorithm output for educational purposes.
             </p>
         </section>
 
