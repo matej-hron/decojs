@@ -102,3 +102,7 @@ npm run test:watch    # Watch mode for development
 - CSS variables in `:root` for theming
 - JSDoc comments for public functions
 - Bug fixes should include regression tests
+
+## Known Limitations / Roadmap
+
+- **Repetitive dives disabled** - DiveSetupEditor supports multi-dive (`showMultiDive` option) but charts only render `dives[0]`. Full support requires: chaining tissue simulation across dives, surface interval off-gassing, continuous timeline rendering. Feature is on roadmap but not critical.

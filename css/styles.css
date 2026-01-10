@@ -1541,7 +1541,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.4.52";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.4.53";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
