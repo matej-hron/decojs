@@ -68,6 +68,11 @@ import {
 } from '../tissueCompartments.js';
 
 /**
+ * Default SAC rate in L/min at surface
+ */
+const DEFAULT_SAC_RATE = 20;
+
+/**
  * Default editor options
  */
 const DEFAULT_EDITOR_OPTIONS = {
@@ -78,6 +83,7 @@ const DEFAULT_EDITOR_OPTIONS = {
     showDescription: true,
     showSurfaceInterval: true,
     showMultiDive: true,
+    showSacRate: true,
     compact: false,
     maxGases: 4,
     emitOnInput: true  // Emit change events on every input (vs only on save)
@@ -175,6 +181,14 @@ export class DiveSetupEditor extends EventTarget {
         this.profiles = profiles || [];
         this._renderProfileSelector();
     }
+
+    /**
+     * Generate profile from current Quick Setup settings
+     * Call this to ensure waypoints are up-to-date with current inputs
+     */
+    generateProfile() {
+        this._generateProfile();
+    }
     
     /**
      * Get validation errors for current setup
@@ -230,111 +244,72 @@ export class DiveSetupEditor extends EventTarget {
     _buildDOM() {
         this.container.innerHTML = '';
         this.container.classList.add('dive-setup-editor');
-        
+
         const wrapper = document.createElement('div');
         wrapper.className = 'dse-wrapper';
-        
-        // Profile name header (auto-generated)
-        wrapper.appendChild(this._buildProfileHeader());
-        
+
+        // ===== INPUT SECTION =====
+
         // Profile selector (if profiles provided)
         if (this.options.showProfiles && this.profiles.length > 0) {
             wrapper.appendChild(this._buildProfileSelector());
         }
-        
-        // Quick Setup section
+
+        // Quick Setup section (primary inputs)
         if (this.options.showQuickSetup) {
             wrapper.appendChild(this._buildQuickSetup());
         }
-        
-        // Gases section
+
+        // Gases section (collapsed by default)
         wrapper.appendChild(this._buildGasesSection());
-        
-        // Gradient Factors section
+
+        // Gradient Factors section (collapsed by default)
         if (this.options.showGradientFactors) {
             wrapper.appendChild(this._buildGradientFactors());
         }
-        
-        // Waypoints section (Dive 1)
+
+        // SAC Rate section
+        if (this.options.showSacRate) {
+            wrapper.appendChild(this._buildSacRateSection());
+        }
+
+        // Generate button (prominent, between inputs and outputs)
+        if (this.options.showQuickSetup) {
+            wrapper.appendChild(this._buildGenerateButton());
+        }
+
+        // ===== OUTPUT SECTION =====
+
+        // Waypoints section (Dive 1) - output of generation
         wrapper.appendChild(this._buildWaypointsSection(1));
-        
+
         // Multi-dive support
         if (this.options.showMultiDive) {
             wrapper.appendChild(this._buildDive2Controls());
             wrapper.appendChild(this._buildWaypointsSection(2));
         }
-        
+
+        // ===== SETTINGS SECTION =====
+
         // Surface interval
         if (this.options.showSurfaceInterval) {
             wrapper.appendChild(this._buildSurfaceInterval());
         }
-        
+
         // Description
         if (this.options.showDescription) {
             wrapper.appendChild(this._buildDescription());
         }
-        
+
         // Import/Export buttons
         if (this.options.showImportExport) {
             wrapper.appendChild(this._buildImportExport());
         }
-        
+
         // Validation errors display
         wrapper.appendChild(this._buildValidationErrors());
-        
+
         this.container.appendChild(wrapper);
-    }
-    
-    _buildProfileHeader() {
-        const section = document.createElement('div');
-        section.className = 'dse-profile-header';
-        section.innerHTML = `
-            <div class="dse-profile-name">
-                <span class="dse-profile-icon">🤿</span>
-                <span class="dse-profile-name-text">New Dive</span>
-            </div>
-            <div class="dse-profile-stats">
-                <span class="dse-stat dse-stat-depth" title="Max depth">--m</span>
-                <span class="dse-stat dse-stat-time" title="Total time">--min</span>
-                <span class="dse-stat dse-stat-gf" title="Gradient factors">GF --/--</span>
-            </div>
-        `;
-        
-        this.elements.profileNameText = section.querySelector('.dse-profile-name-text');
-        this.elements.statDepth = section.querySelector('.dse-stat-depth');
-        this.elements.statTime = section.querySelector('.dse-stat-time');
-        this.elements.statGF = section.querySelector('.dse-stat-gf');
-        
-        return section;
-    }
-    
-    _updateProfileHeader() {
-        const waypoints = this._readWaypointsFromTable(this.elements.waypointsBody);
-        const waypoints2 = this.hasDive2 ? this._readWaypointsFromTable(this.elements.waypointsBody2) : [];
-        const allWaypoints = [...waypoints, ...waypoints2];
-        
-        const maxDepth = allWaypoints.length > 0 ? Math.max(...allWaypoints.map(wp => wp.depth), 0) : 0;
-        const totalTime = allWaypoints.length > 0 ? Math.max(...allWaypoints.map(wp => wp.time), 0) : 0;
-        const gasNames = this.currentGases.map(g => g.name).join(' + ');
-        const gfLow = this.elements.gfLowInput?.value || 100;
-        const gfHigh = this.elements.gfHighInput?.value || 100;
-        
-        // Use saved profile name if available, otherwise generate one
-        const displayName = this.currentProfileName || 
-            (maxDepth > 0 ? `${maxDepth}m ${gasNames}` : 'New Dive');
-        
-        if (this.elements.profileNameText) {
-            this.elements.profileNameText.textContent = displayName;
-        }
-        if (this.elements.statDepth) {
-            this.elements.statDepth.textContent = `${maxDepth}m`;
-        }
-        if (this.elements.statTime) {
-            this.elements.statTime.textContent = `${totalTime}min`;
-        }
-        if (this.elements.statGF) {
-            this.elements.statGF.textContent = `GF ${gfLow}/${gfHigh}`;
-        }
     }
     
     _buildProfileSelector() {
@@ -380,7 +355,7 @@ export class DiveSetupEditor extends EventTarget {
         section.innerHTML = `
             <summary>⚡ Quick Setup</summary>
             <div class="dse-quick-inputs">
-                <p class="dse-hint">Enter max depth and bottom time to auto-generate waypoints.</p>
+                <p class="dse-hint">Set depth and bottom time, then click Generate below.</p>
                 <div class="dse-row">
                     <div class="dse-field">
                         <label>Max Depth (m):</label>
@@ -390,7 +365,6 @@ export class DiveSetupEditor extends EventTarget {
                         <label>Bottom Time (min):</label>
                         <input type="number" class="dse-quick-time form-input" value="20" min="1" max="120" step="1">
                     </div>
-                    <button class="dse-generate-btn btn btn-secondary" title="Generate a new profile from depth and bottom time">🔄 Generate</button>
                 </div>
                 <div class="dse-row dse-safety-stop-row">
                     <label class="dse-checkbox-label">
@@ -406,34 +380,19 @@ export class DiveSetupEditor extends EventTarget {
                         <input type="number" class="dse-safety-stop-time form-input" value="3" min="1" max="10" step="1">
                     </div>
                 </div>
-                <div class="dse-ndl-display">
-                    <span class="dse-ndl-label">NDL:</span>
-                    <span class="dse-ndl-value">--</span> min
-                    <span class="dse-ndl-status"></span>
-                    <span class="dse-deco-info" style="display: none;">
-                        <span class="dse-deco-warning">⚠️ Deco:</span>
-                        <span class="dse-deco-time">--</span> min stops
-                    </span>
-                </div>
             </div>
         `;
-        
+
         this.elements.quickDepth = section.querySelector('.dse-quick-depth');
         this.elements.quickTime = section.querySelector('.dse-quick-time');
-        this.elements.generateBtn = section.querySelector('.dse-generate-btn');
-        this.elements.ndlValue = section.querySelector('.dse-ndl-value');
-        this.elements.ndlStatus = section.querySelector('.dse-ndl-status');
-        this.elements.decoInfo = section.querySelector('.dse-deco-info');
-        this.elements.decoTime = section.querySelector('.dse-deco-time');
         this.elements.safetyStopEnabled = section.querySelector('.dse-safety-stop-enabled');
         this.elements.safetyStopDepth = section.querySelector('.dse-safety-stop-depth');
         this.elements.safetyStopTime = section.querySelector('.dse-safety-stop-time');
-        
+
         // Event handlers
         this.elements.quickDepth.addEventListener('input', () => this._updateNDLDisplay());
         this.elements.quickTime.addEventListener('input', () => this._updateNDLDisplay());
-        this.elements.generateBtn.addEventListener('click', () => this._generateProfile());
-        
+
         // Safety stop toggle - update field visibility
         this.elements.safetyStopEnabled.addEventListener('change', () => {
             const enabled = this.elements.safetyStopEnabled.checked;
@@ -441,22 +400,24 @@ export class DiveSetupEditor extends EventTarget {
                 el.style.opacity = enabled ? '1' : '0.5';
             });
         });
-        
+
         return section;
     }
     
     _buildGasesSection() {
         const section = document.createElement('details');
         section.className = 'dse-section dse-gases';
-        section.open = true;
+        section.open = false; // Collapsed by default
         section.innerHTML = `
-            <summary>⚗️ Gases</summary>
+            <summary>⚗️ Gases <span class="dse-summary-hint">(Air)</span></summary>
             <div class="dse-gases-content">
                 <p class="dse-hint">First gas is bottom gas. Add deco gases for multi-gas diving.</p>
                 <div class="dse-gases-list"></div>
                 <button class="dse-add-gas-btn btn btn-secondary btn-small">+ Add Deco Gas</button>
             </div>
         `;
+
+        this.elements.gasesSummaryHint = section.querySelector('.dse-summary-hint');
         
         this.elements.gasesList = section.querySelector('.dse-gases-list');
         this.elements.addGasBtn = section.querySelector('.dse-add-gas-btn');
@@ -469,8 +430,9 @@ export class DiveSetupEditor extends EventTarget {
     _buildGradientFactors() {
         const section = document.createElement('details');
         section.className = 'dse-section dse-gf';
+        section.open = false; // Collapsed by default
         section.innerHTML = `
-            <summary>🎚️ Decompression Model</summary>
+            <summary>🎚️ Decompression Model <span class="dse-summary-hint">(GF 100/100)</span></summary>
             <div class="dse-gf-content">
                 <div class="dse-algorithm-row">
                     <label>Algorithm:</label>
@@ -508,7 +470,8 @@ export class DiveSetupEditor extends EventTarget {
         this.elements.gfHighSlider = section.querySelector('.dse-gf-high-slider');
         this.elements.gfHighInput = section.querySelector('.dse-gf-high-input');
         this.elements.algorithmSelect = section.querySelector('.dse-algorithm-select');
-        
+        this.elements.gfSummaryHint = section.querySelector('.dse-summary-hint');
+
         // Set initial algorithm value
         this.elements.algorithmSelect.value = getZHL16Variant();
         
@@ -556,7 +519,69 @@ export class DiveSetupEditor extends EventTarget {
         
         return section;
     }
-    
+
+    _buildSacRateSection() {
+        const section = document.createElement('details');
+        section.className = 'dse-section dse-sac';
+        section.open = false; // Collapsed by default
+        section.innerHTML = `
+            <summary>⛽ Gas Consumption <span class="dse-summary-hint">(SAC ${DEFAULT_SAC_RATE} L/min)</span></summary>
+            <div class="dse-sac-content">
+                <p class="dse-hint">Surface Air Consumption rate for gas planning calculations.</p>
+                <div class="dse-row">
+                    <div class="dse-field">
+                        <label>SAC Rate (L/min):</label>
+                        <input type="number" class="dse-sac-input form-input" value="${DEFAULT_SAC_RATE}" min="5" max="50" step="1">
+                    </div>
+                    <div class="dse-field">
+                        <label>Reserve (bar):</label>
+                        <input type="number" class="dse-reserve-input form-input" value="50" min="20" max="100" step="10">
+                    </div>
+                </div>
+                <p class="dse-hint">Typical SAC: 15-20 L/min (relaxed), 25-30 L/min (working).</p>
+            </div>
+        `;
+
+        this.elements.sacInput = section.querySelector('.dse-sac-input');
+        this.elements.reserveInput = section.querySelector('.dse-reserve-input');
+        this.elements.sacSummaryHint = section.querySelector('.dse-summary-hint');
+
+        this.elements.sacInput.addEventListener('input', () => {
+            this._updateSummaryHints();
+            this._onInputChange();
+        });
+        this.elements.reserveInput.addEventListener('input', () => this._onInputChange());
+
+        return section;
+    }
+
+    _buildGenerateButton() {
+        const section = document.createElement('div');
+        section.className = 'dse-section dse-generate-section';
+        section.innerHTML = `
+            <button class="dse-generate-btn btn btn-primary btn-large">🔄 Generate Profile</button>
+            <div class="dse-ndl-display">
+                <span class="dse-ndl-label">NDL:</span>
+                <span class="dse-ndl-value">--</span> min
+                <span class="dse-ndl-status"></span>
+                <span class="dse-deco-info" style="display: none;">
+                    <span class="dse-deco-warning">⚠️ Deco:</span>
+                    <span class="dse-deco-time">--</span> min stops
+                </span>
+            </div>
+        `;
+
+        this.elements.generateBtn = section.querySelector('.dse-generate-btn');
+        this.elements.ndlValue = section.querySelector('.dse-ndl-value');
+        this.elements.ndlStatus = section.querySelector('.dse-ndl-status');
+        this.elements.decoInfo = section.querySelector('.dse-deco-info');
+        this.elements.decoTime = section.querySelector('.dse-deco-time');
+
+        this.elements.generateBtn.addEventListener('click', () => this._generateProfile());
+
+        return section;
+    }
+
     _buildWaypointsSection(diveNumber) {
         const section = document.createElement('div');
         const isDive2 = diveNumber === 2;
@@ -821,6 +846,7 @@ export class DiveSetupEditor extends EventTarget {
                 this.currentGases.splice(index, 1);
                 this._renderGasCards();
                 this._onInputChange();
+                this._updateNDLDisplay();
             });
         }
         
@@ -854,8 +880,9 @@ export class DiveSetupEditor extends EventTarget {
         
         this._renderGasCards();
         this._onInputChange();
+        this._updateNDLDisplay();
     }
-    
+
     _updateWaypointGasDropdowns() {
         const updateDropdowns = (body) => {
             if (!body) return;
@@ -1082,7 +1109,7 @@ export class DiveSetupEditor extends EventTarget {
     
     _updateNDLDisplay() {
         if (!this.elements.quickDepth || !this.elements.ndlValue) return;
-        
+
         const maxDepth = parseFloat(this.elements.quickDepth.value) || 30;
         const bottomTime = parseFloat(this.elements.quickTime.value) || 20;
         const gas = this.currentGases[0] || { n2: 0.79 };
@@ -1229,7 +1256,9 @@ export class DiveSetupEditor extends EventTarget {
         const profileName = this.currentProfileName || generatedName;
         
         const surfaceInterval = parseFloat(this.elements.surfaceIntervalInput?.value) || 5;
-        
+        const sacRate = parseFloat(this.elements.sacInput?.value) || DEFAULT_SAC_RATE;
+        const reservePressure = parseFloat(this.elements.reserveInput?.value) || 50;
+
         return {
             name: profileName,
             description: this.elements.descriptionInput?.value || '',
@@ -1239,6 +1268,8 @@ export class DiveSetupEditor extends EventTarget {
             gfLow: parseInt(this.elements.gfLowInput?.value) || DEFAULT_GF_LOW,
             gfHigh: parseInt(this.elements.gfHighInput?.value) || DEFAULT_GF_HIGH,
             surfaceInterval: surfaceInterval,
+            sacRate: sacRate,
+            reservePressure: reservePressure,
             units: { depth: 'meters', time: 'minutes', pressure: 'bar' }
         };
     }
@@ -1246,16 +1277,24 @@ export class DiveSetupEditor extends EventTarget {
     _populateFromSetup(setup) {
         // Store profile name
         this.currentProfileName = setup.name || null;
-        
+
         // Load gases
         this.currentGases = getGases(setup);
         this._renderGasCards();
-        
+
         // Surface interval
         if (this.elements.surfaceIntervalInput) {
             this.elements.surfaceIntervalInput.value = setup.surfaceInterval ?? 5;
         }
-        
+
+        // SAC rate and reserve
+        if (this.elements.sacInput) {
+            this.elements.sacInput.value = setup.sacRate ?? DEFAULT_SAC_RATE;
+        }
+        if (this.elements.reserveInput) {
+            this.elements.reserveInput.value = setup.reservePressure ?? 50;
+        }
+
         // Gradient factors
         const gfLow = setup.gfLow ?? DEFAULT_GF_LOW;
         const gfHigh = setup.gfHigh ?? DEFAULT_GF_HIGH;
@@ -1267,22 +1306,36 @@ export class DiveSetupEditor extends EventTarget {
             this.elements.gfHighInput.value = gfHigh;
             this.elements.gfHighSlider.value = gfHigh;
         }
-        
+
         // Algorithm variant
         if (this.elements.algorithmSelect && setup.algorithm) {
             this.elements.algorithmSelect.value = setup.algorithm;
             setZHL16Variant(setup.algorithm);
         }
-        
+
         // Description
         if (this.elements.descriptionInput) {
             this.elements.descriptionInput.value = setup.description || '';
         }
-        
+
         // Waypoints
         if (setup.dives && setup.dives.length > 0) {
             this._loadWaypointsToTable(setup.dives[0].waypoints || [], this.elements.waypointsBody);
-            
+
+            // Update Quick Setup fields from waypoints
+            const waypoints = setup.dives[0].waypoints || [];
+            if (waypoints.length > 0 && this.elements.quickDepth && this.elements.quickTime) {
+                const maxDepth = Math.max(...waypoints.map(wp => wp.depth), 0);
+                // Estimate bottom time: time at max depth (find when descent ends and ascent begins)
+                const maxDepthWaypoints = waypoints.filter(wp => wp.depth === maxDepth);
+                const bottomTime = maxDepthWaypoints.length > 0
+                    ? maxDepthWaypoints[maxDepthWaypoints.length - 1].time
+                    : waypoints[waypoints.length - 1].time;
+
+                this.elements.quickDepth.value = maxDepth;
+                this.elements.quickTime.value = bottomTime;
+            }
+
             if (setup.dives.length > 1 && this.elements.waypointsBody2) {
                 const dive2 = setup.dives[1];
                 if (this.elements.dive2SI) {
@@ -1294,10 +1347,10 @@ export class DiveSetupEditor extends EventTarget {
                 this._removeDive2();
             }
         }
-        
+
         // Update displays
         this._updateNDLDisplay();
-        this._updateProfileHeader();
+        this._updateSummaryHints();
     }
     
     _validateSetup(setup) {
@@ -1373,14 +1426,35 @@ export class DiveSetupEditor extends EventTarget {
     // =========================================================================
     
     _onInputChange() {
-        // Update profile header with current values
-        this._updateProfileHeader();
-        
+        // Update collapsed section hints
+        this._updateSummaryHints();
+
         if (this.options.emitOnInput) {
             this._emitChange();
         }
     }
-    
+
+    _updateSummaryHints() {
+        // Update Gases summary hint
+        if (this.elements.gasesSummaryHint) {
+            const gasNames = this.currentGases.map(g => g.name).join(' + ');
+            this.elements.gasesSummaryHint.textContent = `(${gasNames || 'Air'})`;
+        }
+
+        // Update GF summary hint
+        if (this.elements.gfSummaryHint) {
+            const gfLow = this.elements.gfLowInput?.value || 100;
+            const gfHigh = this.elements.gfHighInput?.value || 100;
+            this.elements.gfSummaryHint.textContent = `(GF ${gfLow}/${gfHigh})`;
+        }
+
+        // Update SAC summary hint
+        if (this.elements.sacSummaryHint) {
+            const sac = this.elements.sacInput?.value || DEFAULT_SAC_RATE;
+            this.elements.sacSummaryHint.textContent = `(SAC ${sac} L/min)`;
+        }
+    }
+
     _emitChange() {
         const setup = this._buildSetupFromForm();
         const validation = this._validateSetup(setup);

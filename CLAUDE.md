@@ -1,36 +1,104 @@
-# CLAUDE.md - Project Context for Claude Code
+# CLAUDE.md
 
-## Project: DecoJS - Decompression Theory PWA
-Interactive educational tool for scuba diving decompression theory.
-Live at: https://matej-hron.github.io/decojs/
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Tech Stack
-- Pure HTML/CSS/JavaScript (no build tools)
-- Chart.js for visualizations
-- PWA with service worker for offline support
-- Jest for testing
+## Project Overview
+DecoJS is an educational PWA for scuba diving decompression theory, implementing the Bühlmann ZH-L16 algorithm with interactive visualizations.
 
-## Key Commands
-- `npm test` - Run tests (MUST pass before commits)
-- Use Live Server VS Code extension for local dev
+**Live at:** https://decotheory.eu
 
-## Before Every Commit
-1. Run `npm test`
-2. Bump version in `sw.js` (line 2) AND `css/styles.css` (search `.version-number::after`)
+## Development Commands
 
-## Project Structure
-- `/js/` - Core logic (decoModel.js, tissueCompartments.js)
-- `/js/charts/` - Reusable chart components
-- `/data/` - Quiz JSON files, dive presets
-- `/resources/` - Reference materials, source test files
-- `/css/styles.css` - All styles
+```bash
+npm test              # Run all 174 tests - MUST pass before commits
+npm run test:watch    # Watch mode for development
+```
 
-## Quizzes
-5 quiz sets (100 questions each) from SPČR 2018 exams:
-- Physics, Anatomy, Accidents, Safety Guidelines, Training Guidelines
-- JSON format in `/data/quiz-*.json`
-- When adding new quiz: update `js/nav.js` AND `index.html` tiles
+**Local development:** Use VS Code Live Server extension (port 5500)
 
-## Language
-- UI: English
-- Quiz content: Czech with proper diacritics (háčky, čárky)
+## Before Every Commit (CRITICAL)
+
+1. Run `npm test` - all tests must pass
+2. Bump version in TWO files:
+   - `sw.js` line 2: `const CACHE_NAME = 'deco-theory-X.X.XX'`
+   - `css/styles.css`: search `.version-number::after` and update content
+
+## Architecture
+
+**No build tools** - Pure ES Modules loaded directly by browser.
+
+### Three Main Parts
+
+1. **Sandbox** (`sandbox/index.html`)
+   - Interactive dive planner where users freely simulate dives
+   - Three components: DiveSetupEditor → produces JSON → feeds two charts
+   - Components: `DiveProfileChart`, `MValueChart`, `DiveSetupEditor`
+
+2. **Theory** (pressure.html, tissue-loading.html, m-values.html, gradient-factors.html)
+   - Educational pages explaining decompression concepts
+   - Embed chart components to demonstrate examples
+   - Each example links to Sandbox with same dive setup ("Open in Sandbox →")
+
+3. **Tests** (quiz-*.html)
+   - Official SPČR (Czech CMAS) exam questions made interactive
+   - Generic quiz engine with category filtering and scoring
+
+### Core Modules
+- `js/decoModel.js` - Haldane/Schreiner equations, M-value calculations
+- `js/tissueCompartments.js` - ZH-L16 compartment data (A/B/C variants)
+- `js/diveSetup.js` - Gas presets, profile generation
+- `js/quiz.js` - Generic quiz engine
+
+### Reusable Components
+- `js/charts/DiveProfileChart.js` - Depth/time with deco stops, ceilings, gas switches
+- `js/charts/MValueChart.js` - P-P diagram with tissue loading visualization
+- `js/components/DiveSetupEditor.js` - Form UI for dive configuration
+
+### Navigation
+- `js/nav.js` - Centralized `NAV_ITEMS` array, handles subdirectory paths
+
+## Adding a New Quiz
+
+1. Create `data/quiz-{name}.json`
+2. Create `quiz-{name}.html` (copy existing quiz page as template)
+3. Add to `NAV_ITEMS` submenu in `js/nav.js`
+4. Add topic tile to `index.html`
+5. Add both files to `STATIC_ASSETS` array in `sw.js`
+6. Bump version
+
+### Quiz JSON Format
+```json
+{
+  "title": "Quiz Title",
+  "description": "Description",
+  "questions": [
+    {
+      "id": 1,
+      "category": "category-slug",
+      "question": "Question text?",
+      "options": [
+        { "key": "a", "text": "Option A" },
+        { "key": "b", "text": "Option B" }
+      ],
+      "correct": "a",
+      "explanation": "Why A is correct..."
+    }
+  ]
+}
+```
+
+## Current Content
+
+**Theory pages (English):** Pressure, Tissue Loading, M-Values, Gradient Factors
+
+**Quizzes (Czech - CMAS/SPČR 2018 exams):**
+- Physics, Anatomy, Accidents, Safety, Training, Equipment, Vessel
+- 7 quizzes, 650+ questions total
+
+## Key Conventions
+
+- Quizzes use Czech with proper diacritics (háčky, čárky)
+- Theory pages in English
+- CSS variables in `:root` for theming
+- JSDoc comments for public functions
+- Bug fixes should include regression tests
