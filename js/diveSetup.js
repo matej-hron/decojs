@@ -189,7 +189,7 @@ export function getDefaultSetup() {
         reservePressure: 50,
         gfLow: 100,   // Gradient Factor Low (percentage)
         gfHigh: 100,  // Gradient Factor High (percentage)
-        surfaceInterval: 5,
+        surfaceInterval: 15,  // Post-dive surface time to show off-gassing
         units: {
             depth: "meters",
             time: "minutes",
@@ -711,7 +711,7 @@ export function getDiveSetupWaypoints(setup) {
  * @returns {number} Surface interval in minutes
  */
 export function getSurfaceInterval(setup) {
-    return setup.surfaceInterval ?? 5;
+    return setup.surfaceInterval ?? 15;
 }
 
 /**

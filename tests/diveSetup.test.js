@@ -189,9 +189,9 @@ describe('diveSetup module', () => {
             expect(getSurfaceInterval(setup)).toBe(90);
         });
 
-        test('returns default 5 if not set', () => {
+        test('returns default 15 if not set', () => {
             const setup = {};
-            expect(getSurfaceInterval(setup)).toBe(5);
+            expect(getSurfaceInterval(setup)).toBe(15);
         });
     });
 

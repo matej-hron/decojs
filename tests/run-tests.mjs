@@ -291,8 +291,8 @@ describe('diveSetup', () => {
             expect(getSurfaceInterval({ surfaceInterval: 90 })).toBe(90);
         });
 
-        test('returns default 5 if not set', () => {
-            expect(getSurfaceInterval({})).toBe(5);
+        test('returns default 15 if not set', () => {
+            expect(getSurfaceInterval({})).toBe(15);
         });
 
         test('returns 0 when explicitly set to 0', () => {
