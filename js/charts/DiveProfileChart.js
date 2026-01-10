@@ -515,12 +515,12 @@ export class DiveProfileChart {
             }
         }
         
-        // Descent label - position at middle of descent phase
+        // Descent label - position along descent slope
         if (descentEnd && descentEnd.time > 0) {
             annotations.descentLabel = {
                 type: 'label',
                 xValue: descentEnd.time / 2,
-                yValue: -3,
+                yValue: maxDepth / 3,
                 content: ['⬇ 20 m/min'],
                 backgroundColor: 'rgba(46, 204, 113, 0.9)',
                 color: 'white',
