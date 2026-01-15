@@ -531,9 +531,8 @@
 
             if (totalVolume === 0) return 0;
 
-            const rawFinal = totalGas / totalVolume;
-            // Apply reduction valve limit for targets
-            return Math.min(rawFinal, TARGET_MAX_PRESSURE);
+            // Return raw equalized pressure (caller handles reduction valve limit)
+            return totalGas / totalVolume;
         }
 
         /**
@@ -841,15 +840,16 @@
             }
 
             // Currently flowing or ready to flow
-            const finalP = calculateMultiFinalPressure(openCascades, openTargets);
+            const rawFinalP = calculateMultiFinalPressure(openCascades, openTargets);
+            const displayP = Math.min(rawFinalP, TARGET_MAX_PRESSURE);
 
             statusDiv.className = 'connection-status ready';
             detailsDiv.className = 'connection-details active';
             detailsDiv.innerHTML = `
                 <strong>${cascadeLabels}</strong> → <strong>${targetLabels}</strong>
                 <div class="predicted-result">
-                    ${isAnimating ? 'Filling...' : 'Equalizing to'} <strong>${finalP.toFixed(1)} bar</strong>
-                    ${finalP >= TARGET_MAX_PRESSURE ? ' (200 bar limit)' : ''}
+                    ${isAnimating ? 'Filling...' : 'Equalizing to'} <strong>${displayP.toFixed(1)} bar</strong>
+                    ${rawFinalP > TARGET_MAX_PRESSURE ? ' (200 bar limit)' : ''}
                 </div>
             `;
         }
