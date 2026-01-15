@@ -592,6 +592,18 @@
                 }
             }
 
+            // Check target-to-target equalization (multiple targets open, no cascade)
+            if (openCascades.length === 0 && openTargets.length >= 2) {
+                const targetPressureValues = openTargets.map(i => targetPressures[i]);
+                const maxP = Math.max(...targetPressureValues);
+                const minP = Math.min(...targetPressureValues);
+                // If there's a pressure difference, equalize
+                if (maxP - minP > 0.5) {
+                    performFill();
+                    return;
+                }
+            }
+
             // Check cascade-to-target filling
             if (openCascades.length === 0 || openTargets.length === 0) return;
 
@@ -784,6 +796,35 @@
                 return;
             }
 
+            // Multiple targets open with no cascade - show target equalization
+            if (openCascades.length === 0 && openTargets.length >= 2) {
+                const targetLabels = openTargets.map(i => `T${i + 1}`).join(', ');
+                const targetPressureValues = openTargets.map(i => targetPressures[i]);
+                const maxP = Math.max(...targetPressureValues);
+                const minP = Math.min(...targetPressureValues);
+
+                if (maxP - minP > 0.5) {
+                    // Calculate equalized pressure
+                    const totalGas = openTargets.reduce((sum, i) => sum + targetPressures[i] * targetVolume, 0);
+                    const totalVolume = openTargets.length * targetVolume;
+                    const eqP = Math.min(totalGas / totalVolume, TARGET_MAX_PRESSURE);
+
+                    statusDiv.className = 'connection-status ready';
+                    detailsDiv.className = 'connection-details active';
+                    detailsDiv.innerHTML = `
+                        <strong>${targetLabels}</strong> equalizing
+                        <div class="predicted-result">
+                            ${isAnimating ? 'Equalizing...' : 'Will equalize to'} <strong>${eqP.toFixed(1)} bar</strong>
+                        </div>
+                    `;
+                } else {
+                    statusDiv.className = 'connection-status';
+                    detailsDiv.innerHTML = `<strong>${targetLabels}</strong> — Equalized at ${Math.round(maxP)} bar`;
+                    detailsDiv.className = 'connection-details';
+                }
+                return;
+            }
+
             // Calculate what would happen
             const cascadeLabels = openCascades.map(i => `C${i + 1}`).join(', ');
             const targetLabels = openTargets.map(i => `T${i + 1}`).join(', ');
@@ -820,12 +861,14 @@
             const openCascades = getOpenCascades();
             const openTargets = getOpenTargets();
 
-            // Need at least one open cascade
-            if (openCascades.length === 0) return;
+            // Determine the mode: target-only, cascade-only, or cascade-to-target
+            const targetOnly = openCascades.length === 0 && openTargets.length >= 2;
+            const cascadeOnly = openCascades.length >= 2 &&
+                (openTargets.length === 0 || openTargets.every(i => targetPressures[i] >= TARGET_MAX_PRESSURE));
 
-            // Check if this is cascade-only equalization or cascade-to-target fill
-            const cascadeOnly = openTargets.length === 0 ||
-                openTargets.every(i => targetPressures[i] >= TARGET_MAX_PRESSURE);
+            // Need something to equalize
+            if (openCascades.length === 0 && openTargets.length < 2) return;
+            if (openCascades.length === 0 && !targetOnly) return;
 
             isAnimating = true;
 
@@ -835,7 +878,13 @@
 
             let cascadeFinalP, targetFinalP;
 
-            if (cascadeOnly) {
+            if (targetOnly) {
+                // Target-only equalization
+                const totalGas = openTargets.reduce((sum, i) => sum + targetPressures[i] * targetVolume, 0);
+                const totalVolume = openTargets.length * targetVolume;
+                targetFinalP = Math.min(totalGas / totalVolume, TARGET_MAX_PRESSURE);
+                cascadeFinalP = null; // No cascade changes
+            } else if (cascadeOnly) {
                 // Cascade-only equalization
                 const totalGas = openCascades.reduce((sum, i) => sum + cascadePressures[i] * CASCADE_VOLUME, 0);
                 const totalVolume = openCascades.length * CASCADE_VOLUME;
@@ -870,13 +919,15 @@
                 const progress = Math.min(1, elapsed / duration);
                 const eased = 1 - Math.pow(1 - progress, 3);
 
-                // Animate cascade pressures
-                openCascades.forEach(i => {
-                    cascadePressures[i] = initialCascade[i] + (cascadeFinalP - initialCascade[i]) * eased;
-                });
+                // Animate cascade pressures if applicable
+                if (cascadeFinalP !== null) {
+                    openCascades.forEach(i => {
+                        cascadePressures[i] = initialCascade[i] + (cascadeFinalP - initialCascade[i]) * eased;
+                    });
+                }
 
-                // Animate target pressures (capped at 200) if applicable
-                if (!cascadeOnly) {
+                // Animate target pressures if applicable
+                if (targetFinalP !== null) {
                     openTargets.forEach(i => {
                         const targetFinal = Math.min(targetFinalP, TARGET_MAX_PRESSURE);
                         targetPressures[i] = initialTarget[i] + (targetFinal - initialTarget[i]) * eased;
@@ -891,17 +942,23 @@
                     requestAnimationFrame(animate);
                 } else {
                     // Finalize values
-                    openCascades.forEach(i => {
-                        cascadePressures[i] = Math.round(cascadeFinalP * 10) / 10;
-                    });
-                    if (!cascadeOnly) {
+                    if (cascadeFinalP !== null) {
+                        openCascades.forEach(i => {
+                            cascadePressures[i] = Math.round(cascadeFinalP * 10) / 10;
+                        });
+                    }
+                    if (targetFinalP !== null) {
                         openTargets.forEach(i => {
                             targetPressures[i] = Math.round(Math.min(targetFinalP, TARGET_MAX_PRESSURE) * 10) / 10;
                         });
                     }
 
                     // Log the fill
-                    addLogEntry(openCascades, cascadeOnly ? [] : openTargets, initialCascade, initialTarget, cascadeFinalP, targetFinalP);
+                    addLogEntry(
+                        cascadeFinalP !== null ? openCascades : [],
+                        targetFinalP !== null ? openTargets : [],
+                        initialCascade, initialTarget, cascadeFinalP, targetFinalP
+                    );
 
                     isAnimating = false;
                     renderAll();
@@ -921,15 +978,24 @@
             const emptyMsg = logDiv.querySelector('.log-empty');
             if (emptyMsg) emptyMsg.remove();
 
-            const cascadeStr = cascadeIndices.map(i =>
-                `C${i + 1}(${Math.round(initialCascade[i])}→${Math.round(cascadeFinal)})`
-            ).join(', ');
-
             let logText;
-            if (targetIndices.length === 0) {
+            if (cascadeIndices.length === 0 && targetIndices.length > 0) {
+                // Target-only equalization
+                const targetStr = targetIndices.map(i =>
+                    `T${i + 1}(${Math.round(initialTarget[i])}→${Math.round(Math.min(targetFinal, TARGET_MAX_PRESSURE))})`
+                ).join(', ');
+                logText = `${targetStr} equalized`;
+            } else if (targetIndices.length === 0) {
                 // Cascade-only equalization
+                const cascadeStr = cascadeIndices.map(i =>
+                    `C${i + 1}(${Math.round(initialCascade[i])}→${Math.round(cascadeFinal)})`
+                ).join(', ');
                 logText = `${cascadeStr} equalized`;
             } else {
+                // Cascade-to-target fill
+                const cascadeStr = cascadeIndices.map(i =>
+                    `C${i + 1}(${Math.round(initialCascade[i])}→${Math.round(cascadeFinal)})`
+                ).join(', ');
                 const targetStr = targetIndices.map(i =>
                     `T${i + 1}(${Math.round(initialTarget[i])}→${Math.round(Math.min(targetFinal, TARGET_MAX_PRESSURE))})`
                 ).join(', ');
