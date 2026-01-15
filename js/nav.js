@@ -7,8 +7,16 @@
 
 const NAV_ITEMS = [
     { href: 'index.html', label: 'Home' },
-    { href: 'sandbox/index.html', label: 'Sandbox' },
-    { 
+    {
+        label: 'Sandbox',
+        href: 'sandbox/index.html',
+        submenu: [
+            { href: 'sandbox/index.html', label: 'Decompression Modelling' },
+            { href: 'sandbox/transfilling.html', label: 'Cylinder Transfilling' },
+            { href: 'sandbox/cascade-filling.html', label: 'Cascade Filling' }
+        ]
+    },
+    {
         label: 'Theory',
         href: 'pressure.html',
         submenu: [

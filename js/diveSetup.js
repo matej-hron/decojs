@@ -39,10 +39,7 @@ export const GAS_SWITCH_TIME = 3;
 export const BOTTOM_GASES = [
     { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 },
     { id: 'ean32', name: 'Nitrox 32 (EAN32)', o2: 0.32, n2: 0.68, he: 0 },
-    { id: 'ean36', name: 'Nitrox 36 (EAN36)', o2: 0.36, n2: 0.64, he: 0 },
-    { id: 'tx21_35', name: 'Trimix 21/35', o2: 0.21, n2: 0.44, he: 0.35 },
-    { id: 'tx18_45', name: 'Trimix 18/45', o2: 0.18, n2: 0.37, he: 0.45 },
-    { id: 'tx10_70', name: 'Trimix 10/70', o2: 0.10, n2: 0.20, he: 0.70 }
+    { id: 'ean36', name: 'Nitrox 36 (EAN36)', o2: 0.36, n2: 0.64, he: 0 }
 ];
 
 /**

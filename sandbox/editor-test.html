@@ -139,7 +139,6 @@
             <button id="btn-get-setup" class="btn btn-secondary">📋 Get Current Setup</button>
             <button id="btn-load-simple" class="btn btn-secondary">Load Simple Dive</button>
             <button id="btn-load-deco" class="btn btn-secondary">Load Deco Dive</button>
-            <button id="btn-load-trimix" class="btn btn-secondary">Load Trimix Dive</button>
             <button id="btn-validate" class="btn btn-secondary">🔍 Validate</button>
             <button id="btn-clear-log" class="btn btn-secondary">🗑️ Clear Log</button>
         </div>
@@ -264,35 +263,6 @@ editor.destroy();                        <span style="color: #6a9955;">// Clean 
                         { time: 45, depth: 0 }
                     ]
                 }]
-            },
-            {
-                id: 'trimix-60',
-                name: 'Trimix 60m',
-                description: 'Deep trimix dive',
-                gases: [
-                    { id: 'tx18_45', name: 'Trimix 18/45', o2: 0.18, n2: 0.37, he: 0.45, cylinderVolume: 24, startPressure: 200 },
-                    { id: 'ean50', name: 'Nitrox 50', o2: 0.50, n2: 0.50, he: 0, cylinderVolume: 7, startPressure: 200 },
-                    { id: 'o2', name: 'Pure O2', o2: 1.0, n2: 0, he: 0, cylinderVolume: 7, startPressure: 200 }
-                ],
-                gfLow: 30,
-                gfHigh: 85,
-                surfaceInterval: 120,
-                dives: [{
-                    waypoints: [
-                        { time: 0, depth: 0 },
-                        { time: 3, depth: 60, gasId: 'tx18_45' },
-                        { time: 20, depth: 60 },
-                        { time: 25, depth: 21, gasId: 'ean50' },
-                        { time: 30, depth: 21 },
-                        { time: 32, depth: 12 },
-                        { time: 37, depth: 12 },
-                        { time: 38, depth: 6, gasId: 'o2' },
-                        { time: 53, depth: 6 },
-                        { time: 54, depth: 3 },
-                        { time: 69, depth: 3 },
-                        { time: 70, depth: 0 }
-                    ]
-                }]
             }
         ];
         
@@ -367,11 +337,7 @@ editor.destroy();                        <span style="color: #6a9955;">// Clean 
         document.getElementById('btn-load-deco').addEventListener('click', () => {
             editor.setDiveSetup(sampleProfiles[1], true);
         });
-        
-        document.getElementById('btn-load-trimix').addEventListener('click', () => {
-            editor.setDiveSetup(sampleProfiles[2], true);
-        });
-        
+
         document.getElementById('btn-validate').addEventListener('click', () => {
             const { valid, errors } = editor.validate();
             if (valid) {

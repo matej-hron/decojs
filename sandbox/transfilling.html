@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cylinder Transfilling - Deco Theory</title>
+
+    <!-- PWA -->
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#2980b9">
+    <link rel="icon" type="image/svg+xml" href="../icons/icon.svg">
+
+    <!-- App styles -->
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <style>
+        /* Transfilling-specific layout */
+        .transfilling-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 1.5rem;
+            padding: 1rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: calc(100vh - 250px);
+        }
+
+        @media (max-width: 900px) {
+            .transfilling-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .controls-panel {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            align-self: start;
+        }
+
+        .controls-panel h2 {
+            margin: 0 0 1rem 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .cylinder-input {
+            background: var(--background-color);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .cylinder-input h3 {
+            margin: 0 0 0.75rem 0;
+            font-size: 0.95rem;
+            color: var(--text-color);
+        }
+
+        .input-group {
+            margin-bottom: 0.75rem;
+        }
+
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .input-group select,
+        .input-group input[type="number"] {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            background: var(--card-background);
+        }
+
+        .input-row {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .input-row input[type="range"] {
+            flex: 1;
+        }
+
+        .input-row input[type="number"] {
+            width: 80px;
+        }
+
+        .open-valves-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .open-valves-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .open-valves-btn:disabled {
+            background: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .reset-btn {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 0.9rem;
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+
+        .reset-btn:hover {
+            background: var(--background-color);
+        }
+
+        /* Visualization panel */
+        .visualization-panel {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+        }
+
+        .cylinders-display {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .cylinder-viz {
+            text-align: center;
+        }
+
+        .cylinder-viz h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .cylinder-container {
+            position: relative;
+            width: 80px;
+            height: 200px;
+            background: linear-gradient(to right, #e0e0e0, #f5f5f5, #e0e0e0);
+            border: 3px solid #888;
+            border-radius: 10px 10px 20px 20px;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .cylinder-valve {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 20px;
+            background: #666;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .cylinder-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to right, #3498db, #5dade2, #3498db);
+            transition: height 1.5s ease-out;
+        }
+
+        .cylinder-stats {
+            margin-top: 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .cylinder-stats .volume {
+            color: var(--text-muted);
+        }
+
+        .cylinder-stats .pressure {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .cylinder-stats .gas-amount {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        /* Connection pipe */
+        .connection {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+
+        .pipe {
+            height: 8px;
+            background: #888;
+            flex: 1;
+            max-width: 200px;
+            position: relative;
+        }
+
+        .valve-icon {
+            width: 40px;
+            height: 40px;
+            background: #666;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .valve-icon.open {
+            background: var(--secondary-color);
+            transform: rotate(90deg);
+        }
+
+        /* Result section */
+        .result-section {
+            background: var(--background-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .result-section.hidden {
+            display: none;
+        }
+
+        .result-section h3 {
+            margin: 0 0 1rem 0;
+            color: var(--secondary-color);
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .result-detail {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Formula section */
+        .formula-section {
+            background: var(--background-color);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .formula-section h4 {
+            margin: 0 0 1rem 0;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .formula {
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            color: var(--text-color);
+            padding: 0.5rem;
+        }
+
+        .formula-general {
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .formula-computed {
+            font-size: 1.1rem;
+            color: var(--text-color);
+        }
+
+        .formula-computed strong {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .formula-computed.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">Deco Theory</a>
+            <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links">
+                <!-- Generated by js/nav.js -->
+            </ul>
+            <span class="nav-wip-badge">Experimental</span>
+        </div>
+    </nav>
+
+    <!-- Disclaimer Banner -->
+    <div class="disclaimer-banner">
+        <strong>Educational Use Only</strong> — This tool demonstrates Boyle's Law for connected cylinders.
+    </div>
+
+    <!-- Hero Header -->
+    <header class="hero hero-compact">
+        <h1>Cylinder Transfilling</h1>
+        <p class="hero-subtitle">Simulate pressure equalization between two connected cylinders</p>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="transfilling-layout">
+        <!-- Left Panel: Controls -->
+        <div class="controls-panel">
+            <h2>Cylinder Setup</h2>
+
+            <div class="cylinder-input">
+                <h3>Cylinder A (Source)</h3>
+                <div class="input-group">
+                    <label>Volume</label>
+                    <select id="volumeA">
+                        <option value="3">3 L (Pony)</option>
+                        <option value="5.5">5.5 L (AL40)</option>
+                        <option value="7">7 L (AL50)</option>
+                        <option value="10">10 L (Single)</option>
+                        <option value="11">11 L (AL80)</option>
+                        <option value="12" selected>12 L (Single)</option>
+                        <option value="15">15 L (Single)</option>
+                        <option value="18">18 L (Single)</option>
+                        <option value="14">2x7 L (Doubles)</option>
+                        <option value="20">2x10 L (Doubles)</option>
+                        <option value="24">2x12 L (Doubles)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Pressure (bar)</label>
+                    <div class="input-row">
+                        <input type="range" id="pressureASlider" min="0" max="300" value="200">
+                        <input type="number" id="pressureA" min="0" max="300" value="200">
+                    </div>
+                </div>
+            </div>
+
+            <div class="cylinder-input">
+                <h3>Cylinder B (Receiving)</h3>
+                <div class="input-group">
+                    <label>Volume</label>
+                    <select id="volumeB">
+                        <option value="3">3 L (Pony)</option>
+                        <option value="5.5">5.5 L (AL40)</option>
+                        <option value="7" selected>7 L (AL50)</option>
+                        <option value="10">10 L (Single)</option>
+                        <option value="11">11 L (AL80)</option>
+                        <option value="12">12 L (Single)</option>
+                        <option value="15">15 L (Single)</option>
+                        <option value="18">18 L (Single)</option>
+                        <option value="14">2x7 L (Doubles)</option>
+                        <option value="20">2x10 L (Doubles)</option>
+                        <option value="24">2x12 L (Doubles)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Pressure (bar)</label>
+                    <div class="input-row">
+                        <input type="range" id="pressureBSlider" min="0" max="300" value="50">
+                        <input type="number" id="pressureB" min="0" max="300" value="50">
+                    </div>
+                </div>
+            </div>
+
+            <button class="open-valves-btn" id="openValvesBtn">
+                <span>Open Valves</span>
+            </button>
+            <button class="reset-btn" id="resetBtn">Reset</button>
+
+        </div>
+
+        <!-- Right Panel: Visualization -->
+        <div class="visualization-panel">
+            <div class="cylinders-display">
+                <div class="cylinder-viz">
+                    <h4>Cylinder A</h4>
+                    <div class="cylinder-container">
+                        <div class="cylinder-valve"></div>
+                        <div class="cylinder-fill" id="fillA" style="height: 66.7%;"></div>
+                    </div>
+                    <div class="cylinder-stats">
+                        <div class="volume" id="volumeADisplay">12 L</div>
+                        <div class="pressure" id="pressureADisplay">200 bar</div>
+                        <div class="gas-amount" id="gasADisplay">2400 bar·L</div>
+                    </div>
+                </div>
+
+                <div class="connection">
+                    <div class="pipe"></div>
+                    <div class="valve-icon" id="valveIcon">X</div>
+                    <div class="pipe"></div>
+                </div>
+
+                <div class="cylinder-viz">
+                    <h4>Cylinder B</h4>
+                    <div class="cylinder-container">
+                        <div class="cylinder-valve"></div>
+                        <div class="cylinder-fill" id="fillB" style="height: 16.7%;"></div>
+                    </div>
+                    <div class="cylinder-stats">
+                        <div class="volume" id="volumeBDisplay">7 L</div>
+                        <div class="pressure" id="pressureBDisplay">50 bar</div>
+                        <div class="gas-amount" id="gasBDisplay">350 bar·L</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="result-section hidden" id="resultSection">
+                <h3>Equalization Complete</h3>
+                <div class="result-value" id="finalPressure">144.7 bar</div>
+                <div class="result-detail" id="resultDetail">
+                    Total gas: 2750 bar·L (conserved)
+                </div>
+            </div>
+
+            <div class="formula-section">
+                <h4>Boyle's Law</h4>
+                <div class="formula formula-general">
+                    P<sub>final</sub> = (P<sub>A</sub> × V<sub>A</sub> + P<sub>B</sub> × V<sub>B</sub>) / (V<sub>A</sub> + V<sub>B</sub>)
+                </div>
+                <div class="formula formula-computed hidden" id="formulaComputed"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <span class="wip-badge">Experimental</span>
+        <p><strong>Disclaimer:</strong> For educational purposes only. Based on ideal gas law assumptions.</p>
+        <span class="version-number"></span>
+    </footer>
+
+    <!-- Navigation script -->
+    <script src="../js/nav.js" type="module"></script>
+
+    <script>
+        // DOM Elements
+        const volumeASelect = document.getElementById('volumeA');
+        const volumeBSelect = document.getElementById('volumeB');
+        const pressureAInput = document.getElementById('pressureA');
+        const pressureBInput = document.getElementById('pressureB');
+        const pressureASlider = document.getElementById('pressureASlider');
+        const pressureBSlider = document.getElementById('pressureBSlider');
+        const openValvesBtn = document.getElementById('openValvesBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const valveIcon = document.getElementById('valveIcon');
+        const resultSection = document.getElementById('resultSection');
+
+        // Display elements
+        const fillA = document.getElementById('fillA');
+        const fillB = document.getElementById('fillB');
+        const volumeADisplay = document.getElementById('volumeADisplay');
+        const volumeBDisplay = document.getElementById('volumeBDisplay');
+        const pressureADisplay = document.getElementById('pressureADisplay');
+        const pressureBDisplay = document.getElementById('pressureBDisplay');
+        const gasADisplay = document.getElementById('gasADisplay');
+        const gasBDisplay = document.getElementById('gasBDisplay');
+        const finalPressureDisplay = document.getElementById('finalPressure');
+        const resultDetail = document.getElementById('resultDetail');
+        const formulaComputed = document.getElementById('formulaComputed');
+
+        // State
+        let isEqualized = false;
+        let initialPressureA = 200;
+        let initialPressureB = 50;
+
+        // Max pressure for fill height calculation
+        const MAX_PRESSURE = 300;
+
+        /**
+         * Calculate the final equalized pressure using Boyle's Law
+         * P_final = (P1*V1 + P2*V2) / (V1 + V2)
+         */
+        function calculateFinalPressure(v1, p1, v2, p2) {
+            const totalGas = (p1 * v1) + (p2 * v2);
+            const totalVolume = v1 + v2;
+            return totalGas / totalVolume;
+        }
+
+        /**
+         * Get current values from inputs
+         */
+        function getValues() {
+            return {
+                volumeA: parseFloat(volumeASelect.value),
+                volumeB: parseFloat(volumeBSelect.value),
+                pressureA: parseFloat(pressureAInput.value),
+                pressureB: parseFloat(pressureBInput.value)
+            };
+        }
+
+        /**
+         * Calculate fill height percentage (0-100)
+         */
+        function getFillHeight(pressure) {
+            return Math.min(100, Math.max(0, (pressure / MAX_PRESSURE) * 100));
+        }
+
+        /**
+         * Update the visualization display
+         */
+        function updateDisplay() {
+            const { volumeA, volumeB, pressureA, pressureB } = getValues();
+
+            // Update volume displays
+            volumeADisplay.textContent = `${volumeA} L`;
+            volumeBDisplay.textContent = `${volumeB} L`;
+
+            // Update pressure displays
+            pressureADisplay.textContent = `${Math.round(pressureA)} bar`;
+            pressureBDisplay.textContent = `${Math.round(pressureB)} bar`;
+
+            // Update gas amount displays
+            const gasA = pressureA * volumeA;
+            const gasB = pressureB * volumeB;
+            gasADisplay.textContent = `${Math.round(gasA)} bar·L`;
+            gasBDisplay.textContent = `${Math.round(gasB)} bar·L`;
+
+            // Update fill heights
+            fillA.style.height = `${getFillHeight(pressureA)}%`;
+            fillB.style.height = `${getFillHeight(pressureB)}%`;
+        }
+
+        /**
+         * Sync slider and input values
+         */
+        function syncPressureInputs(sliderId, inputId) {
+            const slider = document.getElementById(sliderId);
+            const input = document.getElementById(inputId);
+
+            slider.addEventListener('input', () => {
+                input.value = slider.value;
+                if (!isEqualized) updateDisplay();
+            });
+
+            input.addEventListener('input', () => {
+                slider.value = input.value;
+                if (!isEqualized) updateDisplay();
+            });
+        }
+
+        /**
+         * Animate pressure equalization
+         */
+        function animateEqualization() {
+            const { volumeA, volumeB, pressureA, pressureB } = getValues();
+            const finalPressure = calculateFinalPressure(volumeA, pressureA, volumeB, pressureB);
+
+            // Store initial values for reset
+            initialPressureA = pressureA;
+            initialPressureB = pressureB;
+
+            // Update state
+            isEqualized = true;
+            openValvesBtn.disabled = true;
+            valveIcon.classList.add('open');
+            valveIcon.textContent = '=';
+
+            // Animate the pressure changes
+            const duration = 1500; // ms
+            const startTime = performance.now();
+
+            function animate(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(1, elapsed / duration);
+
+                // Ease out cubic
+                const eased = 1 - Math.pow(1 - progress, 3);
+
+                // Interpolate pressures
+                const currentPressureA = pressureA + (finalPressure - pressureA) * eased;
+                const currentPressureB = pressureB + (finalPressure - pressureB) * eased;
+
+                // Update inputs (without triggering change events)
+                pressureAInput.value = Math.round(currentPressureA);
+                pressureBInput.value = Math.round(currentPressureB);
+                pressureASlider.value = Math.round(currentPressureA);
+                pressureBSlider.value = Math.round(currentPressureB);
+
+                // Update display
+                updateDisplay();
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    // Animation complete - show result
+                    const totalGas = (pressureA * volumeA) + (pressureB * volumeB);
+                    finalPressureDisplay.textContent = `${finalPressure.toFixed(1)} bar`;
+                    resultDetail.textContent = `Total gas: ${Math.round(totalGas)} bar·L (conserved)`;
+                    resultSection.classList.remove('hidden');
+
+                    // Show formula with initial values
+                    formulaComputed.innerHTML = `P<sub>final</sub> = (${Math.round(pressureA)} × ${volumeA} + ${Math.round(pressureB)} × ${volumeB}) / (${volumeA} + ${volumeB}) = <strong>${finalPressure.toFixed(1)} bar</strong>`;
+                    formulaComputed.classList.remove('hidden');
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        /**
+         * Reset to initial state
+         */
+        function reset() {
+            isEqualized = false;
+            openValvesBtn.disabled = false;
+            valveIcon.classList.remove('open');
+            valveIcon.textContent = 'X';
+            resultSection.classList.add('hidden');
+            formulaComputed.classList.add('hidden');
+
+            // Reset pressures to defaults
+            pressureAInput.value = 200;
+            pressureBInput.value = 50;
+            pressureASlider.value = 200;
+            pressureBSlider.value = 50;
+
+            updateDisplay();
+        }
+
+        // Event listeners
+        syncPressureInputs('pressureASlider', 'pressureA');
+        syncPressureInputs('pressureBSlider', 'pressureB');
+
+        volumeASelect.addEventListener('change', () => {
+            if (!isEqualized) updateDisplay();
+        });
+
+        volumeBSelect.addEventListener('change', () => {
+            if (!isEqualized) updateDisplay();
+        });
+
+        openValvesBtn.addEventListener('click', animateEqualization);
+        resetBtn.addEventListener('click', reset);
+
+        // Initial display update
+        updateDisplay();
+    </script>
+</body>
+</html>

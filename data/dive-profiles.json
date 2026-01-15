@@ -106,41 +106,6 @@
       ]
     },
     {
-      "id": "deep-technical",
-      "name": "Deep Technical Dive",
-      "description": "A deep technical dive to 55m requiring extended decompression. Uses trimix for reduced narcosis. For experienced technical divers only.",
-      "gases": [
-        { "id": "bottom", "name": "Trimix 18/45", "o2": 0.18, "n2": 0.37, "he": 0.45, "cylinderVolume": 24, "startPressure": 200 }
-      ],
-      "reservePressure": 50,
-      "surfaceInterval": 90,
-      "units": { "depth": "meters", "time": "minutes", "pressure": "bar" },
-      "dives": [
-        {
-          "waypoints": [
-            { "time": 0, "depth": 0 },
-            { "time": 3, "depth": 55 },
-            { "time": 18, "depth": 55 },
-            { "time": 22, "depth": 21 },
-            { "time": 25, "depth": 21 },
-            { "time": 26, "depth": 18 },
-            { "time": 29, "depth": 18 },
-            { "time": 30, "depth": 15 },
-            { "time": 34, "depth": 15 },
-            { "time": 35, "depth": 12 },
-            { "time": 40, "depth": 12 },
-            { "time": 41, "depth": 9 },
-            { "time": 48, "depth": 9 },
-            { "time": 49, "depth": 6 },
-            { "time": 60, "depth": 6 },
-            { "time": 61, "depth": 3 },
-            { "time": 75, "depth": 3 },
-            { "time": 78, "depth": 0 }
-          ]
-        }
-      ]
-    },
-    {
       "id": "30m-deco-air",
       "name": "30m Deco Dive (Air)",
       "description": "A 30m dive with 40 min bottom time requiring staged decompression stops. Demonstrates tissue loading on a moderate depth deco dive.",

@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cascade Filling Station - Deco Theory</title>
+
+    <!-- PWA -->
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#2980b9">
+    <link rel="icon" type="image/svg+xml" href="../icons/icon.svg">
+
+    <!-- App styles -->
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <style>
+        .cascade-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 1.5rem;
+            padding: 1rem;
+            max-width: 1600px;
+            margin: 0 auto;
+            min-height: calc(100vh - 250px);
+        }
+
+        @media (max-width: 1100px) {
+            .cascade-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .controls-panel {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            align-self: start;
+        }
+
+        .controls-panel h2 {
+            margin: 0 0 1rem 0;
+            font-size: 1rem;
+        }
+
+        .section {
+            background: var(--background-color);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section h3 {
+            margin: 0 0 0.75rem 0;
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-row .label { color: var(--text-muted); }
+        .info-row .value { font-weight: 600; }
+
+        .input-group {
+            margin-bottom: 0.75rem;
+        }
+
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .input-group select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            background: var(--card-background);
+        }
+
+        .reset-btn {
+            width: 100%;
+            padding: 0.5rem;
+            font-size: 0.85rem;
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            cursor: pointer;
+        }
+
+        .reset-btn:hover { background: var(--background-color); }
+
+        .hose-limit-warning {
+            background: #fff3e0;
+            border: 1px solid #ffcc80;
+            border-radius: var(--radius);
+            padding: 0.5rem 0.75rem;
+            font-size: 0.8rem;
+            color: #e65100;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .hose-limit-warning.visible { display: block; }
+
+        /* Visualization Panel */
+        .visualization-panel {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+        }
+
+        .viz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .viz-header h3 { margin: 0; font-size: 1rem; }
+
+        .header-stats {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .cylinders-area {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+            padding: 1rem 0;
+        }
+
+        .cylinder-group { text-align: center; }
+
+        .cylinder-group h4 {
+            margin: 0 0 1rem 0;
+            font-size: 0.95rem;
+            color: var(--text-color);
+        }
+
+        .cylinders-row {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Individual cylinder with valve */
+        .cylinder-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .cylinder-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        /* Valve switch on top */
+        .valve-switch {
+            width: 36px;
+            height: 20px;
+            background: #ccc;
+            border-radius: 10px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+            border: 2px solid #999;
+        }
+
+        .valve-switch::after {
+            content: '';
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            background: white;
+            border-radius: 50%;
+            top: 1px;
+            left: 2px;
+            transition: transform 0.3s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .valve-switch.open {
+            background: #27ae60;
+            border-color: #1e8449;
+        }
+
+        .valve-switch.open::after {
+            transform: translateX(16px);
+        }
+
+        .valve-switch.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Pipe from valve to cylinder */
+        .valve-pipe {
+            width: 4px;
+            height: 10px;
+            background: #666;
+        }
+
+        .cylinder-container {
+            position: relative;
+            width: 50px;
+            height: 130px;
+            background: linear-gradient(to right, #e0e0e0, #f5f5f5, #e0e0e0);
+            border: 3px solid #888;
+            border-radius: 8px 8px 15px 15px;
+            overflow: hidden;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .cylinder-container.cascade {
+            width: 55px;
+            height: 160px;
+        }
+
+        .cylinder-unit.open .cylinder-container {
+            border-color: #27ae60;
+            box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.3);
+        }
+
+        .cylinder-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to right, #3498db, #5dade2, #3498db);
+            transition: height 1.5s ease-out;
+        }
+
+        .cylinder-fill.cascade {
+            background: linear-gradient(to right, #27ae60, #58d68d, #27ae60);
+        }
+
+        .cylinder-fill.low {
+            background: linear-gradient(to right, #e74c3c, #ec7063, #e74c3c);
+        }
+
+        .cylinder-fill.full {
+            background: linear-gradient(to right, #9b59b6, #bb8fce, #9b59b6);
+        }
+
+        .cylinder-stats {
+            margin-top: 0.4rem;
+            font-size: 0.7rem;
+            text-align: center;
+        }
+
+        .cylinder-stats .pressure {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .cylinder-stats .volume {
+            color: var(--text-muted);
+        }
+
+        /* Connection status */
+        .connection-status {
+            background: var(--background-color);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .connection-status.ready {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+        }
+
+        .connection-status h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        .connection-details {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .connection-details.active {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .predicted-result {
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+
+        .predicted-result strong {
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+        }
+
+        /* Fill Log */
+        .fill-log {
+            background: var(--background-color);
+            border-radius: var(--radius);
+            padding: 1rem;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+
+        .fill-log h4 {
+            margin: 0 0 0.75rem 0;
+            font-size: 0.9rem;
+        }
+
+        .log-entry {
+            font-size: 0.75rem;
+            padding: 0.4rem 0.5rem;
+            margin-bottom: 0.25rem;
+            background: var(--card-background);
+            border-radius: 4px;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .log-entry .step { color: var(--text-muted); font-weight: 600; }
+        .log-empty { color: var(--text-muted); font-size: 0.85rem; font-style: italic; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">Deco Theory</a>
+            <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links"></ul>
+            <span class="nav-wip-badge">Experimental</span>
+        </div>
+    </nav>
+
+    <!-- Disclaimer Banner -->
+    <div class="disclaimer-banner">
+        <strong>Educational Use Only</strong> — Simulates cascade filling using Boyle's Law.
+    </div>
+
+    <!-- Hero Header -->
+    <header class="hero hero-compact">
+        <h1>Cascade Filling Station</h1>
+        <p class="hero-subtitle">Click valve switches to connect cylinders, then fill (max 3 hoses, 200 bar limit)</p>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="cascade-layout">
+        <!-- Left Panel: Controls -->
+        <div class="controls-panel">
+            <h2>Setup</h2>
+
+            <div class="section">
+                <h3>Cascade Bank</h3>
+                <div class="info-row">
+                    <span class="label">Cylinders:</span>
+                    <span class="value">4 x 50 L</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Initial:</span>
+                    <span class="value">300 bar each</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Remaining:</span>
+                    <span class="value" id="cascadeRemaining">60,000 bar-L</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Target Cylinders</h3>
+                <div class="input-group">
+                    <label>Count</label>
+                    <select id="targetCount">
+                        <option value="3">3 cylinders</option>
+                        <option value="4">4 cylinders</option>
+                        <option value="5">5 cylinders</option>
+                        <option value="6">6 cylinders</option>
+                        <option value="8">8 cylinders</option>
+                        <option value="10">10 cylinders</option>
+                        <option value="12" selected>12 cylinders</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Volume</label>
+                    <select id="targetVolume">
+                        <option value="7">7 L (AL50)</option>
+                        <option value="10">10 L (Single)</option>
+                        <option value="11">11 L (AL80)</option>
+                        <option value="12" selected>12 L (Single)</option>
+                        <option value="15">15 L (Single)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Controls</h3>
+                <button class="reset-btn" id="resetBtn">Reset All</button>
+                <div class="hose-limit-warning" id="hoseWarning">
+                    Max 3 target cylinders can be connected at once (3 hoses available)
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Panel: Visualization -->
+        <div class="visualization-panel">
+            <div class="viz-header">
+                <h3>Filling Station</h3>
+                <div class="header-stats">
+                    <span>Hoses: <strong id="hoseCount">0</strong>/3</span>
+                    <span>Cascade open: <strong id="cascadeOpenCount">0</strong></span>
+                </div>
+            </div>
+
+            <div class="cylinders-area">
+                <div class="cylinder-group">
+                    <h4>Cascade Bank (click valves to open)</h4>
+                    <div class="cylinders-row" id="cascadeCylinders"></div>
+                </div>
+
+                <div class="cylinder-group">
+                    <h4>Target Cylinders (max 3 connected)</h4>
+                    <div class="cylinders-row" id="targetCylinders"></div>
+                </div>
+            </div>
+
+            <div class="connection-status" id="connectionStatus">
+                <h4>Connection Status</h4>
+                <div class="connection-details">Open cascade and target valves to connect</div>
+            </div>
+
+            <div class="fill-log">
+                <h4>Fill Log</h4>
+                <div id="fillLog">
+                    <div class="log-empty">No fills yet</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <span class="wip-badge">Experimental</span>
+        <p><strong>Disclaimer:</strong> For educational purposes only.</p>
+        <span class="version-number"></span>
+    </footer>
+
+    <!-- Navigation script -->
+    <script src="../js/nav.js" type="module"></script>
+
+    <script>
+        // Constants
+        const CASCADE_COUNT = 4;
+        const CASCADE_VOLUME = 50;
+        const CASCADE_INITIAL_PRESSURE = 300;
+        const MAX_HOSES = 3;
+        const TARGET_MAX_PRESSURE = 200; // Reduction valve limit
+        const MAX_DISPLAY_PRESSURE = 300;
+
+        // State
+        let cascadePressures = Array(CASCADE_COUNT).fill(CASCADE_INITIAL_PRESSURE);
+        let cascadeValves = Array(CASCADE_COUNT).fill(false); // open/closed
+        let targetPressures = [];
+        let targetValves = []; // open/closed
+        let targetVolume = 12;
+        let targetCount = 12;
+        let fillCount = 0;
+        let isAnimating = false;
+
+        // DOM Elements
+        const targetCountSelect = document.getElementById('targetCount');
+        const targetVolumeSelect = document.getElementById('targetVolume');
+        const resetBtn = document.getElementById('resetBtn');
+        const hoseWarning = document.getElementById('hoseWarning');
+
+        /**
+         * Calculate equalized pressure for multiple cylinders
+         * Returns the final pressure after all connected cylinders equalize
+         */
+        function calculateMultiFinalPressure(cascadeIndices, targetIndices) {
+            let totalGas = 0;
+            let totalVolume = 0;
+
+            // Add cascade cylinders
+            cascadeIndices.forEach(i => {
+                totalGas += cascadePressures[i] * CASCADE_VOLUME;
+                totalVolume += CASCADE_VOLUME;
+            });
+
+            // Add target cylinders
+            targetIndices.forEach(i => {
+                totalGas += targetPressures[i] * targetVolume;
+                totalVolume += targetVolume;
+            });
+
+            if (totalVolume === 0) return 0;
+
+            const rawFinal = totalGas / totalVolume;
+            // Apply reduction valve limit for targets
+            return Math.min(rawFinal, TARGET_MAX_PRESSURE);
+        }
+
+        /**
+         * Get open cascade indices
+         */
+        function getOpenCascades() {
+            return cascadeValves.map((v, i) => v ? i : -1).filter(i => i >= 0);
+        }
+
+        /**
+         * Get open target indices
+         */
+        function getOpenTargets() {
+            return targetValves.map((v, i) => v ? i : -1).filter(i => i >= 0);
+        }
+
+        /**
+         * Count open target valves
+         */
+        function countOpenTargets() {
+            return targetValves.filter(v => v).length;
+        }
+
+        /**
+         * Get fill height percentage
+         */
+        function getFillHeight(pressure, maxP = MAX_DISPLAY_PRESSURE) {
+            return Math.min(100, Math.max(0, (pressure / maxP) * 100));
+        }
+
+        /**
+         * Initialize targets
+         */
+        function initTargets() {
+            targetPressures = Array(targetCount).fill(0);
+            targetValves = Array(targetCount).fill(false);
+            renderAll();
+        }
+
+        /**
+         * Check if filling/equalization can happen and trigger it
+         */
+        function checkAndFill() {
+            const openCascades = getOpenCascades();
+            const openTargets = getOpenTargets();
+
+            // Check cascade-to-cascade equalization (multiple cascades open)
+            if (openCascades.length >= 2) {
+                const cascadePressureValues = openCascades.map(i => cascadePressures[i]);
+                const maxP = Math.max(...cascadePressureValues);
+                const minP = Math.min(...cascadePressureValues);
+                // If there's a pressure difference, equalize
+                if (maxP - minP > 0.5) {
+                    performFill();
+                    return;
+                }
+            }
+
+            // Check cascade-to-target filling
+            if (openCascades.length === 0 || openTargets.length === 0) return;
+
+            const maxCascadeP = Math.max(...openCascades.map(i => cascadePressures[i]));
+            const minTargetP = Math.min(...openTargets.map(i => targetPressures[i]));
+
+            if (maxCascadeP > minTargetP && minTargetP < TARGET_MAX_PRESSURE) {
+                performFill();
+            }
+        }
+
+        /**
+         * Toggle cascade valve
+         */
+        function toggleCascadeValve(index) {
+            if (isAnimating) return;
+            cascadeValves[index] = !cascadeValves[index];
+            renderAll();
+
+            // Auto-fill if opening a valve creates a valid connection
+            if (cascadeValves[index]) {
+                checkAndFill();
+            }
+        }
+
+        /**
+         * Toggle target valve
+         */
+        function toggleTargetValve(index) {
+            if (isAnimating) return;
+
+            // Check if we can open another hose
+            if (!targetValves[index] && countOpenTargets() >= MAX_HOSES) {
+                hoseWarning.classList.add('visible');
+                setTimeout(() => hoseWarning.classList.remove('visible'), 2000);
+                return;
+            }
+
+            targetValves[index] = !targetValves[index];
+            renderAll();
+
+            // Auto-fill if opening a valve creates a valid connection
+            if (targetValves[index]) {
+                checkAndFill();
+            }
+        }
+
+        /**
+         * Render cascade cylinders
+         */
+        function renderCascades() {
+            const container = document.getElementById('cascadeCylinders');
+            container.innerHTML = '';
+
+            cascadePressures.forEach((pressure, i) => {
+                const isOpen = cascadeValves[i];
+                const isLow = pressure < 100;
+
+                const unit = document.createElement('div');
+                unit.className = `cylinder-unit${isOpen ? ' open' : ''}`;
+                unit.innerHTML = `
+                    <div class="cylinder-label">C${i + 1}</div>
+                    <div class="valve-switch${isOpen ? ' open' : ''}" data-type="cascade" data-index="${i}"></div>
+                    <div class="valve-pipe"></div>
+                    <div class="cylinder-container cascade">
+                        <div class="cylinder-fill cascade${isLow ? ' low' : ''}" style="height: ${getFillHeight(pressure)}%"></div>
+                    </div>
+                    <div class="cylinder-stats">
+                        <div class="pressure">${Math.round(pressure)} bar</div>
+                        <div class="volume">${CASCADE_VOLUME} L</div>
+                    </div>
+                `;
+                container.appendChild(unit);
+            });
+
+            // Add click handlers
+            container.querySelectorAll('.valve-switch').forEach(el => {
+                el.addEventListener('click', () => {
+                    toggleCascadeValve(parseInt(el.dataset.index));
+                });
+            });
+        }
+
+        /**
+         * Render target cylinders
+         */
+        function renderTargets() {
+            const container = document.getElementById('targetCylinders');
+            container.innerHTML = '';
+
+            targetPressures.forEach((pressure, i) => {
+                const isOpen = targetValves[i];
+                const isFull = pressure >= TARGET_MAX_PRESSURE;
+                const canOpen = isOpen || countOpenTargets() < MAX_HOSES;
+
+                const unit = document.createElement('div');
+                unit.className = `cylinder-unit${isOpen ? ' open' : ''}`;
+                unit.innerHTML = `
+                    <div class="cylinder-label">T${i + 1}${isFull ? ' ✓' : ''}</div>
+                    <div class="valve-switch${isOpen ? ' open' : ''}${!canOpen && !isOpen ? ' disabled' : ''}"
+                         data-type="target" data-index="${i}"></div>
+                    <div class="valve-pipe"></div>
+                    <div class="cylinder-container">
+                        <div class="cylinder-fill${isFull ? ' full' : ''}" style="height: ${getFillHeight(pressure)}%"></div>
+                    </div>
+                    <div class="cylinder-stats">
+                        <div class="pressure">${Math.round(pressure)} bar</div>
+                        <div class="volume">${targetVolume} L</div>
+                    </div>
+                `;
+                container.appendChild(unit);
+            });
+
+            // Add click handlers
+            container.querySelectorAll('.valve-switch:not(.disabled)').forEach(el => {
+                el.addEventListener('click', () => {
+                    toggleTargetValve(parseInt(el.dataset.index));
+                });
+            });
+        }
+
+        /**
+         * Update connection status display
+         */
+        function updateConnectionStatus() {
+            const openCascades = getOpenCascades();
+            const openTargets = getOpenTargets();
+            const statusDiv = document.getElementById('connectionStatus');
+            const detailsDiv = statusDiv.querySelector('.connection-details');
+
+            // Update header stats
+            document.getElementById('hoseCount').textContent = openTargets.length;
+            document.getElementById('cascadeOpenCount').textContent = openCascades.length;
+
+            // Update cascade remaining
+            const remaining = cascadePressures.reduce((sum, p) => sum + p * CASCADE_VOLUME, 0);
+            document.getElementById('cascadeRemaining').textContent = remaining.toLocaleString() + ' bar-L';
+
+            // No target connections - check for cascade-only equalization
+            if (openCascades.length === 0 && openTargets.length === 0) {
+                statusDiv.className = 'connection-status';
+                detailsDiv.innerHTML = 'Open cascade and target valves to start filling';
+                detailsDiv.className = 'connection-details';
+                return;
+            }
+
+            if (openCascades.length === 0) {
+                statusDiv.className = 'connection-status';
+                detailsDiv.innerHTML = `${openTargets.length} target(s) ready - open a cascade valve to fill`;
+                detailsDiv.className = 'connection-details';
+                return;
+            }
+
+            // Multiple cascades open with no targets (or all targets full) - show cascade equalization
+            const allTargetsFull = openTargets.length === 0 ||
+                openTargets.every(i => targetPressures[i] >= TARGET_MAX_PRESSURE);
+
+            if (openCascades.length >= 2 && allTargetsFull) {
+                const cascadeLabels = openCascades.map(i => `C${i + 1}`).join(', ');
+                const cascadePressureValues = openCascades.map(i => cascadePressures[i]);
+                const maxP = Math.max(...cascadePressureValues);
+                const minP = Math.min(...cascadePressureValues);
+
+                if (maxP - minP > 0.5) {
+                    // Calculate equalized pressure
+                    const totalGas = openCascades.reduce((sum, i) => sum + cascadePressures[i] * CASCADE_VOLUME, 0);
+                    const totalVolume = openCascades.length * CASCADE_VOLUME;
+                    const eqP = totalGas / totalVolume;
+
+                    statusDiv.className = 'connection-status ready';
+                    detailsDiv.className = 'connection-details active';
+                    detailsDiv.innerHTML = `
+                        <strong>${cascadeLabels}</strong> equalizing
+                        <div class="predicted-result">
+                            ${isAnimating ? 'Equalizing...' : 'Will equalize to'} <strong>${eqP.toFixed(1)} bar</strong>
+                        </div>
+                    `;
+                } else {
+                    statusDiv.className = 'connection-status';
+                    detailsDiv.innerHTML = `<strong>${cascadeLabels}</strong> — Equalized at ${Math.round(maxP)} bar`;
+                    detailsDiv.className = 'connection-details';
+                }
+                return;
+            }
+
+            if (openTargets.length === 0) {
+                statusDiv.className = 'connection-status';
+                detailsDiv.innerHTML = `${openCascades.length} cascade(s) open - open target valve(s) to fill`;
+                detailsDiv.className = 'connection-details';
+                return;
+            }
+
+            // Calculate what would happen
+            const cascadeLabels = openCascades.map(i => `C${i + 1}`).join(', ');
+            const targetLabels = openTargets.map(i => `T${i + 1}`).join(', ');
+
+            // Check if any filling can happen
+            const maxCascadeP = Math.max(...openCascades.map(i => cascadePressures[i]));
+            const minTargetP = Math.min(...openTargets.map(i => targetPressures[i]));
+
+            if (maxCascadeP <= minTargetP || minTargetP >= TARGET_MAX_PRESSURE) {
+                statusDiv.className = 'connection-status';
+                detailsDiv.innerHTML = `<strong>${cascadeLabels}</strong> ↔ <strong>${targetLabels}</strong> — Equalized (open higher pressure cascade to continue)`;
+                detailsDiv.className = 'connection-details';
+                return;
+            }
+
+            // Currently flowing or ready to flow
+            const finalP = calculateMultiFinalPressure(openCascades, openTargets);
+
+            statusDiv.className = 'connection-status ready';
+            detailsDiv.className = 'connection-details active';
+            detailsDiv.innerHTML = `
+                <strong>${cascadeLabels}</strong> → <strong>${targetLabels}</strong>
+                <div class="predicted-result">
+                    ${isAnimating ? 'Filling...' : 'Equalizing to'} <strong>${finalP.toFixed(1)} bar</strong>
+                    ${finalP >= TARGET_MAX_PRESSURE ? ' (200 bar limit)' : ''}
+                </div>
+            `;
+        }
+
+        /**
+         * Perform fill with animation
+         */
+        function performFill() {
+            const openCascades = getOpenCascades();
+            const openTargets = getOpenTargets();
+
+            // Need at least one open cascade
+            if (openCascades.length === 0) return;
+
+            // Check if this is cascade-only equalization or cascade-to-target fill
+            const cascadeOnly = openTargets.length === 0 ||
+                openTargets.every(i => targetPressures[i] >= TARGET_MAX_PRESSURE);
+
+            isAnimating = true;
+
+            // Store initial values
+            const initialCascade = [...cascadePressures];
+            const initialTarget = [...targetPressures];
+
+            let cascadeFinalP, targetFinalP;
+
+            if (cascadeOnly) {
+                // Cascade-only equalization
+                const totalGas = openCascades.reduce((sum, i) => sum + cascadePressures[i] * CASCADE_VOLUME, 0);
+                const totalVolume = openCascades.length * CASCADE_VOLUME;
+                cascadeFinalP = totalGas / totalVolume;
+                targetFinalP = null; // No target changes
+            } else {
+                // Calculate final pressure (limited by reduction valve)
+                const rawFinalP = calculateMultiFinalPressure(openCascades, openTargets);
+                targetFinalP = Math.min(rawFinalP, TARGET_MAX_PRESSURE);
+
+                // For cascades: if target hits 200 limit, cascades don't drop as much
+                // Recalculate cascade final pressure based on actual gas transferred
+                cascadeFinalP = rawFinalP;
+                if (targetFinalP < rawFinalP) {
+                    // Gas that would go to targets is limited
+                    let targetGasNeeded = 0;
+                    openTargets.forEach(i => {
+                        targetGasNeeded += (targetFinalP - targetPressures[i]) * targetVolume;
+                    });
+
+                    const cascadeGasStart = openCascades.reduce((sum, i) => sum + cascadePressures[i] * CASCADE_VOLUME, 0);
+                    const cascadeGasEnd = cascadeGasStart - targetGasNeeded;
+                    cascadeFinalP = cascadeGasEnd / (openCascades.length * CASCADE_VOLUME);
+                }
+            }
+
+            const duration = 1500;
+            const startTime = performance.now();
+
+            function animate(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(1, elapsed / duration);
+                const eased = 1 - Math.pow(1 - progress, 3);
+
+                // Animate cascade pressures
+                openCascades.forEach(i => {
+                    cascadePressures[i] = initialCascade[i] + (cascadeFinalP - initialCascade[i]) * eased;
+                });
+
+                // Animate target pressures (capped at 200) if applicable
+                if (!cascadeOnly) {
+                    openTargets.forEach(i => {
+                        const targetFinal = Math.min(targetFinalP, TARGET_MAX_PRESSURE);
+                        targetPressures[i] = initialTarget[i] + (targetFinal - initialTarget[i]) * eased;
+                    });
+                }
+
+                renderCascades();
+                renderTargets();
+                updateConnectionStatus();
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    // Finalize values
+                    openCascades.forEach(i => {
+                        cascadePressures[i] = Math.round(cascadeFinalP * 10) / 10;
+                    });
+                    if (!cascadeOnly) {
+                        openTargets.forEach(i => {
+                            targetPressures[i] = Math.round(Math.min(targetFinalP, TARGET_MAX_PRESSURE) * 10) / 10;
+                        });
+                    }
+
+                    // Log the fill
+                    addLogEntry(openCascades, cascadeOnly ? [] : openTargets, initialCascade, initialTarget, cascadeFinalP, targetFinalP);
+
+                    isAnimating = false;
+                    renderAll();
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        /**
+         * Add log entry
+         */
+        function addLogEntry(cascadeIndices, targetIndices, initialCascade, initialTarget, cascadeFinal, targetFinal) {
+            fillCount++;
+            const logDiv = document.getElementById('fillLog');
+
+            const emptyMsg = logDiv.querySelector('.log-empty');
+            if (emptyMsg) emptyMsg.remove();
+
+            const cascadeStr = cascadeIndices.map(i =>
+                `C${i + 1}(${Math.round(initialCascade[i])}→${Math.round(cascadeFinal)})`
+            ).join(', ');
+
+            let logText;
+            if (targetIndices.length === 0) {
+                // Cascade-only equalization
+                logText = `${cascadeStr} equalized`;
+            } else {
+                const targetStr = targetIndices.map(i =>
+                    `T${i + 1}(${Math.round(initialTarget[i])}→${Math.round(Math.min(targetFinal, TARGET_MAX_PRESSURE))})`
+                ).join(', ');
+                logText = `${cascadeStr} → ${targetStr}`;
+            }
+
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="step">#${fillCount}</span> ${logText}`;
+            logDiv.insertBefore(entry, logDiv.querySelector('.log-entry') || null);
+        }
+
+        /**
+         * Reset all
+         */
+        function reset() {
+            cascadePressures = Array(CASCADE_COUNT).fill(CASCADE_INITIAL_PRESSURE);
+            cascadeValves = Array(CASCADE_COUNT).fill(false);
+            targetPressures = Array(targetCount).fill(0);
+            targetValves = Array(targetCount).fill(false);
+            fillCount = 0;
+
+            document.getElementById('fillLog').innerHTML = '<div class="log-empty">No fills yet</div>';
+            renderAll();
+        }
+
+        /**
+         * Render everything
+         */
+        function renderAll() {
+            renderCascades();
+            renderTargets();
+            updateConnectionStatus();
+        }
+
+        // Event listeners
+        targetCountSelect.addEventListener('change', () => {
+            targetCount = parseInt(targetCountSelect.value);
+            initTargets();
+        });
+
+        targetVolumeSelect.addEventListener('change', () => {
+            targetVolume = parseInt(targetVolumeSelect.value);
+            renderAll();
+        });
+
+        resetBtn.addEventListener('click', reset);
+
+        // Initialize
+        initTargets();
+    </script>
+</body>
+</html>
