@@ -387,14 +387,16 @@
             <h2>Setup</h2>
 
             <div class="section">
-                <h3>Cascade Bank</h3>
-                <div class="info-row">
-                    <span class="label">Cylinders:</span>
-                    <span class="value">4 x 50 L</span>
-                </div>
-                <div class="info-row">
-                    <span class="label">Initial:</span>
-                    <span class="value">300 bar each</span>
+                <h3>Cascade Bank (4 x 50 L)</h3>
+                <div class="input-group">
+                    <label>Initial Pressure</label>
+                    <select id="cascadePressure">
+                        <option value="200">200 bar</option>
+                        <option value="230">230 bar</option>
+                        <option value="250">250 bar</option>
+                        <option value="280">280 bar</option>
+                        <option value="300" selected>300 bar</option>
+                    </select>
                 </div>
                 <div class="info-row">
                     <span class="label">Remaining:</span>
@@ -424,6 +426,16 @@
                         <option value="11">11 L (AL80)</option>
                         <option value="12" selected>12 L (Single)</option>
                         <option value="15">15 L (Single)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Starting Pressure</label>
+                    <select id="targetPressure">
+                        <option value="0">0 bar (empty)</option>
+                        <option value="20" selected>20 bar</option>
+                        <option value="50">50 bar</option>
+                        <option value="100">100 bar</option>
+                        <option value="150">150 bar</option>
                     </select>
                 </div>
             </div>
@@ -488,13 +500,14 @@
         // Constants
         const CASCADE_COUNT = 4;
         const CASCADE_VOLUME = 50;
-        const CASCADE_INITIAL_PRESSURE = 300;
         const MAX_HOSES = 3;
         const TARGET_MAX_PRESSURE = 200; // Reduction valve limit
         const MAX_DISPLAY_PRESSURE = 300;
 
         // State
-        let cascadePressures = Array(CASCADE_COUNT).fill(CASCADE_INITIAL_PRESSURE);
+        let cascadeInitialPressure = 300;
+        let targetInitialPressure = 20;
+        let cascadePressures = Array(CASCADE_COUNT).fill(cascadeInitialPressure);
         let cascadeValves = Array(CASCADE_COUNT).fill(false); // open/closed
         let targetPressures = [];
         let targetValves = []; // open/closed
@@ -504,8 +517,10 @@
         let isAnimating = false;
 
         // DOM Elements
+        const cascadePressureSelect = document.getElementById('cascadePressure');
         const targetCountSelect = document.getElementById('targetCount');
         const targetVolumeSelect = document.getElementById('targetVolume');
+        const targetPressureSelect = document.getElementById('targetPressure');
         const resetBtn = document.getElementById('resetBtn');
         const hoseWarning = document.getElementById('hoseWarning');
 
@@ -567,7 +582,7 @@
          * Initialize targets
          */
         function initTargets() {
-            targetPressures = Array(targetCount).fill(0);
+            targetPressures = Array(targetCount).fill(targetInitialPressure);
             targetValves = Array(targetCount).fill(false);
             renderAll();
         }
@@ -1045,9 +1060,11 @@
          * Reset all
          */
         function reset() {
-            cascadePressures = Array(CASCADE_COUNT).fill(CASCADE_INITIAL_PRESSURE);
+            cascadeInitialPressure = parseInt(cascadePressureSelect.value);
+            targetInitialPressure = parseInt(targetPressureSelect.value);
+            cascadePressures = Array(CASCADE_COUNT).fill(cascadeInitialPressure);
             cascadeValves = Array(CASCADE_COUNT).fill(false);
-            targetPressures = Array(targetCount).fill(0);
+            targetPressures = Array(targetCount).fill(targetInitialPressure);
             targetValves = Array(targetCount).fill(false);
             fillCount = 0;
 
@@ -1065,6 +1082,10 @@
         }
 
         // Event listeners
+        cascadePressureSelect.addEventListener('change', reset);
+
+        targetPressureSelect.addEventListener('change', reset);
+
         targetCountSelect.addEventListener('change', () => {
             targetCount = parseInt(targetCountSelect.value);
             initTargets();
