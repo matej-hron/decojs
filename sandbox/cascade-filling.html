@@ -603,13 +603,20 @@
                 }
             }
 
-            // Check cascade-to-target filling
+            // Check cascade-target equalization (either direction)
             if (openCascades.length === 0 || openTargets.length === 0) return;
 
             const maxCascadeP = Math.max(...openCascades.map(i => cascadePressures[i]));
+            const minCascadeP = Math.min(...openCascades.map(i => cascadePressures[i]));
+            const maxTargetP = Math.max(...openTargets.map(i => targetPressures[i]));
             const minTargetP = Math.min(...openTargets.map(i => targetPressures[i]));
 
+            // Flow from cascade to target (normal fill)
             if (maxCascadeP > minTargetP && minTargetP < TARGET_MAX_PRESSURE) {
+                performFill();
+            }
+            // Flow from target to cascade (reverse flow)
+            else if (maxTargetP > minCascadeP) {
                 performFill();
             }
         }
@@ -830,26 +837,43 @@
 
             // Check if any filling can happen
             const maxCascadeP = Math.max(...openCascades.map(i => cascadePressures[i]));
+            const minCascadeP = Math.min(...openCascades.map(i => cascadePressures[i]));
+            const maxTargetP = Math.max(...openTargets.map(i => targetPressures[i]));
             const minTargetP = Math.min(...openTargets.map(i => targetPressures[i]));
 
-            if (maxCascadeP <= minTargetP || minTargetP >= TARGET_MAX_PRESSURE) {
+            // Determine flow direction
+            const flowingToTarget = maxCascadeP > minTargetP;
+            const flowingToCascade = maxTargetP > minCascadeP;
+
+            if (!flowingToTarget && !flowingToCascade) {
                 statusDiv.className = 'connection-status';
-                detailsDiv.innerHTML = `<strong>${cascadeLabels}</strong> ↔ <strong>${targetLabels}</strong> — Equalized (open higher pressure cascade to continue)`;
+                detailsDiv.innerHTML = `<strong>${cascadeLabels}</strong> ↔ <strong>${targetLabels}</strong> — Equalized`;
+                detailsDiv.className = 'connection-details';
+                return;
+            }
+
+            // Check if filling to target is blocked by 200 bar limit
+            if (flowingToTarget && minTargetP >= TARGET_MAX_PRESSURE && !flowingToCascade) {
+                statusDiv.className = 'connection-status';
+                detailsDiv.innerHTML = `<strong>${cascadeLabels}</strong> ↔ <strong>${targetLabels}</strong> — Targets at limit (200 bar)`;
                 detailsDiv.className = 'connection-details';
                 return;
             }
 
             // Currently flowing or ready to flow
             const rawFinalP = calculateMultiFinalPressure(openCascades, openTargets);
-            const displayP = Math.min(rawFinalP, TARGET_MAX_PRESSURE);
+            const flowDirection = flowingToCascade && !flowingToTarget ? '←' : (flowingToTarget ? '→' : '↔');
+            const displayP = (flowingToTarget && rawFinalP > TARGET_MAX_PRESSURE)
+                ? TARGET_MAX_PRESSURE
+                : rawFinalP;
 
             statusDiv.className = 'connection-status ready';
             detailsDiv.className = 'connection-details active';
             detailsDiv.innerHTML = `
-                <strong>${cascadeLabels}</strong> → <strong>${targetLabels}</strong>
+                <strong>${cascadeLabels}</strong> ${flowDirection} <strong>${targetLabels}</strong>
                 <div class="predicted-result">
-                    ${isAnimating ? 'Filling...' : 'Equalizing to'} <strong>${displayP.toFixed(1)} bar</strong>
-                    ${rawFinalP > TARGET_MAX_PRESSURE ? ' (200 bar limit)' : ''}
+                    ${isAnimating ? 'Equalizing...' : 'Will equalize to'} <strong>${displayP.toFixed(1)} bar</strong>
+                    ${flowingToTarget && rawFinalP > TARGET_MAX_PRESSURE ? ' (200 bar limit on targets)' : ''}
                 </div>
             `;
         }
@@ -891,15 +915,20 @@
                 cascadeFinalP = totalGas / totalVolume;
                 targetFinalP = null; // No target changes
             } else {
-                // Calculate final pressure (limited by reduction valve)
+                // Calculate raw equalized pressure
                 const rawFinalP = calculateMultiFinalPressure(openCascades, openTargets);
-                targetFinalP = Math.min(rawFinalP, TARGET_MAX_PRESSURE);
 
-                // For cascades: if target hits 200 limit, cascades don't drop as much
-                // Recalculate cascade final pressure based on actual gas transferred
-                cascadeFinalP = rawFinalP;
-                if (targetFinalP < rawFinalP) {
-                    // Gas that would go to targets is limited
+                // Determine flow direction
+                const maxCascadeP = Math.max(...openCascades.map(i => cascadePressures[i]));
+                const maxTargetP = Math.max(...openTargets.map(i => targetPressures[i]));
+                const flowingToTarget = maxCascadeP > maxTargetP;
+
+                // 200 bar limit only applies when filling targets (not draining them)
+                if (flowingToTarget && rawFinalP > TARGET_MAX_PRESSURE) {
+                    // Cap target at 200 bar
+                    targetFinalP = TARGET_MAX_PRESSURE;
+
+                    // Recalculate cascade pressure based on actual gas transferred
                     let targetGasNeeded = 0;
                     openTargets.forEach(i => {
                         targetGasNeeded += (targetFinalP - targetPressures[i]) * targetVolume;
@@ -908,6 +937,10 @@
                     const cascadeGasStart = openCascades.reduce((sum, i) => sum + cascadePressures[i] * CASCADE_VOLUME, 0);
                     const cascadeGasEnd = cascadeGasStart - targetGasNeeded;
                     cascadeFinalP = cascadeGasEnd / (openCascades.length * CASCADE_VOLUME);
+                } else {
+                    // Normal equalization (no limit hit, or reverse flow)
+                    cascadeFinalP = rawFinalP;
+                    targetFinalP = rawFinalP;
                 }
             }
 
