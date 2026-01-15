@@ -393,9 +393,9 @@
                     <select id="cascadePressure">
                         <option value="200">200 bar</option>
                         <option value="230">230 bar</option>
-                        <option value="250">250 bar</option>
+                        <option value="250" selected>250 bar</option>
                         <option value="280">280 bar</option>
-                        <option value="300" selected>300 bar</option>
+                        <option value="300">300 bar</option>
                     </select>
                 </div>
                 <div class="info-row">
@@ -505,7 +505,7 @@
         const MAX_DISPLAY_PRESSURE = 300;
 
         // State
-        let cascadeInitialPressure = 300;
+        let cascadeInitialPressure = 250;
         let targetInitialPressure = 20;
         let cascadePressures = Array(CASCADE_COUNT).fill(cascadeInitialPressure);
         let cascadeValves = Array(CASCADE_COUNT).fill(false); // open/closed
