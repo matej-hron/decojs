@@ -467,7 +467,32 @@ export class DiveProfileChart {
             }
         });
     }
-    
+
+    /**
+     * Calculate average depth from time/depth data points using trapezoidal integration
+     * @param {number[]} timePoints - Array of time points
+     * @param {number[]} depthPoints - Array of depth points
+     * @returns {number} Average depth in meters
+     * @private
+     */
+    _calculateAverageDepth(timePoints, depthPoints) {
+        if (!timePoints || !depthPoints || timePoints.length < 2) return 0;
+
+        let totalArea = 0;
+        const totalTime = timePoints[timePoints.length - 1] - timePoints[0];
+
+        if (totalTime <= 0) return 0;
+
+        // Trapezoidal integration: sum of (d1 + d2) / 2 * dt for each segment
+        for (let i = 1; i < timePoints.length; i++) {
+            const dt = timePoints[i] - timePoints[i - 1];
+            const avgDepth = (depthPoints[i] + depthPoints[i - 1]) / 2;
+            totalArea += avgDepth * dt;
+        }
+
+        return totalArea / totalTime;
+    }
+
     /**
      * Add profile labels (descent, bottom time, max depth, ascent, stops)
      * @private
@@ -582,7 +607,31 @@ export class DiveProfileChart {
                 padding: { top: 3, bottom: 3, left: 6, right: 6 }
             }
         };
-        
+
+        // Average depth line
+        if (results && results.timePoints && results.depthPoints) {
+            const avgDepth = this._calculateAverageDepth(results.timePoints, results.depthPoints);
+            if (avgDepth > 0) {
+                annotations.avgDepthLine = {
+                    type: 'line',
+                    yMin: avgDepth,
+                    yMax: avgDepth,
+                    borderColor: 'rgba(46, 204, 113, 0.7)',
+                    borderWidth: 2,
+                    borderDash: [4, 4],
+                    label: {
+                        display: true,
+                        content: `AVG: ${avgDepth.toFixed(1)}m`,
+                        position: 'start',
+                        backgroundColor: 'rgba(46, 204, 113, 0.9)',
+                        color: 'white',
+                        font: { size: 10, weight: 'bold' },
+                        padding: { top: 3, bottom: 3, left: 6, right: 6 }
+                    }
+                };
+            }
+        }
+
         // Ascent label - positioned at where ascent starts (bottom end)
         if (bottomEnd && bottomEnd.time < totalTime) {
             annotations.ascentLabel = {
@@ -1184,8 +1233,48 @@ export class DiveProfileChart {
                     padding: { top: 3, bottom: 3, left: 6, right: 6 }
                 }
             };
+
+            // Average depth line for gas consumption mode
+            const avgDepth = this._calculateAverageDepth(results.timePoints, results.depthPoints);
+            const maxDepth = Math.max(...waypoints.map(wp => wp.depth));
+            if (avgDepth > 0) {
+                annotations.avgDepthLine = {
+                    type: 'line',
+                    yMin: avgDepth,
+                    yMax: avgDepth,
+                    borderColor: 'rgba(46, 204, 113, 0.7)',
+                    borderWidth: 2,
+                    borderDash: [4, 4],
+                    label: {
+                        display: true,
+                        content: `AVG: ${avgDepth.toFixed(1)}m`,
+                        position: 'start',
+                        backgroundColor: 'rgba(46, 204, 113, 0.9)',
+                        color: 'white',
+                        font: { size: 10, weight: 'bold' },
+                        padding: { top: 3, bottom: 3, left: 6, right: 6 }
+                    }
+                };
+                annotations.maxDepthLine = {
+                    type: 'line',
+                    yMin: maxDepth,
+                    yMax: maxDepth,
+                    borderColor: 'rgba(231, 76, 60, 0.6)',
+                    borderWidth: 2,
+                    borderDash: [6, 4],
+                    label: {
+                        display: true,
+                        content: `MAX: ${maxDepth}m`,
+                        position: 'end',
+                        backgroundColor: 'rgba(231, 76, 60, 0.9)',
+                        color: 'white',
+                        font: { size: 10, weight: 'bold' },
+                        padding: { top: 3, bottom: 3, left: 6, right: 6 }
+                    }
+                };
+            }
         }
-        
+
         // Gas switch markers
         if (this.options.showGasSwitches && results.gasSwitches && results.gasSwitches.length > 0) {
             results.gasSwitches.forEach((sw, i) => {
