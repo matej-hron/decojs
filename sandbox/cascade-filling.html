@@ -334,7 +334,7 @@
             background: var(--background-color);
             border-radius: var(--radius);
             padding: 1rem;
-            max-height: 180px;
+            max-height: 250px;
             overflow-y: auto;
         }
 
@@ -1026,33 +1026,72 @@
             const emptyMsg = logDiv.querySelector('.log-empty');
             if (emptyMsg) emptyMsg.remove();
 
+            // Calculate input volumes (bar-L)
+            let cascadeInputGas = 0;
+            let targetInputGas = 0;
+            let cascadeInputVolume = 0;
+            let targetInputVolume = 0;
+
+            cascadeIndices.forEach(i => {
+                cascadeInputGas += initialCascade[i] * CASCADE_VOLUME;
+                cascadeInputVolume += CASCADE_VOLUME;
+            });
+            targetIndices.forEach(i => {
+                targetInputGas += initialTarget[i] * targetVolume;
+                targetInputVolume += targetVolume;
+            });
+
+            const totalInputGas = cascadeInputGas + targetInputGas;
+            const totalVolume = cascadeInputVolume + targetInputVolume;
+
+            // Calculate final equalized pressure
+            let finalEqPressure;
+            if (cascadeIndices.length === 0) {
+                finalEqPressure = Math.min(targetFinal, TARGET_MAX_PRESSURE);
+            } else if (targetIndices.length === 0) {
+                finalEqPressure = cascadeFinal;
+            } else {
+                // Use the actual final pressure (may be limited by 200 bar on targets)
+                finalEqPressure = cascadeFinal; // cascade shows the true equalization
+            }
+
             let logText;
+            let detailsText;
+
             if (cascadeIndices.length === 0 && targetIndices.length > 0) {
                 // Target-only equalization
-                const targetStr = targetIndices.map(i =>
-                    `T${i + 1}(${Math.round(initialTarget[i])}→${Math.round(Math.min(targetFinal, TARGET_MAX_PRESSURE))})`
+                const targetStr = targetIndices.map(i => `T${i + 1}`).join(', ');
+                const pressureStr = targetIndices.map(i =>
+                    `${Math.round(initialTarget[i])}→${Math.round(Math.min(targetFinal, TARGET_MAX_PRESSURE))}`
                 ).join(', ');
                 logText = `${targetStr} equalized`;
+                detailsText = `Input: ${Math.round(targetInputGas).toLocaleString()} bar-L in ${targetInputVolume} L | Final: ${finalEqPressure.toFixed(1)} bar`;
             } else if (targetIndices.length === 0) {
                 // Cascade-only equalization
-                const cascadeStr = cascadeIndices.map(i =>
-                    `C${i + 1}(${Math.round(initialCascade[i])}→${Math.round(cascadeFinal)})`
-                ).join(', ');
+                const cascadeStr = cascadeIndices.map(i => `C${i + 1}`).join(', ');
                 logText = `${cascadeStr} equalized`;
+                detailsText = `Input: ${Math.round(cascadeInputGas).toLocaleString()} bar-L in ${cascadeInputVolume} L | Final: ${finalEqPressure.toFixed(1)} bar`;
             } else {
                 // Cascade-to-target fill
-                const cascadeStr = cascadeIndices.map(i =>
-                    `C${i + 1}(${Math.round(initialCascade[i])}→${Math.round(cascadeFinal)})`
-                ).join(', ');
-                const targetStr = targetIndices.map(i =>
-                    `T${i + 1}(${Math.round(initialTarget[i])}→${Math.round(Math.min(targetFinal, TARGET_MAX_PRESSURE))})`
-                ).join(', ');
+                const cascadeStr = cascadeIndices.map(i => `C${i + 1}`).join(', ');
+                const targetStr = targetIndices.map(i => `T${i + 1}`).join(', ');
+                const actualTargetFinal = Math.min(targetFinal, TARGET_MAX_PRESSURE);
                 logText = `${cascadeStr} → ${targetStr}`;
+
+                // Calculate gas transferred to targets
+                const gasTransferred = targetIndices.reduce((sum, i) => {
+                    return sum + (actualTargetFinal - initialTarget[i]) * targetVolume;
+                }, 0);
+
+                detailsText = `Input: ${Math.round(totalInputGas).toLocaleString()} bar-L (${totalVolume} L) | ` +
+                    `Transferred: ${Math.round(gasTransferred).toLocaleString()} bar-L | ` +
+                    `Final: ${finalEqPressure.toFixed(1)} bar` +
+                    (targetFinal > TARGET_MAX_PRESSURE ? ` (targets: ${actualTargetFinal} bar)` : '');
             }
 
             const entry = document.createElement('div');
             entry.className = 'log-entry';
-            entry.innerHTML = `<span class="step">#${fillCount}</span> ${logText}`;
+            entry.innerHTML = `<span class="step">#${fillCount}</span> ${logText}<br><small style="color: var(--text-muted)">${detailsText}</small>`;
             logDiv.insertBefore(entry, logDiv.querySelector('.log-entry') || null);
         }
 
