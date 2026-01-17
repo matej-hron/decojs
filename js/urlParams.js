@@ -101,10 +101,14 @@ export function decodeDiveSetup(encoded) {
  * Generate a full sandbox URL with the dive setup encoded
  *
  * @param {Object} diveSetup - The dive setup to link to
- * @param {string} [baseUrl] - Optional base URL (defaults to relative path)
+ * @param {Object} [options] - Optional settings
+ * @param {string} [options.baseUrl] - Base URL (defaults to relative path)
+ * @param {string} [options.chartMode] - Chart mode to pre-select (profile, pressure, gas, pp, tissue)
  * @returns {string} Full URL to sandbox with profile parameter
  */
-export function getSandboxUrl(diveSetup, baseUrl = null) {
+export function getSandboxUrl(diveSetup, options = {}) {
+    const { baseUrl = null, chartMode = null } = options;
+
     const encoded = encodeDiveSetup(diveSetup);
     if (!encoded) return baseUrl || 'sandbox/';
 
@@ -114,7 +118,21 @@ export function getSandboxUrl(diveSetup, baseUrl = null) {
         ? './'
         : 'sandbox/');
 
-    return `${base}?profile=${encoded}`;
+    let url = `${base}?profile=${encoded}`;
+    if (chartMode) {
+        url += `&chart=${chartMode}`;
+    }
+    return url;
+}
+
+/**
+ * Get the chart mode from current URL if present
+ *
+ * @returns {string|null} Chart mode from URL, or null if not present
+ */
+export function getChartModeFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('chart');
 }
 
 /**

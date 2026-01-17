@@ -1026,16 +1026,16 @@
         
         function setupSandboxLinks() {
             const links = [
-                { id: 'profile-sandbox-link', profile: DECO_PROFILE },
-                { id: 'pressure-sandbox-link', profile: DECO_PROFILE },
-                { id: 'gas-sandbox-link', profile: DECO_PROFILE },
-                { id: 'pp-sandbox-link', profile: DECO_PROFILE }
+                { id: 'profile-sandbox-link', profile: DECO_PROFILE, chartMode: 'profile' },
+                { id: 'pressure-sandbox-link', profile: DECO_PROFILE, chartMode: 'pressure' },
+                { id: 'gas-sandbox-link', profile: DECO_PROFILE, chartMode: 'gas' },
+                { id: 'pp-sandbox-link', profile: DECO_PROFILE, chartMode: 'pp' }
             ];
-            
-            links.forEach(({ id, profile }) => {
+
+            links.forEach(({ id, profile, chartMode }) => {
                 const link = document.getElementById(id);
                 if (link) {
-                    link.href = getSandboxUrl(profile);
+                    link.href = getSandboxUrl(profile, { chartMode });
                 }
             });
         }

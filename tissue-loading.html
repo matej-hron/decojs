@@ -691,7 +691,7 @@
         // Update sandbox link with profile
         const sandboxLink = document.getElementById('tissue-sandbox-link');
         if (sandboxLink) {
-            sandboxLink.href = getSandboxUrl(TISSUE_PROFILE);
+            sandboxLink.href = getSandboxUrl(TISSUE_PROFILE, { chartMode: 'tissue' });
         }
         
         // =====================================================================

@@ -409,6 +409,7 @@
         import { MValueChart } from './js/charts/MValueChart.js';
         import { DiveProfileChart } from './js/charts/DiveProfileChart.js';
         import { COMPARTMENTS } from './js/tissueCompartments.js';
+        import { getSandboxUrl } from './js/urlParams.js';
         
         // Default example dive for this educational page: 30m for 28 min + 10 min safety stop at 3m
         const exampleDiveSetup = {
@@ -554,6 +555,12 @@
                 tbody.appendChild(row);
             });
         }
+
+        // Set up sandbox links with profiles and chart mode
+        const safeDiveLink = document.getElementById('safe-dive-sandbox-link');
+        const violationLink = document.getElementById('violation-sandbox-link');
+        if (safeDiveLink) safeDiveLink.href = getSandboxUrl(exampleDiveSetup, { chartMode: 'profile' });
+        if (violationLink) violationLink.href = getSandboxUrl(ceilingViolationSetup, { chartMode: 'profile' });
     </script>
 
     <!-- Shared Navigation -->

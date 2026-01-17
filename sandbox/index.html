@@ -717,7 +717,7 @@
             generateDecoSchedule,
             SURFACE_PRESSURE
         } from '../js/decoModel.js';
-        import { getProfileFromUrl, updateUrlWithProfile } from '../js/urlParams.js';
+        import { getProfileFromUrl, updateUrlWithProfile, getChartModeFromUrl } from '../js/urlParams.js';
         
         // =====================================================================
         // DIVE ANALYSIS - Warnings, Gas Consumption, Safety Checks
@@ -1329,15 +1329,38 @@
                     document.getElementById(id).classList.remove('active');
                 });
                 e.target.classList.add('active');
-                
+
                 // Update chart options
                 diveProfileChart.setOptions(chartButtons[btnId]);
-                
+
                 // Sync the properties panel checkboxes with the new options
                 syncPropertiesPanel(chartButtons[btnId]);
             });
         });
-        
+
+        // Apply chart mode from URL if present
+        const urlChartMode = getChartModeFromUrl();
+        if (urlChartMode) {
+            const chartModeMap = {
+                'profile': 'dpc-depth',
+                'pressure': 'dpc-pressure',
+                'gas': 'dpc-gas',
+                'pp': 'dpc-pp',
+                'tissue': 'dpc-tissue'
+            };
+            const btnId = chartModeMap[urlChartMode];
+            if (btnId && chartButtons[btnId]) {
+                // Update button states
+                Object.keys(chartButtons).forEach(id => {
+                    document.getElementById(id).classList.remove('active');
+                });
+                document.getElementById(btnId).classList.add('active');
+
+                // Update chart options
+                diveProfileChart.setOptions(chartButtons[btnId]);
+            }
+        }
+
         // =====================================================================
         // CHART PROPERTIES PANEL (Advanced)
         // =====================================================================
