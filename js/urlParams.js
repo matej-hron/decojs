@@ -26,27 +26,7 @@
  * @returns {string} URL-safe encoded string
  */
 export function encodeDiveSetup(diveSetup) {
-    if (!diveSetup) {
-        console.warn('encodeDiveSetup: No dive setup provided');
-        return '';
-    }
-
-    // Validate required fields
-    if (!diveSetup.dives || !Array.isArray(diveSetup.dives) || diveSetup.dives.length === 0) {
-        console.warn('encodeDiveSetup: Invalid dives array', diveSetup.dives);
-        return '';
-    }
-
-    // Check that first dive has waypoints
-    if (!diveSetup.dives[0].waypoints || diveSetup.dives[0].waypoints.length === 0) {
-        console.warn('encodeDiveSetup: First dive has no waypoints', diveSetup.dives[0]);
-        return '';
-    }
-
-    if (!diveSetup.gases || !Array.isArray(diveSetup.gases) || diveSetup.gases.length === 0) {
-        console.warn('encodeDiveSetup: Invalid gases array', diveSetup.gases);
-        return '';
-    }
+    if (!diveSetup) return '';
 
     try {
         // Create a minimal copy without unnecessary properties
@@ -76,7 +56,7 @@ export function encodeDiveSetup(diveSetup) {
 
         return urlSafe;
     } catch (error) {
-        console.error('Failed to encode dive setup:', error, diveSetup);
+        console.error('Failed to encode dive setup:', error);
         return '';
     }
 }
@@ -125,17 +105,14 @@ export function decodeDiveSetup(encoded) {
  * @returns {string} Full URL to sandbox with profile parameter
  */
 export function getSandboxUrl(diveSetup, baseUrl = null) {
+    const encoded = encodeDiveSetup(diveSetup);
+    if (!encoded) return baseUrl || 'sandbox/';
+
     // Determine base URL
     // If we're in the root, use 'sandbox/', if we're in a subdirectory, use '../sandbox/'
     const base = baseUrl || (window.location.pathname.includes('/sandbox')
         ? './'
         : 'sandbox/');
-
-    const encoded = encodeDiveSetup(diveSetup);
-    if (!encoded) {
-        console.warn('Failed to encode dive setup for sandbox URL:', diveSetup);
-        return base;
-    }
 
     return `${base}?profile=${encoded}`;
 }
