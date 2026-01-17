@@ -26,8 +26,28 @@
  * @returns {string} URL-safe encoded string
  */
 export function encodeDiveSetup(diveSetup) {
-    if (!diveSetup) return '';
-    
+    if (!diveSetup) {
+        console.warn('encodeDiveSetup: No dive setup provided');
+        return '';
+    }
+
+    // Validate required fields
+    if (!diveSetup.dives || !Array.isArray(diveSetup.dives) || diveSetup.dives.length === 0) {
+        console.warn('encodeDiveSetup: Invalid dives array', diveSetup.dives);
+        return '';
+    }
+
+    // Check that first dive has waypoints
+    if (!diveSetup.dives[0].waypoints || diveSetup.dives[0].waypoints.length === 0) {
+        console.warn('encodeDiveSetup: First dive has no waypoints', diveSetup.dives[0]);
+        return '';
+    }
+
+    if (!diveSetup.gases || !Array.isArray(diveSetup.gases) || diveSetup.gases.length === 0) {
+        console.warn('encodeDiveSetup: Invalid gases array', diveSetup.gases);
+        return '';
+    }
+
     try {
         // Create a minimal copy without unnecessary properties
         const minimal = {
@@ -38,25 +58,25 @@ export function encodeDiveSetup(diveSetup) {
             gfHigh: diveSetup.gfHigh,
             dives: diveSetup.dives
         };
-        
+
         // Only include optional properties if they have meaningful values
         if (diveSetup.description) minimal.description = diveSetup.description;
         if (diveSetup.surfaceInterval) minimal.surfaceInterval = diveSetup.surfaceInterval;
-        
+
         const json = JSON.stringify(minimal);
-        
+
         // Use base64 encoding (URL-safe variant)
         const base64 = btoa(unescape(encodeURIComponent(json)));
-        
+
         // Make URL-safe: replace + with -, / with _, remove padding =
         const urlSafe = base64
             .replace(/\+/g, '-')
             .replace(/\//g, '_')
             .replace(/=+$/, '');
-        
+
         return urlSafe;
     } catch (error) {
-        console.error('Failed to encode dive setup:', error);
+        console.error('Failed to encode dive setup:', error, diveSetup);
         return '';
     }
 }
@@ -99,21 +119,24 @@ export function decodeDiveSetup(encoded) {
 
 /**
  * Generate a full sandbox URL with the dive setup encoded
- * 
+ *
  * @param {Object} diveSetup - The dive setup to link to
  * @param {string} [baseUrl] - Optional base URL (defaults to relative path)
  * @returns {string} Full URL to sandbox with profile parameter
  */
 export function getSandboxUrl(diveSetup, baseUrl = null) {
-    const encoded = encodeDiveSetup(diveSetup);
-    if (!encoded) return baseUrl || 'sandbox/';
-    
     // Determine base URL
     // If we're in the root, use 'sandbox/', if we're in a subdirectory, use '../sandbox/'
-    const base = baseUrl || (window.location.pathname.includes('/sandbox') 
-        ? './' 
+    const base = baseUrl || (window.location.pathname.includes('/sandbox')
+        ? './'
         : 'sandbox/');
-    
+
+    const encoded = encodeDiveSetup(diveSetup);
+    if (!encoded) {
+        console.warn('Failed to encode dive setup for sandbox URL:', diveSetup);
+        return base;
+    }
+
     return `${base}?profile=${encoded}`;
 }
 
