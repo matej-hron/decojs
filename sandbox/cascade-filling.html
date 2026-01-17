@@ -1014,6 +1014,7 @@
 
                     isAnimating = false;
                     renderAll();
+                    updateUrl(); // Update URL with new state
                 }
             }
 
@@ -1154,24 +1155,30 @@
         });
 
         /**
-         * Build shareable URL with current setup
+         * Build shareable URL with current state
          */
         function buildShareUrl() {
             const params = new URLSearchParams();
+            // Setup params
             params.set('cp', cascadePressureSelect.value);
             params.set('tc', targetCountSelect.value);
             params.set('tv', targetVolumeSelect.value);
             params.set('tp', targetPressureSelect.value);
+            // Current pressures (rounded to 1 decimal)
+            params.set('c', cascadePressures.map(p => Math.round(p * 10) / 10).join(','));
+            params.set('t', targetPressures.map(p => Math.round(p * 10) / 10).join(','));
             return `${window.location.origin}${window.location.pathname}?${params.toString()}`;
         }
 
         /**
          * Read URL parameters and apply to setup
+         * Returns true if state was loaded from URL
          */
         function applyUrlParams() {
             const params = new URLSearchParams(window.location.search);
+            let hasState = false;
 
-            // Cascade pressure
+            // Cascade initial pressure (for reset)
             const cp = params.get('cp');
             if (cp && [...cascadePressureSelect.options].some(o => o.value === cp)) {
                 cascadePressureSelect.value = cp;
@@ -1192,12 +1199,34 @@
                 targetVolume = parseInt(tv);
             }
 
-            // Target pressure
+            // Target initial pressure (for reset)
             const tp = params.get('tp');
             if (tp && [...targetPressureSelect.options].some(o => o.value === tp)) {
                 targetPressureSelect.value = tp;
                 targetInitialPressure = parseInt(tp);
             }
+
+            // Current cascade pressures
+            const c = params.get('c');
+            if (c) {
+                const pressures = c.split(',').map(Number);
+                if (pressures.length === CASCADE_COUNT && pressures.every(p => !isNaN(p) && p >= 0)) {
+                    cascadePressures = pressures;
+                    hasState = true;
+                }
+            }
+
+            // Current target pressures
+            const t = params.get('t');
+            if (t) {
+                const pressures = t.split(',').map(Number);
+                if (pressures.length === targetCount && pressures.every(p => !isNaN(p) && p >= 0)) {
+                    targetPressures = pressures;
+                    hasState = true;
+                }
+            }
+
+            return hasState;
         }
 
         /**
@@ -1215,9 +1244,13 @@
         targetPressureSelect.addEventListener('change', updateUrl);
 
         // Initialize from URL params, then render
-        applyUrlParams();
-        cascadePressures = Array(CASCADE_COUNT).fill(cascadeInitialPressure);
-        initTargets();
+        const hasState = applyUrlParams();
+        if (!hasState) {
+            cascadePressures = Array(CASCADE_COUNT).fill(cascadeInitialPressure);
+            targetPressures = Array(targetCount).fill(targetInitialPressure);
+        }
+        targetValves = Array(targetCount).fill(false);
+        renderAll();
     </script>
 </body>
 </html>
