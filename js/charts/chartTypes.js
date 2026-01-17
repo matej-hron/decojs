@@ -307,6 +307,7 @@ export function normalizeDiveSetup(setup) {
             cylinderVolume: gas.cylinderVolume || 12,
             startPressure: gas.startPressure || 200
         })),
+        sacRate: setup.sacRate ?? 20,
         reservePressure: setup.reservePressure ?? 50,
         gfLow: setup.gfLow ?? 100,
         gfHigh: setup.gfHigh ?? 100,
