@@ -470,6 +470,7 @@ export class DiveProfileChart {
 
     /**
      * Calculate average depth from time/depth data points using trapezoidal integration
+     * Only considers time spent underwater (excludes surface interval where depth = 0)
      * @param {number[]} timePoints - Array of time points
      * @param {number[]} depthPoints - Array of depth points
      * @returns {number} Average depth in meters
@@ -479,18 +480,26 @@ export class DiveProfileChart {
         if (!timePoints || !depthPoints || timePoints.length < 2) return 0;
 
         let totalArea = 0;
-        const totalTime = timePoints[timePoints.length - 1] - timePoints[0];
-
-        if (totalTime <= 0) return 0;
+        let diveTime = 0;
 
         // Trapezoidal integration: sum of (d1 + d2) / 2 * dt for each segment
+        // Only include segments where diver is underwater (either point > 0)
         for (let i = 1; i < timePoints.length; i++) {
+            const d1 = depthPoints[i - 1];
+            const d2 = depthPoints[i];
+
+            // Skip surface interval segments (both points at surface)
+            if (d1 === 0 && d2 === 0) continue;
+
             const dt = timePoints[i] - timePoints[i - 1];
-            const avgDepth = (depthPoints[i] + depthPoints[i - 1]) / 2;
+            const avgDepth = (d1 + d2) / 2;
             totalArea += avgDepth * dt;
+            diveTime += dt;
         }
 
-        return totalArea / totalTime;
+        if (diveTime <= 0) return 0;
+
+        return totalArea / diveTime;
     }
 
     /**
@@ -806,22 +815,25 @@ export class DiveProfileChart {
                 const prevTime = results.timePoints[i - 1];
                 const prevDepth = results.depthPoints[i - 1];
                 const deltaTime = time - prevTime; // minutes
-                
-                // Average depth for this segment
-                const avgDepth = (depth + prevDepth) / 2;
-                const ambientPressure = 1 + avgDepth / 10; // bar
-                
-                // Gas consumed in this segment (liters at surface)
-                const segmentConsumption = sacRate * ambientPressure * deltaTime;
-                
-                // Add to cumulative consumption for current gas
-                if (gasData[currentGasId]) {
-                    cumulativeConsumption[currentGasId] += segmentConsumption;
+
+                // Skip surface interval (both points at surface = not diving)
+                if (!(depth === 0 && prevDepth === 0)) {
+                    // Average depth for this segment
+                    const avgDepth = (depth + prevDepth) / 2;
+                    const ambientPressure = 1 + avgDepth / 10; // bar
+
+                    // Gas consumed in this segment (liters at surface)
+                    const segmentConsumption = sacRate * ambientPressure * deltaTime;
+
+                    // Add to cumulative consumption for current gas
+                    if (gasData[currentGasId]) {
+                        cumulativeConsumption[currentGasId] += segmentConsumption;
+                    }
                 }
             }
-            
-            // Calculate instantaneous rate at current depth
-            const ambientPressure = 1 + depth / 10;
+
+            // Calculate instantaneous rate at current depth (0 at surface)
+            const ambientPressure = depth > 0 ? 1 + depth / 10 : 0;
             const instantRate = sacRate * ambientPressure; // L/min at surface equivalent
 
             // Record pressure and rate for each gas at this time point
