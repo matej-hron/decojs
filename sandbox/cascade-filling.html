@@ -443,8 +443,12 @@
             <div class="section">
                 <h3>Controls</h3>
                 <button class="reset-btn" id="resetBtn">Reset All</button>
+                <button class="reset-btn" id="shareBtn" style="margin-top: 0.5rem;">Copy Link</button>
                 <div class="hose-limit-warning" id="hoseWarning">
                     Max 3 target cylinders can be connected at once (3 hoses available)
+                </div>
+                <div class="hose-limit-warning" id="shareConfirm" style="background: #e8f5e9; border-color: #a5d6a7; color: #2e7d32;">
+                    Link copied to clipboard!
                 </div>
             </div>
 
@@ -1137,7 +1141,82 @@
 
         resetBtn.addEventListener('click', reset);
 
-        // Initialize
+        // Share button
+        const shareBtn = document.getElementById('shareBtn');
+        const shareConfirm = document.getElementById('shareConfirm');
+
+        shareBtn.addEventListener('click', () => {
+            const url = buildShareUrl();
+            navigator.clipboard.writeText(url).then(() => {
+                shareConfirm.classList.add('visible');
+                setTimeout(() => shareConfirm.classList.remove('visible'), 2000);
+            });
+        });
+
+        /**
+         * Build shareable URL with current setup
+         */
+        function buildShareUrl() {
+            const params = new URLSearchParams();
+            params.set('cp', cascadePressureSelect.value);
+            params.set('tc', targetCountSelect.value);
+            params.set('tv', targetVolumeSelect.value);
+            params.set('tp', targetPressureSelect.value);
+            return `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+        }
+
+        /**
+         * Read URL parameters and apply to setup
+         */
+        function applyUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+
+            // Cascade pressure
+            const cp = params.get('cp');
+            if (cp && [...cascadePressureSelect.options].some(o => o.value === cp)) {
+                cascadePressureSelect.value = cp;
+                cascadeInitialPressure = parseInt(cp);
+            }
+
+            // Target count
+            const tc = params.get('tc');
+            if (tc && [...targetCountSelect.options].some(o => o.value === tc)) {
+                targetCountSelect.value = tc;
+                targetCount = parseInt(tc);
+            }
+
+            // Target volume
+            const tv = params.get('tv');
+            if (tv && [...targetVolumeSelect.options].some(o => o.value === tv)) {
+                targetVolumeSelect.value = tv;
+                targetVolume = parseInt(tv);
+            }
+
+            // Target pressure
+            const tp = params.get('tp');
+            if (tp && [...targetPressureSelect.options].some(o => o.value === tp)) {
+                targetPressureSelect.value = tp;
+                targetInitialPressure = parseInt(tp);
+            }
+        }
+
+        /**
+         * Update URL without reload (for bookmarking)
+         */
+        function updateUrl() {
+            const url = buildShareUrl();
+            history.replaceState(null, '', url);
+        }
+
+        // Update URL when settings change
+        cascadePressureSelect.addEventListener('change', updateUrl);
+        targetCountSelect.addEventListener('change', updateUrl);
+        targetVolumeSelect.addEventListener('change', updateUrl);
+        targetPressureSelect.addEventListener('change', updateUrl);
+
+        // Initialize from URL params, then render
+        applyUrlParams();
+        cascadePressures = Array(CASCADE_COUNT).fill(cascadeInitialPressure);
         initTargets();
     </script>
 </body>
