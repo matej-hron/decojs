@@ -338,6 +338,52 @@
                     <p>Available gas = 12 × (200 - 50) = <strong>1800 liters</strong></p>
                 </div>
             </details>
+
+            <details class="learn-more">
+                <summary>📊 Calculating Your Personal SAC Rate</summary>
+                <div class="math-content">
+                    <p>
+                        Knowing your personal SAC rate helps you plan dives more accurately. You can calculate it
+                        from real dive data using your pressure drop, cylinder size, dive time, and average depth.
+                    </p>
+
+                    <h4>SAC Calculation Formula</h4>
+                    <div class="formula" id="formula-sac-calculation">
+                        SAC = \frac{\Delta P \times V_{cyl}}{t \times P_{avg}}
+                    </div>
+                    <p>Where:</p>
+                    <ul>
+                        <li><span class="formula-inline">\Delta P</span> = Pressure drop (start - end pressure in bar)</li>
+                        <li><span class="formula-inline">V_{cyl}</span> = Cylinder volume (liters)</li>
+                        <li><span class="formula-inline">t</span> = Dive time (minutes)</li>
+                        <li><span class="formula-inline">P_{avg}</span> = Average ambient pressure = 1 + (avg depth / 10)</li>
+                    </ul>
+
+                    <h4>Example Calculation</h4>
+                    <p>After a dive you note:</p>
+                    <ul>
+                        <li>Cylinder: 12L</li>
+                        <li>Start pressure: 200 bar, End pressure: 80 bar → <strong>ΔP = 120 bar</strong></li>
+                        <li>Dive time: 45 minutes</li>
+                        <li>Average depth: 15m → <strong>P<sub>avg</sub> = 1 + 15/10 = 2.5 bar</strong></li>
+                    </ul>
+                    <div class="formula" id="formula-sac-example">
+                        SAC = \frac{120 \times 12}{45 \times 2.5} = \frac{1440}{112.5} = 12.8 \text{ L/min}
+                    </div>
+                    <p>
+                        This diver has a SAC rate of <strong>12.8 L/min</strong> — quite efficient!
+                        Typical recreational divers range from 12-25 L/min depending on fitness, experience, and conditions.
+                    </p>
+
+                    <h4>Tips for Accurate Measurement</h4>
+                    <ul>
+                        <li>Use a dive computer that logs average depth, or calculate it from your profile</li>
+                        <li>Measure over several dives to get a reliable average</li>
+                        <li>Note that SAC increases with exertion, cold, or stress</li>
+                        <li>For planning, use a conservative (higher) SAC estimate</li>
+                    </ul>
+                </div>
+            </details>
         </section>
 
         <!-- Gas Consumption Chart Section -->
