@@ -1,0 +1,342 @@
+{
+    "page": {
+        "title": "Tlak a parciální tlak - Deco Theory"
+    },
+    "disclaimer": {
+        "text": "<strong>Pouze pro výukové účely</strong> — Tento nástroj NENÍ určen k plánování skutečných ponorů. Nikdy jej nepoužívejte pro reálné potápění. Vždy používejte certifikované potápěčské počítače, tabulky a řádný výcvik."
+    },
+    "header": {
+        "title": "Tlak a parciální tlak",
+        "subtitle": "Jak se mění tlak s hloubkou a jak ovlivňuje plyny, které dýcháte"
+    },
+    "toc": {
+        "title": "Obsah",
+        "diveProfile": "Terminologie",
+        "totalPressure": "Celkový tlak pod vodou",
+        "gasConsumption": "Spotřeba plynu",
+        "airComposition": "Složení vzduchu",
+        "daltonsLaw": "Daltonův zákon",
+        "partialPressureLimits": "Limity parciálních tlaků",
+        "oxygenToxicity": "Toxicita kyslíku",
+        "partialPressureChart": "Graf parciálních tlaků"
+    },
+    "diveProfile": {
+        "title": "Terminologie"
+    },
+    "terminology": {
+        "reading": {
+            "title": "Čtení potápěčského profilu",
+            "text": "<strong>Potápěčský profil</strong> je grafické znázornění ponoru, které ukazuje hloubku v čase. Znalost základní terminologie vám pomůže komunikovat s ostatními potápěči a správně interpretovat údaje z potápěčského počítače."
+        },
+        "keyTerms": "Klíčové pojmy",
+        "descent": {
+            "label": "Sestup",
+            "text": "Fáze od opuštění hladiny do dosažení plánované hloubky. Doporučená rychlost: ≤18–20 m/min."
+        },
+        "bottomTime": {
+            "label": "Čas na dně",
+            "text": "Celkový čas od začátku sestupu do zahájení finálního výstupu. Zahrnuje fázi sestupu."
+        },
+        "maxDepth": {
+            "label": "Maximální hloubka",
+            "text": "Nejhlubší bod dosažený během ponoru. Určuje okolní tlak a rychlost absorpce plynů."
+        },
+        "ascent": {
+            "label": "Výstup",
+            "text": "Návrat k hladině. Rychlost by neměla překročit 9–10 m/min, aby se zabránilo tvorbě bublin."
+        },
+        "tdt": {
+            "label": "Celková doba ponoru (TDT)",
+            "text": "Celková doba od opuštění hladiny do návratu. Zahrnuje sestup, čas na dně a celý výstup."
+        },
+        "decoStop": {
+            "label": "Dekompresní zastávka",
+            "text": "Povinná pauza v určité hloubce během výstupu umožňující bezpečné odbourání inertních plynů."
+        },
+        "safetyStop": {
+            "label": "Bezpečnostní zastávka",
+            "text": "Dobrovolná 3minutová pauza v hloubce 3–5 m během výstupu pro bezpečné odvětrání přebytečného dusíku."
+        },
+        "surfaceInterval": {
+            "label": "Povrchový interval (SI)",
+            "text": "Čas strávený na hladině mezi ponory pro odvětrání dusíku. Delší PI = více odbouraného dusíku."
+        }
+    },
+    "sandboxLink": "Otevřít v Sandboxu →",
+    "totalPressure": {
+        "title": "Celkový tlak pod vodou",
+        "whatCreates": {
+            "title": "Co vytváří tlak pod vodou?",
+            "intro": "Celkový tlak, kterému je potápěč pod vodou vystaven, pochází ze dvou zdrojů:",
+            "atmospheric": "<strong>Atmosférický tlak</strong> — Váha sloupce vzduchu nad vámi. Na hladině moře je to přibližně <strong>1 bar</strong> (1 atm = 1,01325 bar).",
+            "hydrostatic": "<strong>Hydrostatický tlak</strong> — Váha vodního sloupce nad vámi. V mořské vodě přidává přibližně <strong>1 bar na každých 10 metrů</strong> hloubky.",
+            "summary": "Proto v hloubce 10 m na vás působí celkový tlak 2 bary (1 atm + 1 bar vody), v 20 m jsou to 3 bary, v 30 m 4 bary atd."
+        },
+        "altitude": {
+            "summary": "Atmosférický tlak v různých nadmořských výškách",
+            "intro": "Atmosférický tlak klesá s nadmořskou výškou. Pokud se potápíte v horském jezeře, začínáte na hladině s méně než 1 barem:",
+            "thAltitude": "Nadmořská výška",
+            "thPressure": "Tlak (bar)",
+            "thExample": "Příklad",
+            "seaLevel": "Hladina moře",
+            "seaLevelExample": "Moře, pobřežní jezera",
+            "300m": "300 m",
+            "300mExample": "Nízké kopce",
+            "700m": "700 m",
+            "700mExample": "Horská jezera",
+            "1500m": "1500 m",
+            "1500mExample": "Vysokohorská jezera",
+            "2500m": "2500 m",
+            "2500mExample": "Jezero Titicaca",
+            "3000m": "3000 m",
+            "3000mExample": "Potápění v extrémní výšce",
+            "note": "⚠️ Potápění ve výšce vyžaduje speciální postupy a úpravy dekomprese."
+        },
+        "formulas": {
+            "summary": "Matematické vzorce",
+            "totalAmbient": "Celkový okolní tlak",
+            "totalAmbientDesc": "Celkový tlak v jakékoli hloubce je součtem atmosférického a hydrostatického tlaku:",
+            "totalAmbientWhere": "Kde:",
+            "pAmb": "celkový okolní tlak",
+            "pAtm": "atmosférický tlak (≈1 bar na hladině moře)",
+            "rho": "hustota vody (≈1025 kg/m³ pro mořskou vodu)",
+            "g": "gravitační zrychlení (9,81 m/s²)",
+            "hDepth": "hloubka v metrech",
+            "simplified": "Zjednodušený vzorec (hladina moře)",
+            "simplifiedDesc": "Pro potápění na hladině moře používáme zjednodušený vzorec:",
+            "simplifiedNote": "Tato aproximace dobře funguje pro výpočty při rekreačním potápění.",
+            "altitudeFormula": "Atmosférický tlak vs. nadmořská výška",
+            "altitudeFormulaDesc": "Atmosférický tlak klesá exponenciálně s nadmořskou výškou:",
+            "altitudeWhere": "Kde:",
+            "p0": "1,01325 bar (tlak na hladině moře)",
+            "hAlt": "nadmořská výška v metrech",
+            "scaleHeight": "≈ 8500 m (měřítková výška atmosféry)"
+        }
+    },
+    "pressureChart": {
+        "title": "Profil ponoru s celkovým tlakem"
+    },
+    "gasConsumption": {
+        "title": "Spotřeba plynu",
+        "whyDepth": {
+            "title": "Vliv hloubky na spotřebu plynu",
+            "text1": "Podle <strong>Boyle-Mariottova zákona</strong> platí, že s rostoucím tlakem se objem plynu úměrně zmenšuje. Pod vodou to znamená, že dýcháte <em>stlačený</em> vzduch z lahve. V hloubce 10 m (2 bary) každý nádech odebere dvojnásobné množství molekul plynu ve srovnání s hladinou.",
+            "text2": "Proto hlubší ponory spotřebovávají vaši zásobu plynu rychleji — dýcháte stejný objem vzduchu, ale ten obsahuje více molekul plynu v důsledku komprese."
+        },
+        "sac": {
+            "title": "Spotřeba vzduchu na hladině (SAC)",
+            "text1": "<strong>SAC</strong> (též nazývaná RMV — respirační minutový objem) je množství plynu, které spotřebujete za minutu na hladině. Pro účely plánování používáme typickou hodnotu <strong>20 l/min</strong> pro klidné potápění, i když skutečná spotřeba se liší podle zátěže, stresu a individuálních faktorů.",
+            "text2": "V hloubce je vaše skutečná spotřeba: <strong>SAC × okolní tlak</strong>",
+            "surface": "Hladina (1 bar): 20 l/min",
+            "10m": "10 m (2 bary): 40 l/min",
+            "20m": "20 m (3 bary): 60 l/min",
+            "30m": "30 m (4 bary): 80 l/min",
+            "40m": "40 m (5 barů): 100 l/min"
+        },
+        "formula": {
+            "summary": "Vzorec spotřeby plynu",
+            "consumedTitle": "Spotřeba plynu v hloubce",
+            "consumedDesc": "Spotřebu plynu v jakékoli hloubce lze vypočítat jako:",
+            "consumedWhere": "Kde:",
+            "sacVar": "Spotřeba vzduchu na hladině (l/min)",
+            "pAmbVar": "Okolní tlak v barech (1 + hloubka/10)",
+            "tVar": "Čas v hloubce (minuty)",
+            "availableTitle": "Dostupný objem plynu v lahvi",
+            "availableExample": "Pro 12l lahev při 200 barech s rezervou 50 barů:",
+            "availableResult": "Dostupný plyn = 12 × (200 − 50) = <strong>1800 litrů</strong>"
+        }
+    },
+    "gasConsumptionChart": {
+        "title": "Spotřeba plynu během ponoru",
+        "sacCalc": {
+            "summary": "Výpočet osobní spotřeby SAC",
+            "intro": "Znalost vaší osobní spotřeby SAC vám pomůže přesněji plánovat ponory. Můžete ji vypočítat z reálných dat ponoru pomocí úbytku tlaku, velikosti lahve, doby ponoru a průměrné hloubky.",
+            "formulaTitle": "Vzorec pro výpočet SAC",
+            "where": "Kde:",
+            "deltaP": "Úbytek tlaku (počáteční − konečný tlak v barech)",
+            "vCyl": "Objem lahve (litry)",
+            "t": "Doba ponoru (minuty)",
+            "pAvg": "Průměrný okolní tlak = 1 + (průměrná hloubka / 10)",
+            "exampleTitle": "Příklad výpočtu",
+            "exampleIntro": "Po ponoru si zaznamenáte:",
+            "exampleCyl": "Lahev: 12 l",
+            "examplePressure": "Počáteční tlak: 200 bar, konečný tlak: 80 bar → <strong>ΔP = 120 bar</strong>",
+            "exampleTime": "Doba ponoru: 45 minut",
+            "exampleDepth": "Průměrná hloubka: 15 m → <strong>P<sub>avg</sub> = 1 + 15/10 = 2,5 bar</strong>",
+            "exampleResult": "Tento potápěč má SAC <strong>12,8 l/min</strong> — poměrně efektivní! Typičtí rekreační potápěči mají 12–25 l/min v závislosti na kondici, zkušenostech a podmínkách.",
+            "tipsTitle": "Tipy pro přesné měření",
+            "tip1": "Použijte potápěčský počítač, který zaznamenává průměrnou hloubku, nebo ji vypočítejte z profilu",
+            "tip2": "Měřte během několika ponorů, abyste získali spolehlivý průměr",
+            "tip3": "Pamatujte, že SAC se zvyšuje při námaze, v chladu nebo při stresu",
+            "tip4": "Pro plánování používejte konzervativní (vyšší) odhad SAC"
+        }
+    },
+    "airComposition": {
+        "title": "Složení vzduchu",
+        "whatsInAir": {
+            "title": "Co obsahuje vzduch, který dýcháte?",
+            "intro": "Vzduch, který dýcháme, je směsí plynů. Pochopení tohoto složení je pro potápění zásadní, protože každý plyn se pod tlakem chová jinak. Hlavní složky jsou:",
+            "nitrogen": "<strong>Dusík (N₂)</strong> — 78 % — inertní plyn, neúčastní se metabolismu",
+            "oxygen": "<strong>Kyslík (O₂)</strong> — 21 % — nezbytný pro život, ale toxický při vysokých parciálních tlacích",
+            "other": "<strong>Ostatní plyny</strong> — 1 % — především argon, CO₂ a stopové plyny"
+        },
+        "mixtures": {
+            "title": "Dýchací směsi",
+            "intro": "Potápěči používají různé směsi plynů k ovlivnění parciálních tlaků jednotlivých plynů v hloubce. Změnou podílu každého plynu ve směsi mohou potápěči zůstat v bezpečných limitech pro toxicitu kyslíku a hloubkové opojení:",
+            "nitrox": "<strong>Nitrox (EAN)</strong> — Zvyšuje podíl kyslíku, čímž snižuje parciální tlak dusíku (ppN<sub>2</sub>), a tím omezuje sycení tkání dusíkem.",
+            "trimix": "<strong>Trimix</strong> — Přidává do směsi hélium, což potápěčům umožňuje snížit parciální tlaky kyslíku i dusíku na bezpečnou úroveň pro hluboké ponory."
+        }
+    },
+    "daltonsLaw": {
+        "title": "Daltonův zákon parciálních tlaků",
+        "foundation": {
+            "title": "Základ fyziky plynů při potápění",
+            "text": "<strong>Daltonův zákon</strong> říká, že celkový tlak směsi plynů se rovná součtu parciálních tlaků jednotlivých složek. <em>Parciální tlak</em> plynu je tlak, který by plyn vyvolal, kdyby sám zabíral stejný objem."
+        },
+        "animation": {
+            "caption": "Každý plyn (modrý, červený) vyvíjí svůj tlak nezávisle — celkový tlak je součtem všech parciálních tlaků."
+        },
+        "formula": {
+            "summary": "Vzorec Daltonova zákona",
+            "totalPressure": "Celkový tlak",
+            "ppCalc": "Výpočet parciálního tlaku",
+            "where": "Kde:",
+            "ppx": "parciální tlak plynu x (bar)",
+            "fx": "podíl plynu x ve směsi (desetinné číslo, např. 0,21 pro 21 %)",
+            "pAmb": "okolní tlak (bar), vypočítaný jako 1 + hloubka/10",
+            "note": "<em>Poznámka: Toto je <strong>operační</strong> vzorec používaný pro MOD a limity plynů v celé této části.</em>"
+        },
+        "example": {
+            "title": "Příklad: Vzduch v hloubce 30 metrů",
+            "intro": "V hloubce 30 metrů je okolní tlak <strong>4 bary</strong> (1 + 30/10). Pro vzduch:",
+            "thGas": "Plyn",
+            "thFraction": "Frakce",
+            "thCalculation": "Výpočet",
+            "thPP": "Parciální tlak",
+            "o2PP": "<strong>0,84 bar</strong>",
+            "n2PP": "<strong>3,16 bar</strong>"
+        },
+        "operational": {
+            "title": "Operační a fyziologický parciální tlak",
+            "intro": "Existují dva běžné kontexty pro výpočty parciálních tlaků:",
+            "opTitle": "Operační (MOD / limity plynů)",
+            "opDesc": "Používá se pro maximální operační hloubku (MOD) a limity toxicity kyslíku. Bez odečtení vodní páry.",
+            "physTitle": "Fyziologický (kinetika tkání)",
+            "physDesc": "Při výpočtu alveolárních tlaků plynů pro modely sycení tkání odečítáme tlak vodní páry, protože plíce zvlhčují vdechovaný vzduch:",
+            "physNote": "Tato ~6% redukce se objevuje v Bühlmannových rovnicích pro výpočty sycení tkání. Budeme ji potřebovat v dalších částech a uvádíme ji zde pro úplnost."
+        }
+    },
+    "partialPressureLimits": {
+        "title": "Limity parciálních tlaků",
+        "oxygenLimits": {
+            "title": "Limity kyslíku (ppO₂)",
+            "intro": "Kyslík se stává toxickým při zvýšených parciálních tlacích. Tělo reaguje na různé úrovně ppO₂ odlišně:",
+            "thPPO2": "ppO₂ (bar)",
+            "thStatus": "Stav",
+            "thNotes": "Poznámky",
+            "hypoxia": "Hypoxie",
+            "hypoxiaNotes": "Ztráta vědomí, smrt. Minimum pro přežití.",
+            "normal": "Normální",
+            "normalNotes": "Rozsah dýchání na hladině.",
+            "safe": "Bezpečné pro potápění",
+            "safeNotes": "Doporučený provozní limit pro rekreační potápění.",
+            "caution": "Pozor",
+            "cautionNotes": "Přípustné pouze pro dekompresní zastávky. Omezená doba expozice.",
+            "danger": "Nebezpečí",
+            "dangerNotes": "Vysoké riziko toxicity kyslíku na CNS (křeče)."
+        },
+        "mod": {
+            "title": "Maximální operační hloubka (MOD)",
+            "intro": "MOD je maximální hloubka, do které se můžete bezpečně ponořit s danou dýchací směsí, aniž byste překročili limit ppO₂. Vypočítá se z podílu kyslíku a požadovaného maximálního ppO₂.",
+            "formulaSummary": "Vzorec MOD",
+            "where": "Kde:",
+            "ppO2Max": "maximální povolený parciální tlak (typicky 1,4 bar)",
+            "fO2": "podíl kyslíku v plynu (desetinné číslo)",
+            "exercisesTitle": "Cvičení: Vypočítejte MOD (ppO₂ = 1,4 bar)",
+            "exGas": "Směs",
+            "exCalc": "Výpočet",
+            "showAnswer": "ukázat",
+            "exAir": "Vzduch (21 % O₂)",
+            "exerciseNote": "💡 Všimněte si: vyšší podíl O₂ → menší MOD. Více kyslíku znamená, že limitu toxicity dosáhnete dříve."
+        },
+        "nitrogenLimits": {
+            "title": "Limity dusíku (ppN₂) — Narkóza",
+            "intro": "Dusík se při zvýšených parciálních tlacích stává narkotickým, což způsobuje zhoršený úsudek, euforii a zpomalené reakce — podobně jako intoxikace alkoholem.",
+            "martiniTitle": "Pravidlo Martini",
+            "martiniIntro": "Populární pomůcka: každých 10 metrů hloubky na vzduchu odpovídá zhruba jednomu martini na lačný žaludek. V 30 m se můžete cítit, jako byste vypili 3 martini!",
+            "martini10": "10 m — 1 martini",
+            "martini20": "20 m — 2 martini",
+            "martini30": "30 m — 3 martini",
+            "martini40": "40 m — 4 martini",
+            "martiniNote": "<em>Poznámka: Individuální citlivost se výrazně liší. Někteří potápěči pociťují účinky dříve, jiní později. Chlad, stres a únava narkózu zesilují.</em>",
+            "thPPN2": "ppN₂ (bar)",
+            "thEquivDepth": "Ekvivalentní hloubka (vzduch)",
+            "thEffects": "Účinky",
+            "minimal": "Minimální účinky u většiny potápěčů.",
+            "mild": "Mírná euforie, lehké zhoršení.",
+            "noticeable": "Znatelné zhoršení, snížený úsudek.",
+            "severe": "Silná narkóza. Maximální limit pro rekreační potápění.",
+            "exercisesTitle": "Cvičení: Maximální hloubka pro limit narkózy",
+            "limitLabel": "Limit ppN₂:",
+            "strictNote": "← přísnější limit používaný některými výcvikovými agenturami",
+            "exButModTemplate": "ale MOD je {mod} m!",
+            "exercisesHint": "Stejný vzorec jako MOD, ale pro dusík: Max hloubka = ((ppN₂<sub>max</sub> / fN₂) − 1) × 10",
+            "exGas": "Směs",
+            "exCalc": "Výpočet",
+            "exMaxDepth": "Max hloubka",
+            "exAir": "Vzduch",
+            "showAnswer": "ukázat",
+            "exerciseNote": "💡 Nitrox posouvá limit narkózy hlouběji, ale kyslíkový MOD nastoupí dříve — vždy je třeba respektovat oba limity. Skutečným omezujícím faktorem u EAN směsí je obvykle kyslík, ne narkóza."
+        }
+    },
+    "oxygenToxicity": {
+        "title": "Toxicita kyslíku",
+        "twoTypes": {
+            "title": "Dva typy toxicity kyslíku",
+            "intro": "Dýchání kyslíku při zvýšených parciálních tlacích může způsobit dva odlišné typy toxicity:",
+            "thType": "Typ",
+            "thCause": "Příčina",
+            "thSymptoms": "Příznaky",
+            "thRelevance": "Význam pro potápění",
+            "cnsType": "<strong>Toxicita CNS</strong>",
+            "cnsCause": "Vysoký ppO₂ (>1,6 bar)",
+            "cnsSymptoms": "Křeče, tunelové vidění, záškuby",
+            "cnsRelevance": "Bezprostřední nebezpečí, může způsobit utonutí",
+            "pulmonaryType": "<strong>Plicní toxicita</strong>",
+            "pulmonaryCause": "Dlouhodobá expozice (ppO₂ >0,5 bar)",
+            "pulmonarySymptoms": "Bolest na hrudi, kašel, dechové obtíže",
+            "pulmonaryRelevance": "Relevantní při dlouhých expozicích, rebreathery"
+        },
+        "cnsOtu": {
+            "title": "Sledování CNS a OTU",
+            "toggleLabel": "Zobrazit podrobnosti",
+            "disclaimer": "<em>⚠️ Toto je pokročilý obsah. Pro rekreační potápění stačí dodržovat ppO₂ pod 1,4 bar. Sledování CNS/OTU se používá především v technickém potápění s prodlouženými expozicemi kyslíku.</em>",
+            "cnsTitle": "CNS (centrální nervový systém) hodiny",
+            "cnsDesc": "CNS hodiny sledují vaši expozici jako procento maximálního povoleného času při dané úrovni ppO₂. Při 100 % jste dosáhli doporučeného limitu.",
+            "thPPO2": "ppO₂ (bar)",
+            "thNOAAMax": "Max. čas NOAA",
+            "thCNSPerMin": "CNS % za min",
+            "otuTitle": "OTU (jednotky kyslíkové tolerance)",
+            "otuDesc": "OTU sledují kumulativní plicní expozici kyslíku. Vzorec se použije, když ppO₂ překročí 0,5 bar:",
+            "otuLimits": "Denní limity: <strong>300 OTU</strong> (jeden ponor), <strong>850 OTU</strong> (celkový denní)"
+        },
+        "symptoms": {
+            "title": "Příznaky toxicity kyslíku na CNS",
+            "mnemonic": "Zapamatujte si mnemotechnickou pomůcku <strong>VENTID-C</strong>:",
+            "v": "<strong>V</strong> — Poruchy vidění (tunelové vidění)",
+            "e": "<strong>E</strong> — Zvonění v uších (tinnitus)",
+            "n": "<strong>N</strong> — Nevolnost",
+            "t": "<strong>T</strong> — Záškuby (zejména obličejových svalů)",
+            "i": "<strong>I</strong> — Podrážděnost, úzkost",
+            "d": "<strong>D</strong> — Závrať",
+            "c": "<strong>C</strong> — Křeče (nejnebezpečnější)",
+            "warning": "⚠️ Pokud pocítíte jakýkoli z těchto příznaků, okamžitě signalizujte partnerovi a zahajte výstup. Křeče pod vodou jsou často smrtelné."
+        }
+    },
+    "partialPressureChart": {
+        "title": "Parciální tlaky během ponoru"
+    },
+    "footer": {
+        "text": "Pouze výuková vizualizace. Není určeno pro plánování ponorů."
+    }
+}
