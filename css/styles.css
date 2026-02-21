@@ -4228,9 +4228,46 @@ body.presentation-active .presentation-sidebar {
     padding: 0;
 }
 
-.presentation-sidebar li {
-    padding: 0.6rem 1rem;
-    font-size: 0.85rem;
+/* Page group headers in sidebar */
+.sidebar-page-header {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    border-left: 3px solid transparent;
+}
+
+.sidebar-page-header:first-child {
+    margin-top: 0;
+}
+
+.sidebar-page-header.sidebar-page-current {
+    color: var(--primary-color);
+    border-left-color: var(--primary-color);
+    background: rgba(41, 128, 185, 0.04);
+}
+
+.sidebar-page-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.sidebar-page-link:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+.sidebar-page-title {
+    color: inherit;
+}
+
+/* Slide items (current page only) */
+.sidebar-slide-item {
+    padding: 0.4rem 0.8rem 0.4rem 1.4rem;
+    font-size: 0.8rem;
     color: var(--text-muted);
     cursor: pointer;
     border-left: 3px solid transparent;
@@ -4238,12 +4275,12 @@ body.presentation-active .presentation-sidebar {
     line-height: 1.3;
 }
 
-.presentation-sidebar li:hover {
+.sidebar-slide-item:hover {
     background: var(--background-color);
     color: var(--text-color);
 }
 
-.presentation-sidebar li.active {
+.sidebar-slide-item.active {
     background: rgba(41, 128, 185, 0.08);
     color: var(--primary-color);
     border-left-color: var(--primary-color);
@@ -4333,4 +4370,66 @@ body.presentation-active .presentation-nav {
     .presentation-counter {
         font-size: 0.9rem;
     }
+}
+
+/* =====================================================================
+   PRESENTATION MODE — Slide-optimized content
+   ===================================================================== */
+
+/* Slide text injected by presentationMode.js */
+body.presentation-active .slide-text {
+    font-size: 1.3rem;
+    color: var(--text-muted);
+    max-width: 800px;
+    margin: 0.5rem 0 1.5rem;
+    line-height: 1.5;
+}
+
+body.presentation-active .slide-text strong {
+    color: var(--text-color);
+}
+
+/* Charts slightly bigger in presentation mode */
+body.presentation-active .chart-wrapper {
+    height: 65vh !important;
+    max-height: 650px;
+}
+
+/* Slide-visual: hidden in reading mode, shown in presentation mode */
+.slide-visual {
+    display: none;
+}
+
+body.presentation-active .slide-visual {
+    display: block !important;
+    margin: 1.5rem 0;
+    padding: 2rem;
+    background: var(--card-background);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.slide-formula {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    font-family: 'Courier New', monospace;
+}
+
+.slide-scale {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+}
+
+.slide-scale span {
+    padding: 0.4rem 0.8rem;
+    background: var(--background-color);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
 }

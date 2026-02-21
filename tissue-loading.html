@@ -65,8 +65,10 @@
                 <li><a href="#henrys-law">🧪 <span data-i18n="tissueLoading.toc.henrysLaw">Henry's Law</span></a></li>
                 <li><a href="#gas-exchange">💨 <span data-i18n="tissueLoading.toc.gasExchange">Gas Exchange Pathway</span></a></li>
                 <li><a href="#saturation-dynamics">📈 <span data-i18n="tissueLoading.toc.saturationDynamics">Saturation Dynamics</span></a></li>
+                <li><a href="#critical-supersaturation">⚠️ <span data-i18n="tissueLoading.toc.criticalSupersaturation">Critical Supersaturation</span></a></li>
                 <li><a href="#half-time-concept">⏱️ <span data-i18n="tissueLoading.toc.halfTimeConcept">Half-Time Concept</span></a></li>
                 <li><a href="#half-time-charts">📊 <span data-i18n="tissueLoading.toc.halfTimeCharts">Half-Time Charts</span></a></li>
+                <li><a href="#half-time-math">🔬 <span data-i18n="tissueLoading.toc.halfTimeMath">The Mathematics</span></a></li>
                 <li><a href="#tissue-heterogeneity">🧠 <span data-i18n="tissueLoading.toc.tissueTypes">Tissue Types</span></a></li>
                 <li><a href="#buhlmann-compartments">🏗️ <span data-i18n="tissueLoading.toc.buhlmannCompartments">Bühlmann Compartments</span></a></li>
                 <li><a href="#zhl16-variants">🔧 <span data-i18n="tissueLoading.toc.zhl16Variants">ZH-L16 Variants</span></a></li>
@@ -76,7 +78,7 @@
         </nav>
 
         <!-- Intro -->
-        <section id="deco-theory" class="education-section">
+        <section id="deco-theory" class="education-section" data-slide-text="Nitrogen dissolves into your tissues under pressure. Ascend too fast and it forms **bubbles — decompression sickness**." data-slide-text-cs="Dusík se pod tlakem rozpouští ve tkáních. Vystoupáte-li příliš rychle, tvoří **bubliny — dekompresní nemoc**.">
             <h2>📚 <span data-i18n="tissueLoading.decoTheory.title">Why Does This Matter?</span></h2>
 
             <div class="concept-card">
@@ -90,7 +92,7 @@
         </section>
 
         <!-- Henry's Law -->
-        <section id="henrys-law" class="education-section">
+        <section id="henrys-law" class="education-section" data-slide-text="Like CO₂ in a soda bottle — **more pressure = more gas dissolved**. Fat holds 5x more N₂ than blood." data-slide-text-cs="Jako CO₂ v lahvi limonády — **vyšší tlak = více rozpuštěného plynu**. Tuk pojme 5x více N₂ než krev.">
             <h2>🧪 <span data-i18n="tissueLoading.henrysLaw.title">Henry's Law: Gas Dissolution</span></h2>
 
             <div class="concept-card">
@@ -151,7 +153,7 @@
         </section>
 
         <!-- Gas Exchange Pathway -->
-        <section id="gas-exchange" class="education-section">
+        <section id="gas-exchange" class="education-section" data-slide-text="Gas flows along the **pressure gradient**: tank → lungs → blood → tissues. Higher pressure always pushes toward lower." data-slide-text-cs="Plyn proudí po **tlakovém gradientu**: láhev → plíce → krev → tkáně. Vyšší tlak vždy tlačí směrem k nižšímu.">
             <h2>💨 <span data-i18n="tissueLoading.gasExchange.title">Gas Exchange Pathway</span></h2>
 
             <div class="concept-card">
@@ -347,7 +349,7 @@
         </section>
 
         <!-- Saturation Dynamics -->
-        <section id="saturation-dynamics" class="education-section">
+        <section id="saturation-dynamics" class="education-section" data-slide-text="Three phases: **descent = on-gassing**, at depth = differential saturation, **ascent = off-gassing**." data-slide-text-cs="Tři fáze: **sestup = nasycování**, v hloubce = diferenciální saturace, **výstup = odsycování**.">
             <h2>📈 <span data-i18n="tissueLoading.saturationDynamics.title">Saturation Dynamics During a Dive</span></h2>
 
             <div class="concept-card">
@@ -389,25 +391,29 @@
                         <p class="phase-formula">ppN₂<sub>tissue</sub> &gt; P<sub>ambient</sub> → <strong>Supersaturation</strong> ⚠️</p>
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <div class="concept-card warning-card" style="margin-top: 1rem;">
-                    <h4 data-i18n="tissueLoading.saturationDynamics.critical.heading">⚠️ Critical Supersaturation</h4>
-                    <p data-i18n="tissueLoading.saturationDynamics.critical.text1">
-                        Some supersaturation is <strong>tolerable</strong> — our bodies can handle a certain amount
-                        of excess dissolved gas without forming bubbles. However, if tissues become <em>too</em>
-                        supersaturated, dissolved nitrogen can form bubbles instead of diffusing out safely.
-                    </p>
-                    <p data-i18n="tissueLoading.saturationDynamics.critical.text2">
-                        The maximum tolerable supersaturation is called <strong>critical supersaturation</strong> —
-                        it varies by tissue type and depth. In the <a href="m-values.html">next chapter</a>,
-                        we'll explore how to calculate these limits.
-                    </p>
-                </div>
+        <!-- Critical Supersaturation -->
+        <section id="critical-supersaturation" class="education-section" data-slide-text="Some supersaturation is OK. Cross the **critical threshold** and bubbles form — that's DCS." data-slide-text-cs="Určitá míra přesycení je v pořádku. Překročíte-li **kritickou hranici**, tvoří se bubliny — to je DCS.">
+            <h2>⚠️ <span data-i18n="tissueLoading.saturationDynamics.critical.heading">Critical Supersaturation</span></h2>
+
+            <div class="concept-card warning-card">
+                <p data-i18n="tissueLoading.saturationDynamics.critical.text1">
+                    Some supersaturation is <strong>tolerable</strong> — our bodies can handle a certain amount
+                    of excess dissolved gas without forming bubbles. However, if tissues become <em>too</em>
+                    supersaturated, dissolved nitrogen can form bubbles instead of diffusing out safely.
+                </p>
+                <p data-i18n="tissueLoading.saturationDynamics.critical.text2">
+                    The maximum tolerable supersaturation is called <strong>critical supersaturation</strong> —
+                    it varies by tissue type and depth. In the <a href="m-values.html">next chapter</a>,
+                    we'll explore how to calculate these limits.
+                </p>
             </div>
         </section>
 
         <!-- Half-Time Concept -->
-        <section id="half-time-concept" class="education-section">
+        <section id="half-time-concept" class="education-section" data-slide-text="**Half-time** = time to close 50% of the pressure gap. After 6 half-times, a tissue is ~98% saturated." data-slide-text-cs="**Poločas** = čas k překonání 50 % tlakového rozdílu. Po 6 poločasech je tkáň ~98% nasycena.">
             <h2>⏱️ <span data-i18n="tissueLoading.halfTimeConcept.title">The Half-Time Concept</span></h2>
 
             <div class="concept-card">
@@ -451,7 +457,7 @@
         </section>
 
         <!-- Interactive Half-Time Charts -->
-        <section id="half-time-charts" class="education-section">
+        <section id="half-time-charts" class="education-section" data-slide-text="Drag the depth slider — **bigger pressure gap = faster loading**. On-gassing and off-gassing are perfect mirrors." data-slide-text-cs="Posuvte hloubku — **větší tlakový rozdíl = rychlejší nasycování**. Nasycování a odsycování jsou dokonalé zrcadlové obrazy.">
             <h2>📊 <span data-i18n="tissueLoading.halfTimeCharts.title">Interactive: Pressure Delta & Half-Times</span></h2>
 
             <div class="concept-card">
@@ -493,9 +499,13 @@
                     On-gassing and off-gassing are symmetrical—only the direction changes.
                 </p>
             </div>
+        </section>
 
-            <details class="learn-more">
-                <summary>🔬 <span data-i18n="tissueLoading.halfTimeCharts.math.summary">Learn More: The Mathematics</span></summary>
+        <!-- The Mathematics -->
+        <section id="half-time-math" class="education-section" data-slide-text="**Haldane equation** for constant depth, **Schreiner equation** for ascent/descent — exponential decay drives it all." data-slide-text-cs="**Haldaneova rovnice** pro konstantní hloubku, **Schreinerova rovnice** pro výstup/sestup — vše řídí exponenciální pokles.">
+            <h2>🔬 <span data-i18n="tissueLoading.halfTimeCharts.math.summary">The Mathematics</span></h2>
+
+            <div class="concept-card">
                 <div class="math-content">
                     <h4 data-i18n="tissueLoading.halfTimeCharts.math.haldaneTitle">Haldane Equation (constant depth)</h4>
                     <p data-i18n="tissueLoading.halfTimeCharts.math.haldaneDesc">When staying at a constant depth, tissue pressure changes according to:</p>
@@ -523,11 +533,11 @@
                     </div>
                     <p data-i18n="tissueLoading.halfTimeCharts.math.pressureDesc">Every 10 meters of seawater adds approximately 1 bar of pressure.</p>
                 </div>
-            </details>
+            </div>
         </section>
 
         <!-- Tissue Heterogeneity -->
-        <section id="tissue-heterogeneity" class="education-section">
+        <section id="tissue-heterogeneity" class="education-section" data-slide-text="Brain exchanges gas in minutes, fat takes hours. **Blood perfusion, solubility, and distance** determine the speed." data-slide-text-cs="Mozek vyměňuje plyn za minuty, tuk za hodiny. **Prokrvení, rozpustnost a vzdálenost** určují rychlost.">
             <h2>🧠 <span data-i18n="tissueLoading.tissueHeterogeneity.title">Why Different Tissues Behave Differently</span></h2>
 
             <div class="concept-card">
@@ -551,7 +561,7 @@
         </section>
 
         <!-- Bühlmann Compartments -->
-        <section id="buhlmann-compartments" class="education-section">
+        <section id="buhlmann-compartments" class="education-section" data-slide-text="**16 mathematical compartments** from 5 to 635 min half-time. The one closest to its limit is the **controlling compartment**." data-slide-text-cs="**16 matematických kompartmentů** s poločasy 5 až 635 min. Ten nejblíže svému limitu je **řídící kompartment**.">
             <h2>🏗️ <span data-i18n="tissueLoading.buhlmannCompartments.title">Bühlmann's ZH-L16 Compartments</span></h2>
 
             <div class="concept-card">
@@ -573,7 +583,7 @@
         </section>
 
         <!-- ZH-L16 Variants -->
-        <section id="zhl16-variants" class="education-section">
+        <section id="zhl16-variants" class="education-section" data-slide-text="Three variants: A (research), B (tables), **C (dive computers)** — same half-times, different conservatism." data-slide-text-cs="Tři varianty: A (výzkum), B (tabulky), **C (potápěčské počítače)** — stejné poločasy, různá konzervativnost.">
             <h2>🔧 <span data-i18n="tissueLoading.zhl16Variants.title">ZH-L16 Variants: A, B, and C</span></h2>
 
             <div class="concept-card">
@@ -616,7 +626,7 @@
         </section>
 
         <!-- Tissue Loading Chart -->
-        <section id="tissue-chart-section" class="chart-section">
+        <section id="tissue-chart-section" class="chart-section" data-slide-text="Watch all **16 compartments load and unload** in real time during a 20 m dive." data-slide-text-cs="Sledujte, jak se všech **16 kompartmentů nasycuje a odsycuje** v reálném čase během ponoru na 20 m.">
             <div class="chart-header">
                 <h2>📈 <span data-i18n="tissueLoading.tissueChart.title">Tissue Loading Chart</span></h2>
             </div>
@@ -629,7 +639,7 @@
         </section>
 
         <!-- Compartment Reference Table -->
-        <section id="reference-table" class="reference-section">
+        <section id="reference-table" class="reference-section" data-slide-text="The full **ZH-L16C reference** — 16 compartments, half-times from 5 min (brain) to 635 min (fat)." data-slide-text-cs="Kompletní **reference ZH-L16C** — 16 kompartmentů, poločasy od 5 min (mozek) po 635 min (tuk).">
             <h2>📋 <span data-i18n="tissueLoading.referenceTable.title">Bühlmann ZH-L16C Compartments Reference</span></h2>
             <table class="reference-table">
                 <thead>
