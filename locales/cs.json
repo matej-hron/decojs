@@ -348,7 +348,7 @@
             "title": "Obsah",
             "decoTheory": "Proč je to důležité?",
             "henrysLaw": "Henryho zákon",
-            "gasExchange": "Cesta výměny plynů",
+            "gasExchange": "Výměna plynů v těle",
             "saturationDynamics": "Dynamika sycení",
             "halfTimeConcept": "Koncept poločasu",
             "halfTimeCharts": "Grafy poločasu",
@@ -383,12 +383,13 @@
             "footnote": "Všimněte si, že tukové tkáně pojmou při stejném tlaku <strong>5× více dusíku</strong> než krev!"
         },
         "gasExchange": {
-            "title": "Cesta výměny plynů",
+            "title": "Výměna plynů v těle",
             "intro": "Plyn proudí po <strong>tlakovém gradientu</strong> — z místa vyššího tlaku do místa nižšího tlaku. Během ponoru je cesta následující:",
             "descentBtn": "Sestup (sycení)",
             "ascentBtn": "Výstup (vysycování)",
             "svg": {
-                "breathingGas": "Dýchací plyn",
+                "tank": "Automatika",
+                "breathingGas": "Vdechovaný plyn",
                 "alveoli": "Plicní sklípky",
                 "blood": "Krev",
                 "tissues": "Tkáně",

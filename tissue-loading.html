@@ -193,7 +193,7 @@
                         <!-- Regulator -->
                         <g class="pathway-stage" transform="translate(30, 60)">
                             <rect x="0" y="0" width="100" height="80" rx="8" class="stage-box stage-regulator" />
-                            <text x="50" y="35" text-anchor="middle" class="stage-icon" style="font-size: 14px; font-weight: 600;">TANK</text>
+                            <text x="50" y="35" text-anchor="middle" class="stage-icon" style="font-size: 14px; font-weight: 600;" data-i18n="tissueLoading.gasExchange.svg.tank">TANK</text>
                             <text x="50" y="55" text-anchor="middle" class="stage-label" data-i18n="tissueLoading.gasExchange.svg.breathingGas">Breathing Gas</text>
                             <text x="50" y="72" text-anchor="middle" class="stage-value" id="reg-pressure">ppN₂ = 3.16</text>
                         </g>
@@ -357,13 +357,9 @@
 
         <!-- Saturation Dynamics: Descent -->
         <section id="saturation-descent" class="education-section" data-slide-text="Descent: alveolar N₂ pressure **exceeds tissue pressure**. Gas flows IN. Fast tissues fill first." data-slide-text-cs="Sestup: alveolární tlak N₂ **převyšuje tlak ve tkáních**. Plyn proudí DOVNITŘ. Rychlé tkáně se sytí první.">
-            <h2>📈 <span data-i18n="tissueLoading.saturationDynamics.title">Saturation Dynamics During a Dive</span></h2>
+            <h2>⬇️ <span data-i18n="tissueLoading.saturationDynamics.descent.heading">Descent — On-gassing</span></h2>
 
             <div class="concept-card">
-                <p data-i18n="tissueLoading.saturationDynamics.intro">Understanding how tissue loading changes throughout a dive is key to safe decompression:</p>
-
-                <div class="dive-phase">
-                    <h4 data-i18n="tissueLoading.saturationDynamics.descent.heading">⬇️ a) Descent — On-gassing</h4>
                     <p data-i18n="tissueLoading.saturationDynamics.descent.text">
                         As you descend, ambient pressure increases. The partial pressure of nitrogen in your lungs
                         becomes <strong>higher than in your tissues</strong>, so gas flows <em>into</em> tissues.
@@ -376,10 +372,9 @@
 
         <!-- Saturation Dynamics: At Depth -->
         <section id="saturation-at-depth" class="education-section" data-slide-text="At depth: fast tissues **reach equilibrium in minutes**. Slow tissues are still far from saturated after an hour." data-slide-text-cs="V hloubce: rychlé tkáně **dosáhnou rovnováhy za minuty**. Pomalé tkáně jsou po hodině stále daleko od nasycení.">
-            <h2>📈 <span data-i18n="tissueLoading.saturationDynamics.atDepth.heading">At Depth — Differential Saturation</span></h2>
+            <h2>➡️ <span data-i18n="tissueLoading.saturationDynamics.atDepth.heading">At Depth — Differential Saturation</span></h2>
 
             <div class="concept-card">
-                <div class="dive-phase">
                     <p data-i18n="tissueLoading.saturationDynamics.atDepth.text">
                         While at your maximum depth, <strong>fast tissues approach equilibrium</strong> within minutes.
                         Medium tissues continue loading. Slow tissues (like fat) are still far from saturation —
@@ -391,10 +386,9 @@
 
         <!-- Saturation Dynamics: Ascent -->
         <section id="saturation-ascent" class="education-section" data-slide-text="Ascent: the gradient **reverses**. When tissue N₂ exceeds ambient pressure, you're **supersaturated** — bubble risk begins." data-slide-text-cs="Výstup: gradient se **otáčí**. Když tlak N₂ ve tkáních překročí okolní tlak, jste **přesyceni** — začíná riziko bublin.">
-            <h2>📈 <span data-i18n="tissueLoading.saturationDynamics.ascent.heading">Ascent — Off-gassing & Supersaturation</span></h2>
+            <h2>⬆️ <span data-i18n="tissueLoading.saturationDynamics.ascent.heading">Ascent — Off-gassing & Supersaturation</span></h2>
 
             <div class="concept-card">
-                <div class="dive-phase">
                     <p data-i18n="tissueLoading.saturationDynamics.ascent.text1">
                         As you ascend, the partial pressure of nitrogen in your lungs drops. When tissue nitrogen
                         pressure exceeds alveolar pressure, the gradient reverses and gas flows <em>out</em> —

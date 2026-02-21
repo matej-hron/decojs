@@ -388,6 +388,7 @@
             "descentBtn": "Descent (On-gassing)",
             "ascentBtn": "Ascent (Off-gassing)",
             "svg": {
+                "tank": "TANK",
                 "breathingGas": "Breathing Gas",
                 "alveoli": "Alveoli",
                 "blood": "Blood",
