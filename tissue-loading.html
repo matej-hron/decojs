@@ -92,7 +92,7 @@
         </section>
 
         <!-- Henry's Law -->
-        <section id="henrys-law" class="education-section" data-slide-text="Like CO₂ in a soda bottle — **more pressure = more gas dissolved**. Fat holds 5x more N₂ than blood." data-slide-text-cs="Jako CO₂ v lahvi limonády — **vyšší tlak = více rozpuštěného plynu**. Tuk pojme 5x více N₂ než krev.">
+        <section id="henrys-law" class="education-section" data-slide-text="Like CO₂ in a soda bottle — **more pressure = more gas dissolved**. We track nitrogen because your body doesn't use it." data-slide-text-cs="Jako CO₂ v láhvi limonády — **vyšší tlak = více rozpuštěného plynu**. Sledujeme dusík, protože ho tělo nespotřebuje.">
             <h2>🧪 <span data-i18n="tissueLoading.henrysLaw.title">Henry's Law: Gas Dissolution</span></h2>
 
             <div class="concept-card">
@@ -115,7 +115,14 @@
                     and makes up 78% of air. For technical divers using trimix, <strong>helium (He)</strong> follows the same
                     principles but with different solubility characteristics.
                 </p>
+            </div>
+        </section>
 
+        <!-- Gas Solubility -->
+        <section id="gas-solubility" class="education-section" data-slide-text="Fat holds **5x more nitrogen** than blood. That's why slow fatty tissues take hours to off-gas." data-slide-text-cs="Tuk pojme **5x více dusíku** než krev. Proto pomalé tukové tkáně potřebují hodiny k odsycení.">
+            <h2>🧪 <span data-i18n="tissueLoading.henrysLaw.solubilityTitle">Gas Solubility</span></h2>
+
+            <div class="concept-card">
                 <table class="data-table small-table">
                     <thead>
                         <tr>
@@ -348,48 +355,58 @@
             </div>
         </section>
 
-        <!-- Saturation Dynamics -->
-        <section id="saturation-dynamics" class="education-section" data-slide-text="Three phases: **descent = on-gassing**, at depth = differential saturation, **ascent = off-gassing**." data-slide-text-cs="Tři fáze: **sestup = nasycování**, v hloubce = diferenciální saturace, **výstup = odsycování**.">
+        <!-- Saturation Dynamics: Descent -->
+        <section id="saturation-descent" class="education-section" data-slide-text="Descent: alveolar N₂ pressure **exceeds tissue pressure**. Gas flows IN. Fast tissues fill first." data-slide-text-cs="Sestup: alveolární tlak N₂ **převyšuje tlak ve tkáních**. Plyn proudí DOVNITŘ. Rychlé tkáně se sytí první.">
             <h2>📈 <span data-i18n="tissueLoading.saturationDynamics.title">Saturation Dynamics During a Dive</span></h2>
 
             <div class="concept-card">
                 <p data-i18n="tissueLoading.saturationDynamics.intro">Understanding how tissue loading changes throughout a dive is key to safe decompression:</p>
 
-                <div class="dive-phases">
-                    <div class="dive-phase">
-                        <h4 data-i18n="tissueLoading.saturationDynamics.descent.heading">⬇️ a) Descent — On-gassing</h4>
-                        <p data-i18n="tissueLoading.saturationDynamics.descent.text">
-                            As you descend, ambient pressure increases. The partial pressure of nitrogen in your lungs
-                            becomes <strong>higher than in your tissues</strong>, so gas flows <em>into</em> tissues.
-                            All compartments begin absorbing nitrogen, but <strong>fast tissues fill first</strong>.
-                        </p>
-                        <p class="phase-formula">ppN₂<sub>tissue</sub> &lt; ppN₂<sub>alveolar</sub> → <strong>On-gassing</strong></p>
-                    </div>
+                <div class="dive-phase">
+                    <h4 data-i18n="tissueLoading.saturationDynamics.descent.heading">⬇️ a) Descent — On-gassing</h4>
+                    <p data-i18n="tissueLoading.saturationDynamics.descent.text">
+                        As you descend, ambient pressure increases. The partial pressure of nitrogen in your lungs
+                        becomes <strong>higher than in your tissues</strong>, so gas flows <em>into</em> tissues.
+                        All compartments begin absorbing nitrogen, but <strong>fast tissues fill first</strong>.
+                    </p>
+                    <p class="phase-formula">ppN₂<sub>tissue</sub> &lt; ppN₂<sub>alveolar</sub> → <strong>On-gassing</strong></p>
+                </div>
+            </div>
+        </section>
 
-                    <div class="dive-phase">
-                        <h4 data-i18n="tissueLoading.saturationDynamics.atDepth.heading">➡️ b) At Depth — Differential Saturation</h4>
-                        <p data-i18n="tissueLoading.saturationDynamics.atDepth.text">
-                            While at your maximum depth, <strong>fast tissues approach equilibrium</strong> within minutes.
-                            Medium tissues continue loading. Slow tissues (like fat) are still far from saturation —
-                            they would need hours at depth to fully equilibrate.
-                        </p>
-                    </div>
+        <!-- Saturation Dynamics: At Depth -->
+        <section id="saturation-at-depth" class="education-section" data-slide-text="At depth: fast tissues **reach equilibrium in minutes**. Slow tissues are still far from saturated after an hour." data-slide-text-cs="V hloubce: rychlé tkáně **dosáhnou rovnováhy za minuty**. Pomalé tkáně jsou po hodině stále daleko od nasycení.">
+            <h2>📈 <span data-i18n="tissueLoading.saturationDynamics.atDepth.heading">At Depth — Differential Saturation</span></h2>
 
-                    <div class="dive-phase">
-                        <h4 data-i18n="tissueLoading.saturationDynamics.ascent.heading">⬆️ c) Ascent — Off-gassing & Supersaturation</h4>
-                        <p data-i18n="tissueLoading.saturationDynamics.ascent.text1">
-                            As you ascend, the partial pressure of nitrogen in your lungs drops. When tissue nitrogen
-                            pressure exceeds alveolar pressure, the gradient reverses and gas flows <em>out</em> —
-                            this is <strong>off-gassing</strong>.
-                        </p>
-                        <p class="phase-formula">ppN₂<sub>tissue</sub> &gt; ppN₂<sub>alveolar</sub> → <strong>Off-gassing</strong></p>
-                        <p data-i18n="tissueLoading.saturationDynamics.ascent.text2">
-                            But there's another threshold: when tissue nitrogen pressure exceeds <strong>ambient pressure</strong>,
-                            the tissue is <em>supersaturated</em>. This is when we need to be careful — the dissolved gas
-                            wants to come out of solution and could form bubbles.
-                        </p>
-                        <p class="phase-formula">ppN₂<sub>tissue</sub> &gt; P<sub>ambient</sub> → <strong>Supersaturation</strong> ⚠️</p>
-                    </div>
+            <div class="concept-card">
+                <div class="dive-phase">
+                    <p data-i18n="tissueLoading.saturationDynamics.atDepth.text">
+                        While at your maximum depth, <strong>fast tissues approach equilibrium</strong> within minutes.
+                        Medium tissues continue loading. Slow tissues (like fat) are still far from saturation —
+                        they would need hours at depth to fully equilibrate.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Saturation Dynamics: Ascent -->
+        <section id="saturation-ascent" class="education-section" data-slide-text="Ascent: the gradient **reverses**. When tissue N₂ exceeds ambient pressure, you're **supersaturated** — bubble risk begins." data-slide-text-cs="Výstup: gradient se **otáčí**. Když tlak N₂ ve tkáních překročí okolní tlak, jste **přesyceni** — začíná riziko bublin.">
+            <h2>📈 <span data-i18n="tissueLoading.saturationDynamics.ascent.heading">Ascent — Off-gassing & Supersaturation</span></h2>
+
+            <div class="concept-card">
+                <div class="dive-phase">
+                    <p data-i18n="tissueLoading.saturationDynamics.ascent.text1">
+                        As you ascend, the partial pressure of nitrogen in your lungs drops. When tissue nitrogen
+                        pressure exceeds alveolar pressure, the gradient reverses and gas flows <em>out</em> —
+                        this is <strong>off-gassing</strong>.
+                    </p>
+                    <p class="phase-formula">ppN₂<sub>tissue</sub> &gt; ppN₂<sub>alveolar</sub> → <strong>Off-gassing</strong></p>
+                    <p data-i18n="tissueLoading.saturationDynamics.ascent.text2">
+                        But there's another threshold: when tissue nitrogen pressure exceeds <strong>ambient pressure</strong>,
+                        the tissue is <em>supersaturated</em>. This is when we need to be careful — the dissolved gas
+                        wants to come out of solution and could form bubbles.
+                    </p>
+                    <p class="phase-formula">ppN₂<sub>tissue</sub> &gt; P<sub>ambient</sub> → <strong>Supersaturation</strong> ⚠️</p>
                 </div>
             </div>
         </section>
@@ -441,8 +458,14 @@
                     </div>
                 </div>
                 <p data-i18n="tissueLoading.halfTimeConcept.example">A 5-minute compartment reaches 50% saturation in 5 minutes; a 635-minute compartment takes over 10 hours!</p>
+            </div>
+        </section>
 
-                <h4 style="margin-top: 1.5rem;" data-i18n="tissueLoading.halfTimeConcept.gradientTitle">The Pressure Gradient Effect</h4>
+        <!-- Pressure Gradient Effect -->
+        <section id="pressure-gradient-effect" class="education-section" data-slide-text="Half-time is constant, but a **bigger pressure gap = more gas moved** per half-time. That's why O₂-rich deco gas works." data-slide-text-cs="Poločas je konstantní, ale **větší tlakový rozdíl = více přesunutého plynu** za poločas. Proto dekompresní směsi bohaté na O₂ fungují.">
+            <h2>⏱️ <span data-i18n="tissueLoading.halfTimeConcept.gradientTitle">The Pressure Gradient Effect</span></h2>
+
+            <div class="concept-card">
                 <p data-i18n="tissueLoading.halfTimeConcept.gradientText1">
                     A tissue's half-time is constant — it always takes the same time to close <strong>50% of the gap</strong>
                     between current tissue pressure and the target. But when that gap is larger, 50% represents
@@ -456,17 +479,13 @@
             </div>
         </section>
 
-        <!-- Interactive Half-Time Charts -->
-        <section id="half-time-charts" class="education-section" data-slide-text="Drag the depth slider — **bigger pressure gap = faster loading**. On-gassing and off-gassing are perfect mirrors." data-slide-text-cs="Posuvte hloubku — **větší tlakový rozdíl = rychlejší nasycování**. Nasycování a odsycování jsou dokonalé zrcadlové obrazy.">
-            <h2>📊 <span data-i18n="tissueLoading.halfTimeCharts.title">Interactive: Pressure Delta & Half-Times</span></h2>
+        <!-- Interactive Half-Time Charts: On-gassing -->
+        <section id="half-time-ongassing" class="education-section" data-slide-text="Drag the depth slider — **bigger pressure gap = faster absolute loading**. Watch the exponential curve flatten as the tissue approaches equilibrium." data-slide-text-cs="Posuňte posuvník hloubky — **větší tlakový rozdíl = rychlejší absolutní sycení**. Sledujte, jak se exponenciální křivka splošťuje při přiblížení k rovnováze.">
+            <h2>📊 <span data-i18n="tissueLoading.halfTimeCharts.ongassing.title">Interactive: On-gassing Chart</span></h2>
 
             <div class="concept-card">
-                <p data-i18n="tissueLoading.halfTimeCharts.intro">These charts demonstrate how the pressure difference affects saturation and desaturation rates.</p>
-
                 <div class="half-time-chart-grid">
-                    <!-- On-gassing Chart -->
                     <div class="half-time-chart-wrapper">
-                        <h4 data-i18n="tissueLoading.halfTimeCharts.ongassing.title">On-gassing (Descent)</h4>
                         <p class="chart-description" data-i18n="tissueLoading.halfTimeCharts.ongassing.desc">Tissue starts at surface equilibrium (~0.79 bar ppN₂).
                            Adjust target depth to see how bigger pressure differences mean faster absolute loading.</p>
                         <div class="chart-controls-inline">
@@ -479,10 +498,17 @@
                             <canvas id="ongassing-chart"></canvas>
                         </div>
                     </div>
+                </div>
+            </div>
+        </section>
 
-                    <!-- Off-gassing Chart -->
+        <!-- Interactive Half-Time Charts: Off-gassing -->
+        <section id="half-time-offgassing" class="education-section" data-slide-text="Off-gassing is the **perfect mirror** of on-gassing. Same equation, same half-time — only the direction changes." data-slide-text-cs="Odsycování je **dokonalý zrcadlový obraz** sycení. Stejná rovnice, stejný poločas — mění se jen směr.">
+            <h2>📊 <span data-i18n="tissueLoading.halfTimeCharts.offgassing.title">Interactive: Off-gassing Chart</span></h2>
+
+            <div class="concept-card">
+                <div class="half-time-chart-grid">
                     <div class="half-time-chart-wrapper">
-                        <h4 data-i18n="tissueLoading.halfTimeCharts.offgassing.title">Off-gassing (Ascent to Surface)</h4>
                         <p class="chart-description" data-i18n="tissueLoading.halfTimeCharts.offgassing.desc">Tissue starts saturated at the selected depth.
                            Same half-time, same equation—just inverted. The curves are perfect mirrors.</p>
                         <div class="chart-controls-inline">
@@ -561,7 +587,7 @@
         </section>
 
         <!-- Bühlmann Compartments -->
-        <section id="buhlmann-compartments" class="education-section" data-slide-text="**16 mathematical compartments** from 5 to 635 min half-time. The one closest to its limit is the **controlling compartment**." data-slide-text-cs="**16 matematických kompartmentů** s poločasy 5 až 635 min. Ten nejblíže svému limitu je **řídící kompartment**.">
+        <section id="buhlmann-compartments" class="education-section" data-slide-text="**16 mathematical compartments** spanning 5 to 635 min. They're not real tissues — they're equations fit to experimental data." data-slide-text-cs="**16 matematických kompartmentů** s poločasy 5 až 635 min. Nejsou to skutečné tkáně — jsou to rovnice fitované na experimentální data.">
             <h2>🏗️ <span data-i18n="tissueLoading.buhlmannCompartments.title">Bühlmann's ZH-L16 Compartments</span></h2>
 
             <div class="concept-card">
@@ -575,6 +601,14 @@
                     <li data-i18n="tissueLoading.buhlmannCompartments.medium"><strong>Medium compartments (18.5–77 min)</strong> — balance between loading and off-gassing</li>
                     <li data-i18n="tissueLoading.buhlmannCompartments.slow"><strong>Slow compartments (109–635 min)</strong> — can take hours to fully saturate</li>
                 </ul>
+            </div>
+        </section>
+
+        <!-- Controlling Compartment -->
+        <section id="controlling-compartment" class="education-section" data-slide-text="At any moment, the compartment **closest to its limit** is the controlling one — it determines your deco ceiling." data-slide-text-cs="V každém okamžiku je **řídící kompartment** ten nejblíže svému limitu — určuje váš dekompresní strop.">
+            <h2>🏗️ <span data-i18n="tissueLoading.buhlmannCompartments.controllingTitle">The Controlling Compartment</span></h2>
+
+            <div class="concept-card">
                 <p data-i18n="tissueLoading.buhlmannCompartments.controlling">
                     At any point during a dive, the <strong>controlling compartment</strong> is the one closest to
                     its critical supersaturation limit — this compartment determines your decompression ceiling.
