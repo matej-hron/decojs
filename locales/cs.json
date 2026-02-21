@@ -338,5 +338,214 @@
     },
     "footer": {
         "text": "Pouze výuková vizualizace. Není určeno pro plánování ponorů."
+    },
+    "tissueLoading": {
+        "header": {
+            "title": "Sycení tkání a saturace",
+            "subtitle": "Vizualizace sycení a vysycování dusíku ve vašem těle během ponoru"
+        },
+        "toc": {
+            "title": "Obsah",
+            "decoTheory": "Proč je to důležité?",
+            "henrysLaw": "Henryho zákon",
+            "gasExchange": "Cesta výměny plynů",
+            "saturationDynamics": "Dynamika sycení",
+            "halfTimeConcept": "Koncept poločasu",
+            "halfTimeCharts": "Grafy poločasu",
+            "tissueTypes": "Typy tkání",
+            "buhlmannCompartments": "Bühlmannovy kompartmenty",
+            "zhl16Variants": "Varianty ZH-L16",
+            "tissueChart": "Graf sycení tkání",
+            "referenceTable": "Referenční tabulka"
+        },
+        "decoTheory": {
+            "title": "Proč je to důležité?",
+            "whyMatters": {
+                "title": "Proč je to důležité?",
+                "text": "Při ponoru způsobuje zvýšený tlak rozpouštění dusíku z vdechovaného vzduchu do tkání vašeho těla. Čím hlouběji se ponoříte a čím déle zůstanete, tím více dusíku se nahromadí. Pokud vystoupáte příliš rychle, může tento dusík tvořit bubliny ve tkáních — a způsobit <strong>dekompresní nemoc (DCS)</strong>, známou také jako \u201Ekesonová nemoc\u201C."
+            }
+        },
+        "henrysLaw": {
+            "title": "Henryho zákon: rozpouštění plynů",
+            "cardTitle": "Henryho zákon: rozpouštění plynů",
+            "text1": "<strong>Henryho zákon</strong> říká, že množství plynu rozpuštěného v kapalině je úměrné tlaku tohoto plynu nad kapalinou. Představte si lahev s perlivou vodou: pod tlakem zůstává CO₂ rozpuštěný. Otevřete víčko (snížíte tlak) a bubliny se začnou tvořit, jak plyn přechází z roztoku.",
+            "text2": "Stejný princip platí pro vaše tělo během ponoru. Jak sestupujete a tlak roste, více plynu se rozpouští ve vaší krvi a tkáních. I když se to týká <em>všech</em> plynů, které dýcháte, <strong>kyslík (O₂)</strong> nepředstavuje riziko tvorby bublin, protože:",
+            "o2reason1": "Vaše tělo kyslík průběžně <strong>spotřebovává</strong> při metabolismu",
+            "o2reason2": "Většina kyslíku v krvi je <strong>vázána na hemoglobin</strong> v červených krvinkách, nikoli volně rozpuštěna",
+            "text3": "Plyn, který musíme pečlivě sledovat, je <strong>dusík (N₂)</strong> — je inertní (tělo ho nevyužívá) a tvoří 78 % vzduchu. Pro technické potápěče používající trimix platí pro <strong>hélium (He)</strong> stejné principy, ale s odlišnými vlastnostmi rozpustnosti.",
+            "thGas": "Plyn",
+            "thBloodSolubility": "Rozpustnost v krvi<br><small>(ml/l na bar, 37 °C)</small>",
+            "thFatSolubility": "Rozpustnost v tuku<br><small>(ml/l na bar, 37 °C)</small>",
+            "thFatBloodRatio": "Poměr tuk:krev",
+            "nitrogen": "Dusík (N₂)",
+            "helium": "Hélium (He)",
+            "oxygen": "Kyslík (O₂)",
+            "footnote": "Všimněte si, že tukové tkáně pojmou při stejném tlaku <strong>5× více dusíku</strong> než krev!"
+        },
+        "gasExchange": {
+            "title": "Cesta výměny plynů",
+            "intro": "Plyn proudí po <strong>tlakovém gradientu</strong> — z místa vyššího tlaku do místa nižšího tlaku. Během ponoru je cesta následující:",
+            "descentBtn": "Sestup (sycení)",
+            "ascentBtn": "Výstup (vysycování)",
+            "svg": {
+                "breathingGas": "Dýchací plyn",
+                "alveoli": "Plicní sklípky",
+                "blood": "Krev",
+                "tissues": "Tkáně",
+                "fast": "🧠 Rychlé",
+                "medium": "💪 Střední",
+                "slow": "🦴 Pomalé",
+                "pressureLabel": "Tlak:",
+                "high": "VYSOKÝ",
+                "low": "NÍZKÝ",
+                "flowDirection": "→ Plyn proudí z místa vyššího tlaku do místa nižšího tlaku"
+            },
+            "alveolarFormula": {
+                "summary": "Vzorec alveolárního tlaku",
+                "desc": "Parciální tlak dusíku v plicních sklípcích zohledňuje tlak vodní páry:",
+                "where": "Kde:",
+                "pAmb": "okolní tlak v hloubce (bar)",
+                "pH2O": "tlak vodní páry ≈ 0,0627 bar při 37 °C",
+                "fN2": "podíl dusíku v dýchací směsi (0,79 pro vzduch)"
+            }
+        },
+        "saturationDynamics": {
+            "title": "Dynamika sycení během ponoru",
+            "intro": "Pochopení toho, jak se mění sycení tkání v průběhu ponoru, je klíčem k bezpečné dekompresi:",
+            "descent": {
+                "heading": "⬇️ a) Sestup — sycení",
+                "text": "Při sestupu roste okolní tlak. Parciální tlak dusíku ve vašich plicích se stává <strong>vyšším než ve tkáních</strong>, takže plyn proudí <em>do</em> tkání. Všechny kompartmenty začínají absorbovat dusík, ale <strong>rychlé tkáně se sytí první</strong>."
+            },
+            "atDepth": {
+                "heading": "➡️ b) V hloubce — rozdílné sycení",
+                "text": "V maximální hloubce se <strong>rychlé tkáně blíží rovnováze</strong> během minut. Střední tkáně se dále sytí. Pomalé tkáně (jako tuk) jsou stále daleko od nasycení — k úplnému vyrovnání by potřebovaly hodiny v hloubce."
+            },
+            "ascent": {
+                "heading": "⬆️ c) Výstup — vysycování a přesycení",
+                "text1": "Při výstupu klesá parciální tlak dusíku ve vašich plicích. Když tlak dusíku ve tkáních překročí alveolární tlak, gradient se obrátí a plyn proudí <em>ven</em> — to je <strong>vysycování</strong>.",
+                "text2": "Je tu ale další práh: když tlak dusíku ve tkáních překročí <strong>okolní tlak</strong>, je tkáň <em>přesycena</em>. V tomto okamžiku musíme být opatrní — rozpuštěný plyn chce přejít z roztoku a mohl by tvořit bubliny."
+            },
+            "critical": {
+                "heading": "⚠️ Kritické přesycení",
+                "text1": "Určitá míra přesycení je <strong>tolerovatelná</strong> — naše těla zvládnou určité množství přebytečného rozpuštěného plynu bez tvorby bublin. Pokud se však tkáně stanou <em>příliš</em> přesycenými, rozpuštěný dusík může tvořit bubliny namísto toho, aby bezpečně difundoval ven.",
+                "text2": "Maximální tolerovatelné přesycení se nazývá <strong>kritické přesycení</strong> — liší se podle typu tkáně a hloubky. V <a href=\"m-values.html\">další kapitole</a> se podíváme, jak tyto limity vypočítat."
+            }
+        },
+        "halfTimeConcept": {
+            "title": "Koncept poločasu sycení",
+            "intro": "Viděli jsme, <em>co</em> se děje při sycení a vysycování — nyní se podívejme na to, <strong>jak tyto procesy probíhají v čase</strong>. Podobně jako radioaktivní rozpad a mnoho dalších přírodních jevů, difuze plynů ve tkáních se řídí předvídatelným matematickým vzorem.",
+            "definition": "<strong>Poločas sycení</strong> tkáně udává, jak dlouho trvá, než se tkáň nasytí na 50 % (nebo vysytí o 50 %) při daném tlakovém rozdílu. Po každém poločasu:",
+            "bar1": "1 poločas: 50 %",
+            "bar2": "2 poločasy: 75 %",
+            "bar3": "3 poločasy: 87,5 %",
+            "bar4": "6 poločasů: ~98 % (nasyceno)",
+            "example": "Kompartment s poločasem 5 minut dosáhne 50% nasycení za 5 minut; kompartment s poločasem 635 minut potřebuje přes 10 hodin!",
+            "gradientTitle": "Vliv tlakového gradientu",
+            "gradientText1": "Poločas tkáně je konstantní — vždy trvá stejně dlouho, než se uzavře <strong>50 % rozdílu</strong> mezi aktuálním tlakem tkáně a cílovým tlakem. Ale když je tento rozdíl větší, 50 % představuje v absolutních číslech více plynu.",
+            "gradientText2": "<strong>Příklad:</strong> Pokud tkáň potřebuje odbavit 2 bary dusíku, přepnutí ze vzduchu (79 % N₂) na Nitrox 50 (50 % N₂) nebo čistý O₂ (0 % N₂) vytvoří mnohem větší tlakový gradient, takže každý poločas odstraní více plynu — proto směsi bohaté na kyslík urychlují dekompresi!"
+        },
+        "halfTimeCharts": {
+            "title": "Interaktivně: tlakový rozdíl a poločasy",
+            "intro": "Tyto grafy ukazují, jak tlakový rozdíl ovlivňuje rychlost sycení a vysycování.",
+            "ongassing": {
+                "title": "Sycení (sestup)",
+                "desc": "Tkáň začíná v rovnováze na hladině (~0,79 bar ppN₂). Upravte cílovou hloubku a sledujte, jak větší tlakový rozdíl znamená rychlejší absolutní sycení.",
+                "depthLabel": "Cílová hloubka:"
+            },
+            "offgassing": {
+                "title": "Vysycování (výstup na hladinu)",
+                "desc": "Tkáň začíná nasycena ve zvolené hloubce. Stejný poločas, stejná rovnice — jen obrácená. Křivky jsou dokonalé zrcadlové obrazy.",
+                "info": "Nasyceno v <strong id=\"offgassing-depth-display\">30 m</strong> → Hladina (~0,79 bar)"
+            },
+            "footnote": "ℹ️ Oba grafy používají stejnou hloubku a stejný vzorec poločasu. Sycení a vysycování jsou symetrické — mění se pouze směr.",
+            "math": {
+                "summary": "Více informací: matematika",
+                "haldaneTitle": "Haldanova rovnice (konstantní hloubka)",
+                "haldaneDesc": "Při pobytu v konstantní hloubce se tlak ve tkáni mění podle:",
+                "haldaneWhere": "Kde:",
+                "pt": "tlak N₂ ve tkáni v čase t",
+                "palv": "inspirovaný (alveolární) tlak N₂",
+                "pt0": "počáteční tlak N₂ ve tkáni",
+                "k": "rychlostní konstanta",
+                "schreinerTitle": "Schreinerova rovnice (změna hloubky)",
+                "schreinerDesc": "Během výstupu nebo sestupu konstantní rychlostí:",
+                "rDesc": "je rychlost změny alveolárního tlaku (kladná při sestupu).",
+                "pressureTitle": "Tlak v hloubce",
+                "pressureDesc": "Každých 10 metrů mořské vody přidává přibližně 1 bar tlaku."
+            }
+        },
+        "tissueHeterogeneity": {
+            "title": "Proč se různé tkáně chovají odlišně",
+            "intro": "Vaše tělo <strong>není homogenní</strong> — různé tkáně mají velmi odlišné vlastnosti, které ovlivňují, jak rychle absorbují a uvolňují inertní plyn:",
+            "perfusion": "<strong>Prokrvení (perfuze)</strong> — Dobře prokrvené tkáně (mozek, srdce) si vyměňují plyn rychle; špatně prokrvené tkáně (chrupavka, tuk) pomalu",
+            "solubility": "<strong>Rozpustnost plynu</strong> — Tuk rozpustí 5× více dusíku než krev (viz tabulka výše), proto se tukové tkáně sytí déle",
+            "distance": "<strong>Vzdálenost od krevního zásobení</strong> — Plyn musí difundovat z kapilár do tkáně; tkáně vzdálené od krevního zásobení potřebují více času",
+            "conclusion": "Proto dekompresní modely používají více <strong>teoretických kompartmentů</strong> k simulaci celého spektra chování tkání ve vašem těle."
+        },
+        "buhlmannCompartments": {
+            "title": "Bühlmannovy kompartmenty ZH-L16",
+            "intro": "Bühlmannův model ZH-L16 používá <strong>16 teoretických kompartmentů</strong> — jsou to <em>matematické konstrukce</em> přizpůsobené experimentálním datům, nikoli doslovné anatomické tkáně. Pokrývají rozsah poločasů navržený tak, aby modeloval celé spektrum chování tkání:",
+            "fast": "<strong>Rychlé kompartmenty (5–12,5 min)</strong> — nasytí se za minuty, ale také rychle uvolňují plyn",
+            "medium": "<strong>Střední kompartmenty (18,5–77 min)</strong> — rovnováha mezi sycením a vysycováním",
+            "slow": "<strong>Pomalé kompartmenty (109–635 min)</strong> — plné nasycení může trvat hodiny",
+            "controlling": "V jakémkoli okamžiku ponoru je <strong>řídící kompartment</strong> ten, který je nejblíže svému limitu kritického přesycení — tento kompartment určuje váš dekompresní strop."
+        },
+        "zhl16Variants": {
+            "title": "Varianty ZH-L16: A, B a C",
+            "intro": "Bühlmann vyvinul <strong>tři varianty</strong> algoritmu ZH-L16, každou s odlišnou úrovní konzervativnosti. Varianty se liší pouze v <strong>koeficientech 'a'</strong> — poločasy a hodnoty 'b' zůstávají stejné.",
+            "a": {
+                "name": "ZH-L16A",
+                "badge": "Experimentální",
+                "desc": "<strong>Původní</strong> hodnoty odvozené z experimentálních dat. Nejméně konzervativní — umožňuje největší přesycení.",
+                "use": "📚 Použití: výzkum, porovnání algoritmů"
+            },
+            "b": {
+                "name": "ZH-L16B",
+                "badge": "Tabulky",
+                "desc": "Upravené hodnoty 'a' pro <strong>tištěné dekompresní tabulky</strong>. Konzervativnější v kompartmentech 5–8 a 13, aby se zohlednilo inherentní zaokrouhlování při použití tabulek.",
+                "use": "📋 Použití: publikované dekompresní tabulky"
+            },
+            "c": {
+                "name": "ZH-L16C",
+                "badge": "Počítače",
+                "desc": "<strong>Nejkonzervativnější</strong> — upravené hodnoty 'a' pro kompartmenty 5–15. Protože potápěčské počítače sledují hloubku a čas přesně (bez zaokrouhlování tabulek), byla přidána další konzervativnost pro reálné bezpečnostní rezervy.",
+                "use": "💻 Použití: potápěčské počítače (dnes nejběžnější)"
+            }
+        },
+        "tissueChart": {
+            "title": "Graf sycení tkání",
+            "hint": "↑↓ pohyb tkání | Shift+↑ zvětšení | Shift+↓ zmenšení"
+        },
+        "referenceTable": {
+            "title": "Referenční tabulka kompartmentů Bühlmann ZH-L16C",
+            "thHalfTime": "Poločas",
+            "thCategory": "Kategorie",
+            "thTissueType": "Typ tkáně",
+            "thNumber": "#",
+            "thSaturationTime": "Doba do nasycení*",
+            "footnote": "* Přibližná doba do dosažení 98% nasycení (6 poločasů)",
+            "categoryFast": "Rychlé",
+            "categoryMedium": "Střední",
+            "categoryMediumSlow": "Středně pomalé",
+            "categorySlow": "Pomalé"
+        },
+        "tissueLabels": {
+            "1": "Mozek, mícha",
+            "2": "Mozek, mícha",
+            "3": "Mícha",
+            "4": "Svaly, kůže",
+            "5": "Svaly, kůže",
+            "6": "Svaly",
+            "7": "Svaly",
+            "8": "Svaly, šlachy",
+            "9": "Šlachy, chrupavka",
+            "10": "Šlachy, kosti",
+            "11": "Kosti",
+            "12": "Kosti, tuk",
+            "13": "Tuk",
+            "14": "Tuk",
+            "15": "Tuk",
+            "16": "Tuk"
+        }
     }
 }

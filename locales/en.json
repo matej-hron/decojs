@@ -338,5 +338,214 @@
     },
     "footer": {
         "text": "Educational visualization only. Not for dive planning."
+    },
+    "tissueLoading": {
+        "header": {
+            "title": "Tissue Loading & Saturation",
+            "subtitle": "Visualize how nitrogen saturates and desaturates in your body during a dive"
+        },
+        "toc": {
+            "title": "Contents",
+            "decoTheory": "Why Does This Matter?",
+            "henrysLaw": "Henry's Law",
+            "gasExchange": "Gas Exchange Pathway",
+            "saturationDynamics": "Saturation Dynamics",
+            "halfTimeConcept": "Half-Time Concept",
+            "halfTimeCharts": "Half-Time Charts",
+            "tissueTypes": "Tissue Types",
+            "buhlmannCompartments": "Bühlmann Compartments",
+            "zhl16Variants": "ZH-L16 Variants",
+            "tissueChart": "Tissue Loading Chart",
+            "referenceTable": "Reference Table"
+        },
+        "decoTheory": {
+            "title": "Why Does This Matter?",
+            "whyMatters": {
+                "title": "Why Does This Matter?",
+                "text": "When you dive, the increased pressure causes nitrogen from the air you breathe to dissolve into your body tissues. The deeper you go and the longer you stay, the more nitrogen accumulates. If you ascend too quickly, this nitrogen can form bubbles in your tissues — causing <strong>decompression sickness (DCS)</strong>, also known as \"the bends.\""
+            }
+        },
+        "henrysLaw": {
+            "title": "Henry's Law: Gas Dissolution",
+            "cardTitle": "Henry's Law: Gas Dissolution",
+            "text1": "<strong>Henry's Law</strong> states that the amount of gas dissolved in a liquid is proportional to the pressure of that gas above the liquid. Think of a soda bottle: when sealed under pressure, CO₂ stays dissolved. Open the cap (reduce pressure), and bubbles form as gas comes out of solution.",
+            "text2": "The same principle applies to your body during a dive. As you descend and pressure increases, more gas dissolves into your blood and tissues. While this applies to <em>all</em> gases you breathe, <strong>oxygen (O₂)</strong> is not a concern for bubble formation because:",
+            "o2reason1": "Your body continuously <strong>consumes oxygen</strong> through metabolism",
+            "o2reason2": "Most oxygen in blood is <strong>bound to hemoglobin</strong> in red blood cells, not freely dissolved",
+            "text3": "The gas we must carefully manage is <strong>nitrogen (N₂)</strong> — it's inert (your body doesn't use it) and makes up 78% of air. For technical divers using trimix, <strong>helium (He)</strong> follows the same principles but with different solubility characteristics.",
+            "thGas": "Gas",
+            "thBloodSolubility": "Solubility in Blood<br><small>(ml/L per bar, 37°C)</small>",
+            "thFatSolubility": "Solubility in Fat<br><small>(ml/L per bar, 37°C)</small>",
+            "thFatBloodRatio": "Fat:Blood Ratio",
+            "nitrogen": "Nitrogen (N₂)",
+            "helium": "Helium (He)",
+            "oxygen": "Oxygen (O₂)",
+            "footnote": "Notice that fatty tissues can hold <strong>5× more nitrogen</strong> than blood at the same pressure!"
+        },
+        "gasExchange": {
+            "title": "Gas Exchange Pathway",
+            "intro": "Gas flows along the <strong>partial pressure gradient</strong> — from higher pressure to lower pressure. During a dive, the pathway is:",
+            "descentBtn": "Descent (On-gassing)",
+            "ascentBtn": "Ascent (Off-gassing)",
+            "svg": {
+                "breathingGas": "Breathing Gas",
+                "alveoli": "Alveoli",
+                "blood": "Blood",
+                "tissues": "Tissues",
+                "fast": "🧠 Fast",
+                "medium": "💪 Med",
+                "slow": "🦴 Slow",
+                "pressureLabel": "Pressure:",
+                "high": "HIGH",
+                "low": "LOW",
+                "flowDirection": "→ Gas flows from HIGH to LOW pressure"
+            },
+            "alveolarFormula": {
+                "summary": "Alveolar Pressure Formula",
+                "desc": "The partial pressure of nitrogen in the alveoli accounts for water vapor pressure:",
+                "where": "Where:",
+                "pAmb": "ambient pressure at depth (bar)",
+                "pH2O": "water vapor pressure ≈ 0.0627 bar at 37°C",
+                "fN2": "fraction of nitrogen in breathing gas (0.79 for air)"
+            }
+        },
+        "saturationDynamics": {
+            "title": "Saturation Dynamics During a Dive",
+            "intro": "Understanding how tissue loading changes throughout a dive is key to safe decompression:",
+            "descent": {
+                "heading": "⬇️ a) Descent — On-gassing",
+                "text": "As you descend, ambient pressure increases. The partial pressure of nitrogen in your lungs becomes <strong>higher than in your tissues</strong>, so gas flows <em>into</em> tissues. All compartments begin absorbing nitrogen, but <strong>fast tissues fill first</strong>."
+            },
+            "atDepth": {
+                "heading": "➡️ b) At Depth — Differential Saturation",
+                "text": "While at your maximum depth, <strong>fast tissues approach equilibrium</strong> within minutes. Medium tissues continue loading. Slow tissues (like fat) are still far from saturation — they would need hours at depth to fully equilibrate."
+            },
+            "ascent": {
+                "heading": "⬆️ c) Ascent — Off-gassing & Supersaturation",
+                "text1": "As you ascend, the partial pressure of nitrogen in your lungs drops. When tissue nitrogen pressure exceeds alveolar pressure, the gradient reverses and gas flows <em>out</em> — this is <strong>off-gassing</strong>.",
+                "text2": "But there's another threshold: when tissue nitrogen pressure exceeds <strong>ambient pressure</strong>, the tissue is <em>supersaturated</em>. This is when we need to be careful — the dissolved gas wants to come out of solution and could form bubbles."
+            },
+            "critical": {
+                "heading": "⚠️ Critical Supersaturation",
+                "text1": "Some supersaturation is <strong>tolerable</strong> — our bodies can handle a certain amount of excess dissolved gas without forming bubbles. However, if tissues become <em>too</em> supersaturated, dissolved nitrogen can form bubbles instead of diffusing out safely.",
+                "text2": "The maximum tolerable supersaturation is called <strong>critical supersaturation</strong> — it varies by tissue type and depth. In the <a href=\"m-values.html\">next chapter</a>, we'll explore how to calculate these limits."
+            }
+        },
+        "halfTimeConcept": {
+            "title": "The Half-Time Concept",
+            "intro": "We've seen <em>what</em> happens during on-gassing and off-gassing — now let's explore <strong>how these processes unfold over time</strong>. Like radioactive decay and many other natural phenomena, gas diffusion in tissues follows a predictable mathematical pattern.",
+            "definition": "A tissue's <strong>half-time</strong> is how long it takes to become 50% saturated (or 50% desaturated) at a given pressure difference. After each half-time period:",
+            "bar1": "1 half-time: 50%",
+            "bar2": "2 half-times: 75%",
+            "bar3": "3 half-times: 87.5%",
+            "bar4": "6 half-times: ~98% (saturated)",
+            "example": "A 5-minute compartment reaches 50% saturation in 5 minutes; a 635-minute compartment takes over 10 hours!",
+            "gradientTitle": "The Pressure Gradient Effect",
+            "gradientText1": "A tissue's half-time is constant — it always takes the same time to close <strong>50% of the gap</strong> between current tissue pressure and the target. But when that gap is larger, 50% represents more gas in absolute terms.",
+            "gradientText2": "<strong>Example:</strong> If a tissue needs to off-gas 2 bar of nitrogen, switching from air (79% N₂) to Nitrox 50 (50% N₂) or pure O₂ (0% N₂) creates a much larger pressure gradient, so each half-time removes more gas — this is why oxygen-rich mixes accelerate decompression!"
+        },
+        "halfTimeCharts": {
+            "title": "Interactive: Pressure Delta & Half-Times",
+            "intro": "These charts demonstrate how the pressure difference affects saturation and desaturation rates.",
+            "ongassing": {
+                "title": "On-gassing (Descent)",
+                "desc": "Tissue starts at surface equilibrium (~0.79 bar ppN₂). Adjust target depth to see how bigger pressure differences mean faster absolute loading.",
+                "depthLabel": "Target Depth:"
+            },
+            "offgassing": {
+                "title": "Off-gassing (Ascent to Surface)",
+                "desc": "Tissue starts saturated at the selected depth. Same half-time, same equation—just inverted. The curves are perfect mirrors.",
+                "info": "Saturated @ <strong id=\"offgassing-depth-display\">30m</strong> → Surface (~0.79 bar)"
+            },
+            "footnote": "ℹ️ Both charts use the same depth and the same half-time formula. On-gassing and off-gassing are symmetrical—only the direction changes.",
+            "math": {
+                "summary": "Learn More: The Mathematics",
+                "haldaneTitle": "Haldane Equation (constant depth)",
+                "haldaneDesc": "When staying at a constant depth, tissue pressure changes according to:",
+                "haldaneWhere": "Where:",
+                "pt": "tissue N₂ pressure at time t",
+                "palv": "inspired (alveolar) N₂ pressure",
+                "pt0": "initial tissue N₂ pressure",
+                "k": "rate constant",
+                "schreinerTitle": "Schreiner Equation (depth change)",
+                "schreinerDesc": "During ascent or descent at a constant rate:",
+                "rDesc": "is the rate of change of alveolar pressure (positive for descent).",
+                "pressureTitle": "Pressure at Depth",
+                "pressureDesc": "Every 10 meters of seawater adds approximately 1 bar of pressure."
+            }
+        },
+        "tissueHeterogeneity": {
+            "title": "Why Different Tissues Behave Differently",
+            "intro": "Your body is <strong>not homogenous</strong> — different tissues have vastly different characteristics that affect how quickly they absorb and release inert gas:",
+            "perfusion": "<strong>Blood perfusion</strong> — Well-perfused tissues (brain, heart) exchange gas quickly; poorly-perfused tissues (cartilage, fat) exchange slowly",
+            "solubility": "<strong>Gas solubility</strong> — Fat dissolves 5× more nitrogen than blood (see table above), so fatty tissues take longer to saturate",
+            "distance": "<strong>Distance from blood supply</strong> — Gas must diffuse from capillaries into tissue; tissues far from blood supply take longer",
+            "conclusion": "This is why decompression models use multiple <strong>theoretical compartments</strong> to simulate the full range of tissue behaviors in your body."
+        },
+        "buhlmannCompartments": {
+            "title": "Bühlmann's ZH-L16 Compartments",
+            "intro": "The Bühlmann ZH-L16 model uses <strong>16 theoretical compartments</strong> — these are <em>mathematical constructs</em> fit to experimental data, not literal anatomical tissues. They span a range of half-times designed to model the full spectrum of tissue behaviors:",
+            "fast": "<strong>Fast compartments (5–12.5 min)</strong> — saturate in minutes, but also release gas quickly",
+            "medium": "<strong>Medium compartments (18.5–77 min)</strong> — balance between loading and off-gassing",
+            "slow": "<strong>Slow compartments (109–635 min)</strong> — can take hours to fully saturate",
+            "controlling": "At any point during a dive, the <strong>controlling compartment</strong> is the one closest to its critical supersaturation limit — this compartment determines your decompression ceiling."
+        },
+        "zhl16Variants": {
+            "title": "ZH-L16 Variants: A, B, and C",
+            "intro": "Bühlmann developed <strong>three variants</strong> of the ZH-L16 algorithm, each with different levels of conservatism. The variants differ only in their <strong>'a' coefficients</strong> — the half-times and 'b' values remain the same.",
+            "a": {
+                "name": "ZH-L16A",
+                "badge": "Experimental",
+                "desc": "The <strong>original</strong> values derived from experimental data. Least conservative — allows the most supersaturation.",
+                "use": "📚 Used for: Research, algorithm comparison"
+            },
+            "b": {
+                "name": "ZH-L16B",
+                "badge": "Tables",
+                "desc": "Modified 'a' values for <strong>printed dive tables</strong>. More conservative in compartments 5–8 and 13 to account for the inherent rounding in table use.",
+                "use": "📋 Used for: Published decompression tables"
+            },
+            "c": {
+                "name": "ZH-L16C",
+                "badge": "Computers",
+                "desc": "<strong>Most conservative</strong> — modified 'a' values for compartments 5–15. Since dive computers track depth and time precisely (no table rounding), additional conservatism was added for real-world safety margins.",
+                "use": "💻 Used for: Dive computers (most common today)"
+            }
+        },
+        "tissueChart": {
+            "title": "Tissue Loading Chart",
+            "hint": "↑↓ move tissues | Shift+↑ expand | Shift+↓ shrink"
+        },
+        "referenceTable": {
+            "title": "Bühlmann ZH-L16C Compartments Reference",
+            "thHalfTime": "Half-Time",
+            "thCategory": "Category",
+            "thTissueType": "Tissue Type",
+            "thNumber": "#",
+            "thSaturationTime": "Time to Saturate*",
+            "footnote": "* Approximate time to reach 98% saturation (6 half-times)",
+            "categoryFast": "Fast",
+            "categoryMedium": "Medium",
+            "categoryMediumSlow": "Medium-Slow",
+            "categorySlow": "Slow"
+        },
+        "tissueLabels": {
+            "1": "Brain, spinal cord",
+            "2": "Brain, spinal cord",
+            "3": "Spinal cord",
+            "4": "Muscles, skin",
+            "5": "Muscles, skin",
+            "6": "Muscles",
+            "7": "Muscles",
+            "8": "Muscles, tendons",
+            "9": "Tendons, cartilage",
+            "10": "Tendons, bones",
+            "11": "Bones",
+            "12": "Bones, fat",
+            "13": "Fat",
+            "14": "Fat",
+            "15": "Fat",
+            "16": "Fat"
+        }
     }
 }
