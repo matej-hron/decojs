@@ -1619,7 +1619,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.4.92";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.5.0";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -3415,7 +3415,7 @@ textarea.form-input {
 
 /* Small Chart Container */
 .chart-container-small {
-    max-width: 350px;
+    max-width: 700px;
     margin: 1.5rem auto;
 }
 

@@ -270,7 +270,16 @@ function initOngassingChart() {
                 tooltip: {
                     callbacks: {
                         title: (items) => `${items[0].label} half-times`,
-                        label: (item) => `${item.dataset.label}: ${item.raw.toFixed(2)} bar`
+                        label: (item) => {
+                            const bar = `${item.dataset.label}: ${item.raw.toFixed(2)} bar`;
+                            if (item.datasetIndex === 0) {
+                                const target = getSaturatedTissuePpN2(currentDepth);
+                                const initial = SURFACE_ALVEOLAR_N2;
+                                const pct = ((item.raw - initial) / (target - initial) * 100).toFixed(1);
+                                return `${bar} (${pct}% saturated)`;
+                            }
+                            return bar;
+                        }
                     }
                 }
             },
@@ -302,7 +311,7 @@ function initOngassingChart() {
             }
         }
     });
-    
+
     updateOngassingChart();
 }
 
@@ -403,7 +412,16 @@ function initOffgassingChart() {
                 tooltip: {
                     callbacks: {
                         title: (items) => `${items[0].label} half-times`,
-                        label: (item) => `${item.dataset.label}: ${item.raw.toFixed(2)} bar`
+                        label: (item) => {
+                            const bar = `${item.dataset.label}: ${item.raw.toFixed(2)} bar`;
+                            if (item.datasetIndex === 0) {
+                                const initial = getSaturatedTissuePpN2(currentDepth);
+                                const target = SURFACE_ALVEOLAR_N2;
+                                const pct = ((initial - item.raw) / (initial - target) * 100).toFixed(1);
+                                return `${bar} (${pct}% desaturated)`;
+                            }
+                            return bar;
+                        }
                     }
                 }
             },

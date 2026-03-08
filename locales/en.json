@@ -367,6 +367,7 @@
         },
         "henrysLaw": {
             "title": "Henry's Law: Gas Dissolution",
+            "solubilityTitle": "Gas Solubility",
             "cardTitle": "Henry's Law: Gas Dissolution",
             "text1": "<strong>Henry's Law</strong> states that the amount of gas dissolved in a liquid is proportional to the pressure of that gas above the liquid. Think of a soda bottle: when sealed under pressure, CO₂ stays dissolved. Open the cap (reduce pressure), and bubbles form as gas comes out of solution.",
             "text2": "The same principle applies to your body during a dive. As you descend and pressure increases, more gas dissolves into your blood and tissues. While this applies to <em>all</em> gases you breathe, <strong>oxygen (O₂)</strong> is not a concern for bubble formation because:",
@@ -547,6 +548,110 @@
             "14": "Fat",
             "15": "Fat",
             "16": "Fat"
+        }
+    },
+    "mValues": {
+        "header": {
+            "title": "M-Values & Surfacing Limits",
+            "subtitle": "Understanding the limits of supersaturation"
+        },
+        "recap": {
+            "title": "What We Know So Far",
+            "cardTitle": "The Pressure Relationships",
+            "intro": "From the previous sections, we learned about three key pressures and how they relate:",
+            "tissueLabel": "Tissue Inert Gas Pressure",
+            "tissueHint": "The nitrogen (or helium) dissolved in body tissues",
+            "alveolarLabel": "Alveolar Pressure",
+            "alveolarHint": "The ppN₂ in our lungs (≈0.79 × ambient for air)",
+            "ambientLabel": "Ambient Pressure",
+            "ambientHint": "Total pressure at current depth",
+            "insightTitle": "💡 The Key Insight",
+            "offgassingDesc": "✅ Off-gassing — nitrogen flows from tissue to lungs. <em>This is good!</em>",
+            "supersatDesc": "⚠️ Supersaturation — dissolved gas exceeds what pressure can hold. <em>Bubble risk!</em>",
+            "challenge": "The challenge: during ascent, we <em>want</em> tissue pressure to exceed alveolar (to off-gas), but we need to limit how much it exceeds ambient pressure (to avoid bubbles)."
+        },
+        "supersaturation": {
+            "title": "The Supersaturation Problem",
+            "cardTitle": "Critical Supersaturation",
+            "text1": "When tissue pressure exceeds ambient pressure, we're in a state called <strong>supersaturation</strong>. Think of it like a carbonated drink—the CO₂ is dissolved under pressure. Open the bottle (reduce pressure) and bubbles form.",
+            "text2": "The same happens in our tissues if we ascend too fast. But here's the fascinating discovery: the body can tolerate <em>some</em> supersaturation without forming dangerous bubbles. The question is: <strong>how much?</strong>",
+            "haldaneDesc": "Total ambient pressure ratio",
+            "haldaneMath": "(2 bar → 1 bar, safe from 10m)",
+            "workmanValue": "Per tissue, per depth",
+            "workmanDesc": "Each compartment has its own limit",
+            "workmanMath": "(faster tissues tolerate more)",
+            "historySummary": "📚 The History: How We Discovered Safe Limits",
+            "haldaneHistory": "The Scottish physiologist observed that workers in compressed-air tunnels and caissons could safely decompress from 2 atmospheres to 1 (a 2:1 ratio). This became the foundation of staged decompression—if the body can tolerate 2:1, we can plan safe depth-ratio ascents.",
+            "workmanHistory": "U.S. Navy researcher who recognized that a single fixed ratio couldn't capture the full picture. Different tissue compartments tolerate different levels of supersaturation, and these tolerances change with depth. He coined the term <strong>\"M-value\"</strong> (Maximum value) — the maximum tolerable tissue inert gas pressure at any given depth.",
+            "workmanInsight": "Workman's key insight: faster tissues (brain, blood) tolerate higher supersaturation than slower tissues (fat, bones) — and the tolerated ratio also varies with depth."
+        },
+        "buhlmann": {
+            "title": "Bühlmann's Solution",
+            "cardTitle": "Tissue-Specific Limits",
+            "intro": "Swiss physician <strong>Prof. Albert A. Bühlmann</strong> took this further in his ZH-L16 algorithm. Instead of a single ratio for all tissues, he defined specific tolerance limits for each of the 16 tissue compartments.",
+            "coreConceptTitle": "The Core Concept",
+            "coreConceptText": "Each tissue compartment has its own <strong>M-value line</strong> that defines the maximum tolerable tissue pressure for any given ambient pressure. This is the limit—cross it, and bubble formation becomes likely.",
+            "fasterTissues": "<strong>Faster tissues</strong> (short half-times like 5 min) → tolerate MORE supersaturation",
+            "slowerTissues": "<strong>Slower tissues</strong> (long half-times like 635 min) → tolerate LESS supersaturation",
+            "formulaSummary": "📐 The Formula Behind M-Values",
+            "formulaIntro": "Bühlmann's M-value formula for each compartment:",
+            "formulaWhere": "Where:",
+            "formulaM": "<strong>M</strong> = Maximum tolerable tissue inert gas pressure (bar)",
+            "formulaPamb": "<strong>P<sub>amb</sub></strong> = Ambient pressure at current depth (bar)",
+            "formulaA": "<strong>a</strong> = Intercept coefficient (bar) — tissue-specific",
+            "formulaB": "<strong>b</strong> = Slope coefficient (dimensionless) — tissue-specific",
+            "formulaHint": "The \"a\" coefficient is the y-intercept — the maximum tolerable tissue pressure at zero gauge pressure (surface). Faster tissues have higher \"a\" values, meaning they can handle more supersaturation.",
+            "variantsSummary": "📚 ZH-L16 Variants: A, B, and C",
+            "variantsIntro": "Bühlmann published three sets of coefficients:",
+            "variantA": "<strong>ZH-L16A</strong> — Mathematically derived from half-times. The original, least conservative set. Used for research.",
+            "variantB": "<strong>ZH-L16B</strong> — Slightly more conservative in middle compartments. Designed for printed dive tables (rounded to whole-meter stops).",
+            "variantC": "<strong>ZH-L16C</strong> — Most conservative, especially in middle compartments. Designed for real-time dive computers.",
+            "variantsHint": "Set A was found to be too aggressive for middle compartments in practice, leading to the B and C modifications. Most dive computers today use ZH-L16C.",
+            "limitationsSummary": "⚠️ Limitations of M-Values",
+            "limitationsText1": "M-values are useful but not absolute safety boundaries. Research shows that <strong>silent (asymptomatic) bubbles</strong> form well within M-value limits — you don't need to cross the line for bubbles to appear.",
+            "limitationsText2": "Some divers have exceeded M-values without symptoms, while others developed DCS while staying within limits. As Powell puts it: <em>\"an M-value can be thought of as a solid black line through a large grey area.\"</em>",
+            "limitationsHint": "This is why Gradient Factors exist — to keep tissue loading well below the theoretical M-value limit. See the <a href=\"gradient-factors.html\">Gradient Factors</a> page."
+        },
+        "diagram": {
+            "title": "The Pressure-Pressure Diagram",
+            "cardTitle": "Visualizing the Limits",
+            "intro": "The chart below plots <strong>Ambient Pressure</strong> (X-axis) against <strong>Tissue N₂ Pressure</strong> (Y-axis). Watch how your tissue compartments move through the different zones during a dive:",
+            "zoneBelowMarker": "Below blue line (y = x)",
+            "zoneBelowDesc": "Tissue pressure &lt; ambient (not supersaturated)",
+            "zoneBetweenMarker": "Between blue & M-value lines",
+            "zoneBetweenDesc": "Supersaturated but safe ✓",
+            "zoneAboveMarker": "Above tissue's M-value line",
+            "zoneAboveDesc": "⚠️ Critical supersaturation!",
+            "movementSummary": "🎯 How to Read the Movement",
+            "moveDescent": "<strong>Descent:</strong> Move <em>right</em> (↑ ambient) and <em>up</em> (↑ tissue loading)",
+            "moveAtDepth": "<strong>At depth:</strong> Stay at same X position, slowly move <em>up</em> toward equilibrium",
+            "moveAscent": "<strong>Ascent:</strong> Move <em>left</em> (↓ ambient) — this is where you enter supersaturation",
+            "movementWarning": "⚠️ The danger: ascending too fast moves you left faster than you off-gas down — risking crossing above the M-value line!"
+        },
+        "example1": {
+            "title": "Example 1: Safe Dive",
+            "desc": "This dive includes a 10-minute safety stop at 3m. Notice how the tissue pressure stays well below the M-value line throughout the ascent.",
+            "profileTitle": "Dive Profile",
+            "ppDiagramTitle": "Pressure-Pressure Diagram"
+        },
+        "example2": {
+            "title": "Example 2: Ceiling Violation",
+            "ceilingTitle": "What is an Ascent Ceiling?",
+            "ceilingText": "The <strong>ascent ceiling</strong> is the shallowest depth you can ascend to without any tissue exceeding its M-value. If you ascend past the ceiling, tissue pressure crosses the M-value line and dangerous bubble formation becomes likely. Decompression stops keep you at or below this ceiling while tissues off-gas.",
+            "desc": "<strong>Same dive, but with a direct ascent to surface.</strong> Watch how the tissue pressure crosses above the M-value line — this is a decompression sickness risk!",
+            "profileTitle": "Dive Profile",
+            "ppDiagramTitle": "Pressure-Pressure Diagram",
+            "legendSummary": "📖 Chart Legend",
+            "legendAmbient": "<strong>Blue solid (Ambient Line):</strong> y = x. Above this = tissue is supersaturated.",
+            "legendSurface": "<strong>Gray dashed (Surface):</strong> x = 1 bar. Must be below M-value when reaching this.",
+            "legendMValue": "<strong>Colored dashed (M-Value):</strong> Critical limit for each tissue. Each tissue compartment has its own color.",
+            "legendTrail": "<strong>Trail:</strong> The path traced by the tissue point throughout the dive."
+        },
+        "reference": {
+            "title": "ZH-L16A M-Value Coefficients",
+            "viewTable": "View coefficient table",
+            "thHalfTime": "Half-Time (min)",
+            "footnote": "* M₀ = a + 1/b = Maximum tolerable tissue pressure at surface (1 bar ambient)"
         }
     }
 }

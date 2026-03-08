@@ -367,6 +367,7 @@
         },
         "henrysLaw": {
             "title": "Henryho zákon: rozpouštění plynů",
+            "solubilityTitle": "Rozpustnost plynů",
             "cardTitle": "Henryho zákon: rozpouštění plynů",
             "text1": "<strong>Henryho zákon</strong> říká, že množství plynu rozpuštěného v kapalině je úměrné tlaku tohoto plynu nad kapalinou. Představte si lahev s perlivou vodou: pod tlakem zůstává CO₂ rozpuštěný. Otevřete víčko (snížíte tlak) a bubliny se začnou tvořit, jak plyn přechází z roztoku.",
             "text2": "Stejný princip platí pro vaše tělo během ponoru. Jak sestupujete a tlak roste, více plynu se rozpouští ve vaší krvi a tkáních. I když se to týká <em>všech</em> plynů, které dýcháte, <strong>kyslík (O₂)</strong> nepředstavuje riziko tvorby bublin, protože:",
@@ -547,6 +548,110 @@
             "14": "Tuk",
             "15": "Tuk",
             "16": "Tuk"
+        }
+    },
+    "mValues": {
+        "header": {
+            "title": "M-hodnoty a limity výstupu",
+            "subtitle": "Pochopení limitů přesycení"
+        },
+        "recap": {
+            "title": "Co už víme",
+            "cardTitle": "Vztahy mezi tlaky",
+            "intro": "Z předchozích částí jsme se dozvěděli o třech klíčových tlacích a o tom, jak spolu souvisí:",
+            "tissueLabel": "Tlak inertního plynu ve tkáni",
+            "tissueHint": "Dusík (nebo hélium) rozpuštěný v tkáních těla",
+            "alveolarLabel": "Alveolární tlak",
+            "alveolarHint": "ppN₂ v našich plicích (≈0,79 × okolní tlak pro vzduch)",
+            "ambientLabel": "Okolní tlak",
+            "ambientHint": "Celkový tlak v aktuální hloubce",
+            "insightTitle": "💡 Klíčový poznatek",
+            "offgassingDesc": "✅ Vysycování — dusík proudí z tkáně do plic. <em>To je žádoucí!</em>",
+            "supersatDesc": "⚠️ Přesycení — rozpuštěný plyn přesahuje to, co tlak dokáže udržet. <em>Riziko bublin!</em>",
+            "challenge": "Výzva: během výstupu <em>chceme</em>, aby tkáňový tlak přesahoval alveolární (kvůli vysycování), ale musíme omezit, o kolik přesahuje okolní tlak (aby se zabránilo tvorbě bublin)."
+        },
+        "supersaturation": {
+            "title": "Problém přesycení",
+            "cardTitle": "Kritické přesycení",
+            "text1": "Když tkáňový tlak přesáhne okolní tlak, jsme ve stavu zvaném <strong>přesycení</strong>. Představte si to jako perlivý nápoj — CO₂ je rozpuštěný pod tlakem. Otevřete lahev (snížíte tlak) a bubliny se začnou tvořit.",
+            "text2": "Totéž se děje v našich tkáních, pokud vystoupáme příliš rychle. Ale zde je fascinující objev: tělo dokáže tolerovat <em>určitou míru</em> přesycení bez tvorby nebezpečných bublin. Otázka zní: <strong>kolik?</strong>",
+            "haldaneDesc": "Poměr celkového okolního tlaku",
+            "haldaneMath": "(2 bary → 1 bar, bezpečné z 10 m)",
+            "workmanValue": "Pro každou tkáň, pro každou hloubku",
+            "workmanDesc": "Každý kompartment má svůj vlastní limit",
+            "workmanMath": "(rychlejší tkáně tolerují více)",
+            "historySummary": "📚 Historie: jak jsme objevili bezpečné limity",
+            "haldaneHistory": "Skotský fyziolog pozoroval, že dělníci v tunelech a kesonech se stlačeným vzduchem mohli bezpečně dekomprimovat z 2 atmosfér na 1 (poměr 2:1). To se stalo základem stupňovité dekomprese — pokud tělo toleruje 2:1, můžeme plánovat bezpečné výstupy v poměrech hloubek.",
+            "workmanHistory": "Výzkumník amerického námořnictva, který rozpoznal, že jediný pevný poměr nedokáže zachytit celý obraz. Různé tkáňové kompartmenty tolerují různé úrovně přesycení a tyto tolerance se mění s hloubkou. Zavedl pojem <strong>\"M-hodnota\"</strong> (Maximum value) — maximální tolerovatelný tlak inertního plynu ve tkáni při jakékoli dané hloubce.",
+            "workmanInsight": "Klíčový poznatek Workmana: rychlejší tkáně (mozek, krev) tolerují vyšší přesycení než pomalejší tkáně (tuk, kosti) — a tolerovaný poměr se také mění s hloubkou."
+        },
+        "buhlmann": {
+            "title": "Bühlmannovo řešení",
+            "cardTitle": "Limity specifické pro tkáně",
+            "intro": "Švýcarský lékař <strong>prof. Albert A. Bühlmann</strong> toto rozvinul ve svém algoritmu ZH-L16. Místo jediného poměru pro všechny tkáně definoval specifické toleranční limity pro každý ze 16 tkáňových kompartmentů.",
+            "coreConceptTitle": "Základní koncept",
+            "coreConceptText": "Každý tkáňový kompartment má svou vlastní <strong>M-value linii</strong>, která definuje maximální tolerovatelný tkáňový tlak pro jakýkoli daný okolní tlak. Toto je limit — překročte ho a tvorba bublin se stává pravděpodobnou.",
+            "fasterTissues": "<strong>Rychlejší tkáně</strong> (krátké poločasy jako 5 min) → tolerují VÍCE přesycení",
+            "slowerTissues": "<strong>Pomalejší tkáně</strong> (dlouhé poločasy jako 635 min) → tolerují MÉNĚ přesycení",
+            "formulaSummary": "📐 Vzorec M-hodnot",
+            "formulaIntro": "Bühlmannův vzorec M-hodnoty pro každý kompartment:",
+            "formulaWhere": "Kde:",
+            "formulaM": "<strong>M</strong> = Maximální tolerovatelný tlak inertního plynu ve tkáni (bar)",
+            "formulaPamb": "<strong>P<sub>amb</sub></strong> = Okolní tlak v aktuální hloubce (bar)",
+            "formulaA": "<strong>a</strong> = Koeficient úsečky (bar) — specifický pro tkáň",
+            "formulaB": "<strong>b</strong> = Koeficient směrnice (bezrozměrný) — specifický pro tkáň",
+            "formulaHint": "Koeficient \"a\" je průsečík s osou y — maximální tolerovatelný tkáňový tlak při nulovém přetlaku (na hladině). Rychlejší tkáně mají vyšší hodnoty \"a\", což znamená, že zvládnou větší přesycení.",
+            "variantsSummary": "📚 Varianty ZH-L16: A, B a C",
+            "variantsIntro": "Bühlmann publikoval tři sady koeficientů:",
+            "variantA": "<strong>ZH-L16A</strong> — Matematicky odvozené z poločasů. Původní, nejméně konzervativní sada. Používá se pro výzkum.",
+            "variantB": "<strong>ZH-L16B</strong> — O něco konzervativnější ve středních kompartmentech. Navrženo pro tištěné dekompresní tabulky (zaokrouhlení na celé metry zastávek).",
+            "variantC": "<strong>ZH-L16C</strong> — Nejkonzervativnější, zejména ve středních kompartmentech. Navrženo pro potápěčské počítače pracující v reálném čase.",
+            "variantsHint": "Sada A se v praxi ukázala jako příliš agresivní pro střední kompartmenty, což vedlo k modifikacím B a C. Většina dnešních potápěčských počítačů používá ZH-L16C.",
+            "limitationsSummary": "⚠️ Omezení M-hodnot",
+            "limitationsText1": "M-hodnoty jsou užitečné, ale nejsou absolutními bezpečnostními hranicemi. Výzkum ukazuje, že <strong>tiché (asymptomatické) bubliny</strong> se tvoří hluboko pod limity M-hodnot — nemusíte překročit linii, aby se bubliny objevily.",
+            "limitationsText2": "Někteří potápěči překročili M-hodnoty bez příznaků, zatímco jiní rozvinuli dekompresní nemoc i přesto, že zůstali v limitech. Jak říká Powell: <em>\"M-hodnotu si lze představit jako silnou černou čáru procházející velkou šedou zónou.\"</em>",
+            "limitationsHint": "Proto existují gradient faktory — aby udržely sycení tkání hluboko pod teoretickým limitem M-hodnoty. Viz stránka <a href=\"gradient-factors.html\">Gradient faktory</a>."
+        },
+        "diagram": {
+            "title": "Diagram tlak-tlak",
+            "cardTitle": "Vizualizace limitů",
+            "intro": "Graf níže zobrazuje <strong>okolní tlak</strong> (osa X) proti <strong>tlaku N₂ ve tkáni</strong> (osa Y). Sledujte, jak se vaše tkáňové kompartmenty pohybují různými zónami během ponoru:",
+            "zoneBelowMarker": "Pod modrou linií (y = x)",
+            "zoneBelowDesc": "Tkáňový tlak &lt; okolní (bez přesycení)",
+            "zoneBetweenMarker": "Mezi modrou a M-value linií",
+            "zoneBetweenDesc": "Přesycení, ale bezpečné ✓",
+            "zoneAboveMarker": "Nad M-value linií tkáně",
+            "zoneAboveDesc": "⚠️ Kritické přesycení!",
+            "movementSummary": "🎯 Jak číst pohyb",
+            "moveDescent": "<strong>Sestup:</strong> Pohyb <em>vpravo</em> (↑ okolní tlak) a <em>nahoru</em> (↑ sycení tkáně)",
+            "moveAtDepth": "<strong>V hloubce:</strong> Stejná pozice na ose X, pomalý pohyb <em>nahoru</em> k rovnováze",
+            "moveAscent": "<strong>Výstup:</strong> Pohyb <em>vlevo</em> (↓ okolní tlak) — zde vstupujete do přesycení",
+            "movementWarning": "⚠️ Nebezpečí: příliš rychlý výstup vás posune vlevo rychleji, než se vysycujete dolů — riskujete překročení M-value linie!"
+        },
+        "example1": {
+            "title": "Příklad 1: Bezpečný ponor",
+            "desc": "Tento ponor zahrnuje 10minutovou bezpečnostní zastávku v 3 m. Všimněte si, jak tkáňový tlak zůstává po celou dobu výstupu bezpečně pod M-value linií.",
+            "profileTitle": "Profil ponoru",
+            "ppDiagramTitle": "Diagram tlak-tlak"
+        },
+        "example2": {
+            "title": "Příklad 2: Překročení stropu",
+            "ceilingTitle": "Co je dekompresní strop?",
+            "ceilingText": "<strong>Dekompresní strop</strong> je nejmenší hloubka, do které můžete vystoupat, aniž by jakákoli tkáň překročila svou M-hodnotu. Pokud vystoupáte nad strop, tkáňový tlak překročí M-value linii a tvorba nebezpečných bublin se stává pravděpodobnou. Dekompresní zastávky vás drží na úrovni stropu nebo pod ním, zatímco se tkáně vysycují.",
+            "desc": "<strong>Stejný ponor, ale s přímým výstupem na hladinu.</strong> Sledujte, jak tkáňový tlak překročí M-value linii — toto je riziko dekompresní nemoci!",
+            "profileTitle": "Profil ponoru",
+            "ppDiagramTitle": "Diagram tlak-tlak",
+            "legendSummary": "📖 Legenda grafu",
+            "legendAmbient": "<strong>Modrá plná (linie okolního tlaku):</strong> y = x. Nad ní = tkáň je přesycena.",
+            "legendSurface": "<strong>Šedá čárkovaná (hladina):</strong> x = 1 bar. Při dosažení hladiny musíte být pod M-hodnotou.",
+            "legendMValue": "<strong>Barevná čárkovaná (M-hodnota):</strong> Kritický limit pro každou tkáň. Každý tkáňový kompartment má svou vlastní barvu.",
+            "legendTrail": "<strong>Stopa:</strong> Trajektorie, kterou bod tkáně vykreslil během ponoru."
+        },
+        "reference": {
+            "title": "Koeficienty M-hodnot ZH-L16A",
+            "viewTable": "Zobrazit tabulku koeficientů",
+            "thHalfTime": "Poločas (min)",
+            "footnote": "* M₀ = a + 1/b = Maximální tolerovatelný tkáňový tlak na hladině (okolní tlak 1 bar)"
         }
     }
 }
