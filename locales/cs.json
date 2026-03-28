@@ -613,7 +613,7 @@
             "limitationsHint": "Proto existují gradient faktory — aby udržely sycení tkání hluboko pod teoretickým limitem M-hodnoty. Viz stránka <a href=\"gradient-factors.html\">Gradient faktory</a>."
         },
         "diagram": {
-            "title": "Diagram tlak-tlak",
+            "title": "Diagram M-value",
             "cardTitle": "Vizualizace limitů",
             "intro": "Graf níže zobrazuje <strong>okolní tlak</strong> (osa X) proti <strong>tlaku N₂ ve tkáni</strong> (osa Y). Sledujte, jak se vaše tkáňové kompartmenty pohybují různými zónami během ponoru:",
             "zoneBelowMarker": "Pod modrou linií (y = x)",
@@ -632,7 +632,7 @@
             "title": "Příklad 1: Bezpečný ponor",
             "desc": "Tento ponor zahrnuje 10minutovou bezpečnostní zastávku v 3 m. Všimněte si, jak tkáňový tlak zůstává po celou dobu výstupu bezpečně pod M-value linií.",
             "profileTitle": "Profil ponoru",
-            "ppDiagramTitle": "Diagram tlak-tlak"
+            "ppDiagramTitle": "Diagram M-value"
         },
         "example2": {
             "title": "Příklad 2: Překročení stropu",
@@ -640,7 +640,7 @@
             "ceilingText": "<strong>Dekompresní strop</strong> je nejmenší hloubka, do které můžete vystoupat, aniž by jakákoli tkáň překročila svou M-hodnotu. Pokud vystoupáte nad strop, tkáňový tlak překročí M-value linii a tvorba nebezpečných bublin se stává pravděpodobnou. Dekompresní zastávky vás drží na úrovni stropu nebo pod ním, zatímco se tkáně vysycují.",
             "desc": "<strong>Stejný ponor, ale s přímým výstupem na hladinu.</strong> Sledujte, jak tkáňový tlak překročí M-value linii — toto je riziko dekompresní nemoci!",
             "profileTitle": "Profil ponoru",
-            "ppDiagramTitle": "Diagram tlak-tlak",
+            "ppDiagramTitle": "Diagram M-value",
             "legendSummary": "📖 Legenda grafu",
             "legendAmbient": "<strong>Modrá plná (linie okolního tlaku):</strong> y = x. Nad ní = tkáň je přesycena.",
             "legendSurface": "<strong>Šedá čárkovaná (hladina):</strong> x = 1 bar. Při dosažení hladiny musíte být pod M-hodnotou.",
@@ -663,12 +663,12 @@
             "subtitle": "Přidání konzervativnosti k dekompresi — a debata o hlubokých zastávkách"
         },
         "greyZone": {
-            "title": "Šedá zóna: proč M-hodnoty nestačí",
+            "title": "Šedá zóna: proč M-values nestačí",
             "silentBubbles": {
                 "title": "Tiché bubliny",
                 "text1": "Studie pomocí dopplerovského ultrazvuku odhalily něco překvapivého: <strong>bubliny se tvoří u potápěčů po většině ponorů</strong>, i když dodržují konzervativní profily bez příznaků DCS.",
-                "insight": "Tyto „tiché bubliny“ (žilní plynové embolie) jsou subklinické — nezpůsobují příznaky, ale dokazují, že <strong>M-hodnoty nepředstavují hranici bez bublin</strong>. Představují <em>tolerovatelnou</em> úroveň tvorby bublin.",
-                "text2": "To znamená, že M-value linie v našem diagramu tlak-tlak není ostrá hranice „bezpečné/nebezpečné“. Spíše se jedná o pravděpodobnostní gradient — čím blíže se k ní přiblížíte, tím více bublin vzniká a tím vyšší je vaše riziko."
+                "insight": "Tyto „tiché bubliny” (žilní plynové embolie) nevyvolávají žádné příznaky, ale dokazují, že <strong>M-values nepředstavují hranici bez bublin</strong>. Představují <em>tolerovatelnou</em> úroveň tvorby bublin.",
+                "text2": "To znamená, že M-value linie v našem diagramu M-value není ostrá hranice „bezpečné/nebezpečné“. Spíše se jedná o pravděpodobnostní gradient — čím blíže se k ní přiblížíte, tím více bublin vzniká a tím vyšší je vaše riziko."
             },
             "variability": {
                 "title": "Individuální variabilita",
@@ -681,14 +681,14 @@
                 "workload": "Vysoká fyzická zátěž",
                 "pfo": "Patent Foramen Ovale (PFO)",
                 "alcohol": "Konzumace alkoholu",
-                "undeservedHit": "Termín <strong>„nezasloužený zásah“</strong> popisuje případy, kdy potápěči dodrželi všechna pravidla, ale přesto dostali DCS. To se stává, protože pracujeme s pravděpodobnostní biologií, nikoli s přesnou fyzikou."
+                "undeservedHit": "I potápěči, kteří dodrželi všechna pravidla, mohou dostat DCS. Dekompresní modely pracují s pravděpodobností, ne s jistotou."
             }
         },
         "pyle": {
             "discovery": {
                 "title": "Objev Richarda Pylea",
                 "cardTitle": "Pozorování sběratele ryb",
-                "text1": "V 80. letech byl <strong>Richard Pyle</strong> mořský biolog sbírající vzorky ryb ze „soumrakové zóny“ — hloubek mezi 50–70 metry. Všiml si něčeho zvláštního ohledně své únavy po ponorech.",
+                "text1": "V 80. letech byl <strong>Richard Pyle</strong> mořský biolog sbírající vzorky ryb z hloubek mezi 50–70 metry. Všiml si něčeho zvláštního ohledně své únavy po ponorech.",
                 "insight": "<strong>Vzorec:</strong> Při ponorech, kdy chytal ryby, musel zastavit v přechodných hloubkách, aby <strong>odvětral jejich plynový měchýř</strong> (aby jim nepraskl během výstupu). Po těchto ponorech se cítil skvěle. Při ponorech bez ryb — a tedy bez přechodných zastávek — byl unavený.",
                 "text2": "Pyle náhodou zjistil, že krátké zastávky v hloubkách <em>hlubších</em>, než vyžadoval jeho dekompresní plán, měly znatelný vliv na to, jak se cítil."
             },
@@ -718,14 +718,14 @@
             "title": "Gradientní faktory: nástroj",
             "what": {
                 "title": "Co jsou gradientní faktory?",
-                "text1": "Gradientní faktory (GF) jsou způsob, jak přidat <strong>konzervativnost</strong> k Bühlmannovu algoritmu snížením povoleného přesycení. Místo toho, abyste tkáním dovolili dosáhnout 100 % M-hodnoty, nastavíte nižší procento.",
+                "text1": "Gradientní faktory (GF) jsou způsob, jak přidat <strong>konzervativnost</strong> k Bühlmannovu algoritmu snížením povoleného přesycení. Místo toho, abyste tkáním dovolili dosáhnout 100 % M-value, nastavíte nižší procento.",
                 "gf100label": "GF 100 %",
-                "gf100value": "Plná M-hodnota",
+                "gf100value": "Plná M-value",
                 "gf100desc": "Maximální povolené přesycení (Bühlmannův limit)",
                 "gf0label": "GF 0 %",
                 "gf0value": "Okolní tlak",
                 "gf0desc": "Žádné přesycení povoleno (nepraktické)",
-                "text2": "Gradientní faktor <strong>GF 80 %</strong> znamená, že tkáni dovolíte dosáhnout pouze 80 % vzdálenosti od okolního tlaku k M-hodnotě."
+                "text2": "Gradientní faktor <strong>GF 80 %</strong> znamená, že tkáni dovolíte dosáhnout pouze 80 % vzdálenosti od okolního tlaku k M-value."
             },
             "lowHigh": {
                 "title": "GF Low a GF High",
@@ -742,11 +742,11 @@
             },
             "example100": {
                 "title": "Vizualizace: GF 100/100 (bez konzervativnosti)",
-                "desc": "Čistý Bühlmannův limit — tkáň může dosáhnout 100 % M-hodnoty."
+                "desc": "Čistý Bühlmannův limit — tkáň může dosáhnout 100 % M-value."
             },
             "example5080": {
                 "title": "Vizualizace: GF 50/80 (konzervativní)",
-                "desc": "Tkáň smí dosáhnout jen 50–80 % M-hodnoty — všimněte si linie GF pod M-hodnotou."
+                "desc": "Tkáň smí dosáhnout jen 50–80 % M-value — všimněte si linie GF pod M-value."
             }
         },
         "controversy": {
