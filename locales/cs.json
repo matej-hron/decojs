@@ -653,5 +653,189 @@
             "thHalfTime": "Poločas (min)",
             "footnote": "* M₀ = a + 1/b = Maximální tolerovatelný tkáňový tlak na hladině (okolní tlak 1 bar)"
         }
+    },
+    "gradientFactors": {
+        "page": {
+            "title": "Gradientní faktory - Deco Theory"
+        },
+        "header": {
+            "title": "Gradientní faktory",
+            "subtitle": "Přidání konzervativnosti k dekompresi — a debata o hlubokých zastávkách"
+        },
+        "greyZone": {
+            "title": "Šedá zóna: proč M-hodnoty nestačí",
+            "silentBubbles": {
+                "title": "Tiché bubliny",
+                "text1": "Studie pomocí dopplerovského ultrazvuku odhalily něco překvapivého: <strong>bubliny se tvoří u potápěčů po většině ponorů</strong>, i když dodržují konzervativní profily bez příznaků DCS.",
+                "insight": "Tyto „tiché bubliny“ (žilní plynové embolie) jsou subklinické — nezpůsobují příznaky, ale dokazují, že <strong>M-hodnoty nepředstavují hranici bez bublin</strong>. Představují <em>tolerovatelnou</em> úroveň tvorby bublin.",
+                "text2": "To znamená, že M-value linie v našem diagramu tlak-tlak není ostrá hranice „bezpečné/nebezpečné“. Spíše se jedná o pravděpodobnostní gradient — čím blíže se k ní přiblížíte, tím více bublin vzniká a tím vyšší je vaše riziko."
+            },
+            "variability": {
+                "title": "Individuální variabilita",
+                "intro": "Riziko DCS se enormně liší mezi jednotlivci, a dokonce i mezi ponory téhož potápěče. Faktory zvyšující riziko zahrnují:",
+                "dehydration": "Dehydratace",
+                "poorFitness": "Špatná fyzická kondice",
+                "age": "Věk",
+                "bodyFat": "Procento tělesného tuku",
+                "cold": "Expozice chladu",
+                "workload": "Vysoká fyzická zátěž",
+                "pfo": "Patent Foramen Ovale (PFO)",
+                "alcohol": "Konzumace alkoholu",
+                "undeservedHit": "Termín <strong>„nezasloužený zásah“</strong> popisuje případy, kdy potápěči dodrželi všechna pravidla, ale přesto dostali DCS. To se stává, protože pracujeme s pravděpodobnostní biologií, nikoli s přesnou fyzikou."
+            }
+        },
+        "pyle": {
+            "discovery": {
+                "title": "Objev Richarda Pylea",
+                "cardTitle": "Pozorování sběratele ryb",
+                "text1": "V 80. letech byl <strong>Richard Pyle</strong> mořský biolog sbírající vzorky ryb ze „soumrakové zóny“ — hloubek mezi 50–70 metry. Všiml si něčeho zvláštního ohledně své únavy po ponorech.",
+                "insight": "<strong>Vzorec:</strong> Při ponorech, kdy chytal ryby, musel zastavit v přechodných hloubkách, aby <strong>odvětral jejich plynový měchýř</strong> (aby jim nepraskl během výstupu). Po těchto ponorech se cítil skvěle. Při ponorech bez ryb — a tedy bez přechodných zastávek — byl unavený.",
+                "text2": "Pyle náhodou zjistil, že krátké zastávky v hloubkách <em>hlubších</em>, než vyžadoval jeho dekompresní plán, měly znatelný vliv na to, jak se cítil."
+            },
+            "method": {
+                "title": "Pyle zastávky",
+                "intro": "Pyle formalizoval své pozorování do metody:",
+                "step1": "Vypočítejte konvenční dekompresní plán",
+                "step2": "První hluboká zastávka = <strong>v polovině</strong> mezi maximální hloubkou a první povinnou dekompresní zastávkou",
+                "step3": "Zůstaňte 2–3 minuty",
+                "step4": "Pokud je mezera k další zastávce stále >9 m (30 ft), přidejte další zastávku v polovině",
+                "exampleTitle": "Příklad: ponor na 60 m, první dekompresní zastávka v 15 m",
+                "stop1Label": "1. Pyle zastávka:",
+                "stop1Value": "(60 + 15) ÷ 2 = <strong>38 m</strong>",
+                "stop2Label": "2. Pyle zastávka:",
+                "stop2Value": "(38 + 15) ÷ 2 = <strong>27 m</strong>",
+                "stop3Label": "3. Pyle zastávka:",
+                "stop3Value": "(27 + 15) ÷ 2 = <strong>21 m</strong>",
+                "vpmConnection": "Zajímavé je, že Pyle později zjistil, že jeho empirický vzorec velmi přesně odpovídal <strong>modelu proměnlivé propustnosti (VPM)</strong> — dekompresnímu algoritmu založenému na bublinách, který nezávisle předpovídal podobné profily s hlubokými zastávkami."
+            },
+            "bridge": {
+                "title": "Most od Pyleova objevu k Bühlmannovi",
+                "text1": "Pyle ukázal, že hluboké zastávky pomáhají, a VPM (bublinový model) vysvětluje proč. Ale co když chcete nadále používat <strong>Bühlmannův model rozpuštěného plynu</strong> — algoritmus ve většině potápěčských počítačů — a přitom získat ty příznivé hluboké zastávky?",
+                "text2": "Přesně to poskytují <strong>gradientní faktory</strong>. Jsou modifikací Bühlmanna, která vám umožňuje nastavit konzervativnější profily, včetně hlubších prvních zastávek, <em>aniž</em> byste museli přejít na úplně jiný algoritmus."
+            }
+        },
+        "gfExplained": {
+            "title": "Gradientní faktory: nástroj",
+            "what": {
+                "title": "Co jsou gradientní faktory?",
+                "text1": "Gradientní faktory (GF) jsou způsob, jak přidat <strong>konzervativnost</strong> k Bühlmannovu algoritmu snížením povoleného přesycení. Místo toho, abyste tkáním dovolili dosáhnout 100 % M-hodnoty, nastavíte nižší procento.",
+                "gf100label": "GF 100 %",
+                "gf100value": "Plná M-hodnota",
+                "gf100desc": "Maximální povolené přesycení (Bühlmannův limit)",
+                "gf0label": "GF 0 %",
+                "gf0value": "Okolní tlak",
+                "gf0desc": "Žádné přesycení povoleno (nepraktické)",
+                "text2": "Gradientní faktor <strong>GF 80 %</strong> znamená, že tkáni dovolíte dosáhnout pouze 80 % vzdálenosti od okolního tlaku k M-hodnotě."
+            },
+            "lowHigh": {
+                "title": "GF Low a GF High",
+                "intro": "Potápěčské počítače a plánovací software používají <strong>dva</strong> gradientní faktory:",
+                "gfLowLabel": "GF Low",
+                "gfLowDesc": "Řídí <strong>první/nejhlubší</strong> dekompresní zastávku",
+                "gfHighLabel": "GF High",
+                "gfHighDesc": "Řídí přesycení na <strong>hladině</strong>",
+                "interpolation": "Algoritmus <strong>interpoluje</strong> mezi těmito hodnotami během výstupu:",
+                "interpList1": "U nejhlubší povinné zastávky → platí GF Low",
+                "interpList2": "Na hladině → platí GF High",
+                "interpList3": "Mezi tím → lineární interpolace",
+                "insight": "<strong>Nižší GF Low = hlubší první zastávka</strong> (podobné Pyle zastávkám)<br><strong>Nižší GF High = více času na mělkých zastávkách</strong>"
+            },
+            "example100": {
+                "title": "Vizualizace: GF 100/100 (bez konzervativnosti)",
+                "desc": "Čistý Bühlmannův limit — tkáň může dosáhnout 100 % M-hodnoty."
+            },
+            "example5080": {
+                "title": "Vizualizace: GF 50/80 (konzervativní)",
+                "desc": "Tkáň smí dosáhnout jen 50–80 % M-hodnoty — všimněte si linie GF pod M-hodnotou."
+            }
+        },
+        "controversy": {
+            "title": "Kontroverze kolem hlubokých zastávek",
+            "nedu": {
+                "cardTitle": "Studie NEDU, která vše změnila",
+                "text1": "Po léta byly hluboké zastávky považovány za prospěšné na základě Pyleových pozorování a teorie bublinových modelů. Pak přišlo důkladné testování.",
+                "text2": "<strong>Experimentální potápěčská jednotka amerického námořnictva (NEDU)</strong> provedla rozsáhlou srovnávací studii: stejný ponor (170 fsw/30 min), stejná celková dekompresní doba, ale odlišné profily:",
+                "shallowLabel": "Mělké zastávky",
+                "shallowValue": "3 DCS ze 192 ponorů",
+                "shallowDesc": "První zastávka ve 40 fsw (12 m)",
+                "deepLabel": "Hluboké zastávky",
+                "deepValue": "11 DCS ze 198 ponorů",
+                "deepDesc": "První zastávka v 70 fsw (21 m)",
+                "result": "Hluboké zastávky vedly k <span style=\"color: var(--danger-color);\">3,6× více DCS</span> u stejného ponoru!"
+            },
+            "backfire": {
+                "title": "Proč mohou hluboké zastávky škodit",
+                "text1": "Problém hlubokých zastávek je nenápadný, ale důležitý:",
+                "insight": "V hloubkách hlubokých zastávek <strong>pomalé tkáně stále nasycují</strong>. Zatímco se snažíte umožnit rychlým tkáním vysycování, zatěžujete pomalé tkáně, které budou řídit vaši pozdější dekompresi.",
+                "text2": "Hluboké zastávky snižují tlakový gradient pro vysycování. Čím hlouběji zůstáváte, tím menší je rozdíl mezi tkáňovým a okolním tlakem — a právě tento gradient řídí odvod plynu.",
+                "nuanceTitle": "Realita je složitější",
+                "nuanceIntro": "To neznamená, že všechny hluboké zastávky jsou špatné:",
+                "nuance1": "<strong>Velmi krátké zastávky</strong> (Pyleovy původní 2–3 minuty) mohou být stále prospěšné",
+                "nuance2": "Studie NEDU používala prodloužené hluboké zastávky s výrazným přesunem dekompresního času do hloubky",
+                "nuance3": "Extrémně agresivní profily hlubokých zastávek (GF 30/85) se dnes nedoporučují",
+                "nuance4": "Mírná konzervativnost (GF 70/85) přidává bezpečnost bez nadměrných hlubokých zastávek"
+            }
+        },
+        "practical": {
+            "settings": {
+                "title": "Běžná nastavení GF",
+                "thSetting": "Nastavení",
+                "thConservatism": "Konzervativnost",
+                "thTypicalUse": "Typické použití",
+                "row1conservatism": "Žádná",
+                "row1use": "Čistý Bühlmann — NEDOPORUČUJE se",
+                "row2conservatism": "Mírná",
+                "row2use": "Lehká rekreační konzervativnost",
+                "row3conservatism": "Střední",
+                "row3use": "Oblíbené vyvážené nastavení",
+                "row4conservatism": "Konzervativní",
+                "row4use": "Technické potápění, osobní rizikové faktory",
+                "row5conservatism": "Agresivní hluboké",
+                "row5use": "Dnes se nedoporučuje (nadměrné hluboké zastávky)"
+            },
+            "ratio": {
+                "title": "Pravidlo poměru",
+                "intro": "Výzkumník dekomprese <strong>Dr. David Doolette</strong> navrhuje praktickou zásadu:",
+                "insight": "<strong>GF Low by měl být přibližně 83 % GF High</strong>",
+                "insightDesc": "Tento poměr odpovídá průměrnému Bühlmannovu parametru „b“ a zabraňuje přílišnému důrazu na hluboké zastávky.",
+                "examplesTitle": "Příklady podle pravidla ~83 %:",
+                "example1label": "GF High 85 %:",
+                "example1value": "GF Low ≈ <strong>70 %</strong> → GF 70/85",
+                "example2label": "GF High 80 %:",
+                "example2value": "GF Low ≈ <strong>66 %</strong> → GF 65/80",
+                "example3label": "GF High 70 %:",
+                "example3value": "GF Low ≈ <strong>58 %</strong> → GF 55/70"
+            },
+            "bottomLine": {
+                "title": "Shrnutí",
+                "item1": "Určitá konzervativnost je dobrá — GF 100/100 je příliš agresivní",
+                "item2": "GF 70/85 je rozumný výchozí bod pro většinu potápěčů",
+                "item3": "Velmi nízký GF Low (například 30 %) může být kontraproduktivní",
+                "item4": "Více konzervativnosti není vždy lepší — jde o rovnováhu",
+                "item5": "Upravte podle osobních faktorů, podmínek ponoru a zkušeností"
+            }
+        },
+        "bubbleModels": {
+            "title": "Bublinové modely (pokročilé)",
+            "beyond": {
+                "title": "Za hranicemi rozpuštěného plynu",
+                "text": "Bühlmannův algoritmus sleduje pouze <strong>rozpuštěný plyn</strong>. Nemodeluje tvorbu ani růst bublin. Alternativní „bublinové modely“ se snaží tento problém řešit."
+            },
+            "vpm": {
+                "title": "VPM (model proměnlivé propustnosti)",
+                "text1": "VPM předpokládá, že <strong>mikroskopická zárodečná jádra bublin existují ve tkáních neustále</strong>. Během dekomprese jádra větší než „kritický poloměr“ (určený maximální hloubkou) porostou.",
+                "text2": "VPM se snaží minimalizovat celkový objem bublin tím, že udržuje okolní tlak dostatečně vysoký, aby omezil růst bublin — což přirozeně vede k hlubším zastávkám."
+            },
+            "rgbm": {
+                "title": "RGBM (model redukovaného gradientu bublin)",
+                "text": "RGBM modeluje, jak bubliny rostou absorbováním plynu z okolní nasycené tkáně. Podobně jako VPM má tendenci generovat hlubší zastávky než Bühlmann."
+            },
+            "realityCheck": {
+                "title": "Kontrola reality",
+                "text": "Navzdory odlišným teoretickým základům všechny tyto algoritmy vytvářejí <strong>překvapivě podobné dekompresní plány</strong> — protože všechny musí odpovídat stejným empirickým datům z reálných ponorů.",
+                "quote": "„Je příliš snadné podívat se na složitost jakéhokoli výpočtu a na počet desetinných míst, která moderní počítač zobrazí, a získat dojem, že výsledek je nesmírně přesný, i když ve skutečnosti není.“",
+                "quoteAuthor": "— Paul Chapman, Decompression Theory"
+            }
+        }
     }
 }

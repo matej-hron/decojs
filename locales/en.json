@@ -653,5 +653,189 @@
             "thHalfTime": "Half-Time (min)",
             "footnote": "* M₀ = a + 1/b = Maximum tolerable tissue pressure at surface (1 bar ambient)"
         }
+    },
+    "gradientFactors": {
+        "page": {
+            "title": "Gradient Factors - Deco Theory"
+        },
+        "header": {
+            "title": "Gradient Factors",
+            "subtitle": "Adding conservatism to decompression — and the deep stops debate"
+        },
+        "greyZone": {
+            "title": "The Grey Zone: Why M-Values Aren't Enough",
+            "silentBubbles": {
+                "title": "Silent Bubbles",
+                "text1": "Doppler ultrasound studies have revealed something surprising: <strong>bubbles form in divers after most dives</strong>, even when following conservative profiles with no DCS symptoms.",
+                "insight": "These \"silent bubbles\" (venous gas emboli) are sub-clinical — they don't cause symptoms, but they prove that <strong>M-values don't represent a bubble-free boundary</strong>. They represent a <em>tolerable</em> level of bubble formation.",
+                "text2": "This means the M-value line on our pressure-pressure diagram isn't a sharp \"safe/unsafe\" boundary. It's more like a probability gradient — the closer you get, the more bubbles form, and the higher your risk."
+            },
+            "variability": {
+                "title": "Individual Variability",
+                "intro": "DCS risk varies enormously between individuals and even between dives for the same person. Factors that increase risk include:",
+                "dehydration": "Dehydration",
+                "poorFitness": "Poor physical fitness",
+                "age": "Age",
+                "bodyFat": "Body fat percentage",
+                "cold": "Cold exposure",
+                "workload": "Heavy workload",
+                "pfo": "Patent Foramen Ovale (PFO)",
+                "alcohol": "Alcohol consumption",
+                "undeservedHit": "The term <strong>\"undeserved hit\"</strong> describes cases where divers followed all the rules but still got DCS. This happens because we're dealing with probabilistic biology, not precise physics."
+            }
+        },
+        "pyle": {
+            "discovery": {
+                "title": "Richard Pyle's Discovery",
+                "cardTitle": "The Fish Collector's Observation",
+                "text1": "In the 1980s, <strong>Richard Pyle</strong> was a marine biologist collecting fish specimens from the \"twilight zone\" — depths between 50-70 meters. He noticed something curious about his post-dive fatigue.",
+                "insight": "<strong>The pattern:</strong> On dives where he caught fish, he had to stop at intermediate depths to <strong>vent their swim bladders</strong> (preventing them from bursting during ascent). After these dives, he felt great. On dives with no fish — and therefore no intermediate stops — he felt fatigued.",
+                "text2": "Pyle had accidentally discovered that brief stops at depths <em>deeper</em> than required by his decompression schedule made a noticeable difference in how he felt."
+            },
+            "method": {
+                "title": "Pyle Stops",
+                "intro": "Pyle formalized his observation into a method:",
+                "step1": "Calculate your conventional decompression schedule",
+                "step2": "First deep stop = <strong>halfway</strong> between max depth and first required deco stop",
+                "step3": "Stay 2-3 minutes",
+                "step4": "If the gap to the next stop is still &gt;9m (30ft), add another halfway stop",
+                "exampleTitle": "Example: 60m dive, first deco stop at 15m",
+                "stop1Label": "1st Pyle stop:",
+                "stop1Value": "(60 + 15) ÷ 2 = <strong>38m</strong>",
+                "stop2Label": "2nd Pyle stop:",
+                "stop2Value": "(38 + 15) ÷ 2 = <strong>27m</strong>",
+                "stop3Label": "3rd Pyle stop:",
+                "stop3Value": "(27 + 15) ÷ 2 = <strong>21m</strong>",
+                "vpmConnection": "Interestingly, Pyle later discovered that his empirical pattern closely matched the <strong>Varying Permeability Model (VPM)</strong> — a bubble-based decompression algorithm that independently predicted similar deep stop profiles."
+            },
+            "bridge": {
+                "title": "Bridging Pyle's Discovery to Bühlmann",
+                "text1": "So Pyle showed that deep stops help, and VPM (a bubble model) explains why. But what if you want to keep using <strong>Bühlmann's dissolved-gas model</strong> — the algorithm in most dive computers — while still getting those beneficial deep stops?",
+                "text2": "That's exactly what <strong>Gradient Factors</strong> provide. They're a modification to Bühlmann that lets you dial in more conservative profiles, including deeper first stops, <em>without</em> switching to a completely different algorithm."
+            }
+        },
+        "gfExplained": {
+            "title": "Gradient Factors: The Tool",
+            "what": {
+                "title": "What Are Gradient Factors?",
+                "text1": "Gradient Factors (GF) are a way to add <strong>conservatism</strong> to Bühlmann's algorithm by reducing the allowed supersaturation. Instead of allowing tissues to reach 100% of the M-value, you set a lower percentage.",
+                "gf100label": "GF 100%",
+                "gf100value": "Full M-value",
+                "gf100desc": "Maximum allowed supersaturation (Bühlmann's limit)",
+                "gf0label": "GF 0%",
+                "gf0value": "Ambient pressure",
+                "gf0desc": "No supersaturation allowed (impractical)",
+                "text2": "A gradient factor of <strong>GF 80%</strong> means you only allow the tissue to reach 80% of the way from ambient pressure to the M-value."
+            },
+            "lowHigh": {
+                "title": "GF Low and GF High",
+                "intro": "Dive computers and planning software use <strong>two</strong> gradient factors:",
+                "gfLowLabel": "GF Low",
+                "gfLowDesc": "Controls the <strong>first/deepest</strong> deco stop",
+                "gfHighLabel": "GF High",
+                "gfHighDesc": "Controls supersaturation at the <strong>surface</strong>",
+                "interpolation": "The algorithm <strong>interpolates</strong> between these values during the ascent:",
+                "interpList1": "At your deepest required stop → GF Low applies",
+                "interpList2": "At the surface → GF High applies",
+                "interpList3": "In between → linear interpolation",
+                "insight": "<strong>Lower GF Low = deeper first stop</strong> (similar to Pyle stops)<br><strong>Lower GF High = more time at shallow stops</strong>"
+            },
+            "example100": {
+                "title": "Visual: GF 100/100 (No Conservatism)",
+                "desc": "Raw Bühlmann limits — tissue can reach 100% of M-value."
+            },
+            "example5080": {
+                "title": "Visual: GF 50/80 (Conservative)",
+                "desc": "Tissue only allowed to 50-80% of M-value — notice the GF line below the M-value."
+            }
+        },
+        "controversy": {
+            "title": "The Deep Stops Controversy",
+            "nedu": {
+                "cardTitle": "The NEDU Study That Changed Everything",
+                "text1": "For years, deep stops were considered beneficial based on Pyle's observations and bubble model theory. Then came rigorous testing.",
+                "text2": "The <strong>U.S. Navy Experimental Diving Unit (NEDU)</strong> conducted a large comparative study: same dive (170 fsw/30 min), same total decompression time, but different profiles:",
+                "shallowLabel": "Shallow Stops",
+                "shallowValue": "3 DCS in 192 dives",
+                "shallowDesc": "First stop at 40 fsw (12m)",
+                "deepLabel": "Deep Stops",
+                "deepValue": "11 DCS in 198 dives",
+                "deepDesc": "First stop at 70 fsw (21m)",
+                "result": "Deep stops resulted in <span style=\"color: var(--danger-color);\">3.6× more DCS</span> for the same dive!"
+            },
+            "backfire": {
+                "title": "Why Deep Stops Can Backfire",
+                "text1": "The problem with deep stops is subtle but important:",
+                "insight": "At deep stop depths, <strong>slow tissues are still on-gassing</strong>. While you're trying to let fast tissues off-gas, you're loading up the slow tissues that will control your later decompression.",
+                "text2": "Deep stops reduce the pressure gradient for off-gassing. The deeper you stay, the smaller the difference between tissue pressure and ambient — and that gradient is what drives gas elimination.",
+                "nuanceTitle": "The Nuanced Reality",
+                "nuanceIntro": "This doesn't mean all deep stops are bad:",
+                "nuance1": "<strong>Very brief stops</strong> (Pyle's original 2-3 minutes) may still be beneficial",
+                "nuance2": "The NEDU study used extended deep stops with significant deco time shifted deep",
+                "nuance3": "Extremely aggressive deep stop profiles (GF 30/85) are now discouraged",
+                "nuance4": "Moderate conservatism (GF 70/85) adds safety without excessive deep stops"
+            }
+        },
+        "practical": {
+            "settings": {
+                "title": "Common GF Settings",
+                "thSetting": "Setting",
+                "thConservatism": "Conservatism",
+                "thTypicalUse": "Typical Use",
+                "row1conservatism": "None",
+                "row1use": "Raw Bühlmann — NOT recommended",
+                "row2conservatism": "Mild",
+                "row2use": "Light recreational conservatism",
+                "row3conservatism": "Moderate",
+                "row3use": "Popular balanced setting",
+                "row4conservatism": "Conservative",
+                "row4use": "Technical diving, personal risk factors",
+                "row5conservatism": "Aggressive deep",
+                "row5use": "Now discouraged (excessive deep stops)"
+            },
+            "ratio": {
+                "title": "The Ratio Rule",
+                "intro": "Decompression researcher <strong>Dr. David Doolette</strong> suggests a practical guideline:",
+                "insight": "<strong>GF Low should be approximately 83% of GF High</strong>",
+                "insightDesc": "This ratio matches the average Bühlmann 'b' parameter and avoids over-emphasizing deep stops.",
+                "examplesTitle": "Examples following the ~83% rule:",
+                "example1label": "GF High 85%:",
+                "example1value": "GF Low ≈ <strong>70%</strong> → GF 70/85",
+                "example2label": "GF High 80%:",
+                "example2value": "GF Low ≈ <strong>66%</strong> → GF 65/80",
+                "example3label": "GF High 70%:",
+                "example3value": "GF Low ≈ <strong>58%</strong> → GF 55/70"
+            },
+            "bottomLine": {
+                "title": "The Bottom Line",
+                "item1": "Some conservatism is good — GF 100/100 is too aggressive",
+                "item2": "GF 70/85 is a sensible starting point for most divers",
+                "item3": "Very low GF Low (like 30%) can be counterproductive",
+                "item4": "More conservatism isn't always better — it's about balance",
+                "item5": "Adjust based on personal factors, dive conditions, and experience"
+            }
+        },
+        "bubbleModels": {
+            "title": "Bubble Models (Advanced)",
+            "beyond": {
+                "title": "Beyond Dissolved Gas",
+                "text": "Bühlmann's algorithm only tracks <strong>dissolved gas</strong>. It doesn't model bubble formation or growth. Alternative \"bubble models\" attempt to address this."
+            },
+            "vpm": {
+                "title": "VPM (Varying Permeability Model)",
+                "text1": "VPM assumes that <strong>microscopic bubble nuclei always exist</strong> in tissues. During decompression, nuclei larger than a \"critical radius\" (determined by max depth) will grow.",
+                "text2": "VPM aims to minimize total bubble volume by keeping ambient pressure high enough to limit bubble growth — naturally producing deeper stops."
+            },
+            "rgbm": {
+                "title": "RGBM (Reduced Gradient Bubble Model)",
+                "text": "RGBM models how bubbles grow by acquiring gas from surrounding saturated tissue. Like VPM, it tends to produce deeper stops than Bühlmann."
+            },
+            "realityCheck": {
+                "title": "The Reality Check",
+                "text": "Despite different theoretical foundations, all these algorithms produce <strong>surprisingly similar schedules</strong> — because they all must match the same empirical data from real dives.",
+                "quote": "\"It is far too easy to look at the complexity of any calculation, and the number of decimal places that a modern computer will display, and get the impression that the result is extremely accurate when in fact it is not.\"",
+                "quoteAuthor": "— Paul Chapman, Decompression Theory"
+            }
+        }
     }
 }
