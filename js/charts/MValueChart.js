@@ -320,12 +320,23 @@ export class MValueChart {
             checkbox.type = 'checkbox';
             checkbox.checked = this.visibleCompartments.has(comp.id);
             checkbox.dataset.compartmentId = comp.id;
-            checkbox.addEventListener('change', () => {
-                if (checkbox.checked) {
-                    this.visibleCompartments.add(comp.id);
+            checkbox.style.pointerEvents = 'none';
+            // Click: switch to this tissue only. Shift+click: toggle (add/remove).
+            label.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (e.shiftKey) {
+                    // Shift+click: toggle this compartment
+                    if (this.visibleCompartments.has(comp.id)) {
+                        this.visibleCompartments.delete(comp.id);
+                    } else {
+                        this.visibleCompartments.add(comp.id);
+                    }
                 } else {
-                    this.visibleCompartments.delete(comp.id);
+                    // Normal click: switch to this compartment only
+                    this.visibleCompartments.clear();
+                    this.visibleCompartments.add(comp.id);
                 }
+                this._updateCompartmentCheckboxes();
                 this._render();
             });
             
