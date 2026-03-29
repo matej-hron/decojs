@@ -671,7 +671,7 @@
                 "text2": "To znamená, že M-value linie v našem diagramu M-value není ostrá hranice „bezpečné/nebezpečné“. Spíše se jedná o pravděpodobnostní gradient — čím blíže se k ní přiblížíte, tím více bublin vzniká a tím vyšší je vaše riziko."
             },
             "variability": {
-                "title": "Individuální variabilita",
+                "title": "Individuální odlišnosti",
                 "intro": "Riziko DCS se enormně liší mezi jednotlivci, a dokonce i mezi ponory téhož potápěče. Faktory zvyšující riziko zahrnují:",
                 "dehydration": "Dehydratace",
                 "poorFitness": "Špatná fyzická kondice",

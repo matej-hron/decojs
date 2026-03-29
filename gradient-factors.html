@@ -429,43 +429,6 @@
             </div>
         </section>
 
-        <!-- Section 5b: The Ratio Rule -->
-        <section class="education-section" id="ratio-rule" data-slide-text="Doolette's rule: **GF Low ≈ 83% of GF High**. E.g., GF High 85 → GF Low 70." data-slide-text-cs="Dooletteho pravidlo: **GF Low ≈ 83 % GF High**. Např. GF High 85 → GF Low 70.">
-            <h2>🎯 <span data-i18n="gradientFactors.practical.ratio.title">The Ratio Rule</span></h2>
-
-            <div class="concept-card">
-                <p data-i18n="gradientFactors.practical.ratio.intro">
-                    Decompression researcher <strong>Dr. David Doolette</strong> suggests a practical guideline:
-                </p>
-
-                <div class="key-insight" style="background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(41, 128, 185, 0.15)); border-left-color: var(--primary-color);">
-                    <p>
-                        <strong data-i18n="gradientFactors.practical.ratio.insight">GF Low should be approximately 83% of GF High</strong><br>
-                        <span style="font-size: 0.9rem; opacity: 0.8;" data-i18n="gradientFactors.practical.ratio.insightDesc">
-                            This ratio matches the average Bühlmann 'b' parameter and avoids
-                            over-emphasizing deep stops.
-                        </span>
-                    </p>
-                </div>
-
-                <div class="diagram-zones" style="margin: 1.5rem 0;">
-                    <p style="font-weight: 600; margin-bottom: 0.75rem;" data-i18n="gradientFactors.practical.ratio.examplesTitle">Examples following the ~83% rule:</p>
-                    <div class="zone-item">
-                        <span data-i18n="gradientFactors.practical.ratio.example1label">GF High 85%:</span>
-                        <span data-i18n="gradientFactors.practical.ratio.example1value">GF Low ≈ <strong>70%</strong> → GF 70/85</span>
-                    </div>
-                    <div class="zone-item">
-                        <span data-i18n="gradientFactors.practical.ratio.example2label">GF High 80%:</span>
-                        <span data-i18n="gradientFactors.practical.ratio.example2value">GF Low ≈ <strong>66%</strong> → GF 65/80</span>
-                    </div>
-                    <div class="zone-item">
-                        <span data-i18n="gradientFactors.practical.ratio.example3label">GF High 70%:</span>
-                        <span data-i18n="gradientFactors.practical.ratio.example3value">GF Low ≈ <strong>58%</strong> → GF 55/70</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- Section 5c: The Bottom Line -->
         <section class="education-section" id="bottom-line" data-slide-text="Start with **GF 70/85** and adjust for your body, conditions, and experience." data-slide-text-cs="Začněte s **GF 70/85** a upravte podle svého těla, podmínek a zkušeností.">
             <h2>🎯 <span data-i18n="gradientFactors.practical.bottomLine.title">The Bottom Line</span></h2>
@@ -478,6 +441,40 @@
                     <li data-i18n="gradientFactors.practical.bottomLine.item4">More conservatism isn't always better — it's about balance</li>
                     <li data-i18n="gradientFactors.practical.bottomLine.item5">Adjust based on personal factors, dive conditions, and experience</li>
                 </ul>
+            </div>
+        </section>
+
+        <!-- Interactive: Bubble Mechanics -->
+        <section class="education-section" id="bubble-mechanics">
+            <h2>🫧 Interactive: Bubble Mechanics</h2>
+
+            <div class="concept-card">
+                <h3>Why Do Bubbles Grow?</h3>
+                <p>
+                    A gas bubble in tissue has three pressures acting on it:
+                </p>
+                <ul style="margin: 1rem 0; padding-left: 1.5rem;">
+                    <li><strong>Ambient pressure (P<sub>amb</sub>)</strong> — pushes the bubble inward</li>
+                    <li><strong>Surface tension (2γ/r)</strong> — the Laplace pressure, also squeezes the bubble. Smaller bubbles have <em>more</em> surface tension.</li>
+                    <li><strong>Dissolved gas tension (P<sub>tissue</sub>)</strong> — the partial pressure of N₂ dissolved in surrounding tissue, pushing gas <em>into</em> the bubble</li>
+                </ul>
+
+                <div class="key-insight">
+                    <p>
+                        When <strong>P<sub>tissue</sub> &gt; P<sub>amb</sub> + 2γ/r</strong>, gas diffuses into the bubble and it <strong>grows</strong>.
+                        As it grows, <em>r</em> increases, surface tension <em>drops</em>, making growth even easier —
+                        a <strong>positive feedback loop</strong>.
+                    </p>
+                </div>
+
+                <p>
+                    Use the slider to ascend from 30m. Watch how reducing ambient pressure
+                    tips the balance — larger bubbles cross the critical radius first.
+                </p>
+            </div>
+
+            <div id="bubble-model-container" style="margin: 1.5rem 0;">
+                <!-- BubbleModel rendered here -->
             </div>
         </section>
 
@@ -548,6 +545,7 @@
     <script type="module">
         import { MValueChart } from './js/charts/MValueChart.js';
         import { DiveProfileChart } from './js/charts/DiveProfileChart.js';
+        import { BubbleModel } from './js/charts/BubbleModel.js';
         import { COMPARTMENTS } from './js/tissueCompartments.js';
         import { getSandboxUrl } from './js/urlParams.js';
         import { initPresentationMode } from './js/presentationMode.js';
@@ -688,6 +686,10 @@
             const link5080 = document.getElementById('sandbox-link-5080');
             if (link100) link100.href = getSandboxUrl(exampleDiveSetup, { chartMode: 'profile' });
             if (link5080) link5080.href = getSandboxUrl(conservativeSetup, { chartMode: 'profile' });
+
+            // Bubble model
+            const bubbleContainer = document.getElementById('bubble-model-container');
+            new BubbleModel(bubbleContainer, { saturatedDepth: 30 });
         }
 
         // Initialize presentation mode
