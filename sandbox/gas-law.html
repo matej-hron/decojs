@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gas Law: Temperature & Pressure - Deco Theory</title>
+
+    <!-- PWA -->
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#2980b9">
+    <link rel="icon" type="image/svg+xml" href="../icons/icon.svg">
+
+    <!-- App styles -->
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <style>
+        /* Gas Law page layout */
+        .gaslaw-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 1.5rem;
+            padding: 1rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: calc(100vh - 250px);
+        }
+
+        @media (max-width: 900px) {
+            .gaslaw-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .controls-panel {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            align-self: start;
+        }
+
+        .controls-panel h2 {
+            margin: 0 0 1rem 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-section {
+            background: var(--background-color);
+            border-radius: var(--radius);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .control-section h3 {
+            margin: 0 0 0.75rem 0;
+            font-size: 0.95rem;
+            color: var(--text-color);
+        }
+
+        .input-group {
+            margin-bottom: 0.75rem;
+        }
+
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .input-group select,
+        .input-group input[type="number"] {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            background: var(--card-background);
+        }
+
+        .input-row {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .input-row input[type="range"] {
+            flex: 1;
+        }
+
+        .input-row input[type="number"] {
+            width: 80px;
+        }
+
+        /* Visualization panel */
+        .visualization-panel {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+        }
+
+        /* Cylinder visualization */
+        .cylinder-display {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .cylinder-viz {
+            text-align: center;
+        }
+
+        .cylinder-container {
+            position: relative;
+            width: 100px;
+            height: 240px;
+            background: linear-gradient(to right, #e0e0e0, #f5f5f5, #e0e0e0);
+            border: 3px solid #888;
+            border-radius: 10px 10px 20px 20px;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .cylinder-valve {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 20px;
+            background: #666;
+            border-radius: 5px 5px 0 0;
+            z-index: 2;
+        }
+
+        .cylinder-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            transition: height 0.6s ease-out, background 0.6s ease-out;
+        }
+
+        .cylinder-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 1;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            color: white;
+            font-weight: 700;
+        }
+
+        .cylinder-overlay .cyl-pressure {
+            font-size: 1.4rem;
+            display: block;
+        }
+
+        .cylinder-overlay .cyl-temp {
+            font-size: 0.9rem;
+            display: block;
+            margin-top: 0.25rem;
+        }
+
+        .cylinder-stats {
+            margin-top: 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .cylinder-stats .volume {
+            color: var(--text-muted);
+        }
+
+        /* Result cards */
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .result-card {
+            background: var(--background-color);
+            border-radius: var(--radius);
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .result-card .result-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .result-card .result-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .result-card .result-value.large {
+            font-size: 2.2rem;
+        }
+
+        .result-card .result-sub {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .result-card .result-value.positive {
+            color: #e74c3c;
+        }
+
+        .result-card .result-value.negative {
+            color: #3498db;
+        }
+
+        /* Safety indicator */
+        .safety-indicator {
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .safety-indicator.safe {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .safety-indicator.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        .safety-indicator.danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Temperature scale */
+        .temp-scale {
+            margin-bottom: 1.5rem;
+        }
+
+        .temp-scale h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .temp-bar-container {
+            position: relative;
+            height: 30px;
+            background: linear-gradient(to right, #3498db, #85c1e9, #f9e79f, #e67e22, #e74c3c);
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+        }
+
+        .temp-marker {
+            position: absolute;
+            top: -6px;
+            width: 3px;
+            height: 42px;
+            background: var(--text-color);
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+
+        .temp-marker::after {
+            content: attr(data-label);
+            position: absolute;
+            top: 46px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            white-space: nowrap;
+            color: var(--text-muted);
+        }
+
+        .temp-marker.t1-marker {
+            background: #2980b9;
+        }
+
+        .temp-marker.t1-marker::after {
+            color: #2980b9;
+            font-weight: 600;
+        }
+
+        .temp-marker.t2-marker {
+            background: #e74c3c;
+        }
+
+        .temp-marker.t2-marker::after {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+
+        .temp-ref-labels {
+            position: relative;
+            height: 20px;
+        }
+
+        .temp-ref {
+            position: absolute;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            transform: translateX(-50%);
+        }
+
+        /* Formula section */
+        .formula-section {
+            background: var(--background-color);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .formula-section h4 {
+            margin: 0 0 1rem 0;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .formula {
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            color: var(--text-color);
+            padding: 0.5rem;
+        }
+
+        .formula-general {
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .formula-step {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .formula-computed {
+            font-size: 1.1rem;
+            color: var(--text-color);
+        }
+
+        .formula-computed strong {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        /* Show Result button */
+        .show-result-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            transition: background 0.2s;
+        }
+
+        .show-result-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .results-hidden .result-grid,
+        .results-hidden .safety-indicator,
+        .results-hidden .formula-step,
+        .results-hidden .formula-computed {
+            display: none;
+        }
+
+        .results-hidden .show-result-btn {
+            display: flex;
+        }
+
+        .show-result-btn {
+            display: none;
+        }
+
+        .calculate-prompt {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: var(--background-color);
+            border-radius: var(--radius);
+            border: 1px dashed var(--border-color);
+        }
+
+        .results-hidden .calculate-prompt {
+            display: block;
+        }
+
+        .calculate-prompt {
+            display: none;
+        }
+
+        .formula-basic {
+            color: var(--text-color);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .formula-basic-note {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .formula-rearranged-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">Deco Theory</a>
+            <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links">
+                <!-- Generated by js/nav.js -->
+            </ul>
+            <span class="nav-wip-badge">Experimental</span>
+        </div>
+    </nav>
+
+    <!-- Disclaimer Banner -->
+    <div class="disclaimer-banner" data-i18n="gasLaw.disclaimer.text">
+        <strong>Educational Use Only</strong> — This tool demonstrates Gay-Lussac's Law for rigid scuba cylinders.
+    </div>
+
+    <!-- Hero Header -->
+    <header class="hero hero-compact">
+        <h1 data-i18n="gasLaw.header.title">Gas Law: Temperature &amp; Pressure</h1>
+        <p class="hero-subtitle" data-i18n="gasLaw.header.subtitle">How temperature changes affect pressure in a rigid scuba cylinder (Gay-Lussac's Law)</p>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="gaslaw-layout">
+        <!-- Left Panel: Controls -->
+        <div class="controls-panel">
+            <h2 data-i18n="gasLaw.setup">Setup</h2>
+
+            <div class="control-section">
+                <h3 data-i18n="gasLaw.scenario">Scenario</h3>
+                <div class="input-group">
+                    <label data-i18n="gasLaw.preset">Preset</label>
+                    <select id="scenarioSelect">
+                        <option value="warm-shop" data-i18n="gasLaw.presets.warmShop">Warm shop &rarr; Cold lake</option>
+                        <option value="hot-fill" data-i18n="gasLaw.presets.hotFill">Hot fill &rarr; Cold quarry</option>
+                        <option value="sun-deck" data-i18n="gasLaw.presets.sunDeck">Sun on deck</option>
+                        <option value="fire" data-i18n="gasLaw.presets.fire">Fire!</option>
+                        <option value="custom" data-i18n="gasLaw.presets.custom">Custom</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="control-section">
+                <h3 data-i18n="gasLaw.cylinder">Cylinder</h3>
+                <div class="input-group">
+                    <label data-i18n="gasLaw.fillPressure">Fill pressure (bar)</label>
+                    <div class="input-row">
+                        <input type="range" id="pressureSlider" min="0" max="300" value="200">
+                        <input type="number" id="pressureInput" min="0" max="300" value="200">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label data-i18n="gasLaw.cylinderVolume">Cylinder volume (L)</label>
+                    <select id="volumeSelect">
+                        <option value="3">3 L</option>
+                        <option value="7">7 L</option>
+                        <option value="10">10 L</option>
+                        <option value="12" selected>12 L</option>
+                        <option value="15">15 L</option>
+                        <option value="18">18 L</option>
+                        <option value="24">24 L</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="control-section">
+                <h3 data-i18n="gasLaw.temperature">Temperature</h3>
+                <div class="input-group">
+                    <label data-i18n="gasLaw.initialTemp">Initial temperature T<sub>1</sub> (&deg;C)</label>
+                    <div class="input-row">
+                        <input type="range" id="t1Slider" min="-10" max="80" value="20">
+                        <input type="number" id="t1Input" min="-10" max="80" value="20">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label data-i18n="gasLaw.finalTemp">Final temperature T<sub>2</sub> (&deg;C)</label>
+                    <div class="input-row">
+                        <input type="range" id="t2Slider" min="-10" max="80" value="4">
+                        <input type="number" id="t2Input" min="-10" max="80" value="4">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Visualization -->
+        <div class="visualization-panel">
+            <!-- Cylinder visualization -->
+            <div class="cylinder-display">
+                <div class="cylinder-viz">
+                    <div class="cylinder-container">
+                        <div class="cylinder-valve"></div>
+                        <div class="cylinder-fill" id="cylinderFill"></div>
+                        <div class="cylinder-overlay">
+                            <span class="cyl-pressure" id="cylPressure">189.1 bar</span>
+                            <span class="cyl-temp" id="cylTemp">4 &deg;C</span>
+                        </div>
+                    </div>
+                    <div class="cylinder-stats">
+                        <div class="volume" id="cylVolume">12 L</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calculate prompt (shown when results hidden) -->
+            <div class="calculate-prompt" id="calculatePrompt" data-i18n="gasLaw.calculatePrompt">
+                Set up your scenario, calculate P<sub>2</sub> in your head, then click below to check your answer.
+            </div>
+
+            <!-- Show Result button -->
+            <button class="show-result-btn" id="showResultBtn" data-i18n="gasLaw.showResult">Show Result</button>
+
+            <!-- Result cards -->
+            <div class="result-grid">
+                <div class="result-card">
+                    <div class="result-label" data-i18n="gasLaw.finalPressure">Final Pressure P<sub>2</sub></div>
+                    <div class="result-value large" id="finalPressure">189.1 bar</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-label" data-i18n="gasLaw.pressureChange">Pressure Change &Delta;P</div>
+                    <div class="result-value" id="deltaP">-10.9 bar</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-label" data-i18n="gasLaw.usableGasChange">Usable Gas Change</div>
+                    <div class="result-value" id="gasChange">-130.8 L</div>
+                    <div class="result-sub" id="gasChangeSub" data-i18n="gasLaw.gasChangeSub">equivalent surface liters (&Delta;P &times; volume)</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-label" data-i18n="gasLaw.diveTimeChange">Dive Time Change at 20 m</div>
+                    <div class="result-value" id="timeChange">-2.2 min</div>
+                    <div class="result-sub" data-i18n="gasLaw.diveTimeSub">Surface Air Consumption 20 L/min at 3 bar (1+20/10)</div>
+                </div>
+            </div>
+
+            <!-- Safety indicator -->
+            <div class="safety-indicator safe" id="safetyIndicator">
+                Within working pressure (200 bar rated)
+            </div>
+
+            <!-- Temperature scale -->
+            <div class="temp-scale">
+                <h4 data-i18n="gasLaw.tempRange">Temperature Range</h4>
+                <div class="temp-bar-container" id="tempBar">
+                    <!-- Markers injected by JS -->
+                </div>
+                <div class="temp-ref-labels" id="tempRefLabels">
+                    <!-- Reference labels injected by JS -->
+                </div>
+            </div>
+
+            <!-- Why this matters -->
+            <div class="formula-section" style="text-align: left; margin-top: 1.5rem;">
+                <h4 style="text-align: center;" data-i18n="gasLaw.whyTitle">💡 Why Does This Happen?</h4>
+                <p style="font-size: 0.9rem; color: var(--text-color); line-height: 1.5; margin: 0.5rem 0;" data-i18n="gasLaw.whyText1">
+                    Gas molecules move faster at higher temperatures and hit the cylinder walls harder, increasing pressure.
+                    Since the cylinder is rigid (constant volume), all the extra kinetic energy translates directly to higher pressure.
+                </p>
+                <p style="font-size: 0.9rem; color: var(--text-color); line-height: 1.5; margin: 0.5rem 0;" data-i18n="gasLaw.whyText2">
+                    <strong>Practical tip:</strong> Compressors generate significant heat during filling — gas inside a freshly
+                    filled cylinder can be 40–50°C above ambient. If you fill to 200 bar in a warm shop and dive in a cold lake,
+                    don't be surprised to see only ~180 bar on your gauge. That's not a leak — it's physics.
+                </p>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.5rem 0;" data-i18n="gasLaw.whyRuleOfThumb">
+                    <strong>Rule of thumb:</strong> ~0.6 bar change per 1°C at 200 bar working pressure.
+                </p>
+            </div>
+
+            <!-- Formula section -->
+            <div class="formula-section">
+                <h4 data-i18n="gasLaw.formulaTitle">Gay-Lussac's Law (Isochoric Process)</h4>
+                <div class="formula formula-basic">
+                    P<sub>1</sub> / T<sub>1</sub> = P<sub>2</sub> / T<sub>2</sub>
+                </div>
+                <div class="formula-basic-note" data-i18n="gasLaw.formulaNote">pressure / temperature ratio is constant at constant volume (T in Kelvin)</div>
+                <div class="formula-rearranged-label" data-i18n="gasLaw.formulaRearranged">Rearranged:</div>
+                <div class="formula formula-general">
+                    P<sub>2</sub> = P<sub>1</sub> &times; T<sub>2</sub> / T<sub>1</sub>
+                </div>
+                <div class="formula formula-step" id="formulaKelvin"></div>
+                <div class="formula formula-computed" id="formulaComputed"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <span class="wip-badge" data-i18n="gasLaw.footer.badge">Experimental</span>
+        <p data-i18n="gasLaw.footer.text"><strong>Disclaimer:</strong> For educational purposes only. Based on ideal gas law assumptions.</p>
+        <span class="version-number"></span>
+    </footer>
+
+    <!-- Navigation script -->
+    <script src="../js/nav.js" type="module"></script>
+
+    <!-- i18n -->
+    <script type="module">
+        import { initI18n, createLanguageSwitcher } from '../js/i18n.js';
+        createLanguageSwitcher();
+        initI18n();
+    </script>
+
+    <script>
+        // === DOM Elements ===
+        const scenarioSelect = document.getElementById('scenarioSelect');
+        const pressureSlider = document.getElementById('pressureSlider');
+        const pressureInput = document.getElementById('pressureInput');
+        const volumeSelect = document.getElementById('volumeSelect');
+        const t1Slider = document.getElementById('t1Slider');
+        const t1Input = document.getElementById('t1Input');
+        const t2Slider = document.getElementById('t2Slider');
+        const t2Input = document.getElementById('t2Input');
+
+        // Display elements
+        const cylinderFill = document.getElementById('cylinderFill');
+        const cylPressure = document.getElementById('cylPressure');
+        const cylTemp = document.getElementById('cylTemp');
+        const cylVolume = document.getElementById('cylVolume');
+        const finalPressureEl = document.getElementById('finalPressure');
+        const deltaPEl = document.getElementById('deltaP');
+        const gasChangeEl = document.getElementById('gasChange');
+        const gasChangeSub = document.getElementById('gasChangeSub');
+        const timeChangeEl = document.getElementById('timeChange');
+        const safetyIndicator = document.getElementById('safetyIndicator');
+        const formulaKelvin = document.getElementById('formulaKelvin');
+        const formulaComputed = document.getElementById('formulaComputed');
+        const tempBar = document.getElementById('tempBar');
+        const tempRefLabels = document.getElementById('tempRefLabels');
+        const showResultBtn = document.getElementById('showResultBtn');
+        const vizPanel = document.querySelector('.visualization-panel');
+
+        // Track whether results are currently revealed
+        let resultsRevealed = false;
+
+        // === i18n strings (updated on languagechange) ===
+        let i18nStrings = {
+            safetyWithin: 'Within working pressure ({0} bar rated)',
+            safetyAbove: 'Above working pressure! {0} bar (test pressure: {1} bar)',
+            safetyDanger: 'DANGER! {0} bar exceeds test pressure ({1} bar)',
+            tempIce: '0\u00B0C Ice',
+            tempRoom: '20\u00B0C Room',
+            tempBody: '37\u00B0C Body',
+            tempHotCar: '60\u00B0C Hot car'
+        };
+
+        /**
+         * Load gasLaw i18n strings from the active locale.
+         */
+        async function loadGasLawStrings() {
+            const lang = localStorage.getItem('deco-theory-lang') || document.documentElement.lang || 'en';
+            const prefix = window.location.pathname.includes('/sandbox/') ? '../' : '';
+            try {
+                const resp = await fetch(`${prefix}locales/${lang}.json`);
+                if (!resp.ok) return;
+                const data = await resp.json();
+                const gl = data.gasLaw;
+                if (!gl) return;
+                i18nStrings.safetyWithin = gl.safety?.withinWorking || i18nStrings.safetyWithin;
+                i18nStrings.safetyAbove = gl.safety?.aboveWorking || i18nStrings.safetyAbove;
+                i18nStrings.safetyDanger = gl.safety?.danger || i18nStrings.safetyDanger;
+                i18nStrings.tempIce = gl.tempRefs?.ice || i18nStrings.tempIce;
+                i18nStrings.tempRoom = gl.tempRefs?.room || i18nStrings.tempRoom;
+                i18nStrings.tempBody = gl.tempRefs?.body || i18nStrings.tempBody;
+                i18nStrings.tempHotCar = gl.tempRefs?.hotCar || i18nStrings.tempHotCar;
+                // Override document title with gasLaw-specific title
+                if (gl.page?.title) {
+                    document.title = gl.page.title;
+                }
+            } catch (_) { /* keep defaults */ }
+        }
+
+        document.addEventListener('languagechange', async () => {
+            await loadGasLawStrings();
+            if (resultsRevealed) {
+                update();
+            } else {
+                updateTempScale(parseFloat(t1Input.value) || 0, parseFloat(t2Input.value) || 0);
+            }
+        });
+
+        // Initial load of i18n strings
+        loadGasLawStrings().then(() => {
+            updateTempScale(parseFloat(t1Input.value) || 0, parseFloat(t2Input.value) || 0);
+        });
+
+        // === Scenarios ===
+        const SCENARIOS = {
+            'warm-shop':  { t1: 35, t2: 4,   pressure: 200, label: 'Warm shop to cold lake' },
+            'hot-fill':   { t1: 50, t2: 4,   pressure: 200, label: 'Hot fill to cold quarry' },
+            'sun-deck':   { t1: 20, t2: 70,  pressure: 230, label: 'Sun heating on deck' },
+            'fire':       { t1: 20, t2: 400, pressure: 200, label: 'Fire scenario' }
+        };
+
+        // Working pressure for safety check
+        const WORKING_PRESSURE = 200;
+        const TEST_PRESSURE = WORKING_PRESSURE * 1.5; // 300 bar
+
+        // Temperature scale range
+        const TEMP_SCALE_MIN = -10;
+        const TEMP_SCALE_MAX = 80;
+
+        // Fire scenario needs wider temp scale
+        let tempScaleMax = TEMP_SCALE_MAX;
+
+        /**
+         * Convert Celsius to Kelvin
+         */
+        function toKelvin(c) {
+            return c + 273.15;
+        }
+
+        /**
+         * Calculate P2 using Gay-Lussac's Law
+         */
+        function calculateP2(p1, t1C, t2C) {
+            const t1K = toKelvin(t1C);
+            const t2K = toKelvin(t2C);
+            return p1 * (t2K / t1K);
+        }
+
+        /**
+         * Get fill color based on temperature
+         */
+        function getFillColor(tempC) {
+            if (tempC <= 0)  return 'linear-gradient(to right, #2471a3, #3498db, #2471a3)';
+            if (tempC <= 15) return 'linear-gradient(to right, #2e86c1, #5dade2, #2e86c1)';
+            if (tempC <= 30) return 'linear-gradient(to right, #2980b9, #85c1e9, #2980b9)';
+            if (tempC <= 50) return 'linear-gradient(to right, #e67e22, #f0b27a, #e67e22)';
+            if (tempC <= 100) return 'linear-gradient(to right, #d35400, #e74c3c, #d35400)';
+            return 'linear-gradient(to right, #c0392b, #e74c3c, #c0392b)';
+        }
+
+        /**
+         * Get temperature position on scale (0-100%)
+         */
+        function getTempPosition(tempC) {
+            const clamped = Math.max(TEMP_SCALE_MIN, Math.min(tempScaleMax, tempC));
+            return ((clamped - TEMP_SCALE_MIN) / (tempScaleMax - TEMP_SCALE_MIN)) * 100;
+        }
+
+        /**
+         * Apply a scenario preset
+         */
+        function applyScenario(key) {
+            if (key === 'custom') {
+                // Reset slider bounds when explicitly choosing Custom
+                t2Input.max = 80;
+                t2Slider.max = 80;
+                if (parseFloat(t2Slider.value) > 80) {
+                    t2Slider.value = 80;
+                    t2Input.value = 80;
+                }
+                hideResults();
+                updateTempScale(parseFloat(t1Input.value) || 0, parseFloat(t2Input.value) || 0);
+                return;
+            }
+            const s = SCENARIOS[key];
+            if (!s) return;
+
+            pressureSlider.value = pressureInput.value = s.pressure;
+            t1Slider.value = t1Input.value = Math.min(s.t1, 80);
+            t2Slider.value = t2Input.value = Math.min(s.t2, 80);
+
+            // For fire scenario, allow T2 beyond slider max via input
+            if (key === 'fire') {
+                t2Input.value = s.t2;
+                t2Input.max = 500;
+                t2Slider.max = 500;
+                t2Slider.value = s.t2;
+            } else {
+                t2Input.max = 80;
+                t2Slider.max = 80;
+            }
+
+            hideResults();
+            updateTempScale(parseFloat(t1Input.value) || 0, parseFloat(t2Input.value) || 0);
+        }
+
+        /**
+         * Update temperature scale markers
+         */
+        function updateTempScale(t1C, t2C) {
+            // Adjust scale max for fire scenario
+            tempScaleMax = Math.max(TEMP_SCALE_MAX, t1C + 10, t2C + 10);
+
+            const references = [
+                { temp: 0,  label: i18nStrings.tempIce },
+                { temp: 20, label: i18nStrings.tempRoom },
+                { temp: 37, label: i18nStrings.tempBody },
+                { temp: 60, label: i18nStrings.tempHotCar }
+            ];
+
+            // Filter refs to those within scale
+            const visibleRefs = references.filter(r => r.temp >= TEMP_SCALE_MIN && r.temp <= tempScaleMax);
+
+            // Build markers HTML
+            let markersHTML = '';
+
+            // T1 marker
+            const t1Pos = getTempPosition(t1C);
+            markersHTML += `<div class="temp-marker t1-marker" style="left:${t1Pos}%" data-label="T\u2081 ${t1C}\u00B0C"></div>`;
+
+            // T2 marker
+            const t2Pos = getTempPosition(t2C);
+            markersHTML += `<div class="temp-marker t2-marker" style="left:${t2Pos}%" data-label="T\u2082 ${t2C}\u00B0C"></div>`;
+
+            tempBar.innerHTML = markersHTML;
+
+            // Reference labels below
+            let refsHTML = '';
+            for (const ref of visibleRefs) {
+                const pos = getTempPosition(ref.temp);
+                refsHTML += `<span class="temp-ref" style="left:${pos}%">${ref.label}</span>`;
+            }
+            tempRefLabels.innerHTML = refsHTML;
+        }
+
+        /**
+         * Hide results — show initial state on cylinder
+         */
+        function hideResults() {
+            resultsRevealed = false;
+            vizPanel.classList.add('results-hidden');
+            updateCylinderInitialState();
+        }
+
+        /**
+         * Show results — reveal computed values and final cylinder state
+         */
+        function revealResults() {
+            resultsRevealed = true;
+            vizPanel.classList.remove('results-hidden');
+            update();
+        }
+
+        /**
+         * Update cylinder to show initial state (P1, T1)
+         */
+        function updateCylinderInitialState() {
+            const p1 = parseFloat(pressureInput.value) || 0;
+            const t1C = parseFloat(t1Input.value) || 0;
+            const vol = parseFloat(volumeSelect.value) || 12;
+
+            const maxDisplay = Math.max(300, p1 + 20);
+            const fillPercent = Math.min(100, Math.max(0, (p1 / maxDisplay) * 100));
+            cylinderFill.style.height = fillPercent + '%';
+            cylinderFill.style.background = getFillColor(t1C);
+            cylPressure.textContent = p1.toFixed(1) + ' bar';
+            cylTemp.textContent = t1C + ' \u00B0C';
+            cylVolume.textContent = vol + ' L';
+        }
+
+        /**
+         * Main update function — recalculates everything
+         */
+        function update() {
+            const p1 = parseFloat(pressureInput.value) || 0;
+            const t1C = parseFloat(t1Input.value) || 0;
+            const t2C = parseFloat(t2Input.value) || 0;
+            const vol = parseFloat(volumeSelect.value) || 12;
+
+            const t1K = toKelvin(t1C);
+            const t2K = toKelvin(t2C);
+            const p2 = calculateP2(p1, t1C, t2C);
+            const deltaP = p2 - p1;
+
+            // Surface liters change
+            const gasChangeLiters = deltaP * vol;
+
+            // Time at 20m: ambient = 3 bar, SAC = 20 L/min
+            const sacRate = 20; // L/min
+            const ambient = 3;  // bar at 20m
+            const consumptionRate = sacRate * ambient; // 60 L/min real gas
+            const timeDelta = gasChangeLiters / consumptionRate;
+
+            // === Update cylinder ===
+            const maxDisplay = Math.max(300, p2 + 20);
+            const fillPercent = Math.min(100, Math.max(0, (p2 / maxDisplay) * 100));
+            cylinderFill.style.height = fillPercent + '%';
+            cylinderFill.style.background = getFillColor(t2C);
+            cylPressure.textContent = p2.toFixed(1) + ' bar';
+            cylTemp.textContent = t2C + ' \u00B0C';
+            cylVolume.textContent = vol + ' L';
+
+            // === Result cards ===
+            finalPressureEl.textContent = p2.toFixed(1) + ' bar';
+
+            const dpSign = deltaP >= 0 ? '+' : '';
+            deltaPEl.textContent = dpSign + deltaP.toFixed(1) + ' bar';
+            deltaPEl.className = 'result-value ' + (deltaP >= 0 ? 'positive' : 'negative');
+
+            const glSign = gasChangeLiters >= 0 ? '+' : '';
+            gasChangeEl.textContent = glSign + gasChangeLiters.toFixed(0) + ' L';
+            gasChangeEl.className = 'result-value ' + (gasChangeLiters >= 0 ? 'positive' : 'negative');
+            gasChangeSub.innerHTML = `${dpSign}${deltaP.toFixed(1)} bar &times; ${vol} L`;
+
+            const tSign = timeDelta >= 0 ? '+' : '';
+            timeChangeEl.textContent = tSign + timeDelta.toFixed(1) + ' min';
+            timeChangeEl.className = 'result-value ' + (timeDelta >= 0 ? 'positive' : 'negative');
+
+            // === Safety indicator ===
+            if (p2 <= WORKING_PRESSURE) {
+                safetyIndicator.className = 'safety-indicator safe';
+                safetyIndicator.textContent = i18nStrings.safetyWithin.replace('{0}', WORKING_PRESSURE);
+            } else if (p2 <= TEST_PRESSURE) {
+                safetyIndicator.className = 'safety-indicator warning';
+                safetyIndicator.textContent = i18nStrings.safetyAbove.replace('{0}', p2.toFixed(1)).replace('{1}', TEST_PRESSURE);
+            } else {
+                safetyIndicator.className = 'safety-indicator danger';
+                safetyIndicator.textContent = i18nStrings.safetyDanger.replace('{0}', p2.toFixed(1)).replace('{1}', TEST_PRESSURE);
+            }
+
+            // === Temperature scale ===
+            updateTempScale(t1C, t2C);
+
+            // === Formula ===
+            formulaKelvin.innerHTML =
+                `T<sub>1</sub> = ${t1C}\u00B0C + 273.15 = ${t1K.toFixed(2)} K &nbsp;&nbsp;|&nbsp;&nbsp; ` +
+                `T<sub>2</sub> = ${t2C}\u00B0C + 273.15 = ${t2K.toFixed(2)} K`;
+
+            formulaComputed.innerHTML =
+                `P<sub>2</sub> = ${p1} &times; ${t2K.toFixed(2)} / ${t1K.toFixed(2)} = <strong>${p2.toFixed(1)} bar</strong>`;
+        }
+
+        // === Input syncing ===
+        function syncSliderInput(slider, input) {
+            slider.addEventListener('input', () => {
+                input.value = slider.value;
+                scenarioSelect.value = 'custom';
+                hideResults();
+                updateTempScale(parseFloat(t1Input.value) || 0, parseFloat(t2Input.value) || 0);
+            });
+            input.addEventListener('input', () => {
+                slider.value = input.value;
+                scenarioSelect.value = 'custom';
+                hideResults();
+                updateTempScale(parseFloat(t1Input.value) || 0, parseFloat(t2Input.value) || 0);
+            });
+        }
+
+        syncSliderInput(pressureSlider, pressureInput);
+        syncSliderInput(t1Slider, t1Input);
+        syncSliderInput(t2Slider, t2Input);
+
+        volumeSelect.addEventListener('change', () => {
+            scenarioSelect.value = 'custom';
+            hideResults();
+        });
+
+        scenarioSelect.addEventListener('change', () => {
+            applyScenario(scenarioSelect.value);
+        });
+
+        showResultBtn.addEventListener('click', () => {
+            revealResults();
+        });
+
+        // === Initialize ===
+        applyScenario('warm-shop');
+    </script>
+</body>
+</html>

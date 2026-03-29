@@ -847,5 +847,70 @@
                 "quoteAuthor": "— Paul Chapman, Decompression Theory"
             }
         }
+    },
+    "gasLaw": {
+        "page": {
+            "title": "Plynový zákon: Teplota a tlak - Deco Theory"
+        },
+        "disclaimer": {
+            "text": "<strong>Pouze pro výukové účely</strong> — Tento nástroj demonstruje Gay-Lussacův zákon pro tuhé potápěčské lahve."
+        },
+        "header": {
+            "title": "Plynový zákon: Teplota a tlak",
+            "subtitle": "Jak změna teploty ovlivňuje tlak v potápěčské lahvi (Gay-Lussacův zákon)"
+        },
+        "setup": "Nastavení",
+        "scenario": "Scénář",
+        "preset": "Předvolba",
+        "presets": {
+            "warmShop": "Teplá plnírna → Studené jezero",
+            "hotFill": "Horké plnění → Studený lom",
+            "sunDeck": "Slunce na palubě",
+            "fire": "Požár!",
+            "custom": "Vlastní"
+        },
+        "cylinder": "Lahev",
+        "fillPressure": "Plnicí tlak (bar)",
+        "cylinderVolume": "Objem lahve (L)",
+        "temperature": "Teplota",
+        "initialTemp": "Počáteční teplota T<sub>1</sub> (°C)",
+        "finalTemp": "Konečná teplota T<sub>2</sub> (°C)",
+        "calculatePrompt": "Nastavte scénář, spočítejte P<sub>2</sub> z hlavy, a pak klikněte pro ověření.",
+        "showResult": "Zobrazit výsledek",
+        "finalPressure": "Výsledný tlak P<sub>2</sub>",
+        "pressureChange": "Změna tlaku ΔP",
+        "usableGasChange": "Změna použitelného plynu",
+        "gasChangeSub": "ekvivalentní povrchové litry (ΔP × objem)",
+        "diveTimeChange": "Změna času ponoru ve 20 m",
+        "diveTimeSub": "Spotřeba vzduchu na hladině (SAC) 20 l/min při 3 bar (1+20/10)",
+        "safety": {
+            "withinWorking": "V rámci pracovního tlaku ({0} bar)",
+            "aboveWorking": "Překračuje pracovní tlak! {0} bar (zkušební tlak: {1} bar)",
+            "danger": "NEBEZPEČÍ! {0} bar překračuje zkušební tlak ({1} bar)"
+        },
+        "tempRange": "Teplotní rozsah",
+        "tempRefs": {
+            "ice": "0°C Led",
+            "room": "20°C Místnost",
+            "body": "37°C Tělo",
+            "hotCar": "60°C Horké auto"
+        },
+        "whyTitle": "💡 Proč se to děje?",
+        "whyText1": "Molekuly plynu se při vyšší teplotě pohybují rychleji a narážejí na stěny lahve s větší silou, čímž zvyšují tlak. Protože lahev je tuhá (konstantní objem), veškerá kinetická energie se přímo přemění na vyšší tlak.",
+        "whyText2": "<strong>Praktický tip:</strong> Kompresory při plnění generují značné teplo — plyn v čerstvě naplněné lahvi může mít o 40–50 °C více než okolí. Pokud naplníte lahev na 200 bar v teplé plnírně a ponoříte se do studeného jezera, nedivte se, že na manometru uvidíte jen asi 180 bar. To není únik — to je fyzika.",
+        "whyRuleOfThumb": "<strong>Orientační pravidlo:</strong> ~0,6 bar změna na 1 °C při pracovním tlaku 200 bar.",
+        "formulaTitle": "Gay-Lussacův zákon (izochorický děj)",
+        "formulaNote": "poměr tlaku a teploty je konstantní při konstantním objemu (T v Kelvinech)",
+        "formulaRearranged": "Přeuspořádáno:",
+        "scenarioLabels": {
+            "warmShop": "Teplá plnírna do studeného jezera",
+            "hotFill": "Horké plnění do studeného lomu",
+            "sunDeck": "Slunce na palubě",
+            "fire": "Požár"
+        },
+        "footer": {
+            "badge": "Experimentální",
+            "text": "<strong>Upozornění:</strong> Pouze pro výukové účely. Založeno na předpokladech ideálního plynového zákona."
+        }
     }
 }

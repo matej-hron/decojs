@@ -13,7 +13,8 @@ const NAV_ITEMS = [
         submenu: [
             { href: 'sandbox/index.html', label: 'Decompression Modelling' },
             { href: 'sandbox/transfilling.html', label: 'Cylinder Transfilling' },
-            { href: 'sandbox/cascade-filling.html', label: 'Cascade Filling' }
+            { href: 'sandbox/cascade-filling.html', label: 'Cascade Filling' },
+            { href: 'sandbox/gas-law.html', label: 'Gas Law: Temp & Pressure' }
         ]
     },
     {
