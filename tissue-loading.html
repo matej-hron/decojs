@@ -423,6 +423,40 @@
             </div>
         </section>
 
+        <!-- Interactive: Bubble Mechanics -->
+        <section class="education-section" id="bubble-mechanics" data-slide-text="When **P_tissue > P_amb + 2γ/r**, gas diffuses into the bubble and it grows — a positive feedback loop." data-slide-text-cs="Když **P_tissue > P_amb + 2γ/r**, plyn difunduje do bubliny a ta roste — pozitivní zpětná vazba.">
+            <h2>🫧 <span data-i18n="tissueLoading.bubbleMechanics.title">What Happens to Bubbles During Ascent?</span></h2>
+
+            <div class="concept-card">
+                <h3 data-i18n="tissueLoading.bubbleMechanics.cardTitle">Why Do Bubbles Grow?</h3>
+                <p data-i18n="tissueLoading.bubbleMechanics.intro">
+                    A gas bubble in tissue has three pressures acting on it:
+                </p>
+                <ul style="margin: 1rem 0; padding-left: 1.5rem;">
+                    <li data-i18n="tissueLoading.bubbleMechanics.pAmb"><strong>Ambient pressure (P<sub>amb</sub>)</strong> — pushes the bubble inward</li>
+                    <li data-i18n="tissueLoading.bubbleMechanics.pSurface"><strong>Surface tension (2γ/r)</strong> — the Laplace pressure, also squeezes the bubble. Smaller bubbles have <em>more</em> surface tension.</li>
+                    <li data-i18n="tissueLoading.bubbleMechanics.pTissue"><strong>Dissolved gas tension (P<sub>tissue</sub>)</strong> — the total pressure of gases dissolved in surrounding tissue, pushing gas <em>into</em> the bubble</li>
+                </ul>
+
+                <div class="key-insight">
+                    <p data-i18n="tissueLoading.bubbleMechanics.insight">
+                        When <strong>P<sub>tissue</sub> &gt; P<sub>amb</sub> + 2γ/r</strong>, gas diffuses into the bubble and it <strong>grows</strong>.
+                        As it grows, <em>r</em> increases, surface tension <em>drops</em>, making growth even easier —
+                        a <strong>positive feedback loop</strong>.
+                    </p>
+                </div>
+
+                <p data-i18n="tissueLoading.bubbleMechanics.sliderHint">
+                    Use the slider to ascend from 30m. Watch how reducing ambient pressure
+                    tips the balance — larger bubbles cross the critical radius first.
+                </p>
+            </div>
+
+            <div id="bubble-model-container" style="margin: 1.5rem 0;">
+                <!-- BubbleModel rendered here -->
+            </div>
+        </section>
+
         <!-- Half-Time Concept -->
         <section id="half-time-concept" class="education-section" data-slide-text="**Half-time** = time to close 50% of the pressure gap. After 6 half-times, a tissue is ~98% saturated." data-slide-text-cs="**Poločas** = čas k překonání 50 % tlakového rozdílu. Po 6 poločasech je tkáň ~98% nasycena.">
             <h2>⏱️ <span data-i18n="tissueLoading.halfTimeConcept.title">The Half-Time Concept</span></h2>
@@ -719,6 +753,7 @@
     <!-- Main chart and reference table -->
     <script type="module">
         import { DiveProfileChart } from './js/charts/DiveProfileChart.js';
+        import { BubbleModel } from './js/charts/BubbleModel.js';
         import { generateDecoProfile } from './js/diveSetup.js';
         import { COMPARTMENTS, getCompartmentCategory } from './js/tissueCompartments.js';
         import { getSandboxUrl } from './js/urlParams.js';
@@ -852,6 +887,11 @@
         // =====================================================================
 
         renderMathFormulas();
+
+        // Bubble mechanics interactive
+        const bubbleContainer = document.getElementById('bubble-model-container');
+        if (bubbleContainer) new BubbleModel(bubbleContainer, { saturatedDepth: 30 });
+
         initPresentationMode(document.querySelector('main'));
 
         // Initialize i18n (language switcher + translations)

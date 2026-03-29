@@ -433,6 +433,16 @@
                 "text2": "The maximum tolerable supersaturation is called <strong>critical supersaturation</strong> — it varies by tissue type and depth. In the <a href=\"m-values.html\">next chapter</a>, we'll explore how to calculate these limits."
             }
         },
+        "bubbleMechanics": {
+            "title": "What Happens to Bubbles During Ascent?",
+            "cardTitle": "Why Do Bubbles Grow?",
+            "intro": "A gas bubble in tissue has three pressures acting on it:",
+            "pAmb": "<strong>Ambient pressure (P<sub>amb</sub>)</strong> — pushes the bubble inward",
+            "pSurface": "<strong>Surface tension (2γ/r)</strong> — the Laplace pressure, also squeezes the bubble. Smaller bubbles have <em>more</em> surface tension.",
+            "pTissue": "<strong>Dissolved gas tension (P<sub>tissue</sub>)</strong> — the total pressure of gases dissolved in surrounding tissue, pushing gas <em>into</em> the bubble",
+            "insight": "When <strong>P<sub>tissue</sub> &gt; P<sub>amb</sub> + 2γ/r</strong>, gas diffuses into the bubble and it <strong>grows</strong>. As it grows, <em>r</em> increases, surface tension <em>drops</em>, making growth even easier — a <strong>positive feedback loop</strong>.",
+            "sliderHint": "Use the slider to ascend from 30m. Watch how reducing ambient pressure tips the balance — larger bubbles cross the critical radius first."
+        },
         "halfTimeConcept": {
             "title": "The Half-Time Concept",
             "intro": "We've seen <em>what</em> happens during on-gassing and off-gassing — now let's explore <strong>how these processes unfold over time</strong>. Like radioactive decay and many other natural phenomena, gas diffusion in tissues follows a predictable mathematical pattern.",

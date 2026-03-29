@@ -433,6 +433,16 @@
                 "text2": "Maximální tolerovatelné přesycení se nazývá <strong>kritické přesycení</strong> — liší se podle typu tkáně a hloubky. V <a href=\"m-values.html\">další kapitole</a> se podíváme, jak tyto limity vypočítat."
             }
         },
+        "bubbleMechanics": {
+            "title": "Co se děje s bublinami během výstupu?",
+            "cardTitle": "Proč bubliny rostou?",
+            "intro": "Na plynovou bublinu ve tkáni působí tři tlaky:",
+            "pAmb": "<strong>Okolní tlak (P<sub>amb</sub>)</strong> — stlačuje bublinu zvenku",
+            "pSurface": "<strong>Povrchové napětí (2γ/r)</strong> — Laplaceův tlak, který rovněž bublinu stlačuje. Menší bubliny mají <em>větší</em> povrchové napětí.",
+            "pTissue": "<strong>Tenze rozpuštěných plynů (P<sub>tissue</sub>)</strong> — celkový tlak plynů rozpuštěných v okolní tkáni, který tlačí plyn <em>dovnitř</em> bubliny",
+            "insight": "Když <strong>P<sub>tissue</sub> &gt; P<sub>amb</sub> + 2γ/r</strong>, plyn difunduje do bubliny a ta <strong>roste</strong>. Jak roste, <em>r</em> se zvětšuje, povrchové napětí <em>klesá</em>, což růst ještě urychluje — <strong>pozitivní zpětná vazba</strong>.",
+            "sliderHint": "Použijte posuvník pro výstup z 30 m. Sledujte, jak snížení okolního tlaku naruší rovnováhu — větší bubliny překročí kritický poloměr jako první."
+        },
         "halfTimeConcept": {
             "title": "Koncept poločasu sycení",
             "intro": "Viděli jsme, <em>co</em> se děje při sycení a vysycování — nyní se podívejme na to, <strong>jak tyto procesy probíhají v čase</strong>. Podobně jako radioaktivní rozpad a mnoho dalších přírodních jevů, difuze plynů ve tkáních se řídí předvídatelným matematickým vzorem.",
