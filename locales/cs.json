@@ -591,7 +591,7 @@
             "workmanDesc": "Každý kompartment má svůj vlastní limit",
             "workmanMath": "(rychlejší tkáně tolerují více)",
             "historySummary": "📚 Historie: jak jsme objevili bezpečné limity",
-            "haldaneHistory": "Skotský fyziolog pozoroval, že dělníci v tunelech a kesonech se stlačeným vzduchem mohli bezpečně dekomprimovat z 2 atmosfér na 1 (poměr 2:1). To se stalo základem stupňovité dekomprese — pokud tělo toleruje 2:1, můžeme plánovat bezpečné výstupy v poměrech hloubek.",
+            "haldaneHistory": "Skotský fyziolog pozoroval, že dělníci v tunelech a kesonech se stlačeným vzduchem mohli bezpečně dekomprimovat z 2 atmosfér na 1 (poměr 2:1). To se stalo základem stupňovité dekomprese. <em>Poznámka: tento poměr 2:1 byl odvozen z experimentů pouze se vzduchem — pro jiné směsi (trimix, heliox) platí jiné tolerance kvůli odlišným vlastnostem rozpustnosti a difuze hélia.</em>",
             "workmanHistory": "Výzkumník amerického námořnictva, který rozpoznal, že jediný pevný poměr nedokáže zachytit celý obraz. Různé tkáňové kompartmenty tolerují různé úrovně přesycení a tyto tolerance se mění s hloubkou. Zavedl pojem <strong>\"M-hodnota\"</strong> (Maximum value) — maximální tolerovatelný tlak inertního plynu ve tkáni při jakékoli dané hloubce.",
             "workmanInsight": "Klíčový poznatek Workmana: rychlejší tkáně (mozek, krev) tolerují vyšší přesycení než pomalejší tkáně (tuk, kosti) — a tolerovaný poměr se také mění s hloubkou."
         },
