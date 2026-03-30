@@ -592,7 +592,7 @@
             "workmanMath": "(faster tissues tolerate more)",
             "historySummary": "📚 The History: How We Discovered Safe Limits",
             "haldaneHistory": "The Scottish physiologist observed that workers in compressed-air tunnels and caissons could safely decompress from 2 atmospheres to 1 (a 2:1 ratio). This became the foundation of staged decompression. <em>Note: this 2:1 ratio was derived from experiments with air only — different gas mixtures (trimix, heliox) have different tolerances due to helium's different solubility and diffusion properties.</em>",
-            "workmanHistory": "U.S. Navy researcher who recognized that a single fixed ratio couldn't capture the full picture. Different tissue compartments tolerate different levels of supersaturation, and these tolerances change with depth. He coined the term <strong>\"M-value\"</strong> (Maximum value) — the maximum tolerable tissue inert gas pressure at any given depth.",
+            "workmanHistory": "U.S. Navy researcher who recognized that a single fixed ratio couldn't capture the full picture. Different tissue compartments tolerate different levels of supersaturation, and these tolerances change with depth. He coined the term <strong>\"M-value\"</strong> (Maximum value) — the maximum tolerable tissue inert gas pressure at any given depth. Crucially, Workman developed M-values for both nitrogen <em>and</em> helium (1965), enabling decompression planning for heliox deep dives.",
             "workmanInsight": "Workman's key insight: faster tissues (brain, blood) tolerate higher supersaturation than slower tissues (fat, bones) — and the tolerated ratio also varies with depth."
         },
         "buhlmann": {
