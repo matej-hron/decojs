@@ -2024,7 +2024,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "Parciální tlak závisí na celkovém tlaku! ppO₂ = fO₂ × P_celkový. S rostoucí hloubkou (tlakem) rostou i parciální tlaky všech plynů. Proto je kyslík v hloubce toxický.",
+      "explanation": "Parciální tlak závisí na celkovém tlaku! <em>pp</em>O₂ = fO₂ × P_celkový. S rostoucí hloubkou (tlakem) rostou i parciální tlaky všech plynů. Proto je kyslík v hloubce toxický.",
       "category": "dekomprese-syceni"
     },
     {
@@ -2049,7 +2049,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "Minimální ppO₂ = 16 kPa = 0,16 bar. Potřebný celkový tlak = 0,16 / 0,04 = 4 bar. To odpovídá hloubce 30 m. V menší hloubce by byl ppO₂ příliš nízký (hypoxie).",
+      "explanation": "Minimální <em>pp</em>O₂ = 16 kPa = 0,16 bar. Potřebný celkový tlak = 0,16 / 0,04 = 4 bar. To odpovídá hloubce 30 m. V menší hloubce by byl <em>pp</em>O₂ příliš nízký (hypoxie).",
       "category": "dekomprese-syceni"
     },
     {
@@ -2099,7 +2099,7 @@
         }
       ],
       "correct": "a",
-      "explanation": "Kyslíkový přístroj obsahuje 100 % O₂. V 15 m je absolutní tlak 2,5 bar = 250 kPa. ppO₂ = 1,0 × 250 = 250 kPa. To je nebezpečně vysoká hodnota (toxicita O₂)!",
+      "explanation": "Kyslíkový přístroj obsahuje 100 % O₂. V 15 m je absolutní tlak 2,5 bar = 250 kPa. <em>pp</em>O₂ = 1,0 × 250 = 250 kPa. To je nebezpečně vysoká hodnota (toxicita O₂)!",
       "category": "dekomprese-syceni"
     },
     {
@@ -2124,7 +2124,7 @@
         }
       ],
       "correct": "b",
-      "explanation": "Na hladině: ppO₂ = 0,21 × 70 = 14,7 kPa. V 20 m: celkový tlak = 70 + 200 = 270 kPa, ppO₂ = 0,21 × 270 = 56,7 kPa.",
+      "explanation": "Na hladině: <em>pp</em>O₂ = 0,21 × 70 = 14,7 kPa. V 20 m: celkový tlak = 70 + 200 = 270 kPa, <em>pp</em>O₂ = 0,21 × 270 = 56,7 kPa.",
       "category": "dekomprese-syceni"
     },
     {
@@ -2174,7 +2174,7 @@
         }
       ],
       "correct": "a",
-      "explanation": "V 70 m je absolutní tlak 8 bar = 800 kPa. ppO₂ = 0,20 × 800 = 160 kPa. ppN₂ = 0,50 × 800 = 400 kPa. ppHe = 0,30 × 800 = 240 kPa.",
+      "explanation": "V 70 m je absolutní tlak 8 bar = 800 kPa. <em>pp</em>O₂ = 0,20 × 800 = 160 kPa. <em>pp</em>N₂ = 0,50 × 800 = 400 kPa. <em>pp</em>He = 0,30 × 800 = 240 kPa.",
       "category": "dekomprese-syceni"
     },
     {
@@ -2199,7 +2199,7 @@
         }
       ],
       "correct": "c",
-      "explanation": "Celkový tlak = 160 / 0,21 = 762 kPa ≈ 7,6 bar. Hloubka = (7,6 - 1) × 10 = 66 m. To je MOD pro vzduch při ppO₂ = 1,6 bar.",
+      "explanation": "Celkový tlak = 160 / 0,21 = 762 kPa ≈ 7,6 bar. Hloubka = (7,6 - 1) × 10 = 66 m. To je MOD pro vzduch při <em>pp</em>O₂ = 1,6 bar.",
       "category": "dekomprese-syceni"
     },
     {
@@ -2224,7 +2224,7 @@
         }
       ],
       "correct": "b",
-      "explanation": "V lahvi je tlak 15 MPa nezávisle na hloubce. ppO₂ = 0,21 × 15 = 3,15 MPa. ppN₂ = 0,78 × 15 = 11,7 MPa. Parciální tlaky v lahvi jsou konstantní.",
+      "explanation": "V lahvi je tlak 15 MPa nezávisle na hloubce. <em>pp</em>O₂ = 0,21 × 15 = 3,15 MPa. <em>pp</em>N₂ = 0,78 × 15 = 11,7 MPa. Parciální tlaky v lahvi jsou konstantní.",
       "category": "dekomprese-syceni"
     },
     {
@@ -2324,7 +2324,7 @@
         }
       ],
       "correct": "b",
-      "explanation": "Při dýchání čistého O₂ je ppN₂ v plicích téměř nulový. To vytváří maximální tlakový gradient mezi tkáněmi (nasycenými N₂) a plicemi, což urychluje odbourávání dusíku.",
+      "explanation": "Při dýchání čistého O₂ je <em>pp</em>N₂ v plicích téměř nulový. To vytváří maximální tlakový gradient mezi tkáněmi (nasycenými N₂) a plicemi, což urychluje odbourávání dusíku.",
       "category": "dekomprese-syceni"
     },
     {
@@ -2374,7 +2374,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "ppN₂ na hladině = 78 kPa. V 40 m (5 bar): ppN₂ = 0,78 × 500 = 390 kPa. Za 30 min (2 poločasy) se tkáň nasytí na 75 %. Δp = 390-78 = 312 kPa. Nasycení = 78 + 0,75×312 = 312 kPa.",
+      "explanation": "<em>pp</em>N₂ na hladině = 78 kPa. V 40 m (5 bar): <em>pp</em>N₂ = 0,78 × 500 = 390 kPa. Za 30 min (2 poločasy) se tkáň nasytí na 75 %. Δp = 390-78 = 312 kPa. Nasycení = 78 + 0,75×312 = 312 kPa.",
       "category": "dekomprese-syceni"
     },
     {
@@ -2399,7 +2399,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "ppN₂ na hladině = 78 kPa. V 30 m (4 bar): ppN₂ = 0,78 × 400 = 312 kPa. Po 1 poločase se tkáň nasytí na 50 % rozdílu. Δp = 312-78 = 234 kPa. Nasycení = 78 + 0,5×234 = 195 kPa.",
+      "explanation": "<em>pp</em>N₂ na hladině = 78 kPa. V 30 m (4 bar): <em>pp</em>N₂ = 0,78 × 400 = 312 kPa. Po 1 poločase se tkáň nasytí na 50 % rozdílu. Δp = 312-78 = 234 kPa. Nasycení = 78 + 0,5×234 = 195 kPa.",
       "category": "dekomprese-syceni"
     },
     {
@@ -2424,7 +2424,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "ppN₂ v 30 m = 312 kPa, Δp = 234 kPa. A (40 min = 2 poločasy, 75 %): 78 + 0,75×234 = 253,5 kPa. B (40 min = 1 poločas, 50 %): 78 + 0,5×234 = 195 kPa.",
+      "explanation": "<em>pp</em>N₂ v 30 m = 312 kPa, Δp = 234 kPa. A (40 min = 2 poločasy, 75 %): 78 + 0,75×234 = 253,5 kPa. B (40 min = 1 poločas, 50 %): 78 + 0,5×234 = 195 kPa.",
       "category": "dekomprese-syceni"
     },
     {
@@ -2449,7 +2449,7 @@
         }
       ],
       "correct": "b",
-      "explanation": "ppN₂ v 30 m = 312 kPa, počáteční = 78 kPa, Δp = 234 kPa. Po 2 poločasech: 50 % + 25 % = 75 % nasycení. ppN₂ = 78 + 0,75×234 = 253,5 kPa.",
+      "explanation": "<em>pp</em>N₂ v 30 m = 312 kPa, počáteční = 78 kPa, Δp = 234 kPa. Po 2 poločasech: 50 % + 25 % = 75 % nasycení. <em>pp</em>N₂ = 78 + 0,75×234 = 253,5 kPa.",
       "category": "dekomprese-syceni"
     },
     {
@@ -2474,7 +2474,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "Počáteční ppN₂ = 78 kPa. V 70 m (8 bar) s 50 % N₂: ppN₂ = 0,5 × 800 = 400 kPa. Δp = 322 kPa. Za 30 min (2 poločasy, 75 %): 78 + 0,75×322 = 319,5 kPa.",
+      "explanation": "Počáteční <em>pp</em>N₂ = 78 kPa. V 70 m (8 bar) s 50 % N₂: <em>pp</em>N₂ = 0,5 × 800 = 400 kPa. Δp = 322 kPa. Za 30 min (2 poločasy, 75 %): 78 + 0,75×322 = 319,5 kPa.",
       "category": "dekomprese-syceni"
     },
     {
