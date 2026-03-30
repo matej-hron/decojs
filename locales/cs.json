@@ -59,7 +59,7 @@
         },
         "surfaceInterval": {
             "label": "Povrchový interval (SI)",
-            "text": "Čas strávený na hladině mezi ponory pro odvětrání dusíku. Delší PI = více odbouraného dusíku."
+            "text": "Čas strávený na hladině mezi ponory pro odvětrání dusíku. Delší SI = více odbouraného dusíku."
         }
     },
     "sandboxLink": "Otevřít v Sandboxu →",
@@ -210,7 +210,7 @@
             "title": "Příklad: Vzduch v hloubce 30 metrů",
             "intro": "V hloubce 30 metrů je okolní tlak <strong>4 bary</strong> (1 + 30/10). Pro vzduch:",
             "thGas": "Plyn",
-            "thFraction": "Frakce",
+            "thFraction": "Podíl",
             "thCalculation": "Výpočet",
             "thPP": "Parciální tlak",
             "o2PP": "<strong>0,84 bar</strong>",
@@ -322,7 +322,7 @@
         },
         "symptoms": {
             "title": "Příznaky toxicity kyslíku na CNS",
-            "mnemonic": "Zapamatujte si mnemotechnickou pomůcku <strong>VENTID-C</strong>:",
+            "mnemonic": "Zapamatujte si anglickou mnemotechnickou pomůcku <strong>VENTID-C</strong> (podle anglických názvů příznaků):",
             "v": "<strong>V</strong> — Poruchy vidění (tunelové vidění)",
             "e": "<strong>E</strong> — Zvonění v uších (tinnitus)",
             "n": "<strong>N</strong> — Nevolnost",
@@ -454,7 +454,7 @@
             "example": "Kompartment s poločasem 5 minut dosáhne 50% nasycení za 5 minut; kompartment s poločasem 635 minut potřebuje přes 10 hodin!",
             "gradientTitle": "Vliv tlakového gradientu",
             "gradientText1": "Poločas tkáně je konstantní — vždy trvá stejně dlouho, než se uzavře <strong>50 % rozdílu</strong> mezi aktuálním tlakem tkáně a cílovým tlakem. Ale když je tento rozdíl větší, 50 % představuje v absolutních číslech více plynu.",
-            "gradientText2": "<strong>Příklad:</strong> Pokud tkáň potřebuje odbavit 2 bary dusíku, přepnutí ze vzduchu (79 % N₂) na Nitrox 50 (50 % N₂) nebo čistý O₂ (0 % N₂) vytvoří mnohem větší tlakový gradient, takže každý poločas odstraní více plynu — proto směsi bohaté na kyslík urychlují dekompresi!"
+            "gradientText2": "<strong>Příklad:</strong> Pokud tkáň potřebuje odvětrat 2 bary dusíku, přepnutí ze vzduchu (79 % N₂) na Nitrox 50 (50 % N₂) nebo čistý O₂ (0 % N₂) vytvoří mnohem větší tlakový gradient, takže každý poločas odstraní více plynu — proto směsi bohaté na kyslík urychlují dekompresi!"
         },
         "halfTimeCharts": {
             "title": "Interaktivně: tlakový rozdíl a poločasy",
@@ -608,8 +608,8 @@
             "formulaWhere": "Kde:",
             "formulaM": "<strong>M</strong> = Maximální tolerovatelný tlak inertního plynu ve tkáni (bar)",
             "formulaPamb": "<strong>P<sub>amb</sub></strong> = Okolní tlak v aktuální hloubce (bar)",
-            "formulaA": "<strong>a</strong> = Koeficient úsečky (bar) — specifický pro tkáň",
-            "formulaB": "<strong>b</strong> = Koeficient směrnice (bezrozměrný) — specifický pro tkáň",
+            "formulaA": "<strong>a</strong> = Úsek na ose y (bar) — specifický pro tkáň",
+            "formulaB": "<strong>b</strong> = Směrnice (bezrozměrný) — specifická pro tkáň",
             "formulaHint": "Koeficient \"a\" je průsečík s osou y — maximální tolerovatelný tkáňový tlak při nulovém přetlaku (na hladině). Rychlejší tkáně mají vyšší hodnoty \"a\", což znamená, že zvládnou větší přesycení.",
             "variantsSummary": "📚 Varianty ZH-L16: A, B a C",
             "variantsIntro": "Bühlmann publikoval tři sady koeficientů:",
@@ -666,10 +666,10 @@
     },
     "gradientFactors": {
         "page": {
-            "title": "Gradientní faktory - Deco Theory"
+            "title": "Gradient faktory - Deco Theory"
         },
         "header": {
-            "title": "Gradientní faktory",
+            "title": "Gradient faktory",
             "subtitle": "Přidání konzervativnosti k dekompresi — a debata o hlubokých zastávkách"
         },
         "greyZone": {
@@ -721,25 +721,25 @@
             "bridge": {
                 "title": "Most od Pyleova objevu k Bühlmannovi",
                 "text1": "Pyle ukázal, že hluboké zastávky pomáhají, a VPM (bublinový model) vysvětluje proč. Ale co když chcete nadále používat <strong>Bühlmannův model rozpuštěného plynu</strong> — algoritmus ve většině potápěčských počítačů — a přitom získat ty příznivé hluboké zastávky?",
-                "text2": "Přesně to poskytují <strong>gradientní faktory</strong>. Jsou modifikací Bühlmanna, která vám umožňuje nastavit konzervativnější profily, včetně hlubších prvních zastávek, <em>aniž</em> byste museli přejít na úplně jiný algoritmus."
+                "text2": "Přesně to poskytují <strong>gradient faktory</strong>. Jsou modifikací Bühlmanna, která vám umožňuje nastavit konzervativnější profily, včetně hlubších prvních zastávek, <em>aniž</em> byste museli přejít na úplně jiný algoritmus."
             }
         },
         "gfExplained": {
-            "title": "Gradientní faktory: nástroj",
+            "title": "Gradient faktory: nástroj",
             "what": {
-                "title": "Co jsou gradientní faktory?",
-                "text1": "Gradientní faktory (GF) jsou způsob, jak přidat <strong>konzervativnost</strong> k Bühlmannovu algoritmu snížením povoleného přesycení. Místo toho, abyste tkáním dovolili dosáhnout 100 % M-value, nastavíte nižší procento.",
+                "title": "Co jsou gradient faktory?",
+                "text1": "Gradient faktory (GF) jsou způsob, jak přidat <strong>konzervativnost</strong> k Bühlmannovu algoritmu snížením povoleného přesycení. Místo toho, abyste tkáním dovolili dosáhnout 100 % M-value, nastavíte nižší procento.",
                 "gf100label": "GF 100 %",
                 "gf100value": "Plná M-value",
                 "gf100desc": "Maximální povolené přesycení (Bühlmannův limit)",
                 "gf0label": "GF 0 %",
                 "gf0value": "Okolní tlak",
                 "gf0desc": "Žádné přesycení povoleno (nepraktické)",
-                "text2": "Gradientní faktor <strong>GF 80 %</strong> znamená, že tkáni dovolíte dosáhnout pouze 80 % vzdálenosti od okolního tlaku k M-value."
+                "text2": "Gradient faktor <strong>GF 80 %</strong> znamená, že tkáni dovolíte dosáhnout pouze 80 % vzdálenosti od okolního tlaku k M-value."
             },
             "lowHigh": {
                 "title": "GF Low a GF High",
-                "intro": "Potápěčské počítače a plánovací software používají <strong>dva</strong> gradientní faktory:",
+                "intro": "Potápěčské počítače a plánovací software používají <strong>dva</strong> gradient faktory:",
                 "gfLowLabel": "GF Low",
                 "gfLowDesc": "Řídí <strong>první/nejhlubší</strong> dekompresní zastávku",
                 "gfHighLabel": "GF High",
@@ -853,7 +853,7 @@
             "title": "Plynový zákon: Teplota a tlak - Deco Theory"
         },
         "disclaimer": {
-            "text": "<strong>Pouze pro výukové účely</strong> — Tento nástroj demonstruje Gay-Lussacův zákon pro tuhé potápěčské lahve."
+            "text": "<strong>Pouze pro výukové účely</strong> — Tento nástroj demonstruje Gay-Lussacův zákon pro potápěčské lahve (konstantní objem)."
         },
         "header": {
             "title": "Plynový zákon: Teplota a tlak",
@@ -880,7 +880,7 @@
         "finalPressure": "Výsledný tlak P<sub>2</sub>",
         "pressureChange": "Změna tlaku ΔP",
         "usableGasChange": "Změna použitelného plynu",
-        "gasChangeSub": "ekvivalentní povrchové litry (ΔP × objem)",
+        "gasChangeSub": "povrchové litry (ΔP × objem)",
         "diveTimeChange": "Změna času ponoru ve 20 m",
         "diveTimeSub": "Spotřeba vzduchu na hladině (SAC) 20 l/min při 3 bar (1+20/10)",
         "safety": {
