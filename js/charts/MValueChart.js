@@ -37,6 +37,8 @@ import {
     getAdjustedMValue,
     getFirstStopDepth,
     findGFLowAnchor,
+    generateDecoSchedule,
+    getAmbientPressure,
     interpolateGF,
     N2_FRACTION,
     SURFACE_PRESSURE
@@ -846,13 +848,14 @@ export class MValueChart {
                 tissuePressures[compId] = results.compartments[compId].pressures[ascentStartIndex];
             }
             
-            // Get N2 fraction from dive setup (first gas or air)
+            // Get gases and N2 fraction from dive setup
             const gases = this.diveSetup?.gases || [];
             const n2Fraction = gases[0]?.n2 ?? N2_FRACTION;
-            
-            // Find pAnchor using the new algorithm
-            const anchorResult = findGFLowAnchor(tissuePressures, maxDepth, n2Fraction, gfLow);
-            pAnchor = anchorResult.pAnchor;
+
+            // Use generateDecoSchedule to get pAnchor - this ensures the GF lines
+            // on the chart match exactly what the deco algorithm computes.
+            const schedule = generateDecoSchedule(tissuePressures, maxDepth, n2Fraction, gfLow, gfHigh, gases);
+            pAnchor = schedule.pAnchor;
             
             // Draw vertical line at pAnchor (GF Low anchor depth)
             if (pAnchor > SURFACE_PRESSURE) {
