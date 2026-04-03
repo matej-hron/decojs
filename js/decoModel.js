@@ -977,55 +977,75 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
     
     // Deco loop: work up from first stop to surface
     // Gas switches occur on arrival at each stop depth, before waiting begins
-    while (depth > 0) {
-        // Check for gas switch on arrival (find best gas valid at this depth)
-        switchToBestGas(depth);
-        
-        // Wait at this stop until ceiling clears to next stop (or surface)
-        const nextStopDepth = Math.max(0, Math.round((depth - stopIncrement) * 10) / 10);
-        const delta = depth - nextStopDepth;
-        const ascentTime = delta / ASCENT_SPEED;
-        
-        // For ceiling check, use GF at the DESTINATION depth
-        // GF interpolates linearly from gfLow at pAnchor to gfHigh at surface
-        const gfAtDestination = interpolateGF(getAmbientPressure(nextStopDepth), pAnchor, gfLow, gfHigh);
-        
-        let stopTime = 0;
-        
-        while (true) {
-            // Simulate ascent to check if we'd exceed M-value at destination
-            // Uses current gas during ascent segment (gas switch happens on arrival)
-            const testTissues = simulateDepthChange({ ...tissues }, depth, nextStopDepth, ascentTime, currentN2);
-            const { ceilingDepth } = getDiveCeiling(testTissues, gfAtDestination);
-            
-            if (ceilingDepth <= nextStopDepth) {
-                break; // Ceiling cleared after simulated ascent, can actually ascend
-            }
-            
-            // Wait at this stop
-            tissues = simulateDepthTime(tissues, depth, timeIncrement, currentN2);
-            stopTime = Math.round((stopTime + timeIncrement) * 10) / 10;
+    if (continuousDeco) {
+        // Continuous mode: stay at exact model depth, min 2 min per stop,
+        // then jump to shallowest reachable depth. Shows raw model behavior.
+        const MIN_STOP_TIME = 2; // minutes
+        while (depth > 0) {
+            switchToBestGas(depth);
 
-            // Safety: prevent infinite loops
-            if (stopTime > 300) {
-                console.warn('Deco stop exceeded 5 hours, breaking');
-                break;
+            // Wait minimum time at this stop
+            tissues = simulateDepthTime(tissues, depth, MIN_STOP_TIME, currentN2);
+            let stopTime = MIN_STOP_TIME;
+
+            // Continue waiting until we can ascend shallower
+            while (true) {
+                const { depth: reachable } = findFirstStopWithRampedGF(
+                    tissues, depth, pAnchor, currentN2, gfLow, gfHigh, stopIncrement
+                );
+                if (reachable < depth) break; // can go shallower
+
+                tissues = simulateDepthTime(tissues, depth, 0.1, currentN2);
+                stopTime = Math.round((stopTime + 0.1) * 10) / 10;
+                if (stopTime > 300) { console.warn('Deco stop exceeded 5 hours'); break; }
             }
-        }
-        
-        if (stopTime > 0) {
+
             stops.push({
                 depth: Math.round(depth * 10) / 10,
                 time: stopTime,
                 gas: currentGasName
             });
-        }
-        
-        // Ascend to next stop
-        if (nextStopDepth >= 0) {
-            tissues = simulateDepthChange(tissues, depth, nextStopDepth, ascentTime, currentN2);
+
+            // Find shallowest reachable depth and ascend there
+            const { depth: nextDepth } = findFirstStopWithRampedGF(
+                tissues, depth, pAnchor, currentN2, gfLow, gfHigh, stopIncrement
+            );
+            if (nextDepth >= depth) break; // safety: can't go shallower
+            const ascentTime = (depth - nextDepth) / ASCENT_SPEED;
+            tissues = simulateDepthChange(tissues, depth, nextDepth, ascentTime, currentN2);
             totalAscentTime += ascentTime;
-            depth = nextStopDepth;
+            depth = nextDepth;
+        }
+    } else {
+        // Standard mode: 3m grid, whole minute stops
+        while (depth > 0) {
+            switchToBestGas(depth);
+
+            const nextStopDepth = Math.max(0, depth - STOP_INCREMENT);
+            const delta = depth - nextStopDepth;
+            const ascentTime = delta / ASCENT_SPEED;
+            const gfAtDestination = interpolateGF(getAmbientPressure(nextStopDepth), pAnchor, gfLow, gfHigh);
+
+            let stopTime = 0;
+            while (true) {
+                const testTissues = simulateDepthChange({ ...tissues }, depth, nextStopDepth, ascentTime, currentN2);
+                const { ceilingDepth } = getDiveCeiling(testTissues, gfAtDestination);
+                if (ceilingDepth <= nextStopDepth) break;
+
+                tissues = simulateDepthTime(tissues, depth, 1, currentN2);
+                stopTime += 1;
+                if (stopTime > 300) { console.warn('Deco stop exceeded 5 hours'); break; }
+            }
+
+            if (stopTime > 0) {
+                stops.push({ depth, time: stopTime, gas: currentGasName });
+            }
+
+            if (nextStopDepth >= 0) {
+                tissues = simulateDepthChange(tissues, depth, nextStopDepth, ascentTime, currentN2);
+                totalAscentTime += ascentTime;
+                depth = nextStopDepth;
+            }
         }
     }
     

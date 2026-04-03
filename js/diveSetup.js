@@ -462,10 +462,10 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
         // Ascend to this event's depth
         if (currentDepth > event.depth) {
             const ascentTime = roundUp((currentDepth - event.depth) / ASCENT_SPEED);
-            currentTime += ascentTime;
+            currentTime = Math.round((currentTime + ascentTime) * 10) / 10;
             currentDepth = event.depth;
         }
-        
+
         // Add arrival waypoint (with gasId if gas changes)
         if (event.gasId && event.gasId !== currentGasId) {
             waypoints.push({ time: currentTime, depth: event.depth, gasId: event.gasId });
@@ -473,18 +473,18 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
         } else {
             waypoints.push({ time: currentTime, depth: event.depth });
         }
-        
+
         // Add departure waypoint after stop time (if any stop time)
         if (event.stopTime > 0) {
-            currentTime += event.stopTime;
+            currentTime = Math.round((currentTime + event.stopTime) * 10) / 10;
             waypoints.push({ time: currentTime, depth: event.depth });
         }
     }
-    
+
     // Final ascent to surface (if not already there)
     if (currentDepth > 0) {
         const finalAscentTime = roundUp(currentDepth / ASCENT_SPEED);
-        currentTime += finalAscentTime;
+        currentTime = Math.round((currentTime + finalAscentTime) * 10) / 10;
         waypoints.push({ time: currentTime, depth: 0 });
     }
     
