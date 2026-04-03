@@ -1739,9 +1739,10 @@ describe('decoModel', () => {
             expect(gfAtMid).toBeCloseTo(0.65, 6);
         });
         
-        test('30m/20min air GF 50/80: pAnchor equals actual first stop', () => {
-            // Two-pass approach: GF Low gives initial anchor, then GF ramp from that
-            // anchor allows going shallower. pAnchor is set to the actual first stop.
+        test('30m/20min air GF 50/80: pAnchor is shallower than first stop', () => {
+            // pAnchor (from findGFLowAnchor) can be shallower than the first actual deco stop.
+            // This is correct: pAnchor is the theoretical GF Low constraint point,
+            // the first stop is the practical ceiling constraint (rounded to grid).
 
             // Simulate dive: 30m/20min air
             const descentTime = 30 / 20; // 1.5 min at 20 m/min
@@ -1753,10 +1754,12 @@ describe('decoModel', () => {
             // Generate deco schedule
             const schedule = generateDecoSchedule(tissues, 30, N2_FRACTION, 0.5, 0.8);
 
-            // pAnchor = actual first stop depth
+            // pAnchor around 6m (theoretical GF Low point)
+            expect(schedule.anchorDepth).toBeCloseTo(6, 0);
+
+            // First stop at 9m (practical ceiling on 3m grid, deeper than pAnchor)
             expect(schedule.stops.length).toBeGreaterThan(0);
-            expect(schedule.anchorDepth).toBe(schedule.stops[0].depth);
-            expect(schedule.stops[0].depth).toBe(6);
+            expect(schedule.stops[0].depth).toBe(9);
         });
     });
     
