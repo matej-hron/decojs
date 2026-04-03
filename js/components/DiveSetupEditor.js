@@ -772,10 +772,16 @@ export class DiveSetupEditor extends EventTarget {
                 <div class="dse-gas-row">
                     <label>Tank:</label>
                     <select class="dse-gas-cylinder form-select">
-                        ${cylinderOptions.map(c => 
+                        ${cylinderOptions.map(c =>
                             `<option value="${c.value}" ${c.value === gas.cylinderVolume ? 'selected' : ''}>${c.label}</option>`
                         ).join('')}
+                        <option value="custom" ${!cylinderOptions.find(c => c.value === gas.cylinderVolume) ? 'selected' : ''}>✏️ Custom...</option>
                     </select>
+                    <input type="number" class="dse-cylinder-custom form-input" min="1" max="50" step="0.1"
+                        value="${gas.cylinderVolume}"
+                        style="display: ${!cylinderOptions.find(c => c.value === gas.cylinderVolume) ? 'inline-block' : 'none'}; width: 70px; margin-left: 4px;"
+                        title="Cylinder volume in liters">
+                    <span class="dse-cylinder-custom-unit" style="display: ${!cylinderOptions.find(c => c.value === gas.cylinderVolume) ? 'inline' : 'none'};">L</span>
                 </div>
                 <div class="dse-gas-mod">
                     <span class="dse-hint">MOD: ${mod14}m (deco: ${mod16}m)</span>
@@ -789,8 +795,10 @@ export class DiveSetupEditor extends EventTarget {
         const o2Input = card.querySelector('.dse-gas-o2');
         const heInput = card.querySelector('.dse-gas-he');
         const cylinderSelect = card.querySelector('.dse-gas-cylinder');
+        const cylinderCustomInput = card.querySelector('.dse-cylinder-custom');
+        const cylinderCustomUnit = card.querySelector('.dse-cylinder-custom-unit');
         const modDisplay = card.querySelector('.dse-gas-mod .dse-hint');
-        
+
         presetSelect.addEventListener('change', () => {
             if (presetSelect.value === 'custom') {
                 customInputs.style.display = 'flex';
@@ -814,11 +822,27 @@ export class DiveSetupEditor extends EventTarget {
                 }
             }
         });
-        
+
         cylinderSelect.addEventListener('change', () => {
-            this.currentGases[index].cylinderVolume = parseFloat(cylinderSelect.value);
+            if (cylinderSelect.value === 'custom') {
+                cylinderCustomInput.style.display = 'inline-block';
+                cylinderCustomUnit.style.display = 'inline';
+                this.currentGases[index].cylinderVolume = parseFloat(cylinderCustomInput.value) || 12;
+            } else {
+                cylinderCustomInput.style.display = 'none';
+                cylinderCustomUnit.style.display = 'none';
+                this.currentGases[index].cylinderVolume = parseFloat(cylinderSelect.value);
+            }
             this.currentGases[index].startPressure = DEFAULT_START_PRESSURE;
             this._onInputChange();
+        });
+
+        cylinderCustomInput.addEventListener('input', () => {
+            const vol = parseFloat(cylinderCustomInput.value);
+            if (vol > 0 && vol <= 50) {
+                this.currentGases[index].cylinderVolume = vol;
+                this._onInputChange();
+            }
         });
         
         const updateCustomGas = () => {

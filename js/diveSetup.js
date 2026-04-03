@@ -59,6 +59,7 @@ export const PREDEFINED_GASES = [...BOTTOM_GASES, ...DECO_GASES];
 
 /**
  * Bottom/back-mount cylinder sizes (liters)
+ * Volumes are water capacity (actual internal volume).
  */
 export const BOTTOM_CYLINDERS = [
     { value: 10, label: '10 L (Single)' },
@@ -72,12 +73,22 @@ export const BOTTOM_CYLINDERS = [
 
 /**
  * Stage/deco cylinder sizes (liters)
+ * Catalina AL-series actual water capacities:
+ *   AL6  = 2.7 L,  AL13 = 3.9 L,  AL30 = 4.4 L
+ *   AL40 = 5.8 L,  AL50 = 6.9 L,  AL63 = 8.0 L
+ *   AL80 = 11.1 L, AL100 = 12.9 L
  */
 export const STAGE_CYLINDERS = [
+    { value: 2.7, label: '2.7 L (AL6)' },
     { value: 3, label: '3 L (Pony)' },
-    { value: 5.5, label: '5.5 L (AL40)' },
-    { value: 7, label: '7 L (AL50)' },
-    { value: 11, label: '11 L (AL80)' }
+    { value: 3.9, label: '3.9 L (AL13)' },
+    { value: 4.4, label: '4.4 L (AL30)' },
+    { value: 5.8, label: '5.8 L (AL40)' },
+    { value: 6.9, label: '6.9 L (AL50)' },
+    { value: 8.0, label: '8.0 L (AL63)' },
+    { value: 10, label: '10 L (Steel S80)' },
+    { value: 11.1, label: '11.1 L (AL80)' },
+    { value: 12.9, label: '12.9 L (AL100)' }
 ];
 
 /**

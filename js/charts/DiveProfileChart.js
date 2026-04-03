@@ -925,7 +925,11 @@ export class DiveProfileChart {
         if (!data) return;
         
         const { results, ceilingDepths, compartmentCeilings, gasConsumption, waypoints, gases } = data;
-        
+
+        // Store gas consumption data for tooltip access
+        this._gasConsumption = gasConsumption;
+        this._timePoints = results.timePoints;
+
         // Calculate axis bounds
         const maxDepth = Math.max(...waypoints.map(wp => wp.depth));
         const maxPressure = Math.max(...results.ambientPressures);
@@ -1403,6 +1407,29 @@ export class DiveProfileChart {
                                     return `${label}: ${value.toFixed(0)} bar`;
                                 }
                                 return `${label}: ${value.toFixed(2)}`;
+                            },
+                            afterBody: (items) => {
+                                if (!this._gasConsumption || !this._timePoints || items.length === 0) return '';
+                                const time = items[0].parsed.x;
+                                // Find closest time index
+                                let closestIdx = 0;
+                                let minDist = Infinity;
+                                for (let i = 0; i < this._timePoints.length; i++) {
+                                    const dist = Math.abs(this._timePoints[i] - time);
+                                    if (dist < minDist) { minDist = dist; closestIdx = i; }
+                                }
+                                const lines = ['─── Tank Pressures ───'];
+                                Object.values(this._gasConsumption).forEach(gasData => {
+                                    if (!gasData.isActive) return;
+                                    const pressure = gasData.pressures[closestIdx];
+                                    if (pressure !== undefined) {
+                                        const bar = Math.round(pressure);
+                                        const status = bar <= 0 ? ' ⚠️ EMPTY' :
+                                                       bar < (gasData.reservePressure || 50) ? ' ⚠️' : '';
+                                        lines.push(`  ${gasData.name}: ${bar} bar${status}`);
+                                    }
+                                });
+                                return lines;
                             }
                         }
                     },
