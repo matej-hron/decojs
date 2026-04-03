@@ -1882,11 +1882,11 @@ describe('Gas Switching During Ascent', () => {
         // This dive has first stop at 6m, which is shallower than EAN50's MOD (21m)
         // The scheduler should still switch to EAN50 at 21m during ascent
         
-        test('first stop is at 6m or shallower', () => {
+        test('first stop is at 9m or shallower', () => {
             const schedule = getShallowDecoSchedule();
-            // Verify this test case has first stop at 6m (confirming the bug scenario)
+            // With gas-switch-aware pAnchor, first stop may be deeper than without
             expect(schedule.stops.length).toBeGreaterThan(0);
-            expect(schedule.stops[0].depth).toBeLessThanOrEqual(6);
+            expect(schedule.stops[0].depth).toBeLessThanOrEqual(9);
         });
         
         test('switches to EAN50 at 21m during ascent', () => {

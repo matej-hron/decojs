@@ -224,15 +224,14 @@ export function calculateMaxGF(tissuePressures, ambientPressure) {
  *          leadingCompartment: Controlling tissue at anchor
  *          tissuesAtAnchor: Tissue pressures at anchor point
  */
-export function findGFLowAnchor(tissuePressures, currentDepth, n2Fraction, gfLow, ascentRate = ASCENT_SPEED) {
+export function findGFLowAnchor(tissuePressures, currentDepth, n2Fraction, gfLow, ascentRate = ASCENT_SPEED, gasSwitchPoints = null) {
     const STEP_SIZE = 0.1; // bar (~1m precision for simulation)
-    
+
     const startAmbient = getAmbientPressure(currentDepth);
-    
+
     // First check if we're already at or above GF_low at current depth
     const { gfMax: initialGfMax, leadingCompartment: initialLeading } = calculateMaxGF(tissuePressures, startAmbient);
     if (initialGfMax >= gfLow) {
-        // Already at or exceeding GF_low, anchor is at current depth
         return {
             pAnchor: startAmbient,
             anchorDepth: currentDepth,
@@ -240,26 +239,37 @@ export function findGFLowAnchor(tissuePressures, currentDepth, n2Fraction, gfLow
             tissuesAtAnchor: { ...tissuePressures }
         };
     }
-    
+
+    // Sort gas switch points by depth descending (deepest first) for sequential switching
+    const switches = gasSwitchPoints
+        ? [...gasSwitchPoints].sort((a, b) => b.switchDepth - a.switchDepth)
+        : [];
+    let currentN2 = n2Fraction;
+
     // Simulate ascent toward surface, checking at each step
     let currentAmbient = startAmbient;
     let tissues = { ...tissuePressures };
     let prevDepth = currentDepth;
     let prevTissues = { ...tissues };
     let prevAmbient = currentAmbient;
-    
+
     while (currentAmbient > SURFACE_PRESSURE) {
-        // Take a step toward surface
         const nextAmbient = Math.max(SURFACE_PRESSURE, currentAmbient - STEP_SIZE);
         const nextDepth = (nextAmbient - SURFACE_PRESSURE) / PRESSURE_PER_METER;
-        
-        // Calculate time for this ascent segment
+
+        // Check for gas switch at this depth (switch to best available gas)
+        for (const sp of switches) {
+            if (nextDepth <= sp.switchDepth && sp.n2 < currentN2) {
+                currentN2 = sp.n2;
+                break;
+            }
+        }
+
         const depthChange = prevDepth - nextDepth;
         const segmentTime = depthChange / ascentRate;
-        
-        // Simulate tissue off-gassing during ascent
+
         if (segmentTime > 0) {
-            tissues = simulateDepthChange(tissues, prevDepth, nextDepth, segmentTime, n2Fraction);
+            tissues = simulateDepthChange(tissues, prevDepth, nextDepth, segmentTime, currentN2);
         }
         
         // Check GF_max at this new pressure
@@ -867,12 +877,6 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
     const gasSwitches = []; // Track gas switches during ascent
     let totalAscentTime = 0;
 
-    // Find the GF Low anchor point (pAnchor)
-    // This is the ambient pressure where GF_max first equals GF_low during ascent
-    const { pAnchor: pAnchorRaw, anchorDepth: anchorDepthRaw } = findGFLowAnchor(
-        tissuePressures, currentDepth, n2Fraction, gfLow
-    );
-
     // Clone tissue pressures
     let tissues = { ...tissuePressures };
     let depth = currentDepth;
@@ -916,7 +920,13 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
         // Sort by switchDepth descending (deeper first) for iteration order
         gasSwitchPoints.sort((a, b) => b.switchDepth - a.switchDepth);
     }
-    
+
+    // Find the GF Low anchor point (pAnchor), accounting for gas switches during ascent
+    const { pAnchor: pAnchorRaw, anchorDepth: anchorDepthRaw } = findGFLowAnchor(
+        tissuePressures, currentDepth, n2Fraction, gfLow, ASCENT_SPEED,
+        gasSwitchPoints.length > 0 ? gasSwitchPoints : null
+    );
+
     // Track used gases to avoid duplicate switches
     const usedGases = new Set();
     
