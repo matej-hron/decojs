@@ -427,6 +427,46 @@ export function getFirstStopDepth(tissuePressures, gfLow, stopIncrement = 3) {
 }
 
 /**
+/**
+ * Simulate ascent with gas switches - used to accurately predict tissue state
+ * when ascending through depths where gas changes occur.
+ * @param {Object} tissuePressures - Starting tissue pressures
+ * @param {number} fromDepth - Starting depth (meters)
+ * @param {number} toDepth - Target depth (meters, must be <= fromDepth)
+ * @param {number} startN2 - N2 fraction of initial gas
+ * @param {Array} gasSwitchPoints - [{switchDepth, n2}] sorted deepest first
+ * @returns {Object} Simulated tissue pressures after ascent
+ */
+function _simulateAscentWithGasSwitches(tissuePressures, fromDepth, toDepth, startN2, gasSwitchPoints) {
+    let tissues = { ...tissuePressures };
+    let currentDepth = fromDepth;
+    let currentN2 = startN2;
+
+    // Get switch points between fromDepth and toDepth, sorted deep to shallow
+    const relevantSwitches = gasSwitchPoints
+        .filter(sp => sp.switchDepth < currentDepth && sp.switchDepth >= toDepth)
+        .sort((a, b) => b.switchDepth - a.switchDepth);
+
+    // Ascend through each gas switch segment
+    for (const sp of relevantSwitches) {
+        const segmentTime = (currentDepth - sp.switchDepth) / ASCENT_SPEED;
+        if (segmentTime > 0) {
+            tissues = simulateDepthChange(tissues, currentDepth, sp.switchDepth, segmentTime, currentN2);
+        }
+        currentDepth = sp.switchDepth;
+        currentN2 = sp.n2;
+    }
+
+    // Final segment to target depth
+    if (currentDepth > toDepth) {
+        const segmentTime = (currentDepth - toDepth) / ASCENT_SPEED;
+        tissues = simulateDepthChange(tissues, currentDepth, toDepth, segmentTime, currentN2);
+    }
+
+    return tissues;
+}
+
+/**
  * Find first stop depth using pAnchor-based GF ramp with ascent simulation.
  * 
  * This function uses the EXACT same ascent-permission logic as the deco loop:
@@ -445,20 +485,30 @@ export function getFirstStopDepth(tissuePressures, gfLow, stopIncrement = 3) {
  * @param {number} gfLow - GF Low value (0-1)
  * @param {number} gfHigh - GF High value (0-1)
  * @param {number} stopIncrement - Stop depth increment in meters (default 3m)
+ * @param {Array|null} gasSwitchPoints - Optional gas switch points [{switchDepth, n2}] sorted deepest first.
+ *          When provided, ascent simulation uses correct gas at each depth segment.
  * @returns {{depth: number, ambient: number, tissues: Object}}
  *          depth: first stop depth (0 if can surface directly)
  *          ambient: ambient pressure at first stop
  *          tissues: simulated tissue pressures after ascending to first stop
  */
-export function findFirstStopWithRampedGF(tissuePressures, currentDepth, pAnchor, currentN2, gfLow, gfHigh, stopIncrement = 3) {
+export function findFirstStopWithRampedGF(tissuePressures, currentDepth, pAnchor, currentN2, gfLow, gfHigh, stopIncrement = 3, gasSwitchPoints = null) {
     // Iterate from surface (0m) up to current depth in stop increments
     // Find the shallowest depth where we can ascend to and remain within limits
     for (let candidateDepth = 0; candidateDepth <= currentDepth; candidateDepth += stopIncrement) {
         // Simulate ascent from currentDepth to candidateDepth
-        const ascentTime = (currentDepth - candidateDepth) / ASCENT_SPEED;
-        const simulatedTissues = ascentTime > 0
-            ? simulateDepthChange({ ...tissuePressures }, currentDepth, candidateDepth, ascentTime, currentN2)
-            : { ...tissuePressures };
+        // If gasSwitchPoints provided, simulate with correct gas at each segment
+        let simulatedTissues;
+        if (gasSwitchPoints && gasSwitchPoints.length > 0) {
+            simulatedTissues = _simulateAscentWithGasSwitches(
+                tissuePressures, currentDepth, candidateDepth, currentN2, gasSwitchPoints
+            );
+        } else {
+            const ascentTime = (currentDepth - candidateDepth) / ASCENT_SPEED;
+            simulatedTissues = ascentTime > 0
+                ? simulateDepthChange({ ...tissuePressures }, currentDepth, candidateDepth, ascentTime, currentN2)
+                : { ...tissuePressures };
+        }
         
         // Compute GF at the candidate depth using pAnchor-based interpolation
         const candidateAmbient = getAmbientPressure(candidateDepth);
@@ -906,7 +956,7 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
     // Find first stop depth using pAnchor-based GF ramp with ascent simulation
     // This uses the exact same logic as the deco loop: simulate ascent, check ceiling at destination GF
     let { depth: firstStopDepth, tissues: tissuesAtFirstStop } = findFirstStopWithRampedGF(
-        tissues, depth, pAnchor, currentN2, gfLow, gfHigh, stopIncrement
+        tissues, depth, pAnchor, currentN2, gfLow, gfHigh, stopIncrement, gasSwitchPoints
     );
     
     // If no deco needed (first stop = 0), just ascend with mid-ascent gas switches
@@ -991,7 +1041,7 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
             // Continue waiting until we can ascend shallower
             while (true) {
                 const { depth: reachable } = findFirstStopWithRampedGF(
-                    tissues, depth, pAnchor, currentN2, gfLow, gfHigh, stopIncrement
+                    tissues, depth, pAnchor, currentN2, gfLow, gfHigh, stopIncrement, gasSwitchPoints
                 );
                 if (reachable < depth) break; // can go shallower
 
@@ -1008,7 +1058,7 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
 
             // Find shallowest reachable depth and ascend there
             const { depth: nextDepth } = findFirstStopWithRampedGF(
-                tissues, depth, pAnchor, currentN2, gfLow, gfHigh, stopIncrement
+                tissues, depth, pAnchor, currentN2, gfLow, gfHigh, stopIncrement, gasSwitchPoints
             );
             if (nextDepth >= depth) break; // safety: can't go shallower
             const ascentTime = (depth - nextDepth) / ASCENT_SPEED;
