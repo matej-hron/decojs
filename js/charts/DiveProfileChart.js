@@ -1405,13 +1405,30 @@ export class DiveProfileChart {
                                 return `${label}: ${value.toFixed(2)}`;
                             },
                             filter: (item) => {
-                                // Filter out null labels (gas consumption)
                                 return item.text !== null;
+                            },
+                            beforeBody: (items) => {
+                                if (!this._gasConsumption || !this._timePoints || items.length === 0) return '';
+                                const time = items[0].parsed.x;
+                                let closestIdx = 0;
+                                let minDist = Infinity;
+                                for (let i = 0; i < this._timePoints.length; i++) {
+                                    const dist = Math.abs(this._timePoints[i] - time);
+                                    if (dist < minDist) { minDist = dist; closestIdx = i; }
+                                }
+                                // Find active gas (the one currently being consumed)
+                                for (const gasData of Object.values(this._gasConsumption)) {
+                                    if (!gasData.isActive) continue;
+                                    const rate = gasData.rates[closestIdx] || 0;
+                                    if (rate > 0) {
+                                        return `⛽ ${rate.toFixed(1)} L/min (${gasData.name})`;
+                                    }
+                                }
+                                return '';
                             },
                             afterBody: (items) => {
                                 if (!this._gasConsumption || !this._timePoints || items.length === 0) return '';
                                 const time = items[0].parsed.x;
-                                // Find closest time index
                                 let closestIdx = 0;
                                 let minDist = Infinity;
                                 for (let i = 0; i < this._timePoints.length; i++) {
@@ -1424,11 +1441,9 @@ export class DiveProfileChart {
                                     const pressure = gasData.pressures[closestIdx];
                                     if (pressure !== undefined) {
                                         const bar = Math.round(pressure);
-                                        const rate = gasData.rates[closestIdx] || 0;
-                                        const rateStr = rate > 0 ? ` (${rate.toFixed(1)} L/min)` : '';
                                         const status = bar <= 0 ? ' ⚠️ EMPTY' :
                                                        bar < (gasData.reservePressure || 50) ? ' ⚠️' : '';
-                                        lines.push(`  ${gasData.name}: ${bar} bar${rateStr}${status}`);
+                                        lines.push(`  ${gasData.name}: ${bar} bar${status}`);
                                     }
                                 });
                                 return lines;
