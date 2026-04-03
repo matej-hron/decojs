@@ -73,22 +73,16 @@ export const BOTTOM_CYLINDERS = [
 
 /**
  * Stage/deco cylinder sizes (liters)
- * Catalina AL-series actual water capacities:
- *   AL6  = 2.7 L,  AL13 = 3.9 L,  AL30 = 4.4 L
- *   AL40 = 5.8 L,  AL50 = 6.9 L,  AL63 = 8.0 L
- *   AL80 = 11.1 L, AL100 = 12.9 L
+ * Based on Luxfer aluminum stage cylinders commonly used in EU diving.
+ * Ref: stranypotapecske.cz - S040 = 5.7 L, S080 = 11.1 L
+ * "S" = stage designation (cuft nominal capacity at working pressure)
  */
 export const STAGE_CYLINDERS = [
-    { value: 2.7, label: '2.7 L (AL6)' },
     { value: 3, label: '3 L (Pony)' },
-    { value: 3.9, label: '3.9 L (AL13)' },
-    { value: 4.4, label: '4.4 L (AL30)' },
-    { value: 5.8, label: '5.8 L (AL40)' },
-    { value: 6.9, label: '6.9 L (AL50)' },
-    { value: 8.0, label: '8.0 L (AL63)' },
-    { value: 10, label: '10 L (Steel S80)' },
-    { value: 11.1, label: '11.1 L (AL80)' },
-    { value: 12.9, label: '12.9 L (AL100)' }
+    { value: 5.7, label: '5.7 L (S040)' },
+    { value: 7, label: '7 L' },
+    { value: 10, label: '10 L' },
+    { value: 11.1, label: '11.1 L (S080)' }
 ];
 
 /**

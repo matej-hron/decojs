@@ -388,7 +388,7 @@ describe('diveSetup module', () => {
             const setup = {
                 gases: [
                     { id: 'bottom', name: 'EAN32', o2: 0.32, n2: 0.68, he: 0, cylinderVolume: 12, startPressure: 200 },
-                    { id: 'deco', name: 'EAN50', o2: 0.50, n2: 0.50, he: 0, cylinderVolume: 6.9, startPressure: 200 }
+                    { id: 'deco', name: 'EAN50', o2: 0.50, n2: 0.50, he: 0, cylinderVolume: 7, startPressure: 200 }
                 ]
             };
             const gases = getGases(setup);
