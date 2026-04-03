@@ -1407,25 +1407,6 @@ export class DiveProfileChart {
                             filter: (item) => {
                                 return item.text !== null;
                             },
-                            beforeBody: (items) => {
-                                if (!this._gasConsumption || !this._timePoints || items.length === 0) return '';
-                                const time = items[0].parsed.x;
-                                let closestIdx = 0;
-                                let minDist = Infinity;
-                                for (let i = 0; i < this._timePoints.length; i++) {
-                                    const dist = Math.abs(this._timePoints[i] - time);
-                                    if (dist < minDist) { minDist = dist; closestIdx = i; }
-                                }
-                                // Find active gas (the one currently being consumed)
-                                for (const gasData of Object.values(this._gasConsumption)) {
-                                    if (!gasData.isActive) continue;
-                                    const rate = gasData.rates[closestIdx] || 0;
-                                    if (rate > 0) {
-                                        return `⛽ ${rate.toFixed(1)} L/min (${gasData.name})`;
-                                    }
-                                }
-                                return '';
-                            },
                             afterBody: (items) => {
                                 if (!this._gasConsumption || !this._timePoints || items.length === 0) return '';
                                 const time = items[0].parsed.x;
@@ -1435,7 +1416,18 @@ export class DiveProfileChart {
                                     const dist = Math.abs(this._timePoints[i] - time);
                                     if (dist < minDist) { minDist = dist; closestIdx = i; }
                                 }
-                                const lines = ['─── Tank Pressures ───'];
+                                const lines = [];
+                                // Current gas consumption rate (only one gas active at a time)
+                                for (const gasData of Object.values(this._gasConsumption)) {
+                                    if (!gasData.isActive) continue;
+                                    const rate = gasData.rates[closestIdx] || 0;
+                                    if (rate > 0) {
+                                        lines.push(`Gas: ${rate.toFixed(1)} L/min (${gasData.name})`);
+                                        break;
+                                    }
+                                }
+                                // Tank pressures
+                                lines.push('─── Tank Pressures ───');
                                 Object.values(this._gasConsumption).forEach(gasData => {
                                     if (!gasData.isActive) return;
                                     const pressure = gasData.pressures[closestIdx];

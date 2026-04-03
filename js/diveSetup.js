@@ -38,8 +38,8 @@ export const GAS_SWITCH_TIME = 3;
  */
 export const BOTTOM_GASES = [
     { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 },
-    { id: 'ean32', name: 'Nitrox 32 (EAN32)', o2: 0.32, n2: 0.68, he: 0 },
-    { id: 'ean36', name: 'Nitrox 36 (EAN36)', o2: 0.36, n2: 0.64, he: 0 }
+    { id: 'ean32', name: 'EAN32', o2: 0.32, n2: 0.68, he: 0 },
+    { id: 'ean36', name: 'EAN36', o2: 0.36, n2: 0.64, he: 0 }
 ];
 
 /**
@@ -47,9 +47,9 @@ export const BOTTOM_GASES = [
  * Shallow MOD, used with stage cylinders
  */
 export const DECO_GASES = [
-    { id: 'ean50', name: 'Nitrox 50 (EAN50)', o2: 0.50, n2: 0.50, he: 0 },
-    { id: 'ean80', name: 'Nitrox 80 (EAN80)', o2: 0.80, n2: 0.20, he: 0 },
-    { id: 'o2', name: 'Pure Oxygen (100%)', o2: 1.0, n2: 0, he: 0 }
+    { id: 'ean50', name: 'EAN50', o2: 0.50, n2: 0.50, he: 0 },
+    { id: 'ean80', name: 'EAN80', o2: 0.80, n2: 0.20, he: 0 },
+    { id: 'o2', name: 'O₂ 100%', o2: 1.0, n2: 0, he: 0 }
 ];
 
 /**
