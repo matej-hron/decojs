@@ -677,10 +677,12 @@
         });
     </script>
 
-    <!-- Service Worker Registration -->
+    <!-- Unregister Service Worker (was causing cache issues during development) -->
     <script>
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+                registrations.forEach(r => r.unregister());
+            });
         }
     </script>
 </body>
