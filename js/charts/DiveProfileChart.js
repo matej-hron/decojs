@@ -1393,20 +1393,20 @@ export class DiveProfileChart {
                                 return '';
                             },
                             label: (context) => {
+                                // Hide gas consumption from regular labels (shown in afterBody)
+                                if (context.dataset.isGasConsumption) return null;
                                 const label = context.dataset.label || '';
                                 const value = context.parsed.y;
                                 if (label.includes('Depth') || label.includes('Ceiling')) {
                                     return `${label}: ${value.toFixed(1)} m`;
                                 } else if (label.includes('Pressure') || label.includes('pp')) {
                                     return `${label}: ${value.toFixed(2)} bar`;
-                                } else if (context.dataset.isGasConsumption) {
-                                    const rate = context.raw.rate || 0;
-                                    if (rate > 0) {
-                                        return `${label}: ${value.toFixed(0)} bar (${rate.toFixed(1)} L/min)`;
-                                    }
-                                    return `${label}: ${value.toFixed(0)} bar`;
                                 }
                                 return `${label}: ${value.toFixed(2)}`;
+                            },
+                            filter: (item) => {
+                                // Filter out null labels (gas consumption)
+                                return item.text !== null;
                             },
                             afterBody: (items) => {
                                 if (!this._gasConsumption || !this._timePoints || items.length === 0) return '';
@@ -1424,9 +1424,11 @@ export class DiveProfileChart {
                                     const pressure = gasData.pressures[closestIdx];
                                     if (pressure !== undefined) {
                                         const bar = Math.round(pressure);
+                                        const rate = gasData.rates[closestIdx] || 0;
+                                        const rateStr = rate > 0 ? ` (${rate.toFixed(1)} L/min)` : '';
                                         const status = bar <= 0 ? ' ⚠️ EMPTY' :
                                                        bar < (gasData.reservePressure || 50) ? ' ⚠️' : '';
-                                        lines.push(`  ${gasData.name}: ${bar} bar${status}`);
+                                        lines.push(`  ${gasData.name}: ${bar} bar${rateStr}${status}`);
                                     }
                                 });
                                 return lines;
