@@ -1422,7 +1422,7 @@ export class DiveProfileChart {
                                     if (!gasData.isActive) continue;
                                     const rate = gasData.rates[closestIdx] || 0;
                                     if (rate > 0) {
-                                        lines.push(`Gas: ${rate.toFixed(1)} L/min (${gasData.name})`);
+                                        lines.push(`⛽ Gas consumption: ${rate.toFixed(1)} L/min (${gasData.name})`);
                                         break;
                                     }
                                 }
