@@ -462,6 +462,15 @@ export class DiveSetupEditor extends EventTarget {
                     <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="50" data-gf-high="80">50/80</button>
                     <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="30" data-gf-high="85">30/85</button>
                 </div>
+                <div class="dse-continuous-deco" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color, #ddd);">
+                    <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; cursor: pointer;">
+                        <input type="checkbox" class="dse-continuous-checkbox">
+                        Continuous deco (no 3m/1min grid)
+                    </label>
+                    <p class="dse-hint dse-continuous-warning" style="display: none; color: var(--warning-color, #e67e22); margin-top: 0.3rem;">
+                        ⚠️ Produces impractical profiles for demonstration only. Shows raw Bühlmann model output without standard 3m/1min rounding.
+                    </p>
+                </div>
             </div>
         `;
         
@@ -471,6 +480,14 @@ export class DiveSetupEditor extends EventTarget {
         this.elements.gfHighInput = section.querySelector('.dse-gf-high-input');
         this.elements.algorithmSelect = section.querySelector('.dse-algorithm-select');
         this.elements.gfSummaryHint = section.querySelector('.dse-summary-hint');
+        this.elements.continuousDecoCheckbox = section.querySelector('.dse-continuous-checkbox');
+        this.elements.continuousWarning = section.querySelector('.dse-continuous-warning');
+
+        // Continuous deco toggle
+        this.elements.continuousDecoCheckbox.addEventListener('change', () => {
+            this.elements.continuousWarning.style.display = this.elements.continuousDecoCheckbox.checked ? 'block' : 'none';
+            this._onInputChange();
+        });
 
         // Set initial algorithm value
         this.elements.algorithmSelect.value = getZHL16Variant();
@@ -1173,8 +1190,9 @@ export class DiveSetupEditor extends EventTarget {
         // Update deco info
         if (ndl !== Infinity && bottomTime > ndl) {
             this.elements.decoInfo.style.display = 'inline';
-            const result = generateDecoProfile(maxDepth, bottomTime, this.currentGases, gfLow, gfHigh, safetyStop);
-            this.elements.decoTime.textContent = result.totalDecoTime;
+            const continuousDecoNDL = this.elements.continuousDecoCheckbox?.checked ?? false;
+            const result = generateDecoProfile(maxDepth, bottomTime, this.currentGases, gfLow, gfHigh, safetyStop, { continuousDeco: continuousDecoNDL });
+            this.elements.decoTime.textContent = Math.round(result.totalDecoTime * 10) / 10;
         } else {
             this.elements.decoInfo.style.display = 'none';
         }
@@ -1203,8 +1221,9 @@ export class DiveSetupEditor extends EventTarget {
             time: parseFloat(this.elements.safetyStopTime?.value) || DEFAULT_SAFETY_STOP.time
         };
         
-        const result = generateDecoProfile(maxDepth, bottomTime, this.currentGases, gfLow, gfHigh, safetyStop);
-        
+        const continuousDeco = this.elements.continuousDecoCheckbox?.checked ?? false;
+        const result = generateDecoProfile(maxDepth, bottomTime, this.currentGases, gfLow, gfHigh, safetyStop, { continuousDeco });
+
         this._loadWaypointsToTable(result.waypoints, this.elements.waypointsBody);
         this._onInputChange();
     }
@@ -1294,10 +1313,11 @@ export class DiveSetupEditor extends EventTarget {
             surfaceInterval: surfaceInterval,
             sacRate: sacRate,
             reservePressure: reservePressure,
-            units: { depth: 'meters', time: 'minutes', pressure: 'bar' }
+            units: { depth: 'meters', time: 'minutes', pressure: 'bar' },
+            continuousDeco: this.elements.continuousDecoCheckbox?.checked ?? false
         };
     }
-    
+
     _populateFromSetup(setup) {
         // Store profile name
         this.currentProfileName = setup.name || null;
@@ -1335,6 +1355,12 @@ export class DiveSetupEditor extends EventTarget {
         if (this.elements.algorithmSelect && setup.algorithm) {
             this.elements.algorithmSelect.value = setup.algorithm;
             setZHL16Variant(setup.algorithm);
+        }
+
+        // Continuous deco
+        if (this.elements.continuousDecoCheckbox) {
+            this.elements.continuousDecoCheckbox.checked = setup.continuousDeco ?? false;
+            this.elements.continuousWarning.style.display = setup.continuousDeco ? 'block' : 'none';
         }
 
         // Description

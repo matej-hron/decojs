@@ -807,8 +807,12 @@ export function simulateDepthChange(tissuePressures, startDepth, endDepth, time,
  * @returns {{stops: Array<{depth: number, time: number, gas: string}>, gasSwitches: Array<{depth: number, gas: string, gasId: string}>, totalTime: number, totalAscentTime: number, pAnchor: number, anchorDepth: number}}
  */
 export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, gfLow, gfHigh, gases = null, options = {}) {
-    const { switchPpO2 = 1.6 } = options;
-    
+    const { switchPpO2 = 1.6, continuousDeco = false } = options;
+
+    // In continuous mode, use fine-grained resolution for didactic visualization
+    const stopIncrement = continuousDeco ? 0.1 : STOP_INCREMENT;
+    const timeIncrement = continuousDeco ? 0.1 : 1;
+
     const stops = [];
     const gasSwitches = []; // Track gas switches during ascent
     let totalAscentTime = 0;
@@ -853,7 +857,7 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
             }
             // Round MOD toward shallower (smaller depth = lower ppO2 = safe)
             // E.g., MOD=22m -> switchDepth=21m
-            const switchDepth = Math.max(0, Math.floor(mod / STOP_INCREMENT) * STOP_INCREMENT);
+            const switchDepth = Math.max(0, Math.floor(mod / stopIncrement) * stopIncrement);
             gasSwitchPoints.push({
                 ...gas,
                 switchDepth
@@ -902,7 +906,7 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
     // Find first stop depth using pAnchor-based GF ramp with ascent simulation
     // This uses the exact same logic as the deco loop: simulate ascent, check ceiling at destination GF
     let { depth: firstStopDepth, tissues: tissuesAtFirstStop } = findFirstStopWithRampedGF(
-        tissues, depth, pAnchor, currentN2, gfLow, gfHigh
+        tissues, depth, pAnchor, currentN2, gfLow, gfHigh, stopIncrement
     );
     
     // If no deco needed (first stop = 0), just ascend with mid-ascent gas switches
@@ -978,7 +982,7 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
         switchToBestGas(depth);
         
         // Wait at this stop until ceiling clears to next stop (or surface)
-        const nextStopDepth = Math.max(0, depth - STOP_INCREMENT);
+        const nextStopDepth = Math.max(0, Math.round((depth - stopIncrement) * 10) / 10);
         const delta = depth - nextStopDepth;
         const ascentTime = delta / ASCENT_SPEED;
         
@@ -998,10 +1002,10 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
                 break; // Ceiling cleared after simulated ascent, can actually ascend
             }
             
-            // Wait 1 minute at this stop
-            tissues = simulateDepthTime(tissues, depth, 1, currentN2);
-            stopTime += 1;
-            
+            // Wait at this stop
+            tissues = simulateDepthTime(tissues, depth, timeIncrement, currentN2);
+            stopTime = Math.round((stopTime + timeIncrement) * 10) / 10;
+
             // Safety: prevent infinite loops
             if (stopTime > 300) {
                 console.warn('Deco stop exceeded 5 hours, breaking');
@@ -1011,7 +1015,7 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
         
         if (stopTime > 0) {
             stops.push({
-                depth: depth,
+                depth: Math.round(depth * 10) / 10,
                 time: stopTime,
                 gas: currentGasName
             });
