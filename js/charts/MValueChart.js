@@ -849,9 +849,25 @@ export class MValueChart {
             // Get N2 fraction from dive setup (first gas or air)
             const gases = this.diveSetup?.gases || [];
             const n2Fraction = gases[0]?.n2 ?? N2_FRACTION;
-            
-            // Find pAnchor using the new algorithm
-            const anchorResult = findGFLowAnchor(tissuePressures, maxDepth, n2Fraction, gfLow);
+
+            // Build gas switch points for pAnchor calculation (same as generateDecoSchedule)
+            const switchPpO2 = 1.6;
+            const gasSwitchPoints = [];
+            for (const gas of gases.slice(1)) {
+                if (gas.o2 > 0 && Number.isFinite(gas.o2) && Number.isFinite(gas.n2)) {
+                    const mod = (switchPpO2 / gas.o2 - 1) * 10;
+                    if (Number.isFinite(mod)) {
+                        gasSwitchPoints.push({ ...gas, switchDepth: Math.max(0, Math.floor(mod / 3) * 3) });
+                    }
+                }
+            }
+            gasSwitchPoints.sort((a, b) => b.switchDepth - a.switchDepth);
+
+            // Find pAnchor using findGFLowAnchor with gas switches (same as generateDecoSchedule)
+            const anchorResult = findGFLowAnchor(
+                tissuePressures, maxDepth, n2Fraction, gfLow, undefined,
+                gasSwitchPoints.length > 0 ? gasSwitchPoints : null
+            );
             pAnchor = anchorResult.pAnchor;
             
             // Draw vertical line at pAnchor (GF Low anchor depth)

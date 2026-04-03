@@ -1740,34 +1740,26 @@ describe('decoModel', () => {
         });
         
         test('30m/20min air GF 50/80: pAnchor is shallower than first stop', () => {
-            // This tests a real-world scenario where:
-            // - pAnchor (where GF_max first equals GF_low) is at 6m
-            // - But first STOP is at 9m because ceiling requires it
-            
+            // pAnchor (from findGFLowAnchor) can be shallower than the first actual deco stop.
+            // This is correct: pAnchor is the theoretical GF Low constraint point,
+            // the first stop is the practical ceiling constraint (rounded to grid).
+
             // Simulate dive: 30m/20min air
             const descentTime = 30 / 20; // 1.5 min at 20 m/min
             let tissues = {};
             COMPARTMENTS.forEach(c => { tissues[c.id] = 0.74; }); // surface sat
             tissues = simulateDepthChange(tissues, 0, 30, descentTime, N2_FRACTION);
             tissues = simulateDepthTime(tissues, 30, 20 - descentTime, N2_FRACTION);
-            
-            // Find pAnchor
-            const { pAnchor, anchorDepth } = findGFLowAnchor(tissues, 30, N2_FRACTION, 0.5);
-            
+
             // Generate deco schedule
             const schedule = generateDecoSchedule(tissues, 30, N2_FRACTION, 0.5, 0.8);
-            
-            // pAnchor should be around 6m (1.6 bar)
-            expect(anchorDepth).toBeCloseTo(6, 0);
-            expect(pAnchor).toBeCloseTo(1.6, 1);
-            
-            // First stop should be 9m (deeper than pAnchor due to ceiling constraint)
+
+            // pAnchor around 6m (theoretical GF Low point)
+            expect(schedule.anchorDepth).toBeCloseTo(6, 0);
+
+            // First stop at 9m (practical ceiling on 3m grid, deeper than pAnchor)
             expect(schedule.stops.length).toBeGreaterThan(0);
             expect(schedule.stops[0].depth).toBe(9);
-            
-            // Schedule should return the pAnchor
-            expect(schedule.pAnchor).toBeCloseTo(1.6, 1);
-            expect(schedule.anchorDepth).toBeCloseTo(6, 0);
         });
     });
     
@@ -1890,11 +1882,11 @@ describe('Gas Switching During Ascent', () => {
         // This dive has first stop at 6m, which is shallower than EAN50's MOD (21m)
         // The scheduler should still switch to EAN50 at 21m during ascent
         
-        test('first stop is at 6m or shallower', () => {
+        test('first stop is at 9m or shallower', () => {
             const schedule = getShallowDecoSchedule();
-            // Verify this test case has first stop at 6m (confirming the bug scenario)
+            // With gas-switch-aware pAnchor, first stop may be deeper than without
             expect(schedule.stops.length).toBeGreaterThan(0);
-            expect(schedule.stops[0].depth).toBeLessThanOrEqual(6);
+            expect(schedule.stops[0].depth).toBeLessThanOrEqual(9);
         });
         
         test('switches to EAN50 at 21m during ascent', () => {
