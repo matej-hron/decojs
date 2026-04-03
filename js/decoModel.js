@@ -1049,12 +1049,11 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
             tissues = simulateDepthTime(tissues, depth, MIN_STOP_TIME, currentN2);
             let stopTime = MIN_STOP_TIME;
 
-            // Continue waiting until we can ascend shallower
+            // Continue waiting until ceiling drops below current depth
             while (true) {
-                const { depth: reachable } = findFirstStopWithRampedGF(
-                    tissues, depth, pAnchor, currentN2, gfLow, gfHigh, stopIncrement, gasSwitchPoints
-                );
-                if (reachable < depth) break; // can go shallower
+                const gfAtDepth = interpolateGF(getAmbientPressure(depth), pAnchor, gfLow, gfHigh);
+                const { ceilingDepth } = getDiveCeiling(tissues, gfAtDepth);
+                if (ceilingDepth < depth) break; // ceiling is above us, can go shallower
 
                 tissues = simulateDepthTime(tissues, depth, 0.1, currentN2);
                 stopTime = Math.round((stopTime + 0.1) * 10) / 10;
@@ -1067,10 +1066,12 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
                 gas: currentGasName
             });
 
-            // Find shallowest reachable depth and ascend there
-            const { depth: nextDepth } = findFirstStopWithRampedGF(
-                tissues, depth, pAnchor, currentN2, gfLow, gfHigh, stopIncrement, gasSwitchPoints
-            );
+            // Find shallowest reachable depth: use ceiling directly from current tissues
+            // This avoids the discrete overshoot from findFirstStopWithRampedGF's grid search
+            const gfHere = interpolateGF(getAmbientPressure(depth), pAnchor, gfLow, gfHigh);
+            const { ceilingDepth: rawCeiling } = getDiveCeiling(tissues, gfHere);
+            // Round ceiling up to stopIncrement grid
+            const nextDepth = Math.max(0, Math.ceil(rawCeiling / stopIncrement) * stopIncrement);
             if (nextDepth >= depth) break; // safety: can't go shallower
             const ascentTime = (depth - nextDepth) / ASCENT_SPEED;
             tissues = simulateDepthChange(tissues, depth, nextDepth, ascentTime, currentN2);
