@@ -78,7 +78,6 @@ export const BOTTOM_CYLINDERS = [
  * "S" = stage designation (cuft nominal capacity at working pressure)
  */
 export const STAGE_CYLINDERS = [
-    { value: 3, label: '3 L (Pony)' },
     { value: 5.7, label: '5.7 L (S040)' },
     { value: 7, label: '7 L' },
     { value: 10, label: '10 L' },
