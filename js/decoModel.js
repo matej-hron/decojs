@@ -866,13 +866,7 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
     const stops = [];
     const gasSwitches = []; // Track gas switches during ascent
     let totalAscentTime = 0;
-    
-    // Find the GF Low anchor point (pAnchor)
-    // This is the ambient pressure where GF_max first equals GF_low during ascent
-    const { pAnchor, anchorDepth, tissuesAtAnchor } = findGFLowAnchor(
-        tissuePressures, currentDepth, n2Fraction, gfLow
-    );
-    
+
     // Clone tissue pressures
     let tissues = { ...tissuePressures };
     let depth = currentDepth;
@@ -953,11 +947,22 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
         return true;
     };
     
-    // Find first stop depth using pAnchor-based GF ramp with ascent simulation
-    // This uses the exact same logic as the deco loop: simulate ascent, check ceiling at destination GF
-    let { depth: firstStopDepth, tissues: tissuesAtFirstStop } = findFirstStopWithRampedGF(
-        tissues, depth, pAnchor, currentN2, gfLow, gfHigh, stopIncrement, gasSwitchPoints
+    // Two-pass first stop finding:
+    // Pass 1: Find deepest constraint with GF Low everywhere → initial anchor
+    const gfLowEverywhere = SURFACE_PRESSURE; // Makes interpolateGF always return gfLow
+    const { depth: gfLowStopDepth } = findFirstStopWithRampedGF(
+        tissues, depth, gfLowEverywhere, currentN2, gfLow, gfHigh, stopIncrement, gasSwitchPoints
     );
+
+    // Pass 2: With GF ramp from initial anchor, find actual first stop (may be shallower)
+    const initialPAnchor = getAmbientPressure(gfLowStopDepth);
+    let { depth: firstStopDepth, tissues: tissuesAtFirstStop } = findFirstStopWithRampedGF(
+        tissues, depth, initialPAnchor, currentN2, gfLow, gfHigh, stopIncrement, gasSwitchPoints
+    );
+
+    // pAnchor = actual first stop depth (where diver first needs to wait)
+    const pAnchor = getAmbientPressure(firstStopDepth);
+    const anchorDepth = firstStopDepth;
     
     // If no deco needed (first stop = 0), just ascend with mid-ascent gas switches
     // Note: In this path, gas switches occur at MOD (rounded to 3m) during continuous

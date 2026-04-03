@@ -860,37 +860,35 @@ describe('Bottom-Anchored GF', () => {
             expect(gfAt3m).toBeLessThan(gfHigh);
         });
         
-        test('30m/20min air GF 50/80: pAnchor is shallower than first stop', () => {
-            // This specific dive should have first stop at 9m, pAnchor around 6m
+        test('30m/20min air GF 50/80: pAnchor equals first stop depth', () => {
+            // pAnchor is now defined as the first stop depth (Baker's approach).
+            // The GF interpolation ramp starts from the first stop.
             const initialTissues = {};
             COMPARTMENTS.forEach(comp => {
                 initialTissues[comp.id] = getInitialTissueN2();
             });
-            
+
             const descentTime = 30 / 20; // 20m/min descent = 1.5 min
             const bottomDuration = 20 - descentTime; // 18.5 min at depth
-            
+
             // Manual simulation of descent + bottom
             const startAlv = getAlveolarN2Pressure(getAmbientPressure(0), N2_FRACTION);
             const endAlv = getAlveolarN2Pressure(getAmbientPressure(30), N2_FRACTION);
             const rate = (endAlv - startAlv) / descentTime;
-            
+
             const tissues = {};
             COMPARTMENTS.forEach(comp => {
-                // Descent
                 const afterDescent = schreinerEquation(initialTissues[comp.id], startAlv, rate, descentTime, comp.halfTime);
-                // Bottom time
                 tissues[comp.id] = haldaneEquation(afterDescent, endAlv, bottomDuration, comp.halfTime);
             });
-            
+
             const schedule = generateDecoSchedule(tissues, 30, N2_FRACTION, 0.5, 0.8);
-            
-            // pAnchor should be around 6.27m (shallower than 9m first stop)
-            expect(schedule.anchorDepth).toBeGreaterThan(5);
-            expect(schedule.anchorDepth).toBeLessThan(8);
-            
-            // First stop should be at 9m (not 6m) because at 6m ceiling > depth
-            expect(schedule.stops[0].depth).toBe(9);
+
+            // pAnchor = first stop depth (on 3m grid)
+            expect(schedule.anchorDepth).toBe(schedule.stops[0].depth);
+
+            // First stop at 6m (found with GF Low, then GF ramp starts here)
+            expect(schedule.stops[0].depth).toBe(6);
         });
     });
     
