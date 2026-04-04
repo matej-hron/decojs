@@ -678,9 +678,9 @@
                 </div>
             </div>
             
-            <!-- M-Value Chart -->
+            <!-- Pressure-Pressure Diagram -->
             <div class="sandbox-chart-container">
-                <h3>📐 M-Value Diagram</h3>
+                <h3>📐 Pressure-Pressure Diagram</h3>
                 <div class="export-config-panel">
                     <div class="export-config-actions">
                         <button id="export-mvalue-config-btn" class="btn btn-small btn-secondary">📋 Export Config</button>
@@ -689,7 +689,13 @@
                 </div>
                 <div class="chart-wrapper" id="mvalue-container" style="height: 700px;"></div>
             </div>
-            
+
+            <!-- GF% Diagram -->
+            <div class="sandbox-chart-container">
+                <h3>📊 GF% Diagram</h3>
+                <div class="chart-wrapper" id="gf-chart-container" style="height: 700px;"></div>
+            </div>
+
             <!-- Status -->
             <div class="sandbox-status">
                 <span id="status-text">Ready</span>
@@ -710,6 +716,7 @@
         import { DiveSetupEditor } from '../js/components/DiveSetupEditor.js';
         import { DiveProfileChart } from '../js/charts/DiveProfileChart.js';
         import { MValueChart } from '../js/charts/MValueChart.js';
+        import { GFChart } from '../js/charts/GFChart.js';
         import { 
             getAmbientPressure, 
             calculateCeilingTimeSeries,
@@ -1130,6 +1137,7 @@
         const editorContainer = document.getElementById('editor-container');
         const diveProfileContainer = document.getElementById('dive-profile-container');
         const mvalueContainer = document.getElementById('mvalue-container');
+        const gfChartContainer = document.getElementById('gf-chart-container');
         const profileChips = document.getElementById('profile-chips');
         const saveProfileName = document.getElementById('save-profile-name');
         const saveProfileBtn = document.getElementById('save-profile-btn');
@@ -1181,19 +1189,29 @@
                 compartmentSelector: true
             }
         });
-        
+
+        const gfChart = new GFChart(gfChartContainer, {
+            diveSetup: initialSetup,
+            options: {
+                compartments: [1, 2, 3, 4, 5, 6],
+                showTrail: true,
+                compartmentSelector: true
+            }
+        });
+
         // =====================================================================
         // EVENT HANDLERS
         // =====================================================================
-        
+
         // Editor changes → update charts
         editor.addEventListener('change', (e) => {
             const { diveSetup, valid, errors } = e.detail;
-            
+
             // Update charts
             diveProfileChart.update(diveSetup);
             mvalueChart.update(diveSetup);
-            
+            gfChart.update(diveSetup);
+
             // Analyze dive and render warnings/gas summary
             const { warnings, gasSummary } = analyzeDive(diveSetup);
             renderWarnings(diveWarningsContainer, warnings);
