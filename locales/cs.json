@@ -875,7 +875,7 @@
         "temperature": "Teplota",
         "initialTemp": "Počáteční teplota T<sub>1</sub> (°C)",
         "finalTemp": "Konečná teplota T<sub>2</sub> (°C)",
-        "calculatePrompt": "Nastavte scénář, spočítejte P<sub>2</sub> z hlavy, a pak klikněte pro ověření.",
+        "calculatePrompt": "Nastavte scénář, spočítejte P<sub>2</sub>, a pak klikněte pro ověření.",
         "showResult": "Zobrazit výsledek",
         "finalPressure": "Výsledný tlak P<sub>2</sub>",
         "pressureChange": "Změna tlaku ΔP",

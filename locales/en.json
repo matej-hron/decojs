@@ -875,7 +875,7 @@
         "temperature": "Temperature",
         "initialTemp": "Initial temperature T<sub>1</sub> (°C)",
         "finalTemp": "Final temperature T<sub>2</sub> (°C)",
-        "calculatePrompt": "Set up your scenario, calculate P<sub>2</sub> in your head, then click below to check your answer.",
+        "calculatePrompt": "Set up your scenario, calculate P<sub>2</sub>, then click below to check your answer.",
         "showResult": "Show Result",
         "finalPressure": "Final Pressure P<sub>2</sub>",
         "pressureChange": "Pressure Change ΔP",
