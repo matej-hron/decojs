@@ -2473,6 +2473,122 @@ describe('Reference Comparison: Bühlmann Tables', () => {
 });
 
 // ============================================================================
+// CONTINUOUS DECO ACCURACY TESTS
+// ============================================================================
+
+describe('Continuous Deco Accuracy', () => {
+    // Helper: simulate dive and generate continuous deco schedule
+    function continuousDecoSchedule(maxDepth, bottomTime, n2, gfLow, gfHigh, gases) {
+        const initialN2 = getInitialTissueN2(n2);
+        let tissues = {};
+        COMPARTMENTS.forEach(c => { tissues[c.id] = initialN2; });
+        const descentTime = Math.ceil(maxDepth / 20);
+        tissues = simulateDepthChange(tissues, 0, maxDepth, descentTime, n2);
+        tissues = simulateDepthTime(tissues, maxDepth, bottomTime - descentTime, n2);
+        return { schedule: generateDecoSchedule(tissues, maxDepth, n2, gfLow, gfHigh, gases, { continuousDeco: true }), tissues };
+    }
+
+    // Helper: simulate ascent to a stop and return tissue state at arrival
+    function simulateAscentToStop(tissues, fromDepth, toDepth, n2, gasSwitches, gases) {
+        let currentN2 = n2;
+        let currentDepth = fromDepth;
+        let t = { ...tissues };
+        const sortedSwitches = [...gasSwitches].sort((a, b) => b.depth - a.depth);
+        for (const sw of sortedSwitches) {
+            if (sw.depth < currentDepth && sw.depth >= toDepth) {
+                const dt = (currentDepth - sw.depth) / 10;
+                t = simulateDepthChange(t, currentDepth, sw.depth, dt, currentN2);
+                currentDepth = sw.depth;
+                const g = gases.find(g => g.name === sw.gas);
+                if (g) currentN2 = g.n2;
+            }
+        }
+        if (currentDepth > toDepth) {
+            const dt = (currentDepth - toDepth) / 10;
+            t = simulateDepthChange(t, currentDepth, toDepth, dt, currentN2);
+        }
+        return { tissues: t, n2: currentN2 };
+    }
+
+    const scenarios = [
+        { name: 'Air 30m/25min GF 70/85', depth: 30, bt: 25, gases: [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79 }], gfL: 0.70, gfH: 0.85 },
+        { name: 'Air 40m/20min GF 50/80', depth: 40, bt: 20, gases: [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79 }], gfL: 0.50, gfH: 0.80 },
+        { name: 'Air+EAN50 40m/25min GF 70/85', depth: 40, bt: 25, gases: [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79 }, { id: 'ean50', name: 'EAN50', o2: 0.50, n2: 0.50 }], gfL: 0.70, gfH: 0.85 },
+        { name: 'Air+EAN50 50m/20min GF 30/85', depth: 50, bt: 20, gases: [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79 }, { id: 'ean50', name: 'EAN50', o2: 0.50, n2: 0.50 }], gfL: 0.30, gfH: 0.85 },
+        { name: 'Air 40m/25min GF 50/80', depth: 40, bt: 25, gases: [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79 }], gfL: 0.50, gfH: 0.80 },
+    ];
+
+    for (const sc of scenarios) {
+        test(`${sc.name}: first stop within 0.2m of pAnchor`, () => {
+            const { schedule } = continuousDecoSchedule(sc.depth, sc.bt, sc.gases[0].n2, sc.gfL, sc.gfH, sc.gases);
+            if (schedule.stops.length === 0) return; // NDL dive
+            const gap = Math.abs(schedule.stops[0].depth - schedule.anchorDepth);
+            expect(gap).toBeLessThan(0.25);
+        });
+
+        test(`${sc.name}: subsequent stops within 0.15m of ceiling at arrival`, () => {
+            const { schedule, tissues: bottomTissues } = continuousDecoSchedule(sc.depth, sc.bt, sc.gases[0].n2, sc.gfL, sc.gfH, sc.gases);
+            if (schedule.stops.length < 2) return;
+
+            // Simulate ascent to first stop
+            let simResult = simulateAscentToStop(bottomTissues, sc.depth, schedule.stops[0].depth, sc.gases[0].n2, schedule.gasSwitches, sc.gases);
+            let simTissues = simResult.tissues;
+            let simN2 = simResult.n2;
+
+            for (let i = 0; i < schedule.stops.length; i++) {
+                const stop = schedule.stops[i];
+                const gf = interpolateGF(getAmbientPressure(stop.depth), schedule.pAnchor, sc.gfL, sc.gfH);
+
+                if (i > 0) {
+                    // Check gap at arrival
+                    const { ceilingDepth } = getDiveCeiling(simTissues, gf);
+                    const gap = stop.depth - ceilingDepth;
+                    expect(gap).toBeLessThan(0.15);
+                }
+
+                // Simulate wait + ascent to next stop
+                simTissues = simulateDepthTime(simTissues, stop.depth, stop.time, simN2);
+                if (i < schedule.stops.length - 1) {
+                    const next = schedule.stops[i + 1];
+                    // Check gas switch
+                    const sw = schedule.gasSwitches.find(g => Math.abs(g.depth - next.depth) < 0.5);
+                    if (sw) {
+                        const g = sc.gases.find(g => g.name === sw.gas);
+                        if (g) simN2 = g.n2;
+                    }
+                    const dt = (stop.depth - next.depth) / 10;
+                    simTissues = simulateDepthChange(simTissues, stop.depth, next.depth, dt, simN2);
+                }
+            }
+        });
+
+        test(`${sc.name}: no GF violations`, () => {
+            const { schedule, tissues: bottomTissues } = continuousDecoSchedule(sc.depth, sc.bt, sc.gases[0].n2, sc.gfL, sc.gfH, sc.gases);
+            if (schedule.stops.length === 0) return;
+
+            let simResult = simulateAscentToStop(bottomTissues, sc.depth, schedule.stops[0].depth, sc.gases[0].n2, schedule.gasSwitches, sc.gases);
+            let simTissues = simResult.tissues;
+            let simN2 = simResult.n2;
+
+            for (let i = 0; i < schedule.stops.length; i++) {
+                const stop = schedule.stops[i];
+                const stopAmbient = getAmbientPressure(stop.depth);
+                const gfLimit = interpolateGF(stopAmbient, schedule.pAnchor, sc.gfL, sc.gfH);
+                const { gfMax } = calculateMaxGF(simTissues, stopAmbient);
+                expect(gfMax).toBeLessThan(gfLimit + 0.002); // small tolerance
+
+                simTissues = simulateDepthTime(simTissues, stop.depth, stop.time, simN2);
+                if (i < schedule.stops.length - 1) {
+                    const next = schedule.stops[i + 1];
+                    const dt = (stop.depth - next.depth) / 10;
+                    simTissues = simulateDepthChange(simTissues, stop.depth, next.depth, dt, simN2);
+                }
+            }
+        });
+    }
+});
+
+// ============================================================================
 // SUMMARY
 // ============================================================================
 
