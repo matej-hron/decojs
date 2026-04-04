@@ -502,9 +502,9 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
             const wp1 = waypoints[i];
             const wp2 = waypoints[i + 1];
             if (wp1.depth > sw.depth && wp2.depth < sw.depth) {
-                // Interpolate time on the ascent line
+                // Interpolate time on the ascent line (no rounding - must be exactly on the line)
                 const fraction = (wp1.depth - sw.depth) / (wp1.depth - wp2.depth);
-                const switchTime = Math.round((wp1.time + fraction * (wp2.time - wp1.time)) * 10) / 10;
+                const switchTime = wp1.time + fraction * (wp2.time - wp1.time);
                 waypoints.splice(i + 1, 0, { time: switchTime, depth: sw.depth, gasId: sw.gasId });
                 break;
             }
