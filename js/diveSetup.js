@@ -492,7 +492,25 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
         currentTime = Math.round((currentTime + finalAscentTime) * 10) / 10;
         waypoints.push({ time: currentTime, depth: 0 });
     }
-    
+
+    // Insert gas switch waypoints on the ascent line (for chart annotation positioning).
+    // These don't change the profile geometry – they sit exactly on the existing ascent line.
+    for (const sw of sortedGasSwitches) {
+        if (eventsByDepth.has(sw.depth)) continue; // already a stop at this depth
+        // Find the two waypoints this switch falls between
+        for (let i = 0; i < waypoints.length - 1; i++) {
+            const wp1 = waypoints[i];
+            const wp2 = waypoints[i + 1];
+            if (wp1.depth > sw.depth && wp2.depth < sw.depth) {
+                // Interpolate time on the ascent line
+                const fraction = (wp1.depth - sw.depth) / (wp1.depth - wp2.depth);
+                const switchTime = Math.round((wp1.time + fraction * (wp2.time - wp1.time)) * 10) / 10;
+                waypoints.splice(i + 1, 0, { time: switchTime, depth: sw.depth, gasId: sw.gasId });
+                break;
+            }
+        }
+    }
+
     const totalDecoTime = stops.reduce((sum, s) => sum + s.time, 0);
     
     return {
