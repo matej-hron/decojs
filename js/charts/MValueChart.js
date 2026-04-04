@@ -170,7 +170,12 @@ export class MValueChart {
         `;
         this._buildTimelineControls();
         wrapper.appendChild(this.timelineContainer);
-        
+
+        // Mini profile canvas - shows dive profile with current position marker
+        this.miniProfileCanvas = document.createElement('canvas');
+        this.miniProfileCanvas.style.cssText = 'width: 100%; height: 50px; margin-bottom: 6px; border-radius: 4px; background: var(--surface-alt, #f0f4f8);';
+        wrapper.appendChild(this.miniProfileCanvas);
+
         // Chart container - fills remaining height
         this.chartContainer = document.createElement('div');
         this.chartContainer.className = 'mvc-chart-container';
@@ -648,6 +653,88 @@ export class MValueChart {
         const time = this.calculationResults.timePoints[this.currentTimeIndex] || 0;
         const depth = this.calculationResults.depthPoints[this.currentTimeIndex] || 0;
         this.timeDisplay.textContent = `${time.toFixed(1)} min @ ${depth.toFixed(1)}m`;
+        this._renderMiniProfile();
+    }
+
+    /**
+     * Render mini dive profile with current position marker
+     * @private
+     */
+    _renderMiniProfile() {
+        const canvas = this.miniProfileCanvas;
+        if (!canvas || !this.calculationResults) return;
+
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        const w = rect.width * dpr;
+        const h = rect.height * dpr;
+        if (w === 0 || h === 0) return;
+
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.scale(dpr, dpr);
+
+        const width = rect.width;
+        const height = rect.height;
+        const pad = { left: 4, right: 4, top: 4, bottom: 4 };
+
+        const times = this.calculationResults.timePoints;
+        const depths = this.calculationResults.depthPoints;
+        if (!times || times.length === 0) return;
+
+        const maxTime = times[times.length - 1];
+        const maxDepth = Math.max(...depths);
+        if (maxTime === 0 || maxDepth === 0) return;
+
+        const plotW = width - pad.left - pad.right;
+        const plotH = height - pad.top - pad.bottom;
+        const toX = (t) => pad.left + (t / maxTime) * plotW;
+        const toY = (d) => pad.top + (d / maxDepth) * plotH;
+
+        // Draw filled profile
+        ctx.beginPath();
+        ctx.moveTo(toX(times[0]), toY(0));
+        for (let i = 0; i < times.length; i++) {
+            ctx.lineTo(toX(times[i]), toY(depths[i]));
+        }
+        ctx.lineTo(toX(times[times.length - 1]), toY(0));
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(52, 152, 219, 0.2)';
+        ctx.fill();
+
+        // Draw profile line
+        ctx.beginPath();
+        for (let i = 0; i < times.length; i++) {
+            if (i === 0) ctx.moveTo(toX(times[i]), toY(depths[i]));
+            else ctx.lineTo(toX(times[i]), toY(depths[i]));
+        }
+        ctx.strokeStyle = 'rgba(52, 152, 219, 0.7)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // Draw current position marker
+        const curTime = times[this.currentTimeIndex] || 0;
+        const curDepth = depths[this.currentTimeIndex] || 0;
+        const cx = toX(curTime);
+        const cy = toY(curDepth);
+
+        // Vertical line
+        ctx.beginPath();
+        ctx.moveTo(cx, pad.top);
+        ctx.lineTo(cx, height - pad.bottom);
+        ctx.strokeStyle = 'rgba(231, 76, 60, 0.4)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Dot
+        ctx.beginPath();
+        ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(231, 76, 60, 0.9)';
+        ctx.fill();
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
     }
     
     // ============================================================================
