@@ -926,9 +926,11 @@ export class DiveProfileChart {
         
         const { results, ceilingDepths, compartmentCeilings, gasConsumption, waypoints, gases } = data;
 
-        // Store gas consumption data for tooltip access
+        // Store data for tooltip access
         this._gasConsumption = gasConsumption;
         this._timePoints = results.timePoints;
+        this._gasSwitches = results.gasSwitches || [];
+        this._bottomGasName = gases[0]?.name || 'Air';
 
         // Calculate axis bounds
         const maxDepth = Math.max(...waypoints.map(wp => wp.depth));
@@ -1294,19 +1296,30 @@ export class DiveProfileChart {
         // Gas switch markers
         if (this.options.showGasSwitches && results.gasSwitches && results.gasSwitches.length > 0) {
             results.gasSwitches.forEach((sw, i) => {
-                // Position label to the right of the switch, at same depth level
                 const fromText = sw.fromGasName ? `${sw.fromGasName} → ${sw.gasName}` : `→ ${sw.gasName}`;
+                const depthText = `${Math.round(sw.depth)}m`;
+                // Label with depth
                 annotations[`gasSwitch${i}`] = {
                     type: 'label',
                     xValue: sw.time + 1,
                     yValue: sw.depth,
                     yAdjust: 20,
-                    content: [fromText],
+                    content: [`${fromText} @ ${depthText}`],
                     backgroundColor: 'rgba(155, 89, 182, 0.95)',
                     color: 'white',
                     font: { size: 9, weight: 'bold' },
                     padding: { top: 3, bottom: 3, left: 6, right: 6 },
                     borderRadius: 4
+                };
+                // Dot on the dive profile line
+                annotations[`gasSwitchDot${i}`] = {
+                    type: 'point',
+                    xValue: sw.time,
+                    yValue: sw.depth,
+                    backgroundColor: 'rgba(155, 89, 182, 1)',
+                    borderColor: 'white',
+                    borderWidth: 2,
+                    radius: 5
                 };
             });
         }
@@ -1388,7 +1401,15 @@ export class DiveProfileChart {
                         callbacks: {
                             title: (items) => {
                                 if (items.length > 0) {
-                                    return `Time: ${items[0].parsed.x.toFixed(1)} min`;
+                                    const time = items[0].parsed.x;
+                                    // Find active gas at this time
+                                    let gasName = this._bottomGasName || 'Air';
+                                    if (this._gasSwitches) {
+                                        for (const sw of this._gasSwitches) {
+                                            if (time >= sw.time) gasName = sw.gasName;
+                                        }
+                                    }
+                                    return [`Time: ${time.toFixed(1)} min`, `Gas: ${gasName}`];
                                 }
                                 return '';
                             },
