@@ -456,11 +456,30 @@ export class DiveSetupEditor extends EventTarget {
                     </div>
                 </div>
                 <div class="dse-gf-presets">
-                    <span class="dse-hint">Presets:</span>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="100" data-gf-high="100">100/100</button>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="70" data-gf-high="85">70/85</button>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="50" data-gf-high="80">50/80</button>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="30" data-gf-high="85">30/85</button>
+                    <span class="dse-hint">Presets: <span class="dse-gf-info-toggle" title="GF preset guide" style="cursor:pointer; text-decoration:underline;">ℹ️</span></span>
+                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="100" data-gf-high="100" title="Raw Bühlmann tables, no conservatism">Bühlmann</button>
+                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="50" data-gf-high="85" title="Recreational: ≤40m, short deco">Recreational</button>
+                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="35" data-gf-high="75" title="Intensive: repeat dives, safari">Intensive</button>
+                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="20" data-gf-high="85" title="Deep: >60m, single dive">Deep</button>
+                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="70" data-gf-high="90" title="Bailout: emergency, switch to Freedom">Bailout</button>
+                </div>
+                <div class="dse-gf-info" style="display:none; margin-top:0.5rem; font-size:0.8rem; background:var(--surface-alt, #f5f5f5); border-radius:6px; padding:0.6rem; line-height:1.5;">
+                    <table style="width:100%; border-collapse:collapse; font-size:0.78rem;">
+                        <tr style="border-bottom:1px solid var(--border-color,#ddd);">
+                            <th style="text-align:left; padding:2px 4px;">Scenario</th>
+                            <th style="text-align:left; padding:2px 4px;">Depth</th>
+                            <th style="padding:2px 4px;">GF Low</th>
+                            <th style="padding:2px 4px;">GF High</th>
+                        </tr>
+                        <tr><td style="padding:2px 4px;">Recreational</td><td style="padding:2px 4px;">≤40m, short deco</td><td style="text-align:center;">40–60%</td><td style="text-align:center;">80–90%</td></tr>
+                        <tr><td style="padding:2px 4px;">Intensive / safari</td><td style="padding:2px 4px;">≤40m, repeat dives</td><td style="text-align:center;">30–40%</td><td style="text-align:center;">70–80%</td></tr>
+                        <tr><td style="padding:2px 4px;">Deep single dive</td><td style="padding:2px 4px;">>60m, one dive</td><td style="text-align:center;">0–50%</td><td style="text-align:center;">80–100%</td></tr>
+                        <tr><td style="padding:2px 4px;">Bailout / emergency</td><td style="padding:2px 4px;">—</td><td style="text-align:center;">60–80%</td><td style="text-align:center;">80–100%</td></tr>
+                        <tr style="border-top:1px solid var(--border-color,#ddd);"><td style="padding:2px 4px;">Deco Planner default</td><td></td><td style="text-align:center;">20%</td><td style="text-align:center;">80%</td></tr>
+                        <tr><td style="padding:2px 4px;">Freedom default</td><td></td><td style="text-align:center;">30%</td><td style="text-align:center;">80%</td></tr>
+                        <tr><td style="padding:2px 4px;">Bühlmann tables</td><td></td><td style="text-align:center;">100%</td><td style="text-align:center;">100%</td></tr>
+                    </table>
+                    <p style="margin:0.3rem 0 0; color:var(--text-muted); font-size:0.72rem;">Source: J. Hovorka (CMAS instructor)</p>
                 </div>
                 <div class="dse-continuous-deco" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color, #ddd);">
                     <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; cursor: pointer;">
@@ -482,6 +501,15 @@ export class DiveSetupEditor extends EventTarget {
         this.elements.gfSummaryHint = section.querySelector('.dse-summary-hint');
         this.elements.continuousDecoCheckbox = section.querySelector('.dse-continuous-checkbox');
         this.elements.continuousWarning = section.querySelector('.dse-continuous-warning');
+
+        // GF info toggle
+        const gfInfoToggle = section.querySelector('.dse-gf-info-toggle');
+        const gfInfoPanel = section.querySelector('.dse-gf-info');
+        if (gfInfoToggle && gfInfoPanel) {
+            gfInfoToggle.addEventListener('click', () => {
+                gfInfoPanel.style.display = gfInfoPanel.style.display === 'none' ? 'block' : 'none';
+            });
+        }
 
         // Continuous deco toggle
         this.elements.continuousDecoCheckbox.addEventListener('change', () => {
