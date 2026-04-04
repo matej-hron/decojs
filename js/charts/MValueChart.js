@@ -351,6 +351,12 @@ export class MValueChart {
             label.appendChild(document.createTextNode(` ${comp.id}`));
             this.controlsContainer.appendChild(label);
         });
+
+        // Shortcut legend
+        const hint = document.createElement('div');
+        hint.style.cssText = 'font-size: 0.7rem; color: var(--text-muted, #888); margin-top: 2px; padding: 0 4px;';
+        hint.textContent = 'Click = select one · Shift+click = toggle · ←→ step · Space play · F fullscreen';
+        this.controlsContainer.appendChild(hint);
     }
     
     /**
