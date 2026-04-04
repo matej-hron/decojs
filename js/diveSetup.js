@@ -411,23 +411,19 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
         });
     }
     
-    // Then, add gas switches that don't coincide with deco stops
-    // These are just waypoints for the profile, no extra time needed
+    // Gas switches at deco stops: update the stop's gasId.
+    // Gas switches during ascent (not at a deco stop) are NOT added as waypoints –
+    // they happen "in transit" and the chart shows them as annotations from gasSwitches.
+    // This avoids breaking the ascent into segments with different (rounded) speeds.
+    const gasSwitchesByDepth = new Map();
     for (const sw of gasSwitches) {
-        if (!eventsByDepth.has(sw.depth)) {
-            // Gas switch during ascent - just mark the switch point, no stop time
-            eventsByDepth.set(sw.depth, {
-                depth: sw.depth,
-                stopTime: 0,  // No extra time - just a waypoint
-                gasId: sw.gasId,
-                gas: sw.gas,
-                isDecoStop: false
-            });
-        } else {
-            // Gas switch at a deco stop - just update the gasId
+        if (eventsByDepth.has(sw.depth)) {
+            // Gas switch at a deco stop - update the gasId
             const existing = eventsByDepth.get(sw.depth);
             existing.gasId = sw.gasId;
         }
+        // Track all switches for gasId assignment to waypoints
+        gasSwitchesByDepth.set(sw.depth, sw);
     }
     
     // Check if we need to add a safety stop (deco cleared before safety stop depth)
@@ -457,10 +453,19 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
     // Sort events by depth (descending - deeper first)
     const events = Array.from(eventsByDepth.values()).sort((a, b) => b.depth - a.depth);
     
+    // Sort gas switches by depth descending for in-transit gasId tracking
+    const sortedGasSwitches = [...gasSwitchesByDepth.values()].sort((a, b) => b.depth - a.depth);
+
     // Process events in order
     for (const event of events) {
         // Ascend to this event's depth
         if (currentDepth > event.depth) {
+            // Apply any gas switches passed during this ascent segment
+            for (const sw of sortedGasSwitches) {
+                if (sw.depth < currentDepth && sw.depth >= event.depth) {
+                    currentGasId = sw.gasId;
+                }
+            }
             const ascentTime = roundUp((currentDepth - event.depth) / ASCENT_SPEED);
             currentTime = Math.round((currentTime + ascentTime) * 10) / 10;
             currentDepth = event.depth;
@@ -471,7 +476,7 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
             waypoints.push({ time: currentTime, depth: event.depth, gasId: event.gasId });
             currentGasId = event.gasId;
         } else {
-            waypoints.push({ time: currentTime, depth: event.depth });
+            waypoints.push({ time: currentTime, depth: event.depth, gasId: currentGasId });
         }
 
         // Add departure waypoint after stop time (if any stop time)
@@ -487,7 +492,25 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
         currentTime = Math.round((currentTime + finalAscentTime) * 10) / 10;
         waypoints.push({ time: currentTime, depth: 0 });
     }
-    
+
+    // Insert gas switch waypoints on the ascent line (for chart annotation positioning).
+    // These don't change the profile geometry – they sit exactly on the existing ascent line.
+    for (const sw of sortedGasSwitches) {
+        if (eventsByDepth.has(sw.depth)) continue; // already a stop at this depth
+        // Find the two waypoints this switch falls between
+        for (let i = 0; i < waypoints.length - 1; i++) {
+            const wp1 = waypoints[i];
+            const wp2 = waypoints[i + 1];
+            if (wp1.depth > sw.depth && wp2.depth < sw.depth) {
+                // Interpolate time on the ascent line (no rounding - must be exactly on the line)
+                const fraction = (wp1.depth - sw.depth) / (wp1.depth - wp2.depth);
+                const switchTime = wp1.time + fraction * (wp2.time - wp1.time);
+                waypoints.splice(i + 1, 0, { time: switchTime, depth: sw.depth, gasId: sw.gasId });
+                break;
+            }
+        }
+    }
+
     const totalDecoTime = stops.reduce((sum, s) => sum + s.time, 0);
     
     return {
