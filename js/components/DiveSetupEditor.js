@@ -458,10 +458,12 @@ export class DiveSetupEditor extends EventTarget {
                 <div class="dse-gf-presets">
                     <span class="dse-hint">Presets: <span class="dse-gf-info-toggle" title="GF preset guide" style="cursor:pointer; text-decoration:underline;">ℹ️</span></span>
                     <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="100" data-gf-high="100" title="Raw Bühlmann tables, no conservatism">Bühlmann</button>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="50" data-gf-high="85" title="Recreational: ≤40m, short deco">Recreational</button>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="35" data-gf-high="75" title="Intensive: repeat dives, safari">Intensive</button>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="20" data-gf-high="85" title="Deep: >60m, single dive">Deep</button>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="70" data-gf-high="90" title="Bailout: emergency, switch to Freedom">Bailout</button>
+                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="60" data-gf-high="90" title="Recreational: ≤40m, short deco">Recreational</button>
+                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="40" data-gf-high="80" title="Intensive: repeat dives, safari">Intensive</button>
+                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="50" data-gf-high="90" title="Deep: >60m, single dive">Deep</button>
+                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="80" data-gf-high="100" title="Bailout: emergency">Bailout</button>
+                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="20" data-gf-high="80" title="Deco Planner default">Deco Planner</button>
+                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="30" data-gf-high="80" title="Divesoft Freedom default">Freedom</button>
                 </div>
                 <div class="dse-gf-info" style="display:none; margin-top:0.5rem; font-size:0.8rem; background:var(--surface-alt, #f5f5f5); border-radius:6px; padding:0.6rem; line-height:1.5;">
                     <table style="width:100%; border-collapse:collapse; font-size:0.78rem;">
@@ -479,7 +481,6 @@ export class DiveSetupEditor extends EventTarget {
                         <tr><td style="padding:2px 4px;">Freedom default</td><td></td><td style="text-align:center;">30%</td><td style="text-align:center;">80%</td></tr>
                         <tr><td style="padding:2px 4px;">Bühlmann tables</td><td></td><td style="text-align:center;">100%</td><td style="text-align:center;">100%</td></tr>
                     </table>
-                    <p style="margin:0.3rem 0 0; color:var(--text-muted); font-size:0.72rem;">Source: J. Hovorka (CMAS instructor)</p>
                 </div>
                 <div class="dse-continuous-deco" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color, #ddd);">
                     <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; cursor: pointer;">
