@@ -171,11 +171,6 @@ export class MValueChart {
         this._buildTimelineControls();
         wrapper.appendChild(this.timelineContainer);
 
-        // Mini profile canvas - shows dive profile with current position marker
-        this.miniProfileCanvas = document.createElement('canvas');
-        this.miniProfileCanvas.style.cssText = 'width: 100%; height: 50px; margin-bottom: 6px; border-radius: 4px; background: var(--surface-alt, #f0f4f8);';
-        wrapper.appendChild(this.miniProfileCanvas);
-
         // Chart container - fills remaining height
         this.chartContainer = document.createElement('div');
         this.chartContainer.className = 'mvc-chart-container';
@@ -230,6 +225,12 @@ export class MValueChart {
         this.chartContainer.appendChild(this.resetZoomBtn);
         
         wrapper.appendChild(this.chartContainer);
+
+        // Mini profile canvas - shows dive profile with current position marker
+        this.miniProfileCanvas = document.createElement('canvas');
+        this.miniProfileCanvas.style.cssText = 'width: 100%; height: 100px; margin-top: 6px; border-radius: 4px; background: var(--surface-alt, #f0f4f8);';
+        wrapper.appendChild(this.miniProfileCanvas);
+
         this.container.appendChild(wrapper);
         
         // Set up ResizeObserver to automatically resize chart when container changes
