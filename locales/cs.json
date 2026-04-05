@@ -213,8 +213,9 @@
             "thFraction": "Podíl",
             "thCalculation": "Výpočet",
             "thPP": "Parciální tlak",
-            "o2PP": "<strong>0,84 bar</strong>",
-            "n2PP": "<strong>3,16 bar</strong>"
+            "o2PP": "0,84 bar",
+            "n2PP": "3,16 bar",
+            "show": "zobrazit"
         },
         "operational": {
             "title": "Operační a fyziologický parciální tlak",
