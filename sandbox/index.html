@@ -696,6 +696,7 @@
                 <div class="export-config-panel">
                     <div class="export-config-actions">
                         <button id="copy-debug-btn" class="btn btn-small btn-secondary" title="Copy diagnostic data as JSON">🔍 Copy Debug Data</button>
+                        <button id="screenshot-gf-btn" class="btn btn-small btn-secondary" title="Copy chart as image">📷 Screenshot</button>
                     </div>
                 </div>
                 <div class="chart-wrapper" id="gf-chart-container" style="height: 700px;"></div>
@@ -1807,6 +1808,13 @@ const chart = new DiveProfileChart(
             const canvas = mvalueContainer.querySelector('canvas');
             if (canvas) {
                 takeChartScreenshot(canvas, 'M-Value Diagram');
+            }
+        });
+
+        document.getElementById('screenshot-gf-btn').addEventListener('click', () => {
+            const canvas = gfChartContainer.querySelector('canvas');
+            if (canvas) {
+                takeChartScreenshot(canvas, 'GF Diagram');
             }
         });
 

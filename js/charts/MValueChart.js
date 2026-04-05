@@ -966,13 +966,14 @@ export class MValueChart {
             
             // Draw vertical line at pAnchor (GF Low anchor depth)
             if (pAnchor > SURFACE_PRESSURE) {
+                const anchorDepthM = ((pAnchor - SURFACE_PRESSURE) / 0.1).toFixed(1);
                 datasets.push({
-                    label: `pAnchor ${pAnchor.toFixed(2)} bar (${((pAnchor - SURFACE_PRESSURE) / 0.1).toFixed(1)}m)`,
+                    label: `pAnchor ${pAnchor.toFixed(2)} bar (${anchorDepthM}m)`,
                     data: [
                         { x: pAnchor, y: 0 },
                         { x: pAnchor, y: maxPressure }
                     ],
-                    borderColor: 'rgba(243, 156, 18, 0.6)',  // Orange
+                    borderColor: 'rgba(243, 156, 18, 0.6)',
                     borderWidth: 2,
                     borderDash: [4, 4],
                     pointRadius: 0,
@@ -1116,10 +1117,10 @@ export class MValueChart {
                         position: 'top',
                         labels: {
                             filter: (item) => {
-                                // Only show tissue point labels
-                                return item.text.startsWith('TC') && 
+                                return (item.text.startsWith('TC') &&
                                        !item.text.startsWith('Trail') &&
-                                       item.text.includes('min');
+                                       item.text.includes('min')) ||
+                                       item.text.startsWith('pAnchor');
                             }
                         }
                     },

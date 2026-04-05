@@ -1062,7 +1062,8 @@ export class GFChart {
                                 return (item.text.startsWith('TC') &&
                                        !item.text.startsWith('Trail') &&
                                        item.text.includes('min')) ||
-                                       item.text.startsWith('Leading');
+                                       item.text.startsWith('Leading') ||
+                                       item.text.startsWith('pAnchor');
                             }
                         }
                     },
