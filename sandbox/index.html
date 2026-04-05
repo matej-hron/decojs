@@ -693,6 +693,11 @@
             <!-- GF% Diagram -->
             <div class="sandbox-chart-container">
                 <h3>📊 GF% Diagram</h3>
+                <div class="export-config-panel">
+                    <div class="export-config-actions">
+                        <button id="copy-debug-btn" class="btn btn-small btn-secondary" title="Copy diagnostic data as JSON">🔍 Copy Debug Data</button>
+                    </div>
+                </div>
                 <div class="chart-wrapper" id="gf-chart-container" style="height: 700px;"></div>
             </div>
 
@@ -717,13 +722,20 @@
         import { DiveProfileChart } from '../js/charts/DiveProfileChart.js';
         import { MValueChart } from '../js/charts/MValueChart.js';
         import { GFChart } from '../js/charts/GFChart.js';
-        import { 
-            getAmbientPressure, 
+        import {
+            getAmbientPressure,
             calculateCeilingTimeSeries,
             calculateTissueLoading,
+            calculateInstantGF,
+            calculateMaxGF,
             generateDecoSchedule,
+            findGFLowAnchor,
+            getInitialTissueN2,
+            simulateDepthChange,
+            simulateDepthTime,
             SURFACE_PRESSURE
         } from '../js/decoModel.js';
+        import { COMPARTMENTS } from '../js/tissueCompartments.js';
         import { getProfileFromUrl, updateUrlWithProfile, getChartModeFromUrl } from '../js/urlParams.js';
         
         // =====================================================================
@@ -1797,7 +1809,84 @@ const chart = new DiveProfileChart(
                 takeChartScreenshot(canvas, 'M-Value Diagram');
             }
         });
-        
+
+        document.getElementById('copy-debug-btn').addEventListener('click', () => {
+            const setup = editor.getDiveSetup();
+            if (!setup) return;
+
+            const gases = setup.gases || [];
+            const bottomGas = gases[0] || { n2: 0.79 };
+            const waypoints = setup.dives?.[0]?.waypoints || [];
+            const gfLow = (setup.gfLow || 100) / 100;
+            const gfHigh = (setup.gfHigh || 100) / 100;
+            const maxDepth = Math.max(...waypoints.map(wp => wp.depth), 0);
+            const bottomTime = waypoints.length > 2 ? waypoints[2]?.time || 0 : 0;
+            const continuousDeco = setup.continuousDeco || false;
+
+            // Simulate tissues at end of bottom
+            let tissues = {};
+            COMPARTMENTS.forEach(c => { tissues[c.id] = getInitialTissueN2(bottomGas.n2); });
+            const descentTime = Math.ceil(maxDepth / 20);
+            tissues = simulateDepthChange(tissues, 0, maxDepth, descentTime, bottomGas.n2);
+            const bt = bottomTime - descentTime;
+            if (bt > 0) tissues = simulateDepthTime(tissues, maxDepth, bt, bottomGas.n2);
+
+            // Deco schedule
+            const schedule = generateDecoSchedule(tissues, maxDepth, bottomGas.n2, gfLow, gfHigh, gases, { continuousDeco });
+
+            // Tissue loading via waypoints (as chart sees it)
+            const tlResults = calculateTissueLoading(waypoints, setup.surfaceInterval || 5, { gases });
+            let lastDiveIdx = 0;
+            for (let i = 0; i < tlResults.depthPoints.length; i++) {
+                if (tlResults.depthPoints[i] > 0.01) lastDiveIdx = i;
+            }
+            const surfIdx = Math.min(lastDiveIdx + 1, tlResults.timePoints.length - 1);
+            const surfAmbient = tlResults.ambientPressures[surfIdx];
+
+            // Per-tissue GF% at surfacing
+            const tissuesAtSurface = {};
+            COMPARTMENTS.forEach(comp => {
+                const p = tlResults.compartments[comp.id].pressures[surfIdx];
+                const gf = calculateInstantGF(p, surfAmbient, comp);
+                tissuesAtSurface[`TC${comp.id}`] = {
+                    halfTime: comp.halfTime,
+                    pressure: Math.round(p * 1000) / 1000,
+                    gfPercent: Math.round(gf * 1000) / 10,
+                    exceedsGFHigh: gf > gfHigh
+                };
+            });
+
+            const debug = {
+                diveSetup: {
+                    maxDepth, bottomTime,
+                    gases: gases.map(g => ({ id: g.id, name: g.name, o2: g.o2, n2: g.n2 })),
+                    gfLow: setup.gfLow, gfHigh: setup.gfHigh,
+                    continuousDeco,
+                    algorithm: setup.algorithm
+                },
+                decoSchedule: {
+                    pAnchor: Math.round(schedule.pAnchor * 1000) / 1000,
+                    anchorDepth: Math.round(schedule.anchorDepth * 10) / 10,
+                    stops: schedule.stops,
+                    gasSwitches: schedule.gasSwitches,
+                    totalDecoTime: Math.round(schedule.totalTime * 10) / 10
+                },
+                waypoints: waypoints.map(wp => ({
+                    t: Math.round(wp.time * 100) / 100,
+                    d: wp.depth,
+                    ...(wp.gasId ? { gas: wp.gasId } : {})
+                })),
+                tissuesAtSurface,
+                surfacingTime: Math.round(tlResults.timePoints[surfIdx] * 10) / 10
+            };
+
+            navigator.clipboard.writeText(JSON.stringify(debug, null, 2)).then(() => {
+                const btn = document.getElementById('copy-debug-btn');
+                btn.textContent = '✅ Copied!';
+                setTimeout(() => { btn.textContent = '🔍 Copy Debug Data'; }, 2000);
+            });
+        });
+
         // =====================================================================
         // INITIALIZE
         // =====================================================================
