@@ -685,6 +685,7 @@
                     <div class="export-config-actions">
                         <button id="export-mvalue-config-btn" class="btn btn-small btn-secondary">📋 Export Config</button>
                         <button id="screenshot-mvalue-btn" class="btn btn-small btn-secondary" title="Copy chart as image">📷 Screenshot</button>
+                        <label style="font-size: 0.8rem; display: inline-flex; align-items: center; gap: 3px; margin-left: 8px;"><input type="checkbox" id="opt-showAlveolarLine"> Alveolar pN₂</label>
                     </div>
                 </div>
                 <div class="chart-wrapper" id="mvalue-container" style="height: 700px;"></div>
@@ -1804,6 +1805,11 @@ const chart = new DiveProfileChart(
             }
         });
         
+        document.getElementById('opt-showAlveolarLine').addEventListener('change', (e) => {
+            mvalueChart.options.showAlveolarLine = e.target.checked;
+            mvalueChart._render();
+        });
+
         document.getElementById('screenshot-mvalue-btn').addEventListener('click', () => {
             const canvas = mvalueContainer.querySelector('canvas');
             if (canvas) {

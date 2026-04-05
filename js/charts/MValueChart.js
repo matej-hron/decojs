@@ -56,6 +56,7 @@ const DEFAULT_MVALUE_OPTIONS = {
     showMValueLines: true,
     showGFLines: true,
     showAmbientLine: true,
+    showAlveolarLine: false,
     showSurfaceLine: true,
     showTrail: true,
     interactive: true,
@@ -902,6 +903,28 @@ export class MValueChart {
             });
         }
         
+        // Alveolar pN₂ line: y = (x - water_vapor) × n2_fraction
+        // Shows equilibrium pressure - above this line tissue is offgassing, below is ongasing
+        if (this.options.showAlveolarLine) {
+            const gases = this.diveSetup?.gases || [];
+            const n2 = gases[0]?.n2 ?? 0.79;
+            const wv = 0.0627; // water vapor pressure at 37°C
+            datasets.push({
+                label: `Alveolar pN₂ (${Math.round(n2 * 100)}%)`,
+                data: [
+                    { x: 0, y: 0 },
+                    { x: maxPressure, y: (maxPressure - wv) * n2 }
+                ],
+                borderColor: 'rgba(46, 204, 113, 0.5)',
+                borderWidth: 1.5,
+                borderDash: [8, 4],
+                pointRadius: 0,
+                fill: false,
+                showLine: true,
+                order: 99
+            });
+        }
+
         // Surface line (x = 1 bar)
         if (this.options.showSurfaceLine) {
             datasets.push({
