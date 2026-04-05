@@ -996,6 +996,56 @@ export class GFChart {
             });
         });
 
+        // Leading tissue envelope - max GF% across all tissues at each time point
+        if (this.options.showTrail && results.timePoints) {
+            const envelopeData = [];
+            for (let i = 0; i <= timeIndex; i++) {
+                const amb = results.ambientPressures[i];
+                let maxGF = -Infinity;
+                for (const comp of COMPARTMENTS) {
+                    const tp = results.compartments[comp.id].pressures[i];
+                    const gf = calculateInstantGF(tp, amb, comp) * 100;
+                    if (gf > maxGF) maxGF = gf;
+                }
+                envelopeData.push({ x: amb, y: maxGF });
+            }
+            datasets.push({
+                label: 'Leading tissue',
+                data: envelopeData,
+                borderColor: 'rgba(0, 0, 0, 0.6)',
+                borderWidth: 2.5,
+                pointRadius: 0,
+                showLine: true,
+                fill: false,
+                borderDash: [],
+                order: 5
+            });
+        }
+
+        // Leading tissue dot (largest GF% at current time)
+        {
+            let maxGF = -Infinity;
+            let leadingComp = null;
+            for (const comp of COMPARTMENTS) {
+                const tp = results.compartments[comp.id].pressures[timeIndex];
+                const gf = calculateInstantGF(tp, currentAmbient, comp) * 100;
+                if (gf > maxGF) { maxGF = gf; leadingComp = comp; }
+            }
+            if (leadingComp) {
+                datasets.push({
+                    label: `Leading: TC${leadingComp.id} (${maxGF.toFixed(0)}%)`,
+                    data: [{ x: currentAmbient, y: maxGF }],
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    borderColor: leadingComp.color,
+                    borderWidth: 3,
+                    pointRadius: 10,
+                    pointStyle: 'circle',
+                    showLine: false,
+                    order: 0
+                });
+            }
+        }
+
         const config = {
             type: 'scatter',
             data: { datasets },
@@ -1009,9 +1059,10 @@ export class GFChart {
                         position: 'top',
                         labels: {
                             filter: (item) => {
-                                return item.text.startsWith('TC') &&
+                                return (item.text.startsWith('TC') &&
                                        !item.text.startsWith('Trail') &&
-                                       item.text.includes('min');
+                                       item.text.includes('min')) ||
+                                       item.text.startsWith('Leading');
                             }
                         }
                     },
