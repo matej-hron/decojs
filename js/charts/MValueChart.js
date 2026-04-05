@@ -967,7 +967,7 @@ export class MValueChart {
             // Draw vertical line at pAnchor (GF Low anchor depth)
             if (pAnchor > SURFACE_PRESSURE) {
                 datasets.push({
-                    label: 'pAnchor (GF Low)',
+                    label: `pAnchor ${pAnchor.toFixed(2)} bar (${((pAnchor - SURFACE_PRESSURE) / 0.1).toFixed(1)}m)`,
                     data: [
                         { x: pAnchor, y: 0 },
                         { x: pAnchor, y: maxPressure }

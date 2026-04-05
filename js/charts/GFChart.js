@@ -937,7 +937,7 @@ export class GFChart {
             // pAnchor vertical line
             if (pAnchor > SURFACE_PRESSURE) {
                 datasets.push({
-                    label: 'pAnchor (GF Low)',
+                    label: `pAnchor ${pAnchor.toFixed(2)} bar (${((pAnchor - SURFACE_PRESSURE) / 0.1).toFixed(1)}m)`,
                     data: [
                         { x: pAnchor, y: -10 },
                         { x: pAnchor, y: 120 }
