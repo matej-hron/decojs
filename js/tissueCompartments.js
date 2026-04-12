@@ -81,35 +81,45 @@ const BASE_COMPARTMENTS = [
 
 /**
  * ZH-L16A 'a' coefficients (original experimental values - least conservative)
- * Used for research and comparison
+ * Used for research and comparison.
+ *
+ * Note: TC1 uses a=1.2599 with half-time 4.0 min (original Bühlmann specification).
+ * The corresponding b coefficient should be 0.5050, but our b values are shared
+ * across variants (0.5578 for TC1). This is a known limitation for the A variant.
+ *
+ * Sources: Bühlmann (2002) Tauchmedizin, dipplanner, decotengu
  */
 const A_COEFFICIENTS_16A = {
-    1:  1.1696, 2:  1.0000, 3:  0.8618, 4:  0.7562,
-    5:  0.6667, 6:  0.5600, 7:  0.4947, 8:  0.4500,
+    1:  1.2599, 2:  1.0000, 3:  0.8618, 4:  0.7562,
+    5:  0.6667, 6:  0.5933, 7:  0.5282, 8:  0.4710,
     9:  0.4187, 10: 0.3798, 11: 0.3497, 12: 0.3223,
     13: 0.2971, 14: 0.2737, 15: 0.2523, 16: 0.2327
 };
 
 /**
  * ZH-L16B 'a' coefficients (for printed dive tables - more conservative)
- * Modified compartments: 5, 6, 7, 8, 13
+ * Modified compartments from A: 6, 7, 8, 13 (lower 'a' = more conservative)
+ *
+ * Sources: Bühlmann (2002) Tauchmedizin, mvplan, decotengu
  */
 const A_COEFFICIENTS_16B = {
     1:  1.1696, 2:  1.0000, 3:  0.8618, 4:  0.7562,
-    5:  0.5600, 6:  0.4947, 7:  0.4500, 8:  0.4187,  // More conservative
-    9:  0.3798, 10: 0.3497, 11: 0.3223, 12: 0.2971,
-    13: 0.2737, 14: 0.2523, 15: 0.2327, 16: 0.2327   // TC13 more conservative
+    5:  0.6667, 6:  0.5600, 7:  0.4947, 8:  0.4500,  // TC6-8 more conservative than A
+    9:  0.4187, 10: 0.3798, 11: 0.3497, 12: 0.3223,
+    13: 0.2850, 14: 0.2737, 15: 0.2523, 16: 0.2327   // TC13 more conservative than A
 };
 
 /**
  * ZH-L16C 'a' coefficients (for dive computers - most conservative)
- * Modified compartments: 5-15 (all middle compartments)
+ * Modified compartments from A: 5-15 (lower 'a' = more conservative)
+ *
+ * Sources: Bühlmann (2002) Tauchmedizin, Wikipedia, Subsurface, decotengu, dipplanner
  */
 const A_COEFFICIENTS_16C = {
     1:  1.1696, 2:  1.0000, 3:  0.8618, 4:  0.7562,
-    5:  0.5282, 6:  0.4701, 7:  0.4187, 8:  0.3798,  // Most conservative
-    9:  0.3497, 10: 0.3223, 11: 0.2971, 12: 0.2737,  // More conservative
-    13: 0.2523, 14: 0.2327, 15: 0.2118, 16: 0.2327   // More conservative
+    5:  0.6200, 6:  0.5043, 7:  0.4410, 8:  0.4000,  // TC5-8 more conservative than A
+    9:  0.3750, 10: 0.3500, 11: 0.3295, 12: 0.3065,  // TC9-12 more conservative than A
+    13: 0.2835, 14: 0.2610, 15: 0.2480, 16: 0.2327   // TC13-15 more conservative than A
 };
 
 /**

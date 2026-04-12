@@ -282,9 +282,9 @@ describe('decoModel module', () => {
             });
         });
 
-        test('TC1 M-value coefficients match ZH-L16A', () => {
+        test('TC1 M-value coefficients match ZH-L16C', () => {
             const tc1 = COMPARTMENTS[0];
-            // TC1 a and b values are the same across all ZH-L16 variants (A, B, C)
+            // Default variant is C: TC1 uses a=1.1696, b=0.5578, ht=5.0
             expect(tc1.aN2).toBeCloseTo(1.1696, 3);
             expect(tc1.bN2).toBeCloseTo(0.5578, 3);
         });
@@ -336,9 +336,9 @@ describe('decoModel module', () => {
             setZHL16Variant(ZHL16_VARIANTS.C);
             const tc5_C = COMPARTMENTS.find(c => c.id === 5).aN2;
             
-            // ZH-L16A TC5 a = 0.6667, ZH-L16C TC5 a = 0.5282
+            // ZH-L16A TC5 a = 0.6667, ZH-L16C TC5 a = 0.6200
             expect(tc5_A).toBeCloseTo(0.6667, 3);
-            expect(tc5_C).toBeCloseTo(0.5282, 3);
+            expect(tc5_C).toBeCloseTo(0.6200, 3);
             expect(tc5_A).toBeGreaterThan(tc5_C);  // A is less conservative
         });
 
@@ -353,12 +353,18 @@ describe('decoModel module', () => {
             expect(tc5_A).toBeCloseTo(0.6667, 3);
         });
 
-        test('TC1-4 have same a values across all variants', () => {
+        test('TC2-4 have same a values across all variants, TC1 differs for A', () => {
             const variantA = getCompartmentsForVariant(ZHL16_VARIANTS.A);
             const variantB = getCompartmentsForVariant(ZHL16_VARIANTS.B);
             const variantC = getCompartmentsForVariant(ZHL16_VARIANTS.C);
-            
-            for (let id = 1; id <= 4; id++) {
+
+            // TC1: A uses 1.2599 (original 4.0 min half-time), B/C use 1.1696 (5.0 min)
+            expect(variantA.find(c => c.id === 1).aN2).toBeCloseTo(1.2599, 4);
+            expect(variantB.find(c => c.id === 1).aN2).toBeCloseTo(1.1696, 4);
+            expect(variantC.find(c => c.id === 1).aN2).toBeCloseTo(1.1696, 4);
+
+            // TC2-4 are the same across all variants
+            for (let id = 2; id <= 4; id++) {
                 const a_A = variantA.find(c => c.id === id).aN2;
                 const a_B = variantB.find(c => c.id === id).aN2;
                 const a_C = variantC.find(c => c.id === id).aN2;
