@@ -754,11 +754,12 @@ export class DiveProfileChart {
      * @private
      * @param {Object} results - Tissue loading results with timePoints and depthPoints
      * @param {Object[]} gases - Gas configurations
-     * @param {number} sacRate - Surface Air Consumption rate in L/min
+     * @param {number} sacRate - Surface Air Consumption rate in L/min (bottom gas)
      * @param {number} reservePressure - Reserve pressure in bar
+     * @param {number} [decoSacRate] - SAC rate for deco gases (defaults to sacRate)
      * @returns {Object} Gas consumption data per cylinder
      */
-    _calculateGasConsumption(results, gases, sacRate, reservePressure) {
+    _calculateGasConsumption(results, gases, sacRate, reservePressure, decoSacRate = sacRate) {
         const gasData = {};
         
         // Initialize each gas cylinder
@@ -823,7 +824,8 @@ export class DiveProfileChart {
                     const ambientPressure = 1 + avgDepth / 10; // bar
 
                     // Gas consumed in this segment (liters at surface)
-                    const segmentConsumption = sacRate * ambientPressure * deltaTime;
+                    const isDecoGas = currentGasId !== gases[0]?.id;
+                    const segmentConsumption = (isDecoGas ? decoSacRate : sacRate) * ambientPressure * deltaTime;
 
                     // Add to cumulative consumption for current gas
                     if (gasData[currentGasId]) {
@@ -834,7 +836,8 @@ export class DiveProfileChart {
 
             // Calculate instantaneous rate at current depth (0 at surface)
             const ambientPressure = depth > 0 ? 1 + depth / 10 : 0;
-            const instantRate = sacRate * ambientPressure; // L/min at surface equivalent
+            const isDecoGasRate = currentGasId !== gases[0]?.id;
+            const instantRate = (isDecoGasRate ? decoSacRate : sacRate) * ambientPressure;
 
             // Record pressure and rate for each gas at this time point
             gases.forEach(gas => {
@@ -897,9 +900,10 @@ export class DiveProfileChart {
         // Calculate gas consumption if needed
         let gasConsumption = null;
         if (this.options.showGasConsumption) {
-            const sacRate = this.diveSetup.sacRate || 20; // Default 20 L/min
+            const sacRate = this.diveSetup.sacRate || 20;
+            const decoSacRate = this.diveSetup.decoSacRate ?? sacRate;
             const reservePressure = this.diveSetup.reservePressure || 50;
-            gasConsumption = this._calculateGasConsumption(results, gases, sacRate, reservePressure);
+            gasConsumption = this._calculateGasConsumption(results, gases, sacRate, reservePressure, decoSacRate);
         }
         
         return {

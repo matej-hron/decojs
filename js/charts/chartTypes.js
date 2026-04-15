@@ -44,7 +44,8 @@
  * @property {string} [description] - Profile description
  * @property {Gas[]} gases - Available gases for the dive
  * @property {number} [reservePressure=50] - Reserve pressure in bar
- * @property {number} [sacRate=20] - Surface Air Consumption rate in liters/min
+ * @property {number} [sacRate=20] - Surface Air Consumption rate in liters/min (bottom gas)
+ * @property {number} [decoSacRate=15] - SAC rate for deco gases in liters/min
  * @property {number} [gfLow=100] - Gradient Factor Low (0-100 percentage)
  * @property {number} [gfHigh=100] - Gradient Factor High (0-100 percentage)
  * @property {number} [surfaceInterval=60] - Post-dive surface interval in minutes
@@ -308,6 +309,7 @@ export function normalizeDiveSetup(setup) {
             startPressure: gas.startPressure || 200
         })),
         sacRate: setup.sacRate ?? 20,
+        decoSacRate: setup.decoSacRate ?? 15,
         reservePressure: setup.reservePressure ?? 50,
         gfLow: setup.gfLow ?? 100,
         gfHigh: setup.gfHigh ?? 100,

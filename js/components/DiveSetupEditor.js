@@ -71,6 +71,7 @@ import {
  * Default SAC rate in L/min at surface
  */
 const DEFAULT_SAC_RATE = 20;
+const DEFAULT_DECO_SAC_RATE = 15;
 
 /**
  * Default editor options
@@ -587,13 +588,17 @@ export class DiveSetupEditor extends EventTarget {
         section.className = 'dse-section dse-sac';
         section.open = false; // Collapsed by default
         section.innerHTML = `
-            <summary>⛽ Gas Consumption <span class="dse-summary-hint">(SAC ${DEFAULT_SAC_RATE} L/min)</span></summary>
+            <summary>⛽ Gas Consumption <span class="dse-summary-hint">(SAC ${DEFAULT_SAC_RATE}/${DEFAULT_DECO_SAC_RATE} L/min)</span></summary>
             <div class="dse-sac-content">
                 <p class="dse-hint">Surface Air Consumption rate for gas planning calculations.</p>
                 <div class="dse-row">
                     <div class="dse-field">
-                        <label>SAC Rate (L/min):</label>
+                        <label>Bottom SAC (L/min):</label>
                         <input type="number" class="dse-sac-input form-input" value="${DEFAULT_SAC_RATE}" min="5" max="50" step="1">
+                    </div>
+                    <div class="dse-field">
+                        <label>Deco SAC (L/min):</label>
+                        <input type="number" class="dse-deco-sac-input form-input" value="${DEFAULT_DECO_SAC_RATE}" min="5" max="50" step="1">
                     </div>
                     <div class="dse-field">
                         <label>Reserve (bar):</label>
@@ -605,10 +610,15 @@ export class DiveSetupEditor extends EventTarget {
         `;
 
         this.elements.sacInput = section.querySelector('.dse-sac-input');
+        this.elements.decoSacInput = section.querySelector('.dse-deco-sac-input');
         this.elements.reserveInput = section.querySelector('.dse-reserve-input');
         this.elements.sacSummaryHint = section.querySelector('.dse-summary-hint');
 
         this.elements.sacInput.addEventListener('input', () => {
+            this._updateSummaryHints();
+            this._onInputChange();
+        });
+        this.elements.decoSacInput.addEventListener('input', () => {
             this._updateSummaryHints();
             this._onInputChange();
         });
@@ -1347,6 +1357,7 @@ export class DiveSetupEditor extends EventTarget {
         
         const surfaceInterval = parseFloat(this.elements.surfaceIntervalInput?.value) || 5;
         const sacRate = parseFloat(this.elements.sacInput?.value) || DEFAULT_SAC_RATE;
+        const decoSacRate = parseFloat(this.elements.decoSacInput?.value) || DEFAULT_DECO_SAC_RATE;
         const reservePressure = parseFloat(this.elements.reserveInput?.value) || 50;
 
         return {
@@ -1359,6 +1370,7 @@ export class DiveSetupEditor extends EventTarget {
             gfHigh: parseInt(this.elements.gfHighInput?.value) || DEFAULT_GF_HIGH,
             surfaceInterval: surfaceInterval,
             sacRate: sacRate,
+            decoSacRate: decoSacRate,
             reservePressure: reservePressure,
             units: { depth: 'meters', time: 'minutes', pressure: 'bar' },
             continuousDeco: this.elements.continuousDecoCheckbox?.checked ?? false,
@@ -1382,6 +1394,9 @@ export class DiveSetupEditor extends EventTarget {
         // SAC rate and reserve
         if (this.elements.sacInput) {
             this.elements.sacInput.value = setup.sacRate ?? DEFAULT_SAC_RATE;
+        }
+        if (this.elements.decoSacInput) {
+            this.elements.decoSacInput.value = setup.decoSacRate ?? DEFAULT_DECO_SAC_RATE;
         }
         if (this.elements.reserveInput) {
             this.elements.reserveInput.value = setup.reservePressure ?? 50;
@@ -1554,7 +1569,8 @@ export class DiveSetupEditor extends EventTarget {
         // Update SAC summary hint
         if (this.elements.sacSummaryHint) {
             const sac = this.elements.sacInput?.value || DEFAULT_SAC_RATE;
-            this.elements.sacSummaryHint.textContent = `(SAC ${sac} L/min)`;
+            const decoSac = this.elements.decoSacInput?.value || DEFAULT_DECO_SAC_RATE;
+            this.elements.sacSummaryHint.textContent = `(SAC ${sac}/${decoSac} L/min)`;
         }
     }
 

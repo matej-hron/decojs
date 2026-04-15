@@ -763,6 +763,7 @@
             const gfHigh = (diveSetup.gfHigh || 100) / 100;
             const surfaceInterval = diveSetup.surfaceInterval || 0;
             const sacRate = diveSetup.sacRate || 20; // L/min at surface
+            const decoSacRate = diveSetup.decoSacRate ?? sacRate; // L/min during deco
             const reservePressure = diveSetup.reservePressure || 50; // bar
             
             // Calculate tissue loading
@@ -944,7 +945,9 @@
                 const avgDepth = (depth + prevDepth) / 2;
                 const duration = time - prevTime; // minutes
                 const avgPressure = getAmbientPressure(avgDepth) / SURFACE_PRESSURE;
-                const consumed = sacRate * avgPressure * duration; // liters at surface
+                const isDecoGas = currentGasId !== gases[0]?.id;
+                const effectiveSacRate = isDecoGas ? decoSacRate : sacRate;
+                const consumed = effectiveSacRate * avgPressure * duration; // liters at surface
                 tank.consumed += consumed;
             }
             
