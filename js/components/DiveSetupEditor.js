@@ -53,7 +53,7 @@ import {
     generateDecoProfile,
     getNDLForDepth,
     getGases,
-    GAS_SWITCH_TIME
+    DEFAULT_GAS_SWITCH_TIME
 } from '../diveSetup.js';
 
 import {
@@ -414,16 +414,32 @@ export class DiveSetupEditor extends EventTarget {
                 <p class="dse-hint">First gas is bottom gas. Add deco gases for multi-gas diving.</p>
                 <div class="dse-gases-list"></div>
                 <button class="dse-add-gas-btn btn btn-secondary btn-small">+ Add Deco Gas</button>
+                <div class="dse-gas-switch-time" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color, #ddd);">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem;">
+                        Gas switch stop:
+                        <select class="dse-gas-switch-time-select form-input" style="width: auto;">
+                            <option value="0">0 min (no stop)</option>
+                            <option value="1">1 min</option>
+                            <option value="2">2 min</option>
+                            <option value="3">3 min</option>
+                            <option value="4">4 min</option>
+                            <option value="5">5 min</option>
+                        </select>
+                    </label>
+                    <p class="dse-hint">Time to verify gas, take breaths, and signal buddy at each switch depth.</p>
+                </div>
             </div>
         `;
 
         this.elements.gasesSummaryHint = section.querySelector('.dse-summary-hint');
-        
+
         this.elements.gasesList = section.querySelector('.dse-gases-list');
         this.elements.addGasBtn = section.querySelector('.dse-add-gas-btn');
-        
+        this.elements.gasSwitchTimeSelect = section.querySelector('.dse-gas-switch-time-select');
+
         this.elements.addGasBtn.addEventListener('click', () => this._addGas());
-        
+        this.elements.gasSwitchTimeSelect.addEventListener('change', () => this._onInputChange());
+
         return section;
     }
     
@@ -1220,7 +1236,8 @@ export class DiveSetupEditor extends EventTarget {
         if (ndl !== Infinity && bottomTime > ndl) {
             this.elements.decoInfo.style.display = 'inline';
             const continuousDecoNDL = this.elements.continuousDecoCheckbox?.checked ?? false;
-            const result = generateDecoProfile(maxDepth, bottomTime, this.currentGases, gfLow, gfHigh, safetyStop, { continuousDeco: continuousDecoNDL });
+            const gasSwitchTimeNDL = parseInt(this.elements.gasSwitchTimeSelect?.value) || 0;
+            const result = generateDecoProfile(maxDepth, bottomTime, this.currentGases, gfLow, gfHigh, safetyStop, { continuousDeco: continuousDecoNDL, gasSwitchTime: gasSwitchTimeNDL });
             this.elements.decoTime.textContent = Math.round(result.totalDecoTime * 10) / 10;
         } else {
             this.elements.decoInfo.style.display = 'none';
@@ -1251,7 +1268,8 @@ export class DiveSetupEditor extends EventTarget {
         };
         
         const continuousDeco = this.elements.continuousDecoCheckbox?.checked ?? false;
-        const result = generateDecoProfile(maxDepth, bottomTime, this.currentGases, gfLow, gfHigh, safetyStop, { continuousDeco });
+        const gasSwitchTime = parseInt(this.elements.gasSwitchTimeSelect?.value) || 0;
+        const result = generateDecoProfile(maxDepth, bottomTime, this.currentGases, gfLow, gfHigh, safetyStop, { continuousDeco, gasSwitchTime });
 
         this._loadWaypointsToTable(result.waypoints, this.elements.waypointsBody);
         this._onInputChange();
@@ -1343,7 +1361,8 @@ export class DiveSetupEditor extends EventTarget {
             sacRate: sacRate,
             reservePressure: reservePressure,
             units: { depth: 'meters', time: 'minutes', pressure: 'bar' },
-            continuousDeco: this.elements.continuousDecoCheckbox?.checked ?? false
+            continuousDeco: this.elements.continuousDecoCheckbox?.checked ?? false,
+            gasSwitchTime: parseInt(this.elements.gasSwitchTimeSelect?.value) || 0
         };
     }
 
@@ -1390,6 +1409,11 @@ export class DiveSetupEditor extends EventTarget {
         if (this.elements.continuousDecoCheckbox) {
             this.elements.continuousDecoCheckbox.checked = setup.continuousDeco ?? false;
             this.elements.continuousWarning.style.display = setup.continuousDeco ? 'block' : 'none';
+        }
+
+        // Gas switch time
+        if (this.elements.gasSwitchTimeSelect) {
+            this.elements.gasSwitchTimeSelect.value = setup.gasSwitchTime ?? DEFAULT_GAS_SWITCH_TIME;
         }
 
         // Description

@@ -2601,6 +2601,122 @@ describe('Continuous Deco Accuracy', () => {
 });
 
 // ============================================================================
+// GAS SWITCH STOP TIME TESTS
+// ============================================================================
+
+describe('Gas Switch Stop Time (gasSwitchTime option)', () => {
+    const gases = [
+        { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 },
+        { id: 'ean50', name: 'EAN50', o2: 0.50, n2: 0.50, he: 0 },
+        { id: 'o2', name: 'O2', o2: 1.00, n2: 0.00, he: 0 }
+    ];
+
+    // Helper: simulate a dive and return deco schedule
+    function runDive(depth, bottomTime, diveGases, gfLow, gfHigh, gasSwitchTime = 0) {
+        const bottomGas = diveGases[0];
+        const initialN2 = getInitialTissueN2(bottomGas.n2);
+        let tissues = {};
+        COMPARTMENTS.forEach(c => { tissues[c.id] = initialN2; });
+
+        const descentTime = Math.ceil(depth / 20);
+        tissues = simulateDepthChange(tissues, 0, depth, descentTime, bottomGas.n2);
+
+        const actualBottom = bottomTime - descentTime;
+        if (actualBottom > 0) {
+            tissues = simulateDepthTime(tissues, depth, actualBottom, bottomGas.n2);
+        }
+
+        return generateDecoSchedule(
+            tissues, depth, bottomGas.n2,
+            gfLow / 100, gfHigh / 100,
+            diveGases,
+            { gasSwitchTime }
+        );
+    }
+
+    test('Single gas dive: gasSwitchTime has no effect', () => {
+        const singleGas = [gases[0]]; // Air only
+        const result0 = runDive(30, 25, singleGas, 50, 90, 0);
+        const result3 = runDive(30, 25, singleGas, 50, 90, 3);
+
+        expect(result0.totalTime).toBe(result3.totalTime);
+        expect(result0.stops.length).toBe(result3.stops.length);
+        for (let i = 0; i < result0.stops.length; i++) {
+            expect(result0.stops[i].depth).toBe(result3.stops[i].depth);
+            expect(result0.stops[i].time).toBe(result3.stops[i].time);
+        }
+    });
+
+    test('Multi-gas deco dive: gasSwitchTime=3 adds stop time at switch depths', () => {
+        // 40m/25min with Air+EAN50+O2, GF 30/80 — requires deco + gas switches
+        const result0 = runDive(40, 25, gases, 30, 80, 0);
+        const result3 = runDive(40, 25, gases, 30, 80, 3);
+
+        // With gasSwitchTime=3, total deco should increase (switch time added)
+        const totalDeco0 = result0.stops.reduce((s, st) => s + st.time, 0);
+        const totalDeco3 = result3.stops.reduce((s, st) => s + st.time, 0);
+        expect(totalDeco3).toBeGreaterThan(totalDeco0);
+
+        // Gas switches should still be recorded
+        expect(result3.gasSwitches.length).toBe(result0.gasSwitches.length);
+    });
+
+    test('gasSwitchTime off-gassing reduces subsequent deco stops', () => {
+        // Compare gasSwitchTime=3 vs gasSwitchTime=0
+        // The extra time breathing deco gas should reduce subsequent stop times
+        // So the total increase should be LESS than 3 * numSwitches
+        const result0 = runDive(40, 25, gases, 30, 80, 0);
+        const result3 = runDive(40, 25, gases, 30, 80, 3);
+
+        const totalDeco0 = result0.stops.reduce((s, st) => s + st.time, 0);
+        const totalDeco3 = result3.stops.reduce((s, st) => s + st.time, 0);
+        const numSwitches = result0.gasSwitches.length;
+
+        // Increase should be less than 3 * numSwitches (off-gassing benefit)
+        const maxIncrease = 3 * numSwitches;
+        const actualIncrease = totalDeco3 - totalDeco0;
+        expect(actualIncrease).toBeLessThan(maxIncrease);
+        expect(actualIncrease).toBeGreaterThan(0);
+    });
+
+    test('gasSwitchTime=0 is identical to no option (default)', () => {
+        const bottomGas = gases[0];
+        const initialN2 = getInitialTissueN2(bottomGas.n2);
+        let tissues = {};
+        COMPARTMENTS.forEach(c => { tissues[c.id] = initialN2; });
+
+        const descentTime = Math.ceil(40 / 20);
+        tissues = simulateDepthChange(tissues, 0, 40, descentTime, bottomGas.n2);
+        tissues = simulateDepthTime(tissues, 40, 25 - descentTime, bottomGas.n2);
+
+        const resultDefault = generateDecoSchedule(tissues, 40, bottomGas.n2, 0.3, 0.8, gases);
+        // Re-simulate (fresh tissues)
+        let tissues2 = {};
+        COMPARTMENTS.forEach(c => { tissues2[c.id] = initialN2; });
+        tissues2 = simulateDepthChange(tissues2, 0, 40, descentTime, bottomGas.n2);
+        tissues2 = simulateDepthTime(tissues2, 40, 25 - descentTime, bottomGas.n2);
+
+        const resultExplicit = generateDecoSchedule(tissues2, 40, bottomGas.n2, 0.3, 0.8, gases, { gasSwitchTime: 0 });
+
+        expect(resultDefault.totalTime).toBe(resultExplicit.totalTime);
+        expect(resultDefault.stops.length).toBe(resultExplicit.stops.length);
+    });
+
+    test('Gas switch stop in deco loop: switch depths have stops >= gasSwitchTime', () => {
+        // EAN50 switches at 21m, O2 switches at 6m
+        // With gasSwitchTime=2, stops at switch depths should be at least 2 min
+        const result2 = runDive(40, 25, gases, 30, 80, 2);
+
+        const switchDepths = result2.gasSwitches.map(sw => sw.depth);
+        for (const switchDepth of switchDepths) {
+            const stopAtSwitch = result2.stops.find(s => s.depth === switchDepth);
+            expect(stopAtSwitch).toBeDefined();
+            expect(stopAtSwitch.time).toBeGreaterThanOrEqual(2);
+        }
+    });
+});
+
+// ============================================================================
 // SUMMARY
 // ============================================================================
 

@@ -867,7 +867,7 @@ export function simulateDepthChange(tissuePressures, startDepth, endDepth, time,
  * @returns {{stops: Array<{depth: number, time: number, gas: string}>, gasSwitches: Array<{depth: number, gas: string, gasId: string}>, totalTime: number, totalAscentTime: number, pAnchor: number, anchorDepth: number}}
  */
 export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, gfLow, gfHigh, gases = null, options = {}) {
-    const { switchPpO2 = 1.6, continuousDeco = false } = options;
+    const { switchPpO2 = 1.6, continuousDeco = false, gasSwitchTime = 0 } = options;
 
     // In continuous mode, use fine-grained resolution for didactic visualization
     const stopIncrement = continuousDeco ? 0.1 : STOP_INCREMENT;
@@ -991,7 +991,10 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
                 totalAscentTime += segmentTime;
                 remainingDepth = switchDepth;
                 // Switch to best gas at this depth
-                switchToBestGas(switchDepth);
+                if (switchToBestGas(switchDepth) && gasSwitchTime > 0) {
+                    currentTissues = simulateDepthTime(currentTissues, switchDepth, gasSwitchTime, currentN2);
+                    stops.push({ depth: switchDepth, time: gasSwitchTime, gas: currentGasName });
+                }
             }
         }
         // Final ascent to surface
@@ -1000,7 +1003,8 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
             currentTissues = simulateDepthChange(currentTissues, remainingDepth, 0, segmentTime, currentN2);
             totalAscentTime += segmentTime;
         }
-        return { stops: [], gasSwitches, totalTime: totalAscentTime, totalAscentTime, pAnchor, anchorDepth };
+        const totalTime = totalAscentTime + stops.reduce((sum, s) => sum + s.time, 0);
+        return { stops, gasSwitches, totalTime, totalAscentTime, pAnchor, anchorDepth };
     }
     
     // Ascend to first stop WITH gas switches at MOD depths
@@ -1022,10 +1026,13 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
             totalAscentTime += segmentTime;
             currentAscentDepth = switchDepth;
             // Switch to best gas at this depth
-            switchToBestGas(switchDepth);
+            if (switchToBestGas(switchDepth) && gasSwitchTime > 0) {
+                currentTissues = simulateDepthTime(currentTissues, switchDepth, gasSwitchTime, currentN2);
+                stops.push({ depth: switchDepth, time: gasSwitchTime, gas: currentGasName });
+            }
         }
     }
-    
+
     // Final segment to first stop
     if (currentAscentDepth > firstStopDepth) {
         const finalSegmentTime = (currentAscentDepth - firstStopDepth) / ASCENT_SPEED;
@@ -1046,7 +1053,10 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
 
     while (depth > 0) {
         // Check for gas switch on arrival
-        switchToBestGas(depth);
+        if (switchToBestGas(depth) && gasSwitchTime > 0) {
+            tissues = simulateDepthTime(tissues, depth, gasSwitchTime, currentN2);
+            pendingStopTime += gasSwitchTime;
+        }
 
         // Next candidate depth (one step shallower)
         const nextStopDepth = Math.max(0, Math.round((depth - stopIncrement) * 10) / 10);

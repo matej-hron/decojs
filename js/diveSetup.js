@@ -26,11 +26,11 @@ const DEFAULT_SETUP_PATH = 'data/dive-setup.json';
 let cachedSetup = null;
 
 /**
- * Time spent at gas switch depth (minutes)
- * Standard practice: 1-3 minutes to verify gas, take several breaths, signal buddy
- * Can be moved to UI settings later
+ * Default time spent at gas switch depth (minutes).
+ * Configurable in DiveSetupEditor (0-5 min dropdown).
+ * 0 = instant switch (no stop), typical range 1-3 min.
  */
-export const GAS_SWITCH_TIME = 3;
+export const DEFAULT_GAS_SWITCH_TIME = 0;
 
 /**
  * Bottom gases - suitable for descent and bottom time
@@ -982,7 +982,7 @@ export function getGasSwitchEvents(waypoints, gases) {
  * @param {number} maxPpO2 - Maximum ppO2 for MOD calculation (default 1.6 for deco)
  * @returns {Array<Object>} Waypoints with gas switches inserted
  */
-export function insertGasSwitchWaypoints(waypoints, gases, ascentRate = 10, maxPpO2 = 1.6) {
+export function insertGasSwitchWaypoints(waypoints, gases, ascentRate = 10, maxPpO2 = 1.6, gasSwitchTime = DEFAULT_GAS_SWITCH_TIME) {
     if (!waypoints || waypoints.length < 2 || !gases || gases.length < 2) {
         return waypoints;
     }
@@ -1084,7 +1084,7 @@ export function insertGasSwitchWaypoints(waypoints, gases, ascentRate = 10, maxP
                         const depthChange = prevWp.depth - switchDepth;
                         const timeToSwitch = depthChange / ascentRate;
                         const switchArrivalTime = Math.ceil(prevWp.time + timeToSwitch);
-                        const switchDepartureTime = switchArrivalTime + GAS_SWITCH_TIME;
+                        const switchDepartureTime = switchArrivalTime + gasSwitchTime;
                         
                         // Insert arrival waypoint (switch to new gas)
                         newWaypoints.push({
@@ -1104,7 +1104,7 @@ export function insertGasSwitchWaypoints(waypoints, gases, ascentRate = 10, maxP
                         currentGasId = decoGas.id;
                         
                         // Add the gas switch time to the offset for subsequent waypoints
-                        timeOffset += GAS_SWITCH_TIME;
+                        timeOffset += gasSwitchTime;
                     }
                 }
             }
