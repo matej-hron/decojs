@@ -924,12 +924,18 @@
             });
             
             currentGasId = gases[0]?.id || null;
-            
+            let gasSwitchActive = false;
+
             for (let i = 1; i < results.timePoints.length; i++) {
                 const time = results.timePoints[i];
                 const prevTime = results.timePoints[i - 1];
                 const depth = results.depthPoints[i];
                 const prevDepth = results.depthPoints[i - 1];
+
+                // Track when diver leaves max depth (ascent begins)
+                if (!leftMaxDepth && prevDepth >= maxDepth && depth < maxDepth) {
+                    leftMaxDepth = true;
+                }
 
                 // Skip surface interval (both points at surface = not diving)
                 if (depth === 0 && prevDepth === 0) continue;
@@ -937,7 +943,11 @@
                 // Check gas switches
                 if (gasSwitchTimes.has(time)) {
                     currentGasId = gasSwitchTimes.get(time);
+                    gasSwitchActive = true;
                 }
+
+                // Clear gas switch flag when depth changes (diver is moving)
+                if (depth !== prevDepth) gasSwitchActive = false;
 
                 const tank = tankConsumption.get(currentGasId);
                 if (!tank) continue;
@@ -945,8 +955,8 @@
                 const avgDepth = (depth + prevDepth) / 2;
                 const duration = time - prevTime; // minutes
                 const avgPressure = getAmbientPressure(avgDepth) / SURFACE_PRESSURE;
-                const isDecoGas = currentGasId !== gases[0]?.id;
-                const effectiveSacRate = isDecoGas ? decoSacRate : sacRate;
+                const isDecoStop = leftMaxDepth && depth === prevDepth && depth > 0 && !gasSwitchActive;
+                const effectiveSacRate = isDecoStop ? decoSacRate : sacRate;
                 const consumed = effectiveSacRate * avgPressure * duration; // liters at surface
                 tank.consumed += consumed;
             }

@@ -797,25 +797,40 @@ export class DiveProfileChart {
         }
         
         // Calculate consumption at each time point
+        // Deco SAC applies on stops (stationary, depth > 0) AFTER leaving max depth,
+        // excluding gas switch stops. Bottom time at max depth uses bottom SAC.
+        const maxDepth = Math.max(...results.depthPoints);
+        let leftMaxDepth = false;
+        let gasSwitchActive = false;
+
         for (let i = 0; i < results.timePoints.length; i++) {
             const time = results.timePoints[i];
             const depth = results.depthPoints[i];
-            
+
+            // Track when diver leaves max depth (ascent begins)
+            if (!leftMaxDepth && i > 0 && results.depthPoints[i - 1] >= maxDepth && depth < maxDepth) {
+                leftMaxDepth = true;
+            }
+
             // Check for gas switch
             if (gasSwitchTimes[time]) {
                 currentGasId = gasSwitchTimes[time];
+                gasSwitchActive = true;
             }
-            
+
             // Mark gas as active once used
             if (gasData[currentGasId]) {
                 gasData[currentGasId].isActive = true;
             }
-            
+
             // Calculate consumption for this time step
             if (i > 0) {
                 const prevTime = results.timePoints[i - 1];
                 const prevDepth = results.depthPoints[i - 1];
                 const deltaTime = time - prevTime; // minutes
+
+                // Clear gas switch flag when depth changes (diver is moving)
+                if (depth !== prevDepth) gasSwitchActive = false;
 
                 // Skip surface interval (both points at surface = not diving)
                 if (!(depth === 0 && prevDepth === 0)) {
@@ -823,9 +838,10 @@ export class DiveProfileChart {
                     const avgDepth = (depth + prevDepth) / 2;
                     const ambientPressure = 1 + avgDepth / 10; // bar
 
-                    // Gas consumed in this segment (liters at surface)
-                    const isDecoGas = currentGasId !== gases[0]?.id;
-                    const segmentConsumption = (isDecoGas ? decoSacRate : sacRate) * ambientPressure * deltaTime;
+                    // Deco SAC on stops after leaving max depth, excluding gas switch stops
+                    const isDecoStop = leftMaxDepth && depth === prevDepth && depth > 0 && !gasSwitchActive;
+                    const effectiveSac = isDecoStop ? decoSacRate : sacRate;
+                    const segmentConsumption = effectiveSac * ambientPressure * deltaTime;
 
                     // Add to cumulative consumption for current gas
                     if (gasData[currentGasId]) {
@@ -836,8 +852,8 @@ export class DiveProfileChart {
 
             // Calculate instantaneous rate at current depth (0 at surface)
             const ambientPressure = depth > 0 ? 1 + depth / 10 : 0;
-            const isDecoGasRate = currentGasId !== gases[0]?.id;
-            const instantRate = (isDecoGasRate ? decoSacRate : sacRate) * ambientPressure;
+            const isDecoStopNow = leftMaxDepth && i > 0 && depth === results.depthPoints[i - 1] && depth > 0 && !gasSwitchActive;
+            const instantRate = (isDecoStopNow ? decoSacRate : sacRate) * ambientPressure;
 
             // Record pressure and rate for each gas at this time point
             gases.forEach(gas => {
