@@ -1911,6 +1911,65 @@ footer a {
     flex-wrap: wrap;
 }
 
+/* Dive Plan Table (read-only runtime summary) */
+.dse-plan-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+}
+
+.dse-plan-table th,
+.dse-plan-table td {
+    padding: 0.3rem 0.5rem;
+    border: 1px solid var(--border-color);
+    text-align: left;
+}
+
+.dse-plan-table th {
+    background: rgba(0,0,0,0.05);
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.dse-plan-phase {
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.dse-plan-icon {
+    display: inline-block;
+    width: 1.2em;
+    text-align: center;
+}
+
+.dse-plan-depth,
+.dse-plan-stop,
+.dse-plan-runtime {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.dse-plan-stop {
+    font-weight: 600;
+}
+
+tr.dse-plan-des .dse-plan-phase { color: var(--primary-color, #2980b9); }
+tr.dse-plan-bottom .dse-plan-phase { color: #27ae60; }
+tr.dse-plan-bottom { background: rgba(39, 174, 96, 0.06); }
+tr.dse-plan-asc .dse-plan-phase { color: #e67e22; }
+tr.dse-plan-stop .dse-plan-phase { color: #c0392b; }
+tr.dse-plan-stop { background: rgba(192, 57, 43, 0.06); }
+tr.dse-plan-switch .dse-plan-phase { color: #8e44ad; }
+tr.dse-plan-switch { background: rgba(142, 68, 173, 0.06); }
+
+.dse-waypoints-detail summary {
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--text-color-light, #666);
+    padding: 0.3rem 0;
+}
+
 /* Waypoints Table */
 .dse-waypoints h4 {
     margin: 0 0 0.75rem 0;

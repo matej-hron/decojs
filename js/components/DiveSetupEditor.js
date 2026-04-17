@@ -674,24 +674,30 @@ export class DiveSetupEditor extends EventTarget {
                     <input type="number" class="dse-dive2-si form-input" value="60" min="1" max="720" step="5">
                 </div>
             ` : `<h4>🤿 Dive 1 Waypoints</h4>`}
-            <table class="dse-waypoints-table">
-                <thead>
-                    <tr>
-                        <th>Time (min)</th>
-                        <th>Depth (m)</th>
-                        <th>Gas</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="dse-waypoints-body"></tbody>
-            </table>
-            <div class="dse-waypoint-actions">
-                <button class="dse-add-waypoint-btn btn btn-secondary btn-small">+ Add Waypoint</button>
-            </div>
+            <div class="dse-dive-plan"></div>
+            <details class="dse-waypoints-detail">
+                <summary>✏️ Edit Waypoints</summary>
+                <table class="dse-waypoints-table">
+                    <thead>
+                        <tr>
+                            <th>Time (min)</th>
+                            <th>Depth (m)</th>
+                            <th>Gas</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="dse-waypoints-body"></tbody>
+                </table>
+                <div class="dse-waypoint-actions">
+                    <button class="dse-add-waypoint-btn btn btn-secondary btn-small">+ Add Waypoint</button>
+                </div>
+            </details>
         `;
         
         const bodyKey = isDive2 ? 'waypointsBody2' : 'waypointsBody';
+        const planKey = isDive2 ? 'divePlan2' : 'divePlan';
         this.elements[bodyKey] = section.querySelector('.dse-waypoints-body');
+        this.elements[planKey] = section.querySelector('.dse-dive-plan');
         
         // Add waypoint button
         section.querySelector('.dse-add-waypoint-btn').addEventListener('click', () => {
@@ -1012,8 +1018,84 @@ export class DiveSetupEditor extends EventTarget {
             }
             this._addWaypointRow(tbody, wp.time, wp.depth, currentGasId);
         });
+        this._updateDivePlan(tbody);
     }
-    
+
+    _updateDivePlan(tbody) {
+        const planDiv = tbody === this.elements.waypointsBody
+            ? this.elements.divePlan
+            : this.elements.divePlan2;
+        if (!planDiv) return;
+
+        const waypoints = this._readWaypointsFromTable(tbody);
+        if (waypoints.length < 2) {
+            planDiv.innerHTML = '';
+            return;
+        }
+
+        const maxDepth = Math.max(...waypoints.map(wp => wp.depth));
+        let leftMax = false;
+        let prevGasId = waypoints[0].gasId;
+        const segments = [];
+
+        for (let i = 0; i < waypoints.length - 1; i++) {
+            const wp = waypoints[i];
+            const next = waypoints[i + 1];
+            const duration = Math.round((next.time - wp.time) * 10) / 10;
+            const gasName = this.currentGases.find(g => g.id === (next.gasId || wp.gasId))?.name || '';
+            const runtime = Math.round(next.time * 10) / 10;
+
+            if (next.depth > wp.depth) {
+                // Descent
+                segments.push({ cls: 'des', icon: '↓', label: 'Des', depth: next.depth, stop: '', runtime, gas: gasName });
+            } else if (next.depth === wp.depth && next.depth === maxDepth && !leftMax) {
+                // Bottom
+                segments.push({ cls: 'bottom', icon: '●', label: 'Bottom', depth: wp.depth, stop: duration, runtime, gas: gasName });
+            } else if (next.depth < wp.depth) {
+                // Ascent
+                leftMax = true;
+                segments.push({ cls: 'asc', icon: '↑', label: 'Asc', depth: next.depth, stop: '', runtime, gas: gasName });
+            } else if (next.depth === wp.depth && next.depth > 0) {
+                // Stop (deco, safety, or gas switch)
+                leftMax = true;
+                const gasChanged = wp.gasId && wp.gasId !== prevGasId;
+                if (gasChanged) {
+                    segments.push({ cls: 'switch', icon: '⇄', label: 'Switch', depth: wp.depth, stop: duration, runtime, gas: gasName });
+                } else {
+                    segments.push({ cls: 'stop', icon: '■', label: 'Stop', depth: wp.depth, stop: duration, runtime, gas: gasName });
+                }
+            } else if (next.depth === 0 && wp.depth === 0) {
+                // Already at surface — skip
+            } else if (next.depth === 0) {
+                // Final ascent to surface
+                segments.push({ cls: 'asc', icon: '▲', label: 'Surface', depth: 0, stop: '', runtime, gas: '' });
+            }
+
+            if (wp.gasId) prevGasId = wp.gasId;
+        }
+
+        if (segments.length === 0) {
+            planDiv.innerHTML = '';
+            return;
+        }
+
+        const rows = segments.map(s =>
+            `<tr class="dse-plan-${s.cls}">` +
+            `<td class="dse-plan-phase"><span class="dse-plan-icon">${s.icon}</span> ${s.label}</td>` +
+            `<td class="dse-plan-depth">${s.depth}m</td>` +
+            `<td class="dse-plan-stop">${s.stop || '—'}</td>` +
+            `<td class="dse-plan-runtime">${s.runtime}</td>` +
+            `<td class="dse-plan-gas">${s.gas}</td>` +
+            `</tr>`
+        ).join('');
+
+        planDiv.innerHTML =
+            `<table class="dse-plan-table">` +
+            `<thead><tr><th>Phase</th><th>Depth</th><th>Stop</th><th>Runtime</th><th>Gas</th></tr></thead>` +
+            `<tbody>${rows}</tbody>` +
+            `</table>`;
+    }
+
     _addWaypointRow(tbody, time = '', depth = '', gasId = '') {
         const row = document.createElement('tr');
         const gasOptions = this.currentGases.map(gas => 
@@ -1546,6 +1628,11 @@ export class DiveSetupEditor extends EventTarget {
     _onInputChange() {
         // Update collapsed section hints
         this._updateSummaryHints();
+
+        // Update dive plan table
+        if (this.elements.waypointsBody) {
+            this._updateDivePlan(this.elements.waypointsBody);
+        }
 
         if (this.options.emitOnInput) {
             this._emitChange();
