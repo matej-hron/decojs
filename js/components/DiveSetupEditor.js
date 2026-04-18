@@ -666,14 +666,14 @@ export class DiveSetupEditor extends EventTarget {
         section.innerHTML = `
             ${isDive2 ? `
                 <div class="dse-dive2-header">
-                    <h4>🤿 Dive 2 Waypoints</h4>
+                    <h4>🤿 Dive 2 Plan</h4>
                     <button class="dse-remove-dive2-btn btn btn-danger btn-small">✕ Remove</button>
                 </div>
                 <div class="dse-field dse-si-between">
                     <label>Surface Interval Before (min):</label>
                     <input type="number" class="dse-dive2-si form-input" value="60" min="1" max="720" step="5">
                 </div>
-            ` : `<h4>🤿 Dive 1 Waypoints</h4>`}
+            ` : `<h4>🤿 Dive 1 Plan</h4>`}
             <div class="dse-dive-plan"></div>
             <details class="dse-waypoints-detail">
                 <summary>✏️ Edit Waypoints</summary>
