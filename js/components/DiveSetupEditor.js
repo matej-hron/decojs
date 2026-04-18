@@ -1038,37 +1038,68 @@ export class DiveSetupEditor extends EventTarget {
         let prevGasId = waypoints[0].gasId;
         const segments = [];
 
+        // Per-gas tank pressure tracker (bar), seeded from each gas's startPressure.
+        const pressureByGasId = {};
+        for (const g of this.currentGases) {
+            pressureByGasId[g.id] = g.startPressure ?? 200;
+        }
+        const sacRate = parseFloat(this.elements.sacInput?.value) || DEFAULT_SAC_RATE;
+        const decoSacRate = parseFloat(this.elements.decoSacInput?.value) || DEFAULT_DECO_SAC_RATE;
+        const reservePressure = parseFloat(this.elements.reserveInput?.value) || 50;
+
         for (let i = 0; i < waypoints.length - 1; i++) {
             const wp = waypoints[i];
             const next = waypoints[i + 1];
             const duration = Math.round((next.time - wp.time) * 10) / 10;
-            const gasName = this.currentGases.find(g => g.id === (next.gasId || wp.gasId))?.name || '';
+            const activeGasId = next.gasId || wp.gasId || prevGasId;
+            const activeGas = this.currentGases.find(g => g.id === activeGasId);
+            const gasName = activeGas?.name || '';
             const runtime = Math.round(next.time * 10) / 10;
+
+            const addSegment = (seg) => {
+                // Compute pressure drop for this segment's gas.
+                const isDecoOrSafety = seg.cls === 'stop' || seg.cls === 'safety';
+                const sac = isDecoOrSafety ? decoSacRate : sacRate;
+                const avgDepth = ((wp.depth + next.depth) / 2);
+                const avgAmbient = 1 + (avgDepth / 10);
+                let tankBar = null;
+                if (activeGas && activeGas.cylinderVolume > 0 && duration > 0) {
+                    const litersUsed = sac * avgAmbient * duration;
+                    const barDrop = litersUsed / activeGas.cylinderVolume;
+                    pressureByGasId[activeGasId] = Math.max(0, pressureByGasId[activeGasId] - barDrop);
+                }
+                if (activeGas && pressureByGasId[activeGasId] !== undefined) {
+                    tankBar = Math.round(pressureByGasId[activeGasId]);
+                }
+                seg.tankBar = tankBar;
+                seg.gasId = activeGasId;
+                segments.push(seg);
+            };
 
             if (next.depth > wp.depth) {
                 // Descent
-                segments.push({ cls: 'des', icon: '↓', label: 'Des', depth: next.depth, stop: '', runtime, gas: gasName });
+                addSegment({ cls: 'des', icon: '↓', label: 'Des', depth: next.depth, stop: '', runtime, gas: gasName });
             } else if (next.depth === wp.depth && next.depth === maxDepth && !leftMax) {
                 // Bottom
-                segments.push({ cls: 'bottom', icon: '●', label: 'Bottom', depth: wp.depth, stop: duration, runtime, gas: gasName });
+                addSegment({ cls: 'bottom', icon: '●', label: 'Bottom', depth: wp.depth, stop: duration, runtime, gas: gasName });
             } else if (next.depth < wp.depth) {
                 // Ascent
                 leftMax = true;
-                segments.push({ cls: 'asc', icon: '↑', label: 'Asc', depth: next.depth, stop: '', runtime, gas: gasName });
+                addSegment({ cls: 'asc', icon: '↑', label: 'Asc', depth: next.depth, stop: '', runtime, gas: gasName });
             } else if (next.depth === wp.depth && next.depth > 0) {
                 // Stop (deco, safety, or gas switch)
                 leftMax = true;
                 const gasChanged = wp.gasId && wp.gasId !== prevGasId;
                 if (gasChanged) {
-                    segments.push({ cls: 'switch', icon: '⇄', label: 'Switch', depth: wp.depth, stop: duration, runtime, gas: gasName });
+                    addSegment({ cls: 'switch', icon: '⇄', label: 'Switch', depth: wp.depth, stop: duration, runtime, gas: gasName });
                 } else {
-                    segments.push({ cls: 'stop', icon: '■', label: 'Stop', depth: wp.depth, stop: duration, runtime, gas: gasName });
+                    addSegment({ cls: 'stop', icon: '■', label: 'Stop', depth: wp.depth, stop: duration, runtime, gas: gasName });
                 }
             } else if (next.depth === 0 && wp.depth === 0) {
                 // Already at surface — skip
             } else if (next.depth === 0) {
                 // Final ascent to surface
-                segments.push({ cls: 'asc', icon: '▲', label: 'Surface', depth: 0, stop: '', runtime, gas: '' });
+                addSegment({ cls: 'asc', icon: '▲', label: 'Surface', depth: 0, stop: '', runtime, gas: '' });
             }
 
             if (wp.gasId) prevGasId = wp.gasId;
@@ -1079,19 +1110,28 @@ export class DiveSetupEditor extends EventTarget {
             return;
         }
 
-        const rows = segments.map(s =>
-            `<tr class="dse-plan-${s.cls}">` +
-            `<td class="dse-plan-phase"><span class="dse-plan-icon">${s.icon}</span> ${s.label}</td>` +
-            `<td class="dse-plan-depth">${s.depth}m</td>` +
-            `<td class="dse-plan-stop">${s.stop || '—'}</td>` +
-            `<td class="dse-plan-runtime">${s.runtime}</td>` +
-            `<td class="dse-plan-gas">${s.gas}</td>` +
-            `</tr>`
-        ).join('');
+        const rows = segments.map(s => {
+            const tankCell = s.tankBar !== null && s.tankBar !== undefined
+                ? `${s.tankBar} bar`
+                : '—';
+            // Reserve threshold: per-gas if set, else global reserve.
+            const gas = this.currentGases.find(g => g.id === s.gasId);
+            const reserve = gas?.reservePressure ?? reservePressure;
+            const belowReserve = s.tankBar !== null && s.tankBar !== undefined && s.tankBar <= reserve;
+            const trClass = belowReserve ? `dse-plan-${s.cls} danger-row` : `dse-plan-${s.cls}`;
+            return `<tr class="${trClass}">` +
+                `<td class="dse-plan-phase"><span class="dse-plan-icon">${s.icon}</span> ${s.label}</td>` +
+                `<td class="dse-plan-depth">${s.depth}m</td>` +
+                `<td class="dse-plan-stop">${s.stop || '—'}</td>` +
+                `<td class="dse-plan-runtime">${s.runtime}</td>` +
+                `<td class="dse-plan-gas">${s.gas}</td>` +
+                `<td class="dse-plan-tank">${tankCell}</td>` +
+                `</tr>`;
+        }).join('');
 
         planDiv.innerHTML =
             `<table class="dse-plan-table">` +
-            `<thead><tr><th>Phase</th><th>Depth</th><th>Stop</th><th>Runtime</th><th>Gas</th></tr></thead>` +
+            `<thead><tr><th>Phase</th><th>Depth</th><th>Stop</th><th>Runtime</th><th>Gas</th><th>Tank</th></tr></thead>` +
             `<tbody>${rows}</tbody>` +
             `</table>`;
     }

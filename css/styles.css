@@ -2014,7 +2014,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.5.19";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.5.20";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -2340,9 +2340,25 @@ footer a {
 
 .dse-plan-depth,
 .dse-plan-stop,
-.dse-plan-runtime {
+.dse-plan-runtime,
+.dse-plan-tank {
     text-align: right;
     font-variant-numeric: tabular-nums;
+}
+
+.dse-plan-tank {
+    font-weight: 500;
+}
+
+/* Low-reserve warning row in the plan table */
+.dse-plan-table tr.danger-row,
+.dse-plan-table tr.danger-row.dse-plan-stop,
+.dse-plan-table tr.danger-row.dse-plan-bottom {
+    background: rgba(231, 76, 60, 0.18);
+}
+.dse-plan-table tr.danger-row .dse-plan-tank {
+    color: #c0392b;
+    font-weight: 700;
 }
 
 .dse-plan-stop {
