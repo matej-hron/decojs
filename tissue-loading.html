@@ -560,6 +560,9 @@
             <h2>🔬 <span data-i18n="tissueLoading.halfTimeCharts.math.summary">The Mathematics</span></h2>
 
             <div class="concept-card">
+                <p data-i18n="tissueLoading.halfTimeCharts.math.intro">The equations behind the curves. Expand to see how Bühlmann modelled tissue pressure at constant depth and during ascent.</p>
+                <details class="derivation-details">
+                    <summary><span data-i18n="tissueLoading.halfTimeCharts.math.showDerivation">Show derivation</span></summary>
                 <div class="math-content">
                     <h4 data-i18n="tissueLoading.halfTimeCharts.math.haldaneTitle">Haldane Equation (constant depth)</h4>
                     <p data-i18n="tissueLoading.halfTimeCharts.math.haldaneDesc">When staying at a constant depth, tissue pressure changes according to:</p>
@@ -587,6 +590,7 @@
                     </div>
                     <p data-i18n="tissueLoading.halfTimeCharts.math.pressureDesc">Every 10 meters of seawater adds approximately 1 bar of pressure.</p>
                 </div>
+                </details>
             </div>
         </section>
 
@@ -756,6 +760,7 @@
         import { BubbleModel } from './js/charts/BubbleModel.js';
         import { COMPARTMENTS, getCompartmentCategory } from './js/tissueCompartments.js';
         import { getSandboxUrl } from './js/urlParams.js';
+        import { initStickyTOC } from './js/components/StickyTOC.js';
         import { initI18n, createLanguageSwitcher } from './js/i18n.js';
 
         // =====================================================================
@@ -897,6 +902,8 @@
         // Bubble mechanics interactive
         const bubbleContainer = document.getElementById('bubble-model-container');
         if (bubbleContainer) new BubbleModel(bubbleContainer, { saturatedDepth: 30 });
+
+        initStickyTOC();
 
         // Initialize i18n (language switcher + translations)
         createLanguageSwitcher();

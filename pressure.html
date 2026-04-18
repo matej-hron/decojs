@@ -867,6 +867,7 @@
         import { getDiveSetupWaypoints } from './js/diveSetup.js';
         import { getAmbientPressure, SURFACE_PRESSURE } from './js/decoModel.js';
         import { getSandboxUrl } from './js/urlParams.js';
+        import { initStickyTOC } from './js/components/StickyTOC.js';
         import { initI18n, createLanguageSwitcher } from './js/i18n.js';
 
         // =====================================================================
@@ -1264,6 +1265,8 @@
         setupCNSToggle();
         setupNarcosisSwitch();
         renderMathFormulas();
+
+        initStickyTOC();
 
         // Initialize i18n (language switcher + translations)
         createLanguageSwitcher();

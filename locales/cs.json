@@ -474,6 +474,8 @@
             "footnote": "ℹ️ Oba grafy používají stejnou hloubku a stejný vzorec poločasu. Sycení a vysycování jsou symetrické — mění se pouze směr.",
             "math": {
                 "summary": "Více informací: matematika",
+                "intro": "Rovnice stojící za křivkami. Rozbalením zobrazíte, jak Bühlmann modeloval tlak ve tkáni při konstantní hloubce a při výstupu.",
+                "showDerivation": "Zobrazit odvození",
                 "haldaneTitle": "Haldanova rovnice (konstantní hloubka)",
                 "haldaneDesc": "Při pobytu v konstantní hloubce se tlak ve tkáni mění podle:",
                 "haldaneWhere": "Kde:",
@@ -502,6 +504,7 @@
             "fast": "<strong>Rychlé kompartmenty (5–12,5 min)</strong> — nasytí se za minuty, ale také rychle uvolňují plyn",
             "medium": "<strong>Střední kompartmenty (18,5–77 min)</strong> — rovnováha mezi sycením a vysycováním",
             "slow": "<strong>Pomalé kompartmenty (109–635 min)</strong> — plné nasycení může trvat hodiny",
+            "controllingTitle": "Řídící kompartment",
             "controlling": "V jakémkoli okamžiku ponoru je <strong>řídící kompartment</strong> ten, který je nejblíže svému limitu kritického přesycení — tento kompartment určuje váš dekompresní strop."
         },
         "zhl16Variants": {

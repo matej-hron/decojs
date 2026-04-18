@@ -474,6 +474,8 @@
             "footnote": "ℹ️ Both charts use the same depth and the same half-time formula. On-gassing and off-gassing are symmetrical—only the direction changes.",
             "math": {
                 "summary": "Learn More: The Mathematics",
+                "intro": "The equations behind the curves. Expand to see how Bühlmann modelled tissue pressure at constant depth and during ascent.",
+                "showDerivation": "Show derivation",
                 "haldaneTitle": "Haldane Equation (constant depth)",
                 "haldaneDesc": "When staying at a constant depth, tissue pressure changes according to:",
                 "haldaneWhere": "Where:",
@@ -502,6 +504,7 @@
             "fast": "<strong>Fast compartments (5–12.5 min)</strong> — saturate in minutes, but also release gas quickly",
             "medium": "<strong>Medium compartments (18.5–77 min)</strong> — balance between loading and off-gassing",
             "slow": "<strong>Slow compartments (109–635 min)</strong> — can take hours to fully saturate",
+            "controllingTitle": "The Controlling Compartment",
             "controlling": "At any point during a dive, the <strong>controlling compartment</strong> is the one closest to its critical supersaturation limit — this compartment determines your decompression ceiling."
         },
         "zhl16Variants": {
