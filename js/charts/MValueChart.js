@@ -32,6 +32,7 @@
 
 import { COMPARTMENTS } from '../tissueCompartments.js';
 import { applyChartTheme, theme } from './chartTheme.js';
+import { createInteractionLockBtn } from './interactionLock.js';
 import {
     calculateTissueLoading,
     getMValue,
@@ -225,7 +226,15 @@ export class MValueChart {
         `;
         this.resetZoomBtn.addEventListener('click', () => this.resetZoom());
         this.chartContainer.appendChild(this.resetZoomBtn);
-        
+
+        // Lock/unlock chart interaction (wheel/trackpad zoom + drag pan).
+        // Default locked so scrolling over the chart passes through.
+        this.interactionLockBtn = createInteractionLockBtn(
+            () => this.chart,
+            this.chartContainer,
+            { rightOffsetPx: this.options.fullscreenButton ? 80 : 44 }
+        );
+
         wrapper.appendChild(this.chartContainer);
 
         // Mini profile canvas - shows dive profile with current position marker
@@ -1199,7 +1208,7 @@ export class MValueChart {
                     },
                     zoom: {
                         pan: {
-                            enabled: true,
+                            enabled: false,   // toggled on by the lock button
                             mode: 'xy',
                             threshold: 10,
                             onPanComplete: () => {
@@ -1211,11 +1220,11 @@ export class MValueChart {
                         },
                         zoom: {
                             wheel: {
-                                enabled: true,
+                                enabled: false,   // toggled on by the lock button
                                 speed: 0.015
                             },
                             pinch: {
-                                enabled: true
+                                enabled: false
                             },
                             mode: 'xy',
                             onZoomComplete: () => {

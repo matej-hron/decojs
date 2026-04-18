@@ -29,6 +29,7 @@
 
 import { COMPARTMENTS } from '../tissueCompartments.js';
 import { applyChartTheme, depthGradient, theme } from './chartTheme.js';
+import { createInteractionLockBtn } from './interactionLock.js';
 import {
     calculateTissueLoading,
     calculateCeilingTimeSeries,
@@ -173,7 +174,15 @@ export class DiveProfileChart {
         `;
         this.resetZoomBtn.addEventListener('click', () => this.resetZoom());
         this.chartContainer.appendChild(this.resetZoomBtn);
-        
+
+        // Lock/unlock chart interaction. Sits to the left of the reset-zoom
+        // button. Default is LOCKED so wheel/trackpad scroll goes to the page.
+        this.interactionLockBtn = createInteractionLockBtn(
+            () => this.chart,
+            this.chartContainer,
+            { rightOffsetPx: this.options.fullscreenButton ? 80 : 44 }
+        );
+
         this.container.appendChild(this.chartContainer);
         
         // Handle keyboard events
@@ -1498,7 +1507,7 @@ export class DiveProfileChart {
                     },
                     zoom: {
                         pan: {
-                            enabled: true,
+                            enabled: false,   // toggled on by the lock button
                             mode: 'xy',
                             threshold: 10,
                             onPanComplete: () => {
@@ -1510,11 +1519,11 @@ export class DiveProfileChart {
                         },
                         zoom: {
                             wheel: {
-                                enabled: true,
+                                enabled: false,   // toggled on by the lock button
                                 speed: 0.015
                             },
                             pinch: {
-                                enabled: true
+                                enabled: false
                             },
                             mode: 'xy',
                             onZoomComplete: () => {
