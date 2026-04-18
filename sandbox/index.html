@@ -1264,6 +1264,24 @@
         });
         
         // =====================================================================
+        // KEYBOARD SHORTCUTS
+        // =====================================================================
+
+        document.addEventListener('keydown', (e) => {
+            // 'T' toggles chart tooltip on/off
+            if (e.key === 't' || e.key === 'T') {
+                // Don't trigger when typing in an input/textarea/select
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+                const chart = diveProfileChart.chart;
+                if (chart) {
+                    const enabled = chart.options.plugins.tooltip.enabled;
+                    chart.options.plugins.tooltip.enabled = !enabled;
+                    chart.update('none');
+                }
+            }
+        });
+
+        // =====================================================================
         // PROFILE LIBRARY UI
         // =====================================================================
         
