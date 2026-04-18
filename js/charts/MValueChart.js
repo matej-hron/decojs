@@ -885,7 +885,7 @@ export class MValueChart {
         const maxAmbient = Math.max(...results.ambientPressures);
         const allPressures = Object.values(results.compartments).flatMap(c => c.pressures);
         const maxTissue = Math.max(...allPressures);
-        const maxPressure = this.options.maxPressure || Math.max(maxAmbient, maxTissue, 5) * 1.1;
+        const maxPressure = this.options.maxPressure || Math.max(maxAmbient, maxTissue, 1.5) * 1.1;
         
         const datasets = [];
         
