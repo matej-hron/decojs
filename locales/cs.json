@@ -701,7 +701,8 @@
             "gfLowHigh": "GF Low a GF High",
             "example100": "Příklad: GF 100/100",
             "example5080": "Příklad: GF 50/80",
-            "controversy": "Kontroverze hlubokých zastávek"
+            "controversy": "Kontroverze hlubokých zastávek",
+            "cmas": "Doporučení CMAS (2025)"
         },
         "chartFormula": {
             "summary": "📐 Zobrazit vzorec M' s gradient faktory",
@@ -881,6 +882,30 @@
                 "item4": "Více konzervativnosti není vždy lepší — jde o rovnováhu",
                 "item5": "Upravte podle osobních faktorů, podmínek ponoru a zkušeností"
             }
+        },
+        "cmas": {
+            "title": "Doporučení CMAS (2025)",
+            "intro": "CMAS v roce 2025 vydala fact sheet shrnující současné poznatky o gradient faktorech. Jejich doporučení se liší od některých hodnot v tabulce výše — stojí za to znát obě perspektivy, než si zvolíš nastavení.",
+            "pointSymmetric": {
+                "title": "1. Pro vzduch/nitrox používej <em>symetrické</em> GF",
+                "text": "CMAS doporučuje <strong>GF Low = GF High</strong> na dusíkových ponorech — typicky <strong>90/90</strong>, se snížením na <strong>85/85</strong> nebo <strong>80/80</strong> při rizikových faktorech (věk, únava, chlad, námaha). Asymetrické GF vynucují hluboké zastávky a více nezávislých studií zjistilo, že to <em>zvyšuje</em> výskyt DCS na vzduchu/nitroxu:",
+                "bullet1": "Francouzské námořnictvo (2005) — hluboké zastávky zvýšily riziko DCS na vzduchových deko ponorech",
+                "bullet2": "U.S. Navy NEDU (2011) — „přesun času ze zastávek mělčích na hlubší zvyšuje výskyt DCS u vzduchové dekomprese“",
+                "bullet3": "Belgické vojsko (2023) — tovární nastavení 30/70 bylo nebezpečné pro vzduchový ponor do 60 m"
+            },
+            "pointHelium": {
+                "title": "2. Pro helium (trimix/heliox) jsou asymetrické GF stále na místě",
+                "text": "Na heliových směsích vynucení některých hlubších zastávek <em>pomáhá</em> (DCS vnitřního ucha, rychlé heliové tkáně). CMAS doporučuje <strong>GF Low 30–50, GF High 70–80</strong> (např. 30/70, 50/80). To odpovídá řádku „Hluboký ponor“ v tabulce výše."
+            },
+            "pointNoStop": {
+                "title": "3. Na bezdekompresním ponoru GF Low nezáleží",
+                "text": "Neintuitivní, ale důležité: GF Low se uplatní až na <strong>hloubce první deko zastávky</strong>. Pokud ponor nemá povinné zastávky, nastavení <strong>45/95</strong> se chová přesně jako <strong>95/95</strong> — protože neexistuje „první zastávka“, kam by se GF Low ukotvilo. Neočekávej, že konzervativní GF Low ti na čistě rekreačním profilu pomůže."
+            },
+            "pointDefaults": {
+                "title": "4. Zkontroluj tovární nastavení počítače",
+                "text": "Mnoho potápěčských počítačů přichází z výroby s <strong>GF 30/70</strong> — preset zvolený pro tec/trimix potápění. Na vzduchovém ponoru do 60 m je to <em>agresivní</em> (podle belgické studie). Pokud se potápíš na vzduch/nitrox, před každým ponorem ověř a uprav; jinak tvoje „bezpečné výchozí“ nastavení může být ve skutečnosti škodlivé."
+            },
+            "linkText": "📄 Přečti si fact sheet CMAS →"
         },
         "bubbleModels": {
             "title": "Bublinové modely (pokročilé)",

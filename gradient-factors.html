@@ -70,6 +70,7 @@
                 <li><a href="#gf-example-100">📊 <span data-i18n="gradientFactors.toc.example100">Example: GF 100/100</span></a></li>
                 <li><a href="#gf-example-5080">📊 <span data-i18n="gradientFactors.toc.example5080">Example: GF 50/80</span></a></li>
                 <li><a href="#controversy">⚖️ <span data-i18n="gradientFactors.toc.controversy">Deep-Stop Controversy</span></a></li>
+                <li><a href="#cmas-recommendations">📜 <span data-i18n="gradientFactors.toc.cmas">CMAS Recommendations (2025)</span></a></li>
             </ul>
         </nav>
 
@@ -516,6 +517,63 @@
                     </table>
                 </div>
                 <p class="gf-settings-credit" data-i18n="gradientFactors.practical.settings.credit">Reference table courtesy of Jirka Hovorka.</p>
+            </div>
+        </section>
+
+        <!-- Section 5b: What CMAS recommends (2025) -->
+        <section class="education-section" id="cmas-recommendations">
+            <h2>📜 <span data-i18n="gradientFactors.cmas.title">What CMAS recommends (2025)</span></h2>
+
+            <div class="concept-card">
+                <p data-i18n="gradientFactors.cmas.intro">
+                    CMAS published a 2025 fact sheet summarising current evidence on gradient factors.
+                    Its advice differs from some of the values in the reference table above — worth
+                    knowing both perspectives before you pick your settings.
+                </p>
+
+                <h3 data-i18n="gradientFactors.cmas.pointSymmetric.title">1. For air/nitrox, use <em>symmetric</em> GFs</h3>
+                <p data-i18n="gradientFactors.cmas.pointSymmetric.text">
+                    CMAS recommends <strong>GF Low = GF High</strong> on nitrogen dives — typically
+                    <strong>90/90</strong>, dropping to <strong>85/85</strong> or <strong>80/80</strong>
+                    when risk factors apply (age, fatigue, cold, exertion). Asymmetric GFs force deep
+                    stops, and multiple independent studies found this <em>increases</em> DCS incidence
+                    on air/nitrox dives:
+                </p>
+                <ul>
+                    <li data-i18n="gradientFactors.cmas.pointSymmetric.bullet1">French Navy (2005) — deep stops raised DCS risk on air deco dives</li>
+                    <li data-i18n="gradientFactors.cmas.pointSymmetric.bullet2">U.S. Navy NEDU (2011) — "redistribution of stop time from shallow to deep stops increases incidence of DCS in air decompression dives"</li>
+                    <li data-i18n="gradientFactors.cmas.pointSymmetric.bullet3">Belgian Military (2023) — default 30/70 preset was unsafe for 60 m air dives</li>
+                </ul>
+
+                <h3 data-i18n="gradientFactors.cmas.pointHelium.title">2. For helium (trimix/heliox), asymmetric GFs are still justified</h3>
+                <p data-i18n="gradientFactors.cmas.pointHelium.text">
+                    On helium mixes, forcing some deeper stops <em>does</em> help (inner-ear DCS,
+                    fast helium tissues). CMAS suggests <strong>GF Low 30–50, GF High 70–80</strong>
+                    (e.g. 30/70, 50/80). This aligns with the "Deep dive" row of the table above.
+                </p>
+
+                <h3 data-i18n="gradientFactors.cmas.pointNoStop.title">3. On a no-deco dive, GF Low doesn't matter</h3>
+                <p data-i18n="gradientFactors.cmas.pointNoStop.text">
+                    Non-obvious but important: GF Low only kicks in at the <strong>first deco stop
+                    depth</strong>. If your dive has no mandatory stops, setting <strong>45/95</strong>
+                    behaves exactly like <strong>95/95</strong> — because there is no "first stop"
+                    for GF Low to anchor. Don't expect conservative GF Low to help you on a pure
+                    recreational profile.
+                </p>
+
+                <h3 data-i18n="gradientFactors.cmas.pointDefaults.title">4. Check your computer's default preset</h3>
+                <p data-i18n="gradientFactors.cmas.pointDefaults.text">
+                    Many dive computers ship with <strong>GF 30/70</strong> out of the box — a preset
+                    chosen for tech/trimix diving. On a 60 m air dive that setting is <em>aggressive</em>
+                    (per the Belgian study). If you dive air/nitrox, verify and adjust before every
+                    dive; otherwise your "safe default" may be actively harmful.
+                </p>
+
+                <p class="cmas-reference-link" style="margin-top: 1.25rem;">
+                    <a href="https://www.cmas.org/fact-sheets/gradient-factors-gf-and-dive-computers.html"
+                       target="_blank" rel="noopener"
+                       data-i18n="gradientFactors.cmas.linkText">📄 Read the CMAS fact sheet →</a>
+                </p>
             </div>
         </section>
 
