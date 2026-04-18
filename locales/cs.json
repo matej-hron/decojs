@@ -21,7 +21,9 @@
         "partialPressureChart": "Graf parciálních tlaků"
     },
     "diveProfile": {
-        "title": "Terminologie"
+        "title": "Terminologie",
+        "writtenPlanTitle": "Písemný plán ponoru",
+        "writtenPlanSubtitle": "(též runtime; Divesoft Freedom to nazývá „profile“)"
     },
     "terminology": {
         "reading": {

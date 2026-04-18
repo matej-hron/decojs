@@ -21,7 +21,9 @@
         "partialPressureChart": "Partial Pressure Chart"
     },
     "diveProfile": {
-        "title": "Dive Profile Terminology"
+        "title": "Dive Profile Terminology",
+        "writtenPlanTitle": "Written Dive Plan",
+        "writtenPlanSubtitle": "(a.k.a. runtime; Divesoft Freedom calls it “profile”)"
     },
     "terminology": {
         "reading": {
