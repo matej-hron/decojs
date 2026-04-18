@@ -1290,3 +1290,114 @@ export const OTU_LIMITS = {
     daily: 300,           // Max OTU per day (normal operations)
     dailyExceptional: 600 // Max OTU per day (exceptional exposure)
 };
+
+/**
+ * Build a read-only dive-plan (RunTime) table for a set of waypoints.
+ *
+ * Returns an HTML string containing a `<table class="dse-plan-table">` with
+ * one row per dive segment (descent / bottom / ascent / stop / gas switch /
+ * surface) and columns: Phase, Depth, Stop, Runtime, Gas, Tank.
+ *
+ * Tank pressure is tracked per-gas across the dive. Rows where the tracked
+ * pressure falls at or below the gas's reservePressure (or the `reserve`
+ * fallback) are tagged with `danger-row` for red highlight.
+ *
+ * Returns an empty string if fewer than 2 waypoints are provided.
+ *
+ * @param {Array<{time:number, depth:number, gasId?:string}>} waypoints
+ * @param {Array<{id:string, name:string, cylinderVolume?:number, startPressure?:number, reservePressure?:number}>} gases
+ * @param {Object} [opts]
+ * @param {number} [opts.sacRate=20]       Bottom/descent/ascent SAC (L/min).
+ * @param {number} [opts.decoSacRate=15]   Deco-stop / safety-stop SAC.
+ * @param {number} [opts.reserve=50]       Fallback reserve pressure (bar).
+ * @returns {string}  HTML for the plan table (or '').
+ */
+export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
+    if (!Array.isArray(waypoints) || waypoints.length < 2) return '';
+    const sacRate = opts.sacRate ?? 20;
+    const decoSacRate = opts.decoSacRate ?? 15;
+    const reserve = opts.reserve ?? 50;
+    const gasList = Array.isArray(gases) ? gases : [];
+
+    const maxDepth = Math.max(...waypoints.map(wp => wp.depth));
+    let leftMax = false;
+    let prevGasId = waypoints[0].gasId;
+    const segments = [];
+
+    const pressureByGasId = {};
+    for (const g of gasList) {
+        pressureByGasId[g.id] = g.startPressure ?? 200;
+    }
+
+    for (let i = 0; i < waypoints.length - 1; i++) {
+        const wp = waypoints[i];
+        const next = waypoints[i + 1];
+        const duration = Math.round((next.time - wp.time) * 10) / 10;
+        const activeGasId = next.gasId || wp.gasId || prevGasId;
+        const activeGas = gasList.find(g => g.id === activeGasId);
+        const gasName = activeGas?.name || '';
+        const runtime = Math.round(next.time * 10) / 10;
+
+        const pushSeg = (seg) => {
+            const isDecoOrSafety = seg.cls === 'stop' || seg.cls === 'safety';
+            const sac = isDecoOrSafety ? decoSacRate : sacRate;
+            const avgDepth = (wp.depth + next.depth) / 2;
+            const avgAmbient = 1 + avgDepth / 10;
+            if (activeGas && activeGas.cylinderVolume > 0 && duration > 0) {
+                const litersUsed = sac * avgAmbient * duration;
+                const barDrop = litersUsed / activeGas.cylinderVolume;
+                pressureByGasId[activeGasId] = Math.max(0, pressureByGasId[activeGasId] - barDrop);
+            }
+            seg.tankBar = activeGas && pressureByGasId[activeGasId] !== undefined
+                ? Math.round(pressureByGasId[activeGasId])
+                : null;
+            seg.gasId = activeGasId;
+            segments.push(seg);
+        };
+
+        if (next.depth > wp.depth) {
+            pushSeg({ cls: 'des', icon: '↓', label: 'Des', depth: next.depth, stop: '', runtime, gas: gasName });
+        } else if (next.depth === wp.depth && next.depth === maxDepth && !leftMax) {
+            pushSeg({ cls: 'bottom', icon: '●', label: 'Bottom', depth: wp.depth, stop: duration, runtime, gas: gasName });
+        } else if (next.depth < wp.depth) {
+            leftMax = true;
+            pushSeg({ cls: 'asc', icon: '↑', label: 'Asc', depth: next.depth, stop: '', runtime, gas: gasName });
+        } else if (next.depth === wp.depth && next.depth > 0) {
+            leftMax = true;
+            const gasChanged = wp.gasId && wp.gasId !== prevGasId;
+            if (gasChanged) {
+                pushSeg({ cls: 'switch', icon: '⇄', label: 'Switch', depth: wp.depth, stop: duration, runtime, gas: gasName });
+            } else {
+                pushSeg({ cls: 'stop', icon: '■', label: 'Stop', depth: wp.depth, stop: duration, runtime, gas: gasName });
+            }
+        } else if (next.depth === 0 && wp.depth === 0) {
+            // already at surface — skip
+        } else if (next.depth === 0) {
+            pushSeg({ cls: 'asc', icon: '▲', label: 'Surface', depth: 0, stop: '', runtime, gas: '' });
+        }
+        if (wp.gasId) prevGasId = wp.gasId;
+    }
+
+    if (segments.length === 0) return '';
+
+    const rows = segments.map(s => {
+        const tankCell = s.tankBar !== null && s.tankBar !== undefined ? `${s.tankBar} bar` : '—';
+        const gas = gasList.find(g => g.id === s.gasId);
+        const threshold = gas?.reservePressure ?? reserve;
+        const belowReserve = s.tankBar !== null && s.tankBar !== undefined && s.tankBar <= threshold;
+        const trClass = belowReserve ? `dse-plan-${s.cls} danger-row` : `dse-plan-${s.cls}`;
+        return `<tr class="${trClass}">` +
+            `<td class="dse-plan-phase"><span class="dse-plan-icon">${s.icon}</span> ${s.label}</td>` +
+            `<td class="dse-plan-depth">${s.depth}m</td>` +
+            `<td class="dse-plan-stop">${s.stop || '—'}</td>` +
+            `<td class="dse-plan-runtime">${s.runtime}</td>` +
+            `<td class="dse-plan-gas">${s.gas}</td>` +
+            `<td class="dse-plan-tank">${tankCell}</td>` +
+            `</tr>`;
+    }).join('');
+
+    return `<table class="dse-plan-table">` +
+        `<thead><tr><th>Phase</th><th>Depth</th><th>Stop</th><th>Runtime</th><th>Gas</th><th>Tank</th></tr></thead>` +
+        `<tbody>${rows}</tbody>` +
+        `</table>`;
+}

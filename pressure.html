@@ -88,6 +88,7 @@
                 </p>
             </div>
             <div id="chart-container" class="chart-wrapper" style="height: 600px;"></div>
+            <div id="dive-profile-plan-table" class="dse-plan-table-wrapper" style="margin-top: 1rem;"></div>
             <a id="profile-sandbox-link" href="sandbox/" class="sandbox-link" target="_blank">
                 🔬 <span data-i18n="sandboxLink">Open in Sandbox →</span>
             </a>
@@ -864,7 +865,7 @@
 
     <script type="module">
         import { DiveProfileChart } from './js/charts/DiveProfileChart.js';
-        import { getDiveSetupWaypoints } from './js/diveSetup.js';
+        import { getDiveSetupWaypoints, renderDivePlanTableHTML } from './js/diveSetup.js';
         import { getAmbientPressure, SURFACE_PRESSURE } from './js/decoModel.js';
         import { getSandboxUrl } from './js/urlParams.js';
         import { initStickyTOC } from './js/components/StickyTOC.js';
@@ -953,6 +954,17 @@
                 }
             }
         );
+
+        // RunTime plan table under the dive-profile chart (teaches students
+        // the same table convention they'll see in the sandbox).
+        const planTableContainer = document.getElementById('dive-profile-plan-table');
+        if (planTableContainer) {
+            planTableContainer.innerHTML = renderDivePlanTableHTML(
+                getDiveSetupWaypoints(DECO_PROFILE),
+                DECO_PROFILE.gases,
+                { sacRate: 20, decoSacRate: 15, reserve: 50 }
+            );
+        }
 
         // 2. Total Pressure Chart - pressure variant
         const pressureChart = new DiveProfileChart(
