@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Potápěčská fyzika | CMAS P**</title>
+    <style>
+        :root {
+            --primary: #2980b9;
+            --primary-dark: #1a5276;
+            --green: #27ae60;
+            --orange: #e67e22;
+            --red: #c0392b;
+            --purple: #8e44ad;
+            --bg: #f5f7fa;
+            --card: #ffffff;
+            --text: #2c3e50;
+            --muted: #7f8c8d;
+            --border: #dce1e6;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--primary);
+        }
+        header h1 { font-size: 1.8rem; color: var(--primary-dark); }
+        header p { color: var(--muted); margin-top: 0.3rem; }
+        .badge {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .section {
+            background: var(--card);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .section h2 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .section h2 .num {
+            background: var(--primary);
+            color: white;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .topic {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .topic:last-child { border-bottom: none; }
+        .topic-title {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        .topic-detail {
+            color: var(--muted);
+            font-size: 0.9rem;
+            padding-left: 1.2rem;
+        }
+        .topic-detail li { margin-bottom: 0.2rem; }
+        .links {
+            margin-top: 0.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+        .links a {
+            display: inline-block;
+            font-size: 0.8rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        a.link-deco {
+            background: rgba(41, 128, 185, 0.1);
+            color: var(--primary);
+        }
+        a.link-deco:hover { background: rgba(41, 128, 185, 0.2); }
+        a.link-local {
+            background: rgba(142, 68, 173, 0.1);
+            color: var(--purple);
+        }
+        a.link-local:hover { background: rgba(142, 68, 173, 0.2); }
+        a.link-ext {
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--green);
+        }
+        a.link-ext:hover { background: rgba(39, 174, 96, 0.2); }
+        .done {
+            opacity: 0.5;
+        }
+        .done .topic-title::after {
+            content: " (probrali jsme)";
+            font-weight: 400;
+            font-size: 0.8rem;
+            color: var(--green);
+        }
+        .time {
+            float: right;
+            color: var(--muted);
+            font-size: 0.85rem;
+            font-weight: 400;
+        }
+        footer {
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.8rem;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <span class="badge">CMAS P** | SPČR</span>
+    <h1>Potápěčská fyzika</h1>
+    <p>2 x 45 min | Osnova výcviku dle výcvikových směrnic SPČR</p>
+</header>
+
+<!-- ČÁST 1: PRAXE -->
+<div class="section">
+    <h2><span class="num">1</span> Osnova CMAS T1 <span class="time">5 min</span></h2>
+    <div class="topic">
+        <div class="topic-title">Přehled toho, co budeme probírat</div>
+        <div class="topic-detail">
+            <ul>
+                <li>Co CMAS předepisuje pro T1</li>
+                <li>Struktura dnešní přednášky: praxe první, teorie pak</li>
+            </ul>
+        </div>
+        <img src="materialy/osnova-t1.png" alt="Osnova T1 z výcvikových směrnic CMAS P**"
+             style="max-width: 100%; border: 1px solid var(--border); border-radius: 6px; margin-top: 0.75rem;">
+        <div class="links">
+            <a href="materialy/soubor-osnova-vycviku-cmas_p2-148-.pdf" class="link-local">Osnova PDF (komplet)</a>
+            <a href="https://docs.google.com/presentation/d/1-oLABRn67d32wZMwelFiBjR6hO1dY-RX/edit?usp=share_link&ouid=109543640528933701855&rtpof=true&sd=true" target="_blank" class="link-ext">Prezentace fyziky (Google)</a>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <h2><span class="num">2</span> Plánování ponoru přes tabulky <span class="time">20 min</span></h2>
+    <div class="topic">
+        <div class="topic-title">Dekompresní tabulky — praktické použití</div>
+        <div class="topic-detail">
+            <ul>
+                <li>Nulový čas (NDL) — co to je, jak ho najdu v tabulce</li>
+                <li>Jednoduchý ponor — nalezení v tabulce, bezpečnostní zastávka</li>
+                <li>Opakovaný ponor — penalizace, skupiny, povrchový interval</li>
+                <li>Praktický příklad: naplánujem ponor na 30m/20min</li>
+            </ul>
+        </div>
+        <div class="links">
+            <a href="materialy/deko-tabulky.xls" class="link-local">Deko tabulky (XLS)</a>
+            <a href="materialy/deko-priklady.xlsx" class="link-local">Příklady (XLSX)</a>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <h2><span class="num">3</span> Plánování ponoru přes Divesoft app <span class="time">15 min</span></h2>
+    <div class="topic">
+        <div class="topic-title">Divesoft — moderní plánování</div>
+        <div class="topic-detail">
+            <ul>
+                <li>Stejný ponor (30m/20min) v Divesoft app</li>
+                <li>Co ukazuje navíc: runtime, spotřeba plynu, parciálky</li>
+                <li>Gradient faktory — co znamenají čísla v počítači</li>
+                <li>Porovnání s tabulkou — proč se výsledky liší?</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- PAUZA -->
+<div class="section" style="background: var(--orange); color: white; text-align: center; padding: 1rem;">
+    <strong>Pauza 10 min</strong>
+</div>
+
+<!-- ČÁST 2: TEORIE -->
+<div class="section">
+    <h2><span class="num">4</span> Tlak a plynové zákony <span class="time">20 min</span></h2>
+
+    <div class="topic">
+        <div class="topic-title">Hydrostatický tlak, absolutní tlak</div>
+        <div class="topic-detail">
+            <ul>
+                <li>Atmosférický tlak (1 bar), hydrostatický tlak (1 bar / 10m)</li>
+                <li>Absolutní (ambientní) tlak = atm + hydro</li>
+            </ul>
+        </div>
+        <div class="links">
+            <a href="../pressure.html" class="link-deco">decotheory: Pressure</a>
+        </div>
+    </div>
+
+    <div class="topic">
+        <div class="topic-title">Boyleův-Mariottův zákon</div>
+        <div class="topic-detail">
+            <ul>
+                <li>p &times; V = konst. (při konstantní teplotě)</li>
+                <li>Důsledky: vyrovnávání tlakových prostor, BCD, suchý oblek</li>
+                <li>Praktický příklad: objem vzduchu v plicích na 30m vs hladina</li>
+            </ul>
+        </div>
+        <div class="links">
+            <a href="../pressure.html" class="link-deco">decotheory: Pressure</a>
+        </div>
+    </div>
+
+    <div class="topic">
+        <div class="topic-title">Stavová rovnice ideálního plynu</div>
+        <div class="topic-detail">
+            <ul>
+                <li>p &times; V = n &times; R &times; T — rozšíření Boyla o teplotu</li>
+                <li>Isotermický, isochorický, isobarický děj</li>
+                <li>Přepouštění plynu — praktické výpočty</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="topic">
+        <div class="topic-title">Daltonův zákon — parciální tlaky</div>
+        <div class="topic-detail">
+            <ul>
+                <li>Celkový tlak = součet parciálních tlaků</li>
+                <li>ppO₂, ppN₂ — co to znamená pro potápěče</li>
+                <li>MOD (Maximum Operating Depth) — limit kyslíku</li>
+                <li>Narkóza — limit dusíku (END/EAD)</li>
+            </ul>
+        </div>
+        <div class="links">
+            <a href="../pressure.html" class="link-deco">decotheory: Partial Pressure</a>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <h2><span class="num">5</span> Rozpouštění plynů a dekomprese <span class="time">20 min</span></h2>
+
+    <div class="topic">
+        <div class="topic-title">Henryho zákon</div>
+        <div class="topic-detail">
+            <ul>
+                <li>Množství rozpuštěného plynu ~ parciální tlak</li>
+                <li>Analogie: soda pod tlakem</li>
+            </ul>
+        </div>
+        <div class="links">
+            <a href="../tissue-loading.html" class="link-deco">decotheory: Tissue Loading</a>
+        </div>
+    </div>
+
+    <div class="topic">
+        <div class="topic-title">Dynamika procesu — sycení a odsycování tkání</div>
+        <div class="topic-detail">
+            <ul>
+                <li>Poločas sycení (half-time) — rychlé vs pomalé tkáně</li>
+                <li>16 Bühlmannových tkáňových kompartmentů</li>
+                <li>Exponenciální křivka — proč je začátek rychlý</li>
+            </ul>
+        </div>
+        <div class="links">
+            <a href="../tissue-loading.html" class="link-deco">decotheory: Tissue Loading</a>
+            <a href="../sandbox/index.html" class="link-deco">Sandbox: simulace</a>
+        </div>
+    </div>
+
+    <div class="topic">
+        <div class="topic-title">Přesycení a kritické přesycení</div>
+        <div class="topic-detail">
+            <ul>
+                <li>M-hodnota — maximální povolené přesycení</li>
+                <li>Gradient faktor — konzervativní přístup</li>
+                <li>Co se stane při překročení: bublinky, DCS</li>
+            </ul>
+        </div>
+        <div class="links">
+            <a href="../m-values.html" class="link-deco">decotheory: M-Values</a>
+            <a href="../gradient-factors.html" class="link-deco">decotheory: Gradient Factors</a>
+        </div>
+    </div>
+
+    <div class="topic">
+        <div class="topic-title">Souvislost s dekompresními procesy</div>
+        <div class="topic-detail">
+            <ul>
+                <li>Proč musíme dělat zastávky — návaznost na tabulky z části 2</li>
+                <li>Proč počítač ukazuje jiné časy než tabulka</li>
+                <li>Interaktivní ukázka v sandboxu — ponor na 40m</li>
+            </ul>
+        </div>
+        <div class="links">
+            <a href="../sandbox/index.html" class="link-deco">Sandbox: plánovač</a>
+        </div>
+    </div>
+</div>
+
+<!-- UŽ PROBRALI -->
+<div class="section" style="opacity: 0.6;">
+    <h2><span class="num" style="background: var(--muted);">*</span> Již probraná témata (opakování dle potřeby)</h2>
+
+    <div class="topic done">
+        <div class="topic-title">Světlo a vidění pod vodou</div>
+        <div class="topic-detail">
+            <ul>
+                <li>Vidění na vzduchu, pod vodou, s potápěčskou maskou</li>
+                <li>Změna intenzity a barvy světla</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="topic done">
+        <div class="topic-title">Zvuk pod vodou</div>
+        <div class="topic-detail">
+            <ul>
+                <li>Slyšení na vzduchu a pod vodou</li>
+                <li>Směr zvuku pod vodou</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="topic done">
+        <div class="topic-title">Teplo a teplota</div>
+        <div class="topic-detail">
+            <ul>
+                <li>Vedení a sdílení tepla</li>
+                <li>Tepelné ztráty při potápění</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<footer>
+    Osnova výcviku CMAS P** | SPČR 2006 | Přednášky přes <a href="../index.html">decotheory.eu</a>
+</footer>
+
+</body>
+</html>
