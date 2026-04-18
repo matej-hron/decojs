@@ -864,7 +864,7 @@
 
     <script type="module">
         import { DiveProfileChart } from './js/charts/DiveProfileChart.js';
-        import { generateDecoProfile, getDiveSetupWaypoints } from './js/diveSetup.js';
+        import { getDiveSetupWaypoints } from './js/diveSetup.js';
         import { getAmbientPressure, SURFACE_PRESSURE } from './js/decoModel.js';
         import { getSandboxUrl } from './js/urlParams.js';
         import { initPresentationMode } from './js/presentationMode.js';
@@ -879,22 +879,28 @@
             { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0, cylinderVolume: 18, startPressure: 200 }
         ];
 
-        // Generate the deco profile (20m/40min with GF 50/80 creates deco stops)
-        const decoResult = generateDecoProfile(20, 40, DECO_GASES, 50, 80);
-
         /**
-         * Default profile for terminology/pressure/consumption charts
+         * Default profile for terminology/pressure/consumption charts.
+         * Class reference dive: 31m for 29 min on Air at GF 100/100
+         * with a 10-minute safety stop at 3m.
          */
         const DECO_PROFILE = {
-            id: 'deco-20m-40min',
-            name: '20m Deco Dive',
-            description: 'A 20m dive for 40 minutes with conservative GF 50/80',
+            id: 'class-31m-29min',
+            name: '31m / 29 min (Class Example)',
+            description: 'Reference dive used in class: 31m for 29 min on Air at GF 100/100',
             gases: DECO_GASES,
-            gfLow: 50,
-            gfHigh: 80,
+            gfLow: 100,
+            gfHigh: 100,
             surfaceInterval: 0.1,
             dives: [{
-                waypoints: decoResult.waypoints
+                waypoints: [
+                    { time: 0, depth: 0, gasId: 'air' },
+                    { time: 2, depth: 31, gasId: 'air' },
+                    { time: 29, depth: 31, gasId: 'air' },
+                    { time: 32, depth: 3, gasId: 'air' },
+                    { time: 42, depth: 3, gasId: 'air' },
+                    { time: 43, depth: 0, gasId: 'air' }
+                ]
             }]
         };
 
