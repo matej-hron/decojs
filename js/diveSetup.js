@@ -1490,7 +1490,7 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
     for (let i = segments.length - 1; i >= 0; i--) {
         const seg = segments[i];
         if (seg.cls !== 'asc') continue;
-        if (seg.label === 'Surface') continue;       // final surface ascent stays visible
+        if (seg.label === 'Surface') continue;       // handled below
         const prev = segments[i - 1];
         const next = segments[i + 1];
         if (!prev || !next) continue;
@@ -1500,6 +1500,28 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
         const combined = (typeof next.stop === 'number' ? next.stop : 0) + ascDuration;
         next.stop = Math.round(combined * 10) / 10;
         segments.splice(i, 1);
+    }
+
+    // Drop the final Surface marker and extend the preceding stop so its row
+    // "ends on the surface" — same spirit as inter-stop folding.
+    //
+    // Note: we do NOT add the final-ascent duration onto prev.stop. After the
+    // inter-stop merge above, prev.stop already represents the effective
+    // duration at this depth (in display terms). Adding the 0.3-ish min of
+    // the final 3m→0 ascent on top would give 10.6→11, double-counting.
+    // Instead we keep prev.stop as-is and only move prev.runtime to surface
+    // arrival, so the row reads "Stop 3m, 10 min, runT 43" exactly like the
+    // industry-standard table.
+    //
+    // We skip if the preceding row is a switch — preserves gas-switch row
+    // visibility (switches are load-bearing UX for tech diving).
+    const lastIdx = segments.length - 1;
+    if (lastIdx >= 1 && segments[lastIdx].label === 'Surface') {
+        const prev = segments[lastIdx - 1];
+        if (prev && prev.cls === 'stop') {
+            prev.runtime = segments[lastIdx].runtime;
+            segments.splice(lastIdx, 1);
+        }
     }
 
     const rows = segments.map(s => {
