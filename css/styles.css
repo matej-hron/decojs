@@ -2,19 +2,196 @@
    Decompression Model Visualizer - Styles
    ========================================================================== */
 
-/* CSS Variables */
+/* ==========================================================================
+   Web fonts — self-hosted variable subsets (latin + latin-ext for Czech)
+   Fraunces  (SIL OFL) — display serif with optical sizing, weights 400–800
+   Inter     (SIL OFL) — body grotesk, weights 400–700, tabular-nums built-in
+   ========================================================================== */
+@font-face {
+    font-family: 'Fraunces';
+    font-style: normal;
+    font-weight: 400 800;
+    font-display: swap;
+    src: url('../fonts/fraunces-latin.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: 'Fraunces';
+    font-style: normal;
+    font-weight: 400 800;
+    font-display: swap;
+    src: url('../fonts/fraunces-latin-ext.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url('../fonts/inter-latin.woff2') format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url('../fonts/inter-latin-ext.woff2') format('woff2');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* ==========================================================================
+   Design Tokens
+   ==========================================================================
+   Token layering:
+     1. Primitive ramps (blue-*, gray-*)          — never referenced by components
+     2. Semantic tokens (--surface, --text, …)    — themed by prefers-color-scheme
+     3. Scale tokens (--space-*, --text-*, …)     — structure
+     4. Legacy aliases (--primary-color, …)       — back-compat for existing rules
+   ========================================================================== */
+
 :root {
-    --primary-color: #2980b9;
-    --primary-dark: #1a5276;
-    --secondary-color: #27ae60;
-    --warning-color: #e74c3c;
-    --background-color: #f5f7fa;
-    --card-background: #ffffff;
-    --text-color: #2c3e50;
-    --text-muted: #7f8c8d;
-    --border-color: #dce1e6;
-    --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    --radius: 8px;
+    color-scheme: light;  /* flip to "light dark" once dark auto-detect is enabled */
+
+    /* ---------- Blue ramp (brand / primary) ---------- */
+    --blue-50:  #eaf4fb;
+    --blue-100: #cfe5f5;
+    --blue-200: #a5cde8;
+    --blue-300: #71b0d6;
+    --blue-400: #4693c2;
+    --blue-500: #2980b9;
+    --blue-600: #216694;
+    --blue-700: #1a5276;
+    --blue-800: #12405c;
+    --blue-900: #0b2d42;
+
+    /* ---------- Gray ramp (neutrals) ---------- */
+    --gray-50:  #f5f7fa;
+    --gray-100: #e9eef3;
+    --gray-200: #dce1e6;
+    --gray-300: #c5ccd4;
+    --gray-400: #9aa4ae;
+    --gray-500: #7f8c8d;
+    --gray-600: #5a6773;
+    --gray-700: #3d4a58;
+    --gray-800: #2c3e50;
+    --gray-900: #1a2330;
+
+    /* ---------- Accent primitives ---------- */
+    --green-500: #27ae60;
+    --red-500:   #e74c3c;
+    --amber-500: #f39c12;
+
+    /* ---------- Semantic tokens (themable in dark mode) ---------- */
+    --surface:          #ffffff;
+    --surface-elevated: #ffffff;
+    --surface-sunken:   var(--gray-50);
+    --border:           var(--gray-200);
+    --border-strong:    var(--gray-300);
+    --text:             var(--gray-800);
+    --text-subtle:      var(--gray-500);
+    --text-inverse:     #ffffff;
+    --focus-ring:       var(--blue-500);
+    --brand:            var(--blue-500);
+    --brand-strong:     var(--blue-700);
+
+    /* ---------- Font families ---------- */
+    --font-display: 'Fraunces', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+    --font-body:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-mono:    'SF Mono', 'JetBrains Mono', 'Courier New', monospace;
+
+    /* ---------- Typography scale ---------- */
+    --text-xs:   0.75rem;
+    --text-sm:   0.875rem;
+    --text-base: 1rem;
+    --text-md:   1.125rem;
+    --text-lg:   1.25rem;
+    --text-xl:   1.5rem;
+    --text-2xl:  2rem;
+    --text-3xl:  2.5rem;
+    --text-4xl:  3rem;
+    --leading-tight:   1.25;
+    --leading-normal:  1.5;
+    --leading-relaxed: 1.7;
+
+    /* ---------- Spacing scale (4 px base) ---------- */
+    --space-0:  0;
+    --space-1:  0.25rem;
+    --space-2:  0.5rem;
+    --space-3:  0.75rem;
+    --space-4:  1rem;
+    --space-5:  1.25rem;
+    --space-6:  1.5rem;
+    --space-8:  2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+    --space-24: 6rem;
+
+    /* ---------- Radii ---------- */
+    --radius-sm:   4px;
+    --radius-md:   8px;
+    --radius-lg:   16px;
+    --radius-full: 9999px;
+
+    /* ---------- Shadows ---------- */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.10);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+    /* ---------- Motion ---------- */
+    --duration-fast: 120ms;
+    --duration-base: 200ms;
+    --duration-slow: 320ms;
+    --ease-out:    cubic-bezier(0.33, 1, 0.68, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+    /* ---------- Legacy aliases (back-compat for existing rules) ---------- */
+    --primary-color:    var(--blue-500);
+    --primary-dark:     var(--blue-700);
+    --secondary-color:  var(--green-500);
+    --warning-color:    var(--red-500);
+    --danger-color:     var(--red-500);
+    --success-color:    var(--green-500);
+    --background-color: var(--surface-sunken);
+    --card-background:  var(--surface-elevated);
+    --card-bg:          var(--surface-elevated);
+    --bg-light:         var(--surface-sunken);
+    --bg-secondary:     var(--surface-sunken);
+    --accent-color:     var(--brand);
+    --accent:           var(--brand);
+    --text-color:       var(--text);
+    --text-secondary:   var(--text-subtle);
+    --text-muted:       var(--text-subtle);
+    --border-color:     var(--border);
+    --shadow:           var(--shadow-md);
+    --radius:           var(--radius-md);
+}
+
+/* ==========================================================================
+   Dark mode — opt-in via <html data-theme="dark"> (NOT prefers-color-scheme).
+
+   Auto-detection is intentionally gated until subsequent priorities tokenize
+   the remaining hardcoded hex values and text-on-surface contrast rules that
+   still assume a light background (hero gradients, pastel callouts, headings
+   colored with --primary-dark, KaTeX defaults, Chart.js canvases). Flip to
+   `@media (prefers-color-scheme: dark)` once those are audited.
+   ========================================================================== */
+:root[data-theme="dark"] {
+    --surface:          var(--gray-900);
+    --surface-elevated: var(--gray-800);
+    --surface-sunken:   #0f1620;
+    --border:           var(--gray-700);
+    --border-strong:    var(--gray-600);
+    --text:             #e4e8ed;
+    --text-subtle:      var(--gray-400);
+    --text-inverse:     var(--gray-900);
+    --focus-ring:       var(--blue-400);
+
+    /* Stronger shadow alpha in dark mode so elevation stays legible */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.40);
+    --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.50);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.60);
 }
 
 /* Reset & Base */
@@ -320,7 +497,7 @@ section[id],
     position: absolute;
     top: -0.5rem;
     left: 0.5rem;
-    font-family: Georgia, serif;
+    font-family: var(--font-display);
     line-height: 1;
 }
 
@@ -577,12 +754,43 @@ section[id],
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    font-family: var(--font-body);
+    font-feature-settings: 'ss01', 'cv11';  /* Inter: single-story a + flat numerals */
     line-height: 1.6;
     color: var(--text-color);
     background-color: var(--background-color);
     margin: 0;
     padding: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* Display type — editorial serif for the main narrative hierarchy */
+h1,
+h2,
+.nav-logo,
+.hero h1,
+.featured-quote::before {
+    font-family: var(--font-display);
+    font-feature-settings: 'ss01', 'ss04';  /* Fraunces: alt g, soft terminals */
+    letter-spacing: -0.015em;
+}
+
+h1 { font-weight: 600; line-height: var(--leading-tight); }
+h2 { font-weight: 600; line-height: var(--leading-tight); }
+
+/* Tabular numerals wherever numeric alignment matters */
+.dse-plan-table,
+.data-table,
+.dse-plan-table td,
+.dse-plan-table th,
+.stat-value,
+.version-number,
+.dse-ndl,
+.dse-rt,
+.gas-summary {
+    font-variant-numeric: tabular-nums;
 }
 
 /* Header */
@@ -1715,7 +1923,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.5.8";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.5.10";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
