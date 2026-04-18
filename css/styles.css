@@ -582,6 +582,38 @@ section[id],
 .topic-icon {
     font-size: 2.5rem;
     margin-bottom: 0.75rem;
+    line-height: 1;
+    color: var(--brand);
+}
+
+.topic-icon .icon {
+    width: 2.25rem;
+    height: 2.25rem;
+    display: inline-block;
+    vertical-align: top;
+}
+
+/* Shared inline icon — inherits color from parent, scales with font-size */
+.icon {
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    vertical-align: -0.15em;
+    flex-shrink: 0;
+}
+
+/* Align icons nested inside badges / buttons with surrounding text */
+.nav-wip-badge .icon,
+.nav-logo .icon,
+.disclaimer-box .icon {
+    vertical-align: -0.2em;
+    margin-right: 0.2em;
+}
+
+.nav-logo .icon {
+    width: 1.1em;
+    height: 1.1em;
+    color: inherit;
 }
 
 .topic-card h3 {
@@ -1923,7 +1955,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.5.10";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.5.11";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
