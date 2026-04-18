@@ -1964,7 +1964,8 @@ const chart = new DiveProfileChart(
         const editorPanel = document.getElementById('editor-panel');
         const sandboxLayout = document.getElementById('sandbox-layout');
         const COLLAPSE_STORAGE_KEY = 'sandbox-editor-collapsed';
-        const NARROW_VIEWPORT_PX = 1400;
+        const NARROW_DESKTOP_MIN_PX = 1024;  // below this the layout stacks (editor above charts)
+        const NARROW_DESKTOP_MAX_PX = 1400;  // narrow-desktop band that benefits from auto-collapse
 
         function applyCollapsedState(isCollapsed) {
             editorPanel.classList.toggle('collapsed', isCollapsed);
@@ -1973,11 +1974,20 @@ const chart = new DiveProfileChart(
             collapseBtn.title = isCollapsed ? 'Expand editor' : 'Collapse editor';
         }
 
-        // Restore persisted state, or auto-collapse on narrow viewports (first visit only)
+        // Restore persisted state, or auto-collapse on narrow-desktop first-visit.
+        // On mobile (<1024px) the CSS stacks and `.collapsed` becomes display:none
+        // with no way to recover, so force-expand there regardless of stored state.
         const storedCollapsed = localStorage.getItem(COLLAPSE_STORAGE_KEY);
-        const initialCollapsed = storedCollapsed !== null
-            ? storedCollapsed === 'true'
-            : window.innerWidth < NARROW_VIEWPORT_PX;
+        const w = window.innerWidth;
+        const isMobile = w < NARROW_DESKTOP_MIN_PX;
+        let initialCollapsed;
+        if (isMobile) {
+            initialCollapsed = false;
+        } else if (storedCollapsed !== null) {
+            initialCollapsed = storedCollapsed === 'true';
+        } else {
+            initialCollapsed = w < NARROW_DESKTOP_MAX_PX;
+        }
         applyCollapsedState(initialCollapsed);
 
         collapseBtn.addEventListener('click', () => {
