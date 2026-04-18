@@ -238,7 +238,9 @@ export function getDefaultSetup() {
 export function generateSimpleProfile(maxDepth, bottomTime, safetyStop = DEFAULT_SAFETY_STOP, options = {}) {
     const DESCENT_SPEED = 20; // m/min
     const ASCENT_SPEED = 10;  // m/min
-    const roundUp = options.continuousDeco ? (x) => x : Math.ceil;
+    // Descent still rounds up (keeps the bottom-time invariant intact); ascents use
+    // exact fractional time so the effective ascent rate is really 10 m/min.
+    const roundUpDescent = options.continuousDeco ? (x) => x : Math.ceil;
 
     // Get safety stop settings with defaults
     const safetyStopEnabled = safetyStop?.enabled ?? DEFAULT_SAFETY_STOP.enabled;
@@ -246,24 +248,24 @@ export function generateSimpleProfile(maxDepth, bottomTime, safetyStop = DEFAULT
     const safetyStopTime = safetyStop?.time ?? DEFAULT_SAFETY_STOP.time;
 
     // Calculate descent time
-    const descentTime = roundUp(maxDepth / DESCENT_SPEED);
-    
+    const descentTime = roundUpDescent(maxDepth / DESCENT_SPEED);
+
     // Bottom time is from dive start, so we leave depth at bottomTime
     // (not descentTime + bottomTime)
     const bottomEndTime = bottomTime;
-    
+
     if (safetyStopEnabled && maxDepth > safetyStopDepth) {
-        // Ascent from max depth to safety stop depth
-        const ascentToSafetyStop = roundUp((maxDepth - safetyStopDepth) / ASCENT_SPEED);
+        // Ascent from max depth to safety stop depth — exact 10 m/min
+        const ascentToSafetyStop = (maxDepth - safetyStopDepth) / ASCENT_SPEED;
         const safetyStopStartTime = bottomEndTime + ascentToSafetyStop;
 
         // Safety stop ends
         const safetyStopEndTime = safetyStopStartTime + safetyStopTime;
 
-        // Final ascent from safety stop to surface
-        const finalAscentTime = roundUp(safetyStopDepth / ASCENT_SPEED);
+        // Final ascent from safety stop to surface — exact 10 m/min
+        const finalAscentTime = safetyStopDepth / ASCENT_SPEED;
         const surfaceTime = safetyStopEndTime + finalAscentTime;
-        
+
         return [
             { time: 0, depth: 0 },                                   // Start at surface
             { time: descentTime, depth: maxDepth },                  // Arrive at max depth
@@ -273,10 +275,10 @@ export function generateSimpleProfile(maxDepth, bottomTime, safetyStop = DEFAULT
             { time: surfaceTime, depth: 0 }                          // Back at surface
         ];
     } else {
-        // No safety stop - direct ascent
-        const ascentTime = roundUp(maxDepth / ASCENT_SPEED);
+        // No safety stop - direct ascent at exact 10 m/min
+        const ascentTime = maxDepth / ASCENT_SPEED;
         const surfaceTime = bottomEndTime + ascentTime;
-        
+
         return [
             { time: 0, depth: 0 },                           // Start at surface
             { time: descentTime, depth: maxDepth },          // Arrive at max depth
@@ -320,6 +322,9 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
     const DESCENT_SPEED = 20; // m/min
     const ASCENT_SPEED = 10;  // m/min
     const STOP_INCREMENT = 3;
+    // roundUp is used only for descent and for displayed stop-time accumulation.
+    // Ascent durations are kept fractional below so the real 10 m/min rate is
+    // preserved in the waypoint timeline (matches Divesoft's behaviour).
     const roundUp = options.continuousDeco ? (x) => x : Math.ceil;
 
     // Get safety stop settings with defaults
@@ -466,9 +471,10 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
                     currentGasId = sw.gasId;
                 }
             }
-            const ascentTime = roundUp((currentDepth - event.depth) / ASCENT_SPEED);
+            // Exact 10 m/min (no ceil); keep fractional so the underlying ascent
+            // rate is correct. Runtime display is rounded at render time, not here.
+            const ascentTime = (currentDepth - event.depth) / ASCENT_SPEED;
             currentTime += ascentTime;
-            if (!options.continuousDeco) currentTime = Math.round(currentTime * 10) / 10;
             currentDepth = event.depth;
         }
 
@@ -488,11 +494,10 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
         }
     }
 
-    // Final ascent to surface (if not already there)
+    // Final ascent to surface (if not already there) — exact 10 m/min
     if (currentDepth > 0) {
-        const finalAscentTime = roundUp(currentDepth / ASCENT_SPEED);
+        const finalAscentTime = currentDepth / ASCENT_SPEED;
         currentTime += finalAscentTime;
-        if (!options.continuousDeco) currentTime = Math.round(currentTime * 10) / 10;
         waypoints.push({ time: currentTime, depth: 0 });
     }
 
@@ -604,25 +609,26 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
     let currentDepth = maxDepth;
     
     for (const stop of stops) {
-        const ascentTime = roundUp((currentDepth - stop.depth) / ASCENT_SPEED);
+        // Exact 10 m/min; fractional preserved so the ascent rate is correct.
+        const ascentTime = (currentDepth - stop.depth) / ASCENT_SPEED;
         currentTime += ascentTime;
         waypoints.push({ time: currentTime, depth: stop.depth });
-        
+
         currentTime += stop.time;
         waypoints.push({ time: currentTime, depth: stop.depth });
-        
+
         currentDepth = stop.depth;
     }
-    
+
     // Check if we need to add a safety stop (deco cleared before safety stop depth)
     const hasDecoAtOrBelowSafetyStop = stops.some(s => s.depth <= safetyStopDepth && s.depth > 0);
-    const needsSafetyStop = safetyStopEnabled && 
-                           maxDepth > safetyStopDepth && 
+    const needsSafetyStop = safetyStopEnabled &&
+                           maxDepth > safetyStopDepth &&
                            !hasDecoAtOrBelowSafetyStop;
-    
+
     if (needsSafetyStop && currentDepth > safetyStopDepth) {
-        // Add safety stop
-        const ascentTime = roundUp((currentDepth - safetyStopDepth) / ASCENT_SPEED);
+        // Add safety stop — exact ascent at 10 m/min
+        const ascentTime = (currentDepth - safetyStopDepth) / ASCENT_SPEED;
         currentTime += ascentTime;
         waypoints.push({ time: currentTime, depth: safetyStopDepth });
         currentTime += safetyStopTime;
@@ -631,7 +637,8 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
     }
 
     if (currentDepth > 0) {
-        const finalAscentTime = roundUp(currentDepth / ASCENT_SPEED);
+        // Final ascent at exact 10 m/min
+        const finalAscentTime = currentDepth / ASCENT_SPEED;
         currentTime += finalAscentTime;
         waypoints.push({ time: currentTime, depth: 0 });
     }
@@ -1448,12 +1455,19 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
         };
 
         if (next.depth > wp.depth) {
-            pushSeg({ cls: 'des', icon: '↓', label: 'Des', depth: next.depth, stop: '', runtime, gas: gasName });
+            pushSeg({ cls: 'des', icon: '↓', label: 'Des', depth: next.depth, stop: duration, runtime, gas: gasName });
         } else if (next.depth === wp.depth && next.depth === maxDepth && !leftMax) {
             pushSeg({ cls: 'bottom', icon: '●', label: 'Bottom', depth: wp.depth, stop: duration, runtime, gas: gasName });
+        } else if (next.depth === 0 && wp.depth === 0) {
+            // already at surface — skip
+        } else if (next.depth === 0 && wp.depth > 0) {
+            // Final surface ascent — blank stop column; it's just a surfacing
+            // marker, not a deco duration worth showing as a number.
+            leftMax = true;
+            pushSeg({ cls: 'asc', icon: '▲', label: 'Surface', depth: 0, stop: '', runtime, gas: '' });
         } else if (next.depth < wp.depth) {
             leftMax = true;
-            pushSeg({ cls: 'asc', icon: '↑', label: 'Asc', depth: next.depth, stop: '', runtime, gas: gasName });
+            pushSeg({ cls: 'asc', icon: '↑', label: 'Asc', depth: next.depth, stop: duration, runtime, gas: gasName });
         } else if (next.depth === wp.depth && next.depth > 0) {
             leftMax = true;
             const gasChanged = wp.gasId && wp.gasId !== prevGasId;
@@ -1462,15 +1476,31 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
             } else {
                 pushSeg({ cls: 'stop', icon: '■', label: 'Stop', depth: wp.depth, stop: duration, runtime, gas: gasName });
             }
-        } else if (next.depth === 0 && wp.depth === 0) {
-            // already at surface — skip
-        } else if (next.depth === 0) {
-            pushSeg({ cls: 'asc', icon: '▲', label: 'Surface', depth: 0, stop: '', runtime, gas: '' });
         }
         if (wp.gasId) prevGasId = wp.gasId;
     }
 
     if (segments.length === 0) return '';
+
+    // Fold inter-stop ascents into the following stop row (Divesoft-style).
+    // We only merge when BOTH neighbours are plain 'stop' segments — so the first
+    // ascent from bottom, the ascent leading into a gas switch, and the ascent
+    // from a switch to the next stop all remain their own rows. Gas-switch rows
+    // never merge.
+    for (let i = segments.length - 1; i >= 0; i--) {
+        const seg = segments[i];
+        if (seg.cls !== 'asc') continue;
+        if (seg.label === 'Surface') continue;       // final surface ascent stays visible
+        const prev = segments[i - 1];
+        const next = segments[i + 1];
+        if (!prev || !next) continue;
+        if (prev.cls !== 'stop') continue;           // only merge stop→asc→stop chains
+        if (next.cls !== 'stop') continue;           // do not fold into a switch row
+        const ascDuration = seg.runtime - prev.runtime;
+        const combined = (typeof next.stop === 'number' ? next.stop : 0) + ascDuration;
+        next.stop = Math.round(combined * 10) / 10;
+        segments.splice(i, 1);
+    }
 
     const rows = segments.map(s => {
         const tankCell = s.tankBar !== null && s.tankBar !== undefined ? `${s.tankBar} bar` : '—';
@@ -1478,11 +1508,16 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
         const threshold = gas?.reservePressure ?? reserve;
         const belowReserve = s.tankBar !== null && s.tankBar !== undefined && s.tankBar <= threshold;
         const trClass = belowReserve ? `dse-plan-${s.cls} danger-row` : `dse-plan-${s.cls}`;
+        // Display runtime rounded to whole minutes (matches Divesoft). Internal
+        // times stay fractional so physics and chart rendering use the exact
+        // ascent rate.
+        const stopDisplay = typeof s.stop === 'number' ? Math.round(s.stop) : s.stop;
+        const runtimeDisplay = Math.round(s.runtime);
         return `<tr class="${trClass}">` +
             `<td class="dse-plan-phase"><span class="dse-plan-icon">${s.icon}</span> ${s.label}</td>` +
             `<td class="dse-plan-depth">${s.depth}m</td>` +
-            `<td class="dse-plan-stop">${s.stop || '—'}</td>` +
-            `<td class="dse-plan-runtime">${s.runtime}</td>` +
+            `<td class="dse-plan-stop">${stopDisplay || stopDisplay === 0 ? stopDisplay : '—'}</td>` +
+            `<td class="dse-plan-runtime">${runtimeDisplay}</td>` +
             `<td class="dse-plan-gas">${s.gas}</td>` +
             `<td class="dse-plan-tank">${tankCell}</td>` +
             `</tr>`;

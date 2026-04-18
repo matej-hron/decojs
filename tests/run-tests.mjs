@@ -346,14 +346,22 @@ describe('diveSetup', () => {
             expect(waypoints2[1].time).toBe(2);
         });
 
-        test('rounds times up to full minutes', () => {
-            // 25m at 20 m/min = 1.25 min, should round up to 2 min
+        test('descent time rounds up to whole minutes; ascent stays exact 10 m/min', () => {
+            // Descent is still ceil-rounded (keeps bottom-time invariant).
+            // Ascent uses exact 10 m/min (fractional) so inter-stop ascents
+            // don't force the diver below the intended ascent rate. This matches
+            // how dive computers like Divesoft display and execute plans.
             const waypoints = generateSimpleProfile(25, 15);
-            // All times should be integers
-            for (const wp of waypoints) {
-                expect(Number.isInteger(wp.time)).toBe(true);
-            }
+            // Descent arrival at depth: 25m / 20 = 1.25 → ceil → 2 min
             expect(waypoints[1].time).toBe(2);
+            // Bottom time is from dive start, so depth is left at minute 15
+            expect(waypoints[2].time).toBe(15);
+            // Ascent 25m → 5m safety stop at exact 10 m/min = 2.0 min
+            expect(waypoints[3].time).toBe(17);
+            // Safety stop of 3 min → leave at 20
+            expect(waypoints[4].time).toBe(20);
+            // Final ascent 5m → 0 at exact 10 m/min = 0.5 min (fractional)
+            expect(waypoints[5].time).toBeCloseTo(20.5, 5);
         });
 
         test('maintains correct bottom time (from dive start)', () => {

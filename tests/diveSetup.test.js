@@ -320,17 +320,23 @@ describe('diveSetup module', () => {
             expect(waypoints2[1].time).toBe(2);
         });
 
-        test('rounds times up to full minutes', () => {
-            // 25m at 20 m/min = 1.25 min, should round up to 2 min
+        test('descent rounds to whole minutes; ascent stays exact 10 m/min', () => {
+            // Descent still uses ceil rounding (keeps the bottom-time invariant
+            // — e.g. "25 m for 15 min" always leaves depth at minute 15).
+            // Ascent durations are now fractional so the effective ascent rate
+            // really is 10 m/min instead of being slowed down by grid rounding.
             const waypoints = generateSimpleProfile(25, 15);
-            
-            // All times should be integers
-            waypoints.forEach(wp => {
-                expect(Number.isInteger(wp.time)).toBe(true);
-            });
-            
-            // Descent: 25m / 20 m/min = 1.25 min → 2 min
+
+            // Descent: 25m / 20 m/min = 1.25 → ceil → 2 min
             expect(waypoints[1].time).toBe(2);
+            // Bottom time is from dive start, so depth is left at minute 15
+            expect(waypoints[2].time).toBe(15);
+            // Ascent 25 → 5 m (safety stop) at exact 10 m/min = 2.0 min
+            expect(waypoints[3].time).toBe(17);
+            // Safety stop 3 min → leave at 20
+            expect(waypoints[4].time).toBe(20);
+            // Final ascent 5 m → 0 at exact 10 m/min = 0.5 min (fractional)
+            expect(waypoints[5].time).toBeCloseTo(20.5, 5);
         });
 
         test('maintains correct bottom time (from dive start)', () => {
