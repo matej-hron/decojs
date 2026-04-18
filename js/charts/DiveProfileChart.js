@@ -28,6 +28,7 @@
  */
 
 import { COMPARTMENTS } from '../tissueCompartments.js';
+import { applyChartTheme, depthGradient, theme } from './chartTheme.js';
 import {
     calculateTissueLoading,
     calculateCeilingTimeSeries,
@@ -967,10 +968,16 @@ export class DiveProfileChart {
             });
         }
         
+        // Apply shared chart theme (reads CSS tokens -> Chart.defaults).
+        // Idempotent; runs every render so theme flips take effect.
+        applyChartTheme();
+
         // Prepare datasets
         const datasets = [];
-        
-        // Depth profile (primary)
+
+        // Depth profile (primary) — vertical gradient fill: lighter near
+        // the surface, fading toward transparent at the floor so the
+        // deeper region doesn't visually compete with annotations.
         datasets.push({
             label: 'Depth (m)',
             data: results.timePoints.map((t, i) => ({
@@ -978,12 +985,15 @@ export class DiveProfileChart {
                 y: results.depthPoints[i]
             })),
             borderColor: this.options.colors.depth,
-            backgroundColor: this.options.colors.depth + '20',
+            backgroundColor: (ctx) => {
+                const { chart } = ctx;
+                return depthGradient(chart.ctx, chart.chartArea, this.options.colors.depth);
+            },
             fill: true,
             yAxisID: 'yDepth',
             tension: 0,
             pointRadius: 0,
-            borderWidth: 2,
+            borderWidth: 2.25,
             order: 10
         });
         

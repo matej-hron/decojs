@@ -31,6 +31,7 @@
  */
 
 import { COMPARTMENTS } from '../tissueCompartments.js';
+import { applyChartTheme, theme } from './chartTheme.js';
 import {
     calculateTissueLoading,
     getMValue,
@@ -872,7 +873,11 @@ export class MValueChart {
     
     _render() {
         if (!this.calculationResults) return;
-        
+
+        // Push current CSS design tokens into Chart.defaults so every
+        // chart (incl. this one) picks up consistent typography & grid.
+        applyChartTheme();
+
         const results = this.calculationResults;
         const gfLow = (this.diveSetup.gfLow || 100) / 100;
         const gfHigh = (this.diveSetup.gfHigh || 100) / 100;
@@ -1047,11 +1052,11 @@ export class MValueChart {
                     label: `M-value TC${comp.id}`,
                     data: mValueData,
                     borderColor: comp.color,
-                    borderWidth: 2,
+                    borderWidth: 2.25,
                     pointRadius: 0,
                     fill: false,
                     showLine: true,
-                    borderDash: [3, 3],
+                    borderDash: [4, 4],
                     order: 50
                 });
             }
@@ -1138,15 +1143,26 @@ export class MValueChart {
                 });
             }
             
-            // Current tissue point
+            // Current tissue point — ring uses --surface so it reads in
+            // either theme; subtle inner glow via shadowBlur lifts the
+            // point off the trail without adding visual noise.
             const currentTissue = results.compartments[comp.id].pressures[timeIndex];
             datasets.push({
                 label: `TC${comp.id} (${comp.halfTime}min)`,
                 data: [{ x: currentAmbient, y: currentTissue }],
                 backgroundColor: comp.color,
-                borderColor: '#fff',
+                borderColor: theme().colors.surface,
                 borderWidth: 2,
                 pointRadius: 8,
+                pointHoverRadius: 10,
+                hoverBorderWidth: 2.5,
+                pointHoverBackgroundColor: comp.color,
+                // Chart.js respects element.point.shadowBlur on newer versions;
+                // we set it through the dataset for compatibility.
+                shadowOffsetX: 0,
+                shadowOffsetY: 0,
+                shadowBlur: 8,
+                shadowColor: comp.color + '55',
                 showLine: false,
                 order: 1
             });

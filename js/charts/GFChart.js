@@ -31,6 +31,7 @@
  */
 
 import { COMPARTMENTS } from '../tissueCompartments.js';
+import { applyChartTheme } from './chartTheme.js';
 import {
     calculateTissueLoading,
     calculateInstantGF,
@@ -844,6 +845,7 @@ export class GFChart {
 
     _render() {
         if (!this.calculationResults) return;
+        applyChartTheme();
 
         const results = this.calculationResults;
         const gfLow = (this.diveSetup.gfLow || 100) / 100;
