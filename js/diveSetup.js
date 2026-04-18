@@ -1292,6 +1292,98 @@ export const OTU_LIMITS = {
 };
 
 /**
+ * Shared gas-consumption integrator used by the chart line AND the warning /
+ * Gas Summary blocks. Walks simulated time-points (from calculateTissueLoading)
+ * and computes per-gas consumption and remaining pressure using the SAME
+ * convention everywhere: sacRate for moving phases and the bottom, decoSacRate
+ * for stationary stops (depth unchanged, depth > 0) AFTER the diver has left
+ * max depth — except gas-switch stops, which use sacRate so they don't count
+ * as deco stops.
+ *
+ * @param {Object} results           Output of calculateTissueLoading (needs timePoints, depthPoints, gasSwitches).
+ * @param {Array}  gases             Dive-setup gases (each {id, name, cylinderVolume, startPressure}).
+ * @param {number} sacRate           L/min at surface, bottom/descent/ascent.
+ * @param {number} [decoSacRate]     L/min for deco/safety stops (defaults to sacRate).
+ * @param {number} [reservePressure] bar — carried through to the summary so callers share one threshold.
+ * @returns {{
+ *   pressureByGasId: Object,        final remaining pressure (bar), per gas id
+ *   consumedByGasId: Object,        L consumed per gas id
+ *   pressureSeries:  Object,        per-gas array of remaining pressure at each timepoint (for chart lines)
+ *   totalConsumed:   number
+ * }}
+ */
+export function computeGasConsumption(results, gases, sacRate, decoSacRate, reservePressure = 50) {
+    const pressureByGasId = {};
+    const consumedByGasId = {};
+    const pressureSeries = {};
+    for (const g of gases) {
+        pressureByGasId[g.id] = g.startPressure ?? 200;
+        consumedByGasId[g.id] = 0;
+        pressureSeries[g.id] = [];
+    }
+    if (!results || !results.timePoints || results.timePoints.length === 0) {
+        return { pressureByGasId, consumedByGasId, pressureSeries, totalConsumed: 0 };
+    }
+
+    // Build gas-switch time → gasId map
+    const gasSwitchTimes = {};
+    if (results.gasSwitches) {
+        for (const sw of results.gasSwitches) gasSwitchTimes[sw.time] = sw.gasId;
+    }
+
+    const maxDepth = Math.max(...results.depthPoints);
+    let leftMaxDepth = false;
+    let gasSwitchActive = false;
+    let currentGasId = gases[0]?.id;
+
+    for (let i = 0; i < results.timePoints.length; i++) {
+        const time = results.timePoints[i];
+        const depth = results.depthPoints[i];
+
+        if (!leftMaxDepth && i > 0 && results.depthPoints[i - 1] >= maxDepth && depth < maxDepth) {
+            leftMaxDepth = true;
+        }
+
+        if (gasSwitchTimes[time]) {
+            currentGasId = gasSwitchTimes[time];
+            gasSwitchActive = true;
+        }
+
+        if (i > 0) {
+            const prevTime = results.timePoints[i - 1];
+            const prevDepth = results.depthPoints[i - 1];
+            const deltaTime = time - prevTime;
+            if (depth !== prevDepth) gasSwitchActive = false;
+            if (!(depth === 0 && prevDepth === 0)) {
+                const avgDepth = (depth + prevDepth) / 2;
+                const ambient = 1 + avgDepth / 10;
+                const isDecoStop = leftMaxDepth && depth === prevDepth && depth > 0 && !gasSwitchActive;
+                const sac = isDecoStop ? decoSacRate : sacRate;
+                const consumed = sac * ambient * deltaTime;
+                if (consumedByGasId[currentGasId] !== undefined) {
+                    consumedByGasId[currentGasId] += consumed;
+                    const gas = gases.find(g => g.id === currentGasId);
+                    if (gas && gas.cylinderVolume > 0) {
+                        const drop = consumed / gas.cylinderVolume;
+                        pressureByGasId[currentGasId] = Math.max(0, pressureByGasId[currentGasId] - drop);
+                    }
+                }
+            }
+        }
+
+        // Record per-timepoint remaining pressure for chart lines
+        for (const g of gases) {
+            pressureSeries[g.id].push(pressureByGasId[g.id]);
+        }
+    }
+
+    let totalConsumed = 0;
+    for (const id of Object.keys(consumedByGasId)) totalConsumed += consumedByGasId[id];
+
+    return { pressureByGasId, consumedByGasId, pressureSeries, totalConsumed };
+}
+
+/**
  * Build a read-only dive-plan (RunTime) table for a set of waypoints.
  *
  * Returns an HTML string containing a `<table class="dse-plan-table">` with

@@ -761,6 +761,7 @@
         } from '../js/decoModel.js';
         import { COMPARTMENTS } from '../js/tissueCompartments.js';
         import { getProfileFromUrl, updateUrlWithProfile, getChartModeFromUrl } from '../js/urlParams.js';
+        import { computeGasConsumption } from '../js/diveSetup.js';
         
         // =====================================================================
         // DIVE ANALYSIS - Warnings, Gas Consumption, Safety Checks
@@ -933,63 +934,22 @@
                 });
             }
             
-            // ===== Gas Consumption =====
+            // ===== Gas Consumption (uses shared helper so chart + summary agree) =====
+            const shared = computeGasConsumption(results, gases, sacRate, decoSacRate, reservePressure);
             const tankConsumption = new Map();
             gases.forEach(gas => {
                 tankConsumption.set(gas.id, {
                     name: gas.name || `${(gas.o2 * 100).toFixed(0)}/${(gas.he * 100).toFixed(0)}`,
                     startPressure: gas.startPressure || 200,
                     cylinderVolume: gas.cylinderVolume || 12,
-                    consumed: 0, // liters
-                    endPressure: 0
+                    consumed: shared.consumedByGasId[gas.id] || 0,
+                    endPressure: shared.pressureByGasId[gas.id] ?? (gas.startPressure || 200)
                 });
             });
-            
-            currentGasId = gases[0]?.id || null;
-            let gasSwitchActive = false;
 
-            for (let i = 1; i < results.timePoints.length; i++) {
-                const time = results.timePoints[i];
-                const prevTime = results.timePoints[i - 1];
-                const depth = results.depthPoints[i];
-                const prevDepth = results.depthPoints[i - 1];
-
-                // Track when diver leaves max depth (ascent begins)
-                if (!leftMaxDepth && prevDepth >= maxDepth && depth < maxDepth) {
-                    leftMaxDepth = true;
-                }
-
-                // Skip surface interval (both points at surface = not diving)
-                if (depth === 0 && prevDepth === 0) continue;
-
-                // Check gas switches
-                if (gasSwitchTimes.has(time)) {
-                    currentGasId = gasSwitchTimes.get(time);
-                    gasSwitchActive = true;
-                }
-
-                // Clear gas switch flag when depth changes (diver is moving)
-                if (depth !== prevDepth) gasSwitchActive = false;
-
-                const tank = tankConsumption.get(currentGasId);
-                if (!tank) continue;
-
-                const avgDepth = (depth + prevDepth) / 2;
-                const duration = time - prevTime; // minutes
-                const avgPressure = getAmbientPressure(avgDepth) / SURFACE_PRESSURE;
-                const isDecoStop = leftMaxDepth && depth === prevDepth && depth > 0 && !gasSwitchActive;
-                const effectiveSacRate = isDecoStop ? decoSacRate : sacRate;
-                const consumed = effectiveSacRate * avgPressure * duration; // liters at surface
-                tank.consumed += consumed;
-            }
-            
             // Calculate end pressures and warnings
             tankConsumption.forEach((tank, gasId) => {
                 const gas = gases.find(g => g.id === gasId);
-                const totalLiters = tank.startPressure * tank.cylinderVolume;
-                const remainingLiters = totalLiters - tank.consumed;
-                tank.endPressure = Math.max(0, remainingLiters / tank.cylinderVolume);
-                
                 gasSummary.tanks.push({
                     id: gasId,
                     name: tank.name,
@@ -998,7 +958,7 @@
                     consumed: Math.round(tank.consumed),
                     cylinderVolume: tank.cylinderVolume
                 });
-                
+
                 gasSummary.totalConsumed += tank.consumed;
                 
                 // Gas warnings

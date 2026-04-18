@@ -46,6 +46,7 @@ import {
     validateDiveSetup,
     normalizeDiveSetup
 } from './chartTypes.js';
+import { computeGasConsumption } from '../diveSetup.js';
 
 /**
  * DiveProfileChart - Embeddable dive profile visualization
@@ -770,15 +771,20 @@ export class DiveProfileChart {
      * @returns {Object} Gas consumption data per cylinder
      */
     _calculateGasConsumption(results, gases, sacRate, reservePressure, decoSacRate = sacRate) {
+        // Delegate the per-timepoint integration to the shared helper so that
+        // this chart's red pressure line, the warnings/Gas Summary block, and
+        // the plan-table "Tank" column all agree by construction.
+        const shared = computeGasConsumption(results, gases, sacRate, decoSacRate, reservePressure);
+
         const gasData = {};
-        
-        // Initialize each gas cylinder
         gases.forEach(gas => {
-            const cylinderVolume = gas.cylinderVolume || 12; // Default 12L cylinder
-            const startPressure = gas.startPressure || 200; // Default 200 bar
-            const totalGas = cylinderVolume * startPressure; // Total gas in liters
+            const cylinderVolume = gas.cylinderVolume || 12;
+            const startPressure = gas.startPressure || 200;
+            const totalGas = cylinderVolume * startPressure;
             const reserveGas = cylinderVolume * reservePressure;
-            
+            const pressures = shared.pressureSeries[gas.id] || [];
+            const consumption = pressures.map(p => (startPressure - p) * cylinderVolume);
+
             gasData[gas.id] = {
                 name: gas.name,
                 cylinderVolume,
@@ -786,99 +792,12 @@ export class DiveProfileChart {
                 totalGas,
                 reserveGas,
                 reservePressure,
-                pressures: [],      // Pressure at each time point
-                consumption: [],    // Cumulative consumption at each time point
-                rates: [],          // Instantaneous consumption rate (L/min) at each point
-                isActive: false     // Whether this gas has been used
+                pressures,
+                consumption,
+                rates: [],          // (not used by the drawn chart; left empty for now)
+                isActive: (shared.consumedByGasId[gas.id] || 0) > 0
             };
         });
-        
-        // Track current gas (first gas by default, or use gas switches from results)
-        let currentGasId = gases[0]?.id;
-        let cumulativeConsumption = {}; // Per-gas cumulative consumption
-        gases.forEach(gas => { cumulativeConsumption[gas.id] = 0; });
-        
-        // Build gas switch timeline from results
-        const gasSwitchTimes = {};
-        if (results.gasSwitches) {
-            results.gasSwitches.forEach(sw => {
-                gasSwitchTimes[sw.time] = sw.gasId;
-            });
-        }
-        
-        // Calculate consumption at each time point
-        // Deco SAC applies on stops (stationary, depth > 0) AFTER leaving max depth,
-        // excluding gas switch stops. Bottom time at max depth uses bottom SAC.
-        const maxDepth = Math.max(...results.depthPoints);
-        let leftMaxDepth = false;
-        let gasSwitchActive = false;
-
-        for (let i = 0; i < results.timePoints.length; i++) {
-            const time = results.timePoints[i];
-            const depth = results.depthPoints[i];
-
-            // Track when diver leaves max depth (ascent begins)
-            if (!leftMaxDepth && i > 0 && results.depthPoints[i - 1] >= maxDepth && depth < maxDepth) {
-                leftMaxDepth = true;
-            }
-
-            // Check for gas switch
-            if (gasSwitchTimes[time]) {
-                currentGasId = gasSwitchTimes[time];
-                gasSwitchActive = true;
-            }
-
-            // Mark gas as active once used
-            if (gasData[currentGasId]) {
-                gasData[currentGasId].isActive = true;
-            }
-
-            // Calculate consumption for this time step
-            if (i > 0) {
-                const prevTime = results.timePoints[i - 1];
-                const prevDepth = results.depthPoints[i - 1];
-                const deltaTime = time - prevTime; // minutes
-
-                // Clear gas switch flag when depth changes (diver is moving)
-                if (depth !== prevDepth) gasSwitchActive = false;
-
-                // Skip surface interval (both points at surface = not diving)
-                if (!(depth === 0 && prevDepth === 0)) {
-                    // Average depth for this segment
-                    const avgDepth = (depth + prevDepth) / 2;
-                    const ambientPressure = 1 + avgDepth / 10; // bar
-
-                    // Deco SAC on stops after leaving max depth, excluding gas switch stops
-                    const isDecoStop = leftMaxDepth && depth === prevDepth && depth > 0 && !gasSwitchActive;
-                    const effectiveSac = isDecoStop ? decoSacRate : sacRate;
-                    const segmentConsumption = effectiveSac * ambientPressure * deltaTime;
-
-                    // Add to cumulative consumption for current gas
-                    if (gasData[currentGasId]) {
-                        cumulativeConsumption[currentGasId] += segmentConsumption;
-                    }
-                }
-            }
-
-            // Calculate instantaneous rate at current depth (0 at surface)
-            const ambientPressure = depth > 0 ? 1 + depth / 10 : 0;
-            const isDecoStopNow = leftMaxDepth && i > 0 && depth === results.depthPoints[i - 1] && depth > 0 && !gasSwitchActive;
-            const instantRate = (isDecoStopNow ? decoSacRate : sacRate) * ambientPressure;
-
-            // Record pressure and rate for each gas at this time point
-            gases.forEach(gas => {
-                const data = gasData[gas.id];
-                const consumed = cumulativeConsumption[gas.id];
-                const remainingGas = data.totalGas - consumed;
-                const remainingPressure = Math.max(0, remainingGas / data.cylinderVolume);
-
-                data.consumption.push(consumed);
-                data.pressures.push(remainingPressure);
-                // Rate only applies if this gas is currently in use
-                data.rates.push(gas.id === currentGasId ? instantRate : 0);
-            });
-        }
-        
         return gasData;
     }
     

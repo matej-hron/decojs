@@ -866,8 +866,8 @@
 
     <script type="module">
         import { DiveProfileChart } from './js/charts/DiveProfileChart.js';
-        import { getDiveSetupWaypoints, renderDivePlanTableHTML } from './js/diveSetup.js';
-        import { getAmbientPressure, SURFACE_PRESSURE } from './js/decoModel.js';
+        import { getDiveSetupWaypoints, renderDivePlanTableHTML, computeGasConsumption } from './js/diveSetup.js';
+        import { getAmbientPressure, SURFACE_PRESSURE, calculateTissueLoading } from './js/decoModel.js';
         import { getSandboxUrl } from './js/urlParams.js';
         import { initStickyTOC } from './js/components/StickyTOC.js';
         import { initTooltipShortcut } from './js/components/tooltipShortcut.js';
@@ -1033,52 +1033,30 @@
 
         const gasSummaryContainer = document.getElementById('gas-summary-container');
         if (gasSummaryContainer) {
+            // Use the shared consumption helper so this summary matches the
+            // red pressure line drawn by the gas-consumption chart above.
             const waypoints = getDiveSetupWaypoints(DECO_PROFILE);
             const gases = DECO_PROFILE.gases || [];
-            const sacRate = 20; // L/min at surface
+            const sacRate = DECO_PROFILE.sacRate ?? 20;
+            const decoSacRate = DECO_PROFILE.decoSacRate ?? 15;
+            const reservePressure = DECO_PROFILE.reservePressure ?? 50;
+            const loadingResults = calculateTissueLoading(
+                waypoints, DECO_PROFILE.surfaceInterval || 0, { gases }
+            );
+            const shared = computeGasConsumption(loadingResults, gases, sacRate, decoSacRate, reservePressure);
 
-            // Calculate gas consumption
-            const tankConsumption = new Map();
+            const gasSummary = { tanks: [], totalConsumed: shared.totalConsumed };
             gases.forEach(gas => {
-                tankConsumption.set(gas.id, {
-                    name: gas.name || `${(gas.o2 * 100).toFixed(0)}%`,
-                    startPressure: gas.startPressure || 200,
-                    cylinderVolume: gas.cylinderVolume || 12,
-                    consumed: 0
-                });
-            });
-
-            let currentGasId = gases[0]?.id || null;
-            for (let i = 1; i < waypoints.length; i++) {
-                const wp = waypoints[i];
-                const prevWp = waypoints[i - 1];
-
-                if (wp.gasId) currentGasId = wp.gasId;
-
-                const tank = tankConsumption.get(currentGasId);
-                if (!tank) continue;
-
-                const avgDepth = (wp.depth + prevWp.depth) / 2;
-                const duration = wp.time - prevWp.time;
-                const avgPressure = getAmbientPressure(avgDepth) / SURFACE_PRESSURE;
-                tank.consumed += sacRate * avgPressure * duration;
-            }
-
-            const gasSummary = { tanks: [], totalConsumed: 0 };
-            tankConsumption.forEach((tank, gasId) => {
-                const totalLiters = tank.startPressure * tank.cylinderVolume;
-                const remainingLiters = totalLiters - tank.consumed;
-                const endPressure = Math.max(0, remainingLiters / tank.cylinderVolume);
-
+                const cylinderVolume = gas.cylinderVolume || 12;
+                const startPressure = gas.startPressure || 200;
                 gasSummary.tanks.push({
-                    name: tank.name,
-                    cylinderVolume: tank.cylinderVolume,
-                    startPressure: tank.startPressure,
-                    endPressure: Math.round(endPressure),
-                    consumed: Math.round(tank.consumed),
-                    totalCapacity: Math.round(totalLiters)
+                    name: gas.name || `${(gas.o2 * 100).toFixed(0)}%`,
+                    cylinderVolume,
+                    startPressure,
+                    endPressure: Math.round(shared.pressureByGasId[gas.id] ?? startPressure),
+                    consumed: Math.round(shared.consumedByGasId[gas.id] || 0),
+                    totalCapacity: Math.round(startPressure * cylinderVolume)
                 });
-                gasSummary.totalConsumed += tank.consumed;
             });
 
             renderGasSummary(gasSummaryContainer, gasSummary);
