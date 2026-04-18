@@ -570,6 +570,15 @@
             "title": "M-hodnoty a limity výstupu",
             "subtitle": "Pochopení limitů přesycení"
         },
+        "toc": {
+            "recap": "Co už víme",
+            "supersaturation": "Problém přesycení",
+            "buhlmann": "Bühlmannovo řešení",
+            "diagram": "Tlak-tlakový diagram",
+            "exampleSafe": "Příklad: bezpečný ponor",
+            "exampleViolation": "Příklad: překročení stropu",
+            "reference": "Koeficienty ZH-L16A"
+        },
         "recap": {
             "title": "Co už víme",
             "cardTitle": "Vztahy mezi tlaky",
@@ -672,6 +681,16 @@
     "gradientFactors": {
         "page": {
             "title": "Gradient faktory - Deco Theory"
+        },
+        "toc": {
+            "greyZone": "Šedá zóna: tiché bubliny",
+            "individualVariability": "Individuální variabilita",
+            "pyleStops": "Pyle zastávky",
+            "gfExplained": "Gradient faktory vysvětlené",
+            "gfLowHigh": "GF Low a GF High",
+            "example100": "Příklad: GF 100/100",
+            "example5080": "Příklad: GF 50/80",
+            "controversy": "Kontroverze hlubokých zastávek"
         },
         "header": {
             "title": "Gradient faktory",

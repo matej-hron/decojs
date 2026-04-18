@@ -58,8 +58,22 @@
     </header>
 
     <main>
+        <!-- Table of Contents -->
+        <nav class="toc">
+            <h2>📑 <span data-i18n="toc.title">Contents</span></h2>
+            <ul>
+                <li><a href="#recap">🔄 <span data-i18n="mValues.toc.recap">What We Know So Far</span></a></li>
+                <li><a href="#supersaturation">🫧 <span data-i18n="mValues.toc.supersaturation">The Supersaturation Problem</span></a></li>
+                <li><a href="#buhlmann">🧮 <span data-i18n="mValues.toc.buhlmann">Bühlmann's Solution</span></a></li>
+                <li><a href="#diagram">📊 <span data-i18n="mValues.toc.diagram">Pressure-Pressure Diagram</span></a></li>
+                <li><a href="#example-safe">✅ <span data-i18n="mValues.toc.exampleSafe">Example: Safe Dive</span></a></li>
+                <li><a href="#example-violation">⚠️ <span data-i18n="mValues.toc.exampleViolation">Example: Ceiling Violation</span></a></li>
+                <li><a href="#reference">📋 <span data-i18n="mValues.toc.reference">ZH-L16A Coefficients</span></a></li>
+            </ul>
+        </nav>
+
         <!-- What We Know So Far -->
-        <section class="education-section">
+        <section class="education-section" id="recap">
             <h2>🔄 <span data-i18n="mValues.recap.title">What We Know So Far</span></h2>
 
             <div class="concept-card">
@@ -106,7 +120,7 @@
         </section>
 
         <!-- The Supersaturation Problem -->
-        <section class="education-section">
+        <section class="education-section" id="supersaturation">
             <h2>🫧 <span data-i18n="mValues.supersaturation.title">The Supersaturation Problem</span></h2>
 
             <div class="concept-card">
@@ -165,7 +179,7 @@
         </section>
 
         <!-- Bühlmann's Solution -->
-        <section class="education-section">
+        <section class="education-section" id="buhlmann">
             <h2>🧮 <span data-i18n="mValues.buhlmann.title">Bühlmann's Solution</span></h2>
 
             <div class="concept-card">
@@ -247,7 +261,7 @@
         </section>
 
         <!-- The M-Value Diagram -->
-        <section class="education-section">
+        <section class="education-section" id="diagram">
             <h2>📊 <span data-i18n="mValues.diagram.title">The Pressure-Pressure Diagram</span></h2>
 
             <div class="concept-card">
@@ -290,7 +304,7 @@
         </section>
 
         <!-- Example 1: Safe Dive with Safety Stop -->
-        <section class="education-section">
+        <section class="education-section" id="example-safe">
             <h2>✅ <span data-i18n="mValues.example1.title">Example 1: Safe Dive</span></h2>
             <p style="margin-bottom: 1rem; color: var(--text-muted);" data-i18n="mValues.example1.desc">
                 This dive includes a 10-minute safety stop at 3m. Notice how the tissue pressure
@@ -313,7 +327,7 @@
         </section>
 
         <!-- Example 2: Ceiling Violation -->
-        <section class="education-section">
+        <section class="education-section" id="example-violation">
             <h2>⚠️ <span data-i18n="mValues.example2.title">Example 2: Ceiling Violation</span></h2>
 
             <div class="key-insight" style="margin-bottom: 1rem;">
@@ -359,7 +373,7 @@
         </section>
 
         <!-- ZH-L16A Coefficients Reference -->
-        <section class="reference-section">
+        <section class="reference-section" id="reference">
             <h2>📋 <span data-i18n="mValues.reference.title">ZH-L16A M-Value Coefficients</span></h2>
             <details>
                 <summary data-i18n="mValues.reference.viewTable">View coefficient table</summary>
@@ -399,6 +413,7 @@
         import { COMPARTMENTS } from './js/tissueCompartments.js';
         import { getSandboxUrl } from './js/urlParams.js';
         import { initI18n, createLanguageSwitcher } from './js/i18n.js';
+        import { initStickyTOC } from './js/components/StickyTOC.js';
         
         // Class reference dive: 31m for 29 min on Air with a 10-min safety stop at 3m
         const exampleDiveSetup = {
@@ -550,6 +565,9 @@
         const violationLink = document.getElementById('violation-sandbox-link');
         if (safeDiveLink) safeDiveLink.href = getSandboxUrl(exampleDiveSetup, { chartMode: 'profile' });
         if (violationLink) violationLink.href = getSandboxUrl(ceilingViolationSetup, { chartMode: 'profile' });
+
+        // Sticky TOC + scroll-spy + reading-progress
+        initStickyTOC();
 
         // Initialize i18n
         createLanguageSwitcher();

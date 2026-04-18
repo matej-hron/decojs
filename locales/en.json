@@ -570,6 +570,15 @@
             "title": "M-Values & Surfacing Limits",
             "subtitle": "Understanding the limits of supersaturation"
         },
+        "toc": {
+            "recap": "What We Know So Far",
+            "supersaturation": "The Supersaturation Problem",
+            "buhlmann": "Bühlmann's Solution",
+            "diagram": "Pressure-Pressure Diagram",
+            "exampleSafe": "Example: Safe Dive",
+            "exampleViolation": "Example: Ceiling Violation",
+            "reference": "ZH-L16A Coefficients"
+        },
         "recap": {
             "title": "What We Know So Far",
             "cardTitle": "The Pressure Relationships",
@@ -672,6 +681,16 @@
     "gradientFactors": {
         "page": {
             "title": "Gradient Factors - Deco Theory"
+        },
+        "toc": {
+            "greyZone": "Grey Zone: Silent Bubbles",
+            "individualVariability": "Individual Variability",
+            "pyleStops": "Pyle Stops",
+            "gfExplained": "Gradient Factors Explained",
+            "gfLowHigh": "GF Low & GF High",
+            "example100": "Example: GF 100/100",
+            "example5080": "Example: GF 50/80",
+            "controversy": "Deep-Stop Controversy"
         },
         "header": {
             "title": "Gradient Factors",

@@ -58,7 +58,21 @@
     </header>
 
     <main class="education-content">
-        
+        <!-- Table of Contents -->
+        <nav class="toc">
+            <h2>📑 <span data-i18n="toc.title">Contents</span></h2>
+            <ul>
+                <li><a href="#grey-zone">🌫️ <span data-i18n="gradientFactors.toc.greyZone">Grey Zone: Silent Bubbles</span></a></li>
+                <li><a href="#individual-variability">👥 <span data-i18n="gradientFactors.toc.individualVariability">Individual Variability</span></a></li>
+                <li><a href="#pyle-stops">🐟 <span data-i18n="gradientFactors.toc.pyleStops">Pyle Stops</span></a></li>
+                <li><a href="#gf-explained">🎚️ <span data-i18n="gradientFactors.toc.gfExplained">Gradient Factors Explained</span></a></li>
+                <li><a href="#gf-low-high">⬇️⬆️ <span data-i18n="gradientFactors.toc.gfLowHigh">GF Low &amp; GF High</span></a></li>
+                <li><a href="#gf-example-100">📊 <span data-i18n="gradientFactors.toc.example100">Example: GF 100/100</span></a></li>
+                <li><a href="#gf-example-5080">📊 <span data-i18n="gradientFactors.toc.example5080">Example: GF 50/80</span></a></li>
+                <li><a href="#controversy">⚖️ <span data-i18n="gradientFactors.toc.controversy">Deep-Stop Controversy</span></a></li>
+            </ul>
+        </nav>
+
         <!-- Section 1a: The Grey Zone — Silent Bubbles -->
         <section class="education-section" id="grey-zone">
             <h2>🌫️ <span data-i18n="gradientFactors.greyZone.title">The Grey Zone: Why M-Values Aren't Enough</span></h2>
@@ -514,6 +528,7 @@
         import { getSandboxUrl } from './js/urlParams.js';
         import { generateDecoProfile } from './js/diveSetup.js';
         import { initI18n, createLanguageSwitcher } from './js/i18n.js';
+        import { initStickyTOC } from './js/components/StickyTOC.js';
 
         // Shared gas definition for the class reference dive
         const CLASS_GASES = [
@@ -636,6 +651,9 @@
             if (link5080) link5080.href = getSandboxUrl(conservativeSetup, { chartMode: 'profile' });
 
         }
+
+        // Sticky TOC + scroll-spy + reading-progress
+        initStickyTOC();
 
         // Initialize i18n (language switcher + translations)
         createLanguageSwitcher();

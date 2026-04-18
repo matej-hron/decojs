@@ -2014,7 +2014,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.5.15";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.5.16";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -4800,5 +4800,57 @@ textarea.form-input {
         grid-column: 2;
         margin-left: 0;
         margin-right: 0;
+    }
+
+    /* Collapse toggle button — lives inside .toc, visible only on sticky layout */
+    main.with-sticky-toc > .toc .toc-collapse-btn {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.4rem;
+        background: transparent;
+        border: 1px solid var(--border-color);
+        color: var(--text-muted);
+        border-radius: 4px;
+        width: 24px;
+        height: 24px;
+        font-size: 0.75rem;
+        line-height: 1;
+        padding: 0;
+        cursor: pointer;
+        transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    main.with-sticky-toc > .toc {
+        position: sticky;
+    }
+    main.with-sticky-toc > .toc .toc-collapse-btn:hover {
+        background: var(--primary-color);
+        color: #fff;
+        border-color: var(--primary-color);
+    }
+
+    /* Collapsed state: shrink the TOC column to just the button */
+    main.with-sticky-toc.toc-collapsed {
+        grid-template-columns: 36px minmax(0, 1fr);
+        column-gap: 1.25rem;
+    }
+    main.with-sticky-toc.toc-collapsed > .toc {
+        padding: 0.5rem 0;
+        background: transparent;
+        border: none;
+        overflow: visible;
+    }
+    main.with-sticky-toc.toc-collapsed > .toc > :not(.toc-collapse-btn) {
+        display: none;
+    }
+    main.with-sticky-toc.toc-collapsed > .toc .toc-collapse-btn {
+        position: sticky;
+        top: 84px;
+    }
+}
+
+/* Hide the toggle on narrow screens where layout is in-flow */
+@media (max-width: 1023.98px) {
+    .toc .toc-collapse-btn {
+        display: none;
     }
 }

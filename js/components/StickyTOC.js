@@ -15,6 +15,7 @@
 
 const STICKY_BREAKPOINT = '(min-width: 1024px)';
 const NAV_OFFSET_PX = 72;
+const COLLAPSE_STORAGE_KEY = 'theory-toc-collapsed';
 
 /**
  * @param {Object} [options]
@@ -35,9 +36,37 @@ export function initStickyTOC(options = {}) {
     if (sections.length === 0) return;
 
     applyLayout(main);
+    installCollapseToggle(main, toc);
     installScrollSpy(links, sections);
     installSmoothScroll(links);
     if (options.progress !== false) installProgressBar(main);
+}
+
+function installCollapseToggle(main, toc) {
+    // Inject a small toggle button into the TOC. Sticky CSS uses
+    // `.toc-collapsed` on <main> to shrink the left column to ~36px.
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'toc-collapse-btn';
+    btn.setAttribute('aria-label', 'Collapse contents');
+    btn.textContent = '◀';
+    toc.appendChild(btn);
+
+    const apply = (collapsed) => {
+        main.classList.toggle('toc-collapsed', collapsed);
+        btn.textContent = collapsed ? '▶' : '◀';
+        btn.setAttribute('aria-label', collapsed ? 'Expand contents' : 'Collapse contents');
+    };
+
+    let stored = null;
+    try { stored = localStorage.getItem(COLLAPSE_STORAGE_KEY); } catch (e) { /* storage blocked */ }
+    apply(stored === 'true');
+
+    btn.addEventListener('click', () => {
+        const next = !main.classList.contains('toc-collapsed');
+        apply(next);
+        try { localStorage.setItem(COLLAPSE_STORAGE_KEY, String(next)); } catch (e) { /* storage blocked */ }
+    });
 }
 
 function applyLayout(main) {
