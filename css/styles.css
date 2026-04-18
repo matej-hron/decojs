@@ -782,6 +782,102 @@ section h2 {
     color: var(--warning-color, #e67e22);
 }
 
+/* Block-level hideable solution for worked examples */
+.solution-reveal {
+    margin-top: 1rem;
+    border-left: 3px solid var(--primary-color);
+    padding-left: 1rem;
+}
+
+.solution-reveal summary {
+    cursor: pointer;
+    color: var(--primary-color);
+    font-style: italic;
+    list-style: none;
+    padding: 0.25rem 0;
+}
+
+.solution-reveal summary::-webkit-details-marker {
+    display: none;
+}
+
+.solution-reveal summary::before {
+    content: "▸ ";
+    display: inline-block;
+    transition: transform 0.15s ease;
+}
+
+.solution-reveal[open] summary::before {
+    transform: rotate(90deg);
+}
+
+.solution-reveal summary:hover {
+    text-decoration: underline;
+}
+
+/* Inline formula shown inside a .solution-reveal on chart panels */
+.chart-formula {
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+}
+
+.chart-formula .chart-formula-block {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: var(--background-color, #f8f9fa);
+    border-radius: var(--radius, 6px);
+    font-size: 1.05rem;
+    margin: 0.75rem 0;
+    flex-wrap: wrap;
+}
+
+.chart-formula .gfc-eq-lhs {
+    order: -1;
+    font-weight: 600;
+}
+
+.chart-formula .gfc-frac {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.chart-formula .gfc-num {
+    border-bottom: 1px solid currentColor;
+    padding: 0 0.4rem 0.15rem;
+}
+
+.chart-formula .gfc-den {
+    padding: 0.15rem 0.4rem 0;
+}
+
+.chart-formula .chart-formula-sub {
+    margin: 0.25rem 0 0.75rem;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.chart-formula .chart-formula-legend {
+    margin: 0.25rem 0;
+    padding-left: 1.2rem;
+}
+
+.chart-formula .chart-formula-legend li {
+    margin-bottom: 0.2rem;
+}
+
+.chart-formula .chart-formula-note {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-muted, #666);
+    font-style: italic;
+}
+
 /* Inline hideable answers in exercise tables */
 .inline-answer {
     display: inline;
@@ -1619,7 +1715,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.5.3";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.5.4";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================

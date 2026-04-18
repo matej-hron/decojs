@@ -163,6 +163,7 @@
             "examplePressure": "Start pressure: 200 bar, End pressure: 80 bar → <strong>ΔP = 120 bar</strong>",
             "exampleTime": "Dive time: 45 minutes",
             "exampleDepth": "Average depth: 15m → <strong>P<sub>avg</sub> = 1 + 15/10 = 2.5 bar</strong>",
+            "showSolution": "Try it yourself first — click to reveal the solution",
             "exampleResult": "This diver has a SAC rate of <strong>12.8 L/min</strong> — quite efficient! Typical recreational divers range from 12-25 L/min depending on fitness, experience, and conditions.",
             "tipsTitle": "Tips for Accurate Measurement",
             "tip1": "Use a dive computer that logs average depth, or calculate it from your profile",
@@ -848,6 +849,17 @@
                 "quoteAuthor": "— Paul Chapman, Decompression Theory"
             }
         }
+    },
+    "gfChart": {
+        "formulaSummary": "📐 Show the GF% formula",
+        "formulaIntro": "Instantaneous Gradient Factor for a tissue at ambient pressure P<sub>amb</sub>:",
+        "formulaMValue": "Bühlmann M-value at P<sub>amb</sub>: <strong>M(P<sub>amb</sub>) = a + P<sub>amb</sub> / b</strong>",
+        "formulaWhere": "Where:",
+        "varPtissue": "<strong>P<sub>tissue</sub></strong> — tissue inert-gas pressure (bar)",
+        "varPamb": "<strong>P<sub>amb</sub></strong> — ambient pressure = 1 + depth/10 (bar)",
+        "varAB": "<strong>a, b</strong> — ZH-L16 Bühlmann coefficients for that tissue",
+        "varGF": "<strong>GF</strong> — 0 % at ambient (fully saturated, no gradient), 100 % at the M-value (Bühlmann limit)",
+        "rampNote": "During ascent the <em>allowed</em> GF is ramped linearly from GF Low at the pAnchor depth to GF High at the surface. The green corridor in the chart shows that allowed region."
     },
     "gasLaw": {
         "page": {

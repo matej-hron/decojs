@@ -163,6 +163,7 @@
             "examplePressure": "Počáteční tlak: 200 bar, konečný tlak: 80 bar → <strong>ΔP = 120 bar</strong>",
             "exampleTime": "Doba ponoru: 45 minut",
             "exampleDepth": "Průměrná hloubka: 15 m → <strong>P<sub>avg</sub> = 1 + 15/10 = 2,5 bar</strong>",
+            "showSolution": "Zkus si to nejdřív spočítat — klikni pro zobrazení řešení",
             "exampleResult": "Tento potápěč má SAC <strong>12,8 l/min</strong> — poměrně efektivní! Typičtí rekreační potápěči mají 12–25 l/min v závislosti na kondici, zkušenostech a podmínkách.",
             "tipsTitle": "Tipy pro přesné měření",
             "tip1": "Použijte potápěčský počítač, který zaznamenává průměrnou hloubku, nebo ji vypočítejte z profilu",
@@ -848,6 +849,17 @@
                 "quoteAuthor": "— Paul Chapman, Decompression Theory"
             }
         }
+    },
+    "gfChart": {
+        "formulaSummary": "📐 Zobrazit vzorec GF %",
+        "formulaIntro": "Okamžitý Gradient Factor tkáně při okolním tlaku P<sub>amb</sub>:",
+        "formulaMValue": "Bühlmannova M-hodnota při P<sub>amb</sub>: <strong>M(P<sub>amb</sub>) = a + P<sub>amb</sub> / b</strong>",
+        "formulaWhere": "Kde:",
+        "varPtissue": "<strong>P<sub>tissue</sub></strong> — tlak inertního plynu v tkáni (bar)",
+        "varPamb": "<strong>P<sub>amb</sub></strong> — okolní tlak = 1 + hloubka/10 (bar)",
+        "varAB": "<strong>a, b</strong> — Bühlmannovy koeficienty ZH-L16 pro danou tkáň",
+        "varGF": "<strong>GF</strong> — 0 % na úrovni okolního tlaku (plně saturováno, nulový gradient), 100 % na M-hodnotě (Bühlmannův limit)",
+        "rampNote": "Během výstupu se <em>povolené</em> GF lineárně interpoluje z GF Low v hloubce pAnchor na GF High na hladině. Zelený koridor v grafu zobrazuje tuto povolenou oblast."
     },
     "gasLaw": {
         "page": {
