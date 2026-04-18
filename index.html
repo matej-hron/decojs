@@ -34,9 +34,12 @@
     </nav>
 
     <!-- Hero Section -->
-    <header class="hero">
-        <h1>Understanding Decompression Theory</h1>
-        <p class="hero-subtitle">Interactive visualizations to help you understand how dissolved gases behave in your body during diving</p>
+    <header class="hero hero-landing">
+        <div class="hero-motion" id="hero-motion" aria-hidden="true"></div>
+        <div class="hero-content">
+            <h1>Understanding Decompression Theory</h1>
+            <p class="hero-subtitle">Interactive visualizations to help you understand how dissolved gases behave in your body during diving</p>
+        </div>
     </header>
 
     <main class="landing-main">
@@ -201,6 +204,7 @@
 
     <!-- Shared Navigation -->
     <script src="js/nav.js" type="module"></script>
+    <script src="js/components/HeroMotion.js" type="module"></script>
     
     <!-- Unregister Service Worker (was causing cache issues during development) -->
     <script>

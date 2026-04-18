@@ -45,6 +45,7 @@ const STATIC_ASSETS = [
   './js/charts/DiveProfileChart.js',
   './js/charts/MValueChart.js',
   './js/components/DiveSetupEditor.js',
+  './js/components/HeroMotion.js',
   './images/gas-particles.gif',
   './js/urlParams.js',
   './js/i18n.js',

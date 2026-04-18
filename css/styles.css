@@ -424,6 +424,9 @@ section[id],
     color: white;
     text-align: center;
     padding: 4rem 2rem;
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
 }
 
 .hero h1 {
@@ -436,6 +439,72 @@ section[id],
     opacity: 0.9;
     max-width: 600px;
     margin: 0 auto;
+}
+
+/* Landing-page hero: animated dive-profile backdrop */
+.hero-landing {
+    padding: 6rem 2rem 5rem;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 1px 12px rgba(10, 30, 60, 0.55);
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.hero-motion {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.hero-motion::after {
+    /* Soft dark ellipse behind text so the profile graphic recedes */
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        ellipse 55% 65% at 50% 50%,
+        rgba(8, 28, 58, 0.45) 0%,
+        rgba(8, 28, 58, 0.22) 45%,
+        rgba(8, 28, 58, 0) 75%
+    );
+    pointer-events: none;
+}
+
+.hero-motion-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.hero-motion-svg .hero-grid line {
+    stroke: rgba(255, 255, 255, 0.14);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+}
+
+.hero-motion-svg .hero-axis-label {
+    fill: rgba(255, 255, 255, 0.45);
+    font-family: var(--font-body, system-ui);
+    font-size: 16px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+}
+
+.hero-motion-svg .hero-line {
+    stroke: rgba(255, 255, 255, 0.95);
+    stroke-width: 2.5;
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.45));
+    vector-effect: non-scaling-stroke;
+}
+
+.hero-motion-svg .hero-dot {
+    fill: #ffffff;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.75));
 }
 
 /* Compact hero for tool pages */
@@ -2547,12 +2616,30 @@ tr.dse-plan-switch { background: rgba(142, 68, 173, 0.06); }
         padding: 2.5rem 1.5rem;
     }
 
+    .hero.hero-landing {
+        padding: 4rem 1.5rem 3.25rem;
+    }
+
     .hero h1 {
         font-size: 1.75rem;
     }
 
     .hero-subtitle {
         font-size: 1.05rem;
+    }
+
+    .hero-motion-svg .hero-axis-label {
+        font-size: 20px;
+    }
+
+    .hero-motion::after {
+        background: radial-gradient(
+            ellipse 90% 70% at 50% 50%,
+            rgba(8, 28, 58, 0.7) 0%,
+            rgba(8, 28, 58, 0.5) 40%,
+            rgba(8, 28, 58, 0.1) 80%,
+            rgba(8, 28, 58, 0) 100%
+        );
     }
 
     .topics-grid {
