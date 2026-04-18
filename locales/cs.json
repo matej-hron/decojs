@@ -903,7 +903,7 @@
             },
             "pointDefaults": {
                 "title": "4. Zkontroluj tovární nastavení počítače",
-                "text": "Mnoho potápěčských počítačů přichází z výroby s <strong>GF 30/70</strong> — preset zvolený pro tec/trimix potápění. Na vzduchovém ponoru do 60 m je to <em>agresivní</em> (podle belgické studie). Pokud se potápíš na vzduch/nitrox, před každým ponorem ověř a uprav; jinak tvoje „bezpečné výchozí“ nastavení může být ve skutečnosti škodlivé."
+                "text": "Mnoho potápěčských počítačů přichází z výroby s <strong>GF 30/70</strong> — preset určený pro tec/trimix potápění. CMAS upozorňuje, že stejný preset <em>není</em> vhodný pro vzduch/nitrox: vynucuje hluboké zastávky, které studie výše spojují s vyšším rizikem DCS na dusíku. Na rekreačním ponoru do 30–40 m na vzduch neuvidíš dramatické následky, ale ani tento preset není pro takový typ potápění optimalizovaný. Zkontroluj, že nastavení GF odpovídá tomu, co právě chystáš potápět."
             },
             "linkText": "📄 Přečti si fact sheet CMAS →"
         },

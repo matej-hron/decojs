@@ -903,7 +903,7 @@
             },
             "pointDefaults": {
                 "title": "4. Check your computer's default preset",
-                "text": "Many dive computers ship with <strong>GF 30/70</strong> out of the box — a preset chosen for tech/trimix diving. On a 60 m air dive that setting is <em>aggressive</em> (per the Belgian study). If you dive air/nitrox, verify and adjust before every dive; otherwise your \"safe default\" may be actively harmful."
+                "text": "Many dive computers ship with <strong>GF 30/70</strong> out of the box — a preset chosen for tech/trimix diving. CMAS argues the same preset is <em>not</em> the right choice on air/nitrox: it forces deep stops that the studies above link to higher DCS risk on nitrogen. On a recreational 30–40 m air dive you won't see dramatic effects, but the preset isn't optimised for what you're doing either. Verify the GF setting matches the type of diving you're actually about to do."
             },
             "linkText": "📄 Read the CMAS fact sheet →"
         },
