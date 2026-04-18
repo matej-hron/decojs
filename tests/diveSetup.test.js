@@ -480,19 +480,22 @@ describe('diveSetup module', () => {
         });
 
         test('detects gas switch events', () => {
+            // Every waypoint carries its active gasId (getGasAtWaypoint falls back
+            // to the first/bottom gas when gasId is unset, so maintaining the deco
+            // gasId explicitly after the switch reflects how real dive profiles look).
             const waypoints = [
                 { time: 0, depth: 0, gasId: 'bottom' },
-                { time: 5, depth: 30 },
-                { time: 25, depth: 30 },
+                { time: 5, depth: 30, gasId: 'bottom' },
+                { time: 25, depth: 30, gasId: 'bottom' },
                 { time: 28, depth: 6, gasId: 'deco' },
-                { time: 31, depth: 6 },
-                { time: 32, depth: 0 }
+                { time: 31, depth: 6, gasId: 'deco' },
+                { time: 32, depth: 0, gasId: 'deco' }
             ];
             const gases = [
                 { id: 'bottom', name: 'Air', o2: 0.21, n2: 0.79, he: 0 },
                 { id: 'deco', name: 'EAN50', o2: 0.50, n2: 0.50, he: 0 }
             ];
-            
+
             const events = getGasSwitchEvents(waypoints, gases);
             expect(events).toHaveLength(1);
             expect(events[0].time).toBe(28);
@@ -616,27 +619,24 @@ describe('diveSetup module', () => {
     });
 
     describe('calculateMOD', () => {
+        // calculateMOD floors to integer metres (conservative rounding).
         test('calculates MOD for EAN32 at 1.4 ppO2', () => {
-            // MOD = (1.4 / 0.32 - 1) * 10 = 33.75m
-            const mod = calculateMOD(0.32, 1.4);
-            expect(mod).toBeCloseTo(33.75, 1);
+            // Exact MOD = (1.4 / 0.32 - 1) * 10 = 33.75 m → floor → 33
+            expect(calculateMOD(0.32, 1.4)).toBe(33);
         });
 
         test('calculates MOD for Air at 1.6 ppO2', () => {
-            // MOD = (1.6 / 0.21 - 1) * 10 = 66.2m
-            const mod = calculateMOD(0.21, 1.6);
-            expect(mod).toBeCloseTo(66.2, 1);
+            // Exact MOD = (1.6 / 0.21 - 1) * 10 ≈ 66.19 m → floor → 66
+            expect(calculateMOD(0.21, 1.6)).toBe(66);
         });
 
         test('calculates MOD for Oxygen at 1.6 ppO2', () => {
-            // MOD = (1.6 / 1.0 - 1) * 10 = 6m
-            const mod = calculateMOD(1.0, 1.6);
-            expect(mod).toBeCloseTo(6, 1);
+            // Exact MOD = (1.6 / 1.0 - 1) * 10 = 6 m
+            expect(calculateMOD(1.0, 1.6)).toBe(6);
         });
 
         test('uses default ppO2 of 1.4 if not specified', () => {
-            const mod = calculateMOD(0.32);
-            expect(mod).toBeCloseTo(33.75, 1);
+            expect(calculateMOD(0.32)).toBe(33);
         });
     });
 });

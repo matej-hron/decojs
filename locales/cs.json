@@ -579,6 +579,15 @@
             "exampleViolation": "Příklad: překročení stropu",
             "reference": "Koeficienty ZH-L16A"
         },
+        "chartFormula": {
+            "summary": "📐 Zobrazit vzorec M-hodnoty",
+            "intro": "Bühlmannův limit pro tkáň při okolním tlaku P<sub>amb</sub>:",
+            "where": "Kde:",
+            "varM": "<strong>M</strong> — maximální tolerovatelný tlak inertního plynu v tkáni (bar)",
+            "varPamb": "<strong>P<sub>amb</sub></strong> — okolní tlak (bar)",
+            "varAB": "<strong>a, b</strong> — Bühlmannovy koeficienty ZH-L16 pro danou tkáň",
+            "note": "Graf vykresluje M-hodnotu každé tkáně jako červenou čáru. Tlak tkáně nad touto čárou znamená překročení stropu."
+        },
         "recap": {
             "title": "Co už víme",
             "cardTitle": "Vztahy mezi tlaky",
@@ -691,6 +700,17 @@
             "example100": "Příklad: GF 100/100",
             "example5080": "Příklad: GF 50/80",
             "controversy": "Kontroverze hlubokých zastávek"
+        },
+        "chartFormula": {
+            "summary": "📐 Zobrazit vzorec M' s gradient faktory",
+            "intro": "Povolený tlak na stropu při GF = 100% odpovídá surové Bühlmannově M-hodnotě:",
+            "intro5080": "Při GF 50/80 se povolený strop mění s hloubkou:",
+            "where": "Kde:",
+            "varMPrime": "<strong>M'</strong> — povolený tlak na stropu po aplikaci GF (bar)",
+            "varGF": "<strong>GF</strong> — interpolovaný z GF Low (50%) v hloubce pAnchor na GF High (80%) na hladině",
+            "varM": "<strong>M</strong> — surová Bühlmannova M-hodnota = a + P<sub>amb</sub> / b",
+            "note100": "Při GF 100/100 zelený koridor splývá s červenou M-čárou — žádná konzervativnost se nepřidává.",
+            "note5080": "Zelený pás zobrazuje M' během ponoru — leží pod červenou M-čárou a směrem k hladině se přibližuje k ambient čáře."
         },
         "header": {
             "title": "Gradient faktory",

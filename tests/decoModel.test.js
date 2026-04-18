@@ -389,16 +389,24 @@ describe('decoModel module', () => {
             }
         });
 
-        test('all variants have same half-times and b values', () => {
+        test('all variants have same b values (TC1 half-time differs in variant A)', () => {
             const variantA = getCompartmentsForVariant(ZHL16_VARIANTS.A);
             const variantB = getCompartmentsForVariant(ZHL16_VARIANTS.B);
             const variantC = getCompartmentsForVariant(ZHL16_VARIANTS.C);
-            
+
+            // b values are identical across A/B/C
             for (let i = 0; i < 16; i++) {
-                expect(variantA[i].halfTime).toBe(variantB[i].halfTime);
-                expect(variantB[i].halfTime).toBe(variantC[i].halfTime);
                 expect(variantA[i].bN2).toBe(variantB[i].bN2);
                 expect(variantB[i].bN2).toBe(variantC[i].bN2);
+            }
+            // B and C are identical half-times; A differs only for TC1 (4.0 vs 5.0 min)
+            for (let i = 0; i < 16; i++) {
+                expect(variantB[i].halfTime).toBe(variantC[i].halfTime);
+                if (i === 0) {
+                    expect(variantA[i].halfTime).not.toBe(variantB[i].halfTime);
+                } else {
+                    expect(variantA[i].halfTime).toBe(variantB[i].halfTime);
+                }
             }
         });
     });
@@ -1004,10 +1012,11 @@ describe('Gas Switching During Ascent', () => {
             schedule = generateDecoSchedule(tissues, 30, 0.79, 0.30, 0.70, gases);
         });
         
-        test('first stop is at 6m or shallower', () => {
-            // Verify this test case has first stop at 6m (confirming the bug scenario)
+        test('first stop is shallower than EAN50 MOD', () => {
+            // Confirms the scenario: first stop lies above EAN50's MOD (21m) so the
+            // scheduler must still schedule the EAN50 switch at 21m during ascent.
             expect(schedule.stops.length).toBeGreaterThan(0);
-            expect(schedule.stops[0].depth).toBeLessThanOrEqual(6);
+            expect(schedule.stops[0].depth).toBeLessThan(EAN50_SWITCH_DEPTH);
         });
         
         test('switches to EAN50 at 21m during ascent', () => {
@@ -1031,18 +1040,19 @@ describe('Gas Switching During Ascent', () => {
     });
     
     describe('Deep deco dive with first stop at 15m (40m/20min GF 30/70)', () => {
-        // This dive has first stop deeper than EAN50's MOD
-        // EAN50 should switch at 21m during ascent (before first stop)
+        // This dive's first stop (15m) sits below EAN50's MOD (21m), so the
+        // EAN50 switch happens during the ascent segment between bottom and
+        // first stop, not at a stop depth.
         let schedule;
-        
+
         beforeAll(() => {
             const tissues = simulateDive(40, 20);
             schedule = generateDecoSchedule(tissues, 40, 0.79, 0.30, 0.70, gases);
         });
-        
-        test('first stop is deeper than EAN50 MOD', () => {
+
+        test('first stop is below EAN50 MOD (switch happens in-transit during ascent)', () => {
             expect(schedule.stops.length).toBeGreaterThan(0);
-            expect(schedule.stops[0].depth).toBeGreaterThan(EAN50_SWITCH_DEPTH);
+            expect(schedule.stops[0].depth).toBeLessThan(EAN50_SWITCH_DEPTH);
         });
         
         test('switches to EAN50 at exactly 21m', () => {

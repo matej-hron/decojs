@@ -579,6 +579,15 @@
             "exampleViolation": "Example: Ceiling Violation",
             "reference": "ZH-L16A Coefficients"
         },
+        "chartFormula": {
+            "summary": "📐 Show the M-value formula",
+            "intro": "Bühlmann's limit for each tissue at ambient pressure P<sub>amb</sub>:",
+            "where": "Where:",
+            "varM": "<strong>M</strong> — maximum tolerable tissue inert-gas pressure (bar)",
+            "varPamb": "<strong>P<sub>amb</sub></strong> — ambient pressure (bar)",
+            "varAB": "<strong>a, b</strong> — ZH-L16 coefficients for the tissue",
+            "note": "The chart plots each tissue's M-value as a red line. Tissue pressure above its line means the ceiling has been violated."
+        },
         "recap": {
             "title": "What We Know So Far",
             "cardTitle": "The Pressure Relationships",
@@ -691,6 +700,17 @@
             "example100": "Example: GF 100/100",
             "example5080": "Example: GF 50/80",
             "controversy": "Deep-Stop Controversy"
+        },
+        "chartFormula": {
+            "summary": "📐 Show the GF-adjusted M-value formula",
+            "intro": "The allowed ceiling pressure at GF = 100% equals Bühlmann's raw M-value:",
+            "intro5080": "At GF 50/80 the allowed ceiling scales with depth:",
+            "where": "Where:",
+            "varMPrime": "<strong>M'</strong> — allowed ceiling pressure after GF scaling (bar)",
+            "varGF": "<strong>GF</strong> — ramped from GF Low (50%) at pAnchor to GF High (80%) at the surface",
+            "varM": "<strong>M</strong> — Bühlmann raw M-value = a + P<sub>amb</sub> / b",
+            "note100": "At GF 100/100 the green corridor collapses onto the red M-value line — no conservatism is added.",
+            "note5080": "The green band shows M' across the dive — it sits below the red M-line, shrinking toward the ambient line near the surface."
         },
         "header": {
             "title": "Gradient Factors",
