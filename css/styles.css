@@ -2014,7 +2014,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.5.25";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.5.26";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -2361,6 +2361,34 @@ footer a {
     color: var(--text-muted, #666);
     font-style: italic;
     margin-left: 0.25rem;
+}
+
+/* Gradient-Factors reference table (Jirka) */
+.gf-settings-table .gf-col-note {
+    font-size: 0.75rem;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--text-muted, #666);
+    text-align: center;
+    background: transparent;
+}
+.gf-settings-table th,
+.gf-settings-table td {
+    vertical-align: middle;
+}
+.gf-settings-table .gf-row-sub {
+    display: inline;
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: var(--text-muted, #666);
+    margin-left: 0.35rem;
+}
+.gf-settings-credit {
+    margin: 0.5rem 0 0;
+    font-size: 0.8rem;
+    color: var(--text-muted, #666);
+    font-style: italic;
+    text-align: right;
 }
 
 /* Low-reserve warning row in the plan table */

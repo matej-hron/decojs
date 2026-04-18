@@ -421,49 +421,101 @@
             </div>
         </section>
 
-        <!-- Section 5a: Common GF Settings -->
+        <!-- Section 5a: Common GF Settings (Jirka's reference table) -->
         <section class="education-section" id="practical">
-            <h2>🎯 <span data-i18n="gradientFactors.practical.settings.title">Common GF Settings</span></h2>
+            <h2>🎯 <span data-i18n="gradientFactors.practical.settings.title">Gradient Factors — decompression conservatism settings</span></h2>
 
             <div class="concept-card">
                 <div class="table-wrapper" style="margin: 1.5rem 0;">
-                    <table class="data-table">
+                    <table class="data-table gf-settings-table">
                         <thead>
                             <tr>
-                                <th data-i18n="gradientFactors.practical.settings.thSetting">Setting</th>
-                                <th data-i18n="gradientFactors.practical.settings.thConservatism">Conservatism</th>
-                                <th data-i18n="gradientFactors.practical.settings.thTypicalUse">Typical Use</th>
+                                <th colspan="2"></th>
+                                <th class="gf-col-note" data-i18n="gradientFactors.practical.settings.noteGfLow">determines the depth of the first deco stop and influences deeper stops</th>
+                                <th class="gf-col-note" data-i18n="gradientFactors.practical.settings.noteGfHigh">influences shallow-stop time and overall surfacing time</th>
+                            </tr>
+                            <tr>
+                                <th data-i18n="gradientFactors.practical.settings.thDiveType">Dive type</th>
+                                <th data-i18n="gradientFactors.practical.settings.thDepthDuration">Depth &amp; duration</th>
+                                <th>GF Low (%)</th>
+                                <th>GF High (%)</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td><strong>GF 100/100</strong></td>
-                                <td data-i18n="gradientFactors.practical.settings.row1conservatism">None</td>
-                                <td data-i18n="gradientFactors.practical.settings.row1use">Raw Bühlmann — NOT recommended</td>
+                                <td>
+                                    <strong data-i18n="gradientFactors.practical.settings.row1type">Recreational dive</strong>
+                                </td>
+                                <td data-i18n="gradientFactors.practical.settings.row1depth">up to 40 m, short deco</td>
+                                <td><strong>40 – 60 %</strong></td>
+                                <td><strong>80 – 90 %</strong></td>
                             </tr>
                             <tr>
-                                <td><strong>GF 85/85</strong></td>
-                                <td data-i18n="gradientFactors.practical.settings.row2conservatism">Mild</td>
-                                <td data-i18n="gradientFactors.practical.settings.row2use">Light recreational conservatism</td>
-                            </tr>
-                            <tr style="background: rgba(46, 204, 113, 0.1);">
-                                <td><strong>GF 70/85</strong></td>
-                                <td data-i18n="gradientFactors.practical.settings.row3conservatism">Moderate</td>
-                                <td data-i18n="gradientFactors.practical.settings.row3use">Popular balanced setting</td>
+                                <td>
+                                    <strong data-i18n="gradientFactors.practical.settings.row2type">Intensive diving</strong><br>
+                                    <span class="gf-row-sub" data-i18n="gradientFactors.practical.settings.row2typeSub">repetitive dives or liveaboard</span>
+                                </td>
+                                <td data-i18n="gradientFactors.practical.settings.row2depth">up to 40 m, short deco</td>
+                                <td><strong>30 – 40 %</strong></td>
+                                <td><strong>70 – 80 %</strong></td>
                             </tr>
                             <tr>
-                                <td><strong>GF 55/70</strong></td>
-                                <td data-i18n="gradientFactors.practical.settings.row4conservatism">Conservative</td>
-                                <td data-i18n="gradientFactors.practical.settings.row4use">Technical diving, personal risk factors</td>
+                                <td>
+                                    <strong data-i18n="gradientFactors.practical.settings.row3type">Deep dive</strong><br>
+                                    <span class="gf-row-sub" data-i18n="gradientFactors.practical.settings.row3typeSub">don't dive tomorrow</span>
+                                </td>
+                                <td data-i18n="gradientFactors.practical.settings.row3depth">below 60 m, single dive</td>
+                                <td><strong>0 – 50 %</strong></td>
+                                <td><strong>80 – 100 %</strong></td>
                             </tr>
-                            <tr style="background: rgba(231, 76, 60, 0.1);">
-                                <td><strong>GF 30/85</strong></td>
-                                <td data-i18n="gradientFactors.practical.settings.row5conservatism">Aggressive deep</td>
-                                <td data-i18n="gradientFactors.practical.settings.row5use">Now discouraged (excessive deep stops)</td>
+                            <tr>
+                                <td>
+                                    <strong data-i18n="gradientFactors.practical.settings.row4type">Crisis situation</strong><br>
+                                    <span class="gf-row-sub" data-i18n="gradientFactors.practical.settings.row4typeSub">bailout, underwater switch on Freedom</span>
+                                </td>
+                                <td data-i18n="gradientFactors.practical.settings.row4depth">take a longer break from diving</td>
+                                <td><strong>60 – 80 %</strong></td>
+                                <td><strong>80 – 100 %</strong></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong data-i18n="gradientFactors.practical.settings.row5type">Deco Planner</strong>
+                                    <span class="gf-row-sub" data-i18n="gradientFactors.practical.settings.row5typeSub">default</span>
+                                </td>
+                                <td></td>
+                                <td><strong>20 %</strong></td>
+                                <td><strong>80 %</strong></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong data-i18n="gradientFactors.practical.settings.row6type">Freedom</strong>
+                                    <span class="gf-row-sub" data-i18n="gradientFactors.practical.settings.row6typeSub">default</span>
+                                </td>
+                                <td></td>
+                                <td><strong>30 %</strong></td>
+                                <td><strong>80 %</strong></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong data-i18n="gradientFactors.practical.settings.row7type">Freedom</strong>
+                                    <span class="gf-row-sub" data-i18n="gradientFactors.practical.settings.row7typeSub">my setting</span>
+                                </td>
+                                <td data-i18n="gradientFactors.practical.settings.row7depth">up to 40 m, short deco</td>
+                                <td><strong>60 %</strong></td>
+                                <td><strong>90 %</strong></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong data-i18n="gradientFactors.practical.settings.row8type">Bühlmann tables ZH-L16</strong>
+                                </td>
+                                <td></td>
+                                <td><strong>100 %</strong></td>
+                                <td><strong>100 %</strong></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
+                <p class="gf-settings-credit" data-i18n="gradientFactors.practical.settings.credit">Reference table courtesy of Jirka.</p>
             </div>
         </section>
 
