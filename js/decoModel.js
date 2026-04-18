@@ -30,6 +30,33 @@ export const PRESSURE_PER_METER = 0.1; // bar per meter
 export const DEFAULT_GF_LOW = 1.0;   // 100%
 export const DEFAULT_GF_HIGH = 1.0;  // 100%
 
+/**
+ * Safety cap on a single deco stop. If waiting at one depth exceeds this, the
+ * profile is outside the algorithm's usable domain (unreasonable GF for the
+ * exposure, or a dive past air/diluent limits) and generateDecoSchedule throws
+ * a DecoCapExceededError instead of returning a silently-truncated plan.
+ */
+export const DECO_STOP_MAX_MINUTES = 300;
+
+/**
+ * Thrown by generateDecoSchedule when a single stop would need to exceed
+ * DECO_STOP_MAX_MINUTES. The caller is expected to surface this to the user.
+ */
+export class DecoCapExceededError extends Error {
+    constructor(depth, stopsSoFar, capMinutes) {
+        super(
+            `Decompression at ${depth} m would need more than ${capMinutes} minutes ` +
+            `to clear. This profile is outside the algorithm's usable range — ` +
+            `the gradient factor may be too aggressive for the exposure, or the ` +
+            `dive is beyond what the configured gas can safely support.`
+        );
+        this.name = 'DecoCapExceededError';
+        this.depth = depth;
+        this.stopsSoFar = stopsSoFar;
+        this.capMinutes = capMinutes;
+    }
+}
+
 // ============================================================================
 // CORE CALCULATIONS
 // ============================================================================
@@ -1096,9 +1123,8 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
             tissues = simulateDepthTime(tissues, depth, timeIncrement, currentN2);
             pendingStopTime = Math.round((pendingStopTime + timeIncrement) * 10) / 10;
 
-            if (pendingStopTime > 300) {
-                console.warn('Deco stop exceeded 5 hours, breaking');
-                break;
+            if (pendingStopTime > DECO_STOP_MAX_MINUTES) {
+                throw new DecoCapExceededError(depth, stops, DECO_STOP_MAX_MINUTES);
             }
         }
     }

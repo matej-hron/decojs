@@ -1270,8 +1270,16 @@ export class DiveSetupEditor extends EventTarget {
             this.elements.decoInfo.style.display = 'inline';
             const continuousDecoNDL = this.elements.continuousDecoCheckbox?.checked ?? false;
             const gasSwitchTimeNDL = parseInt(this.elements.gasSwitchTimeSelect?.value) || 0;
-            const result = generateDecoProfile(maxDepth, bottomTime, this.currentGases, gfLow, gfHigh, safetyStop, { continuousDeco: continuousDecoNDL, gasSwitchTime: gasSwitchTimeNDL });
-            this.elements.decoTime.textContent = Math.round(result.totalDecoTime * 10) / 10;
+            try {
+                const result = generateDecoProfile(maxDepth, bottomTime, this.currentGases, gfLow, gfHigh, safetyStop, { continuousDeco: continuousDecoNDL, gasSwitchTime: gasSwitchTimeNDL });
+                this.elements.decoTime.textContent = Math.round(result.totalDecoTime * 10) / 10;
+            } catch (err) {
+                if (err?.name === 'DecoCapExceededError') {
+                    this.elements.decoTime.textContent = '⚠ out of range';
+                } else {
+                    throw err;
+                }
+            }
         } else {
             this.elements.decoInfo.style.display = 'none';
         }
@@ -1302,7 +1310,16 @@ export class DiveSetupEditor extends EventTarget {
         
         const continuousDeco = this.elements.continuousDecoCheckbox?.checked ?? false;
         const gasSwitchTime = parseInt(this.elements.gasSwitchTimeSelect?.value) || 0;
-        const result = generateDecoProfile(maxDepth, bottomTime, this.currentGases, gfLow, gfHigh, safetyStop, { continuousDeco, gasSwitchTime });
+        let result;
+        try {
+            result = generateDecoProfile(maxDepth, bottomTime, this.currentGases, gfLow, gfHigh, safetyStop, { continuousDeco, gasSwitchTime });
+        } catch (err) {
+            if (err?.name === 'DecoCapExceededError') {
+                alert(err.message);
+                return;
+            }
+            throw err;
+        }
 
         this._loadWaypointsToTable(result.waypoints, this.elements.waypointsBody);
         this._onInputChange();

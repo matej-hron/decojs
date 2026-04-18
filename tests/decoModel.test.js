@@ -23,7 +23,9 @@ import {
     getFirstStopDepth,
     findFirstStopWithRampedGF,
     generateDecoSchedule,
-    calculateTissueLoading
+    calculateTissueLoading,
+    DecoCapExceededError,
+    DECO_STOP_MAX_MINUTES
 } from '../js/decoModel.js';
 
 import {
@@ -1227,11 +1229,91 @@ describe('Full Deco Dive Integration', () => {
             // O2 MOD at 1.6 ppO2 is 6m
             const stopsWithO2 = profile.decoStops.filter(stop => stop.gas === 'O2');
             expect(stopsWithO2.length).toBeGreaterThan(0);
-            
+
             // All O2 stops should be at 6m or shallower
             stopsWithO2.forEach(stop => {
                 expect(stop.depth).toBeLessThanOrEqual(6);
             });
+        });
+    });
+});
+
+// =============================================================================
+// Deco cap enforcement
+// =============================================================================
+
+describe('generateDecoSchedule cap enforcement', () => {
+    // 60m / 100min on air with GF 90/90 pushes the shallowest stop past the
+    // 5-hour per-stop cap. Previously the loop silently dropped the stop with a
+    // console.warn; we now throw so the caller can't surface an unsafe plan.
+    test('throws DecoCapExceededError when a single stop exceeds the cap', () => {
+        const n2 = 0.79;
+        const maxDepth = 60;
+        const bottomTime = 100;
+        const descentTime = maxDepth / 20;
+
+        let tissues = {};
+        COMPARTMENTS.forEach(c => {
+            tissues[c.id] = getInitialTissueN2(n2);
+        });
+        tissues = simulateDepthChange(tissues, 0, maxDepth, descentTime, n2);
+        tissues = simulateDepthTime(tissues, maxDepth, bottomTime - descentTime, n2);
+
+        const gases = [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79 }];
+
+        expect(() => {
+            generateDecoSchedule(tissues, maxDepth, n2, 0.9, 0.9, gases, { continuousDeco: false });
+        }).toThrow(DecoCapExceededError);
+    });
+
+    test('error carries the stops completed before the cap was hit', () => {
+        const n2 = 0.79;
+        const maxDepth = 60;
+        const bottomTime = 100;
+        const descentTime = maxDepth / 20;
+
+        let tissues = {};
+        COMPARTMENTS.forEach(c => {
+            tissues[c.id] = getInitialTissueN2(n2);
+        });
+        tissues = simulateDepthChange(tissues, 0, maxDepth, descentTime, n2);
+        tissues = simulateDepthTime(tissues, maxDepth, bottomTime - descentTime, n2);
+
+        const gases = [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79 }];
+
+        try {
+            generateDecoSchedule(tissues, maxDepth, n2, 0.9, 0.9, gases, { continuousDeco: false });
+            throw new Error('expected DecoCapExceededError to be thrown');
+        } catch (err) {
+            expect(err).toBeInstanceOf(DecoCapExceededError);
+            expect(err.capMinutes).toBe(DECO_STOP_MAX_MINUTES);
+            expect(err.depth).toBeGreaterThan(0);
+            expect(Array.isArray(err.stopsSoFar)).toBe(true);
+            expect(err.stopsSoFar.length).toBeGreaterThan(0);
+        }
+    });
+
+    test('normal deco profiles stay under the cap and return a plan', () => {
+        // 30m / 25min on air with GF 50/80 — standard recreational deco, well
+        // within the cap. Must NOT throw.
+        const n2 = 0.79;
+        const maxDepth = 30;
+        const bottomTime = 25;
+        const descentTime = maxDepth / 20;
+
+        let tissues = {};
+        COMPARTMENTS.forEach(c => {
+            tissues[c.id] = getInitialTissueN2(n2);
+        });
+        tissues = simulateDepthChange(tissues, 0, maxDepth, descentTime, n2);
+        tissues = simulateDepthTime(tissues, maxDepth, bottomTime - descentTime, n2);
+
+        const gases = [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79 }];
+
+        const schedule = generateDecoSchedule(tissues, maxDepth, n2, 0.5, 0.8, gases);
+        expect(schedule.stops.length).toBeGreaterThan(0);
+        schedule.stops.forEach(stop => {
+            expect(stop.time).toBeLessThanOrEqual(DECO_STOP_MAX_MINUTES);
         });
     });
 });
