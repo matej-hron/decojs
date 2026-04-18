@@ -1973,13 +1973,28 @@ const chart = new DiveProfileChart(
         const collapseBtn = document.getElementById('collapse-btn');
         const editorPanel = document.getElementById('editor-panel');
         const sandboxLayout = document.getElementById('sandbox-layout');
-        
-        collapseBtn.addEventListener('click', () => {
-            const isCollapsed = editorPanel.classList.toggle('collapsed');
+        const COLLAPSE_STORAGE_KEY = 'sandbox-editor-collapsed';
+        const NARROW_VIEWPORT_PX = 1400;
+
+        function applyCollapsedState(isCollapsed) {
+            editorPanel.classList.toggle('collapsed', isCollapsed);
             sandboxLayout.classList.toggle('editor-collapsed', isCollapsed);
             collapseBtn.textContent = isCollapsed ? '▶' : '◀';
             collapseBtn.title = isCollapsed ? 'Expand editor' : 'Collapse editor';
-            
+        }
+
+        // Restore persisted state, or auto-collapse on narrow viewports (first visit only)
+        const storedCollapsed = localStorage.getItem(COLLAPSE_STORAGE_KEY);
+        const initialCollapsed = storedCollapsed !== null
+            ? storedCollapsed === 'true'
+            : window.innerWidth < NARROW_VIEWPORT_PX;
+        applyCollapsedState(initialCollapsed);
+
+        collapseBtn.addEventListener('click', () => {
+            const isCollapsed = !editorPanel.classList.contains('collapsed');
+            applyCollapsedState(isCollapsed);
+            localStorage.setItem(COLLAPSE_STORAGE_KEY, String(isCollapsed));
+
             // Resize charts after collapse animation
             setTimeout(() => {
                 diveProfileChart.chart?.resize();
