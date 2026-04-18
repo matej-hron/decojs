@@ -152,12 +152,29 @@ function initNavigation() {
             hamburger.setAttribute('aria-expanded', isOpen);
         });
 
-        // Close menu when clicking on a link
+        const mobileMQ = window.matchMedia('(max-width: 768px)');
+        const closeMenu = () => {
+            navLinks.classList.remove('nav-open');
+            hamburger.classList.remove('is-active');
+            hamburger.setAttribute('aria-expanded', 'false');
+            navLinks.querySelectorAll('.nav-dropdown.open').forEach(d => d.classList.remove('open'));
+        };
+
+        // On mobile, dropdown triggers expand the submenu instead of navigating.
+        // Leaf links and submenu items close the menu after navigation.
         navLinks.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('nav-open');
-                hamburger.classList.remove('is-active');
-                hamburger.setAttribute('aria-expanded', 'false');
+            const dropdownParent = link.parentElement.classList.contains('nav-dropdown')
+                && link.parentElement.querySelector('.nav-dropdown-menu')
+                ? link.parentElement
+                : null;
+
+            link.addEventListener('click', (e) => {
+                if (mobileMQ.matches && dropdownParent) {
+                    e.preventDefault();
+                    dropdownParent.classList.toggle('open');
+                    return;
+                }
+                closeMenu();
             });
         });
     }
