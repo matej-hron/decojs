@@ -4,13 +4,15 @@
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
+// SVG is a 1200x200 strip anchored to the bottom of the hero so the
+// title area above stays clear. y=20 = surface, y=160 = 30m.
 const PROFILE_D =
-    'M 0 40 L 90 40 L 240 300 L 700 300 L 850 85 L 1000 85 L 1100 40 L 1200 40';
-const FILL_D = `${PROFILE_D} L 1200 400 L 0 400 Z`;
+    'M 0 20 L 90 20 L 240 160 L 700 160 L 850 47 L 1000 47 L 1100 20 L 1200 20';
+const FILL_D = `${PROFILE_D} L 1200 200 L 0 200 Z`;
 
 function buildSvg() {
     const svg = document.createElementNS(SVG_NS, 'svg');
-    svg.setAttribute('viewBox', '0 0 1200 400');
+    svg.setAttribute('viewBox', '0 0 1200 200');
     svg.setAttribute('preserveAspectRatio', 'none');
     svg.setAttribute('aria-hidden', 'true');
     svg.classList.add('hero-motion-svg');
@@ -24,26 +26,25 @@ function buildSvg() {
             </linearGradient>
         </defs>
         <g class="hero-grid">
-            <line x1="0" y1="40"  x2="1200" y2="40" />
-            <line x1="0" y1="130" x2="1200" y2="130" stroke-dasharray="2 6"/>
-            <line x1="0" y1="215" x2="1200" y2="215" stroke-dasharray="2 6"/>
-            <line x1="0" y1="300" x2="1200" y2="300" stroke-dasharray="2 6"/>
-            <line x1="200"  y1="0" x2="200"  y2="400" stroke-dasharray="2 6"/>
-            <line x1="400"  y1="0" x2="400"  y2="400" stroke-dasharray="2 6"/>
-            <line x1="600"  y1="0" x2="600"  y2="400" stroke-dasharray="2 6"/>
-            <line x1="800"  y1="0" x2="800"  y2="400" stroke-dasharray="2 6"/>
-            <line x1="1000" y1="0" x2="1000" y2="400" stroke-dasharray="2 6"/>
+            <line x1="0" y1="20"  x2="1200" y2="20"/>
+            <line x1="0" y1="90"  x2="1200" y2="90"  stroke-dasharray="2 6"/>
+            <line x1="0" y1="160" x2="1200" y2="160" stroke-dasharray="2 6"/>
+            <line x1="200"  y1="0" x2="200"  y2="200" stroke-dasharray="2 6"/>
+            <line x1="400"  y1="0" x2="400"  y2="200" stroke-dasharray="2 6"/>
+            <line x1="600"  y1="0" x2="600"  y2="200" stroke-dasharray="2 6"/>
+            <line x1="800"  y1="0" x2="800"  y2="200" stroke-dasharray="2 6"/>
+            <line x1="1000" y1="0" x2="1000" y2="200" stroke-dasharray="2 6"/>
         </g>
         <g class="hero-axis">
-            <text x="14"   y="55"  class="hero-axis-label">0m</text>
-            <text x="14"   y="220" class="hero-axis-label">15m</text>
-            <text x="14"   y="315" class="hero-axis-label">30m</text>
-            <text x="1186" y="390" class="hero-axis-label" text-anchor="end">time →</text>
+            <text x="14"   y="35"  class="hero-axis-label">0m</text>
+            <text x="14"   y="95"  class="hero-axis-label">15m</text>
+            <text x="14"   y="165" class="hero-axis-label">30m</text>
+            <text x="1186" y="193" class="hero-axis-label" text-anchor="end">time →</text>
         </g>
         <path class="hero-fill" d="${FILL_D}" fill="url(#hero-depth-fill)"/>
         <path class="hero-line" d="${PROFILE_D}" fill="none"
               stroke-linejoin="round" stroke-linecap="round"/>
-        <circle class="hero-dot" cx="1200" cy="40" r="4"/>
+        <circle class="hero-dot" cx="1200" cy="20" r="3"/>
     `;
     return svg;
 }
