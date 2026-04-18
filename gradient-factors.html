@@ -553,6 +553,7 @@
         import { generateDecoProfile } from './js/diveSetup.js';
         import { initI18n, createLanguageSwitcher } from './js/i18n.js';
         import { initStickyTOC } from './js/components/StickyTOC.js';
+        import { initTooltipShortcut } from './js/components/tooltipShortcut.js';
 
         // Shared gas definition for the class reference dive
         const CLASS_GASES = [
@@ -678,6 +679,7 @@
 
         // Sticky TOC + scroll-spy + reading-progress
         initStickyTOC();
+        initTooltipShortcut();
 
         // Initialize i18n (language switcher + translations)
         createLanguageSwitcher();

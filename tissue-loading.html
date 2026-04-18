@@ -761,6 +761,7 @@
         import { COMPARTMENTS, getCompartmentCategory } from './js/tissueCompartments.js';
         import { getSandboxUrl } from './js/urlParams.js';
         import { initStickyTOC } from './js/components/StickyTOC.js';
+        import { initTooltipShortcut } from './js/components/tooltipShortcut.js';
         import { initI18n, createLanguageSwitcher } from './js/i18n.js';
 
         // =====================================================================
@@ -904,6 +905,7 @@
         if (bubbleContainer) new BubbleModel(bubbleContainer, { saturatedDepth: 30 });
 
         initStickyTOC();
+        initTooltipShortcut();
 
         // Initialize i18n (language switcher + translations)
         createLanguageSwitcher();

@@ -452,6 +452,7 @@
         import { getSandboxUrl } from './js/urlParams.js';
         import { initI18n, createLanguageSwitcher } from './js/i18n.js';
         import { initStickyTOC } from './js/components/StickyTOC.js';
+        import { initTooltipShortcut } from './js/components/tooltipShortcut.js';
         
         // Class reference dive: 31m for 29 min on Air with a 10-min safety stop at 3m
         const exampleDiveSetup = {
@@ -606,6 +607,7 @@
 
         // Sticky TOC + scroll-spy + reading-progress
         initStickyTOC();
+        initTooltipShortcut();
 
         // Initialize i18n
         createLanguageSwitcher();
