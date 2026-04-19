@@ -131,6 +131,17 @@ export class TissueSaturationSim {
         this.stepBackBtn.addEventListener('click', () => this._stepBackward(STEP_BUTTON_MINUTES));
         this.stepFwdBtn.addEventListener('click',  () => this._stepForward(STEP_BUTTON_MINUTES));
         this.resetBtn.addEventListener('click',   () => this._reset());
+
+        // Keyboard shortcuts — skip when the user is typing in the number
+        // input or interacting with the slider / select.
+        this._onKey = (e) => {
+            const tag = e.target && e.target.tagName;
+            if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
+            if (e.key === 'ArrowLeft')  { this._stepBackward(STEP_BUTTON_MINUTES); e.preventDefault(); }
+            else if (e.key === 'ArrowRight') { this._stepForward(STEP_BUTTON_MINUTES);  e.preventDefault(); }
+            else if (e.key === ' ' || e.code === 'Space') { this._togglePlay(); e.preventDefault(); }
+        };
+        window.addEventListener('keydown', this._onKey);
     }
 
     _togglePlay() {
@@ -395,6 +406,7 @@ export class TissueSaturationSim {
 
     destroy() {
         if (this.tickHandle) clearInterval(this.tickHandle);
+        if (this._onKey) window.removeEventListener('keydown', this._onKey);
         if (this.chart) this.chart.destroy();
     }
 }
