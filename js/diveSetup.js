@@ -254,17 +254,20 @@ export function generateSimpleProfile(maxDepth, bottomTime, safetyStop = DEFAULT
     // (not descentTime + bottomTime)
     const bottomEndTime = bottomTime;
 
+    // Snap to 0.1-min precision to avoid IEEE-754 accumulation artifacts.
+    const snap = options.continuousDeco ? (t) => t : (t) => Math.round(t * 10) / 10;
+
     if (safetyStopEnabled && maxDepth > safetyStopDepth) {
         // Ascent from max depth to safety stop depth — exact 10 m/min
         const ascentToSafetyStop = (maxDepth - safetyStopDepth) / ASCENT_SPEED;
-        const safetyStopStartTime = bottomEndTime + ascentToSafetyStop;
+        const safetyStopStartTime = snap(bottomEndTime + ascentToSafetyStop);
 
         // Safety stop ends
-        const safetyStopEndTime = safetyStopStartTime + safetyStopTime;
+        const safetyStopEndTime = snap(safetyStopStartTime + safetyStopTime);
 
         // Final ascent from safety stop to surface — exact 10 m/min
         const finalAscentTime = safetyStopDepth / ASCENT_SPEED;
-        const surfaceTime = safetyStopEndTime + finalAscentTime;
+        const surfaceTime = snap(safetyStopEndTime + finalAscentTime);
 
         return [
             { time: 0, depth: 0 },                                   // Start at surface
@@ -277,7 +280,7 @@ export function generateSimpleProfile(maxDepth, bottomTime, safetyStop = DEFAULT
     } else {
         // No safety stop - direct ascent at exact 10 m/min
         const ascentTime = maxDepth / ASCENT_SPEED;
-        const surfaceTime = bottomEndTime + ascentTime;
+        const surfaceTime = snap(bottomEndTime + ascentTime);
 
         return [
             { time: 0, depth: 0 },                           // Start at surface
@@ -473,8 +476,11 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
             }
             // Exact 10 m/min (no ceil); keep fractional so the underlying ascent
             // rate is correct. Runtime display is rounded at render time, not here.
+            // Snap to 0.1-min precision to avoid IEEE-754 accumulation artifacts
+            // (e.g. 0.3 + 0.3 + 0.3 → 0.8999…) that leak into the editor UI.
             const ascentTime = (currentDepth - event.depth) / ASCENT_SPEED;
             currentTime += ascentTime;
+            if (!options.continuousDeco) currentTime = Math.round(currentTime * 10) / 10;
             currentDepth = event.depth;
         }
 
@@ -498,6 +504,7 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
     if (currentDepth > 0) {
         const finalAscentTime = currentDepth / ASCENT_SPEED;
         currentTime += finalAscentTime;
+        if (!options.continuousDeco) currentTime = Math.round(currentTime * 10) / 10;
         waypoints.push({ time: currentTime, depth: 0 });
     }
 
@@ -608,13 +615,17 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
     let currentTime = bottomTime;
     let currentDepth = maxDepth;
     
+    // Snap currentTime to 0.1-min precision after each accumulation to avoid
+    // IEEE-754 artifacts like 52.099999999999994 that leak into the editor.
+    const snap = options.continuousDeco ? (t) => t : (t) => Math.round(t * 10) / 10;
+
     for (const stop of stops) {
         // Exact 10 m/min; fractional preserved so the ascent rate is correct.
         const ascentTime = (currentDepth - stop.depth) / ASCENT_SPEED;
-        currentTime += ascentTime;
+        currentTime = snap(currentTime + ascentTime);
         waypoints.push({ time: currentTime, depth: stop.depth });
 
-        currentTime += stop.time;
+        currentTime = snap(currentTime + stop.time);
         waypoints.push({ time: currentTime, depth: stop.depth });
 
         currentDepth = stop.depth;
@@ -629,9 +640,9 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
     if (needsSafetyStop && currentDepth > safetyStopDepth) {
         // Add safety stop — exact ascent at 10 m/min
         const ascentTime = (currentDepth - safetyStopDepth) / ASCENT_SPEED;
-        currentTime += ascentTime;
+        currentTime = snap(currentTime + ascentTime);
         waypoints.push({ time: currentTime, depth: safetyStopDepth });
-        currentTime += safetyStopTime;
+        currentTime = snap(currentTime + safetyStopTime);
         waypoints.push({ time: currentTime, depth: safetyStopDepth });
         currentDepth = safetyStopDepth;
     }
@@ -639,7 +650,7 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
     if (currentDepth > 0) {
         // Final ascent at exact 10 m/min
         const finalAscentTime = currentDepth / ASCENT_SPEED;
-        currentTime += finalAscentTime;
+        currentTime = snap(currentTime + finalAscentTime);
         waypoints.push({ time: currentTime, depth: 0 });
     }
     

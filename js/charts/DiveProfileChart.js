@@ -673,7 +673,7 @@ export class DiveProfileChart {
             type: 'label',
             xValue: totalTime,
             yValue: -1,
-            content: [`TDT: ${totalTime} min`],
+            content: [`TDT: ${Math.round(totalTime * 10) / 10} min`],
             backgroundColor: 'rgba(52, 73, 94, 0.9)',
             color: 'white',
             font: { size: 11, weight: 'bold' },

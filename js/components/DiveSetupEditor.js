@@ -1044,7 +1044,7 @@ export class DiveSetupEditor extends EventTarget {
         ).join('');
         
         row.innerHTML = `
-            <td><input type="number" class="dse-wp-time form-input" value="${time}" min="0" step="1"></td>
+            <td><input type="number" class="dse-wp-time form-input" value="${time}" min="0" step="0.1"></td>
             <td><input type="number" class="dse-wp-depth form-input" value="${depth}" min="0" step="1"></td>
             <td><select class="dse-wp-gas form-select-small">${gasOptions}</select></td>
             <td class="dse-wp-actions">
