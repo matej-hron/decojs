@@ -304,22 +304,24 @@ export class TissueSaturationSim {
         const colMed  = COMPARTMENTS.find(c => c.id === TRACKED_COMPARTMENT_IDS[1]).color;
         const colSlow = COMPARTMENTS.find(c => c.id === TRACKED_COMPARTMENT_IDS[2]).color;
 
+        // Single pressure axis. pAmb is plotted as a soft grey fill from 0
+        // up to the current ambient pressure — this doubles as the depth
+        // indicator (pAmb − 1 bar per 10 m of depth). Ticks on the right
+        // edge re-label pAmb values as equivalent depths so the learner
+        // can read both without the two axes drifting out of alignment.
         this.chart = new Chart(ctx, {
             type: 'line',
             data: {
                 datasets: [
-                    // Ambient pressure: solid, bold, top of the stack — the
-                    // driver everything else is chasing.
-                    { label: 'pAmb',          data: [], borderColor: '#2c3e50', borderWidth: 2.5,
-                      pointRadius: 0, yAxisID: 'y', tension: 0 },
-                    { label: 'pN₂ alveolar',  data: [], borderColor: '#7f8c8d', borderDash: [6,4],
-                      borderWidth: 1.5, pointRadius: 0, yAxisID: 'y' },
+                    // pAmb drawn first so fill sits under the other curves.
+                    { label: 'pAmb (ambient)', data: [], borderColor: 'rgba(127,140,141,0.8)',
+                      backgroundColor: 'rgba(127,140,141,0.15)',
+                      borderWidth: 2, pointRadius: 0, yAxisID: 'y', fill: true, tension: 0 },
+                    { label: 'pN₂ alveolar',  data: [], borderColor: '#2c3e50',
+                      borderDash: [6,4], borderWidth: 1.5, pointRadius: 0, yAxisID: 'y' },
                     { label: 'TC1 fast (5 min)',     data: [], borderColor: colFast, borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' },
                     { label: 'TC5 medium (27 min)',  data: [], borderColor: colMed,  borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' },
-                    { label: 'TC12 slow (239 min)',  data: [], borderColor: colSlow, borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' },
-                    { label: 'Depth',         data: [], borderColor: 'rgba(170,170,170,0.6)',
-                      backgroundColor: 'rgba(170,170,170,0.15)',
-                      borderWidth: 1, pointRadius: 0, yAxisID: 'yDepth', fill: true }
+                    { label: 'TC12 slow (239 min)',  data: [], borderColor: colSlow, borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' }
                 ]
             },
             options: {
@@ -331,15 +333,28 @@ export class TissueSaturationSim {
                     x: { type: 'linear',
                          title: { display: true, text: 'Time (min)' },
                          ticks: { maxTicksLimit: 10 } },
-                    y: { type: 'linear', position: 'left', beginAtZero: true,
+                    y: { type: 'linear', position: 'left',
+                         // Fixed range so tissue movement is always in context
+                         // and the axis doesn't rescale on every tick.
+                         min: 0, max: 7,
                          title: { display: true, text: 'Pressure (bar)' } },
-                    // Depth axis NOT reversed: depth rises together with
-                    // pressure, so the grey fill moves upward as the diver
-                    // descends — aligned with pAmb climbing on the left.
+                    // Companion right-side axis: reads the SAME pressure
+                    // values, but tick labels are rewritten as equivalent
+                    // depth (m). Because it's the same scale, "surface"
+                    // (pAmb = 1, depth = 0) aligns on both sides.
                     yDepth: { type: 'linear', position: 'right',
-                              min: 0, max: 60,
-                              title: { display: true, text: 'Depth (m)' },
-                              grid: { drawOnChartArea: false } }
+                              min: 0, max: 7,
+                              title: { display: true, text: 'Depth equivalent (m)' },
+                              grid: { drawOnChartArea: false },
+                              ticks: {
+                                  stepSize: 1,
+                                  callback: (v) => {
+                                      // pAmb = 1 + depth/10 ⇒ depth = (pAmb − 1) × 10
+                                      const d = Math.round((v - 1) * 10);
+                                      return d < 0 ? '' : `${d} m`;
+                                  }
+                              }
+                    }
                 },
                 plugins: {
                     legend: {
@@ -350,7 +365,7 @@ export class TissueSaturationSim {
                     tooltip: {
                         enabled: true,
                         callbacks: {
-                            label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}${ctx.dataset.yAxisID === 'yDepth' ? ' m' : ' bar'}`
+                            label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)} bar`
                         }
                     }
                 }
@@ -368,7 +383,6 @@ export class TissueSaturationSim {
         ds[2].data = rows.map(r => ({ x: r.t, y: r.pFast }));
         ds[3].data = rows.map(r => ({ x: r.t, y: r.pMed }));
         ds[4].data = rows.map(r => ({ x: r.t, y: r.pSlow }));
-        ds[5].data = rows.map(r => ({ x: r.t, y: r.depth }));
         this.chart.options.scales.x.min = minT;
         this.chart.options.scales.x.max = Math.max(minT + HISTORY_WINDOW_MIN, maxT);
         this.chart.update('none');
