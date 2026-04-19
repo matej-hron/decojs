@@ -464,7 +464,16 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
     // Sort gas switches by depth descending for in-transit gasId tracking
     const sortedGasSwitches = [...gasSwitchesByDepth.values()].sort((a, b) => b.depth - a.depth);
 
-    // Process events in order
+    // Process events in order. Physics convention: a stop's `stopTime` is the
+    // stay at depth (matching decotengu and our scheduler's semantics). The
+    // ascent to the next level is a separate segment that follows. This keeps
+    // the tissue simulation strictly honest — the diver stays at stop depth
+    // for the full scheduled minutes, as the scheduler planned.
+    //
+    // The table renderer (`renderDivePlanTableHTML`) subsequently folds each
+    // inter-stop ascent into the PRECEDING stop row for display, so the plan
+    // table shows Divesoft-style runtimes (Stop 6m 1 min runT 33) while the
+    // waypoints retain the faithful stay+ascent structure for the chart.
     for (const event of events) {
         // Ascend to this event's depth
         if (currentDepth > event.depth) {
@@ -474,10 +483,6 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
                     currentGasId = sw.gasId;
                 }
             }
-            // Exact 10 m/min (no ceil); keep fractional so the underlying ascent
-            // rate is correct. Runtime display is rounded at render time, not here.
-            // Snap to 0.1-min precision to avoid IEEE-754 accumulation artifacts
-            // (e.g. 0.3 + 0.3 + 0.3 → 0.8999…) that leak into the editor UI.
             const ascentTime = (currentDepth - event.depth) / ASCENT_SPEED;
             currentTime += ascentTime;
             if (!options.continuousDeco) currentTime = Math.round(currentTime * 10) / 10;
@@ -492,7 +497,7 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
             waypoints.push({ time: currentTime, depth: event.depth, gasId: currentGasId });
         }
 
-        // Add departure waypoint after stop time (if any stop time)
+        // Add departure waypoint after full scheduled stay at depth
         if (event.stopTime > 0) {
             currentTime += event.stopTime;
             if (!options.continuousDeco) currentTime = Math.round(currentTime * 10) / 10;
@@ -500,7 +505,7 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
         }
     }
 
-    // Final ascent to surface (if not already there) — exact 10 m/min
+    // Final ascent to surface at exact 10 m/min
     if (currentDepth > 0) {
         const finalAscentTime = currentDepth / ASCENT_SPEED;
         currentTime += finalAscentTime;
@@ -1493,23 +1498,30 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
 
     if (segments.length === 0) return '';
 
-    // Fold inter-stop ascents into the following stop row (Divesoft-style).
-    // We only merge when BOTH neighbours are plain 'stop' segments — so the first
-    // ascent from bottom, the ascent leading into a gas switch, and the ascent
-    // from a switch to the next stop all remain their own rows. Gas-switch rows
-    // never merge.
+    // Fold each inter-stop ascent into the PRECEDING stop row. Effect:
+    // "Stop 6m 1 min runT 33" means "at runtime 33 the diver reaches the next
+    // level (3m) — the 1 min spans arrival-at-6m to arrival-at-3m, the final
+    // 0.3 min of which is the ascent." Runtimes in the table then line up
+    // with the chart's integer-grid arrivals at each next level.
+    //
+    // Gas-switch rows never merge — they stay their own line, with the ascent
+    // leading INTO them also preserved. This is load-bearing UX for tech
+    // diving.
     for (let i = segments.length - 1; i >= 0; i--) {
         const seg = segments[i];
         if (seg.cls !== 'asc') continue;
-        if (seg.label === 'Surface') continue;       // handled below
+        if (seg.label === 'Surface') continue;       // final surface handled below
         const prev = segments[i - 1];
         const next = segments[i + 1];
         if (!prev || !next) continue;
         if (prev.cls !== 'stop') continue;           // only merge stop→asc→stop chains
         if (next.cls !== 'stop') continue;           // do not fold into a switch row
+        // Extend the preceding stop row to absorb the ascent: runtime moves
+        // forward to the ascent's end (arrival at next level), and the
+        // displayed stop duration now covers stay + ascent-out.
         const ascDuration = seg.runtime - prev.runtime;
-        const combined = (typeof next.stop === 'number' ? next.stop : 0) + ascDuration;
-        next.stop = Math.round(combined * 10) / 10;
+        prev.stop = Math.round(((typeof prev.stop === 'number' ? prev.stop : 0) + ascDuration) * 10) / 10;
+        prev.runtime = seg.runtime;
         segments.splice(i, 1);
     }
 
@@ -1535,17 +1547,32 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
         }
     }
 
-    const rows = segments.map(s => {
+    // Display runtime rounded to whole minutes (matches Divesoft). To keep
+    // the Stop column internally consistent with the Runtime column
+    // (so `runtime[i] − runtime[i-1]` always equals the displayed Stop), we
+    // compute displayed Stop as the integer runtime delta, not as the raw
+    // segment duration. Independently rounding two fractional runtimes can
+    // otherwise create a 1-minute discrepancy (e.g., runtime 43 → 47 but
+    // raw 3.3 min rounds to 3, missing 1 min).
+    const displayRuntimes = segments.map(s => Math.round(s.runtime));
+    const rows = segments.map((s, i) => {
         const tankCell = s.tankBar !== null && s.tankBar !== undefined ? `${s.tankBar} bar` : '—';
         const gas = gasList.find(g => g.id === s.gasId);
         const threshold = gas?.reservePressure ?? reserve;
         const belowReserve = s.tankBar !== null && s.tankBar !== undefined && s.tankBar <= threshold;
         const trClass = belowReserve ? `dse-plan-${s.cls} danger-row` : `dse-plan-${s.cls}`;
-        // Display runtime rounded to whole minutes (matches Divesoft). Internal
-        // times stay fractional so physics and chart rendering use the exact
-        // ascent rate.
-        const stopDisplay = typeof s.stop === 'number' ? Math.round(s.stop) : s.stop;
-        const runtimeDisplay = Math.round(s.runtime);
+
+        const runtimeDisplay = displayRuntimes[i];
+        // First row's "stop" is its own duration; subsequent rows derive it
+        // from the runtime delta so the table stays internally consistent.
+        let stopDisplay;
+        if (s.stop === '' || s.stop === undefined || s.stop === null) {
+            stopDisplay = '';
+        } else if (i === 0) {
+            stopDisplay = Math.round(s.stop);
+        } else {
+            stopDisplay = runtimeDisplay - displayRuntimes[i - 1];
+        }
         return `<tr class="${trClass}">` +
             `<td class="dse-plan-phase"><span class="dse-plan-icon">${s.icon}</span> ${s.label}</td>` +
             `<td class="dse-plan-depth">${s.depth}m</td>` +
