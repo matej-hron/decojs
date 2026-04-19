@@ -2014,7 +2014,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.5.36";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.5.37";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -4911,3 +4911,146 @@ textarea.form-input {
         display: none;
     }
 }
+
+/* =========================================================================
+   Tissue Saturation Sandbox (sandbox/tissue-saturation.html)
+   ========================================================================= */
+.tsim-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 1.25rem;
+    padding: 1rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+@media (max-width: 900px) {
+    .tsim-layout { grid-template-columns: 1fr; }
+}
+
+.tsim-controls,
+.tsim-readouts {
+    background: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 1rem;
+}
+
+.tsim-control-block { margin-bottom: 1.25rem; }
+.tsim-control-block:last-child { margin-bottom: 0; }
+
+.tsim-label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.4rem;
+}
+
+.tsim-depth-row,
+.tsim-time-row,
+.tsim-speed-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tsim-depth-row input[type="range"] { flex: 1; }
+.tsim-depth-row input[type="number"] { width: 70px; padding: 0.35rem; }
+.tsim-depth-hint,
+.tsim-speed-hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.3rem;
+}
+
+.tsim-gas-select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--card-background);
+}
+
+.tsim-speed-btn.active {
+    background: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+}
+
+.tsim-play-btn {
+    min-width: 50px;
+    font-size: 1.1rem;
+}
+
+/* Readouts grid */
+.tsim-numbers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+}
+
+.tsim-tile {
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 0.5rem 0.7rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.tsim-tile-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+}
+
+.tsim-tile-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-color);
+    font-variant-numeric: tabular-nums;
+}
+
+.tsim-tile-fast { border-left: 4px solid #e74c3c; }
+.tsim-tile-med  { border-left: 4px solid #27ae60; }
+.tsim-tile-slow { border-left: 4px solid #2980b9; }
+
+.tsim-tile-value.tsim-critical { color: #c0392b; }
+.tsim-tile-value.tsim-warn     { color: #d35400; }
+.tsim-tile-value.tsim-hypoxic  { color: #2980b9; }
+
+/* Alerts */
+.tsim-alerts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-bottom: 1rem;
+}
+
+.tsim-alert {
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.tsim-alert-ok       { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+.tsim-alert-warn     { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+.tsim-alert-critical { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+/* Chart */
+.tsim-chart {
+    position: relative;
+    height: 340px;
+    background: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 0.5rem;
+}
+
+.tsim-chart canvas { width: 100% !important; height: 100% !important; }

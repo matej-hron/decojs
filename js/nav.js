@@ -12,6 +12,7 @@ const NAV_ITEMS = [
         href: 'sandbox/index.html',
         submenu: [
             { href: 'sandbox/index.html', label: 'Decompression Modelling' },
+            { href: 'sandbox/tissue-saturation.html', label: 'Tissue Saturation' },
             { href: 'sandbox/transfilling.html', label: 'Cylinder Transfilling' },
             { href: 'sandbox/cascade-filling.html', label: 'Cascade Filling' },
             { href: 'sandbox/gas-law.html', label: 'Gas Law: Temp & Pressure' }
