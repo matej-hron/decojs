@@ -333,7 +333,10 @@ export class TissueSaturationSim {
                          ticks: { maxTicksLimit: 10 } },
                     y: { type: 'linear', position: 'left', beginAtZero: true,
                          title: { display: true, text: 'Pressure (bar)' } },
-                    yDepth: { type: 'linear', position: 'right', reverse: true,
+                    // Depth axis NOT reversed: depth rises together with
+                    // pressure, so the grey fill moves upward as the diver
+                    // descends — aligned with pAmb climbing on the left.
+                    yDepth: { type: 'linear', position: 'right',
                               min: 0, max: 60,
                               title: { display: true, text: 'Depth (m)' },
                               grid: { drawOnChartArea: false } }
