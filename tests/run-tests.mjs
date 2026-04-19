@@ -125,13 +125,15 @@ import {
     formatDiveSetupSummary,
     generateSimpleProfile,
     generateDecoProfile,
+    generateDecoProfileSync,
     clearCache,
     getGases,
     getGasAtWaypoint,
     getGasAtTime,
     getGasSwitchEvents,
     insertGasSwitchWaypoints,
-    calculateMOD
+    calculateMOD,
+    computeGasConsumption
 } from '../js/diveSetup.js';
 
 import {
@@ -2721,6 +2723,82 @@ describe('Gas Switch Stop Time (gasSwitchTime option)', () => {
             expect(stopAtSwitch).toBeDefined();
             expect(stopAtSwitch.time).toBeGreaterThanOrEqual(2);
         }
+    });
+});
+
+// ============================================================================
+// computeGasConsumption — switch-stop SAC regression
+// ============================================================================
+
+describe('computeGasConsumption', () => {
+    const gasesForSwitchTest = () => ([
+        { id: 'air',   name: 'Air',   o2: 0.21, n2: 0.79, cylinderVolume: 24, startPressure: 200, reservePressure: 50 },
+        { id: 'ean50', name: 'EAN50', o2: 0.50, n2: 0.50, cylinderVolume: 11, startPressure: 200, reservePressure: 50 }
+    ]);
+
+    // Hand-built waypoints: descent → bottom → ascent → 1-min switch stop at
+    // 21m → ascent → 10-min stop at 6m → surface. This isolates the bug:
+    // the 21m stop is the switch stop (must bill at sacRate), the 6m stop
+    // is a plain deco stop (must bill at decoSacRate).
+    const buildScenario = () => {
+        const gases = gasesForSwitchTest();
+        const waypoints = [
+            { time: 0,    depth: 0 },
+            { time: 2,    depth: 40, gasId: 'air' },
+            { time: 22,   depth: 40 },
+            { time: 23.9, depth: 21, gasId: 'ean50' },  // switch arrival
+            { time: 24.9, depth: 21 },                   // 1-min switch stop
+            { time: 26.4, depth: 6,  gasId: 'ean50' },
+            { time: 36.4, depth: 6 },                    // 10-min deco stop
+            { time: 37,   depth: 0 }
+        ];
+        return { gases, loading: calculateTissueLoading(waypoints, 0, { gases }) };
+    };
+
+    // Regression: the EAN50 switch stop at 21m MUST bill at sacRate, not
+    // decoSacRate. The older code reset the gas-switch flag on the arrival
+    // timepoint (depth !== prevDepth), so the 1-min stop that immediately
+    // followed the switch was mis-classified as a deco stop.
+    test('switch-stop window bills at sacRate, not decoSacRate', () => {
+        const { gases, loading } = buildScenario();
+        expect(loading.gasSwitches.length).toBe(1);
+        expect(loading.gasSwitches[0].depth).toBe(21);
+
+        // With sacRate=20, decoSacRate=10:
+        //   Bug path: 21m stop billed at 10 L/min → 1 min × 3.1 bar × 10 = 31 L
+        //   Fixed:    21m stop billed at 20 L/min → 1 min × 3.1 bar × 20 = 62 L
+        // The difference on EAN50 between the two implementations is 31 L.
+        const gc = computeGasConsumption(loading, gases, 20, 10, 50);
+
+        // Under the fix, EAN50 covers: 21m switch stop (1 min, sacRate=20)
+        // plus ascent 21→6 (1.5 min avg 13.5m, sacRate=20) plus 6m stop
+        // (10 min, decoSacRate=10) plus 6→surface ascent.
+        // Expected lower bound asserts the 21m stop used sacRate — with the
+        // bug, ean50 consumed is meaningfully lower.
+        //
+        // Numerically:
+        //   21m stop (sacRate=20):   1   × 3.1  × 20 =  62.0 L
+        //   asc 21→6 (sacRate=20): 1.5  × 2.35 × 20 =  70.5 L
+        //   6m stop (decoSac=10):   10   × 1.6  × 10 = 160.0 L
+        //   asc 6→0 (sacRate=20):   0.6  × 1.3  × 20 =  15.6 L
+        //                                               ~308 L
+        // Bug path replaces the first 62 L with 31 L → ~277 L.
+        expect(gc.consumedByGasId.ean50).toBeGreaterThan(290);
+        expect(gc.consumedByGasId.ean50).toBeLessThan(320);
+    });
+
+    // Regression: the 6m stop after the switch MUST still bill at
+    // decoSacRate. An over-eager fix that latched the switch flag forever
+    // would regress this.
+    test('stops after the switch still bill at decoSacRate', () => {
+        const { gases, loading } = buildScenario();
+        const gcLow  = computeGasConsumption(loading, gases, 20, 10, 50);
+        const gcHigh = computeGasConsumption(loading, gases, 20, 20, 50);
+        // 6m stop is the only decoSacRate-sensitive slice for EAN50.
+        //   (20 − 10) × 10 min × 1.6 bar = 160 L.
+        const diff = gcHigh.consumedByGasId.ean50 - gcLow.consumedByGasId.ean50;
+        expect(diff).toBeGreaterThan(150);
+        expect(diff).toBeLessThan(170);
     });
 });
 

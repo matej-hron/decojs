@@ -1357,6 +1357,7 @@ export function computeGasConsumption(results, gases, sacRate, decoSacRate, rese
     const maxDepth = Math.max(...results.depthPoints);
     let leftMaxDepth = false;
     let gasSwitchActive = false;
+    let gasSwitchDepth = null;
     let currentGasId = gases[0]?.id;
 
     for (let i = 0; i < results.timePoints.length; i++) {
@@ -1370,13 +1371,16 @@ export function computeGasConsumption(results, gases, sacRate, decoSacRate, rese
         if (gasSwitchTimes[time]) {
             currentGasId = gasSwitchTimes[time];
             gasSwitchActive = true;
+            gasSwitchDepth = depth;
         }
 
         if (i > 0) {
             const prevTime = results.timePoints[i - 1];
             const prevDepth = results.depthPoints[i - 1];
             const deltaTime = time - prevTime;
-            if (depth !== prevDepth) gasSwitchActive = false;
+            // Keep switch-mode active while diver stays at the switch depth;
+            // clear once they move off it (ascending out of the switch stop).
+            if (gasSwitchActive && depth !== gasSwitchDepth) gasSwitchActive = false;
             if (!(depth === 0 && prevDepth === 0)) {
                 const avgDepth = (depth + prevDepth) / 2;
                 const ambient = 1 + avgDepth / 10;
