@@ -103,7 +103,7 @@ export class TissueSaturationSim {
     _wireControls() {
         // Depth — slider and number input kept in sync.
         const onDepthChange = (rawVal) => {
-            const d = Math.max(0, Math.min(60, Number(rawVal) || 0));
+            const d = Math.max(0, Math.min(40, Number(rawVal) || 0));
             this.state.depth = d;
             this.depthSlider.value = d;
             this.depthInput.value = d;
@@ -336,14 +336,17 @@ export class TissueSaturationSim {
                     y: { type: 'linear', position: 'left',
                          // Fixed range so tissue movement is always in context
                          // and the axis doesn't rescale on every tick.
-                         min: 0, max: 7,
+                         // 0–5 bar = 0–40 m depth equivalent, matches the
+                         // slider range and covers typical recreational /
+                         // early-tech profiles comfortably.
+                         min: 0, max: 5,
                          title: { display: true, text: 'Pressure (bar)' } },
                     // Companion right-side axis: reads the SAME pressure
                     // values, but tick labels are rewritten as equivalent
                     // depth (m). Because it's the same scale, "surface"
                     // (pAmb = 1, depth = 0) aligns on both sides.
                     yDepth: { type: 'linear', position: 'right',
-                              min: 0, max: 7,
+                              min: 0, max: 5,
                               title: { display: true, text: 'Depth equivalent (m)' },
                               grid: { drawOnChartArea: false },
                               ticks: {
