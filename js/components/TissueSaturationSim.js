@@ -209,6 +209,7 @@ export class TissueSaturationSim {
         const row = {
             t: this.state.time,
             depth: this.state.depth,
+            pAmb: ambient,
             pAlv: alvN2,
             pFast: this.state.tissues[TRACKED_COMPARTMENT_IDS[0]],
             pMed:  this.state.tissues[TRACKED_COMPARTMENT_IDS[1]],
@@ -307,11 +308,17 @@ export class TissueSaturationSim {
             type: 'line',
             data: {
                 datasets: [
-                    { label: 'pN₂ alveolar',  data: [], borderColor: '#555', borderDash: [6,4], borderWidth: 1.5, pointRadius: 0, yAxisID: 'y' },
-                    { label: `TC1 (fast)`,    data: [], borderColor: colFast, borderWidth: 2,   pointRadius: 0, yAxisID: 'y' },
-                    { label: `TC5 (medium)`,  data: [], borderColor: colMed,  borderWidth: 2,   pointRadius: 0, yAxisID: 'y' },
-                    { label: `TC12 (slow)`,   data: [], borderColor: colSlow, borderWidth: 2,   pointRadius: 0, yAxisID: 'y' },
-                    { label: 'Depth',         data: [], borderColor: '#aaaaaa', backgroundColor: 'rgba(170,170,170,0.15)',
+                    // Ambient pressure: solid, bold, top of the stack — the
+                    // driver everything else is chasing.
+                    { label: 'pAmb',          data: [], borderColor: '#2c3e50', borderWidth: 2.5,
+                      pointRadius: 0, yAxisID: 'y', tension: 0 },
+                    { label: 'pN₂ alveolar',  data: [], borderColor: '#7f8c8d', borderDash: [6,4],
+                      borderWidth: 1.5, pointRadius: 0, yAxisID: 'y' },
+                    { label: 'TC1 fast (5 min)',     data: [], borderColor: colFast, borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' },
+                    { label: 'TC5 medium (27 min)',  data: [], borderColor: colMed,  borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' },
+                    { label: 'TC12 slow (239 min)',  data: [], borderColor: colSlow, borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' },
+                    { label: 'Depth',         data: [], borderColor: 'rgba(170,170,170,0.6)',
+                      backgroundColor: 'rgba(170,170,170,0.15)',
                       borderWidth: 1, pointRadius: 0, yAxisID: 'yDepth', fill: true }
                 ]
             },
@@ -321,17 +328,28 @@ export class TissueSaturationSim {
                 interaction: { mode: 'nearest', axis: 'x', intersect: false },
                 animation: false,
                 scales: {
-                    x: { type: 'linear', title: { display: true, text: 'Time (min)' } },
+                    x: { type: 'linear',
+                         title: { display: true, text: 'Time (min)' },
+                         ticks: { maxTicksLimit: 10 } },
                     y: { type: 'linear', position: 'left', beginAtZero: true,
-                         title: { display: true, text: 'pN₂ (bar)' } },
+                         title: { display: true, text: 'Pressure (bar)' } },
                     yDepth: { type: 'linear', position: 'right', reverse: true,
                               min: 0, max: 60,
                               title: { display: true, text: 'Depth (m)' },
                               grid: { drawOnChartArea: false } }
                 },
                 plugins: {
-                    legend: { position: 'bottom', labels: { boxWidth: 14, usePointStyle: false } },
-                    tooltip: { enabled: true }
+                    legend: {
+                        position: 'top',
+                        align: 'end',
+                        labels: { boxWidth: 18, boxHeight: 3, usePointStyle: false, font: { size: 11 } }
+                    },
+                    tooltip: {
+                        enabled: true,
+                        callbacks: {
+                            label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)}${ctx.dataset.yAxisID === 'yDepth' ? ' m' : ' bar'}`
+                        }
+                    }
                 }
             }
         });
@@ -342,11 +360,12 @@ export class TissueSaturationSim {
         const minT = Math.max(0, maxT - HISTORY_WINDOW_MIN);
         const rows = this.history.filter(r => r.t >= minT);
         const ds = this.chart.data.datasets;
-        ds[0].data = rows.map(r => ({ x: r.t, y: r.pAlv }));
-        ds[1].data = rows.map(r => ({ x: r.t, y: r.pFast }));
-        ds[2].data = rows.map(r => ({ x: r.t, y: r.pMed }));
-        ds[3].data = rows.map(r => ({ x: r.t, y: r.pSlow }));
-        ds[4].data = rows.map(r => ({ x: r.t, y: r.depth }));
+        ds[0].data = rows.map(r => ({ x: r.t, y: r.pAmb }));
+        ds[1].data = rows.map(r => ({ x: r.t, y: r.pAlv }));
+        ds[2].data = rows.map(r => ({ x: r.t, y: r.pFast }));
+        ds[3].data = rows.map(r => ({ x: r.t, y: r.pMed }));
+        ds[4].data = rows.map(r => ({ x: r.t, y: r.pSlow }));
+        ds[5].data = rows.map(r => ({ x: r.t, y: r.depth }));
         this.chart.options.scales.x.min = minT;
         this.chart.options.scales.x.max = Math.max(minT + HISTORY_WINDOW_MIN, maxT);
         this.chart.update('none');
