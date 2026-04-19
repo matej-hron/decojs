@@ -85,7 +85,9 @@ export class TissueSaturationSim {
             depth: 0,
             gas,
             speed: 1,
-            isPlaying: true,
+            // Start paused so the learner can arrange depth/gas first,
+            // then press play to watch tissues respond.
+            isPlaying: false,
             time: 0,
             tissues: {}                // pN per compartment id
         };

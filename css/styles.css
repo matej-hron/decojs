@@ -2014,7 +2014,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.5.41";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.5.42";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
