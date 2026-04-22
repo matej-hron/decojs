@@ -14,14 +14,17 @@ import { COMPARTMENTS, getRateConstant } from './tissueCompartments.js';
 /** Calculation interval in seconds */
 export const CALC_INTERVAL = 10;
 
-/** Surface atmospheric pressure in bar */
-export const SURFACE_PRESSURE = 1.0;
+/** Surface atmospheric pressure in bar (1 atm exactly) */
+export const SURFACE_PRESSURE = 1.01325;
 
 /** Water vapor pressure at body temperature (37°C) in bar */
 export const WATER_VAPOR_PRESSURE = 0.0627;
 
-/** Default fraction of nitrogen in breathing gas (air) - used for backward compatibility */
-export const N2_FRACTION = 0.79;
+/**
+ * Effective N2-equivalent fraction in air. Textbook value is 0.79, but
+ * decompression models lump argon (~0.93%) with nitrogen, giving 0.7902.
+ */
+export const N2_FRACTION = 0.7902;
 
 /** Pressure increase per meter of seawater depth */
 export const PRESSURE_PER_METER = 0.1; // bar per meter

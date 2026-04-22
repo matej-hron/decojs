@@ -10,7 +10,7 @@
  */
 
 import { COMPARTMENTS } from './tissueCompartments.js';
-import { calculateTissueLoading, getAmbientPressure, SURFACE_PRESSURE, getAdjustedMValue, getFirstStopDepth } from './decoModel.js';
+import { calculateTissueLoading, getAmbientPressure, SURFACE_PRESSURE, N2_FRACTION, getAdjustedMValue, getFirstStopDepth } from './decoModel.js';
 import { loadDiveSetup, getDiveSetupWaypoints, getGases, getGradientFactors } from './diveSetup.js';
 
 // ============================================================================
@@ -825,7 +825,7 @@ function buildDatasets() {
     
     // 1b. Alveolar ppN2 Line (y = 0.79x) - off-gassing threshold
     // This is where tissue pressure equals alveolar ppN2 (for air: 79% N2)
-    const fN2 = 0.79;  // N2 fraction in air
+    const fN2 = N2_FRACTION;
     datasets.push({
         label: 'Alveolar ppN₂ (y = 0.79x)',
         data: [

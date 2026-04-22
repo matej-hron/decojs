@@ -5,7 +5,9 @@
 
 // Constants
 const WATER_VAPOR_PRESSURE = 0.0627; // bar at 37°C
-const SURFACE_ALVEOLAR_N2 = (1 - WATER_VAPOR_PRESSURE) * 0.79; // ~0.74 bar
+const SURFACE_PRESSURE = 1.01325; // 1 atm exactly
+const N2_FRACTION = 0.7902; // N2-equivalent fraction (accounts for argon)
+const SURFACE_ALVEOLAR_N2 = (SURFACE_PRESSURE - WATER_VAPOR_PRESSURE) * N2_FRACTION; // ~0.75 bar
 
 // Wait for DOM to be ready
 document.addEventListener('DOMContentLoaded', () => {
@@ -202,8 +204,8 @@ function initHalfTimeCharts() {
 
 function getSaturatedTissuePpN2(depth) {
     // Tissue fully saturated at the given depth
-    const ambientPressure = 1 + depth / 10;
-    return (ambientPressure - WATER_VAPOR_PRESSURE) * 0.79;
+    const ambientPressure = SURFACE_PRESSURE + depth / 10;
+    return (ambientPressure - WATER_VAPOR_PRESSURE) * N2_FRACTION;
 }
 
 function initOngassingChart() {

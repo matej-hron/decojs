@@ -50,6 +50,17 @@ const COMPARTMENT_1_HALFTIME = {
 };
 
 /**
+ * Compartment 1 b-coefficient by variant.
+ * ZH-L16A (4 min half-time) has its own b; B/C (5 min) share a different b.
+ * All other compartments share a single b value across variants.
+ */
+const COMPARTMENT_1_B_N2 = {
+    [ZHL16_VARIANTS.A]: 0.5050, // Paired with 4 min half-time
+    [ZHL16_VARIANTS.B]: 0.5578, // Paired with 5 min half-time
+    [ZHL16_VARIANTS.C]: 0.5578
+};
+
+/**
  * Base compartment data (half-times, b coefficients, labels, colors)
  * Note: Compartment 1 half-time is variant-specific (see COMPARTMENT_1_HALFTIME)
  */
@@ -83,9 +94,8 @@ const BASE_COMPARTMENTS = [
  * ZH-L16A 'a' coefficients (original experimental values - least conservative)
  * Used for research and comparison.
  *
- * Note: TC1 uses a=1.2599 with half-time 4.0 min (original Bühlmann specification).
- * The corresponding b coefficient should be 0.5050, but our b values are shared
- * across variants (0.5578 for TC1). This is a known limitation for the A variant.
+ * TC1 uses a=1.2599 with half-time 4.0 min and b=0.5050 (variant-specific, see
+ * COMPARTMENT_1_B_N2).
  *
  * Sources: Bühlmann (2002) Tauchmedizin, dipplanner, decotengu
  */
@@ -147,10 +157,12 @@ function getACoefficients(variant) {
 function buildCompartments(variant) {
     const aCoeffs = getACoefficients(variant);
     const comp1HalfTime = COMPARTMENT_1_HALFTIME[variant] || 5.0;
+    const comp1BN2 = COMPARTMENT_1_B_N2[variant] || 0.5578;
 
     return BASE_COMPARTMENTS.map(comp => ({
         ...comp,
         halfTime: comp.id === 1 ? comp1HalfTime : comp.halfTime,
+        bN2: comp.id === 1 ? comp1BN2 : comp.bN2,
         aN2: aCoeffs[comp.id]
     }));
 }

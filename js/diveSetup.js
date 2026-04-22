@@ -37,7 +37,7 @@ export const DEFAULT_GAS_SWITCH_TIME = 0;
  * Larger MOD, used with back-mount cylinders
  */
 export const BOTTOM_GASES = [
-    { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 },
+    { id: 'air', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0 },
     { id: 'ean32', name: 'EAN32', o2: 0.32, n2: 0.68, he: 0 },
     { id: 'ean36', name: 'EAN36', o2: 0.36, n2: 0.64, he: 0 }
 ];
@@ -180,8 +180,8 @@ export function getDefaultSetup() {
             {
                 id: 'bottom',
                 name: 'Air',
-                o2: 0.21,
-                n2: 0.79,
+                o2: 0.2098,
+                n2: 0.7902,
                 he: 0,
                 cylinderVolume: 12,
                 startPressure: 200
@@ -340,7 +340,7 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
     const gfHighDec = gfHigh / 100;
 
     // Get bottom gas (first gas or air)
-    const bottomGas = gases && gases.length > 0 ? gases[0] : { id: 'air', name: 'Air', o2: 0.21, n2: 0.79 };
+    const bottomGas = gases && gases.length > 0 ? gases[0] : { id: 'air', name: 'Air', o2: 0.2098, n2: 0.7902 };
 
     // Calculate NDL for this depth/gas (uses GF Low since that determines first stop)
     const { ndl, controllingCompartment } = calculateNDL(maxDepth, bottomGas.n2, gfLowDec);
@@ -564,7 +564,7 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
     const gfHighDec = gfHigh / 100;
 
     // Get bottom gas
-    const bottomGas = gases && gases.length > 0 ? gases[0] : { id: 'air', name: 'Air', o2: 0.21, n2: 0.79 };
+    const bottomGas = gases && gases.length > 0 ? gases[0] : { id: 'air', name: 'Air', o2: 0.2098, n2: 0.7902 };
 
     // Calculate NDL (uses GF Low since that determines first stop)
     const { ndl, controllingCompartment } = calculateNDL(maxDepth, bottomGas.n2, gfLowDec);
@@ -829,7 +829,7 @@ export function calculateEND(depth, heFraction = 0) {
  * @returns {number} Partial pressure in bar
  */
 export function calculatePartialPressure(depth, gasFraction) {
-    const ambient = 1 + depth / 10;
+    const ambient = SURFACE_PRESSURE + depth / 10;
     return gasFraction * ambient;
 }
 
@@ -886,8 +886,8 @@ export function getGases(setup) {
         return [{
             id: 'bottom',
             name: 'Air',
-            o2: 0.21,
-            n2: 0.79,
+            o2: 0.2098,
+            n2: 0.7902,
             he: 0,
             cylinderVolume: 12,
             startPressure: DEFAULT_START_PRESSURE
@@ -925,7 +925,7 @@ export function getDecoGasesFromSetup(setup) {
  */
 export function getGasAtWaypoint(waypoint, gases) {
     if (!gases || gases.length === 0) {
-        return { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 };
+        return { id: 'air', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0 };
     }
     
     if (waypoint.gasId) {
@@ -947,7 +947,7 @@ export function getGasAtWaypoint(waypoint, gases) {
  */
 export function getGasAtTime(waypoints, gases, time) {
     if (!waypoints || waypoints.length === 0) {
-        return gases?.[0] || { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 };
+        return gases?.[0] || { id: 'air', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0 };
     }
     
     // Find the last waypoint at or before this time
@@ -1383,7 +1383,7 @@ export function computeGasConsumption(results, gases, sacRate, decoSacRate, rese
             if (gasSwitchActive && depth !== gasSwitchDepth) gasSwitchActive = false;
             if (!(depth === 0 && prevDepth === 0)) {
                 const avgDepth = (depth + prevDepth) / 2;
-                const ambient = 1 + avgDepth / 10;
+                const ambient = SURFACE_PRESSURE + avgDepth / 10;
                 const isDecoStop = leftMaxDepth && depth === prevDepth && depth > 0 && !gasSwitchActive;
                 const sac = isDecoStop ? decoSacRate : sacRate;
                 const consumed = sac * ambient * deltaTime;
