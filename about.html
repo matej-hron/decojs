@@ -34,41 +34,41 @@
     </nav>
 
     <header class="hero hero-small">
-        <h1>About This Project</h1>
-        <p class="hero-subtitle">An experimental learning tool for understanding decompression theory</p>
+        <h1 data-i18n="about.title">About This Project</h1>
+        <p class="hero-subtitle" data-i18n="about.subtitle">An experimental learning tool for understanding decompression theory</p>
     </header>
 
     <main class="content-main">
         <!-- Disclaimer Section -->
         <section class="about-disclaimer">
             <div class="disclaimer-box prominent">
-                <h2>🚧&nbsp;Work&nbsp;in&nbsp;Progress</h2>
-                <p>
-                    This project is a <strong>work in progress</strong> and has not been reviewed 
-                    by anyone yet. The content, calculations, and information presented here may 
+                <h2 data-i18n="about.wip.title">🚧&nbsp;Work&nbsp;in&nbsp;Progress</h2>
+                <p data-i18n="about.wip.text">
+                    This project is a <strong>work in progress</strong> and has not been reviewed
+                    by anyone yet. The content, calculations, and information presented here may
                     contain errors or inaccuracies. Use at your own discretion.
                 </p>
             </div>
 
             <div class="disclaimer-box prominent">
-                <h2>⚠️ Important Disclaimer</h2>
-                <p>
-                    This project was created as a <strong>personal learning exercise</strong> by the author 
-                    to better understand decompression theory and dive physics. It is an experimental, 
+                <h2 data-i18n="about.disclaimer.title">⚠️ Important Disclaimer</h2>
+                <p data-i18n="about.disclaimer.intro">
+                    This project was created as a <strong>personal learning exercise</strong> by the author
+                    to better understand decompression theory and dive physics. It is an experimental,
                     work-in-progress tool.
                 </p>
                 <ul class="disclaimer-list">
-                    <li>
-                        <strong>No guarantees:</strong> There is no guarantee that the information, 
+                    <li data-i18n="about.disclaimer.guarantees">
+                        <strong>No guarantees:</strong> There is no guarantee that the information,
                         calculations, or visualizations provided here are correct or complete.
                     </li>
-                    <li>
-                        <strong>Not for dive planning:</strong> This tool must <em>never</em> be used 
-                        for actual dive planning or any real diving situation. Always rely on certified 
+                    <li data-i18n="about.disclaimer.notForDiving">
+                        <strong>Not for dive planning:</strong> This tool must <em>never</em> be used
+                        for actual dive planning or any real diving situation. Always rely on certified
                         dive computers, tables, and proper training.
                     </li>
-                    <li>
-                        <strong>Educational use:</strong> This project may be used for educational purposes 
+                    <li data-i18n="about.disclaimer.educational">
+                        <strong>Educational use:</strong> This project may be used for educational purposes
                         by <a href="https://deepblue.cz" target="_blank" rel="noopener">Deepblue diving club</a>.
                     </li>
                 </ul>
@@ -77,13 +77,13 @@
 
         <!-- About Content -->
         <section class="about-content">
-            <h2>What Is This?</h2>
-            <p>
+            <h2 data-i18n="about.what.title">What Is This?</h2>
+            <p data-i18n="about.what.body">
                 This is an interactive educational resource for divers who want to understand the science
                 behind their dive computers. All visualizations are based on the <strong>Bühlmann ZH-L16</strong>
                 decompression model, one of the most widely used algorithms in recreational and technical diving.
             </p>
-            <p>
+            <p data-i18n="about.what.goal">
                 The goal is to make abstract concepts like tissue saturation, half-times, and M-values
                 more intuitive through hands-on exploration and visualization.
             </p>
@@ -91,56 +91,56 @@
 
         <!-- Technical Details -->
         <section class="about-content">
-            <h2>Algorithm Details</h2>
-            <p>
+            <h2 data-i18n="about.algo.title">Algorithm Details</h2>
+            <p data-i18n="about.algo.intro">
                 The decompression calculations use the <strong>Bühlmann ZH-L16</strong> algorithm with
                 the following parameters and assumptions:
             </p>
 
-            <h3>Model Variants</h3>
+            <h3 data-i18n="about.algo.variants.title">Model Variants</h3>
             <ul>
-                <li><strong>ZH-L16A:</strong> Original experimental values, TC1 half-time = 4.0 min</li>
-                <li><strong>ZH-L16B:</strong> Modified for printed tables, TC1 half-time = 5.0 min</li>
-                <li><strong>ZH-L16C:</strong> Modified for dive computers (default), TC1 half-time = 5.0 min</li>
+                <li data-i18n="about.algo.variants.a"><strong>ZH-L16A:</strong> Original experimental values, TC1 half-time = 4.0 min</li>
+                <li data-i18n="about.algo.variants.b"><strong>ZH-L16B:</strong> Modified for printed tables, TC1 half-time = 5.0 min</li>
+                <li data-i18n="about.algo.variants.c"><strong>ZH-L16C:</strong> Modified for dive computers (default), TC1 half-time = 5.0 min</li>
             </ul>
 
-            <h3>Constants</h3>
+            <h3 data-i18n="about.algo.constants.title">Constants</h3>
             <ul>
-                <li>Surface pressure: 1.0 bar</li>
-                <li>Water vapor pressure: 0.0627 bar (47 mmHg at 37°C)</li>
-                <li>Pressure per 10m depth: 1.0 bar (saltwater)</li>
-                <li>Descent rate: 20 m/min</li>
-                <li>Ascent rate: 10 m/min</li>
-                <li>Deco stop increment: 3 m</li>
+                <li data-i18n="about.algo.constants.surfacePressure">Surface pressure: 1.0 bar</li>
+                <li data-i18n="about.algo.constants.waterVapor">Water vapor pressure: 0.0627 bar (47 mmHg at 37°C)</li>
+                <li data-i18n="about.algo.constants.pressurePer10m">Pressure per 10m depth: 1.0 bar (saltwater)</li>
+                <li data-i18n="about.algo.constants.descentRate">Descent rate: 20 m/min</li>
+                <li data-i18n="about.algo.constants.ascentRate">Ascent rate: 10 m/min</li>
+                <li data-i18n="about.algo.constants.stopIncrement">Deco stop increment: 3 m</li>
             </ul>
 
-            <h3>Gradient Factors</h3>
-            <p>
+            <h3 data-i18n="about.algo.gf.title">Gradient Factors</h3>
+            <p data-i18n="about.algo.gf.intro">
                 Gradient factors use the <strong>Baker pAnchor method</strong>:
             </p>
             <ul>
-                <li>GF Low applies at the pAnchor depth (first stop)</li>
-                <li>Linear interpolation from pAnchor to surface (GF High)</li>
-                <li>Below pAnchor: constant GF Low</li>
+                <li data-i18n="about.algo.gf.item1">GF Low applies at the pAnchor depth (first stop)</li>
+                <li data-i18n="about.algo.gf.item2">Linear interpolation from pAnchor to surface (GF High)</li>
+                <li data-i18n="about.algo.gf.item3">Below pAnchor: constant GF Low</li>
             </ul>
 
-            <h3>Equations</h3>
+            <h3 data-i18n="about.algo.equations.title">Equations</h3>
             <ul>
-                <li><strong>Haldane equation:</strong> Tissue loading at constant depth</li>
-                <li><strong>Schreiner equation:</strong> Tissue loading during depth changes</li>
-                <li><strong>M-value:</strong> M = a + P<sub>amb</sub> / b</li>
-                <li><strong>Adjusted M-value:</strong> M<sub>adj</sub> = P<sub>amb</sub> + GF × (M - P<sub>amb</sub>)</li>
+                <li data-i18n="about.algo.equations.haldane"><strong>Haldane equation:</strong> Tissue loading at constant depth</li>
+                <li data-i18n="about.algo.equations.schreiner"><strong>Schreiner equation:</strong> Tissue loading during depth changes</li>
+                <li data-i18n="about.algo.equations.mvalue"><strong>M-value:</strong> M = a + P<sub>amb</sub> / b</li>
+                <li data-i18n="about.algo.equations.adjustedM"><strong>Adjusted M-value:</strong> M<sub>adj</sub> = P<sub>amb</sub> + GF × (M - P<sub>amb</sub>)</li>
             </ul>
 
-            <h3>Validation</h3>
-            <p>
+            <h3 data-i18n="about.algo.validation.title">Validation</h3>
+            <p data-i18n="about.algo.validation.intro">
                 The implementation has been validated against:
             </p>
             <ul>
-                <li><strong>DecoTengu:</strong> Tissue loading matches within 0.02%</li>
-                <li><strong>Bühlmann printed tables:</strong> Deco schedules match within expected tolerance</li>
+                <li data-i18n="about.algo.validation.decotengu"><strong>DecoTengu:</strong> Tissue loading matches within 0.02%</li>
+                <li data-i18n="about.algo.validation.buhlmann"><strong>Bühlmann printed tables:</strong> Deco schedules match within expected tolerance</li>
             </ul>
-            <p>
+            <p data-i18n="about.algo.validation.note">
                 <em>Note:</em> Our calculations may produce 10-25% shorter deco times than printed tables.
                 This is expected — printed tables include safety margins and round up conservatively.
                 This tool shows the raw algorithm output for educational purposes.
@@ -149,12 +149,12 @@
 
         <!-- Author -->
         <section class="about-content">
-            <h2>👤 Author</h2>
-            <p>
+            <h2 data-i18n="about.author.title">👤 Author</h2>
+            <p data-i18n="about.author.bio">
                 Created by <strong>Matej Hron</strong><br>
                 CMAS I** instructor at <a href="https://deepblue.cz" target="_blank" rel="noopener">Deepblue diving club</a>
             </p>
-            <p class="author-links">
+            <p class="author-links" data-i18n="about.author.links">
                 <a href="mailto:matej.hron@gmail.com">matej.hron@gmail.com</a>
                 · <a href="https://www.linkedin.com/in/matejhron/" target="_blank" rel="noopener">LinkedIn</a>
             </p>
@@ -162,8 +162,8 @@
 
         <!-- Expert review -->
         <section class="about-content">
-            <h2>🎓 Expert review</h2>
-            <p>
+            <h2 data-i18n="about.review.title">🎓 Expert review</h2>
+            <p data-i18n="about.review.text">
                 Technical oversight provided by
                 <strong><a href="https://cs.wikipedia.org/wiki/Ji%C5%99%C3%AD_Hovorka_(speleopot%C3%A1p%C4%9B%C4%8D)" target="_blank" rel="noopener">Jiří Hovorka</a></strong>
                 — CMAS/SPČR I3 instructor, trainer of cave diving instructors (ICD3), co-author of SPČR training guidelines —
@@ -173,22 +173,22 @@
 
         <!-- Acknowledgments -->
         <section class="about-content">
-            <h2>🙏 Acknowledgments</h2>
-            <p>
-                Special thanks to <strong>Mark Powell</strong> for his excellent book <em>Deco for Divers</em> — 
+            <h2 data-i18n="about.ack.title">🙏 Acknowledgments</h2>
+            <p data-i18n="about.ack.powell">
+                Special thanks to <strong>Mark Powell</strong> for his excellent book <em>Deco for Divers</em> —
                 the primary inspiration for this project and the resource that made decompression theory finally click.
             </p>
-            <p>
-                Thanks also to <strong>Jan Jahns</strong> for his great book, another valuable learning resource 
+            <p data-i18n="about.ack.jahns">
+                Thanks also to <strong>Jan Jahns</strong> for his great book, another valuable learning resource
                 for understanding decompression theory.
             </p>
         </section>
 
         <!-- References Section -->
         <section class="reference-section">
-            <h2>📖 References & Sources</h2>
+            <h2 data-i18n="about.refs.title">📖 References & Sources</h2>
             <ol class="references-list">
-                <li>
+                <li data-i18n="about.refs.item1">
                     <strong>Jahns, Jan.</strong> (2008).
                     <em>Fyzika.</em>
                     Svaz českých potápěčů, Praha.
@@ -198,7 +198,7 @@
                         Review on Strany potápěčské
                     </a>
                 </li>
-                <li>
+                <li data-i18n="about.refs.item2">
                     <strong>Jahns, Jan.</strong> (2008).
                     <em>Podklady k výpočtům dekompresních tabulek Bühlmann/SUSV 1986.</em>
                     2. vydání. Hlučín, 34 stran.
@@ -209,53 +209,53 @@
                         Full text (PDF, SPMS)
                     </a>
                 </li>
-                <li>
-                    <strong>Powell, Mark.</strong> 
-                    <em>Deco for Divers.</em> 
-                    — The primary inspiration for this project. An excellent, accessible guide to decompression 
+                <li data-i18n="about.refs.item3">
+                    <strong>Powell, Mark.</strong>
+                    <em>Deco for Divers.</em>
+                    — The primary inspiration for this project. An excellent, accessible guide to decompression
                     theory for recreational and technical divers. Highly recommended!
                 </li>
-                <li>
-                    <strong>Bühlmann, A.A.</strong> (1984). 
-                    <em>Decompression–Decompression Sickness.</em> 
-                    Berlin: Springer-Verlag. 
+                <li data-i18n="about.refs.item4">
+                    <strong>Bühlmann, A.A.</strong> (1984).
+                    <em>Decompression–Decompression Sickness.</em>
+                    Berlin: Springer-Verlag.
                     — The original work describing the ZH-L16 algorithm.
                 </li>
-                <li>
-                    <strong>Wikipedia</strong>. 
+                <li data-i18n="about.refs.item5">
+                    <strong>Wikipedia</strong>.
                     <a href="https://en.wikipedia.org/wiki/B%C3%BChlmann_decompression_algorithm" target="_blank" rel="noopener">
                         Bühlmann decompression algorithm
-                    </a> 
+                    </a>
                     — Overview of the algorithm, tissue compartment half-times, and M-values.
                 </li>
-                <li>
-                    <strong>Wienke, B.R.</strong> 
+                <li data-i18n="about.refs.item6">
+                    <strong>Wienke, B.R.</strong>
                     <a href="https://aquatec.wordpress.com/wp-content/uploads/2011/03/decompression-theory.pdf" target="_blank" rel="noopener">
                         Decompression Theory (PDF)
-                    </a> 
+                    </a>
                     — Comprehensive introduction to decompression physics and physiology.
                 </li>
-                <li>
-                    <strong>Alveolar Gas Equation</strong>: 
-                    The model accounts for water vapor pressure at body temperature (37°C) = 47 mmHg ≈ 0.0627 bar, 
-                    which reduces the effective partial pressure of inspired gases. 
+                <li data-i18n="about.refs.item7">
+                    <strong>Alveolar Gas Equation</strong>:
+                    The model accounts for water vapor pressure at body temperature (37°C) = 47 mmHg ≈ 0.0627 bar,
+                    which reduces the effective partial pressure of inspired gases.
                     <a href="https://en.wikipedia.org/wiki/Alveolar_gas_equation" target="_blank" rel="noopener">
                         Wikipedia: Alveolar gas equation
                     </a>
                 </li>
-                <li>
-                    <strong>Schreiner, H.R.</strong> (1971). 
-                    <em>Safe Limits of Exposure to Increased Pressure.</em> 
+                <li data-i18n="about.refs.item8">
+                    <strong>Schreiner, H.R.</strong> (1971).
+                    <em>Safe Limits of Exposure to Increased Pressure.</em>
                     — Derivation of the Schreiner equation for calculating gas loading during linear pressure changes.
                 </li>
-                <li>
-                    <strong>Strany potápěčské</strong>. 
+                <li data-i18n="about.refs.item9">
+                    <strong>Strany potápěčské</strong>.
                     <a href="https://stranypotapecske.cz" target="_blank" rel="noopener">
                         stranypotapecske.cz
-                    </a> 
-                    — A comprehensive Czech diving portal and community resource run by Zdeněk Šraier. 
-                    Features an extensive library of book reviews, educational articles on diving physics 
-                    and decompression theory, dive site conditions database, equipment reviews, and 
+                    </a>
+                    — A comprehensive Czech diving portal and community resource run by Zdeněk Šraier.
+                    Features an extensive library of book reviews, educational articles on diving physics
+                    and decompression theory, dive site conditions database, equipment reviews, and
                     training materials. An invaluable resource for Czech-speaking divers at all levels.
                 </li>
             </ol>
@@ -264,8 +264,8 @@
 
     <!-- Footer -->
     <footer>
-        <span class="wip-badge">Experimental</span>
-        <p>
+        <span class="wip-badge" data-i18n="common.wipBadge">Experimental</span>
+        <p data-i18n="home.footer.disclaimer">
             <strong>Educational Use Only</strong> — Not for dive planning.
             <br>
             <a href="about.html">Learn more about this project</a>
@@ -275,5 +275,12 @@
 
     <!-- Shared Navigation -->
     <script src="js/nav.js" type="module"></script>
+
+    <!-- i18n -->
+    <script type="module">
+        import { initI18n, createLanguageSwitcher } from './js/i18n.js';
+        createLanguageSwitcher();
+        initI18n();
+    </script>
 </body>
 </html>

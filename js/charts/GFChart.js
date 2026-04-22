@@ -33,6 +33,15 @@
 import { COMPARTMENTS } from '../tissueCompartments.js';
 import { applyChartTheme } from './chartTheme.js';
 import { createInteractionLockBtn } from './interactionLock.js';
+import { translate } from '../i18n.js';
+
+/** Helper: replace {0}, {1}, ... placeholders with the given values. */
+function fmt(str, ...values) {
+    return String(str).replace(/\{(\d+)\}/g, (_, i) => {
+        const v = values[Number(i)];
+        return v === undefined ? '' : String(v);
+    });
+}
 import {
     calculateTissueLoading,
     calculateInstantGF,
@@ -124,6 +133,17 @@ export class GFChart {
         // Setup keyboard shortcuts
         this._setupKeyboardShortcuts();
 
+        // Re-render on language change so chart labels retranslate.
+        this._onLanguageChange = () => {
+            if (this.options.compartmentSelector) this._buildCompartmentSelector();
+            if (this.fullscreenBtn) this.fullscreenBtn.title = translate('chart.tooltips.fullscreen', 'Toggle Fullscreen');
+            if (this.exitFullscreenBtn) this.exitFullscreenBtn.title = translate('chart.tooltips.exitFullscreen', 'Exit Fullscreen (Esc)');
+            if (this.resetZoomBtn) this.resetZoomBtn.title = translate('chart.tooltips.resetZoom', 'Reset Zoom (double-click chart)');
+            this._updateTimeDisplay();
+            if (this.diveSetup) this._render();
+        };
+        document.addEventListener('languagechange', this._onLanguageChange);
+
         // Calculate and render if we have data
         if (this.diveSetup) {
             this._calculate();
@@ -182,7 +202,7 @@ export class GFChart {
         if (this.options.fullscreenButton) {
             this.fullscreenBtn = document.createElement('button');
             this.fullscreenBtn.innerHTML = '⛶';
-            this.fullscreenBtn.title = 'Toggle Fullscreen';
+            this.fullscreenBtn.title = translate('chart.tooltips.fullscreen', 'Toggle Fullscreen');
             this.fullscreenBtn.style.cssText = `
                 position: absolute; top: 8px; right: 8px; z-index: 10;
                 padding: 4px 8px; background: rgba(255,255,255,0.9);
@@ -195,7 +215,7 @@ export class GFChart {
             this.exitFullscreenBtn = document.createElement('button');
             this.exitFullscreenBtn.className = 'gfc-exit-fullscreen-btn';
             this.exitFullscreenBtn.innerHTML = '✕';
-            this.exitFullscreenBtn.title = 'Exit Fullscreen (Esc)';
+            this.exitFullscreenBtn.title = translate('chart.tooltips.exitFullscreen', 'Exit Fullscreen (Esc)');
             this.exitFullscreenBtn.style.cssText = `
                 position: absolute; top: 16px; right: 16px; z-index: 1001;
                 padding: 8px 12px; background: rgba(0,0,0,0.7); color: white;
@@ -210,7 +230,7 @@ export class GFChart {
         this.resetZoomBtn = document.createElement('button');
         this.resetZoomBtn.className = 'gfc-reset-zoom-btn';
         this.resetZoomBtn.innerHTML = '↺';
-        this.resetZoomBtn.title = 'Reset Zoom (double-click chart)';
+        this.resetZoomBtn.title = translate('chart.tooltips.resetZoom', 'Reset Zoom (double-click chart)');
         this.resetZoomBtn.style.cssText = `
             position: absolute; top: 8px; right: ${this.options.fullscreenButton ? '44px' : '8px'}; z-index: 10;
             padding: 4px 8px; background: rgba(255,255,255,0.9);
@@ -294,10 +314,10 @@ export class GFChart {
         btnGroup.style.cssText = 'display: flex; gap: 4px; margin-right: 12px;';
 
         const buttons = [
-            { text: 'All', action: () => this._selectAllCompartments() },
-            { text: 'None', action: () => this._selectNoCompartments() },
-            { text: 'Fast', action: () => this._selectFastCompartments() },
-            { text: 'Slow', action: () => this._selectSlowCompartments() }
+            { text: translate('chart.buttons.all', 'All'), action: () => this._selectAllCompartments() },
+            { text: translate('chart.buttons.none', 'None'), action: () => this._selectNoCompartments() },
+            { text: translate('chart.buttons.fast', 'Fast'), action: () => this._selectFastCompartments() },
+            { text: translate('chart.buttons.slow', 'Slow'), action: () => this._selectSlowCompartments() }
         ];
 
         buttons.forEach(({ text, action }) => {
@@ -357,7 +377,7 @@ export class GFChart {
         // Shortcut legend
         const hint = document.createElement('div');
         hint.style.cssText = 'font-size: 0.7rem; color: var(--text-muted, #888); margin-top: 2px; padding: 0 4px;';
-        hint.textContent = 'Click = select one · Shift+click = toggle · ←→ step · Space play · F fullscreen';
+        hint.textContent = translate('chart.hints.compartments', 'Click = select one · Shift+click = toggle · ←→ step · Space play · F fullscreen');
         this.controlsContainer.appendChild(hint);
     }
 
@@ -366,11 +386,11 @@ export class GFChart {
      * @private
      */
     _buildTimelineControls() {
-        const rewindBtn = this._createButton('⏮', 'Jump to start (Home)', () => this._jumpToStart());
-        const stepBackBtn = this._createButton('◀', 'Step back (←)', () => this._stepTime(-1));
-        this.playBtn = this._createButton('▶️', 'Play/Pause (Space)', () => this._togglePlayback());
-        const stepFwdBtn = this._createButton('▶', 'Step forward (→)', () => this._stepTime(1));
-        const ffwdBtn = this._createButton('⏭', 'Jump to end (End)', () => this._jumpToEnd());
+        const rewindBtn = this._createButton('⏮', translate('chart.tooltips.jumpStart', 'Jump to start (Home)'), () => this._jumpToStart());
+        const stepBackBtn = this._createButton('◀', translate('chart.tooltips.stepBack', 'Step back (←)'), () => this._stepTime(-1));
+        this.playBtn = this._createButton('▶️', translate('chart.tooltips.playPause', 'Play/Pause (Space)'), () => this._togglePlayback());
+        const stepFwdBtn = this._createButton('▶', translate('chart.tooltips.stepForward', 'Step forward (→)'), () => this._stepTime(1));
+        const ffwdBtn = this._createButton('⏭', translate('chart.tooltips.jumpEnd', 'Jump to end (End)'), () => this._jumpToEnd());
 
         // Time slider
         this.timeSlider = document.createElement('input');
@@ -391,7 +411,7 @@ export class GFChart {
         // Time display
         this.timeDisplay = document.createElement('span');
         this.timeDisplay.style.cssText = 'font-family: monospace; min-width: 120px; text-align: right;';
-        this.timeDisplay.textContent = '0.0 min @ 0m';
+        this.timeDisplay.textContent = translate('chart.mvalue.initialDepthLabel', '0.0 min @ 0m');
 
         this.timelineContainer.appendChild(rewindBtn);
         this.timelineContainer.appendChild(stepBackBtn);
@@ -638,7 +658,7 @@ export class GFChart {
         if (!this.timeDisplay || !this.calculationResults) return;
         const time = this.calculationResults.timePoints[this.currentTimeIndex] || 0;
         const depth = this.calculationResults.depthPoints[this.currentTimeIndex] || 0;
-        this.timeDisplay.textContent = `${time.toFixed(1)} min @ ${depth.toFixed(1)}m`;
+        this.timeDisplay.textContent = fmt(translate('chart.timeDisplay', '{0} min @ {1}m'), time.toFixed(1), depth.toFixed(1));
         this._renderMiniProfile();
     }
 
@@ -872,7 +892,7 @@ export class GFChart {
 
         // M-value line at 100%
         datasets.push({
-            label: 'M-value (100%)',
+            label: translate('chart.gf.mValue100', 'M-value (100%)'),
             data: [{ x: 0, y: 100 }, { x: maxPressure, y: 100 }],
             borderColor: 'rgba(231, 76, 60, 0.8)',
             borderDash: [6, 3],
@@ -934,7 +954,7 @@ export class GFChart {
             corridorUpper.push({ x: maxPressure, y: gfLow * 100 });
 
             datasets.push({
-                label: 'GF corridor',
+                label: translate('chart.gf.gfCorridor', 'GF corridor'),
                 data: corridorUpper,
                 borderColor: 'rgba(46, 204, 113, 0.8)',
                 backgroundColor: 'rgba(46, 204, 113, 0.1)',
@@ -948,7 +968,7 @@ export class GFChart {
             // pAnchor vertical line
             if (pAnchor > SURFACE_PRESSURE) {
                 datasets.push({
-                    label: `pAnchor ${pAnchor.toFixed(2)} bar (${((pAnchor - SURFACE_PRESSURE) / 0.1).toFixed(1)}m)`,
+                    label: fmt(translate('chart.gf.pAnchor', 'pAnchor {0} bar ({1}m)'), pAnchor.toFixed(2), ((pAnchor - SURFACE_PRESSURE) / 0.1).toFixed(1)),
                     data: [
                         { x: pAnchor, y: -10 },
                         { x: pAnchor, y: 120 }
@@ -981,7 +1001,7 @@ export class GFChart {
                     });
                 }
                 datasets.push({
-                    label: `Trail TC${comp.id}`,
+                    label: fmt(translate('chart.mvalue.trailTC', 'Trail TC{0}'), comp.id),
                     data: trailData,
                     borderColor: comp.color + '60',
                     borderWidth: 1,
@@ -996,7 +1016,7 @@ export class GFChart {
             const currentTissue = results.compartments[comp.id].pressures[timeIndex];
             const currentGF = calculateInstantGF(currentTissue, currentAmbient, comp) * 100;
             datasets.push({
-                label: `TC${comp.id} (${comp.halfTime}min)`,
+                label: fmt(translate('chart.mvalue.tcLabel', 'TC{0} ({1}min)'), comp.id, comp.halfTime),
                 data: [{ x: currentAmbient, y: currentGF }],
                 backgroundColor: comp.color,
                 borderColor: '#fff',
@@ -1021,7 +1041,7 @@ export class GFChart {
                 envelopeData.push({ x: amb, y: maxGF });
             }
             datasets.push({
-                label: 'Leading tissue',
+                label: translate('chart.gf.leadingTissue', 'Leading tissue'),
                 data: envelopeData,
                 borderColor: 'rgba(0, 0, 0, 0.6)',
                 borderWidth: 2.5,
@@ -1044,7 +1064,7 @@ export class GFChart {
             }
             if (leadingComp) {
                 datasets.push({
-                    label: `Leading: TC${leadingComp.id} (${maxGF.toFixed(0)}%)`,
+                    label: fmt(translate('chart.gf.leadingTC', 'Leading: TC{0} ({1}%)'), leadingComp.id, maxGF.toFixed(0)),
                     data: [{ x: currentAmbient, y: maxGF }],
                     backgroundColor: 'rgba(0, 0, 0, 0.8)',
                     borderColor: leadingComp.color,
@@ -1070,11 +1090,13 @@ export class GFChart {
                         position: 'top',
                         labels: {
                             filter: (item) => {
-                                return (item.text.startsWith('TC') &&
-                                       !item.text.startsWith('Trail') &&
-                                       item.text.includes('min')) ||
-                                       item.text.startsWith('Leading') ||
-                                       item.text.startsWith('pAnchor');
+                                const text = item.text || '';
+                                const leadingPrefix = translate('chart.gf.leadingTC', 'Leading: TC').split('TC')[0];
+                                const leadingPrefixEn = 'Leading:';
+                                const isTissue = text.startsWith('TC') && text.includes('min');
+                                const isLeading = text.startsWith(leadingPrefix) || text.startsWith(leadingPrefixEn);
+                                const isPAnchor = text.startsWith('pAnchor');
+                                return isTissue || isLeading || isPAnchor;
                             }
                         }
                     },
@@ -1083,7 +1105,10 @@ export class GFChart {
                         callbacks: {
                             label: (context) => {
                                 const label = context.dataset.label || '';
-                                return `${label}: P_amb=${context.parsed.x.toFixed(2)} bar, GF=${context.parsed.y.toFixed(1)}%`;
+                                return fmt(
+                                    translate('chart.gf.tooltipLabel', '{0}: P_amb={1} bar, GF={2}%'),
+                                    label, context.parsed.x.toFixed(2), context.parsed.y.toFixed(1)
+                                );
                             }
                         }
                     },
@@ -1120,13 +1145,13 @@ export class GFChart {
                 scales: {
                     x: {
                         type: 'linear',
-                        title: { display: true, text: 'Ambient Pressure (bar)' },
+                        title: { display: true, text: translate('chart.axes.ambientPressureBar', 'Ambient Pressure (bar)') },
                         min: 0,
                         max: maxPressure
                     },
                     y: {
                         type: 'linear',
-                        title: { display: true, text: 'GF (%)' },
+                        title: { display: true, text: translate('chart.axes.gfPercent', 'GF (%)') },
                         min: -10,
                         suggestedMax: 120
                     }
@@ -1269,6 +1294,10 @@ export class GFChart {
         }
 
         document.removeEventListener('keydown', this._keyHandler);
+        if (this._onLanguageChange) {
+            document.removeEventListener('languagechange', this._onLanguageChange);
+            this._onLanguageChange = null;
+        }
         this.container.innerHTML = '';
     }
 }

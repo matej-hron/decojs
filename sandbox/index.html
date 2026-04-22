@@ -569,15 +569,15 @@
     </nav>
 
     <!-- Disclaimer Banner -->
-    <div class="disclaimer-banner">
-        ⚠️ <strong>Educational Use Only</strong> — This tool is NOT intended for real dive planning. 
+    <div class="disclaimer-banner" data-i18n="sandbox.dive.disclaimerBanner">
+        ⚠️ <strong>Educational Use Only</strong> — This tool is NOT intended for real dive planning.
         Never use this for actual dives. Always use certified dive computers, tables, and proper training.
     </div>
 
     <!-- Hero Header -->
     <header class="hero hero-compact">
-        <h1>🎯 Dive Planner Sandbox</h1>
-        <p class="hero-subtitle">Design dive profiles and visualize decompression in real-time</p>
+        <h1 data-i18n="sandbox.dive.title">🎯 Dive Planner Sandbox</h1>
+        <p class="hero-subtitle" data-i18n="sandbox.dive.subtitle">Design dive profiles and visualize decompression in real-time</p>
     </header>
 
     <!-- Main Layout -->
@@ -585,88 +585,88 @@
         <!-- Left Panel: Editor -->
         <div class="sandbox-editor-panel" id="editor-panel">
             <div class="editor-header">
-                <h2>⚙️ <span>Dive Setup</span></h2>
+                <h2>⚙️ <span data-i18n="sandbox.dive.setupHeading">Dive Setup</span></h2>
                 <button class="collapse-btn" id="collapse-btn" title="Collapse/Expand">◀</button>
             </div>
             <div class="editor-content">
                 <!-- Profile Library -->
                 <div class="profile-library">
-                    <h3>📚 Saved Profiles</h3>
+                    <h3 data-i18n="sandbox.dive.profilesLibrary">📚 Saved Profiles</h3>
                     <div class="profile-chips" id="profile-chips">
                         <!-- Populated by JavaScript -->
                     </div>
                     <div class="save-profile-row">
-                        <input type="text" id="save-profile-name" placeholder="Profile name...">
-                        <button id="save-profile-btn" class="btn btn-secondary btn-small">💾 Save</button>
+                        <input type="text" id="save-profile-name" placeholder="Profile name..." data-i18n-placeholder="sandbox.dive.saveProfileNamePlaceholder">
+                        <button id="save-profile-btn" class="btn btn-secondary btn-small" data-i18n="sandbox.dive.saveProfile">💾 Save</button>
                     </div>
                 </div>
-                
+
                 <!-- Dive Setup Editor -->
                 <div id="editor-container"></div>
             </div>
         </div>
-        
+
         <!-- Right Panel: Charts -->
         <div class="sandbox-charts-panel">
             <!-- Dive Profile Chart -->
             <div class="sandbox-chart-container">
-                <h3>📊 Dive Profile</h3>
+                <h3 data-i18n="sandbox.dive.profileChart">📊 Dive Profile</h3>
                 <div class="chart-controls">
-                    <button id="dpc-depth" class="btn btn-small btn-secondary active">Profile</button>
-                    <button id="dpc-pressure" class="btn btn-small btn-secondary">Pressure</button>
-                    <button id="dpc-gas" class="btn btn-small btn-secondary">Gas Consumption</button>
-                    <button id="dpc-pp" class="btn btn-small btn-secondary">Partial Pressure</button>
-                    <button id="dpc-tissue" class="btn btn-small btn-secondary">Tissue Loading</button>
+                    <button id="dpc-depth" class="btn btn-small btn-secondary active" data-i18n="sandbox.dive.chartMode.profile">Profile</button>
+                    <button id="dpc-pressure" class="btn btn-small btn-secondary" data-i18n="sandbox.dive.chartMode.pressure">Pressure</button>
+                    <button id="dpc-gas" class="btn btn-small btn-secondary" data-i18n="sandbox.dive.chartMode.gas">Gas Consumption</button>
+                    <button id="dpc-pp" class="btn btn-small btn-secondary" data-i18n="sandbox.dive.chartMode.partialPressure">Partial Pressure</button>
+                    <button id="dpc-tissue" class="btn btn-small btn-secondary" data-i18n="sandbox.dive.chartMode.tissue">Tissue Loading</button>
                 </div>
-                
+
                 <!-- Chart Properties Panel (Advanced) -->
                 <div class="chart-properties-panel" id="chart-properties-panel">
                     <div class="chart-properties-header" id="chart-properties-toggle">
-                        <span>🎛️ Chart Options (Advanced)</span>
+                        <span data-i18n="sandbox.dive.chartOptions">🎛️ Chart Options (Advanced)</span>
                         <span class="chart-properties-toggle">▼</span>
                     </div>
                     <div class="chart-properties-body">
                         <div class="chart-prop-group">
-                            <div class="chart-prop-group-label">Display Layers</div>
+                            <div class="chart-prop-group-label" data-i18n="sandbox.dive.displayLayers">Display Layers</div>
                             <div class="chart-prop-row">
-                                <label><input type="checkbox" id="opt-showCeiling" checked> Show Ceiling</label>
+                                <label><input type="checkbox" id="opt-showCeiling" checked> <span data-i18n="sandbox.dive.options.showCeiling">Show Ceiling</span></label>
                             </div>
                             <div class="chart-prop-row">
-                                <label><input type="checkbox" id="opt-showAmbientPressure"> Show Ambient Pressure</label>
+                                <label><input type="checkbox" id="opt-showAmbientPressure"> <span data-i18n="sandbox.dive.options.showAmbient">Show Ambient Pressure</span></label>
                             </div>
                             <div class="chart-prop-row">
-                                <label><input type="checkbox" id="opt-showPartialPressures"> Show Partial Pressures (ppO₂/ppN₂)</label>
+                                <label><input type="checkbox" id="opt-showPartialPressures"> <span data-i18n="sandbox.dive.options.showPartialPressures">Show Partial Pressures (ppO₂/ppN₂)</span></label>
                             </div>
                             <div class="chart-prop-row">
-                                <label><input type="checkbox" id="opt-showTissueLoading"> Show Tissue Loading</label>
+                                <label><input type="checkbox" id="opt-showTissueLoading"> <span data-i18n="sandbox.dive.options.showTissueLoading">Show Tissue Loading</span></label>
                             </div>
                             <div class="chart-prop-row">
-                                <label><input type="checkbox" id="opt-showGasConsumption"> Show Gas Consumption</label>
+                                <label><input type="checkbox" id="opt-showGasConsumption"> <span data-i18n="sandbox.dive.options.showGasConsumption">Show Gas Consumption</span></label>
                             </div>
                         </div>
                         <div class="chart-prop-group">
-                            <div class="chart-prop-group-label">Annotations</div>
+                            <div class="chart-prop-group-label" data-i18n="sandbox.dive.annotations">Annotations</div>
                             <div class="chart-prop-row">
-                                <label><input type="checkbox" id="opt-showGasSwitches" checked> Show Gas Switches</label>
+                                <label><input type="checkbox" id="opt-showGasSwitches" checked> <span data-i18n="sandbox.dive.options.showGasSwitches">Show Gas Switches</span></label>
                             </div>
                             <div class="chart-prop-row">
-                                <label><input type="checkbox" id="opt-showLabels" checked> Show Labels</label>
+                                <label><input type="checkbox" id="opt-showLabels" checked> <span data-i18n="sandbox.dive.options.showLabels">Show Labels</span></label>
                             </div>
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Export Config -->
                 <div class="export-config-panel">
                     <div class="export-config-actions">
-                        <button id="export-config-btn" class="btn btn-small btn-secondary">📋 Export Config</button>
-                        <button id="screenshot-profile-btn" class="btn btn-small btn-secondary" title="Copy chart as image">📷 Screenshot</button>
-                        <span class="copy-success" id="copy-success">✓ Copied!</span>
+                        <button id="export-config-btn" class="btn btn-small btn-secondary" data-i18n="sandbox.dive.exportConfig">📋 Export Config</button>
+                        <button id="screenshot-profile-btn" class="btn btn-small btn-secondary" title="Copy chart as image" data-i18n="sandbox.dive.screenshot">📷 Screenshot</button>
+                        <span class="copy-success" id="copy-success" data-i18n="sandbox.dive.copied">✓ Copied!</span>
                     </div>
                 </div>
-                
+
                 <div class="chart-wrapper" id="dive-profile-container" style="height: 600px;"></div>
-                
+
                 <!-- Dive Warnings & Info Panel -->
                 <div class="dive-info-panel" id="dive-info-panel">
                     <div class="dive-warnings" id="dive-warnings">
@@ -677,15 +677,15 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Pressure-Pressure Diagram -->
             <div class="sandbox-chart-container">
-                <h3>📐 Pressure-Pressure Diagram</h3>
+                <h3 data-i18n="sandbox.dive.mValueChart">📐 Pressure-Pressure Diagram</h3>
                 <div class="export-config-panel">
                     <div class="export-config-actions">
-                        <button id="export-mvalue-config-btn" class="btn btn-small btn-secondary">📋 Export Config</button>
-                        <button id="screenshot-mvalue-btn" class="btn btn-small btn-secondary" title="Copy chart as image">📷 Screenshot</button>
-                        <label style="font-size: 0.8rem; display: inline-flex; align-items: center; gap: 3px; margin-left: 8px;"><input type="checkbox" id="opt-showAlveolarLine"> Alveolar pN₂</label>
+                        <button id="export-mvalue-config-btn" class="btn btn-small btn-secondary" data-i18n="sandbox.dive.exportConfig">📋 Export Config</button>
+                        <button id="screenshot-mvalue-btn" class="btn btn-small btn-secondary" title="Copy chart as image" data-i18n="sandbox.dive.screenshot">📷 Screenshot</button>
+                        <label style="font-size: 0.8rem; display: inline-flex; align-items: center; gap: 3px; margin-left: 8px;"><input type="checkbox" id="opt-showAlveolarLine"> <span data-i18n="sandbox.dive.options.alveolarPn2">Alveolar pN₂</span></label>
                     </div>
                 </div>
                 <div class="chart-wrapper" id="mvalue-container" style="height: 700px;"></div>
@@ -693,7 +693,7 @@
 
             <!-- GF% Diagram -->
             <div class="sandbox-chart-container">
-                <h3>📊 GF% Diagram</h3>
+                <h3 data-i18n="sandbox.dive.gfChart">📊 GF% Diagram</h3>
                 <details class="solution-reveal chart-formula">
                     <summary data-i18n="gfChart.formulaSummary">📐 Show the GF% formula</summary>
                     <p data-i18n="gfChart.formulaIntro">Instantaneous Gradient Factor for a tissue at ambient pressure P<sub>amb</sub>:</p>
@@ -717,8 +717,8 @@
                 </details>
                 <div class="export-config-panel">
                     <div class="export-config-actions">
-                        <button id="copy-debug-btn" class="btn btn-small btn-secondary" title="Copy diagnostic data as JSON">🔍 Copy Debug Data</button>
-                        <button id="screenshot-gf-btn" class="btn btn-small btn-secondary" title="Copy chart as image">📷 Screenshot</button>
+                        <button id="copy-debug-btn" class="btn btn-small btn-secondary" title="Copy diagnostic data as JSON" data-i18n="sandbox.dive.copyDebug">🔍 Copy Debug Data</button>
+                        <button id="screenshot-gf-btn" class="btn btn-small btn-secondary" title="Copy chart as image" data-i18n="sandbox.dive.screenshot">📷 Screenshot</button>
                     </div>
                 </div>
                 <div class="chart-wrapper" id="gf-chart-container" style="height: 700px;"></div>
@@ -726,15 +726,15 @@
 
             <!-- Status -->
             <div class="sandbox-status">
-                <span id="status-text">Ready</span>
+                <span id="status-text" data-i18n="sandbox.dive.status.ready">Ready</span>
                 <span id="last-update">--</span>
             </div>
         </div>
     </div>
 
     <footer>
-        <span class="wip-badge">Experimental</span>
-        <p>
+        <span class="wip-badge" data-i18n="common.wipBadge">Experimental</span>
+        <p data-i18n="sandbox.dive.footerDisclaimer">
             <strong>Disclaimer:</strong> This is an educational tool only. Do not use for actual dive planning.
         </p>
         <span class="version-number"></span>
@@ -762,7 +762,16 @@
         import { COMPARTMENTS } from '../js/tissueCompartments.js';
         import { getProfileFromUrl, updateUrlWithProfile, getChartModeFromUrl } from '../js/urlParams.js';
         import { computeGasConsumption } from '../js/diveSetup.js';
-        
+        import { translate } from '../js/i18n.js';
+
+        /** Helper: replace {0}, {1}, ... placeholders with the given values. */
+        function fmt(str, ...values) {
+            return String(str).replace(/\{(\d+)\}/g, (_, i) => {
+                const v = values[Number(i)];
+                return v === undefined ? '' : String(v);
+            });
+        }
+
         // =====================================================================
         // DIVE ANALYSIS - Warnings, Gas Consumption, Safety Checks
         // =====================================================================
@@ -883,54 +892,75 @@
                 warnings.push({
                     type: 'critical',
                     icon: '⚠️',
-                    message: `CNS toxicity risk: ppO₂ = ${maxPpO2Bottom.toFixed(2)} bar at ${maxPpO2BottomDepth.toFixed(0)}m during bottom (max 1.6)`
+                    message: fmt(
+                        translate('warnings.cnsToxicityBottom', 'CNS toxicity risk: ppO₂ = {0} bar at {1}m during bottom (max 1.6)'),
+                        maxPpO2Bottom.toFixed(2), maxPpO2BottomDepth.toFixed(0)
+                    )
                 });
             } else if (maxPpO2Bottom > 1.4) {
                 warnings.push({
                     type: 'warning',
                     icon: '⚡',
-                    message: `High ppO₂: ${maxPpO2Bottom.toFixed(2)} bar at ${maxPpO2BottomDepth.toFixed(0)}m during bottom (limit 1.4 for working dives)`
+                    message: fmt(
+                        translate('warnings.highPpO2Bottom', 'High ppO₂: {0} bar at {1}m during bottom (limit 1.4 for working dives)'),
+                        maxPpO2Bottom.toFixed(2), maxPpO2BottomDepth.toFixed(0)
+                    )
                 });
             }
-            
+
             // Check deco phase (limit 1.6)
             if (maxPpO2Deco > 1.6) {
                 warnings.push({
                     type: 'critical',
                     icon: '⚠️',
-                    message: `CNS toxicity risk: ppO₂ = ${maxPpO2Deco.toFixed(2)} bar at ${maxPpO2DecoDepth.toFixed(0)}m during deco (max 1.6)`
+                    message: fmt(
+                        translate('warnings.cnsToxicityDeco', 'CNS toxicity risk: ppO₂ = {0} bar at {1}m during deco (max 1.6)'),
+                        maxPpO2Deco.toFixed(2), maxPpO2DecoDepth.toFixed(0)
+                    )
                 });
             }
-            
+
             if (minPpO2 < 0.16) {
                 warnings.push({
                     type: 'critical',
                     icon: '💨',
-                    message: `Hypoxia risk: ppO₂ = ${minPpO2.toFixed(2)} bar (min 0.16)`
+                    message: fmt(
+                        translate('warnings.hypoxiaRisk', 'Hypoxia risk: ppO₂ = {0} bar (min 0.16)'),
+                        minPpO2.toFixed(2)
+                    )
                 });
             }
-            
+
             // ===== ppN2 Warnings (Narcosis) =====
             if (maxPpN2 > 4.0) {
                 warnings.push({
                     type: 'warning',
                     icon: '🍺',
-                    message: `Narcosis warning: ppN₂ = ${maxPpN2.toFixed(2)} bar at ${maxPpN2Depth.toFixed(0)}m (equivalent to ${((maxPpN2 - 0.79) / 0.079).toFixed(0)}m on air)`
+                    message: fmt(
+                        translate('warnings.narcosisWarning', 'Narcosis warning: ppN₂ = {0} bar at {1}m (equivalent to {2}m on air)'),
+                        maxPpN2.toFixed(2), maxPpN2Depth.toFixed(0), ((maxPpN2 - 0.79) / 0.079).toFixed(0)
+                    )
                 });
             } else if (maxPpN2 > 3.2) {
                 warnings.push({
                     type: 'info',
                     icon: '🍻',
-                    message: `Mild narcosis possible: ppN₂ = ${maxPpN2.toFixed(2)} bar at ${maxPpN2Depth.toFixed(0)}m`
+                    message: fmt(
+                        translate('warnings.mildNarcosis', 'Mild narcosis possible: ppN₂ = {0} bar at {1}m'),
+                        maxPpN2.toFixed(2), maxPpN2Depth.toFixed(0)
+                    )
                 });
             }
-            
+
             // ===== Ceiling Violations =====
             if (ceilingViolationCount > 0) {
                 warnings.push({
                     type: 'critical',
                     icon: '🚫',
-                    message: `Ceiling violation: Surfaced ${maxCeilingViolation.toFixed(1)}m above ceiling (${ceilingViolationCount} data points)`
+                    message: fmt(
+                        translate('warnings.ceilingViolation', 'Ceiling violation: Surfaced {0}m above ceiling ({1} data points)'),
+                        maxCeilingViolation.toFixed(1), ceilingViolationCount
+                    )
                 });
             }
             
@@ -966,29 +996,38 @@
                     warnings.push({
                         type: 'critical',
                         icon: '🫁',
-                        message: `Out of gas: ${tank.name} runs out during dive (need ${Math.round(tank.consumed)}L, have ${Math.round(totalLiters)}L)`
+                        message: fmt(
+                            translate('warnings.outOfGas', 'Out of gas: {0} runs out during dive (need {1}L, have {2}L)'),
+                            tank.name, Math.round(tank.consumed), Math.round(totalLiters)
+                        )
                     });
                 } else if (tank.endPressure < reservePressure) {
                     warnings.push({
                         type: 'critical',
                         icon: '⛽',
-                        message: `Below reserve: ${tank.name} ends at ${Math.round(tank.endPressure)} bar (reserve: ${reservePressure} bar)`
+                        message: fmt(
+                            translate('warnings.belowReserve', 'Below reserve: {0} ends at {1} bar (reserve: {2} bar)'),
+                            tank.name, Math.round(tank.endPressure), reservePressure
+                        )
                     });
                 } else if (tank.endPressure < reservePressure * 1.3) {
                     warnings.push({
                         type: 'warning',
                         icon: '📉',
-                        message: `Low gas margin: ${tank.name} ends at ${Math.round(tank.endPressure)} bar (close to ${reservePressure} bar reserve)`
+                        message: fmt(
+                            translate('warnings.lowGasMargin', 'Low gas margin: {0} ends at {1} bar (close to {2} bar reserve)'),
+                            tank.name, Math.round(tank.endPressure), reservePressure
+                        )
                     });
                 }
             });
-            
+
             // ===== Success message if no warnings =====
             if (warnings.length === 0) {
                 warnings.push({
                     type: 'success',
                     icon: '✅',
-                    message: 'Dive plan looks good! All parameters within safe limits.'
+                    message: translate('warnings.divePlanGood', 'Dive plan looks good! All parameters within safe limits.')
                 });
             }
             
@@ -1020,22 +1059,25 @@
                 const status = tank.endPressure < 0 ? 'critical' :
                                tank.endPressure < reservePressure ? 'critical' :
                                tank.endPressure < reservePressure * 1.3 ? 'warning' : 'ok';
+                const usedText = fmt(translate('gasSummary.used', '({0}L used)'), tank.consumed);
                 return `
                     <div class="gas-tank-row">
                         <span class="gas-tank-name">${tank.name}</span>
                         <span class="gas-tank-stats">
                             <span>${tank.startPressure} → <span class="${status}">${tank.endPressure} bar</span></span>
-                            <span>(${tank.consumed}L used)</span>
+                            <span>${usedText}</span>
                         </span>
                     </div>
                 `;
             }).join('');
-            
+
+            const heading = translate('gasSummary.heading', '⛽ Gas Summary');
+            const totalLabel = fmt(translate('gasSummary.total', 'Total: {0}L consumed'), Math.round(gasSummary.totalConsumed));
             container.innerHTML = `
-                <h4>⛽ Gas Summary</h4>
+                <h4>${heading}</h4>
                 ${tankRows}
                 <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">
-                    Total: ${Math.round(gasSummary.totalConsumed)}L consumed
+                    ${totalLabel}
                 </div>
             `;
         }
@@ -1225,6 +1267,8 @@
             const { warnings, gasSummary } = analyzeDive(diveSetup);
             renderWarnings(diveWarningsContainer, warnings);
             renderGasSummary(diveGasSummaryContainer, gasSummary, diveSetup.reservePressure || 50);
+            // Remember last setup so we can re-render warnings on language change.
+            window._sandboxLastDiveSetup = diveSetup;
             
             // Save to localStorage
             saveCurrentProfile(diveSetup);
@@ -1279,7 +1323,8 @@
             });
             
             if (profiles.length === 0) {
-                profileChips.innerHTML = '<span style="color: var(--text-muted); font-size: 0.85rem;">No saved profiles</span>';
+                const label = translate('gasSummary.noProfiles', 'No saved profiles');
+                profileChips.innerHTML = `<span style="color: var(--text-muted); font-size: 0.85rem;">${label}</span>`;
             }
         }
         
@@ -1915,6 +1960,17 @@ const chart = new DiveProfileChart(
         const initialAnalysis = analyzeDive(initialSetup);
         renderWarnings(diveWarningsContainer, initialAnalysis.warnings);
         renderGasSummary(diveGasSummaryContainer, initialAnalysis.gasSummary, initialSetup.reservePressure || 50);
+        window._sandboxLastDiveSetup = initialSetup;
+
+        // Re-render warnings and gas summary when the user switches language.
+        // (The chart components wire their own languagechange listeners internally.)
+        document.addEventListener('languagechange', () => {
+            const setup = window._sandboxLastDiveSetup;
+            if (!setup) return;
+            const a = analyzeDive(setup);
+            renderWarnings(diveWarningsContainer, a.warnings);
+            renderGasSummary(diveGasSummaryContainer, a.gasSummary, setup.reservePressure || 50);
+        });
         
         // =====================================================================
         // COLLAPSE FUNCTIONALITY
@@ -1965,5 +2021,12 @@ const chart = new DiveProfileChart(
     
     <!-- Shared Navigation -->
     <script src="../js/nav.js" type="module"></script>
+
+    <!-- i18n -->
+    <script type="module">
+        import { initI18n, createLanguageSwitcher } from '../js/i18n.js';
+        createLanguageSwitcher();
+        initI18n();
+    </script>
 </body>
 </html>

@@ -24,6 +24,15 @@ import {
 } from '../decoModel.js';
 import { COMPARTMENTS } from '../tissueCompartments.js';
 import { PREDEFINED_GASES } from '../diveSetup.js';
+import { translate } from '../i18n.js';
+
+/** Helper: replace {0}, {1}, ... placeholders with the given values. */
+function fmt(str, ...values) {
+    return String(str).replace(/\{(\d+)\}/g, (_, i) => {
+        const v = values[Number(i)];
+        return v === undefined ? '' : String(v);
+    });
+}
 
 const TICK_MS = 100;
 const MIN_PER_TICK_AT_1X = 0.1;         // 100 ms tick × 1× = 0.1 sim-min
@@ -48,6 +57,27 @@ export class TissueSaturationSim {
         this._wireControls();
         this._renderAll();
         this._startLoop();
+
+        // Re-render alerts and retranslate chart labels on language change.
+        this._onLanguageChange = () => {
+            const ds = this.chart && this.chart.data && this.chart.data.datasets;
+            if (ds) {
+                ds[0].label = translate('tissueSim.chartLabels.pAmb', 'pAmb (ambient)');
+                ds[1].label = translate('tissueSim.chartLabels.pN2Alveolar', 'pN₂ alveolar');
+                ds[2].label = translate('tissueSim.chartLabels.tcFast', 'TC1 fast (5 min)');
+                ds[3].label = translate('tissueSim.chartLabels.tcMed', 'TC5 medium (27 min)');
+                ds[4].label = translate('tissueSim.chartLabels.tcSlow', 'TC12 slow (239 min)');
+            }
+            if (this.chart && this.chart.options && this.chart.options.scales) {
+                const s = this.chart.options.scales;
+                if (s.x && s.x.title) s.x.title.text = translate('chart.axes.timeMin', 'Time (min)');
+                if (s.y && s.y.title) s.y.title.text = translate('chart.axes.pressureBar', 'Pressure (bar)');
+                if (s.yDepth && s.yDepth.title) s.yDepth.title.text = translate('chart.axes.depthEquivalent', 'Depth equivalent (m)');
+            }
+            this._renderAlerts();
+            if (this.chart) this.chart.update('none');
+        };
+        document.addEventListener('languagechange', this._onLanguageChange);
     }
 
     _collectDom() {
@@ -290,21 +320,30 @@ export class TissueSaturationSim {
         const alerts = [];
         if (pO2 > PPO2_DECO_LIMIT) {
             alerts.push({ level: 'critical',
-                text: `pO₂ ${pO2.toFixed(2)} bar — oxygen toxicity (deco limit ${PPO2_DECO_LIMIT})` });
+                text: fmt(translate('tissueSim.ppO2OxygenToxicity',
+                    'pO₂ {0} bar — oxygen toxicity (deco limit {1})'),
+                    pO2.toFixed(2), PPO2_DECO_LIMIT) });
         } else if (pO2 > PPO2_REC_LIMIT) {
             alerts.push({ level: 'warn',
-                text: `pO₂ ${pO2.toFixed(2)} bar — above recreational limit ${PPO2_REC_LIMIT}` });
+                text: fmt(translate('tissueSim.ppO2AboveRec',
+                    'pO₂ {0} bar — above recreational limit {1}'),
+                    pO2.toFixed(2), PPO2_REC_LIMIT) });
         }
         if (pO2 < PPO2_HYPOXIA) {
             alerts.push({ level: 'critical',
-                text: `pO₂ ${pO2.toFixed(2)} bar — hypoxic (< ${PPO2_HYPOXIA})` });
+                text: fmt(translate('tissueSim.ppO2Hypoxic',
+                    'pO₂ {0} bar — hypoxic (< {1})'),
+                    pO2.toFixed(2), PPO2_HYPOXIA) });
         }
         if (pN2Insp > PPN2_NARCOSIS) {
             alerts.push({ level: 'warn',
-                text: `pN₂ ${pN2Insp.toFixed(2)} bar — nitrogen narcosis likely (> ${PPN2_NARCOSIS})` });
+                text: fmt(translate('tissueSim.ppN2Narcosis',
+                    'pN₂ {0} bar — nitrogen narcosis likely (> {1})'),
+                    pN2Insp.toFixed(2), PPN2_NARCOSIS) });
         }
+        const okText = translate('tissueSim.alertOk', 'All clear');
         this.alertsEl.innerHTML = alerts.length === 0
-            ? '<div class="tsim-alert tsim-alert-ok">All clear</div>'
+            ? `<div class="tsim-alert tsim-alert-ok">${okText}</div>`
             : alerts.map(a => `<div class="tsim-alert tsim-alert-${a.level}">${a.text}</div>`).join('');
     }
 
@@ -327,14 +366,14 @@ export class TissueSaturationSim {
             data: {
                 datasets: [
                     // pAmb drawn first so fill sits under the other curves.
-                    { label: 'pAmb (ambient)', data: [], borderColor: 'rgba(127,140,141,0.8)',
+                    { label: translate('tissueSim.chartLabels.pAmb', 'pAmb (ambient)'), data: [], borderColor: 'rgba(127,140,141,0.8)',
                       backgroundColor: 'rgba(127,140,141,0.15)',
                       borderWidth: 2, pointRadius: 0, yAxisID: 'y', fill: true, tension: 0 },
-                    { label: 'pN₂ alveolar',  data: [], borderColor: '#2c3e50',
+                    { label: translate('tissueSim.chartLabels.pN2Alveolar', 'pN₂ alveolar'),  data: [], borderColor: '#2c3e50',
                       borderDash: [6,4], borderWidth: 1.5, pointRadius: 0, yAxisID: 'y' },
-                    { label: 'TC1 fast (5 min)',     data: [], borderColor: colFast, borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' },
-                    { label: 'TC5 medium (27 min)',  data: [], borderColor: colMed,  borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' },
-                    { label: 'TC12 slow (239 min)',  data: [], borderColor: colSlow, borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' }
+                    { label: translate('tissueSim.chartLabels.tcFast', 'TC1 fast (5 min)'),     data: [], borderColor: colFast, borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' },
+                    { label: translate('tissueSim.chartLabels.tcMed', 'TC5 medium (27 min)'),  data: [], borderColor: colMed,  borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' },
+                    { label: translate('tissueSim.chartLabels.tcSlow', 'TC12 slow (239 min)'),  data: [], borderColor: colSlow, borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' }
                 ]
             },
             options: {
@@ -344,7 +383,7 @@ export class TissueSaturationSim {
                 animation: false,
                 scales: {
                     x: { type: 'linear',
-                         title: { display: true, text: 'Time (min)' },
+                         title: { display: true, text: translate('chart.axes.timeMin', 'Time (min)') },
                          ticks: { maxTicksLimit: 10 } },
                     y: { type: 'linear', position: 'left',
                          // Fixed range so tissue movement is always in context
@@ -353,14 +392,14 @@ export class TissueSaturationSim {
                          // slider range and covers typical recreational /
                          // early-tech profiles comfortably.
                          min: 0, max: 5,
-                         title: { display: true, text: 'Pressure (bar)' } },
+                         title: { display: true, text: translate('chart.axes.pressureBar', 'Pressure (bar)') } },
                     // Companion right-side axis: reads the SAME pressure
                     // values, but tick labels are rewritten as equivalent
                     // depth (m). Because it's the same scale, "surface"
                     // (pAmb = 1, depth = 0) aligns on both sides.
                     yDepth: { type: 'linear', position: 'right',
                               min: 0, max: 5,
-                              title: { display: true, text: 'Depth equivalent (m)' },
+                              title: { display: true, text: translate('chart.axes.depthEquivalent', 'Depth equivalent (m)') },
                               grid: { drawOnChartArea: false },
                               ticks: {
                                   stepSize: 1,
@@ -381,7 +420,10 @@ export class TissueSaturationSim {
                     tooltip: {
                         enabled: true,
                         callbacks: {
-                            label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(2)} bar`
+                            label: (ctx) => fmt(
+                                translate('tissueSim.tooltipLabel', '{0}: {1} bar'),
+                                ctx.dataset.label, ctx.parsed.y.toFixed(2)
+                            )
                         }
                     }
                 }
@@ -407,6 +449,7 @@ export class TissueSaturationSim {
     destroy() {
         if (this.tickHandle) clearInterval(this.tickHandle);
         if (this._onKey) window.removeEventListener('keydown', this._onKey);
+        if (this._onLanguageChange) document.removeEventListener('languagechange', this._onLanguageChange);
         if (this.chart) this.chart.destroy();
     }
 }

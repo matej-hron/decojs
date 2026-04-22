@@ -340,42 +340,42 @@
     </nav>
 
     <!-- Disclaimer Banner -->
-    <div class="disclaimer-banner">
+    <div class="disclaimer-banner" data-i18n="sandbox.transfill.disclaimerBanner">
         <strong>Educational Use Only</strong> — This tool demonstrates Boyle's Law for connected cylinders.
     </div>
 
     <!-- Hero Header -->
     <header class="hero hero-compact">
-        <h1>Cylinder Transfilling</h1>
-        <p class="hero-subtitle">Simulate pressure equalization between two connected cylinders</p>
+        <h1 data-i18n="sandbox.transfill.title">Cylinder Transfilling</h1>
+        <p class="hero-subtitle" data-i18n="sandbox.transfill.subtitle">Simulate pressure equalization between two connected cylinders</p>
     </header>
 
     <!-- Main Layout -->
     <div class="transfilling-layout">
         <!-- Left Panel: Controls -->
         <div class="controls-panel">
-            <h2>Cylinder Setup</h2>
+            <h2 data-i18n="sandbox.transfill.setupHeading">Cylinder Setup</h2>
 
             <div class="cylinder-input">
-                <h3>Cylinder A (Source)</h3>
+                <h3 data-i18n="sandbox.transfill.cylinderA">Cylinder A (Source)</h3>
                 <div class="input-group">
-                    <label>Volume</label>
+                    <label data-i18n="sandbox.transfill.labels.volume">Volume</label>
                     <select id="volumeA">
-                        <option value="3">3 L (Pony)</option>
-                        <option value="5.5">5.5 L (AL40)</option>
-                        <option value="7">7 L (AL50)</option>
-                        <option value="10">10 L (Single)</option>
-                        <option value="11">11 L (AL80)</option>
-                        <option value="12" selected>12 L (Single)</option>
-                        <option value="15">15 L (Single)</option>
-                        <option value="18">18 L (Single)</option>
-                        <option value="14">2x7 L (Doubles)</option>
-                        <option value="20">2x10 L (Doubles)</option>
-                        <option value="24">2x12 L (Doubles)</option>
+                        <option value="3" data-i18n="sandbox.transfill.volumes.pony">3 L (Pony)</option>
+                        <option value="5.5" data-i18n="sandbox.transfill.volumes.al40">5.5 L (AL40)</option>
+                        <option value="7" data-i18n="sandbox.transfill.volumes.al50">7 L (AL50)</option>
+                        <option value="10" data-i18n="sandbox.transfill.volumes.single10">10 L (Single)</option>
+                        <option value="11" data-i18n="sandbox.transfill.volumes.al80">11 L (AL80)</option>
+                        <option value="12" selected data-i18n="sandbox.transfill.volumes.single12">12 L (Single)</option>
+                        <option value="15" data-i18n="sandbox.transfill.volumes.single15">15 L (Single)</option>
+                        <option value="18" data-i18n="sandbox.transfill.volumes.single18">18 L (Single)</option>
+                        <option value="14" data-i18n="sandbox.transfill.volumes.doubles7">2x7 L (Doubles)</option>
+                        <option value="20" data-i18n="sandbox.transfill.volumes.doubles10">2x10 L (Doubles)</option>
+                        <option value="24" data-i18n="sandbox.transfill.volumes.doubles12">2x12 L (Doubles)</option>
                     </select>
                 </div>
                 <div class="input-group">
-                    <label>Pressure (bar)</label>
+                    <label data-i18n="sandbox.transfill.labels.pressure">Pressure (bar)</label>
                     <div class="input-row">
                         <input type="range" id="pressureASlider" min="0" max="300" value="200">
                         <input type="number" id="pressureA" min="0" max="300" value="200">
@@ -384,25 +384,25 @@
             </div>
 
             <div class="cylinder-input">
-                <h3>Cylinder B (Receiving)</h3>
+                <h3 data-i18n="sandbox.transfill.cylinderB">Cylinder B (Receiving)</h3>
                 <div class="input-group">
-                    <label>Volume</label>
+                    <label data-i18n="sandbox.transfill.labels.volume">Volume</label>
                     <select id="volumeB">
-                        <option value="3">3 L (Pony)</option>
-                        <option value="5.5">5.5 L (AL40)</option>
-                        <option value="7" selected>7 L (AL50)</option>
-                        <option value="10">10 L (Single)</option>
-                        <option value="11">11 L (AL80)</option>
-                        <option value="12">12 L (Single)</option>
-                        <option value="15">15 L (Single)</option>
-                        <option value="18">18 L (Single)</option>
-                        <option value="14">2x7 L (Doubles)</option>
-                        <option value="20">2x10 L (Doubles)</option>
-                        <option value="24">2x12 L (Doubles)</option>
+                        <option value="3" data-i18n="sandbox.transfill.volumes.pony">3 L (Pony)</option>
+                        <option value="5.5" data-i18n="sandbox.transfill.volumes.al40">5.5 L (AL40)</option>
+                        <option value="7" selected data-i18n="sandbox.transfill.volumes.al50">7 L (AL50)</option>
+                        <option value="10" data-i18n="sandbox.transfill.volumes.single10">10 L (Single)</option>
+                        <option value="11" data-i18n="sandbox.transfill.volumes.al80">11 L (AL80)</option>
+                        <option value="12" data-i18n="sandbox.transfill.volumes.single12">12 L (Single)</option>
+                        <option value="15" data-i18n="sandbox.transfill.volumes.single15">15 L (Single)</option>
+                        <option value="18" data-i18n="sandbox.transfill.volumes.single18">18 L (Single)</option>
+                        <option value="14" data-i18n="sandbox.transfill.volumes.doubles7">2x7 L (Doubles)</option>
+                        <option value="20" data-i18n="sandbox.transfill.volumes.doubles10">2x10 L (Doubles)</option>
+                        <option value="24" data-i18n="sandbox.transfill.volumes.doubles12">2x12 L (Doubles)</option>
                     </select>
                 </div>
                 <div class="input-group">
-                    <label>Pressure (bar)</label>
+                    <label data-i18n="sandbox.transfill.labels.pressure">Pressure (bar)</label>
                     <div class="input-row">
                         <input type="range" id="pressureBSlider" min="0" max="300" value="50">
                         <input type="number" id="pressureB" min="0" max="300" value="50">
@@ -411,9 +411,9 @@
             </div>
 
             <button class="open-valves-btn" id="openValvesBtn">
-                <span>Open Valves</span>
+                <span data-i18n="sandbox.transfill.buttons.openValves">Open Valves</span>
             </button>
-            <button class="reset-btn" id="resetBtn">Reset</button>
+            <button class="reset-btn" id="resetBtn" data-i18n="sandbox.transfill.buttons.reset">Reset</button>
 
         </div>
 
@@ -421,7 +421,7 @@
         <div class="visualization-panel">
             <div class="cylinders-display">
                 <div class="cylinder-viz">
-                    <h4>Cylinder A</h4>
+                    <h4 data-i18n="sandbox.transfill.display.cylinderA">Cylinder A</h4>
                     <div class="cylinder-container">
                         <div class="cylinder-valve"></div>
                         <div class="cylinder-fill" id="fillA" style="height: 66.7%;"></div>
@@ -440,7 +440,7 @@
                 </div>
 
                 <div class="cylinder-viz">
-                    <h4>Cylinder B</h4>
+                    <h4 data-i18n="sandbox.transfill.display.cylinderB">Cylinder B</h4>
                     <div class="cylinder-container">
                         <div class="cylinder-valve"></div>
                         <div class="cylinder-fill" id="fillB" style="height: 16.7%;"></div>
@@ -454,7 +454,7 @@
             </div>
 
             <div class="result-section hidden" id="resultSection">
-                <h3>Equalization Complete</h3>
+                <h3 data-i18n="sandbox.transfill.resultTitle">Equalization Complete</h3>
                 <div class="result-value" id="finalPressure">144.7 bar</div>
                 <div class="result-detail" id="resultDetail">
                     Total gas: 2750 bar·L (conserved)
@@ -462,8 +462,8 @@
             </div>
 
             <div class="formula-section">
-                <h4>Boyle's Law</h4>
-                <div class="formula formula-general">
+                <h4 data-i18n="sandbox.transfill.formulaTitle">Boyle's Law</h4>
+                <div class="formula formula-general" data-i18n="sandbox.transfill.formula">
                     P<sub>final</sub> = (P<sub>A</sub> × V<sub>A</sub> + P<sub>B</sub> × V<sub>B</sub>) / (V<sub>A</sub> + V<sub>B</sub>)
                 </div>
                 <div class="formula formula-computed hidden" id="formulaComputed"></div>
@@ -473,13 +473,20 @@
 
     <!-- Footer -->
     <footer>
-        <span class="wip-badge">Experimental</span>
-        <p><strong>Disclaimer:</strong> For educational purposes only. Based on ideal gas law assumptions.</p>
+        <span class="wip-badge" data-i18n="common.wipBadge">Experimental</span>
+        <p data-i18n="sandbox.transfill.disclaimer"><strong>Disclaimer:</strong> For educational purposes only. Based on ideal gas law assumptions.</p>
         <span class="version-number"></span>
     </footer>
 
     <!-- Navigation script -->
     <script src="../js/nav.js" type="module"></script>
+
+    <!-- i18n -->
+    <script type="module">
+        import { initI18n, createLanguageSwitcher } from '../js/i18n.js';
+        createLanguageSwitcher();
+        initI18n();
+    </script>
 
     <script>
         // DOM Elements

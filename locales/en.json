@@ -354,8 +354,10 @@
             "henrysLaw": "Henry's Law",
             "gasExchange": "Gas Exchange Pathway",
             "saturationDynamics": "Saturation Dynamics",
+            "criticalSupersaturation": "Critical Supersaturation",
             "halfTimeConcept": "Half-Time Concept",
             "halfTimeCharts": "Half-Time Charts",
+            "halfTimeMath": "The Mathematics",
             "tissueTypes": "Tissue Types",
             "buhlmannCompartments": "Bühlmann Compartments",
             "zhl16Variants": "ZH-L16 Variants",
@@ -1004,6 +1006,578 @@
         "footer": {
             "badge": "Experimental",
             "text": "<strong>Disclaimer:</strong> For educational purposes only. Based on ideal gas law assumptions."
+        }
+    },
+    "common": {
+        "wipBadge": "Experimental"
+    },
+    "units": {
+        "min": "min",
+        "m": "m",
+        "bar": "bar",
+        "liters": "L",
+        "percent": "%",
+        "mPerMin": "m/min",
+        "lPerMin": "L/min"
+    },
+    "chart": {
+        "buttons": {
+            "all": "All",
+            "none": "None",
+            "fast": "Fast",
+            "slow": "Slow"
+        },
+        "hints": {
+            "compartments": "Click = select one · Shift+click = toggle · ←→ step · Space play · F fullscreen",
+            "arrowShiftArrow": "↑↓ move, Shift+↑↓ expand/shrink"
+        },
+        "tooltips": {
+            "fullscreen": "Toggle Fullscreen",
+            "exitFullscreen": "Exit Fullscreen (Esc)",
+            "resetZoom": "Reset Zoom (double-click chart)",
+            "jumpStart": "Jump to start (Home)",
+            "stepBack": "Step back (←)",
+            "playPause": "Play/Pause (Space)",
+            "stepForward": "Step forward (→)",
+            "jumpEnd": "Jump to end (End)"
+        },
+        "timeDisplay": "{0} min @ {1}m",
+        "axes": {
+            "timeMinutes": "Time (minutes)",
+            "timeMin": "Time (min)",
+            "depthMeters": "Depth (m)",
+            "pressureBar": "Pressure (bar)",
+            "tankPressureBar": "Tank Pressure (bar)",
+            "ambientPressureBar": "Ambient Pressure (bar)",
+            "tissueN2PressureBar": "Tissue N₂ Pressure (bar)",
+            "gfPercent": "GF (%)",
+            "depthEquivalent": "Depth equivalent (m)"
+        },
+        "profile": {
+            "datasetDepth": "Depth (m)",
+            "datasetCeiling": "Ceiling (m)",
+            "datasetAmbientPressure": "Ambient Pressure (bar)",
+            "datasetAlveolarPpN2": "Alveolar ppN₂ (bar)",
+            "datasetPpO2": "ppO₂ (bar)",
+            "datasetPpN2": "ppN₂ (bar)",
+            "datasetGasBar": "{0} (bar)",
+            "avg": "AVG: {0}m",
+            "max": "MAX: {0}m",
+            "tdt": "TDT: {0} min",
+            "bottomTime": "BOTTOM TIME: {0} min",
+            "reserve": "RESERVE: {0} bar",
+            "descentRate": "⬇ {0} m/min",
+            "ascentRate": "⬆ {0} m/min",
+            "decoStop": "DECO {0}m · {1}min",
+            "surfaceInterval": "SURFACE INTERVAL →",
+            "gasSwitchFrom": "{0} → {1} @ {2}m",
+            "gasSwitchTo": "→ {0} @ {1}m",
+            "ppO2Working": "ppO₂ 1.4 (bottom)",
+            "ppO2Deco": "ppO₂ 1.6 (deco)",
+            "ppN2Narcosis": "ppN₂ narcosis (4.0)",
+            "tooltipTime": "Time: {0} min",
+            "tooltipGas": "Gas: {0}",
+            "tooltipGasConsumption": "⛽ Gas consumption: {0} L/min ({1})",
+            "tooltipTankPressures": "─── Tank Pressures ───",
+            "tooltipTankEmpty": " ⚠️ EMPTY",
+            "tooltipTankLow": " ⚠️",
+            "tooltipTankRow": "  {0}: {1} bar{2}",
+            "tooltipLabelDepth": "{0}: {1} m",
+            "tooltipLabelPressure": "{0}: {1} bar",
+            "tooltipLabelValue": "{0}: {1}"
+        },
+        "mvalue": {
+            "tcLabel": "TC{0} ({1}min)",
+            "tcCeilingLabel": "TC{0} ceiling",
+            "mValueTC": "M-value TC{0}",
+            "gfLowTC": "GF Low ({0}%) TC{1}",
+            "gfHighTC": "GF High ({0}%) TC{1}",
+            "gfCorridorTC": "GF Corridor TC{0}",
+            "trailTC": "Trail TC{0}",
+            "ambientLine": "Ambient Line (y = x)",
+            "alveolarPN2": "Alveolar pN₂",
+            "alveolarPN2WithGases": "Alveolar pN₂ ({0})",
+            "alveolarPN2Percent": "Alveolar pN₂ ({0}%)",
+            "surfaceLine": "Surface (1 bar)",
+            "pAnchor": "pAnchor {0} bar ({1}m)",
+            "tooltipLabel": "{0}: P_amb={1}, P_tissue={2} bar",
+            "initialDepthLabel": "0.0 min @ 0m"
+        },
+        "gf": {
+            "mValue100": "M-value (100%)",
+            "gfCorridor": "GF corridor",
+            "leadingTissue": "Leading tissue",
+            "leadingTC": "Leading: TC{0} ({1}%)",
+            "pAnchor": "pAnchor {0} bar ({1}m)",
+            "tooltipLabel": "{0}: P_amb={1} bar, GF={2}%"
+        }
+    },
+    "warnings": {
+        "cnsToxicityBottom": "CNS toxicity risk: ppO₂ = {0} bar at {1}m during bottom (max 1.6)",
+        "highPpO2Bottom": "High ppO₂: {0} bar at {1}m during bottom (limit 1.4 for working dives)",
+        "cnsToxicityDeco": "CNS toxicity risk: ppO₂ = {0} bar at {1}m during deco (max 1.6)",
+        "hypoxiaRisk": "Hypoxia risk: ppO₂ = {0} bar (min 0.16)",
+        "narcosisWarning": "Narcosis warning: ppN₂ = {0} bar at {1}m (equivalent to {2}m on air)",
+        "mildNarcosis": "Mild narcosis possible: ppN₂ = {0} bar at {1}m",
+        "ceilingViolation": "Ceiling violation: Surfaced {0}m above ceiling ({1} data points)",
+        "outOfGas": "Out of gas: {0} runs out during dive (need {1}L, have {2}L)",
+        "belowReserve": "Below reserve: {0} ends at {1} bar (reserve: {2} bar)",
+        "lowGasMargin": "Low gas margin: {0} ends at {1} bar (close to {2} bar reserve)",
+        "divePlanGood": "Dive plan looks good! All parameters within safe limits."
+    },
+    "gasSummary": {
+        "heading": "⛽ Gas Summary",
+        "total": "Total: {0}L consumed",
+        "used": "({0}L used)",
+        "noProfiles": "No saved profiles"
+    },
+    "diveEditor": {
+        "ndl": {
+            "noLimit": "✅ No limit",
+            "remaining": "✅ {0}min remaining",
+            "atLimit": "⚠️ At limit",
+            "decoDive": "🔴 Deco dive",
+            "outOfRange": "⚠ out of range",
+            "infinity": "∞"
+        },
+        "mod": "MOD: {0}m (deco: {1}m)",
+        "profileDefault": "Profile:",
+        "customProfile": "✏️ Custom Profile",
+        "customProfileNamed": "✏️ {0}",
+        "separator": "──────────────"
+    },
+    "tissueSim": {
+        "alertOk": "All clear",
+        "ppO2OxygenToxicity": "pO₂ {0} bar — oxygen toxicity (deco limit {1})",
+        "ppO2AboveRec": "pO₂ {0} bar — above recreational limit {1}",
+        "ppO2Hypoxic": "pO₂ {0} bar — hypoxic (< {1})",
+        "ppN2Narcosis": "pN₂ {0} bar — nitrogen narcosis likely (> {1})",
+        "chartLabels": {
+            "pAmb": "pAmb (ambient)",
+            "pN2Alveolar": "pN₂ alveolar",
+            "tcFast": "TC1 fast (5 min)",
+            "tcMed": "TC5 medium (27 min)",
+            "tcSlow": "TC12 slow (239 min)"
+        },
+        "tooltipLabel": "{0}: {1} bar"
+    },
+    "nav": {
+        "home": "Home",
+        "sandbox": {
+            "label": "Sandbox",
+            "deco": "Decompression Modelling",
+            "tissue": "Tissue Saturation",
+            "transfill": "Cylinder Transfilling",
+            "cascade": "Cascade Filling",
+            "gasLaw": "Gas Law: Temp & Pressure"
+        },
+        "theory": {
+            "label": "Theory",
+            "pressure": "Pressure & Depth",
+            "tissue": "Tissue Loading",
+            "mValues": "M-Values",
+            "gf": "Gradient Factors"
+        },
+        "tests": {
+            "label": "Tests",
+            "physics": "Physics",
+            "anatomy": "Anatomy",
+            "accidents": "Accidents",
+            "safety": "Safety Guidelines",
+            "training": "Training Guidelines",
+            "equipment": "Equipment",
+            "vessel": "Vessel"
+        },
+        "about": "About"
+    },
+    "home": {
+        "hero": {
+            "title": "Understanding Decompression Theory",
+            "subtitle": "Interactive visualizations to help you understand how dissolved gases behave in your body during diving"
+        },
+        "quote": {
+            "text": "\"There is a false sense of security amongst recreational divers that decompression is a well understood science and that decompression illness can easily be avoided if you stick to your decompression tables.\"",
+            "context": "This is why we built these interactive lessons — to look beyond the tables and computers, and understand the science that powers them."
+        },
+        "topics": {
+            "heading": "Topics",
+            "sandbox": "Sandbox",
+            "sandboxDesc": "Interactive simulators for dive planning and gas calculations.",
+            "sandboxLinks": {
+                "deco": "Deco Modelling",
+                "transfill": "Transfilling",
+                "cascade": "Cascade Filling",
+                "gasLaw": "Gas Law"
+            },
+            "statusStart": "Start Here",
+            "pressure": "Pressure & Partial Pressure",
+            "pressureDesc": "Learn dive profile terminology and understand how ambient pressure changes with depth. Foundation for all decompression concepts.",
+            "statusAvailable": "Available",
+            "tissueLoading": "Tissue Loading & Saturation",
+            "tissueLoadingDesc": "Visualize how nitrogen dissolves into different tissue compartments during a dive and releases during ascent. Explore the Bühlmann ZH-L16 model.",
+            "mValues": "M-Values & Surfacing Limits",
+            "mValuesDesc": "Visualize maximum tolerated tissue pressures and how they define safe ascent limits for each compartment.",
+            "gradientFactors": "Gradient Factors",
+            "gradientFactorsDesc": "Explore how GF Low and GF High settings add conservatism to your decompression schedule.",
+            "multiGas": "Multi-Gas Diving",
+            "multiGasDesc": "See how switching to oxygen-rich gases during ascent accelerates decompression.",
+            "statusComingSoon": "Coming Soon",
+            "quizzes": "Knowledge Quizzes",
+            "quizzesDesc": "Test your understanding with official CMAS/SPČR exam-style questions.",
+            "quizLinks": {
+                "physics": "Physics",
+                "anatomy": "Anatomy",
+                "accidents": "Accidents",
+                "safety": "Safety",
+                "training": "Training",
+                "equipment": "Equipment",
+                "vessel": "Vessel"
+            },
+            "about": "About This Project",
+            "aboutDesc": "Who built DecoJS, the sources it draws on, and the disclaimers that apply.",
+            "statusRead": "Read",
+            "moreFuture": "More Topics",
+            "moreFutureDesc": "Additional educational content coming soon.",
+            "statusPlanned": "Planned"
+        },
+        "about": {
+            "heading": "About This Project",
+            "body1": "This is an educational resource for divers who want to understand the science behind their dive computers. All visualizations are based on the <strong>Bühlmann ZH-L16</strong> decompression model, one of the most widely used algorithms in recreational and technical diving.",
+            "disclaimerTitle": "Educational Use Only",
+            "disclaimer": "These tools are for learning purposes only. Never use them for actual dive planning. Always rely on properly certified dive computers and tables for real-world diving."
+        },
+        "footer": {
+            "disclaimer": "<strong>Educational Use Only</strong> — Not for dive planning.<br><a href=\"about.html\">Learn more about this project</a>"
+        }
+    },
+    "about": {
+        "title": "About This Project",
+        "subtitle": "An experimental learning tool for understanding decompression theory",
+        "wip": {
+            "title": "🚧&nbsp;Work&nbsp;in&nbsp;Progress",
+            "text": "This project is a <strong>work in progress</strong> and has not been reviewed by anyone yet. The content, calculations, and information presented here may contain errors or inaccuracies. Use at your own discretion."
+        },
+        "disclaimer": {
+            "title": "⚠️ Important Disclaimer",
+            "intro": "This project was created as a <strong>personal learning exercise</strong> by the author to better understand decompression theory and dive physics. It is an experimental, work-in-progress tool.",
+            "guarantees": "<strong>No guarantees:</strong> There is no guarantee that the information, calculations, or visualizations provided here are correct or complete.",
+            "notForDiving": "<strong>Not for dive planning:</strong> This tool must <em>never</em> be used for actual dive planning or any real diving situation. Always rely on certified dive computers, tables, and proper training.",
+            "educational": "<strong>Educational use:</strong> This project may be used for educational purposes by <a href=\"https://deepblue.cz\" target=\"_blank\" rel=\"noopener\">Deepblue diving club</a>."
+        },
+        "what": {
+            "title": "What Is This?",
+            "body": "This is an interactive educational resource for divers who want to understand the science behind their dive computers. All visualizations are based on the <strong>Bühlmann ZH-L16</strong> decompression model, one of the most widely used algorithms in recreational and technical diving.",
+            "goal": "The goal is to make abstract concepts like tissue saturation, half-times, and M-values more intuitive through hands-on exploration and visualization."
+        },
+        "algo": {
+            "title": "Algorithm Details",
+            "intro": "The decompression calculations use the <strong>Bühlmann ZH-L16</strong> algorithm with the following parameters and assumptions:",
+            "variants": {
+                "title": "Model Variants",
+                "a": "<strong>ZH-L16A:</strong> Original experimental values, TC1 half-time = 4.0 min",
+                "b": "<strong>ZH-L16B:</strong> Modified for printed tables, TC1 half-time = 5.0 min",
+                "c": "<strong>ZH-L16C:</strong> Modified for dive computers (default), TC1 half-time = 5.0 min"
+            },
+            "constants": {
+                "title": "Constants",
+                "surfacePressure": "Surface pressure: 1.0 bar",
+                "waterVapor": "Water vapor pressure: 0.0627 bar (47 mmHg at 37°C)",
+                "pressurePer10m": "Pressure per 10m depth: 1.0 bar (saltwater)",
+                "descentRate": "Descent rate: 20 m/min",
+                "ascentRate": "Ascent rate: 10 m/min",
+                "stopIncrement": "Deco stop increment: 3 m"
+            },
+            "gf": {
+                "title": "Gradient Factors",
+                "intro": "Gradient factors use the <strong>Baker pAnchor method</strong>:",
+                "item1": "GF Low applies at the pAnchor depth (first stop)",
+                "item2": "Linear interpolation from pAnchor to surface (GF High)",
+                "item3": "Below pAnchor: constant GF Low"
+            },
+            "equations": {
+                "title": "Equations",
+                "haldane": "<strong>Haldane equation:</strong> Tissue loading at constant depth",
+                "schreiner": "<strong>Schreiner equation:</strong> Tissue loading during depth changes",
+                "mvalue": "<strong>M-value:</strong> M = a + P<sub>amb</sub> / b",
+                "adjustedM": "<strong>Adjusted M-value:</strong> M<sub>adj</sub> = P<sub>amb</sub> + GF × (M - P<sub>amb</sub>)"
+            },
+            "validation": {
+                "title": "Validation",
+                "intro": "The implementation has been validated against:",
+                "decotengu": "<strong>DecoTengu:</strong> Tissue loading matches within 0.02%",
+                "buhlmann": "<strong>Bühlmann printed tables:</strong> Deco schedules match within expected tolerance",
+                "note": "<em>Note:</em> Our calculations may produce 10-25% shorter deco times than printed tables. This is expected — printed tables include safety margins and round up conservatively. This tool shows the raw algorithm output for educational purposes."
+            }
+        },
+        "author": {
+            "title": "👤 Author",
+            "bio": "Created by <strong>Matej Hron</strong><br>CMAS I** instructor at <a href=\"https://deepblue.cz\" target=\"_blank\" rel=\"noopener\">Deepblue diving club</a>",
+            "links": "<a href=\"mailto:matej.hron@gmail.com\">matej.hron@gmail.com</a> · <a href=\"https://www.linkedin.com/in/matejhron/\" target=\"_blank\" rel=\"noopener\">LinkedIn</a>"
+        },
+        "review": {
+            "title": "🎓 Expert review",
+            "text": "Technical oversight provided by <strong><a href=\"https://cs.wikipedia.org/wiki/Ji%C5%99%C3%AD_Hovorka_(speleopot%C3%A1p%C4%9B%C4%8D)\" target=\"_blank\" rel=\"noopener\">Jiří Hovorka</a></strong> — CMAS/SPČR I3 instructor, trainer of cave diving instructors (ICD3), co-author of SPČR training guidelines — in cooperation with the <strong>SPČR Training Commission</strong> (Výcviková komise SPČR)."
+        },
+        "ack": {
+            "title": "🙏 Acknowledgments",
+            "powell": "Special thanks to <strong>Mark Powell</strong> for his excellent book <em>Deco for Divers</em> — the primary inspiration for this project and the resource that made decompression theory finally click.",
+            "jahns": "Thanks also to <strong>Jan Jahns</strong> for his great book, another valuable learning resource for understanding decompression theory."
+        },
+        "refs": {
+            "title": "📖 References & Sources",
+            "item1": "<strong>Jahns, Jan.</strong> (2008). <em>Fyzika.</em> Svaz českých potápěčů, Praha. — Comprehensive overview of diving physics for experienced divers and instructors. Covers essential topics with practical examples from diving. <a href=\"https://stranypotapecske.cz/litera/fyzika.asp?str=200807251858030\" target=\"_blank\" rel=\"noopener\">Review on Strany potápěčské</a>",
+            "item2": "<strong>Jahns, Jan.</strong> (2008). <em>Podklady k výpočtům dekompresních tabulek Bühlmann/SUSV 1986.</em> 2. vydání. Hlučín, 34 stran. — Mathematical foundations of the Bühlmann ZH-L16 decompression model, including saturation/desaturation equations, M-values, deco stop calculations, and a supplement on ZH-L16B with gradient factors and trimix extensions. <a href=\"https://www.spms.cz/soubory/Buhlmann_teorie.pdf?fid=17128261330230.pdf\" target=\"_blank\" rel=\"noopener\">Full text (PDF, SPMS)</a>",
+            "item3": "<strong>Powell, Mark.</strong> <em>Deco for Divers.</em> — The primary inspiration for this project. An excellent, accessible guide to decompression theory for recreational and technical divers. Highly recommended!",
+            "item4": "<strong>Bühlmann, A.A.</strong> (1984). <em>Decompression–Decompression Sickness.</em> Berlin: Springer-Verlag. — The original work describing the ZH-L16 algorithm.",
+            "item5": "<strong>Wikipedia</strong>. <a href=\"https://en.wikipedia.org/wiki/B%C3%BChlmann_decompression_algorithm\" target=\"_blank\" rel=\"noopener\">Bühlmann decompression algorithm</a> — Overview of the algorithm, tissue compartment half-times, and M-values.",
+            "item6": "<strong>Wienke, B.R.</strong> <a href=\"https://aquatec.wordpress.com/wp-content/uploads/2011/03/decompression-theory.pdf\" target=\"_blank\" rel=\"noopener\">Decompression Theory (PDF)</a> — Comprehensive introduction to decompression physics and physiology.",
+            "item7": "<strong>Alveolar Gas Equation</strong>: The model accounts for water vapor pressure at body temperature (37°C) = 47 mmHg ≈ 0.0627 bar, which reduces the effective partial pressure of inspired gases. <a href=\"https://en.wikipedia.org/wiki/Alveolar_gas_equation\" target=\"_blank\" rel=\"noopener\">Wikipedia: Alveolar gas equation</a>",
+            "item8": "<strong>Schreiner, H.R.</strong> (1971). <em>Safe Limits of Exposure to Increased Pressure.</em> — Derivation of the Schreiner equation for calculating gas loading during linear pressure changes.",
+            "item9": "<strong>Strany potápěčské</strong>. <a href=\"https://stranypotapecske.cz\" target=\"_blank\" rel=\"noopener\">stranypotapecske.cz</a> — A comprehensive Czech diving portal and community resource run by Zdeněk Šraier. Features an extensive library of book reviews, educational articles on diving physics and decompression theory, dive site conditions database, equipment reviews, and training materials. An invaluable resource for Czech-speaking divers at all levels."
+        }
+    },
+    "sandbox": {
+        "dive": {
+            "title": "🎯 Dive Planner Sandbox",
+            "subtitle": "Design dive profiles and visualize decompression in real-time",
+            "disclaimerBanner": "⚠️ <strong>Educational Use Only</strong> — This tool is NOT intended for real dive planning. Never use this for actual dives. Always use certified dive computers, tables, and proper training.",
+            "setupHeading": "Dive Setup",
+            "profilesLibrary": "📚 Saved Profiles",
+            "saveProfile": "💾 Save",
+            "saveProfileNamePlaceholder": "Profile name...",
+            "profileChart": "📊 Dive Profile",
+            "chartMode": {
+                "profile": "Profile",
+                "pressure": "Pressure",
+                "gas": "Gas Consumption",
+                "partialPressure": "Partial Pressure",
+                "tissue": "Tissue Loading"
+            },
+            "chartOptions": "🎛️ Chart Options (Advanced)",
+            "displayLayers": "Display Layers",
+            "annotations": "Annotations",
+            "options": {
+                "showCeiling": "Show Ceiling",
+                "showAmbient": "Show Ambient Pressure",
+                "showPartialPressures": "Show Partial Pressures (ppO₂/ppN₂)",
+                "showTissueLoading": "Show Tissue Loading",
+                "showGasConsumption": "Show Gas Consumption",
+                "showGasSwitches": "Show Gas Switches",
+                "showLabels": "Show Labels",
+                "alveolarPn2": "Alveolar pN₂"
+            },
+            "exportConfig": "📋 Export Config",
+            "screenshot": "📷 Screenshot",
+            "copied": "✓ Copied!",
+            "mValueChart": "📐 Pressure-Pressure Diagram",
+            "gfChart": "📊 GF% Diagram",
+            "copyDebug": "🔍 Copy Debug Data",
+            "status": {
+                "ready": "Ready"
+            },
+            "footerDisclaimer": "<strong>Disclaimer:</strong> This is an educational tool only. Do not use for actual dive planning."
+        },
+        "tissue": {
+            "title": "Tissue Saturation Simulator",
+            "subtitle": "Move the diver, switch the gas, let time run — and watch nitrogen partial pressures chase ambient exponentially.",
+            "disclaimerBanner": "<strong>Educational Use Only</strong> — A physics playground showing how tissue nitrogen loading responds to depth and gas changes. Not a dive planner.",
+            "depth": "Depth",
+            "depthHint": "0–40 m. Changes are instantaneous.",
+            "gas": "Breathing gas",
+            "gases": {
+                "air": "Air (21/79)",
+                "ean32": "EAN32",
+                "ean36": "EAN36",
+                "ean50": "EAN50",
+                "ean80": "EAN80",
+                "o2": "O₂ 100%"
+            },
+            "speed": "Speed",
+            "speedHint": "1× = 1 sim-minute per real second.",
+            "time": "Time",
+            "timeButtons": {
+                "back": "◀ 1 min",
+                "forward": "1 min ▶",
+                "reset": "Reset"
+            },
+            "keyboardHint": "Keyboard: ← / → to step, Space to play/pause.",
+            "readout": {
+                "depth": "Depth",
+                "pAmb": "pAmb",
+                "gas": "Gas",
+                "pO2": "pO₂",
+                "pN2Inspired": "pN₂ inspired",
+                "pN2Alveolar": "pN₂ alveolar",
+                "tcFast": "TC1 • fast (5 min)",
+                "tcMed": "TC5 • medium (27 min)",
+                "tcSlow": "TC12 • slow (239 min)",
+                "time": "Sim time"
+            },
+            "alertOk": "All clear",
+            "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only. Single-inert-gas (N₂) model; no helium, no CNS clock, no M-value warnings."
+        },
+        "transfill": {
+            "title": "Cylinder Transfilling",
+            "subtitle": "Simulate pressure equalization between two connected cylinders",
+            "disclaimerBanner": "<strong>Educational Use Only</strong> — This tool demonstrates Boyle's Law for connected cylinders.",
+            "setupHeading": "Cylinder Setup",
+            "cylinderA": "Cylinder A (Source)",
+            "cylinderB": "Cylinder B (Receiving)",
+            "labels": {
+                "volume": "Volume",
+                "pressure": "Pressure (bar)"
+            },
+            "volumes": {
+                "pony": "3 L (Pony)",
+                "al40": "5.5 L (AL40)",
+                "al50": "7 L (AL50)",
+                "single10": "10 L (Single)",
+                "al80": "11 L (AL80)",
+                "single12": "12 L (Single)",
+                "single15": "15 L (Single)",
+                "single18": "18 L (Single)",
+                "doubles7": "2x7 L (Doubles)",
+                "doubles10": "2x10 L (Doubles)",
+                "doubles12": "2x12 L (Doubles)"
+            },
+            "buttons": {
+                "openValves": "Open Valves",
+                "reset": "Reset"
+            },
+            "display": {
+                "cylinderA": "Cylinder A",
+                "cylinderB": "Cylinder B"
+            },
+            "resultTitle": "Equalization Complete",
+            "formulaTitle": "Boyle's Law",
+            "formula": "P<sub>final</sub> = (P<sub>A</sub> × V<sub>A</sub> + P<sub>B</sub> × V<sub>B</sub>) / (V<sub>A</sub> + V<sub>B</sub>)",
+            "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only. Based on ideal gas law assumptions."
+        },
+        "cascade": {
+            "title": "Cascade Filling Station",
+            "subtitle": "Click valve switches to connect cylinders, then fill (max 3 hoses, 200 bar limit)",
+            "disclaimerBanner": "<strong>Educational Use Only</strong> — Simulates cascade filling using Boyle's Law.",
+            "setupHeading": "Setup",
+            "cascadeBank": "Cascade Bank (4 x 50 L)",
+            "targetCylinders": "Target Cylinders",
+            "controlsHeading": "Controls",
+            "remaining": "Remaining:",
+            "labels": {
+                "initialPressure": "Initial Pressure",
+                "count": "Count",
+                "volume": "Volume",
+                "startingPressure": "Starting Pressure"
+            },
+            "counts": {
+                "3": "3 cylinders",
+                "4": "4 cylinders",
+                "5": "5 cylinders",
+                "6": "6 cylinders",
+                "8": "8 cylinders",
+                "10": "10 cylinders",
+                "12": "12 cylinders"
+            },
+            "volumes": {
+                "al50": "7 L (AL50)",
+                "single10": "10 L (Single)",
+                "al80": "11 L (AL80)",
+                "single12": "12 L (Single)",
+                "single15": "15 L (Single)"
+            },
+            "startPressures": {
+                "empty": "0 bar (empty)"
+            },
+            "buttons": {
+                "reset": "Reset All",
+                "copyLink": "Copy Link"
+            },
+            "warning": "Max 3 target cylinders can be connected at once (3 hoses available)",
+            "shareConfirm": "Link copied to clipboard!",
+            "vizTitle": "Filling Station",
+            "status": {
+                "hoses": "Hoses",
+                "cascadeOpen": "Cascade open"
+            },
+            "groupTitles": {
+                "cascadeBank": "Cascade Bank (click valves to open)",
+                "targetCylinders": "Target Cylinders (max 3 connected)"
+            },
+            "panelTitles": {
+                "connection": "Connection Status",
+                "fillLog": "Fill Log"
+            },
+            "connectionStatus": {
+                "idle": "Open cascade and target valves to connect"
+            },
+            "logEmpty": "No fills yet",
+            "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only."
+        }
+    },
+    "quiz": {
+        "languageNotice": "🇨🇿 This quiz is in <strong>Czech language</strong> to match the official CMAS/SPČR certification exam materials. Translation was avoided to prevent errors in technical terminology.",
+        "categoriesTitle": "Témata:",
+        "filterAll": "Vše",
+        "settings": {
+            "shuffle": "Zamíchat otázky",
+            "questionCount": "Počet otázek:",
+            "apply": "Aplikovat a restartovat"
+        },
+        "buttons": {
+            "next": "Další otázka →",
+            "restart": "Začít znovu"
+        },
+        "about": {
+            "title": "📚 O testu"
+        },
+        "disclaimer": "<strong>Disclaimer:</strong> Toto je vzdělávací nástroj. Pro oficiální certifikaci kontaktujte CMAS/SPČR.",
+        "physics": {
+            "title": "🧪 Fyzika",
+            "subtitle": "Zkušební otázky z fyziky pro potápěče (CMAS/SPČR)",
+            "aboutIntro": "Tyto otázky pochází z oficiálních zkušebních testů SPČR (Svaz potápěčů České republiky) z roku 2018. Testují znalosti fyziky relevantní pro potápění.",
+            "aboutAvailable": "<strong>Aktuálně k dispozici:</strong> 100 otázek ze všech 8 témat.",
+            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz/soubor-fyzika-349-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Fyzika zkušební testy</a>"
+        },
+        "anatomy": {
+            "title": "🩺 Anatomie a fyziologie",
+            "subtitle": "Zkušební otázky z anatomie a fyziologie pro potápěče (CMAS/SPČR)",
+            "aboutIntro": "Tyto otázky pochází z oficiálních zkušebních testů SPČR (Svaz potápěčů České republiky) z roku 2018. Testují znalosti anatomie a fyziologie relevantní pro potápění.",
+            "aboutAvailable": "<strong>Aktuálně k dispozici:</strong> 100 otázek ze všech témat: základní pojmy, dýchací soustava, oběhová soustava, krev a přenos plynů, ucho a vyrovnávání tlaků, sycení tkání, termoregulace a toxicita plynů.",
+            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Anatomie a fyziologie zkušební testy</a>"
+        },
+        "accidents": {
+            "title": "🏥 Nehody a nemoci",
+            "subtitle": "Zkušební otázky o potápěčských nehodách a nemocech (CMAS/SPČR)",
+            "aboutIntro": "Tyto otázky pochází z oficiálních zkušebních testů SPČR (Svaz potápěčů České republiky) z roku 2018. Testují znalosti o potápěčských nehodách, nemocech a první pomoci.",
+            "aboutAvailable": "<strong>Aktuálně k dispozici:</strong> 100 otázek z 5 témat.",
+            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz/soubor-nehody-a-nemoci-348-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Nehody a nemoci zkušební testy</a>"
+        },
+        "safety": {
+            "title": "🛡️ Bezpečnostní směrnice",
+            "subtitle": "Zkušební otázky z Bezpečnostních směrnic SPČR 2016 (CMAS/SPČR)",
+            "aboutIntro": "Tyto otázky pochází z oficiálních zkušebních testů SPČR (Svaz potápěčů České republiky) z roku 2018. Testují znalosti Bezpečnostních směrnic SPČR 2016.",
+            "aboutAvailable": "<strong>Aktuálně k dispozici:</strong> 100 otázek ze všech 9 témat.",
+            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz/soubor-bezpecnostni-smernice-345-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Bezpečnostní směrnice zkušební testy</a>"
+        },
+        "training": {
+            "title": "📋 Výcvikové směrnice",
+            "subtitle": "Zkušební otázky z Výcvikových směrnic SPČR 2016 (CMAS/SPČR)",
+            "aboutIntro": "Tyto otázky pochází z oficiálních zkušebních testů SPČR (Svaz potápěčů České republiky) z roku 2018. Testují znalosti Výcvikových směrnic SPČR 2016.",
+            "aboutAvailable": "<strong>Aktuálně k dispozici:</strong> 100 otázek ze 6 témat.",
+            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Výcvikové směrnice zkušební testy</a>"
+        },
+        "equipment": {
+            "title": "🤿 Potápěčská výstroj",
+            "subtitle": "Zkušební otázky z Potápěčské výstroje SPČR 2018 (CMAS/SPČR)",
+            "aboutIntro": "Tyto otázky pochází z oficiálních zkušebních testů SPČR (Svaz potápěčů České republiky) z roku 2018. Testují znalosti potápěčské výstroje.",
+            "aboutAvailable": "<strong>Aktuálně k dispozici:</strong> 100 otázek z 11 témat.",
+            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Potápěčská výstroj zkušební testy</a>"
+        },
+        "vessel": {
+            "title": "⚓ Plavidlo",
+            "subtitle": "Zkušební otázky z obsluhy plavidla SPČR 2018 (CMAS/SPČR)",
+            "aboutIntro": "Tyto otázky pochází z oficiálních zkušebních testů SPČR (Svaz potápěčů České republiky) z roku 2018. Testují znalosti obsluhy plavidla a potápění z lodi.",
+            "aboutAvailable": "<strong>Aktuálně k dispozici:</strong> 50 otázek z 8 témat.",
+            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Plavidlo zkušební testy</a>"
         }
     }
 }

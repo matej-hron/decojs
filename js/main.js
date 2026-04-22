@@ -9,6 +9,15 @@ import { calculateTissueLoading, getInitialTissueN2, calculateCeilingTimeSeries 
 import { validateProfile, getDiveStats } from './diveProfile.js';
 import { renderChart, toggleCompartment, showAllCompartments, hideAllCompartments, showOnlyCompartments } from './visualization.js';
 import { loadDiveSetup, getDiveSetupWaypoints, getSurfaceInterval, formatDiveSetupSummary, saveDiveSetup, clearCache, getGases, getGasSwitchEvents, getGradientFactors } from './diveSetup.js';
+import { translate } from './i18n.js';
+
+/** Helper: replace {0}, {1}, ... placeholders with the given values. */
+function fmt(str, ...values) {
+    return String(str).replace(/\{(\d+)\}/g, (_, i) => {
+        const v = values[Number(i)];
+        return v === undefined ? '' : String(v);
+    });
+}
 
 // ============================================================================
 // UTILITIES
@@ -99,13 +108,17 @@ function initProfileSwitcher(setup) {
     // Add custom option - show actual name if it's a custom profile
     const customOption = document.createElement('option');
     customOption.value = 'custom';
-    customOption.textContent = isPredefined ? '✏️ Custom Profile' : `✏️ ${setup.name || 'Custom Profile'}`;
+    customOption.textContent = isPredefined
+        ? translate('diveEditor.customProfile', '✏️ Custom Profile')
+        : (setup.name
+            ? fmt(translate('diveEditor.customProfileNamed', '✏️ {0}'), setup.name)
+            : translate('diveEditor.customProfile', '✏️ Custom Profile'));
     profileSwitcher.appendChild(customOption);
     
     // Add separator
     const separator = document.createElement('option');
     separator.disabled = true;
-    separator.textContent = '──────────────';
+    separator.textContent = translate('diveEditor.separator', '──────────────');
     profileSwitcher.appendChild(separator);
     
     // Add predefined profiles
@@ -179,7 +192,7 @@ function displayProfileSummary(setup) {
     // Update profile name label
     const profileLabel = document.querySelector('.profile-header-label');
     if (profileLabel) {
-        profileLabel.textContent = setup.name || 'Profile:';
+        profileLabel.textContent = setup.name || translate('diveEditor.profileDefault', 'Profile:');
     }
     
     profileHeaderSummary.textContent = `${maxDepth}m max, ${totalTime} min, ${gasNames}${diveInfo}`;
@@ -193,7 +206,9 @@ function displayProfileSummary(setup) {
         if (!matchingProfile) {
             const customOption = profileSwitcher.querySelector('option[value="custom"]');
             if (customOption) {
-                customOption.textContent = `✏️ ${setup.name || 'Custom Profile'}`;
+                customOption.textContent = setup.name
+                    ? fmt(translate('diveEditor.customProfileNamed', '✏️ {0}'), setup.name)
+                    : translate('diveEditor.customProfile', '✏️ Custom Profile');
             }
         }
     }

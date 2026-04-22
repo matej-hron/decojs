@@ -30,6 +30,15 @@
 import { COMPARTMENTS } from '../tissueCompartments.js';
 import { applyChartTheme, depthGradient, theme } from './chartTheme.js';
 import { createInteractionLockBtn } from './interactionLock.js';
+import { translate } from '../i18n.js';
+
+/** Helper: replace {0}, {1}, ... placeholders with the given values. */
+function fmt(str, ...values) {
+    return String(str).replace(/\{(\d+)\}/g, (_, i) => {
+        const v = values[Number(i)];
+        return v === undefined ? '' : String(v);
+    });
+}
 import {
     calculateTissueLoading,
     calculateCeilingTimeSeries,
@@ -96,7 +105,18 @@ export class DiveProfileChart {
         
         // Build DOM structure
         this._buildDOM();
-        
+
+        // Re-render on language change so annotations/labels retranslate.
+        this._onLanguageChange = () => {
+            // Rebuild tissue controls so button text retranslates too.
+            this._buildTissueControls();
+            if (this.fullscreenBtn) this.fullscreenBtn.title = translate('chart.tooltips.fullscreen', 'Toggle Fullscreen');
+            if (this.exitFullscreenBtn) this.exitFullscreenBtn.title = translate('chart.tooltips.exitFullscreen', 'Exit Fullscreen');
+            if (this.resetZoomBtn) this.resetZoomBtn.title = translate('chart.tooltips.resetZoom', 'Reset Zoom (double-click chart)');
+            if (this.diveSetup) this._render();
+        };
+        document.addEventListener('languagechange', this._onLanguageChange);
+
         // Render chart if we have data
         if (this.diveSetup) {
             this._render();
@@ -137,7 +157,7 @@ export class DiveProfileChart {
             this.fullscreenBtn = document.createElement('button');
             this.fullscreenBtn.className = 'dpc-fullscreen-btn';
             this.fullscreenBtn.innerHTML = '⛶';
-            this.fullscreenBtn.title = 'Toggle Fullscreen';
+            this.fullscreenBtn.title = translate('chart.tooltips.fullscreen', 'Toggle Fullscreen');
             this.fullscreenBtn.style.cssText = `
                 position: absolute; top: 8px; right: 8px; z-index: 10;
                 padding: 4px 8px; background: rgba(255,255,255,0.9);
@@ -151,7 +171,7 @@ export class DiveProfileChart {
             this.exitFullscreenBtn = document.createElement('button');
             this.exitFullscreenBtn.className = 'dpc-exit-fullscreen-btn';
             this.exitFullscreenBtn.innerHTML = '✕';
-            this.exitFullscreenBtn.title = 'Exit Fullscreen';
+            this.exitFullscreenBtn.title = translate('chart.tooltips.exitFullscreen', 'Exit Fullscreen');
             this.exitFullscreenBtn.style.cssText = `
                 position: absolute; top: 16px; right: 16px; z-index: 1001;
                 padding: 8px 12px; background: rgba(0,0,0,0.7); color: white;
@@ -166,7 +186,7 @@ export class DiveProfileChart {
         this.resetZoomBtn = document.createElement('button');
         this.resetZoomBtn.className = 'dpc-reset-zoom-btn';
         this.resetZoomBtn.innerHTML = '↺';
-        this.resetZoomBtn.title = 'Reset Zoom (double-click chart)';
+        this.resetZoomBtn.title = translate('chart.tooltips.resetZoom', 'Reset Zoom (double-click chart)');
         this.resetZoomBtn.style.cssText = `
             position: absolute; top: 8px; right: ${this.options.fullscreenButton ? '44px' : '8px'}; z-index: 10;
             padding: 4px 8px; background: rgba(255,255,255,0.9);
@@ -318,12 +338,12 @@ export class DiveProfileChart {
         btnGroup.style.cssText = 'display: flex; gap: 4px; margin-right: 12px; flex-wrap: wrap; align-items: center;';
         
         const buttons = [
-            { text: 'All', action: () => this._selectAllCompartments() },
-            { text: 'None', action: () => this._selectNoCompartments() },
-            { text: 'Fast', action: () => this._selectFastCompartments() },
-            { text: 'Slow', action: () => this._selectSlowCompartments() }
+            { text: translate('chart.buttons.all', 'All'), action: () => this._selectAllCompartments() },
+            { text: translate('chart.buttons.none', 'None'), action: () => this._selectNoCompartments() },
+            { text: translate('chart.buttons.fast', 'Fast'), action: () => this._selectFastCompartments() },
+            { text: translate('chart.buttons.slow', 'Slow'), action: () => this._selectSlowCompartments() }
         ];
-        
+
         buttons.forEach(({ text, action }) => {
             const btn = document.createElement('button');
             btn.textContent = text;
@@ -334,10 +354,10 @@ export class DiveProfileChart {
             btn.addEventListener('click', action);
             btnGroup.appendChild(btn);
         });
-        
+
         // Add keyboard hint
         const hint = document.createElement('span');
-        hint.textContent = '↑↓ move, Shift+↑↓ expand/shrink';
+        hint.textContent = translate('chart.hints.arrowShiftArrow', '↑↓ move, Shift+↑↓ expand/shrink');
         hint.style.cssText = 'font-size: 11px; color: #6c757d; margin-left: 8px;';
         btnGroup.appendChild(hint);
         
@@ -566,14 +586,14 @@ export class DiveProfileChart {
                 type: 'label',
                 xValue: descentEnd.time / 2,
                 yValue: maxDepth / 3,
-                content: ['⬇ 20 m/min'],
+                content: [fmt(translate('chart.profile.descentRate', '⬇ {0} m/min'), 20)],
                 backgroundColor: 'rgba(46, 204, 113, 0.9)',
                 color: 'white',
                 font: { size: 10, weight: 'bold' },
                 padding: { top: 3, bottom: 3, left: 6, right: 6 }
             };
         }
-        
+
         // Bottom time bracket
         if (bottomEnd) {
             annotations.bottomTimeBracket = {
@@ -586,7 +606,7 @@ export class DiveProfileChart {
                 borderWidth: 3,
                 label: {
                     display: true,
-                    content: `BOTTOM TIME: ${bottomEnd.time} min`,
+                    content: fmt(translate('chart.profile.bottomTime', 'BOTTOM TIME: {0} min'), bottomEnd.time),
                     position: 'center',
                     backgroundColor: 'rgba(241, 196, 15, 0.95)',
                     color: '#333',
@@ -619,7 +639,7 @@ export class DiveProfileChart {
             borderDash: [6, 4],
             label: {
                 display: true,
-                content: `MAX: ${maxDepth}m`,
+                content: fmt(translate('chart.profile.max', 'MAX: {0}m'), maxDepth),
                 position: 'end',
                 backgroundColor: 'rgba(231, 76, 60, 0.9)',
                 color: 'white',
@@ -641,7 +661,7 @@ export class DiveProfileChart {
                     borderDash: [4, 4],
                     label: {
                         display: true,
-                        content: `AVG: ${avgDepth.toFixed(1)}m`,
+                        content: fmt(translate('chart.profile.avg', 'AVG: {0}m'), avgDepth.toFixed(1)),
                         position: 'start',
                         backgroundColor: 'rgba(46, 204, 113, 0.9)',
                         color: 'white',
@@ -658,7 +678,7 @@ export class DiveProfileChart {
                 type: 'label',
                 xValue: bottomEnd.time + 1,
                 yValue: maxDepth,
-                content: ['⬆ 10 m/min'],
+                content: [fmt(translate('chart.profile.ascentRate', '⬆ {0} m/min'), 10)],
                 backgroundColor: 'rgba(155, 89, 182, 0.9)',
                 color: 'white',
                 font: { size: 10, weight: 'bold' },
@@ -667,13 +687,13 @@ export class DiveProfileChart {
                 yAdjust: -15
             };
         }
-        
+
         // Total Dive Time (TDT) label - top right corner
         annotations.totalDiveTime = {
             type: 'label',
             xValue: totalTime,
             yValue: -1,
-            content: [`TDT: ${Math.round(totalTime * 10) / 10} min`],
+            content: [fmt(translate('chart.profile.tdt', 'TDT: {0} min'), Math.round(totalTime * 10) / 10)],
             backgroundColor: 'rgba(52, 73, 94, 0.9)',
             color: 'white',
             font: { size: 11, weight: 'bold' },
@@ -702,7 +722,7 @@ export class DiveProfileChart {
             type: 'label',
             xValue: diveEndTime,
             yValue: -3,
-            content: ['SURFACE INTERVAL →'],
+            content: [translate('chart.profile.surfaceInterval', 'SURFACE INTERVAL →')],
             backgroundColor: 'rgba(52, 152, 219, 0.9)',
             color: 'white',
             font: { size: 10, weight: 'bold' },
@@ -751,7 +771,7 @@ export class DiveProfileChart {
                 xValue: stop.end.time + 1,
                 yValue: stop.depth,
                 yAdjust: 20,
-                content: [`DECO ${stop.depth}m · ${stopDuration}min`],
+                content: [fmt(translate('chart.profile.decoStop', 'DECO {0}m · {1}min'), stop.depth, stopDuration)],
                 backgroundColor: color,
                 color: 'white',
                 font: { size: 9, weight: 'bold' },
@@ -907,7 +927,7 @@ export class DiveProfileChart {
         // the surface, fading toward transparent at the floor so the
         // deeper region doesn't visually compete with annotations.
         datasets.push({
-            label: 'Depth (m)',
+            label: translate('chart.profile.datasetDepth', 'Depth (m)'),
             data: results.timePoints.map((t, i) => ({
                 x: t,
                 y: results.depthPoints[i]
@@ -932,7 +952,7 @@ export class DiveProfileChart {
                 
                 const pressureData = results.compartments[comp.id].pressures;
                 datasets.push({
-                    label: `TC${comp.id} (${comp.halfTime}min)`,
+                    label: fmt(translate('chart.mvalue.tcLabel', 'TC{0} ({1}min)'), comp.id, comp.halfTime),
                     data: results.timePoints.map((t, i) => ({
                         x: t,
                         y: pressureData[i]
@@ -957,7 +977,7 @@ export class DiveProfileChart {
                     if (!ceilingData) return;
                     
                     datasets.push({
-                        label: `TC${comp.id} ceiling`,
+                        label: fmt(translate('chart.mvalue.tcCeilingLabel', 'TC{0} ceiling'), comp.id),
                         data: results.timePoints.map((t, i) => ({
                             x: t,
                             y: ceilingData[i]
@@ -979,7 +999,7 @@ export class DiveProfileChart {
         // Aggregate ceiling line (if enabled, but not in tissue mode where we show per-compartment ceilings)
         if (this.options.showCeiling && ceilingDepths && !this.options.showTissueLoading) {
             datasets.push({
-                label: 'Ceiling (m)',
+                label: translate('chart.profile.datasetCeiling', 'Ceiling (m)'),
                 data: results.timePoints.map((t, i) => ({
                     x: t,
                     y: ceilingDepths[i]
@@ -999,7 +1019,7 @@ export class DiveProfileChart {
         // Ambient pressure (if enabled)
         if (this.options.showAmbientPressure) {
             datasets.push({
-                label: 'Ambient Pressure (bar)',
+                label: translate('chart.profile.datasetAmbientPressure', 'Ambient Pressure (bar)'),
                 data: results.timePoints.map((t, i) => ({
                     x: t,
                     y: results.ambientPressures[i]
@@ -1019,7 +1039,7 @@ export class DiveProfileChart {
         if (this.options.showPartialPressures) {
             // ppO2
             datasets.push({
-                label: 'ppO₂ (bar)',
+                label: translate('chart.profile.datasetPpO2', 'ppO₂ (bar)'),
                 data: results.timePoints.map((t, i) => {
                     const n2 = results.n2Fractions[i];
                     const o2 = 1 - n2; // Simplified - assumes no helium
@@ -1039,7 +1059,7 @@ export class DiveProfileChart {
             
             // ppN2
             datasets.push({
-                label: 'ppN₂ (bar)',
+                label: translate('chart.profile.datasetPpN2', 'ppN₂ (bar)'),
                 data: results.timePoints.map((t, i) => ({
                     x: t,
                     y: results.ambientPressures[i] * results.n2Fractions[i]
@@ -1057,7 +1077,7 @@ export class DiveProfileChart {
         // Alveolar N2 (inspired nitrogen partial pressure) - shown automatically in tissue mode
         if (this.options.showTissueLoading) {
             datasets.push({
-                label: 'Alveolar ppN₂ (bar)',
+                label: translate('chart.profile.datasetAlveolarPpN2', 'Alveolar ppN₂ (bar)'),
                 data: results.timePoints.map((t, i) => ({
                     x: t,
                     y: getAlveolarN2Pressure(results.ambientPressures[i], results.n2Fractions[i])
@@ -1087,7 +1107,7 @@ export class DiveProfileChart {
                 
                 // Tank pressure line
                 datasets.push({
-                    label: `${gasData.name} (bar)`,
+                    label: fmt(translate('chart.profile.datasetGasBar', '{0} (bar)'), gasData.name),
                     data: results.timePoints.map((t, i) => ({
                         x: t,
                         y: gasData.pressures[i],
@@ -1112,7 +1132,7 @@ export class DiveProfileChart {
                 type: 'linear',
                 title: {
                     display: true,
-                    text: 'Time (minutes)'
+                    text: translate('chart.axes.timeMinutes', 'Time (minutes)')
                 },
                 min: this.options.showLabels ? -2 : 0
             },
@@ -1122,7 +1142,7 @@ export class DiveProfileChart {
                 reverse: true,
                 title: {
                     display: true,
-                    text: 'Depth (m)'
+                    text: translate('chart.axes.depthMeters', 'Depth (m)')
                 },
                 min: this.options.showLabels ? -10 : 0,
                 max: maxDepth + 5  // Add padding below max depth
@@ -1145,7 +1165,7 @@ export class DiveProfileChart {
                 position: 'right',
                 title: {
                     display: true,
-                    text: 'Pressure (bar)'
+                    text: translate('chart.axes.pressureBar', 'Pressure (bar)')
                 },
                 min: 0,
                 max: pressureAxisMax,
@@ -1166,7 +1186,7 @@ export class DiveProfileChart {
                 position: 'right',
                 title: {
                     display: true,
-                    text: 'Tank Pressure (bar)'
+                    text: translate('chart.axes.tankPressureBar', 'Tank Pressure (bar)')
                 },
                 min: 0,
                 max: maxGasPressure + 10,
@@ -1201,7 +1221,7 @@ export class DiveProfileChart {
                 borderDash: [8, 4],
                 label: {
                     display: true,
-                    content: `RESERVE: ${reservePressure} bar`,
+                    content: fmt(translate('chart.profile.reserve', 'RESERVE: {0} bar'), reservePressure),
                     position: 'start',
                     backgroundColor: 'rgba(231, 76, 60, 0.9)',
                     color: 'white',
@@ -1223,7 +1243,7 @@ export class DiveProfileChart {
                     borderDash: [4, 4],
                     label: {
                         display: true,
-                        content: `AVG: ${avgDepth.toFixed(1)}m`,
+                        content: fmt(translate('chart.profile.avg', 'AVG: {0}m'), avgDepth.toFixed(1)),
                         position: 'start',
                         backgroundColor: 'rgba(46, 204, 113, 0.9)',
                         color: 'white',
@@ -1240,7 +1260,7 @@ export class DiveProfileChart {
                     borderDash: [6, 4],
                     label: {
                         display: true,
-                        content: `MAX: ${maxDepth}m`,
+                        content: fmt(translate('chart.profile.max', 'MAX: {0}m'), maxDepth),
                         position: 'end',
                         backgroundColor: 'rgba(231, 76, 60, 0.9)',
                         color: 'white',
@@ -1254,15 +1274,17 @@ export class DiveProfileChart {
         // Gas switch markers
         if (this.options.showGasSwitches && results.gasSwitches && results.gasSwitches.length > 0) {
             results.gasSwitches.forEach((sw, i) => {
-                const fromText = sw.fromGasName ? `${sw.fromGasName} → ${sw.gasName}` : `→ ${sw.gasName}`;
-                const depthText = `${Math.round(sw.depth)}m`;
+                const depthRounded = Math.round(sw.depth);
+                const content = sw.fromGasName
+                    ? fmt(translate('chart.profile.gasSwitchFrom', '{0} → {1} @ {2}m'), sw.fromGasName, sw.gasName, depthRounded)
+                    : fmt(translate('chart.profile.gasSwitchTo', '→ {0} @ {1}m'), sw.gasName, depthRounded);
                 // Label with depth
                 annotations[`gasSwitch${i}`] = {
                     type: 'label',
                     xValue: sw.time + 1,
                     yValue: sw.depth,
                     yAdjust: 20,
-                    content: [`${fromText} @ ${depthText}`],
+                    content: [content],
                     backgroundColor: 'rgba(155, 89, 182, 0.95)',
                     color: 'white',
                     font: { size: 9, weight: 'bold' },
@@ -1295,7 +1317,7 @@ export class DiveProfileChart {
                 borderDash: [3, 3],
                 label: {
                     display: true,
-                    content: 'ppO₂ 1.4 (bottom)',
+                    content: translate('chart.profile.ppO2Working', 'ppO₂ 1.4 (bottom)'),
                     position: 'end',
                     font: { size: 9 }
                 }
@@ -1311,12 +1333,12 @@ export class DiveProfileChart {
                 borderDash: [3, 3],
                 label: {
                     display: true,
-                    content: 'ppO₂ 1.6 (deco)',
+                    content: translate('chart.profile.ppO2Deco', 'ppO₂ 1.6 (deco)'),
                     position: 'end',
                     font: { size: 9 }
                 }
             };
-            
+
             // ppN2 narcosis limit (4 bar)
             annotations.ppN2Max = {
                 type: 'line',
@@ -1328,7 +1350,7 @@ export class DiveProfileChart {
                 borderDash: [3, 3],
                 label: {
                     display: true,
-                    content: 'ppN₂ narcosis (4.0)',
+                    content: translate('chart.profile.ppN2Narcosis', 'ppN₂ narcosis (4.0)'),
                     position: 'start',
                     font: { size: 9 }
                 }
@@ -1367,7 +1389,10 @@ export class DiveProfileChart {
                                             if (time >= sw.time) gasName = sw.gasName;
                                         }
                                     }
-                                    return [`Time: ${time.toFixed(1)} min`, `Gas: ${gasName}`];
+                                    return [
+                                        fmt(translate('chart.profile.tooltipTime', 'Time: {0} min'), time.toFixed(1)),
+                                        fmt(translate('chart.profile.tooltipGas', 'Gas: {0}'), gasName)
+                                    ];
                                 }
                                 return '';
                             },
@@ -1376,12 +1401,20 @@ export class DiveProfileChart {
                                 if (context.dataset.isGasConsumption) return null;
                                 const label = context.dataset.label || '';
                                 const value = context.parsed.y;
-                                if (label.includes('Depth') || label.includes('Ceiling')) {
-                                    return `${label}: ${value.toFixed(1)} m`;
-                                } else if (label.includes('Pressure') || label.includes('pp')) {
-                                    return `${label}: ${value.toFixed(2)} bar`;
+                                // Detect unit by checking known translated dataset labels.
+                                // We compare against both the English fallbacks and the current translations.
+                                const depthKeywords = ['Depth', 'Ceiling',
+                                    translate('chart.profile.datasetDepth', 'Depth (m)'),
+                                    translate('chart.profile.datasetCeiling', 'Ceiling (m)')];
+                                const isDepth = depthKeywords.some(k => k && label.includes(k));
+                                const isPressure = label.includes('Pressure') || label.includes('pp')
+                                    || label.includes(translate('chart.axes.pressureBar', 'Pressure (bar)'));
+                                if (isDepth) {
+                                    return fmt(translate('chart.profile.tooltipLabelDepth', '{0}: {1} m'), label, value.toFixed(1));
+                                } else if (isPressure) {
+                                    return fmt(translate('chart.profile.tooltipLabelPressure', '{0}: {1} bar'), label, value.toFixed(2));
                                 }
-                                return `${label}: ${value.toFixed(2)}`;
+                                return fmt(translate('chart.profile.tooltipLabelValue', '{0}: {1}'), label, value.toFixed(2));
                             },
                             filter: (item) => {
                                 return item.text !== null;
@@ -1401,20 +1434,26 @@ export class DiveProfileChart {
                                     if (!gasData.isActive) continue;
                                     const rate = gasData.rates[closestIdx] || 0;
                                     if (rate > 0) {
-                                        lines.push(`⛽ Gas consumption: ${rate.toFixed(1)} L/min (${gasData.name})`);
+                                        lines.push(fmt(
+                                            translate('chart.profile.tooltipGasConsumption', '⛽ Gas consumption: {0} L/min ({1})'),
+                                            rate.toFixed(1), gasData.name
+                                        ));
                                         break;
                                     }
                                 }
                                 // Tank pressures
-                                lines.push('─── Tank Pressures ───');
+                                lines.push(translate('chart.profile.tooltipTankPressures', '─── Tank Pressures ───'));
                                 Object.values(this._gasConsumption).forEach(gasData => {
                                     if (!gasData.isActive) return;
                                     const pressure = gasData.pressures[closestIdx];
                                     if (pressure !== undefined) {
                                         const bar = Math.round(pressure);
-                                        const status = bar <= 0 ? ' ⚠️ EMPTY' :
-                                                       bar < (gasData.reservePressure || 50) ? ' ⚠️' : '';
-                                        lines.push(`  ${gasData.name}: ${bar} bar${status}`);
+                                        const status = bar <= 0 ? translate('chart.profile.tooltipTankEmpty', ' ⚠️ EMPTY') :
+                                                       bar < (gasData.reservePressure || 50) ? translate('chart.profile.tooltipTankLow', ' ⚠️') : '';
+                                        lines.push(fmt(
+                                            translate('chart.profile.tooltipTankRow', '  {0}: {1} bar{2}'),
+                                            gasData.name, bar, status
+                                        ));
                                     }
                                 });
                                 return lines;
@@ -1548,11 +1587,15 @@ export class DiveProfileChart {
         }
         
         document.removeEventListener('keydown', this._keyHandler);
-        
+        if (this._onLanguageChange) {
+            document.removeEventListener('languagechange', this._onLanguageChange);
+            this._onLanguageChange = null;
+        }
+
         if (this.chartContainer) {
             this.chartContainer.innerHTML = '';
         }
-        
+
         this.container.innerHTML = '';
     }
 }

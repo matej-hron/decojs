@@ -33,6 +33,15 @@
 import { COMPARTMENTS } from '../tissueCompartments.js';
 import { applyChartTheme, theme } from './chartTheme.js';
 import { createInteractionLockBtn } from './interactionLock.js';
+import { translate } from '../i18n.js';
+
+/** Helper: replace {0}, {1}, ... placeholders with the given values. */
+function fmt(str, ...values) {
+    return String(str).replace(/\{(\d+)\}/g, (_, i) => {
+        const v = values[Number(i)];
+        return v === undefined ? '' : String(v);
+    });
+}
 import {
     calculateTissueLoading,
     getMValue,
@@ -126,10 +135,21 @@ export class MValueChart {
         
         // Build DOM structure
         this._buildDOM();
-        
+
         // Setup keyboard shortcuts
         this._setupKeyboardShortcuts();
-        
+
+        // Re-render on language change so chart labels retranslate.
+        this._onLanguageChange = () => {
+            if (this.options.compartmentSelector) this._buildCompartmentSelector();
+            if (this.fullscreenBtn) this.fullscreenBtn.title = translate('chart.tooltips.fullscreen', 'Toggle Fullscreen');
+            if (this.exitFullscreenBtn) this.exitFullscreenBtn.title = translate('chart.tooltips.exitFullscreen', 'Exit Fullscreen (Esc)');
+            if (this.resetZoomBtn) this.resetZoomBtn.title = translate('chart.tooltips.resetZoom', 'Reset Zoom (double-click chart)');
+            this._updateTimeDisplay();
+            if (this.diveSetup) this._render();
+        };
+        document.addEventListener('languagechange', this._onLanguageChange);
+
         // Calculate and render if we have data
         if (this.diveSetup) {
             this._calculate();
@@ -189,7 +209,7 @@ export class MValueChart {
         if (this.options.fullscreenButton) {
             this.fullscreenBtn = document.createElement('button');
             this.fullscreenBtn.innerHTML = '⛶';
-            this.fullscreenBtn.title = 'Toggle Fullscreen';
+            this.fullscreenBtn.title = translate('chart.tooltips.fullscreen', 'Toggle Fullscreen');
             this.fullscreenBtn.style.cssText = `
                 position: absolute; top: 8px; right: 8px; z-index: 10;
                 padding: 4px 8px; background: rgba(255,255,255,0.9);
@@ -202,7 +222,7 @@ export class MValueChart {
             this.exitFullscreenBtn = document.createElement('button');
             this.exitFullscreenBtn.className = 'mvc-exit-fullscreen-btn';
             this.exitFullscreenBtn.innerHTML = '✕';
-            this.exitFullscreenBtn.title = 'Exit Fullscreen (Esc)';
+            this.exitFullscreenBtn.title = translate('chart.tooltips.exitFullscreen', 'Exit Fullscreen (Esc)');
             this.exitFullscreenBtn.style.cssText = `
                 position: absolute; top: 16px; right: 16px; z-index: 1001;
                 padding: 8px 12px; background: rgba(0,0,0,0.7); color: white;
@@ -217,7 +237,7 @@ export class MValueChart {
         this.resetZoomBtn = document.createElement('button');
         this.resetZoomBtn.className = 'mvc-reset-zoom-btn';
         this.resetZoomBtn.innerHTML = '↺';
-        this.resetZoomBtn.title = 'Reset Zoom (double-click chart)';
+        this.resetZoomBtn.title = translate('chart.tooltips.resetZoom', 'Reset Zoom (double-click chart)');
         this.resetZoomBtn.style.cssText = `
             position: absolute; top: 8px; right: ${this.options.fullscreenButton ? '44px' : '8px'}; z-index: 10;
             padding: 4px 8px; background: rgba(255,255,255,0.9);
@@ -306,10 +326,10 @@ export class MValueChart {
         btnGroup.style.cssText = 'display: flex; gap: 4px; margin-right: 12px;';
         
         const buttons = [
-            { text: 'All', action: () => this._selectAllCompartments() },
-            { text: 'None', action: () => this._selectNoCompartments() },
-            { text: 'Fast', action: () => this._selectFastCompartments() },
-            { text: 'Slow', action: () => this._selectSlowCompartments() }
+            { text: translate('chart.buttons.all', 'All'), action: () => this._selectAllCompartments() },
+            { text: translate('chart.buttons.none', 'None'), action: () => this._selectNoCompartments() },
+            { text: translate('chart.buttons.fast', 'Fast'), action: () => this._selectFastCompartments() },
+            { text: translate('chart.buttons.slow', 'Slow'), action: () => this._selectSlowCompartments() }
         ];
         
         buttons.forEach(({ text, action }) => {
@@ -372,7 +392,7 @@ export class MValueChart {
         // Shortcut legend
         const hint = document.createElement('div');
         hint.style.cssText = 'font-size: 0.7rem; color: var(--text-muted, #888); margin-top: 2px; padding: 0 4px;';
-        hint.textContent = 'Click = select one · Shift+click = toggle · ←→ step · Space play · F fullscreen';
+        hint.textContent = translate('chart.hints.compartments', 'Click = select one · Shift+click = toggle · ←→ step · Space play · F fullscreen');
         this.controlsContainer.appendChild(hint);
     }
     
@@ -382,19 +402,19 @@ export class MValueChart {
      */
     _buildTimelineControls() {
         // Rewind button
-        const rewindBtn = this._createButton('⏮', 'Jump to start (Home)', () => this._jumpToStart());
-        
+        const rewindBtn = this._createButton('⏮', translate('chart.tooltips.jumpStart', 'Jump to start (Home)'), () => this._jumpToStart());
+
         // Step back button
-        const stepBackBtn = this._createButton('◀', 'Step back (←)', () => this._stepTime(-1));
-        
+        const stepBackBtn = this._createButton('◀', translate('chart.tooltips.stepBack', 'Step back (←)'), () => this._stepTime(-1));
+
         // Play/Pause button
-        this.playBtn = this._createButton('▶️', 'Play/Pause (Space)', () => this._togglePlayback());
-        
+        this.playBtn = this._createButton('▶️', translate('chart.tooltips.playPause', 'Play/Pause (Space)'), () => this._togglePlayback());
+
         // Step forward button
-        const stepFwdBtn = this._createButton('▶', 'Step forward (→)', () => this._stepTime(1));
-        
+        const stepFwdBtn = this._createButton('▶', translate('chart.tooltips.stepForward', 'Step forward (→)'), () => this._stepTime(1));
+
         // Fast forward button
-        const ffwdBtn = this._createButton('⏭', 'Jump to end (End)', () => this._jumpToEnd());
+        const ffwdBtn = this._createButton('⏭', translate('chart.tooltips.jumpEnd', 'Jump to end (End)'), () => this._jumpToEnd());
         
         // Time slider
         this.timeSlider = document.createElement('input');
@@ -415,7 +435,7 @@ export class MValueChart {
         // Time display
         this.timeDisplay = document.createElement('span');
         this.timeDisplay.style.cssText = 'font-family: monospace; min-width: 120px; text-align: right;';
-        this.timeDisplay.textContent = '0.0 min @ 0m';
+        this.timeDisplay.textContent = translate('chart.mvalue.initialDepthLabel', '0.0 min @ 0m');
         
         this.timelineContainer.appendChild(rewindBtn);
         this.timelineContainer.appendChild(stepBackBtn);
@@ -664,7 +684,7 @@ export class MValueChart {
         if (!this.timeDisplay || !this.calculationResults) return;
         const time = this.calculationResults.timePoints[this.currentTimeIndex] || 0;
         const depth = this.calculationResults.depthPoints[this.currentTimeIndex] || 0;
-        this.timeDisplay.textContent = `${time.toFixed(1)} min @ ${depth.toFixed(1)}m`;
+        this.timeDisplay.textContent = fmt(translate('chart.timeDisplay', '{0} min @ {1}m'), time.toFixed(1), depth.toFixed(1));
         this._renderMiniProfile();
     }
 
@@ -906,7 +926,7 @@ export class MValueChart {
         // Ambient line (y = x)
         if (this.options.showAmbientLine) {
             datasets.push({
-                label: 'Ambient Line (y = x)',
+                label: translate('chart.mvalue.ambientLine', 'Ambient Line (y = x)'),
                 data: [{ x: 0, y: 0 }, { x: maxPressure, y: maxPressure }],
                 borderColor: this.options.colors.ambient,
                 borderWidth: 2,
@@ -924,7 +944,7 @@ export class MValueChart {
         if (this.options.showAlveolarLine) {
             const results = this.calculationResults;
             let alveolarData;
-            let alveolarLabel = 'Alveolar pN₂';
+            let alveolarLabel = translate('chart.mvalue.alveolarPN2', 'Alveolar pN₂');
 
             if (results && results.ambientPressures && results.alveolarN2Pressures) {
                 alveolarData = results.ambientPressures.map((amb, i) => ({
@@ -938,7 +958,10 @@ export class MValueChart {
                         if (name && !gasSeq.includes(name)) gasSeq.push(name);
                     }
                 }
-                if (gasSeq.length > 0) alveolarLabel = `Alveolar pN₂ (${gasSeq.join(' → ')})`;
+                if (gasSeq.length > 0) alveolarLabel = fmt(
+                    translate('chart.mvalue.alveolarPN2WithGases', 'Alveolar pN₂ ({0})'),
+                    gasSeq.join(' → ')
+                );
             } else {
                 // Fallback: no simulation yet — draw the bottom-gas straight reference line
                 const gases = this.diveSetup?.gases || [];
@@ -948,7 +971,10 @@ export class MValueChart {
                     { x: 0, y: 0 },
                     { x: maxPressure, y: (maxPressure - wv) * n2 }
                 ];
-                alveolarLabel = `Alveolar pN₂ (${Math.round(n2 * 100)}%)`;
+                alveolarLabel = fmt(
+                    translate('chart.mvalue.alveolarPN2Percent', 'Alveolar pN₂ ({0}%)'),
+                    Math.round(n2 * 100)
+                );
             }
 
             datasets.push({
@@ -967,7 +993,7 @@ export class MValueChart {
         // Surface line (x = 1 bar)
         if (this.options.showSurfaceLine) {
             datasets.push({
-                label: 'Surface (1 bar)',
+                label: translate('chart.mvalue.surfaceLine', 'Surface (1 bar)'),
                 data: [{ x: SURFACE_PRESSURE, y: 0 }, { x: SURFACE_PRESSURE, y: maxPressure }],
                 borderColor: this.options.colors.surface,
                 borderWidth: 1,
@@ -1030,7 +1056,7 @@ export class MValueChart {
             if (pAnchor > SURFACE_PRESSURE) {
                 const anchorDepthM = ((pAnchor - SURFACE_PRESSURE) / 0.1).toFixed(1);
                 datasets.push({
-                    label: `pAnchor ${pAnchor.toFixed(2)} bar (${anchorDepthM}m)`,
+                    label: fmt(translate('chart.mvalue.pAnchor', 'pAnchor {0} bar ({1}m)'), pAnchor.toFixed(2), anchorDepthM),
                     data: [
                         { x: pAnchor, y: 0 },
                         { x: pAnchor, y: maxPressure }
@@ -1058,7 +1084,7 @@ export class MValueChart {
                 }
                 
                 datasets.push({
-                    label: `M-value TC${comp.id}`,
+                    label: fmt(translate('chart.mvalue.mValueTC', 'M-value TC{0}'), comp.id),
                     data: mValueData,
                     borderColor: comp.color,
                     borderWidth: 2.25,
@@ -1078,7 +1104,7 @@ export class MValueChart {
                     gfLowData.push({ x: p, y: getAdjustedMValue(p, comp.aN2, comp.bN2, gfLow) });
                 }
                 datasets.push({
-                    label: `GF Low (${Math.round(gfLow * 100)}%) TC${comp.id}`,
+                    label: fmt(translate('chart.mvalue.gfLowTC', 'GF Low ({0}%) TC{1}'), Math.round(gfLow * 100), comp.id),
                     data: gfLowData,
                     borderColor: comp.color + 'B0',
                     borderWidth: 1.5,
@@ -1095,7 +1121,7 @@ export class MValueChart {
                     gfHighData.push({ x: p, y: getAdjustedMValue(p, comp.aN2, comp.bN2, gfHigh) });
                 }
                 datasets.push({
-                    label: `GF High (${Math.round(gfHigh * 100)}%) TC${comp.id}`,
+                    label: fmt(translate('chart.mvalue.gfHighTC', 'GF High ({0}%) TC{1}'), Math.round(gfHigh * 100), comp.id),
                     data: gfHighData,
                     borderColor: comp.color + '60',
                     borderWidth: 1.5,
@@ -1120,7 +1146,7 @@ export class MValueChart {
                 }
                 
                 datasets.push({
-                    label: `GF Corridor TC${comp.id}`,
+                    label: fmt(translate('chart.mvalue.gfCorridorTC', 'GF Corridor TC{0}'), comp.id),
                     data: corridorData,
                     borderColor: comp.color,
                     borderWidth: 3,
@@ -1141,7 +1167,7 @@ export class MValueChart {
                     });
                 }
                 datasets.push({
-                    label: `Trail TC${comp.id}`,
+                    label: fmt(translate('chart.mvalue.trailTC', 'Trail TC{0}'), comp.id),
                     data: trailData,
                     borderColor: comp.color + '60',
                     borderWidth: 1,
@@ -1157,7 +1183,7 @@ export class MValueChart {
             // point off the trail without adding visual noise.
             const currentTissue = results.compartments[comp.id].pressures[timeIndex];
             datasets.push({
-                label: `TC${comp.id} (${comp.halfTime}min)`,
+                label: fmt(translate('chart.mvalue.tcLabel', 'TC{0} ({1}min)'), comp.id, comp.halfTime),
                 data: [{ x: currentAmbient, y: currentTissue }],
                 backgroundColor: comp.color,
                 borderColor: theme().colors.surface,
@@ -1202,7 +1228,10 @@ export class MValueChart {
                         callbacks: {
                             label: (context) => {
                                 const label = context.dataset.label || '';
-                                return `${label}: P_amb=${context.parsed.x.toFixed(2)}, P_tissue=${context.parsed.y.toFixed(2)} bar`;
+                                return fmt(
+                                    translate('chart.mvalue.tooltipLabel', '{0}: P_amb={1}, P_tissue={2} bar'),
+                                    label, context.parsed.x.toFixed(2), context.parsed.y.toFixed(2)
+                                );
                             }
                         }
                     },
@@ -1239,13 +1268,13 @@ export class MValueChart {
                 scales: {
                     x: {
                         type: 'linear',
-                        title: { display: true, text: 'Ambient Pressure (bar)' },
+                        title: { display: true, text: translate('chart.axes.ambientPressureBar', 'Ambient Pressure (bar)') },
                         min: 0,
                         max: maxPressure
                     },
                     y: {
                         type: 'linear',
-                        title: { display: true, text: 'Tissue N₂ Pressure (bar)' },
+                        title: { display: true, text: translate('chart.axes.tissueN2PressureBar', 'Tissue N₂ Pressure (bar)') },
                         min: 0,
                         max: maxPressure
                     }
@@ -1388,6 +1417,10 @@ export class MValueChart {
         }
         
         document.removeEventListener('keydown', this._keyHandler);
+        if (this._onLanguageChange) {
+            document.removeEventListener('languagechange', this._onLanguageChange);
+            this._onLanguageChange = null;
+        }
         this.container.innerHTML = '';
     }
 }

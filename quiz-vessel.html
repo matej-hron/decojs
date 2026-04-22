@@ -34,9 +34,9 @@
     </nav>
 
     <header class="hero">
-        <h1>⚓ Plavidlo</h1>
-        <p class="hero-subtitle">Zkušební otázky z obsluhy plavidla SPČR 2018 (CMAS/SPČR)</p>
-        <p class="language-notice">
+        <h1 data-i18n="quiz.vessel.title">⚓ Plavidlo</h1>
+        <p class="hero-subtitle" data-i18n="quiz.vessel.subtitle">Zkušební otázky z obsluhy plavidla SPČR 2018 (CMAS/SPČR)</p>
+        <p class="language-notice" data-i18n="quiz.languageNotice">
             🇨🇿 This quiz is in <strong>Czech language</strong> to match the official CMAS/SPČR certification exam materials.
             Translation was avoided to prevent errors in technical terminology.
         </p>
@@ -46,11 +46,11 @@
         <section class="quiz-section">
             <!-- Category Filter -->
             <div class="quiz-categories">
-                <h4>Témata:</h4>
+                <h4 data-i18n="quiz.categoriesTitle">Témata:</h4>
                 <div class="category-options">
                     <label class="category-option">
                         <input type="checkbox" value="all" id="category-all" checked>
-                        <span>Vše</span>
+                        <span data-i18n="quiz.filterAll">Vše</span>
                     </label>
                     <label class="category-option">
                         <input type="checkbox" value="navigace" class="category-checkbox">
@@ -91,10 +91,10 @@
             <div class="quiz-settings">
                 <label class="quiz-setting">
                     <input type="checkbox" id="shuffle-toggle">
-                    <span>Zamíchat otázky</span>
+                    <span data-i18n="quiz.settings.shuffle">Zamíchat otázky</span>
                 </label>
                 <label class="quiz-setting">
-                    <span>Počet otázek:</span>
+                    <span data-i18n="quiz.settings.questionCount">Počet otázek:</span>
                     <select id="question-count">
                         <option value="5">5</option>
                         <option value="10" selected>10</option>
@@ -102,7 +102,7 @@
                         <option value="50">50 (vše)</option>
                     </select>
                 </label>
-                <button id="apply-settings-btn" class="btn btn-small">Aplikovat a restartovat</button>
+                <button id="apply-settings-btn" class="btn btn-small" data-i18n="quiz.settings.apply">Aplikovat a restartovat</button>
             </div>
 
             <div class="quiz-progress">
@@ -115,21 +115,21 @@
             </div>
 
             <div id="quiz-controls" class="quiz-controls">
-                <button id="next-btn" class="btn btn-primary" disabled>Další otázka →</button>
-                <button id="restart-btn" class="btn btn-secondary" style="display: none;">Začít znovu</button>
+                <button id="next-btn" class="btn btn-primary" disabled data-i18n="quiz.buttons.next">Další otázka →</button>
+                <button id="restart-btn" class="btn btn-secondary" style="display: none;" data-i18n="quiz.buttons.restart">Začít znovu</button>
             </div>
         </section>
 
         <section class="quiz-info">
-            <h3>📚 O testu</h3>
-            <p>
+            <h3 data-i18n="quiz.about.title">📚 O testu</h3>
+            <p data-i18n="quiz.vessel.aboutIntro">
                 Tyto otázky pochází z oficiálních zkušebních testů SPČR (Svaz potápěčů České republiky)
                 z roku 2018. Testují znalosti obsluhy plavidla a potápění z lodi.
             </p>
-            <p>
+            <p data-i18n="quiz.vessel.aboutAvailable">
                 <strong>Aktuálně k dispozici:</strong> 50 otázek z 8 témat.
             </p>
-            <p>
+            <p data-i18n="quiz.vessel.aboutSource">
                 <strong>Zdroj:</strong>
                 <a href="https://www.cmas.cz" target="_blank" rel="noopener">
                     CMAS.cz - Plavidlo zkušební testy
@@ -139,8 +139,8 @@
     </main>
 
     <footer>
-        <span class="wip-badge">Experimental</span>
-        <p>
+        <span class="wip-badge" data-i18n="common.wipBadge">Experimental</span>
+        <p data-i18n="quiz.disclaimer">
             <strong>Disclaimer:</strong> Toto je vzdělávací nástroj. Pro oficiální certifikaci
             kontaktujte CMAS/SPČR.
         </p>
@@ -151,5 +151,12 @@
 
     <!-- Shared Navigation -->
     <script src="js/nav.js" type="module"></script>
+
+    <!-- i18n -->
+    <script type="module">
+        import { initI18n, createLanguageSwitcher } from './js/i18n.js';
+        createLanguageSwitcher();
+        initI18n();
+    </script>
 </body>
 </html>

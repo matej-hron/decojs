@@ -13,7 +13,7 @@
 const DEFAULT_LANG = 'en';
 
 /** @type {string[]} Supported language codes */
-const SUPPORTED_LANGS = ['en', 'cs'];
+const SUPPORTED_LANGS = ['en', 'cs', 'es'];
 
 /** @type {string} localStorage key for language preference */
 const STORAGE_KEY = 'deco-theory-lang';
@@ -175,6 +175,33 @@ function getCurrentLanguage() {
 }
 
 /**
+ * Synchronously look up a translation key in the current-language cache.
+ * If the key is missing in the current language, falls back to English if
+ * available. If that also fails, returns the provided fallback string.
+ *
+ * Use this for dynamically-generated UI labels (chart tooltips, runtime
+ * button text, nav labels, etc.) where `data-i18n` attributes can't be
+ * used because the element doesn't exist yet at translation time.
+ *
+ * @param {string} key - Dot-notation key (e.g. "nav.home")
+ * @param {string} [fallback] - String to return if key resolves to nothing
+ * @returns {string} The translated string, or the fallback
+ */
+function translate(key, fallback = '') {
+    const current = translationCache[currentLanguage];
+    if (current) {
+        const val = resolveKey(current, key);
+        if (val !== undefined) return val;
+    }
+    // Fallback to English cache if it's loaded and different
+    if (currentLanguage !== DEFAULT_LANG && translationCache[DEFAULT_LANG]) {
+        const val = resolveKey(translationCache[DEFAULT_LANG], key);
+        if (val !== undefined) return val;
+    }
+    return fallback;
+}
+
+/**
  * Initialize the i18n system.
  * Detects language, loads translations, and applies them.
  * Call this once when the page loads.
@@ -195,7 +222,9 @@ function buildSwitcherElement() {
     switcher.innerHTML = `
         <button class="lang-switcher-btn" data-lang="en" aria-label="Switch to English">EN</button>
         <span class="lang-switcher-divider">|</span>
-        <button class="lang-switcher-btn" data-lang="cs" aria-label="Switch to Czech">CZ</button>
+        <button class="lang-switcher-btn" data-lang="cs" aria-label="Switch to Czech">CS</button>
+        <span class="lang-switcher-divider">|</span>
+        <button class="lang-switcher-btn" data-lang="es" aria-label="Switch to Spanish">ES</button>
     `;
 
     switcher.querySelectorAll('.lang-switcher-btn').forEach(btn => {
@@ -238,4 +267,4 @@ function createLanguageSwitcher() {
     }
 }
 
-export { initI18n, setLanguage, getCurrentLanguage, createLanguageSwitcher, SUPPORTED_LANGS };
+export { initI18n, setLanguage, getCurrentLanguage, createLanguageSwitcher, translate, SUPPORTED_LANGS };

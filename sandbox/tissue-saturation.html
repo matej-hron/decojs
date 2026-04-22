@@ -29,13 +29,13 @@
         </div>
     </nav>
 
-    <div class="disclaimer-banner">
+    <div class="disclaimer-banner" data-i18n="sandbox.tissue.disclaimerBanner">
         <strong>Educational Use Only</strong> — A physics playground showing how tissue nitrogen loading responds to depth and gas changes. Not a dive planner.
     </div>
 
     <header class="hero hero-compact">
-        <h1>Tissue Saturation Simulator</h1>
-        <p class="hero-subtitle">
+        <h1 data-i18n="sandbox.tissue.title">Tissue Saturation Simulator</h1>
+        <p class="hero-subtitle" data-i18n="sandbox.tissue.subtitle">
             Move the diver, switch the gas, let time run — and watch nitrogen partial pressures chase ambient exponentially.
         </p>
     </header>
@@ -45,47 +45,47 @@
             <!-- Left: controls -->
             <aside class="tsim-controls">
                 <div class="tsim-control-block">
-                    <label class="tsim-label">Depth</label>
+                    <label class="tsim-label" data-i18n="sandbox.tissue.depth">Depth</label>
                     <div class="tsim-depth-row">
                         <input type="range" class="tsim-depth-slider" min="0" max="40" step="1" value="0" aria-label="Depth in meters">
                         <input type="number" class="tsim-depth-input" min="0" max="40" step="1" value="0" aria-label="Depth in meters">
                         <span class="tsim-unit">m</span>
                     </div>
-                    <div class="tsim-depth-hint">0–40 m. Changes are instantaneous.</div>
+                    <div class="tsim-depth-hint" data-i18n="sandbox.tissue.depthHint">0–40 m. Changes are instantaneous.</div>
                 </div>
 
                 <div class="tsim-control-block">
-                    <label class="tsim-label">Breathing gas</label>
+                    <label class="tsim-label" data-i18n="sandbox.tissue.gas">Breathing gas</label>
                     <select class="tsim-gas-select">
-                        <option value="air">Air (21/79)</option>
-                        <option value="ean32">EAN32</option>
-                        <option value="ean36">EAN36</option>
-                        <option value="ean50">EAN50</option>
-                        <option value="ean80">EAN80</option>
-                        <option value="o2">O₂ 100%</option>
+                        <option value="air" data-i18n="sandbox.tissue.gases.air">Air (21/79)</option>
+                        <option value="ean32" data-i18n="sandbox.tissue.gases.ean32">EAN32</option>
+                        <option value="ean36" data-i18n="sandbox.tissue.gases.ean36">EAN36</option>
+                        <option value="ean50" data-i18n="sandbox.tissue.gases.ean50">EAN50</option>
+                        <option value="ean80" data-i18n="sandbox.tissue.gases.ean80">EAN80</option>
+                        <option value="o2" data-i18n="sandbox.tissue.gases.o2">O₂ 100%</option>
                     </select>
                 </div>
 
                 <div class="tsim-control-block">
-                    <label class="tsim-label">Speed</label>
+                    <label class="tsim-label" data-i18n="sandbox.tissue.speed">Speed</label>
                     <div class="tsim-speed-row">
                         <button class="btn btn-small tsim-speed-btn active" data-speed="1">1×</button>
                         <button class="btn btn-small tsim-speed-btn" data-speed="5">5×</button>
                         <button class="btn btn-small tsim-speed-btn" data-speed="10">10×</button>
                         <button class="btn btn-small tsim-speed-btn" data-speed="60">60×</button>
                     </div>
-                    <div class="tsim-speed-hint">1× = 1 sim-minute per real second.</div>
+                    <div class="tsim-speed-hint" data-i18n="sandbox.tissue.speedHint">1× = 1 sim-minute per real second.</div>
                 </div>
 
                 <div class="tsim-control-block">
-                    <label class="tsim-label">Time</label>
+                    <label class="tsim-label" data-i18n="sandbox.tissue.time">Time</label>
                     <div class="tsim-time-row">
-                        <button class="btn btn-small tsim-step-back-btn" title="Step back 1 min (←)">◀ 1 min</button>
+                        <button class="btn btn-small tsim-step-back-btn" title="Step back 1 min (←)" data-i18n="sandbox.tissue.timeButtons.back">◀ 1 min</button>
                         <button class="btn btn-small tsim-play-btn" title="Play / Pause (Space)">▶</button>
-                        <button class="btn btn-small tsim-step-fwd-btn" title="Step forward 1 min (→)">1 min ▶</button>
+                        <button class="btn btn-small tsim-step-fwd-btn" title="Step forward 1 min (→)" data-i18n="sandbox.tissue.timeButtons.forward">1 min ▶</button>
                     </div>
-                    <div class="tsim-speed-hint">Keyboard: ← / → to step, Space to play/pause.</div>
-                    <button class="btn btn-small btn-secondary tsim-reset-btn" style="margin-top:0.5rem;">Reset</button>
+                    <div class="tsim-speed-hint" data-i18n="sandbox.tissue.keyboardHint">Keyboard: ← / → to step, Space to play/pause.</div>
+                    <button class="btn btn-small btn-secondary tsim-reset-btn" style="margin-top:0.5rem;" data-i18n="sandbox.tissue.timeButtons.reset">Reset</button>
                 </div>
             </aside>
 
@@ -93,49 +93,49 @@
             <section class="tsim-readouts">
                 <div class="tsim-numbers">
                     <div class="tsim-tile">
-                        <span class="tsim-tile-label">Depth</span>
+                        <span class="tsim-tile-label" data-i18n="sandbox.tissue.readout.depth">Depth</span>
                         <span class="tsim-tile-value" data-tsim-readout="depth">0.0 m</span>
                     </div>
                     <div class="tsim-tile">
-                        <span class="tsim-tile-label">pAmb</span>
+                        <span class="tsim-tile-label" data-i18n="sandbox.tissue.readout.pAmb">pAmb</span>
                         <span class="tsim-tile-value" data-tsim-readout="pAmb">1.00 bar</span>
                     </div>
                     <div class="tsim-tile">
-                        <span class="tsim-tile-label">Gas</span>
+                        <span class="tsim-tile-label" data-i18n="sandbox.tissue.readout.gas">Gas</span>
                         <span class="tsim-tile-value" data-tsim-readout="gas">Air</span>
                     </div>
                     <div class="tsim-tile">
-                        <span class="tsim-tile-label">pO₂</span>
+                        <span class="tsim-tile-label" data-i18n="sandbox.tissue.readout.pO2">pO₂</span>
                         <span class="tsim-tile-value" data-tsim-readout="pO2">0.21 bar</span>
                     </div>
                     <div class="tsim-tile">
-                        <span class="tsim-tile-label">pN₂ inspired</span>
+                        <span class="tsim-tile-label" data-i18n="sandbox.tissue.readout.pN2Inspired">pN₂ inspired</span>
                         <span class="tsim-tile-value" data-tsim-readout="pN2Insp">0.79 bar</span>
                     </div>
                     <div class="tsim-tile">
-                        <span class="tsim-tile-label">pN₂ alveolar</span>
+                        <span class="tsim-tile-label" data-i18n="sandbox.tissue.readout.pN2Alveolar">pN₂ alveolar</span>
                         <span class="tsim-tile-value" data-tsim-readout="pN2Alv">0.74 bar</span>
                     </div>
                     <div class="tsim-tile tsim-tile-fast">
-                        <span class="tsim-tile-label">TC1 • fast (5 min)</span>
+                        <span class="tsim-tile-label" data-i18n="sandbox.tissue.readout.tcFast">TC1 • fast (5 min)</span>
                         <span class="tsim-tile-value" data-tsim-readout="pFast">0.74 bar</span>
                     </div>
                     <div class="tsim-tile tsim-tile-med">
-                        <span class="tsim-tile-label">TC5 • medium (27 min)</span>
+                        <span class="tsim-tile-label" data-i18n="sandbox.tissue.readout.tcMed">TC5 • medium (27 min)</span>
                         <span class="tsim-tile-value" data-tsim-readout="pMed">0.74 bar</span>
                     </div>
                     <div class="tsim-tile tsim-tile-slow">
-                        <span class="tsim-tile-label">TC12 • slow (239 min)</span>
+                        <span class="tsim-tile-label" data-i18n="sandbox.tissue.readout.tcSlow">TC12 • slow (239 min)</span>
                         <span class="tsim-tile-value" data-tsim-readout="pSlow">0.74 bar</span>
                     </div>
                     <div class="tsim-tile">
-                        <span class="tsim-tile-label">Sim time</span>
+                        <span class="tsim-tile-label" data-i18n="sandbox.tissue.readout.time">Sim time</span>
                         <span class="tsim-tile-value" data-tsim-readout="time">0:00</span>
                     </div>
                 </div>
 
                 <div class="tsim-alerts">
-                    <div class="tsim-alert tsim-alert-ok">All clear</div>
+                    <div class="tsim-alert tsim-alert-ok" data-i18n="sandbox.tissue.alertOk">All clear</div>
                 </div>
 
                 <div class="tsim-chart">
@@ -146,8 +146,8 @@
     </main>
 
     <footer>
-        <span class="wip-badge">Experimental</span>
-        <p><strong>Disclaimer:</strong> For educational purposes only. Single-inert-gas (N₂) model; no helium, no CNS clock, no M-value warnings.</p>
+        <span class="wip-badge" data-i18n="common.wipBadge">Experimental</span>
+        <p data-i18n="sandbox.tissue.disclaimer"><strong>Disclaimer:</strong> For educational purposes only. Single-inert-gas (N₂) model; no helium, no CNS clock, no M-value warnings.</p>
         <span class="version-number"></span>
     </footer>
 

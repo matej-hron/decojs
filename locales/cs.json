@@ -354,8 +354,10 @@
             "henrysLaw": "Henryho zákon",
             "gasExchange": "Výměna plynů v těle",
             "saturationDynamics": "Dynamika sycení",
+            "criticalSupersaturation": "Kritické přesycení",
             "halfTimeConcept": "Koncept poločasu",
             "halfTimeCharts": "Grafy poločasu",
+            "halfTimeMath": "Matematika",
             "tissueTypes": "Typy tkání",
             "buhlmannCompartments": "Bühlmannovy kompartmenty",
             "zhl16Variants": "Varianty ZH-L16",
@@ -366,7 +368,7 @@
             "title": "Proč je to důležité?",
             "whyMatters": {
                 "title": "Proč je to důležité?",
-                "text": "Při ponoru způsobuje zvýšený tlak rozpouštění dusíku z vdechovaného vzduchu do tkání vašeho těla. Čím hlouběji se ponoříte a čím déle zůstanete, tím více dusíku se nahromadí. Pokud vystoupáte příliš rychle, může tento dusík tvořit bubliny ve tkáních — a způsobit <strong>dekompresní nemoc (DCS)</strong>, známou také jako \u201Ekesonová nemoc\u201C."
+                "text": "Při ponoru způsobuje zvýšený tlak rozpouštění dusíku z vdechovaného vzduchu do tkání vašeho těla. Čím hlouběji se ponoříte a čím déle zůstanete, tím více dusíku se nahromadí. Pokud vystoupáte příliš rychle, může tento dusík tvořit bubliny ve tkáních — a způsobit <strong>dekompresní nemoc (DCS)</strong>, známou také jako „kesonová nemoc“."
             }
         },
         "henrysLaw": {
@@ -617,7 +619,7 @@
             "workmanMath": "(N₂ i He, 1965)",
             "historySummary": "📚 Historie: jak jsme objevili bezpečné limity",
             "haldaneHistory": "Skotský fyziolog pozoroval, že dělníci v tunelech a kesonech se stlačeným vzduchem mohli bezpečně dekomprimovat z 2 atmosfér na 1 (poměr 2:1). To se stalo základem stupňovité dekomprese. <em>Poznámka: tento poměr 2:1 byl odvozen z experimentů pouze se vzduchem — pro jiné směsi (trimix, heliox) platí jiné tolerance kvůli odlišným vlastnostem rozpustnosti a difuze hélia.</em>",
-            "workmanHistory": "Výzkumník amerického námořnictva, který rozpoznal, že jediný pevný poměr nedokáže zachytit celý obraz. Různé tkáňové kompartmenty tolerují různé úrovně přesycení a tyto tolerance se mění s hloubkou. Zavedl pojem <strong>\"M-hodnota\"</strong> (Maximum value) — maximální tolerovatelný tlak inertního plynu ve tkáni při jakékoli dané hloubce. Workman jako první vyvinul M-hodnoty jak pro dusík, <em>tak pro hélium</em> (1965), čímž umožnil plánování dekomprese pro hluboké ponory s heliox směsí.",
+            "workmanHistory": "Výzkumník amerického námořnictva, který rozpoznal, že jediný pevný poměr nedokáže zachytit celý obraz. Různé tkáňové kompartmenty tolerují různé úrovně přesycení a tyto tolerance se mění s hloubkou. Zavedl pojem <strong>„M-hodnota“</strong> (Maximum value) — maximální tolerovatelný tlak inertního plynu ve tkáni při jakékoli dané hloubce. Workman jako první vyvinul M-hodnoty jak pro dusík, <em>tak pro hélium</em> (1965), čímž umožnil plánování dekomprese pro hluboké ponory s heliox směsí.",
             "workmanInsight": "Klíčový poznatek Workmana: rychlejší tkáně (mozek, krev) tolerují vyšší přesycení než pomalejší tkáně (tuk, kosti) — a tolerovaný poměr se také mění s hloubkou."
         },
         "buhlmann": {
@@ -635,7 +637,7 @@
             "formulaPamb": "<strong>P<sub>amb</sub></strong> = Okolní tlak v aktuální hloubce (bar)",
             "formulaA": "<strong>a</strong> = Úsek na ose y (bar) — specifický pro tkáň",
             "formulaB": "<strong>b</strong> = Směrnice (bezrozměrný) — specifická pro tkáň",
-            "formulaHint": "Koeficient \"a\" je průsečík s osou y — maximální tolerovatelný tkáňový tlak při nulovém přetlaku (na hladině). Rychlejší tkáně mají vyšší hodnoty \"a\", což znamená, že zvládnou větší přesycení.",
+            "formulaHint": "Koeficient „a“ je průsečík s osou y — maximální tolerovatelný tkáňový tlak při nulovém přetlaku (na hladině). Rychlejší tkáně mají vyšší hodnoty „a“, což znamená, že zvládnou větší přesycení.",
             "variantsSummary": "📚 Varianty ZH-L16: A, B a C",
             "variantsIntro": "Bühlmann publikoval tři sady koeficientů:",
             "variantA": "<strong>ZH-L16A</strong> — Matematicky odvozené z poločasů. Původní, nejméně konzervativní sada. Používá se pro výzkum.",
@@ -644,7 +646,7 @@
             "variantsHint": "Sada A se v praxi ukázala jako příliš agresivní pro střední kompartmenty, což vedlo k modifikacím B a C. Většina dnešních potápěčských počítačů používá ZH-L16C.",
             "limitationsSummary": "⚠️ Omezení M-hodnot",
             "limitationsText1": "M-hodnoty jsou užitečné, ale nejsou absolutními bezpečnostními hranicemi. Výzkum ukazuje, že <strong>tiché (asymptomatické) bubliny</strong> se tvoří hluboko pod limity M-hodnot — nemusíte překročit linii, aby se bubliny objevily.",
-            "limitationsText2": "Někteří potápěči překročili M-hodnoty bez příznaků, zatímco jiní rozvinuli dekompresní nemoc i přesto, že zůstali v limitech. Jak říká Powell: <em>\"M-hodnotu si lze představit jako silnou černou čáru procházející velkou šedou zónou.\"</em>",
+            "limitationsText2": "Někteří potápěči překročili M-hodnoty bez příznaků, zatímco jiní rozvinuli dekompresní nemoc i přesto, že zůstali v limitech. Jak říká Powell: <em>„M-hodnotu si lze představit jako silnou černou čáru procházející velkou šedou zónou.“</em>",
             "limitationsHint": "Proto existují gradient faktory — aby udržely sycení tkání hluboko pod teoretickým limitem M-hodnoty. Viz stránka <a href=\"gradient-factors.html\">Gradient faktory</a>."
         },
         "diagram": {
@@ -713,7 +715,7 @@
             "varGF": "<strong>GF</strong> — interpolovaný z GF Low (50%) v hloubce pAnchor na GF High (80%) na hladině",
             "varM": "<strong>M</strong> — surová Bühlmannova M-hodnota = a + P<sub>amb</sub> / b",
             "note100": "Při GF 100/100 zelený koridor splývá s červenou M-čárou — žádná konzervativnost se nepřidává.",
-            "note5080": "Zelený pás zobrazuje M' během ponoru — leží pod červenou M-čárou a směrem k hladině se přibližuje k ambient čáře."
+            "note5080": "Zelený pás zobrazuje M' během ponoru — leží pod červenou M-čárou a směrem k hladině se přibližuje k čáře okolního tlaku."
         },
         "header": {
             "title": "Gradient faktory",
@@ -724,7 +726,7 @@
             "silentBubbles": {
                 "title": "Tiché bubliny",
                 "text1": "Studie pomocí dopplerovského ultrazvuku odhalily něco překvapivého: <strong>bubliny se tvoří u potápěčů po většině ponorů</strong>, i když dodržují konzervativní profily bez příznaků DCS.",
-                "insight": "Tyto „tiché bubliny” (žilní plynové embolie) nevyvolávají žádné příznaky, ale dokazují, že <strong>M-values nepředstavují hranici bez bublin</strong>. Představují <em>tolerovatelnou</em> úroveň tvorby bublin.",
+                "insight": "Tyto „tiché bubliny“ (žilní plynové embolie) nevyvolávají žádné příznaky, ale dokazují, že <strong>M-values nepředstavují hranici bez bublin</strong>. Představují <em>tolerovatelnou</em> úroveň tvorby bublin.",
                 "text2": "To znamená, že M-value linie v našem diagramu M-value není ostrá hranice „bezpečné/nebezpečné“. Spíše se jedná o pravděpodobnostní gradient — čím blíže se k ní přiblížíte, tím více bublin vzniká a tím vyšší je vaše riziko."
             },
             "variability": {
@@ -894,7 +896,7 @@
                 "bullet3": "Belgické vojsko (2023) — tovární nastavení 30/70 bylo nebezpečné pro vzduchový ponor do 60 m"
             },
             "pointHelium": {
-                "title": "2. Pro helium (trimix/heliox) jsou asymetrické GF stále na místě",
+                "title": "2. Pro hélium (trimix/heliox) jsou asymetrické GF stále na místě",
                 "text": "Na heliových směsích vynucení některých hlubších zastávek <em>pomáhá</em> (DCS vnitřního ucha, rychlé heliové tkáně). CMAS doporučuje <strong>GF Low 30–50, GF High 70–80</strong> (např. 30/70, 50/80). To odpovídá řádku „Hluboký ponor“ v tabulce výše."
             },
             "pointNoStop": {
@@ -1004,6 +1006,578 @@
         "footer": {
             "badge": "Experimentální",
             "text": "<strong>Upozornění:</strong> Pouze pro výukové účely. Založeno na předpokladech ideálního plynového zákona."
+        }
+    },
+    "common": {
+        "wipBadge": "Experimentální"
+    },
+    "units": {
+        "min": "min",
+        "m": "m",
+        "bar": "bar",
+        "liters": "l",
+        "percent": "%",
+        "mPerMin": "m/min",
+        "lPerMin": "l/min"
+    },
+    "chart": {
+        "buttons": {
+            "all": "Vše",
+            "none": "Žádné",
+            "fast": "Rychlé",
+            "slow": "Pomalé"
+        },
+        "hints": {
+            "compartments": "Klik = vybrat jednu · Shift+klik = přepnout · ←→ krok · Mezerník přehrávání · F režim celé obrazovky",
+            "arrowShiftArrow": "↑↓ posun, Shift+↑↓ rozšířit/zúžit"
+        },
+        "tooltips": {
+            "fullscreen": "Přepnout celou obrazovku",
+            "exitFullscreen": "Ukončit celou obrazovku (Esc)",
+            "resetZoom": "Resetovat přiblížení (dvojklik)",
+            "jumpStart": "Na začátek (Home)",
+            "stepBack": "Krok zpět (←)",
+            "playPause": "Přehrát / pauza (mezerník)",
+            "stepForward": "Krok vpřed (→)",
+            "jumpEnd": "Na konec (End)"
+        },
+        "timeDisplay": "{0} min @ {1} m",
+        "axes": {
+            "timeMinutes": "Čas (minuty)",
+            "timeMin": "Čas (min)",
+            "depthMeters": "Hloubka (m)",
+            "pressureBar": "Tlak (bar)",
+            "tankPressureBar": "Tlak v lahvi (bar)",
+            "ambientPressureBar": "Okolní tlak (bar)",
+            "tissueN2PressureBar": "Tlak N₂ v tkáni (bar)",
+            "gfPercent": "GF (%)",
+            "depthEquivalent": "Ekvivalentní hloubka (m)"
+        },
+        "profile": {
+            "datasetDepth": "Hloubka (m)",
+            "datasetCeiling": "Strop (m)",
+            "datasetAmbientPressure": "Okolní tlak (bar)",
+            "datasetAlveolarPpN2": "Alveolární ppN₂ (bar)",
+            "datasetPpO2": "ppO₂ (bar)",
+            "datasetPpN2": "ppN₂ (bar)",
+            "datasetGasBar": "{0} (bar)",
+            "avg": "PRŮM: {0} m",
+            "max": "MAX: {0} m",
+            "tdt": "TDT: {0} min",
+            "bottomTime": "ČAS NA DNĚ: {0} min",
+            "reserve": "REZERVA: {0} bar",
+            "descentRate": "⬇ {0} m/min",
+            "ascentRate": "⬆ {0} m/min",
+            "decoStop": "DEKO {0} m · {1} min",
+            "surfaceInterval": "POVRCHOVÝ INTERVAL →",
+            "gasSwitchFrom": "{0} → {1} @ {2} m",
+            "gasSwitchTo": "→ {0} @ {1} m",
+            "ppO2Working": "ppO₂ 1,4 (dno)",
+            "ppO2Deco": "ppO₂ 1,6 (deko)",
+            "ppN2Narcosis": "ppN₂ opojení (4,0)",
+            "tooltipTime": "Čas: {0} min",
+            "tooltipGas": "Plyn: {0}",
+            "tooltipGasConsumption": "⛽ Spotřeba plynu: {0} l/min ({1})",
+            "tooltipTankPressures": "─── Tlaky v lahvích ───",
+            "tooltipTankEmpty": " ⚠️ PRÁZDNÁ",
+            "tooltipTankLow": " ⚠️",
+            "tooltipTankRow": "  {0}: {1} bar{2}",
+            "tooltipLabelDepth": "{0}: {1} m",
+            "tooltipLabelPressure": "{0}: {1} bar",
+            "tooltipLabelValue": "{0}: {1}"
+        },
+        "mvalue": {
+            "tcLabel": "TC{0} ({1} min)",
+            "tcCeilingLabel": "TC{0} strop",
+            "mValueTC": "M-hodnota TC{0}",
+            "gfLowTC": "GF Low ({0} %) TC{1}",
+            "gfHighTC": "GF High ({0} %) TC{1}",
+            "gfCorridorTC": "GF koridor TC{0}",
+            "trailTC": "Stopa TC{0}",
+            "ambientLine": "Přímka okolního tlaku (y = x)",
+            "alveolarPN2": "Alveolární pN₂",
+            "alveolarPN2WithGases": "Alveolární pN₂ ({0})",
+            "alveolarPN2Percent": "Alveolární pN₂ ({0} %)",
+            "surfaceLine": "Hladina (1 bar)",
+            "pAnchor": "pAnchor {0} bar ({1} m)",
+            "tooltipLabel": "{0}: P_amb={1}, P_tkáň={2} bar",
+            "initialDepthLabel": "0,0 min @ 0 m"
+        },
+        "gf": {
+            "mValue100": "M-hodnota (100 %)",
+            "gfCorridor": "GF koridor",
+            "leadingTissue": "Vedoucí tkáň",
+            "leadingTC": "Vedoucí: TC{0} ({1} %)",
+            "pAnchor": "pAnchor {0} bar ({1} m)",
+            "tooltipLabel": "{0}: P_amb={1} bar, GF={2} %"
+        }
+    },
+    "warnings": {
+        "cnsToxicityBottom": "Riziko toxicity CNS: ppO₂ = {0} bar v hloubce {1} m u dna (max. 1,6)",
+        "highPpO2Bottom": "Vysoké ppO₂: {0} bar v hloubce {1} m u dna (limit 1,4 pro pracovní ponory)",
+        "cnsToxicityDeco": "Riziko toxicity CNS: ppO₂ = {0} bar v hloubce {1} m během deko (max. 1,6)",
+        "hypoxiaRisk": "Riziko hypoxie: ppO₂ = {0} bar (min. 0,16)",
+        "narcosisWarning": "Varování – hloubkové opojení: ppN₂ = {0} bar v hloubce {1} m (ekvivalent {2} m na vzduchu)",
+        "mildNarcosis": "Možné mírné opojení: ppN₂ = {0} bar v hloubce {1} m",
+        "ceilingViolation": "Porušení stropu: vynoření {0} m nad strop ({1} bodů dat)",
+        "outOfGas": "Došel plyn: {0} dojde během ponoru (potřeba {1} l, k dispozici {2} l)",
+        "belowReserve": "Pod rezervou: {0} končí na {1} bar (rezerva: {2} bar)",
+        "lowGasMargin": "Malá rezerva plynu: {0} končí na {1} bar (blízko rezervy {2} bar)",
+        "divePlanGood": "Plán ponoru vypadá dobře! Všechny parametry v bezpečných mezích."
+    },
+    "gasSummary": {
+        "heading": "⛽ Souhrn plynů",
+        "total": "Celkem spotřebováno: {0} l",
+        "used": "(spotřebováno {0} l)",
+        "noProfiles": "Žádné uložené profily"
+    },
+    "diveEditor": {
+        "ndl": {
+            "noLimit": "✅ Bez limitu",
+            "remaining": "✅ Zbývá {0} min",
+            "atLimit": "⚠️ Na limitu",
+            "decoDive": "🔴 Dekompresní ponor",
+            "outOfRange": "⚠ mimo rozsah",
+            "infinity": "∞"
+        },
+        "mod": "MOD: {0} m (deko: {1} m)",
+        "profileDefault": "Profil:",
+        "customProfile": "✏️ Vlastní profil",
+        "customProfileNamed": "✏️ {0}",
+        "separator": "──────────────"
+    },
+    "tissueSim": {
+        "alertOk": "Vše v pořádku",
+        "ppO2OxygenToxicity": "pO₂ {0} bar — toxicita kyslíku (deko limit {1})",
+        "ppO2AboveRec": "pO₂ {0} bar — nad rekreační limit {1}",
+        "ppO2Hypoxic": "pO₂ {0} bar — hypoxie (< {1})",
+        "ppN2Narcosis": "pN₂ {0} bar — pravděpodobné hloubkové opojení (> {1})",
+        "chartLabels": {
+            "pAmb": "pAmb (okolní)",
+            "pN2Alveolar": "pN₂ alveolární",
+            "tcFast": "TC1 rychlá (5 min)",
+            "tcMed": "TC5 střední (27 min)",
+            "tcSlow": "TC12 pomalá (239 min)"
+        },
+        "tooltipLabel": "{0}: {1} bar"
+    },
+    "nav": {
+        "home": "Domů",
+        "sandbox": {
+            "label": "Sandbox",
+            "deco": "Modelování dekomprese",
+            "tissue": "Sycení tkání",
+            "transfill": "Přepouštění lahví",
+            "cascade": "Kaskádové plnění",
+            "gasLaw": "Plynový zákon: teplota a tlak"
+        },
+        "theory": {
+            "label": "Teorie",
+            "pressure": "Tlak a hloubka",
+            "tissue": "Sycení tkání",
+            "mValues": "M-hodnoty",
+            "gf": "Gradient faktory"
+        },
+        "tests": {
+            "label": "Testy",
+            "physics": "Fyzika",
+            "anatomy": "Anatomie",
+            "accidents": "Nehody a nemoci",
+            "safety": "Bezpečnostní směrnice",
+            "training": "Výcvikové směrnice",
+            "equipment": "Potápěčská výstroj",
+            "vessel": "Plavidlo"
+        },
+        "about": "O projektu"
+    },
+    "home": {
+        "hero": {
+            "title": "Porozumějte dekompresní teorii",
+            "subtitle": "Interaktivní vizualizace, které vám pomohou pochopit, jak se rozpuštěné plyny chovají ve vašem těle při potápění"
+        },
+        "quote": {
+            "text": "„Mezi rekreačními potápěči panuje falešný pocit bezpečí, že dekomprese je dobře prozkoumaná věda a že dekompresní nemoci se lze snadno vyhnout, pokud se budete držet svých dekompresních tabulek.“",
+            "context": "Proto jsme vytvořili tyto interaktivní lekce — abyste se podívali dál než jen na tabulky a počítače a pochopili vědu, která za nimi stojí."
+        },
+        "topics": {
+            "heading": "Témata",
+            "sandbox": "Sandbox",
+            "sandboxDesc": "Interaktivní simulátory pro plánování ponorů a výpočty plynů.",
+            "sandboxLinks": {
+                "deco": "Modelování dekomprese",
+                "transfill": "Přepouštění",
+                "cascade": "Kaskádové plnění",
+                "gasLaw": "Plynový zákon"
+            },
+            "statusStart": "Začněte zde",
+            "pressure": "Tlak a parciální tlak",
+            "pressureDesc": "Seznamte se s terminologií profilu ponoru a s tím, jak se okolní tlak mění s hloubkou. Základ všech dekompresních konceptů.",
+            "statusAvailable": "K dispozici",
+            "tissueLoading": "Sycení tkání a saturace",
+            "tissueLoadingDesc": "Vizualizujte, jak se dusík během ponoru rozpouští v jednotlivých tkáňových kompartmentech a jak se při výstupu uvolňuje. Prozkoumejte Bühlmannův model ZH-L16.",
+            "mValues": "M-hodnoty a limity pro vynoření",
+            "mValuesDesc": "Vizualizace maximálních tolerovaných tlaků ve tkáních a jak určují bezpečné limity výstupu pro každý kompartment.",
+            "gradientFactors": "Gradient faktory",
+            "gradientFactorsDesc": "Prozkoumejte, jak nastavení GF Low a GF High přidává konzervativnost vašemu dekompresnímu plánu.",
+            "multiGas": "Potápění s více směsmi",
+            "multiGasDesc": "Podívejte se, jak přepnutí na směsi bohaté na kyslík během výstupu urychluje dekompresi.",
+            "statusComingSoon": "Připravujeme",
+            "quizzes": "Znalostní testy",
+            "quizzesDesc": "Otestujte své znalosti oficiálními otázkami ze zkoušek CMAS/SPČR.",
+            "quizLinks": {
+                "physics": "Fyzika",
+                "anatomy": "Anatomie",
+                "accidents": "Nehody a nemoci",
+                "safety": "Bezpečnost",
+                "training": "Výcvik",
+                "equipment": "Výstroj",
+                "vessel": "Plavidlo"
+            },
+            "about": "O tomto projektu",
+            "aboutDesc": "Kdo DecoJS vytvořil, z jakých zdrojů čerpá a jaká upozornění se na něj vztahují.",
+            "statusRead": "Číst",
+            "moreFuture": "Další témata",
+            "moreFutureDesc": "Další vzdělávací obsah se připravuje.",
+            "statusPlanned": "Plánováno"
+        },
+        "about": {
+            "heading": "O tomto projektu",
+            "body1": "Toto je vzdělávací zdroj pro potápěče, kteří chtějí porozumět vědě stojící za jejich potápěčskými počítači. Všechny vizualizace vycházejí z dekompresního modelu <strong>Bühlmann ZH-L16</strong>, jednoho z nejpoužívanějších algoritmů v rekreačním i technickém potápění.",
+            "disclaimerTitle": "Pouze pro výukové účely",
+            "disclaimer": "Tyto nástroje slouží pouze ke studijním účelům. Nikdy je nepoužívejte pro plánování skutečných ponorů. Pro reálné potápění vždy spoléhejte na řádně certifikované potápěčské počítače a tabulky."
+        },
+        "footer": {
+            "disclaimer": "<strong>Pouze pro výukové účely</strong> — Neslouží k plánování ponorů.<br><a href=\"about.html\">Více o tomto projektu</a>"
+        }
+    },
+    "about": {
+        "title": "O tomto projektu",
+        "subtitle": "Experimentální výukový nástroj pro porozumění dekompresní teorii",
+        "wip": {
+            "title": "🚧&nbsp;Rozpracováno",
+            "text": "Tento projekt je <strong>rozpracovaný</strong> a zatím nebyl nikým revidován. Obsah, výpočty a informace zde uvedené mohou obsahovat chyby nebo nepřesnosti. Používejte je dle vlastního uvážení."
+        },
+        "disclaimer": {
+            "title": "⚠️ Důležité upozornění",
+            "intro": "Tento projekt vznikl jako <strong>osobní studijní cvičení</strong> autora pro lepší pochopení dekompresní teorie a fyziky potápění. Jedná se o experimentální, rozpracovaný nástroj.",
+            "guarantees": "<strong>Žádné záruky:</strong> Není zaručeno, že informace, výpočty ani vizualizace zde uvedené jsou správné nebo úplné.",
+            "notForDiving": "<strong>Neslouží k plánování ponorů:</strong> Tento nástroj nesmí být <em>nikdy</em> použit pro plánování skutečných ponorů ani v jakékoli reálné potápěčské situaci. Vždy spoléhejte na certifikované potápěčské počítače, tabulky a řádný výcvik.",
+            "educational": "<strong>Vzdělávací použití:</strong> Tento projekt může být využíván pro vzdělávací účely <a href=\"https://deepblue.cz\" target=\"_blank\" rel=\"noopener\">potápěčským klubem Deepblue</a>."
+        },
+        "what": {
+            "title": "Co to je?",
+            "body": "Jedná se o interaktivní vzdělávací zdroj pro potápěče, kteří chtějí porozumět vědě stojící za jejich potápěčskými počítači. Všechny vizualizace vycházejí z dekompresního modelu <strong>Bühlmann ZH-L16</strong>, jednoho z nejpoužívanějších algoritmů v rekreačním i technickém potápění.",
+            "goal": "Cílem je učinit abstraktní pojmy jako sycení tkání, poločasy a M-hodnoty intuitivnější díky praktickému zkoumání a vizualizaci."
+        },
+        "algo": {
+            "title": "Detaily algoritmu",
+            "intro": "Dekompresní výpočty používají algoritmus <strong>Bühlmann ZH-L16</strong> s následujícími parametry a předpoklady:",
+            "variants": {
+                "title": "Varianty modelu",
+                "a": "<strong>ZH-L16A:</strong> Původní experimentální hodnoty, poločas TC1 = 4,0 min",
+                "b": "<strong>ZH-L16B:</strong> Upraveno pro tištěné tabulky, poločas TC1 = 5,0 min",
+                "c": "<strong>ZH-L16C:</strong> Upraveno pro potápěčské počítače (výchozí), poločas TC1 = 5,0 min"
+            },
+            "constants": {
+                "title": "Konstanty",
+                "surfacePressure": "Tlak na hladině: 1,0 bar",
+                "waterVapor": "Tlak vodní páry: 0,0627 bar (47 mmHg při 37 °C)",
+                "pressurePer10m": "Tlak na 10 m hloubky: 1,0 bar (mořská voda)",
+                "descentRate": "Rychlost sestupu: 20 m/min",
+                "ascentRate": "Rychlost výstupu: 10 m/min",
+                "stopIncrement": "Krok dekompresních zastávek: 3 m"
+            },
+            "gf": {
+                "title": "Gradient faktory",
+                "intro": "Gradient faktory používají <strong>Bakerovu metodu pAnchor</strong>:",
+                "item1": "GF Low platí v hloubce pAnchor (první zastávka)",
+                "item2": "Lineární interpolace od pAnchor k hladině (GF High)",
+                "item3": "Pod pAnchor: konstantní GF Low"
+            },
+            "equations": {
+                "title": "Rovnice",
+                "haldane": "<strong>Haldaneova rovnice:</strong> Sycení tkání při konstantní hloubce",
+                "schreiner": "<strong>Schreinerova rovnice:</strong> Sycení tkání při změně hloubky",
+                "mvalue": "<strong>M-hodnota:</strong> M = a + P<sub>amb</sub> / b",
+                "adjustedM": "<strong>Upravená M-hodnota:</strong> M<sub>adj</sub> = P<sub>amb</sub> + GF × (M − P<sub>amb</sub>)"
+            },
+            "validation": {
+                "title": "Validace",
+                "intro": "Implementace byla ověřena proti:",
+                "decotengu": "<strong>DecoTengu:</strong> Sycení tkání odpovídá s přesností do 0,02 %",
+                "buhlmann": "<strong>Tištěné Bühlmannovy tabulky:</strong> Dekompresní plány odpovídají v rámci očekávané tolerance",
+                "note": "<em>Poznámka:</em> Naše výpočty mohou dávat dekompresní časy o 10–25 % kratší než tištěné tabulky. To je očekávané — tištěné tabulky zahrnují bezpečnostní rezervy a zaokrouhlují konzervativně nahoru. Tento nástroj pro vzdělávací účely zobrazuje surový výstup algoritmu."
+            }
+        },
+        "author": {
+            "title": "👤 Autor",
+            "bio": "Vytvořil <strong>Matěj Hron</strong><br>Instruktor CMAS I** v <a href=\"https://deepblue.cz\" target=\"_blank\" rel=\"noopener\">potápěčském klubu Deepblue</a>",
+            "links": "<a href=\"mailto:matej.hron@gmail.com\">matej.hron@gmail.com</a> · <a href=\"https://www.linkedin.com/in/matejhron/\" target=\"_blank\" rel=\"noopener\">LinkedIn</a>"
+        },
+        "review": {
+            "title": "🎓 Odborný garant",
+            "text": "Odborný dohled zajišťuje <strong><a href=\"https://cs.wikipedia.org/wiki/Ji%C5%99%C3%AD_Hovorka_(speleopot%C3%A1p%C4%9B%C4%8D)\" target=\"_blank\" rel=\"noopener\">Jiří Hovorka</a></strong> — instruktor CMAS/SPČR I3, školitel instruktorů jeskynního potápění (ICD3), spoluautor výcvikových směrnic SPČR — ve spolupráci s <strong>Výcvikovou komisí SPČR</strong>."
+        },
+        "ack": {
+            "title": "🙏 Poděkování",
+            "powell": "Zvláštní poděkování patří <strong>Marku Powellovi</strong> za jeho vynikající knihu <em>Deco for Divers</em> — hlavní inspiraci tohoto projektu a zdroj, díky kterému dekompresní teorie konečně začala dávat smysl.",
+            "jahns": "Děkujeme také <strong>Janu Jahnsovi</strong> za jeho skvělou knihu, další cenný zdroj pro pochopení dekompresní teorie."
+        },
+        "refs": {
+            "title": "📖 Literatura a zdroje",
+            "item1": "<strong>Jahns, Jan.</strong> (2008). <em>Fyzika.</em> Svaz českých potápěčů, Praha. — Komplexní přehled fyziky potápění pro zkušené potápěče a instruktory. Pokrývá klíčová témata s praktickými příklady z potápění. <a href=\"https://stranypotapecske.cz/litera/fyzika.asp?str=200807251858030\" target=\"_blank\" rel=\"noopener\">Recenze na Stranypotapecske.cz</a>",
+            "item2": "<strong>Jahns, Jan.</strong> (2008). <em>Podklady k výpočtům dekompresních tabulek Bühlmann/SUSV 1986.</em> 2. vydání. Hlučín, 34 stran. — Matematické základy dekompresního modelu Bühlmann ZH-L16, včetně rovnic pro sycení a vysycování, M-hodnot, výpočtů dekompresních zastávek a dodatku o ZH-L16B s gradient faktory a rozšířením pro trimix. <a href=\"https://www.spms.cz/soubory/Buhlmann_teorie.pdf?fid=17128261330230.pdf\" target=\"_blank\" rel=\"noopener\">Plný text (PDF, SPMS)</a>",
+            "item3": "<strong>Powell, Mark.</strong> <em>Deco for Divers.</em> — Hlavní inspirace tohoto projektu. Vynikající a srozumitelný průvodce dekompresní teorií pro rekreační i technické potápěče. Vřele doporučujeme!",
+            "item4": "<strong>Bühlmann, A.A.</strong> (1984). <em>Decompression–Decompression Sickness.</em> Berlin: Springer-Verlag. — Původní dílo popisující algoritmus ZH-L16.",
+            "item5": "<strong>Wikipedia</strong>. <a href=\"https://en.wikipedia.org/wiki/B%C3%BChlmann_decompression_algorithm\" target=\"_blank\" rel=\"noopener\">Bühlmann decompression algorithm</a> — Přehled algoritmu, poločasů tkáňových kompartmentů a M-hodnot.",
+            "item6": "<strong>Wienke, B.R.</strong> <a href=\"https://aquatec.wordpress.com/wp-content/uploads/2011/03/decompression-theory.pdf\" target=\"_blank\" rel=\"noopener\">Decompression Theory (PDF)</a> — Komplexní úvod do fyziky a fyziologie dekomprese.",
+            "item7": "<strong>Alveolární plynová rovnice</strong>: Model zohledňuje tlak vodní páry při tělesné teplotě (37 °C) = 47 mmHg ≈ 0,0627 bar, který snižuje efektivní parciální tlak vdechovaných plynů. <a href=\"https://en.wikipedia.org/wiki/Alveolar_gas_equation\" target=\"_blank\" rel=\"noopener\">Wikipedia: Alveolar gas equation</a>",
+            "item8": "<strong>Schreiner, H.R.</strong> (1971). <em>Safe Limits of Exposure to Increased Pressure.</em> — Odvození Schreinerovy rovnice pro výpočet sycení plyny při lineárních změnách tlaku.",
+            "item9": "<strong>Strany potápěčské</strong>. <a href=\"https://stranypotapecske.cz\" target=\"_blank\" rel=\"noopener\">stranypotapecske.cz</a> — Komplexní český potápěčský portál a komunitní zdroj pod vedením Zdeňka Šraiera. Obsahuje rozsáhlou knihovnu recenzí knih, vzdělávací články o fyzice potápění a dekompresní teorii, databázi podmínek potápěčských lokalit, recenze výstroje a výukové materiály. Nepostradatelný zdroj pro česky mluvící potápěče na všech úrovních."
+        }
+    },
+    "sandbox": {
+        "dive": {
+            "title": "🎯 Sandbox pro plánování ponoru",
+            "subtitle": "Navrhujte profily ponorů a vizualizujte dekompresi v reálném čase",
+            "disclaimerBanner": "⚠️ <strong>Pouze pro výukové účely</strong> — Tento nástroj NENÍ určen k plánování skutečných ponorů. Nikdy jej nepoužívejte pro reálné potápění. Vždy používejte certifikované potápěčské počítače, tabulky a řádný výcvik.",
+            "setupHeading": "Nastavení ponoru",
+            "profilesLibrary": "📚 Uložené profily",
+            "saveProfile": "💾 Uložit",
+            "saveProfileNamePlaceholder": "Název profilu…",
+            "profileChart": "📊 Profil ponoru",
+            "chartMode": {
+                "profile": "Profil",
+                "pressure": "Tlak",
+                "gas": "Spotřeba plynu",
+                "partialPressure": "Parciální tlak",
+                "tissue": "Sycení tkání"
+            },
+            "chartOptions": "🎛️ Možnosti grafu (pokročilé)",
+            "displayLayers": "Zobrazené vrstvy",
+            "annotations": "Popisky",
+            "options": {
+                "showCeiling": "Zobrazit strop",
+                "showAmbient": "Zobrazit okolní tlak",
+                "showPartialPressures": "Zobrazit parciální tlaky (ppO₂/ppN₂)",
+                "showTissueLoading": "Zobrazit sycení tkání",
+                "showGasConsumption": "Zobrazit spotřebu plynu",
+                "showGasSwitches": "Zobrazit přepnutí plynu",
+                "showLabels": "Zobrazit popisky",
+                "alveolarPn2": "Alveolární pN₂"
+            },
+            "exportConfig": "📋 Exportovat konfiguraci",
+            "screenshot": "📷 Snímek obrazovky",
+            "copied": "✓ Zkopírováno!",
+            "mValueChart": "📐 Diagram tlak-tlak",
+            "gfChart": "📊 Diagram GF %",
+            "copyDebug": "🔍 Zkopírovat ladicí data",
+            "status": {
+                "ready": "Připraveno"
+            },
+            "footerDisclaimer": "<strong>Upozornění:</strong> Jedná se pouze o výukový nástroj. Nepoužívejte jej k plánování skutečných ponorů."
+        },
+        "tissue": {
+            "title": "Simulátor sycení tkání",
+            "subtitle": "Pohybujte potápěčem, měňte dýchací směs, nechte plynout čas — a sledujte, jak parciální tlaky dusíku exponenciálně dobíhají okolní tlak.",
+            "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Fyzikální hřiště ukazující, jak sycení tkání dusíkem reaguje na změny hloubky a dýchací směsi. Nejde o plánovač ponorů.",
+            "depth": "Hloubka",
+            "depthHint": "0–40 m. Změny jsou okamžité.",
+            "gas": "Dýchací směs",
+            "gases": {
+                "air": "Vzduch (21/79)",
+                "ean32": "EAN32",
+                "ean36": "EAN36",
+                "ean50": "EAN50",
+                "ean80": "EAN80",
+                "o2": "O₂ 100 %"
+            },
+            "speed": "Rychlost",
+            "speedHint": "1× = 1 simulovaná minuta za reálnou sekundu.",
+            "time": "Čas",
+            "timeButtons": {
+                "back": "◀ 1 min",
+                "forward": "1 min ▶",
+                "reset": "Reset"
+            },
+            "keyboardHint": "Klávesnice: ← / → krok, mezerník pro přehrání/pozastavení.",
+            "readout": {
+                "depth": "Hloubka",
+                "pAmb": "pAmb",
+                "gas": "Směs",
+                "pO2": "pO₂",
+                "pN2Inspired": "pN₂ vdechovaný",
+                "pN2Alveolar": "pN₂ alveolární",
+                "tcFast": "TC1 • rychlý (5 min)",
+                "tcMed": "TC5 • střední (27 min)",
+                "tcSlow": "TC12 • pomalý (239 min)",
+                "time": "Simulační čas"
+            },
+            "alertOk": "Vše v pořádku",
+            "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely. Model s jedním inertním plynem (N₂); bez hélia, bez CNS hodin, bez varování na M-hodnoty."
+        },
+        "transfill": {
+            "title": "Přepouštění lahví",
+            "subtitle": "Simulujte vyrovnávání tlaku mezi dvěma propojenými lahvemi",
+            "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Tento nástroj demonstruje Boyleův zákon pro propojené lahve.",
+            "setupHeading": "Nastavení lahví",
+            "cylinderA": "Lahev A (zdroj)",
+            "cylinderB": "Lahev B (plněná)",
+            "labels": {
+                "volume": "Objem",
+                "pressure": "Tlak (bar)"
+            },
+            "volumes": {
+                "pony": "3 l (Pony)",
+                "al40": "5,5 l (AL40)",
+                "al50": "7 l (AL50)",
+                "single10": "10 l (jednolahev)",
+                "al80": "11 l (AL80)",
+                "single12": "12 l (jednolahev)",
+                "single15": "15 l (jednolahev)",
+                "single18": "18 l (jednolahev)",
+                "doubles7": "2×7 l (dvojče)",
+                "doubles10": "2×10 l (dvojče)",
+                "doubles12": "2×12 l (dvojče)"
+            },
+            "buttons": {
+                "openValves": "Otevřít ventily",
+                "reset": "Reset"
+            },
+            "display": {
+                "cylinderA": "Lahev A",
+                "cylinderB": "Lahev B"
+            },
+            "resultTitle": "Vyrovnání dokončeno",
+            "formulaTitle": "Boyleův zákon",
+            "formula": "P<sub>konec</sub> = (P<sub>A</sub> × V<sub>A</sub> + P<sub>B</sub> × V<sub>B</sub>) / (V<sub>A</sub> + V<sub>B</sub>)",
+            "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely. Založeno na předpokladech ideálního plynového zákona."
+        },
+        "cascade": {
+            "title": "Kaskádová plnicí stanice",
+            "subtitle": "Kliknutím na ventily propojte lahve a poté plňte (max. 3 hadice, limit 200 bar)",
+            "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Simuluje kaskádové plnění pomocí Boyleova zákona.",
+            "setupHeading": "Nastavení",
+            "cascadeBank": "Kaskádová baterie (4 × 50 l)",
+            "targetCylinders": "Cílové lahve",
+            "controlsHeading": "Ovládání",
+            "remaining": "Zbývá:",
+            "labels": {
+                "initialPressure": "Počáteční tlak",
+                "count": "Počet",
+                "volume": "Objem",
+                "startingPressure": "Výchozí tlak"
+            },
+            "counts": {
+                "3": "3 lahve",
+                "4": "4 lahve",
+                "5": "5 lahví",
+                "6": "6 lahví",
+                "8": "8 lahví",
+                "10": "10 lahví",
+                "12": "12 lahví"
+            },
+            "volumes": {
+                "al50": "7 l (AL50)",
+                "single10": "10 l (jednolahev)",
+                "al80": "11 l (AL80)",
+                "single12": "12 l (jednolahev)",
+                "single15": "15 l (jednolahev)"
+            },
+            "startPressures": {
+                "empty": "0 bar (prázdná)"
+            },
+            "buttons": {
+                "reset": "Resetovat vše",
+                "copyLink": "Kopírovat odkaz"
+            },
+            "warning": "Najednou lze připojit maximálně 3 cílové lahve (k dispozici jsou 3 hadice)",
+            "shareConfirm": "Odkaz zkopírován do schránky!",
+            "vizTitle": "Plnicí stanice",
+            "status": {
+                "hoses": "Hadice",
+                "cascadeOpen": "Otevřená kaskáda"
+            },
+            "groupTitles": {
+                "cascadeBank": "Kaskádová baterie (kliknutím otevřete ventily)",
+                "targetCylinders": "Cílové lahve (max. 3 připojené)"
+            },
+            "panelTitles": {
+                "connection": "Stav připojení",
+                "fillLog": "Záznam plnění"
+            },
+            "connectionStatus": {
+                "idle": "Otevřete ventily kaskády a cílové lahve pro propojení"
+            },
+            "logEmpty": "Zatím žádná plnění",
+            "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely."
+        }
+    },
+    "quiz": {
+        "languageNotice": "🇨🇿 Otázky jsou v <strong>češtině</strong> a odpovídají oficiálním materiálům ke zkouškám CMAS/SPČR. Překladu jsme se vyhnuli, abychom předešli chybám v odborné terminologii.",
+        "categoriesTitle": "Témata:",
+        "filterAll": "Vše",
+        "settings": {
+            "shuffle": "Zamíchat otázky",
+            "questionCount": "Počet otázek:",
+            "apply": "Aplikovat a restartovat"
+        },
+        "buttons": {
+            "next": "Další otázka →",
+            "restart": "Začít znovu"
+        },
+        "about": {
+            "title": "📚 O testu"
+        },
+        "disclaimer": "<strong>Upozornění:</strong> Toto je vzdělávací nástroj. Pro oficiální certifikaci kontaktujte CMAS/SPČR.",
+        "physics": {
+            "title": "🧪 Fyzika",
+            "subtitle": "Zkušební otázky z fyziky pro potápěče (CMAS/SPČR)",
+            "aboutIntro": "Tyto otázky pochází z oficiálních zkušebních testů SPČR (Svaz potápěčů České republiky) z roku 2018. Testují znalosti fyziky relevantní pro potápění.",
+            "aboutAvailable": "<strong>Aktuálně k dispozici:</strong> 100 otázek ze všech 8 témat.",
+            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz/soubor-fyzika-349-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Fyzika zkušební testy</a>"
+        },
+        "anatomy": {
+            "title": "🩺 Anatomie a fyziologie",
+            "subtitle": "Zkušební otázky z anatomie a fyziologie pro potápěče (CMAS/SPČR)",
+            "aboutIntro": "Tyto otázky pochází z oficiálních zkušebních testů SPČR (Svaz potápěčů České republiky) z roku 2018. Testují znalosti anatomie a fyziologie relevantní pro potápění.",
+            "aboutAvailable": "<strong>Aktuálně k dispozici:</strong> 100 otázek ze všech témat: základní pojmy, dýchací soustava, oběhová soustava, krev a přenos plynů, ucho a vyrovnávání tlaků, sycení tkání, termoregulace a toxicita plynů.",
+            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Anatomie a fyziologie zkušební testy</a>"
+        },
+        "accidents": {
+            "title": "🏥 Nehody a nemoci",
+            "subtitle": "Zkušební otázky o potápěčských nehodách a nemocech (CMAS/SPČR)",
+            "aboutIntro": "Tyto otázky pochází z oficiálních zkušebních testů SPČR (Svaz potápěčů České republiky) z roku 2018. Testují znalosti o potápěčských nehodách, nemocech a první pomoci.",
+            "aboutAvailable": "<strong>Aktuálně k dispozici:</strong> 100 otázek z 5 témat.",
+            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz/soubor-nehody-a-nemoci-348-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Nehody a nemoci zkušební testy</a>"
+        },
+        "safety": {
+            "title": "🛡️ Bezpečnostní směrnice",
+            "subtitle": "Zkušební otázky z Bezpečnostních směrnic SPČR 2016 (CMAS/SPČR)",
+            "aboutIntro": "Tyto otázky pochází z oficiálních zkušebních testů SPČR (Svaz potápěčů České republiky) z roku 2018. Testují znalosti Bezpečnostních směrnic SPČR 2016.",
+            "aboutAvailable": "<strong>Aktuálně k dispozici:</strong> 100 otázek ze všech 9 témat.",
+            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz/soubor-bezpecnostni-smernice-345-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Bezpečnostní směrnice zkušební testy</a>"
+        },
+        "training": {
+            "title": "📋 Výcvikové směrnice",
+            "subtitle": "Zkušební otázky z Výcvikových směrnic SPČR 2016 (CMAS/SPČR)",
+            "aboutIntro": "Tyto otázky pochází z oficiálních zkušebních testů SPČR (Svaz potápěčů České republiky) z roku 2018. Testují znalosti Výcvikových směrnic SPČR 2016.",
+            "aboutAvailable": "<strong>Aktuálně k dispozici:</strong> 100 otázek ze 6 témat.",
+            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Výcvikové směrnice zkušební testy</a>"
+        },
+        "equipment": {
+            "title": "🤿 Potápěčská výstroj",
+            "subtitle": "Zkušební otázky z Potápěčské výstroje SPČR 2018 (CMAS/SPČR)",
+            "aboutIntro": "Tyto otázky pochází z oficiálních zkušebních testů SPČR (Svaz potápěčů České republiky) z roku 2018. Testují znalosti potápěčské výstroje.",
+            "aboutAvailable": "<strong>Aktuálně k dispozici:</strong> 100 otázek z 11 témat.",
+            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Potápěčská výstroj zkušební testy</a>"
+        },
+        "vessel": {
+            "title": "⚓ Plavidlo",
+            "subtitle": "Zkušební otázky z obsluhy plavidla SPČR 2018 (CMAS/SPČR)",
+            "aboutIntro": "Tyto otázky pochází z oficiálních zkušebních testů SPČR (Svaz potápěčů České republiky) z roku 2018. Testují znalosti obsluhy plavidla a potápění z lodi.",
+            "aboutAvailable": "<strong>Aktuálně k dispozici:</strong> 50 otázek z 8 témat.",
+            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Plavidlo zkušební testy</a>"
         }
     }
 }

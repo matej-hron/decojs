@@ -370,26 +370,26 @@
     </nav>
 
     <!-- Disclaimer Banner -->
-    <div class="disclaimer-banner">
+    <div class="disclaimer-banner" data-i18n="sandbox.cascade.disclaimerBanner">
         <strong>Educational Use Only</strong> — Simulates cascade filling using Boyle's Law.
     </div>
 
     <!-- Hero Header -->
     <header class="hero hero-compact">
-        <h1>Cascade Filling Station</h1>
-        <p class="hero-subtitle">Click valve switches to connect cylinders, then fill (max 3 hoses, 200 bar limit)</p>
+        <h1 data-i18n="sandbox.cascade.title">Cascade Filling Station</h1>
+        <p class="hero-subtitle" data-i18n="sandbox.cascade.subtitle">Click valve switches to connect cylinders, then fill (max 3 hoses, 200 bar limit)</p>
     </header>
 
     <!-- Main Layout -->
     <div class="cascade-layout">
         <!-- Left Panel: Controls -->
         <div class="controls-panel">
-            <h2>Setup</h2>
+            <h2 data-i18n="sandbox.cascade.setupHeading">Setup</h2>
 
             <div class="section">
-                <h3>Cascade Bank (4 x 50 L)</h3>
+                <h3 data-i18n="sandbox.cascade.cascadeBank">Cascade Bank (4 x 50 L)</h3>
                 <div class="input-group">
-                    <label>Initial Pressure</label>
+                    <label data-i18n="sandbox.cascade.labels.initialPressure">Initial Pressure</label>
                     <select id="cascadePressure">
                         <option value="200">200 bar</option>
                         <option value="230">230 bar</option>
@@ -399,39 +399,39 @@
                     </select>
                 </div>
                 <div class="info-row">
-                    <span class="label">Remaining:</span>
+                    <span class="label" data-i18n="sandbox.cascade.remaining">Remaining:</span>
                     <span class="value" id="cascadeRemaining">60,000 bar-L</span>
                 </div>
             </div>
 
             <div class="section">
-                <h3>Target Cylinders</h3>
+                <h3 data-i18n="sandbox.cascade.targetCylinders">Target Cylinders</h3>
                 <div class="input-group">
-                    <label>Count</label>
+                    <label data-i18n="sandbox.cascade.labels.count">Count</label>
                     <select id="targetCount">
-                        <option value="3">3 cylinders</option>
-                        <option value="4">4 cylinders</option>
-                        <option value="5">5 cylinders</option>
-                        <option value="6">6 cylinders</option>
-                        <option value="8">8 cylinders</option>
-                        <option value="10">10 cylinders</option>
-                        <option value="12" selected>12 cylinders</option>
+                        <option value="3" data-i18n="sandbox.cascade.counts.3">3 cylinders</option>
+                        <option value="4" data-i18n="sandbox.cascade.counts.4">4 cylinders</option>
+                        <option value="5" data-i18n="sandbox.cascade.counts.5">5 cylinders</option>
+                        <option value="6" data-i18n="sandbox.cascade.counts.6">6 cylinders</option>
+                        <option value="8" data-i18n="sandbox.cascade.counts.8">8 cylinders</option>
+                        <option value="10" data-i18n="sandbox.cascade.counts.10">10 cylinders</option>
+                        <option value="12" selected data-i18n="sandbox.cascade.counts.12">12 cylinders</option>
                     </select>
                 </div>
                 <div class="input-group">
-                    <label>Volume</label>
+                    <label data-i18n="sandbox.cascade.labels.volume">Volume</label>
                     <select id="targetVolume">
-                        <option value="7">7 L (AL50)</option>
-                        <option value="10">10 L (Single)</option>
-                        <option value="11">11 L (AL80)</option>
-                        <option value="12" selected>12 L (Single)</option>
-                        <option value="15">15 L (Single)</option>
+                        <option value="7" data-i18n="sandbox.cascade.volumes.al50">7 L (AL50)</option>
+                        <option value="10" data-i18n="sandbox.cascade.volumes.single10">10 L (Single)</option>
+                        <option value="11" data-i18n="sandbox.cascade.volumes.al80">11 L (AL80)</option>
+                        <option value="12" selected data-i18n="sandbox.cascade.volumes.single12">12 L (Single)</option>
+                        <option value="15" data-i18n="sandbox.cascade.volumes.single15">15 L (Single)</option>
                     </select>
                 </div>
                 <div class="input-group">
-                    <label>Starting Pressure</label>
+                    <label data-i18n="sandbox.cascade.labels.startingPressure">Starting Pressure</label>
                     <select id="targetPressure">
-                        <option value="0">0 bar (empty)</option>
+                        <option value="0" data-i18n="sandbox.cascade.startPressures.empty">0 bar (empty)</option>
                         <option value="20" selected>20 bar</option>
                         <option value="50">50 bar</option>
                         <option value="100">100 bar</option>
@@ -441,13 +441,13 @@
             </div>
 
             <div class="section">
-                <h3>Controls</h3>
-                <button class="reset-btn" id="resetBtn">Reset All</button>
-                <button class="reset-btn" id="shareBtn" style="margin-top: 0.5rem;">Copy Link</button>
-                <div class="hose-limit-warning" id="hoseWarning">
+                <h3 data-i18n="sandbox.cascade.controlsHeading">Controls</h3>
+                <button class="reset-btn" id="resetBtn" data-i18n="sandbox.cascade.buttons.reset">Reset All</button>
+                <button class="reset-btn" id="shareBtn" style="margin-top: 0.5rem;" data-i18n="sandbox.cascade.buttons.copyLink">Copy Link</button>
+                <div class="hose-limit-warning" id="hoseWarning" data-i18n="sandbox.cascade.warning">
                     Max 3 target cylinders can be connected at once (3 hoses available)
                 </div>
-                <div class="hose-limit-warning" id="shareConfirm" style="background: #e8f5e9; border-color: #a5d6a7; color: #2e7d32;">
+                <div class="hose-limit-warning" id="shareConfirm" style="background: #e8f5e9; border-color: #a5d6a7; color: #2e7d32;" data-i18n="sandbox.cascade.shareConfirm">
                     Link copied to clipboard!
                 </div>
             </div>
@@ -457,34 +457,34 @@
         <!-- Right Panel: Visualization -->
         <div class="visualization-panel">
             <div class="viz-header">
-                <h3>Filling Station</h3>
+                <h3 data-i18n="sandbox.cascade.vizTitle">Filling Station</h3>
                 <div class="header-stats">
-                    <span>Hoses: <strong id="hoseCount">0</strong>/3</span>
-                    <span>Cascade open: <strong id="cascadeOpenCount">0</strong></span>
+                    <span><span data-i18n="sandbox.cascade.status.hoses">Hoses</span>: <strong id="hoseCount">0</strong>/3</span>
+                    <span><span data-i18n="sandbox.cascade.status.cascadeOpen">Cascade open</span>: <strong id="cascadeOpenCount">0</strong></span>
                 </div>
             </div>
 
             <div class="cylinders-area">
                 <div class="cylinder-group">
-                    <h4>Cascade Bank (click valves to open)</h4>
+                    <h4 data-i18n="sandbox.cascade.groupTitles.cascadeBank">Cascade Bank (click valves to open)</h4>
                     <div class="cylinders-row" id="cascadeCylinders"></div>
                 </div>
 
                 <div class="cylinder-group">
-                    <h4>Target Cylinders (max 3 connected)</h4>
+                    <h4 data-i18n="sandbox.cascade.groupTitles.targetCylinders">Target Cylinders (max 3 connected)</h4>
                     <div class="cylinders-row" id="targetCylinders"></div>
                 </div>
             </div>
 
             <div class="connection-status" id="connectionStatus">
-                <h4>Connection Status</h4>
-                <div class="connection-details">Open cascade and target valves to connect</div>
+                <h4 data-i18n="sandbox.cascade.panelTitles.connection">Connection Status</h4>
+                <div class="connection-details" data-i18n="sandbox.cascade.connectionStatus.idle">Open cascade and target valves to connect</div>
             </div>
 
             <div class="fill-log">
-                <h4>Fill Log</h4>
+                <h4 data-i18n="sandbox.cascade.panelTitles.fillLog">Fill Log</h4>
                 <div id="fillLog">
-                    <div class="log-empty">No fills yet</div>
+                    <div class="log-empty" data-i18n="sandbox.cascade.logEmpty">No fills yet</div>
                 </div>
             </div>
         </div>
@@ -492,13 +492,20 @@
 
     <!-- Footer -->
     <footer>
-        <span class="wip-badge">Experimental</span>
-        <p><strong>Disclaimer:</strong> For educational purposes only.</p>
+        <span class="wip-badge" data-i18n="common.wipBadge">Experimental</span>
+        <p data-i18n="sandbox.cascade.disclaimer"><strong>Disclaimer:</strong> For educational purposes only.</p>
         <span class="version-number"></span>
     </footer>
 
     <!-- Navigation script -->
     <script src="../js/nav.js" type="module"></script>
+
+    <!-- i18n -->
+    <script type="module">
+        import { initI18n, createLanguageSwitcher } from '../js/i18n.js';
+        createLanguageSwitcher();
+        initI18n();
+    </script>
 
     <script>
         // Constants

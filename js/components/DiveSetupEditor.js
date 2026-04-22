@@ -62,6 +62,16 @@ import {
     normalizeDiveSetup
 } from '../charts/chartTypes.js';
 
+import { translate } from '../i18n.js';
+
+/** Helper: replace {0}, {1}, ... placeholders with the given values. */
+function fmt(str, ...values) {
+    return String(str).replace(/\{(\d+)\}/g, (_, i) => {
+        const v = values[Number(i)];
+        return v === undefined ? '' : String(v);
+    });
+}
+
 import {
     ZHL16_VARIANTS,
     getZHL16Variant,
@@ -863,7 +873,7 @@ export class DiveSetupEditor extends EventTarget {
                     <span class="dse-cylinder-custom-unit" style="display: ${!cylinderOptions.find(c => c.value === gas.cylinderVolume) ? 'inline' : 'none'};">L</span>
                 </div>
                 <div class="dse-gas-mod">
-                    <span class="dse-hint">MOD: ${mod14}m (deco: ${mod16}m)</span>
+                    <span class="dse-hint">${fmt(translate('diveEditor.mod', 'MOD: {0}m (deco: {1}m)'), mod14, mod16)}</span>
                 </div>
             </div>
         `;
@@ -959,7 +969,7 @@ export class DiveSetupEditor extends EventTarget {
     _updateGasModDisplay(modDisplay, o2Fraction) {
         const mod14 = calculateMOD(o2Fraction, 1.4);
         const mod16 = calculateMOD(o2Fraction, 1.6);
-        modDisplay.textContent = `MOD: ${mod14}m (deco: ${mod16}m)`;
+        modDisplay.textContent = fmt(translate('diveEditor.mod', 'MOD: {0}m (deco: {1}m)'), mod14, mod16);
     }
     
     _addGas() {
@@ -1246,21 +1256,21 @@ export class DiveSetupEditor extends EventTarget {
         const { ndl } = getNDLForDepth(maxDepth, gas, gfLow);
         
         if (ndl === Infinity) {
-            this.elements.ndlValue.textContent = '∞';
-            this.elements.ndlStatus.textContent = '✅ No limit';
+            this.elements.ndlValue.textContent = translate('diveEditor.ndl.infinity', '∞');
+            this.elements.ndlStatus.textContent = translate('diveEditor.ndl.noLimit', '✅ No limit');
             this.elements.ndlStatus.className = 'dse-ndl-status dse-ndl-ok';
         } else {
             this.elements.ndlValue.textContent = ndl;
-            
+
             if (bottomTime <= ndl) {
                 const remaining = ndl - bottomTime;
-                this.elements.ndlStatus.textContent = `✅ ${remaining}min remaining`;
+                this.elements.ndlStatus.textContent = fmt(translate('diveEditor.ndl.remaining', '✅ {0}min remaining'), remaining);
                 this.elements.ndlStatus.className = 'dse-ndl-status dse-ndl-ok';
             } else if (bottomTime <= ndl * 1.1) {
-                this.elements.ndlStatus.textContent = '⚠️ At limit';
+                this.elements.ndlStatus.textContent = translate('diveEditor.ndl.atLimit', '⚠️ At limit');
                 this.elements.ndlStatus.className = 'dse-ndl-status dse-ndl-warning';
             } else {
-                this.elements.ndlStatus.textContent = '🔴 Deco dive';
+                this.elements.ndlStatus.textContent = translate('diveEditor.ndl.decoDive', '🔴 Deco dive');
                 this.elements.ndlStatus.className = 'dse-ndl-status dse-ndl-deco';
             }
         }
@@ -1275,7 +1285,7 @@ export class DiveSetupEditor extends EventTarget {
                 this.elements.decoTime.textContent = Math.round(result.totalDecoTime * 10) / 10;
             } catch (err) {
                 if (err?.name === 'DecoCapExceededError') {
-                    this.elements.decoTime.textContent = '⚠ out of range';
+                    this.elements.decoTime.textContent = translate('diveEditor.ndl.outOfRange', '⚠ out of range');
                 } else {
                     throw err;
                 }

@@ -1,0 +1,1583 @@
+{
+    "page": {
+        "title": "Presión y presión parcial - Deco Theory"
+    },
+    "disclaimer": {
+        "text": "<strong>Solo para fines educativos</strong> — Esta herramienta NO está pensada para planificar inmersiones reales. No la uses nunca para bucear. Utiliza siempre ordenadores de buceo certificados, tablas y una formación adecuada."
+    },
+    "header": {
+        "title": "Presión y presión parcial",
+        "subtitle": "Cómo cambia la presión con la profundidad y cómo afecta a los gases que respiras"
+    },
+    "toc": {
+        "title": "Contenido",
+        "diveProfile": "Terminología del perfil",
+        "totalPressure": "Presión total bajo el agua",
+        "gasConsumption": "Consumo de gas",
+        "airComposition": "Composición del aire",
+        "daltonsLaw": "Ley de Dalton",
+        "partialPressureLimits": "Límites de presión parcial",
+        "oxygenToxicity": "Toxicidad del oxígeno",
+        "partialPressureChart": "Gráfica de presiones parciales"
+    },
+    "diveProfile": {
+        "title": "Terminología del perfil",
+        "writtenPlanTitle": "Plan de inmersión escrito",
+        "writtenPlanSubtitle": "(también llamado runtime; Divesoft Freedom lo llama «profile»)"
+    },
+    "terminology": {
+        "reading": {
+            "title": "Cómo leer un perfil de inmersión",
+            "text": "Un <strong>perfil de inmersión</strong> es la representación gráfica del buceo, que muestra la profundidad a lo largo del tiempo. Conocer la terminología básica te ayuda a comunicarte con otros buceadores y a interpretar correctamente los datos del ordenador de buceo."
+        },
+        "keyTerms": "Términos clave",
+        "descent": {
+            "label": "Descenso",
+            "text": "Fase desde que abandonas la superficie hasta alcanzar la profundidad prevista. Velocidad recomendada: ≤18-20 m/min."
+        },
+        "bottomTime": {
+            "label": "Tiempo de fondo",
+            "text": "Tiempo total desde el inicio del descenso hasta el comienzo del ascenso final. Incluye la fase de descenso."
+        },
+        "maxDepth": {
+            "label": "Profundidad máxima",
+            "text": "El punto más profundo alcanzado durante la inmersión. Determina la presión ambiente y la velocidad de absorción de gases."
+        },
+        "ascent": {
+            "label": "Ascenso",
+            "text": "Regreso a la superficie. La velocidad no debe superar los 9-10 m/min para evitar la formación de burbujas."
+        },
+        "tdt": {
+            "label": "Tiempo total de inmersión (TDT)",
+            "text": "Duración completa desde que abandonas la superficie hasta que regresas. Incluye descenso, tiempo de fondo y todo el ascenso."
+        },
+        "decoStop": {
+            "label": "Parada de descompresión",
+            "text": "Pausa obligatoria a una profundidad concreta durante el ascenso para permitir la eliminación segura de los gases inertes."
+        },
+        "safetyStop": {
+            "label": "Parada de seguridad",
+            "text": "Pausa voluntaria de 3 minutos a 3-5 m durante el ascenso para que el exceso de nitrógeno se desgasifique con seguridad."
+        },
+        "surfaceInterval": {
+            "label": "Intervalo en superficie (SI)",
+            "text": "Tiempo en la superficie entre inmersiones para desgasificar el nitrógeno. Más intervalo = más nitrógeno eliminado."
+        }
+    },
+    "sandboxLink": "Abrir en el Sandbox →",
+    "totalPressure": {
+        "title": "Presión total bajo el agua",
+        "whatCreates": {
+            "title": "¿Qué genera la presión bajo el agua?",
+            "intro": "La presión total a la que se expone un buceador bajo el agua procede de dos fuentes:",
+            "atmospheric": "<strong>Presión atmosférica</strong> — El peso de la columna de aire que tienes sobre ti. A nivel del mar es aproximadamente <strong>1 bar</strong> (1 atm = 1.01325 bar).",
+            "hydrostatic": "<strong>Presión hidrostática</strong> — El peso de la columna de agua que tienes encima. En agua salada añade aproximadamente <strong>1 bar por cada 10 metros</strong> de profundidad.",
+            "summary": "Por eso a 10 m de profundidad soportas 2 bar de presión total (1 atm + 1 bar de agua), a 20 m son 3 bar, a 30 m 4 bar, y así sucesivamente."
+        },
+        "altitude": {
+            "summary": "Presión atmosférica a distintas altitudes",
+            "intro": "La presión atmosférica disminuye con la altitud. Si buceas en un lago de montaña, partes de menos de 1 bar en superficie:",
+            "thAltitude": "Altitud",
+            "thPressure": "Presión (bar)",
+            "thExample": "Ejemplo de lugar",
+            "seaLevel": "Nivel del mar",
+            "seaLevelExample": "Océano, lagos costeros",
+            "300m": "300 m",
+            "300mExample": "Colinas bajas",
+            "700m": "700 m",
+            "700mExample": "Lagos de montaña",
+            "1500m": "1500 m",
+            "1500mExample": "Lagos de alta montaña",
+            "2500m": "2500 m",
+            "2500mExample": "Lago Titicaca",
+            "3000m": "3000 m",
+            "3000mExample": "Buceo en altitud extrema",
+            "note": "⚠️ El buceo en altitud exige procedimientos especiales y ajustes en la descompresión."
+        },
+        "formulas": {
+            "summary": "Fórmulas matemáticas",
+            "totalAmbient": "Presión ambiente total",
+            "totalAmbientDesc": "La presión total a cualquier profundidad es la suma de la presión atmosférica y la hidrostática:",
+            "totalAmbientWhere": "Donde:",
+            "pAmb": "presión ambiente total",
+            "pAtm": "presión atmosférica (≈1 bar a nivel del mar)",
+            "rho": "densidad del agua (≈1025 kg/m³ para agua salada)",
+            "g": "aceleración de la gravedad (9.81 m/s²)",
+            "hDepth": "profundidad en metros",
+            "simplified": "Fórmula simplificada (nivel del mar)",
+            "simplifiedDesc": "Para bucear a nivel del mar usamos la fórmula simplificada:",
+            "simplifiedNote": "Esta aproximación funciona bien para los cálculos del buceo recreativo.",
+            "altitudeFormula": "Presión atmosférica según la altitud",
+            "altitudeFormulaDesc": "La presión atmosférica disminuye de forma exponencial con la altitud:",
+            "altitudeWhere": "Donde:",
+            "p0": "1.01325 bar (presión a nivel del mar)",
+            "hAlt": "altitud en metros",
+            "scaleHeight": "≈ 8500 m (altura característica de la atmósfera)"
+        }
+    },
+    "pressureChart": {
+        "title": "Perfil de inmersión con presión total"
+    },
+    "gasConsumption": {
+        "title": "Consumo de gas",
+        "whyDepth": {
+            "title": "Por qué la profundidad influye en el suministro de gas",
+            "text1": "Según la <strong>Ley de Boyle-Mariotte</strong>, cuando la presión aumenta, el volumen del gas disminuye de forma proporcional. Bajo el agua esto significa que respiras aire <em>comprimido</em> de tu botella. A 10 m de profundidad (2 bar), cada respiración toma el doble de moléculas de gas que en superficie.",
+            "text2": "Por eso las inmersiones profundas consumen el suministro de gas más deprisa: estás respirando el mismo volumen de aire, pero contiene más moléculas debido a la compresión."
+        },
+        "sac": {
+            "title": "Consumo de aire en superficie (SAC)",
+            "text1": "La <strong>tasa SAC</strong> (también llamada RMV - Respiratory Minute Volume) es el gas que respiras por minuto en superficie. Para planificación, se emplea un valor típico de <strong>20 L/min</strong> para un buceo relajado, aunque el consumo real varía según el esfuerzo, el estrés y factores individuales.",
+            "text2": "En profundidad, el consumo real es: <strong>SAC × presión ambiente</strong>",
+            "surface": "Superficie (1 bar): 20 L/min",
+            "10m": "10 m (2 bar): 40 L/min",
+            "20m": "20 m (3 bar): 60 L/min",
+            "30m": "30 m (4 bar): 80 L/min",
+            "40m": "40 m (5 bar): 100 L/min"
+        },
+        "formula": {
+            "summary": "Fórmula de consumo de gas",
+            "consumedTitle": "Gas consumido en profundidad",
+            "consumedDesc": "El consumo de gas a cualquier profundidad se calcula así:",
+            "consumedWhere": "Donde:",
+            "sacVar": "Consumo de aire en superficie (L/min en superficie)",
+            "pAmbVar": "Presión ambiente en bar (1 + profundidad/10)",
+            "tVar": "Tiempo en profundidad (minutos)",
+            "availableTitle": "Gas disponible en la botella",
+            "availableExample": "Para una botella de 12 L a 200 bar con 50 bar de reserva:",
+            "availableResult": "Gas disponible = 12 × (200 − 50) = <strong>1800 litros</strong>"
+        }
+    },
+    "gasConsumptionChart": {
+        "title": "Consumo de gas durante la inmersión",
+        "sacCalc": {
+            "summary": "Cómo calcular tu tasa SAC personal",
+            "intro": "Conocer tu tasa SAC personal te ayuda a planificar las inmersiones con más precisión. Puedes calcularla a partir de datos reales usando la caída de presión, el volumen de la botella, el tiempo de inmersión y la profundidad media.",
+            "formulaTitle": "Fórmula del SAC",
+            "where": "Donde:",
+            "deltaP": "Caída de presión (presión inicial − presión final en bar)",
+            "vCyl": "Volumen de la botella (litros)",
+            "t": "Tiempo de inmersión (minutos)",
+            "pAvg": "Presión ambiente media = 1 + (profundidad media / 10)",
+            "exampleTitle": "Ejemplo de cálculo",
+            "exampleIntro": "Tras una inmersión apuntas:",
+            "exampleCyl": "Botella: 12 L",
+            "examplePressure": "Presión inicial: 200 bar, presión final: 80 bar → <strong>ΔP = 120 bar</strong>",
+            "exampleTime": "Tiempo de inmersión: 45 minutos",
+            "exampleDepth": "Profundidad media: 15 m → <strong>P<sub>media</sub> = 1 + 15/10 = 2.5 bar</strong>",
+            "showSolution": "Pruébalo primero — haz clic para revelar la solución",
+            "exampleResult": "Este buceador tiene una tasa SAC de <strong>12.8 L/min</strong> — ¡bastante eficiente! Los buceadores recreativos típicos se sitúan entre 12 y 25 L/min según su forma física, experiencia y condiciones.",
+            "tipsTitle": "Consejos para una medición precisa",
+            "tip1": "Usa un ordenador de buceo que registre la profundidad media, o calcúlala a partir de tu perfil",
+            "tip2": "Mide en varias inmersiones para obtener una media fiable",
+            "tip3": "Ten en cuenta que el SAC aumenta con el esfuerzo, el frío o el estrés",
+            "tip4": "Para la planificación, usa una estimación SAC conservadora (más alta)"
+        }
+    },
+    "airComposition": {
+        "title": "Composición del aire",
+        "whatsInAir": {
+            "title": "¿Qué contiene el aire que respiras?",
+            "intro": "El aire que respiramos es una mezcla de gases. Entender su composición es fundamental para el buceo, porque cada gas se comporta de forma distinta bajo presión. Los componentes principales son:",
+            "nitrogen": "<strong>Nitrógeno (N₂)</strong> — 78 % — gas inerte, no interviene en el metabolismo",
+            "oxygen": "<strong>Oxígeno (O₂)</strong> — 21 % — esencial para la vida, pero tóxico a presiones parciales elevadas",
+            "other": "<strong>Otros gases</strong> — 1 % — principalmente argón, CO₂ y gases traza"
+        },
+        "mixtures": {
+            "title": "Mezclas respirables",
+            "intro": "Los buceadores utilizan distintas mezclas para manipular las presiones parciales de gases concretos en profundidad. Cambiando la fracción de cada gas, podemos mantenernos dentro de los límites seguros frente a la toxicidad del oxígeno y la narcosis de nitrógeno:",
+            "nitrox": "<strong>Nitrox (EAN)</strong> — Aumenta la fracción de oxígeno para reducir la presión parcial de nitrógeno (ppN<sub>2</sub>), disminuyendo la carga de nitrógeno en los tejidos.",
+            "trimix": "<strong>Trimix</strong> — Añade helio a la mezcla, permitiendo reducir las presiones parciales de oxígeno y de nitrógeno a niveles seguros para inmersiones profundas."
+        }
+    },
+    "daltonsLaw": {
+        "title": "Ley de Dalton de las presiones parciales",
+        "foundation": {
+            "title": "La base de la física de los gases en el buceo",
+            "text": "La <strong>Ley de Dalton</strong> establece que la presión total de una mezcla de gases es igual a la suma de las presiones parciales de cada gas que la compone. La <em>presión parcial</em> de un gas es la presión que ejercería si ocupara él solo el mismo volumen."
+        },
+        "animation": {
+            "caption": "Cada gas (azul, rojo) ejerce su propia presión de forma independiente — la presión total es la suma de todas las presiones parciales."
+        },
+        "formula": {
+            "summary": "Fórmula de la Ley de Dalton",
+            "totalPressure": "Presión total",
+            "ppCalc": "Cálculo de la presión parcial",
+            "where": "Donde:",
+            "ppx": "presión parcial del gas x (bar)",
+            "fx": "fracción del gas x en la mezcla (decimal; p. ej., 0.21 para 21 %)",
+            "pAmb": "presión ambiente (bar), calculada como 1 + profundidad/10",
+            "note": "<em>Nota: esta es la fórmula <strong>operativa</strong> que se usa para la MOD y los límites de gas a lo largo de esta sección.</em>"
+        },
+        "example": {
+            "title": "Ejemplo: aire a 30 metros",
+            "intro": "A 30 metros la presión ambiente es <strong>4 bar</strong> (1 + 30/10). Para el aire:",
+            "thGas": "Gas",
+            "thFraction": "Fracción",
+            "thCalculation": "Cálculo",
+            "thPP": "Presión parcial",
+            "o2PP": "0.84 bar",
+            "n2PP": "3.16 bar",
+            "show": "mostrar"
+        },
+        "operational": {
+            "title": "Presión parcial operativa frente a fisiológica",
+            "intro": "Hay dos contextos habituales para calcular la presión parcial:",
+            "opTitle": "Operativa (MOD / límites de gas)",
+            "opDesc": "Se usa para la profundidad máxima operativa (MOD) y los límites de toxicidad por oxígeno. No se resta la presión del vapor de agua.",
+            "physTitle": "Fisiológica (cinética tisular)",
+            "physDesc": "Al calcular las presiones parciales alveolares para los modelos de carga tisular, restamos la presión del vapor de agua, porque los pulmones humidifican el aire inspirado:",
+            "physNote": "Esta reducción de ~6 % aparece en las ecuaciones de Bühlmann para los cálculos de saturación tisular. La necesitaremos en las próximas secciones y la mencionamos aquí por completitud."
+        }
+    },
+    "partialPressureLimits": {
+        "title": "Límites de presión parcial",
+        "oxygenLimits": {
+            "title": "Límites de oxígeno (ppO₂)",
+            "intro": "El oxígeno se vuelve tóxico a presiones parciales elevadas. El cuerpo responde de forma distinta a cada nivel de ppO₂:",
+            "thPPO2": "ppO₂ (bar)",
+            "thStatus": "Estado",
+            "thNotes": "Notas",
+            "hypoxia": "Hipoxia",
+            "hypoxiaNotes": "Pérdida de conciencia, muerte. Mínimo para sobrevivir.",
+            "normal": "Normal",
+            "normalNotes": "Rango de respiración en superficie.",
+            "safe": "Seguro para bucear",
+            "safeNotes": "Límite operativo recomendado para buceo recreativo.",
+            "caution": "Precaución",
+            "cautionNotes": "Aceptable solo en paradas de descompresión. Tiempo de exposición limitado.",
+            "danger": "Peligro",
+            "dangerNotes": "Riesgo elevado de toxicidad del SNC por oxígeno (convulsiones)."
+        },
+        "mod": {
+            "title": "Profundidad máxima operativa (MOD)",
+            "intro": "La MOD es la mayor profundidad a la que puedes bucear con seguridad con una mezcla concreta sin superar el límite de ppO₂. Se calcula a partir de la fracción de oxígeno y la ppO₂ máxima deseada.",
+            "formulaSummary": "Fórmula de la MOD",
+            "where": "Donde:",
+            "ppO2Max": "presión parcial máxima permitida (habitualmente 1.4 bar)",
+            "fO2": "fracción de oxígeno en el gas (decimal)",
+            "exercisesTitle": "Ejercicios: calcula la MOD (ppO₂ = 1.4 bar)",
+            "exGas": "Gas",
+            "exCalc": "Cálculo",
+            "showAnswer": "mostrar",
+            "exAir": "Aire (21 % O₂)",
+            "exerciseNote": "💡 Fíjate: mayor fracción de O₂ → MOD más somera. Más oxígeno significa que alcanzas antes el límite de toxicidad."
+        },
+        "nitrogenLimits": {
+            "title": "Límites de nitrógeno (ppN₂) — narcosis",
+            "intro": "El nitrógeno se vuelve narcótico a presiones parciales elevadas, causando deterioro del juicio, euforia y reacciones lentas — similar a la intoxicación etílica.",
+            "martiniTitle": "La «regla del martini»",
+            "martiniIntro": "Una regla empírica popular: cada 10 metros de profundidad respirando aire equivale aproximadamente a tomarse un martini con el estómago vacío. A 30 m, ¡podrías sentirte como si te hubieras tomado 3 martinis!",
+            "martini10": "10 m — 1 martini",
+            "martini20": "20 m — 2 martinis",
+            "martini30": "30 m — 3 martinis",
+            "martini40": "40 m — 4 martinis",
+            "martiniNote": "<em>Nota: la sensibilidad individual varía mucho. Algunos buceadores notan los efectos antes, otros más tarde. El frío, el estrés y la fatiga aumentan la narcosis.</em>",
+            "thPPN2": "ppN₂ (bar)",
+            "thEquivDepth": "Profundidad equivalente (aire)",
+            "thEffects": "Efectos",
+            "minimal": "Efectos mínimos para la mayoría de los buceadores.",
+            "mild": "Euforia leve, deterioro ligero.",
+            "noticeable": "Deterioro apreciable, juicio reducido.",
+            "severe": "Narcosis grave. Límite máximo para el buceo recreativo.",
+            "exercisesTitle": "Ejercicios: profundidad máxima para el límite de narcosis",
+            "limitLabel": "Límite ppN₂:",
+            "strictNote": "← límite más estricto empleado por algunas agencias de formación",
+            "exButModTemplate": "¡pero la MOD es {mod} m!",
+            "exercisesHint": "La misma fórmula que la MOD, pero para el nitrógeno: profundidad máxima = ((ppN₂<sub>máx</sub> / fN₂) − 1) × 10",
+            "exGas": "Gas",
+            "exCalc": "Cálculo",
+            "exMaxDepth": "Profundidad máxima",
+            "exAir": "Aire",
+            "showAnswer": "mostrar",
+            "exerciseNote": "💡 El Nitrox desplaza el límite de narcosis a mayor profundidad, pero antes entra en juego la MOD de oxígeno — siempre hay que respetar ambos límites. El factor limitante real de las mezclas EAN suele ser el oxígeno, no la narcosis."
+        }
+    },
+    "oxygenToxicity": {
+        "title": "Toxicidad del oxígeno",
+        "twoTypes": {
+            "title": "Los dos tipos de toxicidad por oxígeno",
+            "intro": "Respirar oxígeno a presiones parciales elevadas puede causar dos tipos distintos de toxicidad:",
+            "thType": "Tipo",
+            "thCause": "Causa",
+            "thSymptoms": "Síntomas",
+            "thRelevance": "Relevancia en buceo",
+            "cnsType": "<strong>Toxicidad del SNC</strong>",
+            "cnsCause": "ppO₂ elevada (>1.6 bar)",
+            "cnsSymptoms": "Convulsiones, espasmos, visión en túnel, sacudidas",
+            "cnsRelevance": "Peligro inmediato; puede causar ahogamiento",
+            "pulmonaryType": "<strong>Toxicidad pulmonar</strong>",
+            "pulmonaryCause": "Exposición prolongada (ppO₂ >0.5 bar)",
+            "pulmonarySymptoms": "Dolor torácico, tos, dificultad respiratoria",
+            "pulmonaryRelevance": "Relevante en exposiciones largas y rebreathers"
+        },
+        "cnsOtu": {
+            "title": "Seguimiento de CNS y OTU",
+            "toggleLabel": "Mostrar detalles",
+            "disclaimer": "<em>⚠️ Contenido avanzado. Para el buceo recreativo basta con mantenerse por debajo de 1.4 bar de ppO₂. El seguimiento de CNS/OTU se utiliza sobre todo en buceo técnico con exposiciones prolongadas al oxígeno.</em>",
+            "cnsTitle": "Reloj CNS (Sistema Nervioso Central)",
+            "cnsDesc": "El reloj CNS contabiliza tu exposición como porcentaje del tiempo máximo admisible a cada nivel de ppO₂. Al llegar al 100 % has alcanzado el límite recomendado.",
+            "thPPO2": "ppO₂ (bar)",
+            "thNOAAMax": "Tiempo máx. NOAA",
+            "thCNSPerMin": "CNS % por minuto",
+            "otuTitle": "OTU (Unidades de Tolerancia al Oxígeno)",
+            "otuDesc": "Los OTU contabilizan la exposición pulmonar acumulada al oxígeno. La fórmula se aplica cuando la ppO₂ supera los 0.5 bar:",
+            "otuLimits": "Límites diarios: <strong>300 OTU</strong> (una sola inmersión), <strong>850 OTU</strong> (total del día)"
+        },
+        "symptoms": {
+            "title": "Síntomas de toxicidad del SNC por oxígeno",
+            "mnemonic": "Recuerda la regla nemotécnica <strong>VENTID-C</strong>:",
+            "v": "<strong>V</strong>isión (alteraciones, visión en túnel)",
+            "e": "<strong>E</strong>ars — zumbido en los oídos (tinnitus)",
+            "n": "<strong>N</strong>áuseas",
+            "t": "<strong>T</strong>witching — sacudidas (sobre todo en músculos faciales)",
+            "i": "<strong>I</strong>rritabilidad, ansiedad",
+            "d": "<strong>D</strong>izziness — mareo",
+            "c": "<strong>C</strong>onvulsiones (lo más peligroso)",
+            "warning": "⚠️ Si notas cualquiera de estos síntomas, avisa de inmediato a tu compañero y empieza a ascender. Las convulsiones bajo el agua suelen ser mortales."
+        }
+    },
+    "partialPressureChart": {
+        "title": "Presiones parciales durante la inmersión"
+    },
+    "footer": {
+        "text": "Visualización con fines educativos. No apta para planificar inmersiones."
+    },
+    "tissueLoading": {
+        "header": {
+            "title": "Carga y saturación tisular",
+            "subtitle": "Visualiza cómo el nitrógeno satura y desatura tu cuerpo durante una inmersión"
+        },
+        "toc": {
+            "title": "Contenido",
+            "decoTheory": "¿Por qué importa?",
+            "henrysLaw": "Ley de Henry",
+            "gasExchange": "Vía del intercambio gaseoso",
+            "saturationDynamics": "Dinámica de la saturación",
+            "criticalSupersaturation": "Sobresaturación crítica",
+            "halfTimeConcept": "El concepto de medio tiempo",
+            "halfTimeCharts": "Gráficas de medios tiempos",
+            "halfTimeMath": "Las matemáticas",
+            "tissueTypes": "Tipos de tejido",
+            "buhlmannCompartments": "Compartimentos de Bühlmann",
+            "zhl16Variants": "Variantes ZH-L16",
+            "tissueChart": "Gráfica de carga tisular",
+            "referenceTable": "Tabla de referencia"
+        },
+        "decoTheory": {
+            "title": "¿Por qué importa?",
+            "whyMatters": {
+                "title": "¿Por qué importa?",
+                "text": "Cuando buceas, el aumento de presión hace que el nitrógeno del aire que respiras se disuelva en los tejidos del cuerpo. Cuanto más profundo vayas y más tiempo permanezcas, más nitrógeno se acumula. Si asciendes demasiado rápido, ese nitrógeno puede formar burbujas en los tejidos y provocar la <strong>enfermedad descompresiva (DCS)</strong>, también conocida como <em>bends</em>."
+            }
+        },
+        "henrysLaw": {
+            "title": "Ley de Henry: disolución de gases",
+            "solubilityTitle": "Solubilidad de los gases",
+            "cardTitle": "Ley de Henry: disolución de gases",
+            "text1": "La <strong>Ley de Henry</strong> establece que la cantidad de gas disuelto en un líquido es proporcional a la presión de ese gas sobre el líquido. Piensa en una botella de refresco: cerrada a presión, el CO₂ permanece disuelto. Abres el tapón (la presión baja) y se forman burbujas al salir el gas de la disolución.",
+            "text2": "El mismo principio se aplica a tu cuerpo durante una inmersión. Al descender y aumentar la presión, se disuelve más gas en la sangre y los tejidos. Aunque esto ocurre con <em>todos</em> los gases que respiras, el <strong>oxígeno (O₂)</strong> no es un problema para la formación de burbujas porque:",
+            "o2reason1": "Tu cuerpo <strong>consume oxígeno</strong> continuamente mediante el metabolismo",
+            "o2reason2": "La mayor parte del oxígeno en sangre está <strong>unida a la hemoglobina</strong> en los glóbulos rojos, no disuelta libremente",
+            "text3": "El gas que debemos gestionar con cuidado es el <strong>nitrógeno (N₂)</strong> — es inerte (el cuerpo no lo utiliza) y representa el 78 % del aire. Para los buceadores técnicos que usan trimix, el <strong>helio (He)</strong> sigue los mismos principios pero con propiedades de solubilidad distintas.",
+            "thGas": "Gas",
+            "thBloodSolubility": "Solubilidad en sangre<br><small>(ml/L por bar, 37°C)</small>",
+            "thFatSolubility": "Solubilidad en grasa<br><small>(ml/L por bar, 37°C)</small>",
+            "thFatBloodRatio": "Proporción grasa:sangre",
+            "nitrogen": "Nitrógeno (N₂)",
+            "helium": "Helio (He)",
+            "oxygen": "Oxígeno (O₂)",
+            "footnote": "¡Fíjate en que el tejido graso puede albergar <strong>5× más nitrógeno</strong> que la sangre a la misma presión!"
+        },
+        "gasExchange": {
+            "title": "Vía del intercambio gaseoso",
+            "intro": "El gas se desplaza siguiendo el <strong>gradiente de presión parcial</strong> — de mayor a menor presión. Durante una inmersión, la vía es la siguiente:",
+            "descentBtn": "Descenso (absorción)",
+            "ascentBtn": "Ascenso (desgasificación)",
+            "svg": {
+                "tank": "BOTELLA",
+                "breathingGas": "Gas respirable",
+                "alveoli": "Alvéolos",
+                "blood": "Sangre",
+                "tissues": "Tejidos",
+                "fast": "🧠 Rápido",
+                "medium": "💪 Medio",
+                "slow": "🦴 Lento",
+                "pressureLabel": "Presión:",
+                "high": "ALTA",
+                "low": "BAJA",
+                "flowDirection": "→ El gas fluye de presión ALTA a BAJA"
+            },
+            "alveolarFormula": {
+                "summary": "Fórmula de la presión alveolar",
+                "desc": "La presión parcial de nitrógeno en los alvéolos tiene en cuenta la presión del vapor de agua:",
+                "where": "Donde:",
+                "pAmb": "presión ambiente a profundidad (bar)",
+                "pH2O": "presión del vapor de agua ≈ 0.0627 bar a 37°C",
+                "fN2": "fracción de nitrógeno en el gas respirable (0.79 para aire)"
+            }
+        },
+        "saturationDynamics": {
+            "title": "Dinámica de la saturación durante una inmersión",
+            "intro": "Entender cómo cambia la carga tisular a lo largo de la inmersión es clave para una descompresión segura:",
+            "descent": {
+                "heading": "⬇️ a) Descenso — Absorción",
+                "text": "Al descender, la presión ambiente aumenta. La presión parcial de nitrógeno en los pulmones pasa a ser <strong>mayor que en los tejidos</strong>, así que el gas fluye <em>hacia</em> los tejidos. Todos los compartimentos empiezan a absorber nitrógeno, pero los <strong>tejidos rápidos se llenan primero</strong>."
+            },
+            "atDepth": {
+                "heading": "➡️ b) En el fondo — Saturación diferencial",
+                "text": "Mientras permaneces a la profundidad máxima, los <strong>tejidos rápidos se acercan al equilibrio</strong> en cuestión de minutos. Los tejidos medios siguen cargando. Los tejidos lentos (como la grasa) aún están lejos de saturarse — necesitarían horas en profundidad para equilibrarse del todo."
+            },
+            "ascent": {
+                "heading": "⬆️ c) Ascenso — Desgasificación y sobresaturación",
+                "text1": "Al ascender, la presión parcial de nitrógeno en los pulmones cae. Cuando la presión de nitrógeno del tejido supera la alveolar, el gradiente se invierte y el gas fluye <em>hacia fuera</em> — esto es la <strong>desgasificación</strong>.",
+                "text2": "Pero hay otro umbral: cuando la presión de nitrógeno del tejido supera la <strong>presión ambiente</strong>, el tejido está <em>sobresaturado</em>. En ese momento hay que tener cuidado — el gas disuelto tiende a salir de la disolución y podría formar burbujas."
+            },
+            "critical": {
+                "heading": "⚠️ Sobresaturación crítica",
+                "text1": "Cierta sobresaturación es <strong>tolerable</strong> — el cuerpo puede gestionar una cantidad de gas disuelto en exceso sin formar burbujas. Sin embargo, si los tejidos se sobresaturan <em>demasiado</em>, el nitrógeno disuelto puede formar burbujas en vez de difundirse de forma segura.",
+                "text2": "La sobresaturación máxima tolerable se llama <strong>sobresaturación crítica</strong> — varía según el tipo de tejido y la profundidad. En el <a href=\"m-values.html\">próximo capítulo</a> veremos cómo calcular estos límites."
+            }
+        },
+        "bubbleMechanics": {
+            "title": "¿Qué les pasa a las burbujas durante el ascenso?",
+            "cardTitle": "¿Por qué crecen las burbujas?",
+            "intro": "Sobre una burbuja de gas en un tejido actúan tres presiones:",
+            "pAmb": "<strong>Presión ambiente (P<sub>amb</sub>)</strong> — empuja la burbuja hacia dentro",
+            "pSurface": "<strong>Tensión superficial (2γ/r)</strong> — la presión de Laplace, que también comprime la burbuja. Las burbujas más pequeñas tienen <em>más</em> tensión superficial.",
+            "pTissue": "<strong>Tensión del gas disuelto (P<sub>tejido</sub>)</strong> — la presión total de los gases disueltos en el tejido circundante, que empuja el gas <em>hacia dentro</em> de la burbuja",
+            "insight": "Cuando <strong>P<sub>tejido</sub> &gt; P<sub>amb</sub> + 2γ/r</strong>, el gas se difunde hacia la burbuja y esta <strong>crece</strong>. Al crecer, <em>r</em> aumenta, la tensión superficial <em>disminuye</em> y el crecimiento se vuelve aún más fácil — un <strong>bucle de realimentación positiva</strong>.",
+            "sliderHint": "Usa el deslizador para ascender desde 30 m. Observa cómo, al reducir la presión ambiente, el equilibrio se inclina — las burbujas grandes cruzan antes el radio crítico."
+        },
+        "halfTimeConcept": {
+            "title": "El concepto de medio tiempo",
+            "intro": "Ya hemos visto <em>qué</em> ocurre durante la absorción y la desgasificación — ahora veamos <strong>cómo se desarrollan estos procesos en el tiempo</strong>. Igual que la desintegración radiactiva y muchos otros fenómenos naturales, la difusión de gas en los tejidos sigue un patrón matemático predecible.",
+            "definition": "El <strong>medio tiempo (periodo de semisaturación)</strong> de un tejido es el tiempo que tarda en alcanzar el 50 % de saturación (o el 50 % de desaturación) para una diferencia de presión dada. Tras cada periodo de medio tiempo:",
+            "bar1": "1 medio tiempo: 50 %",
+            "bar2": "2 medios tiempos: 75 %",
+            "bar3": "3 medios tiempos: 87.5 %",
+            "bar4": "6 medios tiempos: ~98 % (saturado)",
+            "example": "Un compartimento de 5 minutos alcanza el 50 % de saturación en 5 minutos; ¡uno de 635 minutos tarda más de 10 horas!",
+            "gradientTitle": "El efecto del gradiente de presión",
+            "gradientText1": "El medio tiempo de un tejido es constante — siempre tarda lo mismo en cerrar el <strong>50 % de la diferencia</strong> entre la presión actual del tejido y la objetivo. Pero cuando esa diferencia es mayor, ese 50 % representa más gas en términos absolutos.",
+            "gradientText2": "<strong>Ejemplo:</strong> si un tejido necesita desgasificar 2 bar de nitrógeno, pasar de aire (79 % N₂) a Nitrox 50 (50 % N₂) o a O₂ puro (0 % N₂) crea un gradiente de presión mucho mayor, de modo que cada medio tiempo elimina más gas — ¡por eso las mezclas ricas en oxígeno aceleran la descompresión!"
+        },
+        "halfTimeCharts": {
+            "title": "Interactivo: diferencia de presión y medios tiempos",
+            "intro": "Estas gráficas muestran cómo la diferencia de presión afecta a las velocidades de saturación y desaturación.",
+            "ongassing": {
+                "title": "Absorción (descenso)",
+                "desc": "El tejido parte del equilibrio en superficie (~0.79 bar ppN₂). Ajusta la profundidad objetivo para ver cómo diferencias de presión mayores implican una carga absoluta más rápida.",
+                "depthLabel": "Profundidad objetivo:"
+            },
+            "offgassing": {
+                "title": "Desgasificación (ascenso hasta la superficie)",
+                "desc": "El tejido parte saturado a la profundidad seleccionada. Mismo medio tiempo, misma ecuación: solo se invierte. Las curvas son espejos perfectos.",
+                "info": "Saturado a <strong id=\"offgassing-depth-display\">30 m</strong> → Superficie (~0.79 bar)"
+            },
+            "footnote": "ℹ️ Ambas gráficas usan la misma profundidad y la misma fórmula de medio tiempo. La absorción y la desgasificación son simétricas — solo cambia el sentido.",
+            "math": {
+                "summary": "Aprende más: las matemáticas",
+                "intro": "Las ecuaciones detrás de las curvas. Despliega para ver cómo Bühlmann modeló la presión tisular a profundidad constante y durante el ascenso.",
+                "showDerivation": "Mostrar derivación",
+                "haldaneTitle": "Ecuación de Haldane (profundidad constante)",
+                "haldaneDesc": "Cuando permaneces a profundidad constante, la presión tisular cambia según:",
+                "haldaneWhere": "Donde:",
+                "pt": "presión de N₂ del tejido en el instante t",
+                "palv": "presión de N₂ inspirada (alveolar)",
+                "pt0": "presión inicial de N₂ del tejido",
+                "k": "constante de velocidad",
+                "schreinerTitle": "Ecuación de Schreiner (cambio de profundidad)",
+                "schreinerDesc": "Durante el ascenso o descenso a velocidad constante:",
+                "rDesc": "es la velocidad de cambio de la presión alveolar (positiva en el descenso).",
+                "pressureTitle": "Presión en profundidad",
+                "pressureDesc": "Cada 10 metros de agua salada añaden aproximadamente 1 bar de presión."
+            }
+        },
+        "tissueHeterogeneity": {
+            "title": "Por qué los distintos tejidos se comportan de forma diferente",
+            "intro": "Tu cuerpo <strong>no es homogéneo</strong> — los distintos tejidos tienen características muy diferentes que afectan a la rapidez con la que absorben y liberan gas inerte:",
+            "perfusion": "<strong>Perfusión sanguínea</strong> — Los tejidos bien perfundidos (cerebro, corazón) intercambian gas deprisa; los mal perfundidos (cartílago, grasa) lo hacen despacio",
+            "solubility": "<strong>Solubilidad del gas</strong> — La grasa disuelve 5× más nitrógeno que la sangre (ver tabla anterior), por lo que los tejidos grasos tardan más en saturarse",
+            "distance": "<strong>Distancia al aporte sanguíneo</strong> — El gas debe difundir desde los capilares al tejido; los tejidos lejos del aporte sanguíneo tardan más",
+            "conclusion": "Por eso los modelos de descompresión utilizan varios <strong>compartimentos teóricos</strong> para simular todo el rango de comportamientos tisulares del cuerpo."
+        },
+        "buhlmannCompartments": {
+            "title": "Los compartimentos ZH-L16 de Bühlmann",
+            "intro": "El modelo Bühlmann ZH-L16 utiliza <strong>16 compartimentos teóricos</strong> — son <em>constructos matemáticos</em> ajustados a datos experimentales, no tejidos anatómicos literales. Cubren un rango de medios tiempos diseñado para modelar todo el espectro de comportamientos tisulares:",
+            "fast": "<strong>Compartimentos rápidos (5–12.5 min)</strong> — se saturan en minutos, pero también liberan gas deprisa",
+            "medium": "<strong>Compartimentos medios (18.5–77 min)</strong> — equilibrio entre carga y desgasificación",
+            "slow": "<strong>Compartimentos lentos (109–635 min)</strong> — pueden tardar horas en saturarse por completo",
+            "controllingTitle": "El compartimento de control",
+            "controlling": "En cualquier punto de la inmersión, el <strong>compartimento de control</strong> es el que está más cerca de su límite de sobresaturación crítica — ese compartimento determina tu techo de descompresión."
+        },
+        "zhl16Variants": {
+            "title": "Variantes de ZH-L16: A, B y C",
+            "intro": "Bühlmann desarrolló <strong>tres variantes</strong> del algoritmo ZH-L16, cada una con un grado distinto de conservadurismo. Las variantes solo difieren en los <strong>coeficientes «a»</strong> — los medios tiempos y los valores «b» son los mismos.",
+            "a": {
+                "name": "ZH-L16A",
+                "badge": "Experimental",
+                "desc": "Los valores <strong>originales</strong> obtenidos a partir de datos experimentales. El menos conservador — permite la mayor sobresaturación.",
+                "use": "📚 Uso: investigación, comparación de algoritmos"
+            },
+            "b": {
+                "name": "ZH-L16B",
+                "badge": "Tablas",
+                "desc": "Valores «a» modificados para <strong>tablas de descompresión impresas</strong>. Más conservador en los compartimentos 5–8 y 13 para compensar el redondeo inherente al uso de tablas.",
+                "use": "📋 Uso: tablas de descompresión publicadas"
+            },
+            "c": {
+                "name": "ZH-L16C",
+                "badge": "Ordenadores",
+                "desc": "<strong>El más conservador</strong> — valores «a» modificados para los compartimentos 5–15. Como los ordenadores de buceo registran la profundidad y el tiempo con precisión (sin redondeo de tablas), se añadió un margen adicional de seguridad para el uso real.",
+                "use": "💻 Uso: ordenadores de buceo (el más habitual hoy en día)"
+            }
+        },
+        "tissueChart": {
+            "title": "Gráfica de carga tisular",
+            "hint": "↑↓ mover tejidos | Shift+↑ expandir | Shift+↓ reducir"
+        },
+        "referenceTable": {
+            "title": "Referencia de compartimentos Bühlmann ZH-L16C",
+            "thHalfTime": "Medio tiempo",
+            "thCategory": "Categoría",
+            "thTissueType": "Tipo de tejido",
+            "thNumber": "#",
+            "thSaturationTime": "Tiempo hasta saturar*",
+            "footnote": "* Tiempo aproximado para alcanzar el 98 % de saturación (6 medios tiempos)",
+            "categoryFast": "Rápido",
+            "categoryMedium": "Medio",
+            "categoryMediumSlow": "Medio-lento",
+            "categorySlow": "Lento"
+        },
+        "tissueLabels": {
+            "1": "Cerebro, médula espinal",
+            "2": "Cerebro, médula espinal",
+            "3": "Médula espinal",
+            "4": "Músculos, piel",
+            "5": "Músculos, piel",
+            "6": "Músculos",
+            "7": "Músculos",
+            "8": "Músculos, tendones",
+            "9": "Tendones, cartílago",
+            "10": "Tendones, huesos",
+            "11": "Huesos",
+            "12": "Huesos, grasa",
+            "13": "Grasa",
+            "14": "Grasa",
+            "15": "Grasa",
+            "16": "Grasa"
+        }
+    },
+    "mValues": {
+        "header": {
+            "title": "Valores-M y límites al emerger",
+            "subtitle": "Entender los límites de la sobresaturación"
+        },
+        "toc": {
+            "recap": "Lo que ya sabemos",
+            "supersaturation": "El problema de la sobresaturación",
+            "buhlmann": "La solución de Bühlmann",
+            "diagram": "Diagrama presión-presión",
+            "exampleSafe": "Ejemplo: inmersión segura",
+            "exampleViolation": "Ejemplo: violación del techo",
+            "reference": "Coeficientes ZH-L16A"
+        },
+        "chartFormula": {
+            "summary": "📐 Mostrar la fórmula del valor-M",
+            "intro": "Límite de Bühlmann para cada tejido a presión ambiente P<sub>amb</sub>:",
+            "where": "Donde:",
+            "varM": "<strong>M</strong> — presión máxima tolerable de gas inerte en el tejido (bar)",
+            "varPamb": "<strong>P<sub>amb</sub></strong> — presión ambiente (bar)",
+            "varAB": "<strong>a, b</strong> — coeficientes ZH-L16 del tejido",
+            "note": "La gráfica traza el valor-M de cada tejido como una línea roja. Una presión tisular por encima de su línea significa que se ha violado el techo."
+        },
+        "recap": {
+            "title": "Lo que ya sabemos",
+            "cardTitle": "Las relaciones entre presiones",
+            "intro": "De las secciones anteriores aprendimos tres presiones clave y cómo se relacionan:",
+            "tissueLabel": "Presión de gas inerte en el tejido",
+            "tissueHint": "El nitrógeno (o el helio) disuelto en los tejidos del cuerpo",
+            "alveolarLabel": "Presión alveolar",
+            "alveolarHint": "La ppN₂ en los pulmones (≈0.79 × ambiente para aire)",
+            "ambientLabel": "Presión ambiente",
+            "ambientHint": "Presión total a la profundidad actual",
+            "insightTitle": "💡 La idea clave",
+            "offgassingDesc": "✅ Desgasificación — el nitrógeno fluye del tejido a los pulmones. <em>¡Esto es bueno!</em>",
+            "supersatDesc": "⚠️ Sobresaturación — el gas disuelto supera lo que la presión puede contener. <em>¡Riesgo de burbujas!</em>",
+            "challenge": "El reto: durante el ascenso <em>queremos</em> que la presión del tejido supere la alveolar (para desgasificar), pero debemos limitar cuánto supera la presión ambiente (para evitar burbujas)."
+        },
+        "supersaturation": {
+            "title": "El problema de la sobresaturación",
+            "cardTitle": "Sobresaturación crítica",
+            "text1": "Cuando la presión del tejido supera la presión ambiente, estamos en un estado llamado <strong>sobresaturación</strong>. Piensa en una bebida carbonatada: el CO₂ está disuelto a presión. Abre la botella (reduce la presión) y se forman burbujas.",
+            "text2": "Lo mismo ocurre en nuestros tejidos si ascendemos demasiado rápido. Pero aquí está el descubrimiento fascinante: el cuerpo puede tolerar <em>cierto</em> grado de sobresaturación sin formar burbujas peligrosas. La pregunta es: <strong>¿cuánta?</strong>",
+            "haldaneDesc": "Proporción de presión ambiente total",
+            "haldaneMath": "(2 bar → 1 bar, seguro desde 10 m, solo con aire)",
+            "workmanValue": "Por tejido, por profundidad",
+            "workmanDesc": "Cada compartimento tiene su propio límite",
+            "workmanMath": "(N₂ y He, 1965)",
+            "historySummary": "📚 La historia: cómo descubrimos los límites seguros",
+            "haldaneHistory": "El fisiólogo escocés observó que los trabajadores de túneles y cajones de aire comprimido podían descomprimirse con seguridad de 2 atmósferas a 1 (una proporción 2:1). Esto se convirtió en la base de la descompresión por etapas. <em>Nota: esta proporción 2:1 se obtuvo de experimentos solo con aire — mezclas distintas (trimix, heliox) tienen otras tolerancias debido a las diferentes propiedades de solubilidad y difusión del helio.</em>",
+            "workmanHistory": "Investigador de la U.S. Navy que se dio cuenta de que una única proporción fija no podía capturar todo el cuadro. Distintos compartimentos tisulares toleran distintos niveles de sobresaturación, y esas tolerancias cambian con la profundidad. Acuñó el término <strong>«valor-M»</strong> (Maximum value) — la presión máxima tolerable de gas inerte en el tejido a cualquier profundidad dada. Es importante que Workman desarrolló valores-M tanto para el nitrógeno <em>como</em> para el helio (1965), lo que permitió planificar la descompresión en inmersiones profundas con heliox.",
+            "workmanInsight": "La idea clave de Workman: los tejidos rápidos (cerebro, sangre) toleran más sobresaturación que los lentos (grasa, huesos) — y la proporción tolerada también varía con la profundidad."
+        },
+        "buhlmann": {
+            "title": "La solución de Bühlmann",
+            "cardTitle": "Límites específicos por tejido",
+            "intro": "El médico suizo <strong>Prof. Albert A. Bühlmann</strong> fue un paso más allá con su algoritmo ZH-L16. En lugar de una única proporción para todos los tejidos, definió límites de tolerancia específicos para cada uno de los 16 compartimentos tisulares.",
+            "coreConceptTitle": "El concepto central",
+            "coreConceptText": "Cada compartimento tisular tiene su propia <strong>línea de valor-M</strong> que define la presión tisular máxima tolerable para cualquier presión ambiente. Este es el límite — al cruzarlo, la formación de burbujas pasa a ser probable.",
+            "fasterTissues": "<strong>Tejidos rápidos</strong> (medios tiempos cortos como 5 min) → toleran MÁS sobresaturación",
+            "slowerTissues": "<strong>Tejidos lentos</strong> (medios tiempos largos como 635 min) → toleran MENOS sobresaturación",
+            "formulaSummary": "📐 La fórmula detrás de los valores-M",
+            "formulaIntro": "Fórmula del valor-M de Bühlmann para cada compartimento:",
+            "formulaWhere": "Donde:",
+            "formulaM": "<strong>M</strong> = presión máxima tolerable de gas inerte en el tejido (bar)",
+            "formulaPamb": "<strong>P<sub>amb</sub></strong> = presión ambiente a la profundidad actual (bar)",
+            "formulaA": "<strong>a</strong> = coeficiente de intercepción (bar) — específico del tejido",
+            "formulaB": "<strong>b</strong> = coeficiente de pendiente (adimensional) — específico del tejido",
+            "formulaHint": "El coeficiente «a» es la ordenada en el origen — la presión tisular máxima tolerable a presión manométrica cero (superficie). Los tejidos rápidos tienen valores «a» más altos, lo que significa que aguantan más sobresaturación.",
+            "variantsSummary": "📚 Variantes de ZH-L16: A, B y C",
+            "variantsIntro": "Bühlmann publicó tres juegos de coeficientes:",
+            "variantA": "<strong>ZH-L16A</strong> — Deducido matemáticamente a partir de los medios tiempos. El original, el menos conservador. Se usa en investigación.",
+            "variantB": "<strong>ZH-L16B</strong> — Algo más conservador en los compartimentos medios. Pensado para tablas de descompresión impresas (redondeadas a paradas de metro entero).",
+            "variantC": "<strong>ZH-L16C</strong> — El más conservador, sobre todo en los compartimentos medios. Pensado para ordenadores de buceo en tiempo real.",
+            "variantsHint": "En la práctica, el juego A resultó demasiado agresivo para los compartimentos medios, lo que motivó las modificaciones B y C. La mayoría de los ordenadores de buceo actuales usan ZH-L16C.",
+            "limitationsSummary": "⚠️ Limitaciones de los valores-M",
+            "limitationsText1": "Los valores-M son útiles, pero no son fronteras absolutas de seguridad. La investigación muestra que se forman <strong>burbujas silenciosas (asintomáticas)</strong> dentro de los límites de valor-M — no hace falta cruzar la línea para que aparezcan burbujas.",
+            "limitationsText2": "Algunos buceadores han superado los valores-M sin síntomas, y otros han desarrollado DCS manteniéndose dentro de los límites. Como dice Powell: <em>«un valor-M puede verse como una línea negra sólida que atraviesa una amplia zona gris».</em>",
+            "limitationsHint": "Por eso existen los factores de gradiente — para mantener la carga tisular muy por debajo del límite teórico del valor-M. Consulta la página de <a href=\"gradient-factors.html\">Factores de gradiente</a>."
+        },
+        "diagram": {
+            "title": "El diagrama presión-presión",
+            "cardTitle": "Visualizar los límites",
+            "intro": "La gráfica de abajo representa la <strong>presión ambiente</strong> (eje X) frente a la <strong>presión de N₂ en el tejido</strong> (eje Y). Observa cómo los compartimentos tisulares se mueven por las distintas zonas durante la inmersión:",
+            "zoneBelowMarker": "Por debajo de la línea azul (y = x)",
+            "zoneBelowDesc": "Presión tisular &lt; ambiente (no sobresaturado)",
+            "zoneBetweenMarker": "Entre la línea azul y la del valor-M",
+            "zoneBetweenDesc": "Sobresaturado pero seguro ✓",
+            "zoneAboveMarker": "Por encima de la línea del valor-M del tejido",
+            "zoneAboveDesc": "⚠️ ¡Sobresaturación crítica!",
+            "movementSummary": "🎯 Cómo leer el movimiento",
+            "moveDescent": "<strong>Descenso:</strong> te mueves a la <em>derecha</em> (↑ ambiente) y hacia <em>arriba</em> (↑ carga tisular)",
+            "moveAtDepth": "<strong>En el fondo:</strong> misma posición en X; subes lentamente en <em>Y</em> hacia el equilibrio",
+            "moveAscent": "<strong>Ascenso:</strong> te mueves a la <em>izquierda</em> (↓ ambiente) — aquí es donde entras en sobresaturación",
+            "movementWarning": "⚠️ El peligro: ascender demasiado rápido te desplaza a la izquierda más rápido de lo que desgasificas hacia abajo — ¡con riesgo de cruzar por encima de la línea del valor-M!"
+        },
+        "example1": {
+            "title": "Ejemplo 1: inmersión segura",
+            "desc": "Esta inmersión incluye una parada de seguridad de 10 minutos a 3 m. Observa cómo la presión tisular se mantiene muy por debajo de la línea del valor-M durante todo el ascenso.",
+            "profileTitle": "Perfil de inmersión",
+            "ppDiagramTitle": "Diagrama presión-presión"
+        },
+        "example2": {
+            "title": "Ejemplo 2: violación del techo",
+            "ceilingTitle": "¿Qué es el techo de ascenso?",
+            "ceilingText": "El <strong>techo de ascenso</strong> es la profundidad más somera a la que puedes ascender sin que ningún tejido supere su valor-M. Si asciendes más allá del techo, la presión del tejido cruza la línea del valor-M y la formación de burbujas peligrosas se vuelve probable. Las paradas de descompresión te mantienen en o por debajo de ese techo mientras los tejidos se desgasifican.",
+            "desc": "<strong>La misma inmersión, pero con ascenso directo a superficie.</strong> Observa cómo la presión tisular cruza por encima de la línea del valor-M — ¡es un riesgo de enfermedad descompresiva!",
+            "profileTitle": "Perfil de inmersión",
+            "ppDiagramTitle": "Diagrama presión-presión",
+            "legendSummary": "📖 Leyenda del gráfico",
+            "legendAmbient": "<strong>Azul sólido (línea de presión ambiente):</strong> y = x. Por encima = el tejido está sobresaturado.",
+            "legendSurface": "<strong>Gris discontinuo (superficie):</strong> x = 1 bar. Al llegar aquí debes estar por debajo del valor-M.",
+            "legendMValue": "<strong>Discontinuo de color (valor-M):</strong> límite crítico de cada tejido. Cada compartimento tiene su propio color.",
+            "legendTrail": "<strong>Estela:</strong> la trayectoria del punto tisular a lo largo de la inmersión."
+        },
+        "reference": {
+            "title": "Coeficientes del valor-M ZH-L16A",
+            "viewTable": "Ver tabla de coeficientes",
+            "thHalfTime": "Medio tiempo (min)",
+            "footnote": "* M₀ = a + 1/b = presión tisular máxima tolerable en superficie (1 bar de ambiente)"
+        }
+    },
+    "gradientFactors": {
+        "page": {
+            "title": "Factores de gradiente - Deco Theory"
+        },
+        "toc": {
+            "greyZone": "Zona gris: burbujas silenciosas",
+            "individualVariability": "Variabilidad individual",
+            "pyleStops": "Paradas de Pyle",
+            "gfExplained": "Los factores de gradiente explicados",
+            "gfLowHigh": "GF bajo y GF alto",
+            "example100": "Ejemplo: GF 100/100",
+            "example5080": "Ejemplo: GF 50/80",
+            "controversy": "La controversia de las paradas profundas",
+            "cmas": "Recomendaciones CMAS (2025)"
+        },
+        "chartFormula": {
+            "summary": "📐 Mostrar la fórmula del valor-M ajustado por GF",
+            "intro": "La presión de techo permitida con GF = 100 % coincide con el valor-M puro de Bühlmann:",
+            "intro5080": "Con GF 50/80 la presión de techo permitida escala con la profundidad:",
+            "where": "Donde:",
+            "varMPrime": "<strong>M'</strong> — presión de techo permitida tras aplicar el GF (bar)",
+            "varGF": "<strong>GF</strong> — interpolado desde GF bajo (50 %) a pAnchor hasta GF alto (80 %) en superficie",
+            "varM": "<strong>M</strong> — valor-M puro de Bühlmann = a + P<sub>amb</sub> / b",
+            "note100": "Con GF 100/100 el corredor verde se colapsa sobre la línea roja del valor-M — no se añade conservadurismo.",
+            "note5080": "La banda verde muestra M' a lo largo de la inmersión — queda por debajo de la línea roja del valor-M y se estrecha al acercarse a superficie."
+        },
+        "header": {
+            "title": "Factores de gradiente",
+            "subtitle": "Añadir conservadurismo a la descompresión — y el debate de las paradas profundas"
+        },
+        "greyZone": {
+            "title": "La zona gris: por qué los valores-M no bastan",
+            "silentBubbles": {
+                "title": "Burbujas silenciosas",
+                "text1": "Los estudios con ecografía Doppler han revelado algo sorprendente: <strong>se forman burbujas en los buceadores tras la mayoría de las inmersiones</strong>, incluso siguiendo perfiles conservadores sin síntomas de DCS.",
+                "insight": "Estas «burbujas silenciosas» (émbolos gaseosos venosos) son subclínicas — no producen síntomas, pero demuestran que <strong>los valores-M no representan una frontera libre de burbujas</strong>. Representan un nivel <em>tolerable</em> de formación de burbujas.",
+                "text2": "Esto significa que la línea del valor-M en nuestro diagrama presión-presión no es una frontera nítida de «seguro/inseguro». Es más bien un gradiente de probabilidad — cuanto más te acerques, más burbujas se forman y mayor es el riesgo."
+            },
+            "variability": {
+                "title": "Variabilidad individual",
+                "intro": "El riesgo de DCS varía enormemente entre personas e incluso entre inmersiones de una misma persona. Factores que aumentan el riesgo:",
+                "dehydration": "Deshidratación",
+                "poorFitness": "Mala forma física",
+                "age": "Edad",
+                "bodyFat": "Porcentaje de grasa corporal",
+                "cold": "Exposición al frío",
+                "workload": "Esfuerzo intenso",
+                "pfo": "Foramen oval permeable (FOP)",
+                "alcohol": "Consumo de alcohol",
+                "undeservedHit": "El término <strong>«undeserved hit»</strong> («golpe inmerecido») describe los casos en los que un buceador ha seguido todas las reglas y, aun así, ha sufrido DCS. Sucede porque estamos tratando con biología probabilística, no con física precisa."
+            }
+        },
+        "pyle": {
+            "discovery": {
+                "title": "El descubrimiento de Richard Pyle",
+                "cardTitle": "La observación del coleccionista de peces",
+                "text1": "En los años 80, <strong>Richard Pyle</strong> era un biólogo marino que recogía ejemplares de peces en la «zona crepuscular» — profundidades entre 50 y 70 metros. Se dio cuenta de algo curioso sobre su fatiga posinmersión.",
+                "insight": "<strong>El patrón:</strong> en las inmersiones en que capturaba peces tenía que parar a profundidades intermedias para <strong>liberar la presión de sus vejigas natatorias</strong> (para evitar que estallaran al ascender). Tras esas inmersiones se sentía bien. En las inmersiones sin peces — y, por tanto, sin paradas intermedias — se sentía fatigado.",
+                "text2": "Pyle había descubierto por casualidad que breves paradas a profundidades <em>mayores</em> que las exigidas por su tabla de descompresión marcaban una diferencia notable en cómo se encontraba después."
+            },
+            "method": {
+                "title": "Paradas de Pyle",
+                "intro": "Pyle formalizó su observación en un método:",
+                "step1": "Calcula tu programa de descompresión convencional",
+                "step2": "1.ª parada profunda = <strong>a medio camino</strong> entre la profundidad máxima y la primera parada deco exigida",
+                "step3": "Permanece 2-3 minutos",
+                "step4": "Si la distancia hasta la siguiente parada sigue siendo &gt;9 m (30 ft), añade otra parada a medio camino",
+                "exampleTitle": "Ejemplo: inmersión a 60 m, primera parada deco a 15 m",
+                "stop1Label": "1.ª parada de Pyle:",
+                "stop1Value": "(60 + 15) ÷ 2 = <strong>38 m</strong>",
+                "stop2Label": "2.ª parada de Pyle:",
+                "stop2Value": "(38 + 15) ÷ 2 = <strong>27 m</strong>",
+                "stop3Label": "3.ª parada de Pyle:",
+                "stop3Value": "(27 + 15) ÷ 2 = <strong>21 m</strong>",
+                "vpmConnection": "Curiosamente, Pyle descubrió después que su patrón empírico coincidía muy de cerca con el <strong>Varying Permeability Model (VPM)</strong> — un algoritmo de descompresión basado en burbujas que, de forma independiente, predecía perfiles de paradas profundas similares."
+            },
+            "bridge": {
+                "title": "Del descubrimiento de Pyle a Bühlmann",
+                "text1": "Pyle demostró que las paradas profundas ayudan, y VPM (un modelo de burbujas) explica por qué. Pero ¿y si quieres seguir usando el <strong>modelo de gas disuelto de Bühlmann</strong> — el algoritmo de la mayoría de los ordenadores de buceo — y, aun así, obtener esas paradas profundas beneficiosas?",
+                "text2": "Eso es exactamente lo que ofrecen los <strong>factores de gradiente</strong>. Son una modificación de Bühlmann que te permite ajustar perfiles más conservadores, incluidas primeras paradas más profundas, <em>sin</em> cambiar a un algoritmo completamente distinto."
+            }
+        },
+        "gfExplained": {
+            "title": "Factores de gradiente: la herramienta",
+            "what": {
+                "title": "¿Qué son los factores de gradiente?",
+                "text1": "Los factores de gradiente (GF) son una forma de añadir <strong>conservadurismo</strong> al algoritmo de Bühlmann reduciendo la sobresaturación permitida. En lugar de dejar que los tejidos alcancen el 100 % del valor-M, fijas un porcentaje más bajo.",
+                "gf100label": "GF 100 %",
+                "gf100value": "Valor-M completo",
+                "gf100desc": "Sobresaturación máxima permitida (límite de Bühlmann)",
+                "gf0label": "GF 0 %",
+                "gf0value": "Presión ambiente",
+                "gf0desc": "No se permite sobresaturación (inviable)",
+                "text2": "Un factor de gradiente de <strong>GF 80 %</strong> significa que solo permites al tejido alcanzar el 80 % del camino entre la presión ambiente y el valor-M."
+            },
+            "lowHigh": {
+                "title": "GF bajo y GF alto",
+                "intro": "Los ordenadores de buceo y los programas de planificación usan <strong>dos</strong> factores de gradiente:",
+                "gfLowLabel": "GF bajo",
+                "gfLowDesc": "Controla la <strong>primera/más profunda</strong> parada deco",
+                "gfHighLabel": "GF alto",
+                "gfHighDesc": "Controla la sobresaturación en la <strong>superficie</strong>",
+                "interpolation": "El algoritmo <strong>interpola</strong> entre estos valores durante el ascenso:",
+                "interpList1": "En la parada obligatoria más profunda → se aplica el GF bajo",
+                "interpList2": "En la superficie → se aplica el GF alto",
+                "interpList3": "Entre ambos → interpolación lineal",
+                "insight": "<strong>GF bajo más bajo = primera parada más profunda</strong> (similar a las paradas de Pyle)<br><strong>GF alto más bajo = más tiempo en paradas someras</strong>"
+            },
+            "example100": {
+                "title": "Visual: GF 100/100 (sin conservadurismo)",
+                "desc": "Límites puros de Bühlmann — el tejido puede alcanzar el 100 % del valor-M."
+            },
+            "example5080": {
+                "title": "Visual: GF 50/80 (conservador)",
+                "desc": "El tejido solo puede llegar al 50-80 % del valor-M — fíjate en la línea GF por debajo del valor-M."
+            }
+        },
+        "controversy": {
+            "title": "La controversia de las paradas profundas",
+            "nedu": {
+                "cardTitle": "El estudio de la NEDU que lo cambió todo",
+                "text1": "Durante años las paradas profundas se consideraron beneficiosas según las observaciones de Pyle y la teoría de los modelos de burbujas. Luego llegaron los tests rigurosos.",
+                "text2": "La <strong>U.S. Navy Experimental Diving Unit (NEDU)</strong> realizó un gran estudio comparativo: misma inmersión (170 fsw/30 min), mismo tiempo total de descompresión, pero distintos perfiles:",
+                "shallowLabel": "Paradas someras",
+                "shallowValue": "3 DCS en 192 inmersiones",
+                "shallowDesc": "1.ª parada a 40 fsw (12 m)",
+                "deepLabel": "Paradas profundas",
+                "deepValue": "11 DCS en 198 inmersiones",
+                "deepDesc": "1.ª parada a 70 fsw (21 m)",
+                "result": "¡Las paradas profundas produjeron <span style=\"color: var(--danger-color);\">3.6× más DCS</span> en la misma inmersión!"
+            },
+            "backfire": {
+                "title": "Por qué las paradas profundas pueden ser contraproducentes",
+                "text1": "El problema de las paradas profundas es sutil pero importante:",
+                "insight": "A la profundidad de una parada profunda, los <strong>tejidos lentos siguen absorbiendo</strong>. Mientras intentas que los tejidos rápidos desgasifiquen, estás cargando los tejidos lentos que controlarán la descompresión posterior.",
+                "text2": "Las paradas profundas reducen el gradiente de presión para desgasificar. Cuanto más profundo te quedes, menor es la diferencia entre la presión del tejido y la ambiente — y ese gradiente es el que impulsa la eliminación de gas.",
+                "nuanceTitle": "El matiz real",
+                "nuanceIntro": "Esto no significa que todas las paradas profundas sean malas:",
+                "nuance1": "<strong>Las paradas muy breves</strong> (los 2-3 minutos originales de Pyle) pueden seguir siendo beneficiosas",
+                "nuance2": "El estudio de la NEDU empleó paradas profundas prolongadas, trasladando mucho tiempo de deco a la zona profunda",
+                "nuance3": "Los perfiles muy agresivos de paradas profundas (GF 30/85) se desaconsejan hoy",
+                "nuance4": "Un conservadurismo moderado (GF 70/85) añade seguridad sin paradas profundas excesivas"
+            }
+        },
+        "practical": {
+            "settings": {
+                "title": "Factores de gradiente — ajustes de conservadurismo en la descompresión",
+                "noteGfLow": "determina la profundidad de la primera parada deco y condiciona las paradas más profundas",
+                "noteGfHigh": "condiciona el tiempo en paradas someras y el tiempo total hasta emerger",
+                "thDiveType": "Tipo de inmersión",
+                "thDepthDuration": "Profundidad y duración",
+                "row1type": "Inmersión recreativa",
+                "row1depth": "hasta 40 m, deco breve",
+                "row2type": "Buceo intensivo",
+                "row2typeSub": "inmersiones repetitivas o liveaboard",
+                "row2depth": "hasta 40 m, deco breve",
+                "row3type": "Inmersión profunda",
+                "row3typeSub": "no bucees al día siguiente",
+                "row3depth": "por debajo de 60 m, una sola inmersión",
+                "row4type": "Situación de emergencia",
+                "row4typeSub": "bailout, cambio subacuático en Freedom",
+                "row4depth": "tómate un descanso más largo de las inmersiones",
+                "row5type": "Deco Planner",
+                "row5typeSub": "por defecto",
+                "row6type": "Freedom",
+                "row6typeSub": "por defecto",
+                "row7type": "Freedom",
+                "row7typeSub": "mi ajuste",
+                "row7depth": "hasta 40 m, deco breve",
+                "row8type": "Tablas Bühlmann ZH-L16",
+                "credit": "Tabla de referencia cortesía de Jirka Hovorka."
+            },
+            "ratio": {
+                "title": "La regla de la proporción",
+                "intro": "El investigador de descompresión <strong>Dr. David Doolette</strong> propone una pauta práctica:",
+                "insight": "<strong>El GF bajo debería ser aproximadamente el 83 % del GF alto</strong>",
+                "insightDesc": "Esta proporción coincide con el parámetro «b» medio de Bühlmann y evita sobreponderar las paradas profundas.",
+                "examplesTitle": "Ejemplos que siguen la regla del ~83 %:",
+                "example1label": "GF alto 85 %:",
+                "example1value": "GF bajo ≈ <strong>70 %</strong> → GF 70/85",
+                "example2label": "GF alto 80 %:",
+                "example2value": "GF bajo ≈ <strong>66 %</strong> → GF 65/80",
+                "example3label": "GF alto 70 %:",
+                "example3value": "GF bajo ≈ <strong>58 %</strong> → GF 55/70"
+            },
+            "bottomLine": {
+                "title": "En resumen",
+                "item1": "Algo de conservadurismo es bueno — GF 100/100 resulta demasiado agresivo",
+                "item2": "GF 70/85 es un buen punto de partida para la mayoría de buceadores",
+                "item3": "Un GF bajo muy reducido (como 30) puede ser contraproducente",
+                "item4": "Más conservadurismo no siempre es mejor — es cuestión de equilibrio",
+                "item5": "Ajústalo según factores personales, condiciones de la inmersión y experiencia"
+            }
+        },
+        "cmas": {
+            "title": "Qué recomienda la CMAS (2025)",
+            "intro": "La CMAS publicó en 2025 una hoja informativa que resume la evidencia actual sobre factores de gradiente. Sus recomendaciones difieren de algunos valores de la tabla de arriba — vale la pena conocer ambas perspectivas antes de elegir tus ajustes.",
+            "pointSymmetric": {
+                "title": "1. Para aire/nitrox, usa GF <em>simétricos</em>",
+                "text": "La CMAS recomienda <strong>GF bajo = GF alto</strong> en inmersiones con nitrógeno — típicamente <strong>90/90</strong>, bajando a <strong>85/85</strong> u <strong>80/80</strong> cuando hay factores de riesgo (edad, fatiga, frío, esfuerzo). Los GF asimétricos fuerzan paradas profundas, y varios estudios independientes han encontrado que esto <em>aumenta</em> la incidencia de DCS en inmersiones con aire/nitrox:",
+                "bullet1": "Marina Francesa (2005) — las paradas profundas aumentaron el riesgo de DCS en inmersiones con deco de aire",
+                "bullet2": "U.S. Navy NEDU (2011) — «la redistribución del tiempo de parada de las paradas someras a las profundas aumenta la incidencia de DCS en inmersiones con descompresión de aire»",
+                "bullet3": "Ejército Belga (2023) — el preajuste por defecto 30/70 resultó inseguro para inmersiones con aire a 60 m"
+            },
+            "pointHelium": {
+                "title": "2. Con helio (trimix/heliox), los GF asimétricos siguen justificados",
+                "text": "En mezclas con helio, forzar algunas paradas más profundas <em>sí</em> ayuda (DCS del oído interno, tejidos rápidos con helio). La CMAS sugiere <strong>GF bajo 30-50, GF alto 70-80</strong> (p. ej., 30/70, 50/80). Esto concuerda con la fila «Inmersión profunda» de la tabla anterior."
+            },
+            "pointNoStop": {
+                "title": "3. En una inmersión sin deco, el GF bajo no importa",
+                "text": "No es obvio, pero es importante: el GF bajo solo entra en juego en la <strong>profundidad de la primera parada deco</strong>. Si tu inmersión no tiene paradas obligatorias, ajustar <strong>45/95</strong> se comporta exactamente igual que <strong>95/95</strong> — porque no hay «primera parada» a la que anclar el GF bajo. No esperes que un GF bajo conservador te ayude en un perfil puramente recreativo."
+            },
+            "pointDefaults": {
+                "title": "4. Revisa el preajuste por defecto de tu ordenador",
+                "text": "Muchos ordenadores de buceo vienen de fábrica con <strong>GF 30/70</strong> — un preajuste elegido para buceo técnico/trimix. La CMAS sostiene que ese mismo preajuste <em>no</em> es el adecuado para aire/nitrox."
+            },
+            "linkText": "📄 Leer la hoja informativa de la CMAS →"
+        },
+        "bubbleModels": {
+            "title": "Modelos de burbujas (avanzado)",
+            "beyond": {
+                "title": "Más allá del gas disuelto",
+                "text": "El algoritmo de Bühlmann solo sigue el <strong>gas disuelto</strong>. No modela la formación ni el crecimiento de burbujas. Los llamados «modelos de burbujas» intentan abordar esto."
+            },
+            "vpm": {
+                "title": "VPM (Varying Permeability Model)",
+                "text1": "VPM parte de que en los tejidos <strong>siempre existen núcleos microscópicos de burbujas</strong>. Durante la descompresión, los núcleos mayores que un «radio crítico» (determinado por la profundidad máxima) crecerán.",
+                "text2": "VPM busca minimizar el volumen total de burbujas manteniendo la presión ambiente lo bastante alta como para limitar su crecimiento — lo que da lugar, de forma natural, a paradas más profundas."
+            },
+            "rgbm": {
+                "title": "RGBM (Reduced Gradient Bubble Model)",
+                "text": "RGBM modela cómo crecen las burbujas al captar gas del tejido saturado circundante. Al igual que VPM, tiende a producir paradas más profundas que Bühlmann."
+            },
+            "realityCheck": {
+                "title": "Prueba de realidad",
+                "text": "A pesar de sus bases teóricas distintas, todos estos algoritmos producen <strong>programas sorprendentemente parecidos</strong> — porque todos deben ajustarse a los mismos datos empíricos de inmersiones reales.",
+                "quote": "«Es demasiado fácil mirar la complejidad de un cálculo y la cantidad de decimales que muestra un ordenador moderno y quedarse con la impresión de que el resultado es extremadamente preciso cuando en realidad no lo es.»",
+                "quoteAuthor": "— Paul Chapman, Decompression Theory"
+            }
+        }
+    },
+    "gfChart": {
+        "formulaSummary": "📐 Mostrar la fórmula del GF %",
+        "formulaIntro": "Factor de gradiente instantáneo para un tejido a presión ambiente P<sub>amb</sub>:",
+        "formulaMValue": "Valor-M de Bühlmann a P<sub>amb</sub>: <strong>M(P<sub>amb</sub>) = a + P<sub>amb</sub> / b</strong>",
+        "formulaWhere": "Donde:",
+        "varPtissue": "<strong>P<sub>tejido</sub></strong> — presión de gas inerte en el tejido (bar)",
+        "varPamb": "<strong>P<sub>amb</sub></strong> — presión ambiente = 1 + profundidad/10 (bar)",
+        "varAB": "<strong>a, b</strong> — coeficientes ZH-L16 de Bühlmann del tejido",
+        "varGF": "<strong>GF</strong> — 0 % en la línea de ambiente (plenamente saturado, sin gradiente), 100 % en el valor-M (límite de Bühlmann)",
+        "rampNote": "Durante el ascenso el GF <em>permitido</em> se interpola linealmente desde GF bajo a la profundidad pAnchor hasta GF alto en superficie. El corredor verde del gráfico muestra esa región permitida."
+    },
+    "gasLaw": {
+        "page": {
+            "title": "Ley de los gases: temperatura y presión - Deco Theory"
+        },
+        "disclaimer": {
+            "text": "<strong>Solo para fines educativos</strong> — Esta herramienta demuestra la Ley de Gay-Lussac para botellas rígidas de buceo."
+        },
+        "header": {
+            "title": "Ley de los gases: temperatura y presión",
+            "subtitle": "Cómo los cambios de temperatura afectan a la presión en una botella rígida de buceo (Ley de Gay-Lussac)"
+        },
+        "setup": "Configuración",
+        "scenario": "Escenario",
+        "preset": "Preajuste",
+        "presets": {
+            "warmShop": "Tienda cálida → lago frío",
+            "hotFill": "Carga caliente → cantera fría",
+            "sunDeck": "Sol en cubierta",
+            "fire": "¡Fuego!",
+            "custom": "Personalizado"
+        },
+        "cylinder": "Botella",
+        "fillPressure": "Presión de llenado (bar)",
+        "cylinderVolume": "Volumen de la botella (L)",
+        "temperature": "Temperatura",
+        "initialTemp": "Temperatura inicial T<sub>1</sub> (°C)",
+        "finalTemp": "Temperatura final T<sub>2</sub> (°C)",
+        "calculatePrompt": "Configura el escenario, calcula P<sub>2</sub> y pulsa abajo para comprobar tu respuesta.",
+        "showResult": "Mostrar resultado",
+        "finalPressure": "Presión final P<sub>2</sub>",
+        "pressureChange": "Cambio de presión ΔP",
+        "usableGasChange": "Cambio de gas utilizable",
+        "gasChangeSub": "litros equivalentes en superficie (ΔP × volumen)",
+        "diveTimeChange": "Cambio de tiempo de inmersión a 20 m",
+        "diveTimeSub": "Consumo de aire en superficie 20 L/min a 3 bar (1+20/10)",
+        "safety": {
+            "withinWorking": "Dentro de la presión de trabajo ({0} bar nominales)",
+            "aboveWorking": "¡Por encima de la presión de trabajo! {0} bar (presión de prueba: {1} bar)",
+            "danger": "¡PELIGRO! {0} bar supera la presión de prueba ({1} bar)"
+        },
+        "tempRange": "Rango de temperatura",
+        "tempRefs": {
+            "ice": "0°C hielo",
+            "room": "20°C ambiente",
+            "body": "37°C cuerpo",
+            "hotCar": "60°C coche al sol"
+        },
+        "whyTitle": "💡 ¿Por qué ocurre esto?",
+        "whyText1": "Las moléculas de gas se mueven más rápido a mayor temperatura y chocan con más fuerza contra las paredes de la botella, aumentando la presión. Como la botella es rígida (volumen constante), toda la energía cinética extra se traduce directamente en más presión.",
+        "whyText2": "<strong>Consejo práctico:</strong> los compresores generan un calor notable al llenar — el gas dentro de una botella recién cargada puede estar 40-50°C por encima del ambiente. Si cargas a 200 bar en una tienda cálida y luego buceas en un lago frío, no te sorprendas si ves solo ~180 bar en el manómetro. No es una fuga — es física.",
+        "whyRuleOfThumb": "<strong>Regla práctica:</strong> ~0.6 bar de cambio por cada 1°C a 200 bar de presión de trabajo.",
+        "formulaTitle": "Ley de Gay-Lussac (proceso isocórico)",
+        "formulaNote": "la relación presión/temperatura es constante a volumen constante (T en Kelvin)",
+        "formulaRearranged": "Reordenada:",
+        "scenarioLabels": {
+            "warmShop": "Tienda cálida a lago frío",
+            "hotFill": "Carga caliente a cantera fría",
+            "sunDeck": "Calentamiento por el sol en cubierta",
+            "fire": "Escenario de incendio"
+        },
+        "footer": {
+            "badge": "Experimental",
+            "text": "<strong>Aviso:</strong> Solo con fines educativos. Basado en las hipótesis de gas ideal."
+        }
+    },
+    "common": {
+        "wipBadge": "Experimental"
+    },
+    "units": {
+        "min": "min",
+        "m": "m",
+        "bar": "bar",
+        "liters": "L",
+        "percent": "%",
+        "mPerMin": "m/min",
+        "lPerMin": "L/min"
+    },
+    "chart": {
+        "buttons": {
+            "all": "Todo",
+            "none": "Ninguno",
+            "fast": "Rápido",
+            "slow": "Lento"
+        },
+        "hints": {
+            "compartments": "Clic = seleccionar uno · Mayús+clic = alternar · ←→ paso · Espacio reproducir · F pantalla completa",
+            "arrowShiftArrow": "↑↓ mover, Mayús+↑↓ ampliar/reducir"
+        },
+        "tooltips": {
+            "fullscreen": "Alternar pantalla completa",
+            "exitFullscreen": "Salir de pantalla completa (Esc)",
+            "resetZoom": "Restablecer zoom (doble clic)",
+            "jumpStart": "Ir al inicio (Home)",
+            "stepBack": "Paso atrás (←)",
+            "playPause": "Reproducir / pausar (Espacio)",
+            "stepForward": "Paso adelante (→)",
+            "jumpEnd": "Ir al final (End)"
+        },
+        "timeDisplay": "{0} min @ {1} m",
+        "axes": {
+            "timeMinutes": "Tiempo (minutos)",
+            "timeMin": "Tiempo (min)",
+            "depthMeters": "Profundidad (m)",
+            "pressureBar": "Presión (bar)",
+            "tankPressureBar": "Presión de botella (bar)",
+            "ambientPressureBar": "Presión ambiente (bar)",
+            "tissueN2PressureBar": "Presión de N₂ en tejido (bar)",
+            "gfPercent": "GF (%)",
+            "depthEquivalent": "Profundidad equivalente (m)"
+        },
+        "profile": {
+            "datasetDepth": "Profundidad (m)",
+            "datasetCeiling": "Techo (m)",
+            "datasetAmbientPressure": "Presión ambiente (bar)",
+            "datasetAlveolarPpN2": "ppN₂ alveolar (bar)",
+            "datasetPpO2": "ppO₂ (bar)",
+            "datasetPpN2": "ppN₂ (bar)",
+            "datasetGasBar": "{0} (bar)",
+            "avg": "MED: {0} m",
+            "max": "MÁX: {0} m",
+            "tdt": "TDT: {0} min",
+            "bottomTime": "TIEMPO DE FONDO: {0} min",
+            "reserve": "RESERVA: {0} bar",
+            "descentRate": "⬇ {0} m/min",
+            "ascentRate": "⬆ {0} m/min",
+            "decoStop": "DECO {0} m · {1} min",
+            "surfaceInterval": "INTERVALO EN SUPERFICIE →",
+            "gasSwitchFrom": "{0} → {1} @ {2} m",
+            "gasSwitchTo": "→ {0} @ {1} m",
+            "ppO2Working": "ppO₂ 1,4 (fondo)",
+            "ppO2Deco": "ppO₂ 1,6 (deco)",
+            "ppN2Narcosis": "Narcosis ppN₂ (4,0)",
+            "tooltipTime": "Tiempo: {0} min",
+            "tooltipGas": "Gas: {0}",
+            "tooltipGasConsumption": "⛽ Consumo de gas: {0} L/min ({1})",
+            "tooltipTankPressures": "─── Presiones de botella ───",
+            "tooltipTankEmpty": " ⚠️ VACÍA",
+            "tooltipTankLow": " ⚠️",
+            "tooltipTankRow": "  {0}: {1} bar{2}",
+            "tooltipLabelDepth": "{0}: {1} m",
+            "tooltipLabelPressure": "{0}: {1} bar",
+            "tooltipLabelValue": "{0}: {1}"
+        },
+        "mvalue": {
+            "tcLabel": "TC{0} ({1} min)",
+            "tcCeilingLabel": "Techo TC{0}",
+            "mValueTC": "Valor-M TC{0}",
+            "gfLowTC": "GF bajo ({0} %) TC{1}",
+            "gfHighTC": "GF alto ({0} %) TC{1}",
+            "gfCorridorTC": "Corredor GF TC{0}",
+            "trailTC": "Traza TC{0}",
+            "ambientLine": "Línea de presión ambiente (y = x)",
+            "alveolarPN2": "pN₂ alveolar",
+            "alveolarPN2WithGases": "pN₂ alveolar ({0})",
+            "alveolarPN2Percent": "pN₂ alveolar ({0} %)",
+            "surfaceLine": "Superficie (1 bar)",
+            "pAnchor": "pAnchor {0} bar ({1} m)",
+            "tooltipLabel": "{0}: P_amb={1}, P_tejido={2} bar",
+            "initialDepthLabel": "0,0 min @ 0 m"
+        },
+        "gf": {
+            "mValue100": "Valor-M (100 %)",
+            "gfCorridor": "Corredor GF",
+            "leadingTissue": "Tejido líder",
+            "leadingTC": "Líder: TC{0} ({1} %)",
+            "pAnchor": "pAnchor {0} bar ({1} m)",
+            "tooltipLabel": "{0}: P_amb={1} bar, GF={2} %"
+        }
+    },
+    "warnings": {
+        "cnsToxicityBottom": "Riesgo de toxicidad SNC: ppO₂ = {0} bar a {1} m en fondo (máx. 1,6)",
+        "highPpO2Bottom": "ppO₂ elevado: {0} bar a {1} m en fondo (límite 1,4 para inmersiones con esfuerzo)",
+        "cnsToxicityDeco": "Riesgo de toxicidad SNC: ppO₂ = {0} bar a {1} m durante la deco (máx. 1,6)",
+        "hypoxiaRisk": "Riesgo de hipoxia: ppO₂ = {0} bar (mín. 0,16)",
+        "narcosisWarning": "Aviso de narcosis: ppN₂ = {0} bar a {1} m (equivalente a {2} m con aire)",
+        "mildNarcosis": "Posible narcosis leve: ppN₂ = {0} bar a {1} m",
+        "ceilingViolation": "Violación de techo: emergido {0} m sobre el techo ({1} puntos de datos)",
+        "outOfGas": "Sin gas: {0} se agota durante la inmersión (necesario {1} L, disponible {2} L)",
+        "belowReserve": "Por debajo de reserva: {0} acaba a {1} bar (reserva: {2} bar)",
+        "lowGasMargin": "Margen de gas bajo: {0} acaba a {1} bar (cerca de la reserva de {2} bar)",
+        "divePlanGood": "El plan de inmersión parece correcto. Todos los parámetros dentro de límites seguros."
+    },
+    "gasSummary": {
+        "heading": "⛽ Resumen de gases",
+        "total": "Total consumido: {0} L",
+        "used": "({0} L consumidos)",
+        "noProfiles": "Sin perfiles guardados"
+    },
+    "diveEditor": {
+        "ndl": {
+            "noLimit": "✅ Sin límite",
+            "remaining": "✅ {0} min restantes",
+            "atLimit": "⚠️ En el límite",
+            "decoDive": "🔴 Inmersión con deco",
+            "outOfRange": "⚠ fuera de rango",
+            "infinity": "∞"
+        },
+        "mod": "MOD: {0} m (deco: {1} m)",
+        "profileDefault": "Perfil:",
+        "customProfile": "✏️ Perfil personalizado",
+        "customProfileNamed": "✏️ {0}",
+        "separator": "──────────────"
+    },
+    "tissueSim": {
+        "alertOk": "Todo correcto",
+        "ppO2OxygenToxicity": "pO₂ {0} bar — toxicidad por oxígeno (límite deco {1})",
+        "ppO2AboveRec": "pO₂ {0} bar — por encima del límite recreativo {1}",
+        "ppO2Hypoxic": "pO₂ {0} bar — hipoxia (< {1})",
+        "ppN2Narcosis": "pN₂ {0} bar — narcosis de nitrógeno probable (> {1})",
+        "chartLabels": {
+            "pAmb": "pAmb (ambiente)",
+            "pN2Alveolar": "pN₂ alveolar",
+            "tcFast": "TC1 rápido (5 min)",
+            "tcMed": "TC5 medio (27 min)",
+            "tcSlow": "TC12 lento (239 min)"
+        },
+        "tooltipLabel": "{0}: {1} bar"
+    },
+    "nav": {
+        "home": "Inicio",
+        "sandbox": {
+            "label": "Sandbox",
+            "deco": "Modelado de descompresión",
+            "tissue": "Saturación tisular",
+            "transfill": "Transvase de botellas",
+            "cascade": "Llenado en cascada",
+            "gasLaw": "Ley de los gases: temp. y presión"
+        },
+        "theory": {
+            "label": "Teoría",
+            "pressure": "Presión y profundidad",
+            "tissue": "Carga tisular",
+            "mValues": "Valores-M",
+            "gf": "Factores de gradiente"
+        },
+        "tests": {
+            "label": "Tests",
+            "physics": "Física",
+            "anatomy": "Anatomía",
+            "accidents": "Accidentes",
+            "safety": "Normas de seguridad",
+            "training": "Normas de formación",
+            "equipment": "Equipamiento",
+            "vessel": "Embarcación"
+        },
+        "about": "Acerca de"
+    },
+    "home": {
+        "hero": {
+            "title": "Entender la teoría de la descompresión",
+            "subtitle": "Visualizaciones interactivas para ayudarte a entender cómo se comportan en el cuerpo los gases disueltos durante una inmersión"
+        },
+        "quote": {
+            "text": "«Entre los buceadores recreativos hay una falsa sensación de seguridad: creen que la descompresión es una ciencia bien entendida y que la enfermedad descompresiva se evita fácilmente con tal de ceñirse a las tablas de descompresión.»",
+            "context": "Por eso hemos creado estas lecciones interactivas — para mirar más allá de las tablas y los ordenadores y entender la ciencia que hay detrás."
+        },
+        "topics": {
+            "heading": "Temas",
+            "sandbox": "Sandbox",
+            "sandboxDesc": "Simuladores interactivos para planificar inmersiones y calcular gases.",
+            "sandboxLinks": {
+                "deco": "Modelado deco",
+                "transfill": "Transvase",
+                "cascade": "Llenado en cascada",
+                "gasLaw": "Ley de los gases"
+            },
+            "statusStart": "Empieza aquí",
+            "pressure": "Presión y presión parcial",
+            "pressureDesc": "Aprende la terminología del perfil de inmersión y entiende cómo cambia la presión ambiente con la profundidad. Base de todos los conceptos de descompresión.",
+            "statusAvailable": "Disponible",
+            "tissueLoading": "Carga y saturación tisular",
+            "tissueLoadingDesc": "Visualiza cómo el nitrógeno se disuelve en los distintos compartimentos tisulares durante una inmersión y se libera en el ascenso. Explora el modelo Bühlmann ZH-L16.",
+            "mValues": "Valores-M y límites al emerger",
+            "mValuesDesc": "Visualiza las presiones tisulares máximas toleradas y cómo definen los límites seguros de ascenso para cada compartimento.",
+            "gradientFactors": "Factores de gradiente",
+            "gradientFactorsDesc": "Explora cómo los ajustes GF bajo y GF alto añaden conservadurismo a tu programa de descompresión.",
+            "multiGas": "Buceo con varios gases",
+            "multiGasDesc": "Descubre cómo pasar a gases ricos en oxígeno durante el ascenso acelera la descompresión.",
+            "statusComingSoon": "Próximamente",
+            "quizzes": "Tests de conocimiento",
+            "quizzesDesc": "Pon a prueba lo que sabes con preguntas al estilo de los exámenes oficiales CMAS/SPČR.",
+            "quizLinks": {
+                "physics": "Física",
+                "anatomy": "Anatomía",
+                "accidents": "Accidentes",
+                "safety": "Seguridad",
+                "training": "Formación",
+                "equipment": "Equipamiento",
+                "vessel": "Embarcación"
+            },
+            "about": "Sobre este proyecto",
+            "aboutDesc": "Quién ha construido DecoJS, las fuentes en las que se apoya y los avisos que se aplican.",
+            "statusRead": "Leer",
+            "moreFuture": "Más temas",
+            "moreFutureDesc": "Más contenido educativo, próximamente.",
+            "statusPlanned": "Planeado"
+        },
+        "about": {
+            "heading": "Sobre este proyecto",
+            "body1": "Este es un recurso educativo para buceadores que quieren entender la ciencia que hay detrás de su ordenador de buceo. Todas las visualizaciones se basan en el modelo de descompresión <strong>Bühlmann ZH-L16</strong>, uno de los algoritmos más utilizados en buceo recreativo y técnico.",
+            "disclaimerTitle": "Solo para fines educativos",
+            "disclaimer": "Estas herramientas son únicamente con fines de aprendizaje. No las uses nunca para planificar inmersiones reales. Confía siempre en ordenadores de buceo y tablas debidamente certificados."
+        },
+        "footer": {
+            "disclaimer": "<strong>Solo para fines educativos</strong> — No apto para planificar inmersiones.<br><a href=\"about.html\">Más información sobre este proyecto</a>"
+        }
+    },
+    "about": {
+        "title": "Sobre este proyecto",
+        "subtitle": "Una herramienta experimental para entender la teoría de la descompresión",
+        "wip": {
+            "title": "🚧&nbsp;Trabajo&nbsp;en&nbsp;curso",
+            "text": "Este proyecto es un <strong>trabajo en curso</strong> y aún no ha sido revisado por nadie. El contenido, los cálculos y la información que aquí se presentan pueden contener errores o imprecisiones. Úsalo bajo tu responsabilidad."
+        },
+        "disclaimer": {
+            "title": "⚠️ Aviso importante",
+            "intro": "Este proyecto se creó como un <strong>ejercicio personal de aprendizaje</strong> del autor para comprender mejor la teoría de la descompresión y la física del buceo. Es una herramienta experimental y en construcción.",
+            "guarantees": "<strong>Sin garantías:</strong> no hay ninguna garantía de que la información, los cálculos o las visualizaciones que aquí aparecen sean correctos o completos.",
+            "notForDiving": "<strong>No para planificar inmersiones:</strong> esta herramienta <em>nunca</em> debe usarse para planificar inmersiones reales ni para ninguna situación de buceo real. Confía siempre en ordenadores de buceo certificados, tablas y una formación adecuada.",
+            "educational": "<strong>Uso educativo:</strong> este proyecto puede utilizarse con fines educativos por el <a href=\"https://deepblue.cz\" target=\"_blank\" rel=\"noopener\">club de buceo Deepblue</a>."
+        },
+        "what": {
+            "title": "¿Qué es esto?",
+            "body": "Este es un recurso educativo interactivo para buceadores que quieren entender la ciencia que hay detrás de su ordenador de buceo. Todas las visualizaciones se basan en el modelo de descompresión <strong>Bühlmann ZH-L16</strong>, uno de los algoritmos más utilizados en buceo recreativo y técnico.",
+            "goal": "El objetivo es hacer que conceptos abstractos como la saturación tisular, los medios tiempos y los valores-M resulten más intuitivos mediante la exploración y la visualización prácticas."
+        },
+        "algo": {
+            "title": "Detalles del algoritmo",
+            "intro": "Los cálculos de descompresión usan el algoritmo <strong>Bühlmann ZH-L16</strong> con los siguientes parámetros y supuestos:",
+            "variants": {
+                "title": "Variantes del modelo",
+                "a": "<strong>ZH-L16A:</strong> valores experimentales originales, medio tiempo TC1 = 4.0 min",
+                "b": "<strong>ZH-L16B:</strong> modificado para tablas impresas, medio tiempo TC1 = 5.0 min",
+                "c": "<strong>ZH-L16C:</strong> modificado para ordenadores de buceo (por defecto), medio tiempo TC1 = 5.0 min"
+            },
+            "constants": {
+                "title": "Constantes",
+                "surfacePressure": "Presión en superficie: 1.0 bar",
+                "waterVapor": "Presión del vapor de agua: 0.0627 bar (47 mmHg a 37°C)",
+                "pressurePer10m": "Presión por cada 10 m de profundidad: 1.0 bar (agua salada)",
+                "descentRate": "Velocidad de descenso: 20 m/min",
+                "ascentRate": "Velocidad de ascenso: 10 m/min",
+                "stopIncrement": "Incremento entre paradas deco: 3 m"
+            },
+            "gf": {
+                "title": "Factores de gradiente",
+                "intro": "Los factores de gradiente se aplican con el <strong>método pAnchor de Baker</strong>:",
+                "item1": "GF bajo se aplica a la profundidad pAnchor (primera parada)",
+                "item2": "Interpolación lineal desde pAnchor hasta superficie (GF alto)",
+                "item3": "Por debajo de pAnchor: GF bajo constante"
+            },
+            "equations": {
+                "title": "Ecuaciones",
+                "haldane": "<strong>Ecuación de Haldane:</strong> carga tisular a profundidad constante",
+                "schreiner": "<strong>Ecuación de Schreiner:</strong> carga tisular durante cambios de profundidad",
+                "mvalue": "<strong>Valor-M:</strong> M = a + P<sub>amb</sub> / b",
+                "adjustedM": "<strong>Valor-M ajustado:</strong> M<sub>aj</sub> = P<sub>amb</sub> + GF × (M − P<sub>amb</sub>)"
+            },
+            "validation": {
+                "title": "Validación",
+                "intro": "La implementación se ha contrastado con:",
+                "decotengu": "<strong>DecoTengu:</strong> la carga tisular coincide con un margen inferior al 0.02 %",
+                "buhlmann": "<strong>Tablas impresas de Bühlmann:</strong> los programas de deco coinciden dentro de la tolerancia esperada",
+                "note": "<em>Nota:</em> nuestros cálculos pueden dar tiempos de deco un 10-25 % más cortos que las tablas impresas. Es lo esperado — las tablas impresas incluyen márgenes de seguridad y redondean al alza de forma conservadora. Esta herramienta muestra la salida directa del algoritmo con fines educativos."
+            }
+        },
+        "author": {
+            "title": "👤 Autor",
+            "bio": "Creado por <strong>Matej Hron</strong><br>Instructor CMAS I** en el <a href=\"https://deepblue.cz\" target=\"_blank\" rel=\"noopener\">club de buceo Deepblue</a>",
+            "links": "<a href=\"mailto:matej.hron@gmail.com\">matej.hron@gmail.com</a> · <a href=\"https://www.linkedin.com/in/matejhron/\" target=\"_blank\" rel=\"noopener\">LinkedIn</a>"
+        },
+        "review": {
+            "title": "🎓 Revisión experta",
+            "text": "Supervisión técnica a cargo de <strong><a href=\"https://cs.wikipedia.org/wiki/Ji%C5%99%C3%AD_Hovorka_(speleopot%C3%A1p%C4%9B%C4%8D)\" target=\"_blank\" rel=\"noopener\">Jiří Hovorka</a></strong> — instructor CMAS/SPČR I3, formador de instructores de buceo en cuevas (ICD3), coautor de las directrices de formación de la SPČR — en cooperación con la <strong>Comisión de Formación de la SPČR</strong> (Výcviková komise SPČR)."
+        },
+        "ack": {
+            "title": "🙏 Agradecimientos",
+            "powell": "Un agradecimiento especial a <strong>Mark Powell</strong> por su excelente libro <em>Deco for Divers</em> — la principal inspiración de este proyecto y el recurso que, por fin, hizo que la teoría de la descompresión encajara.",
+            "jahns": "Gracias también a <strong>Jan Jahns</strong> por su gran libro, otro recurso valioso para entender la teoría de la descompresión."
+        },
+        "refs": {
+            "title": "📖 Referencias y fuentes",
+            "item1": "<strong>Jahns, Jan.</strong> (2008). <em>Fyzika.</em> Svaz českých potápěčů, Praga. — Repaso exhaustivo de la física del buceo para buceadores experimentados e instructores. Cubre temas esenciales con ejemplos prácticos del buceo. <a href=\"https://stranypotapecske.cz/litera/fyzika.asp?str=200807251858030\" target=\"_blank\" rel=\"noopener\">Reseña en Strany potápěčské</a>",
+            "item2": "<strong>Jahns, Jan.</strong> (2008). <em>Podklady k výpočtům dekompresních tabulek Bühlmann/SUSV 1986.</em> 2.ª edición. Hlučín, 34 páginas. — Fundamentos matemáticos del modelo de descompresión Bühlmann ZH-L16, incluyendo ecuaciones de saturación/desaturación, valores-M, cálculos de paradas deco y un complemento sobre ZH-L16B con factores de gradiente y extensiones para trimix. <a href=\"https://www.spms.cz/soubory/Buhlmann_teorie.pdf?fid=17128261330230.pdf\" target=\"_blank\" rel=\"noopener\">Texto completo (PDF, SPMS)</a>",
+            "item3": "<strong>Powell, Mark.</strong> <em>Deco for Divers.</em> — Principal inspiración de este proyecto. Una guía excelente y accesible a la teoría de la descompresión para buceadores recreativos y técnicos. ¡Muy recomendable!",
+            "item4": "<strong>Bühlmann, A.A.</strong> (1984). <em>Decompression–Decompression Sickness.</em> Berlín: Springer-Verlag. — La obra original que describe el algoritmo ZH-L16.",
+            "item5": "<strong>Wikipedia</strong>. <a href=\"https://en.wikipedia.org/wiki/B%C3%BChlmann_decompression_algorithm\" target=\"_blank\" rel=\"noopener\">Bühlmann decompression algorithm</a> — Visión general del algoritmo, los medios tiempos de los compartimentos tisulares y los valores-M.",
+            "item6": "<strong>Wienke, B.R.</strong> <a href=\"https://aquatec.wordpress.com/wp-content/uploads/2011/03/decompression-theory.pdf\" target=\"_blank\" rel=\"noopener\">Decompression Theory (PDF)</a> — Introducción exhaustiva a la física y la fisiología de la descompresión.",
+            "item7": "<strong>Ecuación del gas alveolar</strong>: el modelo tiene en cuenta la presión del vapor de agua a la temperatura corporal (37°C) = 47 mmHg ≈ 0.0627 bar, que reduce la presión parcial efectiva de los gases inspirados. <a href=\"https://en.wikipedia.org/wiki/Alveolar_gas_equation\" target=\"_blank\" rel=\"noopener\">Wikipedia: Alveolar gas equation</a>",
+            "item8": "<strong>Schreiner, H.R.</strong> (1971). <em>Safe Limits of Exposure to Increased Pressure.</em> — Derivación de la ecuación de Schreiner para calcular la carga gaseosa durante cambios lineales de presión.",
+            "item9": "<strong>Strany potápěčské</strong>. <a href=\"https://stranypotapecske.cz\" target=\"_blank\" rel=\"noopener\">stranypotapecske.cz</a> — Un completo portal checo de buceo y recurso comunitario gestionado por Zdeněk Šraier. Ofrece una amplia biblioteca de reseñas de libros, artículos educativos sobre física del buceo y teoría de la descompresión, base de datos de condiciones de inmersión, reseñas de material y materiales formativos. Un recurso muy valioso para los buceadores de habla checa de cualquier nivel."
+        }
+    },
+    "sandbox": {
+        "dive": {
+            "title": "🎯 Sandbox del planificador de inmersiones",
+            "subtitle": "Diseña perfiles de inmersión y visualiza la descompresión en tiempo real",
+            "disclaimerBanner": "⚠️ <strong>Solo para fines educativos</strong> — Esta herramienta NO está pensada para planificar inmersiones reales. No la uses nunca para bucear. Utiliza siempre ordenadores de buceo certificados, tablas y una formación adecuada.",
+            "setupHeading": "Configuración de la inmersión",
+            "profilesLibrary": "📚 Perfiles guardados",
+            "saveProfile": "💾 Guardar",
+            "saveProfileNamePlaceholder": "Nombre del perfil...",
+            "profileChart": "📊 Perfil de inmersión",
+            "chartMode": {
+                "profile": "Perfil",
+                "pressure": "Presión",
+                "gas": "Consumo de gas",
+                "partialPressure": "Presión parcial",
+                "tissue": "Carga tisular"
+            },
+            "chartOptions": "🎛️ Opciones del gráfico (avanzado)",
+            "displayLayers": "Capas de visualización",
+            "annotations": "Anotaciones",
+            "options": {
+                "showCeiling": "Mostrar techo",
+                "showAmbient": "Mostrar presión ambiente",
+                "showPartialPressures": "Mostrar presiones parciales (ppO₂/ppN₂)",
+                "showTissueLoading": "Mostrar carga tisular",
+                "showGasConsumption": "Mostrar consumo de gas",
+                "showGasSwitches": "Mostrar cambios de gas",
+                "showLabels": "Mostrar etiquetas",
+                "alveolarPn2": "pN₂ alveolar"
+            },
+            "exportConfig": "📋 Exportar configuración",
+            "screenshot": "📷 Captura",
+            "copied": "✓ ¡Copiado!",
+            "mValueChart": "📐 Diagrama presión-presión",
+            "gfChart": "📊 Diagrama GF %",
+            "copyDebug": "🔍 Copiar datos de depuración",
+            "status": {
+                "ready": "Listo"
+            },
+            "footerDisclaimer": "<strong>Aviso:</strong> Solo con fines educativos. No usar para planificar inmersiones reales."
+        },
+        "tissue": {
+            "title": "Simulador de saturación tisular",
+            "subtitle": "Mueve al buceador, cambia el gas, deja correr el tiempo — y observa cómo las presiones parciales de nitrógeno persiguen exponencialmente al ambiente.",
+            "disclaimerBanner": "<strong>Solo para fines educativos</strong> — Un juego de física que muestra cómo responde la carga de nitrógeno en los tejidos a la profundidad y a los cambios de gas. No es un planificador de inmersiones.",
+            "depth": "Profundidad",
+            "depthHint": "0-40 m. Los cambios son instantáneos.",
+            "gas": "Gas respirable",
+            "gases": {
+                "air": "Aire (21/79)",
+                "ean32": "EAN32",
+                "ean36": "EAN36",
+                "ean50": "EAN50",
+                "ean80": "EAN80",
+                "o2": "O₂ 100 %"
+            },
+            "speed": "Velocidad",
+            "speedHint": "1× = 1 minuto de simulación por segundo real.",
+            "time": "Tiempo",
+            "timeButtons": {
+                "back": "◀ 1 min",
+                "forward": "1 min ▶",
+                "reset": "Reiniciar"
+            },
+            "keyboardHint": "Teclado: ← / → para avanzar paso a paso, espacio para play/pausa.",
+            "readout": {
+                "depth": "Profundidad",
+                "pAmb": "pAmb",
+                "gas": "Gas",
+                "pO2": "pO₂",
+                "pN2Inspired": "pN₂ inspirada",
+                "pN2Alveolar": "pN₂ alveolar",
+                "tcFast": "TC1 • rápido (5 min)",
+                "tcMed": "TC5 • medio (27 min)",
+                "tcSlow": "TC12 • lento (239 min)",
+                "time": "Tiempo sim."
+            },
+            "alertOk": "Todo en orden",
+            "disclaimer": "<strong>Aviso:</strong> Solo con fines educativos. Modelo de un único gas inerte (N₂); sin helio, sin reloj CNS, sin avisos de valor-M."
+        },
+        "transfill": {
+            "title": "Transvase de botellas",
+            "subtitle": "Simula la igualación de presión entre dos botellas conectadas",
+            "disclaimerBanner": "<strong>Solo para fines educativos</strong> — Esta herramienta demuestra la Ley de Boyle para botellas conectadas.",
+            "setupHeading": "Configuración de las botellas",
+            "cylinderA": "Botella A (fuente)",
+            "cylinderB": "Botella B (receptora)",
+            "labels": {
+                "volume": "Volumen",
+                "pressure": "Presión (bar)"
+            },
+            "volumes": {
+                "pony": "3 L (Pony)",
+                "al40": "5.5 L (AL40)",
+                "al50": "7 L (AL50)",
+                "single10": "10 L (mono)",
+                "al80": "11 L (AL80)",
+                "single12": "12 L (mono)",
+                "single15": "15 L (mono)",
+                "single18": "18 L (mono)",
+                "doubles7": "2x7 L (bibotella)",
+                "doubles10": "2x10 L (bibotella)",
+                "doubles12": "2x12 L (bibotella)"
+            },
+            "buttons": {
+                "openValves": "Abrir válvulas",
+                "reset": "Reiniciar"
+            },
+            "display": {
+                "cylinderA": "Botella A",
+                "cylinderB": "Botella B"
+            },
+            "resultTitle": "Igualación completa",
+            "formulaTitle": "Ley de Boyle",
+            "formula": "P<sub>final</sub> = (P<sub>A</sub> × V<sub>A</sub> + P<sub>B</sub> × V<sub>B</sub>) / (V<sub>A</sub> + V<sub>B</sub>)",
+            "disclaimer": "<strong>Aviso:</strong> Solo con fines educativos. Basado en las hipótesis de gas ideal."
+        },
+        "cascade": {
+            "title": "Estación de llenado en cascada",
+            "subtitle": "Haz clic en las válvulas para conectar botellas y llena (máx. 3 latiguillos, límite de 200 bar)",
+            "disclaimerBanner": "<strong>Solo para fines educativos</strong> — Simula el llenado en cascada usando la Ley de Boyle.",
+            "setupHeading": "Configuración",
+            "cascadeBank": "Batería de cascada (4 x 50 L)",
+            "targetCylinders": "Botellas objetivo",
+            "controlsHeading": "Controles",
+            "remaining": "Restante:",
+            "labels": {
+                "initialPressure": "Presión inicial",
+                "count": "Cantidad",
+                "volume": "Volumen",
+                "startingPressure": "Presión de partida"
+            },
+            "counts": {
+                "3": "3 botellas",
+                "4": "4 botellas",
+                "5": "5 botellas",
+                "6": "6 botellas",
+                "8": "8 botellas",
+                "10": "10 botellas",
+                "12": "12 botellas"
+            },
+            "volumes": {
+                "al50": "7 L (AL50)",
+                "single10": "10 L (mono)",
+                "al80": "11 L (AL80)",
+                "single12": "12 L (mono)",
+                "single15": "15 L (mono)"
+            },
+            "startPressures": {
+                "empty": "0 bar (vacía)"
+            },
+            "buttons": {
+                "reset": "Reiniciar todo",
+                "copyLink": "Copiar enlace"
+            },
+            "warning": "Solo pueden conectarse 3 botellas objetivo a la vez (hay 3 latiguillos disponibles)",
+            "shareConfirm": "¡Enlace copiado al portapapeles!",
+            "vizTitle": "Estación de llenado",
+            "status": {
+                "hoses": "Latiguillos",
+                "cascadeOpen": "Cascada abierta"
+            },
+            "groupTitles": {
+                "cascadeBank": "Batería de cascada (haz clic en las válvulas para abrirlas)",
+                "targetCylinders": "Botellas objetivo (máx. 3 conectadas)"
+            },
+            "panelTitles": {
+                "connection": "Estado de la conexión",
+                "fillLog": "Registro de llenado"
+            },
+            "connectionStatus": {
+                "idle": "Abre las válvulas de la cascada y de las botellas objetivo para conectar"
+            },
+            "logEmpty": "Sin llenados aún",
+            "disclaimer": "<strong>Aviso:</strong> Solo con fines educativos."
+        }
+    },
+    "quiz": {
+        "languageNotice": "🇨🇿 Este test está en <strong>checo</strong> para reflejar los materiales oficiales de examen CMAS/SPČR. No se ha traducido para evitar errores en la terminología técnica.",
+        "categoriesTitle": "Temas:",
+        "filterAll": "Todo",
+        "settings": {
+            "shuffle": "Mezclar preguntas",
+            "questionCount": "Número de preguntas:",
+            "apply": "Aplicar y reiniciar"
+        },
+        "buttons": {
+            "next": "Siguiente pregunta →",
+            "restart": "Empezar de nuevo"
+        },
+        "about": {
+            "title": "📚 Sobre el test"
+        },
+        "disclaimer": "<strong>Aviso:</strong> Esta es una herramienta educativa. Para la certificación oficial, contacta con CMAS/SPČR.",
+        "physics": {
+            "title": "🧪 Física",
+            "subtitle": "Preguntas de examen de física para buceadores (CMAS/SPČR, en checo)",
+            "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Svaz potápěčů České republiky) de 2018. Evalúan conocimientos de física relevantes para el buceo. El test está en checo.",
+            "aboutAvailable": "<strong>Disponibles actualmente:</strong> 100 preguntas de los 8 temas.",
+            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz/soubor-fyzika-349-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Fyzika zkušební testy</a>"
+        },
+        "anatomy": {
+            "title": "🩺 Anatomía y fisiología",
+            "subtitle": "Preguntas de examen de anatomía y fisiología para buceadores (CMAS/SPČR, en checo)",
+            "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Svaz potápěčů České republiky) de 2018. Evalúan conocimientos de anatomía y fisiología relevantes para el buceo. El test está en checo.",
+            "aboutAvailable": "<strong>Disponibles actualmente:</strong> 100 preguntas de todos los temas: conceptos básicos, sistema respiratorio, sistema circulatorio, sangre y transporte de gases, oído y compensación de presiones, saturación tisular, termorregulación y toxicidad de los gases.",
+            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Anatomie a fyziologie zkušební testy</a>"
+        },
+        "accidents": {
+            "title": "🏥 Accidentes y enfermedades",
+            "subtitle": "Preguntas de examen sobre accidentes y enfermedades del buceo (CMAS/SPČR, en checo)",
+            "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Svaz potápěčů České republiky) de 2018. Evalúan conocimientos sobre accidentes y enfermedades del buceo y primeros auxilios. El test está en checo.",
+            "aboutAvailable": "<strong>Disponibles actualmente:</strong> 100 preguntas de 5 temas.",
+            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz/soubor-nehody-a-nemoci-348-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Nehody a nemoci zkušební testy</a>"
+        },
+        "safety": {
+            "title": "🛡️ Normas de seguridad",
+            "subtitle": "Preguntas de examen de las Normas de Seguridad SPČR 2016 (CMAS/SPČR, en checo)",
+            "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Svaz potápěčů České republiky) de 2018. Evalúan conocimientos sobre las Normas de Seguridad SPČR 2016. El test está en checo.",
+            "aboutAvailable": "<strong>Disponibles actualmente:</strong> 100 preguntas de los 9 temas.",
+            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz/soubor-bezpecnostni-smernice-345-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Bezpečnostní směrnice zkušební testy</a>"
+        },
+        "training": {
+            "title": "📋 Normas de formación",
+            "subtitle": "Preguntas de examen de las Normas de Formación SPČR 2016 (CMAS/SPČR, en checo)",
+            "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Svaz potápěčů České republiky) de 2018. Evalúan conocimientos sobre las Normas de Formación SPČR 2016. El test está en checo.",
+            "aboutAvailable": "<strong>Disponibles actualmente:</strong> 100 preguntas de 6 temas.",
+            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Výcvikové směrnice zkušební testy</a>"
+        },
+        "equipment": {
+            "title": "🤿 Equipamiento de buceo",
+            "subtitle": "Preguntas de examen sobre el equipamiento de buceo SPČR 2018 (CMAS/SPČR, en checo)",
+            "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Svaz potápěčů České republiky) de 2018. Evalúan conocimientos sobre el equipamiento de buceo. El test está en checo.",
+            "aboutAvailable": "<strong>Disponibles actualmente:</strong> 100 preguntas de 11 temas.",
+            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Potápěčská výstroj zkušební testy</a>"
+        },
+        "vessel": {
+            "title": "⚓ Embarcación",
+            "subtitle": "Preguntas de examen sobre el manejo de la embarcación SPČR 2018 (CMAS/SPČR, en checo)",
+            "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Svaz potápěčů České republiky) de 2018. Evalúan conocimientos sobre el manejo de la embarcación y el buceo desde barco. El test está en checo.",
+            "aboutAvailable": "<strong>Disponibles actualmente:</strong> 50 preguntas de 8 temas.",
+            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Plavidlo zkušební testy</a>"
+        }
+    }
+}
