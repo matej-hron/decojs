@@ -750,8 +750,8 @@ export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0) {
     // Initialize tissue pressures at surface saturation
     const initialN2 = getInitialTissueN2(n2Fraction);
     
-    // Simulate descent to depth - use ceil() to match profile generation
-    const descentTime = Math.ceil(depth / DESCENT_SPEED);
+    // Exact descent time at ASCENT_SPEED=20 m/min (matches decotengu/divetools)
+    const descentTime = depth / DESCENT_SPEED;
     const descentRate = (alveolarN2 - getAlveolarN2Pressure(SURFACE_PRESSURE, n2Fraction)) / descentTime;
     
     // Get tissue pressures after descent
@@ -821,7 +821,7 @@ export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0) {
         ndl: Math.floor(minTime),
         ndlExact: minTime,  // Exact value for debugging/comparison
         controllingCompartment,
-        descentTime: Math.ceil(depth / DESCENT_SPEED)  // So caller knows total dive time = descentTime + ndl
+        descentTime: depth / DESCENT_SPEED  // Exact; caller knows total dive time = descentTime + ndl
     };
 }
 
@@ -1093,12 +1093,11 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
         const delta = depth - nextStopDepth;
         const ascentTime = delta / ASCENT_SPEED;
 
-        // GF at destination depth (interpolated from pAnchor)
-        const gfAtDestination = interpolateGF(getAmbientPressure(nextStopDepth), pAnchor, gfLow, gfHigh);
-
-        // Check if we can ascend to next depth
-        const testTissues = simulateDepthChange({ ...tissues }, depth, nextStopDepth, ascentTime, currentN2);
-        const { ceilingDepth } = getDiveCeiling(testTissues, gfAtDestination);
+        // Ceiling check: current tissue ceiling at current-depth GF must clear
+        // the next stop depth *before* the ascent. Matches decotengu/divetools
+        // convention (no Schreiner credit for off-gassing during the short ascent).
+        const gfHere = interpolateGF(getAmbientPressure(depth), pAnchor, gfLow, gfHigh);
+        const { ceilingDepth } = getDiveCeiling(tissues, gfHere);
 
         if (ceilingDepth <= nextStopDepth) {
             // Can ascend. Record stop if we waited here.

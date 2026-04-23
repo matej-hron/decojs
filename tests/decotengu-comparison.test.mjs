@@ -9,34 +9,26 @@
  *
  * Known implementation differences (both are correct Bühlmann ZH-L16C):
  *
- *   1. SURFACE PRESSURE — we use 1.0 bar, decotengu uses 1.01325 bar (1 atm).
- *      This means decotengu starts with ~0.01 bar more N2 in tissues, producing
- *      slightly more deco obligation. This is the primary source of bias:
- *      we give on average 0.26 min less deco across all 3900 scenarios.
+ *   1. STOP-TIME DISCRETIZATION — both round to 1-minute stops, but the
+ *      continuous ceiling crossing can land on different sides of a minute
+ *      boundary, giving ±1 min per stop.
  *
- *   2. DESCENT TIME — we use ceil(depth/20) (whole minutes), decotengu uses
- *      exact depth/20. At 45m: we get 3 min descent (7 min at depth), decotengu
- *      gets 2.25 min (7.75 min at depth). More time at depth = more loading.
- *      This compounds with low GF Low (20–30%) where the first stop is deep
- *      and each extra minute of loading can add multiple deep stops.
+ *   2. FIRST-STOP / GF RAMP ANCHOR — we anchor the GF ramp at pAnchor (the
+ *      exact ambient pressure where GF_max first equals GF_low during simulated
+ *      ascent); decotengu anchors at the rounded first-stop depth. These
+ *      converge for most profiles but can differ by a stop on edge cases.
  *
- *   3. STOP ROUNDING — both round to 1-minute stops, but the continuous ceiling
- *      crossing can land on different sides of a minute boundary. Accounts for
- *      ±1 min per stop.
+ * Other items (SURFACE_PRESSURE, descent rounding, stop-termination check)
+ * were aligned with decotengu in fix/buhlmann-constants and fix/decotengu-align
+ * commits. Post-alignment agreement on the Bühlmann-air subset (160 scenarios):
+ *   - 83.8% exact match
+ *   - 100% within ±1 min (max |diff| = 1 min)
+ *   - Mean signed diff: +0.16 min (we're slightly more conservative)
  *
- * These differences are well-characterized:
- *   - 56% of scenarios match exactly (0 min diff)
- *   - Mean |diff|: 0.6 min, median: 0 min, P95: 2 min, max: 5 min
- *   - We give less deco in 31% of cases (surface pressure + descent rounding)
- *   - We give more deco in 13% of cases (stop rounding going the other way)
- *   - Largest outliers are GF 20/80 with deco gases at short bottom times
- *     (just past NDL boundary where small loading differences flip deep stops)
- *
- * Tolerance: max(5 min, 20% of reference total deco time)
- *   - 5 min floor covers rounding + surface pressure + descent time drift,
- *     especially for short deco with low GF Low where deep stop thresholds
- *     are sensitive to small loading differences
- *   - 20% scales for longer deco where parameter differences compound
+ * Tolerance on this test: max(5 min, 20% of reference total deco time).
+ * Generous because the test also covers 3740 non-air-Bühlmann scenarios with
+ * GF ramps where the pAnchor difference can still contribute several minutes
+ * on low-GF_low profiles.
  *
  * Regenerate reference: python3 scripts/generate_decotengu_reference.py > tests/decotengu-reference.json
  */

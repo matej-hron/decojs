@@ -240,7 +240,8 @@ export function generateSimpleProfile(maxDepth, bottomTime, safetyStop = DEFAULT
     const ASCENT_SPEED = 10;  // m/min
     // Descent still rounds up (keeps the bottom-time invariant intact); ascents use
     // exact fractional time so the effective ascent rate is really 10 m/min.
-    const roundUpDescent = options.continuousDeco ? (x) => x : Math.ceil;
+    // Exact descent time (matches decotengu/divetools; no whole-minute rounding).
+    const roundUpDescent = (x) => x;
 
     // Get safety stop settings with defaults
     const safetyStopEnabled = safetyStop?.enabled ?? DEFAULT_SAFETY_STOP.enabled;
@@ -325,10 +326,8 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
     const DESCENT_SPEED = 20; // m/min
     const ASCENT_SPEED = 10;  // m/min
     const STOP_INCREMENT = 3;
-    // roundUp is used only for descent and for displayed stop-time accumulation.
-    // Ascent durations are kept fractional below so the real 10 m/min rate is
-    // preserved in the waypoint timeline (matches Divesoft's behaviour).
-    const roundUp = options.continuousDeco ? (x) => x : Math.ceil;
+    // Exact descent time (matches decotengu/divetools).
+    const roundUp = (x) => x;
 
     // Get safety stop settings with defaults
     const safetyStopEnabled = safetyStop?.enabled ?? DEFAULT_SAFETY_STOP.enabled;
@@ -552,7 +551,8 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
 export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHigh, compartments, safetyStop = DEFAULT_SAFETY_STOP, options = {}) {
     const DESCENT_SPEED = 20;
     const ASCENT_SPEED = 10;
-    const roundUp = options.continuousDeco ? (x) => x : Math.ceil;
+    // Exact descent time (matches decotengu/divetools).
+    const roundUp = (x) => x;
 
     // Get safety stop settings with defaults
     const safetyStopEnabled = safetyStop?.enabled ?? DEFAULT_SAFETY_STOP.enabled;
