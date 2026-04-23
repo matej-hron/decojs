@@ -1144,7 +1144,143 @@
         "profileDefault": "Perfil:",
         "customProfile": "✏️ Perfil personalizado",
         "customProfileNamed": "✏️ {0}",
-        "separator": "──────────────"
+        "separator": "──────────────",
+        "newDiveName": "Inmersión nueva",
+        "generateProfile": "Generar perfil",
+        "ndlLabel": "NDL:",
+        "minUnit": "min",
+        "decoLabel": "⚠️ Deco:",
+        "minStopsUnit": "min de paradas",
+        "profiles": {
+            "loadProfile": "Cargar perfil:",
+            "selectPlaceholder": "-- Selecciona perfil --"
+        },
+        "quickSetup": {
+            "title": "Configuración rápida",
+            "hint": "Define la profundidad y el tiempo de fondo, y luego haz clic en Generar más abajo.",
+            "maxDepth": "Profundidad máxima (m):",
+            "bottomTime": "Tiempo de fondo (min):",
+            "safetyStop": "Parada de seguridad",
+            "depth": "Profundidad (m):",
+            "time": "Tiempo (min):"
+        },
+        "gases": {
+            "title": "Gases",
+            "airShort": "Aire",
+            "hint": "El primer gas es el gas de fondo. Añade gases de deco para inmersiones multi-gas.",
+            "addDecoGas": "Añadir gas de deco",
+            "gasSwitchStop": "Parada al cambiar de gas:",
+            "switchNoStop": "0 min (sin parada)",
+            "switchNMin": "{0} min",
+            "switchHint": "Tiempo para verificar el gas, respirar y señalizar al compañero en cada profundidad de cambio."
+        },
+        "gf": {
+            "title": "Modelo de descompresión",
+            "algorithm": "Algoritmo:",
+            "algorithmExperimental": "experimental",
+            "algorithmTables": "tablas",
+            "algorithmComputers": "ordenadores",
+            "hint": "GF 100/100 = Bühlmann puro. Valores más bajos = más conservador.",
+            "low": "GF Low (%):",
+            "high": "GF High (%):",
+            "presetsLabel": "Preajustes:",
+            "presetGuide": "Guía de preajustes GF",
+            "presetBuhlmann": "Bühlmann",
+            "presetBuhlmannTitle": "Tablas Bühlmann puras, sin conservadurismo",
+            "presetRecreational": "Recreativo",
+            "presetRecreationalTitle": "Recreativo: ≤40 m, deco corta",
+            "presetIntensive": "Intensivo",
+            "presetIntensiveTitle": "Intensivo: inmersiones repetidas, safari",
+            "presetDeep": "Profunda",
+            "presetDeepTitle": "Profunda: >60 m, inmersión única",
+            "presetBailout": "Bailout",
+            "presetBailoutTitle": "Bailout: emergencia",
+            "presetDecoPlanner": "Deco Planner",
+            "presetDecoPlannerTitle": "Valores por defecto de Deco Planner",
+            "presetFreedom": "Freedom",
+            "presetFreedomTitle": "Valores por defecto de Divesoft Freedom",
+            "tableScenario": "Escenario",
+            "tableDepth": "Profundidad",
+            "tableGfLow": "GF Low",
+            "tableGfHigh": "GF High",
+            "rowRecDepth": "≤40 m, deco corta",
+            "rowIntensive": "Intensivo / safari",
+            "rowIntensiveDepth": "≤40 m, inmersiones repetidas",
+            "rowDeep": "Inmersión profunda única",
+            "rowDeepDepth": ">60 m, una inmersión",
+            "rowBailout": "Bailout / emergencia",
+            "rowDecoPlanner": "Deco Planner por defecto",
+            "rowFreedom": "Freedom por defecto",
+            "rowBuhlmannTables": "Tablas Bühlmann",
+            "continuousDeco": "Deco continua (sin rejilla 3 m/1 min)",
+            "continuousWarning": "⚠️ Produce perfiles poco prácticos, solo para demostración. Muestra la salida bruta del modelo Bühlmann sin el redondeo estándar a 3 m/1 min."
+        },
+        "sac": {
+            "title": "Consumo de gas",
+            "hint": "Consumo de aire en superficie (SAC) para los cálculos de planificación de gas.",
+            "bottom": "SAC en el fondo (L/min):",
+            "deco": "SAC en deco (L/min):",
+            "reserve": "Reserva (bar):",
+            "typicalHint": "SAC típico: 15–20 L/min (en calma), 25–30 L/min (con esfuerzo)."
+        },
+        "waypoints": {
+            "dive1Plan": "Plan de inmersión 1",
+            "dive2Plan": "Plan de inmersión 2",
+            "remove": "Eliminar",
+            "surfaceIntervalBefore": "Intervalo en superficie antes (min):",
+            "editWaypoints": "Editar puntos del perfil",
+            "colTime": "Tiempo (min)",
+            "colDepth": "Profundidad (m)",
+            "colGas": "Gas",
+            "colActions": "Acciones",
+            "addWaypoint": "Añadir punto",
+            "timeDown": "−1 min",
+            "timeUp": "+1 min",
+            "insertAfter": "Insertar después",
+            "addRepetitiveDive": "Añadir inmersión sucesiva",
+            "addRepetitiveHint": "Añadir una segunda inmersión tras un intervalo en superficie"
+        },
+        "surfaceInterval": {
+            "label": "Intervalo en superficie tras la inmersión (min):",
+            "hint": "Tiempo de visualización del desaturado post-inmersión"
+        },
+        "description": {
+            "label": "Descripción:",
+            "placeholder": "Describe este perfil de inmersión..."
+        },
+        "importExport": {
+            "exportJson": "Exportar JSON",
+            "importJson": "Importar JSON"
+        },
+        "gasCard": {
+            "bottomGas": "Gas de fondo",
+            "decoGas": "Gas de deco {0}",
+            "custom": "Personalizado…",
+            "remove": "Eliminar",
+            "gasLabel": "Gas:",
+            "o2": "O₂:",
+            "he": "He:",
+            "tank": "Botella:",
+            "cylinderVolumeTitle": "Volumen de la botella en litros"
+        },
+        "validation": {
+            "firstWaypointTime": "Inmersión {0}: El primer punto debe estar en el tiempo 0",
+            "firstWaypointDepth": "Inmersión {0}: El primer punto debería estar en superficie (0 m)"
+        }
+    },
+    "divePlan": {
+        "colPhase": "Fase",
+        "colDepth": "Profundidad",
+        "colStop": "Parada",
+        "colRuntime": "Runtime",
+        "colGas": "Gas",
+        "colTank": "Botella",
+        "phaseDescent": "Des",
+        "phaseBottom": "Fondo",
+        "phaseSurface": "Superficie",
+        "phaseAscent": "Asc",
+        "phaseSwitch": "Cambio",
+        "phaseStop": "Parada"
     },
     "tissueSim": {
         "alertOk": "Todo correcto",
@@ -1375,6 +1511,11 @@
             "status": {
                 "ready": "Listo"
             },
+            "statusValid": "✓ Válido",
+            "statusErrors": "✗ {0} error(es)",
+            "statusReady": "✓ Listo",
+            "deleteProfileConfirm": "¿Eliminar este perfil?",
+            "enterProfileNameAlert": "Introduce un nombre de perfil",
             "footerDisclaimer": "<strong>Aviso:</strong> Solo con fines educativos. No usar para planificar inmersiones reales."
         },
         "tissue": {

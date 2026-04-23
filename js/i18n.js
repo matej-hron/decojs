@@ -157,9 +157,13 @@ async function setLanguage(lang) {
     const translations = await loadTranslations(lang);
     applyTranslations(translations);
 
-    // Update active state on language switcher buttons
-    document.querySelectorAll('.lang-switcher-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.lang === lang);
+    // Update any rendered language switchers
+    document.querySelectorAll('.lang-switcher').forEach(sw => {
+        const label = sw.querySelector('.lang-switcher-current');
+        if (label) label.textContent = lang.toUpperCase();
+        sw.querySelectorAll('.lang-switcher-menu button').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.lang === lang);
+        });
     });
 
     // Notify listeners that language has changed
@@ -212,29 +216,88 @@ async function initI18n() {
     await setLanguage(lang);
 }
 
+/** @type {Object<string, {name: string, label: string}>} Native names per language */
+const LANG_OPTIONS = {
+    en: { name: 'English', label: 'Switch to English' },
+    cs: { name: 'Čeština', label: 'Přepnout na češtinu' },
+    es: { name: 'Español', label: 'Cambiar a español' }
+};
+
 /**
- * Build a language switcher DOM element.
- * @returns {HTMLDivElement} The switcher element with click handlers wired up
+ * Build a compact language-switcher dropdown (toggle + menu).
+ * @returns {HTMLDivElement}
  */
 function buildSwitcherElement() {
     const switcher = document.createElement('div');
     switcher.className = 'lang-switcher';
+    switcher.dataset.open = 'false';
+
+    const options = SUPPORTED_LANGS
+        .map(code => {
+            const opt = LANG_OPTIONS[code] || { name: code.toUpperCase(), label: `Switch to ${code}` };
+            const active = code === currentLanguage ? ' active' : '';
+            return `<li><button class="lang-switcher-option${active}" data-lang="${code}" aria-label="${opt.label}">${opt.name}</button></li>`;
+        })
+        .join('');
+
     switcher.innerHTML = `
-        <button class="lang-switcher-btn" data-lang="en" aria-label="Switch to English">EN</button>
-        <span class="lang-switcher-divider">|</span>
-        <button class="lang-switcher-btn" data-lang="cs" aria-label="Switch to Czech">CS</button>
-        <span class="lang-switcher-divider">|</span>
-        <button class="lang-switcher-btn" data-lang="es" aria-label="Switch to Spanish">ES</button>
+        <button class="lang-switcher-toggle" aria-haspopup="listbox" aria-expanded="false" aria-label="Change language">
+            <span class="lang-switcher-current">${currentLanguage.toUpperCase()}</span>
+            <span class="lang-switcher-caret" aria-hidden="true">▾</span>
+        </button>
+        <ul class="lang-switcher-menu" role="listbox">${options}</ul>
     `;
 
-    switcher.querySelectorAll('.lang-switcher-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            setLanguage(btn.dataset.lang);
+    const toggle = switcher.querySelector('.lang-switcher-toggle');
+    const closeMenu = () => {
+        switcher.dataset.open = 'false';
+        toggle.setAttribute('aria-expanded', 'false');
+    };
+
+    toggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = switcher.dataset.open === 'true';
+        // Close other open switchers on the page first
+        document.querySelectorAll('.lang-switcher[data-open="true"]').forEach(other => {
+            if (other !== switcher) {
+                other.dataset.open = 'false';
+                const t = other.querySelector('.lang-switcher-toggle');
+                if (t) t.setAttribute('aria-expanded', 'false');
+            }
         });
-        btn.classList.toggle('active', btn.dataset.lang === currentLanguage);
+        switcher.dataset.open = isOpen ? 'false' : 'true';
+        toggle.setAttribute('aria-expanded', String(!isOpen));
+    });
+
+    switcher.querySelectorAll('.lang-switcher-option').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            setLanguage(btn.dataset.lang);
+            closeMenu();
+        });
     });
 
     return switcher;
+}
+
+// Close any open language switcher when clicking elsewhere or pressing Escape.
+if (typeof document !== 'undefined') {
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.lang-switcher[data-open="true"]').forEach(sw => {
+            sw.dataset.open = 'false';
+            const t = sw.querySelector('.lang-switcher-toggle');
+            if (t) t.setAttribute('aria-expanded', 'false');
+        });
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.lang-switcher[data-open="true"]').forEach(sw => {
+                sw.dataset.open = 'false';
+                const t = sw.querySelector('.lang-switcher-toggle');
+                if (t) t.setAttribute('aria-expanded', 'false');
+            });
+        }
+    });
 }
 
 /**

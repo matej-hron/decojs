@@ -150,9 +150,20 @@ export class DiveSetupEditor extends EventTarget {
         
         // Build the editor UI
         this._buildDOM();
-        
+
         // Populate with initial data
         this._populateFromSetup(this.diveSetup);
+
+        // Re-render whole editor on language change so every hardcoded label
+        // (section headings, form labels, button text, dropdown options, etc.)
+        // picks up the new locale. We preserve the current setup from the form
+        // so the user's in-progress work isn't lost.
+        this._onLanguageChange = () => {
+            const currentSetup = this._buildSetupFromForm();
+            this._buildDOM();
+            this._populateFromSetup(currentSetup);
+        };
+        document.addEventListener('languagechange', this._onLanguageChange);
     }
     
     // =========================================================================
@@ -241,6 +252,10 @@ export class DiveSetupEditor extends EventTarget {
      * Destroy the editor and clean up
      */
     destroy() {
+        if (this._onLanguageChange) {
+            document.removeEventListener('languagechange', this._onLanguageChange);
+            this._onLanguageChange = null;
+        }
         this.container.innerHTML = '';
         this.elements = {};
     }
@@ -328,7 +343,7 @@ export class DiveSetupEditor extends EventTarget {
         const section = document.createElement('div');
         section.className = 'dse-section dse-profiles';
         section.innerHTML = `
-            <label class="dse-label">Load Profile:</label>
+            <label class="dse-label">${translate('diveEditor.profiles.loadProfile', 'Load Profile:')}</label>
             <select class="dse-profile-select form-select"></select>
         `;
         
@@ -353,7 +368,7 @@ export class DiveSetupEditor extends EventTarget {
         if (!this.elements.profileSelect) return;
         
         this.elements.profileSelect.innerHTML = `
-            <option value="">-- Select Profile --</option>
+            <option value="">${translate('diveEditor.profiles.selectPlaceholder', '-- Select Profile --')}</option>
             ${this.profiles.map(p => `
                 <option value="${p.id}" ${this.selectedProfileId === p.id ? 'selected' : ''}>${p.name}</option>
             `).join('')}
@@ -365,30 +380,30 @@ export class DiveSetupEditor extends EventTarget {
         section.className = 'dse-section dse-quick-setup';
         section.open = true;
         section.innerHTML = `
-            <summary>⚡ Quick Setup</summary>
+            <summary>⚡ ${translate('diveEditor.quickSetup.title', 'Quick Setup')}</summary>
             <div class="dse-quick-inputs">
-                <p class="dse-hint">Set depth and bottom time, then click Generate below.</p>
+                <p class="dse-hint">${translate('diveEditor.quickSetup.hint', 'Set depth and bottom time, then click Generate below.')}</p>
                 <div class="dse-row">
                     <div class="dse-field">
-                        <label>Max Depth (m):</label>
+                        <label>${translate('diveEditor.quickSetup.maxDepth', 'Max Depth (m):')}</label>
                         <input type="number" class="dse-quick-depth form-input" value="30" min="1" max="100" step="1">
                     </div>
                     <div class="dse-field">
-                        <label>Bottom Time (min):</label>
+                        <label>${translate('diveEditor.quickSetup.bottomTime', 'Bottom Time (min):')}</label>
                         <input type="number" class="dse-quick-time form-input" value="20" min="1" max="120" step="1">
                     </div>
                 </div>
                 <div class="dse-row dse-safety-stop-row">
                     <label class="dse-checkbox-label">
                         <input type="checkbox" class="dse-safety-stop-enabled" checked>
-                        Safety Stop
+                        ${translate('diveEditor.quickSetup.safetyStop', 'Safety Stop')}
                     </label>
                     <div class="dse-field dse-safety-stop-field">
-                        <label>Depth (m):</label>
+                        <label>${translate('diveEditor.quickSetup.depth', 'Depth (m):')}</label>
                         <input type="number" class="dse-safety-stop-depth form-input" value="5" min="3" max="10" step="1">
                     </div>
                     <div class="dse-field dse-safety-stop-field">
-                        <label>Time (min):</label>
+                        <label>${translate('diveEditor.quickSetup.time', 'Time (min):')}</label>
                         <input type="number" class="dse-safety-stop-time form-input" value="3" min="1" max="10" step="1">
                     </div>
                 </div>
@@ -421,24 +436,24 @@ export class DiveSetupEditor extends EventTarget {
         section.className = 'dse-section dse-gases';
         section.open = false; // Collapsed by default
         section.innerHTML = `
-            <summary>⚗️ Gases <span class="dse-summary-hint">(Air)</span></summary>
+            <summary>⚗️ ${translate('diveEditor.gases.title', 'Gases')} <span class="dse-summary-hint">(${translate('diveEditor.gases.airShort', 'Air')})</span></summary>
             <div class="dse-gases-content">
-                <p class="dse-hint">First gas is bottom gas. Add deco gases for multi-gas diving.</p>
+                <p class="dse-hint">${translate('diveEditor.gases.hint', 'First gas is bottom gas. Add deco gases for multi-gas diving.')}</p>
                 <div class="dse-gases-list"></div>
-                <button class="dse-add-gas-btn btn btn-secondary btn-small">+ Add Deco Gas</button>
+                <button class="dse-add-gas-btn btn btn-secondary btn-small">+ ${translate('diveEditor.gases.addDecoGas', 'Add Deco Gas')}</button>
                 <div class="dse-gas-switch-time" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color, #ddd);">
                     <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem;">
-                        Gas switch stop:
+                        ${translate('diveEditor.gases.gasSwitchStop', 'Gas switch stop:')}
                         <select class="dse-gas-switch-time-select form-input" style="width: auto;">
-                            <option value="0">0 min (no stop)</option>
-                            <option value="1">1 min</option>
-                            <option value="2">2 min</option>
-                            <option value="3">3 min</option>
-                            <option value="4">4 min</option>
-                            <option value="5">5 min</option>
+                            <option value="0">${translate('diveEditor.gases.switchNoStop', '0 min (no stop)')}</option>
+                            <option value="1">${fmt(translate('diveEditor.gases.switchNMin', '{0} min'), 1)}</option>
+                            <option value="2">${fmt(translate('diveEditor.gases.switchNMin', '{0} min'), 2)}</option>
+                            <option value="3">${fmt(translate('diveEditor.gases.switchNMin', '{0} min'), 3)}</option>
+                            <option value="4">${fmt(translate('diveEditor.gases.switchNMin', '{0} min'), 4)}</option>
+                            <option value="5">${fmt(translate('diveEditor.gases.switchNMin', '{0} min'), 5)}</option>
                         </select>
                     </label>
-                    <p class="dse-hint">Time to verify gas, take breaths, and signal buddy at each switch depth.</p>
+                    <p class="dse-hint">${translate('diveEditor.gases.switchHint', 'Time to verify gas, take breaths, and signal buddy at each switch depth.')}</p>
                 </div>
             </div>
         `;
@@ -460,63 +475,63 @@ export class DiveSetupEditor extends EventTarget {
         section.className = 'dse-section dse-gf';
         section.open = false; // Collapsed by default
         section.innerHTML = `
-            <summary>🎚️ Decompression Model <span class="dse-summary-hint">(GF 100/100)</span></summary>
+            <summary>🎚️ ${translate('diveEditor.gf.title', 'Decompression Model')} <span class="dse-summary-hint">(GF 100/100)</span></summary>
             <div class="dse-gf-content">
                 <div class="dse-algorithm-row">
-                    <label>Algorithm:</label>
+                    <label>${translate('diveEditor.gf.algorithm', 'Algorithm:')}</label>
                     <select class="dse-algorithm-select form-input">
-                        <option value="ZH-L16A">ZH-L16A (experimental)</option>
-                        <option value="ZH-L16B">ZH-L16B (tables)</option>
-                        <option value="ZH-L16C">ZH-L16C (computers)</option>
+                        <option value="ZH-L16A">ZH-L16A (${translate('diveEditor.gf.algorithmExperimental', 'experimental')})</option>
+                        <option value="ZH-L16B">ZH-L16B (${translate('diveEditor.gf.algorithmTables', 'tables')})</option>
+                        <option value="ZH-L16C">ZH-L16C (${translate('diveEditor.gf.algorithmComputers', 'computers')})</option>
                     </select>
                 </div>
-                <p class="dse-hint">GF 100/100 = raw Bühlmann. Lower values = more conservative.</p>
+                <p class="dse-hint">${translate('diveEditor.gf.hint', 'GF 100/100 = raw Bühlmann. Lower values = more conservative.')}</p>
                 <div class="dse-gf-row">
                     <div class="dse-field">
-                        <label>GF Low (%):</label>
+                        <label>${translate('diveEditor.gf.low', 'GF Low (%):')}</label>
                         <input type="range" class="dse-gf-low-slider" min="10" max="100" value="100" step="5">
                         <input type="number" class="dse-gf-low-input form-input" value="100" min="10" max="100" step="5">
                     </div>
                     <div class="dse-field">
-                        <label>GF High (%):</label>
+                        <label>${translate('diveEditor.gf.high', 'GF High (%):')}</label>
                         <input type="range" class="dse-gf-high-slider" min="10" max="100" value="100" step="5">
                         <input type="number" class="dse-gf-high-input form-input" value="100" min="10" max="100" step="5">
                     </div>
                 </div>
                 <div class="dse-gf-presets">
-                    <span class="dse-hint">Presets: <span class="dse-gf-info-toggle" title="GF preset guide" style="cursor:pointer; text-decoration:underline;">ℹ️</span></span>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="100" data-gf-high="100" title="Raw Bühlmann tables, no conservatism">Bühlmann</button>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="60" data-gf-high="90" title="Recreational: ≤40m, short deco">Recreational</button>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="40" data-gf-high="80" title="Intensive: repeat dives, safari">Intensive</button>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="50" data-gf-high="90" title="Deep: >60m, single dive">Deep</button>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="80" data-gf-high="100" title="Bailout: emergency">Bailout</button>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="20" data-gf-high="80" title="Deco Planner default">Deco Planner</button>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="30" data-gf-high="80" title="Divesoft Freedom default">Freedom</button>
+                    <span class="dse-hint">${translate('diveEditor.gf.presetsLabel', 'Presets:')} <span class="dse-gf-info-toggle" title="${translate('diveEditor.gf.presetGuide', 'GF preset guide')}" style="cursor:pointer; text-decoration:underline;">ℹ️</span></span>
+                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="100" data-gf-high="100" title="${translate('diveEditor.gf.presetBuhlmannTitle', 'Raw Bühlmann tables, no conservatism')}">${translate('diveEditor.gf.presetBuhlmann', 'Bühlmann')}</button>
+                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="60" data-gf-high="90" title="${translate('diveEditor.gf.presetRecreationalTitle', 'Recreational: ≤40m, short deco')}">${translate('diveEditor.gf.presetRecreational', 'Recreational')}</button>
+                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="40" data-gf-high="80" title="${translate('diveEditor.gf.presetIntensiveTitle', 'Intensive: repeat dives, safari')}">${translate('diveEditor.gf.presetIntensive', 'Intensive')}</button>
+                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="50" data-gf-high="90" title="${translate('diveEditor.gf.presetDeepTitle', 'Deep: >60m, single dive')}">${translate('diveEditor.gf.presetDeep', 'Deep')}</button>
+                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="80" data-gf-high="100" title="${translate('diveEditor.gf.presetBailoutTitle', 'Bailout: emergency')}">${translate('diveEditor.gf.presetBailout', 'Bailout')}</button>
+                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="20" data-gf-high="80" title="${translate('diveEditor.gf.presetDecoPlannerTitle', 'Deco Planner default')}">${translate('diveEditor.gf.presetDecoPlanner', 'Deco Planner')}</button>
+                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="30" data-gf-high="80" title="${translate('diveEditor.gf.presetFreedomTitle', 'Divesoft Freedom default')}">${translate('diveEditor.gf.presetFreedom', 'Freedom')}</button>
                 </div>
                 <div class="dse-gf-info" style="display:none; margin-top:0.5rem; font-size:0.8rem; background:var(--surface-alt, #f5f5f5); border-radius:6px; padding:0.6rem; line-height:1.5;">
                     <table style="width:100%; border-collapse:collapse; font-size:0.78rem;">
                         <tr style="border-bottom:1px solid var(--border-color,#ddd);">
-                            <th style="text-align:left; padding:2px 4px;">Scenario</th>
-                            <th style="text-align:left; padding:2px 4px;">Depth</th>
-                            <th style="padding:2px 4px;">GF Low</th>
-                            <th style="padding:2px 4px;">GF High</th>
+                            <th style="text-align:left; padding:2px 4px;">${translate('diveEditor.gf.tableScenario', 'Scenario')}</th>
+                            <th style="text-align:left; padding:2px 4px;">${translate('diveEditor.gf.tableDepth', 'Depth')}</th>
+                            <th style="padding:2px 4px;">${translate('diveEditor.gf.tableGfLow', 'GF Low')}</th>
+                            <th style="padding:2px 4px;">${translate('diveEditor.gf.tableGfHigh', 'GF High')}</th>
                         </tr>
-                        <tr><td style="padding:2px 4px;">Recreational</td><td style="padding:2px 4px;">≤40m, short deco</td><td style="text-align:center;">40–60%</td><td style="text-align:center;">80–90%</td></tr>
-                        <tr><td style="padding:2px 4px;">Intensive / safari</td><td style="padding:2px 4px;">≤40m, repeat dives</td><td style="text-align:center;">30–40%</td><td style="text-align:center;">70–80%</td></tr>
-                        <tr><td style="padding:2px 4px;">Deep single dive</td><td style="padding:2px 4px;">>60m, one dive</td><td style="text-align:center;">0–50%</td><td style="text-align:center;">80–100%</td></tr>
-                        <tr><td style="padding:2px 4px;">Bailout / emergency</td><td style="padding:2px 4px;">—</td><td style="text-align:center;">60–80%</td><td style="text-align:center;">80–100%</td></tr>
-                        <tr style="border-top:1px solid var(--border-color,#ddd);"><td style="padding:2px 4px;">Deco Planner default</td><td></td><td style="text-align:center;">20%</td><td style="text-align:center;">80%</td></tr>
-                        <tr><td style="padding:2px 4px;">Freedom default</td><td></td><td style="text-align:center;">30%</td><td style="text-align:center;">80%</td></tr>
-                        <tr><td style="padding:2px 4px;">Bühlmann tables</td><td></td><td style="text-align:center;">100%</td><td style="text-align:center;">100%</td></tr>
+                        <tr><td style="padding:2px 4px;">${translate('diveEditor.gf.presetRecreational', 'Recreational')}</td><td style="padding:2px 4px;">${translate('diveEditor.gf.rowRecDepth', '≤40m, short deco')}</td><td style="text-align:center;">40–60%</td><td style="text-align:center;">80–90%</td></tr>
+                        <tr><td style="padding:2px 4px;">${translate('diveEditor.gf.rowIntensive', 'Intensive / safari')}</td><td style="padding:2px 4px;">${translate('diveEditor.gf.rowIntensiveDepth', '≤40m, repeat dives')}</td><td style="text-align:center;">30–40%</td><td style="text-align:center;">70–80%</td></tr>
+                        <tr><td style="padding:2px 4px;">${translate('diveEditor.gf.rowDeep', 'Deep single dive')}</td><td style="padding:2px 4px;">${translate('diveEditor.gf.rowDeepDepth', '>60m, one dive')}</td><td style="text-align:center;">0–50%</td><td style="text-align:center;">80–100%</td></tr>
+                        <tr><td style="padding:2px 4px;">${translate('diveEditor.gf.rowBailout', 'Bailout / emergency')}</td><td style="padding:2px 4px;">—</td><td style="text-align:center;">60–80%</td><td style="text-align:center;">80–100%</td></tr>
+                        <tr style="border-top:1px solid var(--border-color,#ddd);"><td style="padding:2px 4px;">${translate('diveEditor.gf.rowDecoPlanner', 'Deco Planner default')}</td><td></td><td style="text-align:center;">20%</td><td style="text-align:center;">80%</td></tr>
+                        <tr><td style="padding:2px 4px;">${translate('diveEditor.gf.rowFreedom', 'Freedom default')}</td><td></td><td style="text-align:center;">30%</td><td style="text-align:center;">80%</td></tr>
+                        <tr><td style="padding:2px 4px;">${translate('diveEditor.gf.rowBuhlmannTables', 'Bühlmann tables')}</td><td></td><td style="text-align:center;">100%</td><td style="text-align:center;">100%</td></tr>
                     </table>
                 </div>
                 <div class="dse-continuous-deco" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color, #ddd);">
                     <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; cursor: pointer;">
                         <input type="checkbox" class="dse-continuous-checkbox">
-                        Continuous deco (no 3m/1min grid)
+                        ${translate('diveEditor.gf.continuousDeco', 'Continuous deco (no 3m/1min grid)')}
                     </label>
                     <p class="dse-hint dse-continuous-warning" style="display: none; color: var(--warning-color, #e67e22); margin-top: 0.3rem;">
-                        ⚠️ Produces impractical profiles for demonstration only. Shows raw Bühlmann model output without standard 3m/1min rounding.
+                        ${translate('diveEditor.gf.continuousWarning', '⚠️ Produces impractical profiles for demonstration only. Shows raw Bühlmann model output without standard 3m/1min rounding.')}
                     </p>
                 </div>
             </div>
@@ -599,24 +614,24 @@ export class DiveSetupEditor extends EventTarget {
         section.className = 'dse-section dse-sac';
         section.open = false; // Collapsed by default
         section.innerHTML = `
-            <summary>⛽ Gas Consumption <span class="dse-summary-hint">(SAC ${DEFAULT_SAC_RATE}/${DEFAULT_DECO_SAC_RATE} L/min)</span></summary>
+            <summary>⛽ ${translate('diveEditor.sac.title', 'Gas Consumption')} <span class="dse-summary-hint">(SAC ${DEFAULT_SAC_RATE}/${DEFAULT_DECO_SAC_RATE} L/min)</span></summary>
             <div class="dse-sac-content">
-                <p class="dse-hint">Surface Air Consumption rate for gas planning calculations.</p>
+                <p class="dse-hint">${translate('diveEditor.sac.hint', 'Surface Air Consumption rate for gas planning calculations.')}</p>
                 <div class="dse-row">
                     <div class="dse-field">
-                        <label>Bottom SAC (L/min):</label>
+                        <label>${translate('diveEditor.sac.bottom', 'Bottom SAC (L/min):')}</label>
                         <input type="number" class="dse-sac-input form-input" value="${DEFAULT_SAC_RATE}" min="5" max="50" step="1">
                     </div>
                     <div class="dse-field">
-                        <label>Deco SAC (L/min):</label>
+                        <label>${translate('diveEditor.sac.deco', 'Deco SAC (L/min):')}</label>
                         <input type="number" class="dse-deco-sac-input form-input" value="${DEFAULT_DECO_SAC_RATE}" min="5" max="50" step="1">
                     </div>
                     <div class="dse-field">
-                        <label>Reserve (bar):</label>
+                        <label>${translate('diveEditor.sac.reserve', 'Reserve (bar):')}</label>
                         <input type="number" class="dse-reserve-input form-input" value="50" min="20" max="100" step="10">
                     </div>
                 </div>
-                <p class="dse-hint">Typical SAC: 15-20 L/min (relaxed), 25-30 L/min (working).</p>
+                <p class="dse-hint">${translate('diveEditor.sac.typicalHint', 'Typical SAC: 15-20 L/min (relaxed), 25-30 L/min (working).')}</p>
             </div>
         `;
 
@@ -642,14 +657,14 @@ export class DiveSetupEditor extends EventTarget {
         const section = document.createElement('div');
         section.className = 'dse-section dse-generate-section';
         section.innerHTML = `
-            <button class="dse-generate-btn btn btn-primary btn-large">🔄 Generate Profile</button>
+            <button class="dse-generate-btn btn btn-primary btn-large">🔄 ${translate('diveEditor.generateProfile', 'Generate Profile')}</button>
             <div class="dse-ndl-display">
-                <span class="dse-ndl-label">NDL:</span>
-                <span class="dse-ndl-value">--</span> min
+                <span class="dse-ndl-label">${translate('diveEditor.ndlLabel', 'NDL:')}</span>
+                <span class="dse-ndl-value">--</span> ${translate('diveEditor.minUnit', 'min')}
                 <span class="dse-ndl-status"></span>
                 <span class="dse-deco-info" style="display: none;">
-                    <span class="dse-deco-warning">⚠️ Deco:</span>
-                    <span class="dse-deco-time">--</span> min stops
+                    <span class="dse-deco-warning">${translate('diveEditor.decoLabel', '⚠️ Deco:')}</span>
+                    <span class="dse-deco-time">--</span> ${translate('diveEditor.minStopsUnit', 'min stops')}
                 </span>
             </div>
         `;
@@ -677,30 +692,30 @@ export class DiveSetupEditor extends EventTarget {
         section.innerHTML = `
             ${isDive2 ? `
                 <div class="dse-dive2-header">
-                    <h4>🤿 Dive 2 Plan</h4>
-                    <button class="dse-remove-dive2-btn btn btn-danger btn-small">✕ Remove</button>
+                    <h4>🤿 ${translate('diveEditor.waypoints.dive2Plan', 'Dive 2 Plan')}</h4>
+                    <button class="dse-remove-dive2-btn btn btn-danger btn-small">✕ ${translate('diveEditor.waypoints.remove', 'Remove')}</button>
                 </div>
                 <div class="dse-field dse-si-between">
-                    <label>Surface Interval Before (min):</label>
+                    <label>${translate('diveEditor.waypoints.surfaceIntervalBefore', 'Surface Interval Before (min):')}</label>
                     <input type="number" class="dse-dive2-si form-input" value="60" min="1" max="720" step="5">
                 </div>
-            ` : `<h4>🤿 Dive 1 Plan</h4>`}
+            ` : `<h4>🤿 ${translate('diveEditor.waypoints.dive1Plan', 'Dive 1 Plan')}</h4>`}
             <div class="dse-dive-plan"></div>
             <details class="dse-waypoints-detail">
-                <summary>✏️ Edit Waypoints</summary>
+                <summary>✏️ ${translate('diveEditor.waypoints.editWaypoints', 'Edit Waypoints')}</summary>
                 <table class="dse-waypoints-table">
                     <thead>
                         <tr>
-                            <th>Time (min)</th>
-                            <th>Depth (m)</th>
-                            <th>Gas</th>
-                            <th>Actions</th>
+                            <th>${translate('diveEditor.waypoints.colTime', 'Time (min)')}</th>
+                            <th>${translate('diveEditor.waypoints.colDepth', 'Depth (m)')}</th>
+                            <th>${translate('diveEditor.waypoints.colGas', 'Gas')}</th>
+                            <th>${translate('diveEditor.waypoints.colActions', 'Actions')}</th>
                         </tr>
                     </thead>
                     <tbody class="dse-waypoints-body"></tbody>
                 </table>
                 <div class="dse-waypoint-actions">
-                    <button class="dse-add-waypoint-btn btn btn-secondary btn-small">+ Add Waypoint</button>
+                    <button class="dse-add-waypoint-btn btn btn-secondary btn-small">+ ${translate('diveEditor.waypoints.addWaypoint', 'Add Waypoint')}</button>
                 </div>
             </details>
         `;
@@ -732,8 +747,8 @@ export class DiveSetupEditor extends EventTarget {
         const section = document.createElement('div');
         section.className = 'dse-section dse-add-dive';
         section.innerHTML = `
-            <button class="dse-add-dive-btn btn btn-secondary">➕ Add Repetitive Dive</button>
-            <span class="dse-hint">Add a second dive after a surface interval</span>
+            <button class="dse-add-dive-btn btn btn-secondary">➕ ${translate('diveEditor.waypoints.addRepetitiveDive', 'Add Repetitive Dive')}</button>
+            <span class="dse-hint">${translate('diveEditor.waypoints.addRepetitiveHint', 'Add a second dive after a surface interval')}</span>
         `;
         
         this.elements.addDiveSection = section;
@@ -749,9 +764,9 @@ export class DiveSetupEditor extends EventTarget {
         section.className = 'dse-section dse-surface-interval';
         section.innerHTML = `
             <div class="dse-field">
-                <label>Surface Interval After Dive (min):</label>
+                <label>${translate('diveEditor.surfaceInterval.label', 'Surface Interval After Dive (min):')}</label>
                 <input type="number" class="dse-si-input form-input" value="60" min="0" max="720" step="10">
-                <span class="dse-hint">Post-dive off-gassing display time</span>
+                <span class="dse-hint">${translate('diveEditor.surfaceInterval.hint', 'Post-dive off-gassing display time')}</span>
             </div>
         `;
         
@@ -766,8 +781,8 @@ export class DiveSetupEditor extends EventTarget {
         section.className = 'dse-section dse-description';
         section.innerHTML = `
             <div class="dse-field">
-                <label>Description:</label>
-                <textarea class="dse-desc-input form-input form-textarea" rows="2" placeholder="Describe this dive profile..."></textarea>
+                <label>${translate('diveEditor.description.label', 'Description:')}</label>
+                <textarea class="dse-desc-input form-input form-textarea" rows="2" placeholder="${translate('diveEditor.description.placeholder', 'Describe this dive profile...')}"></textarea>
             </div>
         `;
         
@@ -781,8 +796,8 @@ export class DiveSetupEditor extends EventTarget {
         const section = document.createElement('div');
         section.className = 'dse-section dse-import-export';
         section.innerHTML = `
-            <button class="dse-export-btn btn btn-secondary btn-small">📤 Export JSON</button>
-            <button class="dse-import-btn btn btn-secondary btn-small">📥 Import JSON</button>
+            <button class="dse-export-btn btn btn-secondary btn-small">📤 ${translate('diveEditor.importExport.exportJson', 'Export JSON')}</button>
+            <button class="dse-import-btn btn btn-secondary btn-small">📥 ${translate('diveEditor.importExport.importJson', 'Import JSON')}</button>
             <input type="file" class="dse-import-file" accept=".json" style="display: none;">
         `;
         
@@ -837,39 +852,43 @@ export class DiveSetupEditor extends EventTarget {
             Math.abs(g.o2 - gas.o2) < 0.01 && Math.abs(g.he - gas.he) < 0.01
         );
         
+        const gasLabel = isBottomGas
+            ? `🫧 ${translate('diveEditor.gasCard.bottomGas', 'Bottom Gas')}`
+            : `🔄 ${fmt(translate('diveEditor.gasCard.decoGas', 'Deco Gas {0}'), index)}`;
+        const customOption = `✏️ ${translate('diveEditor.gasCard.custom', 'Custom...')}`;
         card.innerHTML = `
             <div class="dse-gas-header">
-                <span class="dse-gas-label">${isBottomGas ? '🫧 Bottom Gas' : '🔄 Deco Gas ' + index}</span>
-                ${!isBottomGas ? '<button class="dse-gas-remove btn btn-small" title="Remove">×</button>' : ''}
+                <span class="dse-gas-label">${gasLabel}</span>
+                ${!isBottomGas ? `<button class="dse-gas-remove btn btn-small" title="${translate('diveEditor.gasCard.remove', 'Remove')}">×</button>` : ''}
             </div>
             <div class="dse-gas-content">
                 <div class="dse-gas-row">
-                    <label>Gas:</label>
+                    <label>${translate('diveEditor.gasCard.gasLabel', 'Gas:')}</label>
                     <select class="dse-gas-preset form-select">
-                        ${gasOptions.map(g => 
+                        ${gasOptions.map(g =>
                             `<option value="${g.id}" ${matchingPreset?.id === g.id ? 'selected' : ''}>${g.name}</option>`
                         ).join('')}
-                        <option value="custom" ${!matchingPreset ? 'selected' : ''}>✏️ Custom...</option>
+                        <option value="custom" ${!matchingPreset ? 'selected' : ''}>${customOption}</option>
                     </select>
                 </div>
                 <div class="dse-gas-row dse-gas-custom" style="display: ${!matchingPreset ? 'flex' : 'none'};">
-                    <label>O₂:</label>
+                    <label>${translate('diveEditor.gasCard.o2', 'O₂:')}</label>
                     <input type="number" class="dse-gas-o2" min="5" max="100" step="1" value="${Math.round(gas.o2 * 100)}">%
-                    <label>He:</label>
+                    <label>${translate('diveEditor.gasCard.he', 'He:')}</label>
                     <input type="number" class="dse-gas-he" min="0" max="95" step="1" value="${Math.round(gas.he * 100)}">%
                 </div>
                 <div class="dse-gas-row">
-                    <label>Tank:</label>
+                    <label>${translate('diveEditor.gasCard.tank', 'Tank:')}</label>
                     <select class="dse-gas-cylinder form-select">
                         ${cylinderOptions.map(c =>
                             `<option value="${c.value}" ${c.value === gas.cylinderVolume ? 'selected' : ''}>${c.label}</option>`
                         ).join('')}
-                        <option value="custom" ${!cylinderOptions.find(c => c.value === gas.cylinderVolume) ? 'selected' : ''}>✏️ Custom...</option>
+                        <option value="custom" ${!cylinderOptions.find(c => c.value === gas.cylinderVolume) ? 'selected' : ''}>${customOption}</option>
                     </select>
                     <input type="number" class="dse-cylinder-custom form-input" min="1" max="50" step="0.1"
                         value="${gas.cylinderVolume}"
                         style="display: ${!cylinderOptions.find(c => c.value === gas.cylinderVolume) ? 'inline-block' : 'none'}; width: 70px; margin-left: 4px;"
-                        title="Cylinder volume in liters">
+                        title="${translate('diveEditor.gasCard.cylinderVolumeTitle', 'Cylinder volume in liters')}">
                     <span class="dse-cylinder-custom-unit" style="display: ${!cylinderOptions.find(c => c.value === gas.cylinderVolume) ? 'inline' : 'none'};">L</span>
                 </div>
                 <div class="dse-gas-mod">
@@ -1058,10 +1077,10 @@ export class DiveSetupEditor extends EventTarget {
             <td><input type="number" class="dse-wp-depth form-input" value="${depth}" min="0" step="1"></td>
             <td><select class="dse-wp-gas form-select-small">${gasOptions}</select></td>
             <td class="dse-wp-actions">
-                <button class="btn btn-icon btn-small dse-wp-time-down" title="-1 min">−</button>
-                <button class="btn btn-icon btn-small dse-wp-time-up" title="+1 min">+</button>
-                <button class="btn btn-icon btn-small dse-wp-insert" title="Insert after">⊕</button>
-                <button class="btn btn-danger btn-small dse-wp-remove" title="Remove">×</button>
+                <button class="btn btn-icon btn-small dse-wp-time-down" title="${translate('diveEditor.waypoints.timeDown', '-1 min')}">−</button>
+                <button class="btn btn-icon btn-small dse-wp-time-up" title="${translate('diveEditor.waypoints.timeUp', '+1 min')}">+</button>
+                <button class="btn btn-icon btn-small dse-wp-insert" title="${translate('diveEditor.waypoints.insertAfter', 'Insert after')}">⊕</button>
+                <button class="btn btn-danger btn-small dse-wp-remove" title="${translate('diveEditor.waypoints.remove', 'Remove')}">×</button>
             </td>
         `;
         
@@ -1157,10 +1176,10 @@ export class DiveSetupEditor extends EventTarget {
             <td><input type="number" class="dse-wp-depth form-input" value="${midDepth}" min="0" step="1"></td>
             <td><select class="dse-wp-gas form-select-small">${gasOptions}</select></td>
             <td class="dse-wp-actions">
-                <button class="btn btn-icon btn-small dse-wp-time-down" title="-1 min">−</button>
-                <button class="btn btn-icon btn-small dse-wp-time-up" title="+1 min">+</button>
-                <button class="btn btn-icon btn-small dse-wp-insert" title="Insert after">⊕</button>
-                <button class="btn btn-danger btn-small dse-wp-remove" title="Remove">×</button>
+                <button class="btn btn-icon btn-small dse-wp-time-down" title="${translate('diveEditor.waypoints.timeDown', '-1 min')}">−</button>
+                <button class="btn btn-icon btn-small dse-wp-time-up" title="${translate('diveEditor.waypoints.timeUp', '+1 min')}">+</button>
+                <button class="btn btn-icon btn-small dse-wp-insert" title="${translate('diveEditor.waypoints.insertAfter', 'Insert after')}">⊕</button>
+                <button class="btn btn-danger btn-small dse-wp-remove" title="${translate('diveEditor.waypoints.remove', 'Remove')}">×</button>
             </td>
         `;
         
@@ -1535,10 +1554,16 @@ export class DiveSetupEditor extends EventTarget {
             setup.dives.forEach((dive, i) => {
                 if (dive.waypoints?.length > 0) {
                     if (dive.waypoints[0].time !== 0) {
-                        errors.push(`Dive ${i + 1}: First waypoint must be at time 0`);
+                        errors.push(fmt(
+                            translate('diveEditor.validation.firstWaypointTime', 'Dive {0}: First waypoint must be at time 0'),
+                            i + 1
+                        ));
                     }
                     if (dive.waypoints[0].depth !== 0) {
-                        errors.push(`Dive ${i + 1}: First waypoint should be at surface (0m)`);
+                        errors.push(fmt(
+                            translate('diveEditor.validation.firstWaypointDepth', 'Dive {0}: First waypoint should be at surface (0m)'),
+                            i + 1
+                        ));
                     }
                 }
             });
@@ -1561,7 +1586,7 @@ export class DiveSetupEditor extends EventTarget {
     
     _getDefaultSetup() {
         return {
-            name: 'New Dive',
+            name: translate('diveEditor.newDiveName', 'New Dive'),
             description: '',
             gases: [{
                 id: 'bottom',
@@ -1611,7 +1636,8 @@ export class DiveSetupEditor extends EventTarget {
         // Update Gases summary hint
         if (this.elements.gasesSummaryHint) {
             const gasNames = this.currentGases.map(g => g.name).join(' + ');
-            this.elements.gasesSummaryHint.textContent = `(${gasNames || 'Air'})`;
+            const fallback = translate('diveEditor.gases.airShort', 'Air');
+            this.elements.gasesSummaryHint.textContent = `(${gasNames || fallback})`;
         }
 
         // Update GF summary hint

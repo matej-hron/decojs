@@ -1144,7 +1144,143 @@
         "profileDefault": "Profile:",
         "customProfile": "✏️ Custom Profile",
         "customProfileNamed": "✏️ {0}",
-        "separator": "──────────────"
+        "separator": "──────────────",
+        "newDiveName": "New Dive",
+        "generateProfile": "Generate Profile",
+        "ndlLabel": "NDL:",
+        "minUnit": "min",
+        "decoLabel": "⚠️ Deco:",
+        "minStopsUnit": "min stops",
+        "profiles": {
+            "loadProfile": "Load Profile:",
+            "selectPlaceholder": "-- Select Profile --"
+        },
+        "quickSetup": {
+            "title": "Quick Setup",
+            "hint": "Set depth and bottom time, then click Generate below.",
+            "maxDepth": "Max Depth (m):",
+            "bottomTime": "Bottom Time (min):",
+            "safetyStop": "Safety Stop",
+            "depth": "Depth (m):",
+            "time": "Time (min):"
+        },
+        "gases": {
+            "title": "Gases",
+            "airShort": "Air",
+            "hint": "First gas is bottom gas. Add deco gases for multi-gas diving.",
+            "addDecoGas": "Add Deco Gas",
+            "gasSwitchStop": "Gas switch stop:",
+            "switchNoStop": "0 min (no stop)",
+            "switchNMin": "{0} min",
+            "switchHint": "Time to verify gas, take breaths, and signal buddy at each switch depth."
+        },
+        "gf": {
+            "title": "Decompression Model",
+            "algorithm": "Algorithm:",
+            "algorithmExperimental": "experimental",
+            "algorithmTables": "tables",
+            "algorithmComputers": "computers",
+            "hint": "GF 100/100 = raw Bühlmann. Lower values = more conservative.",
+            "low": "GF Low (%):",
+            "high": "GF High (%):",
+            "presetsLabel": "Presets:",
+            "presetGuide": "GF preset guide",
+            "presetBuhlmann": "Bühlmann",
+            "presetBuhlmannTitle": "Raw Bühlmann tables, no conservatism",
+            "presetRecreational": "Recreational",
+            "presetRecreationalTitle": "Recreational: ≤40m, short deco",
+            "presetIntensive": "Intensive",
+            "presetIntensiveTitle": "Intensive: repeat dives, safari",
+            "presetDeep": "Deep",
+            "presetDeepTitle": "Deep: >60m, single dive",
+            "presetBailout": "Bailout",
+            "presetBailoutTitle": "Bailout: emergency",
+            "presetDecoPlanner": "Deco Planner",
+            "presetDecoPlannerTitle": "Deco Planner default",
+            "presetFreedom": "Freedom",
+            "presetFreedomTitle": "Divesoft Freedom default",
+            "tableScenario": "Scenario",
+            "tableDepth": "Depth",
+            "tableGfLow": "GF Low",
+            "tableGfHigh": "GF High",
+            "rowRecDepth": "≤40m, short deco",
+            "rowIntensive": "Intensive / safari",
+            "rowIntensiveDepth": "≤40m, repeat dives",
+            "rowDeep": "Deep single dive",
+            "rowDeepDepth": ">60m, one dive",
+            "rowBailout": "Bailout / emergency",
+            "rowDecoPlanner": "Deco Planner default",
+            "rowFreedom": "Freedom default",
+            "rowBuhlmannTables": "Bühlmann tables",
+            "continuousDeco": "Continuous deco (no 3m/1min grid)",
+            "continuousWarning": "⚠️ Produces impractical profiles for demonstration only. Shows raw Bühlmann model output without standard 3m/1min rounding."
+        },
+        "sac": {
+            "title": "Gas Consumption",
+            "hint": "Surface Air Consumption rate for gas planning calculations.",
+            "bottom": "Bottom SAC (L/min):",
+            "deco": "Deco SAC (L/min):",
+            "reserve": "Reserve (bar):",
+            "typicalHint": "Typical SAC: 15-20 L/min (relaxed), 25-30 L/min (working)."
+        },
+        "waypoints": {
+            "dive1Plan": "Dive 1 Plan",
+            "dive2Plan": "Dive 2 Plan",
+            "remove": "Remove",
+            "surfaceIntervalBefore": "Surface Interval Before (min):",
+            "editWaypoints": "Edit Waypoints",
+            "colTime": "Time (min)",
+            "colDepth": "Depth (m)",
+            "colGas": "Gas",
+            "colActions": "Actions",
+            "addWaypoint": "Add Waypoint",
+            "timeDown": "-1 min",
+            "timeUp": "+1 min",
+            "insertAfter": "Insert after",
+            "addRepetitiveDive": "Add Repetitive Dive",
+            "addRepetitiveHint": "Add a second dive after a surface interval"
+        },
+        "surfaceInterval": {
+            "label": "Surface Interval After Dive (min):",
+            "hint": "Post-dive off-gassing display time"
+        },
+        "description": {
+            "label": "Description:",
+            "placeholder": "Describe this dive profile..."
+        },
+        "importExport": {
+            "exportJson": "Export JSON",
+            "importJson": "Import JSON"
+        },
+        "gasCard": {
+            "bottomGas": "Bottom Gas",
+            "decoGas": "Deco Gas {0}",
+            "custom": "Custom...",
+            "remove": "Remove",
+            "gasLabel": "Gas:",
+            "o2": "O₂:",
+            "he": "He:",
+            "tank": "Tank:",
+            "cylinderVolumeTitle": "Cylinder volume in liters"
+        },
+        "validation": {
+            "firstWaypointTime": "Dive {0}: First waypoint must be at time 0",
+            "firstWaypointDepth": "Dive {0}: First waypoint should be at surface (0m)"
+        }
+    },
+    "divePlan": {
+        "colPhase": "Phase",
+        "colDepth": "Depth",
+        "colStop": "Stop",
+        "colRuntime": "Runtime",
+        "colGas": "Gas",
+        "colTank": "Tank",
+        "phaseDescent": "Des",
+        "phaseBottom": "Bottom",
+        "phaseSurface": "Surface",
+        "phaseAscent": "Asc",
+        "phaseSwitch": "Switch",
+        "phaseStop": "Stop"
     },
     "tissueSim": {
         "alertOk": "All clear",
@@ -1375,6 +1511,11 @@
             "status": {
                 "ready": "Ready"
             },
+            "statusValid": "✓ Valid",
+            "statusErrors": "✗ {0} error(s)",
+            "statusReady": "✓ Ready",
+            "deleteProfileConfirm": "Delete this profile?",
+            "enterProfileNameAlert": "Please enter a profile name",
             "footerDisclaimer": "<strong>Disclaimer:</strong> This is an educational tool only. Do not use for actual dive planning."
         },
         "tissue": {

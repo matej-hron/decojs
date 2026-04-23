@@ -18,6 +18,7 @@ import {
 } from './decoModel.js';
 
 import { COMPARTMENTS } from './tissueCompartments.js';
+import { translate } from './i18n.js';
 
 // Default path to dive setup JSON
 const DEFAULT_SETUP_PATH = 'data/dive-setup.json';
@@ -1448,6 +1449,15 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
         pressureByGasId[g.id] = g.startPressure ?? 200;
     }
 
+    const phaseLabels = {
+        des: translate('divePlan.phaseDescent', 'Des'),
+        bottom: translate('divePlan.phaseBottom', 'Bottom'),
+        surface: translate('divePlan.phaseSurface', 'Surface'),
+        asc: translate('divePlan.phaseAscent', 'Asc'),
+        switch: translate('divePlan.phaseSwitch', 'Switch'),
+        stop: translate('divePlan.phaseStop', 'Stop')
+    };
+
     for (let i = 0; i < waypoints.length - 1; i++) {
         const wp = waypoints[i];
         const next = waypoints[i + 1];
@@ -1475,26 +1485,26 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
         };
 
         if (next.depth > wp.depth) {
-            pushSeg({ cls: 'des', icon: '↓', label: 'Des', depth: next.depth, stop: duration, runtime, gas: gasName });
+            pushSeg({ cls: 'des', icon: '↓', label: phaseLabels.des, depth: next.depth, stop: duration, runtime, gas: gasName });
         } else if (next.depth === wp.depth && next.depth === maxDepth && !leftMax) {
-            pushSeg({ cls: 'bottom', icon: '●', label: 'Bottom', depth: wp.depth, stop: duration, runtime, gas: gasName });
+            pushSeg({ cls: 'bottom', icon: '●', label: phaseLabels.bottom, depth: wp.depth, stop: duration, runtime, gas: gasName });
         } else if (next.depth === 0 && wp.depth === 0) {
             // already at surface — skip
         } else if (next.depth === 0 && wp.depth > 0) {
             // Final surface ascent — blank stop column; it's just a surfacing
             // marker, not a deco duration worth showing as a number.
             leftMax = true;
-            pushSeg({ cls: 'asc', icon: '▲', label: 'Surface', depth: 0, stop: '', runtime, gas: '' });
+            pushSeg({ cls: 'asc', icon: '▲', label: phaseLabels.surface, isSurface: true, depth: 0, stop: '', runtime, gas: '' });
         } else if (next.depth < wp.depth) {
             leftMax = true;
-            pushSeg({ cls: 'asc', icon: '↑', label: 'Asc', depth: next.depth, stop: duration, runtime, gas: gasName });
+            pushSeg({ cls: 'asc', icon: '↑', label: phaseLabels.asc, depth: next.depth, stop: duration, runtime, gas: gasName });
         } else if (next.depth === wp.depth && next.depth > 0) {
             leftMax = true;
             const gasChanged = wp.gasId && wp.gasId !== prevGasId;
             if (gasChanged) {
-                pushSeg({ cls: 'switch', icon: '⇄', label: 'Switch', depth: wp.depth, stop: duration, runtime, gas: gasName });
+                pushSeg({ cls: 'switch', icon: '⇄', label: phaseLabels.switch, depth: wp.depth, stop: duration, runtime, gas: gasName });
             } else {
-                pushSeg({ cls: 'stop', icon: '■', label: 'Stop', depth: wp.depth, stop: duration, runtime, gas: gasName });
+                pushSeg({ cls: 'stop', icon: '■', label: phaseLabels.stop, depth: wp.depth, stop: duration, runtime, gas: gasName });
             }
         }
         if (wp.gasId) prevGasId = wp.gasId;
@@ -1514,7 +1524,7 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
     for (let i = segments.length - 1; i >= 0; i--) {
         const seg = segments[i];
         if (seg.cls !== 'asc') continue;
-        if (seg.label === 'Surface') continue;       // final surface handled below
+        if (seg.isSurface) continue;                 // final surface handled below
         const prev = segments[i - 1];
         const next = segments[i + 1];
         if (!prev || !next) continue;
@@ -1543,7 +1553,7 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
     // We skip if the preceding row is a switch — preserves gas-switch row
     // visibility (switches are load-bearing UX for tech diving).
     const lastIdx = segments.length - 1;
-    if (lastIdx >= 1 && segments[lastIdx].label === 'Surface') {
+    if (lastIdx >= 1 && segments[lastIdx].isSurface) {
         const prev = segments[lastIdx - 1];
         if (prev && prev.cls === 'stop') {
             prev.runtime = segments[lastIdx].runtime;
@@ -1588,7 +1598,14 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
     }).join('');
 
     return `<table class="dse-plan-table">` +
-        `<thead><tr><th>Phase</th><th>Depth</th><th>Stop</th><th>Runtime</th><th>Gas</th><th>Tank</th></tr></thead>` +
+        `<thead><tr>` +
+        `<th>${translate('divePlan.colPhase', 'Phase')}</th>` +
+        `<th>${translate('divePlan.colDepth', 'Depth')}</th>` +
+        `<th>${translate('divePlan.colStop', 'Stop')}</th>` +
+        `<th>${translate('divePlan.colRuntime', 'Runtime')}</th>` +
+        `<th>${translate('divePlan.colGas', 'Gas')}</th>` +
+        `<th>${translate('divePlan.colTank', 'Tank')}</th>` +
+        `</tr></thead>` +
         `<tbody>${rows}</tbody>` +
         `</table>`;
 }

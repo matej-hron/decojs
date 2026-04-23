@@ -1278,9 +1278,10 @@
             
             // Update status
             if (valid) {
-                statusText.innerHTML = '<span class="status-valid">✓ Valid</span>';
+                statusText.innerHTML = `<span class="status-valid">${translate('sandbox.dive.statusValid', '✓ Valid')}</span>`;
             } else {
-                statusText.innerHTML = `<span class="status-invalid">✗ ${errors.length} error(s)</span>`;
+                const tpl = translate('sandbox.dive.statusErrors', '✗ {0} error(s)');
+                statusText.innerHTML = `<span class="status-invalid">${tpl.replace('{0}', errors.length)}</span>`;
             }
             lastUpdate.textContent = new Date().toLocaleTimeString();
             
@@ -1340,7 +1341,7 @@
         }
         
         function deleteProfile(id) {
-            if (!confirm('Delete this profile?')) return;
+            if (!confirm(translate('sandbox.dive.deleteProfileConfirm', 'Delete this profile?'))) return;
             
             profiles = profiles.filter(p => p.id !== id);
             saveProfiles(profiles);
@@ -1355,7 +1356,7 @@
         saveProfileBtn.addEventListener('click', () => {
             const name = saveProfileName.value.trim();
             if (!name) {
-                alert('Please enter a profile name');
+                alert(translate('sandbox.dive.enterProfileNameAlert', 'Please enter a profile name'));
                 return;
             }
 
@@ -1953,7 +1954,7 @@ const chart = new DiveProfileChart(
         // =====================================================================
         
         renderProfileChips();
-        statusText.innerHTML = '<span class="status-valid">✓ Ready</span>';
+        statusText.innerHTML = `<span class="status-valid">${translate('sandbox.dive.statusReady', '✓ Ready')}</span>`;
         lastUpdate.textContent = new Date().toLocaleTimeString();
         
         // Initial dive analysis

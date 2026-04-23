@@ -1144,7 +1144,143 @@
         "profileDefault": "Profil:",
         "customProfile": "✏️ Vlastní profil",
         "customProfileNamed": "✏️ {0}",
-        "separator": "──────────────"
+        "separator": "──────────────",
+        "newDiveName": "Nový ponor",
+        "generateProfile": "Generovat profil",
+        "ndlLabel": "NDL:",
+        "minUnit": "min",
+        "decoLabel": "⚠️ Deko:",
+        "minStopsUnit": "min zastávek",
+        "profiles": {
+            "loadProfile": "Načíst profil:",
+            "selectPlaceholder": "-- Vyberte profil --"
+        },
+        "quickSetup": {
+            "title": "Rychlé nastavení",
+            "hint": "Nastavte hloubku a čas na dně, pak klikněte na tlačítko Generovat níže.",
+            "maxDepth": "Maximální hloubka (m):",
+            "bottomTime": "Čas na dně (min):",
+            "safetyStop": "Bezpečnostní zastávka",
+            "depth": "Hloubka (m):",
+            "time": "Čas (min):"
+        },
+        "gases": {
+            "title": "Plyny",
+            "airShort": "Vzduch",
+            "hint": "První plyn je dýchací plyn na dně. Přidejte dekompresní plyny pro vícesložkové potápění.",
+            "addDecoGas": "Přidat dekompresní plyn",
+            "gasSwitchStop": "Zastávka při změně plynu:",
+            "switchNoStop": "0 min (bez zastávky)",
+            "switchNMin": "{0} min",
+            "switchHint": "Čas na ověření plynu, nádechy a signalizaci buddymu při každé hloubce změny plynu."
+        },
+        "gf": {
+            "title": "Dekompresní model",
+            "algorithm": "Algoritmus:",
+            "algorithmExperimental": "experimentální",
+            "algorithmTables": "tabulky",
+            "algorithmComputers": "počítače",
+            "hint": "GF 100/100 = čistý Bühlmann. Nižší hodnoty = konzervativnější.",
+            "low": "GF Low (%):",
+            "high": "GF High (%):",
+            "presetsLabel": "Předvolby:",
+            "presetGuide": "Průvodce GF předvolbami",
+            "presetBuhlmann": "Bühlmann",
+            "presetBuhlmannTitle": "Čisté Bühlmannovy tabulky, bez konzervatismu",
+            "presetRecreational": "Rekreační",
+            "presetRecreationalTitle": "Rekreační: ≤40 m, krátká deko",
+            "presetIntensive": "Intenzivní",
+            "presetIntensiveTitle": "Intenzivní: opakované ponory, safari",
+            "presetDeep": "Hluboký",
+            "presetDeepTitle": "Hluboký: >60 m, jeden ponor",
+            "presetBailout": "Bailout",
+            "presetBailoutTitle": "Bailout: nouzová situace",
+            "presetDecoPlanner": "Deco Planner",
+            "presetDecoPlannerTitle": "Výchozí hodnoty Deco Planneru",
+            "presetFreedom": "Freedom",
+            "presetFreedomTitle": "Výchozí hodnoty Divesoft Freedom",
+            "tableScenario": "Scénář",
+            "tableDepth": "Hloubka",
+            "tableGfLow": "GF Low",
+            "tableGfHigh": "GF High",
+            "rowRecDepth": "≤40 m, krátká deko",
+            "rowIntensive": "Intenzivní / safari",
+            "rowIntensiveDepth": "≤40 m, opakované ponory",
+            "rowDeep": "Hluboký jednorázový ponor",
+            "rowDeepDepth": ">60 m, jeden ponor",
+            "rowBailout": "Bailout / nouze",
+            "rowDecoPlanner": "Deco Planner výchozí",
+            "rowFreedom": "Freedom výchozí",
+            "rowBuhlmannTables": "Bühlmannovy tabulky",
+            "continuousDeco": "Spojitá deko (bez mřížky 3 m/1 min)",
+            "continuousWarning": "⚠️ Produkuje nepraktické profily pouze pro demonstraci. Ukazuje čistý výstup Bühlmannova modelu bez standardního zaokrouhlování na 3 m/1 min."
+        },
+        "sac": {
+            "title": "Spotřeba plynu",
+            "hint": "SAC (Surface Air Consumption) pro výpočet plánu spotřeby plynu.",
+            "bottom": "SAC na dně (l/min):",
+            "deco": "Deko SAC (l/min):",
+            "reserve": "Rezerva (bar):",
+            "typicalHint": "Typické SAC: 15–20 l/min (v klidu), 25–30 l/min (při práci)."
+        },
+        "waypoints": {
+            "dive1Plan": "Plán ponoru 1",
+            "dive2Plan": "Plán ponoru 2",
+            "remove": "Odebrat",
+            "surfaceIntervalBefore": "Povrchový interval před (min):",
+            "editWaypoints": "Upravit body profilu",
+            "colTime": "Čas (min)",
+            "colDepth": "Hloubka (m)",
+            "colGas": "Plyn",
+            "colActions": "Akce",
+            "addWaypoint": "Přidat bod",
+            "timeDown": "−1 min",
+            "timeUp": "+1 min",
+            "insertAfter": "Vložit za",
+            "addRepetitiveDive": "Přidat opakovaný ponor",
+            "addRepetitiveHint": "Přidat druhý ponor po povrchovém intervalu"
+        },
+        "surfaceInterval": {
+            "label": "Povrchový interval po ponoru (min):",
+            "hint": "Čas zobrazení vyplavování po ponoru"
+        },
+        "description": {
+            "label": "Popis:",
+            "placeholder": "Popište tento profil ponoru..."
+        },
+        "importExport": {
+            "exportJson": "Exportovat JSON",
+            "importJson": "Importovat JSON"
+        },
+        "gasCard": {
+            "bottomGas": "Plyn na dně",
+            "decoGas": "Deko plyn {0}",
+            "custom": "Vlastní…",
+            "remove": "Odebrat",
+            "gasLabel": "Plyn:",
+            "o2": "O₂:",
+            "he": "He:",
+            "tank": "Láhev:",
+            "cylinderVolumeTitle": "Objem láhve v litrech"
+        },
+        "validation": {
+            "firstWaypointTime": "Ponor {0}: První bod musí být v čase 0",
+            "firstWaypointDepth": "Ponor {0}: První bod by měl být na hladině (0 m)"
+        }
+    },
+    "divePlan": {
+        "colPhase": "Fáze",
+        "colDepth": "Hloubka",
+        "colStop": "Zastávka",
+        "colRuntime": "Runtime",
+        "colGas": "Plyn",
+        "colTank": "Láhev",
+        "phaseDescent": "Sestup",
+        "phaseBottom": "Dno",
+        "phaseSurface": "Hladina",
+        "phaseAscent": "Výstup",
+        "phaseSwitch": "Změna",
+        "phaseStop": "Zastávka"
     },
     "tissueSim": {
         "alertOk": "Vše v pořádku",
@@ -1375,6 +1511,11 @@
             "status": {
                 "ready": "Připraveno"
             },
+            "statusValid": "✓ Platné",
+            "statusErrors": "✗ {0} chyb",
+            "statusReady": "✓ Připraveno",
+            "deleteProfileConfirm": "Smazat tento profil?",
+            "enterProfileNameAlert": "Zadejte prosím název profilu",
             "footerDisclaimer": "<strong>Upozornění:</strong> Jedná se pouze o výukový nástroj. Nepoužívejte jej k plánování skutečných ponorů."
         },
         "tissue": {
