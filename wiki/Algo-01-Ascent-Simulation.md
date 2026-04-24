@@ -96,7 +96,7 @@ This guarantees each segment is driven by exactly one `(wp_i, wp_{i+1})` pair �
 
 ## Gas switches
 
-Each waypoint may carry an optional `gasId` field. `calculateTissueLoading` reads this via the `getN2FractionAtTime()` closure (`js/decoModel.js:1188-1208`) — the current gas sticks until a waypoint with a new `gasId` is seen. Tissue pressure is continuous across a switch; only the alveolar target $P_{alv}$ changes, so the Schreiner rate for the *next* segment picks up the new $f_{N_2}$. See [[Algo-05-Multi-Gas-Switching]] for how these waypoints are produced.
+Each waypoint may carry an optional `gasId` field. `calculateTissueLoading` reads this via the `getN2FractionAtTime()` closure (`js/decoModel.js:1188-1208`) — the current gas sticks until a waypoint with a new `gasId` is seen. Tissue pressure is continuous across a switch; only the alveolar target $P_{alv}$ changes, so the Schreiner rate for the *next* segment picks up the new $f_{N_2}$. See [Algo-05-Multi-Gas-Switching](Algo-05-Multi-Gas-Switching.md) for how these waypoints are produced.
 
 ## Surface interval
 
@@ -113,6 +113,6 @@ This lets unit tests chain dives, though the current chart layer renders only `d
 
 ## Cross-references
 
-- [[Model-02-Haldane-Equation]] and [[Model-03-Schreiner-Equation]] — the equations being dispatched.
-- [[Algo-06-Ceiling-Time-Series]] — consumes the `results` object from `calculateTissueLoading` to overlay ceilings.
-- [[Architecture]] — `calculateTissueLoading` is the main hot-path consumed by every chart component.
+- [Model-02-Haldane-Equation](Model-02-Haldane-Equation.md) and [Model-03-Schreiner-Equation](Model-03-Schreiner-Equation.md) — the equations being dispatched.
+- [Algo-06-Ceiling-Time-Series](Algo-06-Ceiling-Time-Series.md) — consumes the `results` object from `calculateTissueLoading` to overlay ceilings.
+- [Architecture](Architecture.md) — `calculateTissueLoading` is the main hot-path consumed by every chart component.

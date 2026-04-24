@@ -125,7 +125,7 @@ for (let candidateDepth = 0; candidateDepth <= currentDepth; candidateDepth += s
 }
 ```
 
-This is the same ascent-permission test used in the deco stop loop itself (see [[Algo-04-Deco-Stop-Loop]]) — consistency between first-stop discovery and subsequent stops matters for stop-count agreement across tools.
+This is the same ascent-permission test used in the deco stop loop itself (see [Algo-04-Deco-Stop-Loop](Algo-04-Deco-Stop-Loop.md)) — consistency between first-stop discovery and subsequent stops matters for stop-count agreement across tools.
 
 ### `_simulateAscentWithGasSwitches`
 
@@ -177,6 +177,6 @@ If `findGFLowAnchor` returned 1.01325 bar (NDL case), the candidate-zero check p
 
 ## Cross-references
 
-- [[Model-05-Gradient-Factors]] — the GF ramp equation and why `pAnchor` is its lower reference.
-- [[Algo-04-Deco-Stop-Loop]] — consumes `firstStopDepth` and the simulated tissue state at first stop.
-- [[Algo-05-Multi-Gas-Switching]] — how `gasSwitchPoints` is built before being passed in here.
+- [Model-05-Gradient-Factors](Model-05-Gradient-Factors.md) — the GF ramp equation and why `pAnchor` is its lower reference.
+- [Algo-04-Deco-Stop-Loop](Algo-04-Deco-Stop-Loop.md) — consumes `firstStopDepth` and the simulated tissue state at first stop.
+- [Algo-05-Multi-Gas-Switching](Algo-05-Multi-Gas-Switching.md) — how `gasSwitchPoints` is built before being passed in here.

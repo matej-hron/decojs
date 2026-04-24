@@ -2,7 +2,7 @@
 
 The mathematical machinery DecoJS uses to track inert gas loading across 16 theoretical tissue compartments and compute ascent limits from them. These pages are the developer-facing counterpart to `pressure.html`, `tissue-loading.html`, `m-values.html`, and `gradient-factors.html` — they assume the reader already knows what inert-gas loading is and want to see the algorithm as it is coded.
 
-For algorithm-level orchestration (how these equations drive a simulated ascent, deco-stop search, NDL computation), see [[Algorithms]]. For the JavaScript module/function index, see [[Architecture]].
+For algorithm-level orchestration (how these equations drive a simulated ascent, deco-stop search, NDL computation), see [Algorithms](Algorithms.md). For the JavaScript module/function index, see [Architecture](Architecture.md).
 
 ## Notation
 
@@ -42,10 +42,10 @@ export const PRESSURE_PER_METER = 0.1;         // fresh-water convention, bar/m
 
 ## Chapter TOC
 
-1. [[Model-01-Compartments]] — the 16 ZH-L16 compartments, their half-times, the a/b coefficients, and the A/B/C variants.
-2. [[Model-02-Haldane-Equation]] — constant-depth tissue loading.
-3. [[Model-03-Schreiner-Equation]] — linear-rate-of-pressure-change tissue loading (the workhorse during descent and ascent).
-4. [[Model-04-M-Values]] — Bühlmann M-value lines, ceiling equation, instantaneous GF.
-5. [[Model-05-Gradient-Factors]] — Baker GFs, `pAnchor`, and the GF ramp.
+1. [Model-01-Compartments](Model-01-Compartments.md) — the 16 ZH-L16 compartments, their half-times, the a/b coefficients, and the A/B/C variants.
+2. [Model-02-Haldane-Equation](Model-02-Haldane-Equation.md) — constant-depth tissue loading.
+3. [Model-03-Schreiner-Equation](Model-03-Schreiner-Equation.md) — linear-rate-of-pressure-change tissue loading (the workhorse during descent and ascent).
+4. [Model-04-M-Values](Model-04-M-Values.md) — Bühlmann M-value lines, ceiling equation, instantaneous GF.
+5. [Model-05-Gradient-Factors](Model-05-Gradient-Factors.md) — Baker GFs, `pAnchor`, and the GF ramp.
 
-Cross-cutting: [[Algorithms]] drives these equations across a full dive; [[References]] lists primary sources.
+Cross-cutting: [Algorithms](Algorithms.md) drives these equations across a full dive; [References](References.md) lists primary sources.

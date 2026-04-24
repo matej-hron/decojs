@@ -33,7 +33,7 @@ This runs `node tests/run-tests.mjs` — a custom zero-dependency test runner wi
 - `tests/diveProfile.test.js` — profile validation and statistics
 - `tests/decotengu-comparison.test.mjs` — 3900 Bühlmann-air scenarios pre-generated from decotengu 0.14.1 as the numerical oracle
 
-See [[Validation-and-Testing]] for details on tolerances and scenario coverage.
+See [Validation-and-Testing](Validation-and-Testing.md) for details on tolerances and scenario coverage.
 
 ## Before every commit
 
@@ -63,4 +63,4 @@ Run `npm test` — all 208 tests must pass — then commit both version bumps al
 
 ## Release and PWA deployment
 
-Deployment is GitHub Pages from the `main` branch, served under the `decotheory.eu` custom domain configured via the `CNAME` file. The manifest declares `start_url: "/decojs/index.html"` and `scope: "/decojs/"`, and the service worker (`sw.js`) uses a cache-first strategy keyed by `CACHE_NAME` — bumping that constant on every release is what invalidates stale caches in installed PWAs. See [[Architecture]] for the PWA details.
+Deployment is GitHub Pages from the `main` branch, served under the `decotheory.eu` custom domain configured via the `CNAME` file. The manifest declares `start_url: "/decojs/index.html"` and `scope: "/decojs/"`, and the service worker (`sw.js`) uses a cache-first strategy keyed by `CACHE_NAME` — bumping that constant on every release is what invalidates stale caches in installed PWAs. See [Architecture](Architecture.md) for the PWA details.

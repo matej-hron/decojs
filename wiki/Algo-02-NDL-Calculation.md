@@ -111,6 +111,6 @@ If `bottomTime ≤ ndl`, the planner returns a no-stop profile (optionally with 
 
 ## Cross-references
 
-- [[Algo-03-First-Stop-Ramped-GF]] — what happens when NDL is exceeded.
-- [[Model-04-M-Values]] — the ceiling equation underlying `getDiveCeiling`.
-- [[Model-05-Gradient-Factors]] — why the $GF_{low}$ threshold is the right one for NDL.
+- [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md) — what happens when NDL is exceeded.
+- [Model-04-M-Values](Model-04-M-Values.md) — the ceiling equation underlying `getDiveCeiling`.
+- [Model-05-Gradient-Factors](Model-05-Gradient-Factors.md) — why the $GF_{low}$ threshold is the right one for NDL.

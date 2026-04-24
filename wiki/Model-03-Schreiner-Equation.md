@@ -2,7 +2,7 @@
 
 Applies when the ambient pressure changes at a **constant linear rate** — i.e. descent at a fixed m/min, ascent at a fixed m/min. This is the workhorse of DecoJS: every segment between waypoints except pure level-offs gets dispatched through Schreiner.
 
-Origin: Schreiner & Kelley 1971 (see [[References#22-schreiner--exponential-gas-uptake-with-changing-pressure]]). The closed-form solution of the Haldane ODE with a time-varying alveolar source.
+Origin: Schreiner & Kelley 1971 (see [References](References.md#22-schreiner--exponential-gas-uptake-with-changing-pressure)). The closed-form solution of the Haldane ODE with a time-varying alveolar source.
 
 ## Formula as coded
 
@@ -102,6 +102,6 @@ Exactly the Haldane equation. DecoJS still dispatches to `haldaneEquation()` sep
 
 ## Cross-references
 
-- [[Model-02-Haldane-Equation]] — the constant-depth specialization.
-- [[Algo-01-Ascent-Simulation]] — the loop that drives Schreiner through a dive.
-- [[References#22-schreiner--exponential-gas-uptake-with-changing-pressure]] — Schreiner & Kelley 1971, plus Baker's "Clearing Up The Confusion About 'Deep Stops'" which derives the same form in modern notation.
+- [Model-02-Haldane-Equation](Model-02-Haldane-Equation.md) — the constant-depth specialization.
+- [Algo-01-Ascent-Simulation](Algo-01-Ascent-Simulation.md) — the loop that drives Schreiner through a dive.
+- [References](References.md#22-schreiner--exponential-gas-uptake-with-changing-pressure) — Schreiner & Kelley 1971, plus Baker's "Clearing Up The Confusion About 'Deep Stops'" which derives the same form in modern notation.

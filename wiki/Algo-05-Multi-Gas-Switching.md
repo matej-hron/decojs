@@ -65,7 +65,7 @@ const switchToBestGas = (atDepth, recordSwitch = true) => {
 
 ### 1. Anchor search (`findGFLowAnchor`)
 
-The simulated 0.1 bar ascent accepts `gasSwitchPoints` and applies them as it crosses each switch depth (`js/decoModel.js:290-296`). Without this, `pAnchor` would be computed as if the diver stayed on bottom gas to the surface, yielding an incorrectly deep anchor. See [[Algo-03-First-Stop-Ramped-GF]].
+The simulated 0.1 bar ascent accepts `gasSwitchPoints` and applies them as it crosses each switch depth (`js/decoModel.js:290-296`). Without this, `pAnchor` would be computed as if the diver stayed on bottom gas to the surface, yielding an incorrectly deep anchor. See [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md).
 
 ### 2. Deco scheduler (`generateDecoSchedule`)
 
@@ -131,6 +131,6 @@ Each switch is recorded in `gasSwitches: [{depth: 21, gas: 'EAN50', gasId: 2}, {
 
 ## Cross-references
 
-- [[Algo-03-First-Stop-Ramped-GF]] — where `gasSwitchPoints` is first consumed.
-- [[Algo-04-Deco-Stop-Loop]] — the stop-loop's `switchToBestGas` dispatcher.
-- [[Algo-06-Ceiling-Time-Series]] — how gas changes propagate through the ceiling overlay.
+- [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md) — where `gasSwitchPoints` is first consumed.
+- [Algo-04-Deco-Stop-Loop](Algo-04-Deco-Stop-Loop.md) — the stop-loop's `switchToBestGas` dispatcher.
+- [Algo-06-Ceiling-Time-Series](Algo-06-Ceiling-Time-Series.md) — how gas changes propagate through the ceiling overlay.

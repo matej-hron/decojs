@@ -1,4 +1,4 @@
-DecoJS is a vanilla-JavaScript Progressive Web App with no build pipeline. The browser loads ES modules directly from source, and every `.js` file in the repo is exactly the file the browser parses. This page covers the high-level shape; per-file details live in [[Module-Reference]].
+DecoJS is a vanilla-JavaScript Progressive Web App with no build pipeline. The browser loads ES modules directly from source, and every `.js` file in the repo is exactly the file the browser parses. This page covers the high-level shape; per-file details live in [Module-Reference](Module-Reference.md).
 
 ## No-build ES-module philosophy
 
@@ -143,7 +143,7 @@ const CACHE_NAME = 'deco-theory-0.5.48';
 
 `manifest.json` declares a standalone PWA (no browser chrome) with `start_url: "/decojs/index.html"`, `scope: "/decojs/"`, 8 SVG icons (72px to 512px including a maskable variant), theme color `#2980b9`, and categories `["education", "health"]`.
 
-The `CACHE_NAME` bump is load-bearing — it is the only mechanism that forces installed PWAs to pick up new content. This is why [[Project-Info#before-every-commit]] requires a version bump in `sw.js` on every release.
+The `CACHE_NAME` bump is load-bearing — it is the only mechanism that forces installed PWAs to pick up new content. This is why [Project-Info](Project-Info.md#before-every-commit) requires a version bump in `sw.js` on every release.
 
 ## i18n
 
@@ -166,4 +166,4 @@ The canonical flow:
 
 The same pattern carries `languagechange` (global on `window`) and theme toggles. No component reaches into another's internals; all cross-component state moves through events or through the `diveSetup` object itself.
 
-Per-file details live in [[Module-Reference]].
+Per-file details live in [Module-Reference](Module-Reference.md).

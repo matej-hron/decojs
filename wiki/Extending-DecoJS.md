@@ -25,7 +25,7 @@ export const BOTTOM_GASES = [
 ];
 ```
 
-MOD is derived automatically by `calculateMOD()` (`diveSetup.js:807`) whenever the gas is used. The `he` fraction is tracked in the gas record but the decompression algorithm lumps it into the inert-gas calculation via the gas's effective N₂-equivalent; separate helium kinetics are not implemented (see [[Validation-and-Testing#test-gaps]]).
+MOD is derived automatically by `calculateMOD()` (`diveSetup.js:807`) whenever the gas is used. The `he` fraction is tracked in the gas record but the decompression algorithm lumps it into the inert-gas calculation via the gas's effective N₂-equivalent; separate helium kinetics are not implemented (see [Validation-and-Testing](Validation-and-Testing.md#test-gaps)).
 
 The `DiveSetupEditor` picks new gases up automatically — no UI change is needed.
 
@@ -41,7 +41,7 @@ setZHL16Variant(ZHL16_VARIANTS.A); // or .B, or .C (default)
 
 Recalculate any cached tissue-loading results after switching, since compartment parameters have changed. The three chart classes accept a fresh `update(diveSetup)` call.
 
-Variant letter meaning: A = original experimental; B = printed tables (moderate conservatism); C = dive computers (most conservative). See [[Model-01-Compartments]].
+Variant letter meaning: A = original experimental; B = printed tables (moderate conservatism); C = dive computers (most conservative). See [Model-01-Compartments](Model-01-Compartments.md).
 
 ## Adding a new quiz
 
@@ -151,6 +151,6 @@ Also tunable on the same call: `ascentRate` (default 10 m/min), `gasSwitchTime` 
 
 ## Further reading
 
-- [[Module-Reference]] — full signatures and line references for every module.
-- [[Decompression-Model]] — the math these extensions rest on.
-- [[Validation-and-Testing]] — how to verify a change does not regress against decotengu.
+- [Module-Reference](Module-Reference.md) — full signatures and line references for every module.
+- [Decompression-Model](Decompression-Model.md) — the math these extensions rest on.
+- [Validation-and-Testing](Validation-and-Testing.md) — how to verify a change does not regress against decotengu.

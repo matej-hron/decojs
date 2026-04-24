@@ -1,6 +1,6 @@
 # Model-05 — Gradient Factors
 
-Bühlmann M-values represent the DCS-threshold supersaturation. Diving right up to M is "on the line" — any error, poor perfusion, or individual susceptibility and you cross over. **Gradient Factors** (Erik Baker, 1998; see [[References#24-erik-baker--gradient-factors-articles]]) add a configurable safety margin by treating the supersaturation budget as a fraction of the raw Bühlmann allowance. `GF 100/100` means Bühlmann-native. `GF 30/70` means deeper first stops (30% of the supersaturation budget used when the first stop triggers) and a more conservative surfacing (only 70% used at the surface).
+Bühlmann M-values represent the DCS-threshold supersaturation. Diving right up to M is "on the line" — any error, poor perfusion, or individual susceptibility and you cross over. **Gradient Factors** (Erik Baker, 1998; see [References](References.md#24-erik-baker--gradient-factors-articles)) add a configurable safety margin by treating the supersaturation budget as a fraction of the raw Bühlmann allowance. `GF 100/100` means Bühlmann-native. `GF 30/70` means deeper first stops (30% of the supersaturation budget used when the first stop triggers) and a more conservative surfacing (only 70% used at the surface).
 
 ## Two-parameter form
 
@@ -123,7 +123,7 @@ for (const sp of switches) {
 }
 ```
 
-Switches are sorted deepest-first so the simulation applies the richest permissible gas at each depth. `generateDecoSchedule()` (`js/decoModel.js:899`) is the caller that passes in the switch points — see [[Algo-04-Deco-Schedule]] for how they're computed from MODs.
+Switches are sorted deepest-first so the simulation applies the richest permissible gas at each depth. `generateDecoSchedule()` (`js/decoModel.js:899`) is the caller that passes in the switch points — see [Algo-04-Deco-Stop-Loop](Algo-04-Deco-Stop-Loop.md) for how they're computed from MODs.
 
 ## Worked example
 
@@ -142,7 +142,7 @@ Exact numbers depend on the variant (A/B/C) and the descent/ascent profile shape
 
 ## Cross-references
 
-- [[Model-04-M-Values]] — $M$, $M_{adj}$, and the ceiling equation that pAnchor is computed from.
-- [[Algo-03-First-Stop-Ramped-GF]] — the first-stop-finding loop that uses pAnchor to locate the shallowest mandatory stop.
-- [[Algo-06-Ceiling-Time-Series]] — how pAnchor is pre-computed once and reused across a full dive's ceiling time series.
-- [[References#24-erik-baker--gradient-factors-articles]] — Baker's original GF papers ("Understanding M-values", "Clearing Up The Confusion About 'Deep Stops'").
+- [Model-04-M-Values](Model-04-M-Values.md) — $M$, $M_{adj}$, and the ceiling equation that pAnchor is computed from.
+- [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md) — the first-stop-finding loop that uses pAnchor to locate the shallowest mandatory stop.
+- [Algo-06-Ceiling-Time-Series](Algo-06-Ceiling-Time-Series.md) — how pAnchor is pre-computed once and reused across a full dive's ceiling time series.
+- [References](References.md#24-erik-baker--gradient-factors-articles) — Baker's original GF papers ("Understanding M-values", "Clearing Up The Confusion About 'Deep Stops'").

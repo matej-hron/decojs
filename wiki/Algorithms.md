@@ -1,6 +1,6 @@
 # Algorithms
 
-The orchestration layer that strings together the Haldane / Schreiner equations, Bühlmann M-values, and the Baker gradient-factor ramp into a working dive simulator. The [[Decompression-Model]] chapters cover the underlying equations; this section is about how those equations are *called* to produce a dive plan.
+The orchestration layer that strings together the Haldane / Schreiner equations, Bühlmann M-values, and the Baker gradient-factor ramp into a working dive simulator. The [Decompression-Model](Decompression-Model.md) chapters cover the underlying equations; this section is about how those equations are *called* to produce a dive plan.
 
 ## Pipeline
 
@@ -28,11 +28,11 @@ The pipeline is single-pass per dive setup: tissue state flows forward from surf
 
 ## Chapter TOC
 
-1. [[Algo-01-Ascent-Simulation]] — replay a waypoint array over all 16 compartments; segment dispatch between Haldane (level) and Schreiner (slope).
-2. [[Algo-02-NDL-Calculation]] — binary search for no-decompression limit at a given depth and gas.
-3. [[Algo-03-First-Stop-Ramped-GF]] — the two-step `pAnchor` → first-stop discovery. The subtlest chapter.
-4. [[Algo-04-Deco-Stop-Loop]] — from first stop to surface, generate the stop list; the `DECO_STOP_MAX_MINUTES` safety cap.
-5. [[Algo-05-Multi-Gas-Switching]] — MOD calculation, sequential switching, gas-switch waypoint insertion.
-6. [[Algo-06-Ceiling-Time-Series]] — per-timepoint ceiling overlay for chart rendering.
+1. [Algo-01-Ascent-Simulation](Algo-01-Ascent-Simulation.md) — replay a waypoint array over all 16 compartments; segment dispatch between Haldane (level) and Schreiner (slope).
+2. [Algo-02-NDL-Calculation](Algo-02-NDL-Calculation.md) — binary search for no-decompression limit at a given depth and gas.
+3. [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md) — the two-step `pAnchor` → first-stop discovery. The subtlest chapter.
+4. [Algo-04-Deco-Stop-Loop](Algo-04-Deco-Stop-Loop.md) — from first stop to surface, generate the stop list; the `DECO_STOP_MAX_MINUTES` safety cap.
+5. [Algo-05-Multi-Gas-Switching](Algo-05-Multi-Gas-Switching.md) — MOD calculation, sequential switching, gas-switch waypoint insertion.
+6. [Algo-06-Ceiling-Time-Series](Algo-06-Ceiling-Time-Series.md) — per-timepoint ceiling overlay for chart rendering.
 
-Cross-cutting: [[Architecture]] for the module/function index; [[Decompression-Model]] for the equations themselves; [[References#11-decotengu-documentation--structure-and-rigor-to-match]] for the prior-art decotengu docs whose structure these chapters mirror.
+Cross-cutting: [Architecture](Architecture.md) for the module/function index; [Decompression-Model](Decompression-Model.md) for the equations themselves; [References](References.md#11-decotengu-documentation--structure-and-rigor-to-match) for the prior-art decotengu docs whose structure these chapters mirror.

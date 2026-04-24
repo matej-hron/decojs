@@ -1,6 +1,6 @@
 # Model-04 — M-Values
 
-An **M-value** is the maximum tolerated inert-gas tissue pressure at a given ambient pressure, per compartment. Above M = supersaturation that the algorithm treats as unsafe. Workman (1965) introduced the concept (see [[References#23-workman--m-values]]); Bühlmann recast it as a linear function of ambient with two tabulated coefficients (see [[References#24-erik-baker--gradient-factors-articles]]).
+An **M-value** is the maximum tolerated inert-gas tissue pressure at a given ambient pressure, per compartment. Above M = supersaturation that the algorithm treats as unsafe. Workman (1965) introduced the concept (see [References](References.md#23-workman--m-values)); Bühlmann recast it as a linear function of ambient with two tabulated coefficients (see [References](References.md#24-erik-baker--gradient-factors-articles)).
 
 ## Bühlmann linear form
 
@@ -13,7 +13,7 @@ export function getMValue(ambientPressure, a, b) {
 }
 ```
 
-Where $a$ and $b$ are variant-specific per-compartment constants (see [[Model-01-Compartments]]). Both depend on the compartment (and $a$ on the variant A/B/C); neither depends on depth.
+Where $a$ and $b$ are variant-specific per-compartment constants (see [Model-01-Compartments](Model-01-Compartments.md)). Both depend on the compartment (and $a$ on the variant A/B/C); neither depends on depth.
 
 ## Graphical interpretation
 
@@ -78,7 +78,7 @@ export function getAdjustedMValue(ambientPressure, a, b, gf) {
 
 At GF = 0.5, the allowed tissue pressure sits exactly halfway between ambient and the raw M-value. At GF = 0, $M_{adj} = P_{amb}$ — no supersaturation tolerated at all. The ceiling equation above is the inverse of this, solved for $P_{amb}$.
 
-See [[Model-05-Gradient-Factors]] for how $GF$ itself varies during ascent.
+See [Model-05-Gradient-Factors](Model-05-Gradient-Factors.md) for how $GF$ itself varies during ascent.
 
 ## Instantaneous GF — "how full is this tissue right now?"
 
@@ -126,6 +126,6 @@ During an ascent the controlling compartment typically shifts:
 
 ## Cross-references
 
-- [[Model-01-Compartments]] — where $a$ and $b$ come from.
-- [[Model-05-Gradient-Factors]] — how GF is varied with depth via `pAnchor`.
-- [[Algo-06-Ceiling-Time-Series]] — the ceiling sampled at every dive-time point, for chart overlay.
+- [Model-01-Compartments](Model-01-Compartments.md) — where $a$ and $b$ come from.
+- [Model-05-Gradient-Factors](Model-05-Gradient-Factors.md) — how GF is varied with depth via `pAnchor`.
+- [Algo-06-Ceiling-Time-Series](Algo-06-Ceiling-Time-Series.md) — the ceiling sampled at every dive-time point, for chart overlay.

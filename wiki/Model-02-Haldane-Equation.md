@@ -14,7 +14,7 @@ export function haldaneEquation(initialPressure, alveolarPressure, time, halfTim
 }
 ```
 
-Where $k = \ln(2)/T_{1/2}$ (see [[Model-01-Compartments#rate-constant]]). As $t \to \infty$, $P_t \to P_{alv}$ (full equilibrium). After one half-time, 50% of the remaining gradient has been closed; after two half-times, 75%; after six, ~98.4%.
+Where $k = \ln(2)/T_{1/2}$ (see [Model-01-Compartments](Model-01-Compartments.md#rate-constant)). As $t \to \infty$, $P_t \to P_{alv}$ (full equilibrium). After one half-time, 50% of the remaining gradient has been closed; after two half-times, 75%; after six, ~98.4%.
 
 ## Alveolar pressure
 
@@ -29,7 +29,7 @@ export function getAlveolarN2Pressure(ambientPressure, n2Fraction = N2_FRACTION)
 }
 ```
 
-With $P_{H_2O} = 0.0627$ bar at 37 °C and $f_{N_2} = 0.7902$ for air (see [[Decompression-Model#unit-constants]]). On a gas switch, `n2Fraction` changes to the new gas's N₂-equivalent fraction (for trimix, $N_2$ and $He$ fractions are summed as the inert-gas fraction — DecoJS does not track helium kinetics separately).
+With $P_{H_2O} = 0.0627$ bar at 37 °C and $f_{N_2} = 0.7902$ for air (see [Decompression-Model](Decompression-Model.md#unit-constants)). On a gas switch, `n2Fraction` changes to the new gas's N₂-equivalent fraction (for trimix, $N_2$ and $He$ fractions are summed as the inert-gas fraction — DecoJS does not track helium kinetics separately).
 
 ## Worked example
 
@@ -65,6 +65,6 @@ Iterates over all 16 compartments applying the Haldane equation at constant dept
 
 ## Cross-references
 
-- [[Model-03-Schreiner-Equation]] — the generalization for when depth changes linearly. Haldane is the degenerate case with $R = 0$.
-- [[Algo-01-Ascent-Simulation]] — how Haldane drives level-segment tissue loading inside the full simulation loop.
-- [[References#21-b%C3%BChlmann--zh-l16--keller-b%C3%BChlmann]] — original Bühlmann sources.
+- [Model-03-Schreiner-Equation](Model-03-Schreiner-Equation.md) — the generalization for when depth changes linearly. Haldane is the degenerate case with $R = 0$.
+- [Algo-01-Ascent-Simulation](Algo-01-Ascent-Simulation.md) — how Haldane drives level-segment tissue loading inside the full simulation loop.
+- [References](References.md#21-b%C3%BChlmann--zh-l16--keller-b%C3%BChlmann) — original Bühlmann sources.

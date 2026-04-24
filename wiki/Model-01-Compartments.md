@@ -1,6 +1,6 @@
 # Model-01 — Compartments
 
-Bühlmann ZH-L16 is a parallel-compartment model: 16 theoretical tissue groups, each with a half-time $T_{1/2}$ (how fast it on-/off-gasses) and two Bühlmann coefficients $a$ (bar) and $b$ (dimensionless) defining its M-value line. The letter suffix (A/B/C) picks one of three coefficient tables — same half-times, different `a` values (plus one $b$ quirk at TC1). See [[References#6-zh-l16-constant-tables]].
+Bühlmann ZH-L16 is a parallel-compartment model: 16 theoretical tissue groups, each with a half-time $T_{1/2}$ (how fast it on-/off-gasses) and two Bühlmann coefficients $a$ (bar) and $b$ (dimensionless) defining its M-value line. The letter suffix (A/B/C) picks one of three coefficient tables — same half-times, different `a` values (plus one $b$ quirk at TC1). See [References](References.md#6-zh-l16-constant-tables).
 
 ## Half-times in DecoJS
 
@@ -55,11 +55,11 @@ export function getRateConstant(halfTime) {
 }
 ```
 
-Used by [[Model-02-Haldane-Equation|Haldane]] and [[Model-03-Schreiner-Equation|Schreiner]] equations.
+Used by [Model-02-Haldane-Equation](Haldane.md) and [Model-03-Schreiner-Equation](Schreiner.md) equations.
 
 ## Bühlmann a/b — where they come from
 
-Tabulated in `js/tissueCompartments.js` rather than computed at runtime, but they follow Baker's half-time formulas (see [[References#24-erik-baker--gradient-factors-articles]]):
+Tabulated in `js/tissueCompartments.js` rather than computed at runtime, but they follow Baker's half-time formulas (see [References](References.md#24-erik-baker--gradient-factors-articles)):
 
 $$a = 2 \cdot T_{1/2}^{-1/3} \quad (\text{bar}) \qquad b = 1.005 - T_{1/2}^{-1/2}$$
 
@@ -107,4 +107,4 @@ Used by the M-value and profile charts for quick visual grouping:
 - **Blues** (TC9–12): medium-slow
 - **Purples / magentas** (TC13–16): slow
 
-See [[Model-04-M-Values]] for how $a$ and $b$ are actually used to compute the M-value line.
+See [Model-04-M-Values](Model-04-M-Values.md) for how $a$ and $b$ are actually used to compute the M-value line.

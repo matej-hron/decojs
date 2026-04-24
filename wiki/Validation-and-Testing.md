@@ -56,7 +56,7 @@ Pinned regression: passing `{gasSwitchTime: 0}` to `generateDecoSchedule` must p
 
 This is the primary numerical-correctness evidence for the DecoJS algorithm.
 
-**Reference data.** `tests/decotengu-reference.json` holds 3900 pre-generated deco scenarios produced by decotengu v0.14.1 (see [[References#41-decotengu-primary-reference-implementation]]). Reference data is regenerated with `python3 scripts/generate_decotengu_reference.py > tests/decotengu-reference.json`.
+**Reference data.** `tests/decotengu-reference.json` holds 3900 pre-generated deco scenarios produced by decotengu v0.14.1 (see [References](References.md#41-decotengu-primary-reference-implementation)). Reference data is regenerated with `python3 scripts/generate_decotengu_reference.py > tests/decotengu-reference.json`.
 
 **Scenario coverage.**
 
@@ -79,7 +79,7 @@ The tolerances exist because both implementations are correct Bühlmann ZH-L16C 
 - 100 % within ±1 min (max absolute difference = 1 min)
 - Mean signed difference: +0.16 min (DecoJS slightly more conservative)
 
-Bühlmann constants (`SURFACE_PRESSURE=1.01325`, `N2_FRACTION=0.7902`, TC1 b-coefficient variant-specific) were aligned with decotengu — which itself cross-references the HeinrichsWeikamp OSTC firmware — in commit `7f985da Fix Bühlmann constants: TC1 b-coefficient, surface pressure, N2 fraction`. See [[References#6-zh-l16-constant-tables]] for the provenance chain.
+Bühlmann constants (`SURFACE_PRESSURE=1.01325`, `N2_FRACTION=0.7902`, TC1 b-coefficient variant-specific) were aligned with decotengu — which itself cross-references the HeinrichsWeikamp OSTC firmware — in commit `7f985da Fix Bühlmann constants: TC1 b-coefficient, surface pressure, N2 fraction`. See [References](References.md#6-zh-l16-constant-tables) for the provenance chain.
 
 ## Adding tests
 
@@ -116,4 +116,4 @@ What is currently not covered — honest inventory so callers know where to be c
 - **SAC / gas consumption edge cases.** `computeGasConsumption` has basic coverage but not realistic multi-dive or bail-out scenarios.
 - **Altitude / salinity.** `DEFAULT_ENVIRONMENT` in `chartTypes.js` exists but the algorithm uses fixed `SURFACE_PRESSURE = 1.01325`; altitude adjustment is not tested because it is not implemented.
 
-Cross-link: see the individual algorithm chapters ([[Algo-02-NDL-Calculation]], [[Algo-03-First-Stop-Ramped-GF]], [[Algo-04-Deco-Stop-Loop]], [[Algo-05-Multi-Gas-Switching]]) for which algorithm each test file exercises.
+Cross-link: see the individual algorithm chapters ([Algo-02-NDL-Calculation](Algo-02-NDL-Calculation.md), [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md), [Algo-04-Deco-Stop-Loop](Algo-04-Deco-Stop-Loop.md), [Algo-05-Multi-Gas-Switching](Algo-05-Multi-Gas-Switching.md)) for which algorithm each test file exercises.

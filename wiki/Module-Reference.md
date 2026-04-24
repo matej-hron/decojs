@@ -1,4 +1,4 @@
-Per-file API walkthrough. Signatures, line references, dependencies. For the math behind the algorithm functions listed here, see [[Decompression-Model]] and the individual algorithm chapters.
+Per-file API walkthrough. Signatures, line references, dependencies. For the math behind the algorithm functions listed here, see [Decompression-Model](Decompression-Model.md) and the individual algorithm chapters.
 
 All paths are relative to the repository root. All line numbers are as of commit `19d7fbf` on `main`.
 
@@ -36,8 +36,8 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 
 | Signature | Line | Description |
 |---|---|---|
-| `haldaneEquation(P0, Palv, t, halfTime)` | 108 | Constant-depth exponential loading. See [[Model-02-Haldane-Equation]]. |
-| `schreinerEquation(P0, Palv0, R, t, halfTime)` | 125 | Linear-rate loading. See [[Model-03-Schreiner-Equation]]. |
+| `haldaneEquation(P0, Palv, t, halfTime)` | 108 | Constant-depth exponential loading. See [Model-02-Haldane-Equation](Model-02-Haldane-Equation.md). |
+| `schreinerEquation(P0, Palv0, R, t, halfTime)` | 125 | Linear-rate loading. See [Model-03-Schreiner-Equation](Model-03-Schreiner-Equation.md). |
 | `simulateDepthTime(tissues, depth, t, n2)` | 838 | Vector-apply Haldane across all 16 compartments |
 | `simulateDepthChange(tissues, startDepth, endDepth, t, n2)` | 860 | Vector-apply Schreiner across all 16 compartments |
 
@@ -57,7 +57,7 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 |---|---|---|
 | `calculateInstantGF(Pt, ambient, compartment)` | 185 | `(Pt − ambient) / (M − ambient)`, expressed as 0–1 |
 | `calculateMaxGF(tissues, ambient)` | 212 | Returns `{gfMax, leadingCompartment, allGFs}` |
-| `findGFLowAnchor(tissues, depth, n2, gfLow, ascentRate=10, gasSwitchPoints=null)` | 257 | Simulates ascent in 0.1-bar steps; returns `pAnchor` (pressure where `gfMax=gfLow`). See [[Algo-03-First-Stop-Ramped-GF]]. |
+| `findGFLowAnchor(tissues, depth, n2, gfLow, ascentRate=10, gasSwitchPoints=null)` | 257 | Simulates ascent in 0.1-bar steps; returns `pAnchor` (pressure where `gfMax=gfLow`). See [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md). |
 | `interpolateGF(ambient, pAnchor, gfLow, gfHigh)` | 424 | Linear ramp from GF-low at pAnchor to GF-high at surface (1 bar) |
 | `findFirstStopWithRampedGF(tissues, depth, pAnchor, n2, gfLow, gfHigh, stopIncrement=3, gasSwitchPoints=null)` | 535 | First stop consistent with the GF ramp from pAnchor |
 
@@ -66,7 +66,7 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 | Signature | Line | Description |
 |---|---|---|
 | `calculateNDL(depth, n2=0.7902, gfLow=1.0)` | 741 | Binary search; returns `{ndl, controllingCompartment, descentTime, ndlExact}` |
-| `generateDecoSchedule(tissues, depth, n2, gfLow, gfHigh, gases=null, options={})` | 899 | Returns `{stops, gasSwitches, totalTime, totalAscentTime, pAnchor, anchorDepth}`. Throws `DecoCapExceededError` if any stop would exceed `DECO_STOP_MAX_MINUTES`. See [[Algo-04-Deco-Stop-Loop]] and [[Algo-05-Multi-Gas-Switching]]. |
+| `generateDecoSchedule(tissues, depth, n2, gfLow, gfHigh, gases=null, options={})` | 899 | Returns `{stops, gasSwitches, totalTime, totalAscentTime, pAnchor, anchorDepth}`. Throws `DecoCapExceededError` if any stop would exceed `DECO_STOP_MAX_MINUTES`. See [Algo-04-Deco-Stop-Loop](Algo-04-Deco-Stop-Loop.md) and [Algo-05-Multi-Gas-Switching](Algo-05-Multi-Gas-Switching.md). |
 
 `generateDecoSchedule` options:
 
@@ -119,7 +119,7 @@ Imported by: `decoModel.js`, `diveSetup.js`, `mvalues.js`, `tissueEducation.js`,
 - All variants share TC2–16 half-times; only the `a` coefficient varies between A, B, C for compartments 5–15 (A_COEFFICIENTS_16A/B/C at lines 102, 115, 128).
 - `setZHL16Variant()` clears and repushes the existing `COMPARTMENTS` array (`tissueCompartments.js:190–191`) rather than reassigning, so downstream code holding a reference (e.g. `decoModel.js`) picks up the change without reimporting.
 - Default active variant is ZH-L16C (`currentVariant = ZHL16_VARIANTS.C` at line 40). Matches decotengu and divetools.app defaults.
-- All times in minutes, pressures in bar. See [[Model-01-Compartments]] for the full coefficient table.
+- All times in minutes, pressures in bar. See [Model-01-Compartments](Model-01-Compartments.md) for the full coefficient table.
 
 ### `js/mvalues.js`
 
@@ -416,4 +416,4 @@ Legacy Chart.js visualisation used by `main.js`. Modern pages use the class comp
 
 ### `js/quiz.js`
 
-Generic quiz engine for the seven CMAS / SPČR quiz pages. No exports — executes on DOM load; reads `data/quiz-{name}.json` based on a URL parameter, renders questions with category filtering, shuffling, and scoring. See [[Extending-DecoJS#adding-a-new-quiz]] for the JSON format.
+Generic quiz engine for the seven CMAS / SPČR quiz pages. No exports — executes on DOM load; reads `data/quiz-{name}.json` based on a URL parameter, renders questions with category filtering, shuffling, and scoring. See [Extending-DecoJS](Extending-DecoJS.md#adding-a-new-quiz) for the JSON format.

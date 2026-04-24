@@ -125,7 +125,7 @@ Cited by the DecoJS README as the **primary inspiration for the project**. Powel
 - License: GPL-3.0
 - Approach: Bühlmann ZH-L16 A/B/C with Erik Baker gradient factors; Schreiner iteration for inert-gas loading; decompression stops located by iteratively finding the shallowest depth at which the tissue ceiling (GF-adjusted) is not violated; stop duration found by linear search + binary refinement. OC air / nitrox / trimix supported.
 
-**DecoJS relationship:** used as the numerical oracle. Commit `ff06756 Align deco algorithm with decotengu/divetools convention` documents a cross-check against decotengu 0.14.1's 160 Bühlmann-air reference scenarios; DecoJS matches decotengu exactly on 83.8 % and within ±1 min on 100 %. See [[Validation-and-Testing#decotengu-cross-check]].
+**DecoJS relationship:** used as the numerical oracle. Commit `ff06756 Align deco algorithm with decotengu/divetools convention` documents a cross-check against decotengu 0.14.1's 160 Bühlmann-air reference scenarios; DecoJS matches decotengu exactly on 83.8 % and within ±1 min on 100 %. See [Validation-and-Testing](Validation-and-Testing.md#decotengu-cross-check).
 
 ### 4.2 divetools.app
 
