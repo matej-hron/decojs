@@ -40,9 +40,3 @@ Developers reading, modifying, or porting the code. This wiki documents the algo
 ## How to read
 
 Start with [[Architecture]] to orient — it shows the module graph and the no-build ES-module philosophy. Then read the Decompression Model chapters in order; they build up notation and each equation is cited to source. The Algorithms chapters assume the Model chapters and show how DecoJS stitches the equations into a dive simulation. [[Module-Reference]] is lookup-style — go there when you need the signature or line number for a specific function.
-
-## Credits
-
-DecoJS is the practical component of Matej Hron's CMAS I3 (International Instructor Level 3) thesis. Expert review and endorsement was provided by Ing. Jiří Hovorka, Petr Hruška, and the Training Commission of the Czech Diving Federation (VK SPČR); see [[References#spcr--cmas-endorsers]].
-
-Numerical validation uses Artur Wroblewski's [decotengu](https://wrobell.dcmod.org/decotengu/) as the reference oracle — DecoJS's 3900-scenario comparison suite runs decotengu 0.14.1 output against the JS implementation. Credit for the reference implementation and for the documentation format this wiki is modeled on goes to Artur Wroblewski.
