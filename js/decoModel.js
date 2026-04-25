@@ -647,21 +647,19 @@ export function calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh = gfLo
         }
     }
     
-    // If pAnchor not provided, compute it at the moment ascent starts
-    // This uses the tissue state at the start of ascent (end of bottom time)
+    // If pAnchor not provided, compute it at the moment ascent starts using the
+    // tissue state at end of bottom time, then round up to the stop grid (the
+    // GF ramp is anchored at the first-stop depth per the Baker convention).
     if (pAnchor === null) {
-        // Get tissue pressures at the start of ascent
         const tissuesAtAscentStart = {};
         for (const compId of Object.keys(results.compartments)) {
             tissuesAtAscentStart[compId] = results.compartments[compId].pressures[ascentStartIndex];
         }
-        
-        // Get N2 fraction at ascent start
         const n2Fraction = results.n2Fractions ? results.n2Fractions[ascentStartIndex] : N2_FRACTION;
-        
-        // Find pAnchor from tissue state at ascent start
         const anchorResult = findGFLowAnchor(tissuesAtAscentStart, maxDepthSeen, n2Fraction, gfLow);
-        pAnchor = anchorResult.pAnchor;
+        const firstStopFromCeiling = Math.ceil(anchorResult.anchorDepth / STOP_INCREMENT) * STOP_INCREMENT;
+        const cappedAnchorDepth = Math.min(firstStopFromCeiling, maxDepthSeen);
+        pAnchor = SURFACE_PRESSURE + cappedAnchorDepth * PRESSURE_PER_METER;
     }
     
     // Process each time point
@@ -951,11 +949,35 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
         gasSwitchPoints.sort((a, b) => b.switchDepth - a.switchDepth);
     }
 
-    // Find the GF Low anchor point (pAnchor), accounting for gas switches during ascent
-    const { pAnchor: pAnchorRaw, anchorDepth: anchorDepthRaw } = findGFLowAnchor(
-        tissuePressures, currentDepth, n2Fraction, gfLow, ASCENT_SPEED,
-        gasSwitchPoints.length > 0 ? gasSwitchPoints : null
-    );
+    // First-stop search per Baker convention: shallowest stop-grid depth where,
+    // after simulating the actual ascent from currentDepth to that depth, the
+    // dive ceiling at GF_low is satisfied. Iterates surface-up so the first
+    // accepted candidate is the shallowest valid first stop. We also capture
+    // the post-ascent tissue state for use as the deco-loop starting point.
+    let firstStopFromGFLow = currentDepth;
+    let tissuesAtStrictFirstStop = { ...tissuePressures };
+    {
+        const safeGases = gasSwitchPoints.length > 0 ? gasSwitchPoints : null;
+        for (let candidate = 0; candidate <= currentDepth + 1e-9; candidate += stopIncrement) {
+            let simTissues;
+            if (safeGases) {
+                simTissues = _simulateAscentWithGasSwitches(
+                    tissuePressures, currentDepth, candidate, n2Fraction, safeGases
+                );
+            } else {
+                const ascentTime = (currentDepth - candidate) / ASCENT_SPEED;
+                simTissues = ascentTime > 0
+                    ? simulateDepthChange({ ...tissuePressures }, currentDepth, candidate, ascentTime, n2Fraction)
+                    : { ...tissuePressures };
+            }
+            const { ceilingDepth } = getDiveCeiling(simTissues, gfLow);
+            if (ceilingDepth <= candidate + 1e-9) {
+                firstStopFromGFLow = candidate;
+                tissuesAtStrictFirstStop = simTissues;
+                break;
+            }
+        }
+    }
 
     // Track used gases to avoid duplicate switches
     const usedGases = new Set();
@@ -993,12 +1015,13 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
         return true;
     };
     
-    // Find first stop using pAnchor from findGFLowAnchor
-    const pAnchor = pAnchorRaw;
-    const anchorDepth = anchorDepthRaw;
-    let { depth: firstStopDepth, tissues: tissuesAtFirstStop } = findFirstStopWithRampedGF(
-        tissues, depth, pAnchor, currentN2, gfLow, gfHigh, stopIncrement, gasSwitchPoints
-    );
+    // Per Baker convention, the GF ramp is anchored AT the first stop. At
+    // ambient pressures >= pAnchor the active GF is clamped to GF_low; from
+    // pAnchor up to the surface it ramps linearly to GF_high.
+    const anchorDepth = firstStopFromGFLow;
+    const pAnchor = SURFACE_PRESSURE + anchorDepth * PRESSURE_PER_METER;
+    let firstStopDepth = firstStopFromGFLow;
+    let tissuesAtFirstStop = tissuesAtStrictFirstStop;
     
     // If no deco needed (first stop = 0), just ascend with mid-ascent gas switches
     // Note: In this path, gas switches occur at MOD (rounded to 3m) during continuous

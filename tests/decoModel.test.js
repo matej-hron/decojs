@@ -876,8 +876,9 @@ describe('Bottom-Anchored GF', () => {
             expect(gfAt3m).toBeLessThan(gfHigh);
         });
         
-        test('30m/20min air GF 50/80: pAnchor is shallower than first stop', () => {
-            // pAnchor (from findGFLowAnchor) can be shallower than the first actual deco stop.
+        test('30m/20min air GF 50/80: GF ramp is anchored at the first stop depth', () => {
+            // Per Baker convention, the GF ramp is anchored at the rounded first-stop
+            // depth (the next stop-grid line at or below the unrounded GF-low ceiling).
             const initialTissues = {};
             COMPARTMENTS.forEach(comp => {
                 initialTissues[comp.id] = getInitialTissueN2();
@@ -898,9 +899,8 @@ describe('Bottom-Anchored GF', () => {
 
             const schedule = generateDecoSchedule(tissues, 30, N2_FRACTION, 0.5, 0.8);
 
-            // pAnchor around 6m, first stop at 9m
-            expect(schedule.anchorDepth).toBeGreaterThan(5);
-            expect(schedule.anchorDepth).toBeLessThan(8);
+            // anchorDepth equals the first stop depth (both rounded to the 3 m grid).
+            expect(schedule.anchorDepth).toBe(9);
             expect(schedule.stops[0].depth).toBe(9);
         });
     });
