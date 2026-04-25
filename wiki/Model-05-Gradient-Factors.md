@@ -113,16 +113,16 @@ DecoJS originally used (1); aligning with (2) brought the 3900-scenario decoteng
 
 ## Worked example
 
-40 m dive on air, 25 min bottom time, GF 30/85.
+40 m dive on air, 25 min bottom time, GF 30/85, ZH-L16C.
 
 1. `calculateTissueLoading()` simulates descent + bottom time.
-2. `findFirstStopAtGFLow()` iterates stop-grid candidates surface-up. For this exposure, the deepest GF_low ceiling lands around 12-13 m. The first 3 m grid line that satisfies the check is **15 m** (the next stop-grid line at or below the unrounded ceiling).
-3. `pAnchor` = ambient pressure at 15 m = $1.01325 + 1.5 = 2.51$ bar.
-4. At $P_{amb} \ge 2.51$ bar (15 m or deeper): $GF = 0.30$.
-5. At surface ($P_{amb} = 1.01$ bar): $GF = 0.85$.
-6. Linear ramp between. E.g., at 6 m ($P_{amb} = 1.61$ bar): $GF = 0.30 + 0.55 \cdot (2.51 - 1.61)/(2.51 - 1.01) = 0.30 + 0.55 \cdot 0.6 = 0.63$.
+2. `findFirstStopAtGFLow()` iterates stop-grid candidates surface-up. The first 3 m grid line where the dive ceiling at $GF_{low}$ is satisfied (after simulated ascent) is **18 m** — candidates 0, 3, 6, 9, 12, 15 all fail.
+3. `pAnchor` = ambient pressure at 18 m = $1.01325 + 1.8 = 2.81$ bar.
+4. At $P_{amb} \ge 2.81$ bar (18 m or deeper): $GF = 0.30$.
+5. At surface ($P_{amb} = 1.01325$ bar): $GF = 0.85$.
+6. Linear ramp between. E.g., at 6 m ($P_{amb} = 1.61$ bar): $GF = 0.30 + 0.55 \cdot (2.81 - 1.61)/(2.81 - 1.01) = 0.30 + 0.55 \cdot 0.667 \approx 0.67$.
 
-Exact numbers depend on the variant (A/B/C) and the descent/ascent profile shape.
+Resulting deco schedule on this profile: 5 stops totalling 29 min (15/2, 12/2, 9/3, 6/6, 3/16). Exact numbers depend on the variant (A/B/C) and the descent/ascent profile shape; the example above is reproducible by running `generateDecoSchedule` against a fresh tissue state from `calculateTissueLoading`.
 
 ## Cross-references
 
