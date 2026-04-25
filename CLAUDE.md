@@ -10,7 +10,7 @@ DecoJS is an educational PWA for scuba diving decompression theory, implementing
 ## Development Commands
 
 ```bash
-npm test              # Run all 174 tests - MUST pass before commits
+npm test              # Run all 208 tests - MUST pass before commits
 npm run test:watch    # Watch mode for development
 ```
 
@@ -22,6 +22,21 @@ npm run test:watch    # Watch mode for development
 2. Bump version in TWO files:
    - `sw.js` line 2: `const CACHE_NAME = 'deco-theory-X.X.XX'`
    - `css/styles.css`: search `.version-number::after` and update content
+3. If a core algorithm file changed, update the wiki (see below)
+
+## Wiki Documentation (CRITICAL)
+
+The developer wiki lives in `wiki/` (mirrored to the GitHub wiki). When you change a core algorithm file, update the corresponding wiki page so file:line citations, equations, and signatures stay accurate. A drifted wiki is worse than no wiki.
+
+| Source file | Wiki pages to review |
+|---|---|
+| `js/decoModel.js` | `Model-02-Haldane-Equation.md`, `Model-03-Schreiner-Equation.md`, `Model-04-M-Values.md`, `Model-05-Gradient-Factors.md`, `Algo-01-Ascent-Simulation.md` through `Algo-06-Ceiling-Time-Series.md`, `Module-Reference.md` |
+| `js/tissueCompartments.js` | `Model-01-Compartments.md`, `Module-Reference.md` |
+| `js/mvalues.js` | `Model-04-M-Values.md`, `Module-Reference.md` |
+| `js/diveSetup.js` | `Algo-05-Multi-Gas-Switching.md`, `Module-Reference.md`, `Extending-DecoJS.md` |
+| `tests/*` | `Validation-and-Testing.md` (test count, scenario coverage) |
+
+Treat any change to an exported function signature, an equation, or a numerical constant as a wiki change. Worked examples in the Model chapters use specific numbers — re-verify them if you change underlying constants or formulas.
 
 ## Architecture
 
