@@ -53,13 +53,15 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 
 **Exports — Gradient factors**
 
-| Signature | Line | Description |
-|---|---|---|
-| `calculateInstantGF(Pt, ambient, compartment)` | 185 | `(Pt − ambient) / (M − ambient)`, expressed as 0–1 |
-| `calculateMaxGF(tissues, ambient)` | 212 | Returns `{gfMax, leadingCompartment, allGFs}` |
-| `findGFLowAnchor(tissues, depth, n2, gfLow, ascentRate=10, gasSwitchPoints=null)` | 257 | Simulates ascent in 0.1-bar steps; returns `pAnchor` (pressure where `gfMax=gfLow`). See [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md). |
-| `interpolateGF(ambient, pAnchor, gfLow, gfHigh)` | 424 | Linear ramp from GF-low at pAnchor to GF-high at surface (1 bar) |
-| `findFirstStopWithRampedGF(tissues, depth, pAnchor, n2, gfLow, gfHigh, stopIncrement=3, gasSwitchPoints=null)` | 535 | First stop consistent with the GF ramp from pAnchor |
+| Signature | Description |
+|---|---|
+| `calculateInstantGF(Pt, ambient, compartment)` | `(Pt − ambient) / (M − ambient)`, expressed as 0–1 |
+| `calculateMaxGF(tissues, ambient)` | Returns `{gfMax, leadingCompartment, allGFs}` |
+| `findFirstStopAtGFLow(tissues, depth, n2, gfLow, stopIncrement, ascentRate, gasSwitchPoints)` | The convention's first-stop search: shallowest stop-grid depth where the dive ceiling at GF_low is satisfied after simulated ascent. Returns `{anchorDepth, pAnchor, tissuesAtAnchor}`. **This is the canonical pAnchor source** used by `generateDecoSchedule`, `calculateCeilingTimeSeriesDetailed`, `MValueChart`, and `GFChart`. See [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md). |
+| `interpolateGF(ambient, pAnchor, gfLow, gfHigh)` | Linear ramp from GF-low at pAnchor to GF-high at surface (1.01325 bar) |
+| `findGFLowAnchor(tissues, depth, n2, gfLow, ascentRate, gasSwitchPoints)` | Legacy: simulates ascent in 0.1-bar steps; returns the leading compartment's GF_low ceiling. No longer drives the scheduler — kept as a building block. |
+| `findFirstStopWithRampedGF(tissues, depth, pAnchor, n2, gfLow, gfHigh, stopIncrement, gasSwitchPoints)` | Legacy: scans the stop grid using the *ramped* GF for the ceiling check. No longer drives the scheduler. |
+| `getFirstStopDepth(tissues, gfLow, stopIncrement=3)` | Static (no ascent simulation): rounds the current dive ceiling at GF_low up to the stop grid. Used by quick-lookups; the deco scheduler uses `findFirstStopAtGFLow` instead. |
 
 **Exports — NDL & deco scheduling**
 

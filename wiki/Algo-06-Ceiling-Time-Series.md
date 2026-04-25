@@ -57,21 +57,20 @@ for (let i = 0; i < results.timePoints.length; i++) {
 ### 2. Compute `pAnchor` once
 
 ```javascript
-// js/decoModel.js:650-665
+// js/decoModel.js (calculateCeilingTimeSeriesDetailed)
 if (pAnchor === null) {
     const tissuesAtAscentStart = {};
     for (const compId of Object.keys(results.compartments)) {
         tissuesAtAscentStart[compId] = results.compartments[compId].pressures[ascentStartIndex];
     }
     const n2Fraction = results.n2Fractions ? results.n2Fractions[ascentStartIndex] : N2_FRACTION;
-    const anchorResult = findGFLowAnchor(tissuesAtAscentStart, maxDepthSeen, n2Fraction, gfLow);
-    pAnchor = anchorResult.pAnchor;
+    ({ pAnchor } = findFirstStopAtGFLow(tissuesAtAscentStart, maxDepthSeen, n2Fraction, gfLow));
 }
 ```
 
-If the caller passes `providedPAnchor` (e.g., from `generateDecoSchedule`'s return value), it is used verbatim. Otherwise `findGFLowAnchor` is called once on the tissue state at ascent start.
+If the caller passes `providedPAnchor` (e.g., from `generateDecoSchedule`'s return value), it is used verbatim. Otherwise `findFirstStopAtGFLow` is called once on the tissue state at ascent start — the same helper the scheduler uses, so the chart and scheduler always agree on the anchor.
 
-**Why `pAnchor` must come from outside when possible**: it is a property of the *ascent* — of the tissue state right before the diver starts heading up. It is not recomputed per timepoint because that would produce a different value at every sample and cause the displayed ceiling to disagree with the scheduler's ceiling. Passing it in from `generateDecoSchedule` guarantees chart-and-scheduler consistency.
+**Why `pAnchor` must come from outside when possible**: it is a property of the *ascent* — of the tissue state right before the diver starts heading up. It is not recomputed per timepoint because that would produce a different value at every sample and cause the displayed ceiling to disagree with the scheduler's ceiling. Passing it in from `generateDecoSchedule` (or having both call sites use `findFirstStopAtGFLow`) guarantees chart-and-scheduler consistency.
 
 ### 3. Per-timepoint GF and ceiling
 

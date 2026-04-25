@@ -68,16 +68,22 @@ This is the primary numerical-correctness evidence for the DecoJS algorithm.
 
 **Tolerances.** Per-scenario assertion is `|total_deco_diff| ≤ max(5 min, 20% of reference_total_deco)`. Per-stop tolerance is ±1 min.
 
-The tolerances exist because both implementations are correct Bühlmann ZH-L16C but differ on two small discretisation choices (see `tests/decotengu-comparison.test.mjs:15–22`):
+These tolerances cover stop-time discretization noise — both implementations round stop times to whole minutes, and the continuous ceiling crossing can land on either side of a minute boundary, giving ±1 min per stop.
 
-1. **Stop-time discretisation.** Both round stop times to whole minutes, but the continuous ceiling crossing can land on either side of a minute boundary, giving ±1 min per stop.
-2. **GF-ramp anchor.** DecoJS anchors the GF ramp at `pAnchor` — the exact ambient pressure at which `GF_max` first equals `GF_low` during simulated ascent (`decoModel.js:257`). decotengu anchors at the rounded first-stop depth. These converge for most profiles but differ by up to one stop on low-`GF_low` edge cases.
+**Match statistics across all 3900 scenarios:**
 
-**Match statistics on the Bühlmann-air subset** (160 scenarios, GF 100/100):
+| | |
+|---|---|
+| Pass rate | 100 % (3900/3900) |
+| Exact match on total deco | 56 % (2196 scenarios) |
+| Within ±2 min | 95 % (P95) |
+| Mean \|diff\| | 0.6 min |
+| Median \|diff\| | 0 min |
+| Max \|diff\| | 5 min |
+| DecoJS gives less | 41 % |
+| DecoJS gives more | 3 % |
 
-- 83.8 % exact match on total deco time
-- 100 % within ±1 min (max absolute difference = 1 min)
-- Mean signed difference: +0.16 min (DecoJS slightly more conservative)
+The largest residuals are concentrated at GF 20/80 (the most aggressive setting in the matrix) where stop-time discretization between the two implementations occasionally lands a stop on different minute boundaries.
 
 Bühlmann constants (`SURFACE_PRESSURE=1.01325`, `N2_FRACTION=0.7902`, TC1 b-coefficient variant-specific) match decotengu — which itself cross-references the HeinrichsWeikamp OSTC firmware. See [References](References.md#6-zh-l16-constant-tables) for the provenance chain.
 

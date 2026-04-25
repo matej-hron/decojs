@@ -38,17 +38,16 @@ Standard mode produces a 3 m / 1 min staircase matching decotengu and dive-compu
 ```mermaid
 flowchart TD
   A[Input: tissue state<br/>at bottom end] --> B[Compute gas switch points<br/>MOD, 3m grid, sorted deepest first]
-  B --> C[findGFLowAnchor<br/>with gasSwitchPoints]
-  C --> D[findFirstStopWithRampedGF]
-  D --> E{firstStop == 0?}
-  E -- yes --> F[Ascend direct,<br/>switch gases mid-ascent<br/>at their MODs]
-  E -- no --> G[Ascend to first stop<br/>switching gases at MODs<br/>passed en route]
-  G --> H[Stop loop: depth → 0<br/>in stopIncrement steps]
-  H --> I[At each depth: check<br/>ceiling at destination GF]
-  I -- ceiling ≤ next --> J[Record stop, ascend]
-  I -- ceiling > next --> K[Haldane for<br/>timeIncrement, recheck]
-  K -- exceeds cap --> L[throw DecoCapExceededError]
-  J --> H
+  B --> C[findFirstStopAtGFLow<br/>with gasSwitchPoints]
+  C --> D{firstStop == 0?}
+  D -- yes --> E[Ascend direct,<br/>switch gases mid-ascent<br/>at their MODs]
+  D -- no --> F[Ascend to first stop<br/>switching gases at MODs<br/>passed en route]
+  F --> G[Stop loop: depth → 0<br/>in stopIncrement steps]
+  G --> H[At each depth: check ceiling<br/>at destination GF]
+  H -- ceiling ≤ next --> I[Record stop, ascend]
+  H -- ceiling > next --> J[Haldane for<br/>timeIncrement, recheck]
+  J -- exceeds cap --> K[throw DecoCapExceededError]
+  I --> G
 ```
 
 ## Gas-switch points
@@ -70,7 +69,7 @@ if (gases && gases.length > 1) {
 }
 ```
 
-The result is an array of deco gases, each annotated with a `switchDepth` on the 3 m grid, sorted deepest first. This is the canonical form passed into `findGFLowAnchor`, `findFirstStopWithRampedGF`, and the stop loop.
+The result is an array of deco gases, each annotated with a `switchDepth` on the 3 m grid, sorted deepest first. This is the canonical form passed into `findFirstStopAtGFLow` and the stop loop.
 
 ## Ascent to first stop, with mid-ascent switches
 
@@ -122,8 +121,9 @@ while (depth > 0) {
     const delta = depth - nextStopDepth;
     const ascentTime = delta / ASCENT_SPEED;
 
-    const gfHere = interpolateGF(getAmbientPressure(depth), pAnchor, gfLow, gfHigh);
-    const { ceilingDepth } = getDiveCeiling(tissues, gfHere);
+    // Can-we-ascend check uses GF at the *destination* depth.
+    const gfThere = interpolateGF(getAmbientPressure(nextStopDepth), pAnchor, gfLow, gfHigh);
+    const { ceilingDepth } = getDiveCeiling(tissues, gfThere);
 
     if (ceilingDepth <= nextStopDepth) {
         if (pendingStopTime > 0) {
@@ -155,9 +155,9 @@ while (depth > 0) {
 
 Per-iteration logic:
 
-- Compute the GF *at the current depth* (not the destination) — this matches the decotengu convention: the ceiling check uses the current-position GF, and there is no Schreiner off-gassing credit applied to the short inter-stop ascent.
-- If the current-depth ceiling already clears `nextStopDepth`, ascend; otherwise wait `timeIncrement` minutes at depth (Haldane) and re-test.
-- Stops are only recorded if `pendingStopTime > 0` — a stop that the diver merely passes through without waiting does not appear in the list.
+- Compute the GF at the **destination** depth (one step shallower than current). The ramp gives a higher GF as the diver moves toward the surface, so the destination GF is the relevant constraint for "can I move there now?".
+- If the dive ceiling under the destination GF clears `nextStopDepth`, ascend (no Schreiner off-gassing credit is applied to the short inter-stop ascent itself). Otherwise wait `timeIncrement` minutes at depth (Haldane) and re-test.
+- Stops are only recorded if `pendingStopTime > 0` — a stop that the diver merely passes through without waiting does not appear in the list. This is why the first recorded stop can be shallower than `anchorDepth`.
 
 ## Safety cap
 
@@ -190,4 +190,4 @@ Stop durations grow as the controlling compartment shifts toward slower tissues 
 - [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md) — the `pAnchor` and first-stop inputs.
 - [Algo-05-Multi-Gas-Switching](Algo-05-Multi-Gas-Switching.md) — how `gasSwitchPoints` and `switchToBestGas` pick gases.
 - [Model-05-Gradient-Factors](Model-05-Gradient-Factors.md) — the `interpolateGF` ramp the loop calls on every iteration.
-- [References](References.md#41-decotengu-primary-reference-implementation) — stop-termination follows decotengu's convention; within-±1-min agreement on 100 % of the 160-scenario reference.
+- [References](References.md#41-decotengu-primary-reference-implementation) — stop-termination follows decotengu's convention; the 3900-scenario cross-check passes 100 % within ±5 min, mean diff 0.6 min.

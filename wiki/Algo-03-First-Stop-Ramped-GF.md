@@ -1,136 +1,70 @@
-# Algo-03 — First Stop with Ramped GF
+# Algo-03 — First Stop and the GF Ramp Anchor
 
-The subtlest chapter. Two coupled questions have to be answered before the deco loop can start:
+The first decompression stop is where two things coincide: it is the **deepest mandatory stop on the 3 m grid**, and it is the **anchor of the GF ramp**. Same depth, two roles. The deco loop then ascends from there toward the surface.
 
-1. **What is `pAnchor`?** The ambient pressure at which $GF_{max}$ (the controlling tissue's instantaneous gradient factor) first equals $GF_{low}$ during a free ascent.
-2. **What is the first stop depth?** The shallowest depth to which the diver can ascend, accounting for the fact that the GF ramp already starts at `pAnchor` — so the GF at destination is *not* $GF_{low}$ unless the first stop is exactly at `pAnchor`.
+## Convention
 
-Many naïve implementations conflate the two, or ramp GF from first-stop-depth to surface. DecoJS follows the Baker-intended ramp: from `pAnchor` to surface. The two converge when first stop = `pAnchor`; they differ when they do not (e.g., after gas switches).
+DecoJS implements the standard Baker GF convention:
 
-## Subproblem 1: `findGFLowAnchor`
+> The first stop is the shallowest stop-grid depth at which the dive ceiling at $GF_{low}$ — the maximum ceiling across all 16 compartments — is satisfied after a simulated ascent from current depth.
+
+`pAnchor` is the ambient pressure at that depth. Below it the active GF is clamped at $GF_{low}$; above it the GF ramps linearly to $GF_{high}$ at the surface (see [Model-05-Gradient-Factors](Model-05-Gradient-Factors.md)).
+
+## findFirstStopAtGFLow
 
 ```javascript
-// js/decoModel.js:257 (signature)
-export function findGFLowAnchor(tissuePressures, currentDepth, n2Fraction, gfLow, ascentRate = ASCENT_SPEED, gasSwitchPoints = null)
+// js/decoModel.js (signature)
+export function findFirstStopAtGFLow(
+    tissuePressures, currentDepth, n2Fraction, gfLow,
+    stopIncrement = STOP_INCREMENT, ascentRate = ASCENT_SPEED, gasSwitchPoints = null
+)
 ```
 
-Returns `{pAnchor, anchorDepth, leadingCompartment, tissuesAtAnchor}`.
+Returns `{ anchorDepth, pAnchor, tissuesAtAnchor }`.
 
 ### Method
 
-1. Simulate an ascent from `currentDepth` toward surface in 0.1 bar steps (≈ 1 m resolution).
-2. At each step, Schreiner-advance all 16 compartments for the segment and recompute $GF_{max}$.
-3. When $GF_{max}$ first exceeds $GF_{low}$, **refine** by solving the compartment-ceiling equation for the leading tissue at that exact pressure — rather than accepting the 0.1 bar step boundary.
+Iterate the stop grid surface-up. For each candidate depth $d$:
+
+1. Simulate the ascent from `currentDepth` to $d$ (Schreiner integration with gas switches if applicable).
+2. Compute the dive ceiling at $GF_{low}$ — `getDiveCeiling(simTissues, gfLow)`.
+3. If `ceilingDepth ≤ d`, the diver can arrive at $d$ within $GF_{low}$; this is the first stop.
 
 ```javascript
-// js/decoModel.js:286-329
-while (currentAmbient > SURFACE_PRESSURE) {
-    const nextAmbient = Math.max(SURFACE_PRESSURE, currentAmbient - STEP_SIZE);
-    const nextDepth = (nextAmbient - SURFACE_PRESSURE) / PRESSURE_PER_METER;
-
-    // Check for gas switch at this depth (switch to best available gas)
-    for (const sp of switches) {
-        if (nextDepth <= sp.switchDepth && sp.n2 < currentN2) {
-            currentN2 = sp.n2;
-            break;
-        }
-    }
-
-    const depthChange = prevDepth - nextDepth;
-    const segmentTime = depthChange / ascentRate;
-
-    if (segmentTime > 0) {
-        tissues = simulateDepthChange(tissues, prevDepth, nextDepth, segmentTime, currentN2);
-    }
-
-    const { gfMax, leadingCompartment } = calculateMaxGF(tissues, nextAmbient);
-
-    if (gfMax >= gfLow) {
-        // Found the step where GF_max crosses GF_low
-        // Now calculate the EXACT pAnchor for the leading compartment
-        const comp = COMPARTMENTS.find(c => c.id === leadingCompartment);
-        const tissuePressure = tissues[leadingCompartment];
-
-        // pAnchor = ceiling at GF_low = (Pt - GF_low * a) / (GF_low/b + 1 - GF_low)
-        const exactPAnchor = getCompartmentCeiling(tissuePressure, comp.aN2, comp.bN2, gfLow);
-        …
-        return { pAnchor: finalPAnchor, anchorDepth: finalAnchorDepth, leadingCompartment, tissuesAtAnchor: { ...tissues } };
-    }
-    …
-}
-```
-
-The final `getCompartmentCeiling` call is a closed-form solve: given the leading tissue's $P_t$, the exact $P_{amb}$ at which its instantaneous GF equals $GF_{low}$ is its ceiling at that GF. This avoids quantizing `pAnchor` to 1 m grid boundaries and keeps it numerically precise.
-
-### Gas switches during anchor search
-
-If `gasSwitchPoints` is provided, the 0.1 bar loop consults it at each step and switches $f_{N_2}$ when the simulated ascent crosses a gas's switch depth. Without this, a deco gas with deeper MOD (e.g., EAN50 at 21 m) would be ignored during anchor search, producing a `pAnchor` as if the diver stayed on bottom gas the whole way up — usually yielding an incorrectly deep `pAnchor`.
-
-### Edge case — dive is within NDL
-
-If the while loop reaches `SURFACE_PRESSURE` without $GF_{max}$ ever exceeding $GF_{low}$:
-
-```javascript
-// js/decoModel.js:337-345
-const { leadingCompartment } = calculateMaxGF(tissues, SURFACE_PRESSURE);
-return {
-    pAnchor: SURFACE_PRESSURE,
-    anchorDepth: 0,
-    leadingCompartment,
-    tissuesAtAnchor: { ...tissues }
-};
-```
-
-`pAnchor = 1.01325 bar` (surface). The deco loop will then skip all stops — consistent with an NDL dive being queried through this path.
-
-## Subproblem 2: `findFirstStopWithRampedGF`
-
-```javascript
-// js/decoModel.js:535 (signature)
-export function findFirstStopWithRampedGF(tissuePressures, currentDepth, pAnchor, currentN2, gfLow, gfHigh, stopIncrement = 3, gasSwitchPoints = null)
-```
-
-Returns `{depth, ambient, tissues}` — the shallowest grid-aligned depth at which the tissue ceiling permits staying (using the GF interpolated for *that destination*), plus the simulated tissue state after the ascent.
-
-### Method
-
-Candidate depths are scanned from surface upward, in `stopIncrement` meters (3 m by default, 0.1 m in continuous mode). For each candidate:
-
-1. Simulate the ascent from `currentDepth` to `candidateDepth`, using `_simulateAscentWithGasSwitches` when deco gases are provided (applies the correct gas to each depth segment between switches).
-2. Compute the GF *at the candidate depth* via `interpolateGF(candidateAmbient, pAnchor, gfLow, gfHigh)`.
-3. Compute the dive ceiling under that GF; if `ceilingDepth ≤ candidateDepth`, the ascent is allowed — return this candidate.
-
-```javascript
-// js/decoModel.js:538-568
-for (let candidateDepth = 0; candidateDepth <= currentDepth; candidateDepth += stopIncrement) {
-    let simulatedTissues;
-    if (gasSwitchPoints && gasSwitchPoints.length > 0) {
-        simulatedTissues = _simulateAscentWithGasSwitches(
-            tissuePressures, currentDepth, candidateDepth, currentN2, gasSwitchPoints
+// js/decoModel.js findFirstStopAtGFLow
+for (let candidate = 0; candidate <= currentDepth + 1e-9; candidate += stopIncrement) {
+    let simTissues;
+    if (safeGases) {
+        simTissues = _simulateAscentWithGasSwitches(
+            tissuePressures, currentDepth, candidate, n2Fraction, safeGases
         );
     } else {
-        const ascentTime = (currentDepth - candidateDepth) / ASCENT_SPEED;
-        simulatedTissues = ascentTime > 0
-            ? simulateDepthChange({ ...tissuePressures }, currentDepth, candidateDepth, ascentTime, currentN2)
+        const ascentTime = (currentDepth - candidate) / ascentRate;
+        simTissues = ascentTime > 0
+            ? simulateDepthChange({ ...tissuePressures }, currentDepth, candidate, ascentTime, n2Fraction)
             : { ...tissuePressures };
     }
-
-    const candidateAmbient = getAmbientPressure(candidateDepth);
-    const gf = interpolateGF(candidateAmbient, pAnchor, gfLow, gfHigh);
-    const { ceilingDepth } = getDiveCeiling(simulatedTissues, gf);
-
-    if (ceilingDepth <= candidateDepth) {
-        return { depth: candidateDepth, ambient: candidateAmbient, tissues: simulatedTissues };
+    const { ceilingDepth } = getDiveCeiling(simTissues, gfLow);
+    if (ceilingDepth <= candidate + 1e-9) {
+        anchorDepth = candidate;
+        tissuesAtAnchor = simTissues;
+        break;
     }
 }
 ```
 
-This is the same ascent-permission test used in the deco stop loop itself (see [Algo-04-Deco-Stop-Loop](Algo-04-Deco-Stop-Loop.md)) — consistency between first-stop discovery and subsequent stops matters for stop-count agreement across tools.
+`stopIncrement` is 3 m by default (matching dive-computer practice) and 0.1 m in continuous-deco mode (educational visualization).
 
-### `_simulateAscentWithGasSwitches`
+### Why "dive ceiling" and not "leading-compartment ceiling"
+
+`getDiveCeiling` takes the maximum across all 16 compartments. The compartment with the highest *instantaneous* GF is not always the same as the compartment with the deepest GF_low ceiling — the two can disagree, especially after a gas switch shifts which compartment is loading vs off-gassing. The convention takes the deepest of all per-compartment ceilings, so the diver isn't sent shallower than safe.
+
+### Gas switches
+
+The simulated ascent within the search uses `_simulateAscentWithGasSwitches` when deco gases are provided. Switching to a richer mix at its MOD changes $f_{N_2}$ and therefore the off-gassing rate — without that, a pAnchor computed against bottom-gas alveolar pressures would be too deep.
 
 ```javascript
-// js/decoModel.js:480-507
+// js/decoModel.js _simulateAscentWithGasSwitches
 function _simulateAscentWithGasSwitches(tissuePressures, fromDepth, toDepth, startN2, gasSwitchPoints) {
     let tissues = { ...tissuePressures };
     let currentDepth = fromDepth;
@@ -158,25 +92,26 @@ function _simulateAscentWithGasSwitches(tissuePressures, fromDepth, toDepth, sta
 }
 ```
 
-The leading underscore marks this as internal — it is only called by `findGFLowAnchor` (indirectly) and `findFirstStopWithRampedGF`. Consumers should not call it directly.
+### NDL edge case
+
+If candidate = 0 (surface) already satisfies the ceiling check, the diver is within NDL. `findFirstStopAtGFLow` returns `anchorDepth = 0` and `pAnchor = SURFACE_PRESSURE`. The deco loop then takes the no-deco branch (`js/decoModel.js` no-deco path).
 
 ## Worked example
 
 40 m on air, 25 min bottom time, $GF = 30/85$.
 
-- At end of bottom, TC5 ($T_{1/2} = 27$ min) is near-leading with $P_t \approx 2.85$ bar.
-- Anchor search: ascent from 40 m in 0.1 bar steps. Around $P_{amb} \approx 2.4$ bar (≈ 14 m), $GF_{max}$ crosses 0.30.
-- Refinement: for TC5 with $a = 0.6200$, $b = 0.8126$ and $P_t = 2.85$ bar, `getCompartmentCeiling(2.85, 0.62, 0.8126, 0.30)` resolves `pAnchor ≈ 2.40 bar`, `anchorDepth ≈ 13.9 m`.
-- First-stop search (`stopIncrement = 3`): candidate = 0, 3, 6, 9, 12 all fail ceiling check; candidate = 15 passes. But the GF at 15 m is not $GF_{low}$ — it is `interpolateGF(2.5, 2.4, 0.30, 0.85)` ≈ 0.36. First stop = 15 m with the post-ascent tissue state, which is slightly off-gassed relative to the bottom state.
+- After descent + 25 min at 40 m, the deepest GF_low ceiling lands somewhere around 12-13 m.
+- Iterate the 3 m grid: candidates at 0, 3, 6, 9, 12 all fail (`ceilingDepth > candidate` after simulated ascent).
+- Candidate 15 passes: dive ceiling at $GF_{low}$ on the post-ascent tissues is $\le 15$ m.
+- First stop = 15 m. $pAnchor = 1.01325 + 1.5 = 2.51$ bar.
+- The deco loop then runs from 15 m, with `interpolateGF` giving GF rising from 0.30 at 15 m to 0.85 at the surface.
 
-In practice, with these inputs first stop ≈ `pAnchor` rounded up to the 3 m grid; the two values diverge most noticeably when a deco-gas switch during the ascent to first stop changes which compartment leads.
+## Legacy functions
 
-## Edge case — `pAnchor = SURFACE_PRESSURE`
-
-If `findGFLowAnchor` returned 1.01325 bar (NDL case), the candidate-zero check passes immediately in `findFirstStopWithRampedGF` — ceiling after a full ascent to 0 m is ≤ 0 m. First stop = 0 m. `generateDecoSchedule` then takes the no-deco branch (`js/decoModel.js:1007`).
+`findGFLowAnchor` and `findFirstStopWithRampedGF` (earlier exploratory implementations) are still in the codebase but no longer drive the deco scheduler. `findFirstStopAtGFLow` replaced them in this role; the older functions remain as building blocks that may be removed in a future cleanup.
 
 ## Cross-references
 
-- [Model-05-Gradient-Factors](Model-05-Gradient-Factors.md) — the GF ramp equation and why `pAnchor` is its lower reference.
-- [Algo-04-Deco-Stop-Loop](Algo-04-Deco-Stop-Loop.md) — consumes `firstStopDepth` and the simulated tissue state at first stop.
-- [Algo-05-Multi-Gas-Switching](Algo-05-Multi-Gas-Switching.md) — how `gasSwitchPoints` is built before being passed in here.
+- [Model-05-Gradient-Factors](Model-05-Gradient-Factors.md) — what $pAnchor$ does once it's been found.
+- [Algo-04-Deco-Stop-Loop](Algo-04-Deco-Stop-Loop.md) — consumes `firstStopDepth` and `tissuesAtAnchor`.
+- [Algo-05-Multi-Gas-Switching](Algo-05-Multi-Gas-Switching.md) — how `gasSwitchPoints` is constructed before being passed in.
