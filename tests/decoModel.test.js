@@ -21,7 +21,6 @@ import {
     getDiveCeiling,
     interpolateGF,
     getFirstStopDepth,
-    findFirstStopWithRampedGF,
     generateDecoSchedule,
     calculateTissueLoading,
     DecoCapExceededError,
@@ -718,60 +717,6 @@ describe('decoModel module', () => {
 // =============================================================================
 
 describe('Bottom-Anchored GF', () => {
-    
-    describe('findFirstStopWithRampedGF', () => {
-        test('surface-saturated tissues return 0m first stop', () => {
-            const tissuePressures = {};
-            COMPARTMENTS.forEach(comp => {
-                tissuePressures[comp.id] = 0.74; // Surface saturation
-            });
-            
-            const currentDepth = 50; // 50m
-            const anchorAmbient = 6.0; // 50m
-            const currentN2 = 0.79; // Air
-            const result = findFirstStopWithRampedGF(tissuePressures, currentDepth, anchorAmbient, currentN2, 0.7, 0.85);
-            expect(result.depth).toBe(0);
-        });
-        
-        test('uses ramped GF: shallower first stop than constant GF Low', () => {
-            // Create loaded tissues that would require a deep stop
-            const tissuePressures = {};
-            COMPARTMENTS.forEach(comp => {
-                // Simulate tissues loaded at 40m
-                tissuePressures[comp.id] = 3.5;
-            });
-            
-            const currentDepth = 40; // 40m - bottom-anchored
-            const anchorAmbient = 5.0; // 40m
-            const currentN2 = 0.79; // Air
-            const gfLow = 0.5;
-            const gfHigh = 0.85;
-            
-            // Bottom-anchored first stop with ramped GF
-            const rampedResult = findFirstStopWithRampedGF(tissuePressures, currentDepth, anchorAmbient, currentN2, gfLow, gfHigh);
-            
-            // Constant GF Low first stop (old method)
-            const constantResult = getFirstStopDepth(tissuePressures, gfLow);
-            
-            // Ramped GF should give shallower or equal first stop
-            // because GF increases (becomes less conservative) as we ascend
-            expect(rampedResult.depth).toBeLessThanOrEqual(constantResult.depth);
-        });
-        
-        test('returns stop at 3m increments', () => {
-            const tissuePressures = {};
-            COMPARTMENTS.forEach(comp => {
-                tissuePressures[comp.id] = 2.5;
-            });
-            
-            const currentDepth = 30; // 30m
-            const anchorAmbient = 4.0; // 30m
-            const currentN2 = 0.79; // Air
-            const result = findFirstStopWithRampedGF(tissuePressures, currentDepth, anchorAmbient, currentN2, 0.7, 0.85);
-            
-            expect(result.depth % 3).toBe(0);
-        });
-    });
     
     describe('generateDecoSchedule bottom-anchored behavior', () => {
         test('GF at bottom depth equals GF Low', () => {

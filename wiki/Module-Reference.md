@@ -57,11 +57,9 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 |---|---|
 | `calculateInstantGF(Pt, ambient, compartment)` | `(Pt − ambient) / (M − ambient)`, expressed as 0–1 |
 | `calculateMaxGF(tissues, ambient)` | Returns `{gfMax, leadingCompartment, allGFs}` |
-| `findFirstStopAtGFLow(tissues, depth, n2, gfLow, stopIncrement, ascentRate, gasSwitchPoints)` | The convention's first-stop search: shallowest stop-grid depth where the dive ceiling at GF_low is satisfied after simulated ascent. Returns `{anchorDepth, pAnchor, tissuesAtAnchor}`. **This is the canonical pAnchor source** used by `generateDecoSchedule`, `calculateCeilingTimeSeriesDetailed`, `MValueChart`, and `GFChart`. See [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md). |
+| `findFirstStopAtGFLow(tissues, depth, n2, gfLow, stopIncrement, ascentRate, gasSwitchPoints)` | The convention's first-stop search: shallowest stop-grid depth where the dive ceiling at GF_low is satisfied after simulated ascent. Returns `{anchorDepth, pAnchor, tissuesAtAnchor}`. **The canonical pAnchor source** used by `generateDecoSchedule`, `calculateCeilingTimeSeriesDetailed`, `MValueChart`, and `GFChart`. See [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md). |
 | `interpolateGF(ambient, pAnchor, gfLow, gfHigh)` | Linear ramp from GF-low at pAnchor to GF-high at surface (1.01325 bar) |
-| `findGFLowAnchor(tissues, depth, n2, gfLow, ascentRate, gasSwitchPoints)` | Legacy: simulates ascent in 0.1-bar steps; returns the leading compartment's GF_low ceiling. No longer drives the scheduler — kept as a building block. |
-| `findFirstStopWithRampedGF(tissues, depth, pAnchor, n2, gfLow, gfHigh, stopIncrement, gasSwitchPoints)` | Legacy: scans the stop grid using the *ramped* GF for the ceiling check. No longer drives the scheduler. |
-| `getFirstStopDepth(tissues, gfLow, stopIncrement=3)` | Static (no ascent simulation): rounds the current dive ceiling at GF_low up to the stop grid. Used by quick-lookups; the deco scheduler uses `findFirstStopAtGFLow` instead. |
+| `getFirstStopDepth(tissues, gfLow, stopIncrement=3)` | Static (no ascent simulation): rounds the current dive ceiling at GF_low up to the stop grid. Used for quick lookups; the deco scheduler uses `findFirstStopAtGFLow` instead. |
 
 **Exports — NDL & deco scheduling**
 
@@ -91,7 +89,7 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 
 - Haldane is coded as `Palv + (P0 − Palv) × e^(−k·t)` at `decoModel.js:110`.
 - Schreiner is coded as a three-term form at `decoModel.js:127–129`: constant inert-gas source + exponential offset.
-- `pAnchor` is an ambient-pressure value, not a depth. `findGFLowAnchor` simulates the ascent until `calculateMaxGF()` first hits `gfLow`, then refines with `getCompartmentCeiling()` on the leading tissue (`decoModel.js:316`). This differs from decotengu, which anchors the GF ramp at the rounded first-stop depth; see `tests/decotengu-comparison.test.mjs:15–22`.
+- `pAnchor` is an ambient-pressure value, not a depth. `findFirstStopAtGFLow` iterates the stop grid surface-up, simulating the ascent to each candidate and checking the dive ceiling at `gfLow` (`getDiveCeiling`). The first depth that passes is the anchor — also the first decompression stop. See [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md).
 - Ascent permission in the deco loop (`decoModel.js:1099–1102`) checks the GF-adjusted ceiling at current depth against the next-shallower stop, without Schreiner-crediting the short ascent segment. This matches decotengu's convention.
 - `gasKey()` helper at `decoModel.js:918` normalises gases with or without an `id` field, so the deco loop tolerates both library gases and custom mixes.
 

@@ -106,10 +106,6 @@ If candidate = 0 (surface) already satisfies the ceiling check, the diver is wit
 - First stop = 15 m. $pAnchor = 1.01325 + 1.5 = 2.51$ bar.
 - The deco loop then runs from 15 m, with `interpolateGF` giving GF rising from 0.30 at 15 m to 0.85 at the surface.
 
-## Legacy functions
-
-`findGFLowAnchor` and `findFirstStopWithRampedGF` (earlier exploratory implementations) are still in the codebase but no longer drive the deco scheduler. `findFirstStopAtGFLow` replaced them in this role; the older functions remain as building blocks that may be removed in a future cleanup.
-
 ## Cross-references
 
 - [Model-05-Gradient-Factors](Model-05-Gradient-Factors.md) — what $pAnchor$ does once it's been found.

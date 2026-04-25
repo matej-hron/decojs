@@ -134,6 +134,6 @@ During descent and bottom time, `ascentStarted` is false and `gf = gfLow` regard
 ## Cross-references
 
 - [Algo-01-Ascent-Simulation](Algo-01-Ascent-Simulation.md) — produces the `results` object consumed here.
-- [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md) — the `findGFLowAnchor` function used for fallback anchor computation.
+- [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md) — `findFirstStopAtGFLow`, the canonical anchor computation.
 - [Algo-04-Deco-Stop-Loop](Algo-04-Deco-Stop-Loop.md) — `generateDecoSchedule` returns the `pAnchor` to pass in as `providedPAnchor`.
 - [Model-05-Gradient-Factors](Model-05-Gradient-Factors.md) — `interpolateGF` and the ramp geometry.

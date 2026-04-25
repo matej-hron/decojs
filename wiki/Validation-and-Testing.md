@@ -19,7 +19,7 @@ The algorithm suite. Directly imports from `js/decoModel.js` and `js/tissueCompa
 - **Constants & pressure.** Checks `SURFACE_PRESSURE`, `WATER_VAPOR_PRESSURE`, `N2_FRACTION`, `PRESSURE_PER_METER`, `getAmbientPressure`, `getAlveolarN2Pressure`.
 - **Haldane and Schreiner equations.** Verifies the closed-form output at known half-times (1, 5, 10, 20 min) and compares Schreiner against a time-stepped Haldane reference.
 - **M-values, ceilings, GF interpolation.** Exercises `getMValue`, `getAdjustedMValue`, `getCompartmentCeiling`, `getDiveCeiling`, `interpolateGF`, and the `calculateInstantGF`/`calculateMaxGF` pair.
-- **GF-low anchor and first stop.** Covers `findGFLowAnchor` and `findFirstStopWithRampedGF` across a range of depths and GF settings, including edge cases where pAnchor coincides with a 3 m grid depth.
+- **GF-low anchor and first stop.** Covers `findFirstStopAtGFLow` across a range of depths and GF settings, including edge cases where the unrounded ceiling coincides with a 3 m grid depth and where gas switches occur en route.
 - **Deco schedule.** Full `generateDecoSchedule` runs for air, EAN50, and O₂ deco; asserts stop count, per-stop time bounds, total-deco bounds, and the `DecoCapExceededError` path.
 - **Tissue loading end-to-end.** `calculateTissueLoading` on simple profiles; verifies monotonicity on descent, exponential shape, and surface equilibration.
 - **Variant switching.** `setZHL16Variant('A'|'B'|'C')` followed by re-checking a reference dive.

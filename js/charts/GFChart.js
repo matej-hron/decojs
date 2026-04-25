@@ -45,7 +45,6 @@ function fmt(str, ...values) {
 import {
     calculateTissueLoading,
     calculateInstantGF,
-    findGFLowAnchor,
     findFirstStopAtGFLow,
     interpolateGF,
     getAmbientPressure,

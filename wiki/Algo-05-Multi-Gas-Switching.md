@@ -63,9 +63,9 @@ const switchToBestGas = (atDepth, recordSwitch = true) => {
 
 ## Where switches are handled — three layers
 
-### 1. Anchor search (`findGFLowAnchor`)
+### 1. Anchor search (`findFirstStopAtGFLow`)
 
-The simulated 0.1 bar ascent accepts `gasSwitchPoints` and applies them as it crosses each switch depth (`js/decoModel.js:290-296`). Without this, `pAnchor` would be computed as if the diver stayed on bottom gas to the surface, yielding an incorrectly deep anchor. See [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md).
+The grid-iterating ascent simulation accepts `gasSwitchPoints` and applies them as it crosses each switch depth (via `_simulateAscentWithGasSwitches`). Without this, the dive ceiling at GF_low would be computed as if the diver stayed on bottom gas to the surface, yielding an incorrectly deep first stop. See [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md).
 
 ### 2. Deco scheduler (`generateDecoSchedule`)
 

@@ -105,7 +105,7 @@ The original U.S. Navy paper that introduced the "M-value" concept — maximum t
 
 ### 2.4 Erik Baker — Gradient Factors articles
 
-All three freely distributed PDFs, archived by Shearwater and other outlets. No formal publication venue; these are the "grey literature" of the GF model, and the central reference for DecoJS's `findGFLowAnchor` / `interpolateGF` implementation.
+All three freely distributed PDFs, archived by Shearwater and other outlets. No formal publication venue; these are the "grey literature" of the GF model, and the central reference for DecoJS's `findFirstStopAtGFLow` / `interpolateGF` implementation.
 
 **Baker, Erik C.** "Understanding M-values." 1998. https://www.shearwater.com/wp-content/uploads/2019/05/understanding_m-values.pdf
 

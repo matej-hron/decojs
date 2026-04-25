@@ -47,7 +47,6 @@ import {
     getMValue,
     getAdjustedMValue,
     getFirstStopDepth,
-    findGFLowAnchor,
     findFirstStopAtGFLow,
     interpolateGF,
     N2_FRACTION,

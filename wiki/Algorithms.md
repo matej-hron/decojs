@@ -6,7 +6,7 @@ The orchestration layer that strings together the Haldane / Schreiner equations,
 
 1. The user provides a dive setup: bottom gas + optional deco gases, $GF_{low}$ / $GF_{high}$, and either a full waypoint array or just `{maxDepth, bottomTime}`.
 2. `generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, …)` (`js/diveSetup.js:326`) is the top-level entry. It calls `calculateNDL()` first; if $t_{bottom} \le NDL$ it returns a simple no-stop profile. Otherwise it simulates descent + bottom time to get tissue state, then hands off to `generateDecoSchedule()`.
-3. `generateDecoSchedule()` (`js/decoModel.js:899`) computes gas-switch MODs, calls `findGFLowAnchor()` to get `pAnchor`, calls `findFirstStopWithRampedGF()` to place the first stop, then runs the deco loop to generate the stop list.
+3. `generateDecoSchedule()` (`js/decoModel.js`) computes gas-switch MODs, calls `findFirstStopAtGFLow()` to determine `pAnchor` and the first stop in one pass, then runs the deco loop to generate the stop list.
 4. Output is a waypoint array (embedded stops + gas switches) plus metadata (total deco time, controlling compartment, `pAnchor`, `anchorDepth`).
 5. Chart rendering replays the waypoints at 10-second resolution via `calculateTissueLoading()` (`js/decoModel.js:1178`) and overlays per-timepoint ceilings via `calculateCeilingTimeSeriesDetailed()` (`js/decoModel.js:617`).
 
@@ -16,9 +16,8 @@ flowchart TD
   B -- "t ≤ NDL" --> C[generateSimpleProfile]
   B -- "t > NDL" --> D[simulate descent + bottom]
   D --> E[generateDecoSchedule<br/>decoModel.js:899]
-  E --> F[findGFLowAnchor<br/>decoModel.js:257]
-  E --> G[findFirstStopWithRampedGF<br/>decoModel.js:535]
-  E --> H[deco stop loop<br/>decoModel.js:1084-1132]
+  E --> F[findFirstStopAtGFLow<br/>strict GF_low first-stop search]
+  F --> H[deco stop loop]
   H --> I[waypoints + stops]
   I --> J[calculateTissueLoading<br/>decoModel.js:1178]
   I --> K[calculateCeilingTimeSeriesDetailed<br/>decoModel.js:617]
