@@ -2,30 +2,35 @@
 
 Bühlmann ZH-L16 is a parallel-compartment model: 16 theoretical tissue groups, each with a half-time $T_{1/2}$ (how fast it on-/off-gasses) and two Bühlmann coefficients $a$ (bar) and $b$ (dimensionless) defining its M-value line. The letter suffix (A/B/C) picks one of three coefficient tables — same half-times, different `a` values (plus one $b$ quirk at TC1). See [References](References.md#6-zh-l16-constant-tables).
 
-## Half-times in DecoJS
+## All 16 compartments — full A/B/C table
 
-Quoted from `js/tissueCompartments.js:67-91` (variant C, the default):
+Drawn directly from `js/tissueCompartments.js`. **Bold** values differ from variant A.
 
-| ID | $T_{1/2}$ (min) | $b$ | $a$ (variant C) | Category |
-|----|-----------------|-----|-----------------|----------|
-| 1  | 5.0   | 0.5578 | 1.1696 | Fast |
-| 2  | 8.0   | 0.6514 | 1.0000 | Fast |
-| 3  | 12.5  | 0.7222 | 0.8618 | Fast |
-| 4  | 18.5  | 0.7825 | 0.7562 | Fast |
-| 5  | 27.0  | 0.8126 | 0.6200 | Medium |
-| 6  | 38.3  | 0.8434 | 0.5043 | Medium |
-| 7  | 54.3  | 0.8693 | 0.4410 | Medium |
-| 8  | 77.0  | 0.8910 | 0.4000 | Medium |
-| 9  | 109.0 | 0.9092 | 0.3750 | Medium-Slow |
-| 10 | 146.0 | 0.9222 | 0.3500 | Medium-Slow |
-| 11 | 187.0 | 0.9319 | 0.3295 | Medium-Slow |
-| 12 | 239.0 | 0.9403 | 0.3065 | Medium-Slow |
-| 13 | 305.0 | 0.9477 | 0.2835 | Slow |
-| 14 | 390.0 | 0.9544 | 0.2610 | Slow |
-| 15 | 498.0 | 0.9602 | 0.2480 | Slow |
-| 16 | 635.0 | 0.9653 | 0.2327 | Slow |
+| ID | $T_{1/2}$ (min)¹ | $b$ ² | $a$ (16A) | $a$ (16B) | $a$ (16C) | Category |
+|----|------------------|--------|-----------|-----------|-----------|----------|
+| 1  | 4 / 5            | 0.5050 / 0.5578 | 1.2599 | **1.1696** | **1.1696** | Fast |
+| 2  | 8                | 0.6514 | 1.0000 | 1.0000 | 1.0000 | Fast |
+| 3  | 12.5             | 0.7222 | 0.8618 | 0.8618 | 0.8618 | Fast |
+| 4  | 18.5             | 0.7825 | 0.7562 | 0.7562 | 0.7562 | Fast |
+| 5  | 27               | 0.8126 | 0.6667 | 0.6667 | **0.6200** | Medium |
+| 6  | 38.3             | 0.8434 | 0.5933 | **0.5600** | **0.5043** | Medium |
+| 7  | 54.3             | 0.8693 | 0.5282 | **0.4947** | **0.4410** | Medium |
+| 8  | 77               | 0.8910 | 0.4710 | **0.4500** | **0.4000** | Medium |
+| 9  | 109              | 0.9092 | 0.4187 | 0.4187 | **0.3750** | Medium-Slow |
+| 10 | 146              | 0.9222 | 0.3798 | 0.3798 | **0.3500** | Medium-Slow |
+| 11 | 187              | 0.9319 | 0.3497 | 0.3497 | **0.3295** | Medium-Slow |
+| 12 | 239              | 0.9403 | 0.3223 | 0.3223 | **0.3065** | Medium-Slow |
+| 13 | 305              | 0.9477 | 0.2971 | **0.2850** | **0.2835** | Slow |
+| 14 | 390              | 0.9544 | 0.2737 | 0.2737 | **0.2610** | Slow |
+| 15 | 498              | 0.9602 | 0.2523 | 0.2523 | **0.2480** | Slow |
+| 16 | 635              | 0.9653 | 0.2327 | 0.2327 | 0.2327 | Slow |
 
-Variant A uses $T_{1/2} = 4.0$ min with $b = 0.5050$ for TC1; variants B and C use $T_{1/2} = 5.0$ min with $b = 0.5578$. The pairing is immutable — both coefficients swap together. See `js/tissueCompartments.js:46-61`:
+¹ TC1 is the only half-time that varies across variants: 4 min in A, 5 min in B/C.
+² TC1 is the only $b$ that varies across variants: 0.5050 in A, 0.5578 in B/C. The half-time and $b$ swap together as a pair.
+
+Pattern at a glance: **B** changes TC1 + TC6-8 + TC13 (4 compartments). **C** changes TC1 + TC5-15 (12 compartments). TC2-4 and TC16 are identical across all three variants. Smaller $a$ = more conservative (lower M-value at any depth).
+
+The TC1 pairing is immutable — half-time and $b$ swap together when the variant changes. See `js/tissueCompartments.js:46-61`:
 
 ```javascript
 // js/tissueCompartments.js:46-61
@@ -63,7 +68,7 @@ Tabulated in `js/tissueCompartments.js` rather than computed at runtime, but the
 
 $$a = 2 \cdot T_{1/2}^{-1/3} \quad (\text{bar}) \qquad b = 1.005 - T_{1/2}^{-1/2}$$
 
-These give the ZH-L16A (experimental) values exactly. The B and C variants keep the same $b$ values across all 16 compartments (and TC2–TC16 keep the same $a$ values as A), but selectively lower $a$ for the middle-to-slow compartments in order to produce tables that proved more conservative empirically. The C variant lowers $a$ for TC5 through TC15 (see `js/tissueCompartments.js:128-133`).
+These give the **ZH-L16A** (experimental) values exactly. The **B** and **C** variants share A's $b$ values for TC2–TC16 (TC1 has its own pairing) and selectively lower the $a$ coefficient on a subset of compartments to produce tables / computer firmware that proved more conservative in practice. See the table above for which compartments differ in B vs. C.
 
 ## Variant semantics
 
