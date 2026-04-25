@@ -1695,49 +1695,118 @@
             "subtitle": "Exam questions on physics for divers (CMAS/SPČR)",
             "aboutIntro": "These questions come from the official 2018 SPČR (Czech Diving Federation) exam tests. They cover physics relevant to diving.",
             "aboutAvailable": "<strong>Currently available:</strong> 100 questions across all 8 topics.",
-            "aboutSource": "<strong>Source:</strong> <a href=\"https://www.cmas.cz/soubor-fyzika-349-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Fyzika zkušební testy</a>"
+            "aboutSource": "<strong>Source:</strong> <a href=\"https://www.cmas.cz/soubor-fyzika-349-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Fyzika zkušební testy</a>",
+            "categories": {
+                "tlak-jednotky": "Pressure and units",
+                "vlastnosti-vody-vzduchu": "Properties of water and air",
+                "prenos-tepla": "Heat transfer",
+                "optika": "Optics and vision",
+                "fyzika-plynu": "Gas physics",
+                "vztlak-vystroj": "Buoyancy and equipment",
+                "spotreba-planovani": "Consumption and planning",
+                "dekomprese-syceni": "Decompression and on-gassing"
+            }
         },
         "anatomy": {
             "title": "🩺 Anatomy and Physiology",
             "subtitle": "Exam questions on anatomy and physiology for divers (CMAS/SPČR)",
             "aboutIntro": "These questions come from the official 2018 SPČR (Czech Diving Federation) exam tests. They cover anatomy and physiology relevant to diving.",
             "aboutAvailable": "<strong>Currently available:</strong> 100 questions across all topics: basics, respiratory system, circulatory system, blood and gas transport, ear and equalisation, tissue on-gassing, thermoregulation and gas toxicity.",
-            "aboutSource": "<strong>Source:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Anatomie a fyziologie zkušební testy</a>"
+            "aboutSource": "<strong>Source:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Anatomie a fyziologie zkušební testy</a>",
+            "categories": {
+                "základní pojmy": "Basic concepts",
+                "dýchací soustava": "Respiratory system",
+                "oběhová soustava": "Circulatory system",
+                "krev a přenos plynů": "Blood and gas transport",
+                "ucho a vyrovnávání tlaků": "Ear and equalisation",
+                "sycení tkání": "Tissue on-gassing",
+                "termoregulace": "Thermoregulation",
+                "toxicita plynů": "Gas toxicity"
+            }
         },
         "accidents": {
             "title": "🏥 Accidents and Illnesses",
             "subtitle": "Exam questions on diving accidents and illnesses (CMAS/SPČR)",
             "aboutIntro": "These questions come from the official 2018 SPČR (Czech Diving Federation) exam tests. They cover diving accidents, illnesses and first aid.",
             "aboutAvailable": "<strong>Currently available:</strong> 100 questions across 5 topics.",
-            "aboutSource": "<strong>Source:</strong> <a href=\"https://www.cmas.cz/soubor-nehody-a-nemoci-348-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Nehody a nemoci zkušební testy</a>"
+            "aboutSource": "<strong>Source:</strong> <a href=\"https://www.cmas.cz/soubor-nehody-a-nemoci-348-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Nehody a nemoci zkušební testy</a>",
+            "categories": {
+                "první pomoc": "First aid",
+                "otravy plyny": "Gas poisoning",
+                "barotrauma plic": "Pulmonary barotrauma",
+                "podchlazení": "Hypothermia",
+                "dekompresní nemoc": "Decompression sickness"
+            }
         },
         "safety": {
             "title": "🛡️ Safety Guidelines",
             "subtitle": "Exam questions on the SPČR Safety Guidelines 2016 (CMAS/SPČR)",
             "aboutIntro": "These questions come from the official 2018 SPČR (Czech Diving Federation) exam tests. They cover the SPČR Safety Guidelines 2016.",
             "aboutAvailable": "<strong>Currently available:</strong> 100 questions across all 9 topics.",
-            "aboutSource": "<strong>Source:</strong> <a href=\"https://www.cmas.cz/soubor-bezpecnostni-smernice-345-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Bezpečnostní směrnice zkušební testy</a>"
+            "aboutSource": "<strong>Source:</strong> <a href=\"https://www.cmas.cz/soubor-bezpecnostni-smernice-345-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Bezpečnostní směrnice zkušební testy</a>",
+            "categories": {
+                "obecne-smernice": "General guidelines",
+                "zpusobilost": "Diver fitness",
+                "specialni-potapeni": "Specialty diving",
+                "vystroj": "Equipment",
+                "buddy-system": "Buddy system",
+                "planovani-ponoru": "Dive planning",
+                "organizace-akci": "Event organisation",
+                "doprovodne-plavidlo": "Support vessel",
+                "nouzove-situace": "Emergency situations"
+            }
         },
         "training": {
             "title": "📋 Training Guidelines",
             "subtitle": "Exam questions on the SPČR Training Guidelines 2016 (CMAS/SPČR)",
             "aboutIntro": "These questions come from the official 2018 SPČR (Czech Diving Federation) exam tests. They cover the SPČR Training Guidelines 2016.",
             "aboutAvailable": "<strong>Currently available:</strong> 100 questions across 6 topics.",
-            "aboutSource": "<strong>Source:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Výcvikové směrnice zkušební testy</a>"
+            "aboutSource": "<strong>Source:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Výcvikové směrnice zkušební testy</a>",
+            "categories": {
+                "obecna-pravidla": "General rules",
+                "prava-povinnosti": "Rights and duties",
+                "definice-pravidla": "Definitions and rules",
+                "potapec-zakladni": "Supervised Diver / Junior",
+                "potapec-cmas": "CMAS One/Two/Three-Star Diver",
+                "instruktor": "CMAS Instructor"
+            }
         },
         "equipment": {
             "title": "🤿 Diving Equipment",
             "subtitle": "Exam questions on diving equipment (CMAS/SPČR)",
             "aboutIntro": "These questions come from the official 2018 SPČR (Czech Diving Federation) exam tests. They cover diving equipment.",
             "aboutAvailable": "<strong>Currently available:</strong> 100 questions across 11 topics.",
-            "aboutSource": "<strong>Source:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Potápěčská výstroj zkušební testy</a>"
+            "aboutSource": "<strong>Source:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Potápěčská výstroj zkušební testy</a>",
+            "categories": {
+                "masky": "Masks",
+                "ploutve-trubice": "Fins and snorkels",
+                "zakladni-vystroj": "Basic equipment",
+                "obleky": "Suits",
+                "kompenzatory": "BCDs",
+                "plicni-automatiky": "Regulators",
+                "lahve": "Cylinders",
+                "merici-pristroje": "Gauges and instruments",
+                "prislusenstvi": "Accessories",
+                "kompresory": "Compressors",
+                "udrzba": "Maintenance"
+            }
         },
         "vessel": {
             "title": "⚓ Vessel",
             "subtitle": "Exam questions on boat handling (CMAS/SPČR)",
             "aboutIntro": "These questions come from the official 2018 SPČR (Czech Diving Federation) exam tests. They cover boat handling and diving from a vessel.",
             "aboutAvailable": "<strong>Currently available:</strong> 50 questions across 8 topics.",
-            "aboutSource": "<strong>Source:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Plavidlo zkušební testy</a>"
+            "aboutSource": "<strong>Source:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Plavidlo zkušební testy</a>",
+            "categories": {
+                "navigace": "Navigation",
+                "kotveni": "Anchoring",
+                "pravidla-plavby": "Navigation rules",
+                "potapeni-z-lodi": "Boat diving",
+                "technika": "Technical",
+                "svetla": "Lights",
+                "pocasi": "Weather",
+                "bezpecnost": "Safety"
+            }
         }
     }
 }

@@ -1695,49 +1695,118 @@
             "subtitle": "Zkušební otázky z fyziky pro potápěče (CMAS/SPČR)",
             "aboutIntro": "Tyto otázky pochází z oficiálních zkušebních testů SPČR (Svaz potápěčů České republiky) z roku 2018. Testují znalosti fyziky relevantní pro potápění.",
             "aboutAvailable": "<strong>Aktuálně k dispozici:</strong> 100 otázek ze všech 8 témat.",
-            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz/soubor-fyzika-349-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Fyzika zkušební testy</a>"
+            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz/soubor-fyzika-349-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Fyzika zkušební testy</a>",
+            "categories": {
+                "tlak-jednotky": "Tlak a jednotky",
+                "vlastnosti-vody-vzduchu": "Vlastnosti vody a vzduchu",
+                "prenos-tepla": "Přenos tepla",
+                "optika": "Optika a vidění",
+                "fyzika-plynu": "Fyzika plynů",
+                "vztlak-vystroj": "Vztlak a výstroj",
+                "spotreba-planovani": "Spotřeba a plánování",
+                "dekomprese-syceni": "Dekomprese a sycení"
+            }
         },
         "anatomy": {
             "title": "🩺 Anatomie a fyziologie",
             "subtitle": "Zkušební otázky z anatomie a fyziologie pro potápěče (CMAS/SPČR)",
             "aboutIntro": "Tyto otázky pochází z oficiálních zkušebních testů SPČR (Svaz potápěčů České republiky) z roku 2018. Testují znalosti anatomie a fyziologie relevantní pro potápění.",
             "aboutAvailable": "<strong>Aktuálně k dispozici:</strong> 100 otázek ze všech témat: základní pojmy, dýchací soustava, oběhová soustava, krev a přenos plynů, ucho a vyrovnávání tlaků, sycení tkání, termoregulace a toxicita plynů.",
-            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Anatomie a fyziologie zkušební testy</a>"
+            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Anatomie a fyziologie zkušební testy</a>",
+            "categories": {
+                "základní pojmy": "Základní pojmy",
+                "dýchací soustava": "Dýchací soustava",
+                "oběhová soustava": "Oběhová soustava",
+                "krev a přenos plynů": "Krev a přenos plynů",
+                "ucho a vyrovnávání tlaků": "Ucho a vyrovnávání tlaků",
+                "sycení tkání": "Sycení tkání",
+                "termoregulace": "Termoregulace",
+                "toxicita plynů": "Toxicita plynů"
+            }
         },
         "accidents": {
             "title": "🏥 Nehody a nemoci",
             "subtitle": "Zkušební otázky o potápěčských nehodách a nemocech (CMAS/SPČR)",
             "aboutIntro": "Tyto otázky pochází z oficiálních zkušebních testů SPČR (Svaz potápěčů České republiky) z roku 2018. Testují znalosti o potápěčských nehodách, nemocech a první pomoci.",
             "aboutAvailable": "<strong>Aktuálně k dispozici:</strong> 100 otázek z 5 témat.",
-            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz/soubor-nehody-a-nemoci-348-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Nehody a nemoci zkušební testy</a>"
+            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz/soubor-nehody-a-nemoci-348-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Nehody a nemoci zkušební testy</a>",
+            "categories": {
+                "první pomoc": "První pomoc",
+                "otravy plyny": "Otravy plyny",
+                "barotrauma plic": "Barotrauma plic",
+                "podchlazení": "Podchlazení",
+                "dekompresní nemoc": "Dekompresní nemoc"
+            }
         },
         "safety": {
             "title": "🛡️ Bezpečnostní směrnice",
             "subtitle": "Zkušební otázky z Bezpečnostních směrnic SPČR 2016 (CMAS/SPČR)",
             "aboutIntro": "Tyto otázky pochází z oficiálních zkušebních testů SPČR (Svaz potápěčů České republiky) z roku 2018. Testují znalosti Bezpečnostních směrnic SPČR 2016.",
             "aboutAvailable": "<strong>Aktuálně k dispozici:</strong> 100 otázek ze všech 9 témat.",
-            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz/soubor-bezpecnostni-smernice-345-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Bezpečnostní směrnice zkušební testy</a>"
+            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz/soubor-bezpecnostni-smernice-345-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Bezpečnostní směrnice zkušební testy</a>",
+            "categories": {
+                "obecne-smernice": "Obecné směrnice",
+                "zpusobilost": "Způsobilost potápěče",
+                "specialni-potapeni": "Speciální potápění",
+                "vystroj": "Výstroj",
+                "buddy-system": "Buddy systém",
+                "planovani-ponoru": "Plánování ponorů",
+                "organizace-akci": "Organizace akcí",
+                "doprovodne-plavidlo": "Doprovodné plavidlo",
+                "nouzove-situace": "Nouzové situace"
+            }
         },
         "training": {
             "title": "📋 Výcvikové směrnice",
             "subtitle": "Zkušební otázky z Výcvikových směrnic SPČR 2016 (CMAS/SPČR)",
             "aboutIntro": "Tyto otázky pochází z oficiálních zkušebních testů SPČR (Svaz potápěčů České republiky) z roku 2018. Testují znalosti Výcvikových směrnic SPČR 2016.",
             "aboutAvailable": "<strong>Aktuálně k dispozici:</strong> 100 otázek ze 6 témat.",
-            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Výcvikové směrnice zkušební testy</a>"
+            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Výcvikové směrnice zkušební testy</a>",
+            "categories": {
+                "obecna-pravidla": "Obecná pravidla",
+                "prava-povinnosti": "Práva a povinnosti",
+                "definice-pravidla": "Definice a pravidla",
+                "potapec-zakladni": "Potápěč s doprovodem / Junior",
+                "potapec-cmas": "Potápěč CMAS P*/P**/P***",
+                "instruktor": "Instruktor CMAS"
+            }
         },
         "equipment": {
             "title": "🤿 Potápěčská výstroj",
             "subtitle": "Zkušební otázky z Potápěčské výstroje SPČR 2018 (CMAS/SPČR)",
             "aboutIntro": "Tyto otázky pochází z oficiálních zkušebních testů SPČR (Svaz potápěčů České republiky) z roku 2018. Testují znalosti potápěčské výstroje.",
             "aboutAvailable": "<strong>Aktuálně k dispozici:</strong> 100 otázek z 11 témat.",
-            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Potápěčská výstroj zkušební testy</a>"
+            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Potápěčská výstroj zkušební testy</a>",
+            "categories": {
+                "masky": "Masky",
+                "ploutve-trubice": "Ploutve a trubice",
+                "zakladni-vystroj": "Základní výstroj",
+                "obleky": "Obleky",
+                "kompenzatory": "Kompenzátory vztlaku",
+                "plicni-automatiky": "Plicní automatiky",
+                "lahve": "Lahve",
+                "merici-pristroje": "Měřicí přístroje",
+                "prislusenstvi": "Příslušenství",
+                "kompresory": "Kompresory",
+                "udrzba": "Údržba"
+            }
         },
         "vessel": {
             "title": "⚓ Plavidlo",
             "subtitle": "Zkušební otázky z obsluhy plavidla SPČR 2018 (CMAS/SPČR)",
             "aboutIntro": "Tyto otázky pochází z oficiálních zkušebních testů SPČR (Svaz potápěčů České republiky) z roku 2018. Testují znalosti obsluhy plavidla a potápění z lodi.",
             "aboutAvailable": "<strong>Aktuálně k dispozici:</strong> 50 otázek z 8 témat.",
-            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Plavidlo zkušební testy</a>"
+            "aboutSource": "<strong>Zdroj:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Plavidlo zkušební testy</a>",
+            "categories": {
+                "navigace": "Navigace",
+                "kotveni": "Kotvení",
+                "pravidla-plavby": "Pravidla plavby",
+                "potapeni-z-lodi": "Potápění z lodi",
+                "technika": "Technika",
+                "svetla": "Světla",
+                "pocasi": "Počasí",
+                "bezpecnost": "Bezpečnost"
+            }
         }
     }
 }

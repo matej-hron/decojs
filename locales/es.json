@@ -1695,49 +1695,118 @@
             "subtitle": "Preguntas de examen de física para buceadores (CMAS/SPČR)",
             "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Federación Checa de Buceo) de 2018. Evalúan conocimientos de física relevantes para el buceo.",
             "aboutAvailable": "<strong>Disponibles actualmente:</strong> 100 preguntas de los 8 temas.",
-            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz/soubor-fyzika-349-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Fyzika zkušební testy</a>"
+            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz/soubor-fyzika-349-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Fyzika zkušební testy</a>",
+            "categories": {
+                "tlak-jednotky": "Presión y unidades",
+                "vlastnosti-vody-vzduchu": "Propiedades del agua y el aire",
+                "prenos-tepla": "Transmisión del calor",
+                "optika": "Óptica y visión",
+                "fyzika-plynu": "Física de los gases",
+                "vztlak-vystroj": "Flotabilidad y equipo",
+                "spotreba-planovani": "Consumo y planificación",
+                "dekomprese-syceni": "Descompresión y saturación"
+            }
         },
         "anatomy": {
             "title": "🩺 Anatomía y fisiología",
             "subtitle": "Preguntas de examen de anatomía y fisiología para buceadores (CMAS/SPČR)",
             "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Federación Checa de Buceo) de 2018. Evalúan conocimientos de anatomía y fisiología relevantes para el buceo.",
             "aboutAvailable": "<strong>Disponibles actualmente:</strong> 100 preguntas de todos los temas: conceptos básicos, sistema respiratorio, sistema circulatorio, sangre y transporte de gases, oído y compensación, saturación tisular, termorregulación y toxicidad de los gases.",
-            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Anatomie a fyziologie zkušební testy</a>"
+            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Anatomie a fyziologie zkušební testy</a>",
+            "categories": {
+                "základní pojmy": "Conceptos básicos",
+                "dýchací soustava": "Sistema respiratorio",
+                "oběhová soustava": "Sistema circulatorio",
+                "krev a přenos plynů": "Sangre y transporte de gases",
+                "ucho a vyrovnávání tlaků": "Oído y compensación",
+                "sycení tkání": "Saturación tisular",
+                "termoregulace": "Termorregulación",
+                "toxicita plynů": "Toxicidad de los gases"
+            }
         },
         "accidents": {
             "title": "🏥 Accidentes y enfermedades",
             "subtitle": "Preguntas de examen sobre accidentes y enfermedades del buceo (CMAS/SPČR)",
             "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Federación Checa de Buceo) de 2018. Evalúan conocimientos sobre accidentes y enfermedades del buceo y primeros auxilios.",
             "aboutAvailable": "<strong>Disponibles actualmente:</strong> 100 preguntas de 5 temas.",
-            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz/soubor-nehody-a-nemoci-348-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Nehody a nemoci zkušební testy</a>"
+            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz/soubor-nehody-a-nemoci-348-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Nehody a nemoci zkušební testy</a>",
+            "categories": {
+                "první pomoc": "Primeros auxilios",
+                "otravy plyny": "Intoxicaciones por gases",
+                "barotrauma plic": "Barotrauma pulmonar",
+                "podchlazení": "Hipotermia",
+                "dekompresní nemoc": "Enfermedad descompresiva"
+            }
         },
         "safety": {
             "title": "🛡️ Normas de Seguridad",
             "subtitle": "Preguntas de examen de las Normas de Seguridad SPČR 2016 (CMAS/SPČR)",
             "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Federación Checa de Buceo) de 2018. Evalúan conocimientos sobre las Normas de Seguridad SPČR 2016.",
             "aboutAvailable": "<strong>Disponibles actualmente:</strong> 100 preguntas de los 9 temas.",
-            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz/soubor-bezpecnostni-smernice-345-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Bezpečnostní směrnice zkušební testy</a>"
+            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz/soubor-bezpecnostni-smernice-345-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Bezpečnostní směrnice zkušební testy</a>",
+            "categories": {
+                "obecne-smernice": "Directrices generales",
+                "zpusobilost": "Aptitud del buceador",
+                "specialni-potapeni": "Buceo especializado",
+                "vystroj": "Equipo",
+                "buddy-system": "Sistema buddy",
+                "planovani-ponoru": "Planificación de inmersiones",
+                "organizace-akci": "Organización de eventos",
+                "doprovodne-plavidlo": "Embarcación de apoyo",
+                "nouzove-situace": "Situaciones de emergencia"
+            }
         },
         "training": {
             "title": "📋 Normas de Formación",
             "subtitle": "Preguntas de examen de las Normas de Formación SPČR 2016 (CMAS/SPČR)",
             "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Federación Checa de Buceo) de 2018. Evalúan conocimientos sobre las Normas de Formación SPČR 2016.",
             "aboutAvailable": "<strong>Disponibles actualmente:</strong> 100 preguntas de 6 temas.",
-            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Výcvikové směrnice zkušební testy</a>"
+            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Výcvikové směrnice zkušební testy</a>",
+            "categories": {
+                "obecna-pravidla": "Normas generales",
+                "prava-povinnosti": "Derechos y deberes",
+                "definice-pravidla": "Definiciones y normas",
+                "potapec-zakladni": "Buceador acompañado / Junior",
+                "potapec-cmas": "Buceador CMAS P1 / P2 / P3",
+                "instruktor": "Instructor CMAS"
+            }
         },
         "equipment": {
             "title": "🤿 Equipo de buceo",
             "subtitle": "Preguntas de examen sobre el equipo de buceo SPČR 2018 (CMAS/SPČR)",
             "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Federación Checa de Buceo) de 2018. Evalúan conocimientos sobre el equipo de buceo.",
             "aboutAvailable": "<strong>Disponibles actualmente:</strong> 100 preguntas de 11 temas.",
-            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Potápěčská výstroj zkušební testy</a>"
+            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Potápěčská výstroj zkušební testy</a>",
+            "categories": {
+                "masky": "Máscaras",
+                "ploutve-trubice": "Aletas y tubos",
+                "zakladni-vystroj": "Equipo básico",
+                "obleky": "Trajes",
+                "kompenzatory": "Chalecos compensadores",
+                "plicni-automatiky": "Reguladores",
+                "lahve": "Botellas",
+                "merici-pristroje": "Instrumentos de medida",
+                "prislusenstvi": "Accesorios",
+                "kompresory": "Compresores",
+                "udrzba": "Mantenimiento"
+            }
         },
         "vessel": {
             "title": "⚓ Embarcación",
             "subtitle": "Preguntas de examen sobre el manejo de la embarcación SPČR 2018 (CMAS/SPČR)",
             "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Federación Checa de Buceo) de 2018. Evalúan conocimientos sobre el manejo de la embarcación y el buceo desde barco.",
             "aboutAvailable": "<strong>Disponibles actualmente:</strong> 50 preguntas de 8 temas.",
-            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Plavidlo zkušební testy</a>"
+            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Plavidlo zkušební testy</a>",
+            "categories": {
+                "navigace": "Navegación",
+                "kotveni": "Fondeo",
+                "pravidla-plavby": "Reglas de navegación",
+                "potapeni-z-lodi": "Buceo desde embarcación",
+                "technika": "Técnica",
+                "svetla": "Luces",
+                "pocasi": "Tiempo",
+                "bezpecnost": "Seguridad"
+            }
         }
     }
 }
