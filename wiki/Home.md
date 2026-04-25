@@ -1,8 +1,10 @@
-DecoJS is a browser-based, zero-build implementation of the Bühlmann ZH-L16 decompression algorithm with Erik Baker's gradient factors, packaged as a Progressive Web App. It runs live at [decotheory.eu](https://decotheory.eu); the source is on GitHub at [matej-hron/decojs](https://github.com/matej-hron/decojs).
+DecoJS is a browser-based, zero-build implementation of the Bühlmann ZH-L16 decompression algorithm with Erik Baker's gradient factors. It runs live at [decotheory.eu](https://decotheory.eu); the source is on GitHub at [matej-hron/decojs](https://github.com/matej-hron/decojs).
 
 ## Who this wiki is for
 
 Developers reading, modifying, or porting the code. This wiki documents the algorithm as implemented — equations with file:line citations, data flow between modules, and the numerical conventions used. The in-app HTML pages ([pressure.html](https://decotheory.eu/pressure.html), [tissue-loading.html](https://decotheory.eu/tissue-loading.html), [m-values.html](https://decotheory.eu/m-values.html), [gradient-factors.html](https://decotheory.eu/gradient-factors.html)) cover the physics for divers — this wiki does not.
+
+For diving-physiology background that this wiki assumes, the most accessible primer is Mark Powell's *Deco for Divers* — the project's intellectual inspiration; see [References §3](References.md#3-mark-powell--deco-for-divers).
 
 ## Contents
 

@@ -155,7 +155,7 @@ while (depth > 0) {
 
 Per-iteration logic:
 
-- Compute the GF *at the current depth* (not the destination) — this matches the decotengu / divetools convention: the ceiling check uses the current-position GF, and there is no Schreiner off-gassing credit applied to the short inter-stop ascent.
+- Compute the GF *at the current depth* (not the destination) — this matches the decotengu convention: the ceiling check uses the current-position GF, and there is no Schreiner off-gassing credit applied to the short inter-stop ascent.
 - If the current-depth ceiling already clears `nextStopDepth`, ascend; otherwise wait `timeIncrement` minutes at depth (Haldane) and re-test.
 - Stops are only recorded if `pendingStopTime > 0` — a stop that the diver merely passes through without waiting does not appear in the list.
 

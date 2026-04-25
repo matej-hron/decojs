@@ -31,7 +31,7 @@ Any function in `decoModel.js` taking a `gf` parameter expects the 0–1 form.
 This is where implementations diverge. Two approaches are both called "GF interpolation":
 
 1. **Depth-based ramp** (naive / simplified): GF linearly interpolates from the chosen first-stop depth to the surface. The anchor is the depth of the first mandatory stop.
-2. **pAnchor-based ramp** (Baker-intended; decotengu; divetools.app; **DecoJS**): GF interpolates from the ambient pressure where $GF_{max}$ across all 16 compartments first reaches $GF_{low}$ during a simulated free ascent. Not from the stop depth.
+2. **pAnchor-based ramp** (Baker-intended; decotengu; **DecoJS**): GF interpolates from the ambient pressure where $GF_{max}$ across all 16 compartments first reaches $GF_{low}$ during a simulated free ascent. Not from the stop depth.
 
 The difference matters. Two dives with the same max depth but different bottom times have different tissue loadings, so they hit $GF_{low}$ at different ambient pressures — and therefore should have different GF ramps. Approach #2 ties the ramp to tissue state; approach #1 ties it to an arbitrary choice of stop grid. DecoJS implements #2.
 

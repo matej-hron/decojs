@@ -4,6 +4,27 @@
 
 The underlying source code is archived at https://github.com/matej-hron/decojs and deployed at https://decotheory.eu. Where the code implements a published equation, cite both this wiki (for the implementation) and the original source below (for the equation).
 
+## At a glance
+
+**Cited inline by other wiki pages** — the load-bearing references for DecoJS's algorithm and constants:
+
+- §1.1 — decotengu Decompression Model docs
+- §2.1 — Bühlmann *Tauchmedizin* (ZH-L16 source)
+- §2.2 — Schreiner & Kelley 1971 (linear-rate uptake equation)
+- §2.3 — Workman 1965 (M-values)
+- §2.4 — Erik Baker GF articles
+- §3 — Mark Powell, *Deco for Divers* (project's intellectual inspiration)
+- §4.1 — decotengu (numerical oracle for the test suite)
+- §6 — ZH-L16 constant tables
+
+**Further reading** — context, prior art, and orientation for readers going deeper:
+
+- §1.2, §1.3 — decotengu Algorithms and Design pages
+- §2.5 — Wienke & O'Leary secondary review
+- §4.2 — divetools.app (another web-based deco planner)
+- §4.3 — eight other open-source ZH-L16 + GF implementations across Python, C, C++, Java, JavaScript, Kotlin
+- §5 — SPČR / CMAS training references and the project's institutional context
+
 ## 1. decotengu — reference implementation and documentation model
 
 Project documentation for Artur Wroblewski's `decotengu` (Python 3 Bühlmann ZH-L16 + GF implementation, v0.14.1). Hosted at https://wrobell.dcmod.org/decotengu/.
@@ -129,12 +150,9 @@ Cited by the DecoJS README as the **primary inspiration for the project**. Powel
 
 ### 4.2 divetools.app
 
-- URL: https://divetools.app/
-- Status: **closed-source** freeware web app (no public repository; credit/contact `radim.pelanek@gmail.com`).
-- Language: JavaScript (browser bundle) — the app was reverse-engineered from its shipped bundle during the DecoJS constants cross-check.
-- Approach: Bühlmann ZH-L16 with gradient factors; OC & CCR deco planning, multi-level profiles, cave mode (same-way back), bailout, trimix, IBCD, ppO₂ & CNS/OTU tracking, gas mixer, gas density, MOD/EAD/END.
+Browser-based dive-planning tool covering Bühlmann ZH-L16 with gradient factors, OC and CCR planning, multi-level profiles, trimix, ppO₂ / CNS / OTU tracking, gas mixer, MOD / EAD / END.
 
-**DecoJS relationship:** used as a second oracle alongside decotengu for stop-termination logic and constant choices (`SURFACE_PRESSURE = 1.01325` bar; N₂ = 0.7902; TC1 b variant-specific). Because it is not open source, cite it as a reference implementation, not as a code source.
+- URL: https://divetools.app/
 
 ### 4.3 Additional open-source implementations worth cross-referencing
 
@@ -206,7 +224,7 @@ Primary (paper) source for the constants is **Bühlmann 1992 *Tauchmedizin*** (�
 - **B** = Printed tables (slightly more conservative; used for table calculations).
 - **C** = Dive computers (most conservative; used for in-water computers).
 
-DecoJS's defaults follow **ZH-L16C** — aligned with decotengu and divetools.app — see `js/tissueCompartments.js`.
+DecoJS's defaults follow **ZH-L16C** — aligned with decotengu — see `js/tissueCompartments.js`.
 
 **Numerical provenance chain:**
 

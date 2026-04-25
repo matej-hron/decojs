@@ -118,7 +118,7 @@ Imported by: `decoModel.js`, `diveSetup.js`, `mvalues.js`, `tissueEducation.js`,
 - TC1's half-time and `b` coefficient swap as a pair between variants. ZH-L16A uses 4.0 min / `b=0.5050`; B and C use 5.0 min / `b=0.5578`. See `COMPARTMENT_1_HALFTIME` at line 46 and `COMPARTMENT_1_B_N2` around line 55.
 - All variants share TC2–16 half-times; only the `a` coefficient varies between A, B, C for compartments 5–15 (A_COEFFICIENTS_16A/B/C at lines 102, 115, 128).
 - `setZHL16Variant()` clears and repushes the existing `COMPARTMENTS` array (`tissueCompartments.js:190–191`) rather than reassigning, so downstream code holding a reference (e.g. `decoModel.js`) picks up the change without reimporting.
-- Default active variant is ZH-L16C (`currentVariant = ZHL16_VARIANTS.C` at line 40). Matches decotengu and divetools.app defaults.
+- Default active variant is ZH-L16C (`currentVariant = ZHL16_VARIANTS.C` at line 40). Matches the decotengu default.
 - All times in minutes, pressures in bar. See [Model-01-Compartments](Model-01-Compartments.md) for the full coefficient table.
 
 ### `js/mvalues.js`
