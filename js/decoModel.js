@@ -1116,11 +1116,13 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
         const delta = depth - nextStopDepth;
         const ascentTime = delta / ASCENT_SPEED;
 
-        // Ceiling check: current tissue ceiling at current-depth GF must clear
-        // the next stop depth *before* the ascent. Matches decotengu/divetools
-        // convention (no Schreiner credit for off-gassing during the short ascent).
-        const gfHere = interpolateGF(getAmbientPressure(depth), pAnchor, gfLow, gfHigh);
-        const { ceilingDepth } = getDiveCeiling(tissues, gfHere);
+        // Can-we-ascend check: the ceiling at the *destination* GF (one stop
+        // shallower) must clear the destination depth. We do not credit Schreiner
+        // off-gassing during the short ascent — we ask "would the current tissue
+        // pressures be within the M-line at the next stop, under the next stop's
+        // GF". This matches the decotengu convention.
+        const gfThere = interpolateGF(getAmbientPressure(nextStopDepth), pAnchor, gfLow, gfHigh);
+        const { ceilingDepth } = getDiveCeiling(tissues, gfThere);
 
         if (ceilingDepth <= nextStopDepth) {
             // Can ascend. Record stop if we waited here.

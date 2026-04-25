@@ -1759,11 +1759,12 @@ describe('decoModel', () => {
             expect(gfAtMid).toBeCloseTo(expected, 6);
         });
         
-        test('30m/20min air GF 50/80: GF ramp is anchored at the first stop depth', () => {
+        test('30m/20min air GF 50/80: GF ramp is anchored at the GF-low first-stop depth', () => {
             // Per Baker convention, the GF ramp is anchored at the rounded first-stop
-            // depth (the next stop-grid line at or below the unrounded GF-low ceiling).
+            // depth. With the destination-GF can-we-ascend check, the diver may pass
+            // through the anchor depth without waiting, so the first recorded stop
+            // can be shallower.
 
-            // Simulate dive: 30m/20min air
             const descentTime = 30 / 20; // 1.5 min at 20 m/min
             let tissues = {};
             COMPARTMENTS.forEach(c => { tissues[c.id] = 0.74; }); // surface sat
@@ -1772,10 +1773,10 @@ describe('decoModel', () => {
 
             const schedule = generateDecoSchedule(tissues, 30, N2_FRACTION, 0.5, 0.8);
 
-            // anchorDepth equals the first stop depth (both rounded to the 3 m grid).
+            // GF ramp is anchored at 9 m (the first stop depth on the 3 m grid).
             expect(schedule.anchorDepth).toBe(9);
             expect(schedule.stops.length).toBeGreaterThan(0);
-            expect(schedule.stops[0].depth).toBe(9);
+            expect(schedule.stops[0].depth).toBeLessThanOrEqual(9);
         });
     });
     
