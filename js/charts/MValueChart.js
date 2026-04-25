@@ -48,6 +48,7 @@ import {
     getAdjustedMValue,
     getFirstStopDepth,
     findGFLowAnchor,
+    findFirstStopAtGFLow,
     interpolateGF,
     N2_FRACTION,
     SURFACE_PRESSURE
@@ -1045,9 +1046,10 @@ export class MValueChart {
             }
             gasSwitchPoints.sort((a, b) => b.switchDepth - a.switchDepth);
 
-            // Find pAnchor using findGFLowAnchor with gas switches (same as generateDecoSchedule)
-            const anchorResult = findGFLowAnchor(
-                tissuePressures, maxDepth, n2Fraction, gfLow, undefined,
+            // Find pAnchor via the convention (rounded first-stop depth that
+            // satisfies the GF_low dive ceiling after simulated ascent).
+            const anchorResult = findFirstStopAtGFLow(
+                tissuePressures, maxDepth, n2Fraction, gfLow, undefined, undefined,
                 gasSwitchPoints.length > 0 ? gasSwitchPoints : null
             );
             pAnchor = anchorResult.pAnchor;

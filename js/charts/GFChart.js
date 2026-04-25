@@ -46,6 +46,7 @@ import {
     calculateTissueLoading,
     calculateInstantGF,
     findGFLowAnchor,
+    findFirstStopAtGFLow,
     interpolateGF,
     getAmbientPressure,
     N2_FRACTION,
@@ -936,8 +937,8 @@ export class GFChart {
             }
             gasSwitchPoints.sort((a, b) => b.switchDepth - a.switchDepth);
 
-            const anchorResult = findGFLowAnchor(
-                tissuePressures, maxDepth, n2Fraction, gfLow, undefined,
+            const anchorResult = findFirstStopAtGFLow(
+                tissuePressures, maxDepth, n2Fraction, gfLow, undefined, undefined,
                 gasSwitchPoints.length > 0 ? gasSwitchPoints : null
             );
             pAnchor = anchorResult.pAnchor;
