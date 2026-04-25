@@ -1,0 +1,1306 @@
+{
+  "title": "Anatomía y Fisiología – Exámenes SPČR 2018",
+  "description": "Preguntas de examen de anatomía y fisiología para buceadores",
+  "questions": [
+    {
+      "id": 1,
+      "category": "základní pojmy",
+      "question": "El organismo obtiene energía:",
+      "options": [
+        { "key": "a", "text": "de la respiración" },
+        { "key": "b", "text": "de las hormonas" },
+        { "key": "c", "text": "de los nutrientes" },
+        { "key": "d", "text": "del trabajo muscular" }
+      ],
+      "correct": "c",
+      "explanation": "El organismo obtiene energía de los nutrientes (hidratos de carbono, grasas, proteínas), procesados mediante el metabolismo. La respiración aporta el oxígeno necesario para esa conversión."
+    },
+    {
+      "id": 2,
+      "category": "základní pojmy",
+      "question": "La fuente de energía más rápidamente disponible son:",
+      "options": [
+        { "key": "a", "text": "las grasas" },
+        { "key": "b", "text": "los hidratos de carbono" },
+        { "key": "c", "text": "las proteínas" },
+        { "key": "d", "text": "las vitaminas" }
+      ],
+      "correct": "b",
+      "explanation": "Los hidratos de carbono son la fuente de energía más rápidamente disponible, ya que se descomponen con rapidez y liberan energía deprisa. Las grasas aportan más energía, pero su procesado es más lento."
+    },
+    {
+      "id": 3,
+      "category": "základní pojmy",
+      "question": "Al sistema digestivo NO pertenece:",
+      "options": [
+        { "key": "a", "text": "los dientes" },
+        { "key": "b", "text": "la faringe" },
+        { "key": "c", "text": "la laringe" },
+        { "key": "d", "text": "el esófago" }
+      ],
+      "correct": "c",
+      "explanation": "La laringe es parte del sistema respiratorio, no del digestivo. Los dientes, la faringe y el esófago forman parte del tubo digestivo."
+    },
+    {
+      "id": 4,
+      "category": "základní pojmy",
+      "question": "La cavidad torácica está separada de la abdominal por:",
+      "options": [
+        { "key": "a", "text": "la pleura parietal" },
+        { "key": "b", "text": "la pleura visceral" },
+        { "key": "c", "text": "el peritoneo" },
+        { "key": "d", "text": "el diafragma" }
+      ],
+      "correct": "d",
+      "explanation": "El diafragma es el músculo plano que separa la cavidad torácica de la abdominal. Es esencial para la respiración: en la inspiración se contrae y los pulmones se expanden."
+    },
+    {
+      "id": 5,
+      "category": "ucho a vyrovnávání tlaků",
+      "question": "El aparato vestibular se encuentra:",
+      "options": [
+        { "key": "a", "text": "en el oído interno" },
+        { "key": "b", "text": "en el oído medio" },
+        { "key": "c", "text": "en el oído externo" },
+        { "key": "d", "text": "en el bulbo raquídeo" }
+      ],
+      "correct": "a",
+      "explanation": "El aparato vestibular (órgano del equilibrio) se aloja en el oído interno junto con el órgano auditivo. Importante para el buceador: los problemas de compensación pueden afectar al equilibrio."
+    },
+    {
+      "id": 6,
+      "category": "základní pojmy",
+      "question": "La proporción de agua en la masa corporal de un adulto es:",
+      "options": [
+        { "key": "a", "text": "aproximadamente el 10 %" },
+        { "key": "b", "text": "aproximadamente el 30 %" },
+        { "key": "c", "text": "aproximadamente el 60 %" },
+        { "key": "d", "text": "aproximadamente el 90 %" }
+      ],
+      "correct": "c",
+      "explanation": "El cuerpo humano contiene cerca del 60 % de agua. Esto es importante para la fisiología del buceo, incluida la deshidratación y la saturación de los tejidos por gases inertes."
+    },
+    {
+      "id": 7,
+      "category": "základní pojmy",
+      "question": "La absorción de nutrientes a partir de los alimentos tiene lugar principalmente:",
+      "options": [
+        { "key": "a", "text": "en el estómago" },
+        { "key": "b", "text": "en el intestino delgado" },
+        { "key": "c", "text": "en el intestino grueso" },
+        { "key": "d", "text": "en el esófago" }
+      ],
+      "correct": "b",
+      "explanation": "La mayor parte de la absorción de nutrientes se produce en el intestino delgado, que tiene una gran superficie gracias a las vellosidades. La digestión ocurre sobre todo en el estómago; el intestino grueso absorbe principalmente agua."
+    },
+    {
+      "id": 8,
+      "category": "základní pojmy",
+      "question": "La proporción de agua en la masa corporal de un adulto es:",
+      "options": [
+        { "key": "a", "text": "aproximadamente el 90 %" },
+        { "key": "b", "text": "aproximadamente el 60 %" },
+        { "key": "c", "text": "aproximadamente el 30 %" },
+        { "key": "d", "text": "aproximadamente el 10 %" }
+      ],
+      "correct": "b",
+      "explanation": "El cuerpo humano contiene cerca del 60 % de agua. Esta pregunta solo cambia el orden de las respuestas respecto a la pregunta 6."
+    },
+    {
+      "id": 9,
+      "category": "základní pojmy",
+      "question": "El espacio entre el cristalino y la retina del ojo está ocupado por:",
+      "options": [
+        { "key": "a", "text": "sangre" },
+        { "key": "b", "text": "linfa" },
+        { "key": "c", "text": "humor vítreo" },
+        { "key": "d", "text": "aire" }
+      ],
+      "correct": "c",
+      "explanation": "El humor vítreo es una sustancia gelatinosa transparente que ocupa el espacio entre el cristalino y la retina. Mantiene la forma del globo ocular y permite el paso de la luz."
+    },
+    {
+      "id": 10,
+      "category": "základní pojmy",
+      "question": "Las funciones vitales básicas son:",
+      "options": [
+        { "key": "a", "text": "respiración y digestión" },
+        { "key": "b", "text": "consciencia, respiración y circulación" },
+        { "key": "c", "text": "digestión y circulación" },
+        { "key": "d", "text": "visión, circulación y audición" }
+      ],
+      "correct": "b",
+      "explanation": "Las funciones vitales básicas son consciencia, respiración y circulación. Su comprobación es esencial en primeros auxilios: si falta alguna, hay que actuar de inmediato."
+    },
+    {
+      "id": 11,
+      "category": "základní pojmy",
+      "question": "Los riñones forman parte del sistema:",
+      "options": [
+        { "key": "a", "text": "excretor" },
+        { "key": "b", "text": "digestivo" },
+        { "key": "c", "text": "circulatorio" },
+        { "key": "d", "text": "endocrino" }
+      ],
+      "correct": "a",
+      "explanation": "Los riñones son el órgano principal del sistema excretor. Filtran la sangre y eliminan los desechos del cuerpo en forma de orina."
+    },
+    {
+      "id": 12,
+      "category": "základní pojmy",
+      "question": "La córnea forma parte:",
+      "options": [
+        { "key": "a", "text": "de la piel" },
+        { "key": "b", "text": "de las articulaciones" },
+        { "key": "c", "text": "del oído" },
+        { "key": "d", "text": "del ojo" }
+      ],
+      "correct": "d",
+      "explanation": "La córnea es la parte anterior transparente del ojo que refracta la luz y protege las estructuras internas."
+    },
+    {
+      "id": 13,
+      "category": "ucho a vyrovnávání tlaků",
+      "question": "En el oído interno se alojan:",
+      "options": [
+        { "key": "a", "text": "los huesecillos del oído (martillo, yunque, estribo)" },
+        { "key": "b", "text": "los órganos auditivo y vestibular" },
+        { "key": "c", "text": "la trompa auditiva (de Eustaquio) y el conducto auditivo externo" },
+        { "key": "d", "text": "la trompa auditiva (de Eustaquio) y el tímpano" }
+      ],
+      "correct": "b",
+      "explanation": "El oído interno contiene el órgano auditivo (cóclea) y el aparato vestibular (órgano del equilibrio). Los huesecillos del oído están en el oído medio."
+    },
+    {
+      "id": 14,
+      "category": "základní pojmy",
+      "question": "Marque la afirmación incorrecta:",
+      "options": [
+        { "key": "a", "text": "Las funciones vitales básicas son consciencia, respiración y circulación." },
+        { "key": "b", "text": "El globo ocular está ocupado por el humor vítreo." },
+        { "key": "c", "text": "La sangre desoxigenada llega al corazón por la vena porta." },
+        { "key": "d", "text": "Por gases respiratorios se entiende oxígeno y dióxido de carbono." }
+      ],
+      "correct": "c",
+      "explanation": "La afirmación c) es incorrecta: la sangre desoxigenada vuelve al corazón por las venas cavas superior e inferior, no por la vena porta, que conduce sangre del tubo digestivo al hígado."
+    },
+    {
+      "id": 15,
+      "category": "základní pojmy",
+      "question": "El aparato locomotor humano está formado por los sistemas:",
+      "options": [
+        { "key": "a", "text": "esquelético y muscular" },
+        { "key": "b", "text": "muscular y circulatorio" },
+        { "key": "c", "text": "esquelético y nervioso" },
+        { "key": "d", "text": "muscular y nervioso" }
+      ],
+      "correct": "a",
+      "explanation": "El aparato locomotor lo forman el sistema esquelético (huesos, articulaciones) y el muscular. El sistema nervioso controla el movimiento, pero no forma parte del aparato locomotor."
+    },
+    {
+      "id": 16,
+      "category": "oběhová soustava",
+      "question": "La sangre:",
+      "options": [
+        { "key": "a", "text": "retira de los tejidos los productos del metabolismo" },
+        { "key": "b", "text": "transporta hormonas" },
+        { "key": "c", "text": "transporta los gases respiratorios" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "La sangre cumple todas las funciones citadas: transporta oxígeno y dióxido de carbono, hormonas y desechos del metabolismo."
+    },
+    {
+      "id": 17,
+      "category": "základní pojmy",
+      "question": "Entre las funciones vitales básicas NO se incluye:",
+      "options": [
+        { "key": "a", "text": "la consciencia" },
+        { "key": "b", "text": "la respiración" },
+        { "key": "c", "text": "la circulación" },
+        { "key": "d", "text": "la digestión" }
+      ],
+      "correct": "d",
+      "explanation": "Las funciones vitales básicas son consciencia, respiración y circulación. La digestión no figura entre ellas: una persona puede sobrevivir días o semanas sin alimento."
+    },
+    {
+      "id": 18,
+      "category": "základní pojmy",
+      "question": "El esófago desemboca:",
+      "options": [
+        { "key": "a", "text": "en el duodeno" },
+        { "key": "b", "text": "en el estómago" },
+        { "key": "c", "text": "en el intestino delgado" },
+        { "key": "d", "text": "en el intestino grueso" }
+      ],
+      "correct": "b",
+      "explanation": "El esófago conecta la faringe con el estómago. El duodeno es la primera parte del intestino delgado, justo después del estómago."
+    },
+    {
+      "id": 19,
+      "category": "ucho a vyrovnávání tlaků",
+      "question": "Los huesecillos del oído (martillo, yunque y estribo) se encuentran:",
+      "options": [
+        { "key": "a", "text": "en el oído externo" },
+        { "key": "b", "text": "en la trompa auditiva (de Eustaquio)" },
+        { "key": "c", "text": "en el oído interno" },
+        { "key": "d", "text": "en el oído medio" }
+      ],
+      "correct": "d",
+      "explanation": "Los huesecillos están en el oído medio y transmiten las vibraciones del tímpano al oído interno. Para el buceador es esencial la compensación de la presión en el oído medio."
+    },
+    {
+      "id": 20,
+      "category": "oběhová soustava",
+      "question": "Marque la afirmación incorrecta:",
+      "options": [
+        { "key": "a", "text": "La sangre descompone los alimentos en nutrientes." },
+        { "key": "b", "text": "La sangre transporta el oxígeno desde los pulmones a los tejidos." },
+        { "key": "c", "text": "La sangre interviene en la regulación de la temperatura corporal." },
+        { "key": "d", "text": "La sangre conduce el dióxido de carbono desde los tejidos hasta los pulmones." }
+      ],
+      "correct": "a",
+      "explanation": "La afirmación a) es incorrecta: la sangre no descompone los alimentos, esa es función del sistema digestivo. La sangre solo transporta los nutrientes ya absorbidos."
+    },
+    {
+      "id": 21,
+      "category": "dýchací soustava",
+      "question": "En la cavidad pleural hay:",
+      "options": [
+        { "key": "a", "text": "aire alveolar" },
+        { "key": "b", "text": "presión atmosférica" },
+        { "key": "c", "text": "sobrepresión" },
+        { "key": "d", "text": "depresión (presión negativa)" }
+      ],
+      "correct": "d",
+      "explanation": "En la cavidad pleural (entre la pleura visceral y la parietal) existe una presión negativa que mantiene los pulmones desplegados y permite respirar."
+    },
+    {
+      "id": 22,
+      "category": "dýchací soustava",
+      "question": "En una inmersión en apnea, la presión del aire en pulmones y vías respiratorias es:",
+      "options": [
+        { "key": "a", "text": "dependiente del esfuerzo físico" },
+        { "key": "b", "text": "igual a la presión en superficie" },
+        { "key": "c", "text": "igual a la presión ambiente" },
+        { "key": "d", "text": "dependiente de la frecuencia cardíaca" }
+      ],
+      "correct": "c",
+      "explanation": "Buceando con equipo autónomo, la presión del aire en los pulmones siempre coincide con la presión ambiente. De ello se encarga el regulador."
+    },
+    {
+      "id": 23,
+      "category": "dýchací soustava",
+      "question": "El volumen de aire que se puede exhalar tras una inspiración máxima se denomina:",
+      "options": [
+        { "key": "a", "text": "volumen inspiratorio pulmonar" },
+        { "key": "b", "text": "volumen residual pulmonar" },
+        { "key": "c", "text": "capacidad vital pulmonar" },
+        { "key": "d", "text": "volumen pulmonar total" }
+      ],
+      "correct": "c",
+      "explanation": "La capacidad vital pulmonar es el volumen máximo de aire que se puede exhalar tras una inspiración máxima. En un adulto es de unos 4–5 litros."
+    },
+    {
+      "id": 24,
+      "category": "dýchací soustava",
+      "question": "La laringe es parte:",
+      "options": [
+        { "key": "a", "text": "de las vías respiratorias superiores" },
+        { "key": "b", "text": "del sistema digestivo" },
+        { "key": "c", "text": "de los pulmones" },
+        { "key": "d", "text": "del esófago" }
+      ],
+      "correct": "a",
+      "explanation": "La laringe forma parte de las vías respiratorias superiores. Contiene las cuerdas vocales y conecta la faringe con la tráquea."
+    },
+    {
+      "id": 25,
+      "category": "dýchací soustava",
+      "question": "El volumen de aire que no puede exhalarse ni con un esfuerzo máximo se denomina:",
+      "options": [
+        { "key": "a", "text": "espacio muerto de las vías respiratorias" },
+        { "key": "b", "text": "capacidad vital pulmonar" },
+        { "key": "c", "text": "volumen pulmonar total" },
+        { "key": "d", "text": "volumen residual pulmonar" }
+      ],
+      "correct": "d",
+      "explanation": "El volumen residual pulmonar es el aire que permanece en los pulmones incluso tras una espiración máxima. Es de aproximadamente 1,5 litros."
+    },
+    {
+      "id": 26,
+      "category": "dýchací soustava",
+      "question": "El volumen residual pulmonar es el volumen de aire:",
+      "options": [
+        { "key": "a", "text": "en el que no hay intercambio de gases respiratorios" },
+        { "key": "b", "text": "que se puede exhalar tras una inspiración máxima" },
+        { "key": "c", "text": "que no puede exhalarse ni con esfuerzo máximo" },
+        { "key": "d", "text": "que se encuentra entre la pleura visceral y la parietal" }
+      ],
+      "correct": "c",
+      "explanation": "El volumen residual pulmonar es el aire que no puede exhalarse ni con un esfuerzo máximo. Es importante en los cálculos para la apnea."
+    },
+    {
+      "id": 27,
+      "category": "dýchací soustava",
+      "question": "El diafragma interviene principalmente:",
+      "options": [
+        { "key": "a", "text": "en la digestión" },
+        { "key": "b", "text": "en la respiración" },
+        { "key": "c", "text": "en la regulación de la temperatura corporal" },
+        { "key": "d", "text": "en la defensa frente a las infecciones" }
+      ],
+      "correct": "b",
+      "explanation": "El diafragma es el principal músculo respiratorio. En la inspiración se contrae y desciende, aumentando el volumen torácico y permitiendo la entrada de aire a los pulmones."
+    },
+    {
+      "id": 28,
+      "category": "dýchací soustava",
+      "question": "La presión negativa en la cavidad pleural:",
+      "options": [
+        { "key": "a", "text": "mantiene los pulmones desplegados" },
+        { "key": "b", "text": "filtra el aire exhalado" },
+        { "key": "c", "text": "calienta el aire inhalado" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "a",
+      "explanation": "La presión negativa pleural mantiene los pulmones desplegados. En el neumotórax (entrada de aire a la cavidad pleural) el pulmón puede colapsar."
+    },
+    {
+      "id": 29,
+      "category": "dýchací soustava",
+      "question": "Los pulmones se mantienen desplegados:",
+      "options": [
+        { "key": "a", "text": "por su propia elasticidad" },
+        { "key": "b", "text": "por la presión negativa de la cavidad pleural" },
+        { "key": "c", "text": "por la presión parcial del oxígeno" },
+        { "key": "d", "text": "por la presión parcial del dióxido de carbono" }
+      ],
+      "correct": "b",
+      "explanation": "Los pulmones se mantienen desplegados por la presión negativa pleural. Su propia elasticidad, al contrario, los retraería."
+    },
+    {
+      "id": 30,
+      "category": "dýchací soustava",
+      "question": "El espacio muerto de las vías respiratorias ocupa aproximadamente:",
+      "options": [
+        { "key": "a", "text": "0,15 litros" },
+        { "key": "b", "text": "1,5 litros" },
+        { "key": "c", "text": "4,5 litros" },
+        { "key": "d", "text": "6 litros" }
+      ],
+      "correct": "a",
+      "explanation": "El espacio muerto (donde no hay intercambio gaseoso) es de unos 0,15 litros (150 ml). El equipo de buceo aumenta este espacio muerto."
+    },
+    {
+      "id": 31,
+      "category": "dýchací soustava",
+      "question": "El volumen residual pulmonar es de aproximadamente:",
+      "options": [
+        { "key": "a", "text": "0,15 litros" },
+        { "key": "b", "text": "1,5 litros" },
+        { "key": "c", "text": "4,5 litros" },
+        { "key": "d", "text": "6 litros" }
+      ],
+      "correct": "b",
+      "explanation": "El volumen residual pulmonar es de aproximadamente 1,5 litros. Es el aire que permanece en los pulmones tras una espiración máxima."
+    },
+    {
+      "id": 32,
+      "category": "dýchací soustava",
+      "question": "Marque la afirmación incorrecta:",
+      "options": [
+        { "key": "a", "text": "El sistema respiratorio consta de las vías respiratorias y los pulmones." },
+        { "key": "b", "text": "La pleura parietal recubre la superficie de los pulmones." },
+        { "key": "c", "text": "El volumen pulmonar total es la suma de la capacidad vital y el volumen residual." },
+        { "key": "d", "text": "El espacio muerto de las vías respiratorias es de unos 0,15 litros." }
+      ],
+      "correct": "b",
+      "explanation": "La afirmación b) es incorrecta: la superficie de los pulmones está recubierta por la pleura visceral (poplicnice), no por la parietal. La pleura parietal recubre la pared torácica."
+    },
+    {
+      "id": 33,
+      "category": "dýchací soustava",
+      "question": "La capacidad vital pulmonar es el volumen de aire:",
+      "options": [
+        { "key": "a", "text": "en el que no hay intercambio de gases respiratorios" },
+        { "key": "b", "text": "que se encuentra entre la pleura visceral y la parietal" },
+        { "key": "c", "text": "que no puede exhalarse ni con esfuerzo máximo" },
+        { "key": "d", "text": "que se puede exhalar tras una inspiración máxima" }
+      ],
+      "correct": "d",
+      "explanation": "La capacidad vital es el volumen de aire que se puede exhalar tras una inspiración máxima. En un adulto, unos 4–5 litros."
+    },
+    {
+      "id": 34,
+      "category": "dýchací soustava",
+      "question": "El volumen pulmonar total es la suma de:",
+      "options": [
+        { "key": "a", "text": "la capacidad vital y el volumen residual" },
+        { "key": "b", "text": "la capacidad vital y el espacio muerto" },
+        { "key": "c", "text": "el volumen residual y el volumen de reserva espiratoria" },
+        { "key": "d", "text": "el volumen residual y el espacio muerto" }
+      ],
+      "correct": "a",
+      "explanation": "Volumen pulmonar total = capacidad vital + volumen residual. En un adulto, alrededor de 6 litros (4,5 L de capacidad vital + 1,5 L de volumen residual)."
+    },
+    {
+      "id": 35,
+      "category": "dýchací soustava",
+      "question": "Por espacio muerto de las vías respiratorias se entiende:",
+      "options": [
+        { "key": "a", "text": "el volumen de aire que permanece en los pulmones tras una espiración forzada" },
+        { "key": "b", "text": "el espacio en el que no se produce intercambio de gases respiratorios" },
+        { "key": "c", "text": "la diferencia entre una inspiración normal y otra forzada" },
+        { "key": "d", "text": "la diferencia de volúmenes pulmonares entre una inspiración máxima y una espiración máxima" }
+      ],
+      "correct": "b",
+      "explanation": "El espacio muerto es la parte de las vías respiratorias (nariz, laringe, tráquea, bronquios) donde no hay intercambio gaseoso. El intercambio se produce en los alvéolos."
+    },
+    {
+      "id": 36,
+      "category": "dýchací soustava",
+      "question": "Pertenecen a las vías respiratorias:",
+      "options": [
+        { "key": "a", "text": "los vasos pulmonares" },
+        { "key": "b", "text": "los alvéolos pulmonares" },
+        { "key": "c", "text": "los bronquios y los bronquiolos" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "c",
+      "explanation": "A las vías respiratorias pertenecen los bronquios y los bronquiolos. Los alvéolos son parte del propio pulmón; los vasos pulmonares pertenecen al sistema circulatorio."
+    },
+    {
+      "id": 37,
+      "category": "dýchací soustava",
+      "question": "No forma parte del sistema respiratorio:",
+      "options": [
+        { "key": "a", "text": "la laringe" },
+        { "key": "b", "text": "el esófago" },
+        { "key": "c", "text": "la tráquea" },
+        { "key": "d", "text": "los bronquios" }
+      ],
+      "correct": "b",
+      "explanation": "El esófago forma parte del sistema digestivo, no del respiratorio. Conecta la faringe con el estómago y discurre paralelo a la tráquea."
+    },
+    {
+      "id": 38,
+      "category": "dýchací soustava",
+      "question": "Marque la afirmación incorrecta:",
+      "options": [
+        { "key": "a", "text": "Entre la pleura visceral (superficie de los pulmones) y la parietal (pared interna del tórax) se encuentra la cavidad pleural." },
+        { "key": "b", "text": "En la cavidad pleural existe una presión negativa." },
+        { "key": "c", "text": "Los pulmones se sitúan a ambos lados del mediastino." },
+        { "key": "d", "text": "Los pulmones se mantienen desplegados por su propia elasticidad." }
+      ],
+      "correct": "d",
+      "explanation": "La afirmación d) es incorrecta: los pulmones se mantienen desplegados por la presión negativa pleural, no por su propia elasticidad, que tendería a colapsarlos."
+    },
+    {
+      "id": 39,
+      "category": "dýchací soustava",
+      "question": "Los alvéolos pulmonares:",
+      "options": [
+        { "key": "a", "text": "miden, en promedio, alrededor de un cuarto de milímetro" },
+        { "key": "b", "text": "se encuentran al final de las vías respiratorias" },
+        { "key": "c", "text": "están rodeados por capilares sanguíneos" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todas las afirmaciones son correctas. Los alvéolos son pequeñas vesículas al final de las vías respiratorias, rodeadas de capilares, donde tiene lugar el intercambio de gases respiratorios."
+    },
+    {
+      "id": 40,
+      "category": "dýchací soustava",
+      "question": "Las vías respiratorias comienzan en:",
+      "options": [
+        { "key": "a", "text": "la tráquea" },
+        { "key": "b", "text": "la laringe" },
+        { "key": "c", "text": "la cavidad nasal" },
+        { "key": "d", "text": "los bronquios" }
+      ],
+      "correct": "c",
+      "explanation": "Las vías respiratorias empiezan en la cavidad nasal (y en la oral). El aire prosigue por faringe, laringe, tráquea y bronquios hasta los alvéolos."
+    },
+    {
+      "id": 41,
+      "category": "oběhová soustava",
+      "question": "Marque la afirmación incorrecta:",
+      "options": [
+        { "key": "a", "text": "Las arterias siempre transportan sangre oxigenada." },
+        { "key": "b", "text": "La aorta saca sangre del ventrículo izquierdo." },
+        { "key": "c", "text": "Las arteriolas se ramifican en capilares." },
+        { "key": "d", "text": "Los capilares confluyen en vénulas." }
+      ],
+      "correct": "a",
+      "explanation": "La afirmación a) es incorrecta: la arteria pulmonar lleva sangre desoxigenada del ventrículo derecho a los pulmones. Las arterias se definen por la dirección del flujo (saliendo del corazón), no por la oxigenación."
+    },
+    {
+      "id": 42,
+      "category": "oběhová soustava",
+      "question": "La arteria pulmonar transporta:",
+      "options": [
+        { "key": "a", "text": "sangre desoxigenada del ventrículo derecho a los pulmones" },
+        { "key": "b", "text": "sangre oxigenada del ventrículo izquierdo a los pulmones" },
+        { "key": "c", "text": "sangre oxigenada de los pulmones a la aurícula izquierda" },
+        { "key": "d", "text": "sangre desoxigenada de los pulmones a la aurícula derecha" }
+      ],
+      "correct": "a",
+      "explanation": "La arteria pulmonar lleva sangre desoxigenada del ventrículo derecho a los pulmones, donde se oxigena. Es la única arteria que lleva sangre desoxigenada."
+    },
+    {
+      "id": 43,
+      "category": "oběhová soustava",
+      "question": "Un adulto tiene aproximadamente:",
+      "options": [
+        { "key": "a", "text": "10–12 litros de sangre" },
+        { "key": "b", "text": "8–10 litros de sangre" },
+        { "key": "c", "text": "5–6 litros de sangre" },
+        { "key": "d", "text": "2–3 litros de sangre" }
+      ],
+      "correct": "c",
+      "explanation": "Un adulto tiene aproximadamente 5–6 litros de sangre, lo que supone alrededor del 7–8 % de la masa corporal."
+    },
+    {
+      "id": 44,
+      "category": "oběhová soustava",
+      "question": "El corazón de un adulto, en reposo, bombea 5 litros de sangre en aproximadamente:",
+      "options": [
+        { "key": "a", "text": "1 segundo" },
+        { "key": "b", "text": "10 segundos" },
+        { "key": "c", "text": "5 minutos" },
+        { "key": "d", "text": "1 minuto" }
+      ],
+      "correct": "d",
+      "explanation": "El corazón bombea en reposo unos 5 litros por minuto (gasto cardíaco). En esfuerzo intenso puede llegar a 25–30 litros."
+    },
+    {
+      "id": 45,
+      "category": "oběhová soustava",
+      "question": "La sangre oxigenada llega desde los pulmones:",
+      "options": [
+        { "key": "a", "text": "a la aurícula izquierda" },
+        { "key": "b", "text": "al ventrículo izquierdo" },
+        { "key": "c", "text": "a la aurícula derecha" },
+        { "key": "d", "text": "al ventrículo derecho" }
+      ],
+      "correct": "a",
+      "explanation": "La sangre oxigenada vuelve de los pulmones por las venas pulmonares hasta la aurícula izquierda. De ahí pasa al ventrículo izquierdo y por la aorta al resto del cuerpo."
+    },
+    {
+      "id": 46,
+      "category": "oběhová soustava",
+      "question": "Del ventrículo derecho se expulsa sangre:",
+      "options": [
+        { "key": "a", "text": "oxigenada" },
+        { "key": "b", "text": "desoxigenada" },
+        { "key": "c", "text": "hacia la aorta" },
+        { "key": "d", "text": "hacia cabeza, tronco y extremidades" }
+      ],
+      "correct": "b",
+      "explanation": "Del ventrículo derecho se expulsa sangre desoxigenada por la arteria pulmonar hacia los pulmones, donde se oxigena."
+    },
+    {
+      "id": 47,
+      "category": "oběhová soustava",
+      "question": "La sangre desoxigenada de la circulación mayor (sistémica) llega:",
+      "options": [
+        { "key": "a", "text": "a la aurícula izquierda" },
+        { "key": "b", "text": "al ventrículo izquierdo" },
+        { "key": "c", "text": "a la aurícula derecha" },
+        { "key": "d", "text": "al ventrículo derecho" }
+      ],
+      "correct": "c",
+      "explanation": "La sangre desoxigenada del cuerpo vuelve por las venas cavas superior e inferior a la aurícula derecha. De ahí pasa al ventrículo derecho y a los pulmones."
+    },
+    {
+      "id": 48,
+      "category": "oběhová soustava",
+      "question": "La frecuencia cardíaca en reposo de un adulto sano es de aproximadamente:",
+      "options": [
+        { "key": "a", "text": "30 latidos por minuto" },
+        { "key": "b", "text": "70 latidos por minuto" },
+        { "key": "c", "text": "110 latidos por minuto" },
+        { "key": "d", "text": "140 latidos por minuto" }
+      ],
+      "correct": "b",
+      "explanation": "La frecuencia cardíaca en reposo de un adulto sano es de 60–80 latidos por minuto, típicamente cerca de 70. En deportistas entrenados puede ser menor."
+    },
+    {
+      "id": 49,
+      "category": "oběhová soustava",
+      "question": "La circulación menor (pulmonar) forma el circuito:",
+      "options": [
+        { "key": "a", "text": "entre el ventrículo izquierdo, los pulmones y la aurícula derecha" },
+        { "key": "b", "text": "entre el ventrículo derecho, los pulmones y la aurícula izquierda" },
+        { "key": "c", "text": "entre el ventrículo izquierdo, la aurícula izquierda, los pulmones y la aurícula derecha" },
+        { "key": "d", "text": "entre la aurícula derecha, los pulmones y el ventrículo derecho" }
+      ],
+      "correct": "b",
+      "explanation": "Circulación menor (pulmonar): ventrículo derecho → arteria pulmonar → pulmones → venas pulmonares → aurícula izquierda. Sirve para oxigenar la sangre."
+    },
+    {
+      "id": 50,
+      "category": "oběhová soustava",
+      "question": "La aorta:",
+      "options": [
+        { "key": "a", "text": "sale del ventrículo izquierdo" },
+        { "key": "b", "text": "lleva sangre oxigenada" },
+        { "key": "c", "text": "forma parte de la circulación mayor (sistémica)" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todas las afirmaciones son correctas. La aorta es la mayor arteria del cuerpo, sale del ventrículo izquierdo y distribuye sangre oxigenada por todo el cuerpo (circulación mayor)."
+    },
+    {
+      "id": 51,
+      "category": "oběhová soustava",
+      "question": "Marque la afirmación incorrecta:",
+      "options": [
+        { "key": "a", "text": "La aorta lleva sangre del ventrículo izquierdo a la circulación mayor (sistémica)." },
+        { "key": "b", "text": "El corazón en reposo bombea unos 5 litros de sangre por minuto." },
+        { "key": "c", "text": "La arteria pulmonar lleva sangre del corazón a los pulmones." },
+        { "key": "d", "text": "La sangre oxigenada se dirige a la aurícula derecha." }
+      ],
+      "correct": "d",
+      "explanation": "La afirmación d) es incorrecta: la sangre oxigenada llega a la aurícula izquierda (desde los pulmones). A la aurícula derecha llega sangre desoxigenada del cuerpo."
+    },
+    {
+      "id": 52,
+      "category": "oběhová soustava",
+      "question": "La aorta:",
+      "options": [
+        { "key": "a", "text": "sale del ventrículo derecho" },
+        { "key": "b", "text": "forma parte de la circulación menor (pulmonar)" },
+        { "key": "c", "text": "lleva sangre oxigenada" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "c",
+      "explanation": "Solo la respuesta c) es correcta: la aorta lleva sangre oxigenada. Sale del ventrículo izquierdo (no del derecho) y forma parte de la circulación mayor (no de la menor)."
+    },
+    {
+      "id": 53,
+      "category": "oběhová soustava",
+      "question": "La parte más ramificada del sistema circulatorio está formada por:",
+      "options": [
+        { "key": "a", "text": "las arterias" },
+        { "key": "b", "text": "las arteriolas" },
+        { "key": "c", "text": "las vénulas" },
+        { "key": "d", "text": "los capilares" }
+      ],
+      "correct": "d",
+      "explanation": "Los capilares forman la red más ramificada del sistema circulatorio. Su longitud total en el cuerpo humano se estima en 100 000 km."
+    },
+    {
+      "id": 54,
+      "category": "oběhová soustava",
+      "question": "Los vasos más pequeños son:",
+      "options": [
+        { "key": "a", "text": "los vasos linfáticos" },
+        { "key": "b", "text": "los capilares" },
+        { "key": "c", "text": "las vénulas" },
+        { "key": "d", "text": "las arteriolas" }
+      ],
+      "correct": "b",
+      "explanation": "Los capilares son los vasos sanguíneos más pequeños, de 5–10 micrómetros de diámetro. Su pared está formada por una sola capa de células, lo que permite el intercambio con los tejidos."
+    },
+    {
+      "id": 55,
+      "category": "oběhová soustava",
+      "question": "El corazón de un adulto bombea en reposo, en 1 minuto, aproximadamente:",
+      "options": [
+        { "key": "a", "text": "0,1 litros de sangre" },
+        { "key": "b", "text": "1 litro de sangre" },
+        { "key": "c", "text": "5 litros de sangre" },
+        { "key": "d", "text": "10 litros de sangre" }
+      ],
+      "correct": "c",
+      "explanation": "El gasto cardíaco en reposo es de unos 5 litros por minuto. Es decir, todo el volumen sanguíneo pasa por el corazón aproximadamente una vez por minuto."
+    },
+    {
+      "id": 56,
+      "category": "oběhová soustava",
+      "question": "La sangre desoxigenada se conduce a los pulmones:",
+      "options": [
+        { "key": "a", "text": "por la aorta desde el ventrículo izquierdo" },
+        { "key": "b", "text": "por la arteria pulmonar desde el ventrículo derecho" },
+        { "key": "c", "text": "por la vena porta" },
+        { "key": "d", "text": "por la vena cava superior" }
+      ],
+      "correct": "b",
+      "explanation": "La sangre desoxigenada se conduce a los pulmones por la arteria pulmonar (truncus pulmonalis) desde el ventrículo derecho. Allí se oxigena."
+    },
+    {
+      "id": 57,
+      "category": "oběhová soustava",
+      "question": "La vena porta conduce sangre:",
+      "options": [
+        { "key": "a", "text": "de los órganos abdominales al hígado" },
+        { "key": "b", "text": "de los pulmones al hígado" },
+        { "key": "c", "text": "del hígado a los riñones" },
+        { "key": "d", "text": "del corazón a la circulación mayor (sistémica)" }
+      ],
+      "correct": "a",
+      "explanation": "La vena porta (vena portae) conduce la sangre del tubo digestivo y del bazo al hígado. Allí se procesan los nutrientes absorbidos en el intestino."
+    },
+    {
+      "id": 58,
+      "category": "oběhová soustava",
+      "question": "La arteria pulmonar:",
+      "options": [
+        { "key": "a", "text": "sale del ventrículo derecho" },
+        { "key": "b", "text": "lleva sangre desoxigenada" },
+        { "key": "c", "text": "forma parte de la circulación menor (pulmonar)" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todas las afirmaciones son correctas. La arteria pulmonar sale del ventrículo derecho, lleva sangre desoxigenada y forma parte de la circulación menor (pulmonar)."
+    },
+    {
+      "id": 59,
+      "category": "oběhová soustava",
+      "question": "Del ventrículo derecho la sangre se expulsa:",
+      "options": [
+        { "key": "a", "text": "a la circulación menor (pulmonar)" },
+        { "key": "b", "text": "a la circulación mayor (sistémica)" },
+        { "key": "c", "text": "a la circulación porta" },
+        { "key": "d", "text": "al hígado" }
+      ],
+      "correct": "a",
+      "explanation": "Del ventrículo derecho la sangre se expulsa por la arteria pulmonar a la circulación menor (pulmonar), donde se oxigena en los pulmones."
+    },
+    {
+      "id": 60,
+      "category": "oběhová soustava",
+      "question": "Bajo esfuerzo, el corazón de un adulto bombea, en 1 minuto:",
+      "options": [
+        { "key": "a", "text": "hasta 5 litros de sangre" },
+        { "key": "b", "text": "hasta 10 litros de sangre" },
+        { "key": "c", "text": "hasta 30 litros de sangre" },
+        { "key": "d", "text": "hasta 100 litros de sangre" }
+      ],
+      "correct": "c",
+      "explanation": "Con esfuerzo intenso el gasto cardíaco puede subir hasta 25–30 litros por minuto (en deportistas entrenados). En reposo es de unos 5 litros."
+    },
+    {
+      "id": 61,
+      "category": "toxicita plynů",
+      "question": "El estímulo principal para la inspiración es la irritación del centro respiratorio por:",
+      "options": [
+        { "key": "a", "text": "falta de oxígeno en el organismo" },
+        { "key": "b", "text": "exceso de oxígeno en el organismo" },
+        { "key": "c", "text": "falta de dióxido de carbono en el organismo" },
+        { "key": "d", "text": "exceso de dióxido de carbono en el organismo" }
+      ],
+      "correct": "d",
+      "explanation": "El principal estímulo para inspirar es el aumento de CO₂ en sangre. Por eso la hiperventilación es peligrosa: reduce el CO₂ y el buceador puede no sentir la necesidad de respirar."
+    },
+    {
+      "id": 62,
+      "category": "krev a přenos plynů",
+      "question": "El dióxido de carbono pasa de los tejidos a la sangre y de la sangre a los pulmones:",
+      "options": [
+        { "key": "a", "text": "por la mayor presión parcial del nitrógeno" },
+        { "key": "b", "text": "por difusión, por diferencia de presiones parciales" },
+        { "key": "c", "text": "por desplazamiento del oxígeno" },
+        { "key": "d", "text": "por la acción de los glóbulos blancos" }
+      ],
+      "correct": "b",
+      "explanation": "El intercambio de gases ocurre por difusión: los gases pasan del lugar de mayor presión parcial al de menor presión parcial."
+    },
+    {
+      "id": 63,
+      "category": "dýchací soustava",
+      "question": "Un adulto en reposo respira en 1 minuto aproximadamente:",
+      "options": [
+        { "key": "a", "text": "8 veces" },
+        { "key": "b", "text": "10 veces" },
+        { "key": "c", "text": "16 veces" },
+        { "key": "d", "text": "30 veces" }
+      ],
+      "correct": "c",
+      "explanation": "La frecuencia respiratoria en reposo de un adulto es de 12–20 respiraciones por minuto, típicamente alrededor de 16."
+    },
+    {
+      "id": 64,
+      "category": "krev a přenos plynů",
+      "question": "El plasma sanguíneo:",
+      "options": [
+        { "key": "a", "text": "es un líquido amarillento" },
+        { "key": "b", "text": "contiene aproximadamente un 90 % de agua" },
+        { "key": "c", "text": "transporta glóbulos rojos, glóbulos blancos y plaquetas" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todas las afirmaciones son correctas. El plasma sanguíneo es un líquido amarillento que constituye cerca del 55 % del volumen sanguíneo, contiene un 90 % de agua y transporta las células sanguíneas."
+    },
+    {
+      "id": 65,
+      "category": "krev a přenos plynů",
+      "question": "Por gases respiratorios se entiende:",
+      "options": [
+        { "key": "a", "text": "oxígeno y dióxido de carbono" },
+        { "key": "b", "text": "oxígeno, helio e hidrógeno" },
+        { "key": "c", "text": "oxígeno y nitrógeno" },
+        { "key": "d", "text": "oxígeno, nitrógeno y dióxido de carbono" }
+      ],
+      "correct": "a",
+      "explanation": "Por gases respiratorios entendemos el oxígeno (O₂) y el dióxido de carbono (CO₂): los gases que se intercambian entre el organismo y el entorno al respirar."
+    },
+    {
+      "id": 66,
+      "category": "krev a přenos plynů",
+      "question": "El plasma sanguíneo:",
+      "options": [
+        { "key": "a", "text": "fija el oxígeno mediante un enlace químico reversible" },
+        { "key": "b", "text": "contiene aproximadamente un 90 % de agua" },
+        { "key": "c", "text": "se forma en la médula ósea" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "b",
+      "explanation": "Solo es correcta la respuesta b). El oxígeno lo fija la hemoglobina de los glóbulos rojos (no el plasma) y en la médula ósea se forman las células sanguíneas, no el plasma."
+    },
+    {
+      "id": 67,
+      "category": "krev a přenos plynů",
+      "question": "Los glóbulos rojos se forman:",
+      "options": [
+        { "key": "a", "text": "en la médula ósea" },
+        { "key": "b", "text": "en el hígado" },
+        { "key": "c", "text": "en la médula espinal" },
+        { "key": "d", "text": "en la sangre, a partir del plasma" }
+      ],
+      "correct": "a",
+      "explanation": "Los glóbulos rojos (eritrocitos) se forman en la médula ósea roja. En adultos, sobre todo en huesos planos (pelvis, esternón, cráneo)."
+    },
+    {
+      "id": 68,
+      "category": "krev a přenos plynů",
+      "question": "Marque la afirmación incorrecta:",
+      "options": [
+        { "key": "a", "text": "Los glóbulos blancos intervienen en la detención de la hemorragia." },
+        { "key": "b", "text": "Los glóbulos rojos se forman en la médula ósea." },
+        { "key": "c", "text": "Los glóbulos rojos intervienen en el transporte de oxígeno." },
+        { "key": "d", "text": "Aproximadamente la mitad de la sangre es plasma." }
+      ],
+      "correct": "a",
+      "explanation": "La afirmación a) es incorrecta: en la detención de la hemorragia intervienen las plaquetas (trombocitos), no los glóbulos blancos. Los glóbulos blancos combaten las infecciones."
+    },
+    {
+      "id": 69,
+      "category": "krev a přenos plynů",
+      "question": "Para el transporte de oxígeno, lo más importante en la sangre es:",
+      "options": [
+        { "key": "a", "text": "la presencia de glóbulos blancos" },
+        { "key": "b", "text": "la capacidad de fijar el oxígeno mediante un enlace químico reversible" },
+        { "key": "c", "text": "el contenido aproximado del 50 % de plasma" },
+        { "key": "d", "text": "la presencia de plaquetas" }
+      ],
+      "correct": "b",
+      "explanation": "El transporte de oxígeno depende de la capacidad de la hemoglobina de los glóbulos rojos para fijar el oxígeno mediante un enlace químico reversible: lo capta en los pulmones y lo libera en los tejidos."
+    },
+    {
+      "id": 70,
+      "category": "krev a přenos plynů",
+      "question": "En el transporte de oxígeno intervienen:",
+      "options": [
+        { "key": "a", "text": "las plaquetas" },
+        { "key": "b", "text": "los glóbulos blancos" },
+        { "key": "c", "text": "los glóbulos rojos" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "c",
+      "explanation": "En el transporte de oxígeno intervienen los glóbulos rojos (eritrocitos), que contienen hemoglobina, el pigmento capaz de fijar el oxígeno."
+    },
+    {
+      "id": 71,
+      "category": "krev a přenos plynů",
+      "question": "El oxígeno se une a la hemoglobina mediante:",
+      "options": [
+        { "key": "a", "text": "un enlace químico reversible" },
+        { "key": "b", "text": "un enlace químico irreversible" },
+        { "key": "c", "text": "un enlace físico" },
+        { "key": "d", "text": "un enlace hormonal" }
+      ],
+      "correct": "a",
+      "explanation": "El oxígeno se une a la hemoglobina mediante un enlace químico reversible. En los pulmones (alta <em>p</em>O₂) se une, en los tejidos (baja <em>p</em>O₂) se libera. El monóxido de carbono se une de forma irreversible y por eso es venenoso."
+    },
+    {
+      "id": 72,
+      "category": "krev a přenos plynů",
+      "question": "Las plaquetas intervienen:",
+      "options": [
+        { "key": "a", "text": "en el transporte de oxígeno" },
+        { "key": "b", "text": "en la defensa frente a las infecciones" },
+        { "key": "c", "text": "en la digestión" },
+        { "key": "d", "text": "en la detención de la hemorragia" }
+      ],
+      "correct": "d",
+      "explanation": "Las plaquetas (trombocitos) intervienen en la detención de la hemorragia: se agregan en el lugar de una lesión vascular y participan en la formación del coágulo."
+    },
+    {
+      "id": 73,
+      "category": "krev a přenos plynů",
+      "question": "Los glóbulos blancos intervienen:",
+      "options": [
+        { "key": "a", "text": "en el transporte de oxígeno" },
+        { "key": "b", "text": "en la detención de la hemorragia" },
+        { "key": "c", "text": "en la defensa del organismo frente a las infecciones" },
+        { "key": "d", "text": "en la digestión" }
+      ],
+      "correct": "c",
+      "explanation": "Los glóbulos blancos (leucocitos) forman parte del sistema inmunitario y protegen al organismo de las infecciones: destruyen bacterias, virus y otros patógenos."
+    },
+    {
+      "id": 74,
+      "category": "krev a přenos plynů",
+      "question": "Los glóbulos rojos intervienen:",
+      "options": [
+        { "key": "a", "text": "en la defensa del organismo frente a las infecciones" },
+        { "key": "b", "text": "en el transporte de oxígeno" },
+        { "key": "c", "text": "en la detención de la hemorragia" },
+        { "key": "d", "text": "en la digestión" }
+      ],
+      "correct": "b",
+      "explanation": "Los glóbulos rojos (eritrocitos) contienen hemoglobina y su función principal es transportar oxígeno desde los pulmones a los tejidos y devolver el CO₂ a los pulmones."
+    },
+    {
+      "id": 75,
+      "category": "krev a přenos plynů",
+      "question": "Por respiración interna se entiende el intercambio de gases respiratorios:",
+      "options": [
+        { "key": "a", "text": "entre la sangre y los tejidos" },
+        { "key": "b", "text": "entre los pulmones y la sangre" },
+        { "key": "c", "text": "entre el entorno y los pulmones" },
+        { "key": "d", "text": "entre tramos de las vías respiratorias" }
+      ],
+      "correct": "a",
+      "explanation": "La respiración interna (tisular) es el intercambio de gases entre la sangre y los tejidos. El oxígeno pasa de la sangre a las células; el CO₂, en sentido contrario."
+    },
+    {
+      "id": 76,
+      "category": "krev a přenos plynů",
+      "question": "Por respiración externa se entiende el intercambio de gases respiratorios:",
+      "options": [
+        { "key": "a", "text": "entre tramos de las vías respiratorias" },
+        { "key": "b", "text": "entre el entorno y los pulmones" },
+        { "key": "c", "text": "entre la sangre y los tejidos" },
+        { "key": "d", "text": "entre los pulmones y la sangre" }
+      ],
+      "correct": "d",
+      "explanation": "La respiración externa (pulmonar) es el intercambio de gases entre los alvéolos y la sangre de los capilares pulmonares. El oxígeno pasa a la sangre y el CO₂ al alvéolo."
+    },
+    {
+      "id": 77,
+      "category": "dýchací soustava",
+      "question": "El centro respiratorio se encuentra:",
+      "options": [
+        { "key": "a", "text": "en los pulmones" },
+        { "key": "b", "text": "en la corteza cerebral" },
+        { "key": "c", "text": "en el bulbo raquídeo" },
+        { "key": "d", "text": "en las arterias del cuello" }
+      ],
+      "correct": "c",
+      "explanation": "El centro respiratorio se encuentra en el bulbo raquídeo (medulla oblongata). Reacciona sobre todo a los niveles de CO₂ en sangre y regula la frecuencia y profundidad de la respiración."
+    },
+    {
+      "id": 78,
+      "category": "dýchací soustava",
+      "question": "El aire alveolar contiene a presión normal aproximadamente:",
+      "options": [
+        { "key": "a", "text": "10 % de oxígeno y 0 % de dióxido de carbono" },
+        { "key": "b", "text": "15 % de oxígeno y 5 % de dióxido de carbono" },
+        { "key": "c", "text": "21 % de oxígeno y 0,03 % de dióxido de carbono al inhalar, 16 % de oxígeno y 4 % de dióxido de carbono al exhalar" },
+        { "key": "d", "text": "5 % de oxígeno y 15 % de dióxido de carbono" }
+      ],
+      "correct": "b",
+      "explanation": "El aire alveolar contiene aproximadamente un 15 % de O₂ y un 5 % de CO₂. Difiere del aire inspirado (21 % O₂, 0,03 % CO₂) porque allí se produce el intercambio gaseoso."
+    },
+    {
+      "id": 79,
+      "category": "dýchací soustava",
+      "question": "Un adulto en reposo inhala por respiración:",
+      "options": [
+        { "key": "a", "text": "5–6 litros de aire" },
+        { "key": "b", "text": "3–4 litros de aire" },
+        { "key": "c", "text": "1–2 litros de aire" },
+        { "key": "d", "text": "0,3–0,5 litros de aire" }
+      ],
+      "correct": "d",
+      "explanation": "El volumen corriente en reposo es de unos 0,5 litros (500 ml). En esfuerzo aumenta. La capacidad vital (inspiración máxima) es de 4–5 litros."
+    },
+    {
+      "id": 80,
+      "category": "krev a přenos plynů",
+      "question": "El oxígeno pasa de los pulmones a la sangre y de la sangre a los tejidos:",
+      "options": [
+        { "key": "a", "text": "por la mayor presión parcial del nitrógeno" },
+        { "key": "b", "text": "por desplazamiento del dióxido de carbono" },
+        { "key": "c", "text": "por difusión, por diferencia de presiones parciales" },
+        { "key": "d", "text": "en forma de carbonatos" }
+      ],
+      "correct": "c",
+      "explanation": "El oxígeno pasa por difusión desde el lugar de mayor presión parcial (pulmones, sangre) al de menor presión parcial (sangre, tejidos)."
+    },
+    {
+      "id": 81,
+      "category": "ucho a vyrovnávání tlaků",
+      "question": "Los senos paranasales están comunicados con:",
+      "options": [
+        { "key": "a", "text": "la cavidad nasal" },
+        { "key": "b", "text": "la nasofaringe" },
+        { "key": "c", "text": "el oído medio" },
+        { "key": "d", "text": "el oído interno" }
+      ],
+      "correct": "a",
+      "explanation": "Los senos paranasales (frontal, etmoidal, esfenoidal, maxilar) están comunicados con la cavidad nasal. Al bucear la presión se compensa en ellos automáticamente."
+    },
+    {
+      "id": 82,
+      "category": "ucho a vyrovnávání tlaků",
+      "question": "En una persona sana, los senos paranasales están:",
+      "options": [
+        { "key": "a", "text": "cerrados" },
+        { "key": "b", "text": "comunicados libremente con las cavidades del oído medio" },
+        { "key": "c", "text": "comunicados libremente con la cavidad nasal" },
+        { "key": "d", "text": "comunicados con las vías respiratorias mediante una válvula unidireccional" }
+      ],
+      "correct": "c",
+      "explanation": "En una persona sana, los senos paranasales están libremente comunicados con la cavidad nasal, por lo que la presión se compensa automáticamente. Con catarro la comunicación puede estrecharse."
+    },
+    {
+      "id": 83,
+      "category": "toxicita plynů",
+      "question": "La aparición de la narcosis nitrogenada (borrachera de las profundidades) se manifiesta como:",
+      "options": [
+        { "key": "a", "text": "depresión" },
+        { "key": "b", "text": "mejor concentración en la tarea" },
+        { "key": "c", "text": "euforia" },
+        { "key": "d", "text": "temblor muscular incontrolable" }
+      ],
+      "correct": "c",
+      "explanation": "La aparición de la narcosis nitrogenada se manifiesta típicamente con euforia y sensación de exaltación, parecida a la embriaguez. Es peligroso, porque el buceador puede no reconocer el problema."
+    },
+    {
+      "id": 84,
+      "category": "toxicita plynů",
+      "question": "La aparición de la narcosis nitrogenada puede acelerarse por:",
+      "options": [
+        { "key": "a", "text": "estrés" },
+        { "key": "b", "text": "esfuerzo físico" },
+        { "key": "c", "text": "técnica de respiración inadecuada" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todos los factores citados pueden acelerar la narcosis: estrés, esfuerzo, mala técnica respiratoria (acumulación de CO₂), así como fatiga, frío o alcohol."
+    },
+    {
+      "id": 85,
+      "category": "termoregulace",
+      "question": "La permanencia prolongada sin traje aislante es posible en agua de al menos:",
+      "options": [
+        { "key": "a", "text": "42 °C" },
+        { "key": "b", "text": "35 °C" },
+        { "key": "c", "text": "30 °C" },
+        { "key": "d", "text": "18 °C" }
+      ],
+      "correct": "b",
+      "explanation": "La permanencia prolongada sin neopreno es posible en agua de al menos 35 °C (zona termoneutra). El agua disipa el calor 25 veces más rápido que el aire."
+    },
+    {
+      "id": 86,
+      "category": "termoregulace",
+      "question": "Entre las reacciones del organismo al frío NO se incluye:",
+      "options": [
+        { "key": "a", "text": "vasoconstricción" },
+        { "key": "b", "text": "aumento de la diuresis (poliuria)" },
+        { "key": "c", "text": "temblor muscular incontrolable" },
+        { "key": "d", "text": "euforia" }
+      ],
+      "correct": "d",
+      "explanation": "La euforia no es una reacción al frío. Sí lo son la vasoconstricción, la poliuria por inmersión y el tiritón, que son respuestas defensivas típicas."
+    },
+    {
+      "id": 87,
+      "category": "toxicita plynů",
+      "question": "Marque la afirmación incorrecta:",
+      "options": [
+        { "key": "a", "text": "El dióxido de carbono se transporta en la sangre en forma de carbonatos." },
+        { "key": "b", "text": "La hiperventilación lleva a la acumulación de oxígeno en el organismo." },
+        { "key": "c", "text": "Por respiración externa se entiende el intercambio de gases entre los pulmones y la sangre." },
+        { "key": "d", "text": "Por respiración interna se entiende el intercambio de gases entre la sangre y los tejidos." }
+      ],
+      "correct": "b",
+      "explanation": "La afirmación b) es incorrecta: la hiperventilación no acumula oxígeno, sino que elimina CO₂. Las reservas de O₂ apenas aumentan, pero disminuye el estímulo para inspirar."
+    },
+    {
+      "id": 88,
+      "category": "ucho a vyrovnávání tlaků",
+      "question": "La trompa auditiva (de Eustaquio) conecta:",
+      "options": [
+        { "key": "a", "text": "el oído medio con los senos paranasales" },
+        { "key": "b", "text": "el oído medio con el oído interno" },
+        { "key": "c", "text": "el oído medio con la nasofaringe" },
+        { "key": "d", "text": "el oído interno con la nasofaringe" }
+      ],
+      "correct": "c",
+      "explanation": "La trompa de Eustaquio conecta el oído medio con la nasofaringe. Permite la compensación de la presión en el oído medio, esencial para el buceador en el descenso."
+    },
+    {
+      "id": 89,
+      "category": "toxicita plynů",
+      "question": "Una consecuencia de la hiperventilación es:",
+      "options": [
+        { "key": "a", "text": "descenso del nivel de dióxido de carbono en el organismo" },
+        { "key": "b", "text": "acumulación de dióxido de carbono en el organismo" },
+        { "key": "c", "text": "descenso del nivel de oxígeno en el organismo" },
+        { "key": "d", "text": "acumulación de oxígeno en el organismo" }
+      ],
+      "correct": "a",
+      "explanation": "La hiperventilación elimina CO₂ y reduce su nivel en sangre. Esto es peligroso en la apnea: el buceador puede no sentir la necesidad de respirar y perder el conocimiento."
+    },
+    {
+      "id": 90,
+      "category": "ucho a vyrovnávání tlaků",
+      "question": "La compensación de la presión en el oído medio se logra mediante:",
+      "options": [
+        { "key": "a", "text": "la apertura de los orificios de los senos paranasales" },
+        { "key": "b", "text": "el cierre de los conductos auditivos externos" },
+        { "key": "c", "text": "el cierre de los orificios de las trompas auditivas (de Eustaquio)" },
+        { "key": "d", "text": "la apertura de los orificios de las trompas auditivas (de Eustaquio)" }
+      ],
+      "correct": "d",
+      "explanation": "La compensación del oído medio se logra abriendo las trompas de Eustaquio (maniobra de Valsalva, deglución, movimiento mandibular). En el descenso hay que compensar de forma continua."
+    },
+    {
+      "id": 91,
+      "category": "toxicita plynů",
+      "question": "Al respirar aire comprimido, la narcosis nitrogenada (borrachera de las profundidades) aparece típicamente a una profundidad de:",
+      "options": [
+        { "key": "a", "text": "10–20 metros" },
+        { "key": "b", "text": "30–40 metros" },
+        { "key": "c", "text": "alrededor de 50 metros" },
+        { "key": "d", "text": "más de 60 metros" }
+      ],
+      "correct": "b",
+      "explanation": "La narcosis nitrogenada con aire aparece típicamente a 30–40 m. La sensibilidad individual varía y puede verse aumentada por otros factores."
+    },
+    {
+      "id": 92,
+      "category": "toxicita plynů",
+      "question": "La narcosis nitrogenada es causada por:",
+      "options": [
+        { "key": "a", "text": "el nitrógeno y el dióxido de carbono" },
+        { "key": "b", "text": "la elevación de la presión parcial del oxígeno" },
+        { "key": "c", "text": "la presión del equipo sobre las arterias del cuello" },
+        { "key": "d", "text": "el helio o, en su caso, el hidrógeno" }
+      ],
+      "correct": "a",
+      "explanation": "La narcosis nitrogenada la causa principalmente el nitrógeno (efecto narcótico) y puede verse acentuada por niveles elevados de CO₂. El helio no tiene efecto narcótico."
+    },
+    {
+      "id": 93,
+      "category": "sycení tkání",
+      "question": "Durante la inmersión, el tejido que más rápidamente se satura de nitrógeno es:",
+      "options": [
+        { "key": "a", "text": "el músculo esquelético" },
+        { "key": "b", "text": "el cerebro" },
+        { "key": "c", "text": "la sangre" },
+        { "key": "d", "text": "el corazón" }
+      ],
+      "correct": "c",
+      "explanation": "La sangre se satura de nitrógeno con la mayor rapidez porque está en contacto directo con los alvéolos. Los tejidos rápidos (cerebro, corazón) también se saturan deprisa por su buena perfusión."
+    },
+    {
+      "id": 94,
+      "category": "sycení tkání",
+      "question": "El nitrógeno residual:",
+      "options": [
+        { "key": "a", "text": "es la cantidad de nitrógeno que falta para saturar completamente un tejido dado" },
+        { "key": "b", "text": "se desatura del organismo durante muchas horas tras la salida" },
+        { "key": "c", "text": "es el nitrógeno disuelto en los tejidos desde la inmersión hasta el inicio del ascenso a la velocidad prescrita" },
+        { "key": "d", "text": "se desatura del organismo durante la(s) parada(s) de descompresión" }
+      ],
+      "correct": "b",
+      "explanation": "El nitrógeno residual es el nitrógeno disuelto en los tejidos tras la inmersión. Sigue desaturándose durante muchas horas tras salir; por eso importa el intervalo en superficie antes de otra inmersión o de volar."
+    },
+    {
+      "id": 95,
+      "category": "sycení tkání",
+      "question": "Durante la inmersión, el tejido que más lentamente se satura de nitrógeno es:",
+      "options": [
+        { "key": "a", "text": "ligamentos, tendones y huesos" },
+        { "key": "b", "text": "los riñones" },
+        { "key": "c", "text": "el músculo esquelético" },
+        { "key": "d", "text": "la sangre" }
+      ],
+      "correct": "a",
+      "explanation": "Ligamentos, tendones y huesos (tejidos lentos) se saturan más lentamente por su escasa perfusión. Por eso son vulnerables en inmersiones largas o repetitivas."
+    },
+    {
+      "id": 96,
+      "category": "sycení tkání",
+      "question": "Marque la afirmación incorrecta:",
+      "options": [
+        { "key": "a", "text": "Durante el descenso, el nitrógeno se distribuye por la sangre por todo el cuerpo." },
+        { "key": "b", "text": "En comparación con la mayoría de las estructuras corporales, en el tejido graso se disuelve cinco veces más nitrógeno." },
+        { "key": "c", "text": "El nitrógeno residual sigue desaturándose del organismo durante muchas horas tras salir." },
+        { "key": "d", "text": "Los tejidos que se saturan más rápido en el descenso se desaturan más lentamente en el ascenso." }
+      ],
+      "correct": "d",
+      "explanation": "La afirmación d) es incorrecta: los tejidos que se saturan rápido también se desaturan rápido (tejidos rápidos). Los tejidos lentos se saturan y desaturan lentamente."
+    },
+    {
+      "id": 97,
+      "category": "termoregulace",
+      "question": "La temperatura media normal del llamado núcleo corporal es de aproximadamente:",
+      "options": [
+        { "key": "a", "text": "18 °C" },
+        { "key": "b", "text": "30 °C" },
+        { "key": "c", "text": "37 °C" },
+        { "key": "d", "text": "42 °C" }
+      ],
+      "correct": "c",
+      "explanation": "La temperatura del núcleo corporal es de unos 37 °C (36,5–37,5 °C). Por encima de 42 °C o por debajo de 28 °C resulta peligrosa para la vida."
+    },
+    {
+      "id": 98,
+      "category": "ucho a vyrovnávání tlaků",
+      "question": "Marque la afirmación incorrecta:",
+      "options": [
+        { "key": "a", "text": "Las trompas auditivas (de Eustaquio) conectan las cavidades del oído medio con la nasofaringe." },
+        { "key": "b", "text": "Para compensar la presión del oído medio hay que abrir los orificios de las trompas auditivas (de Eustaquio)." },
+        { "key": "c", "text": "El órgano del equilibrio se encuentra en el oído interno." },
+        { "key": "d", "text": "En una persona sana, los senos paranasales no están comunicados con las vías respiratorias." }
+      ],
+      "correct": "d",
+      "explanation": "La afirmación d) es incorrecta: en una persona sana los senos paranasales están libremente comunicados con la cavidad nasal (y, por tanto, con las vías respiratorias)."
+    },
+    {
+      "id": 99,
+      "category": "ucho a vyrovnávání tlaků",
+      "question": "La compensación de la presión en los senos paranasales:",
+      "options": [
+        { "key": "a", "text": "depende de la apertura de los orificios de las trompas auditivas (de Eustaquio)" },
+        { "key": "b", "text": "es automática en una persona sana" },
+        { "key": "c", "text": "es necesaria solo al bucear con equipo autónomo" },
+        { "key": "d", "text": "se asegura por la elasticidad de las paredes" }
+      ],
+      "correct": "b",
+      "explanation": "En una persona sana la compensación de los senos paranasales es automática gracias a su libre comunicación con la cavidad nasal. Pueden surgir problemas con catarro o sinusitis."
+    },
+    {
+      "id": 100,
+      "category": "termoregulace",
+      "question": "La dilatación de los vasos es una respuesta del organismo para protegerse:",
+      "options": [
+        { "key": "a", "text": "del sobrecalentamiento" },
+        { "key": "b", "text": "de la hipotermia" },
+        { "key": "c", "text": "de la hiperventilación" },
+        { "key": "d", "text": "del shock" }
+      ],
+      "correct": "a",
+      "explanation": "La vasodilatación es una respuesta protectora frente al sobrecalentamiento: más sangre fluye hacia la superficie del cuerpo y el calor se disipa al entorno. Con frío, los vasos se contraen (vasoconstricción)."
+    }
+  ]
+}

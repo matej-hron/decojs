@@ -1,0 +1,1306 @@
+{
+  "title": "Normas de Seguridad – Exámenes SPČR 2018",
+  "description": "Preguntas de examen sobre las Normas de Seguridad SPČR 2016 para buceadores",
+  "questions": [
+    {
+      "id": 1,
+      "category": "obecne-smernice",
+      "question": "El cumplimiento de las Normas de Seguridad de la SPČR 2016 se recomienda encarecidamente:",
+      "options": [
+        { "key": "a", "text": "a todos los buceadores salvo a los participantes en formación (alumnos)" },
+        { "key": "b", "text": "a todos los participantes en la actividad de buceo salvo a los instructores" },
+        { "key": "c", "text": "a todos los buceadores" },
+        { "key": "d", "text": "solo a los instructores de buceo durante la formación" }
+      ],
+      "correct": "c",
+      "explanation": "Las Normas de Seguridad de la SPČR 2016 se recomiendan encarecidamente a todos los buceadores sin excepción."
+    },
+    {
+      "id": 2,
+      "category": "obecne-smernice",
+      "question": "En la formación (salvo que las Normas de Formación vigentes de la SPČR dispongan otra cosa) y en los eventos de la SPČR (Federación Checa de Buceo), de la SČP y de la SPMS:",
+      "options": [
+        { "key": "a", "text": "el cumplimiento de las Normas de Seguridad es obligatorio si la formación supera los 10 alumnos o el evento los 20 buceadores" },
+        { "key": "b", "text": "el cumplimiento se deja al criterio del jefe de inmersión o del instructor" },
+        { "key": "c", "text": "el cumplimiento es obligatorio para los participantes con cualificación hasta Buceador CMAS P2 incluido" },
+        { "key": "d", "text": "el cumplimiento de las Normas de Seguridad es obligatorio" }
+      ],
+      "correct": "d",
+      "explanation": "En la formación y en los eventos de la SPČR el cumplimiento de las Normas de Seguridad es obligatorio."
+    },
+    {
+      "id": 3,
+      "category": "obecne-smernice",
+      "question": "Los buceadores deben respetar:",
+      "options": [
+        { "key": "a", "text": "un perfil de inmersión cuya profundidad media no supere los 15 m" },
+        { "key": "b", "text": "el uso del tubo respirador al nadar en superficie con el equipo autónomo" },
+        { "key": "c", "text": "las restricciones aplicables a la cualificación que poseen" },
+        { "key": "d", "text": "una pauta de buceo de hasta dos inmersiones diarias" }
+      ],
+      "correct": "c",
+      "explanation": "Los buceadores deben respetar las restricciones aplicables a la cualificación que poseen."
+    },
+    {
+      "id": 4,
+      "category": "obecne-smernice",
+      "question": "Los buceadores:",
+      "options": [
+        { "key": "a", "text": "se someten periódicamente a controles de su estado de salud para comprobar la aptitud para el buceo" },
+        { "key": "b", "text": "no usan equipo de más de 6 años de antigüedad desde su fabricación" },
+        { "key": "c", "text": "deben conocer el código internacional de banderas completo" },
+        { "key": "d", "text": "ninguna respuesta es correcta" }
+      ],
+      "correct": "a",
+      "explanation": "Los buceadores se someten periódicamente a controles de salud para comprobar la aptitud para el buceo."
+    },
+    {
+      "id": 5,
+      "category": "obecne-smernice",
+      "question": "La validez del reconocimiento médico es de:",
+      "options": [
+        { "key": "a", "text": "3 meses" },
+        { "key": "b", "text": "6 meses" },
+        { "key": "c", "text": "9 meses" },
+        { "key": "d", "text": "1 año" }
+      ],
+      "correct": "d",
+      "explanation": "La validez del reconocimiento médico de aptitud para el buceo es de 1 año."
+    },
+    {
+      "id": 6,
+      "category": "obecne-smernice",
+      "question": "La validez del reconocimiento médico es de:",
+      "options": [
+        { "key": "a", "text": "6 meses" },
+        { "key": "b", "text": "1 año" },
+        { "key": "c", "text": "2 años" },
+        { "key": "d", "text": "hasta los 40 años, 2 años; por encima de los 40, 1 año" }
+      ],
+      "correct": "b",
+      "explanation": "La validez del reconocimiento médico es de 1 año."
+    },
+    {
+      "id": 7,
+      "category": "obecne-smernice",
+      "question": "Marque la afirmación que NO se ajusta a las Normas de Seguridad de la SPČR 2016:",
+      "options": [
+        { "key": "a", "text": "Los buceadores respetan las restricciones aplicables a la cualificación que poseen." },
+        { "key": "b", "text": "Los buceadores se someten periódicamente a controles de su estado de salud para comprobar la aptitud para el buceo." },
+        { "key": "c", "text": "La validez del reconocimiento médico es de 2 años." },
+        { "key": "d", "text": "Nadie puede obligar a un buceador a sumergirse." }
+      ],
+      "correct": "c",
+      "explanation": "La afirmación de que el reconocimiento médico vale 2 años no se ajusta a las normas: lo correcto es 1 año."
+    },
+    {
+      "id": 8,
+      "category": "zpusobilost",
+      "question": "Los buceadores evitan en cualquier caso bucear:",
+      "options": [
+        { "key": "a", "text": "con temperaturas inferiores a −10 °C" },
+        { "key": "b", "text": "si sus capacidades físicas y/o psíquicas están mermadas por el cansancio" },
+        { "key": "c", "text": "si no van equipados con un ordenador de buceo" },
+        { "key": "d", "text": "cuando la visibilidad bajo el agua cae por debajo de 2 m" }
+      ],
+      "correct": "b",
+      "explanation": "Los buceadores evitan bucear cuando sus capacidades físicas y/o psíquicas están mermadas por el cansancio."
+    },
+    {
+      "id": 9,
+      "category": "zpusobilost",
+      "question": "Los buceadores evitan en cualquier caso bucear si sus capacidades físicas y/o psíquicas están mermadas por:",
+      "options": [
+        { "key": "a", "text": "una enfermedad" },
+        { "key": "b", "text": "el consumo de alcohol o drogas" },
+        { "key": "c", "text": "el cansancio" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Los buceadores evitan bucear cuando sus capacidades estén mermadas por enfermedad, alcohol/drogas o cansancio: todas las respuestas son correctas."
+    },
+    {
+      "id": 10,
+      "category": "zpusobilost",
+      "question": "Los buceadores cuyas capacidades físicas y/o psíquicas están mermadas:",
+      "options": [
+        { "key": "a", "text": "deben prestar especial atención al equipo antes de la inmersión" },
+        { "key": "b", "text": "deben prestar especial atención a la planificación de las inmersiones" },
+        { "key": "c", "text": "evitan en cualquier caso bucear" },
+        { "key": "d", "text": "bucean a profundidad limitada (Buceador CMAS P1 máx. 10 m, P2 máx. 15 m, P3 o instructor máx. 20 m)" }
+      ],
+      "correct": "c",
+      "explanation": "Los buceadores con capacidades mermadas evitan en cualquier caso bucear."
+    },
+    {
+      "id": 11,
+      "category": "zpusobilost",
+      "question": "A la prevención de accidentes de buceo NO pertenece:",
+      "options": [
+        { "key": "a", "text": "llevar correctamente la libreta de buceo" },
+        { "key": "b", "text": "la práctica regular del buceo" },
+        { "key": "c", "text": "el ejercicio de la resolución de situaciones críticas" },
+        { "key": "d", "text": "una planificación responsable de las inmersiones" }
+      ],
+      "correct": "a",
+      "explanation": "Llevar correctamente la libreta no es una medida de prevención de accidentes; sí lo son la práctica regular, el ejercicio de situaciones críticas y la planificación responsable."
+    },
+    {
+      "id": 12,
+      "category": "zpusobilost",
+      "question": "Marque la afirmación que NO se ajusta a las Normas de Seguridad de la SPČR:",
+      "options": [
+        { "key": "a", "text": "Los buceadores evitan bucear cuando sus capacidades físicas y/o psíquicas están mermadas por enfermedad, cansancio, consumo de alcohol o drogas u otras circunstancias." },
+        { "key": "b", "text": "Los buceadores evitan bucear cuando la temperatura del agua baja de los 6 °C." },
+        { "key": "c", "text": "Los buceadores mantienen continuamente sus destrezas de buceo y su condición física." },
+        { "key": "d", "text": "Los buceadores previenen los accidentes mediante la práctica regular, el ejercicio de situaciones críticas y la planificación responsable." }
+      ],
+      "correct": "b",
+      "explanation": "Las normas no recogen una restricción de bucear cuando la temperatura del agua cae por debajo de 6 °C."
+    },
+    {
+      "id": 13,
+      "category": "zpusobilost",
+      "question": "Los buceadores previenen los accidentes:",
+      "options": [
+        { "key": "a", "text": "con la práctica regular del buceo" },
+        { "key": "b", "text": "ejercitando la resolución de situaciones críticas" },
+        { "key": "c", "text": "con una planificación responsable de las inmersiones" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Los buceadores previenen los accidentes con todas estas medidas: práctica regular, ejercicio de situaciones críticas y planificación responsable."
+    },
+    {
+      "id": 14,
+      "category": "zpusobilost",
+      "question": "Los buceadores:",
+      "options": [
+        { "key": "a", "text": "previenen los accidentes ejercitando la resolución de situaciones críticas" },
+        { "key": "b", "text": "mantienen sus destrezas y su condición física en el periodo previo a cada subida de cualificación" },
+        { "key": "c", "text": "evitan en cualquier caso bucear cuando la visibilidad horizontal bajo el agua cae por debajo de 2 m" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "a",
+      "explanation": "Los buceadores previenen los accidentes ejercitando la resolución de situaciones críticas. Las destrezas se mantienen continuamente (no solo antes de subir de cualificación) y, con poca visibilidad, se utiliza un cabo guía."
+    },
+    {
+      "id": 15,
+      "category": "specialni-potapeni",
+      "question": "Para bucear con mezclas respiratorias artificiales, con rebreathers, en espacios cerrados (incluido el buceo bajo hielo) y en otras condiciones difíciles, se requiere:",
+      "options": [
+        { "key": "a", "text": "haber completado la formación para Buceador CMAS P3" },
+        { "key": "b", "text": "haber completado un curso o formación específicos" },
+        { "key": "c", "text": "una redundancia del equipo" },
+        { "key": "d", "text": "una experiencia de buceo de 150 inmersiones en distintas condiciones" }
+      ],
+      "correct": "b",
+      "explanation": "Para los tipos especiales de buceo se requiere haber completado un curso o formación específicos."
+    },
+    {
+      "id": 16,
+      "category": "specialni-potapeni",
+      "question": "Para bucear bajo hielo se requiere:",
+      "options": [
+        { "key": "a", "text": "haber realizado al menos 90 inmersiones en aguas abiertas, de las cuales al menos 30 nocturnas" },
+        { "key": "b", "text": "haber completado un curso o formación específicos" },
+        { "key": "c", "text": "tener al menos la cualificación de Buceador CMAS P1" },
+        { "key": "d", "text": "tener al menos la cualificación de Buceador CMAS P3" }
+      ],
+      "correct": "b",
+      "explanation": "Para bucear bajo hielo se requiere haber completado un curso o formación específicos."
+    },
+    {
+      "id": 17,
+      "category": "specialni-potapeni",
+      "question": "Evitan bucear bajo hielo los buceadores:",
+      "options": [
+        { "key": "a", "text": "que no van equipados con traje seco" },
+        { "key": "b", "text": "que no van equipados con ordenador de buceo" },
+        { "key": "c", "text": "que no han completado un curso o formación específicos" },
+        { "key": "d", "text": "sin un proceso previo de aclimatación al frío" }
+      ],
+      "correct": "c",
+      "explanation": "Los buceadores que no han completado un curso o formación específicos evitan bucear bajo hielo."
+    },
+    {
+      "id": 18,
+      "category": "specialni-potapeni",
+      "question": "El haber completado un curso o formación específicos y respetar las normas de seguridad allí indicadas:",
+      "options": [
+        { "key": "a", "text": "se exige a todos los buceadores con cualificación CMAS P2 o superior" },
+        { "key": "b", "text": "se exige para bucear en grupos pequeños, con visibilidad bajo el agua inferior a 2 m y a mayor distancia de la costa" },
+        { "key": "c", "text": "no se exige para el buceo bajo hielo" },
+        { "key": "d", "text": "se exige para bucear con mezclas respiratorias artificiales, con rebreathers, en espacios cerrados (incluido el buceo bajo hielo) y en otras condiciones difíciles" }
+      ],
+      "correct": "d",
+      "explanation": "Se exige un curso específico para mezclas artificiales, rebreathers, espacios cerrados, buceo bajo hielo y condiciones difíciles."
+    },
+    {
+      "id": 19,
+      "category": "obecne-smernice",
+      "question": "Los buceadores, en la medida de sus posibilidades:",
+      "options": [
+        { "key": "a", "text": "velan por la protección del medio ambiente" },
+        { "key": "b", "text": "velan por la promoción de su federación miembro de la SPČR" },
+        { "key": "c", "text": "velan por la renovación periódica del equipo" },
+        { "key": "d", "text": "ninguna respuesta es correcta" }
+      ],
+      "correct": "a",
+      "explanation": "Los buceadores, en la medida de sus posibilidades, velan por la protección del medio ambiente."
+    },
+    {
+      "id": 20,
+      "category": "obecne-smernice",
+      "question": "Marque la afirmación que NO se ajusta a las Normas de Seguridad de la SPČR:",
+      "options": [
+        { "key": "a", "text": "La validez del reconocimiento médico es de 1 año." },
+        { "key": "b", "text": "El cumplimiento de las Normas de Seguridad de la SPČR se recomienda encarecidamente a todos los buceadores salvo a los participantes en formación (alumnos), que se rigen por las Normas de Formación de la SPČR." },
+        { "key": "c", "text": "Los buceadores previenen los accidentes mediante una planificación responsable de las inmersiones." },
+        { "key": "d", "text": "Para bucear con mezclas respiratorias artificiales, con rebreathers, en espacios cerrados (incluido el buceo bajo hielo) y en otras condiciones difíciles, se requiere haber completado un curso o formación específicos y respetar las normas de seguridad allí indicadas." }
+      ],
+      "correct": "b",
+      "explanation": "Las Normas de Seguridad se recomiendan a todos los buceadores sin excepción, no a todos salvo los alumnos."
+    },
+    {
+      "id": 21,
+      "category": "vystroj",
+      "question": "El equipo de buceo debe ser:",
+      "options": [
+        { "key": "a", "text": "operativo y adecuado para la inmersión planificada" },
+        { "key": "b", "text": "probado al doble de la profundidad máxima para la que está concebido" },
+        { "key": "c", "text": "aprobado por las juntas directivas miembros de la SPČR" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "a",
+      "explanation": "El equipo de buceo debe ser operativo y adecuado para la inmersión planificada."
+    },
+    {
+      "id": 22,
+      "category": "vystroj",
+      "question": "Para el buceo en aguas abiertas son componentes imprescindibles del equipo:",
+      "options": [
+        { "key": "a", "text": "el cuchillo de buceo y el traje" },
+        { "key": "b", "text": "el cuchillo de buceo y el ordenador de buceo" },
+        { "key": "c", "text": "el ordenador de buceo, el profundímetro y un sistema de medición del tiempo" },
+        { "key": "d", "text": "el cuchillo de buceo (u otra herramienta adecuada) y el chaleco compensador" }
+      ],
+      "correct": "d",
+      "explanation": "Para el buceo en aguas abiertas son imprescindibles el cuchillo de buceo (u otra herramienta adecuada) y el chaleco compensador."
+    },
+    {
+      "id": 23,
+      "category": "vystroj",
+      "question": "NO se considera chaleco compensador:",
+      "options": [
+        { "key": "a", "text": "un jacket con tirantes desabrochables" },
+        { "key": "b", "text": "un jacket con plomos integrados" },
+        { "key": "c", "text": "un traje seco de buceo" },
+        { "key": "d", "text": "un ala (wing)" }
+      ],
+      "correct": "c",
+      "explanation": "El traje seco de buceo no se considera chaleco compensador."
+    },
+    {
+      "id": 24,
+      "category": "vystroj",
+      "question": "Como chaleco compensador:",
+      "options": [
+        { "key": "a", "text": "también se considera el traje seco de buceo" },
+        { "key": "b", "text": "no se considera el traje seco de buceo" },
+        { "key": "c", "text": "también se considera el traje seco de buceo de neopreno espumado" },
+        { "key": "d", "text": "no se considera el llamado wing (ala)" }
+      ],
+      "correct": "b",
+      "explanation": "El traje seco de buceo no se considera chaleco compensador."
+    },
+    {
+      "id": 25,
+      "category": "vystroj",
+      "question": "Marque la afirmación que NO se ajusta a las Normas de Seguridad de la SPČR:",
+      "options": [
+        { "key": "a", "text": "El equipo de buceo debe ser operativo y adecuado para la inmersión planificada." },
+        { "key": "b", "text": "Para bucear a profundidades superiores a 10 m solo puede usarse equipo con certificado internacional CMAS." },
+        { "key": "c", "text": "Para el buceo en aguas abiertas son imprescindibles el cuchillo de buceo (u otra herramienta adecuada) y el chaleco compensador." },
+        { "key": "d", "text": "El traje seco de buceo no se considera chaleco compensador." }
+      ],
+      "correct": "b",
+      "explanation": "Las normas no exigen un certificado CMAS para el equipo en inmersiones de más de 10 m."
+    },
+    {
+      "id": 26,
+      "category": "vystroj",
+      "question": "El equipo debe estar:",
+      "options": [
+        { "key": "a", "text": "de colores llamativos para localizar más fácilmente al buceador perdido" },
+        { "key": "b", "text": "marcado con la bandera A (Alfa) del código internacional de banderas" },
+        { "key": "c", "text": "ordenado de modo que no haya peligro de daños y/o enganches" },
+        { "key": "d", "text": "marcado de forma visible con la profundidad máxima de uso seguro" }
+      ],
+      "correct": "c",
+      "explanation": "El equipo debe estar ordenado de modo que no haya peligro de daños y/o enganches."
+    },
+    {
+      "id": 27,
+      "category": "vystroj",
+      "question": "Con el chaleco compensador NO se debe:",
+      "options": [
+        { "key": "a", "text": "controlar la flotabilidad durante la inmersión" },
+        { "key": "b", "text": "subir a la superficie a un compañero en apuros" },
+        { "key": "c", "text": "sustituir un dispositivo de izado" },
+        { "key": "d", "text": "estabilizar en superficie la flotabilidad de un buceador inconsciente" }
+      ],
+      "correct": "c",
+      "explanation": "Con el chaleco compensador no se debe sustituir un dispositivo de izado."
+    },
+    {
+      "id": 28,
+      "category": "vystroj",
+      "question": "Cada buceador debe llevar una fuente alternativa de:",
+      "options": [
+        { "key": "a", "text": "gas respiratorio (regulador alternativo, octopus, etc.), un dispositivo para medir la presión del gas y los aparatos para determinar la profundidad y el tiempo bajo el agua o un ordenador de buceo" },
+        { "key": "b", "text": "medición de la temperatura del agua (un termómetro de respaldo)" },
+        { "key": "c", "text": "iluminación (un foco de respaldo, etc.)" },
+        { "key": "d", "text": "registro de la inmersión (cámara de fotos, cámara de vídeo, etc.)" }
+      ],
+      "correct": "a",
+      "explanation": "Cada buceador debe llevar una fuente alternativa de gas respiratorio (octopus), un dispositivo para medir la presión y los aparatos para profundidad y tiempo."
+    },
+    {
+      "id": 29,
+      "category": "vystroj",
+      "question": "Los aparatos para determinar la profundidad y el tiempo bajo el agua deben estar en posesión de:",
+      "options": [
+        { "key": "a", "text": "al menos uno de la pareja de buceadores" },
+        { "key": "b", "text": "cada buceador" },
+        { "key": "c", "text": "cada buceador en inmersiones a más de 10 m" },
+        { "key": "d", "text": "al menos uno del trío de buceadores" }
+      ],
+      "correct": "b",
+      "explanation": "Cada buceador debe llevar aparatos para determinar la profundidad y el tiempo bajo el agua."
+    },
+    {
+      "id": 30,
+      "category": "vystroj",
+      "question": "Una fuente alternativa de gas respiratorio (regulador alternativo, octopus, etc.), un dispositivo para medir la presión del gas y los aparatos para determinar la profundidad y el tiempo bajo el agua o un ordenador de buceo:",
+      "options": [
+        { "key": "a", "text": "deben estar en posesión de al menos uno de la pareja (o del trío) de buceadores" },
+        { "key": "b", "text": "deben estar en posesión de cada buceador" },
+        { "key": "c", "text": "los buceadores los llevan según sus posibilidades y criterio" },
+        { "key": "d", "text": "los buceadores los llevan en inmersiones a más de 10 m" }
+      ],
+      "correct": "b",
+      "explanation": "Cada buceador debe llevar la fuente alternativa de gas respiratorio y demás equipamiento citado."
+    },
+    {
+      "id": 31,
+      "category": "vystroj",
+      "question": "Los buceadores:",
+      "options": [
+        { "key": "a", "text": "mantienen continuamente sus destrezas de buceo y su condición física" },
+        { "key": "b", "text": "para el buceo bajo hielo completan un curso o formación específicos" },
+        { "key": "c", "text": "usan una fuente alternativa de gas respiratorio (regulador alternativo, octopus, etc.)" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todas las respuestas son correctas: mantienen la forma, hacen el curso para el hielo y usan una fuente alternativa de gas."
+    },
+    {
+      "id": 32,
+      "category": "vystroj",
+      "question": "El uso de una fuente alternativa de gas respiratorio (regulador alternativo, octopus, etc.), de un dispositivo para medir la presión del gas y de los aparatos para determinar la profundidad y el tiempo bajo el agua o un ordenador de buceo:",
+      "options": [
+        { "key": "a", "text": "no se recomienda" },
+        { "key": "b", "text": "no se recomienda durante la formación" },
+        { "key": "c", "text": "se recomienda encarecidamente a todos los buceadores" },
+        { "key": "d", "text": "se recomienda encarecidamente durante la formación para los grados Buceador CMAS P2 y P3" }
+      ],
+      "correct": "c",
+      "explanation": "El uso de la fuente alternativa de gas respiratorio y demás equipamiento se recomienda encarecidamente a todos los buceadores."
+    },
+    {
+      "id": 33,
+      "category": "vystroj",
+      "question": "La boya de buceo se utiliza:",
+      "options": [
+        { "key": "a", "text": "en cada inmersión" },
+        { "key": "b", "text": "cuando es conveniente" },
+        { "key": "c", "text": "solo al bucear en aguas confinadas" },
+        { "key": "d", "text": "al bucear bajo hielo" }
+      ],
+      "correct": "b",
+      "explanation": "La boya de buceo se utiliza cuando es conveniente."
+    },
+    {
+      "id": 34,
+      "category": "vystroj",
+      "question": "El equipo de buceo debe:",
+      "options": [
+        { "key": "a", "text": "estar correctamente sujeto, ordenado y utilizado para que no haya peligro de daños y/o enganches" },
+        { "key": "b", "text": "ser de colores llamativos para localizar fácilmente al buceador" },
+        { "key": "c", "text": "estar aprobado por la Comisión de Formación de la SPČR" },
+        { "key": "d", "text": "estar aprobado por la dirección del club de buceo correspondiente" }
+      ],
+      "correct": "a",
+      "explanation": "El equipo debe estar correctamente sujeto, ordenado y utilizado para que no haya peligro de daños y/o enganches."
+    },
+    {
+      "id": 35,
+      "category": "vystroj",
+      "question": "Cuando la visibilidad horizontal bajo el agua es inferior a 2 m:",
+      "options": [
+        { "key": "a", "text": "se utiliza un cabo guía" },
+        { "key": "b", "text": "se recomienda el uso de un foco potente" },
+        { "key": "c", "text": "se utiliza un estroboscopio o una luz química" },
+        { "key": "d", "text": "es necesario evitar el buceo" }
+      ],
+      "correct": "a",
+      "explanation": "Cuando la visibilidad horizontal bajo el agua es inferior a 2 m se utiliza un cabo guía."
+    },
+    {
+      "id": 36,
+      "category": "vystroj",
+      "question": "El cabo guía se utiliza:",
+      "options": [
+        { "key": "a", "text": "en el buceo nocturno" },
+        { "key": "b", "text": "en la apnea en aguas confinadas" },
+        { "key": "c", "text": "al bucear a profundidades superiores a 30 m" },
+        { "key": "d", "text": "cuando la visibilidad horizontal bajo el agua es inferior a 2 m" }
+      ],
+      "correct": "d",
+      "explanation": "El cabo guía se utiliza cuando la visibilidad horizontal bajo el agua es inferior a 2 m."
+    },
+    {
+      "id": 37,
+      "category": "vystroj",
+      "question": "Marque la afirmación que NO se ajusta a las Normas de Seguridad de la SPČR 2016:",
+      "options": [
+        { "key": "a", "text": "El equipo debe estar correctamente sujeto, ordenado y utilizado para que no haya peligro de daños y/o enganches." },
+        { "key": "b", "text": "El chaleco compensador no debe usarse para sustituir un dispositivo de izado." },
+        { "key": "c", "text": "Cada buceador debe llevar aparatos para determinar la profundidad y el tiempo bajo el agua o un ordenador de buceo." },
+        { "key": "d", "text": "Cuando la visibilidad horizontal es inferior a 4 m se utiliza un cabo guía." }
+      ],
+      "correct": "d",
+      "explanation": "Las normas indican el uso del cabo guía con visibilidad inferior a 2 m, no a 4 m."
+    },
+    {
+      "id": 38,
+      "category": "buddy-system",
+      "question": "Los buceadores conocen:",
+      "options": [
+        { "key": "a", "text": "la previsión meteorológica para al menos dos días" },
+        { "key": "b", "text": "las señales de buceo" },
+        { "key": "c", "text": "la fauna acuática del lugar de buceo" },
+        { "key": "d", "text": "el código internacional de banderas completo" }
+      ],
+      "correct": "b",
+      "explanation": "Los buceadores conocen las señales de buceo."
+    },
+    {
+      "id": 39,
+      "category": "buddy-system",
+      "question": "Los buceadores se sumergen en buddy teams (parejas o, si es necesario, tríos), en los que:",
+      "options": [
+        { "key": "a", "text": "repasan en detalle el plan de inmersión por adelantado" },
+        { "key": "b", "text": "se familiarizan mutuamente con el manejo de su equipo" },
+        { "key": "c", "text": "acuerdan la señalización mutua" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "En los buddy teams se repasa el plan, se conoce el equipo y se acuerda la señalización: todas las respuestas son correctas."
+    },
+    {
+      "id": 40,
+      "category": "buddy-system",
+      "question": "Antes de la inmersión, los miembros del buddy team realizan la comprobación de pareja (buddy check) centrada en:",
+      "options": [
+        { "key": "a", "text": "el correcto llenado de las libretas de buceo" },
+        { "key": "b", "text": "el conocimiento de las novedades técnicas en buceo" },
+        { "key": "c", "text": "la corrección y suficiencia del equipamiento de documentación (cámara de fotos, cámara de vídeo)" },
+        { "key": "d", "text": "la apertura de las griferías de las botellas, la presión en las botellas, la conexión de los latiguillos del chaleco compensador y del traje seco, el funcionamiento de las 2.ª etapas principales y alternativas de los reguladores y la colocación y fijación del lastre" }
+      ],
+      "correct": "d",
+      "explanation": "El buddy check se centra en griferías, presión, latiguillos, reguladores y lastre."
+    },
+    {
+      "id": 41,
+      "category": "buddy-system",
+      "question": "Los buceadores conocen:",
+      "options": [
+        { "key": "a", "text": "el uso de profundímetros de respaldo" },
+        { "key": "b", "text": "la reducción de los tiempos sin descompresión a profundidades superiores a 18 m" },
+        { "key": "c", "text": "la prolongación de los tiempos de descompresión en inmersiones repetitivas" },
+        { "key": "d", "text": "las señales de buceo" }
+      ],
+      "correct": "d",
+      "explanation": "Los buceadores conocen las señales de buceo."
+    },
+    {
+      "id": 42,
+      "category": "buddy-system",
+      "question": "Antes de bucear, los buceadores se familiarizan con:",
+      "options": [
+        { "key": "a", "text": "la normativa local que regula la actividad de buceo" },
+        { "key": "b", "text": "las condiciones naturales del buceo" },
+        { "key": "c", "text": "la forma de avisar a los servicios de emergencia y la ubicación de la cámara hiperbárica" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Antes de bucear los buceadores se familiarizan con todo lo anterior: normativa, condiciones y forma de pedir ayuda."
+    },
+    {
+      "id": 43,
+      "category": "buddy-system",
+      "question": "Antes de bucear, los buceadores se familiarizan con:",
+      "options": [
+        { "key": "a", "text": "la fauna acuática del lugar" },
+        { "key": "b", "text": "la historia del buceo en la zona" },
+        { "key": "c", "text": "la ubicación del equipo para llenar las botellas" },
+        { "key": "d", "text": "la normativa local que regula la actividad de buceo" }
+      ],
+      "correct": "d",
+      "explanation": "Antes de bucear, los buceadores se familiarizan con la normativa local que regula la actividad de buceo."
+    },
+    {
+      "id": 44,
+      "category": "buddy-system",
+      "question": "Antes de bucear, los buceadores se familiarizan con:",
+      "options": [
+        { "key": "a", "text": "la tecnología de fabricación de las botellas" },
+        { "key": "b", "text": "la normativa local que regula la actividad de buceo" },
+        { "key": "c", "text": "las autoridades locales" },
+        { "key": "d", "text": "ninguna respuesta es correcta" }
+      ],
+      "correct": "b",
+      "explanation": "Antes de bucear, los buceadores se familiarizan con la normativa local que regula la actividad de buceo."
+    },
+    {
+      "id": 45,
+      "category": "buddy-system",
+      "question": "Antes de la inmersión, los buceadores en el buddy team realizan:",
+      "options": [
+        { "key": "a", "text": "la comprobación de pareja (buddy check)" },
+        { "key": "b", "text": "una planificación detallada de la inmersión" },
+        { "key": "c", "text": "una verificación mutua de los registros de la libreta de buceo" },
+        { "key": "d", "text": "un breve recordatorio de los principios de protección del medio ambiente" }
+      ],
+      "correct": "a",
+      "explanation": "Antes de la inmersión, los buceadores del buddy team realizan la comprobación de pareja (buddy check)."
+    },
+    {
+      "id": 46,
+      "category": "buddy-system",
+      "question": "La comprobación de pareja antes de la inmersión (buddy check) NO incluye:",
+      "options": [
+        { "key": "a", "text": "comprobar la apertura de las griferías de las botellas" },
+        { "key": "b", "text": "comprobar la conexión de los latiguillos del chaleco compensador y del traje seco" },
+        { "key": "c", "text": "comprobar la colocación y fijación del tubo respirador (snorkel)" },
+        { "key": "d", "text": "comprobar la colocación y fijación del lastre" }
+      ],
+      "correct": "c",
+      "explanation": "El buddy check no incluye comprobar la colocación y fijación del tubo respirador (snorkel)."
+    },
+    {
+      "id": 47,
+      "category": "buddy-system",
+      "question": "En los buddy teams (parejas o, si es necesario, tríos), los buceadores se familiarizan mutuamente con:",
+      "options": [
+        { "key": "a", "text": "los resultados de sus reconocimientos médicos" },
+        { "key": "b", "text": "el manejo de su equipo y acuerdan la señalización mutua" },
+        { "key": "c", "text": "su cualificación, experiencia, número de inmersiones y máxima profundidad alcanzada" },
+        { "key": "d", "text": "el último apunte en sus libretas de buceo" }
+      ],
+      "correct": "b",
+      "explanation": "En los buddy teams los buceadores se familiarizan con el manejo del equipo y acuerdan la señalización mutua."
+    },
+    {
+      "id": 48,
+      "category": "buddy-system",
+      "question": "En las parejas (o, si es necesario, tríos):",
+      "options": [
+        { "key": "a", "text": "los buceadores repasan por adelantado y en detalle el plan de inmersión" },
+        { "key": "b", "text": "los buceadores se familiarizan mutuamente con el manejo de su equipo" },
+        { "key": "c", "text": "los buceadores acuerdan la señalización mutua" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todas son correctas: en parejas/tríos se repasa el plan, se conoce el equipo y se acuerda la señalización."
+    },
+    {
+      "id": 49,
+      "category": "buddy-system",
+      "question": "Durante la inmersión y en superficie, los buceadores mantienen entre sí:",
+      "options": [
+        { "key": "a", "text": "contacto visual permanente" },
+        { "key": "b", "text": "la distancia que les permita ayudarse mutuamente en caso de problema" },
+        { "key": "c", "text": "una distancia equivalente a la mitad de la visibilidad horizontal bajo el agua" },
+        { "key": "d", "text": "una distancia inferior a 2 m" }
+      ],
+      "correct": "b",
+      "explanation": "Los buceadores mantienen entre sí la distancia que les permita ayudarse mutuamente en caso de problema."
+    },
+    {
+      "id": 50,
+      "category": "planovani-ponoru",
+      "question": "Los buceadores no superan la profundidad de:",
+      "options": [
+        { "key": "a", "text": "30 m" },
+        { "key": "b", "text": "40 m" },
+        { "key": "c", "text": "50 m" },
+        { "key": "d", "text": "60 m" }
+      ],
+      "correct": "b",
+      "explanation": "Los buceadores no superan la profundidad de 40 m."
+    },
+    {
+      "id": 51,
+      "category": "planovani-ponoru",
+      "question": "Marque la afirmación que NO se ajusta a las Normas de Seguridad de la SPČR 2016:",
+      "options": [
+        { "key": "a", "text": "Los buceadores no superan la profundidad de 30 m." },
+        { "key": "b", "text": "Los buceadores conocen las señales de buceo." },
+        { "key": "c", "text": "Antes de bucear, los buceadores se familiarizan con la forma de avisar a los servicios de emergencia y con la ubicación de la cámara hiperbárica." },
+        { "key": "d", "text": "Durante la inmersión y en superficie, los buceadores mantienen entre sí la distancia que les permita ayudarse mutuamente en caso de problema." }
+      ],
+      "correct": "a",
+      "explanation": "Las normas establecen una profundidad máxima de 40 m, no de 30 m."
+    },
+    {
+      "id": 52,
+      "category": "planovani-ponoru",
+      "question": "Las inmersiones se organizan para que en el ascenso no haya que realizar:",
+      "options": [
+        { "key": "a", "text": "una descompresión escalonada" },
+        { "key": "b", "text": "una parada de seguridad" },
+        { "key": "c", "text": "una boya de descompresión" },
+        { "key": "d", "text": "personal de apoyo en superficie" }
+      ],
+      "correct": "a",
+      "explanation": "Las inmersiones se organizan para que en el ascenso no haya que realizar descompresión escalonada."
+    },
+    {
+      "id": 53,
+      "category": "planovani-ponoru",
+      "question": "Las inmersiones:",
+      "options": [
+        { "key": "a", "text": "se organizan, en principio, para no necesitar embarcación de apoyo" },
+        { "key": "b", "text": "se organizan para que en el ascenso no haya que realizar descompresión escalonada" },
+        { "key": "c", "text": "se organizan en equipos de al menos cinco personas" },
+        { "key": "d", "text": "se organizan en principio bajo la supervisión de un jefe de inmersión o instructor" }
+      ],
+      "correct": "b",
+      "explanation": "Las inmersiones se organizan para que en el ascenso no haya que realizar descompresión escalonada."
+    },
+    {
+      "id": 54,
+      "category": "planovani-ponoru",
+      "question": "Si la descompresión escalonada es inevitable en la inmersión, hay que:",
+      "options": [
+        { "key": "a", "text": "asegurar la presencia de una cámara hiperbárica con personal" },
+        { "key": "b", "text": "asegurar la presencia de un médico familiarizado con la materia de buceo" },
+        { "key": "c", "text": "organizarla de modo que no sea necesario realizar más de una parada de descompresión" },
+        { "key": "d", "text": "organizarla de modo que el buceador permanezca al menos 6 horas tras la salida bajo supervisión médica o del jefe de inmersión" }
+      ],
+      "correct": "c",
+      "explanation": "Si la descompresión es inevitable, la inmersión se organiza de modo que no haya que realizar más de una parada de descompresión."
+    },
+    {
+      "id": 55,
+      "category": "planovani-ponoru",
+      "question": "Tras la inmersión, los buceadores evitan (teniendo en cuenta el nitrógeno residual):",
+      "options": [
+        { "key": "a", "text": "el esfuerzo físico intenso" },
+        { "key": "b", "text": "la deshidratación" },
+        { "key": "c", "text": "subir a mayor altitud o volar en avión" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Tras la inmersión los buceadores evitan el esfuerzo físico, la deshidratación y subir a mayor altitud o volar: todas son correctas."
+    },
+    {
+      "id": 56,
+      "category": "planovani-ponoru",
+      "question": "Los buceadores:",
+      "options": [
+        { "key": "a", "text": "como mínimo cada dos años revisan sus reguladores" },
+        { "key": "b", "text": "como mínimo una vez al año hacen probar las botellas de sus equipos" },
+        { "key": "c", "text": "evitan el uso de ordenadores de buceo para calcular la descompresión" },
+        { "key": "d", "text": "evitan el esfuerzo físico intenso tras la inmersión" }
+      ],
+      "correct": "d",
+      "explanation": "Los buceadores evitan el esfuerzo físico intenso tras la inmersión."
+    },
+    {
+      "id": 57,
+      "category": "planovani-ponoru",
+      "question": "Marque la afirmación que NO se ajusta a las Normas de Seguridad de la SPČR 2016:",
+      "options": [
+        { "key": "a", "text": "Los buceadores no superan la profundidad de 40 m." },
+        { "key": "b", "text": "Las inmersiones se organizan para que en el ascenso no haya que realizar descompresión escalonada." },
+        { "key": "c", "text": "Tras la inmersión los buceadores evitan la deshidratación." },
+        { "key": "d", "text": "Si la descompresión escalonada es inevitable en la inmersión, hay que organizarla de modo que no sea necesario realizar más de dos paradas de descompresión." }
+      ],
+      "correct": "d",
+      "explanation": "Las normas establecen un máximo de una parada de descompresión, no dos."
+    },
+    {
+      "id": 58,
+      "category": "planovani-ponoru",
+      "question": "Se recomienda encarecidamente a los buceadores:",
+      "options": [
+        { "key": "a", "text": "no ingerir líquidos antes de la inmersión (hidratación del organismo)" },
+        { "key": "b", "text": "no ingerir líquidos después de la inmersión (hidratación del organismo)" },
+        { "key": "c", "text": "no subir a mayor altitud ni volar en avión antes de la inmersión" },
+        { "key": "d", "text": "no subir a mayor altitud ni volar en avión después de la inmersión" }
+      ],
+      "correct": "d",
+      "explanation": "Se recomienda encarecidamente no subir a mayor altitud ni volar en avión después de la inmersión."
+    },
+    {
+      "id": 59,
+      "category": "planovani-ponoru",
+      "question": "Los buceadores:",
+      "options": [
+        { "key": "a", "text": "antes de bucear se familiarizan con la normativa local que regula la actividad de buceo" },
+        { "key": "b", "text": "antes de bucear se familiarizan con la forma de avisar a los servicios de emergencia y con la ubicación de la cámara hiperbárica" },
+        { "key": "c", "text": "evitan el esfuerzo físico intenso tras la inmersión" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todas las respuestas son correctas."
+    },
+    {
+      "id": 60,
+      "category": "planovani-ponoru",
+      "question": "Los buceadores:",
+      "options": [
+        { "key": "a", "text": "durante la inmersión y en superficie mantienen entre sí la distancia que les permita ayudarse mutuamente en caso de problema" },
+        { "key": "b", "text": "no superan la profundidad de 50 m" },
+        { "key": "c", "text": "antes de la inmersión realizan una comprobación de pareja centrada en el correcto llenado de las libretas de buceo" },
+        { "key": "d", "text": "evitan las paradas de seguridad en inmersiones sin descompresión" }
+      ],
+      "correct": "a",
+      "explanation": "Durante la inmersión y en superficie, los buceadores mantienen entre sí la distancia que les permita ayudarse mutuamente."
+    },
+    {
+      "id": 61,
+      "category": "organizace-akci",
+      "question": "Todos los participantes en un evento de buceo de mayor envergadura deben ser informados detalladamente sobre:",
+      "options": [
+        { "key": "a", "text": "el propósito y plan del evento" },
+        { "key": "b", "text": "las señales utilizadas" },
+        { "key": "c", "text": "el plan de actuación en caso de incidente" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Los participantes deben ser informados sobre el propósito del evento, las señales y el plan ante incidentes: todas son correctas."
+    },
+    {
+      "id": 62,
+      "category": "organizace-akci",
+      "question": "Todos los participantes en un evento de buceo de mayor envergadura deben ser informados detalladamente del propósito y plan del evento:",
+      "options": [
+        { "key": "a", "text": "al menos 48 horas antes del evento" },
+        { "key": "b", "text": "al menos 24 horas antes del evento" },
+        { "key": "c", "text": "en cualquier momento del evento" },
+        { "key": "d", "text": "al inicio del evento" }
+      ],
+      "correct": "d",
+      "explanation": "Los participantes deben ser informados del propósito y el plan del evento al inicio del mismo."
+    },
+    {
+      "id": 63,
+      "category": "organizace-akci",
+      "question": "Sobre el plan de actuación en caso de incidente en un evento de buceo de mayor envergadura deben ser informados:",
+      "options": [
+        { "key": "a", "text": "todos los titulares de cualificación a partir del grado Buceador CMAS P2" },
+        { "key": "b", "text": "todos los participantes" },
+        { "key": "c", "text": "los participantes mayores de 18 años" },
+        { "key": "d", "text": "los participantes mayores de 14 años" }
+      ],
+      "correct": "b",
+      "explanation": "Sobre el plan de actuación en caso de incidente deben ser informados todos los participantes."
+    },
+    {
+      "id": 64,
+      "category": "organizace-akci",
+      "question": "En eventos de buceo de mayor envergadura y carácter exigente con riesgo de enfermedad descompresiva conviene la presencia de:",
+      "options": [
+        { "key": "a", "text": "un instructor de buceo con autorización vigente" },
+        { "key": "b", "text": "un médico de buceo" },
+        { "key": "c", "text": "una cámara hiperbárica con personal capacitado" },
+        { "key": "d", "text": "un equipo para la administración de oxígeno y de personal capacitado para su uso" }
+      ],
+      "correct": "d",
+      "explanation": "En eventos exigentes con riesgo de ED conviene la presencia de un equipo para la administración de oxígeno y de personal capacitado."
+    },
+    {
+      "id": 65,
+      "category": "organizace-akci",
+      "question": "La presencia de un equipo autónomo de respaldo es conveniente:",
+      "options": [
+        { "key": "a", "text": "en eventos de buceo de mayor envergadura y carácter exigente" },
+        { "key": "b", "text": "en eventos de buceo con más de 5 participantes" },
+        { "key": "c", "text": "en el buceo en aguas confinadas" },
+        { "key": "d", "text": "en la apnea en aguas abiertas" }
+      ],
+      "correct": "a",
+      "explanation": "La presencia de un equipo autónomo de respaldo es conveniente en eventos de mayor envergadura y carácter exigente."
+    },
+    {
+      "id": 66,
+      "category": "organizace-akci",
+      "question": "En eventos de buceo de mayor envergadura y carácter exigente con riesgo de enfermedad descompresiva conviene la presencia de:",
+      "options": [
+        { "key": "a", "text": "personal sanitario" },
+        { "key": "b", "text": "un equipo para la administración de oxígeno y de personal capacitado para su uso" },
+        { "key": "c", "text": "un vehículo del servicio de emergencias" },
+        { "key": "d", "text": "una embarcación de apoyo" }
+      ],
+      "correct": "b",
+      "explanation": "Conviene la presencia de un equipo para la administración de oxígeno y de personal capacitado para su uso."
+    },
+    {
+      "id": 67,
+      "category": "organizace-akci",
+      "question": "En los eventos de buceo de mayor envergadura conviene elegir entre los participantes:",
+      "options": [
+        { "key": "a", "text": "un coordinador que vele por la fluidez de los preparativos" },
+        { "key": "b", "text": "un jefe de inmersión que organice la actividad de los buceadores bajo el agua" },
+        { "key": "c", "text": "un buceador experimentado que, terminada la actividad, analice las inmersiones con los participantes" },
+        { "key": "d", "text": "un secretario del evento que vele también por el orden correcto de las inmersiones" }
+      ],
+      "correct": "b",
+      "explanation": "En eventos de mayor envergadura conviene elegir un jefe de inmersión que organice la actividad de los buceadores bajo el agua."
+    },
+    {
+      "id": 68,
+      "category": "organizace-akci",
+      "question": "El jefe de inmersión:",
+      "options": [
+        { "key": "a", "text": "debe ser mayor de 21 años" },
+        { "key": "b", "text": "organiza la actividad de los buceadores bajo el agua" },
+        { "key": "c", "text": "debe ser titular de una cualificación de instructor" },
+        { "key": "d", "text": "ninguna respuesta es correcta" }
+      ],
+      "correct": "b",
+      "explanation": "El jefe de inmersión organiza la actividad de los buceadores bajo el agua."
+    },
+    {
+      "id": 69,
+      "category": "organizace-akci",
+      "question": "El jefe de inmersión:",
+      "options": [
+        { "key": "a", "text": "se elige entre los participantes del evento de buceo de mayor envergadura" },
+        { "key": "b", "text": "organiza la actividad de los buceadores bajo el agua" },
+        { "key": "c", "text": "debe ser titular como mínimo del grado Buceador CMAS P3" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todas son correctas: el jefe de inmersión se elige entre los participantes, organiza la actividad bajo el agua y debe ser P3 como mínimo."
+    },
+    {
+      "id": 70,
+      "category": "organizace-akci",
+      "question": "El jefe de inmersión:",
+      "options": [
+        { "key": "a", "text": "puede subir, durante el tiempo imprescindible, la cualificación de los participantes en el evento" },
+        { "key": "b", "text": "organiza el desarrollo del evento de buceo de mayor envergadura, salvo la actividad de los buceadores bajo el agua" },
+        { "key": "c", "text": "organiza la actividad de los buceadores bajo el agua" },
+        { "key": "d", "text": "puede dejar la organización de la actividad bajo el agua a una dirección colectiva" }
+      ],
+      "correct": "c",
+      "explanation": "El jefe de inmersión organiza la actividad de los buceadores bajo el agua."
+    },
+    {
+      "id": 71,
+      "category": "organizace-akci",
+      "question": "Marque la afirmación que NO se ajusta a las Normas de Seguridad de la SPČR 2016:",
+      "options": [
+        { "key": "a", "text": "El jefe de inmersión se elige entre los participantes del evento de buceo de mayor envergadura." },
+        { "key": "b", "text": "El jefe de inmersión organiza la actividad de los buceadores bajo el agua." },
+        { "key": "c", "text": "El jefe de inmersión debe ser titular como mínimo del grado Buceador CMAS P2." },
+        { "key": "d", "text": "El jefe de inmersión debe ser titular como mínimo del grado Buceador CMAS P3." }
+      ],
+      "correct": "c",
+      "explanation": "Las normas establecen que el jefe de inmersión debe tener como mínimo P3, no P2."
+    },
+    {
+      "id": 72,
+      "category": "organizace-akci",
+      "question": "El jefe de inmersión se elige entre:",
+      "options": [
+        { "key": "a", "text": "los titulares de la cualificación mínima Buceador CMAS P2 con la especialización pertinente" },
+        { "key": "b", "text": "los instructores CMAS/SPČR con autorización vigente" },
+        { "key": "c", "text": "los participantes del evento de buceo de mayor envergadura" },
+        { "key": "d", "text": "los presidentes de los clubes de buceo de SČP o SPMS" }
+      ],
+      "correct": "c",
+      "explanation": "El jefe de inmersión se elige entre los participantes del evento de buceo de mayor envergadura."
+    },
+    {
+      "id": 73,
+      "category": "organizace-akci",
+      "question": "Resulta conveniente elegir un jefe de inmersión entre los participantes:",
+      "options": [
+        { "key": "a", "text": "cuando la visibilidad bajo el agua cae por debajo de 2 m" },
+        { "key": "b", "text": "al bucear a mayor distancia de la costa" },
+        { "key": "c", "text": "en eventos de buceo de mayor envergadura" },
+        { "key": "d", "text": "cuando bucean 4 o más buceadores a la vez" }
+      ],
+      "correct": "c",
+      "explanation": "Resulta conveniente elegir un jefe de inmersión en eventos de buceo de mayor envergadura."
+    },
+    {
+      "id": 74,
+      "category": "organizace-akci",
+      "question": "El jefe de inmersión debe:",
+      "options": [
+        { "key": "a", "text": "ser titular como mínimo de Buceador CMAS P2" },
+        { "key": "b", "text": "ser titular como mínimo de Buceador CMAS P3" },
+        { "key": "c", "text": "ser titular como mínimo de Buceador CMAS P1 con especialización en mezclas artificiales" },
+        { "key": "d", "text": "ser titular como mínimo de Buceador CMAS P2 con especialización en rebreathers" }
+      ],
+      "correct": "b",
+      "explanation": "El jefe de inmersión debe ser titular como mínimo de Buceador CMAS P3."
+    },
+    {
+      "id": 75,
+      "category": "organizace-akci",
+      "question": "Todos los participantes en un evento de buceo de mayor envergadura deben ser informados al inicio del mismo sobre:",
+      "options": [
+        { "key": "a", "text": "la trayectoria como buceador del jefe de inmersión" },
+        { "key": "b", "text": "su importancia individual para cada participante" },
+        { "key": "c", "text": "su importancia para el desarrollo del buceo" },
+        { "key": "d", "text": "el propósito y plan del evento, las señales utilizadas y el plan de actuación en caso de incidente" }
+      ],
+      "correct": "d",
+      "explanation": "Los participantes deben ser informados sobre el propósito, las señales y el plan de actuación en caso de incidente."
+    },
+    {
+      "id": 76,
+      "category": "obecne-smernice",
+      "question": "Los buceadores:",
+      "options": [
+        { "key": "a", "text": "velan, en la medida de sus posibilidades, por la protección del medio ambiente" },
+        { "key": "b", "text": "mantienen continuamente sus destrezas de buceo y su condición física" },
+        { "key": "c", "text": "respetan las restricciones aplicables a la cualificación que poseen" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todas son correctas: protegen el medio ambiente, mantienen la forma y respetan las restricciones de su cualificación."
+    },
+    {
+      "id": 77,
+      "category": "zpusobilost",
+      "question": "Los buceadores evitan en cualquier caso bucear:",
+      "options": [
+        { "key": "a", "text": "si sus capacidades físicas y/o psíquicas están mermadas" },
+        { "key": "b", "text": "si las botellas de su equipo no están al menos al 80 % de la presión máxima de servicio" },
+        { "key": "c", "text": "si no van equipados con un profundímetro u ordenador de buceo de respaldo" },
+        { "key": "d", "text": "si no van equipados con tubo respirador (snorkel)" }
+      ],
+      "correct": "a",
+      "explanation": "Los buceadores evitan en cualquier caso bucear si sus capacidades físicas y/o psíquicas están mermadas."
+    },
+    {
+      "id": 78,
+      "category": "vystroj",
+      "question": "El equipo de buceo debe estar:",
+      "options": [
+        { "key": "a", "text": "correctamente sujeto" },
+        { "key": "b", "text": "correctamente ordenado" },
+        { "key": "c", "text": "utilizado para que no haya peligro de daños y/o enganches" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todas son correctas: el equipo debe estar correctamente sujeto, ordenado y utilizado de forma segura."
+    },
+    {
+      "id": 79,
+      "category": "vystroj",
+      "question": "Un dispositivo para medir la presión del gas respiratorio debe ser llevado por:",
+      "options": [
+        { "key": "a", "text": "cada buceador" },
+        { "key": "b", "text": "uno de cada dos buceadores (en un buddy team de tres, por dos de los tres)" },
+        { "key": "c", "text": "el jefe de inmersión" },
+        { "key": "d", "text": "el instructor durante la formación a más de 10 m" }
+      ],
+      "correct": "a",
+      "explanation": "Cada buceador debe llevar un dispositivo para medir la presión del gas respiratorio."
+    },
+    {
+      "id": 80,
+      "category": "buddy-system",
+      "question": "Durante la inmersión y en superficie, los buceadores mantienen entre sí una distancia tal:",
+      "options": [
+        { "key": "a", "text": "que les permita ayudarse mutuamente en caso de problema" },
+        { "key": "b", "text": "que les permita leerse con seguridad mensajes en pizarras" },
+        { "key": "c", "text": "que no supere la visibilidad horizontal bajo el agua" },
+        { "key": "d", "text": "que no supere un cuarto de la visibilidad horizontal bajo el agua" }
+      ],
+      "correct": "a",
+      "explanation": "Los buceadores mantienen una distancia que les permita ayudarse mutuamente en caso de problema."
+    },
+    {
+      "id": 81,
+      "category": "doprovodne-plavidlo",
+      "question": "Para asegurar el buceo a mayor distancia de la costa se utiliza:",
+      "options": [
+        { "key": "a", "text": "un equipo autónomo con una capacidad mínima de 4 m³" },
+        { "key": "b", "text": "un chaleco compensador tipo ala" },
+        { "key": "c", "text": "una cámara hiperbárica con personal" },
+        { "key": "d", "text": "una embarcación de apoyo adecuada" }
+      ],
+      "correct": "d",
+      "explanation": "Para asegurar el buceo a mayor distancia de la costa se utiliza una embarcación de apoyo adecuada."
+    },
+    {
+      "id": 82,
+      "category": "doprovodne-plavidlo",
+      "question": "Una embarcación de apoyo adecuada se utiliza:",
+      "options": [
+        { "key": "a", "text": "para el buceo en grupo" },
+        { "key": "b", "text": "para el buceo a mayor distancia de la costa" },
+        { "key": "c", "text": "para el buceo con equipo autónomo" },
+        { "key": "d", "text": "para la apnea" }
+      ],
+      "correct": "b",
+      "explanation": "Una embarcación de apoyo adecuada se utiliza para el buceo a mayor distancia de la costa."
+    },
+    {
+      "id": 83,
+      "category": "doprovodne-plavidlo",
+      "question": "La bandera A (Alfa) del código internacional de banderas, bien visible, debe izarse en la embarcación de apoyo:",
+      "options": [
+        { "key": "a", "text": "de forma permanente" },
+        { "key": "b", "text": "en los 10 minutos siguientes a la salida" },
+        { "key": "c", "text": "durante toda la travesía" },
+        { "key": "d", "text": "durante el tiempo en que los buceadores estén sumergidos" }
+      ],
+      "correct": "d",
+      "explanation": "La bandera A debe izarse en la embarcación de apoyo durante el tiempo en que los buceadores estén sumergidos."
+    },
+    {
+      "id": 84,
+      "category": "doprovodne-plavidlo",
+      "question": "Mientras los buceadores estén sumergidos, en la embarcación de apoyo debe izarse, bien visible:",
+      "options": [
+        { "key": "a", "text": "la bandera de la SPČR" },
+        { "key": "b", "text": "la bandera A (Alfa) del código internacional de banderas" },
+        { "key": "c", "text": "la bandera de la CMAS u otra organización internacional de buceo" },
+        { "key": "d", "text": "la bandera de la SPČR junto con la de la CMAS u otra organización internacional" }
+      ],
+      "correct": "b",
+      "explanation": "Mientras los buceadores estén sumergidos debe izarse la bandera A (Alfa) del código internacional de banderas."
+    },
+    {
+      "id": 85,
+      "category": "doprovodne-plavidlo",
+      "question": "La bandera A (Alfa) del código internacional de banderas, bien visible, debe izarse:",
+      "options": [
+        { "key": "a", "text": "en la embarcación de apoyo, desde la salida hasta el atraque" },
+        { "key": "b", "text": "en la embarcación de apoyo, mientras los buceadores estén sumergidos" },
+        { "key": "c", "text": "en la boya de descompresión, sobre todo en el buceo con equipo autónomo" },
+        { "key": "d", "text": "en la boya de buceo, sobre todo en la apnea" }
+      ],
+      "correct": "b",
+      "explanation": "La bandera A debe izarse en la embarcación de apoyo mientras los buceadores estén sumergidos."
+    },
+    {
+      "id": 86,
+      "category": "doprovodne-plavidlo",
+      "question": "A bordo de la embarcación de apoyo se encuentran:",
+      "options": [
+        { "key": "a", "text": "tablas de mareas" },
+        { "key": "b", "text": "una persona encargada de vigilar el entorno y un motor de reserva" },
+        { "key": "c", "text": "el personal necesario para manejar la embarcación y un equipo autónomo de respaldo" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "c",
+      "explanation": "A bordo de la embarcación de apoyo se encuentran el personal necesario para manejar la embarcación y un equipo autónomo de respaldo."
+    },
+    {
+      "id": 87,
+      "category": "doprovodne-plavidlo",
+      "question": "A bordo de la embarcación de apoyo se encuentran:",
+      "options": [
+        { "key": "a", "text": "una fuente de propulsión de respaldo" },
+        { "key": "b", "text": "un equipo autónomo de respaldo" },
+        { "key": "c", "text": "una máscara, aletas y un tubo respirador de respaldo" },
+        { "key": "d", "text": "ninguna respuesta es correcta" }
+      ],
+      "correct": "b",
+      "explanation": "A bordo de la embarcación de apoyo se encuentra un equipo autónomo de respaldo."
+    },
+    {
+      "id": 88,
+      "category": "doprovodne-plavidlo",
+      "question": "Marque la afirmación que NO se ajusta a las Normas de Seguridad de la SPČR 2016:",
+      "options": [
+        { "key": "a", "text": "Para asegurar el buceo a mayor distancia de la costa se utiliza una embarcación de apoyo adecuada." },
+        { "key": "b", "text": "Mientras los buceadores estén sumergidos, en la embarcación de apoyo debe izarse, bien visible, la bandera A (Alfa) del código internacional de banderas." },
+        { "key": "c", "text": "A bordo de la embarcación de apoyo se encuentran el personal necesario para manejar la embarcación y un equipo autónomo de respaldo." },
+        { "key": "d", "text": "A bordo de la embarcación de apoyo se encuentran una carta náutica, tablas de mareas y un motor de reserva." }
+      ],
+      "correct": "d",
+      "explanation": "Las normas no exigen carta náutica, tablas de mareas ni motor de reserva a bordo."
+    },
+    {
+      "id": 89,
+      "category": "doprovodne-plavidlo",
+      "question": "Si la situación exige usar el motor para propulsar la embarcación de apoyo durante la inmersión:",
+      "options": [
+        { "key": "a", "text": "hay que navegar de modo que no se ponga en peligro a los buceadores" },
+        { "key": "b", "text": "hay que navegar de modo que la embarcación no entre en el canal de navegación" },
+        { "key": "c", "text": "hay que utilizar remos o palas" },
+        { "key": "d", "text": "hay que evitar en cualquier caso esta actividad" }
+      ],
+      "correct": "a",
+      "explanation": "Al usar el motor durante la inmersión hay que navegar de modo que no se ponga en peligro a los buceadores."
+    },
+    {
+      "id": 90,
+      "category": "doprovodne-plavidlo",
+      "question": "El uso del motor para propulsar la embarcación de apoyo durante la inmersión:",
+      "options": [
+        { "key": "a", "text": "siempre pone en peligro a los buceadores y, por tanto, no es admisible en absoluto" },
+        { "key": "b", "text": "es admisible en cualquier momento" },
+        { "key": "c", "text": "es admisible si la situación lo exige; al hacerlo hay que navegar de modo que no se ponga en peligro a los buceadores" },
+        { "key": "d", "text": "es admisible hasta 10 minutos después de la inmersión" }
+      ],
+      "correct": "c",
+      "explanation": "El uso del motor es admisible si la situación lo exige; al hacerlo hay que navegar de modo que no se ponga en peligro a los buceadores."
+    },
+    {
+      "id": 91,
+      "category": "doprovodne-plavidlo",
+      "question": "Si la situación exige usar el motor para propulsar la embarcación de apoyo durante la inmersión, hay que:",
+      "options": [
+        { "key": "a", "text": "sustituirlo por remos (palas)" },
+        { "key": "b", "text": "navegar de modo que no se ponga en peligro a los buceadores" },
+        { "key": "c", "text": "navegar despacio y solo en línea recta" },
+        { "key": "d", "text": "permanecer con la embarcación parada en el sitio" }
+      ],
+      "correct": "b",
+      "explanation": "Hay que navegar de modo que no se ponga en peligro a los buceadores."
+    },
+    {
+      "id": 92,
+      "category": "doprovodne-plavidlo",
+      "question": "Con embarcaciones pequeñas no es seguro salir al mar ni a grandes superficies de agua cuando el estado de la superficie está provocado por viento de fuerza:",
+      "options": [
+        { "key": "a", "text": "3 o más Bf" },
+        { "key": "b", "text": "4 o más Bf" },
+        { "key": "c", "text": "5 o más Bf" },
+        { "key": "d", "text": "ninguna respuesta es correcta" }
+      ],
+      "correct": "b",
+      "explanation": "Con embarcaciones pequeñas no es seguro salir cuando el estado de la superficie está provocado por viento de fuerza 4 o más Bf."
+    },
+    {
+      "id": 93,
+      "category": "doprovodne-plavidlo",
+      "question": "Con embarcaciones pequeñas no es seguro salir al mar ni a grandes superficies de agua:",
+      "options": [
+        { "key": "a", "text": "sin notificarlo al puerto (capitanía)" },
+        { "key": "b", "text": "sin una unidad de propulsión de respaldo" },
+        { "key": "c", "text": "cuando el estado de la superficie está provocado por viento de fuerza 4 o más Bf" },
+        { "key": "d", "text": "cuando el estado de la superficie está provocado por viento de fuerza 2 o más Bf" }
+      ],
+      "correct": "c",
+      "explanation": "Con embarcaciones pequeñas no es seguro salir cuando el estado de la superficie está provocado por viento de fuerza 4 o más Bf."
+    },
+    {
+      "id": 94,
+      "category": "doprovodne-plavidlo",
+      "question": "La embarcación de apoyo:",
+      "options": [
+        { "key": "a", "text": "se utiliza para asegurar el buceo a mayor distancia de la costa" },
+        { "key": "b", "text": "mientras los buceadores estén sumergidos debe izar, bien visible, la bandera A (Alfa) del código internacional de banderas" },
+        { "key": "c", "text": "lleva a bordo un equipo autónomo de respaldo" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todas son correctas: la embarcación de apoyo se usa lejos de la costa, iza la bandera A y lleva un equipo de respaldo."
+    },
+    {
+      "id": 95,
+      "category": "nouzove-situace",
+      "question": "Si bajo el agua se pierde el contacto con el compañero (o compañeros):",
+      "options": [
+        { "key": "a", "text": "los buceadores limitan la búsqueda mutua a unos 30 segundos y ascienden a la superficie respetando las reglas de un ascenso seguro" },
+        { "key": "b", "text": "los buceadores limitan la búsqueda mutua a unos 5 minutos y ascienden a la superficie respetando las reglas de un ascenso seguro" },
+        { "key": "c", "text": "hay que buscar al compañero (o compañeros) hasta que la presión en la botella alcance el límite de la reserva" },
+        { "key": "d", "text": "hay que iniciar de inmediato un ascenso de emergencia a la superficie" }
+      ],
+      "correct": "a",
+      "explanation": "Si se pierde el contacto, la búsqueda se limita a unos 30 segundos y luego se asciende con seguridad a la superficie."
+    },
+    {
+      "id": 96,
+      "category": "nouzove-situace",
+      "question": "Si bajo el agua se pierde el contacto con el compañero (o compañeros):",
+      "options": [
+        { "key": "a", "text": "los buceadores limitan la búsqueda mutua a unos 30 segundos y, si no se restablece el contacto, continúan la inmersión según el plan original" },
+        { "key": "b", "text": "los buceadores limitan la búsqueda mutua a unos 30 segundos y ascienden a la superficie respetando las reglas de un ascenso seguro" },
+        { "key": "c", "text": "es necesario salir de inmediato a una velocidad de hasta 10 m/min" },
+        { "key": "d", "text": "es necesario salir de inmediato a una velocidad de hasta 20 m/min" }
+      ],
+      "correct": "b",
+      "explanation": "Si se pierde el contacto, se limita la búsqueda a unos 30 segundos y se sale a la superficie respetando las reglas del ascenso seguro."
+    },
+    {
+      "id": 97,
+      "category": "nouzove-situace",
+      "question": "Marque la afirmación que NO se ajusta a las Normas de Seguridad de la SPČR 2016:",
+      "options": [
+        { "key": "a", "text": "Si la situación exige usar el motor para propulsar la embarcación de apoyo durante la inmersión, hay que navegar de modo que no se ponga en peligro a los buceadores." },
+        { "key": "b", "text": "Con embarcaciones pequeñas no es seguro salir al mar ni a grandes superficies de agua cuando el estado de la superficie está provocado por viento de fuerza 4 o más Bf." },
+        { "key": "c", "text": "Si bajo el agua se pierde el contacto con el compañero, los buceadores limitan la búsqueda mutua a unos 3–5 minutos y ascienden a la superficie respetando las reglas de un ascenso seguro." },
+        { "key": "d", "text": "En caso de problemas de salud tras la inmersión, hay que prestar primeros auxilios cuanto antes, administrar oxígeno (si procede y está disponible), buscar atención médica especializada y, en su caso, asegurar el tratamiento en cámara hiperbárica." }
+      ],
+      "correct": "c",
+      "explanation": "Las normas establecen una búsqueda de unos 30 segundos, no de 3–5 minutos."
+    },
+    {
+      "id": 98,
+      "category": "nouzove-situace",
+      "question": "En caso de problemas de salud tras la inmersión hay que:",
+      "options": [
+        { "key": "a", "text": "volver a sumergirse cuanto antes con la víctima para una descompresión correctora" },
+        { "key": "b", "text": "evaluar primero el registro del ordenador de buceo de la víctima" },
+        { "key": "c", "text": "prestar a la víctima primeros auxilios cuanto antes" },
+        { "key": "d", "text": "que el jefe de inmersión redacte un parte de incidente con la víctima" }
+      ],
+      "correct": "c",
+      "explanation": "En caso de problemas de salud hay que prestar a la víctima primeros auxilios cuanto antes."
+    },
+    {
+      "id": 99,
+      "category": "nouzove-situace",
+      "question": "En caso de problemas de salud tras la inmersión, a la víctima hay que:",
+      "options": [
+        { "key": "a", "text": "darle analgésicos" },
+        { "key": "b", "text": "administrarle oxígeno (si procede y está disponible)" },
+        { "key": "c", "text": "trasladarla de inmediato a su domicilio" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "b",
+      "explanation": "En caso de problemas de salud hay que administrarle oxígeno (si procede y está disponible)."
+    },
+    {
+      "id": 100,
+      "category": "nouzove-situace",
+      "question": "En caso de problemas de salud tras la inmersión hay que:",
+      "options": [
+        { "key": "a", "text": "introducir a la víctima sin demora en una cámara hiperbárica" },
+        { "key": "b", "text": "prestar a la víctima primeros auxilios cuanto antes, administrar oxígeno (si procede y está disponible), buscar atención médica especializada y, en su caso, asegurar el tratamiento en cámara hiperbárica" },
+        { "key": "c", "text": "iniciar un traslado cuidadoso de la víctima al centro sanitario más cercano" },
+        { "key": "d", "text": "esperar la llegada del médico" }
+      ],
+      "correct": "b",
+      "explanation": "Hay que prestar primeros auxilios, administrar oxígeno, buscar atención médica especializada y, en su caso, asegurar el tratamiento en cámara hiperbárica."
+    }
+  ]
+}

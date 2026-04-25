@@ -1,0 +1,1306 @@
+{
+  "title": "Diving Equipment",
+  "description": "SPČR 2018 Exam Tests on diving equipment (CMAS/SPČR)",
+  "questions": [
+    {
+      "id": 1,
+      "category": "masky",
+      "question": "The most suitable mask for breath-hold diving is:",
+      "options": [
+        { "key": "a", "text": "a mask with a wide field of view and a small internal volume" },
+        { "key": "b", "text": "a mask with a wide field of view and a large internal volume" },
+        { "key": "c", "text": "a simple mask without an equalisation feature" },
+        { "key": "d", "text": "swimming goggles" }
+      ],
+      "correct": "a",
+      "explanation": "For breath-hold diving the best mask has a small internal volume, because equalising it costs less air."
+    },
+    {
+      "id": 2,
+      "category": "masky",
+      "question": "The double seal of a diving-mask skirt:",
+      "options": [
+        { "key": "a", "text": "maintains a positive pressure inside the mask" },
+        { "key": "b", "text": "improves the mask's fit on the face" },
+        { "key": "c", "text": "prevents unwanted air loss on ascent on scuba" },
+        { "key": "d", "text": "reduces lens fogging" }
+      ],
+      "correct": "b",
+      "explanation": "A double-seal skirt improves the mask's fit on the face and ensures a better water-tight seal."
+    },
+    {
+      "id": 3,
+      "category": "masky",
+      "question": "Swimming goggles:",
+      "options": [
+        { "key": "a", "text": "are suitable only for breath-hold diving" },
+        { "key": "b", "text": "are not suitable for diving" },
+        { "key": "c", "text": "are suitable only for diving on scuba" },
+        { "key": "d", "text": "are suitable only for diving in the sea" }
+      ],
+      "correct": "b",
+      "explanation": "Swimming goggles are not suitable for diving because they cannot be equalised (you cannot exhale into them through the nose)."
+    },
+    {
+      "id": 4,
+      "category": "masky",
+      "question": "For breath-hold diving we choose a mask with the smallest possible internal volume:",
+      "options": [
+        { "key": "a", "text": "to minimise the increase in residual lung volume" },
+        { "key": "b", "text": "to use as little air as possible when equalising the mask" },
+        { "key": "c", "text": "to allow pressure equalisation in the mask at all" },
+        { "key": "d", "text": "to keep the mass of the mask as low as possible" }
+      ],
+      "correct": "b",
+      "explanation": "On a breath-hold dive we want to save air, so we choose a mask with a small internal volume."
+    },
+    {
+      "id": 5,
+      "category": "masky",
+      "question": "Diving-mask lenses are made from tempered glass:",
+      "options": [
+        { "key": "a", "text": "to prevent fogging" },
+        { "key": "b", "text": "to withstand the elevated pressure during a dive" },
+        { "key": "c", "text": "to minimise the risk of injury to the diver if the lens breaks" },
+        { "key": "d", "text": "to insulate the diver from the surrounding water" }
+      ],
+      "correct": "c",
+      "explanation": "Tempered glass breaks into small blunt-edged pieces, which minimises the risk of injury."
+    },
+    {
+      "id": 6,
+      "category": "ploutve-trubice",
+      "question": "The spring effect of quality fins makes it possible to:",
+      "options": [
+        { "key": "a", "text": "make better use of the energy spent on the down-stroke" },
+        { "key": "b", "text": "make better use of the energy spent on the up-stroke" },
+        { "key": "c", "text": "set the heel straps with a quick release" },
+        { "key": "d", "text": "set the stiffness of the support ribs" }
+      ],
+      "correct": "a",
+      "explanation": "The spring effect stores energy on the down-stroke and releases it as the fin returns."
+    },
+    {
+      "id": 7,
+      "category": "ploutve-trubice",
+      "question": "For swimming against a current, a trained diver chooses fins:",
+      "options": [
+        { "key": "a", "text": "with a softer blade" },
+        { "key": "b", "text": "with a stiffer blade" },
+        { "key": "c", "text": "with heel straps" },
+        { "key": "d", "text": "with a foot pocket" }
+      ],
+      "correct": "b",
+      "explanation": "For swimming against current, fins with a stiffer blade are better — they provide more thrust."
+    },
+    {
+      "id": 8,
+      "category": "ploutve-trubice",
+      "question": "A snorkel:",
+      "options": [
+        { "key": "a", "text": "must have purge valves" },
+        { "key": "b", "text": "should be up to 40 cm long with an internal diameter of about 2 cm" },
+        { "key": "c", "text": "must be flexible at the mouthpiece" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "b",
+      "explanation": "The optimal snorkel length is up to 40 cm with an internal diameter of about 2 cm to minimise dead space."
+    },
+    {
+      "id": 9,
+      "category": "ploutve-trubice",
+      "question": "An advantage of a snorkel with a purge valve is:",
+      "options": [
+        { "key": "a", "text": "reduced dead space" },
+        { "key": "b", "text": "easier clearing of water" },
+        { "key": "c", "text": "use for emergency lung-to-lung breathing on the surface" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "b",
+      "explanation": "The main advantage of a purge valve is easier clearing of water from the snorkel."
+    },
+    {
+      "id": 10,
+      "category": "zakladni-vystroj",
+      "question": "A dive knife is intended primarily for:",
+      "options": [
+        { "key": "a", "text": "defence against aggressive marine life" },
+        { "key": "b", "text": "freeing the diver from lines or nets" },
+        { "key": "c", "text": "disassembling the equipment" },
+        { "key": "d", "text": "none of the answers is correct" }
+      ],
+      "correct": "b",
+      "explanation": "The main purpose of a dive knife is to free the diver from lines, nets or other entanglements."
+    },
+    {
+      "id": 11,
+      "category": "zakladni-vystroj",
+      "question": "Mark the incorrect statement:",
+      "options": [
+        { "key": "a", "text": "The buckle of a weight belt can be opened with one hand." },
+        { "key": "b", "text": "The webbing of a synthetic weight belt is usually 50 mm wide." },
+        { "key": "c", "text": "Plastic pouches with lead shot cannot be used as weights." },
+        { "key": "d", "text": "Weights are placed symmetrically on the belt." }
+      ],
+      "correct": "c",
+      "explanation": "Plastic pouches with lead shot can be used as weights — this statement is incorrect."
+    },
+    {
+      "id": 12,
+      "category": "obleky",
+      "question": "Compared with a wet suit of similar cut and the same material, a semi-dry neoprene suit usually insulates:",
+      "options": [
+        { "key": "a", "text": "better, thanks to an air gap between the body and the suit" },
+        { "key": "b", "text": "better, thanks to reduced heat conduction through the suit material" },
+        { "key": "c", "text": "better, thanks to reduced heat loss from water exchange in the suit" },
+        { "key": "d", "text": "the same" }
+      ],
+      "correct": "c",
+      "explanation": "A semi-dry suit insulates better thanks to seals that limit water exchange and so reduce heat loss."
+    },
+    {
+      "id": 13,
+      "category": "obleky",
+      "question": "The insulating capacity of a wet neoprene suit is influenced by:",
+      "options": [
+        { "key": "a", "text": "the right cut and size" },
+        { "key": "b", "text": "the depth at which the diver is" },
+        { "key": "c", "text": "the insulating properties of the material" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "The insulating capacity of a wet neoprene suit depends on cut, size, depth (compression) and material properties."
+    },
+    {
+      "id": 14,
+      "category": "obleky",
+      "question": "The insulating capacity of a neoprene suit:",
+      "options": [
+        { "key": "a", "text": "increases with increasing depth" },
+        { "key": "b", "text": "decreases with decreasing depth" },
+        { "key": "c", "text": "decreases with increasing depth" },
+        { "key": "d", "text": "is the same at all depths" }
+      ],
+      "correct": "c",
+      "explanation": "With increasing depth the neoprene is compressed, the gas-bubble volume shrinks and the insulating capacity drops."
+    },
+    {
+      "id": 15,
+      "category": "obleky",
+      "question": "Heat transfer through a foamed-neoprene dry suit:",
+      "options": [
+        { "key": "a", "text": "decreases with depth, because the suit becomes more compact under compression" },
+        { "key": "b", "text": "increases with depth, because the neoprene thickness shrinks" },
+        { "key": "c", "text": "is independent of depth, because the layer of undergarment stays the same" },
+        { "key": "d", "text": "is highest at shallow depths" }
+      ],
+      "correct": "b",
+      "explanation": "A foamed-neoprene dry suit compresses with depth, its thickness shrinks and heat transfer increases."
+    },
+    {
+      "id": 16,
+      "category": "obleky",
+      "question": "The insulating capacity of a trilaminate membrane dry suit:",
+      "options": [
+        { "key": "a", "text": "decreases with increasing depth" },
+        { "key": "b", "text": "is independent of depth" },
+        { "key": "c", "text": "increases with increasing depth" },
+        { "key": "d", "text": "is lower at shallow depths" }
+      ],
+      "correct": "b",
+      "explanation": "A membrane suit does not compress; insulation comes from the undergarment, so the insulating capacity does not depend on depth."
+    },
+    {
+      "id": 17,
+      "category": "obleky",
+      "question": "Heat loss from neoprene dry suits is NOT influenced by:",
+      "options": [
+        { "key": "a", "text": "the temperature of the surrounding water" },
+        { "key": "b", "text": "the type and thickness of the undergarment and the thickness of the neoprene" },
+        { "key": "c", "text": "the location of the inflator and dump valves" },
+        { "key": "d", "text": "the type of gas used to fill the suit" }
+      ],
+      "correct": "c",
+      "explanation": "The location of the valves does not affect heat loss; what matters is the water temperature, the undergarment and the gas in the suit."
+    },
+    {
+      "id": 18,
+      "category": "obleky",
+      "question": "A semi-dry neoprene suit differs from a wet suit mainly in:",
+      "options": [
+        { "key": "a", "text": "the thickness of the neoprene" },
+        { "key": "b", "text": "the seals (cuffs) preventing water flow between skin and suit" },
+        { "key": "c", "text": "a looser cut allowing an insulating air gap to form between skin and suit" },
+        { "key": "d", "text": "an inflator valve" }
+      ],
+      "correct": "b",
+      "explanation": "A semi-dry suit differs from a wet one mainly in its sealing cuffs at the wrists, ankles and neck."
+    },
+    {
+      "id": 19,
+      "category": "obleky",
+      "question": "Mark the incorrect statement about a wet neoprene suit.",
+      "options": [
+        { "key": "a", "text": "Its insulating capacity comes from the warming of the water layer between skin and suit." },
+        { "key": "b", "text": "After entering cold water it is recommended not to leave the water again before the dive begins." },
+        { "key": "c", "text": "Its insulating capacity decreases with increasing depth." },
+        { "key": "d", "text": "Its insulating capacity comes from reduced heat conduction through the closed-cell foam material." }
+      ],
+      "correct": "a",
+      "explanation": "The insulating capacity of a wet suit does not come from warming the water but from the insulating properties of the gas-cell material itself."
+    },
+    {
+      "id": 20,
+      "category": "obleky",
+      "question": "Special undersuits (undergarments) for dry suits:",
+      "options": [
+        { "key": "a", "text": "insulate thermally and trap moisture and sweat against the body" },
+        { "key": "b", "text": "insulate thermally and wick moisture and sweat away from the body" },
+        { "key": "c", "text": "actively warm the skin via electrostatic potential" },
+        { "key": "d", "text": "prevent water reaching the skin if the suit is torn" }
+      ],
+      "correct": "b",
+      "explanation": "Quality undergarments insulate thermally and at the same time wick moisture and sweat away from the body."
+    },
+    {
+      "id": 21,
+      "category": "obleky",
+      "question": "Automatic dump valves on dry suits:",
+      "options": [
+        { "key": "a", "text": "allow setting a constant ascent rate" },
+        { "key": "b", "text": "reduce the risk of an uncontrolled ascent" },
+        { "key": "c", "text": "cannot be operated manually" },
+        { "key": "d", "text": "automatically add air to the suit" }
+      ],
+      "correct": "b",
+      "explanation": "Automatic dump valves vent expanding air on ascent and so reduce the risk of an uncontrolled ascent."
+    },
+    {
+      "id": 22,
+      "category": "kompenzatory",
+      "question": "A buoyancy compensator (BCD) compensates for:",
+      "options": [
+        { "key": "a", "text": "changes in the volume of the insulating suit" },
+        { "key": "b", "text": "changes in the mass of the gas supply during the dive" },
+        { "key": "c", "text": "the weight of the kit components" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "A BCD is used to compensate for all of the above factors that affect the diver's buoyancy."
+    },
+    {
+      "id": 23,
+      "category": "kompenzatory",
+      "question": "A buoyancy compensator is intended for:",
+      "options": [
+        { "key": "a", "text": "lifting objects to the surface" },
+        { "key": "b", "text": "controlling buoyancy according to the diver's current need" },
+        { "key": "c", "text": "rescue from depth only" },
+        { "key": "d", "text": "improving the insulating properties of the suit" }
+      ],
+      "correct": "b",
+      "explanation": "The main purpose of the BCD is to control buoyancy according to the diver's current need during the dive."
+    },
+    {
+      "id": 24,
+      "category": "kompenzatory",
+      "question": "The control device of a buoyancy compensator (the inflator):",
+      "options": [
+        { "key": "a", "text": "is connected to the HP port of the regulator's first stage" },
+        { "key": "b", "text": "is connected to the LP port of the regulator's first stage" },
+        { "key": "c", "text": "is used only for emergency breathing" },
+        { "key": "d", "text": "is used solely to speed up the ascent" }
+      ],
+      "correct": "b",
+      "explanation": "The inflator is connected to the LP (low-pressure) port of the regulator's first stage."
+    },
+    {
+      "id": 25,
+      "category": "kompenzatory",
+      "question": "A dump valve at the lower part of the BCD is used during the dive to:",
+      "options": [
+        { "key": "a", "text": "rapidly let water into the BCD" },
+        { "key": "b", "text": "let water out of the BCD" },
+        { "key": "c", "text": "control buoyancy in a head-down position" },
+        { "key": "d", "text": "control buoyancy in a head-up position" }
+      ],
+      "correct": "c",
+      "explanation": "The lower dump valve lets the diver vent gas in a head-down position, where the air is at the lower part of the BCD."
+    },
+    {
+      "id": 26,
+      "category": "kompenzatory",
+      "question": "Over-pressure dump valves on a BCD:",
+      "options": [
+        { "key": "a", "text": "protect a fully inflated BCD from rupture" },
+        { "key": "b", "text": "can be opened manually by pulling a release cord" },
+        { "key": "c", "text": "make it easier to drain water from the BCD after the dive" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "Over-pressure dump valves perform all of these functions."
+    },
+    {
+      "id": 27,
+      "category": "kompenzatory",
+      "question": "A fully inflated BCD is protected against rupture by:",
+      "options": [
+        { "key": "a", "text": "the over-pressure dump valve(s)" },
+        { "key": "b", "text": "respecting the prescribed ascent rate" },
+        { "key": "c", "text": "locking the inflator's fill valve" },
+        { "key": "d", "text": "the strength of the air-bladder material" }
+      ],
+      "correct": "a",
+      "explanation": "The over-pressure dump valve automatically vents excess gas and protects the BCD from rupture."
+    },
+    {
+      "id": 28,
+      "category": "kompenzatory",
+      "question": "To reliably bring the diver to the surface, the BCD must:",
+      "options": [
+        { "key": "a", "text": "have at least two dump valves" },
+        { "key": "b", "text": "have three dump valves" },
+        { "key": "c", "text": "have sufficient lift capacity (volume)" },
+        { "key": "d", "text": "have a suitably placed D-ring for attaching the SMB" }
+      ],
+      "correct": "c",
+      "explanation": "Sufficient lift capacity is the key requirement for reliably bringing the diver to the surface."
+    },
+    {
+      "id": 29,
+      "category": "kompenzatory",
+      "question": "The term \"backplate\" refers to:",
+      "options": [
+        { "key": "a", "text": "special valves" },
+        { "key": "b", "text": "a device for adding air to the BCD or to a dry suit" },
+        { "key": "c", "text": "the back-plate of a scuba harness" },
+        { "key": "d", "text": "a device for venting air from the BCD or from a dry suit" }
+      ],
+      "correct": "c",
+      "explanation": "A backplate is a rigid plate to which the cylinder and harness attach."
+    },
+    {
+      "id": 30,
+      "category": "kompenzatory",
+      "question": "The advantage of BCDs with shoulder straps fitted with quick-release buckles is:",
+      "options": [
+        { "key": "a", "text": "easier donning and doffing" },
+        { "key": "b", "text": "the ability to keep the diver face-up at the surface" },
+        { "key": "c", "text": "easier inflating/venting of the BCD" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "a",
+      "explanation": "The main advantage of quick-release buckles on the shoulder straps is easier donning and doffing."
+    },
+    {
+      "id": 31,
+      "category": "kompenzatory",
+      "question": "The minimum lift capacity of a BCD for ordinary recreational diving should be approximately:",
+      "options": [
+        { "key": "a", "text": "5 litres" },
+        { "key": "b", "text": "15 litres" },
+        { "key": "c", "text": "25 litres" },
+        { "key": "d", "text": "35 litres" }
+      ],
+      "correct": "b",
+      "explanation": "For ordinary recreational diving the recommended minimum lift capacity is approximately 15 litres."
+    },
+    {
+      "id": 32,
+      "category": "kompenzatory",
+      "question": "Stabiliser jackets differ from ordinary jacket-style BCDs in:",
+      "options": [
+        { "key": "a", "text": "having D-rings" },
+        { "key": "b", "text": "their air bladder also wrapping around the diver's shoulders" },
+        { "key": "c", "text": "having sealable pockets" },
+        { "key": "d", "text": "the connection of an LP hose to the inflator" }
+      ],
+      "correct": "b",
+      "explanation": "Stabiliser jackets have an air bladder that also wraps around the diver's shoulders for better stability."
+    },
+    {
+      "id": 33,
+      "category": "kompenzatory",
+      "question": "A wing-style BCD is positioned:",
+      "options": [
+        { "key": "a", "text": "between the diver's back and the backplate" },
+        { "key": "b", "text": "between the backplate and the cylinder" },
+        { "key": "c", "text": "on the cylinder, secured from behind by the valve and the cylinder boot" },
+        { "key": "d", "text": "in any of the above places at the diver's choice" }
+      ],
+      "correct": "b",
+      "explanation": "The wing is positioned between the backplate and the cylinder."
+    },
+    {
+      "id": 34,
+      "category": "kompenzatory",
+      "question": "An inflator is used to:",
+      "options": [
+        { "key": "a", "text": "give optical emergency signals on the surface" },
+        { "key": "b", "text": "add air to the BCD" },
+        { "key": "c", "text": "secure the scuba kit to the diver's back" },
+        { "key": "d", "text": "hang smaller pieces of equipment (torch, SMB, etc.)" }
+      ],
+      "correct": "b",
+      "explanation": "The inflator is used to add air to the BCD from the LP port of the regulator's first stage."
+    },
+    {
+      "id": 35,
+      "category": "kompenzatory",
+      "question": "Which of the following is NOT a usual signalling device fitted to a BCD?",
+      "options": [
+        { "key": "a", "text": "whistle" },
+        { "key": "b", "text": "air horn" },
+        { "key": "c", "text": "inflator" },
+        { "key": "d", "text": "strobe" }
+      ],
+      "correct": "c",
+      "explanation": "The inflator is not a signalling device; it is used to add air to the BCD."
+    },
+    {
+      "id": 36,
+      "category": "plicni-automatiky",
+      "question": "In a diaphragm-type first stage of a regulator, the force of the IP-control spring acts on the valve to:",
+      "options": [
+        { "key": "a", "text": "always open it" },
+        { "key": "b", "text": "always close it" },
+        { "key": "c", "text": "close it on an upstream-opening valve, open it on a downstream-opening valve" },
+        { "key": "d", "text": "open it on an upstream-opening valve, close it on a downstream-opening valve" }
+      ],
+      "correct": "a",
+      "explanation": "In a diaphragm first stage, the control spring always opens the valve."
+    },
+    {
+      "id": 37,
+      "category": "plicni-automatiky",
+      "question": "In a piston-type first stage of a regulator, the force of the IP-control spring acts on the valve to:",
+      "options": [
+        { "key": "a", "text": "always close it" },
+        { "key": "b", "text": "always open it" },
+        { "key": "c", "text": "close it on an upstream-opening valve, open it on a downstream-opening valve" },
+        { "key": "d", "text": "open it on an upstream-opening valve, close it on a downstream-opening valve" }
+      ],
+      "correct": "b",
+      "explanation": "In a piston first stage, the control spring always opens the valve."
+    },
+    {
+      "id": 38,
+      "category": "plicni-automatiky",
+      "question": "The valve in the first stage of a regulator is:",
+      "options": [
+        { "key": "a", "text": "opened by intermediate pressure and closed by the spring force together with the surrounding water pressure" },
+        { "key": "b", "text": "opened by the combined force of intermediate pressure and the spring, and closed by the surrounding water pressure" },
+        { "key": "c", "text": "opened by the combined force of the spring and the surrounding water pressure, and closed by intermediate pressure" },
+        { "key": "d", "text": "opened by intermediate pressure and closed by the combined force of the spring and the surrounding water pressure" }
+      ],
+      "correct": "c",
+      "explanation": "The first-stage valve is opened by the combined force of the spring and the ambient water pressure, and closed by intermediate pressure."
+    },
+    {
+      "id": 39,
+      "category": "plicni-automatiky",
+      "question": "In an unbalanced upstream-opening first stage, the force produced by the high-pressure side:",
+      "options": [
+        { "key": "a", "text": "acts against the spring force, so IP falls as cylinder pressure drops" },
+        { "key": "b", "text": "acts against the spring force, so IP rises as cylinder pressure drops" },
+        { "key": "c", "text": "acts in the same direction as the spring, so IP rises as cylinder pressure drops" },
+        { "key": "d", "text": "acts in the same direction as the spring, so IP falls as cylinder pressure drops" }
+      ],
+      "correct": "b",
+      "explanation": "In an unbalanced upstream-opening first stage, HP acts against the spring, so IP rises as cylinder pressure drops."
+    },
+    {
+      "id": 40,
+      "category": "plicni-automatiky",
+      "question": "In a regulator's first stage, the force from the surrounding water pressure acts in the same direction as the IP-control spring:",
+      "options": [
+        { "key": "a", "text": "on an upstream-opening valve (and opposite on a downstream-opening one)" },
+        { "key": "b", "text": "on a downstream-opening valve (and opposite on an upstream-opening one)" },
+        { "key": "c", "text": "on both upstream- and downstream-opening valves" },
+        { "key": "d", "text": "only on balanced first stages" }
+      ],
+      "correct": "c",
+      "explanation": "Ambient water pressure always acts in the direction of the control spring (opening the valve) for both valve types."
+    },
+    {
+      "id": 41,
+      "category": "plicni-automatiky",
+      "question": "In a regulator's first stage, the force produced by intermediate pressure:",
+      "options": [
+        { "key": "a", "text": "opens a downstream-opening valve and closes an upstream-opening one" },
+        { "key": "b", "text": "opens an upstream-opening valve and closes a downstream-opening one" },
+        { "key": "c", "text": "opens both upstream- and downstream-opening valves" },
+        { "key": "d", "text": "closes both upstream- and downstream-opening valves" }
+      ],
+      "correct": "d",
+      "explanation": "Intermediate pressure always closes the first-stage valve, regardless of the opening direction."
+    },
+    {
+      "id": 42,
+      "category": "plicni-automatiky",
+      "question": "In an unbalanced piston-type first stage of a regulator, the lower end of the channel running through the piston stem opens into a chamber containing:",
+      "options": [
+        { "key": "a", "text": "intermediate pressure" },
+        { "key": "b", "text": "high pressure" },
+        { "key": "c", "text": "the IP-control spring" },
+        { "key": "d", "text": "ambient water pressure" }
+      ],
+      "correct": "a",
+      "explanation": "The chamber under the piston stem is connected to the IP chamber by the channel."
+    },
+    {
+      "id": 43,
+      "category": "plicni-automatiky",
+      "question": "The fact that intermediate pressure remains constant relative to ambient pressure at every depth is usually achieved by:",
+      "options": [
+        { "key": "a", "text": "communicating ambient pressure to the IP-control spring of the first stage" },
+        { "key": "b", "text": "the IP-control spring of the first stage" },
+        { "key": "c", "text": "the larger cross-section of the piston or diaphragm of the first stage" },
+        { "key": "d", "text": "the balancing mechanism of the first stage" }
+      ],
+      "correct": "a",
+      "explanation": "Communicating ambient pressure to the control spring keeps IP constant relative to ambient at any depth."
+    },
+    {
+      "id": 44,
+      "category": "plicni-automatiky",
+      "question": "The intermediate pressure of a regulator with an unbalanced first stage, as cylinder pressure drops:",
+      "options": [
+        { "key": "a", "text": "falls on an upstream-opening valve and rises on a downstream-opening one" },
+        { "key": "b", "text": "rises on an upstream-opening valve and falls on a downstream-opening one" },
+        { "key": "c", "text": "always rises, regardless of the opening direction" },
+        { "key": "d", "text": "rises on an upstream-opening valve and stays the same on a downstream-opening one" }
+      ],
+      "correct": "b",
+      "explanation": "On an unbalanced first stage, IP rises with the upstream opening and falls with the downstream opening as cylinder pressure drops."
+    },
+    {
+      "id": 45,
+      "category": "plicni-automatiky",
+      "question": "Intermediate pressure as a gauge pressure relative to ambient is NOT influenced by:",
+      "options": [
+        { "key": "a", "text": "water pressure (depth)" },
+        { "key": "b", "text": "the opening direction of the first-stage valve" },
+        { "key": "c", "text": "the force of the control spring" },
+        { "key": "d", "text": "cylinder pressure" }
+      ],
+      "correct": "a",
+      "explanation": "Thanks to the ambient-pressure feed to the spring, IP relative to ambient remains constant regardless of depth."
+    },
+    {
+      "id": 46,
+      "category": "plicni-automatiky",
+      "question": "When servicing a regulator, intermediate pressure (as a gauge pressure relative to ambient) is increased by:",
+      "options": [
+        { "key": "a", "text": "reducing the preload of the control spring" },
+        { "key": "b", "text": "increasing the preload of the control spring" },
+        { "key": "c", "text": "adding a Venturi to the second-stage inhalation chamber" },
+        { "key": "d", "text": "removing the Venturi from the second-stage inhalation chamber" }
+      ],
+      "correct": "b",
+      "explanation": "Increasing the preload of the control spring increases the opening force on the valve and thus the IP value."
+    },
+    {
+      "id": 47,
+      "category": "plicni-automatiky",
+      "question": "An advantage of a downstream-opening second stage of a regulator is:",
+      "options": [
+        { "key": "a", "text": "manual operation of the valve via the purge button" },
+        { "key": "b", "text": "constant intermediate pressure regardless of cylinder pressure" },
+        { "key": "c", "text": "requiring an over-pressure relief valve in the IP chamber" },
+        { "key": "d", "text": "not requiring an over-pressure relief valve in the IP chamber" }
+      ],
+      "correct": "d",
+      "explanation": "A downstream-opening second stage opens itself when IP rises and vents the excess gas, so it does not need an over-pressure relief valve."
+    },
+    {
+      "id": 48,
+      "category": "plicni-automatiky",
+      "question": "Reducing the exhalation resistance of a regulator can be achieved by:",
+      "options": [
+        { "key": "a", "text": "reducing the flow cross-section of the exhaust valve" },
+        { "key": "b", "text": "increasing the flow cross-section of the exhaust valve" },
+        { "key": "c", "text": "reducing the airflow through the second-stage valve" },
+        { "key": "d", "text": "increasing the airflow through the second-stage valve" }
+      ],
+      "correct": "b",
+      "explanation": "Increasing the flow cross-section of the exhaust valve reduces exhalation resistance."
+    },
+    {
+      "id": 49,
+      "category": "plicni-automatiky",
+      "question": "A regulator does not need an over-pressure relief valve in the IP chamber when:",
+      "options": [
+        { "key": "a", "text": "the first stage is downstream-opening and the second stage is upstream-opening" },
+        { "key": "b", "text": "the first stage is downstream-opening" },
+        { "key": "c", "text": "the second stage is balanced and downstream-opening" },
+        { "key": "d", "text": "the second stage opens at elevated IP" }
+      ],
+      "correct": "d",
+      "explanation": "If the second stage opens itself at elevated IP and vents the excess gas, an over-pressure relief valve is not necessary."
+    },
+    {
+      "id": 50,
+      "category": "plicni-automatiky",
+      "question": "A diver at 20 m breathes from a regulator whose first stage is set to a gauge IP of 10 bar. Cylinder pressure is 180 bar. What absolute pressures will be measured at the IP port (A) and at the HP port (B) of this first stage?",
+      "options": [
+        { "key": "a", "text": "A = 13 bar, B = 180 bar" },
+        { "key": "b", "text": "A = 10 bar, B = 180 bar" },
+        { "key": "c", "text": "A = 7 bar, B = 177 bar" },
+        { "key": "d", "text": "A = 170 bar, B = 180 bar" }
+      ],
+      "correct": "a",
+      "explanation": "At 20 m the ambient pressure is 3 bar. IP gauge 10 bar + ambient 3 bar = 13 bar absolute. The HP port shows the cylinder pressure, 180 bar."
+    },
+    {
+      "id": 51,
+      "category": "plicni-automatiky",
+      "question": "An INT connection on a regulator means:",
+      "options": [
+        { "key": "a", "text": "yoke connection to the cylinder" },
+        { "key": "b", "text": "DIN-thread connection to the cylinder" },
+        { "key": "c", "text": "a regulator intended for professional use" },
+        { "key": "d", "text": "a regulator intended exclusively for nitrox" }
+      ],
+      "correct": "a",
+      "explanation": "INT (International) refers to the yoke (A-clamp) connection, as opposed to DIN (Deutsche Industrie Norm), which uses a threaded fitting."
+    },
+    {
+      "id": 52,
+      "category": "plicni-automatiky",
+      "question": "The Venturi (or injector) in a regulator:",
+      "options": [
+        { "key": "a", "text": "humidifies the breathed air by drawing in water" },
+        { "key": "b", "text": "reduces inhalation resistance during inhalation" },
+        { "key": "c", "text": "directs the airflow against the deflection of the second-stage diaphragm" },
+        { "key": "d", "text": "helps to open the exhaust valve" }
+      ],
+      "correct": "b",
+      "explanation": "The Venturi effect reduces inhalation resistance: the flowing air creates a low-pressure region that helps keep the valve open."
+    },
+    {
+      "id": 53,
+      "category": "plicni-automatiky",
+      "question": "In the IP chamber of a balanced regulator first stage set to a gauge IP of 10 bar, with cylinder pressure 7 bar at a depth of 10 m, the absolute pressure is:",
+      "options": [
+        { "key": "a", "text": "17 bar" },
+        { "key": "b", "text": "12 bar" },
+        { "key": "c", "text": "11 bar" },
+        { "key": "d", "text": "7 bar" }
+      ],
+      "correct": "d",
+      "explanation": "When cylinder pressure is only 7 bar, the first stage is fully open and the IP chamber holds the same pressure as the cylinder, i.e. 7 bar."
+    },
+    {
+      "id": 54,
+      "category": "plicni-automatiky",
+      "question": "The HP port of a regulator's first stage is used to connect:",
+      "options": [
+        { "key": "a", "text": "an inflator hose for a dry suit" },
+        { "key": "b", "text": "the primary second stage" },
+        { "key": "c", "text": "a waterproof submersible pressure gauge" },
+        { "key": "d", "text": "the alternate second stage (octopus)" }
+      ],
+      "correct": "c",
+      "explanation": "The HP port is intended for the submersible pressure gauge that measures cylinder pressure."
+    },
+    {
+      "id": 55,
+      "category": "plicni-automatiky",
+      "question": "Mark the incorrect statement about second stages with servo assistance:",
+      "options": [
+        { "key": "a", "text": "They demand more maintenance than ordinary second stages." },
+        { "key": "b", "text": "They demand more careful adjustment than ordinary second stages." },
+        { "key": "c", "text": "They are simpler in construction than ordinary second stages." },
+        { "key": "d", "text": "They achieve high gas flow with minimum inhalation resistance." }
+      ],
+      "correct": "c",
+      "explanation": "Servo-assisted second stages are more complex in construction than ordinary second stages, not simpler."
+    },
+    {
+      "id": 56,
+      "category": "plicni-automatiky",
+      "question": "Which of the following measures does NOT improve a regulator's resistance to freezing?",
+      "options": [
+        { "key": "a", "text": "Allowing manual operation of the second-stage valve via the purge button." },
+        { "key": "b", "text": "Preventing water from entering the spring chamber of the first stage." },
+        { "key": "c", "text": "Filling the spring chamber of the first stage with antifreeze fluid." },
+        { "key": "d", "text": "Increasing the surface area of the first-stage body with fins." }
+      ],
+      "correct": "a",
+      "explanation": "The purge button has nothing to do with freeze resistance; it is for manually operating the valve."
+    },
+    {
+      "id": 57,
+      "category": "plicni-automatiky",
+      "question": "The disadvantage of a cylinder fitted with an HP shut-off valve with a single port is that:",
+      "options": [
+        { "key": "a", "text": "this configuration cannot handle an out-of-air (OOA) emergency" },
+        { "key": "b", "text": "it cannot be used with a wing-style BCD" },
+        { "key": "c", "text": "both regulator second stages, the SPG and the inflator hoses to the BCD and dry suit all depend on a single first stage" },
+        { "key": "d", "text": "it does not allow regulators with freeze-resistant modifications to be used" }
+      ],
+      "correct": "c",
+      "explanation": "With a single port, everything depends on a single first stage — if it fails, all functions are lost."
+    },
+    {
+      "id": 58,
+      "category": "plicni-automatiky",
+      "question": "A cylinder fitted with an HP shut-off valve with two independently operable ports:",
+      "options": [
+        { "key": "a", "text": "allows two complete regulators to be mounted" },
+        { "key": "b", "text": "with a correct kit configuration, allows continued gas supply if one of the first stages fails" },
+        { "key": "c", "text": "with a correct kit configuration, lets a dry-suit diver continue to control buoyancy if one of the first stages fails" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "A dual-port valve provides all of the above benefits — redundancy and independence between systems."
+    },
+    {
+      "id": 59,
+      "category": "plicni-automatiky",
+      "question": "When using a primary second stage on a hose about 150 cm long, the hose is routed from the first stage:",
+      "options": [
+        { "key": "a", "text": "in a free loop" },
+        { "key": "b", "text": "under the right armpit, diagonally across the chest and around the neck from the left so that the second stage approaches the diver from the right" },
+        { "key": "c", "text": "over the right shoulder, wrapped around the diver's neck" },
+        { "key": "d", "text": "under the BCD to keep it from snagging" }
+      ],
+      "correct": "b",
+      "explanation": "A long hose runs under the right armpit, across the chest and around the neck — the standard DIR configuration for easy gas sharing."
+    },
+    {
+      "id": 60,
+      "category": "plicni-automatiky",
+      "question": "The term \"sidemount\" refers to:",
+      "options": [
+        { "key": "a", "text": "a system of weight pouches placed on the sides of a single cylinder" },
+        { "key": "b", "text": "a kit configuration with the cylinders carried on the diver's sides" },
+        { "key": "c", "text": "attaching the SMB to a side D-ring of the BCD" },
+        { "key": "d", "text": "attaching the snorkel to the mask strap" }
+      ],
+      "correct": "b",
+      "explanation": "Sidemount is a configuration in which cylinders are carried on the diver's sides instead of on the back."
+    },
+    {
+      "id": 61,
+      "category": "lahve",
+      "question": "The connection thread for an air-cylinder valve is:",
+      "options": [
+        { "key": "a", "text": "R 3/4\"" },
+        { "key": "b", "text": "W 21.8\"" },
+        { "key": "c", "text": "G 5/8\"" },
+        { "key": "d", "text": "R 1/8\"" }
+      ],
+      "correct": "c",
+      "explanation": "The standard connection thread for an air-cylinder valve is G 5/8\"."
+    },
+    {
+      "id": 62,
+      "category": "lahve",
+      "question": "Cylinders intended for compressed air are never filled with pure oxygen:",
+      "options": [
+        { "key": "a", "text": "because contact with grease can cause an explosion" },
+        { "key": "b", "text": "because oxygen breathed at elevated partial pressure is toxic" },
+        { "key": "c", "text": "because regulations forbid it" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "All these reasons are valid — explosion risk, oxygen toxicity under pressure and regulations."
+    },
+    {
+      "id": 63,
+      "category": "lahve",
+      "question": "Cylinder valves with a parallel thread:",
+      "options": [
+        { "key": "a", "text": "are sealed by an O-ring and require higher tightening torque than valves with a tapered thread" },
+        { "key": "b", "text": "are sealed by PTFE tape and require higher tightening torque than valves with a tapered thread" },
+        { "key": "c", "text": "are sealed by an O-ring and require lower tightening torque than valves with a tapered thread" },
+        { "key": "d", "text": "are sealed by PTFE tape and require lower tightening torque than valves with a tapered thread" }
+      ],
+      "correct": "c",
+      "explanation": "A parallel thread with an O-ring requires lower tightening torque than a tapered thread."
+    },
+    {
+      "id": 64,
+      "category": "lahve",
+      "question": "An air cylinder with a 300 bar test pressure is filled to:",
+      "options": [
+        { "key": "a", "text": "300 bar" },
+        { "key": "b", "text": "200 bar" },
+        { "key": "c", "text": "450 bar" },
+        { "key": "d", "text": "250 bar" }
+      ],
+      "correct": "b",
+      "explanation": "The maximum filling pressure is 2/3 of the test pressure. For a cylinder with a 300 bar test pressure that is 200 bar."
+    },
+    {
+      "id": 65,
+      "category": "lahve",
+      "question": "Cylinders are stored with a positive internal air pressure. The reason for this is:",
+      "options": [
+        { "key": "a", "text": "to keep the valve sealed" },
+        { "key": "b", "text": "to strengthen the cylinder walls" },
+        { "key": "c", "text": "to prevent moisture and contaminants from entering the cylinder" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "c",
+      "explanation": "Storing a cylinder under positive pressure prevents moisture and contaminants from entering."
+    },
+    {
+      "id": 66,
+      "category": "lahve",
+      "question": "Air that has been stored for several months in a scuba cylinder:",
+      "options": [
+        { "key": "a", "text": "may be used, but only to 3 m" },
+        { "key": "b", "text": "should be vented, because its composition may have changed" },
+        { "key": "c", "text": "should be vented, because it may contain carbon monoxide as a corrosion product from the cylinder interior" },
+        { "key": "d", "text": "may be used, because it contains more oxygen produced by corrosion of the cylinder interior" }
+      ],
+      "correct": "b",
+      "explanation": "Long-stored air should be vented, because its composition may have changed."
+    },
+    {
+      "id": 67,
+      "category": "lahve",
+      "question": "The relationship between the maximum filling pressure and the test pressure of a scuba cylinder is:",
+      "options": [
+        { "key": "a", "text": "they are equal" },
+        { "key": "b", "text": "the maximum filling pressure equals half the test pressure" },
+        { "key": "c", "text": "the test pressure equals 1.5 times the maximum filling pressure" },
+        { "key": "d", "text": "the test pressure equals half the maximum filling pressure" }
+      ],
+      "correct": "c",
+      "explanation": "The test pressure is 1.5× the maximum filling pressure (e.g. 300 bar test = 200 bar fill)."
+    },
+    {
+      "id": 68,
+      "category": "merici-pristroje",
+      "question": "An analogue waterproof submersible pressure gauge is typically of the type:",
+      "options": [
+        { "key": "a", "text": "diaphragm" },
+        { "key": "b", "text": "Bourdon tube" },
+        { "key": "c", "text": "piston" },
+        { "key": "d", "text": "oil-filled diaphragm" }
+      ],
+      "correct": "b",
+      "explanation": "Waterproof SPGs use a Bourdon tube to measure cylinder pressure."
+    },
+    {
+      "id": 69,
+      "category": "merici-pristroje",
+      "question": "The micro-orifice (restrictor) in the HP port of a regulator's first stage:",
+      "options": [
+        { "key": "a", "text": "is used only with digital SPGs" },
+        { "key": "b", "text": "only slows the pressure rise in the SPG when the cylinder valve is opened" },
+        { "key": "c", "text": "prevents rapid air loss if the SPG hose ruptures" },
+        { "key": "d", "text": "none of the answers is correct" }
+      ],
+      "correct": "c",
+      "explanation": "The HP-port restrictor limits the flow and prevents rapid air loss if the hose is damaged."
+    },
+    {
+      "id": 70,
+      "category": "merici-pristroje",
+      "question": "Of the data provided by a dive computer during a dive, the most important from a safety point of view are:",
+      "options": [
+        { "key": "a", "text": "instructions for descent" },
+        { "key": "b", "text": "instructions for ascent" },
+        { "key": "c", "text": "information about the surface interval" },
+        { "key": "d", "text": "information about the average dive depth" }
+      ],
+      "correct": "b",
+      "explanation": "From a safety point of view, ascent instructions (rate, decompression, safety stop) are most important."
+    },
+    {
+      "id": 71,
+      "category": "merici-pristroje",
+      "question": "Mark the incorrect statement. Dive computers:",
+      "options": [
+        { "key": "a", "text": "warn when the safe ascent rate is exceeded" },
+        { "key": "b", "text": "calculate the decompression schedule from the actual dive profile" },
+        { "key": "c", "text": "should not be used on no-decompression dives" },
+        { "key": "d", "text": "continue to indicate residual nitrogen after the dive" }
+      ],
+      "correct": "c",
+      "explanation": "Dive computers are appropriate for no-decompression dives as well — this statement is incorrect."
+    },
+    {
+      "id": 72,
+      "category": "merici-pristroje",
+      "question": "A capillary depth gauge works on the principle of:",
+      "options": [
+        { "key": "a", "text": "volume changes of a gas due to changes in external pressure" },
+        { "key": "b", "text": "deflection of a capillary under changes in ambient pressure" },
+        { "key": "c", "text": "deflection of a diaphragm" },
+        { "key": "d", "text": "shape changes of a brass capillary" }
+      ],
+      "correct": "a",
+      "explanation": "A capillary depth gauge works on Boyle's law — air in the capillary is compressed as ambient pressure rises."
+    },
+    {
+      "id": 73,
+      "category": "merici-pristroje",
+      "question": "On a depth gauge with an open Bourdon tube, the water-pressure force acts:",
+      "options": [
+        { "key": "a", "text": "directly inside the tube" },
+        { "key": "b", "text": "inside the gauge housing" },
+        { "key": "c", "text": "on the elastic gauge housing" },
+        { "key": "d", "text": "on a vacuum inside the rigid gauge housing" }
+      ],
+      "correct": "a",
+      "explanation": "On an open Bourdon tube, water enters the tube directly and its pressure straightens it."
+    },
+    {
+      "id": 74,
+      "category": "merici-pristroje",
+      "question": "A depth gauge calibrated for sea water will, in fresh water, indicate:",
+      "options": [
+        { "key": "a", "text": "a smaller depth than the diver actually is at" },
+        { "key": "b", "text": "a greater depth than the diver actually is at" },
+        { "key": "c", "text": "the same as in salt water" },
+        { "key": "d", "text": "none of the answers is correct" }
+      ],
+      "correct": "a",
+      "explanation": "Fresh water is less dense than salt water, so at the same depth the pressure is lower and the gauge reads less."
+    },
+    {
+      "id": 75,
+      "category": "merici-pristroje",
+      "question": "An oil-filled depth gauge uses a Bourdon tube that is:",
+      "options": [
+        { "key": "a", "text": "filled with oil; pressure acts on the oil charge" },
+        { "key": "b", "text": "open to the surrounding water; pressure is transferred via the elastic gauge housing" },
+        { "key": "c", "text": "closed at both ends and immersed in oil; pressure is transferred via the elastic gauge housing" },
+        { "key": "d", "text": "filled with oil; pressure is transferred via the elastic gauge housing" }
+      ],
+      "correct": "c",
+      "explanation": "In an oil-filled depth gauge the Bourdon tube is sealed and immersed in oil; pressure is transferred via the elastic housing."
+    },
+    {
+      "id": 76,
+      "category": "merici-pristroje",
+      "question": "Mark the incorrect statement. A diaphragm depth gauge:",
+      "options": [
+        { "key": "a", "text": "works by measuring the deflection of a diaphragm by hydrostatic pressure" },
+        { "key": "b", "text": "can record the maximum depth reached" },
+        { "key": "c", "text": "can be adjustable for the local altitude pressure" },
+        { "key": "d", "text": "has ambient pressure on both sides of the diaphragm" }
+      ],
+      "correct": "d",
+      "explanation": "A diaphragm depth gauge does not have ambient pressure on both sides — one side has a reference pressure."
+    },
+    {
+      "id": 77,
+      "category": "merici-pristroje",
+      "question": "A depth gauge calibrated for fresh water will, in the sea, indicate:",
+      "options": [
+        { "key": "a", "text": "a smaller depth than the diver actually is at" },
+        { "key": "b", "text": "a greater depth than the diver actually is at" },
+        { "key": "c", "text": "the same as in fresh water" },
+        { "key": "d", "text": "none of the answers is correct" }
+      ],
+      "correct": "b",
+      "explanation": "Sea water is denser than fresh water, so at the same depth the pressure is higher and the gauge reads more."
+    },
+    {
+      "id": 78,
+      "category": "prislusenstvi",
+      "question": "Diving torches with LEDs have, compared with other types, the advantage of:",
+      "options": [
+        { "key": "a", "text": "lower energy consumption for comparable light output" },
+        { "key": "b", "text": "longer service life" },
+        { "key": "c", "text": "greater mechanical robustness" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "LED torches have all of these advantages — lower power draw, longer life and greater robustness."
+    },
+    {
+      "id": 79,
+      "category": "prislusenstvi",
+      "question": "The best ratio between energy consumption and light output is offered by a diving torch fitted with:",
+      "options": [
+        { "key": "a", "text": "a HID lamp" },
+        { "key": "b", "text": "a halogen bulb" },
+        { "key": "c", "text": "an LED" },
+        { "key": "d", "text": "a back-up power source" }
+      ],
+      "correct": "c",
+      "explanation": "LEDs offer the best ratio of energy consumption to light output."
+    },
+    {
+      "id": 80,
+      "category": "prislusenstvi",
+      "question": "A surface marker buoy (SMB):",
+      "options": [
+        { "key": "a", "text": "is a personal aid for ascent and decompression" },
+        { "key": "b", "text": "marks the position of an ascending diver" },
+        { "key": "c", "text": "is red or orange for ordinary diving" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "An SMB serves all of these purposes — aid during decompression, position marker, usually orange."
+    },
+    {
+      "id": 81,
+      "category": "prislusenstvi",
+      "question": "To reliably mark the position of an ascending diver, you use:",
+      "options": [
+        { "key": "a", "text": "rising bubbles" },
+        { "key": "b", "text": "a surface marker buoy" },
+        { "key": "c", "text": "a BCD signalling device (whistle or air horn)" },
+        { "key": "d", "text": "none of the answers is correct" }
+      ],
+      "correct": "b",
+      "explanation": "An SMB reliably marks the diver's surface position; bubbles can be dispersed and are not reliable."
+    },
+    {
+      "id": 82,
+      "category": "prislusenstvi",
+      "question": "When ascending with a deployed SMB, the SMB line or spool:",
+      "options": [
+        { "key": "a", "text": "is always clipped or tied to a D-ring of the BCD or other piece of kit" },
+        { "key": "b", "text": "is clipped to a D-ring of the BCD or other piece of kit when you need free hands" },
+        { "key": "c", "text": "is held throughout the ascent so that the line is not fully taut" },
+        { "key": "d", "text": "is on principle never clipped to a D-ring or anywhere else" }
+      ],
+      "correct": "d",
+      "explanation": "On principle, the SMB line is never clipped to the kit, so the diver is not pulled to the surface if e.g. a boat catches the buoy."
+    },
+    {
+      "id": 83,
+      "category": "prislusenstvi",
+      "question": "A diving compass is usually fitted with:",
+      "options": [
+        { "key": "a", "text": "a protective shielding against magnetic fields" },
+        { "key": "b", "text": "a needle-locking device" },
+        { "key": "c", "text": "a rotating bezel that lets it be used to set a course" },
+        { "key": "d", "text": "a compensation device to remove deviation" }
+      ],
+      "correct": "c",
+      "explanation": "A diving compass has a rotating bezel that lets you set and follow a course."
+    },
+    {
+      "id": 84,
+      "category": "prislusenstvi",
+      "question": "A lift bag:",
+      "options": [
+        { "key": "a", "text": "is used to bring objects to the surface" },
+        { "key": "b", "text": "is used to move objects underwater" },
+        { "key": "c", "text": "is usually fitted with a dump valve" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "A lift bag is used to lift and move objects and is usually fitted with a dump valve."
+    },
+    {
+      "id": 85,
+      "category": "kompresory",
+      "question": "Compressors used to fill scuba cylinders are:",
+      "options": [
+        { "key": "a", "text": "multi-stage diaphragm" },
+        { "key": "b", "text": "single-stage piston" },
+        { "key": "c", "text": "multi-stage piston" },
+        { "key": "d", "text": "multi-stage rotary" }
+      ],
+      "correct": "c",
+      "explanation": "Multi-stage piston compressors are used to fill scuba cylinders."
+    },
+    {
+      "id": 86,
+      "category": "kompresory",
+      "question": "Mark the incorrect statement. Inter-stage cooling in high-pressure compressors:",
+      "options": [
+        { "key": "a", "text": "helps remove moisture" },
+        { "key": "b", "text": "reduces the work needed to compress the air" },
+        { "key": "c", "text": "is generally not used (only the drive unit is cooled)" },
+        { "key": "d", "text": "increases the usable air supply after filling" }
+      ],
+      "correct": "c",
+      "explanation": "Inter-stage cooling is standard in high-pressure compressors — the statement that it is not used is incorrect."
+    },
+    {
+      "id": 87,
+      "category": "kompresory",
+      "question": "The intake filter on a compressor for scuba cylinders is used to capture:",
+      "options": [
+        { "key": "a", "text": "carbon dioxide" },
+        { "key": "b", "text": "carbon monoxide" },
+        { "key": "c", "text": "water vapour" },
+        { "key": "d", "text": "dust particles" }
+      ],
+      "correct": "d",
+      "explanation": "The intake filter captures dust particles that could damage the compressor and contaminate the air."
+    },
+    {
+      "id": 88,
+      "category": "kompresory",
+      "question": "The discharge filter after the last stage of a compressor is used to capture:",
+      "options": [
+        { "key": "a", "text": "moisture and carbon dioxide" },
+        { "key": "b", "text": "moisture and dust" },
+        { "key": "c", "text": "moisture and odorous compounds" },
+        { "key": "d", "text": "carbon monoxide and carbon dioxide" }
+      ],
+      "correct": "c",
+      "explanation": "The discharge filter captures moisture and odorous compounds (oil residues) — silica gel and activated carbon are used."
+    },
+    {
+      "id": 89,
+      "category": "kompresory",
+      "question": "The discharge filter after the last stage of a compressor can be filled with:",
+      "options": [
+        { "key": "a", "text": "activated carbon" },
+        { "key": "b", "text": "activated carbon and silica gel" },
+        { "key": "c", "text": "molecular sieve and silica gel" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "The discharge filter can contain various combinations of activated carbon, silica gel and molecular sieve."
+    },
+    {
+      "id": 90,
+      "category": "kompresory",
+      "question": "The water trap upstream of the discharge filter on a compressor is used to separate:",
+      "options": [
+        { "key": "a", "text": "the water-and-oil emulsion" },
+        { "key": "b", "text": "the water-and-air mixture" },
+        { "key": "c", "text": "the oil-and-CO₂ mixture" },
+        { "key": "d", "text": "the mixture of oil, water, CO₂ and CO" }
+      ],
+      "correct": "a",
+      "explanation": "The water trap (separator) removes the condensate — the water-and-oil emulsion — before the air enters the filter."
+    },
+    {
+      "id": 91,
+      "category": "udrzba",
+      "question": "A silicone-rubber mask skirt before storage:",
+      "options": [
+        { "key": "a", "text": "needs to be treated with silicone oil" },
+        { "key": "b", "text": "does not need any special care" },
+        { "key": "c", "text": "needs to be treated with ordinary cosmetics" },
+        { "key": "d", "text": "needs to be treated with talc" }
+      ],
+      "correct": "b",
+      "explanation": "A silicone mask skirt does not require special care before storage — rinse and dry are enough."
+    },
+    {
+      "id": 92,
+      "category": "udrzba",
+      "question": "Mark the incorrect statement about a diving mask:",
+      "options": [
+        { "key": "a", "text": "Dry and store the mask in the shade." },
+        { "key": "b", "text": "Before first use, the lens usually needs to be thoroughly degreased." },
+        { "key": "c", "text": "Rinse the mask with fresh water after use." },
+        { "key": "d", "text": "A silicone-rubber skirt should be treated with silicone oil." }
+      ],
+      "correct": "d",
+      "explanation": "A silicone skirt is not treated with silicone oil — this statement is incorrect."
+    },
+    {
+      "id": 93,
+      "category": "udrzba",
+      "question": "To prevent mask fogging during a dive it is usually enough to:",
+      "options": [
+        { "key": "a", "text": "rinse the mask with concentrated alcohol" },
+        { "key": "b", "text": "make sure the mask is dry before donning" },
+        { "key": "c", "text": "rinse the mask with water" },
+        { "key": "d", "text": "spread a little saliva (or commercial anti-fog) on the inner side of the lens and rinse the mask with water" }
+      ],
+      "correct": "d",
+      "explanation": "Saliva or a commercial anti-fog applied to the lens and then rinsed prevents fogging."
+    },
+    {
+      "id": 94,
+      "category": "udrzba",
+      "question": "Soiled neoprene suits:",
+      "options": [
+        { "key": "a", "text": "should be dry-cleaned" },
+        { "key": "b", "text": "can be washed with ordinary detergents at up to 40 °C" },
+        { "key": "c", "text": "can be machine-washed at up to 90 °C" },
+        { "key": "d", "text": "can be cleaned only with disinfectants and bleach" }
+      ],
+      "correct": "b",
+      "explanation": "Neoprene suits can be washed with ordinary detergents at up to 40 °C."
+    },
+    {
+      "id": 95,
+      "category": "udrzba",
+      "question": "A torn neoprene suit:",
+      "options": [
+        { "key": "a", "text": "is glued with ordinary super-glue" },
+        { "key": "b", "text": "is glued with neoprene cement: degrease both faces, coat them, let them \"flash off\", press together and hold" },
+        { "key": "c", "text": "can only be repaired by a professional shop" },
+        { "key": "d", "text": "is not glued, only watertight-stitched" }
+      ],
+      "correct": "b",
+      "explanation": "Neoprene is glued with a special cement: degrease, coat both faces, let them flash off and then press together."
+    },
+    {
+      "id": 96,
+      "category": "udrzba",
+      "question": "Mark the incorrect statement:",
+      "options": [
+        { "key": "a", "text": "The waterproof zip on a dry suit is rinsed thoroughly with clean water after every dive." },
+        { "key": "b", "text": "The waterproof zip on a dry suit is occasionally cleaned with a brush." },
+        { "key": "c", "text": "The valves of a dry suit are removed and stored separately after every dive." },
+        { "key": "d", "text": "Beeswax or paraffin is used to maintain a metal waterproof zip on a dry suit." }
+      ],
+      "correct": "c",
+      "explanation": "Dry-suit valves are not removed after every dive — this statement is incorrect."
+    },
+    {
+      "id": 97,
+      "category": "udrzba",
+      "question": "Dry-suit valves:",
+      "options": [
+        { "key": "a", "text": "do not need maintenance" },
+        { "key": "b", "text": "are thoroughly rinsed with running water after the dive" },
+        { "key": "c", "text": "are treated with silicone grease" },
+        { "key": "d", "text": "are treated with beeswax or paraffin" }
+      ],
+      "correct": "b",
+      "explanation": "Dry-suit valves are thoroughly rinsed with running water after the dive."
+    },
+    {
+      "id": 98,
+      "category": "udrzba",
+      "question": "Latex seals on dry suits, after the dive:",
+      "options": [
+        { "key": "a", "text": "need chemical treatment" },
+        { "key": "b", "text": "are brushed clean and sprayed with silicone spray" },
+        { "key": "c", "text": "are rinsed with fresh water, allowed to dry and dusted with talc" },
+        { "key": "d", "text": "are allowed to dry and coated with detergent" }
+      ],
+      "correct": "c",
+      "explanation": "Latex seals are rinsed with fresh water, allowed to dry and dusted with talc."
+    },
+    {
+      "id": 99,
+      "category": "udrzba",
+      "question": "After a sea dive, the regulator should be:",
+      "options": [
+        { "key": "a", "text": "immersed in fresh water, the purge button pressed several times, then removed and allowed to dry" },
+        { "key": "b", "text": "immersed in fresh water with the first-stage inlet open, left until the salt dissolves, then removed and allowed to dry" },
+        { "key": "c", "text": "immersed in fresh water with the first-stage inlet sealed, without pressing the purge, then removed and allowed to dry" },
+        { "key": "d", "text": "left to dry without further treatment" }
+      ],
+      "correct": "c",
+      "explanation": "Immerse the regulator with the first-stage inlet sealed (dust cap), do not press the purge — water must not enter the first stage."
+    },
+    {
+      "id": 100,
+      "category": "udrzba",
+      "question": "Before long-term storage, the regulator should be:",
+      "options": [
+        { "key": "a", "text": "dried and the first-stage interior sprayed with preservative oil" },
+        { "key": "b", "text": "dried, faulty parts replaced, and stored in a disassembled state" },
+        { "key": "c", "text": "dried and given a professional inspection" },
+        { "key": "d", "text": "dried and the second-stage diaphragm preserved with silicone spray" }
+      ],
+      "correct": "c",
+      "explanation": "Before long-term storage, the regulator should be dried and given a professional service."
+    }
+  ]
+}

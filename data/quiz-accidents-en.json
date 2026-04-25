@@ -1,0 +1,1306 @@
+{
+  "title": "Accidents and Illnesses",
+  "description": "SPČR 2018 Exam Tests – diving accidents and illnesses, first aid, resuscitation",
+  "questions": [
+    {
+      "id": 1,
+      "category": "první pomoc",
+      "question": "When helping an unconscious casualty, the recommended first step is:",
+      "options": [
+        { "key": "a", "text": "give 4 rescue breaths" },
+        { "key": "b", "text": "give 2 rescue breaths" },
+        { "key": "c", "text": "open the airway with a head tilt and check whether the casualty is breathing; if not, call EMS" },
+        { "key": "d", "text": "check the pulse" }
+      ],
+      "correct": "c",
+      "explanation": "The first step is always to open the airway with a head tilt, check breathing, and call emergency medical services."
+    },
+    {
+      "id": 2,
+      "category": "první pomoc",
+      "question": "What do you prioritise for an unconscious casualty bleeding heavily?",
+      "options": [
+        { "key": "a", "text": "Calling EMS." },
+        { "key": "b", "text": "Two rescue breaths." },
+        { "key": "c", "text": "Vigorous chest compressions." },
+        { "key": "d", "text": "Stopping the bleeding." }
+      ],
+      "correct": "d",
+      "explanation": "Massive bleeding is life-threatening and must be controlled first, otherwise resuscitation will not be effective."
+    },
+    {
+      "id": 3,
+      "category": "první pomoc",
+      "question": "Resuscitation is started when:",
+      "options": [
+        { "key": "a", "text": "the casualty is unconscious and not breathing normally" },
+        { "key": "b", "text": "the conscious casualty has no palpable pulse" },
+        { "key": "c", "text": "the unconscious casualty has no palpable pulse" },
+        { "key": "d", "text": "none of the answers is correct" }
+      ],
+      "correct": "a",
+      "explanation": "Resuscitation is started in an unconscious person who is not breathing normally. Pulse checks are no longer recommended for lay rescuers."
+    },
+    {
+      "id": 4,
+      "category": "první pomoc",
+      "question": "The first action in resuscitation is:",
+      "options": [
+        { "key": "a", "text": "starting chest compressions" },
+        { "key": "b", "text": "opening the airway with a head tilt and checking whether the casualty is breathing; if not, calling EMS" },
+        { "key": "c", "text": "giving 4 rescue breaths" },
+        { "key": "d", "text": "giving 2 rescue breaths" }
+      ],
+      "correct": "b",
+      "explanation": "First open the airway, check breathing and call EMS, then start resuscitation."
+    },
+    {
+      "id": 5,
+      "category": "první pomoc",
+      "question": "Lifting the casualty's lower limbs during resuscitation:",
+      "options": [
+        { "key": "a", "text": "limits the effectiveness of chest compressions" },
+        { "key": "b", "text": "limits the effectiveness of rescue breathing" },
+        { "key": "c", "text": "is inadvisable because of the risk of blood pooling in the trunk" },
+        { "key": "d", "text": "has no significant benefit" }
+      ],
+      "correct": "d",
+      "explanation": "Studies have shown that lifting the lower limbs during resuscitation provides no significant benefit."
+    },
+    {
+      "id": 6,
+      "category": "první pomoc",
+      "question": "The site for chest compressions is:",
+      "options": [
+        { "key": "a", "text": "approximately the middle of the chest, on the breastbone" },
+        { "key": "b", "text": "in the left half of the chest" },
+        { "key": "c", "text": "in the lower part of the chest, about three fingers below the breastbone" },
+        { "key": "d", "text": "in the upper chest at the level of the collarbone joint" }
+      ],
+      "correct": "a",
+      "explanation": "The correct site is the middle of the chest on the breastbone, not on the left where the heart is."
+    },
+    {
+      "id": 7,
+      "category": "první pomoc",
+      "question": "Chest compressions are performed at a rate of:",
+      "options": [
+        { "key": "a", "text": "exactly 12 per minute" },
+        { "key": "b", "text": "approximately 70 per minute" },
+        { "key": "c", "text": "approximately 100–120 per minute" },
+        { "key": "d", "text": "160–180 per minute" }
+      ],
+      "correct": "c",
+      "explanation": "Current resuscitation guidelines recommend 100–120 compressions per minute."
+    },
+    {
+      "id": 8,
+      "category": "první pomoc",
+      "question": "Chest compressions:",
+      "options": [
+        { "key": "a", "text": "are performed approximately in the middle of the chest, on the breastbone" },
+        { "key": "b", "text": "are performed at a rate of about 100–120 per minute" },
+        { "key": "c", "text": "are performed to a depth of 5–6 cm" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "All of these are correct — middle of the chest, 100–120/min, depth 5–6 cm."
+    },
+    {
+      "id": 9,
+      "category": "první pomoc",
+      "question": "Mark the incorrect statement:",
+      "options": [
+        { "key": "a", "text": "During chest compressions, the chest is compressed at a rate of approximately 100–120 per minute." },
+        { "key": "b", "text": "The site for chest compressions is in the left half of the chest." },
+        { "key": "c", "text": "Chest compressions are performed to a depth of 5–6 cm." },
+        { "key": "d", "text": "Resuscitation begins with 30 chest compressions immediately after the airway is opened." }
+      ],
+      "correct": "b",
+      "explanation": "Statement (b) is incorrect — the site for compressions is the middle of the chest on the breastbone, not the left half."
+    },
+    {
+      "id": 10,
+      "category": "první pomoc",
+      "question": "During chest compressions, the casualty's chest is compressed:",
+      "options": [
+        { "key": "a", "text": "approximately in the middle of the breastbone, to a depth of 5–6 cm" },
+        { "key": "b", "text": "in the left part of the chest, at a rate of approximately 100–120 per minute" },
+        { "key": "c", "text": "three fingers below the breastbone, at a rate of approximately 100–120 per minute, to a depth of 4–5 cm" },
+        { "key": "d", "text": "approximately in the middle of the breastbone, at a rate of 70 per minute" }
+      ],
+      "correct": "a",
+      "explanation": "Compress the middle of the breastbone to a depth of 5–6 cm at 100–120/min."
+    },
+    {
+      "id": 11,
+      "category": "první pomoc",
+      "question": "Adult resuscitation by a single rescuer requires:",
+      "options": [
+        { "key": "a", "text": "5 chest compressions per 1 rescue breath" },
+        { "key": "b", "text": "15 chest compressions per 1 rescue breath" },
+        { "key": "c", "text": "15 chest compressions per 2 rescue breaths" },
+        { "key": "d", "text": "30 chest compressions per 2 rescue breaths" }
+      ],
+      "correct": "d",
+      "explanation": "The standard adult ratio is 30:2 (30 compressions to 2 breaths), regardless of the number of rescuers."
+    },
+    {
+      "id": 12,
+      "category": "první pomoc",
+      "question": "Adult resuscitation by two rescuers requires:",
+      "options": [
+        { "key": "a", "text": "15 chest compressions per 2 rescue breaths" },
+        { "key": "b", "text": "30 chest compressions per 2 rescue breaths" },
+        { "key": "c", "text": "15 chest compressions per 1 rescue breath" },
+        { "key": "d", "text": "5 chest compressions per 1 rescue breath" }
+      ],
+      "correct": "b",
+      "explanation": "For adults the ratio is always 30:2 regardless of whether one or two rescuers are working."
+    },
+    {
+      "id": 13,
+      "category": "první pomoc",
+      "question": "Resuscitation after drowning requires:",
+      "options": [
+        { "key": "a", "text": "first emptying water from the lungs" },
+        { "key": "b", "text": "5 rescue breaths immediately after opening the airway" },
+        { "key": "c", "text": "the rescuer(s) focusing only on chest compressions" },
+        { "key": "d", "text": "only calling EMS, since lay first aid is impossible" }
+      ],
+      "correct": "b",
+      "explanation": "In drowning the priority is oxygenation, so we begin with 5 rescue breaths before starting compressions."
+    },
+    {
+      "id": 14,
+      "category": "první pomoc",
+      "question": "The A-B-C resuscitation order (A = open airway, B = rescue breathing, C = chest compressions) is used:",
+      "options": [
+        { "key": "a", "text": "in seniors over 60" },
+        { "key": "b", "text": "in children from newborns to pre-school age" },
+        { "key": "c", "text": "when EMS cannot be contacted" },
+        { "key": "d", "text": "if the casualty is partly conscious" }
+      ],
+      "correct": "b",
+      "explanation": "The A-B-C order (breathing first) is used in children, where arrest is most often caused by oxygen deprivation rather than cardiac failure."
+    },
+    {
+      "id": 15,
+      "category": "první pomoc",
+      "question": "Mark the incorrect statement:",
+      "options": [
+        { "key": "a", "text": "The first step in resuscitation is to open the casualty's airway." },
+        { "key": "b", "text": "Chest compressions are performed in cycles of 30." },
+        { "key": "c", "text": "The compression rate is 60–80 per minute." },
+        { "key": "d", "text": "If several rescuers are present, they should swap on chest compressions every 2 minutes." }
+      ],
+      "correct": "c",
+      "explanation": "Statement (c) is incorrect — the correct rate is 100–120 per minute, not 60–80."
+    },
+    {
+      "id": 16,
+      "category": "první pomoc",
+      "question": "The recovery position is:",
+      "options": [
+        { "key": "a", "text": "any lying-down position on the ground" },
+        { "key": "b", "text": "lying on the side with the head tilted back" },
+        { "key": "c", "text": "lying on the back with the head supported" },
+        { "key": "d", "text": "sitting with back support" }
+      ],
+      "correct": "b",
+      "explanation": "The recovery position is on the side with the head tilted back, which allows fluids to drain from the mouth and keeps the airway clear."
+    },
+    {
+      "id": 17,
+      "category": "první pomoc",
+      "question": "An unconscious casualty who is breathing:",
+      "options": [
+        { "key": "a", "text": "is placed in the recovery position and covered to prevent cooling" },
+        { "key": "b", "text": "is resuscitated until EMS arrives" },
+        { "key": "c", "text": "is resuscitated with 15 chest compressions per 1 rescue breath" },
+        { "key": "d", "text": "is placed on their back and EMS is called" }
+      ],
+      "correct": "a",
+      "explanation": "If an unconscious casualty is breathing, do not start resuscitation — place them in the recovery position and protect them from cooling."
+    },
+    {
+      "id": 18,
+      "category": "první pomoc",
+      "question": "If the casualty is breathing but remains unconscious:",
+      "options": [
+        { "key": "a", "text": "place them in the recovery position" },
+        { "key": "b", "text": "continuously check that breathing has not stopped" },
+        { "key": "c", "text": "cover them to prevent cooling" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "All these steps are correct — recovery position, continuous breathing check and protection from cooling."
+    },
+    {
+      "id": 19,
+      "category": "první pomoc",
+      "question": "Covering a casualty placed in the recovery position:",
+      "options": [
+        { "key": "a", "text": "is not recommended because it makes it harder to check the pulse" },
+        { "key": "b", "text": "is not recommended because of the risk of overheating" },
+        { "key": "c", "text": "is recommended to prevent heat loss" },
+        { "key": "d", "text": "none of the answers is correct" }
+      ],
+      "correct": "c",
+      "explanation": "Covering the casualty is important to prevent hypothermia, which can worsen their condition."
+    },
+    {
+      "id": 20,
+      "category": "první pomoc",
+      "question": "Each mouth-to-mouth rescue breath should last approximately:",
+      "options": [
+        { "key": "a", "text": "1 second" },
+        { "key": "b", "text": "2 seconds" },
+        { "key": "c", "text": "4 seconds" },
+        { "key": "d", "text": "6 seconds" }
+      ],
+      "correct": "a",
+      "explanation": "Each rescue breath should last about 1 second and should be enough to make the chest visibly rise."
+    },
+    {
+      "id": 21,
+      "category": "podchlazení",
+      "question": "A hypothermia casualty is placed in a warm bath:",
+      "options": [
+        { "key": "a", "text": "lower limbs and trunk first" },
+        { "key": "b", "text": "so that initially only the head is out of the water" },
+        { "key": "c", "text": "so that initially only the trunk is submerged" },
+        { "key": "d", "text": "trunk and upper limbs first" }
+      ],
+      "correct": "c",
+      "explanation": "Warm only the trunk first so that cold blood from the limbs does not return to the heart too quickly and cause shock."
+    },
+    {
+      "id": 22,
+      "category": "otravy plyny",
+      "question": "Using compressed-air scuba, on reaching 40 m communication between you and your buddy worsens markedly. The cause should be considered:",
+      "options": [
+        { "key": "a", "text": "lack of oxygen (hypoxia)" },
+        { "key": "b", "text": "nitrogen narcosis (rapture of the deep)" },
+        { "key": "c", "text": "oxygen toxicity" },
+        { "key": "d", "text": "decompression sickness" }
+      ],
+      "correct": "b",
+      "explanation": "At 40 m the partial pressure of nitrogen is high enough to produce nitrogen narcosis, which impairs coordination and communication."
+    },
+    {
+      "id": 23,
+      "category": "podchlazení",
+      "question": "When helping a hypothermic diver, it is appropriate to:",
+      "options": [
+        { "key": "a", "text": "focus on warming the trunk" },
+        { "key": "b", "text": "exercise the limbs" },
+        { "key": "c", "text": "massage the limbs" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "a",
+      "explanation": "Warm only the trunk. Massage and limb movement would push cold blood back to the heart and could trigger cardiac arrest."
+    },
+    {
+      "id": 24,
+      "category": "podchlazení",
+      "question": "Which of the following is NOT a sign of hypothermia?",
+      "options": [
+        { "key": "a", "text": "poor concentration, increased air consumption" },
+        { "key": "b", "text": "cherry-red discolouration of the lips, mucosae and nail beds" },
+        { "key": "c", "text": "increased urine output (polyuria)" },
+        { "key": "d", "text": "uncontrolled shivering" }
+      ],
+      "correct": "b",
+      "explanation": "Cherry-red discolouration is a sign of carbon-monoxide poisoning, not hypothermia. In hypothermia the lips are blue."
+    },
+    {
+      "id": 25,
+      "category": "otravy plyny",
+      "question": "Mark the incorrect statement:",
+      "options": [
+        { "key": "a", "text": "Hyperventilation lowers the carbon-dioxide level in the body." },
+        { "key": "b", "text": "The signs of oxygen deficiency (hypoxia) are hard to recognise." },
+        { "key": "c", "text": "Persistent pressure of equipment on the carotid arteries can reduce oxygen supply to the brain." },
+        { "key": "d", "text": "Hypoxia occurs when the partial pressure of oxygen in the breathing gas falls below 21 kPa." }
+      ],
+      "correct": "d",
+      "explanation": "Statement (d) is incorrect — hypoxia occurs when <em>p</em>O₂ falls below about 16 kPa (0.16 bar), not 21 kPa. 21 kPa is the normal atmospheric partial pressure of oxygen."
+    },
+    {
+      "id": 26,
+      "category": "otravy plyny",
+      "question": "Hypoxia cannot result from:",
+      "options": [
+        { "key": "a", "text": "hyperventilation before a breath-hold dive" },
+        { "key": "b", "text": "binding of carbon monoxide to haemoglobin" },
+        { "key": "c", "text": "breathing a 2% oxygen mixture at 90 m" },
+        { "key": "d", "text": "breathing air stored long-term in a steel cylinder" }
+      ],
+      "correct": "c",
+      "explanation": "At 90 m the absolute pressure is 10 bar, so 2% O₂ gives <em>p</em>O₂ = 0.2 bar (20 kPa), which is sufficient and does not cause hypoxia."
+    },
+    {
+      "id": 27,
+      "category": "otravy plyny",
+      "question": "Mark the incorrect statement about nitrogen narcosis (rapture of the deep):",
+      "options": [
+        { "key": "a", "text": "First aid is to ascend to a shallower depth." },
+        { "key": "b", "text": "The onset of narcosis is hastened by stress." },
+        { "key": "c", "text": "An oxygen-rebreather diver is not at risk of narcosis." },
+        { "key": "d", "text": "The narcotic effect of nitrogen can be reduced by increased physical exertion." }
+      ],
+      "correct": "d",
+      "explanation": "Increased exertion in fact worsens narcosis because of CO₂ build-up, which amplifies the narcotic effect of nitrogen."
+    },
+    {
+      "id": 28,
+      "category": "otravy plyny",
+      "question": "Which of the following is NOT a sign of hypoxia?",
+      "options": [
+        { "key": "a", "text": "feeling unwell, nausea" },
+        { "key": "b", "text": "increased heart and breathing rate" },
+        { "key": "c", "text": "exhilaration (euphoria)" },
+        { "key": "d", "text": "impaired judgement" }
+      ],
+      "correct": "a",
+      "explanation": "Feeling unwell and nausea are not typical signs of hypoxia. Hypoxia presents with euphoria, increased heart and breathing rate, and impaired judgement."
+    },
+    {
+      "id": 29,
+      "category": "otravy plyny",
+      "question": "If your buddy shows signs of nitrogen narcosis:",
+      "options": [
+        { "key": "a", "text": "you immediately make them ascend to a shallower depth" },
+        { "key": "b", "text": "you immediately start an emergency ascent to the surface" },
+        { "key": "c", "text": "you stay together at the same depth until the symptoms pass" },
+        { "key": "d", "text": "you continue descending until the symptoms pass" }
+      ],
+      "correct": "a",
+      "explanation": "The correct first aid for narcosis is to ascend to a shallower depth, where the narcotic effect of nitrogen quickly subsides."
+    },
+    {
+      "id": 30,
+      "category": "otravy plyny",
+      "question": "The narcotic effect of nitrogen is amplified by:",
+      "options": [
+        { "key": "a", "text": "hydrogen" },
+        { "key": "b", "text": "helium" },
+        { "key": "c", "text": "carbon dioxide" },
+        { "key": "d", "text": "carbon monoxide" }
+      ],
+      "correct": "c",
+      "explanation": "Carbon dioxide (CO₂) amplifies the narcotic effect of nitrogen. That is why proper breathing technique and avoiding exertion at depth matter."
+    },
+    {
+      "id": 31,
+      "category": "otravy plyny",
+      "question": "Hypoxia is a risk:",
+      "options": [
+        { "key": "a", "text": "on a breath-hold dive after hyperventilation" },
+        { "key": "b", "text": "if the regulator is removed in dry pockets sealed underwater" },
+        { "key": "c", "text": "when using long-stored air supply" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "All these can cause hypoxia — hyperventilation lowers CO₂ and suppresses the breathing reflex, sealed pockets have limited oxygen, and long-stored air can have its oxygen consumed by reaction with the steel walls."
+    },
+    {
+      "id": 32,
+      "category": "otravy plyny",
+      "question": "A breathing mixture contains 4% oxygen. It can be used without risk of hypoxia only at depths greater than:",
+      "options": [
+        { "key": "a", "text": "10 metres" },
+        { "key": "b", "text": "20 metres" },
+        { "key": "c", "text": "30 metres" },
+        { "key": "d", "text": "60 metres" }
+      ],
+      "correct": "c",
+      "explanation": "Safe breathing requires <em>p</em>O₂ of at least 0.16 bar. At 30 m (4 bar) we get 4% × 4 = 0.16 bar (16 kPa), which is the minimum safe value."
+    },
+    {
+      "id": 33,
+      "category": "otravy plyny",
+      "question": "Loss of consciousness is a risk when the partial pressure of oxygen in the breathing gas drops below:",
+      "options": [
+        { "key": "a", "text": "5 kPa" },
+        { "key": "b", "text": "10 kPa" },
+        { "key": "c", "text": "16 kPa" },
+        { "key": "d", "text": "21 kPa" }
+      ],
+      "correct": "b",
+      "explanation": "Loss of consciousness is a risk when <em>p</em>O₂ falls below 10 kPa (0.1 bar). 16 kPa is the minimum for normal function; below 10 kPa, consciousness is lost."
+    },
+    {
+      "id": 34,
+      "category": "otravy plyny",
+      "question": "Using air stored long-term (e.g. several months) in a steel cylinder may lead to:",
+      "options": [
+        { "key": "a", "text": "lack of oxygen" },
+        { "key": "b", "text": "oxygen toxicity" },
+        { "key": "c", "text": "carbon-dioxide toxicity" },
+        { "key": "d", "text": "faster onset of nitrogen narcosis" }
+      ],
+      "correct": "a",
+      "explanation": "Oxygen in long-stored air can react with the steel cylinder walls (oxidation/rust), reducing its content and creating a hypoxia risk."
+    },
+    {
+      "id": 35,
+      "category": "otravy plyny",
+      "question": "Hypoxia occurs when the partial pressure of oxygen in the breathing gas drops below:",
+      "options": [
+        { "key": "a", "text": "21 kPa" },
+        { "key": "b", "text": "16 kPa" },
+        { "key": "c", "text": "12 kPa" },
+        { "key": "d", "text": "10 kPa" }
+      ],
+      "correct": "b",
+      "explanation": "Hypoxia occurs when <em>p</em>O₂ falls below 16 kPa (0.16 bar). This is the minimum partial pressure of oxygen needed for normal body function."
+    },
+    {
+      "id": 36,
+      "category": "podchlazení",
+      "question": "The appropriate temperature of a shower or bath for a hypothermic diver is approximately:",
+      "options": [
+        { "key": "a", "text": "16–18 °C" },
+        { "key": "b", "text": "20–30 °C" },
+        { "key": "c", "text": "37–40 °C" },
+        { "key": "d", "text": "45–50 °C" }
+      ],
+      "correct": "c",
+      "explanation": "The optimal warming temperature is 37–40 °C — close to body temperature, so it does not cause thermal shock."
+    },
+    {
+      "id": 37,
+      "category": "podchlazení",
+      "question": "When helping a hypothermic diver, the priority is:",
+      "options": [
+        { "key": "a", "text": "exercising the limbs" },
+        { "key": "b", "text": "massaging the limbs" },
+        { "key": "c", "text": "warming the limbs" },
+        { "key": "d", "text": "warming the trunk" }
+      ],
+      "correct": "d",
+      "explanation": "In hypothermia the priority is to warm the trunk, where the vital organs are. Warming the limbs can push cold blood back to the heart."
+    },
+    {
+      "id": 38,
+      "category": "podchlazení",
+      "question": "When helping a hypothermic diver it is appropriate to:",
+      "options": [
+        { "key": "a", "text": "wrap the casualty in pre-warmed blankets" },
+        { "key": "b", "text": "use a warm bath" },
+        { "key": "c", "text": "use a warm shower" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "All of these are appropriate ways of warming a hypothermic diver — pre-warmed blankets, a warm bath and a warm shower."
+    },
+    {
+      "id": 39,
+      "category": "podchlazení",
+      "question": "In hypothermia it is inappropriate to:",
+      "options": [
+        { "key": "a", "text": "exercise the casualty" },
+        { "key": "b", "text": "use a pre-warmed wrap" },
+        { "key": "c", "text": "warm the casualty with a warm shower or bath" },
+        { "key": "d", "text": "warm the casualty with the rescuer's body heat" }
+      ],
+      "correct": "a",
+      "explanation": "Exercising a hypothermic casualty is inappropriate, because limb movement speeds the return of cold peripheral blood to the heart and can cause cardiac arrhythmia."
+    },
+    {
+      "id": 40,
+      "category": "podchlazení",
+      "question": "Uncontrolled shivering:",
+      "options": [
+        { "key": "a", "text": "is a normal effect of being in water and need not be addressed" },
+        { "key": "b", "text": "is a serious sign of hypothermia" },
+        { "key": "c", "text": "is not a risk for a diver in a full insulating suit" },
+        { "key": "d", "text": "precedes the first signs of hypothermia" }
+      ],
+      "correct": "b",
+      "explanation": "Uncontrolled shivering is a serious sign of hypothermia and requires immediate attention and rewarming."
+    },
+    {
+      "id": 41,
+      "category": "otravy plyny",
+      "question": "Cyanosis of the lips, mucosae and nail beds is characteristic of:",
+      "options": [
+        { "key": "a", "text": "nitrogen narcosis (rapture of the deep)" },
+        { "key": "b", "text": "cutaneous decompression sickness" },
+        { "key": "c", "text": "carbon-monoxide poisoning" },
+        { "key": "d", "text": "carbon-dioxide toxicity" }
+      ],
+      "correct": "d",
+      "explanation": "Cyanosis (bluish discolouration) of the lips, mucosae and nail beds is characteristic of carbon-dioxide toxicity, caused by inadequate blood oxygenation."
+    },
+    {
+      "id": 42,
+      "category": "otravy plyny",
+      "question": "A characteristic sign of carbon-dioxide toxicity is:",
+      "options": [
+        { "key": "a", "text": "cherry-red discolouration of the lips, mucosae and nail beds" },
+        { "key": "b", "text": "cyanosis of the lips, mucosae and nail beds" },
+        { "key": "c", "text": "skin mottling" },
+        { "key": "d", "text": "pain below the eyes" }
+      ],
+      "correct": "b",
+      "explanation": "Cyanosis is the characteristic sign of CO₂ toxicity. Cherry-red discolouration is typical of carbon-monoxide poisoning."
+    },
+    {
+      "id": 43,
+      "category": "otravy plyny",
+      "question": "Which of the following is NOT a sign of carbon-dioxide toxicity?",
+      "options": [
+        { "key": "a", "text": "cyanosis of the lips, mucosae and nail beds" },
+        { "key": "b", "text": "increased heart and breathing rate" },
+        { "key": "c", "text": "muscle and joint pain" },
+        { "key": "d", "text": "feeling hot" }
+      ],
+      "correct": "c",
+      "explanation": "Muscle and joint pain is a sign of decompression sickness, not carbon-dioxide toxicity."
+    },
+    {
+      "id": 44,
+      "category": "otravy plyny",
+      "question": "Carbon-dioxide toxicity cannot result from:",
+      "options": [
+        { "key": "a", "text": "hyperventilation before a breath-hold dive" },
+        { "key": "b", "text": "excessive exertion on a scuba dive" },
+        { "key": "c", "text": "incorrect breathing technique on scuba" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "a",
+      "explanation": "Hyperventilation lowers CO₂ in the body, so it cannot cause CO₂ toxicity. Excessive exertion and improper breathing, by contrast, cause CO₂ build-up."
+    },
+    {
+      "id": 45,
+      "category": "otravy plyny",
+      "question": "Carbon-dioxide toxicity can be caused by:",
+      "options": [
+        { "key": "a", "text": "hyperventilation before a breath-hold dive" },
+        { "key": "b", "text": "contamination of the air supply with exhaust fumes" },
+        { "key": "c", "text": "use of an unsuitable snorkel" },
+        { "key": "d", "text": "persistent pressure of equipment on the carotid arteries" }
+      ],
+      "correct": "c",
+      "explanation": "An unsuitable snorkel (too long or too narrow) increases dead space and traps exhaled CO₂, leading to toxicity."
+    },
+    {
+      "id": 46,
+      "category": "otravy plyny",
+      "question": "Which of the following is NOT a sign of acute oxygen toxicity?",
+      "options": [
+        { "key": "a", "text": "headache" },
+        { "key": "b", "text": "twitching of small muscles in the hands and face" },
+        { "key": "c", "text": "generalised convulsions" },
+        { "key": "d", "text": "rapid loss of consciousness" }
+      ],
+      "correct": "a",
+      "explanation": "Headache is not a typical sign of acute oxygen toxicity. Typical signs include muscle twitching, convulsions and loss of consciousness."
+    },
+    {
+      "id": 47,
+      "category": "otravy plyny",
+      "question": "Cyanosis of the lips, mucosae and nail beds is characteristic of:",
+      "options": [
+        { "key": "a", "text": "carbon-monoxide poisoning" },
+        { "key": "b", "text": "carbon-dioxide toxicity" },
+        { "key": "c", "text": "nitrogen narcosis (rapture of the deep)" },
+        { "key": "d", "text": "cutaneous decompression sickness" }
+      ],
+      "correct": "b",
+      "explanation": "Cyanosis (bluish discolouration) of the lips, mucosae and nail beds is characteristic of carbon-dioxide toxicity, which results in inadequate blood oxygenation."
+    },
+    {
+      "id": 48,
+      "category": "otravy plyny",
+      "question": "A characteristic sign of carbon-dioxide toxicity is:",
+      "options": [
+        { "key": "a", "text": "cyanosis of the lips, mucosae and nail beds" },
+        { "key": "b", "text": "cherry-red discolouration of the lips, mucosae and nail beds" },
+        { "key": "c", "text": "skin mottling" },
+        { "key": "d", "text": "pain below the eyes" }
+      ],
+      "correct": "a",
+      "explanation": "Cyanosis is the characteristic sign of CO₂ toxicity, because it leads to insufficient blood oxygenation."
+    },
+    {
+      "id": 49,
+      "category": "otravy plyny",
+      "question": "Which of the following is NOT a sign of carbon-monoxide poisoning?",
+      "options": [
+        { "key": "a", "text": "stabbing pain behind the breastbone" },
+        { "key": "b", "text": "headache and dizziness" },
+        { "key": "c", "text": "nausea and vomiting" },
+        { "key": "d", "text": "cherry-red discolouration of the lips, mucosae and nail beds" }
+      ],
+      "correct": "a",
+      "explanation": "Stabbing pain behind the breastbone is not a typical sign of CO poisoning. Typical signs include headache, dizziness, nausea and cherry-red discolouration."
+    },
+    {
+      "id": 50,
+      "category": "otravy plyny",
+      "question": "Acute oxygen toxicity on compressed-air scuba is a risk from approximately:",
+      "options": [
+        { "key": "a", "text": "18 metres" },
+        { "key": "b", "text": "40 metres" },
+        { "key": "c", "text": "70 metres" },
+        { "key": "d", "text": "100 metres" }
+      ],
+      "correct": "c",
+      "explanation": "On air (21% O₂) the oxygen partial pressure reaches the toxic threshold of 1.6 bar at approximately 70 m (8 bar × 0.21 = 1.68 bar)."
+    },
+    {
+      "id": 51,
+      "category": "otravy plyny",
+      "question": "A characteristic sign of carbon-monoxide poisoning is:",
+      "options": [
+        { "key": "a", "text": "cherry-red discolouration of the lips, mucosae and nail beds" },
+        { "key": "b", "text": "cyanosis of the lips, mucosae and nail beds" },
+        { "key": "c", "text": "skin mottling" },
+        { "key": "d", "text": "muscle and joint pain" }
+      ],
+      "correct": "a",
+      "explanation": "Cherry-red discolouration is characteristic of CO poisoning, because carboxyhaemoglobin (CO bound to haemoglobin) is bright red."
+    },
+    {
+      "id": 52,
+      "category": "otravy plyny",
+      "question": "Carbon-monoxide poisoning can be caused by:",
+      "options": [
+        { "key": "a", "text": "hyperventilation before a breath-hold dive" },
+        { "key": "b", "text": "persistent pressure of equipment on the carotid arteries" },
+        { "key": "c", "text": "contamination of the air supply with exhaust fumes" },
+        { "key": "d", "text": "an elevated partial pressure of nitrogen" }
+      ],
+      "correct": "c",
+      "explanation": "Contamination of the air supply with exhaust fumes is the main cause of CO poisoning in diving — exhaust gases contain carbon monoxide."
+    },
+    {
+      "id": 53,
+      "category": "otravy plyny",
+      "question": "Acute oxygen toxicity presents with:",
+      "options": [
+        { "key": "a", "text": "cyanosis of the lips, mucosae and nail beds" },
+        { "key": "b", "text": "cherry-red discolouration of the lips, mucosae and nail beds" },
+        { "key": "c", "text": "fatigue" },
+        { "key": "d", "text": "twitching of small muscles, violent convulsions, loss of consciousness" }
+      ],
+      "correct": "d",
+      "explanation": "Acute oxygen toxicity (Paul Bert effect) presents with muscle twitching, violent convulsions and subsequent loss of consciousness."
+    },
+    {
+      "id": 54,
+      "category": "otravy plyny",
+      "question": "The basis of carbon-monoxide poisoning is:",
+      "options": [
+        { "key": "a", "text": "dissolution of carbon monoxide in the tissues" },
+        { "key": "b", "text": "dissolution of carbon monoxide in blood plasma" },
+        { "key": "c", "text": "chemical binding of carbon monoxide to blood plasma" },
+        { "key": "d", "text": "chemical binding of carbon monoxide to haemoglobin" }
+      ],
+      "correct": "d",
+      "explanation": "CO binds to haemoglobin with an affinity 200–250× greater than oxygen, blocking oxygen transport in the blood and causing tissue hypoxia."
+    },
+    {
+      "id": 55,
+      "category": "otravy plyny",
+      "question": "A characteristic sign of carbon-monoxide poisoning is:",
+      "options": [
+        { "key": "a", "text": "cyanosis of the lips, mucosae and nail beds" },
+        { "key": "b", "text": "cherry-red discolouration of the lips, mucosae and nail beds" },
+        { "key": "c", "text": "skin mottling" },
+        { "key": "d", "text": "pain below the eyes" }
+      ],
+      "correct": "b",
+      "explanation": "Cherry-red discolouration is typical of CO poisoning because of the bright red colour of carboxyhaemoglobin in the blood."
+    },
+    {
+      "id": 56,
+      "category": "otravy plyny",
+      "question": "Cherry-red discolouration of the lips, mucosae and nail beds is characteristic of:",
+      "options": [
+        { "key": "a", "text": "cutaneous decompression sickness" },
+        { "key": "b", "text": "nitrogen narcosis (rapture of the deep)" },
+        { "key": "c", "text": "carbon-monoxide poisoning" },
+        { "key": "d", "text": "carbon-dioxide toxicity" }
+      ],
+      "correct": "c",
+      "explanation": "Cherry-red discolouration is a typical sign of carbon-monoxide poisoning, where CO binds to haemoglobin and produces this characteristic colour."
+    },
+    {
+      "id": 57,
+      "category": "otravy plyny",
+      "question": "Acute oxygen toxicity is a risk if the oxygen partial pressure in the breathing gas exceeds approximately:",
+      "options": [
+        { "key": "a", "text": "100 kPa" },
+        { "key": "b", "text": "160 kPa" },
+        { "key": "c", "text": "420 kPa" },
+        { "key": "d", "text": "500 kPa" }
+      ],
+      "correct": "b",
+      "explanation": "Acute oxygen toxicity (hyperoxia) is a risk above 160 kPa (1.6 bar), which is the safety limit for diving."
+    },
+    {
+      "id": 58,
+      "category": "otravy plyny",
+      "question": "Cherry-red discolouration of the lips, mucosae and nail beds is characteristic of:",
+      "options": [
+        { "key": "a", "text": "carbon-dioxide toxicity" },
+        { "key": "b", "text": "carbon-monoxide poisoning" },
+        { "key": "c", "text": "cutaneous decompression sickness" },
+        { "key": "d", "text": "nitrogen narcosis (rapture of the deep)" }
+      ],
+      "correct": "b",
+      "explanation": "Cherry-red discolouration is a characteristic sign of carbon-monoxide poisoning because carboxyhaemoglobin is markedly red."
+    },
+    {
+      "id": 59,
+      "category": "otravy plyny",
+      "question": "Mark the incorrect statement:",
+      "options": [
+        { "key": "a", "text": "Carbon monoxide blocks oxygen transport by binding to haemoglobin." },
+        { "key": "b", "text": "CO poisoning during diving is caused by contamination of the air supply with exhaust fumes." },
+        { "key": "c", "text": "CO poisoning includes headache, dizziness, nausea and vomiting." },
+        { "key": "d", "text": "A characteristic sign of CO poisoning is cyanosis of the lips, mucosae and nail beds." }
+      ],
+      "correct": "d",
+      "explanation": "Statement (d) is incorrect — carbon-monoxide poisoning produces cherry-red discolouration, not cyanosis. Cyanosis is characteristic of carbon-dioxide toxicity."
+    },
+    {
+      "id": 60,
+      "category": "otravy plyny",
+      "question": "Carbon-dioxide toxicity can result from:",
+      "options": [
+        { "key": "a", "text": "breathing through an unsuitable snorkel" },
+        { "key": "b", "text": "excessive physical exertion underwater" },
+        { "key": "c", "text": "incorrect breathing technique on scuba" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "All these can lead to CO₂ toxicity — an unsuitable snorkel with large dead space, exertion increasing CO₂ production, and improper breathing technique."
+    },
+    {
+      "id": 61,
+      "category": "barotrauma plic",
+      "question": "On descent on compressed-air scuba, at 15 m your buddy starts to show signs of disorientation, spinning around and struggling with motor coordination. The cause is:",
+      "options": [
+        { "key": "a", "text": "a ruptured eardrum" },
+        { "key": "b", "text": "an arterial gas embolism" },
+        { "key": "c", "text": "oxygen toxicity" },
+        { "key": "d", "text": "nitrogen narcosis (rapture of the deep)" }
+      ],
+      "correct": "a",
+      "explanation": "Disorientation and motor coordination problems on descent at shallow depth point to inner-ear damage — a ruptured eardrum causes vertigo and loss of orientation."
+    },
+    {
+      "id": 62,
+      "category": "barotrauma plic",
+      "question": "Which of the following is NOT a sign of pneumothorax?",
+      "options": [
+        { "key": "a", "text": "chest pain" },
+        { "key": "b", "text": "paralysis" },
+        { "key": "c", "text": "irritating cough" },
+        { "key": "d", "text": "distended neck veins" }
+      ],
+      "correct": "b",
+      "explanation": "Paralysis is not a sign of pneumothorax. Pneumothorax presents with chest pain, cough and distended neck veins. Paralysis is more characteristic of decompression sickness or arterial gas embolism."
+    },
+    {
+      "id": 63,
+      "category": "barotrauma plic",
+      "question": "Mask squeeze (eye barotrauma):",
+      "options": [
+        { "key": "a", "text": "cannot occur because the eyeball is filled with vitreous humour" },
+        { "key": "b", "text": "cannot occur because the eye equalises pressure differences by its own elasticity" },
+        { "key": "c", "text": "can occur if the diver does not equalise pressure in the mask on descent" },
+        { "key": "d", "text": "can occur if the diver does not equalise pressure in the mask on ascent" }
+      ],
+      "correct": "c",
+      "explanation": "Mask squeeze can occur on descent if the diver does not equalise the pressure inside the mask by exhaling through the nose. Negative pressure in the mask can damage the eyes and cause bleeding."
+    },
+    {
+      "id": 64,
+      "category": "barotrauma plic",
+      "question": "Pulmonary barotrauma of descent (lung squeeze) presents with:",
+      "options": [
+        { "key": "a", "text": "pain at the bridge of the nose and below the eyes" },
+        { "key": "b", "text": "chest pain, sometimes with coughing of pinkish foam" },
+        { "key": "c", "text": "mediastinal emphysema" },
+        { "key": "d", "text": "cherry-red discolouration of the lips, mucosae and nail beds" }
+      ],
+      "correct": "b",
+      "explanation": "Lung squeeze presents with chest pain and coughing of pinkish foam — blood mixed with air from damaged alveoli."
+    },
+    {
+      "id": 65,
+      "category": "barotrauma plic",
+      "question": "In diving, emphysema occurs when air from a ruptured lung enters:",
+      "options": [
+        { "key": "a", "text": "the bloodstream" },
+        { "key": "b", "text": "the pleural space" },
+        { "key": "c", "text": "the mediastinum or the subcutaneous tissue around the neck and shoulders" },
+        { "key": "d", "text": "the stomach" }
+      ],
+      "correct": "c",
+      "explanation": "Emphysema occurs when air enters the mediastinum (mediastinal emphysema) or the subcutaneous tissue around the neck and shoulders (subcutaneous emphysema). Air in the bloodstream is an embolism; air in the pleural space is pneumothorax."
+    },
+    {
+      "id": 66,
+      "category": "barotrauma plic",
+      "question": "On scuba, pulmonary barotrauma of descent (lung squeeze):",
+      "options": [
+        { "key": "a", "text": "is a risk after losing control of breathing during a fall to depth" },
+        { "key": "b", "text": "is a risk when lifting heavier objects by hand" },
+        { "key": "c", "text": "is a risk on ascent without exhaling" },
+        { "key": "d", "text": "is not a risk" }
+      ],
+      "correct": "a",
+      "explanation": "Pulmonary barotrauma of descent is a risk during a rapid fall to depth, when the diver loses control of breathing and cannot supply enough air to the lungs."
+    },
+    {
+      "id": 67,
+      "category": "barotrauma plic",
+      "question": "Pain at the bridge of the nose and below the eyes is a sign of:",
+      "options": [
+        { "key": "a", "text": "tooth squeeze" },
+        { "key": "b", "text": "sinus barotrauma" },
+        { "key": "c", "text": "middle-ear barotrauma" },
+        { "key": "d", "text": "mask squeeze" }
+      ],
+      "correct": "b",
+      "explanation": "Pain at the bridge of the nose and below the eyes is a typical sign of sinus barotrauma."
+    },
+    {
+      "id": 68,
+      "category": "barotrauma plic",
+      "question": "Pulmonary barotrauma of ascent on scuba can occur on an incorrectly performed ascent from a depth as shallow as:",
+      "options": [
+        { "key": "a", "text": "less than 2 metres" },
+        { "key": "b", "text": "3 metres" },
+        { "key": "c", "text": "5 metres" },
+        { "key": "d", "text": "10 metres" }
+      ],
+      "correct": "a",
+      "explanation": "Pulmonary barotrauma of ascent can occur at very shallow depths (less than 2 m), because the relative pressure change is greatest near the surface."
+    },
+    {
+      "id": 69,
+      "category": "barotrauma plic",
+      "question": "Tooth squeeze (barodontalgia):",
+      "options": [
+        { "key": "a", "text": "is impossible because of tooth structure" },
+        { "key": "b", "text": "is neither painful nor dangerous" },
+        { "key": "c", "text": "can only occur on dives below 40 m" },
+        { "key": "d", "text": "is painful and can be dangerous, especially on ascent" }
+      ],
+      "correct": "d",
+      "explanation": "Tooth squeeze is painful and can be dangerous, especially on ascent, when air trapped in tooth cavities expands."
+    },
+    {
+      "id": 70,
+      "category": "barotrauma plic",
+      "question": "Which of the following is NOT a sign of arterial gas embolism?",
+      "options": [
+        { "key": "a", "text": "dizziness" },
+        { "key": "b", "text": "sensory disturbances" },
+        { "key": "c", "text": "muscle and joint pain" },
+        { "key": "d", "text": "loss of consciousness" }
+      ],
+      "correct": "c",
+      "explanation": "Muscle and joint pain is a sign of decompression sickness, not arterial gas embolism. AGE presents with neurological signs."
+    },
+    {
+      "id": 71,
+      "category": "barotrauma plic",
+      "question": "In diving, pneumothorax occurs when air from a ruptured lung enters:",
+      "options": [
+        { "key": "a", "text": "the bloodstream" },
+        { "key": "b", "text": "the pleural space" },
+        { "key": "c", "text": "the mediastinum" },
+        { "key": "d", "text": "the subcutaneous tissue around the neck and shoulders" }
+      ],
+      "correct": "b",
+      "explanation": "Pneumothorax is caused by air entering the pleural space, which causes the lung to collapse."
+    },
+    {
+      "id": 72,
+      "category": "barotrauma plic",
+      "question": "Pulmonary barotrauma of ascent on scuba can occur on an incorrectly performed ascent from a depth as shallow as:",
+      "options": [
+        { "key": "a", "text": "10 metres" },
+        { "key": "b", "text": "5 metres" },
+        { "key": "c", "text": "3 metres" },
+        { "key": "d", "text": "less than 2 metres" }
+      ],
+      "correct": "d",
+      "explanation": "Pulmonary barotrauma of ascent can occur at depths less than 2 m, because the relative pressure change is greatest near the surface."
+    },
+    {
+      "id": 73,
+      "category": "barotrauma plic",
+      "question": "Inner-ear damage from over-pressure:",
+      "options": [
+        { "key": "a", "text": "cannot occur because the inner ear is separated from the middle ear by bone" },
+        { "key": "b", "text": "cannot occur because inner-ear organs are filled with fluid" },
+        { "key": "c", "text": "can occur on attempts at forceful equalisation of the middle ear" },
+        { "key": "d", "text": "can occur on rapid ascent" }
+      ],
+      "correct": "c",
+      "explanation": "Inner-ear damage can occur during a forceful Valsalva manoeuvre, where over-pressure in the middle ear damages the oval or round window."
+    },
+    {
+      "id": 74,
+      "category": "barotrauma plic",
+      "question": "The vertigo on a ruptured eardrum underwater is mainly caused by:",
+      "options": [
+        { "key": "a", "text": "stabbing pain" },
+        { "key": "b", "text": "blood loss" },
+        { "key": "c", "text": "shock" },
+        { "key": "d", "text": "sudden cooling of the inner ear by water entering the middle-ear cavity" }
+      ],
+      "correct": "d",
+      "explanation": "The vertigo on a ruptured eardrum is caused by sudden cooling of the inner ear by cold water entering the middle-ear cavity."
+    },
+    {
+      "id": 75,
+      "category": "barotrauma plic",
+      "question": "In diving, arterial gas embolism (AGE) is caused by air from a ruptured lung entering:",
+      "options": [
+        { "key": "a", "text": "the bloodstream" },
+        { "key": "b", "text": "the pleural space" },
+        { "key": "c", "text": "the mediastinum" },
+        { "key": "d", "text": "the subcutaneous tissue around the neck and shoulders" }
+      ],
+      "correct": "a",
+      "explanation": "Arterial gas embolism is caused by air bubbles from a ruptured lung entering the bloodstream directly."
+    },
+    {
+      "id": 76,
+      "category": "barotrauma plic",
+      "question": "The consequences of pulmonary barotrauma of ascent appear:",
+      "options": [
+        { "key": "a", "text": "within 6 hours of surfacing" },
+        { "key": "b", "text": "between 30 minutes and 3 hours after surfacing" },
+        { "key": "c", "text": "between 30 minutes and 1 hour after surfacing" },
+        { "key": "d", "text": "immediately on surfacing, or even during the ascent" }
+      ],
+      "correct": "d",
+      "explanation": "Pulmonary barotrauma of ascent is an acute injury whose signs (embolism, pneumothorax, emphysema) appear immediately on ascent or surfacing."
+    },
+    {
+      "id": 77,
+      "category": "barotrauma plic",
+      "question": "Arterial gas embolism is a consequence of:",
+      "options": [
+        { "key": "a", "text": "pulmonary barotrauma of ascent" },
+        { "key": "b", "text": "pulmonary barotrauma of descent" },
+        { "key": "c", "text": "pulmonary decompression sickness" },
+        { "key": "d", "text": "neurological decompression sickness" }
+      ],
+      "correct": "a",
+      "explanation": "Arterial gas embolism is caused by air entering the bloodstream from a ruptured lung — a consequence of pulmonary barotrauma of ascent."
+    },
+    {
+      "id": 78,
+      "category": "barotrauma plic",
+      "question": "Pneumothorax is a consequence of:",
+      "options": [
+        { "key": "a", "text": "pulmonary barotrauma of descent" },
+        { "key": "b", "text": "pulmonary barotrauma of ascent" },
+        { "key": "c", "text": "pulmonary decompression sickness" },
+        { "key": "d", "text": "a breath-hold dive after hyperventilation" }
+      ],
+      "correct": "b",
+      "explanation": "Pneumothorax is caused by air entering the pleural space from a ruptured lung — a consequence of pulmonary barotrauma of ascent."
+    },
+    {
+      "id": 79,
+      "category": "barotrauma plic",
+      "question": "The cause of pulmonary barotrauma of ascent is:",
+      "options": [
+        { "key": "a", "text": "tissue super-saturation with nitrogen on ascent on scuba" },
+        { "key": "b", "text": "breath-holding on ascent during a breath-hold dive" },
+        { "key": "c", "text": "insufficient exhalation, or breath-holding on ascent on scuba" },
+        { "key": "d", "text": "exceeding the breath-hold depth limit" }
+      ],
+      "correct": "c",
+      "explanation": "Pulmonary barotrauma of ascent occurs on a scuba ascent when the diver does not exhale enough or holds their breath — air in the lungs expands and can rupture lung tissue."
+    },
+    {
+      "id": 80,
+      "category": "barotrauma plic",
+      "question": "Air entering the mediastinum, or the subcutaneous tissue around the neck and shoulders, is called:",
+      "options": [
+        { "key": "a", "text": "pneumothorax" },
+        { "key": "b", "text": "arterial gas embolism" },
+        { "key": "c", "text": "carotid sinus syndrome" },
+        { "key": "d", "text": "emphysema" }
+      ],
+      "correct": "d",
+      "explanation": "Emphysema (mediastinal or subcutaneous) is the entry of air from a ruptured lung into the mediastinum or into the subcutaneous tissue around the neck and shoulders."
+    },
+    {
+      "id": 81,
+      "category": "dekompresní nemoc",
+      "question": "Mark the incorrect statement:",
+      "options": [
+        { "key": "a", "text": "Decompression sickness does not occur in divers who do not exceed the no-decompression limit for a given depth." },
+        { "key": "b", "text": "Cutaneous DCS does not require recompression-chamber treatment." },
+        { "key": "c", "text": "The partial pressure of oxygen breathed during in-water decompression must not exceed 170 kPa." },
+        { "key": "d", "text": "A surface interval longer than 2 hours is recommended." }
+      ],
+      "correct": "a",
+      "explanation": "This statement is incorrect — DCS can occur even within no-decompression limits, especially on repetitive dives or in the presence of risk factors."
+    },
+    {
+      "id": 82,
+      "category": "dekompresní nemoc",
+      "question": "Which of the following is NOT a sign of decompression sickness?",
+      "options": [
+        { "key": "a", "text": "pain at the bridge of the nose and below the eyes" },
+        { "key": "b", "text": "pain behind the breastbone" },
+        { "key": "c", "text": "muscle and joint pain" },
+        { "key": "d", "text": "skin mottling" }
+      ],
+      "correct": "a",
+      "explanation": "Pain at the bridge of the nose and below the eyes is a sign of sinus barotrauma, not decompression sickness."
+    },
+    {
+      "id": 83,
+      "category": "dekompresní nemoc",
+      "question": "Pulmonary DCS (the chokes):",
+      "options": [
+        { "key": "a", "text": "is accompanied by muscle and joint pain" },
+        { "key": "b", "text": "does not require recompression treatment" },
+        { "key": "c", "text": "is caused by nitrogen bubbles blocking pulmonary capillaries" },
+        { "key": "d", "text": "is characterised by skin mottling" }
+      ],
+      "correct": "c",
+      "explanation": "Pulmonary DCS (the chokes) is caused by nitrogen bubbles blocking pulmonary capillaries, which interferes with respiratory-gas exchange."
+    },
+    {
+      "id": 84,
+      "category": "dekompresní nemoc",
+      "question": "In a case of decompression sickness, it is NOT recommended to:",
+      "options": [
+        { "key": "a", "text": "give oxygen" },
+        { "key": "b", "text": "give analgesics" },
+        { "key": "c", "text": "place the casualty at rest" },
+        { "key": "d", "text": "ensure professional medical evaluation" }
+      ],
+      "correct": "b",
+      "explanation": "Analgesics can mask the signs of DCS and complicate diagnosis. Oxygen, rest and professional evaluation are the recommended steps."
+    },
+    {
+      "id": 85,
+      "category": "dekompresní nemoc",
+      "question": "Mark the incorrect statement:",
+      "options": [
+        { "key": "a", "text": "All forms of decompression sickness require recompression-chamber treatment." },
+        { "key": "b", "text": "The musculoskeletal form is the most common form of DCS." },
+        { "key": "c", "text": "Cutaneous DCS is caused by nitrogen bubbles blocking skin capillaries." },
+        { "key": "d", "text": "Most cases of DCS appear from 30 minutes to 3 hours after surfacing." }
+      ],
+      "correct": "a",
+      "explanation": "This statement is incorrect — cutaneous DCS does not normally require recompression-chamber treatment, only observation and conservative management."
+    },
+    {
+      "id": 86,
+      "category": "dekompresní nemoc",
+      "question": "Pulmonary DCS:",
+      "options": [
+        { "key": "a", "text": "blocks respiratory-gas exchange" },
+        { "key": "b", "text": "threatens cardiac function" },
+        { "key": "c", "text": "requires immediate recompression-chamber treatment" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "Pulmonary DCS blocks gas exchange, threatens the heart and requires immediate chamber treatment — all answers are correct."
+    },
+    {
+      "id": 87,
+      "category": "dekompresní nemoc",
+      "question": "Which of the following is NOT a sign of musculoskeletal DCS?",
+      "options": [
+        { "key": "a", "text": "holding the limbs in a flexed position" },
+        { "key": "b", "text": "muscle pain" },
+        { "key": "c", "text": "pain behind the breastbone" },
+        { "key": "d", "text": "joint pain" }
+      ],
+      "correct": "c",
+      "explanation": "Pain behind the breastbone is a sign of pulmonary DCS, not musculoskeletal DCS."
+    },
+    {
+      "id": 88,
+      "category": "dekompresní nemoc",
+      "question": "Recompression-chamber treatment is required for:",
+      "options": [
+        { "key": "a", "text": "lymphatic DCS" },
+        { "key": "b", "text": "musculoskeletal DCS" },
+        { "key": "c", "text": "cutaneous DCS" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "b",
+      "explanation": "Musculoskeletal DCS requires recompression-chamber treatment. Cutaneous and lymphatic forms are milder and do not require chamber treatment."
+    },
+    {
+      "id": 89,
+      "category": "dekompresní nemoc",
+      "question": "Pulmonary DCS:",
+      "options": [
+        { "key": "a", "text": "may lead to cardiac failure" },
+        { "key": "b", "text": "may cause pneumothorax" },
+        { "key": "c", "text": "is caused by nitrogen bubbles inside the alveoli" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "a",
+      "explanation": "Pulmonary DCS can lead to cardiac failure because nitrogen bubbles block the pulmonary capillaries."
+    },
+    {
+      "id": 90,
+      "category": "dekompresní nemoc",
+      "question": "Which form of DCS does NOT require recompression-chamber treatment?",
+      "options": [
+        { "key": "a", "text": "musculoskeletal DCS" },
+        { "key": "b", "text": "pulmonary DCS" },
+        { "key": "c", "text": "neurological DCS" },
+        { "key": "d", "text": "lymphatic DCS" }
+      ],
+      "correct": "d",
+      "explanation": "Lymphatic DCS is a mild form that does not require recompression-chamber treatment."
+    },
+    {
+      "id": 91,
+      "category": "dekompresní nemoc",
+      "question": "The most serious form of DCS is:",
+      "options": [
+        { "key": "a", "text": "cutaneous DCS" },
+        { "key": "b", "text": "neurological DCS (CNS involvement)" },
+        { "key": "c", "text": "lymphatic DCS" },
+        { "key": "d", "text": "musculoskeletal DCS" }
+      ],
+      "correct": "b",
+      "explanation": "Neurological DCS affects the central nervous system and can cause paralysis or death, making it the most serious form."
+    },
+    {
+      "id": 92,
+      "category": "dekompresní nemoc",
+      "question": "Paralysis is a sign of:",
+      "options": [
+        { "key": "a", "text": "pulmonary DCS" },
+        { "key": "b", "text": "musculoskeletal DCS" },
+        { "key": "c", "text": "neurological DCS" },
+        { "key": "d", "text": "haematological DCS" }
+      ],
+      "correct": "c",
+      "explanation": "Paralysis is a characteristic sign of neurological DCS, which affects the spinal cord and brain."
+    },
+    {
+      "id": 93,
+      "category": "dekompresní nemoc",
+      "question": "DCS most often presents as:",
+      "options": [
+        { "key": "a", "text": "the neurological form" },
+        { "key": "b", "text": "the pulmonary form" },
+        { "key": "c", "text": "the lymphatic form" },
+        { "key": "d", "text": "the musculoskeletal form" }
+      ],
+      "correct": "d",
+      "explanation": "The musculoskeletal form (joint and muscle pain — the bends) is the most common form of decompression sickness."
+    },
+    {
+      "id": 94,
+      "category": "dekompresní nemoc",
+      "question": "A characteristic sign of cutaneous DCS is:",
+      "options": [
+        { "key": "a", "text": "cyanosis of the lips, mucosae and nail beds" },
+        { "key": "b", "text": "cherry-red discolouration of the lips, mucosae and nail beds" },
+        { "key": "c", "text": "skin mottling" },
+        { "key": "d", "text": "uncontrolled shivering" }
+      ],
+      "correct": "c",
+      "explanation": "Skin mottling (cutis marmorata) is a typical sign of cutaneous DCS."
+    },
+    {
+      "id": 95,
+      "category": "dekompresní nemoc",
+      "question": "Shallow breathing, breathlessness and stabbing pain behind the breastbone are signs of:",
+      "options": [
+        { "key": "a", "text": "musculoskeletal DCS" },
+        { "key": "b", "text": "pulmonary DCS" },
+        { "key": "c", "text": "neurological DCS" },
+        { "key": "d", "text": "lymphatic DCS" }
+      ],
+      "correct": "b",
+      "explanation": "These signs are typical of pulmonary DCS, caused by bubbles blocking the pulmonary capillaries."
+    },
+    {
+      "id": 96,
+      "category": "dekompresní nemoc",
+      "question": "Skin mottling is a sign of:",
+      "options": [
+        { "key": "a", "text": "hypoxia" },
+        { "key": "b", "text": "carbon-dioxide toxicity" },
+        { "key": "c", "text": "carbon-monoxide poisoning" },
+        { "key": "d", "text": "cutaneous DCS" }
+      ],
+      "correct": "d",
+      "explanation": "Skin mottling is a characteristic sign of cutaneous decompression sickness."
+    },
+    {
+      "id": 97,
+      "category": "dekompresní nemoc",
+      "question": "Musculoskeletal DCS:",
+      "options": [
+        { "key": "a", "text": "makes the casualty hold their limbs in a flexed position" },
+        { "key": "b", "text": "requires recompression-chamber treatment" },
+        { "key": "c", "text": "tolerates a longer transport to the recompression chamber" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "Musculoskeletal DCS has all these features — flexed posture eases the pain, it requires chamber treatment, but it tolerates a longer transport."
+    },
+    {
+      "id": 98,
+      "category": "dekompresní nemoc",
+      "question": "DCS signs appear:",
+      "options": [
+        { "key": "a", "text": "within 3 minutes of surfacing" },
+        { "key": "b", "text": "immediately on surfacing (or even during the ascent)" },
+        { "key": "c", "text": "often only on the shore or boat, sometimes hours later" },
+        { "key": "d", "text": "within 10 minutes of surfacing" }
+      ],
+      "correct": "c",
+      "explanation": "DCS signs often appear after surfacing — typically from 30 minutes to several hours after the dive."
+    },
+    {
+      "id": 99,
+      "category": "dekompresní nemoc",
+      "question": "The risk of decompression incidents is increased by:",
+      "options": [
+        { "key": "a", "text": "breathing pure oxygen on decompression" },
+        { "key": "b", "text": "physical exertion and cooling underwater" },
+        { "key": "c", "text": "surface intervals longer than 2 hours" },
+        { "key": "d", "text": "no-decompression dives" }
+      ],
+      "correct": "b",
+      "explanation": "Physical exertion and cooling increase the risk of DCS by impairing tissue off-gassing."
+    },
+    {
+      "id": 100,
+      "category": "dekompresní nemoc",
+      "question": "Replacing nitrogen in the breathing gas with helium eliminates:",
+      "options": [
+        { "key": "a", "text": "nitrogen narcosis" },
+        { "key": "b", "text": "decompression" },
+        { "key": "c", "text": "the risk of hypothermia" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "a",
+      "explanation": "Helium has no narcotic effect like nitrogen, so its use eliminates nitrogen narcosis."
+    }
+  ]
+}

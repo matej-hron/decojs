@@ -1,0 +1,1306 @@
+{
+  "title": "Normas de Formación – Exámenes SPČR 2018",
+  "description": "Preguntas de examen sobre las Normas de Formación SPČR 2016 para buceadores",
+  "questions": [
+    {
+      "id": 1,
+      "category": "obecna-pravidla",
+      "question": "Los grados de buceador Buceador acompañado, Buceador Junior SPČR, Buceador CMAS P1, Buceador CMAS P2, Buceador CMAS P3, y los grados de instructor Instructor CMAS I1, Instructor CMAS I2 e Instructor CMAS I3 pueden concederse:",
+      "options": [
+        { "key": "a", "text": "tras superar al menos el 80 % de las prácticas previstas por estas normas" },
+        { "key": "b", "text": "únicamente a un miembro de una organización CMAS" },
+        { "key": "c", "text": "los grados de buceador a cualquier ciudadano checo; los grados de instructor solo al presidente y/o vicepresidente de un club de SČP o SPMS" },
+        { "key": "d", "text": "los grados de buceador a partir de los 18 años; los de instructor a partir de los 21" }
+      ],
+      "correct": "b",
+      "explanation": "Los grados solo pueden concederse a un miembro de una organización CMAS."
+    },
+    {
+      "id": 2,
+      "category": "obecna-pravidla",
+      "question": "Para la Introducción al Buceo, los cursos de especialidad CMAS/SPČR y la formación de buceo de niños:",
+      "options": [
+        { "key": "a", "text": "rigen normas independientes" },
+        { "key": "b", "text": "el instructor tiene derecho a definir el alcance de la formación según el progreso de los alumnos" },
+        { "key": "c", "text": "no existe un estándar vinculante" },
+        { "key": "d", "text": "no es necesaria una cualificación de instructor" }
+      ],
+      "correct": "a",
+      "explanation": "Para la Introducción al Buceo, los cursos de especialidad y la formación de niños rigen normas independientes."
+    },
+    {
+      "id": 3,
+      "category": "obecna-pravidla",
+      "question": "Pueden ser proveedores de la formación para los grados recogidos en VS SPČR 2016 (las Normas de Formación de la SPČR de 2016):",
+      "options": [
+        { "key": "a", "text": "SPČR (Federación Checa de Buceo), las federaciones miembros, los clubes registrados en ellas, los instructores SPČR y las personas físicas o jurídicas autorizadas por la federación miembro" },
+        { "key": "b", "text": "solo SPČR y sus federaciones miembros (SČP y SPMS)" },
+        { "key": "c", "text": "solo las federaciones miembros y los clubes registrados en ellas" },
+        { "key": "d", "text": "solo los instructores SPČR" }
+      ],
+      "correct": "a",
+      "explanation": "Pueden ser proveedores SPČR, las federaciones miembros, los clubes registrados, los instructores SPČR y las personas autorizadas."
+    },
+    {
+      "id": 4,
+      "category": "obecna-pravidla",
+      "question": "Quien quiera participar en la formación debe presentar:",
+      "options": [
+        { "key": "a", "text": "un justificante del nivel de estudios alcanzado" },
+        { "key": "b", "text": "un informe psicológico" },
+        { "key": "c", "text": "su propio equipo de buceo" },
+        { "key": "d", "text": "un certificado médico válido de aptitud para bucear" }
+      ],
+      "correct": "d",
+      "explanation": "El interesado debe presentar un certificado médico válido de aptitud para bucear."
+    },
+    {
+      "id": 5,
+      "category": "obecna-pravidla",
+      "question": "La participación de un menor de 18 años en la formación solo es posible con el consentimiento por escrito de:",
+      "options": [
+        { "key": "a", "text": "los demás participantes" },
+        { "key": "b", "text": "el instructor que imparte la formación" },
+        { "key": "c", "text": "cualquier instructor SPČR con al menos la cualificación de Instructor CMAS I2" },
+        { "key": "d", "text": "el representante legal del interesado" }
+      ],
+      "correct": "d",
+      "explanation": "La participación de un menor de 18 años solo es posible con el consentimiento por escrito de su representante legal."
+    },
+    {
+      "id": 6,
+      "category": "obecna-pravidla",
+      "question": "Durante la formación deben respetarse:",
+      "options": [
+        { "key": "a", "text": "las disposiciones de las Normas de Seguridad de la SPČR sobre la organización del buceo" },
+        { "key": "b", "text": "las disposiciones de las Normas de Seguridad de la SPČR sobre el equipo de buceo" },
+        { "key": "c", "text": "todas las disposiciones de las Normas de Seguridad de la SPČR" },
+        { "key": "d", "text": "aquellas disposiciones de las Normas de Seguridad de la SPČR que se refieran expresamente a la formación" }
+      ],
+      "correct": "c",
+      "explanation": "Durante la formación deben respetarse todas las disposiciones de las Normas de Seguridad de la SPČR."
+    },
+    {
+      "id": 7,
+      "category": "obecna-pravidla",
+      "question": "Los conocimientos de los candidatos a un grado de buceador pueden evaluarse:",
+      "options": [
+        { "key": "a", "text": "únicamente mediante exámenes finales" },
+        { "key": "b", "text": "durante la formación o mediante exámenes finales, por escrito y/o oralmente" },
+        { "key": "c", "text": "durante la formación o mediante exámenes finales, pero siempre por escrito" },
+        { "key": "d", "text": "únicamente durante la formación, y siempre oralmente" }
+      ],
+      "correct": "b",
+      "explanation": "Los conocimientos pueden evaluarse durante la formación o mediante exámenes finales, por escrito y/o oralmente."
+    },
+    {
+      "id": 8,
+      "category": "obecna-pravidla",
+      "question": "Los conocimientos de los candidatos a un grado de buceador pueden evaluarse:",
+      "options": [
+        { "key": "a", "text": "por escrito y/o oralmente" },
+        { "key": "b", "text": "solo por escrito" },
+        { "key": "c", "text": "solo oralmente" },
+        { "key": "d", "text": "solo en exámenes finales por escrito y/o oralmente" }
+      ],
+      "correct": "a",
+      "explanation": "Los conocimientos pueden evaluarse por escrito y/o oralmente."
+    },
+    {
+      "id": 9,
+      "category": "obecna-pravidla",
+      "question": "La evaluación de las destrezas de los candidatos a un grado de buceador debe realizarla:",
+      "options": [
+        { "key": "a", "text": "el presidente del club de buceo correspondiente, asistido por un instructor" },
+        { "key": "b", "text": "el instructor que conceda al candidato el grado" },
+        { "key": "c", "text": "un tribunal examinador de al menos tres miembros designado por la Comisión de Formación de la SPČR (VK)" },
+        { "key": "d", "text": "un tribunal examinador de al menos tres miembros designado por la junta directiva de SČP o SPMS" }
+      ],
+      "correct": "b",
+      "explanation": "La evaluación de las destrezas debe realizarla el instructor que conceda al candidato el grado."
+    },
+    {
+      "id": 10,
+      "category": "obecna-pravidla",
+      "question": "Las destrezas de los candidatos a un grado de buceador pueden evaluarse durante la formación o mediante exámenes finales, pero en cualquier caso:",
+      "options": [
+        { "key": "a", "text": "ante un tribunal examinador de al menos tres miembros" },
+        { "key": "b", "text": "ante un miembro autorizado de la junta directiva de SČP o SPMS" },
+        { "key": "c", "text": "deben cumplirse todos los requisitos del grado correspondiente" },
+        { "key": "d", "text": "debe cumplirse al menos la mayoría de los requisitos del grado correspondiente" }
+      ],
+      "correct": "c",
+      "explanation": "Deben cumplirse todos los requisitos del grado correspondiente."
+    },
+    {
+      "id": 11,
+      "category": "obecna-pravidla",
+      "question": "La concesión de un grado consiste en:",
+      "options": [
+        { "key": "a", "text": "una confirmación por escrito (o electrónica), cuya copia el instructor envía en un plazo de 10 días hábiles a la junta directiva de la federación miembro correspondiente" },
+        { "key": "b", "text": "la emisión de la tarjeta de cualificación a nombre del titular; a petición del titular, también puede certificarse el grado en su libreta de buceo con foto y datos personales" },
+        { "key": "c", "text": "la certificación del grado en la libreta de buceo del titular con foto y datos personales; a petición del titular puede emitirse también la tarjeta de cualificación" },
+        { "key": "d", "text": "la emisión de la tarjeta de cualificación a nombre del titular y la certificación del grado en su libreta de buceo con foto y datos personales" }
+      ],
+      "correct": "d",
+      "explanation": "La concesión consiste en la emisión de la tarjeta de cualificación y la certificación en la libreta de buceo."
+    },
+    {
+      "id": 12,
+      "category": "obecna-pravidla",
+      "question": "La concesión de un grado:",
+      "options": [
+        { "key": "a", "text": "consiste en la emisión de la tarjeta de cualificación a nombre del titular y la certificación del grado en su libreta de buceo" },
+        { "key": "b", "text": "consiste en la emisión de la tarjeta de cualificación" },
+        { "key": "c", "text": "consiste en la certificación del grado en la libreta de buceo" },
+        { "key": "d", "text": "consiste en una notificación verbal al titular con la posibilidad de gestionar la emisión de la tarjeta de cualificación" }
+      ],
+      "correct": "a",
+      "explanation": "La concesión consiste en la emisión de la tarjeta y la certificación en la libreta de buceo."
+    },
+    {
+      "id": 13,
+      "category": "obecna-pravidla",
+      "question": "Si la evaluación de los conocimientos y destrezas del candidato la realiza un tribunal de instructores:",
+      "options": [
+        { "key": "a", "text": "debe contar con al menos tres miembros" },
+        { "key": "b", "text": "los miembros eligen entre ellos al presidente del tribunal" },
+        { "key": "c", "text": "el presidente del tribunal actúa, en nombre del mismo, ante los candidatos" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todas son correctas: el tribunal debe ser de tres miembros, los miembros eligen al presidente y este actúa en nombre del tribunal."
+    },
+    {
+      "id": 14,
+      "category": "obecna-pravidla",
+      "question": "Marque la afirmación incorrecta. Si la evaluación la realiza un tribunal de instructores:",
+      "options": [
+        { "key": "a", "text": "debe contar con al menos tres miembros" },
+        { "key": "b", "text": "el presidente del tribunal lo eligen los miembros entre ellos" },
+        { "key": "c", "text": "el presidente del tribunal lo eligen los candidatos en votación secreta" },
+        { "key": "d", "text": "el presidente actúa, en nombre del tribunal, ante los candidatos" }
+      ],
+      "correct": "c",
+      "explanation": "Es incorrecto que los candidatos elijan al presidente; este lo eligen los miembros del tribunal entre ellos."
+    },
+    {
+      "id": 15,
+      "category": "obecna-pravidla",
+      "question": "Cada vez que se sube de cualificación o se renueva su validez, el candidato debe presentar:",
+      "options": [
+        { "key": "a", "text": "una recomendación del club de buceo correspondiente" },
+        { "key": "b", "text": "una recomendación del instructor que le concedió la cualificación inicial" },
+        { "key": "c", "text": "el justificante de la cualificación de acceso requerida y una libreta de buceo correctamente llevada" },
+        { "key": "d", "text": "el justificante de la cualificación de acceso requerida" }
+      ],
+      "correct": "c",
+      "explanation": "El candidato debe presentar el justificante de la cualificación de acceso y una libreta de buceo correctamente llevada."
+    },
+    {
+      "id": 16,
+      "category": "obecna-pravidla",
+      "question": "El justificante de la cualificación de acceso requerida y la libreta de buceo correctamente llevada deben presentarse:",
+      "options": [
+        { "key": "a", "text": "antes de cada inmersión, al jefe de inmersión y/o al responsable de la actividad" },
+        { "key": "b", "text": "cada vez que se sube de cualificación o se renueva su validez" },
+        { "key": "c", "text": "antes de cada inmersión en condiciones difíciles (viento, oleaje, corriente)" },
+        { "key": "d", "text": "antes de cada inmersión a más de 30 m" }
+      ],
+      "correct": "b",
+      "explanation": "El candidato debe presentar los documentos cada vez que sube de cualificación o renueva su validez."
+    },
+    {
+      "id": 17,
+      "category": "obecna-pravidla",
+      "question": "Los conocimientos y destrezas de los candidatos a un grado de buceador:",
+      "options": [
+        { "key": "a", "text": "pueden evaluarse durante la formación o mediante exámenes finales" },
+        { "key": "b", "text": "deben cumplir todos los requisitos del grado correspondiente" },
+        { "key": "c", "text": "deben ser evaluados por el instructor que conceda al candidato el grado" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todas las respuestas son correctas."
+    },
+    {
+      "id": 18,
+      "category": "obecna-pravidla",
+      "question": "Marque la afirmación incorrecta:",
+      "options": [
+        { "key": "a", "text": "El interesado en participar en la formación debe presentar un certificado médico válido de aptitud para bucear." },
+        { "key": "b", "text": "La participación de un menor de 21 años en la formación solo es posible con el consentimiento por escrito de su representante legal." },
+        { "key": "c", "text": "Si la evaluación la realiza un tribunal de instructores, debe contar con al menos tres miembros." },
+        { "key": "d", "text": "Cada vez que se sube de cualificación o se renueva su validez, el candidato debe presentar el justificante de la cualificación de acceso requerida y una libreta de buceo correctamente llevada." }
+      ],
+      "correct": "b",
+      "explanation": "Es incorrecto el dato de los 21 años: el límite correcto es por debajo de los 18 años para que se necesite el consentimiento del representante legal."
+    },
+    {
+      "id": 19,
+      "category": "prava-povinnosti",
+      "question": "El proveedor de la formación tiene derecho a:",
+      "options": [
+        { "key": "a", "text": "comprobar si durante la formación se incumplen o se han incumplido las Normas de Seguridad y/o Formación de la SPČR" },
+        { "key": "b", "text": "subir temporalmente la cualificación del instructor que imparte la formación, según las necesidades del momento" },
+        { "key": "c", "text": "reducir de forma proporcional los requisitos de estas normas para el grado correspondiente, en función del estado material, financiero y de personal de la formación" },
+        { "key": "d", "text": "en caso necesario, encomendar temporalmente la dirección de la formación a un titular de la cualificación Buceador CMAS P3" }
+      ],
+      "correct": "a",
+      "explanation": "El proveedor de la formación tiene derecho a comprobar el cumplimiento de las Normas de Seguridad y/o Formación de la SPČR."
+    },
+    {
+      "id": 20,
+      "category": "prava-povinnosti",
+      "question": "Marque la afirmación incorrecta. El proveedor de la formación tiene derecho a:",
+      "options": [
+        { "key": "a", "text": "comprobar si durante la formación se incumplen o se han incumplido las Normas de Seguridad y/o Formación de la SPČR" },
+        { "key": "b", "text": "comprobar si la formación tiene la calidad requerida" },
+        { "key": "c", "text": "organizar el orden de las clases y prácticas a su libre criterio" },
+        { "key": "d", "text": "apartar de la dirección de la formación al instructor que haya abusado de su posición de algún modo o haya desprestigiado la formación con su conducta" }
+      ],
+      "correct": "c",
+      "explanation": "Organizar el orden de las clases a libre criterio del proveedor no es su derecho: corresponde al instructor."
+    },
+    {
+      "id": 21,
+      "category": "prava-povinnosti",
+      "question": "El proveedor de la formación:",
+      "options": [
+        { "key": "a", "text": "tiene derecho a comprobar si la formación tiene la calidad requerida" },
+        { "key": "b", "text": "está obligado a garantizar material, financiera y personalmente la seguridad, la calidad requerida y la continuidad de la formación" },
+        { "key": "c", "text": "tiene derecho a apartar de la dirección de la formación al instructor que haya incumplido conscientemente las Normas de Seguridad o de Formación de la SPČR" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todas las respuestas son correctas."
+    },
+    {
+      "id": 22,
+      "category": "prava-povinnosti",
+      "question": "El instructor que imparte la formación tiene derecho a:",
+      "options": [
+        { "key": "a", "text": "expulsar de la zona de formación a quienes con su conducta entorpezcan la formación o pongan en peligro a los participantes" },
+        { "key": "b", "text": "organizar el orden de las clases y prácticas a su libre criterio" },
+        { "key": "c", "text": "organizar el orden de las clases y prácticas teniendo en cuenta los medios materiales y técnicos disponibles y las capacidades físicas y psíquicas de los participantes" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todas las respuestas son correctas."
+    },
+    {
+      "id": 23,
+      "category": "prava-povinnosti",
+      "question": "Entre los derechos del instructor NO figura organizar el orden de las clases y prácticas:",
+      "options": [
+        { "key": "a", "text": "según una decisión colectiva de los alumnos" },
+        { "key": "b", "text": "a su libre criterio" },
+        { "key": "c", "text": "teniendo en cuenta los medios materiales y técnicos disponibles" },
+        { "key": "d", "text": "teniendo en cuenta las capacidades físicas y psíquicas de los participantes" }
+      ],
+      "correct": "a",
+      "explanation": "Organizar el orden por decisión colectiva de los alumnos no figura entre los derechos del instructor."
+    },
+    {
+      "id": 24,
+      "category": "prava-povinnosti",
+      "question": "Marque la respuesta incorrecta. El instructor que imparte la formación está obligado a:",
+      "options": [
+        { "key": "a", "text": "admitir solo a candidatos que cumplan los requisitos previstos para participar en la formación" },
+        { "key": "b", "text": "admitir a candidatos que cumplan al menos la mitad de los requisitos previstos" },
+        { "key": "c", "text": "al inicio de la formación, informar a los alumnos de los derechos y deberes del instructor y de los suyos propios" },
+        { "key": "d", "text": "al inicio de la formación, informar a los alumnos del contenido y la organización del curso" }
+      ],
+      "correct": "b",
+      "explanation": "Es incorrecto el supuesto de la mitad de los requisitos: los candidatos deben cumplir todos los requisitos."
+    },
+    {
+      "id": 25,
+      "category": "prava-povinnosti",
+      "question": "Durante la formación, el instructor está obligado a:",
+      "options": [
+        { "key": "a", "text": "explicar y demostrar adecuadamente cada nueva tarea y advertir a los alumnos de los posibles peligros" },
+        { "key": "b", "text": "no permitir realizar las tareas asignadas a un alumno cuyo equipo sea incompleto, inadecuado o no esté suficientemente operativo" },
+        { "key": "c", "text": "negarse a confirmar la realización de tareas y pruebas que el alumno no haya superado, no haya terminado o no haya realizado en absoluto" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todas las respuestas son correctas."
+    },
+    {
+      "id": 26,
+      "category": "prava-povinnosti",
+      "question": "Antes de cada práctica, el instructor está obligado a:",
+      "options": [
+        { "key": "a", "text": "informar a los alumnos del texto íntegro de las Normas de Seguridad de la SPČR" },
+        { "key": "b", "text": "obtener de los alumnos el consentimiento por escrito sobre el contenido de la práctica" },
+        { "key": "c", "text": "revisar el equipo de los alumnos y rebajar las exigencias para los alumnos cuyo equipo sea incompleto, inadecuado o no esté suficientemente operativo" },
+        { "key": "d", "text": "revisar el equipo de los alumnos y no permitir realizar las tareas asignadas a aquellos cuyo equipo sea incompleto, inadecuado o no esté suficientemente operativo" }
+      ],
+      "correct": "d",
+      "explanation": "El instructor está obligado a revisar el equipo y a no permitir realizar las tareas a quien tenga un equipo inadecuado."
+    },
+    {
+      "id": 27,
+      "category": "prava-povinnosti",
+      "question": "El instructor está obligado a interrumpir la formación si comprueba que continuarla llevaría a:",
+      "options": [
+        { "key": "a", "text": "un incumplimiento de las Normas de Seguridad y/o de Formación de la SPČR" },
+        { "key": "b", "text": "sobrepasar el objetivo de la práctica correspondiente" },
+        { "key": "c", "text": "no alcanzar el objetivo de la práctica correspondiente" },
+        { "key": "d", "text": "ninguna respuesta es correcta" }
+      ],
+      "correct": "a",
+      "explanation": "El instructor está obligado a interrumpir la formación si continuarla llevaría a un incumplimiento de las normas."
+    },
+    {
+      "id": 28,
+      "category": "prava-povinnosti",
+      "question": "Marque la afirmación incorrecta. El instructor que imparte la formación está obligado a:",
+      "options": [
+        { "key": "a", "text": "al inicio de la formación, informar a los alumnos del contenido y la organización del curso" },
+        { "key": "b", "text": "al inicio de la formación, informar a los alumnos de los derechos y deberes del proveedor de la formación" },
+        { "key": "c", "text": "durante la formación, organizar el orden de las clases y prácticas respetando los principios pedagógicos básicos" },
+        { "key": "d", "text": "durante la formación, explicar y demostrar adecuadamente cada nueva tarea y advertir a los alumnos de los posibles peligros" }
+      ],
+      "correct": "b",
+      "explanation": "El instructor no está obligado a informar a los alumnos de los derechos y deberes del proveedor de la formación."
+    },
+    {
+      "id": 29,
+      "category": "prava-povinnosti",
+      "question": "El instructor está obligado a informar a los alumnos sobre:",
+      "options": [
+        { "key": "a", "text": "la forma de redactar el parte en caso de accidente" },
+        { "key": "b", "text": "la forma de avisar a los servicios médicos en caso de problemas de salud" },
+        { "key": "c", "text": "las fechas de las reuniones de la junta directiva de la federación miembro correspondiente" },
+        { "key": "d", "text": "las fechas de las reuniones de la Comisión de Formación de la SPČR (VK)" }
+      ],
+      "correct": "b",
+      "explanation": "El instructor está obligado a informar a los alumnos sobre la forma de avisar a los servicios médicos."
+    },
+    {
+      "id": 30,
+      "category": "prava-povinnosti",
+      "question": "El alumno tiene derecho a:",
+      "options": [
+        { "key": "a", "text": "organizar el orden de las clases y prácticas a su libre criterio" },
+        { "key": "b", "text": "recibir un equipo cuyas piezas no tengan más de dos años desde la fecha de fabricación" },
+        { "key": "c", "text": "pedir una nueva explicación si no ha entendido la del instructor" },
+        { "key": "d", "text": "pedir que se le exonere de las prácticas que ya domina" }
+      ],
+      "correct": "c",
+      "explanation": "El alumno tiene derecho a pedir una nueva explicación si no ha entendido la del instructor."
+    },
+    {
+      "id": 31,
+      "category": "prava-povinnosti",
+      "question": "El alumno tiene derecho a:",
+      "options": [
+        { "key": "a", "text": "rechazar una tarea que no se corresponda con sus conocimientos y destrezas actuales, su estado de salud o su condición física o psíquica" },
+        { "key": "b", "text": "rechazar una tarea que no se ajuste a su idea sobre el contenido de la práctica" },
+        { "key": "c", "text": "antes de cada práctica, revisar el equipo del resto de participantes y no permitir realizar la tarea a aquellos cuyo equipo no sea completo, adecuado y/o suficientemente operativo" },
+        { "key": "d", "text": "antes de cada práctica, revisar los certificados médicos de aptitud para bucear de los alumnos" }
+      ],
+      "correct": "a",
+      "explanation": "El alumno tiene derecho a rechazar una tarea que no se corresponda con sus conocimientos, destrezas, salud o condición."
+    },
+    {
+      "id": 32,
+      "category": "prava-povinnosti",
+      "question": "El alumno tiene derecho a:",
+      "options": [
+        { "key": "a", "text": "antes de cada práctica, revisar el equipo del instructor" },
+        { "key": "b", "text": "pedir el cambio de un equipo en el que haya detectado defectos de funcionamiento" },
+        { "key": "c", "text": "controlar si la formación tiene la calidad requerida y apartar de ella al instructor que no cumpla esa condición" },
+        { "key": "d", "text": "dar clase a alumnos rezagados en la adquisición de las destrezas exigidas para el grado correspondiente" }
+      ],
+      "correct": "b",
+      "explanation": "El alumno tiene derecho a pedir el cambio de un equipo en el que haya detectado defectos."
+    },
+    {
+      "id": 33,
+      "category": "prava-povinnosti",
+      "question": "El alumno está obligado a:",
+      "options": [
+        { "key": "a", "text": "asegurar material y financieramente la calidad y la continuidad de la formación" },
+        { "key": "b", "text": "organizar el orden de las clases y prácticas respetando los principios pedagógicos básicos" },
+        { "key": "c", "text": "seguir con atención las explicaciones del instructor" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "c",
+      "explanation": "El alumno está obligado a seguir con atención las explicaciones del instructor."
+    },
+    {
+      "id": 34,
+      "category": "prava-povinnosti",
+      "question": "Durante la formación, el alumno está obligado a realizar siempre solo aquellas tareas:",
+      "options": [
+        { "key": "a", "text": "que considere oportunas para una progresión óptima de la formación" },
+        { "key": "b", "text": "que considere imprescindibles para una progresión óptima de la formación" },
+        { "key": "c", "text": "que le indique el instructor" },
+        { "key": "d", "text": "que le indique otro alumno que ya las domine" }
+      ],
+      "correct": "c",
+      "explanation": "El alumno está obligado a realizar las tareas que le indique el instructor."
+    },
+    {
+      "id": 35,
+      "category": "prava-povinnosti",
+      "question": "El alumno está obligado a:",
+      "options": [
+        { "key": "a", "text": "a indicación del instructor, repetir la consigna de la tarea y dejar revisar su equipo y la correcta colocación del mismo" },
+        { "key": "b", "text": "explicar y demostrar adecuadamente cada nueva tarea" },
+        { "key": "c", "text": "antes de cada práctica, revisar el equipo de los demás alumnos" },
+        { "key": "d", "text": "apartar de la formación al instructor que haya abusado de su posición de algún modo" }
+      ],
+      "correct": "a",
+      "explanation": "El alumno está obligado a repetir la consigna a indicación del instructor y dejar revisar su equipo."
+    },
+    {
+      "id": 36,
+      "category": "prava-povinnosti",
+      "question": "Marque la afirmación incorrecta. El alumno está obligado a comunicar de inmediato al instructor:",
+      "options": [
+        { "key": "a", "text": "si antes de la práctica no lleva consigo el certificado médico de aptitud para bucear" },
+        { "key": "b", "text": "cualquier problema de salud" },
+        { "key": "c", "text": "cualquier problema con su condición física o psíquica" },
+        { "key": "d", "text": "si detecta que durante la formación se ha producido o puede producirse un incumplimiento de las Normas de Seguridad de la SPČR" }
+      ],
+      "correct": "a",
+      "explanation": "El alumno no tiene que comunicar que no lleva consigo el certificado médico: este se entrega antes de la formación."
+    },
+    {
+      "id": 37,
+      "category": "definice-pravidla",
+      "question": "Por profundidad pequeña, media y grande se entienden, en este orden:",
+      "options": [
+        { "key": "a", "text": "profundidades hasta 6 m, de 6–18 m y más de 18 m" },
+        { "key": "b", "text": "profundidades hasta 10 m, de 10–20 m y más de 20 m" },
+        { "key": "c", "text": "profundidades hasta 10 m, de 10–30 m y más de 30 m" },
+        { "key": "d", "text": "profundidades hasta 20 m, de 20–40 m y más de 40 m" }
+      ],
+      "correct": "c",
+      "explanation": "Profundidad pequeña hasta 10 m, media de 10 a 30 m y grande más de 30 m."
+    },
+    {
+      "id": 38,
+      "category": "definice-pravidla",
+      "question": "Por aguas confinadas (espacio de agua protegido) se entiende:",
+      "options": [
+        { "key": "a", "text": "una zona de agua con tráfico restringido a todas las embarcaciones" },
+        { "key": "b", "text": "una zona de agua de poca profundidad en la que se puede vigilar continuamente a los alumnos y, en caso de peligro, intervenir de inmediato" },
+        { "key": "c", "text": "una zona de agua resguardada del viento y el oleaje" },
+        { "key": "d", "text": "una zona de agua protegida durante todo el año contra la congelación" }
+      ],
+      "correct": "b",
+      "explanation": "Las aguas confinadas son una zona poco profunda que permite la vigilancia continua y la intervención inmediata."
+    },
+    {
+      "id": 39,
+      "category": "definice-pravidla",
+      "question": "Por aguas abiertas (volná voda) se entiende:",
+      "options": [
+        { "key": "a", "text": "una zona con superficie libre, p. ej., una piscina cubierta" },
+        { "key": "b", "text": "una zona de cualquier profundidad que no pueda considerarse confinada" },
+        { "key": "c", "text": "una zona que no puede considerarse confinada, tiene profundidad suficiente para practicar las tareas previstas y permite el ascenso directo a la superficie durante toda la inmersión" },
+        { "key": "d", "text": "una zona de poca profundidad en la que se pueda vigilar continuamente a los alumnos e intervenir de inmediato en caso de peligro" }
+      ],
+      "correct": "c",
+      "explanation": "Las aguas abiertas son una zona con profundidad suficiente para la formación y posibilidad de ascenso directo a la superficie."
+    },
+    {
+      "id": 40,
+      "category": "definice-pravidla",
+      "question": "Durante la formación, un buddy team está formado por:",
+      "options": [
+        { "key": "a", "text": "el grupo (clase) completo de alumnos" },
+        { "key": "b", "text": "el grupo (clase) completo de alumnos y el instructor" },
+        { "key": "c", "text": "el instructor y al menos dos alumnos" },
+        { "key": "d", "text": "el instructor y uno o dos alumnos" }
+      ],
+      "correct": "d",
+      "explanation": "Durante la formación, un buddy team está formado por el instructor y uno o dos alumnos."
+    },
+    {
+      "id": 41,
+      "category": "definice-pravidla",
+      "question": "También pueden formarse buddy teams con parejas (o tríos) de alumnos compuestas por el instructor:",
+      "options": [
+        { "key": "a", "text": "a petición o por deseo de los alumnos" },
+        { "key": "b", "text": "si la visibilidad horizontal bajo el agua alcanza al menos los 6 m" },
+        { "key": "c", "text": "si están equipados con botellas de gas respiratorio con una capacidad mínima de 3,6 m³" },
+        { "key": "d", "text": "en función del avance de la formación, las condiciones concretas y con criterios de seguridad" }
+      ],
+      "correct": "d",
+      "explanation": "Los buddy teams de alumnos pueden formarse en función del avance de la formación, las condiciones y la seguridad."
+    },
+    {
+      "id": 42,
+      "category": "definice-pravidla",
+      "question": "Antes de entrar al agua, los miembros del buddy team realizan la comprobación de pareja (buddy check) centrada en la corrección y suficiencia de:",
+      "options": [
+        { "key": "a", "text": "la apertura de las grifería de las botellas, la presión en las botellas, la conexión de los latiguillos del chaleco compensador y del traje seco" },
+        { "key": "b", "text": "el funcionamiento de las 2.ª etapas principales y alternativas de los reguladores" },
+        { "key": "c", "text": "la colocación y fijación del lastre" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todas son correctas: el buddy check revisa griferías, presión, latiguillos, reguladores y lastre."
+    },
+    {
+      "id": 43,
+      "category": "definice-pravidla",
+      "question": "Marque la afirmación incorrecta:",
+      "options": [
+        { "key": "a", "text": "Durante la formación, el buddy team está formado por el instructor y uno o dos alumnos." },
+        { "key": "b", "text": "En función del avance de la formación, las condiciones y la seguridad, los buddy teams también pueden formarse con parejas (tríos) de alumnos compuestas por el instructor." },
+        { "key": "c", "text": "Antes de entrar al agua, los miembros del buddy team realizan la comprobación de pareja (buddy check)." },
+        { "key": "d", "text": "El buddy check antes de entrar al agua se centra en la corrección y suficiencia de la colocación de los trajes aislantes." }
+      ],
+      "correct": "d",
+      "explanation": "Es incorrecta la afirmación sobre los trajes aislantes: el buddy check revisa griferías, presión, reguladores y lastre."
+    },
+    {
+      "id": 44,
+      "category": "definice-pravidla",
+      "question": "A efectos de cumplir el número de inmersiones exigido para un grado, una inmersión con equipo autónomo en aguas abiertas se entiende como una permanencia bajo el agua de:",
+      "options": [
+        { "key": "a", "text": "al menos 15 minutos" },
+        { "key": "b", "text": "al menos 20 minutos" },
+        { "key": "c", "text": "20–30 minutos" },
+        { "key": "d", "text": "para Buceador Junior SPČR y Buceador CMAS P1, al menos 10 min; para Buceador CMAS P2, al menos 20 min; y para Buceador CMAS P3, al menos 30 min" }
+      ],
+      "correct": "a",
+      "explanation": "Una inmersión a efectos de cualificación supone una permanencia bajo el agua de al menos 15 minutos."
+    },
+    {
+      "id": 45,
+      "category": "definice-pravidla",
+      "question": "En un solo día, el número máximo de inmersiones que pueden contabilizarse para el cómputo exigido para un grado es de:",
+      "options": [
+        { "key": "a", "text": "una inmersión" },
+        { "key": "b", "text": "dos inmersiones" },
+        { "key": "c", "text": "tres inmersiones" },
+        { "key": "d", "text": "cuatro inmersiones" }
+      ],
+      "correct": "c",
+      "explanation": "En un día pueden contabilizarse como máximo tres inmersiones."
+    },
+    {
+      "id": 46,
+      "category": "potapec-zakladni",
+      "question": "El titular del grado Buceador acompañado está autorizado a:",
+      "options": [
+        { "key": "a", "text": "bucear en aguas abiertas hasta una profundidad máxima de 12 m, acompañado por una persona con cualificación de jefe de inmersión" },
+        { "key": "b", "text": "bucear en aguas abiertas hasta una profundidad máxima de 10 m, acompañado por una persona con al menos la cualificación de Buceador CMAS P2" },
+        { "key": "c", "text": "bucear en aguas abiertas hasta una profundidad máxima de 10 m con un titular de la misma cualificación (Buceador acompañado) o superior" },
+        { "key": "d", "text": "bucear únicamente en aguas confinadas" }
+      ],
+      "correct": "a",
+      "explanation": "El Buceador acompañado puede bucear hasta 12 m acompañado por una persona con cualificación de jefe de inmersión."
+    },
+    {
+      "id": 47,
+      "category": "potapec-zakladni",
+      "question": "La edad mínima para acceder a la formación de Buceador acompañado es:",
+      "options": [
+        { "key": "a", "text": "15 años" },
+        { "key": "b", "text": "14 años" },
+        { "key": "c", "text": "12 años" },
+        { "key": "d", "text": "10 años" }
+      ],
+      "correct": "c",
+      "explanation": "La edad mínima para la formación de Buceador acompañado es de 12 años."
+    },
+    {
+      "id": 48,
+      "category": "potapec-zakladni",
+      "question": "El aspirante al curso de Buceador acompañado debe nadar en superficie, sin equipo básico de buceo ni otras ayudas:",
+      "options": [
+        { "key": "a", "text": "50 m" },
+        { "key": "b", "text": "75 m" },
+        { "key": "c", "text": "100 m" },
+        { "key": "d", "text": "200 m" }
+      ],
+      "correct": "a",
+      "explanation": "El aspirante a Buceador acompañado debe nadar 50 m sin ayudas."
+    },
+    {
+      "id": 49,
+      "category": "potapec-zakladni",
+      "question": "Entre los requisitos de acceso a la formación de Buceador acompañado NO se incluye:",
+      "options": [
+        { "key": "a", "text": "edad mínima de 12 años" },
+        { "key": "b", "text": "nadar 50 m en superficie sin equipo básico ni otras ayudas" },
+        { "key": "c", "text": "aguantar al menos 30 segundos bajo el agua en apnea" },
+        { "key": "d", "text": "mantenerse 5 minutos en superficie (haciendo bicicleta y/o flotando)" }
+      ],
+      "correct": "c",
+      "explanation": "Aguantar 30 segundos bajo el agua en apnea no figura entre los requisitos de acceso."
+    },
+    {
+      "id": 50,
+      "category": "potapec-zakladni",
+      "question": "Para conceder la cualificación Buceador acompañado se exige completar:",
+      "options": [
+        { "key": "a", "text": "al menos 2 inmersiones con instructor o 4 inmersiones acompañado por una persona con cualificación de jefe de inmersión, en aguas abiertas a poca profundidad" },
+        { "key": "b", "text": "al menos 2 inmersiones con instructor en aguas abiertas a poca profundidad" },
+        { "key": "c", "text": "al menos 4 inmersiones con instructor en aguas abiertas a poca profundidad" },
+        { "key": "d", "text": "al menos 5 inmersiones en aguas confinadas" }
+      ],
+      "correct": "b",
+      "explanation": "Para Buceador acompañado se exigen al menos 2 inmersiones con instructor en aguas abiertas a poca profundidad."
+    },
+    {
+      "id": 51,
+      "category": "potapec-zakladni",
+      "question": "El titular de Buceador Junior SPČR está autorizado a:",
+      "options": [
+        { "key": "a", "text": "bucear en aguas abiertas con titulares de Buceador CMAS P1 y/o P2 hasta una profundidad máxima de 20 m" },
+        { "key": "b", "text": "tras realizar un total de 10 inmersiones en aguas abiertas y cumplir 14 años, solicitar el curso de adaptación y la evaluación para el grado Buceador CMAS P1" },
+        { "key": "c", "text": "participar en inmersiones con titulares de la misma cualificación" },
+        { "key": "d", "text": "participar en cursos de especialidad seleccionados" }
+      ],
+      "correct": "b",
+      "explanation": "El Buceador Junior, tras 10 inmersiones y al cumplir 14 años, puede solicitar la adaptación al grado Buceador CMAS P1."
+    },
+    {
+      "id": 52,
+      "category": "potapec-zakladni",
+      "question": "La edad mínima para acceder a la formación de Buceador Junior SPČR es:",
+      "options": [
+        { "key": "a", "text": "15 años" },
+        { "key": "b", "text": "14 años" },
+        { "key": "c", "text": "13 años" },
+        { "key": "d", "text": "12 años" }
+      ],
+      "correct": "d",
+      "explanation": "La edad mínima para la formación de Buceador Junior SPČR es de 12 años."
+    },
+    {
+      "id": 53,
+      "category": "potapec-zakladni",
+      "question": "El aspirante al curso de Buceador Junior SPČR debe nadar en superficie, sin equipo básico de buceo ni otras ayudas:",
+      "options": [
+        { "key": "a", "text": "300 m" },
+        { "key": "b", "text": "200 m" },
+        { "key": "c", "text": "100 m" },
+        { "key": "d", "text": "50 m" }
+      ],
+      "correct": "b",
+      "explanation": "El aspirante a Buceador Junior SPČR debe nadar 200 m sin ayudas."
+    },
+    {
+      "id": 54,
+      "category": "potapec-zakladni",
+      "question": "Para conceder la cualificación de Buceador Junior SPČR se exige completar:",
+      "options": [
+        { "key": "a", "text": "al menos 2 inmersiones con instructor en aguas abiertas a poca profundidad" },
+        { "key": "b", "text": "al menos 3 inmersiones con instructor en aguas abiertas a poca profundidad" },
+        { "key": "c", "text": "al menos 5 inmersiones con instructor en aguas abiertas a poca profundidad" },
+        { "key": "d", "text": "al menos 10 inmersiones en aguas confinadas" }
+      ],
+      "correct": "c",
+      "explanation": "Para Buceador Junior SPČR se exigen al menos 5 inmersiones con instructor en aguas abiertas a poca profundidad."
+    },
+    {
+      "id": 55,
+      "category": "potapec-zakladni",
+      "question": "La formación para Buceador Junior SPČR la dirige, evalúa y la cualificación la concede:",
+      "options": [
+        { "key": "a", "text": "un instructor con al menos la cualificación de Instructor CMAS I2" },
+        { "key": "b", "text": "un instructor con al menos la cualificación de Instructor CMAS I1" },
+        { "key": "c", "text": "un instructor con al menos la cualificación de Instructor CMAS I1, o un titular de Buceador CMAS P3 autorizado por dicho instructor" },
+        { "key": "d", "text": "ninguna respuesta es correcta" }
+      ],
+      "correct": "a",
+      "explanation": "La formación de Buceador Junior SPČR la dirige y la cualificación la concede un instructor con al menos CMAS I2."
+    },
+    {
+      "id": 56,
+      "category": "potapec-cmas",
+      "question": "El titular del grado Buceador CMAS P1 está autorizado a:",
+      "options": [
+        { "key": "a", "text": "bucear en aguas abiertas con un titular de Buceador Junior SPČR a poca profundidad como representante legal o persona designada por este" },
+        { "key": "b", "text": "bucear en aguas abiertas con titulares de Buceador CMAS P1 y/o P2 hasta una profundidad máxima de 20 m" },
+        { "key": "c", "text": "tras realizar 40 inmersiones en aguas abiertas, solicitar el grado Buceador CMAS P2" },
+        { "key": "d", "text": "tras cumplir 18 años, supervisar a participantes en formación según las indicaciones del instructor" }
+      ],
+      "correct": "b",
+      "explanation": "El Buceador CMAS P1 puede bucear con titulares de P1 y/o P2 hasta 20 m de profundidad."
+    },
+    {
+      "id": 57,
+      "category": "potapec-cmas",
+      "question": "Los requisitos de acceso a la formación de Buceador CMAS P1 son:",
+      "options": [
+        { "key": "a", "text": "edad mínima de 14 años" },
+        { "key": "b", "text": "nadar 200 m en superficie sin equipo básico ni otras ayudas" },
+        { "key": "c", "text": "mantenerse 5 minutos en superficie (haciendo bicicleta y/o flotando)" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todas son correctas: edad de 14 años, 200 m de natación y 5 minutos en superficie."
+    },
+    {
+      "id": 58,
+      "category": "potapec-cmas",
+      "question": "La edad mínima para acceder a la formación de Buceador CMAS P1 es:",
+      "options": [
+        { "key": "a", "text": "14 años" },
+        { "key": "b", "text": "15 años" },
+        { "key": "c", "text": "16 años" },
+        { "key": "d", "text": "18 años" }
+      ],
+      "correct": "a",
+      "explanation": "La edad mínima para la formación de Buceador CMAS P1 es de 14 años."
+    },
+    {
+      "id": 59,
+      "category": "potapec-cmas",
+      "question": "La formación para Buceador CMAS P1 la dirige, evalúa y la cualificación la concede:",
+      "options": [
+        { "key": "a", "text": "un instructor con al menos CMAS I2 autorizado o designado por la federación miembro de la SPČR" },
+        { "key": "b", "text": "un instructor con al menos CMAS I1 bajo la supervisión de un instructor con al menos CMAS I2" },
+        { "key": "c", "text": "un instructor con al menos CMAS I2" },
+        { "key": "d", "text": "un instructor con al menos CMAS I1" }
+      ],
+      "correct": "c",
+      "explanation": "La formación de Buceador CMAS P1 la dirige y la cualificación la concede un instructor con al menos CMAS I2."
+    },
+    {
+      "id": 60,
+      "category": "potapec-cmas",
+      "question": "Para conceder la cualificación de Buceador CMAS P1 se exige completar:",
+      "options": [
+        { "key": "a", "text": "al menos 5 inmersiones con instructor en aguas abiertas a poca profundidad" },
+        { "key": "b", "text": "al menos 5 inmersiones con instructor en aguas abiertas, de las cuales 3 a poca profundidad y al menos 2 a 15–20 m" },
+        { "key": "c", "text": "al menos 5 inmersiones en aguas abiertas a poca profundidad, de las cuales las 3 primeras con instructor; las dos restantes pueden hacerse acompañado por una persona con cualificación de jefe de inmersión" },
+        { "key": "d", "text": "al menos 5 inmersiones en aguas abiertas; las 3 primeras a poca profundidad pueden hacerse acompañado por una persona con cualificación de jefe de inmersión, y las 2 restantes a 15–20 m deben realizarse con instructor" }
+      ],
+      "correct": "b",
+      "explanation": "Para P1 se exigen 5 inmersiones con instructor: 3 a poca profundidad y 2 a 15–20 m."
+    },
+    {
+      "id": 61,
+      "category": "potapec-cmas",
+      "question": "El titular del grado Buceador CMAS P2 está autorizado a:",
+      "options": [
+        { "key": "a", "text": "acompañar al titular de Buceador acompañado en aguas abiertas hasta una profundidad máxima de 12 m" },
+        { "key": "b", "text": "ayudar a supervisar a los participantes en formación" },
+        { "key": "c", "text": "bucear en aguas abiertas con titulares de Buceador CMAS P1 hasta una profundidad máxima de 20 m" },
+        { "key": "d", "text": "ejercer la función de jefe de inmersión" }
+      ],
+      "correct": "c",
+      "explanation": "El Buceador CMAS P2 puede bucear con titulares de P1 hasta una profundidad máxima de 20 m."
+    },
+    {
+      "id": 62,
+      "category": "potapec-cmas",
+      "question": "La edad mínima para acceder a la formación de Buceador CMAS P2 es:",
+      "options": [
+        { "key": "a", "text": "18 años" },
+        { "key": "b", "text": "15 años" },
+        { "key": "c", "text": "14 años" },
+        { "key": "d", "text": "12 años" }
+      ],
+      "correct": "b",
+      "explanation": "La edad mínima para la formación de Buceador CMAS P2 es de 15 años."
+    },
+    {
+      "id": 63,
+      "category": "potapec-cmas",
+      "question": "El aspirante a la formación de Buceador CMAS P2 debe ser titular del grado:",
+      "options": [
+        { "key": "a", "text": "Buceador acompañado" },
+        { "key": "b", "text": "Buceador Junior SPČR" },
+        { "key": "c", "text": "Buceador CMAS P1 o de una cualificación equivalente de otro sistema designada por la SPČR" },
+        { "key": "d", "text": "Buceador acompañado con una experiencia de 15 inmersiones en aguas abiertas, o Buceador Junior SPČR con 10 inmersiones en aguas abiertas" }
+      ],
+      "correct": "c",
+      "explanation": "Para acceder al curso de P2 hay que ser titular de Buceador CMAS P1 o equivalente."
+    },
+    {
+      "id": 64,
+      "category": "potapec-cmas",
+      "question": "Antes de obtener la cualificación CMAS P2, el aspirante debe realizar:",
+      "options": [
+        { "key": "a", "text": "al menos 40 inmersiones en aguas abiertas en distintas condiciones" },
+        { "key": "b", "text": "al menos 20 inmersiones en aguas abiertas en distintas condiciones, de las cuales al menos 10 a profundidades medias" },
+        { "key": "c", "text": "al menos 20 inmersiones a profundidades medias" },
+        { "key": "d", "text": "al menos 10 inmersiones a grandes profundidades" }
+      ],
+      "correct": "b",
+      "explanation": "Para P2 se exigen 20 inmersiones en aguas abiertas, de las cuales al menos 10 a profundidades medias."
+    },
+    {
+      "id": 65,
+      "category": "potapec-cmas",
+      "question": "La formación para Buceador CMAS P2 la dirige, evalúa y la cualificación la concede:",
+      "options": [
+        { "key": "a", "text": "un instructor con cualificación CMAS I3" },
+        { "key": "b", "text": "un instructor con al menos la cualificación CMAS I2" },
+        { "key": "c", "text": "un instructor con al menos la cualificación CMAS I2 bajo la supervisión de un instructor con cualificación CMAS I3" },
+        { "key": "d", "text": "un instructor con al menos la cualificación CMAS I1 autorizado o designado por la federación miembro de la SPČR" }
+      ],
+      "correct": "b",
+      "explanation": "La formación de P2 la dirige y la cualificación la concede un instructor con al menos CMAS I2."
+    },
+    {
+      "id": 66,
+      "category": "potapec-cmas",
+      "question": "El titular del grado Buceador CMAS P3 está autorizado a:",
+      "options": [
+        { "key": "a", "text": "acompañar al titular de Buceador acompañado en aguas abiertas a profundidades superiores a 20 m" },
+        { "key": "b", "text": "evaluar conocimientos y/o destrezas de los alumnos en la formación de Buceador acompañado y Buceador Junior SPČR" },
+        { "key": "c", "text": "supervisar a los participantes en formación según las indicaciones del instructor" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "c",
+      "explanation": "El Buceador CMAS P3 puede supervisar a los participantes en formación según las indicaciones del instructor."
+    },
+    {
+      "id": 67,
+      "category": "potapec-cmas",
+      "question": "La edad mínima para acceder a la formación de Buceador CMAS P3 es:",
+      "options": [
+        { "key": "a", "text": "14 años" },
+        { "key": "b", "text": "15 años" },
+        { "key": "c", "text": "18 años" },
+        { "key": "d", "text": "21 años" }
+      ],
+      "correct": "c",
+      "explanation": "La edad mínima para la formación de Buceador CMAS P3 es de 18 años."
+    },
+    {
+      "id": 68,
+      "category": "potapec-cmas",
+      "question": "El aspirante a la formación de Buceador CMAS P3 debe:",
+      "options": [
+        { "key": "a", "text": "acreditar experiencia en buceo nocturno, con visibilidad reducida, a grandes profundidades y con navegación subacuática" },
+        { "key": "b", "text": "ser titular como mínimo de Buceador CMAS P1 o de una cualificación de otro sistema designada por la SPČR" },
+        { "key": "c", "text": "ser titular como mínimo de Buceador CMAS P2; si acredita una experiencia de al menos 60 inmersiones en aguas abiertas, basta como cualificación de acceso Buceador CMAS P1" },
+        { "key": "d", "text": "ser titular de una licencia válida para gobernar embarcaciones pequeñas en el mar" }
+      ],
+      "correct": "a",
+      "explanation": "El aspirante a P3 debe acreditar experiencia en buceo nocturno, con visibilidad reducida, a grandes profundidades y con navegación."
+    },
+    {
+      "id": 69,
+      "category": "potapec-cmas",
+      "question": "Antes de obtener la cualificación CMAS P3, el aspirante debe realizar:",
+      "options": [
+        { "key": "a", "text": "al menos 60 inmersiones en aguas abiertas, de las cuales al menos 30 en condiciones más exigentes" },
+        { "key": "b", "text": "al menos 50 inmersiones en aguas abiertas en distintas condiciones, de las cuales al menos 20 a grandes profundidades" },
+        { "key": "c", "text": "al menos 50 inmersiones a profundidades medias y al menos 20 a grandes profundidades" },
+        { "key": "d", "text": "al menos 50 inmersiones a grandes profundidades" }
+      ],
+      "correct": "a",
+      "explanation": "Para P3 se exigen 60 inmersiones en aguas abiertas, de las cuales al menos 30 en condiciones más exigentes."
+    },
+    {
+      "id": 70,
+      "category": "potapec-cmas",
+      "question": "A efectos de la experiencia exigida para CMAS P3, se consideran inmersiones en condiciones más exigentes:",
+      "options": [
+        { "key": "a", "text": "inmersiones con visibilidad inferior a 2 m" },
+        { "key": "b", "text": "inmersiones con temperatura del agua inferior a 10 °C" },
+        { "key": "c", "text": "inmersiones a profundidades superiores a 30 m" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todas las situaciones son más exigentes: visibilidad reducida, agua fría y grandes profundidades."
+    },
+    {
+      "id": 71,
+      "category": "instruktor",
+      "question": "Puede llegar a ser instructor de buceo un miembro de una federación SPČR:",
+      "options": [
+        { "key": "a", "text": "que sea titular del grado Buceador CMAS P3 o de una cualificación equivalente de otro sistema designada por la SPČR, y que tenga conocimientos suficientes y aptitudes pedagógicas para ejercer como instructor" },
+        { "key": "b", "text": "por recomendación del club de buceo correspondiente" },
+        { "key": "c", "text": "por recomendación de la federación de buceo correspondiente" },
+        { "key": "d", "text": "ninguna respuesta es correcta" }
+      ],
+      "correct": "a",
+      "explanation": "Puede ser instructor un titular de P3 con conocimientos suficientes y aptitudes pedagógicas."
+    },
+    {
+      "id": 72,
+      "category": "instruktor",
+      "question": "Puede llegar a ser instructor de buceo un miembro de una federación SPČR:",
+      "options": [
+        { "key": "a", "text": "que tenga conocimientos suficientes para ejercer como instructor" },
+        { "key": "b", "text": "que tenga aptitudes pedagógicas suficientes para ejercer como instructor" },
+        { "key": "c", "text": "que sea titular del grado Buceador CMAS P3 o de una cualificación equivalente de otro sistema designada por la SPČR" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todas son correctas: hacen falta conocimientos, aptitudes pedagógicas y la cualificación P3."
+    },
+    {
+      "id": 73,
+      "category": "instruktor",
+      "question": "La formación para los grados de instructor CMAS la organiza:",
+      "options": [
+        { "key": "a", "text": "la SPČR" },
+        { "key": "b", "text": "la federación miembro correspondiente de la SPČR" },
+        { "key": "c", "text": "un club de buceo de SČP o SPMS" },
+        { "key": "d", "text": "un titular de la cualificación Instructor CMAS I3" }
+      ],
+      "correct": "a",
+      "explanation": "La formación para los grados de instructor CMAS la organiza la SPČR."
+    },
+    {
+      "id": 74,
+      "category": "instruktor",
+      "question": "Las pruebas de los grados de instructor incluyen la verificación de:",
+      "options": [
+        { "key": "a", "text": "el nivel de estudios alcanzado por el aspirante" },
+        { "key": "b", "text": "los conocimientos y destrezas de buceo del aspirante" },
+        { "key": "c", "text": "la antigüedad del aspirante en la federación miembro correspondiente de la SPČR" },
+        { "key": "d", "text": "ninguna respuesta es correcta" }
+      ],
+      "correct": "b",
+      "explanation": "Las pruebas incluyen la verificación de los conocimientos y destrezas de buceo del aspirante."
+    },
+    {
+      "id": 75,
+      "category": "instruktor",
+      "question": "La validez de un grado de instructor está condicionada al cumplimiento de:",
+      "options": [
+        { "key": "a", "text": "todas las obligaciones derivadas de las Normas de Formación de la SPČR" },
+        { "key": "b", "text": "todas las obligaciones derivadas de las Normas de Seguridad de la SPČR" },
+        { "key": "c", "text": "las obligaciones de membresía con la federación miembro correspondiente de la SPČR" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "La validez del grado de instructor depende del cumplimiento de todas estas obligaciones."
+    },
+    {
+      "id": 76,
+      "category": "instruktor",
+      "question": "El periodo de validez de un grado de instructor es de:",
+      "options": [
+        { "key": "a", "text": "1 año" },
+        { "key": "b", "text": "3 años" },
+        { "key": "c", "text": "5 años" },
+        { "key": "d", "text": "6 años" }
+      ],
+      "correct": "c",
+      "explanation": "El periodo de validez de un grado de instructor es de 5 años."
+    },
+    {
+      "id": 77,
+      "category": "instruktor",
+      "question": "Están autorizados a renovar la validez de los grados de instructor:",
+      "options": [
+        { "key": "a", "text": "todos los titulares de Instructor CMAS I3" },
+        { "key": "b", "text": "los titulares de Instructor CMAS I3 autorizados para ello por la Comisión de Formación de la SPČR (VK) y/o el tribunal examinador formado por titulares de Instructor CMAS I3 en los seminarios de instructores SPČR" },
+        { "key": "c", "text": "todos los Instructores CMAS I3 y los Instructores CMAS I2 autorizados para ello por la VK SPČR" },
+        { "key": "d", "text": "las juntas directivas de las federaciones miembros de la SPČR" }
+      ],
+      "correct": "b",
+      "explanation": "La autorización corresponde a los titulares de I3 designados y/o al tribunal examinador formado por titulares de I3."
+    },
+    {
+      "id": 78,
+      "category": "instruktor",
+      "question": "Entre las condiciones para renovar la validez de un grado de instructor por otros 5 años figura formar:",
+      "options": [
+        { "key": "a", "text": "al menos 20 buceadores con concesión de la cualificación (o, en su caso, otra actividad para la SPČR en el ámbito de la formación)" },
+        { "key": "b", "text": "al menos 15 buceadores" },
+        { "key": "c", "text": "al menos 10 buceadores con concesión de la cualificación (o, en su caso, otra actividad para la SPČR en el ámbito de la formación)" },
+        { "key": "d", "text": "al menos 5 buceadores; al mismo tiempo, en el periodo evaluado no debe haber más de 2 años seguidos sin formar al menos un buceador" }
+      ],
+      "correct": "c",
+      "explanation": "La renovación exige formar al menos 10 buceadores con concesión de la cualificación."
+    },
+    {
+      "id": 79,
+      "category": "instruktor",
+      "question": "Si el aspirante a renovar la validez del grado no realiza otra actividad para la SPČR en el ámbito de la formación, debe formar en el periodo evaluado al menos:",
+      "options": [
+        { "key": "a", "text": "5 buceadores" },
+        { "key": "b", "text": "10 buceadores" },
+        { "key": "c", "text": "15 buceadores" },
+        { "key": "d", "text": "20 buceadores" }
+      ],
+      "correct": "b",
+      "explanation": "Sin otra actividad para la SPČR, el instructor debe formar al menos 10 buceadores."
+    },
+    {
+      "id": 80,
+      "category": "instruktor",
+      "question": "Si en el periodo evaluado el instructor ha formado a menos de 10 buceadores (y no ha realizado otra actividad para la SPČR en el ámbito de la formación):",
+      "options": [
+        { "key": "a", "text": "no se puede sustituir el incumplimiento de esta condición de ningún modo, por lo que termina la validez de su cualificación" },
+        { "key": "b", "text": "el incumplimiento puede sustituirse asistiendo a una formación de la SPČR sobre metodología de la formación" },
+        { "key": "c", "text": "el incumplimiento puede sustituirse asistiendo a más de dos seminarios de instructores SPČR durante el periodo" },
+        { "key": "d", "text": "el incumplimiento puede sustituirse aprobando un examen de la SPČR sobre teoría del buceo del nivel correspondiente al grado" }
+      ],
+      "correct": "d",
+      "explanation": "El incumplimiento puede sustituirse aprobando un examen de la SPČR sobre teoría del buceo."
+    },
+    {
+      "id": 81,
+      "category": "instruktor",
+      "question": "Entre las condiciones para renovar la validez de un grado de instructor por otros 5 años NO figura:",
+      "options": [
+        { "key": "a", "text": "asistir al menos a 2 seminarios de instructores SPČR" },
+        { "key": "b", "text": "completar una práctica sobre la administración de oxígeno como primeros auxilios" },
+        { "key": "c", "text": "sumergirse con equipo básico y subir un objeto desde 10 m" },
+        { "key": "d", "text": "subir a un compañero desde 20–30 m con la ayuda del chaleco compensador y remolcarlo en superficie 50 m" }
+      ],
+      "correct": "c",
+      "explanation": "Sumergirse con equipo básico y subir un objeto desde 10 m no figura entre las condiciones de renovación."
+    },
+    {
+      "id": 82,
+      "category": "instruktor",
+      "question": "A un aspirante que en el periodo evaluado, dentro del sistema CMAS/SPČR, haya formado a más de 40 buceadores con concesión de la cualificación y contra el que no se hayan presentado quejas justificadas y sustanciales, le basta para renovar el grado de instructor:",
+      "options": [
+        { "key": "a", "text": "asistir a un seminario de instructores SPČR siempre que asistiera a todas las presentaciones" },
+        { "key": "b", "text": "asistir a un seminario de instructores SPČR siempre que asistiera a la práctica de reanimación, a la práctica de administración de oxígeno como primeros auxilios y demostrara subir a un compañero desde 20–30 m y remolcarlo en superficie 50 m" },
+        { "key": "c", "text": "una solicitud por escrito a la Comisión de Formación de la SPČR" },
+        { "key": "d", "text": "ninguna respuesta es correcta" }
+      ],
+      "correct": "b",
+      "explanation": "Al instructor con más de 40 buceadores formados le basta asistir a un seminario con todas las prácticas."
+    },
+    {
+      "id": 83,
+      "category": "instruktor",
+      "question": "Si el instructor no cumple las condiciones para renovar la validez del grado:",
+      "options": [
+        { "key": "a", "text": "se le suspenderá la validez de la autorización; al mismo tiempo se le dará la oportunidad de cumplir esas condiciones en el plazo más cercano" },
+        { "key": "b", "text": "se le suspenderá la validez de la autorización por 2 años" },
+        { "key": "c", "text": "su cualificación de instructor se rebajará al grado inferior más próximo y, en el caso de Instructor CMAS I1, a la cualificación Buceador CMAS P3" },
+        { "key": "d", "text": "se terminará la validez de su cualificación de instructor" }
+      ],
+      "correct": "a",
+      "explanation": "Si no se cumplen las condiciones, se suspenderá la validez con la posibilidad de cumplirlas en el plazo más cercano."
+    },
+    {
+      "id": 84,
+      "category": "instruktor",
+      "question": "Marque la afirmación incorrecta:",
+      "options": [
+        { "key": "a", "text": "Si el instructor no cumple las condiciones para renovar la validez del grado, se terminará la validez de su cualificación." },
+        { "key": "b", "text": "Si se presentan quejas sobre la actividad del instructor, la VK SPČR le invita a tratarlas y, si acude, le da la oportunidad de manifestarse." },
+        { "key": "c", "text": "La VK SPČR tiene derecho a controlar el contenido y la calidad de la formación preguntando a los participantes y mediante inspecciones directas." },
+        { "key": "d", "text": "En caso de queja justificada sobre el instructor, la VK SPČR puede, según su gravedad, suspender la validez de la cualificación de instructor." }
+      ],
+      "correct": "a",
+      "explanation": "Es incorrecta la afirmación sobre la terminación: si no se cumplen las condiciones, la validez se suspende, no se termina."
+    },
+    {
+      "id": 85,
+      "category": "instruktor",
+      "question": "En caso de queja justificada sobre la actividad del instructor, la VK SPČR puede, según su gravedad:",
+      "options": [
+        { "key": "a", "text": "exigir que se subsanen las deficiencias detectadas en un plazo determinado" },
+        { "key": "b", "text": "suspender la validez de la cualificación de instructor" },
+        { "key": "c", "text": "proponer a la federación miembro de la SPČR que se termine la validez de la cualificación de instructor" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "La VK SPČR puede tomar todas estas medidas: exigir corrección, suspender o proponer la terminación."
+    },
+    {
+      "id": 86,
+      "category": "instruktor",
+      "question": "El Instructor CMAS I1 está autorizado a:",
+      "options": [
+        { "key": "a", "text": "impartir formación para el grado Buceador Junior SPČR" },
+        { "key": "b", "text": "impartir teoría y evaluar conocimientos de los alumnos para el grado Buceador acompañado" },
+        { "key": "c", "text": "dirigir cursos de especialidad seleccionados" },
+        { "key": "d", "text": "ayudar en la formación de grados de instructor" }
+      ],
+      "correct": "b",
+      "explanation": "El Instructor CMAS I1 está autorizado a impartir teoría y evaluar conocimientos para Buceador acompañado."
+    },
+    {
+      "id": 87,
+      "category": "instruktor",
+      "question": "Por encargo y bajo la supervisión de un instructor con al menos la cualificación Instructor CMAS I2, el Instructor CMAS I1 está autorizado a adquirir experiencia:",
+      "options": [
+        { "key": "a", "text": "dirigiendo cursos de especialidad seleccionados" },
+        { "key": "b", "text": "impartiendo teoría y evaluando conocimientos de alumnos para los grados Buceador Junior SPČR, Buceador CMAS P1, Buceador CMAS P2 y Buceador CMAS P3" },
+        { "key": "c", "text": "formando alumnos para los grados Buceador Junior SPČR, Buceador CMAS P1, Buceador CMAS P2 y Buceador CMAS P3 en aguas abiertas" },
+        { "key": "d", "text": "en la formación para Instructor CMAS I1" }
+      ],
+      "correct": "b",
+      "explanation": "Bajo supervisión de un I2, el I1 puede adquirir experiencia impartiendo teoría y evaluando conocimientos para todos los grados de buceador."
+    },
+    {
+      "id": 88,
+      "category": "instruktor",
+      "question": "El aspirante al grado Instructor CMAS I1 debe:",
+      "options": [
+        { "key": "a", "text": "tener al menos 18 años" },
+        { "key": "b", "text": "ser titular de Buceador CMAS P3, o de una cualificación de jefe de inmersión IANTD, PADI, SSI, ITD, NAUI o SDI/TDI, o de una cualificación de buceo de otro sistema designada por la SPČR" },
+        { "key": "c", "text": "acreditar haber realizado en los últimos tres años una formación SPČR sobre metodología de la formación" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todas son correctas: edad de 18 años, cualificación P3 o equivalente y formación sobre metodología."
+    },
+    {
+      "id": 89,
+      "category": "instruktor",
+      "question": "El aspirante al grado Instructor CMAS I1 debe acreditar:",
+      "options": [
+        { "key": "a", "text": "que en los últimos 3 años ha realizado una formación SPČR sobre metodología de la formación" },
+        { "key": "b", "text": "que en los últimos 2 años ha realizado al menos 80 inmersiones" },
+        { "key": "c", "text": "que en los últimos 5 años ha asistido al menos a 2 seminarios de instructores SPČR" },
+        { "key": "d", "text": "que en los últimos 5 años ha demostrado subir a un compañero desde 20–30 m con la ayuda del chaleco compensador y remolcarlo en superficie 50 m" }
+      ],
+      "correct": "a",
+      "explanation": "El aspirante a I1 debe acreditar haber realizado una formación sobre metodología de la formación en los últimos 3 años."
+    },
+    {
+      "id": 90,
+      "category": "instruktor",
+      "question": "El grado Instructor CMAS I1 lo concede:",
+      "options": [
+        { "key": "a", "text": "la junta directiva de la federación miembro correspondiente de la SPČR" },
+        { "key": "b", "text": "un instructor con al menos la cualificación CMAS I2 autorizado por la junta directiva de la federación miembro correspondiente de la SPČR" },
+        { "key": "c", "text": "un tribunal examinador formado por titulares de Instructor CMAS I3 e Instructor CMAS I2, designado por la VK SPČR" },
+        { "key": "d", "text": "un tribunal examinador formado por titulares de Instructor CMAS I3, designado por la junta directiva de la federación miembro correspondiente de la SPČR" }
+      ],
+      "correct": "c",
+      "explanation": "La cualificación I1 la concede un tribunal formado por titulares de I3 e I2, designado por la VK SPČR."
+    },
+    {
+      "id": 91,
+      "category": "instruktor",
+      "question": "El Instructor CMAS I2 está autorizado a:",
+      "options": [
+        { "key": "a", "text": "impartir formación para todos los grados de buceador CMAS" },
+        { "key": "b", "text": "impartir formación para los grados de instructor CMAS" },
+        { "key": "c", "text": "dirigir un centro de formación" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "a",
+      "explanation": "El Instructor CMAS I2 está autorizado a impartir formación para todos los grados de buceador CMAS."
+    },
+    {
+      "id": 92,
+      "category": "instruktor",
+      "question": "El Instructor CMAS I2 NO está autorizado a:",
+      "options": [
+        { "key": "a", "text": "impartir formación para los grados Buceador acompañado y Buceador Junior SPČR" },
+        { "key": "b", "text": "impartir formación para todos los grados de buceador CMAS" },
+        { "key": "c", "text": "impartir formación para los grados de instructor CMAS" },
+        { "key": "d", "text": "dirigir cursos de especialidad seleccionados" }
+      ],
+      "correct": "c",
+      "explanation": "El Instructor CMAS I2 no está autorizado a impartir formación para los grados de instructor."
+    },
+    {
+      "id": 93,
+      "category": "instruktor",
+      "question": "El aspirante al grado Instructor CMAS I2 debe:",
+      "options": [
+        { "key": "a", "text": "tener al menos 21 años" },
+        { "key": "b", "text": "acreditar haber asistido en los últimos 5 años a al menos 2 seminarios de instructores SPČR" },
+        { "key": "c", "text": "ser titular de Instructor CMAS I1 o de Buceador CMAS P3, o de una cualificación de jefe de inmersión IANTD, PADI, SSI, ITD, NAUI o SDI/TDI, o de una cualificación de buceo de otro sistema designada por la SPČR" },
+        { "key": "d", "text": "ser titular como mínimo de CMAS P2 o de una cualificación de otro sistema designada por la SPČR" }
+      ],
+      "correct": "c",
+      "explanation": "El aspirante a I2 debe ser titular de I1 o de P3, o de una cualificación equivalente."
+    },
+    {
+      "id": 94,
+      "category": "instruktor",
+      "question": "El aspirante al grado Instructor CMAS I2 debe acreditar:",
+      "options": [
+        { "key": "a", "text": "que en los últimos 5 años ha asistido al menos a 2 seminarios de instructores SPČR" },
+        { "key": "b", "text": "que en los últimos 3 años ha realizado una formación SPČR sobre metodología de la formación (este requisito no se aplica al aspirante con la cualificación Instructor CMAS I1)" },
+        { "key": "c", "text": "que desde la obtención del grado Instructor CMAS I1 ha formado al menos a 10 buceadores para Buceador acompañado y/o Buceador Junior SPČR con concesión de la cualificación" },
+        { "key": "d", "text": "que desde la obtención del grado Instructor CMAS I1 ha formado al menos a 5 buceadores para Buceador CMAS P1 con concesión de la cualificación" }
+      ],
+      "correct": "b",
+      "explanation": "El aspirante a I2 debe acreditar la formación sobre metodología (salvo si ya tiene I1)."
+    },
+    {
+      "id": 95,
+      "category": "instruktor",
+      "question": "El grado Instructor CMAS I2 lo concede:",
+      "options": [
+        { "key": "a", "text": "la junta directiva de la federación miembro correspondiente de la SPČR" },
+        { "key": "b", "text": "un instructor con al menos la cualificación CMAS I3 autorizado por la junta directiva de la federación miembro correspondiente de la SPČR" },
+        { "key": "c", "text": "un tribunal examinador formado por titulares de Instructor CMAS I3 e Instructor CMAS I2, designado por la VK SPČR" },
+        { "key": "d", "text": "un tribunal examinador formado por titulares de Instructor CMAS I3, designado por la VK SPČR" }
+      ],
+      "correct": "d",
+      "explanation": "La cualificación I2 la concede un tribunal formado por titulares de I3, designado por la VK SPČR."
+    },
+    {
+      "id": 96,
+      "category": "instruktor",
+      "question": "El aspirante al grado Instructor CMAS I3 debe tener al menos:",
+      "options": [
+        { "key": "a", "text": "24 años" },
+        { "key": "b", "text": "21 años" },
+        { "key": "c", "text": "19 años" },
+        { "key": "d", "text": "18 años" }
+      ],
+      "correct": "a",
+      "explanation": "La edad mínima para el aspirante a I3 es de 24 años."
+    },
+    {
+      "id": 97,
+      "category": "instruktor",
+      "question": "El Instructor CMAS I3 NO está autorizado a:",
+      "options": [
+        { "key": "a", "text": "impartir formación para los grados de buceador CMAS" },
+        { "key": "b", "text": "impartir formación para los grados de instructor CMAS" },
+        { "key": "c", "text": "conceder los grados de instructor CMAS" },
+        { "key": "d", "text": "dirigir cursos de especialidad seleccionados" }
+      ],
+      "correct": "c",
+      "explanation": "El Instructor I3 no está autorizado a conceder los grados de instructor (eso lo hace el tribunal examinador)."
+    },
+    {
+      "id": 98,
+      "category": "instruktor",
+      "question": "El aspirante al grado Instructor CMAS I3 debe:",
+      "options": [
+        { "key": "a", "text": "tener al menos 21 años" },
+        { "key": "b", "text": "acreditar que durante su actividad formativa dentro de CMAS/SPČR ha formado al menos a 60 buceadores con concesión de la cualificación; en ese número deben figurar los grados Buceador CMAS P1, Buceador CMAS P2 y Buceador CMAS P3" },
+        { "key": "c", "text": "acreditar que durante su actividad formativa dentro de CMAS/SPČR ha formado al menos a 80 buceadores con concesión de la cualificación; en ese número pueden incluirse hasta 40 alumnos de cursos de especialidad" },
+        { "key": "d", "text": "ser titular como mínimo del grado Instructor CMAS I1" }
+      ],
+      "correct": "b",
+      "explanation": "El aspirante a I3 debe formar al menos a 60 buceadores incluidos los grados P1, P2 y P3."
+    },
+    {
+      "id": 99,
+      "category": "instruktor",
+      "question": "El aspirante al grado Instructor CMAS I3 debe:",
+      "options": [
+        { "key": "a", "text": "tener al menos 24 años" },
+        { "key": "b", "text": "ser titular del grado Instructor CMAS I2" },
+        { "key": "c", "text": "presentar un trabajo escrito (o preparado de otra forma) sobre un tema asignado de antemano" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todas son correctas: edad de 24 años, cualificación I2 y trabajo escrito."
+    },
+    {
+      "id": 100,
+      "category": "instruktor",
+      "question": "El grado Instructor CMAS I3 lo concede:",
+      "options": [
+        { "key": "a", "text": "la junta directiva de la federación miembro correspondiente de la SPČR" },
+        { "key": "b", "text": "un instructor con al menos la cualificación CMAS I3 autorizado por la junta directiva de la federación miembro correspondiente de la SPČR" },
+        { "key": "c", "text": "un tribunal examinador formado por titulares de Instructor CMAS I3, designado por la VK SPČR" },
+        { "key": "d", "text": "un tribunal examinador formado por titulares de Instructor CMAS I3 e Instructor CMAS I2, designado por la VK SPČR" }
+      ],
+      "correct": "c",
+      "explanation": "La cualificación I3 la concede un tribunal formado por titulares de I3, designado por la VK SPČR."
+    }
+  ]
+}

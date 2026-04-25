@@ -1667,6 +1667,25 @@
             "next": "Další otázka →",
             "restart": "Začít znovu"
         },
+        "runtime": {
+            "loading": "Načítání otázek…",
+            "errorTitle": "❌ Chyba načítání",
+            "errorMessage": "Nepodařilo se načíst otázky. Zkuste obnovit stránku.",
+            "noQuestionsTitle": "⚠️ Žádné otázky",
+            "noQuestionsMessage": "Pro vybraná témata nejsou k dispozici žádné otázky. Vyberte alespoň jedno téma.",
+            "all": "vše",
+            "questionOf": "Otázka {n} z {total}",
+            "questionIdLabel": "č. {id}",
+            "correctVerdict": "✅ Správně!",
+            "incorrectVerdict": "❌ Špatně!",
+            "showResults": "Zobrazit výsledky",
+            "scoreLabel": "Skóre",
+            "resultsTitle": "Test dokončen!",
+            "resultPerfect": "Výborně! Perfektní skóre!",
+            "resultGreat": "Skvělá práce!",
+            "resultGood": "Dobrý výsledek, ale je co zlepšovat.",
+            "resultPoor": "Doporučujeme prostudovat teorii a zkusit znovu."
+        },
         "about": {
             "title": "📚 O testu"
         },

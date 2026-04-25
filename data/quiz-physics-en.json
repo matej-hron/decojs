@@ -1,0 +1,1306 @@
+{
+  "title": "Physics – SPČR 2018 Exam Tests",
+  "description": "Exam questions on physics for divers",
+  "questions": [
+    {
+      "id": 1,
+      "category": "tlak-jednotky",
+      "question": "Which of the following units express approximately the same pressure value?",
+      "options": [
+        { "key": "a", "text": "0.1 MPa = 100 kPa = 1 bar" },
+        { "key": "b", "text": "1 MPa = 1,000 kPa = 10 mbar" },
+        { "key": "c", "text": "0.1 MPa = 1,000 kPa = 10 bar" },
+        { "key": "d", "text": "1 MPa = 1,000 mbar" }
+      ],
+      "correct": "a",
+      "explanation": "0.1 MPa = 100 kPa = 1 bar are equivalent pressure values. 1 MPa = 1,000 kPa = 10 bar, so the other options contain incorrect conversions."
+    },
+    {
+      "id": 2,
+      "category": "tlak-jednotky",
+      "question": "Apart from gravitational acceleration, hydrostatic pressure in a lake depends on:",
+      "options": [
+        { "key": "a", "text": "atmospheric pressure and water density" },
+        { "key": "b", "text": "water density and depth" },
+        { "key": "c", "text": "altitude and depth" },
+        { "key": "d", "text": "temperature and the air pressure above the surface" }
+      ],
+      "correct": "b",
+      "explanation": "Hydrostatic pressure is calculated as p = ρ·g·h, so it depends on water density (ρ) and depth (h). Atmospheric pressure contributes to total pressure, but not to hydrostatic pressure itself."
+    },
+    {
+      "id": 3,
+      "category": "tlak-jednotky",
+      "question": "Which statement about average air pressure (normal atmospheric pressure) is incorrect?",
+      "options": [
+        { "key": "a", "text": "around 100,000 N/m², i.e. about 100 kPa" },
+        { "key": "b", "text": "between 900 and 1,100 millibar, i.e. about 1 bar" },
+        { "key": "c", "text": "approximately 0.1 MPa, i.e. 1,000 hPa" },
+        { "key": "d", "text": "around 100 kbar, i.e. 0.1 Mbar" }
+      ],
+      "correct": "d",
+      "explanation": "100 kbar = 10,000 MPa, which is an enormous pressure (100,000× higher than atmospheric). Normal atmospheric pressure is approximately 1 bar = 0.1 MPa = 100 kPa."
+    },
+    {
+      "id": 4,
+      "category": "tlak-jednotky",
+      "question": "A pressure of 1 kPa corresponds to the pressure produced at the Earth's surface by a water column of height:",
+      "options": [
+        { "key": "a", "text": "1 millimetre" },
+        { "key": "b", "text": "1 decimetre" },
+        { "key": "c", "text": "1 centimetre" },
+        { "key": "d", "text": "1 metre" }
+      ],
+      "correct": "b",
+      "explanation": "1 kPa = 1,000 Pa. Water-column pressure p = ρ·g·h. For water: 1,000 kg/m³ × 10 m/s² × 0.1 m = 1,000 Pa = 1 kPa. So a 1-decimetre (0.1 m) water column produces a pressure of 1 kPa."
+    },
+    {
+      "id": 5,
+      "category": "vlastnosti-vody-vzduchu",
+      "question": "The composition of dry atmospheric air is approximately:",
+      "options": [
+        { "key": "a", "text": "21% O₂, 78% CO₂, 1% N₂ and noble gases" },
+        { "key": "b", "text": "78 O₂, 21 CO₂, 1% N₂ and noble gases" },
+        { "key": "c", "text": "21% O₂, 78% N₂, 1% noble gases and CO₂" },
+        { "key": "d", "text": "78% O₂, 21% N₂, 1% noble gases and CO₂" }
+      ],
+      "correct": "c",
+      "explanation": "Air contains approximately 78% nitrogen (N₂), 21% oxygen (O₂) and 1% other gases including argon and CO₂. This composition is fundamental to understanding decompression theory."
+    },
+    {
+      "id": 6,
+      "category": "vlastnosti-vody-vzduchu",
+      "question": "The density of dry air:",
+      "options": [
+        { "key": "a", "text": "does not depend on pressure or temperature and is always about 1.25 kg/m³" },
+        { "key": "b", "text": "equals 1.25 kg/l under normal conditions" },
+        { "key": "c", "text": "depends on pressure and temperature; at normal pressure and 10 °C it is approximately 1.25 kg/m³" },
+        { "key": "d", "text": "is zero, because air has no weight" }
+      ],
+      "correct": "c",
+      "explanation": "Air density depends on pressure and temperature according to the ideal-gas law. Under normal conditions (about 10 °C, 1 atm) the density is approximately 1.25 kg/m³."
+    },
+    {
+      "id": 7,
+      "category": "vlastnosti-vody-vzduchu",
+      "question": "Which statement is fully correct? At the bottom you find:",
+      "options": [
+        { "key": "a", "text": "the coldest water" },
+        { "key": "b", "text": "water of the highest density" },
+        { "key": "c", "text": "the warmest water" },
+        { "key": "d", "text": "water of the lowest density" }
+      ],
+      "correct": "b",
+      "explanation": "Water of the highest density settles at the bottom. Water reaches its maximum density at 4 °C. In winter the bottom water can be warmer than surface water, because the denser water sinks."
+    },
+    {
+      "id": 8,
+      "category": "vlastnosti-vody-vzduchu",
+      "question": "Under our local conditions, what is the approximate temperature at the bottom of a frozen lake 50 m deep?",
+      "options": [
+        { "key": "a", "text": "−1 °C" },
+        { "key": "b", "text": "0 °C" },
+        { "key": "c", "text": "1 °C" },
+        { "key": "d", "text": "4 °C" }
+      ],
+      "correct": "d",
+      "explanation": "Water has its maximum density at 4 °C. In a frozen lake this densest water collects at the bottom, while colder (and lighter) water stays near the surface and freezes."
+    },
+    {
+      "id": 9,
+      "category": "prenos-tepla",
+      "question": "Which of the following statements is incorrect?",
+      "options": [
+        { "key": "a", "text": "Heat loss by convection is the most efficient form of heat loss." },
+        { "key": "b", "text": "Evaporation of liquid from the surface of a body lowers its temperature." },
+        { "key": "c", "text": "Warmed water between the body and the wetsuit prevents heat loss." },
+        { "key": "d", "text": "Heat transfer through foamed neoprene is reduced by closed gas-filled cells." }
+      ],
+      "correct": "c",
+      "explanation": "Water has high thermal conductivity and capacity, so warmed water between the body and the suit does NOT prevent heat loss — on the contrary, water rapidly carries heat away. That is why dry suits are more efficient."
+    },
+    {
+      "id": 10,
+      "category": "prenos-tepla",
+      "question": "Comparing heat loss from the body surface in air and in water under the same conditions, heat loss in water is:",
+      "options": [
+        { "key": "a", "text": "greater because of water's higher thermal conductivity and capacity" },
+        { "key": "b", "text": "greater because of physiological changes in the body" },
+        { "key": "c", "text": "lower, because water warmed by the body, e.g. inside a suit, keeps us warm" },
+        { "key": "d", "text": "lower, because water acts as a thermal insulator" }
+      ],
+      "correct": "a",
+      "explanation": "Water carries heat away approximately 25× faster than air because of its higher thermal conductivity and heat capacity. That is why the risk of hypothermia is much greater in cold water."
+    },
+    {
+      "id": 11,
+      "category": "optika",
+      "question": "To a diver wearing a mask, objects seen underwater appear, compared with their real size and distance:",
+      "options": [
+        { "key": "a", "text": "1/4 larger, 1/3 farther" },
+        { "key": "b", "text": "1/3 larger, 1/3 closer" },
+        { "key": "c", "text": "1/3 smaller, 1/4 closer" },
+        { "key": "d", "text": "1/3 larger, 1/4 closer" }
+      ],
+      "correct": "d",
+      "explanation": "Because of light refraction at the water-air interface in the mask, objects appear approximately 1/3 larger and 1/4 closer. The refractive index of water is 1.33, which produces these optical illusions."
+    },
+    {
+      "id": 12,
+      "category": "optika",
+      "question": "Which of the following statements is incorrect? A beam coming from a torch underwater, on reaching the surface:",
+      "options": [
+        { "key": "a", "text": "refracts away from the normal to the interface (unless it strikes perpendicularly)" },
+        { "key": "b", "text": "at a certain angle (the critical angle) refracts so that it continues parallel to the surface" },
+        { "key": "c", "text": "always refracts and passes into the air" },
+        { "key": "d", "text": "sometimes reflects and returns into the water" }
+      ],
+      "correct": "c",
+      "explanation": "Statement (c) is incorrect: at angles greater than the critical angle (about 48.6° for water) total internal reflection occurs and the beam does not pass into the air."
+    },
+    {
+      "id": 13,
+      "category": "optika",
+      "question": "Which of the following statements about vision (with a healthy eye in clear water) is incorrect?",
+      "options": [
+        { "key": "a", "text": "At great depths we see all colours in shades of grey." },
+        { "key": "b", "text": "Below about 10 m the red component of daylight no longer penetrates." },
+        { "key": "c", "text": "The colours of daylight start fading with increasing depth from the red end of the spectrum." },
+        { "key": "d", "text": "In clear water the yellow component of daylight penetrates the deepest." }
+      ],
+      "correct": "d",
+      "explanation": "Statement (d) is incorrect. In clear water it is blue, not yellow, that penetrates the deepest. That is why everything appears blue at great depths."
+    },
+    {
+      "id": 14,
+      "category": "optika",
+      "question": "A beam travelling underwater from an object to the diver, on leaving the mask glass into the air inside the mask, refracts relative to its incident direction on the glass:",
+      "options": [
+        { "key": "a", "text": "towards the normal, thus apparently enlarging the observed object" },
+        { "key": "b", "text": "away from the normal, thus apparently enlarging the observed object" },
+        { "key": "c", "text": "towards the normal, thus apparently shrinking the observed object" },
+        { "key": "d", "text": "away from the normal, thus apparently shrinking the observed object" }
+      ],
+      "correct": "b",
+      "explanation": "When passing from an optically denser medium (water/glass) into a thinner one (air), the beam refracts away from the normal. The result is an apparent enlargement of observed objects."
+    },
+    {
+      "id": 15,
+      "category": "optika",
+      "question": "Which of the following statements is incorrect? A diving torch:",
+      "options": [
+        { "key": "a", "text": "allows colour vision even at depth" },
+        { "key": "b", "text": "increases visibility in turbid water" },
+        { "key": "c", "text": "lets you see into nooks and crevices" },
+        { "key": "d", "text": "allows vision under reduced light" }
+      ],
+      "correct": "b",
+      "explanation": "A torch does NOT increase visibility in turbid water — on the contrary, the light reflects off particles and can make visibility worse (similar to high-beam headlights in fog)."
+    },
+    {
+      "id": 16,
+      "category": "optika",
+      "question": "A light beam crossing under a certain non-zero angle from air into water refracts at the interface:",
+      "options": [
+        { "key": "a", "text": "parallel to the interface" },
+        { "key": "b", "text": "towards the normal to the interface" },
+        { "key": "c", "text": "away from the normal to the interface" },
+        { "key": "d", "text": "perpendicular to the interface" }
+      ],
+      "correct": "b",
+      "explanation": "When passing from an optically thinner medium (air) into a denser one (water), light refracts towards the normal. Water has a higher refractive index (1.33) than air (1.0)."
+    },
+    {
+      "id": 17,
+      "category": "optika",
+      "question": "Which of the following statements is incorrect? Underwater illumination depends on:",
+      "options": [
+        { "key": "a", "text": "the angle at which sunlight strikes the surface" },
+        { "key": "b", "text": "the time spent underwater, i.e. on the eye adapting to dim light" },
+        { "key": "c", "text": "the level of water turbidity" },
+        { "key": "d", "text": "depth" }
+      ],
+      "correct": "b",
+      "explanation": "Adaptation of the eye to dim light is a physiological property of the eye, not a factor that affects underwater illumination itself. Illumination depends on physical factors such as depth, the angle of incoming light and water clarity."
+    },
+    {
+      "id": 18,
+      "category": "optika",
+      "question": "Which of the following statements is incorrect?",
+      "options": [
+        { "key": "a", "text": "A beam striking the surface perpendicularly refracts by an angle of 68° (90°/1.33)." },
+        { "key": "b", "text": "A beam striking the surface from air at 24° from the normal will continue in the water at approximately 18° from the normal." },
+        { "key": "c", "text": "The refractive index of water is 1.33." },
+        { "key": "d", "text": "The ratio of the speed of light in water to its speed in air is approximately 3 : 4." }
+      ],
+      "correct": "a",
+      "explanation": "A beam striking the surface perpendicularly does NOT refract at all — it continues straight through. Refraction occurs only on oblique incidence. Statement (a) is therefore incorrect."
+    },
+    {
+      "id": 19,
+      "category": "vlastnosti-vody-vzduchu",
+      "question": "The eye irritation we feel on contact with water occurs:",
+      "options": [
+        { "key": "a", "text": "in fresh and salt water alike, if their osmotic pressure differs from that of body fluids" },
+        { "key": "b", "text": "only in seawater whose osmotic pressure is greater than that of body fluids" },
+        { "key": "c", "text": "only in fresh water whose osmotic pressure is lower than that of body fluids" },
+        { "key": "d", "text": "only in pools, due to the chemicals used to keep the water hygienic" }
+      ],
+      "correct": "a",
+      "explanation": "Eye irritation is caused by an osmotic-pressure mismatch. Both fresh water (hypotonic) and seawater (hypertonic) have an osmotic pressure different from tears, which irritates the eyes."
+    },
+    {
+      "id": 20,
+      "category": "vlastnosti-vody-vzduchu",
+      "question": "The osmotic pressure of fresh water compared with that of blood:",
+      "options": [
+        { "key": "a", "text": "is higher, so during drowning it crosses into the blood and dilutes it" },
+        { "key": "b", "text": "is lower, so during drowning it crosses into the blood and dilutes it" },
+        { "key": "c", "text": "is higher, so during drowning it stays in the lungs" },
+        { "key": "d", "text": "is lower, so during drowning it stays in the lungs" }
+      ],
+      "correct": "b",
+      "explanation": "Fresh water has a lower osmotic pressure (it is hypotonic) than blood. During drowning, water passes through the alveolar membrane into the blood and dilutes it, which can cause haemolysis and cardiac arrhythmias."
+    },
+    {
+      "id": 21,
+      "category": "fyzika-plynu",
+      "question": "The thermodynamic temperature T of the freezing point of water is approximately:",
+      "options": [
+        { "key": "a", "text": "0 K" },
+        { "key": "b", "text": "−273 °C" },
+        { "key": "c", "text": "273 K" },
+        { "key": "d", "text": "373 K" }
+      ],
+      "correct": "c",
+      "explanation": "The freezing point of water is 0 °C, which corresponds to 273 K (more precisely 273.15 K). Conversion: T[K] = T[°C] + 273. Option (d), 373 K, is the boiling point of water (100 °C)."
+    },
+    {
+      "id": 22,
+      "category": "fyzika-plynu",
+      "question": "The quantities determining the instantaneous state of a given amount of an ideal gas (state variables) are:",
+      "options": [
+        { "key": "a", "text": "pressure, volume and mass" },
+        { "key": "b", "text": "volume, temperature and molecular mass" },
+        { "key": "c", "text": "pressure, volume and temperature" },
+        { "key": "d", "text": "volume and pressure" }
+      ],
+      "correct": "c",
+      "explanation": "The state variables of an ideal gas are pressure (p), volume (V) and temperature (T). They are linked by the ideal-gas law pV = nRT."
+    },
+    {
+      "id": 23,
+      "category": "fyzika-plynu",
+      "question": "The Boyle–Mariotte law for an isothermal process can be written as:",
+      "options": [
+        { "key": "a", "text": "p₁ / V₁ = p₀ / V₀, stating that the gas volume increases in proportion to the increase in its pressure" },
+        { "key": "b", "text": "p₀ · V₁ = p₁ · V₀, stating that the gas volume increases in proportion to the increase in its pressure" },
+        { "key": "c", "text": "p₁ · T₁ = p₀ · T₀, stating that the gas pressure decreases in proportion to the increase in its temperature" },
+        { "key": "d", "text": "p₁ · V₁ = p₀ · V₀, stating that the gas volume decreases in proportion to the increase in its pressure" }
+      ],
+      "correct": "d",
+      "explanation": "Boyle–Mariotte law: p₁·V₁ = p₀·V₀ at constant temperature. Pressure and volume are inversely proportional — when pressure doubles, volume halves. A key law for diving."
+    },
+    {
+      "id": 24,
+      "category": "fyzika-plynu",
+      "question": "The Gay-Lussac law for an isobaric process can be written as:",
+      "options": [
+        { "key": "a", "text": "p₁ · V₁ = p₀ · V₀, stating that the gas volume decreases in proportion to the increase in its pressure" },
+        { "key": "b", "text": "p₀ · V₁ = p₁ · V₀, stating that the gas volume increases in proportion to the increase in its pressure" },
+        { "key": "c", "text": "V₁ / T₁ = V₂ / T₂, stating that the gas volume increases in proportion to the increase in its thermodynamic temperature" },
+        { "key": "d", "text": "p₁ · T₁ = p₀ · T₀, stating that the gas pressure decreases in proportion to the increase in its temperature" }
+      ],
+      "correct": "c",
+      "explanation": "Gay-Lussac law: V₁/T₁ = V₂/T₂ at constant pressure (isobaric process). The volume of a gas is directly proportional to its absolute temperature."
+    },
+    {
+      "id": 25,
+      "category": "fyzika-plynu",
+      "question": "A 15 L cylinder was filled to 20 MPa and the air inside warmed to 47 °C. Which calculation correctly determines the cylinder pressure after the air has cooled to 17 °C?",
+      "options": [
+        { "key": "a", "text": "p₂ = p₁ · T₂ / T₁ = 20 · 290 / 320 = …" },
+        { "key": "b", "text": "p₂ = p₁ · T₁ / T₂ = 20 · 47 / 17 = …" },
+        { "key": "c", "text": "p₂ = p₁ · V₁ · T₁ = 20 · 15 · 17 = …" },
+        { "key": "d", "text": "p₂ = p₁ · V₁ · T₂ / T₁ = 20 · 15 · 290 / 320 = …" }
+      ],
+      "correct": "a",
+      "explanation": "Isochoric process (V = const.): p₁/T₁ = p₂/T₂, so p₂ = p₁·T₂/T₁. Absolute temperatures must be used: T₁ = 47 + 273 = 320 K, T₂ = 17 + 273 = 290 K. Result: p₂ = 20·290/320 = 18.1 MPa."
+    },
+    {
+      "id": 26,
+      "category": "fyzika-plynu",
+      "question": "A 10 L water-capacity cylinder contained air at 27 °C compressed to 10 MPa. In a fire it heated up to 327 °C, and the air pressure in it rose approximately:",
+      "options": [
+        { "key": "a", "text": "to 12.7 MPa" },
+        { "key": "b", "text": "to 20 MPa" },
+        { "key": "c", "text": "to 30 MPa" },
+        { "key": "d", "text": "to 32.7 MPa" }
+      ],
+      "correct": "b",
+      "explanation": "Isochoric process: p₂ = p₁·T₂/T₁. T₁ = 27 + 273 = 300 K, T₂ = 327 + 273 = 600 K. p₂ = 10·600/300 = 20 MPa. Temperature doubled (in kelvins), so pressure doubled too."
+    },
+    {
+      "id": 27,
+      "category": "fyzika-plynu",
+      "question": "Which of the following statements about the gas equation of state p · V / T = p₀ · V₀ / T₀ is incorrect?",
+      "options": [
+        { "key": "a", "text": "This equation applies to a given mass of gas." },
+        { "key": "b", "text": "This equation can describe temperature changes during compression and expansion of air." },
+        { "key": "c", "text": "From this equation the basic laws for changes of state of a gas (isothermal, isobaric, isochoric) can be derived." },
+        { "key": "d", "text": "This equation describes state changes of an ideal gas." }
+      ],
+      "correct": "b",
+      "explanation": "The state equation pV/T = const. does not describe temperature changes during compression/expansion — that requires knowledge of the type of process (adiabatic, isothermal, etc.). The equation only links the states before and after the change."
+    },
+    {
+      "id": 28,
+      "category": "fyzika-plynu",
+      "question": "When the air in just-filled scuba cylinders cools down, the change most relevant to the diver is:",
+      "options": [
+        { "key": "a", "text": "a change in the mass of air in the cylinders" },
+        { "key": "b", "text": "a change in air pressure (used to gauge the gas supply)" },
+        { "key": "c", "text": "lower temperature of the breathed air" },
+        { "key": "d", "text": "a change in cylinder volume (relevant to the seal dimensions)" }
+      ],
+      "correct": "b",
+      "explanation": "When cylinders cool, pressure drops (isochoric process). This matters most to the diver because pressure determines the actual gas supply. After filling and cooling, the cylinder will hold less air than the filling pressure would suggest."
+    },
+    {
+      "id": 29,
+      "category": "tlak-jednotky",
+      "question": "Pressure p can be determined as:",
+      "options": [
+        { "key": "a", "text": "force F divided by area S, i.e. p = F / S" },
+        { "key": "b", "text": "force F multiplied by area S, i.e. p = F · S" },
+        { "key": "c", "text": "force F divided by volume V, i.e. p = F / V" },
+        { "key": "d", "text": "force F directly, i.e. P = F" }
+      ],
+      "correct": "a",
+      "explanation": "Pressure is defined as the force acting perpendicular to a surface divided by that surface's area: p = F/S. The unit is the pascal (Pa) = N/m²."
+    },
+    {
+      "id": 30,
+      "category": "tlak-jednotky",
+      "question": "A compressor's output is characterised by compressing 300 L of air at standard pressure per minute, with a maximum delivery pressure of 20 MPa. How many empty 15 L cylinders can this compressor fill to 20 MPa in one hour? (The air in the cylinders is at the same temperature as the air drawn in.)",
+      "options": [
+        { "key": "a", "text": "2 cylinders" },
+        { "key": "b", "text": "3 cylinders" },
+        { "key": "c", "text": "4 cylinders" },
+        { "key": "d", "text": "6 cylinders" }
+      ],
+      "correct": "d",
+      "explanation": "In one hour the compressor draws in 300 × 60 = 18,000 L of air at standard pressure. One 15 L cylinder at 20 MPa (= 200 bar) needs 15 × 200 = 3,000 L. Number of cylinders: 18,000 / 3,000 = 6."
+    },
+    {
+      "id": 31,
+      "category": "vztlak-vystroj",
+      "question": "Choose the lift bag of minimum volume needed to raise a cast-iron block of mass 750 kg (cast-iron density 8,000 kg/m³) lying loose on the bottom at 10 m. The bag with rigging weighs 10–15 kg:",
+      "options": [
+        { "key": "a", "text": "1,000 L" },
+        { "key": "b", "text": "800 L" },
+        { "key": "c", "text": "700 L" },
+        { "key": "d", "text": "600 L" }
+      ],
+      "correct": "c",
+      "explanation": "Volume of cast iron: 750/8,000 = 0.094 m³ = 94 L. Buoyant force on the iron: 94 kg. Required bag lift: 750 − 94 + 15 = 671 kg ≈ 671 L. The minimum bag is therefore 700 L."
+    },
+    {
+      "id": 32,
+      "category": "vztlak-vystroj",
+      "question": "While at constant depth, the diver's mass (with scuba) changes mainly because of:",
+      "options": [
+        { "key": "a", "text": "compression of the suit" },
+        { "key": "b", "text": "consumption of air from the cylinder" },
+        { "key": "c", "text": "changes in pressure" },
+        { "key": "d", "text": "changes in temperature" }
+      ],
+      "correct": "b",
+      "explanation": "The main reason for the mass change during a dive is air consumption from the cylinders. Air has mass (about 1.25 kg/m³), so consuming 3,000 L of air costs the diver almost 4 kg."
+    },
+    {
+      "id": 33,
+      "category": "vztlak-vystroj",
+      "question": "What is the maximum theoretical breath-hold depth, without risking lung injury, for a diver with a vital lung capacity of 4.5 L and a residual lung volume of 1.5 L?",
+      "options": [
+        { "key": "a", "text": "70 metres" },
+        { "key": "b", "text": "60 metres" },
+        { "key": "c", "text": "30 metres" },
+        { "key": "d", "text": "45 metres" }
+      ],
+      "correct": "c",
+      "explanation": "Total lung volume = 4.5 + 1.5 = 6 L. Maximum compression to the residual volume of 1.5 L = a ratio of 6/1.5 = 4×. That corresponds to a pressure of 4 bar, i.e. a depth of 30 m. Beyond that depth, lung squeeze would be a risk."
+    },
+    {
+      "id": 34,
+      "category": "vztlak-vystroj",
+      "question": "A breath-hold diver wears a neoprene suit of volume 10 L at standard pressure and mass 2 kg. How much weight will be needed to balance the diver at the surface?",
+      "options": [
+        { "key": "a", "text": "12 kg" },
+        { "key": "b", "text": "10 kg" },
+        { "key": "c", "text": "6 kg" },
+        { "key": "d", "text": "8 kg" }
+      ],
+      "correct": "d",
+      "explanation": "A 10 L suit produces 10 kg of buoyancy. The suit's mass is 2 kg. Net suit buoyancy = 10 − 2 = 8 kg. The diver therefore needs 8 kg of ballast to balance."
+    },
+    {
+      "id": 35,
+      "category": "vztlak-vystroj",
+      "question": "The volume of an air bubble released from 300 m, just below the surface, has grown compared with its volume at depth (assuming constant temperature):",
+      "options": [
+        { "key": "a", "text": "31 times" },
+        { "key": "b", "text": "310 times" },
+        { "key": "c", "text": "301 times" },
+        { "key": "d", "text": "300 times" }
+      ],
+      "correct": "a",
+      "explanation": "At 300 m the absolute pressure is 31 bar (1 bar atmospheric + 30 bar hydrostatic, ~10 m = 1 bar). At the surface it is 1 bar. By the Boyle–Mariotte law the volume grows 31 times."
+    },
+    {
+      "id": 36,
+      "category": "vztlak-vystroj",
+      "question": "A flooded hollow steel-plate cylinder of mass 2,400 kg and internal volume 3,000 L (steel density 8,000 kg/m³) lies loose on the bottom at 20 m. It can be raised to the surface after being filled with air. Choose the minimum number of 12 L cylinders filled to 18 MPa needed for this:",
+      "options": [
+        { "key": "a", "text": "1 cylinder" },
+        { "key": "b", "text": "3 cylinders" },
+        { "key": "c", "text": "2 cylinders" },
+        { "key": "d", "text": "4 cylinders" }
+      ],
+      "correct": "b",
+      "explanation": "Steel volume: 2,400/8,000 = 0.3 m³ = 300 L. Total drum volume: 3,000 + 300 = 3,300 L. Buoyancy requires displacing the water from the drum. One 12 L cylinder × 180 bar = 2,160 L of surface-pressure air = 720 L at 20 m. We need about 2,400 L → 3 cylinders."
+    },
+    {
+      "id": 37,
+      "category": "vztlak-vystroj",
+      "question": "On the surface a diver was balanced with the buoyancy compensator inflated by 6 L of air. If, without adding or venting air from the BCD, the diver descended to 20 m and tried to rebalance by ditching weights (ignoring suit compression), they would need to ditch:",
+      "options": [
+        { "key": "a", "text": "4 kg of weights" },
+        { "key": "b", "text": "2 kg of weights" },
+        { "key": "c", "text": "3 kg of weights" },
+        { "key": "d", "text": "6 kg of weights" }
+      ],
+      "correct": "a",
+      "explanation": "At 20 m the pressure is 3 bar. The air volume in the BCD shrinks to 6/3 = 2 L. Loss of buoyancy = 6 − 2 = 4 L = 4 kg. To rebalance, the diver must ditch 4 kg of weights."
+    },
+    {
+      "id": 38,
+      "category": "vztlak-vystroj",
+      "question": "A diving cabin was lowered to 60 m while normal atmospheric pressure was maintained inside. What net force does the lid of an exit hatch of area 1 m² exert on the cabin's sealing surface?",
+      "options": [
+        { "key": "a", "text": "700,000 N" },
+        { "key": "b", "text": "70,000 N" },
+        { "key": "c", "text": "6,000 N" },
+        { "key": "d", "text": "600,000 N" }
+      ],
+      "correct": "d",
+      "explanation": "Pressure differential = hydrostatic pressure at 60 m = 6 bar = 600,000 Pa. Force F = p × S = 600,000 Pa × 1 m² = 600,000 N (about 60 tonnes!)."
+    },
+    {
+      "id": 39,
+      "category": "vztlak-vystroj",
+      "question": "A diving bell with no air supply, lowered to 20 m, fills with water to approximately:",
+      "options": [
+        { "key": "a", "text": "1/2 of its volume" },
+        { "key": "b", "text": "2/3 of its volume" },
+        { "key": "c", "text": "1/3 of its volume" },
+        { "key": "d", "text": "3/4 of its volume" }
+      ],
+      "correct": "b",
+      "explanation": "At 20 m the absolute pressure is 3 bar. The air in the bell is compressed to 1/3 of its original volume. The remaining 2/3 fills with water."
+    },
+    {
+      "id": 40,
+      "category": "vztlak-vystroj",
+      "question": "A hollow cylindrical diving bell 10 m tall is lowered, without air being added, to 30 m. How high will the water surface inside the bell rise?",
+      "options": [
+        { "key": "a", "text": "2.5 m" },
+        { "key": "b", "text": "3.3 m" },
+        { "key": "c", "text": "7.5 m" },
+        { "key": "d", "text": "6.6 m" }
+      ],
+      "correct": "c",
+      "explanation": "The bottom rim of the bell is at 30 m (4 bar). The air compresses to 1/4 of its volume, occupying 2.5 m of height in the top of the bell. Water fills the remaining 7.5 m."
+    },
+    {
+      "id": 41,
+      "category": "vztlak-vystroj",
+      "question": "A buoyancy compensator with a maximum volume of 16 L is half-filled at 40 m. Without venting, at what depth during ascent would air begin to escape through the over-pressure relief valve set at 30 kPa?",
+      "options": [
+        { "key": "a", "text": "37 metres" },
+        { "key": "b", "text": "22 metres" },
+        { "key": "c", "text": "17 metres" },
+        { "key": "d", "text": "12 metres" }
+      ],
+      "correct": "d",
+      "explanation": "At 40 m (5 bar) the BCD holds 8 L of air. The air expands to 16 L at 5×8/16 = 2.5 bar, which corresponds to a depth of 15 m. With a 30 kPa (0.3 bar) cracking pressure the valve opens at 2.2 bar ≈ 12 m."
+    },
+    {
+      "id": 42,
+      "category": "vztlak-vystroj",
+      "question": "A diving bell has a full internal volume of 900 L, total mass with ballast of 1,010 kg, and material volume 100 L. What force will it exert on the suspension line at 20 m in fresh water if during lowering:\nA. air was continuously topped up?\nB. air was not topped up?",
+      "options": [
+        { "key": "a", "text": "A = 100 N, B = 400 N" },
+        { "key": "b", "text": "A = 100 N, B = 6,100 N" },
+        { "key": "c", "text": "A = 6,000 N, B = 7,000 N" },
+        { "key": "d", "text": "A = 100 N, B = 3,100 N" }
+      ],
+      "correct": "b",
+      "explanation": "A: full of air — buoyancy = (900+100)×10 = 10,000 N, weight = 10,100 N, line force = 100 N. B: air compressed to 1/3 (300 L), water fills 600 L, buoyancy = 400×10 = 4,000 N, line force = 10,100 − 4,000 = 6,100 N."
+    },
+    {
+      "id": 43,
+      "category": "vztlak-vystroj",
+      "question": "A buoyancy compensator with a maximum volume of 20 L is half-filled with air at 30 m. At what depth during ascent, without venting, would the air inside this BCD expand enough to start escaping through the over-pressure valve set at 0.03 MPa?",
+      "options": [
+        { "key": "a", "text": "17 metres" },
+        { "key": "b", "text": "12 metres" },
+        { "key": "c", "text": "7 metres" },
+        { "key": "d", "text": "3 metres" }
+      ],
+      "correct": "c",
+      "explanation": "At 30 m (4 bar) the BCD holds 10 L. The air reaches 20 L at 4×10/20 = 2 bar = 10 m. With a 0.03 MPa (0.3 bar) cracking pressure the valve opens at 1.7 bar ≈ 7 m."
+    },
+    {
+      "id": 44,
+      "category": "vztlak-vystroj",
+      "question": "The density of seawater is:",
+      "options": [
+        { "key": "a", "text": "dependent on temperature, salt concentration and weakly on pressure" },
+        { "key": "b", "text": "dependent only on temperature" },
+        { "key": "c", "text": "dependent on temperature and pressure, independent of salt concentration" },
+        { "key": "d", "text": "constantly 1,020 kg/m³ regardless of temperature, pressure or salt concentration" }
+      ],
+      "correct": "a",
+      "explanation": "Seawater density depends mainly on temperature and salinity. Pressure has a smaller effect. Typical density is 1,020–1,030 kg/m³ but varies by location."
+    },
+    {
+      "id": 45,
+      "category": "vztlak-vystroj",
+      "question": "By approximately how much, and in which direction, does the mass of a 20 L cylinder originally filled to 20 MPa change after 3/4 of the gas supply has been breathed out?",
+      "options": [
+        { "key": "a", "text": "lighter by about 5 kg" },
+        { "key": "b", "text": "heavier by about 3.7 kg" },
+        { "key": "c", "text": "lighter by about 3.7 kg" },
+        { "key": "d", "text": "no change" }
+      ],
+      "correct": "c",
+      "explanation": "Total supply = 20 L × 200 bar = 4,000 L of air. 3/4 = 3,000 L. Mass of air ≈ 1.25 kg per 1,000 L. Loss = 3,000 × 1.25/1,000 = 3.75 kg ≈ 3.7 kg."
+    },
+    {
+      "id": 46,
+      "category": "vztlak-vystroj",
+      "question": "What buoyant force lifts a free-lying cast-iron object of volume 10 L at 40 m in fresh water (cast-iron density 7,500 kg/m³)?",
+      "options": [
+        { "key": "a", "text": "0.75 MPa" },
+        { "key": "b", "text": "750 N" },
+        { "key": "c", "text": "850 N" },
+        { "key": "d", "text": "100 N" }
+      ],
+      "correct": "d",
+      "explanation": "Buoyant force = volume × water density × g = 0.01 m³ × 1,000 kg/m³ × 10 m/s² = 100 N. Buoyancy depends only on the submerged object's volume, not on depth."
+    },
+    {
+      "id": 47,
+      "category": "vztlak-vystroj",
+      "question": "Steel cubes, each of mass 160 kg, lie loose on the bottom at 10 m. Approximately how many such cubes can be raised using a lift bag and a 10 L cylinder filled to 18 MPa? (Steel density 8,000 kg/m³)",
+      "options": [
+        { "key": "a", "text": "6 cubes" },
+        { "key": "b", "text": "2 cubes" },
+        { "key": "c", "text": "8 cubes" },
+        { "key": "d", "text": "10 cubes" }
+      ],
+      "correct": "a",
+      "explanation": "The cylinder holds 10×180 = 1,800 L of air. At 10 m (2 bar) that produces 900 L of lift. Cube volume = 160/8,000 = 0.02 m³ = 20 L. Net underwater weight of one cube = 160 − 20 = 140 kg. Number of cubes = 900/140 ≈ 6."
+    },
+    {
+      "id": 48,
+      "category": "vztlak-vystroj",
+      "question": "We determine the density of a hollow sealed object by:",
+      "options": [
+        { "key": "a", "text": "dividing its weight by the area on which it acts" },
+        { "key": "b", "text": "multiplying its mass by its volume" },
+        { "key": "c", "text": "looking up the density of the material from which it is made in a reference table" },
+        { "key": "d", "text": "dividing its mass by its volume" }
+      ],
+      "correct": "d",
+      "explanation": "Density ρ = m/V (mass divided by volume). For a hollow object you must use the total external volume, not the material density from a reference table."
+    },
+    {
+      "id": 49,
+      "category": "vztlak-vystroj",
+      "question": "A waterproof body has a mass of 250 kg and a volume of 245 L. Determine its density and predict its behaviour in seawater of density 1,030 kg/m³:",
+      "options": [
+        { "key": "a", "text": "it will float as a shallowly submerged body (e.g. a boat)" },
+        { "key": "b", "text": "it will hover (neutral)" },
+        { "key": "c", "text": "it will float just at the surface (almost fully submerged)" },
+        { "key": "d", "text": "it will sink to the bottom" }
+      ],
+      "correct": "c",
+      "explanation": "Body density = 250/0.245 = 1,020 kg/m³. Seawater density is 1,030 kg/m³. The body is lighter than the water, so it floats. Because the densities are very close, it will be almost fully submerged."
+    },
+    {
+      "id": 50,
+      "category": "vztlak-vystroj",
+      "question": "At 22 °C the absolute humidity of air saturated with water vapour is 18 g/m³. How much water would remain in the compressor's water trap after fully removing water from the air, after filling 10 originally empty 15 L cylinders to 20 MPa, with intake air of relative humidity 33% at this temperature?",
+      "options": [
+        { "key": "a", "text": "18 g" },
+        { "key": "b", "text": "54 g" },
+        { "key": "c", "text": "178.2 g" },
+        { "key": "d", "text": "540 g" }
+      ],
+      "correct": "c",
+      "explanation": "Total air: 10 × 15 × 200 = 30,000 L = 30 m³. Air humidity: 18 × 0.33 = 5.94 g/m³. Total water: 30 × 5.94 = 178.2 g."
+    },
+    {
+      "id": 51,
+      "category": "tlak-jednotky",
+      "question": "Approximately what spring force does a balanced first stage of a regulator need so that the diaphragm of working diameter 40 mm produces an intermediate pressure (gauge) of 1 MPa?",
+      "options": [
+        { "key": "a", "text": "130 N" },
+        { "key": "b", "text": "650 N" },
+        { "key": "c", "text": "1,260 N" },
+        { "key": "d", "text": "65 N" }
+      ],
+      "correct": "c",
+      "explanation": "Diaphragm area S = π × r² = π × 0.02² = 0.001257 m². Force F = p × S = 1,000,000 Pa × 0.001257 m² ≈ 1,257 N ≈ 1,260 N."
+    },
+    {
+      "id": 52,
+      "category": "tlak-jednotky",
+      "question": "The same pressure as the Earth's atmospheric column produces at sea level is produced by a water column alone of height:",
+      "options": [
+        { "key": "a", "text": "around 1 metre on average" },
+        { "key": "b", "text": "100 metres" },
+        { "key": "c", "text": "exactly 20 metres" },
+        { "key": "d", "text": "approximately 10 metres" }
+      ],
+      "correct": "d",
+      "explanation": "Atmospheric pressure ≈ 1 bar ≈ 100 kPa. Hydrostatic pressure of a 10 m water column = 1,000 kg/m³ × 10 m/s² × 10 m = 100,000 Pa = 1 bar. So 10 m of water = 1 atmosphere."
+    },
+    {
+      "id": 53,
+      "category": "tlak-jednotky",
+      "question": "The pressure produced by the Earth's atmospheric column at sea level (normal atmospheric pressure) is approximately:",
+      "options": [
+        { "key": "a", "text": "0.1 MPa, i.e. 1 bar" },
+        { "key": "b", "text": "1 MPa, i.e. 1,000 mbar" },
+        { "key": "c", "text": "10 MPa, i.e. 1 bar" },
+        { "key": "d", "text": "0.01 MPa, i.e. 1 bar" }
+      ],
+      "correct": "a",
+      "explanation": "Normal atmospheric pressure = 0.1 MPa = 100 kPa = 1 bar = 1,000 mbar. The other options contain incorrect unit conversions."
+    },
+    {
+      "id": 54,
+      "category": "tlak-jednotky",
+      "question": "Diving in a lake whose surface lies about 5,500 m above sea level (where atmospheric pressure is about 50 kPa), the total pressure at 20 m depth is approximately:",
+      "options": [
+        { "key": "a", "text": "200 kPa" },
+        { "key": "b", "text": "250 kPa" },
+        { "key": "c", "text": "300 kPa" },
+        { "key": "d", "text": "350 kPa" }
+      ],
+      "correct": "b",
+      "explanation": "Total pressure = atmospheric + hydrostatic. Atmospheric = 50 kPa. Hydrostatic at 20 m = 200 kPa. Total = 50 + 200 = 250 kPa."
+    },
+    {
+      "id": 55,
+      "category": "tlak-jednotky",
+      "question": "A recompression chamber on board ship is pressurised to a depth equivalent of 50 m. What net force pushes the door of area 1 m² against the chamber flange?",
+      "options": [
+        { "key": "a", "text": "600,000 N" },
+        { "key": "b", "text": "400,000 N" },
+        { "key": "c", "text": "500,000 N" },
+        { "key": "d", "text": "50,000 N" }
+      ],
+      "correct": "c",
+      "explanation": "Gauge pressure in the chamber = 50 m = 5 bar = 500,000 Pa (the difference relative to outside atmospheric). Force F = p × S = 500,000 Pa × 1 m² = 500,000 N."
+    },
+    {
+      "id": 56,
+      "category": "tlak-jednotky",
+      "question": "The reason that decompression at higher altitude must take into account the lower atmospheric pressure compared with diving at sea is:",
+      "options": [
+        { "key": "a", "text": "the higher proportion of nitrogen in the air" },
+        { "key": "b", "text": "the lower proportion of oxygen in the air" },
+        { "key": "c", "text": "the lower total pressure at depth" },
+        { "key": "d", "text": "the different ratio of atmospheric pressure to total pressure at depth" }
+      ],
+      "correct": "d",
+      "explanation": "At altitude the atmospheric pressure is lower, but the hydrostatic pressure stays the same. The ratio between surface pressure and pressure at depth therefore differs, which means ascent represents a larger relative pressure change."
+    },
+    {
+      "id": 57,
+      "category": "tlak-jednotky",
+      "question": "Which of the following statements is incorrect?",
+      "options": [
+        { "key": "a", "text": "A volume of 1 cubic metre (1 m³) contains 1,000 litres." },
+        { "key": "b", "text": "A pressure of 1 MPa is the same as a pressure of 100 kPa." },
+        { "key": "c", "text": "A temperature of 20 °C corresponds to approximately 293 K." },
+        { "key": "d", "text": "A 1 kg body exerts a force of approximately 10 newtons (N) at the Earth's surface." }
+      ],
+      "correct": "b",
+      "explanation": "1 MPa = 1,000 kPa, not 100 kPa. The correct relation is 0.1 MPa = 100 kPa. The other statements are correct."
+    },
+    {
+      "id": 58,
+      "category": "tlak-jednotky",
+      "question": "Determine the force pressing the upstream-opening poppet of a second-stage regulator against its 10 mm² seat when the intermediate pressure (gauge) is set to 1 MPa:",
+      "options": [
+        { "key": "a", "text": "0.1 N" },
+        { "key": "b", "text": "1 N" },
+        { "key": "c", "text": "10 N" },
+        { "key": "d", "text": "100 N" }
+      ],
+      "correct": "c",
+      "explanation": "Area S = 10 mm² = 10 × 10⁻⁶ m² = 0.00001 m². Force F = p × S = 1,000,000 Pa × 0.00001 m² = 10 N."
+    },
+    {
+      "id": 59,
+      "category": "tlak-jednotky",
+      "question": "The total pressure at a given depth in a mountain lake:",
+      "options": [
+        { "key": "a", "text": "is the difference between hydrostatic and atmospheric pressure" },
+        { "key": "b", "text": "equals the hydrostatic pressure at that depth" },
+        { "key": "c", "text": "is the sum of hydrostatic and atmospheric pressure" },
+        { "key": "d", "text": "is independent of hydrostatic and atmospheric pressure" }
+      ],
+      "correct": "c",
+      "explanation": "Total (absolute) pressure = atmospheric pressure + hydrostatic pressure. At altitude the atmospheric pressure is lower, so the total pressure at a given depth is also lower than at sea level."
+    },
+    {
+      "id": 60,
+      "category": "tlak-jednotky",
+      "question": "Determine the net pressure force exerted at 30 m by a 40 mm diameter port of a video-camera housing on the housing's mating surface:",
+      "options": [
+        { "key": "a", "text": "3,770 N" },
+        { "key": "b", "text": "503 N" },
+        { "key": "c", "text": "50.3 N" },
+        { "key": "d", "text": "377 N" }
+      ],
+      "correct": "d",
+      "explanation": "Hydrostatic pressure at 30 m = 3 bar = 300,000 Pa. Port area S = π × 0.02² = 0.001257 m². Force F = 300,000 × 0.001257 ≈ 377 N."
+    },
+    {
+      "id": 61,
+      "category": "spotreba-planovani",
+      "question": "How long would the air supply in a 15 L cylinder filled to 20 MPa theoretically be fully consumed at a depth of 10 m, given a surface air consumption of 30 L/min?",
+      "options": [
+        { "key": "a", "text": "100 minutes" },
+        { "key": "b", "text": "75 minutes" },
+        { "key": "c", "text": "50 minutes" },
+        { "key": "d", "text": "25 minutes" }
+      ],
+      "correct": "c",
+      "explanation": "Air supply = 15 × 200 = 3,000 L. At 10 m (2 bar) consumption = 30 × 2 = 60 L/min. Time = 3,000 / 60 = 50 minutes."
+    },
+    {
+      "id": 62,
+      "category": "spotreba-planovani",
+      "question": "How long can a diver with an 18 L cylinder at 20 MPa and a surface air consumption of 30 L/min stay at 20 m before the cylinder pressure drops to 5 MPa?",
+      "options": [
+        { "key": "a", "text": "45 minutes" },
+        { "key": "b", "text": "30 minutes" },
+        { "key": "c", "text": "40 minutes" },
+        { "key": "d", "text": "20 minutes" }
+      ],
+      "correct": "b",
+      "explanation": "Usable supply = 18 × (200 − 50) = 18 × 150 = 2,700 L. At 20 m (3 bar) consumption = 30 × 3 = 90 L/min. Time = 2,700 / 90 = 30 minutes."
+    },
+    {
+      "id": 63,
+      "category": "spotreba-planovani",
+      "question": "Two divers will swim at 20 m until the first of them has used half of his supply, then return at 10 m. Diver A has a 15 L cylinder and 25 L/min surface consumption; Diver B has a 20 L cylinder and 30 L/min surface consumption; both cylinders are filled to 20 MPa. Determine the turn-around time:",
+      "options": [
+        { "key": "a", "text": "33 minutes" },
+        { "key": "b", "text": "30 minutes" },
+        { "key": "c", "text": "20 minutes" },
+        { "key": "d", "text": "22 minutes" }
+      ],
+      "correct": "c",
+      "explanation": "A: supply = 15×200 = 3,000 L, half = 1,500 L. At 20 m consumption = 25×3 = 75 L/min. Time = 1,500/75 = 20 min. B: supply = 4,000 L, half = 2,000 L. At 20 m consumption = 30×3 = 90 L/min. Time = 2,000/90 = 22 min. A reaches half first → turn at 20 min."
+    },
+    {
+      "id": 64,
+      "category": "spotreba-planovani",
+      "question": "Plan the bottom time at 30 m for a diver with a 15 L cylinder filled to 20 MPa and 25 L/min surface consumption so that ascent begins when the supply has dropped to 1/3 of the original:",
+      "options": [
+        { "key": "a", "text": "30 minutes" },
+        { "key": "b", "text": "27 minutes" },
+        { "key": "c", "text": "20 minutes" },
+        { "key": "d", "text": "10 minutes" }
+      ],
+      "correct": "c",
+      "explanation": "Supply = 15×200 = 3,000 L. The diver may use 2/3 = 2,000 L. At 30 m (4 bar) consumption = 25×4 = 100 L/min. Time = 2,000/100 = 20 minutes."
+    },
+    {
+      "id": 65,
+      "category": "spotreba-planovani",
+      "question": "Plan the turn-around time for an under-ice dive at 20 m using the rule of thirds. Both divers have 15 L cylinders filled to 18 MPa and 30 L/min surface consumption:",
+      "options": [
+        { "key": "a", "text": "15 minutes" },
+        { "key": "b", "text": "20 minutes" },
+        { "key": "c", "text": "30 minutes" },
+        { "key": "d", "text": "10 minutes" }
+      ],
+      "correct": "d",
+      "explanation": "Supply = 15×180 = 2,700 L. One third for the outbound leg = 900 L. At 20 m (3 bar) consumption = 30×3 = 90 L/min. Time = 900/90 = 10 minutes."
+    },
+    {
+      "id": 66,
+      "category": "spotreba-planovani",
+      "question": "What surface air consumption does a diver have if, during 20 minutes at 10 m, the pressure in a 10 L cylinder drops from 15 MPa to 5 MPa?",
+      "options": [
+        { "key": "a", "text": "20 litres per minute" },
+        { "key": "b", "text": "30 litres per minute" },
+        { "key": "c", "text": "35 litres per minute" },
+        { "key": "d", "text": "25 litres per minute" }
+      ],
+      "correct": "d",
+      "explanation": "Air used = 10 × (150 − 50) = 1,000 L. At 10 m (2 bar) over 20 min. Actual consumption = 1,000/20 = 50 L/min. Surface consumption = 50/2 = 25 L/min."
+    },
+    {
+      "id": 67,
+      "category": "spotreba-planovani",
+      "question": "How long can a diver with a 10 L cylinder at 20 MPa and surface consumption 30 L/min stay at 15 m before the cylinder pressure drops to 5 MPa?",
+      "options": [
+        { "key": "a", "text": "17 minutes" },
+        { "key": "b", "text": "20 minutes" },
+        { "key": "c", "text": "25 minutes" },
+        { "key": "d", "text": "33 minutes" }
+      ],
+      "correct": "b",
+      "explanation": "Usable supply = 10 × (200 − 50) = 1,500 L. At 15 m (2.5 bar) consumption = 30 × 2.5 = 75 L/min. Time = 1,500/75 = 20 minutes."
+    },
+    {
+      "id": 68,
+      "category": "spotreba-planovani",
+      "question": "How long does the pressure in a 12 L cylinder drop from an initial 20 MPa to 5 MPa at 20 m and a surface consumption of 30 L/min?",
+      "options": [
+        { "key": "a", "text": "in 15 minutes" },
+        { "key": "b", "text": "in 25 minutes" },
+        { "key": "c", "text": "in 20 minutes" },
+        { "key": "d", "text": "in 30 minutes" }
+      ],
+      "correct": "c",
+      "explanation": "Usable supply = 12 × (200 − 50) = 1,800 L. At 20 m (3 bar) consumption = 30 × 3 = 90 L/min. Time = 1,800/90 = 20 minutes."
+    },
+    {
+      "id": 69,
+      "category": "spotreba-planovani",
+      "question": "Before the dive a 15 L cylinder held only 5 MPa. A second 18 L cylinder held 20 MPa. The divers transferred air between the cylinders and are about to dive. Both have surface consumption 30 L/min. How long can they stay at 15 m before the pressure in the first cylinder drops to 3 MPa?",
+      "options": [
+        { "key": "a", "text": "25 minutes" },
+        { "key": "b", "text": "32 minutes" },
+        { "key": "c", "text": "20 minutes" },
+        { "key": "d", "text": "44 minutes" }
+      ],
+      "correct": "c",
+      "explanation": "Total air = 15×50 + 18×200 = 750 + 3,600 = 4,350 L. After equalisation the pressure in both = 4,350/(15+18) = 132 bar. Smaller cylinder (15 L): supply = 15×(132−30) = 1,530 L. At 15 m consumption = 30×2.5 = 75 L/min. Time = 1,530/75 ≈ 20 min."
+    },
+    {
+      "id": 70,
+      "category": "spotreba-planovani",
+      "question": "A 12 L cylinder has 5 MPa of residual pressure left. What pressure will it reach after being topped up from a 40 L cylinder originally at 20 MPa?",
+      "options": [
+        { "key": "a", "text": "11.5 MPa" },
+        { "key": "b", "text": "15.4 MPa" },
+        { "key": "c", "text": "16.5 MPa" },
+        { "key": "d", "text": "19.3 MPa" }
+      ],
+      "correct": "c",
+      "explanation": "Total air = 12×50 + 40×200 = 600 + 8,000 = 8,600 L. Total volume = 12 + 40 = 52 L. Resulting pressure = 8,600/52 = 165 bar = 16.5 MPa."
+    },
+    {
+      "id": 71,
+      "category": "spotreba-planovani",
+      "question": "What minimum cylinder pressure does a diver with a 10 L cylinder need for an ascent from 20 m at the prescribed 10 m/min rate with a 3-minute decompression stop at 5 m, with surface consumption 30 L/min?",
+      "options": [
+        { "key": "a", "text": "1.6 MPa" },
+        { "key": "b", "text": "2 MPa" },
+        { "key": "c", "text": "2.36 MPa" },
+        { "key": "d", "text": "4 MPa" }
+      ],
+      "correct": "c",
+      "explanation": "Ascent 20→5 m (2 min, average 2.25 bar): 30×2.25×2 = 135 L. Deco at 5 m (3 min, 1.5 bar): 30×1.5×3 = 135 L. Ascent 5→0 m (0.5 min, 1.25 bar): 30×1.25×0.5 = 19 L. Total ≈ 289 L. Pressure = 289/10 ≈ 29 bar → with margin, 2.36 MPa."
+    },
+    {
+      "id": 72,
+      "category": "spotreba-planovani",
+      "question": "Calculate the minimum cylinder volume, filled to 20 MPa, for a profile of 30 m / 10 min, 20 m / 5 min and 10 m / 10 min with a 5 MPa reserve included for ascent. Surface consumption is 30 L/min:",
+      "options": [
+        { "key": "a", "text": "12 litres" },
+        { "key": "b", "text": "15 litres" },
+        { "key": "c", "text": "18 litres" },
+        { "key": "d", "text": "20 litres" }
+      ],
+      "correct": "b",
+      "explanation": "30 m (4 bar, 10 min): 30×4×10 = 1,200 L. 20 m (3 bar, 5 min): 30×3×5 = 450 L. 10 m (2 bar, 10 min): 30×2×10 = 600 L. Total = 2,250 L. Usable pressure = 200−50 = 150 bar. Volume = 2,250/150 = 15 L."
+    },
+    {
+      "id": 73,
+      "category": "spotreba-planovani",
+      "question": "Two divers agree that on a dive to 30 m they will start ascending to a shallower depth when the first reaches 10 MPa.\nDiver A has an 18 L cylinder and surface consumption 30 L/min.\nDiver B has a 15 L cylinder and surface consumption 25 L/min.\nBoth cylinders are filled to 20 MPa.\nWhich diver reaches 10 MPa first, and after how long?",
+      "options": [
+        { "key": "a", "text": "B, in 20 minutes" },
+        { "key": "b", "text": "B, in 10 minutes" },
+        { "key": "c", "text": "both at the same time, in 20 minutes" },
+        { "key": "d", "text": "both at the same time, in 15 minutes" }
+      ],
+      "correct": "d",
+      "explanation": "A: supply down to 10 MPa = 18×(200−100) = 1,800 L. At 30 m (4 bar): 30×4 = 120 L/min. Time = 1,800/120 = 15 min. B: supply = 15×100 = 1,500 L. At 30 m: 25×4 = 100 L/min. Time = 1,500/100 = 15 min. Both reach the limit at 15 min."
+    },
+    {
+      "id": 74,
+      "category": "spotreba-planovani",
+      "question": "What surface consumption does a diver have if, during 10 minutes at 20 m, the pressure in an 18 L cylinder drops from 16 MPa to 11 MPa?",
+      "options": [
+        { "key": "a", "text": "20 litres per minute" },
+        { "key": "b", "text": "30 litres per minute" },
+        { "key": "c", "text": "25 litres per minute" },
+        { "key": "d", "text": "35 litres per minute" }
+      ],
+      "correct": "b",
+      "explanation": "Air used = 18 × (160 − 110) = 18 × 50 = 900 L. At 20 m (3 bar) over 10 min. Actual consumption = 900/10 = 90 L/min. Surface consumption = 90/3 = 30 L/min."
+    },
+    {
+      "id": 75,
+      "category": "spotreba-planovani",
+      "question": "Would the air supply in a 15 L cylinder at 5 MPa be enough for the prescribed 10 m/min ascent from 30 m and a 3-minute decompression stop at 5 m, if two divers — both with 40 L/min surface consumption — were breathing from this cylinder?",
+      "options": [
+        { "key": "a", "text": "not even enough to reach the stop" },
+        { "key": "b", "text": "only enough for a direct ascent to the surface" },
+        { "key": "c", "text": "enough to reach the stop and stay there for about 1.5 minutes" },
+        { "key": "d", "text": "enough to reach the stop and complete the full 3-minute decompression" }
+      ],
+      "correct": "c",
+      "explanation": "Supply = 15×50 = 750 L. Two divers = 80 L/min at the surface. Ascent 30→5 m (2.5 min, average 2.75 bar): 80×2.75×2.5 = 550 L. Remaining 200 L. Deco at 5 m (1.5 bar): 80×1.5 = 120 L/min. Time = 200/120 ≈ 1.5 min."
+    },
+    {
+      "id": 76,
+      "category": "spotreba-planovani",
+      "question": "A diver swam outbound at 30 m until the cylinder pressure dropped from 20 MPa to 10 MPa. He then ascended to 10 m and swam back. Determine the approximate cylinder pressure on returning to the start point (consumption was constant throughout):",
+      "options": [
+        { "key": "a", "text": "1 MPa" },
+        { "key": "b", "text": "3 MPa" },
+        { "key": "c", "text": "5 MPa" },
+        { "key": "d", "text": "7.5 MPa" }
+      ],
+      "correct": "c",
+      "explanation": "At 30 m (4 bar) he used 100 bar. The surface-equivalent consumption over time t = 100/4 = 25 bar-equivalent. At 10 m (2 bar) over the same time he uses 25×2 = 50 bar. Remaining 100 − 50 = 50 bar = 5 MPa."
+    },
+    {
+      "id": 77,
+      "category": "spotreba-planovani",
+      "question": "What minimum cylinder volume, filled to 20 MPa, does a diver with surface consumption 30 L/min need to spend 17 minutes at 30 m, complete a 3 min / 5 m decompression stop and surface with a 4 MPa reserve?",
+      "options": [
+        { "key": "a", "text": "12 litres" },
+        { "key": "b", "text": "18 litres" },
+        { "key": "c", "text": "15 litres" },
+        { "key": "d", "text": "20 litres" }
+      ],
+      "correct": "c",
+      "explanation": "30 m (4 bar, 17 min): 30×4×17 = 2,040 L. Ascent 30→5 m (2.5 min, 2.75 bar): 30×2.75×2.5 = 206 L. Deco at 5 m (1.5 bar, 3 min): 30×1.5×3 = 135 L. Ascent 5→0 m: ~20 L. Total ≈ 2,400 L. Usable pressure = 200−40 = 160 bar. Volume = 2,400/160 = 15 L."
+    },
+    {
+      "id": 78,
+      "category": "spotreba-planovani",
+      "question": "Divers agree that on a 25 m wreck they will stay until either:\n– the first reaches 5 MPa cylinder pressure, or\n– 30 minutes elapse, with a 5 min / 5 m decompression stop.\nDiver A has an 18 L cylinder and surface consumption 25 L/min;\nDiver B has a 20 L cylinder and surface consumption 30 L/min;\nboth cylinders are filled to 20 MPa.\nWhich condition is met first (and for which diver)?",
+      "options": [
+        { "key": "a", "text": "5 MPa (Diver A)" },
+        { "key": "b", "text": "5 MPa (Diver B)" },
+        { "key": "c", "text": "30 minutes (Diver B)" },
+        { "key": "d", "text": "both conditions are met simultaneously (5 MPa at 30 minutes)" }
+      ],
+      "correct": "b",
+      "explanation": "At 25 m (3.5 bar). A: supply = 18×(200−50) = 2,700 L. Consumption = 25×3.5 = 87.5 L/min. Time = 2,700/87.5 ≈ 31 min. B: supply = 20×150 = 3,000 L. Consumption = 30×3.5 = 105 L/min. Time = 3,000/105 ≈ 28.6 min. B reaches 5 MPa first (before 30 min)."
+    },
+    {
+      "id": 79,
+      "category": "spotreba-planovani",
+      "question": "Divers are at 25 m. Diver A, surface consumption 25 L/min, has a 12 L cylinder; Diver B, surface consumption 30 L/min, has an 18 L cylinder. What minimum cylinder pressure must each have for an ascent to a 5 m decompression stop, a 5 min / 5 m decompression and a final ascent with a 3 MPa reserve?",
+      "options": [
+        { "key": "a", "text": "A: 5.6 MPa, B: 5.1 MPa" },
+        { "key": "b", "text": "A: 7.5 MPa, B: 7 MPa" },
+        { "key": "c", "text": "A: 7 MPa, B: 7.3 MPa" },
+        { "key": "d", "text": "A: 4.8 MPa, B: 4.2 MPa" }
+      ],
+      "correct": "a",
+      "explanation": "Ascent 25→5 m (2 min, 2.5 bar): A = 25×2.5×2 = 125 L, B = 30×2.5×2 = 150 L. Deco at 5 m (5 min, 1.5 bar): A = 25×1.5×5 = 187 L, B = 30×1.5×5 = 225 L. Totals: A ≈ 312 L, B ≈ 375 L. Pressure: A = 312/12 + 30 = 56 bar = 5.6 MPa. B = 375/18 + 30 = 51 bar = 5.1 MPa."
+    },
+    {
+      "id": 80,
+      "category": "dekomprese-syceni",
+      "question": "A diver with a surface air consumption of 30 L/min consumes per minute approximately:",
+      "options": [
+        { "key": "a", "text": "0.5 L of oxygen" },
+        { "key": "b", "text": "3 L of oxygen" },
+        { "key": "c", "text": "1.5 L of oxygen" },
+        { "key": "d", "text": "6 L of oxygen" }
+      ],
+      "correct": "c",
+      "explanation": "About 5% of the inhaled oxygen is consumed by the body (from 21% down to 16%). O₂ consumption = 30 L × 0.05 = 1.5 L/min. The rest of the oxygen is exhaled."
+    },
+    {
+      "id": 81,
+      "category": "dekomprese-syceni",
+      "question": "Which answer is entirely incorrect? The partial pressure of oxygen in air:",
+      "options": [
+        { "key": "a", "text": "Expresses the partial pressure of O₂ in air." },
+        { "key": "b", "text": "Is given by the percentage of O₂ in air." },
+        { "key": "c", "text": "The sum of the partial pressures of the components of air equals the air pressure." },
+        { "key": "d", "text": "Partial pressures of gases in air do not depend on the total air pressure." }
+      ],
+      "correct": "d",
+      "explanation": "Partial pressure depends on the total pressure. <em>p</em>O₂ = fO₂ × P_total. As depth (and pressure) increase, every partial pressure increases as well. That is why oxygen becomes toxic at depth."
+    },
+    {
+      "id": 82,
+      "category": "dekomprese-syceni",
+      "question": "From what depth can a 4% oxygen / 96% hydrogen mixture be breathed if the partial pressure of oxygen must not fall below 16 kPa?",
+      "options": [
+        { "key": "a", "text": "6 metres" },
+        { "key": "b", "text": "16 metres" },
+        { "key": "c", "text": "40 metres" },
+        { "key": "d", "text": "30 metres" }
+      ],
+      "correct": "d",
+      "explanation": "Minimum <em>p</em>O₂ = 16 kPa = 0.16 bar. Required total pressure = 0.16 / 0.04 = 4 bar. That corresponds to 30 m. Shallower than that, <em>p</em>O₂ would be too low (hypoxia)."
+    },
+    {
+      "id": 83,
+      "category": "dekomprese-syceni",
+      "question": "Which of the following statements is incorrect?\nWith increasing altitude:",
+      "options": [
+        { "key": "a", "text": "atmospheric pressure decreases" },
+        { "key": "b", "text": "after a previous decompression dive at sea, the probability of decompression sickness rises" },
+        { "key": "c", "text": "the partial pressure of oxygen falls, but the partial pressure of nitrogen rises (so we are more at risk of decompression sickness)" },
+        { "key": "d", "text": "compared with diving at sea, the depths and durations of decompression stops must change" }
+      ],
+      "correct": "c",
+      "explanation": "Incorrect. With increasing altitude the partial pressures of all gases (including nitrogen) fall, because the total pressure falls. The composition of air (the ratio of gases) stays the same."
+    },
+    {
+      "id": 84,
+      "category": "dekomprese-syceni",
+      "question": "What is the partial pressure of oxygen in the bag of an oxygen rebreather at 15 m?",
+      "options": [
+        { "key": "a", "text": "250 kPa" },
+        { "key": "b", "text": "21 kPa" },
+        { "key": "c", "text": "52.5 kPa" },
+        { "key": "d", "text": "150 kPa" }
+      ],
+      "correct": "a",
+      "explanation": "An oxygen rebreather contains 100% O₂. At 15 m the absolute pressure is 2.5 bar = 250 kPa. <em>p</em>O₂ = 1.0 × 250 = 250 kPa. That is a dangerously high value (oxygen toxicity)."
+    },
+    {
+      "id": 85,
+      "category": "dekomprese-syceni",
+      "question": "At a high-altitude lake the atmospheric pressure is 70 kPa. Determine the partial pressures of oxygen on breathing air at the surface of the lake and at 20 m depth:",
+      "options": [
+        { "key": "a", "text": "14.7 kPa and 42 kPa" },
+        { "key": "b", "text": "14.7 kPa and 56.7 kPa" },
+        { "key": "c", "text": "21 kPa and 63 kPa" },
+        { "key": "d", "text": "14.7 kPa and 63 kPa" }
+      ],
+      "correct": "b",
+      "explanation": "At the surface: <em>p</em>O₂ = 0.21 × 70 = 14.7 kPa. At 20 m: total pressure = 70 + 200 = 270 kPa, <em>p</em>O₂ = 0.21 × 270 = 56.7 kPa."
+    },
+    {
+      "id": 86,
+      "category": "dekomprese-syceni",
+      "question": "To what depth may a 32% oxygen / 68% nitrogen mixture be used so that the maximum oxygen partial pressure of 160 kPa is not exceeded?",
+      "options": [
+        { "key": "a", "text": "40 metres" },
+        { "key": "b", "text": "50 metres" },
+        { "key": "c", "text": "30 metres" },
+        { "key": "d", "text": "6 metres" }
+      ],
+      "correct": "a",
+      "explanation": "Maximum total pressure = 160 / 0.32 = 500 kPa = 5 bar. That corresponds to 40 m. This is the MOD (Maximum Operating Depth) for Nitrox 32."
+    },
+    {
+      "id": 87,
+      "category": "dekomprese-syceni",
+      "question": "A breathing mixture is 20% oxygen, 50% nitrogen and 30% helium. Determine the partial pressures of the individual gases when this mixture is used at 70 m:",
+      "options": [
+        { "key": "a", "text": "oxygen 160 kPa, nitrogen 400 kPa, helium 240 kPa" },
+        { "key": "b", "text": "oxygen 140 kPa, nitrogen 350 kPa, helium 210 kPa" },
+        { "key": "c", "text": "oxygen 180 kPa, nitrogen 450 kPa, helium 270 kPa" },
+        { "key": "d", "text": "oxygen 200 kPa, nitrogen 500 kPa, helium 300 kPa" }
+      ],
+      "correct": "a",
+      "explanation": "At 70 m the absolute pressure is 8 bar = 800 kPa. <em>p</em>O₂ = 0.20 × 800 = 160 kPa. <em>p</em>N₂ = 0.50 × 800 = 400 kPa. <em>p</em>He = 0.30 × 800 = 240 kPa."
+    },
+    {
+      "id": 88,
+      "category": "dekomprese-syceni",
+      "question": "At what depth does the partial pressure of oxygen in air reach 160 kPa?",
+      "options": [
+        { "key": "a", "text": "55 metres" },
+        { "key": "b", "text": "77 metres" },
+        { "key": "c", "text": "66 metres" },
+        { "key": "d", "text": "88 metres" }
+      ],
+      "correct": "c",
+      "explanation": "Total pressure = 160 / 0.21 = 762 kPa ≈ 7.6 bar. Depth = (7.6 − 1) × 10 = 66 m. This is the MOD for air at <em>p</em>O₂ = 1.6 bar."
+    },
+    {
+      "id": 89,
+      "category": "dekomprese-syceni",
+      "question": "Determine the partial pressures of oxygen and nitrogen in a 15 L scuba cylinder filled with air to 15 MPa:",
+      "options": [
+        { "key": "a", "text": "oxygen 21 kPa, nitrogen 78 kPa" },
+        { "key": "b", "text": "oxygen 3.15 MPa, nitrogen 11.7 MPa" },
+        { "key": "c", "text": "oxygen 315 kPa, nitrogen 1,170 kPa" },
+        { "key": "d", "text": "depends on depth (e.g. at 10 m oxygen 42 kPa, nitrogen 156 kPa)" }
+      ],
+      "correct": "b",
+      "explanation": "The cylinder pressure is 15 MPa, independent of depth. <em>p</em>O₂ = 0.21 × 15 = 3.15 MPa. <em>p</em>N₂ = 0.78 × 15 = 11.7 MPa. Partial pressures inside the cylinder are constant."
+    },
+    {
+      "id": 90,
+      "category": "dekomprese-syceni",
+      "question": "What is the maximum oxygen volume fraction in an oxygen-nitrogen mixture intended for 30 m so that the oxygen partial pressure at this depth does not exceed 160 kPa?",
+      "options": [
+        { "key": "a", "text": "4%" },
+        { "key": "b", "text": "53%" },
+        { "key": "c", "text": "40%" },
+        { "key": "d", "text": "16%" }
+      ],
+      "correct": "c",
+      "explanation": "At 30 m the absolute pressure is 4 bar = 400 kPa. Maximum fO₂ = 160 / 400 = 0.40 = 40%. A mixture richer in O₂ would be toxic at this depth."
+    },
+    {
+      "id": 91,
+      "category": "dekomprese-syceni",
+      "question": "What is the maximum nitrogen volume fraction in a helium-oxygen-nitrogen mixture intended for 150 m so that the nitrogen partial pressure at this depth does not exceed 400 kPa?",
+      "options": [
+        { "key": "a", "text": "50%" },
+        { "key": "b", "text": "35%" },
+        { "key": "c", "text": "25%" },
+        { "key": "d", "text": "60%" }
+      ],
+      "correct": "c",
+      "explanation": "At 150 m the absolute pressure is 16 bar = 1,600 kPa. Maximum fN₂ = 400 / 1,600 = 0.25 = 25%. A higher nitrogen fraction would cause narcosis."
+    },
+    {
+      "id": 92,
+      "category": "dekomprese-syceni",
+      "question": "At what depth would a breathing mixture of 40% nitrogen, 16% oxygen and 34% helium reach the partial pressures of nitrogen 400 kPa and oxygen 160 kPa?",
+      "options": [
+        { "key": "a", "text": "N₂ 70 m, O₂ 66 m" },
+        { "key": "b", "text": "N₂ 80 m, O₂ 80 m" },
+        { "key": "c", "text": "N₂ 100 m, O₂ 90 m" },
+        { "key": "d", "text": "N₂ 90 m, O₂ 90 m" }
+      ],
+      "correct": "d",
+      "explanation": "For N₂: pressure = 400/0.40 = 1,000 kPa = 10 bar → 90 m. For O₂: pressure = 160/0.16 = 1,000 kPa = 10 bar → 90 m. Both limits are reached at the same depth, 90 m."
+    },
+    {
+      "id": 93,
+      "category": "dekomprese-syceni",
+      "question": "Why is it advantageous to breathe oxygen at decompression stops?",
+      "options": [
+        { "key": "a", "text": "It reduces the rate of nitrogen elimination from the body." },
+        { "key": "b", "text": "It creates a larger pressure gradient for nitrogen elimination from the body." },
+        { "key": "c", "text": "Oxygen stimulates the receptors of the respiratory centre and thus increases ventilation." },
+        { "key": "d", "text": "Oxygen binds to haemoglobin and thereby displaces bound nitrogen." }
+      ],
+      "correct": "b",
+      "explanation": "When breathing pure O₂, <em>p</em>N₂ in the lungs is almost zero. This creates the maximum pressure gradient between tissues (saturated with N₂) and the lungs, which speeds up nitrogen off-gassing."
+    },
+    {
+      "id": 94,
+      "category": "dekomprese-syceni",
+      "question": "The half-time of on-gassing of the fastest tissues is approximately:",
+      "options": [
+        { "key": "a", "text": "4 minutes" },
+        { "key": "b", "text": "12 minutes" },
+        { "key": "c", "text": "25 minutes" },
+        { "key": "d", "text": "40 minutes" }
+      ],
+      "correct": "a",
+      "explanation": "The fastest tissues (well-perfused — brain, heart) have a half-time around 4–5 minutes. The slowest tissues (tendons, cartilage) have half-times up to 600 minutes."
+    },
+    {
+      "id": 95,
+      "category": "dekomprese-syceni",
+      "question": "Determine the partial pressure of nitrogen in a tissue of 15-minute on-gassing half-time at 40 m in seawater after 30 minutes of breathing air:",
+      "options": [
+        { "key": "a", "text": "253.5 kPa" },
+        { "key": "b", "text": "292.5 kPa" },
+        { "key": "c", "text": "273 kPa" },
+        { "key": "d", "text": "312 kPa" }
+      ],
+      "correct": "d",
+      "explanation": "<em>p</em>N₂ at the surface = 78 kPa. At 40 m (5 bar): <em>p</em>N₂ = 0.78 × 500 = 390 kPa. After 30 min (2 half-times) the tissue has on-gassed to 75%. Δp = 390 − 78 = 312 kPa. On-gassing = 78 + 0.75×312 = 312 kPa."
+    },
+    {
+      "id": 96,
+      "category": "dekomprese-syceni",
+      "question": "Determine the partial pressure of nitrogen in a tissue after the first on-gassing half-time at 30 m in seawater on air:",
+      "options": [
+        { "key": "a", "text": "117 kPa" },
+        { "key": "b", "text": "156 kPa" },
+        { "key": "c", "text": "234 kPa" },
+        { "key": "d", "text": "195 kPa" }
+      ],
+      "correct": "d",
+      "explanation": "<em>p</em>N₂ at the surface = 78 kPa. At 30 m (4 bar): <em>p</em>N₂ = 0.78 × 400 = 312 kPa. After 1 half-time the tissue on-gasses to 50% of the difference. Δp = 312 − 78 = 234 kPa. On-gassing = 78 + 0.5×234 = 195 kPa."
+    },
+    {
+      "id": 97,
+      "category": "dekomprese-syceni",
+      "question": "Determine the partial pressure of nitrogen after 40 minutes at 30 m in seawater on air, in tissues with on-gassing half-times of 20 minutes (A) and 40 minutes (B):",
+      "options": [
+        { "key": "a", "text": "A: 312 kPa, B: 156 kPa" },
+        { "key": "b", "text": "A: 234 kPa, B: 195 kPa" },
+        { "key": "c", "text": "A: 156 kPa, B: 312 kPa" },
+        { "key": "d", "text": "A: 253.5 kPa, B: 195 kPa" }
+      ],
+      "correct": "d",
+      "explanation": "<em>p</em>N₂ at 30 m = 312 kPa, Δp = 234 kPa. A (40 min = 2 half-times, 75%): 78 + 0.75×234 = 253.5 kPa. B (40 min = 1 half-time, 50%): 78 + 0.5×234 = 195 kPa."
+    },
+    {
+      "id": 98,
+      "category": "dekomprese-syceni",
+      "question": "Determine the partial pressure of nitrogen in a tissue after two on-gassing half-times at 30 m in seawater on air:",
+      "options": [
+        { "key": "a", "text": "234 kPa" },
+        { "key": "b", "text": "253.5 kPa" },
+        { "key": "c", "text": "273 kPa" },
+        { "key": "d", "text": "312 kPa" }
+      ],
+      "correct": "b",
+      "explanation": "<em>p</em>N₂ at 30 m = 312 kPa, initial = 78 kPa, Δp = 234 kPa. After 2 half-times: 50% + 25% = 75% on-gassing. <em>p</em>N₂ = 78 + 0.75×234 = 253.5 kPa."
+    },
+    {
+      "id": 99,
+      "category": "dekomprese-syceni",
+      "question": "Determine the partial pressure of nitrogen in a tissue of 15-minute on-gassing half-time at 70 m in seawater after 30 minutes of breathing a mixture containing 50% nitrogen. The mixture is breathed from the moment of submersion; before that, air was breathed:",
+      "options": [
+        { "key": "a", "text": "378 kPa" },
+        { "key": "b", "text": "340.5 kPa" },
+        { "key": "c", "text": "253 kPa" },
+        { "key": "d", "text": "319.5 kPa" }
+      ],
+      "correct": "d",
+      "explanation": "Initial <em>p</em>N₂ = 78 kPa. At 70 m (8 bar) with 50% N₂: <em>p</em>N₂ = 0.5 × 800 = 400 kPa. Δp = 322 kPa. After 30 min (2 half-times, 75%): 78 + 0.75×322 = 319.5 kPa."
+    },
+    {
+      "id": 100,
+      "category": "dekomprese-syceni",
+      "question": "At normal atmospheric pressure, approximately 10 millilitres of nitrogen are dissolved per litre of blood (10 mL/L). How much nitrogen will be dissolved in the blood after one on-gassing half-time at 30 m on air?",
+      "options": [
+        { "key": "a", "text": "40 mL/L" },
+        { "key": "b", "text": "30 mL/L" },
+        { "key": "c", "text": "20 mL/L" },
+        { "key": "d", "text": "25 mL/L" }
+      ],
+      "correct": "d",
+      "explanation": "At 30 m (4 bar) full saturation would dissolve 4× more N₂ = 40 mL/L. After one half-time on-gassing reaches 50% of the difference. Δ = 40 − 10 = 30 mL/L. Dissolved = 10 + 0.5×30 = 25 mL/L."
+    }
+  ]
+}

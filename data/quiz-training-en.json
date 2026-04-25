@@ -1,0 +1,1306 @@
+{
+  "title": "Training Guidelines – SPČR 2018 Exam Tests",
+  "description": "Exam questions on the SPČR Training Guidelines 2016 for divers",
+  "questions": [
+    {
+      "id": 1,
+      "category": "obecna-pravidla",
+      "question": "The diving qualification grades Supervised Diver, SPČR Junior Diver, CMAS One-Star Diver, CMAS Two-Star Diver, CMAS Three-Star Diver, and the instructor grades CMAS One-Star Instructor, CMAS Two-Star Instructor and CMAS Three-Star Instructor may be awarded:",
+      "options": [
+        { "key": "a", "text": "after successfully completing at least 80% of the practical-training tasks prescribed by these guidelines" },
+        { "key": "b", "text": "only to a member of a CMAS organisation" },
+        { "key": "c", "text": "diver grades to any Czech citizen; instructor grades only to the chair and/or vice-chair of an SČP or SPMS dive club" },
+        { "key": "d", "text": "diver grades from age 18; instructor grades from age 21" }
+      ],
+      "correct": "b",
+      "explanation": "The qualification grades may only be awarded to a member of a CMAS organisation."
+    },
+    {
+      "id": 2,
+      "category": "obecna-pravidla",
+      "question": "For the Introduction to Diving, for CMAS/SPČR specialty courses and for diving training of children:",
+      "options": [
+        { "key": "a", "text": "separate guidelines apply" },
+        { "key": "b", "text": "the instructor has the right to set the scope of training based on the trainees' progress" },
+        { "key": "c", "text": "no binding standard is set" },
+        { "key": "d", "text": "no instructor qualification is required" }
+      ],
+      "correct": "a",
+      "explanation": "Introduction to Diving, specialty courses and child training are governed by separate guidelines."
+    },
+    {
+      "id": 3,
+      "category": "obecna-pravidla",
+      "question": "Training providers for the qualification grades listed in VS SPČR 2016 (the SPČR Training Guidelines, 2016 edition) may be:",
+      "options": [
+        { "key": "a", "text": "SPČR (Czech Diving Federation), SPČR member federations, clubs registered with these member federations, SPČR instructors, and legal or natural persons authorised by the relevant member federation" },
+        { "key": "b", "text": "only SPČR and its member federations (SČP and SPMS)" },
+        { "key": "c", "text": "only SPČR member federations and clubs registered with them" },
+        { "key": "d", "text": "only SPČR instructors" }
+      ],
+      "correct": "a",
+      "explanation": "Training providers may be SPČR, member federations, registered clubs, SPČR instructors, and persons authorised for this purpose."
+    },
+    {
+      "id": 4,
+      "category": "obecna-pravidla",
+      "question": "Anyone applying to take part in training must produce:",
+      "options": [
+        { "key": "a", "text": "proof of education achieved" },
+        { "key": "b", "text": "a psychological assessment" },
+        { "key": "c", "text": "their own diving equipment" },
+        { "key": "d", "text": "a valid medical certificate of fitness to dive" }
+      ],
+      "correct": "d",
+      "explanation": "An applicant for training must produce a valid medical certificate of fitness to dive."
+    },
+    {
+      "id": 5,
+      "category": "obecna-pravidla",
+      "question": "Training participation by an applicant under 18 is possible only with the written consent of:",
+      "options": [
+        { "key": "a", "text": "the other training participants" },
+        { "key": "b", "text": "the instructor running the training" },
+        { "key": "c", "text": "any SPČR instructor with at least the CMAS Two-Star Instructor qualification" },
+        { "key": "d", "text": "the applicant's legal guardian" }
+      ],
+      "correct": "d",
+      "explanation": "Participation by an applicant under 18 is possible only with the written consent of their legal guardian."
+    },
+    {
+      "id": 6,
+      "category": "obecna-pravidla",
+      "question": "During training the following must be observed:",
+      "options": [
+        { "key": "a", "text": "the provisions of the SPČR Safety Guidelines concerning the organisation of diving" },
+        { "key": "b", "text": "the provisions of the SPČR Safety Guidelines concerning diving equipment" },
+        { "key": "c", "text": "all provisions of the SPČR Safety Guidelines" },
+        { "key": "d", "text": "those provisions of the SPČR Safety Guidelines that explicitly concern training" }
+      ],
+      "correct": "c",
+      "explanation": "All provisions of the SPČR Safety Guidelines must be observed during training."
+    },
+    {
+      "id": 7,
+      "category": "obecna-pravidla",
+      "question": "Knowledge of candidates for diver qualification grades may be assessed:",
+      "options": [
+        { "key": "a", "text": "only by means of final exams" },
+        { "key": "b", "text": "either during training or by means of final exams, in writing and/or orally" },
+        { "key": "c", "text": "either during training or by means of final exams, but always in writing" },
+        { "key": "d", "text": "only during training, and always orally" }
+      ],
+      "correct": "b",
+      "explanation": "Knowledge may be assessed during training or by means of final exams, in writing and/or orally."
+    },
+    {
+      "id": 8,
+      "category": "obecna-pravidla",
+      "question": "Knowledge of candidates for diver qualification grades may be assessed:",
+      "options": [
+        { "key": "a", "text": "in writing and/or orally" },
+        { "key": "b", "text": "only in writing" },
+        { "key": "c", "text": "only orally" },
+        { "key": "d", "text": "only in the form of final exams in writing and/or orally" }
+      ],
+      "correct": "a",
+      "explanation": "Knowledge may be assessed in writing and/or orally."
+    },
+    {
+      "id": 9,
+      "category": "obecna-pravidla",
+      "question": "Skills of candidates for diver qualification grades must be assessed by:",
+      "options": [
+        { "key": "a", "text": "the chair of the relevant dive club, with assistance from an instructor" },
+        { "key": "b", "text": "the instructor who awards the candidate the qualification grade" },
+        { "key": "c", "text": "an examination panel of at least three members appointed by the SPČR Training Committee (VK)" },
+        { "key": "d", "text": "an examination panel of at least three members appointed by the board of SČP or SPMS" }
+      ],
+      "correct": "b",
+      "explanation": "Skills must be assessed by the instructor who awards the candidate the qualification grade."
+    },
+    {
+      "id": 10,
+      "category": "obecna-pravidla",
+      "question": "Skills of candidates for diver qualification grades may be assessed during training or by means of final exams, but in any case:",
+      "options": [
+        { "key": "a", "text": "before an examination panel of at least three members" },
+        { "key": "b", "text": "before a designated member of the SČP or SPMS board" },
+        { "key": "c", "text": "all requirements for the relevant qualification grade must be met" },
+        { "key": "d", "text": "at least a majority of the requirements for the relevant qualification grade must be met" }
+      ],
+      "correct": "c",
+      "explanation": "All requirements for the relevant qualification grade must be met."
+    },
+    {
+      "id": 11,
+      "category": "obecna-pravidla",
+      "question": "Awarding a qualification grade consists of:",
+      "options": [
+        { "key": "a", "text": "a written (or electronic) confirmation, a copy of which the instructor sends within 10 working days to the board of the relevant SPČR member federation" },
+        { "key": "b", "text": "issuing the relevant qualification (C-)card in the holder's name; on the holder's request the qualification can also be entered into their dive logbook with photo and personal details" },
+        { "key": "c", "text": "entering the qualification grade into the dive logbook with photo and personal details; on the holder's request the qualification card can also be issued" },
+        { "key": "d", "text": "issuing the qualification (C-)card in the holder's name and entering the qualification into their dive logbook with photo and personal details" }
+      ],
+      "correct": "d",
+      "explanation": "The award consists of issuing the qualification card and entering it into the dive logbook."
+    },
+    {
+      "id": 12,
+      "category": "obecna-pravidla",
+      "question": "Awarding a qualification grade:",
+      "options": [
+        { "key": "a", "text": "consists of issuing the qualification card and entering the qualification into the dive logbook" },
+        { "key": "b", "text": "consists of issuing the qualification card" },
+        { "key": "c", "text": "consists of entering the qualification grade into the dive logbook" },
+        { "key": "d", "text": "consists of an oral notification to the holder, with the option to arrange the issuing of the qualification card" }
+      ],
+      "correct": "a",
+      "explanation": "Awarding a qualification grade consists of issuing the qualification card and entering it into the dive logbook."
+    },
+    {
+      "id": 13,
+      "category": "obecna-pravidla",
+      "question": "If an instructor panel is tasked with assessing a candidate's knowledge and skills, the panel:",
+      "options": [
+        { "key": "a", "text": "must have at least three members" },
+        { "key": "b", "text": "elects its chair from among its own members" },
+        { "key": "c", "text": "is represented towards the candidates by its chair" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "All answers are correct — the panel must have three members, the members elect a chair, and the chair represents the panel."
+    },
+    {
+      "id": 14,
+      "category": "obecna-pravidla",
+      "question": "Mark the incorrect statement. If an instructor panel is tasked with assessing a candidate's knowledge and skills:",
+      "options": [
+        { "key": "a", "text": "it must have at least three members" },
+        { "key": "b", "text": "the members elect the chair from among themselves" },
+        { "key": "c", "text": "the chair is elected by the candidates in a secret ballot" },
+        { "key": "d", "text": "the chair represents the panel towards the candidates" }
+      ],
+      "correct": "c",
+      "explanation": "It is incorrect that the candidates elect the chair — the chair is elected by the panel members from among themselves."
+    },
+    {
+      "id": 15,
+      "category": "obecna-pravidla",
+      "question": "Whenever a candidate upgrades a qualification or extends its validity, they must submit:",
+      "options": [
+        { "key": "a", "text": "a recommendation from the dive club" },
+        { "key": "b", "text": "a recommendation from the instructor who awarded their entry-level qualification" },
+        { "key": "c", "text": "proof of the required entry-level qualification and a properly kept dive logbook" },
+        { "key": "d", "text": "proof of the required entry-level qualification" }
+      ],
+      "correct": "c",
+      "explanation": "The candidate must submit proof of the required entry-level qualification and a properly kept dive logbook."
+    },
+    {
+      "id": 16,
+      "category": "obecna-pravidla",
+      "question": "Proof of the required entry-level qualification and a properly kept dive logbook must be submitted by the candidate:",
+      "options": [
+        { "key": "a", "text": "before each dive, to the dive leader and/or dive supervisor" },
+        { "key": "b", "text": "whenever upgrading a qualification or extending its validity" },
+        { "key": "c", "text": "before each dive in difficult conditions (wind, waves, current)" },
+        { "key": "d", "text": "before each dive deeper than 30 m" }
+      ],
+      "correct": "b",
+      "explanation": "Documents must be submitted whenever a candidate upgrades a qualification or extends its validity."
+    },
+    {
+      "id": 17,
+      "category": "obecna-pravidla",
+      "question": "The knowledge and skills of candidates for diver qualification grades:",
+      "options": [
+        { "key": "a", "text": "may be assessed during training or by means of final exams" },
+        { "key": "b", "text": "must in any case meet all requirements for the relevant qualification grade" },
+        { "key": "c", "text": "must be assessed by the instructor who awards the candidate the qualification grade" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "All answers are correct."
+    },
+    {
+      "id": 18,
+      "category": "obecna-pravidla",
+      "question": "Mark the incorrect statement:",
+      "options": [
+        { "key": "a", "text": "An applicant for training must produce a valid medical certificate of fitness to dive." },
+        { "key": "b", "text": "Training participation by an applicant under 21 is possible only with the written consent of their legal guardian." },
+        { "key": "c", "text": "If an instructor panel is tasked with assessing a candidate, it must have at least three members." },
+        { "key": "d", "text": "Whenever upgrading a qualification or extending its validity, the candidate must submit proof of the required entry-level qualification and a properly kept dive logbook." }
+      ],
+      "correct": "b",
+      "explanation": "The statement about age 21 is incorrect — the correct age is under 18 for the legal-guardian consent requirement."
+    },
+    {
+      "id": 19,
+      "category": "prava-povinnosti",
+      "question": "The training provider has the right to:",
+      "options": [
+        { "key": "a", "text": "verify whether the SPČR Safety and/or Training Guidelines are being or have been breached during training" },
+        { "key": "b", "text": "temporarily upgrade the qualification of an instructor running the training, based on current need" },
+        { "key": "c", "text": "appropriately reduce the requirements of these guidelines for the relevant qualification grade in line with the current state of the material, financial and personnel support of the training" },
+        { "key": "d", "text": "if necessary, temporarily entrust the training to a holder of the CMAS Three-Star Diver qualification" }
+      ],
+      "correct": "a",
+      "explanation": "The training provider has the right to verify compliance with the SPČR Safety and/or Training Guidelines."
+    },
+    {
+      "id": 20,
+      "category": "prava-povinnosti",
+      "question": "Mark the incorrect statement. The training provider has the right to:",
+      "options": [
+        { "key": "a", "text": "verify whether the SPČR Safety and/or Training Guidelines are being or have been breached during training" },
+        { "key": "b", "text": "verify whether the training has the required quality" },
+        { "key": "c", "text": "organise the order of lessons and practical sessions at its own discretion" },
+        { "key": "d", "text": "remove from training an instructor who has misused their position in any way or undermined the training by their conduct" }
+      ],
+      "correct": "c",
+      "explanation": "Organising the order of lessons at the provider's own discretion is the instructor's right, not the provider's."
+    },
+    {
+      "id": 21,
+      "category": "prava-povinnosti",
+      "question": "The training provider:",
+      "options": [
+        { "key": "a", "text": "has the right to verify that the training has the required quality" },
+        { "key": "b", "text": "is obliged to provide material, financial and personnel resources for the safety, required quality and continuity of the training" },
+        { "key": "c", "text": "has the right to remove from training an instructor who knowingly violated the SPČR Safety or Training Guidelines" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "All answers are correct."
+    },
+    {
+      "id": 22,
+      "category": "prava-povinnosti",
+      "question": "The instructor running training has the right to:",
+      "options": [
+        { "key": "a", "text": "remove from the training area people whose behaviour disrupts the training or endangers participants" },
+        { "key": "b", "text": "organise the order of lessons and practical sessions at their own discretion" },
+        { "key": "c", "text": "organise the order of lessons and practical sessions taking into account the available material and technical means and the physical and mental abilities of the participants" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "All answers are correct."
+    },
+    {
+      "id": 23,
+      "category": "prava-povinnosti",
+      "question": "Among the rights of the instructor running training, organising the order of lessons and practical sessions does NOT include:",
+      "options": [
+        { "key": "a", "text": "by collective decision of the training participants (trainees)" },
+        { "key": "b", "text": "at their own discretion" },
+        { "key": "c", "text": "taking into account the available material and technical means" },
+        { "key": "d", "text": "taking into account the physical and mental abilities of the participants" }
+      ],
+      "correct": "a",
+      "explanation": "Organising the order by collective decision of the trainees is not among the instructor's rights."
+    },
+    {
+      "id": 24,
+      "category": "prava-povinnosti",
+      "question": "Mark the incorrect answer. The instructor running training is obliged to:",
+      "options": [
+        { "key": "a", "text": "admit to training only candidates who meet the prescribed requirements" },
+        { "key": "b", "text": "admit to training candidates who meet at least half of the prescribed requirements" },
+        { "key": "c", "text": "at the start of training, inform the trainees of the rights and duties of the instructor and of their own rights and duties" },
+        { "key": "d", "text": "at the start of training, inform the trainees of the content and organisation of the course" }
+      ],
+      "correct": "b",
+      "explanation": "The statement about half of the requirements is incorrect — candidates must meet all the requirements."
+    },
+    {
+      "id": 25,
+      "category": "prava-povinnosti",
+      "question": "During training, the instructor is obliged to:",
+      "options": [
+        { "key": "a", "text": "properly explain and practically demonstrate every newly introduced task and warn trainees of possible dangers" },
+        { "key": "b", "text": "not allow a trainee whose equipment is incomplete, unsuitable and/or insufficiently functional to perform the assigned tasks" },
+        { "key": "c", "text": "refuse to confirm the completion of tasks and tests that the trainee did not pass, did not finish or did not perform at all" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "All answers are correct."
+    },
+    {
+      "id": 26,
+      "category": "prava-povinnosti",
+      "question": "Before each practical lesson the instructor is obliged to:",
+      "options": [
+        { "key": "a", "text": "familiarise the trainees with the full text of the SPČR Safety Guidelines" },
+        { "key": "b", "text": "obtain a written consent from the trainees with the content of the lesson" },
+        { "key": "c", "text": "check the trainees' equipment and reduce the requirements for trainees whose equipment is incomplete, unsuitable and/or insufficiently functional" },
+        { "key": "d", "text": "check the trainees' equipment and not allow a trainee whose equipment is incomplete, unsuitable and/or insufficiently functional to perform the assigned tasks" }
+      ],
+      "correct": "d",
+      "explanation": "The instructor is obliged to check equipment and not allow trainees with unsuitable equipment to perform tasks."
+    },
+    {
+      "id": 27,
+      "category": "prava-povinnosti",
+      "question": "The instructor is obliged to interrupt training if they find that continuing would lead to:",
+      "options": [
+        { "key": "a", "text": "a breach of the SPČR Safety and/or Training Guidelines" },
+        { "key": "b", "text": "exceeding the goal of the lesson" },
+        { "key": "c", "text": "not reaching the goal of the lesson" },
+        { "key": "d", "text": "none of the answers is correct" }
+      ],
+      "correct": "a",
+      "explanation": "The instructor is obliged to interrupt training if continuing would lead to a breach of the guidelines."
+    },
+    {
+      "id": 28,
+      "category": "prava-povinnosti",
+      "question": "Mark the incorrect statement. The instructor running training is obliged to:",
+      "options": [
+        { "key": "a", "text": "at the start of training, inform the trainees of the content and organisation of the course" },
+        { "key": "b", "text": "at the start of training, inform the trainees of the training provider's rights and duties" },
+        { "key": "c", "text": "during training, organise the order of lessons and practical sessions in accordance with basic pedagogical principles" },
+        { "key": "d", "text": "during training, properly explain and practically demonstrate every newly introduced task and warn trainees of possible dangers" }
+      ],
+      "correct": "b",
+      "explanation": "The instructor is not obliged to inform trainees of the training provider's rights and duties."
+    },
+    {
+      "id": 29,
+      "category": "prava-povinnosti",
+      "question": "The instructor is obliged to acquaint trainees with:",
+      "options": [
+        { "key": "a", "text": "how to file an incident report" },
+        { "key": "b", "text": "how to summon medical assistance in case of a medical emergency" },
+        { "key": "c", "text": "the meeting schedule of the relevant SPČR member federation board" },
+        { "key": "d", "text": "the meeting schedule of the SPČR Training Committee (VK)" }
+      ],
+      "correct": "b",
+      "explanation": "The instructor is obliged to acquaint trainees with how to summon medical assistance."
+    },
+    {
+      "id": 30,
+      "category": "prava-povinnosti",
+      "question": "A trainee has the right to:",
+      "options": [
+        { "key": "a", "text": "organise the order of lessons and practical sessions at their own discretion" },
+        { "key": "b", "text": "be supplied with equipment no older than two years from manufacture" },
+        { "key": "c", "text": "ask for an additional explanation if they did not understand the instructor's explanation" },
+        { "key": "d", "text": "ask to be exempted from practical tasks they already master" }
+      ],
+      "correct": "c",
+      "explanation": "A trainee has the right to ask for an additional explanation if they did not understand the instructor's explanation."
+    },
+    {
+      "id": 31,
+      "category": "prava-povinnosti",
+      "question": "A trainee has the right to:",
+      "options": [
+        { "key": "a", "text": "decline a task that does not match their current knowledge and skills, medical condition or physical or mental fitness" },
+        { "key": "b", "text": "decline a task that does not match their idea of what the practical lesson should contain" },
+        { "key": "c", "text": "before each practical lesson, check the equipment of the other participants and bar from the lesson those whose equipment is incomplete, unsuitable and/or insufficiently functional" },
+        { "key": "d", "text": "before each practical lesson, check trainees' medical certificates of fitness to dive" }
+      ],
+      "correct": "a",
+      "explanation": "A trainee has the right to decline a task that does not match their knowledge, skills, health or fitness."
+    },
+    {
+      "id": 32,
+      "category": "prava-povinnosti",
+      "question": "A trainee is entitled to:",
+      "options": [
+        { "key": "a", "text": "before each practical lesson, check the instructor's equipment" },
+        { "key": "b", "text": "request a replacement of equipment in which they have found functional defects" },
+        { "key": "c", "text": "verify whether the training has the required quality and remove from training an instructor who does not meet this condition" },
+        { "key": "d", "text": "tutor trainees who lag behind in mastering the required skills" }
+      ],
+      "correct": "b",
+      "explanation": "A trainee is entitled to request a replacement of equipment in which they have found functional defects."
+    },
+    {
+      "id": 33,
+      "category": "prava-povinnosti",
+      "question": "A trainee is obliged to:",
+      "options": [
+        { "key": "a", "text": "provide the material and financial means for the required quality and continuity of training" },
+        { "key": "b", "text": "organise the order of lessons and practical sessions in accordance with basic pedagogical principles" },
+        { "key": "c", "text": "follow the instructor's explanation attentively" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "c",
+      "explanation": "A trainee is obliged to follow the instructor's explanation attentively."
+    },
+    {
+      "id": 34,
+      "category": "prava-povinnosti",
+      "question": "During training, a trainee may only perform tasks:",
+      "options": [
+        { "key": "a", "text": "they consider appropriate for the optimal training progress" },
+        { "key": "b", "text": "they consider necessary for the optimal training progress" },
+        { "key": "c", "text": "assigned by the instructor" },
+        { "key": "d", "text": "assigned by another trainee who already masters the tasks" }
+      ],
+      "correct": "c",
+      "explanation": "A trainee is obliged to perform the tasks assigned by the instructor."
+    },
+    {
+      "id": 35,
+      "category": "prava-povinnosti",
+      "question": "A trainee is obliged to:",
+      "options": [
+        { "key": "a", "text": "on the instructor's request, repeat the task brief and have their equipment and its fit checked" },
+        { "key": "b", "text": "properly explain and practically demonstrate every newly introduced task" },
+        { "key": "c", "text": "before each practical lesson, check the equipment of the other trainees" },
+        { "key": "d", "text": "remove from training an instructor who has misused their position in any way" }
+      ],
+      "correct": "a",
+      "explanation": "A trainee is obliged to repeat the task brief on the instructor's request and have their equipment checked."
+    },
+    {
+      "id": 36,
+      "category": "prava-povinnosti",
+      "question": "Mark the incorrect statement. A trainee is obliged to immediately report to the instructor:",
+      "options": [
+        { "key": "a", "text": "if they do not have their medical certificate of fitness to dive on them before a practical lesson" },
+        { "key": "b", "text": "any health problems" },
+        { "key": "c", "text": "any problems with physical or mental fitness" },
+        { "key": "d", "text": "any finding that the training has led or could lead to a breach of the SPČR Safety Guidelines" }
+      ],
+      "correct": "a",
+      "explanation": "A trainee does not have to report that they do not have the medical certificate on them — that is submitted before the training."
+    },
+    {
+      "id": 37,
+      "category": "definice-pravidla",
+      "question": "The terms shallow, medium and great depth refer, in this order, to:",
+      "options": [
+        { "key": "a", "text": "depths up to 6 m, 6–18 m and over 18 m" },
+        { "key": "b", "text": "depths up to 10 m, 10–20 m and over 20 m" },
+        { "key": "c", "text": "depths up to 10 m, 10–30 m and over 30 m" },
+        { "key": "d", "text": "depths up to 20 m, 20–40 m and over 40 m" }
+      ],
+      "correct": "c",
+      "explanation": "Shallow depth is up to 10 m, medium 10–30 m and great over 30 m."
+    },
+    {
+      "id": 38,
+      "category": "definice-pravidla",
+      "question": "By a sheltered water area is meant:",
+      "options": [
+        { "key": "a", "text": "a water area with restricted vessel traffic" },
+        { "key": "b", "text": "a shallow water area in which trainees can be continuously supervised and where immediate intervention is possible in case of danger" },
+        { "key": "c", "text": "a water area sheltered from wind and waves" },
+        { "key": "d", "text": "a water area protected from freezing year-round" }
+      ],
+      "correct": "b",
+      "explanation": "A sheltered water area is a shallow area allowing continuous supervision and immediate intervention."
+    },
+    {
+      "id": 39,
+      "category": "definice-pravidla",
+      "question": "By open water is meant:",
+      "options": [
+        { "key": "a", "text": "a water area with a free surface, e.g. an indoor pool" },
+        { "key": "b", "text": "a water area of any depth that cannot be considered sheltered" },
+        { "key": "c", "text": "a water area that cannot be considered sheltered, has sufficient depth to practise the prescribed tasks and allows direct ascent to the surface throughout the dive" },
+        { "key": "d", "text": "a shallow water area in which trainees can be continuously supervised and immediate intervention is possible" }
+      ],
+      "correct": "c",
+      "explanation": "Open water is an area with sufficient depth for training and the possibility of direct ascent to the surface."
+    },
+    {
+      "id": 40,
+      "category": "definice-pravidla",
+      "question": "During training, a buddy team is formed by:",
+      "options": [
+        { "key": "a", "text": "the entire trainee group (class)" },
+        { "key": "b", "text": "the entire trainee group (class) plus the instructor" },
+        { "key": "c", "text": "the instructor and at least two trainees" },
+        { "key": "d", "text": "the instructor and one or two trainees" }
+      ],
+      "correct": "d",
+      "explanation": "During training, a buddy team is formed by the instructor and one or two trainees."
+    },
+    {
+      "id": 41,
+      "category": "definice-pravidla",
+      "question": "Buddy teams may also be formed of buddy pairs (or trios) of trainees put together by the instructor:",
+      "options": [
+        { "key": "a", "text": "at the trainees' request and/or wish" },
+        { "key": "b", "text": "if the underwater horizontal visibility is at least 6 m" },
+        { "key": "c", "text": "if they are equipped with breathing-gas cylinders of at least 3.6 m³ capacity" },
+        { "key": "d", "text": "depending on the training stage, the actual conditions and with regard to safety" }
+      ],
+      "correct": "d",
+      "explanation": "Trainee buddy teams may be formed depending on the training stage, the conditions and with regard to safety."
+    },
+    {
+      "id": 42,
+      "category": "definice-pravidla",
+      "question": "Before entering the water, members of a buddy team perform a buddy check focused on the correctness and adequacy of:",
+      "options": [
+        { "key": "a", "text": "open cylinder valves, cylinder pressures, the inflator hoses on BCDs and dry suits" },
+        { "key": "b", "text": "the function of the primary and alternate second stages of the regulators" },
+        { "key": "c", "text": "the placement and securing of weights" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "All answers are correct — a buddy check covers valves, pressures, hoses, regulators and weights."
+    },
+    {
+      "id": 43,
+      "category": "definice-pravidla",
+      "question": "Mark the incorrect statement:",
+      "options": [
+        { "key": "a", "text": "During training, a buddy team is formed by the instructor and one or two trainees." },
+        { "key": "b", "text": "Depending on the training stage, the conditions and with regard to safety, buddy teams may also be formed of buddy pairs or trios of trainees put together by the instructor." },
+        { "key": "c", "text": "Before entering the water, members of a buddy team perform a buddy check." },
+        { "key": "d", "text": "The pre-dive buddy check focuses on the correctness and adequacy of the fit of buddy-team members' insulating suits." }
+      ],
+      "correct": "d",
+      "explanation": "The statement about insulating-suit fit is incorrect — the buddy check focuses on valves, pressures, regulators and weights."
+    },
+    {
+      "id": 44,
+      "category": "definice-pravidla",
+      "question": "For counting toward the dive count required for a diver qualification grade, an open-water scuba dive means time underwater of:",
+      "options": [
+        { "key": "a", "text": "at least 15 minutes" },
+        { "key": "b", "text": "at least 20 minutes" },
+        { "key": "c", "text": "20–30 minutes" },
+        { "key": "d", "text": "at least 10 min for SPČR Junior Diver and CMAS One-Star Diver, at least 20 min for CMAS Two-Star Diver and at least 30 min for CMAS Three-Star Diver" }
+      ],
+      "correct": "a",
+      "explanation": "A dive counted for qualification means at least 15 minutes underwater."
+    },
+    {
+      "id": 45,
+      "category": "definice-pravidla",
+      "question": "On any one day, the maximum number of dives that can count toward the dive count required for a diver qualification grade is:",
+      "options": [
+        { "key": "a", "text": "one dive" },
+        { "key": "b", "text": "two dives" },
+        { "key": "c", "text": "three dives" },
+        { "key": "d", "text": "four dives" }
+      ],
+      "correct": "c",
+      "explanation": "Up to three dives can be counted on any one day."
+    },
+    {
+      "id": 46,
+      "category": "potapec-zakladni",
+      "question": "A holder of the Supervised Diver qualification is entitled to:",
+      "options": [
+        { "key": "a", "text": "dive in open water to a maximum depth of 12 m, accompanied by a person with a dive-leader qualification" },
+        { "key": "b", "text": "dive in open water to a maximum depth of 10 m, accompanied by a person with at least the CMAS Two-Star Diver qualification" },
+        { "key": "c", "text": "dive in open water to a maximum depth of 10 m with a holder of at least the same qualification (Supervised Diver)" },
+        { "key": "d", "text": "dive only in a sheltered water area" }
+      ],
+      "correct": "a",
+      "explanation": "A Supervised Diver may dive to 12 m accompanied by a person with a dive-leader qualification."
+    },
+    {
+      "id": 47,
+      "category": "potapec-zakladni",
+      "question": "The minimum age for entry into Supervised Diver training is:",
+      "options": [
+        { "key": "a", "text": "15 years" },
+        { "key": "b", "text": "14 years" },
+        { "key": "c", "text": "12 years" },
+        { "key": "d", "text": "10 years" }
+      ],
+      "correct": "c",
+      "explanation": "The minimum age for Supervised Diver training is 12."
+    },
+    {
+      "id": 48,
+      "category": "potapec-zakladni",
+      "question": "An applicant for Supervised Diver training must, without basic diving equipment or any other aid, swim on the surface:",
+      "options": [
+        { "key": "a", "text": "50 m" },
+        { "key": "b", "text": "75 m" },
+        { "key": "c", "text": "100 m" },
+        { "key": "d", "text": "200 m" }
+      ],
+      "correct": "a",
+      "explanation": "An applicant for Supervised Diver must swim 50 m without aids."
+    },
+    {
+      "id": 49,
+      "category": "potapec-zakladni",
+      "question": "Which of the following is NOT among the entry requirements for Supervised Diver training?",
+      "options": [
+        { "key": "a", "text": "minimum age of 12" },
+        { "key": "b", "text": "swimming 50 m on the surface without basic diving equipment or any other aid" },
+        { "key": "c", "text": "holding a 30-second breath underwater" },
+        { "key": "d", "text": "staying afloat for 5 minutes (treading water and/or floating)" }
+      ],
+      "correct": "c",
+      "explanation": "Holding a 30-second breath underwater is not among the entry requirements."
+    },
+    {
+      "id": 50,
+      "category": "potapec-zakladni",
+      "question": "Awarding the Supervised Diver qualification requires completing:",
+      "options": [
+        { "key": "a", "text": "at least 2 dives with an instructor or 4 dives accompanied by a person with a dive-leader qualification, in open water at shallow depths" },
+        { "key": "b", "text": "at least 2 dives with an instructor in open water at shallow depths" },
+        { "key": "c", "text": "at least 4 dives with an instructor in open water at shallow depths" },
+        { "key": "d", "text": "at least 5 dives in a sheltered water area" }
+      ],
+      "correct": "b",
+      "explanation": "Supervised Diver requires at least 2 dives with an instructor in open water at shallow depths."
+    },
+    {
+      "id": 51,
+      "category": "potapec-zakladni",
+      "question": "A holder of the SPČR Junior Diver qualification is entitled to:",
+      "options": [
+        { "key": "a", "text": "dive in open water with holders of CMAS One-Star and/or Two-Star Diver to a maximum depth of 20 m" },
+        { "key": "b", "text": "after completing 10 open-water dives in total and reaching age 14, apply for crossover training and assessment to the CMAS One-Star Diver qualification" },
+        { "key": "c", "text": "take part in dives with holders of the same qualification" },
+        { "key": "d", "text": "take part in selected specialty courses" }
+      ],
+      "correct": "b",
+      "explanation": "A Junior Diver may, after 10 dives and reaching age 14, apply for crossover training to CMAS One-Star Diver."
+    },
+    {
+      "id": 52,
+      "category": "potapec-zakladni",
+      "question": "The minimum age for entry into SPČR Junior Diver training is:",
+      "options": [
+        { "key": "a", "text": "15 years" },
+        { "key": "b", "text": "14 years" },
+        { "key": "c", "text": "13 years" },
+        { "key": "d", "text": "12 years" }
+      ],
+      "correct": "d",
+      "explanation": "The minimum age for SPČR Junior Diver training is 12."
+    },
+    {
+      "id": 53,
+      "category": "potapec-zakladni",
+      "question": "An applicant for SPČR Junior Diver training must, without basic diving equipment or any other aid, swim on the surface:",
+      "options": [
+        { "key": "a", "text": "300 m" },
+        { "key": "b", "text": "200 m" },
+        { "key": "c", "text": "100 m" },
+        { "key": "d", "text": "50 m" }
+      ],
+      "correct": "b",
+      "explanation": "An applicant for SPČR Junior Diver must swim 200 m without aids."
+    },
+    {
+      "id": 54,
+      "category": "potapec-zakladni",
+      "question": "Awarding the SPČR Junior Diver qualification requires completing:",
+      "options": [
+        { "key": "a", "text": "at least 2 dives with an instructor in open water at shallow depths" },
+        { "key": "b", "text": "at least 3 dives with an instructor in open water at shallow depths" },
+        { "key": "c", "text": "at least 5 dives with an instructor in open water at shallow depths" },
+        { "key": "d", "text": "at least 10 dives in a sheltered water area" }
+      ],
+      "correct": "c",
+      "explanation": "SPČR Junior Diver requires at least 5 dives with an instructor in open water at shallow depths."
+    },
+    {
+      "id": 55,
+      "category": "potapec-zakladni",
+      "question": "Training for the SPČR Junior Diver qualification is led, the assessment performed and the qualification awarded by:",
+      "options": [
+        { "key": "a", "text": "an instructor with at least the CMAS Two-Star Instructor qualification" },
+        { "key": "b", "text": "an instructor with at least the CMAS One-Star Instructor qualification" },
+        { "key": "c", "text": "an instructor with at least the CMAS One-Star Instructor qualification, or a CMAS Three-Star Diver authorised by such an instructor" },
+        { "key": "d", "text": "none of the answers is correct" }
+      ],
+      "correct": "a",
+      "explanation": "Training for SPČR Junior Diver is led and the qualification awarded by an instructor with at least CMAS Two-Star Instructor."
+    },
+    {
+      "id": 56,
+      "category": "potapec-cmas",
+      "question": "A holder of the CMAS One-Star Diver qualification is entitled to:",
+      "options": [
+        { "key": "a", "text": "dive in open water with a holder of SPČR Junior Diver at shallow depths as the legal guardian or a person designated by them" },
+        { "key": "b", "text": "dive in open water with holders of CMAS One-Star and/or Two-Star Diver to a maximum depth of 20 m" },
+        { "key": "c", "text": "after completing 40 open-water dives, apply for the CMAS Two-Star Diver qualification" },
+        { "key": "d", "text": "after age 18, supervise training participants on the instructor's instructions" }
+      ],
+      "correct": "b",
+      "explanation": "CMAS One-Star Diver may dive with holders of One-Star and/or Two-Star Diver to a maximum of 20 m."
+    },
+    {
+      "id": 57,
+      "category": "potapec-cmas",
+      "question": "Entry requirements for CMAS One-Star Diver training are:",
+      "options": [
+        { "key": "a", "text": "minimum age of 14" },
+        { "key": "b", "text": "swimming 200 m on the surface without basic diving equipment or any other aid" },
+        { "key": "c", "text": "staying afloat for 5 minutes (treading water and/or floating)" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "All answers are correct — age 14, 200 m swim, 5 minutes afloat."
+    },
+    {
+      "id": 58,
+      "category": "potapec-cmas",
+      "question": "The minimum age for entry into CMAS One-Star Diver training is:",
+      "options": [
+        { "key": "a", "text": "14 years" },
+        { "key": "b", "text": "15 years" },
+        { "key": "c", "text": "16 years" },
+        { "key": "d", "text": "18 years" }
+      ],
+      "correct": "a",
+      "explanation": "The minimum age for CMAS One-Star Diver training is 14."
+    },
+    {
+      "id": 59,
+      "category": "potapec-cmas",
+      "question": "Training for CMAS One-Star Diver is led, the assessment performed and the qualification awarded by:",
+      "options": [
+        { "key": "a", "text": "an instructor with at least the CMAS Two-Star Instructor qualification authorised or designated by the relevant SPČR member federation" },
+        { "key": "b", "text": "an instructor with at least the CMAS One-Star Instructor qualification under the supervision of an instructor with at least CMAS Two-Star Instructor" },
+        { "key": "c", "text": "an instructor with at least the CMAS Two-Star Instructor qualification" },
+        { "key": "d", "text": "an instructor with at least the CMAS One-Star Instructor qualification" }
+      ],
+      "correct": "c",
+      "explanation": "Training for CMAS One-Star Diver is led and the qualification awarded by an instructor with at least CMAS Two-Star Instructor."
+    },
+    {
+      "id": 60,
+      "category": "potapec-cmas",
+      "question": "Awarding the CMAS One-Star Diver qualification requires completing:",
+      "options": [
+        { "key": "a", "text": "at least 5 dives with an instructor in open water at shallow depths" },
+        { "key": "b", "text": "at least 5 dives with an instructor in open water — the first 3 at shallow depths and at least 2 more at 15–20 m" },
+        { "key": "c", "text": "at least 5 dives in open water at shallow depths, of which the first 3 with an instructor; the remaining at least 2 may be done with a person with a dive-leader qualification" },
+        { "key": "d", "text": "at least 5 dives in open water, of which the first 3 at shallow depths may be done with a person with a dive-leader qualification, and the remaining at least 2 at 15–20 m must be done with an instructor" }
+      ],
+      "correct": "b",
+      "explanation": "For One-Star Diver, 5 dives with an instructor are required — 3 at shallow depths and 2 at 15–20 m."
+    },
+    {
+      "id": 61,
+      "category": "potapec-cmas",
+      "question": "A holder of the CMAS Two-Star Diver qualification is entitled to:",
+      "options": [
+        { "key": "a", "text": "accompany a holder of Supervised Diver in open water to a maximum depth of 12 m" },
+        { "key": "b", "text": "assist with supervising training participants" },
+        { "key": "c", "text": "dive in open water with holders of CMAS One-Star Diver to a maximum depth of 20 m" },
+        { "key": "d", "text": "act as a dive leader" }
+      ],
+      "correct": "c",
+      "explanation": "CMAS Two-Star Diver may dive with holders of One-Star Diver to a maximum of 20 m."
+    },
+    {
+      "id": 62,
+      "category": "potapec-cmas",
+      "question": "The minimum age for entry into CMAS Two-Star Diver training is:",
+      "options": [
+        { "key": "a", "text": "18 years" },
+        { "key": "b", "text": "15 years" },
+        { "key": "c", "text": "14 years" },
+        { "key": "d", "text": "12 years" }
+      ],
+      "correct": "b",
+      "explanation": "The minimum age for CMAS Two-Star Diver training is 15."
+    },
+    {
+      "id": 63,
+      "category": "potapec-cmas",
+      "question": "An applicant for CMAS Two-Star Diver training must hold the qualification:",
+      "options": [
+        { "key": "a", "text": "Supervised Diver" },
+        { "key": "b", "text": "SPČR Junior Diver" },
+        { "key": "c", "text": "CMAS One-Star Diver or a diving qualification of another system designated by SPČR" },
+        { "key": "d", "text": "Supervised Diver with 15 open-water dives or SPČR Junior Diver with 10 open-water dives" }
+      ],
+      "correct": "c",
+      "explanation": "Entry to Two-Star Diver training requires CMAS One-Star Diver or an equivalent qualification."
+    },
+    {
+      "id": 64,
+      "category": "potapec-cmas",
+      "question": "Before being awarded CMAS Two-Star Diver, the candidate must perform:",
+      "options": [
+        { "key": "a", "text": "at least 40 open-water dives in various conditions" },
+        { "key": "b", "text": "at least 20 open-water dives in various conditions, of which at least 10 to medium depths" },
+        { "key": "c", "text": "at least 20 dives to medium depths" },
+        { "key": "d", "text": "at least 10 dives to great depths" }
+      ],
+      "correct": "b",
+      "explanation": "For Two-Star Diver, 20 open-water dives are required, of which at least 10 to medium depths."
+    },
+    {
+      "id": 65,
+      "category": "potapec-cmas",
+      "question": "Training for CMAS Two-Star Diver is led, the assessment performed and the qualification awarded by:",
+      "options": [
+        { "key": "a", "text": "an instructor with the CMAS Three-Star Instructor qualification" },
+        { "key": "b", "text": "an instructor with at least the CMAS Two-Star Instructor qualification" },
+        { "key": "c", "text": "an instructor with at least the CMAS Two-Star Instructor qualification under the supervision of a CMAS Three-Star Instructor" },
+        { "key": "d", "text": "an instructor with at least the CMAS One-Star Instructor qualification authorised or designated by the relevant SPČR member federation" }
+      ],
+      "correct": "b",
+      "explanation": "Training for Two-Star Diver is led and the qualification awarded by an instructor with at least CMAS Two-Star Instructor."
+    },
+    {
+      "id": 66,
+      "category": "potapec-cmas",
+      "question": "A holder of the CMAS Three-Star Diver qualification is entitled to:",
+      "options": [
+        { "key": "a", "text": "accompany a holder of Supervised Diver in open water to depths greater than 20 m" },
+        { "key": "b", "text": "assess trainees' knowledge and/or skills during training for Supervised Diver and SPČR Junior Diver" },
+        { "key": "c", "text": "supervise training participants on the instructor's instructions" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "c",
+      "explanation": "A CMAS Three-Star Diver may supervise training participants on the instructor's instructions."
+    },
+    {
+      "id": 67,
+      "category": "potapec-cmas",
+      "question": "The minimum age for entry into CMAS Three-Star Diver training is:",
+      "options": [
+        { "key": "a", "text": "14 years" },
+        { "key": "b", "text": "15 years" },
+        { "key": "c", "text": "18 years" },
+        { "key": "d", "text": "21 years" }
+      ],
+      "correct": "c",
+      "explanation": "The minimum age for CMAS Three-Star Diver training is 18."
+    },
+    {
+      "id": 68,
+      "category": "potapec-cmas",
+      "question": "An applicant for CMAS Three-Star Diver training must:",
+      "options": [
+        { "key": "a", "text": "document their experience with night, low-visibility, deep diving and underwater navigation" },
+        { "key": "b", "text": "hold at least the CMAS One-Star Diver qualification or an equivalent qualification of another system designated by SPČR" },
+        { "key": "c", "text": "hold at least the CMAS Two-Star Diver qualification, but if they document at least 60 open-water dives, CMAS One-Star Diver suffices as the entry qualification" },
+        { "key": "d", "text": "hold a valid licence to operate a small vessel at sea" }
+      ],
+      "correct": "a",
+      "explanation": "An applicant for Three-Star Diver must document experience with night, low-visibility, deep dives and underwater navigation."
+    },
+    {
+      "id": 69,
+      "category": "potapec-cmas",
+      "question": "Before being awarded CMAS Three-Star Diver, the candidate must perform:",
+      "options": [
+        { "key": "a", "text": "at least 60 open-water dives, of which at least 30 in more demanding conditions" },
+        { "key": "b", "text": "at least 50 open-water dives in various conditions, of which at least 20 to great depths" },
+        { "key": "c", "text": "at least 50 dives to medium depths and at least 20 dives to great depths" },
+        { "key": "d", "text": "at least 50 dives to great depths" }
+      ],
+      "correct": "a",
+      "explanation": "For CMAS Three-Star Diver, 60 open-water dives are required, of which at least 30 in more demanding conditions."
+    },
+    {
+      "id": 70,
+      "category": "potapec-cmas",
+      "question": "For the experience required for CMAS Three-Star Diver, dives in more demanding conditions are considered to be:",
+      "options": [
+        { "key": "a", "text": "dives in visibility under 2 m" },
+        { "key": "b", "text": "dives in water below 10 °C" },
+        { "key": "c", "text": "dives below 30 m" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "All of these — low visibility, cold water and great depth — count as more demanding conditions."
+    },
+    {
+      "id": 71,
+      "category": "instruktor",
+      "question": "A diving instructor may be a member of an SPČR member federation:",
+      "options": [
+        { "key": "a", "text": "who holds the CMAS Three-Star Diver qualification or an equivalent qualification of another system designated by SPČR, and who has sufficient knowledge and pedagogical skills to perform instructor activity" },
+        { "key": "b", "text": "on the recommendation of the relevant dive club" },
+        { "key": "c", "text": "on the recommendation of the relevant diving federation" },
+        { "key": "d", "text": "none of the answers is correct" }
+      ],
+      "correct": "a",
+      "explanation": "An instructor may be a Three-Star Diver with sufficient knowledge and pedagogical skills."
+    },
+    {
+      "id": 72,
+      "category": "instruktor",
+      "question": "A diving instructor may be a member of an SPČR member federation:",
+      "options": [
+        { "key": "a", "text": "who has sufficient knowledge to perform instructor activity" },
+        { "key": "b", "text": "who has sufficient pedagogical skills to perform instructor activity" },
+        { "key": "c", "text": "who holds the CMAS Three-Star Diver qualification or an equivalent qualification of another system designated by SPČR" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "All answers are correct — knowledge, pedagogical skills and the Three-Star Diver qualification are all required."
+    },
+    {
+      "id": 73,
+      "category": "instruktor",
+      "question": "Training for CMAS instructor qualification grades is organised by:",
+      "options": [
+        { "key": "a", "text": "SPČR" },
+        { "key": "b", "text": "the relevant SPČR member federation" },
+        { "key": "c", "text": "an SČP or SPMS dive club" },
+        { "key": "d", "text": "a holder of the CMAS Three-Star Instructor qualification" }
+      ],
+      "correct": "a",
+      "explanation": "Training for CMAS instructor qualifications is organised by SPČR."
+    },
+    {
+      "id": 74,
+      "category": "instruktor",
+      "question": "Examinations for instructor qualification grades include verifying:",
+      "options": [
+        { "key": "a", "text": "the candidate's highest level of formal education" },
+        { "key": "b", "text": "the candidate's diving knowledge and skills" },
+        { "key": "c", "text": "the required length of the candidate's membership in the relevant SPČR member federation" },
+        { "key": "d", "text": "none of the answers is correct" }
+      ],
+      "correct": "b",
+      "explanation": "Examinations include verifying the candidate's diving knowledge and skills."
+    },
+    {
+      "id": 75,
+      "category": "instruktor",
+      "question": "The validity of an instructor qualification grade is conditional on fulfilling:",
+      "options": [
+        { "key": "a", "text": "all duties arising from the SPČR Training Guidelines" },
+        { "key": "b", "text": "all duties arising from the SPČR Safety Guidelines" },
+        { "key": "c", "text": "membership duties towards the relevant SPČR member federation" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "Validity of the instructor qualification depends on fulfilling all of these duties."
+    },
+    {
+      "id": 76,
+      "category": "instruktor",
+      "question": "The period of validity of an instructor qualification grade is:",
+      "options": [
+        { "key": "a", "text": "1 year" },
+        { "key": "b", "text": "3 years" },
+        { "key": "c", "text": "5 years" },
+        { "key": "d", "text": "6 years" }
+      ],
+      "correct": "c",
+      "explanation": "The period of validity of an instructor qualification grade is 5 years."
+    },
+    {
+      "id": 77,
+      "category": "instruktor",
+      "question": "The authority to extend the validity of an instructor qualification grade rests with:",
+      "options": [
+        { "key": "a", "text": "all holders of CMAS Three-Star Instructor" },
+        { "key": "b", "text": "holders of CMAS Three-Star Instructor authorised for this by the SPČR Training Committee (VK), and/or an examination panel of CMAS Three-Star Instructors at SPČR instructor seminars" },
+        { "key": "c", "text": "all CMAS Three-Star Instructors and CMAS Two-Star Instructors authorised for this by the SPČR Training Committee" },
+        { "key": "d", "text": "the boards of SPČR member federations" }
+      ],
+      "correct": "b",
+      "explanation": "The authority lies with authorised CMAS Three-Star Instructors and/or examination panels of Three-Star Instructors."
+    },
+    {
+      "id": 78,
+      "category": "instruktor",
+      "question": "Conditions for extending the validity of an instructor qualification grade for another 5 years include training:",
+      "options": [
+        { "key": "a", "text": "at least 20 divers including award of the qualification (or alternatively other activity for SPČR in the field of diver training)" },
+        { "key": "b", "text": "at least 15 divers" },
+        { "key": "c", "text": "at least 10 divers including award of the qualification (or alternatively other activity for SPČR in the field of diver training)" },
+        { "key": "d", "text": "at least 5 divers; at the same time, the period under review must not contain more than 2 years without at least one diver trained" }
+      ],
+      "correct": "c",
+      "explanation": "Extension requires training at least 10 divers including award of the qualification."
+    },
+    {
+      "id": 79,
+      "category": "instruktor",
+      "question": "If the applicant for extending an instructor qualification does not perform other activity for SPČR in the field of diver training, they must, in the period under review, train at least:",
+      "options": [
+        { "key": "a", "text": "5 divers" },
+        { "key": "b", "text": "10 divers" },
+        { "key": "c", "text": "15 divers" },
+        { "key": "d", "text": "20 divers" }
+      ],
+      "correct": "b",
+      "explanation": "Without other SPČR activity, the instructor must train at least 10 divers."
+    },
+    {
+      "id": 80,
+      "category": "instruktor",
+      "question": "If the instructor has trained fewer than 10 divers in the period under review (and has not performed other activity for SPČR in the field of diver training):",
+      "options": [
+        { "key": "a", "text": "this condition cannot be substituted in any way; the instructor's qualification therefore lapses" },
+        { "key": "b", "text": "the condition can be substituted by completing SPČR training methodology training" },
+        { "key": "c", "text": "the condition can be substituted by attending more than two SPČR instructor seminars during the period" },
+        { "key": "d", "text": "the condition can be substituted by passing an SPČR exam test on diving theory at the level of the relevant instructor qualification grade" }
+      ],
+      "correct": "d",
+      "explanation": "The condition can be substituted by passing an SPČR exam test on diving theory."
+    },
+    {
+      "id": 81,
+      "category": "instruktor",
+      "question": "Among the conditions for extending the validity of an instructor qualification for another 5 years, the following is NOT included:",
+      "options": [
+        { "key": "a", "text": "attending at least 2 SPČR instructor seminars" },
+        { "key": "b", "text": "completing a practical session on oxygen administration as first aid" },
+        { "key": "c", "text": "submerging in basic kit and bringing up a marker from 10 m" },
+        { "key": "d", "text": "bringing a buddy up from 20–30 m using a BCD and towing them on the surface for 50 m" }
+      ],
+      "correct": "c",
+      "explanation": "Submerging in basic kit and retrieving a marker from 10 m is not among the extension conditions."
+    },
+    {
+      "id": 82,
+      "category": "instruktor",
+      "question": "An applicant who, during the period under review, has trained more than 40 divers within the CMAS/SPČR system including award of the qualification and against whom no justified or substantial complaints have been raised, can extend their instructor qualification by:",
+      "options": [
+        { "key": "a", "text": "attending one SPČR instructor seminar, provided they completed all the presentations" },
+        { "key": "b", "text": "attending one SPČR instructor seminar, provided they completed practical sessions on resuscitation and oxygen administration as first aid, and demonstrated bringing a buddy up from 20–30 m and towing them 50 m on the surface" },
+        { "key": "c", "text": "a written request addressed to the SPČR Training Committee" },
+        { "key": "d", "text": "none of the answers is correct" }
+      ],
+      "correct": "b",
+      "explanation": "An instructor with more than 40 trained divers can extend by attending one seminar including all practical sessions."
+    },
+    {
+      "id": 83,
+      "category": "instruktor",
+      "question": "If the instructor does not meet the conditions set for extending the validity of the instructor qualification grade:",
+      "options": [
+        { "key": "a", "text": "their authorisation will be suspended; the instructor will be given the opportunity to meet these conditions at the next available date" },
+        { "key": "b", "text": "their authorisation will be suspended for 2 years" },
+        { "key": "c", "text": "their instructor qualification will be downgraded to the next-lower grade and, for a CMAS One-Star Instructor, to CMAS Three-Star Diver" },
+        { "key": "d", "text": "the validity of their instructor qualification will be terminated" }
+      ],
+      "correct": "a",
+      "explanation": "If the conditions are not met, the authorisation is suspended with the option to meet the conditions at the next available date."
+    },
+    {
+      "id": 84,
+      "category": "instruktor",
+      "question": "Mark the incorrect statement:",
+      "options": [
+        { "key": "a", "text": "If the instructor does not meet the conditions for extending the validity of their instructor qualification, their qualification will be terminated." },
+        { "key": "b", "text": "If complaints are raised about an instructor, the SPČR Training Committee invites them to discuss the matter, and if the instructor attends, gives them the opportunity to respond." },
+        { "key": "c", "text": "The SPČR Training Committee has the right to verify the content and quality of training by surveying participants and through direct inspections." },
+        { "key": "d", "text": "In the event of a justified complaint about an instructor, the SPČR Training Committee may, depending on its severity, suspend the validity of the instructor qualification." }
+      ],
+      "correct": "a",
+      "explanation": "The statement about termination is incorrect — failure to meet the conditions leads to suspension, not termination."
+    },
+    {
+      "id": 85,
+      "category": "instruktor",
+      "question": "In the event of a justified complaint about an instructor, the SPČR Training Committee may, depending on its severity:",
+      "options": [
+        { "key": "a", "text": "require the deficiencies found to be remedied by a given date" },
+        { "key": "b", "text": "suspend the validity of the instructor qualification" },
+        { "key": "c", "text": "propose to the relevant SPČR member federation that the instructor qualification be terminated" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "The Training Committee may take all of these steps — require remediation, suspend or propose termination."
+    },
+    {
+      "id": 86,
+      "category": "instruktor",
+      "question": "A CMAS One-Star Instructor is entitled to:",
+      "options": [
+        { "key": "a", "text": "conduct training for SPČR Junior Diver" },
+        { "key": "b", "text": "teach theory and assess the knowledge of trainees for Supervised Diver" },
+        { "key": "c", "text": "lead selected specialty courses" },
+        { "key": "d", "text": "assist with training for instructor qualification grades" }
+      ],
+      "correct": "b",
+      "explanation": "A CMAS One-Star Instructor is entitled to teach theory and assess the knowledge of trainees for Supervised Diver."
+    },
+    {
+      "id": 87,
+      "category": "instruktor",
+      "question": "Authorised by, and under the supervision of, an instructor with at least the CMAS Two-Star Instructor qualification, a CMAS One-Star Instructor is entitled to gain experience:",
+      "options": [
+        { "key": "a", "text": "leading selected specialty courses" },
+        { "key": "b", "text": "teaching theory and assessing trainees' knowledge for SPČR Junior Diver, CMAS One-Star, Two-Star and Three-Star Diver" },
+        { "key": "c", "text": "training trainees for SPČR Junior Diver, CMAS One-Star, Two-Star and Three-Star Diver in open water" },
+        { "key": "d", "text": "training for the CMAS One-Star Instructor qualification" }
+      ],
+      "correct": "b",
+      "explanation": "Under supervision of a Two-Star Instructor, a One-Star Instructor can gain experience teaching theory and assessing knowledge for all diver grades."
+    },
+    {
+      "id": 88,
+      "category": "instruktor",
+      "question": "An applicant for the CMAS One-Star Instructor qualification must:",
+      "options": [
+        { "key": "a", "text": "be at least 18 years old" },
+        { "key": "b", "text": "hold the CMAS Three-Star Diver qualification, or hold a dive-leader qualification from IANTD, PADI, SSI, ITD, NAUI or SDI/TDI, or hold a diving qualification from another training system designated by SPČR" },
+        { "key": "c", "text": "show that they completed SPČR training methodology training in the past three years" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "All answers are correct — age 18, CMAS Three-Star Diver or equivalent, methodology training."
+    },
+    {
+      "id": 89,
+      "category": "instruktor",
+      "question": "An applicant for the CMAS One-Star Instructor qualification must show that:",
+      "options": [
+        { "key": "a", "text": "they completed SPČR training methodology training in the past 3 years" },
+        { "key": "b", "text": "they completed at least 80 dives in the past 2 years" },
+        { "key": "c", "text": "they attended at least 2 SPČR instructor seminars in the past 5 years" },
+        { "key": "d", "text": "they demonstrated bringing a buddy up from 20–30 m using a BCD and towing them 50 m on the surface within the past 5 years" }
+      ],
+      "correct": "a",
+      "explanation": "An applicant for One-Star Instructor must show completion of training methodology training in the past 3 years."
+    },
+    {
+      "id": 90,
+      "category": "instruktor",
+      "question": "The CMAS One-Star Instructor qualification is awarded by:",
+      "options": [
+        { "key": "a", "text": "the board of the relevant SPČR member federation" },
+        { "key": "b", "text": "an instructor with at least CMAS Two-Star Instructor authorised by the board of the relevant SPČR member federation" },
+        { "key": "c", "text": "an examination panel of CMAS Three-Star and CMAS Two-Star Instructors appointed by the SPČR Training Committee" },
+        { "key": "d", "text": "an examination panel of CMAS Three-Star Instructors appointed by the board of the relevant SPČR member federation" }
+      ],
+      "correct": "c",
+      "explanation": "The One-Star Instructor qualification is awarded by an examination panel of Three-Star and Two-Star Instructors appointed by the SPČR Training Committee."
+    },
+    {
+      "id": 91,
+      "category": "instruktor",
+      "question": "A CMAS Two-Star Instructor is entitled to:",
+      "options": [
+        { "key": "a", "text": "conduct training for all CMAS diver qualification grades" },
+        { "key": "b", "text": "conduct training for CMAS instructor qualification grades" },
+        { "key": "c", "text": "run a training centre" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "a",
+      "explanation": "A CMAS Two-Star Instructor is entitled to conduct training for all CMAS diver qualification grades."
+    },
+    {
+      "id": 92,
+      "category": "instruktor",
+      "question": "A CMAS Two-Star Instructor is NOT entitled to:",
+      "options": [
+        { "key": "a", "text": "conduct training for Supervised Diver and SPČR Junior Diver" },
+        { "key": "b", "text": "conduct training for all CMAS diver qualification grades" },
+        { "key": "c", "text": "conduct training for CMAS instructor qualification grades" },
+        { "key": "d", "text": "lead selected specialty courses" }
+      ],
+      "correct": "c",
+      "explanation": "A CMAS Two-Star Instructor is not entitled to conduct training for instructor qualification grades."
+    },
+    {
+      "id": 93,
+      "category": "instruktor",
+      "question": "An applicant for CMAS Two-Star Instructor must:",
+      "options": [
+        { "key": "a", "text": "be at least 21 years old" },
+        { "key": "b", "text": "show that they attended at least 2 SPČR instructor seminars in the past 5 years" },
+        { "key": "c", "text": "hold CMAS One-Star Instructor or CMAS Three-Star Diver, or hold a dive-leader qualification from IANTD, PADI, SSI, ITD, NAUI or SDI/TDI, or hold a diving qualification from another training system designated by SPČR" },
+        { "key": "d", "text": "hold at least the CMAS Two-Star Diver qualification or an equivalent qualification of another system designated by SPČR" }
+      ],
+      "correct": "c",
+      "explanation": "An applicant for Two-Star Instructor must hold CMAS One-Star Instructor or CMAS Three-Star Diver, or an equivalent qualification."
+    },
+    {
+      "id": 94,
+      "category": "instruktor",
+      "question": "An applicant for CMAS Two-Star Instructor must show:",
+      "options": [
+        { "key": "a", "text": "that they attended at least 2 SPČR instructor seminars in the past 5 years" },
+        { "key": "b", "text": "that they completed SPČR training methodology training in the past 3 years (this requirement does not apply to applicants who already hold CMAS One-Star Instructor)" },
+        { "key": "c", "text": "that since obtaining CMAS One-Star Instructor they have trained at least 10 divers for Supervised Diver and/or SPČR Junior Diver including award of the qualification" },
+        { "key": "d", "text": "that since obtaining CMAS One-Star Instructor they have trained at least 5 divers for CMAS One-Star Diver including award of the qualification" }
+      ],
+      "correct": "b",
+      "explanation": "An applicant for Two-Star Instructor must show methodology training (unless they already hold One-Star Instructor)."
+    },
+    {
+      "id": 95,
+      "category": "instruktor",
+      "question": "The CMAS Two-Star Instructor qualification is awarded by:",
+      "options": [
+        { "key": "a", "text": "the board of the relevant SPČR member federation" },
+        { "key": "b", "text": "an instructor with at least CMAS Three-Star Instructor authorised by the board of the relevant SPČR member federation" },
+        { "key": "c", "text": "an examination panel of CMAS Three-Star and CMAS Two-Star Instructors appointed by the SPČR Training Committee" },
+        { "key": "d", "text": "an examination panel of CMAS Three-Star Instructors appointed by the SPČR Training Committee" }
+      ],
+      "correct": "d",
+      "explanation": "The Two-Star Instructor qualification is awarded by an examination panel of Three-Star Instructors appointed by the SPČR Training Committee."
+    },
+    {
+      "id": 96,
+      "category": "instruktor",
+      "question": "Applicants for the CMAS Three-Star Instructor qualification must be at least:",
+      "options": [
+        { "key": "a", "text": "24 years old" },
+        { "key": "b", "text": "21 years old" },
+        { "key": "c", "text": "19 years old" },
+        { "key": "d", "text": "18 years old" }
+      ],
+      "correct": "a",
+      "explanation": "The minimum age for an applicant for Three-Star Instructor is 24."
+    },
+    {
+      "id": 97,
+      "category": "instruktor",
+      "question": "A CMAS Three-Star Instructor is NOT entitled to:",
+      "options": [
+        { "key": "a", "text": "conduct training for CMAS diver qualification grades" },
+        { "key": "b", "text": "conduct training for CMAS instructor qualification grades" },
+        { "key": "c", "text": "award CMAS instructor qualification grades" },
+        { "key": "d", "text": "lead selected specialty courses" }
+      ],
+      "correct": "c",
+      "explanation": "A Three-Star Instructor is not entitled to award instructor qualification grades — that is done by an examination panel."
+    },
+    {
+      "id": 98,
+      "category": "instruktor",
+      "question": "An applicant for CMAS Three-Star Instructor must:",
+      "options": [
+        { "key": "a", "text": "be at least 21 years old" },
+        { "key": "b", "text": "show that during their training activity within CMAS/SPČR they have trained at least 60 divers including award of the qualification; the count must include CMAS One-Star, Two-Star and Three-Star Diver grades" },
+        { "key": "c", "text": "show that during their training activity within CMAS/SPČR they have trained at least 80 divers including award of the qualification; up to 40 of them may be specialty-course graduates" },
+        { "key": "d", "text": "hold at least the CMAS One-Star Instructor qualification" }
+      ],
+      "correct": "b",
+      "explanation": "An applicant for Three-Star Instructor must train at least 60 divers including the One-Star, Two-Star and Three-Star Diver grades."
+    },
+    {
+      "id": 99,
+      "category": "instruktor",
+      "question": "An applicant for CMAS Three-Star Instructor must:",
+      "options": [
+        { "key": "a", "text": "be at least 24 years old" },
+        { "key": "b", "text": "hold CMAS Two-Star Instructor" },
+        { "key": "c", "text": "submit a written work (or a work prepared otherwise) on a pre-assigned topic" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "All answers are correct — age 24, CMAS Two-Star Instructor and a written work."
+    },
+    {
+      "id": 100,
+      "category": "instruktor",
+      "question": "The CMAS Three-Star Instructor qualification is awarded by:",
+      "options": [
+        { "key": "a", "text": "the board of the relevant SPČR member federation" },
+        { "key": "b", "text": "an instructor with at least CMAS Three-Star Instructor authorised by the board of the relevant SPČR member federation" },
+        { "key": "c", "text": "an examination panel of CMAS Three-Star Instructors appointed by the SPČR Training Committee" },
+        { "key": "d", "text": "an examination panel of CMAS Three-Star and CMAS Two-Star Instructors appointed by the SPČR Training Committee" }
+      ],
+      "correct": "c",
+      "explanation": "The Three-Star Instructor qualification is awarded by an examination panel of Three-Star Instructors appointed by the SPČR Training Committee."
+    }
+  ]
+}

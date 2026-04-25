@@ -1,0 +1,656 @@
+{
+  "title": "Vessel - SPČR 2018 Exam Tests",
+  "description": "Exam questions on vessel handling for divers (CMAS / SPČR (Czech Diving Federation))",
+  "questions": [
+    {
+      "id": 1,
+      "category": "technika",
+      "question": "The transom of an inflatable boat is:",
+      "options": [
+        {"key": "a", "text": "the bottom with smooth floorboards"},
+        {"key": "b", "text": "the rigid vertical stern section used for mounting the outboard motor"},
+        {"key": "c", "text": "the rear-view mirror at the bow of the boat"},
+        {"key": "d", "text": "the front canopy of the boat"}
+      ],
+      "correct": "b",
+      "explanation": "The transom is the rigid stern section to which the outboard motor is mounted."
+    },
+    {
+      "id": 2,
+      "category": "kotveni",
+      "question": "When approaching a mooring buoy with a boat, the safest approach is:",
+      "options": [
+        {"key": "a", "text": "downwind"},
+        {"key": "b", "text": "with the current"},
+        {"key": "c", "text": "into the current or wind"},
+        {"key": "d", "text": "perpendicular to the current"}
+      ],
+      "correct": "c",
+      "explanation": "Heading into the current or wind gives better control over the boat and makes it easier to stop."
+    },
+    {
+      "id": 3,
+      "category": "kotveni",
+      "question": "On the skipper's command 'Drop anchor!', the designated crew member:",
+      "options": [
+        {"key": "a", "text": "throws the prepared anchor as far as possible"},
+        {"key": "b", "text": "drops the prepared anchor straight down immediately"},
+        {"key": "c", "text": "lowers the anchor carefully only after spotting a shoal"},
+        {"key": "d", "text": "none of the answers is correct"}
+      ],
+      "correct": "b",
+      "explanation": "The anchor is dropped straight down — never thrown, as that could damage the boat or injure crew."
+    },
+    {
+      "id": 4,
+      "category": "navigace",
+      "question": "From the chart we have determined that we must steer a course over ground COG = 205°. To correct for magnetic variation, which we have set as +3°, and deviation, which is +2° for this heading, we will steer a compass course of:",
+      "options": [
+        {"key": "a", "text": "compass course = 200°"},
+        {"key": "b", "text": "compass course = 204°"},
+        {"key": "c", "text": "compass course = 205°"},
+        {"key": "d", "text": "compass course = 210°"}
+      ],
+      "correct": "a",
+      "explanation": "Compass course = COG − variation − deviation = 205° − 3° − 2° = 200°."
+    },
+    {
+      "id": 5,
+      "category": "bezpecnost",
+      "question": "A capsized inflatable boat:",
+      "options": [
+        {"key": "a", "text": "we attempt to right, but we do not abandon it even if we fail"},
+        {"key": "b", "text": "we attempt to right, and if we fail, we swim — even to a distant shore"},
+        {"key": "c", "text": "we must absolutely manage to right"},
+        {"key": "d", "text": "we do not attempt to right, so as not to exhaust ourselves"}
+      ],
+      "correct": "a",
+      "explanation": "Never abandon a capsized boat — it provides buoyancy and is more visible to rescuers."
+    },
+    {
+      "id": 6,
+      "category": "navigace",
+      "question": "One knot (1 kn) is a unit of:",
+      "options": [
+        {"key": "a", "text": "speed equal to 1 nautical mile per hour"},
+        {"key": "b", "text": "distance equal to 1/10 of a nautical mile"},
+        {"key": "c", "text": "speed equal to 1 km per hour"},
+        {"key": "d", "text": "depth equal to 1.83 m"}
+      ],
+      "correct": "a",
+      "explanation": "A knot is a unit of speed equal to 1 nautical mile per hour (1.852 km/h)."
+    },
+    {
+      "id": 7,
+      "category": "navigace",
+      "question": "The entry '045' in the deck log means:",
+      "options": [
+        {"key": "a", "text": "an easterly heading"},
+        {"key": "b", "text": "a north-westerly heading"},
+        {"key": "c", "text": "a north-easterly heading"},
+        {"key": "d", "text": "a south-westerly heading"}
+      ],
+      "correct": "c",
+      "explanation": "045° is a north-easterly heading (between north 0° and east 90°)."
+    },
+    {
+      "id": 8,
+      "category": "technika",
+      "question": "Compared with displacement mode, navigating in planing mode results in:",
+      "options": [
+        {"key": "a", "text": "higher speed and higher fuel consumption (per km)"},
+        {"key": "b", "text": "higher speed and lower fuel consumption (per km)"},
+        {"key": "c", "text": "lower speed and lower fuel consumption (per km)"},
+        {"key": "d", "text": "lower speed and higher fuel consumption (per km)"}
+      ],
+      "correct": "b",
+      "explanation": "On the plane, speed is higher and fuel consumption per kilometre is lower thanks to reduced drag."
+    },
+    {
+      "id": 9,
+      "category": "pravidla-plavby",
+      "question": "A vessel must keep a lookout:",
+      "options": [
+        {"key": "a", "text": "only in reduced visibility"},
+        {"key": "b", "text": "by sight and hearing continuously"},
+        {"key": "c", "text": "by hearing in fog and by sight at night"},
+        {"key": "d", "text": "only when navigating in inshore waters"}
+      ],
+      "correct": "b",
+      "explanation": "A vessel must keep a continuous visual and aural lookout at all times."
+    },
+    {
+      "id": 10,
+      "category": "navigace",
+      "question": "In 1998, the magnetic variation derived from a chart entry 'Var 2°W (1992) incr. 20' annually' will be:",
+      "options": [
+        {"key": "a", "text": "−3° (= 3°W)"},
+        {"key": "b", "text": "0° (= 0°)"},
+        {"key": "c", "text": "+2° (= 2°E)"},
+        {"key": "d", "text": "−4° (= 4°W)"}
+      ],
+      "correct": "d",
+      "explanation": "Over 6 years (1992–1998) the variation increased by 6 × 20' = 2°. The original 2°W + 2° = 4°W."
+    },
+    {
+      "id": 11,
+      "category": "pocasi",
+      "question": "On European coasts, tidal phenomena occur:",
+      "options": [
+        {"key": "a", "text": "approximately twice in 25 h, both ebb and flood"},
+        {"key": "b", "text": "once every 25 h (one flood every 12 h 25 min)"},
+        {"key": "c", "text": "every 12 h 25 min — flood at spring tide and every 6 hours at neap tide"},
+        {"key": "d", "text": "every 12 h 25 min — ebb at neap tide and every 6 hours at spring tide"}
+      ],
+      "correct": "a",
+      "explanation": "On European coasts there are roughly 2 high tides and 2 low tides in about 25 hours (one tidal day)."
+    },
+    {
+      "id": 12,
+      "category": "kotveni",
+      "question": "After anchoring a larger boat in a current:",
+      "options": [
+        {"key": "a", "text": "we anchor downstream"},
+        {"key": "b", "text": "we let the propeller idle at low revs"},
+        {"key": "c", "text": "we trail a floating line from the stern with a buoy or lifebuoy"},
+        {"key": "d", "text": "we hoist the 'vessel in current' flag"}
+      ],
+      "correct": "c",
+      "explanation": "Trail a floating line with a buoy from the stern in case anyone falls overboard."
+    },
+    {
+      "id": 13,
+      "category": "navigace",
+      "question": "The compass course allowing for current set is most easily determined:",
+      "options": [
+        {"key": "a", "text": "graphically, from the speed and direction of the current alone"},
+        {"key": "b", "text": "graphically, from the speed and direction of the current and the speed and course over ground (COG) of the vessel by vector subtraction"},
+        {"key": "c", "text": "always by adding the magnitude of the current's speed to the vessel's speed"},
+        {"key": "d", "text": "always by subtracting the magnitudes of the current's speed and the vessel's speed"}
+      ],
+      "correct": "b",
+      "explanation": "Compensating for current set is found graphically by vector subtraction of speeds and directions."
+    },
+    {
+      "id": 14,
+      "category": "pravidla-plavby",
+      "question": "Every vessel must proceed at a safe speed, meaning:",
+      "options": [
+        {"key": "a", "text": "fast enough to overtake another vessel quickly"},
+        {"key": "b", "text": "according to her length (e.g. a 7-metre boat at most 7 knots)"},
+        {"key": "c", "text": "fast enough to alter her course immediately by 30°"},
+        {"key": "d", "text": "such that she can avoid collision, including by stopping if necessary, in any conditions"}
+      ],
+      "correct": "d",
+      "explanation": "Safe speed is one that allows collision to be avoided in any conditions."
+    },
+    {
+      "id": 15,
+      "category": "kotveni",
+      "question": "The chain between the anchor line and the anchor:",
+      "options": [
+        {"key": "a", "text": "increases the strength of the line"},
+        {"key": "b", "text": "ensures the pull on the anchor stays as parallel to the seabed as possible and dampens shock loads on the cleat in waves"},
+        {"key": "c", "text": "increases the weight of the anchor"},
+        {"key": "d", "text": "is of no significance for anchoring"}
+      ],
+      "correct": "b",
+      "explanation": "The chain ensures a horizontal pull on the anchor and dampens shock loads caused by waves."
+    },
+    {
+      "id": 16,
+      "category": "potapeni-z-lodi",
+      "question": "When climbing out of the water onto a small inflatable boat after a dive, the first thing to do is:",
+      "options": [
+        {"key": "a", "text": "place the mask in the boat"},
+        {"key": "b", "text": "push the mask onto the forehead, but only remove it once on board"},
+        {"key": "c", "text": "remove the fins"},
+        {"key": "d", "text": "hand up the weights"}
+      ],
+      "correct": "d",
+      "explanation": "First hand up the weights, to make the climb easier and avoid loading the boat all at once."
+    },
+    {
+      "id": 17,
+      "category": "navigace",
+      "question": "In 2000, the magnetic variation derived from a chart entry 'Var. 1°W (1994) decr. 30' annually' will be:",
+      "options": [
+        {"key": "a", "text": "−4° (= 4°W)"},
+        {"key": "b", "text": "+1° (= 1°E)"},
+        {"key": "c", "text": "−2° (= 2°W)"},
+        {"key": "d", "text": "+2° (= 2°E)"}
+      ],
+      "correct": "d",
+      "explanation": "Over 6 years (1994–2000) the variation decreased by 6 × 30' = 3°. The original 1°W − 3° = 2°E."
+    },
+    {
+      "id": 18,
+      "category": "potapeni-z-lodi",
+      "question": "When climbing aboard a boat by ladder after a dive:",
+      "options": [
+        {"key": "a", "text": "we climb the ladder immediately, in close succession"},
+        {"key": "b", "text": "we keep a careful watch on our surroundings, and in warm seas mainly look out for sharks"},
+        {"key": "c", "text": "no one may stay directly beneath the ascending diver"},
+        {"key": "d", "text": "all answers are correct"}
+      ],
+      "correct": "c",
+      "explanation": "No one may stay directly beneath the ascending diver because of the risk of dropped equipment or a fall."
+    },
+    {
+      "id": 19,
+      "category": "pravidla-plavby",
+      "question": "When two power-driven vessels approach one another:",
+      "options": [
+        {"key": "a", "text": "each alters course to port"},
+        {"key": "b", "text": "if they are head-on, each alters course to starboard"},
+        {"key": "c", "text": "the vessel that has the other on her starboard side has right of way"},
+        {"key": "d", "text": "the faster vessel has right of way"}
+      ],
+      "correct": "b",
+      "explanation": "In a head-on situation, both vessels alter course to starboard (port-to-port passing)."
+    },
+    {
+      "id": 20,
+      "category": "navigace",
+      "question": "Latitude is the coordinate of a point measured as an angle in the direction:",
+      "options": [
+        {"key": "a", "text": "from the pole to the equator"},
+        {"key": "b", "text": "from the equator to the pole"},
+        {"key": "c", "text": "from the Greenwich meridian eastwards"},
+        {"key": "d", "text": "from the Greenwich meridian westwards"}
+      ],
+      "correct": "b",
+      "explanation": "Latitude is measured from the equator towards the poles (0° to 90° N or S)."
+    },
+    {
+      "id": 21,
+      "category": "pocasi",
+      "question": "In displacement mode, what has the greatest effect on navigation is:",
+      "options": [
+        {"key": "a", "text": "the current"},
+        {"key": "b", "text": "the wind"},
+        {"key": "c", "text": "wind gusts"},
+        {"key": "d", "text": "water temperature"}
+      ],
+      "correct": "a",
+      "explanation": "In displacement mode (low speed), the current has the greatest effect because it acts on the entire submerged hull."
+    },
+    {
+      "id": 22,
+      "category": "svetla",
+      "question": "Navigation lights must be displayed:",
+      "options": [
+        {"key": "a", "text": "only at night"},
+        {"key": "b", "text": "whenever another vessel approaches"},
+        {"key": "c", "text": "only when navigating in reduced visibility"},
+        {"key": "d", "text": "from sunset to sunrise, in reduced visibility, and whenever deemed necessary"}
+      ],
+      "correct": "d",
+      "explanation": "Lights are displayed from sunset to sunrise, in reduced visibility, and whenever necessary."
+    },
+    {
+      "id": 23,
+      "category": "technika",
+      "question": "A cause of fuel starvation in the engine cannot be:",
+      "options": [
+        {"key": "a", "text": "an empty fuel tank"},
+        {"key": "b", "text": "a corroded contact on the ignition coil"},
+        {"key": "c", "text": "a closed fuel-tank vent screw"},
+        {"key": "d", "text": "a clogged fuel filter"}
+      ],
+      "correct": "b",
+      "explanation": "A corroded ignition-coil contact is an electrical-system fault, not a fuel-system fault."
+    },
+    {
+      "id": 24,
+      "category": "navigace",
+      "question": "In 1999, the magnetic variation derived from a chart entry 'Var 1°W (1995) decr. 30' annually' will be:",
+      "options": [
+        {"key": "a", "text": "−3° (= 3°W)"},
+        {"key": "b", "text": "+1° (= 1°E)"},
+        {"key": "c", "text": "−1° (= 1°W)"},
+        {"key": "d", "text": "+2° (= 2°E)"}
+      ],
+      "correct": "b",
+      "explanation": "Over 4 years (1995–1999) the variation decreased by 4 × 30' = 2°. The original 1°W − 2° = 1°E."
+    },
+    {
+      "id": 25,
+      "category": "navigace",
+      "question": "The main advantage of fixing one's position from bearings on 3 points using the inscribed-angle property of a circle is:",
+      "options": [
+        {"key": "a", "text": "that we obtain a third intersection of position lines"},
+        {"key": "b", "text": "that current set need not be considered"},
+        {"key": "c", "text": "that only magnetic variation needs to be taken into account, not deviation"},
+        {"key": "d", "text": "that it is not necessary to correct compass bearings to true bearings"}
+      ],
+      "correct": "d",
+      "explanation": "With the three-point method there is no need to correct compass bearings — only the angles between the points are used."
+    },
+    {
+      "id": 26,
+      "category": "kotveni",
+      "question": "The anchor line of an inflatable boat should be:",
+      "options": [
+        {"key": "a", "text": "25 m"},
+        {"key": "b", "text": "equal to the depth over which we intend to anchor"},
+        {"key": "c", "text": "at least twice the depth over which we intend to anchor"},
+        {"key": "d", "text": "300 m"}
+      ],
+      "correct": "c",
+      "explanation": "The anchor line should be at least twice the water depth so the anchor sets properly."
+    },
+    {
+      "id": 27,
+      "category": "navigace",
+      "question": "We measure the distance between two points on a chart:",
+      "options": [
+        {"key": "a", "text": "on the northern edge of the chart"},
+        {"key": "b", "text": "on the southern edge of the chart, at approximately the same longitude"},
+        {"key": "c", "text": "on the eastern or western edge of the chart, at approximately the same latitude"},
+        {"key": "d", "text": "on the scale in the chart legend"}
+      ],
+      "correct": "c",
+      "explanation": "Distances are read off the side edge of the chart (latitude scale) at the corresponding height."
+    },
+    {
+      "id": 28,
+      "category": "pravidla-plavby",
+      "question": "An action taken to avoid collision shall be made:",
+      "options": [
+        {"key": "a", "text": "by gradually altering the course"},
+        {"key": "b", "text": "by gradually altering the speed"},
+        {"key": "c", "text": "by altering course and speed in such a way that it is readily apparent to the other vessel"},
+        {"key": "d", "text": "by altering course by less than 30°"}
+      ],
+      "correct": "c",
+      "explanation": "The change must be large enough to be readily apparent to the other vessel."
+    },
+    {
+      "id": 29,
+      "category": "technika",
+      "question": "A sheared shear-pin on the propeller will cause:",
+      "options": [
+        {"key": "a", "text": "an increase in engine revs and the boat to slow down"},
+        {"key": "b", "text": "a sudden increase in engine revs and the boat to accelerate"},
+        {"key": "c", "text": "the boat to spin"},
+        {"key": "d", "text": "the engine to stop"}
+      ],
+      "correct": "a",
+      "explanation": "Without the shear-pin the propeller spins freely — engine revs rise, but the boat slows down."
+    },
+    {
+      "id": 30,
+      "category": "potapeni-z-lodi",
+      "question": "After a group of divers has dived from the boat, the most important thing before leaving the site is:",
+      "options": [
+        {"key": "a", "text": "to do a detailed debrief"},
+        {"key": "b", "text": "to download dive profiles from the computers"},
+        {"key": "c", "text": "to check that all dive participants are on board"},
+        {"key": "d", "text": "to check that all divers have stowed their kit properly"}
+      ],
+      "correct": "c",
+      "explanation": "The most important thing is to confirm all divers are on board before departing."
+    },
+    {
+      "id": 31,
+      "category": "navigace",
+      "question": "If the point on which we are taking a bearing lies to the south-west of us, the compass reading is:",
+      "options": [
+        {"key": "a", "text": "045°"},
+        {"key": "b", "text": "090°"},
+        {"key": "c", "text": "225°"},
+        {"key": "d", "text": "315°"}
+      ],
+      "correct": "c",
+      "explanation": "South-west is 225° (between south 180° and west 270°)."
+    },
+    {
+      "id": 32,
+      "category": "navigace",
+      "question": "To fix a position by terrestrial navigation (within sight of fixed landmarks), we need to know at least:",
+      "options": [
+        {"key": "a", "text": "one position line"},
+        {"key": "b", "text": "two position lines"},
+        {"key": "c", "text": "three position lines"},
+        {"key": "d", "text": "the speed of our boat"}
+      ],
+      "correct": "b",
+      "explanation": "An unambiguous fix requires at least two position lines (their intersection)."
+    },
+    {
+      "id": 33,
+      "category": "potapeni-z-lodi",
+      "question": "When climbing out of the water onto a small inflatable boat after a dive:",
+      "options": [
+        {"key": "a", "text": "first remove the fins and stow them in the boat together with the mask"},
+        {"key": "b", "text": "lift the weights into the boat and either clip the scuba unit to the boat or hand it to the crew"},
+        {"key": "c", "text": "with the crew's help, climb into the boat in full kit"},
+        {"key": "d", "text": "watch the surroundings carefully and look out for sharks"}
+      ],
+      "correct": "b",
+      "explanation": "First remove the weights and the scuba unit, only then climb aboard."
+    },
+    {
+      "id": 34,
+      "category": "navigace",
+      "question": "To plot a prescribed course over ground COG = 035° and an expected distance of 30 nautical miles from our position on the chart, we use a navigation triangle and dividers, with this angle:",
+      "options": [
+        {"key": "a", "text": "measured on the triangle by aligning with the nearest meridian, and the distance read off on the eastern edge of the chart"},
+        {"key": "b", "text": "measured on the triangle by aligning with the nearest meridian, and the distance read off on the southern edge of the chart"},
+        {"key": "c", "text": "measured on the triangle by aligning with the nearest parallel of latitude, and the distance read off on the eastern edge of the chart"},
+        {"key": "d", "text": "transferred from the compass rose on the chart, and the distance read off on the southern edge of the chart"}
+      ],
+      "correct": "a",
+      "explanation": "The angle is measured against the meridian and the distance read off on the side (eastern/western) edge of the chart."
+    },
+    {
+      "id": 35,
+      "category": "pocasi",
+      "question": "A coastal breeze typically blows:",
+      "options": [
+        {"key": "a", "text": "both morning and evening, towards the sea"},
+        {"key": "b", "text": "in the morning towards the sea, in the evening towards the shore"},
+        {"key": "c", "text": "in the morning towards the shore, in the evening towards the sea"},
+        {"key": "d", "text": "both morning and evening, towards the shore"}
+      ],
+      "correct": "c",
+      "explanation": "In the morning the breeze blows towards the shore (the sea is warmer); in the evening it blows out to sea (the land is warmer)."
+    },
+    {
+      "id": 36,
+      "category": "navigace",
+      "question": "Which of the following statements is correct?",
+      "options": [
+        {"key": "a", "text": "an easterly wind blows from the east, an easterly current flows to the east"},
+        {"key": "b", "text": "an easterly wind blows to the east, an easterly current flows to the east"},
+        {"key": "c", "text": "an easterly wind blows from the east, an easterly current flows from the east"},
+        {"key": "d", "text": "an easterly wind blows to the east, an easterly current flows from the east"}
+      ],
+      "correct": "a",
+      "explanation": "Wind is named after the direction it comes from. A current is named after the direction it flows towards."
+    },
+    {
+      "id": 37,
+      "category": "svetla",
+      "question": "The starboard sidelight is:",
+      "options": [
+        {"key": "a", "text": "green, visible from dead ahead to 22.5° abaft the beam"},
+        {"key": "b", "text": "green, visible from the beam to 22.5° abaft the beam"},
+        {"key": "c", "text": "red, visible from dead ahead to 22.5° abaft the beam"},
+        {"key": "d", "text": "red, visible from the beam to 22.5° abaft the beam"}
+      ],
+      "correct": "a",
+      "explanation": "The starboard sidelight is green and shines from dead ahead to 22.5° abaft the beam (112.5°)."
+    },
+    {
+      "id": 38,
+      "category": "potapeni-z-lodi",
+      "question": "When divers are picked up directly by the boat, they board the ladder:",
+      "options": [
+        {"key": "a", "text": "on the windward side and when the ladder is at its lowest point"},
+        {"key": "b", "text": "on the windward side and when the ladder is at its highest point"},
+        {"key": "c", "text": "on the leeward side and when the ladder is at its lowest point"},
+        {"key": "d", "text": "on the leeward side and when the ladder is at its highest point"}
+      ],
+      "correct": "c",
+      "explanation": "Board on the leeward side (calmer water) and when the ladder is at its lowest (easier to step on)."
+    },
+    {
+      "id": 39,
+      "category": "svetla",
+      "question": "The port sidelight is:",
+      "options": [
+        {"key": "a", "text": "green, visible from dead ahead to 22.5° abaft the beam"},
+        {"key": "b", "text": "green, visible from the beam to 22.5° abaft the beam"},
+        {"key": "c", "text": "red, visible from dead ahead to 22.5° abaft the beam"},
+        {"key": "d", "text": "red, visible from the beam to 22.5° abaft the beam"}
+      ],
+      "correct": "c",
+      "explanation": "The port sidelight is red and shines from dead ahead to 22.5° abaft the beam (112.5°)."
+    },
+    {
+      "id": 40,
+      "category": "navigace",
+      "question": "If we want to follow a charted course COG = 270° with a determined magnetic variation of −3° and current set of −2°, and deviation can be neglected, the compass course we steer is:",
+      "options": [
+        {"key": "a", "text": "compass course = 265°"},
+        {"key": "b", "text": "compass course = 270°"},
+        {"key": "c", "text": "compass course = 273°"},
+        {"key": "d", "text": "compass course = 275°"}
+      ],
+      "correct": "d",
+      "explanation": "Compass course = COG − variation − set = 270° − (−3°) − (−2°) = 270° + 3° + 2° = 275°."
+    },
+    {
+      "id": 41,
+      "category": "potapeni-z-lodi",
+      "question": "When leading a group on a drift dive, you should:",
+      "options": [
+        {"key": "a", "text": "ensure the whole group stays together"},
+        {"key": "b", "text": "monitor every member's gas consumption"},
+        {"key": "c", "text": "use the compass to check direction of travel and watch the agreed dive time"},
+        {"key": "d", "text": "all answers are correct"}
+      ],
+      "correct": "d",
+      "explanation": "A drift-dive leader must do all of the above."
+    },
+    {
+      "id": 42,
+      "category": "pravidla-plavby",
+      "question": "When two power-driven vessels approach one another:",
+      "options": [
+        {"key": "a", "text": "each alters course to starboard"},
+        {"key": "b", "text": "the vessel that has the other on her starboard side has right of way"},
+        {"key": "c", "text": "the faster vessel has right of way"},
+        {"key": "d", "text": "the vessel that has the other on her port side has right of way"}
+      ],
+      "correct": "d",
+      "explanation": "Right of way belongs to the vessel that has the other on her port side (the give-way vessel is the one with the other on her starboard)."
+    },
+    {
+      "id": 43,
+      "category": "bezpecnost",
+      "question": "Which of the following does NOT apply to a 'man overboard' procedure on an inflatable boat in a tidal current and wind:",
+      "options": [
+        {"key": "a", "text": "The boat's stern swings to the opposite side from the one the casualty fell off."},
+        {"key": "b", "text": "A person is designated to keep the casualty in sight at all times."},
+        {"key": "c", "text": "The approach is made by drifting downstream onto the casualty."},
+        {"key": "d", "text": "The approach is made into the wind."}
+      ],
+      "correct": "c",
+      "explanation": "The approach is not made by drifting onto the casualty — that would be dangerous. The approach is controlled."
+    },
+    {
+      "id": 44,
+      "category": "navigace",
+      "question": "The chart datum (CD) is defined as:",
+      "options": [
+        {"key": "a", "text": "the lowest level below which the water surface only rarely falls at low tide"},
+        {"key": "b", "text": "the highest level above which the water surface only rarely rises at high tide"},
+        {"key": "c", "text": "the water level halfway between maximum high tide and maximum low tide"},
+        {"key": "d", "text": "the average water level at high tide during spring tide"}
+      ],
+      "correct": "a",
+      "explanation": "Chart datum is the lowest tidal level — depths on a chart are measured from this reference."
+    },
+    {
+      "id": 45,
+      "category": "navigace",
+      "question": "One nautical mile (1 nm) is defined as the distance corresponding to:",
+      "options": [
+        {"key": "a", "text": "1 angular minute along a terrestrial meridian"},
+        {"key": "b", "text": "1 angular minute along a terrestrial parallel of latitude"},
+        {"key": "c", "text": "1 degree along a terrestrial meridian"},
+        {"key": "d", "text": "1 degree along a terrestrial parallel of latitude"}
+      ],
+      "correct": "a",
+      "explanation": "A nautical mile corresponds to 1 angular minute along a terrestrial meridian (approximately 1852 m)."
+    },
+    {
+      "id": 46,
+      "category": "potapeni-z-lodi",
+      "question": "What should the first buddy pair do when diving from a small boat?",
+      "options": [
+        {"key": "a", "text": "Set off towards the dive target and cooperate with each other."},
+        {"key": "b", "text": "Check their kit personally and with each other below the surface, then set off towards the dive target."},
+        {"key": "c", "text": "Check their kit personally and with each other below the surface, then wait for the other pairs at the anchor line."},
+        {"key": "d", "text": "Check their kit personally and with each other below the surface, then check (and if needed improve) the boat's anchoring."}
+      ],
+      "correct": "d",
+      "explanation": "The first pair check their kit and inspect / improve the boat's anchoring for everyone's safety."
+    },
+    {
+      "id": 47,
+      "category": "potapeni-z-lodi",
+      "question": "When diving from a small boat in waves, the most suitable place to put on the scuba unit is:",
+      "options": [
+        {"key": "a", "text": "in the water once the unit is floating beside the boat on a tether"},
+        {"key": "b", "text": "at the bow"},
+        {"key": "c", "text": "at the stern"},
+        {"key": "d", "text": "in the middle of the boat"}
+      ],
+      "correct": "a",
+      "explanation": "In waves it is safest to don the scuba unit in the water, where conditions are more stable."
+    },
+    {
+      "id": 48,
+      "category": "kotveni",
+      "question": "Which of the following statements does NOT apply?",
+      "options": [
+        {"key": "a", "text": "The anchor in the boat should lie under the anchor line."},
+        {"key": "b", "text": "It is advisable to attach a buoy to the end of the anchor line."},
+        {"key": "c", "text": "The anchor line is fastened to a fixed point on the boat."},
+        {"key": "d", "text": "The anchor in the boat should lie on top of the anchor line, or beside it."}
+      ],
+      "correct": "d",
+      "explanation": "The anchor should lie under the line, not on top of it, so the line can pay out freely."
+    },
+    {
+      "id": 49,
+      "category": "potapeni-z-lodi",
+      "question": "To safely mark the position of a surfacing diver before pickup by the boat, the device used is:",
+      "options": [
+        {"key": "a", "text": "rising bubbles"},
+        {"key": "b", "text": "a delayed surface marker buoy (DSMB)"},
+        {"key": "c", "text": "a pre-arranged acoustic signal"},
+        {"key": "d", "text": "the 'distress on surface' signal"}
+      ],
+      "correct": "b",
+      "explanation": "A DSMB reliably marks the diver's position for pickup by the boat."
+    },
+    {
+      "id": 50,
+      "category": "potapeni-z-lodi",
+      "question": "Removing fins before climbing aboard a boat by ladder:",
+      "options": [
+        {"key": "a", "text": "is necessary in all circumstances"},
+        {"key": "b", "text": "is fundamentally inadmissible"},
+        {"key": "c", "text": "is appropriate when using a conventional ladder"},
+        {"key": "d", "text": "is appropriate when using a ladder with a centre rail"}
+      ],
+      "correct": "c",
+      "explanation": "On a conventional ladder it is appropriate to remove fins; on a ladder with a centre rail it is not necessary."
+    }
+  ]
+}

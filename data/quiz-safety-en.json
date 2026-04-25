@@ -1,0 +1,1306 @@
+{
+  "title": "Safety Guidelines - SPČR 2018 Exam Tests",
+  "description": "Exam questions on the SPČR (Czech Diving Federation) Safety Guidelines 2016 for divers",
+  "questions": [
+    {
+      "id": 1,
+      "category": "obecne-smernice",
+      "question": "Compliance with the SPČR Safety Guidelines 2016 is strongly recommended for:",
+      "options": [
+        {"key": "a", "text": "all divers except training participants (trainees)"},
+        {"key": "b", "text": "all participants in diving activities except instructors"},
+        {"key": "c", "text": "all divers"},
+        {"key": "d", "text": "only diving instructors when conducting training"}
+      ],
+      "correct": "c",
+      "explanation": "Compliance with the SPČR Safety Guidelines 2016 is strongly recommended for all divers, without exception."
+    },
+    {
+      "id": 2,
+      "category": "obecne-smernice",
+      "question": "During diving training (unless the current SPČR Training Guidelines state otherwise) and at events of the Czech Diving Federation (SPČR), the Czech Divers Union (SČP) and the Moravia-Silesia Divers Union (SPMS):",
+      "options": [
+        {"key": "a", "text": "compliance with the Safety Guidelines is mandatory only for training with more than 10 trainees, or for events with more than 20 divers"},
+        {"key": "b", "text": "compliance with the Safety Guidelines is left to the discretion of the dive leader or instructor"},
+        {"key": "c", "text": "compliance with the Safety Guidelines is mandatory for participants holding qualifications up to and including CMAS Two-Star Diver (P2)"},
+        {"key": "d", "text": "compliance with the Safety Guidelines is mandatory"}
+      ],
+      "correct": "d",
+      "explanation": "During diving training and at SPČR events, compliance with the Safety Guidelines is mandatory."
+    },
+    {
+      "id": 3,
+      "category": "obecne-smernice",
+      "question": "Divers shall:",
+      "options": [
+        {"key": "a", "text": "follow a dive profile such that the average depth does not exceed 15 m"},
+        {"key": "b", "text": "use a snorkel when swimming with their scuba unit on the surface"},
+        {"key": "c", "text": "observe the limiting conditions valid for their qualification grade"},
+        {"key": "d", "text": "limit their diving routine to no more than two dives per day"}
+      ],
+      "correct": "c",
+      "explanation": "Divers must observe the limiting conditions that apply to their qualification grade."
+    },
+    {
+      "id": 4,
+      "category": "obecne-smernice",
+      "question": "Divers:",
+      "options": [
+        {"key": "a", "text": "have their medical fitness for diving checked periodically"},
+        {"key": "b", "text": "do not use equipment more than 6 years old from the date of manufacture"},
+        {"key": "c", "text": "must be familiar with the complete International Code of Signals"},
+        {"key": "d", "text": "none of the answers is correct"}
+      ],
+      "correct": "a",
+      "explanation": "Divers have their medical fitness for diving checked periodically."
+    },
+    {
+      "id": 5,
+      "category": "obecne-smernice",
+      "question": "The validity of a dive medical examination is:",
+      "options": [
+        {"key": "a", "text": "3 months"},
+        {"key": "b", "text": "6 months"},
+        {"key": "c", "text": "9 months"},
+        {"key": "d", "text": "1 year"}
+      ],
+      "correct": "d",
+      "explanation": "A diver's medical examination is valid for 1 year."
+    },
+    {
+      "id": 6,
+      "category": "obecne-smernice",
+      "question": "The validity of a medical examination is:",
+      "options": [
+        {"key": "a", "text": "6 months"},
+        {"key": "b", "text": "1 year"},
+        {"key": "c", "text": "2 years"},
+        {"key": "d", "text": "2 years up to age 40, 1 year over age 40"}
+      ],
+      "correct": "b",
+      "explanation": "The medical examination is valid for 1 year."
+    },
+    {
+      "id": 7,
+      "category": "obecne-smernice",
+      "question": "Identify the statement that does NOT match the SPČR Safety Guidelines 2016:",
+      "options": [
+        {"key": "a", "text": "Divers observe the limiting conditions valid for their qualification grade."},
+        {"key": "b", "text": "Divers have their medical fitness for diving checked periodically."},
+        {"key": "c", "text": "The validity of a medical examination is 2 years."},
+        {"key": "d", "text": "Divers must not be coerced into diving."}
+      ],
+      "correct": "c",
+      "explanation": "The statement 'medical examination valid for 2 years' does not match the Safety Guidelines — the correct period is 1 year."
+    },
+    {
+      "id": 8,
+      "category": "zpusobilost",
+      "question": "Divers shall categorically avoid diving:",
+      "options": [
+        {"key": "a", "text": "at temperatures below minus 10 °C"},
+        {"key": "b", "text": "if their physical and/or mental capacity is reduced by fatigue"},
+        {"key": "c", "text": "if they are not equipped with a dive computer"},
+        {"key": "d", "text": "if underwater visibility drops below 2 m"}
+      ],
+      "correct": "b",
+      "explanation": "Divers shall categorically avoid diving if their physical and/or mental capacity is reduced by fatigue."
+    },
+    {
+      "id": 9,
+      "category": "zpusobilost",
+      "question": "Divers shall categorically avoid diving when their physical and/or mental capacity is reduced by:",
+      "options": [
+        {"key": "a", "text": "illness"},
+        {"key": "b", "text": "consumption of alcohol or drugs"},
+        {"key": "c", "text": "fatigue"},
+        {"key": "d", "text": "all answers are correct"}
+      ],
+      "correct": "d",
+      "explanation": "Divers shall avoid diving whether their capacity is reduced by illness, alcohol/drugs or fatigue — all answers are correct."
+    },
+    {
+      "id": 10,
+      "category": "zpusobilost",
+      "question": "Divers whose physical and/or mental capacity is reduced:",
+      "options": [
+        {"key": "a", "text": "must pay extra attention to their equipment before the dive"},
+        {"key": "b", "text": "must pay extra attention to dive planning"},
+        {"key": "c", "text": "shall categorically avoid diving"},
+        {"key": "d", "text": "shall dive to a limited depth (CMAS One-Star Diver max. 10 m, CMAS Two-Star Diver max. 15 m, CMAS Three-Star Diver or instructor max. 20 m)"}
+      ],
+      "correct": "c",
+      "explanation": "Divers with reduced capacity shall categorically avoid diving."
+    },
+    {
+      "id": 11,
+      "category": "zpusobilost",
+      "question": "Which of the following does NOT belong to dive-accident prevention?",
+      "options": [
+        {"key": "a", "text": "keeping a dive logbook properly"},
+        {"key": "b", "text": "regular diving experience"},
+        {"key": "c", "text": "rehearsing emergency procedures"},
+        {"key": "d", "text": "responsible dive planning"}
+      ],
+      "correct": "a",
+      "explanation": "Keeping a dive logbook is not part of accident prevention — unlike regular practice, rehearsing emergency procedures and responsible dive planning."
+    },
+    {
+      "id": 12,
+      "category": "zpusobilost",
+      "question": "Identify the statement that does NOT match the SPČR Safety Guidelines:",
+      "options": [
+        {"key": "a", "text": "Divers shall categorically avoid diving when their physical and/or mental capacity is reduced by illness, fatigue, alcohol, drugs or other circumstances."},
+        {"key": "b", "text": "Divers shall categorically avoid diving when the water temperature drops below 6 °C."},
+        {"key": "c", "text": "Divers continually maintain their diving skills and physical fitness."},
+        {"key": "d", "text": "Divers prevent dive accidents through regular diving experience, rehearsing emergency procedures and responsible dive planning."}
+      ],
+      "correct": "b",
+      "explanation": "The Safety Guidelines impose no diving restriction based on water temperature dropping below 6 °C."
+    },
+    {
+      "id": 13,
+      "category": "zpusobilost",
+      "question": "Divers prevent dive accidents through:",
+      "options": [
+        {"key": "a", "text": "regular diving experience"},
+        {"key": "b", "text": "rehearsing emergency procedures"},
+        {"key": "c", "text": "responsible dive planning"},
+        {"key": "d", "text": "all answers are correct"}
+      ],
+      "correct": "d",
+      "explanation": "Divers prevent accidents through all of the above — regular experience, rehearsing emergency procedures, and responsible dive planning."
+    },
+    {
+      "id": 14,
+      "category": "zpusobilost",
+      "question": "Divers:",
+      "options": [
+        {"key": "a", "text": "prevent dive accidents by rehearsing emergency procedures"},
+        {"key": "b", "text": "maintain their diving skills and physical fitness only in the period before each step up in qualification"},
+        {"key": "c", "text": "shall categorically avoid diving when the horizontal underwater visibility drops below 2 m"},
+        {"key": "d", "text": "all answers are correct"}
+      ],
+      "correct": "a",
+      "explanation": "Divers prevent accidents by rehearsing emergency procedures. Skills are maintained continually (not only before a qualification step-up), and a buddy line is used in low visibility (not avoidance)."
+    },
+    {
+      "id": 15,
+      "category": "specialni-potapeni",
+      "question": "For diving on mixed-gas breathing mixtures, with rebreathers, in overhead environments including under ice, and in otherwise demanding conditions, what is required is:",
+      "options": [
+        {"key": "a", "text": "completion of training to the level of CMAS Three-Star Diver"},
+        {"key": "b", "text": "completion of a special course or training"},
+        {"key": "c", "text": "redundant equipment"},
+        {"key": "d", "text": "diving experience of at least 150 dives in varied conditions"}
+      ],
+      "correct": "b",
+      "explanation": "Special types of diving require completion of a special course or training."
+    },
+    {
+      "id": 16,
+      "category": "specialni-potapeni",
+      "question": "For diving under ice, what is required is:",
+      "options": [
+        {"key": "a", "text": "completion of at least 90 open-water dives, of which at least 30 at night"},
+        {"key": "b", "text": "completion of a special course or training"},
+        {"key": "c", "text": "qualification at least CMAS One-Star Diver"},
+        {"key": "d", "text": "qualification at least CMAS Three-Star Diver"}
+      ],
+      "correct": "b",
+      "explanation": "Diving under ice requires completion of a special course or training."
+    },
+    {
+      "id": 17,
+      "category": "specialni-potapeni",
+      "question": "Diving under ice shall be avoided by divers who:",
+      "options": [
+        {"key": "a", "text": "are not equipped with a dry suit"},
+        {"key": "b", "text": "are not equipped with a dive computer"},
+        {"key": "c", "text": "have not completed a special course or training"},
+        {"key": "d", "text": "have not undergone prior cold-water acclimatisation"}
+      ],
+      "correct": "c",
+      "explanation": "Divers who have not completed a special course or training shall avoid diving under ice."
+    },
+    {
+      "id": 18,
+      "category": "specialni-potapeni",
+      "question": "Completion of a special course or training and adherence to the safety rules set out in that course is required:",
+      "options": [
+        {"key": "a", "text": "for all divers with CMAS Two-Star Diver and higher"},
+        {"key": "b", "text": "for diving in smaller groups, in underwater visibility below 2 m, and at greater distances from shore"},
+        {"key": "c", "text": "and is not required for diving under ice"},
+        {"key": "d", "text": "for diving on mixed-gas breathing mixtures, with rebreathers, in overhead environments including under ice, and in otherwise demanding conditions"}
+      ],
+      "correct": "d",
+      "explanation": "A special course is required for mixed-gas, rebreather, overhead, ice and otherwise demanding diving."
+    },
+    {
+      "id": 19,
+      "category": "obecne-smernice",
+      "question": "Divers, to the best of their ability:",
+      "options": [
+        {"key": "a", "text": "promote environmental protection"},
+        {"key": "b", "text": "promote their own SPČR member federation"},
+        {"key": "c", "text": "ensure regular replacement of their equipment"},
+        {"key": "d", "text": "none of the answers is correct"}
+      ],
+      "correct": "a",
+      "explanation": "Divers, to the best of their ability, promote environmental protection."
+    },
+    {
+      "id": 20,
+      "category": "obecne-smernice",
+      "question": "Identify the statement that does NOT match the SPČR Safety Guidelines:",
+      "options": [
+        {"key": "a", "text": "The validity of a medical examination is 1 year."},
+        {"key": "b", "text": "Compliance with the SPČR Safety Guidelines is strongly recommended for all divers, except for training participants (trainees), who follow the SPČR Training Guidelines."},
+        {"key": "c", "text": "Divers prevent dive accidents through responsible dive planning."},
+        {"key": "d", "text": "For diving on mixed-gas breathing mixtures, with rebreathers, in overhead environments including under ice, and in otherwise demanding conditions, completion of a special course or training and adherence to the safety rules set out in that course is required."}
+      ],
+      "correct": "b",
+      "explanation": "The Safety Guidelines are recommended for all divers without exception, not 'except for trainees'."
+    },
+    {
+      "id": 21,
+      "category": "vystroj",
+      "question": "Diving equipment must be:",
+      "options": [
+        {"key": "a", "text": "functional and appropriate for the planned dive"},
+        {"key": "b", "text": "tested at twice the maximum depth for which it is intended"},
+        {"key": "c", "text": "approved by the boards of the SPČR member federations"},
+        {"key": "d", "text": "all answers are correct"}
+      ],
+      "correct": "a",
+      "explanation": "Diving equipment must be functional and appropriate for the planned dive."
+    },
+    {
+      "id": 22,
+      "category": "vystroj",
+      "question": "For open-water diving, the indispensable items of equipment are:",
+      "options": [
+        {"key": "a", "text": "dive knife and exposure suit"},
+        {"key": "b", "text": "dive knife and dive computer"},
+        {"key": "c", "text": "dive computer, depth gauge and timer"},
+        {"key": "d", "text": "dive knife (or other suitable cutting tool) and buoyancy compensator"}
+      ],
+      "correct": "d",
+      "explanation": "For open-water diving, the indispensable items are a dive knife (or other suitable tool) and a buoyancy compensator."
+    },
+    {
+      "id": 23,
+      "category": "vystroj",
+      "question": "The following is NOT considered a buoyancy compensator:",
+      "options": [
+        {"key": "a", "text": "a jacket-style BCD with adjustable straps"},
+        {"key": "b", "text": "a jacket-style BCD with integrated weights"},
+        {"key": "c", "text": "a dry suit"},
+        {"key": "d", "text": "a wing"}
+      ],
+      "correct": "c",
+      "explanation": "A dry suit is not considered a buoyancy compensator."
+    },
+    {
+      "id": 24,
+      "category": "vystroj",
+      "question": "As a buoyancy compensator:",
+      "options": [
+        {"key": "a", "text": "a dry suit also counts"},
+        {"key": "b", "text": "a dry suit does not count"},
+        {"key": "c", "text": "a foamed-neoprene dry suit also counts"},
+        {"key": "d", "text": "a wing does not count"}
+      ],
+      "correct": "b",
+      "explanation": "A dry suit is not considered a buoyancy compensator."
+    },
+    {
+      "id": 25,
+      "category": "vystroj",
+      "question": "Identify the statement that does NOT match the SPČR Safety Guidelines:",
+      "options": [
+        {"key": "a", "text": "Diving equipment must be functional and appropriate for the planned dive."},
+        {"key": "b", "text": "For diving below 10 m, only equipment bearing the international CMAS certificate may be used."},
+        {"key": "c", "text": "For open-water diving, the indispensable items of equipment are a dive knife (or other suitable cutting tool) and a buoyancy compensator."},
+        {"key": "d", "text": "A dry suit is not considered a buoyancy compensator."}
+      ],
+      "correct": "b",
+      "explanation": "The Safety Guidelines do not require a CMAS certificate for equipment used below 10 m."
+    },
+    {
+      "id": 26,
+      "category": "vystroj",
+      "question": "Equipment must be:",
+      "options": [
+        {"key": "a", "text": "brightly coloured for easier locating of a lost diver"},
+        {"key": "b", "text": "marked with the Alpha (A) flag of the International Code of Signals"},
+        {"key": "c", "text": "arranged so that there is no risk of damage to it and/or entanglement"},
+        {"key": "d", "text": "marked visibly with its maximum safe operating depth"}
+      ],
+      "correct": "c",
+      "explanation": "Equipment must be arranged so that there is no risk of damage to it and/or entanglement."
+    },
+    {
+      "id": 27,
+      "category": "vystroj",
+      "question": "A buoyancy compensator may NOT be used to:",
+      "options": [
+        {"key": "a", "text": "control buoyancy during the dive"},
+        {"key": "b", "text": "bring a buddy in difficulty up to the surface"},
+        {"key": "c", "text": "substitute for a lifting bag"},
+        {"key": "d", "text": "stabilise the buoyancy of an unconscious diver on the surface"}
+      ],
+      "correct": "c",
+      "explanation": "A buoyancy compensator must not be used as a substitute for a lifting bag."
+    },
+    {
+      "id": 28,
+      "category": "vystroj",
+      "question": "Each diver must be equipped with an alternative source of:",
+      "options": [
+        {"key": "a", "text": "breathing gas, i.e. a backup regulator, an alternate second stage (octopus) or similar, plus a means of measuring breathing-gas pressure and instruments for determining depth and dive time, or a dive computer"},
+        {"key": "b", "text": "water-temperature measurement (a backup thermometer)"},
+        {"key": "c", "text": "lighting (a backup torch or similar)"},
+        {"key": "d", "text": "dive recording (camera, video camera or similar)"}
+      ],
+      "correct": "a",
+      "explanation": "Each diver must carry an alternative breathing-gas source (octopus), a pressure-measuring device, and instruments for depth and time."
+    },
+    {
+      "id": 29,
+      "category": "vystroj",
+      "question": "Instruments for determining depth and dive time must be carried by:",
+      "options": [
+        {"key": "a", "text": "at least one of a buddy pair"},
+        {"key": "b", "text": "every diver"},
+        {"key": "c", "text": "every diver when diving deeper than 10 m"},
+        {"key": "d", "text": "at least one of a buddy trio"}
+      ],
+      "correct": "b",
+      "explanation": "Every diver must carry instruments for determining depth and dive time."
+    },
+    {
+      "id": 30,
+      "category": "vystroj",
+      "question": "An alternative breathing-gas source (backup regulator, alternate second stage (octopus) or similar), a pressure-measuring device for the breathing gas, and instruments for determining depth and dive time, or a dive computer:",
+      "options": [
+        {"key": "a", "text": "must be carried by at least one diver in a buddy pair (or trio)"},
+        {"key": "b", "text": "must be carried by every diver"},
+        {"key": "c", "text": "are carried by divers as their means and judgement allow"},
+        {"key": "d", "text": "are carried by divers for dives deeper than 10 m"}
+      ],
+      "correct": "b",
+      "explanation": "Every diver must carry an alternative breathing-gas source and the other listed equipment."
+    },
+    {
+      "id": 31,
+      "category": "vystroj",
+      "question": "Divers:",
+      "options": [
+        {"key": "a", "text": "continually maintain their diving skills and physical fitness"},
+        {"key": "b", "text": "complete a special course or training for diving under ice"},
+        {"key": "c", "text": "use an alternative breathing-gas source, i.e. a backup regulator, an alternate second stage (octopus) or similar"},
+        {"key": "d", "text": "all answers are correct"}
+      ],
+      "correct": "d",
+      "explanation": "All answers are correct — divers maintain fitness, complete a special course for ice diving, and use an alternative breathing-gas source."
+    },
+    {
+      "id": 32,
+      "category": "vystroj",
+      "question": "Use of an alternative breathing-gas source (backup regulator, alternate second stage (octopus) or similar), a pressure-measuring device, and instruments for depth and time, or a dive computer:",
+      "options": [
+        {"key": "a", "text": "is not recommended"},
+        {"key": "b", "text": "is not recommended during diving training"},
+        {"key": "c", "text": "is strongly recommended for all divers"},
+        {"key": "d", "text": "is strongly recommended during training for the CMAS Two-Star and Three-Star Diver qualifications"}
+      ],
+      "correct": "c",
+      "explanation": "Use of an alternative breathing-gas source and the other equipment is strongly recommended for all divers."
+    },
+    {
+      "id": 33,
+      "category": "vystroj",
+      "question": "A dive flag/buoy is used:",
+      "options": [
+        {"key": "a", "text": "on every dive"},
+        {"key": "b", "text": "where appropriate"},
+        {"key": "c", "text": "only for diving in a sheltered body of water"},
+        {"key": "d", "text": "for diving under ice"}
+      ],
+      "correct": "b",
+      "explanation": "A dive flag/buoy is used where appropriate."
+    },
+    {
+      "id": 34,
+      "category": "vystroj",
+      "question": "Diving equipment must be:",
+      "options": [
+        {"key": "a", "text": "properly secured, arranged and used in such a way that there is no risk of damage and/or entanglement"},
+        {"key": "b", "text": "brightly coloured for easy diver location"},
+        {"key": "c", "text": "approved by the SPČR Training Committee"},
+        {"key": "d", "text": "approved by the management of the relevant dive club"}
+      ],
+      "correct": "a",
+      "explanation": "Diving equipment must be properly secured, arranged and used so that there is no risk of damage and/or entanglement."
+    },
+    {
+      "id": 35,
+      "category": "vystroj",
+      "question": "When horizontal underwater visibility is below 2 m:",
+      "options": [
+        {"key": "a", "text": "a buddy line is used"},
+        {"key": "b", "text": "use of a powerful torch is recommended"},
+        {"key": "c", "text": "a strobe or chemical light is used"},
+        {"key": "d", "text": "diving must be avoided"}
+      ],
+      "correct": "a",
+      "explanation": "When horizontal underwater visibility is below 2 m, a buddy line is used."
+    },
+    {
+      "id": 36,
+      "category": "vystroj",
+      "question": "A buddy line is used:",
+      "options": [
+        {"key": "a", "text": "on night dives"},
+        {"key": "b", "text": "on breath-hold dives in a sheltered body of water"},
+        {"key": "c", "text": "on dives below 30 m"},
+        {"key": "d", "text": "when horizontal underwater visibility is below 2 m"}
+      ],
+      "correct": "d",
+      "explanation": "A buddy line is used when horizontal underwater visibility is below 2 m."
+    },
+    {
+      "id": 37,
+      "category": "vystroj",
+      "question": "Identify the statement that does NOT match the SPČR Safety Guidelines 2016:",
+      "options": [
+        {"key": "a", "text": "Diving equipment must be properly secured, arranged and used in such a way that there is no risk of damage and/or entanglement."},
+        {"key": "b", "text": "A buoyancy compensator must not be used as a substitute for a lifting bag."},
+        {"key": "c", "text": "Every diver must be equipped with instruments for determining depth and dive time, or with a dive computer."},
+        {"key": "d", "text": "When horizontal visibility is below 4 m, a buddy line is used."}
+      ],
+      "correct": "d",
+      "explanation": "The Safety Guidelines specify a buddy line below 2 m visibility, not below 4 m."
+    },
+    {
+      "id": 38,
+      "category": "buddy-system",
+      "question": "Divers shall be familiar with:",
+      "options": [
+        {"key": "a", "text": "the expected weather development for at least the next two days"},
+        {"key": "b", "text": "diving hand signals"},
+        {"key": "c", "text": "the aquatic life present at the dive site"},
+        {"key": "d", "text": "the complete International Code of Signals"}
+      ],
+      "correct": "b",
+      "explanation": "Divers shall be familiar with diving hand signals."
+    },
+    {
+      "id": 39,
+      "category": "buddy-system",
+      "question": "Divers dive in buddy teams, i.e. in pairs (or trios where necessary), in which they:",
+      "options": [
+        {"key": "a", "text": "discuss the dive plan in detail beforehand"},
+        {"key": "b", "text": "familiarise each other with the operation of their equipment"},
+        {"key": "c", "text": "agree on signals between them"},
+        {"key": "d", "text": "all answers are correct"}
+      ],
+      "correct": "d",
+      "explanation": "Within a buddy team, divers discuss the plan, familiarise each other with their equipment and agree on signals — all answers are correct."
+    },
+    {
+      "id": 40,
+      "category": "buddy-system",
+      "question": "Before submerging, divers in a buddy team perform a buddy check focused on:",
+      "options": [
+        {"key": "a", "text": "the proper keeping of their dive logbooks"},
+        {"key": "b", "text": "knowledge of current developments in dive equipment"},
+        {"key": "c", "text": "the suitability and adequacy of documentation equipment (camera, video camera)"},
+        {"key": "d", "text": "the correctness and completeness of cylinder valve opening, cylinder pressure, the connection of inflator hoses for buoyancy compensators and dry suits, the operation of primary and backup second stages, and the placement and securing of weights"}
+      ],
+      "correct": "d",
+      "explanation": "The buddy check verifies cylinder valves, pressure, hose connections, regulators and weights."
+    },
+    {
+      "id": 41,
+      "category": "buddy-system",
+      "question": "Divers shall be familiar with:",
+      "options": [
+        {"key": "a", "text": "the use of backup depth gauges"},
+        {"key": "b", "text": "the shortening of so-called no-decompression limits at depths beyond 18 m"},
+        {"key": "c", "text": "the extension of decompression times for repetitive dives"},
+        {"key": "d", "text": "diving hand signals"}
+      ],
+      "correct": "d",
+      "explanation": "Divers shall be familiar with diving hand signals."
+    },
+    {
+      "id": 42,
+      "category": "buddy-system",
+      "question": "Before diving, divers shall acquaint themselves with:",
+      "options": [
+        {"key": "a", "text": "local rules regulating diving activity"},
+        {"key": "b", "text": "the natural conditions for diving"},
+        {"key": "c", "text": "how to summon first aid and the location of the recompression chamber"},
+        {"key": "d", "text": "all answers are correct"}
+      ],
+      "correct": "d",
+      "explanation": "Before diving, divers acquaint themselves with all of the above — local rules, conditions and how to summon help."
+    },
+    {
+      "id": 43,
+      "category": "buddy-system",
+      "question": "Before diving, divers shall acquaint themselves with:",
+      "options": [
+        {"key": "a", "text": "the aquatic life present at the dive site"},
+        {"key": "b", "text": "the history of diving at the site"},
+        {"key": "c", "text": "the location of the cylinder filling station"},
+        {"key": "d", "text": "local rules regulating diving activity"}
+      ],
+      "correct": "d",
+      "explanation": "Before diving, divers acquaint themselves with the local rules regulating diving activity."
+    },
+    {
+      "id": 44,
+      "category": "buddy-system",
+      "question": "Before diving, divers shall acquaint themselves with:",
+      "options": [
+        {"key": "a", "text": "the manufacturing process for cylinders"},
+        {"key": "b", "text": "local rules regulating diving activity"},
+        {"key": "c", "text": "local authorities"},
+        {"key": "d", "text": "none of the answers is correct"}
+      ],
+      "correct": "b",
+      "explanation": "Before diving, divers acquaint themselves with the local rules regulating diving activity."
+    },
+    {
+      "id": 45,
+      "category": "buddy-system",
+      "question": "Before submerging, divers in a buddy team perform:",
+      "options": [
+        {"key": "a", "text": "a buddy check"},
+        {"key": "b", "text": "the steps of detailed dive planning"},
+        {"key": "c", "text": "a mutual review of dive-logbook entries"},
+        {"key": "d", "text": "a brief recap of nature-protection principles"}
+      ],
+      "correct": "a",
+      "explanation": "Before submerging, divers in a buddy team perform a buddy check."
+    },
+    {
+      "id": 46,
+      "category": "buddy-system",
+      "question": "The buddy check before submerging does NOT include:",
+      "options": [
+        {"key": "a", "text": "checking that cylinder valves are open"},
+        {"key": "b", "text": "checking the connection of inflator hoses to BCDs and dry suits"},
+        {"key": "c", "text": "checking the placement and securing of the snorkel"},
+        {"key": "d", "text": "checking the placement and securing of weights"}
+      ],
+      "correct": "c",
+      "explanation": "The buddy check does not include checking the placement of the snorkel."
+    },
+    {
+      "id": 47,
+      "category": "buddy-system",
+      "question": "In buddy teams, i.e. pairs (or trios where necessary), divers familiarise each other with:",
+      "options": [
+        {"key": "a", "text": "the results of their medical examinations"},
+        {"key": "b", "text": "the operation of their equipment, and agree on signals between them"},
+        {"key": "c", "text": "their qualifications, length of diving experience, number of dives completed and greatest depth reached"},
+        {"key": "d", "text": "the most recent entry in their dive logbooks"}
+      ],
+      "correct": "b",
+      "explanation": "In buddy teams, divers familiarise each other with the operation of their equipment and agree on signals between them."
+    },
+    {
+      "id": 48,
+      "category": "buddy-system",
+      "question": "In pairs (or trios where necessary):",
+      "options": [
+        {"key": "a", "text": "divers discuss the dive plan in detail beforehand"},
+        {"key": "b", "text": "divers familiarise each other with the operation of their equipment"},
+        {"key": "c", "text": "divers agree on signals between them"},
+        {"key": "d", "text": "all answers are correct"}
+      ],
+      "correct": "d",
+      "explanation": "All answers are correct — in pairs/trios, divers discuss the plan, familiarise each other with their equipment, and agree on signals."
+    },
+    {
+      "id": 49,
+      "category": "buddy-system",
+      "question": "Both during the dive and on the surface, divers maintain between themselves:",
+      "options": [
+        {"key": "a", "text": "uninterrupted visual contact"},
+        {"key": "b", "text": "such a distance that they are able to assist each other in case of trouble"},
+        {"key": "c", "text": "a distance corresponding to roughly half the horizontal underwater visibility"},
+        {"key": "d", "text": "a distance of up to 2 m"}
+      ],
+      "correct": "b",
+      "explanation": "Divers maintain such a distance that they are able to assist each other in case of trouble."
+    },
+    {
+      "id": 50,
+      "category": "planovani-ponoru",
+      "question": "Divers shall not exceed a depth of:",
+      "options": [
+        {"key": "a", "text": "30 m"},
+        {"key": "b", "text": "40 m"},
+        {"key": "c", "text": "50 m"},
+        {"key": "d", "text": "60 m"}
+      ],
+      "correct": "b",
+      "explanation": "Divers shall not exceed a depth of 40 m."
+    },
+    {
+      "id": 51,
+      "category": "planovani-ponoru",
+      "question": "Identify the statement that does NOT match the SPČR Safety Guidelines 2016:",
+      "options": [
+        {"key": "a", "text": "Divers shall not exceed a depth of 30 m."},
+        {"key": "b", "text": "Divers shall be familiar with diving hand signals."},
+        {"key": "c", "text": "Before diving, divers shall acquaint themselves with how to summon first aid and with the location of the recompression chamber."},
+        {"key": "d", "text": "Both during the dive and on the surface, divers maintain such a distance that they are able to assist each other in case of trouble."}
+      ],
+      "correct": "a",
+      "explanation": "The Safety Guidelines specify a maximum depth of 40 m, not 30 m."
+    },
+    {
+      "id": 52,
+      "category": "planovani-ponoru",
+      "question": "Dives are organised so that on ascent there is no need to:",
+      "options": [
+        {"key": "a", "text": "perform staged decompression"},
+        {"key": "b", "text": "perform a safety stop"},
+        {"key": "c", "text": "use a DSMB"},
+        {"key": "d", "text": "use a surface support team"}
+      ],
+      "correct": "a",
+      "explanation": "Dives are organised so that staged decompression is not required on ascent."
+    },
+    {
+      "id": 53,
+      "category": "planovani-ponoru",
+      "question": "Dives:",
+      "options": [
+        {"key": "a", "text": "are categorically organised so that no support vessel is needed"},
+        {"key": "b", "text": "are organised so that staged decompression is not required on ascent"},
+        {"key": "c", "text": "are organised in a team of at least five"},
+        {"key": "d", "text": "are categorically organised under the supervision of a dive leader or instructor"}
+      ],
+      "correct": "b",
+      "explanation": "Dives are organised so that staged decompression is not required on ascent."
+    },
+    {
+      "id": 54,
+      "category": "planovani-ponoru",
+      "question": "If staged decompression is unavoidable on a given dive, what is required is:",
+      "options": [
+        {"key": "a", "text": "to ensure the presence of a recompression chamber with operator"},
+        {"key": "b", "text": "to ensure the presence of a doctor familiar with diving medicine"},
+        {"key": "c", "text": "to organise the dive so that no more than one decompression stop is required"},
+        {"key": "d", "text": "to organise the dive so that the diver remains under a doctor's or dive leader's supervision for at least 6 hours after surfacing"}
+      ],
+      "correct": "c",
+      "explanation": "If decompression is unavoidable, the dive is organised so that no more than one decompression stop is required."
+    },
+    {
+      "id": 55,
+      "category": "planovani-ponoru",
+      "question": "After a dive, divers shall avoid (in view of residual nitrogen):",
+      "options": [
+        {"key": "a", "text": "increased physical exertion"},
+        {"key": "b", "text": "dehydration"},
+        {"key": "c", "text": "increasing their altitude or flying"},
+        {"key": "d", "text": "all answers are correct"}
+      ],
+      "correct": "d",
+      "explanation": "After a dive, divers avoid increased exertion, dehydration and altitude increases — all answers are correct."
+    },
+    {
+      "id": 56,
+      "category": "planovani-ponoru",
+      "question": "Divers:",
+      "options": [
+        {"key": "a", "text": "have their regulators serviced at least once every two years"},
+        {"key": "b", "text": "have their cylinders pressure-tested at least once a year"},
+        {"key": "c", "text": "avoid using dive computers when planning decompression"},
+        {"key": "d", "text": "avoid increased physical exertion after a dive"}
+      ],
+      "correct": "d",
+      "explanation": "Divers avoid increased physical exertion after a dive."
+    },
+    {
+      "id": 57,
+      "category": "planovani-ponoru",
+      "question": "Identify the statement that does NOT match the SPČR Safety Guidelines 2016:",
+      "options": [
+        {"key": "a", "text": "Divers shall not exceed a depth of 40 m."},
+        {"key": "b", "text": "Dives are organised so that staged decompression is not required on ascent."},
+        {"key": "c", "text": "After a dive, divers avoid dehydration."},
+        {"key": "d", "text": "If staged decompression is unavoidable on a given dive, it must be organised so that no more than two decompression stops are required."}
+      ],
+      "correct": "d",
+      "explanation": "The Safety Guidelines allow at most one decompression stop, not two."
+    },
+    {
+      "id": 58,
+      "category": "planovani-ponoru",
+      "question": "It is strongly recommended that divers:",
+      "options": [
+        {"key": "a", "text": "do not take on fluids before a dive (hydration)"},
+        {"key": "b", "text": "do not take on fluids after a dive (hydration)"},
+        {"key": "c", "text": "do not increase their altitude or fly before a dive"},
+        {"key": "d", "text": "do not increase their altitude or fly after a dive"}
+      ],
+      "correct": "d",
+      "explanation": "It is strongly recommended that divers do not increase their altitude or fly after a dive."
+    },
+    {
+      "id": 59,
+      "category": "planovani-ponoru",
+      "question": "Divers:",
+      "options": [
+        {"key": "a", "text": "before diving, acquaint themselves with the local rules regulating diving activity"},
+        {"key": "b", "text": "before diving, acquaint themselves with how to summon first aid and the location of the recompression chamber"},
+        {"key": "c", "text": "avoid increased physical exertion after a dive"},
+        {"key": "d", "text": "all answers are correct"}
+      ],
+      "correct": "d",
+      "explanation": "All of the above are correct."
+    },
+    {
+      "id": 60,
+      "category": "planovani-ponoru",
+      "question": "Divers:",
+      "options": [
+        {"key": "a", "text": "during the dive and on the surface maintain such a distance that they are able to assist each other in case of trouble"},
+        {"key": "b", "text": "do not exceed a depth of 50 m"},
+        {"key": "c", "text": "before submerging perform a buddy check focused on the proper keeping of dive logbooks"},
+        {"key": "d", "text": "avoid safety stops on no-decompression dives"}
+      ],
+      "correct": "a",
+      "explanation": "Divers, during the dive and on the surface, maintain such a distance that they are able to assist each other in case of trouble."
+    },
+    {
+      "id": 61,
+      "category": "organizace-akci",
+      "question": "All participants in a larger-scale diving event must be thoroughly briefed on:",
+      "options": [
+        {"key": "a", "text": "the purpose and plan of the event"},
+        {"key": "b", "text": "the signals being used"},
+        {"key": "c", "text": "the action plan in case of emergency"},
+        {"key": "d", "text": "all answers are correct"}
+      ],
+      "correct": "d",
+      "explanation": "Participants must be briefed on the purpose, the signals and the emergency plan — all answers are correct."
+    },
+    {
+      "id": 62,
+      "category": "organizace-akci",
+      "question": "All participants in a larger-scale diving event must be thoroughly briefed on the purpose and plan of the event:",
+      "options": [
+        {"key": "a", "text": "at least 48 hours before the event"},
+        {"key": "b", "text": "at least 24 hours before the event"},
+        {"key": "c", "text": "at any time during the event"},
+        {"key": "d", "text": "at the start of the event"}
+      ],
+      "correct": "d",
+      "explanation": "Participants must be briefed on the purpose and plan at the start of the event."
+    },
+    {
+      "id": 63,
+      "category": "organizace-akci",
+      "question": "The action plan for emergencies at a larger-scale diving event must be communicated to:",
+      "options": [
+        {"key": "a", "text": "all holders of CMAS Two-Star Diver and higher"},
+        {"key": "b", "text": "all participants"},
+        {"key": "c", "text": "participants over the age of 18"},
+        {"key": "d", "text": "participants over the age of 14"}
+      ],
+      "correct": "b",
+      "explanation": "The emergency action plan must be communicated to all participants."
+    },
+    {
+      "id": 64,
+      "category": "organizace-akci",
+      "question": "At larger-scale and more demanding diving events where there is also a risk of decompression sickness, it is appropriate to have:",
+      "options": [
+        {"key": "a", "text": "a diving instructor with a valid licence"},
+        {"key": "b", "text": "a diving doctor"},
+        {"key": "c", "text": "a recompression chamber with an operator"},
+        {"key": "d", "text": "oxygen-administration equipment with an operator familiar with its use"}
+      ],
+      "correct": "d",
+      "explanation": "On more demanding events with DCS risk, it is appropriate to have oxygen-administration equipment and a trained operator."
+    },
+    {
+      "id": 65,
+      "category": "organizace-akci",
+      "question": "The presence of a backup scuba unit is appropriate:",
+      "options": [
+        {"key": "a", "text": "at larger-scale and more demanding diving events"},
+        {"key": "b", "text": "at diving events with more than 5 participants"},
+        {"key": "c", "text": "for diving in a sheltered body of water"},
+        {"key": "d", "text": "for breath-hold diving in open water"}
+      ],
+      "correct": "a",
+      "explanation": "A backup scuba unit is appropriate at larger-scale and more demanding diving events."
+    },
+    {
+      "id": 66,
+      "category": "organizace-akci",
+      "question": "At larger-scale and more demanding diving events where there is a risk of decompression sickness, it is appropriate to have:",
+      "options": [
+        {"key": "a", "text": "medical staff"},
+        {"key": "b", "text": "oxygen-administration equipment with an operator familiar with its use"},
+        {"key": "c", "text": "an emergency-services vehicle"},
+        {"key": "d", "text": "a support vessel"}
+      ],
+      "correct": "b",
+      "explanation": "It is appropriate to have oxygen-administration equipment with a trained operator."
+    },
+    {
+      "id": 67,
+      "category": "organizace-akci",
+      "question": "At larger-scale diving events, it is advisable to designate from the participants:",
+      "options": [
+        {"key": "a", "text": "a coordinator who oversees the smooth flow of dive preparation"},
+        {"key": "b", "text": "a dive leader who organises the activity of divers underwater"},
+        {"key": "c", "text": "an experienced diver who, after diving activities end, runs an analysis of the completed dives with the participants"},
+        {"key": "d", "text": "a recorder who also ensures the correct order of dives"}
+      ],
+      "correct": "b",
+      "explanation": "At larger-scale events it is advisable to designate a dive leader who organises the divers' activity underwater."
+    },
+    {
+      "id": 68,
+      "category": "organizace-akci",
+      "question": "The dive leader:",
+      "options": [
+        {"key": "a", "text": "must be over 21 years of age"},
+        {"key": "b", "text": "organises the activity of divers underwater"},
+        {"key": "c", "text": "must hold an instructor qualification"},
+        {"key": "d", "text": "none of the answers is correct"}
+      ],
+      "correct": "b",
+      "explanation": "The dive leader organises the activity of divers underwater."
+    },
+    {
+      "id": 69,
+      "category": "organizace-akci",
+      "question": "The dive leader:",
+      "options": [
+        {"key": "a", "text": "is selected from among the participants in a larger-scale diving event"},
+        {"key": "b", "text": "organises the activity of divers underwater"},
+        {"key": "c", "text": "must hold a qualification of at least CMAS Three-Star Diver"},
+        {"key": "d", "text": "all answers are correct"}
+      ],
+      "correct": "d",
+      "explanation": "All answers are correct — the dive leader is selected from participants, organises underwater activity, and must hold at least CMAS Three-Star Diver."
+    },
+    {
+      "id": 70,
+      "category": "organizace-akci",
+      "question": "The dive leader:",
+      "options": [
+        {"key": "a", "text": "may, for the time strictly necessary, raise the diving qualification of an event participant"},
+        {"key": "b", "text": "organises the running of the larger-scale event except for the divers' underwater activity"},
+        {"key": "c", "text": "organises the activity of divers underwater"},
+        {"key": "d", "text": "may delegate the organisation of underwater activity to collective leadership"}
+      ],
+      "correct": "c",
+      "explanation": "The dive leader organises the activity of divers underwater."
+    },
+    {
+      "id": 71,
+      "category": "organizace-akci",
+      "question": "Identify the statement that does NOT match the SPČR Safety Guidelines 2016:",
+      "options": [
+        {"key": "a", "text": "The dive leader is selected from among the participants in a larger-scale diving event."},
+        {"key": "b", "text": "The dive leader organises the activity of divers underwater."},
+        {"key": "c", "text": "The dive leader must hold a qualification of at least CMAS Two-Star Diver."},
+        {"key": "d", "text": "The dive leader must hold a qualification of at least CMAS Three-Star Diver."}
+      ],
+      "correct": "c",
+      "explanation": "The Safety Guidelines require the dive leader to hold at least CMAS Three-Star Diver, not Two-Star."
+    },
+    {
+      "id": 72,
+      "category": "organizace-akci",
+      "question": "The dive leader is selected from:",
+      "options": [
+        {"key": "a", "text": "holders of at least CMAS Two-Star Diver with the relevant specialisation"},
+        {"key": "b", "text": "CMAS / SPČR instructors with a valid licence"},
+        {"key": "c", "text": "the participants of a larger-scale diving event"},
+        {"key": "d", "text": "the chairs of SČP or SPMS dive clubs"}
+      ],
+      "correct": "c",
+      "explanation": "The dive leader is selected from the participants of a larger-scale diving event."
+    },
+    {
+      "id": 73,
+      "category": "organizace-akci",
+      "question": "Designating a dive leader from among the participants is appropriate:",
+      "options": [
+        {"key": "a", "text": "when underwater visibility falls below 2 m"},
+        {"key": "b", "text": "when diving at greater distances from shore"},
+        {"key": "c", "text": "at larger-scale diving events"},
+        {"key": "d", "text": "whenever 4 or more divers are diving at once"}
+      ],
+      "correct": "c",
+      "explanation": "Designating a dive leader is appropriate at larger-scale diving events."
+    },
+    {
+      "id": 74,
+      "category": "organizace-akci",
+      "question": "The dive leader must hold:",
+      "options": [
+        {"key": "a", "text": "at least CMAS Two-Star Diver"},
+        {"key": "b", "text": "at least CMAS Three-Star Diver"},
+        {"key": "c", "text": "at least CMAS One-Star Diver with a mixed-gas specialisation"},
+        {"key": "d", "text": "at least CMAS Two-Star Diver with a rebreather specialisation"}
+      ],
+      "correct": "b",
+      "explanation": "The dive leader must hold at least CMAS Three-Star Diver."
+    },
+    {
+      "id": 75,
+      "category": "organizace-akci",
+      "question": "All participants in a larger-scale diving event must be briefed at the start of the event on:",
+      "options": [
+        {"key": "a", "text": "the dive leader's diving history"},
+        {"key": "b", "text": "the event's significance for each participant individually"},
+        {"key": "c", "text": "the event's significance for the development of diving"},
+        {"key": "d", "text": "the purpose and plan of the event, the signals used and the action plan in case of emergency"}
+      ],
+      "correct": "d",
+      "explanation": "Participants must be briefed on the event purpose and plan, signals, and the emergency action plan."
+    },
+    {
+      "id": 76,
+      "category": "obecne-smernice",
+      "question": "Divers:",
+      "options": [
+        {"key": "a", "text": "to the best of their ability promote environmental protection"},
+        {"key": "b", "text": "continually maintain their diving skills and physical fitness"},
+        {"key": "c", "text": "observe the limiting conditions for their qualification grade"},
+        {"key": "d", "text": "all answers are correct"}
+      ],
+      "correct": "d",
+      "explanation": "All answers are correct — divers promote environmental protection, maintain fitness and observe their qualification limits."
+    },
+    {
+      "id": 77,
+      "category": "zpusobilost",
+      "question": "Divers shall categorically avoid diving:",
+      "options": [
+        {"key": "a", "text": "if their physical and/or mental capacity is reduced"},
+        {"key": "b", "text": "if their cylinders are filled to less than 80% of maximum working pressure"},
+        {"key": "c", "text": "if they are not equipped with a backup depth gauge or backup dive computer"},
+        {"key": "d", "text": "if they are not equipped with a snorkel"}
+      ],
+      "correct": "a",
+      "explanation": "Divers shall categorically avoid diving if their physical and/or mental capacity is reduced."
+    },
+    {
+      "id": 78,
+      "category": "vystroj",
+      "question": "Diving equipment must be:",
+      "options": [
+        {"key": "a", "text": "properly secured"},
+        {"key": "b", "text": "properly arranged"},
+        {"key": "c", "text": "used in such a way that there is no risk of damage and/or entanglement"},
+        {"key": "d", "text": "all answers are correct"}
+      ],
+      "correct": "d",
+      "explanation": "All answers are correct — equipment must be properly secured, properly arranged, and used safely."
+    },
+    {
+      "id": 79,
+      "category": "vystroj",
+      "question": "A device for measuring breathing-gas pressure must be carried by:",
+      "options": [
+        {"key": "a", "text": "every diver"},
+        {"key": "b", "text": "every other diver (in a buddy trio, two of three divers)"},
+        {"key": "c", "text": "the dive leader"},
+        {"key": "d", "text": "the instructor during diving training below 10 m"}
+      ],
+      "correct": "a",
+      "explanation": "A device for measuring breathing-gas pressure must be carried by every diver."
+    },
+    {
+      "id": 80,
+      "category": "buddy-system",
+      "question": "Both during the dive and on the surface, divers maintain such a distance:",
+      "options": [
+        {"key": "a", "text": "that they are able to assist each other in case of trouble"},
+        {"key": "b", "text": "that they can reliably read each other's notes on slates"},
+        {"key": "c", "text": "that does not exceed the horizontal underwater visibility"},
+        {"key": "d", "text": "that does not exceed one quarter of the horizontal underwater visibility"}
+      ],
+      "correct": "a",
+      "explanation": "Divers maintain such a distance that they are able to assist each other in case of trouble."
+    },
+    {
+      "id": 81,
+      "category": "doprovodne-plavidlo",
+      "question": "To support diving at greater distances from shore:",
+      "options": [
+        {"key": "a", "text": "a scuba unit with cylinder capacity of at least 4 m³ is used"},
+        {"key": "b", "text": "a wing-type buoyancy compensator is used"},
+        {"key": "c", "text": "a recompression chamber with operator is used"},
+        {"key": "d", "text": "a suitable support vessel is used"}
+      ],
+      "correct": "d",
+      "explanation": "A suitable support vessel is used for diving at greater distances from shore."
+    },
+    {
+      "id": 82,
+      "category": "doprovodne-plavidlo",
+      "question": "A suitable support vessel is used:",
+      "options": [
+        {"key": "a", "text": "for diving in a group"},
+        {"key": "b", "text": "for diving at greater distances from shore"},
+        {"key": "c", "text": "for diving with a scuba unit"},
+        {"key": "d", "text": "for breath-hold diving"}
+      ],
+      "correct": "b",
+      "explanation": "A suitable support vessel is used for diving at greater distances from shore."
+    },
+    {
+      "id": 83,
+      "category": "doprovodne-plavidlo",
+      "question": "The Alpha (A) flag of the International Code of Signals must be displayed clearly visible on the support vessel:",
+      "options": [
+        {"key": "a", "text": "continuously"},
+        {"key": "b", "text": "within 10 minutes of departure"},
+        {"key": "c", "text": "throughout the entire voyage"},
+        {"key": "d", "text": "while the divers are in the water"}
+      ],
+      "correct": "d",
+      "explanation": "The Alpha flag must be displayed on the support vessel while the divers are in the water."
+    },
+    {
+      "id": 84,
+      "category": "doprovodne-plavidlo",
+      "question": "While divers are in the water, the support vessel must display, clearly visible:",
+      "options": [
+        {"key": "a", "text": "the SPČR flag"},
+        {"key": "b", "text": "the Alpha (A) flag of the International Code of Signals"},
+        {"key": "c", "text": "the CMAS flag, or another international diving organisation's flag"},
+        {"key": "d", "text": "the SPČR flag plus the CMAS or another international diving organisation's flag"}
+      ],
+      "correct": "b",
+      "explanation": "While divers are in the water, the Alpha flag of the International Code of Signals must be displayed."
+    },
+    {
+      "id": 85,
+      "category": "doprovodne-plavidlo",
+      "question": "The Alpha (A) flag of the International Code of Signals must be displayed clearly visible:",
+      "options": [
+        {"key": "a", "text": "on the support vessel from departure to landing"},
+        {"key": "b", "text": "on the support vessel while the divers are in the water"},
+        {"key": "c", "text": "on a DSMB, especially when diving with a scuba unit"},
+        {"key": "d", "text": "on a dive flag/buoy, especially when breath-hold diving"}
+      ],
+      "correct": "b",
+      "explanation": "The Alpha flag is displayed on the support vessel while the divers are in the water."
+    },
+    {
+      "id": 86,
+      "category": "doprovodne-plavidlo",
+      "question": "On board the support vessel there shall be:",
+      "options": [
+        {"key": "a", "text": "tide tables"},
+        {"key": "b", "text": "a lookout and a backup engine"},
+        {"key": "c", "text": "the crew necessary to handle the vessel and a backup scuba unit"},
+        {"key": "d", "text": "all answers are correct"}
+      ],
+      "correct": "c",
+      "explanation": "On board the support vessel there shall be the crew needed to handle the vessel and a backup scuba unit."
+    },
+    {
+      "id": 87,
+      "category": "doprovodne-plavidlo",
+      "question": "On board the support vessel there shall be:",
+      "options": [
+        {"key": "a", "text": "a backup means of propulsion"},
+        {"key": "b", "text": "a backup scuba unit"},
+        {"key": "c", "text": "a backup mask, fins and snorkel"},
+        {"key": "d", "text": "none of the answers is correct"}
+      ],
+      "correct": "b",
+      "explanation": "On board the support vessel there shall be a backup scuba unit."
+    },
+    {
+      "id": 88,
+      "category": "doprovodne-plavidlo",
+      "question": "Identify the statement that does NOT match the SPČR Safety Guidelines 2016:",
+      "options": [
+        {"key": "a", "text": "A suitable support vessel is used to support diving at greater distances from shore."},
+        {"key": "b", "text": "While divers are in the water, the support vessel must display the Alpha (A) flag of the International Code of Signals, clearly visible."},
+        {"key": "c", "text": "On board the support vessel there shall be the crew necessary to handle the vessel and a backup scuba unit."},
+        {"key": "d", "text": "On board the support vessel there shall be a nautical chart, tide tables and a backup engine."}
+      ],
+      "correct": "d",
+      "explanation": "The Safety Guidelines do not require a nautical chart, tide tables and a backup engine on board."
+    },
+    {
+      "id": 89,
+      "category": "doprovodne-plavidlo",
+      "question": "If the situation requires the use of the engine to propel the support vessel during a dive:",
+      "options": [
+        {"key": "a", "text": "manoeuvre so as not to endanger the divers"},
+        {"key": "b", "text": "manoeuvre so as not to enter the navigable channel"},
+        {"key": "c", "text": "use oars or paddles instead"},
+        {"key": "d", "text": "this activity must be categorically avoided"}
+      ],
+      "correct": "a",
+      "explanation": "If the engine must be used during a dive, manoeuvre so as not to endanger the divers."
+    },
+    {
+      "id": 90,
+      "category": "doprovodne-plavidlo",
+      "question": "Use of the engine to propel the support vessel during a dive:",
+      "options": [
+        {"key": "a", "text": "always endangers divers and is therefore categorically inadmissible"},
+        {"key": "b", "text": "is permissible at any time"},
+        {"key": "c", "text": "is permissible if the situation requires it; the manoeuvring must be such that divers are not endangered"},
+        {"key": "d", "text": "is permissible within 10 minutes of submerging"}
+      ],
+      "correct": "c",
+      "explanation": "Engine use is permissible if needed, with manoeuvring such that divers are not endangered."
+    },
+    {
+      "id": 91,
+      "category": "doprovodne-plavidlo",
+      "question": "If the situation requires the use of the engine to propel the support vessel during a dive, what is required is:",
+      "options": [
+        {"key": "a", "text": "to replace the engine with oars (paddles)"},
+        {"key": "b", "text": "to manoeuvre so as not to endanger the divers"},
+        {"key": "c", "text": "to proceed slowly and only in a straight line"},
+        {"key": "d", "text": "to keep the vessel stationary"}
+      ],
+      "correct": "b",
+      "explanation": "It is necessary to manoeuvre so as not to endanger the divers."
+    },
+    {
+      "id": 92,
+      "category": "doprovodne-plavidlo",
+      "question": "It is not safe to put to sea or onto large bodies of water in small boats when the surface conditions are caused by wind of force:",
+      "options": [
+        {"key": "a", "text": "Bf 3 or higher"},
+        {"key": "b", "text": "Bf 4 or higher"},
+        {"key": "c", "text": "Bf 5 or higher"},
+        {"key": "d", "text": "none of the answers is correct"}
+      ],
+      "correct": "b",
+      "explanation": "It is not safe to put to sea in small boats when the surface conditions are caused by wind of Bf 4 or higher."
+    },
+    {
+      "id": 93,
+      "category": "doprovodne-plavidlo",
+      "question": "It is not safe to put to sea or onto large bodies of water in small boats:",
+      "options": [
+        {"key": "a", "text": "without notifying the harbour authority of the voyage"},
+        {"key": "b", "text": "without a backup propulsion unit"},
+        {"key": "c", "text": "in surface conditions caused by wind of Bf 4 or higher"},
+        {"key": "d", "text": "in surface conditions caused by wind of Bf 2 or higher"}
+      ],
+      "correct": "c",
+      "explanation": "It is not safe to put to sea in small boats in conditions caused by wind of Bf 4 or higher."
+    },
+    {
+      "id": 94,
+      "category": "doprovodne-plavidlo",
+      "question": "The support vessel:",
+      "options": [
+        {"key": "a", "text": "is used to support diving at greater distances from shore"},
+        {"key": "b", "text": "must, while the divers are in the water, display the Alpha (A) flag of the International Code of Signals, clearly visible"},
+        {"key": "c", "text": "carries a backup scuba unit on board"},
+        {"key": "d", "text": "all answers are correct"}
+      ],
+      "correct": "d",
+      "explanation": "All answers are correct — the support vessel is used at distances from shore, displays the Alpha flag and carries a backup scuba unit."
+    },
+    {
+      "id": 95,
+      "category": "nouzove-situace",
+      "question": "If contact with a buddy is lost underwater:",
+      "options": [
+        {"key": "a", "text": "divers limit the search for one another to about 30 seconds and then ascend, observing safe-ascent rules"},
+        {"key": "b", "text": "divers limit the search for one another to about 5 minutes and then ascend, observing safe-ascent rules"},
+        {"key": "c", "text": "the search must continue until the cylinder pressure drops to the reserve"},
+        {"key": "d", "text": "an immediate emergency ascent must be initiated"}
+      ],
+      "correct": "a",
+      "explanation": "If buddy contact is lost, the search is limited to about 30 seconds, then a controlled ascent to the surface."
+    },
+    {
+      "id": 96,
+      "category": "nouzove-situace",
+      "question": "If contact with a buddy is lost underwater:",
+      "options": [
+        {"key": "a", "text": "divers limit the search for one another to about 30 seconds and, if contact is not re-established, continue the dive according to the original plan"},
+        {"key": "b", "text": "divers limit the search for one another to about 30 seconds and ascend, observing safe-ascent rules"},
+        {"key": "c", "text": "an immediate ascent at up to 10 m/min is required"},
+        {"key": "d", "text": "an immediate ascent at up to 20 m/min is required"}
+      ],
+      "correct": "b",
+      "explanation": "When contact is lost, the search is limited to about 30 seconds, then a controlled ascent observing safe-ascent rules."
+    },
+    {
+      "id": 97,
+      "category": "nouzove-situace",
+      "question": "Identify the statement that does NOT match the SPČR Safety Guidelines 2016:",
+      "options": [
+        {"key": "a", "text": "If the situation requires the use of the engine to propel the support vessel during a dive, manoeuvre so as not to endanger the divers."},
+        {"key": "b", "text": "It is not safe to put to sea or onto large bodies of water in small boats in conditions caused by wind of Bf 4 or higher."},
+        {"key": "c", "text": "If contact with a buddy is lost underwater, divers limit the search for one another to about 3–5 minutes and ascend, observing safe-ascent rules."},
+        {"key": "d", "text": "In the event of post-dive medical complications, the casualty must be given first aid as quickly as possible, oxygen administered (where appropriate and available), professional medical help arranged, and recompression chamber treatment if necessary."}
+      ],
+      "correct": "c",
+      "explanation": "The Safety Guidelines limit the search to about 30 seconds, not 3–5 minutes."
+    },
+    {
+      "id": 98,
+      "category": "nouzove-situace",
+      "question": "In the event of post-dive medical complications, what is required is:",
+      "options": [
+        {"key": "a", "text": "to perform an immediate corrective re-entry with the casualty for in-water decompression"},
+        {"key": "b", "text": "to first review the dive-computer record of the casualty"},
+        {"key": "c", "text": "to give the casualty first aid as quickly as possible"},
+        {"key": "d", "text": "for the dive leader to fill in an accident report with the casualty"}
+      ],
+      "correct": "c",
+      "explanation": "In the event of medical complications, the casualty must be given first aid as quickly as possible."
+    },
+    {
+      "id": 99,
+      "category": "nouzove-situace",
+      "question": "In the event of post-dive medical complications, the casualty should be:",
+      "options": [
+        {"key": "a", "text": "given painkillers (analgesics)"},
+        {"key": "b", "text": "given oxygen (where appropriate and available)"},
+        {"key": "c", "text": "given immediate transport home"},
+        {"key": "d", "text": "all answers are correct"}
+      ],
+      "correct": "b",
+      "explanation": "In the event of medical complications, the casualty should be given oxygen (where appropriate and available)."
+    },
+    {
+      "id": 100,
+      "category": "nouzove-situace",
+      "question": "In the event of post-dive medical complications, what is required is:",
+      "options": [
+        {"key": "a", "text": "to place the casualty in a recompression chamber without delay"},
+        {"key": "b", "text": "to give the casualty first aid as quickly as possible, administer oxygen (where appropriate and available), arrange professional medical help, and arrange recompression chamber treatment if necessary"},
+        {"key": "c", "text": "to begin a careful transfer of the casualty to the nearest medical facility"},
+        {"key": "d", "text": "to wait for the doctor to arrive"}
+      ],
+      "correct": "b",
+      "explanation": "First aid must be given, oxygen administered, professional medical help arranged, and recompression chamber treatment provided if necessary."
+    }
+  ]
+}

@@ -1,0 +1,656 @@
+{
+  "title": "Embarcación",
+  "description": "Pruebas de examen sobre el manejo de la embarcación SPČR 2018 (CMAS/SPČR)",
+  "questions": [
+    {
+      "id": 1,
+      "category": "technika",
+      "question": "El espejo de popa de una embarcación neumática es:",
+      "options": [
+        {"key": "a", "text": "el fondo con tarima lisa"},
+        {"key": "b", "text": "la pieza fija vertical de popa que sirve para fijar el motor fueraborda"},
+        {"key": "c", "text": "el retrovisor situado en la proa de la embarcación"},
+        {"key": "d", "text": "la visera delantera de la embarcación"}
+      ],
+      "correct": "b",
+      "explanation": "El espejo de popa (transom) es la pieza fija de popa donde se monta el motor fueraborda."
+    },
+    {
+      "id": 2,
+      "category": "kotveni",
+      "question": "Lo más seguro al aproximarse con la embarcación a una boya de fondeo es:",
+      "options": [
+        {"key": "a", "text": "a favor del viento"},
+        {"key": "b", "text": "a favor de la corriente"},
+        {"key": "c", "text": "contra la corriente o el viento"},
+        {"key": "d", "text": "perpendicularmente a la dirección de la corriente"}
+      ],
+      "correct": "c",
+      "explanation": "Contra la corriente o el viento se tiene mejor control de la embarcación y es más fácil detenerla."
+    },
+    {
+      "id": 3,
+      "category": "kotveni",
+      "question": "A la orden del patrón de la embarcación «¡Soltar el ancla!», el tripulante designado:",
+      "options": [
+        {"key": "a", "text": "lanza el ancla preparada lo más lejos posible"},
+        {"key": "b", "text": "deja caer inmediatamente hacia abajo el ancla preparada"},
+        {"key": "c", "text": "baja el ancla con cuidado solo cuando vea el bajío"},
+        {"key": "d", "text": "ninguna respuesta es correcta"}
+      ],
+      "correct": "b",
+      "explanation": "El ancla se deja caer inmediatamente hacia abajo, no se lanza: podría dañar la embarcación o herir a la tripulación."
+    },
+    {
+      "id": 4,
+      "category": "navigace",
+      "question": "Sobre la carta hemos visto que debemos navegar con rumbo verdadero RV = 205°. Si queremos corregir por la declinación magnética, que hemos determinado en +3°, y por la desviación, que para este rumbo es de +2°, navegaremos con rumbo de compás:",
+      "options": [
+        {"key": "a", "text": "Rc = 200°"},
+        {"key": "b", "text": "Rc = 204°"},
+        {"key": "c", "text": "Rc = 205°"},
+        {"key": "d", "text": "Rc = 210°"}
+      ],
+      "correct": "a",
+      "explanation": "Rc = RV − declinación − desviación = 205° − 3° − 2° = 200°."
+    },
+    {
+      "id": 5,
+      "category": "bezpecnost",
+      "question": "Una embarcación neumática volcada:",
+      "options": [
+        {"key": "a", "text": "se intenta poner en posición normal pero no se abandona, aunque no se consiga"},
+        {"key": "b", "text": "se intenta poner en posición normal y, si no se consigue, se nada incluso hacia una orilla lejana"},
+        {"key": "c", "text": "hay que ponerla obligatoriamente en posición normal"},
+        {"key": "d", "text": "no se intenta poner en posición normal para no agotarse"}
+      ],
+      "correct": "a",
+      "explanation": "Una embarcación volcada nunca se abandona: proporciona flotabilidad y es más visible para los rescatadores."
+    },
+    {
+      "id": 6,
+      "category": "navigace",
+      "question": "Un nudo (1 kn) es una unidad:",
+      "options": [
+        {"key": "a", "text": "de velocidad equivalente a 1 milla náutica por hora"},
+        {"key": "b", "text": "de distancia equivalente a 1/10 de milla náutica"},
+        {"key": "c", "text": "de velocidad equivalente a 1 km por hora"},
+        {"key": "d", "text": "de profundidad equivalente a 1,83 m"}
+      ],
+      "correct": "a",
+      "explanation": "El nudo (knot) es una unidad de velocidad equivalente a 1 milla náutica por hora (1,852 km/h)."
+    },
+    {
+      "id": 7,
+      "category": "navigace",
+      "question": "El registro 045 en el diario de a bordo significa:",
+      "options": [
+        {"key": "a", "text": "dirección este"},
+        {"key": "b", "text": "dirección noroeste"},
+        {"key": "c", "text": "dirección noreste"},
+        {"key": "d", "text": "dirección suroeste"}
+      ],
+      "correct": "c",
+      "explanation": "045° corresponde al noreste (entre el norte 0° y el este 90°)."
+    },
+    {
+      "id": 8,
+      "category": "technika",
+      "question": "En la navegación en planeo, frente a la navegación en desplazamiento:",
+      "options": [
+        {"key": "a", "text": "la velocidad es mayor y el consumo de combustible (por km) también"},
+        {"key": "b", "text": "la velocidad es mayor y el consumo de combustible (por km) menor"},
+        {"key": "c", "text": "la velocidad es menor y el consumo de combustible (por km) menor"},
+        {"key": "d", "text": "la velocidad es menor y el consumo de combustible (por km) mayor"}
+      ],
+      "correct": "b",
+      "explanation": "En planeo la velocidad es mayor y el consumo por kilómetro menor gracias a la menor resistencia."
+    },
+    {
+      "id": 9,
+      "category": "pravidla-plavby",
+      "question": "Una embarcación debe mantener vigilancia:",
+      "options": [
+        {"key": "a", "text": "solo cuando se reduce la visibilidad"},
+        {"key": "b", "text": "visual y acústica de forma permanente"},
+        {"key": "c", "text": "acústica con niebla y visual de noche"},
+        {"key": "d", "text": "solo cuando navega en aguas costeras"}
+      ],
+      "correct": "b",
+      "explanation": "Toda embarcación debe mantener vigilancia visual y acústica de forma permanente y en cualquier circunstancia."
+    },
+    {
+      "id": 10,
+      "category": "navigace",
+      "question": "En 1998 hallaremos para la declinación magnética indicada en la carta como Var 2°W (1992) incr. 20' annually el valor:",
+      "options": [
+        {"key": "a", "text": "−3° (= 3°W)"},
+        {"key": "b", "text": "0° (= 0°)"},
+        {"key": "c", "text": "+2° (= 2°E)"},
+        {"key": "d", "text": "−4° (= 4°W)"}
+      ],
+      "correct": "d",
+      "explanation": "En 6 años (1992-1998) la declinación aumentó 6×20' = 2°. Original 2°W + 2° = 4°W."
+    },
+    {
+      "id": 11,
+      "category": "pocasi",
+      "question": "En las costas europeas las mareas se producen:",
+      "options": [
+        {"key": "a", "text": "aproximadamente dos veces cada 25 h tanto la bajamar como la pleamar"},
+        {"key": "b", "text": "una vez cada 25 h (una pleamar cada 12 h 25 min)"},
+        {"key": "c", "text": "cada 12 h 25 min pleamar en marea viva y cada 6 horas en marea muerta"},
+        {"key": "d", "text": "cada 12 h 25 min bajamar en marea muerta y cada 6 horas en marea viva"}
+      ],
+      "correct": "a",
+      "explanation": "En las costas europeas hay aproximadamente 2 pleamares y 2 bajamares cada 25 horas (día de marea)."
+    },
+    {
+      "id": 12,
+      "category": "kotveni",
+      "question": "Tras fondear una embarcación grande en corriente:",
+      "options": [
+        {"key": "a", "text": "fondeamos a favor de corriente"},
+        {"key": "b", "text": "dejamos girar la hélice a bajas revoluciones"},
+        {"key": "c", "text": "lanzamos por la popa un cabo flotante con boya o aro salvavidas"},
+        {"key": "d", "text": "izamos la bandera «embarcación en corriente»"}
+      ],
+      "correct": "c",
+      "explanation": "Por la popa se lanza un cabo flotante con boya por si alguien cae al agua."
+    },
+    {
+      "id": 13,
+      "category": "navigace",
+      "question": "El rumbo de compás con abatimiento por corriente se determina más fácilmente:",
+      "options": [
+        {"key": "a", "text": "gráficamente solo a partir de la velocidad y la dirección de la corriente"},
+        {"key": "b", "text": "gráficamente a partir de la velocidad y la dirección de la corriente y de la velocidad y el rumbo sobre el fondo (RV) de la embarcación, mediante diferencia vectorial"},
+        {"key": "c", "text": "sumando siempre la velocidad de la corriente a la velocidad de la embarcación"},
+        {"key": "d", "text": "restando siempre la velocidad de la corriente a la de la embarcación"}
+      ],
+      "correct": "b",
+      "explanation": "La compensación del abatimiento por corriente se determina gráficamente mediante diferencia vectorial de velocidades y direcciones."
+    },
+    {
+      "id": 14,
+      "category": "pravidla-plavby",
+      "question": "Toda embarcación debe navegar a velocidad de seguridad, es decir:",
+      "options": [
+        {"key": "a", "text": "una velocidad que le permita adelantar rápidamente a otra embarcación"},
+        {"key": "b", "text": "según su eslora (p. ej., una de 7 m a un máximo de 7 nudos)"},
+        {"key": "c", "text": "una velocidad que le permita cambiar de rumbo 30° de inmediato"},
+        {"key": "d", "text": "una velocidad que le permita evitar el abordaje, incluso deteniéndose, en cualquier circunstancia"}
+      ],
+      "correct": "d",
+      "explanation": "La velocidad de seguridad es la que permite evitar el abordaje en cualquier circunstancia."
+    },
+    {
+      "id": 15,
+      "category": "kotveni",
+      "question": "La cadena entre el cabo de fondeo y el ancla:",
+      "options": [
+        {"key": "a", "text": "aumenta la resistencia del cabo"},
+        {"key": "b", "text": "asegura una tracción del ancla lo más paralela posible al fondo y amortigua los tirones del oleaje sobre la bita"},
+        {"key": "c", "text": "aumenta la masa del ancla"},
+        {"key": "d", "text": "no tiene importancia para el fondeo"}
+      ],
+      "correct": "b",
+      "explanation": "La cadena asegura una tracción horizontal del ancla y amortigua los tirones del oleaje."
+    },
+    {
+      "id": 16,
+      "category": "potapeni-z-lodi",
+      "question": "Al salir del agua tras la inmersión a una pequeña embarcación neumática, en primer lugar:",
+      "options": [
+        {"key": "a", "text": "se deja la máscara en la embarcación"},
+        {"key": "b", "text": "se sube la máscara a la frente, pero no se quita hasta estar en la cubierta"},
+        {"key": "c", "text": "se quitan las aletas"},
+        {"key": "d", "text": "se entrega el lastre hacia arriba"}
+      ],
+      "correct": "d",
+      "explanation": "Primero se entrega el lastre, para facilitar la salida y no sobrecargar la embarcación de golpe."
+    },
+    {
+      "id": 17,
+      "category": "navigace",
+      "question": "En 2000 hallaremos para la declinación magnética indicada en la carta como Var. 1°W (1994) decr. 30' annually el valor:",
+      "options": [
+        {"key": "a", "text": "−4° (= 4°W)"},
+        {"key": "b", "text": "+1° (= 1°E)"},
+        {"key": "c", "text": "−2° (= 2°W)"},
+        {"key": "d", "text": "+2° (= 2°E)"}
+      ],
+      "correct": "d",
+      "explanation": "En 6 años (1994-2000) la declinación disminuyó 6×30' = 3°. Original 1°W − 3° = 2°E."
+    },
+    {
+      "id": 18,
+      "category": "potapeni-z-lodi",
+      "question": "Al salir del agua tras la inmersión a una embarcación por la escala:",
+      "options": [
+        {"key": "a", "text": "subimos a la escala inmediatamente uno detrás de otro"},
+        {"key": "b", "text": "vigilamos atentamente el entorno y, en mares cálidos, prestamos atención sobre todo a los tiburones"},
+        {"key": "c", "text": "no debe permanecer nadie justo bajo el buceador que está subiendo"},
+        {"key": "d", "text": "todas las respuestas son correctas"}
+      ],
+      "correct": "c",
+      "explanation": "Bajo el buceador que sube no debe permanecer nadie por riesgo de caída de equipo o del propio buceador."
+    },
+    {
+      "id": 19,
+      "category": "pravidla-plavby",
+      "question": "Si se aproximan dos embarcaciones de propulsión mecánica:",
+      "options": [
+        {"key": "a", "text": "cada una cambia el rumbo a babor"},
+        {"key": "b", "text": "si navegan una hacia otra, cada una cambia el rumbo a estribor"},
+        {"key": "c", "text": "tiene preferencia la embarcación que tiene a la otra por su banda de estribor"},
+        {"key": "d", "text": "tiene preferencia la más rápida de las dos"}
+      ],
+      "correct": "b",
+      "explanation": "Cuando navegan una hacia otra, ambas embarcaciones cambian el rumbo a estribor (regla de la derecha)."
+    },
+    {
+      "id": 20,
+      "category": "navigace",
+      "question": "La latitud geográfica es la coordenada de un punto medida como ángulo en dirección:",
+      "options": [
+        {"key": "a", "text": "del polo al ecuador"},
+        {"key": "b", "text": "del ecuador al polo"},
+        {"key": "c", "text": "del meridiano de Greenwich hacia el este"},
+        {"key": "d", "text": "del meridiano de Greenwich hacia el oeste"}
+      ],
+      "correct": "b",
+      "explanation": "La latitud se mide desde el ecuador hacia los polos (de 0° a 90° N o S)."
+    },
+    {
+      "id": 21,
+      "category": "pocasi",
+      "question": "En la navegación en desplazamiento, lo que más influye en la navegación es:",
+      "options": [
+        {"key": "a", "text": "la corriente"},
+        {"key": "b", "text": "el viento"},
+        {"key": "c", "text": "las rachas de viento"},
+        {"key": "d", "text": "la temperatura del agua"}
+      ],
+      "correct": "a",
+      "explanation": "En la navegación en desplazamiento (baja velocidad) influye sobre todo la corriente, porque actúa sobre todo el calado."
+    },
+    {
+      "id": 22,
+      "category": "svetla",
+      "question": "Las luces reglamentarias se deben mostrar:",
+      "options": [
+        {"key": "a", "text": "solo de noche"},
+        {"key": "b", "text": "siempre que se aproxime otra embarcación"},
+        {"key": "c", "text": "solo durante la navegación con visibilidad reducida"},
+        {"key": "d", "text": "desde la puesta hasta la salida del sol, con visibilidad reducida y siempre que se considere necesario"}
+      ],
+      "correct": "d",
+      "explanation": "Las luces se muestran desde la puesta hasta la salida del sol, con visibilidad reducida y siempre que sea necesario."
+    },
+    {
+      "id": 23,
+      "category": "technika",
+      "question": "La causa de la falta de combustible en el motor NO puede ser:",
+      "options": [
+        {"key": "a", "text": "depósito de combustible vacío"},
+        {"key": "b", "text": "contacto corroído de la bobina de encendido"},
+        {"key": "c", "text": "tornillo de venteo cerrado en el tapón del depósito"},
+        {"key": "d", "text": "filtro de combustible obstruido"}
+      ],
+      "correct": "b",
+      "explanation": "El contacto corroído de la bobina de encendido es un problema del sistema eléctrico, no del combustible."
+    },
+    {
+      "id": 24,
+      "category": "navigace",
+      "question": "En 1999 hallaremos para la declinación magnética indicada en la carta como Var 1°W (1995) decr. 30' annually el valor:",
+      "options": [
+        {"key": "a", "text": "−3° (= 3°W)"},
+        {"key": "b", "text": "+1° (= 1°E)"},
+        {"key": "c", "text": "−1° (= 1°W)"},
+        {"key": "d", "text": "+2° (= 2°E)"}
+      ],
+      "correct": "b",
+      "explanation": "En 4 años (1995-1999) la declinación disminuyó 4×30' = 2°. Original 1°W − 2° = 1°E."
+    },
+    {
+      "id": 25,
+      "category": "navigace",
+      "question": "La principal ventaja de determinar la posición propia mediante demoras a 3 puntos y aprovechando la propiedad del ángulo central de la circunferencia es:",
+      "options": [
+        {"key": "a", "text": "obtener un tercer punto de corte de las líneas de posición"},
+        {"key": "b", "text": "no tener que considerar el abatimiento por corriente"},
+        {"key": "c", "text": "tener que considerar solo la declinación magnética y no la desviación"},
+        {"key": "d", "text": "no tener que corregir la demora de compás a la real"}
+      ],
+      "correct": "d",
+      "explanation": "Con el método de los tres puntos no es necesario corregir la demora de compás: se trabaja con los ángulos entre los puntos."
+    },
+    {
+      "id": 26,
+      "category": "kotveni",
+      "question": "La longitud del cabo de fondeo de una embarcación neumática debería ser:",
+      "options": [
+        {"key": "a", "text": "25 m"},
+        {"key": "b", "text": "igual a la profundidad sobre la que se va a fondear"},
+        {"key": "c", "text": "al menos el doble de la profundidad sobre la que se va a fondear"},
+        {"key": "d", "text": "300 m"}
+      ],
+      "correct": "c",
+      "explanation": "El cabo de fondeo debería ser al menos el doble de la profundidad para asegurar el agarre del ancla."
+    },
+    {
+      "id": 27,
+      "category": "navigace",
+      "question": "La distancia entre dos puntos de la carta se mide:",
+      "options": [
+        {"key": "a", "text": "en el borde norte de la carta"},
+        {"key": "b", "text": "en el borde sur de la carta y a una longitud aproximadamente igual"},
+        {"key": "c", "text": "en el borde este u oeste de la carta y a una latitud aproximadamente igual"},
+        {"key": "d", "text": "en la escala de la leyenda de la carta"}
+      ],
+      "correct": "c",
+      "explanation": "Las distancias se miden en el borde lateral de la carta (escala de latitud) a la altura correspondiente."
+    },
+    {
+      "id": 28,
+      "category": "pravidla-plavby",
+      "question": "La acción adoptada para evitar un abordaje se realiza:",
+      "options": [
+        {"key": "a", "text": "con un cambio gradual de rumbo"},
+        {"key": "b", "text": "con un cambio gradual de velocidad"},
+        {"key": "c", "text": "con un cambio de rumbo y velocidad lo bastante notorio para que la otra embarcación lo detecte fácilmente"},
+        {"key": "d", "text": "con un cambio de rumbo de menos de 30°"}
+      ],
+      "correct": "c",
+      "explanation": "El cambio debe ser lo bastante marcado para que la otra embarcación lo detecte con facilidad."
+    },
+    {
+      "id": 29,
+      "category": "technika",
+      "question": "Un pasador de seguridad de la hélice cizallado provocará:",
+      "options": [
+        {"key": "a", "text": "un aumento de las revoluciones del motor y una disminución de la velocidad de la embarcación"},
+        {"key": "b", "text": "un aumento brusco de las revoluciones del motor y una aceleración de la embarcación"},
+        {"key": "c", "text": "que la embarcación gire"},
+        {"key": "d", "text": "la parada del motor"}
+      ],
+      "correct": "a",
+      "explanation": "Sin pasador de seguridad la hélice gira en vacío: el motor revoluciona pero la embarcación pierde velocidad."
+    },
+    {
+      "id": 30,
+      "category": "potapeni-z-lodi",
+      "question": "Tras la inmersión de un grupo de buceadores desde una embarcación, antes de abandonar el lugar lo más importante es:",
+      "options": [
+        {"key": "a", "text": "hacer un debriefing detallado"},
+        {"key": "b", "text": "descargar de los ordenadores los perfiles de las inmersiones"},
+        {"key": "c", "text": "comprobar que todos los participantes en la inmersión están a bordo"},
+        {"key": "d", "text": "comprobar que todos los buceadores han fijado bien su equipo"}
+      ],
+      "correct": "c",
+      "explanation": "Lo más importante es comprobar la presencia de todos los buceadores a bordo antes de zarpar."
+    },
+    {
+      "id": 31,
+      "category": "navigace",
+      "question": "Si el punto sobre el que tomamos la demora se encuentra al suroeste de nuestra posición, en el compás leeremos:",
+      "options": [
+        {"key": "a", "text": "045°"},
+        {"key": "b", "text": "090°"},
+        {"key": "c", "text": "225°"},
+        {"key": "d", "text": "315°"}
+      ],
+      "correct": "c",
+      "explanation": "El suroeste corresponde a 225° (entre el sur 180° y el oeste 270°)."
+    },
+    {
+      "id": 32,
+      "category": "navigace",
+      "question": "Para determinar la posición en navegación terrestre (a la vista de puntos fijos de referencia) hace falta conocer al menos:",
+      "options": [
+        {"key": "a", "text": "una línea de posición"},
+        {"key": "b", "text": "dos líneas de posición"},
+        {"key": "c", "text": "tres líneas de posición"},
+        {"key": "d", "text": "la velocidad de nuestra embarcación"}
+      ],
+      "correct": "b",
+      "explanation": "Para determinar la posición de forma inequívoca hacen falta al menos dos líneas de posición (su intersección)."
+    },
+    {
+      "id": 33,
+      "category": "potapeni-z-lodi",
+      "question": "Al salir del agua tras la inmersión a una pequeña embarcación neumática:",
+      "options": [
+        {"key": "a", "text": "primero se quitan las aletas y, junto con la máscara, se dejan en la embarcación"},
+        {"key": "b", "text": "se entrega a la embarcación el lastre y el equipo autónomo se sujeta de momento a la embarcación o se entrega a la persona que asiste"},
+        {"key": "c", "text": "se sube a la embarcación con la ayuda de la persona de apoyo, con el equipo completo puesto"},
+        {"key": "d", "text": "se vigila atentamente el entorno y se presta atención a los tiburones"}
+      ],
+      "correct": "b",
+      "explanation": "Primero se desprende el lastre y el equipo autónomo y solo después se sube a la embarcación."
+    },
+    {
+      "id": 34,
+      "category": "navigace",
+      "question": "Para trazar el rumbo prescrito RV = 035° y la distancia prevista de 30 millas náuticas desde nuestra posición sobre la carta usamos un transportador de navegación y un compás de puntas, midiendo este ángulo:",
+      "options": [
+        {"key": "a", "text": "sobre el transportador alineándolo con el meridiano más próximo y leyendo la distancia en el borde este de la carta"},
+        {"key": "b", "text": "sobre el transportador alineándolo con el meridiano más próximo y leyendo la distancia en el borde sur de la carta"},
+        {"key": "c", "text": "sobre el transportador alineándolo con el paralelo más próximo y leyendo la distancia en el borde este de la carta"},
+        {"key": "d", "text": "trasladándolo desde la rosa de los vientos de la carta y leyendo la distancia en el borde sur de la carta"}
+      ],
+      "correct": "a",
+      "explanation": "El ángulo se mide respecto al meridiano y la distancia en el borde lateral (este/oeste) de la carta."
+    },
+    {
+      "id": 35,
+      "category": "pocasi",
+      "question": "La brisa costera suele soplar:",
+      "options": [
+        {"key": "a", "text": "por la mañana y por la tarde hacia el mar"},
+        {"key": "b", "text": "por la mañana hacia el mar y por la tarde hacia la costa"},
+        {"key": "c", "text": "por la mañana hacia la costa y por la tarde hacia el mar"},
+        {"key": "d", "text": "por la mañana y por la tarde hacia la costa"}
+      ],
+      "correct": "c",
+      "explanation": "Por la mañana la brisa sopla hacia la costa (el mar está más caliente) y por la tarde hacia el mar (la tierra está más caliente)."
+    },
+    {
+      "id": 36,
+      "category": "navigace",
+      "question": "¿Cuál de las siguientes afirmaciones es correcta?",
+      "options": [
+        {"key": "a", "text": "el viento del este sopla desde el este, la corriente del este fluye hacia el este"},
+        {"key": "b", "text": "el viento del este sopla hacia el este, la corriente del este fluye hacia el este"},
+        {"key": "c", "text": "el viento del este sopla desde el este, la corriente del este fluye desde el este"},
+        {"key": "d", "text": "el viento del este sopla hacia el este, la corriente del este fluye desde el este"}
+      ],
+      "correct": "a",
+      "explanation": "El viento se denomina por la dirección desde la que sopla. La corriente se denomina por la dirección hacia la que fluye."
+    },
+    {
+      "id": 37,
+      "category": "svetla",
+      "question": "La luz de costado de estribor es:",
+      "options": [
+        {"key": "a", "text": "verde, visible desde la dirección de proa hasta 22,5° a popa del través"},
+        {"key": "b", "text": "verde, visible desde el través hasta 22,5° a popa del través"},
+        {"key": "c", "text": "roja, visible desde la dirección de proa hasta 22,5° a popa del través"},
+        {"key": "d", "text": "roja, visible desde el través hasta 22,5° a popa del través"}
+      ],
+      "correct": "a",
+      "explanation": "La luz de costado de estribor es verde y luce desde la dirección de proa hasta 22,5° a popa del través (112,5°)."
+    },
+    {
+      "id": 38,
+      "category": "potapeni-z-lodi",
+      "question": "Si los buceadores son recogidos directamente por la embarcación, suben a la escala:",
+      "options": [
+        {"key": "a", "text": "por la banda de barlovento y cuando la escala está más baja"},
+        {"key": "b", "text": "por la banda de barlovento y cuando la escala está más alta"},
+        {"key": "c", "text": "por la banda de sotavento y cuando la escala está más baja"},
+        {"key": "d", "text": "por la banda de sotavento y cuando la escala está más alta"}
+      ],
+      "correct": "c",
+      "explanation": "Se sube por la banda de sotavento (agua más calmada) y cuando la escala está más baja (más fácil de subir)."
+    },
+    {
+      "id": 39,
+      "category": "svetla",
+      "question": "La luz de costado de babor es:",
+      "options": [
+        {"key": "a", "text": "verde, visible desde la dirección de proa hasta 22,5° a popa del través"},
+        {"key": "b", "text": "verde, visible desde el través hasta 22,5° a popa del través"},
+        {"key": "c", "text": "roja, visible desde la dirección de proa hasta 22,5° a popa del través"},
+        {"key": "d", "text": "roja, visible desde el través hasta 22,5° a popa del través"}
+      ],
+      "correct": "c",
+      "explanation": "La luz de costado de babor es roja y luce desde la dirección de proa hasta 22,5° a popa del través (112,5°)."
+    },
+    {
+      "id": 40,
+      "category": "navigace",
+      "question": "Si queremos navegar por la carta con rumbo verdadero RV = 270° con una declinación magnética de −3°, un abatimiento por corriente de −2° y siendo posible despreciar la desviación, mantendremos en el compás el rumbo:",
+      "options": [
+        {"key": "a", "text": "Rc = 265°"},
+        {"key": "b", "text": "Rc = 270°"},
+        {"key": "c", "text": "Rc = 273°"},
+        {"key": "d", "text": "Rc = 275°"}
+      ],
+      "correct": "d",
+      "explanation": "Rc = RV − declinación − abatimiento = 270° − (−3°) − (−2°) = 270° + 3° + 2° = 275°."
+    },
+    {
+      "id": 41,
+      "category": "potapeni-z-lodi",
+      "question": "En una inmersión a la deriva, como jefe de inmersión:",
+      "options": [
+        {"key": "a", "text": "se vela por mantener unido a todo el grupo"},
+        {"key": "b", "text": "se vigila el consumo del medio respiratorio de todos los miembros del grupo"},
+        {"key": "c", "text": "se controla con el compás la dirección del avance y se vigila el tiempo de inmersión acordado"},
+        {"key": "d", "text": "todas las respuestas son correctas"}
+      ],
+      "correct": "d",
+      "explanation": "El jefe de inmersión en una inmersión a la deriva debe realizar todas las tareas mencionadas."
+    },
+    {
+      "id": 42,
+      "category": "pravidla-plavby",
+      "question": "Si se aproximan dos embarcaciones de propulsión mecánica:",
+      "options": [
+        {"key": "a", "text": "cada una cambia el rumbo a estribor"},
+        {"key": "b", "text": "tiene preferencia la embarcación que tiene a la otra por su banda de estribor"},
+        {"key": "c", "text": "tiene preferencia la más rápida de las dos"},
+        {"key": "d", "text": "tiene preferencia la embarcación que tiene a la otra por su banda de babor"}
+      ],
+      "correct": "d",
+      "explanation": "Tiene preferencia la embarcación que tiene a la otra por su banda de babor (cede paso quien tiene a la otra a estribor)."
+    },
+    {
+      "id": 43,
+      "category": "bezpecnost",
+      "question": "¿Cuál de las siguientes afirmaciones NO es válida en una maniobra de «hombre al agua» con embarcación neumática en corriente de marea y con viento?",
+      "options": [
+        {"key": "a", "text": "La popa de la embarcación gira hacia el lado opuesto al que ha caído la persona."},
+        {"key": "b", "text": "Se designa a una persona para que la siga visualmente sin interrupción."},
+        {"key": "c", "text": "La aproximación se realiza dejando que la embarcación derive a favor de la corriente."},
+        {"key": "d", "text": "La aproximación se realiza contra el viento."}
+      ],
+      "correct": "c",
+      "explanation": "La aproximación NO se realiza derivando a favor de la corriente: sería peligroso. La aproximación debe ser controlada."
+    },
+    {
+      "id": 44,
+      "category": "navigace",
+      "question": "El llamado «cero de la carta» (chart datum, CD) se define como:",
+      "options": [
+        {"key": "a", "text": "el nivel mínimo por debajo del cual la superficie del mar solo desciende rara vez en bajamar"},
+        {"key": "b", "text": "el nivel máximo por encima del cual la superficie del mar solo asciende rara vez en pleamar"},
+        {"key": "c", "text": "el nivel medio entre la pleamar y la bajamar máximas"},
+        {"key": "d", "text": "el nivel medio del mar en pleamar de marea viva"}
+      ],
+      "correct": "a",
+      "explanation": "El cero de la carta (chart datum) es el nivel mínimo del mar: las profundidades de la carta se refieren a este nivel."
+    },
+    {
+      "id": 45,
+      "category": "navigace",
+      "question": "Una milla náutica (1 nm) se definió como la distancia correspondiente a:",
+      "options": [
+        {"key": "a", "text": "1 minuto de arco sobre el meridiano terrestre"},
+        {"key": "b", "text": "1 minuto de arco sobre el paralelo terrestre"},
+        {"key": "c", "text": "1 grado sobre el meridiano terrestre"},
+        {"key": "d", "text": "1 grado sobre el paralelo terrestre"}
+      ],
+      "correct": "a",
+      "explanation": "La milla náutica corresponde a 1 minuto de arco sobre el meridiano terrestre (aproximadamente 1 852 m)."
+    },
+    {
+      "id": 46,
+      "category": "potapeni-z-lodi",
+      "question": "¿Qué debería hacer la primera pareja al bucear desde una embarcación pequeña?",
+      "options": [
+        {"key": "a", "text": "Dirigirse al objetivo de la inmersión y cooperar entre sí."},
+        {"key": "b", "text": "Comprobar bajo la superficie, individual y mutuamente, el funcionamiento del equipo y dirigirse al objetivo de la inmersión."},
+        {"key": "c", "text": "Comprobar bajo la superficie, individual y mutuamente, el funcionamiento del equipo y esperar junto al cabo de fondeo a las demás parejas."},
+        {"key": "d", "text": "Comprobar bajo la superficie, individual y mutuamente, el funcionamiento del equipo y verificar (y, si procede, mejorar) el fondeo de la embarcación."}
+      ],
+      "correct": "d",
+      "explanation": "La primera pareja comprueba el equipo y verifica/mejora el fondeo de la embarcación para la seguridad de todos."
+    },
+    {
+      "id": 47,
+      "category": "potapeni-z-lodi",
+      "question": "Al bucear desde una pequeña embarcación con olas, el lugar más adecuado para colocarse el equipo autónomo es:",
+      "options": [
+        {"key": "a", "text": "en el agua, con el equipo flotando junto a la embarcación atado por un cabo"},
+        {"key": "b", "text": "en la proa"},
+        {"key": "c", "text": "en la popa"},
+        {"key": "d", "text": "en el centro de la embarcación"}
+      ],
+      "correct": "a",
+      "explanation": "Con olas, lo más seguro es ponerse el equipo en el agua, donde el entorno es más estable."
+    },
+    {
+      "id": 48,
+      "category": "kotveni",
+      "question": "¿Cuál de las siguientes afirmaciones NO es válida?",
+      "options": [
+        {"key": "a", "text": "El ancla, en la embarcación, debería ir colocada bajo el cabo de fondeo."},
+        {"key": "b", "text": "En el extremo del cabo de fondeo es conveniente fijar una boya."},
+        {"key": "c", "text": "El cabo de fondeo se amarra a un punto fijo de la embarcación."},
+        {"key": "d", "text": "El ancla, en la embarcación, debería ir sobre el cabo de fondeo o fuera de él."}
+      ],
+      "correct": "d",
+      "explanation": "El ancla debería ir bajo el cabo, no encima, para que el cabo pueda desenrollarse libremente."
+    },
+    {
+      "id": 49,
+      "category": "potapeni-z-lodi",
+      "question": "Para señalizar de forma segura la posición del buceador que sale antes de la recogida por la embarcación se utiliza:",
+      "options": [
+        {"key": "a", "text": "las burbujas que ascienden"},
+        {"key": "b", "text": "la boya de descompresión"},
+        {"key": "c", "text": "una señal acústica acordada de antemano"},
+        {"key": "d", "text": "la señal «emergencia en superficie»"}
+      ],
+      "correct": "b",
+      "explanation": "La boya de descompresión señaliza con fiabilidad la posición del buceador para la recogida por la embarcación."
+    },
+    {
+      "id": 50,
+      "category": "potapeni-z-lodi",
+      "question": "Quitarse las aletas antes de subir a la embarcación por la escala:",
+      "options": [
+        {"key": "a", "text": "es obligatorio en cualquier circunstancia"},
+        {"key": "b", "text": "está terminantemente prohibido"},
+        {"key": "c", "text": "es conveniente con una escala clásica"},
+        {"key": "d", "text": "es conveniente con una escala con barra central"}
+      ],
+      "correct": "c",
+      "explanation": "Con una escala clásica conviene quitarse las aletas; con una escala con barra central no es necesario."
+    }
+  ]
+}

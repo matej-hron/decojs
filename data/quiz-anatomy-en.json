@@ -1,0 +1,1306 @@
+{
+  "title": "Anatomy and Physiology – SPČR 2018 Exam Tests",
+  "description": "Exam questions on anatomy and physiology for divers",
+  "questions": [
+    {
+      "id": 1,
+      "category": "základní pojmy",
+      "question": "The body obtains its energy:",
+      "options": [
+        { "key": "a", "text": "from breathing" },
+        { "key": "b", "text": "from hormones" },
+        { "key": "c", "text": "from nutrients" },
+        { "key": "d", "text": "from muscular work" }
+      ],
+      "correct": "c",
+      "explanation": "The body obtains energy from nutrients (carbohydrates, fats, proteins), which are processed via metabolism. Breathing is the process that supplies the oxygen needed for this conversion."
+    },
+    {
+      "id": 2,
+      "category": "základní pojmy",
+      "question": "The most readily available energy source is:",
+      "options": [
+        { "key": "a", "text": "fats" },
+        { "key": "b", "text": "carbohydrates" },
+        { "key": "c", "text": "proteins" },
+        { "key": "d", "text": "vitamins" }
+      ],
+      "correct": "b",
+      "explanation": "Carbohydrates are the most readily available energy source because they break down fastest and release energy quickly. Fats provide more energy, but take longer to process."
+    },
+    {
+      "id": 3,
+      "category": "základní pojmy",
+      "question": "The digestive system does NOT include:",
+      "options": [
+        { "key": "a", "text": "teeth" },
+        { "key": "b", "text": "pharynx" },
+        { "key": "c", "text": "larynx" },
+        { "key": "d", "text": "oesophagus" }
+      ],
+      "correct": "c",
+      "explanation": "The larynx is part of the respiratory system, not the digestive one. The teeth, pharynx and oesophagus belong to the digestive tract."
+    },
+    {
+      "id": 4,
+      "category": "základní pojmy",
+      "question": "The thoracic cavity is separated from the abdominal cavity by:",
+      "options": [
+        { "key": "a", "text": "the parietal pleura" },
+        { "key": "b", "text": "the visceral pleura" },
+        { "key": "c", "text": "the peritoneum" },
+        { "key": "d", "text": "the diaphragm" }
+      ],
+      "correct": "d",
+      "explanation": "The diaphragm is the flat muscle that separates the thoracic cavity from the abdominal cavity. It is essential for breathing — on inhalation it contracts and the lungs expand."
+    },
+    {
+      "id": 5,
+      "category": "ucho a vyrovnávání tlaků",
+      "question": "The vestibular organ is located:",
+      "options": [
+        { "key": "a", "text": "in the inner ear" },
+        { "key": "b", "text": "in the middle ear" },
+        { "key": "c", "text": "in the outer ear" },
+        { "key": "d", "text": "in the medulla oblongata" }
+      ],
+      "correct": "a",
+      "explanation": "The vestibular organ (balance organ) sits in the inner ear together with the hearing organ. Divers should know that equalisation problems can therefore affect balance."
+    },
+    {
+      "id": 6,
+      "category": "základní pojmy",
+      "question": "The proportion of water in an adult's total body mass is:",
+      "options": [
+        { "key": "a", "text": "approximately 10%" },
+        { "key": "b", "text": "approximately 30%" },
+        { "key": "c", "text": "approximately 60%" },
+        { "key": "d", "text": "approximately 90%" }
+      ],
+      "correct": "c",
+      "explanation": "The human body contains roughly 60% water. This matters for understanding diving physiology, including dehydration and inert-gas on-gassing of tissues."
+    },
+    {
+      "id": 7,
+      "category": "základní pojmy",
+      "question": "The absorption of nutrients from food takes place mainly:",
+      "options": [
+        { "key": "a", "text": "in the stomach" },
+        { "key": "b", "text": "in the small intestine" },
+        { "key": "c", "text": "in the large intestine" },
+        { "key": "d", "text": "in the oesophagus" }
+      ],
+      "correct": "b",
+      "explanation": "Most nutrient absorption takes place in the small intestine, which has a large surface area thanks to its villi. Digestion happens mainly in the stomach; the large intestine mainly absorbs water."
+    },
+    {
+      "id": 8,
+      "category": "základní pojmy",
+      "question": "The proportion of water in an adult's total body mass is:",
+      "options": [
+        { "key": "a", "text": "approximately 90%" },
+        { "key": "b", "text": "approximately 60%" },
+        { "key": "c", "text": "approximately 30%" },
+        { "key": "d", "text": "approximately 10%" }
+      ],
+      "correct": "b",
+      "explanation": "The human body contains roughly 60% water. This question is the same as question 6 with the answer order reshuffled."
+    },
+    {
+      "id": 9,
+      "category": "základní pojmy",
+      "question": "The space between the lens and the retina of the eye is filled with:",
+      "options": [
+        { "key": "a", "text": "blood" },
+        { "key": "b", "text": "lymph" },
+        { "key": "c", "text": "vitreous humour" },
+        { "key": "d", "text": "air" }
+      ],
+      "correct": "c",
+      "explanation": "The vitreous humour is a transparent jelly-like substance that fills the space between the lens and the retina. It maintains the shape of the eyeball and lets light pass through."
+    },
+    {
+      "id": 10,
+      "category": "základní pojmy",
+      "question": "The basic vital functions are:",
+      "options": [
+        { "key": "a", "text": "breathing and digestion" },
+        { "key": "b", "text": "consciousness, breathing and circulation" },
+        { "key": "c", "text": "digestion and circulation" },
+        { "key": "d", "text": "vision, circulation, hearing" }
+      ],
+      "correct": "b",
+      "explanation": "The basic vital functions are consciousness, breathing and circulation. Checking each is essential in first aid — if any is missing, immediate action is required."
+    },
+    {
+      "id": 11,
+      "category": "základní pojmy",
+      "question": "The kidneys are part of the:",
+      "options": [
+        { "key": "a", "text": "excretory system" },
+        { "key": "b", "text": "digestive system" },
+        { "key": "c", "text": "circulatory system" },
+        { "key": "d", "text": "endocrine system" }
+      ],
+      "correct": "a",
+      "explanation": "The kidneys are the main organ of the excretory system. They filter blood and remove waste products from the body as urine."
+    },
+    {
+      "id": 12,
+      "category": "základní pojmy",
+      "question": "The cornea is part of:",
+      "options": [
+        { "key": "a", "text": "the skin" },
+        { "key": "b", "text": "the joints" },
+        { "key": "c", "text": "the ear" },
+        { "key": "d", "text": "the eye" }
+      ],
+      "correct": "d",
+      "explanation": "The cornea is the transparent front part of the eye that refracts light and protects the inner structures."
+    },
+    {
+      "id": 13,
+      "category": "ucho a vyrovnávání tlaků",
+      "question": "The inner ear contains:",
+      "options": [
+        { "key": "a", "text": "the auditory ossicles (malleus, incus, stapes)" },
+        { "key": "b", "text": "the auditory and vestibular organs" },
+        { "key": "c", "text": "the auditory (Eustachian) tube and the external auditory canal" },
+        { "key": "d", "text": "the auditory (Eustachian) tube and the eardrum" }
+      ],
+      "correct": "b",
+      "explanation": "The inner ear contains the auditory organ (cochlea) and the vestibular organ (balance organ). The auditory ossicles are in the middle ear."
+    },
+    {
+      "id": 14,
+      "category": "základní pojmy",
+      "question": "Mark the incorrect statement:",
+      "options": [
+        { "key": "a", "text": "The basic vital functions are consciousness, breathing and circulation." },
+        { "key": "b", "text": "The eyeball is filled with vitreous humour." },
+        { "key": "c", "text": "Deoxygenated blood returns to the heart through the portal vein." },
+        { "key": "d", "text": "By respiratory gases we mean oxygen and carbon dioxide." }
+      ],
+      "correct": "c",
+      "explanation": "Statement (c) is incorrect — deoxygenated blood returns to the heart through the superior and inferior vena cava, not the portal vein, which carries blood from the digestive tract to the liver."
+    },
+    {
+      "id": 15,
+      "category": "základní pojmy",
+      "question": "The human musculoskeletal system is made up of:",
+      "options": [
+        { "key": "a", "text": "the skeletal and muscular systems" },
+        { "key": "b", "text": "the muscular and circulatory systems" },
+        { "key": "c", "text": "the skeletal and nervous systems" },
+        { "key": "d", "text": "the muscular and nervous systems" }
+      ],
+      "correct": "a",
+      "explanation": "The musculoskeletal system consists of the skeletal system (bones, joints) and the muscular system. The nervous system controls movement but is not part of the musculoskeletal system."
+    },
+    {
+      "id": 16,
+      "category": "oběhová soustava",
+      "question": "Blood:",
+      "options": [
+        { "key": "a", "text": "removes metabolic waste products from tissues" },
+        { "key": "b", "text": "transports hormones" },
+        { "key": "c", "text": "carries respiratory gases" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "Blood does all of the above — it transports oxygen and carbon dioxide, hormones and metabolic waste."
+    },
+    {
+      "id": 17,
+      "category": "základní pojmy",
+      "question": "Which of the following is NOT a basic vital function?",
+      "options": [
+        { "key": "a", "text": "consciousness" },
+        { "key": "b", "text": "breathing" },
+        { "key": "c", "text": "circulation" },
+        { "key": "d", "text": "digestion" }
+      ],
+      "correct": "d",
+      "explanation": "The basic vital functions are consciousness, breathing and circulation. Digestion is not among them — a person can survive days or weeks without food."
+    },
+    {
+      "id": 18,
+      "category": "základní pojmy",
+      "question": "The oesophagus opens into:",
+      "options": [
+        { "key": "a", "text": "the duodenum" },
+        { "key": "b", "text": "the stomach" },
+        { "key": "c", "text": "the small intestine" },
+        { "key": "d", "text": "the large intestine" }
+      ],
+      "correct": "b",
+      "explanation": "The oesophagus connects the pharynx to the stomach. The duodenum is the first part of the small intestine, which follows the stomach."
+    },
+    {
+      "id": 19,
+      "category": "ucho a vyrovnávání tlaků",
+      "question": "The auditory ossicles (malleus, incus, stapes) are located:",
+      "options": [
+        { "key": "a", "text": "in the outer ear" },
+        { "key": "b", "text": "in the auditory (Eustachian) tube" },
+        { "key": "c", "text": "in the inner ear" },
+        { "key": "d", "text": "in the middle ear" }
+      ],
+      "correct": "d",
+      "explanation": "The auditory ossicles sit in the middle ear and transmit vibrations from the eardrum to the inner ear. Equalisation of middle-ear pressure is critical for divers."
+    },
+    {
+      "id": 20,
+      "category": "oběhová soustava",
+      "question": "Mark the incorrect statement:",
+      "options": [
+        { "key": "a", "text": "Blood breaks food down into nutrients." },
+        { "key": "b", "text": "Blood carries oxygen from the lungs to the tissues." },
+        { "key": "c", "text": "Blood is involved in regulating body temperature." },
+        { "key": "d", "text": "Blood transports carbon dioxide from the tissues to the lungs." }
+      ],
+      "correct": "a",
+      "explanation": "Statement (a) is incorrect — blood does not break down food; that is the digestive system's job. Blood only transports nutrients once they have been absorbed."
+    },
+    {
+      "id": 21,
+      "category": "dýchací soustava",
+      "question": "Inside the pleural space there is:",
+      "options": [
+        { "key": "a", "text": "alveolar air" },
+        { "key": "b", "text": "atmospheric pressure" },
+        { "key": "c", "text": "positive pressure" },
+        { "key": "d", "text": "negative pressure" }
+      ],
+      "correct": "d",
+      "explanation": "The pleural space (between the visceral and parietal pleura) holds a slight negative pressure, which keeps the lungs expanded and allows breathing."
+    },
+    {
+      "id": 22,
+      "category": "dýchací soustava",
+      "question": "On a breath-hold dive, the air pressure in the lungs and airways is:",
+      "options": [
+        { "key": "a", "text": "dependent on physical exertion" },
+        { "key": "b", "text": "the same as the surface pressure" },
+        { "key": "c", "text": "the same as the ambient pressure" },
+        { "key": "d", "text": "dependent on the heart rate" }
+      ],
+      "correct": "c",
+      "explanation": "When diving with scuba, the air pressure in the lungs is always equal to the ambient pressure. This is what the regulator delivers."
+    },
+    {
+      "id": 23,
+      "category": "dýchací soustava",
+      "question": "The volume of air that can be exhaled after a maximum inhalation is called:",
+      "options": [
+        { "key": "a", "text": "inspiratory lung volume" },
+        { "key": "b", "text": "residual lung volume" },
+        { "key": "c", "text": "vital lung capacity" },
+        { "key": "d", "text": "total lung volume" }
+      ],
+      "correct": "c",
+      "explanation": "Vital lung capacity is the maximum volume of air that can be exhaled after a maximum inhalation. In an adult it is approximately 4–5 litres."
+    },
+    {
+      "id": 24,
+      "category": "dýchací soustava",
+      "question": "The larynx is part of:",
+      "options": [
+        { "key": "a", "text": "the upper airways" },
+        { "key": "b", "text": "the digestive system" },
+        { "key": "c", "text": "the lungs" },
+        { "key": "d", "text": "the oesophagus" }
+      ],
+      "correct": "a",
+      "explanation": "The larynx is part of the upper airways. It contains the vocal cords and connects the pharynx to the trachea."
+    },
+    {
+      "id": 25,
+      "category": "dýchací soustava",
+      "question": "The volume of air that cannot be exhaled even with forceful exhalation is called:",
+      "options": [
+        { "key": "a", "text": "anatomical dead space" },
+        { "key": "b", "text": "vital lung capacity" },
+        { "key": "c", "text": "total lung volume" },
+        { "key": "d", "text": "residual lung volume" }
+      ],
+      "correct": "d",
+      "explanation": "Residual lung volume is the air that remains in the lungs even after a maximum exhalation. It is approximately 1.5 litres."
+    },
+    {
+      "id": 26,
+      "category": "dýchací soustava",
+      "question": "Residual lung volume is the volume of air:",
+      "options": [
+        { "key": "a", "text": "in which no exchange of respiratory gases occurs" },
+        { "key": "b", "text": "that can be exhaled after a maximum inhalation" },
+        { "key": "c", "text": "that cannot be exhaled even by forceful exhalation" },
+        { "key": "d", "text": "that lies between the parietal and visceral pleurae" }
+      ],
+      "correct": "c",
+      "explanation": "Residual lung volume is the air that cannot be exhaled even with maximum forceful exhalation. It is important for breath-hold dive calculations."
+    },
+    {
+      "id": 27,
+      "category": "dýchací soustava",
+      "question": "The diaphragm plays a major role in:",
+      "options": [
+        { "key": "a", "text": "digestion" },
+        { "key": "b", "text": "breathing" },
+        { "key": "c", "text": "regulating body temperature" },
+        { "key": "d", "text": "defending the body against infection" }
+      ],
+      "correct": "b",
+      "explanation": "The diaphragm is the main breathing muscle. On inhalation it contracts and moves down, increasing thoracic-cavity volume and drawing air into the lungs."
+    },
+    {
+      "id": 28,
+      "category": "dýchací soustava",
+      "question": "The negative pressure in the pleural space:",
+      "options": [
+        { "key": "a", "text": "keeps the lungs expanded" },
+        { "key": "b", "text": "filters exhaled air" },
+        { "key": "c", "text": "warms inhaled air" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "a",
+      "explanation": "The negative pressure in the pleural space keeps the lungs expanded. In a pneumothorax (air entering the pleural space) the lung can collapse."
+    },
+    {
+      "id": 29,
+      "category": "dýchací soustava",
+      "question": "The lungs are kept expanded by:",
+      "options": [
+        { "key": "a", "text": "their own elasticity" },
+        { "key": "b", "text": "the negative pressure in the pleural space" },
+        { "key": "c", "text": "the partial pressure of oxygen" },
+        { "key": "d", "text": "the partial pressure of carbon dioxide" }
+      ],
+      "correct": "b",
+      "explanation": "The lungs are kept expanded by the negative pressure in the pleural space. Their own elasticity would actually pull them inward."
+    },
+    {
+      "id": 30,
+      "category": "dýchací soustava",
+      "question": "The anatomical dead space of the airways is approximately:",
+      "options": [
+        { "key": "a", "text": "0.15 litre" },
+        { "key": "b", "text": "1.5 litres" },
+        { "key": "c", "text": "4.5 litres" },
+        { "key": "d", "text": "6 litres" }
+      ],
+      "correct": "a",
+      "explanation": "The anatomical dead space (where no gas exchange occurs) is approximately 0.15 litre (150 mL). Diving equipment increases this dead space."
+    },
+    {
+      "id": 31,
+      "category": "dýchací soustava",
+      "question": "The residual lung volume is approximately:",
+      "options": [
+        { "key": "a", "text": "0.15 litre" },
+        { "key": "b", "text": "1.5 litres" },
+        { "key": "c", "text": "4.5 litres" },
+        { "key": "d", "text": "6 litres" }
+      ],
+      "correct": "b",
+      "explanation": "The residual lung volume is approximately 1.5 litres. This is the air that remains in the lungs even after a maximum exhalation."
+    },
+    {
+      "id": 32,
+      "category": "dýchací soustava",
+      "question": "Mark the incorrect statement:",
+      "options": [
+        { "key": "a", "text": "The respiratory system consists of the airways and the lungs." },
+        { "key": "b", "text": "The parietal pleura covers the surface of the lungs." },
+        { "key": "c", "text": "Total lung volume is the sum of vital capacity and residual volume." },
+        { "key": "d", "text": "The anatomical dead space is approximately 0.15 litre." }
+      ],
+      "correct": "b",
+      "explanation": "Statement (b) is incorrect — the surface of the lungs is covered by the visceral pleura (poplicnice). The parietal pleura (pohrudnice) lines the chest wall."
+    },
+    {
+      "id": 33,
+      "category": "dýchací soustava",
+      "question": "Vital lung capacity is the volume of air:",
+      "options": [
+        { "key": "a", "text": "in which no exchange of respiratory gases occurs" },
+        { "key": "b", "text": "that lies between the visceral and parietal pleurae" },
+        { "key": "c", "text": "that cannot be exhaled even by forceful exhalation" },
+        { "key": "d", "text": "that can be exhaled after a maximum inhalation" }
+      ],
+      "correct": "d",
+      "explanation": "Vital lung capacity is the volume of air that can be exhaled after a maximum inhalation. In an adult it is approximately 4–5 litres."
+    },
+    {
+      "id": 34,
+      "category": "dýchací soustava",
+      "question": "Total lung volume is the sum of:",
+      "options": [
+        { "key": "a", "text": "vital capacity and residual volume" },
+        { "key": "b", "text": "vital capacity and anatomical dead space" },
+        { "key": "c", "text": "residual volume and expiratory reserve volume" },
+        { "key": "d", "text": "residual volume and anatomical dead space" }
+      ],
+      "correct": "a",
+      "explanation": "Total lung volume = vital capacity + residual volume. In an adult that is approximately 6 litres (4.5 L vital capacity + 1.5 L residual volume)."
+    },
+    {
+      "id": 35,
+      "category": "dýchací soustava",
+      "question": "Anatomical dead space refers to:",
+      "options": [
+        { "key": "a", "text": "the volume of air that remains in the lungs even after forceful exhalation" },
+        { "key": "b", "text": "the volume in which no gas exchange occurs" },
+        { "key": "c", "text": "the difference between a normal and a maximum inhalation" },
+        { "key": "d", "text": "the difference between maximum inhalation and maximum exhalation lung volumes" }
+      ],
+      "correct": "b",
+      "explanation": "Dead space is the part of the airway (nose, larynx, trachea, bronchi) where no gas exchange takes place. Exchange happens in the alveoli."
+    },
+    {
+      "id": 36,
+      "category": "dýchací soustava",
+      "question": "The airways include:",
+      "options": [
+        { "key": "a", "text": "pulmonary blood vessels" },
+        { "key": "b", "text": "alveoli" },
+        { "key": "c", "text": "bronchi and bronchioles" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "c",
+      "explanation": "The airways include the bronchi and bronchioles. Alveoli are part of the lungs themselves; pulmonary blood vessels are part of the circulatory system."
+    },
+    {
+      "id": 37,
+      "category": "dýchací soustava",
+      "question": "Which of the following is NOT part of the respiratory system?",
+      "options": [
+        { "key": "a", "text": "larynx" },
+        { "key": "b", "text": "oesophagus" },
+        { "key": "c", "text": "trachea" },
+        { "key": "d", "text": "bronchus" }
+      ],
+      "correct": "b",
+      "explanation": "The oesophagus is part of the digestive system, not the respiratory one. It runs alongside the trachea and connects the pharynx to the stomach."
+    },
+    {
+      "id": 38,
+      "category": "dýchací soustava",
+      "question": "Mark the incorrect statement:",
+      "options": [
+        { "key": "a", "text": "The pleural space lies between the visceral pleura (the lung surface) and the parietal pleura (the chest-wall lining)." },
+        { "key": "b", "text": "There is a negative pressure in the pleural space." },
+        { "key": "c", "text": "The lungs sit on either side of the mediastinum." },
+        { "key": "d", "text": "The lungs are kept expanded by their own elasticity." }
+      ],
+      "correct": "d",
+      "explanation": "Statement (d) is incorrect — the lungs are kept expanded by the negative pressure in the pleural space, not by their own elasticity. Lung elasticity would actually pull them inward."
+    },
+    {
+      "id": 39,
+      "category": "dýchací soustava",
+      "question": "Alveoli:",
+      "options": [
+        { "key": "a", "text": "are about a quarter of a millimetre in diameter" },
+        { "key": "b", "text": "lie at the end of the airways" },
+        { "key": "c", "text": "are surrounded by a network of capillaries" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "All statements are correct. Alveoli are tiny sacs at the end of the airways, surrounded by capillaries, where respiratory-gas exchange takes place."
+    },
+    {
+      "id": 40,
+      "category": "dýchací soustava",
+      "question": "The airways begin at:",
+      "options": [
+        { "key": "a", "text": "the trachea" },
+        { "key": "b", "text": "the larynx" },
+        { "key": "c", "text": "the nasal cavity" },
+        { "key": "d", "text": "the bronchi" }
+      ],
+      "correct": "c",
+      "explanation": "The airways begin in the nasal cavity (and the oral cavity). Air then continues through the pharynx, larynx, trachea and bronchi to the alveoli."
+    },
+    {
+      "id": 41,
+      "category": "oběhová soustava",
+      "question": "Mark the incorrect statement:",
+      "options": [
+        { "key": "a", "text": "Arteries always carry oxygenated blood." },
+        { "key": "b", "text": "The aorta carries blood out of the left ventricle." },
+        { "key": "c", "text": "Arterioles branch into capillaries." },
+        { "key": "d", "text": "Capillaries merge into venules." }
+      ],
+      "correct": "a",
+      "explanation": "Statement (a) is incorrect — the pulmonary artery carries deoxygenated blood from the right ventricle to the lungs. Arteries are defined by direction of flow (away from the heart), not by oxygenation."
+    },
+    {
+      "id": 42,
+      "category": "oběhová soustava",
+      "question": "The pulmonary artery carries:",
+      "options": [
+        { "key": "a", "text": "deoxygenated blood from the right ventricle to the lungs" },
+        { "key": "b", "text": "oxygenated blood from the left ventricle to the lungs" },
+        { "key": "c", "text": "oxygenated blood from the lungs to the left atrium" },
+        { "key": "d", "text": "deoxygenated blood from the lungs to the right atrium" }
+      ],
+      "correct": "a",
+      "explanation": "The pulmonary artery carries deoxygenated blood from the right ventricle to the lungs, where the blood is oxygenated. It is the only artery carrying deoxygenated blood."
+    },
+    {
+      "id": 43,
+      "category": "oběhová soustava",
+      "question": "An adult has approximately:",
+      "options": [
+        { "key": "a", "text": "10–12 litres of blood" },
+        { "key": "b", "text": "8–10 litres of blood" },
+        { "key": "c", "text": "5–6 litres of blood" },
+        { "key": "d", "text": "2–3 litres of blood" }
+      ],
+      "correct": "c",
+      "explanation": "An adult has approximately 5–6 litres of blood, which represents about 7–8% of body mass."
+    },
+    {
+      "id": 44,
+      "category": "oběhová soustava",
+      "question": "An adult heart pumps 5 litres of blood at rest in approximately:",
+      "options": [
+        { "key": "a", "text": "1 second" },
+        { "key": "b", "text": "10 seconds" },
+        { "key": "c", "text": "5 minutes" },
+        { "key": "d", "text": "1 minute" }
+      ],
+      "correct": "d",
+      "explanation": "The heart pumps approximately 5 litres of blood per minute at rest (cardiac output). Under exertion this can rise to 25–30 litres."
+    },
+    {
+      "id": 45,
+      "category": "oběhová soustava",
+      "question": "Oxygenated blood is delivered from the lungs:",
+      "options": [
+        { "key": "a", "text": "to the left atrium" },
+        { "key": "b", "text": "to the left ventricle" },
+        { "key": "c", "text": "to the right atrium" },
+        { "key": "d", "text": "to the right ventricle" }
+      ],
+      "correct": "a",
+      "explanation": "Oxygenated blood returns from the lungs through the pulmonary veins to the left atrium. From there it goes to the left ventricle and out via the aorta to the rest of the body."
+    },
+    {
+      "id": 46,
+      "category": "oběhová soustava",
+      "question": "Blood ejected from the right ventricle is:",
+      "options": [
+        { "key": "a", "text": "oxygenated" },
+        { "key": "b", "text": "deoxygenated" },
+        { "key": "c", "text": "ejected into the aorta" },
+        { "key": "d", "text": "ejected to the head, trunk and limbs" }
+      ],
+      "correct": "b",
+      "explanation": "The right ventricle ejects deoxygenated blood through the pulmonary artery to the lungs, where it is oxygenated."
+    },
+    {
+      "id": 47,
+      "category": "oběhová soustava",
+      "question": "Deoxygenated blood from the systemic circulation is delivered:",
+      "options": [
+        { "key": "a", "text": "to the left atrium" },
+        { "key": "b", "text": "to the left ventricle" },
+        { "key": "c", "text": "to the right atrium" },
+        { "key": "d", "text": "to the right ventricle" }
+      ],
+      "correct": "c",
+      "explanation": "Deoxygenated blood returns from the body through the superior and inferior vena cava to the right atrium. From there it goes to the right ventricle and on to the lungs."
+    },
+    {
+      "id": 48,
+      "category": "oběhová soustava",
+      "question": "The resting heart rate of a healthy adult is approximately:",
+      "options": [
+        { "key": "a", "text": "30 beats per minute" },
+        { "key": "b", "text": "70 beats per minute" },
+        { "key": "c", "text": "110 beats per minute" },
+        { "key": "d", "text": "140 beats per minute" }
+      ],
+      "correct": "b",
+      "explanation": "The resting heart rate of a healthy adult is approximately 60–80 beats per minute, typically around 70. In trained athletes it can be lower."
+    },
+    {
+      "id": 49,
+      "category": "oběhová soustava",
+      "question": "The pulmonary (lesser) circulation is the loop:",
+      "options": [
+        { "key": "a", "text": "from the left ventricle through the lungs to the right atrium" },
+        { "key": "b", "text": "from the right ventricle through the lungs to the left atrium" },
+        { "key": "c", "text": "from the left ventricle through the left atrium and lungs to the right atrium" },
+        { "key": "d", "text": "from the right atrium through the lungs to the right ventricle" }
+      ],
+      "correct": "b",
+      "explanation": "Pulmonary (lesser) circulation: right ventricle → pulmonary artery → lungs → pulmonary veins → left atrium. Its purpose is to oxygenate the blood."
+    },
+    {
+      "id": 50,
+      "category": "oběhová soustava",
+      "question": "The aorta:",
+      "options": [
+        { "key": "a", "text": "leaves the left ventricle" },
+        { "key": "b", "text": "carries oxygenated blood" },
+        { "key": "c", "text": "is part of the systemic circulation" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "All statements are correct. The aorta is the largest artery in the body; it leaves the left ventricle and distributes oxygenated blood to the rest of the body (the systemic circulation)."
+    },
+    {
+      "id": 51,
+      "category": "oběhová soustava",
+      "question": "Mark the incorrect statement:",
+      "options": [
+        { "key": "a", "text": "The aorta carries blood from the left ventricle into the systemic circulation." },
+        { "key": "b", "text": "The heart pumps approximately 5 litres of blood per minute at rest." },
+        { "key": "c", "text": "The pulmonary artery carries blood from the heart to the lungs." },
+        { "key": "d", "text": "Oxygenated blood is delivered to the right atrium." }
+      ],
+      "correct": "d",
+      "explanation": "Statement (d) is incorrect — oxygenated blood is delivered to the left atrium (from the lungs). The right atrium receives deoxygenated blood from the body."
+    },
+    {
+      "id": 52,
+      "category": "oběhová soustava",
+      "question": "The aorta:",
+      "options": [
+        { "key": "a", "text": "leaves the right ventricle" },
+        { "key": "b", "text": "is part of the pulmonary circulation" },
+        { "key": "c", "text": "carries oxygenated blood" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "c",
+      "explanation": "Only answer (c) is correct — the aorta carries oxygenated blood. It leaves the left ventricle (not the right) and is part of the systemic circulation (not the pulmonary one)."
+    },
+    {
+      "id": 53,
+      "category": "oběhová soustava",
+      "question": "The most extensively branched part of the circulatory system is formed by:",
+      "options": [
+        { "key": "a", "text": "arteries" },
+        { "key": "b", "text": "arterioles" },
+        { "key": "c", "text": "venules" },
+        { "key": "d", "text": "capillaries" }
+      ],
+      "correct": "d",
+      "explanation": "Capillaries form the most branched network of the circulatory system. Their total length in the human body is estimated at 100,000 km."
+    },
+    {
+      "id": 54,
+      "category": "oběhová soustava",
+      "question": "The smallest blood vessels are:",
+      "options": [
+        { "key": "a", "text": "lymphatic vessels" },
+        { "key": "b", "text": "capillaries" },
+        { "key": "c", "text": "venules" },
+        { "key": "d", "text": "arterioles" }
+      ],
+      "correct": "b",
+      "explanation": "Capillaries are the smallest blood vessels, with a diameter of about 5–10 micrometres. Their wall is a single layer of cells, which allows substances to be exchanged with the surrounding tissues."
+    },
+    {
+      "id": 55,
+      "category": "oběhová soustava",
+      "question": "An adult heart pumps at rest, in 1 minute, approximately:",
+      "options": [
+        { "key": "a", "text": "0.1 litre of blood" },
+        { "key": "b", "text": "1 litre of blood" },
+        { "key": "c", "text": "5 litres of blood" },
+        { "key": "d", "text": "10 litres of blood" }
+      ],
+      "correct": "c",
+      "explanation": "Cardiac output at rest is approximately 5 litres per minute. That means the entire blood volume passes through the heart roughly once per minute."
+    },
+    {
+      "id": 56,
+      "category": "oběhová soustava",
+      "question": "Deoxygenated blood is carried to the lungs:",
+      "options": [
+        { "key": "a", "text": "by the aorta from the left ventricle" },
+        { "key": "b", "text": "by the pulmonary artery from the right ventricle" },
+        { "key": "c", "text": "by the portal vein" },
+        { "key": "d", "text": "by the superior vena cava" }
+      ],
+      "correct": "b",
+      "explanation": "Deoxygenated blood is carried to the lungs by the pulmonary artery (truncus pulmonalis) from the right ventricle. In the lungs the blood is oxygenated."
+    },
+    {
+      "id": 57,
+      "category": "oběhová soustava",
+      "question": "The portal vein carries blood:",
+      "options": [
+        { "key": "a", "text": "from the abdominal organs to the liver" },
+        { "key": "b", "text": "from the lungs to the liver" },
+        { "key": "c", "text": "from the liver to the kidneys" },
+        { "key": "d", "text": "from the heart into the systemic circulation" }
+      ],
+      "correct": "a",
+      "explanation": "The portal vein (vena portae) carries blood from the digestive tract and spleen to the liver. The liver then processes the nutrients absorbed from the intestines."
+    },
+    {
+      "id": 58,
+      "category": "oběhová soustava",
+      "question": "The pulmonary artery:",
+      "options": [
+        { "key": "a", "text": "leaves the right ventricle" },
+        { "key": "b", "text": "carries deoxygenated blood" },
+        { "key": "c", "text": "is part of the pulmonary circulation" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "All statements are correct. The pulmonary artery leaves the right ventricle, carries deoxygenated blood and is part of the pulmonary (lesser) circulation."
+    },
+    {
+      "id": 59,
+      "category": "oběhová soustava",
+      "question": "Blood ejected from the right ventricle goes:",
+      "options": [
+        { "key": "a", "text": "into the pulmonary circulation" },
+        { "key": "b", "text": "into the systemic circulation" },
+        { "key": "c", "text": "into the portal circulation" },
+        { "key": "d", "text": "into the liver" }
+      ],
+      "correct": "a",
+      "explanation": "Blood from the right ventricle is ejected through the pulmonary artery into the pulmonary circulation, where it is oxygenated in the lungs."
+    },
+    {
+      "id": 60,
+      "category": "oběhová soustava",
+      "question": "Under exertion, an adult heart pumps in 1 minute:",
+      "options": [
+        { "key": "a", "text": "up to 5 litres of blood" },
+        { "key": "b", "text": "up to 10 litres of blood" },
+        { "key": "c", "text": "up to 30 litres of blood" },
+        { "key": "d", "text": "up to 100 litres of blood" }
+      ],
+      "correct": "c",
+      "explanation": "Under intense exertion, cardiac output can rise to 25–30 litres per minute (in trained athletes). At rest it is approximately 5 litres."
+    },
+    {
+      "id": 61,
+      "category": "toxicita plynů",
+      "question": "The main stimulus to inhale is irritation of the respiratory centre by:",
+      "options": [
+        { "key": "a", "text": "lack of oxygen in the body" },
+        { "key": "b", "text": "excess oxygen in the body" },
+        { "key": "c", "text": "lack of carbon dioxide in the body" },
+        { "key": "d", "text": "excess carbon dioxide in the body" }
+      ],
+      "correct": "d",
+      "explanation": "The main stimulus to inhale is a rising CO₂ level in the blood. That is why hyperventilation is dangerous — it lowers CO₂, so the diver may not feel the urge to breathe."
+    },
+    {
+      "id": 62,
+      "category": "krev a přenos plynů",
+      "question": "Carbon dioxide passes from tissues into blood and from blood into the lungs:",
+      "options": [
+        { "key": "a", "text": "due to an increased partial pressure of nitrogen" },
+        { "key": "b", "text": "by diffusion driven by partial-pressure differences" },
+        { "key": "c", "text": "by being displaced by oxygen" },
+        { "key": "d", "text": "through the action of white blood cells" }
+      ],
+      "correct": "b",
+      "explanation": "Gas exchange occurs by diffusion — gases move from the area with higher partial pressure to the area with lower partial pressure."
+    },
+    {
+      "id": 63,
+      "category": "dýchací soustava",
+      "question": "An adult takes, at rest in 1 minute, approximately:",
+      "options": [
+        { "key": "a", "text": "8 breaths" },
+        { "key": "b", "text": "10 breaths" },
+        { "key": "c", "text": "16 breaths" },
+        { "key": "d", "text": "30 breaths" }
+      ],
+      "correct": "c",
+      "explanation": "Resting respiratory rate in an adult is approximately 12–20 breaths per minute, typically around 16."
+    },
+    {
+      "id": 64,
+      "category": "krev a přenos plynů",
+      "question": "Blood plasma:",
+      "options": [
+        { "key": "a", "text": "is a yellowish liquid" },
+        { "key": "b", "text": "contains approximately 90% water" },
+        { "key": "c", "text": "carries red blood cells, white blood cells and platelets" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "All statements are correct. Blood plasma is a yellowish liquid that makes up about 55% of blood volume, contains 90% water and carries the blood cells."
+    },
+    {
+      "id": 65,
+      "category": "krev a přenos plynů",
+      "question": "Respiratory gases are:",
+      "options": [
+        { "key": "a", "text": "oxygen and carbon dioxide" },
+        { "key": "b", "text": "oxygen, helium and hydrogen" },
+        { "key": "c", "text": "oxygen and nitrogen" },
+        { "key": "d", "text": "oxygen, nitrogen and carbon dioxide" }
+      ],
+      "correct": "a",
+      "explanation": "Respiratory gases are oxygen (O₂) and carbon dioxide (CO₂) — the gases exchanged between the body and its environment during breathing."
+    },
+    {
+      "id": 66,
+      "category": "krev a přenos plynů",
+      "question": "Blood plasma:",
+      "options": [
+        { "key": "a", "text": "binds oxygen by a reversible chemical bond" },
+        { "key": "b", "text": "contains approximately 90% water" },
+        { "key": "c", "text": "is produced in the bone marrow" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "b",
+      "explanation": "Only (b) is correct. Oxygen is bound by haemoglobin in red blood cells (not by plasma); the bone marrow produces blood cells, not plasma."
+    },
+    {
+      "id": 67,
+      "category": "krev a přenos plynů",
+      "question": "Red blood cells are produced:",
+      "options": [
+        { "key": "a", "text": "in the bone marrow" },
+        { "key": "b", "text": "in the liver" },
+        { "key": "c", "text": "in the spinal cord" },
+        { "key": "d", "text": "in the blood from blood plasma" }
+      ],
+      "correct": "a",
+      "explanation": "Red blood cells (erythrocytes) are produced in the red bone marrow. In adults, mainly in the flat bones (pelvis, sternum, skull)."
+    },
+    {
+      "id": 68,
+      "category": "krev a přenos plynů",
+      "question": "Mark the incorrect statement:",
+      "options": [
+        { "key": "a", "text": "White blood cells are involved in stopping bleeding." },
+        { "key": "b", "text": "Red blood cells are produced in the bone marrow." },
+        { "key": "c", "text": "Red blood cells carry oxygen." },
+        { "key": "d", "text": "Blood is approximately half plasma." }
+      ],
+      "correct": "a",
+      "explanation": "Statement (a) is incorrect — bleeding is stopped by platelets (thrombocytes), not by white blood cells. White cells fight infection."
+    },
+    {
+      "id": 69,
+      "category": "krev a přenos plynů",
+      "question": "For oxygen transport, the most important property of blood is:",
+      "options": [
+        { "key": "a", "text": "the presence of white blood cells" },
+        { "key": "b", "text": "the ability to bind oxygen by a reversible chemical bond" },
+        { "key": "c", "text": "the approximately 50% plasma content" },
+        { "key": "d", "text": "the presence of platelets" }
+      ],
+      "correct": "b",
+      "explanation": "Oxygen transport relies on the ability of haemoglobin in red blood cells to bind oxygen reversibly — picking it up in the lungs and releasing it in the tissues."
+    },
+    {
+      "id": 70,
+      "category": "krev a přenos plynů",
+      "question": "Oxygen is transported by:",
+      "options": [
+        { "key": "a", "text": "platelets" },
+        { "key": "b", "text": "white blood cells" },
+        { "key": "c", "text": "red blood cells" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "c",
+      "explanation": "Oxygen is transported by red blood cells (erythrocytes), which contain haemoglobin — the oxygen-binding pigment."
+    },
+    {
+      "id": 71,
+      "category": "krev a přenos plynů",
+      "question": "Oxygen binds to haemoglobin via:",
+      "options": [
+        { "key": "a", "text": "a reversible chemical bond" },
+        { "key": "b", "text": "an irreversible chemical bond" },
+        { "key": "c", "text": "physical binding" },
+        { "key": "d", "text": "hormonal binding" }
+      ],
+      "correct": "a",
+      "explanation": "Oxygen binds to haemoglobin via a reversible chemical bond. In the lungs (high <em>p</em>O₂) it binds, in the tissues (low <em>p</em>O₂) it is released. Carbon monoxide binds irreversibly, which is why it is so toxic."
+    },
+    {
+      "id": 72,
+      "category": "krev a přenos plynů",
+      "question": "Platelets are involved in:",
+      "options": [
+        { "key": "a", "text": "oxygen transport" },
+        { "key": "b", "text": "defending the body against infection" },
+        { "key": "c", "text": "digestion" },
+        { "key": "d", "text": "stopping bleeding" }
+      ],
+      "correct": "d",
+      "explanation": "Platelets (thrombocytes) are involved in stopping bleeding — they aggregate at sites of vessel injury and contribute to clot formation."
+    },
+    {
+      "id": 73,
+      "category": "krev a přenos plynů",
+      "question": "White blood cells are involved in:",
+      "options": [
+        { "key": "a", "text": "oxygen transport" },
+        { "key": "b", "text": "stopping bleeding" },
+        { "key": "c", "text": "defending the body against infection" },
+        { "key": "d", "text": "digestion" }
+      ],
+      "correct": "c",
+      "explanation": "White blood cells (leukocytes) are part of the immune system and protect the body against infection — they destroy bacteria, viruses and other pathogens."
+    },
+    {
+      "id": 74,
+      "category": "krev a přenos plynů",
+      "question": "Red blood cells are involved in:",
+      "options": [
+        { "key": "a", "text": "defending the body against infection" },
+        { "key": "b", "text": "oxygen transport" },
+        { "key": "c", "text": "stopping bleeding" },
+        { "key": "d", "text": "digestion" }
+      ],
+      "correct": "b",
+      "explanation": "Red blood cells (erythrocytes) contain haemoglobin and their main role is to transport oxygen from the lungs to the tissues and CO₂ back to the lungs."
+    },
+    {
+      "id": 75,
+      "category": "krev a přenos plynů",
+      "question": "Internal respiration is the exchange of respiratory gases:",
+      "options": [
+        { "key": "a", "text": "between blood and tissues" },
+        { "key": "b", "text": "between the lungs and blood" },
+        { "key": "c", "text": "between the surroundings and the lungs" },
+        { "key": "d", "text": "between segments of the airways" }
+      ],
+      "correct": "a",
+      "explanation": "Internal (tissue) respiration is the exchange of gases between blood and tissues. Oxygen passes from blood into the cells; CO₂ goes the other way."
+    },
+    {
+      "id": 76,
+      "category": "krev a přenos plynů",
+      "question": "External respiration is the exchange of respiratory gases:",
+      "options": [
+        { "key": "a", "text": "between segments of the airways" },
+        { "key": "b", "text": "between the surroundings and the lungs" },
+        { "key": "c", "text": "between blood and tissues" },
+        { "key": "d", "text": "between the lungs and blood" }
+      ],
+      "correct": "d",
+      "explanation": "External (pulmonary) respiration is the exchange of gases between the alveoli and the blood in the pulmonary capillaries. Oxygen passes into the blood; CO₂ into the alveoli."
+    },
+    {
+      "id": 77,
+      "category": "dýchací soustava",
+      "question": "The respiratory centre is located:",
+      "options": [
+        { "key": "a", "text": "in the lungs" },
+        { "key": "b", "text": "in the cerebral cortex" },
+        { "key": "c", "text": "in the medulla oblongata" },
+        { "key": "d", "text": "in the carotid arteries" }
+      ],
+      "correct": "c",
+      "explanation": "The respiratory centre lies in the medulla oblongata. It mainly responds to blood CO₂ levels and controls the rate and depth of breathing."
+    },
+    {
+      "id": 78,
+      "category": "dýchací soustava",
+      "question": "Alveolar air at normal pressure contains approximately:",
+      "options": [
+        { "key": "a", "text": "10% oxygen and 0% carbon dioxide" },
+        { "key": "b", "text": "15% oxygen and 5% carbon dioxide" },
+        { "key": "c", "text": "21% oxygen and 0.03% carbon dioxide on inhalation, 16% oxygen and 4% carbon dioxide on exhalation" },
+        { "key": "d", "text": "5% oxygen and 15% carbon dioxide" }
+      ],
+      "correct": "b",
+      "explanation": "Alveolar air contains approximately 15% O₂ and 5% CO₂. It differs from inhaled air (21% O₂, 0.03% CO₂) because gas exchange takes place there."
+    },
+    {
+      "id": 79,
+      "category": "dýchací soustava",
+      "question": "An adult inhales at rest, per breath:",
+      "options": [
+        { "key": "a", "text": "5–6 litres of air" },
+        { "key": "b", "text": "3–4 litres of air" },
+        { "key": "c", "text": "1–2 litres of air" },
+        { "key": "d", "text": "0.3–0.5 litre of air" }
+      ],
+      "correct": "d",
+      "explanation": "Resting tidal volume is approximately 0.5 litre (500 mL). It rises during exertion. Vital capacity (a maximum inhalation) is 4–5 litres."
+    },
+    {
+      "id": 80,
+      "category": "krev a přenos plynů",
+      "question": "Oxygen passes from the lungs into the blood and from the blood into the tissues:",
+      "options": [
+        { "key": "a", "text": "due to an increased partial pressure of nitrogen" },
+        { "key": "b", "text": "by being displaced by carbon dioxide" },
+        { "key": "c", "text": "by diffusion driven by partial-pressure differences" },
+        { "key": "d", "text": "as carbonates" }
+      ],
+      "correct": "c",
+      "explanation": "Oxygen moves by diffusion from areas of higher partial pressure (lungs, blood) to areas of lower partial pressure (blood, tissues)."
+    },
+    {
+      "id": 81,
+      "category": "ucho a vyrovnávání tlaků",
+      "question": "The paranasal sinuses are connected to:",
+      "options": [
+        { "key": "a", "text": "the nasal cavity" },
+        { "key": "b", "text": "the nasopharynx" },
+        { "key": "c", "text": "the middle ear" },
+        { "key": "d", "text": "the inner ear" }
+      ],
+      "correct": "a",
+      "explanation": "The paranasal sinuses (frontal, ethmoid, sphenoid, maxillary) are connected to the nasal cavity. While diving the pressure equalises in them automatically."
+    },
+    {
+      "id": 82,
+      "category": "ucho a vyrovnávání tlaků",
+      "question": "In a healthy person the paranasal sinuses are:",
+      "options": [
+        { "key": "a", "text": "closed" },
+        { "key": "b", "text": "freely connected to the middle-ear cavities" },
+        { "key": "c", "text": "freely connected to the nasal cavity" },
+        { "key": "d", "text": "connected to the airways through a one-way valve" }
+      ],
+      "correct": "c",
+      "explanation": "In a healthy person, the paranasal sinuses are freely connected to the nasal cavity, so pressure equalises automatically. With a cold the connection can become narrowed."
+    },
+    {
+      "id": 83,
+      "category": "toxicita plynů",
+      "question": "The onset of nitrogen narcosis is marked by:",
+      "options": [
+        { "key": "a", "text": "depression" },
+        { "key": "b", "text": "improved focus on the task" },
+        { "key": "c", "text": "exhilaration (euphoria)" },
+        { "key": "d", "text": "uncontrolled muscular tremor" }
+      ],
+      "correct": "c",
+      "explanation": "The onset of nitrogen narcosis (rapture of the deep) is typically marked by euphoria and a sense of exhilaration, similar to drunkenness. This is dangerous because the diver may not recognise the problem."
+    },
+    {
+      "id": 84,
+      "category": "toxicita plynů",
+      "question": "The onset of nitrogen narcosis can be hastened by:",
+      "options": [
+        { "key": "a", "text": "stress" },
+        { "key": "b", "text": "physical exertion" },
+        { "key": "c", "text": "incorrect breathing technique" },
+        { "key": "d", "text": "all answers are correct" }
+      ],
+      "correct": "d",
+      "explanation": "All of these can hasten the onset of narcosis: stress, exertion, poor breathing technique (CO₂ build-up), as well as fatigue, cold or alcohol."
+    },
+    {
+      "id": 85,
+      "category": "termoregulace",
+      "question": "Long-term immersion without an insulating suit is possible in water of at least:",
+      "options": [
+        { "key": "a", "text": "42 °C" },
+        { "key": "b", "text": "35 °C" },
+        { "key": "c", "text": "30 °C" },
+        { "key": "d", "text": "18 °C" }
+      ],
+      "correct": "b",
+      "explanation": "Long-term immersion without a wetsuit requires water of at least about 35 °C (the thermoneutral zone). Water removes heat 25× faster than air."
+    },
+    {
+      "id": 86,
+      "category": "termoregulace",
+      "question": "Which of the following is NOT a body response to cold?",
+      "options": [
+        { "key": "a", "text": "vasoconstriction" },
+        { "key": "b", "text": "increased urine output (polyuria)" },
+        { "key": "c", "text": "uncontrolled muscular tremor" },
+        { "key": "d", "text": "exhilaration (euphoria)" }
+      ],
+      "correct": "d",
+      "explanation": "Exhilaration (euphoria) is not a response to cold. Vasoconstriction, immersion polyuria and shivering are all typical defensive responses to cold."
+    },
+    {
+      "id": 87,
+      "category": "toxicita plynů",
+      "question": "Mark the incorrect statement:",
+      "options": [
+        { "key": "a", "text": "Carbon dioxide is carried in the blood as carbonates." },
+        { "key": "b", "text": "Forced over-breathing (hyperventilation) leads to a build-up of oxygen in the body." },
+        { "key": "c", "text": "External respiration is the exchange of gases between the lungs and the blood." },
+        { "key": "d", "text": "Internal respiration is the exchange of gases between the blood and the tissues." }
+      ],
+      "correct": "b",
+      "explanation": "Statement (b) is incorrect — hyperventilation does not build up oxygen, it blows off CO₂. Oxygen reserves barely change, but the urge to breathe is reduced."
+    },
+    {
+      "id": 88,
+      "category": "ucho a vyrovnávání tlaků",
+      "question": "The auditory (Eustachian) tube connects:",
+      "options": [
+        { "key": "a", "text": "the middle ear with the paranasal sinuses" },
+        { "key": "b", "text": "the middle ear with the inner ear" },
+        { "key": "c", "text": "the middle ear with the nasopharynx" },
+        { "key": "d", "text": "the inner ear with the nasopharynx" }
+      ],
+      "correct": "c",
+      "explanation": "The Eustachian tube connects the middle ear to the nasopharynx. It allows pressure equalisation in the middle ear — critical for divers on descent."
+    },
+    {
+      "id": 89,
+      "category": "toxicita plynů",
+      "question": "A consequence of forced over-breathing (hyperventilation) is:",
+      "options": [
+        { "key": "a", "text": "a drop in carbon dioxide level in the body" },
+        { "key": "b", "text": "a build-up of carbon dioxide in the body" },
+        { "key": "c", "text": "a drop in oxygen level in the body" },
+        { "key": "d", "text": "a build-up of oxygen in the body" }
+      ],
+      "correct": "a",
+      "explanation": "Hyperventilation blows off CO₂ and lowers its level in the blood. This is dangerous on breath-hold dives — the diver may not feel the urge to breathe and can lose consciousness."
+    },
+    {
+      "id": 90,
+      "category": "ucho a vyrovnávání tlaků",
+      "question": "Equalisation of middle-ear pressure is achieved by:",
+      "options": [
+        { "key": "a", "text": "opening the orifices of the paranasal sinuses" },
+        { "key": "b", "text": "closing the external auditory canals" },
+        { "key": "c", "text": "closing the orifices of the auditory (Eustachian) tubes" },
+        { "key": "d", "text": "opening the orifices of the auditory (Eustachian) tubes" }
+      ],
+      "correct": "d",
+      "explanation": "Middle-ear pressure is equalised by opening the Eustachian tubes (Valsalva manoeuvre, swallowing, jaw movement). On descent the pressure must be equalised continuously."
+    },
+    {
+      "id": 91,
+      "category": "toxicita plynů",
+      "question": "When breathing compressed air, the onset of nitrogen narcosis (rapture of the deep) typically occurs at a depth of:",
+      "options": [
+        { "key": "a", "text": "10–20 metres" },
+        { "key": "b", "text": "30–40 metres" },
+        { "key": "c", "text": "around 50 metres" },
+        { "key": "d", "text": "deeper than 60 metres" }
+      ],
+      "correct": "b",
+      "explanation": "Nitrogen narcosis on air typically sets in around 30–40 m. Individual susceptibility varies and may be amplified by other factors."
+    },
+    {
+      "id": 92,
+      "category": "toxicita plynů",
+      "question": "Nitrogen narcosis is caused by:",
+      "options": [
+        { "key": "a", "text": "nitrogen and carbon dioxide" },
+        { "key": "b", "text": "an elevated partial pressure of oxygen" },
+        { "key": "c", "text": "pressure of equipment on the carotid arteries" },
+        { "key": "d", "text": "helium, or possibly hydrogen" }
+      ],
+      "correct": "a",
+      "explanation": "Nitrogen narcosis is caused mainly by nitrogen (a narcotic effect) and can be amplified by elevated CO₂. Helium has no narcotic effect."
+    },
+    {
+      "id": 93,
+      "category": "sycení tkání",
+      "question": "During time underwater, the fastest tissue to on-gas with nitrogen is:",
+      "options": [
+        { "key": "a", "text": "skeletal muscle" },
+        { "key": "b", "text": "the brain" },
+        { "key": "c", "text": "blood" },
+        { "key": "d", "text": "the heart" }
+      ],
+      "correct": "c",
+      "explanation": "Blood on-gasses with nitrogen the fastest because it is in direct contact with the alveoli. Fast tissues (brain, heart) also on-gas quickly thanks to good perfusion."
+    },
+    {
+      "id": 94,
+      "category": "sycení tkání",
+      "question": "Residual nitrogen:",
+      "options": [
+        { "key": "a", "text": "is the amount of nitrogen needed to fully saturate a given tissue" },
+        { "key": "b", "text": "off-gasses from the body for many hours after surfacing" },
+        { "key": "c", "text": "is the nitrogen dissolved in the tissues from immersion until ascent at the prescribed rate begins" },
+        { "key": "d", "text": "is off-gassed from the body during decompression stop(s)" }
+      ],
+      "correct": "b",
+      "explanation": "Residual nitrogen is nitrogen dissolved in the tissues after a dive. It off-gasses for many hours after surfacing — that is why the surface interval before another dive or before flying matters."
+    },
+    {
+      "id": 95,
+      "category": "sycení tkání",
+      "question": "During time underwater, the slowest tissue to on-gas with nitrogen is:",
+      "options": [
+        { "key": "a", "text": "ligaments, tendons and bones" },
+        { "key": "b", "text": "the kidneys" },
+        { "key": "c", "text": "skeletal muscle" },
+        { "key": "d", "text": "blood" }
+      ],
+      "correct": "a",
+      "explanation": "Ligaments, tendons and bones (slow tissues) on-gas the slowest because of poor perfusion. They are at risk on long or repetitive dives."
+    },
+    {
+      "id": 96,
+      "category": "sycení tkání",
+      "question": "Mark the incorrect statement:",
+      "options": [
+        { "key": "a", "text": "On descent, nitrogen is distributed by blood throughout the body." },
+        { "key": "b", "text": "Compared with most body structures, fatty tissue dissolves about five times more nitrogen." },
+        { "key": "c", "text": "Residual nitrogen off-gasses from the body for many hours after surfacing." },
+        { "key": "d", "text": "Tissues that on-gas faster on descent off-gas more slowly on ascent." }
+      ],
+      "correct": "d",
+      "explanation": "Statement (d) is incorrect — tissues that on-gas quickly also off-gas quickly (fast tissues). Slow tissues both on-gas and off-gas slowly."
+    },
+    {
+      "id": 97,
+      "category": "termoregulace",
+      "question": "The normal average core body temperature is approximately:",
+      "options": [
+        { "key": "a", "text": "18 °C" },
+        { "key": "b", "text": "30 °C" },
+        { "key": "c", "text": "37 °C" },
+        { "key": "d", "text": "42 °C" }
+      ],
+      "correct": "c",
+      "explanation": "Normal core body temperature is approximately 37 °C (36.5–37.5 °C). Temperatures above 42 °C or below 28 °C are life-threatening."
+    },
+    {
+      "id": 98,
+      "category": "ucho a vyrovnávání tlaků",
+      "question": "Mark the incorrect statement:",
+      "options": [
+        { "key": "a", "text": "The auditory (Eustachian) tubes connect the middle-ear cavities with the nasopharynx." },
+        { "key": "b", "text": "Middle-ear pressure equalisation requires opening the Eustachian tube orifices." },
+        { "key": "c", "text": "The balance organ is located in the inner ear." },
+        { "key": "d", "text": "In a healthy person, the paranasal sinuses are not connected to the airways." }
+      ],
+      "correct": "d",
+      "explanation": "Statement (d) is incorrect — in a healthy person the paranasal sinuses are freely connected to the nasal cavity (and therefore to the airways)."
+    },
+    {
+      "id": 99,
+      "category": "ucho a vyrovnávání tlaků",
+      "question": "Pressure equalisation in the paranasal sinuses:",
+      "options": [
+        { "key": "a", "text": "requires opening the auditory (Eustachian) tube orifices" },
+        { "key": "b", "text": "is automatic in a healthy person" },
+        { "key": "c", "text": "is necessary only when diving with scuba" },
+        { "key": "d", "text": "is provided by the elasticity of the sinus walls" }
+      ],
+      "correct": "b",
+      "explanation": "In a healthy person, pressure equalisation in the paranasal sinuses is automatic thanks to their free connection to the nasal cavity. Problems arise with a cold or sinusitis."
+    },
+    {
+      "id": 100,
+      "category": "termoregulace",
+      "question": "Vasodilation is a body response that protects against:",
+      "options": [
+        { "key": "a", "text": "overheating" },
+        { "key": "b", "text": "hypothermia" },
+        { "key": "c", "text": "hyperventilation" },
+        { "key": "d", "text": "shock" }
+      ],
+      "correct": "a",
+      "explanation": "Vasodilation is a protective response against overheating — more blood flows to the body surface and heat is dissipated to the surroundings. In cold, the vessels constrict instead (vasoconstriction)."
+    }
+  ]
+}

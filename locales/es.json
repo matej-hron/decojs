@@ -1655,7 +1655,7 @@
         }
     },
     "quiz": {
-        "languageNotice": "🇨🇿 Este test está en <strong>checo</strong> para reflejar los materiales oficiales de examen CMAS/SPČR. No se ha traducido para evitar errores en la terminología técnica.",
+        "languageNotice": "🇪🇸 Traducido a partir de los materiales oficiales del examen CMAS/SPČR 2018 en checo. Use el selector de idioma para ver la versión original en checo.",
         "categoriesTitle": "Temas:",
         "filterAll": "Todo",
         "settings": {
@@ -1667,58 +1667,77 @@
             "next": "Siguiente pregunta →",
             "restart": "Empezar de nuevo"
         },
+        "runtime": {
+            "loading": "Cargando preguntas…",
+            "errorTitle": "❌ Error de carga",
+            "errorMessage": "No se han podido cargar las preguntas. Pruebe a recargar la página.",
+            "noQuestionsTitle": "⚠️ Sin preguntas",
+            "noQuestionsMessage": "No hay preguntas disponibles para los temas seleccionados. Seleccione al menos un tema.",
+            "all": "todas",
+            "questionOf": "Pregunta {n} de {total}",
+            "questionIdLabel": "n.º {id}",
+            "correctVerdict": "✅ ¡Correcto!",
+            "incorrectVerdict": "❌ ¡Incorrecto!",
+            "showResults": "Ver resultados",
+            "scoreLabel": "Puntuación",
+            "resultsTitle": "¡Test completado!",
+            "resultPerfect": "¡Excelente! ¡Puntuación perfecta!",
+            "resultGreat": "¡Buen trabajo!",
+            "resultGood": "Buen resultado, pero hay margen de mejora.",
+            "resultPoor": "Le recomendamos repasar la teoría y volver a intentarlo."
+        },
         "about": {
             "title": "📚 Sobre el test"
         },
         "disclaimer": "<strong>Aviso:</strong> Esta es una herramienta educativa. Para la certificación oficial, contacta con CMAS/SPČR.",
         "physics": {
             "title": "🧪 Física",
-            "subtitle": "Preguntas de examen de física para buceadores (CMAS/SPČR, en checo)",
-            "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Svaz potápěčů České republiky) de 2018. Evalúan conocimientos de física relevantes para el buceo. El test está en checo.",
+            "subtitle": "Preguntas de examen de física para buceadores (CMAS/SPČR)",
+            "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Federación Checa de Buceo) de 2018. Evalúan conocimientos de física relevantes para el buceo.",
             "aboutAvailable": "<strong>Disponibles actualmente:</strong> 100 preguntas de los 8 temas.",
-            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz/soubor-fyzika-349-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Fyzika zkušební testy</a>"
+            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz/soubor-fyzika-349-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Fyzika zkušební testy</a>"
         },
         "anatomy": {
             "title": "🩺 Anatomía y fisiología",
-            "subtitle": "Preguntas de examen de anatomía y fisiología para buceadores (CMAS/SPČR, en checo)",
-            "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Svaz potápěčů České republiky) de 2018. Evalúan conocimientos de anatomía y fisiología relevantes para el buceo. El test está en checo.",
-            "aboutAvailable": "<strong>Disponibles actualmente:</strong> 100 preguntas de todos los temas: conceptos básicos, sistema respiratorio, sistema circulatorio, sangre y transporte de gases, oído y compensación de presiones, saturación tisular, termorregulación y toxicidad de los gases.",
-            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Anatomie a fyziologie zkušební testy</a>"
+            "subtitle": "Preguntas de examen de anatomía y fisiología para buceadores (CMAS/SPČR)",
+            "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Federación Checa de Buceo) de 2018. Evalúan conocimientos de anatomía y fisiología relevantes para el buceo.",
+            "aboutAvailable": "<strong>Disponibles actualmente:</strong> 100 preguntas de todos los temas: conceptos básicos, sistema respiratorio, sistema circulatorio, sangre y transporte de gases, oído y compensación, saturación tisular, termorregulación y toxicidad de los gases.",
+            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Anatomie a fyziologie zkušební testy</a>"
         },
         "accidents": {
             "title": "🏥 Accidentes y enfermedades",
-            "subtitle": "Preguntas de examen sobre accidentes y enfermedades del buceo (CMAS/SPČR, en checo)",
-            "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Svaz potápěčů České republiky) de 2018. Evalúan conocimientos sobre accidentes y enfermedades del buceo y primeros auxilios. El test está en checo.",
+            "subtitle": "Preguntas de examen sobre accidentes y enfermedades del buceo (CMAS/SPČR)",
+            "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Federación Checa de Buceo) de 2018. Evalúan conocimientos sobre accidentes y enfermedades del buceo y primeros auxilios.",
             "aboutAvailable": "<strong>Disponibles actualmente:</strong> 100 preguntas de 5 temas.",
-            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz/soubor-nehody-a-nemoci-348-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Nehody a nemoci zkušební testy</a>"
+            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz/soubor-nehody-a-nemoci-348-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Nehody a nemoci zkušební testy</a>"
         },
         "safety": {
-            "title": "🛡️ Normas de seguridad",
-            "subtitle": "Preguntas de examen de las Normas de Seguridad SPČR 2016 (CMAS/SPČR, en checo)",
-            "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Svaz potápěčů České republiky) de 2018. Evalúan conocimientos sobre las Normas de Seguridad SPČR 2016. El test está en checo.",
+            "title": "🛡️ Normas de Seguridad",
+            "subtitle": "Preguntas de examen de las Normas de Seguridad SPČR 2016 (CMAS/SPČR)",
+            "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Federación Checa de Buceo) de 2018. Evalúan conocimientos sobre las Normas de Seguridad SPČR 2016.",
             "aboutAvailable": "<strong>Disponibles actualmente:</strong> 100 preguntas de los 9 temas.",
-            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz/soubor-bezpecnostni-smernice-345-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Bezpečnostní směrnice zkušební testy</a>"
+            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz/soubor-bezpecnostni-smernice-345-.pdf\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Bezpečnostní směrnice zkušební testy</a>"
         },
         "training": {
-            "title": "📋 Normas de formación",
-            "subtitle": "Preguntas de examen de las Normas de Formación SPČR 2016 (CMAS/SPČR, en checo)",
-            "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Svaz potápěčů České republiky) de 2018. Evalúan conocimientos sobre las Normas de Formación SPČR 2016. El test está en checo.",
+            "title": "📋 Normas de Formación",
+            "subtitle": "Preguntas de examen de las Normas de Formación SPČR 2016 (CMAS/SPČR)",
+            "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Federación Checa de Buceo) de 2018. Evalúan conocimientos sobre las Normas de Formación SPČR 2016.",
             "aboutAvailable": "<strong>Disponibles actualmente:</strong> 100 preguntas de 6 temas.",
-            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Výcvikové směrnice zkušební testy</a>"
+            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Výcvikové směrnice zkušební testy</a>"
         },
         "equipment": {
-            "title": "🤿 Equipamiento de buceo",
-            "subtitle": "Preguntas de examen sobre el equipamiento de buceo SPČR 2018 (CMAS/SPČR, en checo)",
-            "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Svaz potápěčů České republiky) de 2018. Evalúan conocimientos sobre el equipamiento de buceo. El test está en checo.",
+            "title": "🤿 Equipo de buceo",
+            "subtitle": "Preguntas de examen sobre el equipo de buceo SPČR 2018 (CMAS/SPČR)",
+            "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Federación Checa de Buceo) de 2018. Evalúan conocimientos sobre el equipo de buceo.",
             "aboutAvailable": "<strong>Disponibles actualmente:</strong> 100 preguntas de 11 temas.",
-            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Potápěčská výstroj zkušební testy</a>"
+            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Potápěčská výstroj zkušební testy</a>"
         },
         "vessel": {
             "title": "⚓ Embarcación",
-            "subtitle": "Preguntas de examen sobre el manejo de la embarcación SPČR 2018 (CMAS/SPČR, en checo)",
-            "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Svaz potápěčů České republiky) de 2018. Evalúan conocimientos sobre el manejo de la embarcación y el buceo desde barco. El test está en checo.",
+            "subtitle": "Preguntas de examen sobre el manejo de la embarcación SPČR 2018 (CMAS/SPČR)",
+            "aboutIntro": "Estas preguntas proceden de los exámenes oficiales de la SPČR (Federación Checa de Buceo) de 2018. Evalúan conocimientos sobre el manejo de la embarcación y el buceo desde barco.",
             "aboutAvailable": "<strong>Disponibles actualmente:</strong> 50 preguntas de 8 temas.",
-            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz - Plavidlo zkušební testy</a>"
+            "aboutSource": "<strong>Fuente:</strong> <a href=\"https://www.cmas.cz\" target=\"_blank\" rel=\"noopener\">CMAS.cz – Plavidlo zkušební testy</a>"
         }
     }
 }

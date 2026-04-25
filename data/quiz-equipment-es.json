@@ -1,0 +1,1306 @@
+{
+  "title": "Equipo de buceo",
+  "description": "Exámenes SPČR 2018 sobre el equipo de buceo (CMAS/SPČR)",
+  "questions": [
+    {
+      "id": 1,
+      "category": "masky",
+      "question": "Para la inmersión en apnea, lo más adecuado es:",
+      "options": [
+        { "key": "a", "text": "una máscara con campo de visión amplio y volumen interior pequeño" },
+        { "key": "b", "text": "una máscara con campo de visión amplio y volumen interior grande" },
+        { "key": "c", "text": "una máscara sencilla sin compensador" },
+        { "key": "d", "text": "unas gafas de natación" }
+      ],
+      "correct": "a",
+      "explanation": "Para la apnea conviene una máscara de volumen interior pequeño, ya que para compensarla se gasta menos aire."
+    },
+    {
+      "id": 2,
+      "category": "masky",
+      "question": "El doble faldón de la máscara de buceo:",
+      "options": [
+        { "key": "a", "text": "mantiene una sobrepresión en el interior de la máscara" },
+        { "key": "b", "text": "mejora el sellado de la máscara contra la cara" },
+        { "key": "c", "text": "evita la pérdida indeseada de aire durante el ascenso con equipo autónomo" },
+        { "key": "d", "text": "reduce el empañamiento del cristal" }
+      ],
+      "correct": "b",
+      "explanation": "El doble faldón mejora el sellado de la máscara contra la cara y garantiza una mejor estanqueidad."
+    },
+    {
+      "id": 3,
+      "category": "masky",
+      "question": "Las gafas de natación:",
+      "options": [
+        { "key": "a", "text": "solo conviene usarlas para la apnea" },
+        { "key": "b", "text": "no son adecuadas para el buceo" },
+        { "key": "c", "text": "solo conviene usarlas para el buceo con equipo autónomo" },
+        { "key": "d", "text": "solo conviene usarlas para el buceo en el mar" }
+      ],
+      "correct": "b",
+      "explanation": "Las gafas de natación no son adecuadas para el buceo porque no permiten compensar la presión (no se puede exhalar por la nariz dentro de ellas)."
+    },
+    {
+      "id": 4,
+      "category": "masky",
+      "question": "Para la apnea elegimos una máscara con el menor volumen interior posible:",
+      "options": [
+        { "key": "a", "text": "para que el volumen residual pulmonar aumente lo menos posible" },
+        { "key": "b", "text": "para gastar el mínimo de aire al compensar la máscara" },
+        { "key": "c", "text": "para que sea posible compensar la presión en la máscara" },
+        { "key": "d", "text": "para que la máscara sea lo más ligera posible" }
+      ],
+      "correct": "b",
+      "explanation": "En la apnea queremos ahorrar aire, por eso elegimos una máscara de volumen interior pequeño."
+    },
+    {
+      "id": 5,
+      "category": "masky",
+      "question": "Los cristales de las máscaras de buceo se fabrican de cristal templado:",
+      "options": [
+        { "key": "a", "text": "para evitar el empañamiento" },
+        { "key": "b", "text": "para soportar la presión elevada durante la inmersión" },
+        { "key": "c", "text": "para minimizar el riesgo de lesiones del buceador si se rompe el cristal" },
+        { "key": "d", "text": "para aislar mejor al buceador del agua circundante" }
+      ],
+      "correct": "c",
+      "explanation": "El cristal templado, al romperse, se fragmenta en trozos pequeños de bordes romos, minimizando el riesgo de lesiones."
+    },
+    {
+      "id": 6,
+      "category": "ploutve-trubice",
+      "question": "El efecto muelle de unas aletas de calidad permite:",
+      "options": [
+        { "key": "a", "text": "aprovechar mejor la energía empleada en el batido descendente" },
+        { "key": "b", "text": "aprovechar mejor la energía empleada en el batido ascendente" },
+        { "key": "c", "text": "ajustar las cinchas con un cierre rápido" },
+        { "key": "d", "text": "ajustar la rigidez de las nervaduras" }
+      ],
+      "correct": "a",
+      "explanation": "El efecto muelle permite acumular energía en el batido descendente y aprovecharla cuando la aleta vuelve a su posición."
+    },
+    {
+      "id": 7,
+      "category": "ploutve-trubice",
+      "question": "Para nadar contra corriente un buceador entrenado elige aletas:",
+      "options": [
+        { "key": "a", "text": "con pala más blanda" },
+        { "key": "b", "text": "con pala más rígida" },
+        { "key": "c", "text": "con cinchas" },
+        { "key": "d", "text": "con escarpín" }
+      ],
+      "correct": "b",
+      "explanation": "Para nadar contra corriente conviene una aleta con pala más rígida, que ofrece mayor empuje."
+    },
+    {
+      "id": 8,
+      "category": "ploutve-trubice",
+      "question": "El tubo respirador:",
+      "options": [
+        { "key": "a", "text": "debe estar provisto de válvulas de purga" },
+        { "key": "b", "text": "debe medir hasta 40 cm de largo y unos 2 cm de diámetro interior" },
+        { "key": "c", "text": "debe ser flexible junto a la boquilla" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "b",
+      "explanation": "La longitud óptima del tubo es de hasta 40 cm con un diámetro interior cercano a 2 cm para minimizar el espacio muerto."
+    },
+    {
+      "id": 9,
+      "category": "ploutve-trubice",
+      "question": "Entre las ventajas de un tubo respirador con válvula de purga está:",
+      "options": [
+        { "key": "a", "text": "un menor espacio muerto" },
+        { "key": "b", "text": "una expulsión más fácil del agua" },
+        { "key": "c", "text": "la posibilidad de respiración boca a boca de emergencia en superficie" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "b",
+      "explanation": "La principal ventaja de la válvula de purga es la expulsión más fácil del agua del tubo."
+    },
+    {
+      "id": 10,
+      "category": "zakladni-vystroj",
+      "question": "El cuchillo de buceo está pensado principalmente para:",
+      "options": [
+        { "key": "a", "text": "la defensa frente a animales agresivos" },
+        { "key": "b", "text": "liberar al buceador de cabos o redes" },
+        { "key": "c", "text": "desmontar el equipo" },
+        { "key": "d", "text": "ninguna respuesta es correcta" }
+      ],
+      "correct": "b",
+      "explanation": "El propósito principal del cuchillo de buceo es liberar al buceador de cabos, redes u otros obstáculos."
+    },
+    {
+      "id": 11,
+      "category": "zakladni-vystroj",
+      "question": "Marque la afirmación incorrecta:",
+      "options": [
+        { "key": "a", "text": "La hebilla del cinturón de lastre puede abrirse con una sola mano." },
+        { "key": "b", "text": "La cinta sintética del cinturón de lastre suele tener 50 mm de ancho." },
+        { "key": "c", "text": "No pueden usarse como lastre las bolsas de plástico con perdigones de plomo." },
+        { "key": "d", "text": "Los plomos se distribuyen simétricamente en el cinturón." }
+      ],
+      "correct": "c",
+      "explanation": "Las bolsas de plástico con perdigones de plomo sí pueden usarse como lastre: la afirmación es incorrecta."
+    },
+    {
+      "id": 12,
+      "category": "obleky",
+      "question": "Un traje semiseco de neopreno, frente a uno húmedo de corte similar y del mismo material, suele aislar:",
+      "options": [
+        { "key": "a", "text": "mejor, gracias al hueco de aire entre el cuerpo y el traje" },
+        { "key": "b", "text": "mejor, gracias a una menor transmisión de calor a través del material del traje" },
+        { "key": "c", "text": "mejor, gracias a la reducción de la pérdida de calor por intercambio de agua dentro del traje" },
+        { "key": "d", "text": "igual" }
+      ],
+      "correct": "c",
+      "explanation": "El traje semiseco aísla mejor gracias a los sellos que limitan el intercambio de agua y reducen así la pérdida de calor."
+    },
+    {
+      "id": 13,
+      "category": "obleky",
+      "question": "Sobre la capacidad aislante de un traje húmedo de neopreno influyen:",
+      "options": [
+        { "key": "a", "text": "el corte y la talla adecuados" },
+        { "key": "b", "text": "la profundidad a la que se encuentra el buceador" },
+        { "key": "c", "text": "las propiedades aislantes del material empleado" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "La capacidad aislante del traje húmedo depende del corte, la talla, la profundidad (compresión) y las propiedades del material."
+    },
+    {
+      "id": 14,
+      "category": "obleky",
+      "question": "La capacidad aislante de un traje de neopreno:",
+      "options": [
+        { "key": "a", "text": "aumenta con la profundidad" },
+        { "key": "b", "text": "disminuye con la disminución de la profundidad" },
+        { "key": "c", "text": "disminuye con el aumento de la profundidad" },
+        { "key": "d", "text": "es la misma en todas las profundidades" }
+      ],
+      "correct": "c",
+      "explanation": "Al aumentar la profundidad el neopreno se comprime, se reduce el volumen de las burbujas de gas y disminuye la capacidad aislante."
+    },
+    {
+      "id": 15,
+      "category": "obleky",
+      "question": "La transmisión de calor a través de un traje seco de neopreno espumado:",
+      "options": [
+        { "key": "a", "text": "disminuye con la profundidad porque el traje se vuelve más compacto al comprimirse" },
+        { "key": "b", "text": "aumenta con la profundidad porque se reduce el grosor del neopreno" },
+        { "key": "c", "text": "no depende de la profundidad porque la capa de ropa interior se mantiene" },
+        { "key": "d", "text": "es máxima en aguas poco profundas" }
+      ],
+      "correct": "b",
+      "explanation": "Un traje seco de neopreno espumado se comprime con la profundidad, su grosor disminuye y aumenta la transmisión de calor."
+    },
+    {
+      "id": 16,
+      "category": "obleky",
+      "question": "La capacidad aislante de un traje seco de membrana de trilaminado:",
+      "options": [
+        { "key": "a", "text": "disminuye con el aumento de la profundidad" },
+        { "key": "b", "text": "no depende de la profundidad" },
+        { "key": "c", "text": "aumenta con el aumento de la profundidad" },
+        { "key": "d", "text": "es menor a poca profundidad" }
+      ],
+      "correct": "b",
+      "explanation": "El traje de membrana no se comprime; el aislamiento lo aporta la ropa interior, así que la capacidad aislante no depende de la profundidad."
+    },
+    {
+      "id": 17,
+      "category": "obleky",
+      "question": "En la pérdida de calor con un traje seco de neopreno NO influye:",
+      "options": [
+        { "key": "a", "text": "la temperatura del agua circundante" },
+        { "key": "b", "text": "el tipo y grosor de la ropa interior y el grosor del neopreno" },
+        { "key": "c", "text": "la ubicación de las válvulas de inflado y purga" },
+        { "key": "d", "text": "el tipo de gas usado para inflar el traje" }
+      ],
+      "correct": "c",
+      "explanation": "La ubicación de las válvulas no influye en la pérdida de calor; lo determinan la temperatura del agua, la ropa interior y el gas dentro del traje."
+    },
+    {
+      "id": 18,
+      "category": "obleky",
+      "question": "El traje semiseco de neopreno se diferencia del húmedo, sobre todo, por:",
+      "options": [
+        { "key": "a", "text": "el grosor del neopreno" },
+        { "key": "b", "text": "los sellos (manguitos) que impiden el flujo de agua entre la piel y el traje" },
+        { "key": "c", "text": "un corte más holgado que permite formar una capa aislante de aire entre la piel y el traje" },
+        { "key": "d", "text": "una válvula para añadir aire" }
+      ],
+      "correct": "b",
+      "explanation": "El traje semiseco se diferencia del húmedo, sobre todo, por sus manguitos sellantes en las muñecas, los tobillos y el cuello."
+    },
+    {
+      "id": 19,
+      "category": "obleky",
+      "question": "Marque la afirmación incorrecta sobre el traje húmedo de neopreno:",
+      "options": [
+        { "key": "a", "text": "Su capacidad aislante se debe al calentamiento de la capa de agua entre la piel y el traje." },
+        { "key": "b", "text": "Tras entrar en agua fría, antes de empezar la inmersión se recomienda no salir del agua." },
+        { "key": "c", "text": "Su capacidad aislante disminuye con el aumento de la profundidad." },
+        { "key": "d", "text": "Su capacidad aislante se debe a la menor transmisión de calor del material con celdillas cerradas de gas." }
+      ],
+      "correct": "a",
+      "explanation": "La capacidad aislante del traje húmedo no se debe al calentamiento del agua, sino a las propiedades aislantes del propio material con burbujas de gas."
+    },
+    {
+      "id": 20,
+      "category": "obleky",
+      "question": "Las prendas térmicas para trajes secos (interiores):",
+      "options": [
+        { "key": "a", "text": "aíslan térmicamente y retienen humedad y sudor junto al cuerpo" },
+        { "key": "b", "text": "aíslan térmicamente y desplazan humedad y sudor lejos del cuerpo" },
+        { "key": "c", "text": "calientan activamente la piel mediante un potencial electrostático" },
+        { "key": "d", "text": "evitan la entrada de agua a la piel si se rompe el traje" }
+      ],
+      "correct": "b",
+      "explanation": "Una prenda térmica de calidad aísla térmicamente y, a la vez, desplaza la humedad y el sudor lejos del cuerpo."
+    },
+    {
+      "id": 21,
+      "category": "obleky",
+      "question": "Las válvulas automáticas de purga de los trajes secos:",
+      "options": [
+        { "key": "a", "text": "permiten ajustar una velocidad de ascenso constante" },
+        { "key": "b", "text": "reducen el riesgo de un ascenso descontrolado" },
+        { "key": "c", "text": "no pueden manejarse manualmente" },
+        { "key": "d", "text": "añaden aire al traje automáticamente" }
+      ],
+      "correct": "b",
+      "explanation": "Las válvulas automáticas de purga descargan el aire que se expande durante el ascenso y reducen así el riesgo de un ascenso descontrolado."
+    },
+    {
+      "id": 22,
+      "category": "kompenzatory",
+      "question": "El chaleco compensador (BCD) compensa:",
+      "options": [
+        { "key": "a", "text": "los cambios de volumen del traje aislante" },
+        { "key": "b", "text": "los cambios de masa de la reserva de aire durante la inmersión" },
+        { "key": "c", "text": "el peso de los componentes del equipo" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "El chaleco compensador sirve para compensar todos los factores citados que afectan a la flotabilidad del buceador."
+    },
+    {
+      "id": 23,
+      "category": "kompenzatory",
+      "question": "El chaleco compensador está destinado a:",
+      "options": [
+        { "key": "a", "text": "elevar objetos a la superficie" },
+        { "key": "b", "text": "controlar la flotabilidad según la necesidad puntual del buceador" },
+        { "key": "c", "text": "rescates desde la profundidad únicamente" },
+        { "key": "d", "text": "mejorar las propiedades aislantes del traje" }
+      ],
+      "correct": "b",
+      "explanation": "El propósito principal del chaleco compensador es controlar la flotabilidad según la necesidad puntual del buceador durante la inmersión."
+    },
+    {
+      "id": 24,
+      "category": "kompenzatory",
+      "question": "El dispositivo de control del chaleco compensador (inflador):",
+      "options": [
+        { "key": "a", "text": "se conecta a la salida de alta presión de la primera etapa del regulador" },
+        { "key": "b", "text": "se conecta a la salida de presión intermedia de la primera etapa del regulador" },
+        { "key": "c", "text": "se usa solo para respiración de emergencia" },
+        { "key": "d", "text": "se usa exclusivamente para acelerar el ascenso" }
+      ],
+      "correct": "b",
+      "explanation": "El inflador se conecta a la salida de presión intermedia (LP) de la primera etapa del regulador."
+    },
+    {
+      "id": 25,
+      "category": "kompenzatory",
+      "question": "La válvula de purga situada en la parte inferior del chaleco compensador sirve durante la inmersión para:",
+      "options": [
+        { "key": "a", "text": "introducir agua rápidamente en el chaleco" },
+        { "key": "b", "text": "vaciar agua del chaleco" },
+        { "key": "c", "text": "controlar la flotabilidad en posición cabeza abajo" },
+        { "key": "d", "text": "controlar la flotabilidad en posición cabeza arriba" }
+      ],
+      "correct": "c",
+      "explanation": "La válvula de purga inferior permite descargar aire en posición cabeza abajo, cuando el aire se acumula en la parte baja del chaleco."
+    },
+    {
+      "id": 26,
+      "category": "kompenzatory",
+      "question": "Las válvulas de sobrepresión (descarga rápida) del chaleco compensador:",
+      "options": [
+        { "key": "a", "text": "protegen un chaleco totalmente inflado contra la rotura" },
+        { "key": "b", "text": "pueden abrirse manualmente tirando de un cordón de mando" },
+        { "key": "c", "text": "facilitan vaciar el agua del chaleco después de la inmersión" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Las válvulas de sobrepresión cumplen todas las funciones citadas."
+    },
+    {
+      "id": 27,
+      "category": "kompenzatory",
+      "question": "Para proteger el chaleco compensador totalmente inflado frente a la rotura sirve:",
+      "options": [
+        { "key": "a", "text": "la(s) válvula(s) de sobrepresión de descarga rápida" },
+        { "key": "b", "text": "respetar la velocidad de ascenso prescrita" },
+        { "key": "c", "text": "bloquear la válvula de inflado del inflador" },
+        { "key": "d", "text": "la resistencia del material de la cámara de aire" }
+      ],
+      "correct": "a",
+      "explanation": "La válvula de sobrepresión descarga automáticamente el aire excedente y protege al chaleco frente a la rotura."
+    },
+    {
+      "id": 28,
+      "category": "kompenzatory",
+      "question": "Para llevar al buceador a la superficie con seguridad, el chaleco compensador debe:",
+      "options": [
+        { "key": "a", "text": "tener al menos dos válvulas de purga" },
+        { "key": "b", "text": "tener tres válvulas de purga" },
+        { "key": "c", "text": "tener un volumen suficiente" },
+        { "key": "d", "text": "tener un D-ring colocado de forma adecuada para fijar la boya de descompresión" }
+      ],
+      "correct": "c",
+      "explanation": "Para subir al buceador con seguridad, lo decisivo es que el chaleco tenga un volumen (capacidad de elevación) suficiente."
+    },
+    {
+      "id": 29,
+      "category": "kompenzatory",
+      "question": "El término \"backplate\" se refiere a:",
+      "options": [
+        { "key": "a", "text": "unas válvulas especiales" },
+        { "key": "b", "text": "un dispositivo para añadir aire al chaleco compensador o al traje seco" },
+        { "key": "c", "text": "la placa dorsal del soporte del equipo de buceo" },
+        { "key": "d", "text": "un dispositivo para purgar aire del chaleco o del traje seco" }
+      ],
+      "correct": "c",
+      "explanation": "El backplate es la placa dorsal a la que se fijan la botella y el arnés."
+    },
+    {
+      "id": 30,
+      "category": "kompenzatory",
+      "question": "La ventaja de los chalecos compensadores con tirantes provistos de hebillas de apertura rápida es:",
+      "options": [
+        { "key": "a", "text": "una colocación y retirada más sencillas" },
+        { "key": "b", "text": "la capacidad de mantener al buceador en superficie con la cara hacia arriba" },
+        { "key": "c", "text": "un inflado/descarga más sencillos del chaleco" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "a",
+      "explanation": "La principal ventaja de las hebillas de apertura rápida en los tirantes es facilitar la colocación y la retirada del chaleco."
+    },
+    {
+      "id": 31,
+      "category": "kompenzatory",
+      "question": "El volumen mínimo de un chaleco compensador para buceo recreativo habitual debería ser de aproximadamente:",
+      "options": [
+        { "key": "a", "text": "5 litros" },
+        { "key": "b", "text": "15 litros" },
+        { "key": "c", "text": "25 litros" },
+        { "key": "d", "text": "35 litros" }
+      ],
+      "correct": "b",
+      "explanation": "Para buceo recreativo habitual, el volumen mínimo recomendado del chaleco compensador es de unos 15 litros."
+    },
+    {
+      "id": 32,
+      "category": "kompenzatory",
+      "question": "Los jackets estabilizadores (master) se diferencian de los jackets habituales en:",
+      "options": [
+        { "key": "a", "text": "la presencia de D-rings" },
+        { "key": "b", "text": "que su cámara de aire envuelve también los hombros del buceador" },
+        { "key": "c", "text": "tener bolsillos con cierre" },
+        { "key": "d", "text": "la conexión del latiguillo de presión intermedia al inflador" }
+      ],
+      "correct": "b",
+      "explanation": "Los jackets estabilizadores tienen una cámara de aire que también envuelve los hombros del buceador para una mayor estabilidad."
+    },
+    {
+      "id": 33,
+      "category": "kompenzatory",
+      "question": "Un chaleco compensador tipo ala (wing) se coloca:",
+      "options": [
+        { "key": "a", "text": "entre la espalda del buceador y la placa dorsal (backplate)" },
+        { "key": "b", "text": "entre la placa dorsal (backplate) y la botella" },
+        { "key": "c", "text": "sobre la botella, sujeto por detrás a la grifería y al cubre-botella" },
+        { "key": "d", "text": "en cualquiera de los lugares anteriores, según la elección puntual del buceador" }
+      ],
+      "correct": "b",
+      "explanation": "El ala se coloca entre la placa dorsal (backplate) y la botella del equipo autónomo."
+    },
+    {
+      "id": 34,
+      "category": "kompenzatory",
+      "question": "El inflador sirve para:",
+      "options": [
+        { "key": "a", "text": "emitir señales ópticas de emergencia en superficie" },
+        { "key": "b", "text": "añadir aire al chaleco compensador" },
+        { "key": "c", "text": "fijar el equipo autónomo a la espalda del buceador" },
+        { "key": "d", "text": "colgar piezas pequeñas del equipo (foco, boya de descompresión, etc.)" }
+      ],
+      "correct": "b",
+      "explanation": "El inflador sirve para añadir aire al chaleco compensador desde la salida de presión intermedia del regulador."
+    },
+    {
+      "id": 35,
+      "category": "kompenzatory",
+      "question": "Entre los medios habituales de señalización del chaleco compensador NO se incluye:",
+      "options": [
+        { "key": "a", "text": "el silbato" },
+        { "key": "b", "text": "la bocina" },
+        { "key": "c", "text": "el inflador" },
+        { "key": "d", "text": "el dispositivo de destellos" }
+      ],
+      "correct": "c",
+      "explanation": "El inflador no es un medio de señalización; sirve para añadir aire al chaleco compensador."
+    },
+    {
+      "id": 36,
+      "category": "plicni-automatiky",
+      "question": "En una primera etapa del regulador de tipo membrana, la fuerza del muelle de control de la presión intermedia, sobre el obturador:",
+      "options": [
+        { "key": "a", "text": "lo abre siempre" },
+        { "key": "b", "text": "lo cierra siempre" },
+        { "key": "c", "text": "lo cierra si abre contracorriente, lo abre si abre a favor de corriente" },
+        { "key": "d", "text": "lo abre si abre contracorriente, lo cierra si abre a favor de corriente" }
+      ],
+      "correct": "a",
+      "explanation": "En la primera etapa de membrana el muelle de control siempre abre el obturador."
+    },
+    {
+      "id": 37,
+      "category": "plicni-automatiky",
+      "question": "En una primera etapa del regulador de tipo pistón, la fuerza del muelle de control de la presión intermedia, sobre el obturador:",
+      "options": [
+        { "key": "a", "text": "lo cierra siempre" },
+        { "key": "b", "text": "lo abre siempre" },
+        { "key": "c", "text": "lo cierra si abre contracorriente, lo abre si abre a favor de corriente" },
+        { "key": "d", "text": "lo abre si abre contracorriente, lo cierra si abre a favor de corriente" }
+      ],
+      "correct": "b",
+      "explanation": "En la primera etapa de pistón el muelle de control siempre abre el obturador."
+    },
+    {
+      "id": 38,
+      "category": "plicni-automatiky",
+      "question": "El obturador en la primera etapa del regulador es:",
+      "options": [
+        { "key": "a", "text": "abierto por la presión intermedia y cerrado por la fuerza del muelle de control y la presión del agua" },
+        { "key": "b", "text": "abierto por la fuerza conjunta de la presión intermedia y el muelle, y cerrado por la presión del agua" },
+        { "key": "c", "text": "abierto por la fuerza conjunta del muelle y la presión del agua, y cerrado por la presión intermedia" },
+        { "key": "d", "text": "abierto por la presión intermedia y cerrado por la fuerza conjunta del muelle y la presión del agua" }
+      ],
+      "correct": "c",
+      "explanation": "El obturador de la 1.ª etapa lo abre la fuerza conjunta del muelle de control y la presión del agua, y lo cierra la presión intermedia."
+    },
+    {
+      "id": 39,
+      "category": "plicni-automatiky",
+      "question": "En una primera etapa no compensada que abre contracorriente, la fuerza producida por la alta presión:",
+      "options": [
+        { "key": "a", "text": "se opone al muelle, por lo que la presión intermedia disminuye con la caída de presión en la botella" },
+        { "key": "b", "text": "se opone al muelle, por lo que la presión intermedia aumenta con la caída de presión en la botella" },
+        { "key": "c", "text": "actúa en el sentido del muelle, por lo que la presión intermedia aumenta con la caída de presión en la botella" },
+        { "key": "d", "text": "actúa en el sentido del muelle, por lo que la presión intermedia disminuye con la caída de presión en la botella" }
+      ],
+      "correct": "b",
+      "explanation": "En una 1.ª etapa no compensada que abre contracorriente, la alta presión se opone al muelle, por lo que al bajar la presión en la botella la presión intermedia sube."
+    },
+    {
+      "id": 40,
+      "category": "plicni-automatiky",
+      "question": "En la primera etapa del regulador, la fuerza producida por la presión del agua actúa en el mismo sentido que la fuerza del muelle de control de la presión intermedia:",
+      "options": [
+        { "key": "a", "text": "cuando abre contracorriente (en a favor de corriente actúa en sentido contrario)" },
+        { "key": "b", "text": "cuando abre a favor de corriente (en contracorriente actúa en sentido contrario)" },
+        { "key": "c", "text": "tanto si abre a favor de corriente como contracorriente" },
+        { "key": "d", "text": "solo en primeras etapas compensadas" }
+      ],
+      "correct": "c",
+      "explanation": "La presión del agua siempre actúa en el sentido del muelle de control (abriendo el obturador) en ambos tipos."
+    },
+    {
+      "id": 41,
+      "category": "plicni-automatiky",
+      "question": "En la primera etapa del regulador, la fuerza producida por la presión intermedia:",
+      "options": [
+        { "key": "a", "text": "abre el obturador que abre a favor de corriente y cierra el que abre contracorriente" },
+        { "key": "b", "text": "abre el obturador que abre contracorriente y cierra el que abre a favor de corriente" },
+        { "key": "c", "text": "abre tanto el obturador que abre contracorriente como el que abre a favor de corriente" },
+        { "key": "d", "text": "cierra tanto el obturador que abre contracorriente como el que abre a favor de corriente" }
+      ],
+      "correct": "d",
+      "explanation": "La presión intermedia siempre cierra el obturador de la 1.ª etapa, en ambos tipos de apertura."
+    },
+    {
+      "id": 42,
+      "category": "plicni-automatiky",
+      "question": "En una primera etapa de pistón no compensada del regulador, en el espacio donde desemboca la parte inferior del canal del vástago del pistón hay:",
+      "options": [
+        { "key": "a", "text": "presión intermedia" },
+        { "key": "b", "text": "alta presión" },
+        { "key": "c", "text": "el muelle de control de la presión intermedia" },
+        { "key": "d", "text": "presión del agua" }
+      ],
+      "correct": "a",
+      "explanation": "En el espacio bajo el vástago del pistón desemboca un canal conectado a la cámara de presión intermedia."
+    },
+    {
+      "id": 43,
+      "category": "plicni-automatiky",
+      "question": "Que la presión intermedia, como sobrepresión respecto al entorno, se mantenga constante a cualquier profundidad lo decide habitualmente:",
+      "options": [
+        { "key": "a", "text": "la comunicación de la presión ambiente al muelle de control de la 1.ª etapa" },
+        { "key": "b", "text": "el muelle de control de la 1.ª etapa" },
+        { "key": "c", "text": "la mayor superficie del pistón o de la membrana de la 1.ª etapa" },
+        { "key": "d", "text": "el mecanismo de compensación de la 1.ª etapa" }
+      ],
+      "correct": "a",
+      "explanation": "La comunicación de la presión ambiente al muelle de control hace que la presión intermedia, como sobrepresión respecto al entorno, sea constante."
+    },
+    {
+      "id": 44,
+      "category": "plicni-automatiky",
+      "question": "La presión intermedia de un regulador con primera etapa no compensada, al disminuir la presión en la botella:",
+      "options": [
+        { "key": "a", "text": "baja en apertura contracorriente y sube en apertura a favor de corriente" },
+        { "key": "b", "text": "sube en apertura contracorriente y baja en apertura a favor de corriente" },
+        { "key": "c", "text": "siempre sube, sea cual sea el modo de apertura" },
+        { "key": "d", "text": "sube en apertura contracorriente y no varía en apertura a favor de corriente" }
+      ],
+      "correct": "b",
+      "explanation": "En la 1.ª etapa no compensada la presión intermedia sube con apertura contracorriente y baja con apertura a favor de corriente cuando cae la presión en la botella."
+    },
+    {
+      "id": 45,
+      "category": "plicni-automatiky",
+      "question": "Sobre el valor de la presión intermedia, como sobrepresión respecto al entorno, NO influye:",
+      "options": [
+        { "key": "a", "text": "la presión del agua (la profundidad)" },
+        { "key": "b", "text": "el modo de apertura del obturador de la 1.ª etapa" },
+        { "key": "c", "text": "la fuerza del muelle de control" },
+        { "key": "d", "text": "la presión en la botella" }
+      ],
+      "correct": "a",
+      "explanation": "Gracias a la comunicación de la presión ambiente al muelle, la presión intermedia, como sobrepresión respecto al entorno, se mantiene constante con la profundidad."
+    },
+    {
+      "id": 46,
+      "category": "plicni-automatiky",
+      "question": "Al ajustar el regulador, se logra aumentar el valor de la presión intermedia, como sobrepresión respecto al entorno:",
+      "options": [
+        { "key": "a", "text": "reduciendo la precarga del muelle de control" },
+        { "key": "b", "text": "aumentando la precarga del muelle de control" },
+        { "key": "c", "text": "añadiendo un Venturi al espacio de inhalación de la 2.ª etapa" },
+        { "key": "d", "text": "retirando el Venturi del espacio de inhalación de la 2.ª etapa" }
+      ],
+      "correct": "b",
+      "explanation": "Al aumentar la precarga del muelle de control aumenta la fuerza que abre el obturador y, por tanto, el valor de la presión intermedia."
+    },
+    {
+      "id": 47,
+      "category": "plicni-automatiky",
+      "question": "La ventaja de la apertura a favor de corriente de la segunda etapa del regulador es:",
+      "options": [
+        { "key": "a", "text": "que permite el accionamiento manual del obturador con el botón de purga" },
+        { "key": "b", "text": "que asegura un valor constante de la presión intermedia con independencia de la presión en la botella" },
+        { "key": "c", "text": "que requiere equipar el espacio de presión intermedia con una válvula de seguridad" },
+        { "key": "d", "text": "que no requiere equipar el espacio de presión intermedia con una válvula de seguridad" }
+      ],
+      "correct": "d",
+      "explanation": "La 2.ª etapa que abre a favor de corriente se abre por sí sola al subir la presión intermedia y descarga el aire sobrante, por lo que no necesita válvula de seguridad."
+    },
+    {
+      "id": 48,
+      "category": "plicni-automatiky",
+      "question": "La reducción de la resistencia espiratoria del regulador puede lograrse por construcción:",
+      "options": [
+        { "key": "a", "text": "reduciendo la sección de paso de la válvula de exhalación" },
+        { "key": "b", "text": "ampliando la sección de paso de la válvula de exhalación" },
+        { "key": "c", "text": "reduciendo el caudal de aire por la 2.ª etapa" },
+        { "key": "d", "text": "aumentando el caudal de aire por la 2.ª etapa" }
+      ],
+      "correct": "b",
+      "explanation": "Al ampliar la sección de paso de la válvula de exhalación se reduce la resistencia al espirar."
+    },
+    {
+      "id": 49,
+      "category": "plicni-automatiky",
+      "question": "El regulador no necesita una válvula de seguridad en la cámara de presión intermedia cuando:",
+      "options": [
+        { "key": "a", "text": "la 1.ª etapa abre a favor de corriente y la 2.ª etapa abre contracorriente" },
+        { "key": "b", "text": "la 1.ª etapa abre a favor de corriente" },
+        { "key": "c", "text": "la 2.ª etapa es compensada y abre a favor de corriente" },
+        { "key": "d", "text": "la 2.ª etapa se abre con un aumento de la presión intermedia" }
+      ],
+      "correct": "d",
+      "explanation": "Si la 2.ª etapa se abre con un aumento de la presión intermedia y descarga el aire excedente, no es necesaria una válvula de seguridad."
+    },
+    {
+      "id": 50,
+      "category": "plicni-automatiky",
+      "question": "Un buceador respira a 20 m de un regulador cuya primera etapa está ajustada a una sobrepresión de 10 bar. La presión en la botella es de 180 bar. ¿Qué presiones absolutas (totales) se medirán en la salida de presión intermedia (A) y en la de alta presión (B) de esta primera etapa?",
+      "options": [
+        { "key": "a", "text": "A = 13 bar, B = 180 bar" },
+        { "key": "b", "text": "A = 10 bar, B = 180 bar" },
+        { "key": "c", "text": "A = 7 bar, B = 177 bar" },
+        { "key": "d", "text": "A = 170 bar, B = 180 bar" }
+      ],
+      "correct": "a",
+      "explanation": "A 20 m la presión ambiente es 3 bar. Sobrepresión intermedia 10 bar + 3 bar de ambiente = 13 bar absolutos. La salida HP muestra la presión en la botella, 180 bar."
+    },
+    {
+      "id": 51,
+      "category": "plicni-automatiky",
+      "question": "La denominación INT del regulador significa:",
+      "options": [
+        { "key": "a", "text": "conexión a la botella mediante yugo" },
+        { "key": "b", "text": "conexión a la botella mediante rosca" },
+        { "key": "c", "text": "regulador destinado a uso profesional" },
+        { "key": "d", "text": "regulador destinado exclusivamente a Nitrox" }
+      ],
+      "correct": "a",
+      "explanation": "INT (International) designa la conexión por yugo, frente a DIN (Deutsche Industrie Norm) que utiliza rosca."
+    },
+    {
+      "id": 52,
+      "category": "plicni-automatiky",
+      "question": "El inyector (Venturi) del regulador:",
+      "options": [
+        { "key": "a", "text": "humedece el aire respirado aspirando agua" },
+        { "key": "b", "text": "reduce la resistencia inspiratoria durante la inhalación" },
+        { "key": "c", "text": "dirige el chorro de aire contra la deflexión de la membrana de la 2.ª etapa" },
+        { "key": "d", "text": "ayuda a abrir la válvula de exhalación" }
+      ],
+      "correct": "b",
+      "explanation": "El Venturi reduce la resistencia inspiratoria: el aire en circulación crea una zona de baja presión que ayuda a mantener abierto el obturador."
+    },
+    {
+      "id": 53,
+      "category": "plicni-automatiky",
+      "question": "En la cámara de presión intermedia de una primera etapa compensada de regulador ajustada a 10 bar de sobrepresión, con presión en la botella de 7 bar y a 10 m, la presión absoluta es de:",
+      "options": [
+        { "key": "a", "text": "17 bar" },
+        { "key": "b", "text": "12 bar" },
+        { "key": "c", "text": "11 bar" },
+        { "key": "d", "text": "7 bar" }
+      ],
+      "correct": "d",
+      "explanation": "Cuando la presión en la botella es solo 7 bar, la 1.ª etapa está totalmente abierta y en la cámara de presión intermedia hay la misma presión que en la botella, es decir 7 bar."
+    },
+    {
+      "id": 54,
+      "category": "plicni-automatiky",
+      "question": "A la salida de la 1.ª etapa del regulador marcada como HP se conecta:",
+      "options": [
+        { "key": "a", "text": "el latiguillo del inflador del traje seco" },
+        { "key": "b", "text": "la 2.ª etapa principal" },
+        { "key": "c", "text": "el manómetro sumergible estanco de alta presión" },
+        { "key": "d", "text": "la 2.ª etapa alternativa (octopus)" }
+      ],
+      "correct": "c",
+      "explanation": "La salida HP (High Pressure) está pensada para el manómetro sumergible que mide la presión en la botella."
+    },
+    {
+      "id": 55,
+      "category": "plicni-automatiky",
+      "question": "Marque la afirmación incorrecta sobre las segundas etapas servoasistidas:",
+      "options": [
+        { "key": "a", "text": "Exigen mayor mantenimiento que las 2.ª etapas habituales." },
+        { "key": "b", "text": "Exigen un ajuste más cuidadoso que las 2.ª etapas habituales." },
+        { "key": "c", "text": "Tienen una construcción más sencilla que las 2.ª etapas habituales." },
+        { "key": "d", "text": "Alcanzan caudales elevados con resistencias inspiratorias mínimas." }
+      ],
+      "correct": "c",
+      "explanation": "Las 2.ª etapas servoasistidas tienen una construcción más compleja, no más sencilla, que las habituales."
+    },
+    {
+      "id": 56,
+      "category": "plicni-automatiky",
+      "question": "¿Cuál de las siguientes medidas NO sirve para aumentar la resistencia del regulador a la congelación?",
+      "options": [
+        { "key": "a", "text": "Permitir el manejo manual del obturador de la 2.ª etapa con el botón de purga." },
+        { "key": "b", "text": "Impedir la entrada de agua a la cámara del muelle de la 1.ª etapa." },
+        { "key": "c", "text": "Llenar la cámara del muelle de la 1.ª etapa con un líquido anticongelante." },
+        { "key": "d", "text": "Aumentar la superficie del cuerpo de la 1.ª etapa con aletas." }
+      ],
+      "correct": "a",
+      "explanation": "El botón de purga no guarda relación con la resistencia a la congelación; sirve para el manejo manual del obturador."
+    },
+    {
+      "id": 57,
+      "category": "plicni-automatiky",
+      "question": "La desventaja de una botella con grifería de cierre de alta presión de una sola salida es que:",
+      "options": [
+        { "key": "a", "text": "con esta configuración no puede afrontarse la situación crítica de \"buceador sin aire\" (OOA)" },
+        { "key": "b", "text": "con esta configuración no puede usarse un chaleco compensador tipo ala" },
+        { "key": "c", "text": "ambas 2.ª etapas, el manómetro y los latiguillos del chaleco y del traje seco dependen funcionalmente de una única 1.ª etapa" },
+        { "key": "d", "text": "no permite usar un regulador con modificaciones de resistencia a la congelación" }
+      ],
+      "correct": "c",
+      "explanation": "Con una sola salida todo depende de una única 1.ª etapa: si falla, se pierden todas las funciones."
+    },
+    {
+      "id": 58,
+      "category": "plicni-automatiky",
+      "question": "Una botella equipada con grifería de cierre de alta presión con dos salidas independientes:",
+      "options": [
+        { "key": "a", "text": "permite montar dos reguladores completos" },
+        { "key": "b", "text": "con la configuración correcta del equipo, permite mantener el suministro de gas respiratorio si falla una de las 1.ª etapas" },
+        { "key": "c", "text": "con la configuración correcta del equipo, permite al buceador con traje seco controlar la flotabilidad si falla una de las 1.ª etapas" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Una grifería con dos salidas independientes ofrece todas estas ventajas: redundancia y separación de los sistemas."
+    },
+    {
+      "id": 59,
+      "category": "plicni-automatiky",
+      "question": "Si usamos una 2.ª etapa principal con un latiguillo de unos 150 cm, este se conduce desde la 1.ª etapa:",
+      "options": [
+        { "key": "a", "text": "formando un bucle libre" },
+        { "key": "b", "text": "por debajo de la axila derecha, cruzando el pecho en diagonal y rodeando el cuello por la izquierda, de modo que la 2.ª etapa llegue al buceador desde la derecha" },
+        { "key": "c", "text": "por encima del hombro derecho, enrollado al cuello del buceador" },
+        { "key": "d", "text": "por debajo del jacket, para evitar que se enganche con un obstáculo" }
+      ],
+      "correct": "b",
+      "explanation": "El latiguillo largo se conduce por debajo de la axila derecha, cruzando el pecho y rodeando el cuello: configuración DIR estándar para compartir aire con facilidad."
+    },
+    {
+      "id": 60,
+      "category": "plicni-automatiky",
+      "question": "El término \"sidemount\" designa:",
+      "options": [
+        { "key": "a", "text": "un sistema de plomos colocados en bolsas a los lados de una monobotella" },
+        { "key": "b", "text": "una configuración del equipo autónomo con las botellas a los lados del buceador" },
+        { "key": "c", "text": "el enganche de la boya de descompresión a un D-ring lateral del chaleco compensador" },
+        { "key": "d", "text": "la fijación del tubo respirador a la cinta de la máscara" }
+      ],
+      "correct": "b",
+      "explanation": "Sidemount es una configuración en la que las botellas se llevan a los lados del buceador, en lugar de en la espalda."
+    },
+    {
+      "id": 61,
+      "category": "lahve",
+      "question": "La rosca de conexión de la grifería de una botella de aire es:",
+      "options": [
+        { "key": "a", "text": "R 3/4\"" },
+        { "key": "b", "text": "W 21,8\"" },
+        { "key": "c", "text": "G 5/8\"" },
+        { "key": "d", "text": "R 1/8\"" }
+      ],
+      "correct": "c",
+      "explanation": "La rosca estándar de conexión de la grifería de una botella de aire es G 5/8\"."
+    },
+    {
+      "id": 62,
+      "category": "lahve",
+      "question": "Las botellas destinadas a aire comprimido nunca se cargan con oxígeno puro:",
+      "options": [
+        { "key": "a", "text": "porque el contacto con grasa puede provocar una explosión" },
+        { "key": "b", "text": "porque el oxígeno respirado a presión parcial elevada es tóxico" },
+        { "key": "c", "text": "porque no lo permiten los reglamentos correspondientes" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todos los motivos son correctos: peligro de explosión, toxicidad del oxígeno bajo presión y reglamentación."
+    },
+    {
+      "id": 63,
+      "category": "lahve",
+      "question": "Las griferías de botella con rosca cilíndrica:",
+      "options": [
+        { "key": "a", "text": "se sellan con junta tórica y requieren un par de apriete mayor que las de rosca cónica" },
+        { "key": "b", "text": "se sellan con cinta de teflón y requieren un par de apriete mayor que las de rosca cónica" },
+        { "key": "c", "text": "se sellan con junta tórica y requieren un par de apriete menor que las de rosca cónica" },
+        { "key": "d", "text": "se sellan con cinta de teflón y requieren un par de apriete menor que las de rosca cónica" }
+      ],
+      "correct": "c",
+      "explanation": "La rosca cilíndrica con junta tórica requiere un par de apriete menor que la rosca cónica."
+    },
+    {
+      "id": 64,
+      "category": "lahve",
+      "question": "Una botella de aire con presión de prueba de 300 bar se carga:",
+      "options": [
+        { "key": "a", "text": "hasta 300 bar" },
+        { "key": "b", "text": "hasta 200 bar" },
+        { "key": "c", "text": "hasta 450 bar" },
+        { "key": "d", "text": "hasta 250 bar" }
+      ],
+      "correct": "b",
+      "explanation": "La presión máxima de carga es 2/3 de la presión de prueba. Para una botella con presión de prueba de 300 bar son 200 bar."
+    },
+    {
+      "id": 65,
+      "category": "lahve",
+      "question": "Las botellas se almacenan con sobrepresión de aire en su interior. La razón es:",
+      "options": [
+        { "key": "a", "text": "que mantiene la estanqueidad de la grifería" },
+        { "key": "b", "text": "que refuerza las paredes de la botella" },
+        { "key": "c", "text": "que impide la entrada de humedad y suciedad en la botella" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "c",
+      "explanation": "La sobrepresión durante el almacenamiento impide la entrada de humedad y suciedad en el interior de la botella."
+    },
+    {
+      "id": 66,
+      "category": "lahve",
+      "question": "El aire que ha estado almacenado durante varios meses en la botella del equipo autónomo:",
+      "options": [
+        { "key": "a", "text": "puede usarse, pero solo hasta una profundidad de 3 metros" },
+        { "key": "b", "text": "se descarga, porque su composición puede haberse alterado" },
+        { "key": "c", "text": "se descarga, porque puede contener monóxido de carbono producido por la corrosión interior de la botella" },
+        { "key": "d", "text": "se usa, porque contiene más oxígeno generado por la corrosión interior de la botella" }
+      ],
+      "correct": "b",
+      "explanation": "El aire almacenado durante mucho tiempo debe descargarse, porque su composición puede haberse alterado."
+    },
+    {
+      "id": 67,
+      "category": "lahve",
+      "question": "La relación entre la presión máxima de carga y la presión de prueba de la botella del equipo autónomo es:",
+      "options": [
+        { "key": "a", "text": "ambas presiones son iguales" },
+        { "key": "b", "text": "la presión máxima de carga equivale a la mitad de la presión de prueba" },
+        { "key": "c", "text": "la presión de prueba equivale a 1,5 veces la presión máxima de carga" },
+        { "key": "d", "text": "la presión de prueba equivale a la mitad de la presión máxima de carga" }
+      ],
+      "correct": "c",
+      "explanation": "La presión de prueba es 1,5 veces la presión máxima de carga (p. ej., 300 bar de prueba = 200 bar de carga)."
+    },
+    {
+      "id": 68,
+      "category": "merici-pristroje",
+      "question": "Un manómetro analógico estanco suele ser de tipo:",
+      "options": [
+        { "key": "a", "text": "membrana" },
+        { "key": "b", "text": "tubo de Bourdon" },
+        { "key": "c", "text": "pistón" },
+        { "key": "d", "text": "membrana con relleno de aceite" }
+      ],
+      "correct": "b",
+      "explanation": "Los manómetros estancos para medir la presión de la botella utilizan un tubo de Bourdon."
+    },
+    {
+      "id": 69,
+      "category": "merici-pristroje",
+      "question": "La microtobera de la salida de alta presión (HP) de la 1.ª etapa del regulador:",
+      "options": [
+        { "key": "a", "text": "se usa solo en manómetros digitales" },
+        { "key": "b", "text": "sirve únicamente para frenar el aumento de presión en el manómetro al abrir la grifería" },
+        { "key": "c", "text": "evita la fuga rápida de aire si se daña el latiguillo del manómetro" },
+        { "key": "d", "text": "ninguna respuesta es correcta" }
+      ],
+      "correct": "c",
+      "explanation": "La microtobera (restrictor) de la salida HP limita el caudal y evita la fuga rápida de aire en caso de daño del latiguillo."
+    },
+    {
+      "id": 70,
+      "category": "merici-pristroje",
+      "question": "De los datos que aporta el ordenador de buceo durante la inmersión, los más importantes desde el punto de vista de la seguridad son:",
+      "options": [
+        { "key": "a", "text": "las instrucciones de descenso" },
+        { "key": "b", "text": "las instrucciones de ascenso" },
+        { "key": "c", "text": "la información sobre el intervalo en superficie" },
+        { "key": "d", "text": "la información sobre la profundidad media de la inmersión" }
+      ],
+      "correct": "b",
+      "explanation": "Para la seguridad, las más importantes son las instrucciones de ascenso (velocidad, descompresión, parada de seguridad)."
+    },
+    {
+      "id": 71,
+      "category": "merici-pristroje",
+      "question": "Marque la afirmación incorrecta. Los ordenadores de buceo:",
+      "options": [
+        { "key": "a", "text": "advierten cuando se supera la velocidad de ascenso segura" },
+        { "key": "b", "text": "calculan el procedimiento de descompresión a partir del perfil concreto de la inmersión" },
+        { "key": "c", "text": "no es adecuado utilizarlos en inmersiones dentro de los tiempos sin descompresión" },
+        { "key": "d", "text": "tras la inmersión informan de manera continua del estado actual del nitrógeno residual" }
+      ],
+      "correct": "c",
+      "explanation": "Los ordenadores de buceo son adecuados también para inmersiones dentro de los tiempos sin descompresión: la afirmación es incorrecta."
+    },
+    {
+      "id": 72,
+      "category": "merici-pristroje",
+      "question": "El profundímetro capilar funciona por el principio:",
+      "options": [
+        { "key": "a", "text": "de cambios de volumen del gas por cambios de la presión exterior" },
+        { "key": "b", "text": "de cambios de la deflexión de la capilar por cambios de la presión ambiente" },
+        { "key": "c", "text": "de la deflexión de una membrana" },
+        { "key": "d", "text": "de cambios de forma de la capilar de latón" }
+      ],
+      "correct": "a",
+      "explanation": "El profundímetro capilar funciona según la ley de Boyle-Mariotte: el aire en la capilar se comprime al aumentar la presión."
+    },
+    {
+      "id": 73,
+      "category": "merici-pristroje",
+      "question": "En un profundímetro con tubo de Bourdon abierto, la fuerza de presión del agua actúa:",
+      "options": [
+        { "key": "a", "text": "directamente dentro del tubo" },
+        { "key": "b", "text": "dentro de la caja del profundímetro" },
+        { "key": "c", "text": "sobre la caja elástica del profundímetro" },
+        { "key": "d", "text": "sobre el vacío dentro de la caja rígida del profundímetro" }
+      ],
+      "correct": "a",
+      "explanation": "En un tubo de Bourdon abierto el agua entra directamente en el tubo y, con su presión, lo endereza."
+    },
+    {
+      "id": 74,
+      "category": "merici-pristroje",
+      "question": "Un profundímetro calibrado para mar, en agua dulce mostrará:",
+      "options": [
+        { "key": "a", "text": "una profundidad menor a la real" },
+        { "key": "b", "text": "una profundidad mayor a la real" },
+        { "key": "c", "text": "lo mismo que en agua salada" },
+        { "key": "d", "text": "ninguna respuesta es correcta" }
+      ],
+      "correct": "a",
+      "explanation": "El agua dulce es menos densa que la salada, por lo que a la misma profundidad la presión es menor y el profundímetro indica menos."
+    },
+    {
+      "id": 75,
+      "category": "merici-pristroje",
+      "question": "Un profundímetro de aceite usa un tubo de Bourdon que está:",
+      "options": [
+        { "key": "a", "text": "lleno de aceite y sobre el aceite actúa la presión" },
+        { "key": "b", "text": "abierto al agua circundante; la presión se transmite por la caja elástica del profundímetro" },
+        { "key": "c", "text": "cerrado por ambos extremos y alojado en aceite; la presión se transmite por la caja elástica del profundímetro" },
+        { "key": "d", "text": "lleno de aceite; la presión se transmite por la caja elástica del profundímetro" }
+      ],
+      "correct": "c",
+      "explanation": "En un profundímetro de aceite el tubo de Bourdon está cerrado y alojado en aceite; la presión se transmite por la caja elástica."
+    },
+    {
+      "id": 76,
+      "category": "merici-pristroje",
+      "question": "Marque la afirmación incorrecta. El profundímetro de membrana:",
+      "options": [
+        { "key": "a", "text": "funciona midiendo la deflexión de la membrana por la presión hidrostática" },
+        { "key": "b", "text": "puede registrar la profundidad máxima alcanzada" },
+        { "key": "c", "text": "puede ser ajustable a la presión a una determinada altitud" },
+        { "key": "d", "text": "tiene presión ambiente a ambos lados de la membrana" }
+      ],
+      "correct": "d",
+      "explanation": "El profundímetro de membrana no tiene presión ambiente a ambos lados de la membrana; en uno de los lados hay una presión de referencia."
+    },
+    {
+      "id": 77,
+      "category": "merici-pristroje",
+      "question": "Un profundímetro calibrado para agua dulce, en el mar mostrará:",
+      "options": [
+        { "key": "a", "text": "una profundidad menor a la real" },
+        { "key": "b", "text": "una profundidad mayor a la real" },
+        { "key": "c", "text": "lo mismo que en agua dulce" },
+        { "key": "d", "text": "ninguna respuesta es correcta" }
+      ],
+      "correct": "b",
+      "explanation": "El agua de mar es más densa que la dulce, por lo que a la misma profundidad la presión es mayor y el profundímetro indica más."
+    },
+    {
+      "id": 78,
+      "category": "prislusenstvi",
+      "question": "Los focos de buceo con LED tienen frente a otros tipos la ventaja de:",
+      "options": [
+        { "key": "a", "text": "menor consumo de energía con un rendimiento luminoso comparable" },
+        { "key": "b", "text": "mayor vida útil" },
+        { "key": "c", "text": "mayor resistencia mecánica" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Los focos LED tienen todas las ventajas citadas: menor consumo, mayor vida útil y más robustez."
+    },
+    {
+      "id": 79,
+      "category": "prislusenstvi",
+      "question": "La mejor relación entre consumo de energía y rendimiento luminoso la ofrece un foco de buceo equipado con:",
+      "options": [
+        { "key": "a", "text": "lámpara HID" },
+        { "key": "b", "text": "bombilla halógena" },
+        { "key": "c", "text": "LED" },
+        { "key": "d", "text": "fuente de energía de respaldo" }
+      ],
+      "correct": "c",
+      "explanation": "Los LED ofrecen la mejor relación entre consumo de energía y rendimiento luminoso."
+    },
+    {
+      "id": 80,
+      "category": "prislusenstvi",
+      "question": "La boya de descompresión:",
+      "options": [
+        { "key": "a", "text": "sirve como ayuda personal en el ascenso y la descompresión" },
+        { "key": "b", "text": "marca la posición del buceador en ascenso" },
+        { "key": "c", "text": "para el buceo habitual es roja o naranja" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "La boya de descompresión sirve para todo lo citado: ayuda en la descompresión, marcar la posición y, normalmente, es de color naranja."
+    },
+    {
+      "id": 81,
+      "category": "prislusenstvi",
+      "question": "Para marcar de forma fiable la posición del buceador en ascenso sirve:",
+      "options": [
+        { "key": "a", "text": "las burbujas que ascienden" },
+        { "key": "b", "text": "la boya de descompresión" },
+        { "key": "c", "text": "los dispositivos de señalización del chaleco compensador (silbato o bocina)" },
+        { "key": "d", "text": "ninguna respuesta es correcta" }
+      ],
+      "correct": "b",
+      "explanation": "La boya de descompresión marca de forma fiable la posición del buceador en superficie; las burbujas pueden dispersarse y no son fiables."
+    },
+    {
+      "id": 82,
+      "category": "prislusenstvi",
+      "question": "El cabo o el carrete de la boya de descompresión liberada durante el ascenso:",
+      "options": [
+        { "key": "a", "text": "siempre se sujeta o se ata al D-ring del chaleco compensador o a otra parte del equipo" },
+        { "key": "b", "text": "se sujeta o se ata al D-ring del chaleco compensador o a otra parte del equipo cuando necesitamos las manos libres" },
+        { "key": "c", "text": "se sujeta durante todo el ascenso de modo que el cabo no quede totalmente tenso" },
+        { "key": "d", "text": "por principio, no se sujeta al D-ring ni a ningún otro punto" }
+      ],
+      "correct": "d",
+      "explanation": "Por principio, el cabo de la boya nunca se sujeta al equipo, para no ser arrastrados a la superficie si, por ejemplo, una embarcación engancha la boya."
+    },
+    {
+      "id": 83,
+      "category": "prislusenstvi",
+      "question": "La brújula de buceo suele estar provista de:",
+      "options": [
+        { "key": "a", "text": "una funda protectora frente a campos magnéticos" },
+        { "key": "b", "text": "un dispositivo para fijar la aguja" },
+        { "key": "c", "text": "una corona giratoria que permite usarla como brújula de marcha" },
+        { "key": "d", "text": "un dispositivo de compensación para eliminar la desviación" }
+      ],
+      "correct": "c",
+      "explanation": "La brújula de buceo tiene una corona giratoria que permite fijar el rumbo y comprobar que se mantiene."
+    },
+    {
+      "id": 84,
+      "category": "prislusenstvi",
+      "question": "La bolsa de izado:",
+      "options": [
+        { "key": "a", "text": "sirve para subir objetos a la superficie" },
+        { "key": "b", "text": "sirve para mover objetos bajo el agua" },
+        { "key": "c", "text": "suele estar equipada con una válvula de purga" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "La bolsa de izado sirve tanto para subir como para mover objetos y suele estar equipada con una válvula de purga."
+    },
+    {
+      "id": 85,
+      "category": "kompresory",
+      "question": "Los compresores para llenar botellas de equipos autónomos son:",
+      "options": [
+        { "key": "a", "text": "de membrana, multietapa" },
+        { "key": "b", "text": "de pistón, una etapa" },
+        { "key": "c", "text": "de pistón, multietapa" },
+        { "key": "d", "text": "rotativos, multietapa" }
+      ],
+      "correct": "c",
+      "explanation": "Para llenar botellas de buceo se utilizan compresores de pistón multietapa."
+    },
+    {
+      "id": 86,
+      "category": "kompresory",
+      "question": "Marque la afirmación incorrecta. La refrigeración del aire entre etapas en compresores de alta presión:",
+      "options": [
+        { "key": "a", "text": "ayuda a eliminar la humedad" },
+        { "key": "b", "text": "reduce el trabajo necesario para comprimir el aire" },
+        { "key": "c", "text": "no se utiliza en absoluto (solo se refrigera el motor)" },
+        { "key": "d", "text": "aumenta la reserva utilizable de aire tras la carga" }
+      ],
+      "correct": "c",
+      "explanation": "La refrigeración intermedia se utiliza habitualmente en compresores de alta presión: la afirmación de que no se utiliza es incorrecta."
+    },
+    {
+      "id": 87,
+      "category": "kompresory",
+      "question": "El filtro de aspiración del compresor para equipos de buceo sirve para captar:",
+      "options": [
+        { "key": "a", "text": "dióxido de carbono" },
+        { "key": "b", "text": "monóxido de carbono" },
+        { "key": "c", "text": "vapor de agua" },
+        { "key": "d", "text": "partículas de polvo" }
+      ],
+      "correct": "d",
+      "explanation": "El filtro de aspiración capta partículas de polvo que podrían dañar el compresor y contaminar el aire."
+    },
+    {
+      "id": 88,
+      "category": "kompresory",
+      "question": "El filtro de descarga de la última etapa del compresor sirve para captar:",
+      "options": [
+        { "key": "a", "text": "humedad y dióxido de carbono" },
+        { "key": "b", "text": "humedad y polvo" },
+        { "key": "c", "text": "humedad y compuestos olorosos" },
+        { "key": "d", "text": "monóxido de carbono y dióxido de carbono" }
+      ],
+      "correct": "c",
+      "explanation": "El filtro de salida capta humedad y compuestos olorosos (aceite); se utilizan gel de sílice y carbón activado."
+    },
+    {
+      "id": 89,
+      "category": "kompresory",
+      "question": "El filtro de descarga de la última etapa del compresor puede estar relleno de:",
+      "options": [
+        { "key": "a", "text": "carbón activado" },
+        { "key": "b", "text": "carbón activado y gel de sílice" },
+        { "key": "c", "text": "tamiz molecular y gel de sílice" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "El filtro de salida puede contener distintas combinaciones de carbón activado, gel de sílice y tamiz molecular."
+    },
+    {
+      "id": 90,
+      "category": "kompresory",
+      "question": "El separador situado antes del filtro de descarga de la última etapa del compresor sirve para separar:",
+      "options": [
+        { "key": "a", "text": "la emulsión de agua y aceite" },
+        { "key": "b", "text": "la mezcla de agua y aire" },
+        { "key": "c", "text": "la mezcla de aceite y dióxido de carbono" },
+        { "key": "d", "text": "la mezcla de aceite, agua, dióxido de carbono y monóxido de carbono" }
+      ],
+      "correct": "a",
+      "explanation": "El separador retira el condensado, una emulsión de agua y aceite, antes de que el aire entre en el filtro."
+    },
+    {
+      "id": 91,
+      "category": "udrzba",
+      "question": "El faldón de máscara de caucho de silicona, antes del almacenamiento:",
+      "options": [
+        { "key": "a", "text": "exige tratamiento con aceite de silicona" },
+        { "key": "b", "text": "no exige cuidados especiales" },
+        { "key": "c", "text": "exige tratamiento con productos cosméticos comunes" },
+        { "key": "d", "text": "exige tratamiento con talco" }
+      ],
+      "correct": "b",
+      "explanation": "El faldón de silicona no exige cuidados especiales antes del almacenamiento; basta con aclarar y secar."
+    },
+    {
+      "id": 92,
+      "category": "udrzba",
+      "question": "Marque la afirmación incorrecta sobre la máscara de buceo:",
+      "options": [
+        { "key": "a", "text": "La máscara se seca y se almacena a la sombra." },
+        { "key": "b", "text": "Antes del primer uso suele ser necesario desengrasar bien el cristal." },
+        { "key": "c", "text": "Tras el uso se aclara la máscara con agua dulce." },
+        { "key": "d", "text": "El faldón de caucho de silicona se trata con aceite de silicona." }
+      ],
+      "correct": "d",
+      "explanation": "El faldón de silicona no se trata con aceite de silicona: la afirmación es incorrecta."
+    },
+    {
+      "id": 93,
+      "category": "udrzba",
+      "question": "Para que el cristal de la máscara no se empañe durante la inmersión suele bastar con:",
+      "options": [
+        { "key": "a", "text": "enjuagar la máscara con alcohol concentrado" },
+        { "key": "b", "text": "asegurarse de que la máscara está seca antes de ponérsela" },
+        { "key": "c", "text": "enjuagar la máscara con agua" },
+        { "key": "d", "text": "extender por el interior del cristal un poco de saliva propia (o un antiempañante) y enjuagar la máscara con agua" }
+      ],
+      "correct": "d",
+      "explanation": "Frente al empañamiento ayudan la saliva o un producto antiempañante extendido por el cristal y luego aclarado."
+    },
+    {
+      "id": 94,
+      "category": "udrzba",
+      "question": "Los trajes de neopreno sucios:",
+      "options": [
+        { "key": "a", "text": "se llevan a limpieza en seco" },
+        { "key": "b", "text": "pueden lavarse con detergentes corrientes a temperaturas de hasta 40 °C" },
+        { "key": "c", "text": "pueden lavarse a máquina hasta 90 °C" },
+        { "key": "d", "text": "solo pueden limpiarse con desinfectantes y blanqueadores" }
+      ],
+      "correct": "b",
+      "explanation": "Los trajes de neopreno pueden lavarse con detergentes corrientes a temperaturas de hasta 40 °C."
+    },
+    {
+      "id": 95,
+      "category": "udrzba",
+      "question": "Un traje de neopreno desgarrado:",
+      "options": [
+        { "key": "a", "text": "se pega con un pegamento instantáneo común" },
+        { "key": "b", "text": "se pega con un pegamento específico: se desengrasan ambas superficies, se aplica el pegamento, se deja \"orear\", se presionan entre sí y se mantienen unidas" },
+        { "key": "c", "text": "solo puede repararlo un profesional con equipamiento especial" },
+        { "key": "d", "text": "no se pega; solo se cose de forma estanca" }
+      ],
+      "correct": "b",
+      "explanation": "El neopreno se pega con un pegamento específico: se desengrasan ambas superficies, se aplica el pegamento, se deja orear y luego se presionan entre sí."
+    },
+    {
+      "id": 96,
+      "category": "udrzba",
+      "question": "Marque la afirmación incorrecta:",
+      "options": [
+        { "key": "a", "text": "La cremallera estanca del traje seco se aclara a fondo con agua limpia tras cada inmersión." },
+        { "key": "b", "text": "La cremallera estanca del traje seco se limpia de vez en cuando con un cepillo." },
+        { "key": "c", "text": "Las válvulas del traje seco se desmontan y se almacenan por separado tras cada inmersión." },
+        { "key": "d", "text": "Para mantener una cremallera estanca metálica del traje seco se usa cera de abeja o parafina." }
+      ],
+      "correct": "c",
+      "explanation": "Las válvulas del traje seco no se desmontan después de cada inmersión: la afirmación es incorrecta."
+    },
+    {
+      "id": 97,
+      "category": "udrzba",
+      "question": "Las válvulas del traje seco:",
+      "options": [
+        { "key": "a", "text": "no requieren mantenimiento" },
+        { "key": "b", "text": "tras la inmersión se limpian a fondo con un chorro de agua" },
+        { "key": "c", "text": "se tratan con vaselina de silicona" },
+        { "key": "d", "text": "se tratan con cera de abeja o parafina" }
+      ],
+      "correct": "b",
+      "explanation": "Las válvulas del traje seco se limpian a fondo con un chorro de agua después de la inmersión."
+    },
+    {
+      "id": 98,
+      "category": "udrzba",
+      "question": "Los manguitos de látex de los trajes secos, tras la inmersión:",
+      "options": [
+        { "key": "a", "text": "exigen un tratamiento químico" },
+        { "key": "b", "text": "se limpian con un cepillo y se rocían con espray de silicona" },
+        { "key": "c", "text": "se aclaran con agua dulce, se dejan secar y se espolvorean con talco" },
+        { "key": "d", "text": "se dejan secar y se untan con detergente" }
+      ],
+      "correct": "c",
+      "explanation": "Los manguitos de látex se aclaran con agua dulce, se dejan secar y se espolvorean con talco."
+    },
+    {
+      "id": 99,
+      "category": "udrzba",
+      "question": "Tras una inmersión en el mar, el regulador:",
+      "options": [
+        { "key": "a", "text": "se sumerge en agua dulce, se pulsa varias veces el botón de purga, se saca del agua y se deja secar" },
+        { "key": "b", "text": "se sumerge en agua dulce con la entrada de la 1.ª etapa al descubierto, se espera a que se disuelva la sal, se saca y se deja secar" },
+        { "key": "c", "text": "se sumerge en agua dulce con la entrada de la 1.ª etapa cerrada, sin pulsar el botón de purga; se saca y se deja secar" },
+        { "key": "d", "text": "no requiere tratamiento; basta con dejarlo secar" }
+      ],
+      "correct": "c",
+      "explanation": "El regulador se sumerge con la entrada de la 1.ª etapa cerrada (tapa antipolvo); no se pulsa la purga, para que no entre agua en su interior."
+    },
+    {
+      "id": 100,
+      "category": "udrzba",
+      "question": "Antes de un almacenamiento prolongado, el regulador:",
+      "options": [
+        { "key": "a", "text": "se seca y se rocía con aceite de conservación el espacio de la 1.ª etapa" },
+        { "key": "b", "text": "se seca, se sustituyen las piezas dañadas y se guarda desmontado" },
+        { "key": "c", "text": "se seca y se lleva a una revisión profesional" },
+        { "key": "d", "text": "se seca y se aplica espray de silicona a la membrana de la 2.ª etapa" }
+      ],
+      "correct": "c",
+      "explanation": "Antes de un almacenamiento prolongado, el regulador debe secarse y pasar una revisión profesional (servicio técnico)."
+    }
+  ]
+}

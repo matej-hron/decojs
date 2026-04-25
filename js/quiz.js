@@ -1,9 +1,12 @@
 /**
  * Quiz Module
- * 
+ *
  * Generic quiz engine that loads questions from JSON data files.
  * Supports multiple quiz types, shuffling, and configurable question counts.
+ * Language-aware: tries `<base>-<lang>.json` first, falls back to base path.
  */
+
+import { translate, getCurrentLanguage } from './i18n.js';
 
 // State
 let quizData = null;
@@ -12,6 +15,7 @@ let score = 0;
 let answered = 0;
 let hasAnswered = false;
 let activeQuestions = [];
+let activeBaseSource = null;
 
 // DOM elements (initialized after DOM load)
 let quizContainer, questionCounter, scoreDisplay, nextBtn, restartBtn;
@@ -31,28 +35,43 @@ function shuffleArray(array) {
 }
 
 /**
- * Load quiz data from JSON file
+ * Build the language-specific path for a base JSON path.
+ * `data/quiz-vessel.json` + `en` → `data/quiz-vessel-en.json`.
  */
-async function loadQuizData(jsonPath) {
-    try {
-        const response = await fetch(jsonPath);
-        if (!response.ok) {
-            throw new Error(`Failed to load quiz data: ${response.status}`);
+function localisedQuizPath(basePath, lang) {
+    return basePath.replace(/\.json$/i, `-${lang}.json`);
+}
+
+/**
+ * Load quiz data, preferring the current language version and falling back
+ * to the base (Czech) JSON if no localised file exists.
+ */
+async function loadQuizData(basePath) {
+    const lang = getCurrentLanguage();
+    const candidates = (lang && lang !== 'cs')
+        ? [localisedQuizPath(basePath, lang), basePath]
+        : [basePath];
+
+    for (const path of candidates) {
+        try {
+            const response = await fetch(path);
+            if (response.ok) {
+                quizData = await response.json();
+                updateQuestionCountOptions();
+                return true;
+            }
+        } catch (error) {
+            console.warn(`Quiz: failed to load ${path}:`, error);
         }
-        quizData = await response.json();
-        updateQuestionCountOptions();
-        return true;
-    } catch (error) {
-        console.error('Error loading quiz data:', error);
-        quizContainer.innerHTML = `
-            <div class="error-card">
-                <h3>❌ Chyba načítání</h3>
-                <p>Nepodařilo se načíst otázky. Zkuste obnovit stránku.</p>
-                <p class="error-details">${error.message}</p>
-            </div>
-        `;
-        return false;
     }
+
+    quizContainer.innerHTML = `
+        <div class="error-card">
+            <h3>${translate('quiz.runtime.errorTitle', '❌ Chyba načítání')}</h3>
+            <p>${translate('quiz.runtime.errorMessage', 'Nepodařilo se načíst otázky. Zkuste obnovit stránku.')}</p>
+        </div>
+    `;
+    return false;
 }
 
 /**
@@ -60,13 +79,12 @@ async function loadQuizData(jsonPath) {
  */
 function updateQuestionCountOptions() {
     if (!questionCountSelect || !quizData) return;
-    
-    // Get filtered question count
+
     const filteredQuestions = filterQuestionsByCategory(quizData.questions);
     const total = filteredQuestions.length;
-    
+
     questionCountSelect.innerHTML = '';
-    
+
     if (total === 0) {
         const opt = document.createElement('option');
         opt.value = 0;
@@ -74,22 +92,21 @@ function updateQuestionCountOptions() {
         questionCountSelect.appendChild(opt);
         return;
     }
-    
-    // Add standard options that don't exceed total
+
+    const allLabel = translate('quiz.runtime.all', 'vše');
     const standardOptions = [5, 10, 20, 50, 100];
     standardOptions.filter(n => n <= total).forEach(n => {
         const opt = document.createElement('option');
         opt.value = n;
-        opt.textContent = n === total ? `${n} (vše)` : n;
+        opt.textContent = n === total ? `${n} (${allLabel})` : n;
         if (n === Math.min(10, total)) opt.selected = true;
         questionCountSelect.appendChild(opt);
     });
-    
-    // Add "all" option if not already included
+
     if (!standardOptions.includes(total)) {
         const opt = document.createElement('option');
         opt.value = total;
-        opt.textContent = `${total} (vše)`;
+        opt.textContent = `${total} (${allLabel})`;
         questionCountSelect.appendChild(opt);
     }
 }
@@ -100,7 +117,7 @@ function updateQuestionCountOptions() {
 function getSelectedCategories() {
     if (!categoryCheckboxes) return null;
     if (categoryAllCheckbox && categoryAllCheckbox.checked) return null; // null means all
-    
+
     const selected = [];
     categoryCheckboxes.forEach(cb => {
         if (cb.checked) selected.push(cb.value);
@@ -113,8 +130,8 @@ function getSelectedCategories() {
  */
 function filterQuestionsByCategory(questions) {
     const selectedCategories = getSelectedCategories();
-    if (!selectedCategories) return questions; // Return all if no filter
-    
+    if (!selectedCategories) return questions;
+
     return questions.filter(q => selectedCategories.includes(q.category));
 }
 
@@ -123,42 +140,33 @@ function filterQuestionsByCategory(questions) {
  */
 function initQuiz() {
     if (!quizData) return;
-    
+
     currentQuestionIndex = 0;
     score = 0;
     answered = 0;
     hasAnswered = false;
-    
-    // Get settings
+
     const shouldShuffle = shuffleToggle ? shuffleToggle.checked : false;
     const questionCount = questionCountSelect ? parseInt(questionCountSelect.value) : quizData.questions.length;
-    
-    // Filter by category first
+
     let filteredQuestions = filterQuestionsByCategory(quizData.questions);
-    
-    // Check if we have any questions after filtering
+
     if (filteredQuestions.length === 0) {
         quizContainer.innerHTML = `
             <div class="error-card">
-                <h3>⚠️ Žádné otázky</h3>
-                <p>Pro vybraná témata nejsou k dispozici žádné otázky. Vyberte alespoň jedno téma.</p>
+                <h3>${translate('quiz.runtime.noQuestionsTitle', '⚠️ Žádné otázky')}</h3>
+                <p>${translate('quiz.runtime.noQuestionsMessage', 'Pro vybraná témata nejsou k dispozici žádné otázky. Vyberte alespoň jedno téma.')}</p>
             </div>
         `;
         return;
     }
-    
-    // Prepare questions
+
     if (shouldShuffle) {
         activeQuestions = shuffleArray(filteredQuestions).slice(0, questionCount);
     } else {
         activeQuestions = filteredQuestions.slice(0, questionCount);
     }
-    
-    // Update question count if filtered set is smaller
-    if (activeQuestions.length < questionCount) {
-        // Just use what we have
-    }
-    
+
     renderQuestion();
 }
 
@@ -176,13 +184,18 @@ function renderQuestion() {
     const q = getCurrentQuestion();
     hasAnswered = false;
     nextBtn.disabled = true;
-    nextBtn.textContent = 'Další otázka →';
+    nextBtn.textContent = translate('quiz.buttons.next', 'Další otázka →');
     nextBtn.style.display = 'inline-block';
     restartBtn.style.display = 'none';
-    
+
+    const questionLabel = translate('quiz.runtime.questionOf', 'Otázka {n} z {total}')
+        .replace('{n}', currentQuestionIndex + 1)
+        .replace('{total}', activeQuestions.length);
+    const idLabel = translate('quiz.runtime.questionIdLabel', 'č. {id}').replace('{id}', q.id);
+
     quizContainer.innerHTML = `
         <div class="question-card">
-            <h3 class="question-number">Otázka ${currentQuestionIndex + 1} z ${activeQuestions.length} <span class="question-id">(č. ${q.id})</span></h3>
+            <h3 class="question-number">${questionLabel} <span class="question-id">(${idLabel})</span></h3>
             <p class="question-text">${q.question}</p>
             <div class="options-list">
                 ${q.options.map(opt => `
@@ -195,12 +208,11 @@ function renderQuestion() {
             <div id="feedback" class="feedback" style="display: none;"></div>
         </div>
     `;
-    
-    // Add click handlers to options
+
     document.querySelectorAll('.option-btn').forEach(btn => {
         btn.addEventListener('click', () => handleAnswer(btn.dataset.key));
     });
-    
+
     updateProgress();
 }
 
@@ -211,47 +223,42 @@ function handleAnswer(selectedKey) {
     if (hasAnswered) return;
     hasAnswered = true;
     answered++;
-    
+
     const q = getCurrentQuestion();
     const isCorrect = selectedKey === q.correct;
-    
+
     if (isCorrect) {
         score++;
     }
-    
-    // Highlight answers
+
     document.querySelectorAll('.option-btn').forEach(btn => {
         btn.disabled = true;
         const key = btn.dataset.key;
-        
+
         if (key === q.correct) {
             btn.classList.add('correct');
         } else if (key === selectedKey && !isCorrect) {
             btn.classList.add('incorrect');
         }
     });
-    
-    // Show feedback
+
     const feedback = document.getElementById('feedback');
     feedback.style.display = 'block';
     feedback.className = `feedback ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
+    const verdict = isCorrect
+        ? translate('quiz.runtime.correctVerdict', '✅ Správně!')
+        : translate('quiz.runtime.incorrectVerdict', '❌ Špatně!');
     feedback.innerHTML = `
-        <div class="feedback-header">
-            ${isCorrect ? '✅ Správně!' : '❌ Špatně!'}
-        </div>
-        <div class="feedback-explanation">
-            ${q.explanation}
-        </div>
+        <div class="feedback-header">${verdict}</div>
+        <div class="feedback-explanation">${q.explanation}</div>
     `;
-    
-    // Enable next button
+
     nextBtn.disabled = false;
-    
-    // Check if this was the last question
+
     if (currentQuestionIndex >= activeQuestions.length - 1) {
-        nextBtn.textContent = 'Zobrazit výsledky';
+        nextBtn.textContent = translate('quiz.runtime.showResults', 'Zobrazit výsledky');
     }
-    
+
     updateProgress();
 }
 
@@ -274,25 +281,25 @@ function showResults() {
     const percentage = Math.round((score / activeQuestions.length) * 100);
     let message = '';
     let emoji = '';
-    
+
     if (percentage === 100) {
         emoji = '🏆';
-        message = 'Výborně! Perfektní skóre!';
+        message = translate('quiz.runtime.resultPerfect', 'Výborně! Perfektní skóre!');
     } else if (percentage >= 80) {
         emoji = '🎉';
-        message = 'Skvělá práce!';
+        message = translate('quiz.runtime.resultGreat', 'Skvělá práce!');
     } else if (percentage >= 60) {
         emoji = '👍';
-        message = 'Dobrý výsledek, ale je co zlepšovat.';
+        message = translate('quiz.runtime.resultGood', 'Dobrý výsledek, ale je co zlepšovat.');
     } else {
         emoji = '📚';
-        message = 'Doporučujeme prostudovat teorii a zkusit znovu.';
+        message = translate('quiz.runtime.resultPoor', 'Doporučujeme prostudovat teorii a zkusit znovu.');
     }
-    
+
     quizContainer.innerHTML = `
         <div class="results-card">
             <div class="results-emoji">${emoji}</div>
-            <h2>Test dokončen!</h2>
+            <h2>${translate('quiz.runtime.resultsTitle', 'Test dokončen!')}</h2>
             <div class="results-score">
                 <span class="score-number">${score}</span>
                 <span class="score-divider">/</span>
@@ -302,7 +309,7 @@ function showResults() {
             <p class="results-message">${message}</p>
         </div>
     `;
-    
+
     nextBtn.style.display = 'none';
     restartBtn.style.display = 'inline-block';
 }
@@ -311,15 +318,30 @@ function showResults() {
  * Update progress display
  */
 function updateProgress() {
-    questionCounter.textContent = `Otázka ${currentQuestionIndex + 1} z ${activeQuestions.length}`;
-    scoreDisplay.textContent = `Skóre: ${score} / ${answered}`;
+    const counterText = translate('quiz.runtime.questionOf', 'Otázka {n} z {total}')
+        .replace('{n}', currentQuestionIndex + 1)
+        .replace('{total}', activeQuestions.length);
+    questionCounter.textContent = counterText;
+    const scoreLabel = translate('quiz.runtime.scoreLabel', 'Skóre');
+    scoreDisplay.textContent = `${scoreLabel}: ${score} / ${answered}`;
+}
+
+/**
+ * Reload the active quiz from disk (e.g. after a language change).
+ */
+async function reloadActiveQuiz() {
+    if (!activeBaseSource || !quizContainer) return;
+    quizContainer.innerHTML = `<div class="loading">${translate('quiz.runtime.loading', 'Načítání otázek...')}</div>`;
+    const loaded = await loadQuizData(activeBaseSource);
+    if (loaded) initQuiz();
 }
 
 /**
  * Initialize the quiz module
  */
 async function initQuizModule(jsonPath) {
-    // Get DOM elements
+    activeBaseSource = jsonPath;
+
     quizContainer = document.getElementById('quiz-container');
     questionCounter = document.getElementById('question-counter');
     scoreDisplay = document.getElementById('score-display');
@@ -330,36 +352,30 @@ async function initQuizModule(jsonPath) {
     applySettingsBtn = document.getElementById('apply-settings-btn');
     categoryAllCheckbox = document.getElementById('category-all');
     categoryCheckboxes = document.querySelectorAll('.category-checkbox');
-    
-    // Show loading state
-    quizContainer.innerHTML = '<div class="loading">Načítání otázek...</div>';
-    
-    // Load quiz data
+
+    quizContainer.innerHTML = `<div class="loading">${translate('quiz.runtime.loading', 'Načítání otázek...')}</div>`;
+
     const loaded = await loadQuizData(jsonPath);
     if (!loaded) return;
-    
-    // Set up event listeners
+
     nextBtn.addEventListener('click', nextQuestion);
     restartBtn.addEventListener('click', initQuiz);
-    
+
     if (applySettingsBtn) {
         applySettingsBtn.addEventListener('click', initQuiz);
     }
-    
-    // Set up category checkbox logic
+
     if (categoryAllCheckbox) {
         categoryAllCheckbox.addEventListener('change', () => {
             if (categoryAllCheckbox.checked) {
-                // Uncheck all individual categories
                 categoryCheckboxes.forEach(cb => cb.checked = false);
             }
             updateQuestionCountOptions();
         });
     }
-    
+
     categoryCheckboxes.forEach(cb => {
         cb.addEventListener('change', () => {
-            // If any individual category is checked, uncheck "All"
             const anyChecked = Array.from(categoryCheckboxes).some(c => c.checked);
             if (categoryAllCheckbox) {
                 categoryAllCheckbox.checked = !anyChecked;
@@ -367,8 +383,9 @@ async function initQuizModule(jsonPath) {
             updateQuestionCountOptions();
         });
     });
-    
-    // Start quiz
+
+    document.addEventListener('languagechange', reloadActiveQuiz);
+
     initQuiz();
 }
 

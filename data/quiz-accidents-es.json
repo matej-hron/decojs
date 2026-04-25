@@ -1,0 +1,1306 @@
+{
+  "title": "Accidentes y enfermedades",
+  "description": "Exámenes SPČR 2018 – accidentes y enfermedades del buceo, primeros auxilios, reanimación",
+  "questions": [
+    {
+      "id": 1,
+      "category": "první pomoc",
+      "question": "Al ayudar a una víctima inconsciente se recomienda primero:",
+      "options": [
+        { "key": "a", "text": "dar 4 ventilaciones de rescate" },
+        { "key": "b", "text": "dar 2 ventilaciones de rescate" },
+        { "key": "c", "text": "abrir la vía aérea con la maniobra frente-mentón y comprobar si la víctima respira; si no respira, llamar al servicio de emergencias" },
+        { "key": "d", "text": "comprobar el pulso" }
+      ],
+      "correct": "c",
+      "explanation": "El primer paso es siempre abrir la vía aérea con la maniobra frente-mentón, comprobar la respiración y avisar al servicio de emergencias."
+    },
+    {
+      "id": 2,
+      "category": "první pomoc",
+      "question": "¿Qué actuación se prioriza en una víctima inconsciente con hemorragia intensa?",
+      "options": [
+        { "key": "a", "text": "Llamar al servicio de emergencias." },
+        { "key": "b", "text": "Dos ventilaciones de rescate." },
+        { "key": "c", "text": "Compresiones torácicas vigorosas." },
+        { "key": "d", "text": "Detener la hemorragia." }
+      ],
+      "correct": "d",
+      "explanation": "Una hemorragia masiva es una situación que amenaza la vida y debe controlarse en primer lugar; de lo contrario la reanimación sería ineficaz."
+    },
+    {
+      "id": 3,
+      "category": "první pomoc",
+      "question": "Se inicia la reanimación cuando:",
+      "options": [
+        { "key": "a", "text": "la víctima está inconsciente y no respira con normalidad" },
+        { "key": "b", "text": "la víctima consciente no tiene pulso palpable" },
+        { "key": "c", "text": "la víctima inconsciente no tiene pulso palpable" },
+        { "key": "d", "text": "ninguna respuesta es correcta" }
+      ],
+      "correct": "a",
+      "explanation": "La reanimación se inicia en una persona inconsciente que no respira con normalidad. La comprobación del pulso ya no se recomienda al rescatador lego."
+    },
+    {
+      "id": 4,
+      "category": "první pomoc",
+      "question": "El primer acto de la reanimación es:",
+      "options": [
+        { "key": "a", "text": "iniciar las compresiones torácicas" },
+        { "key": "b", "text": "abrir la vía aérea con la maniobra frente-mentón y comprobar si la víctima respira; si no respira, llamar al servicio de emergencias" },
+        { "key": "c", "text": "dar 4 ventilaciones de rescate" },
+        { "key": "d", "text": "dar 2 ventilaciones de rescate" }
+      ],
+      "correct": "b",
+      "explanation": "Primero abrimos la vía aérea, comprobamos la respiración y llamamos al servicio de emergencias; solo entonces iniciamos la reanimación."
+    },
+    {
+      "id": 5,
+      "category": "první pomoc",
+      "question": "Elevar las extremidades inferiores de la víctima durante la reanimación:",
+      "options": [
+        { "key": "a", "text": "limita el efecto de las compresiones torácicas" },
+        { "key": "b", "text": "limita el efecto de la ventilación de rescate" },
+        { "key": "c", "text": "es desaconsejable por el riesgo de acumulación de sangre en el tronco" },
+        { "key": "d", "text": "no aporta un beneficio significativo" }
+      ],
+      "correct": "d",
+      "explanation": "Los estudios han demostrado que elevar las extremidades inferiores durante la reanimación no aporta un beneficio significativo a su eficacia."
+    },
+    {
+      "id": 6,
+      "category": "první pomoc",
+      "question": "El punto para las compresiones torácicas se sitúa:",
+      "options": [
+        { "key": "a", "text": "aproximadamente en el centro del tórax, sobre el esternón" },
+        { "key": "b", "text": "en la mitad izquierda del tórax" },
+        { "key": "c", "text": "en la parte inferior del tórax, unos tres dedos por debajo del esternón" },
+        { "key": "d", "text": "en la parte superior del tórax, a la altura de la articulación de las clavículas" }
+      ],
+      "correct": "a",
+      "explanation": "El punto correcto para las compresiones es el centro del tórax sobre el esternón, no la mitad izquierda donde está el corazón."
+    },
+    {
+      "id": 7,
+      "category": "první pomoc",
+      "question": "Las compresiones torácicas se realizan con una frecuencia de:",
+      "options": [
+        { "key": "a", "text": "exactamente 12 por minuto" },
+        { "key": "b", "text": "aproximadamente 70 por minuto" },
+        { "key": "c", "text": "aproximadamente 100–120 por minuto" },
+        { "key": "d", "text": "160–180 por minuto" }
+      ],
+      "correct": "c",
+      "explanation": "Las guías actuales recomiendan 100–120 compresiones por minuto."
+    },
+    {
+      "id": 8,
+      "category": "první pomoc",
+      "question": "Las compresiones torácicas:",
+      "options": [
+        { "key": "a", "text": "se realizan aproximadamente en el centro del tórax, sobre el esternón" },
+        { "key": "b", "text": "se realizan a una frecuencia de 100–120 por minuto" },
+        { "key": "c", "text": "se realizan con una profundidad de compresión de 5–6 cm" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todo lo anterior es correcto: centro del tórax, 100–120/min y 5–6 cm de profundidad."
+    },
+    {
+      "id": 9,
+      "category": "první pomoc",
+      "question": "Marque la afirmación incorrecta:",
+      "options": [
+        { "key": "a", "text": "En las compresiones torácicas se comprime el tórax a una frecuencia de unos 100–120 por minuto." },
+        { "key": "b", "text": "El punto para las compresiones torácicas se sitúa en la mitad izquierda del tórax." },
+        { "key": "c", "text": "Las compresiones se realizan con una profundidad de 5–6 cm." },
+        { "key": "d", "text": "La reanimación comienza con 30 compresiones torácicas inmediatamente después de abrir la vía aérea." }
+      ],
+      "correct": "b",
+      "explanation": "La afirmación b) es incorrecta: el punto correcto está en el centro del tórax sobre el esternón, no en la mitad izquierda."
+    },
+    {
+      "id": 10,
+      "category": "první pomoc",
+      "question": "Durante las compresiones torácicas se comprime el tórax de la víctima:",
+      "options": [
+        { "key": "a", "text": "aproximadamente en el centro del esternón, con una profundidad de 5–6 cm" },
+        { "key": "b", "text": "en la parte izquierda, con una frecuencia de 100–120 por minuto" },
+        { "key": "c", "text": "tres dedos por debajo del esternón, con frecuencia de 100–120 por minuto y profundidad de 4–5 cm" },
+        { "key": "d", "text": "aproximadamente en el centro del esternón, con frecuencia de 70 por minuto" }
+      ],
+      "correct": "a",
+      "explanation": "Lo correcto es comprimir en el centro del esternón a una profundidad de 5–6 cm a 100–120/min."
+    },
+    {
+      "id": 11,
+      "category": "první pomoc",
+      "question": "La reanimación de un adulto por un único rescatador requiere:",
+      "options": [
+        { "key": "a", "text": "5 compresiones torácicas por 1 ventilación" },
+        { "key": "b", "text": "15 compresiones torácicas por 1 ventilación" },
+        { "key": "c", "text": "15 compresiones torácicas por 2 ventilaciones" },
+        { "key": "d", "text": "30 compresiones torácicas por 2 ventilaciones" }
+      ],
+      "correct": "d",
+      "explanation": "La proporción estándar en adultos es 30:2 (30 compresiones por 2 ventilaciones), independientemente del número de rescatadores."
+    },
+    {
+      "id": 12,
+      "category": "první pomoc",
+      "question": "La reanimación de un adulto por dos rescatadores requiere:",
+      "options": [
+        { "key": "a", "text": "15 compresiones torácicas por 2 ventilaciones" },
+        { "key": "b", "text": "30 compresiones torácicas por 2 ventilaciones" },
+        { "key": "c", "text": "15 compresiones torácicas por 1 ventilación" },
+        { "key": "d", "text": "5 compresiones torácicas por 1 ventilación" }
+      ],
+      "correct": "b",
+      "explanation": "En adultos la relación es siempre 30:2, sea uno o sean dos los rescatadores."
+    },
+    {
+      "id": 13,
+      "category": "první pomoc",
+      "question": "La reanimación tras un ahogamiento exige:",
+      "options": [
+        { "key": "a", "text": "como primer paso vaciar el agua de los pulmones" },
+        { "key": "b", "text": "5 ventilaciones de rescate inmediatamente tras abrir la vía aérea" },
+        { "key": "c", "text": "que el rescatador (o los rescatadores) se centren solo en las compresiones torácicas" },
+        { "key": "d", "text": "únicamente avisar al servicio de emergencias, ya que los primeros auxilios laicos son imposibles" }
+      ],
+      "correct": "b",
+      "explanation": "En el ahogamiento la prioridad es la oxigenación, por lo que comenzamos con 5 ventilaciones de rescate antes de iniciar las compresiones."
+    },
+    {
+      "id": 14,
+      "category": "první pomoc",
+      "question": "El esquema A-B-C de reanimación (A: apertura de la vía aérea, B: ventilación, C: compresiones torácicas) se aplica:",
+      "options": [
+        { "key": "a", "text": "en personas mayores de 60 años" },
+        { "key": "b", "text": "en niños desde recién nacidos hasta edad preescolar" },
+        { "key": "c", "text": "cuando no podemos llamar al servicio de emergencias" },
+        { "key": "d", "text": "si la víctima está parcialmente consciente" }
+      ],
+      "correct": "b",
+      "explanation": "El esquema A-B-C (prioridad de la respiración) se usa en niños, donde la parada se debe a menudo a falta de oxígeno y no a un fallo cardíaco."
+    },
+    {
+      "id": 15,
+      "category": "první pomoc",
+      "question": "Marque la afirmación incorrecta:",
+      "options": [
+        { "key": "a", "text": "El primer paso de la reanimación es abrir la vía aérea de la víctima." },
+        { "key": "b", "text": "Las compresiones torácicas se realizan en ciclos de 30." },
+        { "key": "c", "text": "La frecuencia de las compresiones es de 60–80 por minuto." },
+        { "key": "d", "text": "Si reaniman varios rescatadores, conviene que se turnen en las compresiones aproximadamente cada 2 minutos." }
+      ],
+      "correct": "c",
+      "explanation": "La afirmación c) es incorrecta: la frecuencia correcta es de 100–120 por minuto, no 60–80."
+    },
+    {
+      "id": 16,
+      "category": "první pomoc",
+      "question": "Por posición lateral de seguridad se entiende:",
+      "options": [
+        { "key": "a", "text": "cualquier posición tumbado en el suelo" },
+        { "key": "b", "text": "tumbado de lado con la cabeza ligeramente extendida" },
+        { "key": "c", "text": "tumbado boca arriba con la cabeza apoyada" },
+        { "key": "d", "text": "sentado con la espalda apoyada" }
+      ],
+      "correct": "b",
+      "explanation": "La posición lateral de seguridad es de lado con la cabeza ligeramente extendida; permite el drenaje de líquidos por la boca y mantiene la vía aérea permeable."
+    },
+    {
+      "id": 17,
+      "category": "první pomoc",
+      "question": "A una víctima inconsciente que respira:",
+      "options": [
+        { "key": "a", "text": "se le coloca en posición lateral de seguridad y se le abriga para que no se enfríe" },
+        { "key": "b", "text": "se le reanima hasta la llegada del servicio de emergencias" },
+        { "key": "c", "text": "se le reanima con 15 compresiones torácicas por 1 ventilación" },
+        { "key": "d", "text": "se le coloca boca arriba y se llama al servicio de emergencias" }
+      ],
+      "correct": "a",
+      "explanation": "Si una víctima inconsciente respira, no se reanima; se la coloca en posición lateral de seguridad y se la protege del frío."
+    },
+    {
+      "id": 18,
+      "category": "první pomoc",
+      "question": "Si la víctima respira pero permanece inconsciente:",
+      "options": [
+        { "key": "a", "text": "se le coloca en posición lateral de seguridad" },
+        { "key": "b", "text": "se vigila continuamente que no deje de respirar" },
+        { "key": "c", "text": "se le abriga para que no se enfríe" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todos los pasos son correctos: posición lateral de seguridad, vigilancia de la respiración y protección frente al frío."
+    },
+    {
+      "id": 19,
+      "category": "první pomoc",
+      "question": "Abrigar a la víctima en posición lateral de seguridad:",
+      "options": [
+        { "key": "a", "text": "no se recomienda porque dificulta el control del pulso" },
+        { "key": "b", "text": "no se recomienda por riesgo de sobrecalentamiento" },
+        { "key": "c", "text": "se recomienda para evitar la pérdida de calor" },
+        { "key": "d", "text": "ninguna respuesta es correcta" }
+      ],
+      "correct": "c",
+      "explanation": "Abrigar a la víctima es importante para prevenir la hipotermia, que puede empeorar su estado."
+    },
+    {
+      "id": 20,
+      "category": "první pomoc",
+      "question": "Cada ventilación boca a boca debe durar aproximadamente:",
+      "options": [
+        { "key": "a", "text": "1 segundo" },
+        { "key": "b", "text": "2 segundos" },
+        { "key": "c", "text": "4 segundos" },
+        { "key": "d", "text": "6 segundos" }
+      ],
+      "correct": "a",
+      "explanation": "Cada ventilación debe durar aproximadamente 1 segundo y ser suficiente para que el tórax se eleve de forma visible."
+    },
+    {
+      "id": 21,
+      "category": "podchlazení",
+      "question": "Al introducir a una víctima hipotérmica en un baño caliente, la sumergimos:",
+      "options": [
+        { "key": "a", "text": "primero las extremidades inferiores y el tronco" },
+        { "key": "b", "text": "de modo que al principio solo sobresalga la cabeza" },
+        { "key": "c", "text": "de modo que al principio solo se sumerja el tronco" },
+        { "key": "d", "text": "primero el tronco y las extremidades superiores" }
+      ],
+      "correct": "c",
+      "explanation": "Primero calentamos solo el tronco para que la sangre fría de las extremidades no vuelva demasiado deprisa al corazón y provoque shock."
+    },
+    {
+      "id": 22,
+      "category": "otravy plyny",
+      "question": "Buceando con equipo autónomo de aire, al alcanzar los 40 m la comunicación entre usted y su compañero empeora notablemente. Considerará que la causa es:",
+      "options": [
+        { "key": "a", "text": "falta de oxígeno (hipoxia)" },
+        { "key": "b", "text": "narcosis nitrogenada (borrachera de las profundidades)" },
+        { "key": "c", "text": "toxicidad por oxígeno" },
+        { "key": "d", "text": "enfermedad descompresiva" }
+      ],
+      "correct": "b",
+      "explanation": "A 40 m la presión parcial del nitrógeno ya es suficiente para causar narcosis, que altera la coordinación y la comunicación."
+    },
+    {
+      "id": 23,
+      "category": "podchlazení",
+      "question": "Al asistir a un buceador hipotérmico es apropiado:",
+      "options": [
+        { "key": "a", "text": "centrarse en calentar el tronco" },
+        { "key": "b", "text": "ejercitar las extremidades" },
+        { "key": "c", "text": "masajear las extremidades" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "a",
+      "explanation": "Calentamos solo el tronco. El masaje y el ejercicio de las extremidades devolverían la sangre fría al corazón y podrían causar parada cardíaca."
+    },
+    {
+      "id": 24,
+      "category": "podchlazení",
+      "question": "Entre los signos de hipotermia NO se incluye:",
+      "options": [
+        { "key": "a", "text": "falta de concentración, mayor consumo de aire" },
+        { "key": "b", "text": "color rojo cereza de los labios, mucosas y lechos ungueales" },
+        { "key": "c", "text": "aumento de la diuresis (poliuria)" },
+        { "key": "d", "text": "tiritón incontrolable" }
+      ],
+      "correct": "b",
+      "explanation": "El color rojo cereza es signo de intoxicación por monóxido de carbono, no de hipotermia. En la hipotermia los labios se ponen azules."
+    },
+    {
+      "id": 25,
+      "category": "otravy plyny",
+      "question": "Marque la afirmación incorrecta:",
+      "options": [
+        { "key": "a", "text": "La hiperventilación provoca un descenso del nivel de dióxido de carbono en el organismo." },
+        { "key": "b", "text": "Los signos de la hipoxia son difíciles de reconocer." },
+        { "key": "c", "text": "Una presión continua del equipo sobre las arterias del cuello puede reducir el aporte de oxígeno al cerebro." },
+        { "key": "d", "text": "La hipoxia aparece cuando la presión parcial de oxígeno en el medio respirado cae por debajo de 21 kPa." }
+      ],
+      "correct": "d",
+      "explanation": "La afirmación d) es incorrecta: la hipoxia aparece cuando la <em>p</em>O₂ cae por debajo de unos 16 kPa (0,16 bar), no de 21 kPa. 21 kPa es la presión parcial de oxígeno atmosférico normal."
+    },
+    {
+      "id": 26,
+      "category": "otravy plyny",
+      "question": "La hipoxia NO puede ser consecuencia de:",
+      "options": [
+        { "key": "a", "text": "la hiperventilación previa a una inmersión en apnea" },
+        { "key": "b", "text": "la fijación de monóxido de carbono a la hemoglobina" },
+        { "key": "c", "text": "respirar una mezcla con un 2 % de oxígeno a 90 m" },
+        { "key": "d", "text": "respirar aire almacenado durante mucho tiempo en una botella de acero" }
+      ],
+      "correct": "c",
+      "explanation": "A 90 m la presión absoluta es 10 bar, por lo que un 2 % de O₂ da <em>p</em>O₂ = 0,2 bar (20 kPa), suficiente para respirar y sin causar hipoxia."
+    },
+    {
+      "id": 27,
+      "category": "otravy plyny",
+      "question": "Marque la afirmación incorrecta sobre la narcosis nitrogenada (borrachera de las profundidades):",
+      "options": [
+        { "key": "a", "text": "Los primeros auxilios consisten en ascender a menor profundidad." },
+        { "key": "b", "text": "El estrés acelera el inicio de la narcosis." },
+        { "key": "c", "text": "Un buceador con equipo de oxígeno puro no corre riesgo de narcosis." },
+        { "key": "d", "text": "El efecto narcótico del nitrógeno puede reducirse con un mayor esfuerzo físico." }
+      ],
+      "correct": "d",
+      "explanation": "Por el contrario, un mayor esfuerzo agrava la narcosis por la acumulación de CO₂, que potencia el efecto narcótico del nitrógeno."
+    },
+    {
+      "id": 28,
+      "category": "otravy plyny",
+      "question": "Entre los signos de hipoxia NO se incluye:",
+      "options": [
+        { "key": "a", "text": "malestar, náuseas" },
+        { "key": "b", "text": "aceleración del pulso y de la respiración" },
+        { "key": "c", "text": "euforia" },
+        { "key": "d", "text": "deterioro del juicio" }
+      ],
+      "correct": "a",
+      "explanation": "El malestar y las náuseas no son signos típicos de hipoxia. La hipoxia se manifiesta con euforia, aceleración del pulso/respiración y deterioro del juicio."
+    },
+    {
+      "id": 29,
+      "category": "otravy plyny",
+      "question": "Si su compañero presenta signos de narcosis nitrogenada:",
+      "options": [
+        { "key": "a", "text": "le hace ascender de inmediato a menor profundidad" },
+        { "key": "b", "text": "inicia de inmediato un ascenso de emergencia a la superficie" },
+        { "key": "c", "text": "permanece con él a la misma profundidad hasta que desaparezcan los síntomas" },
+        { "key": "d", "text": "siguen descendiendo hasta una profundidad en la que cesen los síntomas" }
+      ],
+      "correct": "a",
+      "explanation": "Los primeros auxilios correctos en la narcosis son ascender a menor profundidad, donde el efecto narcótico del nitrógeno desaparece rápidamente."
+    },
+    {
+      "id": 30,
+      "category": "otravy plyny",
+      "question": "El efecto narcótico del nitrógeno se ve potenciado por:",
+      "options": [
+        { "key": "a", "text": "el hidrógeno" },
+        { "key": "b", "text": "el helio" },
+        { "key": "c", "text": "el dióxido de carbono" },
+        { "key": "d", "text": "el monóxido de carbono" }
+      ],
+      "correct": "c",
+      "explanation": "El dióxido de carbono (CO₂) potencia el efecto narcótico del nitrógeno. Por eso es importante respirar correctamente y evitar el esfuerzo físico a gran profundidad."
+    },
+    {
+      "id": 31,
+      "category": "otravy plyny",
+      "question": "Existe riesgo de hipoxia:",
+      "options": [
+        { "key": "a", "text": "en una inmersión en apnea tras hiperventilación" },
+        { "key": "b", "text": "al retirar el regulador en espacios secos cerrados bajo el agua" },
+        { "key": "c", "text": "al usar una reserva de aire almacenada durante mucho tiempo" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todas las situaciones citadas pueden producir hipoxia: la hiperventilación reduce el CO₂ y suprime el reflejo respiratorio; los espacios cerrados tienen oxígeno limitado; y en aire almacenado mucho tiempo el oxígeno puede reaccionar con las paredes de acero."
+    },
+    {
+      "id": 32,
+      "category": "otravy plyny",
+      "question": "Una mezcla respiratoria contiene un 4 % de oxígeno. Solo puede usarse sin riesgo de hipoxia a partir de una profundidad mayor de:",
+      "options": [
+        { "key": "a", "text": "10 metros" },
+        { "key": "b", "text": "20 metros" },
+        { "key": "c", "text": "30 metros" },
+        { "key": "d", "text": "60 metros" }
+      ],
+      "correct": "c",
+      "explanation": "Para respirar con seguridad necesitamos una <em>p</em>O₂ de al menos 0,16 bar. A 30 m la presión absoluta es 4 bar, por lo que 4 % × 4 = 0,16 bar (16 kPa), el mínimo seguro."
+    },
+    {
+      "id": 33,
+      "category": "otravy plyny",
+      "question": "Hay riesgo de pérdida de conciencia cuando la presión parcial de oxígeno en el medio respirado cae por debajo de:",
+      "options": [
+        { "key": "a", "text": "5 kPa" },
+        { "key": "b", "text": "10 kPa" },
+        { "key": "c", "text": "16 kPa" },
+        { "key": "d", "text": "21 kPa" }
+      ],
+      "correct": "b",
+      "explanation": "El riesgo de pérdida de conciencia aparece con <em>p</em>O₂ por debajo de 10 kPa (0,1 bar). 16 kPa es el mínimo para una función normal; por debajo de 10 kPa se pierde el conocimiento."
+    },
+    {
+      "id": 34,
+      "category": "otravy plyny",
+      "question": "El uso de una reserva de aire almacenada durante largo tiempo (p. ej. varios meses) en una botella de acero puede provocar:",
+      "options": [
+        { "key": "a", "text": "falta de oxígeno" },
+        { "key": "b", "text": "toxicidad por oxígeno" },
+        { "key": "c", "text": "intoxicación por dióxido de carbono" },
+        { "key": "d", "text": "una aparición más rápida de la narcosis nitrogenada" }
+      ],
+      "correct": "a",
+      "explanation": "El oxígeno del aire almacenado mucho tiempo puede reaccionar con las paredes de acero (oxidación), reduciendo su contenido y creando riesgo de hipoxia."
+    },
+    {
+      "id": 35,
+      "category": "otravy plyny",
+      "question": "La hipoxia aparece cuando la presión parcial de oxígeno en el medio respirado cae por debajo de:",
+      "options": [
+        { "key": "a", "text": "21 kPa" },
+        { "key": "b", "text": "16 kPa" },
+        { "key": "c", "text": "12 kPa" },
+        { "key": "d", "text": "10 kPa" }
+      ],
+      "correct": "b",
+      "explanation": "La hipoxia aparece con <em>p</em>O₂ por debajo de 16 kPa (0,16 bar). Es la presión parcial mínima necesaria para el funcionamiento normal del organismo."
+    },
+    {
+      "id": 36,
+      "category": "podchlazení",
+      "question": "La temperatura adecuada de la ducha o baño para un buceador hipotérmico es de aproximadamente:",
+      "options": [
+        { "key": "a", "text": "16–18 °C" },
+        { "key": "b", "text": "20–30 °C" },
+        { "key": "c", "text": "37–40 °C" },
+        { "key": "d", "text": "45–50 °C" }
+      ],
+      "correct": "c",
+      "explanation": "La temperatura óptima de calentamiento es de 37–40 °C, similar a la corporal, sin causar shock térmico."
+    },
+    {
+      "id": 37,
+      "category": "podchlazení",
+      "question": "Al asistir a un buceador hipotérmico priorizamos:",
+      "options": [
+        { "key": "a", "text": "el ejercicio de las extremidades" },
+        { "key": "b", "text": "el masaje de las extremidades" },
+        { "key": "c", "text": "calentar las extremidades" },
+        { "key": "d", "text": "calentar el tronco" }
+      ],
+      "correct": "d",
+      "explanation": "En la hipotermia se prioriza calentar el tronco, donde están los órganos vitales. Calentar las extremidades puede provocar el retorno de sangre fría al corazón."
+    },
+    {
+      "id": 38,
+      "category": "podchlazení",
+      "question": "Al asistir a un buceador hipotérmico es adecuado:",
+      "options": [
+        { "key": "a", "text": "envolverlo con mantas precalentadas" },
+        { "key": "b", "text": "usar un baño caliente" },
+        { "key": "c", "text": "usar una ducha caliente" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todos los métodos citados son adecuados para calentar al hipotérmico: mantas precalentadas, baño caliente y ducha caliente."
+    },
+    {
+      "id": 39,
+      "category": "podchlazení",
+      "question": "En la hipotermia es desaconsejable:",
+      "options": [
+        { "key": "a", "text": "ejercitar a la víctima" },
+        { "key": "b", "text": "usar un envoltorio precalentado" },
+        { "key": "c", "text": "calentar a la víctima con ducha o baño caliente" },
+        { "key": "d", "text": "calentar a la víctima con el calor corporal del rescatador" }
+      ],
+      "correct": "a",
+      "explanation": "Ejercitar al hipotérmico no es adecuado, porque el movimiento de las extremidades acelera el retorno de la sangre fría desde la periferia al corazón y puede provocar arritmia cardíaca."
+    },
+    {
+      "id": 40,
+      "category": "podchlazení",
+      "question": "El tiritón incontrolable:",
+      "options": [
+        { "key": "a", "text": "es una consecuencia habitual de estar en el agua y no requiere atención" },
+        { "key": "b", "text": "es un signo grave de hipotermia" },
+        { "key": "c", "text": "no afecta al buceador con traje aislante completo" },
+        { "key": "d", "text": "precede a los primeros signos de hipotermia" }
+      ],
+      "correct": "b",
+      "explanation": "El tiritón incontrolable es un signo grave de hipotermia y exige atención inmediata y calentamiento de la víctima."
+    },
+    {
+      "id": 41,
+      "category": "otravy plyny",
+      "question": "La cianosis de labios, mucosas y lechos ungueales es característica:",
+      "options": [
+        { "key": "a", "text": "de la narcosis nitrogenada (borrachera de las profundidades)" },
+        { "key": "b", "text": "de la forma cutánea de la enfermedad descompresiva" },
+        { "key": "c", "text": "de la intoxicación por monóxido de carbono" },
+        { "key": "d", "text": "de la intoxicación por dióxido de carbono" }
+      ],
+      "correct": "d",
+      "explanation": "La cianosis de labios, mucosas y lechos ungueales es característica de la intoxicación por dióxido de carbono, que causa una oxigenación insuficiente de la sangre."
+    },
+    {
+      "id": 42,
+      "category": "otravy plyny",
+      "question": "Un signo característico de la intoxicación por dióxido de carbono es:",
+      "options": [
+        { "key": "a", "text": "color rojo cereza de labios, mucosas y lechos ungueales" },
+        { "key": "b", "text": "cianosis de labios, mucosas y lechos ungueales" },
+        { "key": "c", "text": "moteado de la piel" },
+        { "key": "d", "text": "dolor bajo los ojos" }
+      ],
+      "correct": "b",
+      "explanation": "La cianosis es el signo característico de la intoxicación por CO₂. El color rojo cereza es típico de la intoxicación por monóxido de carbono."
+    },
+    {
+      "id": 43,
+      "category": "otravy plyny",
+      "question": "Entre los signos de la intoxicación por dióxido de carbono NO se encuentra:",
+      "options": [
+        { "key": "a", "text": "cianosis de labios, mucosas y lechos ungueales" },
+        { "key": "b", "text": "aceleración del pulso y de la respiración" },
+        { "key": "c", "text": "dolor en músculos y articulaciones" },
+        { "key": "d", "text": "sensación de calor" }
+      ],
+      "correct": "c",
+      "explanation": "El dolor muscular y articular es signo de la enfermedad descompresiva, no de la intoxicación por CO₂."
+    },
+    {
+      "id": 44,
+      "category": "otravy plyny",
+      "question": "La intoxicación por dióxido de carbono NO puede deberse a:",
+      "options": [
+        { "key": "a", "text": "hiperventilación previa a una inmersión en apnea" },
+        { "key": "b", "text": "esfuerzo físico excesivo en una inmersión con equipo autónomo" },
+        { "key": "c", "text": "técnica incorrecta de respiración con el equipo autónomo" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "a",
+      "explanation": "La hiperventilación reduce el CO₂ en el organismo, así que no puede causar intoxicación por dióxido de carbono. En cambio, el esfuerzo excesivo y la mala técnica respiratoria sí provocan acumulación de CO₂."
+    },
+    {
+      "id": 45,
+      "category": "otravy plyny",
+      "question": "La intoxicación por dióxido de carbono puede deberse a:",
+      "options": [
+        { "key": "a", "text": "hiperventilación previa a una inmersión en apnea" },
+        { "key": "b", "text": "contaminación de la reserva de aire con gases de escape" },
+        { "key": "c", "text": "uso de un tubo respirador inadecuado" },
+        { "key": "d", "text": "presión continua del equipo sobre las arterias del cuello" }
+      ],
+      "correct": "c",
+      "explanation": "Un tubo respirador inadecuado (demasiado largo o estrecho) aumenta el espacio muerto y favorece la acumulación del CO₂ exhalado, lo que produce intoxicación."
+    },
+    {
+      "id": 46,
+      "category": "otravy plyny",
+      "question": "Entre los signos de la toxicidad aguda por oxígeno NO está:",
+      "options": [
+        { "key": "a", "text": "dolor de cabeza" },
+        { "key": "b", "text": "espasmos de pequeños músculos en manos y cara" },
+        { "key": "c", "text": "convulsiones generalizadas" },
+        { "key": "d", "text": "pérdida rápida de conciencia" }
+      ],
+      "correct": "a",
+      "explanation": "El dolor de cabeza no es un signo típico de la toxicidad aguda por oxígeno. Los signos típicos son espasmos musculares, convulsiones y pérdida de conciencia."
+    },
+    {
+      "id": 47,
+      "category": "otravy plyny",
+      "question": "La cianosis de labios, mucosas y lechos ungueales es característica:",
+      "options": [
+        { "key": "a", "text": "de la intoxicación por monóxido de carbono" },
+        { "key": "b", "text": "de la intoxicación por dióxido de carbono" },
+        { "key": "c", "text": "de la narcosis nitrogenada (borrachera de las profundidades)" },
+        { "key": "d", "text": "de la forma cutánea de la enfermedad descompresiva" }
+      ],
+      "correct": "b",
+      "explanation": "La cianosis de labios, mucosas y lechos ungueales es característica de la intoxicación por CO₂, donde la sangre no se oxigena de forma adecuada."
+    },
+    {
+      "id": 48,
+      "category": "otravy plyny",
+      "question": "Un signo característico de la intoxicación por dióxido de carbono es:",
+      "options": [
+        { "key": "a", "text": "cianosis de labios, mucosas y lechos ungueales" },
+        { "key": "b", "text": "color rojo cereza de labios, mucosas y lechos ungueales" },
+        { "key": "c", "text": "moteado de la piel" },
+        { "key": "d", "text": "dolor bajo los ojos" }
+      ],
+      "correct": "a",
+      "explanation": "La cianosis es el signo característico de la intoxicación por CO₂, ya que la sangre no se oxigena adecuadamente."
+    },
+    {
+      "id": 49,
+      "category": "otravy plyny",
+      "question": "Entre los signos de la intoxicación por monóxido de carbono NO se encuentra:",
+      "options": [
+        { "key": "a", "text": "dolor punzante retroesternal" },
+        { "key": "b", "text": "dolor de cabeza y mareo" },
+        { "key": "c", "text": "náuseas y vómitos" },
+        { "key": "d", "text": "color rojo cereza de labios, mucosas y lechos ungueales" }
+      ],
+      "correct": "a",
+      "explanation": "El dolor punzante retroesternal no es signo típico de la intoxicación por CO. Los signos típicos incluyen dolor de cabeza, mareo, náuseas y color rojo cereza."
+    },
+    {
+      "id": 50,
+      "category": "otravy plyny",
+      "question": "Con un equipo autónomo de aire, hay riesgo de toxicidad aguda por oxígeno a partir de una profundidad aproximada de:",
+      "options": [
+        { "key": "a", "text": "18 metros" },
+        { "key": "b", "text": "40 metros" },
+        { "key": "c", "text": "70 metros" },
+        { "key": "d", "text": "100 metros" }
+      ],
+      "correct": "c",
+      "explanation": "Con aire (21 % O₂), la presión parcial del oxígeno alcanza el límite tóxico de 1,6 bar a unos 70 m (8 bar × 0,21 = 1,68 bar)."
+    },
+    {
+      "id": 51,
+      "category": "otravy plyny",
+      "question": "Un signo característico de la intoxicación por monóxido de carbono es:",
+      "options": [
+        { "key": "a", "text": "color rojo cereza de labios, mucosas y lechos ungueales" },
+        { "key": "b", "text": "cianosis de labios, mucosas y lechos ungueales" },
+        { "key": "c", "text": "moteado de la piel" },
+        { "key": "d", "text": "dolor en músculos y articulaciones" }
+      ],
+      "correct": "a",
+      "explanation": "El color rojo cereza es característico de la intoxicación por CO, debido al color rojo brillante de la carboxihemoglobina (CO unido a la hemoglobina)."
+    },
+    {
+      "id": 52,
+      "category": "otravy plyny",
+      "question": "La intoxicación por monóxido de carbono puede deberse a:",
+      "options": [
+        { "key": "a", "text": "hiperventilación previa a una inmersión en apnea" },
+        { "key": "b", "text": "presión continua del equipo sobre las arterias del cuello" },
+        { "key": "c", "text": "contaminación de la reserva de aire con gases de escape" },
+        { "key": "d", "text": "una mayor presión parcial de nitrógeno" }
+      ],
+      "correct": "c",
+      "explanation": "La contaminación del aire con gases de escape es la principal causa de intoxicación por CO en buceo, pues los gases de escape contienen monóxido de carbono."
+    },
+    {
+      "id": 53,
+      "category": "otravy plyny",
+      "question": "La toxicidad aguda por oxígeno se manifiesta con:",
+      "options": [
+        { "key": "a", "text": "cianosis de labios, mucosas y lechos ungueales" },
+        { "key": "b", "text": "color rojo cereza de labios, mucosas y lechos ungueales" },
+        { "key": "c", "text": "sensación de fatiga" },
+        { "key": "d", "text": "espasmos de pequeños músculos, convulsiones intensas y pérdida de conciencia" }
+      ],
+      "correct": "d",
+      "explanation": "La toxicidad aguda por oxígeno (efecto Paul Bert) se manifiesta con espasmos musculares, convulsiones intensas y luego pérdida de conciencia."
+    },
+    {
+      "id": 54,
+      "category": "otravy plyny",
+      "question": "El mecanismo de la intoxicación por monóxido de carbono es:",
+      "options": [
+        { "key": "a", "text": "la disolución del monóxido de carbono en los tejidos" },
+        { "key": "b", "text": "la disolución del monóxido de carbono en el plasma" },
+        { "key": "c", "text": "la unión química del monóxido de carbono al plasma" },
+        { "key": "d", "text": "la unión química del monóxido de carbono a la hemoglobina" }
+      ],
+      "correct": "d",
+      "explanation": "El CO se une a la hemoglobina con una afinidad 200–250 veces mayor que el oxígeno, bloqueando el transporte de oxígeno por la sangre y causando hipoxia tisular."
+    },
+    {
+      "id": 55,
+      "category": "otravy plyny",
+      "question": "Un signo característico de la intoxicación por monóxido de carbono es:",
+      "options": [
+        { "key": "a", "text": "cianosis de labios, mucosas y lechos ungueales" },
+        { "key": "b", "text": "color rojo cereza de labios, mucosas y lechos ungueales" },
+        { "key": "c", "text": "moteado de la piel" },
+        { "key": "d", "text": "dolor bajo los ojos" }
+      ],
+      "correct": "b",
+      "explanation": "El color rojo cereza es típico de la intoxicación por CO, debido al color rojo intenso de la carboxihemoglobina en sangre."
+    },
+    {
+      "id": 56,
+      "category": "otravy plyny",
+      "question": "El color rojo cereza de labios, mucosas y lechos ungueales es característico:",
+      "options": [
+        { "key": "a", "text": "de la forma cutánea de la enfermedad descompresiva" },
+        { "key": "b", "text": "de la narcosis nitrogenada (borrachera de las profundidades)" },
+        { "key": "c", "text": "de la intoxicación por monóxido de carbono" },
+        { "key": "d", "text": "de la intoxicación por dióxido de carbono" }
+      ],
+      "correct": "c",
+      "explanation": "El color rojo cereza es signo típico de la intoxicación por CO, que se une a la hemoglobina y produce esa coloración característica."
+    },
+    {
+      "id": 57,
+      "category": "otravy plyny",
+      "question": "La toxicidad aguda por oxígeno aparece cuando la presión parcial de oxígeno en el medio respirado supera aproximadamente:",
+      "options": [
+        { "key": "a", "text": "100 kPa" },
+        { "key": "b", "text": "160 kPa" },
+        { "key": "c", "text": "420 kPa" },
+        { "key": "d", "text": "500 kPa" }
+      ],
+      "correct": "b",
+      "explanation": "La toxicidad aguda por oxígeno (hiperoxia) aparece con <em>p</em>O₂ superior a 160 kPa (1,6 bar), que es el límite de seguridad para el buceo."
+    },
+    {
+      "id": 58,
+      "category": "otravy plyny",
+      "question": "El color rojo cereza de labios, mucosas y lechos ungueales es característico:",
+      "options": [
+        { "key": "a", "text": "de la intoxicación por dióxido de carbono" },
+        { "key": "b", "text": "de la intoxicación por monóxido de carbono" },
+        { "key": "c", "text": "de la forma cutánea de la enfermedad descompresiva" },
+        { "key": "d", "text": "de la narcosis nitrogenada (borrachera de las profundidades)" }
+      ],
+      "correct": "b",
+      "explanation": "El color rojo cereza es característico de la intoxicación por CO porque la carboxihemoglobina tiene un color rojo intenso."
+    },
+    {
+      "id": 59,
+      "category": "otravy plyny",
+      "question": "Marque la afirmación incorrecta:",
+      "options": [
+        { "key": "a", "text": "El monóxido de carbono bloquea el transporte de oxígeno al unirse a la hemoglobina." },
+        { "key": "b", "text": "La intoxicación por CO al bucear se debe a la contaminación del aire con gases de escape." },
+        { "key": "c", "text": "Entre los signos de la intoxicación por CO están dolor de cabeza, mareo, náuseas y vómitos." },
+        { "key": "d", "text": "Un signo característico de la intoxicación por CO es la cianosis de labios, mucosas y lechos ungueales." }
+      ],
+      "correct": "d",
+      "explanation": "La afirmación d) es incorrecta: la intoxicación por monóxido de carbono produce color rojo cereza, no cianosis. La cianosis es característica de la intoxicación por dióxido de carbono."
+    },
+    {
+      "id": 60,
+      "category": "otravy plyny",
+      "question": "La intoxicación por dióxido de carbono puede ser consecuencia de:",
+      "options": [
+        { "key": "a", "text": "respirar con un tubo respirador inadecuado" },
+        { "key": "b", "text": "esfuerzo físico excesivo bajo el agua" },
+        { "key": "c", "text": "técnica incorrecta de respiración con el equipo autónomo" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "Todos los factores citados pueden conducir a intoxicación por CO₂: tubo respirador inadecuado con espacio muerto excesivo, esfuerzo físico que aumenta la producción de CO₂, y técnica incorrecta de respiración."
+    },
+    {
+      "id": 61,
+      "category": "barotrauma plic",
+      "question": "Durante el descenso con equipo autónomo de aire, a 15 m su compañero muestra signos de desorientación, gira sobre sí mismo y tiene problemas de coordinación. Considerará que la causa es:",
+      "options": [
+        { "key": "a", "text": "rotura del tímpano" },
+        { "key": "b", "text": "embolia gaseosa" },
+        { "key": "c", "text": "toxicidad por oxígeno" },
+        { "key": "d", "text": "narcosis nitrogenada (borrachera de las profundidades)" }
+      ],
+      "correct": "a",
+      "explanation": "La desorientación y los problemas de coordinación al descender a poca profundidad apuntan a una lesión del oído interno: la rotura del tímpano produce vértigo y pérdida de orientación."
+    },
+    {
+      "id": 62,
+      "category": "barotrauma plic",
+      "question": "Entre los signos del neumotórax NO se encuentra:",
+      "options": [
+        { "key": "a", "text": "dolor torácico" },
+        { "key": "b", "text": "parálisis" },
+        { "key": "c", "text": "tos irritativa" },
+        { "key": "d", "text": "venas del cuello distendidas" }
+      ],
+      "correct": "b",
+      "explanation": "La parálisis no es signo de neumotórax. El neumotórax cursa con dolor torácico, tos y venas del cuello distendidas. La parálisis es más bien signo de enfermedad descompresiva o embolia gaseosa."
+    },
+    {
+      "id": 63,
+      "category": "barotrauma plic",
+      "question": "El barotrauma de los ojos:",
+      "options": [
+        { "key": "a", "text": "no puede producirse porque el globo ocular está lleno de humor vítreo" },
+        { "key": "b", "text": "no puede producirse porque el ojo compensa las diferencias de presión por su propia elasticidad" },
+        { "key": "c", "text": "puede producirse si el buceador no compensa la presión en la máscara durante el descenso" },
+        { "key": "d", "text": "puede producirse si el buceador no compensa la presión en la máscara durante el ascenso" }
+      ],
+      "correct": "c",
+      "explanation": "El barotrauma ocular puede producirse en el descenso si el buceador no compensa la presión de la máscara espirando por la nariz. La depresión en la máscara puede dañar los ojos y causar hemorragia."
+    },
+    {
+      "id": 64,
+      "category": "barotrauma plic",
+      "question": "El barotrauma pulmonar de descenso (barotrauma por depresión) se manifiesta con:",
+      "options": [
+        { "key": "a", "text": "dolor en la raíz de la nariz y bajo los ojos" },
+        { "key": "b", "text": "dolor torácico, a veces con expectoración de espuma rosada" },
+        { "key": "c", "text": "enfisema mediastínico" },
+        { "key": "d", "text": "color rojo cereza de labios, mucosas y lechos ungueales" }
+      ],
+      "correct": "b",
+      "explanation": "El barotrauma pulmonar de descenso se manifiesta con dolor torácico y expectoración de espuma rosada, que es sangre mezclada con aire procedente de los alvéolos dañados."
+    },
+    {
+      "id": 65,
+      "category": "barotrauma plic",
+      "question": "En el buceo se produce enfisema cuando el aire de un pulmón roto entra:",
+      "options": [
+        { "key": "a", "text": "en el torrente sanguíneo" },
+        { "key": "b", "text": "en la cavidad pleural" },
+        { "key": "c", "text": "en el mediastino o en el tejido subcutáneo del cuello y los hombros" },
+        { "key": "d", "text": "en el estómago" }
+      ],
+      "correct": "c",
+      "explanation": "El enfisema aparece cuando el aire entra en el mediastino (enfisema mediastínico) o en el tejido subcutáneo del cuello y los hombros (enfisema subcutáneo). Aire en sangre es embolia; en la cavidad pleural, neumotórax."
+    },
+    {
+      "id": 66,
+      "category": "barotrauma plic",
+      "question": "Para el buceador con equipo autónomo, el barotrauma pulmonar de descenso (por depresión):",
+      "options": [
+        { "key": "a", "text": "es un riesgo tras perder el control de la respiración durante una caída a profundidad" },
+        { "key": "b", "text": "es un riesgo al levantar objetos pesados con la propia fuerza" },
+        { "key": "c", "text": "es un riesgo al ascender sin exhalar" },
+        { "key": "d", "text": "no es un riesgo" }
+      ],
+      "correct": "a",
+      "explanation": "El barotrauma pulmonar de descenso es un riesgo al caer rápidamente a profundidad, cuando el buceador pierde el control de la respiración y no logra reponer aire en los pulmones."
+    },
+    {
+      "id": 67,
+      "category": "barotrauma plic",
+      "question": "El dolor en la raíz de la nariz y bajo los ojos es manifestación de un barotrauma:",
+      "options": [
+        { "key": "a", "text": "de los dientes" },
+        { "key": "b", "text": "de los senos paranasales" },
+        { "key": "c", "text": "del oído medio" },
+        { "key": "d", "text": "de los ojos" }
+      ],
+      "correct": "b",
+      "explanation": "El dolor en la raíz de la nariz y bajo los ojos es signo típico del barotrauma de los senos paranasales (sinusitis barotraumática)."
+    },
+    {
+      "id": 68,
+      "category": "barotrauma plic",
+      "question": "El barotrauma pulmonar de ascenso puede producirse, en un ascenso mal ejecutado con equipo autónomo, ya desde una profundidad de:",
+      "options": [
+        { "key": "a", "text": "menos de 2 metros" },
+        { "key": "b", "text": "3 metros" },
+        { "key": "c", "text": "5 metros" },
+        { "key": "d", "text": "10 metros" }
+      ],
+      "correct": "a",
+      "explanation": "El barotrauma pulmonar de ascenso puede aparecer desde una profundidad muy pequeña (menos de 2 m), porque la variación relativa de presión es máxima cerca de la superficie."
+    },
+    {
+      "id": 69,
+      "category": "barotrauma plic",
+      "question": "El barotrauma de los dientes:",
+      "options": [
+        { "key": "a", "text": "está descartado por la estructura dental" },
+        { "key": "b", "text": "no es doloroso ni peligroso" },
+        { "key": "c", "text": "solo puede producirse en inmersiones a más de 40 m" },
+        { "key": "d", "text": "es doloroso y puede ser peligroso, sobre todo durante el ascenso" }
+      ],
+      "correct": "d",
+      "explanation": "El barotrauma dental es doloroso y peligroso, sobre todo en el ascenso, cuando el aire atrapado en cavidades dentales se expande."
+    },
+    {
+      "id": 70,
+      "category": "barotrauma plic",
+      "question": "Entre los signos de la embolia gaseosa NO está:",
+      "options": [
+        { "key": "a", "text": "vértigo" },
+        { "key": "b", "text": "alteraciones sensitivas" },
+        { "key": "c", "text": "dolor en músculos y articulaciones" },
+        { "key": "d", "text": "pérdida de conciencia" }
+      ],
+      "correct": "c",
+      "explanation": "El dolor muscular y articular es signo de la enfermedad descompresiva, no de la embolia gaseosa. La embolia se manifiesta con signos neurológicos."
+    },
+    {
+      "id": 71,
+      "category": "barotrauma plic",
+      "question": "En el buceo, el neumotórax se produce cuando el aire de un pulmón roto entra:",
+      "options": [
+        { "key": "a", "text": "en el torrente sanguíneo" },
+        { "key": "b", "text": "en la cavidad pleural" },
+        { "key": "c", "text": "en el mediastino" },
+        { "key": "d", "text": "en el tejido subcutáneo del cuello y los hombros" }
+      ],
+      "correct": "b",
+      "explanation": "El neumotórax surge por la entrada de aire en la cavidad pleural, lo que causa el colapso del pulmón."
+    },
+    {
+      "id": 72,
+      "category": "barotrauma plic",
+      "question": "El barotrauma pulmonar de ascenso puede producirse, en un ascenso mal ejecutado con equipo autónomo, ya desde una profundidad de:",
+      "options": [
+        { "key": "a", "text": "10 metros" },
+        { "key": "b", "text": "5 metros" },
+        { "key": "c", "text": "3 metros" },
+        { "key": "d", "text": "menos de 2 metros" }
+      ],
+      "correct": "d",
+      "explanation": "El barotrauma pulmonar de ascenso puede aparecer desde menos de 2 m, porque la variación relativa de presión es máxima cerca de la superficie."
+    },
+    {
+      "id": 73,
+      "category": "barotrauma plic",
+      "question": "La lesión del oído interno por sobrepresión:",
+      "options": [
+        { "key": "a", "text": "no puede producirse porque el oído interno está separado del medio por hueso" },
+        { "key": "b", "text": "no puede producirse porque los órganos del oído interno están llenos de líquido" },
+        { "key": "c", "text": "puede producirse al intentar una compensación forzada de la presión en el oído medio" },
+        { "key": "d", "text": "puede producirse en un ascenso rápido" }
+      ],
+      "correct": "c",
+      "explanation": "La lesión del oído interno puede producirse por una maniobra de Valsalva forzada, en la que la sobrepresión del oído medio daña la ventana oval o redonda."
+    },
+    {
+      "id": 74,
+      "category": "barotrauma plic",
+      "question": "La causa del vértigo en una rotura del tímpano bajo el agua es principalmente:",
+      "options": [
+        { "key": "a", "text": "el dolor punzante" },
+        { "key": "b", "text": "la pérdida de sangre" },
+        { "key": "c", "text": "el shock" },
+        { "key": "d", "text": "el enfriamiento súbito del oído interno por entrada de agua en la cavidad timpánica" }
+      ],
+      "correct": "d",
+      "explanation": "El vértigo en la rotura del tímpano se debe al enfriamiento súbito del oído interno por la entrada de agua fría en la cavidad timpánica."
+    },
+    {
+      "id": 75,
+      "category": "barotrauma plic",
+      "question": "En el buceo, la embolia gaseosa se produce por la entrada de aire desde un pulmón roto:",
+      "options": [
+        { "key": "a", "text": "en el torrente sanguíneo" },
+        { "key": "b", "text": "en la cavidad pleural" },
+        { "key": "c", "text": "en el mediastino" },
+        { "key": "d", "text": "en el tejido subcutáneo del cuello y los hombros" }
+      ],
+      "correct": "a",
+      "explanation": "La embolia gaseosa se origina por la entrada de burbujas de aire desde un pulmón roto directamente al torrente sanguíneo."
+    },
+    {
+      "id": 76,
+      "category": "barotrauma plic",
+      "question": "Las consecuencias del barotrauma pulmonar de ascenso aparecen:",
+      "options": [
+        { "key": "a", "text": "en las 6 horas siguientes a la salida" },
+        { "key": "b", "text": "entre 30 minutos y 3 horas tras la salida" },
+        { "key": "c", "text": "entre 30 minutos y 1 hora tras la salida" },
+        { "key": "d", "text": "inmediatamente al salir o ya durante el ascenso" }
+      ],
+      "correct": "d",
+      "explanation": "El barotrauma pulmonar de ascenso es una lesión aguda cuyos signos (embolia, neumotórax, enfisema) aparecen de inmediato durante el ascenso o al salir."
+    },
+    {
+      "id": 77,
+      "category": "barotrauma plic",
+      "question": "La embolia gaseosa es consecuencia de:",
+      "options": [
+        { "key": "a", "text": "barotrauma pulmonar de ascenso" },
+        { "key": "b", "text": "barotrauma pulmonar de descenso" },
+        { "key": "c", "text": "ED pulmonar" },
+        { "key": "d", "text": "ED neurológica" }
+      ],
+      "correct": "a",
+      "explanation": "La embolia gaseosa surge por la entrada de aire desde un pulmón roto al torrente sanguíneo, lo que es consecuencia del barotrauma pulmonar de ascenso."
+    },
+    {
+      "id": 78,
+      "category": "barotrauma plic",
+      "question": "El neumotórax es consecuencia de:",
+      "options": [
+        { "key": "a", "text": "barotrauma pulmonar de descenso" },
+        { "key": "b", "text": "barotrauma pulmonar de ascenso" },
+        { "key": "c", "text": "ED pulmonar" },
+        { "key": "d", "text": "una inmersión en apnea tras hiperventilación" }
+      ],
+      "correct": "b",
+      "explanation": "El neumotórax se debe a la entrada de aire desde un pulmón roto a la cavidad pleural, consecuencia del barotrauma pulmonar de ascenso."
+    },
+    {
+      "id": 79,
+      "category": "barotrauma plic",
+      "question": "La causa del barotrauma pulmonar de ascenso es:",
+      "options": [
+        { "key": "a", "text": "sobresaturación de los tejidos por nitrógeno durante el ascenso con equipo autónomo" },
+        { "key": "b", "text": "apnea durante el ascenso en una inmersión en apnea" },
+        { "key": "c", "text": "exhalación insuficiente o apnea durante el ascenso con equipo autónomo" },
+        { "key": "d", "text": "haber sobrepasado la profundidad límite en una inmersión en apnea" }
+      ],
+      "correct": "c",
+      "explanation": "El barotrauma pulmonar de ascenso ocurre durante el ascenso con equipo autónomo cuando el buceador no exhala lo suficiente o aguanta la respiración: el aire se expande en los pulmones y puede romper el tejido."
+    },
+    {
+      "id": 80,
+      "category": "barotrauma plic",
+      "question": "La entrada de aire al mediastino o al tejido subcutáneo del cuello y los hombros se denomina:",
+      "options": [
+        { "key": "a", "text": "neumotórax" },
+        { "key": "b", "text": "embolia gaseosa" },
+        { "key": "c", "text": "síndrome del seno carotídeo" },
+        { "key": "d", "text": "enfisema" }
+      ],
+      "correct": "d",
+      "explanation": "El enfisema (mediastínico o subcutáneo) es la entrada de aire desde un pulmón roto al mediastino o al tejido subcutáneo del cuello y los hombros."
+    },
+    {
+      "id": 81,
+      "category": "dekompresní nemoc",
+      "question": "Marque la afirmación incorrecta:",
+      "options": [
+        { "key": "a", "text": "La enfermedad descompresiva no afecta a los buceadores que no agotan el tiempo sin descompresión para una profundidad dada." },
+        { "key": "b", "text": "La forma cutánea de la ED no requiere tratamiento en cámara hiperbárica." },
+        { "key": "c", "text": "La presión parcial de oxígeno respirado durante la descompresión bajo el agua no debe superar 170 kPa." },
+        { "key": "d", "text": "Se recomienda que el intervalo en superficie sea superior a 2 horas." }
+      ],
+      "correct": "a",
+      "explanation": "Esta afirmación es incorrecta: la ED puede aparecer aun respetando los tiempos sin descompresión, sobre todo en inmersiones repetitivas o si hay factores de riesgo."
+    },
+    {
+      "id": 82,
+      "category": "dekompresní nemoc",
+      "question": "Entre los signos de la enfermedad descompresiva NO se encuentra:",
+      "options": [
+        { "key": "a", "text": "dolor en la raíz de la nariz y bajo los ojos" },
+        { "key": "b", "text": "dolor retroesternal" },
+        { "key": "c", "text": "dolor en músculos y articulaciones" },
+        { "key": "d", "text": "moteado de la piel" }
+      ],
+      "correct": "a",
+      "explanation": "El dolor en la raíz de la nariz y bajo los ojos es signo del barotrauma de los senos paranasales, no de la ED."
+    },
+    {
+      "id": 83,
+      "category": "dekompresní nemoc",
+      "question": "La ED pulmonar (chokes):",
+      "options": [
+        { "key": "a", "text": "se acompaña de dolor en músculos y articulaciones" },
+        { "key": "b", "text": "no requiere tratamiento en sobrepresión" },
+        { "key": "c", "text": "se debe al taponamiento de los capilares pulmonares por burbujas de nitrógeno" },
+        { "key": "d", "text": "se caracteriza por el moteado de la piel" }
+      ],
+      "correct": "c",
+      "explanation": "La ED pulmonar (chokes) se debe al taponamiento de los capilares pulmonares por burbujas de nitrógeno, lo que bloquea el intercambio de gases respiratorios."
+    },
+    {
+      "id": 84,
+      "category": "dekompresní nemoc",
+      "question": "En caso de enfermedad descompresiva NO se recomienda:",
+      "options": [
+        { "key": "a", "text": "administrar oxígeno" },
+        { "key": "b", "text": "administrar analgésicos" },
+        { "key": "c", "text": "mantener a la víctima en reposo" },
+        { "key": "d", "text": "asegurar una valoración médica especializada" }
+      ],
+      "correct": "b",
+      "explanation": "Los analgésicos pueden enmascarar los signos de la ED y dificultar el diagnóstico. El oxígeno, el reposo y la valoración especializada sí son procedimientos recomendados."
+    },
+    {
+      "id": 85,
+      "category": "dekompresní nemoc",
+      "question": "Marque la afirmación incorrecta:",
+      "options": [
+        { "key": "a", "text": "Todas las formas de la ED requieren tratamiento en cámara hiperbárica." },
+        { "key": "b", "text": "La forma articular es la más frecuente de la ED." },
+        { "key": "c", "text": "La forma cutánea de la ED se debe al taponamiento de los capilares de la piel por burbujas de nitrógeno." },
+        { "key": "d", "text": "La mayoría de los casos de ED se manifiestan entre 30 minutos y 3 horas tras la salida." }
+      ],
+      "correct": "a",
+      "explanation": "Esta afirmación es incorrecta: la forma cutánea de la ED no suele requerir tratamiento en cámara hiperbárica, solo observación y tratamiento conservador."
+    },
+    {
+      "id": 86,
+      "category": "dekompresní nemoc",
+      "question": "La ED pulmonar:",
+      "options": [
+        { "key": "a", "text": "bloquea el intercambio de gases respiratorios" },
+        { "key": "b", "text": "amenaza la función cardíaca" },
+        { "key": "c", "text": "exige tratamiento inmediato en cámara hiperbárica" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "La ED pulmonar bloquea el intercambio gaseoso, amenaza al corazón y requiere tratamiento inmediato en cámara: todas las respuestas son correctas."
+    },
+    {
+      "id": 87,
+      "category": "dekompresní nemoc",
+      "question": "Entre los signos de la ED articular NO se encuentra:",
+      "options": [
+        { "key": "a", "text": "mantener las extremidades en posición flexionada" },
+        { "key": "b", "text": "dolor muscular" },
+        { "key": "c", "text": "dolor retroesternal" },
+        { "key": "d", "text": "dolor articular" }
+      ],
+      "correct": "c",
+      "explanation": "El dolor retroesternal es signo de la ED pulmonar, no de la forma articular."
+    },
+    {
+      "id": 88,
+      "category": "dekompresní nemoc",
+      "question": "Requiere tratamiento en cámara hiperbárica:",
+      "options": [
+        { "key": "a", "text": "la forma linfática de la ED" },
+        { "key": "b", "text": "la forma articular de la ED" },
+        { "key": "c", "text": "la forma cutánea de la ED" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "b",
+      "explanation": "La forma articular requiere tratamiento en cámara hiperbárica. Las formas cutánea y linfática son más leves y no la requieren."
+    },
+    {
+      "id": 89,
+      "category": "dekompresní nemoc",
+      "question": "La ED pulmonar:",
+      "options": [
+        { "key": "a", "text": "puede llevar al fallo cardíaco" },
+        { "key": "b", "text": "puede causar neumotórax" },
+        { "key": "c", "text": "se debe a burbujas de nitrógeno dentro de los alvéolos pulmonares" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "a",
+      "explanation": "La ED pulmonar puede llevar al fallo cardíaco por el bloqueo de los capilares pulmonares con burbujas de nitrógeno."
+    },
+    {
+      "id": 90,
+      "category": "dekompresní nemoc",
+      "question": "NO requiere tratamiento en cámara hiperbárica:",
+      "options": [
+        { "key": "a", "text": "la forma articular de la ED" },
+        { "key": "b", "text": "la forma pulmonar de la ED" },
+        { "key": "c", "text": "la forma neurológica de la ED" },
+        { "key": "d", "text": "la forma linfática de la ED" }
+      ],
+      "correct": "d",
+      "explanation": "La forma linfática es una ED leve que no requiere tratamiento en cámara hiperbárica."
+    },
+    {
+      "id": 91,
+      "category": "dekompresní nemoc",
+      "question": "La forma más grave de la enfermedad descompresiva es:",
+      "options": [
+        { "key": "a", "text": "la cutánea" },
+        { "key": "b", "text": "la neurológica (afectación del SNC)" },
+        { "key": "c", "text": "la linfática" },
+        { "key": "d", "text": "la articular" }
+      ],
+      "correct": "b",
+      "explanation": "La forma neurológica afecta al sistema nervioso central y puede causar parálisis o muerte; por eso es la más grave."
+    },
+    {
+      "id": 92,
+      "category": "dekompresní nemoc",
+      "question": "La parálisis es manifestación de:",
+      "options": [
+        { "key": "a", "text": "la forma pulmonar de la ED" },
+        { "key": "b", "text": "la forma articular de la ED" },
+        { "key": "c", "text": "la forma neurológica de la ED" },
+        { "key": "d", "text": "la forma hematológica de la ED" }
+      ],
+      "correct": "c",
+      "explanation": "La parálisis es signo característico de la ED neurológica, que afecta a la médula y al cerebro."
+    },
+    {
+      "id": 93,
+      "category": "dekompresní nemoc",
+      "question": "La enfermedad descompresiva se manifiesta más frecuentemente como:",
+      "options": [
+        { "key": "a", "text": "forma neurológica" },
+        { "key": "b", "text": "forma pulmonar" },
+        { "key": "c", "text": "forma linfática" },
+        { "key": "d", "text": "forma articular" }
+      ],
+      "correct": "d",
+      "explanation": "La forma articular (dolor en músculos y articulaciones, los \"bends\") es la más frecuente de la ED."
+    },
+    {
+      "id": 94,
+      "category": "dekompresní nemoc",
+      "question": "Un signo característico de la forma cutánea de la ED es:",
+      "options": [
+        { "key": "a", "text": "cianosis de labios, mucosas y lechos ungueales" },
+        { "key": "b", "text": "color rojo cereza de labios, mucosas y lechos ungueales" },
+        { "key": "c", "text": "moteado de la piel" },
+        { "key": "d", "text": "tiritón incontrolable" }
+      ],
+      "correct": "c",
+      "explanation": "El moteado de la piel (cutis marmorata) es signo típico de la forma cutánea de la ED."
+    },
+    {
+      "id": 95,
+      "category": "dekompresní nemoc",
+      "question": "Respiración superficial, disnea y dolor punzante retroesternal son manifestaciones de:",
+      "options": [
+        { "key": "a", "text": "la forma articular de la ED" },
+        { "key": "b", "text": "la forma pulmonar de la ED" },
+        { "key": "c", "text": "la forma neurológica de la ED" },
+        { "key": "d", "text": "la forma linfática de la ED" }
+      ],
+      "correct": "b",
+      "explanation": "Estos signos son típicos de la ED pulmonar, causada por la obstrucción de capilares pulmonares por burbujas."
+    },
+    {
+      "id": 96,
+      "category": "dekompresní nemoc",
+      "question": "El moteado de la piel es signo de:",
+      "options": [
+        { "key": "a", "text": "la hipoxia" },
+        { "key": "b", "text": "la intoxicación por dióxido de carbono" },
+        { "key": "c", "text": "la intoxicación por monóxido de carbono" },
+        { "key": "d", "text": "la forma cutánea de la ED" }
+      ],
+      "correct": "d",
+      "explanation": "El moteado de la piel es signo característico de la forma cutánea de la enfermedad descompresiva."
+    },
+    {
+      "id": 97,
+      "category": "dekompresní nemoc",
+      "question": "La forma articular de la ED:",
+      "options": [
+        { "key": "a", "text": "obliga a la víctima a mantener las extremidades en posición flexionada" },
+        { "key": "b", "text": "requiere tratamiento en cámara hiperbárica" },
+        { "key": "c", "text": "soporta incluso un transporte prolongado a la cámara hiperbárica" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "d",
+      "explanation": "La forma articular tiene todas estas características: la posición flexionada alivia el dolor, requiere cámara y soporta un transporte más largo."
+    },
+    {
+      "id": 98,
+      "category": "dekompresní nemoc",
+      "question": "Los signos de la enfermedad descompresiva se manifiestan:",
+      "options": [
+        { "key": "a", "text": "en los 3 minutos siguientes a la salida" },
+        { "key": "b", "text": "inmediatamente al salir (o ya durante el ascenso)" },
+        { "key": "c", "text": "a menudo solo en la orilla o en la embarcación, a veces incluso varias horas después" },
+        { "key": "d", "text": "en los 10 minutos siguientes a la salida" }
+      ],
+      "correct": "c",
+      "explanation": "Los signos de la ED suelen aparecer tras la salida, normalmente entre 30 minutos y varias horas después de la inmersión."
+    },
+    {
+      "id": 99,
+      "category": "dekompresní nemoc",
+      "question": "El riesgo de un accidente descompresivo aumenta con:",
+      "options": [
+        { "key": "a", "text": "respirar oxígeno puro durante la descompresión" },
+        { "key": "b", "text": "el esfuerzo físico y el enfriamiento bajo el agua" },
+        { "key": "c", "text": "intervalos en superficie superiores a 2 horas" },
+        { "key": "d", "text": "inmersiones dentro de los tiempos sin descompresión" }
+      ],
+      "correct": "b",
+      "explanation": "El esfuerzo físico y el enfriamiento aumentan el riesgo de ED al empeorar la desaturación de los tejidos."
+    },
+    {
+      "id": 100,
+      "category": "dekompresní nemoc",
+      "question": "Sustituir el nitrógeno del medio respirado por helio elimina:",
+      "options": [
+        { "key": "a", "text": "la narcosis nitrogenada (borrachera de las profundidades)" },
+        { "key": "b", "text": "la descompresión" },
+        { "key": "c", "text": "el riesgo de hipotermia" },
+        { "key": "d", "text": "todas las respuestas son correctas" }
+      ],
+      "correct": "a",
+      "explanation": "El helio no tiene efecto narcótico como el nitrógeno, por lo que su uso elimina la narcosis nitrogenada."
+    }
+  ]
+}
