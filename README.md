@@ -70,7 +70,7 @@ decojs/
 
 ## Core algorithm
 
-DecoJS implements the Bühlmann ZH-L16 model with 16 tissue compartments and Erik Baker's gradient factors. Inert-gas loading uses the **Schreiner equation** during depth changes and the **Haldane equation** at constant depth. M-values follow the Bühlmann linear form `M(P) = a + P / b`. Gradient factor interpolation is anchored at `pAnchor` — the ambient pressure at which `GF_max` across the 16 compartments first equals `GF_low` during a simulated free ascent. This is the Baker-intended ramp; many naïve implementations ramp from first-stop depth instead.
+DecoJS implements the Bühlmann ZH-L16 model with 16 tissue compartments and Erik Baker's gradient factors. Inert-gas loading uses the **Schreiner equation** during depth changes and the **Haldane equation** at constant depth. M-values follow the Bühlmann linear form `M(P) = a + P / b`. Gradient factor interpolation is anchored at `pAnchor` — the exact ambient pressure at which `GF_max` across the 16 compartments first equals `GF_low` during a simulated free ascent. From `pAnchor` upward the active GF ramps linearly to `GF_high` at the surface.
 
 For the full developer reference — per-equation citations, file:line references, algorithm chapters, module API — see the **[wiki](https://github.com/matej-hron/decojs/wiki)**.
 

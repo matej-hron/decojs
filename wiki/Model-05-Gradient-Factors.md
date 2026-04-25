@@ -26,14 +26,11 @@ export const DEFAULT_GF_HIGH = 1.0;  // 100%
 
 Any function in `decoModel.js` taking a `gf` parameter expects the 0–1 form.
 
-## The subtle bit — what "first stop depth" means for the ramp
+## Where the ramp is anchored
 
-This is where implementations diverge. Two approaches are both called "GF interpolation":
+DecoJS anchors the GF ramp at **`pAnchor`** — the exact ambient pressure at which $GF_{max}$ across the 16 compartments first reaches $GF_{low}$ during a simulated free ascent (no 3 m grid rounding). From `pAnchor` upward the active GF ramps linearly to $GF_{high}$ at the surface; at any pressure deeper than `pAnchor` the active GF is clamped at $GF_{low}$.
 
-1. **Depth-based ramp** (naive / simplified): GF linearly interpolates from the chosen first-stop depth to the surface. The anchor is the depth of the first mandatory stop.
-2. **pAnchor-based ramp** (Baker-intended; decotengu; **DecoJS**): GF interpolates from the ambient pressure where $GF_{max}$ across all 16 compartments first reaches $GF_{low}$ during a simulated free ascent. Not from the stop depth.
-
-The difference matters. Two dives with the same max depth but different bottom times have different tissue loadings, so they hit $GF_{low}$ at different ambient pressures — and therefore should have different GF ramps. Approach #2 ties the ramp to tissue state; approach #1 ties it to an arbitrary choice of stop grid. DecoJS implements #2.
+`pAnchor` is a function of the actual tissue state at the moment ascent would begin, so two dives with the same maximum depth but different bottom times produce different `pAnchor` values — which is the intended behaviour, since their ascent ceilings genuinely differ.
 
 ## findGFLowAnchor — how pAnchor is computed
 
