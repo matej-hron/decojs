@@ -1,113 +1,89 @@
-# Decompression Theory - Interactive Learning
+# Decompression Theory — Interactive Learning
 
-An educational web application for understanding decompression models used in scuba diving. Visualize how inert gases dissolve into body tissues during a dive and how they're released during ascent.
+An educational web application for understanding decompression models used in scuba diving. Visualize how inert gases dissolve into body tissues during a dive and how they are released during ascent.
 
 **Live:** [https://decotheory.eu](https://decotheory.eu)
 
 ## Disclaimer
 
-**Educational Use Only** — This tool is NOT intended for real dive planning. Never use this for actual dives. Always use certified dive computers, tables, and proper training.
+**Educational use only** — this tool is **not** intended for real dive planning. Never use it for actual dives. Always use certified dive computers, tables, and proper training.
 
 ## Features
 
-- **Interactive Dive Planner (Sandbox)** — Full-featured dive planning with real-time chart updates
-- **DiveSetupEditor component** — Configure gases, waypoints, gradient factors, and more
-- **DiveProfileChart** — Time-based visualization with depth, pressure, partial pressures, ceiling, and tissue loading
-- **MValueChart** — Pressure-pressure diagram with animated tissue trails and timeline playback
-- **Educational Theory Pages** — Learn about pressure, tissue loading, M-values, and gradient factors with interactive examples
-- **Knowledge Quizzes** — 6 quiz modules with 600+ questions from official CMAS/SPČR exam materials
-- **Bühlmann ZH-L16 model** — Industry-standard decompression algorithm with A/B/C variants
-- **Gradient Factor support** — GF Low/High conservatism settings with visual comparison
-- **Mobile-friendly PWA** — Responsive design with offline support
+- **Interactive Dive Planner (Sandbox)** — full-featured dive planning with live chart updates as you edit gases, gradient factors, and waypoints.
+- **Three coordinated charts** — `DiveProfileChart` (depth/time with deco stops, ceilings, gas switches), `MValueChart` (P-P diagram with tissue trail and timeline playback), and `GFChart` (instantaneous gradient factor per compartment).
+- **Theory pages** — Pressure & Depth, Tissue Loading, M-Values, Gradient Factors. Each lesson embeds the same chart components used in the sandbox so worked examples stay live.
+- **Quizzes** — 7 modules covering Physics, Anatomy, Accidents, Safety Guidelines, Training Guidelines, Equipment, and Vessel; 650+ questions sourced from CMAS / SPČR exam materials.
+- **Bühlmann ZH-L16** — variants A / B / C (default C), with Erik Baker gradient factors.
+- **Multi-gas** — air, nitrox, and oxygen deco mixes with automatic MOD-based switching.
+- **Multilingual** — English, Czech, Spanish.
+- **Responsive** — works on phone, tablet, and desktop.
 
-## Structure
+## Sections
 
 | Section | Description |
 |---------|-------------|
-| **Sandbox** | Interactive dive planner with DiveProfileChart and MValueChart |
-| **Theory** | Educational pages: Pressure & Depth, Tissue Loading, M-Values, Gradient Factors |
-| **Tests** | Physics, Anatomy, Accidents, Safety Guidelines, Training Guidelines, Equipment quizzes |
+| **Sandbox** | Main dive planner plus four supporting simulators (tissue saturation, transfilling, cascade filling, gas law). |
+| **Theory** | Pressure & Depth, Tissue Loading, M-Values, Gradient Factors. |
+| **Tests** | Seven CMAS / SPČR quiz topics. |
 
-## Tech Stack
+## Tech stack
 
-- **Pure HTML/CSS/JS** — No build tools, static hosting ready (GitHub Pages)
-- **Chart.js** — Interactive dive profile and M-value charts
-- **KaTeX** — Mathematical formula rendering
-- **ES Modules** — Clean modular architecture
-- **PWA** — Service worker for offline support
+- **Pure HTML / CSS / ES Modules** — no build tools, no transpiler, no bundler.
+- **Chart.js** for all dive-profile and tissue-loading visualisations.
+- **KaTeX** for math rendering on theory pages.
+- **GitHub Pages** for hosting at `decotheory.eu`.
 
-## Project Structure
+## Project layout
 
 ```
 decojs/
-├── index.html              # Landing page
-├── about.html              # About page with author info
+├── index.html, about.html
+├── pressure.html, tissue-loading.html, m-values.html, gradient-factors.html
+├── quiz-{physics,anatomy,accidents,safety,training,equipment,vessel}.html
 ├── sandbox/
-│   └── index.html          # Main dive planner (Sandbox)
-├── pressure.html           # Theory: Pressure & Depth
-├── tissue-loading.html     # Theory: Tissue Loading
-├── m-values.html           # Theory: M-Values
-├── gradient-factors.html   # Theory: Gradient Factors
-├── quiz-physics.html       # Quiz: Physics
-├── quiz-anatomy.html       # Quiz: Anatomy
-├── quiz-accidents.html     # Quiz: Accidents
-├── quiz-safety.html        # Quiz: Safety Guidelines (Czech)
-├── quiz-training.html      # Quiz: Training Guidelines (Czech)
-├── quiz-equipment.html     # Quiz: Equipment (Czech)
-├── css/
-│   └── styles.css          # All styles (CSS variables, responsive)
+│   ├── index.html               # Main dive planner
+│   ├── tissue-saturation.html
+│   ├── transfilling.html
+│   ├── cascade-filling.html
+│   └── gas-law.html
 ├── js/
-│   ├── decoModel.js        # Core decompression calculations
-│   ├── diveSetup.js        # Dive setup parsing and normalization
-│   ├── quiz.js             # Quiz engine
-│   ├── nav.js              # Shared navigation component
-│   ├── charts/
-│   │   ├── DiveProfileChart.js  # Reusable depth/time chart component
-│   │   ├── MValueChart.js       # Reusable M-value chart component
-│   │   └── chartTypes.js        # Shared types and validation
-│   └── components/
-│       └── DiveSetupEditor.js   # Reusable dive setup editor
+│   ├── decoModel.js             # Schreiner / Haldane / M-value / GF / deco scheduling
+│   ├── tissueCompartments.js    # ZH-L16 A / B / C constants
+│   ├── mvalues.js               # M-value diagram
+│   ├── diveSetup.js             # Gas presets, profile generation, multi-gas switching
+│   ├── diveProfile.js           # Profile validation
+│   ├── tissueEducation.js       # Theory-page interactive animations
+│   ├── i18n.js                  # Translation loader (en, cs, es)
+│   ├── nav.js                   # Shared nav and NAV_ITEMS
+│   ├── quiz.js                  # Generic quiz engine
+│   ├── charts/                  # DiveProfileChart, MValueChart, GFChart, helpers
+│   └── components/              # DiveSetupEditor, TissueSaturationSim, page chrome
 ├── data/
-│   ├── dive-profiles.json  # Preset dive profiles
-│   ├── dive-setup.json     # Default dive setup
-│   └── quiz-*.json         # Quiz question banks
-└── tests/
-    └── run-tests.mjs       # Test suite (174 tests)
+│   ├── dive-setup.json, dive-profiles.json
+│   └── quiz-*.json              # Per-topic exam banks
+├── locales/                     # en.json, cs.json, es.json
+├── css/styles.css
+├── tests/                       # 208 tests + decotengu reference data
+└── wiki/                        # Developer documentation (mirrored to GitHub Wiki)
 ```
 
-## Core Algorithm
+## Core algorithm
 
-The decompression model uses:
+DecoJS implements the Bühlmann ZH-L16 model with 16 tissue compartments and Erik Baker's gradient factors. Inert-gas loading uses the **Schreiner equation** during depth changes and the **Haldane equation** at constant depth. M-values follow the Bühlmann linear form `M(P) = a + P / b`. Gradient factor interpolation is anchored at `pAnchor` — the ambient pressure at which `GF_max` across the 16 compartments first equals `GF_low` during a simulated free ascent. This is the Baker-intended ramp; many naïve implementations ramp from first-stop depth instead.
 
-- **Haldane Equation** — For constant depth segments:
-  ```
-  P_tissue(t) = P_alveolar + (P_initial - P_alveolar) × e^(-kt)
-  ```
-
-- **Schreiner Equation** — For linear depth changes (descent/ascent):
-  ```
-  P_tissue(t) = P_alveolar + R(t - 1/k) - (P_alveolar - P_initial - R/k) × e^(-kt)
-  ```
-
-Where `k = ln(2) / half-time` is the tissue rate constant.
-
-### Compartments
-
-16 theoretical compartments with N₂ half-times ranging from ~4-5 to 635 minutes (ZH-L16A variant). These are mathematical constructs fit to experimental data, not literal anatomical tissues.
-
-### Gradient Factor Interpolation (pAnchor-based)
-
-The implementation uses pAnchor-based GF interpolation, which is the correct approach per Baker's original gradient factor paper. During ascent, the active GF is interpolated from pAnchor to surface, not from bottom depth.
+For the full developer reference — per-equation citations, file:line references, algorithm chapters, module API — see the **[wiki](https://github.com/matej-hron/decojs/wiki)**.
 
 ## Development
 
 ```bash
-# Serve locally (or use VS Code Live Server)
-python3 -m http.server 8080
-
-# Run tests
-npm test
+npm install            # only needed for `npm test`
+npm test               # 208 tests, must pass before commits
 ```
+
+Local development uses any static HTTP server; the project is loaded as ES modules directly by the browser. The convention is the **VS Code Live Server** extension on port 5500. Alternatives: `python3 -m http.server 5500`, `npx http-server -p 5500`.
+
+See `CLAUDE.md` for the full commit checklist (including the wiki-update rule when core algorithm files change).
 
 ## Author
 
@@ -119,10 +95,11 @@ npm test
 
 ## References
 
-- **Powell, Mark.** *Deco for Divers.* — The primary inspiration for this project
-- **Jahns, Jan.** *Fyzika.* — Comprehensive diving physics for Czech divers
-- Bühlmann, A.A. (1984). *Decompression–Decompression Sickness*
-- [Wikipedia: Bühlmann decompression algorithm](https://en.wikipedia.org/wiki/B%C3%BChlmann_decompression_algorithm)
+- Powell, Mark. *Deco for Divers* — primary inspiration for this project.
+- Jahns, Jan. *Fyzika* — comprehensive diving physics for Czech divers.
+- Bühlmann, A. A. *Tauchmedizin*, Springer, 1992 — canonical ZH-L16 source.
+- Baker, Erik C. "Understanding M-values" / "Clearing Up The Confusion About 'Deep Stops'" (1998).
+- Full bibliography on the [wiki References page](https://github.com/matej-hron/decojs/wiki/References).
 
 ## Acknowledgments
 
