@@ -125,13 +125,13 @@ Cited by the DecoJS README as the **primary inspiration for the project**. Powel
 - License: GPL-3.0
 - Approach: Bühlmann ZH-L16 A/B/C with Erik Baker gradient factors; Schreiner iteration for inert-gas loading; decompression stops located by iteratively finding the shallowest depth at which the tissue ceiling (GF-adjusted) is not violated; stop duration found by linear search + binary refinement. OC air / nitrox / trimix supported.
 
-**DecoJS relationship:** used as the numerical oracle. Commit `ff06756 Align deco algorithm with decotengu/divetools convention` documents a cross-check against decotengu 0.14.1's 160 Bühlmann-air reference scenarios; DecoJS matches decotengu exactly on 83.8 % and within ±1 min on 100 %. See [Validation-and-Testing](Validation-and-Testing.md#decotengu-cross-check).
+**DecoJS relationship:** used as the numerical oracle. DecoJS matches decotengu 0.14.1 exactly on 83.8 % of the 160 Bühlmann-air reference scenarios and within ±1 min on 100 %. See [Validation-and-Testing](Validation-and-Testing.md#decotengu-cross-check).
 
 ### 4.2 divetools.app
 
 - URL: https://divetools.app/
 - Status: **closed-source** freeware web app (no public repository; credit/contact `radim.pelanek@gmail.com`).
-- Language: JavaScript (browser bundle) — the app was reverse-engineered from its shipped bundle during the DecoJS constants cross-check (see commit `7f985da`).
+- Language: JavaScript (browser bundle) — the app was reverse-engineered from its shipped bundle during the DecoJS constants cross-check.
 - Approach: Bühlmann ZH-L16 with gradient factors; OC & CCR deco planning, multi-level profiles, cave mode (same-way back), bailout, trimix, IBCD, ppO₂ & CNS/OTU tracking, gas mixer, gas density, MOD/EAD/END.
 
 **DecoJS relationship:** used as a second oracle alongside decotengu for stop-termination logic and constant choices (`SURFACE_PRESSURE = 1.01325` bar; N₂ = 0.7902; TC1 b variant-specific). Because it is not open source, cite it as a reference implementation, not as a code source.
@@ -182,7 +182,7 @@ Source for the DecoJS quizzes:
 
 Per `about.html` "Expert review" section:
 
-- **Ing. Jiří ("Jirka") Hovorka** — SPČR technical instructor; reviewed and endorsed DecoJS. Source of the in-app Gradient-Factor reference table (commit `2e5c0fe`). Explicit permission to name him granted 2026-04-20.
+- **Ing. Jiří ("Jirka") Hovorka** — SPČR technical instructor; reviewed and endorsed DecoJS. Source of the in-app Gradient-Factor reference table.
 - **Petr Hruška** — SPČR / CMAS instructor; further endorser.
 - **Výcviková komise SPČR (VK SPČR)** — the SPČR Training Commission, institutional endorser.
 
@@ -206,7 +206,7 @@ Primary (paper) source for the constants is **Bühlmann 1992 *Tauchmedizin*** (�
 - **B** = Printed tables (slightly more conservative; used for table calculations).
 - **C** = Dive computers (most conservative; used for in-water computers).
 
-DecoJS's defaults follow **ZH-L16C** — aligned with decotengu and divetools.app — see `js/tissueCompartments.js` and commit `7f985da Fix Bühlmann constants: TC1 b-coefficient, surface pressure, N2 fraction`.
+DecoJS's defaults follow **ZH-L16C** — aligned with decotengu and divetools.app — see `js/tissueCompartments.js`.
 
 **Numerical provenance chain:**
 

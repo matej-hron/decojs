@@ -37,16 +37,9 @@ See [Validation-and-Testing](Validation-and-Testing.md) for details on tolerance
 
 ## Before every commit
 
-Two version bumps are required so the service worker refreshes clients and the footer badge shows the right version:
+Bump the version badge so users can see the right version in the footer: edit `css/styles.css` — search for `.version-number::after` and update `content:`.
 
-1. `sw.js` line 2:
-   ```javascript
-   // sw.js:2
-   const CACHE_NAME = 'deco-theory-0.5.48';
-   ```
-2. `css/styles.css` — search for `.version-number::after` and update `content:`.
-
-Run `npm test` — all 208 tests must pass — then commit both version bumps alongside the feature change.
+Run `npm test` — all 208 tests must pass — then commit alongside the feature change.
 
 ## Project layout
 
@@ -56,11 +49,10 @@ Run `npm test` — all 208 tests must pass — then commit both version bumps al
 - `locales/` — `en.json`, `cs.json`, `es.json` translation bundles.
 - `css/` — single `styles.css` plus theme tokens; no preprocessor.
 - `sandbox/` — sandbox entry points (`index.html`, `tissue-saturation.html`, `transfilling.html`, `cascade-filling.html`, `gas-law.html`).
-- `icons/`, `fonts/`, `images/` — PWA icons (SVG), web fonts (Fraunces + Inter, WOFF2), images.
+- `icons/`, `fonts/`, `images/` — app icons (SVG), web fonts (Fraunces + Inter, WOFF2), images.
 - Top-level HTML files: landing (`index.html`), four theory lessons, seven quizzes, `about.html`.
-- `sw.js`, `manifest.json` — PWA service worker and manifest.
 - `CNAME` — `decotheory.eu`.
 
-## Release and PWA deployment
+## Deployment
 
-Deployment is GitHub Pages from the `main` branch, served under the `decotheory.eu` custom domain configured via the `CNAME` file. The manifest declares `start_url: "/decojs/index.html"` and `scope: "/decojs/"`, and the service worker (`sw.js`) uses a cache-first strategy keyed by `CACHE_NAME` — bumping that constant on every release is what invalidates stale caches in installed PWAs. See [Architecture](Architecture.md) for the PWA details.
+GitHub Pages from the `main` branch, served under the `decotheory.eu` custom domain configured via the `CNAME` file.

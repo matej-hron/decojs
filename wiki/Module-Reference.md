@@ -1,6 +1,6 @@
 Per-file API walkthrough. Signatures, line references, dependencies. For the math behind the algorithm functions listed here, see [Decompression-Model](Decompression-Model.md) and the individual algorithm chapters.
 
-All paths are relative to the repository root. All line numbers are as of commit `19d7fbf` on `main`.
+All paths are relative to the repository root. Line numbers are kept current per the wiki-update rule in `CLAUDE.md`.
 
 ## Core algorithm
 
@@ -367,7 +367,7 @@ Exports (all from line 333):
 | `translate(key, vars)` | Lookup by dot-notation key, supports `{0}`, `{1}` interpolation |
 | `SUPPORTED_LANGS` | `['en', 'cs', 'es']` |
 
-Locale files are in `/Users/matejhron/src/playground/decojs/locales/` (`en.json`, `cs.json`, `es.json`) and are included in the service worker's `STATIC_ASSETS` array so they work offline.
+Locale files are in `locales/` (`en.json`, `cs.json`, `es.json`).
 
 ### `js/nav.js`
 

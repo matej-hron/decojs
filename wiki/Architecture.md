@@ -7,7 +7,7 @@ There is no bundler, no transpiler, no TypeScript compile step, no `dist/` direc
 - **Imports use explicit relative paths with `.js` extensions** (e.g. `import { COMPARTMENTS } from './tissueCompartments.js'`). No bare-module resolution, no import maps, no path aliases.
 - **Third-party libraries come from CDN `<script>` tags**, not npm. Chart.js, chartjs-plugin-annotation, Hammer.js, and chartjs-plugin-zoom are loaded from `cdn.jsdelivr.net` in the entry HTML; `node_modules/` exists only for Jest (used by an alternate test runner; the primary runner is dependency-free).
 
-The rationale is educational transparency: a reader with a browser and a text editor can trace any value on screen back to the exact line of source that produced it, without sourcemaps, bundling artefacts, or a toolchain to stand up. It also makes the PWA's cache simple — the `STATIC_ASSETS` array in `sw.js` is the literal list of files served.
+The rationale is educational transparency: a reader with a browser and a text editor can trace any value on screen back to the exact line of source that produced it, without sourcemaps, bundling artefacts, or a toolchain to stand up.
 
 ## Three sections, three entry families
 
@@ -126,24 +126,6 @@ All three algorithm charts — `DiveProfileChart`, `MValueChart`, `GFChart` — 
 - **`chartTypes.js`** centralises dive-setup validation and normalisation (`validateDiveSetup`, `normalizeDiveSetup`, `mergeOptions`). No runtime types — just schema-style validation.
 
 All CDN scripts are loaded in the entry HTML, not imported by modules, so the algorithm core remains Chart.js-free and is directly unit-testable under Node.
-
-## PWA: service worker and manifest
-
-The service worker is 150 lines, dependency-free, and uses a **cache-first-with-network-fallback** strategy.
-
-```javascript
-// sw.js:2
-const CACHE_NAME = 'deco-theory-0.5.48';
-```
-
-- **`STATIC_ASSETS`** (sw.js starting at line 5) lists 70 entries: HTML pages, JS modules, CSS, WOFF2 fonts, SVG icons, locale JSON, and data JSON (`data/dive-*.json`, `data/quiz-*.json`). Notably absent: `sandbox/chart-test.html`, `sandbox/gas-law.html`, and `test*.html` — deliberately excluded.
-- **`install`** pre-caches `STATIC_ASSETS` into the cache keyed by `CACHE_NAME`.
-- **`activate`** deletes any other cache bucket whose key is not the current `CACHE_NAME`. Combined with `skipWaiting()` and `clients.claim()`, this means new versions silently take over from old SW — no user prompt, no "click to update" banner; the next page reload serves fresh content.
-- **`fetch`** tries the cache first; on miss, fetches from the network and caches any 200 OK response.
-
-`manifest.json` declares a standalone PWA (no browser chrome) with `start_url: "/decojs/index.html"`, `scope: "/decojs/"`, 8 SVG icons (72px to 512px including a maskable variant), theme color `#2980b9`, and categories `["education", "health"]`.
-
-The `CACHE_NAME` bump is load-bearing — it is the only mechanism that forces installed PWAs to pick up new content. This is why [Project-Info](Project-Info.md#before-every-commit) requires a version bump in `sw.js` on every release.
 
 ## i18n
 

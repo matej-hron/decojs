@@ -190,4 +190,4 @@ Stop durations grow as the controlling compartment shifts toward slower tissues 
 - [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md) — the `pAnchor` and first-stop inputs.
 - [Algo-05-Multi-Gas-Switching](Algo-05-Multi-Gas-Switching.md) — how `gasSwitchPoints` and `switchToBestGas` pick gases.
 - [Model-05-Gradient-Factors](Model-05-Gradient-Factors.md) — the `interpolateGF` ramp the loop calls on every iteration.
-- [References](References.md#41-decotengu-primary-reference-implementation) — commit `ff06756` aligned stop-termination with decotengu's convention; within-±1-min agreement on 100 % of the 160-scenario reference.
+- [References](References.md#41-decotengu-primary-reference-implementation) — stop-termination follows decotengu's convention; within-±1-min agreement on 100 % of the 160-scenario reference.

@@ -6,7 +6,7 @@ npm test
 
 Runs `node tests/run-tests.mjs`. No external test framework — `tests/run-tests.mjs` implements `describe`/`test`/`expect` inline (lines 10–140) with matchers `.toBe`, `.toEqual`, `.toBeCloseTo`, `.toBeGreaterThan`, `.toBeLessThan`, `.toHaveProperty`, `.toHaveLength`, `.toBeDefined`. Output is one line per test, then a pass/fail summary.
 
-Current status (commit `19d7fbf`): **208 tests pass in under 5 seconds.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`.
+**208 tests pass in under 5 seconds.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`.
 
 `npm test` is required to pass before every commit per `CLAUDE.md`.
 
@@ -73,13 +73,13 @@ The tolerances exist because both implementations are correct Bühlmann ZH-L16C 
 1. **Stop-time discretisation.** Both round stop times to whole minutes, but the continuous ceiling crossing can land on either side of a minute boundary, giving ±1 min per stop.
 2. **GF-ramp anchor.** DecoJS anchors the GF ramp at `pAnchor` — the exact ambient pressure at which `GF_max` first equals `GF_low` during simulated ascent (`decoModel.js:257`). decotengu anchors at the rounded first-stop depth. These converge for most profiles but differ by up to one stop on low-`GF_low` edge cases.
 
-**Match statistics on the Bühlmann-air subset** (160 scenarios, GF 100/100, from commit `ff06756 Align deco algorithm with decotengu/divetools convention`):
+**Match statistics on the Bühlmann-air subset** (160 scenarios, GF 100/100):
 
 - 83.8 % exact match on total deco time
 - 100 % within ±1 min (max absolute difference = 1 min)
 - Mean signed difference: +0.16 min (DecoJS slightly more conservative)
 
-Bühlmann constants (`SURFACE_PRESSURE=1.01325`, `N2_FRACTION=0.7902`, TC1 b-coefficient variant-specific) were aligned with decotengu — which itself cross-references the HeinrichsWeikamp OSTC firmware — in commit `7f985da Fix Bühlmann constants: TC1 b-coefficient, surface pressure, N2 fraction`. See [References](References.md#6-zh-l16-constant-tables) for the provenance chain.
+Bühlmann constants (`SURFACE_PRESSURE=1.01325`, `N2_FRACTION=0.7902`, TC1 b-coefficient variant-specific) match decotengu — which itself cross-references the HeinrichsWeikamp OSTC firmware. See [References](References.md#6-zh-l16-constant-tables) for the provenance chain.
 
 ## Adding tests
 
@@ -109,7 +109,6 @@ Bug fixes should include a regression test that fails without the fix (per `CLAU
 What is currently not covered — honest inventory so callers know where to be careful:
 
 - **UI components.** No render or interaction tests for `DiveSetupEditor`, `DiveProfileChart`, `MValueChart`, or `GFChart`. Chart.js output is not asserted.
-- **PWA.** No tests for service-worker caching, offline fallback, or `STATIC_ASSETS` completeness.
 - **i18n.** No tests for translation loading, `data-i18n` substitution, or the `languagechange` event fan-out to components.
 - **Keyboard shortcuts.** `MValueChart` and `GFChart` expose arrow-key / space / home / end playback; none of this is tested.
 - **Helium.** `COMPARTMENTS` carries He coefficients but the algorithm lumps He into N₂ via `n2Fraction`. Full trimix (separate He kinetics) is not implemented and not tested. Gas definitions accept `he > 0` but no decotengu-reference scenarios exercise it.

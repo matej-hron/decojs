@@ -5,11 +5,7 @@ Practical how-tos for common modifications. All file paths are relative to the r
 Per `CLAUDE.md` root of repo:
 
 1. `npm test` — all 208 tests must pass.
-2. Bump the version in **two** places:
-   - `sw.js` line 2: `const CACHE_NAME = 'deco-theory-X.X.XX'`
-   - `css/styles.css`: find `.version-number::after` and update the `content` string.
-
-Without the version bump the service worker serves stale assets to returning users.
+2. Bump the version badge: edit `css/styles.css`, find `.version-number::after`, update the `content` string.
 
 ## Adding a new gas mix
 
@@ -51,8 +47,7 @@ Per `CLAUDE.md`:
 2. Create `quiz-{name}.html` (copy an existing quiz page as template).
 3. Add an entry to the Tests submenu in `NAV_ITEMS` in `js/nav.js`.
 4. Add a topic tile to `index.html`.
-5. Add both new files to the `STATIC_ASSETS` array in `sw.js`.
-6. Bump the version (see top of this page).
+5. Bump the version (see top of this page).
 
 JSON shape:
 
@@ -121,8 +116,7 @@ The chart re-renders on every `update(diveSetup)` call, so there is no need to m
    const SUPPORTED_LANGS = ['en', 'cs', 'es', 'de']; // added 'de'
    ```
 
-3. Add `./locales/<lang>.json` to `STATIC_ASSETS` in `sw.js` so the language loads offline.
-4. Bump the version.
+3. Bump the version.
 
 The language switcher (`createLanguageSwitcher` in `i18n.js`) reads from `SUPPORTED_LANGS`, so the new language appears automatically. Components that listen for the global `languagechange` event (nav, charts, `DiveSetupEditor`) re-render with the new strings without a page reload.
 

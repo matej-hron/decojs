@@ -9,7 +9,7 @@ Developers reading, modifying, or porting the code. This wiki documents the algo
 **Getting started**
 
 - [Project-Info](Project-Info.md) — install, run, tests, live demo
-- [Architecture](Architecture.md) — module graph, PWA, no-build philosophy
+- [Architecture](Architecture.md) — module graph and no-build philosophy
 
 **Decompression Model** (the math as implemented)
 
