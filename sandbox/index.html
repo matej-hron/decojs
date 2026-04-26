@@ -759,7 +759,7 @@
             SURFACE_PRESSURE
         } from '../js/decoModel.js';
         import { COMPARTMENTS } from '../js/tissueCompartments.js';
-        import { getProfileFromUrl, updateUrlWithProfile, getChartModeFromUrl } from '../js/urlParams.js';
+        import { getProfileFromUrl, updateUrlWithProfile, getChartModeFromUrl, getCompactProfileFromUrl } from '../js/urlParams.js';
         import { computeGasConsumption } from '../js/diveSetup.js';
         import { translate } from '../js/i18n.js';
 
@@ -1196,8 +1196,8 @@
         const diveWarningsContainer = document.getElementById('dive-warnings');
         const diveGasSummaryContainer = document.getElementById('dive-gas-summary');
         
-        // Load initial setup - priority: URL param > localStorage > default
-        const urlProfile = getProfileFromUrl();
+        // Load initial setup - priority: URL profile= > URL v=1 compact > localStorage > default
+        const urlProfile = getProfileFromUrl() || await getCompactProfileFromUrl();
         let initialSetup = urlProfile || loadCurrentProfile() || profiles[0];
         
         // Create the editor

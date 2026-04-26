@@ -155,10 +155,91 @@ export function getProfileFromUrl() {
 export function updateUrlWithProfile(diveSetup) {
     const encoded = encodeDiveSetup(diveSetup);
     if (!encoded) return;
-    
+
     const url = new URL(window.location);
     url.searchParams.set('profile', encoded);
-    
+
     // Use replaceState to update URL without adding to history
     window.history.replaceState({}, '', url);
+}
+
+/**
+ * Read a compact dive setup from URL search params (`?v=1&d=...&t=...&...`).
+ *
+ * Activates only when `v=1` is present and `profile=` is absent — the base64
+ * `profile=` reader takes precedence. Builds a single-gas dive setup and
+ * generates waypoints with `generateDecoProfile()`, the same call the
+ * "Generate Profile" button in DiveSetupEditor uses.
+ *
+ * Recognized params (all optional except d, t):
+ *   d    — max depth (m, required)
+ *   t    — bottom time (min, required, includes descent)
+ *   o2   — bottom-gas O2 percent (default 21)
+ *   gfL  — GF low percent (default 100)
+ *   gfH  — GF high percent (default 100)
+ *   zhl  — ZH-L16 variant 'A' | 'B' | 'C' (default: leave editor's current)
+ *   sac  — surface SAC L/min (default 20)
+ *   cyl  — cylinder volume in liters (default 12)
+ *
+ * @returns {Promise<Object|null>} Setup compatible with DiveSetupEditor, or null
+ *                                  if v!=1, profile= present, required params
+ *                                  invalid, or generateDecoProfile threw.
+ */
+export async function getCompactProfileFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('v') !== '1') return null;
+    if (params.has('profile')) return null;
+
+    const d = parseFloat(params.get('d'));
+    const t = parseFloat(params.get('t'));
+    if (!Number.isFinite(d) || !Number.isFinite(t) || d < 1 || d > 100 || t < 1 || t > 120) {
+        return null;
+    }
+
+    const o2Raw = parseFloat(params.get('o2'));
+    const gfLRaw = parseInt(params.get('gfL'), 10);
+    const gfHRaw = parseInt(params.get('gfH'), 10);
+    const sacRaw = parseFloat(params.get('sac'));
+    const cylRaw = parseFloat(params.get('cyl'));
+    const zhlRaw = params.get('zhl');
+
+    const o2Pct = Number.isFinite(o2Raw) && o2Raw >= 5 && o2Raw <= 100 ? o2Raw : 21;
+    const gfLow = Number.isFinite(gfLRaw) && gfLRaw >= 1 && gfLRaw <= 100 ? gfLRaw : 100;
+    const gfHigh = Number.isFinite(gfHRaw) && gfHRaw >= 1 && gfHRaw <= 100 ? gfHRaw : 100;
+    const sacRate = Number.isFinite(sacRaw) && sacRaw > 0 ? sacRaw : 20;
+    const cylinderVolume = Number.isFinite(cylRaw) && cylRaw > 0 ? cylRaw : 12;
+    const algorithm = (zhlRaw === 'A' || zhlRaw === 'B' || zhlRaw === 'C') ? zhlRaw : null;
+
+    const o2Frac = o2Pct / 100;
+    const gasName = o2Pct === 21 ? 'Air' : `EAN${Math.round(o2Pct)}`;
+    const gases = [{
+        id: 'bottom',
+        name: gasName,
+        o2: o2Frac,
+        n2: 1 - o2Frac,
+        he: 0,
+        cylinderVolume,
+        startPressure: 200
+    }];
+
+    let waypoints;
+    try {
+        const { generateDecoProfile } = await import('./diveSetup.js');
+        const result = generateDecoProfile(d, t, gases, gfLow, gfHigh);
+        waypoints = result.waypoints;
+    } catch (error) {
+        console.error('Failed to build compact profile:', error);
+        return null;
+    }
+
+    const setup = {
+        name: `${d}m / ${t}min ${gasName}`,
+        gases,
+        gfLow,
+        gfHigh,
+        sacRate,
+        dives: [{ waypoints }]
+    };
+    if (algorithm) setup.algorithm = algorithm;
+    return setup;
 }
