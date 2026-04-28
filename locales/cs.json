@@ -1472,6 +1472,42 @@
             "item9": "<strong>Strany potápěčské</strong>. <a href=\"https://stranypotapecske.cz\" target=\"_blank\" rel=\"noopener\">stranypotapecske.cz</a> — Komplexní český potápěčský portál a komunitní zdroj pod vedením Zdeňka Šraiera. Obsahuje rozsáhlou knihovnu recenzí knih, vzdělávací články o fyzice potápění a dekompresní teorii, databázi podmínek potápěčských lokalit, recenze výstroje a výukové materiály. Nepostradatelný zdroj pro česky mluvící potápěče na všech úrovních."
         }
     },
+    "privacy": {
+        "title": "Zásady ochrany osobních údajů",
+        "subtitle": "Jak decotheory.eu a mobilní aplikace DecoTheory nakládají s vašimi daty",
+        "summary": {
+            "title": "Stručně",
+            "text": "Tento web i mobilní aplikace DecoTheory ukládají všechna data <strong>lokálně na vašem zařízení</strong>. Ani jeden z nich nepřenáší data na žádný server. Neobsahují analytiku, hlášení pádů, reklamy, účty ani SDK třetích stran, které by sbíraly data."
+        },
+        "web": {
+            "title": "Web (decotheory.eu)",
+            "localStorage": "Používá <strong>localStorage</strong> prohlížeče k zapamatování vašich nastavení ponorů, postupu v testech a preferovaného jazyka. Tato data nikdy neopouštějí váš prohlížeč.",
+            "serviceWorker": "<strong>Service worker</strong> ukládá HTML, CSS a JavaScript webu do mezipaměti, aby fungoval offline. Mezipaměť žije pouze ve vašem prohlížeči; můžete ji kdykoli smazat v nastavení prohlížeče.",
+            "cookies": "<strong>Žádné cookies se nenastavují.</strong>",
+            "thirdParty": "Externí odkazy (např. na Wikipedii, GitHub, Strany potápěčské) se načítají jen tehdy, když na ně kliknete — nikdy ne automaticky."
+        },
+        "mobile": {
+            "title": "Mobilní aplikace DecoTheory",
+            "asyncStorage": "Používá <strong>AsyncStorage</strong> pro uložení profilu potápěče, plánů ponorů a postupu v testech. Tato data jsou uložena výhradně na vašem zařízení.",
+            "permissions": "Nevyžaduje žádná oprávnění Android nad rámec toho, co zahrnuje Expo SDK 54 ve výchozím nastavení pro instalaci aplikace.",
+            "uninstall": "Při odinstalování aplikace se všechna lokálně uložená data odstraní.",
+            "deepLinks": "Schéma deep-linků <code>decotheory://</code> se používá pouze pro sdílení plánů mezi aplikací a tímto webem. Na žádný server se neodesílají žádná data."
+        },
+        "notdone": {
+            "title": "Co výslovně NEDĚLÁME",
+            "analytics": "Žádná analytika ani telemetrie jakéhokoli druhu.",
+            "crash": "Žádná služba pro hlášení pádů.",
+            "ads": "Žádné reklamy.",
+            "accounts": "Žádné uživatelské účty; žádné přihlašování.",
+            "sdks": "Žádné SDK třetích stran, které by sbíraly data.",
+            "backend": "Žádný serverový backend, který by viděl vaši aktivitu."
+        },
+        "contact": {
+            "title": "Kontakt",
+            "text": "Dotazy nebo připomínky k těmto zásadám? Napište na <a href=\"mailto:matej.hron@gmail.com\">matej.hron@gmail.com</a>."
+        },
+        "lastUpdated": "Aktualizováno: 2026-04-29"
+    },
     "sandbox": {
         "dive": {
             "title": "🎯 Sandbox pro plánování ponoru",

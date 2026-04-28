@@ -1472,6 +1472,42 @@
             "item9": "<strong>Strany potápěčské</strong>. <a href=\"https://stranypotapecske.cz\" target=\"_blank\" rel=\"noopener\">stranypotapecske.cz</a> — A comprehensive Czech diving portal and community resource run by Zdeněk Šraier. Features an extensive library of book reviews, educational articles on diving physics and decompression theory, dive site conditions database, equipment reviews, and training materials. An invaluable resource for Czech-speaking divers at all levels."
         }
     },
+    "privacy": {
+        "title": "Privacy Policy",
+        "subtitle": "How decotheory.eu and the DecoTheory mobile app handle your data",
+        "summary": {
+            "title": "Short version",
+            "text": "Both this website and the DecoTheory mobile app store all data <strong>locally on your device</strong>. Neither transmits data to any server. There is no analytics, no crash reporting, no advertising, no account system, and no third-party SDKs that collect data."
+        },
+        "web": {
+            "title": "Website (decotheory.eu)",
+            "localStorage": "Uses browser <strong>localStorage</strong> to remember your dive setups, quiz progress, and language preference. This data never leaves your browser.",
+            "serviceWorker": "A <strong>service worker</strong> caches the site's HTML, CSS, and JavaScript so it works offline. The cache lives only in your browser; you can clear it at any time via your browser's settings.",
+            "cookies": "<strong>No cookies are set.</strong>",
+            "thirdParty": "External links (e.g. to Wikipedia, GitHub, Strany potápěčské) are loaded only when you click them, never automatically."
+        },
+        "mobile": {
+            "title": "DecoTheory mobile app",
+            "asyncStorage": "Uses <strong>AsyncStorage</strong> to remember your diver profile, dive plans, and quiz progress. This data is stored only on your device.",
+            "permissions": "Requires no Android permissions beyond what Expo SDK 54 includes by default for app installation.",
+            "uninstall": "Uninstalling the app removes all locally stored data.",
+            "deepLinks": "The <code>decotheory://</code> deep-link scheme is used only for sharing plans between the app and this website. No data is sent to any server."
+        },
+        "notdone": {
+            "title": "What we explicitly do NOT do",
+            "analytics": "No analytics or telemetry of any kind.",
+            "crash": "No crash reporting service.",
+            "ads": "No advertising.",
+            "accounts": "No user accounts; no login.",
+            "sdks": "No third-party SDKs that collect data.",
+            "backend": "No server backend that sees your activity."
+        },
+        "contact": {
+            "title": "Contact",
+            "text": "Questions or concerns about this policy? Email <a href=\"mailto:matej.hron@gmail.com\">matej.hron@gmail.com</a>."
+        },
+        "lastUpdated": "Last updated: 2026-04-29"
+    },
     "sandbox": {
         "dive": {
             "title": "🎯 Dive Planner Sandbox",
