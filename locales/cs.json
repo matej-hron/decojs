@@ -1602,7 +1602,8 @@
             "cylinderB": "Lahev B (plněná)",
             "labels": {
                 "volume": "Objem",
-                "pressure": "Tlak (bar)"
+                "pressure": "Tlak (bar)",
+                "customVolume": "Vlastní objem (l)"
             },
             "volumes": {
                 "pony": "3 l (Pony)",
@@ -1615,7 +1616,8 @@
                 "single18": "18 l (jednolahev)",
                 "doubles7": "2×7 l (dvojče)",
                 "doubles10": "2×10 l (dvojče)",
-                "doubles12": "2×12 l (dvojče)"
+                "doubles12": "2×12 l (dvojče)",
+                "custom": "Vlastní…"
             },
             "buttons": {
                 "openValves": "Otevřít ventily",

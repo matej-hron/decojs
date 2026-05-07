@@ -1602,7 +1602,8 @@
             "cylinderB": "Cylinder B (Receiving)",
             "labels": {
                 "volume": "Volume",
-                "pressure": "Pressure (bar)"
+                "pressure": "Pressure (bar)",
+                "customVolume": "Custom volume (L)"
             },
             "volumes": {
                 "pony": "3 L (Pony)",
@@ -1615,7 +1616,8 @@
                 "single18": "18 L (Single)",
                 "doubles7": "2x7 L (Doubles)",
                 "doubles10": "2x10 L (Doubles)",
-                "doubles12": "2x12 L (Doubles)"
+                "doubles12": "2x12 L (Doubles)",
+                "custom": "Custom…"
             },
             "buttons": {
                 "openValves": "Open Valves",

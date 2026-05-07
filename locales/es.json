@@ -1566,7 +1566,8 @@
             "cylinderB": "Botella B (receptora)",
             "labels": {
                 "volume": "Volumen",
-                "pressure": "Presión (bar)"
+                "pressure": "Presión (bar)",
+                "customVolume": "Volumen personalizado (L)"
             },
             "volumes": {
                 "pony": "3 L (Pony)",
@@ -1579,7 +1580,8 @@
                 "single18": "18 L (mono)",
                 "doubles7": "2x7 L (bibotella)",
                 "doubles10": "2x10 L (bibotella)",
-                "doubles12": "2x12 L (bibotella)"
+                "doubles12": "2x12 L (bibotella)",
+                "custom": "Personalizado…"
             },
             "buttons": {
                 "openValves": "Abrir válvulas",
