@@ -372,7 +372,12 @@
                         <option value="14" data-i18n="sandbox.transfill.volumes.doubles7">2x7 L (Doubles)</option>
                         <option value="20" data-i18n="sandbox.transfill.volumes.doubles10">2x10 L (Doubles)</option>
                         <option value="24" data-i18n="sandbox.transfill.volumes.doubles12">2x12 L (Doubles)</option>
+                        <option value="custom" data-i18n="sandbox.transfill.volumes.custom">Custom…</option>
                     </select>
+                </div>
+                <div class="input-group custom-volume-group" id="customVolumeAGroup" hidden>
+                    <label for="customVolumeA" data-i18n="sandbox.transfill.labels.customVolume">Custom volume (L)</label>
+                    <input type="number" id="customVolumeA" min="0.1" max="50" step="0.1" value="12">
                 </div>
                 <div class="input-group">
                     <label data-i18n="sandbox.transfill.labels.pressure">Pressure (bar)</label>
@@ -399,7 +404,12 @@
                         <option value="14" data-i18n="sandbox.transfill.volumes.doubles7">2x7 L (Doubles)</option>
                         <option value="20" data-i18n="sandbox.transfill.volumes.doubles10">2x10 L (Doubles)</option>
                         <option value="24" data-i18n="sandbox.transfill.volumes.doubles12">2x12 L (Doubles)</option>
+                        <option value="custom" data-i18n="sandbox.transfill.volumes.custom">Custom…</option>
                     </select>
+                </div>
+                <div class="input-group custom-volume-group" id="customVolumeBGroup" hidden>
+                    <label for="customVolumeB" data-i18n="sandbox.transfill.labels.customVolume">Custom volume (L)</label>
+                    <input type="number" id="customVolumeB" min="0.1" max="50" step="0.1" value="7">
                 </div>
                 <div class="input-group">
                     <label data-i18n="sandbox.transfill.labels.pressure">Pressure (bar)</label>
@@ -492,6 +502,10 @@
         // DOM Elements
         const volumeASelect = document.getElementById('volumeA');
         const volumeBSelect = document.getElementById('volumeB');
+        const customVolumeA = document.getElementById('customVolumeA');
+        const customVolumeB = document.getElementById('customVolumeB');
+        const customVolumeAGroup = document.getElementById('customVolumeAGroup');
+        const customVolumeBGroup = document.getElementById('customVolumeBGroup');
         const pressureAInput = document.getElementById('pressureA');
         const pressureBInput = document.getElementById('pressureB');
         const pressureASlider = document.getElementById('pressureASlider');
@@ -533,12 +547,24 @@
         }
 
         /**
+         * Resolve a select + custom-input pair to a numeric volume in litres.
+         * Falls back to 1 L if the custom input is blank or non-numeric.
+         */
+        function resolveVolume(select, customInput) {
+            if (select.value === 'custom') {
+                const v = parseFloat(customInput.value);
+                return Number.isFinite(v) && v > 0 ? v : 1;
+            }
+            return parseFloat(select.value);
+        }
+
+        /**
          * Get current values from inputs
          */
         function getValues() {
             return {
-                volumeA: parseFloat(volumeASelect.value),
-                volumeB: parseFloat(volumeBSelect.value),
+                volumeA: resolveVolume(volumeASelect, customVolumeA),
+                volumeB: resolveVolume(volumeBSelect, customVolumeB),
                 pressureA: parseFloat(pressureAInput.value),
                 pressureB: parseFloat(pressureBInput.value)
             };
@@ -677,13 +703,30 @@
         syncPressureInputs('pressureASlider', 'pressureA');
         syncPressureInputs('pressureBSlider', 'pressureB');
 
-        volumeASelect.addEventListener('change', () => {
-            if (!isEqualized) updateDisplay();
-        });
+        /**
+         * Toggle the custom-volume input visibility for one cylinder, seeding
+         * the custom input from the previous preset on first switch so the
+         * user starts from a sensible number rather than a stale default.
+         */
+        function bindVolumeSelect(select, customInput, customGroup) {
+            let lastPresetValue = select.value === 'custom' ? null : parseFloat(select.value);
+            select.addEventListener('change', () => {
+                if (select.value === 'custom') {
+                    if (lastPresetValue != null) customInput.value = lastPresetValue;
+                    customGroup.hidden = false;
+                } else {
+                    customGroup.hidden = true;
+                    lastPresetValue = parseFloat(select.value);
+                }
+                if (!isEqualized) updateDisplay();
+            });
+            customInput.addEventListener('input', () => {
+                if (!isEqualized) updateDisplay();
+            });
+        }
 
-        volumeBSelect.addEventListener('change', () => {
-            if (!isEqualized) updateDisplay();
-        });
+        bindVolumeSelect(volumeASelect, customVolumeA, customVolumeAGroup);
+        bindVolumeSelect(volumeBSelect, customVolumeB, customVolumeBGroup);
 
         openValvesBtn.addEventListener('click', animateEqualization);
         resetBtn.addEventListener('click', reset);

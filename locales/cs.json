@@ -1602,20 +1602,22 @@
             "cylinderB": "Lahev B (plněná)",
             "labels": {
                 "volume": "Objem",
-                "pressure": "Tlak (bar)"
+                "pressure": "Tlak (bar)",
+                "customVolume": "Vlastní objem (l)"
             },
             "volumes": {
                 "pony": "3 l (Pony)",
                 "al40": "5,5 l (AL40)",
                 "al50": "7 l (AL50)",
-                "single10": "10 l (jednolahev)",
+                "single10": "10 l (Single)",
                 "al80": "11 l (AL80)",
-                "single12": "12 l (jednolahev)",
-                "single15": "15 l (jednolahev)",
-                "single18": "18 l (jednolahev)",
+                "single12": "12 l (Single)",
+                "single15": "15 l (Single)",
+                "single18": "18 l (Single)",
                 "doubles7": "2×7 l (dvojče)",
                 "doubles10": "2×10 l (dvojče)",
-                "doubles12": "2×12 l (dvojče)"
+                "doubles12": "2×12 l (dvojče)",
+                "custom": "Vlastní…"
             },
             "buttons": {
                 "openValves": "Otevřít ventily",
@@ -1656,10 +1658,10 @@
             },
             "volumes": {
                 "al50": "7 l (AL50)",
-                "single10": "10 l (jednolahev)",
+                "single10": "10 l (Single)",
                 "al80": "11 l (AL80)",
-                "single12": "12 l (jednolahev)",
-                "single15": "15 l (jednolahev)"
+                "single12": "12 l (Single)",
+                "single15": "15 l (Single)"
             },
             "startPressures": {
                 "empty": "0 bar (prázdná)"
