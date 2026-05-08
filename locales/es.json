@@ -1302,6 +1302,7 @@
         "sandbox": {
             "label": "Sandbox",
             "deco": "Modelado de descompresión",
+            "haldane": "Ecuación de Haldane",
             "tissue": "Saturación tisular",
             "transfill": "Transvase de botellas",
             "cascade": "Llenado en cascada",
@@ -1340,6 +1341,7 @@
             "sandbox": "Sandbox",
             "sandboxDesc": "Simuladores interactivos para planificar inmersiones y calcular gases.",
             "sandboxLinks": {
+                "haldane": "Ecuación de Haldane",
                 "deco": "Modelado deco",
                 "transfill": "Transvase",
                 "cascade": "Llenado en cascada",
@@ -1595,6 +1597,28 @@
             "formulaTitle": "Ley de Boyle",
             "formula": "P<sub>final</sub> = (P<sub>A</sub> × V<sub>A</sub> + P<sub>B</sub> × V<sub>B</sub>) / (V<sub>A</sub> + V<sub>B</sub>)",
             "disclaimer": "<strong>Aviso:</strong> Solo con fines educativos. Basado en las hipótesis de gas ideal."
+        },
+        "haldane": {
+            "title": "Ecuación de Haldane",
+            "subtitle": "Recorrido interactivo de cómo un compartimento tisular se satura en el tiempo.",
+            "disclaimerBanner": "<strong>Solo para fines educativos</strong> — Recorrido interactivo de la ecuación de Bühlmann/Haldane de saturación.",
+            "disclaimer": "<strong>Aviso:</strong> Solo para fines educativos. El algoritmo de descompresión real usa lógica adicional.",
+            "labels": {
+                "startDepth": "Profundidad inicial (m)",
+                "targetDepth": "Profundidad objetivo (m)",
+                "compartment": "Compartimento",
+                "gas": "Gas",
+                "time": "Tiempo"
+            },
+            "gas": {
+                "air": "Aire (F<sub>N₂</sub> = 0.79)"
+            },
+            "mvalue": {
+                "title": "Comprobación del valor M",
+                "modelLabel": "Modelo",
+                "within": "dentro",
+                "exceeded": "excedido"
+            }
         },
         "cascade": {
             "title": "Estación de llenado en cascada",

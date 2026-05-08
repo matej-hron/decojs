@@ -19,6 +19,7 @@ const NAV_ITEMS = [
         href: 'sandbox/index.html',
         submenu: [
             { href: 'sandbox/index.html', labelKey: 'nav.sandbox.deco', label: 'Decompression Modelling' },
+            { href: 'sandbox/haldane.html', labelKey: 'nav.sandbox.haldane', label: 'Haldane Equation' },
             { href: 'sandbox/tissue-saturation.html', labelKey: 'nav.sandbox.tissue', label: 'Tissue Saturation' },
             { href: 'sandbox/transfilling.html', labelKey: 'nav.sandbox.transfill', label: 'Cylinder Transfilling' },
             { href: 'sandbox/cascade-filling.html', labelKey: 'nav.sandbox.cascade', label: 'Cascade Filling' },

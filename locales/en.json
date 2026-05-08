@@ -1302,6 +1302,7 @@
         "sandbox": {
             "label": "Sandbox",
             "deco": "Decompression Modelling",
+            "haldane": "Haldane Equation",
             "tissue": "Tissue Saturation",
             "transfill": "Cylinder Transfilling",
             "cascade": "Cascade Filling",
@@ -1340,6 +1341,7 @@
             "sandbox": "Sandbox",
             "sandboxDesc": "Interactive simulators for dive planning and gas calculations.",
             "sandboxLinks": {
+                "haldane": "Haldane Equation",
                 "deco": "Deco Modelling",
                 "transfill": "Transfilling",
                 "cascade": "Cascade Filling",
@@ -1631,6 +1633,28 @@
             "formulaTitle": "Boyle's Law",
             "formula": "P<sub>final</sub> = (P<sub>A</sub> × V<sub>A</sub> + P<sub>B</sub> × V<sub>B</sub>) / (V<sub>A</sub> + V<sub>B</sub>)",
             "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only. Based on ideal gas law assumptions."
+        },
+        "haldane": {
+            "title": "Haldane Equation",
+            "subtitle": "A live, annotated walk-through of how a tissue compartment on-gasses over time.",
+            "disclaimerBanner": "<strong>Educational Use Only</strong> — Interactive walk-through of the Bühlmann/Haldane on-gassing equation.",
+            "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only. The actual diving algorithm uses additional logic.",
+            "labels": {
+                "startDepth": "Start depth (m)",
+                "targetDepth": "Target depth (m)",
+                "compartment": "Compartment",
+                "gas": "Gas",
+                "time": "Time"
+            },
+            "gas": {
+                "air": "Air (F<sub>N₂</sub> = 0.79)"
+            },
+            "mvalue": {
+                "title": "M-value check",
+                "modelLabel": "Model",
+                "within": "within",
+                "exceeded": "exceeded"
+            }
         },
         "cascade": {
             "title": "Cascade Filling Station",

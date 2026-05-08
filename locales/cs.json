@@ -1302,6 +1302,7 @@
         "sandbox": {
             "label": "Sandbox",
             "deco": "Modelování dekomprese",
+            "haldane": "Haldaneova rovnice",
             "tissue": "Sycení tkání",
             "transfill": "Přepouštění lahví",
             "cascade": "Kaskádové plnění",
@@ -1340,6 +1341,7 @@
             "sandbox": "Sandbox",
             "sandboxDesc": "Interaktivní simulátory pro plánování ponorů a výpočty plynů.",
             "sandboxLinks": {
+                "haldane": "Haldaneova rovnice",
                 "deco": "Modelování dekomprese",
                 "transfill": "Přepouštění",
                 "cascade": "Kaskádové plnění",
@@ -1631,6 +1633,28 @@
             "formulaTitle": "Boyleův zákon",
             "formula": "P<sub>konec</sub> = (P<sub>A</sub> × V<sub>A</sub> + P<sub>B</sub> × V<sub>B</sub>) / (V<sub>A</sub> + V<sub>B</sub>)",
             "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely. Založeno na předpokladech ideálního plynového zákona."
+        },
+        "haldane": {
+            "title": "Haldaneova rovnice",
+            "subtitle": "Interaktivní rozbor toho, jak tkáňový kompartment sytí dusík v čase.",
+            "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Interaktivní rozbor Bühlmannovy/Haldaneovy rovnice nasycování.",
+            "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely. Reálný dekompresní algoritmus používá další logiku.",
+            "labels": {
+                "startDepth": "Počáteční hloubka (m)",
+                "targetDepth": "Cílová hloubka (m)",
+                "compartment": "Kompartment",
+                "gas": "Plyn",
+                "time": "Čas"
+            },
+            "gas": {
+                "air": "Vzduch (F<sub>N₂</sub> = 0,79)"
+            },
+            "mvalue": {
+                "title": "Kontrola M-hodnoty",
+                "modelLabel": "Model",
+                "within": "v limitu",
+                "exceeded": "překročeno"
+            }
         },
         "cascade": {
             "title": "Kaskádová plnicí stanice",
