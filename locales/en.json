@@ -1345,6 +1345,7 @@
                 "deco": "Deco Modelling",
                 "tissue": "Tissue Saturation",
                 "haldane": "Haldane Equation",
+                "schreiner": "Schreiner Equation",
                 "transfill": "Transfilling",
                 "cascade": "Cascade Filling",
                 "gasLaw": "Gas Law"

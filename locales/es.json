@@ -1345,6 +1345,7 @@
                 "deco": "Modelado deco",
                 "tissue": "Saturación tisular",
                 "haldane": "Ecuación de Haldane",
+                "schreiner": "Ecuación de Schreiner",
                 "transfill": "Transvase",
                 "cascade": "Llenado en cascada",
                 "gasLaw": "Ley de los gases"
