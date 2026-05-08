@@ -20,6 +20,7 @@ const STATIC_ASSETS = [
   './quiz-equipment.html',
   './quiz-vessel.html',
   './sandbox/index.html',
+  './sandbox/haldane.html',
   './sandbox/tissue-saturation.html',
   './sandbox/transfilling.html',
   './sandbox/cascade-filling.html',

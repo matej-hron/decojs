@@ -1302,6 +1302,7 @@
         "sandbox": {
             "label": "Sandbox",
             "deco": "Decompression Modelling",
+            "haldane": "Haldane Equation",
             "tissue": "Tissue Saturation",
             "transfill": "Cylinder Transfilling",
             "cascade": "Cascade Filling",

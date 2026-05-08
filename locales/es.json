@@ -1302,6 +1302,7 @@
         "sandbox": {
             "label": "Sandbox",
             "deco": "Modelado de descompresión",
+            "haldane": "Ecuación de Haldane",
             "tissue": "Saturación tisular",
             "transfill": "Transvase de botellas",
             "cascade": "Llenado en cascada",

@@ -1302,6 +1302,7 @@
         "sandbox": {
             "label": "Sandbox",
             "deco": "Modelování dekomprese",
+            "haldane": "Haldaneova rovnice",
             "tissue": "Sycení tkání",
             "transfill": "Přepouštění lahví",
             "cascade": "Kaskádové plnění",
