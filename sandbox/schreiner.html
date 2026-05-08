@@ -380,10 +380,10 @@
             <span class="t-readout">⏱ t = <strong id="timeValue">0</strong> min &nbsp;|&nbsp; saturation = <strong id="saturationValue">0.0</strong>%</span>
             <input type="range" id="timeSlider" min="0" max="0.9" step="0.05" value="0">
             <div class="step-btns">
-                <button type="button" id="tMinusHalf">−T<sub>½</sub></button>
+                <button type="button" id="tMinusTenth">−0.1</button>
                 <button type="button" id="tMinus1">−1</button>
                 <button type="button" id="tPlus1">+1</button>
-                <button type="button" id="tPlusHalf">+T<sub>½</sub></button>
+                <button type="button" id="tPlusTenth">+0.1</button>
             </div>
         </div>
         <!-- Mini Pt(t) chart -->
@@ -611,28 +611,10 @@
 
         const timeSlider   = document.getElementById('timeSlider');
         const timeValue    = document.getElementById('timeValue');
-        const btnMinusHalf = document.getElementById('tMinusHalf');
-        const btnMinus1    = document.getElementById('tMinus1');
-        const btnPlus1     = document.getElementById('tPlus1');
-        const btnPlusHalf  = document.getElementById('tPlusHalf');
-
-        function getHalfTime() {
-            return getCompartmentsForVariant(state.variant)[state.compartmentIdx].halfTime;
-        }
-
-        // ±T½ buttons snap to the next/previous T½ marker on the chart, rather than
-        // adding a fixed minute count. Lets the user step through landmarks directly.
-        function nextHalfTimeMarker() {
-            const ht = getHalfTime();
-            const nextIdx = Math.floor(state.t / ht + 1e-9) + 1;
-            return Math.round(nextIdx * ht);
-        }
-
-        function prevHalfTimeMarker() {
-            const ht = getHalfTime();
-            const prevIdx = Math.ceil(state.t / ht - 1e-9) - 1;
-            return Math.max(0, Math.round(prevIdx * ht));
-        }
+        const btnMinusTenth = document.getElementById('tMinusTenth');
+        const btnMinus1     = document.getElementById('tMinus1');
+        const btnPlus1      = document.getElementById('tPlus1');
+        const btnPlusTenth  = document.getElementById('tPlusTenth');
 
         function applyTimeRange() {
             const tMax = Math.max(0.1, state.segmentTime);
@@ -652,17 +634,17 @@
 
         function updateStepButtons() {
             const tMax = parseFloat(timeSlider.max);
-            btnMinus1.disabled    = state.t <= 0;
-            btnPlus1.disabled     = state.t >= tMax;
-            btnMinusHalf.disabled = prevHalfTimeMarker() >= state.t;
-            btnPlusHalf.disabled  = nextHalfTimeMarker() > tMax || state.t >= tMax;
+            btnMinus1.disabled     = state.t <= 0;
+            btnPlus1.disabled      = state.t >= tMax;
+            btnMinusTenth.disabled = state.t <= 0;
+            btnPlusTenth.disabled  = state.t >= tMax;
         }
 
         timeSlider.addEventListener('input', () => setTime(parseFloat(timeSlider.value)));
-        btnMinusHalf.addEventListener('click', () => setTime(prevHalfTimeMarker()));
-        btnMinus1.addEventListener('click',    () => setTime(state.t - 1));
-        btnPlus1.addEventListener('click',     () => setTime(state.t + 1));
-        btnPlusHalf.addEventListener('click',  () => setTime(nextHalfTimeMarker()));
+        btnMinusTenth.addEventListener('click', () => setTime(state.t - 0.1));
+        btnMinus1.addEventListener('click',     () => setTime(state.t - 1));
+        btnPlus1.addEventListener('click',      () => setTime(state.t + 1));
+        btnPlusTenth.addEventListener('click',  () => setTime(state.t + 0.1));
 
         // ---------- Mini Pt(t) chart ----------
         const CHART_W = 480, CHART_H = 140, CHART_PAD = 6;
