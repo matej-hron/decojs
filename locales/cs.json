@@ -1651,7 +1651,7 @@
                 "time": "Čas",
                 "simplified": "Zjednodušené vzorce"
             },
-            "simplifiedHint": "ručně počítané",
+            "simplifiedHint": "přibližně",
             "gas": {
                 "air": "Vzduch (F<sub>N₂</sub> = 0,79)"
             },
@@ -1681,7 +1681,7 @@
             "gas": {
                 "air": "Vzduch (F<sub>N₂</sub> = 0,79)"
             },
-            "simplifiedHint": "ručně počítané",
+            "simplifiedHint": "přibližně",
             "mvalue": {
                 "title": "Kontrola M-hodnoty",
                 "within": "v limitu",

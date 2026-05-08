@@ -411,7 +411,6 @@
             <div class="mvalue-bar-track">
                 <div class="mvalue-bar"></div>
                 <div class="mvalue-mline"><span class="mvalue-mline-label">M</span></div>
-                <div class="mvalue-anchor mvalue-anchor-pt0" id="mvalueAnchorPt0"><span class="mvalue-anchor-label">P<sub>t,0</sub></span></div>
                 <div class="mvalue-anchor mvalue-anchor-palv" id="mvalueAnchorPalv"><span class="mvalue-anchor-label">P<sub>alv</sub></span></div>
                 <div class="mvalue-anchor mvalue-anchor-pamb" id="mvalueAnchorPamb"><span class="mvalue-anchor-label">P<sub>amb</sub></span></div>
                 <div class="mvalue-marker" id="mvalueMarker"></div>
@@ -751,18 +750,19 @@
 
         function updateMValueStrip() {
             if (!window.__schreiner) return;
-            const { Pt, M, pAmbCurrent, pAlvCurrent, pT0, aN2, bN2 } = window.__schreiner;
+            const { Pt, M, pAmbCurrent, pAlvCurrent, aN2, bN2 } = window.__schreiner;
             mvaluePtOut.textContent = Pt.toFixed(4);
             mvalueOut.textContent = M.toFixed(4);
             const xOfBar = (v) => `${Math.max(0, Math.min(1, v / BAR_MAX)) * 100}%`;
             mvalueMarker.style.left = xOfBar(Pt);
             const mline = document.querySelector('.mvalue-mline');
             mline.style.left = xOfBar(M);
-            // Anchor markers — Pt0 stays put; Palv and Pamb track current depth
-            const anchorPt0  = document.getElementById('mvalueAnchorPt0');
+            // Anchor markers — Palv and Pamb track current depth.
+            // (Pt,0 anchor was removed: in this single-segment model Pt,0 ≡ Palv,0,
+            // so showing both at t=0 is redundant and the trail at t>0 misleads
+            // the safety story — only Pt(t) vs M(t) matters.)
             const anchorPalv = document.getElementById('mvalueAnchorPalv');
             const anchorPamb = document.getElementById('mvalueAnchorPamb');
-            anchorPt0.style.left  = xOfBar(pT0);
             anchorPalv.style.left = xOfBar(pAlvCurrent);
             anchorPamb.style.left = xOfBar(pAmbCurrent);
             const exceeded = Pt > M;

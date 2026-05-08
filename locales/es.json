@@ -1615,7 +1615,7 @@
                 "time": "Tiempo",
                 "simplified": "Cálculos simplificados"
             },
-            "simplifiedHint": "fórmulas a mano alzada",
+            "simplifiedHint": "aproximadamente",
             "gas": {
                 "air": "Aire (F<sub>N₂</sub> = 0.79)"
             },
@@ -1645,7 +1645,7 @@
             "gas": {
                 "air": "Aire (F<sub>N₂</sub> = 0.79)"
             },
-            "simplifiedHint": "fórmulas a mano alzada",
+            "simplifiedHint": "aproximadamente",
             "mvalue": {
                 "title": "Comprobación del valor M",
                 "within": "dentro",
