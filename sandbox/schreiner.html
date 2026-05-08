@@ -587,17 +587,49 @@
             updateMValueStrip();
         }
 
+        // Clamp segment time so the diver can't travel past the surface (depth=0)
+        // or past the deepest input depth (30 m). Run on every input change.
+        function clampSegmentTime() {
+            if (state.depthRate < 0) {
+                // Ascent: max time = startDepth / |rate|
+                const maxT = state.startDepth / -state.depthRate;
+                if (state.segmentTime > maxT) {
+                    state.segmentTime = Math.max(0.1, parseFloat(maxT.toFixed(2)));
+                    els.segmentTime.value = state.segmentTime;
+                }
+            } else if (state.depthRate > 0) {
+                // Descent: max time = (30 - startDepth) / rate
+                const maxT = (30 - state.startDepth) / state.depthRate;
+                if (state.segmentTime > maxT) {
+                    state.segmentTime = Math.max(0.1, parseFloat(maxT.toFixed(2)));
+                    els.segmentTime.value = state.segmentTime;
+                }
+            }
+            // rate = 0 → no constraint (Haldane case)
+        }
+
         // ---------- Event wiring ----------
         els.startDepth.addEventListener('input', () => {
             state.startDepth = parseFloat(els.startDepth.value) || 0;
+            clampSegmentTime();
+            applyTimeRange();
+            timeSlider.value = String(state.t);
+            timeValue.textContent = state.t.toFixed(2);
+            updateStepButtons();
             recompute();
         });
         els.depthRate.addEventListener('input', () => {
             state.depthRate = parseFloat(els.depthRate.value) || 0;
+            clampSegmentTime();
+            applyTimeRange();
+            timeSlider.value = String(state.t);
+            timeValue.textContent = state.t.toFixed(2);
+            updateStepButtons();
             recompute();
         });
         els.segmentTime.addEventListener('input', () => {
             state.segmentTime = parseFloat(els.segmentTime.value) || 0;
+            clampSegmentTime();
             applyTimeRange();                           // may clamp state.t
             timeSlider.value = String(state.t);         // sync slider thumb after clamp
             timeValue.textContent = state.t.toFixed(2);
@@ -788,6 +820,7 @@
         createLanguageSwitcher();
         initI18n();
         populateCompartments();
+        clampSegmentTime();
         applyTimeRange();
         timeValue.textContent = state.t.toFixed(2);
         updateStepButtons();
