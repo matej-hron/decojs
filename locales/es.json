@@ -1608,6 +1608,7 @@
                 "startDepth": "Profundidad inicial (m)",
                 "targetDepth": "Profundidad objetivo (m)",
                 "compartment": "Compartimento",
+                "model": "Modelo",
                 "gas": "Gas",
                 "time": "Tiempo",
                 "simplified": "Cálculos simplificados"

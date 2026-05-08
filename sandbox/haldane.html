@@ -164,14 +164,6 @@
             margin-bottom: 0.5rem;
         }
         .mvalue-title { font-weight: 600; }
-        .mvalue-model { display: inline-flex; align-items: center; gap: 0.4rem; }
-        .mvalue-model select {
-            padding: 0.25rem 0.5rem;
-            border: 1px solid var(--border-color);
-            border-radius: 3px;
-            background: var(--card-background);
-            font-size: 0.85rem;
-        }
 
         .mvalue-bar-track {
             position: relative;
@@ -281,15 +273,23 @@
         <div class="haldane-inputs">
             <div class="field">
                 <label for="startDepth" data-i18n="sandbox.haldane.labels.startDepth">Start depth (m)</label>
-                <input type="number" id="startDepth" min="0" max="60" step="1" value="0">
+                <input type="number" id="startDepth" min="0" max="30" step="1" value="0">
             </div>
             <div class="field">
                 <label for="targetDepth" data-i18n="sandbox.haldane.labels.targetDepth">Target depth (m)</label>
-                <input type="number" id="targetDepth" min="0" max="60" step="1" value="30">
+                <input type="number" id="targetDepth" min="0" max="30" step="1" value="30">
             </div>
             <div class="field">
                 <label for="compartment" data-i18n="sandbox.haldane.labels.compartment">Compartment</label>
                 <select id="compartment"><!-- populated by JS --></select>
+            </div>
+            <div class="field">
+                <label for="variantSelect" data-i18n="sandbox.haldane.labels.model">Model</label>
+                <select id="variantSelect">
+                    <option value="ZH-L16A">ZH-L16A</option>
+                    <option value="ZH-L16B">ZH-L16B</option>
+                    <option value="ZH-L16C" selected>ZH-L16C</option>
+                </select>
             </div>
             <div class="field">
                 <label data-i18n="sandbox.haldane.labels.gas">Gas</label>
@@ -382,14 +382,6 @@
         <div class="mvalue-section">
             <div class="mvalue-header">
                 <span class="mvalue-title" data-i18n="sandbox.haldane.mvalue.title">M-value check</span>
-                <label class="mvalue-model">
-                    <span data-i18n="sandbox.haldane.mvalue.modelLabel">Model</span>
-                    <select id="variantSelect">
-                        <option value="ZH-L16A">ZH-L16A</option>
-                        <option value="ZH-L16B">ZH-L16B</option>
-                        <option value="ZH-L16C" selected>ZH-L16C</option>
-                    </select>
-                </label>
             </div>
             <div class="mvalue-bar-track">
                 <div class="mvalue-bar"></div>

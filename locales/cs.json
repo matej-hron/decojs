@@ -1644,6 +1644,7 @@
                 "startDepth": "Počáteční hloubka (m)",
                 "targetDepth": "Cílová hloubka (m)",
                 "compartment": "Kompartment",
+                "model": "Model",
                 "gas": "Plyn",
                 "time": "Čas",
                 "simplified": "Zjednodušené vzorce"
