@@ -1341,6 +1341,7 @@
             "sandbox": "Sandbox",
             "sandboxDesc": "Interaktivní simulátory pro plánování ponorů a výpočty plynů.",
             "sandboxLinks": {
+                "haldane": "Haldaneova rovnice",
                 "deco": "Modelování dekomprese",
                 "transfill": "Přepouštění",
                 "cascade": "Kaskádové plnění",

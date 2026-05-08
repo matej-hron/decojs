@@ -1341,6 +1341,7 @@
             "sandbox": "Sandbox",
             "sandboxDesc": "Interactive simulators for dive planning and gas calculations.",
             "sandboxLinks": {
+                "haldane": "Haldane Equation",
                 "deco": "Deco Modelling",
                 "transfill": "Transfilling",
                 "cascade": "Cascade Filling",

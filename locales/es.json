@@ -1341,6 +1341,7 @@
             "sandbox": "Sandbox",
             "sandboxDesc": "Simuladores interactivos para planificar inmersiones y calcular gases.",
             "sandboxLinks": {
+                "haldane": "Ecuación de Haldane",
                 "deco": "Modelado deco",
                 "transfill": "Transvase",
                 "cascade": "Llenado en cascada",
