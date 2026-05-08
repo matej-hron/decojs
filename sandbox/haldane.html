@@ -502,16 +502,16 @@
             // Term cards
             const F = fN2();
             const palvSymbolic = state.simplified
-                ? `= (D + 10) / 10 · F<sub>N₂</sub>`
+                ? `= (D/10 + 1) · F<sub>N₂</sub>`
                 : `= (P<sub>amb</sub> − 0.0627) · F<sub>N₂</sub>`;
             const pt0Symbolic = state.simplified
-                ? `= (D<sub>start</sub> + 10) / 10 · F<sub>N₂</sub>`
+                ? `= (D<sub>start</sub>/10 + 1) · F<sub>N₂</sub>`
                 : `= (P<sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub>`;
             const palvSubst = state.simplified
-                ? `= (${state.targetDepth} + 10) / 10 · ${F}`
+                ? `= (${state.targetDepth}/10 + 1) · ${F}`
                 : `= (${pAmbTarget.toFixed(4)} − 0.0627) · ${F.toFixed(4)}`;
             const pt0Subst = state.simplified
-                ? `= (${state.startDepth} + 10) / 10 · ${F}`
+                ? `= (${state.startDepth}/10 + 1) · ${F}`
                 : `= (${pAmbStart.toFixed(4)} − 0.0627) · ${F.toFixed(4)}`;
 
             document.getElementById('palvSymbolic').innerHTML = palvSymbolic;
