@@ -1609,8 +1609,10 @@
                 "targetDepth": "Profundidad objetivo (m)",
                 "compartment": "Compartimento",
                 "gas": "Gas",
-                "time": "Tiempo"
+                "time": "Tiempo",
+                "simplified": "Cálculos simplificados"
             },
+            "simplifiedHint": "fórmulas a mano alzada",
             "gas": {
                 "air": "Aire (F<sub>N₂</sub> = 0.79)"
             },

@@ -1645,8 +1645,10 @@
                 "targetDepth": "Target depth (m)",
                 "compartment": "Compartment",
                 "gas": "Gas",
-                "time": "Time"
+                "time": "Time",
+                "simplified": "Simplified math"
             },
+            "simplifiedHint": "napkin formulas",
             "gas": {
                 "air": "Air (F<sub>N₂</sub> = 0.79)"
             },

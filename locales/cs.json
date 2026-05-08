@@ -1645,8 +1645,10 @@
                 "targetDepth": "Cílová hloubka (m)",
                 "compartment": "Kompartment",
                 "gas": "Plyn",
-                "time": "Čas"
+                "time": "Čas",
+                "simplified": "Zjednodušené vzorce"
             },
+            "simplifiedHint": "ručně počítané",
             "gas": {
                 "air": "Vzduch (F<sub>N₂</sub> = 0,79)"
             },
