@@ -219,7 +219,7 @@
         <!-- Time control -->
         <div class="time-row">
             <span class="t-readout">⏱ t = <strong id="timeValue">0</strong> min</span>
-            <input type="range" id="timeSlider" min="0" max="125" step="1" value="0">
+            <input type="range" id="timeSlider" min="0" max="120" step="1" value="0">
             <div class="step-btns">
                 <button type="button" id="tMinus5">−5</button>
                 <button type="button" id="tMinus1">−1</button>
@@ -343,7 +343,7 @@
             // Floor of 125 gives 5 min headroom above the 120-min reference point so
             // the slider is never clamped exactly at t=120 for any compartment whose
             // 4·T½ < 120 (comps 1–5). Slow compartments always exceed 120 anyway.
-            const tMax = Math.max(125, Math.ceil(4 * comp.halfTime));
+            const tMax = Math.max(120, Math.ceil(4 * comp.halfTime));
             timeSlider.max = String(tMax);
             if (state.t > tMax) state.t = tMax;
         }
