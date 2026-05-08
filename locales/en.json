@@ -1644,6 +1644,7 @@
                 "startDepth": "Start depth (m)",
                 "targetDepth": "Target depth (m)",
                 "compartment": "Compartment",
+                "model": "Model",
                 "gas": "Gas",
                 "time": "Time",
                 "simplified": "Simplified math"
