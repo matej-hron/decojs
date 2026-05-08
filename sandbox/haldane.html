@@ -107,7 +107,7 @@
         }
         .time-row .t-readout {
             font-family: ui-monospace, monospace;
-            min-width: 100px;
+            min-width: 240px;
             font-size: 0.95rem;
         }
         .time-row #timeSlider { flex: 1; accent-color: #9b59b6; }
@@ -326,13 +326,13 @@
         </div>
         <!-- Time control -->
         <div class="time-row">
-            <span class="t-readout">⏱ t = <strong id="timeValue">0</strong> min</span>
-            <input type="range" id="timeSlider" min="0" max="120" step="1" value="0">
+            <span class="t-readout">⏱ t = <strong id="timeValue">0</strong> min &nbsp;|&nbsp; saturation = <strong id="saturationValue">0.0</strong>%</span>
+            <input type="range" id="timeSlider" min="0" max="162" step="1" value="0">
             <div class="step-btns">
-                <button type="button" id="tMinus5">−5</button>
+                <button type="button" id="tMinusHalf">−T<sub>½</sub></button>
                 <button type="button" id="tMinus1">−1</button>
                 <button type="button" id="tPlus1">+1</button>
-                <button type="button" id="tPlus5">+5</button>
+                <button type="button" id="tPlusHalf">+T<sub>½</sub></button>
             </div>
         </div>
         <!-- Mini Pt(t) chart -->
@@ -466,6 +466,10 @@
             document.getElementById('expValue').textContent = expTerm.toFixed(4);
             document.getElementById('expSubst').innerHTML = `= e<sup>−${k.toFixed(4)} · ${state.t}</sup>`;
 
+            // Saturation: 1 − e^−kt = how much of the gap from Pt0 to Palv is closed.
+            const saturationPct = (1 - expTerm) * 100;
+            document.getElementById('saturationValue').textContent = saturationPct.toFixed(1);
+
             // Stashed for later tasks (chart, M-value).
             window.__haldane = { halfTime, k, pT0, pAlv, Pt, M, pAmbStart, pAmbTarget, expTerm, t: state.t, aN2: comp.aN2, bN2: comp.bN2 };
 
@@ -491,16 +495,21 @@
             recompute();                           // recompute with the clamped state.t
         });
 
-        const timeSlider = document.getElementById('timeSlider');
-        const timeValue  = document.getElementById('timeValue');
-        const btnMinus5  = document.getElementById('tMinus5');
-        const btnMinus1  = document.getElementById('tMinus1');
-        const btnPlus1   = document.getElementById('tPlus1');
-        const btnPlus5   = document.getElementById('tPlus5');
+        const timeSlider   = document.getElementById('timeSlider');
+        const timeValue    = document.getElementById('timeValue');
+        const btnMinusHalf = document.getElementById('tMinusHalf');
+        const btnMinus1    = document.getElementById('tMinus1');
+        const btnPlus1     = document.getElementById('tPlus1');
+        const btnPlusHalf  = document.getElementById('tPlusHalf');
+
+        function getHalfTimeStep() {
+            const comp = getCompartmentsForVariant(state.variant)[state.compartmentIdx];
+            return Math.max(1, Math.round(comp.halfTime));
+        }
 
         function applyTimeRange() {
             const comp = getCompartmentsForVariant(state.variant)[state.compartmentIdx];
-            const tMax = Math.max(120, Math.ceil(4 * comp.halfTime));
+            const tMax = Math.ceil(6 * comp.halfTime);
             timeSlider.max = String(tMax);
             if (state.t > tMax) state.t = tMax;
         }
@@ -516,17 +525,17 @@
 
         function updateStepButtons() {
             const tMax = parseInt(timeSlider.max, 10);
-            btnMinus1.disabled = state.t <= 0;
-            btnMinus5.disabled = state.t <= 0;
-            btnPlus1.disabled  = state.t >= tMax;
-            btnPlus5.disabled  = state.t >= tMax;
+            btnMinus1.disabled    = state.t <= 0;
+            btnMinusHalf.disabled = state.t <= 0;
+            btnPlus1.disabled     = state.t >= tMax;
+            btnPlusHalf.disabled  = state.t >= tMax;
         }
 
         timeSlider.addEventListener('input', () => setTime(parseInt(timeSlider.value, 10)));
-        btnMinus5.addEventListener('click', () => setTime(state.t - 5));
-        btnMinus1.addEventListener('click', () => setTime(state.t - 1));
-        btnPlus1.addEventListener('click',  () => setTime(state.t + 1));
-        btnPlus5.addEventListener('click',  () => setTime(state.t + 5));
+        btnMinusHalf.addEventListener('click', () => setTime(state.t - getHalfTimeStep()));
+        btnMinus1.addEventListener('click',    () => setTime(state.t - 1));
+        btnPlus1.addEventListener('click',     () => setTime(state.t + 1));
+        btnPlusHalf.addEventListener('click',  () => setTime(state.t + getHalfTimeStep()));
 
         // ---------- Mini Pt(t) chart ----------
         const CHART_W = 480, CHART_H = 140, CHART_PAD = 6;
