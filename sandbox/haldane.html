@@ -314,7 +314,7 @@
             document.getElementById('expSubst').innerHTML = `= e<sup>−${k.toFixed(4)} · ${state.t}</sup>`;
 
             // Stashed for later tasks (chart, M-value).
-            window.__haldane = { halfTime, k, pT0, pAlv, Pt, M, pAmbStart, pAmbTarget, expTerm };
+            window.__haldane = { halfTime, k, pT0, pAlv, Pt, M, pAmbStart, pAmbTarget, expTerm, t: state.t };
         }
 
         // ---------- Event wiring ----------
@@ -328,7 +328,11 @@
         });
         els.compartment.addEventListener('change', () => {
             state.compartmentIdx = parseInt(els.compartment.value, 10);
-            recompute();
+            applyTimeRange();                      // may clamp state.t
+            timeSlider.value = String(state.t);    // sync slider thumb after clamp
+            timeValue.textContent = String(state.t);
+            updateStepButtons();
+            recompute();                           // recompute with the clamped state.t
         });
 
         const timeSlider = document.getElementById('timeSlider');
@@ -367,13 +371,6 @@
         btnMinus1.addEventListener('click', () => setTime(state.t - 1));
         btnPlus1.addEventListener('click',  () => setTime(state.t + 1));
         btnPlus5.addEventListener('click',  () => setTime(state.t + 5));
-
-        // Compartment changes also affect tMax
-        els.compartment.addEventListener('change', () => {
-            applyTimeRange();
-            timeValue.textContent = String(state.t);
-            updateStepButtons();
-        });
 
         // ---------- Init ----------
         createLanguageSwitcher();
