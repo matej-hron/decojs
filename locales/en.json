@@ -1303,6 +1303,7 @@
             "label": "Sandbox",
             "deco": "Decompression Modelling",
             "haldane": "Haldane Equation",
+            "schreiner": "Schreiner Equation",
             "tissue": "Tissue Saturation",
             "transfill": "Cylinder Transfilling",
             "cascade": "Cascade Filling",
@@ -1659,6 +1660,12 @@
                 "within": "within",
                 "exceeded": "exceeded"
             }
+        },
+        "schreiner": {
+            "title": "Schreiner Equation",
+            "subtitle": "Linear-rate companion to the Haldane page — watch the equation evolve as ambient pressure slides.",
+            "disclaimerBanner": "<strong>Educational Use Only</strong> — Interactive walk-through of the Schreiner equation for linear-rate ambient pressure changes.",
+            "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only. The actual diving algorithm uses additional logic."
         },
         "cascade": {
             "title": "Cascade Filling Station",

@@ -1303,6 +1303,7 @@
             "label": "Sandbox",
             "deco": "Modelování dekomprese",
             "haldane": "Haldaneova rovnice",
+            "schreiner": "Schreinerova rovnice",
             "tissue": "Sycení tkání",
             "transfill": "Přepouštění lahví",
             "cascade": "Kaskádové plnění",
@@ -1659,6 +1660,12 @@
                 "within": "v limitu",
                 "exceeded": "překročeno"
             }
+        },
+        "schreiner": {
+            "title": "Schreinerova rovnice",
+            "subtitle": "Lineárně-rychlostní doplněk k Haldaneově stránce — pozorujte, jak se rovnice vyvíjí, když se okolní tlak posouvá.",
+            "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Interaktivní rozbor Schreinerovy rovnice pro lineární změny okolního tlaku.",
+            "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely. Reálný dekompresní algoritmus používá další logiku."
         },
         "cascade": {
             "title": "Kaskádová plnicí stanice",

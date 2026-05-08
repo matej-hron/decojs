@@ -1303,6 +1303,7 @@
             "label": "Sandbox",
             "deco": "Modelado de descompresión",
             "haldane": "Ecuación de Haldane",
+            "schreiner": "Ecuación de Schreiner",
             "tissue": "Saturación tisular",
             "transfill": "Transvase de botellas",
             "cascade": "Llenado en cascada",
@@ -1623,6 +1624,12 @@
                 "within": "dentro",
                 "exceeded": "excedido"
             }
+        },
+        "schreiner": {
+            "title": "Ecuación de Schreiner",
+            "subtitle": "Compañera de tasa lineal de la página de Haldane — observa cómo la ecuación evoluciona mientras la presión ambiental se desliza.",
+            "disclaimerBanner": "<strong>Solo para fines educativos</strong> — Recorrido interactivo de la ecuación de Schreiner para cambios lineales de presión ambiental.",
+            "disclaimer": "<strong>Aviso:</strong> Solo para fines educativos. El algoritmo de descompresión real usa lógica adicional."
         },
         "cascade": {
             "title": "Estación de llenado en cascada",

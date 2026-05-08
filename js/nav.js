@@ -21,6 +21,7 @@ const NAV_ITEMS = [
             { href: 'sandbox/index.html', labelKey: 'nav.sandbox.deco', label: 'Decompression Modelling' },
             { href: 'sandbox/tissue-saturation.html', labelKey: 'nav.sandbox.tissue', label: 'Tissue Saturation' },
             { href: 'sandbox/haldane.html', labelKey: 'nav.sandbox.haldane', label: 'Haldane Equation' },
+            { href: 'sandbox/schreiner.html', labelKey: 'nav.sandbox.schreiner', label: 'Schreiner Equation' },
             { href: 'sandbox/transfilling.html', labelKey: 'nav.sandbox.transfill', label: 'Cylinder Transfilling' },
             { href: 'sandbox/cascade-filling.html', labelKey: 'nav.sandbox.cascade', label: 'Cascade Filling' },
             { href: 'sandbox/gas-law.html', labelKey: 'nav.sandbox.gasLaw', label: 'Gas Law: Temp & Pressure' }
