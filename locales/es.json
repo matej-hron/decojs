@@ -1601,7 +1601,17 @@
             "title": "Ecuación de Haldane",
             "subtitle": "Recorrido interactivo de cómo un compartimento tisular se satura en el tiempo.",
             "disclaimerBanner": "<strong>Solo para fines educativos</strong> — Recorrido interactivo de la ecuación de Bühlmann/Haldane de saturación.",
-            "disclaimer": "<strong>Aviso:</strong> Solo para fines educativos. El algoritmo de descompresión real usa lógica adicional."
+            "disclaimer": "<strong>Aviso:</strong> Solo para fines educativos. El algoritmo de descompresión real usa lógica adicional.",
+            "labels": {
+                "startDepth": "Profundidad inicial (m)",
+                "targetDepth": "Profundidad objetivo (m)",
+                "compartment": "Compartimento",
+                "gas": "Gas",
+                "time": "Tiempo"
+            },
+            "gas": {
+                "air": "Aire (F<sub>N₂</sub> = 0.79)"
+            }
         },
         "cascade": {
             "title": "Estación de llenado en cascada",

@@ -1637,7 +1637,17 @@
             "title": "Haldane Equation",
             "subtitle": "A live, annotated walk-through of how a tissue compartment on-gasses over time.",
             "disclaimerBanner": "<strong>Educational Use Only</strong> — Interactive walk-through of the Bühlmann/Haldane on-gassing equation.",
-            "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only. The actual diving algorithm uses additional logic."
+            "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only. The actual diving algorithm uses additional logic.",
+            "labels": {
+                "startDepth": "Start depth (m)",
+                "targetDepth": "Target depth (m)",
+                "compartment": "Compartment",
+                "gas": "Gas",
+                "time": "Time"
+            },
+            "gas": {
+                "air": "Air (F<sub>N₂</sub> = 0.79)"
+            }
         },
         "cascade": {
             "title": "Cascade Filling Station",

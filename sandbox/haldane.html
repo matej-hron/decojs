@@ -20,6 +20,31 @@
             margin: 0 auto;
             padding: 1rem;
         }
+        .haldane-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+        }
+        .haldane-inputs .field { display: flex; flex-direction: column; gap: 0.25rem; }
+        .haldane-inputs .field label { font-size: 0.8rem; color: var(--text-muted); }
+        .haldane-inputs .field input,
+        .haldane-inputs .field select {
+            padding: 0.4rem 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--card-background);
+            font-size: 0.9rem;
+        }
+        .haldane-inputs .gas-readout {
+            padding: 0.4rem 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
     </style>
 </head>
 <body>
@@ -48,7 +73,25 @@
 
     <!-- Layout -->
     <div class="haldane-layout">
-        <p class="placeholder">Coming up — inputs, formula, term cards.</p>
+        <div class="haldane-inputs">
+            <div class="field">
+                <label for="startDepth" data-i18n="sandbox.haldane.labels.startDepth">Start depth (m)</label>
+                <input type="number" id="startDepth" min="0" max="60" step="1" value="0">
+            </div>
+            <div class="field">
+                <label for="targetDepth" data-i18n="sandbox.haldane.labels.targetDepth">Target depth (m)</label>
+                <input type="number" id="targetDepth" min="0" max="60" step="1" value="30">
+            </div>
+            <div class="field">
+                <label for="compartment" data-i18n="sandbox.haldane.labels.compartment">Compartment</label>
+                <select id="compartment"><!-- populated by JS --></select>
+            </div>
+            <div class="field">
+                <label data-i18n="sandbox.haldane.labels.gas">Gas</label>
+                <span class="gas-readout" data-i18n="sandbox.haldane.gas.air">Air (F<sub>N₂</sub> = 0.79)</span>
+            </div>
+        </div>
+        <!-- formula, term cards, time control, chart, m-value strip — added in later tasks -->
     </div>
 
     <!-- Footer -->
@@ -61,11 +104,84 @@
     <!-- Navigation script -->
     <script src="../js/nav.js" type="module"></script>
 
-    <!-- i18n -->
+    <!-- i18n + state -->
     <script type="module">
         import { initI18n, createLanguageSwitcher } from '../js/i18n.js';
+        import {
+            getAmbientPressure,
+            getAlveolarN2Pressure,
+            getInitialTissueN2,
+            haldaneEquation,
+            getMValue,
+            N2_FRACTION,
+        } from '../js/decoModel.js';
+        import {
+            getCompartmentsForVariant,
+            getRateConstant,
+        } from '../js/tissueCompartments.js';
+
+        // ---------- State ----------
+        const state = {
+            startDepth: 0,        // m
+            targetDepth: 30,      // m
+            compartmentIdx: 4,    // 0-based; UI shows 1-based
+            variant: 'ZH-L16C',   // matches values from ZHL16_VARIANTS object
+            t: 0,                 // minutes
+            n2Fraction: N2_FRACTION,
+        };
+
+        // ---------- DOM ----------
+        const els = {
+            startDepth:   document.getElementById('startDepth'),
+            targetDepth:  document.getElementById('targetDepth'),
+            compartment:  document.getElementById('compartment'),
+        };
+
+        // ---------- Compartment dropdown ----------
+        function populateCompartments() {
+            const comps = getCompartmentsForVariant(state.variant);
+            els.compartment.innerHTML = comps
+                .map((c, i) => `<option value="${i}">${i + 1} · T½ = ${c.halfTime.toFixed(1)} min</option>`)
+                .join('');
+            els.compartment.value = String(state.compartmentIdx);
+        }
+
+        // ---------- Recompute (stub) ----------
+        function recompute() {
+            // Pure values (used by later tasks).
+            const comp = getCompartmentsForVariant(state.variant)[state.compartmentIdx];
+            const halfTime = comp.halfTime;
+            const k = getRateConstant(halfTime);
+            const pAmbStart = getAmbientPressure(state.startDepth);
+            const pAmbTarget = getAmbientPressure(state.targetDepth);
+            const pT0 = getAlveolarN2Pressure(pAmbStart, state.n2Fraction);
+            const pAlv = getAlveolarN2Pressure(pAmbTarget, state.n2Fraction);
+            const Pt = haldaneEquation(pT0, pAlv, state.t, halfTime);
+            const M = getMValue(pAmbTarget, comp.aN2, comp.bN2);
+            // Later tasks read these via DOM.
+            // Stash on a global for now so smoke tests / future tasks can introspect.
+            window.__haldane = { halfTime, k, pT0, pAlv, Pt, M, pAmbStart, pAmbTarget };
+        }
+
+        // ---------- Event wiring ----------
+        els.startDepth.addEventListener('input', () => {
+            state.startDepth = parseFloat(els.startDepth.value) || 0;
+            recompute();
+        });
+        els.targetDepth.addEventListener('input', () => {
+            state.targetDepth = parseFloat(els.targetDepth.value) || 0;
+            recompute();
+        });
+        els.compartment.addEventListener('change', () => {
+            state.compartmentIdx = parseInt(els.compartment.value, 10);
+            recompute();
+        });
+
+        // ---------- Init ----------
         createLanguageSwitcher();
         initI18n();
+        populateCompartments();
+        recompute();
     </script>
 </body>
 </html>
