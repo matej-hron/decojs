@@ -321,6 +321,8 @@
                 <line id="chartBaseline"  x1="0" x2="480" stroke="#e74c3c" stroke-dasharray="2 4" stroke-width="1" stroke-opacity="0.5"/>
                 <!-- Curve -->
                 <path id="chartCurve" fill="none" stroke="#2c3e50" stroke-width="1.6"/>
+                <!-- Half-time ticks (drawn dynamically) -->
+                <g id="chartTicks"></g>
                 <!-- Cursor -->
                 <line id="chartCursor" stroke="#9b59b6" stroke-width="1.5" y1="0" y2="140"/>
                 <!-- Cursor dot -->
@@ -537,6 +539,36 @@
             const yPt0 = yOf(pT0).toFixed(2);
             chartBaseline.setAttribute('y1', yPt0);
             chartBaseline.setAttribute('y2', yPt0);
+
+            // Half-time tick markers — vertical dotted lines + labels at t = T½, 2T½, ...
+            const ticksGroup = document.getElementById('chartTicks');
+            ticksGroup.innerHTML = '';
+            const SVG_NS = 'http://www.w3.org/2000/svg';
+            const maxTicks = Math.min(5, Math.floor(tMax / halfTime));
+            for (let i = 1; i <= maxTicks; i++) {
+                const tickT = i * halfTime;
+                const xT = xOf(tickT);
+                const line = document.createElementNS(SVG_NS, 'line');
+                line.setAttribute('x1', xT);
+                line.setAttribute('x2', xT);
+                line.setAttribute('y1', CHART_PAD);
+                line.setAttribute('y2', CHART_H - CHART_PAD);
+                line.setAttribute('stroke', '#7f8c8d');
+                line.setAttribute('stroke-dasharray', '2 3');
+                line.setAttribute('stroke-width', '0.8');
+                line.setAttribute('stroke-opacity', '0.4');
+                ticksGroup.appendChild(line);
+
+                const label = document.createElementNS(SVG_NS, 'text');
+                label.setAttribute('x', xT);
+                label.setAttribute('y', CHART_PAD + 8);
+                label.setAttribute('font-size', '9');
+                label.setAttribute('fill', '#7f8c8d');
+                label.setAttribute('text-anchor', 'middle');
+                label.setAttribute('font-family', 'ui-monospace, monospace');
+                label.textContent = i === 1 ? 'T½' : `${i}T½`;
+                ticksGroup.appendChild(label);
+            }
 
             const cursorX = xOf(state.t).toFixed(2);
             chartCursor.setAttribute('x1', cursorX);
