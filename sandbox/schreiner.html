@@ -562,7 +562,10 @@
         });
         els.segmentTime.addEventListener('input', () => {
             state.segmentTime = parseFloat(els.segmentTime.value) || 0;
-            applyTimeRange();
+            applyTimeRange();                           // may clamp state.t
+            timeSlider.value = String(state.t);         // sync slider thumb after clamp
+            timeValue.textContent = state.t.toFixed(2);
+            updateStepButtons();
             recompute();
         });
         els.compartment.addEventListener('change', () => {
