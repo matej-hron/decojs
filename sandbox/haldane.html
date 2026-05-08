@@ -94,6 +94,35 @@
         .term-card .formula { font-family: ui-monospace, monospace; color: var(--text-muted); font-size: 0.82rem; margin-top: 0.25rem; }
         .term-card .value   { font-family: ui-monospace, monospace; font-weight: 700; color: #2980b9; font-size: 1rem; margin-top: 0.4rem; }
         .term-card .why     { color: var(--text-muted); font-size: 0.8rem; font-style: italic; margin-top: 0.4rem; }
+
+        .time-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.7rem 1rem;
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            margin: 1rem 0;
+        }
+        .time-row .t-readout {
+            font-family: ui-monospace, monospace;
+            min-width: 100px;
+            font-size: 0.95rem;
+        }
+        .time-row #timeSlider { flex: 1; accent-color: #9b59b6; }
+        .time-row .step-btns { display: flex; gap: 0.25rem; }
+        .time-row .step-btns button {
+            padding: 0.25rem 0.6rem;
+            border: 1px solid var(--border-color);
+            border-radius: 3px;
+            background: var(--card-background);
+            font-family: ui-monospace, monospace;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        .time-row .step-btns button:hover { background: var(--background-color); }
+        .time-row .step-btns button:disabled { opacity: 0.5; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -187,7 +216,18 @@
                 <div class="why">1.0 at t=0, decays toward 0. Half-gone every T½.</div>
             </div>
         </div>
-        <!-- time control, chart, m-value strip — added in later tasks -->
+        <!-- Time control -->
+        <div class="time-row">
+            <span class="t-readout">⏱ t = <strong id="timeValue">0</strong> min</span>
+            <input type="range" id="timeSlider" min="0" max="125" step="1" value="0">
+            <div class="step-btns">
+                <button type="button" id="tMinus5">−5</button>
+                <button type="button" id="tMinus1">−1</button>
+                <button type="button" id="tPlus1">+1</button>
+                <button type="button" id="tPlus5">+5</button>
+            </div>
+        </div>
+        <!-- chart, m-value strip — added in later tasks -->
     </div>
 
     <!-- Footer -->
@@ -206,7 +246,6 @@
         import {
             getAmbientPressure,
             getAlveolarN2Pressure,
-            getInitialTissueN2,
             haldaneEquation,
             getMValue,
             N2_FRACTION,
@@ -292,10 +331,60 @@
             recompute();
         });
 
+        const timeSlider = document.getElementById('timeSlider');
+        const timeValue  = document.getElementById('timeValue');
+        const btnMinus5  = document.getElementById('tMinus5');
+        const btnMinus1  = document.getElementById('tMinus1');
+        const btnPlus1   = document.getElementById('tPlus1');
+        const btnPlus5   = document.getElementById('tPlus5');
+
+        function applyTimeRange() {
+            const comp = getCompartmentsForVariant(state.variant)[state.compartmentIdx];
+            // Floor of 125 gives 5 min headroom above the 120-min reference point so
+            // the slider is never clamped exactly at t=120 for any compartment whose
+            // 4·T½ < 120 (comps 1–5). Slow compartments always exceed 120 anyway.
+            const tMax = Math.max(125, Math.ceil(4 * comp.halfTime));
+            timeSlider.max = String(tMax);
+            if (state.t > tMax) state.t = tMax;
+        }
+
+        function setTime(newT) {
+            const tMax = parseInt(timeSlider.max, 10);
+            state.t = Math.max(0, Math.min(tMax, Math.round(newT)));
+            timeSlider.value = String(state.t);
+            timeValue.textContent = String(state.t);
+            updateStepButtons();
+            recompute();
+        }
+
+        function updateStepButtons() {
+            const tMax = parseInt(timeSlider.max, 10);
+            btnMinus1.disabled = state.t <= 0;
+            btnMinus5.disabled = state.t <= 0;
+            btnPlus1.disabled  = state.t >= tMax;
+            btnPlus5.disabled  = state.t >= tMax;
+        }
+
+        timeSlider.addEventListener('input', () => setTime(parseInt(timeSlider.value, 10)));
+        btnMinus5.addEventListener('click', () => setTime(state.t - 5));
+        btnMinus1.addEventListener('click', () => setTime(state.t - 1));
+        btnPlus1.addEventListener('click',  () => setTime(state.t + 1));
+        btnPlus5.addEventListener('click',  () => setTime(state.t + 5));
+
+        // Compartment changes also affect tMax
+        els.compartment.addEventListener('change', () => {
+            applyTimeRange();
+            timeValue.textContent = String(state.t);
+            updateStepButtons();
+        });
+
         // ---------- Init ----------
         createLanguageSwitcher();
         initI18n();
         populateCompartments();
+        applyTimeRange();
+        timeValue.textContent = String(state.t);
+        updateStepButtons();
         recompute();
     </script>
 </body>
