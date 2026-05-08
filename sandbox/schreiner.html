@@ -389,13 +389,13 @@
         <!-- Mini Pt(t) chart -->
         <div class="chart-row">
             <svg id="ptChart" viewBox="0 0 480 140" preserveAspectRatio="none" aria-label="Pt over time">
-                <!-- Asymptote (Palv) -->
-                <line id="chartAsymptote" x1="0" x2="480" stroke="#2980b9" stroke-dasharray="4 4" stroke-width="1" stroke-opacity="0.6"/>
-                <!-- Baseline (Pt0) -->
-                <line id="chartBaseline"  x1="0" x2="480" stroke="#e74c3c" stroke-dasharray="2 4" stroke-width="1" stroke-opacity="0.5"/>
-                <!-- Curve -->
+                <!-- Palv(t) — straight sloped line from Palv,0 to Palv,end -->
+                <path id="chartPalv" fill="none" stroke="#2980b9" stroke-dasharray="4 4" stroke-width="1.2" stroke-opacity="0.7"/>
+                <!-- Baseline (Pt,0) — flat dashed red -->
+                <line id="chartBaseline" x1="0" x2="480" stroke="#e74c3c" stroke-dasharray="2 4" stroke-width="1" stroke-opacity="0.5"/>
+                <!-- Curve (Pt(t)) -->
                 <path id="chartCurve" fill="none" stroke="#2c3e50" stroke-width="1.6"/>
-                <!-- Half-time ticks (drawn dynamically) -->
+                <!-- Half-time ticks (drawn dynamically; may be empty for short segments) -->
                 <g id="chartTicks"></g>
                 <!-- Cursor -->
                 <line id="chartCursor" stroke="#9b59b6" stroke-width="1.5" y1="0" y2="140"/>
@@ -648,19 +648,20 @@
 
         // ---------- Mini Pt(t) chart ----------
         const CHART_W = 480, CHART_H = 140, CHART_PAD = 6;
-        const chartCurve     = document.getElementById('chartCurve');
-        const chartCursor    = document.getElementById('chartCursor');
-        const chartDot       = document.getElementById('chartDot');
-        const chartAsymptote = document.getElementById('chartAsymptote');
-        const chartBaseline  = document.getElementById('chartBaseline');
+        const chartCurve    = document.getElementById('chartCurve');
+        const chartCursor   = document.getElementById('chartCursor');
+        const chartDot      = document.getElementById('chartDot');
+        const chartPalv     = document.getElementById('chartPalv');
+        const chartBaseline = document.getElementById('chartBaseline');
 
         function drawChart() {
-            if (!window.__haldane) return;
-            const { halfTime, pT0, pAlv } = window.__haldane;
-            const tMax = parseFloat(timeSlider.max);
-            // y range: encompass both Pt0 and Palv with 5% padding both sides.
-            const yMin = Math.min(pT0, pAlv);
-            const yMax = Math.max(pT0, pAlv);
+            const { halfTime, pT0, pAlv0, R, segmentTime, depthRate } = window.__schreiner;
+            const tMax = Math.max(0.001, parseFloat(timeSlider.max));
+            // Palv at t=0 and at t=segmentTime (linear in time)
+            const pAlvEnd = pAlv0 + R * tMax;
+            // y range: cover Pt0, Palv,0, Palv,end
+            const yMin = Math.min(pT0, pAlv0, pAlvEnd);
+            const yMax = Math.max(pT0, pAlv0, pAlvEnd);
             const ySpan = (yMax - yMin) || 1;
             const yLo = yMin - 0.05 * ySpan;
             const yHi = yMax + 0.05 * ySpan;
@@ -668,23 +669,35 @@
             const xOf = (t) => CHART_PAD + (CHART_W - 2 * CHART_PAD) * (t / tMax);
             const yOf = (p) => CHART_PAD + (CHART_H - 2 * CHART_PAD) * (1 - (p - yLo) / (yHi - yLo));
 
+            // Pt(t) curve via schreinerEquation
             const pts = [];
             const N = 120;
             for (let i = 0; i <= N; i++) {
                 const t = (i / N) * tMax;
-                const Pt = haldaneEquation(pT0, pAlv, t, halfTime);
-                pts.push(`${xOf(t).toFixed(2)},${yOf(Pt).toFixed(2)}`);
+                const PtAtT = schreinerEquation(pT0, pAlv0, R, t, halfTime);
+                pts.push(`${xOf(t).toFixed(2)},${yOf(PtAtT).toFixed(2)}`);
             }
             chartCurve.setAttribute('d', `M ${pts.join(' L ')}`);
 
-            const yPalv = yOf(pAlv).toFixed(2);
-            chartAsymptote.setAttribute('y1', yPalv);
-            chartAsymptote.setAttribute('y2', yPalv);
+            // Palv(t) — straight line from (0, Palv,0) to (tMax, Palv,end)
+            const palvPath = `M ${xOf(0).toFixed(2)},${yOf(pAlv0).toFixed(2)} L ${xOf(tMax).toFixed(2)},${yOf(pAlvEnd).toFixed(2)}`;
+            chartPalv.setAttribute('d', palvPath);
+
+            // Baseline at Pt,0
             const yPt0 = yOf(pT0).toFixed(2);
             chartBaseline.setAttribute('y1', yPt0);
             chartBaseline.setAttribute('y2', yPt0);
 
-            // Half-time tick markers — vertical dotted lines + labels at t = T½, 2T½, ...
+            // Cursor + dot at current t
+            const cursorX = xOf(state.t).toFixed(2);
+            chartCursor.setAttribute('x1', cursorX);
+            chartCursor.setAttribute('x2', cursorX);
+            chartCursor.setAttribute('y2', CHART_H);
+            const PtNow = window.__schreiner.Pt;
+            chartDot.setAttribute('cx', cursorX);
+            chartDot.setAttribute('cy', yOf(PtNow).toFixed(2));
+
+            // Half-time tick markers — only draw if at least one fits in [0, tMax]
             const ticksGroup = document.getElementById('chartTicks');
             ticksGroup.innerHTML = '';
             const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -713,13 +726,6 @@
                 label.textContent = i === 1 ? 'T½' : `${i}T½`;
                 ticksGroup.appendChild(label);
             }
-
-            const cursorX = xOf(state.t).toFixed(2);
-            chartCursor.setAttribute('x1', cursorX);
-            chartCursor.setAttribute('x2', cursorX);
-            const PtNow = window.__haldane.Pt;
-            chartDot.setAttribute('cx', cursorX);
-            chartDot.setAttribute('cy', yOf(PtNow).toFixed(2));
         }
 
         // ---------- M-value strip ----------
@@ -744,8 +750,8 @@
         const BAR_MAX = 10.0;
 
         function updateMValueStrip() {
-            if (!window.__haldane) return;
-            const { Pt, M, pAmbTarget, aN2, bN2 } = window.__haldane;
+            if (!window.__schreiner) return;
+            const { Pt, M, pAmbCurrent, pAlv0, pT0, aN2, bN2 } = window.__schreiner;
             mvaluePtOut.textContent = Pt.toFixed(4);
             mvalueOut.textContent = M.toFixed(4);
             const xOfBar = (v) => `${Math.max(0, Math.min(1, v / BAR_MAX)) * 100}%`;
@@ -753,20 +759,19 @@
             const mline = document.querySelector('.mvalue-mline');
             mline.style.left = xOfBar(M);
             // Anchor markers — Palv, Pt0, and Pamb on the same fixed scale.
-            const { pT0, pAlv } = window.__haldane;
             const anchorPt0  = document.getElementById('mvalueAnchorPt0');
             const anchorPalv = document.getElementById('mvalueAnchorPalv');
             const anchorPamb = document.getElementById('mvalueAnchorPamb');
             anchorPt0.style.left  = xOfBar(pT0);
-            anchorPalv.style.left = xOfBar(pAlv);
-            anchorPamb.style.left = xOfBar(pAmbTarget);
+            anchorPalv.style.left = xOfBar(pAlv0);
+            anchorPamb.style.left = xOfBar(pAmbCurrent);
             const exceeded = Pt > M;
             mvalueStatus.textContent = exceeded ? '✗ exceeded' : '✓ within';
             mvalueStatus.classList.toggle('exceeded', exceeded);
             mvalueStatus.classList.toggle('ok', !exceeded);
             // Substituted derivation line
             const deriv = document.getElementById('mvalueDerivation');
-            deriv.innerHTML = `M = a + P<sub>amb</sub> / b = ${aN2.toFixed(4)} + ${pAmbTarget.toFixed(4)} / ${bN2.toFixed(4)} = <strong>${M.toFixed(4)}</strong>`;
+            deriv.innerHTML = `M = a + P<sub>amb</sub> / b = ${aN2.toFixed(4)} + ${pAmbCurrent.toFixed(4)} / ${bN2.toFixed(4)} = <strong>${M.toFixed(4)}</strong>`;
         }
 
         // ---------- Init ----------
