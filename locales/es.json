@@ -1303,6 +1303,7 @@
             "label": "Sandbox",
             "deco": "Modelado de descompresión",
             "haldane": "Ecuación de Haldane",
+            "schreiner": "Ecuación de Schreiner",
             "tissue": "Saturación tisular",
             "transfill": "Transvase de botellas",
             "cascade": "Llenado en cascada",
@@ -1344,6 +1345,7 @@
                 "deco": "Modelado deco",
                 "tissue": "Saturación tisular",
                 "haldane": "Ecuación de Haldane",
+                "schreiner": "Ecuación de Schreiner",
                 "transfill": "Transvase",
                 "cascade": "Llenado en cascada",
                 "gasLaw": "Ley de los gases"
@@ -1620,6 +1622,32 @@
             "mvalue": {
                 "title": "Comprobación del valor M",
                 "modelLabel": "Modelo",
+                "within": "dentro",
+                "exceeded": "excedido"
+            }
+        },
+        "schreiner": {
+            "title": "Ecuación de Schreiner",
+            "subtitle": "Compañera de tasa lineal de la página de Haldane — observa cómo la ecuación evoluciona mientras la presión ambiental se desliza.",
+            "disclaimerBanner": "<strong>Solo para fines educativos</strong> — Recorrido interactivo de la ecuación de Schreiner para cambios lineales de presión ambiental.",
+            "disclaimer": "<strong>Aviso:</strong> Solo para fines educativos. El algoritmo de descompresión real usa lógica adicional.",
+            "labels": {
+                "startDepth": "Profundidad inicial (m)",
+                "depthRate": "Tasa de profundidad (m/min)",
+                "segmentTime": "Tiempo (min)",
+                "endDepth": "Profundidad final",
+                "compartment": "Compartimento",
+                "model": "Modelo",
+                "gas": "Gas",
+                "time": "Tiempo",
+                "simplified": "Cálculos simplificados"
+            },
+            "gas": {
+                "air": "Aire (F<sub>N₂</sub> = 0.79)"
+            },
+            "simplifiedHint": "fórmulas a mano alzada",
+            "mvalue": {
+                "title": "Comprobación del valor M",
                 "within": "dentro",
                 "exceeded": "excedido"
             }

@@ -1303,6 +1303,7 @@
             "label": "Sandbox",
             "deco": "Modelování dekomprese",
             "haldane": "Haldaneova rovnice",
+            "schreiner": "Schreinerova rovnice",
             "tissue": "Sycení tkání",
             "transfill": "Přepouštění lahví",
             "cascade": "Kaskádové plnění",
@@ -1344,6 +1345,7 @@
                 "deco": "Modelování dekomprese",
                 "tissue": "Sycení tkání",
                 "haldane": "Haldaneova rovnice",
+                "schreiner": "Schreinerova rovnice",
                 "transfill": "Přepouštění",
                 "cascade": "Kaskádové plnění",
                 "gasLaw": "Plynový zákon"
@@ -1656,6 +1658,32 @@
             "mvalue": {
                 "title": "Kontrola M-hodnoty",
                 "modelLabel": "Model",
+                "within": "v limitu",
+                "exceeded": "překročeno"
+            }
+        },
+        "schreiner": {
+            "title": "Schreinerova rovnice",
+            "subtitle": "Lineárně-rychlostní doplněk k Haldaneově stránce — pozorujte, jak se rovnice vyvíjí, když se okolní tlak posouvá.",
+            "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Interaktivní rozbor Schreinerovy rovnice pro lineární změny okolního tlaku.",
+            "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely. Reálný dekompresní algoritmus používá další logiku.",
+            "labels": {
+                "startDepth": "Počáteční hloubka (m)",
+                "depthRate": "Rychlost změny hloubky (m/min)",
+                "segmentTime": "Čas (min)",
+                "endDepth": "Cílová hloubka",
+                "compartment": "Kompartment",
+                "model": "Model",
+                "gas": "Plyn",
+                "time": "Čas",
+                "simplified": "Zjednodušené vzorce"
+            },
+            "gas": {
+                "air": "Vzduch (F<sub>N₂</sub> = 0,79)"
+            },
+            "simplifiedHint": "ručně počítané",
+            "mvalue": {
+                "title": "Kontrola M-hodnoty",
                 "within": "v limitu",
                 "exceeded": "překročeno"
             }
