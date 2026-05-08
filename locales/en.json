@@ -1665,7 +1665,27 @@
             "title": "Schreiner Equation",
             "subtitle": "Linear-rate companion to the Haldane page — watch the equation evolve as ambient pressure slides.",
             "disclaimerBanner": "<strong>Educational Use Only</strong> — Interactive walk-through of the Schreiner equation for linear-rate ambient pressure changes.",
-            "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only. The actual diving algorithm uses additional logic."
+            "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only. The actual diving algorithm uses additional logic.",
+            "labels": {
+                "startDepth": "Start depth (m)",
+                "depthRate": "Depth rate (m/min)",
+                "segmentTime": "Time (min)",
+                "endDepth": "End depth",
+                "compartment": "Compartment",
+                "model": "Model",
+                "gas": "Gas",
+                "time": "Time",
+                "simplified": "Simplified math"
+            },
+            "gas": {
+                "air": "Air (F<sub>N₂</sub> = 0.79)"
+            },
+            "simplifiedHint": "napkin formulas",
+            "mvalue": {
+                "title": "M-value check",
+                "within": "within",
+                "exceeded": "exceeded"
+            }
         },
         "cascade": {
             "title": "Cascade Filling Station",

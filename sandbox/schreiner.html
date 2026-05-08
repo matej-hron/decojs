@@ -273,19 +273,27 @@
     <div class="haldane-layout">
         <div class="haldane-inputs">
             <div class="field">
-                <label for="startDepth" data-i18n="sandbox.haldane.labels.startDepth">Start depth (m)</label>
-                <input type="number" id="startDepth" min="0" max="30" step="1" value="0">
+                <label for="startDepth" data-i18n="sandbox.schreiner.labels.startDepth">Start depth (m)</label>
+                <input type="number" id="startDepth" min="0" max="30" step="1" value="30">
             </div>
             <div class="field">
-                <label for="targetDepth" data-i18n="sandbox.haldane.labels.targetDepth">Target depth (m)</label>
-                <input type="number" id="targetDepth" min="0" max="30" step="1" value="30">
+                <label for="depthRate" data-i18n="sandbox.schreiner.labels.depthRate">Depth rate (m/min)</label>
+                <input type="number" id="depthRate" min="-30" max="30" step="0.5" value="-10">
             </div>
             <div class="field">
-                <label for="compartment" data-i18n="sandbox.haldane.labels.compartment">Compartment</label>
+                <label for="segmentTime" data-i18n="sandbox.schreiner.labels.segmentTime">Time (min)</label>
+                <input type="number" id="segmentTime" min="0.1" max="60" step="0.1" value="0.9">
+            </div>
+            <div class="field">
+                <label data-i18n="sandbox.schreiner.labels.endDepth">End depth</label>
+                <span class="gas-readout" id="endDepthDisplay">21.0 m</span>
+            </div>
+            <div class="field">
+                <label for="compartment" data-i18n="sandbox.schreiner.labels.compartment">Compartment</label>
                 <select id="compartment"><!-- populated by JS --></select>
             </div>
             <div class="field">
-                <label for="variantSelect" data-i18n="sandbox.haldane.labels.model">Model</label>
+                <label for="variantSelect" data-i18n="sandbox.schreiner.labels.model">Model</label>
                 <select id="variantSelect">
                     <option value="ZH-L16A">ZH-L16A</option>
                     <option value="ZH-L16B">ZH-L16B</option>
@@ -293,14 +301,14 @@
                 </select>
             </div>
             <div class="field">
-                <label data-i18n="sandbox.haldane.labels.gas">Gas</label>
-                <span class="gas-readout" data-i18n="sandbox.haldane.gas.air">Air (F<sub>N₂</sub> = 0.79)</span>
+                <label data-i18n="sandbox.schreiner.labels.gas">Gas</label>
+                <span class="gas-readout" data-i18n="sandbox.schreiner.gas.air">Air (F<sub>N₂</sub> = 0.79)</span>
             </div>
             <div class="field">
-                <label for="simplifiedToggle" data-i18n="sandbox.haldane.labels.simplified">Simplified math</label>
+                <label for="simplifiedToggle" data-i18n="sandbox.schreiner.labels.simplified">Simplified math</label>
                 <label class="toggle-row">
                     <input type="checkbox" id="simplifiedToggle">
-                    <span class="toggle-hint" data-i18n="sandbox.haldane.simplifiedHint">napkin formulas</span>
+                    <span class="toggle-hint" data-i18n="sandbox.schreiner.simplifiedHint">napkin formulas</span>
                 </label>
             </div>
         </div>
@@ -354,7 +362,7 @@
         <!-- Time control -->
         <div class="time-row">
             <span class="t-readout">⏱ t = <strong id="timeValue">0</strong> min &nbsp;|&nbsp; saturation = <strong id="saturationValue">0.0</strong>%</span>
-            <input type="range" id="timeSlider" min="0" max="162" step="1" value="0">
+            <input type="range" id="timeSlider" min="0" max="0.9" step="0.05" value="0">
             <div class="step-btns">
                 <button type="button" id="tMinusHalf">−T<sub>½</sub></button>
                 <button type="button" id="tMinus1">−1</button>
@@ -382,7 +390,7 @@
         <!-- M-value strip -->
         <div class="mvalue-section">
             <div class="mvalue-header">
-                <span class="mvalue-title" data-i18n="sandbox.haldane.mvalue.title">M-value check</span>
+                <span class="mvalue-title" data-i18n="sandbox.schreiner.mvalue.title">M-value check</span>
             </div>
             <div class="mvalue-bar-track">
                 <div class="mvalue-bar"></div>
@@ -395,7 +403,7 @@
             <div class="mvalue-readout">
                 P<sub>t</sub> = <span id="mvaluePt">0.7510</span> bar
                 | M = <span id="mValue">2.50</span> bar
-                <span class="mvalue-status" id="mvalueStatus" data-i18n="sandbox.haldane.mvalue.within">within</span>
+                <span class="mvalue-status" id="mvalueStatus" data-i18n="sandbox.schreiner.mvalue.within">within</span>
             </div>
             <div class="mvalue-derivation" id="mvalueDerivation">
                 M = a + P<sub>amb</sub> / b
@@ -451,8 +459,9 @@
 
         // ---------- State ----------
         const state = {
-            startDepth: 0,        // m
-            targetDepth: 30,      // m
+            startDepth: 30,       // m
+            depthRate: -10,       // m/min (signed; negative = descending)
+            segmentTime: 0.9,     // min
             compartmentIdx: 4,    // 0-based; UI shows 1-based
             variant: 'ZH-L16C',   // matches values from ZHL16_VARIANTS object
             t: 0,                 // minutes
@@ -463,7 +472,9 @@
         // ---------- DOM ----------
         const els = {
             startDepth:   document.getElementById('startDepth'),
-            targetDepth:  document.getElementById('targetDepth'),
+            depthRate:    document.getElementById('depthRate'),
+            segmentTime:  document.getElementById('segmentTime'),
+            endDepthDisp: document.getElementById('endDepthDisplay'),
             compartment:  document.getElementById('compartment'),
         };
 
@@ -478,6 +489,11 @@
 
         // ---------- Recompute ----------
         function recompute() {
+            // End depth display
+            const endDepth = state.startDepth + state.depthRate * state.segmentTime;
+            const endDepthClamped = Math.max(0, endDepth);
+            els.endDepthDisp.textContent = `${endDepthClamped.toFixed(1)} m`;
+
             const comp = getCompartmentsForVariant(state.variant)[state.compartmentIdx];
             const halfTime = comp.halfTime;
             const k = getRateConstant(halfTime);
@@ -529,8 +545,10 @@
             // Stashed for later tasks (chart, M-value).
             window.__haldane = { halfTime, k, pT0, pAlv, Pt, M, pAmbStart, pAmbTarget, expTerm, t: state.t, aN2: comp.aN2, bN2: comp.bN2 };
 
-            drawChart();
-            updateMValueStrip();
+            if (!isNaN(pT0) && !isNaN(pAlv)) {
+                drawChart();
+                updateMValueStrip();
+            }
         }
 
         // ---------- Event wiring ----------
@@ -538,17 +556,22 @@
             state.startDepth = parseFloat(els.startDepth.value) || 0;
             recompute();
         });
-        els.targetDepth.addEventListener('input', () => {
-            state.targetDepth = parseFloat(els.targetDepth.value) || 0;
+        els.depthRate.addEventListener('input', () => {
+            state.depthRate = parseFloat(els.depthRate.value) || 0;
+            recompute();
+        });
+        els.segmentTime.addEventListener('input', () => {
+            state.segmentTime = parseFloat(els.segmentTime.value) || 0;
+            applyTimeRange();
             recompute();
         });
         els.compartment.addEventListener('change', () => {
             state.compartmentIdx = parseInt(els.compartment.value, 10);
-            applyTimeRange();                      // may clamp state.t
-            timeSlider.value = String(state.t);    // sync slider thumb after clamp
-            timeValue.textContent = String(state.t);
+            applyTimeRange();                           // may clamp state.t
+            timeSlider.value = String(state.t);         // sync slider thumb after clamp
+            timeValue.textContent = state.t.toFixed(2);
             updateStepButtons();
-            recompute();                           // recompute with the clamped state.t
+            recompute();                                // recompute with the clamped state.t
         });
 
         const simplifiedToggle = document.getElementById('simplifiedToggle');
@@ -583,30 +606,30 @@
         }
 
         function applyTimeRange() {
-            const comp = getCompartmentsForVariant(state.variant)[state.compartmentIdx];
-            const tMax = Math.ceil(6 * comp.halfTime);
+            const tMax = Math.max(0.1, state.segmentTime);
             timeSlider.max = String(tMax);
+            timeSlider.step = '0.05';
             if (state.t > tMax) state.t = tMax;
         }
 
         function setTime(newT) {
-            const tMax = parseInt(timeSlider.max, 10);
-            state.t = Math.max(0, Math.min(tMax, Math.round(newT)));
+            const tMax = parseFloat(timeSlider.max);
+            state.t = Math.max(0, Math.min(tMax, parseFloat(newT.toFixed(2))));
             timeSlider.value = String(state.t);
-            timeValue.textContent = String(state.t);
+            timeValue.textContent = state.t.toFixed(2);
             updateStepButtons();
             recompute();
         }
 
         function updateStepButtons() {
-            const tMax = parseInt(timeSlider.max, 10);
+            const tMax = parseFloat(timeSlider.max);
             btnMinus1.disabled    = state.t <= 0;
             btnPlus1.disabled     = state.t >= tMax;
             btnMinusHalf.disabled = prevHalfTimeMarker() >= state.t;
             btnPlusHalf.disabled  = nextHalfTimeMarker() > tMax || state.t >= tMax;
         }
 
-        timeSlider.addEventListener('input', () => setTime(parseInt(timeSlider.value, 10)));
+        timeSlider.addEventListener('input', () => setTime(parseFloat(timeSlider.value)));
         btnMinusHalf.addEventListener('click', () => setTime(prevHalfTimeMarker()));
         btnMinus1.addEventListener('click',    () => setTime(state.t - 1));
         btnPlus1.addEventListener('click',     () => setTime(state.t + 1));
@@ -622,7 +645,7 @@
 
         function drawChart() {
             const { halfTime, pT0, pAlv } = window.__haldane;
-            const tMax = parseInt(timeSlider.max, 10);
+            const tMax = parseFloat(timeSlider.max);
             // y range: encompass both Pt0 and Palv with 5% padding both sides.
             const yMin = Math.min(pT0, pAlv);
             const yMax = Math.max(pT0, pAlv);
@@ -738,7 +761,7 @@
         initI18n();
         populateCompartments();
         applyTimeRange();
-        timeValue.textContent = String(state.t);
+        timeValue.textContent = state.t.toFixed(2);
         updateStepButtons();
         recompute();
     </script>
