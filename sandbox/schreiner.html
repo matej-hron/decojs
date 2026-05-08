@@ -116,6 +116,44 @@
         .term-card .value   { font-family: ui-monospace, monospace; font-weight: 700; color: #2980b9; font-size: 1rem; margin-top: 0.4rem; }
         .term-card .why     { color: var(--text-muted); font-size: 0.8rem; font-style: italic; margin-top: 0.4rem; }
 
+        .decomp-section { margin-bottom: 1rem; }
+        .decomp-header {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .decomp-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.6rem;
+        }
+        @media (max-width: 700px) {
+            .decomp-row { grid-template-columns: 1fr; }
+        }
+        .decomp-card {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-top: 2px dashed rgba(127, 140, 141, 0.5);
+            border-radius: 4px;
+            padding: 0.55rem 0.7rem;
+            font-size: 0.85rem;
+            line-height: 1.45;
+        }
+        .decomp-card .name    { font-family: ui-monospace, monospace; font-weight: 600; font-size: 0.92rem; color: var(--text-color); }
+        .decomp-card .formula { font-family: ui-monospace, monospace; color: var(--text-muted); font-size: 0.8rem; margin-top: 0.25rem; }
+        .decomp-card .value   { font-family: ui-monospace, monospace; font-weight: 700; color: var(--text-color); font-size: 0.95rem; margin-top: 0.4rem; }
+        .decomp-card .why     { color: var(--text-muted); font-size: 0.78rem; font-style: italic; margin-top: 0.4rem; }
+        .decomp-sum {
+            text-align: center;
+            font-family: ui-monospace, monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.6rem;
+        }
+
         .time-row {
             display: flex;
             align-items: center;
@@ -385,6 +423,36 @@
                 <div class="why">1.0 at t=0, decays toward 0. Multiplied by the initial-disequilibrium term.</div>
             </div>
         </div>
+
+        <!-- Three-term decomposition (the formula's structural pieces) -->
+        <div class="decomp-section">
+            <div class="decomp-header">Three-term decomposition · the formula's structural pieces</div>
+            <div class="decomp-row">
+                <div class="decomp-card">
+                    <div class="name">Moving alveolar source</div>
+                    <div class="formula">= P<sub>alv,0</sub> + R · t</div>
+                    <div class="formula" id="termMovingSubst">= 3.1217 + (−0.7902) · 0.00</div>
+                    <div class="value"><span id="termMovingValue">3.1217</span> bar</div>
+                    <div class="why">Where the alveolar source is right now (linear in t).</div>
+                </div>
+                <div class="decomp-card">
+                    <div class="name">Phase lag (R/k)</div>
+                    <div class="formula">= R / k</div>
+                    <div class="formula" id="termLagSubst">= −0.7902 / 0.0257</div>
+                    <div class="value"><span id="termLagValue">−30.74</span> bar</div>
+                    <div class="why">How far below (ascent) or above (descent) the source a perfectly-tracking tissue would settle. Equivalent to 1/k minutes of slope.</div>
+                </div>
+                <div class="decomp-card">
+                    <div class="name">Decaying initial gap</div>
+                    <div class="formula">= (P<sub>alv,0</sub> − P<sub>t,0</sub> − R/k) · e<sup>−kt</sup></div>
+                    <div class="formula" id="termDecaySubst">= 30.74 · 1.0000</div>
+                    <div class="value"><span id="termDecayValue">30.74</span> bar</div>
+                    <div class="why">The initial offset between actual Pt and the tracking line — settles exponentially toward zero.</div>
+                </div>
+            </div>
+            <div class="decomp-sum">P<sub>t</sub>(t) = [moving] − [phase lag] − [decaying gap]</div>
+        </div>
+
         <!-- Time control -->
         <div class="time-row">
             <span class="t-readout">⏱ t = <strong id="timeValue">0</strong> min &nbsp;|&nbsp; depth = <strong id="depthValue">30.0</strong> m &nbsp;|&nbsp; saturation = <strong id="saturationValue">0.0</strong>%</span>
@@ -575,6 +643,17 @@
             const saturationPct = (1 - expTerm) * 100;
             document.getElementById('saturationValue').textContent = saturationPct.toFixed(1);
             document.getElementById('depthValue').textContent = currentDepth.toFixed(1);
+
+            // Three-term decomposition: Pt = (Palv,0 + R·t) − (R/k) − (Palv,0 − Pt,0 − R/k)·e^−kt
+            const termMoving = pAlv0 + R * state.t;
+            const termLag    = R / k;
+            const termDecay  = (pAlv0 - pT0 - R / k) * expTerm;
+            document.getElementById('termMovingSubst').innerHTML = `= ${pAlv0.toFixed(4)} + (${R.toFixed(4)}) · ${state.t.toFixed(2)}`;
+            document.getElementById('termMovingValue').textContent = termMoving.toFixed(4);
+            document.getElementById('termLagSubst').innerHTML = `= ${R.toFixed(4)} / ${k.toFixed(4)}`;
+            document.getElementById('termLagValue').textContent = termLag.toFixed(4);
+            document.getElementById('termDecaySubst').innerHTML = `= (${pAlv0.toFixed(4)} − ${pT0.toFixed(4)} − ${(R/k).toFixed(4)}) · ${expTerm.toFixed(4)}`;
+            document.getElementById('termDecayValue').textContent = termDecay.toFixed(4);
 
             // Stash for chart + M-value strip
             window.__schreiner = {
