@@ -45,6 +45,55 @@
             font-size: 0.9rem;
             color: var(--text-muted);
         }
+
+        .haldane-formula {
+            text-align: center;
+            padding: 1rem;
+            background: linear-gradient(180deg, rgba(41,128,185,0.06), rgba(41,128,185,0.02));
+            border: 1px solid rgba(41,128,185,0.18);
+            border-radius: var(--radius);
+            margin-bottom: 0.5rem;
+            font-family: ui-monospace, "SF Mono", Menlo, monospace;
+        }
+        .formula-symbolic { font-size: 1.4rem; line-height: 2.2; }
+        .formula-substituted { font-size: 1rem; color: var(--text-muted); margin-top: 0.4rem; }
+        .formula-substituted strong { color: #e67e22; font-size: 1.05em; }
+        .term { display: inline-block; padding: 1px 5px; border-radius: 3px; }
+        .term-result { background: rgba(230, 126, 34, 0.18); border-bottom: 2px solid #e67e22; font-weight: 700; }
+        .term-palv   { background: rgba(41, 128, 185, 0.16); border-bottom: 2px solid #2980b9; }
+        .term-pt0    { background: rgba(231, 76, 60, 0.16);  border-bottom: 2px solid #e74c3c; }
+        .term-k      { background: rgba(46, 204, 113, 0.16); border-bottom: 2px solid #27ae60; }
+        .term-t      { background: rgba(155, 89, 182, 0.16); border-bottom: 2px solid #9b59b6; }
+
+        .term-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.6rem;
+            margin: 1rem 0;
+        }
+        @media (max-width: 800px) {
+            .term-row { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 480px) {
+            .term-row { grid-template-columns: 1fr; }
+        }
+        .term-card {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-top: 3px solid var(--border-color);
+            border-radius: 4px;
+            padding: 0.6rem 0.75rem;
+            font-size: 0.85rem;
+            line-height: 1.45;
+        }
+        .term-card.palv { border-top-color: #2980b9; }
+        .term-card.pt0  { border-top-color: #e74c3c; }
+        .term-card.k    { border-top-color: #27ae60; }
+        .term-card.exp  { border-top-color: #9b59b6; }
+        .term-card .name    { font-family: ui-monospace, monospace; font-weight: 600; font-size: 0.95rem; }
+        .term-card .formula { font-family: ui-monospace, monospace; color: var(--text-muted); font-size: 0.82rem; margin-top: 0.25rem; }
+        .term-card .value   { font-family: ui-monospace, monospace; font-weight: 700; color: #2980b9; font-size: 1rem; margin-top: 0.4rem; }
+        .term-card .why     { color: var(--text-muted); font-size: 0.8rem; font-style: italic; margin-top: 0.4rem; }
     </style>
 </head>
 <body>
@@ -91,7 +140,54 @@
                 <span class="gas-readout" data-i18n="sandbox.haldane.gas.air">Air (F<sub>N₂</sub> = 0.79)</span>
             </div>
         </div>
-        <!-- formula, term cards, time control, chart, m-value strip — added in later tasks -->
+
+        <!-- Live formula -->
+        <div class="haldane-formula">
+            <div class="formula-symbolic">
+                <span class="term term-result">P<sub>t</sub>(t)</span> =
+                <span class="term term-palv">P<sub>alv</sub></span> +
+                (<span class="term term-pt0">P<sub>t,0</sub></span>
+                − <span class="term term-palv">P<sub>alv</sub></span>) ·
+                e<sup>−<span class="term term-k">k</span><span class="term term-t">t</span></sup>
+            </div>
+            <div class="formula-substituted">
+                <strong id="ptValue">0.7510</strong> bar = <span id="palvNum">3.1218</span>
+                + (<span id="pt0Num">0.7510</span> − <span id="palvNum2">3.1218</span>) · <span id="expNum">1.0000</span>
+            </div>
+        </div>
+
+        <!-- Term cards -->
+        <div class="term-row">
+            <div class="term-card palv">
+                <div class="name">P<sub>alv</sub> · alveolar N<sub>2</sub> pressure</div>
+                <div class="formula">= (P<sub>amb</sub> − 0.0627) · F<sub>N₂</sub></div>
+                <div class="formula" id="palvSubst">= (4.0133 − 0.0627) · 0.7902</div>
+                <div class="value"><span id="palvValue">3.1218</span> bar</div>
+                <div class="why">What the lungs are pushing into the blood at target depth.</div>
+            </div>
+            <div class="term-card pt0">
+                <div class="name">P<sub>t,0</sub> · tissue pressure at t=0</div>
+                <div class="formula">= (P<sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub></div>
+                <div class="formula" id="pt0Subst">= (1.0133 − 0.0627) · 0.7902</div>
+                <div class="value"><span id="pt0Value">0.7510</span> bar</div>
+                <div class="why">Where this compartment started, assumed equilibrated at start depth.</div>
+            </div>
+            <div class="term-card k">
+                <div class="name">k · rate constant</div>
+                <div class="formula">= ln(2) / T½</div>
+                <div class="formula" id="kSubst">= 0.6931 / 27.0</div>
+                <div class="value"><span id="kValue">0.0257</span> min⁻¹</div>
+                <div class="why">Faster compartments → bigger k → catch up sooner.</div>
+            </div>
+            <div class="term-card exp">
+                <div class="name">e<sup>−kt</sup> · "fraction left to go"</div>
+                <div class="formula">= e<sup>−k · t</sup></div>
+                <div class="formula" id="expSubst">= e<sup>−0.0257 · 0</sup></div>
+                <div class="value"><span id="expValue">1.0000</span></div>
+                <div class="why">1.0 at t=0, decays toward 0. Half-gone every T½.</div>
+            </div>
+        </div>
+        <!-- time control, chart, m-value strip — added in later tasks -->
     </div>
 
     <!-- Footer -->
@@ -146,9 +242,8 @@
             els.compartment.value = String(state.compartmentIdx);
         }
 
-        // ---------- Recompute (stub) ----------
+        // ---------- Recompute ----------
         function recompute() {
-            // Pure values (used by later tasks).
             const comp = getCompartmentsForVariant(state.variant)[state.compartmentIdx];
             const halfTime = comp.halfTime;
             const k = getRateConstant(halfTime);
@@ -156,11 +251,31 @@
             const pAmbTarget = getAmbientPressure(state.targetDepth);
             const pT0 = getAlveolarN2Pressure(pAmbStart, state.n2Fraction);
             const pAlv = getAlveolarN2Pressure(pAmbTarget, state.n2Fraction);
+            const expTerm = Math.exp(-k * state.t);
             const Pt = haldaneEquation(pT0, pAlv, state.t, halfTime);
             const M = getMValue(pAmbTarget, comp.aN2, comp.bN2);
-            // Later tasks read these via DOM.
-            // Stash on a global for now so smoke tests / future tasks can introspect.
-            window.__haldane = { halfTime, k, pT0, pAlv, Pt, M, pAmbStart, pAmbTarget };
+
+            // Substituted-formula line
+            document.getElementById('ptValue').textContent = Pt.toFixed(4);
+            document.getElementById('palvNum').textContent = pAlv.toFixed(4);
+            document.getElementById('palvNum2').textContent = pAlv.toFixed(4);
+            document.getElementById('pt0Num').textContent = pT0.toFixed(4);
+            document.getElementById('expNum').textContent = expTerm.toFixed(4);
+
+            // Term cards
+            document.getElementById('palvValue').textContent = pAlv.toFixed(4);
+            document.getElementById('palvSubst').innerHTML =
+                `= (${pAmbTarget.toFixed(4)} − 0.0627) · ${state.n2Fraction.toFixed(4)}`;
+            document.getElementById('pt0Value').textContent = pT0.toFixed(4);
+            document.getElementById('pt0Subst').innerHTML =
+                `= (${pAmbStart.toFixed(4)} − 0.0627) · ${state.n2Fraction.toFixed(4)}`;
+            document.getElementById('kValue').textContent = k.toFixed(4);
+            document.getElementById('kSubst').textContent = `= 0.6931 / ${halfTime.toFixed(1)}`;
+            document.getElementById('expValue').textContent = expTerm.toFixed(4);
+            document.getElementById('expSubst').innerHTML = `= e<sup>−${k.toFixed(4)} · ${state.t}</sup>`;
+
+            // Stashed for later tasks (chart, M-value).
+            window.__haldane = { halfTime, k, pT0, pAlv, Pt, M, pAmbStart, pAmbTarget, expTerm };
         }
 
         // ---------- Event wiring ----------
