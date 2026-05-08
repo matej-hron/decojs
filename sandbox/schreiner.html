@@ -80,14 +80,18 @@
         .term-pt0    { background: rgba(231, 76, 60, 0.16);  border-bottom: 2px solid #e74c3c; }
         .term-k      { background: rgba(46, 204, 113, 0.16); border-bottom: 2px solid #27ae60; }
         .term-t      { background: rgba(155, 89, 182, 0.16); border-bottom: 2px solid #9b59b6; }
+        .term-r      { background: rgba(22, 160, 133, 0.16);  border-bottom: 2px solid #16a085; }
 
         .term-row {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 0.6rem;
             margin: 1rem 0;
         }
-        @media (max-width: 800px) {
+        @media (max-width: 1000px) {
+            .term-row { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 700px) {
             .term-row { grid-template-columns: repeat(2, 1fr); }
         }
         @media (max-width: 480px) {
@@ -104,6 +108,7 @@
         }
         .term-card.palv { border-top-color: #2980b9; }
         .term-card.pt0  { border-top-color: #e74c3c; }
+        .term-card.r    { border-top-color: #16a085; }
         .term-card.k    { border-top-color: #27ae60; }
         .term-card.exp  { border-top-color: #9b59b6; }
         .term-card .name    { font-family: ui-monospace, monospace; font-weight: 600; font-size: 0.95rem; }
@@ -317,32 +322,43 @@
         <div class="haldane-formula">
             <div class="formula-symbolic">
                 <span class="term term-result">P<sub>t</sub>(t)</span> =
-                <span class="term term-palv">P<sub>alv</sub></span> +
-                (<span class="term term-pt0">P<sub>t,0</sub></span>
-                − <span class="term term-palv">P<sub>alv</sub></span>) ·
+                <span class="term term-palv">P<sub>alv,0</sub></span> +
+                <span class="term term-r">R</span> ·
+                (<span class="term term-t">t</span> − 1/<span class="term term-k">k</span>) −
+                (<span class="term term-palv">P<sub>alv,0</sub></span> −
+                <span class="term term-pt0">P<sub>t,0</sub></span> −
+                <span class="term term-r">R</span>/<span class="term term-k">k</span>) ·
                 e<sup>−<span class="term term-k">k</span><span class="term term-t">t</span></sup>
             </div>
             <div class="formula-substituted">
-                <strong id="ptValue">0.7510</strong> bar = <span id="palvNum">3.1218</span>
-                + (<span id="pt0Num">0.7510</span> − <span id="palvNum2">3.1218</span>) · <span id="expNum">1.0000</span>
+                <strong id="ptValue">3.1217</strong> bar = <span id="palv0Num">3.1217</span>
+                + <span id="rNum">−0.7902</span> · (<span id="tNum1">0.00</span> − 1/<span id="kNum1">0.0257</span>)
+                − (<span id="palv0Num2">3.1217</span> − <span id="pt0Num">3.1217</span> − <span id="rNum2">−0.7902</span>/<span id="kNum2">0.0257</span>) · <span id="expNum">1.0000</span>
             </div>
         </div>
 
         <!-- Term cards -->
         <div class="term-row">
             <div class="term-card palv">
-                <div class="name">P<sub>alv</sub> | alveolar N<sub>2</sub> pressure</div>
-                <div class="formula" id="palvSymbolic">= (P<sub>amb</sub> − 0.0627) · F<sub>N₂</sub></div>
-                <div class="formula" id="palvSubst">= (4.0133 − 0.0627) · 0.7902</div>
-                <div class="value"><span id="palvValue">3.1218</span> bar</div>
-                <div class="why">What the lungs are pushing into the blood at target depth.</div>
+                <div class="name">P<sub>alv,0</sub> | alveolar N<sub>2</sub> at start depth</div>
+                <div class="formula" id="palv0Symbolic">= (P<sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub></div>
+                <div class="formula" id="palv0Subst">= (4.0133 − 0.0627) · 0.7902</div>
+                <div class="value"><span id="palv0Value">3.1217</span> bar</div>
+                <div class="why">Starting alveolar pressure. Slope-zero point of the moving alveolar source.</div>
             </div>
             <div class="term-card pt0">
                 <div class="name">P<sub>t,0</sub> | tissue pressure at t=0</div>
                 <div class="formula" id="pt0Symbolic">= (P<sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub></div>
-                <div class="formula" id="pt0Subst">= (1.0133 − 0.0627) · 0.7902</div>
-                <div class="value"><span id="pt0Value">0.7510</span> bar</div>
-                <div class="why">Where this compartment started, assumed equilibrated at start depth.</div>
+                <div class="formula" id="pt0Subst">= (4.0133 − 0.0627) · 0.7902</div>
+                <div class="value"><span id="pt0Value">3.1217</span> bar</div>
+                <div class="why">Tissue assumed equilibrated at start depth → equals P<sub>alv,0</sub>.</div>
+            </div>
+            <div class="term-card r">
+                <div class="name">R | alveolar pressure rate</div>
+                <div class="formula" id="rSymbolic">= F<sub>N₂</sub> · depth_rate · 0.1</div>
+                <div class="formula" id="rSubst">= 0.7902 · (−10) · 0.1</div>
+                <div class="value"><span id="rValue">−0.7902</span> bar/min</div>
+                <div class="why">Positive = descent (alveolar climbing), negative = ascent. R = 0 → equation collapses to Haldane.</div>
             </div>
             <div class="term-card k">
                 <div class="name">k | rate constant</div>
@@ -352,11 +368,11 @@
                 <div class="why">Faster compartments → bigger k → catch up sooner.</div>
             </div>
             <div class="term-card exp">
-                <div class="name">e<sup>−kt</sup> | "fraction left to go"</div>
+                <div class="name">e<sup>−kt</sup> | exponential decay factor</div>
                 <div class="formula">= e<sup>−k · t</sup></div>
-                <div class="formula" id="expSubst">= e<sup>−0.0257 · 0</sup></div>
+                <div class="formula" id="expSubst">= e<sup>−0.0257 · 0.00</sup></div>
                 <div class="value"><span id="expValue">1.0000</span></div>
-                <div class="why">1.0 at t=0, decays toward 0. Half-gone every T½.</div>
+                <div class="why">1.0 at t=0, decays toward 0. Multiplied by the initial-disequilibrium term.</div>
             </div>
         </div>
         <!-- Time control -->
@@ -427,7 +443,7 @@
         import {
             getAmbientPressure,
             getAlveolarN2Pressure,
-            haldaneEquation,
+            schreinerEquation,
             getMValue,
             N2_FRACTION,
         } from '../js/decoModel.js';
@@ -491,64 +507,78 @@
         function recompute() {
             // End depth display
             const endDepth = state.startDepth + state.depthRate * state.segmentTime;
-            const endDepthClamped = Math.max(0, endDepth);
-            els.endDepthDisp.textContent = `${endDepthClamped.toFixed(1)} m`;
+            els.endDepthDisp.textContent = `${Math.max(0, endDepth).toFixed(1)} m`;
 
+            // Math primitives
             const comp = getCompartmentsForVariant(state.variant)[state.compartmentIdx];
             const halfTime = comp.halfTime;
             const k = getRateConstant(halfTime);
+            const F = state.simplified ? 0.79 : N2_FRACTION;
             const pAmbStart = ambient(state.startDepth);
-            const pAmbTarget = ambient(state.targetDepth);
-            const pT0 = alveolar(pAmbStart);
-            const pAlv = alveolar(pAmbTarget);
+            const pAlv0 = alveolar(pAmbStart);
+            const pT0 = pAlv0;                              // tissue saturated at start
+            const R = F * state.depthRate * 0.1;             // bar/min
             const expTerm = Math.exp(-k * state.t);
-            const Pt = haldaneEquation(pT0, pAlv, state.t, halfTime);
-            const M = getMValue(pAmbTarget, comp.aN2, comp.bN2);
+            // Pt(t) via the existing primitive
+            const Pt = schreinerEquation(pT0, pAlv0, R, state.t, halfTime);
+
+            // Current depth at this t (for M-value bar — depth changes during the segment)
+            const currentDepth = Math.max(0, state.startDepth + state.depthRate * state.t);
+            const pAmbCurrent = ambient(currentDepth);
+            const pAlvCurrent = alveolar(pAmbCurrent);
+            const M = getMValue(pAmbCurrent, comp.aN2, comp.bN2);
 
             // Substituted-formula line
             document.getElementById('ptValue').textContent = Pt.toFixed(4);
-            document.getElementById('palvNum').textContent = pAlv.toFixed(4);
-            document.getElementById('palvNum2').textContent = pAlv.toFixed(4);
+            document.getElementById('palv0Num').textContent = pAlv0.toFixed(4);
+            document.getElementById('palv0Num2').textContent = pAlv0.toFixed(4);
             document.getElementById('pt0Num').textContent = pT0.toFixed(4);
+            document.getElementById('rNum').textContent = R.toFixed(4);
+            document.getElementById('rNum2').textContent = R.toFixed(4);
+            document.getElementById('tNum1').textContent = state.t.toFixed(2);
+            document.getElementById('kNum1').textContent = k.toFixed(4);
+            document.getElementById('kNum2').textContent = k.toFixed(4);
             document.getElementById('expNum').textContent = expTerm.toFixed(4);
 
-            // Term cards
-            const F = fN2();
-            const palvSymbolic = state.simplified
-                ? `= (D/10 + 1) · F<sub>N₂</sub>`
-                : `= (P<sub>amb</sub> − 0.0627) · F<sub>N₂</sub>`;
-            const pt0Symbolic = state.simplified
+            // Term cards — symbolic + substituted + value
+            const palv0Symbolic = state.simplified
                 ? `= (D<sub>start</sub>/10 + 1) · F<sub>N₂</sub>`
                 : `= (P<sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub>`;
-            const palvSubst = state.simplified
-                ? `= (${state.targetDepth}/10 + 1) · ${F}`
-                : `= (${pAmbTarget.toFixed(4)} − 0.0627) · ${F.toFixed(4)}`;
-            const pt0Subst = state.simplified
+            const pt0Symbolic = palv0Symbolic;
+            const palv0Subst = state.simplified
                 ? `= (${state.startDepth}/10 + 1) · ${F}`
                 : `= (${pAmbStart.toFixed(4)} − 0.0627) · ${F.toFixed(4)}`;
+            const pt0Subst = palv0Subst;
+            const rSymbolic = `= F<sub>N₂</sub> · depth_rate · 0.1`;
+            const rSubst = `= ${F} · (${state.depthRate}) · 0.1`;
 
-            document.getElementById('palvSymbolic').innerHTML = palvSymbolic;
-            document.getElementById('palvSubst').innerHTML = palvSubst;
-            document.getElementById('palvValue').textContent = pAlv.toFixed(4);
+            document.getElementById('palv0Symbolic').innerHTML = palv0Symbolic;
+            document.getElementById('palv0Subst').innerHTML = palv0Subst;
+            document.getElementById('palv0Value').textContent = pAlv0.toFixed(4);
             document.getElementById('pt0Symbolic').innerHTML = pt0Symbolic;
             document.getElementById('pt0Subst').innerHTML = pt0Subst;
             document.getElementById('pt0Value').textContent = pT0.toFixed(4);
+            document.getElementById('rSymbolic').innerHTML = rSymbolic;
+            document.getElementById('rSubst').innerHTML = rSubst;
+            document.getElementById('rValue').textContent = R.toFixed(4);
             document.getElementById('kValue').textContent = k.toFixed(4);
             document.getElementById('kSubst').textContent = `= 0.6931 / ${halfTime.toFixed(1)}`;
             document.getElementById('expValue').textContent = expTerm.toFixed(4);
-            document.getElementById('expSubst').innerHTML = `= e<sup>−${k.toFixed(4)} · ${state.t}</sup>`;
+            document.getElementById('expSubst').innerHTML = `= e<sup>−${k.toFixed(4)} · ${state.t.toFixed(2)}</sup>`;
 
-            // Saturation: 1 − e^−kt = how much of the gap from Pt0 to Palv is closed.
+            // Saturation %
             const saturationPct = (1 - expTerm) * 100;
             document.getElementById('saturationValue').textContent = saturationPct.toFixed(1);
 
-            // Stashed for later tasks (chart, M-value).
-            window.__haldane = { halfTime, k, pT0, pAlv, Pt, M, pAmbStart, pAmbTarget, expTerm, t: state.t, aN2: comp.aN2, bN2: comp.bN2 };
+            // Stash for chart + M-value strip
+            window.__schreiner = {
+                halfTime, k, pT0, pAlv0, R, Pt, M, pAmbStart, pAmbCurrent, pAlvCurrent,
+                expTerm, t: state.t, currentDepth, aN2: comp.aN2, bN2: comp.bN2,
+                segmentTime: state.segmentTime, depthRate: state.depthRate,
+            };
 
-            if (!isNaN(pT0) && !isNaN(pAlv)) {
-                drawChart();
-                updateMValueStrip();
-            }
+            drawChart();
+            updateMValueStrip();
         }
 
         // ---------- Event wiring ----------
@@ -647,6 +677,7 @@
         const chartBaseline  = document.getElementById('chartBaseline');
 
         function drawChart() {
+            if (!window.__haldane) return;
             const { halfTime, pT0, pAlv } = window.__haldane;
             const tMax = parseFloat(timeSlider.max);
             // y range: encompass both Pt0 and Palv with 5% padding both sides.
@@ -735,6 +766,7 @@
         const BAR_MAX = 10.0;
 
         function updateMValueStrip() {
+            if (!window.__haldane) return;
             const { Pt, M, pAmbTarget, aN2, bN2 } = window.__haldane;
             mvaluePtOut.textContent = Pt.toFixed(4);
             mvalueOut.textContent = M.toFixed(4);
