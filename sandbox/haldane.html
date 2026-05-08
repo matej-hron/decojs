@@ -222,6 +222,7 @@
         }
         .mvalue-anchor-pt0  { background: #e74c3c; }
         .mvalue-anchor-palv { background: #2980b9; }
+        .mvalue-anchor-pamb { background: #7f8c8d; }
         .mvalue-anchor-label {
             position: absolute;
             bottom: -1.1rem;
@@ -234,6 +235,7 @@
         }
         .mvalue-anchor-pt0 .mvalue-anchor-label  { color: #e74c3c; }
         .mvalue-anchor-palv .mvalue-anchor-label { color: #2980b9; }
+        .mvalue-anchor-pamb .mvalue-anchor-label { color: #7f8c8d; }
 
         .mvalue-readout { font-family: ui-monospace, monospace; }
         .mvalue-status { font-weight: 600; margin-left: 0.4rem; }
@@ -393,6 +395,7 @@
                 <div class="mvalue-mline"><span class="mvalue-mline-label">M</span></div>
                 <div class="mvalue-anchor mvalue-anchor-pt0" id="mvalueAnchorPt0"><span class="mvalue-anchor-label">P<sub>t,0</sub></span></div>
                 <div class="mvalue-anchor mvalue-anchor-palv" id="mvalueAnchorPalv"><span class="mvalue-anchor-label">P<sub>alv</sub></span></div>
+                <div class="mvalue-anchor mvalue-anchor-pamb" id="mvalueAnchorPamb"><span class="mvalue-anchor-label">P<sub>amb</sub></span></div>
                 <div class="mvalue-marker" id="mvalueMarker"></div>
             </div>
             <div class="mvalue-readout">
@@ -567,9 +570,22 @@
         const btnPlus1     = document.getElementById('tPlus1');
         const btnPlusHalf  = document.getElementById('tPlusHalf');
 
-        function getHalfTimeStep() {
-            const comp = getCompartmentsForVariant(state.variant)[state.compartmentIdx];
-            return Math.max(1, Math.round(comp.halfTime));
+        function getHalfTime() {
+            return getCompartmentsForVariant(state.variant)[state.compartmentIdx].halfTime;
+        }
+
+        // ±T½ buttons snap to the next/previous T½ marker on the chart, rather than
+        // adding a fixed minute count. Lets the user step through landmarks directly.
+        function nextHalfTimeMarker() {
+            const ht = getHalfTime();
+            const nextIdx = Math.floor(state.t / ht + 1e-9) + 1;
+            return Math.round(nextIdx * ht);
+        }
+
+        function prevHalfTimeMarker() {
+            const ht = getHalfTime();
+            const prevIdx = Math.ceil(state.t / ht - 1e-9) - 1;
+            return Math.max(0, Math.round(prevIdx * ht));
         }
 
         function applyTimeRange() {
@@ -591,16 +607,16 @@
         function updateStepButtons() {
             const tMax = parseInt(timeSlider.max, 10);
             btnMinus1.disabled    = state.t <= 0;
-            btnMinusHalf.disabled = state.t <= 0;
             btnPlus1.disabled     = state.t >= tMax;
-            btnPlusHalf.disabled  = state.t >= tMax;
+            btnMinusHalf.disabled = prevHalfTimeMarker() >= state.t;
+            btnPlusHalf.disabled  = nextHalfTimeMarker() > tMax || state.t >= tMax;
         }
 
         timeSlider.addEventListener('input', () => setTime(parseInt(timeSlider.value, 10)));
-        btnMinusHalf.addEventListener('click', () => setTime(state.t - getHalfTimeStep()));
+        btnMinusHalf.addEventListener('click', () => setTime(prevHalfTimeMarker()));
         btnMinus1.addEventListener('click',    () => setTime(state.t - 1));
         btnPlus1.addEventListener('click',     () => setTime(state.t + 1));
-        btnPlusHalf.addEventListener('click',  () => setTime(state.t + getHalfTimeStep()));
+        btnPlusHalf.addEventListener('click',  () => setTime(nextHalfTimeMarker()));
 
         // ---------- Mini Pt(t) chart ----------
         const CHART_W = 480, CHART_H = 140, CHART_PAD = 6;
@@ -699,13 +715,15 @@
             // Marker position: scale 0..1.3·M to bar's 0..100%, clamped.
             const ratio = Math.max(0, Math.min(1, Pt / (1.3 * M)));
             mvalueMarker.style.left = `${ratio * 100}%`;
-            // Anchor markers — Palv and Pt0 on the same 0..1.3·M scale.
+            // Anchor markers — Palv, Pt0, and Pamb on the same 0..1.3·M scale.
             const { pT0, pAlv } = window.__haldane;
             const anchorPt0  = document.getElementById('mvalueAnchorPt0');
             const anchorPalv = document.getElementById('mvalueAnchorPalv');
+            const anchorPamb = document.getElementById('mvalueAnchorPamb');
             const xOfBar = (v) => `${Math.max(0, Math.min(1, v / (1.3 * M))) * 100}%`;
             anchorPt0.style.left  = xOfBar(pT0);
             anchorPalv.style.left = xOfBar(pAlv);
+            anchorPamb.style.left = xOfBar(pAmbTarget);
             const exceeded = Pt > M;
             mvalueStatus.textContent = exceeded ? '✗ exceeded' : '✓ within';
             mvalueStatus.classList.toggle('exceeded', exceeded);
