@@ -45,6 +45,22 @@
             font-size: 0.9rem;
             color: var(--text-muted);
         }
+        .haldane-inputs .toggle-row {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 0.5rem;
+            cursor: pointer;
+        }
+        .haldane-inputs .toggle-row input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+            cursor: pointer;
+        }
+        .haldane-inputs .toggle-hint {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
 
         .haldane-formula {
             text-align: center;
@@ -276,6 +292,13 @@
                 <label data-i18n="sandbox.haldane.labels.gas">Gas</label>
                 <span class="gas-readout" data-i18n="sandbox.haldane.gas.air">Air (F<sub>N₂</sub> = 0.79)</span>
             </div>
+            <div class="field">
+                <label for="simplifiedToggle" data-i18n="sandbox.haldane.labels.simplified">Simplified math</label>
+                <label class="toggle-row">
+                    <input type="checkbox" id="simplifiedToggle">
+                    <span class="toggle-hint" data-i18n="sandbox.haldane.simplifiedHint">napkin formulas</span>
+                </label>
+            </div>
         </div>
 
         <!-- Live formula -->
@@ -297,14 +320,14 @@
         <div class="term-row">
             <div class="term-card palv">
                 <div class="name">P<sub>alv</sub> | alveolar N<sub>2</sub> pressure</div>
-                <div class="formula">= (P<sub>amb</sub> − 0.0627) · F<sub>N₂</sub></div>
+                <div class="formula" id="palvSymbolic">= (P<sub>amb</sub> − 0.0627) · F<sub>N₂</sub></div>
                 <div class="formula" id="palvSubst">= (4.0133 − 0.0627) · 0.7902</div>
                 <div class="value"><span id="palvValue">3.1218</span> bar</div>
                 <div class="why">What the lungs are pushing into the blood at target depth.</div>
             </div>
             <div class="term-card pt0">
                 <div class="name">P<sub>t,0</sub> | tissue pressure at t=0</div>
-                <div class="formula">= (P<sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub></div>
+                <div class="formula" id="pt0Symbolic">= (P<sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub></div>
                 <div class="formula" id="pt0Subst">= (1.0133 − 0.0627) · 0.7902</div>
                 <div class="value"><span id="pt0Value">0.7510</span> bar</div>
                 <div class="why">Where this compartment started, assumed equilibrated at start depth.</div>
@@ -408,6 +431,27 @@
             getRateConstant,
         } from '../js/tissueCompartments.js';
 
+        // Local math wrappers — branch on state.simplified for the educational toggle.
+        const SIMPLIFIED_FN2 = 0.79;
+        const SIMPLIFIED_SURFACE = 1.0;
+        const SIMPLIFIED_VAPOR = 0;
+
+        function ambient(depth) {
+            return state.simplified
+                ? SIMPLIFIED_SURFACE + depth * 0.1
+                : getAmbientPressure(depth);
+        }
+
+        function alveolar(pAmb) {
+            const F = state.simplified ? SIMPLIFIED_FN2 : N2_FRACTION;
+            const vapor = state.simplified ? SIMPLIFIED_VAPOR : 0.0627;
+            return (pAmb - vapor) * F;
+        }
+
+        function fN2() {
+            return state.simplified ? SIMPLIFIED_FN2 : N2_FRACTION;
+        }
+
         // ---------- State ----------
         const state = {
             startDepth: 0,        // m
@@ -416,6 +460,7 @@
             variant: 'ZH-L16C',   // matches values from ZHL16_VARIANTS object
             t: 0,                 // minutes
             n2Fraction: N2_FRACTION,
+            simplified: false,
         };
 
         // ---------- DOM ----------
@@ -439,10 +484,10 @@
             const comp = getCompartmentsForVariant(state.variant)[state.compartmentIdx];
             const halfTime = comp.halfTime;
             const k = getRateConstant(halfTime);
-            const pAmbStart = getAmbientPressure(state.startDepth);
-            const pAmbTarget = getAmbientPressure(state.targetDepth);
-            const pT0 = getAlveolarN2Pressure(pAmbStart, state.n2Fraction);
-            const pAlv = getAlveolarN2Pressure(pAmbTarget, state.n2Fraction);
+            const pAmbStart = ambient(state.startDepth);
+            const pAmbTarget = ambient(state.targetDepth);
+            const pT0 = alveolar(pAmbStart);
+            const pAlv = alveolar(pAmbTarget);
             const expTerm = Math.exp(-k * state.t);
             const Pt = haldaneEquation(pT0, pAlv, state.t, halfTime);
             const M = getMValue(pAmbTarget, comp.aN2, comp.bN2);
@@ -455,12 +500,26 @@
             document.getElementById('expNum').textContent = expTerm.toFixed(4);
 
             // Term cards
+            const F = fN2();
+            const palvSymbolic = state.simplified
+                ? `= (D + 10) / 10 · F<sub>N₂</sub>`
+                : `= (P<sub>amb</sub> − 0.0627) · F<sub>N₂</sub>`;
+            const pt0Symbolic = state.simplified
+                ? `= (D<sub>start</sub> + 10) / 10 · F<sub>N₂</sub>`
+                : `= (P<sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub>`;
+            const palvSubst = state.simplified
+                ? `= (${state.targetDepth} + 10) / 10 · ${F}`
+                : `= (${pAmbTarget.toFixed(4)} − 0.0627) · ${F.toFixed(4)}`;
+            const pt0Subst = state.simplified
+                ? `= (${state.startDepth} + 10) / 10 · ${F}`
+                : `= (${pAmbStart.toFixed(4)} − 0.0627) · ${F.toFixed(4)}`;
+
+            document.getElementById('palvSymbolic').innerHTML = palvSymbolic;
+            document.getElementById('palvSubst').innerHTML = palvSubst;
             document.getElementById('palvValue').textContent = pAlv.toFixed(4);
-            document.getElementById('palvSubst').innerHTML =
-                `= (${pAmbTarget.toFixed(4)} − 0.0627) · ${state.n2Fraction.toFixed(4)}`;
+            document.getElementById('pt0Symbolic').innerHTML = pt0Symbolic;
+            document.getElementById('pt0Subst').innerHTML = pt0Subst;
             document.getElementById('pt0Value').textContent = pT0.toFixed(4);
-            document.getElementById('pt0Subst').innerHTML =
-                `= (${pAmbStart.toFixed(4)} − 0.0627) · ${state.n2Fraction.toFixed(4)}`;
             document.getElementById('kValue').textContent = k.toFixed(4);
             document.getElementById('kSubst').textContent = `= 0.6931 / ${halfTime.toFixed(1)}`;
             document.getElementById('expValue').textContent = expTerm.toFixed(4);
@@ -493,6 +552,12 @@
             timeValue.textContent = String(state.t);
             updateStepButtons();
             recompute();                           // recompute with the clamped state.t
+        });
+
+        const simplifiedToggle = document.getElementById('simplifiedToggle');
+        simplifiedToggle.addEventListener('change', () => {
+            state.simplified = simplifiedToggle.checked;
+            recompute();
         });
 
         const timeSlider   = document.getElementById('timeSlider');
