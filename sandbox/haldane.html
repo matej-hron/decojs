@@ -205,6 +205,16 @@
             transition: left 0.15s;
             box-shadow: 0 0 0 1px white;
         }
+        .mvalue-marker-label {
+            position: absolute;
+            top: -1.1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            font-weight: 700;
+            white-space: nowrap;
+            color: #2c3e50;
+        }
 
         .mvalue-anchor {
             position: absolute;
@@ -390,7 +400,7 @@
                 <div class="mvalue-anchor mvalue-anchor-pt0" id="mvalueAnchorPt0"><span class="mvalue-anchor-label">P<sub>t,0</sub></span></div>
                 <div class="mvalue-anchor mvalue-anchor-palv" id="mvalueAnchorPalv"><span class="mvalue-anchor-label">P<sub>alv</sub></span></div>
                 <div class="mvalue-anchor mvalue-anchor-pamb" id="mvalueAnchorPamb"><span class="mvalue-anchor-label">P<sub>amb</sub></span></div>
-                <div class="mvalue-marker" id="mvalueMarker"></div>
+                <div class="mvalue-marker" id="mvalueMarker"><span class="mvalue-marker-label">P<sub>t</sub></span></div>
             </div>
             <div class="mvalue-readout">
                 P<sub>t</sub> = <span id="mvaluePt">0.7510</span> bar
