@@ -469,14 +469,10 @@
             return (pAmb - vapor) * F;
         }
 
-        function fN2() {
-            return state.simplified ? SIMPLIFIED_FN2 : N2_FRACTION;
-        }
-
         // ---------- State ----------
         const state = {
             startDepth: 30,       // m
-            depthRate: -10,       // m/min (signed; negative = descending)
+            depthRate: -10,       // m/min (signed; negative = ascending, positive = descending)
             segmentTime: 0.9,     // min
             compartmentIdx: 4,    // 0-based; UI shows 1-based
             variant: 'ZH-L16C',   // matches values from ZHL16_VARIANTS object
