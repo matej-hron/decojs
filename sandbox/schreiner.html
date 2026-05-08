@@ -128,7 +128,7 @@
         }
         .time-row .t-readout {
             font-family: ui-monospace, monospace;
-            min-width: 240px;
+            min-width: 380px;
             font-size: 0.95rem;
         }
         .time-row #timeSlider { flex: 1; accent-color: #9b59b6; }
@@ -387,7 +387,7 @@
         </div>
         <!-- Time control -->
         <div class="time-row">
-            <span class="t-readout">⏱ t = <strong id="timeValue">0</strong> min &nbsp;|&nbsp; saturation = <strong id="saturationValue">0.0</strong>%</span>
+            <span class="t-readout">⏱ t = <strong id="timeValue">0</strong> min &nbsp;|&nbsp; depth = <strong id="depthValue">30.0</strong> m &nbsp;|&nbsp; saturation = <strong id="saturationValue">0.0</strong>%</span>
             <input type="range" id="timeSlider" min="0" max="0.9" step="0.05" value="0">
             <div class="step-btns">
                 <button type="button" id="tMinusTenth">−0.1</button>
@@ -571,9 +571,10 @@
             document.getElementById('expValue').textContent = expTerm.toFixed(4);
             document.getElementById('expSubst').innerHTML = `= e<sup>−${k.toFixed(4)} · ${state.t.toFixed(2)}</sup>`;
 
-            // Saturation %
+            // Saturation % and current-depth readouts in the time row
             const saturationPct = (1 - expTerm) * 100;
             document.getElementById('saturationValue').textContent = saturationPct.toFixed(1);
+            document.getElementById('depthValue').textContent = currentDepth.toFixed(1);
 
             // Stash for chart + M-value strip
             window.__schreiner = {
