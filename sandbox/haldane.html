@@ -340,9 +340,6 @@
 
         function applyTimeRange() {
             const comp = getCompartmentsForVariant(state.variant)[state.compartmentIdx];
-            // Floor of 125 gives 5 min headroom above the 120-min reference point so
-            // the slider is never clamped exactly at t=120 for any compartment whose
-            // 4·T½ < 120 (comps 1–5). Slow compartments always exceed 120 anyway.
             const tMax = Math.max(120, Math.ceil(4 * comp.halfTime));
             timeSlider.max = String(tMax);
             if (state.t > tMax) state.t = tMax;
