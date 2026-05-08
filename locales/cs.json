@@ -1633,6 +1633,12 @@
             "formula": "P<sub>konec</sub> = (P<sub>A</sub> × V<sub>A</sub> + P<sub>B</sub> × V<sub>B</sub>) / (V<sub>A</sub> + V<sub>B</sub>)",
             "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely. Založeno na předpokladech ideálního plynového zákona."
         },
+        "haldane": {
+            "title": "Haldaneova rovnice",
+            "subtitle": "Interaktivní rozbor toho, jak tkáňový kompartment sytí dusík v čase.",
+            "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Interaktivní rozbor Bühlmannovy/Haldaneovy rovnice nasycování.",
+            "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely. Reálný dekompresní algoritmus používá další logiku."
+        },
         "cascade": {
             "title": "Kaskádová plnicí stanice",
             "subtitle": "Kliknutím na ventily propojte lahve a poté plňte (max. 3 hadice, limit 200 bar)",

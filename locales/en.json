@@ -1633,6 +1633,12 @@
             "formula": "P<sub>final</sub> = (P<sub>A</sub> × V<sub>A</sub> + P<sub>B</sub> × V<sub>B</sub>) / (V<sub>A</sub> + V<sub>B</sub>)",
             "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only. Based on ideal gas law assumptions."
         },
+        "haldane": {
+            "title": "Haldane Equation",
+            "subtitle": "A live, annotated walk-through of how a tissue compartment on-gasses over time.",
+            "disclaimerBanner": "<strong>Educational Use Only</strong> — Interactive walk-through of the Bühlmann/Haldane on-gassing equation.",
+            "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only. The actual diving algorithm uses additional logic."
+        },
         "cascade": {
             "title": "Cascade Filling Station",
             "subtitle": "Click valve switches to connect cylinders, then fill (max 3 hoses, 200 bar limit)",

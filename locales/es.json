@@ -1597,6 +1597,12 @@
             "formula": "P<sub>final</sub> = (P<sub>A</sub> × V<sub>A</sub> + P<sub>B</sub> × V<sub>B</sub>) / (V<sub>A</sub> + V<sub>B</sub>)",
             "disclaimer": "<strong>Aviso:</strong> Solo con fines educativos. Basado en las hipótesis de gas ideal."
         },
+        "haldane": {
+            "title": "Ecuación de Haldane",
+            "subtitle": "Recorrido interactivo de cómo un compartimento tisular se satura en el tiempo.",
+            "disclaimerBanner": "<strong>Solo para fines educativos</strong> — Recorrido interactivo de la ecuación de Bühlmann/Haldane de saturación.",
+            "disclaimer": "<strong>Aviso:</strong> Solo para fines educativos. El algoritmo de descompresión real usa lógica adicional."
+        },
         "cascade": {
             "title": "Estación de llenado en cascada",
             "subtitle": "Haz clic en las válvulas para conectar botellas y llena (máx. 3 latiguillos, límite de 200 bar)",
