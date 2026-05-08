@@ -1611,6 +1611,12 @@
             },
             "gas": {
                 "air": "Aire (F<sub>N₂</sub> = 0.79)"
+            },
+            "mvalue": {
+                "title": "Comprobación del valor M",
+                "modelLabel": "Modelo",
+                "within": "dentro",
+                "exceeded": "excedido"
             }
         },
         "cascade": {

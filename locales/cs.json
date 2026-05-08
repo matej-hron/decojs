@@ -1647,6 +1647,12 @@
             },
             "gas": {
                 "air": "Vzduch (F<sub>N₂</sub> = 0,79)"
+            },
+            "mvalue": {
+                "title": "Kontrola M-hodnoty",
+                "modelLabel": "Model",
+                "within": "v limitu",
+                "exceeded": "překročeno"
             }
         },
         "cascade": {

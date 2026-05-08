@@ -132,6 +132,48 @@
             margin-bottom: 1rem;
         }
         #ptChart { width: 100%; height: 140px; display: block; }
+
+        .mvalue-row {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        .mvalue-title { font-weight: 600; }
+        .mvalue-bar {
+            flex: 1;
+            min-width: 200px;
+            height: 22px;
+            background: linear-gradient(90deg, #27ae60 0%, #f1c40f 70%, #e74c3c 100%);
+            border-radius: 3px;
+            position: relative;
+        }
+        .mvalue-marker {
+            position: absolute;
+            top: -3px; bottom: -3px;
+            width: 3px;
+            background: #2c3e50;
+            border-radius: 1px;
+            transition: left 0.15s;
+        }
+        .mvalue-readout { font-family: ui-monospace, monospace; }
+        .mvalue-status { font-weight: 600; }
+        .mvalue-status.ok { color: #27ae60; }
+        .mvalue-status.exceeded { color: #e74c3c; }
+        .mvalue-model { display: inline-flex; align-items: center; gap: 0.4rem; }
+        .mvalue-model select {
+            padding: 0.25rem 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 3px;
+            background: var(--card-background);
+            font-size: 0.85rem;
+        }
     </style>
 </head>
 <body>
@@ -251,7 +293,23 @@
                 <circle id="chartDot" r="3.5" fill="#9b59b6"/>
             </svg>
         </div>
-        <!-- m-value strip — added in later tasks -->
+        <!-- M-value strip -->
+        <div class="mvalue-row">
+            <span class="mvalue-title" data-i18n="sandbox.haldane.mvalue.title">M-value check</span>
+            <div class="mvalue-bar"><div class="mvalue-marker" id="mvalueMarker"></div></div>
+            <span class="mvalue-readout">
+                P<sub>t</sub> = <span id="mvaluePt">0.7510</span> / M = <span id="mValue">2.50</span>
+                <span class="mvalue-status" id="mvalueStatus" data-i18n="sandbox.haldane.mvalue.within">within</span>
+            </span>
+            <label class="mvalue-model">
+                <span data-i18n="sandbox.haldane.mvalue.modelLabel">Model</span>
+                <select id="variantSelect">
+                    <option value="ZH-L16A">ZH-L16A</option>
+                    <option value="ZH-L16B">ZH-L16B</option>
+                    <option value="ZH-L16C" selected>ZH-L16C</option>
+                </select>
+            </label>
+        </div>
     </div>
 
     <!-- Footer -->
@@ -341,6 +399,7 @@
             window.__haldane = { halfTime, k, pT0, pAlv, Pt, M, pAmbStart, pAmbTarget, expTerm, t: state.t };
 
             drawChart();
+            updateMValueStrip();
         }
 
         // ---------- Event wiring ----------
@@ -441,6 +500,34 @@
             const PtNow = window.__haldane.Pt;
             chartDot.setAttribute('cx', cursorX);
             chartDot.setAttribute('cy', yOf(PtNow).toFixed(2));
+        }
+
+        // ---------- M-value strip ----------
+        const variantSelect  = document.getElementById('variantSelect');
+        const mvalueMarker   = document.getElementById('mvalueMarker');
+        const mvalueStatus   = document.getElementById('mvalueStatus');
+        const mvalueOut      = document.getElementById('mValue');
+        const mvaluePtOut    = document.getElementById('mvaluePt');
+
+        variantSelect.addEventListener('change', () => {
+            state.variant = variantSelect.value;
+            // Half-times are identical across a/b/c except compartment 1, so rebuild the
+            // dropdown to keep the displayed T½ consistent with the active variant.
+            populateCompartments();
+            recompute();
+        });
+
+        function updateMValueStrip() {
+            const { Pt, M } = window.__haldane;
+            mvaluePtOut.textContent = Pt.toFixed(4);
+            mvalueOut.textContent = M.toFixed(2);
+            // Marker x: Pt/M as a fraction (clamped 0..1.05 so we can show "exceeded" overflow).
+            const ratio = Math.max(0, Math.min(1.05, Pt / M));
+            mvalueMarker.style.left = `${ratio * 100}%`;
+            const exceeded = Pt > M;
+            mvalueStatus.textContent = exceeded ? '✗ exceeded' : '✓ within';
+            mvalueStatus.classList.toggle('exceeded', exceeded);
+            mvalueStatus.classList.toggle('ok', !exceeded);
         }
 
         // ---------- Init ----------
