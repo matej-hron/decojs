@@ -181,17 +181,18 @@
         .mvalue-bar {
             position: absolute;
             inset: 0;
-            background: linear-gradient(90deg, #27ae60 0%, #f1c40f 60%, #f39c12 76.9%, #e74c3c 76.91%, #c0392b 100%);
+            background: linear-gradient(90deg, #27ae60 0%, #f1c40f 50%, #e74c3c 100%);
             border-radius: 3px;
         }
-        /* M-line: a thin dark vertical at 76.9% (where M sits on the 0..1.3·M scale) */
+        /* M-line: a thin dark vertical at the M-value position. Set dynamically in JS
+           because M depends on the active compartment + target depth. */
         .mvalue-mline {
             position: absolute;
             top: -3px; bottom: -3px;
-            left: 76.9%;
             width: 2px;
             background: #2c3e50;
             border-radius: 1px;
+            transition: left 0.15s;
         }
         .mvalue-mline-label {
             position: absolute;
@@ -708,19 +709,27 @@
             recompute();
         });
 
+        // Fixed pressure scale for the M-value bar. Picked so the typical
+        // educational range (0–30 m, default compartments) fits comfortably
+        // and Pt0/Palv/M values don't appear to "move" when only the input
+        // changes that legitimately affects them changes. Extreme cases
+        // (very deep + very fast compartment) may push M off the right edge;
+        // the numeric readout still shows the exact value.
+        const BAR_MAX = 6.0;
+
         function updateMValueStrip() {
             const { Pt, M, pAmbTarget, aN2, bN2 } = window.__haldane;
             mvaluePtOut.textContent = Pt.toFixed(4);
             mvalueOut.textContent = M.toFixed(4);
-            // Marker position: scale 0..1.3·M to bar's 0..100%, clamped.
-            const ratio = Math.max(0, Math.min(1, Pt / (1.3 * M)));
-            mvalueMarker.style.left = `${ratio * 100}%`;
-            // Anchor markers — Palv, Pt0, and Pamb on the same 0..1.3·M scale.
+            const xOfBar = (v) => `${Math.max(0, Math.min(1, v / BAR_MAX)) * 100}%`;
+            mvalueMarker.style.left = xOfBar(Pt);
+            const mline = document.querySelector('.mvalue-mline');
+            mline.style.left = xOfBar(M);
+            // Anchor markers — Palv, Pt0, and Pamb on the same fixed scale.
             const { pT0, pAlv } = window.__haldane;
             const anchorPt0  = document.getElementById('mvalueAnchorPt0');
             const anchorPalv = document.getElementById('mvalueAnchorPalv');
             const anchorPamb = document.getElementById('mvalueAnchorPamb');
-            const xOfBar = (v) => `${Math.max(0, Math.min(1, v / (1.3 * M))) * 100}%`;
             anchorPt0.style.left  = xOfBar(pT0);
             anchorPalv.style.left = xOfBar(pAlv);
             anchorPamb.style.left = xOfBar(pAmbTarget);
