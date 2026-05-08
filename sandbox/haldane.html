@@ -133,39 +133,21 @@
         }
         #ptChart { width: 100%; height: 140px; display: block; }
 
-        .mvalue-row {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
+        .mvalue-section {
             background: var(--background-color);
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
+            padding: 0.75rem 1rem;
             margin-bottom: 1rem;
             font-size: 0.9rem;
         }
+        .mvalue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
         .mvalue-title { font-weight: 600; }
-        .mvalue-bar {
-            flex: 1;
-            min-width: 200px;
-            height: 22px;
-            background: linear-gradient(90deg, #27ae60 0%, #f1c40f 70%, #e74c3c 100%);
-            border-radius: 3px;
-            position: relative;
-        }
-        .mvalue-marker {
-            position: absolute;
-            top: -3px; bottom: -3px;
-            width: 3px;
-            background: #2c3e50;
-            border-radius: 1px;
-            transition: left 0.15s;
-        }
-        .mvalue-readout { font-family: ui-monospace, monospace; }
-        .mvalue-status { font-weight: 600; }
-        .mvalue-status.ok { color: #27ae60; }
-        .mvalue-status.exceeded { color: #e74c3c; }
         .mvalue-model { display: inline-flex; align-items: center; gap: 0.4rem; }
         .mvalue-model select {
             padding: 0.25rem 0.5rem;
@@ -174,6 +156,58 @@
             background: var(--card-background);
             font-size: 0.85rem;
         }
+
+        .mvalue-bar-track {
+            position: relative;
+            height: 22px;
+            margin-bottom: 0.5rem;
+        }
+        .mvalue-bar {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, #27ae60 0%, #f1c40f 60%, #f39c12 76.9%, #e74c3c 76.91%, #c0392b 100%);
+            border-radius: 3px;
+        }
+        /* M-line: a thin dark vertical at 76.9% (where M sits on the 0..1.3·M scale) */
+        .mvalue-mline {
+            position: absolute;
+            top: -3px; bottom: -3px;
+            left: 76.9%;
+            width: 2px;
+            background: #2c3e50;
+            border-radius: 1px;
+        }
+        .mvalue-mline-label {
+            position: absolute;
+            top: -1.1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .mvalue-marker {
+            position: absolute;
+            top: -3px; bottom: -3px;
+            width: 3px;
+            background: #2c3e50;
+            border-radius: 1px;
+            transition: left 0.15s;
+            box-shadow: 0 0 0 1px white;
+        }
+
+        .mvalue-readout { font-family: ui-monospace, monospace; }
+        .mvalue-status { font-weight: 600; margin-left: 0.4rem; }
+        .mvalue-status.ok { color: #27ae60; }
+        .mvalue-status.exceeded { color: #e74c3c; }
+
+        .mvalue-derivation {
+            font-family: ui-monospace, monospace;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-top: 0.4rem;
+        }
+        .mvalue-derivation strong { color: #e67e22; }
     </style>
 </head>
 <body>
@@ -239,28 +273,28 @@
         <!-- Term cards -->
         <div class="term-row">
             <div class="term-card palv">
-                <div class="name">P<sub>alv</sub> · alveolar N<sub>2</sub> pressure</div>
+                <div class="name">P<sub>alv</sub> | alveolar N<sub>2</sub> pressure</div>
                 <div class="formula">= (P<sub>amb</sub> − 0.0627) · F<sub>N₂</sub></div>
                 <div class="formula" id="palvSubst">= (4.0133 − 0.0627) · 0.7902</div>
                 <div class="value"><span id="palvValue">3.1218</span> bar</div>
                 <div class="why">What the lungs are pushing into the blood at target depth.</div>
             </div>
             <div class="term-card pt0">
-                <div class="name">P<sub>t,0</sub> · tissue pressure at t=0</div>
+                <div class="name">P<sub>t,0</sub> | tissue pressure at t=0</div>
                 <div class="formula">= (P<sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub></div>
                 <div class="formula" id="pt0Subst">= (1.0133 − 0.0627) · 0.7902</div>
                 <div class="value"><span id="pt0Value">0.7510</span> bar</div>
                 <div class="why">Where this compartment started, assumed equilibrated at start depth.</div>
             </div>
             <div class="term-card k">
-                <div class="name">k · rate constant</div>
+                <div class="name">k | rate constant</div>
                 <div class="formula">= ln(2) / T½</div>
                 <div class="formula" id="kSubst">= 0.6931 / 27.0</div>
                 <div class="value"><span id="kValue">0.0257</span> min⁻¹</div>
                 <div class="why">Faster compartments → bigger k → catch up sooner.</div>
             </div>
             <div class="term-card exp">
-                <div class="name">e<sup>−kt</sup> · "fraction left to go"</div>
+                <div class="name">e<sup>−kt</sup> | "fraction left to go"</div>
                 <div class="formula">= e<sup>−k · t</sup></div>
                 <div class="formula" id="expSubst">= e<sup>−0.0257 · 0</sup></div>
                 <div class="value"><span id="expValue">1.0000</span></div>
@@ -294,21 +328,31 @@
             </svg>
         </div>
         <!-- M-value strip -->
-        <div class="mvalue-row">
-            <span class="mvalue-title" data-i18n="sandbox.haldane.mvalue.title">M-value check</span>
-            <div class="mvalue-bar"><div class="mvalue-marker" id="mvalueMarker"></div></div>
-            <span class="mvalue-readout">
-                P<sub>t</sub> = <span id="mvaluePt">0.7510</span> / M = <span id="mValue">2.50</span>
+        <div class="mvalue-section">
+            <div class="mvalue-header">
+                <span class="mvalue-title" data-i18n="sandbox.haldane.mvalue.title">M-value check</span>
+                <label class="mvalue-model">
+                    <span data-i18n="sandbox.haldane.mvalue.modelLabel">Model</span>
+                    <select id="variantSelect">
+                        <option value="ZH-L16A">ZH-L16A</option>
+                        <option value="ZH-L16B">ZH-L16B</option>
+                        <option value="ZH-L16C" selected>ZH-L16C</option>
+                    </select>
+                </label>
+            </div>
+            <div class="mvalue-bar-track">
+                <div class="mvalue-bar"></div>
+                <div class="mvalue-mline"><span class="mvalue-mline-label">M</span></div>
+                <div class="mvalue-marker" id="mvalueMarker"></div>
+            </div>
+            <div class="mvalue-readout">
+                P<sub>t</sub> = <span id="mvaluePt">0.7510</span> bar
+                | M = <span id="mValue">2.50</span> bar
                 <span class="mvalue-status" id="mvalueStatus" data-i18n="sandbox.haldane.mvalue.within">within</span>
-            </span>
-            <label class="mvalue-model">
-                <span data-i18n="sandbox.haldane.mvalue.modelLabel">Model</span>
-                <select id="variantSelect">
-                    <option value="ZH-L16A">ZH-L16A</option>
-                    <option value="ZH-L16B">ZH-L16B</option>
-                    <option value="ZH-L16C" selected>ZH-L16C</option>
-                </select>
-            </label>
+            </div>
+            <div class="mvalue-derivation" id="mvalueDerivation">
+                M = a + P<sub>amb</sub> / b
+            </div>
         </div>
     </div>
 
@@ -358,7 +402,7 @@
         function populateCompartments() {
             const comps = getCompartmentsForVariant(state.variant);
             els.compartment.innerHTML = comps
-                .map((c, i) => `<option value="${i}">${i + 1} · T½ = ${c.halfTime.toFixed(1)} min</option>`)
+                .map((c, i) => `<option value="${i}">${i + 1} | T½ = ${c.halfTime.toFixed(1)} min</option>`)
                 .join('');
             els.compartment.value = String(state.compartmentIdx);
         }
@@ -396,7 +440,7 @@
             document.getElementById('expSubst').innerHTML = `= e<sup>−${k.toFixed(4)} · ${state.t}</sup>`;
 
             // Stashed for later tasks (chart, M-value).
-            window.__haldane = { halfTime, k, pT0, pAlv, Pt, M, pAmbStart, pAmbTarget, expTerm, t: state.t };
+            window.__haldane = { halfTime, k, pT0, pAlv, Pt, M, pAmbStart, pAmbTarget, expTerm, t: state.t, aN2: comp.aN2, bN2: comp.bN2 };
 
             drawChart();
             updateMValueStrip();
@@ -518,16 +562,19 @@
         });
 
         function updateMValueStrip() {
-            const { Pt, M } = window.__haldane;
+            const { Pt, M, pAmbTarget, aN2, bN2 } = window.__haldane;
             mvaluePtOut.textContent = Pt.toFixed(4);
-            mvalueOut.textContent = M.toFixed(2);
-            // Marker x: Pt/M as a fraction (clamped 0..1.05 so we can show "exceeded" overflow).
-            const ratio = Math.max(0, Math.min(1.05, Pt / M));
+            mvalueOut.textContent = M.toFixed(4);
+            // Marker position: scale 0..1.3·M to bar's 0..100%, clamped.
+            const ratio = Math.max(0, Math.min(1, Pt / (1.3 * M)));
             mvalueMarker.style.left = `${ratio * 100}%`;
             const exceeded = Pt > M;
             mvalueStatus.textContent = exceeded ? '✗ exceeded' : '✓ within';
             mvalueStatus.classList.toggle('exceeded', exceeded);
             mvalueStatus.classList.toggle('ok', !exceeded);
+            // Substituted derivation line
+            const deriv = document.getElementById('mvalueDerivation');
+            deriv.innerHTML = `M = a + P<sub>amb</sub> / b = ${aN2.toFixed(4)} + ${pAmbTarget.toFixed(4)} / ${bN2.toFixed(4)} = <strong>${M.toFixed(4)}</strong>`;
         }
 
         // ---------- Init ----------
