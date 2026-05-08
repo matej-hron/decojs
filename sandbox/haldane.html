@@ -702,11 +702,10 @@
         });
 
         // Fixed pressure scale for the M-value bar. Sized to cover the worst
-        // case at 30 m: compartment 1 (T½=5) has the highest M ≈ 8.4 bar at
-        // depth (B/C variants) — round up to 9 so it fits with a touch of
-        // headroom. ZH-L16A's compartment 1 hits ~9.2, slightly clipped — a
-        // documented edge case.
-        const BAR_MAX = 9.0;
+        // case at 30 m across all ZH-L16 variants: compartment 1 ZH-L16A is
+        // M ≈ 9.2 bar (a=1.26, b=0.505 → 1.26 + 4.01/0.505). 10 bar leaves
+        // a small comfort margin without compressing typical values too much.
+        const BAR_MAX = 10.0;
 
         function updateMValueStrip() {
             const { Pt, M, pAmbTarget, aN2, bN2 } = window.__haldane;
