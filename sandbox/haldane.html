@@ -123,6 +123,15 @@
         }
         .time-row .step-btns button:hover { background: var(--background-color); }
         .time-row .step-btns button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .chart-row {
+            background: linear-gradient(180deg, rgba(41,128,185,0.04), rgba(41,128,185,0));
+            border: 1px dashed rgba(41,128,185,0.35);
+            border-radius: var(--radius);
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        #ptChart { width: 100%; height: 140px; display: block; }
     </style>
 </head>
 <body>
@@ -227,7 +236,22 @@
                 <button type="button" id="tPlus5">+5</button>
             </div>
         </div>
-        <!-- chart, m-value strip — added in later tasks -->
+        <!-- Mini Pt(t) chart -->
+        <div class="chart-row">
+            <svg id="ptChart" viewBox="0 0 480 140" preserveAspectRatio="none" aria-label="Pt over time">
+                <!-- Asymptote (Palv) -->
+                <line id="chartAsymptote" x1="0" x2="480" stroke="#2980b9" stroke-dasharray="4 4" stroke-width="1" stroke-opacity="0.6"/>
+                <!-- Baseline (Pt0) -->
+                <line id="chartBaseline"  x1="0" x2="480" stroke="#e74c3c" stroke-dasharray="2 4" stroke-width="1" stroke-opacity="0.5"/>
+                <!-- Curve -->
+                <path id="chartCurve" fill="none" stroke="#2c3e50" stroke-width="1.6"/>
+                <!-- Cursor -->
+                <line id="chartCursor" stroke="#9b59b6" stroke-width="1.5" y1="0" y2="140"/>
+                <!-- Cursor dot -->
+                <circle id="chartDot" r="3.5" fill="#9b59b6"/>
+            </svg>
+        </div>
+        <!-- m-value strip — added in later tasks -->
     </div>
 
     <!-- Footer -->
@@ -315,6 +339,8 @@
 
             // Stashed for later tasks (chart, M-value).
             window.__haldane = { halfTime, k, pT0, pAlv, Pt, M, pAmbStart, pAmbTarget, expTerm, t: state.t };
+
+            drawChart();
         }
 
         // ---------- Event wiring ----------
@@ -371,6 +397,51 @@
         btnMinus1.addEventListener('click', () => setTime(state.t - 1));
         btnPlus1.addEventListener('click',  () => setTime(state.t + 1));
         btnPlus5.addEventListener('click',  () => setTime(state.t + 5));
+
+        // ---------- Mini Pt(t) chart ----------
+        const CHART_W = 480, CHART_H = 140, CHART_PAD = 6;
+        const chartCurve     = document.getElementById('chartCurve');
+        const chartCursor    = document.getElementById('chartCursor');
+        const chartDot       = document.getElementById('chartDot');
+        const chartAsymptote = document.getElementById('chartAsymptote');
+        const chartBaseline  = document.getElementById('chartBaseline');
+
+        function drawChart() {
+            const { halfTime, pT0, pAlv } = window.__haldane;
+            const tMax = parseInt(timeSlider.max, 10);
+            // y range: encompass both Pt0 and Palv with 5% padding both sides.
+            const yMin = Math.min(pT0, pAlv);
+            const yMax = Math.max(pT0, pAlv);
+            const ySpan = (yMax - yMin) || 1;
+            const yLo = yMin - 0.05 * ySpan;
+            const yHi = yMax + 0.05 * ySpan;
+
+            const xOf = (t) => CHART_PAD + (CHART_W - 2 * CHART_PAD) * (t / tMax);
+            const yOf = (p) => CHART_PAD + (CHART_H - 2 * CHART_PAD) * (1 - (p - yLo) / (yHi - yLo));
+
+            const pts = [];
+            const N = 120;
+            for (let i = 0; i <= N; i++) {
+                const t = (i / N) * tMax;
+                const Pt = haldaneEquation(pT0, pAlv, t, halfTime);
+                pts.push(`${xOf(t).toFixed(2)},${yOf(Pt).toFixed(2)}`);
+            }
+            chartCurve.setAttribute('d', `M ${pts.join(' L ')}`);
+
+            const yPalv = yOf(pAlv).toFixed(2);
+            chartAsymptote.setAttribute('y1', yPalv);
+            chartAsymptote.setAttribute('y2', yPalv);
+            const yPt0 = yOf(pT0).toFixed(2);
+            chartBaseline.setAttribute('y1', yPt0);
+            chartBaseline.setAttribute('y2', yPt0);
+
+            const cursorX = xOf(state.t).toFixed(2);
+            chartCursor.setAttribute('x1', cursorX);
+            chartCursor.setAttribute('x2', cursorX);
+            const PtNow = window.__haldane.Pt;
+            chartDot.setAttribute('cx', cursorX);
+            chartDot.setAttribute('cy', yOf(PtNow).toFixed(2));
+        }
 
         // ---------- Init ----------
         createLanguageSwitcher();
