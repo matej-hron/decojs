@@ -1732,6 +1732,13 @@
                     "yAxis": "P_t (bar)",
                     "legendAmbient": "Ambientní čára (y = x)",
                     "legendSurface": "Hladina (P_amb = 1,013 bar)"
+                },
+                "legend": {
+                    "variantA": "ZH-L16A (dlouhá čárka)",
+                    "variantB": "ZH-L16B (krátká čárka)",
+                    "variantC": "ZH-L16C (plná)",
+                    "ambient": "Ambientní čára (y = x)",
+                    "surface": "Hladina (P_amb = 1,013 bar)"
                 }
             }
         },

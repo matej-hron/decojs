@@ -163,6 +163,34 @@
         .mv-chart-mline { fill: none; stroke-width: 2; }
         .mv-chart-mline.faint { stroke-width: 1; stroke-dasharray: 3,3; opacity: 0.5; }
         .mv-chart-marker { fill: #e67e22; stroke: white; stroke-width: 1.5; }
+        .mv-chart-legend {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: ui-monospace, monospace;
+        }
+        .mv-chart-legend .item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        .mv-chart-legend .swatch {
+            display: inline-block;
+            width: 24px;
+            height: 2px;
+            background: currentColor;
+        }
+        .mv-chart-legend .swatch.dashed {
+            height: 0;
+            border-top: 2px dashed currentColor;
+        }
+        .mv-chart-mline.variant-A { stroke-dasharray: 8,2; }
+        .mv-chart-mline.variant-B { stroke-dasharray: 3,3; }
+        .mv-chart-mline.variant-C { stroke-dasharray: none; }
     </style>
 </head>
 <body>
@@ -258,6 +286,13 @@
 
             <div class="mv-chart-row">
                 <svg id="mvTopChart" viewBox="0 0 480 280" preserveAspectRatio="xMidYMid meet" aria-label="M-value chart"></svg>
+            </div>
+            <div class="mv-chart-legend" id="mvTopChartLegend">
+                <span class="item" data-i18n="sandbox.mvalues.top.legend.variantA"><span class="swatch dashed"></span>ZH-L16A (long dash)</span>
+                <span class="item" data-i18n="sandbox.mvalues.top.legend.variantB"><span class="swatch dashed"></span>ZH-L16B (short dash)</span>
+                <span class="item" data-i18n="sandbox.mvalues.top.legend.variantC"><span class="swatch"></span>ZH-L16C (solid)</span>
+                <span class="item" data-i18n="sandbox.mvalues.top.legend.ambient"><span class="swatch dashed" style="color:#2980b9;"></span>Ambient line (y = x)</span>
+                <span class="item" data-i18n="sandbox.mvalues.top.legend.surface"><span class="swatch dashed" style="color:#7f8c8d;"></span>Surface (P_amb = 1.013 bar)</span>
             </div>
         </section>
         <!-- Task 5-6 will add the bottom playground here -->
@@ -470,10 +505,11 @@
                     const c = VARIANT_COMPS[v][state.compartmentIdx];
                     const m0 = c.aN2 + X_MIN / c.bN2;
                     const mMax = c.aN2 + X_MAX / c.bN2;
+                    const variantClass = ' variant-' + v.charAt(v.length - 1);  // 'A' | 'B' | 'C'
                     svg.appendChild(svgEl('line', {
                         x1: xToPx(X_MIN), y1: yToPx(m0, yMax),
                         x2: xToPx(X_MAX), y2: yToPx(mMax, yMax),
-                        class: 'mv-chart-mline' + (isActive ? '' : ' faint'),
+                        class: 'mv-chart-mline' + (isActive ? '' : ' faint') + variantClass,
                         stroke: compartmentColor(c),
                     }));
                 }

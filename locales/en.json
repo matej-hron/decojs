@@ -1732,6 +1732,13 @@
                     "yAxis": "P_t (bar)",
                     "legendAmbient": "Ambient line (y = x)",
                     "legendSurface": "Surface (P_amb = 1.013 bar)"
+                },
+                "legend": {
+                    "variantA": "ZH-L16A (long dash)",
+                    "variantB": "ZH-L16B (short dash)",
+                    "variantC": "ZH-L16C (solid)",
+                    "ambient": "Ambient line (y = x)",
+                    "surface": "Surface (P_amb = 1.013 bar)"
                 }
             }
         },

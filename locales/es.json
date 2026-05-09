@@ -1696,6 +1696,13 @@
                     "yAxis": "P_t (bar)",
                     "legendAmbient": "Línea ambiental (y = x)",
                     "legendSurface": "Superficie (P_amb = 1,013 bar)"
+                },
+                "legend": {
+                    "variantA": "ZH-L16A (raya larga)",
+                    "variantB": "ZH-L16B (raya corta)",
+                    "variantC": "ZH-L16C (sólida)",
+                    "ambient": "Línea ambiental (y = x)",
+                    "surface": "Superficie (P_amb = 1,013 bar)"
                 }
             }
         },
