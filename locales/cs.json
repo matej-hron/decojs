@@ -1304,7 +1304,7 @@
             "deco": "Modelování dekomprese",
             "haldane": "Haldaneova rovnice",
             "schreiner": "Schreinerova rovnice",
-            "mvalues": "M-hodnota: pískoviště",
+            "mvalues": "M-hodnoty",
             "tissue": "Sycení tkání",
             "transfill": "Přepouštění lahví",
             "cascade": "Kaskádové plnění",
@@ -1347,7 +1347,7 @@
                 "tissue": "Sycení tkání",
                 "haldane": "Haldaneova rovnice",
                 "schreiner": "Schreinerova rovnice",
-                "mvalues": "M-hodnota: pískoviště",
+                "mvalues": "M-hodnoty",
                 "transfill": "Přepouštění",
                 "cascade": "Kaskádové plnění",
                 "gasLaw": "Plynový zákon"
@@ -1691,13 +1691,13 @@
             }
         },
         "mvalues": {
-            "title": "M-hodnota: pískoviště",
-            "subtitle": "Odkud čára pochází a jak vypadá pro všech 16 kompartmentů.",
+            "title": "M-hodnoty",
+            "subtitle": "Jak funkce vzniká a jak vypadá pro všech 16 kompartmentů.",
             "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Interaktivní rozbor Bühlmannova vzorce pro M-hodnoty a původu jejich koeficientů.",
             "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely. Reálný dekompresní algoritmus používá další logiku.",
             "top": {
                 "heading": "Jak M vypadá v této hloubce?",
-                "anchor": "Vyberte hloubku, kompartment a variantu — sledujte, jak Bühlmannova M-hodnota počítá živě.",
+                "anchor": "Vyberte hloubku, kompartment a variantu — sledujte, jak se Bühlmannova M-hodnota mění.",
                 "inputs": {
                     "depth": "Hloubka (m)",
                     "compartment": "Kompartment",
@@ -1742,11 +1742,12 @@
                 }
             },
             "variantBar": {
-                "label": "Varianta ZH-L16 (platí pro obě pískoviště):"
+                "label": "Varianta ZH-L16:",
+                "shortLabel": "Varianta:"
             },
             "bottom": {
                 "heading": "Odkud pocházejí a a b?",
-                "anchor": "a a b ZH-L16A nejsou napasované na data — počítají se pouze z poločasu. Varianty B a C jsou dodatečné úpravy konkrétních kompartmentů.",
+                "anchor": "a a b ZH-L16A nejsou empiricky odvozené — počítají se pouze z poločasu. Varianty B a C jsou manuálně upravené podle statistické korelace z pozorovaných incidentů.",
                 "inputs": {
                     "halfTime": "Poločas t½ (min)",
                     "snapToggle": "Přichytit ke standardním kompartmentům"
@@ -1757,11 +1758,11 @@
                         "why": "Charakteristický čas kompartmentu. Není anatomický — jen vzorek na exponenciální ose."
                     },
                     "a": {
-                        "name": "a(t<sub>½</sub>) | analytický průsečík",
+                        "name": "a(t<sub>½</sub>) | posun funkce",
                         "why": "Varianty B a C snižují a u konkrétních kompartmentů — jediné místo, kde do Bühlmanna vstupuje statistika."
                     },
                     "b": {
-                        "name": "b(t<sub>½</sub>) | analytický sklon",
+                        "name": "b(t<sub>½</sub>) | sklon funkce",
                         "why": "Identické pro A/B/C kromě TC1 (jehož záměna t½ mění i b)."
                     }
                 },

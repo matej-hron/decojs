@@ -128,6 +128,16 @@
         .mv-term-card .formula { font-family: ui-monospace, monospace; color: var(--text-muted); font-size: 0.82rem; margin-top: 0.25rem; }
         .mv-term-card .value   { font-family: ui-monospace, monospace; font-weight: 700; color: #2980b9; font-size: 1rem; margin-top: 0.4rem; }
         .mv-term-card .why     { color: var(--text-muted); font-size: 0.8rem; font-style: italic; margin-top: 0.4rem; }
+        .mv-term-card .variant-compare {
+            font-family: ui-monospace, monospace;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+        .mv-term-card .variant-compare .delta {
+            color: #e67e22;
+            font-weight: 600;
+        }
 
         .view-toggle {
             display: inline-flex;
@@ -158,11 +168,17 @@
         .mv-chart-axis { stroke: var(--text-muted); stroke-width: 1; }
         .mv-chart-tick { stroke: var(--text-muted); stroke-width: 0.5; }
         .mv-chart-label { fill: var(--text-muted); font-size: 10px; font-family: ui-monospace, monospace; }
-        .mv-chart-ambient { stroke: #2980b9; stroke-width: 1; stroke-dasharray: 4,3; fill: none; opacity: 0.5; }
+        .mv-chart-ambient { stroke: #2980b9; stroke-width: 1.5; stroke-dasharray: 4,3; fill: none; opacity: 0.7; }
         .mv-chart-surface { stroke: #7f8c8d; stroke-width: 1; stroke-dasharray: 2,2; }
         .mv-chart-mline { fill: none; stroke-width: 2; }
         .mv-chart-mline.faint { stroke-width: 1; stroke-dasharray: 3,3; opacity: 0.5; }
+        /* In "This compartment" view, inactive variant lines should stay readable —
+           the dash pattern + variant class already differentiates them. */
+        .mv-chart-mline.faint.variant-A,
+        .mv-chart-mline.faint.variant-B,
+        .mv-chart-mline.faint.variant-C { opacity: 0.85; stroke-width: 1.6; }
         .mv-chart-marker { fill: #e67e22; stroke: white; stroke-width: 1.5; }
+        .mv-chart-axis-callout { fill: #2980b9; font-size: 10px; font-family: ui-monospace, monospace; opacity: 0.85; }
         .mv-chart-legend {
             display: flex;
             gap: 1rem;
@@ -177,6 +193,14 @@
             display: inline-flex;
             align-items: center;
             gap: 0.35rem;
+            padding: 2px 4px;
+            border-radius: 3px;
+            cursor: default;
+            transition: background 0.1s;
+        }
+        .mv-chart-legend .item[data-hover-variant]:hover,
+        .mv-chart-legend .item[data-hover-line]:hover {
+            background: rgba(41, 128, 185, 0.08);
         }
         .mv-chart-legend .swatch {
             display: inline-block;
@@ -191,6 +215,27 @@
         .mv-chart-mline.variant-A { stroke-dasharray: 8,2; }
         .mv-chart-mline.variant-B { stroke-dasharray: 3,3; }
         .mv-chart-mline.variant-C { stroke-dasharray: none; }
+        /* Hover dim: when legend item hovered, dim non-matching chart elements */
+        #mvTopChart[data-hover-variant="A"] .mv-chart-mline:not(.variant-A),
+        #mvTopChart[data-hover-variant="A"] .mv-chart-ambient,
+        #mvTopChart[data-hover-variant="A"] .mv-chart-surface,
+        #mvTopChart[data-hover-variant="A"] .mv-chart-marker { opacity: 0.1; }
+        #mvTopChart[data-hover-variant="B"] .mv-chart-mline:not(.variant-B),
+        #mvTopChart[data-hover-variant="B"] .mv-chart-ambient,
+        #mvTopChart[data-hover-variant="B"] .mv-chart-surface,
+        #mvTopChart[data-hover-variant="B"] .mv-chart-marker { opacity: 0.1; }
+        #mvTopChart[data-hover-variant="C"] .mv-chart-mline:not(.variant-C),
+        #mvTopChart[data-hover-variant="C"] .mv-chart-ambient,
+        #mvTopChart[data-hover-variant="C"] .mv-chart-surface,
+        #mvTopChart[data-hover-variant="C"] .mv-chart-marker { opacity: 0.1; }
+        #mvTopChart[data-hover-line="ambient"] .mv-chart-mline,
+        #mvTopChart[data-hover-line="ambient"] .mv-chart-surface,
+        #mvTopChart[data-hover-line="ambient"] .mv-chart-marker { opacity: 0.1; }
+        #mvTopChart[data-hover-line="ambient"] .mv-chart-ambient { opacity: 1; stroke-width: 2.5; }
+        #mvTopChart[data-hover-line="surface"] .mv-chart-mline,
+        #mvTopChart[data-hover-line="surface"] .mv-chart-ambient,
+        #mvTopChart[data-hover-line="surface"] .mv-chart-marker { opacity: 0.1; }
+        #mvTopChart[data-hover-line="surface"] .mv-chart-surface { opacity: 1; stroke-width: 2.5; }
 
         .mv-derivation-formula {
             text-align: center;
@@ -231,6 +276,26 @@
             font-size: 0.9rem;
             width: 80px;
         }
+        .mv-step-btn {
+            padding: 0.2rem 0.55rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--card-background);
+            font-family: ui-monospace, monospace;
+            font-size: 0.85rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .mv-step-btn:hover { background: rgba(155, 89, 182, 0.1); }
+        .mv-comp-current {
+            font-family: ui-monospace, monospace;
+            font-weight: 600;
+            font-size: 0.9rem;
+            min-width: 3.2rem;
+            text-align: center;
+            color: var(--text-color);
+        }
+        .mv-comp-current.between { color: var(--text-muted); font-weight: normal; font-style: italic; }
 
         .mv-deriv-row {
             display: grid;
@@ -316,7 +381,7 @@
             <div class="mvalues-inputs">
                 <div class="field">
                     <label for="mvDepth" data-i18n="sandbox.mvalues.top.inputs.depth">Depth (m)</label>
-                    <input type="number" id="mvDepth" min="0" max="60" step="0.1" value="30">
+                    <input type="number" id="mvDepth" min="0" max="30" step="0.1" value="30">
                 </div>
                 <div class="field">
                     <label for="mvCompartment" data-i18n="sandbox.mvalues.top.inputs.compartment">Compartment</label>
@@ -333,7 +398,7 @@
 
             <div class="mvalues-formula">
                 <div class="formula-symbolic">
-                    <span class="term term-result">M</span> =
+                    <span class="term term-result">M</span>(<span class="term term-pamb">P<sub>amb</sub></span>) =
                     <span class="term term-a">a</span> +
                     <span class="term term-pamb">P<sub>amb</sub></span> /
                     <span class="term term-b">b</span>
@@ -369,6 +434,7 @@
                     <div class="name" data-i18n="sandbox.mvalues.top.cards.m.name">M | tolerated tissue pressure</div>
                     <div class="formula">= a + P<sub>amb</sub> / b</div>
                     <div class="value"><span id="mvMValue2">5.5588</span> bar</div>
+                    <div class="variant-compare" id="mvMCompare"></div>
                     <div class="why" data-i18n="sandbox.mvalues.top.cards.m.why">Above this, the algorithm flags supersaturation as unsafe.</div>
                 </div>
             </div>
@@ -377,11 +443,11 @@
                 <svg id="mvTopChart" viewBox="0 0 480 280" preserveAspectRatio="xMidYMid meet" aria-label="M-value chart"></svg>
             </div>
             <div class="mv-chart-legend" id="mvTopChartLegend">
-                <span class="item"><span class="swatch dashed"></span><span data-i18n="sandbox.mvalues.top.legend.variantA">ZH-L16A (long dash)</span></span>
-                <span class="item"><span class="swatch dashed"></span><span data-i18n="sandbox.mvalues.top.legend.variantB">ZH-L16B (short dash)</span></span>
-                <span class="item"><span class="swatch"></span><span data-i18n="sandbox.mvalues.top.legend.variantC">ZH-L16C (solid)</span></span>
-                <span class="item"><span class="swatch dashed" style="color:#2980b9;"></span><span data-i18n="sandbox.mvalues.top.legend.ambient">Ambient line (y = x)</span></span>
-                <span class="item"><span class="swatch dashed" style="color:#7f8c8d;"></span><span data-i18n="sandbox.mvalues.top.legend.surface">Surface (P_amb = 1.013 bar)</span></span>
+                <span class="item" data-hover-variant="A"><span class="swatch dashed swatch-variant"></span><span data-i18n="sandbox.mvalues.top.legend.variantA">ZH-L16A (long dash)</span></span>
+                <span class="item" data-hover-variant="B"><span class="swatch dashed swatch-variant"></span><span data-i18n="sandbox.mvalues.top.legend.variantB">ZH-L16B (short dash)</span></span>
+                <span class="item" data-hover-variant="C"><span class="swatch swatch-variant"></span><span data-i18n="sandbox.mvalues.top.legend.variantC">ZH-L16C (solid)</span></span>
+                <span class="item" data-hover-line="ambient"><span class="swatch dashed" style="color:#2980b9;"></span><span data-i18n="sandbox.mvalues.top.legend.ambient">Ambient line (y = x)</span></span>
+                <span class="item" data-hover-line="surface"><span class="swatch dashed" style="color:#7f8c8d;"></span><span data-i18n="sandbox.mvalues.top.legend.surface">Surface (P_amb = 1.013 bar)</span></span>
             </div>
         </section>
         <section class="mvalues-section derivation">
@@ -403,7 +469,7 @@
                 <div class="row">
                     <label for="mvHalfTime" data-i18n="sandbox.mvalues.bottom.inputs.halfTime">Half-time t½ (min)</label>
                     <input type="range" id="mvHalfTimeSlider" min="0" max="100" step="0.1" value="50">
-                    <input type="number" id="mvHalfTime" min="1" max="700" step="0.1" value="27">
+                    <input type="number" id="mvHalfTime" min="1" max="700" step="0.1" value="38.3">
                 </div>
                 <div class="row">
                     <label></label>
@@ -411,6 +477,17 @@
                         <input type="checkbox" id="mvSnapToggle">
                         <span class="toggle-hint" data-i18n="sandbox.mvalues.bottom.inputs.snapToggle">Snap to standard compartments</span>
                     </label>
+                    <button type="button" id="mvCompPrev" class="mv-step-btn" aria-label="Previous compartment" title="Previous compartment">◀</button>
+                    <span id="mvCompCurrent" class="mv-comp-current">TC5</span>
+                    <button type="button" id="mvCompNext" class="mv-step-btn" aria-label="Next compartment" title="Next compartment">▶</button>
+                </div>
+                <div class="row">
+                    <label data-i18n="sandbox.mvalues.variantBar.shortLabel">Variant:</label>
+                    <div class="variant-options" id="mvVariantBarBottom">
+                        <label><input type="radio" name="mvVariantBottom" value="ZH-L16A"> A</label>
+                        <label><input type="radio" name="mvVariantBottom" value="ZH-L16B"> B</label>
+                        <label><input type="radio" name="mvVariantBottom" value="ZH-L16C" checked> C</label>
+                    </div>
                 </div>
             </div>
 
@@ -475,10 +552,10 @@
         // Page state — variant becomes global in Task 5; for Task 2 it's hardcoded to C.
         const state = {
             depth: 30,
-            compartmentIdx: 4,        // TC5 (zero-based index = 4)
+            compartmentIdx: 5,        // TC6 (idx 5) — all 3 variants differ here, biggest A→C gap
             variant: ZHL16_VARIANTS.C,
             topView: 'this',
-            halfTime: 27.0,    // bottom playground slider position
+            halfTime: 38.3,    // bottom playground slider position (TC6's t½)
             snap: false,
         };
 
@@ -499,6 +576,7 @@
             pambValue: document.getElementById('mvPambValue'),
             bValue: document.getElementById('mvBValue'),
             mValue: document.getElementById('mvMValue2'),
+            mCompare: document.getElementById('mvMCompare'),
         };
         els.variantBar = document.getElementById('mvVariantBar');
         els.halfTime = document.getElementById('mvHalfTime');
@@ -509,6 +587,9 @@
         els.derivADelta = document.getElementById('mvDerivADelta');
         els.derivB = document.getElementById('mvDerivB');
         els.derivBDelta = document.getElementById('mvDerivBDelta');
+        els.compPrev = document.getElementById('mvCompPrev');
+        els.compNext = document.getElementById('mvCompNext');
+        els.compCurrent = document.getElementById('mvCompCurrent');
 
         // Populate compartment dropdown
         function populateCompartments() {
@@ -591,13 +672,39 @@
                 els.derivBDelta.textContent = bDeltaTxt;
                 els.derivADelta.classList.toggle('nonzero', Math.abs(dA) > 0.0005);
                 els.derivBDelta.classList.toggle('nonzero', Math.abs(dB) > 0.0005);
+                els.compCurrent.textContent = `TC${match.comp.id}`;
+                els.compCurrent.classList.remove('between');
             } else {
                 const between = translate('sandbox.mvalues.bottom.delta.between', 'between standards');
                 els.derivADelta.textContent = between;
                 els.derivBDelta.textContent = between;
                 els.derivADelta.classList.remove('nonzero');
                 els.derivBDelta.classList.remove('nonzero');
+                els.compCurrent.textContent = '—';
+                els.compCurrent.classList.add('between');
             }
+        }
+
+        function stepCompartment(direction) {
+            const comps = VARIANT_COMPS[state.variant];
+            const match = findStandardCompartmentByHalfTime(state.halfTime, comps);
+            let currentIdx;
+            if (match && match.exact) {
+                currentIdx = match.idx;
+            } else {
+                // Snap to nearest first
+                const nearestT = snapToNearestStandard(state.halfTime, comps);
+                const nearMatch = findStandardCompartmentByHalfTime(nearestT, comps);
+                currentIdx = nearMatch ? nearMatch.idx : 0;
+            }
+            const newIdx = Math.max(0, Math.min(comps.length - 1, currentIdx + direction));
+            state.compartmentIdx = newIdx;
+            els.compartment.value = newIdx;
+            const newT = comps[newIdx].halfTime;
+            state.halfTime = newT;
+            els.halfTime.value = newT.toFixed(1);
+            els.halfTimeSlider.value = halfTimeToSlider(newT).toString();
+            recompute();
         }
 
         function recompute() {
@@ -617,9 +724,33 @@
             els.bValue.textContent = b.toFixed(4);
             els.mValue.textContent = m.toFixed(4);
 
+            // Inactive variants' M values, for the compare line in the M card.
+            const inactiveSpans = VARIANT_LIST
+                .filter(v => v !== state.variant)
+                .map(v => {
+                    const cv = VARIANT_COMPS[v][state.compartmentIdx];
+                    const mV = cv.aN2 + pAmb / cv.bN2;
+                    const dM = mV - m;
+                    const sign = dM >= 0 ? '+' : '';
+                    const suffix = v.replace('ZH-L16', '');
+                    const deltaClass = Math.abs(dM) > 0.0005 ? ' class="delta"' : '';
+                    return `${suffix}: ${mV.toFixed(4)}<span${deltaClass}> (${sign}${dM.toFixed(4)})</span>`;
+                })
+                .join(' · ');
+            els.mCompare.innerHTML = inactiveSpans;
+
             drawTopChart();
             recomputeDerivation();
             drawDerivChart();
+            updateTopLegendSwatches();
+        }
+
+        function updateTopLegendSwatches() {
+            const comp = COMPARTMENTS[state.compartmentIdx];
+            const color = comp.color;
+            document
+                .querySelectorAll('#mvTopChartLegend .swatch-variant')
+                .forEach(sw => { sw.style.color = color; });
         }
 
         // ---- Chart constants ----
@@ -630,7 +761,7 @@
         const PAD_T = 10;
         const PAD_B = 28;
         const X_MIN = 0;
-        const X_MAX = 7;       // bar — covers surface through ~60 m
+        const X_MAX = 4;       // bar — covers surface through 30 m (zoomed for variant gap visibility)
 
         const VARIANT_LIST = ['ZH-L16A', 'ZH-L16B', 'ZH-L16C'];
         const VARIANT_COMPS = {};   // variant name → COMPARTMENTS array snapshot
@@ -660,7 +791,7 @@
                     if (m > maxM) maxM = m;
                 }
             }
-            return Math.max(10, maxM * 1.1);
+            return Math.max(2, maxM * 1.1);
         }
 
         function xToPx(x) {
@@ -727,18 +858,28 @@
             });
             xLabel.textContent = 'P_amb (bar)';
             svg.appendChild(xLabel);
+            const yLabelMid = (PAD_T + CHART_H - PAD_B) / 2;
             const yLabel = svgEl('text', {
-                x: 8, y: PAD_T + 8, class: 'mv-chart-label', 'text-anchor': 'start',
+                x: 12, y: yLabelMid, class: 'mv-chart-label', 'text-anchor': 'middle',
+                transform: `rotate(-90, 12, ${yLabelMid})`,
             });
             yLabel.textContent = 'P_t (bar)';
             svg.appendChild(yLabel);
 
             // Ambient line y = x
+            const ambientEnd = Math.min(X_MAX, yMax);
             svg.appendChild(svgEl('line', {
                 x1: xToPx(0), y1: yToPx(0, yMax),
-                x2: xToPx(Math.min(X_MAX, yMax)), y2: yToPx(Math.min(X_MAX, yMax), yMax),
+                x2: xToPx(ambientEnd), y2: yToPx(ambientEnd, yMax),
                 class: 'mv-chart-ambient',
             }));
+            // Inline "y = x" callout near the ambient line's endpoint, slightly above the line
+            const ambientLabel = svgEl('text', {
+                x: xToPx(ambientEnd) - 4, y: yToPx(ambientEnd, yMax) - 4,
+                class: 'mv-chart-axis-callout', 'text-anchor': 'end',
+            });
+            ambientLabel.textContent = 'y = x';
+            svg.appendChild(ambientLabel);
 
             // Surface line (vertical at P_amb = SURFACE_PRESSURE)
             svg.appendChild(svgEl('line', {
@@ -919,7 +1060,7 @@
         els.depth.addEventListener('input', () => {
             const v = parseFloat(els.depth.value);
             if (!Number.isFinite(v)) return;
-            state.depth = Math.max(0, Math.min(60, v));
+            state.depth = Math.max(0, Math.min(30, v));
             recompute();
         });
         els.compartment.addEventListener('change', () => {
@@ -976,13 +1117,20 @@
             state.snap = els.snapToggle.checked;
             setHalfTime(state.halfTime, false);
         });
+        els.compPrev.addEventListener('click', () => stepCompartment(-1));
+        els.compNext.addEventListener('click', () => stepCompartment(+1));
 
-        // Global variant bar
-        els.variantBar.addEventListener('change', (e) => {
-            if (e.target.name !== 'mvVariant') return;
-            state.variant = e.target.value;
-            setZHL16Variant(state.variant);
+        // Variant change is unified: both top + bottom variant bars feed setVariant()
+        function setVariant(v) {
+            if (state.variant === v) return;
+            state.variant = v;
+            setZHL16Variant(v);
             populateCompartments();
+            // Sync both variant bars' radio state so they don't diverge
+            const top = document.querySelector(`#mvVariantBar input[value="${v}"]`);
+            const bot = document.querySelector(`#mvVariantBarBottom input[value="${v}"]`);
+            if (top) top.checked = true;
+            if (bot) bot.checked = true;
             // Re-snap if needed (only relevant for TC1 between A and B/C)
             if (state.snap) {
                 const comps = VARIANT_COMPS[state.variant];
@@ -991,6 +1139,15 @@
                 els.halfTimeSlider.value = halfTimeToSlider(state.halfTime).toString();
             }
             recompute();
+        }
+
+        els.variantBar.addEventListener('change', (e) => {
+            if (e.target.name !== 'mvVariant') return;
+            setVariant(e.target.value);
+        });
+        document.getElementById('mvVariantBarBottom').addEventListener('change', (e) => {
+            if (e.target.name !== 'mvVariantBottom') return;
+            setVariant(e.target.value);
         });
 
         // Initial slider position
@@ -999,6 +1156,22 @@
 
         populateCompartments();
         recompute();
+
+        // Top-chart legend hover: emphasize the matching line on the chart, dim the rest.
+        const topChartSvg = document.getElementById('mvTopChart');
+        const topLegend = document.getElementById('mvTopChartLegend');
+        topLegend.querySelectorAll('[data-hover-variant], [data-hover-line]').forEach(item => {
+            const variant = item.dataset.hoverVariant;
+            const line = item.dataset.hoverLine;
+            item.addEventListener('mouseenter', () => {
+                if (variant) topChartSvg.setAttribute('data-hover-variant', variant);
+                if (line) topChartSvg.setAttribute('data-hover-line', line);
+            });
+            item.addEventListener('mouseleave', () => {
+                topChartSvg.removeAttribute('data-hover-variant');
+                topChartSvg.removeAttribute('data-hover-line');
+            });
+        });
 
         // Re-render dynamic strings (delta text) when the i18n cache loads or language changes.
         document.addEventListener('languagechange', () => {
