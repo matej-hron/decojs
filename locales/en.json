@@ -1740,6 +1740,31 @@
                     "ambient": "Ambient line (y = x)",
                     "surface": "Surface (P_amb = 1.013 bar)"
                 }
+            },
+            "variantBar": {
+                "label": "ZH-L16 variant (applies to both playgrounds):"
+            },
+            "bottom": {
+                "heading": "Where do a and b come from?",
+                "anchor": "ZH-L16A's a and b aren't fitted to data — they're computed from half-time alone. Variants B and C are post-hoc adjustments to specific compartments.",
+                "inputs": {
+                    "halfTime": "Half-time t½ (min)",
+                    "snapToggle": "Snap to standard compartments"
+                },
+                "cards": {
+                    "halfTime": {
+                        "name": "t<sub>½</sub> | half-time",
+                        "why": "Each compartment's signature time. Not anatomical — a sample point on an exponential axis."
+                    },
+                    "a": {
+                        "name": "a(t<sub>½</sub>) | analytical intercept",
+                        "why": "Variants B and C drop a for specific compartments — that's the only place statistics enter Bühlmann."
+                    },
+                    "b": {
+                        "name": "b(t<sub>½</sub>) | analytical slope",
+                        "why": "Identical across A/B/C except TC1 (whose t½ swap also swaps b)."
+                    }
+                }
             }
         },
         "cascade": {

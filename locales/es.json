@@ -1704,6 +1704,31 @@
                     "ambient": "Línea ambiental (y = x)",
                     "surface": "Superficie (P_amb = 1,013 bar)"
                 }
+            },
+            "variantBar": {
+                "label": "Variante ZH-L16 (afecta a ambos sandboxes):"
+            },
+            "bottom": {
+                "heading": "¿De dónde vienen a y b?",
+                "anchor": "Las a y b de ZH-L16A no se ajustan a datos — se calculan solo a partir del periodo de saturación. Las variantes B y C son ajustes posteriores a compartimentos específicos.",
+                "inputs": {
+                    "halfTime": "Periodo t½ (min)",
+                    "snapToggle": "Ajustar a compartimentos estándar"
+                },
+                "cards": {
+                    "halfTime": {
+                        "name": "t<sub>½</sub> | periodo de saturación",
+                        "why": "Tiempo característico de cada compartimento. No es anatómico — solo un punto de muestreo en un eje exponencial."
+                    },
+                    "a": {
+                        "name": "a(t<sub>½</sub>) | intersección analítica",
+                        "why": "Las variantes B y C bajan a en compartimentos específicos — el único lugar donde entra estadística en Bühlmann."
+                    },
+                    "b": {
+                        "name": "b(t<sub>½</sub>) | pendiente analítica",
+                        "why": "Idéntica en A/B/C salvo TC1 (cuyo cambio de t½ también cambia b)."
+                    }
+                }
             }
         },
         "cascade": {

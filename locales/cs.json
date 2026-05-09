@@ -1740,6 +1740,31 @@
                     "ambient": "Ambientní čára (y = x)",
                     "surface": "Hladina (P_amb = 1,013 bar)"
                 }
+            },
+            "variantBar": {
+                "label": "Varianta ZH-L16 (platí pro obě pískoviště):"
+            },
+            "bottom": {
+                "heading": "Odkud pocházejí a a b?",
+                "anchor": "a a b ZH-L16A nejsou napasované na data — počítají se pouze z poločasu. Varianty B a C jsou dodatečné úpravy konkrétních kompartmentů.",
+                "inputs": {
+                    "halfTime": "Poločas t½ (min)",
+                    "snapToggle": "Přichytit ke standardním kompartmentům"
+                },
+                "cards": {
+                    "halfTime": {
+                        "name": "t<sub>½</sub> | poločas",
+                        "why": "Charakteristický čas kompartmentu. Není anatomický — jen vzorek na exponenciální ose."
+                    },
+                    "a": {
+                        "name": "a(t<sub>½</sub>) | analytický průsečík",
+                        "why": "Varianty B a C snižují a u konkrétních kompartmentů — jediné místo, kde do Bühlmanna vstupuje statistika."
+                    },
+                    "b": {
+                        "name": "b(t<sub>½</sub>) | analytický sklon",
+                        "why": "Identické pro A/B/C kromě TC1 (jehož záměna t½ mění i b)."
+                    }
+                }
             }
         },
         "cascade": {

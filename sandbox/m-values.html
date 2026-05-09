@@ -191,6 +191,72 @@
         .mv-chart-mline.variant-A { stroke-dasharray: 8,2; }
         .mv-chart-mline.variant-B { stroke-dasharray: 3,3; }
         .mv-chart-mline.variant-C { stroke-dasharray: none; }
+
+        .mv-derivation-formula {
+            text-align: center;
+            padding: 0.75rem;
+            background: linear-gradient(180deg, rgba(127,140,141,0.06), rgba(127,140,141,0.02));
+            border: 1px solid rgba(127,140,141,0.18);
+            border-radius: var(--radius);
+            margin-bottom: 0.5rem;
+            font-family: ui-monospace, "SF Mono", Menlo, monospace;
+        }
+        .mv-derivation-formula .formula-line { font-size: 1.05rem; line-height: 1.8; }
+        .mv-derivation-formula .term-th  { background: rgba(155, 89, 182, 0.18); border-bottom: 2px solid #9b59b6; padding: 1px 5px; border-radius: 3px; }
+        .mv-derivation-formula .term-da  { background: rgba(231, 76, 60, 0.18); border-bottom: 2px solid #e74c3c; padding: 1px 5px; border-radius: 3px; }
+        .mv-derivation-formula .term-db  { background: rgba(41, 128, 185, 0.18); border-bottom: 2px solid #2980b9; padding: 1px 5px; border-radius: 3px; }
+
+        .mv-deriv-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+        }
+        .mv-deriv-inputs .row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .mv-deriv-inputs label { font-size: 0.85rem; color: var(--text-muted); min-width: 110px; }
+        .mv-deriv-inputs input[type="range"] { flex: 1; accent-color: #9b59b6; }
+        .mv-deriv-inputs input[type="number"] {
+            padding: 0.3rem 0.4rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--card-background);
+            font-size: 0.9rem;
+            width: 80px;
+        }
+
+        .mv-deriv-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.6rem;
+            margin: 1rem 0;
+        }
+        @media (max-width: 700px) { .mv-deriv-row { grid-template-columns: 1fr; } }
+        .mv-deriv-card {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-top: 3px solid var(--border-color);
+            border-radius: 4px;
+            padding: 0.6rem 0.75rem;
+            font-size: 0.85rem;
+            line-height: 1.45;
+        }
+        .mv-deriv-card.th { border-top-color: #9b59b6; }
+        .mv-deriv-card.da { border-top-color: #e74c3c; }
+        .mv-deriv-card.db { border-top-color: #2980b9; }
+        .mv-deriv-card .name    { font-family: ui-monospace, monospace; font-weight: 600; font-size: 0.95rem; }
+        .mv-deriv-card .formula { font-family: ui-monospace, monospace; color: var(--text-muted); font-size: 0.82rem; margin-top: 0.25rem; }
+        .mv-deriv-card .value   { font-family: ui-monospace, monospace; font-weight: 700; color: var(--text-color); font-size: 1rem; margin-top: 0.4rem; }
+        .mv-deriv-card .delta   { font-family: ui-monospace, monospace; color: var(--text-muted); font-size: 0.82rem; margin-top: 0.25rem; }
+        .mv-deriv-card .delta.nonzero { color: #e67e22; font-weight: 600; }
+        .mv-deriv-card .why     { color: var(--text-muted); font-size: 0.78rem; font-style: italic; margin-top: 0.4rem; }
     </style>
 </head>
 <body>
@@ -219,7 +285,14 @@
 
     <!-- Layout (playgrounds added in later tasks) -->
     <div class="mvalues-layout">
-        <!-- Task 5 will add the global variant bar here -->
+        <div class="variant-bar">
+            <label data-i18n="sandbox.mvalues.variantBar.label">ZH-L16 variant (applies to both playgrounds):</label>
+            <div class="variant-options" id="mvVariantBar">
+                <label><input type="radio" name="mvVariant" value="ZH-L16A"> A</label>
+                <label><input type="radio" name="mvVariant" value="ZH-L16B"> B</label>
+                <label><input type="radio" name="mvVariant" value="ZH-L16C" checked> C</label>
+            </div>
+        </div>
         <section class="mvalues-section top">
             <h2 data-i18n="sandbox.mvalues.top.heading">What does M look like at this depth?</h2>
             <p class="mvalues-anchor" data-i18n="sandbox.mvalues.top.anchor">Pick a depth, a compartment, and a variant — see Bühlmann's M-value formula evaluate live.</p>
@@ -295,7 +368,60 @@
                 <span class="item"><span class="swatch dashed" style="color:#7f8c8d;"></span><span data-i18n="sandbox.mvalues.top.legend.surface">Surface (P_amb = 1.013 bar)</span></span>
             </div>
         </section>
-        <!-- Task 5-6 will add the bottom playground here -->
+        <section class="mvalues-section derivation">
+            <h2 data-i18n="sandbox.mvalues.bottom.heading">Where do a and b come from?</h2>
+            <p class="mvalues-anchor" data-i18n="sandbox.mvalues.bottom.anchor">ZH-L16A's a and b aren't fitted to data — they're computed from half-time alone. Variants B and C are post-hoc adjustments to specific compartments.</p>
+
+            <div class="mv-derivation-formula">
+                <div class="formula-line">
+                    <span class="term-da">a</span>(<span class="term-th">t<sub>½</sub></span>) =
+                    2 · <span class="term-th">t<sub>½</sub></span><sup>−1/3</sup>  &nbsp;(bar)
+                </div>
+                <div class="formula-line">
+                    <span class="term-db">b</span>(<span class="term-th">t<sub>½</sub></span>) =
+                    1.005 − <span class="term-th">t<sub>½</sub></span><sup>−1/2</sup>
+                </div>
+            </div>
+
+            <div class="mv-deriv-inputs">
+                <div class="row">
+                    <label for="mvHalfTime" data-i18n="sandbox.mvalues.bottom.inputs.halfTime">Half-time t½ (min)</label>
+                    <input type="range" id="mvHalfTimeSlider" min="0" max="100" step="0.1" value="50">
+                    <input type="number" id="mvHalfTime" min="1" max="700" step="0.1" value="27">
+                </div>
+                <div class="row">
+                    <label></label>
+                    <label class="toggle-row" style="cursor:pointer;">
+                        <input type="checkbox" id="mvSnapToggle">
+                        <span class="toggle-hint" data-i18n="sandbox.mvalues.bottom.inputs.snapToggle">Snap to standard compartments</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="mv-deriv-row">
+                <div class="mv-deriv-card th">
+                    <div class="name" data-i18n="sandbox.mvalues.bottom.cards.halfTime.name">t<sub>½</sub> | half-time</div>
+                    <div class="value"><span id="mvDerivHalfTime">27.0</span> min</div>
+                    <div class="why" data-i18n="sandbox.mvalues.bottom.cards.halfTime.why">Each compartment's signature time. Not anatomical — a sample point on an exponential axis.</div>
+                </div>
+                <div class="mv-deriv-card da">
+                    <div class="name" data-i18n="sandbox.mvalues.bottom.cards.a.name">a(t<sub>½</sub>) | analytical intercept</div>
+                    <div class="formula">= 2 · t<sub>½</sub><sup>−1/3</sup></div>
+                    <div class="value"><span id="mvDerivA">0.6667</span> bar</div>
+                    <div class="delta" id="mvDerivADelta"></div>
+                    <div class="why" data-i18n="sandbox.mvalues.bottom.cards.a.why">Variants B and C drop a for specific compartments — that's the only place statistics enter Bühlmann.</div>
+                </div>
+                <div class="mv-deriv-card db">
+                    <div class="name" data-i18n="sandbox.mvalues.bottom.cards.b.name">b(t<sub>½</sub>) | analytical slope</div>
+                    <div class="formula">= 1.005 − t<sub>½</sub><sup>−1/2</sup></div>
+                    <div class="value"><span id="mvDerivB">0.8126</span></div>
+                    <div class="delta" id="mvDerivBDelta"></div>
+                    <div class="why" data-i18n="sandbox.mvalues.bottom.cards.b.why">Identical across A/B/C except TC1 (whose t½ swap also swaps b).</div>
+                </div>
+            </div>
+
+            <!-- Task 6 adds the chart here -->
+        </section>
         <!-- Task 7 will add cross-links here -->
     </div>
 
@@ -320,6 +446,8 @@
             compartmentIdx: 4,        // TC5 (zero-based index = 4)
             variant: ZHL16_VARIANTS.C,
             topView: 'this',
+            halfTime: 27.0,    // bottom playground slider position
+            snap: false,
         };
 
         // Initialize variant on the COMPARTMENTS array
@@ -340,6 +468,15 @@
             bValue: document.getElementById('mvBValue'),
             mValue: document.getElementById('mvMValue2'),
         };
+        els.variantBar = document.getElementById('mvVariantBar');
+        els.halfTime = document.getElementById('mvHalfTime');
+        els.halfTimeSlider = document.getElementById('mvHalfTimeSlider');
+        els.snapToggle = document.getElementById('mvSnapToggle');
+        els.derivHalfTime = document.getElementById('mvDerivHalfTime');
+        els.derivA = document.getElementById('mvDerivA');
+        els.derivADelta = document.getElementById('mvDerivADelta');
+        els.derivB = document.getElementById('mvDerivB');
+        els.derivBDelta = document.getElementById('mvDerivBDelta');
 
         // Populate compartment dropdown
         function populateCompartments() {
@@ -351,6 +488,80 @@
                 els.compartment.appendChild(opt);
             });
             els.compartment.value = state.compartmentIdx;
+        }
+
+        const T_HALF_MIN = 1;
+        const T_HALF_MAX = 700;
+        const LOG_T_MIN = Math.log(T_HALF_MIN);
+        const LOG_T_MAX = Math.log(T_HALF_MAX);
+
+        function sliderToHalfTime(sliderVal /* 0..100 */) {
+            // log-scale: slider 0 → 1 min, 100 → 700 min
+            const f = sliderVal / 100;
+            return Math.exp(LOG_T_MIN + f * (LOG_T_MAX - LOG_T_MIN));
+        }
+
+        function halfTimeToSlider(t) {
+            const clamped = Math.max(T_HALF_MIN, Math.min(T_HALF_MAX, t));
+            const f = (Math.log(clamped) - LOG_T_MIN) / (LOG_T_MAX - LOG_T_MIN);
+            return f * 100;
+        }
+
+        function computeAFromHalfTime(t) {
+            return 2 * Math.pow(t, -1 / 3);
+        }
+
+        function computeBFromHalfTime(t) {
+            return 1.005 - Math.pow(t, -0.5);
+        }
+
+        function findStandardCompartmentByHalfTime(t, comps) {
+            // Returns { idx, comp, exact } where exact=true if t matches a standard t½ within 0.01.
+            for (let i = 0; i < comps.length; i++) {
+                if (Math.abs(comps[i].halfTime - t) < 0.01) {
+                    return { idx: i, comp: comps[i], exact: true };
+                }
+            }
+            return null;
+        }
+
+        function snapToNearestStandard(t, comps) {
+            let best = comps[0];
+            let bestD = Math.abs(comps[0].halfTime - t);
+            for (const c of comps) {
+                const d = Math.abs(c.halfTime - t);
+                if (d < bestD) { best = c; bestD = d; }
+            }
+            return best.halfTime;
+        }
+
+        function recomputeDerivation() {
+            const t = state.halfTime;
+            const a = computeAFromHalfTime(t);
+            const b = computeBFromHalfTime(t);
+
+            els.derivHalfTime.textContent = t.toFixed(1);
+            els.derivA.textContent = a.toFixed(4);
+            els.derivB.textContent = b.toFixed(4);
+
+            // Delta — only when slider is exactly at a standard t½ for the active variant
+            const comps = VARIANT_COMPS[state.variant];
+            const match = findStandardCompartmentByHalfTime(t, comps);
+            if (match && match.exact) {
+                const dA = match.comp.aN2 - a;
+                const dB = match.comp.bN2 - b;
+                const aDeltaTxt = `stored: ${match.comp.aN2.toFixed(4)} (${state.variant.replace('ZH-L16','')}, Δ ${(dA >= 0 ? '+' : '')}${dA.toFixed(4)})`;
+                const bDeltaTxt = `stored: ${match.comp.bN2.toFixed(4)} (Δ ${(dB >= 0 ? '+' : '')}${dB.toFixed(4)})`;
+                els.derivADelta.textContent = aDeltaTxt;
+                els.derivBDelta.textContent = bDeltaTxt;
+                els.derivADelta.classList.toggle('nonzero', Math.abs(dA) > 0.0005);
+                els.derivBDelta.classList.toggle('nonzero', Math.abs(dB) > 0.0005);
+            } else {
+                els.derivADelta.textContent = 'between standards';
+                els.derivBDelta.textContent = 'between standards';
+                els.derivADelta.classList.remove('nonzero');
+                els.derivBDelta.classList.remove('nonzero');
+            }
         }
 
         function recompute() {
@@ -371,6 +582,7 @@
             els.mValue.textContent = m.toFixed(4);
 
             drawTopChart();
+            recomputeDerivation();
         }
 
         // ---- Chart constants ----
@@ -560,6 +772,54 @@
             els.viewToggle.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
             drawTopChart();
         });
+
+        function setHalfTime(t, fromSlider) {
+            let next = t;
+            if (state.snap) {
+                const comps = VARIANT_COMPS[state.variant];
+                next = snapToNearestStandard(t, comps);
+            }
+            next = Math.max(T_HALF_MIN, Math.min(T_HALF_MAX, next));
+            state.halfTime = next;
+            if (!fromSlider) {
+                els.halfTimeSlider.value = halfTimeToSlider(next).toString();
+            }
+            els.halfTime.value = next.toFixed(1);
+            recompute();
+        }
+
+        els.halfTimeSlider.addEventListener('input', () => {
+            const t = sliderToHalfTime(parseFloat(els.halfTimeSlider.value));
+            setHalfTime(t, true);
+        });
+        els.halfTime.addEventListener('input', () => {
+            const t = parseFloat(els.halfTime.value);
+            if (!Number.isFinite(t)) return;
+            setHalfTime(t, false);
+        });
+        els.snapToggle.addEventListener('change', () => {
+            state.snap = els.snapToggle.checked;
+            setHalfTime(state.halfTime, false);
+        });
+
+        // Global variant bar
+        els.variantBar.addEventListener('change', (e) => {
+            if (e.target.name !== 'mvVariant') return;
+            state.variant = e.target.value;
+            setZHL16Variant(state.variant);
+            // Re-snap if needed (only relevant for TC1 between A and B/C)
+            if (state.snap) {
+                const comps = VARIANT_COMPS[state.variant];
+                state.halfTime = snapToNearestStandard(state.halfTime, comps);
+                els.halfTime.value = state.halfTime.toFixed(1);
+                els.halfTimeSlider.value = halfTimeToSlider(state.halfTime).toString();
+            }
+            recompute();
+        });
+
+        // Initial slider position
+        els.halfTimeSlider.value = halfTimeToSlider(state.halfTime).toString();
+        els.halfTime.value = state.halfTime.toFixed(1);
 
         populateCompartments();
         recompute();
