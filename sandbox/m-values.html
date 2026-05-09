@@ -439,6 +439,7 @@
     <script type="module">
         import { COMPARTMENTS, ZHL16_VARIANTS, setZHL16Variant, getCompartmentsForVariant } from '../js/tissueCompartments.js';
         import { getMValue, getAmbientPressure, SURFACE_PRESSURE } from '../js/decoModel.js';
+        import { translate } from '../js/i18n.js';
 
         // Page state — variant becomes global in Task 5; for Task 2 it's hardcoded to C.
         const state = {
@@ -550,15 +551,19 @@
             if (match && match.exact) {
                 const dA = match.comp.aN2 - a;
                 const dB = match.comp.bN2 - b;
-                const aDeltaTxt = `stored: ${match.comp.aN2.toFixed(4)} (${state.variant.replace('ZH-L16','')}, Δ ${(dA >= 0 ? '+' : '')}${dA.toFixed(4)})`;
-                const bDeltaTxt = `stored: ${match.comp.bN2.toFixed(4)} (Δ ${(dB >= 0 ? '+' : '')}${dB.toFixed(4)})`;
+                const stored = translate('sandbox.mvalues.bottom.delta.stored', 'stored:');
+                const D = translate('sandbox.mvalues.bottom.delta.deltaSymbol', 'Δ');
+                const variantSuffix = state.variant.replace('ZH-L16', '');
+                const aDeltaTxt = `${stored} ${match.comp.aN2.toFixed(4)} (${variantSuffix}, ${D} ${(dA >= 0 ? '+' : '')}${dA.toFixed(4)})`;
+                const bDeltaTxt = `${stored} ${match.comp.bN2.toFixed(4)} (${D} ${(dB >= 0 ? '+' : '')}${dB.toFixed(4)})`;
                 els.derivADelta.textContent = aDeltaTxt;
                 els.derivBDelta.textContent = bDeltaTxt;
                 els.derivADelta.classList.toggle('nonzero', Math.abs(dA) > 0.0005);
                 els.derivBDelta.classList.toggle('nonzero', Math.abs(dB) > 0.0005);
             } else {
-                els.derivADelta.textContent = 'between standards';
-                els.derivBDelta.textContent = 'between standards';
+                const between = translate('sandbox.mvalues.bottom.delta.between', 'between standards');
+                els.derivADelta.textContent = between;
+                els.derivBDelta.textContent = between;
                 els.derivADelta.classList.remove('nonzero');
                 els.derivBDelta.classList.remove('nonzero');
             }
@@ -807,6 +812,7 @@
             if (e.target.name !== 'mvVariant') return;
             state.variant = e.target.value;
             setZHL16Variant(state.variant);
+            populateCompartments();
             // Re-snap if needed (only relevant for TC1 between A and B/C)
             if (state.snap) {
                 const comps = VARIANT_COMPS[state.variant];
@@ -823,6 +829,11 @@
 
         populateCompartments();
         recompute();
+
+        // Re-render dynamic strings (delta text) when the i18n cache loads or language changes.
+        document.addEventListener('languagechange', () => {
+            recomputeDerivation();
+        });
     </script>
 
     <!-- i18n -->

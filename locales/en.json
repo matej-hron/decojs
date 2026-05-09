@@ -1764,6 +1764,11 @@
                         "name": "b(t<sub>½</sub>) | analytical slope",
                         "why": "Identical across A/B/C except TC1 (whose t½ swap also swaps b)."
                     }
+                },
+                "delta": {
+                    "stored": "stored:",
+                    "between": "between standards",
+                    "deltaSymbol": "Δ"
                 }
             }
         },

@@ -1764,6 +1764,11 @@
                         "name": "b(t<sub>½</sub>) | analytický sklon",
                         "why": "Identické pro A/B/C kromě TC1 (jehož záměna t½ mění i b)."
                     }
+                },
+                "delta": {
+                    "stored": "uložené:",
+                    "between": "mezi standardy",
+                    "deltaSymbol": "Δ"
                 }
             }
         },

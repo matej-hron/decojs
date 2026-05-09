@@ -1728,6 +1728,11 @@
                         "name": "b(t<sub>½</sub>) | pendiente analítica",
                         "why": "Idéntica en A/B/C salvo TC1 (cuyo cambio de t½ también cambia b)."
                     }
+                },
+                "delta": {
+                    "stored": "almacenado:",
+                    "between": "entre estándares",
+                    "deltaSymbol": "Δ"
                 }
             }
         },
