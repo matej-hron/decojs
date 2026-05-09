@@ -1769,6 +1769,11 @@
                     "stored": "uložené:",
                     "between": "mezi standardy",
                     "deltaSymbol": "Δ"
+                },
+                "legend": {
+                    "a": "křivka a(t½) + 16 uložených hodnot (body)",
+                    "b": "křivka b(t½) + 16 uložených hodnot (body)",
+                    "cursor": "Pozice posuvníku (aktuální t½)"
                 }
             }
         },

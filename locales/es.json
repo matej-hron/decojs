@@ -1733,6 +1733,11 @@
                     "stored": "almacenado:",
                     "between": "entre estándares",
                     "deltaSymbol": "Δ"
+                },
+                "legend": {
+                    "a": "curva a(t½) + 16 valores almacenados (puntos)",
+                    "b": "curva b(t½) + 16 valores almacenados (puntos)",
+                    "cursor": "Posición del deslizador (t½ actual)"
                 }
             }
         },

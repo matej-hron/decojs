@@ -257,6 +257,22 @@
         .mv-deriv-card .delta   { font-family: ui-monospace, monospace; color: var(--text-muted); font-size: 0.82rem; margin-top: 0.25rem; }
         .mv-deriv-card .delta.nonzero { color: #e67e22; font-weight: 600; }
         .mv-deriv-card .why     { color: var(--text-muted); font-size: 0.78rem; font-style: italic; margin-top: 0.4rem; }
+
+        .mv-deriv-chart-row {
+            background: linear-gradient(180deg, rgba(127,140,141,0.04), rgba(127,140,141,0));
+            border: 1px dashed rgba(127,140,141,0.35);
+            border-radius: var(--radius);
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        #mvDerivChart { width: 100%; height: 280px; display: block; }
+        .mv-deriv-curve-a { stroke: #e74c3c; stroke-width: 2; fill: none; }
+        .mv-deriv-curve-b { stroke: #2980b9; stroke-width: 2; fill: none; }
+        .mv-deriv-dot-a   { fill: #e74c3c; stroke: white; stroke-width: 1; }
+        .mv-deriv-dot-b   { fill: #2980b9; stroke: white; stroke-width: 1; }
+        .mv-deriv-dot-a.selected,
+        .mv-deriv-dot-b.selected { stroke: #2c3e50; stroke-width: 2; }
+        .mv-deriv-cursor  { stroke: #9b59b6; stroke-width: 1; stroke-dasharray: 3,3; }
     </style>
 </head>
 <body>
@@ -420,7 +436,14 @@
                 </div>
             </div>
 
-            <!-- Task 6 adds the chart here -->
+            <div class="mv-deriv-chart-row">
+                <svg id="mvDerivChart" viewBox="0 0 480 280" preserveAspectRatio="xMidYMid meet" aria-label="Derivation chart"></svg>
+            </div>
+            <div class="mv-chart-legend" id="mvDerivChartLegend">
+                <span class="item" style="color:#e74c3c;"><span class="swatch"></span><span data-i18n="sandbox.mvalues.bottom.legend.a">a(t½) curve + 16 stored values (dots)</span></span>
+                <span class="item" style="color:#2980b9;"><span class="swatch"></span><span data-i18n="sandbox.mvalues.bottom.legend.b">b(t½) curve + 16 stored values (dots)</span></span>
+                <span class="item" style="color:#9b59b6;"><span class="swatch dashed"></span><span data-i18n="sandbox.mvalues.bottom.legend.cursor">Slider position (current t½)</span></span>
+            </div>
         </section>
         <!-- Task 7 will add cross-links here -->
     </div>
@@ -588,6 +611,7 @@
 
             drawTopChart();
             recomputeDerivation();
+            drawDerivChart();
         }
 
         // ---- Chart constants ----
@@ -757,6 +781,126 @@
                     id: 'mvTopChartMarker',
                 }));
             }
+        }
+
+        // ---- Bottom (derivation) chart constants ----
+        const DERIV_W = 480;
+        const DERIV_H = 280;
+        const DERIV_PAD_L = 40;
+        const DERIV_PAD_R = 40;   // right padding leaves room for the b-axis
+        const DERIV_PAD_T = 14;
+        const DERIV_PAD_B = 32;
+        const A_MIN = 0;
+        const A_MAX = 1.5;
+        const B_MIN = 0.4;
+        const B_MAX = 1.0;
+        const N_SAMPLES = 120;
+
+        function tToPx(t) {
+            const f = (Math.log(t) - LOG_T_MIN) / (LOG_T_MAX - LOG_T_MIN);
+            return DERIV_PAD_L + f * (DERIV_W - DERIV_PAD_L - DERIV_PAD_R);
+        }
+        function aToPx(a) {
+            const usable = DERIV_H - DERIV_PAD_T - DERIV_PAD_B;
+            return DERIV_PAD_T + usable - ((a - A_MIN) / (A_MAX - A_MIN)) * usable;
+        }
+        function bToPx(b) {
+            const usable = DERIV_H - DERIV_PAD_T - DERIV_PAD_B;
+            return DERIV_PAD_T + usable - ((b - B_MIN) / (B_MAX - B_MIN)) * usable;
+        }
+
+        function drawDerivChart() {
+            const svg = document.getElementById('mvDerivChart');
+            if (!svg) return;
+            svg.innerHTML = '';
+
+            // Axes (left = a, right = b, bottom = t½ log)
+            svg.appendChild(svgEl('line', {
+                x1: DERIV_PAD_L, y1: DERIV_PAD_T, x2: DERIV_PAD_L, y2: DERIV_H - DERIV_PAD_B, class: 'mv-chart-axis',
+            }));
+            svg.appendChild(svgEl('line', {
+                x1: DERIV_W - DERIV_PAD_R, y1: DERIV_PAD_T, x2: DERIV_W - DERIV_PAD_R, y2: DERIV_H - DERIV_PAD_B, class: 'mv-chart-axis',
+            }));
+            svg.appendChild(svgEl('line', {
+                x1: DERIV_PAD_L, y1: DERIV_H - DERIV_PAD_B, x2: DERIV_W - DERIV_PAD_R, y2: DERIV_H - DERIV_PAD_B, class: 'mv-chart-axis',
+            }));
+
+            // X ticks at decade positions: 1, 10, 100, 700
+            for (const tx of [1, 10, 100, 700]) {
+                const px = tToPx(tx);
+                svg.appendChild(svgEl('line', {
+                    x1: px, y1: DERIV_H - DERIV_PAD_B, x2: px, y2: DERIV_H - DERIV_PAD_B + 4, class: 'mv-chart-tick',
+                }));
+                const lbl = svgEl('text', { x: px, y: DERIV_H - DERIV_PAD_B + 14, class: 'mv-chart-label', 'text-anchor': 'middle' });
+                lbl.textContent = tx.toString();
+                svg.appendChild(lbl);
+            }
+
+            // Y-left ticks for a (every 0.5)
+            for (let a = A_MIN; a <= A_MAX; a += 0.5) {
+                const py = aToPx(a);
+                svg.appendChild(svgEl('line', { x1: DERIV_PAD_L - 4, y1: py, x2: DERIV_PAD_L, y2: py, class: 'mv-chart-tick' }));
+                const lbl = svgEl('text', { x: DERIV_PAD_L - 6, y: py + 3, class: 'mv-chart-label', 'text-anchor': 'end', fill: '#e74c3c' });
+                lbl.textContent = a.toFixed(1);
+                svg.appendChild(lbl);
+            }
+            // Y-right ticks for b (every 0.1)
+            for (let b = B_MIN; b <= B_MAX; b += 0.1) {
+                const py = bToPx(b);
+                svg.appendChild(svgEl('line', { x1: DERIV_W - DERIV_PAD_R, y1: py, x2: DERIV_W - DERIV_PAD_R + 4, y2: py, class: 'mv-chart-tick' }));
+                const lbl = svgEl('text', { x: DERIV_W - DERIV_PAD_R + 6, y: py + 3, class: 'mv-chart-label', 'text-anchor': 'start', fill: '#2980b9' });
+                lbl.textContent = b.toFixed(1);
+                svg.appendChild(lbl);
+            }
+
+            // Axis label (x)
+            const xLabel = svgEl('text', { x: DERIV_W / 2, y: DERIV_H - 6, class: 'mv-chart-label', 'text-anchor': 'middle' });
+            xLabel.textContent = 't½ (min, log)';
+            svg.appendChild(xLabel);
+
+            // Curves: 120 samples
+            let pathA = '';
+            let pathB = '';
+            for (let i = 0; i <= N_SAMPLES; i++) {
+                const f = i / N_SAMPLES;
+                const t = Math.exp(LOG_T_MIN + f * (LOG_T_MAX - LOG_T_MIN));
+                const a = computeAFromHalfTime(t);
+                const b = computeBFromHalfTime(t);
+                const px = tToPx(t);
+                const aPy = aToPx(a);
+                const bPy = bToPx(b);
+                pathA += (i === 0 ? `M ${px} ${aPy}` : ` L ${px} ${aPy}`);
+                pathB += (i === 0 ? `M ${px} ${bPy}` : ` L ${px} ${bPy}`);
+            }
+            svg.appendChild(svgEl('path', { d: pathA, class: 'mv-deriv-curve-a' }));
+            svg.appendChild(svgEl('path', { d: pathB, class: 'mv-deriv-curve-b' }));
+
+            // Dots at the 16 standard compartment t½'s for the active variant
+            const comps = VARIANT_COMPS[state.variant];
+            comps.forEach((c, idx) => {
+                const px = tToPx(c.halfTime);
+                const aPy = aToPx(c.aN2);
+                const bPy = bToPx(c.bN2);
+                const isSelected = idx === state.compartmentIdx;
+                svg.appendChild(svgEl('circle', {
+                    cx: px, cy: aPy, r: isSelected ? 5 : 3.5,
+                    class: 'mv-deriv-dot-a' + (isSelected ? ' selected' : ''),
+                    'data-comp': idx, 'data-axis': 'a',
+                }));
+                svg.appendChild(svgEl('circle', {
+                    cx: px, cy: bPy, r: isSelected ? 5 : 3.5,
+                    class: 'mv-deriv-dot-b' + (isSelected ? ' selected' : ''),
+                    'data-comp': idx, 'data-axis': 'b',
+                }));
+            });
+
+            // Cursor at current slider t½
+            const tNow = state.halfTime;
+            const cursorX = tToPx(tNow);
+            svg.appendChild(svgEl('line', {
+                x1: cursorX, y1: DERIV_PAD_T, x2: cursorX, y2: DERIV_H - DERIV_PAD_B,
+                class: 'mv-deriv-cursor',
+            }));
         }
 
         // Wire inputs

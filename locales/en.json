@@ -1769,6 +1769,11 @@
                     "stored": "stored:",
                     "between": "between standards",
                     "deltaSymbol": "Δ"
+                },
+                "legend": {
+                    "a": "a(t½) curve + 16 stored values (dots)",
+                    "b": "b(t½) curve + 16 stored values (dots)",
+                    "cursor": "Slider position (current t½)"
                 }
             }
         },
