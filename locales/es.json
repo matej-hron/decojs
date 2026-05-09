@@ -1739,6 +1739,13 @@
                     "b": "curva b(t½) + 16 valores almacenados (puntos)",
                     "cursor": "Posición del deslizador (t½ actual)"
                 }
+            },
+            "crossLinks": {
+                "heading": "Ver también",
+                "wiki": "Wiki: Valores M (la matemática)",
+                "theory": "Página de teoría de Valores M (historia + ejemplos de inmersión)",
+                "haldane": "Sandbox de Haldane (el tejido persigue al ambiente)",
+                "schreiner": "Sandbox de Schreiner (el tejido persigue al ambiente en movimiento)"
             }
         },
         "cascade": {

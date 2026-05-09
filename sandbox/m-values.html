@@ -445,7 +445,15 @@
                 <span class="item" style="color:#9b59b6;"><span class="swatch dashed"></span><span data-i18n="sandbox.mvalues.bottom.legend.cursor">Slider position (current t½)</span></span>
             </div>
         </section>
-        <!-- Task 7 will add cross-links here -->
+<section class="mvalues-section" style="background: transparent; border: none;">
+    <h2 data-i18n="sandbox.mvalues.crossLinks.heading">See also</h2>
+    <ul>
+        <li><a href="../wiki/Model-04-M-Values.html" data-i18n="sandbox.mvalues.crossLinks.wiki">Wiki: M-Values (the math)</a></li>
+        <li><a href="../m-values.html" data-i18n="sandbox.mvalues.crossLinks.theory">M-Values theory page (history + dive examples)</a></li>
+        <li><a href="haldane.html" data-i18n="sandbox.mvalues.crossLinks.haldane">Haldane sandbox (tissue chases ambient)</a></li>
+        <li><a href="schreiner.html" data-i18n="sandbox.mvalues.crossLinks.schreiner">Schreiner sandbox (tissue chases moving ambient)</a></li>
+    </ul>
+</section>
     </div>
 
     <!-- Footer -->
@@ -916,6 +924,11 @@
         });
         els.compartment.addEventListener('change', () => {
             state.compartmentIdx = parseInt(els.compartment.value, 10);
+            // Move the bottom slider to that compartment's t½
+            const comp = COMPARTMENTS[state.compartmentIdx];
+            state.halfTime = comp.halfTime;
+            els.halfTime.value = comp.halfTime.toFixed(1);
+            els.halfTimeSlider.value = halfTimeToSlider(comp.halfTime).toString();
             recompute();
         });
         els.viewToggle.addEventListener('click', (e) => {
@@ -938,6 +951,15 @@
                 els.halfTimeSlider.value = halfTimeToSlider(next).toString();
             }
             els.halfTime.value = next.toFixed(1);
+
+            // If t exactly matches a standard compartment, sync the top dropdown
+            const comps = VARIANT_COMPS[state.variant];
+            const match = findStandardCompartmentByHalfTime(next, comps);
+            if (match && match.exact && state.compartmentIdx !== match.idx) {
+                state.compartmentIdx = match.idx;
+                els.compartment.value = match.idx;
+            }
+
             recompute();
         }
 

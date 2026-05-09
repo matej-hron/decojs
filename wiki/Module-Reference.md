@@ -417,3 +417,7 @@ Legacy Chart.js visualisation used by `main.js`. Modern pages use the class comp
 ### `js/quiz.js`
 
 Generic quiz engine for the seven CMAS / SPČR quiz pages. No exports — executes on DOM load; reads `data/quiz-{name}.json` based on a URL parameter, renders questions with category filtering, shuffling, and scoring. See [Extending-DecoJS](Extending-DecoJS.md#adding-a-new-quiz) for the JSON format.
+
+## Sandbox pages
+
+- `sandbox/m-values.html` — Two-playground sandbox for the M-value formula and its derivation. Top playground evaluates `M = a + P_amb/b`. Bottom playground exposes the analytical curves `a(t½)` and `b(t½)` with 16 ZH-L16 compartments overlaid as dots (variants A/B/C lift dots off the curves selectively). See `docs/superpowers/specs/2026-05-09-mvalues-sandbox-page-design.md`.

@@ -129,3 +129,4 @@ During an ascent the controlling compartment typically shifts:
 - [Model-01-Compartments](Model-01-Compartments.md) — where $a$ and $b$ come from.
 - [Model-05-Gradient-Factors](Model-05-Gradient-Factors.md) — how GF is varied with depth via `pAnchor`.
 - [Algo-06-Ceiling-Time-Series](Algo-06-Ceiling-Time-Series.md) — the ceiling sampled at every dive-time point, for chart overlay.
+- [Sandbox: M-Values](../sandbox/m-values.html) — interactive playground for the M-value formula and where its coefficients come from.

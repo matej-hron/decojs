@@ -1775,6 +1775,13 @@
                     "b": "křivka b(t½) + 16 uložených hodnot (body)",
                     "cursor": "Pozice posuvníku (aktuální t½)"
                 }
+            },
+            "crossLinks": {
+                "heading": "Viz také",
+                "wiki": "Wiki: M-hodnoty (matematika)",
+                "theory": "Stránka teorie M-hodnot (historie + příklady ponorů)",
+                "haldane": "Haldaneovo pískoviště (tkáň pronásleduje ambient)",
+                "schreiner": "Schreinerovo pískoviště (tkáň pronásleduje pohyblivý ambient)"
             }
         },
         "cascade": {
