@@ -1658,7 +1658,40 @@
             "title": "Sandbox de Valor M",
             "subtitle": "De dónde viene la línea, y cómo se ve para los 16 compartimentos.",
             "disclaimerBanner": "<strong>Solo para fines educativos</strong> — Recorrido interactivo de la fórmula de Valor M de Bühlmann y el origen de sus coeficientes.",
-            "disclaimer": "<strong>Aviso:</strong> Solo para fines educativos. El algoritmo de descompresión real usa lógica adicional."
+            "disclaimer": "<strong>Aviso:</strong> Solo para fines educativos. El algoritmo de descompresión real usa lógica adicional.",
+            "top": {
+                "heading": "¿Cómo se ve M a esta profundidad?",
+                "anchor": "Elige una profundidad, un compartimento y una variante — observa la fórmula del Valor M de Bühlmann evaluarse en vivo.",
+                "inputs": {
+                    "depth": "Profundidad (m)",
+                    "compartment": "Compartimento",
+                    "viewToggle": {
+                        "label": "Vista",
+                        "thisComp": "Este compartimento",
+                        "all16": "Los 16"
+                    }
+                },
+                "cards": {
+                    "a": {
+                        "name": "a | intersección del tejido",
+                        "formula": "búsqueda por compartimento + variante",
+                        "why": "Intersección con el eje y de la línea M. Mayor = más sobresaturación tolerada en la superficie."
+                    },
+                    "pAmb": {
+                        "name": "P<sub>amb</sub> | presión ambiental",
+                        "why": "Eje horizontal de la línea M. Cada metro de profundidad añade 0,1 bar."
+                    },
+                    "b": {
+                        "name": "b | pendiente del tejido",
+                        "formula": "búsqueda por compartimento (pendiente = 1/b)",
+                        "why": "Menor b → línea M más pendiente → compartimento más rápido."
+                    },
+                    "m": {
+                        "name": "M | presión tisular tolerada",
+                        "why": "Por encima de esto, el algoritmo marca la sobresaturación como peligrosa."
+                    }
+                }
+            }
         },
         "cascade": {
             "title": "Estación de llenado en cascada",

@@ -1694,7 +1694,40 @@
             "title": "M-Value Sandbox",
             "subtitle": "Where the line comes from, and what it looks like for all 16 compartments.",
             "disclaimerBanner": "<strong>Educational Use Only</strong> — Interactive walk-through of Bühlmann's M-value formula and where its coefficients come from.",
-            "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only. The actual diving algorithm uses additional logic."
+            "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only. The actual diving algorithm uses additional logic.",
+            "top": {
+                "heading": "What does M look like at this depth?",
+                "anchor": "Pick a depth, a compartment, and a variant — see Bühlmann's M-value formula evaluate live.",
+                "inputs": {
+                    "depth": "Depth (m)",
+                    "compartment": "Compartment",
+                    "viewToggle": {
+                        "label": "View",
+                        "thisComp": "This compartment",
+                        "all16": "All 16"
+                    }
+                },
+                "cards": {
+                    "a": {
+                        "name": "a | tissue intercept",
+                        "formula": "compartment + variant lookup",
+                        "why": "Y-intercept of the M-line. Higher = more supersaturation tolerated at the surface."
+                    },
+                    "pAmb": {
+                        "name": "P<sub>amb</sub> | ambient pressure",
+                        "why": "The horizontal axis of the M-line. Each meter of depth adds 0.1 bar."
+                    },
+                    "b": {
+                        "name": "b | tissue slope",
+                        "formula": "compartment lookup (slope = 1/b)",
+                        "why": "Lower b → steeper M-line → faster compartment."
+                    },
+                    "m": {
+                        "name": "M | tolerated tissue pressure",
+                        "why": "Above this, the algorithm flags supersaturation as unsafe."
+                    }
+                }
+            }
         },
         "cascade": {
             "title": "Cascade Filling Station",

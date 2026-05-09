@@ -64,6 +64,88 @@
             font-weight: normal;
             cursor: pointer;
         }
+        .mvalues-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+        }
+        .mvalues-inputs .field { display: flex; flex-direction: column; gap: 0.25rem; }
+        .mvalues-inputs .field label { font-size: 0.8rem; color: var(--text-muted); }
+        .mvalues-inputs .field input,
+        .mvalues-inputs .field select {
+            padding: 0.4rem 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--card-background);
+            font-size: 0.9rem;
+        }
+        .mvalues-formula {
+            text-align: center;
+            padding: 1rem;
+            background: linear-gradient(180deg, rgba(41,128,185,0.06), rgba(41,128,185,0.02));
+            border: 1px solid rgba(41,128,185,0.18);
+            border-radius: var(--radius);
+            margin-bottom: 0.5rem;
+            font-family: ui-monospace, "SF Mono", Menlo, monospace;
+        }
+        .mvalues-formula .formula-symbolic { font-size: 1.4rem; line-height: 2.2; }
+        .mvalues-formula .formula-substituted { font-size: 1rem; color: var(--text-muted); margin-top: 0.4rem; }
+        .mvalues-formula .formula-substituted strong { color: #e67e22; font-size: 1.05em; }
+        .mvalues-formula .term { display: inline-block; padding: 1px 5px; border-radius: 3px; }
+        .mvalues-formula .term-result { background: rgba(230, 126, 34, 0.18); border-bottom: 2px solid #e67e22; font-weight: 700; }
+        .mvalues-formula .term-a       { background: rgba(231, 76, 60, 0.16);  border-bottom: 2px solid #e74c3c; }
+        .mvalues-formula .term-pamb    { background: rgba(127, 140, 141, 0.18); border-bottom: 2px solid #7f8c8d; }
+        .mvalues-formula .term-b       { background: rgba(41, 128, 185, 0.16); border-bottom: 2px solid #2980b9; }
+
+        .mv-term-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.6rem;
+            margin: 1rem 0;
+        }
+        @media (max-width: 700px) {
+            .mv-term-row { grid-template-columns: repeat(2, 1fr); }
+        }
+        .mv-term-card {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-top: 3px solid var(--border-color);
+            border-radius: 4px;
+            padding: 0.6rem 0.75rem;
+            font-size: 0.85rem;
+            line-height: 1.45;
+        }
+        .mv-term-card.a    { border-top-color: #e74c3c; }
+        .mv-term-card.pamb { border-top-color: #7f8c8d; }
+        .mv-term-card.b    { border-top-color: #2980b9; }
+        .mv-term-card.m    { border-top-color: #e67e22; }
+        .mv-term-card .name    { font-family: ui-monospace, monospace; font-weight: 600; font-size: 0.95rem; }
+        .mv-term-card .formula { font-family: ui-monospace, monospace; color: var(--text-muted); font-size: 0.82rem; margin-top: 0.25rem; }
+        .mv-term-card .value   { font-family: ui-monospace, monospace; font-weight: 700; color: #2980b9; font-size: 1rem; margin-top: 0.4rem; }
+        .mv-term-card .why     { color: var(--text-muted); font-size: 0.8rem; font-style: italic; margin-top: 0.4rem; }
+
+        .view-toggle {
+            display: inline-flex;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .view-toggle button {
+            padding: 0.4rem 0.75rem;
+            background: var(--card-background);
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .view-toggle button.active {
+            background: rgba(41, 128, 185, 0.15);
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -93,7 +175,72 @@
     <!-- Layout (playgrounds added in later tasks) -->
     <div class="mvalues-layout">
         <!-- Task 5 will add the global variant bar here -->
-        <!-- Task 2-4 will add the top playground here -->
+        <section class="mvalues-section top">
+            <h2 data-i18n="sandbox.mvalues.top.heading">What does M look like at this depth?</h2>
+            <p class="mvalues-anchor" data-i18n="sandbox.mvalues.top.anchor">Pick a depth, a compartment, and a variant — see Bühlmann's M-value formula evaluate live.</p>
+
+            <div class="mvalues-inputs">
+                <div class="field">
+                    <label for="mvDepth" data-i18n="sandbox.mvalues.top.inputs.depth">Depth (m)</label>
+                    <input type="number" id="mvDepth" min="0" max="60" step="0.1" value="30">
+                </div>
+                <div class="field">
+                    <label for="mvCompartment" data-i18n="sandbox.mvalues.top.inputs.compartment">Compartment</label>
+                    <select id="mvCompartment"><!-- populated by JS --></select>
+                </div>
+                <div class="field">
+                    <label data-i18n="sandbox.mvalues.top.inputs.viewToggle.label">View</label>
+                    <div class="view-toggle" id="mvViewToggle">
+                        <button type="button" data-view="this" class="active" data-i18n="sandbox.mvalues.top.inputs.viewToggle.thisComp">This compartment</button>
+                        <button type="button" data-view="all" data-i18n="sandbox.mvalues.top.inputs.viewToggle.all16">All 16</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mvalues-formula">
+                <div class="formula-symbolic">
+                    <span class="term term-result">M</span> =
+                    <span class="term term-a">a</span> +
+                    <span class="term term-pamb">P<sub>amb</sub></span> /
+                    <span class="term term-b">b</span>
+                </div>
+                <div class="formula-substituted">
+                    <strong id="mvMValue">5.5588</strong> bar =
+                    <span id="mvANumF">0.6200</span> +
+                    <span id="mvPambNumF">4.0133</span> /
+                    <span id="mvBNumF">0.8126</span>
+                </div>
+            </div>
+
+            <div class="mv-term-row">
+                <div class="mv-term-card a">
+                    <div class="name" data-i18n="sandbox.mvalues.top.cards.a.name">a | tissue intercept</div>
+                    <div class="formula" data-i18n="sandbox.mvalues.top.cards.a.formula">compartment + variant lookup</div>
+                    <div class="value"><span id="mvAValue">0.6200</span> bar</div>
+                    <div class="why" data-i18n="sandbox.mvalues.top.cards.a.why">Y-intercept of the M-line. Higher = more supersaturation tolerated at the surface.</div>
+                </div>
+                <div class="mv-term-card pamb">
+                    <div class="name" data-i18n="sandbox.mvalues.top.cards.pAmb.name">P<sub>amb</sub> | ambient pressure</div>
+                    <div class="formula">= 1.01325 + depth · 0.1</div>
+                    <div class="value"><span id="mvPambValue">4.0133</span> bar</div>
+                    <div class="why" data-i18n="sandbox.mvalues.top.cards.pAmb.why">The horizontal axis of the M-line. Each meter of depth adds 0.1 bar.</div>
+                </div>
+                <div class="mv-term-card b">
+                    <div class="name" data-i18n="sandbox.mvalues.top.cards.b.name">b | tissue slope</div>
+                    <div class="formula" data-i18n="sandbox.mvalues.top.cards.b.formula">compartment lookup (slope = 1/b)</div>
+                    <div class="value"><span id="mvBValue">0.8126</span></div>
+                    <div class="why" data-i18n="sandbox.mvalues.top.cards.b.why">Lower b → steeper M-line → faster compartment.</div>
+                </div>
+                <div class="mv-term-card m">
+                    <div class="name" data-i18n="sandbox.mvalues.top.cards.m.name">M | tolerated tissue pressure</div>
+                    <div class="formula">= a + P<sub>amb</sub> / b</div>
+                    <div class="value"><span id="mvMValue2">5.5588</span> bar</div>
+                    <div class="why" data-i18n="sandbox.mvalues.top.cards.m.why">Above this, the algorithm flags supersaturation as unsafe.</div>
+                </div>
+            </div>
+
+            <!-- Task 3 adds the chart here -->
+        </section>
         <!-- Task 5-6 will add the bottom playground here -->
         <!-- Task 7 will add cross-links here -->
     </div>
@@ -107,6 +254,95 @@
 
     <!-- Navigation script -->
     <script src="../js/nav.js" type="module"></script>
+
+    <!-- Top playground: inputs, formula, term cards -->
+    <script type="module">
+        import { COMPARTMENTS, ZHL16_VARIANTS, setZHL16Variant } from '../js/tissueCompartments.js';
+        import { getMValue } from '../js/decoModel.js';
+
+        // Page state — variant becomes global in Task 5; for Task 2 it's hardcoded to C.
+        const state = {
+            depth: 30,
+            compartmentIdx: 4,        // TC5 (zero-based index = 4)
+            variant: 'ZH-L16C',
+            topView: 'this',
+        };
+
+        // Initialize variant on the COMPARTMENTS array
+        setZHL16Variant(state.variant);
+
+        const els = {
+            depth: document.getElementById('mvDepth'),
+            compartment: document.getElementById('mvCompartment'),
+            viewToggle: document.getElementById('mvViewToggle'),
+            // Formula numbers
+            formulaA: document.getElementById('mvANumF'),
+            formulaPamb: document.getElementById('mvPambNumF'),
+            formulaB: document.getElementById('mvBNumF'),
+            formulaM: document.getElementById('mvMValue'),
+            // Card values
+            aValue: document.getElementById('mvAValue'),
+            pambValue: document.getElementById('mvPambValue'),
+            bValue: document.getElementById('mvBValue'),
+            mValue: document.getElementById('mvMValue2'),
+        };
+
+        // Populate compartment dropdown
+        function populateCompartments() {
+            els.compartment.innerHTML = '';
+            COMPARTMENTS.forEach((comp, idx) => {
+                const opt = document.createElement('option');
+                opt.value = idx;
+                opt.textContent = `TC${comp.id} — ${comp.halfTime} min — ${comp.label.split(' - ')[1] || ''}`.trim();
+                els.compartment.appendChild(opt);
+            });
+            els.compartment.value = state.compartmentIdx;
+        }
+
+        function pAmbFromDepth(d) {
+            return 1.01325 + d * 0.1;
+        }
+
+        function recompute() {
+            const comp = COMPARTMENTS[state.compartmentIdx];
+            const pAmb = pAmbFromDepth(state.depth);
+            const a = comp.aN2;
+            const b = comp.bN2;
+            const m = getMValue(pAmb, a, b);
+
+            els.formulaA.textContent = a.toFixed(4);
+            els.formulaPamb.textContent = pAmb.toFixed(4);
+            els.formulaB.textContent = b.toFixed(4);
+            els.formulaM.textContent = m.toFixed(4);
+
+            els.aValue.textContent = a.toFixed(4);
+            els.pambValue.textContent = pAmb.toFixed(4);
+            els.bValue.textContent = b.toFixed(4);
+            els.mValue.textContent = m.toFixed(4);
+        }
+
+        // Wire inputs
+        els.depth.addEventListener('input', () => {
+            const v = parseFloat(els.depth.value);
+            if (!Number.isFinite(v)) return;
+            state.depth = Math.max(0, Math.min(60, v));
+            recompute();
+        });
+        els.compartment.addEventListener('change', () => {
+            state.compartmentIdx = parseInt(els.compartment.value, 10);
+            recompute();
+        });
+        els.viewToggle.addEventListener('click', (e) => {
+            const btn = e.target.closest('button[data-view]');
+            if (!btn) return;
+            state.topView = btn.dataset.view;
+            els.viewToggle.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
+            // Task 3 will trigger chart re-render here
+        });
+
+        populateCompartments();
+        recompute();
+    </script>
 
     <!-- i18n -->
     <script type="module">

@@ -1694,7 +1694,40 @@
             "title": "M-hodnota: pískoviště",
             "subtitle": "Odkud čára pochází a jak vypadá pro všech 16 kompartmentů.",
             "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Interaktivní rozbor Bühlmannova vzorce pro M-hodnoty a původu jejich koeficientů.",
-            "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely. Reálný dekompresní algoritmus používá další logiku."
+            "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely. Reálný dekompresní algoritmus používá další logiku.",
+            "top": {
+                "heading": "Jak M vypadá v této hloubce?",
+                "anchor": "Vyberte hloubku, kompartment a variantu — sledujte, jak Bühlmannova M-hodnota počítá živě.",
+                "inputs": {
+                    "depth": "Hloubka (m)",
+                    "compartment": "Kompartment",
+                    "viewToggle": {
+                        "label": "Zobrazení",
+                        "thisComp": "Tento kompartment",
+                        "all16": "Všech 16"
+                    }
+                },
+                "cards": {
+                    "a": {
+                        "name": "a | průsečík tkáně",
+                        "formula": "vyhledání podle kompartmentu + varianty",
+                        "why": "Průsečík M-čáry s osou y. Vyšší = více tolerované supersaturace na hladině."
+                    },
+                    "pAmb": {
+                        "name": "P<sub>amb</sub> | okolní tlak",
+                        "why": "Vodorovná osa M-čáry. Každý metr hloubky přidá 0,1 bar."
+                    },
+                    "b": {
+                        "name": "b | sklon tkáně",
+                        "formula": "vyhledání podle kompartmentu (sklon = 1/b)",
+                        "why": "Nižší b → strmější M-čára → rychlejší kompartment."
+                    },
+                    "m": {
+                        "name": "M | tolerovaný tlak v tkáni",
+                        "why": "Nad touto hodnotou algoritmus označí supersaturaci za nebezpečnou."
+                    }
+                }
+            }
         },
         "cascade": {
             "title": "Kaskádová plnicí stanice",
