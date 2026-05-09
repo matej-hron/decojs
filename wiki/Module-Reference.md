@@ -420,4 +420,4 @@ Generic quiz engine for the seven CMAS / SPČR quiz pages. No exports — execut
 
 ## Sandbox pages
 
-- `sandbox/m-values.html` — Two-playground sandbox for the M-value formula and its derivation. Top playground evaluates `M = a + P_amb/b`. Bottom playground exposes the analytical curves `a(t½)` and `b(t½)` with 16 ZH-L16 compartments overlaid as dots (variants A/B/C lift dots off the curves selectively). See `docs/superpowers/specs/2026-05-09-mvalues-sandbox-page-design.md`.
+- [`sandbox/m-values.html`](https://decotheory.eu/sandbox/m-values.html) — Two-playground sandbox for the M-value formula and its derivation. Top playground evaluates `M = a + P_amb/b`. Bottom playground exposes the analytical curves `a(t½)` and `b(t½)` with 16 ZH-L16 compartments overlaid as dots (variants A/B/C lift dots off the curves selectively).
