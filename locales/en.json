@@ -1304,6 +1304,7 @@
             "deco": "Decompression Modelling",
             "haldane": "Haldane Equation",
             "schreiner": "Schreiner Equation",
+            "mvalues": "M-Values",
             "tissue": "Tissue Saturation",
             "transfill": "Cylinder Transfilling",
             "cascade": "Cascade Filling",
@@ -1346,6 +1347,7 @@
                 "tissue": "Tissue Saturation",
                 "haldane": "Haldane Equation",
                 "schreiner": "Schreiner Equation",
+                "mvalues": "M-Values",
                 "transfill": "Transfilling",
                 "cascade": "Cascade Filling",
                 "gasLaw": "Gas Law"
@@ -1686,6 +1688,101 @@
                 "title": "M-value check",
                 "within": "within",
                 "exceeded": "exceeded"
+            }
+        },
+        "mvalues": {
+            "title": "M-Values",
+            "subtitle": "Where the line comes from, and what it looks like for all 16 compartments.",
+            "disclaimerBanner": "<strong>Educational Use Only</strong> — Interactive walk-through of Bühlmann's M-value formula and where its coefficients come from.",
+            "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only. The actual diving algorithm uses additional logic.",
+            "top": {
+                "heading": "What does M look like at this depth?",
+                "anchor": "Pick a depth, a compartment, and a variant — see Bühlmann's M-value formula evaluate live.",
+                "inputs": {
+                    "depth": "Depth (m)",
+                    "compartment": "Compartment",
+                    "viewToggle": {
+                        "label": "View",
+                        "thisComp": "This compartment",
+                        "all16": "All 16"
+                    }
+                },
+                "cards": {
+                    "a": {
+                        "name": "a | tissue intercept",
+                        "formula": "compartment + variant lookup",
+                        "why": "Y-intercept of the M-line. Higher = more supersaturation tolerated at the surface."
+                    },
+                    "pAmb": {
+                        "name": "P<sub>amb</sub> | ambient pressure",
+                        "why": "The horizontal axis of the M-line. Each meter of depth adds 0.1 bar."
+                    },
+                    "b": {
+                        "name": "b | tissue slope",
+                        "formula": "compartment lookup (slope = 1/b)",
+                        "why": "Lower b → steeper M-line → faster compartment."
+                    },
+                    "m": {
+                        "name": "M | tolerated tissue pressure",
+                        "why": "Above this, the algorithm flags supersaturation as unsafe."
+                    }
+                },
+                "chart": {
+                    "xAxis": "P_amb (bar)",
+                    "yAxis": "P_t (bar)",
+                    "legendAmbient": "Ambient line (y = x)",
+                    "legendSurface": "Surface (P_amb = 1.013 bar)"
+                },
+                "legend": {
+                    "variantA": "ZH-L16A (long dash)",
+                    "variantB": "ZH-L16B (short dash)",
+                    "variantC": "ZH-L16C (solid)",
+                    "ambient": "Ambient line (y = x)",
+                    "surface": "Surface (P_amb = 1.013 bar)"
+                }
+            },
+            "variantBar": {
+                "label": "ZH-L16 variant:",
+                "shortLabel": "Variant:"
+            },
+            "bottom": {
+                "heading": "Where do a and b come from?",
+                "anchor": "ZH-L16A's a and b aren't fitted to data — they're computed from half-time alone. Variants B and C are post-hoc adjustments to specific compartments.",
+                "inputs": {
+                    "halfTime": "Half-time t½ (min)",
+                    "snapToggle": "Snap to standard compartments"
+                },
+                "cards": {
+                    "halfTime": {
+                        "name": "t<sub>½</sub> | half-time",
+                        "why": "Each compartment's signature time. Not anatomical — a sample point on an exponential axis."
+                    },
+                    "a": {
+                        "name": "a(t<sub>½</sub>) | analytical intercept",
+                        "why": "Variants B and C drop a for specific compartments — that's the only place statistics enter Bühlmann."
+                    },
+                    "b": {
+                        "name": "b(t<sub>½</sub>) | analytical slope",
+                        "why": "Identical across A/B/C except TC1 (whose t½ swap also swaps b)."
+                    }
+                },
+                "delta": {
+                    "stored": "stored:",
+                    "between": "between standards",
+                    "deltaSymbol": "Δ"
+                },
+                "legend": {
+                    "a": "a(t½) curve + 16 stored values (dots)",
+                    "b": "b(t½) curve + 16 stored values (dots)",
+                    "cursor": "Slider position (current t½)"
+                }
+            },
+            "crossLinks": {
+                "heading": "See also",
+                "wiki": "Wiki: M-Values (the math)",
+                "theory": "M-Values theory page (history + dive examples)",
+                "haldane": "Haldane sandbox (tissue chases ambient)",
+                "schreiner": "Schreiner sandbox (tissue chases moving ambient)"
             }
         },
         "cascade": {

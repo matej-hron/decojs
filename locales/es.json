@@ -1304,6 +1304,7 @@
             "deco": "Modelado de descompresión",
             "haldane": "Ecuación de Haldane",
             "schreiner": "Ecuación de Schreiner",
+            "mvalues": "Valores M",
             "tissue": "Saturación tisular",
             "transfill": "Transvase de botellas",
             "cascade": "Llenado en cascada",
@@ -1346,6 +1347,7 @@
                 "tissue": "Saturación tisular",
                 "haldane": "Ecuación de Haldane",
                 "schreiner": "Ecuación de Schreiner",
+                "mvalues": "Valores M",
                 "transfill": "Transvase",
                 "cascade": "Llenado en cascada",
                 "gasLaw": "Ley de los gases"
@@ -1650,6 +1652,101 @@
                 "title": "Comprobación del valor M",
                 "within": "dentro",
                 "exceeded": "excedido"
+            }
+        },
+        "mvalues": {
+            "title": "Valores M",
+            "subtitle": "De dónde viene la línea, y cómo se ve para los 16 compartimentos.",
+            "disclaimerBanner": "<strong>Solo para fines educativos</strong> — Recorrido interactivo de la fórmula de Valor M de Bühlmann y el origen de sus coeficientes.",
+            "disclaimer": "<strong>Aviso:</strong> Solo para fines educativos. El algoritmo de descompresión real usa lógica adicional.",
+            "top": {
+                "heading": "¿Cómo se ve M a esta profundidad?",
+                "anchor": "Elige una profundidad, un compartimento y una variante — observa la fórmula del Valor M de Bühlmann evaluarse en vivo.",
+                "inputs": {
+                    "depth": "Profundidad (m)",
+                    "compartment": "Compartimento",
+                    "viewToggle": {
+                        "label": "Vista",
+                        "thisComp": "Este compartimento",
+                        "all16": "Los 16"
+                    }
+                },
+                "cards": {
+                    "a": {
+                        "name": "a | intersección del tejido",
+                        "formula": "búsqueda por compartimento + variante",
+                        "why": "Intersección con el eje y de la línea M. Mayor = más sobresaturación tolerada en la superficie."
+                    },
+                    "pAmb": {
+                        "name": "P<sub>amb</sub> | presión ambiental",
+                        "why": "Eje horizontal de la línea M. Cada metro de profundidad añade 0,1 bar."
+                    },
+                    "b": {
+                        "name": "b | pendiente del tejido",
+                        "formula": "búsqueda por compartimento (pendiente = 1/b)",
+                        "why": "Menor b → línea M más pendiente → compartimento más rápido."
+                    },
+                    "m": {
+                        "name": "M | presión tisular tolerada",
+                        "why": "Por encima de esto, el algoritmo marca la sobresaturación como peligrosa."
+                    }
+                },
+                "chart": {
+                    "xAxis": "P_amb (bar)",
+                    "yAxis": "P_t (bar)",
+                    "legendAmbient": "Línea ambiental (y = x)",
+                    "legendSurface": "Superficie (P_amb = 1,013 bar)"
+                },
+                "legend": {
+                    "variantA": "ZH-L16A (raya larga)",
+                    "variantB": "ZH-L16B (raya corta)",
+                    "variantC": "ZH-L16C (sólida)",
+                    "ambient": "Línea ambiental (y = x)",
+                    "surface": "Superficie (P_amb = 1,013 bar)"
+                }
+            },
+            "variantBar": {
+                "label": "Variante ZH-L16:",
+                "shortLabel": "Variante:"
+            },
+            "bottom": {
+                "heading": "¿De dónde vienen a y b?",
+                "anchor": "Las a y b de ZH-L16A no se ajustan a datos — se calculan solo a partir del periodo de saturación. Las variantes B y C son ajustes posteriores a compartimentos específicos.",
+                "inputs": {
+                    "halfTime": "Periodo t½ (min)",
+                    "snapToggle": "Ajustar a compartimentos estándar"
+                },
+                "cards": {
+                    "halfTime": {
+                        "name": "t<sub>½</sub> | periodo de saturación",
+                        "why": "Tiempo característico de cada compartimento. No es anatómico — solo un punto de muestreo en un eje exponencial."
+                    },
+                    "a": {
+                        "name": "a(t<sub>½</sub>) | intersección analítica",
+                        "why": "Las variantes B y C bajan a en compartimentos específicos — el único lugar donde entra estadística en Bühlmann."
+                    },
+                    "b": {
+                        "name": "b(t<sub>½</sub>) | pendiente analítica",
+                        "why": "Idéntica en A/B/C salvo TC1 (cuyo cambio de t½ también cambia b)."
+                    }
+                },
+                "delta": {
+                    "stored": "almacenado:",
+                    "between": "entre estándares",
+                    "deltaSymbol": "Δ"
+                },
+                "legend": {
+                    "a": "curva a(t½) + 16 valores almacenados (puntos)",
+                    "b": "curva b(t½) + 16 valores almacenados (puntos)",
+                    "cursor": "Posición del deslizador (t½ actual)"
+                }
+            },
+            "crossLinks": {
+                "heading": "Ver también",
+                "wiki": "Wiki: Valores M (la matemática)",
+                "theory": "Página de teoría de Valores M (historia + ejemplos de inmersión)",
+                "haldane": "Sandbox de Haldane (el tejido persigue al ambiente)",
+                "schreiner": "Sandbox de Schreiner (el tejido persigue al ambiente en movimiento)"
             }
         },
         "cascade": {

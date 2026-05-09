@@ -70,6 +70,8 @@ $$a = 2 \cdot T_{1/2}^{-1/3} \quad (\text{bar}) \qquad b = 1.005 - T_{1/2}^{-1/2
 
 These give the **ZH-L16A** (experimental) values exactly. The **B** and **C** variants share A's $b$ values for TC2–TC16 (TC1 has its own pairing) and selectively lower the $a$ coefficient on a subset of compartments to produce tables / computer firmware that proved more conservative in practice. See the table above for which compartments differ in B vs. C.
 
+See also: [Sandbox: M-Values](https://decotheory.eu/sandbox/m-values.html), whose bottom playground visualizes these formulas alongside the 16 stored compartment values — toggling between A and C lifts the adjusted dots off the analytical curves.
+
 ## Variant semantics
 
 | Variant | Purpose | Conservatism |

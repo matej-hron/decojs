@@ -1304,6 +1304,7 @@
             "deco": "Modelování dekomprese",
             "haldane": "Haldaneova rovnice",
             "schreiner": "Schreinerova rovnice",
+            "mvalues": "M-hodnoty",
             "tissue": "Sycení tkání",
             "transfill": "Přepouštění lahví",
             "cascade": "Kaskádové plnění",
@@ -1346,6 +1347,7 @@
                 "tissue": "Sycení tkání",
                 "haldane": "Haldaneova rovnice",
                 "schreiner": "Schreinerova rovnice",
+                "mvalues": "M-hodnoty",
                 "transfill": "Přepouštění",
                 "cascade": "Kaskádové plnění",
                 "gasLaw": "Plynový zákon"
@@ -1686,6 +1688,101 @@
                 "title": "Kontrola M-hodnoty",
                 "within": "v limitu",
                 "exceeded": "překročeno"
+            }
+        },
+        "mvalues": {
+            "title": "M-hodnoty",
+            "subtitle": "Jak funkce vzniká a jak vypadá pro všech 16 kompartmentů.",
+            "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Interaktivní rozbor Bühlmannova vzorce pro M-hodnoty a původu jejich koeficientů.",
+            "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely. Reálný dekompresní algoritmus používá další logiku.",
+            "top": {
+                "heading": "Jak M vypadá v této hloubce?",
+                "anchor": "Vyberte hloubku, kompartment a variantu — sledujte, jak se Bühlmannova M-hodnota mění.",
+                "inputs": {
+                    "depth": "Hloubka (m)",
+                    "compartment": "Kompartment",
+                    "viewToggle": {
+                        "label": "Zobrazení",
+                        "thisComp": "Tento kompartment",
+                        "all16": "Všech 16"
+                    }
+                },
+                "cards": {
+                    "a": {
+                        "name": "a | průsečík tkáně",
+                        "formula": "vyhledání podle kompartmentu + varianty",
+                        "why": "Průsečík M-čáry s osou y. Vyšší = více tolerované supersaturace na hladině."
+                    },
+                    "pAmb": {
+                        "name": "P<sub>amb</sub> | okolní tlak",
+                        "why": "Vodorovná osa M-čáry. Každý metr hloubky přidá 0,1 bar."
+                    },
+                    "b": {
+                        "name": "b | sklon tkáně",
+                        "formula": "vyhledání podle kompartmentu (sklon = 1/b)",
+                        "why": "Nižší b → strmější M-čára → rychlejší kompartment."
+                    },
+                    "m": {
+                        "name": "M | tolerovaný tlak v tkáni",
+                        "why": "Nad touto hodnotou algoritmus označí supersaturaci za nebezpečnou."
+                    }
+                },
+                "chart": {
+                    "xAxis": "P_amb (bar)",
+                    "yAxis": "P_t (bar)",
+                    "legendAmbient": "Ambientní čára (y = x)",
+                    "legendSurface": "Hladina (P_amb = 1,013 bar)"
+                },
+                "legend": {
+                    "variantA": "ZH-L16A (dlouhá čárka)",
+                    "variantB": "ZH-L16B (krátká čárka)",
+                    "variantC": "ZH-L16C (plná)",
+                    "ambient": "Ambientní čára (y = x)",
+                    "surface": "Hladina (P_amb = 1,013 bar)"
+                }
+            },
+            "variantBar": {
+                "label": "Varianta ZH-L16:",
+                "shortLabel": "Varianta:"
+            },
+            "bottom": {
+                "heading": "Odkud pocházejí a a b?",
+                "anchor": "a a b ZH-L16A nejsou empiricky odvozené — počítají se pouze z poločasu. Varianty B a C jsou manuálně upravené podle statistické korelace z pozorovaných incidentů.",
+                "inputs": {
+                    "halfTime": "Poločas t½ (min)",
+                    "snapToggle": "Přichytit ke standardním kompartmentům"
+                },
+                "cards": {
+                    "halfTime": {
+                        "name": "t<sub>½</sub> | poločas",
+                        "why": "Charakteristický čas kompartmentu. Není anatomický — jen vzorek na exponenciální ose."
+                    },
+                    "a": {
+                        "name": "a(t<sub>½</sub>) | posun funkce",
+                        "why": "Varianty B a C snižují a u konkrétních kompartmentů — jediné místo, kde do Bühlmanna vstupuje statistika."
+                    },
+                    "b": {
+                        "name": "b(t<sub>½</sub>) | sklon funkce",
+                        "why": "Identické pro A/B/C kromě TC1 (jehož záměna t½ mění i b)."
+                    }
+                },
+                "delta": {
+                    "stored": "uložené:",
+                    "between": "mezi standardy",
+                    "deltaSymbol": "Δ"
+                },
+                "legend": {
+                    "a": "křivka a(t½) + 16 uložených hodnot (body)",
+                    "b": "křivka b(t½) + 16 uložených hodnot (body)",
+                    "cursor": "Pozice posuvníku (aktuální t½)"
+                }
+            },
+            "crossLinks": {
+                "heading": "Viz také",
+                "wiki": "Wiki: M-hodnoty (matematika)",
+                "theory": "Stránka teorie M-hodnot (historie + příklady ponorů)",
+                "haldane": "Haldaneovo pískoviště (tkáň pronásleduje ambient)",
+                "schreiner": "Schreinerovo pískoviště (tkáň pronásleduje pohyblivý ambient)"
             }
         },
         "cascade": {
