@@ -277,7 +277,7 @@
     <!-- Top playground: inputs, formula, term cards -->
     <script type="module">
         import { COMPARTMENTS, ZHL16_VARIANTS, setZHL16Variant, getCompartmentsForVariant } from '../js/tissueCompartments.js';
-        import { getMValue, getAmbientPressure } from '../js/decoModel.js';
+        import { getMValue, getAmbientPressure, SURFACE_PRESSURE } from '../js/decoModel.js';
 
         // Page state — variant becomes global in Task 5; for Task 2 it's hardcoded to C.
         const state = {
@@ -379,7 +379,7 @@
             return Math.max(10, maxM * 1.1);
         }
 
-        function xToPx(x, yMax) {
+        function xToPx(x) {
             return PAD_L + (x - X_MIN) / (X_MAX - X_MIN) * (CHART_W - PAD_L - PAD_R);
         }
         function yToPx(y, yMax) {
@@ -413,7 +413,7 @@
 
             // X ticks at integer bar values
             for (let x = 0; x <= X_MAX; x++) {
-                const px = xToPx(x, yMax);
+                const px = xToPx(x);
                 svg.appendChild(svgEl('line', {
                     x1: px, y1: CHART_H - PAD_B, x2: px, y2: CHART_H - PAD_B + 4, class: 'mv-chart-tick',
                 }));
@@ -451,14 +451,14 @@
 
             // Ambient line y = x
             svg.appendChild(svgEl('line', {
-                x1: xToPx(0, yMax), y1: yToPx(0, yMax),
-                x2: xToPx(Math.min(X_MAX, yMax), yMax), y2: yToPx(Math.min(X_MAX, yMax), yMax),
+                x1: xToPx(0), y1: yToPx(0, yMax),
+                x2: xToPx(Math.min(X_MAX, yMax)), y2: yToPx(Math.min(X_MAX, yMax), yMax),
                 class: 'mv-chart-ambient',
             }));
 
-            // Surface line (vertical at P_amb = 1.01325)
+            // Surface line (vertical at P_amb = SURFACE_PRESSURE)
             svg.appendChild(svgEl('line', {
-                x1: xToPx(1.01325, yMax), y1: PAD_T, x2: xToPx(1.01325, yMax), y2: CHART_H - PAD_B,
+                x1: xToPx(SURFACE_PRESSURE), y1: PAD_T, x2: xToPx(SURFACE_PRESSURE), y2: CHART_H - PAD_B,
                 class: 'mv-chart-surface',
             }));
 
@@ -471,8 +471,8 @@
                     const m0 = c.aN2 + X_MIN / c.bN2;
                     const mMax = c.aN2 + X_MAX / c.bN2;
                     svg.appendChild(svgEl('line', {
-                        x1: xToPx(X_MIN, yMax), y1: yToPx(m0, yMax),
-                        x2: xToPx(X_MAX, yMax), y2: yToPx(mMax, yMax),
+                        x1: xToPx(X_MIN), y1: yToPx(m0, yMax),
+                        x2: xToPx(X_MAX), y2: yToPx(mMax, yMax),
                         class: 'mv-chart-mline' + (isActive ? '' : ' faint'),
                         stroke: compartmentColor(c),
                     }));
@@ -485,8 +485,8 @@
                     const mMax = c.aN2 + X_MAX / c.bN2;
                     const isSelected = idx === state.compartmentIdx;
                     svg.appendChild(svgEl('line', {
-                        x1: xToPx(X_MIN, yMax), y1: yToPx(m0, yMax),
-                        x2: xToPx(X_MAX, yMax), y2: yToPx(mMax, yMax),
+                        x1: xToPx(X_MIN), y1: yToPx(m0, yMax),
+                        x2: xToPx(X_MAX), y2: yToPx(mMax, yMax),
                         class: 'mv-chart-mline' + (isSelected ? '' : ' faint'),
                         stroke: compartmentColor(c),
                     }));
@@ -499,7 +499,7 @@
             const mNow = c.aN2 + pAmbNow / c.bN2;
             if (mNow <= yMax && pAmbNow >= X_MIN && pAmbNow <= X_MAX) {
                 svg.appendChild(svgEl('circle', {
-                    cx: xToPx(pAmbNow, yMax), cy: yToPx(mNow, yMax),
+                    cx: xToPx(pAmbNow), cy: yToPx(mNow, yMax),
                     r: 5, class: 'mv-chart-marker',
                     id: 'mvTopChartMarker',
                 }));
