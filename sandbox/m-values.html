@@ -836,16 +836,20 @@
                 svg.appendChild(lbl);
             }
 
-            // Y-left ticks for a (every 0.5)
-            for (let a = A_MIN; a <= A_MAX; a += 0.5) {
+            // Y-left ticks for a (every 0.5) — integer counter to avoid float drift
+            const A_TICK_COUNT = Math.round((A_MAX - A_MIN) / 0.5);
+            for (let i = 0; i <= A_TICK_COUNT; i++) {
+                const a = A_MIN + i * 0.5;
                 const py = aToPx(a);
                 svg.appendChild(svgEl('line', { x1: DERIV_PAD_L - 4, y1: py, x2: DERIV_PAD_L, y2: py, class: 'mv-chart-tick' }));
                 const lbl = svgEl('text', { x: DERIV_PAD_L - 6, y: py + 3, class: 'mv-chart-label', 'text-anchor': 'end', fill: '#e74c3c' });
                 lbl.textContent = a.toFixed(1);
                 svg.appendChild(lbl);
             }
-            // Y-right ticks for b (every 0.1)
-            for (let b = B_MIN; b <= B_MAX; b += 0.1) {
+            // Y-right ticks for b (every 0.1) — integer counter to avoid float drift
+            const B_TICK_COUNT = Math.round((B_MAX - B_MIN) / 0.1);
+            for (let i = 0; i <= B_TICK_COUNT; i++) {
+                const b = B_MIN + i * 0.1;
                 const py = bToPx(b);
                 svg.appendChild(svgEl('line', { x1: DERIV_W - DERIV_PAD_R, y1: py, x2: DERIV_W - DERIV_PAD_R + 4, y2: py, class: 'mv-chart-tick' }));
                 const lbl = svgEl('text', { x: DERIV_W - DERIV_PAD_R + 6, y: py + 3, class: 'mv-chart-label', 'text-anchor': 'start', fill: '#2980b9' });
