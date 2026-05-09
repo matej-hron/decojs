@@ -258,13 +258,13 @@
     <!-- Top playground: inputs, formula, term cards -->
     <script type="module">
         import { COMPARTMENTS, ZHL16_VARIANTS, setZHL16Variant } from '../js/tissueCompartments.js';
-        import { getMValue } from '../js/decoModel.js';
+        import { getMValue, getAmbientPressure } from '../js/decoModel.js';
 
         // Page state — variant becomes global in Task 5; for Task 2 it's hardcoded to C.
         const state = {
             depth: 30,
             compartmentIdx: 4,        // TC5 (zero-based index = 4)
-            variant: 'ZH-L16C',
+            variant: ZHL16_VARIANTS.C,
             topView: 'this',
         };
 
@@ -299,13 +299,9 @@
             els.compartment.value = state.compartmentIdx;
         }
 
-        function pAmbFromDepth(d) {
-            return 1.01325 + d * 0.1;
-        }
-
         function recompute() {
             const comp = COMPARTMENTS[state.compartmentIdx];
-            const pAmb = pAmbFromDepth(state.depth);
+            const pAmb = getAmbientPressure(state.depth);
             const a = comp.aN2;
             const b = comp.bN2;
             const m = getMValue(pAmb, a, b);
