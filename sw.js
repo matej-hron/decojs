@@ -22,6 +22,7 @@ const STATIC_ASSETS = [
   './sandbox/index.html',
   './sandbox/haldane.html',
   './sandbox/schreiner.html',
+  './sandbox/m-values.html',
   './sandbox/tissue-saturation.html',
   './sandbox/transfilling.html',
   './sandbox/cascade-filling.html',

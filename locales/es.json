@@ -1304,6 +1304,7 @@
             "deco": "Modelado de descompresión",
             "haldane": "Ecuación de Haldane",
             "schreiner": "Ecuación de Schreiner",
+            "mvalues": "Sandbox de Valor M",
             "tissue": "Saturación tisular",
             "transfill": "Transvase de botellas",
             "cascade": "Llenado en cascada",
@@ -1346,6 +1347,7 @@
                 "tissue": "Saturación tisular",
                 "haldane": "Ecuación de Haldane",
                 "schreiner": "Ecuación de Schreiner",
+                "mvalues": "Sandbox de Valor M",
                 "transfill": "Transvase",
                 "cascade": "Llenado en cascada",
                 "gasLaw": "Ley de los gases"
@@ -1651,6 +1653,12 @@
                 "within": "dentro",
                 "exceeded": "excedido"
             }
+        },
+        "mvalues": {
+            "title": "Sandbox de Valor M",
+            "subtitle": "De dónde viene la línea, y cómo se ve para los 16 compartimentos.",
+            "disclaimerBanner": "<strong>Solo para fines educativos</strong> — Recorrido interactivo de la fórmula de Valor M de Bühlmann y el origen de sus coeficientes.",
+            "disclaimer": "<strong>Aviso:</strong> Solo para fines educativos. El algoritmo de descompresión real usa lógica adicional."
         },
         "cascade": {
             "title": "Estación de llenado en cascada",

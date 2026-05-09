@@ -1304,6 +1304,7 @@
             "deco": "Decompression Modelling",
             "haldane": "Haldane Equation",
             "schreiner": "Schreiner Equation",
+            "mvalues": "M-Value Sandbox",
             "tissue": "Tissue Saturation",
             "transfill": "Cylinder Transfilling",
             "cascade": "Cascade Filling",
@@ -1346,6 +1347,7 @@
                 "tissue": "Tissue Saturation",
                 "haldane": "Haldane Equation",
                 "schreiner": "Schreiner Equation",
+                "mvalues": "M-Value Sandbox",
                 "transfill": "Transfilling",
                 "cascade": "Cascade Filling",
                 "gasLaw": "Gas Law"
@@ -1687,6 +1689,12 @@
                 "within": "within",
                 "exceeded": "exceeded"
             }
+        },
+        "mvalues": {
+            "title": "M-Value Sandbox",
+            "subtitle": "Where the line comes from, and what it looks like for all 16 compartments.",
+            "disclaimerBanner": "<strong>Educational Use Only</strong> — Interactive walk-through of Bühlmann's M-value formula and where its coefficients come from.",
+            "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only. The actual diving algorithm uses additional logic."
         },
         "cascade": {
             "title": "Cascade Filling Station",

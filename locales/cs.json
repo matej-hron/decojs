@@ -1304,6 +1304,7 @@
             "deco": "Modelování dekomprese",
             "haldane": "Haldaneova rovnice",
             "schreiner": "Schreinerova rovnice",
+            "mvalues": "M-hodnota: pískoviště",
             "tissue": "Sycení tkání",
             "transfill": "Přepouštění lahví",
             "cascade": "Kaskádové plnění",
@@ -1346,6 +1347,7 @@
                 "tissue": "Sycení tkání",
                 "haldane": "Haldaneova rovnice",
                 "schreiner": "Schreinerova rovnice",
+                "mvalues": "M-hodnota: pískoviště",
                 "transfill": "Přepouštění",
                 "cascade": "Kaskádové plnění",
                 "gasLaw": "Plynový zákon"
@@ -1687,6 +1689,12 @@
                 "within": "v limitu",
                 "exceeded": "překročeno"
             }
+        },
+        "mvalues": {
+            "title": "M-hodnota: pískoviště",
+            "subtitle": "Odkud čára pochází a jak vypadá pro všech 16 kompartmentů.",
+            "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Interaktivní rozbor Bühlmannova vzorce pro M-hodnoty a původu jejich koeficientů.",
+            "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely. Reálný dekompresní algoritmus používá další logiku."
         },
         "cascade": {
             "title": "Kaskádová plnicí stanice",
