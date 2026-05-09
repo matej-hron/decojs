@@ -1726,6 +1726,12 @@
                         "name": "M | tolerovaný tlak v tkáni",
                         "why": "Nad touto hodnotou algoritmus označí supersaturaci za nebezpečnou."
                     }
+                },
+                "chart": {
+                    "xAxis": "P_amb (bar)",
+                    "yAxis": "P_t (bar)",
+                    "legendAmbient": "Ambientní čára (y = x)",
+                    "legendSurface": "Hladina (P_amb = 1,013 bar)"
                 }
             }
         },

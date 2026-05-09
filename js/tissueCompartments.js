@@ -154,7 +154,7 @@ function getACoefficients(variant) {
  * @param {string} variant - One of ZHL16_VARIANTS values
  * @returns {Array} Compartments with aN2 values and variant-specific half-times
  */
-function buildCompartments(variant) {
+export function buildCompartments(variant) {
     const aCoeffs = getACoefficients(variant);
     const comp1HalfTime = COMPARTMENT_1_HALFTIME[variant] || 5.0;
     const comp1BN2 = COMPARTMENT_1_B_N2[variant] || 0.5578;

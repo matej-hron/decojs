@@ -1726,6 +1726,12 @@
                         "name": "M | tolerated tissue pressure",
                         "why": "Above this, the algorithm flags supersaturation as unsafe."
                     }
+                },
+                "chart": {
+                    "xAxis": "P_amb (bar)",
+                    "yAxis": "P_t (bar)",
+                    "legendAmbient": "Ambient line (y = x)",
+                    "legendSurface": "Surface (P_amb = 1.013 bar)"
                 }
             }
         },

@@ -146,6 +146,23 @@
             background: rgba(41, 128, 185, 0.15);
             font-weight: 600;
         }
+
+        .mv-chart-row {
+            background: linear-gradient(180deg, rgba(41,128,185,0.04), rgba(41,128,185,0));
+            border: 1px dashed rgba(41,128,185,0.35);
+            border-radius: var(--radius);
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        #mvTopChart { width: 100%; height: 280px; display: block; }
+        .mv-chart-axis { stroke: var(--text-muted); stroke-width: 1; }
+        .mv-chart-tick { stroke: var(--text-muted); stroke-width: 0.5; }
+        .mv-chart-label { fill: var(--text-muted); font-size: 10px; font-family: ui-monospace, monospace; }
+        .mv-chart-ambient { stroke: #2980b9; stroke-width: 1; stroke-dasharray: 4,3; fill: none; opacity: 0.5; }
+        .mv-chart-surface { stroke: #7f8c8d; stroke-width: 1; stroke-dasharray: 2,2; }
+        .mv-chart-mline { fill: none; stroke-width: 2; }
+        .mv-chart-mline.faint { stroke-width: 1; stroke-dasharray: 3,3; opacity: 0.5; }
+        .mv-chart-marker { fill: #e67e22; stroke: white; stroke-width: 1.5; }
     </style>
 </head>
 <body>
@@ -239,7 +256,9 @@
                 </div>
             </div>
 
-            <!-- Task 3 adds the chart here -->
+            <div class="mv-chart-row">
+                <svg id="mvTopChart" viewBox="0 0 480 280" preserveAspectRatio="xMidYMid meet" aria-label="M-value chart"></svg>
+            </div>
         </section>
         <!-- Task 5-6 will add the bottom playground here -->
         <!-- Task 7 will add cross-links here -->
@@ -257,7 +276,7 @@
 
     <!-- Top playground: inputs, formula, term cards -->
     <script type="module">
-        import { COMPARTMENTS, ZHL16_VARIANTS, setZHL16Variant } from '../js/tissueCompartments.js';
+        import { COMPARTMENTS, ZHL16_VARIANTS, setZHL16Variant, buildCompartments } from '../js/tissueCompartments.js';
         import { getMValue, getAmbientPressure } from '../js/decoModel.js';
 
         // Page state — variant becomes global in Task 5; for Task 2 it's hardcoded to C.
@@ -315,6 +334,176 @@
             els.pambValue.textContent = pAmb.toFixed(4);
             els.bValue.textContent = b.toFixed(4);
             els.mValue.textContent = m.toFixed(4);
+
+            drawTopChart();
+        }
+
+        // ---- Chart constants ----
+        const CHART_W = 480;
+        const CHART_H = 280;
+        const PAD_L = 40;
+        const PAD_R = 12;
+        const PAD_T = 10;
+        const PAD_B = 28;
+        const X_MIN = 0;
+        const X_MAX = 7;       // bar — covers surface through ~60 m
+
+        const VARIANT_LIST = ['ZH-L16A', 'ZH-L16B', 'ZH-L16C'];
+        const VARIANT_COMPS = {};   // variant name → COMPARTMENTS array snapshot
+        for (const v of VARIANT_LIST) {
+            VARIANT_COMPS[v] = buildCompartments(v);
+        }
+
+        function compartmentColor(comp) {
+            return comp.color;
+        }
+
+        function dynamicYMax(compsByVariant, activeVariant, allLines) {
+            // Compute 1.1 * max(M at X_MAX), clamped to >= 10
+            let maxM = 0;
+            if (allLines) {
+                // Use all 16 in the active variant (Task 4 path)
+                const comps = compsByVariant[activeVariant];
+                for (const c of comps) {
+                    const m = c.aN2 + X_MAX / c.bN2;
+                    if (m > maxM) maxM = m;
+                }
+            } else {
+                // Use the selected comp across all 3 variants (Task 3 path)
+                for (const v of VARIANT_LIST) {
+                    const c = compsByVariant[v][state.compartmentIdx];
+                    const m = c.aN2 + X_MAX / c.bN2;
+                    if (m > maxM) maxM = m;
+                }
+            }
+            return Math.max(10, maxM * 1.1);
+        }
+
+        function xToPx(x, yMax) {
+            return PAD_L + (x - X_MIN) / (X_MAX - X_MIN) * (CHART_W - PAD_L - PAD_R);
+        }
+        function yToPx(y, yMax) {
+            const usable = CHART_H - PAD_T - PAD_B;
+            return PAD_T + usable - (y / yMax) * usable;
+        }
+
+        function svgEl(name, attrs) {
+            const el = document.createElementNS('http://www.w3.org/2000/svg', name);
+            for (const [k, v] of Object.entries(attrs || {})) {
+                el.setAttribute(k, v);
+            }
+            return el;
+        }
+
+        function drawTopChart() {
+            const svg = document.getElementById('mvTopChart');
+            if (!svg) return;
+            svg.innerHTML = '';
+
+            const allLines = state.topView === 'all';
+            const yMax = dynamicYMax(VARIANT_COMPS, state.variant, allLines);
+
+            // Axes
+            svg.appendChild(svgEl('line', {
+                x1: PAD_L, y1: PAD_T, x2: PAD_L, y2: CHART_H - PAD_B, class: 'mv-chart-axis',
+            }));
+            svg.appendChild(svgEl('line', {
+                x1: PAD_L, y1: CHART_H - PAD_B, x2: CHART_W - PAD_R, y2: CHART_H - PAD_B, class: 'mv-chart-axis',
+            }));
+
+            // X ticks at integer bar values
+            for (let x = 0; x <= X_MAX; x++) {
+                const px = xToPx(x, yMax);
+                svg.appendChild(svgEl('line', {
+                    x1: px, y1: CHART_H - PAD_B, x2: px, y2: CHART_H - PAD_B + 4, class: 'mv-chart-tick',
+                }));
+                const lbl = svgEl('text', {
+                    x: px, y: CHART_H - PAD_B + 14, class: 'mv-chart-label', 'text-anchor': 'middle',
+                });
+                lbl.textContent = x.toString();
+                svg.appendChild(lbl);
+            }
+
+            // Y ticks every 2 bar (rounded to chart's y-range)
+            for (let y = 0; y <= yMax; y += 2) {
+                const py = yToPx(y, yMax);
+                svg.appendChild(svgEl('line', {
+                    x1: PAD_L - 4, y1: py, x2: PAD_L, y2: py, class: 'mv-chart-tick',
+                }));
+                const lbl = svgEl('text', {
+                    x: PAD_L - 6, y: py + 3, class: 'mv-chart-label', 'text-anchor': 'end',
+                });
+                lbl.textContent = y.toString();
+                svg.appendChild(lbl);
+            }
+
+            // Axis labels
+            const xLabel = svgEl('text', {
+                x: (CHART_W + PAD_L) / 2, y: CHART_H - 4, class: 'mv-chart-label', 'text-anchor': 'middle',
+            });
+            xLabel.textContent = 'P_amb (bar)';
+            svg.appendChild(xLabel);
+            const yLabel = svgEl('text', {
+                x: 8, y: PAD_T + 8, class: 'mv-chart-label', 'text-anchor': 'start',
+            });
+            yLabel.textContent = 'P_t (bar)';
+            svg.appendChild(yLabel);
+
+            // Ambient line y = x
+            svg.appendChild(svgEl('line', {
+                x1: xToPx(0, yMax), y1: yToPx(0, yMax),
+                x2: xToPx(Math.min(X_MAX, yMax), yMax), y2: yToPx(Math.min(X_MAX, yMax), yMax),
+                class: 'mv-chart-ambient',
+            }));
+
+            // Surface line (vertical at P_amb = 1.01325)
+            svg.appendChild(svgEl('line', {
+                x1: xToPx(1.01325, yMax), y1: PAD_T, x2: xToPx(1.01325, yMax), y2: CHART_H - PAD_B,
+                class: 'mv-chart-surface',
+            }));
+
+            // M-lines
+            if (state.topView === 'this') {
+                // Faint lines for inactive variants
+                for (const v of VARIANT_LIST) {
+                    const isActive = v === state.variant;
+                    const c = VARIANT_COMPS[v][state.compartmentIdx];
+                    const m0 = c.aN2 + X_MIN / c.bN2;
+                    const mMax = c.aN2 + X_MAX / c.bN2;
+                    svg.appendChild(svgEl('line', {
+                        x1: xToPx(X_MIN, yMax), y1: yToPx(m0, yMax),
+                        x2: xToPx(X_MAX, yMax), y2: yToPx(mMax, yMax),
+                        class: 'mv-chart-mline' + (isActive ? '' : ' faint'),
+                        stroke: compartmentColor(c),
+                    }));
+                }
+            } else {
+                // All 16 lines for active variant
+                const comps = VARIANT_COMPS[state.variant];
+                comps.forEach((c, idx) => {
+                    const m0 = c.aN2 + X_MIN / c.bN2;
+                    const mMax = c.aN2 + X_MAX / c.bN2;
+                    const isSelected = idx === state.compartmentIdx;
+                    svg.appendChild(svgEl('line', {
+                        x1: xToPx(X_MIN, yMax), y1: yToPx(m0, yMax),
+                        x2: xToPx(X_MAX, yMax), y2: yToPx(mMax, yMax),
+                        class: 'mv-chart-mline' + (isSelected ? '' : ' faint'),
+                        stroke: compartmentColor(c),
+                    }));
+                });
+            }
+
+            // Current marker at (P_amb, M) for selected comp under active variant
+            const c = VARIANT_COMPS[state.variant][state.compartmentIdx];
+            const pAmbNow = getAmbientPressure(state.depth);
+            const mNow = c.aN2 + pAmbNow / c.bN2;
+            if (mNow <= yMax && pAmbNow >= X_MIN && pAmbNow <= X_MAX) {
+                svg.appendChild(svgEl('circle', {
+                    cx: xToPx(pAmbNow, yMax), cy: yToPx(mNow, yMax),
+                    r: 5, class: 'mv-chart-marker',
+                    id: 'mvTopChartMarker',
+                }));
+            }
         }
 
         // Wire inputs
@@ -333,7 +522,7 @@
             if (!btn) return;
             state.topView = btn.dataset.view;
             els.viewToggle.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
-            // Task 3 will trigger chart re-render here
+            drawTopChart();
         });
 
         populateCompartments();

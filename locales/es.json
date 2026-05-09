@@ -1690,6 +1690,12 @@
                         "name": "M | presión tisular tolerada",
                         "why": "Por encima de esto, el algoritmo marca la sobresaturación como peligrosa."
                     }
+                },
+                "chart": {
+                    "xAxis": "P_amb (bar)",
+                    "yAxis": "P_t (bar)",
+                    "legendAmbient": "Línea ambiental (y = x)",
+                    "legendSurface": "Superficie (P_amb = 1,013 bar)"
                 }
             }
         },
