@@ -276,7 +276,7 @@
 
     <!-- Top playground: inputs, formula, term cards -->
     <script type="module">
-        import { COMPARTMENTS, ZHL16_VARIANTS, setZHL16Variant, buildCompartments } from '../js/tissueCompartments.js';
+        import { COMPARTMENTS, ZHL16_VARIANTS, setZHL16Variant, getCompartmentsForVariant } from '../js/tissueCompartments.js';
         import { getMValue, getAmbientPressure } from '../js/decoModel.js';
 
         // Page state — variant becomes global in Task 5; for Task 2 it's hardcoded to C.
@@ -351,7 +351,7 @@
         const VARIANT_LIST = ['ZH-L16A', 'ZH-L16B', 'ZH-L16C'];
         const VARIANT_COMPS = {};   // variant name → COMPARTMENTS array snapshot
         for (const v of VARIANT_LIST) {
-            VARIANT_COMPS[v] = buildCompartments(v);
+            VARIANT_COMPS[v] = getCompartmentsForVariant(v);
         }
 
         function compartmentColor(comp) {
