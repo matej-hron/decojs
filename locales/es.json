@@ -1611,7 +1611,7 @@
             "labels": {
                 "startDepth": "Profundidad inicial (m)",
                 "targetDepth": "Profundidad objetivo (m)",
-                "compartment": "Compartimento",
+                "compartment": "Compartimento tisular (TC)",
                 "model": "Modelo",
                 "gas": "Gas",
                 "time": "Tiempo",
@@ -1626,6 +1626,24 @@
                 "modelLabel": "Modelo",
                 "within": "dentro",
                 "exceeded": "excedido"
+            },
+            "cards": {
+                "palv": {
+                    "name": "P<sub>alv</sub> | presión alveolar de N<sub>2</sub>",
+                    "why": "Lo que los pulmones empujan a la sangre en la profundidad objetivo."
+                },
+                "pt0": {
+                    "name": "P<sub>t,0</sub> | presión tisular en t=0",
+                    "why": "Punto de partida del compartimento, supuesto equilibrado a la profundidad inicial."
+                },
+                "k": {
+                    "name": "k | constante de velocidad",
+                    "why": "Compartimentos más rápidos → k mayor → alcanzan antes."
+                },
+                "exp": {
+                    "name": "e<sup>−kt</sup> | «fracción que falta»",
+                    "why": "1,0 en t=0, decae hacia 0. La mitad desaparece cada T½."
+                }
             }
         },
         "schreiner": {
@@ -1635,10 +1653,10 @@
             "disclaimer": "<strong>Aviso:</strong> Solo para fines educativos. El algoritmo de descompresión real usa lógica adicional.",
             "labels": {
                 "startDepth": "Profundidad inicial (m)",
-                "depthRate": "Tasa de profundidad (m/min)",
+                "depthRate": "Tasa de profundidad (m/min, positivo = descenso ↓, negativo = ascenso ↑)",
                 "segmentTime": "Tiempo (min)",
                 "endDepth": "Profundidad final",
-                "compartment": "Compartimento",
+                "compartment": "Compartimento tisular (TC)",
                 "model": "Modelo",
                 "gas": "Gas",
                 "time": "Tiempo",
@@ -1652,6 +1670,42 @@
                 "title": "Comprobación del valor M",
                 "within": "dentro",
                 "exceeded": "excedido"
+            },
+            "cards": {
+                "palv0": {
+                    "name": "P<sub>alv,0</sub> | N<sub>2</sub> alveolar a profundidad inicial",
+                    "why": "Presión alveolar inicial. Punto de pendiente cero de la fuente alveolar móvil."
+                },
+                "pt0": {
+                    "name": "P<sub>t,0</sub> | presión tisular en t=0",
+                    "why": "Tejido supuesto equilibrado a la profundidad inicial → igual a P<sub>alv,0</sub>."
+                },
+                "r": {
+                    "name": "R | tasa de presión alveolar",
+                    "why": "Positiva = descenso (la alveolar sube), negativa = ascenso. R = 0 → la ecuación se reduce a la de Haldane."
+                },
+                "k": {
+                    "name": "k | constante de velocidad",
+                    "why": "Compartimentos más rápidos → k mayor → alcanzan antes."
+                },
+                "exp": {
+                    "name": "e<sup>−kt</sup> | factor de decaimiento exponencial",
+                    "why": "1,0 en t=0, decae hacia 0. Multiplica al término del desequilibrio inicial."
+                }
+            },
+            "decomp": {
+                "moving": {
+                    "name": "Fuente alveolar móvil",
+                    "why": "Dónde se encuentra ahora mismo la fuente alveolar (lineal en t)."
+                },
+                "lag": {
+                    "name": "Desfase (R/k)",
+                    "why": "Cuán por debajo (ascenso) o por encima (descenso) de la fuente se asentaría un tejido que la siguiera perfectamente. Equivalente a 1/k minutos de pendiente."
+                },
+                "decay": {
+                    "name": "Diferencia inicial decreciente",
+                    "why": "El desfase inicial entre el P<sub>t</sub> real y la línea de seguimiento — se aproxima exponencialmente a cero."
+                }
             }
         },
         "mvalues": {
@@ -1664,7 +1718,7 @@
                 "anchor": "Elige una profundidad, un compartimento y una variante — observa la fórmula del Valor M de Bühlmann evaluarse en vivo.",
                 "inputs": {
                     "depth": "Profundidad (m)",
-                    "compartment": "Compartimento",
+                    "compartment": "Compartimento tisular (TC)",
                     "viewToggle": {
                         "label": "Vista",
                         "thisComp": "Este compartimento",

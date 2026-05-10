@@ -1647,7 +1647,7 @@
             "labels": {
                 "startDepth": "Start depth (m)",
                 "targetDepth": "Target depth (m)",
-                "compartment": "Compartment",
+                "compartment": "Tissue compartment (TC)",
                 "model": "Model",
                 "gas": "Gas",
                 "time": "Time",
@@ -1662,6 +1662,24 @@
                 "modelLabel": "Model",
                 "within": "within",
                 "exceeded": "exceeded"
+            },
+            "cards": {
+                "palv": {
+                    "name": "P<sub>alv</sub> | alveolar N<sub>2</sub> pressure",
+                    "why": "What the lungs are pushing into the blood at target depth."
+                },
+                "pt0": {
+                    "name": "P<sub>t,0</sub> | tissue pressure at t=0",
+                    "why": "Where this compartment started, assumed equilibrated at start depth."
+                },
+                "k": {
+                    "name": "k | rate constant",
+                    "why": "Faster compartments → bigger k → catch up sooner."
+                },
+                "exp": {
+                    "name": "e<sup>−kt</sup> | \"fraction left to go\"",
+                    "why": "1.0 at t=0, decays toward 0. Half-gone every T½."
+                }
             }
         },
         "schreiner": {
@@ -1671,10 +1689,10 @@
             "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only. The actual diving algorithm uses additional logic.",
             "labels": {
                 "startDepth": "Start depth (m)",
-                "depthRate": "Depth rate (m/min)",
+                "depthRate": "Depth rate (m/min, positive = descending ↓, negative = ascending ↑)",
                 "segmentTime": "Time (min)",
                 "endDepth": "End depth",
-                "compartment": "Compartment",
+                "compartment": "Tissue compartment (TC)",
                 "model": "Model",
                 "gas": "Gas",
                 "time": "Time",
@@ -1688,6 +1706,42 @@
                 "title": "M-value check",
                 "within": "within",
                 "exceeded": "exceeded"
+            },
+            "cards": {
+                "palv0": {
+                    "name": "P<sub>alv,0</sub> | alveolar N<sub>2</sub> at start depth",
+                    "why": "Starting alveolar pressure. Slope-zero point of the moving alveolar source."
+                },
+                "pt0": {
+                    "name": "P<sub>t,0</sub> | tissue pressure at t=0",
+                    "why": "Tissue assumed equilibrated at start depth → equals P<sub>alv,0</sub>."
+                },
+                "r": {
+                    "name": "R | alveolar pressure rate",
+                    "why": "Positive = descent (alveolar climbing), negative = ascent. R = 0 → equation collapses to Haldane."
+                },
+                "k": {
+                    "name": "k | rate constant",
+                    "why": "Faster compartments → bigger k → catch up sooner."
+                },
+                "exp": {
+                    "name": "e<sup>−kt</sup> | exponential decay factor",
+                    "why": "1.0 at t=0, decays toward 0. Multiplied by the initial-disequilibrium term."
+                }
+            },
+            "decomp": {
+                "moving": {
+                    "name": "Moving alveolar source",
+                    "why": "Where the alveolar source is right now (linear in t)."
+                },
+                "lag": {
+                    "name": "Phase lag (R/k)",
+                    "why": "How far below (ascent) or above (descent) the source a perfectly-tracking tissue would settle. Equivalent to 1/k minutes of slope."
+                },
+                "decay": {
+                    "name": "Decaying initial gap",
+                    "why": "The initial offset between actual Pt and the tracking line — settles exponentially toward zero."
+                }
             }
         },
         "mvalues": {
@@ -1700,7 +1754,7 @@
                 "anchor": "Pick a depth, a compartment, and a variant — see Bühlmann's M-value formula evaluate live.",
                 "inputs": {
                     "depth": "Depth (m)",
-                    "compartment": "Compartment",
+                    "compartment": "Tissue compartment (TC)",
                     "viewToggle": {
                         "label": "View",
                         "thisComp": "This compartment",

@@ -330,7 +330,7 @@
                 <input type="number" id="startDepth" min="0" max="30" step="1" value="30">
             </div>
             <div class="field">
-                <label for="depthRate" data-i18n="sandbox.schreiner.labels.depthRate">Depth rate (m/min)</label>
+                <label for="depthRate" data-i18n="sandbox.schreiner.labels.depthRate">Depth rate (m/min, positive = descending ↓, negative = ascending ↑)</label>
                 <input type="number" id="depthRate" min="-30" max="30" step="0.5" value="-10">
             </div>
             <div class="field">
@@ -342,7 +342,7 @@
                 <span class="gas-readout" id="endDepthDisplay">0.0 m</span>
             </div>
             <div class="field">
-                <label for="compartment" data-i18n="sandbox.schreiner.labels.compartment">Compartment</label>
+                <label for="compartment" data-i18n="sandbox.schreiner.labels.compartment">Tissue compartment (TC)</label>
                 <select id="compartment"><!-- populated by JS --></select>
             </div>
             <div class="field">
@@ -388,39 +388,39 @@
         <!-- Term cards -->
         <div class="term-row">
             <div class="term-card palv">
-                <div class="name">P<sub>alv,0</sub> | alveolar N<sub>2</sub> at start depth</div>
+                <div class="name" data-i18n="sandbox.schreiner.cards.palv0.name">P<sub>alv,0</sub> | alveolar N<sub>2</sub> at start depth</div>
                 <div class="formula" id="palv0Symbolic">= (P<sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub></div>
                 <div class="formula" id="palv0Subst">= (4.0133 − 0.0627) · 0.7902</div>
                 <div class="value"><span id="palv0Value">3.1217</span> bar</div>
-                <div class="why">Starting alveolar pressure. Slope-zero point of the moving alveolar source.</div>
+                <div class="why" data-i18n="sandbox.schreiner.cards.palv0.why">Starting alveolar pressure. Slope-zero point of the moving alveolar source.</div>
             </div>
             <div class="term-card pt0">
-                <div class="name">P<sub>t,0</sub> | tissue pressure at t=0</div>
+                <div class="name" data-i18n="sandbox.schreiner.cards.pt0.name">P<sub>t,0</sub> | tissue pressure at t=0</div>
                 <div class="formula" id="pt0Symbolic">= (P<sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub></div>
                 <div class="formula" id="pt0Subst">= (4.0133 − 0.0627) · 0.7902</div>
                 <div class="value"><span id="pt0Value">3.1217</span> bar</div>
-                <div class="why">Tissue assumed equilibrated at start depth → equals P<sub>alv,0</sub>.</div>
+                <div class="why" data-i18n="sandbox.schreiner.cards.pt0.why">Tissue assumed equilibrated at start depth → equals P<sub>alv,0</sub>.</div>
             </div>
             <div class="term-card r">
-                <div class="name">R | alveolar pressure rate</div>
+                <div class="name" data-i18n="sandbox.schreiner.cards.r.name">R | alveolar pressure rate</div>
                 <div class="formula" id="rSymbolic">= F<sub>N₂</sub> · depth_rate · 0.1</div>
                 <div class="formula" id="rSubst">= 0.7902 · (−10) · 0.1</div>
                 <div class="value"><span id="rValue">−0.7902</span> bar/min</div>
-                <div class="why">Positive = descent (alveolar climbing), negative = ascent. R = 0 → equation collapses to Haldane.</div>
+                <div class="why" data-i18n="sandbox.schreiner.cards.r.why">Positive = descent (alveolar climbing), negative = ascent. R = 0 → equation collapses to Haldane.</div>
             </div>
             <div class="term-card k">
-                <div class="name">k | rate constant</div>
+                <div class="name" data-i18n="sandbox.schreiner.cards.k.name">k | rate constant</div>
                 <div class="formula">= ln(2) / T½</div>
                 <div class="formula" id="kSubst">= 0.6931 / 27.0</div>
                 <div class="value"><span id="kValue">0.0257</span> min⁻¹</div>
-                <div class="why">Faster compartments → bigger k → catch up sooner.</div>
+                <div class="why" data-i18n="sandbox.schreiner.cards.k.why">Faster compartments → bigger k → catch up sooner.</div>
             </div>
             <div class="term-card exp">
-                <div class="name">e<sup>−kt</sup> | exponential decay factor</div>
+                <div class="name" data-i18n="sandbox.schreiner.cards.exp.name">e<sup>−kt</sup> | exponential decay factor</div>
                 <div class="formula">= e<sup>−k · t</sup></div>
                 <div class="formula" id="expSubst">= e<sup>−0.0257 · 0.00</sup></div>
                 <div class="value"><span id="expValue">1.0000</span></div>
-                <div class="why">1.0 at t=0, decays toward 0. Multiplied by the initial-disequilibrium term.</div>
+                <div class="why" data-i18n="sandbox.schreiner.cards.exp.why">1.0 at t=0, decays toward 0. Multiplied by the initial-disequilibrium term.</div>
             </div>
         </div>
 
@@ -429,25 +429,25 @@
             <div class="decomp-header">Three-term decomposition · the formula's structural pieces</div>
             <div class="decomp-row">
                 <div class="decomp-card">
-                    <div class="name">Moving alveolar source</div>
+                    <div class="name" data-i18n="sandbox.schreiner.decomp.moving.name">Moving alveolar source</div>
                     <div class="formula">= P<sub>alv,0</sub> + R · t</div>
                     <div class="formula" id="termMovingSubst">= 3.1217 + (−0.7902) · 0.00</div>
                     <div class="value"><span id="termMovingValue">3.1217</span> bar</div>
-                    <div class="why">Where the alveolar source is right now (linear in t).</div>
+                    <div class="why" data-i18n="sandbox.schreiner.decomp.moving.why">Where the alveolar source is right now (linear in t).</div>
                 </div>
                 <div class="decomp-card">
-                    <div class="name">Phase lag (R/k)</div>
+                    <div class="name" data-i18n="sandbox.schreiner.decomp.lag.name">Phase lag (R/k)</div>
                     <div class="formula">= R / k</div>
                     <div class="formula" id="termLagSubst">= −0.7902 / 0.0257</div>
                     <div class="value"><span id="termLagValue">−30.74</span> bar</div>
-                    <div class="why">How far below (ascent) or above (descent) the source a perfectly-tracking tissue would settle. Equivalent to 1/k minutes of slope.</div>
+                    <div class="why" data-i18n="sandbox.schreiner.decomp.lag.why">How far below (ascent) or above (descent) the source a perfectly-tracking tissue would settle. Equivalent to 1/k minutes of slope.</div>
                 </div>
                 <div class="decomp-card">
-                    <div class="name">Decaying initial gap</div>
+                    <div class="name" data-i18n="sandbox.schreiner.decomp.decay.name">Decaying initial gap</div>
                     <div class="formula">= (P<sub>alv,0</sub> − P<sub>t,0</sub> − R/k) · e<sup>−kt</sup></div>
                     <div class="formula" id="termDecaySubst">= 30.74 · 1.0000</div>
                     <div class="value"><span id="termDecayValue">30.74</span> bar</div>
-                    <div class="why">The initial offset between actual Pt and the tracking line — settles exponentially toward zero.</div>
+                    <div class="why" data-i18n="sandbox.schreiner.decomp.decay.why">The initial offset between actual Pt and the tracking line — settles exponentially toward zero.</div>
                 </div>
             </div>
             <div class="decomp-sum">P<sub>t</sub>(t) = [moving] − [phase lag] − [decaying gap]</div>
