@@ -40,6 +40,26 @@ export function getCompartmentCeiling(tissuePressure, a, b, gf) {
 }
 ```
 
+### Derivation
+
+At the ceiling, the tissue sits exactly at the GF-adjusted limit — the linear blend between $P_{amb}$ (at $GF = 0$) and the raw M-value (at $GF = 1$):
+
+$$P_t = P_{amb} + GF \cdot (M(P_{amb}) - P_{amb})$$
+
+Substitute $M(P_{amb}) = a + P_{amb}/b$ and expand:
+
+$$P_t = P_{amb} + GF \cdot a + \frac{GF \cdot P_{amb}}{b} - GF \cdot P_{amb}$$
+
+Collect $P_{amb}$ terms on the right:
+
+$$P_t - GF \cdot a = P_{amb} \cdot \left(1 - GF + \frac{GF}{b}\right) = P_{amb} \cdot \frac{b \cdot (1 - GF) + GF}{b}$$
+
+Solve for $P_{amb}$:
+
+$$P_{amb} = \frac{b \cdot (P_t - GF \cdot a)}{b \cdot (1 - GF) + GF}$$
+
+Sanity check: at $GF = 0$ this collapses to $P_{amb} = P_t$ (no supersaturation tolerated — the tissue must already be at ambient). At $GF = 1$ it reduces to $P_{amb} = b \cdot P_t - a \cdot b$, the raw Bühlmann inverse of $M = a + P_{amb}/b$ solved for ambient.
+
 This is **the central equation for deco-stop depths**. DecoJS evaluates it for each of the 16 compartments and takes the deepest (highest $P_{amb}$) ceiling — that's the depth the diver cannot go shallower than right now:
 
 ```javascript
