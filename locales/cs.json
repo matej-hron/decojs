@@ -480,7 +480,7 @@
                 "summary": "Více informací: matematika",
                 "intro": "Rovnice stojící za křivkami. Rozbalením zobrazíte, jak Bühlmann modeloval tlak ve tkáni při konstantní hloubce a při výstupu.",
                 "showDerivation": "Zobrazit odvození",
-                "haldaneTitle": "Haldanova rovnice (konstantní hloubka)",
+                "haldaneTitle": "Haldaneova rovnice (konstantní hloubka)",
                 "haldaneDesc": "Při pobytu v konstantní hloubce se tlak ve tkáni mění podle:",
                 "haldaneWhere": "Kde:",
                 "pt": "tlak N₂ ve tkáni v čase t",
@@ -1563,7 +1563,7 @@
         },
         "tissue": {
             "title": "Simulátor sycení tkání",
-            "subtitle": "Pohybujte potápěčem, měňte dýchací směs, nechte plynout čas — a sledujte, jak parciální tlaky dusíku exponenciálně dobíhají okolní tlak.",
+            "subtitle": "Pohybujte potápěčem, měňte dýchací směs, nechte plynout čas — a sledujte, jak se parciální tlaky dusíku exponenciálně přibližují k okolnímu tlaku.",
             "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Fyzikální hřiště ukazující, jak sycení tkání dusíkem reaguje na změny hloubky a dýchací směsi. Nejde o plánovač ponorů.",
             "depth": "Hloubka",
             "depthHint": "0–40 m. Změny jsou okamžité.",
@@ -1641,13 +1641,13 @@
         },
         "haldane": {
             "title": "Haldaneova rovnice",
-            "subtitle": "Interaktivní rozbor toho, jak tkáňový kompartment sytí dusík v čase.",
-            "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Interaktivní rozbor Bühlmannovy/Haldaneovy rovnice nasycování.",
+            "subtitle": "Interaktivní rozbor toho, jak je tkáňový kompartment postupně sycen dusíkem.",
+            "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Interaktivní rozbor Bühlmannovy/Haldaneovy rovnice sycení.",
             "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely. Reálný dekompresní algoritmus používá další logiku.",
             "labels": {
                 "startDepth": "Počáteční hloubka (m)",
                 "targetDepth": "Cílová hloubka (m)",
-                "compartment": "Kompartment",
+                "compartment": "Tkáňový kompartment (TC)",
                 "model": "Model",
                 "gas": "Plyn",
                 "time": "Čas",
@@ -1662,19 +1662,37 @@
                 "modelLabel": "Model",
                 "within": "v limitu",
                 "exceeded": "překročeno"
+            },
+            "cards": {
+                "palv": {
+                    "name": "P<sub>alv</sub> | alveolární tlak N<sub>2</sub>",
+                    "why": "Co plíce tlačí do krve v cílové hloubce."
+                },
+                "pt0": {
+                    "name": "P<sub>t,0</sub> | tlak ve tkáni v čase t=0",
+                    "why": "Stav, ve kterém kompartment začíná — předpokládá se vyrovnaný s počáteční hloubkou."
+                },
+                "k": {
+                    "name": "k | rychlostní konstanta",
+                    "why": "Rychlejší kompartmenty → větší k → rychleji se přibližují."
+                },
+                "exp": {
+                    "name": "e<sup>−kt</sup> | „kolik ještě zbývá“",
+                    "why": "1,0 v čase t=0, klesá k 0. Každý poločas T½ ubude polovina."
+                }
             }
         },
         "schreiner": {
             "title": "Schreinerova rovnice",
-            "subtitle": "Lineárně-rychlostní doplněk k Haldaneově stránce — pozorujte, jak se rovnice vyvíjí, když se okolní tlak posouvá.",
+            "subtitle": "Rozšíření Haldaneovy rovnice o lineární změnu tlaku — sledujte, jak se chování rovnice mění, když se okolní tlak posouvá.",
             "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Interaktivní rozbor Schreinerovy rovnice pro lineární změny okolního tlaku.",
             "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely. Reálný dekompresní algoritmus používá další logiku.",
             "labels": {
                 "startDepth": "Počáteční hloubka (m)",
-                "depthRate": "Rychlost změny hloubky (m/min)",
+                "depthRate": "Rychlost změny hloubky (m/min, kladná = sestup ↓, záporná = výstup ↑)",
                 "segmentTime": "Čas (min)",
                 "endDepth": "Cílová hloubka",
-                "compartment": "Kompartment",
+                "compartment": "Tkáňový kompartment (TC)",
                 "model": "Model",
                 "gas": "Plyn",
                 "time": "Čas",
@@ -1688,19 +1706,55 @@
                 "title": "Kontrola M-hodnoty",
                 "within": "v limitu",
                 "exceeded": "překročeno"
+            },
+            "cards": {
+                "palv0": {
+                    "name": "P<sub>alv,0</sub> | alveolární tlak N<sub>2</sub> v počáteční hloubce",
+                    "why": "Počáteční alveolární tlak. Bod nulového sklonu pohyblivého alveolárního zdroje."
+                },
+                "pt0": {
+                    "name": "P<sub>t,0</sub> | tlak ve tkáni v čase t=0",
+                    "why": "Tkáň se předpokládá vyrovnaná s počáteční hloubkou → rovná se P<sub>alv,0</sub>."
+                },
+                "r": {
+                    "name": "R | rychlost změny alveolárního tlaku",
+                    "why": "Kladná = sestup (alveolární tlak roste), záporná = výstup. R = 0 → rovnice se redukuje na Haldaneovu."
+                },
+                "k": {
+                    "name": "k | rychlostní konstanta",
+                    "why": "Rychlejší kompartmenty → větší k → rychleji se přibližují."
+                },
+                "exp": {
+                    "name": "e<sup>−kt</sup> | faktor exponenciálního poklesu",
+                    "why": "1,0 v čase t=0, klesá k 0. Násobí počáteční odchylku od rovnováhy."
+                }
+            },
+            "decomp": {
+                "moving": {
+                    "name": "Pohyblivý alveolární zdroj",
+                    "why": "Kde se právě nachází alveolární zdroj (lineární v čase t)."
+                },
+                "lag": {
+                    "name": "Fázové zpoždění (R/k)",
+                    "why": "Jak hluboko pod (výstup) nebo nad (sestup) zdrojem by se ustálila dokonale sledující tkáň. Odpovídá 1/k minutám sklonu."
+                },
+                "decay": {
+                    "name": "Mizející počáteční rozdíl",
+                    "why": "Počáteční odchylka mezi skutečným P<sub>t</sub> a sledovací přímkou — exponenciálně se blíží k nule."
+                }
             }
         },
         "mvalues": {
             "title": "M-hodnoty",
             "subtitle": "Jak funkce vzniká a jak vypadá pro všech 16 kompartmentů.",
-            "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Interaktivní rozbor Bühlmannova vzorce pro M-hodnoty a původu jejich koeficientů.",
+            "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Interaktivní rozbor Bühlmannova vzorce pro M-hodnotu a původu jeho koeficientů.",
             "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely. Reálný dekompresní algoritmus používá další logiku.",
             "top": {
                 "heading": "Jak M vypadá v této hloubce?",
                 "anchor": "Vyberte hloubku, kompartment a variantu — sledujte, jak se Bühlmannova M-hodnota mění.",
                 "inputs": {
                     "depth": "Hloubka (m)",
-                    "compartment": "Kompartment",
+                    "compartment": "Tkáňový kompartment (TC)",
                     "viewToggle": {
                         "label": "Zobrazení",
                         "thisComp": "Tento kompartment",
@@ -1709,35 +1763,35 @@
                 },
                 "cards": {
                     "a": {
-                        "name": "a | průsečík tkáně",
-                        "formula": "vyhledání podle kompartmentu + varianty",
-                        "why": "Průsečík M-čáry s osou y. Vyšší = více tolerované supersaturace na hladině."
+                        "name": "a | úsek tkáně na ose y",
+                        "formula": "vyhledá se podle kompartmentu a varianty",
+                        "why": "Úsek M-čáry na ose y. Vyšší = více tolerovaného přesycení na hladině."
                     },
                     "pAmb": {
                         "name": "P<sub>amb</sub> | okolní tlak",
-                        "why": "Vodorovná osa M-čáry. Každý metr hloubky přidá 0,1 bar."
+                        "why": "Hodnota na vodorovné ose M-grafu. Každý metr hloubky přidá 0,1 bar."
                     },
                     "b": {
                         "name": "b | sklon tkáně",
-                        "formula": "vyhledání podle kompartmentu (sklon = 1/b)",
+                        "formula": "vyhledá se podle kompartmentu (sklon = 1/b)",
                         "why": "Nižší b → strmější M-čára → rychlejší kompartment."
                     },
                     "m": {
                         "name": "M | tolerovaný tlak v tkáni",
-                        "why": "Nad touto hodnotou algoritmus označí supersaturaci za nebezpečnou."
+                        "why": "Nad touto hodnotou algoritmus označí přesycení za nebezpečné."
                     }
                 },
                 "chart": {
                     "xAxis": "P_amb (bar)",
                     "yAxis": "P_t (bar)",
-                    "legendAmbient": "Ambientní čára (y = x)",
+                    "legendAmbient": "Přímka okolního tlaku (y = x)",
                     "legendSurface": "Hladina (P_amb = 1,013 bar)"
                 },
                 "legend": {
                     "variantA": "ZH-L16A (dlouhá čárka)",
                     "variantB": "ZH-L16B (krátká čárka)",
                     "variantC": "ZH-L16C (plná)",
-                    "ambient": "Ambientní čára (y = x)",
+                    "ambient": "Přímka okolního tlaku (y = x)",
                     "surface": "Hladina (P_amb = 1,013 bar)"
                 }
             },
@@ -1747,7 +1801,7 @@
             },
             "bottom": {
                 "heading": "Odkud pocházejí a a b?",
-                "anchor": "a a b ZH-L16A nejsou empiricky odvozené — počítají se pouze z poločasu. Varianty B a C jsou manuálně upravené podle statistické korelace z pozorovaných incidentů.",
+                "anchor": "Koeficienty a a b varianty ZH-L16A nejsou odvozeny empiricky — počítají se pouze z poločasu. Varianty B a C jsou manuálně upravené podle statistické korelace z pozorovaných incidentů.",
                 "inputs": {
                     "halfTime": "Poločas t½ (min)",
                     "snapToggle": "Přichytit ke standardním kompartmentům"
@@ -1755,20 +1809,20 @@
                 "cards": {
                     "halfTime": {
                         "name": "t<sub>½</sub> | poločas",
-                        "why": "Charakteristický čas kompartmentu. Není anatomický — jen vzorek na exponenciální ose."
+                        "why": "Charakteristický čas kompartmentu. Není anatomický — jen vzorek na exponenciální stupnici poločasů."
                     },
                     "a": {
-                        "name": "a(t<sub>½</sub>) | posun funkce",
-                        "why": "Varianty B a C snižují a u konkrétních kompartmentů — jediné místo, kde do Bühlmanna vstupuje statistika."
+                        "name": "a(t<sub>½</sub>) | úsek M-čáry",
+                        "why": "Varianty B a C u některých kompartmentů snižují koeficient a — jediné místo, kde do Bühlmanna vstupuje statistika."
                     },
                     "b": {
-                        "name": "b(t<sub>½</sub>) | sklon funkce",
-                        "why": "Identické pro A/B/C kromě TC1 (jehož záměna t½ mění i b)."
+                        "name": "b(t<sub>½</sub>) | sklon M-čáry (1/b)",
+                        "why": "Identické pro A/B/C kromě TC1 (u nějž změna t½ mění i b)."
                     }
                 },
                 "delta": {
                     "stored": "uložené:",
-                    "between": "mezi standardy",
+                    "between": "mezi standardními kompartmenty",
                     "deltaSymbol": "Δ"
                 },
                 "legend": {
@@ -1781,8 +1835,8 @@
                 "heading": "Viz také",
                 "wiki": "Wiki: M-hodnoty (matematika)",
                 "theory": "Stránka teorie M-hodnot (historie + příklady ponorů)",
-                "haldane": "Haldaneovo pískoviště (tkáň pronásleduje ambient)",
-                "schreiner": "Schreinerovo pískoviště (tkáň pronásleduje pohyblivý ambient)"
+                "haldane": "Haldaneův Sandbox (tkáň se přibližuje k okolnímu tlaku)",
+                "schreiner": "Schreinerův Sandbox (tkáň se přibližuje k měnícímu se okolnímu tlaku)"
             }
         },
         "cascade": {
