@@ -1843,7 +1843,8 @@
         },
         "gradientFactors": {
             "title": "Gradient Factors",
-            "subtitle": "Tři rovnice, jeden rampa. Posouvejte slidery a sledujte, jak ožívá matematika GF z wiki.",
+            "subtitle": "Tři rovnice, jedna rampa. Posouvejte slidery a sledujte, jak ožívá matematika GF z wiki.",
+            "wipNote": "🚧 Rozpracováno — experimentální verze. Zpětná vazba vítána.",
             "disclaimer": "<strong>Disclaimer:</strong> Pouze pro vzdělávací účely. Skutečný dekompresní algoritmus používá další logiku (hledání řídicí tkáně přes všechny kompartmenty, výpočet pAnchor s ohledem na změnu plynů apod.).",
             "mode": {
                 "single": "Jedno GF",

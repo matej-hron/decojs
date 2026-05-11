@@ -1844,6 +1844,7 @@
         "gradientFactors": {
             "title": "Gradient Factors",
             "subtitle": "Three formulas, one ramp. Scrub the sliders and watch the wiki's GF math come to life.",
+            "wipNote": "🚧 Work in progress — experimental playground. Feedback welcome.",
             "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only. The actual diving algorithm uses additional logic (multi-compartment search for the controlling tissue, gas-switch-aware pAnchor derivation, etc.).",
             "mode": {
                 "single": "Single GF",
