@@ -23,6 +23,7 @@ const NAV_ITEMS = [
             { href: 'sandbox/haldane.html', labelKey: 'nav.sandbox.haldane', label: 'Haldane Equation' },
             { href: 'sandbox/schreiner.html', labelKey: 'nav.sandbox.schreiner', label: 'Schreiner Equation' },
             { href: 'sandbox/m-values.html', labelKey: 'nav.sandbox.mvalues', label: 'M-Value Sandbox' },
+            { href: 'sandbox/gradient-factors.html', labelKey: 'nav.sandbox.gradientFactors', label: 'Gradient Factors Sandbox' },
             { href: 'sandbox/transfilling.html', labelKey: 'nav.sandbox.transfill', label: 'Cylinder Transfilling' },
             { href: 'sandbox/cascade-filling.html', labelKey: 'nav.sandbox.cascade', label: 'Cascade Filling' },
             { href: 'sandbox/gas-law.html', labelKey: 'nav.sandbox.gasLaw', label: 'Gas Law: Temp & Pressure' }

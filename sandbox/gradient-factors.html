@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient Factors Sandbox — Deco Theory</title>
+
+    <!-- PWA -->
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#2980b9">
+    <link rel="icon" type="image/svg+xml" href="../icons/icon.svg">
+
+    <!-- App styles -->
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <style>
+        .gf-layout {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        .gf-section {
+            margin-bottom: 1.25rem;
+            padding: 1rem;
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+        }
+        .gf-section h2 {
+            font-size: 1.1rem;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Mode toggle pill */
+        .gf-mode-toggle {
+            display: inline-flex;
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            padding: 3px;
+            margin-bottom: 0.75rem;
+            gap: 3px;
+        }
+        .gf-mode-toggle button {
+            border: none;
+            background: transparent;
+            padding: 0.4rem 0.9rem;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border-radius: 999px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .gf-mode-toggle button.active {
+            background: #16a085;
+            color: #fff;
+        }
+
+        /* Formula readout */
+        .gf-formula-readout {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            font-family: ui-monospace, "SF Mono", Menlo, monospace;
+            font-size: 0.85rem;
+        }
+        .gf-formula-line {
+            padding: 0.5rem 0.8rem;
+            background: linear-gradient(180deg, rgba(22,160,133,0.06), rgba(22,160,133,0.01));
+            border-left: 3px solid #16a085;
+            border-radius: 4px;
+        }
+        .gf-formula-line .lbl {
+            display: inline-block;
+            min-width: 80px;
+            color: #16a085;
+            font-weight: 600;
+        }
+        .gf-formula-line .val {
+            color: #c0392b;
+            font-weight: 700;
+        }
+        .gf-formula-line .arrow { color: var(--text-muted); margin: 0 0.3rem; }
+        .gf-formula-line sub { font-size: 0.75em; }
+
+        /* Charts */
+        .gf-chart-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+        .gf-chart-panel {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 0.5rem 0.75rem;
+        }
+        .gf-chart-panel h3 {
+            margin: 0 0 0.3rem 0;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            font-weight: 600;
+        }
+        .gf-chart-panel svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .gf-chart-panel .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 0.3rem;
+        }
+        .gf-chart-panel .legend .swatch {
+            display: inline-block;
+            width: 14px;
+            height: 3px;
+            border-radius: 2px;
+            vertical-align: middle;
+            margin-right: 4px;
+        }
+
+        /* Controls */
+        .gf-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            margin-bottom: 0.75rem;
+        }
+        .gf-inputs .field { display: flex; flex-direction: column; gap: 0.3rem; }
+        .gf-inputs .field.hidden { display: none; }
+        .gf-inputs .field label { font-size: 0.78rem; color: var(--text-muted); }
+        .gf-inputs .field input[type="range"] {
+            width: 100%;
+        }
+        .gf-inputs .field .row-with-num {
+            display: flex; align-items: center; gap: 0.4rem;
+        }
+        .gf-inputs .field .row-with-num input[type="number"] {
+            width: 60px;
+            padding: 0.25rem 0.4rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--card-background);
+            font-size: 0.85rem;
+        }
+        .gf-comp-control {
+            display: flex; align-items: center; gap: 0.4rem;
+        }
+        .gf-comp-control button {
+            border: 1px solid var(--border-color);
+            background: var(--card-background);
+            color: var(--text-color);
+            border-radius: 4px;
+            width: 28px; height: 28px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .gf-comp-label {
+            font-weight: 700;
+            color: #2980b9;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        /* Variant radios */
+        .gf-variant {
+            display: inline-flex;
+            gap: 0.4rem;
+            font-size: 0.85rem;
+        }
+        .gf-variant label { cursor: pointer; font-weight: normal; }
+
+        /* Output cards */
+        .gf-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.6rem;
+        }
+        .gf-card {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-top: 3px solid #16a085;
+            border-radius: 4px;
+            padding: 0.6rem 0.75rem;
+            font-size: 0.85rem;
+        }
+        .gf-card.mvalues { border-top-color: #e67e22; }
+        .gf-card.ceiling { border-top-color: #c0392b; }
+        .gf-card .name { font-weight: 600; color: var(--text-muted); font-size: 0.78rem; }
+        .gf-card .value { font-size: 1.1rem; font-weight: 700; color: var(--text-color); margin: 0.15rem 0; }
+        .gf-card .sub { font-size: 0.75rem; color: var(--text-muted); }
+        .gf-card .delta { font-size: 0.78rem; color: #e67e22; }
+        .gf-card.violation .value { color: #c0392b; }
+        .gf-card.violation .sub { color: #c0392b; font-weight: 600; }
+
+        /* Term cards */
+        .gf-terms {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+        .gf-term-card {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-top: 3px solid var(--border-color);
+            border-radius: 4px;
+            padding: 0.55rem 0.7rem;
+            font-size: 0.82rem;
+        }
+        .gf-term-card.gflo { border-top-color: #16a085; }
+        .gf-term-card.gfhi { border-top-color: #1abc9c; }
+        .gf-term-card.panchor { border-top-color: #27ae60; }
+        .gf-term-card.madj { border-top-color: #f39c12; }
+        .gf-term-card.a { border-top-color: #e74c3c; }
+        .gf-term-card.b { border-top-color: #2980b9; }
+        .gf-term-card .name { font-weight: 700; color: var(--text-color); }
+        .gf-term-card .value { font-size: 0.95rem; color: #e67e22; margin: 0.15rem 0; font-family: ui-monospace, Menlo, monospace; }
+        .gf-term-card .why { font-size: 0.74rem; color: var(--text-muted); line-height: 1.35; }
+
+        /* Page header */
+        .gf-header h1 { margin: 0 0 0.2rem 0; }
+        .gf-header .subtitle { color: var(--text-muted); margin: 0 0 0.6rem 0; }
+    </style>
+</head>
+<body>
+    <!-- Navigation placeholder -->
+    <nav id="navPlaceholder"></nav>
+
+    <main class="gf-layout">
+        <header class="gf-header">
+            <h1 data-i18n="sandbox.gradientFactors.title">Gradient Factors</h1>
+            <p class="subtitle" data-i18n="sandbox.gradientFactors.subtitle">Three formulas, one ramp. Scrub the sliders and watch the wiki's GF math come to life.</p>
+        </header>
+
+        <!-- Mode toggle -->
+        <div class="gf-mode-toggle" role="tablist" aria-label="GF mode">
+            <button id="gfModeSingle" type="button" role="tab" data-mode="single"
+                    data-i18n="sandbox.gradientFactors.mode.single">Single GF</button>
+            <button id="gfModeLoHi" type="button" role="tab" class="active" data-mode="lohi"
+                    data-i18n="sandbox.gradientFactors.mode.lohi">GF Lo + Hi</button>
+        </div>
+
+        <!-- Formula readout -->
+        <section class="gf-section">
+            <h2 data-i18n="sandbox.gradientFactors.formulas.heading">Live formula readout</h2>
+            <div class="gf-formula-readout">
+                <div class="gf-formula-line" id="gfFormulaF1">
+                    <span class="lbl" data-i18n="sandbox.gradientFactors.formulas.f1Label">F1 (ramp):</span>
+                    <span class="symbolic" id="gfF1Symbolic"></span>
+                    <span class="arrow">⟶</span>
+                    <span data-i18n="sandbox.gradientFactors.formulas.atDepth">at current depth:</span>
+                    GF = <span class="val" id="gfF1Val">—</span>
+                </div>
+                <div class="gf-formula-line" id="gfFormulaF2">
+                    <span class="lbl" data-i18n="sandbox.gradientFactors.formulas.f2Label">F2 (M_adj):</span>
+                    M<sub>adj</sub> = P<sub>amb</sub> + GF · (M − P<sub>amb</sub>)
+                    <span class="arrow">⟶</span>
+                    M<sub>adj</sub> = <span class="val" id="gfF2Val">—</span> bar
+                </div>
+                <div class="gf-formula-line" id="gfFormulaF3">
+                    <span class="lbl" data-i18n="sandbox.gradientFactors.formulas.f3Label">F3 (ceiling):</span>
+                    P<sub>ceiling</sub> = b · (P<sub>t</sub> − GF·a) / (b · (1 − GF) + GF)
+                    <span class="arrow">⟶</span>
+                    <span data-i18n="sandbox.gradientFactors.formulas.ceilingLabel">ceiling:</span>
+                    <span class="val" id="gfF3Val">—</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Two-panel chart -->
+        <section class="gf-section">
+            <h2 data-i18n="sandbox.gradientFactors.charts.heading">Visualisation</h2>
+            <div class="gf-chart-grid">
+                <div class="gf-chart-panel">
+                    <h3 data-i18n="sandbox.gradientFactors.charts.corridor.title">Panel 1 — GF corridor (formula 1)</h3>
+                    <svg id="gfCorridorChart" viewBox="0 0 480 180" preserveAspectRatio="xMidYMid meet" aria-label="GF corridor"></svg>
+                    <div class="legend">
+                        <span><span class="swatch" style="background:#16a085"></span><span data-i18n="sandbox.gradientFactors.charts.corridor.legendRamp">GF(P_amb) ramp</span></span>
+                        <span><span class="swatch" style="background:#27ae60"></span><span data-i18n="sandbox.gradientFactors.charts.corridor.legendAnchor">pAnchor (first stop)</span></span>
+                        <span><span class="swatch" style="background:#c0392b"></span><span data-i18n="sandbox.gradientFactors.charts.corridor.legendDepth">current depth</span></span>
+                    </div>
+                </div>
+                <div class="gf-chart-panel">
+                    <h3 data-i18n="sandbox.gradientFactors.charts.pp.title">Panel 2 — P-P diagram (formulas 2 + 3)</h3>
+                    <svg id="gfPPChart" viewBox="0 0 480 280" preserveAspectRatio="xMidYMid meet" aria-label="P-P diagram"></svg>
+                    <div class="legend">
+                        <span><span class="swatch" style="background:#e67e22"></span><span data-i18n="sandbox.gradientFactors.charts.pp.legendRawM">raw M-line</span></span>
+                        <span><span class="swatch" style="background:#f39c12"></span><span data-i18n="sandbox.gradientFactors.charts.pp.legendMAdj">M_adj</span></span>
+                        <span><span class="swatch" style="background:#7f8c8d"></span><span data-i18n="sandbox.gradientFactors.charts.pp.legendAmbient">ambient (y = x)</span></span>
+                        <span><span class="swatch" style="background:#2980b9"></span><span data-i18n="sandbox.gradientFactors.charts.pp.legendTissue">tissue P_t</span></span>
+                        <span><span class="swatch" style="background:#c0392b"></span><span data-i18n="sandbox.gradientFactors.charts.pp.legendCeiling">ceiling</span></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Controls -->
+        <section class="gf-section">
+            <h2 data-i18n="sandbox.gradientFactors.controls.heading">Controls</h2>
+            <div class="gf-inputs">
+                <div class="field">
+                    <label data-i18n="sandbox.gradientFactors.controls.compartment">Tissue compartment (TC)</label>
+                    <div class="gf-comp-control">
+                        <button id="gfCompPrev" type="button" aria-label="Previous compartment" title="Previous compartment">◀</button>
+                        <span class="gf-comp-label" id="gfCompLabel">TC6</span>
+                        <button id="gfCompNext" type="button" aria-label="Next compartment" title="Next compartment">▶</button>
+                    </div>
+                </div>
+                <div class="field">
+                    <label data-i18n="sandbox.gradientFactors.controls.variant">Variant</label>
+                    <div class="gf-variant" id="gfVariantGroup">
+                        <label><input type="radio" name="gfVariant" value="ZH-L16A"> A</label>
+                        <label><input type="radio" name="gfVariant" value="ZH-L16B"> B</label>
+                        <label><input type="radio" name="gfVariant" value="ZH-L16C" checked> C</label>
+                    </div>
+                </div>
+                <div class="field">
+                    <label><span data-i18n="sandbox.gradientFactors.controls.depth">Current depth (m)</span></label>
+                    <div class="row-with-num">
+                        <input type="range" id="gfDepthSlider" min="0" max="40" step="0.5" value="18">
+                        <input type="number" id="gfDepthNum" min="0" max="40" step="0.5" value="18">
+                    </div>
+                </div>
+                <div class="field">
+                    <label><span data-i18n="sandbox.gradientFactors.controls.tissuePt">Tissue P_t (bar)</span></label>
+                    <div class="row-with-num">
+                        <input type="range" id="gfTissueSlider" min="0.7" max="6" step="0.01" value="2.4">
+                        <input type="number" id="gfTissueNum" min="0.7" max="6" step="0.01" value="2.40">
+                    </div>
+                </div>
+                <div class="field" id="gfFieldGf">
+                    <label><span data-i18n="sandbox.gradientFactors.controls.gf">GF (%)</span></label>
+                    <div class="row-with-num">
+                        <input type="range" id="gfGfSlider" min="0" max="100" step="1" value="70">
+                        <input type="number" id="gfGfNum" min="0" max="100" step="1" value="70">
+                    </div>
+                </div>
+                <div class="field" id="gfFieldGfHi">
+                    <label><span data-i18n="sandbox.gradientFactors.controls.gfHi">GF Hi (%)</span></label>
+                    <div class="row-with-num">
+                        <input type="range" id="gfGfHiSlider" min="0" max="100" step="1" value="70">
+                        <input type="number" id="gfGfHiNum" min="0" max="100" step="1" value="70">
+                    </div>
+                </div>
+                <div class="field" id="gfFieldGfLo">
+                    <label><span data-i18n="sandbox.gradientFactors.controls.gfLo">GF Lo (%)</span></label>
+                    <div class="row-with-num">
+                        <input type="range" id="gfGfLoSlider" min="0" max="100" step="1" value="30">
+                        <input type="number" id="gfGfLoNum" min="0" max="100" step="1" value="30">
+                    </div>
+                </div>
+                <div class="field" id="gfFieldAnchor">
+                    <label><span data-i18n="sandbox.gradientFactors.controls.anchor">Anchor depth (m)</span></label>
+                    <div class="row-with-num">
+                        <input type="range" id="gfAnchorSlider" min="3" max="30" step="0.5" value="18">
+                        <input type="number" id="gfAnchorNum" min="3" max="30" step="0.5" value="18">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Output cards -->
+            <div class="gf-cards">
+                <div class="gf-card" id="gfCardGf">
+                    <div class="name" data-i18n="sandbox.gradientFactors.cards.gf.name">GF at current depth</div>
+                    <div class="value" id="gfCardGfValue">—</div>
+                    <div class="sub" id="gfCardGfSub" data-i18n="sandbox.gradientFactors.cards.gf.sub">interpolated from formula 1</div>
+                </div>
+                <div class="gf-card mvalues">
+                    <div class="name" data-i18n="sandbox.gradientFactors.cards.mvalues.name">M  /  M_adj</div>
+                    <div class="value">
+                        <span id="gfCardMVal">—</span>
+                        <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: normal;"> · </span>
+                        <span id="gfCardMAdjVal" style="color:#f39c12;">—</span>
+                    </div>
+                    <div class="delta" id="gfCardMDelta">—</div>
+                </div>
+                <div class="gf-card ceiling" id="gfCardCeiling">
+                    <div class="name" data-i18n="sandbox.gradientFactors.cards.ceiling.name">Ceiling</div>
+                    <div class="value" id="gfCardCeilingValue">—</div>
+                    <div class="sub" id="gfCardCeilingSub">—</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Term cards -->
+        <section class="gf-section">
+            <h2 data-i18n="sandbox.gradientFactors.terms.heading">Glossary</h2>
+            <div class="gf-terms">
+                <div class="gf-term-card a">
+                    <div class="name">a</div>
+                    <div class="value" id="gfTermAVal">—</div>
+                    <div class="why" data-i18n="sandbox.gradientFactors.terms.a.why">Y-intercept of the M-line for the selected compartment + variant. Higher = more supersaturation tolerated.</div>
+                </div>
+                <div class="gf-term-card b">
+                    <div class="name">b</div>
+                    <div class="value" id="gfTermBVal">—</div>
+                    <div class="why" data-i18n="sandbox.gradientFactors.terms.b.why">Slope is 1/b. Smaller b → steeper line → faster compartment.</div>
+                </div>
+                <div class="gf-term-card gflo">
+                    <div class="name" data-i18n="sandbox.gradientFactors.terms.gfLo.name">GF Lo</div>
+                    <div class="value"><span id="gfTermGfLoVal">—</span>%</div>
+                    <div class="why" data-i18n="sandbox.gradientFactors.terms.gfLo.why">Fraction of the supersaturation budget allowed at the first stop. Lower = deeper first stop.</div>
+                </div>
+                <div class="gf-term-card gfhi">
+                    <div class="name" data-i18n="sandbox.gradientFactors.terms.gfHi.name">GF Hi</div>
+                    <div class="value"><span id="gfTermGfHiVal">—</span>%</div>
+                    <div class="why" data-i18n="sandbox.gradientFactors.terms.gfHi.why">Fraction of the budget allowed at the surface. Lower = more conservative surfacing.</div>
+                </div>
+                <div class="gf-term-card panchor">
+                    <div class="name" data-i18n="sandbox.gradientFactors.terms.pAnchor.name">pAnchor</div>
+                    <div class="value" id="gfTermAnchorVal">—</div>
+                    <div class="why" data-i18n="sandbox.gradientFactors.terms.pAnchor.why">Ambient pressure of the first deco stop. The point where GF clamps at GF Lo.</div>
+                </div>
+                <div class="gf-term-card madj">
+                    <div class="name" data-i18n="sandbox.gradientFactors.terms.mAdj.name">M_adj</div>
+                    <div class="value" id="gfTermMAdjVal">—</div>
+                    <div class="why" data-i18n="sandbox.gradientFactors.terms.mAdj.why">M-value scaled by GF: linear blend between P_amb (GF=0) and raw M (GF=1).</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cross-links -->
+        <section class="gf-section" style="background: transparent; border: none;">
+            <h2 data-i18n="sandbox.gradientFactors.crossLinks.heading">See also</h2>
+            <ul>
+                <li><a href="https://github.com/matej-hron/decojs/wiki/Model-05-Gradient-Factors" data-i18n="sandbox.gradientFactors.crossLinks.wiki">Wiki: Model-05 Gradient Factors (the math)</a></li>
+                <li><a href="../gradient-factors.html" data-i18n="sandbox.gradientFactors.crossLinks.theory">Theory page: deep stops, individual variability, CMAS recommendations</a></li>
+                <li><a href="m-values.html" data-i18n="sandbox.gradientFactors.crossLinks.mvalues">M-value sandbox (where the raw M-line comes from)</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <span class="wip-badge" data-i18n="common.wipBadge">Experimental</span>
+        <p data-i18n="sandbox.gradientFactors.disclaimer"><strong>Disclaimer:</strong> For educational purposes only. The actual diving algorithm uses additional logic (multi-compartment search for the controlling tissue, gas-switch-aware pAnchor derivation, etc.).</p>
+        <span class="version-number"></span>
+    </footer>
+
+    <script src="../js/nav.js" type="module"></script>
+
+    <script type="module">
+        import {
+            getMValue,
+            getAdjustedMValue,
+            getCompartmentCeiling,
+            interpolateGF,
+            getAmbientPressure,
+            SURFACE_PRESSURE,
+        } from '../js/decoModel.js';
+        import {
+            COMPARTMENTS,
+            ZHL16_VARIANTS,
+            setZHL16Variant,
+            getCompartmentsForVariant,
+        } from '../js/tissueCompartments.js';
+        import { translate, initI18n, createLanguageSwitcher } from '../js/i18n.js';
+
+        // -----------------------------------------------------------------
+        // State
+        // -----------------------------------------------------------------
+        const state = {
+            mode: 'lohi',                 // 'single' | 'lohi'
+            compartmentIdx: 5,            // TC6
+            variant: ZHL16_VARIANTS.C,
+            depth: 18,                    // m — current depth
+            tissuePt: 2.4,                // bar
+            gf: 0.70,                     // Mode 1 only
+            gfLo: 0.30,                   // Mode 2
+            gfHi: 0.70,                   // Mode 2
+            anchorDepth: 18,              // m → pAnchor
+        };
+
+        setZHL16Variant(state.variant);
+
+        // -----------------------------------------------------------------
+        // Element refs
+        // -----------------------------------------------------------------
+        const els = {
+            modeSingleBtn: document.getElementById('gfModeSingle'),
+            modeLoHiBtn: document.getElementById('gfModeLoHi'),
+
+            // Formula readout
+            f1Symbolic: document.getElementById('gfF1Symbolic'),
+            f1Val: document.getElementById('gfF1Val'),
+            f2Val: document.getElementById('gfF2Val'),
+            f3Val: document.getElementById('gfF3Val'),
+
+            // Charts
+            corridorSvg: document.getElementById('gfCorridorChart'),
+            ppSvg: document.getElementById('gfPPChart'),
+
+            // Compartment
+            compPrev: document.getElementById('gfCompPrev'),
+            compNext: document.getElementById('gfCompNext'),
+            compLabel: document.getElementById('gfCompLabel'),
+
+            // Variant
+            variantGroup: document.getElementById('gfVariantGroup'),
+
+            // Sliders
+            depthSlider: document.getElementById('gfDepthSlider'),
+            depthNum: document.getElementById('gfDepthNum'),
+            tissueSlider: document.getElementById('gfTissueSlider'),
+            tissueNum: document.getElementById('gfTissueNum'),
+            gfSlider: document.getElementById('gfGfSlider'),
+            gfNum: document.getElementById('gfGfNum'),
+            gfHiSlider: document.getElementById('gfGfHiSlider'),
+            gfHiNum: document.getElementById('gfGfHiNum'),
+            gfLoSlider: document.getElementById('gfGfLoSlider'),
+            gfLoNum: document.getElementById('gfGfLoNum'),
+            anchorSlider: document.getElementById('gfAnchorSlider'),
+            anchorNum: document.getElementById('gfAnchorNum'),
+
+            // Field containers (for show/hide per mode)
+            fieldGf: document.getElementById('gfFieldGf'),
+            fieldGfHi: document.getElementById('gfFieldGfHi'),
+            fieldGfLo: document.getElementById('gfFieldGfLo'),
+            fieldAnchor: document.getElementById('gfFieldAnchor'),
+
+            // Cards
+            cardGfValue: document.getElementById('gfCardGfValue'),
+            cardMVal: document.getElementById('gfCardMVal'),
+            cardMAdjVal: document.getElementById('gfCardMAdjVal'),
+            cardMDelta: document.getElementById('gfCardMDelta'),
+            cardCeiling: document.getElementById('gfCardCeiling'),
+            cardCeilingValue: document.getElementById('gfCardCeilingValue'),
+            cardCeilingSub: document.getElementById('gfCardCeilingSub'),
+
+            // Term cards
+            termAVal: document.getElementById('gfTermAVal'),
+            termBVal: document.getElementById('gfTermBVal'),
+            termGfLoVal: document.getElementById('gfTermGfLoVal'),
+            termGfHiVal: document.getElementById('gfTermGfHiVal'),
+            termAnchorVal: document.getElementById('gfTermAnchorVal'),
+            termMAdjVal: document.getElementById('gfTermMAdjVal'),
+        };
+
+        // -----------------------------------------------------------------
+        // Compute (everything reused from decoModel.js)
+        // -----------------------------------------------------------------
+        function compute() {
+            const comp = COMPARTMENTS[state.compartmentIdx];
+            const pAmb = getAmbientPressure(state.depth);
+            const pAnchor = getAmbientPressure(state.anchorDepth);
+            const a = comp.aN2;
+            const b = comp.bN2;
+            const m = getMValue(pAmb, a, b);
+
+            const gfHere = state.mode === 'single'
+                ? state.gf
+                : interpolateGF(pAmb, pAnchor, state.gfLo, state.gfHi);
+
+            const mAdj = getAdjustedMValue(pAmb, a, b, gfHere);
+            const ceilingBar = getCompartmentCeiling(state.tissuePt, a, b, gfHere);
+            const ceilingM = Math.max(0, (ceilingBar - SURFACE_PRESSURE) * 10);
+            const violation = state.tissuePt > mAdj;
+
+            return { comp, pAmb, pAnchor, a, b, m, gfHere, mAdj, ceilingBar, ceilingM, violation };
+        }
+
+        // -----------------------------------------------------------------
+        // Chart constants
+        // -----------------------------------------------------------------
+        const CORRIDOR_W = 480, CORRIDOR_H = 180;
+        const CORR_PAD_L = 44, CORR_PAD_R = 14, CORR_PAD_T = 14, CORR_PAD_B = 28;
+        const PP_W = 480, PP_H = 280;
+        const PP_PAD_L = 44, PP_PAD_R = 14, PP_PAD_T = 12, PP_PAD_B = 30;
+        const X_MAX_BAR = 5.0;   // ~ 40 m
+        const PP_Y_MIN = 0;
+
+        function corrXToPx(pAmb) {
+            return CORR_PAD_L + (pAmb / X_MAX_BAR) * (CORRIDOR_W - CORR_PAD_L - CORR_PAD_R);
+        }
+        function corrYToPx(gf) {
+            // GF: 0 → bottom, 1 → top
+            return CORRIDOR_H - CORR_PAD_B - gf * (CORRIDOR_H - CORR_PAD_T - CORR_PAD_B);
+        }
+
+        function ppXToPx(pAmb) {
+            return PP_PAD_L + (pAmb / X_MAX_BAR) * (PP_W - PP_PAD_L - PP_PAD_R);
+        }
+        // Y is recomputed per-render with dynamic max
+        let PP_Y_MAX = 7;
+        function ppYToPx(pt) {
+            return PP_H - PP_PAD_B - ((pt - PP_Y_MIN) / (PP_Y_MAX - PP_Y_MIN)) * (PP_H - PP_PAD_T - PP_PAD_B);
+        }
+
+        // -----------------------------------------------------------------
+        // Rendering
+        // -----------------------------------------------------------------
+        function renderFormulaReadout(c) {
+            // F1 symbolic depends on mode
+            if (state.mode === 'single') {
+                els.f1Symbolic.innerHTML = 'GF = constant';
+            } else {
+                els.f1Symbolic.innerHTML = 'GF(P<sub>amb</sub>) = GF<sub>lo</sub> + (GF<sub>hi</sub> − GF<sub>lo</sub>) · (pAnchor − P<sub>amb</sub>) / (pAnchor − 1.013)';
+            }
+            els.f1Val.textContent = (c.gfHere * 100).toFixed(1) + '%';
+            els.f2Val.textContent = c.mAdj.toFixed(3);
+            const ceilingStr = `${c.ceilingBar.toFixed(3)} bar (≈ ${c.ceilingM.toFixed(1)} m)`;
+            els.f3Val.textContent = ceilingStr;
+        }
+
+        function renderCorridor(c) {
+            const svg = els.corridorSvg;
+            // Clear
+            while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+            const svgns = 'http://www.w3.org/2000/svg';
+            const e = (tag, attrs, text) => {
+                const n = document.createElementNS(svgns, tag);
+                for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+                if (text != null) n.textContent = text;
+                return n;
+            };
+
+            // Axes
+            svg.appendChild(e('line', { x1: CORR_PAD_L, y1: CORRIDOR_H - CORR_PAD_B, x2: CORRIDOR_W - CORR_PAD_R, y2: CORRIDOR_H - CORR_PAD_B, stroke: '#888', 'stroke-width': 1 }));
+            svg.appendChild(e('line', { x1: CORR_PAD_L, y1: CORR_PAD_T, x2: CORR_PAD_L, y2: CORRIDOR_H - CORR_PAD_B, stroke: '#888', 'stroke-width': 1 }));
+
+            // Axis labels
+            svg.appendChild(e('text', { x: (CORR_PAD_L + CORRIDOR_W - CORR_PAD_R) / 2, y: CORRIDOR_H - 6, 'font-size': 10, 'text-anchor': 'middle', fill: '#666' }, 'P_amb (bar)'));
+            const yLabel = e('text', { x: 12, y: (CORR_PAD_T + CORRIDOR_H - CORR_PAD_B) / 2, 'font-size': 10, 'text-anchor': 'middle', fill: '#666', transform: `rotate(-90 12 ${(CORR_PAD_T + CORRIDOR_H - CORR_PAD_B) / 2})` }, 'GF');
+            svg.appendChild(yLabel);
+
+            // Y-axis ticks at 0%, 50%, 100%
+            for (const gfTick of [0, 0.25, 0.5, 0.75, 1.0]) {
+                const y = corrYToPx(gfTick);
+                svg.appendChild(e('line', { x1: CORR_PAD_L - 3, y1: y, x2: CORR_PAD_L, y2: y, stroke: '#888' }));
+                svg.appendChild(e('text', { x: CORR_PAD_L - 5, y: y + 3, 'font-size': 9, 'text-anchor': 'end', fill: '#666' }, `${Math.round(gfTick * 100)}%`));
+            }
+            // X-axis ticks every 1 bar
+            for (let xb = 1; xb <= X_MAX_BAR; xb += 1) {
+                const px = corrXToPx(xb);
+                svg.appendChild(e('line', { x1: px, y1: CORRIDOR_H - CORR_PAD_B, x2: px, y2: CORRIDOR_H - CORR_PAD_B + 3, stroke: '#888' }));
+                svg.appendChild(e('text', { x: px, y: CORRIDOR_H - CORR_PAD_B + 14, 'font-size': 9, 'text-anchor': 'middle', fill: '#666' }, `${xb}`));
+            }
+
+            const surfaceX = corrXToPx(SURFACE_PRESSURE);
+
+            // Surface vertical line (faint)
+            svg.appendChild(e('line', { x1: surfaceX, y1: CORR_PAD_T, x2: surfaceX, y2: CORRIDOR_H - CORR_PAD_B, stroke: '#bdc3c7', 'stroke-width': 1, 'stroke-dasharray': '2,3' }));
+            svg.appendChild(e('text', { x: surfaceX + 3, y: CORR_PAD_T + 10, 'font-size': 9, fill: '#7f8c8d' }, 'surface'));
+
+            if (state.mode === 'single') {
+                // Horizontal line at GF level
+                const gfY = corrYToPx(state.gf);
+                svg.appendChild(e('line', { x1: surfaceX, y1: gfY, x2: CORRIDOR_W - CORR_PAD_R, y2: gfY, stroke: '#16a085', 'stroke-width': 2.5 }));
+                svg.appendChild(e('text', { x: CORRIDOR_W - CORR_PAD_R - 6, y: gfY - 5, 'font-size': 9, fill: '#16a085', 'text-anchor': 'end' }, `GF ${(state.gf * 100).toFixed(0)}%`));
+            } else {
+                // Ramp + pAnchor
+                const anchorX = corrXToPx(c.pAnchor);
+                // pAnchor vertical
+                svg.appendChild(e('line', { x1: anchorX, y1: CORR_PAD_T, x2: anchorX, y2: CORRIDOR_H - CORR_PAD_B, stroke: '#27ae60', 'stroke-width': 1, 'stroke-dasharray': '3,3', opacity: 0.8 }));
+                svg.appendChild(e('text', { x: anchorX + 3, y: CORR_PAD_T + 10, 'font-size': 9, fill: '#27ae60' }, `pAnchor ${state.anchorDepth.toFixed(0)} m`));
+
+                const surfaceY = corrYToPx(state.gfHi);
+                const anchorY = corrYToPx(state.gfLo);
+
+                // Shaded corridor (below the ramp, down to GF=0)
+                const baseY = corrYToPx(0);
+                const path = `M ${surfaceX} ${surfaceY} L ${anchorX} ${anchorY} L ${anchorX} ${baseY} L ${surfaceX} ${baseY} Z`;
+                svg.appendChild(e('path', { d: path, fill: '#16a085', opacity: 0.10 }));
+
+                // Ramp line (surface → pAnchor)
+                svg.appendChild(e('line', { x1: surfaceX, y1: surfaceY, x2: anchorX, y2: anchorY, stroke: '#16a085', 'stroke-width': 2.5 }));
+                // Flat at GF_lo (right of pAnchor, deeper than anchor depth)
+                svg.appendChild(e('line', { x1: anchorX, y1: anchorY, x2: CORRIDOR_W - CORR_PAD_R, y2: anchorY, stroke: '#16a085', 'stroke-width': 2.5 }));
+                // Flat at GF_hi (left of surface, shouldn't really exist, but render dashed for completeness)
+                svg.appendChild(e('line', { x1: CORR_PAD_L, y1: surfaceY, x2: surfaceX, y2: surfaceY, stroke: '#16a085', 'stroke-width': 2, 'stroke-dasharray': '3,3' }));
+
+                // Endpoint dots
+                svg.appendChild(e('circle', { cx: surfaceX, cy: surfaceY, r: 3.5, fill: '#16a085' }));
+                svg.appendChild(e('circle', { cx: anchorX, cy: anchorY, r: 3.5, fill: '#16a085' }));
+                svg.appendChild(e('text', { x: surfaceX + 5, y: surfaceY + 12, 'font-size': 9, fill: '#16a085' }, `GF_hi ${(state.gfHi * 100).toFixed(0)}%`));
+                svg.appendChild(e('text', { x: anchorX - 5, y: anchorY + 13, 'font-size': 9, fill: '#16a085', 'text-anchor': 'end' }, `GF_lo ${(state.gfLo * 100).toFixed(0)}%`));
+            }
+
+            // Current depth marker (red vertical + dot at intersection with ramp)
+            const depthX = corrXToPx(c.pAmb);
+            svg.appendChild(e('line', { x1: depthX, y1: CORR_PAD_T, x2: depthX, y2: CORRIDOR_H - CORR_PAD_B, stroke: '#c0392b', 'stroke-width': 1.5 }));
+            const depthGfY = corrYToPx(c.gfHere);
+            svg.appendChild(e('circle', { cx: depthX, cy: depthGfY, r: 4.5, fill: '#c0392b' }));
+            svg.appendChild(e('text', { x: depthX + 6, y: depthGfY - 6, 'font-size': 10, fill: '#c0392b', 'font-weight': '600' }, `GF = ${(c.gfHere * 100).toFixed(1)}%`));
+        }
+
+        function renderPP(c) {
+            const svg = els.ppSvg;
+            while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+            const svgns = 'http://www.w3.org/2000/svg';
+            const e = (tag, attrs, text) => {
+                const n = document.createElementNS(svgns, tag);
+                for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+                if (text != null) n.textContent = text;
+                return n;
+            };
+
+            // Compute dynamic Y_MAX from max M-line endpoint
+            const comps = COMPARTMENTS;
+            let maxM = 0;
+            for (const cc of comps) {
+                const mEnd = cc.aN2 + X_MAX_BAR / cc.bN2;
+                if (mEnd > maxM) maxM = mEnd;
+            }
+            // Also ensure tissue and ambient at X_MAX visible
+            const wantTop = Math.max(maxM, state.tissuePt, X_MAX_BAR) * 1.05;
+            PP_Y_MAX = Math.max(6.5, wantTop);
+
+            // Axes
+            svg.appendChild(e('line', { x1: PP_PAD_L, y1: PP_H - PP_PAD_B, x2: PP_W - PP_PAD_R, y2: PP_H - PP_PAD_B, stroke: '#888' }));
+            svg.appendChild(e('line', { x1: PP_PAD_L, y1: PP_PAD_T, x2: PP_PAD_L, y2: PP_H - PP_PAD_B, stroke: '#888' }));
+
+            svg.appendChild(e('text', { x: (PP_PAD_L + PP_W - PP_PAD_R) / 2, y: PP_H - 6, 'font-size': 10, 'text-anchor': 'middle', fill: '#666' }, 'P_amb (bar)'));
+            const yLabel = e('text', { x: 12, y: (PP_PAD_T + PP_H - PP_PAD_B) / 2, 'font-size': 10, 'text-anchor': 'middle', fill: '#666', transform: `rotate(-90 12 ${(PP_PAD_T + PP_H - PP_PAD_B) / 2})` }, 'P_t (bar)');
+            svg.appendChild(yLabel);
+
+            // Y ticks (every 1 bar)
+            for (let yb = 1; yb <= Math.floor(PP_Y_MAX); yb += 1) {
+                const py = ppYToPx(yb);
+                svg.appendChild(e('line', { x1: PP_PAD_L - 3, y1: py, x2: PP_PAD_L, y2: py, stroke: '#888' }));
+                svg.appendChild(e('text', { x: PP_PAD_L - 5, y: py + 3, 'font-size': 9, 'text-anchor': 'end', fill: '#666' }, `${yb}`));
+            }
+            // X ticks (every 1 bar)
+            for (let xb = 1; xb <= X_MAX_BAR; xb += 1) {
+                const px = ppXToPx(xb);
+                svg.appendChild(e('line', { x1: px, y1: PP_H - PP_PAD_B, x2: px, y2: PP_H - PP_PAD_B + 3, stroke: '#888' }));
+                svg.appendChild(e('text', { x: px, y: PP_H - PP_PAD_B + 14, 'font-size': 9, 'text-anchor': 'middle', fill: '#666' }, `${xb}`));
+            }
+
+            // Other 15 raw M-lines (faint background)
+            for (let i = 0; i < comps.length; i++) {
+                if (i === state.compartmentIdx) continue;
+                const cc = comps[i];
+                const x0 = 0, y0 = cc.aN2;
+                const x1 = X_MAX_BAR, y1 = cc.aN2 + X_MAX_BAR / cc.bN2;
+                svg.appendChild(e('line', {
+                    x1: ppXToPx(x0), y1: ppYToPx(y0),
+                    x2: ppXToPx(x1), y2: ppYToPx(y1),
+                    stroke: '#d0d0d0', 'stroke-width': 0.8, opacity: 0.6,
+                }));
+            }
+
+            // Ambient line (y = x) dashed
+            svg.appendChild(e('line', {
+                x1: ppXToPx(0), y1: ppYToPx(0),
+                x2: ppXToPx(X_MAX_BAR), y2: ppYToPx(X_MAX_BAR),
+                stroke: '#7f8c8d', 'stroke-width': 1.2, 'stroke-dasharray': '4,3',
+            }));
+            svg.appendChild(e('text', { x: ppXToPx(X_MAX_BAR) - 4, y: ppYToPx(X_MAX_BAR) - 5, 'font-size': 9, 'text-anchor': 'end', fill: '#7f8c8d' }, 'y = x'));
+
+            // Raw M-line for selected compartment
+            const a = c.a, b = c.b;
+            svg.appendChild(e('line', {
+                x1: ppXToPx(0), y1: ppYToPx(a),
+                x2: ppXToPx(X_MAX_BAR), y2: ppYToPx(a + X_MAX_BAR / b),
+                stroke: '#e67e22', 'stroke-width': 2,
+            }));
+            svg.appendChild(e('text', { x: ppXToPx(X_MAX_BAR) - 4, y: ppYToPx(a + X_MAX_BAR / b) + 10, 'font-size': 9, fill: '#e67e22', 'text-anchor': 'end' }, `M (TC${c.comp.id})`));
+
+            // Surface + pAnchor verticals
+            const surfaceX = ppXToPx(SURFACE_PRESSURE);
+            svg.appendChild(e('line', { x1: surfaceX, y1: PP_PAD_T, x2: surfaceX, y2: PP_H - PP_PAD_B, stroke: '#bdc3c7', 'stroke-width': 1, 'stroke-dasharray': '2,3' }));
+            svg.appendChild(e('text', { x: surfaceX + 3, y: PP_PAD_T + 10, 'font-size': 9, fill: '#7f8c8d' }, 'surface'));
+
+            if (state.mode === 'lohi') {
+                const anchorX = ppXToPx(c.pAnchor);
+                svg.appendChild(e('line', { x1: anchorX, y1: PP_PAD_T, x2: anchorX, y2: PP_H - PP_PAD_B, stroke: '#27ae60', 'stroke-width': 1, 'stroke-dasharray': '3,3', opacity: 0.8 }));
+                svg.appendChild(e('text', { x: anchorX + 3, y: PP_PAD_T + 10, 'font-size': 9, fill: '#27ae60' }, 'pAnchor'));
+
+                // M_adj segment: from (surface, M_adj@GFhi) to (pAnchor, M_adj@GFlo)
+                const mAdjAtHi = getAdjustedMValue(SURFACE_PRESSURE, a, b, state.gfHi);
+                const mAdjAtLo = getAdjustedMValue(c.pAnchor, a, b, state.gfLo);
+                svg.appendChild(e('line', {
+                    x1: surfaceX, y1: ppYToPx(mAdjAtHi),
+                    x2: anchorX, y2: ppYToPx(mAdjAtLo),
+                    stroke: '#f39c12', 'stroke-width': 2.5,
+                }));
+                // Extension past pAnchor at GF_lo (faint)
+                const mAdjAtEnd = getAdjustedMValue(X_MAX_BAR, a, b, state.gfLo);
+                svg.appendChild(e('line', {
+                    x1: anchorX, y1: ppYToPx(mAdjAtLo),
+                    x2: ppXToPx(X_MAX_BAR), y2: ppYToPx(mAdjAtEnd),
+                    stroke: '#f39c12', 'stroke-width': 1.5, 'stroke-dasharray': '4,3', opacity: 0.65,
+                }));
+                // Endpoint dots
+                svg.appendChild(e('circle', { cx: surfaceX, cy: ppYToPx(mAdjAtHi), r: 3.5, fill: '#f39c12' }));
+                svg.appendChild(e('circle', { cx: anchorX, cy: ppYToPx(mAdjAtLo), r: 3.5, fill: '#f39c12' }));
+            } else {
+                // Single GF: M_adj is parallel line at single GF, drawn across the chart
+                const mAdjAt0 = getAdjustedMValue(0.001, a, b, state.gf);   // near zero for left edge
+                const mAdjAtMax = getAdjustedMValue(X_MAX_BAR, a, b, state.gf);
+                svg.appendChild(e('line', {
+                    x1: ppXToPx(0), y1: ppYToPx(mAdjAt0),
+                    x2: ppXToPx(X_MAX_BAR), y2: ppYToPx(mAdjAtMax),
+                    stroke: '#f39c12', 'stroke-width': 2.5,
+                }));
+                svg.appendChild(e('text', {
+                    x: ppXToPx(X_MAX_BAR) - 4,
+                    y: ppYToPx(mAdjAtMax) + 10,
+                    'font-size': 9, fill: '#f39c12', 'text-anchor': 'end',
+                }, `M_adj (GF ${(state.gf * 100).toFixed(0)}%)`));
+            }
+
+            // Current depth vertical (red, same x as corridor)
+            const depthX = ppXToPx(c.pAmb);
+            svg.appendChild(e('line', { x1: depthX, y1: PP_PAD_T, x2: depthX, y2: PP_H - PP_PAD_B, stroke: '#c0392b', 'stroke-width': 1.5, opacity: 0.85 }));
+            svg.appendChild(e('text', { x: depthX + 4, y: PP_PAD_T + 22, 'font-size': 9, fill: '#c0392b' }, `depth ${state.depth.toFixed(1)} m`));
+
+            // Tissue marker (blue dot at current depth)
+            const tissueX = depthX;
+            const tissueY = ppYToPx(state.tissuePt);
+            svg.appendChild(e('circle', { cx: tissueX, cy: tissueY, r: 5, fill: '#2980b9', stroke: '#fff', 'stroke-width': 1.5 }));
+            svg.appendChild(e('text', { x: tissueX + 8, y: tissueY + 4, 'font-size': 9, fill: '#2980b9' }, `P_t = ${state.tissuePt.toFixed(2)}`));
+
+            // M_adj read-off at current depth (small amber dot on the M_adj line)
+            const mAdjAtDepth = c.mAdj;
+            svg.appendChild(e('circle', { cx: depthX, cy: ppYToPx(mAdjAtDepth), r: 3.5, fill: '#f39c12', stroke: '#fff', 'stroke-width': 1.2 }));
+
+            // Ceiling marker (vertical dashed red) — only if ceiling > surface and < X_MAX
+            if (c.ceilingBar > SURFACE_PRESSURE && c.ceilingBar < X_MAX_BAR) {
+                const ceilX = ppXToPx(c.ceilingBar);
+                svg.appendChild(e('line', { x1: ceilX, y1: PP_PAD_T, x2: ceilX, y2: PP_H - PP_PAD_B, stroke: '#c0392b', 'stroke-width': 1, 'stroke-dasharray': '3,2' }));
+                svg.appendChild(e('text', { x: ceilX + 3, y: PP_H - PP_PAD_B - 4, 'font-size': 9, fill: '#c0392b' }, `ceiling ${c.ceilingM.toFixed(1)} m`));
+            }
+
+            // Violation indicator
+            if (c.violation) {
+                svg.appendChild(e('text', {
+                    x: tissueX, y: tissueY - 12,
+                    'font-size': 11, fill: '#c0392b', 'font-weight': '700', 'text-anchor': 'middle',
+                }, '⚠ above M_adj'));
+            }
+        }
+
+        function renderCards(c) {
+            els.cardGfValue.textContent = `${(c.gfHere * 100).toFixed(1)}%`;
+            els.cardMVal.textContent = c.m.toFixed(3);
+            els.cardMAdjVal.textContent = c.mAdj.toFixed(3);
+            const delta = c.mAdj - c.m;
+            els.cardMDelta.textContent = `Δ ${delta >= 0 ? '+' : ''}${delta.toFixed(3)} bar`;
+
+            els.cardCeilingValue.textContent = `${c.ceilingM.toFixed(1)} m`;
+            els.cardCeilingSub.textContent = `${c.ceilingBar.toFixed(3)} bar`;
+
+            if (c.violation) {
+                els.cardCeiling.classList.add('violation');
+                els.cardCeilingSub.textContent = translate('sandbox.gradientFactors.cards.ceiling.violation', 'Tissue above M_adj — supersaturation violation');
+            } else {
+                els.cardCeiling.classList.remove('violation');
+            }
+
+            // Term cards
+            els.termAVal.textContent = `${c.a.toFixed(4)} bar`;
+            els.termBVal.textContent = c.b.toFixed(4);
+            els.termGfLoVal.textContent = state.mode === 'lohi' ? (state.gfLo * 100).toFixed(0) : '—';
+            els.termGfHiVal.textContent = state.mode === 'lohi' ? (state.gfHi * 100).toFixed(0) : (state.gf * 100).toFixed(0);
+            els.termAnchorVal.textContent = state.mode === 'lohi' ? `${c.pAnchor.toFixed(3)} bar (${state.anchorDepth.toFixed(0)} m)` : '—';
+            els.termMAdjVal.textContent = `${c.mAdj.toFixed(3)} bar`;
+
+            els.compLabel.textContent = `TC${c.comp.id}`;
+        }
+
+        function updateControlVisibility() {
+            const isLoHi = state.mode === 'lohi';
+            els.fieldGf.classList.toggle('hidden', isLoHi);
+            els.fieldGfHi.classList.toggle('hidden', !isLoHi);
+            els.fieldGfLo.classList.toggle('hidden', !isLoHi);
+            els.fieldAnchor.classList.toggle('hidden', !isLoHi);
+            els.modeSingleBtn.classList.toggle('active', !isLoHi);
+            els.modeLoHiBtn.classList.toggle('active', isLoHi);
+        }
+
+        function render() {
+            const c = compute();
+            renderFormulaReadout(c);
+            renderCorridor(c);
+            renderPP(c);
+            renderCards(c);
+            updateControlVisibility();
+        }
+
+        // -----------------------------------------------------------------
+        // Event wiring
+        // -----------------------------------------------------------------
+        function bindSliderPair(slider, num, parser, setter, opts = {}) {
+            const sync = (raw) => {
+                const v = parser(raw);
+                setter(v);
+                if (opts.numFormat) {
+                    num.value = opts.numFormat(v);
+                } else {
+                    num.value = v;
+                }
+                slider.value = String(v);
+                render();
+            };
+            slider.addEventListener('input', () => sync(slider.value));
+            num.addEventListener('input', () => sync(num.value));
+        }
+
+        bindSliderPair(
+            els.depthSlider, els.depthNum,
+            (v) => clamp(parseFloat(v) || 0, 0, 40),
+            (v) => { state.depth = v; },
+            { numFormat: (v) => v.toFixed(1) }
+        );
+        bindSliderPair(
+            els.tissueSlider, els.tissueNum,
+            (v) => clamp(parseFloat(v) || 0, 0.7, 6),
+            (v) => { state.tissuePt = v; },
+            { numFormat: (v) => v.toFixed(2) }
+        );
+        bindSliderPair(
+            els.gfSlider, els.gfNum,
+            (v) => clamp(parseInt(v, 10) || 0, 0, 100),
+            (v) => { state.gf = v / 100; }
+        );
+        bindSliderPair(
+            els.gfHiSlider, els.gfHiNum,
+            (v) => clamp(parseInt(v, 10) || 0, 0, 100),
+            (v) => { state.gfHi = v / 100; }
+        );
+        bindSliderPair(
+            els.gfLoSlider, els.gfLoNum,
+            (v) => clamp(parseInt(v, 10) || 0, 0, 100),
+            (v) => { state.gfLo = v / 100; }
+        );
+        bindSliderPair(
+            els.anchorSlider, els.anchorNum,
+            (v) => clamp(parseFloat(v) || 0, 3, 30),
+            (v) => { state.anchorDepth = v; },
+            { numFormat: (v) => v.toFixed(1) }
+        );
+
+        function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+        els.modeSingleBtn.addEventListener('click', () => { state.mode = 'single'; render(); });
+        els.modeLoHiBtn.addEventListener('click', () => { state.mode = 'lohi'; render(); });
+
+        els.compPrev.addEventListener('click', () => {
+            state.compartmentIdx = Math.max(0, state.compartmentIdx - 1);
+            render();
+        });
+        els.compNext.addEventListener('click', () => {
+            state.compartmentIdx = Math.min(COMPARTMENTS.length - 1, state.compartmentIdx + 1);
+            render();
+        });
+
+        els.variantGroup.addEventListener('change', (e) => {
+            if (e.target && e.target.name === 'gfVariant') {
+                state.variant = e.target.value;
+                setZHL16Variant(state.variant);
+                render();
+            }
+        });
+
+        // Initialize i18n + initial render
+        createLanguageSwitcher();
+        initI18n().then(() => render());
+        // Render once unconditionally in case i18n is slow / fails
+        render();
+    </script>
+</body>
+</html>
