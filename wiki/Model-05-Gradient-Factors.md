@@ -131,3 +131,4 @@ Resulting deco schedule on this profile: 5 stops totalling 29 min (15/2, 12/2, 9
 - [Algo-04-Deco-Stop-Loop](Algo-04-Deco-Stop-Loop.md) — how the loop uses the destination GF for ascent permission.
 - [Algo-06-Ceiling-Time-Series](Algo-06-Ceiling-Time-Series.md) — how pAnchor is computed once and reused for the chart-overlay ceiling.
 - [References](References.md#24-erik-baker--gradient-factors-articles) — Baker's original GF papers.
+- [Sandbox: Gradient Factors](https://decotheory.eu/sandbox/gradient-factors.html) — interactive playground for the three GF formulas (interpolation, M_adj, ceiling).

@@ -786,6 +786,7 @@
                 "gf0desc": "No supersaturation allowed (impractical)",
                 "text2": "A gradient factor of <strong>GF 80%</strong> means you only allow the tissue to reach 80% of the way from ambient pressure to the M-value."
             },
+            "sandboxCTA": "Open GF sandbox — scrub the formulas live →",
             "lowHigh": {
                 "title": "GF Low and GF High",
                 "intro": "Dive computers and planning software use <strong>two</strong> gradient factors:",
@@ -1305,6 +1306,7 @@
             "haldane": "Haldane Equation",
             "schreiner": "Schreiner Equation",
             "mvalues": "M-Values",
+            "gradientFactors": "Gradient Factors",
             "tissue": "Tissue Saturation",
             "transfill": "Cylinder Transfilling",
             "cascade": "Cascade Filling",
@@ -1837,6 +1839,95 @@
                 "theory": "M-Values theory page (history + dive examples)",
                 "haldane": "Haldane sandbox (tissue chases ambient)",
                 "schreiner": "Schreiner sandbox (tissue chases moving ambient)"
+            }
+        },
+        "gradientFactors": {
+            "title": "Gradient Factors",
+            "subtitle": "Three formulas, one ramp. Scrub the sliders and watch the wiki's GF math come to life.",
+            "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only. The actual diving algorithm uses additional logic (multi-compartment search for the controlling tissue, gas-switch-aware pAnchor derivation, etc.).",
+            "mode": {
+                "single": "Single GF",
+                "lohi": "GF Lo + Hi"
+            },
+            "formulas": {
+                "heading": "Live formula readout",
+                "f1Label": "F1 (ramp):",
+                "f2Label": "F2 (M_adj):",
+                "f3Label": "F3 (ceiling):",
+                "atDepth": "at current depth:",
+                "ceilingLabel": "ceiling:"
+            },
+            "charts": {
+                "heading": "Visualisation",
+                "corridor": {
+                    "title": "Panel 1 — GF corridor (formula 1)",
+                    "legendRamp": "GF(P_amb) ramp",
+                    "legendAnchor": "pAnchor (first stop)",
+                    "legendDepth": "current depth"
+                },
+                "pp": {
+                    "title": "Panel 2 — P-P diagram (formulas 2 + 3)",
+                    "legendRawM": "raw M-line",
+                    "legendMAdj": "M_adj",
+                    "legendAmbient": "ambient (y = x)",
+                    "legendTissue": "tissue P_t",
+                    "legendCeiling": "ceiling"
+                }
+            },
+            "controls": {
+                "heading": "Controls",
+                "compartment": "Tissue compartment (TC)",
+                "variant": "Variant",
+                "depth": "Current depth (m)",
+                "tissuePt": "Tissue P_t (bar)",
+                "gf": "GF (%)",
+                "gfHi": "GF Hi (%)",
+                "gfLo": "GF Lo (%)",
+                "anchor": "Anchor depth (m)"
+            },
+            "cards": {
+                "gf": {
+                    "name": "GF at current depth",
+                    "sub": "interpolated from formula 1"
+                },
+                "mvalues": {
+                    "name": "M  /  M_adj"
+                },
+                "ceiling": {
+                    "name": "Ceiling",
+                    "violation": "Tissue above M_adj — supersaturation violation"
+                }
+            },
+            "terms": {
+                "heading": "Glossary",
+                "a": {
+                    "why": "Y-intercept of the M-line for the selected compartment + variant. Higher = more supersaturation tolerated."
+                },
+                "b": {
+                    "why": "Slope is 1/b. Smaller b → steeper line → faster compartment."
+                },
+                "gfLo": {
+                    "name": "GF Lo",
+                    "why": "Fraction of the supersaturation budget allowed at the first stop. Lower = deeper first stop."
+                },
+                "gfHi": {
+                    "name": "GF Hi",
+                    "why": "Fraction of the budget allowed at the surface. Lower = more conservative surfacing."
+                },
+                "pAnchor": {
+                    "name": "pAnchor",
+                    "why": "Ambient pressure of the first deco stop. The point where GF clamps at GF Lo."
+                },
+                "mAdj": {
+                    "name": "M_adj",
+                    "why": "M-value scaled by GF: linear blend between P_amb (GF=0) and raw M (GF=1)."
+                }
+            },
+            "crossLinks": {
+                "heading": "See also",
+                "wiki": "Wiki: Model-05 Gradient Factors (the math)",
+                "theory": "Theory page: deep stops, individual variability, CMAS recommendations",
+                "mvalues": "M-value sandbox (where the raw M-line comes from)"
             }
         },
         "cascade": {

@@ -786,6 +786,7 @@
                 "gf0desc": "No se permite sobresaturación (inviable)",
                 "text2": "Un factor de gradiente de <strong>GF 80 %</strong> significa que solo permites al tejido alcanzar el 80 % del camino entre la presión ambiente y el valor-M."
             },
+            "sandboxCTA": "Abrir GF sandbox — manipula las fórmulas en vivo →",
             "lowHigh": {
                 "title": "GF bajo y GF alto",
                 "intro": "Los ordenadores de buceo y los programas de planificación usan <strong>dos</strong> factores de gradiente:",
@@ -1305,6 +1306,7 @@
             "haldane": "Ecuación de Haldane",
             "schreiner": "Ecuación de Schreiner",
             "mvalues": "Valores M",
+            "gradientFactors": "Gradient Factors",
             "tissue": "Saturación tisular",
             "transfill": "Transvase de botellas",
             "cascade": "Llenado en cascada",
@@ -1801,6 +1803,95 @@
                 "theory": "Página de teoría de Valores M (historia + ejemplos de inmersión)",
                 "haldane": "Sandbox de Haldane (el tejido persigue al ambiente)",
                 "schreiner": "Sandbox de Schreiner (el tejido persigue al ambiente en movimiento)"
+            }
+        },
+        "gradientFactors": {
+            "title": "Gradient Factors",
+            "subtitle": "Tres fórmulas, una rampa. Mueve los sliders y observa cómo cobra vida la matemática de GF de la wiki.",
+            "disclaimer": "<strong>Aviso:</strong> Solo con fines educativos. El algoritmo real usa lógica adicional (búsqueda de la tisú controlante a través de todos los compartimentos, derivación de pAnchor consciente del cambio de gas, etc.).",
+            "mode": {
+                "single": "Solo GF",
+                "lohi": "GF Lo + Hi"
+            },
+            "formulas": {
+                "heading": "Lectura en vivo de las fórmulas",
+                "f1Label": "F1 (rampa):",
+                "f2Label": "F2 (M_adj):",
+                "f3Label": "F3 (techo):",
+                "atDepth": "a la profundidad actual:",
+                "ceilingLabel": "techo:"
+            },
+            "charts": {
+                "heading": "Visualización",
+                "corridor": {
+                    "title": "Panel 1 — corredor GF (fórmula 1)",
+                    "legendRamp": "rampa GF(P_amb)",
+                    "legendAnchor": "pAnchor (primera parada)",
+                    "legendDepth": "profundidad actual"
+                },
+                "pp": {
+                    "title": "Panel 2 — diagrama P-P (fórmulas 2 + 3)",
+                    "legendRawM": "línea M cruda",
+                    "legendMAdj": "M_adj",
+                    "legendAmbient": "ambiente (y = x)",
+                    "legendTissue": "tejido P_t",
+                    "legendCeiling": "techo"
+                }
+            },
+            "controls": {
+                "heading": "Controles",
+                "compartment": "Compartimento tisular (TC)",
+                "variant": "Variante",
+                "depth": "Profundidad actual (m)",
+                "tissuePt": "P_t del tejido (bar)",
+                "gf": "GF (%)",
+                "gfHi": "GF Hi (%)",
+                "gfLo": "GF Lo (%)",
+                "anchor": "Profundidad del ancla (m)"
+            },
+            "cards": {
+                "gf": {
+                    "name": "GF a la profundidad actual",
+                    "sub": "interpolado de la fórmula 1"
+                },
+                "mvalues": {
+                    "name": "M  /  M_adj"
+                },
+                "ceiling": {
+                    "name": "Techo",
+                    "violation": "Tejido por encima de M_adj — violación de supersaturación"
+                }
+            },
+            "terms": {
+                "heading": "Glosario",
+                "a": {
+                    "why": "Intersección Y de la línea M para el compartimento + variante seleccionados. Más alto = más supersaturación tolerada."
+                },
+                "b": {
+                    "why": "La pendiente es 1/b. b menor → línea más empinada → compartimento más rápido."
+                },
+                "gfLo": {
+                    "name": "GF Lo",
+                    "why": "Fracción del presupuesto de supersaturación permitido en la primera parada. Más bajo = primera parada más profunda."
+                },
+                "gfHi": {
+                    "name": "GF Hi",
+                    "why": "Fracción del presupuesto permitido en superficie. Más bajo = ascenso más conservador."
+                },
+                "pAnchor": {
+                    "name": "pAnchor",
+                    "why": "Presión ambiental de la primera parada de descompresión. Punto donde GF se fija en GF Lo."
+                },
+                "mAdj": {
+                    "name": "M_adj",
+                    "why": "Valor M escalado por GF: mezcla lineal entre P_amb (GF=0) y M cruda (GF=1)."
+                }
+            },
+            "crossLinks": {
+                "heading": "Ver también",
+                "wiki": "Wiki: Model-05 Gradient Factors (la matemática)",
+                "theory": "Página de teoría: deep stops, variabilidad individual, recomendaciones CMAS",
+                "mvalues": "Sandbox de valores M (de dónde viene la línea M cruda)"
             }
         },
         "cascade": {

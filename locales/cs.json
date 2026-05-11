@@ -786,6 +786,7 @@
                 "gf0desc": "Žádné přesycení povoleno (nepraktické)",
                 "text2": "Gradient faktor <strong>GF 80 %</strong> znamená, že tkáni dovolíte dosáhnout pouze 80 % vzdálenosti od okolního tlaku k M-value."
             },
+            "sandboxCTA": "Otevřít GF sandbox — pohrajte si s rovnicemi živě →",
             "lowHigh": {
                 "title": "GF Low a GF High",
                 "intro": "Potápěčské počítače a plánovací software používají <strong>dva</strong> gradient faktory:",
@@ -1305,6 +1306,7 @@
             "haldane": "Haldaneova rovnice",
             "schreiner": "Schreinerova rovnice",
             "mvalues": "M-hodnoty",
+            "gradientFactors": "Gradient Factors",
             "tissue": "Sycení tkání",
             "transfill": "Přepouštění lahví",
             "cascade": "Kaskádové plnění",
@@ -1837,6 +1839,95 @@
                 "theory": "Stránka teorie M-hodnot (historie + příklady ponorů)",
                 "haldane": "Haldaneův Sandbox (tkáň se přibližuje k okolnímu tlaku)",
                 "schreiner": "Schreinerův Sandbox (tkáň se přibližuje k měnícímu se okolnímu tlaku)"
+            }
+        },
+        "gradientFactors": {
+            "title": "Gradient Factors",
+            "subtitle": "Tři rovnice, jeden rampa. Posouvejte slidery a sledujte, jak ožívá matematika GF z wiki.",
+            "disclaimer": "<strong>Disclaimer:</strong> Pouze pro vzdělávací účely. Skutečný dekompresní algoritmus používá další logiku (hledání řídicí tkáně přes všechny kompartmenty, výpočet pAnchor s ohledem na změnu plynů apod.).",
+            "mode": {
+                "single": "Jedno GF",
+                "lohi": "GF Lo + Hi"
+            },
+            "formulas": {
+                "heading": "Živý výpočet rovnic",
+                "f1Label": "F1 (rampa):",
+                "f2Label": "F2 (M_adj):",
+                "f3Label": "F3 (strop):",
+                "atDepth": "v aktuální hloubce:",
+                "ceilingLabel": "strop:"
+            },
+            "charts": {
+                "heading": "Vizualizace",
+                "corridor": {
+                    "title": "Panel 1 — GF koridor (rovnice 1)",
+                    "legendRamp": "rampa GF(P_amb)",
+                    "legendAnchor": "pAnchor (první zastávka)",
+                    "legendDepth": "aktuální hloubka"
+                },
+                "pp": {
+                    "title": "Panel 2 — P-P diagram (rovnice 2 + 3)",
+                    "legendRawM": "surová M-čára",
+                    "legendMAdj": "M_adj",
+                    "legendAmbient": "okolní (y = x)",
+                    "legendTissue": "tkáňový P_t",
+                    "legendCeiling": "strop"
+                }
+            },
+            "controls": {
+                "heading": "Ovládání",
+                "compartment": "Tkáňový kompartment (TC)",
+                "variant": "Varianta",
+                "depth": "Aktuální hloubka (m)",
+                "tissuePt": "Tkáňový tlak P_t (bar)",
+                "gf": "GF (%)",
+                "gfHi": "GF Hi (%)",
+                "gfLo": "GF Lo (%)",
+                "anchor": "Hloubka kotvy (m)"
+            },
+            "cards": {
+                "gf": {
+                    "name": "GF v aktuální hloubce",
+                    "sub": "interpolováno z rovnice 1"
+                },
+                "mvalues": {
+                    "name": "M  /  M_adj"
+                },
+                "ceiling": {
+                    "name": "Strop",
+                    "violation": "Tkáň je nad M_adj — porušení limitu přesycení"
+                }
+            },
+            "terms": {
+                "heading": "Slovníček",
+                "a": {
+                    "why": "Průsečík M-čáry s osou Y pro daný kompartment + variantu. Vyšší = větší tolerované přesycení."
+                },
+                "b": {
+                    "why": "Sklon je 1/b. Menší b → strmější čára → rychlejší kompartment."
+                },
+                "gfLo": {
+                    "name": "GF Lo",
+                    "why": "Podíl povoleného přesycení na první zastávce. Nižší = hlubší první zastávka."
+                },
+                "gfHi": {
+                    "name": "GF Hi",
+                    "why": "Podíl povoleného přesycení na hladině. Nižší = konzervativnější vynořování."
+                },
+                "pAnchor": {
+                    "name": "pAnchor",
+                    "why": "Okolní tlak v hloubce první deko zastávky. Místo, kde se GF zafixuje na GF Lo."
+                },
+                "mAdj": {
+                    "name": "M_adj",
+                    "why": "M-hodnota škálovaná GF: lineární smíchání mezi P_amb (GF=0) a surovou M (GF=1)."
+                }
+            },
+            "crossLinks": {
+                "heading": "Viz také",
+                "wiki": "Wiki: Model-05 Gradient Factors (matematika)",
+                "theory": "Stránka teorie: deep stops, individuální variabilita, doporučení CMAS",
+                "mvalues": "Sandbox M-hodnot (odkud pochází surová M-čára)"
             }
         },
         "cascade": {
