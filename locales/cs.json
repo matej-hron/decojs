@@ -1869,7 +1869,8 @@
                 "pp": {
                     "title": "Panel 2 — P-P diagram (rovnice 2 + 3)",
                     "legendRawM": "surová M-čára",
-                    "legendMAdj": "M_adj",
+                    "legendMAdj": "M_adj (křivka)",
+                    "legendChord": "lineární tětiva (reference)",
                     "legendAmbient": "okolní (y = x)",
                     "legendTissue": "tkáňový P_t",
                     "legendCeiling": "strop"
