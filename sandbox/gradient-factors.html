@@ -909,11 +909,34 @@
             const mAdjAtDepth = c.mAdj;
             svg.appendChild(e('circle', { cx: depthX, cy: ppYToPx(mAdjAtDepth), r: 3.5, fill: '#f39c12', stroke: '#fff', 'stroke-width': 1.2 }));
 
-            // Ceiling marker (vertical dashed red) — only if ceiling > surface and < X_MAX
+            // Ceiling derivation visualised: the ceiling is the x-coordinate where a horizontal
+            // line through the tissue marker crosses the M_adj curve. Draw that horizontal
+            // dashed line from the tissue marker to the intersection, mark the intersection
+            // with a dot, then drop the ceiling vertical down to the x-axis from there.
             if (c.ceilingBar > SURFACE_PRESSURE && c.ceilingBar < X_MAX_BAR) {
                 const ceilX = ppXToPx(c.ceilingBar);
-                svg.appendChild(e('line', { x1: ceilX, y1: PP_PAD_T, x2: ceilX, y2: PP_H - PP_PAD_B, stroke: '#c0392b', 'stroke-width': 1, 'stroke-dasharray': '3,2' }));
-                svg.appendChild(e('text', { x: ceilX + 3, y: PP_H - PP_PAD_B - 4, 'font-size': 9, fill: '#c0392b' }, `ceiling ${c.ceilingM.toFixed(1)} m`));
+                // Horizontal dashed line at y = P_t, from tissue marker to ceiling-intersection x
+                svg.appendChild(e('line', {
+                    x1: tissueX, y1: tissueY,
+                    x2: ceilX, y2: tissueY,
+                    stroke: '#c0392b', 'stroke-width': 1, 'stroke-dasharray': '4,3', opacity: 0.85,
+                }));
+                // Intersection dot (where horizontal meets M_adj)
+                svg.appendChild(e('circle', {
+                    cx: ceilX, cy: tissueY, r: 4,
+                    fill: '#c0392b', stroke: '#fff', 'stroke-width': 1.2,
+                }));
+                // Vertical from intersection DOWN to x-axis (only the lower half — emphasises
+                // "drop down from intersection to read the ceiling depth").
+                svg.appendChild(e('line', {
+                    x1: ceilX, y1: tissueY,
+                    x2: ceilX, y2: PP_H - PP_PAD_B,
+                    stroke: '#c0392b', 'stroke-width': 1, 'stroke-dasharray': '3,2',
+                }));
+                svg.appendChild(e('text', {
+                    x: ceilX + 3, y: PP_H - PP_PAD_B - 4,
+                    'font-size': 9, fill: '#c0392b',
+                }, `ceiling ${c.ceilingM.toFixed(1)} m`));
             }
 
             // Violation indicator
