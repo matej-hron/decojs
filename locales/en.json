@@ -1884,7 +1884,11 @@
                 "gf": "GF (%)",
                 "gfHi": "GF Hi (%)",
                 "gfLo": "GF Lo (%)",
-                "anchor": "Anchor depth (m)"
+                "anchor": "Anchor depth (m)",
+                "anchorHint": "Teaching knob — scrub to see the ramp tilt. In a real dive, pAnchor is <em>derived</em> from tissue state, not chosen."
+            },
+            "warnings": {
+                "inverted": "⚠ GF Lo &gt; GF Hi — the ramp is inverted. Real dives never run this way."
             },
             "cards": {
                 "gf": {
@@ -1896,7 +1900,7 @@
                 },
                 "ceiling": {
                     "name": "Ceiling",
-                    "violation": "Tissue above M_adj — supersaturation violation"
+                    "violation": "Ceiling above current depth — ascending here would violate the limit"
                 }
             },
             "terms": {
@@ -1921,7 +1925,7 @@
                 },
                 "mAdj": {
                     "name": "M_adj",
-                    "why": "M-value scaled by GF: linear blend between P_amb (GF=0) and raw M (GF=1)."
+                    "why": "GF-adjusted limit: at GF=0 it collapses onto the ambient line, at GF=1 onto the raw M-line. In between it's a line that pivots between those two — slope sits between 1 and 1/b."
                 }
             },
             "crossLinks": {

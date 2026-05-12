@@ -1848,7 +1848,11 @@
                 "gf": "GF (%)",
                 "gfHi": "GF Hi (%)",
                 "gfLo": "GF Lo (%)",
-                "anchor": "Profundidad del ancla (m)"
+                "anchor": "Profundidad del ancla (m)",
+                "anchorHint": "Control didáctico — muévelo para ver cómo se inclina la rampa. En una inmersión real, pAnchor se <em>deriva</em> del estado tisular, no se elige."
+            },
+            "warnings": {
+                "inverted": "⚠ GF Lo &gt; GF Hi — la rampa está invertida. En inmersiones reales nunca se da."
             },
             "cards": {
                 "gf": {
@@ -1860,7 +1864,7 @@
                 },
                 "ceiling": {
                     "name": "Techo",
-                    "violation": "Tejido por encima de M_adj — violación de supersaturación"
+                    "violation": "Techo por encima de la profundidad actual — ascender violaría el límite"
                 }
             },
             "terms": {
@@ -1885,7 +1889,7 @@
                 },
                 "mAdj": {
                     "name": "M_adj",
-                    "why": "Valor M escalado por GF: mezcla lineal entre P_amb (GF=0) y M cruda (GF=1)."
+                    "why": "Límite ajustado por GF: a GF=0 colapsa en la línea ambiente, a GF=1 en la línea M cruda. En medio es una línea que pivota entre ambas — pendiente entre 1 y 1/b."
                 }
             },
             "crossLinks": {
