@@ -1845,7 +1845,7 @@
             "title": "Gradient Factors",
             "subtitle": "Tři rovnice, jedna rampa. Posouvejte slidery a sledujte, jak ožívá matematika GF z wiki.",
             "wipNote": "🚧 Rozpracováno — experimentální verze. Zpětná vazba vítána.",
-            "disclaimer": "<strong>Disclaimer:</strong> Pouze pro vzdělávací účely. Skutečný dekompresní algoritmus používá další logiku (hledání řídicí tkáně přes všechny kompartmenty, výpočet pAnchor s ohledem na změnu plynů apod.).",
+            "disclaimer": "<strong>Upozornění:</strong> Pouze pro vzdělávací účely. Skutečný dekompresní algoritmus používá další logiku (hledání řídicí tkáně přes všechny kompartmenty, výpočet pAnchor s ohledem na změnu plynů apod.).",
             "mode": {
                 "single": "Jedno GF",
                 "lohi": "GF Lo + Hi"
@@ -1884,7 +1884,11 @@
                 "gf": "GF (%)",
                 "gfHi": "GF Hi (%)",
                 "gfLo": "GF Lo (%)",
-                "anchor": "Hloubka kotvy (m)"
+                "anchor": "Hloubka kotvy (m)",
+                "anchorHint": "Učební ovladač — posouvejte, abyste viděli, jak se rampa naklání. Při skutečném ponoru se pAnchor <em>odvozuje</em> ze stavu tkání, nevolíte ho."
+            },
+            "warnings": {
+                "inverted": "⚠ GF Lo &gt; GF Hi — rampa je obrácená. Při skutečném ponoru to takhle nikdy nenastane."
             },
             "cards": {
                 "gf": {
@@ -1896,7 +1900,7 @@
                 },
                 "ceiling": {
                     "name": "Strop",
-                    "violation": "Tkáň je nad M_adj — porušení limitu přesycení"
+                    "violation": "Strop nad aktuální hloubkou — výstup by porušil limit"
                 }
             },
             "terms": {
@@ -1921,7 +1925,7 @@
                 },
                 "mAdj": {
                     "name": "M_adj",
-                    "why": "M-hodnota škálovaná GF: lineární smíchání mezi P_amb (GF=0) a surovou M (GF=1)."
+                    "why": "M-hodnota upravená přes GF: při GF=0 splývá s okolní čárou, při GF=1 se surovou M-čárou. Mezi tím je čára, která se naklání mezi nimi — sklon je mezi 1 a 1/b."
                 }
             },
             "crossLinks": {

@@ -227,6 +227,31 @@
         .gf-term-card .value { font-size: 0.95rem; color: #e67e22; margin: 0.15rem 0; font-family: ui-monospace, Menlo, monospace; }
         .gf-term-card .why { font-size: 0.74rem; color: var(--text-muted); line-height: 1.35; }
 
+        /* Field hint (small inline caveat under a slider) */
+        .gf-inputs .field .field-hint {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            line-height: 1.35;
+            margin-top: 0.15rem;
+            padding: 0.3rem 0.5rem;
+            background: rgba(243, 156, 18, 0.06);
+            border-left: 2px solid #f39c12;
+            border-radius: 3px;
+        }
+        .gf-inputs .field .field-hint em { color: #b8770a; font-style: normal; font-weight: 600; }
+
+        /* Inverted-ramp warning */
+        .gf-warning {
+            margin-top: 0.5rem;
+            padding: 0.4rem 0.7rem;
+            background: rgba(192, 57, 43, 0.10);
+            border: 1px solid #c0392b;
+            border-radius: 4px;
+            color: #962f24;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
         /* Page header */
         .gf-header h1 { margin: 0 0 0.2rem 0; }
         .gf-header .subtitle { color: var(--text-muted); margin: 0 0 0.3rem 0; }
@@ -385,7 +410,11 @@
                         <input type="range" id="gfAnchorSlider" min="3" max="30" step="0.5" value="18">
                         <input type="number" id="gfAnchorNum" min="3" max="30" step="0.5" value="18">
                     </div>
+                    <div class="field-hint" data-i18n="sandbox.gradientFactors.controls.anchorHint">Teaching knob — scrub to see the ramp tilt. In a real dive, pAnchor is <em>derived</em> from tissue state, not chosen.</div>
                 </div>
+            </div>
+            <div class="gf-warning" id="gfInvertedWarning" hidden>
+                <span data-i18n="sandbox.gradientFactors.warnings.inverted">⚠ GF Lo &gt; GF Hi — the ramp is inverted. Real dives never run this way.</span>
             </div>
 
             <!-- Output cards -->
@@ -546,6 +575,7 @@
             fieldGfHi: document.getElementById('gfFieldGfHi'),
             fieldGfLo: document.getElementById('gfFieldGfLo'),
             fieldAnchor: document.getElementById('gfFieldAnchor'),
+            invertedWarning: document.getElementById('gfInvertedWarning'),
 
             // Cards
             cardGfValue: document.getElementById('gfCardGfValue'),
@@ -583,9 +613,14 @@
             const mAdj = getAdjustedMValue(pAmb, a, b, gfHere);
             const ceilingBar = getCompartmentCeiling(state.tissuePt, a, b, gfHere);
             const ceilingM = Math.max(0, (ceilingBar - SURFACE_PRESSURE) * 10);
-            const violation = state.tissuePt > mAdj;
+            // Violation = the diver's current depth is shallower than the ceiling for this
+            // compartment under this GF (i.e., ascending here would cross the limit). NOT
+            // simply P_t > M_adj at depth — that's allowed mid-dive because the ramp still
+            // budgets supersaturation deeper than the surface.
+            const violation = ceilingBar > pAmb;
+            const gfInverted = state.mode === 'lohi' && state.gfLo > state.gfHi;
 
-            return { comp, pAmb, pAnchor, a, b, m, gfHere, mAdj, ceilingBar, ceilingM, violation };
+            return { comp, pAmb, pAnchor, a, b, m, gfHere, mAdj, ceilingBar, ceilingM, violation, gfInverted };
         }
 
         // -----------------------------------------------------------------
@@ -621,9 +656,9 @@
         function renderFormulaReadout(c) {
             // F1 symbolic depends on mode
             if (state.mode === 'single') {
-                els.f1Symbolic.innerHTML = 'GF = constant';
+                els.f1Symbolic.innerHTML = 'GF = constant (Single-mode is the degenerate case GF<sub>lo</sub> = GF<sub>hi</sub>)';
             } else {
-                els.f1Symbolic.innerHTML = 'GF(P<sub>amb</sub>) = GF<sub>lo</sub> + (GF<sub>hi</sub> − GF<sub>lo</sub>) · (pAnchor − P<sub>amb</sub>) / (pAnchor − 1.013)';
+                els.f1Symbolic.innerHTML = 'GF(P<sub>amb</sub>) = GF<sub>lo</sub> + (GF<sub>hi</sub> − GF<sub>lo</sub>) · (pAnchor − P<sub>amb</sub>) / (pAnchor − P<sub>surface</sub>)';
             }
             els.f1Val.textContent = (c.gfHere * 100).toFixed(1) + '%';
             els.f2Val.textContent = c.mAdj.toFixed(3);
@@ -798,27 +833,43 @@
                 svg.appendChild(e('line', { x1: anchorX, y1: PP_PAD_T, x2: anchorX, y2: PP_H - PP_PAD_B, stroke: '#27ae60', 'stroke-width': 1, 'stroke-dasharray': '3,3', opacity: 0.8 }));
                 svg.appendChild(e('text', { x: anchorX + 3, y: PP_PAD_T + 10, 'font-size': 9, fill: '#27ae60' }, 'pAnchor'));
 
-                // M_adj segment: from (surface, M_adj@GFhi) to (pAnchor, M_adj@GFlo)
-                const mAdjAtHi = getAdjustedMValue(SURFACE_PRESSURE, a, b, state.gfHi);
-                const mAdjAtLo = getAdjustedMValue(c.pAnchor, a, b, state.gfLo);
-                svg.appendChild(e('line', {
-                    x1: surfaceX, y1: ppYToPx(mAdjAtHi),
-                    x2: anchorX, y2: ppYToPx(mAdjAtLo),
-                    stroke: '#f39c12', 'stroke-width': 2.5,
+                // M_adj along the ramp is QUADRATIC in P_amb (linear GF × linear M-line, multiplied).
+                // Sample as a polyline so the curve and the read-off dot agree.
+                const RAMP_SAMPLES = 30;
+                const sampleMAdjRamp = (pAmb0, pAmb1) => {
+                    const pts = [];
+                    for (let i = 0; i <= RAMP_SAMPLES; i++) {
+                        const t = i / RAMP_SAMPLES;
+                        const pa = pAmb0 + t * (pAmb1 - pAmb0);
+                        const gfRamp = interpolateGF(pa, c.pAnchor, state.gfLo, state.gfHi);
+                        const mAdj = getAdjustedMValue(pa, a, b, gfRamp);
+                        pts.push(`${ppXToPx(pa)},${ppYToPx(mAdj)}`);
+                    }
+                    return pts.join(' ');
+                };
+
+                // Ramp region (surface → pAnchor): real curve.
+                svg.appendChild(e('polyline', {
+                    points: sampleMAdjRamp(SURFACE_PRESSURE, c.pAnchor),
+                    fill: 'none', stroke: '#f39c12', 'stroke-width': 2.5,
                 }));
-                // Extension past pAnchor at GF_lo (faint)
+                // Past pAnchor: GF clamps at GF_lo, so M_adj becomes linear in P_amb again.
+                const mAdjAtLo = getAdjustedMValue(c.pAnchor, a, b, state.gfLo);
                 const mAdjAtEnd = getAdjustedMValue(X_MAX_BAR, a, b, state.gfLo);
                 svg.appendChild(e('line', {
                     x1: anchorX, y1: ppYToPx(mAdjAtLo),
                     x2: ppXToPx(X_MAX_BAR), y2: ppYToPx(mAdjAtEnd),
-                    stroke: '#f39c12', 'stroke-width': 1.5, 'stroke-dasharray': '4,3', opacity: 0.65,
+                    stroke: '#f39c12', 'stroke-width': 1.5, 'stroke-dasharray': '4,3', opacity: 0.7,
                 }));
                 // Endpoint dots
+                const mAdjAtHi = getAdjustedMValue(SURFACE_PRESSURE, a, b, state.gfHi);
                 svg.appendChild(e('circle', { cx: surfaceX, cy: ppYToPx(mAdjAtHi), r: 3.5, fill: '#f39c12' }));
                 svg.appendChild(e('circle', { cx: anchorX, cy: ppYToPx(mAdjAtLo), r: 3.5, fill: '#f39c12' }));
             } else {
-                // Single GF: M_adj is parallel line at single GF, drawn across the chart
-                const mAdjAt0 = getAdjustedMValue(0.001, a, b, state.gf);   // near zero for left edge
+                // Single GF: M_adj is linear in P_amb (a line that pivots between ambient and raw M
+                // as GF varies — at GF=0 it's the ambient line, at GF=1 it's the raw M-line, in
+                // between it's a separate line with slope between 1 and 1/b). Sample 2 points.
+                const mAdjAt0 = getAdjustedMValue(0.001, a, b, state.gf);
                 const mAdjAtMax = getAdjustedMValue(X_MAX_BAR, a, b, state.gf);
                 svg.appendChild(e('line', {
                     x1: ppXToPx(0), y1: ppYToPx(mAdjAt0),
@@ -859,7 +910,7 @@
                 svg.appendChild(e('text', {
                     x: tissueX, y: tissueY - 12,
                     'font-size': 11, fill: '#c0392b', 'font-weight': '700', 'text-anchor': 'middle',
-                }, '⚠ above M_adj'));
+                }, '⚠ ceiling above depth'));
             }
         }
 
@@ -875,7 +926,7 @@
 
             if (c.violation) {
                 els.cardCeiling.classList.add('violation');
-                els.cardCeilingSub.textContent = translate('sandbox.gradientFactors.cards.ceiling.violation', 'Tissue above M_adj — supersaturation violation');
+                els.cardCeilingSub.textContent = translate('sandbox.gradientFactors.cards.ceiling.violation', 'Ceiling above current depth — ascending here would violate the limit');
             } else {
                 els.cardCeiling.classList.remove('violation');
             }
@@ -891,7 +942,7 @@
             els.compLabel.textContent = `TC${c.comp.id}`;
         }
 
-        function updateControlVisibility() {
+        function updateControlVisibility(c) {
             const isLoHi = state.mode === 'lohi';
             els.fieldGf.classList.toggle('hidden', isLoHi);
             els.fieldGfHi.classList.toggle('hidden', !isLoHi);
@@ -899,6 +950,7 @@
             els.fieldAnchor.classList.toggle('hidden', !isLoHi);
             els.modeSingleBtn.classList.toggle('active', !isLoHi);
             els.modeLoHiBtn.classList.toggle('active', isLoHi);
+            els.invertedWarning.hidden = !(c && c.gfInverted);
         }
 
         function render() {
@@ -907,7 +959,7 @@
             renderCorridor(c);
             renderPP(c);
             renderCards(c);
-            updateControlVisibility();
+            updateControlVisibility(c);
         }
 
         // -----------------------------------------------------------------
