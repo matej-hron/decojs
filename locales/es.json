@@ -1833,7 +1833,8 @@
                 "pp": {
                     "title": "Panel 2 — diagrama P-P (fórmulas 2 + 3)",
                     "legendRawM": "línea M cruda",
-                    "legendMAdj": "M_adj",
+                    "legendMAdj": "M_adj (curva)",
+                    "legendChord": "cuerda lineal (referencia)",
                     "legendAmbient": "ambiente (y = x)",
                     "legendTissue": "tejido P_t",
                     "legendCeiling": "techo"

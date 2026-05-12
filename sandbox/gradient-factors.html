@@ -340,7 +340,8 @@
                     <svg id="gfPPChart" viewBox="0 0 480 280" preserveAspectRatio="xMidYMid meet" aria-label="P-P diagram"></svg>
                     <div class="legend">
                         <span><span class="swatch" style="background:#e67e22"></span><span data-i18n="sandbox.gradientFactors.charts.pp.legendRawM">raw M-line</span></span>
-                        <span><span class="swatch" style="background:#f39c12"></span><span data-i18n="sandbox.gradientFactors.charts.pp.legendMAdj">M_adj</span></span>
+                        <span><span class="swatch" style="background:#f39c12"></span><span data-i18n="sandbox.gradientFactors.charts.pp.legendMAdj">M_adj (curved)</span></span>
+                        <span><span class="swatch" style="background:#34495e"></span><span data-i18n="sandbox.gradientFactors.charts.pp.legendChord">linear chord (reference)</span></span>
                         <span><span class="swatch" style="background:#7f8c8d"></span><span data-i18n="sandbox.gradientFactors.charts.pp.legendAmbient">ambient (y = x)</span></span>
                         <span><span class="swatch" style="background:#2980b9"></span><span data-i18n="sandbox.gradientFactors.charts.pp.legendTissue">tissue P_t</span></span>
                         <span><span class="swatch" style="background:#c0392b"></span><span data-i18n="sandbox.gradientFactors.charts.pp.legendCeiling">ceiling</span></span>
@@ -848,13 +849,24 @@
                     return pts.join(' ');
                 };
 
-                // Ramp region (surface → pAnchor): real curve.
+                // Reference chord (faint grey, straight): if M_adj were truly linear in P_amb
+                // along the ramp, this is what it would look like. The amber polyline below
+                // peels away from this — small deviation for slow compartments + narrow GF
+                // spread, larger for fast compartments + wide spread.
+                const mAdjAtHi = getAdjustedMValue(SURFACE_PRESSURE, a, b, state.gfHi);
+                const mAdjAtLo = getAdjustedMValue(c.pAnchor, a, b, state.gfLo);
+                svg.appendChild(e('line', {
+                    x1: surfaceX, y1: ppYToPx(mAdjAtHi),
+                    x2: anchorX, y2: ppYToPx(mAdjAtLo),
+                    stroke: '#34495e', 'stroke-width': 1.2, 'stroke-dasharray': '5,4', opacity: 0.9,
+                }));
+
+                // Ramp region (surface → pAnchor): the true M_adj curve (quadratic in P_amb).
                 svg.appendChild(e('polyline', {
                     points: sampleMAdjRamp(SURFACE_PRESSURE, c.pAnchor),
                     fill: 'none', stroke: '#f39c12', 'stroke-width': 2.5,
                 }));
                 // Past pAnchor: GF clamps at GF_lo, so M_adj becomes linear in P_amb again.
-                const mAdjAtLo = getAdjustedMValue(c.pAnchor, a, b, state.gfLo);
                 const mAdjAtEnd = getAdjustedMValue(X_MAX_BAR, a, b, state.gfLo);
                 svg.appendChild(e('line', {
                     x1: anchorX, y1: ppYToPx(mAdjAtLo),
@@ -862,7 +874,6 @@
                     stroke: '#f39c12', 'stroke-width': 1.5, 'stroke-dasharray': '4,3', opacity: 0.7,
                 }));
                 // Endpoint dots
-                const mAdjAtHi = getAdjustedMValue(SURFACE_PRESSURE, a, b, state.gfHi);
                 svg.appendChild(e('circle', { cx: surfaceX, cy: ppYToPx(mAdjAtHi), r: 3.5, fill: '#f39c12' }));
                 svg.appendChild(e('circle', { cx: anchorX, cy: ppYToPx(mAdjAtLo), r: 3.5, fill: '#f39c12' }));
             } else {

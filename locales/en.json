@@ -1869,7 +1869,8 @@
                 "pp": {
                     "title": "Panel 2 — P-P diagram (formulas 2 + 3)",
                     "legendRawM": "raw M-line",
-                    "legendMAdj": "M_adj",
+                    "legendMAdj": "M_adj (curved)",
+                    "legendChord": "linear chord (reference)",
                     "legendAmbient": "ambient (y = x)",
                     "legendTissue": "tissue P_t",
                     "legendCeiling": "ceiling"
