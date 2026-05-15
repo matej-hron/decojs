@@ -32,49 +32,107 @@
             margin-bottom: 0.5rem;
         }
 
-        /* Two-column workspace: charts on the left, controls sticky on the right. */
-        .gf-workspace {
-            display: grid;
-            grid-template-columns: 1fr 360px;
-            gap: 1rem;
-            align-items: start;
-            margin-bottom: 1rem;
+        /* Fixed-position control bar: charts get full width, sliders glued to the bottom
+           of the viewport so they're always reachable. */
+        .gf-layout { padding-bottom: 150px; }
+        .gf-control-bar {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            z-index: 100;
+            background: var(--card-background);
+            border-top: 1px solid var(--border-color);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.07);
+            padding: 0.45rem 0.9rem;
+            font-size: 0.78rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem 0.9rem;
+            align-items: center;
+            transition: transform 0.2s ease;
         }
-        .gf-charts-col { min-width: 0; display: flex; flex-direction: column; gap: 1rem; }
-        .gf-controls-col {
-            position: sticky;
-            top: 1rem;
-            max-height: calc(100vh - 2rem);
-            overflow-y: auto;
+        .gf-control-bar.collapsed { transform: translateY(calc(100% - 32px)); }
+        .gf-control-bar-toggle {
+            position: absolute;
+            top: -28px;
+            right: 12px;
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-bottom: none;
+            border-radius: 6px 6px 0 0;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+        .gf-control-bar .ctrl {
             display: flex;
             flex-direction: column;
-            gap: 0.75rem;
+            gap: 0.1rem;
+            min-width: 110px;
         }
-        .gf-controls-col .gf-section { margin-bottom: 0; }
-        .gf-controls-col .gf-inputs {
-            grid-template-columns: 1fr;
-            gap: 0.65rem;
+        .gf-control-bar .ctrl.hidden { display: none; }
+        .gf-control-bar .ctrl label {
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            display: flex;
+            justify-content: space-between;
+            gap: 0.4rem;
         }
-        .gf-controls-col .gf-cards {
-            grid-template-columns: 1fr;
-            gap: 0.5rem;
+        .gf-control-bar .ctrl label .ctrl-value {
+            color: var(--text-color);
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
         }
-        @media (max-width: 900px) {
-            .gf-workspace {
-                grid-template-columns: 1fr;
+        .gf-control-bar .ctrl input[type="range"] { width: 140px; margin: 0; }
+        .gf-control-bar .ctrl-static { display: flex; flex-direction: column; gap: 0.15rem; }
+        .gf-control-bar .ctrl-static .lbl { color: var(--text-muted); font-size: 0.7rem; }
+        .gf-control-bar .ctrl-static .value-row { display: flex; align-items: center; gap: 0.3rem; }
+        .gf-control-bar .gf-variant label { font-size: 0.78rem; padding: 0 0.15rem; }
+        .gf-control-bar .gf-mode-toggle { margin: 0; }
+        .gf-control-bar .gf-mode-toggle button { padding: 0.25rem 0.6rem; font-size: 0.75rem; }
+        .gf-control-bar .gf-comp-control { gap: 0.25rem; }
+        .gf-control-bar .gf-comp-control button { width: 22px; height: 22px; font-size: 0.75rem; }
+        .gf-control-bar .gf-comp-label { font-size: 0.85rem; min-width: 32px; }
+
+        /* Output chips inside the bar */
+        .gf-control-bar .outputs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-left: auto;
+            align-items: center;
+        }
+        .gf-control-bar .out-chip {
+            display: inline-flex;
+            flex-direction: column;
+            padding: 0.2rem 0.55rem;
+            border-radius: 4px;
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-top-width: 2px;
+            min-width: 90px;
+            line-height: 1.2;
+        }
+        .gf-control-bar .out-chip.gf { border-top-color: #16a085; }
+        .gf-control-bar .out-chip.mvalues { border-top-color: #f39c12; }
+        .gf-control-bar .out-chip.ceiling { border-top-color: #c0392b; }
+        .gf-control-bar .out-chip .lbl { color: var(--text-muted); font-size: 0.65rem; }
+        .gf-control-bar .out-chip .val {
+            font-weight: 700;
+            font-size: 0.88rem;
+            font-variant-numeric: tabular-nums;
+        }
+        .gf-control-bar .out-chip.ceiling.violation .val { color: #c0392b; }
+        .gf-control-bar .out-chip .sub { color: var(--text-muted); font-size: 0.65rem; }
+
+        @media (max-width: 700px) {
+            .gf-control-bar {
+                gap: 0.3rem 0.6rem;
+                padding: 0.35rem 0.55rem;
             }
-            .gf-controls-col {
-                position: static;
-                max-height: none;
-                overflow-y: visible;
-                order: -1;       /* controls first on mobile */
-            }
-            .gf-controls-col .gf-inputs {
-                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            }
-            .gf-controls-col .gf-cards {
-                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            }
+            .gf-control-bar .ctrl input[type="range"] { width: 100px; }
+            .gf-control-bar .ctrl { min-width: 90px; }
+            .gf-control-bar .outputs { margin-left: 0; }
         }
 
         /* Mode toggle pill */
@@ -332,9 +390,6 @@
             <p class="wip-note" data-i18n="sandbox.gradientFactors.wipNote">🚧 Work in progress — experimental playground. Feedback welcome.</p>
         </header>
 
-        <div class="gf-workspace">
-        <div class="gf-charts-col">
-
         <!-- Formula readout -->
         <section class="gf-section">
             <h2 data-i18n="sandbox.gradientFactors.formulas.heading">Live formula readout</h2>
@@ -390,110 +445,12 @@
             </div>
         </section>
 
-        </div><!-- /.gf-charts-col -->
-        <aside class="gf-controls-col">
-
-        <!-- Mode toggle (lives with the controls so it's always reachable) -->
-        <section class="gf-section">
-            <h2 data-i18n="sandbox.gradientFactors.controls.heading">Controls</h2>
-            <div class="gf-mode-toggle" role="tablist" aria-label="GF mode">
-                <button id="gfModeSingle" type="button" role="tab" data-mode="single"
-                        data-i18n="sandbox.gradientFactors.mode.single">Single GF</button>
-                <button id="gfModeLoHi" type="button" role="tab" class="active" data-mode="lohi"
-                        data-i18n="sandbox.gradientFactors.mode.lohi">GF Lo + Hi</button>
-            </div>
-
-            <div class="gf-inputs">
-                <div class="field">
-                    <label data-i18n="sandbox.gradientFactors.controls.compartment">Tissue compartment (TC)</label>
-                    <div class="gf-comp-control">
-                        <button id="gfCompPrev" type="button" aria-label="Previous compartment" title="Previous compartment">◀</button>
-                        <span class="gf-comp-label" id="gfCompLabel">TC6</span>
-                        <button id="gfCompNext" type="button" aria-label="Next compartment" title="Next compartment">▶</button>
-                    </div>
-                </div>
-                <div class="field">
-                    <label data-i18n="sandbox.gradientFactors.controls.variant">Variant</label>
-                    <div class="gf-variant" id="gfVariantGroup">
-                        <label><input type="radio" name="gfVariant" value="ZH-L16A"> A</label>
-                        <label><input type="radio" name="gfVariant" value="ZH-L16B"> B</label>
-                        <label><input type="radio" name="gfVariant" value="ZH-L16C" checked> C</label>
-                    </div>
-                </div>
-                <div class="field">
-                    <label><span data-i18n="sandbox.gradientFactors.controls.depth">Current depth (m)</span></label>
-                    <div class="row-with-num">
-                        <input type="range" id="gfDepthSlider" min="0" max="40" step="0.5" value="18">
-                        <input type="number" id="gfDepthNum" min="0" max="40" step="0.5" value="18">
-                    </div>
-                </div>
-                <div class="field">
-                    <label><span data-i18n="sandbox.gradientFactors.controls.tissuePt">Tissue P_t (bar)</span></label>
-                    <div class="row-with-num">
-                        <input type="range" id="gfTissueSlider" min="0.7" max="6" step="0.01" value="2.4">
-                        <input type="number" id="gfTissueNum" min="0.7" max="6" step="0.01" value="2.40">
-                    </div>
-                </div>
-                <div class="field" id="gfFieldGf">
-                    <label><span data-i18n="sandbox.gradientFactors.controls.gf">GF (%)</span></label>
-                    <div class="row-with-num">
-                        <input type="range" id="gfGfSlider" min="0" max="100" step="1" value="70">
-                        <input type="number" id="gfGfNum" min="0" max="100" step="1" value="70">
-                    </div>
-                </div>
-                <div class="field" id="gfFieldGfHi">
-                    <label><span data-i18n="sandbox.gradientFactors.controls.gfHi">GF Hi (%)</span></label>
-                    <div class="row-with-num">
-                        <input type="range" id="gfGfHiSlider" min="0" max="100" step="1" value="70">
-                        <input type="number" id="gfGfHiNum" min="0" max="100" step="1" value="70">
-                    </div>
-                </div>
-                <div class="field" id="gfFieldGfLo">
-                    <label><span data-i18n="sandbox.gradientFactors.controls.gfLo">GF Lo (%)</span></label>
-                    <div class="row-with-num">
-                        <input type="range" id="gfGfLoSlider" min="0" max="100" step="1" value="30">
-                        <input type="number" id="gfGfLoNum" min="0" max="100" step="1" value="30">
-                    </div>
-                </div>
-                <div class="field" id="gfFieldAnchor">
-                    <label><span data-i18n="sandbox.gradientFactors.controls.anchor">Anchor depth (m)</span></label>
-                    <div class="row-with-num">
-                        <input type="range" id="gfAnchorSlider" min="3" max="30" step="0.5" value="18">
-                        <input type="number" id="gfAnchorNum" min="3" max="30" step="0.5" value="18">
-                    </div>
-                    <div class="field-hint" data-i18n="sandbox.gradientFactors.controls.anchorHint">Teaching knob — scrub to see the ramp tilt. In a real dive, pAnchor is <em>derived</em> from tissue state, not chosen.</div>
-                </div>
-            </div>
+        <!-- Anchor hint + warning live in main flow (they're explanatory, not slider-bound) -->
+        <div id="gfBelowChartsNotes">
             <div class="gf-warning" id="gfInvertedWarning" hidden>
                 <span data-i18n="sandbox.gradientFactors.warnings.inverted">⚠ GF Lo &gt; GF Hi — the ramp is inverted. Real dives never run this way.</span>
             </div>
-
-            <!-- Output cards -->
-            <div class="gf-cards">
-                <div class="gf-card" id="gfCardGf">
-                    <div class="name" data-i18n="sandbox.gradientFactors.cards.gf.name">GF at current depth</div>
-                    <div class="value" id="gfCardGfValue">—</div>
-                    <div class="sub" id="gfCardGfSub" data-i18n="sandbox.gradientFactors.cards.gf.sub">interpolated from formula 1</div>
-                </div>
-                <div class="gf-card mvalues">
-                    <div class="name" data-i18n="sandbox.gradientFactors.cards.mvalues.name">M  /  M_adj</div>
-                    <div class="value">
-                        <span id="gfCardMVal">—</span>
-                        <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: normal;"> · </span>
-                        <span id="gfCardMAdjVal" style="color:#f39c12;">—</span>
-                    </div>
-                    <div class="delta" id="gfCardMDelta">—</div>
-                </div>
-                <div class="gf-card ceiling" id="gfCardCeiling">
-                    <div class="name" data-i18n="sandbox.gradientFactors.cards.ceiling.name">Ceiling</div>
-                    <div class="value" id="gfCardCeilingValue">—</div>
-                    <div class="sub" id="gfCardCeilingSub">—</div>
-                </div>
-            </div>
-        </section>
-
-        </aside><!-- /.gf-controls-col -->
-        </div><!-- /.gf-workspace -->
+        </div>
 
         <!-- Term cards -->
         <section class="gf-section">
@@ -542,6 +499,85 @@
             </ul>
         </section>
     </main>
+
+    <!-- Fixed control bar — always visible at the bottom of the viewport -->
+    <aside class="gf-control-bar" id="gfControlBar" aria-label="Sandbox controls">
+        <button type="button" class="gf-control-bar-toggle" id="gfBarToggle" aria-label="Collapse controls" title="Collapse / expand controls">▼ <span data-i18n="sandbox.gradientFactors.barToggle.label">controls</span></button>
+
+        <!-- Mode toggle -->
+        <div class="gf-mode-toggle" role="tablist" aria-label="GF mode">
+            <button id="gfModeSingle" type="button" role="tab" data-mode="single"
+                    data-i18n="sandbox.gradientFactors.mode.single">Single GF</button>
+            <button id="gfModeLoHi" type="button" role="tab" class="active" data-mode="lohi"
+                    data-i18n="sandbox.gradientFactors.mode.lohi">GF Lo + Hi</button>
+        </div>
+
+        <!-- Compartment picker (static control) -->
+        <div class="ctrl ctrl-static">
+            <span class="lbl" data-i18n="sandbox.gradientFactors.controls.compartmentShort">Compartment</span>
+            <div class="value-row gf-comp-control">
+                <button id="gfCompPrev" type="button" aria-label="Previous compartment" title="Previous compartment">◀</button>
+                <span class="gf-comp-label" id="gfCompLabel">TC6</span>
+                <button id="gfCompNext" type="button" aria-label="Next compartment" title="Next compartment">▶</button>
+            </div>
+        </div>
+
+        <!-- Variant (static control) -->
+        <div class="ctrl ctrl-static">
+            <span class="lbl" data-i18n="sandbox.gradientFactors.controls.variantShort">Variant</span>
+            <div class="value-row gf-variant" id="gfVariantGroup">
+                <label><input type="radio" name="gfVariant" value="ZH-L16A"> A</label>
+                <label><input type="radio" name="gfVariant" value="ZH-L16B"> B</label>
+                <label><input type="radio" name="gfVariant" value="ZH-L16C" checked> C</label>
+            </div>
+        </div>
+
+        <!-- Slider controls -->
+        <div class="ctrl">
+            <label><span data-i18n="sandbox.gradientFactors.controls.depthShort">Depth</span><span class="ctrl-value" id="gfDepthVal">18 m</span></label>
+            <input type="range" id="gfDepthSlider" min="0" max="40" step="0.5" value="18">
+        </div>
+        <div class="ctrl">
+            <label><span data-i18n="sandbox.gradientFactors.controls.tissueShort">P_t</span><span class="ctrl-value" id="gfTissueVal">2.40 bar</span></label>
+            <input type="range" id="gfTissueSlider" min="0.7" max="6" step="0.01" value="2.4">
+        </div>
+        <div class="ctrl" id="gfFieldGf">
+            <label><span data-i18n="sandbox.gradientFactors.controls.gfShort">GF</span><span class="ctrl-value" id="gfGfVal">70%</span></label>
+            <input type="range" id="gfGfSlider" min="0" max="100" step="1" value="70">
+        </div>
+        <div class="ctrl" id="gfFieldGfHi">
+            <label><span data-i18n="sandbox.gradientFactors.controls.gfHiShort">GF Hi</span><span class="ctrl-value" id="gfGfHiVal">70%</span></label>
+            <input type="range" id="gfGfHiSlider" min="0" max="100" step="1" value="70">
+        </div>
+        <div class="ctrl" id="gfFieldGfLo">
+            <label><span data-i18n="sandbox.gradientFactors.controls.gfLoShort">GF Lo</span><span class="ctrl-value" id="gfGfLoVal">30%</span></label>
+            <input type="range" id="gfGfLoSlider" min="0" max="100" step="1" value="30">
+        </div>
+        <div class="ctrl" id="gfFieldAnchor">
+            <label><span data-i18n="sandbox.gradientFactors.controls.anchorShort">Anchor</span><span class="ctrl-value" id="gfAnchorVal">18 m</span></label>
+            <input type="range" id="gfAnchorSlider" min="3" max="30" step="0.5" value="18">
+        </div>
+
+        <!-- Output chips -->
+        <div class="outputs">
+            <div class="out-chip gf">
+                <span class="lbl" data-i18n="sandbox.gradientFactors.cards.gf.name">GF at current depth</span>
+                <span class="val" id="gfCardGfValue">—</span>
+            </div>
+            <div class="out-chip mvalues">
+                <span class="lbl">M / M<sub>adj</sub></span>
+                <span class="val">
+                    <span id="gfCardMVal">—</span><span style="color: var(--text-muted); font-weight: normal;"> · </span><span id="gfCardMAdjVal" style="color:#f39c12;">—</span>
+                </span>
+                <span class="sub" id="gfCardMDelta">—</span>
+            </div>
+            <div class="out-chip ceiling" id="gfCardCeiling">
+                <span class="lbl" data-i18n="sandbox.gradientFactors.cards.ceiling.name">Ceiling</span>
+                <span class="val" id="gfCardCeilingValue">—</span>
+                <span class="sub" id="gfCardCeilingSub">—</span>
+            </div>
+        </div>
+    </aside>
 
     <footer>
         <span class="wip-badge" data-i18n="common.wipBadge">Experimental</span>
@@ -610,19 +646,23 @@
             // Variant
             variantGroup: document.getElementById('gfVariantGroup'),
 
-            // Sliders
+            // Sliders + their inline value displays
             depthSlider: document.getElementById('gfDepthSlider'),
-            depthNum: document.getElementById('gfDepthNum'),
+            depthVal: document.getElementById('gfDepthVal'),
             tissueSlider: document.getElementById('gfTissueSlider'),
-            tissueNum: document.getElementById('gfTissueNum'),
+            tissueVal: document.getElementById('gfTissueVal'),
             gfSlider: document.getElementById('gfGfSlider'),
-            gfNum: document.getElementById('gfGfNum'),
+            gfVal: document.getElementById('gfGfVal'),
             gfHiSlider: document.getElementById('gfGfHiSlider'),
-            gfHiNum: document.getElementById('gfGfHiNum'),
+            gfHiVal: document.getElementById('gfGfHiVal'),
             gfLoSlider: document.getElementById('gfGfLoSlider'),
-            gfLoNum: document.getElementById('gfGfLoNum'),
+            gfLoVal: document.getElementById('gfGfLoVal'),
             anchorSlider: document.getElementById('gfAnchorSlider'),
-            anchorNum: document.getElementById('gfAnchorNum'),
+            anchorVal: document.getElementById('gfAnchorVal'),
+
+            // Control-bar toggle
+            controlBar: document.getElementById('gfControlBar'),
+            barToggle: document.getElementById('gfBarToggle'),
 
             // Field containers (for show/hide per mode)
             fieldGf: document.getElementById('gfFieldGf'),
@@ -1052,60 +1092,61 @@
         // -----------------------------------------------------------------
         // Event wiring
         // -----------------------------------------------------------------
-        function bindSliderPair(slider, num, parser, setter, opts = {}) {
-            const sync = (raw) => {
-                const v = parser(raw);
+        function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+        function bindSlider(slider, valEl, parser, setter, fmt) {
+            slider.addEventListener('input', () => {
+                const v = parser(slider.value);
                 setter(v);
-                if (opts.numFormat) {
-                    num.value = opts.numFormat(v);
-                } else {
-                    num.value = v;
-                }
-                slider.value = String(v);
+                valEl.textContent = fmt(v);
                 render();
-            };
-            slider.addEventListener('input', () => sync(slider.value));
-            num.addEventListener('input', () => sync(num.value));
+            });
         }
 
-        bindSliderPair(
-            els.depthSlider, els.depthNum,
+        bindSlider(
+            els.depthSlider, els.depthVal,
             (v) => clamp(parseFloat(v) || 0, 0, 40),
             (v) => { state.depth = v; },
-            { numFormat: (v) => v.toFixed(1) }
+            (v) => `${v.toFixed(1)} m`
         );
-        bindSliderPair(
-            els.tissueSlider, els.tissueNum,
+        bindSlider(
+            els.tissueSlider, els.tissueVal,
             (v) => clamp(parseFloat(v) || 0, 0.7, 6),
             (v) => { state.tissuePt = v; },
-            { numFormat: (v) => v.toFixed(2) }
+            (v) => `${v.toFixed(2)} bar`
         );
-        bindSliderPair(
-            els.gfSlider, els.gfNum,
+        bindSlider(
+            els.gfSlider, els.gfVal,
             (v) => clamp(parseInt(v, 10) || 0, 0, 100),
-            (v) => { state.gf = v / 100; }
+            (v) => { state.gf = v / 100; },
+            (v) => `${v}%`
         );
-        bindSliderPair(
-            els.gfHiSlider, els.gfHiNum,
+        bindSlider(
+            els.gfHiSlider, els.gfHiVal,
             (v) => clamp(parseInt(v, 10) || 0, 0, 100),
-            (v) => { state.gfHi = v / 100; }
+            (v) => { state.gfHi = v / 100; },
+            (v) => `${v}%`
         );
-        bindSliderPair(
-            els.gfLoSlider, els.gfLoNum,
+        bindSlider(
+            els.gfLoSlider, els.gfLoVal,
             (v) => clamp(parseInt(v, 10) || 0, 0, 100),
-            (v) => { state.gfLo = v / 100; }
+            (v) => { state.gfLo = v / 100; },
+            (v) => `${v}%`
         );
-        bindSliderPair(
-            els.anchorSlider, els.anchorNum,
+        bindSlider(
+            els.anchorSlider, els.anchorVal,
             (v) => clamp(parseFloat(v) || 0, 3, 30),
             (v) => { state.anchorDepth = v; },
-            { numFormat: (v) => v.toFixed(1) }
+            (v) => `${v.toFixed(1)} m`
         );
-
-        function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
         els.modeSingleBtn.addEventListener('click', () => { state.mode = 'single'; render(); });
         els.modeLoHiBtn.addEventListener('click', () => { state.mode = 'lohi'; render(); });
+
+        els.barToggle.addEventListener('click', () => {
+            const collapsed = els.controlBar.classList.toggle('collapsed');
+            els.barToggle.firstChild.textContent = collapsed ? '▲ ' : '▼ ';
+        });
 
         els.compPrev.addEventListener('click', () => {
             state.compartmentIdx = Math.max(0, state.compartmentIdx - 1);

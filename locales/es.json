@@ -1850,7 +1850,18 @@
                 "gfHi": "GF Hi (%)",
                 "gfLo": "GF Lo (%)",
                 "anchor": "Profundidad del ancla (m)",
-                "anchorHint": "Control didáctico — muévelo para ver cómo se inclina la rampa. En una inmersión real, pAnchor se <em>deriva</em> del estado tisular, no se elige."
+                "anchorHint": "Control didáctico — muévelo para ver cómo se inclina la rampa. En una inmersión real, pAnchor se <em>deriva</em> del estado tisular, no se elige.",
+                "compartmentShort": "Compartimento",
+                "variantShort": "Variante",
+                "depthShort": "Profundidad",
+                "tissueShort": "P_t",
+                "gfShort": "GF",
+                "gfHiShort": "GF Hi",
+                "gfLoShort": "GF Lo",
+                "anchorShort": "Ancla"
+            },
+            "barToggle": {
+                "label": "controles"
             },
             "warnings": {
                 "inverted": "⚠ GF Lo &gt; GF Hi — la rampa está invertida. En inmersiones reales nunca se da."
