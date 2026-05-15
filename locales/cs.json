@@ -1886,7 +1886,18 @@
                 "gfHi": "GF Hi (%)",
                 "gfLo": "GF Lo (%)",
                 "anchor": "Hloubka kotvy (m)",
-                "anchorHint": "Učební ovladač — posouvejte, abyste viděli, jak se rampa naklání. Při skutečném ponoru se pAnchor <em>odvozuje</em> ze stavu tkání, nevolíte ho."
+                "anchorHint": "Učební ovladač — posouvejte, abyste viděli, jak se rampa naklání. Při skutečném ponoru se pAnchor <em>odvozuje</em> ze stavu tkání, nevolíte ho.",
+                "compartmentShort": "Kompartment",
+                "variantShort": "Varianta",
+                "depthShort": "Hloubka",
+                "tissueShort": "P_t",
+                "gfShort": "GF",
+                "gfHiShort": "GF Hi",
+                "gfLoShort": "GF Lo",
+                "anchorShort": "Kotva"
+            },
+            "barToggle": {
+                "label": "ovládání"
             },
             "warnings": {
                 "inverted": "⚠ GF Lo &gt; GF Hi — rampa je obrácená. Při skutečném ponoru to takhle nikdy nenastane."

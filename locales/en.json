@@ -1886,7 +1886,18 @@
                 "gfHi": "GF Hi (%)",
                 "gfLo": "GF Lo (%)",
                 "anchor": "Anchor depth (m)",
-                "anchorHint": "Teaching knob — scrub to see the ramp tilt. In a real dive, pAnchor is <em>derived</em> from tissue state, not chosen."
+                "anchorHint": "Teaching knob — scrub to see the ramp tilt. In a real dive, pAnchor is <em>derived</em> from tissue state, not chosen.",
+                "compartmentShort": "Compartment",
+                "variantShort": "Variant",
+                "depthShort": "Depth",
+                "tissueShort": "P_t",
+                "gfShort": "GF",
+                "gfHiShort": "GF Hi",
+                "gfLoShort": "GF Lo",
+                "anchorShort": "Anchor"
+            },
+            "barToggle": {
+                "label": "controls"
             },
             "warnings": {
                 "inverted": "⚠ GF Lo &gt; GF Hi — the ramp is inverted. Real dives never run this way."
