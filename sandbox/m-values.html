@@ -19,6 +19,136 @@
             max-width: 1100px;
             margin: 0 auto;
             padding: 1rem;
+            padding-bottom: 160px;   /* leave space for the fixed bottom control bar */
+        }
+
+        /* Sandbox bottom control bar (shared pattern across sandboxes). */
+        .sandbox-control-bar {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            z-index: 100;
+            background: var(--card-background);
+            border-top: 1px solid var(--border-color);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.07);
+            padding: 0.45rem 0.9rem;
+            font-size: 0.78rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem 0.9rem;
+            align-items: center;
+            transition: transform 0.2s ease;
+        }
+        .sandbox-control-bar.collapsed { transform: translateY(calc(100% - 32px)); }
+        .sandbox-control-bar-toggle {
+            position: absolute;
+            top: -28px;
+            right: 12px;
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-bottom: none;
+            border-radius: 6px 6px 0 0;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+        .sandbox-control-bar .ctrl {
+            display: flex;
+            flex-direction: column;
+            gap: 0.1rem;
+            min-width: 110px;
+        }
+        .sandbox-control-bar .ctrl label {
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            display: flex;
+            justify-content: space-between;
+            gap: 0.4rem;
+        }
+        .sandbox-control-bar .ctrl label .ctrl-value {
+            color: var(--text-color);
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+        .sandbox-control-bar .ctrl input[type="range"] { width: 180px; margin: 0; }
+        .sandbox-control-bar .ctrl input[type="number"] {
+            width: 70px;
+            padding: 0.2rem 0.35rem;
+            font-size: 0.85rem;
+            border: 1px solid var(--border-color);
+            border-radius: 3px;
+            background: var(--card-background);
+        }
+        .sandbox-control-bar .ctrl-static { display: flex; flex-direction: column; gap: 0.15rem; }
+        .sandbox-control-bar .ctrl-static .lbl { color: var(--text-muted); font-size: 0.7rem; }
+        .sandbox-control-bar .ctrl-static select {
+            padding: 0.2rem 0.35rem;
+            font-size: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 3px;
+            background: var(--card-background);
+            max-width: 180px;
+        }
+        .sandbox-control-bar .toggle-row {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.78rem;
+            cursor: pointer;
+        }
+        .sandbox-control-bar .toggle-row input[type="checkbox"] { width: auto; margin: 0; }
+        .sandbox-control-bar .gf-variant,
+        .sandbox-control-bar .variant-options {
+            display: inline-flex;
+            gap: 0.4rem;
+            font-size: 0.85rem;
+        }
+        .sandbox-control-bar .variant-options label { cursor: pointer; font-weight: normal; }
+        .sandbox-control-bar .view-toggle {
+            display: inline-flex;
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 2px;
+            gap: 2px;
+        }
+        .sandbox-control-bar .view-toggle button {
+            border: none;
+            background: transparent;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.78rem;
+            cursor: pointer;
+            border-radius: 3px;
+            color: var(--text-muted);
+        }
+        .sandbox-control-bar .view-toggle button.active {
+            background: #2980b9;
+            color: #fff;
+        }
+        .sandbox-control-bar .mv-comp-control {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .sandbox-control-bar .mv-step-btn {
+            width: 22px; height: 22px; padding: 0;
+            border: 1px solid var(--border-color);
+            background: var(--card-background);
+            border-radius: 3px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        .sandbox-control-bar .mv-comp-current {
+            font-weight: 700; color: #2980b9; min-width: 30px; text-align: center;
+            font-size: 0.85rem;
+        }
+        @media (max-width: 700px) {
+            .sandbox-control-bar {
+                gap: 0.3rem 0.6rem;
+                padding: 0.35rem 0.55rem;
+            }
+            .sandbox-control-bar .ctrl input[type="range"] { width: 130px; }
+            .sandbox-control-bar .ctrl { min-width: 90px; }
         }
         .mvalues-section {
             margin-bottom: 2rem;
@@ -366,35 +496,9 @@
 
     <!-- Layout (playgrounds added in later tasks) -->
     <div class="mvalues-layout">
-        <div class="variant-bar">
-            <label data-i18n="sandbox.mvalues.variantBar.label">ZH-L16 variant (applies to both playgrounds):</label>
-            <div class="variant-options" id="mvVariantBar">
-                <label><input type="radio" name="mvVariant" value="ZH-L16A"> A</label>
-                <label><input type="radio" name="mvVariant" value="ZH-L16B"> B</label>
-                <label><input type="radio" name="mvVariant" value="ZH-L16C" checked> C</label>
-            </div>
-        </div>
         <section class="mvalues-section top">
             <h2 data-i18n="sandbox.mvalues.top.heading">What does M look like at this depth?</h2>
             <p class="mvalues-anchor" data-i18n="sandbox.mvalues.top.anchor">Pick a depth, a compartment, and a variant — see Bühlmann's M-value formula evaluate live.</p>
-
-            <div class="mvalues-inputs">
-                <div class="field">
-                    <label for="mvDepth" data-i18n="sandbox.mvalues.top.inputs.depth">Depth (m)</label>
-                    <input type="number" id="mvDepth" min="0" max="30" step="0.1" value="30">
-                </div>
-                <div class="field">
-                    <label for="mvCompartment" data-i18n="sandbox.mvalues.top.inputs.compartment">Tissue compartment (TC)</label>
-                    <select id="mvCompartment"><!-- populated by JS --></select>
-                </div>
-                <div class="field">
-                    <label data-i18n="sandbox.mvalues.top.inputs.viewToggle.label">View</label>
-                    <div class="view-toggle" id="mvViewToggle">
-                        <button type="button" data-view="this" class="active" data-i18n="sandbox.mvalues.top.inputs.viewToggle.thisComp">This compartment</button>
-                        <button type="button" data-view="all" data-i18n="sandbox.mvalues.top.inputs.viewToggle.all16">All 16</button>
-                    </div>
-                </div>
-            </div>
 
             <div class="mvalues-formula">
                 <div class="formula-symbolic">
@@ -465,32 +569,6 @@
                 </div>
             </div>
 
-            <div class="mv-deriv-inputs">
-                <div class="row">
-                    <label for="mvHalfTime" data-i18n="sandbox.mvalues.bottom.inputs.halfTime">Half-time t½ (min)</label>
-                    <input type="range" id="mvHalfTimeSlider" min="0" max="100" step="0.1" value="50">
-                    <input type="number" id="mvHalfTime" min="1" max="700" step="0.1" value="38.3">
-                </div>
-                <div class="row">
-                    <label></label>
-                    <label class="toggle-row" style="cursor:pointer;">
-                        <input type="checkbox" id="mvSnapToggle">
-                        <span class="toggle-hint" data-i18n="sandbox.mvalues.bottom.inputs.snapToggle">Snap to standard compartments</span>
-                    </label>
-                    <button type="button" id="mvCompPrev" class="mv-step-btn" aria-label="Previous compartment" title="Previous compartment">◀</button>
-                    <span id="mvCompCurrent" class="mv-comp-current">TC5</span>
-                    <button type="button" id="mvCompNext" class="mv-step-btn" aria-label="Next compartment" title="Next compartment">▶</button>
-                </div>
-                <div class="row">
-                    <label data-i18n="sandbox.mvalues.variantBar.shortLabel">Variant:</label>
-                    <div class="variant-options" id="mvVariantBarBottom">
-                        <label><input type="radio" name="mvVariantBottom" value="ZH-L16A"> A</label>
-                        <label><input type="radio" name="mvVariantBottom" value="ZH-L16B"> B</label>
-                        <label><input type="radio" name="mvVariantBottom" value="ZH-L16C" checked> C</label>
-                    </div>
-                </div>
-            </div>
-
             <div class="mv-deriv-row">
                 <div class="mv-deriv-card th">
                     <div class="name" data-i18n="sandbox.mvalues.bottom.cards.halfTime.name">t<sub>½</sub> | half-time</div>
@@ -532,6 +610,63 @@
     </ul>
 </section>
     </div>
+
+    <!-- Fixed control bar — always visible at the bottom of the viewport -->
+    <aside class="sandbox-control-bar" id="mvControlBar" aria-label="Sandbox controls">
+        <button type="button" class="sandbox-control-bar-toggle" id="mvBarToggle" aria-label="Collapse controls" title="Collapse / expand controls">▼ <span data-i18n="sandbox.mvalues.barToggle">controls</span></button>
+
+        <!-- Variant (shared across both playgrounds) -->
+        <div class="ctrl ctrl-static">
+            <span class="lbl" data-i18n="sandbox.mvalues.variantBar.shortLabel">Variant</span>
+            <div class="variant-options" id="mvVariantBar">
+                <label><input type="radio" name="mvVariant" value="ZH-L16A"> A</label>
+                <label><input type="radio" name="mvVariant" value="ZH-L16B"> B</label>
+                <label><input type="radio" name="mvVariant" value="ZH-L16C" checked> C</label>
+            </div>
+        </div>
+
+        <!-- Top playground controls -->
+        <div class="ctrl ctrl-static">
+            <span class="lbl" data-i18n="sandbox.mvalues.top.inputs.depthShort">Depth (m)</span>
+            <input type="number" id="mvDepth" min="0" max="30" step="0.1" value="30">
+        </div>
+        <div class="ctrl ctrl-static">
+            <span class="lbl" data-i18n="sandbox.mvalues.top.inputs.compartment">TC</span>
+            <select id="mvCompartment"><!-- populated by JS --></select>
+        </div>
+        <div class="ctrl ctrl-static">
+            <span class="lbl" data-i18n="sandbox.mvalues.top.inputs.viewToggle.label">View</span>
+            <div class="view-toggle" id="mvViewToggle">
+                <button type="button" data-view="this" class="active" data-i18n="sandbox.mvalues.top.inputs.viewToggle.thisComp">This</button>
+                <button type="button" data-view="all" data-i18n="sandbox.mvalues.top.inputs.viewToggle.all16">All 16</button>
+            </div>
+        </div>
+
+        <!-- Bottom playground controls -->
+        <div class="ctrl">
+            <label><span data-i18n="sandbox.mvalues.bottom.inputs.halfTimeShort">t½ (min)</span><span class="ctrl-value"><span id="mvHalfTimeReadout">38.3</span></span></label>
+            <input type="range" id="mvHalfTimeSlider" min="0" max="100" step="0.1" value="50">
+        </div>
+        <div class="ctrl ctrl-static">
+            <span class="lbl" data-i18n="sandbox.mvalues.bottom.inputs.halfTimeExact">Exact t½</span>
+            <input type="number" id="mvHalfTime" min="1" max="700" step="0.1" value="38.3">
+        </div>
+        <div class="ctrl ctrl-static">
+            <span class="lbl">&nbsp;</span>
+            <label class="toggle-row">
+                <input type="checkbox" id="mvSnapToggle">
+                <span data-i18n="sandbox.mvalues.bottom.inputs.snapToggleShort">Snap</span>
+            </label>
+        </div>
+        <div class="ctrl ctrl-static">
+            <span class="lbl" data-i18n="sandbox.mvalues.bottom.inputs.derivCompartment">Comp</span>
+            <div class="mv-comp-control">
+                <button type="button" id="mvCompPrev" class="mv-step-btn" aria-label="Previous compartment" title="Previous compartment">◀</button>
+                <span id="mvCompCurrent" class="mv-comp-current">TC5</span>
+                <button type="button" id="mvCompNext" class="mv-step-btn" aria-label="Next compartment" title="Next compartment">▶</button>
+            </div>
+        </div>
+    </aside>
 
     <!-- Footer -->
     <footer>
@@ -656,6 +791,10 @@
             els.derivHalfTime.textContent = t.toFixed(1);
             els.derivA.textContent = a.toFixed(4);
             els.derivB.textContent = b.toFixed(4);
+
+            // Mirror current t½ into the slider readout in the bottom control bar.
+            const readout = document.getElementById('mvHalfTimeReadout');
+            if (readout) readout.textContent = t.toFixed(1);
 
             // Delta — only when slider is exactly at a standard t½ for the active variant
             const comps = VARIANT_COMPS[state.variant];
@@ -1120,17 +1259,14 @@
         els.compPrev.addEventListener('click', () => stepCompartment(-1));
         els.compNext.addEventListener('click', () => stepCompartment(+1));
 
-        // Variant change is unified: both top + bottom variant bars feed setVariant()
         function setVariant(v) {
             if (state.variant === v) return;
             state.variant = v;
             setZHL16Variant(v);
             populateCompartments();
-            // Sync both variant bars' radio state so they don't diverge
-            const top = document.querySelector(`#mvVariantBar input[value="${v}"]`);
-            const bot = document.querySelector(`#mvVariantBarBottom input[value="${v}"]`);
-            if (top) top.checked = true;
-            if (bot) bot.checked = true;
+            // Make sure the variant bar reflects state (e.g., on programmatic change).
+            const radio = document.querySelector(`#mvVariantBar input[value="${v}"]`);
+            if (radio) radio.checked = true;
             // Re-snap if needed (only relevant for TC1 between A and B/C)
             if (state.snap) {
                 const comps = VARIANT_COMPS[state.variant];
@@ -1145,10 +1281,16 @@
             if (e.target.name !== 'mvVariant') return;
             setVariant(e.target.value);
         });
-        document.getElementById('mvVariantBarBottom').addEventListener('change', (e) => {
-            if (e.target.name !== 'mvVariantBottom') return;
-            setVariant(e.target.value);
-        });
+
+        // Bottom control bar collapse toggle
+        const mvControlBar = document.getElementById('mvControlBar');
+        const mvBarToggle = document.getElementById('mvBarToggle');
+        if (mvBarToggle && mvControlBar) {
+            mvBarToggle.addEventListener('click', () => {
+                const collapsed = mvControlBar.classList.toggle('collapsed');
+                mvBarToggle.firstChild.textContent = collapsed ? '▲ ' : '▼ ';
+            });
+        }
 
         // Initial slider position
         els.halfTimeSlider.value = halfTimeToSlider(state.halfTime).toString();

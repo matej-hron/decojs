@@ -1772,6 +1772,7 @@
         "mvalues": {
             "title": "M-Values",
             "subtitle": "Where the line comes from, and what it looks like for all 16 compartments.",
+            "barToggle": "controls",
             "disclaimerBanner": "<strong>Educational Use Only</strong> — Interactive walk-through of Bühlmann's M-value formula and where its coefficients come from.",
             "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only. The actual diving algorithm uses additional logic.",
             "top": {
@@ -1779,10 +1780,11 @@
                 "anchor": "Pick a depth, a compartment, and a variant — see Bühlmann's M-value formula evaluate live.",
                 "inputs": {
                     "depth": "Depth (m)",
-                    "compartment": "Tissue compartment (TC)",
+                    "depthShort": "Depth (m)",
+                    "compartment": "TC",
                     "viewToggle": {
                         "label": "View",
-                        "thisComp": "This compartment",
+                        "thisComp": "This",
                         "all16": "All 16"
                     }
                 },
@@ -1829,7 +1831,11 @@
                 "anchor": "ZH-L16A's a and b aren't fitted to data — they're computed from half-time alone. Variants B and C are post-hoc adjustments to specific compartments.",
                 "inputs": {
                     "halfTime": "Half-time t½ (min)",
-                    "snapToggle": "Snap to standard compartments"
+                    "halfTimeShort": "t½ (min)",
+                    "halfTimeExact": "Exact t½",
+                    "snapToggle": "Snap to standard compartments",
+                    "snapToggleShort": "Snap",
+                    "derivCompartment": "Comp"
                 },
                 "cards": {
                     "halfTime": {

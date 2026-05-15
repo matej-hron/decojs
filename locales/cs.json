@@ -1772,6 +1772,7 @@
         "mvalues": {
             "title": "M-hodnoty",
             "subtitle": "Jak funkce vzniká a jak vypadá pro všech 16 kompartmentů.",
+            "barToggle": "ovládání",
             "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Interaktivní rozbor Bühlmannova vzorce pro M-hodnotu a původu jeho koeficientů.",
             "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely. Reálný dekompresní algoritmus používá další logiku.",
             "top": {
@@ -1779,10 +1780,11 @@
                 "anchor": "Vyberte hloubku, kompartment a variantu — sledujte, jak se Bühlmannova M-hodnota mění.",
                 "inputs": {
                     "depth": "Hloubka (m)",
-                    "compartment": "Tkáňový kompartment (TC)",
+                    "depthShort": "Hloubka (m)",
+                    "compartment": "TC",
                     "viewToggle": {
                         "label": "Zobrazení",
-                        "thisComp": "Tento kompartment",
+                        "thisComp": "Tento",
                         "all16": "Všech 16"
                     }
                 },
@@ -1829,7 +1831,11 @@
                 "anchor": "Koeficienty a a b varianty ZH-L16A nejsou odvozeny empiricky — počítají se pouze z poločasu. Varianty B a C jsou manuálně upravené podle statistické korelace z pozorovaných incidentů.",
                 "inputs": {
                     "halfTime": "Poločas t½ (min)",
-                    "snapToggle": "Přichytit ke standardním kompartmentům"
+                    "halfTimeShort": "t½ (min)",
+                    "halfTimeExact": "Přesný t½",
+                    "snapToggle": "Přichytit ke standardním kompartmentům",
+                    "snapToggleShort": "Přichytit",
+                    "derivCompartment": "Komp"
                 },
                 "cards": {
                     "halfTime": {
