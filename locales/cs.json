@@ -1894,7 +1894,8 @@
                 "gfShort": "GF",
                 "gfHiShort": "GF Hi",
                 "gfLoShort": "GF Lo",
-                "anchorShort": "Kotva"
+                "anchorShort": "Kotva",
+                "saturateLabel": "Sycení:"
             },
             "barToggle": {
                 "label": "ovládání"

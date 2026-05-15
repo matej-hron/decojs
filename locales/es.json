@@ -1858,7 +1858,8 @@
                 "gfShort": "GF",
                 "gfHiShort": "GF Hi",
                 "gfLoShort": "GF Lo",
-                "anchorShort": "Ancla"
+                "anchorShort": "Ancla",
+                "saturateLabel": "Saturar:"
             },
             "barToggle": {
                 "label": "controles"
