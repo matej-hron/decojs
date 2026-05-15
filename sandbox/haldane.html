@@ -19,47 +19,131 @@
             max-width: 1100px;
             margin: 0 auto;
             padding: 1rem;
+            padding-bottom: 150px;   /* leave space for the fixed bottom control bar */
         }
-        .haldane-inputs {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
+
+        /* Sandbox bottom control bar (will be promoted to css/styles.css once all
+           three sandboxes use the same pattern). Fixed to the bottom of the viewport
+           so the charts use the full content width. */
+        .sandbox-control-bar {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            z-index: 100;
+            background: var(--card-background);
+            border-top: 1px solid var(--border-color);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.07);
+            padding: 0.45rem 0.9rem;
+            font-size: 0.78rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem 0.9rem;
+            align-items: center;
+            transition: transform 0.2s ease;
+        }
+        .sandbox-control-bar.collapsed { transform: translateY(calc(100% - 32px)); }
+        .sandbox-control-bar-toggle {
+            position: absolute;
+            top: -28px;
+            right: 12px;
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-bottom: none;
+            border-radius: 6px 6px 0 0;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+        .sandbox-control-bar .ctrl {
+            display: flex;
+            flex-direction: column;
+            gap: 0.1rem;
+            min-width: 110px;
+        }
+        .sandbox-control-bar .ctrl label {
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            display: flex;
+            justify-content: space-between;
+            gap: 0.4rem;
+        }
+        .sandbox-control-bar .ctrl label .ctrl-value {
+            color: var(--text-color);
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+        .sandbox-control-bar .ctrl input[type="range"] { width: 200px; margin: 0; }
+        .sandbox-control-bar .ctrl input[type="number"] {
+            width: 70px;
+            padding: 0.2rem 0.35rem;
+            font-size: 0.85rem;
+            border: 1px solid var(--border-color);
+            border-radius: 3px;
+            background: var(--card-background);
+        }
+        .sandbox-control-bar .ctrl-static { display: flex; flex-direction: column; gap: 0.15rem; }
+        .sandbox-control-bar .ctrl-static .lbl { color: var(--text-muted); font-size: 0.7rem; }
+        .sandbox-control-bar .ctrl-static select {
+            padding: 0.2rem 0.35rem;
+            font-size: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 3px;
+            background: var(--card-background);
+        }
+        .sandbox-control-bar .step-btns { display: flex; gap: 0.2rem; align-items: center; }
+        .sandbox-control-bar .step-btns button {
+            padding: 0.2rem 0.45rem;
+            border: 1px solid var(--border-color);
+            border-radius: 3px;
+            background: var(--background-color);
+            font-family: ui-monospace, monospace;
+            font-size: 0.78rem;
+            cursor: pointer;
+        }
+        .sandbox-control-bar .step-btns button:hover { background: var(--card-background); }
+        .sandbox-control-bar .toggle-row {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.78rem;
+            cursor: pointer;
+        }
+        .sandbox-control-bar .toggle-row input[type="checkbox"] { width: auto; margin: 0; }
+        .sandbox-control-bar .outputs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-left: auto;
+            align-items: center;
+        }
+        .sandbox-control-bar .out-chip {
+            display: inline-flex;
+            flex-direction: column;
+            padding: 0.2rem 0.55rem;
+            border-radius: 4px;
             background: var(--background-color);
             border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            margin-bottom: 1rem;
+            border-top-width: 2px;
+            min-width: 90px;
+            line-height: 1.2;
         }
-        .haldane-inputs .field { display: flex; flex-direction: column; gap: 0.25rem; }
-        .haldane-inputs .field label { font-size: 0.8rem; color: var(--text-muted); }
-        .haldane-inputs .field input,
-        .haldane-inputs .field select {
-            padding: 0.4rem 0.5rem;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            background: var(--card-background);
-            font-size: 0.9rem;
+        .sandbox-control-bar .out-chip.pt { border-top-color: #e67e22; }
+        .sandbox-control-bar .out-chip.sat { border-top-color: #9b59b6; }
+        .sandbox-control-bar .out-chip.mvalue { border-top-color: #2c3e50; }
+        .sandbox-control-bar .out-chip .lbl { color: var(--text-muted); font-size: 0.65rem; }
+        .sandbox-control-bar .out-chip .val {
+            font-weight: 700;
+            font-size: 0.88rem;
+            font-variant-numeric: tabular-nums;
         }
-        .haldane-inputs .gas-readout {
-            padding: 0.4rem 0.5rem;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-        .haldane-inputs .toggle-row {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.4rem 0.5rem;
-            cursor: pointer;
-        }
-        .haldane-inputs .toggle-row input[type="checkbox"] {
-            width: auto;
-            margin: 0;
-            cursor: pointer;
-        }
-        .haldane-inputs .toggle-hint {
-            font-size: 0.85rem;
-            color: var(--text-muted);
+        @media (max-width: 700px) {
+            .sandbox-control-bar {
+                gap: 0.3rem 0.6rem;
+                padding: 0.35rem 0.55rem;
+            }
+            .sandbox-control-bar .ctrl input[type="range"] { width: 130px; }
+            .sandbox-control-bar .ctrl { min-width: 90px; }
+            .sandbox-control-bar .outputs { margin-left: 0; }
         }
 
         .haldane-formula {
@@ -281,39 +365,6 @@
 
     <!-- Layout -->
     <div class="haldane-layout">
-        <div class="haldane-inputs">
-            <div class="field">
-                <label for="startDepth" data-i18n="sandbox.haldane.labels.startDepth">Start depth (m)</label>
-                <input type="number" id="startDepth" min="0" max="60" step="1" value="0">
-            </div>
-            <div class="field">
-                <label for="targetDepth" data-i18n="sandbox.haldane.labels.targetDepth">Target depth (m)</label>
-                <input type="number" id="targetDepth" min="0" max="60" step="1" value="30">
-            </div>
-            <div class="field">
-                <label for="compartment" data-i18n="sandbox.haldane.labels.compartment">Tissue compartment (TC)</label>
-                <select id="compartment"><!-- populated by JS --></select>
-            </div>
-            <div class="field">
-                <label for="variantSelect" data-i18n="sandbox.haldane.labels.model">Model</label>
-                <select id="variantSelect">
-                    <option value="ZH-L16A">ZH-L16A</option>
-                    <option value="ZH-L16B">ZH-L16B</option>
-                    <option value="ZH-L16C" selected>ZH-L16C</option>
-                </select>
-            </div>
-            <div class="field">
-                <label data-i18n="sandbox.haldane.labels.gas">Gas</label>
-                <span class="gas-readout" data-i18n="sandbox.haldane.gas.air">Air (F<sub>N₂</sub> = 0.79)</span>
-            </div>
-            <div class="field">
-                <label for="simplifiedToggle" data-i18n="sandbox.haldane.labels.simplified">Simplified math</label>
-                <label class="toggle-row">
-                    <input type="checkbox" id="simplifiedToggle">
-                    <span class="toggle-hint" data-i18n="sandbox.haldane.simplifiedHint">napkin formulas</span>
-                </label>
-            </div>
-        </div>
 
         <!-- Live formula -->
         <div class="haldane-formula">
@@ -361,17 +412,6 @@
                 <div class="why" data-i18n="sandbox.haldane.cards.exp.why">1.0 at t=0, decays toward 0. Half-gone every T½.</div>
             </div>
         </div>
-        <!-- Time control -->
-        <div class="time-row">
-            <span class="t-readout">⏱ t = <strong id="timeValue">0</strong> min &nbsp;|&nbsp; saturation = <strong id="saturationValue">0.0</strong>%</span>
-            <input type="range" id="timeSlider" min="0" max="162" step="1" value="0">
-            <div class="step-btns">
-                <button type="button" id="tMinusHalf">−T<sub>½</sub></button>
-                <button type="button" id="tMinus1">−1</button>
-                <button type="button" id="tPlus1">+1</button>
-                <button type="button" id="tPlusHalf">+T<sub>½</sub></button>
-            </div>
-        </div>
         <!-- Mini Pt(t) chart -->
         <div class="chart-row">
             <svg id="ptChart" viewBox="0 0 480 140" preserveAspectRatio="none" aria-label="Pt over time">
@@ -412,6 +452,61 @@
             </div>
         </div>
     </div>
+
+    <!-- Fixed control bar — always visible at the bottom of the viewport -->
+    <aside class="sandbox-control-bar" id="halControlBar" aria-label="Sandbox controls">
+        <button type="button" class="sandbox-control-bar-toggle" id="halBarToggle" aria-label="Collapse controls" title="Collapse / expand controls">▼ <span data-i18n="sandbox.haldane.barToggle">controls</span></button>
+
+        <div class="ctrl ctrl-static">
+            <span class="lbl" data-i18n="sandbox.haldane.labels.startDepthShort">Start (m)</span>
+            <input type="number" id="startDepth" min="0" max="60" step="1" value="0">
+        </div>
+        <div class="ctrl ctrl-static">
+            <span class="lbl" data-i18n="sandbox.haldane.labels.targetDepthShort">Target (m)</span>
+            <input type="number" id="targetDepth" min="0" max="60" step="1" value="30">
+        </div>
+        <div class="ctrl ctrl-static">
+            <span class="lbl" data-i18n="sandbox.haldane.labels.compartmentShort">TC</span>
+            <select id="compartment"><!-- populated by JS --></select>
+        </div>
+        <div class="ctrl ctrl-static">
+            <span class="lbl" data-i18n="sandbox.haldane.labels.modelShort">Model</span>
+            <select id="variantSelect">
+                <option value="ZH-L16A">A</option>
+                <option value="ZH-L16B">B</option>
+                <option value="ZH-L16C" selected>C</option>
+            </select>
+        </div>
+        <div class="ctrl ctrl-static">
+            <span class="lbl" data-i18n="sandbox.haldane.labels.simplifiedShort">Simplified</span>
+            <label class="toggle-row">
+                <input type="checkbox" id="simplifiedToggle">
+                <span data-i18n="sandbox.haldane.simplifiedHint">napkin</span>
+            </label>
+        </div>
+
+        <div class="ctrl">
+            <label><span data-i18n="sandbox.haldane.labels.timeShort">Time</span><span class="ctrl-value" id="timeValue">0 min</span></label>
+            <input type="range" id="timeSlider" min="0" max="162" step="1" value="0">
+        </div>
+        <div class="ctrl-static step-btns">
+            <button type="button" id="tMinusHalf">−T<sub>½</sub></button>
+            <button type="button" id="tMinus1">−1</button>
+            <button type="button" id="tPlus1">+1</button>
+            <button type="button" id="tPlusHalf">+T<sub>½</sub></button>
+        </div>
+
+        <div class="outputs">
+            <div class="out-chip pt">
+                <span class="lbl">P<sub>t</sub></span>
+                <span class="val"><span id="ptChipValue">0.751</span> bar</span>
+            </div>
+            <div class="out-chip sat">
+                <span class="lbl" data-i18n="sandbox.haldane.outputs.saturation">Saturation</span>
+                <span class="val"><span id="saturationValue">0.0</span>%</span>
+            </div>
+        </div>
+    </aside>
 
     <!-- Footer -->
     <footer>
@@ -501,6 +596,8 @@
 
             // Substituted-formula line
             document.getElementById('ptValue').textContent = Pt.toFixed(4);
+            const ptChip = document.getElementById('ptChipValue');
+            if (ptChip) ptChip.textContent = Pt.toFixed(3);
             document.getElementById('palvNum').textContent = pAlv.toFixed(4);
             document.getElementById('palvNum2').textContent = pAlv.toFixed(4);
             document.getElementById('pt0Num').textContent = pT0.toFixed(4);
@@ -556,7 +653,7 @@
             state.compartmentIdx = parseInt(els.compartment.value, 10);
             applyTimeRange();                      // may clamp state.t
             timeSlider.value = String(state.t);    // sync slider thumb after clamp
-            timeValue.textContent = String(state.t);
+            timeValue.textContent = `${state.t} min`;
             updateStepButtons();
             recompute();                           // recompute with the clamped state.t
         });
@@ -603,7 +700,7 @@
             const tMax = parseInt(timeSlider.max, 10);
             state.t = Math.max(0, Math.min(tMax, Math.round(newT)));
             timeSlider.value = String(state.t);
-            timeValue.textContent = String(state.t);
+            timeValue.textContent = `${state.t} min`;
             updateStepButtons();
             recompute();
         }
@@ -743,12 +840,22 @@
             deriv.innerHTML = `M = a + P<sub>amb</sub> / b = ${aN2.toFixed(4)} + ${pAmbTarget.toFixed(4)} / ${bN2.toFixed(4)} = <strong>${M.toFixed(4)}</strong>`;
         }
 
+        // ---------- Bottom control bar collapse toggle ----------
+        const halControlBar = document.getElementById('halControlBar');
+        const halBarToggle = document.getElementById('halBarToggle');
+        if (halBarToggle && halControlBar) {
+            halBarToggle.addEventListener('click', () => {
+                const collapsed = halControlBar.classList.toggle('collapsed');
+                halBarToggle.firstChild.textContent = collapsed ? '▲ ' : '▼ ';
+            });
+        }
+
         // ---------- Init ----------
         createLanguageSwitcher();
         initI18n();
         populateCompartments();
         applyTimeRange();
-        timeValue.textContent = String(state.t);
+        timeValue.textContent = `${state.t} min`;
         updateStepButtons();
         recompute();
     </script>
