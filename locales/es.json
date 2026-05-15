@@ -1736,6 +1736,7 @@
         "mvalues": {
             "title": "Valores M",
             "subtitle": "De dónde viene la línea, y cómo se ve para los 16 compartimentos.",
+            "barToggle": "controles",
             "disclaimerBanner": "<strong>Solo para fines educativos</strong> — Recorrido interactivo de la fórmula de Valor M de Bühlmann y el origen de sus coeficientes.",
             "disclaimer": "<strong>Aviso:</strong> Solo para fines educativos. El algoritmo de descompresión real usa lógica adicional.",
             "top": {
@@ -1743,10 +1744,11 @@
                 "anchor": "Elige una profundidad, un compartimento y una variante — observa la fórmula del Valor M de Bühlmann evaluarse en vivo.",
                 "inputs": {
                     "depth": "Profundidad (m)",
-                    "compartment": "Compartimento tisular (TC)",
+                    "depthShort": "Prof. (m)",
+                    "compartment": "TC",
                     "viewToggle": {
                         "label": "Vista",
-                        "thisComp": "Este compartimento",
+                        "thisComp": "Este",
                         "all16": "Los 16"
                     }
                 },
@@ -1793,7 +1795,11 @@
                 "anchor": "Las a y b de ZH-L16A no se ajustan a datos — se calculan solo a partir del periodo de saturación. Las variantes B y C son ajustes posteriores a compartimentos específicos.",
                 "inputs": {
                     "halfTime": "Periodo t½ (min)",
-                    "snapToggle": "Ajustar a compartimentos estándar"
+                    "halfTimeShort": "t½ (min)",
+                    "halfTimeExact": "t½ exacto",
+                    "snapToggle": "Ajustar a compartimentos estándar",
+                    "snapToggleShort": "Ajustar",
+                    "derivCompartment": "Comp"
                 },
                 "cards": {
                     "halfTime": {
