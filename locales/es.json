@@ -1617,9 +1617,19 @@
                 "model": "Modelo",
                 "gas": "Gas",
                 "time": "Tiempo",
-                "simplified": "Cálculos simplificados"
+                "simplified": "Cálculos simplificados",
+                "startDepthShort": "Inicio (m)",
+                "targetDepthShort": "Objetivo (m)",
+                "compartmentShort": "TC",
+                "modelShort": "Modelo",
+                "timeShort": "Tiempo",
+                "simplifiedShort": "Simplificado"
             },
             "simplifiedHint": "aproximadamente",
+            "barToggle": "controles",
+            "outputs": {
+                "saturation": "Saturación"
+            },
             "gas": {
                 "air": "Aire (F<sub>N₂</sub> = 0.79)"
             },

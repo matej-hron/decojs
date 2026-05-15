@@ -1653,9 +1653,19 @@
                 "model": "Model",
                 "gas": "Gas",
                 "time": "Time",
-                "simplified": "Simplified math"
+                "simplified": "Simplified math",
+                "startDepthShort": "Start (m)",
+                "targetDepthShort": "Target (m)",
+                "compartmentShort": "TC",
+                "modelShort": "Model",
+                "timeShort": "Time",
+                "simplifiedShort": "Simplified"
             },
             "simplifiedHint": "napkin formulas",
+            "barToggle": "controls",
+            "outputs": {
+                "saturation": "Saturation"
+            },
             "gas": {
                 "air": "Air (F<sub>N₂</sub> = 0.79)"
             },

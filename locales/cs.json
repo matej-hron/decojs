@@ -1653,9 +1653,19 @@
                 "model": "Model",
                 "gas": "Plyn",
                 "time": "Čas",
-                "simplified": "Zjednodušené vzorce"
+                "simplified": "Zjednodušené vzorce",
+                "startDepthShort": "Start (m)",
+                "targetDepthShort": "Cíl (m)",
+                "compartmentShort": "TC",
+                "modelShort": "Model",
+                "timeShort": "Čas",
+                "simplifiedShort": "Zjednodušeně"
             },
             "simplifiedHint": "přibližně",
+            "barToggle": "ovládání",
+            "outputs": {
+                "saturation": "Sycení"
+            },
             "gas": {
                 "air": "Vzduch (F<sub>N₂</sub> = 0,79)"
             },
