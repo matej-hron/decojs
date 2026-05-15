@@ -32,6 +32,51 @@
             margin-bottom: 0.5rem;
         }
 
+        /* Two-column workspace: charts on the left, controls sticky on the right. */
+        .gf-workspace {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 1rem;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+        .gf-charts-col { min-width: 0; display: flex; flex-direction: column; gap: 1rem; }
+        .gf-controls-col {
+            position: sticky;
+            top: 1rem;
+            max-height: calc(100vh - 2rem);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .gf-controls-col .gf-section { margin-bottom: 0; }
+        .gf-controls-col .gf-inputs {
+            grid-template-columns: 1fr;
+            gap: 0.65rem;
+        }
+        .gf-controls-col .gf-cards {
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+        }
+        @media (max-width: 900px) {
+            .gf-workspace {
+                grid-template-columns: 1fr;
+            }
+            .gf-controls-col {
+                position: static;
+                max-height: none;
+                overflow-y: visible;
+                order: -1;       /* controls first on mobile */
+            }
+            .gf-controls-col .gf-inputs {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            }
+            .gf-controls-col .gf-cards {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            }
+        }
+
         /* Mode toggle pill */
         .gf-mode-toggle {
             display: inline-flex;
@@ -287,13 +332,8 @@
             <p class="wip-note" data-i18n="sandbox.gradientFactors.wipNote">🚧 Work in progress — experimental playground. Feedback welcome.</p>
         </header>
 
-        <!-- Mode toggle -->
-        <div class="gf-mode-toggle" role="tablist" aria-label="GF mode">
-            <button id="gfModeSingle" type="button" role="tab" data-mode="single"
-                    data-i18n="sandbox.gradientFactors.mode.single">Single GF</button>
-            <button id="gfModeLoHi" type="button" role="tab" class="active" data-mode="lohi"
-                    data-i18n="sandbox.gradientFactors.mode.lohi">GF Lo + Hi</button>
-        </div>
+        <div class="gf-workspace">
+        <div class="gf-charts-col">
 
         <!-- Formula readout -->
         <section class="gf-section">
@@ -350,9 +390,19 @@
             </div>
         </section>
 
-        <!-- Controls -->
+        </div><!-- /.gf-charts-col -->
+        <aside class="gf-controls-col">
+
+        <!-- Mode toggle (lives with the controls so it's always reachable) -->
         <section class="gf-section">
             <h2 data-i18n="sandbox.gradientFactors.controls.heading">Controls</h2>
+            <div class="gf-mode-toggle" role="tablist" aria-label="GF mode">
+                <button id="gfModeSingle" type="button" role="tab" data-mode="single"
+                        data-i18n="sandbox.gradientFactors.mode.single">Single GF</button>
+                <button id="gfModeLoHi" type="button" role="tab" class="active" data-mode="lohi"
+                        data-i18n="sandbox.gradientFactors.mode.lohi">GF Lo + Hi</button>
+            </div>
+
             <div class="gf-inputs">
                 <div class="field">
                     <label data-i18n="sandbox.gradientFactors.controls.compartment">Tissue compartment (TC)</label>
@@ -441,6 +491,9 @@
                 </div>
             </div>
         </section>
+
+        </aside><!-- /.gf-controls-col -->
+        </div><!-- /.gf-workspace -->
 
         <!-- Term cards -->
         <section class="gf-section">
