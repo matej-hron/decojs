@@ -1708,12 +1708,25 @@
                 "model": "Model",
                 "gas": "Gas",
                 "time": "Time",
-                "simplified": "Simplified math"
+                "simplified": "Simplified math",
+                "startDepthShort": "Start (m)",
+                "depthRateShort": "Rate (m/min)",
+                "segmentTimeShort": "Segment (min)",
+                "endDepthShort": "End depth",
+                "compartmentShort": "TC",
+                "modelShort": "Model",
+                "timeShort": "Time",
+                "simplifiedShort": "Simplified"
             },
             "gas": {
                 "air": "Air (F<sub>N₂</sub> = 0.79)"
             },
             "simplifiedHint": "napkin formulas",
+            "barToggle": "controls",
+            "outputs": {
+                "saturation": "Saturation",
+                "depth": "Depth"
+            },
             "mvalue": {
                 "title": "M-value check",
                 "within": "within",

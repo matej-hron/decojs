@@ -1708,12 +1708,25 @@
                 "model": "Model",
                 "gas": "Plyn",
                 "time": "Čas",
-                "simplified": "Zjednodušené vzorce"
+                "simplified": "Zjednodušené vzorce",
+                "startDepthShort": "Start (m)",
+                "depthRateShort": "Rychlost (m/min)",
+                "segmentTimeShort": "Segment (min)",
+                "endDepthShort": "Cíl",
+                "compartmentShort": "TC",
+                "modelShort": "Model",
+                "timeShort": "Čas",
+                "simplifiedShort": "Zjednodušeně"
             },
             "gas": {
                 "air": "Vzduch (F<sub>N₂</sub> = 0,79)"
             },
             "simplifiedHint": "přibližně",
+            "barToggle": "ovládání",
+            "outputs": {
+                "saturation": "Sycení",
+                "depth": "Hloubka"
+            },
             "mvalue": {
                 "title": "Kontrola M-hodnoty",
                 "within": "v limitu",

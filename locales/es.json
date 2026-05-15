@@ -1672,12 +1672,25 @@
                 "model": "Modelo",
                 "gas": "Gas",
                 "time": "Tiempo",
-                "simplified": "Cálculos simplificados"
+                "simplified": "Cálculos simplificados",
+                "startDepthShort": "Inicio (m)",
+                "depthRateShort": "Tasa (m/min)",
+                "segmentTimeShort": "Segmento (min)",
+                "endDepthShort": "Final",
+                "compartmentShort": "TC",
+                "modelShort": "Modelo",
+                "timeShort": "Tiempo",
+                "simplifiedShort": "Simplificado"
             },
             "gas": {
                 "air": "Aire (F<sub>N₂</sub> = 0.79)"
             },
             "simplifiedHint": "aproximadamente",
+            "barToggle": "controles",
+            "outputs": {
+                "saturation": "Saturación",
+                "depth": "Profundidad"
+            },
             "mvalue": {
                 "title": "Comprobación del valor M",
                 "within": "dentro",
