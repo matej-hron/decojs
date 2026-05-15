@@ -84,6 +84,26 @@
             font-variant-numeric: tabular-nums;
         }
         .gf-control-bar .ctrl input[type="range"] { width: 140px; margin: 0; }
+        .gf-control-bar .ctrl-helper {
+            display: flex;
+            align-items: center;
+            gap: 0.15rem;
+            margin-top: 0.15rem;
+            font-size: 0.66rem;
+            color: var(--text-muted);
+        }
+        .gf-control-bar .ctrl-helper button {
+            border: 1px solid var(--border-color);
+            background: var(--background-color);
+            color: var(--text-color);
+            border-radius: 3px;
+            padding: 0 0.3rem;
+            font-size: 0.66rem;
+            cursor: pointer;
+            min-width: 16px;
+            line-height: 1.6;
+        }
+        .gf-control-bar .ctrl-helper button:hover { background: var(--card-background); }
         .gf-control-bar .ctrl-static { display: flex; flex-direction: column; gap: 0.15rem; }
         .gf-control-bar .ctrl-static .lbl { color: var(--text-muted); font-size: 0.7rem; }
         .gf-control-bar .ctrl-static .value-row { display: flex; align-items: center; gap: 0.3rem; }
@@ -540,6 +560,15 @@
         <div class="ctrl">
             <label><span data-i18n="sandbox.gradientFactors.controls.tissueShort">P_t</span><span class="ctrl-value" id="gfTissueVal">2.40 bar</span></label>
             <input type="range" id="gfTissueSlider" min="0.7" max="6" step="0.01" value="2.4">
+            <div class="ctrl-helper" id="gfSaturateHelper" title="Set P_t to the value after N half-times of on-gassing at current depth, starting from surface saturation">
+                <span data-i18n="sandbox.gradientFactors.controls.saturateLabel">Saturate:</span>
+                <button type="button" data-ht="1">1</button>
+                <button type="button" data-ht="2">2</button>
+                <button type="button" data-ht="3">3</button>
+                <button type="button" data-ht="6">6</button>
+                <button type="button" data-ht="Infinity">∞</button>
+                <span>×t½</span>
+            </div>
         </div>
         <div class="ctrl" id="gfFieldGf">
             <label><span data-i18n="sandbox.gradientFactors.controls.gfShort">GF</span><span class="ctrl-value" id="gfGfVal">70%</span></label>
@@ -594,6 +623,7 @@
             getCompartmentCeiling,
             interpolateGF,
             getAmbientPressure,
+            getAlveolarN2Pressure,
             SURFACE_PRESSURE,
         } from '../js/decoModel.js';
         import {
@@ -663,6 +693,7 @@
             // Control-bar toggle
             controlBar: document.getElementById('gfControlBar'),
             barToggle: document.getElementById('gfBarToggle'),
+            saturateHelper: document.getElementById('gfSaturateHelper'),
 
             // Field containers (for show/hide per mode)
             fieldGf: document.getElementById('gfFieldGf'),
@@ -1146,6 +1177,29 @@
         els.barToggle.addEventListener('click', () => {
             const collapsed = els.controlBar.classList.toggle('collapsed');
             els.barToggle.firstChild.textContent = collapsed ? '▲ ' : '▼ ';
+        });
+
+        // Saturate helper: set P_t to where it would be after N half-times of on-gassing
+        // at the current depth, starting from a surface-equilibrated tissue.
+        //   P_t(N) = P_alv + (P_alv0 - P_alv) · 0.5^N
+        // where P_alv0 is the alveolar N2 at the surface, P_alv is at current depth.
+        // (Independent of compartment — N is in units of that compartment's t½, which is
+        //  exactly what makes this a useful teaching knob.)
+        els.saturateHelper.addEventListener('click', (e) => {
+            const btn = e.target.closest('button[data-ht]');
+            if (!btn) return;
+            const htRaw = btn.dataset.ht;
+            const n = (htRaw === 'Infinity') ? Infinity : parseFloat(htRaw);
+            const pAmb = getAmbientPressure(state.depth);
+            const pAlv = getAlveolarN2Pressure(pAmb);
+            const pAlv0 = getAlveolarN2Pressure(SURFACE_PRESSURE);
+            const newPt = Number.isFinite(n)
+                ? pAlv + (pAlv0 - pAlv) * Math.pow(0.5, n)
+                : pAlv;
+            state.tissuePt = clamp(newPt, 0.7, 6);
+            els.tissueSlider.value = state.tissuePt;
+            els.tissueVal.textContent = `${state.tissuePt.toFixed(2)} bar`;
+            render();
         });
 
         els.compPrev.addEventListener('click', () => {

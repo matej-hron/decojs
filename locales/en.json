@@ -1894,7 +1894,8 @@
                 "gfShort": "GF",
                 "gfHiShort": "GF Hi",
                 "gfLoShort": "GF Lo",
-                "anchorShort": "Anchor"
+                "anchorShort": "Anchor",
+                "saturateLabel": "Saturate:"
             },
             "barToggle": {
                 "label": "controls"
