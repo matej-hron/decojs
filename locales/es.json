@@ -1857,7 +1857,9 @@
                     "title": "Panel 1 — corredor GF (fórmula 1)",
                     "legendRamp": "rampa GF(P_amb)",
                     "legendAnchor": "pAnchor (primera parada)",
-                    "legendDepth": "profundidad actual"
+                    "legendDepth": "profundidad actual",
+                    "legendPlan": "GF planificado en profundidad",
+                    "legendActual": "saturación tisular real"
                 },
                 "pp": {
                     "title": "Panel 2 — diagrama P-P (fórmulas 2 + 3)",
@@ -1898,8 +1900,11 @@
             },
             "cards": {
                 "gf": {
-                    "name": "GF a la profundidad actual",
+                    "name": "GF planificado",
                     "sub": "interpolado de la fórmula 1"
+                },
+                "actual": {
+                    "name": "GF tisular"
                 },
                 "mvalues": {
                     "name": "M  /  M_adj"

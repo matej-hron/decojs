@@ -1893,7 +1893,9 @@
                     "title": "Panel 1 — GF koridor (rovnice 1)",
                     "legendRamp": "rampa GF(P_amb)",
                     "legendAnchor": "pAnchor (první zastávka)",
-                    "legendDepth": "aktuální hloubka"
+                    "legendDepth": "aktuální hloubka",
+                    "legendPlan": "plánované GF v hloubce",
+                    "legendActual": "skutečné sycení tkáně"
                 },
                 "pp": {
                     "title": "Panel 2 — P-P diagram (rovnice 2 + 3)",
@@ -1934,8 +1936,11 @@
             },
             "cards": {
                 "gf": {
-                    "name": "GF v aktuální hloubce",
+                    "name": "Plánované GF",
                     "sub": "interpolováno z rovnice 1"
+                },
+                "actual": {
+                    "name": "Tkáňové GF"
                 },
                 "mvalues": {
                     "name": "M  /  M_adj"

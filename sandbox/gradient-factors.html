@@ -134,6 +134,9 @@
             line-height: 1.2;
         }
         .gf-control-bar .out-chip.gf { border-top-color: #16a085; }
+        .gf-control-bar .out-chip.actual { border-top-color: #2980b9; }
+        .gf-control-bar .out-chip.actual.violation { background: rgba(192, 57, 43, 0.10); }
+        .gf-control-bar .out-chip.actual.violation .val { color: #c0392b; }
         .gf-control-bar .out-chip.mvalues { border-top-color: #f39c12; }
         .gf-control-bar .out-chip.ceiling { border-top-color: #c0392b; }
         .gf-control-bar .out-chip .lbl { color: var(--text-muted); font-size: 0.65rem; }
@@ -447,7 +450,8 @@
                     <div class="legend">
                         <span><span class="swatch" style="background:#16a085"></span><span data-i18n="sandbox.gradientFactors.charts.corridor.legendRamp">GF(P_amb) ramp</span></span>
                         <span><span class="swatch" style="background:#27ae60"></span><span data-i18n="sandbox.gradientFactors.charts.corridor.legendAnchor">pAnchor (first stop)</span></span>
-                        <span><span class="swatch" style="background:#c0392b"></span><span data-i18n="sandbox.gradientFactors.charts.corridor.legendDepth">current depth</span></span>
+                        <span><span class="swatch" style="background:#c0392b"></span><span data-i18n="sandbox.gradientFactors.charts.corridor.legendPlan">planned GF at depth</span></span>
+                        <span><span class="swatch" style="background:#2980b9"></span><span data-i18n="sandbox.gradientFactors.charts.corridor.legendActual">actual tissue saturation</span></span>
                     </div>
                 </div>
                 <div class="gf-chart-panel">
@@ -590,8 +594,12 @@
         <!-- Output chips -->
         <div class="outputs">
             <div class="out-chip gf">
-                <span class="lbl" data-i18n="sandbox.gradientFactors.cards.gf.name">GF at current depth</span>
+                <span class="lbl" data-i18n="sandbox.gradientFactors.cards.gf.name">Plan GF</span>
                 <span class="val" id="gfCardGfValue">—</span>
+            </div>
+            <div class="out-chip actual" id="gfCardActual">
+                <span class="lbl" data-i18n="sandbox.gradientFactors.cards.actual.name">Tissue GF</span>
+                <span class="val" id="gfCardActualValue">—</span>
             </div>
             <div class="out-chip mvalues">
                 <span class="lbl">M / M<sub>adj</sub></span>
@@ -622,6 +630,7 @@
             getAdjustedMValue,
             getCompartmentCeiling,
             interpolateGF,
+            calculateInstantGF,
             getAmbientPressure,
             getAlveolarN2Pressure,
             SURFACE_PRESSURE,
@@ -704,6 +713,8 @@
 
             // Cards
             cardGfValue: document.getElementById('gfCardGfValue'),
+            cardActual: document.getElementById('gfCardActual'),
+            cardActualValue: document.getElementById('gfCardActualValue'),
             cardMVal: document.getElementById('gfCardMVal'),
             cardMAdjVal: document.getElementById('gfCardMAdjVal'),
             cardMDelta: document.getElementById('gfCardMDelta'),
@@ -745,7 +756,16 @@
             const violation = ceilingBar > pAmb;
             const gfInverted = state.mode === 'lohi' && state.gfLo > state.gfHi;
 
-            return { comp, pAmb, pAnchor, a, b, m, gfHere, mAdj, ceilingBar, ceilingM, violation, gfInverted };
+            // Instantaneous GF: where the diver's tissue actually sits relative to its
+            // M-value at the current depth — independent of the planned GF ramp.
+            //   GF_inst = (P_t − P_amb) / (M(P_amb) − P_amb)
+            // < 0  → undersaturated (still on-gassing toward ambient)
+            // 0    → at ambient (no supersaturation)
+            // 1.0  → exactly at raw M-value
+            // > 1  → over the raw limit
+            const gfInst = calculateInstantGF(state.tissuePt, pAmb, comp);
+
+            return { comp, pAmb, pAnchor, a, b, m, gfHere, mAdj, ceilingBar, ceilingM, violation, gfInverted, gfInst };
         }
 
         // -----------------------------------------------------------------
@@ -866,12 +886,33 @@
                 svg.appendChild(e('text', { x: anchorX - 5, y: anchorY + 13, 'font-size': 9, fill: '#16a085', 'text-anchor': 'end' }, `GF_lo ${(state.gfLo * 100).toFixed(0)}%`));
             }
 
-            // Current depth marker (red vertical + dot at intersection with ramp)
+            // Current depth marker (red vertical + dot at intersection with the ramp).
+            // This is the PLANNED GF at this depth.
             const depthX = corrXToPx(c.pAmb);
             svg.appendChild(e('line', { x1: depthX, y1: CORR_PAD_T, x2: depthX, y2: CORRIDOR_H - CORR_PAD_B, stroke: '#c0392b', 'stroke-width': 1.5 }));
             const depthGfY = corrYToPx(c.gfHere);
             svg.appendChild(e('circle', { cx: depthX, cy: depthGfY, r: 4.5, fill: '#c0392b' }));
-            svg.appendChild(e('text', { x: depthX + 6, y: depthGfY - 6, 'font-size': 10, fill: '#c0392b', 'font-weight': '600' }, `GF = ${(c.gfHere * 100).toFixed(1)}%`));
+            svg.appendChild(e('text', { x: depthX + 6, y: depthGfY - 6, 'font-size': 10, fill: '#c0392b', 'font-weight': '600' }, `plan ${(c.gfHere * 100).toFixed(1)}%`));
+
+            // ACTUAL instantaneous saturation: where the tissue currently sits, in the
+            // same GF units. Blue dot to match the tissue marker on Panel 2. Clamp to
+            // chart range; show an off-chart arrow if it's beyond 100% (violation) or
+            // below 0% (undersaturated).
+            const gfInstClamped = Math.max(0, Math.min(1, c.gfInst));
+            const tissueGfY = corrYToPx(gfInstClamped);
+            const offTop = c.gfInst > 1;
+            const offBot = c.gfInst < 0;
+            svg.appendChild(e('circle', {
+                cx: depthX, cy: tissueGfY, r: 4.5,
+                fill: '#2980b9', stroke: '#fff', 'stroke-width': 1.5,
+            }));
+            const tag = offTop ? `tissue ${(c.gfInst * 100).toFixed(0)}% ↑`
+                       : offBot ? `tissue ${(c.gfInst * 100).toFixed(0)}% ↓`
+                       : `tissue ${(c.gfInst * 100).toFixed(1)}%`;
+            svg.appendChild(e('text', {
+                x: depthX + 6, y: tissueGfY + 12,
+                'font-size': 10, fill: '#2980b9', 'font-weight': '600',
+            }, tag));
         }
 
         function renderPP(c) {
@@ -1074,6 +1115,9 @@
 
         function renderCards(c) {
             els.cardGfValue.textContent = `${(c.gfHere * 100).toFixed(1)}%`;
+            // Actual instantaneous GF — show 1 decimal, mark red if it's over the planned GF.
+            els.cardActualValue.textContent = `${(c.gfInst * 100).toFixed(1)}%`;
+            els.cardActual.classList.toggle('violation', c.gfInst > c.gfHere + 1e-6);
             els.cardMVal.textContent = c.m.toFixed(3);
             els.cardMAdjVal.textContent = c.mAdj.toFixed(3);
             const delta = c.mAdj - c.m;
