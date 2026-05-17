@@ -1836,7 +1836,7 @@
         },
         "gradientFactors": {
             "title": "Gradient Factors",
-            "subtitle": "Tres fórmulas, una rampa. Mueve los sliders y observa cómo cobra vida la matemática de GF de la wiki.",
+            "subtitle": "La matemática detrás de los Gradient Factors",
             "wipNote": "🚧 En desarrollo — playground experimental. Comentarios bienvenidos.",
             "disclaimer": "<strong>Aviso:</strong> Solo con fines educativos. El algoritmo real usa lógica adicional (búsqueda de la tisú controlante a través de todos los compartimentos, derivación de pAnchor consciente del cambio de gas, etc.).",
             "mode": {

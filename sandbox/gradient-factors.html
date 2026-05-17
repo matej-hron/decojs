@@ -378,19 +378,6 @@
             font-weight: 600;
         }
 
-        /* Page header */
-        .gf-header h1 { margin: 0 0 0.2rem 0; }
-        .gf-header .subtitle { color: var(--text-muted); margin: 0 0 0.3rem 0; }
-        .gf-header .wip-note {
-            display: inline-block;
-            margin: 0 0 0.6rem 0;
-            padding: 0.25rem 0.6rem;
-            font-size: 0.78rem;
-            background: rgba(243, 156, 18, 0.12);
-            border: 1px dashed #f39c12;
-            border-radius: 4px;
-            color: #b8770a;
-        }
     </style>
 </head>
 <body>
@@ -406,12 +393,13 @@
         </div>
     </nav>
 
+    <!-- Hero (full-width, matches the other sandbox pages) -->
+    <header class="hero hero-compact">
+        <h1 data-i18n="sandbox.gradientFactors.title">Gradient Factors</h1>
+        <p class="hero-subtitle" data-i18n="sandbox.gradientFactors.subtitle">Three formulas, one ramp. Scrub the sliders and watch the wiki's GF math come to life.</p>
+    </header>
+
     <main class="gf-layout">
-        <header class="gf-header">
-            <h1 data-i18n="sandbox.gradientFactors.title">Gradient Factors</h1>
-            <p class="subtitle" data-i18n="sandbox.gradientFactors.subtitle">Three formulas, one ramp. Scrub the sliders and watch the wiki's GF math come to life.</p>
-            <p class="wip-note" data-i18n="sandbox.gradientFactors.wipNote">🚧 Work in progress — experimental playground. Feedback welcome.</p>
-        </header>
 
         <!-- Formula readout -->
         <section class="gf-section">
