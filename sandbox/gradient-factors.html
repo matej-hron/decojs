@@ -896,23 +896,24 @@
 
             // ACTUAL instantaneous saturation: where the tissue currently sits, in the
             // same GF units. Blue dot to match the tissue marker on Panel 2. Clamp to
-            // chart range; show an off-chart arrow if it's beyond 100% (violation) or
-            // below 0% (undersaturated).
-            const gfInstClamped = Math.max(0, Math.min(1, c.gfInst));
-            const tissueGfY = corrYToPx(gfInstClamped);
-            const offTop = c.gfInst > 1;
-            const offBot = c.gfInst < 0;
-            svg.appendChild(e('circle', {
-                cx: depthX, cy: tissueGfY, r: 4.5,
-                fill: '#2980b9', stroke: '#fff', 'stroke-width': 1.5,
-            }));
-            const tag = offTop ? `tissue ${(c.gfInst * 100).toFixed(0)}% ↑`
-                       : offBot ? `tissue ${(c.gfInst * 100).toFixed(0)}% ↓`
-                       : `tissue ${(c.gfInst * 100).toFixed(1)}%`;
-            svg.appendChild(e('text', {
-                x: depthX + 6, y: tissueGfY + 12,
-                'font-size': 10, fill: '#2980b9', 'font-weight': '600',
-            }, tag));
+            // chart range. When GF_inst <= 0 the tissue is undersaturated (P_t <= P_amb) —
+            // skip the dot+label entirely; a negative percentage is meaningless here.
+            if (c.gfInst > 0) {
+                const gfInstClamped = Math.min(1, c.gfInst);
+                const tissueGfY = corrYToPx(gfInstClamped);
+                const offTop = c.gfInst > 1;
+                svg.appendChild(e('circle', {
+                    cx: depthX, cy: tissueGfY, r: 4.5,
+                    fill: '#2980b9', stroke: '#fff', 'stroke-width': 1.5,
+                }));
+                const tag = offTop
+                    ? `tissue ${(c.gfInst * 100).toFixed(0)}% ↑`
+                    : `tissue ${(c.gfInst * 100).toFixed(1)}%`;
+                svg.appendChild(e('text', {
+                    x: depthX + 6, y: tissueGfY + 12,
+                    'font-size': 10, fill: '#2980b9', 'font-weight': '600',
+                }, tag));
+            }
         }
 
         function renderPP(c) {
@@ -1115,8 +1116,11 @@
 
         function renderCards(c) {
             els.cardGfValue.textContent = `${(c.gfHere * 100).toFixed(1)}%`;
-            // Actual instantaneous GF — show 1 decimal, mark red if it's over the planned GF.
-            els.cardActualValue.textContent = `${(c.gfInst * 100).toFixed(1)}%`;
+            // Actual instantaneous GF — show 1 decimal when positive, em-dash when the
+            // tissue is undersaturated (negative GF has no useful meaning to show).
+            els.cardActualValue.textContent = c.gfInst > 0
+                ? `${(c.gfInst * 100).toFixed(1)}%`
+                : '—';
             els.cardActual.classList.toggle('violation', c.gfInst > c.gfHere + 1e-6);
             els.cardMVal.textContent = c.m.toFixed(3);
             els.cardMAdjVal.textContent = c.mAdj.toFixed(3);
