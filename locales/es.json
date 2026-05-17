@@ -1858,7 +1858,7 @@
                     "legendRamp": "rampa GF(P_amb)",
                     "legendAnchor": "pAnchor (primera parada)",
                     "legendDepth": "profundidad actual",
-                    "legendPlan": "GF planificado en profundidad",
+                    "legendPlan": "GF(P<sub>amb</sub>) en la profundidad actual",
                     "legendActual": "saturación tisular real"
                 },
                 "pp": {
@@ -1900,7 +1900,7 @@
             },
             "cards": {
                 "gf": {
-                    "name": "GF planificado",
+                    "name": "GF(P<sub>amb</sub>)",
                     "sub": "interpolado de la fórmula 1"
                 },
                 "actual": {

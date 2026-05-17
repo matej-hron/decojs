@@ -1871,7 +1871,7 @@
             }
         },
         "gradientFactors": {
-            "title": "Gradient Factors",
+            "title": "Gradient faktory",
             "subtitle": "Matematika za Gradient faktory",
             "wipNote": "🚧 Rozpracováno — experimentální verze. Zpětná vazba vítána.",
             "disclaimer": "<strong>Upozornění:</strong> Pouze pro vzdělávací účely. Skutečný dekompresní algoritmus používá další logiku (hledání řídicí tkáně přes všechny kompartmenty, výpočet pAnchor s ohledem na změnu plynů apod.).",
@@ -1894,7 +1894,7 @@
                     "legendRamp": "rampa GF(P_amb)",
                     "legendAnchor": "pAnchor (první zastávka)",
                     "legendDepth": "aktuální hloubka",
-                    "legendPlan": "plánované GF v hloubce",
+                    "legendPlan": "GF(P<sub>amb</sub>) v aktuální hloubce",
                     "legendActual": "skutečné sycení tkáně"
                 },
                 "pp": {
@@ -1936,7 +1936,7 @@
             },
             "cards": {
                 "gf": {
-                    "name": "Plánované GF",
+                    "name": "GF(P<sub>amb</sub>)",
                     "sub": "interpolováno z rovnice 1"
                 },
                 "actual": {

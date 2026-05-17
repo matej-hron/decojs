@@ -438,7 +438,7 @@
                     <div class="legend">
                         <span><span class="swatch" style="background:#16a085"></span><span data-i18n="sandbox.gradientFactors.charts.corridor.legendRamp">GF(P_amb) ramp</span></span>
                         <span><span class="swatch" style="background:#27ae60"></span><span data-i18n="sandbox.gradientFactors.charts.corridor.legendAnchor">pAnchor (first stop)</span></span>
-                        <span><span class="swatch" style="background:#c0392b"></span><span data-i18n="sandbox.gradientFactors.charts.corridor.legendPlan">planned GF at depth</span></span>
+                        <span><span class="swatch" style="background:#c0392b"></span><span data-i18n="sandbox.gradientFactors.charts.corridor.legendPlan">GF(P<sub>amb</sub>) at current depth</span></span>
                         <span><span class="swatch" style="background:#2980b9"></span><span data-i18n="sandbox.gradientFactors.charts.corridor.legendActual">actual tissue saturation</span></span>
                     </div>
                 </div>
@@ -582,7 +582,7 @@
         <!-- Output chips -->
         <div class="outputs">
             <div class="out-chip gf">
-                <span class="lbl" data-i18n="sandbox.gradientFactors.cards.gf.name">Plan GF</span>
+                <span class="lbl" data-i18n="sandbox.gradientFactors.cards.gf.name">GF(P<sub>amb</sub>)</span>
                 <span class="val" id="gfCardGfValue">—</span>
             </div>
             <div class="out-chip actual" id="gfCardActual">
@@ -880,7 +880,7 @@
             svg.appendChild(e('line', { x1: depthX, y1: CORR_PAD_T, x2: depthX, y2: CORRIDOR_H - CORR_PAD_B, stroke: '#c0392b', 'stroke-width': 1.5 }));
             const depthGfY = corrYToPx(c.gfHere);
             svg.appendChild(e('circle', { cx: depthX, cy: depthGfY, r: 4.5, fill: '#c0392b' }));
-            svg.appendChild(e('text', { x: depthX + 6, y: depthGfY - 6, 'font-size': 10, fill: '#c0392b', 'font-weight': '600' }, `plan ${(c.gfHere * 100).toFixed(1)}%`));
+            svg.appendChild(e('text', { x: depthX + 6, y: depthGfY - 6, 'font-size': 10, fill: '#c0392b', 'font-weight': '600' }, `GF(P_amb) = ${(c.gfHere * 100).toFixed(1)}%`));
 
             // ACTUAL instantaneous saturation: where the tissue currently sits, in the
             // same GF units. Blue dot to match the tissue marker on Panel 2. Clamp to
