@@ -1801,7 +1801,7 @@
                     "b": {
                         "name": "b | sklon tkáně",
                         "formula": "vyhledá se podle kompartmentu (sklon = 1/b)",
-                        "why": "Nižší b → strmější M-čára → rychlejší kompartment."
+                        "why": "Nižší b → strmější M-čára → větší tolerované přesycení s rostoucí hloubkou."
                     },
                     "m": {
                         "name": "M | tolerovaný tlak v tkáni",
@@ -1956,7 +1956,7 @@
                     "why": "Průsečík M-čáry s osou Y pro daný kompartment + variantu. Vyšší = větší tolerované přesycení."
                 },
                 "b": {
-                    "why": "Sklon je 1/b. Menší b → strmější čára → rychlejší kompartment."
+                    "why": "Sklon je 1/b. Menší b → strmější čára → větší tolerované přesycení s rostoucí hloubkou."
                 },
                 "gfLo": {
                     "name": "GF Lo",

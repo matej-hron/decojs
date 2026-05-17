@@ -1801,7 +1801,7 @@
                     "b": {
                         "name": "b | tissue slope",
                         "formula": "compartment lookup (slope = 1/b)",
-                        "why": "Lower b → steeper M-line → faster compartment."
+                        "why": "Lower b → steeper M-line → more supersaturation tolerated as depth increases."
                     },
                     "m": {
                         "name": "M | tolerated tissue pressure",
@@ -1956,7 +1956,7 @@
                     "why": "Y-intercept of the M-line for the selected compartment + variant. Higher = more supersaturation tolerated."
                 },
                 "b": {
-                    "why": "Slope is 1/b. Smaller b → steeper line → faster compartment."
+                    "why": "Slope is 1/b. Smaller b → steeper line → more supersaturation tolerated as depth increases."
                 },
                 "gfLo": {
                     "name": "GF Lo",

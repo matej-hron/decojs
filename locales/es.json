@@ -1765,7 +1765,7 @@
                     "b": {
                         "name": "b | pendiente del tejido",
                         "formula": "búsqueda por compartimento (pendiente = 1/b)",
-                        "why": "Menor b → línea M más pendiente → compartimento más rápido."
+                        "why": "Menor b → línea M más pendiente → más supersaturación tolerada con la profundidad."
                     },
                     "m": {
                         "name": "M | presión tisular tolerada",
@@ -1920,7 +1920,7 @@
                     "why": "Intersección Y de la línea M para el compartimento + variante seleccionados. Más alto = más supersaturación tolerada."
                 },
                 "b": {
-                    "why": "La pendiente es 1/b. b menor → línea más empinada → compartimento más rápido."
+                    "why": "La pendiente es 1/b. b menor → línea más empinada → más supersaturación tolerada con la profundidad."
                 },
                 "gfLo": {
                     "name": "GF Lo",
