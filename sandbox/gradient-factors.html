@@ -1059,15 +1059,18 @@
             svg.appendChild(e('circle', { cx: tissueX, cy: tissueY, r: 5, fill: '#2980b9', stroke: '#fff', 'stroke-width': 1.5 }));
             svg.appendChild(e('text', { x: tissueX + 8, y: tissueY + 4, 'font-size': 9, fill: '#2980b9' }, `P_t = ${state.tissuePt.toFixed(2)}`));
 
-            // M_adj read-off at current depth (small amber dot on the M_adj line) — labelled
-            // similarly to the GF(P_amb) read-off on Panel 1.
+            // M_adj read-off at current depth (small amber dot on the M_adj line). Label
+            // is anchored to the LEFT of the dot so it doesn't collide with the tissue
+            // marker (blue 'P_t = ...') or the red 'depth ...' label, both of which sit
+            // to the right of the same x-coordinate.
             const mAdjAtDepth = c.mAdj;
             const mAdjY = ppYToPx(mAdjAtDepth);
             svg.appendChild(e('circle', { cx: depthX, cy: mAdjY, r: 3.5, fill: '#f39c12', stroke: '#fff', 'stroke-width': 1.2 }));
             svg.appendChild(e('text', {
-                x: depthX + 6, y: mAdjY - 5,
+                x: depthX - 7, y: mAdjY - 6,
                 'font-size': 10, fill: '#f39c12', 'font-weight': '600',
-            }, `M_adj = ${mAdjAtDepth.toFixed(3)}`));
+                'text-anchor': 'end',
+            }, `M_adj = ${mAdjAtDepth.toFixed(2)}`));
 
             // Ceiling derivation visualised: the ceiling is the x-coordinate where a horizontal
             // line through the tissue marker crosses the M_adj curve. Draw that horizontal
