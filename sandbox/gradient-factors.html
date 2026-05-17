@@ -576,7 +576,7 @@
         </div>
         <div class="ctrl" id="gfFieldAnchor">
             <label><span data-i18n="sandbox.gradientFactors.controls.anchorShort">Anchor</span><span class="ctrl-value" id="gfAnchorVal">18 m</span></label>
-            <input type="range" id="gfAnchorSlider" min="3" max="30" step="0.5" value="18">
+            <input type="range" id="gfAnchorSlider" min="0" max="30" step="0.5" value="18">
         </div>
 
         <!-- Output chips -->
@@ -725,14 +725,20 @@
         function compute() {
             const comp = COMPARTMENTS[state.compartmentIdx];
             const pAmb = getAmbientPressure(state.depth);
-            const pAnchor = getAmbientPressure(state.anchorDepth);
+            // 'Unset' anchor: slider below the minimum sensible first-stop depth (3 m) is
+            // treated as no anchor → no ramp, GF = GF_hi everywhere (the Lo/Hi mode then
+            // behaves like Single with GF = GF_hi).
+            const anchorSet = state.mode === 'lohi' && state.anchorDepth >= 3;
+            const pAnchor = anchorSet ? getAmbientPressure(state.anchorDepth) : null;
             const a = comp.aN2;
             const b = comp.bN2;
             const m = getMValue(pAmb, a, b);
 
             const gfHere = state.mode === 'single'
                 ? state.gf
-                : interpolateGF(pAmb, pAnchor, state.gfLo, state.gfHi);
+                : (anchorSet
+                    ? interpolateGF(pAmb, pAnchor, state.gfLo, state.gfHi)
+                    : state.gfHi);
 
             const mAdj = getAdjustedMValue(pAmb, a, b, gfHere);
             const ceilingBar = getCompartmentCeiling(state.tissuePt, a, b, gfHere);
@@ -753,7 +759,7 @@
             // > 1  → over the raw limit
             const gfInst = calculateInstantGF(state.tissuePt, pAmb, comp);
 
-            return { comp, pAmb, pAnchor, a, b, m, gfHere, mAdj, ceilingBar, ceilingM, violation, gfInverted, gfInst };
+            return { comp, pAmb, pAnchor, anchorSet, a, b, m, gfHere, mAdj, ceilingBar, ceilingM, violation, gfInverted, gfInst };
         }
 
         // -----------------------------------------------------------------
@@ -840,11 +846,17 @@
             svg.appendChild(e('line', { x1: surfaceX, y1: CORR_PAD_T, x2: surfaceX, y2: CORRIDOR_H - CORR_PAD_B, stroke: '#bdc3c7', 'stroke-width': 1, 'stroke-dasharray': '2,3' }));
             svg.appendChild(e('text', { x: surfaceX + 3, y: CORR_PAD_T + 10, 'font-size': 9, fill: '#7f8c8d' }, 'surface'));
 
-            if (state.mode === 'single') {
-                // Horizontal line at GF level
-                const gfY = corrYToPx(state.gf);
+            if (state.mode === 'single' || !c.anchorSet) {
+                // No ramp: either Single mode, or Lo/Hi mode with anchor unset (slider < 3 m).
+                // Draw a horizontal line at the active GF value (state.gf for Single,
+                // state.gfHi for Lo/Hi without anchor).
+                const flatGf = state.mode === 'single' ? state.gf : state.gfHi;
+                const gfY = corrYToPx(flatGf);
                 svg.appendChild(e('line', { x1: surfaceX, y1: gfY, x2: CORRIDOR_W - CORR_PAD_R, y2: gfY, stroke: '#16a085', 'stroke-width': 2.5 }));
-                svg.appendChild(e('text', { x: CORRIDOR_W - CORR_PAD_R - 6, y: gfY - 5, 'font-size': 9, fill: '#16a085', 'text-anchor': 'end' }, `GF ${(state.gf * 100).toFixed(0)}%`));
+                const flatLabel = state.mode === 'single'
+                    ? `GF ${(state.gf * 100).toFixed(0)}%`
+                    : `GF_hi ${(state.gfHi * 100).toFixed(0)}% (no anchor)`;
+                svg.appendChild(e('text', { x: CORRIDOR_W - CORR_PAD_R - 6, y: gfY - 5, 'font-size': 9, fill: '#16a085', 'text-anchor': 'end' }, flatLabel));
             } else {
                 // Ramp + pAnchor
                 const anchorX = corrXToPx(c.pAnchor);
@@ -983,7 +995,7 @@
             svg.appendChild(e('line', { x1: surfaceX, y1: PP_PAD_T, x2: surfaceX, y2: PP_H - PP_PAD_B, stroke: '#bdc3c7', 'stroke-width': 1, 'stroke-dasharray': '2,3' }));
             svg.appendChild(e('text', { x: surfaceX + 3, y: PP_PAD_T + 10, 'font-size': 9, fill: '#7f8c8d' }, 'surface'));
 
-            if (state.mode === 'lohi') {
+            if (state.mode === 'lohi' && c.anchorSet) {
                 const anchorX = ppXToPx(c.pAnchor);
                 svg.appendChild(e('line', { x1: anchorX, y1: PP_PAD_T, x2: anchorX, y2: PP_H - PP_PAD_B, stroke: '#27ae60', 'stroke-width': 1, 'stroke-dasharray': '3,3', opacity: 0.8 }));
                 svg.appendChild(e('text', { x: anchorX + 3, y: PP_PAD_T + 10, 'font-size': 9, fill: '#27ae60' }, 'pAnchor'));
@@ -1027,25 +1039,38 @@
                     x2: ppXToPx(X_MAX_BAR), y2: ppYToPx(mAdjAtEnd),
                     stroke: '#f39c12', 'stroke-width': 1.5, 'stroke-dasharray': '4,3', opacity: 0.7,
                 }));
-                // Endpoint dots
+                // Endpoint dots + GF labels (mirror Panel 1 so the connection is obvious).
                 svg.appendChild(e('circle', { cx: surfaceX, cy: ppYToPx(mAdjAtHi), r: 3.5, fill: '#f39c12' }));
                 svg.appendChild(e('circle', { cx: anchorX, cy: ppYToPx(mAdjAtLo), r: 3.5, fill: '#f39c12' }));
+                svg.appendChild(e('text', {
+                    x: surfaceX + 5, y: ppYToPx(mAdjAtHi) - 5,
+                    'font-size': 9, fill: '#f39c12', 'font-weight': '600',
+                }, `GF_hi ${(state.gfHi * 100).toFixed(0)}%`));
+                svg.appendChild(e('text', {
+                    x: anchorX - 5, y: ppYToPx(mAdjAtLo) - 5,
+                    'font-size': 9, fill: '#f39c12', 'font-weight': '600', 'text-anchor': 'end',
+                }, `GF_lo ${(state.gfLo * 100).toFixed(0)}%`));
             } else {
-                // Single GF: M_adj is linear in P_amb (a line that pivots between ambient and raw M
-                // as GF varies — at GF=0 it's the ambient line, at GF=1 it's the raw M-line, in
-                // between it's a separate line with slope between 1 and 1/b). Sample 2 points.
-                const mAdjAt0 = getAdjustedMValue(0.001, a, b, state.gf);
-                const mAdjAtMax = getAdjustedMValue(X_MAX_BAR, a, b, state.gf);
+                // Single GF or Lo/Hi with anchor unset: M_adj is linear in P_amb. Pick the
+                // active GF (state.gf for Single, state.gfHi for Lo/Hi without anchor).
+                // The line pivots between the ambient line (GF=0) and raw M-line (GF=1)
+                // with slope between 1 and 1/b. Sample 2 points.
+                const flatGf = state.mode === 'single' ? state.gf : state.gfHi;
+                const mAdjAt0 = getAdjustedMValue(0.001, a, b, flatGf);
+                const mAdjAtMax = getAdjustedMValue(X_MAX_BAR, a, b, flatGf);
                 svg.appendChild(e('line', {
                     x1: ppXToPx(0), y1: ppYToPx(mAdjAt0),
                     x2: ppXToPx(X_MAX_BAR), y2: ppYToPx(mAdjAtMax),
                     stroke: '#f39c12', 'stroke-width': 2.5,
                 }));
+                const flatLabel = state.mode === 'single'
+                    ? `M_adj (GF ${(state.gf * 100).toFixed(0)}%)`
+                    : `M_adj (GF_hi ${(state.gfHi * 100).toFixed(0)}%, no anchor)`;
                 svg.appendChild(e('text', {
                     x: ppXToPx(X_MAX_BAR) - 4,
                     y: ppYToPx(mAdjAtMax) + 10,
                     'font-size': 9, fill: '#f39c12', 'text-anchor': 'end',
-                }, `M_adj (GF ${(state.gf * 100).toFixed(0)}%)`));
+                }, flatLabel));
             }
 
             // Current depth vertical (red, same x as corridor)
@@ -1139,7 +1164,9 @@
             els.termBVal.textContent = c.b.toFixed(4);
             els.termGfLoVal.textContent = state.mode === 'lohi' ? (state.gfLo * 100).toFixed(0) : '—';
             els.termGfHiVal.textContent = state.mode === 'lohi' ? (state.gfHi * 100).toFixed(0) : (state.gf * 100).toFixed(0);
-            els.termAnchorVal.textContent = state.mode === 'lohi' ? `${c.pAnchor.toFixed(3)} bar (${state.anchorDepth.toFixed(0)} m)` : '—';
+            els.termAnchorVal.textContent = (state.mode === 'lohi' && c.anchorSet)
+                ? `${c.pAnchor.toFixed(3)} bar (${state.anchorDepth.toFixed(0)} m)`
+                : '—';
             els.termMAdjVal.textContent = `${c.mAdj.toFixed(3)} bar`;
 
             els.compLabel.textContent = `TC${c.comp.id}`;
@@ -1211,9 +1238,9 @@
         );
         bindSlider(
             els.anchorSlider, els.anchorVal,
-            (v) => clamp(parseFloat(v) || 0, 3, 30),
+            (v) => clamp(parseFloat(v) || 0, 0, 30),
             (v) => { state.anchorDepth = v; },
-            (v) => `${v.toFixed(1)} m`
+            (v) => v < 3 ? '— (no anchor)' : `${v.toFixed(1)} m`
         );
 
         els.modeSingleBtn.addEventListener('click', () => { state.mode = 'single'; render(); });
