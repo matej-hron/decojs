@@ -1894,7 +1894,7 @@
                     "legendRamp": "GF(P_amb) ramp",
                     "legendAnchor": "pAnchor (first stop)",
                     "legendDepth": "current depth",
-                    "legendPlan": "planned GF at depth",
+                    "legendPlan": "GF(P<sub>amb</sub>) at current depth",
                     "legendActual": "actual tissue saturation"
                 },
                 "pp": {
@@ -1936,7 +1936,7 @@
             },
             "cards": {
                 "gf": {
-                    "name": "Plan GF",
+                    "name": "GF(P<sub>amb</sub>)",
                     "sub": "interpolated from formula 1"
                 },
                 "actual": {
