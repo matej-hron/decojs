@@ -1306,7 +1306,7 @@
             "haldane": "Haldaneova rovnice",
             "schreiner": "Schreinerova rovnice",
             "mvalues": "M-hodnoty",
-            "gradientFactors": "Gradient Factors",
+            "gradientFactors": "Gradient faktory",
             "tissue": "Sycení tkání",
             "transfill": "Přepouštění lahví",
             "cascade": "Kaskádové plnění",
@@ -1872,7 +1872,7 @@
         },
         "gradientFactors": {
             "title": "Gradient Factors",
-            "subtitle": "Tři rovnice, jedna rampa. Posouvejte slidery a sledujte, jak ožívá matematika GF z wiki.",
+            "subtitle": "Matematika za Gradient faktory",
             "wipNote": "🚧 Rozpracováno — experimentální verze. Zpětná vazba vítána.",
             "disclaimer": "<strong>Upozornění:</strong> Pouze pro vzdělávací účely. Skutečný dekompresní algoritmus používá další logiku (hledání řídicí tkáně přes všechny kompartmenty, výpočet pAnchor s ohledem na změnu plynů apod.).",
             "mode": {
