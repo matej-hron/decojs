@@ -180,6 +180,8 @@ export function updateUrlWithProfile(diveSetup) {
  *   zhl  — ZH-L16 variant 'A' | 'B' | 'C' (default: leave editor's current)
  *   sac  — surface SAC L/min (default 20)
  *   cyl  — cylinder volume in liters (default 12)
+ *   dg   — optional deco gases (multi-gas), each `o2:vol:reserve:start`,
+ *          comma-separated, e.g. 50:11.1:30:200,100:7:20:200 (max 3)
  *
  * @returns {Promise<Object|null>} Setup compatible with DiveSetupEditor, or null
  *                                  if v!=1, profile= present, required params
@@ -221,6 +223,38 @@ export async function getCompactProfileFromUrl() {
         cylinderVolume,
         startPressure: 200
     }];
+
+    // Optional deco gases (multi-gas plans) — the DecoTheory mobile app emits a
+    // `dg` param: one entry per deco cylinder as `o2:volume:reserve:start`,
+    // entries comma-separated (e.g. dg=50:11.1:30:200,100:7:20:200). Older links
+    // omit it (single-gas). Capped at 3 deco gases (1 bottom + 3 deco).
+    const dgRaw = params.get('dg');
+    if (dgRaw) {
+        for (const entry of dgRaw.split(',')) {
+            if (gases.length >= 4) break;
+            const parts = entry.split(':');
+            const gO2 = parseFloat(parts[0]);
+            const gVol = parseFloat(parts[1]);
+            if (!Number.isFinite(gO2) || gO2 < 18 || gO2 > 100) continue;
+            if (!Number.isFinite(gVol) || gVol <= 0 || gVol > 50) continue;
+            const gReserveRaw = parseFloat(parts[2]);
+            const gStartRaw = parseFloat(parts[3]);
+            const gStart = Number.isFinite(gStartRaw) && gStartRaw > 0 ? gStartRaw : 200;
+            const gReserve = Number.isFinite(gReserveRaw) && gReserveRaw >= 0 ? Math.min(gReserveRaw, gStart) : 30;
+            const gFrac = gO2 / 100;
+            const gName = gO2 === 100 ? 'O₂' : gO2 === 21 ? 'Air' : `EAN${Math.round(gO2)}`;
+            gases.push({
+                id: `deco-${gases.length}`,
+                name: gName,
+                o2: gFrac,
+                n2: 1 - gFrac,
+                he: 0,
+                cylinderVolume: gVol,
+                startPressure: gStart,
+                reservePressure: gReserve
+            });
+        }
+    }
 
     let waypoints;
     try {
