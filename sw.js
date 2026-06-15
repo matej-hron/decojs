@@ -42,6 +42,7 @@ const STATIC_ASSETS = [
   './js/decoModel.js',
   './js/diveProfile.js',
   './js/diveSetup.js',
+  './js/tripPlanner.js',
   './js/mvalues.js',
   './js/quiz.js',
   './js/tissueCompartments.js',

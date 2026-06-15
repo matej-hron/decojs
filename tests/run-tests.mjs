@@ -2825,6 +2825,56 @@ describe('tripPlanner - planTrip', () => {
         expect(trip.conflicts[0].overrunMinutes).toBeCloseTo(d1End - 35, 4);
         expect(trip.dives[1].surfaceIntervalBefore).toBe(0);
     });
+
+    test('dives given out of chronological order are sorted', () => {
+        const trip = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [
+                { id: 'late',  startDateTime: 600, maxDepth: 40, bottomTime: 30 },
+                { id: 'early', startDateTime: 0,   maxDepth: 40, bottomTime: 30 }
+            ]
+        });
+        expect(trip.dives.map(d => d.id)).toEqual(['early', 'late']);
+        expect(trip.dives[0].surfaceIntervalBefore).toBe(null);
+    });
+
+    test('three dives chain with monotonically growing starting load', () => {
+        const trip = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [
+                { id: 'd1', startDateTime:  9 * 60, maxDepth: 40, bottomTime: 30 },
+                { id: 'd2', startDateTime: 11 * 60, maxDepth: 40, bottomTime: 30 },
+                { id: 'd3', startDateTime: 13 * 60, maxDepth: 40, bottomTime: 30 }
+            ]
+        });
+        const [a, b, c] = trip.dives.map(d => sum(d.startingTissue));
+        expect(b).toBeGreaterThan(a);
+        expect(c).toBeGreaterThan(b);
+    });
+
+    test('a normal dive after a conflict still computes a sane surface interval', () => {
+        const trip = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [
+                { id: 'd1', startDateTime: 0,   maxDepth: 40, bottomTime: 30 },
+                { id: 'd2', startDateTime: 35,  maxDepth: 40, bottomTime: 30 }, // overlaps d1's deco
+                { id: 'd3', startDateTime: 600, maxDepth: 40, bottomTime: 30 }  // well after d2 ends
+            ]
+        });
+        expect(trip.conflicts).toHaveLength(1);
+        expect(trip.conflicts[0].diveId).toBe('d2');
+        const d3 = trip.dives[2];
+        expect(d3.surfaceIntervalBefore).toBe(600 - trip.dives[1].endDateTime);
+        expect(d3.surfaceIntervalBefore).toBeGreaterThan(0);
+        // tissue stayed finite through the conflict
+        expect(Number.isFinite(sum(d3.startingTissue))).toBe(true);
+    });
+
+    test('an empty trip returns no dives and no conflicts', () => {
+        const trip = planTrip({ gases, gfLow: 100, gfHigh: 100, dives: [] });
+        expect(trip.dives).toHaveLength(0);
+        expect(trip.conflicts).toHaveLength(0);
+    });
 });
 
 // ============================================================================
