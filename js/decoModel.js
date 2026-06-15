@@ -1112,12 +1112,17 @@ export function calculateTissueLoading(profile, surfaceInterval = 60, options = 
         };
     });
 
-    // Current tissue pressures (start at surface saturation with initial gas)
+    // Current tissue pressures. Default: surface saturation with the initial gas.
+    // When options.initialTissuePressures is provided (repetitive-dive chaining),
+    // seed each compartment from it instead.
     const currentPressures = {};
     const initialN2Fraction = getN2FractionAtTime(0);
     const initialN2 = getInitialTissueN2(initialN2Fraction);
+    const seededPressures = options.initialTissuePressures || null;
     COMPARTMENTS.forEach(comp => {
-        currentPressures[comp.id] = initialN2;
+        currentPressures[comp.id] = seededPressures
+            ? seededPressures[comp.id]
+            : initialN2;
     });
 
     // Calculate interval in minutes

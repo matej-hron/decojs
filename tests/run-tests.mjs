@@ -2675,6 +2675,36 @@ describe('computeGasConsumption', () => {
     });
 });
 
+describe('calculateTissueLoading - initialTissuePressures seam', () => {
+    test('omitting initialTissuePressures starts at surface equilibrium', () => {
+        const profile = [
+            { time: 0, depth: 0 },
+            { time: 2, depth: 30 },
+            { time: 20, depth: 30 },
+            { time: 23, depth: 0 }
+        ];
+        const res = calculateTissueLoading(profile, 0, {});
+        const firstCompId = Object.keys(res.compartments)[0];
+        const surfaceEq = getInitialTissueN2(N2_FRACTION);
+        expect(res.compartments[firstCompId].pressures[0]).toBeCloseTo(surfaceEq, 4);
+    });
+
+    test('providing initialTissuePressures seeds every compartment from it', () => {
+        const profile = [
+            { time: 0, depth: 0 },
+            { time: 2, depth: 30 },
+            { time: 20, depth: 30 },
+            { time: 23, depth: 0 }
+        ];
+        const baseline = calculateTissueLoading(profile, 0, {});
+        const seed = {};
+        Object.keys(baseline.compartments).forEach(id => { seed[id] = 1.5; });
+        const res = calculateTissueLoading(profile, 0, { initialTissuePressures: seed });
+        const firstCompId = Object.keys(res.compartments)[0];
+        expect(res.compartments[firstCompId].pressures[0]).toBeCloseTo(1.5, 6);
+    });
+});
+
 // ============================================================================
 // SUMMARY
 // ============================================================================
