@@ -17,7 +17,9 @@ import { calculateTissueLoading, simulateDepthTime, N2_FRACTION } from './decoMo
  * @property {number} startDateTime Scheduled start, epoch minutes.
  * @property {number} maxDepth      Metres.
  * @property {number} bottomTime    Minutes from dive start until leaving max depth.
- *
+ */
+
+/**
  * @param {Object} diveSetup - { gases, gfLow, gfHigh, dives: TripDive[] }
  * @returns {{ dives: Array, conflicts: Array }}
  */
@@ -53,13 +55,16 @@ export function planTrip(diveSetup) {
         const profile = generateDecoProfile(
             dive.maxDepth, dive.bottomTime, gases, gfLow, gfHigh, undefined, decoOpts
         );
+        // surfaceInterval = 0: we want only the in-water tissue track for this dive;
+        // surface off-gassing between dives is handled separately by simulateDepthTime
+        // at the start of the next iteration.
         const loading = calculateTissueLoading(profile.waypoints, 0, { gases, ...decoOpts });
 
         const startingTissue = {};
         const endTissue = {};
         Object.keys(loading.compartments).forEach(id => {
             const p = loading.compartments[id].pressures;
-            startingTissue[id] = p[0];
+            startingTissue[id] = seed ? seed[id] : p[0];
             endTissue[id] = p[p.length - 1];
         });
 
