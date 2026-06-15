@@ -12,6 +12,8 @@
  *                           waypoints: [{ time, depth, gasId? }] with absolute times
  *                           (minutes from dive start); the last waypoint is the surface.
  * @param {Array}  gases   - [{ id, name, ... }]; gases[0] is the starting gas.
+ * Each row's `depth` is the depth at the END of the segment (arrival depth for
+ * descent/ascent, the held level for bottom/stop).
  * @returns {Array<{phase:string, depth:number, segmentTime:number, runTime:number, gas:string, isStop:boolean}>}
  */
 export function buildRuntimeRows(profile, gases) {
@@ -70,6 +72,7 @@ export function renderRuntimeTable(rows) {
     const table = document.createElement('table');
     table.className = 'runtime-table';
     const fmt = (n) => (Math.round(n * 10) / 10);
+    const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
     const phaseLabel = { descent: 'Descent', bottom: 'Bottom', ascent: 'Ascent', stop: 'Deco stop' };
 
     table.innerHTML = `
@@ -83,7 +86,7 @@ export function renderRuntimeTable(rows) {
                     <td>${fmt(r.depth)}</td>
                     <td>${fmt(r.segmentTime)}</td>
                     <td>${fmt(r.runTime)}</td>
-                    <td>${r.gas}</td>
+                    <td>${esc(r.gas)}</td>
                 </tr>`).join('')}
         </tbody>`;
     return table;
