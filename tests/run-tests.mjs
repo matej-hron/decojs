@@ -172,13 +172,15 @@ import {
     calculateMaxGF
 } from '../js/decoModel.js';
 
-import { 
+import {
     COMPARTMENTS,
     ZHL16_VARIANTS,
     getZHL16Variant,
     setZHL16Variant,
     getCompartmentsForVariant
 } from '../js/tissueCompartments.js';
+
+import { planTrip } from '../js/tripPlanner.js';
 
 // ============================================================================
 // DIVE SETUP TESTS
@@ -2730,6 +2732,28 @@ describe('generateDecoProfile - initialTissuePressures seam', () => {
         });
         const res = generateDecoProfile(30, 18, air, 100, 100, undefined, { initialTissuePressures: seed });
         expect(res.totalDecoTime).toBeGreaterThan(0);
+    });
+});
+
+// ============================================================================
+// TRIP PLANNER TESTS
+// ============================================================================
+
+describe('tripPlanner - planTrip', () => {
+    const gases = [{ id: 'bottom', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0 }];
+    const sum = t => Object.values(t).reduce((a, b) => a + b, 0);
+
+    test('single-dive trip matches a direct generateDecoProfile call', () => {
+        const setup = {
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [{ id: 'd1', startDateTime: 0, maxDepth: 40, bottomTime: 30 }]
+        };
+        const trip = planTrip(setup);
+        const direct = generateDecoProfile(40, 30, gases, 100, 100, undefined, {});
+        expect(trip.dives).toHaveLength(1);
+        expect(trip.dives[0].profile.totalDecoTime).toBe(direct.totalDecoTime);
+        expect(trip.dives[0].surfaceIntervalBefore).toBe(null);
+        expect(trip.conflicts).toHaveLength(0);
     });
 });
 
