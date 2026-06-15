@@ -114,7 +114,12 @@
 
     // ── Overview rendering ──────────────────────────────────────────────────
 
+    let overviewCharts = [];
     function renderOverview(result) {
+      // Destroy charts from the previous render before dropping the DOM nodes —
+      // innerHTML='' alone leaks each chart's document listeners + ResizeObserver.
+      overviewCharts.forEach(c => { try { c.destroy(); } catch (e) {} });
+      overviewCharts = [];
       panels.innerHTML = '';
       const conflictIds = new Set((result.conflicts || []).map(c => c.diveId));
 
@@ -149,10 +154,11 @@
           dives: [{ waypoints: d.profile.waypoints }],
           initialTissuePressures: d.startingTissue
         };
-        new DiveProfileChart(card.querySelector('.chart-host'), {
+        const c = new DiveProfileChart(card.querySelector('.chart-host'), {
           diveSetup: perDiveSetup,
           options: { showLabels: true, showCeiling: true }
         });
+        overviewCharts.push(c);
 
         card.querySelector('.view-detail').addEventListener('click', () => showDetail(d.id));
       });

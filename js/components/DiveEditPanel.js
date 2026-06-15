@@ -83,9 +83,8 @@ export class DiveEditPanel extends EventTarget {
         this.editor.addEventListener('change', emitApply);
         this.container.querySelector('.dep-start').addEventListener('change', emitApply);
         // quickDepth/quickTime only trigger _updateNDLDisplay on the editor, not a
-        // full 'change' event. Attach direct listeners so the panel re-emits 'apply'
-        // whenever the user edits depth or bottom time (input + change cover both
-        // programmatic .value changes with dispatchEvent and real keyboard input).
+        // full 'change' event. Attach a direct 'change' listener so the panel
+        // re-emits 'apply' whenever the user edits depth or bottom time.
         if (this.editor.elements && this.editor.elements.quickDepth) {
             this.editor.elements.quickDepth.addEventListener('change', emitApply);
             this.editor.elements.quickTime.addEventListener('change', emitApply);
