@@ -62,10 +62,9 @@ export class AddDiveDialog extends EventTarget {
         el('.ad-add').addEventListener('click', () => {
             const maxDepth = parseFloat(depthEl.value) || depth;
             const bottomTime = parseFloat(timeEl.value) || time;
-            this.dispatchEvent(new CustomEvent('add', {
-                detail: { startDateTime: opts.startDateTime, maxDepth, bottomTime, gases: opts.gases }
-            }));
+            const detail = { startDateTime: opts.startDateTime, maxDepth, bottomTime, gases: opts.gases };
             this.close();
+            this.dispatchEvent(new CustomEvent('add', { detail }));
         });
 
         refresh();
