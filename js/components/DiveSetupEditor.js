@@ -99,7 +99,10 @@ const DEFAULT_EDITOR_OPTIONS = {
     showSacRate: true,
     compact: false,
     maxGases: 4,
-    emitOnInput: true  // Emit change events on every input (vs only on save)
+    emitOnInput: true,  // Emit change events on every input (vs only on save)
+    showSafetyStop: true,
+    showGenerateButton: true,
+    showWaypoints: true,
 };
 
 /**
@@ -302,19 +305,23 @@ export class DiveSetupEditor extends EventTarget {
         }
 
         // Generate button (prominent, between inputs and outputs)
-        if (this.options.showQuickSetup) {
+        if (this.options.showQuickSetup && this.options.showGenerateButton) {
             wrapper.appendChild(this._buildGenerateButton());
         }
 
         // ===== OUTPUT SECTION =====
 
         // Waypoints section (Dive 1) - output of generation
-        wrapper.appendChild(this._buildWaypointsSection(1));
+        if (this.options.showWaypoints) {
+            wrapper.appendChild(this._buildWaypointsSection(1));
+        }
 
         // Multi-dive support
         if (this.options.showMultiDive) {
             wrapper.appendChild(this._buildDive2Controls());
-            wrapper.appendChild(this._buildWaypointsSection(2));
+            if (this.options.showWaypoints) {
+                wrapper.appendChild(this._buildWaypointsSection(2));
+            }
         }
 
         // ===== SETTINGS SECTION =====
@@ -394,7 +401,7 @@ export class DiveSetupEditor extends EventTarget {
                         <input type="number" class="dse-quick-time form-input" value="20" min="1" max="120" step="1">
                     </div>
                 </div>
-                <div class="dse-row dse-safety-stop-row">
+                ${this.options.showSafetyStop ? `<div class="dse-row dse-safety-stop-row">
                     <label class="dse-checkbox-label">
                         <input type="checkbox" class="dse-safety-stop-enabled" checked>
                         ${translate('diveEditor.quickSetup.safetyStop', 'Safety Stop')}
@@ -407,7 +414,7 @@ export class DiveSetupEditor extends EventTarget {
                         <label>${translate('diveEditor.quickSetup.time', 'Time (min):')}</label>
                         <input type="number" class="dse-safety-stop-time form-input" value="3" min="1" max="10" step="1">
                     </div>
-                </div>
+                </div>` : ''}
             </div>
         `;
 
@@ -422,12 +429,14 @@ export class DiveSetupEditor extends EventTarget {
         this.elements.quickTime.addEventListener('input', () => this._updateNDLDisplay());
 
         // Safety stop toggle - update field visibility
-        this.elements.safetyStopEnabled.addEventListener('change', () => {
-            const enabled = this.elements.safetyStopEnabled.checked;
-            section.querySelectorAll('.dse-safety-stop-field').forEach(el => {
-                el.style.opacity = enabled ? '1' : '0.5';
+        if (this.elements.safetyStopEnabled) {
+            this.elements.safetyStopEnabled.addEventListener('change', () => {
+                const enabled = this.elements.safetyStopEnabled.checked;
+                section.querySelectorAll('.dse-safety-stop-field').forEach(el => {
+                    el.style.opacity = enabled ? '1' : '0.5';
+                });
             });
-        });
+        }
 
         return section;
     }
