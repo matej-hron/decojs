@@ -183,6 +183,7 @@ import {
 import { planTrip } from '../js/tripPlanner.js';
 import { surfacingGF } from '../js/preSaturation.js';
 import { normalizeDiveSetup } from '../js/charts/chartTypes.js';
+import { buildRuntimeRows } from '../js/components/RuntimeTable.js';
 
 // ============================================================================
 // DIVE SETUP TESTS
@@ -2934,6 +2935,39 @@ describe('normalizeDiveSetup - initialTissuePressures preservation', () => {
         const seed = { 1: 1.5, 2: 1.4 };
         const norm = normalizeDiveSetup({ ...base, initialTissuePressures: seed });
         expect(norm.initialTissuePressures).toBe(seed);
+    });
+});
+
+describe('RuntimeTable - buildRuntimeRows', () => {
+    const air = [{ id: 'bottom', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0 }];
+
+    test('derives ordered rows from a deco dive profile', () => {
+        const profile = generateDecoProfile(40, 30, air, 30, 70); // GF 30/70 → real deco
+        const rows = buildRuntimeRows(profile, air);
+
+        expect(rows.length > 0).toBe(true);
+        expect(rows[0].phase).toBe('descent');
+
+        let prev = 0;
+        rows.forEach(r => { expect(r.runTime >= prev).toBe(true); prev = r.runTime; });
+        expect(rows[rows.length - 1].depth).toBe(0);
+
+        const totalSeg = rows.reduce((s, r) => s + r.segmentTime, 0);
+        const lastWpTime = profile.waypoints[profile.waypoints.length - 1].time;
+        expect(totalSeg).toBeCloseTo(lastWpTime, 6);
+
+        const stopRows = rows.filter(r => r.isStop);
+        expect(stopRows.length >= profile.decoStops.length).toBe(true);
+
+        rows.forEach(r => expect(typeof r.gas).toBe('string'));
+    });
+
+    test('an NDL dive (no deco) still produces a descent + bottom + ascent', () => {
+        const profile = generateDecoProfile(18, 30, air, 100, 100); // within NDL
+        const rows = buildRuntimeRows(profile, air);
+        expect(rows[0].phase).toBe('descent');
+        expect(rows.some(r => r.phase === 'bottom')).toBe(true);
+        expect(rows[rows.length - 1].depth).toBe(0);
     });
 });
 
