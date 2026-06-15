@@ -24,7 +24,30 @@ export class TripCalendar extends EventTarget {
         this.container = container;
         this.window = config.window || DEFAULT_WINDOW;
         this.startDate = config.startDate || '2026-06-15';
+        this.selectedDiveId = null;
         this.container.classList.add('trip-calendar');
+        // Delegated click handling on the PERSISTENT container so handlers survive
+        // the innerHTML rebuild on every render (fixes selection being swallowed when
+        // an edit-commit rerenders the calendar mid-click).
+        this.container.addEventListener('click', (e) => this._onClick(e));
+    }
+
+    _onClick(e) {
+        const block = e.target.closest('.tc-block');
+        if (block && this.container.contains(block)) {
+            this.dispatchEvent(new CustomEvent('selectDive', { detail: { diveId: block.dataset.diveId } }));
+            return;
+        }
+        const col = e.target.closest('.tc-day');
+        if (col && this.container.contains(col) && !e.target.closest('.tc-day-header')) {
+            const { dayStartMin, dayEndMin } = this.window;
+            const span = dayEndMin - dayStartMin;
+            const dayIndex = Number(col.dataset.dayIndex);
+            const rect = col.getBoundingClientRect();
+            const frac = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
+            const minutesOfDay = Math.round((dayStartMin + frac * span) / SNAP_MIN) * SNAP_MIN;
+            this.dispatchEvent(new CustomEvent('createAt', { detail: { dayIndex, minutesOfDay } }));
+        }
     }
 
     configure({ startDate, dayCount }) {
@@ -33,7 +56,8 @@ export class TripCalendar extends EventTarget {
     }
 
     /** Render from a planTrip result. */
-    render(planResult) {
+    render(planResult, selectedDiveId = null) {
+        this.selectedDiveId = selectedDiveId;
         const layout = computeCalendarLayout(planResult, this.window);
         const { dayStartMin, dayEndMin } = this.window;
         const span = dayEndMin - dayStartMin;
@@ -54,20 +78,17 @@ export class TripCalendar extends EventTarget {
         }
         this.container.appendChild(ruler);
 
-        // Exactly dayCount columns (no phantom column)
         const colEls = [];
         for (let c = 0; c < layout.dayCount; c++) {
             const col = document.createElement('div');
             col.className = 'tc-day';
             col.dataset.dayIndex = String(c);
 
-            // Date header
             const header = document.createElement('div');
             header.className = 'tc-day-header';
             header.textContent = formatDayHeader(this.startDate, c);
             col.appendChild(header);
 
-            // Hour gridlines
             for (let H = startHour; H <= endHour; H++) {
                 const line = document.createElement('div');
                 line.className = 'tc-hour-line';
@@ -75,33 +96,25 @@ export class TripCalendar extends EventTarget {
                 col.appendChild(line);
             }
 
-            // Click empty area → createAt(dayIndex, snapped minutesOfDay)
-            col.addEventListener('click', (e) => {
-                if (e.target !== col) return; // ignore clicks that bubbled from a block/header/line
-                const rect = col.getBoundingClientRect();
-                const frac = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
-                const raw = dayStartMin + frac * span;
-                const minutesOfDay = Math.round(raw / SNAP_MIN) * SNAP_MIN;
-                this.dispatchEvent(new CustomEvent('createAt', { detail: { dayIndex: c, minutesOfDay } }));
-            });
-
             this.container.appendChild(col);
             colEls.push(col);
         }
 
         layout.blocks.forEach(b => {
-            if (b.dayIndex < 0 || b.dayIndex >= colEls.length) return; // dive outside the visible day window
+            if (b.dayIndex < 0 || b.dayIndex >= colEls.length) return;
             const d = byId.get(b.diveId);
             const block = document.createElement('div');
-            block.className = 'tc-block' + (b.conflict ? ' tc-conflict' : '');
+            block.className = 'tc-block'
+                + (b.conflict ? ' tc-conflict' : '')
+                + (b.diveId === selectedDiveId ? ' tc-selected' : '');
+            block.dataset.diveId = b.diveId;
             block.style.top = b.topPct + '%';
             block.style.height = Math.max(b.heightPct, 2) + '%';
-            block.textContent = `${b.diveId.toUpperCase()} · ${d ? d.maxDepth : '?'}m`;
+            const name = (d && d.name) ? d.name : b.diveId.toUpperCase();
+            const depth = d ? d.maxDepth : '?';
+            const runtime = d ? Math.round(d.endDateTime - d.startDateTime) : '?';
+            block.textContent = `${name} · ${depth}m · ${runtime}min`;
             block.title = b.conflict ? 'Overlaps previous dive\'s deco' : '';
-            block.addEventListener('click', (e) => {
-                e.stopPropagation();
-                this.dispatchEvent(new CustomEvent('selectDive', { detail: { diveId: b.diveId } }));
-            });
             colEls[b.dayIndex].appendChild(block);
         });
 
