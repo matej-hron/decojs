@@ -63,6 +63,7 @@ import {
 } from '../charts/chartTypes.js';
 
 import { translate } from '../i18n.js';
+import { GF_PRESETS } from '../gfPresets.js';
 
 /** Helper: replace {0}, {1}, ... placeholders with the given values. */
 function fmt(str, ...values) {
@@ -500,13 +501,7 @@ export class DiveSetupEditor extends EventTarget {
                 </div>
                 <div class="dse-gf-presets">
                     <span class="dse-hint">${translate('diveEditor.gf.presetsLabel', 'Presets:')} <span class="dse-gf-info-toggle" title="${translate('diveEditor.gf.presetGuide', 'GF preset guide')}" style="cursor:pointer; text-decoration:underline;">ℹ️</span></span>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="100" data-gf-high="100" title="${translate('diveEditor.gf.presetBuhlmannTitle', 'Raw Bühlmann tables, no conservatism')}">${translate('diveEditor.gf.presetBuhlmann', 'Bühlmann')}</button>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="60" data-gf-high="90" title="${translate('diveEditor.gf.presetRecreationalTitle', 'Recreational: ≤40m, short deco')}">${translate('diveEditor.gf.presetRecreational', 'Recreational')}</button>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="40" data-gf-high="80" title="${translate('diveEditor.gf.presetIntensiveTitle', 'Intensive: repeat dives, safari')}">${translate('diveEditor.gf.presetIntensive', 'Intensive')}</button>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="50" data-gf-high="90" title="${translate('diveEditor.gf.presetDeepTitle', 'Deep: >60m, single dive')}">${translate('diveEditor.gf.presetDeep', 'Deep')}</button>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="80" data-gf-high="100" title="${translate('diveEditor.gf.presetBailoutTitle', 'Bailout: emergency')}">${translate('diveEditor.gf.presetBailout', 'Bailout')}</button>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="20" data-gf-high="80" title="${translate('diveEditor.gf.presetDecoPlannerTitle', 'Deco Planner default')}">${translate('diveEditor.gf.presetDecoPlanner', 'Deco Planner')}</button>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="30" data-gf-high="80" title="${translate('diveEditor.gf.presetFreedomTitle', 'Divesoft Freedom default')}">${translate('diveEditor.gf.presetFreedom', 'Freedom')}</button>
+                    ${GF_PRESETS.map(p => `<button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="${p.gfLow}" data-gf-high="${p.gfHigh}" title="${translate(p.titleKey, p.title)}">${translate(p.labelKey, p.label)}</button>`).join('')}
                 </div>
                 <div class="dse-gf-info" style="display:none; margin-top:0.5rem; font-size:0.8rem; background:var(--surface-alt, #f5f5f5); border-radius:6px; padding:0.6rem; line-height:1.5;">
                     <table style="width:100%; border-collapse:collapse; font-size:0.78rem;">

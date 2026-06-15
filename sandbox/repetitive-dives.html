@@ -60,6 +60,10 @@
     .ad-modes { display:flex; flex-direction:column; gap:.35rem; }
     .ad-hint { font-size:.85rem; opacity:.85; min-height:1.2em; }
     .ad-actions { display:flex; justify-content:flex-end; gap:.5rem; }
+    .gf-presets { display:flex; flex-wrap:wrap; gap:.3rem; align-items:center; }
+    .gf-preset-btn { font-size:.75rem; padding:.15rem .45rem; cursor:pointer; border:1px solid var(--border-color,#ccc);
+                     border-radius:4px; background:var(--surface,#f7f7f7); }
+    .gf-preset-btn:hover { background:var(--border-color,#e8e8e8); }
   </style>
 </head>
 <body>
@@ -72,6 +76,7 @@
     <div class="trip-config">
       <label>GF Low <input id="cfg-gflow" type="number" value="100" min="1" max="100"></label>
       <label>GF High <input id="cfg-gfhigh" type="number" value="100" min="1" max="100"></label>
+      <span class="gf-presets"></span>
       <label>Start date <input id="cfg-start" type="date" value="2026-06-15"></label>
       <label>Days <input id="cfg-days" type="number" min="1" max="14" value="3"></label>
     </div>
@@ -96,6 +101,7 @@
     import { addDive, editDive, removeDive } from '../js/tripState.js';
     import { AddDiveDialog } from '../js/components/AddDiveDialog.js';
     import { previewNdl } from '../js/ndlPreview.js';
+    import { GF_PRESETS } from '../js/gfPresets.js';
 
     const air = [{ id: 'bottom', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0,
                    cylinderVolume: 12, startPressure: 200 }];
@@ -327,6 +333,19 @@
 
     document.getElementById('cfg-gfhigh').addEventListener('change', (ev) => {
       trip = { ...trip, gfHigh: +ev.target.value };
+      rerender();
+    });
+
+    const gfPresetsEl = document.querySelector('.gf-presets');
+    gfPresetsEl.innerHTML = GF_PRESETS.map(p =>
+      `<button class="gf-preset-btn" data-gf-low="${p.gfLow}" data-gf-high="${p.gfHigh}" title="${p.title}">${p.label} ${p.gfLow}/${p.gfHigh}</button>`).join('');
+    gfPresetsEl.addEventListener('click', (e) => {
+      const btn = e.target.closest('.gf-preset-btn');
+      if (!btn) return;
+      const gfLow = +btn.dataset.gfLow, gfHigh = +btn.dataset.gfHigh;
+      trip = { ...trip, gfLow, gfHigh };
+      document.getElementById('cfg-gflow').value = gfLow;
+      document.getElementById('cfg-gfhigh').value = gfHigh;
       rerender();
     });
 

@@ -188,6 +188,22 @@ import { normalizeDiveSetup } from '../js/charts/chartTypes.js';
 import { buildRuntimeRows } from '../js/components/RuntimeTable.js';
 import { computeCalendarLayout } from '../js/calendarLayout.js';
 import { previewNdl } from '../js/ndlPreview.js';
+import { GF_PRESETS } from '../js/gfPresets.js';
+
+// ============================================================================
+// GF PRESETS TESTS
+// ============================================================================
+
+describe('gfPresets - GF_PRESETS', () => {
+    test('has the 7 standard presets with the expected GF pairs', () => {
+        expect(GF_PRESETS.length).toBe(7);
+        const byLabel = Object.fromEntries(GF_PRESETS.map(p => [p.label, [p.gfLow, p.gfHigh]]));
+        expect(byLabel['Bühlmann']).toEqual([100, 100]);
+        expect(byLabel['Recreational']).toEqual([60, 90]);
+        expect(byLabel['Deco Planner']).toEqual([20, 80]);
+        expect(byLabel['Freedom']).toEqual([30, 80]);
+    });
+});
 
 // ============================================================================
 // DIVE SETUP TESTS
