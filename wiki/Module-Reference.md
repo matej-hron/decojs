@@ -38,8 +38,8 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 |---|---|---|
 | `haldaneEquation(P0, Palv, t, halfTime)` | 108 | Constant-depth exponential loading. See [Model-02-Haldane-Equation](Model-02-Haldane-Equation.md). |
 | `schreinerEquation(P0, Palv0, R, t, halfTime)` | 125 | Linear-rate loading. See [Model-03-Schreiner-Equation](Model-03-Schreiner-Equation.md). |
-| `simulateDepthTime(tissues, depth, t, n2)` | 838 | Vector-apply Haldane across all 16 compartments |
-| `simulateDepthChange(tissues, startDepth, endDepth, t, n2)` | 860 | Vector-apply Schreiner across all 16 compartments |
+| `simulateDepthTime(tissues, depth, t, n2)` | 700 | Vector-apply Haldane across all 16 compartments |
+| `simulateDepthChange(tissues, startDepth, endDepth, t, n2)` | 722 | Vector-apply Schreiner across all 16 compartments |
 
 **Exports — M-values & ceilings**
 
@@ -47,9 +47,9 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 |---|---|---|
 | `getMValue(ambient, a, b)` | 145 | `a + ambient/b` — raw Bühlmann limit |
 | `getAdjustedMValue(ambient, a, b, gf)` | 160 | `ambient + gf × (M − ambient)` |
-| `getCompartmentCeiling(Pt, a, b, gf)` | 361 | Minimum ambient pressure this compartment permits |
-| `getDiveCeiling(tissues, gf)` | 377 | Deepest (most-restrictive) ceiling across 16 compartments; returns `{ceiling, ceilingDepth, controllingCompartment}` |
-| `getFirstStopDepth(tissues, gfLow, stopIncrement=3)` | 456 | First mandatory stop rounded up to 3 m grid |
+| `getCompartmentCeiling(Pt, a, b, gf)` | 244 | Minimum ambient pressure this compartment permits |
+| `getDiveCeiling(tissues, gf)` | 260 | Deepest (most-restrictive) ceiling across 16 compartments; returns `{ceiling, ceilingDepth, controllingCompartment}` |
+| `getFirstStopDepth(tissues, gfLow, stopIncrement=3)` | 390 | First mandatory stop rounded up to 3 m grid |
 
 **Exports — Gradient factors**
 
@@ -65,8 +65,8 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 
 | Signature | Line | Description |
 |---|---|---|
-| `calculateNDL(depth, n2=0.7902, gfLow=1.0)` | 741 | Binary search; returns `{ndl, controllingCompartment, descentTime, ndlExact}` |
-| `generateDecoSchedule(tissues, depth, n2, gfLow, gfHigh, gases=null, options={})` | 899 | Returns `{stops, gasSwitches, totalTime, totalAscentTime, pAnchor, anchorDepth}`. Throws `DecoCapExceededError` if any stop would exceed `DECO_STOP_MAX_MINUTES`. See [Algo-04-Deco-Stop-Loop](Algo-04-Deco-Stop-Loop.md) and [Algo-05-Multi-Gas-Switching](Algo-05-Multi-Gas-Switching.md). |
+| `calculateNDL(depth, n2=0.7902, gfLow=1.0, initialTissuePressures=null)` | 602 | Binary search; returns `{ndl, controllingCompartment, descentTime, ndlExact}`. When `initialTissuePressures` is a `{ [compartmentId]: nitrogenPressureBar }` map, the descent starts from that residual tissue state instead of surface equilibrium, yielding a pre-saturation-aware NDL. Defaults to `null` (surface equilibrium; original behaviour unchanged). |
+| `generateDecoSchedule(tissues, depth, n2, gfLow, gfHigh, gases=null, options={})` | 761 | Returns `{stops, gasSwitches, totalTime, totalAscentTime, pAnchor, anchorDepth}`. Throws `DecoCapExceededError` if any stop would exceed `DECO_STOP_MAX_MINUTES`. See [Algo-04-Deco-Stop-Loop](Algo-04-Deco-Stop-Loop.md) and [Algo-05-Multi-Gas-Switching](Algo-05-Multi-Gas-Switching.md). |
 
 `generateDecoSchedule` options:
 
@@ -81,17 +81,17 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 
 | Signature | Line | Description |
 |---|---|---|
-| `calculateTissueLoading(profile, surfaceInterval=60, options={})` | 1040 | Main entry: walks the waypoint array at `CALC_INTERVAL` resolution, returns `{timePoints, depthPoints, ambientPressures, compartments: {1:{pressures:[]},…}, n2Fractions}`. Accepts optional `options.initialTissuePressures` — a `{ [compartmentId]: nitrogenPressureBar }` map to seed compartments from a prior dive's residual state instead of surface equilibrium. See [repetitive-dive chaining](#repetitive-dive-chaining-initialTissuePressures). |
-| `calculateCeilingTimeSeries(results, gfLow, gfHigh=gfLow)` | 590 | Flat array of ceiling depths at each time point |
-| `calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh, providedPAnchor=null)` | 617 | Returns per-compartment ceiling series plus `gfValues` and `pAnchor`; used by M-value and profile charts |
+| `calculateTissueLoading(profile, surfaceInterval=60, options={})` | 1044 | Main entry: walks the waypoint array at `CALC_INTERVAL` resolution, returns `{timePoints, depthPoints, ambientPressures, compartments: {1:{pressures:[]},…}, n2Fractions}`. Accepts optional `options.initialTissuePressures` — a `{ [compartmentId]: nitrogenPressureBar }` map to seed compartments from a prior dive's residual state instead of surface equilibrium. See [repetitive-dive chaining](#repetitive-dive-chaining-initialTissuePressures). |
+| `calculateCeilingTimeSeries(results, gfLow, gfHigh=gfLow)` | 453 | Flat array of ceiling depths at each time point |
+| `calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh, providedPAnchor=null)` | 480 | Returns per-compartment ceiling series plus `gfValues` and `pAnchor`; used by M-value and profile charts |
 
 **Implementation notes**
 
 - Haldane is coded as `Palv + (P0 − Palv) × e^(−k·t)` at `decoModel.js:110`.
 - Schreiner is coded as a three-term form at `decoModel.js:127–129`: constant inert-gas source + exponential offset.
 - `pAnchor` is an ambient-pressure value, not a depth. `findFirstStopAtGFLow` iterates the stop grid surface-up, simulating the ascent to each candidate and checking the dive ceiling at `gfLow` (`getDiveCeiling`). The first depth that passes is the anchor — also the first decompression stop. See [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md).
-- Ascent permission in the deco loop (`decoModel.js:1099–1102`) checks the GF-adjusted ceiling at current depth against the next-shallower stop, without Schreiner-crediting the short ascent segment. This matches decotengu's convention.
-- `gasKey()` helper at `decoModel.js:918` normalises gases with or without an `id` field, so the deco loop tolerates both library gases and custom mixes.
+- Ascent permission in the deco loop (`decoModel.js:955–968`) checks the GF-adjusted ceiling at the destination stop depth against the destination depth, without Schreiner-crediting the short ascent segment. This matches decotengu's convention.
+- `gasKey()` helper at `decoModel.js:780` normalises gases with or without an `id` field, so the deco loop tolerates both library gases and custom mixes.
 
 ### `js/tissueCompartments.js`
 
@@ -302,7 +302,7 @@ Both `calculateTissueLoading` and `generateDecoProfile` accept an optional `opti
 
 When provided:
 
-- **`calculateTissueLoading`** (`decoModel.js:1115–1126`): seeds each compartment from the map instead of calling `getInitialTissueN2`. Useful for plotting the tissue trajectory of a repetitive dive starting from residual saturation.
+- **`calculateTissueLoading`** (`decoModel.js:1118–1129`): seeds each compartment from the map instead of calling `getInitialTissueN2`. Useful for plotting the tissue trajectory of a repetitive dive starting from residual saturation.
 - **`generateDecoProfile`** (`diveSetup.js:351–373`): seeds the bottom-phase tissues from the map **and** bypasses the surface-based NDL early-return. The NDL computed by `calculateNDL` is a fresh-start figure — it is meaningless when the diver already carries residual nitrogen. By skipping the early-return and always running the full deco scheduler, `generateDecoProfile` computes the actual deco obligation against the pre-saturated tissue state (which may require stops even when bottom time is under the surface NDL).
 
 `generateDecoProfileSync` intentionally does **not** support this option; its NDL early-return and surface-only tissue init assume a fresh surface start.
@@ -359,6 +359,27 @@ A trip dive shape: `{ id, startDateTime (epoch minutes), maxDepth, bottomTime, g
 - `addDive` delegates id assignment to the private `nextId(dives)` helper (`tripState.js:13`), which scans existing ids for the highest numeric suffix and returns `'d<max+1>'`. This is max-based (not length-based) so ids never collide after a removal.
 - All four exports are pure: `trip` in, new `trip` out, no mutation.
 
+### `js/ndlPreview.js`
+
+Position-aware NDL preview for a candidate dive at an arbitrary point in a trip. A dive's carried-in tissue load depends only on the dives before it, not on its own duration — so the candidate is inserted as a placeholder, `planTrip` is run to extract `startingTissue`, and that seed is passed to the new `initialTissuePressures` parameter of `calculateNDL`.
+
+Pure module — no DOM, no side effects.
+
+Imports: `planTrip` from `tripPlanner.js`; `addDive` from `tripState.js`; `calculateNDL` from `decoModel.js`.
+Imported by: the trip-planner sandbox page (via `AddDiveDialog`).
+
+**Exports**
+
+| Signature | Line | Description |
+|---|---|---|
+| `previewNdl(trip, candidate, gfLow = trip.gfLow ?? 100)` | 21 | Returns the pre-saturation-aware NDL in minutes for a candidate dive. `candidate` shape: `{ startDateTime, maxDepth, gases }`. `gfLow` is a percentage (0–100). |
+
+**Implementation notes**
+
+- Inserts a placeholder dive with `bottomTime: 1` — the value is irrelevant because `startingTissue` depends only on prior dives and the surface gap (`ndlPreview.js:25`).
+- Resolves N₂ fraction from `candidate.gases[0].n2`; falls back to `0.79` when no gases are supplied (`ndlPreview.js:32`).
+- Passes `gfLow / 100` to `calculateNDL` because `calculateNDL` expects a decimal fraction, while the trip config and callers use percentages (`ndlPreview.js:33`).
+
 ### `js/calendarLayout.js`
 
 Pure calendar layout engine (sub-project ③). Converts a `planTrip` result into day columns and absolutely-positioned duration blocks. No DOM; the renderer (`TripCalendar`) maps the output percentages to pixels.
@@ -372,22 +393,22 @@ Imported by: `js/components/TripCalendar.js`.
 
 | Signature | Line | Description |
 |---|---|---|
-| `computeCalendarLayout(planResult, windowConfig)` | 15 | Returns `{ dayCount, baseDay, blocks }` |
+| `computeCalendarLayout(planResult, windowConfig)` | 19 | Returns `{ dayCount, baseDay, blocks }` |
 
-`windowConfig` shape: `{ dayStartMin, dayEndMin }` — visible window as minutes-of-day (e.g. `{ dayStartMin: 360, dayEndMin: 1200 }` for 06:00–20:00).
+`windowConfig` shape: `{ dayStartMin, dayEndMin, dayCount }` — visible window as minutes-of-day (e.g. `{ dayStartMin: 360, dayEndMin: 1200 }` for 06:00–20:00) plus the caller-supplied column count. `dayCount` is **not** derived from the dives; it comes from the trip configuration.
 
-`planResult` shape: `planTrip()` output — `{ dives: [{id, startDateTime, endDateTime}], conflicts: [{diveId}] }`.
+`planResult` shape: `planTrip()` output — `{ dives: [{id, startDateTime, endDateTime}], conflicts: [{diveId}] }`. `startDateTime` values are trip-relative minutes (day 0 = trip-start midnight).
 
 Return value:
 
 ```javascript
 {
-    dayCount: number,   // number of distinct calendar days spanned
-    baseDay:  number,   // floor(min startDateTime / 1440) — the epoch-day of the first dive
+    dayCount: number,   // echoed from windowConfig.dayCount (caller-supplied)
+    baseDay:  number,   // always 0 — days are trip-relative, not epoch-absolute
     blocks: [
         {
             diveId:        string,
-            dayIndex:      number,   // 0-based column index from baseDay
+            dayIndex:      number,   // floor(startDateTime / 1440) — trip-relative column index
             topPct:        number,   // top edge as % of window span (clamped 0–100)
             heightPct:     number,   // block height as % of window span (clamped 0–100)
             conflict:      boolean,  // true if diveId appears in planResult.conflicts
@@ -401,10 +422,11 @@ Return value:
 
 **Implementation notes**
 
-- `baseDay` is `floor(min(startDateTimes) / 1440)` (`calendarLayout.js:26`).
-- Block top clips early dives: `visibleStart = Math.max(startMinOfDay, dayStartMin)` (`calendarLayout.js:39`).
-- Dives crossing midnight are clamped to `dayEndMin` for v1 (documented limitation, `calendarLayout.js:37`).
-- An empty `dives` array returns `{ dayCount: 1, baseDay: 0, blocks: [] }` (`calendarLayout.js:21–23`).
+- `baseDay` is always `0`; trip-relative epoch minutes already count from day 0 so no offset is needed (`calendarLayout.js:45`).
+- `dayIndex` is `floor(startDateTime / 1440)` (`calendarLayout.js:27`).
+- Block top clips early dives: `visibleStart = Math.max(startMinOfDay, dayStartMin)` (`calendarLayout.js:31`).
+- Dives crossing midnight are clamped to `dayEndMin` for v1 (documented limitation, `calendarLayout.js:29`).
+- `dayCount` is taken directly from `windowConfig.dayCount`; the function no longer derives it from the dives (`calendarLayout.js:20, 45`).
 
 ### `js/diveProfile.js`
 
@@ -515,7 +537,7 @@ Multi-dive toggle (`showMultiDive`) exists but only `dives[0]` is rendered by th
 
 ### `TripCalendar.js`
 
-`class TripCalendar extends EventTarget` (line 15). Renders a `planTrip` result as duration-spanning blocks across day columns. Owns no trip state — it reads a plan result and emits interaction events; the caller mutates state and re-renders.
+`class TripCalendar extends EventTarget` (line 21). Renders a `planTrip` result as duration-spanning blocks across day columns, with a left-side hour ruler, per-column date headers, and hour gridlines. Owns no trip state — it reads a plan result and emits interaction events; the caller mutates state and re-renders.
 
 Imports: `computeCalendarLayout` from `../calendarLayout.js`.
 Imported by: the trip-planner sandbox page.
@@ -524,15 +546,18 @@ Imported by: the trip-planner sandbox page.
 
 ```javascript
 new TripCalendar(container, config = {})
-// config.window: { dayStartMin, dayEndMin } — defaults to { dayStartMin: 360, dayEndMin: 1200 } (06:00–20:00)
+// config.window: { dayStartMin, dayEndMin, dayCount }
+//   defaults: { dayStartMin: 360, dayEndMin: 1200, dayCount: 3 } (06:00–20:00, 3 columns)
+// config.startDate: ISO date string for the first column header (default '2026-06-15')
 ```
 
 **Methods**
 
 | Signature | Line | Description |
 |---|---|---|
-| `render(planResult)` | 24 | Clears `container` and draws day columns + blocks from the `planTrip` result |
-| `toStartDateTime(dayIndex, minutesOfDay)` | 69 | Converts a `createAt` event's `{dayIndex, minutesOfDay}` to an absolute epoch-minute start |
+| `configure({ startDate, dayCount })` | 30 | Updates `this.startDate` and/or `this.window.dayCount` without re-rendering; call before `render` |
+| `render(planResult)` | 36 | Clears `container`; draws a left hour ruler, exactly `dayCount` day columns (each with a date header and hour gridlines), and dive blocks from the `planTrip` result |
+| `toStartDateTime(dayIndex, minutesOfDay)` | 112 | Converts a `createAt` event's `{dayIndex, minutesOfDay}` to a trip-relative epoch-minute start (`dayIndex * 1440 + minutesOfDay`) |
 
 **Events** (CustomEvent dispatched on the instance)
 
@@ -543,11 +568,52 @@ new TripCalendar(container, config = {})
 
 **Implementation notes**
 
-- One extra empty column beyond the last occupied day is always rendered to allow creating a dive on the next day (`TripCalendar.js:31`).
-- Click position within a column is converted to `minutesOfDay` and snapped to `SNAP_MIN = 5` minutes (`TripCalendar.js:43`).
-- Block labels read `dive.maxDepth` from the `planResult.dives` map (`TripCalendar.js:56`), so `planTrip` must echo `maxDepth` onto result dives.
-- Conflict blocks receive the `tc-conflict` CSS class (`TripCalendar.js:53`).
-- `toStartDateTime` uses `this._layout.baseDay` set by the last `render` call (`TripCalendar.js:70`).
+- Renders exactly `dayCount` columns (from `this.window.dayCount`); no phantom extra column (`TripCalendar.js:59`).
+- Left hour ruler (`.tc-ruler`) contains `.tc-hour-label` divs positioned by `top` percentage (`TripCalendar.js:44–55`).
+- Each column gets a `.tc-day-header` div showing the formatted date (`formatDayHeader` at line 15) using `this.startDate` and the column index (`TripCalendar.js:65–68`).
+- Hour gridlines (`.tc-hour-line`) are injected into each column at the same percentage positions as the ruler labels (`TripCalendar.js:71–76`).
+- Click position within a column is converted to `minutesOfDay` and snapped to `SNAP_MIN = 5` minutes (`TripCalendar.js:84`).
+- Block labels read `dive.maxDepth` from the `planResult.dives` map (`TripCalendar.js:99`), so `planTrip` must echo `maxDepth` onto result dives.
+- Conflict blocks receive the `tc-conflict` CSS class (`TripCalendar.js:96`).
+- `toStartDateTime` no longer uses `_layout.baseDay` (always 0); it computes `dayIndex * 1440 + minutesOfDay` directly (`TripCalendar.js:113`).
+
+### `AddDiveDialog.js`
+
+`class AddDiveDialog extends EventTarget` (line 9). Modal dialog for adding a new dive at a given calendar position. Supports two modes:
+
+- **Custom** — user enters depth and bottom time manually.
+- **No-deco** — user enters depth; bottom time is computed as the NDL for that depth and position in the trip (read-only).
+
+Physics is injected: the caller supplies a `computeNdl(startDateTime, maxDepth, gases) → minutes` callback so the dialog stays pure and testable without a full trip.
+
+Imports: none (physics injected via callback).
+Imported by: the trip-planner sandbox page.
+
+**Constructor**
+
+```javascript
+new AddDiveDialog(container)
+```
+
+**Methods**
+
+| Signature | Line | Description |
+|---|---|---|
+| `open(opts)` | 18 | Renders the dialog into `container`. `opts` shape: `{ startDateTime, gases, defaultDepth=18, defaultTime=40, computeNdl }`. Calls `computeNdl` on every depth change to update the NDL display and the No-deco bottom-time field. Shows a deco warning when Custom time exceeds NDL. |
+| `close()` | 73 | Clears `container.innerHTML`. |
+
+**Events** (CustomEvent dispatched on the instance)
+
+| Event | `detail` | Trigger |
+|---|---|---|
+| `add` | `{ startDateTime, maxDepth, bottomTime, gases }` | User clicks "Add" |
+| `cancel` | — | User clicks "Cancel" |
+
+**Implementation notes**
+
+- `computeNdl` is called with the dialog's current `startDateTime` and the live depth value on every depth input and mode switch (`AddDiveDialog.js:46`).
+- In No-deco mode, `timeEl.disabled = true` and `timeEl.value` is overwritten with the NDL each refresh (`AddDiveDialog.js:49–50`).
+- The deco warning reads: "⚠ deco — exceeds NDL (N min) for this depth at this point in the trip" (`AddDiveDialog.js:53`).
 
 ### `DiveEditPanel.js`
 
@@ -566,8 +632,8 @@ new DiveEditPanel(container)
 
 | Signature | Line | Description |
 |---|---|---|
-| `open(dive)` | 34 | Renders the edit panel for `dive` into `container`; wires change listeners |
-| `close()` | 97 | Destroys the embedded editor and clears `container` |
+| `open(dive, startDate)` | 34 | Renders the edit panel for `dive` into `container`; `startDate` is an ISO date string (`'YYYY-MM-DD'`) for the trip start, used to re-base the epoch↔datetime-local conversion. Defaults to `'2026-01-01'` when not supplied. Wires change listeners. |
+| `close()` | 104 | Destroys the embedded editor and clears `container` |
 
 **Events** (CustomEvent dispatched on the instance)
 
@@ -578,10 +644,10 @@ new DiveEditPanel(container)
 
 **Implementation notes**
 
-- The embedded `DiveSetupEditor` is opened with `showProfiles: false`, `showQuickSetup: true`, `showGradientFactors: false`, `showSacRate: false`, `showMultiDive: false`, `showSurfaceInterval: false`, `showDescription: false`, `showImportExport: false` (`DiveEditPanel.js:51–55`).
-- `maxDepth` and `bottomTime` are read from `editor.elements.quickDepth` / `editor.elements.quickTime` rather than from `getDiveSetup().dives[0].waypoints`, because waypoints are only populated after "Generate Profile" is clicked (`DiveEditPanel.js:74–75`).
-- Quick-setup depth/time inputs only fire `_updateNDLDisplay` internally, not the editor's `change` event, so `DiveEditPanel` attaches its own `change` listeners to those inputs (`DiveEditPanel.js:88–91`).
-- Epoch-minute ↔ `<input type="datetime-local">` conversion uses a fixed `BASE = Date.UTC(2026, 0, 1, 0, 0, 0)` (`DiveEditPanel.js:12`); only relative days/times matter, not the absolute calendar year.
+- The embedded `DiveSetupEditor` is opened with `showProfiles: false`, `showQuickSetup: true`, `showGradientFactors: false`, `showSacRate: false`, `showMultiDive: false`, `showSurfaceInterval: false`, `showDescription: false`, `showImportExport: false` (`DiveEditPanel.js:56–62`).
+- `maxDepth` and `bottomTime` are read from `editor.elements.quickDepth` / `editor.elements.quickTime` rather than from `getDiveSetup().dives[0].waypoints`, because waypoints are only populated after "Generate Profile" is clicked (`DiveEditPanel.js:81–82`).
+- Quick-setup depth/time inputs only fire `_updateNDLDisplay` internally, not the editor's `change` event, so `DiveEditPanel` attaches its own `change` listeners to those inputs (`DiveEditPanel.js:95–98`).
+- Epoch-minute ↔ `<input type="datetime-local">` conversion uses a `base` computed from the `startDate` argument at `open` time via `Date.UTC(y, m-1, d)` (`DiveEditPanel.js:41–42`). UTC reads/writes ensure the displayed time is not shifted by the user's local UTC offset. The helper functions `epochMinToLocalInput` and `localInputToEpochMin` are module-private (`DiveEditPanel.js:13–24`).
 
 ### `RuntimeTable.js`
 
