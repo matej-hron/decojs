@@ -267,10 +267,11 @@ Return value:
     dives: [
         {
             id,
+            name,               // string | undefined — echoed from the input dive (tripPlanner.js:78)
             startDateTime,      // epoch minutes (input, passed through)
             endDateTime,        // epoch minutes — accounts for deco extension
-            maxDepth,           // metres (input, passed through)
-            bottomTime,         // minutes (input, passed through)
+            maxDepth,           // metres (input, passed through — tripPlanner.js:80)
+            bottomTime,         // minutes (input, passed through — tripPlanner.js:81)
             surfaceIntervalBefore, // minutes; null for first dive
             startingTissue,     // { [compartmentId]: nitrogenPressureBar } at dive entry
             endTissue,          // { [compartmentId]: nitrogenPressureBar } at surfacing
@@ -285,7 +286,7 @@ Return value:
 }
 ```
 
-`maxDepth` and `bottomTime` are echoed onto each result dive (`tripPlanner.js:80–81`) so callers such as `TripCalendar` can label blocks without re-parsing the waypoint array.
+`name`, `maxDepth`, and `bottomTime` are echoed onto each result dive (`tripPlanner.js:78–81`) so callers such as `TripCalendar` can label blocks without re-parsing the waypoint array.
 
 **Implementation notes**
 
@@ -352,7 +353,7 @@ Imported by: the trip-planner sandbox page.
 | `removeDive(trip, id)` | 34 | Filters the dive out; returns new trip |
 | `rescheduleDive(trip, id, startDateTime)` | 38 | Sugar for `editDive` that only updates `startDateTime`; returns new trip |
 
-A trip dive shape: `{ id, startDateTime (epoch minutes), maxDepth, bottomTime, gases }`.
+A trip dive shape: `{ id, startDateTime (epoch minutes), maxDepth, bottomTime, gases, name? }`. The optional `name` field (e.g. `'Dive 1'`) carries a user-editable label; `planTrip` echoes it onto each result dive.
 
 **Implementation notes**
 
@@ -551,13 +552,15 @@ new TripCalendar(container, config = {})
 // config.startDate: ISO date string for the first column header (default '2026-06-15')
 ```
 
+A single delegated `click` listener is wired to the persistent `container` element in the constructor (`TripCalendar.js:32`). The listener reads `dataset.diveId` from the nearest `.tc-block` ancestor and `dataset.dayIndex` from the nearest `.tc-day` ancestor. Because the listener lives on the persistent container rather than on the DOM nodes rebuilt during `render`, it continues to work after every calendar redraw — this is what allows an edit-triggered rerender to complete without swallowing the click that triggered it.
+
 **Methods**
 
 | Signature | Line | Description |
 |---|---|---|
-| `configure({ startDate, dayCount })` | 30 | Updates `this.startDate` and/or `this.window.dayCount` without re-rendering; call before `render` |
-| `render(planResult)` | 36 | Clears `container`; draws a left hour ruler, exactly `dayCount` day columns (each with a date header and hour gridlines), and dive blocks from the `planTrip` result |
-| `toStartDateTime(dayIndex, minutesOfDay)` | 112 | Converts a `createAt` event's `{dayIndex, minutesOfDay}` to a trip-relative epoch-minute start (`dayIndex * 1440 + minutesOfDay`) |
+| `configure({ startDate, dayCount })` | 53 | Updates `this.startDate` and/or `this.window.dayCount` without re-rendering; call before `render` |
+| `render(planResult, selectedDiveId = null)` | 59 | Clears `container.innerHTML`; draws a left hour ruler, exactly `dayCount` day columns (each with a date header and hour gridlines), and dive blocks from the `planTrip` result. `selectedDiveId` marks the matching block with the `tc-selected` CSS class. |
+| `toStartDateTime(dayIndex, minutesOfDay)` | 125 | Converts a `createAt` event's `{dayIndex, minutesOfDay}` to a trip-relative epoch-minute start (`dayIndex * 1440 + minutesOfDay`) |
 
 **Events** (CustomEvent dispatched on the instance)
 
@@ -568,14 +571,14 @@ new TripCalendar(container, config = {})
 
 **Implementation notes**
 
-- Renders exactly `dayCount` columns (from `this.window.dayCount`); no phantom extra column (`TripCalendar.js:59`).
-- Left hour ruler (`.tc-ruler`) contains `.tc-hour-label` divs positioned by `top` percentage (`TripCalendar.js:44–55`).
-- Each column gets a `.tc-day-header` div showing the formatted date (`formatDayHeader` at line 15) using `this.startDate` and the column index (`TripCalendar.js:65–68`).
-- Hour gridlines (`.tc-hour-line`) are injected into each column at the same percentage positions as the ruler labels (`TripCalendar.js:71–76`).
-- Click position within a column is converted to `minutesOfDay` and snapped to `SNAP_MIN = 5` minutes (`TripCalendar.js:84`).
-- Block labels read `dive.maxDepth` from the `planResult.dives` map (`TripCalendar.js:99`), so `planTrip` must echo `maxDepth` onto result dives.
-- Conflict blocks receive the `tc-conflict` CSS class (`TripCalendar.js:96`).
-- `toStartDateTime` no longer uses `_layout.baseDay` (always 0); it computes `dayIndex * 1440 + minutesOfDay` directly (`TripCalendar.js:113`).
+- Renders exactly `dayCount` columns (from `this.window.dayCount`); no phantom extra column (`TripCalendar.js:82`).
+- Left hour ruler (`.tc-ruler`) contains `.tc-hour-label` divs positioned by `top` percentage (`TripCalendar.js:72–78`).
+- Each column gets a `.tc-day-header` div showing the formatted date (`formatDayHeader` at line 15) using `this.startDate` and the column index (`TripCalendar.js:88–90`).
+- Hour gridlines (`.tc-hour-line`) are injected into each column at the same percentage positions as the ruler labels (`TripCalendar.js:92–97`).
+- Click position within a column is converted to `minutesOfDay` and snapped to `SNAP_MIN = 5` minutes (`TripCalendar.js:48`).
+- Each dive block is labelled `"{name} · {depth}m · {runtime}min"` (`TripCalendar.js:116`). `name` falls back to the uppercased `diveId` when absent; `runtime` is `endDateTime − startDateTime` from the plan result. `planTrip` must echo `name`, `maxDepth`, and `endDateTime` onto result dives for this label to render correctly.
+- Conflict blocks receive the `tc-conflict` CSS class (`TripCalendar.js:108`); selected block receives `tc-selected` (`TripCalendar.js:109`).
+- `toStartDateTime` computes `dayIndex * 1440 + minutesOfDay` directly (`TripCalendar.js:126`); `_layout.baseDay` (always 0) is not used.
 
 ### `AddDiveDialog.js`
 
@@ -599,21 +602,22 @@ new AddDiveDialog(container)
 
 | Signature | Line | Description |
 |---|---|---|
-| `open(opts)` | 18 | Renders the dialog into `container`. `opts` shape: `{ startDateTime, gases, defaultDepth=18, defaultTime=40, computeNdl }`. Calls `computeNdl` on every depth change to update the NDL display and the No-deco bottom-time field. Shows a deco warning when Custom time exceeds NDL. |
-| `close()` | 73 | Clears `container.innerHTML`. |
+| `open(opts)` | 18 | Renders the dialog into `container`. `opts` shape: `{ startDateTime, gases, defaultDepth=18, defaultTime=40, defaultName='', computeNdl }`. Shows a **Name** text input pre-filled from `opts.defaultName` (`AddDiveDialog.js:26`). Calls `computeNdl` on every depth change to update the NDL display and the No-deco bottom-time field. Shows a deco warning when Custom time exceeds NDL. |
+| `close()` | 75 | Clears `container.innerHTML`. |
 
 **Events** (CustomEvent dispatched on the instance)
 
 | Event | `detail` | Trigger |
 |---|---|---|
-| `add` | `{ startDateTime, maxDepth, bottomTime, gases }` | User clicks "Add" |
+| `add` | `{ name, startDateTime, maxDepth, bottomTime, gases }` | User clicks "Add" |
 | `cancel` | — | User clicks "Cancel" |
 
 **Implementation notes**
 
-- `computeNdl` is called with the dialog's current `startDateTime` and the live depth value on every depth input and mode switch (`AddDiveDialog.js:46`).
-- In No-deco mode, `timeEl.disabled = true` and `timeEl.value` is overwritten with the NDL each refresh (`AddDiveDialog.js:49–50`).
-- The deco warning reads: "⚠ deco — exceeds NDL (N min) for this depth at this point in the trip" (`AddDiveDialog.js:53`).
+- `computeNdl` is called with the dialog's current `startDateTime` and the live depth value on every depth input and mode switch (`AddDiveDialog.js:47`).
+- In No-deco mode, `timeEl.disabled = true` and `timeEl.value` is overwritten with the NDL each refresh (`AddDiveDialog.js:50–51`).
+- The deco warning reads: "⚠ deco — exceeds NDL (N min) for this depth at this point in the trip" (`AddDiveDialog.js:54`).
+- `name` in the `add` event detail is the trimmed value of the Name input; falls back to `opts.defaultName` when the field is left blank (`AddDiveDialog.js:66`).
 
 ### `DiveEditPanel.js`
 
@@ -632,22 +636,24 @@ new DiveEditPanel(container)
 
 | Signature | Line | Description |
 |---|---|---|
-| `open(dive, startDate)` | 34 | Renders the edit panel for `dive` into `container`; `startDate` is an ISO date string (`'YYYY-MM-DD'`) for the trip start, used to re-base the epoch↔datetime-local conversion. Defaults to `'2026-01-01'` when not supplied. Wires change listeners. |
-| `close()` | 104 | Destroys the embedded editor and clears `container` |
+| `open(dive, startDate)` | 37 | Renders the edit panel for `dive` into `container`. Shows an **"Editing: {name}"** header (`DiveEditPanel.js:48`) and a **Name** text input pre-filled from `dive.name` (`DiveEditPanel.js:50`). `startDate` is an ISO date string (`'YYYY-MM-DD'`) for the trip start, used to re-base the epoch↔datetime-local conversion. Defaults to `'2026-01-01'` when not supplied. Wires change listeners. |
+| `close()` | 111 | Destroys the embedded editor and clears `container` |
 
 **Events** (CustomEvent dispatched on the instance)
 
 | Event | `detail` | Trigger |
 |---|---|---|
-| `apply` | `{ id, patch: { startDateTime, maxDepth, bottomTime, gases } }` | Any field changes (gas editor `change`, datetime input `change`, quick depth/time `change`) |
+| `apply` | `{ id, patch: { startDateTime, maxDepth, bottomTime, gases, name } }` | Any field changes (gas editor `change`, datetime input `change`, Name input `change`, quick depth/time `change`) |
 | `remove` | `{ id }` | "Remove dive" button clicked |
 
 **Implementation notes**
 
-- The embedded `DiveSetupEditor` is opened with `showProfiles: false`, `showQuickSetup: true`, `showGradientFactors: false`, `showSacRate: false`, `showMultiDive: false`, `showSurfaceInterval: false`, `showDescription: false`, `showImportExport: false` (`DiveEditPanel.js:56–62`).
-- `maxDepth` and `bottomTime` are read from `editor.elements.quickDepth` / `editor.elements.quickTime` rather than from `getDiveSetup().dives[0].waypoints`, because waypoints are only populated after "Generate Profile" is clicked (`DiveEditPanel.js:81–82`).
-- Quick-setup depth/time inputs only fire `_updateNDLDisplay` internally, not the editor's `change` event, so `DiveEditPanel` attaches its own `change` listeners to those inputs (`DiveEditPanel.js:95–98`).
-- Epoch-minute ↔ `<input type="datetime-local">` conversion uses a `base` computed from the `startDate` argument at `open` time via `Date.UTC(y, m-1, d)` (`DiveEditPanel.js:41–42`). UTC reads/writes ensure the displayed time is not shifted by the user's local UTC offset. The helper functions `epochMinToLocalInput` and `localInputToEpochMin` are module-private (`DiveEditPanel.js:13–24`).
+- The embedded `DiveSetupEditor` is opened with `showProfiles: false`, `showQuickSetup: true`, `showGradientFactors: false`, `showSacRate: false`, `showMultiDive: false`, `showSurfaceInterval: false`, `showDescription: false`, `showImportExport: false` (`DiveEditPanel.js:64–67`).
+- `maxDepth` and `bottomTime` are read from `editor.elements.quickDepth` / `editor.elements.quickTime` rather than from `getDiveSetup().dives[0].waypoints`, because waypoints are only populated after "Generate Profile" is clicked (`DiveEditPanel.js:86–87`).
+- `name` in the patch is the trimmed value of the `.dep-name` input; falls back to `dive.name` when blank (`DiveEditPanel.js:89`).
+- Quick-setup depth/time inputs only fire `_updateNDLDisplay` internally, not the editor's `change` event, so `DiveEditPanel` attaches its own `change` listeners to those inputs (`DiveEditPanel.js:102–105`).
+- The Name input (`dep-name`) fires `emitApply` on `change` (`DiveEditPanel.js:98`), so renaming a dive triggers an `apply` event that propagates to the page.
+- Epoch-minute ↔ `<input type="datetime-local">` conversion uses a `base` computed from the `startDate` argument at `open` time via `Date.UTC(y, m-1, d)` (`DiveEditPanel.js:44–45`). UTC reads/writes ensure the displayed time is not shifted by the user's local UTC offset. The helper functions `epochMinToLocalInput` and `localInputToEpochMin` are module-private (`DiveEditPanel.js:16–27`).
 
 ### `RuntimeTable.js`
 
@@ -767,3 +773,8 @@ Generic quiz engine for the seven CMAS / SPČR quiz pages. No exports — execut
 ## Sandbox pages
 
 - [`sandbox/m-values.html`](https://decotheory.eu/sandbox/m-values.html) — Two-playground sandbox for the M-value formula and its derivation. Top playground evaluates `M = a + P_amb/b`. Bottom playground exposes the analytical curves `a(t½)` and `b(t½)` with 16 ZH-L16 compartments overlaid as dots (variants A/B/C lift dots off the curves selectively).
+
+- [`sandbox/repetitive-dives.html`](https://decotheory.eu/sandbox/repetitive-dives.html) — Trip planner page. Wires `TripCalendar`, `AddDiveDialog`, `DiveEditPanel`, `tripState`, and `planTrip` together. Key wiring notes:
+  - Tracks `selectedDiveId` in page scope; passes it to every `calendar.render(result, selectedDiveId)` call so the selected block stays highlighted across rerenders (`repetitive-dives.html:142, 213`).
+  - Dive `name` is shown on the calendar block (via `TripCalendar`), on overview cards, and in the detail header (`repetitive-dives.html:180, 273`).
+  - **Edit-triggered rerenders are debounced** (`rerenderDeferred`, 250 ms, `repetitive-dives.html:220–222`). A synchronous rerender on `DiveEditPanel`'s `apply` event would rebuild the calendar's DOM mid-click, causing the delegated `selectDive` dispatch to fire on a stale block and losing the new selection. The 250 ms deferral ensures the click completes before the calendar rebuilds.
