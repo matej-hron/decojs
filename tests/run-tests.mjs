@@ -186,6 +186,7 @@ import { planTrip } from '../js/tripPlanner.js';
 import { surfacingGF } from '../js/preSaturation.js';
 import { normalizeDiveSetup } from '../js/charts/chartTypes.js';
 import { buildRuntimeRows } from '../js/components/RuntimeTable.js';
+import { computeCalendarLayout } from '../js/calendarLayout.js';
 
 // ============================================================================
 // DIVE SETUP TESTS
@@ -3056,6 +3057,46 @@ describe('tripState - reducer', () => {
         t = removeDive(t, 'd1');                 // leaves d2
         t = addDive(t, { startDateTime: 780, maxDepth: 20, bottomTime: 40, gases: air });
         expect(t.dives.map(d => d.id)).toEqual(['d2', 'd3']);  // not a duplicate 'd2'
+    });
+});
+
+describe('calendarLayout - computeCalendarLayout', () => {
+    const win = { dayStartMin: 6 * 60, dayEndMin: 20 * 60 }; // 06:00–20:00, span 840 min
+
+    test('positions a dive block by start time and duration within the day window', () => {
+        const planResult = {
+            dives: [{ id: 'd1', startDateTime: 9 * 60, endDateTime: 10 * 60 }],
+            conflicts: []
+        };
+        const layout = computeCalendarLayout(planResult, win);
+        expect(layout.dayCount).toBe(1);
+        const b = layout.blocks[0];
+        expect(b.diveId).toBe('d1');
+        expect(b.dayIndex).toBe(0);
+        expect(b.topPct).toBeCloseTo((540 - 360) / 840 * 100, 4);
+        expect(b.heightPct).toBeCloseTo(60 / 840 * 100, 4);
+        expect(b.conflict).toBe(false);
+    });
+
+    test('spans multiple day columns and flags conflicts', () => {
+        const planResult = {
+            dives: [
+                { id: 'd1', startDateTime: 9 * 60,             endDateTime: 10 * 60 },
+                { id: 'd2', startDateTime: (24 * 60) + 9 * 60, endDateTime: (24 * 60) + 10 * 60 }
+            ],
+            conflicts: [{ diveId: 'd2', type: 'overlap', overrunMinutes: 5 }]
+        };
+        const layout = computeCalendarLayout(planResult, win);
+        expect(layout.dayCount).toBe(2);
+        expect(layout.blocks.find(b => b.diveId === 'd1').dayIndex).toBe(0);
+        expect(layout.blocks.find(b => b.diveId === 'd2').dayIndex).toBe(1);
+        expect(layout.blocks.find(b => b.diveId === 'd2').conflict).toBe(true);
+    });
+
+    test('empty trip yields one day column and no blocks', () => {
+        const layout = computeCalendarLayout({ dives: [], conflicts: [] }, win);
+        expect(layout.dayCount).toBe(1);
+        expect(layout.blocks).toHaveLength(0);
     });
 });
 
