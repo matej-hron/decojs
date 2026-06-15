@@ -3189,6 +3189,33 @@ describe('ndlPreview - previewNdl', () => {
 });
 
 // ============================================================================
+// TRIP STATE / TRIP PLANNER - DIVE NAMES
+// ============================================================================
+
+describe('tripState/tripPlanner - dive names', () => {
+    const air = [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 }];
+
+    test('addDive stores a provided name', () => {
+        const t = addDive({ gases: air, gfLow: 100, gfHigh: 100, dives: [] },
+            { name: 'Reef', startDateTime: 0, maxDepth: 18, bottomTime: 40, gases: air });
+        expect(t.dives[0].name).toBe('Reef');
+    });
+
+    test('editDive patches the name', () => {
+        let t = addDive({ gases: air, gfLow: 100, gfHigh: 100, dives: [] },
+            { name: 'Reef', startDateTime: 0, maxDepth: 18, bottomTime: 40, gases: air });
+        t = editDive(t, t.dives[0].id, { name: 'Wreck' });
+        expect(t.dives[0].name).toBe('Wreck');
+    });
+
+    test('planTrip echoes the dive name onto result dives', () => {
+        const trip = { gases: air, gfLow: 100, gfHigh: 100,
+            dives: [{ id: 'd1', name: 'Wreck', startDateTime: 0, maxDepth: 40, bottomTime: 30, gases: air }] };
+        expect(planTrip(trip).dives[0].name).toBe('Wreck');
+    });
+});
+
+// ============================================================================
 // SUMMARY
 // ============================================================================
 

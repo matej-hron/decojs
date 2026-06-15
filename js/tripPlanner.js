@@ -75,6 +75,7 @@ export function planTrip(diveSetup) {
 
         results.push({
             id: dive.id,
+            name: dive.name,
             startDateTime: dive.startDateTime,
             endDateTime,
             maxDepth: dive.maxDepth,
