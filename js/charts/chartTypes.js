@@ -319,6 +319,7 @@ export function normalizeDiveSetup(setup) {
             time: setup.units?.time || 'minutes',
             pressure: setup.units?.pressure || 'bar'
         },
-        dives: setup.dives
+        dives: setup.dives,
+        initialTissuePressures: setup.initialTissuePressures ?? null
     };
 }

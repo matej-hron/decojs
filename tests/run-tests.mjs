@@ -182,6 +182,7 @@ import {
 
 import { planTrip } from '../js/tripPlanner.js';
 import { surfacingGF } from '../js/preSaturation.js';
+import { normalizeDiveSetup } from '../js/charts/chartTypes.js';
 
 // ============================================================================
 // DIVE SETUP TESTS
@@ -2911,6 +2912,28 @@ describe('preSaturation - surfacingGF', () => {
         expect(res.controllingPct).toBeCloseTo(maxPer, 9);
         expect(res.perCompartmentPct[res.controllingCompartmentId]).toBeCloseTo(maxPer, 9);
         expect(res.controllingPct).toBeGreaterThan(10); // short SI ⇒ clearly elevated
+    });
+});
+
+// ============================================================================
+// normalizeDiveSetup - initialTissuePressures preservation
+// ============================================================================
+
+describe('normalizeDiveSetup - initialTissuePressures preservation', () => {
+    const base = {
+        gases: [{ id: 'bottom', name: 'Air', o2: 0.2098, n2: 0.7902 }],
+        dives: [{ waypoints: [{ time: 0, depth: 0 }, { time: 2, depth: 30 }, { time: 20, depth: 30 }, { time: 23, depth: 0 }] }]
+    };
+
+    test('defaults initialTissuePressures to null when absent', () => {
+        const norm = normalizeDiveSetup({ ...base });
+        expect(norm.initialTissuePressures).toBe(null);
+    });
+
+    test('preserves initialTissuePressures when present', () => {
+        const seed = { 1: 1.5, 2: 1.4 };
+        const norm = normalizeDiveSetup({ ...base, initialTissuePressures: seed });
+        expect(norm.initialTissuePressures).toBe(seed);
     });
 });
 

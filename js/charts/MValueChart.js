@@ -896,7 +896,7 @@ export class MValueChart {
         const gases = this.diveSetup.gases;
         const surfaceInterval = this.diveSetup.surfaceInterval || 0;
         
-        this.calculationResults = calculateTissueLoading(waypoints, surfaceInterval, { gases });
+        this.calculationResults = calculateTissueLoading(waypoints, surfaceInterval, { gases, initialTissuePressures: this.diveSetup.initialTissuePressures });
         this._updateTimeDisplay();
     }
     

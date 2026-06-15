@@ -839,7 +839,7 @@ export class DiveProfileChart {
         const surfaceInterval = this.diveSetup.surfaceInterval || 0;
         
         // Calculate tissue loading
-        const results = calculateTissueLoading(waypoints, surfaceInterval, { gases });
+        const results = calculateTissueLoading(waypoints, surfaceInterval, { gases, initialTissuePressures: this.diveSetup.initialTissuePressures });
         
         // Calculate ceiling if needed - use detailed version in tissue mode
         let ceilingDepths = null;
