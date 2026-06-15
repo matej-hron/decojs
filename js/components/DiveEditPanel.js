@@ -8,19 +8,19 @@
  */
 import { DiveSetupEditor } from './DiveSetupEditor.js';
 
-// epoch-minutes <-> <input type="datetime-local"> helpers (treat minute 0 as a fixed base date).
-const BASE = Date.UTC(2026, 0, 1, 0, 0, 0); // arbitrary trip epoch; only relative days/times matter
-function epochMinToLocalInput(min) {
-    const d = new Date(BASE + min * 60000);
+// epoch-minutes <-> <input type="datetime-local"> helpers.
+// `base` is a UTC millisecond timestamp representing the trip's epoch (minute 0).
+function epochMinToLocalInput(min, base) {
+    const d = new Date(base + min * 60000);
     const pad = (n) => String(n).padStart(2, '0');
     return `${d.getUTCFullYear()}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())}T${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}`;
 }
-function localInputToEpochMin(value) {
+function localInputToEpochMin(value, base) {
     const [datePart, timePart] = value.split('T');
     const [y, mo, da] = datePart.split('-').map(Number);
     const [h, mi] = timePart.split(':').map(Number);
     const ms = Date.UTC(y, mo - 1, da, h, mi);
-    return Math.round((ms - BASE) / 60000);
+    return Math.round((ms - base) / 60000);
 }
 
 export class DiveEditPanel extends EventTarget {
@@ -31,12 +31,16 @@ export class DiveEditPanel extends EventTarget {
         this.editor = null;
     }
 
-    open(dive) {
+    open(dive, startDate) {
         if (this.editor) this.close();
         this.dive = dive;
+
+        // Compute the epoch base from the trip start date (defaults to '2026-01-01' if not provided).
+        const base = new Date(((startDate || '2026-01-01')) + 'T00:00:00').getTime();
+
         this.container.innerHTML = `
             <div class="dep-row">
-                <label>Start <input type="datetime-local" class="dep-start" value="${epochMinToLocalInput(dive.startDateTime)}"></label>
+                <label>Start <input type="datetime-local" class="dep-start" value="${epochMinToLocalInput(dive.startDateTime, base)}"></label>
                 <button class="dep-remove">Remove dive</button>
             </div>
             <div class="dep-editor"></div>`;
@@ -74,7 +78,7 @@ export class DiveEditPanel extends EventTarget {
             const maxDepth = parseFloat(this.editor.elements.quickDepth.value) || this.dive.maxDepth;
             const bottomTime = parseFloat(this.editor.elements.quickTime.value) || this.dive.bottomTime;
 
-            const startDateTime = localInputToEpochMin(this.container.querySelector('.dep-start').value);
+            const startDateTime = localInputToEpochMin(this.container.querySelector('.dep-start').value, base);
             this.dispatchEvent(new CustomEvent('apply', {
                 detail: { id: this.dive.id, patch: { startDateTime, maxDepth, bottomTime, gases: setup.gases } }
             }));
