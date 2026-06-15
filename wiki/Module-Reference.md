@@ -236,13 +236,13 @@ Repetitive-dive trip planner (sub-project ①). Chains a sequence of square dive
 Pure module — no DOM, no side effects.
 
 Imports: `generateDecoProfile` from `diveSetup.js`; `calculateTissueLoading`, `simulateDepthTime`, `N2_FRACTION` from `decoModel.js`.
-Imported by: nothing yet (foundation for the forthcoming repetitive-dive UI).
+Imported by: `js/components/TripCalendar.js` (indirectly, via the sandbox trip-planner page).
 
 **Exports**
 
 | Signature | Line | Description |
 |---|---|---|
-| `planTrip(diveSetup)` | 26 | Plans a sequence of dives; returns `{ dives, conflicts }` |
+| `planTrip(diveSetup)` | 27 | Plans a sequence of dives; returns `{ dives, conflicts }` |
 
 `diveSetup` shape:
 
@@ -252,11 +252,13 @@ Imported by: nothing yet (foundation for the forthcoming repetitive-dive UI).
     gfLow: number,   // as percentage (default 100)
     gfHigh: number,  // as percentage (default 100)
     dives: [
-        { id: string, startDateTime: number, maxDepth: number, bottomTime: number },
+        { id: string, startDateTime: number, maxDepth: number, bottomTime: number, gases?: Array },
         ...
     ]
 }
 ```
+
+Per-dive `gases` field (optional, `tripPlanner.js:55`): when present on an individual dive, it overrides the shared `diveSetup.gases` for that dive's profile generation and tissue-loading simulation. Falls back to `diveSetup.gases` when absent. This allows each dive in a trip to use a different gas set (e.g. different deco mix) while keeping a single shared default.
 
 Return value:
 
@@ -267,6 +269,8 @@ Return value:
             id,
             startDateTime,      // epoch minutes (input, passed through)
             endDateTime,        // epoch minutes — accounts for deco extension
+            maxDepth,           // metres (input, passed through)
+            bottomTime,         // minutes (input, passed through)
             surfaceIntervalBefore, // minutes; null for first dive
             startingTissue,     // { [compartmentId]: nitrogenPressureBar } at dive entry
             endTissue,          // { [compartmentId]: nitrogenPressureBar } at surfacing
@@ -281,10 +285,13 @@ Return value:
 }
 ```
 
+`maxDepth` and `bottomTime` are echoed onto each result dive (`tripPlanner.js:80–81`) so callers such as `TripCalendar` can label blocks without re-parsing the waypoint array.
+
 **Implementation notes**
 
-- Dives are sorted by `startDateTime` before processing.
-- Surface off-gassing is computed by `simulateDepthTime(tissue, 0, gap, N2_FRACTION)` where `gap` is the actual surface interval in minutes.
+- Dives are sorted by `startDateTime` before processing (`tripPlanner.js:32`).
+- Surface off-gassing is computed by `simulateDepthTime(tissue, 0, gap, N2_FRACTION)` where `gap` is the actual surface interval in minutes (`tripPlanner.js:51`).
+- Per-dive gas selection: `const diveGases = dive.gases ?? gases` at `tripPlanner.js:55`.
 - When an overlap conflict is detected, the overlapping dive is still planned using the previous dive's end tissue state, with no surface off-gassing applied (the conflict entry records the overrun minutes).
 - For the first dive, tissues start at surface equilibrium (no seed is passed).
 - See [repetitive-dive chaining](#repetitive-dive-chaining-initialTissuePressures) for the `initialTissuePressures` seam used internally.
@@ -326,6 +333,78 @@ Imported by: the repetitive-dive detail view (sandbox).
 - Calls `calculateMaxGF(tissuePressures, surfaceAmbient)` (`decoModel.js`), where `surfaceAmbient = getAmbientPressure(0)` (`preSaturation.js:26`).
 - Clamp: `Math.max(0, g) * 100` at `preSaturation.js:28`.
 - `perCompartmentPct` iterates `allGFs` from `calculateMaxGF` and applies the same clamp per compartment (`preSaturation.js:31–33`).
+
+### `js/tripState.js`
+
+Immutable reducer over a trip's dive list (sub-project ③). Every operation returns a **new** trip object; the original is never mutated. The `dives` array produced here is the direct input to `planTrip`.
+
+Pure module — no DOM, no side effects.
+
+Imports: none.
+Imported by: the trip-planner sandbox page.
+
+**Exports**
+
+| Signature | Line | Description |
+|---|---|---|
+| `addDive(trip, fields)` | 22 | Appends a new dive with a stable max-based id (`'d<n>'`); returns new trip |
+| `editDive(trip, id, patch)` | 27 | Shallow-merges `patch` onto the matching dive; returns new trip |
+| `removeDive(trip, id)` | 34 | Filters the dive out; returns new trip |
+| `rescheduleDive(trip, id, startDateTime)` | 38 | Sugar for `editDive` that only updates `startDateTime`; returns new trip |
+
+A trip dive shape: `{ id, startDateTime (epoch minutes), maxDepth, bottomTime, gases }`.
+
+**Implementation notes**
+
+- `addDive` delegates id assignment to the private `nextId(dives)` helper (`tripState.js:13`), which scans existing ids for the highest numeric suffix and returns `'d<max+1>'`. This is max-based (not length-based) so ids never collide after a removal.
+- All four exports are pure: `trip` in, new `trip` out, no mutation.
+
+### `js/calendarLayout.js`
+
+Pure calendar layout engine (sub-project ③). Converts a `planTrip` result into day columns and absolutely-positioned duration blocks. No DOM; the renderer (`TripCalendar`) maps the output percentages to pixels.
+
+Pure module — no DOM, no side effects.
+
+Imports: none.
+Imported by: `js/components/TripCalendar.js`.
+
+**Exports**
+
+| Signature | Line | Description |
+|---|---|---|
+| `computeCalendarLayout(planResult, windowConfig)` | 15 | Returns `{ dayCount, baseDay, blocks }` |
+
+`windowConfig` shape: `{ dayStartMin, dayEndMin }` — visible window as minutes-of-day (e.g. `{ dayStartMin: 360, dayEndMin: 1200 }` for 06:00–20:00).
+
+`planResult` shape: `planTrip()` output — `{ dives: [{id, startDateTime, endDateTime}], conflicts: [{diveId}] }`.
+
+Return value:
+
+```javascript
+{
+    dayCount: number,   // number of distinct calendar days spanned
+    baseDay:  number,   // floor(min startDateTime / 1440) — the epoch-day of the first dive
+    blocks: [
+        {
+            diveId:        string,
+            dayIndex:      number,   // 0-based column index from baseDay
+            topPct:        number,   // top edge as % of window span (clamped 0–100)
+            heightPct:     number,   // block height as % of window span (clamped 0–100)
+            conflict:      boolean,  // true if diveId appears in planResult.conflicts
+            startMinOfDay: number,   // dive start as minutes-of-day (may be < dayStartMin)
+            endMinOfDay:   number    // dive end clamped to dayEndMin
+        },
+        ...
+    ]
+}
+```
+
+**Implementation notes**
+
+- `baseDay` is `floor(min(startDateTimes) / 1440)` (`calendarLayout.js:26`).
+- Block top clips early dives: `visibleStart = Math.max(startMinOfDay, dayStartMin)` (`calendarLayout.js:39`).
+- Dives crossing midnight are clamped to `dayEndMin` for v1 (documented limitation, `calendarLayout.js:37`).
+- An empty `dives` array returns `{ dayCount: 1, baseDay: 0, blocks: [] }` (`calendarLayout.js:21–23`).
 
 ### `js/diveProfile.js`
 
@@ -433,6 +512,76 @@ Small helper (~100 lines) that adds a toggle button to lock/unlock Chart.js zoom
 Default export at line 1674. Emits `change` events with `detail.diveSetup` when the form mutates (configurable via `options.emitOnInput`). Sections: gas management (library + custom), waypoint editor with drag-reorder, gradient-factor sliders with presets (Bühlmann, Conservative, Deco Planner), safety stop, SAC rates, import/export JSON textarea. Re-renders on `languagechange`.
 
 Multi-dive toggle (`showMultiDive`) exists but only `dives[0]` is rendered by the chart components; see the note in `CLAUDE.md`.
+
+### `TripCalendar.js`
+
+`class TripCalendar extends EventTarget` (line 15). Renders a `planTrip` result as duration-spanning blocks across day columns. Owns no trip state — it reads a plan result and emits interaction events; the caller mutates state and re-renders.
+
+Imports: `computeCalendarLayout` from `../calendarLayout.js`.
+Imported by: the trip-planner sandbox page.
+
+**Constructor**
+
+```javascript
+new TripCalendar(container, config = {})
+// config.window: { dayStartMin, dayEndMin } — defaults to { dayStartMin: 360, dayEndMin: 1200 } (06:00–20:00)
+```
+
+**Methods**
+
+| Signature | Line | Description |
+|---|---|---|
+| `render(planResult)` | 24 | Clears `container` and draws day columns + blocks from the `planTrip` result |
+| `toStartDateTime(dayIndex, minutesOfDay)` | 69 | Converts a `createAt` event's `{dayIndex, minutesOfDay}` to an absolute epoch-minute start |
+
+**Events** (CustomEvent dispatched on the instance)
+
+| Event | `detail` | Trigger |
+|---|---|---|
+| `createAt` | `{ dayIndex, minutesOfDay }` | User clicks empty area in a day column |
+| `selectDive` | `{ diveId }` | User clicks a rendered dive block |
+
+**Implementation notes**
+
+- One extra empty column beyond the last occupied day is always rendered to allow creating a dive on the next day (`TripCalendar.js:31`).
+- Click position within a column is converted to `minutesOfDay` and snapped to `SNAP_MIN = 5` minutes (`TripCalendar.js:43`).
+- Block labels read `dive.maxDepth` from the `planResult.dives` map (`TripCalendar.js:56`), so `planTrip` must echo `maxDepth` onto result dives.
+- Conflict blocks receive the `tc-conflict` CSS class (`TripCalendar.js:53`).
+- `toStartDateTime` uses `this._layout.baseDay` set by the last `render` call (`TripCalendar.js:70`).
+
+### `DiveEditPanel.js`
+
+`class DiveEditPanel extends EventTarget` (line 26). Per-dive edit panel combining a start date/time field with a stripped-down `DiveSetupEditor` (quick-setup depth/bottom-time + gas management). Emits `apply` and `remove` events; owns no trip state.
+
+Imports: `DiveSetupEditor` from `./DiveSetupEditor.js`.
+Imported by: the trip-planner sandbox page.
+
+**Constructor**
+
+```javascript
+new DiveEditPanel(container)
+```
+
+**Methods**
+
+| Signature | Line | Description |
+|---|---|---|
+| `open(dive)` | 34 | Renders the edit panel for `dive` into `container`; wires change listeners |
+| `close()` | 97 | Destroys the embedded editor and clears `container` |
+
+**Events** (CustomEvent dispatched on the instance)
+
+| Event | `detail` | Trigger |
+|---|---|---|
+| `apply` | `{ id, patch: { startDateTime, maxDepth, bottomTime, gases } }` | Any field changes (gas editor `change`, datetime input `change`, quick depth/time `change`) |
+| `remove` | `{ id }` | "Remove dive" button clicked |
+
+**Implementation notes**
+
+- The embedded `DiveSetupEditor` is opened with `showProfiles: false`, `showQuickSetup: true`, `showGradientFactors: false`, `showSacRate: false`, `showMultiDive: false`, `showSurfaceInterval: false`, `showDescription: false`, `showImportExport: false` (`DiveEditPanel.js:51–55`).
+- `maxDepth` and `bottomTime` are read from `editor.elements.quickDepth` / `editor.elements.quickTime` rather than from `getDiveSetup().dives[0].waypoints`, because waypoints are only populated after "Generate Profile" is clicked (`DiveEditPanel.js:74–75`).
+- Quick-setup depth/time inputs only fire `_updateNDLDisplay` internally, not the editor's `change` event, so `DiveEditPanel` attaches its own `change` listeners to those inputs (`DiveEditPanel.js:88–91`).
+- Epoch-minute ↔ `<input type="datetime-local">` conversion uses a fixed `BASE = Date.UTC(2026, 0, 1, 0, 0, 0)` (`DiveEditPanel.js:12`); only relative days/times matter, not the absolute calendar year.
 
 ### `RuntimeTable.js`
 
