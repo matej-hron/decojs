@@ -32,6 +32,7 @@ export class DiveEditPanel extends EventTarget {
     }
 
     open(dive) {
+        if (this.editor) this.close();
         this.dive = dive;
         this.container.innerHTML = `
             <div class="dep-row">
@@ -70,8 +71,8 @@ export class DiveEditPanel extends EventTarget {
             // Read depth/time from the quick-setup inputs rather than deriving
             // from waypoints, because waypoints are only populated after the user
             // clicks "Generate Profile". Using the inputs ensures we never emit NaN.
-            const maxDepth = parseFloat(this.editor.elements.quickDepth.value);
-            const bottomTime = parseFloat(this.editor.elements.quickTime.value);
+            const maxDepth = parseFloat(this.editor.elements.quickDepth.value) || this.dive.maxDepth;
+            const bottomTime = parseFloat(this.editor.elements.quickTime.value) || this.dive.bottomTime;
 
             const startDateTime = localInputToEpochMin(this.container.querySelector('.dep-start').value);
             this.dispatchEvent(new CustomEvent('apply', {
