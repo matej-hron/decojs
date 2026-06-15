@@ -187,6 +187,7 @@ import { surfacingGF } from '../js/preSaturation.js';
 import { normalizeDiveSetup } from '../js/charts/chartTypes.js';
 import { buildRuntimeRows } from '../js/components/RuntimeTable.js';
 import { computeCalendarLayout } from '../js/calendarLayout.js';
+import { previewNdl } from '../js/ndlPreview.js';
 
 // ============================================================================
 // DIVE SETUP TESTS
@@ -3138,6 +3139,39 @@ describe('calculateNDL - initialTissuePressures seam', () => {
         const seeded = calculateNDL(30, N2_FRACTION, 1.0, loaded);
         const unseeded = calculateNDL(30, N2_FRACTION, 1.0);
         expect(seeded.ndl).toBeLessThan(unseeded.ndl);
+    });
+});
+
+// ============================================================================
+// ndlPreview
+// ============================================================================
+
+describe('ndlPreview - previewNdl', () => {
+    const air = [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 }];
+
+    test('for the first dive it equals the surface NDL', () => {
+        const trip = { gases: air, gfLow: 100, gfHigh: 100, dives: [] };
+        const got = previewNdl(trip, { startDateTime: 9 * 60, maxDepth: 30, gases: air }, 100);
+        const surface = calculateNDL(30, 0.79, 1.0).ndl;
+        expect(got).toBe(surface);
+    });
+
+    test('a later, pre-saturated dive has a shorter NDL', () => {
+        const trip = { gases: air, gfLow: 100, gfHigh: 100, dives: [
+            { id: 'd1', startDateTime: 0, maxDepth: 40, bottomTime: 30, gases: air }
+        ]};
+        const later = previewNdl(trip, { startDateTime: 90, maxDepth: 30, gases: air }, 100); // short SI after d1
+        const surface = calculateNDL(30, 0.79, 1.0).ndl;
+        expect(later).toBeLessThan(surface);
+    });
+
+    test('does not depend on a placeholder bottom time (deterministic)', () => {
+        const trip = { gases: air, gfLow: 100, gfHigh: 100, dives: [
+            { id: 'd1', startDateTime: 0, maxDepth: 40, bottomTime: 30, gases: air }
+        ]};
+        const a = previewNdl(trip, { startDateTime: 90, maxDepth: 30, gases: air }, 100);
+        const b = previewNdl(trip, { startDateTime: 90, maxDepth: 30, gases: air }, 100);
+        expect(a).toBe(b);
     });
 });
 
