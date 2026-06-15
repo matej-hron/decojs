@@ -2705,6 +2705,34 @@ describe('calculateTissueLoading - initialTissuePressures seam', () => {
     });
 });
 
+describe('generateDecoProfile - initialTissuePressures seam', () => {
+    const air = [{ id: 'bottom', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0 }];
+
+    test('omitting the seed is unchanged (surface start)', () => {
+        const a = generateDecoProfile(40, 30, air, 100, 100, undefined, {});
+        const b = generateDecoProfile(40, 30, air, 100, 100);
+        expect(a.totalDecoTime).toBe(b.totalDecoTime);
+    });
+
+    test('a pre-saturated seed increases the deco obligation', () => {
+        // 30 m / 18 min from the surface is within NDL → no deco.
+        const fresh = generateDecoProfile(30, 18, air, 100, 100, undefined, {});
+        expect(fresh.totalDecoTime).toBe(0);
+
+        // Same dive, but tissues already heavily loaded → must incur deco.
+        const seed = {};
+        // Build a heavy seed from a deep prior dive's loading.
+        const prior = calculateTissueLoading(
+            [{ time: 0, depth: 0 }, { time: 2, depth: 45 }, { time: 25, depth: 45 }, { time: 30, depth: 0 }],
+            0, { gases: air });
+        Object.keys(prior.compartments).forEach(id => {
+            seed[id] = prior.compartments[id].pressures.at(-1);
+        });
+        const res = generateDecoProfile(30, 18, air, 100, 100, undefined, { initialTissuePressures: seed });
+        expect(res.totalDecoTime).toBeGreaterThan(0);
+    });
+});
+
 // ============================================================================
 // SUMMARY
 // ============================================================================
