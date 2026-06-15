@@ -178,8 +178,8 @@ Note: `BOTTOM_GASES[0].n2` is `0.7902`, matching `N2_FRACTION` in `decoModel.js`
 | Signature | Line | Description |
 |---|---|---|
 | `generateSimpleProfile(maxDepth, bottomTime, safetyStop, options)` | 239 | No-deco profile. Descent 20 m/min, ascent 10 m/min, optional 3 min @ 5 m. |
-| `generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, safetyStop, options)` | 326 | Async. Runs NDL check; if exceeded, calls `generateDecoSchedule()` and splices stops into the waypoint array. Returns `{waypoints, ndl, requiresDeco, decoStops, totalDecoTime, controllingCompartment, pAnchor, anchorDepth}`. Accepts optional `options.initialTissuePressures` — when provided, tissues are seeded from that map and the surface-based NDL early-return is bypassed so the deco scheduler always runs against the actual pre-saturated state. See [repetitive-dive chaining](#repetitive-dive-chaining-initialTissuePressures). |
-| `generateDecoProfileSync(...)` | 557 | Synchronous variant accepting a pre-loaded `compartments` array. Does **not** support `options.initialTissuePressures`; callers needing a seeded profile must use the async `generateDecoProfile`. |
+| `generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, safetyStop, options)` | 326 | Runs NDL check; if exceeded, calls `generateDecoSchedule()` and splices stops into the waypoint array. Returns `{waypoints, ndl, requiresDeco, decoStops, totalDecoTime, controllingCompartment, pAnchor, anchorDepth}`. Accepts optional `options.initialTissuePressures` — when provided, tissues are seeded from that map and the surface-based NDL early-return is bypassed so the deco scheduler always runs against the actual pre-saturated state. See [repetitive-dive chaining](#repetitive-dive-chaining-initialTissuePressures). |
+| `generateDecoProfileSync(...)` | 557 | Variant accepting a pre-loaded `compartments` array. Does **not** support `options.initialTissuePressures`; callers needing a seeded profile must use `generateDecoProfile`. |
 | `getNDLForDepth(depth, gas, gfLow)` | 682 | Convenience wrapper around `calculateNDL`. |
 
 "Bottom time" means the absolute time at which ascent begins, not time spent at max depth. Descent duration is exact (not rounded); ascent time snaps to 0.1 min unless `continuousDeco=true` (`diveSetup.js:260`).
@@ -285,7 +285,7 @@ Return value:
 
 - Dives are sorted by `startDateTime` before processing.
 - Surface off-gassing is computed by `simulateDepthTime(tissue, 0, gap, N2_FRACTION)` where `gap` is the actual surface interval in minutes.
-- When an overlap conflict is detected, the dive is still planned but tissues are not advanced (the conflict entry records the overrun minutes).
+- When an overlap conflict is detected, the overlapping dive is still planned using the previous dive's end tissue state, with no surface off-gassing applied (the conflict entry records the overrun minutes).
 - For the first dive, tissues start at surface equilibrium (no seed is passed).
 - See [repetitive-dive chaining](#repetitive-dive-chaining-initialTissuePressures) for the `initialTissuePressures` seam used internally.
 
@@ -295,7 +295,7 @@ Both `calculateTissueLoading` and `generateDecoProfile` accept an optional `opti
 
 When provided:
 
-- **`calculateTissueLoading`** (`decoModel.js:1116–1126`): seeds each compartment from the map instead of calling `getInitialTissueN2`. Useful for plotting the tissue trajectory of a repetitive dive starting from residual saturation.
+- **`calculateTissueLoading`** (`decoModel.js:1115–1126`): seeds each compartment from the map instead of calling `getInitialTissueN2`. Useful for plotting the tissue trajectory of a repetitive dive starting from residual saturation.
 - **`generateDecoProfile`** (`diveSetup.js:351–373`): seeds the bottom-phase tissues from the map **and** bypasses the surface-based NDL early-return. The NDL computed by `calculateNDL` is a fresh-start figure — it is meaningless when the diver already carries residual nitrogen. By skipping the early-return and always running the full deco scheduler, `generateDecoProfile` computes the actual deco obligation against the pre-saturated tissue state (which may require stops even when bottom time is under the surface NDL).
 
 `generateDecoProfileSync` intentionally does **not** support this option; its NDL early-return and surface-only tissue init assume a fresh surface start.
