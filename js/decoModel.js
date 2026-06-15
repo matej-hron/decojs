@@ -594,6 +594,9 @@ const STOP_INCREMENT = 3;
  * @param {number} depth - Depth in meters
  * @param {number} n2Fraction - N2 fraction in gas (default 0.79 for air)
  * @param {number} gfLow - GF Low as decimal (0-1), determines first stop ceiling
+ * @param {Object.<string, number>|null} [initialTissuePressures] - Optional per-compartment
+ *   N2 pressure (bar) to seed the descent start from (repetitive-dive pre-saturation);
+ *   when null/omitted, starts from surface equilibrium (unchanged behaviour).
  * @returns {{ndl: number, controllingCompartment: number}} NDL in minutes and limiting compartment
  */
 export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0, initialTissuePressures = null) {
