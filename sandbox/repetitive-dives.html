@@ -19,6 +19,8 @@
   </style>
 </head>
 <body>
+  <nav id="nav-placeholder"></nav>
+
   <div class="trip">
     <h1>Repetitive Dive Planner — preview</h1>
     <p>Each panel is one dive in the trip. Surface intervals off-gas the tissues;
@@ -26,6 +28,7 @@
     <div id="panels"></div>
   </div>
 
+  <script src="../js/nav.js" type="module"></script>
   <script type="module">
     import { DiveProfileChart } from '../js/charts/DiveProfileChart.js';
     import { planTrip } from '../js/tripPlanner.js';
@@ -33,13 +36,15 @@
     const gases = [{ id: 'bottom', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0,
                      cylinderVolume: 12, startPressure: 200 }];
 
-    // Hardcoded 3-dive day: two morning/afternoon dives + one next-morning dive.
+    // Three identical 40 m / 30 min air dives on one day with short surface
+    // intervals — each starts more pre-saturated than the last, so deco grows.
     const setup = {
       gases, gfLow: 100, gfHigh: 100, reservePressure: 50,
+      // startDateTime is epoch MINUTES (minute 0 = start of the trip's first day).
       dives: [
-        { id: 'd1', startDateTime: 9 * 60,        maxDepth: 40, bottomTime: 25 }, // 09:00
-        { id: 'd2', startDateTime: 13 * 60,       maxDepth: 30, bottomTime: 35 }, // 13:00
-        { id: 'd3', startDateTime: (24 + 9) * 60, maxDepth: 40, bottomTime: 25 }  // next 09:00
+        { id: 'd1', startDateTime:  9 * 60, maxDepth: 40, bottomTime: 30 }, // 09:00
+        { id: 'd2', startDateTime: 11 * 60, maxDepth: 40, bottomTime: 30 }, // 11:00 (~1h SI)
+        { id: 'd3', startDateTime: 13 * 60, maxDepth: 40, bottomTime: 30 }  // 13:00 (~40m SI)
       ]
     };
 
