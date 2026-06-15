@@ -190,6 +190,7 @@
           ...trip,
           gases: diveGases,
           dives: [{ waypoints: d.profile.waypoints }],
+          surfaceInterval: 0, // no post-dive flat tail — the chart should fill with the dive itself
           initialTissuePressures: d.startingTissue
         };
         const c = new DiveProfileChart(card.querySelector('.chart-host'), {
@@ -264,6 +265,7 @@
         ...trip,
         gases: diveGases,
         dives: [{ waypoints: d.profile.waypoints }],
+        surfaceInterval: 0, // no post-dive flat tail — fill the chart with the dive itself
         initialTissuePressures: d.startingTissue
       };
       const siLine = d.surfaceIntervalBefore == null ? 'first dive' : `surface interval ${fmtDur(d.surfaceIntervalBefore)}`;
