@@ -16,8 +16,11 @@ import { calculateMaxGF, getAmbientPressure } from './decoModel.js';
  * @returns {{
  *   controllingPct: number,            // max surfacing GF across tissues, clamped at 0, as %
  *   controllingCompartmentId: number,  // the leading (max-GF) compartment id
- *   perCompartmentPct: Object          // { [compartmentId]: clamped surfacing GF % }
+ *   perCompartmentPct: Object.<number, number> // compartment id → clamped surfacing GF %
  * }}
+ *   Negative GFs are clamped to 0: a negative surfacing GF means the tissue sits
+ *   below surface ambient (it still has on-gassing capacity, not a saturation
+ *   state), so it reads as 0% pre-saturation rather than a negative percentage.
  */
 export function surfacingGF(tissuePressures) {
     const surfaceAmbient = getAmbientPressure(0);
@@ -26,7 +29,7 @@ export function surfacingGF(tissuePressures) {
 
     const perCompartmentPct = {};
     for (const id of Object.keys(allGFs)) {
-        perCompartmentPct[id] = clampPct(allGFs[id]);
+        perCompartmentPct[Number(id)] = clampPct(allGFs[id]);
     }
 
     return {

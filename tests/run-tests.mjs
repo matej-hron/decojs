@@ -2900,6 +2900,7 @@ describe('preSaturation - surfacingGF', () => {
             gases, gfLow: 100, gfHigh: 100,
             dives: [
                 { id: 'd1', startDateTime: 0,  maxDepth: 40, bottomTime: 30 },
+                // intentionally SHORT (~5-6 min) surface interval so tissues stay clearly pre-saturated
                 { id: 'd2', startDateTime: 65, maxDepth: 40, bottomTime: 30 }
             ]
         });
@@ -2909,6 +2910,7 @@ describe('preSaturation - surfacingGF', () => {
         const maxPer = Math.max(...Object.values(res.perCompartmentPct));
         expect(res.controllingPct).toBeCloseTo(maxPer, 9);
         expect(res.perCompartmentPct[res.controllingCompartmentId]).toBeCloseTo(maxPer, 9);
+        expect(res.controllingPct).toBeGreaterThan(10); // short SI ⇒ clearly elevated
     });
 });
 
