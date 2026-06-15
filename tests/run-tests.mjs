@@ -2878,6 +2878,27 @@ describe('tripPlanner - planTrip', () => {
         expect(trip.dives).toHaveLength(0);
         expect(trip.conflicts).toHaveLength(0);
     });
+
+    test('per-dive gases: a richer nitrox mix reduces that dive\'s deco', () => {
+        const air = [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 }];
+        const ean32 = [{ id: 'ean32', name: 'EAN32', o2: 0.32, n2: 0.68, he: 0 }];
+        const run = (g2) => planTrip({ gases: air, gfLow: 100, gfHigh: 100, dives: [
+            { id: 'd1', startDateTime: 0,   maxDepth: 30, bottomTime: 30, gases: air },
+            { id: 'd2', startDateTime: 200, maxDepth: 30, bottomTime: 30, gases: g2 }
+        ]});
+        const airDeco = run(air).dives[1].profile.totalDecoTime;
+        const ean32Deco = run(ean32).dives[1].profile.totalDecoTime;
+        expect(ean32Deco).toBeLessThan(airDeco);
+    });
+
+    test('falls back to shared gases when a dive has no gases field', () => {
+        const air = [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 }];
+        const withField = planTrip({ gases: air, gfLow: 100, gfHigh: 100,
+            dives: [{ id: 'd1', startDateTime: 0, maxDepth: 40, bottomTime: 30, gases: air }] });
+        const without = planTrip({ gases: air, gfLow: 100, gfHigh: 100,
+            dives: [{ id: 'd1', startDateTime: 0, maxDepth: 40, bottomTime: 30 }] });
+        expect(without.dives[0].profile.totalDecoTime).toBe(withField.dives[0].profile.totalDecoTime);
+    });
 });
 
 // ============================================================================

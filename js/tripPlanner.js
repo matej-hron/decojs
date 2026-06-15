@@ -51,14 +51,15 @@ export function planTrip(diveSetup) {
             }
         }
 
+        const diveGases = dive.gases ?? gases;
         const decoOpts = seed ? { initialTissuePressures: seed } : {};
         const profile = generateDecoProfile(
-            dive.maxDepth, dive.bottomTime, gases, gfLow, gfHigh, undefined, decoOpts
+            dive.maxDepth, dive.bottomTime, diveGases, gfLow, gfHigh, undefined, decoOpts
         );
         // surfaceInterval = 0: we want only the in-water tissue track for this dive;
         // surface off-gassing between dives is handled separately by simulateDepthTime
         // at the start of the next iteration.
-        const loading = calculateTissueLoading(profile.waypoints, 0, { gases, ...decoOpts });
+        const loading = calculateTissueLoading(profile.waypoints, 0, { gases: diveGases, ...decoOpts });
 
         const startingTissue = {};
         const endTissue = {};
