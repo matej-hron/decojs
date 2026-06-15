@@ -17,6 +17,7 @@ import { calculateTissueLoading, simulateDepthTime, N2_FRACTION } from './decoMo
  * @property {number} startDateTime Scheduled start, epoch minutes.
  * @property {number} maxDepth      Metres.
  * @property {number} bottomTime    Minutes from dive start until leaving max depth.
+ * @property {Array=}  gases         Optional per-dive gas list; falls back to the trip-level diveSetup.gases when absent.
  */
 
 /**
