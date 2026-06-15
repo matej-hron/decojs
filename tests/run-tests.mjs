@@ -3098,6 +3098,24 @@ describe('calendarLayout - computeCalendarLayout', () => {
         expect(layout.dayCount).toBe(1);
         expect(layout.blocks).toHaveLength(0);
     });
+
+    test('a dive starting before the window clips its top without inflating height', () => {
+        // 05:30 start, 06:30 end; only 06:00–06:30 (30 min) is in-window.
+        const planResult = { dives: [{ id: 'd1', startDateTime: 5 * 60 + 30, endDateTime: 6 * 60 + 30 }], conflicts: [] };
+        const b = computeCalendarLayout(planResult, win).blocks[0];
+        expect(b.topPct).toBe(0);
+        expect(b.heightPct).toBeCloseTo(30 / 840 * 100, 4);
+    });
+
+    test('handles a trip starting on a later epoch day (baseDay offset)', () => {
+        const day2 = 2 * 24 * 60;
+        const planResult = { dives: [{ id: 'd1', startDateTime: day2 + 9 * 60, endDateTime: day2 + 10 * 60 }], conflicts: [] };
+        const layout = computeCalendarLayout(planResult, win);
+        expect(layout.baseDay).toBe(2);
+        expect(layout.dayCount).toBe(1);
+        expect(layout.blocks[0].dayIndex).toBe(0);
+        expect(layout.blocks[0].topPct).toBeCloseTo((540 - 360) / 840 * 100, 4);
+    });
 });
 
 // ============================================================================

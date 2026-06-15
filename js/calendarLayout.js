@@ -35,8 +35,10 @@ export function computeCalendarLayout(planResult, windowConfig) {
         // Clamp the end into the same day window (a dive crossing midnight is
         // clamped to the window bottom for v1 — documented limitation).
         const endMinOfDay = Math.min(d.endDateTime - (baseDay + dayIndex) * MIN_PER_DAY, dayEndMin);
-        const topPct = clampPct((startMinOfDay - dayStartMin) / span * 100);
-        const heightPct = clampPct((endMinOfDay - startMinOfDay) / span * 100);
+        // Clip the visible start to the window top so an early dive doesn't inflate height.
+        const visibleStart = Math.max(startMinOfDay, dayStartMin);
+        const topPct = clampPct((visibleStart - dayStartMin) / span * 100);
+        const heightPct = clampPct((endMinOfDay - visibleStart) / span * 100);
         return {
             diveId: d.id,
             dayIndex,
