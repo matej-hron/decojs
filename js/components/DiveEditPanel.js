@@ -42,7 +42,9 @@ export class DiveEditPanel extends EventTarget {
         const base = Date.UTC(y, m - 1, d);
 
         this.container.innerHTML = `
+            <div class="dep-header">Editing: ${(dive.name || dive.id)}</div>
             <div class="dep-row">
+                <label>Name <input type="text" class="dep-name" value="${dive.name || ''}"></label>
                 <label>Start <input type="datetime-local" class="dep-start" value="${epochMinToLocalInput(dive.startDateTime, base)}"></label>
                 <button class="dep-remove">Remove dive</button>
             </div>
@@ -81,14 +83,16 @@ export class DiveEditPanel extends EventTarget {
             const maxDepth = parseFloat(this.editor.elements.quickDepth.value) || this.dive.maxDepth;
             const bottomTime = parseFloat(this.editor.elements.quickTime.value) || this.dive.bottomTime;
 
+            const name = (this.container.querySelector('.dep-name').value || this.dive.name || '').trim();
             const startDateTime = localInputToEpochMin(this.container.querySelector('.dep-start').value, base);
             this.dispatchEvent(new CustomEvent('apply', {
-                detail: { id: this.dive.id, patch: { startDateTime, maxDepth, bottomTime, gases: setup.gases } }
+                detail: { id: this.dive.id, patch: { startDateTime, maxDepth, bottomTime, gases: setup.gases, name } }
             }));
         };
 
         this.editor.addEventListener('change', emitApply);
         this.container.querySelector('.dep-start').addEventListener('change', emitApply);
+        this.container.querySelector('.dep-name').addEventListener('change', emitApply);
         // quickDepth/quickTime only trigger _updateNDLDisplay on the editor, not a
         // full 'change' event. Attach a direct 'change' listener so the panel
         // re-emits 'apply' whenever the user edits depth or bottom time.
