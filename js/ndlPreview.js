@@ -18,7 +18,7 @@ import { calculateNDL } from './decoModel.js';
  * @param {number} gfLow - GF Low as a percentage (0-100)
  * @returns {number} pre-saturation-aware NDL in minutes
  */
-export function previewNdl(trip, candidate, gfLow) {
+export function previewNdl(trip, candidate, gfLow = trip.gfLow ?? 100) {
     const withCandidate = addDive(trip, {
         startDateTime: candidate.startDateTime,
         maxDepth: candidate.maxDepth,

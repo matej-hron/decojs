@@ -3165,13 +3165,17 @@ describe('ndlPreview - previewNdl', () => {
         expect(later).toBeLessThan(surface);
     });
 
-    test('does not depend on a placeholder bottom time (deterministic)', () => {
-        const trip = { gases: air, gfLow: 100, gfHigh: 100, dives: [
+    test('depends only on dives before the candidate, not after it', () => {
+        const before = { gases: air, gfLow: 100, gfHigh: 100, dives: [
             { id: 'd1', startDateTime: 0, maxDepth: 40, bottomTime: 30, gases: air }
         ]};
-        const a = previewNdl(trip, { startDateTime: 90, maxDepth: 30, gases: air }, 100);
-        const b = previewNdl(trip, { startDateTime: 90, maxDepth: 30, gases: air }, 100);
-        expect(a).toBe(b);
+        // same trip plus a dive that starts AFTER the candidate slot (t=90)
+        const withLater = { ...before, dives: [...before.dives,
+            { id: 'd9', startDateTime: 600, maxDepth: 40, bottomTime: 30, gases: air }
+        ]};
+        const a = previewNdl(before,    { startDateTime: 90, maxDepth: 30, gases: air }, 100);
+        const b = previewNdl(withLater, { startDateTime: 90, maxDepth: 30, gases: air }, 100);
+        expect(a).toBe(b); // a later dive can't change the candidate's carried-in load
     });
 });
 
