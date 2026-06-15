@@ -302,6 +302,31 @@ When provided:
 
 `planTrip` in `tripPlanner.js` is the only current consumer of this seam.
 
+### `js/preSaturation.js`
+
+Pre-saturation expressed as the surfacing gradient factor (sub-project ②).
+
+"If you ascended straight to the surface right now, how close to each tissue's Bühlmann limit are you?" — 0 % means fully off-gassed to a fresh-diver baseline; 100 % means at the surfacing M-value limit. No new decompression math: it reuses `calculateMaxGF` from `decoModel.js` evaluated at `getAmbientPressure(0)` (1.01325 bar). Negative GFs are clamped to 0 (a tissue below surface ambient still has on-gassing capacity and reads as 0 % pre-saturation rather than a negative percentage).
+
+Pure module — no DOM, no side effects.
+
+Imports: `calculateMaxGF`, `getAmbientPressure` from `decoModel.js`.
+Imported by: the repetitive-dive detail view (sandbox).
+
+**Exports**
+
+| Signature | Line | Description |
+|---|---|---|
+| `surfacingGF(tissuePressures)` | 25 | Returns `{ controllingPct, controllingCompartmentId, perCompartmentPct }`. `controllingPct` is the maximum clamped surfacing GF across all 16 compartments, as a percentage. `controllingCompartmentId` is the numeric id of the leading compartment. `perCompartmentPct` is keyed by numeric compartment id. |
+
+`tissuePressures` input shape: `{ [compartmentId]: nitrogenPressureBar }` — the same shape produced by `planTrip` in `tripPlanner.js` (`startingTissue` / `endTissue` fields).
+
+**Implementation notes**
+
+- Calls `calculateMaxGF(tissuePressures, surfaceAmbient)` (`decoModel.js`), where `surfaceAmbient = getAmbientPressure(0)` (`preSaturation.js:26`).
+- Clamp: `Math.max(0, g) * 100` at `preSaturation.js:28`.
+- `perCompartmentPct` iterates `allGFs` from `calculateMaxGF` and applies the same clamp per compartment (`preSaturation.js:31–33`).
+
 ### `js/diveProfile.js`
 
 Waypoint-array validation and statistics. No algorithm content.
@@ -385,7 +410,7 @@ Validation and normalisation of `diveSetup` objects for chart consumption (~300 
 | `DEFAULT_TISSUE_PRESSURE_OPTIONS` | 184 | Tissue overlay defaults |
 | `mergeOptions(defaults, user)` | 208 | Shallow-per-key deep merge |
 | `validateDiveSetup(setup)` | 230 | Returns `{valid, errors}` |
-| `normalizeDiveSetup(setup)` | 298 | Applies defaults, coerces types, returns a fresh object |
+| `normalizeDiveSetup(setup)` | 298 | Applies defaults, coerces types, returns a fresh object. Preserves `initialTissuePressures` from the input setup, defaulting to `null` (surface equilibrium). When non-null this value is threaded into each chart's `calculateTissueLoading` call (`DiveProfileChart.js:842`, `MValueChart.js:899`, `GFChart.js:871`) to seed tissues from a prior dive's residual state for repetitive-dive rendering. |
 
 ### `interactionLock.js`
 
@@ -408,6 +433,39 @@ Small helper (~100 lines) that adds a toggle button to lock/unlock Chart.js zoom
 Default export at line 1674. Emits `change` events with `detail.diveSetup` when the form mutates (configurable via `options.emitOnInput`). Sections: gas management (library + custom), waypoint editor with drag-reorder, gradient-factor sliders with presets (Bühlmann, Conservative, Deco Planner), safety stop, SAC rates, import/export JSON textarea. Re-renders on `languagechange`.
 
 Multi-dive toggle (`showMultiDive`) exists but only `dives[0]` is rendered by the chart components; see the note in `CLAUDE.md`.
+
+### `RuntimeTable.js`
+
+Runtime table for a single executed dive profile (sub-project ②). Splits pure row derivation from DOM rendering so the logic is unit-testable without a browser.
+
+Imports: none.
+Imported by: the repetitive-dive detail view (sandbox).
+
+**Exports**
+
+| Signature | Line | Description |
+|---|---|---|
+| `buildRuntimeRows(profile, gases)` | 19 | Pure function. Derives ordered runtime rows from an executed dive profile. Returns `Array<{ phase, depth, segmentTime, runTime, gas, isStop }>`. |
+| `renderRuntimeTable(rows)` | 71 | DOM-only. Accepts the output of `buildRuntimeRows` and returns an `HTMLTableElement` with class `runtime-table`. |
+
+`buildRuntimeRows` row shape:
+
+| Field | Type | Description |
+|---|---|---|
+| `phase` | `'descent'` \| `'bottom'` \| `'ascent'` \| `'stop'` | Phase label. Level segments at max depth are `bottom`; all other level segments are `stop`. |
+| `depth` | `number` | Depth (m) at end of segment (arrival depth for descent/ascent; held level for bottom/stop). |
+| `segmentTime` | `number` | Duration of this segment (minutes). |
+| `runTime` | `number` | Absolute run time at end of segment (minutes from dive start). |
+| `gas` | `string` | Human-readable name of the active gas for this segment. |
+| `isStop` | `boolean` | `true` when `phase === 'stop'` (convenience flag for table row styling). |
+
+`profile` input: the result object from `generateDecoProfile` — expects `{ waypoints: [{ time, depth, gasId? }], … }` with absolute times in minutes.
+`gases` input: `[{ id, name, … }]`; `gases[0]` is the starting gas.
+
+**Implementation notes**
+
+- Zero-length segments (e.g. in-transit gas-switch marker waypoints) are skipped (`RuntimeTable.js:38`).
+- Gas tracking follows `wp.gasId` on each waypoint; falls back to `gases[0]` for unmarked segments (`RuntimeTable.js:27`, `RuntimeTable.js:35`).
 
 ### `TissueSaturationSim.js`
 
