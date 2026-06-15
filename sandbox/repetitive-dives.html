@@ -16,6 +16,11 @@
     .dive-meta { font-size: .9rem; opacity: .85; margin-bottom: .5rem; }
     .conflict { color: #b00; font-weight: 600; }
     .chart-host { height: 320px; }
+    /* Detail-view charts need real vertical room — the P-P (M-value) and GF
+       diagrams collapse to a line at the 320px overview height. Mirror the
+       standalone sandbox sizes (profile 600 / M-value & GF 700). */
+    #dv-profile { height: 560px; }
+    #dv-mvalue, #dv-gf { height: 700px; }
     .presat-strip-wrap { max-width: 480px; }
     .presat-strip { display:flex; align-items:flex-end; gap:2px; height:80px;
                     border-bottom:1px solid var(--border-color,#ccc); }
