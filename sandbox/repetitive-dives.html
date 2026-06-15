@@ -51,6 +51,14 @@
                      font-size:.75rem; font-weight:600; background:var(--surface,#f0f0f0);
                      border-bottom:1px solid var(--border-color,#ccc); border-radius:6px 6px 0 0; }
     .tc-hour-line { position:absolute; left:0; right:0; border-top:1px solid var(--border-color,#eee); opacity:.5; pointer-events:none; }
+    .add-dialog-backdrop { position:fixed; inset:0; background:rgba(0,0,0,.35); display:flex;
+                           align-items:center; justify-content:center; z-index:1000; }
+    .add-dialog { background:var(--surface,#fff); padding:1.25rem; border-radius:10px; min-width:300px;
+                  display:flex; flex-direction:column; gap:.6rem; }
+    .add-dialog h3 { margin:0; }
+    .ad-modes { display:flex; flex-direction:column; gap:.35rem; }
+    .ad-hint { font-size:.85rem; opacity:.85; min-height:1.2em; }
+    .ad-actions { display:flex; justify-content:flex-end; gap:.5rem; }
   </style>
 </head>
 <body>
