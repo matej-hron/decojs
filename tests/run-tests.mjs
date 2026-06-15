@@ -2755,6 +2755,76 @@ describe('tripPlanner - planTrip', () => {
         expect(trip.dives[0].surfaceIntervalBefore).toBe(null);
         expect(trip.conflicts).toHaveLength(0);
     });
+
+    test('a second dive starts pre-saturated and incurs more deco', () => {
+        const setup = {
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [
+                { id: 'd1', startDateTime: 0,    maxDepth: 40, bottomTime: 30 },
+                { id: 'd2', startDateTime: 1000, maxDepth: 40, bottomTime: 30 }  // ~SI 925 min later
+            ]
+        };
+        const trip = planTrip(setup);
+        const [d1, d2] = trip.dives;
+
+        // Surface interval is the real clock gap from d1's actual end.
+        expect(d2.surfaceIntervalBefore).toBe(1000 - d1.endDateTime);
+        // Pre-saturation: d2 starts more loaded than d1 (which started at surface eq).
+        expect(sum(d2.startingTissue)).toBeGreaterThan(sum(d1.startingTissue));
+        // And carries a heavier or equal deco obligation.
+        expect(d2.profile.totalDecoTime).toBeGreaterThanOrEqual(d1.profile.totalDecoTime);
+    });
+
+    test('a longer surface interval leaves the next dive less loaded', () => {
+        const make = (secondStart) => planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [
+                { id: 'd1', startDateTime: 0,           maxDepth: 40, bottomTime: 30 },
+                { id: 'd2', startDateTime: secondStart, maxDepth: 40, bottomTime: 30 }
+            ]
+        });
+        const shortSI = make(200);   // d2 soon after d1
+        const longSI  = make(2000);  // d2 much later
+        const startLoad = trip => sum(trip.dives[1].startingTissue);
+        expect(startLoad(longSI)).toBeLessThan(startLoad(shortSI));
+    });
+
+    test('after an overnight interval slow tissues retain residual', () => {
+        const trip = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [
+                { id: 'd1', startDateTime: 0,    maxDepth: 40, bottomTime: 30 },
+                { id: 'd2', startDateTime: 1140, maxDepth: 40, bottomTime: 30 }  // ~18 h later
+            ]
+        });
+        const [d1, d2] = trip.dives;
+        // Fresh surface-equilibrium reference (a brand-new first dive's start load).
+        const fresh = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [{ id: 'x', startDateTime: 0, maxDepth: 40, bottomTime: 30 }]
+        }).dives[0];
+        // Still above a fresh start, but well below the end-of-dive-1 load.
+        expect(sum(d2.startingTissue)).toBeGreaterThan(sum(fresh.startingTissue));
+        expect(sum(d2.startingTissue)).toBeLessThan(sum(d1.endTissue));
+    });
+
+    test('a dive starting before the previous one ends is flagged as a conflict', () => {
+        // d1 at 40 m / 30 min ends (incl. ascent) well after t=35; start d2 at 35.
+        const trip = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [
+                { id: 'd1', startDateTime: 0,  maxDepth: 40, bottomTime: 30 },
+                { id: 'd2', startDateTime: 35, maxDepth: 40, bottomTime: 30 }
+            ]
+        });
+        const d1End = trip.dives[0].endDateTime;
+        expect(d1End).toBeGreaterThan(35);                 // precondition: there IS an overlap
+        expect(trip.conflicts).toHaveLength(1);
+        expect(trip.conflicts[0].diveId).toBe('d2');
+        expect(trip.conflicts[0].type).toBe('overlap');
+        expect(trip.conflicts[0].overrunMinutes).toBeCloseTo(d1End - 35, 4);
+        expect(trip.dives[1].surfaceIntervalBefore).toBe(0);
+    });
 });
 
 // ============================================================================
