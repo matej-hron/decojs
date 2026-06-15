@@ -53,27 +53,39 @@ This spec covers **sub-project ① only**.
 
 ## Data Model
 
-Reuse the existing `diveSetup` object verbatim. Today it already carries, at the
-top level (shared across the whole setup): `gases`, `gfLow`, `gfHigh`,
-`reservePressure`, `units`, `surfaceInterval`. Each dive today is just
-`{ waypoints: [...] }`.
+Reuse the existing `diveSetup` object. Today it already carries, at the top level
+(shared across the whole setup): `gases`, `gfLow`, `gfHigh`, `reservePressure`,
+`units`, `surfaceInterval`.
 
-The **only** additions are two per-dive fields:
+**How dives are actually authored:** the existing `DiveSetupEditor` defines a dive
+by **max depth + bottom time** (`js/components/DiveSetupEditor.js:1261-1262,1303`)
+and calls `generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, ...)`
+(`js/diveSetup.js:326`) to *generate* the waypoints. Waypoints are derived output,
+not authored input. The trip engine mirrors this: a dive is **(maxDepth,
+bottomTime)**, and the engine regenerates each dive's profile (incl. deco) from the
+carried-in tissue state — which is exactly what makes deco grow dive-over-dive.
+
+A **trip dive** for v1:
 
 ```js
 dives: [
   {
-    id: 'd1',            // NEW: stable identity, survives reshuffling
-    startDateTime: ...,  // NEW: explicit clock+day (epoch minutes — see below)
-    waypoints: [ { time, depth, gasId? }, ... ]   // existing shape
+    id: 'd1',            // stable identity, survives reshuffling
+    startDateTime: ...,  // explicit clock+day (epoch minutes — see below)
+    maxDepth: 40,        // metres
+    bottomTime: 22       // minutes from dive start until leaving max depth
   },
   ...
 ]
-// gases, gfLow, gfHigh, reservePressure, units stay top-level/shared (unchanged)
+// gases, gfLow, gfHigh stay top-level/shared (unchanged)
+// waypoints are GENERATED per dive by the engine, not stored as input
 ```
 
 Decisions:
 
+- **Dives are square profiles** (maxDepth + bottomTime) for v1 — matches how the
+  editor already authors them, and lets the engine regenerate deco from the
+  pre-saturated state. Arbitrary multi-level waypoint dives deferred.
 - **GF is trip-global** — already top-level (`gfLow`/`gfHigh`); no change.
 - **Gases are shared** for v1 (one top-level list). Per-dive gases deferred to ②.
 - **`startDateTime`** is stored as **epoch minutes** (integer minutes since an
@@ -101,13 +113,19 @@ planTrip(diveSetup) -> {
   startDateTime,          // scheduled start
   endDateTime,            // ACTUAL end incl. computed deco (epoch minutes)
   surfaceIntervalBefore,  // minutes since previous dive's actual end (null for first)
-  startingTissue,         // tissue pressures at dive start (the "pre-saturation")
-  endTissue,              // tissue pressures at dive end
-  profile,                // executed profile incl. deco stops (time series)
-  decoSchedule,           // output of generateDecoSchedule
-  ceiling                 // ceiling time series / summary
+  startingTissue,         // { [compId]: pressure } at dive start (the "pre-saturation")
+  endTissue,              // { [compId]: pressure } at dive end
+  profile                 // the full generateDecoProfile return for this dive:
+                          //   { waypoints, ndl, requiresDeco, decoStops,
+                          //     totalDecoTime, controllingCompartment,
+                          //     pAnchor, anchorDepth }
 }
 ```
+
+The minimal view renders each dive by building a per-dive `diveSetup`
+(`{ ...sharedTopLevel, dives: [{ waypoints: result.profile.waypoints }] }`) and
+handing it to a `DiveProfileChart`, which computes its own ceiling. So the engine
+need not return a separate ceiling series for v1.
 
 `Conflict` (recorded, not thrown):
 
@@ -118,53 +136,74 @@ planTrip(diveSetup) -> {
 ### Algorithm
 
 1. Sort `dives` by `startDateTime` ascending.
-2. Initialise `tissue = getInitialTissueN2()` (surface equilibrium).
-   Set `prevEndDateTime = null`.
+2. Initialise `tissue` to surface equilibrium: `getInitialTissueN2(gases[0].n2)` for
+   every compartment. Set `prevEndDateTime = null`.
 3. For each dive in order:
    a. **Surface interval:** if `prevEndDateTime != null`, compute
       `gap = dive.startDateTime - prevEndDateTime` (minutes).
       - If `gap < 0`: record a `Conflict` (`overrunMinutes = -gap`); do **not**
         off-gas (the previous dive hasn't finished). `surfaceIntervalBefore = 0`.
-      - Else: off-gas tissues at the surface (depth 0, air) for `gap` minutes via
-        the existing surface-interval off-gassing path; `surfaceIntervalBefore = gap`.
-   b. Capture `startingTissue = clone(tissue)`.
-   c. **Run the dive from the loaded state:** generate the deco-extended profile
-      using the existing single-dive orchestration, but seeded with
-      `startingTissue` instead of surface equilibrium (see decoModel change below).
-      This yields the executed `profile`, `decoSchedule`, `ceiling`, the updated
-      `endTissue`, and the **actual end time** (planned profile + computed deco).
+      - Else: off-gas at the surface for `gap` minutes via the existing primitive
+        `simulateDepthTime(tissue, 0, gap, N2_FRACTION)`; `surfaceIntervalBefore = gap`.
+   b. Capture `startingTissue = { ...tissue }`.
+   c. **Run the dive from the loaded state:**
+      - `profile = generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh,
+        safetyStop, { initialTissuePressures: startingTissue })` → executed
+        waypoints + deco info. Seeding makes the deco obligation reflect the
+        residual load (see decoModel/diveSetup change below).
+      - `loading = calculateTissueLoading(profile.waypoints, 0, { gases,
+        initialTissuePressures: startingTissue })` → time series for rendering and
+        the **end tissue** (last value per compartment) → `endTissue`.
+      - `actualDurationMinutes = last waypoint time of profile.waypoints`.
    d. `endDateTime = startDateTime + actualDurationMinutes`.
-   e. Push `PerDiveResult`. Set `tissue = endTissue`, `prevEndDateTime = endDateTime`.
+   e. Push `PerDiveResult` (`profile`, `decoSchedule = profile.decoStops`,
+      `ceiling` from `loading`). Set `tissue = endTissue`,
+      `prevEndDateTime = endDateTime`.
 4. Return `{ dives, conflicts }`.
 
 Reshuffling later = re-sort + re-run. Optimizer later = permute + score. No engine
 changes needed for either.
 
-## Core-algorithm change — `js/decoModel.js`
+## Core-algorithm changes — two small, default-preserving seams
 
-`calculateTissueLoading` (and the deco-schedule orchestration it drives) currently
-hardcode the initial tissue state to surface equilibrium via `getInitialTissueN2()`.
+Both functions currently hardcode the initial tissue state to surface equilibrium.
+Each gains an optional `options.initialTissuePressures`; when omitted, behaviour is
+byte-for-byte identical to today, so the existing 208 tests are unaffected.
 
-**Change:** add an optional `initialTissuePressures` parameter (via the existing
-`options` object). When provided, the simulation seeds tissues from it instead of
-surface equilibrium. When omitted, behaviour is identical to today.
+**Seam 1 — `calculateTissueLoading` (`js/decoModel.js:1115-1121`).** Today it seeds
+every compartment with `getInitialTissueN2(initialN2Fraction)`. Change: if
+`options.initialTissuePressures` is provided, seed `currentPressures[comp.id]` from
+it instead. Used by the engine to get the end-of-dive tissue state and render series.
 
-- Default path unchanged → existing 208 tests unaffected.
-- This is the single seam the engine needs to inject pre-saturation.
+**Seam 2 — `generateDecoProfile` (`js/diveSetup.js:326,373`).** Today it seeds
+tissues with `getInitialTissueN2(bottomGas.n2)` (line 373) and decides
+deco-vs-no-deco via a *surface-based* NDL check (lines 346,352) before building
+waypoints. Changes when `options.initialTissuePressures` is provided:
+  - Seed `tissues` from it (line 373 area) instead of surface equilibrium.
+  - **Skip the surface-NDL early-return** and always build via the
+    `generateDecoSchedule` path. That path reads the *actual* bottom tissue state,
+    so pre-saturation yields more/deeper stops; if no deco is needed it returns zero
+    stops and the existing safety-stop logic still applies. (The surface-based NDL
+    is wrong under pre-saturation, hence the bypass.)
 
-**Wiki impact (per CLAUDE.md):** `decoModel.js` is a core-algorithm file. After
-implementation, review/update `Algo-01-Ascent-Simulation.md` and
-`Module-Reference.md` for the new optional parameter and the chaining behaviour.
-A new `js/tripPlanner.js` module also needs a `Module-Reference.md` entry.
+Surface-interval off-gassing needs **no new code** — it reuses the existing
+exported `simulateDepthTime(tissues, 0, gap, N2_FRACTION)`.
+
+**Wiki impact (per CLAUDE.md):** `decoModel.js` and `diveSetup.js` are core files.
+After implementation, review/update `Algo-01-Ascent-Simulation.md`,
+`Algo-05-Multi-Gas-Switching.md`, and `Module-Reference.md` for the new optional
+parameters and chaining behaviour. The new `js/tripPlanner.js` module also needs a
+`Module-Reference.md` entry.
 
 ## Minimal View — `sandbox/repetitive-dives.html` (new page)
 
 Purpose: prove the physics end-to-end with the least UI possible. Not the real
 planner (that is sub-project ②).
 
-- A minimal inline definition of 2–3 dives with start datetimes. Acceptable for v1
-  to seed this from a hardcoded/JSON `diveSetup` plus simple inputs; a full
-  multi-dive editor is out of scope here.
+- A minimal inline definition of 2–3 dives, each as `{ startDateTime, maxDepth,
+  bottomTime }`, sharing the top-level gases/GF. Acceptable for v1 to seed this from
+  a hardcoded `diveSetup` plus simple numeric inputs; a full multi-dive editor is
+  out of scope here.
 - Call `planTrip()` and render **stacked `DiveProfileChart` panels**, one per dive,
   in chronological order. Each panel annotated with:
   - surface interval before the dive (e.g. "SI 3h 20m" / "overnight 18h"),
@@ -184,7 +223,12 @@ Integration housekeeping:
 - Navigation entry (`js/nav.js`) only if we want it discoverable; for a sandbox
   proof-of-concept this can wait until ②. Decide during planning.
 
-## Testing — `tests/tripPlanner.test.js` (new)
+## Testing — append a `describe` block to `tests/run-tests.mjs`
+
+`npm test` runs the single monolithic `tests/run-tests.mjs` (its own mini
+`describe`/`test`/`expect` framework; the `.test.js` files are legacy Jest, not
+run). New tests are added as a `describe('tripPlanner', ...)` block in that file,
+with `planTrip` added to the module imports near the top.
 
 The heart of v1. Cases:
 
@@ -203,11 +247,16 @@ The heart of v1. Cases:
 Also: keep the full existing suite green (the decoModel change must be a no-op by
 default).
 
+## Resolved during planning
+
+- **Reuse boundary:** engine calls `generateDecoProfile` (seeded) for the executed
+  deco profile and `calculateTissueLoading` (seeded) for the end-tissue + render
+  series; surface off-gassing uses `simulateDepthTime`. Two default-preserving
+  seams (above). No new waypoint-building logic.
+- **Dive model:** square `(maxDepth, bottomTime)`, mirroring the editor.
+
 ## Open questions / to settle during planning
 
-- Exact reuse boundary inside `decoModel.js`: which function the engine calls to
-  get "loaded-state dive + deco" (`calculateTissueLoading` vs. the schedule
-  orchestration the sandbox uses) — pick the smallest seam that returns both the
-  executed profile and the end tissue state.
-- Whether the minimal page gets a `nav.js` entry now or in ②.
+- Whether the minimal page gets a `nav.js` entry now or in ②ish (lean: not yet —
+  keep it an unlinked sandbox page until the real planner lands).
 ```
