@@ -71,9 +71,12 @@
     <div class="trip-config">
       <label>GF Low <input id="cfg-gflow" type="number" value="100" min="1" max="100"></label>
       <label>GF High <input id="cfg-gfhigh" type="number" value="100" min="1" max="100"></label>
+      <label>Start date <input id="cfg-start" type="date" value="2026-06-15"></label>
+      <label>Days <input id="cfg-days" type="number" min="1" max="14" value="3"></label>
     </div>
     <div id="calendar"></div>
     <div id="edit-panel"></div>
+    <div id="add-dialog"></div>
     <div id="panels"></div>
     <div id="detail" style="display:none;"></div>
   </div>
@@ -90,12 +93,16 @@
     import { TripCalendar } from '../js/components/TripCalendar.js';
     import { DiveEditPanel } from '../js/components/DiveEditPanel.js';
     import { addDive, editDive, removeDive } from '../js/tripState.js';
+    import { AddDiveDialog } from '../js/components/AddDiveDialog.js';
+    import { previewNdl } from '../js/ndlPreview.js';
 
     const air = [{ id: 'bottom', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0,
                    cylinderVolume: 12, startPressure: 200 }];
 
     // Mutable trip state — this is the INPUT to planTrip.
     let trip = {
+      startDate: '2026-06-15',
+      dayCount: 3,
       gases: air,
       gfLow: 100,
       gfHigh: 100,
@@ -122,11 +129,12 @@
     // planTrip result (updated on every rerender).
     let lastResult = null;
 
-    const calendar = new TripCalendar(document.getElementById('calendar'));
-    const editPanel = new DiveEditPanel(document.getElementById('edit-panel'));
-    const panels    = document.getElementById('panels');
-    const overview  = panels;
-    const detail    = document.getElementById('detail');
+    const calendar   = new TripCalendar(document.getElementById('calendar'));
+    const editPanel  = new DiveEditPanel(document.getElementById('edit-panel'));
+    const addDialog  = new AddDiveDialog(document.getElementById('add-dialog'));
+    const panels     = document.getElementById('panels');
+    const overview   = panels;
+    const detail     = document.getElementById('detail');
 
     // ── Overview rendering ──────────────────────────────────────────────────
 
@@ -184,6 +192,9 @@
 
     function rerender() {
       lastResult = planTrip(trip);
+      const neededDays = Math.max(trip.dayCount || 1, 1,
+        ...trip.dives.map(d => Math.floor(d.startDateTime / (24 * 60)) + 1));
+      calendar.configure({ startDate: trip.startDate, dayCount: neededDays });
       calendar.render(lastResult);
       renderOverview(lastResult);
     }
@@ -280,14 +291,21 @@
     // ── Calendar events ─────────────────────────────────────────────────────
 
     calendar.addEventListener('createAt', (e) => {
-      const start = calendar.toStartDateTime(e.detail.dayIndex, e.detail.minutesOfDay);
-      trip = addDive(trip, { startDateTime: start, maxDepth: 40, bottomTime: 30, gases: trip.gases });
-      rerender();
+      const startDateTime = calendar.toStartDateTime(e.detail.dayIndex, e.detail.minutesOfDay);
+      addDialog.open({
+        startDateTime,
+        gases: trip.gases,
+        defaultDepth: 18,
+        defaultTime: 40,
+        computeNdl: (s, d, g) => previewNdl(trip, { startDateTime: s, maxDepth: d, gases: g }, trip.gfLow)
+      });
     });
+
+    addDialog.addEventListener('add', (e) => { trip = addDive(trip, e.detail); rerender(); });
 
     calendar.addEventListener('selectDive', (e) => {
       const dive = trip.dives.find(d => d.id === e.detail.diveId);
-      if (dive) editPanel.open(dive);
+      if (dive) editPanel.open(dive, trip.startDate);
     });
 
     editPanel.addEventListener('apply', (e) => {
@@ -308,6 +326,16 @@
 
     document.getElementById('cfg-gfhigh').addEventListener('change', (ev) => {
       trip = { ...trip, gfHigh: +ev.target.value };
+      rerender();
+    });
+
+    document.getElementById('cfg-start').addEventListener('change', (e) => {
+      trip = { ...trip, startDate: e.target.value };
+      rerender();
+    });
+
+    document.getElementById('cfg-days').addEventListener('change', (e) => {
+      trip = { ...trip, dayCount: Math.max(1, +e.target.value) };
       rerender();
     });
 
