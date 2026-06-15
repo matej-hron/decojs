@@ -5,7 +5,7 @@ Replay a full dive waypoint array over all 16 ZH-L16 compartments and produce a 
 ## Entry point
 
 ```javascript
-// js/decoModel.js:1178 (signature)
+// js/decoModel.js:1040 (signature)
 export function calculateTissueLoading(profile, surfaceInterval = 60, options = {})
 ```
 
@@ -37,22 +37,28 @@ export function getInitialTissueN2(n2Fraction = N2_FRACTION) {
 
 For air this evaluates to $(1.01325 - 0.0627) \cdot 0.7902 \approx 0.7510$ bar. All 16 compartments are initialized to the same value — reasonable because an extended surface interval at constant breathing gas equilibrates every half-time ($6 T_{1/2}$ closes 98.4 % of the gradient; even TC16's 635 min half-time reaches near-equilibrium within a few days).
 
+The actual seeding code (`js/decoModel.js:1115–1126`) checks for `options.initialTissuePressures` first:
+
 ```javascript
-// js/decoModel.js:1254-1259
-const currentPressures = {};
-const initialN2Fraction = getN2FractionAtTime(0);
-const initialN2 = getInitialTissueN2(initialN2Fraction);
+// js/decoModel.js:1115-1126
+const seededPressures = options.initialTissuePressures || null;
 COMPARTMENTS.forEach(comp => {
-    currentPressures[comp.id] = initialN2;
+    currentPressures[comp.id] = seededPressures
+        ? seededPressures[comp.id]
+        : initialN2;
 });
 ```
+
+### Repetitive-dive seeding (`options.initialTissuePressures`)
+
+For a repetitive dive the diver enters the water with residual nitrogen from the previous dive. Callers pass a `{ [compartmentId]: nitrogenPressureBar }` map in `options.initialTissuePressures` to seed every compartment from the prior-dive tissue state rather than surface equilibrium. This is how `js/tripPlanner.js` chains tissue loading across dives: the `endTissue` map from dive N is surface-off-gassed with `simulateDepthTime`, and the result is passed as `initialTissuePressures` to `calculateTissueLoading` (and to `generateDecoProfile`) for dive N+1. When the option is absent, behaviour is unchanged — surface equilibrium via `getInitialTissueN2`.
 
 ## Segment dispatch
 
 Inside the main loop, DecoJS avoids calling Schreiner with `rate = 0` (a numerically bad idea — the Schreiner form divides by $k$ and reduces to Haldane only in the limit). It explicitly dispatches:
 
 ```javascript
-// js/decoModel.js:1399-1424
+// js/decoModel.js:1267-1289
 const ambientRate = (nextAmbient - currentAmbient) / stepDuration;
 const avgN2Fraction = (stepN2Fraction + nextN2Fraction) / 2;
 const alveolarRate = ambientRate * avgN2Fraction;
@@ -79,7 +85,7 @@ Threshold `0.0001 bar/min` is tight enough that stop segments (rate exactly 0) a
 The loop does not simply advance by 10 s — it snaps to the next waypoint time if a straight 10 s step would cross one:
 
 ```javascript
-// js/decoModel.js:1337-1352
+// js/decoModel.js:1204-1218
 let nextTime = currentTime + intervalMinutes;
 const nextWaypointTime = (waypointIndex < profile.length - 1)
     ? profile[waypointIndex + 1].time
@@ -103,7 +109,7 @@ Each waypoint may carry an optional `gasId` field. `calculateTissueLoading` read
 The `surfaceInterval` parameter (default 60 min) appends depth = 0 time *after* the final waypoint, using air (`N2_FRACTION = 0.7902`) regardless of the final in-water gas:
 
 ```javascript
-// js/decoModel.js:1301-1303
+// js/decoModel.js:1169-1171
 const currentN2Fraction = currentTime > lastWaypoint.time
     ? N2_FRACTION  // Surface interval uses air
     : getN2FractionAtTime(currentTime);

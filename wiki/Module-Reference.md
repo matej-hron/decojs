@@ -81,7 +81,7 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 
 | Signature | Line | Description |
 |---|---|---|
-| `calculateTissueLoading(profile, surfaceInterval=60, options={})` | 1178 | Main entry: walks the waypoint array at `CALC_INTERVAL` resolution, returns `{timePoints, depthPoints, ambientPressures, compartments: {1:{pressures:[]},…}, n2Fractions}` |
+| `calculateTissueLoading(profile, surfaceInterval=60, options={})` | 1040 | Main entry: walks the waypoint array at `CALC_INTERVAL` resolution, returns `{timePoints, depthPoints, ambientPressures, compartments: {1:{pressures:[]},…}, n2Fractions}`. Accepts optional `options.initialTissuePressures` — a `{ [compartmentId]: nitrogenPressureBar }` map to seed compartments from a prior dive's residual state instead of surface equilibrium. See [repetitive-dive chaining](#repetitive-dive-chaining-initialTissuePressures). |
 | `calculateCeilingTimeSeries(results, gfLow, gfHigh=gfLow)` | 590 | Flat array of ceiling depths at each time point |
 | `calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh, providedPAnchor=null)` | 617 | Returns per-compartment ceiling series plus `gfValues` and `pAnchor`; used by M-value and profile charts |
 
@@ -178,8 +178,8 @@ Note: `BOTTOM_GASES[0].n2` is `0.7902`, matching `N2_FRACTION` in `decoModel.js`
 | Signature | Line | Description |
 |---|---|---|
 | `generateSimpleProfile(maxDepth, bottomTime, safetyStop, options)` | 239 | No-deco profile. Descent 20 m/min, ascent 10 m/min, optional 3 min @ 5 m. |
-| `generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, safetyStop, options)` | 326 | Async. Runs NDL check; if exceeded, calls `generateDecoSchedule()` and splices stops into the waypoint array. Returns `{waypoints, ndl, requiresDeco, decoStops, totalDecoTime, controllingCompartment, pAnchor, anchorDepth}`. |
-| `generateDecoProfileSync(...)` | 552 | Synchronous variant accepting a pre-loaded `compartments` array. |
+| `generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, safetyStop, options)` | 326 | Async. Runs NDL check; if exceeded, calls `generateDecoSchedule()` and splices stops into the waypoint array. Returns `{waypoints, ndl, requiresDeco, decoStops, totalDecoTime, controllingCompartment, pAnchor, anchorDepth}`. Accepts optional `options.initialTissuePressures` — when provided, tissues are seeded from that map and the surface-based NDL early-return is bypassed so the deco scheduler always runs against the actual pre-saturated state. See [repetitive-dive chaining](#repetitive-dive-chaining-initialTissuePressures). |
+| `generateDecoProfileSync(...)` | 557 | Synchronous variant accepting a pre-loaded `compartments` array. Does **not** support `options.initialTissuePressures`; callers needing a seeded profile must use the async `generateDecoProfile`. |
 | `getNDLForDepth(depth, gas, gfLow)` | 682 | Convenience wrapper around `calculateNDL`. |
 
 "Bottom time" means the absolute time at which ascent begins, not time spent at max depth. Descent duration is exact (not rounded); ascent time snaps to 0.1 min unless `continuousDeco=true` (`diveSetup.js:260`).
@@ -228,6 +228,79 @@ Toxicity is informational; not fed back into the deco loop.
 #### Defaults
 
 `DEFAULT_GAS_SWITCH_TIME=0` (line 34), `DEFAULT_START_PRESSURE=200`, `DEFAULT_RESERVE_PRESSURE=50` (lines 91, 96), `DEFAULT_GF_LOW=100` / `DEFAULT_GF_HIGH=100` as percentages (lines 101–102), `DEFAULT_SAFETY_STOP={enabled:true, depth:5, time:3}` (line 107).
+
+### `js/tripPlanner.js`
+
+Repetitive-dive trip planner (sub-project ①). Chains a sequence of square dives in chronological order: tissues off-gas at the surface between dives via `simulateDepthTime`, and each dive's deco profile is regenerated from the carried-in tissue state via the `options.initialTissuePressures` seam in `generateDecoProfile`.
+
+Pure module — no DOM, no side effects.
+
+Imports: `generateDecoProfile` from `diveSetup.js`; `calculateTissueLoading`, `simulateDepthTime`, `N2_FRACTION` from `decoModel.js`.
+Imported by: nothing yet (foundation for the forthcoming repetitive-dive UI).
+
+**Exports**
+
+| Signature | Line | Description |
+|---|---|---|
+| `planTrip(diveSetup)` | 26 | Plans a sequence of dives; returns `{ dives, conflicts }` |
+
+`diveSetup` shape:
+
+```javascript
+{
+    gases: [...],    // shared gas list (same format as single-dive setup)
+    gfLow: number,   // as percentage (default 100)
+    gfHigh: number,  // as percentage (default 100)
+    dives: [
+        { id: string, startDateTime: number, maxDepth: number, bottomTime: number },
+        ...
+    ]
+}
+```
+
+Return value:
+
+```javascript
+{
+    dives: [
+        {
+            id,
+            startDateTime,      // epoch minutes (input, passed through)
+            endDateTime,        // epoch minutes — accounts for deco extension
+            surfaceIntervalBefore, // minutes; null for first dive
+            startingTissue,     // { [compartmentId]: nitrogenPressureBar } at dive entry
+            endTissue,          // { [compartmentId]: nitrogenPressureBar } at surfacing
+            profile             // full generateDecoProfile result for this dive
+        },
+        ...
+    ],
+    conflicts: [
+        { diveId, type: 'overlap', overrunMinutes }
+        // emitted when a dive is scheduled to start before the previous dive's deco-extended end
+    ]
+}
+```
+
+**Implementation notes**
+
+- Dives are sorted by `startDateTime` before processing.
+- Surface off-gassing is computed by `simulateDepthTime(tissue, 0, gap, N2_FRACTION)` where `gap` is the actual surface interval in minutes.
+- When an overlap conflict is detected, the dive is still planned but tissues are not advanced (the conflict entry records the overrun minutes).
+- For the first dive, tissues start at surface equilibrium (no seed is passed).
+- See [repetitive-dive chaining](#repetitive-dive-chaining-initialTissuePressures) for the `initialTissuePressures` seam used internally.
+
+#### Repetitive-dive chaining (`initialTissuePressures`)
+
+Both `calculateTissueLoading` and `generateDecoProfile` accept an optional `options.initialTissuePressures` — a `{ [compartmentId]: nitrogenPressureBar }` map.
+
+When provided:
+
+- **`calculateTissueLoading`** (`decoModel.js:1116–1126`): seeds each compartment from the map instead of calling `getInitialTissueN2`. Useful for plotting the tissue trajectory of a repetitive dive starting from residual saturation.
+- **`generateDecoProfile`** (`diveSetup.js:351–373`): seeds the bottom-phase tissues from the map **and** bypasses the surface-based NDL early-return. The NDL computed by `calculateNDL` is a fresh-start figure — it is meaningless when the diver already carries residual nitrogen. By skipping the early-return and always running the full deco scheduler, `generateDecoProfile` computes the actual deco obligation against the pre-saturated tissue state (which may require stops even when bottom time is under the surface NDL).
+
+`generateDecoProfileSync` intentionally does **not** support this option; its NDL early-return and surface-only tissue init assume a fresh surface start.
+
+`planTrip` in `tripPlanner.js` is the only current consumer of this seam.
 
 ### `js/diveProfile.js`
 
