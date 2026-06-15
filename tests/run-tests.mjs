@@ -117,6 +117,8 @@ function expect(actual) {
 // IMPORT MODULES
 // ============================================================================
 
+import { addDive, editDive, removeDive, rescheduleDive } from '../js/tripState.js';
+
 import {
     getDefaultSetup,
     extendDiveSetup,
@@ -3001,6 +3003,59 @@ describe('RuntimeTable - buildRuntimeRows', () => {
         // The bottom phase is on Air; after the ascent switch some rows are on EAN50.
         expect(rows.some(r => r.gas === 'Air')).toBe(true);
         expect(rows.some(r => r.gas === 'EAN50')).toBe(true);
+    });
+});
+
+describe('tripState - reducer', () => {
+    const air = [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 }];
+    const base = () => ({ gases: air, gfLow: 100, gfHigh: 100, dives: [] });
+
+    test('addDive assigns a stable unique id and appends', () => {
+        let t = base();
+        t = addDive(t, { startDateTime: 540, maxDepth: 40, bottomTime: 30, gases: air });
+        t = addDive(t, { startDateTime: 660, maxDepth: 30, bottomTime: 35, gases: air });
+        expect(t.dives.length).toBe(2);
+        expect(t.dives[0].id).toBe('d1');
+        expect(t.dives[1].id).toBe('d2');
+        expect(t.dives[1].maxDepth).toBe(30);
+    });
+
+    test('addDive does not mutate the input trip', () => {
+        const t0 = base();
+        const t1 = addDive(t0, { startDateTime: 540, maxDepth: 40, bottomTime: 30, gases: air });
+        expect(t0.dives.length).toBe(0);
+        expect(t1.dives.length).toBe(1);
+    });
+
+    test('editDive patches fields by id, leaving others untouched', () => {
+        let t = addDive(base(), { startDateTime: 540, maxDepth: 40, bottomTime: 30, gases: air });
+        t = editDive(t, 'd1', { maxDepth: 18, bottomTime: 50 });
+        expect(t.dives[0].maxDepth).toBe(18);
+        expect(t.dives[0].bottomTime).toBe(50);
+        expect(t.dives[0].startDateTime).toBe(540);
+    });
+
+    test('rescheduleDive changes only startDateTime', () => {
+        let t = addDive(base(), { startDateTime: 540, maxDepth: 40, bottomTime: 30, gases: air });
+        t = rescheduleDive(t, 'd1', 600);
+        expect(t.dives[0].startDateTime).toBe(600);
+        expect(t.dives[0].maxDepth).toBe(40);
+    });
+
+    test('removeDive drops the dive by id; remaining ids are unchanged', () => {
+        let t = addDive(base(), { startDateTime: 540, maxDepth: 40, bottomTime: 30, gases: air });
+        t = addDive(t, { startDateTime: 660, maxDepth: 30, bottomTime: 35, gases: air });
+        t = removeDive(t, 'd1');
+        expect(t.dives.length).toBe(1);
+        expect(t.dives[0].id).toBe('d2');
+    });
+
+    test('ids never collide after a remove (max-based, not length-based)', () => {
+        let t = addDive(base(), { startDateTime: 540, maxDepth: 40, bottomTime: 30, gases: air });
+        t = addDive(t, { startDateTime: 660, maxDepth: 30, bottomTime: 35, gases: air });
+        t = removeDive(t, 'd1');                 // leaves d2
+        t = addDive(t, { startDateTime: 780, maxDepth: 20, bottomTime: 40, gases: air });
+        expect(t.dives.map(d => d.id)).toEqual(['d2', 'd3']);  // not a duplicate 'd2'
     });
 });
 
