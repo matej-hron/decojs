@@ -576,8 +576,13 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
     const { ndl, controllingCompartment } = calculateNDL(maxDepth, bottomGas.n2, gfLowDec);
 
     const descentTime = roundUp(maxDepth / DESCENT_SPEED);
+    // NOTE: this sync variant intentionally does NOT support
+    // options.initialTissuePressures (repetitive-dive tissue seeding). Its
+    // NDL early-return and surface-only tissue init assume a fresh surface
+    // start. Callers needing a seeded profile must use the async
+    // generateDecoProfile, which implements that seam.
     const requiresDeco = bottomTime > ndl;
-    
+
     if (!requiresDeco) {
         const waypoints = generateSimpleProfile(maxDepth, bottomTime, safetyStop, options);
         waypoints[1].gasId = bottomGas.id;
