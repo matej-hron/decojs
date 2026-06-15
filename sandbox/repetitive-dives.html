@@ -117,9 +117,9 @@
       gfHigh: 100,
       reservePressure: 50,
       dives: [
-        { id: 'd1', startDateTime:  9 * 60, maxDepth: 40, bottomTime: 30, gases: air }, // 09:00
-        { id: 'd2', startDateTime: 11 * 60, maxDepth: 40, bottomTime: 30, gases: air }, // 11:00
-        { id: 'd3', startDateTime: 13 * 60, maxDepth: 40, bottomTime: 30, gases: air }  // 13:00
+        { id: 'd1', name: 'Dive 1', startDateTime:  9 * 60, maxDepth: 40, bottomTime: 30, gases: air }, // 09:00
+        { id: 'd2', name: 'Dive 2', startDateTime: 11 * 60, maxDepth: 40, bottomTime: 30, gases: air }, // 11:00
+        { id: 'd3', name: 'Dive 3', startDateTime: 13 * 60, maxDepth: 40, bottomTime: 30, gases: air }  // 13:00
       ]
     };
 
@@ -137,6 +137,9 @@
 
     // planTrip result (updated on every rerender).
     let lastResult = null;
+    let selectedDiveId = null;
+    let calcTimer = null;
+    let ovTimer = null;
 
     const calendar   = new TripCalendar(document.getElementById('calendar'));
     const editPanel  = new DiveEditPanel(document.getElementById('edit-panel'));
@@ -172,7 +175,7 @@
           : `pre-load ${Math.round(presat.controllingPct)}% (tissue #${presat.controllingCompartmentId})`;
 
         card.innerHTML = `
-          <h2>${d.id.toUpperCase()} — ${fmtClock(d.startDateTime)}</h2>
+          <h2>${(d.name || d.id.toUpperCase())} — ${fmtClock(d.startDateTime)}</h2>
           <div class="dive-meta">${si} · deco ${fmtDur(d.profile.totalDecoTime)}
             · ${d.profile.decoStops.length} stop(s) · ${pre}</div>
           <div class="chart-host"></div>
@@ -199,13 +202,22 @@
 
     // ── Main render entry point ─────────────────────────────────────────────
 
-    function rerender() {
+    function rerender() {                 // immediate calendar; overview deferred
+      clearTimeout(calcTimer);
       lastResult = planTrip(trip);
       const neededDays = Math.max(trip.dayCount || 1, 1,
         ...trip.dives.map(d => Math.floor(d.startDateTime / (24 * 60)) + 1));
       calendar.configure({ startDate: trip.startDate, dayCount: neededDays });
-      calendar.render(lastResult);
-      renderOverview(lastResult);
+      calendar.render(lastResult, selectedDiveId);
+      clearTimeout(ovTimer);
+      ovTimer = setTimeout(() => renderOverview(lastResult), 250);
+    }
+    // Edits commit on field blur, which can fire during a click on another dive.
+    // A synchronous rerender then rebuilds the calendar mid-click and swallows the
+    // selection. Defer the edit-triggered rerender off the blur/click path.
+    function rerenderDeferred() {
+      clearTimeout(calcTimer);
+      calcTimer = setTimeout(rerender, 250);
     }
 
     // ── Detail view ─────────────────────────────────────────────────────────
@@ -256,7 +268,7 @@
 
       detail.innerHTML = `
         <button class="back-to-trip">← back to trip</button>
-        <h2>${d.id.toUpperCase()} — ${fmtClock(d.startDateTime)}</h2>
+        <h2>${(d.name || d.id.toUpperCase())} — ${fmtClock(d.startDateTime)}</h2>
         <div class="dive-meta">${siLine} · deco ${fmtDur(d.profile.totalDecoTime)}</div>
         <h3>Pre-saturation at start (surfacing GF per tissue)</h3>
         ${d.surfaceIntervalBefore == null ? '<p>Fresh diver — no residual loading.</p>' : presatStrip(d.startingTissue)}
@@ -306,6 +318,7 @@
         gases: trip.gases,
         defaultDepth: 18,
         defaultTime: 40,
+        defaultName: `Dive ${trip.dives.length + 1}`,
         computeNdl: (s, d, g) => previewNdl(trip, { startDateTime: s, maxDepth: d, gases: g }, trip.gfLow)
       });
     });
@@ -313,13 +326,15 @@
     addDialog.addEventListener('add', (e) => { trip = addDive(trip, e.detail); rerender(); });
 
     calendar.addEventListener('selectDive', (e) => {
-      const dive = trip.dives.find(d => d.id === e.detail.diveId);
+      selectedDiveId = e.detail.diveId;
+      const dive = trip.dives.find(d => d.id === selectedDiveId);
       if (dive) editPanel.open(dive, trip.startDate);
+      rerender();
     });
 
     editPanel.addEventListener('apply', (e) => {
       trip = editDive(trip, e.detail.id, e.detail.patch);
-      rerender();
+      rerenderDeferred();
     });
 
     editPanel.addEventListener('remove', (e) => {
