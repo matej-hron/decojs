@@ -181,6 +181,7 @@ import {
 } from '../js/tissueCompartments.js';
 
 import { planTrip } from '../js/tripPlanner.js';
+import { surfacingGF } from '../js/preSaturation.js';
 
 // ============================================================================
 // DIVE SETUP TESTS
@@ -2874,6 +2875,40 @@ describe('tripPlanner - planTrip', () => {
         const trip = planTrip({ gases, gfLow: 100, gfHigh: 100, dives: [] });
         expect(trip.dives).toHaveLength(0);
         expect(trip.conflicts).toHaveLength(0);
+    });
+});
+
+// ============================================================================
+// PRESATURATION TESTS
+// ============================================================================
+
+describe('preSaturation - surfacingGF', () => {
+    const gases = [{ id: 'bottom', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0 }];
+
+    test('a fresh surface-equilibrium diver reads 0% on every tissue', () => {
+        const fresh = {};
+        COMPARTMENTS.forEach(c => { fresh[c.id] = getInitialTissueN2(N2_FRACTION); });
+        const res = surfacingGF(fresh);
+        expect(res.controllingPct).toBe(0);
+        const maxPer = Math.max(...Object.values(res.perCompartmentPct));
+        expect(maxPer).toBe(0);
+        expect(Object.keys(res.perCompartmentPct).length).toBe(COMPARTMENTS.length);
+    });
+
+    test('a pre-saturated diver reads > 0%, and the controlling value is the max', () => {
+        const trip = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [
+                { id: 'd1', startDateTime: 0,  maxDepth: 40, bottomTime: 30 },
+                { id: 'd2', startDateTime: 65, maxDepth: 40, bottomTime: 30 }
+            ]
+        });
+        const loaded = trip.dives[1].startingTissue;
+        const res = surfacingGF(loaded);
+        expect(res.controllingPct).toBeGreaterThan(0);
+        const maxPer = Math.max(...Object.values(res.perCompartmentPct));
+        expect(res.controllingPct).toBeCloseTo(maxPer, 9);
+        expect(res.perCompartmentPct[res.controllingCompartmentId]).toBeCloseTo(maxPer, 9);
     });
 });
 
