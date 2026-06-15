@@ -36,7 +36,10 @@ export class DiveEditPanel extends EventTarget {
         this.dive = dive;
 
         // Compute the epoch base from the trip start date (defaults to '2026-01-01' if not provided).
-        const base = new Date(((startDate || '2026-01-01')) + 'T00:00:00').getTime();
+        // Use UTC midnight to match the .getUTC* reads in epochMinToLocalInput, so displayed
+        // times are not shifted by the user's local UTC offset.
+        const [y, m, d] = (startDate || '2026-01-01').split('-').map(Number);
+        const base = Date.UTC(y, m - 1, d);
 
         this.container.innerHTML = `
             <div class="dep-row">

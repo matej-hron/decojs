@@ -90,6 +90,7 @@ export class TripCalendar extends EventTarget {
         }
 
         layout.blocks.forEach(b => {
+            if (b.dayIndex < 0 || b.dayIndex >= colEls.length) return; // dive outside the visible day window
             const d = byId.get(b.diveId);
             const block = document.createElement('div');
             block.className = 'tc-block' + (b.conflict ? ' tc-conflict' : '');
