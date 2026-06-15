@@ -596,7 +596,7 @@ const STOP_INCREMENT = 3;
  * @param {number} gfLow - GF Low as decimal (0-1), determines first stop ceiling
  * @returns {{ndl: number, controllingCompartment: number}} NDL in minutes and limiting compartment
  */
-export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0) {
+export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0, initialTissuePressures = null) {
     // Very shallow depths have effectively unlimited NDL
     if (depth <= 0) {
         return { ndl: Infinity, controllingCompartment: null };
@@ -615,8 +615,9 @@ export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0) {
     // Get tissue pressures after descent
     const afterDescent = {};
     COMPARTMENTS.forEach(comp => {
+        const startN2 = initialTissuePressures ? initialTissuePressures[comp.id] : initialN2;
         afterDescent[comp.id] = schreinerEquation(
-            initialN2,
+            startN2,
             getAlveolarN2Pressure(SURFACE_PRESSURE, n2Fraction),
             descentRate,
             descentTime,

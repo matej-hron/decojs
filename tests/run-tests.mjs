@@ -3118,6 +3118,29 @@ describe('calendarLayout - computeCalendarLayout', () => {
     });
 });
 
+describe('calculateNDL - initialTissuePressures seam', () => {
+    const air = [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 }];
+
+    test('a surface-equilibrium seed reproduces the unseeded NDL', () => {
+        const fresh = {};
+        COMPARTMENTS.forEach(c => { fresh[c.id] = getInitialTissueN2(N2_FRACTION); });
+        const seeded = calculateNDL(30, N2_FRACTION, 1.0, fresh);
+        const unseeded = calculateNDL(30, N2_FRACTION, 1.0);
+        expect(seeded.ndl).toBe(unseeded.ndl);
+    });
+
+    test('a pre-saturated seed shortens the NDL', () => {
+        const prior = calculateTissueLoading(
+            [{ time: 0, depth: 0 }, { time: 2, depth: 40 }, { time: 25, depth: 40 }, { time: 30, depth: 0 }],
+            0, { gases: air });
+        const loaded = {};
+        COMPARTMENTS.forEach(c => { loaded[c.id] = prior.compartments[c.id].pressures.at(-1); });
+        const seeded = calculateNDL(30, N2_FRACTION, 1.0, loaded);
+        const unseeded = calculateNDL(30, N2_FRACTION, 1.0);
+        expect(seeded.ndl).toBeLessThan(unseeded.ndl);
+    });
+});
+
 // ============================================================================
 // SUMMARY
 // ============================================================================
