@@ -3062,60 +3062,53 @@ describe('tripState - reducer', () => {
 });
 
 describe('calendarLayout - computeCalendarLayout', () => {
-    const win = { dayStartMin: 6 * 60, dayEndMin: 20 * 60 }; // 06:00–20:00, span 840 min
+    const win = (dayCount) => ({ dayStartMin: 6 * 60, dayEndMin: 20 * 60, dayCount }); // span 840 min
 
     test('positions a dive block by start time and duration within the day window', () => {
-        const planResult = {
-            dives: [{ id: 'd1', startDateTime: 9 * 60, endDateTime: 10 * 60 }],
-            conflicts: []
-        };
-        const layout = computeCalendarLayout(planResult, win);
+        const planResult = { dives: [{ id: 'd1', startDateTime: 9 * 60, endDateTime: 10 * 60 }], conflicts: [] };
+        const layout = computeCalendarLayout(planResult, win(1));
         expect(layout.dayCount).toBe(1);
+        expect(layout.baseDay).toBe(0);
         const b = layout.blocks[0];
-        expect(b.diveId).toBe('d1');
         expect(b.dayIndex).toBe(0);
         expect(b.topPct).toBeCloseTo((540 - 360) / 840 * 100, 4);
         expect(b.heightPct).toBeCloseTo(60 / 840 * 100, 4);
         expect(b.conflict).toBe(false);
     });
 
-    test('spans multiple day columns and flags conflicts', () => {
+    test('dayCount comes from the caller, not the dives (1 dive, 3 columns)', () => {
+        const planResult = { dives: [{ id: 'd1', startDateTime: 9 * 60, endDateTime: 10 * 60 }], conflicts: [] };
+        const layout = computeCalendarLayout(planResult, win(3));
+        expect(layout.dayCount).toBe(3);
+        expect(layout.blocks[0].dayIndex).toBe(0);
+    });
+
+    test('places a dive on day 2 in column index 2; flags conflicts', () => {
         const planResult = {
             dives: [
-                { id: 'd1', startDateTime: 9 * 60,             endDateTime: 10 * 60 },
-                { id: 'd2', startDateTime: (24 * 60) + 9 * 60, endDateTime: (24 * 60) + 10 * 60 }
+                { id: 'd1', startDateTime: 9 * 60,                  endDateTime: 10 * 60 },
+                { id: 'd2', startDateTime: (2 * 24 * 60) + 9 * 60,  endDateTime: (2 * 24 * 60) + 10 * 60 }
             ],
             conflicts: [{ diveId: 'd2', type: 'overlap', overrunMinutes: 5 }]
         };
-        const layout = computeCalendarLayout(planResult, win);
-        expect(layout.dayCount).toBe(2);
+        const layout = computeCalendarLayout(planResult, win(3));
+        expect(layout.baseDay).toBe(0);
         expect(layout.blocks.find(b => b.diveId === 'd1').dayIndex).toBe(0);
-        expect(layout.blocks.find(b => b.diveId === 'd2').dayIndex).toBe(1);
+        expect(layout.blocks.find(b => b.diveId === 'd2').dayIndex).toBe(2);
         expect(layout.blocks.find(b => b.diveId === 'd2').conflict).toBe(true);
     });
 
-    test('empty trip yields one day column and no blocks', () => {
-        const layout = computeCalendarLayout({ dives: [], conflicts: [] }, win);
-        expect(layout.dayCount).toBe(1);
+    test('empty trip yields the configured columns and no blocks', () => {
+        const layout = computeCalendarLayout({ dives: [], conflicts: [] }, win(2));
+        expect(layout.dayCount).toBe(2);
         expect(layout.blocks).toHaveLength(0);
     });
 
     test('a dive starting before the window clips its top without inflating height', () => {
-        // 05:30 start, 06:30 end; only 06:00–06:30 (30 min) is in-window.
         const planResult = { dives: [{ id: 'd1', startDateTime: 5 * 60 + 30, endDateTime: 6 * 60 + 30 }], conflicts: [] };
-        const b = computeCalendarLayout(planResult, win).blocks[0];
+        const b = computeCalendarLayout(planResult, win(1)).blocks[0];
         expect(b.topPct).toBe(0);
         expect(b.heightPct).toBeCloseTo(30 / 840 * 100, 4);
-    });
-
-    test('handles a trip starting on a later epoch day (baseDay offset)', () => {
-        const day2 = 2 * 24 * 60;
-        const planResult = { dives: [{ id: 'd1', startDateTime: day2 + 9 * 60, endDateTime: day2 + 10 * 60 }], conflicts: [] };
-        const layout = computeCalendarLayout(planResult, win);
-        expect(layout.baseDay).toBe(2);
-        expect(layout.dayCount).toBe(1);
-        expect(layout.blocks[0].dayIndex).toBe(0);
-        expect(layout.blocks[0].topPct).toBeCloseTo((540 - 360) / 840 * 100, 4);
     });
 });
 

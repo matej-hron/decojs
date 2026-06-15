@@ -8,33 +8,25 @@ const MIN_PER_DAY = 24 * 60;
 
 /**
  * @param {Object} planResult - planTrip() output: { dives:[{id,startDateTime,endDateTime}], conflicts:[{diveId}] }
- * @param {Object} windowConfig - { dayStartMin, dayEndMin } minutes-of-day for the visible window
+ *   startDateTime is trip-relative minutes (day 0 = trip start midnight).
+ * @param {Object} windowConfig - { dayStartMin, dayEndMin, dayCount }
+ *   dayStartMin/dayEndMin: minutes-of-day for the visible window.
+ *   dayCount: number of columns to display (comes from trip config, not derived from dives).
  * @returns {{ dayCount:number, baseDay:number, blocks:Array }}
+ *   baseDay is always 0 (days are trip-relative).
  *   blocks: { diveId, dayIndex, topPct, heightPct, conflict, startMinOfDay, endMinOfDay }
  */
 export function computeCalendarLayout(planResult, windowConfig) {
-    const { dayStartMin, dayEndMin } = windowConfig;
+    const { dayStartMin, dayEndMin, dayCount } = windowConfig;
     const span = dayEndMin - dayStartMin;
     const dives = planResult.dives || [];
     const conflictIds = new Set((planResult.conflicts || []).map(c => c.diveId));
-
-    if (dives.length === 0) {
-        return { dayCount: 1, baseDay: 0, blocks: [] };
-    }
-
-    const days = dives.map(d => Math.floor(d.startDateTime / MIN_PER_DAY));
-    const baseDay = Math.min(...days);
-    const maxDay = Math.max(...days);
-    const dayCount = (maxDay - baseDay) + 1;
-
     const clampPct = (p) => Math.max(0, Math.min(100, p));
 
     const blocks = dives.map(d => {
-        const dayIndex = Math.floor(d.startDateTime / MIN_PER_DAY) - baseDay;
-        const startMinOfDay = d.startDateTime - (baseDay + dayIndex) * MIN_PER_DAY;
-        // Clamp the end into the same day window (a dive crossing midnight is
-        // clamped to the window bottom for v1 — documented limitation).
-        const endMinOfDay = Math.min(d.endDateTime - (baseDay + dayIndex) * MIN_PER_DAY, dayEndMin);
+        const dayIndex = Math.floor(d.startDateTime / MIN_PER_DAY);
+        const startMinOfDay = d.startDateTime - dayIndex * MIN_PER_DAY;
+        const endMinOfDay = Math.min(d.endDateTime - dayIndex * MIN_PER_DAY, dayEndMin);
         // Clip the visible start to the window top so an early dive doesn't inflate height.
         const visibleStart = Math.max(startMinOfDay, dayStartMin);
         const topPct = clampPct((visibleStart - dayStartMin) / span * 100);
@@ -50,5 +42,5 @@ export function computeCalendarLayout(planResult, windowConfig) {
         };
     });
 
-    return { dayCount, baseDay, blocks };
+    return { dayCount, baseDay: 0, blocks };
 }
