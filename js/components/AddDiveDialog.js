@@ -23,6 +23,7 @@ export class AddDiveDialog extends EventTarget {
           <div class="add-dialog-backdrop">
             <div class="add-dialog">
               <h3>Add dive</h3>
+              <label>Name <input class="ad-name" type="text" value="${opts.defaultName || ''}"></label>
               <label>Max depth <input class="ad-depth" type="number" min="1" max="100" value="${depth}"> m</label>
               <div class="ad-modes">
                 <label><input type="radio" name="ad-mode" class="ad-mode-custom" checked> Custom time
@@ -62,7 +63,8 @@ export class AddDiveDialog extends EventTarget {
         el('.ad-add').addEventListener('click', () => {
             const maxDepth = parseFloat(depthEl.value) || depth;
             const bottomTime = parseFloat(timeEl.value) || time;
-            const detail = { startDateTime: opts.startDateTime, maxDepth, bottomTime, gases: opts.gases };
+            const name = (el('.ad-name').value || opts.defaultName || '').trim();
+            const detail = { name, startDateTime: opts.startDateTime, maxDepth, bottomTime, gases: opts.gases };
             this.close();
             this.dispatchEvent(new CustomEvent('add', { detail }));
         });
