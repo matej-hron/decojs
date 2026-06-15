@@ -16,6 +16,16 @@
     .dive-meta { font-size: .9rem; opacity: .85; margin-bottom: .5rem; }
     .conflict { color: #b00; font-weight: 600; }
     .chart-host { height: 320px; }
+    .presat-strip-wrap { max-width: 480px; }
+    .presat-strip { display:flex; align-items:flex-end; gap:2px; height:80px;
+                    border-bottom:1px solid var(--border-color,#ccc); }
+    .presat-bar { flex:1 1 0; min-height:1px; border-radius:2px 2px 0 0; }
+    .presat-axis { display:flex; justify-content:space-between; font-size:.75rem; opacity:.7; }
+    .runtime-table { border-collapse:collapse; width:100%; max-width:560px; font-size:.9rem; }
+    .runtime-table th, .runtime-table td { border:1px solid var(--border-color,#ccc); padding:.25rem .5rem; text-align:right; }
+    .runtime-table th:first-child, .runtime-table td:first-child { text-align:left; }
+    .runtime-table tr.is-stop { font-weight:600; }
+    .view-detail, .back-to-trip { margin-top:.5rem; cursor:pointer; }
   </style>
 </head>
 <body>
@@ -26,12 +36,18 @@
     <p>Each panel is one dive in the trip. Surface intervals off-gas the tissues;
        later dives start pre-saturated and accrue more decompression.</p>
     <div id="panels"></div>
+    <div id="detail" style="display:none;"></div>
   </div>
 
   <script src="../js/nav.js" type="module"></script>
   <script type="module">
     import { DiveProfileChart } from '../js/charts/DiveProfileChart.js';
+    import { MValueChart } from '../js/charts/MValueChart.js';
+    import { GFChart } from '../js/charts/GFChart.js';
     import { planTrip } from '../js/tripPlanner.js';
+    import { surfacingGF } from '../js/preSaturation.js';
+    import { buildRuntimeRows, renderRuntimeTable } from '../js/components/RuntimeTable.js';
+    import { COMPARTMENTS } from '../js/tissueCompartments.js';
 
     const gases = [{ id: 'bottom', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0,
                      cylinderVolume: 12, startPressure: 200 }];
@@ -74,19 +90,98 @@
             ? `<span class="conflict">⚠ overlaps previous dive's deco</span>`
             : `surface interval ${fmtDur(d.surfaceIntervalBefore)}`);
 
+      const presat = d.surfaceIntervalBefore == null ? null : surfacingGF(d.startingTissue);
+      const pre = presat == null
+        ? 'fresh'
+        : `pre-load ${Math.round(presat.controllingPct)}% (tissue #${presat.controllingCompartmentId})`;
+
       card.innerHTML = `
         <h2>${d.id.toUpperCase()} — ${fmtClock(d.startDateTime)}</h2>
         <div class="dive-meta">${si} · deco ${fmtDur(d.profile.totalDecoTime)}
-          · ${d.profile.decoStops.length} stop(s)</div>
-        <div class="chart-host"></div>`;
+          · ${d.profile.decoStops.length} stop(s) · ${pre}</div>
+        <div class="chart-host"></div>
+        <button class="view-detail" data-dive="${d.id}">View detail →</button>`;
       panels.appendChild(card);
 
-      const perDiveSetup = { ...setup, dives: [{ waypoints: d.profile.waypoints }] };
+      const perDiveSetup = { ...setup, dives: [{ waypoints: d.profile.waypoints }], initialTissuePressures: d.startingTissue };
       new DiveProfileChart(card.querySelector('.chart-host'), {
         diveSetup: perDiveSetup,
         options: { showLabels: true, showCeiling: true }
       });
+
+      card.querySelector('.view-detail').addEventListener('click', () => showDetail(d.id));
     });
+
+    const overview = document.getElementById('panels');
+    const detail = document.getElementById('detail');
+
+    function showOverview() {
+      detail.style.display = 'none';
+      detail.innerHTML = '';
+      overview.style.display = '';
+    }
+
+    function presatStrip(startingTissue) {
+      const per = surfacingGF(startingTissue).perCompartmentPct;
+      const bars = COMPARTMENTS.map(c => {
+        const pct = Math.min(100, per[c.id] || 0);
+        return `<span class="presat-bar" title="#${c.id} (${c.halfTime}min): ${Math.round(pct)}%"
+                   style="height:${pct}%;background:${c.color};"></span>`;
+      }).join('');
+      return `<div class="presat-strip-wrap">
+                <div class="presat-strip">${bars}</div>
+                <div class="presat-axis"><span>fast</span><span>slow</span></div>
+              </div>`;
+    }
+
+    function showDetail(diveId) {
+      const d = trip.dives.find(x => x.id === diveId);
+      if (!d) return;
+      overview.style.display = 'none';
+      detail.style.display = '';
+
+      const seededSetup = { ...setup, dives: [{ waypoints: d.profile.waypoints }], initialTissuePressures: d.startingTissue };
+      const siLine = d.surfaceIntervalBefore == null ? 'first dive' : `surface interval ${fmtDur(d.surfaceIntervalBefore)}`;
+
+      detail.innerHTML = `
+        <button class="back-to-trip">← back to trip</button>
+        <h2>${d.id.toUpperCase()} — ${fmtClock(d.startDateTime)}</h2>
+        <div class="dive-meta">${siLine} · deco ${fmtDur(d.profile.totalDecoTime)}</div>
+        <h3>Pre-saturation at start (surfacing GF per tissue)</h3>
+        ${d.surfaceIntervalBefore == null ? '<p>Fresh diver — no residual loading.</p>' : presatStrip(d.startingTissue)}
+        <h3>Dive profile</h3><div class="chart-host" id="dv-profile"></div>
+        <h3>M-value loading</h3><div class="chart-host" id="dv-mvalue"></div>
+        <h3>Gradient factor</h3><div class="chart-host" id="dv-gf"></div>
+        <h3>Runtime</h3><div id="dv-runtime"></div>`;
+
+      detail.querySelector('.back-to-trip').addEventListener('click', showOverview);
+
+      new DiveProfileChart(detail.querySelector('#dv-profile'), {
+        diveSetup: seededSetup, options: { showLabels: true, showCeiling: true }
+      });
+      new MValueChart(detail.querySelector('#dv-mvalue'), {
+        diveSetup: seededSetup,
+        options: {
+          compartments: [1],
+          showMValueLines: true,
+          showGFLines: true,
+          showAmbientLine: true,
+          showTrail: true,
+          compartmentSelector: true
+        }
+      });
+      new GFChart(detail.querySelector('#dv-gf'), {
+        diveSetup: seededSetup,
+        options: {
+          compartments: [1, 2, 3, 4, 5, 6],
+          showTrail: true,
+          compartmentSelector: true
+        }
+      });
+
+      const rows = buildRuntimeRows(d.profile, setup.gases);
+      detail.querySelector('#dv-runtime').appendChild(renderRuntimeTable(rows));
+    }
   </script>
 </body>
 </html>
