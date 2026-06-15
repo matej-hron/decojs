@@ -115,8 +115,15 @@
     const overview = document.getElementById('panels');
     const detail = document.getElementById('detail');
 
+    let detailCharts = [];
+    function disposeDetail() {
+      detailCharts.forEach(c => { try { c.destroy(); } catch (e) {} });
+      detailCharts = [];
+    }
+
     function showOverview() {
       detail.style.display = 'none';
+      disposeDetail();
       detail.innerHTML = '';
       overview.style.display = '';
       window.scrollTo(0, 0);
@@ -138,6 +145,7 @@
     function showDetail(diveId) {
       const d = trip.dives.find(x => x.id === diveId);
       if (!d) return;
+      disposeDetail();
       overview.style.display = 'none';
       detail.style.display = '';
 
@@ -157,10 +165,10 @@
 
       detail.querySelector('.back-to-trip').addEventListener('click', showOverview);
 
-      new DiveProfileChart(detail.querySelector('#dv-profile'), {
+      const profileChart = new DiveProfileChart(detail.querySelector('#dv-profile'), {
         diveSetup: seededSetup, options: { showLabels: true, showCeiling: true }
       });
-      new MValueChart(detail.querySelector('#dv-mvalue'), {
+      const mvalueChart = new MValueChart(detail.querySelector('#dv-mvalue'), {
         diveSetup: seededSetup,
         options: {
           compartments: [1],
@@ -171,7 +179,7 @@
           compartmentSelector: true
         }
       });
-      new GFChart(detail.querySelector('#dv-gf'), {
+      const gfChart = new GFChart(detail.querySelector('#dv-gf'), {
         diveSetup: seededSetup,
         options: {
           compartments: [1, 2, 3, 4, 5, 6],
@@ -179,6 +187,7 @@
           compartmentSelector: true
         }
       });
+      detailCharts.push(profileChart, mvalueChart, gfChart);
 
       const rows = buildRuntimeRows(d.profile, seededSetup.gases);
       detail.querySelector('#dv-runtime').appendChild(renderRuntimeTable(rows));

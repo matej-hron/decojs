@@ -2969,6 +2969,18 @@ describe('RuntimeTable - buildRuntimeRows', () => {
         expect(rows.some(r => r.phase === 'bottom')).toBe(true);
         expect(rows[rows.length - 1].depth).toBe(0);
     });
+
+    test('reflects a deco-gas switch in the row gas names', () => {
+        const gases = [
+            { id: 'bottom', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0 },
+            { id: 'ean50', name: 'EAN50', o2: 0.50, n2: 0.50, he: 0 }
+        ];
+        const profile = generateDecoProfile(45, 25, gases, 30, 70); // deco dive, EAN50 available
+        const rows = buildRuntimeRows(profile, gases);
+        // The bottom phase is on Air; after the ascent switch some rows are on EAN50.
+        expect(rows.some(r => r.gas === 'Air')).toBe(true);
+        expect(rows.some(r => r.gas === 'EAN50')).toBe(true);
+    });
 });
 
 // ============================================================================
