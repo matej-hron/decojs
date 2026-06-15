@@ -134,6 +134,8 @@
       const r = Math.round(m);
       return r >= 60 ? `${Math.floor(r / 60)}h ${r % 60}m` : `${r}m`;
     };
+    // Escape user-controlled text before interpolating into innerHTML.
+    const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
 
     // planTrip result (updated on every rerender).
     let lastResult = null;
@@ -175,7 +177,7 @@
           : `pre-load ${Math.round(presat.controllingPct)}% (tissue #${presat.controllingCompartmentId})`;
 
         card.innerHTML = `
-          <h2>${(d.name || d.id.toUpperCase())} — ${fmtClock(d.startDateTime)}</h2>
+          <h2>${esc(d.name || d.id.toUpperCase())} — ${fmtClock(d.startDateTime)}</h2>
           <div class="dive-meta">${si} · deco ${fmtDur(d.profile.totalDecoTime)}
             · ${d.profile.decoStops.length} stop(s) · ${pre}</div>
           <div class="chart-host"></div>
@@ -268,7 +270,7 @@
 
       detail.innerHTML = `
         <button class="back-to-trip">← back to trip</button>
-        <h2>${(d.name || d.id.toUpperCase())} — ${fmtClock(d.startDateTime)}</h2>
+        <h2>${esc(d.name || d.id.toUpperCase())} — ${fmtClock(d.startDateTime)}</h2>
         <div class="dive-meta">${siLine} · deco ${fmtDur(d.profile.totalDecoTime)}</div>
         <h3>Pre-saturation at start (surfacing GF per tissue)</h3>
         ${d.surfaceIntervalBefore == null ? '<p>Fresh diver — no residual loading.</p>' : presatStrip(d.startingTissue)}

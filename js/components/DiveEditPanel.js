@@ -8,6 +8,9 @@
  */
 import { DiveSetupEditor } from './DiveSetupEditor.js';
 
+// Escape user-controlled text before interpolating into innerHTML.
+const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+
 // epoch-minutes <-> <input type="datetime-local"> helpers.
 // `base` is a UTC millisecond timestamp representing the trip's epoch (minute 0).
 function epochMinToLocalInput(min, base) {
@@ -42,9 +45,9 @@ export class DiveEditPanel extends EventTarget {
         const base = Date.UTC(y, m - 1, d);
 
         this.container.innerHTML = `
-            <div class="dep-header">Editing: ${(dive.name || dive.id)}</div>
+            <div class="dep-header">Editing: ${esc(dive.name || dive.id)}</div>
             <div class="dep-row">
-                <label>Name <input type="text" class="dep-name" value="${dive.name || ''}"></label>
+                <label>Name <input type="text" class="dep-name" value="${esc(dive.name || '')}"></label>
                 <label>Start <input type="datetime-local" class="dep-start" value="${epochMinToLocalInput(dive.startDateTime, base)}"></label>
                 <button class="dep-remove">Remove dive</button>
             </div>
