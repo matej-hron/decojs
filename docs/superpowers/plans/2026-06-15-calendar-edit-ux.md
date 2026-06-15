@@ -316,28 +316,40 @@ git commit -m "feat(trip): DiveEditPanel Name field + active-dive header"
 - [ ] **Step 2: Names + selectedDiveId + debounce**
 
 - Seed the initial dives with names: add `name: 'Dive 1'`, `'Dive 2'`, `'Dive 3'` to the three `trip.dives` entries.
-- Add module-scope state: `let selectedDiveId = null;` and `let overviewTimer = null;`.
-- Change `rerender()` so the calendar updates immediately with the selected id, and the OVERVIEW is debounced:
+- Add module-scope state: `let selectedDiveId = null;`, `let calcTimer = null;`, `let ovTimer = null;`.
+- **THE BUG FIX (verified by reproduction):** an edit commits on the field's blur, which fires while another block is being clicked; if that rerenders the calendar synchronously it rebuilds the DOM mid-click and the selection click is swallowed (delegation alone does NOT survive this). So the **edit path must defer its rerender** off the blur/click. Also defer the expensive overview everywhere (chart rebuilds). Structure:
 ```js
-    function rerender() {
+    function rerender() {                 // immediate calendar; overview deferred
       lastResult = planTrip(trip);
       const neededDays = Math.max(trip.dayCount || 1, 1,
         ...trip.dives.map(d => Math.floor(d.startDateTime / (24 * 60)) + 1));
       calendar.configure({ startDate: trip.startDate, dayCount: neededDays });
       calendar.render(lastResult, selectedDiveId);
-      clearTimeout(overviewTimer);
-      overviewTimer = setTimeout(() => renderOverview(lastResult), 250);
+      clearTimeout(ovTimer);
+      ovTimer = setTimeout(() => renderOverview(lastResult), 250);
+    }
+    function rerenderDeferred() {          // edit path: defer EVERYTHING off the blur/click
+      clearTimeout(calcTimer);
+      calcTimer = setTimeout(rerender, 250);
     }
 ```
-- Update the `selectDive` handler to track selection and open the panel:
+- The `apply` (edit) handler must use the DEFERRED rerender (this is the fix):
+```js
+    editPanel.addEventListener('apply', (e) => {
+      trip = editDive(trip, e.detail.id, e.detail.patch);
+      rerenderDeferred();
+    });
+```
+- The `selectDive` handler runs on the click (after mouseup), so an immediate `rerender()` is safe here and gives an instant highlight:
 ```js
     calendar.addEventListener('selectDive', (e) => {
       selectedDiveId = e.detail.diveId;
       const dive = trip.dives.find(d => d.id === selectedDiveId);
       if (dive) editPanel.open(dive, trip.startDate);
-      calendar.render(lastResult, selectedDiveId); // immediate highlight, no full rerender needed
+      rerender(); // post-click: safe to rebuild the calendar now; flushes any pending edit
     });
 ```
+- `add`, `remove`, GF, and date/day-count handlers keep calling `rerender()` (immediate). (The existing `apply` handler shown above REPLACES the current one; the others are unchanged except `selectDive`.)
 - Update `createAt` to pass a default name into the dialog:
 ```js
       addDialog.open({

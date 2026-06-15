@@ -36,7 +36,7 @@ add the time to the label and enforce a minimum height so the label fits.)
 - Drag-to-reschedule, chart-mode toggles, URL persistence (still ③-rich/later).
 - An explicit "Apply" button — edits stay live (with a debounce on the heavy render).
 
-## A. Selection bug — root-cause fix (event delegation)
+## A. Selection bug — root-cause fix (defer edit rerender + delegation)
 
 `TripCalendar` currently attaches click listeners to each `.tc-block` and `.tc-day`,
 which are destroyed by `innerHTML = ''` on every render. Replace with **delegated
@@ -49,13 +49,22 @@ not per-render):
   target is not the `.tc-day-header`) → compute `minutesOfDay` from the click Y
   within that column and dispatch `createAt { dayIndex, minutesOfDay }`.
 
-Because the listener lives on the container (which `innerHTML` does not remove), a
-click that rebuilds the calendar during its own `mousedown` still resolves
-`selectDive` against whichever block is under the pointer at `mouseup`. This fixes
-the swallowed-selection bug at its source.
+Delegation is good hygiene, but **verification showed it is not sufficient alone**:
+when the edit commits on blur and rerenders the calendar *synchronously during the
+click* (`innerHTML=''` rebuilds the block the user is clicking before `mouseup`), the
+click→`selectDive` is still broken — a mid-`mousedown` DOM rebuild detaches the
+mousedown target so the `click` no longer resolves to the new block.
+
+**The actual fix: defer the edit-triggered rerender.** The page's `apply` (edit)
+handler debounces its rerender (~250 ms) so the calendar is NOT rebuilt synchronously
+during the blur/click; the selection click completes against the live block, and the
+deferred rerender runs afterwards. (This also de-janks editing.) Selection itself
+runs on the click — after `mouseup` — where an immediate calendar render is safe and
+gives an instant highlight.
 
 The page tracks `let selectedDiveId`. `selectDive` sets it and opens the panel for
-that dive; `rerender` keeps the panel/highlight in sync if the dive still exists.
+that dive; the deferred-on-edit / immediate-on-select rerender keeps everything in
+sync.
 
 ## B. Active-dive indication
 
