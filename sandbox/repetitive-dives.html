@@ -31,6 +31,13 @@
     .runtime-table th:first-child, .runtime-table td:first-child { text-align:left; }
     .runtime-table tr.is-stop { font-weight:600; }
     .view-detail, .back-to-trip { margin-top:.5rem; cursor:pointer; }
+    .trip-calendar { display:flex; gap:8px; align-items:stretch; min-height:420px; margin:1rem 0; }
+    .tc-day { position:relative; flex:1 1 0; min-width:120px; border:1px solid var(--border-color,#ccc);
+              border-radius:6px; background:var(--surface,#fafafa); cursor:crosshair; }
+    .tc-block { position:absolute; left:4px; right:4px; box-sizing:border-box; padding:2px 4px;
+                font-size:.75rem; color:#fff; background:#2980b9; border-radius:4px; overflow:hidden;
+                cursor:pointer; }
+    .tc-block.tc-conflict { background:#c0392b; outline:2px solid #c0392b; }
   </style>
 </head>
 <body>
