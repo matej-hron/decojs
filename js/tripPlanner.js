@@ -77,6 +77,8 @@ export function planTrip(diveSetup) {
             id: dive.id,
             startDateTime: dive.startDateTime,
             endDateTime,
+            maxDepth: dive.maxDepth,
+            bottomTime: dive.bottomTime,
             surfaceIntervalBefore,
             startingTissue,
             endTissue,

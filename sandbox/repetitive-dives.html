@@ -40,6 +40,9 @@
     .tc-block.tc-conflict { background:#c0392b; outline:2px solid #c0392b; }
     .dep-row { display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:.5rem; }
     .dep-remove { color:#c0392b; cursor:pointer; }
+    .trip-config { display:flex; gap:1.5rem; margin-bottom:.5rem; }
+    .trip-config label { display:flex; align-items:center; gap:.4rem; font-size:.9rem; }
+    .trip-config input { width:5ch; }
   </style>
 </head>
 <body>
@@ -49,6 +52,12 @@
     <h1>Repetitive Dive Planner — preview</h1>
     <p>Each panel is one dive in the trip. Surface intervals off-gas the tissues;
        later dives start pre-saturated and accrue more decompression.</p>
+    <div class="trip-config">
+      <label>GF Low <input id="cfg-gflow" type="number" value="100" min="1" max="100"></label>
+      <label>GF High <input id="cfg-gfhigh" type="number" value="100" min="1" max="100"></label>
+    </div>
+    <div id="calendar"></div>
+    <div id="edit-panel"></div>
     <div id="panels"></div>
     <div id="detail" style="display:none;"></div>
   </div>
@@ -62,19 +71,23 @@
     import { surfacingGF } from '../js/preSaturation.js';
     import { buildRuntimeRows, renderRuntimeTable } from '../js/components/RuntimeTable.js';
     import { COMPARTMENTS } from '../js/tissueCompartments.js';
+    import { TripCalendar } from '../js/components/TripCalendar.js';
+    import { DiveEditPanel } from '../js/components/DiveEditPanel.js';
+    import { addDive, editDive, removeDive } from '../js/tripState.js';
 
-    const gases = [{ id: 'bottom', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0,
-                     cylinderVolume: 12, startPressure: 200 }];
+    const air = [{ id: 'bottom', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0,
+                   cylinderVolume: 12, startPressure: 200 }];
 
-    // Three identical 40 m / 30 min air dives on one day with short surface
-    // intervals — each starts more pre-saturated than the last, so deco grows.
-    const setup = {
-      gases, gfLow: 100, gfHigh: 100, reservePressure: 50,
-      // startDateTime is epoch MINUTES (minute 0 = start of the trip's first day).
+    // Mutable trip state — this is the INPUT to planTrip.
+    let trip = {
+      gases: air,
+      gfLow: 100,
+      gfHigh: 100,
+      reservePressure: 50,
       dives: [
-        { id: 'd1', startDateTime:  9 * 60, maxDepth: 40, bottomTime: 30 }, // 09:00
-        { id: 'd2', startDateTime: 11 * 60, maxDepth: 40, bottomTime: 30 }, // 11:00 (~1h SI)
-        { id: 'd3', startDateTime: 13 * 60, maxDepth: 40, bottomTime: 30 }  // 13:00 (~40m SI)
+        { id: 'd1', startDateTime:  9 * 60, maxDepth: 40, bottomTime: 30, gases: air }, // 09:00
+        { id: 'd2', startDateTime: 11 * 60, maxDepth: 40, bottomTime: 30, gases: air }, // 11:00
+        { id: 'd3', startDateTime: 13 * 60, maxDepth: 40, bottomTime: 30, gases: air }  // 13:00
       ]
     };
 
@@ -90,44 +103,70 @@
       return r >= 60 ? `${Math.floor(r / 60)}h ${r % 60}m` : `${r}m`;
     };
 
-    const trip = planTrip(setup);
-    const conflictIds = new Set(trip.conflicts.map(c => c.diveId));
-    const panels = document.getElementById('panels');
+    // planTrip result (updated on every rerender).
+    let lastResult = null;
 
-    trip.dives.forEach(d => {
-      const card = document.createElement('div');
-      card.className = 'dive-card';
+    const calendar = new TripCalendar(document.getElementById('calendar'));
+    const editPanel = new DiveEditPanel(document.getElementById('edit-panel'));
+    const panels    = document.getElementById('panels');
+    const overview  = panels;
+    const detail    = document.getElementById('detail');
 
-      const si = d.surfaceIntervalBefore == null
-        ? 'first dive'
-        : (conflictIds.has(d.id)
-            ? `<span class="conflict">⚠ overlaps previous dive's deco</span>`
-            : `surface interval ${fmtDur(d.surfaceIntervalBefore)}`);
+    // ── Overview rendering ──────────────────────────────────────────────────
 
-      const presat = d.surfaceIntervalBefore == null ? null : surfacingGF(d.startingTissue);
-      const pre = presat == null
-        ? 'fresh'
-        : `pre-load ${Math.round(presat.controllingPct)}% (tissue #${presat.controllingCompartmentId})`;
+    function renderOverview(result) {
+      panels.innerHTML = '';
+      const conflictIds = new Set((result.conflicts || []).map(c => c.diveId));
 
-      card.innerHTML = `
-        <h2>${d.id.toUpperCase()} — ${fmtClock(d.startDateTime)}</h2>
-        <div class="dive-meta">${si} · deco ${fmtDur(d.profile.totalDecoTime)}
-          · ${d.profile.decoStops.length} stop(s) · ${pre}</div>
-        <div class="chart-host"></div>
-        <button class="view-detail" data-dive="${d.id}">View detail →</button>`;
-      panels.appendChild(card);
+      result.dives.forEach(d => {
+        const card = document.createElement('div');
+        card.className = 'dive-card';
 
-      const perDiveSetup = { ...setup, dives: [{ waypoints: d.profile.waypoints }], initialTissuePressures: d.startingTissue };
-      new DiveProfileChart(card.querySelector('.chart-host'), {
-        diveSetup: perDiveSetup,
-        options: { showLabels: true, showCeiling: true }
+        const si = d.surfaceIntervalBefore == null
+          ? 'first dive'
+          : (conflictIds.has(d.id)
+              ? `<span class="conflict">⚠ overlaps previous dive's deco</span>`
+              : `surface interval ${fmtDur(d.surfaceIntervalBefore)}`);
+
+        const presat = d.surfaceIntervalBefore == null ? null : surfacingGF(d.startingTissue);
+        const pre = presat == null
+          ? 'fresh'
+          : `pre-load ${Math.round(presat.controllingPct)}% (tissue #${presat.controllingCompartmentId})`;
+
+        card.innerHTML = `
+          <h2>${d.id.toUpperCase()} — ${fmtClock(d.startDateTime)}</h2>
+          <div class="dive-meta">${si} · deco ${fmtDur(d.profile.totalDecoTime)}
+            · ${d.profile.decoStops.length} stop(s) · ${pre}</div>
+          <div class="chart-host"></div>
+          <button class="view-detail" data-dive="${d.id}">View detail →</button>`;
+        panels.appendChild(card);
+
+        // Use per-dive gases if available, fall back to trip-level gases.
+        const diveGases = (trip.dives.find(td => td.id === d.id)?.gases) ?? trip.gases;
+        const perDiveSetup = {
+          ...trip,
+          gases: diveGases,
+          dives: [{ waypoints: d.profile.waypoints }],
+          initialTissuePressures: d.startingTissue
+        };
+        new DiveProfileChart(card.querySelector('.chart-host'), {
+          diveSetup: perDiveSetup,
+          options: { showLabels: true, showCeiling: true }
+        });
+
+        card.querySelector('.view-detail').addEventListener('click', () => showDetail(d.id));
       });
+    }
 
-      card.querySelector('.view-detail').addEventListener('click', () => showDetail(d.id));
-    });
+    // ── Main render entry point ─────────────────────────────────────────────
 
-    const overview = document.getElementById('panels');
-    const detail = document.getElementById('detail');
+    function rerender() {
+      lastResult = planTrip(trip);
+      calendar.render(lastResult);
+      renderOverview(lastResult);
+    }
+
+    // ── Detail view ─────────────────────────────────────────────────────────
 
     let detailCharts = [];
     function disposeDetail() {
@@ -157,13 +196,20 @@
     }
 
     function showDetail(diveId) {
-      const d = trip.dives.find(x => x.id === diveId);
+      const d = lastResult.dives.find(x => x.id === diveId);
       if (!d) return;
       disposeDetail();
       overview.style.display = 'none';
       detail.style.display = '';
 
-      const seededSetup = { ...setup, dives: [{ waypoints: d.profile.waypoints }], initialTissuePressures: d.startingTissue };
+      // Use per-dive gases from the trip input state.
+      const diveGases = (trip.dives.find(td => td.id === diveId)?.gases) ?? trip.gases;
+      const seededSetup = {
+        ...trip,
+        gases: diveGases,
+        dives: [{ waypoints: d.profile.waypoints }],
+        initialTissuePressures: d.startingTissue
+      };
       const siLine = d.surfaceIntervalBefore == null ? 'first dive' : `surface interval ${fmtDur(d.surfaceIntervalBefore)}`;
 
       detail.innerHTML = `
@@ -208,6 +254,43 @@
 
       window.scrollTo(0, 0);
     }
+
+    // ── Calendar events ─────────────────────────────────────────────────────
+
+    calendar.addEventListener('createAt', (e) => {
+      const start = calendar.toStartDateTime(e.detail.dayIndex, e.detail.minutesOfDay);
+      trip = addDive(trip, { startDateTime: start, maxDepth: 40, bottomTime: 30, gases: trip.gases });
+      rerender();
+    });
+
+    calendar.addEventListener('selectDive', (e) => {
+      const dive = trip.dives.find(d => d.id === e.detail.diveId);
+      if (dive) editPanel.open(dive);
+    });
+
+    editPanel.addEventListener('apply', (e) => {
+      trip = editDive(trip, e.detail.id, e.detail.patch);
+      rerender();
+    });
+
+    editPanel.addEventListener('remove', (e) => {
+      trip = removeDive(trip, e.detail.id);
+      editPanel.close();
+      rerender();
+    });
+
+    document.getElementById('cfg-gflow').addEventListener('change', (ev) => {
+      trip = { ...trip, gfLow: +ev.target.value };
+      rerender();
+    });
+
+    document.getElementById('cfg-gfhigh').addEventListener('change', (ev) => {
+      trip = { ...trip, gfHigh: +ev.target.value };
+      rerender();
+    });
+
+    // ── Initial render ──────────────────────────────────────────────────────
+    rerender();
   </script>
 </body>
 </html>
