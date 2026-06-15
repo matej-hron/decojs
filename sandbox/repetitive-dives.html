@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Repetitive Dives — DecoJS Sandbox</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+  <style>
+    .trip { max-width: 900px; margin: 0 auto; padding: 1rem; }
+    .dive-card { border: 1px solid var(--border-color, #ccc); border-radius: 8px; margin: 1rem 0; padding: 1rem; }
+    .dive-card h2 { margin: 0 0 .25rem; font-size: 1.1rem; }
+    .dive-meta { font-size: .9rem; opacity: .85; margin-bottom: .5rem; }
+    .conflict { color: #b00; font-weight: 600; }
+    .chart-host { height: 320px; }
+  </style>
+</head>
+<body>
+  <div class="trip">
+    <h1>Repetitive Dive Planner — preview</h1>
+    <p>Each panel is one dive in the trip. Surface intervals off-gas the tissues;
+       later dives start pre-saturated and accrue more decompression.</p>
+    <div id="panels"></div>
+  </div>
+
+  <script type="module">
+    import { DiveProfileChart } from '../js/charts/DiveProfileChart.js';
+    import { planTrip } from '../js/tripPlanner.js';
+
+    const gases = [{ id: 'bottom', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0,
+                     cylinderVolume: 12, startPressure: 200 }];
+
+    // Hardcoded 3-dive day: two morning/afternoon dives + one next-morning dive.
+    const setup = {
+      gases, gfLow: 100, gfHigh: 100, reservePressure: 50,
+      dives: [
+        { id: 'd1', startDateTime: 9 * 60,        maxDepth: 40, bottomTime: 25 }, // 09:00
+        { id: 'd2', startDateTime: 13 * 60,       maxDepth: 30, bottomTime: 35 }, // 13:00
+        { id: 'd3', startDateTime: (24 + 9) * 60, maxDepth: 40, bottomTime: 25 }  // next 09:00
+      ]
+    };
+
+    const fmtClock = (epochMin) => {
+      const day = Math.floor(epochMin / (24 * 60)) + 1;
+      const mins = epochMin % (24 * 60);
+      const hh = String(Math.floor(mins / 60)).padStart(2, '0');
+      const mm = String(mins % 60).padStart(2, '0');
+      return `Day ${day} ${hh}:${mm}`;
+    };
+    const fmtDur = (m) => {
+      const r = Math.round(m);
+      return r >= 60 ? `${Math.floor(r / 60)}h ${r % 60}m` : `${r}m`;
+    };
+
+    const trip = planTrip(setup);
+    const conflictIds = new Set(trip.conflicts.map(c => c.diveId));
+    const panels = document.getElementById('panels');
+
+    trip.dives.forEach(d => {
+      const card = document.createElement('div');
+      card.className = 'dive-card';
+
+      const si = d.surfaceIntervalBefore == null
+        ? 'first dive'
+        : (conflictIds.has(d.id)
+            ? `<span class="conflict">⚠ overlaps previous dive's deco</span>`
+            : `surface interval ${fmtDur(d.surfaceIntervalBefore)}`);
+
+      card.innerHTML = `
+        <h2>${d.id.toUpperCase()} — ${fmtClock(d.startDateTime)}</h2>
+        <div class="dive-meta">${si} · deco ${fmtDur(d.profile.totalDecoTime)}
+          · ${d.profile.decoStops.length} stop(s)</div>
+        <div class="chart-host"></div>`;
+      panels.appendChild(card);
+
+      const perDiveSetup = { ...setup, dives: [{ waypoints: d.profile.waypoints }] };
+      new DiveProfileChart(card.querySelector('.chart-host'), {
+        diveSetup: perDiveSetup,
+        options: { showLabels: true, showCeiling: true }
+      });
+    });
+  </script>
+</body>
+</html>
