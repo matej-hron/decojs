@@ -119,6 +119,7 @@
       detail.style.display = 'none';
       detail.innerHTML = '';
       overview.style.display = '';
+      window.scrollTo(0, 0);
     }
 
     function presatStrip(startingTissue) {
@@ -179,8 +180,10 @@
         }
       });
 
-      const rows = buildRuntimeRows(d.profile, setup.gases);
+      const rows = buildRuntimeRows(d.profile, seededSetup.gases);
       detail.querySelector('#dv-runtime').appendChild(renderRuntimeTable(rows));
+
+      window.scrollTo(0, 0);
     }
   </script>
 </body>
