@@ -275,7 +275,8 @@ Return value:
             surfaceIntervalBefore, // minutes; null for first dive
             startingTissue,     // { [compartmentId]: nitrogenPressureBar } at dive entry
             endTissue,          // { [compartmentId]: nitrogenPressureBar } at surfacing
-            profile             // full generateDecoProfile result for this dive
+            profile,            // full generateDecoProfile result for this dive
+            ndlLocked           // boolean — echoed from the input dive (false when absent)
         },
         ...
     ],
@@ -543,7 +544,7 @@ Multi-dive toggle (`showMultiDive`) exists but only `dives[0]` is rendered by th
 
 `class TripCalendar extends EventTarget` (line 29). Renders a `planTrip` result as duration-spanning blocks across day columns, with a left-side hour ruler, per-column date headers, and hour gridlines. Owns no trip state — it reads a plan result and emits interaction events; the caller mutates state and re-renders.
 
-Also exports the pure helpers `snapClamp` (line 18) and `decoLabelSuffix` (line 29).
+Also exports the pure helpers `snapClamp` and `diveBlockLabel`.
 
 Imports: `computeCalendarLayout` from `../calendarLayout.js`.
 Imported by: the trip-planner sandbox page.
@@ -551,16 +552,16 @@ Imported by: the trip-planner sandbox page.
 **Exported pure helpers**
 
 ```javascript
-snapClamp(rawMin, dayStartMin, dayEndMin, snap)   // TripCalendar.js:18
+snapClamp(rawMin, dayStartMin, dayEndMin, snap)
 ```
 
 Rounds `rawMin` to the nearest `snap`-minute boundary, then clamps the result to `[dayStartMin, dayEndMin]`. Used internally during drag to produce the drop position; also importable by callers that need the same arithmetic.
 
 ```javascript
-decoLabelSuffix(plannedDive)   // TripCalendar.js:29
+diveBlockLabel(plannedDive)
 ```
 
-Returns a label suffix string for a `planTrip` result dive. When the dive incurs deco stops (`profile.decoStops` non-empty), returns `' · stop {deepestStop}m · TTS {tts}min'`; otherwise returns `''`. `deepestStop` is the deepest entry in `profile.decoStops`; TTS (total time to surface) is `endDateTime − startDateTime − bottomTime` (all in minutes), rounded to the nearest minute. Used by `render` to annotate calendar blocks for deco dives.
+Returns a full block label string for a `planTrip` result dive in the form `"{name} · {depth}m · {bottomTime}min"` followed by either `" · stop {deepestStop}m · TTS {tts}min"` for deco dives or `" NDL"` for no-deco dives. When the dive is flagged `invalid: true`, returns `"⚠ no-deco N/A"`. Replaces the old `decoLabelSuffix` export, which only returned a suffix and had no NDL tag. Used by `render` to populate calendar block labels.
 
 **Constructor**
 
@@ -583,7 +584,7 @@ The constructor wires two delegated listeners on the persistent `container`:
 | Signature | Line | Description |
 |---|---|---|
 | `configure({ startDate, dayCount })` | 130 | Updates `this.startDate` and/or `this.window.dayCount` without re-rendering; call before `render` |
-| `render(planResult, selectedDiveId = null)` | 136 | Clears `container.innerHTML`; draws a left hour ruler, exactly `dayCount` day columns (each with a date header and hour gridlines), and dive blocks from the `planTrip` result. `selectedDiveId` marks the matching block with the `tc-selected` CSS class. Dives with `invalid: true` (e.g. `invalidReason: 'ndl-too-short'`) render with the `tc-invalid` CSS class and a `⚠ no-deco N/A` label instead of a normal depth/time annotation. |
+| `render(planResult, selectedDiveId = null)` | 136 | Clears `container.innerHTML`; draws a left hour ruler, exactly `dayCount` day columns (each with a date header and hour gridlines), and dive blocks from the `planTrip` result. `selectedDiveId` marks the matching block with the `tc-selected` CSS class. Dives with `invalid: true` (e.g. `invalidReason: 'ndl-too-short'`) render with the `tc-invalid` CSS class and a `⚠ no-deco N/A` label instead of a normal depth/time annotation. Deco dives receive a two-tone background: `render` computes the deco portion of the block as a percentage of its total height (`decoTime / totalTime`) and applies an inline `linear-gradient` so the bottom slice is shaded differently (`.tc-deco-shade` colour) from the bottom-phase portion above. |
 | `toStartDateTime(dayIndex, minutesOfDay)` | 202 | Converts a `{dayIndex, minutesOfDay}` pair to a trip-relative epoch-minute start (`dayIndex * 1440 + minutesOfDay`). Used by both `createAt` click handling and drag-drop. |
 
 **Events** (CustomEvent dispatched on the instance)
@@ -631,7 +632,7 @@ calendar.addEventListener('reschedule', (e) => {
 - Each column gets a `.tc-day-header` div showing the formatted date (`formatDayHeader` at line 23) using `this.startDate` and the column index (`TripCalendar.js:165–166`).
 - Hour gridlines (`.tc-hour-line`) are injected into each column at the same percentage positions as the ruler labels (`TripCalendar.js:169–174`).
 - Click position within a column is converted to `minutesOfDay` and snapped to `SNAP_MIN = 60` minutes (`TripCalendar.js:13, 60`).
-- Each dive block is labelled `"{name} · {depth}m · {runtime}min"` followed by `decoLabelSuffix(...)` when the dive incurs deco, yielding e.g. `"Dive 1 · 30m · 45min · stop 6m · TTS 12min"` (`TripCalendar.js:207`). `name` falls back to the uppercased `diveId` when absent; `runtime` is `endDateTime − startDateTime` from the plan result. `planTrip` must echo `name`, `maxDepth`, and `endDateTime` onto result dives for this label to render correctly.
+- Each dive block is labelled using `diveBlockLabel(plannedDive)`, which returns the full label string including name, depth, bottom time, and a deco or NDL tag. Example output: `"Dive 1 · 30m · 45min · stop 6m · TTS 12min"` (deco) or `"Dive 1 · 30m · 40min NDL"` (no-deco). `planTrip` must echo `name`, `maxDepth`, `bottomTime`, `endDateTime`, and `ndlLocked` onto result dives for this label to render correctly.
 - Conflict blocks receive the `tc-conflict` CSS class (`TripCalendar.js:185`); selected block receives `tc-selected` (`TripCalendar.js:186`).
 - `toStartDateTime` computes `dayIndex * 1440 + minutesOfDay` directly (`TripCalendar.js:203`); `_layout.baseDay` (always 0) is not used.
 
@@ -861,7 +862,8 @@ Generic quiz engine for the seven CMAS / SPČR quiz pages. No exports — execut
 
 - [`sandbox/m-values.html`](https://decotheory.eu/sandbox/m-values.html) — Two-playground sandbox for the M-value formula and its derivation. Top playground evaluates `M = a + P_amb/b`. Bottom playground exposes the analytical curves `a(t½)` and `b(t½)` with 16 ZH-L16 compartments overlaid as dots (variants A/B/C lift dots off the curves selectively).
 
-- [`sandbox/repetitive-dives.html`](https://decotheory.eu/sandbox/repetitive-dives.html) — Trip planner page. Wires `TripCalendar`, `AddDiveDialog`, `DiveEditPanel`, `tripState`, and `planTrip` together. Key wiring notes:
-  - Tracks `selectedDiveId` in page scope; passes it to every `calendar.render(result, selectedDiveId)` call so the selected block stays highlighted across rerenders (`repetitive-dives.html:142, 213`).
-  - Dive `name` is shown on the calendar block (via `TripCalendar`), on overview cards, and in the detail header (`repetitive-dives.html:180, 273`).
-  - **Edit-triggered rerenders are debounced** (`rerenderDeferred`, 250 ms, `repetitive-dives.html:220–222`). A synchronous rerender on `DiveEditPanel`'s `apply` event would rebuild the calendar's DOM mid-click, causing the delegated `selectDive` dispatch to fire on a stale block and losing the new selection. The 250 ms deferral ensures the click completes before the calendar rebuilds.
+- [`sandbox/repetitive-dives.html`](https://decotheory.eu/sandbox/repetitive-dives.html) — Trip planner page. Wires `TripCalendar`, `AddDiveDialog`, `DiveEditPanel`, `tripState`, and `planTrip` together using a **master–detail layout**: the calendar is always visible on the left; clicking a block updates the single `#selected` panel on the right, which is rebuilt by `renderSelected`. The old all-cards overview, separate detail view, and separate edit strip are gone. Key wiring notes:
+  - Tracks `selectedDiveId` in page scope; passes it to every `calendar.render(result, selectedDiveId)` call so the selected block stays highlighted across rerenders.
+  - `renderSelected(plannedDive)` builds the `#selected` panel: a summary section (name, depth, bottom time, NDL-lock badge, deco/NDL status), an inline `DiveProfileChart`, an inline edit section (powered by `DiveEditPanel`) and a "Full analysis" `<details>` disclosure containing tissue/GF charts and the runtime table. When no dive is selected the panel shows a placeholder prompt.
+  - Dive `name` is shown on the calendar block (via `diveBlockLabel`), in the `#selected` summary header, and in the `DiveEditPanel` header.
+  - **Edit-triggered rerenders are debounced** (`rerenderDeferred`, 250 ms). A synchronous rerender on `DiveEditPanel`'s `apply` event would rebuild the calendar's DOM mid-click, causing the delegated `selectDive` dispatch to fire on a stale block and losing the new selection. The 250 ms deferral ensures the click completes before the calendar rebuilds.
