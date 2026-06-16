@@ -296,6 +296,8 @@ Return value:
 - When an overlap conflict is detected, the overlapping dive is still planned using the previous dive's end tissue state, with no surface off-gassing applied (the conflict entry records the overrun minutes).
 - For the first dive, tissues start at surface equilibrium (no seed is passed).
 - **NDL-locked dives** (`ndlLocked: true` on the input dive): instead of using the caller-supplied `bottomTime`, `planTrip` derives `bottomTime` as the pre-saturation-aware NDL for that position in the trip — `calculateNDL` seeded with the carried-in tissue (`startingTissue`). The result is capped at 99 min (`NDL_LOCK_CAP`) and floored at the descent time (`maxDepth / 20`, matching `generateDecoProfile`'s 20 m/min rate). This ensures a moved NDL-locked dive always shows the same number the add-dialog/`ndlPreview` showed at creation.
+- **Safety stops disabled for trip dives**: all trip dives are generated with `generateDecoProfile(..., { safetyStop: { enabled: false } })`. No-deco dives' runtime and TTS therefore reflect pure deco obligation without an appended 3 m safety stop.
+- **Invalid NDL-locked dives** (`invalid: true`, `invalidReason: 'ndl-too-short'`): when an NDL-locked dive's actual bottom phase — `min(NDL, NDL_LOCK_CAP) − descentTime` — is under 1 min, the dive is flagged `invalid: true` with `invalidReason: 'ndl-too-short'`. The profile is still generated at the floored bottom time to preserve tissue continuity for subsequent dives, but the UI renders an explanation instead of the (degenerate) dive profile.
 - See [repetitive-dive chaining](#repetitive-dive-chaining-initialTissuePressures) for the `initialTissuePressures` seam used internally.
 
 #### Repetitive-dive chaining (`initialTissuePressures`)
@@ -581,7 +583,7 @@ The constructor wires two delegated listeners on the persistent `container`:
 | Signature | Line | Description |
 |---|---|---|
 | `configure({ startDate, dayCount })` | 130 | Updates `this.startDate` and/or `this.window.dayCount` without re-rendering; call before `render` |
-| `render(planResult, selectedDiveId = null)` | 136 | Clears `container.innerHTML`; draws a left hour ruler, exactly `dayCount` day columns (each with a date header and hour gridlines), and dive blocks from the `planTrip` result. `selectedDiveId` marks the matching block with the `tc-selected` CSS class. |
+| `render(planResult, selectedDiveId = null)` | 136 | Clears `container.innerHTML`; draws a left hour ruler, exactly `dayCount` day columns (each with a date header and hour gridlines), and dive blocks from the `planTrip` result. `selectedDiveId` marks the matching block with the `tc-selected` CSS class. Dives with `invalid: true` (e.g. `invalidReason: 'ndl-too-short'`) render with the `tc-invalid` CSS class and a `⚠ no-deco N/A` label instead of a normal depth/time annotation. |
 | `toStartDateTime(dayIndex, minutesOfDay)` | 202 | Converts a `{dayIndex, minutesOfDay}` pair to a trip-relative epoch-minute start (`dayIndex * 1440 + minutesOfDay`). Used by both `createAt` click handling and drag-drop. |
 
 **Events** (CustomEvent dispatched on the instance)
