@@ -21,6 +21,8 @@
     .sel-actions button { cursor:pointer; font-size:.85rem; padding:.2rem .6rem; border:1px solid var(--border-color,#ccc); border-radius:4px; background:var(--surface,#f7f7f7); }
     .sel-delete { color:#c0392b; }
     .sel-edit-form { margin:.5rem 0; }
+    /* The selected-panel header already has a 🗑 Delete; hide the edit form's own Remove button. */
+    .sel-edit-form .dep-remove { display:none; }
     .sel-full { margin-top:.75rem; }
     .sel-full > summary { cursor:pointer; font-weight:600; font-size:.95rem; padding:.3rem 0; }
     #selected .chart-host { height:auto; min-height:320px; display:flex; flex-direction:column; }
@@ -208,6 +210,9 @@
     function disposeSelected() {
       selectedCharts.forEach(c => { try { c.destroy(); } catch (e) {} });
       selectedCharts = [];
+      // Dispose any open edit panel before its DOM is overwritten, so its
+      // DiveSetupEditor document listener isn't leaked on switch-away-while-editing.
+      if (editPanel) { editPanel.close(); editPanel = null; }
     }
 
     function renderSelected() {
