@@ -11,24 +11,10 @@
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
   <style>
     .trip { max-width: 900px; margin: 0 auto; padding: 1rem; }
-    .dive-card { border: 1px solid var(--border-color, #ccc); border-radius: 8px; margin: 1rem 0; padding: 1rem; }
-    .dive-card h2 { margin: 0 0 .25rem; font-size: 1.1rem; }
     .dive-meta { font-size: .9rem; opacity: .85; margin-bottom: .5rem; }
     .invalid-note { margin:.5rem 0; padding:.6rem .8rem; border:1px dashed #e67e22; border-radius:6px; background:#fff6ee; color:#a04000; font-size:.9rem; }
     .conflict { color: #b00; font-weight: 600; }
     .chart-host { height: 320px; }
-    /* Detail-view charts need real vertical room — the P-P (M-value) and GF
-       diagrams collapse to a line at the 320px overview height. Mirror the
-       standalone sandbox sizes (profile 600 / M-value & GF 700). */
-    #dv-mvalue, #dv-gf { height: 700px; }
-    /* DiveProfileChart prepends a tissue-controls panel inside its host. With a
-       fixed-height host the canvas (height:100%) ignores that panel and overflows
-       onto the buttons below. Make the profile-chart hosts flex columns that GROW
-       for the controls: the canvas keeps a fixed height, the card just gets taller. */
-    .dive-card .chart-host { height: auto; min-height: 320px; display: flex; flex-direction: column; }
-    .dive-card .chart-host .dpc-chart-container { flex: 0 0 320px; min-height: 0; }
-    #dv-profile { height: auto; min-height: 560px; display: flex; flex-direction: column; }
-    #dv-profile .dpc-chart-container { flex: 0 0 560px; min-height: 0; }
     .sel-header { display:flex; justify-content:space-between; align-items:center; gap:1rem; }
     .sel-header h2 { margin:.25rem 0; font-size:1.15rem; }
     .sel-actions { display:flex; gap:.5rem; }
@@ -52,7 +38,6 @@
     .runtime-table th, .runtime-table td { border:1px solid var(--border-color,#ccc); padding:.25rem .5rem; text-align:right; }
     .runtime-table th:first-child, .runtime-table td:first-child { text-align:left; }
     .runtime-table tr.is-stop { font-weight:600; }
-    .view-detail, .back-to-trip { margin-top:.5rem; cursor:pointer; }
     .trip-calendar { display:flex; gap:8px; align-items:stretch; min-height:420px; margin:1rem 0; }
     .tc-day { position:relative; flex:1 1 0; min-width:120px; border:1px solid var(--border-color,#ccc);
               border-radius:6px; background:var(--surface,#fafafa); cursor:crosshair; overflow:hidden; }
@@ -217,6 +202,7 @@
     // ── Selected-dive panel (master–detail) ─────────────────────────────────
     let selectedCharts = [];
     let editingOpen = false;
+    let editPanel = null;
     let fullAnalysisOpen = false;
 
     function disposeSelected() {
@@ -245,6 +231,7 @@
           + '<h3>Pre-saturation at start (surfacing GF per tissue)</h3>'
           + (d.surfaceIntervalBefore == null ? '<p>Fresh diver — no residual loading.</p>' : presatStrip(d.startingTissue))
           + '<div class="sel-edit-form"></div>';
+        wireSelectedActions(d); if (editingOpen) openEditForm(d);
         return;
       }
 
@@ -308,6 +295,39 @@
       };
       details.addEventListener('toggle', () => { fullAnalysisOpen = details.open; if (details.open) buildFull(); });
       if (fullAnalysisOpen) buildFull();
+      wireSelectedActions(d); if (editingOpen) openEditForm(d);
+    }
+
+    function deleteDive(id) {
+      trip = removeDive(trip, id);
+      editingOpen = false;
+      selectedDiveId = (trip.dives[0] && trip.dives[0].id) || null;
+      rerender();
+    }
+
+    function openEditForm(d) {
+      const formHost = selectedHost.querySelector('.sel-edit-form');
+      if (!formHost) return;
+      if (editPanel) { editPanel.close(); editPanel = null; }   // dispose any prior panel's listeners
+      editPanel = new DiveEditPanel(formHost);
+      editPanel.addEventListener('apply', (e) => {
+        trip = editDive(trip, e.detail.id, e.detail.patch);
+        rerenderDeferred();
+      });
+      editPanel.addEventListener('remove', () => deleteDive(d.id));
+      const raw = trip.dives.find(td => td.id === d.id);
+      if (raw) editPanel.open(raw, trip.startDate, d.bottomTime);
+    }
+
+    function wireSelectedActions(d) {
+      const editBtn = selectedHost.querySelector('.sel-edit');
+      const delBtn = selectedHost.querySelector('.sel-delete');
+      if (editBtn) editBtn.addEventListener('click', () => {
+        editingOpen = !editingOpen;
+        if (editingOpen) openEditForm(d);
+        else { if (editPanel) editPanel.close(); editPanel = null; }
+      });
+      if (delBtn) delBtn.addEventListener('click', () => deleteDive(d.id));
     }
 
     // ── Main render entry point ─────────────────────────────────────────────
