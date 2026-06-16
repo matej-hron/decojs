@@ -3313,6 +3313,20 @@ describe('tripUrl - encode/decode', () => {
         expect(decodeTrip('aGVsbG8=')).toBe(null);              // base64 of "hello" → not JSON
         expect(decodeTrip(btoa('{"foo":1}'))).toBe(null);        // valid JSON but no dives/gases array
     });
+
+    test('round-trips the ndlLocked flag', () => {
+        const trip = {
+            startDate: '2026-06-15', dayCount: 2, gfLow: 100, gfHigh: 100,
+            gases: [{ id: 'bottom', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0 }],
+            dives: [
+                { id: 'd1', name: 'A', startDateTime: 540, maxDepth: 30, bottomTime: 20, ndlLocked: true },
+                { id: 'd2', name: 'B', startDateTime: 1980, maxDepth: 18, bottomTime: 40 }
+            ]
+        };
+        const back = decodeTrip(encodeTrip(trip));
+        expect(back.dives[0].ndlLocked).toBe(true);
+        expect(back.dives[1].ndlLocked).toBe(false);
+    });
 });
 
 // ============================================================================

@@ -39,6 +39,7 @@ export function encodeTrip(trip) {
             };
             // Store per-dive gas only when it differs from the trip gas (keeps URLs short).
             if (d.gases && !sameGases(d.gases, trip.gases)) dive.gases = d.gases.map(minimalGas);
+            if (d.ndlLocked) dive.ndlLocked = true; // store only when set, to keep URLs short
             return dive;
         })
     };
@@ -63,7 +64,8 @@ export function decodeTrip(str) {
             startDateTime: d.startDateTime,
             maxDepth: d.maxDepth,
             bottomTime: d.bottomTime,
-            gases: Array.isArray(d.gases) ? d.gases : [...tripGases]
+            gases: Array.isArray(d.gases) ? d.gases : [...tripGases],
+            ndlLocked: d.ndlLocked === true
         }));
         return {
             startDate: m.startDate,
