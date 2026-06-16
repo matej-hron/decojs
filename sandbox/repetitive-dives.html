@@ -29,6 +29,20 @@
     .dive-card .chart-host .dpc-chart-container { flex: 0 0 320px; min-height: 0; }
     #dv-profile { height: auto; min-height: 560px; display: flex; flex-direction: column; }
     #dv-profile .dpc-chart-container { flex: 0 0 560px; min-height: 0; }
+    .sel-header { display:flex; justify-content:space-between; align-items:center; gap:1rem; }
+    .sel-header h2 { margin:.25rem 0; font-size:1.15rem; }
+    .sel-actions { display:flex; gap:.5rem; }
+    .sel-actions button { cursor:pointer; font-size:.85rem; padding:.2rem .6rem; border:1px solid var(--border-color,#ccc); border-radius:4px; background:var(--surface,#f7f7f7); }
+    .sel-delete { color:#c0392b; }
+    .sel-edit-form { margin:.5rem 0; }
+    .sel-full { margin-top:.75rem; }
+    .sel-full > summary { cursor:pointer; font-weight:600; font-size:.95rem; padding:.3rem 0; }
+    #selected .chart-host { height:auto; min-height:320px; display:flex; flex-direction:column; }
+    #selected .chart-host .dpc-chart-container { flex:0 0 320px; min-height:0; }
+    #sel-profile { min-height:560px; }
+    #sel-profile .dpc-chart-container { flex:0 0 560px; }
+    #sel-mvalue, #sel-gf { min-height:700px; }
+    #sel-mvalue .dpc-chart-container, #sel-gf .dpc-chart-container { flex:0 0 700px; }
     .presat-strip-wrap { max-width: 480px; }
     .presat-strip { display:flex; align-items:flex-end; gap:2px; height:80px;
                     border-bottom:1px solid var(--border-color,#ccc); }
@@ -98,10 +112,8 @@
       <button id="cfg-copy" class="cfg-copy-btn">Copy trip link</button>
     </div>
     <div id="calendar"></div>
-    <div id="edit-panel"></div>
+    <div id="selected"></div>
     <div id="add-dialog"></div>
-    <div id="panels"></div>
-    <div id="detail" style="display:none;"></div>
   </div>
 
   <script src="../js/nav.js" type="module"></script>
@@ -167,11 +179,9 @@
     let lastResult = null;
     let selectedDiveId = null;
     let calcTimer = null;
-    let ovTimer = null;
 
     // ── Shared profile display-mode state ───────────────────────────────────
     const profileModes = { showTissueLoading: false, showPartialPressures: false, showAmbientPressure: false, showGasConsumption: false };
-    let detailDiveId = null;
 
     const MODE_LABELS = [
       ['showTissueLoading', 'Tissue'],
@@ -195,102 +205,121 @@
       return wrap;
     }
     function reRenderProfiles() {
-      // Re-render whatever's visible so all profile charts pick up the new modes.
-      if (detail.style.display !== 'none' && detailDiveId) { showDetail(detailDiveId); }
-      else { renderOverview(lastResult); }
+      renderSelected(); // single view now — re-render picks up the new modes
     }
 
     const calendar   = new TripCalendar(document.getElementById('calendar'));
-    const editPanel  = new DiveEditPanel(document.getElementById('edit-panel'));
     const addDialog  = new AddDiveDialog(document.getElementById('add-dialog'));
-    const panels     = document.getElementById('panels');
-    const overview   = panels;
-    const detail     = document.getElementById('detail');
+    const selectedHost = document.getElementById('selected');
 
     const INVALID_NDL_HTML = `<div class="invalid-note">⚠ No-deco dive not possible here — too pre-saturated. Move it later or unlock to a custom dive.</div>`;
 
-    // ── Overview rendering ──────────────────────────────────────────────────
+    // ── Selected-dive panel (master–detail) ─────────────────────────────────
+    let selectedCharts = [];
+    let editingOpen = false;
+    let fullAnalysisOpen = false;
 
-    let overviewCharts = [];
-    function renderOverview(result) {
-      // Destroy charts from the previous render before dropping the DOM nodes —
-      // innerHTML='' alone leaks each chart's document listeners + ResizeObserver.
-      overviewCharts.forEach(c => { try { c.destroy(); } catch (e) {} });
-      overviewCharts = [];
-      panels.innerHTML = '';
-      const conflictIds = new Set((result.conflicts || []).map(c => c.diveId));
+    function disposeSelected() {
+      selectedCharts.forEach(c => { try { c.destroy(); } catch (e) {} });
+      selectedCharts = [];
+    }
 
-      result.dives.forEach(d => {
-        const card = document.createElement('div');
-        card.className = 'dive-card';
-
-        const si = d.surfaceIntervalBefore == null
-          ? 'first dive'
-          : (conflictIds.has(d.id)
-              ? `<span class="conflict">⚠ overlaps previous dive's deco</span>`
-              : `surface interval ${fmtDur(d.surfaceIntervalBefore)}`);
-
-        const presat = d.surfaceIntervalBefore == null ? null : surfacingGF(d.startingTissue);
-        const pre = presat == null
-          ? 'fresh'
-          : `pre-load ${Math.round(presat.controllingPct)}% (tissue #${presat.controllingCompartmentId})`;
-
-        if (d.invalid) {
-          card.innerHTML = `
-            <h2>${esc(d.name || d.id.toUpperCase())} — ${fmtClock(d.startDateTime)}</h2>
-            <div class="dive-meta">${si} · ${d.maxDepth}m · invalid</div>
-            ${INVALID_NDL_HTML}
-            <button class="view-detail" data-dive="${d.id}">View detail →</button>`;
-          panels.appendChild(card);
-          card.querySelector('.view-detail').addEventListener('click', () => showDetail(d.id));
-          return; // no chart for an invalid dive
-        }
-
-        card.innerHTML = `
+    function renderSelected() {
+      disposeSelected();
+      if (!lastResult || !lastResult.dives.length) { selectedHost.innerHTML = ''; return; }
+      if (!selectedDiveId || !lastResult.dives.some(x => x.id === selectedDiveId)) {
+        selectedDiveId = lastResult.dives[0].id;
+      }
+      const d = lastResult.dives.find(x => x.id === selectedDiveId);
+      const siLine = d.surfaceIntervalBefore == null ? 'first dive' : `SI ${fmtDur(d.surfaceIntervalBefore)}`;
+      const headerHtml = `
+        <div class="sel-header">
           <h2>${esc(d.name || d.id.toUpperCase())} — ${fmtClock(d.startDateTime)}</h2>
-          <div class="dive-meta">${si} · deco ${fmtDur(d.profile.totalDecoTime)}
-            · ${d.profile.decoStops.length} stop(s) · ${pre}</div>
-          <div class="chart-host"></div>
-          <button class="view-detail" data-dive="${d.id}">View detail →</button>`;
-        panels.appendChild(card);
+          <div class="sel-actions"><button class="sel-edit">✎ Edit</button><button class="sel-delete">🗑 Delete</button></div>
+        </div>`;
 
-        // Add mode toggles row between the chart host and the view-detail button.
-        const toggles = buildModeToggles();
-        const btn = card.querySelector('.view-detail');
-        card.insertBefore(toggles, btn);
+      if (d.invalid) {
+        selectedHost.innerHTML = headerHtml
+          + `<div class="dive-meta">${siLine} · ${d.maxDepth}m · invalid</div>`
+          + INVALID_NDL_HTML
+          + '<h3>Pre-saturation at start (surfacing GF per tissue)</h3>'
+          + (d.surfaceIntervalBefore == null ? '<p>Fresh diver — no residual loading.</p>' : presatStrip(d.startingTissue))
+          + '<div class="sel-edit-form"></div>';
+        return;
+      }
 
-        // Use per-dive gases if available, fall back to trip-level gases.
-        const diveGases = (trip.dives.find(td => td.id === d.id)?.gases) ?? trip.gases;
-        const perDiveSetup = {
-          ...trip,
-          gases: diveGases,
-          dives: [{ waypoints: d.profile.waypoints }],
-          surfaceInterval: 0, // no post-dive flat tail — the chart should fill with the dive itself
-          initialTissuePressures: d.startingTissue,
-          sacRate: 20,
-          decoSacRate: 15
-        };
-        const c = new DiveProfileChart(card.querySelector('.chart-host'), {
-          diveSetup: perDiveSetup,
-          options: { showLabels: true, showCeiling: true, showLegend: false, ...profileModes }
-        });
-        overviewCharts.push(c);
+      const runtime = Math.round(d.endDateTime - d.startDateTime);
+      const tts = Math.round(runtime - d.bottomTime);
+      const deco = d.profile.totalDecoTime;
+      const stops = d.profile.decoStops || [];
+      const deepest = stops.length ? Math.max(...stops.map(s => s.depth)) : null;
+      const presat = d.surfaceIntervalBefore == null ? null : surfacingGF(d.startingTissue);
+      const parts = [siLine, `${d.maxDepth}m`, `${Math.round(d.bottomTime)}min bottom`, `${runtime}min runtime`];
+      if (deco > 0) {
+        parts.push(`+${Math.round(deco)}min deco`);
+        if (deepest != null) parts.push(`first stop ${deepest}m`);
+        parts.push(`TTS ${tts}min`);
+      } else {
+        parts.push('no-deco');
+      }
+      if (presat) parts.push(`pre-load ${Math.round(presat.controllingPct)}% (#${presat.controllingCompartmentId})`);
 
-        card.querySelector('.view-detail').addEventListener('click', () => showDetail(d.id));
+      selectedHost.innerHTML = headerHtml
+        + `<div class="dive-meta">${parts.join(' · ')}</div>`
+        + (d.surfaceIntervalBefore == null ? '' : presatStrip(d.startingTissue))
+        + '<div class="sel-edit-form"></div>'
+        + '<div id="sel-modes"></div><div class="chart-host" id="sel-profile"></div>'
+        + `<details class="sel-full"${fullAnalysisOpen ? ' open' : ''}><summary>Full analysis (M-value, GF, runtime)</summary><div class="sel-full-body"></div></details>`;
+
+      document.getElementById('sel-modes').appendChild(buildModeToggles());
+
+      const diveGases = (trip.dives.find(td => td.id === d.id)?.gases) ?? trip.gases;
+      const seededSetup = {
+        ...trip, gases: diveGases,
+        dives: [{ waypoints: d.profile.waypoints }],
+        surfaceInterval: 0, initialTissuePressures: d.startingTissue,
+        sacRate: 20, decoSacRate: 15
+      };
+
+      const profileChart = new DiveProfileChart(selectedHost.querySelector('#sel-profile'), {
+        diveSetup: seededSetup, options: { showLabels: true, showCeiling: true, showLegend: false, ...profileModes }
       });
+      selectedCharts.push(profileChart);
+
+      const details = selectedHost.querySelector('.sel-full');
+      const buildFull = () => {
+        const body = details.querySelector('.sel-full-body');
+        if (body.dataset.built) return;
+        body.dataset.built = '1';
+        body.innerHTML = '<h3>M-value loading</h3><div class="chart-host" id="sel-mvalue"></div>'
+          + '<h3>Gradient factor</h3><div class="chart-host" id="sel-gf"></div>'
+          + '<h3>Runtime</h3><div id="sel-runtime"></div>';
+        const mvalueChart = new MValueChart(body.querySelector('#sel-mvalue'), {
+          diveSetup: seededSetup,
+          options: { compartments: [1], showMValueLines: true, showGFLines: true, showAmbientLine: true, showTrail: true, compartmentSelector: true }
+        });
+        const gfChart = new GFChart(body.querySelector('#sel-gf'), {
+          diveSetup: seededSetup,
+          options: { compartments: [1, 2, 3, 4, 5, 6], showTrail: true, compartmentSelector: true }
+        });
+        selectedCharts.push(mvalueChart, gfChart);
+        const rows = buildRuntimeRows(d.profile, seededSetup.gases);
+        body.querySelector('#sel-runtime').appendChild(renderRuntimeTable(rows));
+      };
+      details.addEventListener('toggle', () => { fullAnalysisOpen = details.open; if (details.open) buildFull(); });
+      if (fullAnalysisOpen) buildFull();
     }
 
     // ── Main render entry point ─────────────────────────────────────────────
 
-    function rerender() {                 // immediate calendar; overview deferred
+    function rerender() {
       clearTimeout(calcTimer);
       lastResult = planTrip(trip);
       const neededDays = Math.max(trip.dayCount || 1, 1,
         ...trip.dives.map(d => Math.floor(d.startDateTime / (24 * 60)) + 1));
       calendar.configure({ startDate: trip.startDate, dayCount: neededDays });
       calendar.render(lastResult, selectedDiveId);
-      clearTimeout(ovTimer);
-      ovTimer = setTimeout(() => renderOverview(lastResult), 250);
+      renderSelected();
       updateUrlWithTrip(trip);
     }
     // Edits commit on field blur, which can fire during a click on another dive.
@@ -299,23 +328,6 @@
     function rerenderDeferred() {
       clearTimeout(calcTimer);
       calcTimer = setTimeout(rerender, 250);
-    }
-
-    // ── Detail view ─────────────────────────────────────────────────────────
-
-    let detailCharts = [];
-    function disposeDetail() {
-      detailCharts.forEach(c => { try { c.destroy(); } catch (e) {} });
-      detailCharts = [];
-    }
-
-    function showOverview() {
-      detail.style.display = 'none';
-      detailDiveId = null;
-      disposeDetail();
-      detail.innerHTML = '';
-      overview.style.display = '';
-      window.scrollTo(0, 0);
     }
 
     function presatStrip(startingTissue) {
@@ -329,87 +341,6 @@
                 <div class="presat-strip">${bars}</div>
                 <div class="presat-axis"><span>fast</span><span>slow</span></div>
               </div>`;
-    }
-
-    function showDetail(diveId) {
-      const d = lastResult.dives.find(x => x.id === diveId);
-      if (!d) return;
-      detailDiveId = diveId;
-      disposeDetail();
-      overview.style.display = 'none';
-      detail.style.display = '';
-
-      // Use per-dive gases from the trip input state.
-      const diveGases = (trip.dives.find(td => td.id === diveId)?.gases) ?? trip.gases;
-
-      if (d.invalid) {
-        const siLine = d.surfaceIntervalBefore == null ? 'first dive' : `surface interval ${fmtDur(d.surfaceIntervalBefore)}`;
-        detail.innerHTML = `
-          <button class="back-to-trip">← back to trip</button>
-          <h2>${esc(d.name || d.id.toUpperCase())} — ${fmtClock(d.startDateTime)}</h2>
-          <div class="dive-meta">${siLine} · ${d.maxDepth}m · invalid</div>
-          ${INVALID_NDL_HTML}
-          <h3>Pre-saturation at start (surfacing GF per tissue)</h3>
-          ${d.surfaceIntervalBefore == null ? '<p>Fresh diver — no residual loading.</p>' : presatStrip(d.startingTissue)}`;
-        detail.querySelector('.back-to-trip').addEventListener('click', showOverview);
-        return; // no profile / M-value / GF / runtime charts for an invalid dive
-      }
-
-      const seededSetup = {
-        ...trip,
-        gases: diveGases,
-        dives: [{ waypoints: d.profile.waypoints }],
-        surfaceInterval: 0, // no post-dive flat tail — fill the chart with the dive itself
-        initialTissuePressures: d.startingTissue,
-        sacRate: 20,
-        decoSacRate: 15
-      };
-      const siLine = d.surfaceIntervalBefore == null ? 'first dive' : `surface interval ${fmtDur(d.surfaceIntervalBefore)}`;
-
-      detail.innerHTML = `
-        <button class="back-to-trip">← back to trip</button>
-        <h2>${esc(d.name || d.id.toUpperCase())} — ${fmtClock(d.startDateTime)}</h2>
-        <div class="dive-meta">${siLine} · deco ${fmtDur(d.profile.totalDecoTime)}</div>
-        <h3>Pre-saturation at start (surfacing GF per tissue)</h3>
-        ${d.surfaceIntervalBefore == null ? '<p>Fresh diver — no residual loading.</p>' : presatStrip(d.startingTissue)}
-        <h3>Dive profile</h3><div id="dv-modes"></div><div class="chart-host" id="dv-profile"></div>
-        <h3>M-value loading</h3><div class="chart-host" id="dv-mvalue"></div>
-        <h3>Gradient factor</h3><div class="chart-host" id="dv-gf"></div>
-        <h3>Runtime</h3><div id="dv-runtime"></div>`;
-
-      detail.querySelector('.back-to-trip').addEventListener('click', showOverview);
-
-      // Populate the mode-toggles placeholder above the profile chart.
-      detail.querySelector('#dv-modes').appendChild(buildModeToggles());
-
-      const profileChart = new DiveProfileChart(detail.querySelector('#dv-profile'), {
-        diveSetup: seededSetup, options: { showLabels: true, showCeiling: true, showLegend: false, ...profileModes }
-      });
-      const mvalueChart = new MValueChart(detail.querySelector('#dv-mvalue'), {
-        diveSetup: seededSetup,
-        options: {
-          compartments: [1],
-          showMValueLines: true,
-          showGFLines: true,
-          showAmbientLine: true,
-          showTrail: true,
-          compartmentSelector: true
-        }
-      });
-      const gfChart = new GFChart(detail.querySelector('#dv-gf'), {
-        diveSetup: seededSetup,
-        options: {
-          compartments: [1, 2, 3, 4, 5, 6],
-          showTrail: true,
-          compartmentSelector: true
-        }
-      });
-      detailCharts.push(profileChart, mvalueChart, gfChart);
-
-      const rows = buildRuntimeRows(d.profile, seededSetup.gases);
-      detail.querySelector('#dv-runtime').appendChild(renderRuntimeTable(rows));
-
-      window.scrollTo(0, 0);
     }
 
     // ── Calendar events ─────────────────────────────────────────────────────
@@ -433,31 +364,11 @@
       trip = rescheduleDive(trip, e.detail.diveId, e.detail.startDateTime);
       selectedDiveId = e.detail.diveId;
       rerender();
-      // If the moved dive's edit panel is open, refresh it so the read-only NDL bottom
-      // time and start field reflect the new position (a locked dive's NDL changes as it moves).
-      if (editPanel.dive && editPanel.dive.id === e.detail.diveId) {
-        const dive = trip.dives.find(d => d.id === e.detail.diveId);
-        const planned = lastResult && lastResult.dives.find(d => d.id === e.detail.diveId);
-        if (dive) editPanel.open(dive, trip.startDate, planned ? planned.bottomTime : dive.bottomTime);
-      }
     });
 
     calendar.addEventListener('selectDive', (e) => {
       selectedDiveId = e.detail.diveId;
-      const dive = trip.dives.find(d => d.id === selectedDiveId);
-      const planned = lastResult && lastResult.dives.find(d => d.id === selectedDiveId);
-      if (dive) editPanel.open(dive, trip.startDate, planned ? planned.bottomTime : dive.bottomTime);
-      rerender();
-    });
-
-    editPanel.addEventListener('apply', (e) => {
-      trip = editDive(trip, e.detail.id, e.detail.patch);
-      rerenderDeferred();
-    });
-
-    editPanel.addEventListener('remove', (e) => {
-      trip = removeDive(trip, e.detail.id);
-      editPanel.close();
+      editingOpen = false;
       rerender();
     });
 
