@@ -404,6 +404,13 @@
       trip = rescheduleDive(trip, e.detail.diveId, e.detail.startDateTime);
       selectedDiveId = e.detail.diveId;
       rerender();
+      // If the moved dive's edit panel is open, refresh it so the read-only NDL bottom
+      // time and start field reflect the new position (a locked dive's NDL changes as it moves).
+      if (editPanel.dive && editPanel.dive.id === e.detail.diveId) {
+        const dive = trip.dives.find(d => d.id === e.detail.diveId);
+        const planned = lastResult && lastResult.dives.find(d => d.id === e.detail.diveId);
+        if (dive) editPanel.open(dive, trip.startDate, planned ? planned.bottomTime : dive.bottomTime);
+      }
     });
 
     calendar.addEventListener('selectDive', (e) => {
