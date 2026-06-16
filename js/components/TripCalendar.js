@@ -21,17 +21,22 @@ export function snapClamp(rawMin, dayStartMin, dayEndMin, snap) {
 }
 
 /**
- * Label suffix describing a planned dive's deco obligation, or '' if none.
- * @param {Object} plannedDive - a planTrip result dive (all time fields in minutes):
- *   { startDateTime, endDateTime, bottomTime, profile }
- * @returns {string} e.g. ' · stop 9m · TTS 30min', or '' for a no-deco dive
+ * Full calendar-block label for a planTrip result dive. The number shown is the
+ * bottom time — the block's HEIGHT already conveys total runtime, so runtime/TTS
+ * are not repeated here (they live in the selected-dive panel).
+ * @param {Object} d - planTrip result dive: { name?, id?, maxDepth, bottomTime, ndlLocked?, invalid?, profile }
+ * @returns {string}
  */
-export function decoLabelSuffix(plannedDive) {
-    const stops = (plannedDive && plannedDive.profile && plannedDive.profile.decoStops) || [];
-    if (stops.length === 0) return '';
-    const deepest = Math.max(...stops.map(s => s.depth));
-    const tts = Math.round((plannedDive.endDateTime - plannedDive.startDateTime) - plannedDive.bottomTime);
-    return ` · stop ${deepest}m · TTS ${tts}min`;
+export function diveBlockLabel(d) {
+    const name = (d && d.name) ? d.name : (d && d.id ? d.id.toUpperCase() : '?');
+    const depth = d ? d.maxDepth : '?';
+    if (d && d.invalid) return `${name} · ${depth}m · ⚠ no-deco N/A`;
+    const bt = d ? Math.round(d.bottomTime) : '?';
+    let label = `${name} · ${depth}m · ${bt}min`;
+    const deco = (d && d.profile && d.profile.totalDecoTime) || 0;
+    if (deco > 0) label += ` · +${Math.round(deco)} deco`;
+    else if (d && d.ndlLocked) label += ` · NDL`;
+    return label;
 }
 
 function formatDayHeader(startDate, dayIndex) {
@@ -202,16 +207,10 @@ export class TripCalendar extends EventTarget {
             block.dataset.diveId = b.diveId;
             block.style.top = b.topPct + '%';
             block.style.height = Math.max(b.heightPct, 2) + '%';
-            const name = (d && d.name) ? d.name : b.diveId.toUpperCase();
-            const depth = d ? d.maxDepth : '?';
-            if (d && d.invalid) {
-                block.textContent = `${name} · ${depth}m · ⚠ no-deco N/A`;
-                block.title = 'No-deco not possible here — too pre-saturated';
-            } else {
-                const runtime = d ? Math.round(d.endDateTime - d.startDateTime) : '?';
-                block.textContent = `${name} · ${depth}m · ${runtime}min` + (d ? decoLabelSuffix(d) : '');
-                block.title = b.conflict ? 'Overlaps previous dive\'s deco' : '';
-            }
+            block.textContent = diveBlockLabel(d);
+            block.title = (d && d.invalid)
+                ? 'No-deco not possible here — too pre-saturated'
+                : (b.conflict ? 'Overlaps previous dive\'s deco' : '');
             colEls[b.dayIndex].appendChild(block);
         });
 

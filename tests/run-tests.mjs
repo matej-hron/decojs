@@ -188,7 +188,7 @@ import { surfacingGF } from '../js/preSaturation.js';
 import { normalizeDiveSetup } from '../js/charts/chartTypes.js';
 import { buildRuntimeRows } from '../js/components/RuntimeTable.js';
 import { computeCalendarLayout } from '../js/calendarLayout.js';
-import { snapClamp, decoLabelSuffix } from '../js/components/TripCalendar.js';
+import { snapClamp, diveBlockLabel } from '../js/components/TripCalendar.js';
 import { previewNdl } from '../js/ndlPreview.js';
 import { GF_PRESETS } from '../js/gfPresets.js';
 import { encodeTrip, decodeTrip } from '../js/tripUrl.js';
@@ -3030,6 +3030,18 @@ describe('tripPlanner - planTrip', () => {
         const hasSafetyStop = fiveMetreStops.length >= 2; // arrive + depart at 5 m
         expect(hasSafetyStop).toBe(false);
     });
+
+    test('result echoes ndlLocked', () => {
+        const trip = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [
+                { id: 'd1', startDateTime: 0, maxDepth: 30, bottomTime: 5, ndlLocked: true },
+                { id: 'd2', startDateTime: 1000, maxDepth: 30, bottomTime: 20 }
+            ]
+        });
+        expect(trip.dives.find(d => d.id === 'd1').ndlLocked).toBe(true);
+        expect(trip.dives.find(d => d.id === 'd2').ndlLocked).toBe(false);
+    });
 });
 
 // ============================================================================
@@ -3436,26 +3448,26 @@ describe('TripCalendar - snapClamp', () => {
     });
 });
 
-describe('TripCalendar - decoLabelSuffix', () => {
-    test('returns deepest stop + TTS for a dive with deco', () => {
-        const dive = {
-            startDateTime: 540, endDateTime: 600, bottomTime: 30,
-            profile: { decoStops: [{ depth: 6, time: 3 }, { depth: 9, time: 2 }] }
-        };
-        // deepest stop = 9 m; TTS = (600 - 540) - 30 = 30 min
-        expect(decoLabelSuffix(dive)).toBe(' · stop 9m · TTS 30min');
+describe('TripCalendar - diveBlockLabel', () => {
+    test('no-deco dive: name, depth, bottom time', () => {
+        const d = { name: 'Dive 2', maxDepth: 40, bottomTime: 22, profile: { totalDecoTime: 0, decoStops: [] } };
+        expect(diveBlockLabel(d)).toBe('Dive 2 · 40m · 22min');
     });
-
-    test('returns empty string for a no-deco dive', () => {
-        const dive = {
-            startDateTime: 540, endDateTime: 570, bottomTime: 25,
-            profile: { decoStops: [] }
-        };
-        expect(decoLabelSuffix(dive)).toBe('');
+    test('deco dive: appends +N deco', () => {
+        const d = { name: 'Dive 2', maxDepth: 40, bottomTime: 30, profile: { totalDecoTime: 28, decoStops: [{ depth: 9, time: 5 }] } };
+        expect(diveBlockLabel(d)).toBe('Dive 2 · 40m · 30min · +28 deco');
     });
-
-    test('returns empty string when profile is missing', () => {
-        expect(decoLabelSuffix({ startDateTime: 0, endDateTime: 30, bottomTime: 20 })).toBe('');
+    test('NDL-locked no-deco dive: appends NDL tag', () => {
+        const d = { name: 'Dive 2', maxDepth: 40, bottomTime: 22, ndlLocked: true, profile: { totalDecoTime: 0, decoStops: [] } };
+        expect(diveBlockLabel(d)).toBe('Dive 2 · 40m · 22min · NDL');
+    });
+    test('invalid dive: no-deco N/A', () => {
+        const d = { name: 'Dive 2', maxDepth: 40, bottomTime: 2, invalid: true, profile: { totalDecoTime: 0, decoStops: [] } };
+        expect(diveBlockLabel(d)).toBe('Dive 2 · 40m · ⚠ no-deco N/A');
+    });
+    test('falls back to id.toUpperCase() when name absent', () => {
+        const d = { id: 'd3', maxDepth: 18, bottomTime: 40, profile: { totalDecoTime: 0, decoStops: [] } };
+        expect(diveBlockLabel(d)).toBe('D3 · 18m · 40min');
     });
 });
 

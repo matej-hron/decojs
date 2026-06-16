@@ -28,6 +28,7 @@ import { calculateTissueLoading, simulateDepthTime, calculateNDL, N2_FRACTION } 
  * @property {number} endDateTime    Epoch minutes (start + full runtime incl. deco).
  * @property {number} maxDepth       Metres.
  * @property {number} bottomTime     Effective bottom time used (derived for ndlLocked dives).
+ * @property {boolean} ndlLocked     Echo of the input dive's NDL-lock flag.
  * @property {?number} surfaceIntervalBefore  Minutes since the previous dive's end; null for the first dive.
  * @property {Object} startingTissue Per-compartment N2 pressure at the start of the dive.
  * @property {Object} endTissue      Per-compartment N2 pressure at the end of the dive.
@@ -130,6 +131,7 @@ export function planTrip(diveSetup) {
             endDateTime,
             maxDepth: dive.maxDepth,
             bottomTime,
+            ndlLocked: !!dive.ndlLocked,
             surfaceIntervalBefore,
             startingTissue,
             endTissue,
