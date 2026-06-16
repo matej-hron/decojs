@@ -295,6 +295,7 @@ Return value:
 - Per-dive gas selection: `const diveGases = dive.gases ?? gases` at `tripPlanner.js:55`.
 - When an overlap conflict is detected, the overlapping dive is still planned using the previous dive's end tissue state, with no surface off-gassing applied (the conflict entry records the overrun minutes).
 - For the first dive, tissues start at surface equilibrium (no seed is passed).
+- **NDL-locked dives** (`ndlLocked: true` on the input dive): instead of using the caller-supplied `bottomTime`, `planTrip` derives `bottomTime` as the pre-saturation-aware NDL for that position in the trip — `calculateNDL` seeded with the carried-in tissue (`startingTissue`). The result is capped at 99 min (`NDL_LOCK_CAP`) and floored at the descent time (`maxDepth / 20`, matching `generateDecoProfile`'s 20 m/min rate). This ensures a moved NDL-locked dive always shows the same number the add-dialog/`ndlPreview` showed at creation.
 - See [repetitive-dive chaining](#repetitive-dive-chaining-initialTissuePressures) for the `initialTissuePressures` seam used internally.
 
 #### Repetitive-dive chaining (`initialTissuePressures`)
@@ -540,18 +541,24 @@ Multi-dive toggle (`showMultiDive`) exists but only `dives[0]` is rendered by th
 
 `class TripCalendar extends EventTarget` (line 29). Renders a `planTrip` result as duration-spanning blocks across day columns, with a left-side hour ruler, per-column date headers, and hour gridlines. Owns no trip state — it reads a plan result and emits interaction events; the caller mutates state and re-renders.
 
-Also exports the pure helper `snapClamp` (line 18).
+Also exports the pure helpers `snapClamp` (line 18) and `decoLabelSuffix` (line 29).
 
 Imports: `computeCalendarLayout` from `../calendarLayout.js`.
 Imported by: the trip-planner sandbox page.
 
-**Exported pure helper**
+**Exported pure helpers**
 
 ```javascript
 snapClamp(rawMin, dayStartMin, dayEndMin, snap)   // TripCalendar.js:18
 ```
 
 Rounds `rawMin` to the nearest `snap`-minute boundary, then clamps the result to `[dayStartMin, dayEndMin]`. Used internally during drag to produce the drop position; also importable by callers that need the same arithmetic.
+
+```javascript
+decoLabelSuffix(plannedDive)   // TripCalendar.js:29
+```
+
+Returns a label suffix string for a `planTrip` result dive. When the dive incurs deco stops (`profile.decoStops` non-empty), returns `' · stop {deepestStop}m · TTS {tts}min'`; otherwise returns `''`. `deepestStop` is the deepest entry in `profile.decoStops`; TTS (total time to surface) is `endDateTime − startDateTime − bottomTime` (all in minutes), rounded to the nearest minute. Used by `render` to annotate calendar blocks for deco dives.
 
 **Constructor**
 
@@ -622,7 +629,7 @@ calendar.addEventListener('reschedule', (e) => {
 - Each column gets a `.tc-day-header` div showing the formatted date (`formatDayHeader` at line 23) using `this.startDate` and the column index (`TripCalendar.js:165–166`).
 - Hour gridlines (`.tc-hour-line`) are injected into each column at the same percentage positions as the ruler labels (`TripCalendar.js:169–174`).
 - Click position within a column is converted to `minutesOfDay` and snapped to `SNAP_MIN = 60` minutes (`TripCalendar.js:13, 60`).
-- Each dive block is labelled `"{name} · {depth}m · {runtime}min"` (`TripCalendar.js:193`). `name` falls back to the uppercased `diveId` when absent; `runtime` is `endDateTime − startDateTime` from the plan result. `planTrip` must echo `name`, `maxDepth`, and `endDateTime` onto result dives for this label to render correctly.
+- Each dive block is labelled `"{name} · {depth}m · {runtime}min"` followed by `decoLabelSuffix(...)` when the dive incurs deco, yielding e.g. `"Dive 1 · 30m · 45min · stop 6m · TTS 12min"` (`TripCalendar.js:207`). `name` falls back to the uppercased `diveId` when absent; `runtime` is `endDateTime − startDateTime` from the plan result. `planTrip` must echo `name`, `maxDepth`, and `endDateTime` onto result dives for this label to render correctly.
 - Conflict blocks receive the `tc-conflict` CSS class (`TripCalendar.js:185`); selected block receives `tc-selected` (`TripCalendar.js:186`).
 - `toStartDateTime` computes `dayIndex * 1440 + minutesOfDay` directly (`TripCalendar.js:203`); `_layout.baseDay` (always 0) is not used.
 
@@ -689,7 +696,7 @@ new DiveEditPanel(container)
 
 | Event | `detail` | Trigger |
 |---|---|---|
-| `apply` | `{ id, patch: { startDateTime, maxDepth, bottomTime, gases, name } }` | Any field changes (gas editor `change`, datetime input `change`, Name input `change`, quick depth/time `change`) |
+| `apply` | `{ id, patch: { startDateTime, maxDepth, bottomTime, gases, name, ndlLocked } }` | Any field changes (gas editor `change`, datetime input `change`, Name input `change`, quick depth/time `change`, NDL-lock checkbox `change`) |
 | `remove` | `{ id }` | "Remove dive" button clicked |
 
 **Implementation notes**
