@@ -43,7 +43,8 @@
               border-radius:6px; background:var(--surface,#fafafa); cursor:crosshair; overflow:hidden; }
     .tc-block { position:absolute; left:4px; right:4px; box-sizing:border-box; padding:2px 4px;
                 font-size:.75rem; color:#fff; background:#2980b9; border-radius:4px; overflow:hidden;
-                cursor:pointer; min-height: 2.4em; }
+                cursor: grab; min-height: 2.4em; }
+    .tc-block.tc-dragging { opacity:.85; z-index:3; cursor:grabbing; box-shadow:0 2px 8px rgba(0,0,0,.35); }
     .tc-block.tc-conflict { background:#c0392b; outline:2px solid #c0392b; }
     .tc-block.tc-selected { outline:2px solid #f1c40f; outline-offset:0; z-index:2; }
     .dep-header { font-weight:600; margin-bottom:.35rem; }
@@ -111,7 +112,7 @@
     import { COMPARTMENTS } from '../js/tissueCompartments.js';
     import { TripCalendar } from '../js/components/TripCalendar.js';
     import { DiveEditPanel } from '../js/components/DiveEditPanel.js';
-    import { addDive, editDive, removeDive } from '../js/tripState.js';
+    import { addDive, editDive, removeDive, rescheduleDive } from '../js/tripState.js';
     import { AddDiveDialog } from '../js/components/AddDiveDialog.js';
     import { previewNdl } from '../js/ndlPreview.js';
     import { GF_PRESETS } from '../js/gfPresets.js';
@@ -397,6 +398,12 @@
     });
 
     addDialog.addEventListener('add', (e) => { trip = addDive(trip, e.detail); rerender(); });
+
+    calendar.addEventListener('reschedule', (e) => {
+      trip = rescheduleDive(trip, e.detail.diveId, e.detail.startDateTime);
+      selectedDiveId = e.detail.diveId;
+      rerender();
+    });
 
     calendar.addEventListener('selectDive', (e) => {
       selectedDiveId = e.detail.diveId;
