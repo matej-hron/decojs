@@ -75,7 +75,8 @@ export class AddDiveDialog extends EventTarget {
             const maxDepth = parseFloat(depthEl.value) || depth;
             const bottomTime = parseFloat(timeEl.value) || time;
             const name = (el('.ad-name').value || opts.defaultName || '').trim();
-            const detail = { name, startDateTime, maxDepth, bottomTime, gases: opts.gases };
+            const detail = { name, startDateTime, maxDepth, bottomTime, gases: opts.gases,
+                             ndlLocked: !modeCustom.checked };
             this.close();
             this.dispatchEvent(new CustomEvent('add', { detail }));
         });
