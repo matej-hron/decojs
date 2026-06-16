@@ -20,6 +20,20 @@ export function snapClamp(rawMin, dayStartMin, dayEndMin, snap) {
     return Math.max(dayStartMin, Math.min(dayEndMin, snapped));
 }
 
+/**
+ * Label suffix describing a planned dive's deco obligation, or '' if none.
+ * @param {Object} plannedDive - a planTrip result dive (all time fields in minutes):
+ *   { startDateTime, endDateTime, bottomTime, profile }
+ * @returns {string} e.g. ' · stop 9m · TTS 30min', or '' for a no-deco dive
+ */
+export function decoLabelSuffix(plannedDive) {
+    const stops = (plannedDive && plannedDive.profile && plannedDive.profile.decoStops) || [];
+    if (stops.length === 0) return '';
+    const deepest = Math.max(...stops.map(s => s.depth));
+    const tts = Math.round((plannedDive.endDateTime - plannedDive.startDateTime) - plannedDive.bottomTime);
+    return ` · stop ${deepest}m · TTS ${tts}min`;
+}
+
 function formatDayHeader(startDate, dayIndex) {
     const base = (startDate instanceof Date) ? startDate : new Date(startDate + 'T00:00:00');
     const d = new Date(base.getTime() + dayIndex * 24 * 60 * 60 * 1000);
@@ -190,7 +204,7 @@ export class TripCalendar extends EventTarget {
             const name = (d && d.name) ? d.name : b.diveId.toUpperCase();
             const depth = d ? d.maxDepth : '?';
             const runtime = d ? Math.round(d.endDateTime - d.startDateTime) : '?';
-            block.textContent = `${name} · ${depth}m · ${runtime}min`;
+            block.textContent = `${name} · ${depth}m · ${runtime}min` + (d ? decoLabelSuffix(d) : '');
             block.title = b.conflict ? 'Overlaps previous dive\'s deco' : '';
             colEls[b.dayIndex].appendChild(block);
         });

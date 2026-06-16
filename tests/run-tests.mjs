@@ -188,7 +188,7 @@ import { surfacingGF } from '../js/preSaturation.js';
 import { normalizeDiveSetup } from '../js/charts/chartTypes.js';
 import { buildRuntimeRows } from '../js/components/RuntimeTable.js';
 import { computeCalendarLayout } from '../js/calendarLayout.js';
-import { snapClamp } from '../js/components/TripCalendar.js';
+import { snapClamp, decoLabelSuffix } from '../js/components/TripCalendar.js';
 import { previewNdl } from '../js/ndlPreview.js';
 import { GF_PRESETS } from '../js/gfPresets.js';
 import { encodeTrip, decodeTrip } from '../js/tripUrl.js';
@@ -3370,6 +3370,29 @@ describe('TripCalendar - snapClamp', () => {
     test('clamps to the day window', () => {
         expect(snapClamp(5 * 60, ds, de, 15)).toBe(ds);   // before window -> dayStart
         expect(snapClamp(21 * 60, ds, de, 15)).toBe(de);  // after window  -> dayEnd
+    });
+});
+
+describe('TripCalendar - decoLabelSuffix', () => {
+    test('returns deepest stop + TTS for a dive with deco', () => {
+        const dive = {
+            startDateTime: 540, endDateTime: 600, bottomTime: 30,
+            profile: { decoStops: [{ depth: 6, time: 3 }, { depth: 9, time: 2 }] }
+        };
+        // deepest stop = 9 m; TTS = (600 - 540) - 30 = 30 min
+        expect(decoLabelSuffix(dive)).toBe(' · stop 9m · TTS 30min');
+    });
+
+    test('returns empty string for a no-deco dive', () => {
+        const dive = {
+            startDateTime: 540, endDateTime: 570, bottomTime: 25,
+            profile: { decoStops: [] }
+        };
+        expect(decoLabelSuffix(dive)).toBe('');
+    });
+
+    test('returns empty string when profile is missing', () => {
+        expect(decoLabelSuffix({ startDateTime: 0, endDateTime: 30, bottomTime: 20 })).toBe('');
     });
 });
 
