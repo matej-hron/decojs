@@ -3253,6 +3253,14 @@ describe('tripUrl - encode/decode', () => {
         expect(back.dives[1].gases[0].id).toBe('ean32');
     });
 
+    test('round-trips non-ASCII dive names', () => {
+        const trip = { startDate: '2026-06-15', dayCount: 1, gfLow: 100, gfHigh: 100, gases: air, dives: [
+            { id: 'd1', name: 'Potápění °C', startDateTime: 0, maxDepth: 30, bottomTime: 30, gases: air }
+        ]};
+        const back = decodeTrip(encodeTrip(trip));
+        expect(back.dives[0].name).toBe('Potápění °C');
+    });
+
     test('returns null for malformed input', () => {
         expect(decodeTrip('')).toBe(null);
         expect(decodeTrip('aGVsbG8=')).toBe(null);              // base64 of "hello" → not JSON

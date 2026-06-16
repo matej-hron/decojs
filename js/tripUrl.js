@@ -63,7 +63,7 @@ export function decodeTrip(str) {
             startDateTime: d.startDateTime,
             maxDepth: d.maxDepth,
             bottomTime: d.bottomTime,
-            gases: Array.isArray(d.gases) ? d.gases : tripGases
+            gases: Array.isArray(d.gases) ? d.gases : [...tripGases]
         }));
         return {
             startDate: m.startDate,
