@@ -197,15 +197,21 @@ export class TripCalendar extends EventTarget {
             const block = document.createElement('div');
             block.className = 'tc-block'
                 + (b.conflict ? ' tc-conflict' : '')
+                + (d && d.invalid ? ' tc-invalid' : '')
                 + (b.diveId === selectedDiveId ? ' tc-selected' : '');
             block.dataset.diveId = b.diveId;
             block.style.top = b.topPct + '%';
             block.style.height = Math.max(b.heightPct, 2) + '%';
             const name = (d && d.name) ? d.name : b.diveId.toUpperCase();
             const depth = d ? d.maxDepth : '?';
-            const runtime = d ? Math.round(d.endDateTime - d.startDateTime) : '?';
-            block.textContent = `${name} · ${depth}m · ${runtime}min` + (d ? decoLabelSuffix(d) : '');
-            block.title = b.conflict ? 'Overlaps previous dive\'s deco' : '';
+            if (d && d.invalid) {
+                block.textContent = `${name} · ${depth}m · ⚠ no-deco N/A`;
+                block.title = 'No-deco not possible here — too pre-saturated';
+            } else {
+                const runtime = d ? Math.round(d.endDateTime - d.startDateTime) : '?';
+                block.textContent = `${name} · ${depth}m · ${runtime}min` + (d ? decoLabelSuffix(d) : '');
+                block.title = b.conflict ? 'Overlaps previous dive\'s deco' : '';
+            }
             colEls[b.dayIndex].appendChild(block);
         });
 
