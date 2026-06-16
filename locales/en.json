@@ -1352,7 +1352,8 @@
                 "mvalues": "M-Values",
                 "transfill": "Transfilling",
                 "cascade": "Cascade Filling",
-                "gasLaw": "Gas Law"
+                "gasLaw": "Gas Law",
+                "repetitive": "Repetitive Dives (preview)"
             },
             "statusStart": "Start Here",
             "pressure": "Pressure & Partial Pressure",
