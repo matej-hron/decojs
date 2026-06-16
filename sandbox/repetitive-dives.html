@@ -217,8 +217,10 @@
           <button class="view-detail" data-dive="${d.id}">View detail →</button>`;
         panels.appendChild(card);
 
-        // Add mode toggles row after the chart host.
-        card.appendChild(buildModeToggles());
+        // Add mode toggles row between the chart host and the view-detail button.
+        const toggles = buildModeToggles();
+        const btn = card.querySelector('.view-detail');
+        card.insertBefore(toggles, btn);
 
         // Use per-dive gases if available, fall back to trip-level gases.
         const diveGases = (trip.dives.find(td => td.id === d.id)?.gases) ?? trip.gases;
@@ -271,6 +273,7 @@
 
     function showOverview() {
       detail.style.display = 'none';
+      detailDiveId = null;
       disposeDetail();
       detail.innerHTML = '';
       overview.style.display = '';
