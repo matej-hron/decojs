@@ -10,6 +10,7 @@
  */
 
 import { translate } from './i18n.js';
+import { initAppBanner } from './appBanner.js';
 
 const NAV_ITEMS = [
     { href: 'index.html', labelKey: 'nav.home', label: 'Home' },
@@ -241,11 +242,16 @@ function initNavigation() {
     document.addEventListener('languagechange', renderNav);
 }
 
-// Auto-initialize when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initNavigation);
-} else {
+// Auto-initialize when DOM is ready. Also offer the Android app banner site-wide
+// (self-guards: only on Android, only if not previously dismissed).
+function initPage() {
     initNavigation();
+    initAppBanner();
+}
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPage);
+} else {
+    initPage();
 }
 
 // Export for module usage
