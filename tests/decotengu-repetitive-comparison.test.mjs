@@ -135,6 +135,10 @@ console.log('='.repeat(70));
 // ---------------------------------------------------------------------------
 // Trips — per-dive total deco for a continuous multi-dive profile
 // ---------------------------------------------------------------------------
+// Note: planTrip off-gasses surface intervals at N2_FRACTION (0.7902) while the decotengu
+// reference uses the air gas's 0.79. The resulting per-compartment difference over a surface
+// interval is ~2e-4 bar — far inside the max(5, 20%) deco tolerance below, so this section
+// stays apples-to-apples for practical purposes.
 {
     let fail = 0;
     let beyond = 0;
