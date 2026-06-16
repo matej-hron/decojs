@@ -192,6 +192,7 @@ import { snapClamp, diveBlockLabel } from '../js/components/TripCalendar.js';
 import { previewNdl } from '../js/ndlPreview.js';
 import { GF_PRESETS } from '../js/gfPresets.js';
 import { encodeTrip, decodeTrip } from '../js/tripUrl.js';
+import { isAndroid } from '../js/appBanner.js';
 
 // ============================================================================
 // GF PRESETS TESTS
@@ -205,6 +206,20 @@ describe('gfPresets - GF_PRESETS', () => {
         expect(byLabel['Recreational']).toEqual([60, 90]);
         expect(byLabel['Deco Planner']).toEqual([20, 80]);
         expect(byLabel['Freedom']).toEqual([30, 80]);
+    });
+});
+
+describe('appBanner - isAndroid', () => {
+    test('true for an Android user agent', () => {
+        expect(isAndroid('Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 Chrome/120 Mobile')).toBe(true);
+    });
+    test('false for desktop and iOS user agents', () => {
+        expect(isAndroid('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605')).toBe(false);
+        expect(isAndroid('Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605')).toBe(false);
+    });
+    test('false for empty/undefined', () => {
+        expect(isAndroid('')).toBe(false);
+        expect(isAndroid(undefined)).toBe(false);
     });
 });
 

@@ -880,6 +880,34 @@ section[id],
    Original Styles (Disclaimer Banner, Header, etc.)
    ========================================================================== */
 
+/* Android app install banner (shown only on Android, dismissible) */
+.app-banner {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 1rem;
+    background: var(--surface, #ffffff);
+    border-top: 1px solid var(--border-color, #cccccc);
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.12);
+    font-size: 0.9rem;
+}
+.app-banner-text { flex: 1; min-width: 0; }
+.app-banner-cta { white-space: nowrap; }
+.app-banner-close {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--text-muted, #888888);
+    padding: 0 0.25rem;
+}
+
 /* Disclaimer Banner */
 .disclaimer-banner {
     background: linear-gradient(135deg, #e74c3c, #c0392b);
@@ -2063,7 +2091,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.27";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.28";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
