@@ -1352,7 +1352,8 @@
                 "mvalues": "Valores M",
                 "transfill": "Transvase",
                 "cascade": "Llenado en cascada",
-                "gasLaw": "Ley de los gases"
+                "gasLaw": "Ley de los gases",
+                "repetitive": "Inmersiones repetitivas (preview)"
             },
             "statusStart": "Empieza aquí",
             "pressure": "Presión y presión parcial",

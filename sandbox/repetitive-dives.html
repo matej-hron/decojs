@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Repetitive Dives — DecoJS Sandbox</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+  <style>
+    .trip { max-width: 900px; margin: 0 auto; padding: 1rem; }
+    .dive-meta { font-size: .9rem; opacity: .85; margin-bottom: .5rem; }
+    .invalid-note { margin:.5rem 0; padding:.6rem .8rem; border:1px dashed #e67e22; border-radius:6px; background:#fff6ee; color:#a04000; font-size:.9rem; }
+    .conflict { color: #b00; font-weight: 600; }
+    .chart-host { height: 320px; }
+    .sel-header { display:flex; justify-content:space-between; align-items:center; gap:1rem; }
+    .sel-header h2 { margin:.25rem 0; font-size:1.15rem; }
+    .sel-actions { display:flex; gap:.5rem; }
+    .sel-actions button { cursor:pointer; font-size:.85rem; padding:.2rem .6rem; border:1px solid var(--border-color,#ccc); border-radius:4px; background:var(--surface,#f7f7f7); }
+    .sel-delete { color:#c0392b; }
+    .sel-edit-form { margin:.5rem 0; }
+    /* The selected-panel header already has a 🗑 Delete; hide the edit form's own Remove button. */
+    .sel-edit-form .dep-remove { display:none; }
+    .sel-full { margin-top:.75rem; }
+    .sel-full > summary { cursor:pointer; font-weight:600; font-size:.95rem; padding:.3rem 0; }
+    #selected .chart-host { height:auto; min-height:320px; display:flex; flex-direction:column; }
+    #selected .chart-host .dpc-chart-container { flex:0 0 320px; min-height:0; }
+    #sel-profile { min-height:560px; }
+    #sel-profile .dpc-chart-container { flex:0 0 560px; }
+    #sel-mvalue, #sel-gf { min-height:700px; }
+    #sel-mvalue .dpc-chart-container, #sel-gf .dpc-chart-container { flex:0 0 700px; }
+    .presat-strip-wrap { max-width: 480px; }
+    .presat-strip { display:flex; align-items:flex-end; gap:2px; height:80px;
+                    border-bottom:1px solid var(--border-color,#ccc); }
+    .presat-bar { flex:1 1 0; min-height:1px; border-radius:2px 2px 0 0; }
+    .presat-axis { display:flex; justify-content:space-between; font-size:.75rem; opacity:.7; }
+    .runtime-table { border-collapse:collapse; width:100%; max-width:560px; font-size:.9rem; }
+    .runtime-table th, .runtime-table td { border:1px solid var(--border-color,#ccc); padding:.25rem .5rem; text-align:right; }
+    .runtime-table th:first-child, .runtime-table td:first-child { text-align:left; }
+    .runtime-table tr.is-stop { font-weight:600; }
+    .trip-calendar { display:flex; gap:8px; align-items:stretch; min-height:420px; margin:1rem 0; }
+    .tc-day { position:relative; flex:1 1 0; min-width:120px; border:1px solid var(--border-color,#ccc);
+              border-radius:6px; background:var(--surface,#fafafa); cursor:crosshair; overflow:hidden; }
+    .tc-block { position:absolute; left:4px; right:4px; box-sizing:border-box; padding:2px 4px;
+                font-size:.75rem; color:#fff; background:#2980b9; border-radius:4px; overflow:hidden;
+                cursor: grab; min-height: 2.4em; }
+    .tc-block.tc-dragging { opacity:.85; z-index:3; cursor:grabbing; box-shadow:0 2px 8px rgba(0,0,0,.35); }
+    .tc-block.tc-conflict { background:#c0392b; outline:2px solid #c0392b; }
+    .tc-block.tc-invalid { background:repeating-linear-gradient(45deg,#7f8c8d,#7f8c8d 6px,#95a5a6 6px,#95a5a6 12px); outline:2px dashed #e67e22; color:#fff; }
+    .tc-block.tc-selected { outline:2px solid #f1c40f; outline-offset:0; z-index:2; }
+    .dep-header { font-weight:600; margin-bottom:.35rem; }
+    .dep-row { display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:.5rem; }
+    .dep-remove { color:#c0392b; cursor:pointer; }
+    .dep-lock-label { display: inline-flex; align-items: center; gap: 0.3rem; white-space: nowrap; }
+    .trip-config { display:flex; gap:1.5rem; margin-bottom:.5rem; }
+    .trip-config label { display:flex; align-items:center; gap:.4rem; font-size:.9rem; }
+    .trip-config input[type=number] { width:4.5rem; }
+    .trip-config input[type=date] { width:auto; }
+    .trip-calendar { align-items: stretch; }
+    .tc-ruler { position: relative; width: 48px; flex: 0 0 48px; }
+    .tc-hour-label { position:absolute; right:4px; transform:translateY(-50%); font-size:.7rem; opacity:.6; }
+    .tc-day { padding-top: 22px; }
+    .tc-day-header { position:absolute; top:0; left:0; right:0; height:20px; line-height:20px; text-align:center;
+                     font-size:.75rem; font-weight:600; background:var(--surface,#f0f0f0);
+                     border-bottom:1px solid var(--border-color,#ccc); border-radius:6px 6px 0 0; }
+    .tc-hour-line { position:absolute; left:0; right:0; border-top:1px solid var(--border-color,#eee); opacity:.5; pointer-events:none; }
+    .add-dialog-backdrop { position:fixed; inset:0; background:rgba(0,0,0,.35); display:flex;
+                           align-items:center; justify-content:center; z-index:1000; }
+    .add-dialog { background:var(--surface,#fff); padding:1.25rem; border-radius:10px; min-width:300px;
+                  display:flex; flex-direction:column; gap:.6rem; }
+    .add-dialog h3 { margin:0; }
+    .ad-modes { display:flex; flex-direction:column; gap:.35rem; }
+    .ad-hint { font-size:.85rem; opacity:.85; min-height:1.2em; }
+    .ad-actions { display:flex; justify-content:flex-end; gap:.5rem; }
+    .gf-presets { display:flex; flex-wrap:wrap; gap:.3rem; align-items:center; }
+    .gf-preset-btn { font-size:.75rem; padding:.15rem .45rem; cursor:pointer; border:1px solid var(--border-color,#ccc);
+                     border-radius:4px; background:var(--surface,#f7f7f7); }
+    .gf-preset-btn:hover { background:var(--border-color,#e8e8e8); }
+    .mode-toggles { display:flex; flex-wrap:wrap; gap:.6rem; font-size:.8rem; margin:.4rem 0; opacity:.9; }
+    .mode-toggles label { display:inline-flex; align-items:center; gap:.25rem; cursor:pointer; }
+    .cfg-copy-btn { font-size:.8rem; padding:.15rem .5rem; cursor:pointer; border:1px solid var(--border-color,#ccc); border-radius:4px; background:var(--surface,#f7f7f7); }
+  </style>
+</head>
+<body>
+  <nav class="main-nav">
+    <div class="nav-container">
+      <a href="../index.html" class="nav-logo">Deco Theory</a>
+      <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links"><!-- generated by js/nav.js --></ul>
+      <span class="nav-wip-badge">Experimental</span>
+    </div>
+  </nav>
+
+  <div class="trip">
+    <h1>Repetitive Dive Planner — preview</h1>
+    <p>Each panel is one dive in the trip. Surface intervals off-gas the tissues;
+       later dives start pre-saturated and accrue more decompression.</p>
+    <div class="trip-config">
+      <label>GF Low <input id="cfg-gflow" type="number" value="100" min="1" max="100"></label>
+      <label>GF High <input id="cfg-gfhigh" type="number" value="100" min="1" max="100"></label>
+      <span class="gf-presets"></span>
+      <label>Start date <input id="cfg-start" type="date" value="2026-06-15"></label>
+      <label>Days <input id="cfg-days" type="number" min="1" max="14" value="3"></label>
+      <button id="cfg-copy" class="cfg-copy-btn">Copy trip link</button>
+    </div>
+    <div id="calendar"></div>
+    <div id="selected"></div>
+    <div id="add-dialog"></div>
+  </div>
+
+  <script src="../js/nav.js" type="module"></script>
+  <script type="module">
+    import { DiveProfileChart } from '../js/charts/DiveProfileChart.js';
+    import { MValueChart } from '../js/charts/MValueChart.js';
+    import { GFChart } from '../js/charts/GFChart.js';
+    import { planTrip } from '../js/tripPlanner.js';
+    import { surfacingGF } from '../js/preSaturation.js';
+    import { buildRuntimeRows, renderRuntimeTable } from '../js/components/RuntimeTable.js';
+    import { COMPARTMENTS } from '../js/tissueCompartments.js';
+    import { TripCalendar } from '../js/components/TripCalendar.js';
+    import { DiveEditPanel } from '../js/components/DiveEditPanel.js';
+    import { addDive, editDive, removeDive, rescheduleDive } from '../js/tripState.js';
+    import { AddDiveDialog } from '../js/components/AddDiveDialog.js';
+    import { previewNdl } from '../js/ndlPreview.js';
+    import { GF_PRESETS } from '../js/gfPresets.js';
+    import { getTripFromUrl, updateUrlWithTrip, getTripShareUrl } from '../js/tripUrl.js';
+
+    const air = [{ id: 'bottom', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0,
+                   cylinderVolume: 12, startPressure: 200 }];
+
+    // Mutable trip state — this is the INPUT to planTrip.
+    let trip = {
+      startDate: '2026-06-15',
+      dayCount: 3,
+      gases: air,
+      gfLow: 100,
+      gfHigh: 100,
+      reservePressure: 50,
+      dives: [
+        { id: 'd1', name: 'Dive 1', startDateTime:  9 * 60, maxDepth: 40, bottomTime: 30, gases: air }, // 09:00
+        { id: 'd2', name: 'Dive 2', startDateTime: 11 * 60, maxDepth: 40, bottomTime: 30, gases: air }, // 11:00
+        { id: 'd3', name: 'Dive 3', startDateTime: 13 * 60, maxDepth: 40, bottomTime: 30, gases: air }  // 13:00
+      ]
+    };
+
+    const urlTrip = getTripFromUrl();
+    if (urlTrip) {
+      trip = urlTrip;
+      // Sync form inputs to match the restored trip values.
+      document.getElementById('cfg-gflow').value  = trip.gfLow  ?? 100;
+      document.getElementById('cfg-gfhigh').value = trip.gfHigh ?? 100;
+      if (trip.startDate) document.getElementById('cfg-start').value = trip.startDate;
+      document.getElementById('cfg-days').value   = trip.dayCount ?? 3;
+    }
+
+    const fmtClock = (epochMin) => {
+      const day = Math.floor(epochMin / (24 * 60)) + 1;
+      const mins = epochMin % (24 * 60);
+      const hh = String(Math.floor(mins / 60)).padStart(2, '0');
+      const mm = String(mins % 60).padStart(2, '0');
+      return `Day ${day} ${hh}:${mm}`;
+    };
+    const fmtDur = (m) => {
+      const r = Math.round(m);
+      return r >= 60 ? `${Math.floor(r / 60)}h ${r % 60}m` : `${r}m`;
+    };
+    // Escape user-controlled text before interpolating into innerHTML.
+    const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+
+    // planTrip result (updated on every rerender).
+    let lastResult = null;
+    let selectedDiveId = null;
+    let calcTimer = null;
+
+    // ── Shared profile display-mode state ───────────────────────────────────
+    const profileModes = { showTissueLoading: false, showPartialPressures: false, showAmbientPressure: false, showGasConsumption: false };
+
+    const MODE_LABELS = [
+      ['showTissueLoading', 'Tissue'],
+      ['showPartialPressures', 'ppO₂/N₂'],
+      ['showAmbientPressure', 'Ambient'],
+      ['showGasConsumption', 'Gas use']
+    ];
+    function buildModeToggles() {
+      const wrap = document.createElement('div');
+      wrap.className = 'mode-toggles';
+      MODE_LABELS.forEach(([key, label]) => {
+        const lab = document.createElement('label');
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = profileModes[key];
+        cb.addEventListener('change', () => { profileModes[key] = cb.checked; reRenderProfiles(); });
+        lab.appendChild(cb);
+        lab.appendChild(document.createTextNode(' ' + label));
+        wrap.appendChild(lab);
+      });
+      return wrap;
+    }
+    function reRenderProfiles() {
+      renderSelected(); // single view now — re-render picks up the new modes
+    }
+
+    const calendar   = new TripCalendar(document.getElementById('calendar'));
+    const addDialog  = new AddDiveDialog(document.getElementById('add-dialog'));
+    const selectedHost = document.getElementById('selected');
+
+    const INVALID_NDL_HTML = `<div class="invalid-note">⚠ No-deco dive not possible here — too pre-saturated. Move it later or unlock to a custom dive.</div>`;
+
+    // ── Selected-dive panel (master–detail) ─────────────────────────────────
+    let selectedCharts = [];
+    let editingOpen = false;
+    let editPanel = null;
+    let fullAnalysisOpen = false;
+
+    function disposeSelected() {
+      selectedCharts.forEach(c => { try { c.destroy(); } catch (e) {} });
+      selectedCharts = [];
+      // Dispose any open edit panel before its DOM is overwritten, so its
+      // DiveSetupEditor document listener isn't leaked on switch-away-while-editing.
+      if (editPanel) { editPanel.close(); editPanel = null; }
+    }
+
+    function renderSelected() {
+      disposeSelected();
+      if (!lastResult || !lastResult.dives.length) { selectedHost.innerHTML = ''; return; }
+      if (!selectedDiveId || !lastResult.dives.some(x => x.id === selectedDiveId)) {
+        selectedDiveId = lastResult.dives[0].id;
+      }
+      const d = lastResult.dives.find(x => x.id === selectedDiveId);
+      const siLine = d.surfaceIntervalBefore == null ? 'first dive' : `SI ${fmtDur(d.surfaceIntervalBefore)}`;
+      const headerHtml = `
+        <div class="sel-header">
+          <h2>${esc(d.name || d.id.toUpperCase())} — ${fmtClock(d.startDateTime)}</h2>
+          <div class="sel-actions"><button class="sel-edit">✎ Edit</button><button class="sel-delete">🗑 Delete</button></div>
+        </div>`;
+
+      if (d.invalid) {
+        selectedHost.innerHTML = headerHtml
+          + `<div class="dive-meta">${siLine} · ${d.maxDepth}m · invalid</div>`
+          + INVALID_NDL_HTML
+          + '<h3>Pre-saturation at start (surfacing GF per tissue)</h3>'
+          + (d.surfaceIntervalBefore == null ? '<p>Fresh diver — no residual loading.</p>' : presatStrip(d.startingTissue))
+          + '<div class="sel-edit-form"></div>';
+        wireSelectedActions(d); if (editingOpen) openEditForm(d);
+        return;
+      }
+
+      const runtime = Math.round(d.endDateTime - d.startDateTime);
+      const tts = Math.round(runtime - d.bottomTime);
+      const deco = d.profile.totalDecoTime;
+      const stops = d.profile.decoStops || [];
+      const deepest = stops.length ? Math.max(...stops.map(s => s.depth)) : null;
+      const presat = d.surfaceIntervalBefore == null ? null : surfacingGF(d.startingTissue);
+      const parts = [siLine, `${d.maxDepth}m`, `${Math.round(d.bottomTime)}min bottom`, `${runtime}min runtime`];
+      if (deco > 0) {
+        parts.push(`+${Math.round(deco)}min deco`);
+        if (deepest != null) parts.push(`first stop ${deepest}m`);
+        parts.push(`TTS ${tts}min`);
+      } else {
+        parts.push('no-deco');
+      }
+      if (presat) parts.push(`pre-load ${Math.round(presat.controllingPct)}% (#${presat.controllingCompartmentId})`);
+
+      selectedHost.innerHTML = headerHtml
+        + `<div class="dive-meta">${parts.join(' · ')}</div>`
+        + (d.surfaceIntervalBefore == null ? '' : presatStrip(d.startingTissue))
+        + '<div class="sel-edit-form"></div>'
+        + '<div id="sel-modes"></div><div class="chart-host" id="sel-profile"></div>'
+        + `<details class="sel-full"${fullAnalysisOpen ? ' open' : ''}><summary>Full analysis (M-value, GF, runtime)</summary><div class="sel-full-body"></div></details>`;
+
+      document.getElementById('sel-modes').appendChild(buildModeToggles());
+
+      const diveGases = (trip.dives.find(td => td.id === d.id)?.gases) ?? trip.gases;
+      const seededSetup = {
+        ...trip, gases: diveGases,
+        dives: [{ waypoints: d.profile.waypoints }],
+        surfaceInterval: 0, initialTissuePressures: d.startingTissue,
+        sacRate: 20, decoSacRate: 15
+      };
+
+      const profileChart = new DiveProfileChart(selectedHost.querySelector('#sel-profile'), {
+        diveSetup: seededSetup, options: { showLabels: true, showCeiling: true, showLegend: false, ...profileModes }
+      });
+      selectedCharts.push(profileChart);
+
+      const details = selectedHost.querySelector('.sel-full');
+      const buildFull = () => {
+        const body = details.querySelector('.sel-full-body');
+        if (body.dataset.built) return;
+        body.dataset.built = '1';
+        body.innerHTML = '<h3>M-value loading</h3><div class="chart-host" id="sel-mvalue"></div>'
+          + '<h3>Gradient factor</h3><div class="chart-host" id="sel-gf"></div>'
+          + '<h3>Runtime</h3><div id="sel-runtime"></div>';
+        const mvalueChart = new MValueChart(body.querySelector('#sel-mvalue'), {
+          diveSetup: seededSetup,
+          options: { compartments: [1], showMValueLines: true, showGFLines: true, showAmbientLine: true, showTrail: true, compartmentSelector: true }
+        });
+        const gfChart = new GFChart(body.querySelector('#sel-gf'), {
+          diveSetup: seededSetup,
+          options: { compartments: [1, 2, 3, 4, 5, 6], showTrail: true, compartmentSelector: true }
+        });
+        selectedCharts.push(mvalueChart, gfChart);
+        const rows = buildRuntimeRows(d.profile, seededSetup.gases);
+        body.querySelector('#sel-runtime').appendChild(renderRuntimeTable(rows));
+      };
+      details.addEventListener('toggle', () => { fullAnalysisOpen = details.open; if (details.open) buildFull(); });
+      if (fullAnalysisOpen) buildFull();
+      wireSelectedActions(d); if (editingOpen) openEditForm(d);
+    }
+
+    function deleteDive(id) {
+      trip = removeDive(trip, id);
+      editingOpen = false;
+      selectedDiveId = (trip.dives[0] && trip.dives[0].id) || null;
+      rerender();
+    }
+
+    function openEditForm(d) {
+      const formHost = selectedHost.querySelector('.sel-edit-form');
+      if (!formHost) return;
+      if (editPanel) { editPanel.close(); editPanel = null; }   // dispose any prior panel's listeners
+      editPanel = new DiveEditPanel(formHost);
+      editPanel.addEventListener('apply', (e) => {
+        trip = editDive(trip, e.detail.id, e.detail.patch);
+        rerenderDeferred();
+      });
+      editPanel.addEventListener('remove', () => deleteDive(d.id));
+      const raw = trip.dives.find(td => td.id === d.id);
+      if (raw) editPanel.open(raw, trip.startDate, d.bottomTime);
+    }
+
+    function wireSelectedActions(d) {
+      const editBtn = selectedHost.querySelector('.sel-edit');
+      const delBtn = selectedHost.querySelector('.sel-delete');
+      if (editBtn) editBtn.addEventListener('click', () => {
+        editingOpen = !editingOpen;
+        if (editingOpen) openEditForm(d);
+        else { if (editPanel) editPanel.close(); editPanel = null; }
+      });
+      if (delBtn) delBtn.addEventListener('click', () => deleteDive(d.id));
+    }
+
+    // ── Main render entry point ─────────────────────────────────────────────
+
+    function rerender() {
+      clearTimeout(calcTimer);
+      lastResult = planTrip(trip);
+      const neededDays = Math.max(trip.dayCount || 1, 1,
+        ...trip.dives.map(d => Math.floor(d.startDateTime / (24 * 60)) + 1));
+      calendar.configure({ startDate: trip.startDate, dayCount: neededDays });
+      calendar.render(lastResult, selectedDiveId);
+      renderSelected();
+      updateUrlWithTrip(trip);
+    }
+    // Edits commit on field blur, which can fire during a click on another dive.
+    // A synchronous rerender then rebuilds the calendar mid-click and swallows the
+    // selection. Defer the edit-triggered rerender off the blur/click path.
+    function rerenderDeferred() {
+      clearTimeout(calcTimer);
+      calcTimer = setTimeout(rerender, 250);
+    }
+
+    function presatStrip(startingTissue) {
+      const per = surfacingGF(startingTissue).perCompartmentPct;
+      const bars = COMPARTMENTS.map(c => {
+        const pct = Math.min(100, per[c.id] || 0);
+        return `<span class="presat-bar" title="#${c.id} (${c.halfTime}min): ${Math.round(pct)}%"
+                   style="height:${pct}%;background:${c.color};"></span>`;
+      }).join('');
+      return `<div class="presat-strip-wrap">
+                <div class="presat-strip">${bars}</div>
+                <div class="presat-axis"><span>fast</span><span>slow</span></div>
+              </div>`;
+    }
+
+    // ── Calendar events ─────────────────────────────────────────────────────
+
+    calendar.addEventListener('createAt', (e) => {
+      const startDateTime = calendar.toStartDateTime(e.detail.dayIndex, e.detail.minutesOfDay);
+      addDialog.open({
+        startDateTime,
+        startDate: trip.startDate,
+        gases: trip.gases,
+        defaultDepth: 18,
+        defaultTime: 40,
+        defaultName: `Dive ${trip.dives.length + 1}`,
+        computeNdl: (s, d, g) => previewNdl(trip, { startDateTime: s, maxDepth: d, gases: g }, trip.gfLow)
+      });
+    });
+
+    addDialog.addEventListener('add', (e) => { trip = addDive(trip, e.detail); rerender(); });
+
+    calendar.addEventListener('reschedule', (e) => {
+      trip = rescheduleDive(trip, e.detail.diveId, e.detail.startDateTime);
+      selectedDiveId = e.detail.diveId;
+      rerender();
+    });
+
+    calendar.addEventListener('selectDive', (e) => {
+      selectedDiveId = e.detail.diveId;
+      editingOpen = false;
+      rerender();
+    });
+
+    document.getElementById('cfg-gflow').addEventListener('change', (ev) => {
+      trip = { ...trip, gfLow: +ev.target.value };
+      rerender();
+    });
+
+    document.getElementById('cfg-gfhigh').addEventListener('change', (ev) => {
+      trip = { ...trip, gfHigh: +ev.target.value };
+      rerender();
+    });
+
+    const gfPresetsEl = document.querySelector('.gf-presets');
+    gfPresetsEl.innerHTML = GF_PRESETS.map(p =>
+      `<button class="gf-preset-btn" data-gf-low="${p.gfLow}" data-gf-high="${p.gfHigh}" title="${p.title}">${p.label} ${p.gfLow}/${p.gfHigh}</button>`).join('');
+    gfPresetsEl.addEventListener('click', (e) => {
+      const btn = e.target.closest('.gf-preset-btn');
+      if (!btn) return;
+      const gfLow = +btn.dataset.gfLow, gfHigh = +btn.dataset.gfHigh;
+      trip = { ...trip, gfLow, gfHigh };
+      document.getElementById('cfg-gflow').value = gfLow;
+      document.getElementById('cfg-gfhigh').value = gfHigh;
+      rerender();
+    });
+
+    document.getElementById('cfg-start').addEventListener('change', (e) => {
+      trip = { ...trip, startDate: e.target.value };
+      rerender();
+    });
+
+    document.getElementById('cfg-days').addEventListener('change', (e) => {
+      trip = { ...trip, dayCount: Math.max(1, +e.target.value) };
+      rerender();
+    });
+
+    document.getElementById('cfg-copy').addEventListener('click', async (e) => {
+      const btn = e.target;
+      try {
+        await navigator.clipboard.writeText(getTripShareUrl(trip));
+        const prev = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = prev; }, 1500);
+      } catch (_) { /* clipboard unavailable — the address bar still holds the link */ }
+    });
+
+    // ── Initial render ──────────────────────────────────────────────────────
+    rerender();
+  </script>
+</body>
+</html>

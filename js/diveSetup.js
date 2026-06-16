@@ -348,15 +348,20 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
     // Calculate descent time
     const descentTime = roundUp(maxDepth / DESCENT_SPEED);
     
-    // Check if deco is required
+    // Check if deco is required. The NDL here is surface-based, so it is only
+    // valid when starting fresh. For repetitive dives (a seeded tissue state) we
+    // cannot trust it — skip the early-return and always run the deco scheduler,
+    // which reads the actual bottom tissue state (and returns zero stops + a
+    // safety stop if no deco is genuinely needed).
+    const seededTissues = options.initialTissuePressures || null;
     const requiresDeco = bottomTime > ndl;
-    
-    if (!requiresDeco) {
+
+    if (!requiresDeco && !seededTissues) {
         // Within NDL - generate simple profile with safety stop
         const waypoints = generateSimpleProfile(maxDepth, bottomTime, safetyStop, options);
         // Add gasId to first bottom waypoint
         waypoints[1].gasId = bottomGas.id;
-        
+
         return {
             waypoints,
             ndl,
@@ -366,14 +371,14 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
             controllingCompartment
         };
     }
-    
-    // Deco required - simulate to end of bottom time and generate deco schedule
-    
-    // Initialize tissue pressures
+
+    // Simulate to end of bottom time and generate deco schedule.
+
+    // Initialize tissue pressures (seeded for repetitive dives, else surface).
     const initialN2 = getInitialTissueN2(bottomGas.n2);
     let tissues = {};
     COMPARTMENTS.forEach(comp => {
-        tissues[comp.id] = initialN2;
+        tissues[comp.id] = seededTissues ? seededTissues[comp.id] : initialN2;
     });
     
     // Simulate descent
@@ -571,8 +576,13 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
     const { ndl, controllingCompartment } = calculateNDL(maxDepth, bottomGas.n2, gfLowDec);
 
     const descentTime = roundUp(maxDepth / DESCENT_SPEED);
+    // NOTE: this sync variant intentionally does NOT support
+    // options.initialTissuePressures (repetitive-dive tissue seeding). Its
+    // NDL early-return and surface-only tissue init assume a fresh surface
+    // start. Callers needing a seeded profile must use the async
+    // generateDecoProfile, which implements that seam.
     const requiresDeco = bottomTime > ndl;
-    
+
     if (!requiresDeco) {
         const waypoints = generateSimpleProfile(maxDepth, bottomTime, safetyStop, options);
         waypoints[1].gasId = bottomGas.id;

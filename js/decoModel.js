@@ -594,9 +594,12 @@ const STOP_INCREMENT = 3;
  * @param {number} depth - Depth in meters
  * @param {number} n2Fraction - N2 fraction in gas (default 0.79 for air)
  * @param {number} gfLow - GF Low as decimal (0-1), determines first stop ceiling
+ * @param {Object.<string, number>|null} [initialTissuePressures] - Optional per-compartment
+ *   N2 pressure (bar) to seed the descent start from (repetitive-dive pre-saturation);
+ *   when null/omitted, starts from surface equilibrium (unchanged behaviour).
  * @returns {{ndl: number, controllingCompartment: number}} NDL in minutes and limiting compartment
  */
-export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0) {
+export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0, initialTissuePressures = null) {
     // Very shallow depths have effectively unlimited NDL
     if (depth <= 0) {
         return { ndl: Infinity, controllingCompartment: null };
@@ -615,8 +618,9 @@ export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0) {
     // Get tissue pressures after descent
     const afterDescent = {};
     COMPARTMENTS.forEach(comp => {
+        const startN2 = initialTissuePressures ? initialTissuePressures[comp.id] : initialN2;
         afterDescent[comp.id] = schreinerEquation(
-            initialN2,
+            startN2,
             getAlveolarN2Pressure(SURFACE_PRESSURE, n2Fraction),
             descentRate,
             descentTime,
@@ -1112,12 +1116,17 @@ export function calculateTissueLoading(profile, surfaceInterval = 60, options = 
         };
     });
 
-    // Current tissue pressures (start at surface saturation with initial gas)
+    // Current tissue pressures. Default: surface saturation with the initial gas.
+    // When options.initialTissuePressures is provided (repetitive-dive chaining),
+    // seed each compartment from it instead.
     const currentPressures = {};
     const initialN2Fraction = getN2FractionAtTime(0);
     const initialN2 = getInitialTissueN2(initialN2Fraction);
+    const seededPressures = options.initialTissuePressures || null;
     COMPARTMENTS.forEach(comp => {
-        currentPressures[comp.id] = initialN2;
+        currentPressures[comp.id] = seededPressures
+            ? seededPressures[comp.id]
+            : initialN2;
     });
 
     // Calculate interval in minutes

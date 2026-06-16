@@ -1352,7 +1352,8 @@
                 "mvalues": "M-hodnoty",
                 "transfill": "Přepouštění",
                 "cascade": "Kaskádové plnění",
-                "gasLaw": "Plynový zákon"
+                "gasLaw": "Plynový zákon",
+                "repetitive": "Opakované ponory (preview)"
             },
             "statusStart": "Začněte zde",
             "pressure": "Tlak a parciální tlak",

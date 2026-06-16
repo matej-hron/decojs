@@ -896,7 +896,7 @@ export class MValueChart {
         const gases = this.diveSetup.gases;
         const surfaceInterval = this.diveSetup.surfaceInterval || 0;
         
-        this.calculationResults = calculateTissueLoading(waypoints, surfaceInterval, { gases });
+        this.calculationResults = calculateTissueLoading(waypoints, surfaceInterval, { gases, initialTissuePressures: this.diveSetup.initialTissuePressures });
         this._updateTimeDisplay();
     }
     
@@ -1210,7 +1210,13 @@ export class MValueChart {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                animation: { duration: 50 },
+                // Only animate the first build. Every time-scrub / compartment toggle
+                // rebuilds the chart (destroy + new Chart below); a 50 ms entrance
+                // animation on each of those re-renders makes the chart re-draw from
+                // scratch every step, which reads as "jumping" while moving through time.
+                // `this.chart` is the prior instance here (config is built before the
+                // destroy below) on a re-render, and null on the first render.
+                animation: this.chart ? false : { duration: 50 },
                 plugins: {
                     legend: {
                         display: true,

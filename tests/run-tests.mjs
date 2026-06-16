@@ -117,6 +117,9 @@ function expect(actual) {
 // IMPORT MODULES
 // ============================================================================
 
+import { baseFromStartDate, epochMinToLocalInput, localInputToEpochMin } from '../js/tripTime.js';
+import { addDive, editDive, removeDive, rescheduleDive } from '../js/tripState.js';
+
 import {
     getDefaultSetup,
     extendDiveSetup,
@@ -172,13 +175,38 @@ import {
     calculateMaxGF
 } from '../js/decoModel.js';
 
-import { 
+import {
     COMPARTMENTS,
     ZHL16_VARIANTS,
     getZHL16Variant,
     setZHL16Variant,
     getCompartmentsForVariant
 } from '../js/tissueCompartments.js';
+
+import { planTrip } from '../js/tripPlanner.js';
+import { surfacingGF } from '../js/preSaturation.js';
+import { normalizeDiveSetup } from '../js/charts/chartTypes.js';
+import { buildRuntimeRows } from '../js/components/RuntimeTable.js';
+import { computeCalendarLayout } from '../js/calendarLayout.js';
+import { snapClamp, diveBlockLabel } from '../js/components/TripCalendar.js';
+import { previewNdl } from '../js/ndlPreview.js';
+import { GF_PRESETS } from '../js/gfPresets.js';
+import { encodeTrip, decodeTrip } from '../js/tripUrl.js';
+
+// ============================================================================
+// GF PRESETS TESTS
+// ============================================================================
+
+describe('gfPresets - GF_PRESETS', () => {
+    test('has the 7 standard presets with the expected GF pairs', () => {
+        expect(GF_PRESETS.length).toBe(7);
+        const byLabel = Object.fromEntries(GF_PRESETS.map(p => [p.label, [p.gfLow, p.gfHigh]]));
+        expect(byLabel['Bühlmann']).toEqual([100, 100]);
+        expect(byLabel['Recreational']).toEqual([60, 90]);
+        expect(byLabel['Deco Planner']).toEqual([20, 80]);
+        expect(byLabel['Freedom']).toEqual([30, 80]);
+    });
+});
 
 // ============================================================================
 // DIVE SETUP TESTS
@@ -2672,6 +2700,774 @@ describe('computeGasConsumption', () => {
         const diff = gcHigh.consumedByGasId.ean50 - gcLow.consumedByGasId.ean50;
         expect(diff).toBeGreaterThan(150);
         expect(diff).toBeLessThan(170);
+    });
+});
+
+describe('calculateTissueLoading - initialTissuePressures seam', () => {
+    test('omitting initialTissuePressures starts at surface equilibrium', () => {
+        const profile = [
+            { time: 0, depth: 0 },
+            { time: 2, depth: 30 },
+            { time: 20, depth: 30 },
+            { time: 23, depth: 0 }
+        ];
+        const res = calculateTissueLoading(profile, 0, {});
+        const firstCompId = Object.keys(res.compartments)[0];
+        const surfaceEq = getInitialTissueN2(N2_FRACTION);
+        expect(res.compartments[firstCompId].pressures[0]).toBeCloseTo(surfaceEq, 4);
+    });
+
+    test('providing initialTissuePressures seeds every compartment from it', () => {
+        const profile = [
+            { time: 0, depth: 0 },
+            { time: 2, depth: 30 },
+            { time: 20, depth: 30 },
+            { time: 23, depth: 0 }
+        ];
+        const baseline = calculateTissueLoading(profile, 0, {});
+        const seed = {};
+        Object.keys(baseline.compartments).forEach(id => { seed[id] = 1.5; });
+        const res = calculateTissueLoading(profile, 0, { initialTissuePressures: seed });
+        const firstCompId = Object.keys(res.compartments)[0];
+        expect(res.compartments[firstCompId].pressures[0]).toBeCloseTo(1.5, 6);
+    });
+});
+
+describe('generateDecoProfile - initialTissuePressures seam', () => {
+    const air = [{ id: 'bottom', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0 }];
+
+    test('omitting the seed is unchanged (surface start)', () => {
+        const a = generateDecoProfile(40, 30, air, 100, 100, undefined, {});
+        const b = generateDecoProfile(40, 30, air, 100, 100);
+        expect(a.totalDecoTime).toBe(b.totalDecoTime);
+    });
+
+    test('a pre-saturated seed increases the deco obligation', () => {
+        // 30 m / 18 min from the surface is within NDL → no deco.
+        const fresh = generateDecoProfile(30, 18, air, 100, 100, undefined, {});
+        expect(fresh.totalDecoTime).toBe(0);
+
+        // Same dive, but tissues already heavily loaded → must incur deco.
+        const seed = {};
+        // Build a heavy seed from a deep prior dive's loading.
+        const prior = calculateTissueLoading(
+            [{ time: 0, depth: 0 }, { time: 2, depth: 45 }, { time: 25, depth: 45 }, { time: 30, depth: 0 }],
+            0, { gases: air });
+        Object.keys(prior.compartments).forEach(id => {
+            seed[id] = prior.compartments[id].pressures.at(-1);
+        });
+        const res = generateDecoProfile(30, 18, air, 100, 100, undefined, { initialTissuePressures: seed });
+        expect(res.totalDecoTime).toBeGreaterThan(0);
+    });
+});
+
+// ============================================================================
+// TRIP PLANNER TESTS
+// ============================================================================
+
+describe('tripPlanner - planTrip', () => {
+    const gases = [{ id: 'bottom', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0 }];
+    const sum = t => Object.values(t).reduce((a, b) => a + b, 0);
+
+    test('single-dive trip matches a direct generateDecoProfile call', () => {
+        const setup = {
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [{ id: 'd1', startDateTime: 0, maxDepth: 40, bottomTime: 30 }]
+        };
+        const trip = planTrip(setup);
+        const direct = generateDecoProfile(40, 30, gases, 100, 100, undefined, {});
+        expect(trip.dives).toHaveLength(1);
+        expect(trip.dives[0].profile.totalDecoTime).toBe(direct.totalDecoTime);
+        expect(trip.dives[0].surfaceIntervalBefore).toBe(null);
+        expect(trip.conflicts).toHaveLength(0);
+    });
+
+    test('a second dive starts pre-saturated and incurs more deco', () => {
+        const setup = {
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [
+                { id: 'd1', startDateTime: 0,    maxDepth: 40, bottomTime: 30 },
+                { id: 'd2', startDateTime: 1000, maxDepth: 40, bottomTime: 30 }  // ~SI 925 min later
+            ]
+        };
+        const trip = planTrip(setup);
+        const [d1, d2] = trip.dives;
+
+        // Surface interval is the real clock gap from d1's actual end.
+        expect(d2.surfaceIntervalBefore).toBe(1000 - d1.endDateTime);
+        // Pre-saturation: d2 starts more loaded than d1 (which started at surface eq).
+        expect(sum(d2.startingTissue)).toBeGreaterThan(sum(d1.startingTissue));
+        // And carries a heavier or equal deco obligation.
+        expect(d2.profile.totalDecoTime).toBeGreaterThanOrEqual(d1.profile.totalDecoTime);
+    });
+
+    test('a longer surface interval leaves the next dive less loaded', () => {
+        const make = (secondStart) => planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [
+                { id: 'd1', startDateTime: 0,           maxDepth: 40, bottomTime: 30 },
+                { id: 'd2', startDateTime: secondStart, maxDepth: 40, bottomTime: 30 }
+            ]
+        });
+        const shortSI = make(200);   // d2 soon after d1
+        const longSI  = make(2000);  // d2 much later
+        const startLoad = trip => sum(trip.dives[1].startingTissue);
+        expect(startLoad(longSI)).toBeLessThan(startLoad(shortSI));
+    });
+
+    test('after an overnight interval slow tissues retain residual', () => {
+        const trip = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [
+                { id: 'd1', startDateTime: 0,    maxDepth: 40, bottomTime: 30 },
+                { id: 'd2', startDateTime: 1140, maxDepth: 40, bottomTime: 30 }  // ~18 h later
+            ]
+        });
+        const [d1, d2] = trip.dives;
+        // Fresh surface-equilibrium reference (a brand-new first dive's start load).
+        const fresh = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [{ id: 'x', startDateTime: 0, maxDepth: 40, bottomTime: 30 }]
+        }).dives[0];
+        // Still above a fresh start, but well below the end-of-dive-1 load.
+        expect(sum(d2.startingTissue)).toBeGreaterThan(sum(fresh.startingTissue));
+        expect(sum(d2.startingTissue)).toBeLessThan(sum(d1.endTissue));
+    });
+
+    test('a dive starting before the previous one ends is flagged as a conflict', () => {
+        // d1 at 40 m / 30 min ends (incl. ascent) well after t=35; start d2 at 35.
+        const trip = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [
+                { id: 'd1', startDateTime: 0,  maxDepth: 40, bottomTime: 30 },
+                { id: 'd2', startDateTime: 35, maxDepth: 40, bottomTime: 30 }
+            ]
+        });
+        const d1End = trip.dives[0].endDateTime;
+        expect(d1End).toBeGreaterThan(35);                 // precondition: there IS an overlap
+        expect(trip.conflicts).toHaveLength(1);
+        expect(trip.conflicts[0].diveId).toBe('d2');
+        expect(trip.conflicts[0].type).toBe('overlap');
+        expect(trip.conflicts[0].overrunMinutes).toBeCloseTo(d1End - 35, 4);
+        expect(trip.dives[1].surfaceIntervalBefore).toBe(0);
+    });
+
+    test('dives given out of chronological order are sorted', () => {
+        const trip = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [
+                { id: 'late',  startDateTime: 600, maxDepth: 40, bottomTime: 30 },
+                { id: 'early', startDateTime: 0,   maxDepth: 40, bottomTime: 30 }
+            ]
+        });
+        expect(trip.dives.map(d => d.id)).toEqual(['early', 'late']);
+        expect(trip.dives[0].surfaceIntervalBefore).toBe(null);
+    });
+
+    test('three dives chain with monotonically growing starting load', () => {
+        const trip = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [
+                { id: 'd1', startDateTime:  9 * 60, maxDepth: 40, bottomTime: 30 },
+                { id: 'd2', startDateTime: 11 * 60, maxDepth: 40, bottomTime: 30 },
+                { id: 'd3', startDateTime: 13 * 60, maxDepth: 40, bottomTime: 30 }
+            ]
+        });
+        const [a, b, c] = trip.dives.map(d => sum(d.startingTissue));
+        expect(b).toBeGreaterThan(a);
+        expect(c).toBeGreaterThan(b);
+    });
+
+    test('a normal dive after a conflict still computes a sane surface interval', () => {
+        const trip = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [
+                { id: 'd1', startDateTime: 0,   maxDepth: 40, bottomTime: 30 },
+                { id: 'd2', startDateTime: 35,  maxDepth: 40, bottomTime: 30 }, // overlaps d1's deco
+                { id: 'd3', startDateTime: 600, maxDepth: 40, bottomTime: 30 }  // well after d2 ends
+            ]
+        });
+        expect(trip.conflicts).toHaveLength(1);
+        expect(trip.conflicts[0].diveId).toBe('d2');
+        const d3 = trip.dives[2];
+        expect(d3.surfaceIntervalBefore).toBe(600 - trip.dives[1].endDateTime);
+        expect(d3.surfaceIntervalBefore).toBeGreaterThan(0);
+        // tissue stayed finite through the conflict
+        expect(Number.isFinite(sum(d3.startingTissue))).toBe(true);
+    });
+
+    test('an empty trip returns no dives and no conflicts', () => {
+        const trip = planTrip({ gases, gfLow: 100, gfHigh: 100, dives: [] });
+        expect(trip.dives).toHaveLength(0);
+        expect(trip.conflicts).toHaveLength(0);
+    });
+
+    test('per-dive gases: a richer nitrox mix reduces that dive\'s deco', () => {
+        const air = [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 }];
+        const ean32 = [{ id: 'ean32', name: 'EAN32', o2: 0.32, n2: 0.68, he: 0 }];
+        const run = (g2) => planTrip({ gases: air, gfLow: 100, gfHigh: 100, dives: [
+            { id: 'd1', startDateTime: 0,   maxDepth: 30, bottomTime: 30, gases: air },
+            { id: 'd2', startDateTime: 200, maxDepth: 30, bottomTime: 30, gases: g2 }
+        ]});
+        const airDeco = run(air).dives[1].profile.totalDecoTime;
+        const ean32Deco = run(ean32).dives[1].profile.totalDecoTime;
+        expect(ean32Deco).toBeLessThan(airDeco);
+    });
+
+    test('falls back to shared gases when a dive has no gases field', () => {
+        const air = [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 }];
+        const withField = planTrip({ gases: air, gfLow: 100, gfHigh: 100,
+            dives: [{ id: 'd1', startDateTime: 0, maxDepth: 40, bottomTime: 30, gases: air }] });
+        const without = planTrip({ gases: air, gfLow: 100, gfHigh: 100,
+            dives: [{ id: 'd1', startDateTime: 0, maxDepth: 40, bottomTime: 30 }] });
+        expect(without.dives[0].profile.totalDecoTime).toBe(withField.dives[0].profile.totalDecoTime);
+    });
+
+    test('an ndlLocked first dive derives bottomTime = surface-saturated NDL', () => {
+        const setup = {
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [{ id: 'd1', startDateTime: 0, maxDepth: 30, bottomTime: 5, ndlLocked: true }]
+        };
+        const trip = planTrip(setup);
+        const expected = calculateNDL(30, gases[0].n2, 1.0, null).ndl;
+        expect(trip.dives[0].bottomTime).toBe(Math.min(expected, 99));
+    });
+
+    test('an ndlLocked dive shortens when pre-saturated (later position)', () => {
+        // 40m/25min then a short ~60min SI leaves real residual loading, so d2's locked
+        // NDL is measurably shorter than the surface NDL (a longer/shallower combo off-gasses
+        // enough that they'd be equal — a degenerate pass).
+        const setup = {
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [
+                { id: 'd1', startDateTime: 0,  maxDepth: 40, bottomTime: 25 },
+                { id: 'd2', startDateTime: 60, maxDepth: 30, bottomTime: 5, ndlLocked: true }
+            ]
+        };
+        const trip = planTrip(setup);
+        const lockedAfter = trip.dives.find(d => d.id === 'd2').bottomTime;
+        const surfaceNdl = calculateNDL(30, gases[0].n2, 1.0, null).ndl;
+        expect(lockedAfter).toBeLessThan(Math.min(surfaceNdl, 99));
+    });
+
+    test('an ndlLocked very-shallow dive caps bottomTime at 99', () => {
+        const setup = {
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [{ id: 'd1', startDateTime: 0, maxDepth: 10, bottomTime: 5, ndlLocked: true }]
+        };
+        const trip = planTrip(setup);
+        expect(trip.dives[0].bottomTime).toBe(99);
+    });
+
+    test('an ndlLocked dive with ~0 NDL stays renderable (floored at descent time)', () => {
+        // d2 overlaps d1's end, so tissues never off-gas → NDL ~0. Without the descent-time
+        // floor, bottomTime would be 0 and the profile waypoints would be non-monotonic,
+        // crashing the chart validator.
+        const trip = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [
+                { id: 'd1', startDateTime: 0,  maxDepth: 40, bottomTime: 30 },
+                { id: 'd2', startDateTime: 50, maxDepth: 40, bottomTime: 5, ndlLocked: true }
+            ]
+        });
+        const d2 = trip.dives.find(d => d.id === 'd2');
+        expect(d2.bottomTime).toBeGreaterThanOrEqual(40 / 20); // floored at descent time
+        const wp = d2.profile.waypoints;
+        for (let i = 1; i < wp.length; i++) {
+            expect(wp[i].time).toBeGreaterThanOrEqual(wp[i - 1].time); // non-decreasing → renderable
+        }
+    });
+
+    test('a non-locked dive keeps its stored bottomTime', () => {
+        const setup = {
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [{ id: 'd1', startDateTime: 0, maxDepth: 30, bottomTime: 17 }]
+        };
+        const trip = planTrip(setup);
+        expect(trip.dives[0].bottomTime).toBe(17);
+    });
+
+    test('an ndlLocked dive forced into overlap is flagged invalid', () => {
+        // d2 overlaps d1's end → no off-gassing → NDL ~0 → no real no-deco bottom time.
+        const trip = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [
+                { id: 'd1', startDateTime: 0,  maxDepth: 40, bottomTime: 30 },
+                { id: 'd2', startDateTime: 50, maxDepth: 40, bottomTime: 5, ndlLocked: true }
+            ]
+        });
+        const d2 = trip.dives.find(d => d.id === 'd2');
+        expect(d2.invalid).toBe(true);
+        expect(d2.invalidReason).toBe('ndl-too-short');
+        // Chaining preserved: endTissue is populated.
+        expect(Object.keys(d2.endTissue).length).toBeGreaterThan(0);
+    });
+
+    test('a normal ndlLocked first dive is not invalid', () => {
+        const trip = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [{ id: 'd1', startDateTime: 0, maxDepth: 30, bottomTime: 5, ndlLocked: true }]
+        });
+        expect(trip.dives[0].invalid).toBe(false);
+    });
+
+    test('a non-locked dive is not invalid', () => {
+        const trip = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [{ id: 'd1', startDateTime: 0, maxDepth: 30, bottomTime: 20 }]
+        });
+        expect(trip.dives[0].invalid).toBe(false);
+    });
+
+    test('trip dives carry no safety-stop segment (safety stops off)', () => {
+        // A no-deco dive: with safety stops ON it would gain a 3-min stop at 5 m. Off → none.
+        const trip = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [{ id: 'd1', startDateTime: 0, maxDepth: 18, bottomTime: 20 }]
+        });
+        const wp = trip.dives[0].profile.waypoints;
+        const fiveMetreStops = wp.filter(w => w.depth === 5);
+        const hasSafetyStop = fiveMetreStops.length >= 2; // arrive + depart at 5 m
+        expect(hasSafetyStop).toBe(false);
+    });
+
+    test('result echoes ndlLocked', () => {
+        const trip = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [
+                { id: 'd1', startDateTime: 0, maxDepth: 30, bottomTime: 5, ndlLocked: true },
+                { id: 'd2', startDateTime: 1000, maxDepth: 30, bottomTime: 20 }
+            ]
+        });
+        expect(trip.dives.find(d => d.id === 'd1').ndlLocked).toBe(true);
+        expect(trip.dives.find(d => d.id === 'd2').ndlLocked).toBe(false);
+    });
+});
+
+// ============================================================================
+// PRESATURATION TESTS
+// ============================================================================
+
+describe('preSaturation - surfacingGF', () => {
+    const gases = [{ id: 'bottom', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0 }];
+
+    test('a fresh surface-equilibrium diver reads 0% on every tissue', () => {
+        const fresh = {};
+        COMPARTMENTS.forEach(c => { fresh[c.id] = getInitialTissueN2(N2_FRACTION); });
+        const res = surfacingGF(fresh);
+        expect(res.controllingPct).toBe(0);
+        const maxPer = Math.max(...Object.values(res.perCompartmentPct));
+        expect(maxPer).toBe(0);
+        expect(Object.keys(res.perCompartmentPct).length).toBe(COMPARTMENTS.length);
+    });
+
+    test('a pre-saturated diver reads > 0%, and the controlling value is the max', () => {
+        const trip = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [
+                { id: 'd1', startDateTime: 0,  maxDepth: 40, bottomTime: 30 },
+                // intentionally SHORT (~5-6 min) surface interval so tissues stay clearly pre-saturated
+                { id: 'd2', startDateTime: 65, maxDepth: 40, bottomTime: 30 }
+            ]
+        });
+        const loaded = trip.dives[1].startingTissue;
+        const res = surfacingGF(loaded);
+        expect(res.controllingPct).toBeGreaterThan(0);
+        const maxPer = Math.max(...Object.values(res.perCompartmentPct));
+        expect(res.controllingPct).toBeCloseTo(maxPer, 9);
+        expect(res.perCompartmentPct[res.controllingCompartmentId]).toBeCloseTo(maxPer, 9);
+        expect(res.controllingPct).toBeGreaterThan(10); // short SI ⇒ clearly elevated
+    });
+});
+
+// ============================================================================
+// normalizeDiveSetup - initialTissuePressures preservation
+// ============================================================================
+
+describe('normalizeDiveSetup - initialTissuePressures preservation', () => {
+    const base = {
+        gases: [{ id: 'bottom', name: 'Air', o2: 0.2098, n2: 0.7902 }],
+        dives: [{ waypoints: [{ time: 0, depth: 0 }, { time: 2, depth: 30 }, { time: 20, depth: 30 }, { time: 23, depth: 0 }] }]
+    };
+
+    test('defaults initialTissuePressures to null when absent', () => {
+        const norm = normalizeDiveSetup({ ...base });
+        expect(norm.initialTissuePressures).toBe(null);
+    });
+
+    test('preserves initialTissuePressures when present', () => {
+        const seed = { 1: 1.5, 2: 1.4 };
+        const norm = normalizeDiveSetup({ ...base, initialTissuePressures: seed });
+        expect(norm.initialTissuePressures).toBe(seed);
+    });
+});
+
+describe('RuntimeTable - buildRuntimeRows', () => {
+    const air = [{ id: 'bottom', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0 }];
+
+    test('derives ordered rows from a deco dive profile', () => {
+        const profile = generateDecoProfile(40, 30, air, 30, 70); // GF 30/70 → real deco
+        const rows = buildRuntimeRows(profile, air);
+
+        expect(rows.length > 0).toBe(true);
+        expect(rows[0].phase).toBe('descent');
+
+        let prev = 0;
+        rows.forEach(r => { expect(r.runTime >= prev).toBe(true); prev = r.runTime; });
+        expect(rows[rows.length - 1].depth).toBe(0);
+
+        const totalSeg = rows.reduce((s, r) => s + r.segmentTime, 0);
+        const lastWpTime = profile.waypoints[profile.waypoints.length - 1].time;
+        expect(totalSeg).toBeCloseTo(lastWpTime, 6);
+
+        const stopRows = rows.filter(r => r.isStop);
+        expect(stopRows.length >= profile.decoStops.length).toBe(true);
+
+        rows.forEach(r => expect(typeof r.gas).toBe('string'));
+    });
+
+    test('an NDL dive (no deco) still produces a descent + bottom + ascent', () => {
+        const profile = generateDecoProfile(18, 30, air, 100, 100); // within NDL
+        const rows = buildRuntimeRows(profile, air);
+        expect(rows[0].phase).toBe('descent');
+        expect(rows.some(r => r.phase === 'bottom')).toBe(true);
+        expect(rows[rows.length - 1].depth).toBe(0);
+    });
+
+    test('reflects a deco-gas switch in the row gas names', () => {
+        const gases = [
+            { id: 'bottom', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0 },
+            { id: 'ean50', name: 'EAN50', o2: 0.50, n2: 0.50, he: 0 }
+        ];
+        const profile = generateDecoProfile(45, 25, gases, 30, 70); // deco dive, EAN50 available
+        const rows = buildRuntimeRows(profile, gases);
+        // The bottom phase is on Air; after the ascent switch some rows are on EAN50.
+        expect(rows.some(r => r.gas === 'Air')).toBe(true);
+        expect(rows.some(r => r.gas === 'EAN50')).toBe(true);
+    });
+});
+
+describe('tripState - reducer', () => {
+    const air = [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 }];
+    const base = () => ({ gases: air, gfLow: 100, gfHigh: 100, dives: [] });
+
+    test('addDive assigns a stable unique id and appends', () => {
+        let t = base();
+        t = addDive(t, { startDateTime: 540, maxDepth: 40, bottomTime: 30, gases: air });
+        t = addDive(t, { startDateTime: 660, maxDepth: 30, bottomTime: 35, gases: air });
+        expect(t.dives.length).toBe(2);
+        expect(t.dives[0].id).toBe('d1');
+        expect(t.dives[1].id).toBe('d2');
+        expect(t.dives[1].maxDepth).toBe(30);
+    });
+
+    test('addDive does not mutate the input trip', () => {
+        const t0 = base();
+        const t1 = addDive(t0, { startDateTime: 540, maxDepth: 40, bottomTime: 30, gases: air });
+        expect(t0.dives.length).toBe(0);
+        expect(t1.dives.length).toBe(1);
+    });
+
+    test('editDive patches fields by id, leaving others untouched', () => {
+        let t = addDive(base(), { startDateTime: 540, maxDepth: 40, bottomTime: 30, gases: air });
+        t = editDive(t, 'd1', { maxDepth: 18, bottomTime: 50 });
+        expect(t.dives[0].maxDepth).toBe(18);
+        expect(t.dives[0].bottomTime).toBe(50);
+        expect(t.dives[0].startDateTime).toBe(540);
+    });
+
+    test('rescheduleDive changes only startDateTime', () => {
+        let t = addDive(base(), { startDateTime: 540, maxDepth: 40, bottomTime: 30, gases: air });
+        t = rescheduleDive(t, 'd1', 600);
+        expect(t.dives[0].startDateTime).toBe(600);
+        expect(t.dives[0].maxDepth).toBe(40);
+    });
+
+    test('removeDive drops the dive by id; remaining ids are unchanged', () => {
+        let t = addDive(base(), { startDateTime: 540, maxDepth: 40, bottomTime: 30, gases: air });
+        t = addDive(t, { startDateTime: 660, maxDepth: 30, bottomTime: 35, gases: air });
+        t = removeDive(t, 'd1');
+        expect(t.dives.length).toBe(1);
+        expect(t.dives[0].id).toBe('d2');
+    });
+
+    test('ids never collide after a remove (max-based, not length-based)', () => {
+        let t = addDive(base(), { startDateTime: 540, maxDepth: 40, bottomTime: 30, gases: air });
+        t = addDive(t, { startDateTime: 660, maxDepth: 30, bottomTime: 35, gases: air });
+        t = removeDive(t, 'd1');                 // leaves d2
+        t = addDive(t, { startDateTime: 780, maxDepth: 20, bottomTime: 40, gases: air });
+        expect(t.dives.map(d => d.id)).toEqual(['d2', 'd3']);  // not a duplicate 'd2'
+    });
+});
+
+describe('calendarLayout - computeCalendarLayout', () => {
+    const win = (dayCount) => ({ dayStartMin: 6 * 60, dayEndMin: 20 * 60, dayCount }); // span 840 min
+
+    test('positions a dive block by start time and duration within the day window', () => {
+        const planResult = { dives: [{ id: 'd1', startDateTime: 9 * 60, endDateTime: 10 * 60 }], conflicts: [] };
+        const layout = computeCalendarLayout(planResult, win(1));
+        expect(layout.dayCount).toBe(1);
+        expect(layout.baseDay).toBe(0);
+        const b = layout.blocks[0];
+        expect(b.dayIndex).toBe(0);
+        expect(b.topPct).toBeCloseTo((540 - 360) / 840 * 100, 4);
+        expect(b.heightPct).toBeCloseTo(60 / 840 * 100, 4);
+        expect(b.conflict).toBe(false);
+    });
+
+    test('dayCount comes from the caller, not the dives (1 dive, 3 columns)', () => {
+        const planResult = { dives: [{ id: 'd1', startDateTime: 9 * 60, endDateTime: 10 * 60 }], conflicts: [] };
+        const layout = computeCalendarLayout(planResult, win(3));
+        expect(layout.dayCount).toBe(3);
+        expect(layout.blocks[0].dayIndex).toBe(0);
+    });
+
+    test('places a dive on day 2 in column index 2; flags conflicts', () => {
+        const planResult = {
+            dives: [
+                { id: 'd1', startDateTime: 9 * 60,                  endDateTime: 10 * 60 },
+                { id: 'd2', startDateTime: (2 * 24 * 60) + 9 * 60,  endDateTime: (2 * 24 * 60) + 10 * 60 }
+            ],
+            conflicts: [{ diveId: 'd2', type: 'overlap', overrunMinutes: 5 }]
+        };
+        const layout = computeCalendarLayout(planResult, win(3));
+        expect(layout.baseDay).toBe(0);
+        expect(layout.blocks.find(b => b.diveId === 'd1').dayIndex).toBe(0);
+        expect(layout.blocks.find(b => b.diveId === 'd2').dayIndex).toBe(2);
+        expect(layout.blocks.find(b => b.diveId === 'd2').conflict).toBe(true);
+    });
+
+    test('empty trip yields the configured columns and no blocks', () => {
+        const layout = computeCalendarLayout({ dives: [], conflicts: [] }, win(2));
+        expect(layout.dayCount).toBe(2);
+        expect(layout.blocks).toHaveLength(0);
+    });
+
+    test('a dive starting before the window clips its top without inflating height', () => {
+        const planResult = { dives: [{ id: 'd1', startDateTime: 5 * 60 + 30, endDateTime: 6 * 60 + 30 }], conflicts: [] };
+        const b = computeCalendarLayout(planResult, win(1)).blocks[0];
+        expect(b.topPct).toBe(0);
+        expect(b.heightPct).toBeCloseTo(30 / 840 * 100, 4);
+    });
+});
+
+describe('calculateNDL - initialTissuePressures seam', () => {
+    const air = [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 }];
+
+    test('a surface-equilibrium seed reproduces the unseeded NDL', () => {
+        const fresh = {};
+        COMPARTMENTS.forEach(c => { fresh[c.id] = getInitialTissueN2(N2_FRACTION); });
+        const seeded = calculateNDL(30, N2_FRACTION, 1.0, fresh);
+        const unseeded = calculateNDL(30, N2_FRACTION, 1.0);
+        expect(seeded.ndl).toBe(unseeded.ndl);
+    });
+
+    test('a pre-saturated seed shortens the NDL', () => {
+        const prior = calculateTissueLoading(
+            [{ time: 0, depth: 0 }, { time: 2, depth: 40 }, { time: 25, depth: 40 }, { time: 30, depth: 0 }],
+            0, { gases: air });
+        const loaded = {};
+        COMPARTMENTS.forEach(c => { loaded[c.id] = prior.compartments[c.id].pressures.at(-1); });
+        const seeded = calculateNDL(30, N2_FRACTION, 1.0, loaded);
+        const unseeded = calculateNDL(30, N2_FRACTION, 1.0);
+        expect(seeded.ndl).toBeLessThan(unseeded.ndl);
+    });
+});
+
+// ============================================================================
+// ndlPreview
+// ============================================================================
+
+describe('ndlPreview - previewNdl', () => {
+    const air = [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 }];
+
+    test('for the first dive it equals the surface NDL', () => {
+        const trip = { gases: air, gfLow: 100, gfHigh: 100, dives: [] };
+        const got = previewNdl(trip, { startDateTime: 9 * 60, maxDepth: 30, gases: air }, 100);
+        const surface = calculateNDL(30, 0.79, 1.0).ndl;
+        expect(got).toBe(surface);
+    });
+
+    test('a later, pre-saturated dive has a shorter NDL', () => {
+        const trip = { gases: air, gfLow: 100, gfHigh: 100, dives: [
+            { id: 'd1', startDateTime: 0, maxDepth: 40, bottomTime: 30, gases: air }
+        ]};
+        const later = previewNdl(trip, { startDateTime: 90, maxDepth: 30, gases: air }, 100); // short SI after d1
+        const surface = calculateNDL(30, 0.79, 1.0).ndl;
+        expect(later).toBeLessThan(surface);
+    });
+
+    test('depends only on dives before the candidate, not after it', () => {
+        const before = { gases: air, gfLow: 100, gfHigh: 100, dives: [
+            { id: 'd1', startDateTime: 0, maxDepth: 40, bottomTime: 30, gases: air }
+        ]};
+        // same trip plus a dive that starts AFTER the candidate slot (t=90)
+        const withLater = { ...before, dives: [...before.dives,
+            { id: 'd9', startDateTime: 600, maxDepth: 40, bottomTime: 30, gases: air }
+        ]};
+        const a = previewNdl(before,    { startDateTime: 90, maxDepth: 30, gases: air }, 100);
+        const b = previewNdl(withLater, { startDateTime: 90, maxDepth: 30, gases: air }, 100);
+        expect(a).toBe(b); // a later dive can't change the candidate's carried-in load
+    });
+});
+
+// ============================================================================
+// TRIP STATE / TRIP PLANNER - DIVE NAMES
+// ============================================================================
+
+describe('tripState/tripPlanner - dive names', () => {
+    const air = [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 }];
+
+    test('addDive stores a provided name', () => {
+        const t = addDive({ gases: air, gfLow: 100, gfHigh: 100, dives: [] },
+            { name: 'Reef', startDateTime: 0, maxDepth: 18, bottomTime: 40, gases: air });
+        expect(t.dives[0].name).toBe('Reef');
+    });
+
+    test('editDive patches the name', () => {
+        let t = addDive({ gases: air, gfLow: 100, gfHigh: 100, dives: [] },
+            { name: 'Reef', startDateTime: 0, maxDepth: 18, bottomTime: 40, gases: air });
+        t = editDive(t, t.dives[0].id, { name: 'Wreck' });
+        expect(t.dives[0].name).toBe('Wreck');
+    });
+
+    test('planTrip echoes the dive name onto result dives', () => {
+        const trip = { gases: air, gfLow: 100, gfHigh: 100,
+            dives: [{ id: 'd1', name: 'Wreck', startDateTime: 0, maxDepth: 40, bottomTime: 30, gases: air }] };
+        expect(planTrip(trip).dives[0].name).toBe('Wreck');
+    });
+});
+
+// ============================================================================
+// TRIP URL TESTS
+// ============================================================================
+
+describe('tripUrl - encode/decode', () => {
+    const air = [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 }];
+    const ean32 = [{ id: 'ean32', name: 'EAN32', o2: 0.32, n2: 0.68, he: 0 }];
+
+    test('round-trips a trip whose dives share the trip gas', () => {
+        const trip = { startDate: '2026-06-15', dayCount: 3, gfLow: 90, gfHigh: 100, gases: air, dives: [
+            { id: 'd1', name: 'Wreck', startDateTime: 540, maxDepth: 40, bottomTime: 30, gases: air },
+            { id: 'd2', name: 'Reef',  startDateTime: 660, maxDepth: 18, bottomTime: 50, gases: air }
+        ]};
+        const back = decodeTrip(encodeTrip(trip));
+        expect(back.startDate).toBe('2026-06-15');
+        expect(back.dayCount).toBe(3);
+        expect(back.gfLow).toBe(90);
+        expect(back.gfHigh).toBe(100);
+        expect(back.dives.length).toBe(2);
+        expect(back.dives[0].name).toBe('Wreck');
+        expect(back.dives[0].maxDepth).toBe(40);
+        expect(back.dives[1].bottomTime).toBe(50);
+        expect(back.dives[0].id).toBe('d1');
+        expect(back.dives[1].id).toBe('d2');
+        expect(back.dives[0].gases[0].id).toBe('air');
+    });
+
+    test('preserves a dive with a different gas (stored inline)', () => {
+        const trip = { startDate: '2026-06-15', dayCount: 1, gfLow: 100, gfHigh: 100, gases: air, dives: [
+            { id: 'd1', name: 'A', startDateTime: 0,   maxDepth: 30, bottomTime: 30, gases: air },
+            { id: 'd2', name: 'B', startDateTime: 200, maxDepth: 30, bottomTime: 30, gases: ean32 }
+        ]};
+        const back = decodeTrip(encodeTrip(trip));
+        expect(back.dives[0].gases[0].id).toBe('air');
+        expect(back.dives[1].gases[0].id).toBe('ean32');
+    });
+
+    test('round-trips non-ASCII dive names', () => {
+        const trip = { startDate: '2026-06-15', dayCount: 1, gfLow: 100, gfHigh: 100, gases: air, dives: [
+            { id: 'd1', name: 'Potápění °C', startDateTime: 0, maxDepth: 30, bottomTime: 30, gases: air }
+        ]};
+        const back = decodeTrip(encodeTrip(trip));
+        expect(back.dives[0].name).toBe('Potápění °C');
+    });
+
+    test('returns null for malformed input', () => {
+        expect(decodeTrip('')).toBe(null);
+        expect(decodeTrip('aGVsbG8=')).toBe(null);              // base64 of "hello" → not JSON
+        expect(decodeTrip(btoa('{"foo":1}'))).toBe(null);        // valid JSON but no dives/gases array
+    });
+
+    test('round-trips the ndlLocked flag', () => {
+        const trip = {
+            startDate: '2026-06-15', dayCount: 2, gfLow: 100, gfHigh: 100,
+            gases: [{ id: 'bottom', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0 }],
+            dives: [
+                { id: 'd1', name: 'A', startDateTime: 540, maxDepth: 30, bottomTime: 20, ndlLocked: true },
+                { id: 'd2', name: 'B', startDateTime: 1980, maxDepth: 18, bottomTime: 40 }
+            ]
+        };
+        const back = decodeTrip(encodeTrip(trip));
+        expect(back.dives[0].ndlLocked).toBe(true);
+        expect(back.dives[1].ndlLocked).toBe(false);
+    });
+});
+
+// ============================================================================
+// TRIP TIME TESTS
+// ============================================================================
+
+describe('tripTime - epoch <-> datetime-local', () => {
+    test('round-trips an epoch minute against a start date (UTC-safe)', () => {
+        const base = baseFromStartDate('2026-06-15');
+        const s = epochMinToLocalInput(9 * 60, base);   // day 0, 09:00
+        expect(s).toBe('2026-06-15T09:00');
+        expect(localInputToEpochMin(s, base)).toBe(9 * 60);
+    });
+    test('handles a later day (24h+) correctly', () => {
+        const base = baseFromStartDate('2026-06-15');
+        const s = epochMinToLocalInput(24 * 60 + 11 * 60, base); // day 1, 11:00
+        expect(s).toBe('2026-06-16T11:00');
+        expect(localInputToEpochMin(s, base)).toBe(24 * 60 + 11 * 60);
+    });
+    test('default base for missing start date', () => {
+        const base = baseFromStartDate();
+        expect(base).toBe(Date.UTC(2026, 0, 1));
+    });
+    test('returns NaN for empty/invalid input', () => {
+        const base = baseFromStartDate('2026-06-15');
+        expect(Number.isNaN(localInputToEpochMin('', base))).toBe(true);
+        expect(Number.isNaN(localInputToEpochMin('garbage', base))).toBe(true);
+    });
+});
+
+// ============================================================================
+// TRIPCALENDAR - snapClamp TESTS
+// ============================================================================
+
+describe('TripCalendar - snapClamp', () => {
+    const ds = 6 * 60, de = 20 * 60;
+    test('snaps to the nearest 15 minutes', () => {
+        expect(snapClamp(9 * 60 + 8, ds, de, 15)).toBe(9 * 60 + 15); // 09:08 -> 09:15
+        expect(snapClamp(9 * 60 + 7, ds, de, 15)).toBe(9 * 60);      // 09:07 -> 09:00
+    });
+    test('clamps to the day window', () => {
+        expect(snapClamp(5 * 60, ds, de, 15)).toBe(ds);   // before window -> dayStart
+        expect(snapClamp(21 * 60, ds, de, 15)).toBe(de);  // after window  -> dayEnd
+    });
+});
+
+describe('TripCalendar - diveBlockLabel', () => {
+    test('no-deco dive: name, depth, bottom time', () => {
+        const d = { name: 'Dive 2', maxDepth: 40, bottomTime: 22, profile: { totalDecoTime: 0, decoStops: [] } };
+        expect(diveBlockLabel(d)).toBe('Dive 2 · 40m · 22min');
+    });
+    test('deco dive: appends +N deco', () => {
+        const d = { name: 'Dive 2', maxDepth: 40, bottomTime: 30, profile: { totalDecoTime: 28, decoStops: [{ depth: 9, time: 5 }] } };
+        expect(diveBlockLabel(d)).toBe('Dive 2 · 40m · 30min · +28 deco');
+    });
+    test('NDL-locked no-deco dive: appends NDL tag', () => {
+        const d = { name: 'Dive 2', maxDepth: 40, bottomTime: 22, ndlLocked: true, profile: { totalDecoTime: 0, decoStops: [] } };
+        expect(diveBlockLabel(d)).toBe('Dive 2 · 40m · 22min · NDL');
+    });
+    test('invalid dive: no-deco N/A', () => {
+        const d = { name: 'Dive 2', maxDepth: 40, bottomTime: 2, invalid: true, profile: { totalDecoTime: 0, decoStops: [] } };
+        expect(diveBlockLabel(d)).toBe('Dive 2 · 40m · ⚠ no-deco N/A');
+    });
+    test('falls back to id.toUpperCase() when name absent', () => {
+        const d = { id: 'd3', maxDepth: 18, bottomTime: 40, profile: { totalDecoTime: 0, decoStops: [] } };
+        expect(diveBlockLabel(d)).toBe('D3 · 18m · 40min');
     });
 });
 

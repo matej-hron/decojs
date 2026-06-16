@@ -6,7 +6,7 @@ npm test
 
 Runs `node tests/run-tests.mjs`. No external test framework — `tests/run-tests.mjs` implements `describe`/`test`/`expect` inline (lines 10–140) with matchers `.toBe`, `.toEqual`, `.toBeCloseTo`, `.toBeGreaterThan`, `.toBeLessThan`, `.toHaveProperty`, `.toHaveLength`, `.toBeDefined`. Output is one line per test, then a pass/fail summary.
 
-**208 tests pass in under 5 seconds.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`.
+**262 tests pass in under 5 seconds.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`.
 
 `npm test` is required to pass before every commit per `CLAUDE.md`.
 
@@ -86,6 +86,50 @@ These tolerances cover stop-time discretization noise — both implementations r
 The largest residuals are concentrated at GF 20/80 (the most aggressive setting in the matrix) where stop-time discretization between the two implementations occasionally lands a stop on different minute boundaries.
 
 Bühlmann constants (`SURFACE_PRESSURE=1.01325`, `N2_FRACTION=0.7902`, TC1 b-coefficient variant-specific) match decotengu — which itself cross-references the HeinrichsWeikamp OSTC firmware. See [References](References.md#6-zh-l16-constant-tables) for the provenance chain.
+
+## decotengu repetitive-dive cross-check
+
+Validates the repetitive-dive engine (surface-interval off-gassing, seeded deco, and multi-dive trip chaining) against decotengu 0.14.1. This harness is **not part of `npm test`** — run it on demand.
+
+**Run:**
+
+```bash
+node tests/decotengu-repetitive-comparison.test.mjs
+```
+
+**Regenerate reference data:**
+
+```bash
+python3 scripts/generate_decotengu_repetitive_reference.py > tests/decotengu-repetitive-reference.json
+```
+
+### Three validation seams
+
+**Seam A — surface-interval off-gassing.** Calls `simulateDepthTime` at depth 0 for each surface-interval duration and compares the resulting compartment pressures against decotengu's `model.load` run at surface pressure. Tolerance: 0.001 bar per compartment (compartments 2–16).
+
+**Seam B — deco from a pre-saturated seed.** Seeds DecoJS's `generateDecoProfile` with `initialTissuePressures` taken from a preceding dive, then runs decotengu's ascent from the same saturated state. Tolerance: `max(5 min, 20%)` of reference total deco.
+
+**Trips — multi-dive chaining end-to-end.** Chains two or three dives through `planTrip`, compares per-dive total deco against decotengu run as one continuous profile. Tolerance: `max(5 min, 20%)`.
+
+### Model notes
+
+**Compartment 1.** DecoJS uses the ZH-L16 "1b" first compartment (half-time 5.0 min); decotengu uses 4.0 min. This is a deliberate model choice. Compartment 1 is **excluded from the Seam A pass/fail gate** — its divergence (max ~0.012 bar) is reported as informational only.
+
+**Scenario bottom times.** Reference scenarios use recreational/light-tech bottom times chosen so that every dive stays within DecoJS's 300-min/stop usable range. The test guards beyond-range profiles rather than crashing on them.
+
+### Observed agreement
+
+| Section | Metric | Value |
+|---|---|---|
+| Seam A | Max \|diff\| comp 2–16 | 2.22 × 10⁻¹⁶ bar (machine epsilon) |
+| Seam A | Compartment 1 max \|diff\| (informational) | 1.19 × 10⁻² bar |
+| Seam B | Mean \|diff\| | 0.3 min |
+| Seam B | Max \|diff\| | 1 min |
+| Trips | Mean \|diff\| | 0.3 min |
+| Trips | Max \|diff\| | 2 min |
+| Trips | Dive comparisons | 54 |
+
+Off-gas agreement on compartments 2–16 is at floating-point machine epsilon, confirming the Schreiner equation and surface-interval logic are numerically identical to decotengu. Seeded deco and trip totals agree within 1–2 min — within the stop-discretization noise explained in the single-dive section above.
 
 ## Adding tests
 

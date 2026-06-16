@@ -63,6 +63,7 @@ import {
 } from '../charts/chartTypes.js';
 
 import { translate } from '../i18n.js';
+import { GF_PRESETS } from '../gfPresets.js';
 
 /** Helper: replace {0}, {1}, ... placeholders with the given values. */
 function fmt(str, ...values) {
@@ -98,7 +99,11 @@ const DEFAULT_EDITOR_OPTIONS = {
     showSacRate: true,
     compact: false,
     maxGases: 4,
-    emitOnInput: true  // Emit change events on every input (vs only on save)
+    emitOnInput: true,  // Emit change events on every input (vs only on save)
+    showSafetyStop: true,
+    showGenerateButton: true,
+    showWaypoints: true,
+    showValidation: true,
 };
 
 /**
@@ -301,19 +306,23 @@ export class DiveSetupEditor extends EventTarget {
         }
 
         // Generate button (prominent, between inputs and outputs)
-        if (this.options.showQuickSetup) {
+        if (this.options.showQuickSetup && this.options.showGenerateButton) {
             wrapper.appendChild(this._buildGenerateButton());
         }
 
         // ===== OUTPUT SECTION =====
 
         // Waypoints section (Dive 1) - output of generation
-        wrapper.appendChild(this._buildWaypointsSection(1));
+        if (this.options.showWaypoints) {
+            wrapper.appendChild(this._buildWaypointsSection(1));
+        }
 
         // Multi-dive support
         if (this.options.showMultiDive) {
             wrapper.appendChild(this._buildDive2Controls());
-            wrapper.appendChild(this._buildWaypointsSection(2));
+            if (this.options.showWaypoints) {
+                wrapper.appendChild(this._buildWaypointsSection(2));
+            }
         }
 
         // ===== SETTINGS SECTION =====
@@ -334,7 +343,9 @@ export class DiveSetupEditor extends EventTarget {
         }
 
         // Validation errors display
-        wrapper.appendChild(this._buildValidationErrors());
+        if (this.options.showValidation) {
+            wrapper.appendChild(this._buildValidationErrors());
+        }
 
         this.container.appendChild(wrapper);
     }
@@ -382,7 +393,7 @@ export class DiveSetupEditor extends EventTarget {
         section.innerHTML = `
             <summary>⚡ ${translate('diveEditor.quickSetup.title', 'Quick Setup')}</summary>
             <div class="dse-quick-inputs">
-                <p class="dse-hint">${translate('diveEditor.quickSetup.hint', 'Set depth and bottom time, then click Generate below.')}</p>
+                ${this.options.showGenerateButton ? `<p class="dse-hint">${translate('diveEditor.quickSetup.hint', 'Set depth and bottom time, then click Generate below.')}</p>` : ''}
                 <div class="dse-row">
                     <div class="dse-field">
                         <label>${translate('diveEditor.quickSetup.maxDepth', 'Max Depth (m):')}</label>
@@ -393,7 +404,7 @@ export class DiveSetupEditor extends EventTarget {
                         <input type="number" class="dse-quick-time form-input" value="20" min="1" max="120" step="1">
                     </div>
                 </div>
-                <div class="dse-row dse-safety-stop-row">
+                ${this.options.showSafetyStop ? `<div class="dse-row dse-safety-stop-row">
                     <label class="dse-checkbox-label">
                         <input type="checkbox" class="dse-safety-stop-enabled" checked>
                         ${translate('diveEditor.quickSetup.safetyStop', 'Safety Stop')}
@@ -406,7 +417,7 @@ export class DiveSetupEditor extends EventTarget {
                         <label>${translate('diveEditor.quickSetup.time', 'Time (min):')}</label>
                         <input type="number" class="dse-safety-stop-time form-input" value="3" min="1" max="10" step="1">
                     </div>
-                </div>
+                </div>` : ''}
             </div>
         `;
 
@@ -421,12 +432,14 @@ export class DiveSetupEditor extends EventTarget {
         this.elements.quickTime.addEventListener('input', () => this._updateNDLDisplay());
 
         // Safety stop toggle - update field visibility
-        this.elements.safetyStopEnabled.addEventListener('change', () => {
-            const enabled = this.elements.safetyStopEnabled.checked;
-            section.querySelectorAll('.dse-safety-stop-field').forEach(el => {
-                el.style.opacity = enabled ? '1' : '0.5';
+        if (this.elements.safetyStopEnabled) {
+            this.elements.safetyStopEnabled.addEventListener('change', () => {
+                const enabled = this.elements.safetyStopEnabled.checked;
+                section.querySelectorAll('.dse-safety-stop-field').forEach(el => {
+                    el.style.opacity = enabled ? '1' : '0.5';
+                });
             });
-        });
+        }
 
         return section;
     }
@@ -500,13 +513,7 @@ export class DiveSetupEditor extends EventTarget {
                 </div>
                 <div class="dse-gf-presets">
                     <span class="dse-hint">${translate('diveEditor.gf.presetsLabel', 'Presets:')} <span class="dse-gf-info-toggle" title="${translate('diveEditor.gf.presetGuide', 'GF preset guide')}" style="cursor:pointer; text-decoration:underline;">ℹ️</span></span>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="100" data-gf-high="100" title="${translate('diveEditor.gf.presetBuhlmannTitle', 'Raw Bühlmann tables, no conservatism')}">${translate('diveEditor.gf.presetBuhlmann', 'Bühlmann')}</button>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="60" data-gf-high="90" title="${translate('diveEditor.gf.presetRecreationalTitle', 'Recreational: ≤40m, short deco')}">${translate('diveEditor.gf.presetRecreational', 'Recreational')}</button>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="40" data-gf-high="80" title="${translate('diveEditor.gf.presetIntensiveTitle', 'Intensive: repeat dives, safari')}">${translate('diveEditor.gf.presetIntensive', 'Intensive')}</button>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="50" data-gf-high="90" title="${translate('diveEditor.gf.presetDeepTitle', 'Deep: >60m, single dive')}">${translate('diveEditor.gf.presetDeep', 'Deep')}</button>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="80" data-gf-high="100" title="${translate('diveEditor.gf.presetBailoutTitle', 'Bailout: emergency')}">${translate('diveEditor.gf.presetBailout', 'Bailout')}</button>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="20" data-gf-high="80" title="${translate('diveEditor.gf.presetDecoPlannerTitle', 'Deco Planner default')}">${translate('diveEditor.gf.presetDecoPlanner', 'Deco Planner')}</button>
-                    <button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="30" data-gf-high="80" title="${translate('diveEditor.gf.presetFreedomTitle', 'Divesoft Freedom default')}">${translate('diveEditor.gf.presetFreedom', 'Freedom')}</button>
+                    ${GF_PRESETS.map(p => `<button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="${p.gfLow}" data-gf-high="${p.gfHigh}" title="${translate(p.titleKey, p.title)}">${translate(p.labelKey, p.label)}</button>`).join('')}
                 </div>
                 <div class="dse-gf-info" style="display:none; margin-top:0.5rem; font-size:0.8rem; background:var(--surface-alt, #f5f5f5); border-radius:6px; padding:0.6rem; line-height:1.5;">
                     <table style="width:100%; border-collapse:collapse; font-size:0.78rem;">

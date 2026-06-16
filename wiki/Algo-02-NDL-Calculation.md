@@ -5,9 +5,11 @@ The **No-Decompression Limit** is the maximum bottom time at a given depth such 
 ## Entry point
 
 ```javascript
-// js/decoModel.js:741 (signature)
-export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0)
+// js/decoModel.js:602 (signature)
+export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0, initialTissuePressures = null)
 ```
+
+The optional fourth parameter `initialTissuePressures` is a `{ [compartmentId]: nitrogenPressureBar }` map. When provided, descent starts from that pre-saturated tissue state instead of surface equilibrium. Defaults to `null` (original behaviour). See [`js/ndlPreview.js`](Module-Reference.md#jsndlpreviewjs) for the trip-position-aware wrapper that supplies this seed.
 
 Returns:
 
@@ -27,7 +29,7 @@ The NDL returned is **bottom time** — time at maximum depth after descent comp
 A common confusion: surely NDL should use $GF_{high}$, since that's the surface limit? Not for "first stop becomes mandatory." The moment a first stop is required, the deco algorithm starts enforcing $GF_{low}$ — so that is the threshold at which the no-deco window closes. Using $GF_{high}$ here would overstate the NDL by pretending the entire GF budget is available immediately.
 
 ```javascript
-// js/decoModel.js:802
+// js/decoModel.js:664
 const { ceilingDepth } = getDiveCeiling(testPressures, gfLow);
 ```
 
@@ -36,13 +38,14 @@ Default `gfLow = 1.0` (100 %) — raw Bühlmann, no conservatism. Typical planni
 ## Method — binary search
 
 ```javascript
-// js/decoModel.js:754-767 (descent)
+// js/decoModel.js:615-629 (descent)
 const descentTime = depth / DESCENT_SPEED;
 const descentRate = (alveolarN2 - getAlveolarN2Pressure(SURFACE_PRESSURE, n2Fraction)) / descentTime;
 const afterDescent = {};
 COMPARTMENTS.forEach(comp => {
+    const startN2 = initialTissuePressures ? initialTissuePressures[comp.id] : initialN2;
     afterDescent[comp.id] = schreinerEquation(
-        initialN2,
+        startN2,
         getAlveolarN2Pressure(SURFACE_PRESSURE, n2Fraction),
         descentRate,
         descentTime,
@@ -51,10 +54,10 @@ COMPARTMENTS.forEach(comp => {
 });
 ```
 
-Descent is simulated once via Schreiner at `DESCENT_SPEED = 20 m/min` (`js/decoModel.js:720`). That gives tissue state at the start of bottom time.
+Descent is simulated once via Schreiner at `DESCENT_SPEED = 20 m/min` (`js/decoModel.js:578`). That gives tissue state at the start of bottom time. When `initialTissuePressures` is set, `startN2` is read from the seed rather than surface equilibrium.
 
 ```javascript
-// js/decoModel.js:791-809
+// js/decoModel.js:654-669
 while (maxTime - minTime > 0.1) {
     const testTime = (minTime + maxTime) / 2;
     const testPressures = {};
@@ -92,11 +95,11 @@ For default raw Bühlmann ($gfLow = 1.0$) the same dive yields NDL ≈ 21 min �
 NDL is the pivot in the top-level dive planner:
 
 ```javascript
-// js/diveSetup.js:346-367
+// js/diveSetup.js:346-373
 const { ndl, controllingCompartment } = calculateNDL(maxDepth, bottomGas.n2, gfLowDec);
-const descentTime = roundUp(maxDepth / DESCENT_SPEED);
+const seededTissues = options.initialTissuePressures || null;
 const requiresDeco = bottomTime > ndl;
-if (!requiresDeco) {
+if (!requiresDeco && !seededTissues) {
     const waypoints = generateSimpleProfile(maxDepth, bottomTime, safetyStop, options);
     waypoints[1].gasId = bottomGas.id;
     return {
@@ -107,7 +110,7 @@ if (!requiresDeco) {
 // else: proceed to generateDecoSchedule()
 ```
 
-If `bottomTime ≤ ndl`, the planner returns a no-stop profile (optionally with a safety stop). Only when deco is unavoidable does the expensive `generateDecoSchedule()` pipeline run.
+If `bottomTime ≤ ndl` **and** no pre-saturated tissue seed is provided, the planner returns a no-stop profile (optionally with a safety stop). Only when deco is unavoidable (or a seed is present) does the expensive `generateDecoSchedule()` pipeline run. The extra `!seededTissues` guard ensures repetitive dives always run the full deco scheduler — see [repetitive-dive chaining](Module-Reference.md#repetitive-dive-chaining-initialtissuepressures).
 
 ## Cross-references
 

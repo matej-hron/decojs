@@ -1,5 +1,5 @@
 // Service Worker for Deco Theory PWA
-const CACHE_NAME = 'deco-theory-0.6.4';
+const CACHE_NAME = 'deco-theory-0.6.27';
 
 // Files to cache for offline use
 const STATIC_ASSETS = [
@@ -29,6 +29,7 @@ const STATIC_ASSETS = [
   './sandbox/cascade-filling.html',
   './sandbox/chart-test.html',
   './sandbox/editor-test.html',
+  './sandbox/repetitive-dives.html',
   './css/styles.css',
   './fonts/fraunces-latin.woff2',
   './fonts/fraunces-latin-ext.woff2',
@@ -41,6 +42,8 @@ const STATIC_ASSETS = [
   './js/decoModel.js',
   './js/diveProfile.js',
   './js/diveSetup.js',
+  './js/tripPlanner.js',
+  './js/preSaturation.js',
   './js/mvalues.js',
   './js/quiz.js',
   './js/tissueCompartments.js',
@@ -51,13 +54,24 @@ const STATIC_ASSETS = [
   './js/charts/chartTypes.js',
   './js/charts/DiveProfileChart.js',
   './js/charts/MValueChart.js',
+  './js/charts/GFChart.js',
   './js/components/DiveSetupEditor.js',
+  './js/components/RuntimeTable.js',
   './js/components/HeroMotion.js',
   './js/components/StickyTOC.js',
   './js/components/TissueSaturationSim.js',
   './js/components/tooltipShortcut.js',
+  './js/tripState.js',
+  './js/tripTime.js',
+  './js/calendarLayout.js',
+  './js/components/TripCalendar.js',
+  './js/components/DiveEditPanel.js',
+  './js/components/AddDiveDialog.js',
+  './js/ndlPreview.js',
+  './js/gfPresets.js',
   './images/gas-particles.gif',
   './js/urlParams.js',
+  './js/tripUrl.js',
   './js/i18n.js',
   './locales/en.json',
   './locales/cs.json',
