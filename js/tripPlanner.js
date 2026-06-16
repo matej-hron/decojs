@@ -9,7 +9,7 @@
  */
 
 import { generateDecoProfile } from './diveSetup.js';
-import { calculateTissueLoading, simulateDepthTime, N2_FRACTION } from './decoModel.js';
+import { calculateTissueLoading, simulateDepthTime, calculateNDL, N2_FRACTION } from './decoModel.js';
 
 /**
  * @typedef {Object} TripDive
@@ -19,6 +19,9 @@ import { calculateTissueLoading, simulateDepthTime, N2_FRACTION } from './decoMo
  * @property {number} bottomTime    Minutes from dive start until leaving max depth.
  * @property {Array=}  gases         Optional per-dive gas list; falls back to the trip-level diveSetup.gases when absent.
  */
+
+/** Cap for an NDL-locked dive whose NDL is effectively infinite (very shallow). */
+const NDL_LOCK_CAP = 99;
 
 /**
  * @param {Object} diveSetup - { gases, gfLow, gfHigh, dives: TripDive[] }
@@ -53,9 +56,20 @@ export function planTrip(diveSetup) {
         }
 
         const diveGases = dive.gases ?? gases;
+
+        // NDL-locked dives derive their bottom time from the carried-in pre-saturation,
+        // so they stay no-deco wherever they are scheduled. seed === null on the first
+        // dive ⇒ surface-saturated NDL (matches the add-dialog preview).
+        let bottomTime = dive.bottomTime;
+        if (dive.ndlLocked) {
+            const n2 = (diveGases && diveGases[0]) ? diveGases[0].n2 : N2_FRACTION;
+            const ndl = calculateNDL(dive.maxDepth, n2, gfLow / 100, seed).ndl;
+            bottomTime = Number.isFinite(ndl) ? Math.min(ndl, NDL_LOCK_CAP) : NDL_LOCK_CAP;
+        }
+
         const decoOpts = seed ? { initialTissuePressures: seed } : {};
         const profile = generateDecoProfile(
-            dive.maxDepth, dive.bottomTime, diveGases, gfLow, gfHigh, undefined, decoOpts
+            dive.maxDepth, bottomTime, diveGases, gfLow, gfHigh, undefined, decoOpts
         );
         // surfaceInterval = 0: we want only the in-water tissue track for this dive;
         // surface off-gassing between dives is handled separately by simulateDepthTime
@@ -79,7 +93,7 @@ export function planTrip(diveSetup) {
             startDateTime: dive.startDateTime,
             endDateTime,
             maxDepth: dive.maxDepth,
-            bottomTime: dive.bottomTime,
+            bottomTime,
             surfaceIntervalBefore,
             startingTissue,
             endTissue,

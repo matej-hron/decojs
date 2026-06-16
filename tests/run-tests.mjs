@@ -2922,6 +2922,51 @@ describe('tripPlanner - planTrip', () => {
             dives: [{ id: 'd1', startDateTime: 0, maxDepth: 40, bottomTime: 30 }] });
         expect(without.dives[0].profile.totalDecoTime).toBe(withField.dives[0].profile.totalDecoTime);
     });
+
+    test('an ndlLocked first dive derives bottomTime = surface-saturated NDL', () => {
+        const setup = {
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [{ id: 'd1', startDateTime: 0, maxDepth: 30, bottomTime: 5, ndlLocked: true }]
+        };
+        const trip = planTrip(setup);
+        const expected = calculateNDL(30, gases[0].n2, 1.0, null).ndl;
+        expect(trip.dives[0].bottomTime).toBe(Math.min(expected, 99));
+    });
+
+    test('an ndlLocked dive shortens when pre-saturated (later position)', () => {
+        // 40m/25min then a short ~60min SI leaves real residual loading, so d2's locked
+        // NDL is measurably shorter than the surface NDL (a longer/shallower combo off-gasses
+        // enough that they'd be equal — a degenerate pass).
+        const setup = {
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [
+                { id: 'd1', startDateTime: 0,  maxDepth: 40, bottomTime: 25 },
+                { id: 'd2', startDateTime: 60, maxDepth: 30, bottomTime: 5, ndlLocked: true }
+            ]
+        };
+        const trip = planTrip(setup);
+        const lockedAfter = trip.dives.find(d => d.id === 'd2').bottomTime;
+        const surfaceNdl = calculateNDL(30, gases[0].n2, 1.0, null).ndl;
+        expect(lockedAfter).toBeLessThan(Math.min(surfaceNdl, 99));
+    });
+
+    test('an ndlLocked very-shallow dive caps bottomTime at 99', () => {
+        const setup = {
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [{ id: 'd1', startDateTime: 0, maxDepth: 10, bottomTime: 5, ndlLocked: true }]
+        };
+        const trip = planTrip(setup);
+        expect(trip.dives[0].bottomTime).toBe(99);
+    });
+
+    test('a non-locked dive keeps its stored bottomTime', () => {
+        const setup = {
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [{ id: 'd1', startDateTime: 0, maxDepth: 30, bottomTime: 17 }]
+        };
+        const trip = planTrip(setup);
+        expect(trip.dives[0].bottomTime).toBe(17);
+    });
 });
 
 // ============================================================================
