@@ -561,7 +561,7 @@ Rounds `rawMin` to the nearest `snap`-minute boundary, then clamps the result to
 diveBlockLabel(plannedDive)
 ```
 
-Returns a full block label string for a `planTrip` result dive in the form `"{name} · {depth}m · {bottomTime}min"` followed by either `" · stop {deepestStop}m · TTS {tts}min"` for deco dives or `" NDL"` for no-deco dives. When the dive is flagged `invalid: true`, returns `"⚠ no-deco N/A"`. Replaces the old `decoLabelSuffix` export, which only returned a suffix and had no NDL tag. Used by `render` to populate calendar block labels.
+Returns the full block label string for a `planTrip` result dive in the form `"{name} · {depth}m · {bottomTime}min"`. The number shown is **bottom time** (the block's height already conveys total runtime), followed by `" · +{totalDecoTime} deco"` for deco dives or `" · NDL"` for NDL-locked no-deco dives. When the dive is flagged `invalid: true`, returns `"{name} · {depth}m · ⚠ no-deco N/A"`. Examples: `"Dive 1 · 40m · 30min · +28 deco"` (deco), `"Dive 2 · 18m · 40min · NDL"` (NDL-locked no-deco), `"Dive 3 · 30m · 25min"` (plain no-deco). Replaces the old `decoLabelSuffix` export (which only returned a `stop/TTS` suffix and had no NDL tag). Used by `render` to populate calendar block labels.
 
 **Constructor**
 
@@ -584,7 +584,7 @@ The constructor wires two delegated listeners on the persistent `container`:
 | Signature | Line | Description |
 |---|---|---|
 | `configure({ startDate, dayCount })` | 130 | Updates `this.startDate` and/or `this.window.dayCount` without re-rendering; call before `render` |
-| `render(planResult, selectedDiveId = null)` | 136 | Clears `container.innerHTML`; draws a left hour ruler, exactly `dayCount` day columns (each with a date header and hour gridlines), and dive blocks from the `planTrip` result. `selectedDiveId` marks the matching block with the `tc-selected` CSS class. Dives with `invalid: true` (e.g. `invalidReason: 'ndl-too-short'`) render with the `tc-invalid` CSS class and a `⚠ no-deco N/A` label instead of a normal depth/time annotation. Deco dives receive a two-tone background: `render` computes the deco portion of the block as a percentage of its total height (`decoTime / totalTime`) and applies an inline `linear-gradient` so the bottom slice is shaded differently (`.tc-deco-shade` colour) from the bottom-phase portion above. |
+| `render(planResult, selectedDiveId = null)` | 136 | Clears `container.innerHTML`; draws a left hour ruler, exactly `dayCount` day columns (each with a date header and hour gridlines), and dive blocks from the `planTrip` result. `selectedDiveId` marks the matching block with the `tc-selected` CSS class. Dives with `invalid: true` (e.g. `invalidReason: 'ndl-too-short'`) render with the `tc-invalid` CSS class and a `⚠ no-deco N/A` label instead of a normal depth/time annotation. Deco dives receive a two-tone background: `render` sets an inline `linear-gradient(to bottom, …)` whose colour stop sits at `round(bottomTime / runtime * 100)%`, so the lower bottom-phase slice is the solid block blue (`#2980b9`) and the ascent+deco portion above it is a lighter blue (`#5dade2`). The shading is skipped for no-deco, conflicting (`tc-conflict`), and invalid (`tc-invalid`) dives. |
 | `toStartDateTime(dayIndex, minutesOfDay)` | 202 | Converts a `{dayIndex, minutesOfDay}` pair to a trip-relative epoch-minute start (`dayIndex * 1440 + minutesOfDay`). Used by both `createAt` click handling and drag-drop. |
 
 **Events** (CustomEvent dispatched on the instance)
@@ -632,7 +632,7 @@ calendar.addEventListener('reschedule', (e) => {
 - Each column gets a `.tc-day-header` div showing the formatted date (`formatDayHeader` at line 23) using `this.startDate` and the column index (`TripCalendar.js:165–166`).
 - Hour gridlines (`.tc-hour-line`) are injected into each column at the same percentage positions as the ruler labels (`TripCalendar.js:169–174`).
 - Click position within a column is converted to `minutesOfDay` and snapped to `SNAP_MIN = 60` minutes (`TripCalendar.js:13, 60`).
-- Each dive block is labelled using `diveBlockLabel(plannedDive)`, which returns the full label string including name, depth, bottom time, and a deco or NDL tag. Example output: `"Dive 1 · 30m · 45min · stop 6m · TTS 12min"` (deco) or `"Dive 1 · 30m · 40min NDL"` (no-deco). `planTrip` must echo `name`, `maxDepth`, `bottomTime`, `endDateTime`, and `ndlLocked` onto result dives for this label to render correctly.
+- Each dive block is labelled using `diveBlockLabel(plannedDive)`, which returns the full label string including name, depth, bottom time, and a deco or NDL tag. Example output: `"Dive 1 · 30m · 45min · +12 deco"` (deco) or `"Dive 1 · 30m · 40min · NDL"` (NDL-locked no-deco). `planTrip` must echo `name`, `maxDepth`, `bottomTime`, `totalDecoTime` (in `profile`), and `ndlLocked` onto result dives for this label to render correctly.
 - Conflict blocks receive the `tc-conflict` CSS class (`TripCalendar.js:185`); selected block receives `tc-selected` (`TripCalendar.js:186`).
 - `toStartDateTime` computes `dayIndex * 1440 + minutesOfDay` directly (`TripCalendar.js:203`); `_layout.baseDay` (always 0) is not used.
 
