@@ -19,8 +19,15 @@
     /* Detail-view charts need real vertical room — the P-P (M-value) and GF
        diagrams collapse to a line at the 320px overview height. Mirror the
        standalone sandbox sizes (profile 600 / M-value & GF 700). */
-    #dv-profile { height: 560px; }
     #dv-mvalue, #dv-gf { height: 700px; }
+    /* DiveProfileChart prepends a tissue-controls panel inside its host. With a
+       fixed-height host the canvas (height:100%) ignores that panel and overflows
+       onto the buttons below. Make the profile-chart hosts flex columns that GROW
+       for the controls: the canvas keeps a fixed height, the card just gets taller. */
+    .dive-card .chart-host { height: auto; min-height: 320px; display: flex; flex-direction: column; }
+    .dive-card .chart-host .dpc-chart-container { flex: 0 0 320px; min-height: 0; }
+    #dv-profile { height: auto; min-height: 560px; display: flex; flex-direction: column; }
+    #dv-profile .dpc-chart-container { flex: 0 0 560px; min-height: 0; }
     .presat-strip-wrap { max-width: 480px; }
     .presat-strip { display:flex; align-items:flex-end; gap:2px; height:80px;
                     border-bottom:1px solid var(--border-color,#ccc); }
