@@ -211,6 +211,14 @@ export class TripCalendar extends EventTarget {
             block.title = (d && d.invalid)
                 ? 'No-deco not possible here — too pre-saturated'
                 : (b.conflict ? 'Overlaps previous dive\'s deco' : '');
+            // Shade the ascent+deco portion: solid for the bottom phase, lighter above,
+            // so the tall part of a deco block visually reads as the "+N deco".
+            if (d && !d.invalid && !b.conflict && d.profile && d.profile.totalDecoTime > 0) {
+                const runtime = d.endDateTime - d.startDateTime;
+                const frac = runtime > 0 ? Math.max(0, Math.min(100, Math.round((d.bottomTime / runtime) * 100))) : 100;
+                block.style.background =
+                    `linear-gradient(to bottom, #2980b9 0%, #2980b9 ${frac}%, #5dade2 ${frac}%, #5dade2 100%)`;
+            }
             colEls[b.dayIndex].appendChild(block);
         });
 
