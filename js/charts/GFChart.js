@@ -1083,7 +1083,11 @@ export class GFChart {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                animation: { duration: 50 },
+                // Only animate the first build; re-renders (time scrub / compartment
+                // toggle) rebuild the chart and a 50 ms entrance animation on each step
+                // reads as the chart "jumping" while moving through time. `this.chart` is
+                // the prior instance here (config built before the destroy below), null first.
+                animation: this.chart ? false : { duration: 50 },
                 plugins: {
                     legend: {
                         display: true,
