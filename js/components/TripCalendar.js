@@ -74,8 +74,10 @@ export class TripCalendar extends EventTarget {
         };
         this._moveHandler = (ev) => this._onPointerMove(ev);
         this._upHandler = (ev) => this._onPointerUp(ev);
+        this._cancelHandler = () => this._onPointerCancel();
         document.addEventListener('pointermove', this._moveHandler);
         document.addEventListener('pointerup', this._upHandler);
+        document.addEventListener('pointercancel', this._cancelHandler);
     }
 
     _onPointerMove(e) {
@@ -105,14 +107,24 @@ export class TripCalendar extends EventTarget {
         const d = this._drag;
         document.removeEventListener('pointermove', this._moveHandler);
         document.removeEventListener('pointerup', this._upHandler);
+        document.removeEventListener('pointercancel', this._cancelHandler);
         this._drag = null;
         if (!d) return;
         if (d.block) { d.block.classList.remove('tc-dragging'); d.block.style.pointerEvents = ''; }
-        if (d.moved && d.targetDayIndex != null && d.targetMinutes != null) {
+        if (d.moved && Number.isFinite(d.targetDayIndex) && Number.isFinite(d.targetMinutes)) {
             this._justDragged = true; // swallow the trailing click
             const startDateTime = this.toStartDateTime(d.targetDayIndex, d.targetMinutes);
             this.dispatchEvent(new CustomEvent('reschedule', { detail: { diveId: d.diveId, startDateTime } }));
         }
+    }
+
+    _onPointerCancel() {
+        const d = this._drag;
+        document.removeEventListener('pointermove', this._moveHandler);
+        document.removeEventListener('pointerup', this._upHandler);
+        document.removeEventListener('pointercancel', this._cancelHandler);
+        this._drag = null;
+        if (d && d.block) { d.block.classList.remove('tc-dragging'); d.block.style.pointerEvents = ''; }
     }
 
     configure({ startDate, dayCount }) {
