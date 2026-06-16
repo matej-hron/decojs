@@ -248,7 +248,7 @@
         };
         const c = new DiveProfileChart(card.querySelector('.chart-host'), {
           diveSetup: perDiveSetup,
-          options: { showLabels: true, showCeiling: true, ...profileModes }
+          options: { showLabels: true, showCeiling: true, showLegend: false, ...profileModes }
         });
         overviewCharts.push(c);
 
@@ -345,7 +345,7 @@
       detail.querySelector('#dv-modes').appendChild(buildModeToggles());
 
       const profileChart = new DiveProfileChart(detail.querySelector('#dv-profile'), {
-        diveSetup: seededSetup, options: { showLabels: true, showCeiling: true, ...profileModes }
+        diveSetup: seededSetup, options: { showLabels: true, showCeiling: true, showLegend: false, ...profileModes }
       });
       const mvalueChart = new MValueChart(detail.querySelector('#dv-mvalue'), {
         diveSetup: seededSetup,

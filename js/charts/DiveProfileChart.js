@@ -1373,7 +1373,7 @@ export class DiveProfileChart {
                 },
                 plugins: {
                     legend: {
-                        display: true,
+                        display: this.options.showLegend !== false,
                         position: 'top'
                     },
                     tooltip: {

@@ -164,6 +164,7 @@ export const DEFAULT_DIVE_PROFILE_OPTIONS = {
     showTissueLoading: false,
     showGasConsumption: false,
     showLabels: true,
+    showLegend: true,
     tissueCompartments: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
     interactive: true,
     fullscreenButton: true,
