@@ -189,6 +189,7 @@ import { buildRuntimeRows } from '../js/components/RuntimeTable.js';
 import { computeCalendarLayout } from '../js/calendarLayout.js';
 import { previewNdl } from '../js/ndlPreview.js';
 import { GF_PRESETS } from '../js/gfPresets.js';
+import { encodeTrip, decodeTrip } from '../js/tripUrl.js';
 
 // ============================================================================
 // GF PRESETS TESTS
@@ -3212,6 +3213,50 @@ describe('tripState/tripPlanner - dive names', () => {
         const trip = { gases: air, gfLow: 100, gfHigh: 100,
             dives: [{ id: 'd1', name: 'Wreck', startDateTime: 0, maxDepth: 40, bottomTime: 30, gases: air }] };
         expect(planTrip(trip).dives[0].name).toBe('Wreck');
+    });
+});
+
+// ============================================================================
+// TRIP URL TESTS
+// ============================================================================
+
+describe('tripUrl - encode/decode', () => {
+    const air = [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 }];
+    const ean32 = [{ id: 'ean32', name: 'EAN32', o2: 0.32, n2: 0.68, he: 0 }];
+
+    test('round-trips a trip whose dives share the trip gas', () => {
+        const trip = { startDate: '2026-06-15', dayCount: 3, gfLow: 90, gfHigh: 100, gases: air, dives: [
+            { id: 'd1', name: 'Wreck', startDateTime: 540, maxDepth: 40, bottomTime: 30, gases: air },
+            { id: 'd2', name: 'Reef',  startDateTime: 660, maxDepth: 18, bottomTime: 50, gases: air }
+        ]};
+        const back = decodeTrip(encodeTrip(trip));
+        expect(back.startDate).toBe('2026-06-15');
+        expect(back.dayCount).toBe(3);
+        expect(back.gfLow).toBe(90);
+        expect(back.gfHigh).toBe(100);
+        expect(back.dives.length).toBe(2);
+        expect(back.dives[0].name).toBe('Wreck');
+        expect(back.dives[0].maxDepth).toBe(40);
+        expect(back.dives[1].bottomTime).toBe(50);
+        expect(back.dives[0].id).toBe('d1');
+        expect(back.dives[1].id).toBe('d2');
+        expect(back.dives[0].gases[0].id).toBe('air');
+    });
+
+    test('preserves a dive with a different gas (stored inline)', () => {
+        const trip = { startDate: '2026-06-15', dayCount: 1, gfLow: 100, gfHigh: 100, gases: air, dives: [
+            { id: 'd1', name: 'A', startDateTime: 0,   maxDepth: 30, bottomTime: 30, gases: air },
+            { id: 'd2', name: 'B', startDateTime: 200, maxDepth: 30, bottomTime: 30, gases: ean32 }
+        ]};
+        const back = decodeTrip(encodeTrip(trip));
+        expect(back.dives[0].gases[0].id).toBe('air');
+        expect(back.dives[1].gases[0].id).toBe('ean32');
+    });
+
+    test('returns null for malformed input', () => {
+        expect(decodeTrip('')).toBe(null);
+        expect(decodeTrip('aGVsbG8=')).toBe(null);              // base64 of "hello" → not JSON
+        expect(decodeTrip(btoa('{"foo":1}'))).toBe(null);        // valid JSON but no dives/gases array
     });
 });
 
