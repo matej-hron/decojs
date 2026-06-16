@@ -20,12 +20,28 @@ import { calculateTissueLoading, simulateDepthTime, calculateNDL, N2_FRACTION } 
  * @property {Array=}  gases         Optional per-dive gas list; falls back to the trip-level diveSetup.gases when absent.
  */
 
+/**
+ * @typedef {Object} TripDiveResult
+ * @property {string} id
+ * @property {string=} name
+ * @property {number} startDateTime  Epoch minutes.
+ * @property {number} endDateTime    Epoch minutes (start + full runtime incl. deco).
+ * @property {number} maxDepth       Metres.
+ * @property {number} bottomTime     Effective bottom time used (derived for ndlLocked dives).
+ * @property {?number} surfaceIntervalBefore  Minutes since the previous dive's end; null for the first dive.
+ * @property {Object} startingTissue Per-compartment N2 pressure at the start of the dive.
+ * @property {Object} endTissue      Per-compartment N2 pressure at the end of the dive.
+ * @property {Object} profile        generateDecoProfile output (waypoints, decoStops, totalDecoTime, …).
+ * @property {boolean} invalid       True when an ndlLocked dive has under 1 min of real bottom time.
+ * @property {?string} invalidReason 'ndl-too-short' when invalid, else null.
+ */
+
 /** Cap for an NDL-locked dive whose NDL is effectively infinite (very shallow). */
 const NDL_LOCK_CAP = 99;
 
 /**
  * @param {Object} diveSetup - { gases, gfLow, gfHigh, dives: TripDive[] }
- * @returns {{ dives: Array, conflicts: Array }}
+ * @returns {{ dives: TripDiveResult[], conflicts: Array<{diveId: string, type: string}> }}
  */
 export function planTrip(diveSetup) {
     const gases = diveSetup.gases;
@@ -61,6 +77,8 @@ export function planTrip(diveSetup) {
         // so they stay no-deco wherever they are scheduled. seed === null on the first
         // dive ⇒ surface-saturated NDL (matches the add-dialog preview).
         let bottomTime = dive.bottomTime;
+        let invalid = false;
+        let invalidReason = null;
         if (dive.ndlLocked) {
             const n2 = (diveGases && diveGases[0]) ? diveGases[0].n2 : N2_FRACTION;
             // Use the NDL value directly as the bottom time. This is the established
@@ -71,17 +89,23 @@ export function planTrip(diveSetup) {
             // under the true NDL — do NOT add descentTime here or this diverges from the dialog.
             const ndl = calculateNDL(dive.maxDepth, n2, gfLow / 100, seed).ndl;
             const capped = Number.isFinite(ndl) ? Math.min(ndl, NDL_LOCK_CAP) : NDL_LOCK_CAP;
-            // bottomTime is measured from dive start and includes the descent. A derived NDL
-            // below the descent time (heavy pre-saturation, e.g. an overlapping dive) would
-            // make actualBottomDuration negative and the profile non-monotonic, so floor it at
-            // the descent time (DESCENT_SPEED = 20 m/min, matching generateDecoProfile).
-            const descentTime = dive.maxDepth / 20;
+            const descentTime = dive.maxDepth / 20;   // DESCENT_SPEED = 20 m/min
+            // If the actual bottom phase (capped − descentTime) is under a minute, there is no
+            // real no-deco dive at this position (too pre-saturated). Flag it invalid; still floor
+            // the bottom time so a minimal profile is generated for tissue continuity (chaining),
+            // but the UI shows an explanation instead of the degenerate "triangle" profile.
+            if (capped - descentTime < 1) {
+                invalid = true;
+                invalidReason = 'ndl-too-short';
+            }
             bottomTime = Math.max(capped, descentTime);
         }
 
         const decoOpts = seed ? { initialTissuePressures: seed } : {};
+        // Safety stops are disabled for the trip planner: a 3-min stop on no-deco dives inflates
+        // runtime/TTS inconsistently across dives and obscures the calendar deco times.
         const profile = generateDecoProfile(
-            dive.maxDepth, bottomTime, diveGases, gfLow, gfHigh, undefined, decoOpts
+            dive.maxDepth, bottomTime, diveGases, gfLow, gfHigh, { enabled: false }, decoOpts
         );
         // surfaceInterval = 0: we want only the in-water tissue track for this dive;
         // surface off-gassing between dives is handled separately by simulateDepthTime
@@ -109,7 +133,9 @@ export function planTrip(diveSetup) {
             surfaceIntervalBefore,
             startingTissue,
             endTissue,
-            profile
+            profile,
+            invalid,
+            invalidReason
         });
 
         tissue = endTissue;

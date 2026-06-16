@@ -2986,6 +2986,50 @@ describe('tripPlanner - planTrip', () => {
         const trip = planTrip(setup);
         expect(trip.dives[0].bottomTime).toBe(17);
     });
+
+    test('an ndlLocked dive forced into overlap is flagged invalid', () => {
+        // d2 overlaps d1's end → no off-gassing → NDL ~0 → no real no-deco bottom time.
+        const trip = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [
+                { id: 'd1', startDateTime: 0,  maxDepth: 40, bottomTime: 30 },
+                { id: 'd2', startDateTime: 50, maxDepth: 40, bottomTime: 5, ndlLocked: true }
+            ]
+        });
+        const d2 = trip.dives.find(d => d.id === 'd2');
+        expect(d2.invalid).toBe(true);
+        expect(d2.invalidReason).toBe('ndl-too-short');
+        // Chaining preserved: endTissue is populated.
+        expect(Object.keys(d2.endTissue).length).toBeGreaterThan(0);
+    });
+
+    test('a normal ndlLocked first dive is not invalid', () => {
+        const trip = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [{ id: 'd1', startDateTime: 0, maxDepth: 30, bottomTime: 5, ndlLocked: true }]
+        });
+        expect(trip.dives[0].invalid).toBe(false);
+    });
+
+    test('a non-locked dive is not invalid', () => {
+        const trip = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [{ id: 'd1', startDateTime: 0, maxDepth: 30, bottomTime: 20 }]
+        });
+        expect(trip.dives[0].invalid).toBe(false);
+    });
+
+    test('trip dives carry no safety-stop segment (safety stops off)', () => {
+        // A no-deco dive: with safety stops ON it would gain a 3-min stop at 5 m. Off → none.
+        const trip = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [{ id: 'd1', startDateTime: 0, maxDepth: 18, bottomTime: 20 }]
+        });
+        const wp = trip.dives[0].profile.waypoints;
+        const fiveMetreStops = wp.filter(w => w.depth === 5);
+        const hasSafetyStop = fiveMetreStops.length >= 2; // arrive + depart at 5 m
+        expect(hasSafetyStop).toBe(false);
+    });
 });
 
 // ============================================================================
