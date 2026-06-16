@@ -2959,6 +2959,25 @@ describe('tripPlanner - planTrip', () => {
         expect(trip.dives[0].bottomTime).toBe(99);
     });
 
+    test('an ndlLocked dive with ~0 NDL stays renderable (floored at descent time)', () => {
+        // d2 overlaps d1's end, so tissues never off-gas → NDL ~0. Without the descent-time
+        // floor, bottomTime would be 0 and the profile waypoints would be non-monotonic,
+        // crashing the chart validator.
+        const trip = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [
+                { id: 'd1', startDateTime: 0,  maxDepth: 40, bottomTime: 30 },
+                { id: 'd2', startDateTime: 50, maxDepth: 40, bottomTime: 5, ndlLocked: true }
+            ]
+        });
+        const d2 = trip.dives.find(d => d.id === 'd2');
+        expect(d2.bottomTime).toBeGreaterThanOrEqual(40 / 20); // floored at descent time
+        const wp = d2.profile.waypoints;
+        for (let i = 1; i < wp.length; i++) {
+            expect(wp[i].time).toBeGreaterThanOrEqual(wp[i - 1].time); // non-decreasing → renderable
+        }
+    });
+
     test('a non-locked dive keeps its stored bottomTime', () => {
         const setup = {
             gases, gfLow: 100, gfHigh: 100,

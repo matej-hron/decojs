@@ -64,7 +64,13 @@ export function planTrip(diveSetup) {
         if (dive.ndlLocked) {
             const n2 = (diveGases && diveGases[0]) ? diveGases[0].n2 : N2_FRACTION;
             const ndl = calculateNDL(dive.maxDepth, n2, gfLow / 100, seed).ndl;
-            bottomTime = Number.isFinite(ndl) ? Math.min(ndl, NDL_LOCK_CAP) : NDL_LOCK_CAP;
+            const capped = Number.isFinite(ndl) ? Math.min(ndl, NDL_LOCK_CAP) : NDL_LOCK_CAP;
+            // bottomTime is measured from dive start and includes the descent. A derived NDL
+            // below the descent time (heavy pre-saturation, e.g. an overlapping dive) would
+            // make actualBottomDuration negative and the profile non-monotonic, so floor it at
+            // the descent time (DESCENT_SPEED = 20 m/min, matching generateDecoProfile).
+            const descentTime = dive.maxDepth / 20;
+            bottomTime = Math.max(capped, descentTime);
         }
 
         const decoOpts = seed ? { initialTissuePressures: seed } : {};
