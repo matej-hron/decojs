@@ -66,6 +66,8 @@
     .gf-preset-btn { font-size:.75rem; padding:.15rem .45rem; cursor:pointer; border:1px solid var(--border-color,#ccc);
                      border-radius:4px; background:var(--surface,#f7f7f7); }
     .gf-preset-btn:hover { background:var(--border-color,#e8e8e8); }
+    .mode-toggles { display:flex; flex-wrap:wrap; gap:.6rem; font-size:.8rem; margin:.4rem 0; opacity:.9; }
+    .mode-toggles label { display:inline-flex; align-items:center; gap:.25rem; cursor:pointer; }
   </style>
 </head>
 <body>
@@ -143,6 +145,37 @@
     let calcTimer = null;
     let ovTimer = null;
 
+    // ── Shared profile display-mode state ───────────────────────────────────
+    const profileModes = { showTissueLoading: false, showPartialPressures: false, showAmbientPressure: false, showGasConsumption: false };
+    let detailDiveId = null;
+
+    const MODE_LABELS = [
+      ['showTissueLoading', 'Tissue'],
+      ['showPartialPressures', 'ppO₂/N₂'],
+      ['showAmbientPressure', 'Ambient'],
+      ['showGasConsumption', 'Gas use']
+    ];
+    function buildModeToggles() {
+      const wrap = document.createElement('div');
+      wrap.className = 'mode-toggles';
+      MODE_LABELS.forEach(([key, label]) => {
+        const lab = document.createElement('label');
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = profileModes[key];
+        cb.addEventListener('change', () => { profileModes[key] = cb.checked; reRenderProfiles(); });
+        lab.appendChild(cb);
+        lab.appendChild(document.createTextNode(' ' + label));
+        wrap.appendChild(lab);
+      });
+      return wrap;
+    }
+    function reRenderProfiles() {
+      // Re-render whatever's visible so all profile charts pick up the new modes.
+      if (detail.style.display !== 'none' && detailDiveId) { showDetail(detailDiveId); }
+      else { renderOverview(lastResult); }
+    }
+
     const calendar   = new TripCalendar(document.getElementById('calendar'));
     const editPanel  = new DiveEditPanel(document.getElementById('edit-panel'));
     const addDialog  = new AddDiveDialog(document.getElementById('add-dialog'));
@@ -184,6 +217,9 @@
           <button class="view-detail" data-dive="${d.id}">View detail →</button>`;
         panels.appendChild(card);
 
+        // Add mode toggles row after the chart host.
+        card.appendChild(buildModeToggles());
+
         // Use per-dive gases if available, fall back to trip-level gases.
         const diveGases = (trip.dives.find(td => td.id === d.id)?.gases) ?? trip.gases;
         const perDiveSetup = {
@@ -191,11 +227,13 @@
           gases: diveGases,
           dives: [{ waypoints: d.profile.waypoints }],
           surfaceInterval: 0, // no post-dive flat tail — the chart should fill with the dive itself
-          initialTissuePressures: d.startingTissue
+          initialTissuePressures: d.startingTissue,
+          sacRate: 20,
+          decoSacRate: 15
         };
         const c = new DiveProfileChart(card.querySelector('.chart-host'), {
           diveSetup: perDiveSetup,
-          options: { showLabels: true, showCeiling: true }
+          options: { showLabels: true, showCeiling: true, ...profileModes }
         });
         overviewCharts.push(c);
 
@@ -255,6 +293,7 @@
     function showDetail(diveId) {
       const d = lastResult.dives.find(x => x.id === diveId);
       if (!d) return;
+      detailDiveId = diveId;
       disposeDetail();
       overview.style.display = 'none';
       detail.style.display = '';
@@ -266,7 +305,9 @@
         gases: diveGases,
         dives: [{ waypoints: d.profile.waypoints }],
         surfaceInterval: 0, // no post-dive flat tail — fill the chart with the dive itself
-        initialTissuePressures: d.startingTissue
+        initialTissuePressures: d.startingTissue,
+        sacRate: 20,
+        decoSacRate: 15
       };
       const siLine = d.surfaceIntervalBefore == null ? 'first dive' : `surface interval ${fmtDur(d.surfaceIntervalBefore)}`;
 
@@ -276,15 +317,18 @@
         <div class="dive-meta">${siLine} · deco ${fmtDur(d.profile.totalDecoTime)}</div>
         <h3>Pre-saturation at start (surfacing GF per tissue)</h3>
         ${d.surfaceIntervalBefore == null ? '<p>Fresh diver — no residual loading.</p>' : presatStrip(d.startingTissue)}
-        <h3>Dive profile</h3><div class="chart-host" id="dv-profile"></div>
+        <h3>Dive profile</h3><div id="dv-modes"></div><div class="chart-host" id="dv-profile"></div>
         <h3>M-value loading</h3><div class="chart-host" id="dv-mvalue"></div>
         <h3>Gradient factor</h3><div class="chart-host" id="dv-gf"></div>
         <h3>Runtime</h3><div id="dv-runtime"></div>`;
 
       detail.querySelector('.back-to-trip').addEventListener('click', showOverview);
 
+      // Populate the mode-toggles placeholder above the profile chart.
+      detail.querySelector('#dv-modes').appendChild(buildModeToggles());
+
       const profileChart = new DiveProfileChart(detail.querySelector('#dv-profile'), {
-        diveSetup: seededSetup, options: { showLabels: true, showCeiling: true }
+        diveSetup: seededSetup, options: { showLabels: true, showCeiling: true, ...profileModes }
       });
       const mvalueChart = new MValueChart(detail.querySelector('#dv-mvalue'), {
         diveSetup: seededSetup,
