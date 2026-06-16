@@ -740,6 +740,38 @@ URL-based dive-setup share links.
 | `getProfileFromUrl()` | 143 | Reads `?p=…` and decodes |
 | `updateUrlWithProfile(setup)` | 155 | `history.replaceState` without reloading |
 
+### `js/tripUrl.js`
+
+Encode/decode a repetitive-dive trip to/from a `?trip=` URL param, making trips shareable and reload-surviving. Mirrors the single-dive scheme in `urlParams.js`.
+
+`encodeTrip` and `decodeTrip` are pure (no DOM). The `get…` / `update…` / `share…` helpers read and write `window.location` / `window.history`.
+
+Imports: none.
+Imported by: `sandbox/repetitive-dives.html` (direct script import).
+
+**Exports**
+
+| Signature | Line | Description |
+|---|---|---|
+| `encodeTrip(trip)` | 25 | Returns URL-safe base64 of a minimal trip JSON containing `startDate`, `dayCount`, `gfLow`, `gfHigh`, `gases`, and `dives`. Per-dive `gases` is **omitted** when it equals the trip-level gas array (keeps URLs short); gases are stored minimally as `{id, name, o2, n2, he}`. |
+| `decodeTrip(str)` | 53 | Inverse of `encodeTrip`. Reconstructs the trip: per-dive gas is refilled from the trip-level set when absent (fresh array copy). Re-mints sequential ids `d1`, `d2`, … regardless of the original ids. Returns `null` on **any** malformed input (parse error, missing `dives` or `gases` arrays, empty/null string). |
+| `getTripFromUrl()` | 82 | Reads the `?trip=` param from `window.location.search` and passes it to `decodeTrip`; returns `null` if the param is absent or invalid. |
+| `updateUrlWithTrip(trip)` | 88 | Encodes the trip and writes `?trip=` via `history.replaceState` — no new history entry, no reload. |
+| `getTripShareUrl(trip)` | 95 | Returns the absolute URL string with `?trip=` set for the current page. |
+
+**Page integration (`sandbox/repetitive-dives.html`)**
+
+- On load (`repetitive-dives.html:131–139`): calls `getTripFromUrl()`; if non-null, it overrides the default trip and syncs the GF, start-date, and day-count form inputs to the restored values.
+- At the end of `rerender()` (`repetitive-dives.html:270`): calls `updateUrlWithTrip(trip)` so every state change is reflected in the URL automatically.
+- "Copy trip link" button (`repetitive-dives.html:447`): calls `getTripShareUrl(trip)` and writes the result to the clipboard.
+
+**Implementation notes**
+
+- Encoding uses `btoa(unescape(encodeURIComponent(json)))` (`tripUrl.js:46`) to handle Unicode characters in dive names safely.
+- Decoding reverses with `decodeURIComponent(escape(atob(str)))` (`tripUrl.js:56`).
+- `sameGases()` at `tripUrl.js:15` compares gases by `id`, `o2`, `n2`, and `he`; the `name` field is intentionally excluded from the equality check so cosmetic renames do not force a per-dive gas copy into the URL.
+- `decodeTrip` validates by checking `Array.isArray(m.dives)` and `Array.isArray(m.gases)` before constructing the result (`tripUrl.js:58`); any other structural issue is caught by the surrounding `try/catch`.
+
 ### `js/icons.js`
 
 SVG-sprite helper.
