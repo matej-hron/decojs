@@ -103,6 +103,7 @@ const DEFAULT_EDITOR_OPTIONS = {
     showSafetyStop: true,
     showGenerateButton: true,
     showWaypoints: true,
+    showValidation: true,
 };
 
 /**
@@ -342,7 +343,9 @@ export class DiveSetupEditor extends EventTarget {
         }
 
         // Validation errors display
-        wrapper.appendChild(this._buildValidationErrors());
+        if (this.options.showValidation) {
+            wrapper.appendChild(this._buildValidationErrors());
+        }
 
         this.container.appendChild(wrapper);
     }
@@ -390,7 +393,7 @@ export class DiveSetupEditor extends EventTarget {
         section.innerHTML = `
             <summary>⚡ ${translate('diveEditor.quickSetup.title', 'Quick Setup')}</summary>
             <div class="dse-quick-inputs">
-                <p class="dse-hint">${translate('diveEditor.quickSetup.hint', 'Set depth and bottom time, then click Generate below.')}</p>
+                ${this.options.showGenerateButton ? `<p class="dse-hint">${translate('diveEditor.quickSetup.hint', 'Set depth and bottom time, then click Generate below.')}</p>` : ''}
                 <div class="dse-row">
                     <div class="dse-field">
                         <label>${translate('diveEditor.quickSetup.maxDepth', 'Max Depth (m):')}</label>

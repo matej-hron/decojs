@@ -65,6 +65,7 @@ export class DiveEditPanel extends EventTarget {
                 showSacRate: false, showMultiDive: false, showSurfaceInterval: false,
                 showDescription: false, showImportExport: false,
                 showSafetyStop: false, showGenerateButton: false, showWaypoints: false,
+                showValidation: false,
             }
         });
 
