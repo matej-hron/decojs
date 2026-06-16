@@ -3290,6 +3290,11 @@ describe('tripTime - epoch <-> datetime-local', () => {
         const base = baseFromStartDate();
         expect(base).toBe(Date.UTC(2026, 0, 1));
     });
+    test('returns NaN for empty/invalid input', () => {
+        const base = baseFromStartDate('2026-06-15');
+        expect(Number.isNaN(localInputToEpochMin('', base))).toBe(true);
+        expect(Number.isNaN(localInputToEpochMin('garbage', base))).toBe(true);
+    });
 });
 
 // ============================================================================

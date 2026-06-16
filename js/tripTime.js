@@ -19,6 +19,7 @@ export function epochMinToLocalInput(min, base) {
 
 /** 'YYYY-MM-DDTHH:MM' -> epoch-minutes (relative to base). */
 export function localInputToEpochMin(value, base) {
+    if (!value || !value.includes('T')) return NaN;
     const [datePart, timePart] = value.split('T');
     const [y, mo, da] = datePart.split('-').map(Number);
     const [h, mi] = timePart.split(':').map(Number);

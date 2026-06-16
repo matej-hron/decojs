@@ -74,7 +74,8 @@ export class DiveEditPanel extends EventTarget {
             const bottomTime = parseFloat(this.editor.elements.quickTime.value) || this.dive.bottomTime;
 
             const name = (this.container.querySelector('.dep-name').value || this.dive.name || '').trim();
-            const startDateTime = localInputToEpochMin(this.container.querySelector('.dep-start').value, base);
+            const sdt = localInputToEpochMin(this.container.querySelector('.dep-start').value, base);
+            const startDateTime = Number.isFinite(sdt) ? sdt : this.dive.startDateTime;
             this.dispatchEvent(new CustomEvent('apply', {
                 detail: { id: this.dive.id, patch: { startDateTime, maxDepth, bottomTime, gases: setup.gases, name } }
             }));

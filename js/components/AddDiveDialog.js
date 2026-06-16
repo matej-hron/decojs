@@ -48,7 +48,8 @@ export class AddDiveDialog extends EventTarget {
         const modeCustom = el('.ad-mode-custom');
 
         const refresh = () => {
-            const startDateTime = localInputToEpochMin(startEl.value, base);
+            const sdt = localInputToEpochMin(startEl.value, base);
+            const startDateTime = Number.isFinite(sdt) ? sdt : opts.startDateTime;
             const d = parseFloat(depthEl.value) || depth;
             const ndl = opts.computeNdl(startDateTime, d, opts.gases);
             ndlEl.textContent = Number.isFinite(ndl) ? ndl : '∞';
@@ -69,7 +70,8 @@ export class AddDiveDialog extends EventTarget {
         el('.ad-mode-ndl').addEventListener('change', refresh);
         el('.ad-cancel').addEventListener('click', () => { this.close(); this.dispatchEvent(new CustomEvent('cancel')); });
         el('.ad-add').addEventListener('click', () => {
-            const startDateTime = localInputToEpochMin(startEl.value, base);
+            const sdt = localInputToEpochMin(startEl.value, base);
+            const startDateTime = Number.isFinite(sdt) ? sdt : opts.startDateTime;
             const maxDepth = parseFloat(depthEl.value) || depth;
             const bottomTime = parseFloat(timeEl.value) || time;
             const name = (el('.ad-name').value || opts.defaultName || '').trim();
