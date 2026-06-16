@@ -538,10 +538,20 @@ Multi-dive toggle (`showMultiDive`) exists but only `dives[0]` is rendered by th
 
 ### `TripCalendar.js`
 
-`class TripCalendar extends EventTarget` (line 21). Renders a `planTrip` result as duration-spanning blocks across day columns, with a left-side hour ruler, per-column date headers, and hour gridlines. Owns no trip state — it reads a plan result and emits interaction events; the caller mutates state and re-renders.
+`class TripCalendar extends EventTarget` (line 29). Renders a `planTrip` result as duration-spanning blocks across day columns, with a left-side hour ruler, per-column date headers, and hour gridlines. Owns no trip state — it reads a plan result and emits interaction events; the caller mutates state and re-renders.
+
+Also exports the pure helper `snapClamp` (line 18).
 
 Imports: `computeCalendarLayout` from `../calendarLayout.js`.
 Imported by: the trip-planner sandbox page.
+
+**Exported pure helper**
+
+```javascript
+snapClamp(rawMin, dayStartMin, dayEndMin, snap)   // TripCalendar.js:18
+```
+
+Rounds `rawMin` to the nearest `snap`-minute boundary, then clamps the result to `[dayStartMin, dayEndMin]`. Used internally during drag to produce the drop position; also importable by callers that need the same arithmetic.
 
 **Constructor**
 
@@ -552,33 +562,69 @@ new TripCalendar(container, config = {})
 // config.startDate: ISO date string for the first column header (default '2026-06-15')
 ```
 
-A single delegated `click` listener is wired to the persistent `container` element in the constructor (`TripCalendar.js:32`). The listener reads `dataset.diveId` from the nearest `.tc-block` ancestor and `dataset.dayIndex` from the nearest `.tc-day` ancestor. Because the listener lives on the persistent container rather than on the DOM nodes rebuilt during `render`, it continues to work after every calendar redraw — this is what allows an edit-triggered rerender to complete without swallowing the click that triggered it.
+The constructor wires two delegated listeners on the persistent `container`:
+
+- A `click` listener (`TripCalendar.js:40`) that handles `createAt` and `selectDive` (see `_onClick`, line 46). Because it lives on the container rather than on DOM nodes rebuilt by `render`, it survives every calendar redraw.
+- A `pointerdown` listener (`TripCalendar.js:43`) that initiates drag tracking (see `_onPointerDown`, line 65).
+
+`_justDragged` (initialised at line 41) is a one-shot flag set by `_onPointerUp` to swallow the trailing `click` event that the browser fires after a drag release, preventing an accidental `selectDive` emission.
 
 **Methods**
 
 | Signature | Line | Description |
 |---|---|---|
-| `configure({ startDate, dayCount })` | 53 | Updates `this.startDate` and/or `this.window.dayCount` without re-rendering; call before `render` |
-| `render(planResult, selectedDiveId = null)` | 59 | Clears `container.innerHTML`; draws a left hour ruler, exactly `dayCount` day columns (each with a date header and hour gridlines), and dive blocks from the `planTrip` result. `selectedDiveId` marks the matching block with the `tc-selected` CSS class. |
-| `toStartDateTime(dayIndex, minutesOfDay)` | 125 | Converts a `createAt` event's `{dayIndex, minutesOfDay}` to a trip-relative epoch-minute start (`dayIndex * 1440 + minutesOfDay`) |
+| `configure({ startDate, dayCount })` | 130 | Updates `this.startDate` and/or `this.window.dayCount` without re-rendering; call before `render` |
+| `render(planResult, selectedDiveId = null)` | 136 | Clears `container.innerHTML`; draws a left hour ruler, exactly `dayCount` day columns (each with a date header and hour gridlines), and dive blocks from the `planTrip` result. `selectedDiveId` marks the matching block with the `tc-selected` CSS class. |
+| `toStartDateTime(dayIndex, minutesOfDay)` | 202 | Converts a `{dayIndex, minutesOfDay}` pair to a trip-relative epoch-minute start (`dayIndex * 1440 + minutesOfDay`). Used by both `createAt` click handling and drag-drop. |
 
 **Events** (CustomEvent dispatched on the instance)
 
 | Event | `detail` | Trigger |
 |---|---|---|
 | `createAt` | `{ dayIndex, minutesOfDay }` | User clicks empty area in a day column |
-| `selectDive` | `{ diveId }` | User clicks a rendered dive block |
+| `selectDive` | `{ diveId }` | User clicks a rendered dive block (plain click, no drag) |
+| `reschedule` | `{ diveId, startDateTime }` | User drags a dive block and releases it on a valid column position |
+
+**Drag-to-reschedule behaviour**
+
+A pointer-press on a `.tc-block` starts drag tracking in `_onPointerDown` (`TripCalendar.js:65`). The drag does not activate until the pointer has moved at least `DRAG_THRESHOLD = 4` px (`TripCalendar.js:14`), so short taps still emit `selectDive`.
+
+Once the threshold is crossed, `_onPointerMove` (`TripCalendar.js:83`):
+
+1. Adds `.tc-dragging` to the block and sets `pointerEvents: none` so `elementFromPoint` sees the column behind it.
+2. Identifies the `.tc-day` column under the pointer.
+3. Converts the pointer's Y position to minutes-of-day and passes it through `snapClamp(..., SNAP_DRAG_MIN)` where `SNAP_DRAG_MIN = 15` (`TripCalendar.js:15`), snapping the ghost position to 15-minute boundaries and clamping it inside the visible window.
+4. Moves the block DOM node into the target column and updates its `top` style — the block visually follows the pointer.
+
+On release, `_onPointerUp` (`TripCalendar.js:106`):
+
+- Removes event listeners and the `.tc-dragging` class.
+- If the drag moved and a valid target position was recorded, sets `_justDragged = true` (suppresses the trailing click, line 115) and dispatches `reschedule` with `{ diveId, startDateTime }` where `startDateTime = toStartDateTime(targetDayIndex, targetMinutes)` (`TripCalendar.js:116–117`).
+
+`pointercancel` (e.g. scroll interruption) is handled by `_onPointerCancel` (`TripCalendar.js:121`), which cleans up listeners and the `.tc-dragging` class without emitting `reschedule`.
+
+**Page wiring (`sandbox/repetitive-dives.html`)**
+
+```javascript
+// repetitive-dives.html:402–404
+calendar.addEventListener('reschedule', (e) => {
+    trip = rescheduleDive(trip, e.detail.diveId, e.detail.startDateTime);
+    rerender();
+});
+```
+
+`rescheduleDive` (from `js/tripState.js:38`) moves the dive to the new `startDateTime`, re-chains pre-saturation and deco across the trip, and updates conflict flags. `rerender()` calls `calendar.render(...)`, which rebuilds the DOM with the updated plan.
 
 **Implementation notes**
 
-- Renders exactly `dayCount` columns (from `this.window.dayCount`); no phantom extra column (`TripCalendar.js:82`).
-- Left hour ruler (`.tc-ruler`) contains `.tc-hour-label` divs positioned by `top` percentage (`TripCalendar.js:72–78`).
-- Each column gets a `.tc-day-header` div showing the formatted date (`formatDayHeader` at line 15) using `this.startDate` and the column index (`TripCalendar.js:88–90`).
-- Hour gridlines (`.tc-hour-line`) are injected into each column at the same percentage positions as the ruler labels (`TripCalendar.js:92–97`).
-- Click position within a column is converted to `minutesOfDay` and snapped to `SNAP_MIN = 5` minutes (`TripCalendar.js:48`).
-- Each dive block is labelled `"{name} · {depth}m · {runtime}min"` (`TripCalendar.js:116`). `name` falls back to the uppercased `diveId` when absent; `runtime` is `endDateTime − startDateTime` from the plan result. `planTrip` must echo `name`, `maxDepth`, and `endDateTime` onto result dives for this label to render correctly.
-- Conflict blocks receive the `tc-conflict` CSS class (`TripCalendar.js:108`); selected block receives `tc-selected` (`TripCalendar.js:109`).
-- `toStartDateTime` computes `dayIndex * 1440 + minutesOfDay` directly (`TripCalendar.js:126`); `_layout.baseDay` (always 0) is not used.
+- Renders exactly `dayCount` columns; no phantom extra column (`TripCalendar.js:159`).
+- Left hour ruler (`.tc-ruler`) contains `.tc-hour-label` divs positioned by `top` percentage (`TripCalendar.js:146–155`).
+- Each column gets a `.tc-day-header` div showing the formatted date (`formatDayHeader` at line 23) using `this.startDate` and the column index (`TripCalendar.js:165–166`).
+- Hour gridlines (`.tc-hour-line`) are injected into each column at the same percentage positions as the ruler labels (`TripCalendar.js:169–174`).
+- Click position within a column is converted to `minutesOfDay` and snapped to `SNAP_MIN = 60` minutes (`TripCalendar.js:13, 60`).
+- Each dive block is labelled `"{name} · {depth}m · {runtime}min"` (`TripCalendar.js:193`). `name` falls back to the uppercased `diveId` when absent; `runtime` is `endDateTime − startDateTime` from the plan result. `planTrip` must echo `name`, `maxDepth`, and `endDateTime` onto result dives for this label to render correctly.
+- Conflict blocks receive the `tc-conflict` CSS class (`TripCalendar.js:185`); selected block receives `tc-selected` (`TripCalendar.js:186`).
+- `toStartDateTime` computes `dayIndex * 1440 + minutesOfDay` directly (`TripCalendar.js:203`); `_layout.baseDay` (always 0) is not used.
 
 ### `AddDiveDialog.js`
 
