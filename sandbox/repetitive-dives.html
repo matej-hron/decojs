@@ -68,6 +68,7 @@
     .gf-preset-btn:hover { background:var(--border-color,#e8e8e8); }
     .mode-toggles { display:flex; flex-wrap:wrap; gap:.6rem; font-size:.8rem; margin:.4rem 0; opacity:.9; }
     .mode-toggles label { display:inline-flex; align-items:center; gap:.25rem; cursor:pointer; }
+    .cfg-copy-btn { font-size:.8rem; padding:.15rem .5rem; cursor:pointer; border:1px solid var(--border-color,#ccc); border-radius:4px; background:var(--surface,#f7f7f7); }
   </style>
 </head>
 <body>
@@ -83,6 +84,7 @@
       <span class="gf-presets"></span>
       <label>Start date <input id="cfg-start" type="date" value="2026-06-15"></label>
       <label>Days <input id="cfg-days" type="number" min="1" max="14" value="3"></label>
+      <button id="cfg-copy" class="cfg-copy-btn">Copy trip link</button>
     </div>
     <div id="calendar"></div>
     <div id="edit-panel"></div>
@@ -106,6 +108,7 @@
     import { AddDiveDialog } from '../js/components/AddDiveDialog.js';
     import { previewNdl } from '../js/ndlPreview.js';
     import { GF_PRESETS } from '../js/gfPresets.js';
+    import { getTripFromUrl, updateUrlWithTrip, getTripShareUrl } from '../js/tripUrl.js';
 
     const air = [{ id: 'bottom', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0,
                    cylinderVolume: 12, startPressure: 200 }];
@@ -124,6 +127,16 @@
         { id: 'd3', name: 'Dive 3', startDateTime: 13 * 60, maxDepth: 40, bottomTime: 30, gases: air }  // 13:00
       ]
     };
+
+    const urlTrip = getTripFromUrl();
+    if (urlTrip) {
+      trip = urlTrip;
+      // Sync form inputs to match the restored trip values.
+      document.getElementById('cfg-gflow').value  = trip.gfLow  ?? 100;
+      document.getElementById('cfg-gfhigh').value = trip.gfHigh ?? 100;
+      if (trip.startDate) document.getElementById('cfg-start').value = trip.startDate;
+      document.getElementById('cfg-days').value   = trip.dayCount ?? 3;
+    }
 
     const fmtClock = (epochMin) => {
       const day = Math.floor(epochMin / (24 * 60)) + 1;
@@ -254,6 +267,7 @@
       calendar.render(lastResult, selectedDiveId);
       clearTimeout(ovTimer);
       ovTimer = setTimeout(() => renderOverview(lastResult), 250);
+      updateUrlWithTrip(trip);
     }
     // Edits commit on field blur, which can fire during a click on another dive.
     // A synchronous rerender then rebuilds the calendar mid-click and swallows the
@@ -425,6 +439,16 @@
     document.getElementById('cfg-days').addEventListener('change', (e) => {
       trip = { ...trip, dayCount: Math.max(1, +e.target.value) };
       rerender();
+    });
+
+    document.getElementById('cfg-copy').addEventListener('click', async (e) => {
+      const btn = e.target;
+      try {
+        await navigator.clipboard.writeText(getTripShareUrl(trip));
+        const prev = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = prev; }, 1500);
+      } catch (_) { /* clipboard unavailable — the address bar still holds the link */ }
     });
 
     // ── Initial render ──────────────────────────────────────────────────────
