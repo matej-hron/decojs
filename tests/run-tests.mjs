@@ -188,6 +188,7 @@ import { surfacingGF } from '../js/preSaturation.js';
 import { normalizeDiveSetup } from '../js/charts/chartTypes.js';
 import { buildRuntimeRows } from '../js/components/RuntimeTable.js';
 import { computeCalendarLayout } from '../js/calendarLayout.js';
+import { snapClamp } from '../js/components/TripCalendar.js';
 import { previewNdl } from '../js/ndlPreview.js';
 import { GF_PRESETS } from '../js/gfPresets.js';
 import { encodeTrip, decodeTrip } from '../js/tripUrl.js';
@@ -3294,6 +3295,22 @@ describe('tripTime - epoch <-> datetime-local', () => {
         const base = baseFromStartDate('2026-06-15');
         expect(Number.isNaN(localInputToEpochMin('', base))).toBe(true);
         expect(Number.isNaN(localInputToEpochMin('garbage', base))).toBe(true);
+    });
+});
+
+// ============================================================================
+// TRIPCALENDAR - snapClamp TESTS
+// ============================================================================
+
+describe('TripCalendar - snapClamp', () => {
+    const ds = 6 * 60, de = 20 * 60;
+    test('snaps to the nearest 15 minutes', () => {
+        expect(snapClamp(9 * 60 + 8, ds, de, 15)).toBe(9 * 60 + 15); // 09:08 -> 09:15
+        expect(snapClamp(9 * 60 + 7, ds, de, 15)).toBe(9 * 60);      // 09:07 -> 09:00
+    });
+    test('clamps to the day window', () => {
+        expect(snapClamp(5 * 60, ds, de, 15)).toBe(ds);   // before window -> dayStart
+        expect(snapClamp(21 * 60, ds, de, 15)).toBe(de);  // after window  -> dayEnd
     });
 });
 
