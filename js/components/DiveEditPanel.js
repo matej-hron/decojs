@@ -7,24 +7,10 @@
  *   'remove' detail: { id }
  */
 import { DiveSetupEditor } from './DiveSetupEditor.js';
+import { baseFromStartDate, epochMinToLocalInput, localInputToEpochMin } from '../tripTime.js';
 
 // Escape user-controlled text before interpolating into innerHTML.
 const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
-
-// epoch-minutes <-> <input type="datetime-local"> helpers.
-// `base` is a UTC millisecond timestamp representing the trip's epoch (minute 0).
-function epochMinToLocalInput(min, base) {
-    const d = new Date(base + min * 60000);
-    const pad = (n) => String(n).padStart(2, '0');
-    return `${d.getUTCFullYear()}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())}T${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}`;
-}
-function localInputToEpochMin(value, base) {
-    const [datePart, timePart] = value.split('T');
-    const [y, mo, da] = datePart.split('-').map(Number);
-    const [h, mi] = timePart.split(':').map(Number);
-    const ms = Date.UTC(y, mo - 1, da, h, mi);
-    return Math.round((ms - base) / 60000);
-}
 
 export class DiveEditPanel extends EventTarget {
     constructor(container) {
@@ -41,8 +27,7 @@ export class DiveEditPanel extends EventTarget {
         // Compute the epoch base from the trip start date (defaults to '2026-01-01' if not provided).
         // Use UTC midnight to match the .getUTC* reads in epochMinToLocalInput, so displayed
         // times are not shifted by the user's local UTC offset.
-        const [y, m, d] = (startDate || '2026-01-01').split('-').map(Number);
-        const base = Date.UTC(y, m - 1, d);
+        const base = baseFromStartDate(startDate);
 
         this.container.innerHTML = `
             <div class="dep-header">Editing: ${esc(dive.name || dive.id)}</div>

@@ -117,6 +117,7 @@ function expect(actual) {
 // IMPORT MODULES
 // ============================================================================
 
+import { baseFromStartDate, epochMinToLocalInput, localInputToEpochMin } from '../js/tripTime.js';
 import { addDive, editDive, removeDive, rescheduleDive } from '../js/tripState.js';
 
 import {
@@ -3265,6 +3266,29 @@ describe('tripUrl - encode/decode', () => {
         expect(decodeTrip('')).toBe(null);
         expect(decodeTrip('aGVsbG8=')).toBe(null);              // base64 of "hello" → not JSON
         expect(decodeTrip(btoa('{"foo":1}'))).toBe(null);        // valid JSON but no dives/gases array
+    });
+});
+
+// ============================================================================
+// TRIP TIME TESTS
+// ============================================================================
+
+describe('tripTime - epoch <-> datetime-local', () => {
+    test('round-trips an epoch minute against a start date (UTC-safe)', () => {
+        const base = baseFromStartDate('2026-06-15');
+        const s = epochMinToLocalInput(9 * 60, base);   // day 0, 09:00
+        expect(s).toBe('2026-06-15T09:00');
+        expect(localInputToEpochMin(s, base)).toBe(9 * 60);
+    });
+    test('handles a later day (24h+) correctly', () => {
+        const base = baseFromStartDate('2026-06-15');
+        const s = epochMinToLocalInput(24 * 60 + 11 * 60, base); // day 1, 11:00
+        expect(s).toBe('2026-06-16T11:00');
+        expect(localInputToEpochMin(s, base)).toBe(24 * 60 + 11 * 60);
+    });
+    test('default base for missing start date', () => {
+        const base = baseFromStartDate();
+        expect(base).toBe(Date.UTC(2026, 0, 1));
     });
 });
 

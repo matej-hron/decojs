@@ -10,7 +10,7 @@ import { computeCalendarLayout } from '../calendarLayout.js';
 
 const MIN_PER_DAY = 24 * 60;
 const DEFAULT_WINDOW = { dayStartMin: 6 * 60, dayEndMin: 20 * 60, dayCount: 3 };
-const SNAP_MIN = 5;
+const SNAP_MIN = 60;
 
 function formatDayHeader(startDate, dayIndex) {
     const base = (startDate instanceof Date) ? startDate : new Date(startDate + 'T00:00:00');

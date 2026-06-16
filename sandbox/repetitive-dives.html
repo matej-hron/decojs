@@ -380,6 +380,7 @@
       const startDateTime = calendar.toStartDateTime(e.detail.dayIndex, e.detail.minutesOfDay);
       addDialog.open({
         startDateTime,
+        startDate: trip.startDate,
         gases: trip.gases,
         defaultDepth: 18,
         defaultTime: 40,
