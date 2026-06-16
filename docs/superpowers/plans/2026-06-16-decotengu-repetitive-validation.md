@@ -11,6 +11,19 @@
 **Spec:** `docs/superpowers/specs/2026-06-16-decotengu-repetitive-validation-design.md`
 **Branch:** `feat/decotengu-repetitive-validation` (already created, stacked on `feat/ndl-locked-dives`).
 
+> **Revision (2026-06-16, during implementation):** the first comparison run surfaced two
+> documented findings (see the spec's "Findings During Implementation" section). As a result the
+> committed code differs from the original code blocks below in two ways:
+> 1. **Generator grids** use realistic bottom times `BT = {30: 25, 40: 18, 50: 14}` (not
+>    `depth+10`/`depth+15`), so every scenario stays inside the engine's 300-min/stop range.
+> 2. **The JS test** excludes compartment 1 from the off-gas pass/fail (DecoJS uses the ZH-L16
+>    "1b" 5.0-min first compartment vs decotengu's 4.0 min — a documented model choice; it is
+>    reported as informational) and wraps the deco calls in a beyond-range guard.
+>
+> Observed agreement: Seam A 2.22e-16 bar (compartments 2–16); Seam B/Trips within 1–2 min.
+> Review the committed code against the spec (which documents these decisions), not the
+> pre-finding code blocks below.
+
 > **All code in this plan has been verified end-to-end against the installed decotengu 0.14.1.** The seeded computation matches `engine.calculate` exactly for a surface seed; the JS side matches decotengu exactly on the spot-checked Seam-B (85=85) and trip ([46,85]=[46,85]) cases; the off-gas seam agrees to ~6.7e-4 bar.
 
 ---

@@ -190,6 +190,32 @@ is the deliverable answer to "is the repetitive engine validated against decoten
 4. JS test: Seam B + Trips loops (async/await) → confirm agreement; capture headline stats.
 5. Wiki (`Validation-and-Testing.md`) + commit the checked-in reference JSON.
 
+## Findings During Implementation (2026-06-16)
+
+Running the first comparison surfaced two real divergences — exactly what the harness is
+for. Both are resolved as documented model/scope decisions, not engine changes:
+
+1. **Compartment 1 half-time (5.0 vs 4.0 min).** The off-gas seam showed every compartment
+   matching decotengu to ~1e-16 **except** the fastest, which diverged up to ~8e-3 bar. Root
+   cause: DecoJS uses the ZH-L16 **"1b"** first compartment (half-time **5.0 min**, Bühlmann's
+   slightly-more-conservative alternative) while decotengu's `ZH_L16C_GF` uses the original
+   **4.0 min**. This is a legitimate, intentional model choice in `tissueCompartments.js`, not a
+   bug — and the off-gas seam is the only test sensitive enough to expose it (the fastest
+   compartment rarely controls the deco the single-dive test compares). **Resolution:** Seam A
+   excludes compartment index 0 from the tight 0.001-bar pass/fail check and reports its diff as
+   informational, keeping the tight tolerance on the 15 compartments that use identical constants
+   (which prove the off-gas integration is exact).
+
+2. **300-min/stop cap on absurd profiles.** The original `depth+10` bottom-time grid produced
+   unrealistic dives (e.g. 50 m for 60 min → 300–526 min of deco). One exceeded DecoJS's
+   deliberate `DECO_STOP_MAX_MINUTES = 300` guard and threw `DecoCapExceededError`; decotengu is
+   unbounded there. Notably, our engine matched decotengu **exactly** even on the in-range
+   extremes (340 vs 339, 210 vs 210). **Resolution:** the grids use realistic recreational/
+   light-tech bottom times `BT = {30: 25, 40: 18, 50: 14}` min, which keep every scenario inside
+   the engine's usable range (verified: 0 cap errors, deco 6–37 min, agreement within 1–2 min).
+   The test still wraps the deco calls in a guard that reports any future beyond-range scenario
+   loudly rather than crashing.
+
 ## Open Questions / To Settle During Planning
 
 - Exact decotengu low-level signatures (`_dive_descent`/`_dive_ascent`/`_step_next`, the `Step`
