@@ -5132,3 +5132,6 @@ textarea.form-input {
     height: 100% !important;
     display: block;
 }
+
+/* Repetitive-dives edit panel: NDL-lock checkbox label */
+.dep-lock-label { display: inline-flex; align-items: center; gap: 0.3rem; white-space: nowrap; }

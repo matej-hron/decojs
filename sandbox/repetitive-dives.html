@@ -50,6 +50,7 @@
     .dep-header { font-weight:600; margin-bottom:.35rem; }
     .dep-row { display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:.5rem; }
     .dep-remove { color:#c0392b; cursor:pointer; }
+    .dep-lock-label { display: inline-flex; align-items: center; gap: 0.3rem; white-space: nowrap; }
     .trip-config { display:flex; gap:1.5rem; margin-bottom:.5rem; }
     .trip-config label { display:flex; align-items:center; gap:.4rem; font-size:.9rem; }
     .trip-config input[type=number] { width:4.5rem; }
@@ -408,7 +409,8 @@
     calendar.addEventListener('selectDive', (e) => {
       selectedDiveId = e.detail.diveId;
       const dive = trip.dives.find(d => d.id === selectedDiveId);
-      if (dive) editPanel.open(dive, trip.startDate);
+      const planned = lastResult && lastResult.dives.find(d => d.id === selectedDiveId);
+      if (dive) editPanel.open(dive, trip.startDate, planned ? planned.bottomTime : dive.bottomTime);
       rerender();
     });
 

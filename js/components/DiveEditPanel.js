@@ -3,7 +3,7 @@
  * (quick-setup depth/bottom-time + gas management). Emits 'apply' / 'remove'.
  *
  * Events:
- *   'apply'  detail: { id, patch: { startDateTime, maxDepth, bottomTime, gases } }
+ *   'apply'  detail: { id, patch: { startDateTime, maxDepth, bottomTime, gases, name, ndlLocked } }
  *   'remove' detail: { id }
  */
 import { DiveSetupEditor } from './DiveSetupEditor.js';
@@ -20,7 +20,7 @@ export class DiveEditPanel extends EventTarget {
         this.editor = null;
     }
 
-    open(dive, startDate) {
+    open(dive, startDate, plannedBottomTime) {
         if (this.editor) this.close();
         this.dive = dive;
 
@@ -34,6 +34,7 @@ export class DiveEditPanel extends EventTarget {
             <div class="dep-row">
                 <label>Name <input type="text" class="dep-name" value="${esc(dive.name || '')}"></label>
                 <label>Start <input type="datetime-local" class="dep-start" value="${epochMinToLocalInput(dive.startDateTime, base)}"></label>
+                <label class="dep-lock-label"><input type="checkbox" class="dep-ndl-lock"${dive.ndlLocked ? ' checked' : ''}> No-deco (NDL-locked)</label>
                 <button class="dep-remove">Remove dive</button>
             </div>
             <div class="dep-editor"></div>`;
@@ -64,6 +65,20 @@ export class DiveEditPanel extends EventTarget {
             this.editor.elements.quickTime.value = dive.bottomTime;
         }
 
+        const lockEl = this.container.querySelector('.dep-ndl-lock');
+        const qt = this.editor.elements ? this.editor.elements.quickTime : null;
+        // When locked, bottom time is engine-derived: show the planned NDL read-only.
+        const applyLockState = () => {
+            if (!qt) return;
+            if (lockEl.checked) {
+                qt.disabled = true;
+                if (Number.isFinite(plannedBottomTime)) qt.value = plannedBottomTime;
+            } else {
+                qt.disabled = false;
+            }
+        };
+        applyLockState();
+
         const emitApply = () => {
             const setup = this.editor.getDiveSetup();
 
@@ -76,8 +91,9 @@ export class DiveEditPanel extends EventTarget {
             const name = (this.container.querySelector('.dep-name').value || this.dive.name || '').trim();
             const sdt = localInputToEpochMin(this.container.querySelector('.dep-start').value, base);
             const startDateTime = Number.isFinite(sdt) ? sdt : this.dive.startDateTime;
+            const ndlLocked = this.container.querySelector('.dep-ndl-lock').checked;
             this.dispatchEvent(new CustomEvent('apply', {
-                detail: { id: this.dive.id, patch: { startDateTime, maxDepth, bottomTime, gases: setup.gases, name } }
+                detail: { id: this.dive.id, patch: { startDateTime, maxDepth, bottomTime, gases: setup.gases, name, ndlLocked } }
             }));
         };
 
@@ -91,6 +107,7 @@ export class DiveEditPanel extends EventTarget {
             this.editor.elements.quickDepth.addEventListener('change', emitApply);
             this.editor.elements.quickTime.addEventListener('change', emitApply);
         }
+        lockEl.addEventListener('change', () => { applyLockState(); emitApply(); });
         this.container.querySelector('.dep-remove').addEventListener('click', () => {
             this.dispatchEvent(new CustomEvent('remove', { detail: { id: this.dive.id } }));
         });
