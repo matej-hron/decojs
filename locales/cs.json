@@ -70,9 +70,9 @@
         "whatCreates": {
             "title": "Co vytváří tlak pod vodou?",
             "intro": "Celkový tlak, kterému je potápěč pod vodou vystaven, pochází ze dvou zdrojů:",
-            "atmospheric": "<strong>Atmosférický tlak</strong> — Váha sloupce vzduchu nad vámi. Na hladině moře je to přibližně <strong>1 bar</strong> (1 atm = 1,01325 bar).",
+            "atmospheric": "<strong>Atmosférický tlak</strong> — Váha sloupce vzduchu nad vámi. Na hladině moře je to přibližně <strong>1 bar</strong> — standardní tlak na hladině moře je definován jako 1,01325 bar.",
             "hydrostatic": "<strong>Hydrostatický tlak</strong> — Váha vodního sloupce nad vámi. V mořské vodě přidává přibližně <strong>1 bar na každých 10 metrů</strong> hloubky.",
-            "summary": "Proto v hloubce 10 m na vás působí celkový tlak 2 bary (1 atm + 1 bar vody), v 20 m jsou to 3 bary, v 30 m 4 bary atd."
+            "summary": "Proto v hloubce 10 m na vás působí celkový tlak 2 bary (1 bar atmosférický + 1 bar vody), v 20 m jsou to 3 bary, v 30 m 4 bary atd."
         },
         "altitude": {
             "summary": "Atmosférický tlak v různých nadmořských výškách",
@@ -618,7 +618,7 @@
             "workmanDesc": "Každý kompartment má svůj vlastní limit",
             "workmanMath": "(N₂ i He, 1965)",
             "historySummary": "📚 Historie: jak jsme objevili bezpečné limity",
-            "haldaneHistory": "Skotský fyziolog pozoroval, že dělníci v tunelech a kesonech se stlačeným vzduchem mohli bezpečně dekomprimovat z 2 atmosfér na 1 (poměr 2:1). To se stalo základem stupňovité dekomprese. <em>Poznámka: tento poměr 2:1 byl odvozen z experimentů pouze se vzduchem — pro jiné směsi (trimix, heliox) platí jiné tolerance kvůli odlišným vlastnostem rozpustnosti a difuze hélia.</em>",
+            "haldaneHistory": "Skotský fyziolog pozoroval, že dělníci v tunelech a kesonech se stlačeným vzduchem mohli bezpečně dekomprimovat z 2 barů na 1 bar (absolutně, poměr 2:1). To se stalo základem stupňovité dekomprese. <em>Poznámka: tento poměr 2:1 byl odvozen z experimentů pouze se vzduchem — pro jiné směsi (trimix, heliox) platí jiné tolerance kvůli odlišným vlastnostem rozpustnosti a difuze hélia.</em>",
             "workmanHistory": "Výzkumník amerického námořnictva, který rozpoznal, že jediný pevný poměr nedokáže zachytit celý obraz. Různé tkáňové kompartmenty tolerují různé úrovně přesycení a tyto tolerance se mění s hloubkou. Zavedl pojem <strong>„M-hodnota“</strong> (Maximum value) — maximální tolerovatelný tlak inertního plynu ve tkáni při jakékoli dané hloubce. Workman jako první vyvinul M-hodnoty jak pro dusík, <em>tak pro hélium</em> (1965), čímž umožnil plánování dekomprese pro hluboké ponory s heliox směsí.",
             "workmanInsight": "Klíčový poznatek Workmana: rychlejší tkáně (mozek, krev) tolerují vyšší přesycení než pomalejší tkáně (tuk, kosti) — a tolerovaný poměr se také mění s hloubkou."
         },
