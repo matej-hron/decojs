@@ -181,7 +181,7 @@
             "intro": "Vzduch, který dýcháme, je směsí plynů. Pochopení tohoto složení je pro potápění zásadní, protože každý plyn se pod tlakem chová jinak. Hlavní složky jsou:",
             "nitrogen": "<strong>Dusík (N₂)</strong> — 78 % — inertní plyn, neúčastní se metabolismu",
             "oxygen": "<strong>Kyslík (O₂)</strong> — 21 % — nezbytný pro život, ale toxický při vysokých parciálních tlacích",
-            "other": "<strong>Ostatní plyny</strong> — 1 % — především argon, CO₂ a stopové plyny"
+            "other": "<strong>Ostatní plyny</strong> — 1 % — hlavně argon (~0,93 %) a CO₂ (~0,04 %), plus stopové množství neonu, helia a metanu"
         },
         "mixtures": {
             "title": "Dýchací směsi",

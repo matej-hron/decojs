@@ -181,7 +181,7 @@
             "intro": "El aire que respiramos es una mezcla de gases. Entender su composición es fundamental para el buceo, porque cada gas se comporta de forma distinta bajo presión. Los componentes principales son:",
             "nitrogen": "<strong>Nitrógeno (N₂)</strong> — 78 % — gas inerte, no interviene en el metabolismo",
             "oxygen": "<strong>Oxígeno (O₂)</strong> — 21 % — esencial para la vida, pero tóxico a presiones parciales elevadas",
-            "other": "<strong>Otros gases</strong> — 1 % — principalmente argón, CO₂ y gases traza"
+            "other": "<strong>Otros gases</strong> — 1 % — sobre todo argón (~0,93 %) y CO₂ (~0,04 %), más trazas de neón, helio y metano"
         },
         "mixtures": {
             "title": "Mezclas respirables",
