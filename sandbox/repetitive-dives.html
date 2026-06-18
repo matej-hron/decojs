@@ -128,10 +128,20 @@
     .mode-toggles { display:flex; flex-wrap:wrap; gap: var(--space-3); font-size: var(--text-xs); color: var(--text-subtle); margin: var(--space-3) 0; }
     .mode-toggles label { display:inline-flex; align-items:center; gap: var(--space-1); cursor:pointer; }
 
-    /* Pre-saturation strip */
-    .presat-strip-wrap { max-width: 480px; }
+    /* Pre-saturation strip — full-height hover columns with an instant value tooltip */
+    .presat-strip-wrap { max-width: 480px; overflow: visible; padding-top: 1.9rem; }
     .presat-strip { display:flex; align-items:flex-end; gap:2px; height:80px; border-bottom:1px solid var(--border-strong); }
-    .presat-bar { flex:1 1 0; min-height:1px; border-radius:2px 2px 0 0; }
+    .presat-col { position:relative; flex:1 1 0; height:100%; display:flex; align-items:flex-end; cursor:default; }
+    .presat-fill { width:100%; min-height:1px; border-radius:2px 2px 0 0; transition: filter var(--duration-fast) var(--ease-out); }
+    .presat-col:hover .presat-fill { filter: brightness(0.82); outline:1px solid var(--surface); outline-offset:-1px; }
+    .presat-col:hover::after {
+      content: attr(data-tip);
+      position:absolute; left:50%; bottom:calc(100% + 5px); transform:translateX(-50%);
+      background: var(--gray-800); color: var(--text-inverse);
+      font-size: var(--text-xs); font-variant-numeric: tabular-nums; white-space:nowrap;
+      padding:.2rem .5rem; border-radius: var(--radius-sm); box-shadow: var(--shadow-md);
+      pointer-events:none; z-index:5;
+    }
     .presat-axis { display:flex; justify-content:space-between; font-size: var(--text-xs); color: var(--text-subtle); }
 
     /* Runtime table */
@@ -470,13 +480,17 @@
 
     function presatStrip(startingTissue) {
       const per = preSaturation(startingTissue).perCompartmentPct;
-      const bars = COMPARTMENTS.map(c => {
-        const pct = Math.min(100, per[c.id] || 0);
-        return `<span class="presat-bar" title="#${c.id} (${c.halfTime}min): ${Math.round(pct)}%"
-                   style="height:${pct}%;background:${c.color};"></span>`;
+      // Full-height hover column (easy target even for short bars); the coloured fill is the
+      // value; the tooltip shows the actual (unclamped) % so an over-limit tissue reads >100%.
+      const cols = COMPARTMENTS.map(c => {
+        const raw = per[c.id] || 0;
+        const fill = Math.min(100, raw);
+        return `<span class="presat-col" data-tip="#${c.id} · ${c.halfTime} min · ${Math.round(raw)}%">
+                  <span class="presat-fill" style="height:${fill}%;background:${c.color};"></span>
+                </span>`;
       }).join('');
       return `<div class="presat-strip-wrap">
-                <div class="presat-strip">${bars}</div>
+                <div class="presat-strip">${cols}</div>
                 <div class="presat-axis"><span>fast</span><span>slow</span></div>
               </div>`;
     }
