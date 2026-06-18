@@ -197,7 +197,8 @@
             "text": "<strong>Daltonův zákon</strong> říká, že celkový tlak směsi plynů se rovná součtu parciálních tlaků jednotlivých složek. <em>Parciální tlak</em> plynu je tlak, který by plyn vyvolal, kdyby sám zabíral stejný objem."
         },
         "animation": {
-            "caption": "Každý plyn (modrý, červený) vyvíjí svůj tlak nezávisle — celkový tlak je součtem všech parciálních tlaků."
+            "caption": "Každý plyn (modrý, červený) vyvíjí svůj tlak nezávisle — celkový tlak je součtem všech parciálních tlaků.",
+            "kineticNote": "To, čemu říkáme <em>tlak</em>, je právě tohle bubnování: jak často molekuly narážejí do stěn nádoby. Více molekul — nebo rychlejších — znamená více nárazů a vyšší tlak; každý plyn přispívá svým dílem nárazů: svým parciálním tlakem."
         },
         "formula": {
             "summary": "Vzorec Daltonova zákona",
