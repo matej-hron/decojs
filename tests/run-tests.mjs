@@ -184,7 +184,7 @@ import {
 } from '../js/tissueCompartments.js';
 
 import { planTrip } from '../js/tripPlanner.js';
-import { surfacingGF } from '../js/preSaturation.js';
+import { preSaturation } from '../js/preSaturation.js';
 import { normalizeDiveSetup } from '../js/charts/chartTypes.js';
 import { buildRuntimeRows } from '../js/components/RuntimeTable.js';
 import { computeCalendarLayout } from '../js/calendarLayout.js';
@@ -3063,13 +3063,13 @@ describe('tripPlanner - planTrip', () => {
 // PRESATURATION TESTS
 // ============================================================================
 
-describe('preSaturation - surfacingGF', () => {
+describe('preSaturation', () => {
     const gases = [{ id: 'bottom', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0 }];
 
     test('a fresh surface-equilibrium diver reads 0% on every tissue', () => {
         const fresh = {};
         COMPARTMENTS.forEach(c => { fresh[c.id] = getInitialTissueN2(N2_FRACTION); });
-        const res = surfacingGF(fresh);
+        const res = preSaturation(fresh);
         expect(res.controllingPct).toBe(0);
         const maxPer = Math.max(...Object.values(res.perCompartmentPct));
         expect(maxPer).toBe(0);
@@ -3086,12 +3086,35 @@ describe('preSaturation - surfacingGF', () => {
             ]
         });
         const loaded = trip.dives[1].startingTissue;
-        const res = surfacingGF(loaded);
+        const res = preSaturation(loaded);
         expect(res.controllingPct).toBeGreaterThan(0);
         const maxPer = Math.max(...Object.values(res.perCompartmentPct));
         expect(res.controllingPct).toBeCloseTo(maxPer, 9);
         expect(res.perCompartmentPct[res.controllingCompartmentId]).toBeCloseTo(maxPer, 9);
         expect(res.controllingPct).toBeGreaterThan(10); // short SI ⇒ clearly elevated
+    });
+
+    test('residual loading below surface ambient still reads > 0% (anchored at surface saturation, not ambient)', () => {
+        // Long-ish surface interval: every tissue ends ABOVE the fresh surface-saturation
+        // baseline (so the next dive accrues more deco) but still BELOW surface ambient
+        // pressure — the case where an ambient-anchored surfacing GF would read 0%.
+        const trip = planTrip({
+            gases, gfLow: 100, gfHigh: 100,
+            dives: [
+                { id: 'd1', startDateTime: 0,   maxDepth: 30, bottomTime: 40 },
+                { id: 'd2', startDateTime: 200, maxDepth: 30, bottomTime: 40 }
+            ]
+        });
+        const d2 = trip.dives[1];
+        // Sanity: the dive is genuinely more loaded (more deco than the first).
+        expect(d2.profile.totalDecoTime).toBeGreaterThan(trip.dives[0].profile.totalDecoTime);
+        // Sanity: every compartment is below surface ambient (~1.013 bar) — the band an
+        // ambient-anchored GF would clamp to 0.
+        const surfaceAmbient = getAmbientPressure(0);
+        const maxTension = Math.max(...COMPARTMENTS.map(c => d2.startingTissue[c.id]));
+        expect(maxTension).toBeLessThan(surfaceAmbient);
+        // The surface-saturation-anchored pre-saturation must still register the loading.
+        expect(preSaturation(d2.startingTissue).controllingPct).toBeGreaterThan(10);
     });
 });
 

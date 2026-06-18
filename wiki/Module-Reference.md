@@ -316,20 +316,22 @@ When provided:
 
 ### `js/preSaturation.js`
 
-Pre-saturation expressed as the surfacing gradient factor (sub-project ②).
+Pre-saturation at the start of a (repetitive) dive (sub-project ②).
 
-"If you ascended straight to the surface right now, how close to each tissue's Bühlmann limit are you?" — 0 % means fully off-gassed to a fresh-diver baseline; 100 % means at the surfacing M-value limit. No new decompression math: it reuses `calculateMaxGF` from `decoModel.js` evaluated at `getAmbientPressure(0)` (1.01325 bar). Negative GFs are clamped to 0 (a tissue below surface ambient still has on-gassing capacity and reads as 0 % pre-saturation rather than a negative percentage).
+"How loaded are the tissues vs a fresh surface-saturated diver, on a 0–100 scale toward the surfacing limit?" The baseline is the **surface-saturation** value — the inert-gas tension a fresh diver carries at the surface on air, `getInitialTissueN2(N2_FRACTION)` ≈ 0.751 bar — **not** ambient pressure. Per compartment: `(P − surfaceSat) / (M0 − surfaceSat)`, clamped at 0, where `M0` is the surfacing M-value. So 0 % = fresh/fully off-gassed, 100 % = the leading tissue is already at its surfacing M-value before the dive begins (> 100 % means over the surfacing limit at the surface, e.g. a too-soon repeat dive).
+
+Anchoring at the surface-saturation baseline (not ambient, as the surfacing gradient factor would) is deliberate: residual loading that sits between the baseline (~0.751 bar) and ambient (~1.013 bar) — exactly the band that makes a repeat dive accrue more deco — reads 0 on a GF but registers here. (Earlier versions used the ambient-anchored surfacing GF and read 0 % for such dives despite their longer deco.)
 
 Pure module — no DOM, no side effects.
 
-Imports: `calculateMaxGF`, `getAmbientPressure` from `decoModel.js`.
-Imported by: the repetitive-dive detail view (sandbox).
+Imports: `getMValue`, `getAmbientPressure`, `getInitialTissueN2`, `N2_FRACTION` from `decoModel.js`; `COMPARTMENTS` from `tissueCompartments.js`.
+Imported by: the repetitive-dive selected-dive panel (sandbox).
 
 **Exports**
 
 | Signature | Line | Description |
 |---|---|---|
-| `surfacingGF(tissuePressures)` | 25 | Returns `{ controllingPct, controllingCompartmentId, perCompartmentPct }`. `controllingPct` is the maximum clamped surfacing GF across all 16 compartments, as a percentage. `controllingCompartmentId` is the numeric id of the leading compartment. `perCompartmentPct` is keyed by numeric compartment id. |
+| `preSaturation(tissuePressures)` | 35 | Returns `{ controllingPct, controllingCompartmentId, perCompartmentPct }`. `controllingPct` is the maximum pre-saturation across all 16 compartments (clamped at 0), as a percentage of the way from the surface-saturation baseline to the surfacing M-value. `controllingCompartmentId` is the numeric id of the leading compartment. `perCompartmentPct` is keyed by numeric compartment id. |
 
 `tissuePressures` input shape: `{ [compartmentId]: nitrogenPressureBar }` — the same shape produced by `planTrip` in `tripPlanner.js` (`startingTissue` / `endTissue` fields).
 
