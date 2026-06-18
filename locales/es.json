@@ -70,9 +70,9 @@
         "whatCreates": {
             "title": "¿Qué genera la presión bajo el agua?",
             "intro": "La presión total a la que se expone un buceador bajo el agua procede de dos fuentes:",
-            "atmospheric": "<strong>Presión atmosférica</strong> — El peso de la columna de aire que tienes sobre ti. A nivel del mar es aproximadamente <strong>1 bar</strong> (1 atm = 1.01325 bar).",
+            "atmospheric": "<strong>Presión atmosférica</strong> — El peso de la columna de aire que tienes sobre ti. A nivel del mar es aproximadamente <strong>1 bar</strong> — la presión estándar a nivel del mar se define como 1,01325 bar.",
             "hydrostatic": "<strong>Presión hidrostática</strong> — El peso de la columna de agua que tienes encima. En agua salada añade aproximadamente <strong>1 bar por cada 10 metros</strong> de profundidad.",
-            "summary": "Por eso a 10 m de profundidad soportas 2 bar de presión total (1 atm + 1 bar de agua), a 20 m son 3 bar, a 30 m 4 bar, y así sucesivamente."
+            "summary": "Por eso a 10 m de profundidad soportas 2 bar de presión total (1 bar atmosférico + 1 bar de agua), a 20 m son 3 bar, a 30 m 4 bar, y así sucesivamente."
         },
         "altitude": {
             "summary": "Presión atmosférica a distintas altitudes",
@@ -618,7 +618,7 @@
             "workmanDesc": "Cada compartimento tiene su propio límite",
             "workmanMath": "(N₂ y He, 1965)",
             "historySummary": "📚 La historia: cómo descubrimos los límites seguros",
-            "haldaneHistory": "El fisiólogo escocés observó que los trabajadores de túneles y cajones de aire comprimido podían descomprimirse con seguridad de 2 atmósferas a 1 (una proporción 2:1). Esto se convirtió en la base de la descompresión por etapas. <em>Nota: esta proporción 2:1 se obtuvo de experimentos solo con aire — mezclas distintas (trimix, heliox) tienen otras tolerancias debido a las diferentes propiedades de solubilidad y difusión del helio.</em>",
+            "haldaneHistory": "El fisiólogo escocés observó que los trabajadores de túneles y cajones de aire comprimido podían descomprimirse con seguridad de 2 bar a 1 bar absoluto (una proporción 2:1). Esto se convirtió en la base de la descompresión por etapas. <em>Nota: esta proporción 2:1 se obtuvo de experimentos solo con aire — mezclas distintas (trimix, heliox) tienen otras tolerancias debido a las diferentes propiedades de solubilidad y difusión del helio.</em>",
             "workmanHistory": "Investigador de la U.S. Navy que se dio cuenta de que una única proporción fija no podía capturar todo el cuadro. Distintos compartimentos tisulares toleran distintos niveles de sobresaturación, y esas tolerancias cambian con la profundidad. Acuñó el término <strong>«valor-M»</strong> (Maximum value) — la presión máxima tolerable de gas inerte en el tejido a cualquier profundidad dada. Es importante que Workman desarrolló valores-M tanto para el nitrógeno <em>como</em> para el helio (1965), lo que permitió planificar la descompresión en inmersiones profundas con heliox.",
             "workmanInsight": "La idea clave de Workman: los tejidos rápidos (cerebro, sangre) toleran más sobresaturación que los lentos (grasa, huesos) — y la proporción tolerada también varía con la profundidad."
         },

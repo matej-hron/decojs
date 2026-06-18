@@ -70,9 +70,9 @@
         "whatCreates": {
             "title": "What Creates Pressure Underwater?",
             "intro": "The total pressure a diver experiences underwater comes from two sources:",
-            "atmospheric": "<strong>Atmospheric pressure</strong> — The weight of the air column above you. At sea level, this is approximately <strong>1 bar</strong> (1 atm = 1.01325 bar).",
+            "atmospheric": "<strong>Atmospheric pressure</strong> — The weight of the air column above you. At sea level, this is approximately <strong>1 bar</strong> — the standard pressure at sea level is defined as 1.01325 bar.",
             "hydrostatic": "<strong>Hydrostatic pressure</strong> — The weight of the water column above you. In seawater, this adds approximately <strong>1 bar per 10 meters</strong> of depth.",
-            "summary": "Therefore, at 10m depth you experience 2 bar total pressure (1 atm + 1 bar water), at 20m it's 3 bar, at 30m it's 4 bar, and so on."
+            "summary": "Therefore, at 10m depth you experience 2 bar total pressure (1 bar atmospheric + 1 bar water), at 20m it's 3 bar, at 30m it's 4 bar, and so on."
         },
         "altitude": {
             "summary": "Atmospheric Pressure at Different Altitudes",
@@ -618,7 +618,7 @@
             "workmanDesc": "Each compartment has its own limit",
             "workmanMath": "(N₂ and He, 1965)",
             "historySummary": "📚 The History: How We Discovered Safe Limits",
-            "haldaneHistory": "The Scottish physiologist observed that workers in compressed-air tunnels and caissons could safely decompress from 2 atmospheres to 1 (a 2:1 ratio). This became the foundation of staged decompression. <em>Note: this 2:1 ratio was derived from experiments with air only — different gas mixtures (trimix, heliox) have different tolerances due to helium's different solubility and diffusion properties.</em>",
+            "haldaneHistory": "The Scottish physiologist observed that workers in compressed-air tunnels and caissons could safely decompress from 2 bar to 1 bar absolute (a 2:1 ratio). This became the foundation of staged decompression. <em>Note: this 2:1 ratio was derived from experiments with air only — different gas mixtures (trimix, heliox) have different tolerances due to helium's different solubility and diffusion properties.</em>",
             "workmanHistory": "U.S. Navy researcher who recognized that a single fixed ratio couldn't capture the full picture. Different tissue compartments tolerate different levels of supersaturation, and these tolerances change with depth. He coined the term <strong>\"M-value\"</strong> (Maximum value) — the maximum tolerable tissue inert gas pressure at any given depth. Crucially, Workman developed M-values for both nitrogen <em>and</em> helium (1965), enabling decompression planning for heliox deep dives.",
             "workmanInsight": "Workman's key insight: faster tissues (brain, blood) tolerate higher supersaturation than slower tissues (fat, bones) — and the tolerated ratio also varies with depth."
         },
