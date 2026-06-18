@@ -197,7 +197,8 @@
             "text": "<strong>Dalton's Law</strong> states that the total pressure of a gas mixture equals the sum of the partial pressures of each component gas. The <em>partial pressure</em> of a gas is the pressure it would exert if it occupied the same volume alone."
         },
         "animation": {
-            "caption": "Each gas (blue, red) exerts its own pressure independently — the total pressure is the sum of all partial pressures."
+            "caption": "Each gas (blue, red) exerts its own pressure independently — the total pressure is the sum of all partial pressures.",
+            "kineticNote": "What we call <em>pressure</em> is exactly this drumming: how often the molecules strike the container walls. More molecules — or faster ones — mean more impacts and higher pressure, and each gas adds its own share of impacts: its partial pressure."
         },
         "formula": {
             "summary": "Dalton's Law Formula",

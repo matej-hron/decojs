@@ -197,7 +197,8 @@
             "text": "La <strong>Ley de Dalton</strong> establece que la presión total de una mezcla de gases es igual a la suma de las presiones parciales de cada gas que la compone. La <em>presión parcial</em> de un gas es la presión que ejercería si ocupara él solo el mismo volumen."
         },
         "animation": {
-            "caption": "Cada gas (azul, rojo) ejerce su propia presión de forma independiente — la presión total es la suma de todas las presiones parciales."
+            "caption": "Cada gas (azul, rojo) ejerce su propia presión de forma independiente — la presión total es la suma de todas las presiones parciales.",
+            "kineticNote": "Lo que llamamos <em>presión</em> es precisamente este tamborileo: con qué frecuencia las moléculas golpean las paredes del recipiente. Más moléculas — o más rápidas — significan más impactos y mayor presión; cada gas aporta su parte de impactos: su presión parcial."
         },
         "formula": {
             "summary": "Fórmula de la Ley de Dalton",
