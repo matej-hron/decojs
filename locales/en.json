@@ -181,7 +181,7 @@
             "intro": "The air we breathe is a mixture of gases. Understanding this composition is fundamental to diving because each gas behaves differently under pressure. The main components are:",
             "nitrogen": "<strong>Nitrogen (N₂)</strong> — 78% — inert gas, does not participate in metabolism",
             "oxygen": "<strong>Oxygen (O₂)</strong> — 21% — essential for life, but toxic at high partial pressures",
-            "other": "<strong>Other gases</strong> — 1% — primarily Argon, CO₂, and trace gases"
+            "other": "<strong>Other gases</strong> — 1% — mainly argon (~0.93%) and CO₂ (~0.04%), plus traces of neon, helium and methane"
         },
         "mixtures": {
             "title": "Breathing Gas Mixtures",
