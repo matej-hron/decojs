@@ -46,6 +46,11 @@ separate, larger job.
 
 ## Non-goals
 
+- **Czech diving terminology.** Word choice — `odvětí` vs `vysycení` (#59), `Nádrž` vs
+  `tlak v lahvi` (#58) — is vocabulary, not notation. It is also the area where research was
+  weakest, since official SPČR materials were unreachable. Those two issues stay open and get
+  resolved on their own, with the garant. This spec covers **how a physical quantity is
+  written**, not which Czech word names it.
 - The content sweep: ~190 missing number–unit spaces, 58 `<em>` → `<var>`, LaTeX `\mathrm{}`
   conversion, decimal comma in charts. **Phase 2, separate spec.**
 - Lint / regex enforcement wired into `npm test`. Separate, and it depends on the sweep
@@ -53,6 +58,15 @@ separate, larger job.
 - Renaming JavaScript identifiers. The glossary records the canonical name; the rename is
   its own change with its own regression risk.
 - Self-hosting KaTeX, `sw.js` caching fixes, i18n number formatting. Tracked elsewhere.
+
+## Priority: Czech first
+
+The Czech content is what an examination commission will judge, so CZ is the target and
+EN/ES follow from it. Where a rule cannot be applied to all three languages in one step, the
+Czech form is correct first and the others are allowed to lag.
+
+This mainly affects the localized subscripts of section B3: *p*<sub>celk</sub> must be right
+in Czech even if the English pages still read *p*<sub>tot</sub> inconsistently for a while.
 
 ---
 
@@ -69,6 +83,7 @@ These are normative choices. Each carries its source so the garant can contest i
 | Descriptive subscripts are localized; chemical subscripts are not | Hybrid rule, see section B3 |
 | Quantity symbols italic, unit symbols upright | ČSN EN ISO 80000-1 ch. 7 |
 | Descriptive subscripts upright, quantity/index subscripts italic | NIST SP 811 §10.2; IUPAC test: "quantities can be given a value, but labels cannot" |
+| Number–unit binding is written `&nbsp;` | Already the house entity (67 uses); satisfies the ÚJČ non-breaking requirement — see section D1 |
 
 **Language of the documents:** Czech. The garant is a primary reader, and the subject is
 Czech typographic convention. This spec and the filenames stay English, matching the
@@ -183,7 +198,30 @@ Developer-facing mechanics:
   `\mathrm{...}` out every time.
 - Number formatting: `Intl.NumberFormat` for `cs-CZ`, including the U+202F group separator
   that breaks `parseFloat` and string-comparison tests.
-- Unicode reference: `₂`, `°`, `−`, `–`, `×`, `·`, narrow no-break space.
+- Unicode reference: `₂`, `°`, `−`, `–`, `×`, `·`, non-breaking space.
+
+### D1. Which non-breaking space — decided
+
+**Author with the `&nbsp;` entity (U+00A0).** Not U+202F, not a literal character.
+
+The repository already settles this: 67 `&nbsp;` entities are in use, and there is not a
+single U+202F or literal U+00A0 anywhere. ÚJČ requires the space to be non-breaking and says
+nothing about width; the SI Brochure prefers a thin space, but that is a typographic
+refinement, not a Czech requirement. Following the house entity costs nothing and satisfies
+the rule the commission would actually check.
+
+The entity also beats a literal character on maintainability: a literal U+00A0 is invisible
+in a diff, indistinguishable from a normal space during review, and easily destroyed by
+editors and formatters.
+
+**U+202F still has to be documented, for a different reason.** `Intl.NumberFormat` with
+`cs-CZ` emits U+202F as the thousands separator — so it appears in *generated* output whether
+we ask for it or not. `authoring.md` must warn that code and tests may not assume an ASCII
+space when parsing or comparing formatted numbers. That is a consumption rule, not an
+authoring one.
+
+Existing `&nbsp;` uses are mostly layout indentation rather than number–unit binding. That is
+a separate misuse; this spec neither depends on it nor fixes it.
 
 Presented as patterns to copy. No code is changed by this spec.
 
@@ -207,7 +245,7 @@ an explicit line stating that `docs/notation/` is canonical if the two ever disa
 **The five hard rules** — the ones that must be known without opening anything else:
 
 1. Quantity symbol italic, unit upright: `<var>p</var><sub>celk</sub>`, `bar` never italic.
-2. Non-breaking space between number and unit: `20 m`, never `20m`.
+2. Non-breaking space between number and unit, written `&nbsp;`: `20&nbsp;m`, never `20m`.
 3. Decimal comma in Czech content: `2,81 bar`, never `2.81 bar`.
 4. Pressure is lowercase *p*; partial pressure is *p*<sub>O₂</sub>, not `ppO2`.
 5. Multi-letter abbreviations upright: GF, MOD, NDL, SAC, OTU.
@@ -286,14 +324,12 @@ Commit message convention: `docs(notation): …`, matching `docs(wiki):` and `do
 Steps 1–3 are separable and reviewable on their own. Step 5 is last so the pointers describe
 documents that already exist.
 
-## Open Questions / To Settle During Planning
+## Open Questions
 
-- **Czech diving terminology is the one weak spot.** Official SPČR/CMAS ČR materials were
-  unreachable during research (federation sites down, `spms.cz` PDF unparseable), so the
-  Czech terms rest on secondary sources. The glossary should mark these entries as
-  provisional and ask the garant to confirm them — he is exactly the right person.
-- Whether ČSN 01 6910:2014 mandates the narrow U+202F specifically or a non-breaking space
-  generally. ÚJČ says non-breaking, the SI Brochure says thin. `authoring.md` should present
-  U+202F as a recommendation, not a requirement.
-- Whether the garant wants to review the documents before or after they land on `main`.
-  Landing first and opening a review issue is cheaper and keeps the work visible.
+None. The three questions raised during design are settled:
+
+| Question | Resolution |
+|---|---|
+| Czech diving terminology rests on weak sources | Out of scope — this spec covers physics notation, not vocabulary. #58/#59 stay open separately. |
+| U+00A0 or U+202F? | `&nbsp;` (U+00A0), matching the 67 existing uses. U+202F documented only as generated `Intl` output. See D1. |
+| Garant review before or after merge? | After. The work lands on `main` and he sees the finished product; his review does not block. |
