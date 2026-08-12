@@ -95,8 +95,13 @@ Doslovné znění:
 > — NIST SP 811, §10.2
 
 IUPAC (Mills & Metanomski, *On the Use of Italic and Roman Fonts for Symbols in Scientific
-Text*, IUPAC IDCNS, shrnující Green Book §1.6) dodává praktický test, který je snazší si
-zapamatovat než formální znění:
+Text*, IUPAC IDCNS) dodává praktický test, který je snazší si zapamatovat než formální
+znění. Samotný Green Book (3. vyd., §1.6) nebyl pro tento citát ověřen z prvního zdroje —
+plný text je jen v placené/vázané podobě mimo běžný webový přístup. Citát níže je doslovný
+z IDCNS poznámky, která sama uvádí, že shrnuje pravidlo z Green Booku (str. 5–6); ověřen byl
+z archivované kopie (`old.iupac.org` vrací pro automatizované dotazy 403, proto přes
+Wayback Machine — viz [Prameny](#prameny), č. 6), ne z živé stránky ani z Green Booku
+samotného:
 
 > „A good general rule is that **quantities, or variables, can be given a value, but labels
 > cannot**."
@@ -107,7 +112,7 @@ zapamatovat než formální znění:
 |---|---|---|---|
 | *p*<sub>amb</sub> | „amb" = zkratka slova *ambient* | štítek, nelze mu přiřadit hodnotu | stojatě |
 | *p*<sub>N₂</sub> | chemická značka | štítek | stojatě |
-| *c*<sub>*p*</sub> | „p" = **tlak**, tedy veličina | lze přiřadit hodnotu (např. 1 bar) | **kurzívou** |
+| *c*<sub>*p*</sub> | „p" = **tlak**, tedy veličina | lze přiřadit hodnotu (např. 1&nbsp;bar) | **kurzívou** |
 | *a*<sub>*i*</sub> | „i" = číslo kompartmentu, běžící index | lze přiřadit hodnotu (1, 2, 3…) | **kurzívou** |
 
 Past, na kterou test přesně cílí: *p*<sub>t</sub> (tkáňový tlak — „t" = *tissue*, popisný
@@ -260,7 +265,7 @@ za běhu, ne autorského zápisu — řeší ji `authoring.md`, ne tento dokumen
 | `10–20&nbsp;m` (pomlčka U+2013, bez mezer, pak nedělitelná mezera + jednotka) | ✅ |
 | ✗ `10-20 m` (spojovník U+002D místo pomlčky) | špatně |
 | ✗ `10 – 20 m` (pomlčka s mezerami u číselného rozsahu) | špatně |
-| `hloubka 30 m – hladina` (víceslovný člen, s mezerami) | ✅ |
+| `hloubka 30&nbsp;m – hladina` (víceslovný člen, s mezerami) | ✅ |
 
 ### 4.4 Znaménko minus
 
@@ -281,15 +286,40 @@ textu:
 ### 4.5 Násobení
 
 - **×** (U+00D7) — v aritmetice a rozměrech: `20 × 5 = 100`, `3&nbsp;m × 4&nbsp;m`
-- **·** (U+00B7) — v součinech veličin a jednotek: *p* = *ρ*·*g*·*h*, `5&nbsp;g·m⁻³`
+- **·** (U+00B7) — v součinech veličin: *p* = *ρ*·*g*·*h*
+- **·** (U+00B7) — ve složených značkách jednotek vzniklých násobením: `5&nbsp;g·m⁻³`
 - `*` a písmeno `x` — nikdy v odborném textu (jen v korespondenci, viz §4.4)
 
-NIST SP 811 §10.5.4 dodává, proč čeština (na rozdíl od angličtiny) preferuje tečku na
-střední výšce:
+Tyto dva případy s tečkou na střední výšce dokládají dvě různé kapitoly NIST SP 811, ne
+jedna — jde o odlišná pravidla, každé s jiným rozsahem platnosti.
+
+**Součin značek jednotek** (`5 g·m⁻³`) řídí kapitola 6, ne kapitola 10 — a tady je tečka
+upřednostněna bezpodmínečně, nezávisle na desetinné čárce vs. tečce:
+
+> „Symbols for units formed from other units by multiplication are indicated by means of
+> either a half-high (that is, centered) dot or a space. However, this Guide… prefers the
+> half-high dot because it is less likely to lead to confusion."
+> — NIST SP 811, §6.1.5
+
+**Součin značek veličin** (*p* = *ρ*·*g*·*h*) řídí §10.5.4, konkrétně jeho poznámka 2, která
+tečku na střední výšce výslovně povoluje jako jeden ze způsobů zápisu:
+
+> „The multiplication of quantity symbols (or numbers in parentheses or values of
+> quantities in parentheses) may be indicated in one of the following ways: *ab*, *a b*,
+> *a*·*b*, *a* × *b*."
+> — NIST SP 811, §10.5.4, poznámka 2
+
+Pozor, §10.5.4 samotné (hlavní text i poznámka 1) se týká násobení **čísel a hodnot
+veličin**, ne značek jednotek — a v tomto případě NIST dokonce preferuje křížek (×), i
+v prostředí s desetinnou čárkou:
 
 > „When the comma is used as the decimal marker, the preferred sign for the multiplication
-> of numbers is the half-high dot."
-> — NIST SP 811, §10.5.4
+> of numbers is the half-high dot. However, even when the comma is so used, this Guide
+> prefers the cross for the multiplication of values of quantities."
+> — NIST SP 811, §10.5.4, poznámka 1
+
+§10.5.4 tedy **nelze** použít jako důvod pro tečku u `5&nbsp;g·m⁻³` — to je věc §6.1.5.
+Případná záměna těchto dvou kapitol byla chyba v dřívější verzi tohoto dokumentu.
 
 ### 4.6 Procenta — mezera mění význam
 
@@ -375,7 +405,7 @@ používá `T_{1/2}` (velké *T*, navíc kurzívou vysázený index v LaTeXu, vi
 index „1/2" je číslo, tedy popisný, měl by být stojatě).
 
 ***τ* (tau) je jiná veličina** — časová konstanta, vázaná vztahem *t*<sub>1/2</sub> =
-*τ*·ln 2 — a nelze ji s *t*<sub>1/2</sub> zaměňovat.
+*τ* · ln 2 — a nelze ji s *t*<sub>1/2</sub> zaměňovat.
 
 **Volba: *t*<sub>1/2</sub>** — malé kurzívní *t*, stojatý číselný index. Používáme
 Bühlmannovu vlastní notaci místo vlastního novotvaru; sjednotit i ve wiki.
@@ -401,8 +431,10 @@ oficiální otázky SPČR — jde o citaci zadání, ne o nekonzistenci (viz §4
    ČSN EN ISO 80000-9 (fyzikální chemie) — stejná řada, stejný vydavatel.
 3. ČSN 01 6910:2014, Úprava dokumentů zpracovaných textovými procesory — ÚJČ AV ČR:
    <https://ujc.cas.cz/en/expertni-cinnost/czech-national-standard-csn-01-6910-version-2014/>
-4. NIST SP 811 (2008), *Guide for the Use of the International System of Units*, kap. 7
-   „Rules and Style Conventions for Expressing Values of Quantities":
+4. NIST SP 811 (2008), *Guide for the Use of the International System of Units*, kap. 6
+   „Rules and Style Conventions for Printing and Using Units" (§6.1.5):
+   <https://www.nist.gov/pml/special-publication-811/nist-guide-si-chapter-6-rules-and-style-conventions-printing-and-using>;
+   kap. 7 „Rules and Style Conventions for Expressing Values of Quantities":
    <https://www.nist.gov/pml/special-publication-811/nist-guide-si-chapter-7-rules-and-style-conventions-expressing-values>;
    kap. 10 „More on Printing and Using Symbols and Numbers" (§10.1, §10.2, §10.5.4):
    <https://www.nist.gov/pml/special-publication-811/nist-guide-si-chapter-10-more-printing-and-using-symbols-and-numbers>
@@ -410,10 +442,16 @@ oficiální otázky SPČR — jde o citaci zadání, ne o nekonzistenci (viz §4
    <https://prirucka.ujc.cas.cz/?id=785>; §880 „Nevhodné výrazy na konci řádků":
    <https://prirucka.ujc.cas.cz/?id=880>; §791 „Členění čísel… a desetinná čísla":
    <https://prirucka.ujc.cas.cz/?id=791>; §165 „Pomlčka": <https://prirucka.ujc.cas.cz/?id=165>
-6. IUPAC Green Book, 3. vyd. (2007), §1.6 — volně dostupné:
-   <https://iupac.org/what-we-do/books/greenbook/> (zrcadlo: <https://archive.org/details/QuantitiesUnitsAndSymbolsInPhysicalChemistry3RdEdRscIupac2007>);
-   Mills I. M., Metanomski W. V., *On the Use of Italic and Roman Fonts for Symbols in
-   Scientific Text*, IUPAC IDCNS (souhrn a citovaný test „value vs. label").
+6. IUPAC Green Book, 3. vyd. (2007), §1.6 — obecná reference, primární text nebyl pro citát
+   v §2.3 ověřen z prvního zdroje (dostupný jen v placené/vázané podobě): volně dostupný
+   odkaz <https://iupac.org/what-we-do/books/greenbook/> (zrcadlo:
+   <https://archive.org/details/QuantitiesUnitsAndSymbolsInPhysicalChemistry3RdEdRscIupac2007>).
+   Citát „value vs. label" v §2.3 je doslovně z Mills I. M., Metanomski W. V., *On the Use
+   of Italic and Roman Fonts for Symbols in Scientific Text*, IUPAC IDCNS — tato poznámka
+   sama uvádí, že shrnuje Green Book str. 5–6. Živá stránka `old.iupac.org` vrací pro
+   automatizované dotazy 403; citát byl ověřen z archivované kopie:
+   <https://web.archive.org/web/20200121182850/http://old.iupac.org/standing/idcns/italic_roman.html>
+   — tedy přes sekundární/archivní cestu, ne přímým čtením Green Booku.
 7. N. Higham, „Typesetting Mathematics According to the ISO Standard" (2016) — obecný
    kontext k italice/stojatému písmu podle ISO 80000-2 (jednopísmenné konstanty *e*, *i*),
    necituje se jako zdroj argumentu o víceznakových zkratkách v §2.4:
@@ -429,3 +467,9 @@ oficiální otázky SPČR — jde o citaci zadání, ne o nekonzistenci (viz §4
     Jiří Hovorka, 17. 6. 2026 (zdroj rozhodnutí v §2.3 a v [Rozhodnutí projektu](#rozhodnutí-projektu) č. 1–2).
 12. `docs/notation/_research-source.md` — fáze 1 rešerše, ze které tento dokument čerpá;
     smazána v pozdějším kroku plánu, viz poznámka v jejím záhlaví.
+13. IUPAC Gold Book (*Compendium of Chemical Terminology*), heslo „pressure, p":
+    <https://goldbook.iupac.org/terms/view/P04819> (doi: 10.1351/goldbook.P04819) — jiná
+    publikace než Green Book v položce 6 výše. `goldbook.iupac.org` vrací pro automatizované
+    dotazy 403; obsah hesla ověřen přes archivovanou kopii:
+    <https://web.archive.org/web/20231004174031/https://goldbook.iupac.org/terms/view/P04819>.
+    Zdroj rozhodnutí v [Rozhodnutí projektu](#rozhodnutí-projektu) č. 1 (malé *p* pro tlak).
