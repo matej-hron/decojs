@@ -49,12 +49,15 @@ Past: *p*<sub>t</sub> (tkáňový tlak, „t" = tissue → stojatě) vs. *c*<sub
 | *g* | tíhové zrychlení | gravitational acceleration | m/s² | — | — | — | — | ISO 80000-3 |
 | *v* | rychlost | velocity | m/min | SI: m/s | — | — | — | ISO 80000-3 |
 | *n* | látkové množství | amount of substance | mol | — | — | — | — | ISO 80000-9 |
-| *R* | molární plynová konstanta | gas constant | — | SI: J/(mol·K) | — | — | — | ISO 80000-9 |
+| *R* | molární plynová konstanta | gas constant | — | SI: J/(mol·K); *R* má i jiný význam, viz §5 | — | — | — | ISO 80000-9 |
 | *c* | koncentrace | concentration | — | SI: mol/m³ | — | — | — | ISO 80000-9 |
 
 > Odchylky české školy od ISO: plocha *S* (ISO: *A*), tíhová síla *F*<sub>G</sub> nebo *G*
 > (ISO: *F*<sub>g</sub>), vztlak *F*<sub>vz</sub> (mezinárodně *F*<sub>A</sub>). Pro
 > českého čtenáře držíme českou variantu a mezinárodní uvádíme v závorce.
+
+> **„Doloženo" je počet výskytů v `js/`, ne počet řádků.** Reprodukce pro daný
+> identifikátor: `grep -roE "\b<identifikátor>\b" js/ | wc -l`.
 
 ## 3. Popisné indexy CZ↔EN
 
@@ -127,6 +130,11 @@ lokalizované indexy si vyžádají jejich převedení do i18n. To je práce fá
 
 > *τ* **není totéž.** Časová konstanta *τ* se váže vztahem *t*<sub>1/2</sub> = *τ* · ln 2.
 > Wiki dnes používá *T*<sub>1/2</sub> — sjednotit na *t*<sub>1/2</sub>.
+
+> *R* **znamená dvě různé veličiny.** V §2 je *R* molární plynová konstanta
+> (J·K⁻¹·mol⁻¹); zde, ve Schreinerově rovnici, je *R* rychlost změny tlaku
+> (bar·min⁻¹). Rozlišuje je jen kontext, nikdy značka — každý vzorec s *R* musí mít
+> kontext jednoznačný.
 
 ## 6. Zkratky
 
