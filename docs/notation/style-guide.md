@@ -166,7 +166,7 @@ Praktické důsledky pro DecoJS:
 | m, s, kg, mol, min | M, S, KG | metr, sekunda, kilogram… nejsou od osob |
 
 **Litr:** `l` i `L` jsou obě mezinárodně platná (16. CGPM, rezoluce 6, 1979). DecoJS volí
-`l` — potvrzuje to česká praxe i stávající obsah kvízů (`15 l`, `87,5 l/min`); volba `l`
+`l` — potvrzuje to česká praxe i stávající obsah kvízů (`15&nbsp;l`, `87,5&nbsp;l/min`); volba `l`
 místo `L` je tedy rozhodnutí projektu v rámci povolené volnosti, ne požadavek normy.
 
 ### 3.2 Veličiny — záměna velikosti písmene mění význam
@@ -293,7 +293,7 @@ textu:
 Tyto dva případy s tečkou na střední výšce dokládají dvě různé kapitoly NIST SP 811, ne
 jedna — jde o odlišná pravidla, každé s jiným rozsahem platnosti.
 
-**Součin značek jednotek** (`5 g·m⁻³`) řídí kapitola 6, ne kapitola 10 — a tady je tečka
+**Součin značek jednotek** (`5&nbsp;g·m⁻³`) řídí kapitola 6, ne kapitola 10 — a tady je tečka
 upřednostněna bezpodmínečně, nezávisle na desetinné čárce vs. tečce:
 
 > „Symbols for units formed from other units by multiplication are indicated by means of
