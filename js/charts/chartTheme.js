@@ -15,6 +15,8 @@
  * their existing Chart instances to pick up the new defaults.
  */
 
+import { currentLang, fmtGroup, localeTag } from '../format.js';
+
 const cssVar = (name, fallback) => {
     if (typeof document === 'undefined') return fallback;
     const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -69,6 +71,13 @@ export function applyChartTheme() {
     Chart.defaults.font.size = t.sizes.xs;
     Chart.defaults.font.weight = 500;
     Chart.defaults.color = c.muted;
+
+    // Chart.js formats its own numeric ticks through Intl and takes the locale
+    // from Chart.defaults.locale, which otherwise falls back to the *browser*
+    // language — a Czech page in an English browser drew "0.5" on the axis.
+    // Charts that supply their own ticks.callback go through formatAxis instead;
+    // this covers every scale that does not.
+    Chart.defaults.locale = localeTag(currentLang());
 
     // Scales — grid lines get the border token and a subtle dash
     Chart.defaults.scale.grid.color = c.grid;
@@ -166,10 +175,10 @@ export function depthGradient(canvasCtx, chartArea, strong, weak) {
 export function formatAxis(v, decimals = 0) {
     const n = Number(v);
     if (!Number.isFinite(n)) return '';
-    return n.toLocaleString(undefined, {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: decimals,
-    });
+    // toLocaleString(undefined, …) follows the *browser* locale, so a Czech
+    // page in an English browser drew "1.5" on the axis next to "1,5" in the
+    // body. fmtGroup follows the app language.
+    return fmtGroup(n, decimals);
 }
 
 /**

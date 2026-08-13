@@ -329,6 +329,57 @@ Výjimka se opravila na „`//` stojí před značkou".
 
 Tři testy, každý ověřen tím, že se chyba nasadila zpátky a test spadl.
 
+### Skupinový oddělovač a osy grafů — hotovo
+
+`toLocaleString()` bez lokalizace sleduje **jazyk prohlížeče**, ne jazyk
+aplikace. Česká stránka v anglickém prohlížeči tak kreslila na osu `0.5`
+vedle `0,5` v textu pod grafem. 6 volání nahrazeno `fmtGroup()`.
+
+`fmtGroup` je záměrně oddělená od `fmtNum`: seskupování tisíců se u malých
+fyzikálních veličin neuplatní, ale u bar-litrů ano. Oddělovač se nehádá,
+bere se z CLDR přes `Intl` — `authoring.md` §6.2 ukazuje, že konkrétní kódový
+bod se liší podle verze dat (čeština U+00A0, francouzština U+202F).
+
+**Chart.js si čísla na osách formátuje sám** a locale bere z
+`Chart.defaults.locale`, které jinak spadne na jazyk prohlížeče. Nastaveno
+z jazyka aplikace, čímž se opravily i osy, které vlastní `ticks.callback`
+nemají. Ověřeno negativně: bez toho řádku hlásí kontrola `0.5`, `1.0`, `1.5`
+na třech stránkách.
+
+Doběrky z třídy poločasu: osy grafů na `tissue-loading.html` psaly `0T`, `1T`.
+Byly na canvasu, kde DOM kontrola nedohlédne — opraveno na `0t½` podle
+pravidla pro sinky bez markupu.
+
+#### Kontrola, která měřila nulu
+
+Předchozí kontrola desetinné čárky hlásila 52/52 čistých kombinací. Byla
+**planá ve dvou vrstvách naráz**:
+
+1. Nastavovala `localStorage` klíč `language`, jenže i18n používá
+   `deco-theory-lang`. Všechny „české" běhy tedy běžely anglicky.
+2. Regulární výraz vyžadoval jednotku **v témže textovém uzlu** jako číslo.
+   Web ale sází `<span>2,41</span> bar`, takže uzel obsahuje jen číslo.
+
+Odhaleno až tím, že se do `format.js` nasadila chyba (čeština bez čárky)
+a kontrola dál hlásila „vše čisté". Poučení do dalších tříd: **zelený výsledek
+kontroly neznamená nic, dokud kontrola neselže na nasazené chybě.**
+
+Přepsaná kontrola počítá, kolik čísel vůbec našla, takže planost je vidět
+na první pohled. Našla 53 zbylých výskytů — viz další sekce.
+
+### Desetinný oddělovač v tabulkách a konstantách — ZBÝVÁ
+
+53 textových uzlů v české verzi stále ukazuje desetinnou tečku:
+
+| Kde | Počet | Co to je |
+|---|---|---|
+| `pressure.html` tabulka tlaku podle nadmořské výšky | 22 | natvrdo zapsaná čísla v HTML |
+| `tissue-loading.html` tabulka rozpustnosti plynů | 14 | totéž |
+| vzorce v sandboxech | 17 | konstanty v řetězcích (`0.0627`, `0.6931`, `1.01325`) |
+
+Poslední skupina je nejnápadnější, protože míchá obojí v jednom řádku:
+`= (4,0133 − 0.0627) · 0,7902`. Vypočtená část čárku má, konstanta vedle ní ne.
+
 ### Desetinný oddělovač ve statickém obsahu — hotovo
 
 31 oprav (PR #89): 6 v `data/quiz-accidents.json` (české výklady psaly `0.16 bar`,
