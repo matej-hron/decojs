@@ -3666,6 +3666,37 @@ describe('i18n notation - canvas strings must not contain HTML entities', () => 
         expect(bad).toEqual([]);
     });
 
+    // Decimal separator follows the language, not the source data. Czech and
+    // Spanish use a comma (ČSN 01 6910 ch. 9.3; SI/RAE), English a point.
+    // The unit lookahead keeps version strings and ratios out of scope, and
+    // the "not exactly three digits" rule keeps the English thousands
+    // separator (`1,000 kPa`) from being read as a decimal comma.
+    const DEC_UNIT = '(?:bar|kPa|MPa|Pa|min|%|°C|m|l)';
+    const decPoint = new RegExp(`(?<![\\d.])\\d+\\.\\d+(?=[\\s\\u00a0]*${DEC_UNIT}\\b)`);
+    const decComma = new RegExp(`(?<![\\d,])\\d+,(?!\\d{3}(?!\\d))\\d+(?=[\\s\\u00a0]*${DEC_UNIT}\\b)`);
+
+    test('decimal separator matches the language: comma in cs/es, point in en', () => {
+        const bad = [];
+        const check = (label, entries, wrong) => {
+            for (const [k, v] of entries) {
+                if (SKIP_KEYS.has(k.split('.').pop())) continue;
+                if (wrong.test(v)) bad.push(`${label} ${k} = ${v.slice(0, 70)}`);
+            }
+        };
+        for (const loc of LOCALES) {
+            check(loc, flatten(load(loc)), loc === 'en' ? decComma : decPoint);
+        }
+        const files = readdirSync(new URL('../data/', import.meta.url))
+            .filter((f) => f.startsWith('quiz-') && f.endsWith('.json'));
+        for (const f of files) {
+            const json = JSON.parse(
+                readFileSync(new URL(`../data/${f}`, import.meta.url), 'utf8')
+            );
+            check(f, flatten(json), /-en\.json$/.test(f) ? decComma : decPoint);
+        }
+        expect(bad).toEqual([]);
+    });
+
     test('all locales agree on which keys exist', () => {        // Known gap: the Spanish privacy policy has not been translated yet.
         // The test still fails on any NEW divergence outside this prefix.
         const KNOWN_UNTRANSLATED = /^privacy\./;

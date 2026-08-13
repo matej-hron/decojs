@@ -278,3 +278,37 @@ otázky ani v možnostech odpovědí. Znění zkouškových otázek se nezměnil
 
 Odhad 15–17 se nepotvrdil; `grep` na `T_{1/2}` i `T_1/2` vrací nulu. Než se
 issue #62 zavře, je potřeba prohledat jiné tvary: `t½`, `halfTime`, `poločas`.
+
+### Desetinný oddělovač ve statickém obsahu — hotovo
+
+31 oprav (PR #89): 6 v `data/quiz-accidents.json` (české výklady psaly `0.16 bar`,
+zatímco `quiz-physics.json` správně `0,16 bar`) a 25 v `locales/es.json`.
+
+Španělština byla **nekonzistentní sama se sebou** — 104× čárka proti 25× tečce.
+Většina odpovídá SI i RAE, takže se sjednotilo na čárku.
+
+Regresní test hlídá **obě** konvence naráz: čárku v cs/es, tečku v en. Dva
+detaily, bez kterých by hlásil falešně pozitivní nálezy:
+
+- **Pohled dopředu na jednotku.** Bez něj by se chytila čísla verzí a poměry.
+- **Skupina, která není přesně tři číslice.** Anglický oddělovač tisíců
+  `1,000 kPa` je správně; bez tohohle rozlišení by se četl jako desetinná čárka.
+
+### Desetinný oddělovač za běhu — ZBÝVÁ
+
+Statický obsah je hotový, ale **vypočtená čísla nikoli**. `js/` má 63 volání
+`toFixed()` a žádné formátování podle jazyka. V české verzi (`lang="cs"`) proto
+sandbox ukazuje `0,16 bar` v textu vedle `0.7511 bar` ve výpočtu.
+
+Změřeno v prohlížeči s `deco-theory-lang=cs`:
+
+| Stránka | čísel s tečkou | s čárkou |
+|---|---|---|
+| `sandbox/haldane.html` | 44 | 1 |
+| `sandbox/tissue-saturation.html` | 8 | 0 |
+| `sandbox/index.html` | 4 | 0 |
+| `sandbox/gas-law.html` | 1 | 1 |
+
+Grep tohle nenajde — čísla vznikají až za běhu. Oprava není textová: potřebuje
+formátovací funkci závislou na jazyce a přepojení volajících míst, včetně
+popisků a tooltipů Chart.js. Samostatný PR.
