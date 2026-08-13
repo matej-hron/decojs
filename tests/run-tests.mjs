@@ -3713,6 +3713,61 @@ describe('i18n notation - canvas strings must not contain HTML entities', () => 
     });
 });
 
+describe('notation - half-time symbol t_1/2', () => {
+    // Glossary: kanonický tvar je *t*(1/2) — malé kurzívní t, stojatý index.
+    // Velké T je Bühlmannova notace uvedená v tabulce chyb.
+    const SHIPPED = [
+        'sandbox/haldane.html', 'sandbox/schreiner.html', 'sandbox/m-values.html',
+        'sandbox/gradient-factors.html', 'tissue-loading.html', 'm-values.html',
+        'locales/cs.json', 'locales/en.json', 'locales/es.json',
+    ];
+
+    test('no shipped file writes the half-time symbol with a capital T', () => {
+        const offenders = [];
+        for (const rel of SHIPPED) {
+            const text = readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
+            text.split('\n').forEach((line, i) => {
+                // U+00BD i zapsaný index — obojí za velkým T je chyba.
+                if (/T(?:\u00bd|<sub>\s*(?:\u00bd|1\/2)\s*<\/sub>|_\{1\/2\})/.test(line)) {
+                    offenders.push(`${rel}:${i + 1}  ${line.trim().slice(0, 80)}`);
+                }
+            });
+        }
+        expect(offenders).toEqual([]);
+    });
+
+    test('markup contexts use <var>t</var><sub>1/2</sub>, not a bare vulgar fraction', () => {
+        // U+00BD smí zůstat jen tam, kde značku nelze vysázet: <option> a JS
+        // komentáře. Kdekoli jinde v HTML/JSON je to nesjednocený zápis.
+        const offenders = [];
+        for (const rel of SHIPPED) {
+            const text = readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
+            text.split('\n').forEach((line, i) => {
+                const at = line.indexOf('\u00bd');
+                if (at === -1) return;
+                // Komentář smí značku psát zkratkou — čte ji vývojář, ne uživatel.
+                const comment = line.search(/(?:^|\s)\/\//);
+                if (comment !== -1 && comment < at) return;
+                if (line.includes('<option')) return;
+                offenders.push(`${rel}:${i + 1}  ${line.trim().slice(0, 80)}`);
+            });
+        }
+        expect(offenders).toEqual([]);
+    });
+
+    test('all three languages agree on the half-time spelling', () => {
+        const canonical = '<var>t</var><sub>1/2</sub>';
+        const counts = ['cs', 'en', 'es'].map(lang => {
+            const raw = readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8');
+            return raw.split(canonical).length - 1;
+        });
+        // Jazyková parita: chybí-li oprava v jednom jazyce, čísla se rozejdou.
+        expect(counts[0]).toBe(counts[1]);
+        expect(counts[1]).toBe(counts[2]);
+        expect(counts[0] > 0).toBe(true);
+    });
+});
+
 describe('format - decimal separator at runtime', () => {
     test('decimalSeparator follows the language, region subtag ignored', () => {
         expect(decimalSeparator('cs')).toBe(',');

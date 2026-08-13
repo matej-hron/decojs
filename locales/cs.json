@@ -1692,7 +1692,7 @@
                 },
                 "exp": {
                     "name": "e<sup>−kt</sup> | „kolik ještě zbývá“",
-                    "why": "1,0 v čase t=0, klesá k 0. Každý poločas T½ ubude polovina."
+                    "why": "1,0 v čase t=0, klesá k 0. Každý poločas <var>t</var><sub>1/2</sub> ubude polovina."
                 }
             }
         },
@@ -1832,25 +1832,25 @@
                 "heading": "Odkud pocházejí a a b?",
                 "anchor": "Koeficienty a a b varianty ZH-L16A nejsou odvozeny empiricky — počítají se pouze z poločasu. Varianty B a C jsou manuálně upravené podle statistické korelace z pozorovaných incidentů.",
                 "inputs": {
-                    "halfTime": "Poločas t½ (min)",
-                    "halfTimeShort": "t½ (min)",
-                    "halfTimeExact": "Přesný t½",
+                    "halfTime": "Poločas <var>t</var><sub>1/2</sub> (min)",
+                    "halfTimeShort": "<var>t</var><sub>1/2</sub> (min)",
+                    "halfTimeExact": "Přesný <var>t</var><sub>1/2</sub>",
                     "snapToggle": "Přichytit ke standardním kompartmentům",
                     "snapToggleShort": "Přichytit",
                     "derivCompartment": "Komp"
                 },
                 "cards": {
                     "halfTime": {
-                        "name": "t<sub>½</sub> | poločas",
+                        "name": "<var>t</var><sub>1/2</sub> | poločas",
                         "why": "Charakteristický čas kompartmentu. Není anatomický — jen vzorek na exponenciální stupnici poločasů."
                     },
                     "a": {
-                        "name": "a(t<sub>½</sub>) | úsek M-čáry",
+                        "name": "a(<var>t</var><sub>1/2</sub>) | úsek M-čáry",
                         "why": "Varianty B a C u některých kompartmentů snižují koeficient a — jediné místo, kde do Bühlmanna vstupuje statistika."
                     },
                     "b": {
-                        "name": "b(t<sub>½</sub>) | sklon M-čáry (1/b)",
-                        "why": "Identické pro A/B/C kromě TC1 (u nějž změna t½ mění i b)."
+                        "name": "b(<var>t</var><sub>1/2</sub>) | sklon M-čáry (1/b)",
+                        "why": "Identické pro A/B/C kromě TC1 (u nějž změna <var>t</var><sub>1/2</sub> mění i b)."
                     }
                 },
                 "delta": {
@@ -1859,9 +1859,9 @@
                     "deltaSymbol": "Δ"
                 },
                 "legend": {
-                    "a": "křivka a(t½) + 16 uložených hodnot (body)",
-                    "b": "křivka b(t½) + 16 uložených hodnot (body)",
-                    "cursor": "Pozice posuvníku (aktuální t½)"
+                    "a": "křivka a(<var>t</var><sub>1/2</sub>) + 16 uložených hodnot (body)",
+                    "b": "křivka b(<var>t</var><sub>1/2</sub>) + 16 uložených hodnot (body)",
+                    "cursor": "Pozice posuvníku (aktuální <var>t</var><sub>1/2</sub>)"
                 }
             },
             "crossLinks": {

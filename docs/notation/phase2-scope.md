@@ -274,10 +274,60 @@ rodinu (`locales/{cs,en,es}.json`, `data/quiz-X{,-en,-es}.json`). Rozdíl:
 Všech 27 českých výskytů bylo ve `explanation` — v našem výkladu, ne v zadání
 otázky ani v možnostech odpovědí. Znění zkouškových otázek se nezměnilo.
 
-### `T_{1/2}` — změřeno 0 výskytů
+### Poločas `t`(1/2) — hotovo
 
-Odhad 15–17 se nepotvrdil; `grep` na `T_{1/2}` i `T_1/2` vrací nulu. Než se
-issue #62 zavře, je potřeba prohledat jiné tvary: `t½`, `halfTime`, `poločas`.
+Odhad 15–17 výskytů se nepotvrdil a **první měření na `T_{1/2}` vrátilo nulu**.
+Nula ale znamenala jen to, že se hledal špatný tvar: projekt značku psal `T½`
+a `t<sub>½</sub>`, tedy s vulgárním zlomkem U+00BD. Skutečný rozsah byl **77
+výskytů** v 8 souborech. Poučení pro další třídy: než se issue zavře na základě
+nuly, musí se prohledat i tvary, které se ke stejnému významu píší jinak.
+
+Chyba byla dvojí:
+
+- **velké `T`** — Bühlmannova notace, glossary ji uvádí v tabulce chyb;
+- **`½` místo indexu `1/2`** — U+00BD je kompatibilní znak s rozkladem
+  `<fraction> 1 ⁄ 2`, tedy stejná kategorie jako `℃` (U+2103), kterou glossary
+  za chybu označuje už dřív. V `T½` navíc ½ nebyl index vůbec — sázel se
+  v plné velikosti vedle značky.
+
+Sjednoceno na `<var>t</var><sub>1/2</sub>`: 33 řetězců v locales (11 klíčů ×
+3 jazyky, parita seděla), 22 v HTML.
+
+#### Zápis se řídí sinkem, ne vkusem
+
+Ne každé místo `<sub>` unese. Tvar se proto liší podle sinku — stejná úvaha,
+jakou projekt už používá u `&nbsp;` proti doslovnému U+00A0. Pravidlo je nově
+v `authoring.md` §5b.
+
+| Sink | Zápis |
+|---|---|
+| HTML a `locales/*.json` (jdou do `innerHTML`) | `<var>t</var><sub>1/2</sub>` |
+| KaTeX | `t_{1/2}` — už bylo správně |
+| SVG `<text>` | dva `<tspan>` (kurzíva + posun `dy`) |
+| `<option>` | `t½` — obsah je podle specifikace jen text |
+
+Sink u locales se neodhadoval: `applyTranslations()` přiřazuje `el.innerHTML`
+a žádné JS těch 11 klíčů nečte do `textContent`.
+
+#### Co odhalil až prohlížeč
+
+- **`dy` posouvá i následující obsah.** Popisek osy `t(1/2) (min, log)` měl
+  závorku posazenou o výšku indexu níž. Suffix musí baseline vrátit opačným
+  `dy`; ověřeno tím, že spodní hrana prvního a posledního `<tspan>` sedí na
+  1930 px, zatímco index je na 1933.
+- **Značky ve Schreinerovi se při výchozím stavu vůbec nekreslí** —
+  `Math.floor(tMax / t½)` je 0, protože segment má 3 min a nejrychlejší tkáň
+  5 min. Kód by tak zůstal neověřený; bylo nutné nastavit rychlost 0 m/min
+  a segment 40 min, teprve pak se vykreslilo 5 značek.
+
+#### Past ve vlastním testu
+
+Výjimka pro komentáře byla napsaná jako „řádek začíná `//`", jenže
+`halfTime: 38.3,    // …t½` je komentář **na konci řádku**. Test tenhle řádek
+nahlásil — a měl pravdu, protože skript do něj předtím markup opravdu vložil.
+Výjimka se opravila na „`//` stojí před značkou".
+
+Tři testy, každý ověřen tím, že se chyba nasadila zpátky a test spadl.
 
 ### Desetinný oddělovač ve statickém obsahu — hotovo
 
