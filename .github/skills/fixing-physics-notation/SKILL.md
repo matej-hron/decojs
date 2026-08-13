@@ -59,6 +59,7 @@ každou přes všechny soubory z Kroku 1.
 | 1 | číslo + jednotka | `20m`, `20 m` (obyčejná mezera) | `20&nbsp;m` v HTML, `20`+U+00A0+`m` v JSON |
 | 1b | oddělovač tisíců | `600 000 Pa` (obyčejná mezera) | `600`+nbsp+`000`+nbsp+`Pa` — přepínač `--thousands` |
 | 2 | desetinná tečka v CZ | `2.81 bar` | `2,81` + nedělitelná mezera + `bar` |
+| 2b | desetinná tečka ve **vypočteném** čísle | `x.toFixed(2)` | `fmtNum(x, 2)` z `js/format.js` |
 | 3 | značka tlaku | `P_{amb}`, `P<sub>amb</sub>`, `p<sub>amb</sub>` bez kurzívy | `p_{\mathrm{amb}}`, `<var>p</var><sub>amb</sub>` — hromadně `psym.py` |
 | 3b | parciální tlak | `<em>pp</em>O₂`, `ppO2`, `F_{O_2}` | `<var>p</var><sub>O₂</sub>`, `f_{\mathrm{O_2}}` — hromadně `ppres.py` |
 | 4 | kurzíva značky | `<em>p</em>` **jako značka** | `<var>p</var>` |
@@ -96,6 +97,25 @@ for f in subprocess.run(['git','diff','--name-only'],capture_output=True,text=Tr
     print(f'{f:34} {"jen mezery OK" if ok else "JINA ZMENA - zkontroluj"}')
 PY
 ```
+
+## Vypočtená čísla se nedají grepovat
+
+Třída 2 má dvě poloviny. Statický text v `locales/` a `data/` najde grep.
+**Číslo, které vznikne až za běhu, ne** — v repu není, dokud stránka neběží.
+
+Formátuj přes `fmtNum(value, decimals)` z `js/format.js`, nikdy přes `toFixed()`.
+Test `no shipped page formats a display number with raw toFixed` drží rozpočet
+zbylých `toFixed()` po souborech, takže nové volání test pojmenuje.
+
+Čárka **není** typografie, ale neplatná hodnota, a `toFixed()` tam musí zůstat:
+
+- geometrie SVG — `setAttribute('cy', …)`, `d`, `points`, `x1`/`y1`
+- `<input type="number">.value`
+- cokoli, co se čte zpátky přes `parseFloat`
+- CSS délky a parametry v URL
+
+Pozor: hodnota přiřazená do proměnné a použitá o řádek dál vypadá neškodně.
+Konzole to pozná (`<line> attribute y1: Expected length, "11,82"`), grep ne.
 
 ## Locale JSON uprav jako text, ne jako JSON
 
@@ -164,8 +184,12 @@ a `*.json: U+00A0 between value and unit` v `tests/run-tests.mjs`.
 
 ## Krok 3 — Ověření
 
+Stránku **otevři v prohlížeči**. Ani jeden ze tří skriptů neuvidí, co se
+vykreslí až za běhu; popisky Chart.js jsou navíc na canvasu, ne v DOM
+(vyvolej je přes `chart.tooltip.setActiveElements()`).
+
 ```bash
-npm test          # musí projít celé (287/287)
+npm test          # musí projít celé (294/294)
 git diff --stat   # sedí seznam souborů z Kroku 1?
 
 # diff nesmí obsahovat formátovací šum
@@ -202,7 +226,7 @@ Norma: <odkaz do style-guide.md, proč je nový tvar správný>
 ## Ponecháno záměrně
 - `60°` (úhel se píše bez mezery), `12litrový` (složenina)
 
-**Testy:** 287/287 ✅
+**Testy:** 294/294 ✅
 ```
 
 Report musí odpovídat na otázku „co jsi kontroloval a nenašel", ne jen

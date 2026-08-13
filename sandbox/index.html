@@ -893,7 +893,7 @@
                     icon: '⚠️',
                     message: fmt(
                         translate('warnings.cnsToxicityBottom', 'CNS toxicity risk: ppO₂ = {0} bar at {1}m during bottom (max 1.6)'),
-                        maxPpO2Bottom.toFixed(2), maxPpO2BottomDepth.toFixed(0)
+                        fmtNum(maxPpO2Bottom, 2), fmtNum(maxPpO2BottomDepth, 0)
                     )
                 });
             } else if (maxPpO2Bottom > 1.4) {
@@ -902,7 +902,7 @@
                     icon: '⚡',
                     message: fmt(
                         translate('warnings.highPpO2Bottom', 'High ppO₂: {0} bar at {1}m during bottom (limit 1.4 for working dives)'),
-                        maxPpO2Bottom.toFixed(2), maxPpO2BottomDepth.toFixed(0)
+                        fmtNum(maxPpO2Bottom, 2), fmtNum(maxPpO2BottomDepth, 0)
                     )
                 });
             }
@@ -914,7 +914,7 @@
                     icon: '⚠️',
                     message: fmt(
                         translate('warnings.cnsToxicityDeco', 'CNS toxicity risk: ppO₂ = {0} bar at {1}m during deco (max 1.6)'),
-                        maxPpO2Deco.toFixed(2), maxPpO2DecoDepth.toFixed(0)
+                        fmtNum(maxPpO2Deco, 2), fmtNum(maxPpO2DecoDepth, 0)
                     )
                 });
             }
@@ -925,7 +925,7 @@
                     icon: '💨',
                     message: fmt(
                         translate('warnings.hypoxiaRisk', 'Hypoxia risk: ppO₂ = {0} bar (min 0.16)'),
-                        minPpO2.toFixed(2)
+                        fmtNum(minPpO2, 2)
                     )
                 });
             }
@@ -937,7 +937,7 @@
                     icon: '🍺',
                     message: fmt(
                         translate('warnings.narcosisWarning', 'Narcosis warning: ppN₂ = {0} bar at {1}m (equivalent to {2}m on air)'),
-                        maxPpN2.toFixed(2), maxPpN2Depth.toFixed(0), ((maxPpN2 - 0.79) / 0.079).toFixed(0)
+                        fmtNum(maxPpN2, 2), fmtNum(maxPpN2Depth, 0), fmtNum(((maxPpN2 - 0.79) / 0.079), 0)
                     )
                 });
             } else if (maxPpN2 > 3.2) {
@@ -946,7 +946,7 @@
                     icon: '🍻',
                     message: fmt(
                         translate('warnings.mildNarcosis', 'Mild narcosis possible: ppN₂ = {0} bar at {1}m'),
-                        maxPpN2.toFixed(2), maxPpN2Depth.toFixed(0)
+                        fmtNum(maxPpN2, 2), fmtNum(maxPpN2Depth, 0)
                     )
                 });
             }
@@ -958,7 +958,7 @@
                     icon: '🚫',
                     message: fmt(
                         translate('warnings.ceilingViolation', 'Ceiling violation: Surfaced {0}m above ceiling ({1} data points)'),
-                        maxCeilingViolation.toFixed(1), ceilingViolationCount
+                        fmtNum(maxCeilingViolation, 1), ceilingViolationCount
                     )
                 });
             }
@@ -968,7 +968,7 @@
             const tankConsumption = new Map();
             gases.forEach(gas => {
                 tankConsumption.set(gas.id, {
-                    name: gas.name || `${(gas.o2 * 100).toFixed(0)}/${(gas.he * 100).toFixed(0)}`,
+                    name: gas.name || `${fmtNum((gas.o2 * 100), 0)}/${fmtNum((gas.he * 100), 0)}`,
                     startPressure: gas.startPressure || 200,
                     cylinderVolume: gas.cylinderVolume || 12,
                     consumed: shared.consumedByGasId[gas.id] || 0,
@@ -1579,6 +1579,7 @@
                 return `// Embed this chart in a theory page:
 import { DiveProfileChart } from './charts/DiveProfileChart.js';
 
+        import { fmtNum } from '../js/format.js';
 const config = ${configStr};
 
 const chart = new DiveProfileChart(

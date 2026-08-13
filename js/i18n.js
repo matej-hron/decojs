@@ -139,6 +139,21 @@ function getInitialLanguage() {
     return detectBrowserLanguage();
 }
 
+// Publish the language on <html lang> at module-evaluation time.
+//
+// `initI18n()` cannot do this on its own: it has to await the locale JSON,
+// and pages render charts synchronously in the same module block. Anything
+// formatting a number before that fetch resolves would read a stale "en" and
+// print "0.75 bar" into an otherwise Czech page (see js/format.js).
+//
+// A module's dependencies evaluate before the importing module's body, so
+// every page that imports i18n.js gets the correct language from the first
+// tick. Detection here is synchronous - localStorage and navigator only.
+if (typeof document !== 'undefined' && typeof localStorage !== 'undefined') {
+    currentLanguage = getInitialLanguage();
+    document.documentElement.lang = currentLanguage;
+}
+
 /**
  * Set the active language and apply translations.
  * Saves preference to localStorage.
@@ -153,6 +168,9 @@ async function setLanguage(lang) {
 
     currentLanguage = lang;
     localStorage.setItem(STORAGE_KEY, lang);
+    // Synchronously, before the fetch: number formatting reads this attribute
+    // and must not lag a language switch by a network round trip.
+    document.documentElement.lang = lang;
 
     const translations = await loadTranslations(lang);
     applyTranslations(translations);

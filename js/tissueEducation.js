@@ -3,6 +3,7 @@
  * Handles gas pathway visualization and half-time concept charts
  */
 
+import { fmtNum } from './format.js';
 // Constants
 const WATER_VAPOR_PRESSURE = 0.0627; // bar at 37°C
 const SURFACE_PRESSURE = 1.01325; // 1 atm exactly
@@ -223,7 +224,7 @@ function initOngassingChart() {
     ongassingChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: initialData.halfTimes.map(t => t.toFixed(1)),
+            labels: initialData.halfTimes.map(t => fmtNum(t, 1)),
             datasets: [
                 {
                     label: 'Tissue ppN₂',
@@ -273,11 +274,11 @@ function initOngassingChart() {
                     callbacks: {
                         title: (items) => `${items[0].label} half-times`,
                         label: (item) => {
-                            const bar = `${item.dataset.label}: ${item.raw.toFixed(2)} bar`;
+                            const bar = `${item.dataset.label}: ${fmtNum(item.raw, 2)} bar`;
                             if (item.datasetIndex === 0) {
                                 const target = getSaturatedTissuePpN2(currentDepth);
                                 const initial = SURFACE_ALVEOLAR_N2;
-                                const pct = ((item.raw - initial) / (target - initial) * 100).toFixed(1);
+                                const pct = fmtNum(((item.raw - initial) / (target - initial) * 100), 1);
                                 return `${bar} (${pct}% saturated)`;
                             }
                             return bar;
@@ -338,12 +339,12 @@ function updateOngassingChart() {
     const targetPpN2 = getSaturatedTissuePpN2(currentDepth);
     
     if (depthValue) depthValue.textContent = `${currentDepth}m`;
-    if (ppn2Value) ppn2Value.textContent = `(ppN₂ = ${targetPpN2.toFixed(2)} bar)`;
+    if (ppn2Value) ppn2Value.textContent = `(ppN₂ = ${fmtNum(targetPpN2, 2)} bar)`;
     
     const data = calculateOngassing(targetPpN2);
     
     if (ongassingChart) {
-        ongassingChart.data.labels = data.halfTimes.map(t => t.toFixed(1));
+        ongassingChart.data.labels = data.halfTimes.map(t => fmtNum(t, 1));
         ongassingChart.data.datasets[0].data = data.pressures;
         ongassingChart.data.datasets[1].data = data.halfTimes.map(() => targetPpN2);
         ongassingChart.data.datasets[2].data = data.halfTimes.map(() => SURFACE_ALVEOLAR_N2);
@@ -365,7 +366,7 @@ function initOffgassingChart() {
     offgassingChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: initialData.halfTimes.map(t => t.toFixed(1)),
+            labels: initialData.halfTimes.map(t => fmtNum(t, 1)),
             datasets: [
                 {
                     label: 'Tissue ppN₂',
@@ -415,11 +416,11 @@ function initOffgassingChart() {
                     callbacks: {
                         title: (items) => `${items[0].label} half-times`,
                         label: (item) => {
-                            const bar = `${item.dataset.label}: ${item.raw.toFixed(2)} bar`;
+                            const bar = `${item.dataset.label}: ${fmtNum(item.raw, 2)} bar`;
                             if (item.datasetIndex === 0) {
                                 const initial = getSaturatedTissuePpN2(currentDepth);
                                 const target = SURFACE_ALVEOLAR_N2;
-                                const pct = ((initial - item.raw) / (initial - target) * 100).toFixed(1);
+                                const pct = fmtNum(((initial - item.raw) / (initial - target) * 100), 1);
                                 return `${bar} (${pct}% desaturated)`;
                             }
                             return bar;
@@ -485,7 +486,7 @@ function updateOffgassingChart() {
     if (depthDisplay) depthDisplay.textContent = `${currentDepth}m`;
     
     if (offgassingChart) {
-        offgassingChart.data.labels = data.halfTimes.map(t => t.toFixed(1));
+        offgassingChart.data.labels = data.halfTimes.map(t => fmtNum(t, 1));
         offgassingChart.data.datasets[0].data = data.pressures;
         offgassingChart.data.datasets[1].data = data.halfTimes.map(() => SURFACE_ALVEOLAR_N2);
         offgassingChart.data.datasets[2].data = data.halfTimes.map(() => initialTissuePpN2);

@@ -684,6 +684,7 @@
         import { getMValue, getAmbientPressure, SURFACE_PRESSURE } from '../js/decoModel.js';
         import { translate } from '../js/i18n.js';
 
+        import { fmtNum } from '../js/format.js';
         // Page state — variant becomes global in Task 5; for Task 2 it's hardcoded to C.
         const state = {
             depth: 30,
@@ -732,7 +733,7 @@
             COMPARTMENTS.forEach((comp, idx) => {
                 const opt = document.createElement('option');
                 opt.value = idx;
-                opt.textContent = `TC${comp.id} — ${comp.halfTime} min — ${comp.label.split(' - ')[1] || ''}`.trim();
+                opt.textContent = `TC${comp.id} — ${fmtNum(comp.halfTime)} min — ${comp.label.split(' - ')[1] || ''}`.trim();
                 els.compartment.appendChild(opt);
             });
             els.compartment.value = state.compartmentIdx;
@@ -788,13 +789,13 @@
             const a = computeAFromHalfTime(t);
             const b = computeBFromHalfTime(t);
 
-            els.derivHalfTime.textContent = t.toFixed(1);
-            els.derivA.textContent = a.toFixed(4);
-            els.derivB.textContent = b.toFixed(4);
+            els.derivHalfTime.textContent = fmtNum(t, 1);
+            els.derivA.textContent = fmtNum(a, 4);
+            els.derivB.textContent = fmtNum(b, 4);
 
             // Mirror current t½ into the slider readout in the bottom control bar.
             const readout = document.getElementById('mvHalfTimeReadout');
-            if (readout) readout.textContent = t.toFixed(1);
+            if (readout) readout.textContent = fmtNum(t, 1);
 
             // Delta — only when slider is exactly at a standard t½ for the active variant
             const comps = VARIANT_COMPS[state.variant];
@@ -805,8 +806,8 @@
                 const stored = translate('sandbox.mvalues.bottom.delta.stored', 'stored:');
                 const D = translate('sandbox.mvalues.bottom.delta.deltaSymbol', 'Δ');
                 const variantSuffix = state.variant.replace('ZH-L16', '');
-                const aDeltaTxt = `${stored} ${match.comp.aN2.toFixed(4)} (${variantSuffix}, ${D} ${(dA >= 0 ? '+' : '')}${dA.toFixed(4)})`;
-                const bDeltaTxt = `${stored} ${match.comp.bN2.toFixed(4)} (${D} ${(dB >= 0 ? '+' : '')}${dB.toFixed(4)})`;
+                const aDeltaTxt = `${stored} ${fmtNum(match.comp.aN2, 4)} (${variantSuffix}, ${D} ${(dA >= 0 ? '+' : '')}${fmtNum(dA, 4)})`;
+                const bDeltaTxt = `${stored} ${fmtNum(match.comp.bN2, 4)} (${D} ${(dB >= 0 ? '+' : '')}${fmtNum(dB, 4)})`;
                 els.derivADelta.textContent = aDeltaTxt;
                 els.derivBDelta.textContent = bDeltaTxt;
                 els.derivADelta.classList.toggle('nonzero', Math.abs(dA) > 0.0005);
@@ -853,15 +854,15 @@
             const b = comp.bN2;
             const m = getMValue(pAmb, a, b);
 
-            els.formulaA.textContent = a.toFixed(4);
-            els.formulaPamb.textContent = pAmb.toFixed(4);
-            els.formulaB.textContent = b.toFixed(4);
-            els.formulaM.textContent = m.toFixed(4);
+            els.formulaA.textContent = fmtNum(a, 4);
+            els.formulaPamb.textContent = fmtNum(pAmb, 4);
+            els.formulaB.textContent = fmtNum(b, 4);
+            els.formulaM.textContent = fmtNum(m, 4);
 
-            els.aValue.textContent = a.toFixed(4);
-            els.pambValue.textContent = pAmb.toFixed(4);
-            els.bValue.textContent = b.toFixed(4);
-            els.mValue.textContent = m.toFixed(4);
+            els.aValue.textContent = fmtNum(a, 4);
+            els.pambValue.textContent = fmtNum(pAmb, 4);
+            els.bValue.textContent = fmtNum(b, 4);
+            els.mValue.textContent = fmtNum(m, 4);
 
             // Inactive variants' M values, for the compare line in the M card.
             const inactiveSpans = VARIANT_LIST
@@ -873,7 +874,7 @@
                     const sign = dM >= 0 ? '+' : '';
                     const suffix = v.replace('ZH-L16', '');
                     const deltaClass = Math.abs(dM) > 0.0005 ? ' class="delta"' : '';
-                    return `${suffix}: ${mV.toFixed(4)}<span${deltaClass}> (${sign}${dM.toFixed(4)})</span>`;
+                    return `${suffix}: ${fmtNum(mV, 4)}<span${deltaClass}> (${sign}${fmtNum(dM, 4)})</span>`;
                 })
                 .join(' · ');
             els.mCompare.innerHTML = inactiveSpans;
@@ -1131,7 +1132,7 @@
                 const py = aToPx(a);
                 svg.appendChild(svgEl('line', { x1: DERIV_PAD_L - 4, y1: py, x2: DERIV_PAD_L, y2: py, class: 'mv-chart-tick' }));
                 const lbl = svgEl('text', { x: DERIV_PAD_L - 6, y: py + 3, class: 'mv-chart-label', 'text-anchor': 'end', fill: '#e74c3c' });
-                lbl.textContent = a.toFixed(1);
+                lbl.textContent = fmtNum(a, 1);
                 svg.appendChild(lbl);
             }
             // Y-right ticks for b (every 0.1) — integer counter to avoid float drift
@@ -1141,7 +1142,7 @@
                 const py = bToPx(b);
                 svg.appendChild(svgEl('line', { x1: DERIV_W - DERIV_PAD_R, y1: py, x2: DERIV_W - DERIV_PAD_R + 4, y2: py, class: 'mv-chart-tick' }));
                 const lbl = svgEl('text', { x: DERIV_W - DERIV_PAD_R + 6, y: py + 3, class: 'mv-chart-label', 'text-anchor': 'start', fill: '#2980b9' });
-                lbl.textContent = b.toFixed(1);
+                lbl.textContent = fmtNum(b, 1);
                 svg.appendChild(lbl);
             }
 

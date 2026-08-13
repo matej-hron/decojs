@@ -532,58 +532,47 @@ sekce „Jednotky projektu" v `style-guide.md`) tedy `style: 'unit'` **nikdy** n
 použít — ruční konkatenace čísla a jednotky (viz `qty()` níže) není obchvat pro
 okrajový případ, je to **jediná cesta** pro tlak.
 
-### 6.5 `js/format.js` — fáze 2, zatím neexistuje
+### 6.5 `js/format.js` — zavedeno
 
-> Tento modul **zatím neexistuje** v `js/`. Instaluje ho až fáze 2.
-> Diagnóza současného stavu: `js/i18n.js` neobsahuje žádnou logiku
-> formátování čísel; každý graf volá `.toFixed()` přímo na místě formátování a výsledek
-> (s tečkou bez ohledu na jazyk) předává do vlastní kopie obecného `fmt()` — pomocníka
-> nahrazujícího `{0}`/`{1}` zástupné symboly v textu, který sám o sobě s čísly nijak
-> nepracuje; jediné lokalizačně uvědomělé
-> místo je `formatAxis()` v `js/charts/chartTheme.js:166–173`, které volá
-> `toLocaleString()`, ale jen pro popisky os.
+Modul existuje. Formátuj přes něj, `toFixed()` do zobrazovaného čísla nepatří.
 
 ```js
-// js/format.js — návrh, neinstalováno
-import { getCurrentLanguage } from './i18n.js';
+import { fmtNum } from './format.js';   // cesta podle umístění souboru
 
-const LOCALE_MAP = { cs: 'cs-CZ', en: 'en-US', es: 'es-ES' };
-
-function locale() {
-    return LOCALE_MAP[getCurrentLanguage()] ?? 'en-US';
-}
-
-/** Číslo s pevným počtem desetinných míst, lokalizovaný oddělovač. */
-export function num(value, decimals = 1) {
-    return new Intl.NumberFormat(locale(), {
-        minimumFractionDigits: decimals,
-        maximumFractionDigits: decimals,
-    }).format(value);
-}
-
-/** Hodnota + jednotka, oddělené nedělitelnou mezerou. */
-export function qty(value, unit, decimals = 1) {
-    return `${num(value, decimals)}\u00A0${unit}`;
-}
+fmtNum(0.7511, 2)        // "0,75" v cs/es, "0.75" v en
+fmtNum(comp.halfTime)    // bez počtu míst: hodnota se jen lokalizuje
+fmtNum(x, 2, 'en')       // explicitní jazyk (používají testy)
 ```
 
-**Úprava oproti výzkumnému podkladu:** podklad (§9.2) definuje oddělovač hodnota↔jednotka
-jako `NNBSP = '\u202F'`. Tento návrh ho místo toho staví na `\u00A0` — ze dvou
-ověřených důvodů, ne jen kvůli konzistenci s `&nbsp;` v §6.1:
+Jazyk se bere z `document.documentElement.lang`. Ten nastavuje `js/i18n.js`
+**už při vyhodnocení modulu**, ne až po načtení locale JSONu — jinak by se
+prvních pár set milisekund formátovalo podle `en` a grafy, které se vykreslují
+synchronně, by zůstaly s tečkou.
 
-1. §6.2 výše ukazuje, že samo `Intl.NumberFormat('cs-CZ', …)` v ověřeném prostředí
-   jako oddělovač tisíců generuje U+00A0, ne U+202F — použít v `qty()` jiný nedělitelný
-   znak (U+202F) by znamenalo, že jedna vygenerovaná hodnota („2,81&nbsp;bar" s U+00A0
-   z `qty()`, ale „12&nbsp;345" s U+00A0 z `num()` u čtyřciferných čísel) je vnitřně
-   nekonzistentní jen v tomto jednom bodě zápisu, bez zjištěného přínosu.
-2. Zavedení druhého druhu nedělitelné mezery do generovaného výstupu (vedle `&nbsp;`
-   v autorském textu) by v testech vytvořilo přesně tu past, kterou §6.2 popisuje —
-   jen na dalším místě navíc.
+**Kde `fmtNum` nepoužívej.** Vrací *zobrazovací* řetězec. Desetinná čárka je
+neplatná v geometrii SVG, v `<input type="number">.value`, v CSS délkách, v URL
+a všude, kde se hodnota čte zpět přes `parseFloat`.
 
-Toto je poznámka k návrhu pro fázi 2, ne rozhodnutí o zavedeném kódu — modul zatím
-neexistuje a autor fáze 2 se může rozhodnout jinak, pokud pro U+202F najde konkrétní
-opodstatnění (např. self-hosted KaTeX vykreslující `\,` jako U+202F — to ale
-authoring.md needěl).
+#### Odchylky od původního návrhu
+
+Návrh výše (fáze 1) počítal s `Intl.NumberFormat` a s pomocníkem `qty()`.
+Zavedená verze je jiná ve třech bodech:
+
+1. **Bez `Intl.NumberFormat`.** `Intl` by kromě desetinného oddělovače zavedl
+   i **seskupování tisíců** — tedy U+00A0 uvnitř generovaných čísel, přesně ten
+   znak, který testy hlídají v autorském textu (§6.2). Aplikace zobrazuje malé
+   fyzikální veličiny (bar, m, min), kde se skupiny neuplatní, takže by to byla
+   změna výstupu bez užitku a s novou pastí. Prostá záměna oddělovače je navíc
+   deterministická a testovatelná pod Node bez závislosti na verzi ICU.
+2. **Modul nic neimportuje.** Návrh počítal s `getCurrentLanguage()` z
+   `js/i18n.js`. Tím by ale `js/mvalues.js` a spol. — čisté výpočetní moduly
+   importované testy v Node — získaly závislost na prohlížeči. Čtení
+   `document.documentElement.lang` (za `typeof document` guardem) drží
+   jediný zdroj pravdy a nulové vazby.
+3. **`num()` se jmenuje `fmtNum()` a `qty()` není.** `num` je v projektu
+   obsazené jako lokální proměnná a `fmt` je v grafech pomocník na `{0}`/`{1}`.
+   `qty()` by znamenalo přepsat 253 volajících míst dvakrát — jednotka u nich
+   často přichází z překladové šablony, ne z konstanty.
 
 Číselné hodnoty v `data/*.json` se ukládají jako čísla, ne předformátované řetězce —
 formátování patří k vykreslení, ne k datům, jinak se překladatelé musí dotýkat čísel

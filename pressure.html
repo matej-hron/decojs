@@ -605,7 +605,7 @@
                             <li><span class="formula-inline">f_{O_2}</span> = <span data-i18n="partialPressureLimits.mod.fO2">oxygen fraction in the gas (decimal)</span></li>
                         </ul>
                         <h4 data-i18n="partialPressureLimits.mod.exercisesTitle">Exercises: Calculate the MOD (<var>p</var><sub>O₂</sub> = 1.4&nbsp;bar)</h4>
-                        <table class="data-table">
+                        <table class="data-table" id="mod-exercise-table">
                             <thead>
                                 <tr>
                                     <th data-i18n="partialPressureLimits.mod.exGas">Gas</th>
@@ -614,32 +614,7 @@
                                     <th>MOD</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td data-i18n="partialPressureLimits.mod.exAir">Air (21% O₂)</td>
-                                    <td>0.21</td>
-                                    <td><details class="inline-answer"><summary data-i18n="partialPressureLimits.mod.showAnswer">show</summary>(1.4 / 0.21 − 1) × 10</details></td>
-                                    <td><details class="inline-answer"><summary data-i18n="partialPressureLimits.mod.showAnswer">show</summary><strong>56.7&nbsp;m</strong></details></td>
-                                </tr>
-                                <tr>
-                                    <td>EAN32</td>
-                                    <td>0.32</td>
-                                    <td><details class="inline-answer"><summary data-i18n="partialPressureLimits.mod.showAnswer">show</summary>(1.4 / 0.32 − 1) × 10</details></td>
-                                    <td><details class="inline-answer"><summary data-i18n="partialPressureLimits.mod.showAnswer">show</summary><strong>33.8&nbsp;m</strong></details></td>
-                                </tr>
-                                <tr>
-                                    <td>EAN36</td>
-                                    <td>0.36</td>
-                                    <td><details class="inline-answer"><summary data-i18n="partialPressureLimits.mod.showAnswer">show</summary>(1.4 / 0.36 − 1) × 10</details></td>
-                                    <td><details class="inline-answer"><summary data-i18n="partialPressureLimits.mod.showAnswer">show</summary><strong>28.9&nbsp;m</strong></details></td>
-                                </tr>
-                                <tr>
-                                    <td>EAN40</td>
-                                    <td>0.40</td>
-                                    <td><details class="inline-answer"><summary data-i18n="partialPressureLimits.mod.showAnswer">show</summary>(1.4 / 0.40 − 1) × 10</details></td>
-                                    <td><details class="inline-answer"><summary data-i18n="partialPressureLimits.mod.showAnswer">show</summary><strong>25.0&nbsp;m</strong></details></td>
-                                </tr>
-                            </tbody>
+                            <tbody></tbody>
                         </table>
                         <p class="note" data-i18n="partialPressureLimits.mod.exerciseNote">💡 Notice: higher O₂ fraction → shallower MOD. More oxygen means you hit the toxicity limit sooner.</p>
                     </div>
@@ -876,6 +851,7 @@
         import { initTooltipShortcut } from './js/components/tooltipShortcut.js';
         import { initI18n, createLanguageSwitcher } from './js/i18n.js';
 
+        import { fmtNum } from './js/format.js';
         // =====================================================================
         // DIVE PROFILE DEFINITIONS FOR THIS PAGE
         // =====================================================================
@@ -1053,7 +1029,7 @@
                 const cylinderVolume = gas.cylinderVolume || 12;
                 const startPressure = gas.startPressure || 200;
                 gasSummary.tanks.push({
-                    name: gas.name || `${(gas.o2 * 100).toFixed(0)}%`,
+                    name: gas.name || `${fmtNum((gas.o2 * 100), 0)}%`,
                     cylinderVolume,
                     startPressure,
                     endPressure: Math.round(shared.pressureByGasId[gas.id] ?? startPressure),
@@ -1169,11 +1145,52 @@
 
         function getModWarningText(gas) {
             const mod = ((1.4 / gas.fo2) - 1) * 10;
-            const modStr = mod.toFixed(1);
+            const modStr = fmtNum(mod, 1);
             // Try to get translated template, fall back to English
             const el = document.querySelector('[data-i18n="partialPressureLimits.nitrogenLimits.exButModTemplate"]');
             const template = el ? el.textContent : 'but MOD is {mod} m!';
             return template.replace('{mod}', modStr);
+        }
+
+        // MOD exercise table.
+        //
+        // These four answers used to be hardcoded as "56.7 m", "33.8 m", ...
+        // straight in the markup with no data-i18n key, so a Czech reader saw
+        // English decimal points that no translation could reach. They are
+        // exactly computable, so the table is generated instead - the numbers
+        // then follow the active language like every other computed value.
+        const MOD_PPO2_LIMIT = 1.4;
+        const MOD_GASES = [
+            { name: 'Air (21% O₂)', nameKey: 'partialPressureLimits.mod.exAir', fo2: 0.21 },
+            { name: 'EAN32', fo2: 0.32 },
+            { name: 'EAN36', fo2: 0.36 },
+            { name: 'EAN40', fo2: 0.40 }
+        ];
+
+        function renderModTable() {
+            const tbody = document.querySelector('#mod-exercise-table tbody');
+            if (!tbody) return;
+            const showKey = 'partialPressureLimits.mod.showAnswer';
+            // English source text, exactly as the static markup carried it.
+            // applyTranslations() fills every [data-i18n] once the locale
+            // JSON lands, and these rows exist well before that.
+            const showLabel = 'show';
+            const limit = fmtNum(MOD_PPO2_LIMIT, 1);
+            tbody.innerHTML = MOD_GASES.map((gas) => {
+                const fo2 = fmtNum(gas.fo2, 2);
+                const mod = fmtNum((MOD_PPO2_LIMIT / gas.fo2 - 1) * 10, 1);
+                const nameCell = gas.nameKey
+                    ? `<td data-i18n="${gas.nameKey}">${gas.name}</td>`
+                    : `<td>${gas.name}</td>`;
+                const answer = (body) =>
+                    `<td><details class="inline-answer"><summary data-i18n="${showKey}">${showLabel}</summary>${body}</details></td>`;
+                return `<tr>
+                    ${nameCell}
+                    <td>${fo2}</td>
+                    ${answer(`(${limit} / ${fo2} − 1) × 10`)}
+                    ${answer(`<strong>${mod}&nbsp;m</strong>`)}
+                </tr>`;
+            }).join('');
         }
 
         function renderNarcosisTable(ppn2Max) {
@@ -1185,8 +1202,8 @@
             tbody.innerHTML = NARCOSIS_GASES.map(gas => {
                 const maxDepth = ((ppn2Max / gas.fn2) - 1) * 10;
                 const mod = ((1.4 / gas.fo2) - 1) * 10;
-                const calcStr = `(${ppn2Max} / ${gas.fn2.toFixed(2)} − 1) × 10`;
-                const depthStr = `<strong>${maxDepth.toFixed(1)} m</strong>`;
+                const calcStr = `(${fmtNum(ppn2Max, 1)} / ${fmtNum(gas.fn2, 2)} − 1) × 10`;
+                const depthStr = `<strong>${fmtNum(maxDepth, 1)} m</strong>`;
                 const modNote = maxDepth > mod
                     ? ` <span class="mod-warning">${getModWarningText(gas)}</span>`
                     : '';
@@ -1196,7 +1213,7 @@
 
                 return `<tr>
                     ${nameCell}
-                    <td>${gas.fn2.toFixed(2)}</td>
+                    <td>${fmtNum(gas.fn2, 2)}</td>
                     <td><details class="inline-answer"><summary>${showLabel}</summary>${calcStr}</details></td>
                     <td><details class="inline-answer"><summary>${showLabel}</summary>${depthStr}${modNote}</details></td>
                 </tr>`;
@@ -1208,6 +1225,9 @@
             const strictNote = document.getElementById('ppn2-note-strict');
 
             buttons.forEach(btn => {
+                // Label lived in the markup as "4.0 bar". data-limit is the
+                // single source of truth, so render the label from it.
+                btn.textContent = `${fmtNum(parseFloat(btn.dataset.limit), 1)}\u00a0bar`;
                 btn.addEventListener('click', () => {
                     buttons.forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
@@ -1259,6 +1279,7 @@
         setupSandboxLinks();
         setupCNSToggle();
         setupNarcosisSwitch();
+        renderModTable();
         renderMathFormulas();
 
         initStickyTOC();

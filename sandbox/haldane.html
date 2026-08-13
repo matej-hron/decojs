@@ -521,6 +521,7 @@
     <!-- i18n + state -->
     <script type="module">
         import { initI18n, createLanguageSwitcher } from '../js/i18n.js';
+        import { fmtNum } from '../js/format.js';
         import {
             getAmbientPressure,
             getAlveolarN2Pressure,
@@ -576,7 +577,7 @@
         function populateCompartments() {
             const comps = getCompartmentsForVariant(state.variant);
             els.compartment.innerHTML = comps
-                .map((c, i) => `<option value="${i}">${i + 1} | T½ = ${c.halfTime.toFixed(1)} min</option>`)
+                .map((c, i) => `<option value="${i}">${i + 1} | T½ = ${fmtNum(c.halfTime, 1)} min</option>`)
                 .join('');
             els.compartment.value = String(state.compartmentIdx);
         }
@@ -595,13 +596,13 @@
             const M = getMValue(pAmbTarget, comp.aN2, comp.bN2);
 
             // Substituted-formula line
-            document.getElementById('ptValue').textContent = Pt.toFixed(4);
+            document.getElementById('ptValue').textContent = fmtNum(Pt, 4);
             const ptChip = document.getElementById('ptChipValue');
-            if (ptChip) ptChip.textContent = Pt.toFixed(3);
-            document.getElementById('palvNum').textContent = pAlv.toFixed(4);
-            document.getElementById('palvNum2').textContent = pAlv.toFixed(4);
-            document.getElementById('pt0Num').textContent = pT0.toFixed(4);
-            document.getElementById('expNum').textContent = expTerm.toFixed(4);
+            if (ptChip) ptChip.textContent = fmtNum(Pt, 3);
+            document.getElementById('palvNum').textContent = fmtNum(pAlv, 4);
+            document.getElementById('palvNum2').textContent = fmtNum(pAlv, 4);
+            document.getElementById('pt0Num').textContent = fmtNum(pT0, 4);
+            document.getElementById('expNum').textContent = fmtNum(expTerm, 4);
 
             // Term cards
             const F = fN2();
@@ -613,25 +614,25 @@
                 : `= (<var>p</var><sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub>`;
             const palvSubst = state.simplified
                 ? `= (${state.targetDepth}/10 + 1) · ${F}`
-                : `= (${pAmbTarget.toFixed(4)} − 0.0627) · ${F.toFixed(4)}`;
+                : `= (${fmtNum(pAmbTarget, 4)} − 0.0627) · ${fmtNum(F, 4)}`;
             const pt0Subst = state.simplified
                 ? `= (${state.startDepth}/10 + 1) · ${F}`
-                : `= (${pAmbStart.toFixed(4)} − 0.0627) · ${F.toFixed(4)}`;
+                : `= (${fmtNum(pAmbStart, 4)} − 0.0627) · ${fmtNum(F, 4)}`;
 
             document.getElementById('palvSymbolic').innerHTML = palvSymbolic;
             document.getElementById('palvSubst').innerHTML = palvSubst;
-            document.getElementById('palvValue').textContent = pAlv.toFixed(4);
+            document.getElementById('palvValue').textContent = fmtNum(pAlv, 4);
             document.getElementById('pt0Symbolic').innerHTML = pt0Symbolic;
             document.getElementById('pt0Subst').innerHTML = pt0Subst;
-            document.getElementById('pt0Value').textContent = pT0.toFixed(4);
-            document.getElementById('kValue').textContent = k.toFixed(4);
-            document.getElementById('kSubst').textContent = `= 0.6931 / ${halfTime.toFixed(1)}`;
-            document.getElementById('expValue').textContent = expTerm.toFixed(4);
-            document.getElementById('expSubst').innerHTML = `= e<sup>−${k.toFixed(4)} · ${state.t}</sup>`;
+            document.getElementById('pt0Value').textContent = fmtNum(pT0, 4);
+            document.getElementById('kValue').textContent = fmtNum(k, 4);
+            document.getElementById('kSubst').textContent = `= 0.6931 / ${fmtNum(halfTime, 1)}`;
+            document.getElementById('expValue').textContent = fmtNum(expTerm, 4);
+            document.getElementById('expSubst').innerHTML = `= e<sup>−${fmtNum(k, 4)} · ${state.t}</sup>`;
 
             // Saturation: 1 − e^−kt = how much of the gap from Pt0 to Palv is closed.
             const saturationPct = (1 - expTerm) * 100;
-            document.getElementById('saturationValue').textContent = saturationPct.toFixed(1);
+            document.getElementById('saturationValue').textContent = fmtNum(saturationPct, 1);
 
             // Stashed for later tasks (chart, M-value).
             window.__haldane = { halfTime, k, pT0, pAlv, Pt, M, pAmbStart, pAmbTarget, expTerm, t: state.t, aN2: comp.aN2, bN2: comp.bN2 };
@@ -745,14 +746,14 @@
             for (let i = 0; i <= N; i++) {
                 const t = (i / N) * tMax;
                 const Pt = haldaneEquation(pT0, pAlv, t, halfTime);
-                pts.push(`${xOf(t).toFixed(2)},${yOf(Pt).toFixed(2)}`);
+                pts.push(`${(xOf(t)).toFixed(2)},${(yOf(Pt)).toFixed(2)}`);
             }
             chartCurve.setAttribute('d', `M ${pts.join(' L ')}`);
 
-            const yPalv = yOf(pAlv).toFixed(2);
+            const yPalv = (yOf(pAlv)).toFixed(2);
             chartAsymptote.setAttribute('y1', yPalv);
             chartAsymptote.setAttribute('y2', yPalv);
-            const yPt0 = yOf(pT0).toFixed(2);
+            const yPt0 = (yOf(pT0)).toFixed(2);
             chartBaseline.setAttribute('y1', yPt0);
             chartBaseline.setAttribute('y2', yPt0);
 
@@ -786,7 +787,7 @@
                 ticksGroup.appendChild(label);
             }
 
-            const cursorX = xOf(state.t).toFixed(2);
+            const cursorX = (xOf(state.t)).toFixed(2);
             chartCursor.setAttribute('x1', cursorX);
             chartCursor.setAttribute('x2', cursorX);
             const PtNow = window.__haldane.Pt;
@@ -817,8 +818,8 @@
 
         function updateMValueStrip() {
             const { Pt, M, pAmbTarget, aN2, bN2 } = window.__haldane;
-            mvaluePtOut.textContent = Pt.toFixed(4);
-            mvalueOut.textContent = M.toFixed(4);
+            mvaluePtOut.textContent = fmtNum(Pt, 4);
+            mvalueOut.textContent = fmtNum(M, 4);
             const xOfBar = (v) => `${Math.max(0, Math.min(1, v / BAR_MAX)) * 100}%`;
             mvalueMarker.style.left = xOfBar(Pt);
             const mline = document.querySelector('.mvalue-mline');
@@ -837,7 +838,7 @@
             mvalueStatus.classList.toggle('ok', !exceeded);
             // Substituted derivation line
             const deriv = document.getElementById('mvalueDerivation');
-            deriv.innerHTML = `M = a + <var>p</var><sub>amb</sub> / b = ${aN2.toFixed(4)} + ${pAmbTarget.toFixed(4)} / ${bN2.toFixed(4)} = <strong>${M.toFixed(4)}</strong>`;
+            deriv.innerHTML = `M = a + <var>p</var><sub>amb</sub> / b = ${fmtNum(aN2, 4)} + ${fmtNum(pAmbTarget, 4)} / ${fmtNum(bN2, 4)} = <strong>${fmtNum(M, 4)}</strong>`;
         }
 
         // ---------- Bottom control bar collapse toggle ----------

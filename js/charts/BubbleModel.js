@@ -10,6 +10,7 @@
  * When P_tissue < P_amb + 2γ/r → gas diffuses out → bubble would shrink
  */
 
+import { fmtNum } from '../format.js';
 const GAMMA = 0.018; // Surface tension N/m
 
 function laplacePressure(radiusMicrons) {
@@ -133,7 +134,7 @@ export class BubbleModel {
         this._drawDepthScale(mainH);
         this._drawMain(mainH, rowH);
         this._drawTeachingDiagram();
-        this.depthDisplay.textContent = `${this.currentDepth.toFixed(0)}m`;
+        this.depthDisplay.textContent = `${fmtNum(this.currentDepth, 0)}m`;
     }
 
     _drawDepthScale(totalH) {
@@ -190,12 +191,12 @@ export class BubbleModel {
         ctx.font = '10px sans-serif';
         ctx.textAlign = 'left';
         ctx.fillStyle = '#3498db';
-        ctx.fillText(`p_amb = ${pAmb.toFixed(2)} bar`, 10, 14);
+        ctx.fillText(`p_amb = ${fmtNum(pAmb, 2)} bar`, 10, 14);
         ctx.fillStyle = '#2ecc71';
-        ctx.fillText(`p_tissue = ${pTissue.toFixed(2)} bar (fixed)`, 140, 14);
+        ctx.fillText(`p_tissue = ${fmtNum(pTissue, 2)} bar (fixed)`, 140, 14);
         if (rCrit < 100) {
             ctx.fillStyle = '#e74c3c';
-            ctx.fillText(`r_crit = ${rCrit.toFixed(2)} μm`, 340, 14);
+            ctx.fillText(`r_crit = ${fmtNum(rCrit, 2)} μm`, 340, 14);
         }
 
         // Scale
@@ -336,7 +337,7 @@ export class BubbleModel {
 
             ctx.fillStyle = '#444';
             ctx.font = '9px sans-serif';
-            ctx.fillText(pBubble.toFixed(2), barLeft + ambW + lapW + 3, barY1 + 10);
+            ctx.fillText(fmtNum(pBubble, 2), barLeft + ambW + lapW + 3, barY1 + 10);
 
             // Bottom bar: P_tissue
             const barY2 = yCenterBubble + 1;
@@ -351,7 +352,7 @@ export class BubbleModel {
 
             ctx.fillStyle = '#444';
             ctx.font = '9px sans-serif';
-            ctx.fillText(pTissue.toFixed(2), barLeft + tissueW + 3, barY2 + 10);
+            ctx.fillText(fmtNum(pTissue, 2), barLeft + tissueW + 3, barY2 + 10);
 
             // Result
             ctx.fillStyle = wouldGrow ? '#e74c3c' : '#27ae60';
@@ -505,7 +506,7 @@ export class BubbleModel {
         ty += lineH;
         ctx.font = '10px sans-serif';
         ctx.fillStyle = '#666';
-        ctx.fillText(`= ${pAmb.toFixed(2)} + ${pLaplace.toFixed(2)} = ${pBubble.toFixed(2)} bar`, tx + 10, ty);
+        ctx.fillText(`= ${fmtNum(pAmb, 2)} + ${fmtNum(pLaplace, 2)} = ${fmtNum(pBubble, 2)} bar`, tx + 10, ty);
         ty += lineH - 4;
         ctx.fillStyle = '#888';
         ctx.font = '9px sans-serif';
@@ -514,7 +515,7 @@ export class BubbleModel {
         ty += lineH + 6;
         ctx.fillStyle = '#2ecc71';
         ctx.font = 'bold 11px sans-serif';
-        ctx.fillText(`p_tissue = ${pTissue.toFixed(2)} bar`, tx, ty);
+        ctx.fillText(`p_tissue = ${fmtNum(pTissue, 2)} bar`, tx, ty);
         ty += lineH;
         ctx.fillStyle = '#888';
         ctx.font = '9px sans-serif';

@@ -57,6 +57,7 @@ import {
 } from './chartTypes.js';
 import { computeGasConsumption } from '../diveSetup.js';
 
+import { fmtNum } from '../format.js';
 /**
  * DiveProfileChart - Embeddable dive profile visualization
  */
@@ -661,7 +662,7 @@ export class DiveProfileChart {
                     borderDash: [4, 4],
                     label: {
                         display: true,
-                        content: fmt(translate('chart.profile.avg', 'AVG: {0}m'), avgDepth.toFixed(1)),
+                        content: fmt(translate('chart.profile.avg', 'AVG: {0}m'), fmtNum(avgDepth, 1)),
                         position: 'start',
                         backgroundColor: 'rgba(46, 204, 113, 0.9)',
                         color: 'white',
@@ -1243,7 +1244,7 @@ export class DiveProfileChart {
                     borderDash: [4, 4],
                     label: {
                         display: true,
-                        content: fmt(translate('chart.profile.avg', 'AVG: {0}m'), avgDepth.toFixed(1)),
+                        content: fmt(translate('chart.profile.avg', 'AVG: {0}m'), fmtNum(avgDepth, 1)),
                         position: 'start',
                         backgroundColor: 'rgba(46, 204, 113, 0.9)',
                         color: 'white',
@@ -1390,7 +1391,7 @@ export class DiveProfileChart {
                                         }
                                     }
                                     return [
-                                        fmt(translate('chart.profile.tooltipTime', 'Time: {0} min'), time.toFixed(1)),
+                                        fmt(translate('chart.profile.tooltipTime', 'Time: {0} min'), fmtNum(time, 1)),
                                         fmt(translate('chart.profile.tooltipGas', 'Gas: {0}'), gasName)
                                     ];
                                 }
@@ -1410,11 +1411,11 @@ export class DiveProfileChart {
                                 const isPressure = label.includes('Pressure') || label.includes('pp')
                                     || label.includes(translate('chart.axes.pressureBar', 'Pressure (bar)'));
                                 if (isDepth) {
-                                    return fmt(translate('chart.profile.tooltipLabelDepth', '{0}: {1} m'), label, value.toFixed(1));
+                                    return fmt(translate('chart.profile.tooltipLabelDepth', '{0}: {1} m'), label, fmtNum(value, 1));
                                 } else if (isPressure) {
-                                    return fmt(translate('chart.profile.tooltipLabelPressure', '{0}: {1} bar'), label, value.toFixed(2));
+                                    return fmt(translate('chart.profile.tooltipLabelPressure', '{0}: {1} bar'), label, fmtNum(value, 2));
                                 }
-                                return fmt(translate('chart.profile.tooltipLabelValue', '{0}: {1}'), label, value.toFixed(2));
+                                return fmt(translate('chart.profile.tooltipLabelValue', '{0}: {1}'), label, fmtNum(value, 2));
                             },
                             filter: (item) => {
                                 return item.text !== null;
@@ -1436,7 +1437,7 @@ export class DiveProfileChart {
                                     if (rate > 0) {
                                         lines.push(fmt(
                                             translate('chart.profile.tooltipGasConsumption', '⛽ Gas consumption: {0} L/min ({1})'),
-                                            rate.toFixed(1), gasData.name
+                                            fmtNum(rate, 1), gasData.name
                                         ));
                                         break;
                                     }

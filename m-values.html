@@ -454,6 +454,7 @@
         import { initStickyTOC } from './js/components/StickyTOC.js';
         import { initTooltipShortcut } from './js/components/tooltipShortcut.js';
         
+        import { fmtNum } from './js/format.js';
         // Class reference dive: 31m for 29 min on Air with a 10-min safety stop at 3m
         const exampleDiveSetup = {
             name: "31m / 29 min (Class Example)",
@@ -590,10 +591,10 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td style="color: ${comp.color}; font-weight: bold;">TC${comp.id}</td>
-                    <td>${comp.halfTime} min</td>
-                    <td>${comp.aN2.toFixed(4)}</td>
-                    <td>${comp.bN2.toFixed(4)}</td>
-                    <td>${m0.toFixed(2)}</td>
+                    <td>${fmtNum(comp.halfTime)} min</td>
+                    <td>${fmtNum(comp.aN2, 4)}</td>
+                    <td>${fmtNum(comp.bN2, 4)}</td>
+                    <td>${fmtNum(m0, 2)}</td>
                 `;
                 tbody.appendChild(row);
             });

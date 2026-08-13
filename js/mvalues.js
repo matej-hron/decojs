@@ -13,6 +13,7 @@ import { COMPARTMENTS } from './tissueCompartments.js';
 import { calculateTissueLoading, getAmbientPressure, SURFACE_PRESSURE, N2_FRACTION, getAdjustedMValue, getFirstStopDepth } from './decoModel.js';
 import { loadDiveSetup, getDiveSetupWaypoints, getGases, getGradientFactors } from './diveSetup.js';
 
+import { fmtNum } from './format.js';
 // ============================================================================
 // CONFIGURATION
 // ============================================================================
@@ -154,7 +155,7 @@ function initializeCompartmentSelector() {
         
         const text = document.createElement('span');
         text.className = 'compartment-label';
-        text.textContent = `${comp.id} (${comp.halfTime}m)`;
+        text.textContent = `${comp.id} (${fmtNum(comp.halfTime)}m)`;
         
         label.appendChild(checkbox);
         label.appendChild(colorDot);
@@ -623,10 +624,10 @@ function populateCoefficientsTable() {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td style="color: ${comp.color}; font-weight: bold;">${comp.id}</td>
-            <td>${comp.halfTime}</td>
-            <td>${comp.aN2.toFixed(4)}</td>
-            <td>${comp.bN2.toFixed(4)}</td>
-            <td>${m0.toFixed(2)}</td>
+            <td>${fmtNum(comp.halfTime)}</td>
+            <td>${fmtNum(comp.aN2, 4)}</td>
+            <td>${fmtNum(comp.bN2, 4)}</td>
+            <td>${fmtNum(m0, 2)}</td>
         `;
         tbody.appendChild(row);
     });
@@ -744,8 +745,8 @@ function createChart() {
                 tooltip: {
                     callbacks: {
                         label: function(context) {
-                            const x = context.parsed.x.toFixed(2);
-                            const y = context.parsed.y.toFixed(2);
+                            const x = fmtNum(context.parsed.x, 2);
+                            const y = fmtNum(context.parsed.y, 2);
                             return `${context.dataset.label}: (${x} bar, ${y} bar)`;
                         }
                     }
@@ -794,7 +795,7 @@ function getChartTitle() {
     if (count === 1) {
         const compId = Array.from(visibleCompartments)[0];
         const comp = COMPARTMENTS.find(c => c.id === compId);
-        return `M-Value Diagram - TC${comp.id} (${comp.halfTime} min half-time)`;
+        return `M-Value Diagram - TC${comp.id} (${fmtNum(comp.halfTime)} min half-time)`;
     }
     if (count === 16) return 'M-Value Diagram - All Compartments';
     return `M-Value Diagram - ${count} Compartments`;
@@ -1142,7 +1143,7 @@ function updateTimelineDisplay() {
     
     // Update overlay on chart (prominent display)
     if (overlayTime) overlayTime.textContent = timeStr;
-    if (overlayDepth) overlayDepth.textContent = `${depth.toFixed(0)}m`;
+    if (overlayDepth) overlayDepth.textContent = `${fmtNum(depth, 0)}m`;
     
     // Update info bar below chart - show tissue info for visible compartments
     if (tissueSpan) {
@@ -1151,7 +1152,7 @@ function updateTimelineDisplay() {
         } else if (visibleCompartments.size === 1) {
             const compId = Array.from(visibleCompartments)[0];
             const tissueN2 = diveResults.compartments[compId].pressures[currentTimeIndex];
-            tissueSpan.textContent = `TC${compId} N₂: ${tissueN2.toFixed(2)} bar`;
+            tissueSpan.textContent = `TC${compId} N₂: ${fmtNum(tissueN2, 2)} bar`;
         } else {
             tissueSpan.textContent = `${visibleCompartments.size} compartments`;
         }

@@ -614,6 +614,7 @@
     <!-- i18n + state -->
     <script type="module">
         import { initI18n, createLanguageSwitcher } from '../js/i18n.js';
+        import { fmtNum } from '../js/format.js';
         import {
             getAmbientPressure,
             getAlveolarN2Pressure,
@@ -668,7 +669,7 @@
         function populateCompartments() {
             const comps = getCompartmentsForVariant(state.variant);
             els.compartment.innerHTML = comps
-                .map((c, i) => `<option value="${i}">${i + 1} | T½ = ${c.halfTime.toFixed(1)} min</option>`)
+                .map((c, i) => `<option value="${i}">${i + 1} | T½ = ${fmtNum(c.halfTime, 1)} min</option>`)
                 .join('');
             els.compartment.value = String(state.compartmentIdx);
         }
@@ -677,7 +678,7 @@
         function recompute() {
             // End depth display
             const endDepth = state.startDepth + state.depthRate * state.segmentTime;
-            els.endDepthDisp.textContent = `${Math.max(0, endDepth).toFixed(1)} m`;
+            els.endDepthDisp.textContent = `${fmtNum(Math.max(0, endDepth), 1)} m`;
 
             // Math primitives
             const comp = getCompartmentsForVariant(state.variant)[state.compartmentIdx];
@@ -699,18 +700,18 @@
             const M = getMValue(pAmbCurrent, comp.aN2, comp.bN2);
 
             // Substituted-formula line
-            document.getElementById('ptValue').textContent = Pt.toFixed(4);
+            document.getElementById('ptValue').textContent = fmtNum(Pt, 4);
             const ptChip = document.getElementById('ptChipValue');
-            if (ptChip) ptChip.textContent = Pt.toFixed(3);
-            document.getElementById('palv0Num').textContent = pAlv0.toFixed(4);
-            document.getElementById('palv0Num2').textContent = pAlv0.toFixed(4);
-            document.getElementById('pt0Num').textContent = pT0.toFixed(4);
-            document.getElementById('rNum').textContent = R.toFixed(4);
-            document.getElementById('rNum2').textContent = R.toFixed(4);
-            document.getElementById('tNum1').textContent = state.t.toFixed(2);
-            document.getElementById('kNum1').textContent = k.toFixed(4);
-            document.getElementById('kNum2').textContent = k.toFixed(4);
-            document.getElementById('expNum').textContent = expTerm.toFixed(4);
+            if (ptChip) ptChip.textContent = fmtNum(Pt, 3);
+            document.getElementById('palv0Num').textContent = fmtNum(pAlv0, 4);
+            document.getElementById('palv0Num2').textContent = fmtNum(pAlv0, 4);
+            document.getElementById('pt0Num').textContent = fmtNum(pT0, 4);
+            document.getElementById('rNum').textContent = fmtNum(R, 4);
+            document.getElementById('rNum2').textContent = fmtNum(R, 4);
+            document.getElementById('tNum1').textContent = fmtNum(state.t, 2);
+            document.getElementById('kNum1').textContent = fmtNum(k, 4);
+            document.getElementById('kNum2').textContent = fmtNum(k, 4);
+            document.getElementById('expNum').textContent = fmtNum(expTerm, 4);
 
             // Term cards — symbolic + substituted + value
             const palv0Symbolic = state.simplified
@@ -719,40 +720,40 @@
             const pt0Symbolic = palv0Symbolic;
             const palv0Subst = state.simplified
                 ? `= (${state.startDepth}/10 + 1) · ${F}`
-                : `= (${pAmbStart.toFixed(4)} − 0.0627) · ${F.toFixed(4)}`;
+                : `= (${fmtNum(pAmbStart, 4)} − 0.0627) · ${fmtNum(F, 4)}`;
             const pt0Subst = palv0Subst;
             const rSymbolic = `= F<sub>N₂</sub> · depth_rate · 0.1`;
             const rSubst = `= ${F} · (${state.depthRate}) · 0.1`;
 
             document.getElementById('palv0Symbolic').innerHTML = palv0Symbolic;
             document.getElementById('palv0Subst').innerHTML = palv0Subst;
-            document.getElementById('palv0Value').textContent = pAlv0.toFixed(4);
+            document.getElementById('palv0Value').textContent = fmtNum(pAlv0, 4);
             document.getElementById('pt0Symbolic').innerHTML = pt0Symbolic;
             document.getElementById('pt0Subst').innerHTML = pt0Subst;
-            document.getElementById('pt0Value').textContent = pT0.toFixed(4);
+            document.getElementById('pt0Value').textContent = fmtNum(pT0, 4);
             document.getElementById('rSymbolic').innerHTML = rSymbolic;
             document.getElementById('rSubst').innerHTML = rSubst;
-            document.getElementById('rValue').textContent = R.toFixed(4);
-            document.getElementById('kValue').textContent = k.toFixed(4);
-            document.getElementById('kSubst').textContent = `= 0.6931 / ${halfTime.toFixed(1)}`;
-            document.getElementById('expValue').textContent = expTerm.toFixed(4);
-            document.getElementById('expSubst').innerHTML = `= e<sup>−${k.toFixed(4)} · ${state.t.toFixed(2)}</sup>`;
+            document.getElementById('rValue').textContent = fmtNum(R, 4);
+            document.getElementById('kValue').textContent = fmtNum(k, 4);
+            document.getElementById('kSubst').textContent = `= 0.6931 / ${fmtNum(halfTime, 1)}`;
+            document.getElementById('expValue').textContent = fmtNum(expTerm, 4);
+            document.getElementById('expSubst').innerHTML = `= e<sup>−${fmtNum(k, 4)} · ${fmtNum(state.t, 2)}</sup>`;
 
             // Saturation % and current-depth readouts in the time row
             const saturationPct = (1 - expTerm) * 100;
-            document.getElementById('saturationValue').textContent = saturationPct.toFixed(1);
-            document.getElementById('depthValue').textContent = currentDepth.toFixed(1);
+            document.getElementById('saturationValue').textContent = fmtNum(saturationPct, 1);
+            document.getElementById('depthValue').textContent = fmtNum(currentDepth, 1);
 
             // Three-term decomposition: Pt = (Palv,0 + R·t) − (R/k) − (Palv,0 − Pt,0 − R/k)·e^−kt
             const termMoving = pAlv0 + R * state.t;
             const termLag    = R / k;
             const termDecay  = (pAlv0 - pT0 - R / k) * expTerm;
-            document.getElementById('termMovingSubst').innerHTML = `= ${pAlv0.toFixed(4)} + (${R.toFixed(4)}) · ${state.t.toFixed(2)}`;
-            document.getElementById('termMovingValue').textContent = termMoving.toFixed(4);
-            document.getElementById('termLagSubst').innerHTML = `= ${R.toFixed(4)} / ${k.toFixed(4)}`;
-            document.getElementById('termLagValue').textContent = termLag.toFixed(4);
-            document.getElementById('termDecaySubst').innerHTML = `= (${pAlv0.toFixed(4)} − ${pT0.toFixed(4)} − ${(R/k).toFixed(4)}) · ${expTerm.toFixed(4)}`;
-            document.getElementById('termDecayValue').textContent = termDecay.toFixed(4);
+            document.getElementById('termMovingSubst').innerHTML = `= ${fmtNum(pAlv0, 4)} + (${fmtNum(R, 4)}) · ${fmtNum(state.t, 2)}`;
+            document.getElementById('termMovingValue').textContent = fmtNum(termMoving, 4);
+            document.getElementById('termLagSubst').innerHTML = `= ${fmtNum(R, 4)} / ${fmtNum(k, 4)}`;
+            document.getElementById('termLagValue').textContent = fmtNum(termLag, 4);
+            document.getElementById('termDecaySubst').innerHTML = `= (${fmtNum(pAlv0, 4)} − ${fmtNum(pT0, 4)} − ${fmtNum((R/k), 4)}) · ${fmtNum(expTerm, 4)}`;
+            document.getElementById('termDecayValue').textContent = fmtNum(termDecay, 4);
 
             // Stash for chart + M-value strip
             window.__schreiner = {
@@ -792,7 +793,7 @@
             clampSegmentTime();
             applyTimeRange();
             timeSlider.value = String(state.t);
-            timeValue.textContent = `${state.t.toFixed(2)} min`;
+            timeValue.textContent = `${fmtNum(state.t, 2)} min`;
             updateStepButtons();
             recompute();
         });
@@ -801,7 +802,7 @@
             clampSegmentTime();
             applyTimeRange();
             timeSlider.value = String(state.t);
-            timeValue.textContent = `${state.t.toFixed(2)} min`;
+            timeValue.textContent = `${fmtNum(state.t, 2)} min`;
             updateStepButtons();
             recompute();
         });
@@ -810,7 +811,7 @@
             clampSegmentTime();
             applyTimeRange();                           // may clamp state.t
             timeSlider.value = String(state.t);         // sync slider thumb after clamp
-            timeValue.textContent = `${state.t.toFixed(2)} min`;
+            timeValue.textContent = `${fmtNum(state.t, 2)} min`;
             updateStepButtons();
             recompute();
         });
@@ -818,7 +819,7 @@
             state.compartmentIdx = parseInt(els.compartment.value, 10);
             applyTimeRange();                           // may clamp state.t
             timeSlider.value = String(state.t);         // sync slider thumb after clamp
-            timeValue.textContent = `${state.t.toFixed(2)} min`;
+            timeValue.textContent = `${fmtNum(state.t, 2)} min`;
             updateStepButtons();
             recompute();                                // recompute with the clamped state.t
         });
@@ -847,7 +848,7 @@
             const tMax = parseFloat(timeSlider.max);
             state.t = Math.max(0, Math.min(tMax, parseFloat(newT.toFixed(2))));
             timeSlider.value = String(state.t);
-            timeValue.textContent = `${state.t.toFixed(2)} min`;
+            timeValue.textContent = `${fmtNum(state.t, 2)} min`;
             updateStepButtons();
             recompute();
         }
@@ -895,21 +896,21 @@
             for (let i = 0; i <= N; i++) {
                 const t = (i / N) * tMax;
                 const PtAtT = schreinerEquation(pT0, pAlv0, R, t, halfTime);
-                pts.push(`${xOf(t).toFixed(2)},${yOf(PtAtT).toFixed(2)}`);
+                pts.push(`${(xOf(t)).toFixed(2)},${(yOf(PtAtT)).toFixed(2)}`);
             }
             chartCurve.setAttribute('d', `M ${pts.join(' L ')}`);
 
             // Palv(t) — straight line from (0, Palv,0) to (tMax, Palv,end)
-            const palvPath = `M ${xOf(0).toFixed(2)},${yOf(pAlv0).toFixed(2)} L ${xOf(tMax).toFixed(2)},${yOf(pAlvEnd).toFixed(2)}`;
+            const palvPath = `M ${(xOf(0)).toFixed(2)},${(yOf(pAlv0)).toFixed(2)} L ${(xOf(tMax)).toFixed(2)},${(yOf(pAlvEnd)).toFixed(2)}`;
             chartPalv.setAttribute('d', palvPath);
 
             // Baseline at Pt,0
-            const yPt0 = yOf(pT0).toFixed(2);
+            const yPt0 = (yOf(pT0)).toFixed(2);
             chartBaseline.setAttribute('y1', yPt0);
             chartBaseline.setAttribute('y2', yPt0);
 
             // Cursor + dot at current t
-            const cursorX = xOf(state.t).toFixed(2);
+            const cursorX = (xOf(state.t)).toFixed(2);
             chartCursor.setAttribute('x1', cursorX);
             chartCursor.setAttribute('x2', cursorX);
             chartCursor.setAttribute('y2', CHART_H);
@@ -972,8 +973,8 @@
         function updateMValueStrip() {
             if (!window.__schreiner) return;
             const { Pt, M, pAmbCurrent, pAlvCurrent, aN2, bN2 } = window.__schreiner;
-            mvaluePtOut.textContent = Pt.toFixed(4);
-            mvalueOut.textContent = M.toFixed(4);
+            mvaluePtOut.textContent = fmtNum(Pt, 4);
+            mvalueOut.textContent = fmtNum(M, 4);
             const xOfBar = (v) => `${Math.max(0, Math.min(1, v / BAR_MAX)) * 100}%`;
             mvalueMarker.style.left = xOfBar(Pt);
             const mline = document.querySelector('.mvalue-mline');
@@ -991,7 +992,7 @@
             mvalueStatus.classList.toggle('exceeded', exceeded);
             mvalueStatus.classList.toggle('ok', !exceeded);
             const deriv = document.getElementById('mvalueDerivation');
-            deriv.innerHTML = `M = a + <var>p</var><sub>amb</sub>(t) / b = ${aN2.toFixed(4)} + ${pAmbCurrent.toFixed(4)} / ${bN2.toFixed(4)} = <strong>${M.toFixed(4)}</strong>`;
+            deriv.innerHTML = `M = a + <var>p</var><sub>amb</sub>(t) / b = ${fmtNum(aN2, 4)} + ${fmtNum(pAmbCurrent, 4)} / ${fmtNum(bN2, 4)} = <strong>${fmtNum(M, 4)}</strong>`;
         }
 
         // ---------- Bottom control bar collapse toggle ----------
@@ -1010,7 +1011,7 @@
         populateCompartments();
         clampSegmentTime();
         applyTimeRange();
-        timeValue.textContent = `${state.t.toFixed(2)} min`;
+        timeValue.textContent = `${fmtNum(state.t, 2)} min`;
         updateStepButtons();
         recompute();
     </script>

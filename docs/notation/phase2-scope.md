@@ -294,21 +294,87 @@ detaily, bez kterých by hlásil falešně pozitivní nálezy:
 - **Skupina, která není přesně tři číslice.** Anglický oddělovač tisíců
   `1,000 kPa` je správně; bez tohohle rozlišení by se četl jako desetinná čárka.
 
-### Desetinný oddělovač za běhu — ZBÝVÁ
+### Desetinný oddělovač za běhu — hotovo
 
-Statický obsah je hotový, ale **vypočtená čísla nikoli**. `js/` má 63 volání
-`toFixed()` a žádné formátování podle jazyka. V české verzi (`lang="cs"`) proto
-sandbox ukazuje `0,16 bar` v textu vedle `0.7511 bar` ve výpočtu.
+Statický obsah řešil předchozí PR; tenhle řeší **vypočtená čísla**. V české
+verzi sandbox ukazoval `0,16 bar` v textu vedle `0.7511 bar` ve výpočtu
+hned pod ním.
 
-Změřeno v prohlížeči s `deco-theory-lang=cs`:
+**`js/format.js`** — `fmtNum(value, decimals, lang)`. Modul záměrně nic
+neimportuje: čisté funkce jsou testovatelné pod Node a `js/mvalues.js` ani
+`js/tissueEducation.js` nezískávají závislost na prohlížeči.
 
-| Stránka | čísel s tečkou | s čárkou |
+| Co | Kolik |
+|---|---|
+| `toFixed()` přepsáno na `fmtNum()` | 253 |
+| surová interpolace čísla (`${comp.halfTime}`) | 6 |
+| statická anglická čísla v HTML nahrazena výpočtem | 10 |
+| ponecháno syrových `toFixed()` (viz níže) | 23 |
+
+Seskupování tisíců se **nedělá**. Aplikace zobrazuje malé fyzikální veličiny
+(bar, m, min), kde se skupiny neuplatní, a zavádět je by změnilo výstup, o který
+tady nejde.
+
+#### Kde čárka není typografie, ale chyba
+
+23 volání `toFixed()` zůstalo záměrně. Desetinná čárka by na těchto místech
+nebyla „jinak vysázené číslo", ale neplatná hodnota:
+
+| Kontext | Kde | Proč |
 |---|---|---|
-| `sandbox/haldane.html` | 44 | 1 |
-| `sandbox/tissue-saturation.html` | 8 | 0 |
-| `sandbox/index.html` | 4 | 0 |
-| `sandbox/gas-law.html` | 1 | 1 |
+| geometrie SVG (`d`, `x1`, `cy`, …) | `haldane.html` 6, `schreiner.html` 8 | prohlížeč atribut zahodí a prvek zmizí |
+| `<input type="number">.value` | `m-values.html` 5 | čárka není platná hodnota |
+| hodnota čtená zpět `parseFloat` | `schreiner.html` 3 | rozbije se výpočet |
+| samotný formátovač | `js/format.js` 1 | jediné místo, kam `toFixed` patří |
 
-Grep tohle nenajde — čísla vznikají až za běhu. Oprava není textová: potřebuje
-formátovací funkci závislou na jazyce a přepojení volajících míst, včetně
-popisků a tooltipů Chart.js. Samostatný PR.
+Test `no shipped page formats a display number with raw toFixed` hlídá tento
+rozpočet po souborech. Přibude-li nové `toFixed()`, test pojmenuje soubor.
+
+#### Bez čeho by to nefungovalo
+
+**Jazyk musí být znám dřív, než se něco vykreslí.** `initI18n()` čeká na
+`locales/*.json`, ale stránky vykreslují grafy synchronně ve stejném bloku.
+Prvních pár set milisekund se tedy formátovalo podle `lang="en"`. `js/i18n.js`
+proto nastavuje `document.documentElement.lang` už při vyhodnocení modulu —
+závislosti modulu se vyhodnotí před tělem importujícího modulu, takže každá
+stránka má správný jazyk od prvního tiku. `setLanguage()` ho navíc přepisuje
+synchronně, ještě před fetchem, aby přepnutí jazyka nezaostávalo o jeden
+síťový round trip.
+
+**Statická čísla v HTML, která JS přepisuje až na kliknutí.** Popisky posuvníků
+v `sandbox/gradient-factors.html` se zapisovaly jen při události `input`, takže
+do prvního doteku svítilo `2.40 bar` ze šablony. `render()` teď popisky
+synchronizuje. Tabulka MOD v `pressure.html` měla čtyři odpovědi natvrdo
+(`56.7 m`, …) bez `data-i18n` — žádný překlad se k nim nedostal; jsou přesně
+vypočitatelné, takže se generují.
+
+**Převod `<script>` na `<script type="module">`.** Klasický skript neumí
+`import`. Čtyři stránky (`cascade-filling`, `gas-law`, `transfilling`,
+`tissue-loading`) proto musely na modul. Ověřeno předem: žádné `on*=` atributy
+v HTML, žádné `window.X = `, žádný implicitní globál a `node --check` jako
+modul — tedy nic, co by rozbil striktní režim nebo modulový rozsah.
+
+#### Co našel až prohlížeč
+
+Statická kontrola tohle nemohla vidět:
+
+- **`fmtNum` v souřadnicích SVG.** Vyloučení pokrývalo jen
+  `setAttribute('cy', …)`. Hodnota přiřazená do proměnné a použitá o řádek dál
+  proklouzla; konzole hlásila `<line> attribute y1: Expected length, "11,82"`.
+- **`js/tissueEducation.js` načtený jako klasický skript** — přidaný `import`
+  shodil celou stránku (`Cannot use import statement outside a module`).
+- **Popisky v Chart.js jsou na canvasu, ne v DOM.** Prošlo se to až přímým
+  vyvoláním tooltipu přes `chart.tooltip.setActiveElements()`; jinak kontrola
+  hlásila „v pořádku", protože nečetla vůbec nic.
+
+**Změřeno po opravě:** 26 stránek × 2 jazyky = 52 kombinací, 0 špatných
+oddělovačů, 0 chyb v konzoli. Ověřeno i přepnutí jazyka za běhu bez reloadu
+(`2.40 bar` → `2,41 bar`) a odhalení skrytých panelů kliknutím.
+
+**Testy:** 294/294 (6 nových).
+
+### Zbývá
+
+`toLocaleString()` — 6 volání, řídí se locale prohlížeče, ne jazykem aplikace.
+Týká se seskupování tisíců v `sandbox/cascade-filling.html`. Malý rozsah,
+samostatný úkol.

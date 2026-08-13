@@ -631,6 +631,7 @@
         } from '../js/tissueCompartments.js';
         import { translate, initI18n, createLanguageSwitcher } from '../js/i18n.js';
 
+        import { fmtNum } from '../js/format.js';
         // -----------------------------------------------------------------
         // State
         // -----------------------------------------------------------------
@@ -799,9 +800,9 @@
             } else {
                 els.f1Symbolic.innerHTML = 'GF(<var>p</var><sub>amb</sub>) = GF<sub>lo</sub> + (GF<sub>hi</sub> − GF<sub>lo</sub>) · (pAnchor − <var>p</var><sub>amb</sub>) / (pAnchor − <var>p</var><sub>surface</sub>)';
             }
-            els.f1Val.textContent = (c.gfHere * 100).toFixed(1) + '%';
-            els.f2Val.textContent = c.mAdj.toFixed(3);
-            const ceilingStr = `${c.ceilingBar.toFixed(3)} bar (≈ ${c.ceilingM.toFixed(1)} m)`;
+            els.f1Val.textContent = fmtNum((c.gfHere * 100), 1) + '%';
+            els.f2Val.textContent = fmtNum(c.mAdj, 3);
+            const ceilingStr = `${fmtNum(c.ceilingBar, 3)} bar (≈ ${fmtNum(c.ceilingM, 1)} m)`;
             els.f3Val.textContent = ceilingStr;
         }
 
@@ -854,15 +855,15 @@
                 const gfY = corrYToPx(flatGf);
                 svg.appendChild(e('line', { x1: surfaceX, y1: gfY, x2: CORRIDOR_W - CORR_PAD_R, y2: gfY, stroke: '#16a085', 'stroke-width': 2.5 }));
                 const flatLabel = state.mode === 'single'
-                    ? `GF ${(state.gf * 100).toFixed(0)}%`
-                    : `GF_hi ${(state.gfHi * 100).toFixed(0)}% (no anchor)`;
+                    ? `GF ${fmtNum((state.gf * 100), 0)}%`
+                    : `GF_hi ${fmtNum((state.gfHi * 100), 0)}% (no anchor)`;
                 svg.appendChild(e('text', { x: CORRIDOR_W - CORR_PAD_R - 6, y: gfY - 5, 'font-size': 9, fill: '#16a085', 'text-anchor': 'end' }, flatLabel));
             } else {
                 // Ramp + pAnchor
                 const anchorX = corrXToPx(c.pAnchor);
                 // pAnchor vertical
                 svg.appendChild(e('line', { x1: anchorX, y1: CORR_PAD_T, x2: anchorX, y2: CORRIDOR_H - CORR_PAD_B, stroke: '#27ae60', 'stroke-width': 1, 'stroke-dasharray': '3,3', opacity: 0.8 }));
-                svg.appendChild(e('text', { x: anchorX + 3, y: CORR_PAD_T + 10, 'font-size': 9, fill: '#27ae60' }, `pAnchor ${state.anchorDepth.toFixed(0)} m`));
+                svg.appendChild(e('text', { x: anchorX + 3, y: CORR_PAD_T + 10, 'font-size': 9, fill: '#27ae60' }, `pAnchor ${fmtNum(state.anchorDepth, 0)} m`));
 
                 const surfaceY = corrYToPx(state.gfHi);
                 const anchorY = corrYToPx(state.gfLo);
@@ -882,8 +883,8 @@
                 // Endpoint dots
                 svg.appendChild(e('circle', { cx: surfaceX, cy: surfaceY, r: 3.5, fill: '#16a085' }));
                 svg.appendChild(e('circle', { cx: anchorX, cy: anchorY, r: 3.5, fill: '#16a085' }));
-                svg.appendChild(e('text', { x: surfaceX + 5, y: surfaceY + 12, 'font-size': 9, fill: '#16a085' }, `GF_hi ${(state.gfHi * 100).toFixed(0)}%`));
-                svg.appendChild(e('text', { x: anchorX - 5, y: anchorY + 13, 'font-size': 9, fill: '#16a085', 'text-anchor': 'end' }, `GF_lo ${(state.gfLo * 100).toFixed(0)}%`));
+                svg.appendChild(e('text', { x: surfaceX + 5, y: surfaceY + 12, 'font-size': 9, fill: '#16a085' }, `GF_hi ${fmtNum((state.gfHi * 100), 0)}%`));
+                svg.appendChild(e('text', { x: anchorX - 5, y: anchorY + 13, 'font-size': 9, fill: '#16a085', 'text-anchor': 'end' }, `GF_lo ${fmtNum((state.gfLo * 100), 0)}%`));
             }
 
             // Current depth marker (red vertical + dot at intersection with the ramp).
@@ -892,7 +893,7 @@
             svg.appendChild(e('line', { x1: depthX, y1: CORR_PAD_T, x2: depthX, y2: CORRIDOR_H - CORR_PAD_B, stroke: '#c0392b', 'stroke-width': 1.5 }));
             const depthGfY = corrYToPx(c.gfHere);
             svg.appendChild(e('circle', { cx: depthX, cy: depthGfY, r: 4.5, fill: '#c0392b' }));
-            svg.appendChild(e('text', { x: depthX + 6, y: depthGfY - 6, 'font-size': 10, fill: '#c0392b', 'font-weight': '600' }, `GF(P_amb) = ${(c.gfHere * 100).toFixed(1)}%`));
+            svg.appendChild(e('text', { x: depthX + 6, y: depthGfY - 6, 'font-size': 10, fill: '#c0392b', 'font-weight': '600' }, `GF(P_amb) = ${fmtNum((c.gfHere * 100), 1)}%`));
 
             // ACTUAL instantaneous saturation: where the tissue currently sits, in the
             // same GF units. Blue dot to match the tissue marker on Panel 2. Clamp to
@@ -907,8 +908,8 @@
                     fill: '#2980b9', stroke: '#fff', 'stroke-width': 1.5,
                 }));
                 const tag = offTop
-                    ? `tissue ${(c.gfInst * 100).toFixed(0)}% ↑`
-                    : `tissue ${(c.gfInst * 100).toFixed(1)}%`;
+                    ? `tissue ${fmtNum((c.gfInst * 100), 0)}% ↑`
+                    : `tissue ${fmtNum((c.gfInst * 100), 1)}%`;
                 svg.appendChild(e('text', {
                     x: depthX + 6, y: tissueGfY + 12,
                     'font-size': 10, fill: '#2980b9', 'font-weight': '600',
@@ -1045,11 +1046,11 @@
                 svg.appendChild(e('text', {
                     x: surfaceX + 5, y: ppYToPx(mAdjAtHi) - 5,
                     'font-size': 9, fill: '#f39c12', 'font-weight': '600',
-                }, `GF_hi ${(state.gfHi * 100).toFixed(0)}%`));
+                }, `GF_hi ${fmtNum((state.gfHi * 100), 0)}%`));
                 svg.appendChild(e('text', {
                     x: anchorX - 5, y: ppYToPx(mAdjAtLo) - 5,
                     'font-size': 9, fill: '#f39c12', 'font-weight': '600', 'text-anchor': 'end',
-                }, `GF_lo ${(state.gfLo * 100).toFixed(0)}%`));
+                }, `GF_lo ${fmtNum((state.gfLo * 100), 0)}%`));
             } else {
                 // Single GF or Lo/Hi with anchor unset: M_adj is linear in P_amb. Pick the
                 // active GF (state.gf for Single, state.gfHi for Lo/Hi without anchor).
@@ -1064,8 +1065,8 @@
                     stroke: '#f39c12', 'stroke-width': 2.5,
                 }));
                 const flatLabel = state.mode === 'single'
-                    ? `M_adj (GF ${(state.gf * 100).toFixed(0)}%)`
-                    : `M_adj (GF_hi ${(state.gfHi * 100).toFixed(0)}%, no anchor)`;
+                    ? `M_adj (GF ${fmtNum((state.gf * 100), 0)}%)`
+                    : `M_adj (GF_hi ${fmtNum((state.gfHi * 100), 0)}%, no anchor)`;
                 svg.appendChild(e('text', {
                     x: ppXToPx(X_MAX_BAR) - 4,
                     y: ppYToPx(mAdjAtMax) + 10,
@@ -1076,13 +1077,13 @@
             // Current depth vertical (red, same x as corridor)
             const depthX = ppXToPx(c.pAmb);
             svg.appendChild(e('line', { x1: depthX, y1: PP_PAD_T, x2: depthX, y2: PP_H - PP_PAD_B, stroke: '#c0392b', 'stroke-width': 1.5, opacity: 0.85 }));
-            svg.appendChild(e('text', { x: depthX + 4, y: PP_PAD_T + 22, 'font-size': 9, fill: '#c0392b' }, `depth ${state.depth.toFixed(1)} m`));
+            svg.appendChild(e('text', { x: depthX + 4, y: PP_PAD_T + 22, 'font-size': 9, fill: '#c0392b' }, `depth ${fmtNum(state.depth, 1)} m`));
 
             // Tissue marker (blue dot at current depth)
             const tissueX = depthX;
             const tissueY = ppYToPx(state.tissuePt);
             svg.appendChild(e('circle', { cx: tissueX, cy: tissueY, r: 5, fill: '#2980b9', stroke: '#fff', 'stroke-width': 1.5 }));
-            svg.appendChild(e('text', { x: tissueX + 8, y: tissueY + 4, 'font-size': 9, fill: '#2980b9' }, `P_t = ${state.tissuePt.toFixed(2)}`));
+            svg.appendChild(e('text', { x: tissueX + 8, y: tissueY + 4, 'font-size': 9, fill: '#2980b9' }, `P_t = ${fmtNum(state.tissuePt, 2)}`));
 
             // M_adj read-off at current depth (small amber dot on the M_adj line). Label
             // is anchored to the LEFT of the dot so it doesn't collide with the tissue
@@ -1095,7 +1096,7 @@
                 x: depthX - 7, y: mAdjY - 6,
                 'font-size': 10, fill: '#f39c12', 'font-weight': '600',
                 'text-anchor': 'end',
-            }, `M_adj = ${mAdjAtDepth.toFixed(2)}`));
+            }, `M_adj = ${fmtNum(mAdjAtDepth, 2)}`));
 
             // Ceiling derivation visualised: the ceiling is the x-coordinate where a horizontal
             // line through the tissue marker crosses the M_adj curve. Draw that horizontal
@@ -1124,7 +1125,7 @@
                 svg.appendChild(e('text', {
                     x: ceilX + 3, y: PP_H - PP_PAD_B - 4,
                     'font-size': 9, fill: '#c0392b',
-                }, `ceiling ${c.ceilingM.toFixed(1)} m`));
+                }, `ceiling ${fmtNum(c.ceilingM, 1)} m`));
             }
 
             // Violation indicator
@@ -1137,20 +1138,20 @@
         }
 
         function renderCards(c) {
-            els.cardGfValue.textContent = `${(c.gfHere * 100).toFixed(1)}%`;
+            els.cardGfValue.textContent = `${fmtNum((c.gfHere * 100), 1)}%`;
             // Actual instantaneous GF — show 1 decimal when positive, em-dash when the
             // tissue is undersaturated (negative GF has no useful meaning to show).
             els.cardActualValue.textContent = c.gfInst > 0
-                ? `${(c.gfInst * 100).toFixed(1)}%`
+                ? `${fmtNum((c.gfInst * 100), 1)}%`
                 : '—';
             els.cardActual.classList.toggle('violation', c.gfInst > c.gfHere + 1e-6);
-            els.cardMVal.textContent = c.m.toFixed(3);
-            els.cardMAdjVal.textContent = c.mAdj.toFixed(3);
+            els.cardMVal.textContent = fmtNum(c.m, 3);
+            els.cardMAdjVal.textContent = fmtNum(c.mAdj, 3);
             const delta = c.mAdj - c.m;
-            els.cardMDelta.textContent = `Δ ${delta >= 0 ? '+' : ''}${delta.toFixed(3)} bar`;
+            els.cardMDelta.textContent = `Δ ${delta >= 0 ? '+' : ''}${fmtNum(delta, 3)} bar`;
 
-            els.cardCeilingValue.textContent = `${c.ceilingM.toFixed(1)} m`;
-            els.cardCeilingSub.textContent = `${c.ceilingBar.toFixed(3)} bar`;
+            els.cardCeilingValue.textContent = `${fmtNum(c.ceilingM, 1)} m`;
+            els.cardCeilingSub.textContent = `${fmtNum(c.ceilingBar, 3)} bar`;
 
             if (c.violation) {
                 els.cardCeiling.classList.add('violation');
@@ -1160,14 +1161,14 @@
             }
 
             // Term cards
-            els.termAVal.textContent = `${c.a.toFixed(4)} bar`;
-            els.termBVal.textContent = c.b.toFixed(4);
-            els.termGfLoVal.textContent = state.mode === 'lohi' ? (state.gfLo * 100).toFixed(0) : '—';
-            els.termGfHiVal.textContent = state.mode === 'lohi' ? (state.gfHi * 100).toFixed(0) : (state.gf * 100).toFixed(0);
+            els.termAVal.textContent = `${fmtNum(c.a, 4)} bar`;
+            els.termBVal.textContent = fmtNum(c.b, 4);
+            els.termGfLoVal.textContent = state.mode === 'lohi' ? fmtNum((state.gfLo * 100), 0) : '—';
+            els.termGfHiVal.textContent = state.mode === 'lohi' ? fmtNum((state.gfHi * 100), 0) : fmtNum((state.gf * 100), 0);
             els.termAnchorVal.textContent = (state.mode === 'lohi' && c.anchorSet)
-                ? `${c.pAnchor.toFixed(3)} bar (${state.anchorDepth.toFixed(0)} m)`
+                ? `${fmtNum(c.pAnchor, 3)} bar (${fmtNum(state.anchorDepth, 0)} m)`
                 : '—';
-            els.termMAdjVal.textContent = `${c.mAdj.toFixed(3)} bar`;
+            els.termMAdjVal.textContent = `${fmtNum(c.mAdj, 3)} bar`;
 
             els.compLabel.textContent = `TC${c.comp.id}`;
         }
@@ -1183,7 +1184,14 @@
             els.invertedWarning.hidden = !(c && c.gfInverted);
         }
 
+        // Slider value labels start life as static English placeholders in the
+        // markup ("2.40 bar"). Nothing wrote them until the first `input`
+        // event, so a Czech visitor saw a decimal point until they touched the
+        // slider. bindSlider registers a sync here and render() runs them all.
+        const sliderLabelSyncs = [];
+
         function render() {
+            sliderLabelSyncs.forEach((sync) => sync());
             const c = compute();
             renderFormulaReadout(c);
             renderCorridor(c);
@@ -1204,19 +1212,22 @@
                 valEl.textContent = fmt(v);
                 render();
             });
+            sliderLabelSyncs.push(() => {
+                valEl.textContent = fmt(parser(slider.value));
+            });
         }
 
         bindSlider(
             els.depthSlider, els.depthVal,
             (v) => clamp(parseFloat(v) || 0, 0, 40),
             (v) => { state.depth = v; },
-            (v) => `${v.toFixed(1)} m`
+            (v) => `${fmtNum(v, 1)} m`
         );
         bindSlider(
             els.tissueSlider, els.tissueVal,
             (v) => clamp(parseFloat(v) || 0, 0.7, 6),
             (v) => { state.tissuePt = v; },
-            (v) => `${v.toFixed(2)} bar`
+            (v) => `${fmtNum(v, 2)} bar`
         );
         bindSlider(
             els.gfSlider, els.gfVal,
@@ -1240,7 +1251,7 @@
             els.anchorSlider, els.anchorVal,
             (v) => clamp(parseFloat(v) || 0, 0, 30),
             (v) => { state.anchorDepth = v; },
-            (v) => v < 3 ? '— (no anchor)' : `${v.toFixed(1)} m`
+            (v) => v < 3 ? '— (no anchor)' : `${fmtNum(v, 1)} m`
         );
 
         els.modeSingleBtn.addEventListener('click', () => { state.mode = 'single'; render(); });
@@ -1270,7 +1281,7 @@
                 : pAlv;
             state.tissuePt = clamp(newPt, 0.7, 6);
             els.tissueSlider.value = state.tissuePt;
-            els.tissueVal.textContent = `${state.tissuePt.toFixed(2)} bar`;
+            els.tissueVal.textContent = `${fmtNum(state.tissuePt, 2)} bar`;
             render();
         });
 

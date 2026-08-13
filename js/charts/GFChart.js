@@ -35,6 +35,7 @@ import { applyChartTheme } from './chartTheme.js';
 import { createInteractionLockBtn } from './interactionLock.js';
 import { translate } from '../i18n.js';
 
+import { fmtNum } from '../format.js';
 /** Helper: replace {0}, {1}, ... placeholders with the given values. */
 function fmt(str, ...values) {
     return String(str).replace(/\{(\d+)\}/g, (_, i) => {
@@ -658,7 +659,7 @@ export class GFChart {
         if (!this.timeDisplay || !this.calculationResults) return;
         const time = this.calculationResults.timePoints[this.currentTimeIndex] || 0;
         const depth = this.calculationResults.depthPoints[this.currentTimeIndex] || 0;
-        this.timeDisplay.textContent = fmt(translate('chart.timeDisplay', '{0} min @ {1}m'), time.toFixed(1), depth.toFixed(1));
+        this.timeDisplay.textContent = fmt(translate('chart.timeDisplay', '{0} min @ {1}m'), fmtNum(time, 1), fmtNum(depth, 1));
         this._renderMiniProfile();
     }
 
@@ -968,7 +969,7 @@ export class GFChart {
             // pAnchor vertical line
             if (pAnchor > SURFACE_PRESSURE) {
                 datasets.push({
-                    label: fmt(translate('chart.gf.pAnchor', 'pAnchor {0} bar ({1}m)'), pAnchor.toFixed(2), ((pAnchor - SURFACE_PRESSURE) / 0.1).toFixed(1)),
+                    label: fmt(translate('chart.gf.pAnchor', 'pAnchor {0} bar ({1}m)'), fmtNum(pAnchor, 2), fmtNum(((pAnchor - SURFACE_PRESSURE) / 0.1), 1)),
                     data: [
                         { x: pAnchor, y: -10 },
                         { x: pAnchor, y: 120 }
@@ -1016,7 +1017,7 @@ export class GFChart {
             const currentTissue = results.compartments[comp.id].pressures[timeIndex];
             const currentGF = calculateInstantGF(currentTissue, currentAmbient, comp) * 100;
             datasets.push({
-                label: fmt(translate('chart.mvalue.tcLabel', 'TC{0} ({1}min)'), comp.id, comp.halfTime),
+                label: fmt(translate('chart.mvalue.tcLabel', 'TC{0} ({1}min)'), comp.id, fmtNum(comp.halfTime)),
                 data: [{ x: currentAmbient, y: currentGF }],
                 backgroundColor: comp.color,
                 borderColor: '#fff',
@@ -1064,7 +1065,7 @@ export class GFChart {
             }
             if (leadingComp) {
                 datasets.push({
-                    label: fmt(translate('chart.gf.leadingTC', 'Leading: TC{0} ({1}%)'), leadingComp.id, maxGF.toFixed(0)),
+                    label: fmt(translate('chart.gf.leadingTC', 'Leading: TC{0} ({1}%)'), leadingComp.id, fmtNum(maxGF, 0)),
                     data: [{ x: currentAmbient, y: maxGF }],
                     backgroundColor: 'rgba(0, 0, 0, 0.8)',
                     borderColor: leadingComp.color,
@@ -1111,7 +1112,7 @@ export class GFChart {
                                 const label = context.dataset.label || '';
                                 return fmt(
                                     translate('chart.gf.tooltipLabel', '{0}: p_amb={1} bar, GF={2}%'),
-                                    label, context.parsed.x.toFixed(2), context.parsed.y.toFixed(1)
+                                    label, fmtNum(context.parsed.x, 2), fmtNum(context.parsed.y, 1)
                                 );
                             }
                         }

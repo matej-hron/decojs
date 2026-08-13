@@ -35,6 +35,7 @@ import { applyChartTheme, theme } from './chartTheme.js';
 import { createInteractionLockBtn } from './interactionLock.js';
 import { translate } from '../i18n.js';
 
+import { fmtNum } from '../format.js';
 /** Helper: replace {0}, {1}, ... placeholders with the given values. */
 function fmt(str, ...values) {
     return String(str).replace(/\{(\d+)\}/g, (_, i) => {
@@ -684,7 +685,7 @@ export class MValueChart {
         if (!this.timeDisplay || !this.calculationResults) return;
         const time = this.calculationResults.timePoints[this.currentTimeIndex] || 0;
         const depth = this.calculationResults.depthPoints[this.currentTimeIndex] || 0;
-        this.timeDisplay.textContent = fmt(translate('chart.timeDisplay', '{0} min @ {1}m'), time.toFixed(1), depth.toFixed(1));
+        this.timeDisplay.textContent = fmt(translate('chart.timeDisplay', '{0} min @ {1}m'), fmtNum(time, 1), fmtNum(depth, 1));
         this._renderMiniProfile();
     }
 
@@ -1055,9 +1056,9 @@ export class MValueChart {
             
             // Draw vertical line at pAnchor (GF Low anchor depth)
             if (pAnchor > SURFACE_PRESSURE) {
-                const anchorDepthM = ((pAnchor - SURFACE_PRESSURE) / 0.1).toFixed(1);
+                const anchorDepthM = fmtNum(((pAnchor - SURFACE_PRESSURE) / 0.1), 1);
                 datasets.push({
-                    label: fmt(translate('chart.mvalue.pAnchor', 'pAnchor {0} bar ({1}m)'), pAnchor.toFixed(2), anchorDepthM),
+                    label: fmt(translate('chart.mvalue.pAnchor', 'pAnchor {0} bar ({1}m)'), fmtNum(pAnchor, 2), anchorDepthM),
                     data: [
                         { x: pAnchor, y: 0 },
                         { x: pAnchor, y: maxPressure }
@@ -1184,7 +1185,7 @@ export class MValueChart {
             // point off the trail without adding visual noise.
             const currentTissue = results.compartments[comp.id].pressures[timeIndex];
             datasets.push({
-                label: fmt(translate('chart.mvalue.tcLabel', 'TC{0} ({1}min)'), comp.id, comp.halfTime),
+                label: fmt(translate('chart.mvalue.tcLabel', 'TC{0} ({1}min)'), comp.id, fmtNum(comp.halfTime)),
                 data: [{ x: currentAmbient, y: currentTissue }],
                 backgroundColor: comp.color,
                 borderColor: theme().colors.surface,
@@ -1237,7 +1238,7 @@ export class MValueChart {
                                 const label = context.dataset.label || '';
                                 return fmt(
                                     translate('chart.mvalue.tooltipLabel', '{0}: p_amb={1}, p_tissue={2} bar'),
-                                    label, context.parsed.x.toFixed(2), context.parsed.y.toFixed(2)
+                                    label, fmtNum(context.parsed.x, 2), fmtNum(context.parsed.y, 2)
                                 );
                             }
                         }

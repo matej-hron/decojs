@@ -117,6 +117,7 @@ function expect(actual) {
 // IMPORT MODULES
 // ============================================================================
 
+import { decimalSeparator, fmtNum } from '../js/format.js';
 import { baseFromStartDate, epochMinToLocalInput, localInputToEpochMin } from '../js/tripTime.js';
 import { addDive, editDive, removeDive, rescheduleDive } from '../js/tripState.js';
 
@@ -3709,6 +3710,98 @@ describe('i18n notation - canvas strings must not contain HTML entities', () => 
             expect(missing).toEqual([]);
             expect(extra).toEqual([]);
         }
+    });
+});
+
+describe('format - decimal separator at runtime', () => {
+    test('decimalSeparator follows the language, region subtag ignored', () => {
+        expect(decimalSeparator('cs')).toBe(',');
+        expect(decimalSeparator('es')).toBe(',');
+        expect(decimalSeparator('en')).toBe('.');
+        expect(decimalSeparator('cs-CZ')).toBe(',');
+        expect(decimalSeparator('en-GB')).toBe('.');
+        // Unknown language must not silently become a comma locale.
+        expect(decimalSeparator('de')).toBe('.');
+        expect(decimalSeparator(undefined)).toBe('.');
+    });
+
+    test('fmtNum formats to fixed decimals in the requested language', () => {
+        expect(fmtNum(0.7511, 2, 'cs')).toBe('0,75');
+        expect(fmtNum(0.7511, 2, 'en')).toBe('0.75');
+        expect(fmtNum(0.7511, 2, 'es')).toBe('0,75');
+        expect(fmtNum(0.7511, 4, 'cs')).toBe('0,7511');
+        expect(fmtNum(-1.25, 1, 'cs')).toBe('-1,3');
+        // Rounding must stay identical to toFixed - this is formatting only.
+        expect(fmtNum(2.345, 2, 'en')).toBe((2.345).toFixed(2));
+    });
+
+    test('fmtNum with no decimals keeps the value, still localized', () => {
+        expect(fmtNum(3.5, undefined, 'cs')).toBe('3,5');
+        expect(fmtNum(12, undefined, 'cs')).toBe('12');
+        expect(fmtNum(12, 0, 'cs')).toBe('12');
+    });
+
+    test('fmtNum passes non-finite values through untouched', () => {
+        expect(fmtNum(NaN, 2, 'cs')).toBe('NaN');
+        expect(fmtNum(Infinity, 2, 'cs')).toBe('Infinity');
+        expect(fmtNum(null, 2, 'cs')).toBe('null');
+        expect(fmtNum(undefined, 2, 'cs')).toBe('undefined');
+        expect(fmtNum('', 2, 'cs')).toBe('');
+        // A numeric string is still a number and must format normally.
+        expect(fmtNum('0.5', 2, 'cs')).toBe('0,50');
+    });
+
+    test('only the decimal separator changes, never digits or sign', () => {
+        for (const v of [0, 1, -1, 0.5, -0.05, 1234.5678, 1e-4]) {
+            for (const d of [0, 1, 2, 4]) {
+                expect(fmtNum(v, d, 'cs')).toBe(fmtNum(v, d, 'en').replace('.', ','));
+            }
+        }
+    });
+
+    // Rendered numbers cannot be grepped - they exist only after the page runs.
+    // A static budget on the remaining raw toFixed() calls is therefore the
+    // only regression guard: every new display number must go through fmtNum.
+    test('no shipped page formats a display number with raw toFixed', () => {
+        const root = new URL('../', import.meta.url);
+        // The documented exceptions: contexts where a comma is invalid.
+        const ALLOWED = {
+            // The formatter itself - the one place toFixed belongs.
+            'js/format.js': 1,
+            // SVG geometry: path data, line endpoints, circle centre.
+            // A decimal comma there is not a typographic choice, it is an
+            // invalid attribute value and the browser drops the element.
+            'sandbox/haldane.html': 6,
+            // <input type="number">.value - a comma is not a valid value
+            'sandbox/m-values.html': 5,
+            // 8x SVG geometry, 3x parsed straight back with parseFloat,
+            // 1x circle centre via setAttribute
+            'sandbox/schreiner.html': 12,
+        };
+        const files = [];
+        const walkDir = (rel) => {
+            for (const e of readdirSync(new URL(rel, root), { withFileTypes: true })) {
+                const p = `${rel}${e.name}`;
+                if (e.isDirectory()) walkDir(`${p}/`);
+                else if (e.name.endsWith('.js') || e.name.endsWith('.html')) files.push(p);
+            }
+        };
+        walkDir('js/');
+        walkDir('sandbox/');
+        for (const e of readdirSync(root, { withFileTypes: true })) {
+            if (e.isFile() && e.name.endsWith('.html')) files.push(e.name);
+        }
+        // Untranslated developer scratch pages, not linked and not in sw.js.
+        const SCRATCH = new Set(['test.html', 'test2.html']);
+        const offenders = [];
+        for (const f of files) {
+            if (SCRATCH.has(f)) continue;
+            const src = readFileSync(new URL(f, root), 'utf8');
+            const n = (src.match(/\.toFixed\(/g) || []).length;
+            const allowed = ALLOWED[f] || 0;
+            if (n !== allowed) offenders.push(`${f}: ${n} raw toFixed, expected ${allowed}`);
+        }
+        expect(offenders).toEqual([]);
     });
 });
 
