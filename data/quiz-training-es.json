@@ -205,7 +205,7 @@
         { "key": "a", "text": "antes de cada inmersión, al jefe de inmersión y/o al responsable de la actividad" },
         { "key": "b", "text": "cada vez que se sube de cualificación o se renueva su validez" },
         { "key": "c", "text": "antes de cada inmersión en condiciones difíciles (viento, oleaje, corriente)" },
-        { "key": "d", "text": "antes de cada inmersión a más de 30 m" }
+        { "key": "d", "text": "antes de cada inmersión a más de 30 m" }
       ],
       "correct": "b",
       "explanation": "El candidato debe presentar los documentos cada vez que sube de cualificación o renueva su validez."
@@ -475,13 +475,13 @@
       "category": "definice-pravidla",
       "question": "Por profundidad pequeña, media y grande se entienden, en este orden:",
       "options": [
-        { "key": "a", "text": "profundidades hasta 6 m, de 6–18 m y más de 18 m" },
-        { "key": "b", "text": "profundidades hasta 10 m, de 10–20 m y más de 20 m" },
-        { "key": "c", "text": "profundidades hasta 10 m, de 10–30 m y más de 30 m" },
-        { "key": "d", "text": "profundidades hasta 20 m, de 20–40 m y más de 40 m" }
+        { "key": "a", "text": "profundidades hasta 6 m, de 6–18 m y más de 18 m" },
+        { "key": "b", "text": "profundidades hasta 10 m, de 10–20 m y más de 20 m" },
+        { "key": "c", "text": "profundidades hasta 10 m, de 10–30 m y más de 30 m" },
+        { "key": "d", "text": "profundidades hasta 20 m, de 20–40 m y más de 40 m" }
       ],
       "correct": "c",
-      "explanation": "Profundidad pequeña hasta 10 m, media de 10 a 30 m y grande más de 30 m."
+      "explanation": "Profundidad pequeña hasta 10 m, media de 10 a 30 m y grande más de 30 m."
     },
     {
       "id": 38,
@@ -528,8 +528,8 @@
       "question": "También pueden formarse buddy teams con parejas (o tríos) de alumnos compuestas por el instructor:",
       "options": [
         { "key": "a", "text": "a petición o por deseo de los alumnos" },
-        { "key": "b", "text": "si la visibilidad horizontal bajo el agua alcanza al menos los 6 m" },
-        { "key": "c", "text": "si están equipados con botellas de gas respiratorio con una capacidad mínima de 3,6 m³" },
+        { "key": "b", "text": "si la visibilidad horizontal bajo el agua alcanza al menos los 6 m" },
+        { "key": "c", "text": "si están equipados con botellas de gas respiratorio con una capacidad mínima de 3,6 m³" },
         { "key": "d", "text": "en función del avance de la formación, las condiciones concretas y con criterios de seguridad" }
       ],
       "correct": "d",
@@ -569,7 +569,7 @@
         { "key": "a", "text": "al menos 15 minutos" },
         { "key": "b", "text": "al menos 20 minutos" },
         { "key": "c", "text": "20–30 minutos" },
-        { "key": "d", "text": "para Buceador Junior SPČR y Buceador CMAS P1, al menos 10 min; para Buceador CMAS P2, al menos 20 min; y para Buceador CMAS P3, al menos 30 min" }
+        { "key": "d", "text": "para Buceador Junior SPČR y Buceador CMAS P1, al menos 10 min; para Buceador CMAS P2, al menos 20 min; y para Buceador CMAS P3, al menos 30 min" }
       ],
       "correct": "a",
       "explanation": "Una inmersión a efectos de cualificación supone una permanencia bajo el agua de al menos 15 minutos."
@@ -592,13 +592,13 @@
       "category": "potapec-zakladni",
       "question": "El titular del grado Buceador acompañado está autorizado a:",
       "options": [
-        { "key": "a", "text": "bucear en aguas abiertas hasta una profundidad máxima de 12 m, acompañado por una persona con cualificación de jefe de inmersión" },
-        { "key": "b", "text": "bucear en aguas abiertas hasta una profundidad máxima de 10 m, acompañado por una persona con al menos la cualificación de Buceador CMAS P2" },
-        { "key": "c", "text": "bucear en aguas abiertas hasta una profundidad máxima de 10 m con un titular de la misma cualificación (Buceador acompañado) o superior" },
+        { "key": "a", "text": "bucear en aguas abiertas hasta una profundidad máxima de 12 m, acompañado por una persona con cualificación de jefe de inmersión" },
+        { "key": "b", "text": "bucear en aguas abiertas hasta una profundidad máxima de 10 m, acompañado por una persona con al menos la cualificación de Buceador CMAS P2" },
+        { "key": "c", "text": "bucear en aguas abiertas hasta una profundidad máxima de 10 m con un titular de la misma cualificación (Buceador acompañado) o superior" },
         { "key": "d", "text": "bucear únicamente en aguas confinadas" }
       ],
       "correct": "a",
-      "explanation": "El Buceador acompañado puede bucear hasta 12 m acompañado por una persona con cualificación de jefe de inmersión."
+      "explanation": "El Buceador acompañado puede bucear hasta 12 m acompañado por una persona con cualificación de jefe de inmersión."
     },
     {
       "id": 47,
@@ -618,13 +618,13 @@
       "category": "potapec-zakladni",
       "question": "El aspirante al curso de Buceador acompañado debe nadar en superficie, sin equipo básico de buceo ni otras ayudas:",
       "options": [
-        { "key": "a", "text": "50 m" },
-        { "key": "b", "text": "75 m" },
-        { "key": "c", "text": "100 m" },
-        { "key": "d", "text": "200 m" }
+        { "key": "a", "text": "50 m" },
+        { "key": "b", "text": "75 m" },
+        { "key": "c", "text": "100 m" },
+        { "key": "d", "text": "200 m" }
       ],
       "correct": "a",
-      "explanation": "El aspirante a Buceador acompañado debe nadar 50 m sin ayudas."
+      "explanation": "El aspirante a Buceador acompañado debe nadar 50 m sin ayudas."
     },
     {
       "id": 49,
@@ -632,7 +632,7 @@
       "question": "Entre los requisitos de acceso a la formación de Buceador acompañado NO se incluye:",
       "options": [
         { "key": "a", "text": "edad mínima de 12 años" },
-        { "key": "b", "text": "nadar 50 m en superficie sin equipo básico ni otras ayudas" },
+        { "key": "b", "text": "nadar 50 m en superficie sin equipo básico ni otras ayudas" },
         { "key": "c", "text": "aguantar al menos 30 segundos bajo el agua en apnea" },
         { "key": "d", "text": "mantenerse 5 minutos en superficie (haciendo bicicleta y/o flotando)" }
       ],
@@ -657,7 +657,7 @@
       "category": "potapec-zakladni",
       "question": "El titular de Buceador Junior SPČR está autorizado a:",
       "options": [
-        { "key": "a", "text": "bucear en aguas abiertas con titulares de Buceador CMAS P1 y/o P2 hasta una profundidad máxima de 20 m" },
+        { "key": "a", "text": "bucear en aguas abiertas con titulares de Buceador CMAS P1 y/o P2 hasta una profundidad máxima de 20 m" },
         { "key": "b", "text": "tras realizar un total de 10 inmersiones en aguas abiertas y cumplir 14 años, solicitar el curso de adaptación y la evaluación para el grado Buceador CMAS P1" },
         { "key": "c", "text": "participar en inmersiones con titulares de la misma cualificación" },
         { "key": "d", "text": "participar en cursos de especialidad seleccionados" }
@@ -683,13 +683,13 @@
       "category": "potapec-zakladni",
       "question": "El aspirante al curso de Buceador Junior SPČR debe nadar en superficie, sin equipo básico de buceo ni otras ayudas:",
       "options": [
-        { "key": "a", "text": "300 m" },
-        { "key": "b", "text": "200 m" },
-        { "key": "c", "text": "100 m" },
-        { "key": "d", "text": "50 m" }
+        { "key": "a", "text": "300 m" },
+        { "key": "b", "text": "200 m" },
+        { "key": "c", "text": "100 m" },
+        { "key": "d", "text": "50 m" }
       ],
       "correct": "b",
-      "explanation": "El aspirante a Buceador Junior SPČR debe nadar 200 m sin ayudas."
+      "explanation": "El aspirante a Buceador Junior SPČR debe nadar 200 m sin ayudas."
     },
     {
       "id": 54,
@@ -723,12 +723,12 @@
       "question": "El titular del grado Buceador CMAS P1 está autorizado a:",
       "options": [
         { "key": "a", "text": "bucear en aguas abiertas con un titular de Buceador Junior SPČR a poca profundidad como representante legal o persona designada por este" },
-        { "key": "b", "text": "bucear en aguas abiertas con titulares de Buceador CMAS P1 y/o P2 hasta una profundidad máxima de 20 m" },
+        { "key": "b", "text": "bucear en aguas abiertas con titulares de Buceador CMAS P1 y/o P2 hasta una profundidad máxima de 20 m" },
         { "key": "c", "text": "tras realizar 40 inmersiones en aguas abiertas, solicitar el grado Buceador CMAS P2" },
         { "key": "d", "text": "tras cumplir 18 años, supervisar a participantes en formación según las indicaciones del instructor" }
       ],
       "correct": "b",
-      "explanation": "El Buceador CMAS P1 puede bucear con titulares de P1 y/o P2 hasta 20 m de profundidad."
+      "explanation": "El Buceador CMAS P1 puede bucear con titulares de P1 y/o P2 hasta 20 m de profundidad."
     },
     {
       "id": 57,
@@ -736,12 +736,12 @@
       "question": "Los requisitos de acceso a la formación de Buceador CMAS P1 son:",
       "options": [
         { "key": "a", "text": "edad mínima de 14 años" },
-        { "key": "b", "text": "nadar 200 m en superficie sin equipo básico ni otras ayudas" },
+        { "key": "b", "text": "nadar 200 m en superficie sin equipo básico ni otras ayudas" },
         { "key": "c", "text": "mantenerse 5 minutos en superficie (haciendo bicicleta y/o flotando)" },
         { "key": "d", "text": "todas las respuestas son correctas" }
       ],
       "correct": "d",
-      "explanation": "Todas son correctas: edad de 14 años, 200 m de natación y 5 minutos en superficie."
+      "explanation": "Todas son correctas: edad de 14 años, 200 m de natación y 5 minutos en superficie."
     },
     {
       "id": 58,
@@ -775,25 +775,25 @@
       "question": "Para conceder la cualificación de Buceador CMAS P1 se exige completar:",
       "options": [
         { "key": "a", "text": "al menos 5 inmersiones con instructor en aguas abiertas a poca profundidad" },
-        { "key": "b", "text": "al menos 5 inmersiones con instructor en aguas abiertas, de las cuales 3 a poca profundidad y al menos 2 a 15–20 m" },
+        { "key": "b", "text": "al menos 5 inmersiones con instructor en aguas abiertas, de las cuales 3 a poca profundidad y al menos 2 a 15–20 m" },
         { "key": "c", "text": "al menos 5 inmersiones en aguas abiertas a poca profundidad, de las cuales las 3 primeras con instructor; las dos restantes pueden hacerse acompañado por una persona con cualificación de jefe de inmersión" },
-        { "key": "d", "text": "al menos 5 inmersiones en aguas abiertas; las 3 primeras a poca profundidad pueden hacerse acompañado por una persona con cualificación de jefe de inmersión, y las 2 restantes a 15–20 m deben realizarse con instructor" }
+        { "key": "d", "text": "al menos 5 inmersiones en aguas abiertas; las 3 primeras a poca profundidad pueden hacerse acompañado por una persona con cualificación de jefe de inmersión, y las 2 restantes a 15–20 m deben realizarse con instructor" }
       ],
       "correct": "b",
-      "explanation": "Para P1 se exigen 5 inmersiones con instructor: 3 a poca profundidad y 2 a 15–20 m."
+      "explanation": "Para P1 se exigen 5 inmersiones con instructor: 3 a poca profundidad y 2 a 15–20 m."
     },
     {
       "id": 61,
       "category": "potapec-cmas",
       "question": "El titular del grado Buceador CMAS P2 está autorizado a:",
       "options": [
-        { "key": "a", "text": "acompañar al titular de Buceador acompañado en aguas abiertas hasta una profundidad máxima de 12 m" },
+        { "key": "a", "text": "acompañar al titular de Buceador acompañado en aguas abiertas hasta una profundidad máxima de 12 m" },
         { "key": "b", "text": "ayudar a supervisar a los participantes en formación" },
-        { "key": "c", "text": "bucear en aguas abiertas con titulares de Buceador CMAS P1 hasta una profundidad máxima de 20 m" },
+        { "key": "c", "text": "bucear en aguas abiertas con titulares de Buceador CMAS P1 hasta una profundidad máxima de 20 m" },
         { "key": "d", "text": "ejercer la función de jefe de inmersión" }
       ],
       "correct": "c",
-      "explanation": "El Buceador CMAS P2 puede bucear con titulares de P1 hasta una profundidad máxima de 20 m."
+      "explanation": "El Buceador CMAS P2 puede bucear con titulares de P1 hasta una profundidad máxima de 20 m."
     },
     {
       "id": 62,
@@ -852,7 +852,7 @@
       "category": "potapec-cmas",
       "question": "El titular del grado Buceador CMAS P3 está autorizado a:",
       "options": [
-        { "key": "a", "text": "acompañar al titular de Buceador acompañado en aguas abiertas a profundidades superiores a 20 m" },
+        { "key": "a", "text": "acompañar al titular de Buceador acompañado en aguas abiertas a profundidades superiores a 20 m" },
         { "key": "b", "text": "evaluar conocimientos y/o destrezas de los alumnos en la formación de Buceador acompañado y Buceador Junior SPČR" },
         { "key": "c", "text": "supervisar a los participantes en formación según las indicaciones del instructor" },
         { "key": "d", "text": "todas las respuestas son correctas" }
@@ -904,9 +904,9 @@
       "category": "potapec-cmas",
       "question": "A efectos de la experiencia exigida para CMAS P3, se consideran inmersiones en condiciones más exigentes:",
       "options": [
-        { "key": "a", "text": "inmersiones con visibilidad inferior a 2 m" },
-        { "key": "b", "text": "inmersiones con temperatura del agua inferior a 10 °C" },
-        { "key": "c", "text": "inmersiones a profundidades superiores a 30 m" },
+        { "key": "a", "text": "inmersiones con visibilidad inferior a 2 m" },
+        { "key": "b", "text": "inmersiones con temperatura del agua inferior a 10 °C" },
+        { "key": "c", "text": "inmersiones a profundidades superiores a 30 m" },
         { "key": "d", "text": "todas las respuestas son correctas" }
       ],
       "correct": "d",
@@ -1049,11 +1049,11 @@
       "options": [
         { "key": "a", "text": "asistir al menos a 2 seminarios de instructores SPČR" },
         { "key": "b", "text": "completar una práctica sobre la administración de oxígeno como primeros auxilios" },
-        { "key": "c", "text": "sumergirse con equipo básico y subir un objeto desde 10 m" },
-        { "key": "d", "text": "subir a un compañero desde 20–30 m con la ayuda del chaleco compensador y remolcarlo en superficie 50 m" }
+        { "key": "c", "text": "sumergirse con equipo básico y subir un objeto desde 10 m" },
+        { "key": "d", "text": "subir a un compañero desde 20–30 m con la ayuda del chaleco compensador y remolcarlo en superficie 50 m" }
       ],
       "correct": "c",
-      "explanation": "Sumergirse con equipo básico y subir un objeto desde 10 m no figura entre las condiciones de renovación."
+      "explanation": "Sumergirse con equipo básico y subir un objeto desde 10 m no figura entre las condiciones de renovación."
     },
     {
       "id": 82,
@@ -1061,7 +1061,7 @@
       "question": "A un aspirante que en el periodo evaluado, dentro del sistema CMAS/SPČR, haya formado a más de 40 buceadores con concesión de la cualificación y contra el que no se hayan presentado quejas justificadas y sustanciales, le basta para renovar el grado de instructor:",
       "options": [
         { "key": "a", "text": "asistir a un seminario de instructores SPČR siempre que asistiera a todas las presentaciones" },
-        { "key": "b", "text": "asistir a un seminario de instructores SPČR siempre que asistiera a la práctica de reanimación, a la práctica de administración de oxígeno como primeros auxilios y demostrara subir a un compañero desde 20–30 m y remolcarlo en superficie 50 m" },
+        { "key": "b", "text": "asistir a un seminario de instructores SPČR siempre que asistiera a la práctica de reanimación, a la práctica de administración de oxígeno como primeros auxilios y demostrara subir a un compañero desde 20–30 m y remolcarlo en superficie 50 m" },
         { "key": "c", "text": "una solicitud por escrito a la Comisión de Formación de la SPČR" },
         { "key": "d", "text": "ninguna respuesta es correcta" }
       ],
@@ -1154,7 +1154,7 @@
         { "key": "a", "text": "que en los últimos 3 años ha realizado una formación SPČR sobre metodología de la formación" },
         { "key": "b", "text": "que en los últimos 2 años ha realizado al menos 80 inmersiones" },
         { "key": "c", "text": "que en los últimos 5 años ha asistido al menos a 2 seminarios de instructores SPČR" },
-        { "key": "d", "text": "que en los últimos 5 años ha demostrado subir a un compañero desde 20–30 m con la ayuda del chaleco compensador y remolcarlo en superficie 50 m" }
+        { "key": "d", "text": "que en los últimos 5 años ha demostrado subir a un compañero desde 20–30 m con la ayuda del chaleco compensador y remolcarlo en superficie 50 m" }
       ],
       "correct": "a",
       "explanation": "El aspirante a I1 debe acreditar haber realizado una formación sobre metodología de la formación en los últimos 3 años."

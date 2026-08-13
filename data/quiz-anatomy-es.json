@@ -390,7 +390,7 @@
         { "key": "d", "text": "6 litros" }
       ],
       "correct": "a",
-      "explanation": "El espacio muerto (donde no hay intercambio gaseoso) es de unos 0,15 litros (150 ml). El equipo de buceo aumenta este espacio muerto."
+      "explanation": "El espacio muerto (donde no hay intercambio gaseoso) es de unos 0,15 litros (150 ml). El equipo de buceo aumenta este espacio muerto."
     },
     {
       "id": 31,
@@ -442,7 +442,7 @@
         { "key": "d", "text": "el volumen residual y el espacio muerto" }
       ],
       "correct": "a",
-      "explanation": "Volumen pulmonar total = capacidad vital + volumen residual. En un adulto, alrededor de 6 litros (4,5 L de capacidad vital + 1,5 L de volumen residual)."
+      "explanation": "Volumen pulmonar total = capacidad vital + volumen residual. En un adulto, alrededor de 6 litros (4,5 L de capacidad vital + 1,5 L de volumen residual)."
     },
     {
       "id": 35,
@@ -689,7 +689,7 @@
         { "key": "d", "text": "los capilares" }
       ],
       "correct": "d",
-      "explanation": "Los capilares forman la red más ramificada del sistema circulatorio. Su longitud total en el cuerpo humano se estima en 100 000 km."
+      "explanation": "Los capilares forman la red más ramificada del sistema circulatorio. Su longitud total en el cuerpo humano se estima en 100 000 km."
     },
     {
       "id": 54,
@@ -1027,7 +1027,7 @@
         { "key": "d", "text": "0,3–0,5 litros de aire" }
       ],
       "correct": "d",
-      "explanation": "El volumen corriente en reposo es de unos 0,5 litros (500 ml). En esfuerzo aumenta. La capacidad vital (inspiración máxima) es de 4–5 litros."
+      "explanation": "El volumen corriente en reposo es de unos 0,5 litros (500 ml). En esfuerzo aumenta. La capacidad vital (inspiración máxima) es de 4–5 litros."
     },
     {
       "id": 80,
@@ -1099,13 +1099,13 @@
       "category": "termoregulace",
       "question": "La permanencia prolongada sin traje aislante es posible en agua de al menos:",
       "options": [
-        { "key": "a", "text": "42 °C" },
-        { "key": "b", "text": "35 °C" },
-        { "key": "c", "text": "30 °C" },
-        { "key": "d", "text": "18 °C" }
+        { "key": "a", "text": "42 °C" },
+        { "key": "b", "text": "35 °C" },
+        { "key": "c", "text": "30 °C" },
+        { "key": "d", "text": "18 °C" }
       ],
       "correct": "b",
-      "explanation": "La permanencia prolongada sin neopreno es posible en agua de al menos 35 °C (zona termoneutra). El agua disipa el calor 25 veces más rápido que el aire."
+      "explanation": "La permanencia prolongada sin neopreno es posible en agua de al menos 35 °C (zona termoneutra). El agua disipa el calor 25 veces más rápido que el aire."
     },
     {
       "id": 86,
@@ -1183,7 +1183,7 @@
         { "key": "d", "text": "más de 60 metros" }
       ],
       "correct": "b",
-      "explanation": "La narcosis nitrogenada con aire aparece típicamente a 30–40 m. La sensibilidad individual varía y puede verse aumentada por otros factores."
+      "explanation": "La narcosis nitrogenada con aire aparece típicamente a 30–40 m. La sensibilidad individual varía y puede verse aumentada por otros factores."
     },
     {
       "id": 92,
@@ -1255,13 +1255,13 @@
       "category": "termoregulace",
       "question": "La temperatura media normal del llamado núcleo corporal es de aproximadamente:",
       "options": [
-        { "key": "a", "text": "18 °C" },
-        { "key": "b", "text": "30 °C" },
-        { "key": "c", "text": "37 °C" },
-        { "key": "d", "text": "42 °C" }
+        { "key": "a", "text": "18 °C" },
+        { "key": "b", "text": "30 °C" },
+        { "key": "c", "text": "37 °C" },
+        { "key": "d", "text": "42 °C" }
       ],
       "correct": "c",
-      "explanation": "La temperatura del núcleo corporal es de unos 37 °C (36,5–37,5 °C). Por encima de 42 °C o por debajo de 28 °C resulta peligrosa para la vida."
+      "explanation": "La temperatura del núcleo corporal es de unos 37 °C (36,5–37,5 °C). Por encima de 42 °C o por debajo de 28 °C resulta peligrosa para la vida."
     },
     {
       "id": 98,

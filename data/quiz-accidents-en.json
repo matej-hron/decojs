@@ -100,11 +100,11 @@
       "options": [
         { "key": "a", "text": "are performed approximately in the middle of the chest, on the breastbone" },
         { "key": "b", "text": "are performed at a rate of about 100–120 per minute" },
-        { "key": "c", "text": "are performed to a depth of 5–6 cm" },
+        { "key": "c", "text": "are performed to a depth of 5–6 cm" },
         { "key": "d", "text": "all answers are correct" }
       ],
       "correct": "d",
-      "explanation": "All of these are correct — middle of the chest, 100–120/min, depth 5–6 cm."
+      "explanation": "All of these are correct — middle of the chest, 100–120/min, depth 5–6 cm."
     },
     {
       "id": 9,
@@ -113,7 +113,7 @@
       "options": [
         { "key": "a", "text": "During chest compressions, the chest is compressed at a rate of approximately 100–120 per minute." },
         { "key": "b", "text": "The site for chest compressions is in the left half of the chest." },
-        { "key": "c", "text": "Chest compressions are performed to a depth of 5–6 cm." },
+        { "key": "c", "text": "Chest compressions are performed to a depth of 5–6 cm." },
         { "key": "d", "text": "Resuscitation begins with 30 chest compressions immediately after the airway is opened." }
       ],
       "correct": "b",
@@ -124,13 +124,13 @@
       "category": "první pomoc",
       "question": "During chest compressions, the casualty's chest is compressed:",
       "options": [
-        { "key": "a", "text": "approximately in the middle of the breastbone, to a depth of 5–6 cm" },
+        { "key": "a", "text": "approximately in the middle of the breastbone, to a depth of 5–6 cm" },
         { "key": "b", "text": "in the left part of the chest, at a rate of approximately 100–120 per minute" },
-        { "key": "c", "text": "three fingers below the breastbone, at a rate of approximately 100–120 per minute, to a depth of 4–5 cm" },
+        { "key": "c", "text": "three fingers below the breastbone, at a rate of approximately 100–120 per minute, to a depth of 4–5 cm" },
         { "key": "d", "text": "approximately in the middle of the breastbone, at a rate of 70 per minute" }
       ],
       "correct": "a",
-      "explanation": "Compress the middle of the breastbone to a depth of 5–6 cm at 100–120/min."
+      "explanation": "Compress the middle of the breastbone to a depth of 5–6 cm at 100–120/min."
     },
     {
       "id": 11,
@@ -278,7 +278,7 @@
     {
       "id": 22,
       "category": "otravy plyny",
-      "question": "Using compressed-air scuba, on reaching 40 m communication between you and your buddy worsens markedly. The cause should be considered:",
+      "question": "Using compressed-air scuba, on reaching 40 m communication between you and your buddy worsens markedly. The cause should be considered:",
       "options": [
         { "key": "a", "text": "lack of oxygen (hypoxia)" },
         { "key": "b", "text": "nitrogen narcosis (rapture of the deep)" },
@@ -286,7 +286,7 @@
         { "key": "d", "text": "decompression sickness" }
       ],
       "correct": "b",
-      "explanation": "At 40 m the partial pressure of nitrogen is high enough to produce nitrogen narcosis, which impairs coordination and communication."
+      "explanation": "At 40 m the partial pressure of nitrogen is high enough to produce nitrogen narcosis, which impairs coordination and communication."
     },
     {
       "id": 23,
@@ -322,10 +322,10 @@
         { "key": "a", "text": "Hyperventilation lowers the carbon-dioxide level in the body." },
         { "key": "b", "text": "The signs of oxygen deficiency (hypoxia) are hard to recognise." },
         { "key": "c", "text": "Persistent pressure of equipment on the carotid arteries can reduce oxygen supply to the brain." },
-        { "key": "d", "text": "Hypoxia occurs when the partial pressure of oxygen in the breathing gas falls below 21 kPa." }
+        { "key": "d", "text": "Hypoxia occurs when the partial pressure of oxygen in the breathing gas falls below 21 kPa." }
       ],
       "correct": "d",
-      "explanation": "Statement (d) is incorrect — hypoxia occurs when <em>p</em>O₂ falls below about 16 kPa (0.16 bar), not 21 kPa. 21 kPa is the normal atmospheric partial pressure of oxygen."
+      "explanation": "Statement (d) is incorrect — hypoxia occurs when <em>p</em>O₂ falls below about 16 kPa (0.16 bar), not 21 kPa. 21 kPa is the normal atmospheric partial pressure of oxygen."
     },
     {
       "id": 26,
@@ -334,11 +334,11 @@
       "options": [
         { "key": "a", "text": "hyperventilation before a breath-hold dive" },
         { "key": "b", "text": "binding of carbon monoxide to haemoglobin" },
-        { "key": "c", "text": "breathing a 2% oxygen mixture at 90 m" },
+        { "key": "c", "text": "breathing a 2% oxygen mixture at 90 m" },
         { "key": "d", "text": "breathing air stored long-term in a steel cylinder" }
       ],
       "correct": "c",
-      "explanation": "At 90 m the absolute pressure is 10 bar, so 2% O₂ gives <em>p</em>O₂ = 0.2 bar (20 kPa), which is sufficient and does not cause hypoxia."
+      "explanation": "At 90 m the absolute pressure is 10 bar, so 2% O₂ gives <em>p</em>O₂ = 0.2 bar (20 kPa), which is sufficient and does not cause hypoxia."
     },
     {
       "id": 27,
@@ -416,20 +416,20 @@
         { "key": "d", "text": "60 metres" }
       ],
       "correct": "c",
-      "explanation": "Safe breathing requires <em>p</em>O₂ of at least 0.16 bar. At 30 m (4 bar) we get 4% × 4 = 0.16 bar (16 kPa), which is the minimum safe value."
+      "explanation": "Safe breathing requires <em>p</em>O₂ of at least 0.16 bar. At 30 m (4 bar) we get 4% × 4 = 0.16 bar (16 kPa), which is the minimum safe value."
     },
     {
       "id": 33,
       "category": "otravy plyny",
       "question": "Loss of consciousness is a risk when the partial pressure of oxygen in the breathing gas drops below:",
       "options": [
-        { "key": "a", "text": "5 kPa" },
-        { "key": "b", "text": "10 kPa" },
-        { "key": "c", "text": "16 kPa" },
-        { "key": "d", "text": "21 kPa" }
+        { "key": "a", "text": "5 kPa" },
+        { "key": "b", "text": "10 kPa" },
+        { "key": "c", "text": "16 kPa" },
+        { "key": "d", "text": "21 kPa" }
       ],
       "correct": "b",
-      "explanation": "Loss of consciousness is a risk when <em>p</em>O₂ falls below 10 kPa (0.1 bar). 16 kPa is the minimum for normal function; below 10 kPa, consciousness is lost."
+      "explanation": "Loss of consciousness is a risk when <em>p</em>O₂ falls below 10 kPa (0.1 bar). 16 kPa is the minimum for normal function; below 10 kPa, consciousness is lost."
     },
     {
       "id": 34,
@@ -449,26 +449,26 @@
       "category": "otravy plyny",
       "question": "Hypoxia occurs when the partial pressure of oxygen in the breathing gas drops below:",
       "options": [
-        { "key": "a", "text": "21 kPa" },
-        { "key": "b", "text": "16 kPa" },
-        { "key": "c", "text": "12 kPa" },
-        { "key": "d", "text": "10 kPa" }
+        { "key": "a", "text": "21 kPa" },
+        { "key": "b", "text": "16 kPa" },
+        { "key": "c", "text": "12 kPa" },
+        { "key": "d", "text": "10 kPa" }
       ],
       "correct": "b",
-      "explanation": "Hypoxia occurs when <em>p</em>O₂ falls below 16 kPa (0.16 bar). This is the minimum partial pressure of oxygen needed for normal body function."
+      "explanation": "Hypoxia occurs when <em>p</em>O₂ falls below 16 kPa (0.16 bar). This is the minimum partial pressure of oxygen needed for normal body function."
     },
     {
       "id": 36,
       "category": "podchlazení",
       "question": "The appropriate temperature of a shower or bath for a hypothermic diver is approximately:",
       "options": [
-        { "key": "a", "text": "16–18 °C" },
-        { "key": "b", "text": "20–30 °C" },
-        { "key": "c", "text": "37–40 °C" },
-        { "key": "d", "text": "45–50 °C" }
+        { "key": "a", "text": "16–18 °C" },
+        { "key": "b", "text": "20–30 °C" },
+        { "key": "c", "text": "37–40 °C" },
+        { "key": "d", "text": "45–50 °C" }
       ],
       "correct": "c",
-      "explanation": "The optimal warming temperature is 37–40 °C — close to body temperature, so it does not cause thermal shock."
+      "explanation": "The optimal warming temperature is 37–40 °C — close to body temperature, so it does not cause thermal shock."
     },
     {
       "id": 37,
@@ -650,7 +650,7 @@
         { "key": "d", "text": "100 metres" }
       ],
       "correct": "c",
-      "explanation": "On air (21% O₂) the oxygen partial pressure reaches the toxic threshold of 1.6 bar at approximately 70 m (8 bar × 0.21 = 1.68 bar)."
+      "explanation": "On air (21% O₂) the oxygen partial pressure reaches the toxic threshold of 1.6 bar at approximately 70 m (8 bar × 0.21 = 1.68 bar)."
     },
     {
       "id": 51,
@@ -735,13 +735,13 @@
       "category": "otravy plyny",
       "question": "Acute oxygen toxicity is a risk if the oxygen partial pressure in the breathing gas exceeds approximately:",
       "options": [
-        { "key": "a", "text": "100 kPa" },
-        { "key": "b", "text": "160 kPa" },
-        { "key": "c", "text": "420 kPa" },
-        { "key": "d", "text": "500 kPa" }
+        { "key": "a", "text": "100 kPa" },
+        { "key": "b", "text": "160 kPa" },
+        { "key": "c", "text": "420 kPa" },
+        { "key": "d", "text": "500 kPa" }
       ],
       "correct": "b",
-      "explanation": "Acute oxygen toxicity (hyperoxia) is a risk above 160 kPa (1.6 bar), which is the safety limit for diving."
+      "explanation": "Acute oxygen toxicity (hyperoxia) is a risk above 160 kPa (1.6 bar), which is the safety limit for diving."
     },
     {
       "id": 58,
@@ -785,7 +785,7 @@
     {
       "id": 61,
       "category": "barotrauma plic",
-      "question": "On descent on compressed-air scuba, at 15 m your buddy starts to show signs of disorientation, spinning around and struggling with motor coordination. The cause is:",
+      "question": "On descent on compressed-air scuba, at 15 m your buddy starts to show signs of disorientation, spinning around and struggling with motor coordination. The cause is:",
       "options": [
         { "key": "a", "text": "a ruptured eardrum" },
         { "key": "b", "text": "an arterial gas embolism" },
@@ -884,7 +884,7 @@
         { "key": "d", "text": "10 metres" }
       ],
       "correct": "a",
-      "explanation": "Pulmonary barotrauma of ascent can occur at very shallow depths (less than 2 m), because the relative pressure change is greatest near the surface."
+      "explanation": "Pulmonary barotrauma of ascent can occur at very shallow depths (less than 2 m), because the relative pressure change is greatest near the surface."
     },
     {
       "id": 69,
@@ -893,7 +893,7 @@
       "options": [
         { "key": "a", "text": "is impossible because of tooth structure" },
         { "key": "b", "text": "is neither painful nor dangerous" },
-        { "key": "c", "text": "can only occur on dives below 40 m" },
+        { "key": "c", "text": "can only occur on dives below 40 m" },
         { "key": "d", "text": "is painful and can be dangerous, especially on ascent" }
       ],
       "correct": "d",
@@ -936,7 +936,7 @@
         { "key": "d", "text": "less than 2 metres" }
       ],
       "correct": "d",
-      "explanation": "Pulmonary barotrauma of ascent can occur at depths less than 2 m, because the relative pressure change is greatest near the surface."
+      "explanation": "Pulmonary barotrauma of ascent can occur at depths less than 2 m, because the relative pressure change is greatest near the surface."
     },
     {
       "id": 73,
@@ -1049,7 +1049,7 @@
       "options": [
         { "key": "a", "text": "Decompression sickness does not occur in divers who do not exceed the no-decompression limit for a given depth." },
         { "key": "b", "text": "Cutaneous DCS does not require recompression-chamber treatment." },
-        { "key": "c", "text": "The partial pressure of oxygen breathed during in-water decompression must not exceed 170 kPa." },
+        { "key": "c", "text": "The partial pressure of oxygen breathed during in-water decompression must not exceed 170 kPa." },
         { "key": "d", "text": "A surface interval longer than 2 hours is recommended." }
       ],
       "correct": "a",

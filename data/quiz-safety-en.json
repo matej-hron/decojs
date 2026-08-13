@@ -33,7 +33,7 @@
       "category": "obecne-smernice",
       "question": "Divers shall:",
       "options": [
-        {"key": "a", "text": "follow a dive profile such that the average depth does not exceed 15 m"},
+        {"key": "a", "text": "follow a dive profile such that the average depth does not exceed 15 m"},
         {"key": "b", "text": "use a snorkel when swimming with their scuba unit on the surface"},
         {"key": "c", "text": "observe the limiting conditions valid for their qualification grade"},
         {"key": "d", "text": "limit their diving routine to no more than two dives per day"}
@@ -98,10 +98,10 @@
       "category": "zpusobilost",
       "question": "Divers shall categorically avoid diving:",
       "options": [
-        {"key": "a", "text": "at temperatures below minus 10 °C"},
+        {"key": "a", "text": "at temperatures below minus 10 °C"},
         {"key": "b", "text": "if their physical and/or mental capacity is reduced by fatigue"},
         {"key": "c", "text": "if they are not equipped with a dive computer"},
-        {"key": "d", "text": "if underwater visibility drops below 2 m"}
+        {"key": "d", "text": "if underwater visibility drops below 2 m"}
       ],
       "correct": "b",
       "explanation": "Divers shall categorically avoid diving if their physical and/or mental capacity is reduced by fatigue."
@@ -127,7 +127,7 @@
         {"key": "a", "text": "must pay extra attention to their equipment before the dive"},
         {"key": "b", "text": "must pay extra attention to dive planning"},
         {"key": "c", "text": "shall categorically avoid diving"},
-        {"key": "d", "text": "shall dive to a limited depth (CMAS One-Star Diver max. 10 m, CMAS Two-Star Diver max. 15 m, CMAS Three-Star Diver or instructor max. 20 m)"}
+        {"key": "d", "text": "shall dive to a limited depth (CMAS One-Star Diver max. 10 m, CMAS Two-Star Diver max. 15 m, CMAS Three-Star Diver or instructor max. 20 m)"}
       ],
       "correct": "c",
       "explanation": "Divers with reduced capacity shall categorically avoid diving."
@@ -151,12 +151,12 @@
       "question": "Identify the statement that does NOT match the SPČR Safety Guidelines:",
       "options": [
         {"key": "a", "text": "Divers shall categorically avoid diving when their physical and/or mental capacity is reduced by illness, fatigue, alcohol, drugs or other circumstances."},
-        {"key": "b", "text": "Divers shall categorically avoid diving when the water temperature drops below 6 °C."},
+        {"key": "b", "text": "Divers shall categorically avoid diving when the water temperature drops below 6 °C."},
         {"key": "c", "text": "Divers continually maintain their diving skills and physical fitness."},
         {"key": "d", "text": "Divers prevent dive accidents through regular diving experience, rehearsing emergency procedures and responsible dive planning."}
       ],
       "correct": "b",
-      "explanation": "The Safety Guidelines impose no diving restriction based on water temperature dropping below 6 °C."
+      "explanation": "The Safety Guidelines impose no diving restriction based on water temperature dropping below 6 °C."
     },
     {
       "id": 13,
@@ -178,7 +178,7 @@
       "options": [
         {"key": "a", "text": "prevent dive accidents by rehearsing emergency procedures"},
         {"key": "b", "text": "maintain their diving skills and physical fitness only in the period before each step up in qualification"},
-        {"key": "c", "text": "shall categorically avoid diving when the horizontal underwater visibility drops below 2 m"},
+        {"key": "c", "text": "shall categorically avoid diving when the horizontal underwater visibility drops below 2 m"},
         {"key": "d", "text": "all answers are correct"}
       ],
       "correct": "a",
@@ -202,7 +202,7 @@
       "category": "specialni-potapeni",
       "question": "For diving under ice, what is required is:",
       "options": [
-        {"key": "a", "text": "completion of at least 90 open-water dives, of which at least 30 at night"},
+        {"key": "a", "text": "completion of at least 90 open-water dives, of which at least 30 at night"},
         {"key": "b", "text": "completion of a special course or training"},
         {"key": "c", "text": "qualification at least CMAS One-Star Diver"},
         {"key": "d", "text": "qualification at least CMAS Three-Star Diver"}
@@ -229,7 +229,7 @@
       "question": "Completion of a special course or training and adherence to the safety rules set out in that course is required:",
       "options": [
         {"key": "a", "text": "for all divers with CMAS Two-Star Diver and higher"},
-        {"key": "b", "text": "for diving in smaller groups, in underwater visibility below 2 m, and at greater distances from shore"},
+        {"key": "b", "text": "for diving in smaller groups, in underwater visibility below 2 m, and at greater distances from shore"},
         {"key": "c", "text": "and is not required for diving under ice"},
         {"key": "d", "text": "for diving on mixed-gas breathing mixtures, with rebreathers, in overhead environments including under ice, and in otherwise demanding conditions"}
       ],
@@ -320,12 +320,12 @@
       "question": "Identify the statement that does NOT match the SPČR Safety Guidelines:",
       "options": [
         {"key": "a", "text": "Diving equipment must be functional and appropriate for the planned dive."},
-        {"key": "b", "text": "For diving below 10 m, only equipment bearing the international CMAS certificate may be used."},
+        {"key": "b", "text": "For diving below 10 m, only equipment bearing the international CMAS certificate may be used."},
         {"key": "c", "text": "For open-water diving, the indispensable items of equipment are a dive knife (or other suitable cutting tool) and a buoyancy compensator."},
         {"key": "d", "text": "A dry suit is not considered a buoyancy compensator."}
       ],
       "correct": "b",
-      "explanation": "The Safety Guidelines do not require a CMAS certificate for equipment used below 10 m."
+      "explanation": "The Safety Guidelines do not require a CMAS certificate for equipment used below 10 m."
     },
     {
       "id": 26,
@@ -373,7 +373,7 @@
       "options": [
         {"key": "a", "text": "at least one of a buddy pair"},
         {"key": "b", "text": "every diver"},
-        {"key": "c", "text": "every diver when diving deeper than 10 m"},
+        {"key": "c", "text": "every diver when diving deeper than 10 m"},
         {"key": "d", "text": "at least one of a buddy trio"}
       ],
       "correct": "b",
@@ -387,7 +387,7 @@
         {"key": "a", "text": "must be carried by at least one diver in a buddy pair (or trio)"},
         {"key": "b", "text": "must be carried by every diver"},
         {"key": "c", "text": "are carried by divers as their means and judgement allow"},
-        {"key": "d", "text": "are carried by divers for dives deeper than 10 m"}
+        {"key": "d", "text": "are carried by divers for dives deeper than 10 m"}
       ],
       "correct": "b",
       "explanation": "Every diver must carry an alternative breathing-gas source and the other listed equipment."
@@ -447,7 +447,7 @@
     {
       "id": 35,
       "category": "vystroj",
-      "question": "When horizontal underwater visibility is below 2 m:",
+      "question": "When horizontal underwater visibility is below 2 m:",
       "options": [
         {"key": "a", "text": "a buddy line is used"},
         {"key": "b", "text": "use of a powerful torch is recommended"},
@@ -455,7 +455,7 @@
         {"key": "d", "text": "diving must be avoided"}
       ],
       "correct": "a",
-      "explanation": "When horizontal underwater visibility is below 2 m, a buddy line is used."
+      "explanation": "When horizontal underwater visibility is below 2 m, a buddy line is used."
     },
     {
       "id": 36,
@@ -464,11 +464,11 @@
       "options": [
         {"key": "a", "text": "on night dives"},
         {"key": "b", "text": "on breath-hold dives in a sheltered body of water"},
-        {"key": "c", "text": "on dives below 30 m"},
-        {"key": "d", "text": "when horizontal underwater visibility is below 2 m"}
+        {"key": "c", "text": "on dives below 30 m"},
+        {"key": "d", "text": "when horizontal underwater visibility is below 2 m"}
       ],
       "correct": "d",
-      "explanation": "A buddy line is used when horizontal underwater visibility is below 2 m."
+      "explanation": "A buddy line is used when horizontal underwater visibility is below 2 m."
     },
     {
       "id": 37,
@@ -478,10 +478,10 @@
         {"key": "a", "text": "Diving equipment must be properly secured, arranged and used in such a way that there is no risk of damage and/or entanglement."},
         {"key": "b", "text": "A buoyancy compensator must not be used as a substitute for a lifting bag."},
         {"key": "c", "text": "Every diver must be equipped with instruments for determining depth and dive time, or with a dive computer."},
-        {"key": "d", "text": "When horizontal visibility is below 4 m, a buddy line is used."}
+        {"key": "d", "text": "When horizontal visibility is below 4 m, a buddy line is used."}
       ],
       "correct": "d",
-      "explanation": "The Safety Guidelines specify a buddy line below 2 m visibility, not below 4 m."
+      "explanation": "The Safety Guidelines specify a buddy line below 2 m visibility, not below 4 m."
     },
     {
       "id": 38,
@@ -528,7 +528,7 @@
       "question": "Divers shall be familiar with:",
       "options": [
         {"key": "a", "text": "the use of backup depth gauges"},
-        {"key": "b", "text": "the shortening of so-called no-decompression limits at depths beyond 18 m"},
+        {"key": "b", "text": "the shortening of so-called no-decompression limits at depths beyond 18 m"},
         {"key": "c", "text": "the extension of decompression times for repetitive dives"},
         {"key": "d", "text": "diving hand signals"}
       ],
@@ -634,7 +634,7 @@
         {"key": "a", "text": "uninterrupted visual contact"},
         {"key": "b", "text": "such a distance that they are able to assist each other in case of trouble"},
         {"key": "c", "text": "a distance corresponding to roughly half the horizontal underwater visibility"},
-        {"key": "d", "text": "a distance of up to 2 m"}
+        {"key": "d", "text": "a distance of up to 2 m"}
       ],
       "correct": "b",
       "explanation": "Divers maintain such a distance that they are able to assist each other in case of trouble."
@@ -644,26 +644,26 @@
       "category": "planovani-ponoru",
       "question": "Divers shall not exceed a depth of:",
       "options": [
-        {"key": "a", "text": "30 m"},
-        {"key": "b", "text": "40 m"},
-        {"key": "c", "text": "50 m"},
-        {"key": "d", "text": "60 m"}
+        {"key": "a", "text": "30 m"},
+        {"key": "b", "text": "40 m"},
+        {"key": "c", "text": "50 m"},
+        {"key": "d", "text": "60 m"}
       ],
       "correct": "b",
-      "explanation": "Divers shall not exceed a depth of 40 m."
+      "explanation": "Divers shall not exceed a depth of 40 m."
     },
     {
       "id": 51,
       "category": "planovani-ponoru",
       "question": "Identify the statement that does NOT match the SPČR Safety Guidelines 2016:",
       "options": [
-        {"key": "a", "text": "Divers shall not exceed a depth of 30 m."},
+        {"key": "a", "text": "Divers shall not exceed a depth of 30 m."},
         {"key": "b", "text": "Divers shall be familiar with diving hand signals."},
         {"key": "c", "text": "Before diving, divers shall acquaint themselves with how to summon first aid and with the location of the recompression chamber."},
         {"key": "d", "text": "Both during the dive and on the surface, divers maintain such a distance that they are able to assist each other in case of trouble."}
       ],
       "correct": "a",
-      "explanation": "The Safety Guidelines specify a maximum depth of 40 m, not 30 m."
+      "explanation": "The Safety Guidelines specify a maximum depth of 40 m, not 30 m."
     },
     {
       "id": 52,
@@ -735,7 +735,7 @@
       "category": "planovani-ponoru",
       "question": "Identify the statement that does NOT match the SPČR Safety Guidelines 2016:",
       "options": [
-        {"key": "a", "text": "Divers shall not exceed a depth of 40 m."},
+        {"key": "a", "text": "Divers shall not exceed a depth of 40 m."},
         {"key": "b", "text": "Dives are organised so that staged decompression is not required on ascent."},
         {"key": "c", "text": "After a dive, divers avoid dehydration."},
         {"key": "d", "text": "If staged decompression is unavoidable on a given dive, it must be organised so that no more than two decompression stops are required."}
@@ -775,7 +775,7 @@
       "question": "Divers:",
       "options": [
         {"key": "a", "text": "during the dive and on the surface maintain such a distance that they are able to assist each other in case of trouble"},
-        {"key": "b", "text": "do not exceed a depth of 50 m"},
+        {"key": "b", "text": "do not exceed a depth of 50 m"},
         {"key": "c", "text": "before submerging perform a buddy check focused on the proper keeping of dive logbooks"},
         {"key": "d", "text": "avoid safety stops on no-decompression dives"}
       ],
@@ -943,7 +943,7 @@
       "category": "organizace-akci",
       "question": "Designating a dive leader from among the participants is appropriate:",
       "options": [
-        {"key": "a", "text": "when underwater visibility falls below 2 m"},
+        {"key": "a", "text": "when underwater visibility falls below 2 m"},
         {"key": "b", "text": "when diving at greater distances from shore"},
         {"key": "c", "text": "at larger-scale diving events"},
         {"key": "d", "text": "whenever 4 or more divers are diving at once"}
@@ -1024,7 +1024,7 @@
         {"key": "a", "text": "every diver"},
         {"key": "b", "text": "every other diver (in a buddy trio, two of three divers)"},
         {"key": "c", "text": "the dive leader"},
-        {"key": "d", "text": "the instructor during diving training below 10 m"}
+        {"key": "d", "text": "the instructor during diving training below 10 m"}
       ],
       "correct": "a",
       "explanation": "A device for measuring breathing-gas pressure must be carried by every diver."
@@ -1047,7 +1047,7 @@
       "category": "doprovodne-plavidlo",
       "question": "To support diving at greater distances from shore:",
       "options": [
-        {"key": "a", "text": "a scuba unit with cylinder capacity of at least 4 m³ is used"},
+        {"key": "a", "text": "a scuba unit with cylinder capacity of at least 4 m³ is used"},
         {"key": "b", "text": "a wing-type buoyancy compensator is used"},
         {"key": "c", "text": "a recompression chamber with operator is used"},
         {"key": "d", "text": "a suitable support vessel is used"}
@@ -1244,8 +1244,8 @@
       "options": [
         {"key": "a", "text": "divers limit the search for one another to about 30 seconds and, if contact is not re-established, continue the dive according to the original plan"},
         {"key": "b", "text": "divers limit the search for one another to about 30 seconds and ascend, observing safe-ascent rules"},
-        {"key": "c", "text": "an immediate ascent at up to 10 m/min is required"},
-        {"key": "d", "text": "an immediate ascent at up to 20 m/min is required"}
+        {"key": "c", "text": "an immediate ascent at up to 10 m/min is required"},
+        {"key": "d", "text": "an immediate ascent at up to 20 m/min is required"}
       ],
       "correct": "b",
       "explanation": "When contact is lost, the search is limited to about 30 seconds, then a controlled ascent observing safe-ascent rules."

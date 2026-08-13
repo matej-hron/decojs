@@ -205,7 +205,7 @@
         {"key": "a", "text": "při každém potápění vedoucímu potápěči a/nebo vedoucímu ponoru"},
         {"key": "b", "text": "při každém zvyšování kvalifikace nebo při prodlužování doby její platnosti"},
         {"key": "c", "text": "před každým ponorem ve ztížených podmínkách (vítr, vlny, proud)"},
-        {"key": "d", "text": "před každým ponorem do hloubek přes 30 m"}
+        {"key": "d", "text": "před každým ponorem do hloubek přes 30 m"}
       ],
       "correct": "b",
       "explanation": "Doklady je uchazeč povinen předložit při každém zvyšování kvalifikace nebo při prodlužování její platnosti."
@@ -475,13 +475,13 @@
       "category": "definice-pravidla",
       "question": "Pod pojmy malá, střední a velká hloubka se rozumí ve stejném pořadí:",
       "options": [
-        {"key": "a", "text": "hloubky do 6 m, 6 – 18 m a přes 18 m"},
-        {"key": "b", "text": "hloubky do 10 m, 10 – 20 m a přes 20 m"},
-        {"key": "c", "text": "hloubky do 10 m, 10 – 30 m a přes 30 m"},
-        {"key": "d", "text": "hloubky do 20 m, 20 – 40 m a přes 40 m"}
+        {"key": "a", "text": "hloubky do 6 m, 6 – 18 m a přes 18 m"},
+        {"key": "b", "text": "hloubky do 10 m, 10 – 20 m a přes 20 m"},
+        {"key": "c", "text": "hloubky do 10 m, 10 – 30 m a přes 30 m"},
+        {"key": "d", "text": "hloubky do 20 m, 20 – 40 m a přes 40 m"}
       ],
       "correct": "c",
-      "explanation": "Malá hloubka je do 10 m, střední 10–30 m a velká přes 30 m."
+      "explanation": "Malá hloubka je do 10 m, střední 10–30 m a velká přes 30 m."
     },
     {
       "id": 38,
@@ -528,7 +528,7 @@
       "question": "Buddy týmy mohou být rovněž tvořeny dvojicemi (trojicemi) cvičenců sestavenými instruktorem:",
       "options": [
         {"key": "a", "text": "na žádost a/nebo podle přání cvičenců"},
-        {"key": "b", "text": "pokud horizontální viditelnost pod vodou dosahuje alespoň 6 m"},
+        {"key": "b", "text": "pokud horizontální viditelnost pod vodou dosahuje alespoň 6 m"},
         {"key": "c", "text": "pokud jsou vybaveni zásobníky dýchacího média s kapacitou nejméně 3,6 m3"},
         {"key": "d", "text": "v závislosti na postupu výcviku, na konkrétních podmínkách a s ohledem na bezpečnost"}
       ],
@@ -566,13 +566,13 @@
       "category": "definice-pravidla",
       "question": "Ponorem s dýchacím přístrojem ve volné vodě se pro účely splnění určitého počtu ponorů předepsaného pro získání potápěčského kvalifikačního stupně rozumí pobyt pod vodou v trvání:",
       "options": [
-        {"key": "a", "text": "nejméně 15 minut"},
-        {"key": "b", "text": "nejméně 20 minut"},
-        {"key": "c", "text": "20 – 30 minut"},
-        {"key": "d", "text": "pro kvalifikační stupně Potápěč Junior SPČR a Potápěč CMAS P* nejméně 10 min, pro kvalifikační stupeň Potápěč CMAS P** nejméně 20 min a pro kvalifikační stupeň Potápěč CMAS P*** nejméně 30 min"}
+        {"key": "a", "text": "nejméně 15 minut"},
+        {"key": "b", "text": "nejméně 20 minut"},
+        {"key": "c", "text": "20 – 30 minut"},
+        {"key": "d", "text": "pro kvalifikační stupně Potápěč Junior SPČR a Potápěč CMAS P* nejméně 10 min, pro kvalifikační stupeň Potápěč CMAS P** nejméně 20 min a pro kvalifikační stupeň Potápěč CMAS P*** nejméně 30 min"}
       ],
       "correct": "a",
-      "explanation": "Ponor pro účely kvalifikace znamená pobyt pod vodou nejméně 15 minut."
+      "explanation": "Ponor pro účely kvalifikace znamená pobyt pod vodou nejméně 15 minut."
     },
     {
       "id": 45,
@@ -592,13 +592,13 @@
       "category": "potapec-zakladni",
       "question": "Držitel kvalifikačního stupně Potápěč s doprovodem je oprávněn:",
       "options": [
-        {"key": "a", "text": "potápět se ve volné vodě do hloubky maximálně 12 m v doprovodu osoby s kvalifikací vedoucího potápěče"},
-        {"key": "b", "text": "potápět se ve volné vodě do hloubky maximálně 10 m v doprovodu osoby s minimální kvalifikací Potápěč CMAS P**"},
-        {"key": "c", "text": "potápět se ve volné vodě do hloubky maximálně 10 m s držitelem nejméně stejné kvalifikace (Potápěč s doprovodem)"},
+        {"key": "a", "text": "potápět se ve volné vodě do hloubky maximálně 12 m v doprovodu osoby s kvalifikací vedoucího potápěče"},
+        {"key": "b", "text": "potápět se ve volné vodě do hloubky maximálně 10 m v doprovodu osoby s minimální kvalifikací Potápěč CMAS P**"},
+        {"key": "c", "text": "potápět se ve volné vodě do hloubky maximálně 10 m s držitelem nejméně stejné kvalifikace (Potápěč s doprovodem)"},
         {"key": "d", "text": "potápět se pouze v chráněném vodním prostoru"}
       ],
       "correct": "a",
-      "explanation": "Potápěč s doprovodem se může potápět do 12 m v doprovodu osoby s kvalifikací vedoucího potápěče."
+      "explanation": "Potápěč s doprovodem se může potápět do 12 m v doprovodu osoby s kvalifikací vedoucího potápěče."
     },
     {
       "id": 47,
@@ -618,13 +618,13 @@
       "category": "potapec-zakladni",
       "question": "Uchazeč o přijetí do výcviku na kvalifikační stupeň Potápěč s doprovodem musí bez základní potápěčské výstroje nebo jiných pomůcek uplavat na hladině:",
       "options": [
-        {"key": "a", "text": "50 m"},
-        {"key": "b", "text": "75 m"},
-        {"key": "c", "text": "100 m"},
-        {"key": "d", "text": "200 m"}
+        {"key": "a", "text": "50 m"},
+        {"key": "b", "text": "75 m"},
+        {"key": "c", "text": "100 m"},
+        {"key": "d", "text": "200 m"}
       ],
       "correct": "a",
-      "explanation": "Uchazeč o Potápěče s doprovodem musí uplavat 50 m bez pomůcek."
+      "explanation": "Uchazeč o Potápěče s doprovodem musí uplavat 50 m bez pomůcek."
     },
     {
       "id": 49,
@@ -632,12 +632,12 @@
       "question": "Mezi vstupní požadavky pro přijetí do výcviku na kvalifikační stupeň Potápěč s doprovodem nepatří:",
       "options": [
         {"key": "a", "text": "minimální věk 12 let"},
-        {"key": "b", "text": "uplavat na hladině 50 m bez základní potápěčské výstroje nebo jiných pomůcek"},
-        {"key": "c", "text": "vydržet nejméně 30 sekund pod vodou se zadrženým dechem"},
-        {"key": "d", "text": "udržet se 5 minut na hladině (šlapáním vody a/nebo splýváním)"}
+        {"key": "b", "text": "uplavat na hladině 50 m bez základní potápěčské výstroje nebo jiných pomůcek"},
+        {"key": "c", "text": "vydržet nejméně 30 sekund pod vodou se zadrženým dechem"},
+        {"key": "d", "text": "udržet se 5 minut na hladině (šlapáním vody a/nebo splýváním)"}
       ],
       "correct": "c",
-      "explanation": "Vydržet 30 sekund pod vodou se zadrženým dechem nepatří mezi vstupní požadavky."
+      "explanation": "Vydržet 30 sekund pod vodou se zadrženým dechem nepatří mezi vstupní požadavky."
     },
     {
       "id": 50,
@@ -657,7 +657,7 @@
       "category": "potapec-zakladni",
       "question": "Držitel kvalifikačního stupně Potápěč Junior SPČR je oprávněn:",
       "options": [
-        {"key": "a", "text": "potápět se ve volné vodě s držiteli kvalifikací Potápěč CMAS P* a/nebo Potápěč CMAS P** do hloubky maximálně 20 m"},
+        {"key": "a", "text": "potápět se ve volné vodě s držiteli kvalifikací Potápěč CMAS P* a/nebo Potápěč CMAS P** do hloubky maximálně 20 m"},
         {"key": "b", "text": "po absolvování celkem 10 ponorů ve volné vodě a dovršení věku 14 let se přihlásit k doškolení a přezkoušení na kvalifikační stupeň Potápěč CMAS P*"},
         {"key": "c", "text": "účastnit se ponorů s držiteli stejné kvalifikace"},
         {"key": "d", "text": "účastnit se vybraných specializačních kurzů"}
@@ -683,13 +683,13 @@
       "category": "potapec-zakladni",
       "question": "Uchazeč o přijetí do výcviku na kvalifikační stupeň Potápěč Junior SPČR musí bez základní potápěčské výstroje nebo jiných pomůcek uplavat na hladině:",
       "options": [
-        {"key": "a", "text": "300 m"},
-        {"key": "b", "text": "200 m"},
-        {"key": "c", "text": "100 m"},
-        {"key": "d", "text": "50 m"}
+        {"key": "a", "text": "300 m"},
+        {"key": "b", "text": "200 m"},
+        {"key": "c", "text": "100 m"},
+        {"key": "d", "text": "50 m"}
       ],
       "correct": "b",
-      "explanation": "Uchazeč o Potápěče Junior SPČR musí uplavat 200 m bez pomůcek."
+      "explanation": "Uchazeč o Potápěče Junior SPČR musí uplavat 200 m bez pomůcek."
     },
     {
       "id": 54,
@@ -723,12 +723,12 @@
       "question": "Držitel kvalifikačního stupně Potápěč CMAS P* je oprávněn:",
       "options": [
         {"key": "a", "text": "potápět se ve volné vodě s držitelem kvalifikace Potápěč Junior SPČR do malých hloubek jako zákonný zástupce nebo jím pověřená osoba"},
-        {"key": "b", "text": "potápět se ve volné vodě s držiteli kvalifikací Potápěč CMAS P* a/nebo Potápěč CMAS P** do hloubky maximálně 20 m"},
+        {"key": "b", "text": "potápět se ve volné vodě s držiteli kvalifikací Potápěč CMAS P* a/nebo Potápěč CMAS P** do hloubky maximálně 20 m"},
         {"key": "c", "text": "po absolvování 40 ponorů ve volné vodě zažádat o udělení kvalifikačního stupně Potápěč CMAS P**"},
         {"key": "d", "text": "po dovršení 18 let vykonávat podle pokynů instruktora dozor nad účastníky potápěčského výcviku"}
       ],
       "correct": "b",
-      "explanation": "Potápěč CMAS P* se může potápět s držiteli P* a/nebo P** do hloubky max. 20 m."
+      "explanation": "Potápěč CMAS P* se může potápět s držiteli P* a/nebo P** do hloubky max. 20 m."
     },
     {
       "id": 57,
@@ -736,12 +736,12 @@
       "question": "Vstupní požadavky pro přijetí do výcviku na kvalifikační stupeň Potápěč CMAS P* jsou:",
       "options": [
         {"key": "a", "text": "minimální věk 14 let"},
-        {"key": "b", "text": "uplavat na hladině 200 m bez základní potápěčské výstroje nebo jiných pomůcek"},
-        {"key": "c", "text": "udržet se 5 minut na hladině (šlapáním vody a/nebo splýváním)"},
+        {"key": "b", "text": "uplavat na hladině 200 m bez základní potápěčské výstroje nebo jiných pomůcek"},
+        {"key": "c", "text": "udržet se 5 minut na hladině (šlapáním vody a/nebo splýváním)"},
         {"key": "d", "text": "všechny odpovědi jsou správné"}
       ],
       "correct": "d",
-      "explanation": "Všechny odpovědi jsou správné - věk 14 let, 200 m plavání, 5 minut na hladině."
+      "explanation": "Všechny odpovědi jsou správné - věk 14 let, 200 m plavání, 5 minut na hladině."
     },
     {
       "id": 58,
@@ -775,25 +775,25 @@
       "question": "Podmínkou udělení kvalifikace Potápěč CMAS P* je absolvování:",
       "options": [
         {"key": "a", "text": "nejméně 5 ponorů s instruktorem ve volné vodě do malých hloubek"},
-        {"key": "b", "text": "nejméně 5 ponorů s instruktorem ve volné vodě, z toho první nejméně 3 ponory do malých hloubek a další nejméně 2 ponory do hloubek 15 – 20 m"},
+        {"key": "b", "text": "nejméně 5 ponorů s instruktorem ve volné vodě, z toho první nejméně 3 ponory do malých hloubek a další nejméně 2 ponory do hloubek 15 – 20 m"},
         {"key": "c", "text": "nejméně 5 ponorů ve volné vodě do malých hloubek, z toho první nejméně 3 ponory s instruktorem; zbývající nejméně dva ponory je možno absolvovat v doprovodu osoby s kvalifikací vedoucího potápěče"},
-        {"key": "d", "text": "nejméně 5 ponorů ve volné vodě, z toho první nejméně 3 ponory do malých hloubek je možno absolvovat v doprovodu osoby s kvalifikací vedoucího potápěče a zbývající nejméně 2 ponory do hloubek 15 – 20 m je nutno absolvovat s instruktorem"}
+        {"key": "d", "text": "nejméně 5 ponorů ve volné vodě, z toho první nejméně 3 ponory do malých hloubek je možno absolvovat v doprovodu osoby s kvalifikací vedoucího potápěče a zbývající nejméně 2 ponory do hloubek 15 – 20 m je nutno absolvovat s instruktorem"}
       ],
       "correct": "b",
-      "explanation": "Pro P* je třeba 5 ponorů s instruktorem - 3 do malých hloubek a 2 do hloubek 15–20 m."
+      "explanation": "Pro P* je třeba 5 ponorů s instruktorem - 3 do malých hloubek a 2 do hloubek 15–20 m."
     },
     {
       "id": 61,
       "category": "potapec-cmas",
       "question": "Držitel kvalifikačního stupně Potápěč CMAS P** je oprávněn:",
       "options": [
-        {"key": "a", "text": "doprovázet držitele kvalifikace Potápěč s doprovodem při potápění ve volné vodě do hloubky maximálně 12 m"},
+        {"key": "a", "text": "doprovázet držitele kvalifikace Potápěč s doprovodem při potápění ve volné vodě do hloubky maximálně 12 m"},
         {"key": "b", "text": "pomáhat s dozorem nad účastníky výcviku"},
-        {"key": "c", "text": "potápět se ve volné vodě s držiteli kvalifikace Potápěč CMAS P* do hloubky maximálně 20 m"},
+        {"key": "c", "text": "potápět se ve volné vodě s držiteli kvalifikace Potápěč CMAS P* do hloubky maximálně 20 m"},
         {"key": "d", "text": "vykonávat funkci vedoucího potápěče"}
       ],
       "correct": "c",
-      "explanation": "Potápěč CMAS P** se může potápět s držiteli P* do hloubky max. 20 m."
+      "explanation": "Potápěč CMAS P** se může potápět s držiteli P* do hloubky max. 20 m."
     },
     {
       "id": 62,
@@ -852,7 +852,7 @@
       "category": "potapec-cmas",
       "question": "Držitel kvalifikačního stupně Potápěč CMAS P*** je oprávněn:",
       "options": [
-        {"key": "a", "text": "doprovázet držitele kvalifikace Potápěč s doprovodem při potápění ve volné vodě do hloubek přes 20 m"},
+        {"key": "a", "text": "doprovázet držitele kvalifikace Potápěč s doprovodem při potápění ve volné vodě do hloubek přes 20 m"},
         {"key": "b", "text": "hodnotit vědomosti a/nebo dovednosti cvičenců při výcviku na kvalifikační stupně Potápěč s doprovodem a Potápěč Junior SPČR"},
         {"key": "c", "text": "podle pokynů instruktora vykonávat dozor nad účastníky potápěčského výcviku"},
         {"key": "d", "text": "všechny odpovědi jsou správné"}
@@ -904,9 +904,9 @@
       "category": "potapec-cmas",
       "question": "Z hlediska požadované praxe pro udělení kvalifikace CMAS P*** se za ponory v náročnějších podmínkách považují:",
       "options": [
-        {"key": "a", "text": "ponory při viditelnosti menší než 2 m"},
+        {"key": "a", "text": "ponory při viditelnosti menší než 2 m"},
         {"key": "b", "text": "ponory při teplotě vody pod 10 C"},
-        {"key": "c", "text": "ponory do hloubek přes 30 m"},
+        {"key": "c", "text": "ponory do hloubek přes 30 m"},
         {"key": "d", "text": "všechny odpovědi jsou správné"}
       ],
       "correct": "d",
@@ -1049,11 +1049,11 @@
       "options": [
         {"key": "a", "text": "absolvování nejméně 2 školení instruktorů SPČR"},
         {"key": "b", "text": "absolvování praktického zaměstnání z poskytování kyslíku v rámci první pomoci"},
-        {"key": "c", "text": "zanoření se základní výstrojí a vynesení značky z hloubky 10 m"},
-        {"key": "d", "text": "vynesení partnera z hloubky 20 – 30 m pomocí kompenzátoru vztlaku a jeho tažení po hladině na vzdálenost 50 m"}
+        {"key": "c", "text": "zanoření se základní výstrojí a vynesení značky z hloubky 10 m"},
+        {"key": "d", "text": "vynesení partnera z hloubky 20 – 30 m pomocí kompenzátoru vztlaku a jeho tažení po hladině na vzdálenost 50 m"}
       ],
       "correct": "c",
-      "explanation": "Zanoření se základní výstrojí a vynesení značky z 10 m nepatří mezi podmínky prodloužení."
+      "explanation": "Zanoření se základní výstrojí a vynesení značky z 10 m nepatří mezi podmínky prodloužení."
     },
     {
       "id": 82,
@@ -1061,7 +1061,7 @@
       "question": "Uchazeči, který za posuzované období v rámci výcvikového systému CMAS/SPČR vycvičil více než 40 potápěčů včetně udělení kvalifikace a nebyly na něho oprávněné a podstatné stížnosti ze strany cvičenců, stačí pro účely prodloužení doby platnosti instruktorského kvalifikačního stupně:",
       "options": [
         {"key": "a", "text": "účast na jednom semináři instruktorů SPČR za předpokladu, že při něm absolvoval všechny prezentace"},
-        {"key": "b", "text": "účast na jednom školení instruktorů SPČR za předpokladu, že při něm absolvoval praktické zaměstnání z resuscitace, praktické zaměstnání z poskytování kyslíku v rámci první pomoci a předvedl vynesení partnera z hloubky 20 – 30 m a jeho tažení po hladině na vzdálenost 50 m"},
+        {"key": "b", "text": "účast na jednom školení instruktorů SPČR za předpokladu, že při něm absolvoval praktické zaměstnání z resuscitace, praktické zaměstnání z poskytování kyslíku v rámci první pomoci a předvedl vynesení partnera z hloubky 20 – 30 m a jeho tažení po hladině na vzdálenost 50 m"},
         {"key": "c", "text": "písemná žádost adresovaná výcvikové komisi SPČR"},
         {"key": "d", "text": "žádná odpověď není správná"}
       ],
@@ -1154,7 +1154,7 @@
         {"key": "a", "text": "že v uplynulých 3 letech absolvoval školení SPČR z metodiky vedení výcviku"},
         {"key": "b", "text": "že v uplynulých 2 letech absolvoval minimálně 80 ponorů"},
         {"key": "c", "text": "že v uplynulých 5 letech absolvoval nejméně 2 školení instruktorů SPČR"},
-        {"key": "d", "text": "že v uplynulých 5 letech předvedl vynesení partnera z hloubky 20 – 30 m pomocí kompenzátoru vztlaku a jeho tažení po hladině na vzdálenost 50 m"}
+        {"key": "d", "text": "že v uplynulých 5 letech předvedl vynesení partnera z hloubky 20 – 30 m pomocí kompenzátoru vztlaku a jeho tažení po hladině na vzdálenost 50 m"}
       ],
       "correct": "a",
       "explanation": "Uchazeč o I* musí doložit absolvování školení z metodiky vedení výcviku v uplynulých 3 letech."

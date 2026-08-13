@@ -4,9 +4,11 @@ Kde se sahá, kde ne, a v jakém pořadí. Pravidla samotná jsou v
 [`glossary.md`](glossary.md) a [`style-guide.md`](style-guide.md); postup opravy
 je ve skillu `.github/skills/fixing-physics-notation/`.
 
-Měřeno na `main` po PR #81 a #82 (verze 0.6.37).
+**Stav: nedělitelné mezery hotové (skupiny A, B i C).** Zbývají třídy 2–5
+a oddělovač tisíců — přehled na konci dokumentu. Měřeno na `main` po PR #81
+a #82, dokončeno v 0.6.39.
 
-## Nejdřív: kam se `&nbsp;` smí zapsat
+## Nejdřív: kam se nedělitelná mezera smí zapsat
 
 **Tohle rozhodni dřív než cokoli opravíš.** `&nbsp;` je HTML entita — funguje
 jen tam, kde řetězec projde parserem HTML. Jinde se uživateli vypíše doslova
@@ -39,15 +41,20 @@ python3 docs/notation/tools/nbsp.py --fix   --words    <soubory>   # zápis
 ```
 
 Oddělovač volí podle přípony souboru sám. Nesahá do `<script>`, `<style>`,
-komentářů, `.formula`, `data-latex` ani `$…$`. Zná výjimky (`12litrový`, `60°`,
-`12l lahev`) a s `--words` opraví i mezeru u skloňovaných názvů („2 bary"),
-aniž by měnil tvar slova. `--words` se uplatní jen na české soubory.
+komentářů, `.formula`, `data-latex`, `$…$`, `<pre>` ani `<code>`. Zná výjimky
+(`12litrový`, `60°`, `12l lahev`) a s `--words` opraví i mezeru u skloňovaných
+názvů („2 bary"), aniž by měnil tvar slova. `--words` se uplatní jen na české
+soubory. Hodnoty klíčů `id`, `slug`, `category` a spol. přeskakuje.
 
 
 ## Rozsah
 
-**3 290 chybějících nedělitelných mezer ve 40 souborech** (3 099 obyčejná
-mezera, 191 slepené). Čísla jsou po vyloučení složenin typu `12litrový`.
+Celkem **3 843 oprav ve 32 souborech**. Původní odhad byl 3 290; rozdíl vznikl
+tím, že se doplnily skloňované názvy jednotek a jednotky s horním indexem
+(`10 mm²`), které první měření minulo.
+
+U každé skupiny je doloženo, že se nezměnilo nic než mezery: normalizovaný
+obsah (bez mezer a nedělitelných mezer) je před opravou i po ní shodný.
 
 ### A. Teoretické stránky — **hotovo**
 
@@ -67,29 +74,35 @@ Tohle čte garant a komise.
 Zároveň se 22 existujících `&nbsp;` v locales převedlo na U+00A0, aby v datech
 platil jeden tvar.
 
-### B. Kvízy — dělat druhé
+### B. Kvízy — **hotovo**
 
-| Soubor | Výskytů |
+| Soubor | Opraveno |
 |---|---|
-| `data/quiz-physics{,-en,-es}.json` | 678 / 530 / 530 |
-| `data/quiz-training{,-en,-es}.json` | 57 / 58 / 58 |
-| `data/quiz-accidents{,-en,-es}.json` | 46 / 57 / 57 |
-| `data/quiz-equipment{,-en,-es}.json` | 44 / 45 / 44 |
-| `data/quiz-safety{,-en,-es}.json` | 36 / 38 / 38 |
-| `data/quiz-anatomy{,-en,-es}.json` | 16 / 15 / 15 |
-| `data/quiz-vessel{,-en,-es}.json` | 15 / 14 / 15 |
+| `data/quiz-physics{,-en,-es}.json` | 898 / 776 / 781 |
+| `data/quiz-accidents{,-en,-es}.json` | 87 / 57 / 57 |
+| `data/quiz-anatomy{,-en,-es}.json` | 72 / 17 / 19 |
+| `data/quiz-training{,-en,-es}.json` | 66 / 64 / 59 |
+| `data/quiz-equipment{,-en,-es}.json` | 50 / 45 / 44 |
+| `data/quiz-safety{,-en,-es}.json` | 49 / 40 / 39 |
+| `data/quiz-vessel{,-en,-es}.json` | 21 / 14 / 15 |
+| `data/dive-setup.json`, `data/dive-profiles.json` | 14 / 9 |
 
-Kvízy jdou přes `innerHTML`, `&nbsp;` je tam tedy správně. **Mění se jen
-typografie, nikdy formulace** — jsou to doslovné otázky SPČR. Nedělitelná
-mezera znění otázky nemění.
+Kvízy jdou přes `innerHTML`, ale i tak dostaly U+00A0 — data se řídí
+příponou, ne sinkem. **Měnila se jen typografie, nikdy formulace** — jsou to
+doslovné otázky SPČR. Nedělitelná mezera znění otázky nemění.
 
-### C. Sandbox a data — dělat naposledy
+Klíče `id`, `slug`, `category` a spol. nástroj přeskakuje: `30m-deco-air`
+v `dive-profiles.json` je identifikátor, který se v `js/main.js` vyhledává
+podle hodnoty.
 
-`sandbox/tissue-saturation.html` 16, `sandbox/gas-law.html` 13,
-`sandbox/cascade-filling.html` 12, `sandbox/chart-test.html` 7,
-`sandbox/transfilling.html` 6, `sandbox/gradient-factors.html` 3,
-`sandbox/m-values.html` 2, `sandbox/schreiner.html` 2, `sandbox/haldane.html` 1,
-`data/dive-setup.json` 14, `data/dive-profiles.json` 11.
+### C. Sandbox — **hotovo**
+
+`transfilling.html` 24, `cascade-filling.html` 18, `gas-law.html` 17,
+`tissue-saturation.html` 16, `chart-test.html` 5, `gradient-factors.html` 3,
+`schreiner.html` 3, `haldane.html` 2, `m-values.html` 2 — celkem 90.
+
+Ukázky kódu v `<pre>` a `<code>` nástroj přeskakuje: kód se cituje doslova
+a nedělitelná mezera by se zkopírovala s ním.
 
 ## Mimo rozsah
 
@@ -116,6 +129,12 @@ Nedělitelné mezery jsou jen jedna z pěti tříd. Zbývá:
 | `P_amb` velkým písmenem | 183 v 25 souborech | #62 |
 | `<em>` jako značka místo `<var>` | 105 (a 110 legitimních zvýraznění nechat) | #56 |
 | `T_{1/2}` → `t_{1/2}` | 15–17 v 8–10 souborech | #62 |
+| Oddělovač tisíců obyčejnou mezerou (`600 000 Pa`) | 198 v 6 souborech | — |
+
+Poslední řádek vyplaval při opravě mezer u jednotek. ČSN 01 6910 chce
+i mezi trojicemi číslic nedělitelnou mezeru; `Intl.NumberFormat('cs-CZ')`
+ji tak generuje (viz `authoring.md` §6.2). Nedělá se v témže průchodu,
+aby byl diff po jedné třídě.
 
 ## Pracovní postup
 

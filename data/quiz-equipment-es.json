@@ -99,12 +99,12 @@
       "question": "El tubo respirador:",
       "options": [
         { "key": "a", "text": "debe estar provisto de válvulas de purga" },
-        { "key": "b", "text": "debe medir hasta 40 cm de largo y unos 2 cm de diámetro interior" },
+        { "key": "b", "text": "debe medir hasta 40 cm de largo y unos 2 cm de diámetro interior" },
         { "key": "c", "text": "debe ser flexible junto a la boquilla" },
         { "key": "d", "text": "todas las respuestas son correctas" }
       ],
       "correct": "b",
-      "explanation": "La longitud óptima del tubo es de hasta 40 cm con un diámetro interior cercano a 2 cm para minimizar el espacio muerto."
+      "explanation": "La longitud óptima del tubo es de hasta 40 cm con un diámetro interior cercano a 2 cm para minimizar el espacio muerto."
     },
     {
       "id": 9,
@@ -138,7 +138,7 @@
       "question": "Marque la afirmación incorrecta:",
       "options": [
         { "key": "a", "text": "La hebilla del cinturón de lastre puede abrirse con una sola mano." },
-        { "key": "b", "text": "La cinta sintética del cinturón de lastre suele tener 50 mm de ancho." },
+        { "key": "b", "text": "La cinta sintética del cinturón de lastre suele tener 50 mm de ancho." },
         { "key": "c", "text": "No pueden usarse como lastre las bolsas de plástico con perdigones de plomo." },
         { "key": "d", "text": "Los plomos se distribuyen simétricamente en el cinturón." }
       ],
@@ -642,15 +642,15 @@
     {
       "id": 50,
       "category": "plicni-automatiky",
-      "question": "Un buceador respira a 20 m de un regulador cuya primera etapa está ajustada a una sobrepresión de 10 bar. La presión en la botella es de 180 bar. ¿Qué presiones absolutas (totales) se medirán en la salida de presión intermedia (A) y en la de alta presión (B) de esta primera etapa?",
+      "question": "Un buceador respira a 20 m de un regulador cuya primera etapa está ajustada a una sobrepresión de 10 bar. La presión en la botella es de 180 bar. ¿Qué presiones absolutas (totales) se medirán en la salida de presión intermedia (A) y en la de alta presión (B) de esta primera etapa?",
       "options": [
-        { "key": "a", "text": "A = 13 bar, B = 180 bar" },
-        { "key": "b", "text": "A = 10 bar, B = 180 bar" },
-        { "key": "c", "text": "A = 7 bar, B = 177 bar" },
-        { "key": "d", "text": "A = 170 bar, B = 180 bar" }
+        { "key": "a", "text": "A = 13 bar, B = 180 bar" },
+        { "key": "b", "text": "A = 10 bar, B = 180 bar" },
+        { "key": "c", "text": "A = 7 bar, B = 177 bar" },
+        { "key": "d", "text": "A = 170 bar, B = 180 bar" }
       ],
       "correct": "a",
-      "explanation": "A 20 m la presión ambiente es 3 bar. Sobrepresión intermedia 10 bar + 3 bar de ambiente = 13 bar absolutos. La salida HP muestra la presión en la botella, 180 bar."
+      "explanation": "A 20 m la presión ambiente es 3 bar. Sobrepresión intermedia 10 bar + 3 bar de ambiente = 13 bar absolutos. La salida HP muestra la presión en la botella, 180 bar."
     },
     {
       "id": 51,
@@ -681,15 +681,15 @@
     {
       "id": 53,
       "category": "plicni-automatiky",
-      "question": "En la cámara de presión intermedia de una primera etapa compensada de regulador ajustada a 10 bar de sobrepresión, con presión en la botella de 7 bar y a 10 m, la presión absoluta es de:",
+      "question": "En la cámara de presión intermedia de una primera etapa compensada de regulador ajustada a 10 bar de sobrepresión, con presión en la botella de 7 bar y a 10 m, la presión absoluta es de:",
       "options": [
-        { "key": "a", "text": "17 bar" },
-        { "key": "b", "text": "12 bar" },
-        { "key": "c", "text": "11 bar" },
-        { "key": "d", "text": "7 bar" }
+        { "key": "a", "text": "17 bar" },
+        { "key": "b", "text": "12 bar" },
+        { "key": "c", "text": "11 bar" },
+        { "key": "d", "text": "7 bar" }
       ],
       "correct": "d",
-      "explanation": "Cuando la presión en la botella es solo 7 bar, la 1.ª etapa está totalmente abierta y en la cámara de presión intermedia hay la misma presión que en la botella, es decir 7 bar."
+      "explanation": "Cuando la presión en la botella es solo 7 bar, la 1.ª etapa está totalmente abierta y en la cámara de presión intermedia hay la misma presión que en la botella, es decir 7 bar."
     },
     {
       "id": 54,
@@ -759,7 +759,7 @@
     {
       "id": 59,
       "category": "plicni-automatiky",
-      "question": "Si usamos una 2.ª etapa principal con un latiguillo de unos 150 cm, este se conduce desde la 1.ª etapa:",
+      "question": "Si usamos una 2.ª etapa principal con un latiguillo de unos 150 cm, este se conduce desde la 1.ª etapa:",
       "options": [
         { "key": "a", "text": "formando un bucle libre" },
         { "key": "b", "text": "por debajo de la axila derecha, cruzando el pecho en diagonal y rodeando el cuello por la izquierda, de modo que la 2.ª etapa llegue al buceador desde la derecha" },
@@ -824,15 +824,15 @@
     {
       "id": 64,
       "category": "lahve",
-      "question": "Una botella de aire con presión de prueba de 300 bar se carga:",
+      "question": "Una botella de aire con presión de prueba de 300 bar se carga:",
       "options": [
-        { "key": "a", "text": "hasta 300 bar" },
-        { "key": "b", "text": "hasta 200 bar" },
-        { "key": "c", "text": "hasta 450 bar" },
-        { "key": "d", "text": "hasta 250 bar" }
+        { "key": "a", "text": "hasta 300 bar" },
+        { "key": "b", "text": "hasta 200 bar" },
+        { "key": "c", "text": "hasta 450 bar" },
+        { "key": "d", "text": "hasta 250 bar" }
       ],
       "correct": "b",
-      "explanation": "La presión máxima de carga es 2/3 de la presión de prueba. Para una botella con presión de prueba de 300 bar son 200 bar."
+      "explanation": "La presión máxima de carga es 2/3 de la presión de prueba. Para una botella con presión de prueba de 300 bar son 200 bar."
     },
     {
       "id": 65,
@@ -871,7 +871,7 @@
         { "key": "d", "text": "la presión de prueba equivale a la mitad de la presión máxima de carga" }
       ],
       "correct": "c",
-      "explanation": "La presión de prueba es 1,5 veces la presión máxima de carga (p. ej., 300 bar de prueba = 200 bar de carga)."
+      "explanation": "La presión de prueba es 1,5 veces la presión máxima de carga (p. ej., 300 bar de prueba = 200 bar de carga)."
     },
     {
       "id": 68,
@@ -1217,12 +1217,12 @@
       "question": "Los trajes de neopreno sucios:",
       "options": [
         { "key": "a", "text": "se llevan a limpieza en seco" },
-        { "key": "b", "text": "pueden lavarse con detergentes corrientes a temperaturas de hasta 40 °C" },
-        { "key": "c", "text": "pueden lavarse a máquina hasta 90 °C" },
+        { "key": "b", "text": "pueden lavarse con detergentes corrientes a temperaturas de hasta 40 °C" },
+        { "key": "c", "text": "pueden lavarse a máquina hasta 90 °C" },
         { "key": "d", "text": "solo pueden limpiarse con desinfectantes y blanqueadores" }
       ],
       "correct": "b",
-      "explanation": "Los trajes de neopreno pueden lavarse con detergentes corrientes a temperaturas de hasta 40 °C."
+      "explanation": "Los trajes de neopreno pueden lavarse con detergentes corrientes a temperaturas de hasta 40 °C."
     },
     {
       "id": 95,

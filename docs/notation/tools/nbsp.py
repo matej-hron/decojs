@@ -28,15 +28,25 @@ NBSP = "\u00a0"
 # jen člověk. Samotný stupeň '°' také ne - '60°' je azimut, píše se bez mezery.
 UNITS = [
     "mmHg", "msw", "fsw", "kPa", "MPa", "hPa", "mbar", "bar", "Pa",
-    "km", "cm³", "cm2", "cm", "mm", "dm³", "m³", "m2", "ml", "mg",
-    "kg", "min", "°C", "°F", "atm", "at", "m", "l", "L", "h", "s", "g",
+    "km", "cm³", "cm²", "cm2", "cm", "mm³", "mm²", "mm", "dm³", "dm²",
+    "m³", "m²", "m2", "ml", "mg", "kg", "min", "°C", "°F", "atm", "at",
+    "m", "l", "L", "h", "s", "g",
 ]
 UNIT_RE = "|".join(re.escape(u) for u in sorted(UNITS, key=len, reverse=True))
+
+# Znaková třída se vypisuje ručně a neopírá se o \w. Python počítá mezi \w
+# i horní index '²' (protože '²'.isalnum() je True), JavaScript ne - a stejné
+# pravidlo hlídá i test v tests/run-tests.mjs. Kdyby se třídy rozešly, skript
+# by '10 mm²' přeskočil a test by ho hlásil. Držet obě definice shodné.
+CZ = "áäčďéěíĺľňóôöŕřšťúůüýžÁÄČĎÉĚÍĹĽŇÓÔÖŔŘŠŤÚŮÜÝŽ"
+WORD = "0-9A-Za-z_" + CZ
 
 # Po jednotce nesmí následovat písmeno ani číslice, jinak je to slovo
 # nebo identifikátor: '12litrový', '2hodinový', 'm3'.
 PATTERN = re.compile(
-    r"(?<![\w.,])(\d+(?:[.,]\d+)?)([ ]?)(" + UNIT_RE + r")(?![\w°ÁÄČĎÉĚÍĹĽŇÓÔÖŔŘŠŤÚŮÜÝŽáäčďéěíĺľňóôöŕřšťúůüýž])"
+    r"(?<![" + WORD + r".,])(\d+(?:[.,]\d+)?)([ ]?)("
+    + UNIT_RE
+    + r")(?![" + WORD + r"°])"
 )
 
 # Vypadá to jako chyba, ale není. Rozsah těchto shod se přeskakuje.
@@ -53,9 +63,9 @@ CS_WORDS = (
     r"atmosfér|pascal|kilopascal"
 )
 CS_WORD_PATTERN = re.compile(
-    r"(?<![\w.,])(\d+(?:[.,]\d+)?)( )("
+    r"(?<![" + WORD + r".,])(\d+(?:[.,]\d+)?)( )("
     + CS_WORDS
-    + r")([a-záäčďéěíĺľňóôöŕřšťúůüýž]*)\b"
+    + r")([a-z" + CZ + r"]*)\b"
 )
 
 
@@ -76,6 +86,9 @@ def html_masked_ranges(text):
     add_all(r"<!--.*?-->")
     add_all(r"<script\b.*?</script\s*>")
     add_all(r"<style\b.*?</style\s*>")
+    # Ukázky kódu se citují doslova - nedělitelná mezera by se zkopírovala s nimi.
+    add_all(r"<pre\b.*?</pre\s*>")
+    add_all(r"<code\b.*?</code\s*>")
     # Vzorce: <div class="formula">, <span class="formula-inline">
     add_all(r'<(\w+)[^>]*\bclass="[^"]*\bformula(-inline)?\b[^"]*"[^>]*>.*?</\1\s*>')
     # LaTeX v atributu
@@ -186,6 +199,15 @@ def context(text, m, pad=28):
 
 # ---------------------------------------------------------------- JSON
 
+# Hodnoty pod těmito klíči nejsou text pro čtenáře, ale identifikátory,
+# odkazy a technické kódy. „30m-deco-air" je id profilu; mezera by rozbila
+# vyhledávání. Do těchto klíčů se nesahá bez ohledu na obsah.
+SKIP_KEYS = {
+    "id", "key", "slug", "code", "type", "href", "url", "src",
+    "icon", "class", "className", "ref", "category",
+}
+
+
 def walk(obj, path=""):
     if isinstance(obj, dict):
         for k, v in obj.items():
@@ -207,6 +229,9 @@ def fix_json(raw, sep, report, use_words):
     edits = {}
 
     for key, value in walk(data):
+        leaf = key.rsplit(".", 1)[-1].split("[")[0]
+        if leaf in SKIP_KEYS:
+            continue
         local = []
         new, n = apply(value, sep, use_words, local, label=key)
         if not n:

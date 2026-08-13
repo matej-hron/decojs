@@ -3,7 +3,7 @@
     {
       "id": "recreational",
       "name": "Recreational Dive",
-      "description": "A safe recreational dive to 18m staying well within no-decompression limits. Perfect for beginners and casual diving.",
+      "description": "A safe recreational dive to 18 m staying well within no-decompression limits. Perfect for beginners and casual diving.",
       "gases": [
         { "id": "bottom", "name": "Air", "o2": 0.21, "n2": 0.79, "he": 0, "cylinderVolume": 12, "startPressure": 200 }
       ],
@@ -26,7 +26,7 @@
     {
       "id": "deco-dive",
       "name": "Decompression Dive",
-      "description": "A 40m dive with planned decompression stops. This profile intentionally exceeds no-decompression limits to demonstrate tissue supersaturation and required deco stops.",
+      "description": "A 40 m dive with planned decompression stops. This profile intentionally exceeds no-decompression limits to demonstrate tissue supersaturation and required deco stops.",
       "gases": [
         { "id": "bottom", "name": "Air", "o2": 0.21, "n2": 0.79, "he": 0, "cylinderVolume": 12, "startPressure": 200 }
       ],
@@ -107,8 +107,8 @@
     },
     {
       "id": "30m-deco-air",
-      "name": "30m Deco Dive (Air)",
-      "description": "A 30m dive with 40 min bottom time requiring staged decompression stops. Demonstrates tissue loading on a moderate depth deco dive.",
+      "name": "30 m Deco Dive (Air)",
+      "description": "A 30 m dive with 40 min bottom time requiring staged decompression stops. Demonstrates tissue loading on a moderate depth deco dive.",
       "gases": [
         { "id": "bottom", "name": "Air", "o2": 0.21, "n2": 0.79, "he": 0, "cylinderVolume": 24, "startPressure": 200 }
       ],
@@ -134,8 +134,8 @@
     },
     {
       "id": "30m-deco-o2",
-      "name": "30m Deco Dive (O₂ deco)",
-      "description": "A 30m dive with 40 min bottom time, switching to pure O₂ at 6m for accelerated decompression. Demonstrates the benefit of oxygen deco.",
+      "name": "30 m Deco Dive (O₂ deco)",
+      "description": "A 30 m dive with 40 min bottom time, switching to pure O₂ at 6 m for accelerated decompression. Demonstrates the benefit of oxygen deco.",
       "gases": [
         { "id": "bottom", "name": "Air", "o2": 0.21, "n2": 0.79, "he": 0, "cylinderVolume": 24, "startPressure": 200 },
         { "id": "deco1", "name": "Pure Oxygen (100%)", "o2": 1.0, "n2": 0, "he": 0, "cylinderVolume": 7, "startPressure": 200 }

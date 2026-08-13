@@ -100,11 +100,11 @@
       "options": [
         { "key": "a", "text": "se realizan aproximadamente en el centro del tórax, sobre el esternón" },
         { "key": "b", "text": "se realizan a una frecuencia de 100–120 por minuto" },
-        { "key": "c", "text": "se realizan con una profundidad de compresión de 5–6 cm" },
+        { "key": "c", "text": "se realizan con una profundidad de compresión de 5–6 cm" },
         { "key": "d", "text": "todas las respuestas son correctas" }
       ],
       "correct": "d",
-      "explanation": "Todo lo anterior es correcto: centro del tórax, 100–120/min y 5–6 cm de profundidad."
+      "explanation": "Todo lo anterior es correcto: centro del tórax, 100–120/min y 5–6 cm de profundidad."
     },
     {
       "id": 9,
@@ -113,7 +113,7 @@
       "options": [
         { "key": "a", "text": "En las compresiones torácicas se comprime el tórax a una frecuencia de unos 100–120 por minuto." },
         { "key": "b", "text": "El punto para las compresiones torácicas se sitúa en la mitad izquierda del tórax." },
-        { "key": "c", "text": "Las compresiones se realizan con una profundidad de 5–6 cm." },
+        { "key": "c", "text": "Las compresiones se realizan con una profundidad de 5–6 cm." },
         { "key": "d", "text": "La reanimación comienza con 30 compresiones torácicas inmediatamente después de abrir la vía aérea." }
       ],
       "correct": "b",
@@ -124,13 +124,13 @@
       "category": "první pomoc",
       "question": "Durante las compresiones torácicas se comprime el tórax de la víctima:",
       "options": [
-        { "key": "a", "text": "aproximadamente en el centro del esternón, con una profundidad de 5–6 cm" },
+        { "key": "a", "text": "aproximadamente en el centro del esternón, con una profundidad de 5–6 cm" },
         { "key": "b", "text": "en la parte izquierda, con una frecuencia de 100–120 por minuto" },
-        { "key": "c", "text": "tres dedos por debajo del esternón, con frecuencia de 100–120 por minuto y profundidad de 4–5 cm" },
+        { "key": "c", "text": "tres dedos por debajo del esternón, con frecuencia de 100–120 por minuto y profundidad de 4–5 cm" },
         { "key": "d", "text": "aproximadamente en el centro del esternón, con frecuencia de 70 por minuto" }
       ],
       "correct": "a",
-      "explanation": "Lo correcto es comprimir en el centro del esternón a una profundidad de 5–6 cm a 100–120/min."
+      "explanation": "Lo correcto es comprimir en el centro del esternón a una profundidad de 5–6 cm a 100–120/min."
     },
     {
       "id": 11,
@@ -278,7 +278,7 @@
     {
       "id": 22,
       "category": "otravy plyny",
-      "question": "Buceando con equipo autónomo de aire, al alcanzar los 40 m la comunicación entre usted y su compañero empeora notablemente. Considerará que la causa es:",
+      "question": "Buceando con equipo autónomo de aire, al alcanzar los 40 m la comunicación entre usted y su compañero empeora notablemente. Considerará que la causa es:",
       "options": [
         { "key": "a", "text": "falta de oxígeno (hipoxia)" },
         { "key": "b", "text": "narcosis nitrogenada (borrachera de las profundidades)" },
@@ -286,7 +286,7 @@
         { "key": "d", "text": "enfermedad descompresiva" }
       ],
       "correct": "b",
-      "explanation": "A 40 m la presión parcial del nitrógeno ya es suficiente para causar narcosis, que altera la coordinación y la comunicación."
+      "explanation": "A 40 m la presión parcial del nitrógeno ya es suficiente para causar narcosis, que altera la coordinación y la comunicación."
     },
     {
       "id": 23,
@@ -322,10 +322,10 @@
         { "key": "a", "text": "La hiperventilación provoca un descenso del nivel de dióxido de carbono en el organismo." },
         { "key": "b", "text": "Los signos de la hipoxia son difíciles de reconocer." },
         { "key": "c", "text": "Una presión continua del equipo sobre las arterias del cuello puede reducir el aporte de oxígeno al cerebro." },
-        { "key": "d", "text": "La hipoxia aparece cuando la presión parcial de oxígeno en el medio respirado cae por debajo de 21 kPa." }
+        { "key": "d", "text": "La hipoxia aparece cuando la presión parcial de oxígeno en el medio respirado cae por debajo de 21 kPa." }
       ],
       "correct": "d",
-      "explanation": "La afirmación d) es incorrecta: la hipoxia aparece cuando la <em>p</em>O₂ cae por debajo de unos 16 kPa (0,16 bar), no de 21 kPa. 21 kPa es la presión parcial de oxígeno atmosférico normal."
+      "explanation": "La afirmación d) es incorrecta: la hipoxia aparece cuando la <em>p</em>O₂ cae por debajo de unos 16 kPa (0,16 bar), no de 21 kPa. 21 kPa es la presión parcial de oxígeno atmosférico normal."
     },
     {
       "id": 26,
@@ -334,11 +334,11 @@
       "options": [
         { "key": "a", "text": "la hiperventilación previa a una inmersión en apnea" },
         { "key": "b", "text": "la fijación de monóxido de carbono a la hemoglobina" },
-        { "key": "c", "text": "respirar una mezcla con un 2 % de oxígeno a 90 m" },
+        { "key": "c", "text": "respirar una mezcla con un 2 % de oxígeno a 90 m" },
         { "key": "d", "text": "respirar aire almacenado durante mucho tiempo en una botella de acero" }
       ],
       "correct": "c",
-      "explanation": "A 90 m la presión absoluta es 10 bar, por lo que un 2 % de O₂ da <em>p</em>O₂ = 0,2 bar (20 kPa), suficiente para respirar y sin causar hipoxia."
+      "explanation": "A 90 m la presión absoluta es 10 bar, por lo que un 2 % de O₂ da <em>p</em>O₂ = 0,2 bar (20 kPa), suficiente para respirar y sin causar hipoxia."
     },
     {
       "id": 27,
@@ -416,20 +416,20 @@
         { "key": "d", "text": "60 metros" }
       ],
       "correct": "c",
-      "explanation": "Para respirar con seguridad necesitamos una <em>p</em>O₂ de al menos 0,16 bar. A 30 m la presión absoluta es 4 bar, por lo que 4 % × 4 = 0,16 bar (16 kPa), el mínimo seguro."
+      "explanation": "Para respirar con seguridad necesitamos una <em>p</em>O₂ de al menos 0,16 bar. A 30 m la presión absoluta es 4 bar, por lo que 4 % × 4 = 0,16 bar (16 kPa), el mínimo seguro."
     },
     {
       "id": 33,
       "category": "otravy plyny",
       "question": "Hay riesgo de pérdida de conciencia cuando la presión parcial de oxígeno en el medio respirado cae por debajo de:",
       "options": [
-        { "key": "a", "text": "5 kPa" },
-        { "key": "b", "text": "10 kPa" },
-        { "key": "c", "text": "16 kPa" },
-        { "key": "d", "text": "21 kPa" }
+        { "key": "a", "text": "5 kPa" },
+        { "key": "b", "text": "10 kPa" },
+        { "key": "c", "text": "16 kPa" },
+        { "key": "d", "text": "21 kPa" }
       ],
       "correct": "b",
-      "explanation": "El riesgo de pérdida de conciencia aparece con <em>p</em>O₂ por debajo de 10 kPa (0,1 bar). 16 kPa es el mínimo para una función normal; por debajo de 10 kPa se pierde el conocimiento."
+      "explanation": "El riesgo de pérdida de conciencia aparece con <em>p</em>O₂ por debajo de 10 kPa (0,1 bar). 16 kPa es el mínimo para una función normal; por debajo de 10 kPa se pierde el conocimiento."
     },
     {
       "id": 34,
@@ -449,26 +449,26 @@
       "category": "otravy plyny",
       "question": "La hipoxia aparece cuando la presión parcial de oxígeno en el medio respirado cae por debajo de:",
       "options": [
-        { "key": "a", "text": "21 kPa" },
-        { "key": "b", "text": "16 kPa" },
-        { "key": "c", "text": "12 kPa" },
-        { "key": "d", "text": "10 kPa" }
+        { "key": "a", "text": "21 kPa" },
+        { "key": "b", "text": "16 kPa" },
+        { "key": "c", "text": "12 kPa" },
+        { "key": "d", "text": "10 kPa" }
       ],
       "correct": "b",
-      "explanation": "La hipoxia aparece con <em>p</em>O₂ por debajo de 16 kPa (0,16 bar). Es la presión parcial mínima necesaria para el funcionamiento normal del organismo."
+      "explanation": "La hipoxia aparece con <em>p</em>O₂ por debajo de 16 kPa (0,16 bar). Es la presión parcial mínima necesaria para el funcionamiento normal del organismo."
     },
     {
       "id": 36,
       "category": "podchlazení",
       "question": "La temperatura adecuada de la ducha o baño para un buceador hipotérmico es de aproximadamente:",
       "options": [
-        { "key": "a", "text": "16–18 °C" },
-        { "key": "b", "text": "20–30 °C" },
-        { "key": "c", "text": "37–40 °C" },
-        { "key": "d", "text": "45–50 °C" }
+        { "key": "a", "text": "16–18 °C" },
+        { "key": "b", "text": "20–30 °C" },
+        { "key": "c", "text": "37–40 °C" },
+        { "key": "d", "text": "45–50 °C" }
       ],
       "correct": "c",
-      "explanation": "La temperatura óptima de calentamiento es de 37–40 °C, similar a la corporal, sin causar shock térmico."
+      "explanation": "La temperatura óptima de calentamiento es de 37–40 °C, similar a la corporal, sin causar shock térmico."
     },
     {
       "id": 37,
@@ -650,7 +650,7 @@
         { "key": "d", "text": "100 metros" }
       ],
       "correct": "c",
-      "explanation": "Con aire (21 % O₂), la presión parcial del oxígeno alcanza el límite tóxico de 1,6 bar a unos 70 m (8 bar × 0,21 = 1,68 bar)."
+      "explanation": "Con aire (21 % O₂), la presión parcial del oxígeno alcanza el límite tóxico de 1,6 bar a unos 70 m (8 bar × 0,21 = 1,68 bar)."
     },
     {
       "id": 51,
@@ -735,13 +735,13 @@
       "category": "otravy plyny",
       "question": "La toxicidad aguda por oxígeno aparece cuando la presión parcial de oxígeno en el medio respirado supera aproximadamente:",
       "options": [
-        { "key": "a", "text": "100 kPa" },
-        { "key": "b", "text": "160 kPa" },
-        { "key": "c", "text": "420 kPa" },
-        { "key": "d", "text": "500 kPa" }
+        { "key": "a", "text": "100 kPa" },
+        { "key": "b", "text": "160 kPa" },
+        { "key": "c", "text": "420 kPa" },
+        { "key": "d", "text": "500 kPa" }
       ],
       "correct": "b",
-      "explanation": "La toxicidad aguda por oxígeno (hiperoxia) aparece con <em>p</em>O₂ superior a 160 kPa (1,6 bar), que es el límite de seguridad para el buceo."
+      "explanation": "La toxicidad aguda por oxígeno (hiperoxia) aparece con <em>p</em>O₂ superior a 160 kPa (1,6 bar), que es el límite de seguridad para el buceo."
     },
     {
       "id": 58,
@@ -785,7 +785,7 @@
     {
       "id": 61,
       "category": "barotrauma plic",
-      "question": "Durante el descenso con equipo autónomo de aire, a 15 m su compañero muestra signos de desorientación, gira sobre sí mismo y tiene problemas de coordinación. Considerará que la causa es:",
+      "question": "Durante el descenso con equipo autónomo de aire, a 15 m su compañero muestra signos de desorientación, gira sobre sí mismo y tiene problemas de coordinación. Considerará que la causa es:",
       "options": [
         { "key": "a", "text": "rotura del tímpano" },
         { "key": "b", "text": "embolia gaseosa" },
@@ -884,7 +884,7 @@
         { "key": "d", "text": "10 metros" }
       ],
       "correct": "a",
-      "explanation": "El barotrauma pulmonar de ascenso puede aparecer desde una profundidad muy pequeña (menos de 2 m), porque la variación relativa de presión es máxima cerca de la superficie."
+      "explanation": "El barotrauma pulmonar de ascenso puede aparecer desde una profundidad muy pequeña (menos de 2 m), porque la variación relativa de presión es máxima cerca de la superficie."
     },
     {
       "id": 69,
@@ -893,7 +893,7 @@
       "options": [
         { "key": "a", "text": "está descartado por la estructura dental" },
         { "key": "b", "text": "no es doloroso ni peligroso" },
-        { "key": "c", "text": "solo puede producirse en inmersiones a más de 40 m" },
+        { "key": "c", "text": "solo puede producirse en inmersiones a más de 40 m" },
         { "key": "d", "text": "es doloroso y puede ser peligroso, sobre todo durante el ascenso" }
       ],
       "correct": "d",
@@ -936,7 +936,7 @@
         { "key": "d", "text": "menos de 2 metros" }
       ],
       "correct": "d",
-      "explanation": "El barotrauma pulmonar de ascenso puede aparecer desde menos de 2 m, porque la variación relativa de presión es máxima cerca de la superficie."
+      "explanation": "El barotrauma pulmonar de ascenso puede aparecer desde menos de 2 m, porque la variación relativa de presión es máxima cerca de la superficie."
     },
     {
       "id": 73,
@@ -1049,7 +1049,7 @@
       "options": [
         { "key": "a", "text": "La enfermedad descompresiva no afecta a los buceadores que no agotan el tiempo sin descompresión para una profundidad dada." },
         { "key": "b", "text": "La forma cutánea de la ED no requiere tratamiento en cámara hiperbárica." },
-        { "key": "c", "text": "La presión parcial de oxígeno respirado durante la descompresión bajo el agua no debe superar 170 kPa." },
+        { "key": "c", "text": "La presión parcial de oxígeno respirado durante la descompresión bajo el agua no debe superar 170 kPa." },
         { "key": "d", "text": "Se recomienda que el intervalo en superficie sea superior a 2 horas." }
       ],
       "correct": "a",

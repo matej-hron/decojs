@@ -7,13 +7,13 @@
       "category": "tlak-jednotky",
       "question": "¿Cuáles de las siguientes unidades expresan aproximadamente el mismo valor de presión?",
       "options": [
-        { "key": "a", "text": "0,1 MPa = 100 kPa = 1 bar" },
-        { "key": "b", "text": "1 MPa = 1 000 kPa = 10 mbar" },
-        { "key": "c", "text": "0,1 MPa = 1 000 kPa = 10 bar" },
-        { "key": "d", "text": "1 MPa = 1 000 mbar" }
+        { "key": "a", "text": "0,1 MPa = 100 kPa = 1 bar" },
+        { "key": "b", "text": "1 MPa = 1 000 kPa = 10 mbar" },
+        { "key": "c", "text": "0,1 MPa = 1 000 kPa = 10 bar" },
+        { "key": "d", "text": "1 MPa = 1 000 mbar" }
       ],
       "correct": "a",
-      "explanation": "0,1 MPa = 100 kPa = 1 bar son valores equivalentes de presión. 1 MPa = 1 000 kPa = 10 bar, por lo que las demás opciones contienen conversiones erróneas."
+      "explanation": "0,1 MPa = 100 kPa = 1 bar son valores equivalentes de presión. 1 MPa = 1 000 kPa = 10 bar, por lo que las demás opciones contienen conversiones erróneas."
     },
     {
       "id": 2,
@@ -33,18 +33,18 @@
       "category": "tlak-jednotky",
       "question": "¿Cuál de los siguientes datos sobre la presión atmosférica media (presión atmosférica normal) es incorrecto?",
       "options": [
-        { "key": "a", "text": "alrededor de 100 000 N/m², es decir, unos 100 kPa" },
-        { "key": "b", "text": "entre 900 y 1 100 milibares, es decir, alrededor de 1 bar" },
-        { "key": "c", "text": "aproximadamente 0,1 MPa, es decir, 1 000 hPa" },
+        { "key": "a", "text": "alrededor de 100 000 N/m², es decir, unos 100 kPa" },
+        { "key": "b", "text": "entre 900 y 1 100 milibares, es decir, alrededor de 1 bar" },
+        { "key": "c", "text": "aproximadamente 0,1 MPa, es decir, 1 000 hPa" },
         { "key": "d", "text": "alrededor de 100 kbar, es decir, 0,1 Mbar" }
       ],
       "correct": "d",
-      "explanation": "100 kbar = 10 000 MPa, una presión enorme (100 000 veces mayor que la atmosférica). La presión atmosférica normal es aproximadamente 1 bar = 0,1 MPa = 100 kPa."
+      "explanation": "100 kbar = 10 000 MPa, una presión enorme (100 000 veces mayor que la atmosférica). La presión atmosférica normal es aproximadamente 1 bar = 0,1 MPa = 100 kPa."
     },
     {
       "id": 4,
       "category": "tlak-jednotky",
-      "question": "Una presión de 1 kPa corresponde a la presión que ejerce sobre la superficie terrestre una columna de agua de altura:",
+      "question": "Una presión de 1 kPa corresponde a la presión que ejerce sobre la superficie terrestre una columna de agua de altura:",
       "options": [
         { "key": "a", "text": "1 milímetro" },
         { "key": "b", "text": "1 decímetro" },
@@ -52,7 +52,7 @@
         { "key": "d", "text": "1 metro" }
       ],
       "correct": "b",
-      "explanation": "1 kPa = 1 000 Pa. La presión de una columna de agua p = ρ·g·h. Para el agua: 1 000 kg/m³ × 10 m/s² × 0,1 m = 1 000 Pa = 1 kPa. Por tanto, 1 decímetro (0,1 m) de columna de agua produce una presión de 1 kPa."
+      "explanation": "1 kPa = 1 000 Pa. La presión de una columna de agua p = ρ·g·h. Para el agua: 1 000 kg/m³ × 10 m/s² × 0,1 m = 1 000 Pa = 1 kPa. Por tanto, 1 decímetro (0,1 m) de columna de agua produce una presión de 1 kPa."
     },
     {
       "id": 5,
@@ -72,13 +72,13 @@
       "category": "vlastnosti-vody-vzduchu",
       "question": "La densidad del aire seco:",
       "options": [
-        { "key": "a", "text": "no depende de la presión ni de la temperatura, y es siempre de unos 1,25 kg/m³" },
-        { "key": "b", "text": "en condiciones normales es igual a 1,25 kg/l" },
-        { "key": "c", "text": "depende de la presión y la temperatura; en condiciones normales y a 10 °C es aproximadamente 1,25 kg/m³" },
+        { "key": "a", "text": "no depende de la presión ni de la temperatura, y es siempre de unos 1,25 kg/m³" },
+        { "key": "b", "text": "en condiciones normales es igual a 1,25 kg/l" },
+        { "key": "c", "text": "depende de la presión y la temperatura; en condiciones normales y a 10 °C es aproximadamente 1,25 kg/m³" },
         { "key": "d", "text": "es nula, ya que el aire no pesa" }
       ],
       "correct": "c",
-      "explanation": "La densidad del aire depende de la presión y la temperatura según la ecuación de los gases ideales. En condiciones normales (cerca de 10 °C, 1 atm) la densidad es aproximadamente 1,25 kg/m³."
+      "explanation": "La densidad del aire depende de la presión y la temperatura según la ecuación de los gases ideales. En condiciones normales (cerca de 10 °C, 1 atm) la densidad es aproximadamente 1,25 kg/m³."
     },
     {
       "id": 7,
@@ -91,20 +91,20 @@
         { "key": "d", "text": "el agua de menor densidad" }
       ],
       "correct": "b",
-      "explanation": "En el fondo se acumula el agua de mayor densidad. El agua tiene su densidad máxima a 4 °C. En invierno, el agua del fondo puede ser más cálida que la de la superficie, porque el agua más densa desciende."
+      "explanation": "En el fondo se acumula el agua de mayor densidad. El agua tiene su densidad máxima a 4 °C. En invierno, el agua del fondo puede ser más cálida que la de la superficie, porque el agua más densa desciende."
     },
     {
       "id": 8,
       "category": "vlastnosti-vody-vzduchu",
-      "question": "En nuestras condiciones, ¿cuál es la temperatura aproximada en el fondo de un lago helado de 50 m de profundidad?",
+      "question": "En nuestras condiciones, ¿cuál es la temperatura aproximada en el fondo de un lago helado de 50 m de profundidad?",
       "options": [
-        { "key": "a", "text": "−1 °C" },
-        { "key": "b", "text": "0 °C" },
-        { "key": "c", "text": "1 °C" },
-        { "key": "d", "text": "4 °C" }
+        { "key": "a", "text": "−1 °C" },
+        { "key": "b", "text": "0 °C" },
+        { "key": "c", "text": "1 °C" },
+        { "key": "d", "text": "4 °C" }
       ],
       "correct": "d",
-      "explanation": "El agua tiene su densidad máxima a 4 °C. En un lago helado, esta agua más densa se acumula en el fondo, mientras que el agua más fría (y más ligera) permanece en la superficie y se congela."
+      "explanation": "El agua tiene su densidad máxima a 4 °C. En un lago helado, esta agua más densa se acumula en el fondo, mientras que el agua más fría (y más ligera) permanece en la superficie y se congela."
     },
     {
       "id": 9,
@@ -268,12 +268,12 @@
       "question": "La temperatura termodinámica T del punto de congelación del agua es aproximadamente:",
       "options": [
         { "key": "a", "text": "0 K" },
-        { "key": "b", "text": "−273 °C" },
+        { "key": "b", "text": "−273 °C" },
         { "key": "c", "text": "273 K" },
         { "key": "d", "text": "373 K" }
       ],
       "correct": "c",
-      "explanation": "El punto de congelación del agua es 0 °C, que corresponde a 273 K (más exactamente 273,15 K). Conversión: T[K] = T[°C] + 273. La opción d) 373 K corresponde al punto de ebullición del agua (100 °C)."
+      "explanation": "El punto de congelación del agua es 0 °C, que corresponde a 273 K (más exactamente 273,15 K). Conversión: T[K] = T[°C] + 273. La opción d) 373 K corresponde al punto de ebullición del agua (100 °C)."
     },
     {
       "id": 22,
@@ -317,7 +317,7 @@
     {
       "id": 25,
       "category": "fyzika-plynu",
-      "question": "Una botella de 15 L se cargó a 20 MPa y el aire interior se calentó a 47 °C. ¿Cuál de los cálculos es correcto para determinar la presión en la botella tras enfriarse el aire a 17 °C?",
+      "question": "Una botella de 15 L se cargó a 20 MPa y el aire interior se calentó a 47 °C. ¿Cuál de los cálculos es correcto para determinar la presión en la botella tras enfriarse el aire a 17 °C?",
       "options": [
         { "key": "a", "text": "p₂ = p₁ · T₂ / T₁ = 20 · 290 / 320 = etc." },
         { "key": "b", "text": "p₂ = p₁ · T₁ / T₂ = 20 · 47 / 17 = etc." },
@@ -325,20 +325,20 @@
         { "key": "d", "text": "p₂ = p₁ · V₁ · T₂ / T₁ = 20 · 15 · 290 / 320 = etc." }
       ],
       "correct": "a",
-      "explanation": "Proceso isocórico (V = const.): p₁/T₁ = p₂/T₂, es decir, p₂ = p₁·T₂/T₁. Hay que usar temperaturas absolutas: T₁ = 47+273 = 320 K, T₂ = 17+273 = 290 K. Resultado: p₂ = 20·290/320 = 18,1 MPa."
+      "explanation": "Proceso isocórico (V = const.): p₁/T₁ = p₂/T₂, es decir, p₂ = p₁·T₂/T₁. Hay que usar temperaturas absolutas: T₁ = 47+273 = 320 K, T₂ = 17+273 = 290 K. Resultado: p₂ = 20·290/320 = 18,1 MPa."
     },
     {
       "id": 26,
       "category": "fyzika-plynu",
-      "question": "Una botella de 10 L de capacidad de agua contenía a 27 °C aire comprimido a 10 MPa. En un incendio se calentó hasta 327 °C, con lo que la presión del aire en su interior subió aproximadamente:",
+      "question": "Una botella de 10 L de capacidad de agua contenía a 27 °C aire comprimido a 10 MPa. En un incendio se calentó hasta 327 °C, con lo que la presión del aire en su interior subió aproximadamente:",
       "options": [
-        { "key": "a", "text": "a 12,7 MPa" },
-        { "key": "b", "text": "a 20 MPa" },
-        { "key": "c", "text": "a 30 MPa" },
-        { "key": "d", "text": "a 32,7 MPa" }
+        { "key": "a", "text": "a 12,7 MPa" },
+        { "key": "b", "text": "a 20 MPa" },
+        { "key": "c", "text": "a 30 MPa" },
+        { "key": "d", "text": "a 32,7 MPa" }
       ],
       "correct": "b",
-      "explanation": "Proceso isocórico: p₂ = p₁·T₂/T₁. T₁ = 27+273 = 300 K, T₂ = 327+273 = 600 K. p₂ = 10·600/300 = 20 MPa. La temperatura se duplicó (en kelvin), por lo que la presión también."
+      "explanation": "Proceso isocórico: p₂ = p₁·T₂/T₁. T₁ = 27+273 = 300 K, T₂ = 327+273 = 600 K. p₂ = 10·600/300 = 20 MPa. La temperatura se duplicó (en kelvin), por lo que la presión también."
     },
     {
       "id": 27,
@@ -382,7 +382,7 @@
     {
       "id": 30,
       "category": "tlak-jednotky",
-      "question": "Un compresor tiene un rendimiento caracterizado por la compresión de 300 L de aire a presión normal por minuto, con una presión máxima de suministro de 20 MPa. ¿Cuántas botellas vacías de 15 L puede cargar este compresor en una hora hasta 20 MPa? (El aire de las botellas tiene la misma temperatura que el aire aspirado.)",
+      "question": "Un compresor tiene un rendimiento caracterizado por la compresión de 300 L de aire a presión normal por minuto, con una presión máxima de suministro de 20 MPa. ¿Cuántas botellas vacías de 15 L puede cargar este compresor en una hora hasta 20 MPa? (El aire de las botellas tiene la misma temperatura que el aire aspirado.)",
       "options": [
         { "key": "a", "text": "2 botellas" },
         { "key": "b", "text": "3 botellas" },
@@ -390,20 +390,20 @@
         { "key": "d", "text": "6 botellas" }
       ],
       "correct": "d",
-      "explanation": "En una hora el compresor aspira 300 × 60 = 18 000 L de aire a presión normal. Una botella de 15 L a 20 MPa (= 200 bar) necesita 15 × 200 = 3 000 L. Número de botellas: 18 000 / 3 000 = 6."
+      "explanation": "En una hora el compresor aspira 300 × 60 = 18 000 L de aire a presión normal. Una botella de 15 L a 20 MPa (= 200 bar) necesita 15 × 200 = 3 000 L. Número de botellas: 18 000 / 3 000 = 6."
     },
     {
       "id": 31,
       "category": "vztlak-vystroj",
-      "question": "Elija la bolsa de izado del volumen mínimo necesario para subir un bloque de fundición de 750 kg (densidad de la fundición 8 000 kg/m³) que descansa libre en el fondo a 10 m. La masa de la bolsa con el aparejo es de 10–15 kg:",
+      "question": "Elija la bolsa de izado del volumen mínimo necesario para subir un bloque de fundición de 750 kg (densidad de la fundición 8 000 kg/m³) que descansa libre en el fondo a 10 m. La masa de la bolsa con el aparejo es de 10–15 kg:",
       "options": [
-        { "key": "a", "text": "1 000 L" },
-        { "key": "b", "text": "800 L" },
-        { "key": "c", "text": "700 L" },
-        { "key": "d", "text": "600 L" }
+        { "key": "a", "text": "1 000 L" },
+        { "key": "b", "text": "800 L" },
+        { "key": "c", "text": "700 L" },
+        { "key": "d", "text": "600 L" }
       ],
       "correct": "c",
-      "explanation": "Volumen de la fundición: 750/8 000 = 0,094 m³ = 94 L. Empuje sobre la fundición: 94 kg. Empuje necesario de la bolsa: 750 − 94 + 15 = 671 kg ≈ 671 L. La bolsa mínima es, por tanto, de 700 L."
+      "explanation": "Volumen de la fundición: 750/8 000 = 0,094 m³ = 94 L. Empuje sobre la fundición: 94 kg. Empuje necesario de la bolsa: 750 − 94 + 15 = 671 kg ≈ 671 L. La bolsa mínima es, por tanto, de 700 L."
     },
     {
       "id": 32,
@@ -416,7 +416,7 @@
         { "key": "d", "text": "al cambio de temperatura" }
       ],
       "correct": "b",
-      "explanation": "La causa principal del cambio de masa durante la inmersión es el consumo de aire de las botellas. El aire tiene masa (unos 1,25 kg/m³) y al consumir 3 000 L el buceador pierde casi 4 kg."
+      "explanation": "La causa principal del cambio de masa durante la inmersión es el consumo de aire de las botellas. El aire tiene masa (unos 1,25 kg/m³) y al consumir 3 000 L el buceador pierde casi 4 kg."
     },
     {
       "id": 33,
@@ -429,25 +429,25 @@
         { "key": "d", "text": "45 metros" }
       ],
       "correct": "c",
-      "explanation": "Volumen pulmonar total = 4,5 + 1,5 = 6 L. Compresión máxima hasta el volumen residual de 1,5 L = una proporción de 6/1,5 = 4×. Esto corresponde a una presión de 4 bar = 30 m de profundidad. A mayor profundidad existe riesgo de daño pulmonar (squeeze)."
+      "explanation": "Volumen pulmonar total = 4,5 + 1,5 = 6 L. Compresión máxima hasta el volumen residual de 1,5 L = una proporción de 6/1,5 = 4×. Esto corresponde a una presión de 4 bar = 30 m de profundidad. A mayor profundidad existe riesgo de daño pulmonar (squeeze)."
     },
     {
       "id": 34,
       "category": "vztlak-vystroj",
-      "question": "Un apneista lleva un traje de neopreno cuyo volumen a presión normal es de 10 litros y cuya masa es de 2 kg. ¿Cuánto lastre necesita para estar equilibrado en superficie?",
+      "question": "Un apneista lleva un traje de neopreno cuyo volumen a presión normal es de 10 litros y cuya masa es de 2 kg. ¿Cuánto lastre necesita para estar equilibrado en superficie?",
       "options": [
-        { "key": "a", "text": "12 kg" },
-        { "key": "b", "text": "10 kg" },
-        { "key": "c", "text": "6 kg" },
-        { "key": "d", "text": "8 kg" }
+        { "key": "a", "text": "12 kg" },
+        { "key": "b", "text": "10 kg" },
+        { "key": "c", "text": "6 kg" },
+        { "key": "d", "text": "8 kg" }
       ],
       "correct": "d",
-      "explanation": "Un traje de 10 L crea una flotabilidad de 10 kg. La masa del traje es de 2 kg. Flotabilidad neta del traje = 10 − 2 = 8 kg. El buceador necesita 8 kg de lastre para equilibrarse."
+      "explanation": "Un traje de 10 L crea una flotabilidad de 10 kg. La masa del traje es de 2 kg. Flotabilidad neta del traje = 10 − 2 = 8 kg. El buceador necesita 8 kg de lastre para equilibrarse."
     },
     {
       "id": 35,
       "category": "vztlak-vystroj",
-      "question": "El volumen de una burbuja de aire liberada a 300 m, justo bajo la superficie ha crecido respecto a su volumen en profundidad (a temperatura constante):",
+      "question": "El volumen de una burbuja de aire liberada a 300 m, justo bajo la superficie ha crecido respecto a su volumen en profundidad (a temperatura constante):",
       "options": [
         { "key": "a", "text": "31 veces" },
         { "key": "b", "text": "310 veces" },
@@ -455,12 +455,12 @@
         { "key": "d", "text": "300 veces" }
       ],
       "correct": "a",
-      "explanation": "A 300 m la presión absoluta es de 31 bar (1 bar atmosférico + 30 bar hidrostáticos, ~10 m = 1 bar). En superficie es 1 bar. Según la ley de Boyle-Mariotte el volumen aumenta 31 veces."
+      "explanation": "A 300 m la presión absoluta es de 31 bar (1 bar atmosférico + 30 bar hidrostáticos, ~10 m = 1 bar). En superficie es 1 bar. Según la ley de Boyle-Mariotte el volumen aumenta 31 veces."
     },
     {
       "id": 36,
       "category": "vztlak-vystroj",
-      "question": "Un cilindro hueco de chapa de acero anegado, de masa 2 400 kg y volumen interno 3 000 L (densidad del acero 8 000 kg/m³), descansa libre en el fondo a 20 m. Se puede izar a la superficie llenándolo de aire. Elija el número mínimo de botellas de 12 L cargadas a 18 MPa necesarias para ello:",
+      "question": "Un cilindro hueco de chapa de acero anegado, de masa 2 400 kg y volumen interno 3 000 L (densidad del acero 8 000 kg/m³), descansa libre en el fondo a 20 m. Se puede izar a la superficie llenándolo de aire. Elija el número mínimo de botellas de 12 L cargadas a 18 MPa necesarias para ello:",
       "options": [
         { "key": "a", "text": "1 botella" },
         { "key": "b", "text": "3 botellas" },
@@ -468,25 +468,25 @@
         { "key": "d", "text": "4 botellas" }
       ],
       "correct": "b",
-      "explanation": "Volumen de acero: 2 400/8 000 = 0,3 m³ = 300 L. Volumen total del cilindro: 3 000 + 300 = 3 300 L. Hay que desplazar el agua del cilindro. Una botella de 12 L × 180 bar = 2 160 L de aire en superficie = 720 L a 20 m. Se necesitan unos 2 400 L → 3 botellas."
+      "explanation": "Volumen de acero: 2 400/8 000 = 0,3 m³ = 300 L. Volumen total del cilindro: 3 000 + 300 = 3 300 L. Hay que desplazar el agua del cilindro. Una botella de 12 L × 180 bar = 2 160 L de aire en superficie = 720 L a 20 m. Se necesitan unos 2 400 L → 3 botellas."
     },
     {
       "id": 37,
       "category": "vztlak-vystroj",
-      "question": "En superficie un buceador estaba equilibrado con el chaleco compensador inflado con 6 litros de aire. Si, sin añadir ni purgar este chaleco, descendiera a 20 m y quisiera reequilibrarse soltando lastre (sin contar la compresión del traje), debería soltar:",
+      "question": "En superficie un buceador estaba equilibrado con el chaleco compensador inflado con 6 litros de aire. Si, sin añadir ni purgar este chaleco, descendiera a 20 m y quisiera reequilibrarse soltando lastre (sin contar la compresión del traje), debería soltar:",
       "options": [
-        { "key": "a", "text": "4 kg de lastre" },
-        { "key": "b", "text": "2 kg de lastre" },
-        { "key": "c", "text": "3 kg de lastre" },
-        { "key": "d", "text": "6 kg de lastre" }
+        { "key": "a", "text": "4 kg de lastre" },
+        { "key": "b", "text": "2 kg de lastre" },
+        { "key": "c", "text": "3 kg de lastre" },
+        { "key": "d", "text": "6 kg de lastre" }
       ],
       "correct": "a",
-      "explanation": "A 20 m la presión es de 3 bar. El volumen de aire en el chaleco se reduce a 6/3 = 2 L. Pérdida de flotabilidad = 6 − 2 = 4 L = 4 kg. Para reequilibrarse debe soltar 4 kg de lastre."
+      "explanation": "A 20 m la presión es de 3 bar. El volumen de aire en el chaleco se reduce a 6/3 = 2 L. Pérdida de flotabilidad = 6 − 2 = 4 L = 4 kg. Para reequilibrarse debe soltar 4 kg de lastre."
     },
     {
       "id": 38,
       "category": "vztlak-vystroj",
-      "question": "Una cabina de buceo se bajó a 60 m manteniendo en su interior la presión atmosférica normal. ¿Con qué fuerza neta presiona la tapa de la escotilla de salida (de área 1 m²) sobre la superficie de cierre de la cabina?",
+      "question": "Una cabina de buceo se bajó a 60 m manteniendo en su interior la presión atmosférica normal. ¿Con qué fuerza neta presiona la tapa de la escotilla de salida (de área 1 m²) sobre la superficie de cierre de la cabina?",
       "options": [
         { "key": "a", "text": "700 000 N" },
         { "key": "b", "text": "70 000 N" },
@@ -494,12 +494,12 @@
         { "key": "d", "text": "600 000 N" }
       ],
       "correct": "d",
-      "explanation": "Diferencia de presión = presión hidrostática a 60 m = 6 bar = 600 000 Pa. Fuerza F = p × S = 600 000 Pa × 1 m² = 600 000 N (¡unas 60 toneladas!)."
+      "explanation": "Diferencia de presión = presión hidrostática a 60 m = 6 bar = 600 000 Pa. Fuerza F = p × S = 600 000 Pa × 1 m² = 600 000 N (¡unas 60 toneladas!)."
     },
     {
       "id": 39,
       "category": "vztlak-vystroj",
-      "question": "Una campana de buceo sin alimentación de aire bajada a 20 m se llena de agua aproximadamente:",
+      "question": "Una campana de buceo sin alimentación de aire bajada a 20 m se llena de agua aproximadamente:",
       "options": [
         { "key": "a", "text": "hasta 1/2 de su volumen" },
         { "key": "b", "text": "hasta 2/3 de su volumen" },
@@ -507,25 +507,25 @@
         { "key": "d", "text": "hasta 3/4 de su volumen" }
       ],
       "correct": "b",
-      "explanation": "A 20 m la presión absoluta es 3 bar. El aire de la campana se comprime a 1/3 de su volumen original. Los 2/3 restantes se llenan de agua."
+      "explanation": "A 20 m la presión absoluta es 3 bar. El aire de la campana se comprime a 1/3 de su volumen original. Los 2/3 restantes se llenan de agua."
     },
     {
       "id": 40,
       "category": "vztlak-vystroj",
-      "question": "Una campana cilíndrica hueca de 10 m de altura se sumerge sin reposición de aire hasta 30 m. ¿A qué altura subirá el agua dentro de la campana?",
+      "question": "Una campana cilíndrica hueca de 10 m de altura se sumerge sin reposición de aire hasta 30 m. ¿A qué altura subirá el agua dentro de la campana?",
       "options": [
-        { "key": "a", "text": "2,5 m" },
-        { "key": "b", "text": "3,3 m" },
-        { "key": "c", "text": "7,5 m" },
-        { "key": "d", "text": "6,6 m" }
+        { "key": "a", "text": "2,5 m" },
+        { "key": "b", "text": "3,3 m" },
+        { "key": "c", "text": "7,5 m" },
+        { "key": "d", "text": "6,6 m" }
       ],
       "correct": "c",
-      "explanation": "El borde inferior de la campana está a 30 m (4 bar). El aire se comprime a 1/4 del volumen, ocupando 2,5 m de altura en la parte superior. El agua llena los 7,5 m restantes."
+      "explanation": "El borde inferior de la campana está a 30 m (4 bar). El aire se comprime a 1/4 del volumen, ocupando 2,5 m de altura en la parte superior. El agua llena los 7,5 m restantes."
     },
     {
       "id": 41,
       "category": "vztlak-vystroj",
-      "question": "Un chaleco compensador de volumen máximo 16 litros está medio lleno a 40 m. Sin purgar, ¿a qué profundidad durante el ascenso empezaría a escapar aire por la válvula de sobrepresión tarada a 30 kPa?",
+      "question": "Un chaleco compensador de volumen máximo 16 litros está medio lleno a 40 m. Sin purgar, ¿a qué profundidad durante el ascenso empezaría a escapar aire por la válvula de sobrepresión tarada a 30 kPa?",
       "options": [
         { "key": "a", "text": "37 metros" },
         { "key": "b", "text": "22 metros" },
@@ -533,12 +533,12 @@
         { "key": "d", "text": "12 metros" }
       ],
       "correct": "d",
-      "explanation": "A 40 m (5 bar) el chaleco contiene 8 L. El aire se expande a 16 L a una presión de 5×8/16 = 2,5 bar, que corresponde a 15 m. Con 30 kPa (0,3 bar) de sobrepresión la válvula abre a 2,2 bar ≈ 12 m."
+      "explanation": "A 40 m (5 bar) el chaleco contiene 8 L. El aire se expande a 16 L a una presión de 5×8/16 = 2,5 bar, que corresponde a 15 m. Con 30 kPa (0,3 bar) de sobrepresión la válvula abre a 2,2 bar ≈ 12 m."
     },
     {
       "id": 42,
       "category": "vztlak-vystroj",
-      "question": "Una campana de buceo tiene un volumen interno completo de 900 L, masa con lastre de 1 010 kg y volumen del propio material de 100 L. ¿Con qué fuerza tirará a 20 m en agua dulce del cabo de suspensión si durante el descenso:\nA. se reponía aire continuamente?\nB. no se reponía aire?",
+      "question": "Una campana de buceo tiene un volumen interno completo de 900 L, masa con lastre de 1 010 kg y volumen del propio material de 100 L. ¿Con qué fuerza tirará a 20 m en agua dulce del cabo de suspensión si durante el descenso:\nA. se reponía aire continuamente?\nB. no se reponía aire?",
       "options": [
         { "key": "a", "text": "A = 100 N, B = 400 N" },
         { "key": "b", "text": "A = 100 N, B = 6 100 N" },
@@ -546,12 +546,12 @@
         { "key": "d", "text": "A = 100 N, B = 3 100 N" }
       ],
       "correct": "b",
-      "explanation": "A: aire repuesto: empuje = (900+100)×10 = 10 000 N, peso = 10 100 N, fuerza en el cabo = 100 N. B: aire comprimido a 1/3 (300 L), agua llena 600 L, empuje = 400×10 = 4 000 N, fuerza = 10 100 − 4 000 = 6 100 N."
+      "explanation": "A: aire repuesto: empuje = (900+100)×10 = 10 000 N, peso = 10 100 N, fuerza en el cabo = 100 N. B: aire comprimido a 1/3 (300 L), agua llena 600 L, empuje = 400×10 = 4 000 N, fuerza = 10 100 − 4 000 = 6 100 N."
     },
     {
       "id": 43,
       "category": "vztlak-vystroj",
-      "question": "Un chaleco compensador de volumen máximo 20 L está medio lleno de aire a 30 m. ¿A qué profundidad, durante el ascenso sin purgar, se expandiría el aire del chaleco lo suficiente para empezar a escapar por la válvula de sobrepresión tarada a 0,03 MPa?",
+      "question": "Un chaleco compensador de volumen máximo 20 L está medio lleno de aire a 30 m. ¿A qué profundidad, durante el ascenso sin purgar, se expandiría el aire del chaleco lo suficiente para empezar a escapar por la válvula de sobrepresión tarada a 0,03 MPa?",
       "options": [
         { "key": "a", "text": "17 metros" },
         { "key": "b", "text": "12 metros" },
@@ -559,7 +559,7 @@
         { "key": "d", "text": "3 metros" }
       ],
       "correct": "c",
-      "explanation": "A 30 m (4 bar) el chaleco contiene 10 L. El aire alcanza 20 L a 4×10/20 = 2 bar = 10 m. Con 0,03 MPa (0,3 bar) de sobrepresión la válvula abre a 1,7 bar ≈ 7 m."
+      "explanation": "A 30 m (4 bar) el chaleco contiene 10 L. El aire alcanza 20 L a 4×10/20 = 2 bar = 10 m. Con 0,03 MPa (0,3 bar) de sobrepresión la válvula abre a 1,7 bar ≈ 7 m."
     },
     {
       "id": 44,
@@ -569,41 +569,41 @@
         { "key": "a", "text": "dependiente de la temperatura, la concentración de sales y, ligeramente, de la presión" },
         { "key": "b", "text": "dependiente solo de la temperatura" },
         { "key": "c", "text": "dependiente de la temperatura y la presión, e independiente de la concentración de sales" },
-        { "key": "d", "text": "constante en 1 020 kg/m³ con independencia de la temperatura, la presión y la salinidad" }
+        { "key": "d", "text": "constante en 1 020 kg/m³ con independencia de la temperatura, la presión y la salinidad" }
       ],
       "correct": "a",
-      "explanation": "La densidad del agua de mar depende sobre todo de la temperatura y la salinidad. La presión influye menos. La densidad típica es de 1 020–1 030 kg/m³ y varía según la zona."
+      "explanation": "La densidad del agua de mar depende sobre todo de la temperatura y la salinidad. La presión influye menos. La densidad típica es de 1 020–1 030 kg/m³ y varía según la zona."
     },
     {
       "id": 45,
       "category": "vztlak-vystroj",
-      "question": "¿Cómo y cuántos kg cambia aproximadamente la masa de un equipo de 20 L cargado inicialmente a 20 MPa tras consumir 3/4 de la reserva de aire?",
+      "question": "¿Cómo y cuántos kg cambia aproximadamente la masa de un equipo de 20 L cargado inicialmente a 20 MPa tras consumir 3/4 de la reserva de aire?",
       "options": [
-        { "key": "a", "text": "será unos 5 kg más ligero" },
-        { "key": "b", "text": "será unos 3,7 kg más pesado" },
-        { "key": "c", "text": "será unos 3,7 kg más ligero" },
+        { "key": "a", "text": "será unos 5 kg más ligero" },
+        { "key": "b", "text": "será unos 3,7 kg más pesado" },
+        { "key": "c", "text": "será unos 3,7 kg más ligero" },
         { "key": "d", "text": "no cambiará" }
       ],
       "correct": "c",
-      "explanation": "Reserva total = 20 L × 200 bar = 4 000 L. 3/4 = 3 000 L. Masa del aire ≈ 1,25 kg/1 000 L. Pérdida = 3 000 × 1,25/1 000 = 3,75 kg ≈ 3,7 kg."
+      "explanation": "Reserva total = 20 L × 200 bar = 4 000 L. 3/4 = 3 000 L. Masa del aire ≈ 1,25 kg/1 000 L. Pérdida = 3 000 × 1,25/1 000 = 3,75 kg ≈ 3,7 kg."
     },
     {
       "id": 46,
       "category": "vztlak-vystroj",
-      "question": "¿Con qué fuerza recibe empuje un objeto de fundición libre, de volumen 10 L, a 40 m en agua dulce (densidad de la fundición 7 500 kg/m³)?",
+      "question": "¿Con qué fuerza recibe empuje un objeto de fundición libre, de volumen 10 L, a 40 m en agua dulce (densidad de la fundición 7 500 kg/m³)?",
       "options": [
-        { "key": "a", "text": "0,75 MPa" },
+        { "key": "a", "text": "0,75 MPa" },
         { "key": "b", "text": "750 N" },
         { "key": "c", "text": "850 N" },
         { "key": "d", "text": "100 N" }
       ],
       "correct": "d",
-      "explanation": "Empuje = volumen × densidad del agua × g = 0,01 m³ × 1 000 kg/m³ × 10 m/s² = 100 N. El empuje no depende de la profundidad, solo del volumen sumergido."
+      "explanation": "Empuje = volumen × densidad del agua × g = 0,01 m³ × 1 000 kg/m³ × 10 m/s² = 100 N. El empuje no depende de la profundidad, solo del volumen sumergido."
     },
     {
       "id": 47,
       "category": "vztlak-vystroj",
-      "question": "En el fondo, a 10 m, hay cubos de acero, cada uno de 160 kg de masa. ¿Aproximadamente cuántos pueden levantarse con una bolsa de izado y una botella de 10 L cargada a 18 MPa? (Densidad del acero 8 000 kg/m³)",
+      "question": "En el fondo, a 10 m, hay cubos de acero, cada uno de 160 kg de masa. ¿Aproximadamente cuántos pueden levantarse con una bolsa de izado y una botella de 10 L cargada a 18 MPa? (Densidad del acero 8 000 kg/m³)",
       "options": [
         { "key": "a", "text": "6 cubos" },
         { "key": "b", "text": "2 cubos" },
@@ -611,7 +611,7 @@
         { "key": "d", "text": "10 cubos" }
       ],
       "correct": "a",
-      "explanation": "La botella contiene 10×180 = 1 800 L de aire. A 10 m (2 bar) son 900 L de empuje. Volumen del cubo = 160/8 000 = 0,02 m³ = 20 L. Peso neto bajo el agua = 160 − 20 = 140 kg. Número de cubos = 900/140 ≈ 6."
+      "explanation": "La botella contiene 10×180 = 1 800 L de aire. A 10 m (2 bar) son 900 L de empuje. Volumen del cubo = 160/8 000 = 0,02 m³ = 20 L. Peso neto bajo el agua = 160 − 20 = 140 kg. Número de cubos = 900/140 ≈ 6."
     },
     {
       "id": 48,
@@ -629,7 +629,7 @@
     {
       "id": 49,
       "category": "vztlak-vystroj",
-      "question": "Un cuerpo de superficie estanca tiene una masa de 250 kg y un volumen de 245 L. Determine su densidad y describa su comportamiento en agua de mar de densidad 1 030 kg/m³:",
+      "question": "Un cuerpo de superficie estanca tiene una masa de 250 kg y un volumen de 245 L. Determine su densidad y describa su comportamiento en agua de mar de densidad 1 030 kg/m³:",
       "options": [
         { "key": "a", "text": "flotará como un cuerpo poco sumergido (p. ej. un barco)" },
         { "key": "b", "text": "se mantendrá en flotabilidad neutra" },
@@ -637,25 +637,25 @@
         { "key": "d", "text": "se hundirá hasta el fondo" }
       ],
       "correct": "c",
-      "explanation": "Densidad del cuerpo = 250/0,245 = 1 020 kg/m³. El agua de mar tiene 1 030 kg/m³. El cuerpo es más ligero que el agua, por lo que flota. Como las densidades son muy próximas, flotará casi totalmente sumergido."
+      "explanation": "Densidad del cuerpo = 250/0,245 = 1 020 kg/m³. El agua de mar tiene 1 030 kg/m³. El cuerpo es más ligero que el agua, por lo que flota. Como las densidades son muy próximas, flotará casi totalmente sumergido."
     },
     {
       "id": 50,
       "category": "vztlak-vystroj",
-      "question": "A 22 °C la humedad absoluta del aire saturado de vapor es 18 g/m³. ¿Cuánta agua quedaría en el separador del compresor tras eliminar completamente el agua del aire y después de cargar 10 botellas inicialmente vacías de 15 L a 20 MPa, con aire de aspiración a humedad relativa 33 % a esta temperatura?",
+      "question": "A 22 °C la humedad absoluta del aire saturado de vapor es 18 g/m³. ¿Cuánta agua quedaría en el separador del compresor tras eliminar completamente el agua del aire y después de cargar 10 botellas inicialmente vacías de 15 L a 20 MPa, con aire de aspiración a humedad relativa 33 % a esta temperatura?",
       "options": [
-        { "key": "a", "text": "18 g" },
-        { "key": "b", "text": "54 g" },
-        { "key": "c", "text": "178,2 g" },
-        { "key": "d", "text": "540 g" }
+        { "key": "a", "text": "18 g" },
+        { "key": "b", "text": "54 g" },
+        { "key": "c", "text": "178,2 g" },
+        { "key": "d", "text": "540 g" }
       ],
       "correct": "c",
-      "explanation": "Aire total: 10 × 15 × 200 = 30 000 L = 30 m³. Humedad del aire: 18 × 0,33 = 5,94 g/m³. Agua total: 30 × 5,94 = 178,2 g."
+      "explanation": "Aire total: 10 × 15 × 200 = 30 000 L = 30 m³. Humedad del aire: 18 × 0,33 = 5,94 g/m³. Agua total: 30 × 5,94 = 178,2 g."
     },
     {
       "id": 51,
       "category": "tlak-jednotky",
-      "question": "¿Qué fuerza debe tener aproximadamente el muelle de control de una primera etapa compensada del regulador para que, bajo una membrana de diámetro útil 40 mm, se genere una presión intermedia de sobrepresión 1 MPa?",
+      "question": "¿Qué fuerza debe tener aproximadamente el muelle de control de una primera etapa compensada del regulador para que, bajo una membrana de diámetro útil 40 mm, se genere una presión intermedia de sobrepresión 1 MPa?",
       "options": [
         { "key": "a", "text": "130 N" },
         { "key": "b", "text": "650 N" },
@@ -663,7 +663,7 @@
         { "key": "d", "text": "65 N" }
       ],
       "correct": "c",
-      "explanation": "Área de la membrana S = π × r² = π × 0,02² = 0,001257 m². Fuerza F = p × S = 1 000 000 Pa × 0,001257 m² ≈ 1 257 N ≈ 1 260 N."
+      "explanation": "Área de la membrana S = π × r² = π × 0,02² = 0,001257 m². Fuerza F = p × S = 1 000 000 Pa × 0,001257 m² ≈ 1 257 N ≈ 1 260 N."
     },
     {
       "id": 52,
@@ -676,38 +676,38 @@
         { "key": "d", "text": "aproximadamente 10 metros" }
       ],
       "correct": "d",
-      "explanation": "Presión atmosférica ≈ 1 bar ≈ 100 kPa. Presión hidrostática de 10 m de agua = 1 000 kg/m³ × 10 m/s² × 10 m = 100 000 Pa = 1 bar. Por tanto, 10 m de agua = 1 atmósfera."
+      "explanation": "Presión atmosférica ≈ 1 bar ≈ 100 kPa. Presión hidrostática de 10 m de agua = 1 000 kg/m³ × 10 m/s² × 10 m = 100 000 Pa = 1 bar. Por tanto, 10 m de agua = 1 atmósfera."
     },
     {
       "id": 53,
       "category": "tlak-jednotky",
       "question": "La presión que produce la atmósfera terrestre al nivel del mar (presión atmosférica normal) es aproximadamente:",
       "options": [
-        { "key": "a", "text": "0,1 MPa, es decir, 1 bar" },
-        { "key": "b", "text": "1 MPa, es decir, 1 000 mbar" },
-        { "key": "c", "text": "10 MPa, es decir, 1 bar" },
-        { "key": "d", "text": "0,01 MPa, es decir, 1 bar" }
+        { "key": "a", "text": "0,1 MPa, es decir, 1 bar" },
+        { "key": "b", "text": "1 MPa, es decir, 1 000 mbar" },
+        { "key": "c", "text": "10 MPa, es decir, 1 bar" },
+        { "key": "d", "text": "0,01 MPa, es decir, 1 bar" }
       ],
       "correct": "a",
-      "explanation": "Presión atmosférica normal = 0,1 MPa = 100 kPa = 1 bar = 1 000 mbar. Las demás opciones contienen conversiones incorrectas."
+      "explanation": "Presión atmosférica normal = 0,1 MPa = 100 kPa = 1 bar = 1 000 mbar. Las demás opciones contienen conversiones incorrectas."
     },
     {
       "id": 54,
       "category": "tlak-jednotky",
-      "question": "Buceando en un lago cuya superficie está a unos 5 500 m sobre el nivel del mar, donde la presión atmosférica es de unos 50 kPa, la presión total a 20 m de profundidad es aproximadamente:",
+      "question": "Buceando en un lago cuya superficie está a unos 5 500 m sobre el nivel del mar, donde la presión atmosférica es de unos 50 kPa, la presión total a 20 m de profundidad es aproximadamente:",
       "options": [
-        { "key": "a", "text": "200 kPa" },
-        { "key": "b", "text": "250 kPa" },
-        { "key": "c", "text": "300 kPa" },
-        { "key": "d", "text": "350 kPa" }
+        { "key": "a", "text": "200 kPa" },
+        { "key": "b", "text": "250 kPa" },
+        { "key": "c", "text": "300 kPa" },
+        { "key": "d", "text": "350 kPa" }
       ],
       "correct": "b",
-      "explanation": "Presión total = atmosférica + hidrostática. Atmosférica = 50 kPa. Hidrostática a 20 m = 200 kPa. Total = 50 + 200 = 250 kPa."
+      "explanation": "Presión total = atmosférica + hidrostática. Atmosférica = 50 kPa. Hidrostática a 20 m = 200 kPa. Total = 50 + 200 = 250 kPa."
     },
     {
       "id": 55,
       "category": "tlak-jednotky",
-      "question": "Una cámara de descompresión a bordo de un buque está presurizada a una profundidad equivalente de 50 m. ¿Con qué fuerza neta presiona la tapa de la cámara, de área 1 m², contra la brida?",
+      "question": "Una cámara de descompresión a bordo de un buque está presurizada a una profundidad equivalente de 50 m. ¿Con qué fuerza neta presiona la tapa de la cámara, de área 1 m², contra la brida?",
       "options": [
         { "key": "a", "text": "600 000 N" },
         { "key": "b", "text": "400 000 N" },
@@ -715,7 +715,7 @@
         { "key": "d", "text": "50 000 N" }
       ],
       "correct": "c",
-      "explanation": "Sobrepresión en la cámara = 50 m = 5 bar = 500 000 Pa (diferencia respecto a la presión atmosférica exterior). Fuerza F = p × S = 500 000 Pa × 1 m² = 500 000 N."
+      "explanation": "Sobrepresión en la cámara = 50 m = 5 bar = 500 000 Pa (diferencia respecto a la presión atmosférica exterior). Fuerza F = p × S = 500 000 Pa × 1 m² = 500 000 N."
     },
     {
       "id": 56,
@@ -735,18 +735,18 @@
       "category": "tlak-jednotky",
       "question": "¿Cuál de las siguientes afirmaciones es incorrecta?",
       "options": [
-        { "key": "a", "text": "Un volumen de 1 metro cúbico (1 m³) contiene 1 000 litros." },
-        { "key": "b", "text": "Una presión de 1 MPa es la misma que una de 100 kPa." },
-        { "key": "c", "text": "Una temperatura de 20 °C corresponde aproximadamente a 293 K." },
-        { "key": "d", "text": "Un cuerpo de 1 kg de masa ejerce sobre la superficie terrestre una fuerza de aproximadamente 10 newton (N)." }
+        { "key": "a", "text": "Un volumen de 1 metro cúbico (1 m³) contiene 1 000 litros." },
+        { "key": "b", "text": "Una presión de 1 MPa es la misma que una de 100 kPa." },
+        { "key": "c", "text": "Una temperatura de 20 °C corresponde aproximadamente a 293 K." },
+        { "key": "d", "text": "Un cuerpo de 1 kg de masa ejerce sobre la superficie terrestre una fuerza de aproximadamente 10 newton (N)." }
       ],
       "correct": "b",
-      "explanation": "1 MPa = 1 000 kPa, no 100 kPa. La relación correcta es 0,1 MPa = 100 kPa. Las demás afirmaciones son correctas."
+      "explanation": "1 MPa = 1 000 kPa, no 100 kPa. La relación correcta es 0,1 MPa = 100 kPa. Las demás afirmaciones son correctas."
     },
     {
       "id": 58,
       "category": "tlak-jednotky",
-      "question": "Determine la fuerza con la que se aprieta contra el asiento de la tobera, de sección 10 mm², el obturador de una segunda etapa de regulador de apertura contracorriente, con una presión intermedia ajustada a una sobrepresión de 1 MPa:",
+      "question": "Determine la fuerza con la que se aprieta contra el asiento de la tobera, de sección 10 mm², el obturador de una segunda etapa de regulador de apertura contracorriente, con una presión intermedia ajustada a una sobrepresión de 1 MPa:",
       "options": [
         { "key": "a", "text": "0,1 N" },
         { "key": "b", "text": "1 N" },
@@ -754,7 +754,7 @@
         { "key": "d", "text": "100 N" }
       ],
       "correct": "c",
-      "explanation": "Área S = 10 mm² = 10 × 10⁻⁶ m² = 0,00001 m². Fuerza F = p × S = 1 000 000 Pa × 0,00001 m² = 10 N."
+      "explanation": "Área S = 10 mm² = 10 × 10⁻⁶ m² = 0,00001 m². Fuerza F = p × S = 1 000 000 Pa × 0,00001 m² = 10 N."
     },
     {
       "id": 59,
@@ -772,7 +772,7 @@
     {
       "id": 60,
       "category": "tlak-jednotky",
-      "question": "Determine la fuerza neta de presión que ejerce a 30 m sobre la superficie de apoyo de la carcasa de una videocámara su mirilla de 40 mm de diámetro:",
+      "question": "Determine la fuerza neta de presión que ejerce a 30 m sobre la superficie de apoyo de la carcasa de una videocámara su mirilla de 40 mm de diámetro:",
       "options": [
         { "key": "a", "text": "3 770 N" },
         { "key": "b", "text": "503 N" },
@@ -780,12 +780,12 @@
         { "key": "d", "text": "377 N" }
       ],
       "correct": "d",
-      "explanation": "Presión hidrostática a 30 m = 3 bar = 300 000 Pa. Área de la mirilla S = π × 0,02² = 0,001257 m². Fuerza F = 300 000 × 0,001257 ≈ 377 N."
+      "explanation": "Presión hidrostática a 30 m = 3 bar = 300 000 Pa. Área de la mirilla S = π × 0,02² = 0,001257 m². Fuerza F = 300 000 × 0,001257 ≈ 377 N."
     },
     {
       "id": 61,
       "category": "spotreba-planovani",
-      "question": "¿En cuánto tiempo se consumiría teóricamente por completo, a 10 m de profundidad y con un consumo en superficie de 30 L/min, la reserva de aire de una botella de 15 L cargada a 20 MPa?",
+      "question": "¿En cuánto tiempo se consumiría teóricamente por completo, a 10 m de profundidad y con un consumo en superficie de 30 L/min, la reserva de aire de una botella de 15 L cargada a 20 MPa?",
       "options": [
         { "key": "a", "text": "100 minutos" },
         { "key": "b", "text": "75 minutos" },
@@ -793,12 +793,12 @@
         { "key": "d", "text": "25 minutos" }
       ],
       "correct": "c",
-      "explanation": "Reserva = 15 × 200 = 3 000 L. A 10 m (2 bar) el consumo es 30 × 2 = 60 L/min. Tiempo = 3 000 / 60 = 50 minutos."
+      "explanation": "Reserva = 15 × 200 = 3 000 L. A 10 m (2 bar) el consumo es 30 × 2 = 60 L/min. Tiempo = 3 000 / 60 = 50 minutos."
     },
     {
       "id": 62,
       "category": "spotreba-planovani",
-      "question": "¿Cuánto tiempo puede permanecer a 20 m un buceador con un equipo de 18 L a 20 MPa y un consumo en superficie de 30 L/min antes de que la presión caiga a 5 MPa?",
+      "question": "¿Cuánto tiempo puede permanecer a 20 m un buceador con un equipo de 18 L a 20 MPa y un consumo en superficie de 30 L/min antes de que la presión caiga a 5 MPa?",
       "options": [
         { "key": "a", "text": "45 minutos" },
         { "key": "b", "text": "30 minutos" },
@@ -806,12 +806,12 @@
         { "key": "d", "text": "20 minutos" }
       ],
       "correct": "b",
-      "explanation": "Reserva utilizable = 18 × (200 − 50) = 18 × 150 = 2 700 L. A 20 m (3 bar) el consumo es 30 × 3 = 90 L/min. Tiempo = 2 700 / 90 = 30 minutos."
+      "explanation": "Reserva utilizable = 18 × (200 − 50) = 18 × 150 = 2 700 L. A 20 m (3 bar) el consumo es 30 × 3 = 90 L/min. Tiempo = 2 700 / 90 = 30 minutos."
     },
     {
       "id": 63,
       "category": "spotreba-planovani",
-      "question": "Dos buceadores nadan a 20 m hasta que el primero consuma la mitad de su reserva, y después regresan a 10 m. El buceador A tiene un equipo de 15 L y un consumo de 25 L/min en superficie; el buceador B tiene 20 L y 30 L/min; ambos a 20 MPa. Determine el momento de regreso:",
+      "question": "Dos buceadores nadan a 20 m hasta que el primero consuma la mitad de su reserva, y después regresan a 10 m. El buceador A tiene un equipo de 15 L y un consumo de 25 L/min en superficie; el buceador B tiene 20 L y 30 L/min; ambos a 20 MPa. Determine el momento de regreso:",
       "options": [
         { "key": "a", "text": "33 minutos" },
         { "key": "b", "text": "30 minutos" },
@@ -819,12 +819,12 @@
         { "key": "d", "text": "22 minutos" }
       ],
       "correct": "c",
-      "explanation": "A: reserva = 15×200 = 3 000 L, mitad = 1 500 L. A 20 m consumo = 25×3 = 75 L/min. Tiempo = 1 500/75 = 20 min. B: reserva = 4 000 L, mitad = 2 000 L. A 20 m consumo = 30×3 = 90 L/min. Tiempo = 2 000/90 = 22 min. A llega antes a la mitad → regreso a los 20 min."
+      "explanation": "A: reserva = 15×200 = 3 000 L, mitad = 1 500 L. A 20 m consumo = 25×3 = 75 L/min. Tiempo = 1 500/75 = 20 min. B: reserva = 4 000 L, mitad = 2 000 L. A 20 m consumo = 30×3 = 90 L/min. Tiempo = 2 000/90 = 22 min. A llega antes a la mitad → regreso a los 20 min."
     },
     {
       "id": 64,
       "category": "spotreba-planovani",
-      "question": "Planifique el tiempo de fondo a 30 m para un buceador con equipo de 15 L cargado a 20 MPa y consumo en superficie 25 L/min, de modo que inicie el ascenso al caer la reserva a 1/3 de la inicial:",
+      "question": "Planifique el tiempo de fondo a 30 m para un buceador con equipo de 15 L cargado a 20 MPa y consumo en superficie 25 L/min, de modo que inicie el ascenso al caer la reserva a 1/3 de la inicial:",
       "options": [
         { "key": "a", "text": "30 minutos" },
         { "key": "b", "text": "27 minutos" },
@@ -832,12 +832,12 @@
         { "key": "d", "text": "10 minutos" }
       ],
       "correct": "c",
-      "explanation": "Reserva = 15×200 = 3 000 L. Puede consumir 2/3 = 2 000 L. A 30 m (4 bar) el consumo = 25×4 = 100 L/min. Tiempo = 2 000/100 = 20 minutos."
+      "explanation": "Reserva = 15×200 = 3 000 L. Puede consumir 2/3 = 2 000 L. A 30 m (4 bar) el consumo = 25×4 = 100 L/min. Tiempo = 2 000/100 = 20 minutos."
     },
     {
       "id": 65,
       "category": "spotreba-planovani",
-      "question": "Planifique el momento de iniciar el regreso para una inmersión bajo hielo a 20 m respetando la regla de los tercios. Ambos buceadores tienen equipos de 15 L cargados a 18 MPa y consumo en superficie de 30 L/min:",
+      "question": "Planifique el momento de iniciar el regreso para una inmersión bajo hielo a 20 m respetando la regla de los tercios. Ambos buceadores tienen equipos de 15 L cargados a 18 MPa y consumo en superficie de 30 L/min:",
       "options": [
         { "key": "a", "text": "15 minutos" },
         { "key": "b", "text": "20 minutos" },
@@ -845,12 +845,12 @@
         { "key": "d", "text": "10 minutos" }
       ],
       "correct": "d",
-      "explanation": "Reserva = 15×180 = 2 700 L. Un tercio para la ida = 900 L. A 20 m (3 bar) el consumo = 30×3 = 90 L/min. Tiempo = 900/90 = 10 minutos."
+      "explanation": "Reserva = 15×180 = 2 700 L. Un tercio para la ida = 900 L. A 20 m (3 bar) el consumo = 30×3 = 90 L/min. Tiempo = 900/90 = 10 minutos."
     },
     {
       "id": 66,
       "category": "spotreba-planovani",
-      "question": "¿Cuál es el consumo en superficie de un buceador al que, durante 20 minutos a 10 m, la presión en un equipo de 10 L baja de 15 MPa a 5 MPa?",
+      "question": "¿Cuál es el consumo en superficie de un buceador al que, durante 20 minutos a 10 m, la presión en un equipo de 10 L baja de 15 MPa a 5 MPa?",
       "options": [
         { "key": "a", "text": "20 litros por minuto" },
         { "key": "b", "text": "30 litros por minuto" },
@@ -858,12 +858,12 @@
         { "key": "d", "text": "25 litros por minuto" }
       ],
       "correct": "d",
-      "explanation": "Aire consumido = 10 × (150 − 50) = 1 000 L. A 10 m (2 bar) durante 20 min. Consumo real = 1 000/20 = 50 L/min. Consumo en superficie = 50/2 = 25 L/min."
+      "explanation": "Aire consumido = 10 × (150 − 50) = 1 000 L. A 10 m (2 bar) durante 20 min. Consumo real = 1 000/20 = 50 L/min. Consumo en superficie = 50/2 = 25 L/min."
     },
     {
       "id": 67,
       "category": "spotreba-planovani",
-      "question": "¿Cuánto tiempo puede permanecer a 15 m un buceador con un equipo de 10 L a 20 MPa y consumo 30 L/min antes de que la presión caiga a 5 MPa?",
+      "question": "¿Cuánto tiempo puede permanecer a 15 m un buceador con un equipo de 10 L a 20 MPa y consumo 30 L/min antes de que la presión caiga a 5 MPa?",
       "options": [
         { "key": "a", "text": "17 minutos" },
         { "key": "b", "text": "20 minutos" },
@@ -871,12 +871,12 @@
         { "key": "d", "text": "33 minutos" }
       ],
       "correct": "b",
-      "explanation": "Reserva utilizable = 10 × (200 − 50) = 1 500 L. A 15 m (2,5 bar) el consumo = 30 × 2,5 = 75 L/min. Tiempo = 1 500/75 = 20 minutos."
+      "explanation": "Reserva utilizable = 10 × (200 − 50) = 1 500 L. A 15 m (2,5 bar) el consumo = 30 × 2,5 = 75 L/min. Tiempo = 1 500/75 = 20 minutos."
     },
     {
       "id": 68,
       "category": "spotreba-planovani",
-      "question": "¿En cuánto tiempo cae la presión de un equipo de 12 L desde 20 MPa iniciales a 5 MPa a 20 m de profundidad y con un consumo en superficie de 30 L/min?",
+      "question": "¿En cuánto tiempo cae la presión de un equipo de 12 L desde 20 MPa iniciales a 5 MPa a 20 m de profundidad y con un consumo en superficie de 30 L/min?",
       "options": [
         { "key": "a", "text": "en 15 minutos" },
         { "key": "b", "text": "en 25 minutos" },
@@ -884,12 +884,12 @@
         { "key": "d", "text": "en 30 minutos" }
       ],
       "correct": "c",
-      "explanation": "Reserva utilizable = 12 × (200 − 50) = 1 800 L. A 20 m (3 bar) el consumo = 30 × 3 = 90 L/min. Tiempo = 1 800/90 = 20 minutos."
+      "explanation": "Reserva utilizable = 12 × (200 − 50) = 1 800 L. A 20 m (3 bar) el consumo = 30 × 3 = 90 L/min. Tiempo = 1 800/90 = 20 minutos."
     },
     {
       "id": 69,
       "category": "spotreba-planovani",
-      "question": "Antes de la inmersión, en un equipo de 15 L había solo 5 MPa. En un segundo equipo de 18 L había 20 MPa. Los buceadores trasvasaron aire entre los equipos y se preparan para sumergirse. Ambos tienen un consumo en superficie de 30 L/min. ¿Cuánto tiempo pueden permanecer a 15 m antes de que la presión en el primer equipo baje a 3 MPa?",
+      "question": "Antes de la inmersión, en un equipo de 15 L había solo 5 MPa. En un segundo equipo de 18 L había 20 MPa. Los buceadores trasvasaron aire entre los equipos y se preparan para sumergirse. Ambos tienen un consumo en superficie de 30 L/min. ¿Cuánto tiempo pueden permanecer a 15 m antes de que la presión en el primer equipo baje a 3 MPa?",
       "options": [
         { "key": "a", "text": "25 minutos" },
         { "key": "b", "text": "32 minutos" },
@@ -897,38 +897,38 @@
         { "key": "d", "text": "44 minutos" }
       ],
       "correct": "c",
-      "explanation": "Aire total = 15×50 + 18×200 = 750 + 3 600 = 4 350 L. Tras igualar, presión en ambos = 4 350/(15+18) = 132 bar. Equipo pequeño (15 L): reserva = 15×(132−30) = 1 530 L. A 15 m consumo = 30×2,5 = 75 L/min. Tiempo = 1 530/75 ≈ 20 min."
+      "explanation": "Aire total = 15×50 + 18×200 = 750 + 3 600 = 4 350 L. Tras igualar, presión en ambos = 4 350/(15+18) = 132 bar. Equipo pequeño (15 L): reserva = 15×(132−30) = 1 530 L. A 15 m consumo = 30×2,5 = 75 L/min. Tiempo = 1 530/75 ≈ 20 min."
     },
     {
       "id": 70,
       "category": "spotreba-planovani",
-      "question": "En un equipo de 12 L queda una presión residual de 5 MPa. ¿Qué presión final tendrá tras rellenarlo desde una botella de 40 L con presión inicial de 20 MPa?",
+      "question": "En un equipo de 12 L queda una presión residual de 5 MPa. ¿Qué presión final tendrá tras rellenarlo desde una botella de 40 L con presión inicial de 20 MPa?",
       "options": [
-        { "key": "a", "text": "11,5 MPa" },
-        { "key": "b", "text": "15,4 MPa" },
-        { "key": "c", "text": "16,5 MPa" },
-        { "key": "d", "text": "19,3 MPa" }
+        { "key": "a", "text": "11,5 MPa" },
+        { "key": "b", "text": "15,4 MPa" },
+        { "key": "c", "text": "16,5 MPa" },
+        { "key": "d", "text": "19,3 MPa" }
       ],
       "correct": "c",
-      "explanation": "Aire total = 12×50 + 40×200 = 600 + 8 000 = 8 600 L. Volumen total = 12 + 40 = 52 L. Presión resultante = 8 600/52 = 165 bar = 16,5 MPa."
+      "explanation": "Aire total = 12×50 + 40×200 = 600 + 8 000 = 8 600 L. Volumen total = 12 + 40 = 52 L. Presión resultante = 8 600/52 = 165 bar = 16,5 MPa."
     },
     {
       "id": 71,
       "category": "spotreba-planovani",
-      "question": "¿Qué presión mínima debería tener un buceador en un equipo de 10 L para ascender desde 20 m a la velocidad prescrita de 10 m/min con una descompresión de 3 minutos a 5 m, con un consumo en superficie de 30 L/min?",
+      "question": "¿Qué presión mínima debería tener un buceador en un equipo de 10 L para ascender desde 20 m a la velocidad prescrita de 10 m/min con una descompresión de 3 minutos a 5 m, con un consumo en superficie de 30 L/min?",
       "options": [
-        { "key": "a", "text": "1,6 MPa" },
-        { "key": "b", "text": "2 MPa" },
-        { "key": "c", "text": "2,36 MPa" },
-        { "key": "d", "text": "4 MPa" }
+        { "key": "a", "text": "1,6 MPa" },
+        { "key": "b", "text": "2 MPa" },
+        { "key": "c", "text": "2,36 MPa" },
+        { "key": "d", "text": "4 MPa" }
       ],
       "correct": "c",
-      "explanation": "Ascenso 20→5 m (2 min, media 2,25 bar): 30×2,25×2 = 135 L. Descompresión a 5 m (3 min, 1,5 bar): 30×1,5×3 = 135 L. Ascenso 5→0 m (0,5 min, 1,25 bar): 30×1,25×0,5 = 19 L. Total ≈ 289 L. Presión = 289/10 ≈ 29 bar → con margen, 2,36 MPa."
+      "explanation": "Ascenso 20→5 m (2 min, media 2,25 bar): 30×2,25×2 = 135 L. Descompresión a 5 m (3 min, 1,5 bar): 30×1,5×3 = 135 L. Ascenso 5→0 m (0,5 min, 1,25 bar): 30×1,25×0,5 = 19 L. Total ≈ 289 L. Presión = 289/10 ≈ 29 bar → con margen, 2,36 MPa."
     },
     {
       "id": 72,
       "category": "spotreba-planovani",
-      "question": "Calcule el volumen mínimo de un equipo cargado a 20 MPa para una inmersión de 30 m/10 min, 20 m/5 min y 10 m/10 min con una reserva de 5 MPa incluida para los ascensos. Consumo en superficie 30 L/min:",
+      "question": "Calcule el volumen mínimo de un equipo cargado a 20 MPa para una inmersión de 30 m/10 min, 20 m/5 min y 10 m/10 min con una reserva de 5 MPa incluida para los ascensos. Consumo en superficie 30 L/min:",
       "options": [
         { "key": "a", "text": "12 litros" },
         { "key": "b", "text": "15 litros" },
@@ -936,12 +936,12 @@
         { "key": "d", "text": "20 litros" }
       ],
       "correct": "b",
-      "explanation": "30 m (4 bar, 10 min): 30×4×10 = 1 200 L. 20 m (3 bar, 5 min): 30×3×5 = 450 L. 10 m (2 bar, 10 min): 30×2×10 = 600 L. Total = 2 250 L. Presión utilizable = 200−50 = 150 bar. Volumen = 2 250/150 = 15 L."
+      "explanation": "30 m (4 bar, 10 min): 30×4×10 = 1 200 L. 20 m (3 bar, 5 min): 30×3×5 = 450 L. 10 m (2 bar, 10 min): 30×2×10 = 600 L. Total = 2 250 L. Presión utilizable = 200−50 = 150 bar. Volumen = 2 250/150 = 15 L."
     },
     {
       "id": 73,
       "category": "spotreba-planovani",
-      "question": "Dos buceadores acuerdan que en una inmersión a 30 m iniciarán el ascenso a menor profundidad cuando al primero le quede 10 MPa de presión.\nBuceador A: equipo de 18 L y consumo en superficie 30 L/min.\nBuceador B: equipo de 15 L y consumo en superficie 25 L/min.\nAmbos cargados a 20 MPa.\n¿Quién alcanzará primero los 10 MPa y al cabo de cuánto tiempo?",
+      "question": "Dos buceadores acuerdan que en una inmersión a 30 m iniciarán el ascenso a menor profundidad cuando al primero le quede 10 MPa de presión.\nBuceador A: equipo de 18 L y consumo en superficie 30 L/min.\nBuceador B: equipo de 15 L y consumo en superficie 25 L/min.\nAmbos cargados a 20 MPa.\n¿Quién alcanzará primero los 10 MPa y al cabo de cuánto tiempo?",
       "options": [
         { "key": "a", "text": "B, a los 20 minutos" },
         { "key": "b", "text": "B, a los 10 minutos" },
@@ -949,12 +949,12 @@
         { "key": "d", "text": "ambos a la vez, a los 15 minutos" }
       ],
       "correct": "d",
-      "explanation": "A: reserva hasta 10 MPa = 18×(200−100) = 1 800 L. A 30 m (4 bar): 30×4 = 120 L/min. Tiempo = 1 800/120 = 15 min. B: reserva = 15×100 = 1 500 L. A 30 m: 25×4 = 100 L/min. Tiempo = 1 500/100 = 15 min. Ambos a la vez a los 15 min."
+      "explanation": "A: reserva hasta 10 MPa = 18×(200−100) = 1 800 L. A 30 m (4 bar): 30×4 = 120 L/min. Tiempo = 1 800/120 = 15 min. B: reserva = 15×100 = 1 500 L. A 30 m: 25×4 = 100 L/min. Tiempo = 1 500/100 = 15 min. Ambos a la vez a los 15 min."
     },
     {
       "id": 74,
       "category": "spotreba-planovani",
-      "question": "¿Cuál es el consumo en superficie de un buceador al que, durante 10 minutos a 20 m, la presión en un equipo de 18 L cae de 16 MPa a 11 MPa?",
+      "question": "¿Cuál es el consumo en superficie de un buceador al que, durante 10 minutos a 20 m, la presión en un equipo de 18 L cae de 16 MPa a 11 MPa?",
       "options": [
         { "key": "a", "text": "20 litros por minuto" },
         { "key": "b", "text": "30 litros por minuto" },
@@ -962,12 +962,12 @@
         { "key": "d", "text": "35 litros por minuto" }
       ],
       "correct": "b",
-      "explanation": "Aire consumido = 18 × (160 − 110) = 18 × 50 = 900 L. A 20 m (3 bar) durante 10 min. Consumo real = 900/10 = 90 L/min. Consumo en superficie = 90/3 = 30 L/min."
+      "explanation": "Aire consumido = 18 × (160 − 110) = 18 × 50 = 900 L. A 20 m (3 bar) durante 10 min. Consumo real = 900/10 = 90 L/min. Consumo en superficie = 90/3 = 30 L/min."
     },
     {
       "id": 75,
       "category": "spotreba-planovani",
-      "question": "¿Bastaría para el ascenso a la velocidad prescrita de 10 m/min desde 30 m y para una descompresión de 3 minutos a 5 m la reserva de un equipo de 15 L con presión 5 MPa, si dos buceadores con consumo en superficie de 40 L/min cada uno respiraran de él?",
+      "question": "¿Bastaría para el ascenso a la velocidad prescrita de 10 m/min desde 30 m y para una descompresión de 3 minutos a 5 m la reserva de un equipo de 15 L con presión 5 MPa, si dos buceadores con consumo en superficie de 40 L/min cada uno respiraran de él?",
       "options": [
         { "key": "a", "text": "no bastaría ni para el ascenso a la parada" },
         { "key": "b", "text": "solo bastaría para un ascenso directo a superficie" },
@@ -975,25 +975,25 @@
         { "key": "d", "text": "bastaría para ascender a la parada y completar los 3 minutos de descompresión" }
       ],
       "correct": "c",
-      "explanation": "Reserva = 15×50 = 750 L. Dos buceadores = 80 L/min en superficie. Ascenso 30→5 m (2,5 min, media 2,75 bar): 80×2,75×2,5 = 550 L. Quedan 200 L. Descompresión a 5 m (1,5 bar): 80×1,5 = 120 L/min. Tiempo = 200/120 ≈ 1,5 min."
+      "explanation": "Reserva = 15×50 = 750 L. Dos buceadores = 80 L/min en superficie. Ascenso 30→5 m (2,5 min, media 2,75 bar): 80×2,75×2,5 = 550 L. Quedan 200 L. Descompresión a 5 m (1,5 bar): 80×1,5 = 120 L/min. Tiempo = 200/120 ≈ 1,5 min."
     },
     {
       "id": 76,
       "category": "spotreba-planovani",
-      "question": "Un buceador nadó a 30 m en una dirección hasta que la presión en su equipo bajó de 20 MPa a 10 MPa. Después ascendió a 10 m y volvió. Determine la presión aproximada en el equipo al regresar al punto de inicio (consumo constante durante toda la inmersión):",
+      "question": "Un buceador nadó a 30 m en una dirección hasta que la presión en su equipo bajó de 20 MPa a 10 MPa. Después ascendió a 10 m y volvió. Determine la presión aproximada en el equipo al regresar al punto de inicio (consumo constante durante toda la inmersión):",
       "options": [
-        { "key": "a", "text": "1 MPa" },
-        { "key": "b", "text": "3 MPa" },
-        { "key": "c", "text": "5 MPa" },
-        { "key": "d", "text": "7,5 MPa" }
+        { "key": "a", "text": "1 MPa" },
+        { "key": "b", "text": "3 MPa" },
+        { "key": "c", "text": "5 MPa" },
+        { "key": "d", "text": "7,5 MPa" }
       ],
       "correct": "c",
-      "explanation": "A 30 m (4 bar) consumió 100 bar. El consumo equivalente en superficie por tiempo t = 100/4 = 25 bar. A 10 m (2 bar) durante el mismo tiempo consume 25×2 = 50 bar. Quedan 100 − 50 = 50 bar = 5 MPa."
+      "explanation": "A 30 m (4 bar) consumió 100 bar. El consumo equivalente en superficie por tiempo t = 100/4 = 25 bar. A 10 m (2 bar) durante el mismo tiempo consume 25×2 = 50 bar. Quedan 100 − 50 = 50 bar = 5 MPa."
     },
     {
       "id": 77,
       "category": "spotreba-planovani",
-      "question": "¿Cuál es el volumen mínimo del equipo cargado a 20 MPa para que un buceador con un consumo en superficie de 30 L/min pueda permanecer 17 minutos a 30 m, completar una parada de descompresión de 3 min/5 m y emerger con una reserva de 4 MPa?",
+      "question": "¿Cuál es el volumen mínimo del equipo cargado a 20 MPa para que un buceador con un consumo en superficie de 30 L/min pueda permanecer 17 minutos a 30 m, completar una parada de descompresión de 3 min/5 m y emerger con una reserva de 4 MPa?",
       "options": [
         { "key": "a", "text": "12 litros" },
         { "key": "b", "text": "18 litros" },
@@ -1001,46 +1001,46 @@
         { "key": "d", "text": "20 litros" }
       ],
       "correct": "c",
-      "explanation": "30 m (4 bar, 17 min): 30×4×17 = 2 040 L. Ascenso 30→5 m (2,5 min, 2,75 bar): 30×2,75×2,5 = 206 L. Descompresión a 5 m (1,5 bar, 3 min): 30×1,5×3 = 135 L. Ascenso 5→0 m: ~20 L. Total ≈ 2 400 L. Presión utilizable = 200−40 = 160 bar. Volumen = 2 400/160 = 15 L."
+      "explanation": "30 m (4 bar, 17 min): 30×4×17 = 2 040 L. Ascenso 30→5 m (2,5 min, 2,75 bar): 30×2,75×2,5 = 206 L. Descompresión a 5 m (1,5 bar, 3 min): 30×1,5×3 = 135 L. Ascenso 5→0 m: ~20 L. Total ≈ 2 400 L. Presión utilizable = 200−40 = 160 bar. Volumen = 2 400/160 = 15 L."
     },
     {
       "id": 78,
       "category": "spotreba-planovani",
-      "question": "Los buceadores acuerdan que en un pecio a 25 m permanecerán hasta que:\n– al primero le caiga la presión a 5 MPa, o\n– transcurran 30 minutos con una parada de 5 min a 5 m.\nBuceador A: equipo de 18 L y consumo 25 L/min.\nBuceador B: equipo de 20 L y consumo 30 L/min.\nAmbos cargados a 20 MPa.\n¿Qué condición se cumple antes (y para qué buceador)?",
+      "question": "Los buceadores acuerdan que en un pecio a 25 m permanecerán hasta que:\n– al primero le caiga la presión a 5 MPa, o\n– transcurran 30 minutos con una parada de 5 min a 5 m.\nBuceador A: equipo de 18 L y consumo 25 L/min.\nBuceador B: equipo de 20 L y consumo 30 L/min.\nAmbos cargados a 20 MPa.\n¿Qué condición se cumple antes (y para qué buceador)?",
       "options": [
-        { "key": "a", "text": "5 MPa (buceador A)" },
-        { "key": "b", "text": "5 MPa (buceador B)" },
+        { "key": "a", "text": "5 MPa (buceador A)" },
+        { "key": "b", "text": "5 MPa (buceador B)" },
         { "key": "c", "text": "30 minutos (buceador B)" },
-        { "key": "d", "text": "ambas condiciones se cumplen a la vez (5 MPa a los 30 min)" }
+        { "key": "d", "text": "ambas condiciones se cumplen a la vez (5 MPa a los 30 min)" }
       ],
       "correct": "b",
-      "explanation": "A 25 m (3,5 bar). A: reserva = 18×(200−50) = 2 700 L. Consumo = 25×3,5 = 87,5 L/min. Tiempo = 2 700/87,5 ≈ 31 min. B: reserva = 20×150 = 3 000 L. Consumo = 30×3,5 = 105 L/min. Tiempo = 3 000/105 ≈ 28,6 min. B alcanza 5 MPa antes (antes de los 30 min)."
+      "explanation": "A 25 m (3,5 bar). A: reserva = 18×(200−50) = 2 700 L. Consumo = 25×3,5 = 87,5 L/min. Tiempo = 2 700/87,5 ≈ 31 min. B: reserva = 20×150 = 3 000 L. Consumo = 30×3,5 = 105 L/min. Tiempo = 3 000/105 ≈ 28,6 min. B alcanza 5 MPa antes (antes de los 30 min)."
     },
     {
       "id": 79,
       "category": "spotreba-planovani",
-      "question": "Los buceadores se encuentran a 25 m. El buceador A, con consumo 25 L/min, tiene un equipo de 12 L; el buceador B, con consumo 30 L/min, uno de 18 L. ¿Qué presión mínima debe tener cada uno para ascender hasta una parada de descompresión a 5 m, descomprimir 5 min/5 m y emerger con una reserva de 3 MPa?",
+      "question": "Los buceadores se encuentran a 25 m. El buceador A, con consumo 25 L/min, tiene un equipo de 12 L; el buceador B, con consumo 30 L/min, uno de 18 L. ¿Qué presión mínima debe tener cada uno para ascender hasta una parada de descompresión a 5 m, descomprimir 5 min/5 m y emerger con una reserva de 3 MPa?",
       "options": [
-        { "key": "a", "text": "A: 5,6 MPa, B: 5,1 MPa" },
-        { "key": "b", "text": "A: 7,5 MPa, B: 7 MPa" },
-        { "key": "c", "text": "A: 7 MPa, B: 7,3 MPa" },
-        { "key": "d", "text": "A: 4,8 MPa, B: 4,2 MPa" }
+        { "key": "a", "text": "A: 5,6 MPa, B: 5,1 MPa" },
+        { "key": "b", "text": "A: 7,5 MPa, B: 7 MPa" },
+        { "key": "c", "text": "A: 7 MPa, B: 7,3 MPa" },
+        { "key": "d", "text": "A: 4,8 MPa, B: 4,2 MPa" }
       ],
       "correct": "a",
-      "explanation": "Ascenso 25→5 m (2 min, 2,5 bar): A = 25×2,5×2 = 125 L, B = 30×2,5×2 = 150 L. Descompresión a 5 m (5 min, 1,5 bar): A = 25×1,5×5 = 187 L, B = 30×1,5×5 = 225 L. Total: A ≈ 312 L, B ≈ 375 L. Presión: A = 312/12 + 30 = 56 bar = 5,6 MPa. B = 375/18 + 30 = 51 bar = 5,1 MPa."
+      "explanation": "Ascenso 25→5 m (2 min, 2,5 bar): A = 25×2,5×2 = 125 L, B = 30×2,5×2 = 150 L. Descompresión a 5 m (5 min, 1,5 bar): A = 25×1,5×5 = 187 L, B = 30×1,5×5 = 225 L. Total: A ≈ 312 L, B ≈ 375 L. Presión: A = 312/12 + 30 = 56 bar = 5,6 MPa. B = 375/18 + 30 = 51 bar = 5,1 MPa."
     },
     {
       "id": 80,
       "category": "dekomprese-syceni",
-      "question": "El organismo de un buceador con un consumo en superficie de 30 L/min consume por minuto aproximadamente:",
+      "question": "El organismo de un buceador con un consumo en superficie de 30 L/min consume por minuto aproximadamente:",
       "options": [
-        { "key": "a", "text": "0,5 L de oxígeno" },
-        { "key": "b", "text": "3 L de oxígeno" },
-        { "key": "c", "text": "1,5 L de oxígeno" },
-        { "key": "d", "text": "6 L de oxígeno" }
+        { "key": "a", "text": "0,5 L de oxígeno" },
+        { "key": "b", "text": "3 L de oxígeno" },
+        { "key": "c", "text": "1,5 L de oxígeno" },
+        { "key": "d", "text": "6 L de oxígeno" }
       ],
       "correct": "c",
-      "explanation": "Al respirar se consume aproximadamente el 5 % del oxígeno inhalado (del 21 % al 16 %). Consumo de O₂ = 30 L × 0,05 = 1,5 L/min. El resto del oxígeno se exhala."
+      "explanation": "Al respirar se consume aproximadamente el 5 % del oxígeno inhalado (del 21 % al 16 %). Consumo de O₂ = 30 L × 0,05 = 1,5 L/min. El resto del oxígeno se exhala."
     },
     {
       "id": 81,
@@ -1058,7 +1058,7 @@
     {
       "id": 82,
       "category": "dekomprese-syceni",
-      "question": "¿A partir de qué profundidad se puede respirar una mezcla de 4 % de oxígeno y 96 % de hidrógeno si la presión parcial del oxígeno no debe caer por debajo de 16 kPa?",
+      "question": "¿A partir de qué profundidad se puede respirar una mezcla de 4 % de oxígeno y 96 % de hidrógeno si la presión parcial del oxígeno no debe caer por debajo de 16 kPa?",
       "options": [
         { "key": "a", "text": "6 metros" },
         { "key": "b", "text": "16 metros" },
@@ -1066,7 +1066,7 @@
         { "key": "d", "text": "30 metros" }
       ],
       "correct": "d",
-      "explanation": "<em>p</em>O₂ mínima = 16 kPa = 0,16 bar. Presión total necesaria = 0,16 / 0,04 = 4 bar. Eso corresponde a 30 m. A menor profundidad la <em>p</em>O₂ sería demasiado baja (hipoxia)."
+      "explanation": "<em>p</em>O₂ mínima = 16 kPa = 0,16 bar. Presión total necesaria = 0,16 / 0,04 = 4 bar. Eso corresponde a 30 m. A menor profundidad la <em>p</em>O₂ sería demasiado baja (hipoxia)."
     },
     {
       "id": 83,
@@ -1084,33 +1084,33 @@
     {
       "id": 84,
       "category": "dekomprese-syceni",
-      "question": "¿Cuál es la presión parcial del oxígeno en la bolsa de un equipo de oxígeno a 15 m de profundidad?",
+      "question": "¿Cuál es la presión parcial del oxígeno en la bolsa de un equipo de oxígeno a 15 m de profundidad?",
       "options": [
-        { "key": "a", "text": "250 kPa" },
-        { "key": "b", "text": "21 kPa" },
-        { "key": "c", "text": "52,5 kPa" },
-        { "key": "d", "text": "150 kPa" }
+        { "key": "a", "text": "250 kPa" },
+        { "key": "b", "text": "21 kPa" },
+        { "key": "c", "text": "52,5 kPa" },
+        { "key": "d", "text": "150 kPa" }
       ],
       "correct": "a",
-      "explanation": "El equipo de oxígeno contiene 100 % O₂. A 15 m la presión absoluta es 2,5 bar = 250 kPa. <em>p</em>O₂ = 1,0 × 250 = 250 kPa. ¡Un valor peligrosamente alto (toxicidad por O₂)!"
+      "explanation": "El equipo de oxígeno contiene 100 % O₂. A 15 m la presión absoluta es 2,5 bar = 250 kPa. <em>p</em>O₂ = 1,0 × 250 = 250 kPa. ¡Un valor peligrosamente alto (toxicidad por O₂)!"
     },
     {
       "id": 85,
       "category": "dekomprese-syceni",
-      "question": "En un lago de alta montaña la presión atmosférica es 70 kPa. Determine las presiones parciales del oxígeno al respirar aire en superficie y a 20 m de profundidad:",
+      "question": "En un lago de alta montaña la presión atmosférica es 70 kPa. Determine las presiones parciales del oxígeno al respirar aire en superficie y a 20 m de profundidad:",
       "options": [
-        { "key": "a", "text": "14,7 kPa y 42 kPa" },
-        { "key": "b", "text": "14,7 kPa y 56,7 kPa" },
-        { "key": "c", "text": "21 kPa y 63 kPa" },
-        { "key": "d", "text": "14,7 kPa y 63 kPa" }
+        { "key": "a", "text": "14,7 kPa y 42 kPa" },
+        { "key": "b", "text": "14,7 kPa y 56,7 kPa" },
+        { "key": "c", "text": "21 kPa y 63 kPa" },
+        { "key": "d", "text": "14,7 kPa y 63 kPa" }
       ],
       "correct": "b",
-      "explanation": "En superficie: <em>p</em>O₂ = 0,21 × 70 = 14,7 kPa. A 20 m: presión total = 70 + 200 = 270 kPa, <em>p</em>O₂ = 0,21 × 270 = 56,7 kPa."
+      "explanation": "En superficie: <em>p</em>O₂ = 0,21 × 70 = 14,7 kPa. A 20 m: presión total = 70 + 200 = 270 kPa, <em>p</em>O₂ = 0,21 × 270 = 56,7 kPa."
     },
     {
       "id": 86,
       "category": "dekomprese-syceni",
-      "question": "¿Hasta qué profundidad puede usarse para respirar una mezcla de 32 % de oxígeno y 68 % de nitrógeno sin sobrepasar la presión parcial máxima de oxígeno de 160 kPa?",
+      "question": "¿Hasta qué profundidad puede usarse para respirar una mezcla de 32 % de oxígeno y 68 % de nitrógeno sin sobrepasar la presión parcial máxima de oxígeno de 160 kPa?",
       "options": [
         { "key": "a", "text": "40 metros" },
         { "key": "b", "text": "50 metros" },
@@ -1118,25 +1118,25 @@
         { "key": "d", "text": "6 metros" }
       ],
       "correct": "a",
-      "explanation": "Presión total máxima = 160 / 0,32 = 500 kPa = 5 bar. Eso corresponde a 40 m. Esta es la MOD (Maximum Operating Depth) del Nitrox 32."
+      "explanation": "Presión total máxima = 160 / 0,32 = 500 kPa = 5 bar. Eso corresponde a 40 m. Esta es la MOD (Maximum Operating Depth) del Nitrox 32."
     },
     {
       "id": 87,
       "category": "dekomprese-syceni",
-      "question": "Una mezcla respiratoria está formada por 20 % de oxígeno, 50 % de nitrógeno y 30 % de helio. Determine las presiones parciales de cada gas al usar esta mezcla a 70 m:",
+      "question": "Una mezcla respiratoria está formada por 20 % de oxígeno, 50 % de nitrógeno y 30 % de helio. Determine las presiones parciales de cada gas al usar esta mezcla a 70 m:",
       "options": [
-        { "key": "a", "text": "oxígeno 160 kPa, nitrógeno 400 kPa, helio 240 kPa" },
-        { "key": "b", "text": "oxígeno 140 kPa, nitrógeno 350 kPa, helio 210 kPa" },
-        { "key": "c", "text": "oxígeno 180 kPa, nitrógeno 450 kPa, helio 270 kPa" },
-        { "key": "d", "text": "oxígeno 200 kPa, nitrógeno 500 kPa, helio 300 kPa" }
+        { "key": "a", "text": "oxígeno 160 kPa, nitrógeno 400 kPa, helio 240 kPa" },
+        { "key": "b", "text": "oxígeno 140 kPa, nitrógeno 350 kPa, helio 210 kPa" },
+        { "key": "c", "text": "oxígeno 180 kPa, nitrógeno 450 kPa, helio 270 kPa" },
+        { "key": "d", "text": "oxígeno 200 kPa, nitrógeno 500 kPa, helio 300 kPa" }
       ],
       "correct": "a",
-      "explanation": "A 70 m la presión absoluta es 8 bar = 800 kPa. <em>p</em>O₂ = 0,20 × 800 = 160 kPa. <em>p</em>N₂ = 0,50 × 800 = 400 kPa. <em>p</em>He = 0,30 × 800 = 240 kPa."
+      "explanation": "A 70 m la presión absoluta es 8 bar = 800 kPa. <em>p</em>O₂ = 0,20 × 800 = 160 kPa. <em>p</em>N₂ = 0,50 × 800 = 400 kPa. <em>p</em>He = 0,30 × 800 = 240 kPa."
     },
     {
       "id": 88,
       "category": "dekomprese-syceni",
-      "question": "¿A qué profundidad alcanzaría la presión parcial del oxígeno en aire el límite de 160 kPa?",
+      "question": "¿A qué profundidad alcanzaría la presión parcial del oxígeno en aire el límite de 160 kPa?",
       "options": [
         { "key": "a", "text": "55 metros" },
         { "key": "b", "text": "77 metros" },
@@ -1144,25 +1144,25 @@
         { "key": "d", "text": "88 metros" }
       ],
       "correct": "c",
-      "explanation": "Presión total = 160 / 0,21 = 762 kPa ≈ 7,6 bar. Profundidad = (7,6 − 1) × 10 = 66 m. Esa es la MOD para aire con <em>p</em>O₂ = 1,6 bar."
+      "explanation": "Presión total = 160 / 0,21 = 762 kPa ≈ 7,6 bar. Profundidad = (7,6 − 1) × 10 = 66 m. Esa es la MOD para aire con <em>p</em>O₂ = 1,6 bar."
     },
     {
       "id": 89,
       "category": "dekomprese-syceni",
-      "question": "Determine las presiones parciales de oxígeno y nitrógeno en una botella de equipo de 15 L cargada con aire a 15 MPa:",
+      "question": "Determine las presiones parciales de oxígeno y nitrógeno en una botella de equipo de 15 L cargada con aire a 15 MPa:",
       "options": [
-        { "key": "a", "text": "oxígeno 21 kPa, nitrógeno 78 kPa" },
-        { "key": "b", "text": "oxígeno 3,15 MPa, nitrógeno 11,7 MPa" },
-        { "key": "c", "text": "oxígeno 315 kPa, nitrógeno 1 170 kPa" },
-        { "key": "d", "text": "según la profundidad (p. ej. a 10 m: oxígeno 42 kPa, nitrógeno 156 kPa)" }
+        { "key": "a", "text": "oxígeno 21 kPa, nitrógeno 78 kPa" },
+        { "key": "b", "text": "oxígeno 3,15 MPa, nitrógeno 11,7 MPa" },
+        { "key": "c", "text": "oxígeno 315 kPa, nitrógeno 1 170 kPa" },
+        { "key": "d", "text": "según la profundidad (p. ej. a 10 m: oxígeno 42 kPa, nitrógeno 156 kPa)" }
       ],
       "correct": "b",
-      "explanation": "En la botella la presión es 15 MPa, independiente de la profundidad. <em>p</em>O₂ = 0,21 × 15 = 3,15 MPa. <em>p</em>N₂ = 0,78 × 15 = 11,7 MPa. Las presiones parciales en la botella son constantes."
+      "explanation": "En la botella la presión es 15 MPa, independiente de la profundidad. <em>p</em>O₂ = 0,21 × 15 = 3,15 MPa. <em>p</em>N₂ = 0,78 × 15 = 11,7 MPa. Las presiones parciales en la botella son constantes."
     },
     {
       "id": 90,
       "category": "dekomprese-syceni",
-      "question": "¿Cuál sería la fracción volumétrica máxima de oxígeno en una mezcla oxígeno-nitrógeno destinada a 30 m para que en esta profundidad la presión parcial del oxígeno no supere 160 kPa?",
+      "question": "¿Cuál sería la fracción volumétrica máxima de oxígeno en una mezcla oxígeno-nitrógeno destinada a 30 m para que en esta profundidad la presión parcial del oxígeno no supere 160 kPa?",
       "options": [
         { "key": "a", "text": "4 %" },
         { "key": "b", "text": "53 %" },
@@ -1170,12 +1170,12 @@
         { "key": "d", "text": "16 %" }
       ],
       "correct": "c",
-      "explanation": "A 30 m la presión absoluta es 4 bar = 400 kPa. fO₂ máxima = 160 / 400 = 0,40 = 40 %. Una mezcla con más O₂ sería tóxica a esa profundidad."
+      "explanation": "A 30 m la presión absoluta es 4 bar = 400 kPa. fO₂ máxima = 160 / 400 = 0,40 = 40 %. Una mezcla con más O₂ sería tóxica a esa profundidad."
     },
     {
       "id": 91,
       "category": "dekomprese-syceni",
-      "question": "¿Cuál sería la fracción volumétrica máxima de nitrógeno en una mezcla helio-oxígeno-nitrógeno destinada a 150 m para que la presión parcial del nitrógeno no supere 400 kPa?",
+      "question": "¿Cuál sería la fracción volumétrica máxima de nitrógeno en una mezcla helio-oxígeno-nitrógeno destinada a 150 m para que la presión parcial del nitrógeno no supere 400 kPa?",
       "options": [
         { "key": "a", "text": "50 %" },
         { "key": "b", "text": "35 %" },
@@ -1183,20 +1183,20 @@
         { "key": "d", "text": "60 %" }
       ],
       "correct": "c",
-      "explanation": "A 150 m la presión absoluta es 16 bar = 1 600 kPa. fN₂ máxima = 400 / 1 600 = 0,25 = 25 %. Un contenido mayor de nitrógeno provocaría narcosis."
+      "explanation": "A 150 m la presión absoluta es 16 bar = 1 600 kPa. fN₂ máxima = 400 / 1 600 = 0,25 = 25 %. Un contenido mayor de nitrógeno provocaría narcosis."
     },
     {
       "id": 92,
       "category": "dekomprese-syceni",
-      "question": "¿A qué profundidad, con una mezcla respiratoria de 40 % de nitrógeno, 16 % de oxígeno y 34 % de helio, se alcanzarían las presiones parciales de nitrógeno 400 kPa y oxígeno 160 kPa?",
+      "question": "¿A qué profundidad, con una mezcla respiratoria de 40 % de nitrógeno, 16 % de oxígeno y 34 % de helio, se alcanzarían las presiones parciales de nitrógeno 400 kPa y oxígeno 160 kPa?",
       "options": [
-        { "key": "a", "text": "N₂ 70 m, O₂ 66 m" },
-        { "key": "b", "text": "N₂ 80 m, O₂ 80 m" },
-        { "key": "c", "text": "N₂ 100 m, O₂ 90 m" },
-        { "key": "d", "text": "N₂ 90 m, O₂ 90 m" }
+        { "key": "a", "text": "N₂ 70 m, O₂ 66 m" },
+        { "key": "b", "text": "N₂ 80 m, O₂ 80 m" },
+        { "key": "c", "text": "N₂ 100 m, O₂ 90 m" },
+        { "key": "d", "text": "N₂ 90 m, O₂ 90 m" }
       ],
       "correct": "d",
-      "explanation": "Para N₂: presión = 400/0,40 = 1 000 kPa = 10 bar → 90 m. Para O₂: presión = 160/0,16 = 1 000 kPa = 10 bar → 90 m. Ambos límites se alcanzan a la misma profundidad, 90 m."
+      "explanation": "Para N₂: presión = 400/0,40 = 1 000 kPa = 10 bar → 90 m. Para O₂: presión = 160/0,16 = 1 000 kPa = 10 bar → 90 m. Ambos límites se alcanzan a la misma profundidad, 90 m."
     },
     {
       "id": 93,
@@ -1227,80 +1227,80 @@
     {
       "id": 95,
       "category": "dekomprese-syceni",
-      "question": "Determine la presión parcial de nitrógeno en un tejido con un período de saturación de 15 minutos en el mar a 40 m tras 30 minutos respirando aire:",
+      "question": "Determine la presión parcial de nitrógeno en un tejido con un período de saturación de 15 minutos en el mar a 40 m tras 30 minutos respirando aire:",
       "options": [
-        { "key": "a", "text": "253,5 kPa" },
-        { "key": "b", "text": "292,5 kPa" },
-        { "key": "c", "text": "273 kPa" },
-        { "key": "d", "text": "312 kPa" }
+        { "key": "a", "text": "253,5 kPa" },
+        { "key": "b", "text": "292,5 kPa" },
+        { "key": "c", "text": "273 kPa" },
+        { "key": "d", "text": "312 kPa" }
       ],
       "correct": "d",
-      "explanation": "<em>p</em>N₂ en superficie = 78 kPa. A 40 m (5 bar): <em>p</em>N₂ = 0,78 × 500 = 390 kPa. Tras 30 min (2 períodos) el tejido se satura al 75 %. Δp = 390 − 78 = 312 kPa. Saturación = 78 + 0,75×312 = 312 kPa."
+      "explanation": "<em>p</em>N₂ en superficie = 78 kPa. A 40 m (5 bar): <em>p</em>N₂ = 0,78 × 500 = 390 kPa. Tras 30 min (2 períodos) el tejido se satura al 75 %. Δp = 390 − 78 = 312 kPa. Saturación = 78 + 0,75×312 = 312 kPa."
     },
     {
       "id": 96,
       "category": "dekomprese-syceni",
-      "question": "Determine la presión parcial de nitrógeno en un tejido tras el primer período de saturación, en el mar a 30 m respirando aire:",
+      "question": "Determine la presión parcial de nitrógeno en un tejido tras el primer período de saturación, en el mar a 30 m respirando aire:",
       "options": [
-        { "key": "a", "text": "117 kPa" },
-        { "key": "b", "text": "156 kPa" },
-        { "key": "c", "text": "234 kPa" },
-        { "key": "d", "text": "195 kPa" }
+        { "key": "a", "text": "117 kPa" },
+        { "key": "b", "text": "156 kPa" },
+        { "key": "c", "text": "234 kPa" },
+        { "key": "d", "text": "195 kPa" }
       ],
       "correct": "d",
-      "explanation": "<em>p</em>N₂ en superficie = 78 kPa. A 30 m (4 bar): <em>p</em>N₂ = 0,78 × 400 = 312 kPa. Tras 1 período el tejido se satura al 50 % de la diferencia. Δp = 312 − 78 = 234 kPa. Saturación = 78 + 0,5×234 = 195 kPa."
+      "explanation": "<em>p</em>N₂ en superficie = 78 kPa. A 30 m (4 bar): <em>p</em>N₂ = 0,78 × 400 = 312 kPa. Tras 1 período el tejido se satura al 50 % de la diferencia. Δp = 312 − 78 = 234 kPa. Saturación = 78 + 0,5×234 = 195 kPa."
     },
     {
       "id": 97,
       "category": "dekomprese-syceni",
-      "question": "Determine la presión parcial de nitrógeno tras 40 minutos de permanencia en el mar a 30 m respirando aire en tejidos con períodos de saturación de 20 minutos (A) y 40 minutos (B):",
+      "question": "Determine la presión parcial de nitrógeno tras 40 minutos de permanencia en el mar a 30 m respirando aire en tejidos con períodos de saturación de 20 minutos (A) y 40 minutos (B):",
       "options": [
-        { "key": "a", "text": "A: 312 kPa, B: 156 kPa" },
-        { "key": "b", "text": "A: 234 kPa, B: 195 kPa" },
-        { "key": "c", "text": "A: 156 kPa, B: 312 kPa" },
-        { "key": "d", "text": "A: 253,5 kPa, B: 195 kPa" }
+        { "key": "a", "text": "A: 312 kPa, B: 156 kPa" },
+        { "key": "b", "text": "A: 234 kPa, B: 195 kPa" },
+        { "key": "c", "text": "A: 156 kPa, B: 312 kPa" },
+        { "key": "d", "text": "A: 253,5 kPa, B: 195 kPa" }
       ],
       "correct": "d",
-      "explanation": "<em>p</em>N₂ a 30 m = 312 kPa, Δp = 234 kPa. A (40 min = 2 períodos, 75 %): 78 + 0,75×234 = 253,5 kPa. B (40 min = 1 período, 50 %): 78 + 0,5×234 = 195 kPa."
+      "explanation": "<em>p</em>N₂ a 30 m = 312 kPa, Δp = 234 kPa. A (40 min = 2 períodos, 75 %): 78 + 0,75×234 = 253,5 kPa. B (40 min = 1 período, 50 %): 78 + 0,5×234 = 195 kPa."
     },
     {
       "id": 98,
       "category": "dekomprese-syceni",
-      "question": "Determine la presión parcial de nitrógeno en un tejido tras dos períodos de saturación, en el mar a 30 m respirando aire:",
+      "question": "Determine la presión parcial de nitrógeno en un tejido tras dos períodos de saturación, en el mar a 30 m respirando aire:",
       "options": [
-        { "key": "a", "text": "234 kPa" },
-        { "key": "b", "text": "253,5 kPa" },
-        { "key": "c", "text": "273 kPa" },
-        { "key": "d", "text": "312 kPa" }
+        { "key": "a", "text": "234 kPa" },
+        { "key": "b", "text": "253,5 kPa" },
+        { "key": "c", "text": "273 kPa" },
+        { "key": "d", "text": "312 kPa" }
       ],
       "correct": "b",
-      "explanation": "<em>p</em>N₂ a 30 m = 312 kPa, inicial = 78 kPa, Δp = 234 kPa. Tras 2 períodos: 50 % + 25 % = 75 % de saturación. <em>p</em>N₂ = 78 + 0,75×234 = 253,5 kPa."
+      "explanation": "<em>p</em>N₂ a 30 m = 312 kPa, inicial = 78 kPa, Δp = 234 kPa. Tras 2 períodos: 50 % + 25 % = 75 % de saturación. <em>p</em>N₂ = 78 + 0,75×234 = 253,5 kPa."
     },
     {
       "id": 99,
       "category": "dekomprese-syceni",
-      "question": "Determine la presión parcial de nitrógeno en un tejido con período de saturación de 15 minutos en el mar a 70 m tras 30 minutos respirando una mezcla con 50 % de nitrógeno. La mezcla se respira desde el inicio de la inmersión; antes se respiraba aire:",
+      "question": "Determine la presión parcial de nitrógeno en un tejido con período de saturación de 15 minutos en el mar a 70 m tras 30 minutos respirando una mezcla con 50 % de nitrógeno. La mezcla se respira desde el inicio de la inmersión; antes se respiraba aire:",
       "options": [
-        { "key": "a", "text": "378 kPa" },
-        { "key": "b", "text": "340,5 kPa" },
-        { "key": "c", "text": "253 kPa" },
-        { "key": "d", "text": "319,5 kPa" }
+        { "key": "a", "text": "378 kPa" },
+        { "key": "b", "text": "340,5 kPa" },
+        { "key": "c", "text": "253 kPa" },
+        { "key": "d", "text": "319,5 kPa" }
       ],
       "correct": "d",
-      "explanation": "<em>p</em>N₂ inicial = 78 kPa. A 70 m (8 bar) con 50 % N₂: <em>p</em>N₂ = 0,5 × 800 = 400 kPa. Δp = 322 kPa. Tras 30 min (2 períodos, 75 %): 78 + 0,75×322 = 319,5 kPa."
+      "explanation": "<em>p</em>N₂ inicial = 78 kPa. A 70 m (8 bar) con 50 % N₂: <em>p</em>N₂ = 0,5 × 800 = 400 kPa. Δp = 322 kPa. Tras 30 min (2 períodos, 75 %): 78 + 0,75×322 = 319,5 kPa."
     },
     {
       "id": 100,
       "category": "dekomprese-syceni",
-      "question": "A presión atmosférica normal hay disueltos en la sangre aproximadamente 10 mililitros de nitrógeno por litro (10 ml/l). ¿Cuánto nitrógeno habrá disuelto en la sangre tras un período de saturación a 30 m respirando aire?",
+      "question": "A presión atmosférica normal hay disueltos en la sangre aproximadamente 10 mililitros de nitrógeno por litro (10 ml/l). ¿Cuánto nitrógeno habrá disuelto en la sangre tras un período de saturación a 30 m respirando aire?",
       "options": [
-        { "key": "a", "text": "40 ml/l" },
-        { "key": "b", "text": "30 ml/l" },
-        { "key": "c", "text": "20 ml/l" },
-        { "key": "d", "text": "25 ml/l" }
+        { "key": "a", "text": "40 ml/l" },
+        { "key": "b", "text": "30 ml/l" },
+        { "key": "c", "text": "20 ml/l" },
+        { "key": "d", "text": "25 ml/l" }
       ],
       "correct": "d",
-      "explanation": "A 30 m (4 bar) la saturación completa supondría 4 veces más N₂ = 40 ml/l. Tras un período la saturación es del 50 % de la diferencia. Δ = 40 − 10 = 30 ml/l. Disuelto = 10 + 0,5×30 = 25 ml/l."
+      "explanation": "A 30 m (4 bar) la saturación completa supondría 4 veces más N₂ = 40 ml/l. Tras un período la saturación es del 50 % de la diferencia. Δ = 40 − 10 = 30 ml/l. Disuelto = 10 + 0,5×30 = 25 ml/l."
     }
   ]
 }

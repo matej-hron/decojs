@@ -3544,13 +3544,18 @@ describe('i18n notation - canvas strings must not contain HTML entities', () => 
     // title attribute, and only the first of those decodes entities. U+00A0
     // renders correctly in all of them, so it is the one form that survives a
     // sink being refactored later. See docs/notation/phase2-scope.md.
-    const UNIT = 'mmHg|msw|fsw|kPa|MPa|hPa|mbar|bar|Pa|km|cm³|cm|mm|dm³|m³|ml|mg'
-        + '|kg|min|°C|°F|atm|m|l|L|h|s|g';
+    const UNIT = 'mmHg|msw|fsw|kPa|MPa|hPa|mbar|bar|Pa|km|cm³|cm²|cm2|cm|mm³'
+        + '|mm²|mm|dm³|dm²|m³|m²|m2|ml|mg|kg|min|°C|°F|atm|at|m|l|L|h|s|g';
+    // Character classes are spelled out rather than using \w. Python counts '²'
+    // as a word character ('²'.isalnum() is true) while JavaScript does not, so
+    // the two would silently disagree about "10 mm²". docs/notation/tools/nbsp.py
+    // carries the same explicit sets — keep them identical.
     const CZ = 'áäčďéěíĺľňóôöŕřšťúůüýžÁÄČĎÉĚÍĹĽŇÓÔÖŔŘŠŤÚŮÜÝŽ';
+    const WORD = `0-9A-Za-z_${CZ}`;
     // "12l lahev" is short for "12litrová lahev" — a compound adjective, no space.
     const COMPOUND = /\d+\s?l\s+(lahv|láhv|lahev|láhev)/i;
     const badSpace = new RegExp(
-        `(?<![\\w.,${CZ}])\\d+(?:[.,]\\d+)? (?:${UNIT})(?![\\w°${CZ}])`
+        `(?<![${WORD}.,])\\d+(?:[.,]\\d+)? (?:${UNIT})(?![${WORD}°])`
     );
     // Czech declines spelled-out unit names ("2 bary", "v 10 metrech"). Only the
     // space is wrong there; the word form is correct and must not be touched.
@@ -3558,11 +3563,15 @@ describe('i18n notation - canvas strings must not contain HTML entities', () => 
         + '|sekund|vteřin|hodin|den|dny|dnů|dní|kilogram|gram|tun|stupň|stupe'
         + '|procent|promile|atmosfér|pascal|kilopascal';
     const badWordSpace = new RegExp(
-        `(?<![\\w.,${CZ}])\\d+(?:[.,]\\d+)? (?:${CZ_WORDS})[a-z${CZ}]*\\b`
+        `(?<![${WORD}.,])\\d+(?:[.,]\\d+)? (?:${CZ_WORDS})[a-z${CZ}]*\\b`
     );
+    // Identifiers, not prose: "30m-deco-air" is a profile id looked up by value.
+    const SKIP_KEYS = new Set(['id', 'key', 'slug', 'code', 'type', 'href',
+        'url', 'src', 'icon', 'class', 'className', 'ref', 'category']);
 
     const scanFile = (label, obj, czech) => {
-        const entries = flatten(obj);
+        const entries = flatten(obj)
+            .filter(([k]) => !SKIP_KEYS.has(k.split('.').pop()));
         const entities = entries
             .filter(([, v]) => /&nbsp;|&#160;|&#xa0;/i.test(v))
             .map(([k]) => `${label} ${k}`);
@@ -3583,6 +3592,23 @@ describe('i18n notation - canvas strings must not contain HTML entities', () => 
         });
     }
 
+
+    test('quiz data: no &nbsp; entity and no plain space before a unit', () => {
+        const files = readdirSync(new URL('../data/', import.meta.url))
+            .filter((f) => f.startsWith('quiz-') && f.endsWith('.json'));
+        const entities = [];
+        const spaces = [];
+        for (const f of files) {
+            const json = JSON.parse(
+                readFileSync(new URL(`../data/${f}`, import.meta.url), 'utf8')
+            );
+            const r = scanFile(f, json, !/-(en|es)\.json$/.test(f));
+            entities.push(...r.entities);
+            spaces.push(...r.spaces);
+        }
+        expect(entities).toEqual([]);
+        expect(spaces).toEqual([]);
+    });
 
     test('all locales agree on which keys exist', () => {
         // Known gap: the Spanish privacy policy has not been translated yet.

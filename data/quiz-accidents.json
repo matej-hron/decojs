@@ -192,7 +192,7 @@
         },
         {
           "key": "c",
-          "text": "s hloubkou stlačení 5 – 6 cm"
+          "text": "s hloubkou stlačení 5 – 6 cm"
         },
         {
           "key": "d",
@@ -200,7 +200,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "Všechny uvedené odpovědi jsou správné - uprostřed hrudníku, frekvencí 100-120/min a hloubkou 5-6 cm."
+      "explanation": "Všechny uvedené odpovědi jsou správné - uprostřed hrudníku, frekvencí 100-120/min a hloubkou 5-6 cm."
     },
     {
       "id": 9,
@@ -217,7 +217,7 @@
         },
         {
           "key": "c",
-          "text": "Masáž srdce provádíme s hloubkou stlačení 5 – 6 cm."
+          "text": "Masáž srdce provádíme s hloubkou stlačení 5 – 6 cm."
         },
         {
           "key": "d",
@@ -234,7 +234,7 @@
       "options": [
         {
           "key": "a",
-          "text": "přibližně uprostřed hrudní kosti, hloubka stlačení je 5 – 6 cm"
+          "text": "přibližně uprostřed hrudní kosti, hloubka stlačení je 5 – 6 cm"
         },
         {
           "key": "b",
@@ -242,7 +242,7 @@
         },
         {
           "key": "c",
-          "text": "tři prsty pod hrudní kostí frekvencí přibližně 100 – 120x za minutu, hloubka stlačení je 4 – 5 cm"
+          "text": "tři prsty pod hrudní kostí frekvencí přibližně 100 – 120x za minutu, hloubka stlačení je 4 – 5 cm"
         },
         {
           "key": "d",
@@ -250,7 +250,7 @@
         }
       ],
       "correct": "a",
-      "explanation": "Správně stlačujeme uprostřed hrudní kosti do hloubky 5-6 cm frekvencí 100-120/min."
+      "explanation": "Správně stlačujeme uprostřed hrudní kosti do hloubky 5-6 cm frekvencí 100-120/min."
     },
     {
       "id": 11,
@@ -371,7 +371,7 @@
         },
         {
           "key": "d",
-          "text": "Provádí-li resuscitaci více zachránců, je vhodné, aby se u srdeční masáže střídali po přibližně 2 minutách."
+          "text": "Provádí-li resuscitaci více zachránců, je vhodné, aby se u srdeční masáže střídali po přibližně 2 minutách."
         }
       ],
       "correct": "c",
@@ -484,23 +484,23 @@
       "options": [
         {
           "key": "a",
-          "text": "1 sekundu"
+          "text": "1 sekundu"
         },
         {
           "key": "b",
-          "text": "2 sekundy"
+          "text": "2 sekundy"
         },
         {
           "key": "c",
-          "text": "4 sekundy"
+          "text": "4 sekundy"
         },
         {
           "key": "d",
-          "text": "6 sekund"
+          "text": "6 sekund"
         }
       ],
       "correct": "a",
-      "explanation": "Každý vdech by měl trvat přibližně 1 sekundu a měl by být dostatečný k viditelnému zvednutí hrudníku."
+      "explanation": "Každý vdech by měl trvat přibližně 1 sekundu a měl by být dostatečný k viditelnému zvednutí hrudníku."
     },
     {
       "id": 21,
@@ -530,7 +530,7 @@
     {
       "id": 22,
       "category": "otravy plyny",
-      "question": "Při použití vzduchového dýchacího přístroje se po dosažení hloubky 40 metrů výrazně zhoršila komunikace mezi vámi a vaším partnerem. Za příčinu budete považovat:",
+      "question": "Při použití vzduchového dýchacího přístroje se po dosažení hloubky 40 metrů výrazně zhoršila komunikace mezi vámi a vaším partnerem. Za příčinu budete považovat:",
       "options": [
         {
           "key": "a",
@@ -550,7 +550,7 @@
         }
       ],
       "correct": "b",
-      "explanation": "V hloubce 40 m je parciální tlak dusíku dostatečně vysoký pro vznik hloubkového opojení (narkózy), které zhoršuje koordinaci a komunikaci."
+      "explanation": "V hloubce 40 m je parciální tlak dusíku dostatečně vysoký pro vznik hloubkového opojení (narkózy), které zhoršuje koordinaci a komunikaci."
     },
     {
       "id": 23,
@@ -621,11 +621,11 @@
         },
         {
           "key": "d",
-          "text": "Nedostatek kyslíku (hypoxie) nastává při poklesu parciálního tlaku kyslíku ve vdechovaném médiu pod hranici 21 kPa."
+          "text": "Nedostatek kyslíku (hypoxie) nastává při poklesu parciálního tlaku kyslíku ve vdechovaném médiu pod hranici 21 kPa."
         }
       ],
       "correct": "d",
-      "explanation": "Nesprávné je tvrzení d) - hypoxie nastává při poklesu <em>pp</em>O₂ pod cca 16 kPa (0.16 bar), nikoliv 21 kPa. Při 21 kPa je normální atmosférický parciální tlak kyslíku."
+      "explanation": "Nesprávné je tvrzení d) - hypoxie nastává při poklesu <em>pp</em>O₂ pod cca 16 kPa (0.16 bar), nikoliv 21 kPa. Při 21 kPa je normální atmosférický parciální tlak kyslíku."
     },
     {
       "id": 26,
@@ -642,7 +642,7 @@
         },
         {
           "key": "c",
-          "text": "dýchání směsi s 2% obsahem kyslíku v hloubce 90 metrů"
+          "text": "dýchání směsi s 2% obsahem kyslíku v hloubce 90 metrů"
         },
         {
           "key": "d",
@@ -650,7 +650,7 @@
         }
       ],
       "correct": "c",
-      "explanation": "V 90 m je absolutní tlak 10 bar, takže 2% O₂ dává <em>pp</em>O₂ = 0.2 bar (20 kPa), což je dostatečné pro dýchání a nezpůsobuje hypoxii."
+      "explanation": "V 90 m je absolutní tlak 10 bar, takže 2% O₂ dává <em>pp</em>O₂ = 0.2 bar (20 kPa), což je dostatečné pro dýchání a nezpůsobuje hypoxii."
     },
     {
       "id": 27,
@@ -784,23 +784,23 @@
       "options": [
         {
           "key": "a",
-          "text": "10 metrů"
+          "text": "10 metrů"
         },
         {
           "key": "b",
-          "text": "20 metrů"
+          "text": "20 metrů"
         },
         {
           "key": "c",
-          "text": "30 metrů"
+          "text": "30 metrů"
         },
         {
           "key": "d",
-          "text": "60 metrů"
+          "text": "60 metrů"
         }
       ],
       "correct": "c",
-      "explanation": "Pro bezpečné dýchání potřebujeme <em>pp</em>O₂ alespoň 0.16 bar. V 30 m je absolutní tlak 4 bar, takže 4% × 4 = 0.16 bar (16 kPa), což je minimální bezpečná hodnota."
+      "explanation": "Pro bezpečné dýchání potřebujeme <em>pp</em>O₂ alespoň 0.16 bar. V 30 m je absolutní tlak 4 bar, takže 4% × 4 = 0.16 bar (16 kPa), což je minimální bezpečná hodnota."
     },
     {
       "id": 33,
@@ -809,23 +809,23 @@
       "options": [
         {
           "key": "a",
-          "text": "5 kPa"
+          "text": "5 kPa"
         },
         {
           "key": "b",
-          "text": "10 kPa"
+          "text": "10 kPa"
         },
         {
           "key": "c",
-          "text": "16 kPa"
+          "text": "16 kPa"
         },
         {
           "key": "d",
-          "text": "21 kPa"
+          "text": "21 kPa"
         }
       ],
       "correct": "b",
-      "explanation": "Bezvědomí hrozí při poklesu <em>pp</em>O₂ pod 10 kPa (0.1 bar). Hranice 16 kPa je minimum pro normální funkci, pod 10 kPa nastává ztráta vědomí."
+      "explanation": "Bezvědomí hrozí při poklesu <em>pp</em>O₂ pod 10 kPa (0.1 bar). Hranice 16 kPa je minimum pro normální funkci, pod 10 kPa nastává ztráta vědomí."
     },
     {
       "id": 34,
@@ -859,23 +859,23 @@
       "options": [
         {
           "key": "a",
-          "text": "21 kPa"
+          "text": "21 kPa"
         },
         {
           "key": "b",
-          "text": "16 kPa"
+          "text": "16 kPa"
         },
         {
           "key": "c",
-          "text": "12 kPa"
+          "text": "12 kPa"
         },
         {
           "key": "d",
-          "text": "10 kPa"
+          "text": "10 kPa"
         }
       ],
       "correct": "b",
-      "explanation": "Hypoxie nastává při poklesu <em>pp</em>O₂ pod 16 kPa (0.16 bar). To je minimální parciální tlak kyslíku potřebný pro normální fungování organismu."
+      "explanation": "Hypoxie nastává při poklesu <em>pp</em>O₂ pod 16 kPa (0.16 bar). To je minimální parciální tlak kyslíku potřebný pro normální fungování organismu."
     },
     {
       "id": 36,
@@ -900,7 +900,7 @@
         }
       ],
       "correct": "c",
-      "explanation": "Optimální teplota pro ohřívání podchlazeného je 37–40 °C, což odpovídá tělesné teplotě a nezpůsobí tepelný šok."
+      "explanation": "Optimální teplota pro ohřívání podchlazeného je 37–40 °C, což odpovídá tělesné teplotě a nezpůsobí tepelný šok."
     },
     {
       "id": 37,
@@ -1234,23 +1234,23 @@
       "options": [
         {
           "key": "a",
-          "text": "18 metrů"
+          "text": "18 metrů"
         },
         {
           "key": "b",
-          "text": "40 metrů"
+          "text": "40 metrů"
         },
         {
           "key": "c",
-          "text": "70 metrů"
+          "text": "70 metrů"
         },
         {
           "key": "d",
-          "text": "100 metrů"
+          "text": "100 metrů"
         }
       ],
       "correct": "c",
-      "explanation": "Při použití vzduchu (21% O2) dosáhne parciální tlak kyslíku toxické hranice 1,6 bar přibližně v hloubce 70 metrů (8 bar × 0,21 = 1,68 bar)."
+      "explanation": "Při použití vzduchu (21% O2) dosáhne parciální tlak kyslíku toxické hranice 1,6 bar přibližně v hloubce 70 metrů (8 bar × 0,21 = 1,68 bar)."
     },
     {
       "id": 51,
@@ -1409,23 +1409,23 @@
       "options": [
         {
           "key": "a",
-          "text": "100 kPa"
+          "text": "100 kPa"
         },
         {
           "key": "b",
-          "text": "160 kPa"
+          "text": "160 kPa"
         },
         {
           "key": "c",
-          "text": "420 kPa"
+          "text": "420 kPa"
         },
         {
           "key": "d",
-          "text": "500 kPa"
+          "text": "500 kPa"
         }
       ],
       "correct": "b",
-      "explanation": "Akutní otrava kyslíkem (hyperoxie) hrozí při parciálním tlaku kyslíku nad 160 kPa (1,6 bar), což je bezpečnostní limit pro potápění."
+      "explanation": "Akutní otrava kyslíkem (hyperoxie) hrozí při parciálním tlaku kyslíku nad 160 kPa (1,6 bar), což je bezpečnostní limit pro potápění."
     },
     {
       "id": 58,
@@ -1505,7 +1505,7 @@
     {
       "id": 61,
       "category": "barotrauma plic",
-      "question": "Během sestupu se vzduchovým přístrojem začal váš partner v hloubce 15 metrů jevit známky dezorientace, otáčí se dokola, má problémy s koordinací pohybů. Za příčinu budete považovat:",
+      "question": "Během sestupu se vzduchovým přístrojem začal váš partner v hloubce 15 metrů jevit známky dezorientace, otáčí se dokola, má problémy s koordinací pohybů. Za příčinu budete považovat:",
       "options": [
         {
           "key": "a",
@@ -1684,23 +1684,23 @@
       "options": [
         {
           "key": "a",
-          "text": "menší než 2 metry"
+          "text": "menší než 2 metry"
         },
         {
           "key": "b",
-          "text": "3 metrů"
+          "text": "3 metrů"
         },
         {
           "key": "c",
-          "text": "5 metrů"
+          "text": "5 metrů"
         },
         {
           "key": "d",
-          "text": "10 metrů"
+          "text": "10 metrů"
         }
       ],
       "correct": "a",
-      "explanation": "Barotrauma plic z přetlaku může nastat již z velmi malé hloubky (pod 2 metry), protože relativní změna tlaku je největší u hladiny."
+      "explanation": "Barotrauma plic z přetlaku může nastat již z velmi malé hloubky (pod 2 metry), protože relativní změna tlaku je největší u hladiny."
     },
     {
       "id": 69,
@@ -1717,7 +1717,7 @@
         },
         {
           "key": "c",
-          "text": "může nastat pouze při ponorech do hloubek přes 40 metrů"
+          "text": "může nastat pouze při ponorech do hloubek přes 40 metrů"
         },
         {
           "key": "d",
@@ -1784,23 +1784,23 @@
       "options": [
         {
           "key": "a",
-          "text": "10 metrů"
+          "text": "10 metrů"
         },
         {
           "key": "b",
-          "text": "5 metrů"
+          "text": "5 metrů"
         },
         {
           "key": "c",
-          "text": "3 metrů"
+          "text": "3 metrů"
         },
         {
           "key": "d",
-          "text": "menší než 2 metry"
+          "text": "menší než 2 metry"
         }
       ],
       "correct": "d",
-      "explanation": "Barotrauma plic z přetlaku může nastat již z hloubky menší než 2 metry, protože relativní změna tlaku je u hladiny největší."
+      "explanation": "Barotrauma plic z přetlaku může nastat již z hloubky menší než 2 metry, protože relativní změna tlaku je u hladiny největší."
     },
     {
       "id": 73,
@@ -1884,15 +1884,15 @@
       "options": [
         {
           "key": "a",
-          "text": "do 6 hodin po vynoření"
+          "text": "do 6 hodin po vynoření"
         },
         {
           "key": "b",
-          "text": "od 30 minut do 3 hodin po vynoření"
+          "text": "od 30 minut do 3 hodin po vynoření"
         },
         {
           "key": "c",
-          "text": "od 30 minut do 1 hodiny po vynoření"
+          "text": "od 30 minut do 1 hodiny po vynoření"
         },
         {
           "key": "d",
@@ -2017,11 +2017,11 @@
         },
         {
           "key": "c",
-          "text": "Parciální tlak kyslíku dýchaného při dekompresi pod vodou nesmí překročit 170 kPa."
+          "text": "Parciální tlak kyslíku dýchaného při dekompresi pod vodou nesmí překročit 170 kPa."
         },
         {
           "key": "d",
-          "text": "Doporučuje se, aby povrchový interval byl delší než 2 hodiny."
+          "text": "Doporučuje se, aby povrchový interval byl delší než 2 hodiny."
         }
       ],
       "correct": "a",
@@ -2121,7 +2121,7 @@
         },
         {
           "key": "d",
-          "text": "Nejvíce případů dekompresní nemoci se projeví v době od 30 minut do 3 hodin po vynoření."
+          "text": "Nejvíce případů dekompresní nemoci se projeví v době od 30 minut do 3 hodin po vynoření."
         }
       ],
       "correct": "a",
@@ -2434,7 +2434,7 @@
       "options": [
         {
           "key": "a",
-          "text": "do 3 minut po vynoření"
+          "text": "do 3 minut po vynoření"
         },
         {
           "key": "b",
@@ -2446,11 +2446,11 @@
         },
         {
           "key": "d",
-          "text": "do 10 minut po vynoření"
+          "text": "do 10 minut po vynoření"
         }
       ],
       "correct": "c",
-      "explanation": "Příznaky DCS se často projeví až po vynoření, typicky od 30 minut do několika hodin po ponoru."
+      "explanation": "Příznaky DCS se často projeví až po vynoření, typicky od 30 minut do několika hodin po ponoru."
     },
     {
       "id": 99,
@@ -2467,7 +2467,7 @@
         },
         {
           "key": "c",
-          "text": "povrchové intervaly delší než 2 hodiny"
+          "text": "povrchové intervaly delší než 2 hodiny"
         },
         {
           "key": "d",

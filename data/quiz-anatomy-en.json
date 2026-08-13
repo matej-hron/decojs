@@ -442,7 +442,7 @@
         { "key": "d", "text": "residual volume and anatomical dead space" }
       ],
       "correct": "a",
-      "explanation": "Total lung volume = vital capacity + residual volume. In an adult that is approximately 6 litres (4.5 L vital capacity + 1.5 L residual volume)."
+      "explanation": "Total lung volume = vital capacity + residual volume. In an adult that is approximately 6 litres (4.5 L vital capacity + 1.5 L residual volume)."
     },
     {
       "id": 35,
@@ -689,7 +689,7 @@
         { "key": "d", "text": "capillaries" }
       ],
       "correct": "d",
-      "explanation": "Capillaries form the most branched network of the circulatory system. Their total length in the human body is estimated at 100,000 km."
+      "explanation": "Capillaries form the most branched network of the circulatory system. Their total length in the human body is estimated at 100,000 km."
     },
     {
       "id": 54,
@@ -1099,13 +1099,13 @@
       "category": "termoregulace",
       "question": "Long-term immersion without an insulating suit is possible in water of at least:",
       "options": [
-        { "key": "a", "text": "42 °C" },
-        { "key": "b", "text": "35 °C" },
-        { "key": "c", "text": "30 °C" },
-        { "key": "d", "text": "18 °C" }
+        { "key": "a", "text": "42 °C" },
+        { "key": "b", "text": "35 °C" },
+        { "key": "c", "text": "30 °C" },
+        { "key": "d", "text": "18 °C" }
       ],
       "correct": "b",
-      "explanation": "Long-term immersion without a wetsuit requires water of at least about 35 °C (the thermoneutral zone). Water removes heat 25× faster than air."
+      "explanation": "Long-term immersion without a wetsuit requires water of at least about 35 °C (the thermoneutral zone). Water removes heat 25× faster than air."
     },
     {
       "id": 86,
@@ -1183,7 +1183,7 @@
         { "key": "d", "text": "deeper than 60 metres" }
       ],
       "correct": "b",
-      "explanation": "Nitrogen narcosis on air typically sets in around 30–40 m. Individual susceptibility varies and may be amplified by other factors."
+      "explanation": "Nitrogen narcosis on air typically sets in around 30–40 m. Individual susceptibility varies and may be amplified by other factors."
     },
     {
       "id": 92,
@@ -1255,13 +1255,13 @@
       "category": "termoregulace",
       "question": "The normal average core body temperature is approximately:",
       "options": [
-        { "key": "a", "text": "18 °C" },
-        { "key": "b", "text": "30 °C" },
-        { "key": "c", "text": "37 °C" },
-        { "key": "d", "text": "42 °C" }
+        { "key": "a", "text": "18 °C" },
+        { "key": "b", "text": "30 °C" },
+        { "key": "c", "text": "37 °C" },
+        { "key": "d", "text": "42 °C" }
       ],
       "correct": "c",
-      "explanation": "Normal core body temperature is approximately 37 °C (36.5–37.5 °C). Temperatures above 42 °C or below 28 °C are life-threatening."
+      "explanation": "Normal core body temperature is approximately 37 °C (36.5–37.5 °C). Temperatures above 42 °C or below 28 °C are life-threatening."
     },
     {
       "id": 98,

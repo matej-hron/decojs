@@ -74,11 +74,11 @@
       "options": [
         {"key": "a", "text": "de velocidad equivalente a 1 milla náutica por hora"},
         {"key": "b", "text": "de distancia equivalente a 1/10 de milla náutica"},
-        {"key": "c", "text": "de velocidad equivalente a 1 km por hora"},
-        {"key": "d", "text": "de profundidad equivalente a 1,83 m"}
+        {"key": "c", "text": "de velocidad equivalente a 1 km por hora"},
+        {"key": "d", "text": "de profundidad equivalente a 1,83 m"}
       ],
       "correct": "a",
-      "explanation": "El nudo (knot) es una unidad de velocidad equivalente a 1 milla náutica por hora (1,852 km/h)."
+      "explanation": "El nudo (knot) es una unidad de velocidad equivalente a 1 milla náutica por hora (1,852 km/h)."
     },
     {
       "id": 7,
@@ -137,10 +137,10 @@
       "category": "pocasi",
       "question": "En las costas europeas las mareas se producen:",
       "options": [
-        {"key": "a", "text": "aproximadamente dos veces cada 25 h tanto la bajamar como la pleamar"},
-        {"key": "b", "text": "una vez cada 25 h (una pleamar cada 12 h 25 min)"},
-        {"key": "c", "text": "cada 12 h 25 min pleamar en marea viva y cada 6 horas en marea muerta"},
-        {"key": "d", "text": "cada 12 h 25 min bajamar en marea muerta y cada 6 horas en marea viva"}
+        {"key": "a", "text": "aproximadamente dos veces cada 25 h tanto la bajamar como la pleamar"},
+        {"key": "b", "text": "una vez cada 25 h (una pleamar cada 12 h 25 min)"},
+        {"key": "c", "text": "cada 12 h 25 min pleamar en marea viva y cada 6 horas en marea muerta"},
+        {"key": "d", "text": "cada 12 h 25 min bajamar en marea muerta y cada 6 horas en marea viva"}
       ],
       "correct": "a",
       "explanation": "En las costas europeas hay aproximadamente 2 pleamares y 2 bajamares cada 25 horas (día de marea)."
@@ -177,7 +177,7 @@
       "question": "Toda embarcación debe navegar a velocidad de seguridad, es decir:",
       "options": [
         {"key": "a", "text": "una velocidad que le permita adelantar rápidamente a otra embarcación"},
-        {"key": "b", "text": "según su eslora (p. ej., una de 7 m a un máximo de 7 nudos)"},
+        {"key": "b", "text": "según su eslora (p. ej., una de 7 m a un máximo de 7 nudos)"},
         {"key": "c", "text": "una velocidad que le permita cambiar de rumbo 30° de inmediato"},
         {"key": "d", "text": "una velocidad que le permita evitar el abordaje, incluso deteniéndose, en cualquier circunstancia"}
       ],
@@ -332,10 +332,10 @@
       "category": "kotveni",
       "question": "La longitud del cabo de fondeo de una embarcación neumática debería ser:",
       "options": [
-        {"key": "a", "text": "25 m"},
+        {"key": "a", "text": "25 m"},
         {"key": "b", "text": "igual a la profundidad sobre la que se va a fondear"},
         {"key": "c", "text": "al menos el doble de la profundidad sobre la que se va a fondear"},
-        {"key": "d", "text": "300 m"}
+        {"key": "d", "text": "300 m"}
       ],
       "correct": "c",
       "explanation": "El cabo de fondeo debería ser al menos el doble de la profundidad para asegurar el agarre del ancla."
@@ -585,7 +585,7 @@
         {"key": "d", "text": "1 grado sobre el paralelo terrestre"}
       ],
       "correct": "a",
-      "explanation": "La milla náutica corresponde a 1 minuto de arco sobre el meridiano terrestre (aproximadamente 1 852 m)."
+      "explanation": "La milla náutica corresponde a 1 minuto de arco sobre el meridiano terrestre (aproximadamente 1 852 m)."
     },
     {
       "id": 46,

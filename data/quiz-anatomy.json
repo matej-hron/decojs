@@ -575,7 +575,7 @@
         }
       ],
       "correct": "c",
-      "explanation": "Vitální kapacita plic je maximální objem vzduchu, který lze vydechnout po maximálním nádechu. U dospělého člověka činí přibližně 4-5 litrů."
+      "explanation": "Vitální kapacita plic je maximální objem vzduchu, který lze vydechnout po maximálním nádechu. U dospělého člověka činí přibližně 4-5 litrů."
     },
     {
       "id": 24,
@@ -625,7 +625,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "Zbytkový objem plic (reziduální objem) je objem vzduchu, který zůstává v plicích i po maximálním výdechu. Činí přibližně 1,5 litru."
+      "explanation": "Zbytkový objem plic (reziduální objem) je objem vzduchu, který zůstává v plicích i po maximálním výdechu. Činí přibližně 1,5 litru."
     },
     {
       "id": 26,
@@ -734,23 +734,23 @@
       "options": [
         {
           "key": "a",
-          "text": "0,15 litru"
+          "text": "0,15 litru"
         },
         {
           "key": "b",
-          "text": "1,5 litru"
+          "text": "1,5 litru"
         },
         {
           "key": "c",
-          "text": "4,5 litru"
+          "text": "4,5 litru"
         },
         {
           "key": "d",
-          "text": "6 litrů"
+          "text": "6 litrů"
         }
       ],
       "correct": "a",
-      "explanation": "Mrtvý prostor dýchacích cest (prostor, kde nedochází k výměně plynů) činí přibližně 0,15 litru (150 ml). Potápěčská výstroj tento mrtvý prostor zvětšuje."
+      "explanation": "Mrtvý prostor dýchacích cest (prostor, kde nedochází k výměně plynů) činí přibližně 0,15 litru (150 ml). Potápěčská výstroj tento mrtvý prostor zvětšuje."
     },
     {
       "id": 31,
@@ -759,23 +759,23 @@
       "options": [
         {
           "key": "a",
-          "text": "0,15 litru"
+          "text": "0,15 litru"
         },
         {
           "key": "b",
-          "text": "1,5 litru"
+          "text": "1,5 litru"
         },
         {
           "key": "c",
-          "text": "4,5 litru"
+          "text": "4,5 litru"
         },
         {
           "key": "d",
-          "text": "6 litrů"
+          "text": "6 litrů"
         }
       ],
       "correct": "b",
-      "explanation": "Zbytkový objem plic činí přibližně 1,5 litru. Tento objem vzduchu zůstává v plicích i po maximálním výdechu."
+      "explanation": "Zbytkový objem plic činí přibližně 1,5 litru. Tento objem vzduchu zůstává v plicích i po maximálním výdechu."
     },
     {
       "id": 32,
@@ -796,7 +796,7 @@
         },
         {
           "key": "d",
-          "text": "Mrtvý prostor dýchacích cest činí přibližně 0,15 litru."
+          "text": "Mrtvý prostor dýchacích cest činí přibližně 0,15 litru."
         }
       ],
       "correct": "b",
@@ -825,7 +825,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "Vitální kapacita plic je objem vzduchu, který lze vydechnout po maximálním nádechu. U dospělého člověka činí přibližně 4-5 litrů."
+      "explanation": "Vitální kapacita plic je objem vzduchu, který lze vydechnout po maximálním nádechu. U dospělého člověka činí přibližně 4-5 litrů."
     },
     {
       "id": 34,
@@ -850,7 +850,7 @@
         }
       ],
       "correct": "a",
-      "explanation": "Celkový objem plic = vitální kapacita + zbytkový objem. U dospělého člověka je to přibližně 6 litrů (4,5 l vitální kapacita + 1,5 l zbytkový objem)."
+      "explanation": "Celkový objem plic = vitální kapacita + zbytkový objem. U dospělého člověka je to přibližně 6 litrů (4,5 l vitální kapacita + 1,5 l zbytkový objem)."
     },
     {
       "id": 35,
@@ -1059,48 +1059,48 @@
       "options": [
         {
           "key": "a",
-          "text": "10 – 12 litrů krve"
+          "text": "10 – 12 litrů krve"
         },
         {
           "key": "b",
-          "text": "8 – 10 litrů krve"
+          "text": "8 – 10 litrů krve"
         },
         {
           "key": "c",
-          "text": "5 – 6 litrů krve"
+          "text": "5 – 6 litrů krve"
         },
         {
           "key": "d",
-          "text": "2 – 3 litry krve"
+          "text": "2 – 3 litry krve"
         }
       ],
       "correct": "c",
-      "explanation": "Dospělý člověk má přibližně 5-6 litrů krve, což představuje asi 7-8 % tělesné hmotnosti."
+      "explanation": "Dospělý člověk má přibližně 5-6 litrů krve, což představuje asi 7-8 % tělesné hmotnosti."
     },
     {
       "id": 44,
       "category": "oběhová soustava",
-      "question": "Srdce dospělého člověka přečerpá v klidu 5 litrů krve přibližně:",
+      "question": "Srdce dospělého člověka přečerpá v klidu 5 litrů krve přibližně:",
       "options": [
         {
           "key": "a",
-          "text": "za 1 sekundu"
+          "text": "za 1 sekundu"
         },
         {
           "key": "b",
-          "text": "za 10 sekund"
+          "text": "za 10 sekund"
         },
         {
           "key": "c",
-          "text": "za 5 minut"
+          "text": "za 5 minut"
         },
         {
           "key": "d",
-          "text": "za 1 minutu"
+          "text": "za 1 minutu"
         }
       ],
       "correct": "d",
-      "explanation": "Srdce přečerpá v klidu přibližně 5 litrů krve za minutu (minutový srdeční výdej). Při námaze se tento objem může zvýšit až na 25-30 litrů."
+      "explanation": "Srdce přečerpá v klidu přibližně 5 litrů krve za minutu (minutový srdeční výdej). Při námaze se tento objem může zvýšit až na 25-30 litrů."
     },
     {
       "id": 45,
@@ -1263,7 +1263,7 @@
         },
         {
           "key": "b",
-          "text": "Srdce přečerpá v klidu za 1 minutu přibližně 5 litrů krve."
+          "text": "Srdce přečerpá v klidu za 1 minutu přibližně 5 litrů krve."
         },
         {
           "key": "c",
@@ -1325,7 +1325,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "Krevní vlásečnice (kapiláry) tvoří nejrozvětvenější síť krevního řečiště. Jejich celková délka v lidském těle je odhadována na 100 000 km."
+      "explanation": "Krevní vlásečnice (kapiláry) tvoří nejrozvětvenější síť krevního řečiště. Jejich celková délka v lidském těle je odhadována na 100 000 km."
     },
     {
       "id": 54,
@@ -1355,27 +1355,27 @@
     {
       "id": 55,
       "category": "oběhová soustava",
-      "question": "Srdce dospělého člověka přečerpá v klidu za 1 minutu přibližně:",
+      "question": "Srdce dospělého člověka přečerpá v klidu za 1 minutu přibližně:",
       "options": [
         {
           "key": "a",
-          "text": "0,1 litru krve"
+          "text": "0,1 litru krve"
         },
         {
           "key": "b",
-          "text": "1 litr krve"
+          "text": "1 litr krve"
         },
         {
           "key": "c",
-          "text": "5 litrů krve"
+          "text": "5 litrů krve"
         },
         {
           "key": "d",
-          "text": "10 litrů krve"
+          "text": "10 litrů krve"
         }
       ],
       "correct": "c",
-      "explanation": "Minutový srdeční výdej v klidu je přibližně 5 litrů. To znamená, že celý objem krve projde srdcem přibližně jednou za minutu."
+      "explanation": "Minutový srdeční výdej v klidu je přibližně 5 litrů. To znamená, že celý objem krve projde srdcem přibližně jednou za minutu."
     },
     {
       "id": 56,
@@ -1480,27 +1480,27 @@
     {
       "id": 60,
       "category": "oběhová soustava",
-      "question": "Srdce dospělého člověka přečerpá při námaze za 1 minutu:",
+      "question": "Srdce dospělého člověka přečerpá při námaze za 1 minutu:",
       "options": [
         {
           "key": "a",
-          "text": "až 5 litrů krve"
+          "text": "až 5 litrů krve"
         },
         {
           "key": "b",
-          "text": "až 10 litrů krve"
+          "text": "až 10 litrů krve"
         },
         {
           "key": "c",
-          "text": "až 30 litrů krve"
+          "text": "až 30 litrů krve"
         },
         {
           "key": "d",
-          "text": "až 100 litrů krve"
+          "text": "až 100 litrů krve"
         }
       ],
       "correct": "c",
-      "explanation": "Při intenzivní námaze může srdeční výdej vzrůst až na 25-30 litrů za minutu (u trénovaných sportovců). V klidu je to přibližně 5 litrů."
+      "explanation": "Při intenzivní námaze může srdeční výdej vzrůst až na 25-30 litrů za minutu (u trénovaných sportovců). V klidu je to přibližně 5 litrů."
     },
     {
       "id": 61,
@@ -1555,7 +1555,7 @@
     {
       "id": 63,
       "category": "dýchací soustava",
-      "question": "Dospělý člověk se v klidu za 1 minutu nadechne přibližně:",
+      "question": "Dospělý člověk se v klidu za 1 minutu nadechne přibližně:",
       "options": [
         {
           "key": "a",
@@ -1959,23 +1959,23 @@
       "options": [
         {
           "key": "a",
-          "text": "5 – 6 litrů vzduchu"
+          "text": "5 – 6 litrů vzduchu"
         },
         {
           "key": "b",
-          "text": "3 – 4 litry vzduchu"
+          "text": "3 – 4 litry vzduchu"
         },
         {
           "key": "c",
-          "text": "1 – 2 litry vzduchu"
+          "text": "1 – 2 litry vzduchu"
         },
         {
           "key": "d",
-          "text": "0,3 – 0,5 litru vzduchu"
+          "text": "0,3 – 0,5 litru vzduchu"
         }
       ],
       "correct": "d",
-      "explanation": "Klidový dechový objem je přibližně 0,5 litru (500 ml). Při námaze se zvyšuje. Vitální kapacita (maximální nádech) je 4-5 litrů."
+      "explanation": "Klidový dechový objem je přibližně 0,5 litru (500 ml). Při námaze se zvyšuje. Vitální kapacita (maximální nádech) je 4-5 litrů."
     },
     {
       "id": 80,
@@ -2109,23 +2109,23 @@
       "options": [
         {
           "key": "a",
-          "text": "42 °C"
+          "text": "42 °C"
         },
         {
           "key": "b",
-          "text": "35 °C"
+          "text": "35 °C"
         },
         {
           "key": "c",
-          "text": "30 °C"
+          "text": "30 °C"
         },
         {
           "key": "d",
-          "text": "18 °C"
+          "text": "18 °C"
         }
       ],
       "correct": "b",
-      "explanation": "Dlouhodobý pobyt bez neoprenu je možný ve vodě o teplotě minimálně 35 °C (termoneutrální zóna). Voda odvádí teplo 25× rychleji než vzduch."
+      "explanation": "Dlouhodobý pobyt bez neoprenu je možný ve vodě o teplotě minimálně 35 °C (termoneutrální zóna). Voda odvádí teplo 25× rychleji než vzduch."
     },
     {
       "id": 86,
@@ -2259,23 +2259,23 @@
       "options": [
         {
           "key": "a",
-          "text": "10 – 20 metrů"
+          "text": "10 – 20 metrů"
         },
         {
           "key": "b",
-          "text": "30 – 40 metrů"
+          "text": "30 – 40 metrů"
         },
         {
           "key": "c",
-          "text": "okolo 50 metrů"
+          "text": "okolo 50 metrů"
         },
         {
           "key": "d",
-          "text": "přes 60 metrů"
+          "text": "přes 60 metrů"
         }
       ],
       "correct": "b",
-      "explanation": "Hloubkové opojení při dýchání vzduchu nastupuje typicky v hloubce 30-40 metrů. Individuální citlivost se liší a může být ovlivněna dalšími faktory."
+      "explanation": "Hloubkové opojení při dýchání vzduchu nastupuje typicky v hloubce 30-40 metrů. Individuální citlivost se liší a může být ovlivněna dalšími faktory."
     },
     {
       "id": 92,
@@ -2409,23 +2409,23 @@
       "options": [
         {
           "key": "a",
-          "text": "18 °C"
+          "text": "18 °C"
         },
         {
           "key": "b",
-          "text": "30 °C"
+          "text": "30 °C"
         },
         {
           "key": "c",
-          "text": "37 °C"
+          "text": "37 °C"
         },
         {
           "key": "d",
-          "text": "42 °C"
+          "text": "42 °C"
         }
       ],
       "correct": "c",
-      "explanation": "Normální teplota tělesného jádra je přibližně 37 °C (36,5-37,5 °C). Teplota nad 42 °C nebo pod 28 °C je život ohrožující."
+      "explanation": "Normální teplota tělesného jádra je přibližně 37 °C (36,5-37,5 °C). Teplota nad 42 °C nebo pod 28 °C je život ohrožující."
     },
     {
       "id": 98,
