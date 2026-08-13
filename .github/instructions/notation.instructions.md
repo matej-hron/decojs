@@ -46,3 +46,6 @@ Zapiš ji do [`glossary.md`](../../docs/notation/glossary.md) **ve stejném comm
 
 Podrobnosti: [`style-guide.md`](../../docs/notation/style-guide.md) (pravidla a normy),
 [`authoring.md`](../../docs/notation/authoring.md) (HTML, KaTeX, čísla).
+
+Co je ještě neopravené a v jakém pořadí se to bere:
+[`phase2-scope.md`](../../docs/notation/phase2-scope.md).
