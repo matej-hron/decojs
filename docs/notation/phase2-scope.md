@@ -367,6 +367,40 @@ kontroly neznamená nic, dokud kontrola neselže na nasazené chybě.**
 Přepsaná kontrola počítá, kolik čísel vůbec našla, takže planost je vidět
 na první pohled. Našla 53 zbylých výskytů — viz další sekce.
 
+### Nedělitelná mezera za běhu — hotovo
+
+Statický autorský text měl `&nbsp;` od fáze 1. Čísla, která vznikají až za běhu,
+ale jednotku připojovala **obyčejnou mezerou** — `` `${fmtNum(p, 2)} bar` ``.
+Měřeno v prohlížeči: **113 chybných dvojic** z 257 v české verzi.
+
+| Kde | Počet | Oprava |
+|---|---|---|
+| šablonové řetězce v JS a v `<script>` | 146 | `}\u00a0bar` |
+| skládání přes `+ ' bar'` | 9 | totéž |
+| překladové vzory `{0} bar` v `locales/` | 91 (3 jazyky) | doslovné U+00A0 |
+
+**Proč escape, a ne entita.** Řetězec v JS neví, kam ho kód pošle — stejný
+argument jako u locale klíčů (authoring.md §6.1). `&nbsp;` dekóduje jen
+`innerHTML`; v `textContent`, na canvasu Chart.js a v atributu `title` by se
+vypsalo i se středníkem. Escape `\u00a0` se navíc na rozdíl od doslovného znaku
+dá grepovat a je vidět v diffu. Pravidlo přibylo do §6.1 jako třetí řádek
+tabulky.
+
+**Vlastní kontrola byla nejdřív vakuózní.** První verze testu hledala
+`` /\}\s(?:bar|m)/ `` — jenže `\s` v JS regulárním výrazu matchuje **i U+00A0**,
+takže test procházel i nad neopraveným souborem. Odhalilo se to jen proto, že
+sousední test na locales spadl a při hledání příčiny se ukázalo, že měl spadnout
+také. Testy teď hledají doslovnou mezeru U+0020 a obě jsou negativně ověřené:
+se zaseknutou vadou hlásí 4 (JS), resp. 2 (locales) nálezy.
+
+**Slepé místo prohlížečové kontroly.** Text uvnitř `<option>` a v atributech
+procházení DOM nevidí. Proto je vedle měření i statický test nad zdrojáky —
+zachytil 5 výskytů v `DiveSetupEditor.js`, které v prohlížeči nebyly vidět.
+
+**Zbývá (jiná třída).** Angličtina píše na několika místech `at {1}m` a
+`${maxDepth}m` úplně bez mezery. Podle ISO 80000 je to chyba v každém jazyce,
+ale je to jiná vada než tahle (chybí mezera, ne její typ) a čeština ji nemá.
+
 ### Desetinný oddělovač v tabulkách a konstantách — hotovo
 
 Poslední skupina desetinných teček: 53 textových uzlů, které předchozí PR

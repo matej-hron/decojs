@@ -749,7 +749,7 @@
             COMPARTMENTS.forEach((comp, idx) => {
                 const opt = document.createElement('option');
                 opt.value = idx;
-                opt.textContent = `TC${comp.id} — ${fmtNum(comp.halfTime)} min — ${comp.label.split(' - ')[1] || ''}`.trim();
+                opt.textContent = `TC${comp.id} — ${fmtNum(comp.halfTime)}\u00a0min — ${comp.label.split(' - ')[1] || ''}`.trim();
                 els.compartment.appendChild(opt);
             });
             els.compartment.value = state.compartmentIdx;

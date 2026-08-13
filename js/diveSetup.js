@@ -1259,7 +1259,7 @@ export function formatDiveSetupSummary(setup) {
     const diveCount = setup.dives?.length || 1;
     const diveInfo = diveCount > 1 ? ` (${diveCount} dives)` : '';
     
-    return `${setup.name}: ${maxDepth}m max depth, ${totalTime} min total, ${gasNames}${diveInfo}`;
+    return `${setup.name}: ${maxDepth}m max depth, ${totalTime}\u00a0min total, ${gasNames}${diveInfo}`;
 }
 /**
  * NOAA CNS Oxygen Toxicity Limits
@@ -1580,7 +1580,7 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
     // raw 3.3 min rounds to 3, missing 1 min).
     const displayRuntimes = segments.map(s => Math.round(s.runtime));
     const rows = segments.map((s, i) => {
-        const tankCell = s.tankBar !== null && s.tankBar !== undefined ? `${s.tankBar} bar` : '—';
+        const tankCell = s.tankBar !== null && s.tankBar !== undefined ? `${s.tankBar}\u00a0bar` : '—';
         const gas = gasList.find(g => g.id === s.gasId);
         const threshold = gas?.reservePressure ?? reserve;
         const belowReserve = s.tankBar !== null && s.tankBar !== undefined && s.tankBar <= threshold;

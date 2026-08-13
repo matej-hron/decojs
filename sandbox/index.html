@@ -892,7 +892,7 @@
                     type: 'critical',
                     icon: '⚠️',
                     message: fmt(
-                        translate('warnings.cnsToxicityBottom', 'CNS toxicity risk: ppO₂ = {0} bar at {1}m during bottom (max 1.6)'),
+                        translate('warnings.cnsToxicityBottom', 'CNS toxicity risk: ppO₂ = {0}\u00a0bar at {1}m during bottom (max 1.6)'),
                         fmtNum(maxPpO2Bottom, 2), fmtNum(maxPpO2BottomDepth, 0)
                     )
                 });
@@ -901,7 +901,7 @@
                     type: 'warning',
                     icon: '⚡',
                     message: fmt(
-                        translate('warnings.highPpO2Bottom', 'High ppO₂: {0} bar at {1}m during bottom (limit 1.4 for working dives)'),
+                        translate('warnings.highPpO2Bottom', 'High ppO₂: {0}\u00a0bar at {1}m during bottom (limit 1.4 for working dives)'),
                         fmtNum(maxPpO2Bottom, 2), fmtNum(maxPpO2BottomDepth, 0)
                     )
                 });
@@ -913,7 +913,7 @@
                     type: 'critical',
                     icon: '⚠️',
                     message: fmt(
-                        translate('warnings.cnsToxicityDeco', 'CNS toxicity risk: ppO₂ = {0} bar at {1}m during deco (max 1.6)'),
+                        translate('warnings.cnsToxicityDeco', 'CNS toxicity risk: ppO₂ = {0}\u00a0bar at {1}m during deco (max 1.6)'),
                         fmtNum(maxPpO2Deco, 2), fmtNum(maxPpO2DecoDepth, 0)
                     )
                 });
@@ -924,7 +924,7 @@
                     type: 'critical',
                     icon: '💨',
                     message: fmt(
-                        translate('warnings.hypoxiaRisk', 'Hypoxia risk: ppO₂ = {0} bar (min 0.16)'),
+                        translate('warnings.hypoxiaRisk', 'Hypoxia risk: ppO₂ = {0}\u00a0bar (min 0.16)'),
                         fmtNum(minPpO2, 2)
                     )
                 });
@@ -936,7 +936,7 @@
                     type: 'warning',
                     icon: '🍺',
                     message: fmt(
-                        translate('warnings.narcosisWarning', 'Narcosis warning: ppN₂ = {0} bar at {1}m (equivalent to {2}m on air)'),
+                        translate('warnings.narcosisWarning', 'Narcosis warning: ppN₂ = {0}\u00a0bar at {1}m (equivalent to {2}m on air)'),
                         fmtNum(maxPpN2, 2), fmtNum(maxPpN2Depth, 0), fmtNum(((maxPpN2 - 0.79) / 0.079), 0)
                     )
                 });
@@ -945,7 +945,7 @@
                     type: 'info',
                     icon: '🍻',
                     message: fmt(
-                        translate('warnings.mildNarcosis', 'Mild narcosis possible: ppN₂ = {0} bar at {1}m'),
+                        translate('warnings.mildNarcosis', 'Mild narcosis possible: ppN₂ = {0}\u00a0bar at {1}m'),
                         fmtNum(maxPpN2, 2), fmtNum(maxPpN2Depth, 0)
                     )
                 });
@@ -1005,7 +1005,7 @@
                         type: 'critical',
                         icon: '⛽',
                         message: fmt(
-                            translate('warnings.belowReserve', 'Below reserve: {0} ends at {1} bar (reserve: {2} bar)'),
+                            translate('warnings.belowReserve', 'Below reserve: {0} ends at {1}\u00a0bar (reserve: {2}\u00a0bar)'),
                             tank.name, Math.round(tank.endPressure), reservePressure
                         )
                     });
@@ -1014,7 +1014,7 @@
                         type: 'warning',
                         icon: '📉',
                         message: fmt(
-                            translate('warnings.lowGasMargin', 'Low gas margin: {0} ends at {1} bar (close to {2} bar reserve)'),
+                            translate('warnings.lowGasMargin', 'Low gas margin: {0} ends at {1}\u00a0bar (close to {2}\u00a0bar reserve)'),
                             tank.name, Math.round(tank.endPressure), reservePressure
                         )
                     });
@@ -1063,7 +1063,7 @@
                     <div class="gas-tank-row">
                         <span class="gas-tank-name">${tank.name}</span>
                         <span class="gas-tank-stats">
-                            <span>${tank.startPressure} → <span class="${status}">${tank.endPressure} bar</span></span>
+                            <span>${tank.startPressure} → <span class="${status}">${tank.endPressure}\u00a0bar</span></span>
                             <span>${usedText}</span>
                         </span>
                     </div>

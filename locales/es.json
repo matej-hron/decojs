@@ -979,9 +979,9 @@
         "diveTimeChange": "Cambio de tiempo de inmersión a 20 m",
         "diveTimeSub": "Consumo de aire en superficie 20 L/min a 3 bar (1+20/10)",
         "safety": {
-            "withinWorking": "Dentro de la presión de trabajo ({0} bar nominales)",
-            "aboveWorking": "¡Por encima de la presión de trabajo! {0} bar (presión de prueba: {1} bar)",
-            "danger": "¡PELIGRO! {0} bar supera la presión de prueba ({1} bar)"
+            "withinWorking": "Dentro de la presión de trabajo ({0} bar nominales)",
+            "aboveWorking": "¡Por encima de la presión de trabajo! {0} bar (presión de prueba: {1} bar)",
+            "danger": "¡PELIGRO! {0} bar supera la presión de prueba ({1} bar)"
         },
         "tempRange": "Rango de temperatura",
         "tempRefs": {
@@ -1077,7 +1077,7 @@
             "ppN2Narcosis": "Narcosis ppN₂ (4,0)",
             "tooltipTime": "Tiempo: {0} min",
             "tooltipGas": "Gas: {0}",
-            "tooltipGasConsumption": "⛽ Consumo de gas: {0} L/min ({1})",
+            "tooltipGasConsumption": "⛽ Consumo de gas: {0} L/min ({1})",
             "tooltipTankPressures": "─── Presiones de botella ───",
             "tooltipTankEmpty": " ⚠️ VACÍA",
             "tooltipTankLow": " ⚠️",
@@ -1113,34 +1113,34 @@
         }
     },
     "warnings": {
-        "cnsToxicityBottom": "Riesgo de toxicidad SNC: ppO₂ = {0} bar a {1} m en fondo (máx. 1,6)",
-        "highPpO2Bottom": "ppO₂ elevado: {0} bar a {1} m en fondo (límite 1,4 para inmersiones con esfuerzo)",
-        "cnsToxicityDeco": "Riesgo de toxicidad SNC: ppO₂ = {0} bar a {1} m durante la deco (máx. 1,6)",
-        "hypoxiaRisk": "Riesgo de hipoxia: ppO₂ = {0} bar (mín. 0,16)",
-        "narcosisWarning": "Aviso de narcosis: ppN₂ = {0} bar a {1} m (equivalente a {2} m con aire)",
-        "mildNarcosis": "Posible narcosis leve: ppN₂ = {0} bar a {1} m",
-        "ceilingViolation": "Violación de techo: emergido {0} m sobre el techo ({1} puntos de datos)",
-        "outOfGas": "Sin gas: {0} se agota durante la inmersión (necesario {1} L, disponible {2} L)",
-        "belowReserve": "Por debajo de reserva: {0} acaba a {1} bar (reserva: {2} bar)",
-        "lowGasMargin": "Margen de gas bajo: {0} acaba a {1} bar (cerca de la reserva de {2} bar)",
+        "cnsToxicityBottom": "Riesgo de toxicidad SNC: ppO₂ = {0} bar a {1} m en fondo (máx. 1,6)",
+        "highPpO2Bottom": "ppO₂ elevado: {0} bar a {1} m en fondo (límite 1,4 para inmersiones con esfuerzo)",
+        "cnsToxicityDeco": "Riesgo de toxicidad SNC: ppO₂ = {0} bar a {1} m durante la deco (máx. 1,6)",
+        "hypoxiaRisk": "Riesgo de hipoxia: ppO₂ = {0} bar (mín. 0,16)",
+        "narcosisWarning": "Aviso de narcosis: ppN₂ = {0} bar a {1} m (equivalente a {2} m con aire)",
+        "mildNarcosis": "Posible narcosis leve: ppN₂ = {0} bar a {1} m",
+        "ceilingViolation": "Violación de techo: emergido {0} m sobre el techo ({1} puntos de datos)",
+        "outOfGas": "Sin gas: {0} se agota durante la inmersión (necesario {1} L, disponible {2} L)",
+        "belowReserve": "Por debajo de reserva: {0} acaba a {1} bar (reserva: {2} bar)",
+        "lowGasMargin": "Margen de gas bajo: {0} acaba a {1} bar (cerca de la reserva de {2} bar)",
         "divePlanGood": "El plan de inmersión parece correcto. Todos los parámetros dentro de límites seguros."
     },
     "gasSummary": {
         "heading": "⛽ Resumen de gases",
-        "total": "Total consumido: {0} L",
-        "used": "({0} L consumidos)",
+        "total": "Total consumido: {0} L",
+        "used": "({0} L consumidos)",
         "noProfiles": "Sin perfiles guardados"
     },
     "diveEditor": {
         "ndl": {
             "noLimit": "✅ Sin límite",
-            "remaining": "✅ {0} min restantes",
+            "remaining": "✅ {0} min restantes",
             "atLimit": "⚠️ En el límite",
             "decoDive": "🔴 Inmersión con deco",
             "outOfRange": "⚠ fuera de rango",
             "infinity": "∞"
         },
-        "mod": "MOD: {0} m (deco: {1} m)",
+        "mod": "MOD: {0} m (deco: {1} m)",
         "profileDefault": "Perfil:",
         "customProfile": "✏️ Perfil personalizado",
         "customProfileNamed": "✏️ {0}",
@@ -1171,7 +1171,7 @@
             "addDecoGas": "Añadir gas de deco",
             "gasSwitchStop": "Parada al cambiar de gas:",
             "switchNoStop": "0 min (sin parada)",
-            "switchNMin": "{0} min",
+            "switchNMin": "{0} min",
             "switchHint": "Tiempo para verificar el gas, respirar y señalizar al compañero en cada profundidad de cambio."
         },
         "gf": {
@@ -1284,10 +1284,10 @@
     },
     "tissueSim": {
         "alertOk": "Todo correcto",
-        "ppO2OxygenToxicity": "pO₂ {0} bar — toxicidad por oxígeno (límite deco {1})",
-        "ppO2AboveRec": "pO₂ {0} bar — por encima del límite recreativo {1}",
-        "ppO2Hypoxic": "pO₂ {0} bar — hipoxia (< {1})",
-        "ppN2Narcosis": "pN₂ {0} bar — narcosis de nitrógeno probable (> {1})",
+        "ppO2OxygenToxicity": "pO₂ {0} bar — toxicidad por oxígeno (límite deco {1})",
+        "ppO2AboveRec": "pO₂ {0} bar — por encima del límite recreativo {1}",
+        "ppO2Hypoxic": "pO₂ {0} bar — hipoxia (< {1})",
+        "ppN2Narcosis": "pN₂ {0} bar — narcosis de nitrógeno probable (> {1})",
         "chartLabels": {
             "pAmb": "pAmb (ambiente)",
             "pN2Alveolar": "<var>p</var><sub>N₂</sub> alveolar",

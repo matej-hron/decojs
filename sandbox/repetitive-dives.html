@@ -493,7 +493,7 @@
       const cols = COMPARTMENTS.map(c => {
         const raw = per[c.id] || 0;
         const fill = Math.min(100, raw);
-        return `<span class="presat-col" data-tip="#${c.id} · ${fmtNum(c.halfTime)} min · ${Math.round(raw)}%">
+        return `<span class="presat-col" data-tip="#${c.id} · ${fmtNum(c.halfTime)}\u00a0min · ${Math.round(raw)}%">
                   <span class="presat-fill" style="height:${fill}%;background:${c.color};"></span>
                 </span>`;
       }).join('');

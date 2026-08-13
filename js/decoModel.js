@@ -48,7 +48,7 @@ export const DECO_STOP_MAX_MINUTES = 300;
 export class DecoCapExceededError extends Error {
     constructor(depth, stopsSoFar, capMinutes) {
         super(
-            `Decompression at ${depth} m would need more than ${capMinutes} minutes ` +
+            `Decompression at ${depth}\u00a0m would need more than ${capMinutes} minutes ` +
             `to clear. This profile is outside the algorithm's usable range — ` +
             `the gradient factor may be too aggressive for the exposure, or the ` +
             `dive is beyond what the configured gas can safely support.`

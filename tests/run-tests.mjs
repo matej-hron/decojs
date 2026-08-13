@@ -3833,6 +3833,67 @@ describe('format - static numbers in tables and formulas', () => {
     });
 });
 
+describe('notation - non-breaking space between value and unit at runtime', () => {
+    // authoring.md §6.1: mezi číslem a jednotkou patří nedělitelná mezera.
+    // Statický text hlídají starší testy; tohle hlídá text, který vzniká
+    // až za běhu — v šablonových řetězcích a v překladových vzorech.
+    //
+    // V JS se píše escape `\u00a0`, ne entita a ne doslovný znak:
+    //   - `&nbsp;` dekóduje jen innerHTML, ne textContent, canvas ani title;
+    //   - doslovné U+00A0 je v diffu neviditelné a nedá se grepovat.
+    // Pozor: `\s` v JS regexu matchuje i U+00A0, takže by test prošel
+    // i nad neopraveným souborem. Musí se hledat doslovná mezera U+0020.
+    const UNIT = String.raw`(?:mm|cm|km|msw|fsw|bar-L|bar·L|kPa|MPa|Pa|bar|min|m|l|L|h|s)`;
+    const SHIPPED = [
+        'js/charts/DiveProfileChart.js', 'js/charts/MValueChart.js',
+        'js/charts/GFChart.js', 'js/charts/BubbleModel.js',
+        'js/components/DiveSetupEditor.js', 'js/components/TissueSaturationSim.js',
+        'js/components/AddDiveDialog.js', 'js/mvalues.js', 'js/diveSetup.js',
+        'js/main.js', 'js/visualization.js', 'js/tissueEducation.js', 'js/decoModel.js',
+        'pressure.html', 'tissue-loading.html', 'm-values.html',
+        'sandbox/index.html', 'sandbox/haldane.html', 'sandbox/schreiner.html',
+        'sandbox/m-values.html', 'sandbox/gradient-factors.html', 'sandbox/gas-law.html',
+        'sandbox/cascade-filling.html', 'sandbox/transfilling.html',
+    ];
+
+    const scan = (rel, re) => {
+        const text = readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
+        const hits = [];
+        text.split('\n').forEach((line, i) => {
+            const m = re.exec(line);
+            re.lastIndex = 0;
+            if (!m) return;
+            const comment = line.search(/(?:^|\s)\/\//);
+            if (comment !== -1 && comment < m.index) return;
+            hits.push(`${rel}:${i + 1}  ${line.trim().slice(0, 80)}`);
+        });
+        return hits;
+    };
+
+    test('interpolated values are followed by a non-breaking space', () => {
+        // `${fmtNum(p, 2)} bar` se zlomí na konci řádku mezi číslo a jednotku.
+        const re = new RegExp(String.raw`\} ${UNIT}(?![A-Za-zá-žÁ-Ž0-9])`);
+        const offenders = SHIPPED.flatMap((rel) => scan(rel, re));
+        expect(offenders).toEqual([]);
+    });
+
+    test('translation placeholders are followed by a non-breaking space', () => {
+        // Týká se i záložních řetězců v kódu — ty se použijí, než dorazí locale.
+        const re = new RegExp(String.raw`\{\d\} ${UNIT}(?![A-Za-zá-žÁ-Ž0-9])`);
+        const offenders = [...SHIPPED, 'locales/cs.json', 'locales/en.json', 'locales/es.json']
+            .flatMap((rel) => scan(rel, re));
+        expect(offenders).toEqual([]);
+    });
+
+    test('javascript uses the \\u00a0 escape, never the &nbsp; entity', () => {
+        // Entitu dekóduje jen innerHTML. V textContent, na canvasu a v atributu
+        // title by se vypsala doslova i se středníkem (na to narazil PR #82).
+        const re = /&nbsp;/;
+        const offenders = SHIPPED.filter((rel) => rel.endsWith('.js')).flatMap((rel) => scan(rel, re));
+        expect(offenders).toEqual([]);
+    });
+});
+
 describe('notation - half-time symbol t_1/2', () => {
     // Glossary: kanonický tvar je *t*(1/2) — malé kurzívní t, stojatý index.
     // Velké T je Bühlmannova notace uvedená v tabulce chyb.

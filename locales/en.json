@@ -979,9 +979,9 @@
         "diveTimeChange": "Dive Time Change at 20 m",
         "diveTimeSub": "Surface Air Consumption 20 L/min at 3 bar (1+20/10)",
         "safety": {
-            "withinWorking": "Within working pressure ({0} bar rated)",
-            "aboveWorking": "Above working pressure! {0} bar (test pressure: {1} bar)",
-            "danger": "DANGER! {0} bar exceeds test pressure ({1} bar)"
+            "withinWorking": "Within working pressure ({0} bar rated)",
+            "aboveWorking": "Above working pressure! {0} bar (test pressure: {1} bar)",
+            "danger": "DANGER! {0} bar exceeds test pressure ({1} bar)"
         },
         "tempRange": "Temperature Range",
         "tempRefs": {
@@ -1077,7 +1077,7 @@
             "ppN2Narcosis": "ppN₂ narcosis (4.0)",
             "tooltipTime": "Time: {0} min",
             "tooltipGas": "Gas: {0}",
-            "tooltipGasConsumption": "⛽ Gas consumption: {0} L/min ({1})",
+            "tooltipGasConsumption": "⛽ Gas consumption: {0} L/min ({1})",
             "tooltipTankPressures": "─── Tank Pressures ───",
             "tooltipTankEmpty": " ⚠️ EMPTY",
             "tooltipTankLow": " ⚠️",
@@ -1113,16 +1113,16 @@
         }
     },
     "warnings": {
-        "cnsToxicityBottom": "CNS toxicity risk: ppO₂ = {0} bar at {1}m during bottom (max 1.6)",
-        "highPpO2Bottom": "High ppO₂: {0} bar at {1}m during bottom (limit 1.4 for working dives)",
-        "cnsToxicityDeco": "CNS toxicity risk: ppO₂ = {0} bar at {1}m during deco (max 1.6)",
-        "hypoxiaRisk": "Hypoxia risk: ppO₂ = {0} bar (min 0.16)",
-        "narcosisWarning": "Narcosis warning: ppN₂ = {0} bar at {1}m (equivalent to {2}m on air)",
-        "mildNarcosis": "Mild narcosis possible: ppN₂ = {0} bar at {1}m",
+        "cnsToxicityBottom": "CNS toxicity risk: ppO₂ = {0} bar at {1}m during bottom (max 1.6)",
+        "highPpO2Bottom": "High ppO₂: {0} bar at {1}m during bottom (limit 1.4 for working dives)",
+        "cnsToxicityDeco": "CNS toxicity risk: ppO₂ = {0} bar at {1}m during deco (max 1.6)",
+        "hypoxiaRisk": "Hypoxia risk: ppO₂ = {0} bar (min 0.16)",
+        "narcosisWarning": "Narcosis warning: ppN₂ = {0} bar at {1}m (equivalent to {2}m on air)",
+        "mildNarcosis": "Mild narcosis possible: ppN₂ = {0} bar at {1}m",
         "ceilingViolation": "Ceiling violation: Surfaced {0}m above ceiling ({1} data points)",
         "outOfGas": "Out of gas: {0} runs out during dive (need {1}L, have {2}L)",
-        "belowReserve": "Below reserve: {0} ends at {1} bar (reserve: {2} bar)",
-        "lowGasMargin": "Low gas margin: {0} ends at {1} bar (close to {2} bar reserve)",
+        "belowReserve": "Below reserve: {0} ends at {1} bar (reserve: {2} bar)",
+        "lowGasMargin": "Low gas margin: {0} ends at {1} bar (close to {2} bar reserve)",
         "divePlanGood": "Dive plan looks good! All parameters within safe limits."
     },
     "gasSummary": {
@@ -1171,7 +1171,7 @@
             "addDecoGas": "Add Deco Gas",
             "gasSwitchStop": "Gas switch stop:",
             "switchNoStop": "0 min (no stop)",
-            "switchNMin": "{0} min",
+            "switchNMin": "{0} min",
             "switchHint": "Time to verify gas, take breaths, and signal buddy at each switch depth."
         },
         "gf": {
@@ -1284,10 +1284,10 @@
     },
     "tissueSim": {
         "alertOk": "All clear",
-        "ppO2OxygenToxicity": "pO₂ {0} bar — oxygen toxicity (deco limit {1})",
-        "ppO2AboveRec": "pO₂ {0} bar — above recreational limit {1}",
-        "ppO2Hypoxic": "pO₂ {0} bar — hypoxic (< {1})",
-        "ppN2Narcosis": "pN₂ {0} bar — nitrogen narcosis likely (> {1})",
+        "ppO2OxygenToxicity": "pO₂ {0} bar — oxygen toxicity (deco limit {1})",
+        "ppO2AboveRec": "pO₂ {0} bar — above recreational limit {1}",
+        "ppO2Hypoxic": "pO₂ {0} bar — hypoxic (< {1})",
+        "ppN2Narcosis": "pN₂ {0} bar — nitrogen narcosis likely (> {1})",
         "chartLabels": {
             "pAmb": "pAmb (ambient)",
             "pN2Alveolar": "<var>p</var><sub>N₂</sub> alveolar",

@@ -672,7 +672,7 @@
         function populateCompartments() {
             const comps = getCompartmentsForVariant(state.variant);
             els.compartment.innerHTML = comps
-                .map((c, i) => `<option value="${i}">${i + 1} | t½ = ${fmtNum(c.halfTime, 1)} min</option>`)
+                .map((c, i) => `<option value="${i}">${i + 1} | t½ = ${fmtNum(c.halfTime, 1)}\u00a0min</option>`)
                 .join('');
             els.compartment.value = String(state.compartmentIdx);
         }
@@ -681,7 +681,7 @@
         function recompute() {
             // End depth display
             const endDepth = state.startDepth + state.depthRate * state.segmentTime;
-            els.endDepthDisp.textContent = `${fmtNum(Math.max(0, endDepth), 1)} m`;
+            els.endDepthDisp.textContent = `${fmtNum(Math.max(0, endDepth), 1)}\u00a0m`;
 
             // Math primitives
             const comp = getCompartmentsForVariant(state.variant)[state.compartmentIdx];
@@ -796,7 +796,7 @@
             clampSegmentTime();
             applyTimeRange();
             timeSlider.value = String(state.t);
-            timeValue.textContent = `${fmtNum(state.t, 2)} min`;
+            timeValue.textContent = `${fmtNum(state.t, 2)}\u00a0min`;
             updateStepButtons();
             recompute();
         });
@@ -805,7 +805,7 @@
             clampSegmentTime();
             applyTimeRange();
             timeSlider.value = String(state.t);
-            timeValue.textContent = `${fmtNum(state.t, 2)} min`;
+            timeValue.textContent = `${fmtNum(state.t, 2)}\u00a0min`;
             updateStepButtons();
             recompute();
         });
@@ -814,7 +814,7 @@
             clampSegmentTime();
             applyTimeRange();                           // may clamp state.t
             timeSlider.value = String(state.t);         // sync slider thumb after clamp
-            timeValue.textContent = `${fmtNum(state.t, 2)} min`;
+            timeValue.textContent = `${fmtNum(state.t, 2)}\u00a0min`;
             updateStepButtons();
             recompute();
         });
@@ -822,7 +822,7 @@
             state.compartmentIdx = parseInt(els.compartment.value, 10);
             applyTimeRange();                           // may clamp state.t
             timeSlider.value = String(state.t);         // sync slider thumb after clamp
-            timeValue.textContent = `${fmtNum(state.t, 2)} min`;
+            timeValue.textContent = `${fmtNum(state.t, 2)}\u00a0min`;
             updateStepButtons();
             recompute();                                // recompute with the clamped state.t
         });
@@ -853,7 +853,7 @@
             const tMax = parseFloat(timeSlider.max);
             state.t = Math.max(0, Math.min(tMax, parseFloat(newT.toFixed(2))));
             timeSlider.value = String(state.t);
-            timeValue.textContent = `${fmtNum(state.t, 2)} min`;
+            timeValue.textContent = `${fmtNum(state.t, 2)}\u00a0min`;
             updateStepButtons();
             recompute();
         }
@@ -928,7 +928,7 @@
             chartCurve.setAttribute('d', `M ${pts.join(' L ')}`);
 
             // Palv(t) — straight line from (0, Palv,0) to (tMax, Palv,end)
-            const palvPath = `M ${(xOf(0)).toFixed(2)},${(yOf(pAlv0)).toFixed(2)} L ${(xOf(tMax)).toFixed(2)},${(yOf(pAlvEnd)).toFixed(2)}`;
+            const palvPath = `M ${(xOf(0)).toFixed(2)},${(yOf(pAlv0)).toFixed(2)}\u00a0L ${(xOf(tMax)).toFixed(2)},${(yOf(pAlvEnd)).toFixed(2)}`;
             chartPalv.setAttribute('d', palvPath);
 
             // Baseline at Pt,0
@@ -1038,7 +1038,7 @@
         populateCompartments();
         clampSegmentTime();
         applyTimeRange();
-        timeValue.textContent = `${fmtNum(state.t, 2)} min`;
+        timeValue.textContent = `${fmtNum(state.t, 2)}\u00a0min`;
         updateStepButtons();
         recompute();
     </script>

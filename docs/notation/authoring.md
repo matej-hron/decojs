@@ -381,6 +381,7 @@ osobní preference.
 |---|---|---|
 | `*.html` | `&nbsp;` | autor to píše ručně, prohlížeč to vždy dekóduje, v diffu je to vidět |
 | `locales/*.json`, `data/*.json` | **doslovné U+00A0** | tentýž řetězec může skončit v `innerHTML`, na canvasu Chart.js, v `textContent` i v atributu `title` — entitu dekóduje jen první z nich |
+| `*.js` a `<script>` v HTML | **escape `\u00a0`** | platí tentýž argument o sinku jako u dat, ale ve zdrojáku je escape navíc vidět v diffu a dá se grepovat |
 
 **V datech nesmí být `&nbsp;`.** Locale řetězec neví, kam ho kód pošle:
 `js/i18n.js` ho vloží přes `innerHTML` (entita se dekóduje), ale Chart.js ho vykreslí
@@ -391,6 +392,24 @@ U+00A0 se vykreslí správně ve všech čtyřech případech. Je to jediný tva
 **přežije, když někdo později změní sink** — třeba při běžném zpřísnění `innerHTML`
 na `textContent`. Klasifikovat každý klíč podle sinku by šlo, ale ta klasifikace by
 tichem zestárla; invariant nezestárne.
+
+**V šablonových řetězcích platí totéž co v datech.** `` `${fmtNum(p, 2)} bar` ``
+je stejná past jako locale klíč: než se řetězec vykreslí, projde `innerHTML`,
+`textContent`, canvasem grafu i atributem `title`. Proto se v JS píše
+`` `${fmtNum(p, 2)}\u00a0bar` `` — escape, ne entita a ne doslovný znak:
+
+```js
+el.innerHTML   = `${fmtNum(p, 2)}\u00a0bar`;   // ✅ funguje
+el.textContent = `${fmtNum(p, 2)}&nbsp;bar`;   // ✗ vypíše i středník
+```
+
+Escape se volí proti doslovnému U+00A0 ze stejného důvodu, proč se v HTML volí
+entita: neviditelný znak ve zdrojáku nikdo nezkontroluje a editor ho beze stopy
+nahradí obyčejnou mezerou.
+
+**Pozor při psaní testu:** `\s` v JS regulárním výrazu matchuje **i U+00A0**.
+Kontrola `/\}\s(?:bar|m)/` projde i nad neopraveným souborem. Hledej doslovnou
+mezeru U+0020.
 
 Hlídají to testy `*.json: no &nbsp; entity` a `*.json: U+00A0 between value and unit`
 v `tests/run-tests.mjs`.

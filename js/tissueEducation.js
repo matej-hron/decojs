@@ -274,7 +274,7 @@ function initOngassingChart() {
                     callbacks: {
                         title: (items) => `${items[0].label} half-times`,
                         label: (item) => {
-                            const bar = `${item.dataset.label}: ${fmtNum(item.raw, 2)} bar`;
+                            const bar = `${item.dataset.label}: ${fmtNum(item.raw, 2)}\u00a0bar`;
                             if (item.datasetIndex === 0) {
                                 const target = getSaturatedTissuePpN2(currentDepth);
                                 const initial = SURFACE_ALVEOLAR_N2;
@@ -341,7 +341,7 @@ function updateOngassingChart() {
     const targetPpN2 = getSaturatedTissuePpN2(currentDepth);
     
     if (depthValue) depthValue.textContent = `${currentDepth}m`;
-    if (ppn2Value) ppn2Value.innerHTML = `(<var>p</var><sub>N₂</sub> = ${fmtNum(targetPpN2, 2)}&nbsp;bar)`;
+    if (ppn2Value) ppn2Value.innerHTML = `(<var>p</var><sub>N₂</sub> = ${fmtNum(targetPpN2, 2)}\u00a0bar)`;
     
     const data = calculateOngassing(targetPpN2);
     
@@ -418,7 +418,7 @@ function initOffgassingChart() {
                     callbacks: {
                         title: (items) => `${items[0].label} half-times`,
                         label: (item) => {
-                            const bar = `${item.dataset.label}: ${fmtNum(item.raw, 2)} bar`;
+                            const bar = `${item.dataset.label}: ${fmtNum(item.raw, 2)}\u00a0bar`;
                             if (item.datasetIndex === 0) {
                                 const initial = getSaturatedTissuePpN2(currentDepth);
                                 const target = SURFACE_ALVEOLAR_N2;

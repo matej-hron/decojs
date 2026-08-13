@@ -705,8 +705,8 @@
                         <div class="cylinder-fill cascade${isLow ? ' low' : ''}" style="height: ${getFillHeight(pressure)}%"></div>
                     </div>
                     <div class="cylinder-stats">
-                        <div class="pressure">${Math.round(pressure)} bar</div>
-                        <div class="volume">${CASCADE_VOLUME} L</div>
+                        <div class="pressure">${Math.round(pressure)}\u00a0bar</div>
+                        <div class="volume">${CASCADE_VOLUME}\u00a0L</div>
                     </div>
                 `;
                 container.appendChild(unit);
@@ -743,8 +743,8 @@
                         <div class="cylinder-fill${isFull ? ' full' : ''}" style="height: ${getFillHeight(pressure)}%"></div>
                     </div>
                     <div class="cylinder-stats">
-                        <div class="pressure">${Math.round(pressure)} bar</div>
-                        <div class="volume">${targetVolume} L</div>
+                        <div class="pressure">${Math.round(pressure)}\u00a0bar</div>
+                        <div class="volume">${targetVolume}\u00a0L</div>
                     </div>
                 `;
                 container.appendChild(unit);
@@ -773,7 +773,7 @@
 
             // Update cascade remaining
             const remaining = cascadePressures.reduce((sum, p) => sum + p * CASCADE_VOLUME, 0);
-            document.getElementById('cascadeRemaining').textContent = fmtGroup(remaining) + ' bar-L';
+            document.getElementById('cascadeRemaining').textContent = fmtGroup(remaining) + '\u00a0bar-L';
 
             // No target connections - check for cascade-only equalization
             if (openCascades.length === 0 && openTargets.length === 0) {
@@ -811,12 +811,12 @@
                     detailsDiv.innerHTML = `
                         <strong>${cascadeLabels}</strong> equalizing
                         <div class="predicted-result">
-                            ${isAnimating ? 'Equalizing...' : 'Will equalize to'} <strong>${fmtNum(eqP, 1)} bar</strong>
+                            ${isAnimating ? 'Equalizing...' : 'Will equalize to'} <strong>${fmtNum(eqP, 1)}\u00a0bar</strong>
                         </div>
                     `;
                 } else {
                     statusDiv.className = 'connection-status';
-                    detailsDiv.innerHTML = `<strong>${cascadeLabels}</strong> — Equalized at ${Math.round(maxP)} bar`;
+                    detailsDiv.innerHTML = `<strong>${cascadeLabels}</strong> — Equalized at ${Math.round(maxP)}\u00a0bar`;
                     detailsDiv.className = 'connection-details';
                 }
                 return;
@@ -847,12 +847,12 @@
                     detailsDiv.innerHTML = `
                         <strong>${targetLabels}</strong> equalizing
                         <div class="predicted-result">
-                            ${isAnimating ? 'Equalizing...' : 'Will equalize to'} <strong>${fmtNum(eqP, 1)} bar</strong>
+                            ${isAnimating ? 'Equalizing...' : 'Will equalize to'} <strong>${fmtNum(eqP, 1)}\u00a0bar</strong>
                         </div>
                     `;
                 } else {
                     statusDiv.className = 'connection-status';
-                    detailsDiv.innerHTML = `<strong>${targetLabels}</strong> — Equalized at ${Math.round(maxP)} bar`;
+                    detailsDiv.innerHTML = `<strong>${targetLabels}</strong> — Equalized at ${Math.round(maxP)}\u00a0bar`;
                     detailsDiv.className = 'connection-details';
                 }
                 return;
@@ -899,7 +899,7 @@
             detailsDiv.innerHTML = `
                 <strong>${cascadeLabels}</strong> ${flowDirection} <strong>${targetLabels}</strong>
                 <div class="predicted-result">
-                    ${isAnimating ? 'Equalizing...' : 'Will equalize to'} <strong>${fmtNum(displayP, 1)} bar</strong>
+                    ${isAnimating ? 'Equalizing...' : 'Will equalize to'} <strong>${fmtNum(displayP, 1)}\u00a0bar</strong>
                     ${flowingToTarget && rawFinalP > TARGET_MAX_PRESSURE ? ' (200 bar limit on targets)' : ''}
                 </div>
             `;
@@ -1078,12 +1078,12 @@
                     `${Math.round(initialTarget[i])}→${Math.round(Math.min(targetFinal, TARGET_MAX_PRESSURE))}`
                 ).join(', ');
                 logText = `${targetStr} equalized`;
-                detailsText = `Input: ${fmtGroup(targetInputGas)} bar-L in ${targetInputVolume} L | Final: ${fmtNum(finalEqPressure, 1)} bar`;
+                detailsText = `Input: ${fmtGroup(targetInputGas)}\u00a0bar-L in ${targetInputVolume}\u00a0L | Final: ${fmtNum(finalEqPressure, 1)}\u00a0bar`;
             } else if (targetIndices.length === 0) {
                 // Cascade-only equalization
                 const cascadeStr = cascadeIndices.map(i => `C${i + 1}`).join(', ');
                 logText = `${cascadeStr} equalized`;
-                detailsText = `Input: ${fmtGroup(cascadeInputGas)} bar-L in ${cascadeInputVolume} L | Final: ${fmtNum(finalEqPressure, 1)} bar`;
+                detailsText = `Input: ${fmtGroup(cascadeInputGas)}\u00a0bar-L in ${cascadeInputVolume}\u00a0L | Final: ${fmtNum(finalEqPressure, 1)}\u00a0bar`;
             } else {
                 // Cascade-to-target fill
                 const cascadeStr = cascadeIndices.map(i => `C${i + 1}`).join(', ');
@@ -1096,10 +1096,10 @@
                     return sum + (actualTargetFinal - initialTarget[i]) * targetVolume;
                 }, 0);
 
-                detailsText = `Input: ${fmtGroup(totalInputGas)} bar-L (${totalVolume} L) | ` +
-                    `Transferred: ${fmtGroup(gasTransferred)} bar-L | ` +
-                    `Final: ${fmtNum(finalEqPressure, 1)} bar` +
-                    (targetFinal > TARGET_MAX_PRESSURE ? ` (targets: ${actualTargetFinal} bar)` : '');
+                detailsText = `Input: ${fmtGroup(totalInputGas)}\u00a0bar-L (${totalVolume}\u00a0L) | ` +
+                    `Transferred: ${fmtGroup(gasTransferred)}\u00a0bar-L | ` +
+                    `Final: ${fmtNum(finalEqPressure, 1)}\u00a0bar` +
+                    (targetFinal > TARGET_MAX_PRESSURE ? ` (targets: ${actualTargetFinal}\u00a0bar)` : '');
             }
 
             const entry = document.createElement('div');
