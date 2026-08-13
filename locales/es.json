@@ -282,7 +282,7 @@
             "exercisesTitle": "Ejercicios: profundidad máxima para el límite de narcosis",
             "limitLabel": "Límite <var>p</var><sub>N₂</sub>:",
             "strictNote": "← límite más estricto empleado por algunas agencias de formación",
-            "exButModTemplate": "¡pero la MOD es {mod} m!",
+            "exButModTemplate": "¡pero la MOD es {mod} m!",
             "exercisesHint": "La misma fórmula que la MOD, pero para el nitrógeno: profundidad máxima = ((<var>p</var><sub>N₂,máx</sub> / <var>f</var><sub>N₂</sub>) − 1) × 10",
             "exGas": "Gas",
             "exCalc": "Cálculo",

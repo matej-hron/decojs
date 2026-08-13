@@ -144,7 +144,7 @@
             "pAmbVar": "Okolní tlak v barech (1 + hloubka/10)",
             "tVar": "Čas v hloubce (minuty)",
             "availableTitle": "Dostupný objem plynu v lahvi",
-            "availableExample": "Pro 12l lahev při 200 barech s rezervou 50 barů:",
+            "availableExample": "Pro 12litrovou lahev při 200 barech s rezervou 50 barů:",
             "availableResult": "Dostupný plyn = 12 × (200 − 50) = <strong>1800 litrů</strong>"
         }
     },
@@ -282,7 +282,7 @@
             "exercisesTitle": "Cvičení: Maximální hloubka pro limit narkózy",
             "limitLabel": "Limit <var>p</var><sub>N₂</sub>:",
             "strictNote": "← přísnější limit používaný některými výcvikovými agenturami",
-            "exButModTemplate": "ale MOD je {mod} m!",
+            "exButModTemplate": "ale MOD je {mod} m!",
             "exercisesHint": "Stejný vzorec jako MOD, ale pro dusík: Max hloubka = ((<var>p</var><sub>N₂,max</sub> / <var>f</var><sub>N₂</sub>) − 1) × 10",
             "exGas": "Směs",
             "exCalc": "Výpočet",

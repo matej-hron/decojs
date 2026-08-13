@@ -350,7 +350,7 @@ describe('diveSetup', () => {
             const setup = getDefaultSetup();
             const summary = formatDiveSetupSummary(setup);
             expect(summary).toContain(setup.name);
-            expect(summary).toContain('40m');
+            expect(summary).toContain('40\u00a0m');
         });
     });
 
@@ -3491,23 +3491,23 @@ describe('TripCalendar - snapClamp', () => {
 describe('TripCalendar - diveBlockLabel', () => {
     test('no-deco dive: name, depth, bottom time', () => {
         const d = { name: 'Dive 2', maxDepth: 40, bottomTime: 22, profile: { totalDecoTime: 0, decoStops: [] } };
-        expect(diveBlockLabel(d)).toBe('Dive 2 · 40m · 22min');
+        expect(diveBlockLabel(d)).toBe('Dive 2 · 40\u00a0m · 22\u00a0min');
     });
     test('deco dive: appends +N deco', () => {
         const d = { name: 'Dive 2', maxDepth: 40, bottomTime: 30, profile: { totalDecoTime: 28, decoStops: [{ depth: 9, time: 5 }] } };
-        expect(diveBlockLabel(d)).toBe('Dive 2 · 40m · 30min · +28 deco');
+        expect(diveBlockLabel(d)).toBe('Dive 2 · 40\u00a0m · 30\u00a0min · +28 deco');
     });
     test('NDL-locked no-deco dive: appends NDL tag', () => {
         const d = { name: 'Dive 2', maxDepth: 40, bottomTime: 22, ndlLocked: true, profile: { totalDecoTime: 0, decoStops: [] } };
-        expect(diveBlockLabel(d)).toBe('Dive 2 · 40m · 22min · NDL');
+        expect(diveBlockLabel(d)).toBe('Dive 2 · 40\u00a0m · 22\u00a0min · NDL');
     });
     test('invalid dive: no-deco N/A', () => {
         const d = { name: 'Dive 2', maxDepth: 40, bottomTime: 2, invalid: true, profile: { totalDecoTime: 0, decoStops: [] } };
-        expect(diveBlockLabel(d)).toBe('Dive 2 · 40m · ⚠ no-deco N/A');
+        expect(diveBlockLabel(d)).toBe('Dive 2 · 40\u00a0m · ⚠ no-deco N/A');
     });
     test('falls back to id.toUpperCase() when name absent', () => {
         const d = { id: 'd3', maxDepth: 18, bottomTime: 40, profile: { totalDecoTime: 0, decoStops: [] } };
-        expect(diveBlockLabel(d)).toBe('D3 · 18m · 40min');
+        expect(diveBlockLabel(d)).toBe('D3 · 18\u00a0m · 40\u00a0min');
     });
 });
 
@@ -3946,6 +3946,110 @@ describe('notation - half-time symbol t_1/2', () => {
         expect(counts[0]).toBe(counts[1]);
         expect(counts[1]).toBe(counts[2]);
         expect(counts[0] > 0).toBe(true);
+    });
+});
+
+describe('notation - unit is never glued to the value', () => {
+    // ISO 80000-1: mezi číslem a značkou jednotky je vždy mezera. Předchozí
+    // třída řešila obyčejnou mezeru místo nedělitelné; tahle mezeru, která
+    // chybí úplně — `${maxDepth}m`, `MOD: {0}m`.
+    const UNITS = 'm|min|bar|kPa|MPa|Pa|msw|fsw';
+
+    test('no JS template glues a unit straight onto the closing brace', () => {
+        const files = [
+            'js/diveSetup.js', 'js/main.js', 'js/mvalues.js', 'js/urlParams.js',
+            'js/visualization.js', 'js/diveProfile.js', 'js/tissueEducation.js',
+            'js/charts/BubbleModel.js', 'js/charts/DiveProfileChart.js',
+            'js/charts/GFChart.js', 'js/charts/MValueChart.js',
+            'js/components/DiveSetupEditor.js', 'js/components/TripCalendar.js',
+            'sandbox/index.html', 'sandbox/repetitive-dives.html', 'tissue-loading.html',
+        ];
+        // 'm' ve významu minuty se nepřevádí — 30 m by se četlo jako metry.
+        // Správná oprava je značka 'min' a to je jiná třída (viz phase2-scope.md).
+        const MINUTES_AS_M = /\$\{(?:mins|hours|[^}]*[Hh]alfTime[^}]*|Math\.floor\(r \/ 60\)|r % 60|r)\}[hm]\b/;
+        const offenders = [];
+        for (const rel of files) {
+            const text = readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
+            text.split('\n').forEach((line, i) => {
+                const trimmed = line.trim();
+                if (trimmed.startsWith('//') || trimmed.startsWith('*')) return;
+                if (MINUTES_AS_M.test(line)) return;
+                if (new RegExp(`\\}(?:${UNITS})\\b`).test(line)) {
+                    offenders.push(`${rel}:${i + 1}  ${trimmed.slice(0, 70)}`);
+                }
+            });
+        }
+        expect(offenders).toEqual([]);
+    });
+
+    test('no HTML text node carries a literal \\u00a0 escape', () => {
+        // authoring.md §6.1: escape platí v JS, v HTML se nedekóduje a vypíše se
+        // doslova. Regrese z minulé vlny: pressure.html zobrazovala
+        // "MOD is 33,8\u00a0m!" i s escapem.
+        const files = [
+            'index.html', 'pressure.html', 'tissue-loading.html', 'm-values.html',
+            'gradient-factors.html', 'about.html', 'sandbox/index.html',
+            'sandbox/gas-law.html', 'sandbox/haldane.html', 'sandbox/schreiner.html',
+            'sandbox/transfilling.html', 'sandbox/m-values.html', 'sandbox/gradient-factors.html',
+        ];
+        const offenders = [];
+        for (const rel of files) {
+            const src = readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
+            // obsah <script> a <style> je JS/CSS, tam escape patří
+            const masked = src.replace(/<script\b[\s\S]*?<\/script>|<style\b[\s\S]*?<\/style>/gi,
+                m => ' '.repeat(m.length));
+            let at = masked.indexOf('\\u00a0');
+            while (at !== -1) {
+                offenders.push(`${rel}:${masked.slice(0, at).split('\n').length}`);
+                at = masked.indexOf('\\u00a0', at + 1);
+            }
+        }
+        expect(offenders).toEqual([]);
+    });
+
+    test('named placeholders get the same treatment as numbered ones', () => {
+        // Minulá vlna hledala jen {0}; {mod} jí proklouzlo.
+        const offenders = [];
+        for (const lang of ['cs', 'en', 'es']) {
+            const raw = readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8');
+            raw.split('\n').forEach((line, i) => {
+                if (/\{[a-zA-Z_]\w*\}(?: |)(?:m|min|bar|kPa|Pa)\b/.test(line)) {
+                    offenders.push(`${lang}:${i + 1}  ${line.trim().slice(0, 70)}`);
+                }
+            });
+        }
+        expect(offenders).toEqual([]);
+    });
+
+    test('minutes use the symbol min, never m', () => {
+        // ISO 80000-3: značka minuty je min; m je metr. Tabulka nasycení psala
+        // "1h 15m" hned vedle sloupce s "12,5 min".
+        const files = [
+            'tissue-loading.html', 'js/main.js', 'js/mvalues.js', 'sandbox/repetitive-dives.html',
+        ];
+        const offenders = [];
+        for (const rel of files) {
+            const text = readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
+            text.split('\n').forEach((line, i) => {
+                if (/\$\{(?:mins|hours|r|r % 60|[^}]*[Hh]alfTime[^}]*)\}\s*(?:m|h)\b/.test(line)) {
+                    offenders.push(`${rel}:${i + 1}  ${line.trim().slice(0, 70)}`);
+                }
+            });
+        }
+        expect(offenders).toEqual([]);
+    });
+
+    test('no translation pattern glues a unit onto a placeholder', () => {
+        const offenders = [];
+        for (const lang of ['cs', 'en', 'es']) {
+            const raw = readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8');
+            raw.split('\n').forEach((line, i) => {
+                if (new RegExp(`\\{\\d\\}(?:${UNITS})\\b`).test(line)) {
+                    offenders.push(`${lang}:${i + 1}  ${line.trim().slice(0, 70)}`);
+                }
+            });
+        }
+        expect(offenders).toEqual([]);
     });
 });
 

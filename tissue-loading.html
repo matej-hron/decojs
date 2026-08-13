@@ -857,7 +857,7 @@
                 const saturationTime = Math.round(comp.halfTime * 6);
                 const hours = Math.floor(saturationTime / 60);
                 const mins = saturationTime % 60;
-                const timeStr = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+                const timeStr = hours > 0 ? `${hours}\u00a0h ${mins}\u00a0min` : `${mins}\u00a0min`;
 
                 const row = document.createElement('tr');
                 row.innerHTML = `

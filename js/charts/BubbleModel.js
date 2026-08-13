@@ -134,7 +134,7 @@ export class BubbleModel {
         this._drawDepthScale(mainH);
         this._drawMain(mainH, rowH);
         this._drawTeachingDiagram();
-        this.depthDisplay.textContent = `${fmtNum(this.currentDepth, 0)}m`;
+        this.depthDisplay.textContent = `${fmtNum(this.currentDepth, 0)}\u00a0m`;
     }
 
     _drawDepthScale(totalH) {
@@ -157,7 +157,7 @@ export class BubbleModel {
         for (let d = 0; d <= maxD; d += 5) {
             const y = pad + (d / maxD) * (totalH - 2 * pad);
             ctx.fillRect(w - 18, y, 10, 1);
-            ctx.fillText(`${d}m`, w - 22, y + 4);
+            ctx.fillText(`${d}\u00a0m`, w - 22, y + 4);
         }
 
         const diverY = pad + (this.currentDepth / maxD) * (totalH - 2 * pad);

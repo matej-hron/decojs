@@ -640,7 +640,7 @@ export class DiveProfileChart {
             borderDash: [6, 4],
             label: {
                 display: true,
-                content: fmt(translate('chart.profile.max', 'MAX: {0}m'), maxDepth),
+                content: fmt(translate('chart.profile.max', 'MAX: {0}\u00a0m'), maxDepth),
                 position: 'end',
                 backgroundColor: 'rgba(231, 76, 60, 0.9)',
                 color: 'white',
@@ -662,7 +662,7 @@ export class DiveProfileChart {
                     borderDash: [4, 4],
                     label: {
                         display: true,
-                        content: fmt(translate('chart.profile.avg', 'AVG: {0}m'), fmtNum(avgDepth, 1)),
+                        content: fmt(translate('chart.profile.avg', 'AVG: {0}\u00a0m'), fmtNum(avgDepth, 1)),
                         position: 'start',
                         backgroundColor: 'rgba(46, 204, 113, 0.9)',
                         color: 'white',
@@ -772,7 +772,7 @@ export class DiveProfileChart {
                 xValue: stop.end.time + 1,
                 yValue: stop.depth,
                 yAdjust: 20,
-                content: [fmt(translate('chart.profile.decoStop', 'DECO {0}m · {1}min'), stop.depth, stopDuration)],
+                content: [fmt(translate('chart.profile.decoStop', 'DECO {0}\u00a0m · {1}\u00a0min'), stop.depth, stopDuration)],
                 backgroundColor: color,
                 color: 'white',
                 font: { size: 9, weight: 'bold' },
@@ -953,7 +953,7 @@ export class DiveProfileChart {
                 
                 const pressureData = results.compartments[comp.id].pressures;
                 datasets.push({
-                    label: fmt(translate('chart.mvalue.tcLabel', 'TC{0} ({1}min)'), comp.id, comp.halfTime),
+                    label: fmt(translate('chart.mvalue.tcLabel', 'TC{0} ({1}\u00a0min)'), comp.id, comp.halfTime),
                     data: results.timePoints.map((t, i) => ({
                         x: t,
                         y: pressureData[i]
@@ -1244,7 +1244,7 @@ export class DiveProfileChart {
                     borderDash: [4, 4],
                     label: {
                         display: true,
-                        content: fmt(translate('chart.profile.avg', 'AVG: {0}m'), fmtNum(avgDepth, 1)),
+                        content: fmt(translate('chart.profile.avg', 'AVG: {0}\u00a0m'), fmtNum(avgDepth, 1)),
                         position: 'start',
                         backgroundColor: 'rgba(46, 204, 113, 0.9)',
                         color: 'white',
@@ -1261,7 +1261,7 @@ export class DiveProfileChart {
                     borderDash: [6, 4],
                     label: {
                         display: true,
-                        content: fmt(translate('chart.profile.max', 'MAX: {0}m'), maxDepth),
+                        content: fmt(translate('chart.profile.max', 'MAX: {0}\u00a0m'), maxDepth),
                         position: 'end',
                         backgroundColor: 'rgba(231, 76, 60, 0.9)',
                         color: 'white',
@@ -1277,8 +1277,8 @@ export class DiveProfileChart {
             results.gasSwitches.forEach((sw, i) => {
                 const depthRounded = Math.round(sw.depth);
                 const content = sw.fromGasName
-                    ? fmt(translate('chart.profile.gasSwitchFrom', '{0} → {1} @ {2}m'), sw.fromGasName, sw.gasName, depthRounded)
-                    : fmt(translate('chart.profile.gasSwitchTo', '→ {0} @ {1}m'), sw.gasName, depthRounded);
+                    ? fmt(translate('chart.profile.gasSwitchFrom', '{0} → {1} @ {2}\u00a0m'), sw.fromGasName, sw.gasName, depthRounded)
+                    : fmt(translate('chart.profile.gasSwitchTo', '→ {0} @ {1}\u00a0m'), sw.gasName, depthRounded);
                 // Label with depth
                 annotations[`gasSwitch${i}`] = {
                     type: 'label',

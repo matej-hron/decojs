@@ -155,7 +155,7 @@ function initializeCompartmentSelector() {
         
         const text = document.createElement('span');
         text.className = 'compartment-label';
-        text.textContent = `${comp.id} (${fmtNum(comp.halfTime)}m)`;
+        text.textContent = `${comp.id} (${fmtNum(comp.halfTime)}\u00a0min)`;
         
         label.appendChild(checkbox);
         label.appendChild(colorDot);
@@ -686,7 +686,7 @@ async function loadSelectedProfile() {
             const duration = currentProfile[currentProfile.length - 1].time;
             const { gfLow, gfHigh } = getGradientFactors(profileData);
             const gfStr = (gfLow === 1 && gfHigh === 1) ? '' : ` | GF ${Math.round(gfLow*100)}/${Math.round(gfHigh*100)}`;
-            summary.textContent = `${maxDepth}m / ${duration}\u00a0min${gfStr}`;
+            summary.textContent = `${maxDepth}\u00a0m / ${duration}\u00a0min${gfStr}`;
         }
         
         // Calculate tissue loading
@@ -1143,7 +1143,7 @@ function updateTimelineDisplay() {
     
     // Update overlay on chart (prominent display)
     if (overlayTime) overlayTime.textContent = timeStr;
-    if (overlayDepth) overlayDepth.textContent = `${fmtNum(depth, 0)}m`;
+    if (overlayDepth) overlayDepth.textContent = `${fmtNum(depth, 0)}\u00a0m`;
     
     // Update info bar below chart - show tissue info for visible compartments
     if (tissueSpan) {

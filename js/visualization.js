@@ -209,7 +209,7 @@ export function renderChart(canvas, results, visibleCompartments = null, gasSwit
                             const label = context.dataset.label || '';
                             const value = context.parsed.y;
                             if (label === 'Depth (m)') {
-                                return `${label}: ${fmtNum(value, 1)}m`;
+                                return `${label}: ${fmtNum(value, 1)}\u00a0m`;
                             }
                             return `${label}: ${fmtNum(value, 3)}\u00a0bar`;
                         }

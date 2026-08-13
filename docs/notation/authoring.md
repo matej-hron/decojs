@@ -445,6 +445,15 @@ V ukázce výše jsou obě mezery před jednotkou doslovná U+00A0 — v souboru
 od obyčejné mezery, proto na to je test. Hromadnou opravu umí
 [`tools/nbsp.py`](tools/nbsp.py), který oddělovač volí podle přípony souboru sám.
 
+**Escape se v HTML nedekóduje.** `\u00a0` napsané do textu HTML prvku se
+vypíše doslova; regrese ve fázi 2: `pressure.html` zobrazovala „but MOD is
+33,8\u00a0m!". Escape patří jen dovnitř `<script>` a do `*.js`. Čte-li se
+takový prvek přes `textContent`, je správná forma entita — parser ji dekóduje
+a `textContent` vrátí skutečný znak U+00A0.
+
+**V `locales/` hledej obě formy placeholderu.** Vedle `{0} bar` existuje
+i pojmenovaný `{mod} m`; první vlna oprav viděla jen číslovaný.
+
 ### 6.2 Past na straně spotřeby: co doopravdy generuje `Intl.NumberFormat`
 
 Toto je **jiná otázka** než §6.1 — netýká se toho, co autor napíše do souboru, ale

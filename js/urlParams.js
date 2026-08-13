@@ -267,7 +267,7 @@ export async function getCompactProfileFromUrl() {
     }
 
     const setup = {
-        name: `${d}m / ${t}min ${gasName}`,
+        name: `${d}\u00a0m / ${t}\u00a0min ${gasName}`,
         gases,
         gfLow,
         gfHigh,

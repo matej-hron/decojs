@@ -685,7 +685,7 @@ export class MValueChart {
         if (!this.timeDisplay || !this.calculationResults) return;
         const time = this.calculationResults.timePoints[this.currentTimeIndex] || 0;
         const depth = this.calculationResults.depthPoints[this.currentTimeIndex] || 0;
-        this.timeDisplay.textContent = fmt(translate('chart.timeDisplay', '{0}\u00a0min @ {1}m'), fmtNum(time, 1), fmtNum(depth, 1));
+        this.timeDisplay.textContent = fmt(translate('chart.timeDisplay', '{0}\u00a0min @ {1}\u00a0m'), fmtNum(time, 1), fmtNum(depth, 1));
         this._renderMiniProfile();
     }
 
@@ -1058,7 +1058,7 @@ export class MValueChart {
             if (pAnchor > SURFACE_PRESSURE) {
                 const anchorDepthM = fmtNum(((pAnchor - SURFACE_PRESSURE) / 0.1), 1);
                 datasets.push({
-                    label: fmt(translate('chart.mvalue.pAnchor', 'pAnchor {0}\u00a0bar ({1}m)'), fmtNum(pAnchor, 2), anchorDepthM),
+                    label: fmt(translate('chart.mvalue.pAnchor', 'pAnchor {0}\u00a0bar ({1}\u00a0m)'), fmtNum(pAnchor, 2), anchorDepthM),
                     data: [
                         { x: pAnchor, y: 0 },
                         { x: pAnchor, y: maxPressure }
@@ -1185,7 +1185,7 @@ export class MValueChart {
             // point off the trail without adding visual noise.
             const currentTissue = results.compartments[comp.id].pressures[timeIndex];
             datasets.push({
-                label: fmt(translate('chart.mvalue.tcLabel', 'TC{0} ({1}min)'), comp.id, fmtNum(comp.halfTime)),
+                label: fmt(translate('chart.mvalue.tcLabel', 'TC{0} ({1}\u00a0min)'), comp.id, fmtNum(comp.halfTime)),
                 data: [{ x: currentAmbient, y: currentTissue }],
                 backgroundColor: comp.color,
                 borderColor: theme().colors.surface,
