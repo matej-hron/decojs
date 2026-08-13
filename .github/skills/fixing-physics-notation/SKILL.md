@@ -121,6 +121,27 @@ Jsou to **správné** zápisy; jejich změna je regrese:
   Na `<var>` převádíš **jen** `<em>`, který nese značku veličiny.
 - `&#8239;` / U+202F — nepoužívej; projekt používá výhradně `&nbsp;`
 
+## Pozor: `&nbsp;` platí jen tam, kde se renderuje HTML
+
+`data-i18n` prvky se plní přes `el.innerHTML` (`js/i18n.js`), takže tam je
+`&nbsp;` správně. **Řetězce kreslené na canvas se ale nedekódují** — do popisku
+grafu by se vypsalo doslova „20&nbsp;m/min".
+
+| Cesta řetězce | Použij |
+|---|---|
+| `data-i18n` → `innerHTML` | `&nbsp;` |
+| `translate()` → Chart.js `content`, `label`, `title` (canvas) | literál U+00A0 |
+| `document.title`, `alert()`, `aria-label` | literál U+00A0 |
+
+Než vložíš `&nbsp;` do locale klíče, dohledej, kdo ho čte:
+
+```bash
+grep -rn "chart.profile.descentRate" --include=*.js --include=*.html . | grep -v node_modules
+```
+
+Klíče pod `chart.*` jsou zpravidla canvas. Hlídá to test
+`tests/i18n-notation.test.js`.
+
 ## Krok 3 — Ověření
 
 ```bash

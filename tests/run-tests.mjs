@@ -190,6 +190,7 @@ import { buildRuntimeRows } from '../js/components/RuntimeTable.js';
 import { computeCalendarLayout } from '../js/calendarLayout.js';
 import { snapClamp, diveBlockLabel } from '../js/components/TripCalendar.js';
 import { previewNdl } from '../js/ndlPreview.js';
+import { readFileSync } from 'node:fs';
 import { GF_PRESETS } from '../js/gfPresets.js';
 import { encodeTrip, decodeTrip } from '../js/tripUrl.js';
 import { isAndroid } from '../js/appBanner.js';
@@ -3506,6 +3507,58 @@ describe('TripCalendar - diveBlockLabel', () => {
     test('falls back to id.toUpperCase() when name absent', () => {
         const d = { id: 'd3', maxDepth: 18, bottomTime: 40, profile: { totalDecoTime: 0, decoStops: [] } };
         expect(diveBlockLabel(d)).toBe('D3 · 18m · 40min');
+    });
+});
+
+// ============================================================================
+// I18N NOTATION
+// ============================================================================
+
+describe('i18n notation - canvas strings must not contain HTML entities', () => {
+    const LOCALES = ['cs', 'en', 'es'];
+    const load = (l) => JSON.parse(readFileSync(new URL(`../locales/${l}.json`, import.meta.url), 'utf8'));
+
+    const flatten = (obj, prefix = '') => {
+        const out = [];
+        for (const [k, v] of Object.entries(obj || {})) {
+            const key = prefix ? `${prefix}.${k}` : k;
+            if (typeof v === 'string') out.push([key, v]);
+            else if (v && typeof v === 'object') out.push(...flatten(v, key));
+        }
+        return out;
+    };
+
+    // chart.* is rendered by Chart.js onto a canvas, which does not decode HTML.
+    // "20&nbsp;m/min" would be shown to the user literally, entity and all.
+    for (const loc of LOCALES) {
+        test(`${loc}.json: no HTML entity under chart.*`, () => {
+            const offenders = flatten(load(loc).chart, 'chart')
+                .filter(([, v]) => /&[a-zA-Z]+;|&#\d+;/.test(v))
+                .map(([k, v]) => `${k} = ${v}`);
+            expect(offenders).toEqual([]);
+        });
+
+        test(`${loc}.json: chart.* uses U+00A0 between value and unit`, () => {
+            const offenders = flatten(load(loc).chart, 'chart')
+                .filter(([, v]) => /[\d}] (m\/min|m\/s|bar|min\b|m\b)/.test(v))
+                .map(([k, v]) => `${k} = ${v}`);
+            expect(offenders).toEqual([]);
+        });
+    }
+
+    test('all locales agree on which keys exist', () => {
+        // Known gap: the Spanish privacy policy has not been translated yet.
+        // The test still fails on any NEW divergence outside this prefix.
+        const KNOWN_UNTRANSLATED = /^privacy\./;
+        const keysOf = (l) => new Set(flatten(load(l)).map(([k]) => k));
+        const cs = keysOf('cs');
+        for (const loc of ['en', 'es']) {
+            const have = keysOf(loc);
+            const missing = [...cs].filter((k) => !have.has(k) && !KNOWN_UNTRANSLATED.test(k));
+            const extra = [...have].filter((k) => !cs.has(k));
+            expect(missing).toEqual([]);
+            expect(extra).toEqual([]);
+        }
     });
 });
 
