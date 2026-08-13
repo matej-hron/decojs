@@ -64,8 +64,8 @@ spoléhání na dědičnost — `<sub>` sám o sobě stojaté písmo nezdědí, 
 
 Vzor 5 se liší od podkladové rešerše (`_research-source.md` §7.2): tam je mezi číslem
 a jednotkou `&#8239;` (U+202F). **V tomto projektu se místo toho píše `&nbsp;`** —
-důvod je vysvětlen v §6.1 a je to jediné místo, kde se `&#8239;` v celém dokumentu
-authoring.md smí objevit jako *chybný* příklad, ne jako doporučení (viz tabulka §4).
+důvod je vysvětlen v §6.1. `&#8239;` smí v celém dokumentu authoring.md vystupovat
+jen jako *chybný* příklad (zde i v §6.1), ne jako doporučení (viz tabulka §4).
 
 ### 1.3 Současný stav: `<em>` jako značka veličiny
 
@@ -312,9 +312,10 @@ katex.render('\\foo', outputDiv, { macros, throwOnError: false });
 // → outputDiv obsahuje vykreslené "bar" — makro přežilo, protože `macros`
 //   je stejný objekt v obou voláních.
 
-katex.render('\\gdef\\bar{baz}', scratchDiv, { macros: {}, throwOnError: false });
-katex.render('\\bar', outputDiv, { macros: {}, throwOnError: true });
-// → vyhodí chybu — nový `{}` objekt při druhém volání makro nezná.
+katex.render('\\gdef\\foo{bar}', scratchDiv, { macros: {}, throwOnError: false });
+katex.render('\\foo', outputDiv, { macros: {}, throwOnError: true });
+// → vyhodí `ParseError: Undefined control sequence: \foo` — nový `{}` objekt
+//   při druhém volání makro nezná.
 ```
 
 Praktický důsledek pro `PHYSICS_MACROS` výše: exportovat ho jako modulovou konstantu
@@ -344,8 +345,9 @@ tam také není podporováno.
 ### 6.1 Při psaní: `&nbsp;`, ne U+202F
 
 **Při psaní** (HTML, Markdown, JSX literály) používej entitu `&nbsp;` (U+00A0).
-Repozitář jich má 67 existujících výskytů, U+202F ani jeden — je to tedy už zavedený
-autorský vzor, ne nová konvence. Výzkumný podklad (`_research-source.md` §7.5)
+V HTML a JSON souborech živého produktu jich je 16 existujících výskytů (`git grep -o
+'&nbsp;' -- '*.html' '*.js' '*.json' '*.css' | wc -l`), U+202F ani jeden — je to tedy
+už zavedený autorský vzor, ne nová konvence. Výzkumný podklad (`_research-source.md` §7.5)
 doporučuje `&#8239;` (U+202F) jako typograficky užší variantu preferovanou SI
 Brochure; **toto doporučení projekt záměrně nepřejímá pro autorský text** — viz
 [Rozhodnutí projektu](style-guide.md#rozhodnutí-projektu) a §4.1 v `style-guide.md`.
@@ -499,8 +501,10 @@ okrajový případ, je to **jediná cesta** pro tlak.
 
 > Tento modul **zatím neexistuje** v `js/`. Instaluje ho fáze 2 (`_research-source.md`
 > §11, krok 7). Diagnóza současného stavu: `js/i18n.js` neobsahuje žádnou logiku
-> formátování čísel; každý graf si nese vlastní kopii `fmt()` postavenou na
-> `toFixed()` (vrací vždy tečku bez ohledu na jazyk); jediné lokalizačně uvědomělé
+> formátování čísel; každý graf volá `.toFixed()` přímo na místě formátování a výsledek
+> (s tečkou bez ohledu na jazyk) předává do vlastní kopie obecného `fmt()` — pomocníka
+> nahrazujícího `{0}`/`{1}` zástupné symboly v textu, který sám o sobě s čísly nijak
+> nepracuje; jediné lokalizačně uvědomělé
 > místo je `formatAxis()` v `js/charts/chartTheme.js:166–173`, které volá
 > `toLocaleString()`, ale jen pro popisky os.
 

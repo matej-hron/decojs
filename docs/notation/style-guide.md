@@ -223,8 +223,10 @@ symbol." (NIST SP 811, §7.2)
 
 **Kterou nedělitelnou mezeru píšeme.** Norma (ani ÚJČ) nepředepisuje konkrétní Unicode
 znak, jen požaduje, aby mezera byla **pevná** (nedělitelná). DecoJS proto v autorském textu
-používá entitu **`&nbsp;`** (U+00A0) — v repozitáři je to už dnes zavedený vzor (67×
-existujících výskytů), zatímco jiná nedělitelná mezera se v projektu nepoužívá ani jednou.
+používá entitu **`&nbsp;`** (U+00A0) — v HTML a JSON souborech živého produktu je to
+už dnes zavedený vzor (16× existujících výskytů, `git grep -o '&nbsp;' -- '*.html'
+'*.js' '*.json' '*.css' | wc -l`), zatímco jiná nedělitelná mezera se v projektu
+nepoužívá ani jednou.
 Volba entity místo doslovného znaku je záměrná: doslovný U+00A0 je v diffu neviditelný
 a editor ho snadno rozbije. Mechanika psaní (`&nbsp;` v HTML, KaTeX ekvivalent, Unicode
 tabulka) je v `authoring.md`.
