@@ -399,7 +399,7 @@
             </div>
             <div class="term-card k">
                 <div class="name" data-i18n="sandbox.haldane.cards.k.name">k | rate constant</div>
-                <div class="formula">= ln(2) / T½</div>
+                <div class="formula">= ln(2) / <var>t</var><sub>1/2</sub></div>
                 <div class="formula" id="kSubst">= 0.6931 / 27.0</div>
                 <div class="value"><span id="kValue">0.0257</span> min⁻¹</div>
                 <div class="why" data-i18n="sandbox.haldane.cards.k.why">Faster compartments → bigger k → catch up sooner.</div>
@@ -409,7 +409,7 @@
                 <div class="formula">= e<sup>−k · t</sup></div>
                 <div class="formula" id="expSubst">= e<sup>−0.0257 · 0</sup></div>
                 <div class="value"><span id="expValue">1.0000</span></div>
-                <div class="why" data-i18n="sandbox.haldane.cards.exp.why">1.0&nbsp;at t=0, decays toward 0. Half-gone every T½.</div>
+                <div class="why" data-i18n="sandbox.haldane.cards.exp.why">1.0&nbsp;at t=0, decays toward 0. Half-gone every <var>t</var><sub>1/2</sub>.</div>
             </div>
         </div>
         <!-- Mini Pt(t) chart -->
@@ -490,10 +490,10 @@
             <input type="range" id="timeSlider" min="0" max="162" step="1" value="0">
         </div>
         <div class="ctrl-static step-btns">
-            <button type="button" id="tMinusHalf">−T<sub>½</sub></button>
+            <button type="button" id="tMinusHalf">−<var>t</var><sub>1/2</sub></button>
             <button type="button" id="tMinus1">−1</button>
             <button type="button" id="tPlus1">+1</button>
-            <button type="button" id="tPlusHalf">+T<sub>½</sub></button>
+            <button type="button" id="tPlusHalf">+<var>t</var><sub>1/2</sub></button>
         </div>
 
         <div class="outputs">
@@ -577,7 +577,7 @@
         function populateCompartments() {
             const comps = getCompartmentsForVariant(state.variant);
             els.compartment.innerHTML = comps
-                .map((c, i) => `<option value="${i}">${i + 1} | T½ = ${fmtNum(c.halfTime, 1)} min</option>`)
+                .map((c, i) => `<option value="${i}">${i + 1} | t½ = ${fmtNum(c.halfTime, 1)} min</option>`)
                 .join('');
             els.compartment.value = String(state.compartmentIdx);
         }
@@ -676,7 +676,7 @@
             return getCompartmentsForVariant(state.variant)[state.compartmentIdx].halfTime;
         }
 
-        // ±T½ buttons snap to the next/previous T½ marker on the chart, rather than
+        // ±t½ buttons snap to the next/previous t½ marker on the chart, rather than
         // adding a fixed minute count. Lets the user step through landmarks directly.
         function nextHalfTimeMarker() {
             const ht = getHalfTime();
@@ -728,6 +728,28 @@
         const chartAsymptote = document.getElementById('chartAsymptote');
         const chartBaseline  = document.getElementById('chartBaseline');
 
+        // Značka poločasu do SVG: t kurzívou + stojatý dolní index 1/2.
+        // Kanonický tvar je <var>t</var><sub>1/2</sub>, ale SVG <text> nezná
+        // ani <var>, ani <sub> — ekvivalent se skládá z <tspan> s posunem dy.
+        function svgHalfTimeLabel(el, prefix = '', suffix = '') {
+            const NS = 'http://www.w3.org/2000/svg';
+            el.textContent = '';
+            const add = (text, attrs) => {
+                const s = document.createElementNS(NS, 'tspan');
+                for (const [k, v] of Object.entries(attrs || {})) s.setAttribute(k, v);
+                s.textContent = text;
+                el.appendChild(s);
+                return s;
+            };
+            if (prefix) add(prefix);
+            add('t', { 'font-style': 'italic' });
+            add('1/2', { dy: '3', 'font-size': '0.72em' });
+            // dy posouvá i následující obsah, takže suffix musí baseline vrátit.
+            if (suffix) add(suffix, { dy: '-3' });
+            return el;
+        }
+
+
         function drawChart() {
             const { halfTime, pT0, pAlv } = window.__haldane;
             const tMax = parseInt(timeSlider.max, 10);
@@ -757,7 +779,7 @@
             chartBaseline.setAttribute('y1', yPt0);
             chartBaseline.setAttribute('y2', yPt0);
 
-            // Half-time tick markers — vertical dotted lines + labels at t = T½, 2T½, ...
+            // Half-time tick markers — vertical dotted lines + labels at t = t½, 2t½, ...
             const ticksGroup = document.getElementById('chartTicks');
             ticksGroup.innerHTML = '';
             const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -783,7 +805,7 @@
                 label.setAttribute('fill', '#7f8c8d');
                 label.setAttribute('text-anchor', 'middle');
                 label.setAttribute('font-family', 'system-ui, -apple-system, sans-serif');
-                label.textContent = i === 1 ? 'T½' : `${i}T½`;
+                svgHalfTimeLabel(label, i === 1 ? '' : String(i));
                 ticksGroup.appendChild(label);
             }
 
@@ -805,7 +827,7 @@
         variantSelect.addEventListener('change', () => {
             state.variant = variantSelect.value;
             // Half-times are identical across a/b/c except compartment 1, so rebuild the
-            // dropdown to keep the displayed T½ consistent with the active variant.
+            // dropdown to keep the displayed t½ consistent with the active variant.
             populateCompartments();
             recompute();
         });

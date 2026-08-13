@@ -1692,7 +1692,7 @@
                 },
                 "exp": {
                     "name": "e<sup>−kt</sup> | \"fraction left to go\"",
-                    "why": "1.0 at t=0, decays toward 0. Half-gone every T½."
+                    "why": "1.0 at t=0, decays toward 0. Half-gone every <var>t</var><sub>1/2</sub>."
                 }
             }
         },
@@ -1832,25 +1832,25 @@
                 "heading": "Where do a and b come from?",
                 "anchor": "ZH-L16A's a and b aren't fitted to data — they're computed from half-time alone. Variants B and C are post-hoc adjustments to specific compartments.",
                 "inputs": {
-                    "halfTime": "Half-time t½ (min)",
-                    "halfTimeShort": "t½ (min)",
-                    "halfTimeExact": "Exact t½",
+                    "halfTime": "Half-time <var>t</var><sub>1/2</sub> (min)",
+                    "halfTimeShort": "<var>t</var><sub>1/2</sub> (min)",
+                    "halfTimeExact": "Exact <var>t</var><sub>1/2</sub>",
                     "snapToggle": "Snap to standard compartments",
                     "snapToggleShort": "Snap",
                     "derivCompartment": "Comp"
                 },
                 "cards": {
                     "halfTime": {
-                        "name": "t<sub>½</sub> | half-time",
+                        "name": "<var>t</var><sub>1/2</sub> | half-time",
                         "why": "Each compartment's signature time. Not anatomical — a sample point on an exponential axis."
                     },
                     "a": {
-                        "name": "a(t<sub>½</sub>) | analytical intercept",
+                        "name": "a(<var>t</var><sub>1/2</sub>) | analytical intercept",
                         "why": "Variants B and C drop a for specific compartments — that's the only place statistics enter Bühlmann."
                     },
                     "b": {
-                        "name": "b(t<sub>½</sub>) | analytical slope",
-                        "why": "Identical across A/B/C except TC1 (whose t½ swap also swaps b)."
+                        "name": "b(<var>t</var><sub>1/2</sub>) | analytical slope",
+                        "why": "Identical across A/B/C except TC1 (whose <var>t</var><sub>1/2</sub> swap also swaps b)."
                     }
                 },
                 "delta": {
@@ -1859,9 +1859,9 @@
                     "deltaSymbol": "Δ"
                 },
                 "legend": {
-                    "a": "a(t½) curve + 16 stored values (dots)",
-                    "b": "b(t½) curve + 16 stored values (dots)",
-                    "cursor": "Slider position (current t½)"
+                    "a": "a(<var>t</var><sub>1/2</sub>) curve + 16 stored values (dots)",
+                    "b": "b(<var>t</var><sub>1/2</sub>) curve + 16 stored values (dots)",
+                    "cursor": "Slider position (current <var>t</var><sub>1/2</sub>)"
                 }
             },
             "crossLinks": {

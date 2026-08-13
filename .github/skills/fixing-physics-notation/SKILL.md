@@ -61,6 +61,7 @@ každou přes všechny soubory z Kroku 1.
 | 2 | desetinná tečka v CZ | `2.81 bar` | `2,81` + nedělitelná mezera + `bar` |
 | 2b | desetinná tečka ve **vypočteném** čísle | `x.toFixed(2)` | `fmtNum(x, 2)` z `js/format.js` |
 | 3 | značka tlaku | `P_{amb}`, `P<sub>amb</sub>`, `p<sub>amb</sub>` bez kurzívy | `p_{\mathrm{amb}}`, `<var>p</var><sub>amb</sub>` — hromadně `psym.py` |
+| 3c | poločas | `T½`, `t<sub>½</sub>` | `<var>t</var><sub>1/2</sub>`; v `<option>`/canvas `t½` (viz `authoring.md` §5b) |
 | 3b | parciální tlak | `<em>pp</em>O₂`, `ppO2`, `F_{O_2}` | `<var>p</var><sub>O₂</sub>`, `f_{\mathrm{O_2}}` — hromadně `ppres.py` |
 | 4 | kurzíva značky | `<em>p</em>` **jako značka** | `<var>p</var>` |
 | 5 | zkratky | GF/MOD/NDL/SAC/OTU kurzívou | stojatě |
@@ -189,7 +190,7 @@ vykreslí až za běhu; popisky Chart.js jsou navíc na canvasu, ne v DOM
 (vyvolej je přes `chart.tooltip.setActiveElements()`).
 
 ```bash
-npm test          # musí projít celé (294/294)
+npm test          # musí projít celé (297/297)
 git diff --stat   # sedí seznam souborů z Kroku 1?
 
 # diff nesmí obsahovat formátovací šum
@@ -226,7 +227,7 @@ Norma: <odkaz do style-guide.md, proč je nový tvar správný>
 ## Ponecháno záměrně
 - `60°` (úhel se píše bez mezery), `12litrový` (složenina)
 
-**Testy:** 294/294 ✅
+**Testy:** 297/297 ✅
 ```
 
 Report musí odpovídat na otázku „co jsi kontroloval a nenašel", ne jen

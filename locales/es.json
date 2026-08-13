@@ -1656,7 +1656,7 @@
                 },
                 "exp": {
                     "name": "e<sup>−kt</sup> | «fracción que falta»",
-                    "why": "1,0 en t=0, decae hacia 0. La mitad desaparece cada T½."
+                    "why": "1,0 en t=0, decae hacia 0. La mitad desaparece cada <var>t</var><sub>1/2</sub>."
                 }
             }
         },
@@ -1796,25 +1796,25 @@
                 "heading": "¿De dónde vienen a y b?",
                 "anchor": "Las a y b de ZH-L16A no se ajustan a datos — se calculan solo a partir del periodo de saturación. Las variantes B y C son ajustes posteriores a compartimentos específicos.",
                 "inputs": {
-                    "halfTime": "Periodo t½ (min)",
-                    "halfTimeShort": "t½ (min)",
-                    "halfTimeExact": "t½ exacto",
+                    "halfTime": "Periodo <var>t</var><sub>1/2</sub> (min)",
+                    "halfTimeShort": "<var>t</var><sub>1/2</sub> (min)",
+                    "halfTimeExact": "<var>t</var><sub>1/2</sub> exacto",
                     "snapToggle": "Ajustar a compartimentos estándar",
                     "snapToggleShort": "Ajustar",
                     "derivCompartment": "Comp"
                 },
                 "cards": {
                     "halfTime": {
-                        "name": "t<sub>½</sub> | periodo de saturación",
+                        "name": "<var>t</var><sub>1/2</sub> | periodo de saturación",
                         "why": "Tiempo característico de cada compartimento. No es anatómico — solo un punto de muestreo en un eje exponencial."
                     },
                     "a": {
-                        "name": "a(t<sub>½</sub>) | intersección analítica",
+                        "name": "a(<var>t</var><sub>1/2</sub>) | intersección analítica",
                         "why": "Las variantes B y C bajan a en compartimentos específicos — el único lugar donde entra estadística en Bühlmann."
                     },
                     "b": {
-                        "name": "b(t<sub>½</sub>) | pendiente analítica",
-                        "why": "Idéntica en A/B/C salvo TC1 (cuyo cambio de t½ también cambia b)."
+                        "name": "b(<var>t</var><sub>1/2</sub>) | pendiente analítica",
+                        "why": "Idéntica en A/B/C salvo TC1 (cuyo cambio de <var>t</var><sub>1/2</sub> también cambia b)."
                     }
                 },
                 "delta": {
@@ -1823,9 +1823,9 @@
                     "deltaSymbol": "Δ"
                 },
                 "legend": {
-                    "a": "curva a(t½) + 16 valores almacenados (puntos)",
-                    "b": "curva b(t½) + 16 valores almacenados (puntos)",
-                    "cursor": "Posición del deslizador (t½ actual)"
+                    "a": "curva a(<var>t</var><sub>1/2</sub>) + 16 valores almacenados (puntos)",
+                    "b": "curva b(<var>t</var><sub>1/2</sub>) + 16 valores almacenados (puntos)",
+                    "cursor": "Posición del deslizador (<var>t</var><sub>1/2</sub> actual)"
                 }
             },
             "crossLinks": {

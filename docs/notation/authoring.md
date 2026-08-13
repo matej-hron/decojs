@@ -348,6 +348,28 @@ tam také není podporováno.
 `<sub>`, `<sup>` a `<var>` jsou v GitHubově sanitizační allowlistě a v Markdownu
 (včetně wiki) fungují bez úprav.
 
+## 5b. Značka s indexem tam, kde markup není
+
+Kanonický tvar značky s dolním indexem je `<var>t</var><sub>1/2</sub>`. Ne každý
+sink ale `<sub>` umí, a tvar se pak musí přizpůsobit — stejně jako `&nbsp;`
+v HTML proti doslovnému U+00A0 v JSON (§6.1). **Význam je jeden, zápis se řídí
+sinkem.**
+
+| Sink | Zápis | Proč |
+|---|---|---|
+| HTML (včetně `locales/*.json` → `innerHTML`) | `<var>t</var><sub>1/2</sub>` | plný markup |
+| KaTeX | `t_{1/2}` | index je číslo, sází se stojatě |
+| SVG `<text>` | `<tspan font-style="italic">t</tspan><tspan dy="3" font-size="0.72em">1/2</tspan>` | SVG nezná `<var>` ani `<sub>` |
+| `<option>`, `title=`, canvas | `t½` | obsah je podle HTML specifikace **jen text**, markup se nevykreslí |
+
+Než někam vložíš markup, **ověř sink**. `locales/*.json` ho snese, protože
+`applyTranslations()` v `js/i18n.js` přiřazuje `el.innerHTML`; kdyby týž klíč
+četl `textContent` nebo Chart.js, uživatel by uviděl `<var>t</var>` jako text.
+
+**U SVG posouvá `dy` i následující obsah.** Za indexem musí přijít `<tspan>`
+s opačným `dy`, jinak zbytek popisku klesne o výšku indexu. Kontrola: spodní
+hrana prvního a posledního `<tspan>` se musí rovnat.
+
 ## 6. Čísla — JS formátování
 
 ### 6.1 Při psaní: `&nbsp;` v HTML, U+00A0 v datech

@@ -560,34 +560,34 @@
 
             <div class="mv-derivation-formula">
                 <div class="formula-line">
-                    <span class="term-da">a</span>(<span class="term-th">t<sub>½</sub></span>) =
-                    2 · <span class="term-th">t<sub>½</sub></span><sup>−1/3</sup>  &nbsp;(bar)
+                    <span class="term-da">a</span>(<span class="term-th"><var>t</var><sub>1/2</sub></span>) =
+                    2 · <span class="term-th"><var>t</var><sub>1/2</sub></span><sup>−1/3</sup>  &nbsp;(bar)
                 </div>
                 <div class="formula-line">
-                    <span class="term-db">b</span>(<span class="term-th">t<sub>½</sub></span>) =
-                    1.005 − <span class="term-th">t<sub>½</sub></span><sup>−1/2</sup>
+                    <span class="term-db">b</span>(<span class="term-th"><var>t</var><sub>1/2</sub></span>) =
+                    1.005 − <span class="term-th"><var>t</var><sub>1/2</sub></span><sup>−1/2</sup>
                 </div>
             </div>
 
             <div class="mv-deriv-row">
                 <div class="mv-deriv-card th">
-                    <div class="name" data-i18n="sandbox.mvalues.bottom.cards.halfTime.name">t<sub>½</sub> | half-time</div>
+                    <div class="name" data-i18n="sandbox.mvalues.bottom.cards.halfTime.name"><var>t</var><sub>1/2</sub> | half-time</div>
                     <div class="value"><span id="mvDerivHalfTime">27.0</span> min</div>
                     <div class="why" data-i18n="sandbox.mvalues.bottom.cards.halfTime.why">Each compartment's signature time. Not anatomical — a sample point on an exponential axis.</div>
                 </div>
                 <div class="mv-deriv-card da">
-                    <div class="name" data-i18n="sandbox.mvalues.bottom.cards.a.name">a(t<sub>½</sub>) | analytical intercept</div>
-                    <div class="formula">= 2 · t<sub>½</sub><sup>−1/3</sup></div>
+                    <div class="name" data-i18n="sandbox.mvalues.bottom.cards.a.name">a(<var>t</var><sub>1/2</sub>) | analytical intercept</div>
+                    <div class="formula">= 2 · <var>t</var><sub>1/2</sub><sup>−1/3</sup></div>
                     <div class="value"><span id="mvDerivA">0.6667</span> bar</div>
                     <div class="delta" id="mvDerivADelta"></div>
                     <div class="why" data-i18n="sandbox.mvalues.bottom.cards.a.why">Variants B and C drop a for specific compartments — that's the only place statistics enter Bühlmann.</div>
                 </div>
                 <div class="mv-deriv-card db">
-                    <div class="name" data-i18n="sandbox.mvalues.bottom.cards.b.name">b(t<sub>½</sub>) | analytical slope</div>
-                    <div class="formula">= 1.005 − t<sub>½</sub><sup>−1/2</sup></div>
+                    <div class="name" data-i18n="sandbox.mvalues.bottom.cards.b.name">b(<var>t</var><sub>1/2</sub>) | analytical slope</div>
+                    <div class="formula">= 1.005 − <var>t</var><sub>1/2</sub><sup>−1/2</sup></div>
                     <div class="value"><span id="mvDerivB">0.8126</span></div>
                     <div class="delta" id="mvDerivBDelta"></div>
-                    <div class="why" data-i18n="sandbox.mvalues.bottom.cards.b.why">Identical across A/B/C except TC1 (whose t½ swap also swaps b).</div>
+                    <div class="why" data-i18n="sandbox.mvalues.bottom.cards.b.why">Identical across A/B/C except TC1 (whose <var>t</var><sub>1/2</sub> swap also swaps b).</div>
                 </div>
             </div>
 
@@ -595,9 +595,9 @@
                 <svg id="mvDerivChart" viewBox="0 0 480 280" preserveAspectRatio="xMidYMid meet" aria-label="Derivation chart"></svg>
             </div>
             <div class="mv-chart-legend" id="mvDerivChartLegend">
-                <span class="item" style="color:#e74c3c;"><span class="swatch"></span><span data-i18n="sandbox.mvalues.bottom.legend.a">a(t½) curve + 16 stored values (dots)</span></span>
-                <span class="item" style="color:#2980b9;"><span class="swatch"></span><span data-i18n="sandbox.mvalues.bottom.legend.b">b(t½) curve + 16 stored values (dots)</span></span>
-                <span class="item" style="color:#9b59b6;"><span class="swatch dashed"></span><span data-i18n="sandbox.mvalues.bottom.legend.cursor">Slider position (current t½)</span></span>
+                <span class="item" style="color:#e74c3c;"><span class="swatch"></span><span data-i18n="sandbox.mvalues.bottom.legend.a">a(<var>t</var><sub>1/2</sub>) curve + 16 stored values (dots)</span></span>
+                <span class="item" style="color:#2980b9;"><span class="swatch"></span><span data-i18n="sandbox.mvalues.bottom.legend.b">b(<var>t</var><sub>1/2</sub>) curve + 16 stored values (dots)</span></span>
+                <span class="item" style="color:#9b59b6;"><span class="swatch dashed"></span><span data-i18n="sandbox.mvalues.bottom.legend.cursor">Slider position (current <var>t</var><sub>1/2</sub>)</span></span>
             </div>
         </section>
 <section class="mvalues-section" style="background: transparent; border: none;">
@@ -644,11 +644,11 @@
 
         <!-- Bottom playground controls -->
         <div class="ctrl">
-            <label><span data-i18n="sandbox.mvalues.bottom.inputs.halfTimeShort">t½ (min)</span><span class="ctrl-value"><span id="mvHalfTimeReadout">38.3</span></span></label>
+            <label><span data-i18n="sandbox.mvalues.bottom.inputs.halfTimeShort"><var>t</var><sub>1/2</sub> (min)</span><span class="ctrl-value"><span id="mvHalfTimeReadout">38.3</span></span></label>
             <input type="range" id="mvHalfTimeSlider" min="0" max="100" step="0.1" value="50">
         </div>
         <div class="ctrl ctrl-static">
-            <span class="lbl" data-i18n="sandbox.mvalues.bottom.inputs.halfTimeExact">Exact t½</span>
+            <span class="lbl" data-i18n="sandbox.mvalues.bottom.inputs.halfTimeExact">Exact <var>t</var><sub>1/2</sub></span>
             <input type="number" id="mvHalfTime" min="1" max="700" step="0.1" value="38.3">
         </div>
         <div class="ctrl ctrl-static">
@@ -942,6 +942,28 @@
             return PAD_T + usable - (y / yMax) * usable;
         }
 
+        // Značka poločasu do SVG: t kurzívou + stojatý dolní index 1/2.
+        // Kanonický tvar je <var>t</var><sub>1/2</sub>, ale SVG <text> nezná
+        // ani <var>, ani <sub> — ekvivalent se skládá z <tspan> s posunem dy.
+        function svgHalfTimeLabel(el, prefix = '', suffix = '') {
+            const NS = 'http://www.w3.org/2000/svg';
+            el.textContent = '';
+            const add = (text, attrs) => {
+                const s = document.createElementNS(NS, 'tspan');
+                for (const [k, v] of Object.entries(attrs || {})) s.setAttribute(k, v);
+                s.textContent = text;
+                el.appendChild(s);
+                return s;
+            };
+            if (prefix) add(prefix);
+            add('t', { 'font-style': 'italic' });
+            add('1/2', { dy: '3', 'font-size': '0.72em' });
+            // dy posouvá i následující obsah, takže suffix musí baseline vrátit.
+            if (suffix) add(suffix, { dy: '-3' });
+            return el;
+        }
+
+
         function svgEl(name, attrs) {
             const el = document.createElementNS('http://www.w3.org/2000/svg', name);
             for (const [k, v] of Object.entries(attrs || {})) {
@@ -1148,7 +1170,7 @@
 
             // Axis label (x)
             const xLabel = svgEl('text', { x: DERIV_W / 2, y: DERIV_H - 6, class: 'mv-chart-label', 'text-anchor': 'middle' });
-            xLabel.textContent = 't½ (min, log)';
+            svgHalfTimeLabel(xLabel, '', ' (min, log)');
             svg.appendChild(xLabel);
 
             // Curves: 120 samples

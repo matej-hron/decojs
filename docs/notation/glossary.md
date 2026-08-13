@@ -176,6 +176,7 @@ Další termíny: **kompartment** (přejaté, běžné), **sycení/nasycení tk�
 | ✗ `ppO2`, `CO2` | *p*<sub>O₂</sub>, CO₂ | ASCII index |
 | ✗ `P_{amb}` (LaTeX) | `p_{\mathrm{amb}}` | index by se vysázel kurzívou |
 | ✗ `T_{1/2}` | `t_{1/2}` | Bühlmannova notace |
+| ✗ `t½` v HTML | `<var>t</var><sub>1/2</sub>` | U+00BD je kompatibilní znak, jako ℃ výše |
 | ✗ `GF` kurzívou | GF stojatě | kurzíva se čte jako součin *G*·*F* |
 | ✗ `5 mů`, `5 ms` | `5 m` | značky se neskloňují |
 
