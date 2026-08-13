@@ -13,6 +13,7 @@ Závazná pravidla jsou v repu — **čti je, necituj po paměti**:
 | `docs/notation/glossary.md` | kanonické značky, indexy CZ↔EN, „není chyba" |
 | `docs/notation/style-guide.md` | proč to tak je (normy ČSN/ISO 80000) |
 | `docs/notation/authoring.md` | mechanika: HTML, KaTeX, i18n, čísla |
+| `docs/notation/phase2-scope.md` | co je ještě neopravené a v jakém pořadí |
 
 Při rozporu platí `docs/notation/`.
 
