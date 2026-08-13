@@ -20,7 +20,8 @@ Proč malé *p* (pravidlo 4): [style-guide.md](../../docs/notation/style-guide.m
 **`&nbsp;` patří jen do `*.html`.** V `locales/*.json` a `data/*.json` se píše
 doslovné U+00A0 — tentýž řetězec může skončit na canvasu Chart.js nebo
 v `textContent`, kde by se entita vypsala uživateli i se středníkem. Hromadnou
-opravu udělá `python3 docs/notation/tools/nbsp.py --check --words -v <soubory>`;
+opravu udělá `python3 docs/notation/tools/nbsp.py --check --words -v <soubory>`
+(`--thousands` přidá i oddělovač tisíců, `600 000 Pa`);
 podrobnosti v [authoring.md §6.1](../../docs/notation/authoring.md).
 
 ## Špatně × správně

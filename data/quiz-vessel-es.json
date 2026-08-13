@@ -585,7 +585,7 @@
         {"key": "d", "text": "1 grado sobre el paralelo terrestre"}
       ],
       "correct": "a",
-      "explanation": "La milla náutica corresponde a 1 minuto de arco sobre el meridiano terrestre (aproximadamente 1 852 m)."
+      "explanation": "La milla náutica corresponde a 1 minuto de arco sobre el meridiano terrestre (aproximadamente 1 852 m)."
     },
     {
       "id": 46,
