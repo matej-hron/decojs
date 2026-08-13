@@ -420,9 +420,9 @@
                 e<sup>−<span class="term term-k">k</span><span class="term term-t">t</span></sup>
             </div>
             <div class="formula-substituted">
-                <strong id="ptValue">3.1217</strong> bar = <span id="palv0Num">3.1217</span>
-                + <span id="rNum">−0.7902</span> · (<span id="tNum1">0.00</span> − 1/<span id="kNum1">0.0257</span>)
-                − (<span id="palv0Num2">3.1217</span> − <span id="pt0Num">3.1217</span> − <span id="rNum2">−0.7902</span>/<span id="kNum2">0.0257</span>) · <span id="expNum">1.0000</span>
+                <strong id="ptValue">…</strong> bar = <span id="palv0Num">…</span>
+                + <span id="rNum">…</span> · (<span id="tNum1">…</span> − 1/<span id="kNum1">…</span>)
+                − (<span id="palv0Num2">…</span> − <span id="pt0Num">…</span> − <span id="rNum2">…</span>/<span id="kNum2">…</span>) · <span id="expNum">…</span>
             </div>
         </div>
 
@@ -430,37 +430,37 @@
         <div class="term-row">
             <div class="term-card palv">
                 <div class="name" data-i18n="sandbox.schreiner.cards.palv0.name"><var>p</var><sub>alv,0</sub> | alveolar N<sub>2</sub> at start depth</div>
-                <div class="formula" id="palv0Symbolic">= (<var>p</var><sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub></div>
-                <div class="formula" id="palv0Subst">= (4.0133 − 0.0627) · 0.7902</div>
-                <div class="value"><span id="palv0Value">3.1217</span> bar</div>
+                <div class="formula" id="palv0Symbolic">…</div>
+                <div class="formula" id="palv0Subst">…</div>
+                <div class="value"><span id="palv0Value">…</span> bar</div>
                 <div class="why" data-i18n="sandbox.schreiner.cards.palv0.why">Starting alveolar pressure. Slope-zero point of the moving alveolar source.</div>
             </div>
             <div class="term-card pt0">
                 <div class="name" data-i18n="sandbox.schreiner.cards.pt0.name"><var>p</var><sub>t,0</sub> | tissue pressure at t=0</div>
-                <div class="formula" id="pt0Symbolic">= (<var>p</var><sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub></div>
-                <div class="formula" id="pt0Subst">= (4.0133 − 0.0627) · 0.7902</div>
-                <div class="value"><span id="pt0Value">3.1217</span> bar</div>
+                <div class="formula" id="pt0Symbolic">…</div>
+                <div class="formula" id="pt0Subst">…</div>
+                <div class="value"><span id="pt0Value">…</span> bar</div>
                 <div class="why" data-i18n="sandbox.schreiner.cards.pt0.why">Tissue assumed equilibrated at start depth → equals <var>p</var><sub>alv,0</sub>.</div>
             </div>
             <div class="term-card r">
                 <div class="name" data-i18n="sandbox.schreiner.cards.r.name">R | alveolar pressure rate</div>
-                <div class="formula" id="rSymbolic">= F<sub>N₂</sub> · depth_rate · 0.1</div>
-                <div class="formula" id="rSubst">= 0.7902 · (−10) · 0.1</div>
-                <div class="value"><span id="rValue">−0.7902</span> bar/min</div>
+                <div class="formula" id="rSymbolic">…</div>
+                <div class="formula" id="rSubst">…</div>
+                <div class="value"><span id="rValue">…</span> bar/min</div>
                 <div class="why" data-i18n="sandbox.schreiner.cards.r.why">Positive = descent (alveolar climbing), negative = ascent. R = 0 → equation collapses to Haldane.</div>
             </div>
             <div class="term-card k">
                 <div class="name" data-i18n="sandbox.schreiner.cards.k.name">k | rate constant</div>
                 <div class="formula">= ln(2) / <var>t</var><sub>1/2</sub></div>
-                <div class="formula" id="kSubst">= 0.6931 / 27.0</div>
-                <div class="value"><span id="kValue">0.0257</span> min⁻¹</div>
+                <div class="formula" id="kSubst">…</div>
+                <div class="value"><span id="kValue">…</span> min⁻¹</div>
                 <div class="why" data-i18n="sandbox.schreiner.cards.k.why">Faster compartments → bigger k → catch up sooner.</div>
             </div>
             <div class="term-card exp">
                 <div class="name" data-i18n="sandbox.schreiner.cards.exp.name">e<sup>−kt</sup> | exponential decay factor</div>
                 <div class="formula">= e<sup>−k · t</sup></div>
-                <div class="formula" id="expSubst">= e<sup>−0.0257 · 0.00</sup></div>
-                <div class="value"><span id="expValue">1.0000</span></div>
+                <div class="formula" id="expSubst">…</div>
+                <div class="value"><span id="expValue">…</span></div>
                 <div class="why" data-i18n="sandbox.schreiner.cards.exp.why">1.0&nbsp;at t=0, decays toward 0. Multiplied by the initial-disequilibrium term.</div>
             </div>
         </div>
@@ -472,22 +472,22 @@
                 <div class="decomp-card">
                     <div class="name" data-i18n="sandbox.schreiner.decomp.moving.name">Moving alveolar source</div>
                     <div class="formula">= <var>p</var><sub>alv,0</sub> + R · t</div>
-                    <div class="formula" id="termMovingSubst">= 3.1217 + (−0.7902) · 0.00</div>
-                    <div class="value"><span id="termMovingValue">3.1217</span> bar</div>
+                    <div class="formula" id="termMovingSubst">…</div>
+                    <div class="value"><span id="termMovingValue">…</span> bar</div>
                     <div class="why" data-i18n="sandbox.schreiner.decomp.moving.why">Where the alveolar source is right now (linear in t).</div>
                 </div>
                 <div class="decomp-card">
                     <div class="name" data-i18n="sandbox.schreiner.decomp.lag.name">Phase lag (R/k)</div>
                     <div class="formula">= R / k</div>
-                    <div class="formula" id="termLagSubst">= −0.7902 / 0.0257</div>
-                    <div class="value"><span id="termLagValue">−30.74</span> bar</div>
+                    <div class="formula" id="termLagSubst">…</div>
+                    <div class="value"><span id="termLagValue">…</span> bar</div>
                     <div class="why" data-i18n="sandbox.schreiner.decomp.lag.why">How far below (ascent) or above (descent) the source a perfectly-tracking tissue would settle. Equivalent to 1/k minutes of slope.</div>
                 </div>
                 <div class="decomp-card">
                     <div class="name" data-i18n="sandbox.schreiner.decomp.decay.name">Decaying initial gap</div>
                     <div class="formula">= (<var>p</var><sub>alv,0</sub> − <var>p</var><sub>t,0</sub> − R/k) · e<sup>−kt</sup></div>
-                    <div class="formula" id="termDecaySubst">= 30.74 · 1.0000</div>
-                    <div class="value"><span id="termDecayValue">30.74</span> bar</div>
+                    <div class="formula" id="termDecaySubst">…</div>
+                    <div class="value"><span id="termDecayValue">…</span> bar</div>
                     <div class="why" data-i18n="sandbox.schreiner.decomp.decay.why">The initial offset between actual Pt and the tracking line — settles exponentially toward zero.</div>
                 </div>
             </div>
@@ -588,7 +588,7 @@
         <div class="outputs">
             <div class="out-chip depth">
                 <span class="lbl" data-i18n="sandbox.schreiner.outputs.depth">Depth</span>
-                <span class="val"><span id="depthValue">30.0</span> m</span>
+                <span class="val"><span id="depthValue">…</span> m</span>
             </div>
             <div class="out-chip pt">
                 <span class="lbl"><var>p</var><sub>t</sub></span>
@@ -596,7 +596,7 @@
             </div>
             <div class="out-chip sat">
                 <span class="lbl" data-i18n="sandbox.schreiner.outputs.saturation">Saturation</span>
-                <span class="val"><span id="saturationValue">0.0</span>%</span>
+                <span class="val"><span id="saturationValue">…</span>%</span>
             </div>
         </div>
     </aside>
@@ -621,6 +621,7 @@
             schreinerEquation,
             getMValue,
             N2_FRACTION,
+            WATER_VAPOR_PRESSURE,
         } from '../js/decoModel.js';
         import {
             getCompartmentsForVariant,
@@ -631,6 +632,8 @@
         const SIMPLIFIED_FN2 = 0.79;
         const SIMPLIFIED_SURFACE = 1.0;
         const SIMPLIFIED_VAPOR = 0;
+        // bar na metr mořské vody — ve vzorci se zobrazuje, musí být lokalizovaná
+        const BAR_PER_METRE = 0.1;
 
         function ambient(depth) {
             return state.simplified
@@ -640,7 +643,7 @@
 
         function alveolar(pAmb) {
             const F = state.simplified ? SIMPLIFIED_FN2 : N2_FRACTION;
-            const vapor = state.simplified ? SIMPLIFIED_VAPOR : 0.0627;
+            const vapor = state.simplified ? SIMPLIFIED_VAPOR : WATER_VAPOR_PRESSURE;
             return (pAmb - vapor) * F;
         }
 
@@ -716,14 +719,14 @@
             // Term cards — symbolic + substituted + value
             const palv0Symbolic = state.simplified
                 ? `= (D<sub>start</sub>/10 + 1) · F<sub>N₂</sub>`
-                : `= (<var>p</var><sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub>`;
+                : `= (<var>p</var><sub>amb,start</sub> − ${fmtNum(WATER_VAPOR_PRESSURE, 4)}) · F<sub>N₂</sub>`;
             const pt0Symbolic = palv0Symbolic;
             const palv0Subst = state.simplified
-                ? `= (${state.startDepth}/10 + 1) · ${F}`
-                : `= (${fmtNum(pAmbStart, 4)} − 0.0627) · ${fmtNum(F, 4)}`;
+                ? `= (${fmtNum(state.startDepth)}/10 + 1) · ${fmtNum(F)}`
+                : `= (${fmtNum(pAmbStart, 4)} − ${fmtNum(WATER_VAPOR_PRESSURE, 4)}) · ${fmtNum(F, 4)}`;
             const pt0Subst = palv0Subst;
-            const rSymbolic = `= F<sub>N₂</sub> · depth_rate · 0.1`;
-            const rSubst = `= ${F} · (${state.depthRate}) · 0.1`;
+            const rSymbolic = `= F<sub>N₂</sub> · depth_rate · ${fmtNum(BAR_PER_METRE, 1)}`;
+            const rSubst = `= ${fmtNum(F, 4)} · (${fmtNum(state.depthRate)}) · ${fmtNum(BAR_PER_METRE, 1)}`;
 
             document.getElementById('palv0Symbolic').innerHTML = palv0Symbolic;
             document.getElementById('palv0Subst').innerHTML = palv0Subst;
@@ -735,7 +738,7 @@
             document.getElementById('rSubst').innerHTML = rSubst;
             document.getElementById('rValue').textContent = fmtNum(R, 4);
             document.getElementById('kValue').textContent = fmtNum(k, 4);
-            document.getElementById('kSubst').textContent = `= 0.6931 / ${fmtNum(halfTime, 1)}`;
+            document.getElementById('kSubst').textContent = `= ${fmtNum(Math.LN2, 4)} / ${fmtNum(halfTime, 1)}`;
             document.getElementById('expValue').textContent = fmtNum(expTerm, 4);
             document.getElementById('expSubst').innerHTML = `= e<sup>−${fmtNum(k, 4)} · ${fmtNum(state.t, 2)}</sup>`;
 
@@ -833,9 +836,11 @@
         const timeSlider   = document.getElementById('timeSlider');
         const timeValue    = document.getElementById('timeValue');
         const btnMinusTenth = document.getElementById('tMinusTenth');
+        btnMinusTenth.textContent = `−${fmtNum(0.1, 1)}`;
         const btnMinus1     = document.getElementById('tMinus1');
         const btnPlus1      = document.getElementById('tPlus1');
         const btnPlusTenth  = document.getElementById('tPlusTenth');
+        btnPlusTenth.textContent = `+${fmtNum(0.1, 1)}`;
 
         function applyTimeRange() {
             const tMax = Math.max(0.1, state.segmentTime);

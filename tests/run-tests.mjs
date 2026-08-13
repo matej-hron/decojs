@@ -117,7 +117,7 @@ function expect(actual) {
 // IMPORT MODULES
 // ============================================================================
 
-import { decimalSeparator, fmtGroup, fmtNum, localeTag } from '../js/format.js';
+import { decimalSeparator, fmtGroup, fmtNum, localeTag, localizeLatex } from '../js/format.js';
 import { baseFromStartDate, epochMinToLocalInput, localInputToEpochMin } from '../js/tripTime.js';
 import { addDive, editDive, removeDive, rescheduleDive } from '../js/tripState.js';
 
@@ -3756,6 +3756,78 @@ describe('format - thousands grouping follows the app language', () => {
                 if (comment !== -1 && comment < at) return;
                 offenders.push(`${rel}:${i + 1}`);
             });
+        }
+        expect(offenders).toEqual([]);
+    });
+});
+
+describe('format - static numbers in tables and formulas', () => {
+    // Fáze 2: čísla natvrdo zapsaná v HTML se nelokalizují. Buď se generují
+    // z dat přes fmtNum(), nebo projdou localizeNumbersIn()/localizeLatex().
+
+    test('KaTeX gets a decimal comma wrapped in a group, not a bare one', () => {
+        // V matematickém režimu je holá čárka interpunkce a KaTeX za ni vloží
+        // mezeru — `0, 84`. Správný zápis je `0{,}84` (authoring.md §4).
+        expect(localizeLatex('= 3.16 \\text{ bar}', 'cs')).toBe('= 3{,}16 \\text{ bar}');
+        expect(localizeLatex('\\frac{1440}{112.5} = 12.8', 'cs')).toBe('\\frac{1440}{112{,}5} = 12{,}8');
+    });
+
+    test('KaTeX source is left alone in languages with a decimal point', () => {
+        expect(localizeLatex('= 3.16', 'en')).toBe('= 3.16');
+    });
+
+    test('every page that renders KaTeX localizes the source first', () => {
+        // Kdo zavolá katex.render(el.dataset.latex, …) přímo, obejde lokalizaci.
+        const offenders = [];
+        for (const rel of ['pressure.html', 'tissue-loading.html']) {
+            const text = readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
+            text.split('\n').forEach((line, i) => {
+                if (line.includes('katex.render(') && !line.includes('localizeLatex(')) {
+                    offenders.push(`${rel}:${i + 1}  ${line.trim().slice(0, 80)}`);
+                }
+            });
+        }
+        expect(offenders).toEqual([]);
+    });
+
+    test('data tables are generated, not hardcoded with english decimals', () => {
+        // Prázdné tbody + render z pole je jediný způsob, jak čísla projdou
+        // fmtNum(). Zůstane-li v tbody statické číslo, je natvrdo anglicky.
+        const cases = [
+            ['pressure.html', 'altitude-table-body'],
+            ['pressure.html', 'dalton-example-body'],
+            ['tissue-loading.html', 'solubility-table-body'],
+        ];
+        const offenders = [];
+        for (const [rel, id] of cases) {
+            const text = readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
+            const at = text.indexOf(`<tbody id="${id}">`);
+            if (at === -1) {
+                offenders.push(`${rel}: chybí <tbody id="${id}">`);
+                continue;
+            }
+            const body = text.slice(at, text.indexOf('</tbody>', at));
+            if (/\d\.\d/.test(body)) offenders.push(`${rel}#${id}: statické číslo v tbody`);
+        }
+        expect(offenders).toEqual([]);
+    });
+
+    test('sandbox formulas take physical constants from decoModel, not literals', () => {
+        // 0,0627 bar (tenze vodní páry) a ln 2 se ve vzorcích zobrazují —
+        // literál v šabloně obejde fmtNum() a v češtině zůstane tečka.
+        const offenders = [];
+        for (const rel of ['sandbox/haldane.html', 'sandbox/schreiner.html']) {
+            const text = readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
+            text.split('\n').forEach((line, i) => {
+                const at = line.search(/0\.0627|0\.6931/);
+                if (at === -1) return;
+                const comment = line.search(/(?:^|\s)\/\//);
+                if (comment !== -1 && comment < at) return;
+                offenders.push(`${rel}:${i + 1}  ${line.trim().slice(0, 80)}`);
+            });
+            if (!text.includes('WATER_VAPOR_PRESSURE')) {
+                offenders.push(`${rel}: neimportuje WATER_VAPOR_PRESSURE`);
+            }
         }
         expect(offenders).toEqual([]);
     });

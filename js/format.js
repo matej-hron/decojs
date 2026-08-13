@@ -117,3 +117,53 @@ export function fmtGroup(value, maxDecimals = 0, lang) {
         maximumFractionDigits: maxDecimals,
     }).format(n);
 }
+
+/**
+ * Localize the decimal separators of numbers already written in the markup.
+ *
+ * For static tables whose cells are prose-like ranges (`< 0.16`, `0.16 – 0.50`)
+ * it would be clumsy to rebuild the whole row from data just to move a comma.
+ * This walks the text nodes under `root` and rewrites every `12.34` literal
+ * with the active decimal separator, **preserving the digit count** — `0.50`
+ * stays `0,50`, it does not collapse to `0,5`.
+ *
+ * Deliberately opt-in: call it on a specific container, never on `document`.
+ * A blanket pass would also "localize" version numbers, ratios and file names.
+ *
+ * @param {Element|null} root - Container whose text nodes should be localized
+ * @param {string} [lang] - Language tag; defaults to the active language
+ * @returns {number} How many numbers were rewritten
+ */
+export function localizeNumbersIn(root, lang) {
+    if (!root) return 0;
+    const sep = decimalSeparator(lang === undefined ? currentLang() : lang);
+    if (sep === '.') return 0;
+    let changed = 0;
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+        const next = node.nodeValue.replace(/(\d)\.(\d)/g, (m, a, b) => {
+            changed++;
+            return `${a}${sep}${b}`;
+        });
+        if (next !== node.nodeValue) node.nodeValue = next;
+    }
+    return changed;
+}
+
+/**
+ * Localize decimal separators inside a KaTeX/LaTeX source string.
+ *
+ * In math mode a bare comma is punctuation and KaTeX inserts a space after it
+ * (`0,84` would render as `0, 84`). The decimal comma must be wrapped in a
+ * group — `0{,}84` — see docs/notation/authoring.md §4.
+ *
+ * @param {string} latex - LaTeX source
+ * @param {string} [lang] - Language tag; defaults to the active language
+ * @returns {string} LaTeX with localized decimal separators
+ */
+export function localizeLatex(latex, lang) {
+    if (typeof latex !== 'string') return latex;
+    const sep = decimalSeparator(lang === undefined ? currentLang() : lang);
+    if (sep === '.') return latex;
+    return latex.replace(/(\d)\.(\d)/g, `$1{${sep}}$2`);
+}

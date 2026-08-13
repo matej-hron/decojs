@@ -367,18 +367,51 @@ kontroly neznamená nic, dokud kontrola neselže na nasazené chybě.**
 Přepsaná kontrola počítá, kolik čísel vůbec našla, takže planost je vidět
 na první pohled. Našla 53 zbylých výskytů — viz další sekce.
 
-### Desetinný oddělovač v tabulkách a konstantách — ZBÝVÁ
+### Desetinný oddělovač v tabulkách a konstantách — hotovo
 
-53 textových uzlů v české verzi stále ukazuje desetinnou tečku:
+Poslední skupina desetinných teček: 53 textových uzlů, které předchozí PR
+nezachytily, protože nevznikají výpočtem ani nejsou v locales — jsou napsané
+natvrdo v HTML nebo zabudované do řetězců vzorců.
 
-| Kde | Počet | Co to je |
+| Kde | Počet | Řešení |
 |---|---|---|
-| `pressure.html` tabulka tlaku podle nadmořské výšky | 22 | natvrdo zapsaná čísla v HTML |
-| `tissue-loading.html` tabulka rozpustnosti plynů | 14 | totéž |
-| vzorce v sandboxech | 17 | konstanty v řetězcích (`0.0627`, `0.6931`, `1.01325`) |
+| `pressure.html` tabulka podle nadmořské výšky | 6 | tbody se generuje z pole `ALTITUDE_ROWS` přes `fmtNum()` |
+| `pressure.html` Daltonův příklad | 6 | tbody se generuje z `DALTON_GASES`, součin se počítá |
+| `pressure.html` tabulky limitů *p*(O₂) a *p*(N₂) | 16 | `localizeNumbersIn()` — buňky jsou rozsahy (`0,16 – 0,50`), přepisuje se jen oddělovač |
+| `pressure.html` vzorec SAC (KaTeX) | 3 | `localizeLatex()` |
+| `tissue-loading.html` tabulka rozpustnosti | 12 | tbody se generuje z `SOLUBILITY_ROWS` |
+| `tissue-loading.html` popisky SVG schématu | 6 | `fmtNum()` v `js/tissueEducation.js` |
+| sandboxy: konstanty ve vzorcích | 17 | import `WATER_VAPOR_PRESSURE`, `Math.LN2`, `PRESSURE_PER_METER`, `B_INTERCEPT` |
+| `sandbox/schreiner.html` tlačítka kroku | 2 | `fmtNum(0.1, 1)` |
 
-Poslední skupina je nejnápadnější, protože míchá obojí v jednom řádku:
-`= (4,0133 − 0.0627) · 0,7902`. Vypočtená část čárku má, konstanta vedle ní ne.
+**Tři různé sinky, tři různé nástroje.** Do `js/format.js` přibyly dvě funkce,
+protože „přepiš tečku na čárku" znamená v každém kontextu něco jiného:
+
+- `fmtNum()` — číslo vzniká výpočtem, formátuje se při vzniku;
+- `localizeNumbersIn(element)` — číslo je součástí prózy v buňce
+  (`< 0,16`, `0,16 – 0,50`). Přestavovat kvůli čárce celý řádek z dat by bylo
+  nepřiměřené. **Zachovává počet desetinných míst** — `0.50` → `0,50`,
+  nekolabuje na `0,5`. Je záměrně opt-in na konkrétní element: plošný běh přes
+  `document` by „lokalizoval" i čísla verzí a poměry;
+- `localizeLatex(src)` — KaTeX. V matematickém režimu je holá čárka
+  interpunkce a KaTeX za ni vloží mezeru (`0, 84`). Musí se zabalit do
+  skupiny: `0{,}84` (authoring.md §4).
+
+**Statické placeholdery.** Regresní test na konstanty odhalil vedlejší nález:
+sandboxy měly v HTML zapsané ukázkové hodnoty (`= (4.0133 − 0.0627) · 0.7902`),
+které JS při inicializaci přepíše. Byly to mrtvé anglické hodnoty, které navíc
+svádí k tomu upravovat je místo šablony. 47 takových uzlů se nahradilo `…`;
+kontrola v prohlížeči ověřuje, že žádný `…` na stránce nezůstane.
+
+**Chybný sink v SVG.** V `tissue-loading.html` byly popisky uvnitř `<svg>`
+zapsané jako `<text><var>p</var><sub>N₂</sub> = 3.16</text>`. SVG ale HTML
+značky nezná — parser je vystrčí ven z grafiky a text `= 3.16` skončil jako
+volný uzel v okolním `<div>`. Zápis se opravil na prostý text (viz
+authoring.md §5b: tvar značky se řídí sinkem).
+
+**Nepoužité klíče.** `daltonsLaw.example.o2PP` a `n2PP` obsahovaly jen číslo
+s jednotkou. Po vygenerování tabulky je počítá JS, takže se z locales smazaly
+(3 jazyky × 2 klíče).
 
 ### Desetinný oddělovač ve statickém obsahu — hotovo
 

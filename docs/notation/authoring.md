@@ -575,6 +575,38 @@ synchronně, by zůstaly s tečkou.
 neplatná v geometrii SVG, v `<input type="number">.value`, v CSS délkách, v URL
 a všude, kde se hodnota čte zpět přes `parseFloat`.
 
+#### Tři sinky, tři nástroje
+
+`fmtNum()` řeší čísla, která vznikají výpočtem. Statická čísla v šabloně
+potřebují něco jiného — modul proto nabízí ještě dvě funkce:
+
+| Sink | Funkce | Kdy |
+|---|---|---|
+| číslo vzniká výpočtem | `fmtNum(x, n)` | vždy, když se počítá |
+| číslo je v próze uvnitř buňky | `localizeNumbersIn(el)` | rozsahy jako `< 0,16`, `0,16 – 0,50` |
+| KaTeX / LaTeX | `localizeLatex(src)` | před `katex.render()` |
+
+```js
+import { localizeNumbersIn, localizeLatex } from './js/format.js';
+
+localizeNumbersIn(document.getElementById('ppo2-limits-table'));
+katex.render(localizeLatex(el.dataset.latex), el, { displayMode: true });
+```
+
+**`localizeNumbersIn` zachovává počet desetinných míst.** `0.50` se přepíše na
+`0,50`, ne na `0,5` — v tabulce limitů by kolísající počet míst vypadal jako
+nesourodá data. Je záměrně **opt-in na konkrétní element**: plošný běh přes
+`document` by „lokalizoval" i čísla verzí, poměry a názvy souborů.
+
+**`localizeLatex` balí čárku do skupiny.** V matematickém režimu je holá čárka
+interpunkce a KaTeX za ni vloží mezeru — `0.84` by se vysázelo jako `0, 84`.
+Správný tvar je `0{,}84` (viz §4).
+
+**Statické číslo v HTML, které přepisuje JS, je vždycky chyba.** Ukázkové
+hodnoty typu `<div id="pt0Subst">= (1.0133 − 0.0627) · 0.7902</div>` jsou mrtvé
+anglicky formátované řetězce a svádí k tomu upravovat je místo šablony. Piš
+`…` a nech je vyplnit kód.
+
 #### Odchylky od původního návrhu
 
 Návrh výše (fáze 1) počítal s `Intl.NumberFormat` a s pomocníkem `qty()`.

@@ -132,26 +132,8 @@
                             <th data-i18n="tissueLoading.henrysLaw.thFatBloodRatio">Fat:Blood Ratio</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong data-i18n="tissueLoading.henrysLaw.nitrogen">Nitrogen (N₂)</strong></td>
-                            <td>12.3</td>
-                            <td>66.1</td>
-                            <td>5.4×</td>
-                        </tr>
-                        <tr>
-                            <td data-i18n="tissueLoading.henrysLaw.helium">Helium (He)</td>
-                            <td>8.6</td>
-                            <td>15.7</td>
-                            <td>1.8×</td>
-                        </tr>
-                        <tr>
-                            <td data-i18n="tissueLoading.henrysLaw.oxygen">Oxygen (O₂)</td>
-                            <td>23.9</td>
-                            <td>110.5</td>
-                            <td>4.6×</td>
-                        </tr>
-                    </tbody>
+                    <tbody id="solubility-table-body">
+                        </tbody>
                 </table>
                 <p class="footnote" data-i18n="tissueLoading.henrysLaw.footnote">
                     Notice that fatty tissues can hold <strong>5× more nitrogen</strong> than blood at the same pressure!
@@ -195,7 +177,7 @@
                             <rect x="0" y="0" width="100" height="80" rx="8" class="stage-box stage-regulator" />
                             <text x="50" y="35" text-anchor="middle" class="stage-icon" style="font-size: 14px; font-weight: 600;" data-i18n="tissueLoading.gasExchange.svg.tank">TANK</text>
                             <text x="50" y="55" text-anchor="middle" class="stage-label" data-i18n="tissueLoading.gasExchange.svg.breathingGas">Breathing Gas</text>
-                            <text x="50" y="72" text-anchor="middle" class="stage-value" id="reg-pressure"><var>p</var><sub>N₂</sub> = 3.16</text>
+                            <text x="50" y="72" text-anchor="middle" class="stage-value" id="reg-pressure">ppN₂ = 3,16</text>
                         </g>
 
                         <!-- Arrow 1: Regulator → Alveoli -->
@@ -234,7 +216,7 @@
                             <rect x="0" y="0" width="100" height="80" rx="8" class="stage-box stage-lungs" />
                             <text x="50" y="30" text-anchor="middle" class="stage-icon">🫁</text>
                             <text x="50" y="55" text-anchor="middle" class="stage-label" data-i18n="tissueLoading.gasExchange.svg.alveoli">Alveoli</text>
-                            <text x="50" y="72" text-anchor="middle" class="stage-value" id="alv-pressure"><var>p</var><sub>N₂</sub> = 3.10</text>
+                            <text x="50" y="72" text-anchor="middle" class="stage-value" id="alv-pressure">ppN₂ = 3,10</text>
                         </g>
 
                         <!-- Arrow 2: Alveoli → Blood -->
@@ -271,7 +253,7 @@
                             <rect x="0" y="0" width="100" height="80" rx="8" class="stage-box stage-blood" />
                             <text x="50" y="30" text-anchor="middle" class="stage-icon">💉</text>
                             <text x="50" y="55" text-anchor="middle" class="stage-label" data-i18n="tissueLoading.gasExchange.svg.blood">Blood</text>
-                            <text x="50" y="72" text-anchor="middle" class="stage-value" id="blood-pressure"><var>p</var><sub>N₂</sub> = 2.5</text>
+                            <text x="50" y="72" text-anchor="middle" class="stage-value" id="blood-pressure">ppN₂ = 2,5</text>
                         </g>
 
                         <!-- Arrow 3: Blood → Tissues -->
@@ -763,7 +745,32 @@
         import { initStickyTOC } from './js/components/StickyTOC.js';
         import { initTooltipShortcut } from './js/components/tooltipShortcut.js';
         import { initI18n, createLanguageSwitcher } from './js/i18n.js';
-        import { fmtNum } from './js/format.js';
+        import { fmtNum, localizeLatex } from './js/format.js';
+
+        // Rozpustnosti plynů — tabulkové hodnoty, JS je jen formátuje podle jazyka.
+        const SOLUBILITY_ROWS = [
+            { key: 'tissueLoading.henrysLaw.nitrogen', name: 'Nitrogen (N₂)', blood: 12.3, fat: 66.1, ratio: 5.4 },
+            { key: 'tissueLoading.henrysLaw.helium', name: 'Helium (He)', blood: 8.6, fat: 15.7, ratio: 1.8 },
+            { key: 'tissueLoading.henrysLaw.oxygen', name: 'Oxygen (O₂)', blood: 23.9, fat: 110.5, ratio: 4.6 }
+        ];
+
+        function renderSolubilityTable() {
+            const tbody = document.getElementById('solubility-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = SOLUBILITY_ROWS.map((r, i) => {
+                const nameCell = i === 0
+                    ? `<td><strong data-i18n="${r.key}">${r.name}</strong></td>`
+                    : `<td data-i18n="${r.key}">${r.name}</td>`;
+                return `<tr>
+                    ${nameCell}
+                    <td>${fmtNum(r.blood, 1)}</td>
+                    <td>${fmtNum(r.fat, 1)}</td>
+                    <td>${fmtNum(r.ratio, 1)}×</td>
+                </tr>`;
+            }).join('');
+        }
+        renderSolubilityTable();
+
 
         // =====================================================================
         // DIVE PROFILE DEFINITION FOR THIS PAGE
@@ -878,7 +885,7 @@
                 // Store original LaTeX source on first render
                 if (!el.dataset.latex) el.dataset.latex = el.textContent;
                 try {
-                    katex.render(el.dataset.latex, el, { displayMode: true });
+                    katex.render(localizeLatex(el.dataset.latex), el, { displayMode: true });
                 } catch (e) {
                     console.warn('KaTeX error:', e);
                 }
@@ -888,7 +895,7 @@
             document.querySelectorAll('.formula-inline').forEach(el => {
                 if (!el.dataset.latex) el.dataset.latex = el.textContent;
                 try {
-                    katex.render(el.dataset.latex, el, { displayMode: false });
+                    katex.render(localizeLatex(el.dataset.latex), el, { displayMode: false });
                 } catch (e) {
                     console.warn('KaTeX inline error:', e);
                 }
