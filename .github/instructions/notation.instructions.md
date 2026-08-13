@@ -1,5 +1,5 @@
 ---
-applyTo: "**/*.html,wiki/**/*.md,data/*.json,locales/*.json,js/charts/*.js,js/components/*.js"
+applyTo: "**/*.html,wiki/**/*.md,data/*.json,locales/*.json,js/**/*.js"
 ---
 
 # Zápis fyzikálních veličin
@@ -12,8 +12,10 @@ Závazné znění: [`docs/notation/glossary.md`](../../docs/notation/glossary.md
 1. **Značka veličiny kurzívou, jednotka stojatě.** `<var>p</var><sub>celk</sub>`, `bar` nikdy kurzívou.
 2. **Mezi číslem a jednotkou `&nbsp;`.** Správně `20&nbsp;m`; ✗ nikdy `20m`, `20 m` ani `&#8239;`/U+202F.
 3. **V češtině desetinná čárka.** Správně `2,81&nbsp;bar`; ✗ nikdy `2.81 bar`.
-4. **Tlak je malé *p*.** Parciální tlak *p*<sub>O₂</sub>, ne `ppO2` — [proč](../../docs/notation/style-guide.md#rozhodnutí-projektu).
+4. **Tlak je malé *p*.** Parciální tlak *p*<sub>O₂</sub>, ne `ppO2`.
 5. **Víceznakové zkratky stojatě.** GF, MOD, NDL, SAC, OTU.
+
+Proč malé *p* (pravidlo 4): [style-guide.md](../../docs/notation/style-guide.md#rozhodnutí-projektu).
 
 ## Špatně × správně
 
