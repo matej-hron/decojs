@@ -467,8 +467,9 @@ oficiální otázky SPČR — jde o citaci zadání, ne o nekonzistenci (viz §4
     <https://www.bipm.org/documents/20126/41483022/SI-Brochure-9.pdf>
 11. GitHub issue [#61](https://github.com/matej-hron/decojs/issues/61) — garantova recenze,
     Jiří Hovorka, 17. 6. 2026 (zdroj rozhodnutí v §2.3 a v [Rozhodnutí projektu](#rozhodnutí-projektu) č. 1–2).
-12. `docs/notation/_research-source.md` — fáze 1 rešerše, ze které tento dokument čerpá;
-    smazána v pozdějším kroku plánu, viz poznámka v jejím záhlaví.
+12. Interní podkladová rešerše fáze 1 — necitovatelný pracovní dokument, ze kterého
+    tento dokument čerpá; obsah byl distribuován do `glossary.md`, `style-guide.md`
+    a `authoring.md`.
 13. IUPAC Gold Book (*Compendium of Chemical Terminology*), heslo „pressure, p":
     <https://goldbook.iupac.org/terms/view/P04819> (doi: 10.1351/goldbook.P04819) — jiná
     publikace než Green Book v položce 6 výše. `goldbook.iupac.org` vrací pro automatizované

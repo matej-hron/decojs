@@ -62,7 +62,7 @@ spoléhání na dědičnost — `<sub>` sám o sobě stojaté písmo nezdědí, 
 <span class="formula-inline">$p_{\mathrm{amb}} = p_{\mathrm{atm}} + \rho g h$</span>
 ```
 
-Vzor 5 se liší od podkladové rešerše (`_research-source.md` §7.2): tam je mezi číslem
+Vzor 5 se liší od podkladové rešerše fáze 1: tam je mezi číslem
 a jednotkou `&#8239;` (U+202F). **V tomto projektu se místo toho píše `&nbsp;`** —
 důvod je vysvětlen v §6.1. `&#8239;` smí v celém dokumentu authoring.md vystupovat
 jen jako *chybný* příklad (zde i v §6.1), ne jako doporučení (viz tabulka §4).
@@ -347,7 +347,7 @@ tam také není podporováno.
 **Při psaní** (HTML, Markdown, JSX literály) používej entitu `&nbsp;` (U+00A0).
 V HTML a JSON souborech živého produktu jich je 16 existujících výskytů (`git grep -o
 '&nbsp;' -- '*.html' '*.js' '*.json' '*.css' | wc -l`), U+202F ani jeden — je to tedy
-už zavedený autorský vzor, ne nová konvence. Výzkumný podklad (`_research-source.md` §7.5)
+už zavedený autorský vzor, ne nová konvence. Podkladová rešerše fáze 1
 doporučuje `&#8239;` (U+202F) jako typograficky užší variantu preferovanou SI
 Brochure; **toto doporučení projekt záměrně nepřejímá pro autorský text** — viz
 [Rozhodnutí projektu](style-guide.md#rozhodnutí-projektu) a §4.1 v `style-guide.md`.
@@ -499,8 +499,7 @@ okrajový případ, je to **jediná cesta** pro tlak.
 
 ### 6.5 `js/format.js` — fáze 2, zatím neexistuje
 
-> Tento modul **zatím neexistuje** v `js/`. Instaluje ho fáze 2 (`_research-source.md`
-> §11, krok 7). Diagnóza současného stavu: `js/i18n.js` neobsahuje žádnou logiku
+> Tento modul **zatím neexistuje** v `js/`. Instaluje ho fáze 2 (viz plán fáze 2). Diagnóza současného stavu: `js/i18n.js` neobsahuje žádnou logiku
 > formátování čísel; každý graf volá `.toFixed()` přímo na místě formátování a výsledek
 > (s tečkou bez ohledu na jazyk) předává do vlastní kopie obecného `fmt()` — pomocníka
 > nahrazujícího `{0}`/`{1}` zástupné symboly v textu, který sám o sobě s čísly nijak
