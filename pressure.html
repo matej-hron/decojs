@@ -642,7 +642,7 @@
                 <h4 data-i18n="partialPressureLimits.nitrogenLimits.exercisesTitle">Exercises: Max depth for narcosis limit</h4>
                 <p data-i18n="partialPressureLimits.nitrogenLimits.exercisesHint">Same formula as MOD, but for nitrogen: Max depth = ((<var>p</var><sub>N₂,max</sub> / <var>f</var><sub>N₂</sub>) − 1) × 10</p>
 
-                <span hidden data-i18n="partialPressureLimits.nitrogenLimits.exButModTemplate">but MOD is {mod} m!</span>
+                <span hidden data-i18n="partialPressureLimits.nitrogenLimits.exButModTemplate">but MOD is {mod}\u00a0m!</span>
                 <div class="ppn2-limit-switch">
                     <span data-i18n="partialPressureLimits.nitrogenLimits.limitLabel"><var>p</var><sub>N₂</sub> limit:</span>
                     <button class="ppn2-btn active" data-limit="4.0">4.0&nbsp;bar</button>
@@ -952,7 +952,7 @@
                         <span class="gas-tank-name">${tank.name}</span>
                         <span class="gas-tank-stats">
                             <span style="color: var(--text-muted); font-size: 0.85rem;">${tank.cylinderVolume}L cylinder · ${tank.totalCapacity}L capacity</span>
-                            <span>${tank.startPressure} → <span class="${status}">${tank.endPressure} bar</span></span>
+                            <span>${tank.startPressure} → <span class="${status}">${tank.endPressure}\u00a0bar</span></span>
                             <span>(${tank.consumed}L used)</span>
                         </span>
                     </div>
@@ -1106,7 +1106,7 @@
             const modStr = fmtNum(mod, 1);
             // Try to get translated template, fall back to English
             const el = document.querySelector('[data-i18n="partialPressureLimits.nitrogenLimits.exButModTemplate"]');
-            const template = el ? el.textContent : 'but MOD is {mod} m!';
+            const template = el ? el.textContent : 'but MOD is {mod}\u00a0m!';
             return template.replace('{mod}', modStr);
         }
 
@@ -1217,7 +1217,7 @@
                 const maxDepth = ((ppn2Max / gas.fn2) - 1) * 10;
                 const mod = ((1.4 / gas.fo2) - 1) * 10;
                 const calcStr = `(${fmtNum(ppn2Max, 1)} / ${fmtNum(gas.fn2, 2)} − 1) × 10`;
-                const depthStr = `<strong>${fmtNum(maxDepth, 1)} m</strong>`;
+                const depthStr = `<strong>${fmtNum(maxDepth, 1)}\u00a0m</strong>`;
                 const modNote = maxDepth > mod
                     ? ` <span class="mod-warning">${getModWarningText(gas)}</span>`
                     : '';

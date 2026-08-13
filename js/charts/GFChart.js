@@ -659,7 +659,7 @@ export class GFChart {
         if (!this.timeDisplay || !this.calculationResults) return;
         const time = this.calculationResults.timePoints[this.currentTimeIndex] || 0;
         const depth = this.calculationResults.depthPoints[this.currentTimeIndex] || 0;
-        this.timeDisplay.textContent = fmt(translate('chart.timeDisplay', '{0} min @ {1}m'), fmtNum(time, 1), fmtNum(depth, 1));
+        this.timeDisplay.textContent = fmt(translate('chart.timeDisplay', '{0}\u00a0min @ {1}m'), fmtNum(time, 1), fmtNum(depth, 1));
         this._renderMiniProfile();
     }
 
@@ -969,7 +969,7 @@ export class GFChart {
             // pAnchor vertical line
             if (pAnchor > SURFACE_PRESSURE) {
                 datasets.push({
-                    label: fmt(translate('chart.gf.pAnchor', 'pAnchor {0} bar ({1}m)'), fmtNum(pAnchor, 2), fmtNum(((pAnchor - SURFACE_PRESSURE) / 0.1), 1)),
+                    label: fmt(translate('chart.gf.pAnchor', 'pAnchor {0}\u00a0bar ({1}m)'), fmtNum(pAnchor, 2), fmtNum(((pAnchor - SURFACE_PRESSURE) / 0.1), 1)),
                     data: [
                         { x: pAnchor, y: -10 },
                         { x: pAnchor, y: 120 }
@@ -1111,7 +1111,7 @@ export class GFChart {
                             label: (context) => {
                                 const label = context.dataset.label || '';
                                 return fmt(
-                                    translate('chart.gf.tooltipLabel', '{0}: p_amb={1} bar, GF={2}%'),
+                                    translate('chart.gf.tooltipLabel', '{0}: p_amb={1}\u00a0bar, GF={2}%'),
                                     label, fmtNum(context.parsed.x, 2), fmtNum(context.parsed.y, 1)
                                 );
                             }

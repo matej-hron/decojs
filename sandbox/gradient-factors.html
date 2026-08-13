@@ -802,7 +802,7 @@
             }
             els.f1Val.textContent = fmtNum((c.gfHere * 100), 1) + '%';
             els.f2Val.textContent = fmtNum(c.mAdj, 3);
-            const ceilingStr = `${fmtNum(c.ceilingBar, 3)} bar (≈ ${fmtNum(c.ceilingM, 1)} m)`;
+            const ceilingStr = `${fmtNum(c.ceilingBar, 3)}\u00a0bar (≈ ${fmtNum(c.ceilingM, 1)}\u00a0m)`;
             els.f3Val.textContent = ceilingStr;
         }
 
@@ -863,14 +863,14 @@
                 const anchorX = corrXToPx(c.pAnchor);
                 // pAnchor vertical
                 svg.appendChild(e('line', { x1: anchorX, y1: CORR_PAD_T, x2: anchorX, y2: CORRIDOR_H - CORR_PAD_B, stroke: '#27ae60', 'stroke-width': 1, 'stroke-dasharray': '3,3', opacity: 0.8 }));
-                svg.appendChild(e('text', { x: anchorX + 3, y: CORR_PAD_T + 10, 'font-size': 9, fill: '#27ae60' }, `pAnchor ${fmtNum(state.anchorDepth, 0)} m`));
+                svg.appendChild(e('text', { x: anchorX + 3, y: CORR_PAD_T + 10, 'font-size': 9, fill: '#27ae60' }, `pAnchor ${fmtNum(state.anchorDepth, 0)}\u00a0m`));
 
                 const surfaceY = corrYToPx(state.gfHi);
                 const anchorY = corrYToPx(state.gfLo);
 
                 // Shaded corridor (below the ramp, down to GF=0)
                 const baseY = corrYToPx(0);
-                const path = `M ${surfaceX} ${surfaceY} L ${anchorX} ${anchorY} L ${anchorX} ${baseY} L ${surfaceX} ${baseY} Z`;
+                const path = `M ${surfaceX} ${surfaceY}\u00a0L ${anchorX} ${anchorY}\u00a0L ${anchorX} ${baseY}\u00a0L ${surfaceX} ${baseY} Z`;
                 svg.appendChild(e('path', { d: path, fill: '#16a085', opacity: 0.10 }));
 
                 // Ramp line (surface → pAnchor)
@@ -1077,7 +1077,7 @@
             // Current depth vertical (red, same x as corridor)
             const depthX = ppXToPx(c.pAmb);
             svg.appendChild(e('line', { x1: depthX, y1: PP_PAD_T, x2: depthX, y2: PP_H - PP_PAD_B, stroke: '#c0392b', 'stroke-width': 1.5, opacity: 0.85 }));
-            svg.appendChild(e('text', { x: depthX + 4, y: PP_PAD_T + 22, 'font-size': 9, fill: '#c0392b' }, `depth ${fmtNum(state.depth, 1)} m`));
+            svg.appendChild(e('text', { x: depthX + 4, y: PP_PAD_T + 22, 'font-size': 9, fill: '#c0392b' }, `depth ${fmtNum(state.depth, 1)}\u00a0m`));
 
             // Tissue marker (blue dot at current depth)
             const tissueX = depthX;
@@ -1125,7 +1125,7 @@
                 svg.appendChild(e('text', {
                     x: ceilX + 3, y: PP_H - PP_PAD_B - 4,
                     'font-size': 9, fill: '#c0392b',
-                }, `ceiling ${fmtNum(c.ceilingM, 1)} m`));
+                }, `ceiling ${fmtNum(c.ceilingM, 1)}\u00a0m`));
             }
 
             // Violation indicator
@@ -1148,10 +1148,10 @@
             els.cardMVal.textContent = fmtNum(c.m, 3);
             els.cardMAdjVal.textContent = fmtNum(c.mAdj, 3);
             const delta = c.mAdj - c.m;
-            els.cardMDelta.textContent = `Δ ${delta >= 0 ? '+' : ''}${fmtNum(delta, 3)} bar`;
+            els.cardMDelta.textContent = `Δ ${delta >= 0 ? '+' : ''}${fmtNum(delta, 3)}\u00a0bar`;
 
-            els.cardCeilingValue.textContent = `${fmtNum(c.ceilingM, 1)} m`;
-            els.cardCeilingSub.textContent = `${fmtNum(c.ceilingBar, 3)} bar`;
+            els.cardCeilingValue.textContent = `${fmtNum(c.ceilingM, 1)}\u00a0m`;
+            els.cardCeilingSub.textContent = `${fmtNum(c.ceilingBar, 3)}\u00a0bar`;
 
             if (c.violation) {
                 els.cardCeiling.classList.add('violation');
@@ -1161,14 +1161,14 @@
             }
 
             // Term cards
-            els.termAVal.textContent = `${fmtNum(c.a, 4)} bar`;
+            els.termAVal.textContent = `${fmtNum(c.a, 4)}\u00a0bar`;
             els.termBVal.textContent = fmtNum(c.b, 4);
             els.termGfLoVal.textContent = state.mode === 'lohi' ? fmtNum((state.gfLo * 100), 0) : '—';
             els.termGfHiVal.textContent = state.mode === 'lohi' ? fmtNum((state.gfHi * 100), 0) : fmtNum((state.gf * 100), 0);
             els.termAnchorVal.textContent = (state.mode === 'lohi' && c.anchorSet)
-                ? `${fmtNum(c.pAnchor, 3)} bar (${fmtNum(state.anchorDepth, 0)} m)`
+                ? `${fmtNum(c.pAnchor, 3)}\u00a0bar (${fmtNum(state.anchorDepth, 0)}\u00a0m)`
                 : '—';
-            els.termMAdjVal.textContent = `${fmtNum(c.mAdj, 3)} bar`;
+            els.termMAdjVal.textContent = `${fmtNum(c.mAdj, 3)}\u00a0bar`;
 
             els.compLabel.textContent = `TC${c.comp.id}`;
         }
@@ -1221,13 +1221,13 @@
             els.depthSlider, els.depthVal,
             (v) => clamp(parseFloat(v) || 0, 0, 40),
             (v) => { state.depth = v; },
-            (v) => `${fmtNum(v, 1)} m`
+            (v) => `${fmtNum(v, 1)}\u00a0m`
         );
         bindSlider(
             els.tissueSlider, els.tissueVal,
             (v) => clamp(parseFloat(v) || 0, 0.7, 6),
             (v) => { state.tissuePt = v; },
-            (v) => `${fmtNum(v, 2)} bar`
+            (v) => `${fmtNum(v, 2)}\u00a0bar`
         );
         bindSlider(
             els.gfSlider, els.gfVal,
@@ -1251,7 +1251,7 @@
             els.anchorSlider, els.anchorVal,
             (v) => clamp(parseFloat(v) || 0, 0, 30),
             (v) => { state.anchorDepth = v; },
-            (v) => v < 3 ? '— (no anchor)' : `${fmtNum(v, 1)} m`
+            (v) => v < 3 ? '— (no anchor)' : `${fmtNum(v, 1)}\u00a0m`
         );
 
         els.modeSingleBtn.addEventListener('click', () => { state.mode = 'single'; render(); });
@@ -1281,7 +1281,7 @@
                 : pAlv;
             state.tissuePt = clamp(newPt, 0.7, 6);
             els.tissueSlider.value = state.tissuePt;
-            els.tissueVal.textContent = `${fmtNum(state.tissuePt, 2)} bar`;
+            els.tissueVal.textContent = `${fmtNum(state.tissuePt, 2)}\u00a0bar`;
             render();
         });
 

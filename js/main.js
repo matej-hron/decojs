@@ -196,7 +196,7 @@ function displayProfileSummary(setup) {
         profileLabel.textContent = setup.name || translate('diveEditor.profileDefault', 'Profile:');
     }
     
-    profileHeaderSummary.textContent = `${maxDepth}m max, ${totalTime} min, ${gasNames}${diveInfo}`;
+    profileHeaderSummary.textContent = `${maxDepth}m max, ${totalTime}\u00a0min, ${gasNames}${diveInfo}`;
     
     // Update switcher selection if needed
     if (profileSwitcher) {
@@ -344,7 +344,7 @@ function initReferenceTable() {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td><span class="color-dot" style="background-color: ${comp.color}; display: inline-block;"></span> ${comp.id}</td>
-            <td>${fmtNum(comp.halfTime)} min</td>
+            <td>${fmtNum(comp.halfTime)}\u00a0min</td>
             <td>${getCompartmentCategory(comp.halfTime)}</td>
             <td>${comp.label.split(' - ')[1] || comp.label}</td>
             <td>${timeStr}</td>

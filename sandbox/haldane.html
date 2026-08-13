@@ -578,7 +578,7 @@
         function populateCompartments() {
             const comps = getCompartmentsForVariant(state.variant);
             els.compartment.innerHTML = comps
-                .map((c, i) => `<option value="${i}">${i + 1} | t½ = ${fmtNum(c.halfTime, 1)} min</option>`)
+                .map((c, i) => `<option value="${i}">${i + 1} | t½ = ${fmtNum(c.halfTime, 1)}\u00a0min</option>`)
                 .join('');
             els.compartment.value = String(state.compartmentIdx);
         }
@@ -655,7 +655,7 @@
             state.compartmentIdx = parseInt(els.compartment.value, 10);
             applyTimeRange();                      // may clamp state.t
             timeSlider.value = String(state.t);    // sync slider thumb after clamp
-            timeValue.textContent = `${state.t} min`;
+            timeValue.textContent = `${state.t}\u00a0min`;
             updateStepButtons();
             recompute();                           // recompute with the clamped state.t
         });
@@ -702,7 +702,7 @@
             const tMax = parseInt(timeSlider.max, 10);
             state.t = Math.max(0, Math.min(tMax, Math.round(newT)));
             timeSlider.value = String(state.t);
-            timeValue.textContent = `${state.t} min`;
+            timeValue.textContent = `${state.t}\u00a0min`;
             updateStepButtons();
             recompute();
         }
@@ -879,7 +879,7 @@
         initI18n();
         populateCompartments();
         applyTimeRange();
-        timeValue.textContent = `${state.t} min`;
+        timeValue.textContent = `${state.t}\u00a0min`;
         updateStepButtons();
         recompute();
     </script>

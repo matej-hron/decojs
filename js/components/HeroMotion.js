@@ -8,7 +8,7 @@ const SVG_NS = 'http://www.w3.org/2000/svg';
 // title area above stays clear. y=20 = surface, y=160 = 30m.
 const PROFILE_D =
     'M 0 20 L 90 20 L 240 160 L 700 160 L 850 47 L 1000 47 L 1100 20 L 1200 20';
-const FILL_D = `${PROFILE_D} L 1200 200 L 0 200 Z`;
+const FILL_D = `${PROFILE_D}\u00a0L 1200 200 L 0 200 Z`;
 
 function buildSvg() {
     const svg = document.createElementNS(SVG_NS, 'svg');

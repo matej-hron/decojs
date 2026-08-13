@@ -685,7 +685,7 @@ export class MValueChart {
         if (!this.timeDisplay || !this.calculationResults) return;
         const time = this.calculationResults.timePoints[this.currentTimeIndex] || 0;
         const depth = this.calculationResults.depthPoints[this.currentTimeIndex] || 0;
-        this.timeDisplay.textContent = fmt(translate('chart.timeDisplay', '{0} min @ {1}m'), fmtNum(time, 1), fmtNum(depth, 1));
+        this.timeDisplay.textContent = fmt(translate('chart.timeDisplay', '{0}\u00a0min @ {1}m'), fmtNum(time, 1), fmtNum(depth, 1));
         this._renderMiniProfile();
     }
 
@@ -1058,7 +1058,7 @@ export class MValueChart {
             if (pAnchor > SURFACE_PRESSURE) {
                 const anchorDepthM = fmtNum(((pAnchor - SURFACE_PRESSURE) / 0.1), 1);
                 datasets.push({
-                    label: fmt(translate('chart.mvalue.pAnchor', 'pAnchor {0} bar ({1}m)'), fmtNum(pAnchor, 2), anchorDepthM),
+                    label: fmt(translate('chart.mvalue.pAnchor', 'pAnchor {0}\u00a0bar ({1}m)'), fmtNum(pAnchor, 2), anchorDepthM),
                     data: [
                         { x: pAnchor, y: 0 },
                         { x: pAnchor, y: maxPressure }
@@ -1237,7 +1237,7 @@ export class MValueChart {
                             label: (context) => {
                                 const label = context.dataset.label || '';
                                 return fmt(
-                                    translate('chart.mvalue.tooltipLabel', '{0}: p_amb={1}, p_tissue={2} bar'),
+                                    translate('chart.mvalue.tooltipLabel', '{0}: p_amb={1}, p_tissue={2}\u00a0bar'),
                                     label, fmtNum(context.parsed.x, 2), fmtNum(context.parsed.y, 2)
                                 );
                             }

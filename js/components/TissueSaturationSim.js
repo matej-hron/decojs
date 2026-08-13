@@ -292,15 +292,15 @@ export class TissueSaturationSim {
         const pN2Alv = getAlveolarN2Pressure(ambient, gas.n2);
         const pO2 = ambient * gas.o2;
 
-        this.readouts.depth.textContent = `${fmtNum(depth, 1)} m`;
-        this.readouts.pAmb.textContent  = `${fmtNum(ambient, 2)} bar`;
+        this.readouts.depth.textContent = `${fmtNum(depth, 1)}\u00a0m`;
+        this.readouts.pAmb.textContent  = `${fmtNum(ambient, 2)}\u00a0bar`;
         this.readouts.gas.textContent   = gas.name;
-        this.readouts.pO2.textContent   = `${fmtNum(pO2, 2)} bar`;
-        this.readouts.pN2Insp.textContent = `${fmtNum(pN2Insp, 2)} bar`;
-        this.readouts.pN2Alv.textContent  = `${fmtNum(pN2Alv, 2)} bar`;
-        this.readouts.pFast.textContent = `${fmtNum(tissues[TRACKED_COMPARTMENT_IDS[0]], 2)} bar`;
-        this.readouts.pMed.textContent  = `${fmtNum(tissues[TRACKED_COMPARTMENT_IDS[1]], 2)} bar`;
-        this.readouts.pSlow.textContent = `${fmtNum(tissues[TRACKED_COMPARTMENT_IDS[2]], 2)} bar`;
+        this.readouts.pO2.textContent   = `${fmtNum(pO2, 2)}\u00a0bar`;
+        this.readouts.pN2Insp.textContent = `${fmtNum(pN2Insp, 2)}\u00a0bar`;
+        this.readouts.pN2Alv.textContent  = `${fmtNum(pN2Alv, 2)}\u00a0bar`;
+        this.readouts.pFast.textContent = `${fmtNum(tissues[TRACKED_COMPARTMENT_IDS[0]], 2)}\u00a0bar`;
+        this.readouts.pMed.textContent  = `${fmtNum(tissues[TRACKED_COMPARTMENT_IDS[1]], 2)}\u00a0bar`;
+        this.readouts.pSlow.textContent = `${fmtNum(tissues[TRACKED_COMPARTMENT_IDS[2]], 2)}\u00a0bar`;
 
         this._colourPpO2(pO2);
     }
@@ -322,24 +322,24 @@ export class TissueSaturationSim {
         if (pO2 > PPO2_DECO_LIMIT) {
             alerts.push({ level: 'critical',
                 text: fmt(translate('tissueSim.ppO2OxygenToxicity',
-                    'pO₂ {0} bar — oxygen toxicity (deco limit {1})'),
+                    'pO₂ {0}\u00a0bar — oxygen toxicity (deco limit {1})'),
                     fmtNum(pO2, 2), PPO2_DECO_LIMIT) });
         } else if (pO2 > PPO2_REC_LIMIT) {
             alerts.push({ level: 'warn',
                 text: fmt(translate('tissueSim.ppO2AboveRec',
-                    'pO₂ {0} bar — above recreational limit {1}'),
+                    'pO₂ {0}\u00a0bar — above recreational limit {1}'),
                     fmtNum(pO2, 2), PPO2_REC_LIMIT) });
         }
         if (pO2 < PPO2_HYPOXIA) {
             alerts.push({ level: 'critical',
                 text: fmt(translate('tissueSim.ppO2Hypoxic',
-                    'pO₂ {0} bar — hypoxic (< {1})'),
+                    'pO₂ {0}\u00a0bar — hypoxic (< {1})'),
                     fmtNum(pO2, 2), PPO2_HYPOXIA) });
         }
         if (pN2Insp > PPN2_NARCOSIS) {
             alerts.push({ level: 'warn',
                 text: fmt(translate('tissueSim.ppN2Narcosis',
-                    'pN₂ {0} bar — nitrogen narcosis likely (> {1})'),
+                    'pN₂ {0}\u00a0bar — nitrogen narcosis likely (> {1})'),
                     fmtNum(pN2Insp, 2), PPN2_NARCOSIS) });
         }
         const okText = translate('tissueSim.alertOk', 'All clear');
@@ -407,7 +407,7 @@ export class TissueSaturationSim {
                                   callback: (v) => {
                                       // pAmb = 1 + depth/10 ⇒ depth = (pAmb − 1) × 10
                                       const d = Math.round((v - 1) * 10);
-                                      return d < 0 ? '' : `${d} m`;
+                                      return d < 0 ? '' : `${d}\u00a0m`;
                                   }
                               }
                     }
@@ -422,7 +422,7 @@ export class TissueSaturationSim {
                         enabled: true,
                         callbacks: {
                             label: (ctx) => fmt(
-                                translate('tissueSim.tooltipLabel', '{0}: {1} bar'),
+                                translate('tissueSim.tooltipLabel', '{0}: {1}\u00a0bar'),
                                 ctx.dataset.label, fmtNum(ctx.parsed.y, 2)
                             )
                         }

@@ -459,11 +459,11 @@ export class DiveSetupEditor extends EventTarget {
                         ${translate('diveEditor.gases.gasSwitchStop', 'Gas switch stop:')}
                         <select class="dse-gas-switch-time-select form-input" style="width: auto;">
                             <option value="0">${translate('diveEditor.gases.switchNoStop', '0 min (no stop)')}</option>
-                            <option value="1">${fmt(translate('diveEditor.gases.switchNMin', '{0} min'), 1)}</option>
-                            <option value="2">${fmt(translate('diveEditor.gases.switchNMin', '{0} min'), 2)}</option>
-                            <option value="3">${fmt(translate('diveEditor.gases.switchNMin', '{0} min'), 3)}</option>
-                            <option value="4">${fmt(translate('diveEditor.gases.switchNMin', '{0} min'), 4)}</option>
-                            <option value="5">${fmt(translate('diveEditor.gases.switchNMin', '{0} min'), 5)}</option>
+                            <option value="1">${fmt(translate('diveEditor.gases.switchNMin', '{0}\u00a0min'), 1)}</option>
+                            <option value="2">${fmt(translate('diveEditor.gases.switchNMin', '{0}\u00a0min'), 2)}</option>
+                            <option value="3">${fmt(translate('diveEditor.gases.switchNMin', '{0}\u00a0min'), 3)}</option>
+                            <option value="4">${fmt(translate('diveEditor.gases.switchNMin', '{0}\u00a0min'), 4)}</option>
+                            <option value="5">${fmt(translate('diveEditor.gases.switchNMin', '{0}\u00a0min'), 5)}</option>
                         </select>
                     </label>
                     <p class="dse-hint">${translate('diveEditor.gases.switchHint', 'Time to verify gas, take breaths, and signal buddy at each switch depth.')}</p>
@@ -621,7 +621,7 @@ export class DiveSetupEditor extends EventTarget {
         section.className = 'dse-section dse-sac';
         section.open = false; // Collapsed by default
         section.innerHTML = `
-            <summary>⛽ ${translate('diveEditor.sac.title', 'Gas Consumption')} <span class="dse-summary-hint">(SAC ${DEFAULT_SAC_RATE}/${DEFAULT_DECO_SAC_RATE} L/min)</span></summary>
+            <summary>⛽ ${translate('diveEditor.sac.title', 'Gas Consumption')} <span class="dse-summary-hint">(SAC ${DEFAULT_SAC_RATE}/${DEFAULT_DECO_SAC_RATE}\u00a0L/min)</span></summary>
             <div class="dse-sac-content">
                 <p class="dse-hint">${translate('diveEditor.sac.hint', 'Surface Air Consumption rate for gas planning calculations.')}</p>
                 <div class="dse-row">
@@ -1658,7 +1658,7 @@ export class DiveSetupEditor extends EventTarget {
         if (this.elements.sacSummaryHint) {
             const sac = this.elements.sacInput?.value || DEFAULT_SAC_RATE;
             const decoSac = this.elements.decoSacInput?.value || DEFAULT_DECO_SAC_RATE;
-            this.elements.sacSummaryHint.textContent = `(SAC ${sac}/${decoSac} L/min)`;
+            this.elements.sacSummaryHint.textContent = `(SAC ${sac}/${decoSac}\u00a0L/min)`;
         }
     }
 

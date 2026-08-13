@@ -56,7 +56,7 @@ každou přes všechny soubory z Kroku 1.
 
 | # | Třída | Hledej | Oprav na |
 |---|---|---|---|
-| 1 | číslo + jednotka | `20m`, `20 m` (obyčejná mezera) | `20&nbsp;m` v HTML, `20`+U+00A0+`m` v JSON |
+| 1 | číslo + jednotka | `20m`, `20 m` (obyčejná mezera) | `20&nbsp;m` v HTML, U+00A0 v JSON, `\u00a0` v JS |
 | 1b | oddělovač tisíců | `600 000 Pa` (obyčejná mezera) | `600`+nbsp+`000`+nbsp+`Pa` — přepínač `--thousands` |
 | 2 | desetinná tečka v CZ | `2.81 bar` | `2,81` + nedělitelná mezera + `bar` |
 | 2b | desetinná tečka ve **vypočteném** čísle | `x.toFixed(2)` | `fmtNum(x, 2)` z `js/format.js` |
@@ -117,6 +117,27 @@ zbylých `toFixed()` po souborech, takže nové volání test pojmenuje.
 
 Pozor: hodnota přiřazená do proměnné a použitá o řádek dál vypadá neškodně.
 Konzole to pozná (`<line> attribute y1: Expected length, "11,82"`), grep ne.
+
+## Nedělitelná mezera: tvar se řídí sinkem
+
+| Kde píšeš | Tvar |
+|---|---|
+| `*.html` (autorský text) | `&nbsp;` |
+| `locales/*.json`, `data/*.json` | doslovné U+00A0 |
+| `*.js` a `<script>` v HTML | escape `\u00a0` |
+
+V JS **nikdy `&nbsp;`** — dekóduje ho jen `innerHTML`. V `textContent`, na
+canvasu grafu a v atributu `title` se vypíše i se středníkem.
+
+Nejčastější výskyt je šablonový řetězec: `` `${fmtNum(p, 2)} bar` ``. Grep na
+`\} bar` je najde; v `locales/` hledej `{0} bar`.
+
+**Past při psaní kontroly:** `\s` v JS regulárním výrazu matchuje **i U+00A0**.
+Test `/\}\s(?:bar|m)/` projde i nad neopraveným souborem — hledej doslovnou
+mezeru U+0020. A ověř kontrolu zaseknutím vady, ne jen tím, že je zelená.
+
+**Slepé místo prohlížeče:** text v `<option>` a v atributech procházení DOM
+nevidí. Měření v prohlížeči proto doplň statickým testem nad zdrojáky.
 
 ## Statické číslo v šabloně: vyber správný nástroj
 
@@ -224,7 +245,7 @@ Nech kontrolu vypsat, **kolik** nálezů vůbec prošla — nula nalezených č�
 vypadá stejně jako nula chyb.
 
 ```bash
-npm test          # musí projít celé (307/307)
+npm test          # musí projít celé (310/310)
 git diff --stat   # sedí seznam souborů z Kroku 1?
 
 # diff nesmí obsahovat formátovací šum
@@ -261,7 +282,7 @@ Norma: <odkaz do style-guide.md, proč je nový tvar správný>
 ## Ponecháno záměrně
 - `60°` (úhel se píše bez mezery), `12litrový` (složenina)
 
-**Testy:** 307/307 ✅
+**Testy:** 310/310 ✅
 ```
 
 Report musí odpovídat na otázku „co jsi kontroloval a nenašel", ne jen

@@ -587,7 +587,7 @@ export class DiveProfileChart {
                 type: 'label',
                 xValue: descentEnd.time / 2,
                 yValue: maxDepth / 3,
-                content: [fmt(translate('chart.profile.descentRate', '⬇ {0} m/min'), 20)],
+                content: [fmt(translate('chart.profile.descentRate', '⬇ {0}\u00a0m/min'), 20)],
                 backgroundColor: 'rgba(46, 204, 113, 0.9)',
                 color: 'white',
                 font: { size: 10, weight: 'bold' },
@@ -607,7 +607,7 @@ export class DiveProfileChart {
                 borderWidth: 3,
                 label: {
                     display: true,
-                    content: fmt(translate('chart.profile.bottomTime', 'BOTTOM TIME: {0} min'), bottomEnd.time),
+                    content: fmt(translate('chart.profile.bottomTime', 'BOTTOM TIME: {0}\u00a0min'), bottomEnd.time),
                     position: 'center',
                     backgroundColor: 'rgba(241, 196, 15, 0.95)',
                     color: '#333',
@@ -679,7 +679,7 @@ export class DiveProfileChart {
                 type: 'label',
                 xValue: bottomEnd.time + 1,
                 yValue: maxDepth,
-                content: [fmt(translate('chart.profile.ascentRate', '⬆ {0} m/min'), 10)],
+                content: [fmt(translate('chart.profile.ascentRate', '⬆ {0}\u00a0m/min'), 10)],
                 backgroundColor: 'rgba(155, 89, 182, 0.9)',
                 color: 'white',
                 font: { size: 10, weight: 'bold' },
@@ -694,7 +694,7 @@ export class DiveProfileChart {
             type: 'label',
             xValue: totalTime,
             yValue: -1,
-            content: [fmt(translate('chart.profile.tdt', 'TDT: {0} min'), Math.round(totalTime * 10) / 10)],
+            content: [fmt(translate('chart.profile.tdt', 'TDT: {0}\u00a0min'), Math.round(totalTime * 10) / 10)],
             backgroundColor: 'rgba(52, 73, 94, 0.9)',
             color: 'white',
             font: { size: 11, weight: 'bold' },
@@ -1222,7 +1222,7 @@ export class DiveProfileChart {
                 borderDash: [8, 4],
                 label: {
                     display: true,
-                    content: fmt(translate('chart.profile.reserve', 'RESERVE: {0} bar'), reservePressure),
+                    content: fmt(translate('chart.profile.reserve', 'RESERVE: {0}\u00a0bar'), reservePressure),
                     position: 'start',
                     backgroundColor: 'rgba(231, 76, 60, 0.9)',
                     color: 'white',
@@ -1391,7 +1391,7 @@ export class DiveProfileChart {
                                         }
                                     }
                                     return [
-                                        fmt(translate('chart.profile.tooltipTime', 'Time: {0} min'), fmtNum(time, 1)),
+                                        fmt(translate('chart.profile.tooltipTime', 'Time: {0}\u00a0min'), fmtNum(time, 1)),
                                         fmt(translate('chart.profile.tooltipGas', 'Gas: {0}'), gasName)
                                     ];
                                 }
@@ -1411,9 +1411,9 @@ export class DiveProfileChart {
                                 const isPressure = label.includes('Pressure') || label.includes('pp')
                                     || label.includes(translate('chart.axes.pressureBar', 'Pressure (bar)'));
                                 if (isDepth) {
-                                    return fmt(translate('chart.profile.tooltipLabelDepth', '{0}: {1} m'), label, fmtNum(value, 1));
+                                    return fmt(translate('chart.profile.tooltipLabelDepth', '{0}: {1}\u00a0m'), label, fmtNum(value, 1));
                                 } else if (isPressure) {
-                                    return fmt(translate('chart.profile.tooltipLabelPressure', '{0}: {1} bar'), label, fmtNum(value, 2));
+                                    return fmt(translate('chart.profile.tooltipLabelPressure', '{0}: {1}\u00a0bar'), label, fmtNum(value, 2));
                                 }
                                 return fmt(translate('chart.profile.tooltipLabelValue', '{0}: {1}'), label, fmtNum(value, 2));
                             },
@@ -1436,7 +1436,7 @@ export class DiveProfileChart {
                                     const rate = gasData.rates[closestIdx] || 0;
                                     if (rate > 0) {
                                         lines.push(fmt(
-                                            translate('chart.profile.tooltipGasConsumption', '⛽ Gas consumption: {0} L/min ({1})'),
+                                            translate('chart.profile.tooltipGasConsumption', '⛽ Gas consumption: {0}\u00a0L/min ({1})'),
                                             fmtNum(rate, 1), gasData.name
                                         ));
                                         break;
@@ -1452,7 +1452,7 @@ export class DiveProfileChart {
                                         const status = bar <= 0 ? translate('chart.profile.tooltipTankEmpty', ' ⚠️ EMPTY') :
                                                        bar < (gasData.reservePressure || 50) ? translate('chart.profile.tooltipTankLow', ' ⚠️') : '';
                                         lines.push(fmt(
-                                            translate('chart.profile.tooltipTankRow', '  {0}: {1} bar{2}'),
+                                            translate('chart.profile.tooltipTankRow', '  {0}: {1}\u00a0bar{2}'),
                                             gasData.name, bar, status
                                         ));
                                     }

@@ -979,9 +979,9 @@
         "diveTimeChange": "Změna času ponoru ve 20 m",
         "diveTimeSub": "Spotřeba vzduchu na hladině (SAC) 20 l/min při 3 bar (1+20/10)",
         "safety": {
-            "withinWorking": "V rámci pracovního tlaku ({0} bar)",
-            "aboveWorking": "Překračuje pracovní tlak! {0} bar (zkušební tlak: {1} bar)",
-            "danger": "NEBEZPEČÍ! {0} bar překračuje zkušební tlak ({1} bar)"
+            "withinWorking": "V rámci pracovního tlaku ({0} bar)",
+            "aboveWorking": "Překračuje pracovní tlak! {0} bar (zkušební tlak: {1} bar)",
+            "danger": "NEBEZPEČÍ! {0} bar překračuje zkušební tlak ({1} bar)"
         },
         "tempRange": "Teplotní rozsah",
         "tempRefs": {
@@ -1077,7 +1077,7 @@
             "ppN2Narcosis": "ppN₂ opojení (4,0)",
             "tooltipTime": "Čas: {0} min",
             "tooltipGas": "Plyn: {0}",
-            "tooltipGasConsumption": "⛽ Spotřeba plynu: {0} l/min ({1})",
+            "tooltipGasConsumption": "⛽ Spotřeba plynu: {0} l/min ({1})",
             "tooltipTankPressures": "─── Tlaky v lahvích ───",
             "tooltipTankEmpty": " ⚠️ PRÁZDNÁ",
             "tooltipTankLow": " ⚠️",
@@ -1113,34 +1113,34 @@
         }
     },
     "warnings": {
-        "cnsToxicityBottom": "Riziko toxicity CNS: ppO₂ = {0} bar v hloubce {1} m u dna (max. 1,6)",
-        "highPpO2Bottom": "Vysoké ppO₂: {0} bar v hloubce {1} m u dna (limit 1,4 pro pracovní ponory)",
-        "cnsToxicityDeco": "Riziko toxicity CNS: ppO₂ = {0} bar v hloubce {1} m během deko (max. 1,6)",
-        "hypoxiaRisk": "Riziko hypoxie: ppO₂ = {0} bar (min. 0,16)",
-        "narcosisWarning": "Varování – hloubkové opojení: ppN₂ = {0} bar v hloubce {1} m (ekvivalent {2} m na vzduchu)",
-        "mildNarcosis": "Možné mírné opojení: ppN₂ = {0} bar v hloubce {1} m",
-        "ceilingViolation": "Porušení stropu: vynoření {0} m nad strop ({1} bodů dat)",
-        "outOfGas": "Došel plyn: {0} dojde během ponoru (potřeba {1} l, k dispozici {2} l)",
-        "belowReserve": "Pod rezervou: {0} končí na {1} bar (rezerva: {2} bar)",
-        "lowGasMargin": "Malá rezerva plynu: {0} končí na {1} bar (blízko rezervy {2} bar)",
+        "cnsToxicityBottom": "Riziko toxicity CNS: ppO₂ = {0} bar v hloubce {1} m u dna (max. 1,6)",
+        "highPpO2Bottom": "Vysoké ppO₂: {0} bar v hloubce {1} m u dna (limit 1,4 pro pracovní ponory)",
+        "cnsToxicityDeco": "Riziko toxicity CNS: ppO₂ = {0} bar v hloubce {1} m během deko (max. 1,6)",
+        "hypoxiaRisk": "Riziko hypoxie: ppO₂ = {0} bar (min. 0,16)",
+        "narcosisWarning": "Varování – hloubkové opojení: ppN₂ = {0} bar v hloubce {1} m (ekvivalent {2} m na vzduchu)",
+        "mildNarcosis": "Možné mírné opojení: ppN₂ = {0} bar v hloubce {1} m",
+        "ceilingViolation": "Porušení stropu: vynoření {0} m nad strop ({1} bodů dat)",
+        "outOfGas": "Došel plyn: {0} dojde během ponoru (potřeba {1} l, k dispozici {2} l)",
+        "belowReserve": "Pod rezervou: {0} končí na {1} bar (rezerva: {2} bar)",
+        "lowGasMargin": "Malá rezerva plynu: {0} končí na {1} bar (blízko rezervy {2} bar)",
         "divePlanGood": "Plán ponoru vypadá dobře! Všechny parametry v bezpečných mezích."
     },
     "gasSummary": {
         "heading": "⛽ Souhrn plynů",
-        "total": "Celkem spotřebováno: {0} l",
-        "used": "(spotřebováno {0} l)",
+        "total": "Celkem spotřebováno: {0} l",
+        "used": "(spotřebováno {0} l)",
         "noProfiles": "Žádné uložené profily"
     },
     "diveEditor": {
         "ndl": {
             "noLimit": "✅ Bez limitu",
-            "remaining": "✅ Zbývá {0} min",
+            "remaining": "✅ Zbývá {0} min",
             "atLimit": "⚠️ Na limitu",
             "decoDive": "🔴 Dekompresní ponor",
             "outOfRange": "⚠ mimo rozsah",
             "infinity": "∞"
         },
-        "mod": "MOD: {0} m (deko: {1} m)",
+        "mod": "MOD: {0} m (deko: {1} m)",
         "profileDefault": "Profil:",
         "customProfile": "✏️ Vlastní profil",
         "customProfileNamed": "✏️ {0}",
@@ -1171,7 +1171,7 @@
             "addDecoGas": "Přidat dekompresní plyn",
             "gasSwitchStop": "Zastávka při změně plynu:",
             "switchNoStop": "0 min (bez zastávky)",
-            "switchNMin": "{0} min",
+            "switchNMin": "{0} min",
             "switchHint": "Čas na ověření plynu, nádechy a signalizaci buddymu při každé hloubce změny plynu."
         },
         "gf": {
@@ -1284,10 +1284,10 @@
     },
     "tissueSim": {
         "alertOk": "Vše v pořádku",
-        "ppO2OxygenToxicity": "pO₂ {0} bar — toxicita kyslíku (deko limit {1})",
-        "ppO2AboveRec": "pO₂ {0} bar — nad rekreační limit {1}",
-        "ppO2Hypoxic": "pO₂ {0} bar — hypoxie (< {1})",
-        "ppN2Narcosis": "pN₂ {0} bar — pravděpodobné hloubkové opojení (> {1})",
+        "ppO2OxygenToxicity": "pO₂ {0} bar — toxicita kyslíku (deko limit {1})",
+        "ppO2AboveRec": "pO₂ {0} bar — nad rekreační limit {1}",
+        "ppO2Hypoxic": "pO₂ {0} bar — hypoxie (< {1})",
+        "ppN2Narcosis": "pN₂ {0} bar — pravděpodobné hloubkové opojení (> {1})",
         "chartLabels": {
             "pAmb": "pAmb (okolní)",
             "pN2Alveolar": "<var>p</var><sub>N₂</sub> alveolární",

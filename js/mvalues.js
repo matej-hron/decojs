@@ -686,7 +686,7 @@ async function loadSelectedProfile() {
             const duration = currentProfile[currentProfile.length - 1].time;
             const { gfLow, gfHigh } = getGradientFactors(profileData);
             const gfStr = (gfLow === 1 && gfHigh === 1) ? '' : ` | GF ${Math.round(gfLow*100)}/${Math.round(gfHigh*100)}`;
-            summary.textContent = `${maxDepth}m / ${duration} min${gfStr}`;
+            summary.textContent = `${maxDepth}m / ${duration}\u00a0min${gfStr}`;
         }
         
         // Calculate tissue loading
@@ -747,7 +747,7 @@ function createChart() {
                         label: function(context) {
                             const x = fmtNum(context.parsed.x, 2);
                             const y = fmtNum(context.parsed.y, 2);
-                            return `${context.dataset.label}: (${x} bar, ${y} bar)`;
+                            return `${context.dataset.label}: (${x}\u00a0bar, ${y}\u00a0bar)`;
                         }
                     }
                 }
@@ -795,7 +795,7 @@ function getChartTitle() {
     if (count === 1) {
         const compId = Array.from(visibleCompartments)[0];
         const comp = COMPARTMENTS.find(c => c.id === compId);
-        return `M-Value Diagram - TC${comp.id} (${fmtNum(comp.halfTime)} min half-time)`;
+        return `M-Value Diagram - TC${comp.id} (${fmtNum(comp.halfTime)}\u00a0min half-time)`;
     }
     if (count === 16) return 'M-Value Diagram - All Compartments';
     return `M-Value Diagram - ${count} Compartments`;
@@ -1152,7 +1152,7 @@ function updateTimelineDisplay() {
         } else if (visibleCompartments.size === 1) {
             const compId = Array.from(visibleCompartments)[0];
             const tissueN2 = diveResults.compartments[compId].pressures[currentTimeIndex];
-            tissueSpan.textContent = `TC${compId} N₂: ${fmtNum(tissueN2, 2)} bar`;
+            tissueSpan.textContent = `TC${compId} N₂: ${fmtNum(tissueN2, 2)}\u00a0bar`;
         } else {
             tissueSpan.textContent = `${visibleCompartments.size} compartments`;
         }

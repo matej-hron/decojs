@@ -689,9 +689,9 @@
 
         // === i18n strings (updated on languagechange) ===
         let i18nStrings = {
-            safetyWithin: 'Within working pressure ({0} bar rated)',
-            safetyAbove: 'Above working pressure! {0} bar (test pressure: {1} bar)',
-            safetyDanger: 'DANGER! {0} bar exceeds test pressure ({1} bar)',
+            safetyWithin: 'Within working pressure ({0}\u00a0bar rated)',
+            safetyAbove: 'Above working pressure! {0}\u00a0bar (test pressure: {1}\u00a0bar)',
+            safetyDanger: 'DANGER! {0}\u00a0bar exceeds test pressure ({1}\u00a0bar)',
             tempIce: '0\u00B0C Ice',
             tempRoom: '20\u00B0C Room',
             tempBody: '37\u00B0C Body',
@@ -900,9 +900,9 @@
             const fillPercent = Math.min(100, Math.max(0, (p1 / maxDisplay) * 100));
             cylinderFill.style.height = fillPercent + '%';
             cylinderFill.style.background = getFillColor(t1C);
-            cylPressure.textContent = fmtNum(p1, 1) + ' bar';
+            cylPressure.textContent = fmtNum(p1, 1) + '\u00a0bar';
             cylTemp.textContent = t1C + ' \u00B0C';
-            cylVolume.textContent = vol + ' L';
+            cylVolume.textContent = vol + '\u00a0L';
         }
 
         /**
@@ -933,24 +933,24 @@
             const fillPercent = Math.min(100, Math.max(0, (p2 / maxDisplay) * 100));
             cylinderFill.style.height = fillPercent + '%';
             cylinderFill.style.background = getFillColor(t2C);
-            cylPressure.textContent = fmtNum(p2, 1) + ' bar';
+            cylPressure.textContent = fmtNum(p2, 1) + '\u00a0bar';
             cylTemp.textContent = t2C + ' \u00B0C';
-            cylVolume.textContent = vol + ' L';
+            cylVolume.textContent = vol + '\u00a0L';
 
             // === Result cards ===
-            finalPressureEl.textContent = fmtNum(p2, 1) + ' bar';
+            finalPressureEl.textContent = fmtNum(p2, 1) + '\u00a0bar';
 
             const dpSign = deltaP >= 0 ? '+' : '';
-            deltaPEl.textContent = dpSign + fmtNum(deltaP, 1) + ' bar';
+            deltaPEl.textContent = dpSign + fmtNum(deltaP, 1) + '\u00a0bar';
             deltaPEl.className = 'result-value ' + (deltaP >= 0 ? 'positive' : 'negative');
 
             const glSign = gasChangeLiters >= 0 ? '+' : '';
-            gasChangeEl.textContent = glSign + fmtNum(gasChangeLiters, 0) + ' L';
+            gasChangeEl.textContent = glSign + fmtNum(gasChangeLiters, 0) + '\u00a0L';
             gasChangeEl.className = 'result-value ' + (gasChangeLiters >= 0 ? 'positive' : 'negative');
-            gasChangeSub.innerHTML = `${dpSign}${fmtNum(deltaP, 1)} bar &times; ${vol} L`;
+            gasChangeSub.innerHTML = `${dpSign}${fmtNum(deltaP, 1)}\u00a0bar &times; ${vol}\u00a0L`;
 
             const tSign = timeDelta >= 0 ? '+' : '';
-            timeChangeEl.textContent = tSign + fmtNum(timeDelta, 1) + ' min';
+            timeChangeEl.textContent = tSign + fmtNum(timeDelta, 1) + '\u00a0min';
             timeChangeEl.className = 'result-value ' + (timeDelta >= 0 ? 'positive' : 'negative');
 
             // === Safety indicator ===
@@ -974,7 +974,7 @@
                 `T<sub>2</sub> = ${t2C}\u00B0C + 273.15 = ${fmtNum(t2K, 2)} K`;
 
             formulaComputed.innerHTML =
-                `<var>p</var><sub>2</sub> = ${p1} &times; ${fmtNum(t2K, 2)} / ${fmtNum(t1K, 2)} = <strong>${fmtNum(p2, 1)} bar</strong>`;
+                `<var>p</var><sub>2</sub> = ${p1} &times; ${fmtNum(t2K, 2)} / ${fmtNum(t1K, 2)} = <strong>${fmtNum(p2, 1)}\u00a0bar</strong>`;
         }
 
         // === Input syncing ===

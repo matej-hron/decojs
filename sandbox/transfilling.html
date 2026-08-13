@@ -585,18 +585,18 @@
             const { volumeA, volumeB, pressureA, pressureB } = getValues();
 
             // Update volume displays
-            volumeADisplay.textContent = `${volumeA} L`;
-            volumeBDisplay.textContent = `${volumeB} L`;
+            volumeADisplay.textContent = `${volumeA}\u00a0L`;
+            volumeBDisplay.textContent = `${volumeB}\u00a0L`;
 
             // Update pressure displays
-            pressureADisplay.textContent = `${Math.round(pressureA)} bar`;
-            pressureBDisplay.textContent = `${Math.round(pressureB)} bar`;
+            pressureADisplay.textContent = `${Math.round(pressureA)}\u00a0bar`;
+            pressureBDisplay.textContent = `${Math.round(pressureB)}\u00a0bar`;
 
             // Update gas amount displays
             const gasA = pressureA * volumeA;
             const gasB = pressureB * volumeB;
-            gasADisplay.textContent = `${Math.round(gasA)} bar·L`;
-            gasBDisplay.textContent = `${Math.round(gasB)} bar·L`;
+            gasADisplay.textContent = `${Math.round(gasA)}\u00a0bar·L`;
+            gasBDisplay.textContent = `${Math.round(gasB)}\u00a0bar·L`;
 
             // Update fill heights
             fillA.style.height = `${getFillHeight(pressureA)}%`;
@@ -667,12 +667,12 @@
                 } else {
                     // Animation complete - show result
                     const totalGas = (pressureA * volumeA) + (pressureB * volumeB);
-                    finalPressureDisplay.textContent = `${fmtNum(finalPressure, 1)} bar`;
-                    resultDetail.textContent = `Total gas: ${Math.round(totalGas)} bar·L (conserved)`;
+                    finalPressureDisplay.textContent = `${fmtNum(finalPressure, 1)}\u00a0bar`;
+                    resultDetail.textContent = `Total gas: ${Math.round(totalGas)}\u00a0bar·L (conserved)`;
                     resultSection.classList.remove('hidden');
 
                     // Show formula with initial values
-                    formulaComputed.innerHTML = `<var>p</var><sub>final</sub> = (${Math.round(pressureA)} × ${volumeA} + ${Math.round(pressureB)} × ${volumeB}) / (${volumeA} + ${volumeB}) = <strong>${fmtNum(finalPressure, 1)} bar</strong>`;
+                    formulaComputed.innerHTML = `<var>p</var><sub>final</sub> = (${Math.round(pressureA)} × ${volumeA} + ${Math.round(pressureB)} × ${volumeB}) / (${volumeA} + ${volumeB}) = <strong>${fmtNum(finalPressure, 1)}\u00a0bar</strong>`;
                     formulaComputed.classList.remove('hidden');
                 }
             }

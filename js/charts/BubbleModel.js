@@ -191,9 +191,9 @@ export class BubbleModel {
         ctx.font = '10px sans-serif';
         ctx.textAlign = 'left';
         ctx.fillStyle = '#3498db';
-        ctx.fillText(`p_amb = ${fmtNum(pAmb, 2)} bar`, 10, 14);
+        ctx.fillText(`p_amb = ${fmtNum(pAmb, 2)}\u00a0bar`, 10, 14);
         ctx.fillStyle = '#2ecc71';
-        ctx.fillText(`p_tissue = ${fmtNum(pTissue, 2)} bar (fixed)`, 140, 14);
+        ctx.fillText(`p_tissue = ${fmtNum(pTissue, 2)}\u00a0bar (fixed)`, 140, 14);
         if (rCrit < 100) {
             ctx.fillStyle = '#e74c3c';
             ctx.fillText(`r_crit = ${fmtNum(rCrit, 2)} μm`, 340, 14);
@@ -506,7 +506,7 @@ export class BubbleModel {
         ty += lineH;
         ctx.font = '10px sans-serif';
         ctx.fillStyle = '#666';
-        ctx.fillText(`= ${fmtNum(pAmb, 2)} + ${fmtNum(pLaplace, 2)} = ${fmtNum(pBubble, 2)} bar`, tx + 10, ty);
+        ctx.fillText(`= ${fmtNum(pAmb, 2)} + ${fmtNum(pLaplace, 2)} = ${fmtNum(pBubble, 2)}\u00a0bar`, tx + 10, ty);
         ty += lineH - 4;
         ctx.fillStyle = '#888';
         ctx.font = '9px sans-serif';
@@ -515,7 +515,7 @@ export class BubbleModel {
         ty += lineH + 6;
         ctx.fillStyle = '#2ecc71';
         ctx.font = 'bold 11px sans-serif';
-        ctx.fillText(`p_tissue = ${fmtNum(pTissue, 2)} bar`, tx, ty);
+        ctx.fillText(`p_tissue = ${fmtNum(pTissue, 2)}\u00a0bar`, tx, ty);
         ty += lineH;
         ctx.fillStyle = '#888';
         ctx.font = '9px sans-serif';

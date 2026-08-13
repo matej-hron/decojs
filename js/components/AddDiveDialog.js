@@ -58,8 +58,8 @@ export class AddDiveDialog extends EventTarget {
             if (!customMode && Number.isFinite(ndl)) timeEl.value = ndl;
             const t = parseFloat(timeEl.value) || 0;
             hintEl.textContent = (customMode && Number.isFinite(ndl) && t > ndl)
-                ? `⚠ deco — exceeds NDL (${ndl} min) for this depth at this point in the trip`
-                : (Number.isFinite(ndl) ? `NDL here: ${ndl} min` : 'NDL here: no limit (very shallow)');
+                ? `⚠ deco — exceeds NDL (${ndl}\u00a0min) for this depth at this point in the trip`
+                : (Number.isFinite(ndl) ? `NDL here: ${ndl}\u00a0min` : 'NDL here: no limit (very shallow)');
         };
 
         startEl.addEventListener('input', refresh);
