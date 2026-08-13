@@ -33,7 +33,7 @@
         "keyTerms": "Términos clave",
         "descent": {
             "label": "Descenso",
-            "text": "Fase desde que abandonas la superficie hasta alcanzar la profundidad prevista. Velocidad recomendada: ≤18-20 m/min."
+            "text": "Fase desde que abandonas la superficie hasta alcanzar la profundidad prevista. Velocidad recomendada: ≤18–20&nbsp;m/min."
         },
         "bottomTime": {
             "label": "Tiempo de fondo",
@@ -45,7 +45,7 @@
         },
         "ascent": {
             "label": "Ascenso",
-            "text": "Regreso a la superficie. La velocidad no debe superar los 9-10 m/min para evitar la formación de burbujas."
+            "text": "Regreso a la superficie. La velocidad no debe superar los 9–10&nbsp;m/min para evitar la formación de burbujas."
         },
         "tdt": {
             "label": "Tiempo total de inmersión (TDT)",
@@ -102,7 +102,7 @@
             "pAmb": "presión ambiente total",
             "pAtm": "presión atmosférica (≈1 bar a nivel del mar)",
             "rho": "densidad del agua (≈1025 kg/m³ para agua salada)",
-            "g": "aceleración de la gravedad (9.81 m/s²)",
+            "g": "aceleración de la gravedad (9.81&nbsp;m/s²)",
             "hDepth": "profundidad en metros",
             "simplified": "Fórmula simplificada (nivel del mar)",
             "simplifiedDesc": "Para bucear a nivel del mar usamos la fórmula simplificada:",
@@ -1043,7 +1043,7 @@
             "stepForward": "Paso adelante (→)",
             "jumpEnd": "Ir al final (End)"
         },
-        "timeDisplay": "{0} min @ {1} m",
+        "timeDisplay": "{0} min @ {1} m",
         "axes": {
             "timeMinutes": "Tiempo (minutos)",
             "timeMin": "Tiempo (min)",
@@ -1063,33 +1063,33 @@
             "datasetPpO2": "ppO₂ (bar)",
             "datasetPpN2": "ppN₂ (bar)",
             "datasetGasBar": "{0} (bar)",
-            "avg": "MED: {0} m",
-            "max": "MÁX: {0} m",
-            "tdt": "TDT: {0} min",
-            "bottomTime": "TIEMPO DE FONDO: {0} min",
-            "reserve": "RESERVA: {0} bar",
-            "descentRate": "⬇ {0} m/min",
-            "ascentRate": "⬆ {0} m/min",
-            "decoStop": "DECO {0} m · {1} min",
+            "avg": "MED: {0} m",
+            "max": "MÁX: {0} m",
+            "tdt": "TDT: {0} min",
+            "bottomTime": "TIEMPO DE FONDO: {0} min",
+            "reserve": "RESERVA: {0} bar",
+            "descentRate": "⬇ {0} m/min",
+            "ascentRate": "⬆ {0} m/min",
+            "decoStop": "DECO {0} m · {1} min",
             "surfaceInterval": "INTERVALO EN SUPERFICIE →",
-            "gasSwitchFrom": "{0} → {1} @ {2} m",
-            "gasSwitchTo": "→ {0} @ {1} m",
+            "gasSwitchFrom": "{0} → {1} @ {2} m",
+            "gasSwitchTo": "→ {0} @ {1} m",
             "ppO2Working": "ppO₂ 1,4 (fondo)",
             "ppO2Deco": "ppO₂ 1,6 (deco)",
             "ppN2Narcosis": "Narcosis ppN₂ (4,0)",
-            "tooltipTime": "Tiempo: {0} min",
+            "tooltipTime": "Tiempo: {0} min",
             "tooltipGas": "Gas: {0}",
             "tooltipGasConsumption": "⛽ Consumo de gas: {0} L/min ({1})",
             "tooltipTankPressures": "─── Presiones de botella ───",
             "tooltipTankEmpty": " ⚠️ VACÍA",
             "tooltipTankLow": " ⚠️",
-            "tooltipTankRow": "  {0}: {1} bar{2}",
-            "tooltipLabelDepth": "{0}: {1} m",
-            "tooltipLabelPressure": "{0}: {1} bar",
+            "tooltipTankRow": "  {0}: {1} bar{2}",
+            "tooltipLabelDepth": "{0}: {1} m",
+            "tooltipLabelPressure": "{0}: {1} bar",
             "tooltipLabelValue": "{0}: {1}"
         },
         "mvalue": {
-            "tcLabel": "TC{0} ({1} min)",
+            "tcLabel": "TC{0} ({1} min)",
             "tcCeilingLabel": "Techo TC{0}",
             "mValueTC": "Valor-M TC{0}",
             "gfLowTC": "GF bajo ({0} %) TC{1}",
@@ -1100,18 +1100,18 @@
             "alveolarPN2": "pN₂ alveolar",
             "alveolarPN2WithGases": "pN₂ alveolar ({0})",
             "alveolarPN2Percent": "pN₂ alveolar ({0} %)",
-            "surfaceLine": "Superficie (1 bar)",
-            "pAnchor": "pAnchor {0} bar ({1} m)",
-            "tooltipLabel": "{0}: P_amb={1}, P_tejido={2} bar",
-            "initialDepthLabel": "0,0 min @ 0 m"
+            "surfaceLine": "Superficie (1 bar)",
+            "pAnchor": "pAnchor {0} bar ({1} m)",
+            "tooltipLabel": "{0}: p_amb={1}, P_tejido={2} bar",
+            "initialDepthLabel": "0,0 min @ 0 m"
         },
         "gf": {
             "mValue100": "Valor-M (100 %)",
             "gfCorridor": "Corredor GF",
             "leadingTissue": "Tejido líder",
             "leadingTC": "Líder: TC{0} ({1} %)",
-            "pAnchor": "pAnchor {0} bar ({1} m)",
-            "tooltipLabel": "{0}: P_amb={1} bar, GF={2} %"
+            "pAnchor": "pAnchor {0} bar ({1} m)",
+            "tooltipLabel": "{0}: p_amb={1} bar, GF={2} %"
         }
     },
     "warnings": {
@@ -1297,7 +1297,7 @@
             "tcMed": "TC5 medio (27 min)",
             "tcSlow": "TC12 lento (239 min)"
         },
-        "tooltipLabel": "{0}: {1} bar"
+        "tooltipLabel": "{0}: {1} bar"
     },
     "nav": {
         "home": "Inicio",
@@ -1430,8 +1430,8 @@
                 "surfacePressure": "Presión en superficie: 1.0 bar",
                 "waterVapor": "Presión del vapor de agua: 0.0627 bar (47 mmHg a 37°C)",
                 "pressurePer10m": "Presión por cada 10 m de profundidad: 1.0 bar (agua salada)",
-                "descentRate": "Velocidad de descenso: 20 m/min",
-                "ascentRate": "Velocidad de ascenso: 10 m/min",
+                "descentRate": "Velocidad de descenso: 20&nbsp;m/min",
+                "ascentRate": "Velocidad de ascenso: 10&nbsp;m/min",
                 "stopIncrement": "Incremento entre paradas deco: 3 m"
             },
             "gf": {

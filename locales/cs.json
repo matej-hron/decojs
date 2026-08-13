@@ -33,7 +33,7 @@
         "keyTerms": "Klíčové pojmy",
         "descent": {
             "label": "Sestup",
-            "text": "Fáze od opuštění hladiny do dosažení plánované hloubky. Doporučená rychlost: ≤18–20 m/min."
+            "text": "Fáze od opuštění hladiny do dosažení plánované hloubky. Doporučená rychlost: ≤18–20&nbsp;m/min."
         },
         "bottomTime": {
             "label": "Čas na dně",
@@ -45,7 +45,7 @@
         },
         "ascent": {
             "label": "Výstup",
-            "text": "Návrat k hladině. Rychlost by neměla překročit 9–10 m/min, aby se zabránilo tvorbě bublin."
+            "text": "Návrat k hladině. Rychlost by neměla překročit 9–10&nbsp;m/min, aby se zabránilo tvorbě bublin."
         },
         "tdt": {
             "label": "Celková doba ponoru (TDT)",
@@ -102,7 +102,7 @@
             "pAmb": "celkový okolní tlak",
             "pAtm": "atmosférický tlak (≈1 bar na hladině moře)",
             "rho": "hustota vody (≈1025 kg/m³ pro mořskou vodu)",
-            "g": "gravitační zrychlení (9,81 m/s²)",
+            "g": "gravitační zrychlení (9,81&nbsp;m/s²)",
             "hDepth": "hloubka v metrech",
             "simplified": "Zjednodušený vzorec (hladina moře)",
             "simplifiedDesc": "Pro potápění na hladině moře používáme zjednodušený vzorec:",
@@ -1043,7 +1043,7 @@
             "stepForward": "Krok vpřed (→)",
             "jumpEnd": "Na konec (End)"
         },
-        "timeDisplay": "{0} min @ {1} m",
+        "timeDisplay": "{0} min @ {1} m",
         "axes": {
             "timeMinutes": "Čas (minuty)",
             "timeMin": "Čas (min)",
@@ -1063,33 +1063,33 @@
             "datasetPpO2": "ppO₂ (bar)",
             "datasetPpN2": "ppN₂ (bar)",
             "datasetGasBar": "{0} (bar)",
-            "avg": "PRŮM: {0} m",
-            "max": "MAX: {0} m",
-            "tdt": "TDT: {0} min",
-            "bottomTime": "ČAS NA DNĚ: {0} min",
-            "reserve": "REZERVA: {0} bar",
-            "descentRate": "⬇ {0} m/min",
-            "ascentRate": "⬆ {0} m/min",
-            "decoStop": "DEKO {0} m · {1} min",
+            "avg": "PRŮM: {0} m",
+            "max": "MAX: {0} m",
+            "tdt": "TDT: {0} min",
+            "bottomTime": "ČAS NA DNĚ: {0} min",
+            "reserve": "REZERVA: {0} bar",
+            "descentRate": "⬇ {0} m/min",
+            "ascentRate": "⬆ {0} m/min",
+            "decoStop": "DEKO {0} m · {1} min",
             "surfaceInterval": "POVRCHOVÝ INTERVAL →",
-            "gasSwitchFrom": "{0} → {1} @ {2} m",
-            "gasSwitchTo": "→ {0} @ {1} m",
+            "gasSwitchFrom": "{0} → {1} @ {2} m",
+            "gasSwitchTo": "→ {0} @ {1} m",
             "ppO2Working": "ppO₂ 1,4 (dno)",
             "ppO2Deco": "ppO₂ 1,6 (deko)",
             "ppN2Narcosis": "ppN₂ opojení (4,0)",
-            "tooltipTime": "Čas: {0} min",
+            "tooltipTime": "Čas: {0} min",
             "tooltipGas": "Plyn: {0}",
             "tooltipGasConsumption": "⛽ Spotřeba plynu: {0} l/min ({1})",
             "tooltipTankPressures": "─── Tlaky v lahvích ───",
             "tooltipTankEmpty": " ⚠️ PRÁZDNÁ",
             "tooltipTankLow": " ⚠️",
-            "tooltipTankRow": "  {0}: {1} bar{2}",
-            "tooltipLabelDepth": "{0}: {1} m",
-            "tooltipLabelPressure": "{0}: {1} bar",
+            "tooltipTankRow": "  {0}: {1} bar{2}",
+            "tooltipLabelDepth": "{0}: {1} m",
+            "tooltipLabelPressure": "{0}: {1} bar",
             "tooltipLabelValue": "{0}: {1}"
         },
         "mvalue": {
-            "tcLabel": "TC{0} ({1} min)",
+            "tcLabel": "TC{0} ({1} min)",
             "tcCeilingLabel": "TC{0} strop",
             "mValueTC": "M-hodnota TC{0}",
             "gfLowTC": "GF Low ({0} %) TC{1}",
@@ -1100,18 +1100,18 @@
             "alveolarPN2": "Alveolární pN₂",
             "alveolarPN2WithGases": "Alveolární pN₂ ({0})",
             "alveolarPN2Percent": "Alveolární pN₂ ({0} %)",
-            "surfaceLine": "Hladina (1 bar)",
-            "pAnchor": "pAnchor {0} bar ({1} m)",
-            "tooltipLabel": "{0}: P_amb={1}, P_tkáň={2} bar",
-            "initialDepthLabel": "0,0 min @ 0 m"
+            "surfaceLine": "Hladina (1 bar)",
+            "pAnchor": "pAnchor {0} bar ({1} m)",
+            "tooltipLabel": "{0}: p_amb={1}, p_tkáň={2} bar",
+            "initialDepthLabel": "0,0 min @ 0 m"
         },
         "gf": {
             "mValue100": "M-hodnota (100 %)",
             "gfCorridor": "GF koridor",
             "leadingTissue": "Vedoucí tkáň",
             "leadingTC": "Vedoucí: TC{0} ({1} %)",
-            "pAnchor": "pAnchor {0} bar ({1} m)",
-            "tooltipLabel": "{0}: P_amb={1} bar, GF={2} %"
+            "pAnchor": "pAnchor {0} bar ({1} m)",
+            "tooltipLabel": "{0}: p_amb={1} bar, GF={2} %"
         }
     },
     "warnings": {
@@ -1297,7 +1297,7 @@
             "tcMed": "TC5 střední (27 min)",
             "tcSlow": "TC12 pomalá (239 min)"
         },
-        "tooltipLabel": "{0}: {1} bar"
+        "tooltipLabel": "{0}: {1} bar"
     },
     "nav": {
         "home": "Domů",
@@ -1430,8 +1430,8 @@
                 "surfacePressure": "Tlak na hladině: 1,0 bar",
                 "waterVapor": "Tlak vodní páry: 0,0627 bar (47 mmHg při 37 °C)",
                 "pressurePer10m": "Tlak na 10 m hloubky: 1,0 bar (mořská voda)",
-                "descentRate": "Rychlost sestupu: 20 m/min",
-                "ascentRate": "Rychlost výstupu: 10 m/min",
+                "descentRate": "Rychlost sestupu: 20&nbsp;m/min",
+                "ascentRate": "Rychlost výstupu: 10&nbsp;m/min",
                 "stopIncrement": "Krok dekompresních zastávek: 3 m"
             },
             "gf": {
