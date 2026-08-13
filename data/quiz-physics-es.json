@@ -8,12 +8,12 @@
       "question": "¿Cuáles de las siguientes unidades expresan aproximadamente el mismo valor de presión?",
       "options": [
         { "key": "a", "text": "0,1 MPa = 100 kPa = 1 bar" },
-        { "key": "b", "text": "1 MPa = 1 000 kPa = 10 mbar" },
-        { "key": "c", "text": "0,1 MPa = 1 000 kPa = 10 bar" },
-        { "key": "d", "text": "1 MPa = 1 000 mbar" }
+        { "key": "b", "text": "1 MPa = 1 000 kPa = 10 mbar" },
+        { "key": "c", "text": "0,1 MPa = 1 000 kPa = 10 bar" },
+        { "key": "d", "text": "1 MPa = 1 000 mbar" }
       ],
       "correct": "a",
-      "explanation": "0,1 MPa = 100 kPa = 1 bar son valores equivalentes de presión. 1 MPa = 1 000 kPa = 10 bar, por lo que las demás opciones contienen conversiones erróneas."
+      "explanation": "0,1 MPa = 100 kPa = 1 bar son valores equivalentes de presión. 1 MPa = 1 000 kPa = 10 bar, por lo que las demás opciones contienen conversiones erróneas."
     },
     {
       "id": 2,
@@ -33,13 +33,13 @@
       "category": "tlak-jednotky",
       "question": "¿Cuál de los siguientes datos sobre la presión atmosférica media (presión atmosférica normal) es incorrecto?",
       "options": [
-        { "key": "a", "text": "alrededor de 100 000 N/m², es decir, unos 100 kPa" },
-        { "key": "b", "text": "entre 900 y 1 100 milibares, es decir, alrededor de 1 bar" },
-        { "key": "c", "text": "aproximadamente 0,1 MPa, es decir, 1 000 hPa" },
+        { "key": "a", "text": "alrededor de 100 000 N/m², es decir, unos 100 kPa" },
+        { "key": "b", "text": "entre 900 y 1 100 milibares, es decir, alrededor de 1 bar" },
+        { "key": "c", "text": "aproximadamente 0,1 MPa, es decir, 1 000 hPa" },
         { "key": "d", "text": "alrededor de 100 kbar, es decir, 0,1 Mbar" }
       ],
       "correct": "d",
-      "explanation": "100 kbar = 10 000 MPa, una presión enorme (100 000 veces mayor que la atmosférica). La presión atmosférica normal es aproximadamente 1 bar = 0,1 MPa = 100 kPa."
+      "explanation": "100 kbar = 10 000 MPa, una presión enorme (100 000 veces mayor que la atmosférica). La presión atmosférica normal es aproximadamente 1 bar = 0,1 MPa = 100 kPa."
     },
     {
       "id": 4,
@@ -52,7 +52,7 @@
         { "key": "d", "text": "1 metro" }
       ],
       "correct": "b",
-      "explanation": "1 kPa = 1 000 Pa. La presión de una columna de agua p = ρ·g·h. Para el agua: 1 000 kg/m³ × 10 m/s² × 0,1 m = 1 000 Pa = 1 kPa. Por tanto, 1 decímetro (0,1 m) de columna de agua produce una presión de 1 kPa."
+      "explanation": "1 kPa = 1 000 Pa. La presión de una columna de agua p = ρ·g·h. Para el agua: 1 000 kg/m³ × 10 m/s² × 0,1 m = 1 000 Pa = 1 kPa. Por tanto, 1 decímetro (0,1 m) de columna de agua produce una presión de 1 kPa."
     },
     {
       "id": 5,
@@ -390,20 +390,20 @@
         { "key": "d", "text": "6 botellas" }
       ],
       "correct": "d",
-      "explanation": "En una hora el compresor aspira 300 × 60 = 18 000 L de aire a presión normal. Una botella de 15 L a 20 MPa (= 200 bar) necesita 15 × 200 = 3 000 L. Número de botellas: 18 000 / 3 000 = 6."
+      "explanation": "En una hora el compresor aspira 300 × 60 = 18 000 L de aire a presión normal. Una botella de 15 L a 20 MPa (= 200 bar) necesita 15 × 200 = 3 000 L. Número de botellas: 18 000 / 3 000 = 6."
     },
     {
       "id": 31,
       "category": "vztlak-vystroj",
-      "question": "Elija la bolsa de izado del volumen mínimo necesario para subir un bloque de fundición de 750 kg (densidad de la fundición 8 000 kg/m³) que descansa libre en el fondo a 10 m. La masa de la bolsa con el aparejo es de 10–15 kg:",
+      "question": "Elija la bolsa de izado del volumen mínimo necesario para subir un bloque de fundición de 750 kg (densidad de la fundición 8 000 kg/m³) que descansa libre en el fondo a 10 m. La masa de la bolsa con el aparejo es de 10–15 kg:",
       "options": [
-        { "key": "a", "text": "1 000 L" },
+        { "key": "a", "text": "1 000 L" },
         { "key": "b", "text": "800 L" },
         { "key": "c", "text": "700 L" },
         { "key": "d", "text": "600 L" }
       ],
       "correct": "c",
-      "explanation": "Volumen de la fundición: 750/8 000 = 0,094 m³ = 94 L. Empuje sobre la fundición: 94 kg. Empuje necesario de la bolsa: 750 − 94 + 15 = 671 kg ≈ 671 L. La bolsa mínima es, por tanto, de 700 L."
+      "explanation": "Volumen de la fundición: 750/8 000 = 0,094 m³ = 94 L. Empuje sobre la fundición: 94 kg. Empuje necesario de la bolsa: 750 − 94 + 15 = 671 kg ≈ 671 L. La bolsa mínima es, por tanto, de 700 L."
     },
     {
       "id": 32,
@@ -416,7 +416,7 @@
         { "key": "d", "text": "al cambio de temperatura" }
       ],
       "correct": "b",
-      "explanation": "La causa principal del cambio de masa durante la inmersión es el consumo de aire de las botellas. El aire tiene masa (unos 1,25 kg/m³) y al consumir 3 000 L el buceador pierde casi 4 kg."
+      "explanation": "La causa principal del cambio de masa durante la inmersión es el consumo de aire de las botellas. El aire tiene masa (unos 1,25 kg/m³) y al consumir 3 000 L el buceador pierde casi 4 kg."
     },
     {
       "id": 33,
@@ -460,7 +460,7 @@
     {
       "id": 36,
       "category": "vztlak-vystroj",
-      "question": "Un cilindro hueco de chapa de acero anegado, de masa 2 400 kg y volumen interno 3 000 L (densidad del acero 8 000 kg/m³), descansa libre en el fondo a 20 m. Se puede izar a la superficie llenándolo de aire. Elija el número mínimo de botellas de 12 L cargadas a 18 MPa necesarias para ello:",
+      "question": "Un cilindro hueco de chapa de acero anegado, de masa 2 400 kg y volumen interno 3 000 L (densidad del acero 8 000 kg/m³), descansa libre en el fondo a 20 m. Se puede izar a la superficie llenándolo de aire. Elija el número mínimo de botellas de 12 L cargadas a 18 MPa necesarias para ello:",
       "options": [
         { "key": "a", "text": "1 botella" },
         { "key": "b", "text": "3 botellas" },
@@ -468,7 +468,7 @@
         { "key": "d", "text": "4 botellas" }
       ],
       "correct": "b",
-      "explanation": "Volumen de acero: 2 400/8 000 = 0,3 m³ = 300 L. Volumen total del cilindro: 3 000 + 300 = 3 300 L. Hay que desplazar el agua del cilindro. Una botella de 12 L × 180 bar = 2 160 L de aire en superficie = 720 L a 20 m. Se necesitan unos 2 400 L → 3 botellas."
+      "explanation": "Volumen de acero: 2 400/8 000 = 0,3 m³ = 300 L. Volumen total del cilindro: 3 000 + 300 = 3 300 L. Hay que desplazar el agua del cilindro. Una botella de 12 L × 180 bar = 2 160 L de aire en superficie = 720 L a 20 m. Se necesitan unos 2 400 L → 3 botellas."
     },
     {
       "id": 37,
@@ -488,13 +488,13 @@
       "category": "vztlak-vystroj",
       "question": "Una cabina de buceo se bajó a 60 m manteniendo en su interior la presión atmosférica normal. ¿Con qué fuerza neta presiona la tapa de la escotilla de salida (de área 1 m²) sobre la superficie de cierre de la cabina?",
       "options": [
-        { "key": "a", "text": "700 000 N" },
-        { "key": "b", "text": "70 000 N" },
-        { "key": "c", "text": "6 000 N" },
-        { "key": "d", "text": "600 000 N" }
+        { "key": "a", "text": "700 000 N" },
+        { "key": "b", "text": "70 000 N" },
+        { "key": "c", "text": "6 000 N" },
+        { "key": "d", "text": "600 000 N" }
       ],
       "correct": "d",
-      "explanation": "Diferencia de presión = presión hidrostática a 60 m = 6 bar = 600 000 Pa. Fuerza F = p × S = 600 000 Pa × 1 m² = 600 000 N (¡unas 60 toneladas!)."
+      "explanation": "Diferencia de presión = presión hidrostática a 60 m = 6 bar = 600 000 Pa. Fuerza F = p × S = 600 000 Pa × 1 m² = 600 000 N (¡unas 60 toneladas!)."
     },
     {
       "id": 39,
@@ -538,15 +538,15 @@
     {
       "id": 42,
       "category": "vztlak-vystroj",
-      "question": "Una campana de buceo tiene un volumen interno completo de 900 L, masa con lastre de 1 010 kg y volumen del propio material de 100 L. ¿Con qué fuerza tirará a 20 m en agua dulce del cabo de suspensión si durante el descenso:\nA. se reponía aire continuamente?\nB. no se reponía aire?",
+      "question": "Una campana de buceo tiene un volumen interno completo de 900 L, masa con lastre de 1 010 kg y volumen del propio material de 100 L. ¿Con qué fuerza tirará a 20 m en agua dulce del cabo de suspensión si durante el descenso:\nA. se reponía aire continuamente?\nB. no se reponía aire?",
       "options": [
         { "key": "a", "text": "A = 100 N, B = 400 N" },
-        { "key": "b", "text": "A = 100 N, B = 6 100 N" },
-        { "key": "c", "text": "A = 6 000 N, B = 7 000 N" },
-        { "key": "d", "text": "A = 100 N, B = 3 100 N" }
+        { "key": "b", "text": "A = 100 N, B = 6 100 N" },
+        { "key": "c", "text": "A = 6 000 N, B = 7 000 N" },
+        { "key": "d", "text": "A = 100 N, B = 3 100 N" }
       ],
       "correct": "b",
-      "explanation": "A: aire repuesto: empuje = (900+100)×10 = 10 000 N, peso = 10 100 N, fuerza en el cabo = 100 N. B: aire comprimido a 1/3 (300 L), agua llena 600 L, empuje = 400×10 = 4 000 N, fuerza = 10 100 − 4 000 = 6 100 N."
+      "explanation": "A: aire repuesto: empuje = (900+100)×10 = 10 000 N, peso = 10 100 N, fuerza en el cabo = 100 N. B: aire comprimido a 1/3 (300 L), agua llena 600 L, empuje = 400×10 = 4 000 N, fuerza = 10 100 − 4 000 = 6 100 N."
     },
     {
       "id": 43,
@@ -569,10 +569,10 @@
         { "key": "a", "text": "dependiente de la temperatura, la concentración de sales y, ligeramente, de la presión" },
         { "key": "b", "text": "dependiente solo de la temperatura" },
         { "key": "c", "text": "dependiente de la temperatura y la presión, e independiente de la concentración de sales" },
-        { "key": "d", "text": "constante en 1 020 kg/m³ con independencia de la temperatura, la presión y la salinidad" }
+        { "key": "d", "text": "constante en 1 020 kg/m³ con independencia de la temperatura, la presión y la salinidad" }
       ],
       "correct": "a",
-      "explanation": "La densidad del agua de mar depende sobre todo de la temperatura y la salinidad. La presión influye menos. La densidad típica es de 1 020–1 030 kg/m³ y varía según la zona."
+      "explanation": "La densidad del agua de mar depende sobre todo de la temperatura y la salinidad. La presión influye menos. La densidad típica es de 1 020–1 030 kg/m³ y varía según la zona."
     },
     {
       "id": 45,
@@ -585,12 +585,12 @@
         { "key": "d", "text": "no cambiará" }
       ],
       "correct": "c",
-      "explanation": "Reserva total = 20 L × 200 bar = 4 000 L. 3/4 = 3 000 L. Masa del aire ≈ 1,25 kg/1 000 L. Pérdida = 3 000 × 1,25/1 000 = 3,75 kg ≈ 3,7 kg."
+      "explanation": "Reserva total = 20 L × 200 bar = 4 000 L. 3/4 = 3 000 L. Masa del aire ≈ 1,25 kg/1 000 L. Pérdida = 3 000 × 1,25/1 000 = 3,75 kg ≈ 3,7 kg."
     },
     {
       "id": 46,
       "category": "vztlak-vystroj",
-      "question": "¿Con qué fuerza recibe empuje un objeto de fundición libre, de volumen 10 L, a 40 m en agua dulce (densidad de la fundición 7 500 kg/m³)?",
+      "question": "¿Con qué fuerza recibe empuje un objeto de fundición libre, de volumen 10 L, a 40 m en agua dulce (densidad de la fundición 7 500 kg/m³)?",
       "options": [
         { "key": "a", "text": "0,75 MPa" },
         { "key": "b", "text": "750 N" },
@@ -598,12 +598,12 @@
         { "key": "d", "text": "100 N" }
       ],
       "correct": "d",
-      "explanation": "Empuje = volumen × densidad del agua × g = 0,01 m³ × 1 000 kg/m³ × 10 m/s² = 100 N. El empuje no depende de la profundidad, solo del volumen sumergido."
+      "explanation": "Empuje = volumen × densidad del agua × g = 0,01 m³ × 1 000 kg/m³ × 10 m/s² = 100 N. El empuje no depende de la profundidad, solo del volumen sumergido."
     },
     {
       "id": 47,
       "category": "vztlak-vystroj",
-      "question": "En el fondo, a 10 m, hay cubos de acero, cada uno de 160 kg de masa. ¿Aproximadamente cuántos pueden levantarse con una bolsa de izado y una botella de 10 L cargada a 18 MPa? (Densidad del acero 8 000 kg/m³)",
+      "question": "En el fondo, a 10 m, hay cubos de acero, cada uno de 160 kg de masa. ¿Aproximadamente cuántos pueden levantarse con una bolsa de izado y una botella de 10 L cargada a 18 MPa? (Densidad del acero 8 000 kg/m³)",
       "options": [
         { "key": "a", "text": "6 cubos" },
         { "key": "b", "text": "2 cubos" },
@@ -611,7 +611,7 @@
         { "key": "d", "text": "10 cubos" }
       ],
       "correct": "a",
-      "explanation": "La botella contiene 10×180 = 1 800 L de aire. A 10 m (2 bar) son 900 L de empuje. Volumen del cubo = 160/8 000 = 0,02 m³ = 20 L. Peso neto bajo el agua = 160 − 20 = 140 kg. Número de cubos = 900/140 ≈ 6."
+      "explanation": "La botella contiene 10×180 = 1 800 L de aire. A 10 m (2 bar) son 900 L de empuje. Volumen del cubo = 160/8 000 = 0,02 m³ = 20 L. Peso neto bajo el agua = 160 − 20 = 140 kg. Número de cubos = 900/140 ≈ 6."
     },
     {
       "id": 48,
@@ -629,7 +629,7 @@
     {
       "id": 49,
       "category": "vztlak-vystroj",
-      "question": "Un cuerpo de superficie estanca tiene una masa de 250 kg y un volumen de 245 L. Determine su densidad y describa su comportamiento en agua de mar de densidad 1 030 kg/m³:",
+      "question": "Un cuerpo de superficie estanca tiene una masa de 250 kg y un volumen de 245 L. Determine su densidad y describa su comportamiento en agua de mar de densidad 1 030 kg/m³:",
       "options": [
         { "key": "a", "text": "flotará como un cuerpo poco sumergido (p. ej. un barco)" },
         { "key": "b", "text": "se mantendrá en flotabilidad neutra" },
@@ -637,7 +637,7 @@
         { "key": "d", "text": "se hundirá hasta el fondo" }
       ],
       "correct": "c",
-      "explanation": "Densidad del cuerpo = 250/0,245 = 1 020 kg/m³. El agua de mar tiene 1 030 kg/m³. El cuerpo es más ligero que el agua, por lo que flota. Como las densidades son muy próximas, flotará casi totalmente sumergido."
+      "explanation": "Densidad del cuerpo = 250/0,245 = 1 020 kg/m³. El agua de mar tiene 1 030 kg/m³. El cuerpo es más ligero que el agua, por lo que flota. Como las densidades son muy próximas, flotará casi totalmente sumergido."
     },
     {
       "id": 50,
@@ -650,7 +650,7 @@
         { "key": "d", "text": "540 g" }
       ],
       "correct": "c",
-      "explanation": "Aire total: 10 × 15 × 200 = 30 000 L = 30 m³. Humedad del aire: 18 × 0,33 = 5,94 g/m³. Agua total: 30 × 5,94 = 178,2 g."
+      "explanation": "Aire total: 10 × 15 × 200 = 30 000 L = 30 m³. Humedad del aire: 18 × 0,33 = 5,94 g/m³. Agua total: 30 × 5,94 = 178,2 g."
     },
     {
       "id": 51,
@@ -659,11 +659,11 @@
       "options": [
         { "key": "a", "text": "130 N" },
         { "key": "b", "text": "650 N" },
-        { "key": "c", "text": "1 260 N" },
+        { "key": "c", "text": "1 260 N" },
         { "key": "d", "text": "65 N" }
       ],
       "correct": "c",
-      "explanation": "Área de la membrana S = π × r² = π × 0,02² = 0,001257 m². Fuerza F = p × S = 1 000 000 Pa × 0,001257 m² ≈ 1 257 N ≈ 1 260 N."
+      "explanation": "Área de la membrana S = π × r² = π × 0,02² = 0,001257 m². Fuerza F = p × S = 1 000 000 Pa × 0,001257 m² ≈ 1 257 N ≈ 1 260 N."
     },
     {
       "id": 52,
@@ -676,7 +676,7 @@
         { "key": "d", "text": "aproximadamente 10 metros" }
       ],
       "correct": "d",
-      "explanation": "Presión atmosférica ≈ 1 bar ≈ 100 kPa. Presión hidrostática de 10 m de agua = 1 000 kg/m³ × 10 m/s² × 10 m = 100 000 Pa = 1 bar. Por tanto, 10 m de agua = 1 atmósfera."
+      "explanation": "Presión atmosférica ≈ 1 bar ≈ 100 kPa. Presión hidrostática de 10 m de agua = 1 000 kg/m³ × 10 m/s² × 10 m = 100 000 Pa = 1 bar. Por tanto, 10 m de agua = 1 atmósfera."
     },
     {
       "id": 53,
@@ -684,17 +684,17 @@
       "question": "La presión que produce la atmósfera terrestre al nivel del mar (presión atmosférica normal) es aproximadamente:",
       "options": [
         { "key": "a", "text": "0,1 MPa, es decir, 1 bar" },
-        { "key": "b", "text": "1 MPa, es decir, 1 000 mbar" },
+        { "key": "b", "text": "1 MPa, es decir, 1 000 mbar" },
         { "key": "c", "text": "10 MPa, es decir, 1 bar" },
         { "key": "d", "text": "0,01 MPa, es decir, 1 bar" }
       ],
       "correct": "a",
-      "explanation": "Presión atmosférica normal = 0,1 MPa = 100 kPa = 1 bar = 1 000 mbar. Las demás opciones contienen conversiones incorrectas."
+      "explanation": "Presión atmosférica normal = 0,1 MPa = 100 kPa = 1 bar = 1 000 mbar. Las demás opciones contienen conversiones incorrectas."
     },
     {
       "id": 54,
       "category": "tlak-jednotky",
-      "question": "Buceando en un lago cuya superficie está a unos 5 500 m sobre el nivel del mar, donde la presión atmosférica es de unos 50 kPa, la presión total a 20 m de profundidad es aproximadamente:",
+      "question": "Buceando en un lago cuya superficie está a unos 5 500 m sobre el nivel del mar, donde la presión atmosférica es de unos 50 kPa, la presión total a 20 m de profundidad es aproximadamente:",
       "options": [
         { "key": "a", "text": "200 kPa" },
         { "key": "b", "text": "250 kPa" },
@@ -709,13 +709,13 @@
       "category": "tlak-jednotky",
       "question": "Una cámara de descompresión a bordo de un buque está presurizada a una profundidad equivalente de 50 m. ¿Con qué fuerza neta presiona la tapa de la cámara, de área 1 m², contra la brida?",
       "options": [
-        { "key": "a", "text": "600 000 N" },
-        { "key": "b", "text": "400 000 N" },
-        { "key": "c", "text": "500 000 N" },
-        { "key": "d", "text": "50 000 N" }
+        { "key": "a", "text": "600 000 N" },
+        { "key": "b", "text": "400 000 N" },
+        { "key": "c", "text": "500 000 N" },
+        { "key": "d", "text": "50 000 N" }
       ],
       "correct": "c",
-      "explanation": "Sobrepresión en la cámara = 50 m = 5 bar = 500 000 Pa (diferencia respecto a la presión atmosférica exterior). Fuerza F = p × S = 500 000 Pa × 1 m² = 500 000 N."
+      "explanation": "Sobrepresión en la cámara = 50 m = 5 bar = 500 000 Pa (diferencia respecto a la presión atmosférica exterior). Fuerza F = p × S = 500 000 Pa × 1 m² = 500 000 N."
     },
     {
       "id": 56,
@@ -735,13 +735,13 @@
       "category": "tlak-jednotky",
       "question": "¿Cuál de las siguientes afirmaciones es incorrecta?",
       "options": [
-        { "key": "a", "text": "Un volumen de 1 metro cúbico (1 m³) contiene 1 000 litros." },
+        { "key": "a", "text": "Un volumen de 1 metro cúbico (1 m³) contiene 1 000 litros." },
         { "key": "b", "text": "Una presión de 1 MPa es la misma que una de 100 kPa." },
         { "key": "c", "text": "Una temperatura de 20 °C corresponde aproximadamente a 293 K." },
         { "key": "d", "text": "Un cuerpo de 1 kg de masa ejerce sobre la superficie terrestre una fuerza de aproximadamente 10 newton (N)." }
       ],
       "correct": "b",
-      "explanation": "1 MPa = 1 000 kPa, no 100 kPa. La relación correcta es 0,1 MPa = 100 kPa. Las demás afirmaciones son correctas."
+      "explanation": "1 MPa = 1 000 kPa, no 100 kPa. La relación correcta es 0,1 MPa = 100 kPa. Las demás afirmaciones son correctas."
     },
     {
       "id": 58,
@@ -754,7 +754,7 @@
         { "key": "d", "text": "100 N" }
       ],
       "correct": "c",
-      "explanation": "Área S = 10 mm² = 10 × 10⁻⁶ m² = 0,00001 m². Fuerza F = p × S = 1 000 000 Pa × 0,00001 m² = 10 N."
+      "explanation": "Área S = 10 mm² = 10 × 10⁻⁶ m² = 0,00001 m². Fuerza F = p × S = 1 000 000 Pa × 0,00001 m² = 10 N."
     },
     {
       "id": 59,
@@ -774,13 +774,13 @@
       "category": "tlak-jednotky",
       "question": "Determine la fuerza neta de presión que ejerce a 30 m sobre la superficie de apoyo de la carcasa de una videocámara su mirilla de 40 mm de diámetro:",
       "options": [
-        { "key": "a", "text": "3 770 N" },
+        { "key": "a", "text": "3 770 N" },
         { "key": "b", "text": "503 N" },
         { "key": "c", "text": "50,3 N" },
         { "key": "d", "text": "377 N" }
       ],
       "correct": "d",
-      "explanation": "Presión hidrostática a 30 m = 3 bar = 300 000 Pa. Área de la mirilla S = π × 0,02² = 0,001257 m². Fuerza F = 300 000 × 0,001257 ≈ 377 N."
+      "explanation": "Presión hidrostática a 30 m = 3 bar = 300 000 Pa. Área de la mirilla S = π × 0,02² = 0,001257 m². Fuerza F = 300 000 × 0,001257 ≈ 377 N."
     },
     {
       "id": 61,
@@ -793,7 +793,7 @@
         { "key": "d", "text": "25 minutos" }
       ],
       "correct": "c",
-      "explanation": "Reserva = 15 × 200 = 3 000 L. A 10 m (2 bar) el consumo es 30 × 2 = 60 L/min. Tiempo = 3 000 / 60 = 50 minutos."
+      "explanation": "Reserva = 15 × 200 = 3 000 L. A 10 m (2 bar) el consumo es 30 × 2 = 60 L/min. Tiempo = 3 000 / 60 = 50 minutos."
     },
     {
       "id": 62,
@@ -806,7 +806,7 @@
         { "key": "d", "text": "20 minutos" }
       ],
       "correct": "b",
-      "explanation": "Reserva utilizable = 18 × (200 − 50) = 18 × 150 = 2 700 L. A 20 m (3 bar) el consumo es 30 × 3 = 90 L/min. Tiempo = 2 700 / 90 = 30 minutos."
+      "explanation": "Reserva utilizable = 18 × (200 − 50) = 18 × 150 = 2 700 L. A 20 m (3 bar) el consumo es 30 × 3 = 90 L/min. Tiempo = 2 700 / 90 = 30 minutos."
     },
     {
       "id": 63,
@@ -819,7 +819,7 @@
         { "key": "d", "text": "22 minutos" }
       ],
       "correct": "c",
-      "explanation": "A: reserva = 15×200 = 3 000 L, mitad = 1 500 L. A 20 m consumo = 25×3 = 75 L/min. Tiempo = 1 500/75 = 20 min. B: reserva = 4 000 L, mitad = 2 000 L. A 20 m consumo = 30×3 = 90 L/min. Tiempo = 2 000/90 = 22 min. A llega antes a la mitad → regreso a los 20 min."
+      "explanation": "A: reserva = 15×200 = 3 000 L, mitad = 1 500 L. A 20 m consumo = 25×3 = 75 L/min. Tiempo = 1 500/75 = 20 min. B: reserva = 4 000 L, mitad = 2 000 L. A 20 m consumo = 30×3 = 90 L/min. Tiempo = 2 000/90 = 22 min. A llega antes a la mitad → regreso a los 20 min."
     },
     {
       "id": 64,
@@ -832,7 +832,7 @@
         { "key": "d", "text": "10 minutos" }
       ],
       "correct": "c",
-      "explanation": "Reserva = 15×200 = 3 000 L. Puede consumir 2/3 = 2 000 L. A 30 m (4 bar) el consumo = 25×4 = 100 L/min. Tiempo = 2 000/100 = 20 minutos."
+      "explanation": "Reserva = 15×200 = 3 000 L. Puede consumir 2/3 = 2 000 L. A 30 m (4 bar) el consumo = 25×4 = 100 L/min. Tiempo = 2 000/100 = 20 minutos."
     },
     {
       "id": 65,
@@ -845,7 +845,7 @@
         { "key": "d", "text": "10 minutos" }
       ],
       "correct": "d",
-      "explanation": "Reserva = 15×180 = 2 700 L. Un tercio para la ida = 900 L. A 20 m (3 bar) el consumo = 30×3 = 90 L/min. Tiempo = 900/90 = 10 minutos."
+      "explanation": "Reserva = 15×180 = 2 700 L. Un tercio para la ida = 900 L. A 20 m (3 bar) el consumo = 30×3 = 90 L/min. Tiempo = 900/90 = 10 minutos."
     },
     {
       "id": 66,
@@ -858,7 +858,7 @@
         { "key": "d", "text": "25 litros por minuto" }
       ],
       "correct": "d",
-      "explanation": "Aire consumido = 10 × (150 − 50) = 1 000 L. A 10 m (2 bar) durante 20 min. Consumo real = 1 000/20 = 50 L/min. Consumo en superficie = 50/2 = 25 L/min."
+      "explanation": "Aire consumido = 10 × (150 − 50) = 1 000 L. A 10 m (2 bar) durante 20 min. Consumo real = 1 000/20 = 50 L/min. Consumo en superficie = 50/2 = 25 L/min."
     },
     {
       "id": 67,
@@ -871,7 +871,7 @@
         { "key": "d", "text": "33 minutos" }
       ],
       "correct": "b",
-      "explanation": "Reserva utilizable = 10 × (200 − 50) = 1 500 L. A 15 m (2,5 bar) el consumo = 30 × 2,5 = 75 L/min. Tiempo = 1 500/75 = 20 minutos."
+      "explanation": "Reserva utilizable = 10 × (200 − 50) = 1 500 L. A 15 m (2,5 bar) el consumo = 30 × 2,5 = 75 L/min. Tiempo = 1 500/75 = 20 minutos."
     },
     {
       "id": 68,
@@ -884,7 +884,7 @@
         { "key": "d", "text": "en 30 minutos" }
       ],
       "correct": "c",
-      "explanation": "Reserva utilizable = 12 × (200 − 50) = 1 800 L. A 20 m (3 bar) el consumo = 30 × 3 = 90 L/min. Tiempo = 1 800/90 = 20 minutos."
+      "explanation": "Reserva utilizable = 12 × (200 − 50) = 1 800 L. A 20 m (3 bar) el consumo = 30 × 3 = 90 L/min. Tiempo = 1 800/90 = 20 minutos."
     },
     {
       "id": 69,
@@ -897,7 +897,7 @@
         { "key": "d", "text": "44 minutos" }
       ],
       "correct": "c",
-      "explanation": "Aire total = 15×50 + 18×200 = 750 + 3 600 = 4 350 L. Tras igualar, presión en ambos = 4 350/(15+18) = 132 bar. Equipo pequeño (15 L): reserva = 15×(132−30) = 1 530 L. A 15 m consumo = 30×2,5 = 75 L/min. Tiempo = 1 530/75 ≈ 20 min."
+      "explanation": "Aire total = 15×50 + 18×200 = 750 + 3 600 = 4 350 L. Tras igualar, presión en ambos = 4 350/(15+18) = 132 bar. Equipo pequeño (15 L): reserva = 15×(132−30) = 1 530 L. A 15 m consumo = 30×2,5 = 75 L/min. Tiempo = 1 530/75 ≈ 20 min."
     },
     {
       "id": 70,
@@ -910,7 +910,7 @@
         { "key": "d", "text": "19,3 MPa" }
       ],
       "correct": "c",
-      "explanation": "Aire total = 12×50 + 40×200 = 600 + 8 000 = 8 600 L. Volumen total = 12 + 40 = 52 L. Presión resultante = 8 600/52 = 165 bar = 16,5 MPa."
+      "explanation": "Aire total = 12×50 + 40×200 = 600 + 8 000 = 8 600 L. Volumen total = 12 + 40 = 52 L. Presión resultante = 8 600/52 = 165 bar = 16,5 MPa."
     },
     {
       "id": 71,
@@ -936,7 +936,7 @@
         { "key": "d", "text": "20 litros" }
       ],
       "correct": "b",
-      "explanation": "30 m (4 bar, 10 min): 30×4×10 = 1 200 L. 20 m (3 bar, 5 min): 30×3×5 = 450 L. 10 m (2 bar, 10 min): 30×2×10 = 600 L. Total = 2 250 L. Presión utilizable = 200−50 = 150 bar. Volumen = 2 250/150 = 15 L."
+      "explanation": "30 m (4 bar, 10 min): 30×4×10 = 1 200 L. 20 m (3 bar, 5 min): 30×3×5 = 450 L. 10 m (2 bar, 10 min): 30×2×10 = 600 L. Total = 2 250 L. Presión utilizable = 200−50 = 150 bar. Volumen = 2 250/150 = 15 L."
     },
     {
       "id": 73,
@@ -949,7 +949,7 @@
         { "key": "d", "text": "ambos a la vez, a los 15 minutos" }
       ],
       "correct": "d",
-      "explanation": "A: reserva hasta 10 MPa = 18×(200−100) = 1 800 L. A 30 m (4 bar): 30×4 = 120 L/min. Tiempo = 1 800/120 = 15 min. B: reserva = 15×100 = 1 500 L. A 30 m: 25×4 = 100 L/min. Tiempo = 1 500/100 = 15 min. Ambos a la vez a los 15 min."
+      "explanation": "A: reserva hasta 10 MPa = 18×(200−100) = 1 800 L. A 30 m (4 bar): 30×4 = 120 L/min. Tiempo = 1 800/120 = 15 min. B: reserva = 15×100 = 1 500 L. A 30 m: 25×4 = 100 L/min. Tiempo = 1 500/100 = 15 min. Ambos a la vez a los 15 min."
     },
     {
       "id": 74,
@@ -1001,7 +1001,7 @@
         { "key": "d", "text": "20 litros" }
       ],
       "correct": "c",
-      "explanation": "30 m (4 bar, 17 min): 30×4×17 = 2 040 L. Ascenso 30→5 m (2,5 min, 2,75 bar): 30×2,75×2,5 = 206 L. Descompresión a 5 m (1,5 bar, 3 min): 30×1,5×3 = 135 L. Ascenso 5→0 m: ~20 L. Total ≈ 2 400 L. Presión utilizable = 200−40 = 160 bar. Volumen = 2 400/160 = 15 L."
+      "explanation": "30 m (4 bar, 17 min): 30×4×17 = 2 040 L. Ascenso 30→5 m (2,5 min, 2,75 bar): 30×2,75×2,5 = 206 L. Descompresión a 5 m (1,5 bar, 3 min): 30×1,5×3 = 135 L. Ascenso 5→0 m: ~20 L. Total ≈ 2 400 L. Presión utilizable = 200−40 = 160 bar. Volumen = 2 400/160 = 15 L."
     },
     {
       "id": 78,
@@ -1014,7 +1014,7 @@
         { "key": "d", "text": "ambas condiciones se cumplen a la vez (5 MPa a los 30 min)" }
       ],
       "correct": "b",
-      "explanation": "A 25 m (3,5 bar). A: reserva = 18×(200−50) = 2 700 L. Consumo = 25×3,5 = 87,5 L/min. Tiempo = 2 700/87,5 ≈ 31 min. B: reserva = 20×150 = 3 000 L. Consumo = 30×3,5 = 105 L/min. Tiempo = 3 000/105 ≈ 28,6 min. B alcanza 5 MPa antes (antes de los 30 min)."
+      "explanation": "A 25 m (3,5 bar). A: reserva = 18×(200−50) = 2 700 L. Consumo = 25×3,5 = 87,5 L/min. Tiempo = 2 700/87,5 ≈ 31 min. B: reserva = 20×150 = 3 000 L. Consumo = 30×3,5 = 105 L/min. Tiempo = 3 000/105 ≈ 28,6 min. B alcanza 5 MPa antes (antes de los 30 min)."
     },
     {
       "id": 79,
@@ -1153,7 +1153,7 @@
       "options": [
         { "key": "a", "text": "oxígeno 21 kPa, nitrógeno 78 kPa" },
         { "key": "b", "text": "oxígeno 3,15 MPa, nitrógeno 11,7 MPa" },
-        { "key": "c", "text": "oxígeno 315 kPa, nitrógeno 1 170 kPa" },
+        { "key": "c", "text": "oxígeno 315 kPa, nitrógeno 1 170 kPa" },
         { "key": "d", "text": "según la profundidad (p. ej. a 10 m: oxígeno 42 kPa, nitrógeno 156 kPa)" }
       ],
       "correct": "b",
@@ -1183,7 +1183,7 @@
         { "key": "d", "text": "60 %" }
       ],
       "correct": "c",
-      "explanation": "A 150 m la presión absoluta es 16 bar = 1 600 kPa. fN₂ máxima = 400 / 1 600 = 0,25 = 25 %. Un contenido mayor de nitrógeno provocaría narcosis."
+      "explanation": "A 150 m la presión absoluta es 16 bar = 1 600 kPa. fN₂ máxima = 400 / 1 600 = 0,25 = 25 %. Un contenido mayor de nitrógeno provocaría narcosis."
     },
     {
       "id": 92,
@@ -1196,7 +1196,7 @@
         { "key": "d", "text": "N₂ 90 m, O₂ 90 m" }
       ],
       "correct": "d",
-      "explanation": "Para N₂: presión = 400/0,40 = 1 000 kPa = 10 bar → 90 m. Para O₂: presión = 160/0,16 = 1 000 kPa = 10 bar → 90 m. Ambos límites se alcanzan a la misma profundidad, 90 m."
+      "explanation": "Para N₂: presión = 400/0,40 = 1 000 kPa = 10 bar → 90 m. Para O₂: presión = 160/0,16 = 1 000 kPa = 10 bar → 90 m. Ambos límites se alcanzan a la misma profundidad, 90 m."
     },
     {
       "id": 93,

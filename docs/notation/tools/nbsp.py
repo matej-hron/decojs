@@ -68,6 +68,20 @@ CS_WORD_PATTERN = re.compile(
     + r")([a-z" + CZ + r"]*)\b"
 )
 
+# Oddělovač tisíců (ČSN 01 6910): „600 000 Pa" se sází nedělitelnou mezerou,
+# jinak číslo přeteče na konci řádku. Skupiny musí být přesně po třech
+# číslicích, jinak jde o dvě čísla za sebou („v roce 1990 200 lidí").
+# Vedoucí nula je vyloučená - žádné číslo nezačíná „0 123". Chrání to před
+# souřadnicemi typu viewBox="0 0 480 180", i když ty vyřadí už zóny v HTML.
+THOUSANDS_PATTERN = re.compile(
+    r"(?<![" + WORD + r".,])([1-9]\d{0,2})((?:[ ]\d{3})+)(?![.,]?\d)"
+)
+# Jednotka hned za číslem, aby ji nález tisíců pohltil. Bez toho by se
+# v „600 000 Pa" obě třídy překryly a mezera před Pa by zůstala obyčejná.
+TRAILING_UNIT = re.compile(
+    r"[ ](" + UNIT_RE + r")(?![" + WORD + r"°])"
+)
+
 
 def is_czech_word_char(ch):
     return ch.isalpha() or ch == "_"
@@ -132,7 +146,7 @@ def html_allowed(text):
     return allowed
 
 
-def scan(text, use_words, allowed=None):
+def scan(text, use_words, allowed=None, use_thousands=False):
     """Vrátí seřazené nepřekrývající se nálezy: (start, end, náhrada, druh)."""
     skip = [(m.start(), m.end()) for m in SKIP_LITERAL.finditer(text)]
 
@@ -148,6 +162,17 @@ def scan(text, use_words, allowed=None):
         else:
             continue
         found.append((m.start(), m.end(), m.group(1), m.group(3), kind, m))
+    if use_thousands:
+        for m in THOUSANDS_PATTERN.finditer(text):
+            end = m.end()
+            tail = TRAILING_UNIT.match(text, end)
+            rest = m.group(2).lstrip(" ").replace(" ", "\0")
+            if tail:
+                end = tail.end()
+                rest += "\0" + tail.group(1)
+            found.append(
+                (m.start(), end, m.group(1), rest, "oddělovač tisíců", m)
+            )
     if use_words:
         for m in CS_WORD_PATTERN.finditer(text):
             found.append(
@@ -170,15 +195,16 @@ def scan(text, use_words, allowed=None):
     return out
 
 
-def apply(text, sep, use_words, report, label=None, allowed=None):
-    hits = scan(text, use_words, allowed)
+def apply(text, sep, use_words, report, label=None, allowed=None,
+          use_thousands=False):
+    hits = scan(text, use_words, allowed, use_thousands)
     if not hits:
         return text, 0
     out = []
     last = 0
     for start, end, num, unit, kind, m in hits:
         out.append(text[last:start])
-        out.append(num + sep + unit)
+        out.append((num + "\0" + unit).replace("\0", sep))
         last = end
         ctx = context(text, m, pad=22)
         report.append((kind, "{}: …{}…".format(label, ctx) if label else ctx))
@@ -186,9 +212,10 @@ def apply(text, sep, use_words, report, label=None, allowed=None):
     return "".join(out), len(hits)
 
 
-def fix_html(text, sep, report, use_words):
+def fix_html(text, sep, report, use_words, use_thousands=False):
     allowed = html_allowed(text)
-    new, _ = apply(text, sep, use_words, report, allowed=allowed)
+    new, _ = apply(text, sep, use_words, report, allowed=allowed,
+                   use_thousands=use_thousands)
     return new
 
 
@@ -219,7 +246,7 @@ def walk(obj, path=""):
         yield path, obj
 
 
-def fix_json(raw, sep, report, use_words):
+def fix_json(raw, sep, report, use_words, use_thousands=False):
     """Bodová záměna v surovém textu.
 
     json.load + json.dump by přeformátoval celý soubor (projekt odsazuje
@@ -233,7 +260,8 @@ def fix_json(raw, sep, report, use_words):
         if leaf in SKIP_KEYS:
             continue
         local = []
-        new, n = apply(value, sep, use_words, local, label=key)
+        new, n = apply(value, sep, use_words, local, label=key,
+                       use_thousands=use_thousands)
         if not n:
             continue
         edits.setdefault(value, [new, key, []])
@@ -256,14 +284,14 @@ def separator_for(path):
     return "&nbsp;" if path.endswith(".html") else NBSP
 
 
-def process(path, do_fix, use_words):
+def process(path, do_fix, use_words, use_thousands=False):
     raw = open(path, encoding="utf-8").read()
     sep = separator_for(path)
     report = []
     if path.endswith(".html"):
-        new = fix_html(raw, sep, report, use_words)
+        new = fix_html(raw, sep, report, use_words, use_thousands)
     elif path.endswith(".json"):
-        new = fix_json(raw, sep, report, use_words)
+        new = fix_json(raw, sep, report, use_words, use_thousands)
     else:
         print("přeskočeno (neznámý typ): {}".format(path), file=sys.stderr)
         return []
@@ -291,12 +319,17 @@ def main():
         action="store_true",
         help="i skloňované názvy jednotek (jen české soubory)",
     )
+    ap.add_argument(
+        "--thousands",
+        action="store_true",
+        help="i oddělovač tisíců (600 000 -> 600<nbsp>000)",
+    )
     ap.add_argument("-v", "--verbose", action="store_true")
     a = ap.parse_args()
 
     total = 0
     for f in a.files:
-        rep = process(f, a.fix, a.words and is_czech(f))
+        rep = process(f, a.fix, a.words and is_czech(f), a.thousands)
         if not rep:
             continue
         total += len(rep)

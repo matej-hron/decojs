@@ -129,12 +129,28 @@ Nedělitelné mezery jsou jen jedna z pěti tříd. Zbývá:
 | `P_amb` velkým písmenem | 183 v 25 souborech | #62 |
 | `<em>` jako značka místo `<var>` | 105 (a 110 legitimních zvýraznění nechat) | #56 |
 | `T_{1/2}` → `t_{1/2}` | 15–17 v 8–10 souborech | #62 |
-| Oddělovač tisíců obyčejnou mezerou (`600 000 Pa`) | 198 v 6 souborech | — |
+| ~~Oddělovač tisíců obyčejnou mezerou (`600 000 Pa`)~~ | ~~198 v 6 souborech~~ | **hotovo** |
 
-Poslední řádek vyplaval při opravě mezer u jednotek. ČSN 01 6910 chce
-i mezi trojicemi číslic nedělitelnou mezeru; `Intl.NumberFormat('cs-CZ')`
-ji tak generuje (viz `authoring.md` §6.2). Nedělá se v témže průchodu,
-aby byl diff po jedné třídě.
+### Oddělovač tisíců — hotovo
+
+Vyplaval při opravě mezer u jednotek. ČSN 01 6910 chce i mezi trojicemi
+číslic nedělitelnou mezeru; `Intl.NumberFormat('cs-CZ')` ji tak generuje
+(viz `authoring.md` §6.2). Opraveno 197 výskytů v 5 souborech pomocí
+`nbsp.py --thousands`.
+
+Ze 198 měřených výskytů jich 11 bylo v HTML a **všech 11 byl planý poplach** —
+souřadnice `viewBox="0 0 480 180"` a CSS `flex: 0 0 320px`. Vyřadily je
+existující zóny (vnitřek tagu, `<style>`), takže v HTML nezůstalo nic
+k opravě. Vzor navíc nepřipouští vedoucí nulu, protože žádné číslo
+nezačíná „0 480".
+
+Dvě věci, které vzor musí umět:
+
+- **`v roce 1990 200 lidí` nejsou tisíce**, ale dvě čísla. Proto přesně
+  tři číslice ve skupině a před nimi nejvýš tři.
+- **`600 000 Pa` obsahuje obě třídy naráz.** Kdyby se řešily zvlášť,
+  nález tisíců by překryl nález jednotky a mezera před `Pa` by zůstala
+  obyčejná. Nález tisíců proto navazující jednotku pohltí.
 
 ## Pracovní postup
 

@@ -13,15 +13,15 @@
         },
         {
           "key": "b",
-          "text": "1 MPa = 1 000 kPa = 10 mbar"
+          "text": "1 MPa = 1 000 kPa = 10 mbar"
         },
         {
           "key": "c",
-          "text": "0,1 MPa = 1 000 kPa = 10 bar"
+          "text": "0,1 MPa = 1 000 kPa = 10 bar"
         },
         {
           "key": "d",
-          "text": "1 MPa = 1 000 mbar"
+          "text": "1 MPa = 1 000 mbar"
         }
       ],
       "correct": "a",
@@ -58,15 +58,15 @@
       "options": [
         {
           "key": "a",
-          "text": "kolem 100 000 N/m², tj. kolem 100 kPa"
+          "text": "kolem 100 000 N/m², tj. kolem 100 kPa"
         },
         {
           "key": "b",
-          "text": "mezi 900 a 1 100 milibary, tj. kolem 1 baru"
+          "text": "mezi 900 a 1 100 milibary, tj. kolem 1 baru"
         },
         {
           "key": "c",
-          "text": "asi 0,1 MPa, tj. 1 000 hPa"
+          "text": "asi 0,1 MPa, tj. 1 000 hPa"
         },
         {
           "key": "d",
@@ -74,7 +74,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "100 kbar = 10 000 MPa, což je obrovský tlak (100 000× vyšší než atmosférický). Normální atmosférický tlak je přibližně 1 bar = 0,1 MPa = 100 kPa.",
+      "explanation": "100 kbar = 10 000 MPa, což je obrovský tlak (100 000× vyšší než atmosférický). Normální atmosférický tlak je přibližně 1 bar = 0,1 MPa = 100 kPa.",
       "category": "tlak-jednotky"
     },
     {
@@ -749,16 +749,16 @@
         }
       ],
       "correct": "d",
-      "explanation": "Za hodinu kompresor stlačí 300 × 60 = 18 000 l vzduchu o normálním tlaku. Pro jednu lahev 15 l na 20 MPa (= 200 bar) potřebujeme 15 × 200 = 3 000 l vzduchu. Počet lahví: 18 000 / 3 000 = 6 lahví.",
+      "explanation": "Za hodinu kompresor stlačí 300 × 60 = 18 000 l vzduchu o normálním tlaku. Pro jednu lahev 15 l na 20 MPa (= 200 bar) potřebujeme 15 × 200 = 3 000 l vzduchu. Počet lahví: 18 000 / 3 000 = 6 lahví.",
       "category": "tlak-jednotky"
     },
     {
       "id": 31,
-      "question": "Vyberte z možné nabídky zvedací vak o minimálním objemu potřebný k vyzvednutí litinového bloku o hmotnosti 750 kg (hustota litiny je 8 000 kg/m³) volně ležícího na dně v hloubce 10 m. Hmotnost vaku se závěsem je 10–15 kg:",
+      "question": "Vyberte z možné nabídky zvedací vak o minimálním objemu potřebný k vyzvednutí litinového bloku o hmotnosti 750 kg (hustota litiny je 8 000 kg/m³) volně ležícího na dně v hloubce 10 m. Hmotnost vaku se závěsem je 10–15 kg:",
       "options": [
         {
           "key": "a",
-          "text": "1 000 l"
+          "text": "1 000 l"
         },
         {
           "key": "b",
@@ -879,7 +879,7 @@
     },
     {
       "id": 36,
-      "question": "Zaplavený dutý válec z ocelového plechu o hmotnosti 2 400 kg a o vnitřním objemu 3 000 l (hustota oceli je 8 000 kg/m³) leží volně na dně v hloubce 20 m. Na hladinu je možné jej vyzvednout po naplnění vzduchem. Vyberte nejmenší možný počet k tomu potřebných lahví o objemu 12 l naplněných na 18 MPa:",
+      "question": "Zaplavený dutý válec z ocelového plechu o hmotnosti 2 400 kg a o vnitřním objemu 3 000 l (hustota oceli je 8 000 kg/m³) leží volně na dně v hloubce 20 m. Na hladinu je možné jej vyzvednout po naplnění vzduchem. Vyberte nejmenší možný počet k tomu potřebných lahví o objemu 12 l naplněných na 18 MPa:",
       "options": [
         {
           "key": "a",
@@ -933,23 +933,23 @@
       "options": [
         {
           "key": "a",
-          "text": "700 000 N"
+          "text": "700 000 N"
         },
         {
           "key": "b",
-          "text": "70 000 N"
+          "text": "70 000 N"
         },
         {
           "key": "c",
-          "text": "6 000 N"
+          "text": "6 000 N"
         },
         {
           "key": "d",
-          "text": "600 000 N"
+          "text": "600 000 N"
         }
       ],
       "correct": "d",
-      "explanation": "Tlakový rozdíl = hydrostatický tlak v 60 m = 6 bar = 600 000 Pa. Síla F = p × S = 600 000 Pa × 1 m² = 600 000 N (asi 60 tun!).",
+      "explanation": "Tlakový rozdíl = hydrostatický tlak v 60 m = 6 bar = 600 000 Pa. Síla F = p × S = 600 000 Pa × 1 m² = 600 000 N (asi 60 tun!).",
       "category": "vztlak-vystroj"
     },
     {
@@ -1029,7 +1029,7 @@
     },
     {
       "id": 42,
-      "question": "Potápěčský zvon má plný vnitřní objem 900 l, hmotnost se závažím 1 010 kg a objem materiálu samotného 100 l. Jakou silou bude v hloubce 20 m ve sladké vodě působit na závěsné lano, jestliže při spouštění:\nA. byl stále doplňován vzduchem?\nB. nebyl doplňován vzduchem?",
+      "question": "Potápěčský zvon má plný vnitřní objem 900 l, hmotnost se závažím 1 010 kg a objem materiálu samotného 100 l. Jakou silou bude v hloubce 20 m ve sladké vodě působit na závěsné lano, jestliže při spouštění:\nA. byl stále doplňován vzduchem?\nB. nebyl doplňován vzduchem?",
       "options": [
         {
           "key": "a",
@@ -1037,19 +1037,19 @@
         },
         {
           "key": "b",
-          "text": "A = 100 N, B = 6 100 N"
+          "text": "A = 100 N, B = 6 100 N"
         },
         {
           "key": "c",
-          "text": "A = 6 000 N, B = 7 000 N"
+          "text": "A = 6 000 N, B = 7 000 N"
         },
         {
           "key": "d",
-          "text": "A = 100 N, B = 3 100 N"
+          "text": "A = 100 N, B = 3 100 N"
         }
       ],
       "correct": "b",
-      "explanation": "A: Plný vzduch – vztlak = (900+100)×10 = 10 000 N, tíha = 10 100 N, síla na lano = 100 N. B: Vzduch stlačen na 1/3 (300 l), voda vyplní 600 l, vztlak = 400×10 = 4 000 N, síla = 10 100 - 4 000 = 6 100 N.",
+      "explanation": "A: Plný vzduch – vztlak = (900+100)×10 = 10 000 N, tíha = 10 100 N, síla na lano = 100 N. B: Vzduch stlačen na 1/3 (300 l), voda vyplní 600 l, vztlak = 400×10 = 4 000 N, síla = 10 100 - 4 000 = 6 100 N.",
       "category": "vztlak-vystroj"
     },
     {
@@ -1095,7 +1095,7 @@
         },
         {
           "key": "d",
-          "text": "stálá 1 020 kg/m³ bez ohledu na teplotu, tlak a koncentraci solí"
+          "text": "stálá 1 020 kg/m³ bez ohledu na teplotu, tlak a koncentraci solí"
         }
       ],
       "correct": "a",
@@ -1129,7 +1129,7 @@
     },
     {
       "id": 46,
-      "question": "Jakou silou je v hloubce 40 m sladké vody nadlehčován volně ležící litinový předmět o objemu 10 l (hustota litiny je 7 500 kg/m³)?",
+      "question": "Jakou silou je v hloubce 40 m sladké vody nadlehčován volně ležící litinový předmět o objemu 10 l (hustota litiny je 7 500 kg/m³)?",
       "options": [
         {
           "key": "a",
@@ -1154,7 +1154,7 @@
     },
     {
       "id": 47,
-      "question": "V hloubce 10 m leží volně na dně ocelové kostky, každá o hmotnosti 160 kg. Přibližně kolik takových kostek je možno vyzvednout pomocí zvedacího vaku a vzduchové lahve o objemu 10 l naplněné na tlak 18 MPa? (hustota oceli je 8 000 kg/m³)",
+      "question": "V hloubce 10 m leží volně na dně ocelové kostky, každá o hmotnosti 160 kg. Přibližně kolik takových kostek je možno vyzvednout pomocí zvedacího vaku a vzduchové lahve o objemu 10 l naplněné na tlak 18 MPa? (hustota oceli je 8 000 kg/m³)",
       "options": [
         {
           "key": "a",
@@ -1204,7 +1204,7 @@
     },
     {
       "id": 49,
-      "question": "Těleso s vodotěsným povrchem má hmotnost 250 kg a objem 245 l. Stanovte hustotu tohoto tělesa a vyjádřete se k jeho chování v mořské vodě o hustotě 1 030 kg/m³:",
+      "question": "Těleso s vodotěsným povrchem má hmotnost 250 kg a objem 245 l. Stanovte hustotu tohoto tělesa a vyjádřete se k jeho chování v mořské vodě o hustotě 1 030 kg/m³:",
       "options": [
         {
           "key": "a",
@@ -1249,7 +1249,7 @@
         }
       ],
       "correct": "c",
-      "explanation": "Celkem vzduch: 10 × 15 × 200 = 30 000 l = 30 m³. Vlhkost vzduchu: 18 × 0,33 = 5,94 g/m³. Celková voda: 30 × 5,94 = 178,2 g.",
+      "explanation": "Celkem vzduch: 10 × 15 × 200 = 30 000 l = 30 m³. Vlhkost vzduchu: 18 × 0,33 = 5,94 g/m³. Celková voda: 30 × 5,94 = 178,2 g.",
       "category": "vztlak-vystroj"
     },
     {
@@ -1266,7 +1266,7 @@
         },
         {
           "key": "c",
-          "text": "1 260 N"
+          "text": "1 260 N"
         },
         {
           "key": "d",
@@ -1274,7 +1274,7 @@
         }
       ],
       "correct": "c",
-      "explanation": "Plocha membrány S = π × r² = π × 0,02² = 0,001257 m². Síla F = p × S = 1 000 000 Pa × 0,001257 m² ≈ 1 257 N ≈ 1 260 N.",
+      "explanation": "Plocha membrány S = π × r² = π × 0,02² = 0,001257 m². Síla F = p × S = 1 000 000 Pa × 0,001257 m² ≈ 1 257 N ≈ 1 260 N.",
       "category": "tlak-jednotky"
     },
     {
@@ -1299,7 +1299,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "Atmosférický tlak ≈ 1 bar ≈ 100 kPa. Hydrostatický tlak 10 m vodního sloupce = 1000 kg/m³ × 10 m/s² × 10 m = 100 000 Pa = 1 bar. Proto 10 m vody = 1 atmosféra.",
+      "explanation": "Atmosférický tlak ≈ 1 bar ≈ 100 kPa. Hydrostatický tlak 10 m vodního sloupce = 1000 kg/m³ × 10 m/s² × 10 m = 100 000 Pa = 1 bar. Proto 10 m vody = 1 atmosféra.",
       "category": "tlak-jednotky"
     },
     {
@@ -1312,7 +1312,7 @@
         },
         {
           "key": "b",
-          "text": "1 MPa, tj. 1 000 mbar"
+          "text": "1 MPa, tj. 1 000 mbar"
         },
         {
           "key": "c",
@@ -1329,7 +1329,7 @@
     },
     {
       "id": 54,
-      "question": "Při potápění v jezeře, jehož hladina leží asi 5 500 m nad mořem a u níž je atmosférický tlak asi 50 kPa, bude v hloubce 20 metrů celkový tlak přibližně roven:",
+      "question": "Při potápění v jezeře, jehož hladina leží asi 5 500 m nad mořem a u níž je atmosférický tlak asi 50 kPa, bude v hloubce 20 metrů celkový tlak přibližně roven:",
       "options": [
         {
           "key": "a",
@@ -1358,23 +1358,23 @@
       "options": [
         {
           "key": "a",
-          "text": "600 000 N"
+          "text": "600 000 N"
         },
         {
           "key": "b",
-          "text": "400 000 N"
+          "text": "400 000 N"
         },
         {
           "key": "c",
-          "text": "500 000 N"
+          "text": "500 000 N"
         },
         {
           "key": "d",
-          "text": "50 000 N"
+          "text": "50 000 N"
         }
       ],
       "correct": "c",
-      "explanation": "Přetlak v komoře = 50 m = 5 bar = 500 000 Pa (rozdíl oproti atmosférickému tlaku venku). Síla F = p × S = 500 000 Pa × 1 m² = 500 000 N.",
+      "explanation": "Přetlak v komoře = 50 m = 5 bar = 500 000 Pa (rozdíl oproti atmosférickému tlaku venku). Síla F = p × S = 500 000 Pa × 1 m² = 500 000 N.",
       "category": "tlak-jednotky"
     },
     {
@@ -1408,7 +1408,7 @@
       "options": [
         {
           "key": "a",
-          "text": "Objem 1 krychlového metru (1 m³) obsahuje 1 000 litrů."
+          "text": "Objem 1 krychlového metru (1 m³) obsahuje 1 000 litrů."
         },
         {
           "key": "b",
@@ -1424,7 +1424,7 @@
         }
       ],
       "correct": "b",
-      "explanation": "1 MPa = 1 000 kPa, nikoliv 100 kPa. Správně: 0,1 MPa = 100 kPa. Ostatní tvrzení jsou správná.",
+      "explanation": "1 MPa = 1 000 kPa, nikoliv 100 kPa. Správně: 0,1 MPa = 100 kPa. Ostatní tvrzení jsou správná.",
       "category": "tlak-jednotky"
     },
     {
@@ -1449,7 +1449,7 @@
         }
       ],
       "correct": "c",
-      "explanation": "Plocha S = 10 mm² = 10 × 10⁻⁶ m² = 0,00001 m². Síla F = p × S = 1 000 000 Pa × 0,00001 m² = 10 N.",
+      "explanation": "Plocha S = 10 mm² = 10 × 10⁻⁶ m² = 0,00001 m². Síla F = p × S = 1 000 000 Pa × 0,00001 m² = 10 N.",
       "category": "tlak-jednotky"
     },
     {
@@ -1483,7 +1483,7 @@
       "options": [
         {
           "key": "a",
-          "text": "3 770 N"
+          "text": "3 770 N"
         },
         {
           "key": "b",
@@ -1499,7 +1499,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "Hydrostatický tlak v 30 m = 3 bar = 300 000 Pa. Plocha průzoru S = π × 0,02² = 0,001257 m². Síla F = 300 000 × 0,001257 ≈ 377 N.",
+      "explanation": "Hydrostatický tlak v 30 m = 3 bar = 300 000 Pa. Plocha průzoru S = π × 0,02² = 0,001257 m². Síla F = 300 000 × 0,001257 ≈ 377 N.",
       "category": "tlak-jednotky"
     },
     {
@@ -2216,7 +2216,7 @@
         },
         {
           "key": "c",
-          "text": "kyslík 315 kPa, dusík 1 170 kPa"
+          "text": "kyslík 315 kPa, dusík 1 170 kPa"
         },
         {
           "key": "d",

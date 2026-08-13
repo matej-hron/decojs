@@ -3569,6 +3569,13 @@ describe('i18n notation - canvas strings must not contain HTML entities', () => 
     const SKIP_KEYS = new Set(['id', 'key', 'slug', 'code', 'type', 'href',
         'url', 'src', 'icon', 'class', 'className', 'ref', 'category']);
 
+    // ČSN 01 6910 groups thousands with a non-breaking space, so "600 000 Pa"
+    // cannot break across lines. Exactly three digits per group, and no leading
+    // zero — "1990 200" is two numbers and "0 480" is a coordinate, not a value.
+    const badThousands = new RegExp(
+        `(?<![${WORD}.,])[1-9]\\d{0,2}(?: \\d{3})+(?![.,]?\\d)`
+    );
+
     const scanFile = (label, obj, czech) => {
         const entries = flatten(obj)
             .filter(([k]) => !SKIP_KEYS.has(k.split('.').pop()));
@@ -3577,7 +3584,8 @@ describe('i18n notation - canvas strings must not contain HTML entities', () => 
             .map(([k]) => `${label} ${k}`);
         const spaces = entries
             .filter(([, v]) => !COMPOUND.test(v)
-                && (badSpace.test(v) || (czech && badWordSpace.test(v))))
+                && (badSpace.test(v) || badThousands.test(v)
+                    || (czech && badWordSpace.test(v))))
             .map(([k, v]) => `${label} ${k} = ${v.slice(0, 70)}`);
         return { entities, spaces };
     };
