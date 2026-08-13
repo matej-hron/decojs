@@ -410,12 +410,12 @@
         <!-- Live formula -->
         <div class="haldane-formula">
             <div class="formula-symbolic">
-                <span class="term term-result">P<sub>t</sub>(t)</span> =
-                <span class="term term-palv">P<sub>alv,0</sub></span> +
+                <span class="term term-result">p<sub>t</sub>(t)</span> =
+                <span class="term term-palv">p<sub>alv,0</sub></span> +
                 <span class="term term-r">R</span> ·
                 (<span class="term term-t">t</span> − 1/<span class="term term-k">k</span>) −
-                (<span class="term term-palv">P<sub>alv,0</sub></span> −
-                <span class="term term-pt0">P<sub>t,0</sub></span> −
+                (<span class="term term-palv">p<sub>alv,0</sub></span> −
+                <span class="term term-pt0">p<sub>t,0</sub></span> −
                 <span class="term term-r">R</span>/<span class="term term-k">k</span>) ·
                 e<sup>−<span class="term term-k">k</span><span class="term term-t">t</span></sup>
             </div>
@@ -429,18 +429,18 @@
         <!-- Term cards -->
         <div class="term-row">
             <div class="term-card palv">
-                <div class="name" data-i18n="sandbox.schreiner.cards.palv0.name">P<sub>alv,0</sub> | alveolar N<sub>2</sub> at start depth</div>
-                <div class="formula" id="palv0Symbolic">= (P<sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub></div>
+                <div class="name" data-i18n="sandbox.schreiner.cards.palv0.name"><var>p</var><sub>alv,0</sub> | alveolar N<sub>2</sub> at start depth</div>
+                <div class="formula" id="palv0Symbolic">= (p<sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub></div>
                 <div class="formula" id="palv0Subst">= (4.0133 − 0.0627) · 0.7902</div>
                 <div class="value"><span id="palv0Value">3.1217</span> bar</div>
                 <div class="why" data-i18n="sandbox.schreiner.cards.palv0.why">Starting alveolar pressure. Slope-zero point of the moving alveolar source.</div>
             </div>
             <div class="term-card pt0">
-                <div class="name" data-i18n="sandbox.schreiner.cards.pt0.name">P<sub>t,0</sub> | tissue pressure at t=0</div>
-                <div class="formula" id="pt0Symbolic">= (P<sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub></div>
+                <div class="name" data-i18n="sandbox.schreiner.cards.pt0.name"><var>p</var><sub>t,0</sub> | tissue pressure at t=0</div>
+                <div class="formula" id="pt0Symbolic">= (p<sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub></div>
                 <div class="formula" id="pt0Subst">= (4.0133 − 0.0627) · 0.7902</div>
                 <div class="value"><span id="pt0Value">3.1217</span> bar</div>
-                <div class="why" data-i18n="sandbox.schreiner.cards.pt0.why">Tissue assumed equilibrated at start depth → equals P<sub>alv,0</sub>.</div>
+                <div class="why" data-i18n="sandbox.schreiner.cards.pt0.why">Tissue assumed equilibrated at start depth → equals <var>p</var><sub>alv,0</sub>.</div>
             </div>
             <div class="term-card r">
                 <div class="name" data-i18n="sandbox.schreiner.cards.r.name">R | alveolar pressure rate</div>
@@ -471,7 +471,7 @@
             <div class="decomp-row">
                 <div class="decomp-card">
                     <div class="name" data-i18n="sandbox.schreiner.decomp.moving.name">Moving alveolar source</div>
-                    <div class="formula">= P<sub>alv,0</sub> + R · t</div>
+                    <div class="formula">= p<sub>alv,0</sub> + R · t</div>
                     <div class="formula" id="termMovingSubst">= 3.1217 + (−0.7902) · 0.00</div>
                     <div class="value"><span id="termMovingValue">3.1217</span> bar</div>
                     <div class="why" data-i18n="sandbox.schreiner.decomp.moving.why">Where the alveolar source is right now (linear in t).</div>
@@ -485,13 +485,13 @@
                 </div>
                 <div class="decomp-card">
                     <div class="name" data-i18n="sandbox.schreiner.decomp.decay.name">Decaying initial gap</div>
-                    <div class="formula">= (P<sub>alv,0</sub> − P<sub>t,0</sub> − R/k) · e<sup>−kt</sup></div>
+                    <div class="formula">= (p<sub>alv,0</sub> − p<sub>t,0</sub> − R/k) · e<sup>−kt</sup></div>
                     <div class="formula" id="termDecaySubst">= 30.74 · 1.0000</div>
                     <div class="value"><span id="termDecayValue">30.74</span> bar</div>
                     <div class="why" data-i18n="sandbox.schreiner.decomp.decay.why">The initial offset between actual Pt and the tracking line — settles exponentially toward zero.</div>
                 </div>
             </div>
-            <div class="decomp-sum">P<sub>t</sub>(t) = [moving] − [phase lag] − [decaying gap]</div>
+            <div class="decomp-sum"><var>p</var><sub>t</sub>(t) = [moving] − [phase lag] − [decaying gap]</div>
         </div>
 
         <!-- Mini Pt(t) chart -->
@@ -519,17 +519,17 @@
             <div class="mvalue-bar-track">
                 <div class="mvalue-bar"></div>
                 <div class="mvalue-mline"><span class="mvalue-mline-label">M</span></div>
-                <div class="mvalue-anchor mvalue-anchor-palv" id="mvalueAnchorPalv"><span class="mvalue-anchor-label">P<sub>alv</sub></span></div>
-                <div class="mvalue-anchor mvalue-anchor-pamb" id="mvalueAnchorPamb"><span class="mvalue-anchor-label">P<sub>amb</sub></span></div>
-                <div class="mvalue-marker" id="mvalueMarker"><span class="mvalue-marker-label">P<sub>t</sub></span></div>
+                <div class="mvalue-anchor mvalue-anchor-palv" id="mvalueAnchorPalv"><span class="mvalue-anchor-label"><var>p</var><sub>alv</sub></span></div>
+                <div class="mvalue-anchor mvalue-anchor-pamb" id="mvalueAnchorPamb"><span class="mvalue-anchor-label"><var>p</var><sub>amb</sub></span></div>
+                <div class="mvalue-marker" id="mvalueMarker"><span class="mvalue-marker-label"><var>p</var><sub>t</sub></span></div>
             </div>
             <div class="mvalue-readout">
-                P<sub>t</sub> = <span id="mvaluePt">0.7510</span> bar
+                <var>p</var><sub>t</sub> = <span id="mvaluePt">0.7510</span> bar
                 | M = <span id="mValue">2.50</span> bar
                 <span class="mvalue-status" id="mvalueStatus" data-i18n="sandbox.schreiner.mvalue.within">within</span>
             </div>
             <div class="mvalue-derivation" id="mvalueDerivation">
-                M = a + P<sub>amb</sub> / b
+                M = a + <var>p</var><sub>amb</sub> / b
             </div>
         </div>
     </div>
@@ -591,7 +591,7 @@
                 <span class="val"><span id="depthValue">30.0</span> m</span>
             </div>
             <div class="out-chip pt">
-                <span class="lbl">P<sub>t</sub></span>
+                <span class="lbl"><var>p</var><sub>t</sub></span>
                 <span class="val"><span id="ptChipValue">3.122</span> bar</span>
             </div>
             <div class="out-chip sat">
@@ -715,7 +715,7 @@
             // Term cards — symbolic + substituted + value
             const palv0Symbolic = state.simplified
                 ? `= (D<sub>start</sub>/10 + 1) · F<sub>N₂</sub>`
-                : `= (P<sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub>`;
+                : `= (<var>p</var><sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub>`;
             const pt0Symbolic = palv0Symbolic;
             const palv0Subst = state.simplified
                 ? `= (${state.startDepth}/10 + 1) · ${F}`
@@ -991,7 +991,7 @@
             mvalueStatus.classList.toggle('exceeded', exceeded);
             mvalueStatus.classList.toggle('ok', !exceeded);
             const deriv = document.getElementById('mvalueDerivation');
-            deriv.innerHTML = `M = a + P<sub>amb</sub>(t) / b = ${aN2.toFixed(4)} + ${pAmbCurrent.toFixed(4)} / ${bN2.toFixed(4)} = <strong>${M.toFixed(4)}</strong>`;
+            deriv.innerHTML = `M = a + <var>p</var><sub>amb</sub>(t) / b = ${aN2.toFixed(4)} + ${pAmbCurrent.toFixed(4)} / ${bN2.toFixed(4)} = <strong>${M.toFixed(4)}</strong>`;
         }
 
         // ---------- Bottom control bar collapse toggle ----------

@@ -414,13 +414,13 @@
                 </div>
                 <div class="gf-formula-line" id="gfFormulaF2">
                     <span class="lbl" data-i18n="sandbox.gradientFactors.formulas.f2Label">F2 (M_adj):</span>
-                    M<sub>adj</sub> = P<sub>amb</sub> + GF · (M − P<sub>amb</sub>)
+                    M<sub>adj</sub> = p<sub>amb</sub> + GF · (M − p<sub>amb</sub>)
                     <span class="arrow">⟶</span>
                     M<sub>adj</sub> = <span class="val" id="gfF2Val">—</span> bar
                 </div>
                 <div class="gf-formula-line" id="gfFormulaF3">
                     <span class="lbl" data-i18n="sandbox.gradientFactors.formulas.f3Label">F3 (ceiling):</span>
-                    P<sub>ceiling</sub> = b · (P<sub>t</sub> − GF·a) / (b · (1 − GF) + GF)
+                    p<sub>ceiling</sub> = b · (p<sub>t</sub> − GF·a) / (b · (1 − GF) + GF)
                     <span class="arrow">⟶</span>
                     <span data-i18n="sandbox.gradientFactors.formulas.ceilingLabel">ceiling:</span>
                     <span class="val" id="gfF3Val">—</span>
@@ -436,9 +436,9 @@
                     <h3 data-i18n="sandbox.gradientFactors.charts.corridor.title">Panel 1 — GF corridor (formula 1)</h3>
                     <svg id="gfCorridorChart" viewBox="0 0 480 180" preserveAspectRatio="xMidYMid meet" aria-label="GF corridor"></svg>
                     <div class="legend">
-                        <span><span class="swatch" style="background:#16a085"></span><span data-i18n="sandbox.gradientFactors.charts.corridor.legendRamp">GF(P_amb) ramp</span></span>
+                        <span><span class="swatch" style="background:#16a085"></span><span data-i18n="sandbox.gradientFactors.charts.corridor.legendRamp">GF(p_amb) ramp</span></span>
                         <span><span class="swatch" style="background:#27ae60"></span><span data-i18n="sandbox.gradientFactors.charts.corridor.legendAnchor">pAnchor (first stop)</span></span>
-                        <span><span class="swatch" style="background:#c0392b"></span><span data-i18n="sandbox.gradientFactors.charts.corridor.legendPlan">GF(P<sub>amb</sub>) at current depth</span></span>
+                        <span><span class="swatch" style="background:#c0392b"></span><span data-i18n="sandbox.gradientFactors.charts.corridor.legendPlan">GF(<var>p</var><sub>amb</sub>) at current depth</span></span>
                         <span><span class="swatch" style="background:#2980b9"></span><span data-i18n="sandbox.gradientFactors.charts.corridor.legendActual">actual tissue saturation</span></span>
                     </div>
                 </div>
@@ -450,7 +450,7 @@
                         <span><span class="swatch" style="background:#f39c12"></span><span data-i18n="sandbox.gradientFactors.charts.pp.legendMAdj">M_adj (curved)</span></span>
                         <span><span class="swatch" style="background:#34495e"></span><span data-i18n="sandbox.gradientFactors.charts.pp.legendChord">linear chord (reference)</span></span>
                         <span><span class="swatch" style="background:#7f8c8d"></span><span data-i18n="sandbox.gradientFactors.charts.pp.legendAmbient">ambient (y = x)</span></span>
-                        <span><span class="swatch" style="background:#2980b9"></span><span data-i18n="sandbox.gradientFactors.charts.pp.legendTissue">tissue P_t</span></span>
+                        <span><span class="swatch" style="background:#2980b9"></span><span data-i18n="sandbox.gradientFactors.charts.pp.legendTissue">tissue p_t</span></span>
                         <span><span class="swatch" style="background:#c0392b"></span><span data-i18n="sandbox.gradientFactors.charts.pp.legendCeiling">ceiling</span></span>
                     </div>
                 </div>
@@ -496,7 +496,7 @@
                 <div class="gf-term-card madj">
                     <div class="name" data-i18n="sandbox.gradientFactors.terms.mAdj.name">M_adj</div>
                     <div class="value" id="gfTermMAdjVal">—</div>
-                    <div class="why" data-i18n="sandbox.gradientFactors.terms.mAdj.why">M-value scaled by GF: linear blend between P_amb (GF=0) and raw M (GF=1).</div>
+                    <div class="why" data-i18n="sandbox.gradientFactors.terms.mAdj.why">M-value scaled by GF: linear blend between p_amb (GF=0) and raw M (GF=1).</div>
                 </div>
             </div>
         </section>
@@ -550,7 +550,7 @@
             <input type="range" id="gfDepthSlider" min="0" max="40" step="0.5" value="18">
         </div>
         <div class="ctrl">
-            <label><span data-i18n="sandbox.gradientFactors.controls.tissueShort">P_t</span><span class="ctrl-value" id="gfTissueVal">2.40&nbsp;bar</span></label>
+            <label><span data-i18n="sandbox.gradientFactors.controls.tissueShort">p_t</span><span class="ctrl-value" id="gfTissueVal">2.40&nbsp;bar</span></label>
             <input type="range" id="gfTissueSlider" min="0.7" max="6" step="0.01" value="2.4">
             <div class="ctrl-helper" id="gfSaturateHelper" title="Set P_t to the value after N half-times of on-gassing at current depth, starting from surface saturation">
                 <span data-i18n="sandbox.gradientFactors.controls.saturateLabel">Saturate:</span>
@@ -582,7 +582,7 @@
         <!-- Output chips -->
         <div class="outputs">
             <div class="out-chip gf">
-                <span class="lbl" data-i18n="sandbox.gradientFactors.cards.gf.name">GF(P<sub>amb</sub>)</span>
+                <span class="lbl" data-i18n="sandbox.gradientFactors.cards.gf.name">GF(<var>p</var><sub>amb</sub>)</span>
                 <span class="val" id="gfCardGfValue">—</span>
             </div>
             <div class="out-chip actual" id="gfCardActual">
@@ -797,7 +797,7 @@
             if (state.mode === 'single') {
                 els.f1Symbolic.innerHTML = 'GF = constant (Single-mode is the degenerate case GF<sub>lo</sub> = GF<sub>hi</sub>)';
             } else {
-                els.f1Symbolic.innerHTML = 'GF(P<sub>amb</sub>) = GF<sub>lo</sub> + (GF<sub>hi</sub> − GF<sub>lo</sub>) · (pAnchor − P<sub>amb</sub>) / (pAnchor − P<sub>surface</sub>)';
+                els.f1Symbolic.innerHTML = 'GF(<var>p</var><sub>amb</sub>) = GF<sub>lo</sub> + (GF<sub>hi</sub> − GF<sub>lo</sub>) · (pAnchor − <var>p</var><sub>amb</sub>) / (pAnchor − <var>p</var><sub>surface</sub>)';
             }
             els.f1Val.textContent = (c.gfHere * 100).toFixed(1) + '%';
             els.f2Val.textContent = c.mAdj.toFixed(3);

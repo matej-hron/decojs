@@ -162,9 +162,9 @@
             "exampleTitle": "Příklad výpočtu",
             "exampleIntro": "Po ponoru si zaznamenáte:",
             "exampleCyl": "Lahev: 12 l",
-            "examplePressure": "Počáteční tlak: 200 bar, konečný tlak: 80 bar → <strong>ΔP = 120 bar</strong>",
+            "examplePressure": "Počáteční tlak: 200 bar, konečný tlak: 80 bar → <strong>Δp = 120 bar</strong>",
             "exampleTime": "Doba ponoru: 45 minut",
-            "exampleDepth": "Průměrná hloubka: 15 m → <strong>P<sub>avg</sub> = 1 + 15/10 = 2,5 bar</strong>",
+            "exampleDepth": "Průměrná hloubka: 15 m → <strong><var>p</var><sub>avg</sub> = 1 + 15/10 = 2,5 bar</strong>",
             "showSolution": "Zkus si to nejdřív spočítat — klikni pro zobrazení řešení",
             "exampleResult": "Tento potápěč má SAC <strong>12,8 l/min</strong> — poměrně efektivní! Typičtí rekreační potápěči mají 12–25 l/min v závislosti na kondici, zkušenostech a podmínkách.",
             "tipsTitle": "Tipy pro přesné měření",
@@ -444,10 +444,10 @@
             "title": "Co se děje s bublinami během výstupu?",
             "cardTitle": "Proč bubliny rostou?",
             "intro": "Na plynovou bublinu ve tkáni působí tři tlaky:",
-            "pAmb": "<strong>Okolní tlak (P<sub>amb</sub>)</strong> — stlačuje bublinu zvenku",
+            "pAmb": "<strong>Okolní tlak (<var>p</var><sub>amb</sub>)</strong> — stlačuje bublinu zvenku",
             "pSurface": "<strong>Povrchové napětí (2γ/r)</strong> — Laplaceův tlak, který rovněž bublinu stlačuje. Menší bubliny mají <em>větší</em> povrchové napětí.",
-            "pTissue": "<strong>Tenze rozpuštěných plynů (P<sub>tissue</sub>)</strong> — celkový tlak plynů rozpuštěných v okolní tkáni, který tlačí plyn <em>dovnitř</em> bubliny",
-            "insight": "Když <strong>P<sub>tissue</sub> &gt; P<sub>amb</sub> + 2γ/r</strong>, plyn difunduje do bubliny a ta <strong>roste</strong>. Jak roste, <em>r</em> se zvětšuje, povrchové napětí <em>klesá</em>, což růst ještě urychluje — <strong>pozitivní zpětná vazba</strong>.",
+            "pTissue": "<strong>Tenze rozpuštěných plynů (<var>p</var><sub>tissue</sub>)</strong> — celkový tlak plynů rozpuštěných v okolní tkáni, který tlačí plyn <em>dovnitř</em> bubliny",
+            "insight": "Když <strong><var>p</var><sub>tissue</sub> &gt; <var>p</var><sub>amb</sub> + 2γ/r</strong>, plyn difunduje do bubliny a ta <strong>roste</strong>. Jak roste, <em>r</em> se zvětšuje, povrchové napětí <em>klesá</em>, což růst ještě urychluje — <strong>pozitivní zpětná vazba</strong>.",
             "sliderHint": "Použijte posuvník pro výstup z 30 m. Sledujte, jak snížení okolního tlaku naruší rovnováhu — větší bubliny překročí kritický poloměr jako první."
         },
         "halfTimeConcept": {
@@ -586,10 +586,10 @@
         },
         "chartFormula": {
             "summary": "📐 Zobrazit vzorec M-hodnoty",
-            "intro": "Bühlmannův limit pro tkáň při okolním tlaku P<sub>amb</sub>:",
+            "intro": "Bühlmannův limit pro tkáň při okolním tlaku <var>p</var><sub>amb</sub>:",
             "where": "Kde:",
             "varM": "<strong>M</strong> — maximální tolerovatelný tlak inertního plynu v tkáni (bar)",
-            "varPamb": "<strong>P<sub>amb</sub></strong> — okolní tlak (bar)",
+            "varPamb": "<strong><var>p</var><sub>amb</sub></strong> — okolní tlak (bar)",
             "varAB": "<strong>a, b</strong> — Bühlmannovy koeficienty ZH-L16 pro danou tkáň",
             "note": "Graf vykresluje M-hodnotu každé tkáně jako červenou čáru. Tlak tkáně nad touto čárou znamená překročení stropu."
         },
@@ -635,7 +635,7 @@
             "formulaIntro": "Bühlmannův vzorec M-hodnoty pro každý kompartment:",
             "formulaWhere": "Kde:",
             "formulaM": "<strong>M</strong> = Maximální tolerovatelný tlak inertního plynu ve tkáni (bar)",
-            "formulaPamb": "<strong>P<sub>amb</sub></strong> = Okolní tlak v aktuální hloubce (bar)",
+            "formulaPamb": "<strong><var>p</var><sub>amb</sub></strong> = Okolní tlak v aktuální hloubce (bar)",
             "formulaA": "<strong>a</strong> = Úsek na ose y (bar) — specifický pro tkáň",
             "formulaB": "<strong>b</strong> = Směrnice (bezrozměrný) — specifická pro tkáň",
             "formulaHint": "Koeficient „a“ je průsečík s osou y — maximální tolerovatelný tkáňový tlak při nulovém přetlaku (na hladině). Rychlejší tkáně mají vyšší hodnoty „a“, což znamená, že zvládnou větší přesycení.",
@@ -714,7 +714,7 @@
             "where": "Kde:",
             "varMPrime": "<strong>M'</strong> — povolený tlak na stropu po aplikaci GF (bar)",
             "varGF": "<strong>GF</strong> — interpolovaný z GF Low (50%) v hloubce pAnchor na GF High (80%) na hladině",
-            "varM": "<strong>M</strong> — surová Bühlmannova M-hodnota = a + P<sub>amb</sub> / b",
+            "varM": "<strong>M</strong> — surová Bühlmannova M-hodnota = a + <var>p</var><sub>amb</sub> / b",
             "note100": "Při GF 100/100 zelený koridor splývá s červenou M-čárou — žádná konzervativnost se nepřidává.",
             "note5080": "Zelený pás zobrazuje M' během ponoru — leží pod červenou M-čárou a směrem k hladině se přibližuje k čáře okolního tlaku."
         },
@@ -936,11 +936,11 @@
     },
     "gfChart": {
         "formulaSummary": "📐 Zobrazit vzorec GF %",
-        "formulaIntro": "Okamžitý Gradient Factor tkáně při okolním tlaku P<sub>amb</sub>:",
-        "formulaMValue": "Bühlmannova M-hodnota při P<sub>amb</sub>: <strong>M(P<sub>amb</sub>) = a + P<sub>amb</sub> / b</strong>",
+        "formulaIntro": "Okamžitý Gradient Factor tkáně při okolním tlaku <var>p</var><sub>amb</sub>:",
+        "formulaMValue": "Bühlmannova M-hodnota při <var>p</var><sub>amb</sub>: <strong>M(<var>p</var><sub>amb</sub>) = a + <var>p</var><sub>amb</sub> / b</strong>",
         "formulaWhere": "Kde:",
-        "varPtissue": "<strong>P<sub>tissue</sub></strong> — tlak inertního plynu v tkáni (bar)",
-        "varPamb": "<strong>P<sub>amb</sub></strong> — okolní tlak = 1 + hloubka/10 (bar)",
+        "varPtissue": "<strong><var>p</var><sub>tissue</sub></strong> — tlak inertního plynu v tkáni (bar)",
+        "varPamb": "<strong><var>p</var><sub>amb</sub></strong> — okolní tlak = 1 + hloubka/10 (bar)",
         "varAB": "<strong>a, b</strong> — Bühlmannovy koeficienty ZH-L16 pro danou tkáň",
         "varGF": "<strong>GF</strong> — 0 % na úrovni okolního tlaku (plně saturováno, nulový gradient), 100 % na M-hodnotě (Bühlmannův limit)",
         "rampNote": "Během výstupu se <em>povolené</em> GF lineárně interpoluje z GF Low v hloubce pAnchor na GF High na hladině. Zelený koridor v grafu zobrazuje tuto povolenou oblast."
@@ -972,12 +972,12 @@
         "temperature": "Teplota",
         "initialTemp": "Počáteční teplota T<sub>1</sub> (°C)",
         "finalTemp": "Konečná teplota T<sub>2</sub> (°C)",
-        "calculatePrompt": "Nastavte scénář, spočítejte P<sub>2</sub>, a pak klikněte pro ověření.",
+        "calculatePrompt": "Nastavte scénář, spočítejte <var>p</var><sub>2</sub>, a pak klikněte pro ověření.",
         "showResult": "Zobrazit výsledek",
-        "finalPressure": "Výsledný tlak P<sub>2</sub>",
-        "pressureChange": "Změna tlaku ΔP",
+        "finalPressure": "Výsledný tlak <var>p</var><sub>2</sub>",
+        "pressureChange": "Změna tlaku Δp",
         "usableGasChange": "Změna použitelného plynu",
-        "gasChangeSub": "povrchové litry (ΔP × objem)",
+        "gasChangeSub": "povrchové litry (Δp × objem)",
         "diveTimeChange": "Změna času ponoru ve 20 m",
         "diveTimeSub": "Spotřeba vzduchu na hladině (SAC) 20 l/min při 3 bar (1+20/10)",
         "safety": {
@@ -1445,8 +1445,8 @@
                 "title": "Rovnice",
                 "haldane": "<strong>Haldaneova rovnice:</strong> Sycení tkání při konstantní hloubce",
                 "schreiner": "<strong>Schreinerova rovnice:</strong> Sycení tkání při změně hloubky",
-                "mvalue": "<strong>M-hodnota:</strong> M = a + P<sub>amb</sub> / b",
-                "adjustedM": "<strong>Upravená M-hodnota:</strong> M<sub>adj</sub> = P<sub>amb</sub> + GF × (M − P<sub>amb</sub>)"
+                "mvalue": "<strong>M-hodnota:</strong> M = a + <var>p</var><sub>amb</sub> / b",
+                "adjustedM": "<strong>Upravená M-hodnota:</strong> M<sub>adj</sub> = <var>p</var><sub>amb</sub> + GF × (M − <var>p</var><sub>amb</sub>)"
             },
             "validation": {
                 "title": "Validace",
@@ -1640,7 +1640,7 @@
             },
             "resultTitle": "Vyrovnání dokončeno",
             "formulaTitle": "Boyleův zákon",
-            "formula": "P<sub>konec</sub> = (P<sub>A</sub> × V<sub>A</sub> + P<sub>B</sub> × V<sub>B</sub>) / (V<sub>A</sub> + V<sub>B</sub>)",
+            "formula": "<var>p</var><sub>konec</sub> = (<var>p</var><sub>A</sub> × V<sub>A</sub> + <var>p</var><sub>B</sub> × V<sub>B</sub>) / (V<sub>A</sub> + V<sub>B</sub>)",
             "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely. Založeno na předpokladech ideálního plynového zákona."
         },
         "haldane": {
@@ -1679,11 +1679,11 @@
             },
             "cards": {
                 "palv": {
-                    "name": "P<sub>alv</sub> | alveolární tlak N<sub>2</sub>",
+                    "name": "<var>p</var><sub>alv</sub> | alveolární tlak N<sub>2</sub>",
                     "why": "Co plíce tlačí do krve v cílové hloubce."
                 },
                 "pt0": {
-                    "name": "P<sub>t,0</sub> | tlak ve tkáni v čase t=0",
+                    "name": "<var>p</var><sub>t,0</sub> | tlak ve tkáni v čase t=0",
                     "why": "Stav, ve kterém kompartment začíná — předpokládá se vyrovnaný s počáteční hloubkou."
                 },
                 "k": {
@@ -1736,12 +1736,12 @@
             },
             "cards": {
                 "palv0": {
-                    "name": "P<sub>alv,0</sub> | alveolární tlak N<sub>2</sub> v počáteční hloubce",
+                    "name": "<var>p</var><sub>alv,0</sub> | alveolární tlak N<sub>2</sub> v počáteční hloubce",
                     "why": "Počáteční alveolární tlak. Bod nulového sklonu pohyblivého alveolárního zdroje."
                 },
                 "pt0": {
-                    "name": "P<sub>t,0</sub> | tlak ve tkáni v čase t=0",
-                    "why": "Tkáň se předpokládá vyrovnaná s počáteční hloubkou → rovná se P<sub>alv,0</sub>."
+                    "name": "<var>p</var><sub>t,0</sub> | tlak ve tkáni v čase t=0",
+                    "why": "Tkáň se předpokládá vyrovnaná s počáteční hloubkou → rovná se <var>p</var><sub>alv,0</sub>."
                 },
                 "r": {
                     "name": "R | rychlost změny alveolárního tlaku",
@@ -1767,7 +1767,7 @@
                 },
                 "decay": {
                     "name": "Mizející počáteční rozdíl",
-                    "why": "Počáteční odchylka mezi skutečným P<sub>t</sub> a sledovací přímkou — exponenciálně se blíží k nule."
+                    "why": "Počáteční odchylka mezi skutečným <var>p</var><sub>t</sub> a sledovací přímkou — exponenciálně se blíží k nule."
                 }
             }
         },
@@ -1797,7 +1797,7 @@
                         "why": "Úsek M-čáry na ose y. Vyšší = více tolerovaného přesycení na hladině."
                     },
                     "pAmb": {
-                        "name": "P<sub>amb</sub> | okolní tlak",
+                        "name": "<var>p</var><sub>amb</sub> | okolní tlak",
                         "why": "Hodnota na vodorovné ose M-grafu. Každý metr hloubky přidá 0,1 bar."
                     },
                     "b": {
@@ -1811,17 +1811,17 @@
                     }
                 },
                 "chart": {
-                    "xAxis": "P_amb (bar)",
-                    "yAxis": "P_t (bar)",
+                    "xAxis": "p_amb (bar)",
+                    "yAxis": "p_t (bar)",
                     "legendAmbient": "Přímka okolního tlaku (y = x)",
-                    "legendSurface": "Hladina (P_amb = 1,013 bar)"
+                    "legendSurface": "Hladina (p_amb = 1,013 bar)"
                 },
                 "legend": {
                     "variantA": "ZH-L16A (dlouhá čárka)",
                     "variantB": "ZH-L16B (krátká čárka)",
                     "variantC": "ZH-L16C (plná)",
                     "ambient": "Přímka okolního tlaku (y = x)",
-                    "surface": "Hladina (P_amb = 1,013 bar)"
+                    "surface": "Hladina (p_amb = 1,013 bar)"
                 }
             },
             "variantBar": {
@@ -1893,10 +1893,10 @@
                 "heading": "Vizualizace",
                 "corridor": {
                     "title": "Panel 1 — GF koridor (rovnice 1)",
-                    "legendRamp": "rampa GF(P_amb)",
+                    "legendRamp": "rampa GF(p_amb)",
                     "legendAnchor": "pAnchor (první zastávka)",
                     "legendDepth": "aktuální hloubka",
-                    "legendPlan": "GF(P<sub>amb</sub>) v aktuální hloubce",
+                    "legendPlan": "GF(<var>p</var><sub>amb</sub>) v aktuální hloubce",
                     "legendActual": "skutečné sycení tkáně"
                 },
                 "pp": {
@@ -1905,7 +1905,7 @@
                     "legendMAdj": "M_adj (křivka)",
                     "legendChord": "lineární tětiva (reference)",
                     "legendAmbient": "okolní (y = x)",
-                    "legendTissue": "tkáňový P_t",
+                    "legendTissue": "tkáňový p_t",
                     "legendCeiling": "strop"
                 }
             },
@@ -1914,7 +1914,7 @@
                 "compartment": "Tkáňový kompartment (TC)",
                 "variant": "Varianta",
                 "depth": "Aktuální hloubka (m)",
-                "tissuePt": "Tkáňový tlak P_t (bar)",
+                "tissuePt": "Tkáňový tlak p_t (bar)",
                 "gf": "GF (%)",
                 "gfHi": "GF Hi (%)",
                 "gfLo": "GF Lo (%)",
@@ -1923,7 +1923,7 @@
                 "compartmentShort": "Kompartment",
                 "variantShort": "Varianta",
                 "depthShort": "Hloubka",
-                "tissueShort": "P_t",
+                "tissueShort": "p_t",
                 "gfShort": "GF",
                 "gfHiShort": "GF Hi",
                 "gfLoShort": "GF Lo",
@@ -1938,7 +1938,7 @@
             },
             "cards": {
                 "gf": {
-                    "name": "GF(P<sub>amb</sub>)",
+                    "name": "GF(<var>p</var><sub>amb</sub>)",
                     "sub": "interpolováno z rovnice 1"
                 },
                 "actual": {

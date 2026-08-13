@@ -190,9 +190,9 @@ export class BubbleModel {
         ctx.font = '10px sans-serif';
         ctx.textAlign = 'left';
         ctx.fillStyle = '#3498db';
-        ctx.fillText(`P_amb = ${pAmb.toFixed(2)} bar`, 10, 14);
+        ctx.fillText(`p_amb = ${pAmb.toFixed(2)} bar`, 10, 14);
         ctx.fillStyle = '#2ecc71';
-        ctx.fillText(`P_tissue = ${pTissue.toFixed(2)} bar (fixed)`, 140, 14);
+        ctx.fillText(`p_tissue = ${pTissue.toFixed(2)} bar (fixed)`, 140, 14);
         if (rCrit < 100) {
             ctx.fillStyle = '#e74c3c';
             ctx.fillText(`r_crit = ${rCrit.toFixed(2)} μm`, 340, 14);
@@ -218,7 +218,7 @@ export class BubbleModel {
         ctx.fillStyle = '#3498db';
         ctx.fillRect(barLeft, legendY - 8, 8, 8);
         ctx.fillStyle = '#666';
-        ctx.fillText('P_amb', barLeft + 11, legendY - 1);
+        ctx.fillText('p_amb', barLeft + 11, legendY - 1);
         ctx.fillStyle = '#f39c12';
         ctx.fillRect(barLeft + 52, legendY - 8, 8, 8);
         ctx.fillStyle = '#666';
@@ -226,7 +226,7 @@ export class BubbleModel {
         ctx.fillStyle = 'rgba(100,200,100,0.5)';
         ctx.fillRect(barLeft + 195, legendY - 8, 8, 8);
         ctx.fillStyle = '#666';
-        ctx.fillText('P_tissue → pushes IN', barLeft + 206, legendY - 1);
+        ctx.fillText('p_tissue → pushes IN', barLeft + 206, legendY - 1);
 
         this.bubbles.forEach((b, i) => {
             const yTop = topPad + i * rowH;
@@ -331,7 +331,7 @@ export class BubbleModel {
             ctx.fillStyle = 'rgba(255,255,255,0.9)';
             ctx.font = '8px sans-serif';
             ctx.textAlign = 'left';
-            if (ambW > 28) ctx.fillText('P_amb', barLeft + 2, barY1 + 10);
+            if (ambW > 28) ctx.fillText('p_amb', barLeft + 2, barY1 + 10);
             if (lapW > 18) ctx.fillText('2γ/r', barLeft + ambW + 2, barY1 + 10);
 
             ctx.fillStyle = '#444';
@@ -347,7 +347,7 @@ export class BubbleModel {
             ctx.fillStyle = 'rgba(255,255,255,0.9)';
             ctx.font = '8px sans-serif';
             ctx.textAlign = 'left';
-            if (tissueW > 35) ctx.fillText('P_tissue', barLeft + 2, barY2 + 10);
+            if (tissueW > 35) ctx.fillText('p_tissue', barLeft + 2, barY2 + 10);
 
             ctx.fillStyle = '#444';
             ctx.font = '9px sans-serif';
@@ -501,7 +501,7 @@ export class BubbleModel {
         // Define P_bubble first
         ctx.fillStyle = '#3498db';
         ctx.font = 'bold 11px sans-serif';
-        ctx.fillText(`P_bubble = P_amb + 2γ/r`, tx, ty);
+        ctx.fillText(`p_bubble = p_amb + 2γ/r`, tx, ty);
         ty += lineH;
         ctx.font = '10px sans-serif';
         ctx.fillStyle = '#666';
@@ -514,7 +514,7 @@ export class BubbleModel {
         ty += lineH + 6;
         ctx.fillStyle = '#2ecc71';
         ctx.font = 'bold 11px sans-serif';
-        ctx.fillText(`P_tissue = ${pTissue.toFixed(2)} bar`, tx, ty);
+        ctx.fillText(`p_tissue = ${pTissue.toFixed(2)} bar`, tx, ty);
         ty += lineH;
         ctx.fillStyle = '#888';
         ctx.font = '9px sans-serif';
@@ -524,12 +524,12 @@ export class BubbleModel {
         ctx.font = 'bold 12px sans-serif';
         if (wouldGrow) {
             ctx.fillStyle = '#e74c3c';
-            ctx.fillText(`P_tissue > P_bubble`, tx, ty);
+            ctx.fillText(`p_tissue > p_bubble`, tx, ty);
             ty += lineH;
             ctx.fillText('→ gas diffuses IN → GROWS', tx, ty);
         } else {
             ctx.fillStyle = '#27ae60';
-            ctx.fillText(`P_tissue < P_bubble`, tx, ty);
+            ctx.fillText(`p_tissue < p_bubble`, tx, ty);
             ty += lineH;
             ctx.fillText('→ gas diffuses OUT → SHRINKS', tx, ty);
         }

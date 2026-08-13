@@ -235,12 +235,12 @@
                     <h4 data-i18n="totalPressure.formulas.totalAmbient">Total Ambient Pressure</h4>
                     <p data-i18n="totalPressure.formulas.totalAmbientDesc">The total pressure at any depth is the sum of atmospheric and hydrostatic pressure:</p>
                     <div class="formula" id="formula-total-pressure">
-                        P_{amb} = P_{atm} + P_{hydro} = P_{atm} + \rho \cdot g \cdot h
+                        p_{\mathrm{amb}} = p_{\mathrm{atm}} + p_{\mathrm{hydro}} = p_{\mathrm{atm}} + \rho \cdot g \cdot h
                     </div>
                     <p data-i18n="totalPressure.formulas.totalAmbientWhere">Where:</p>
                     <ul>
-                        <li><span class="formula-inline">P_{amb}</span> = <span data-i18n="totalPressure.formulas.pAmb">total ambient pressure</span></li>
-                        <li><span class="formula-inline">P_{atm}</span> = <span data-i18n="totalPressure.formulas.pAtm">atmospheric pressure (≈1&nbsp;bar at sea level)</span></li>
+                        <li><span class="formula-inline">p_{\mathrm{amb}}</span> = <span data-i18n="totalPressure.formulas.pAmb">total ambient pressure</span></li>
+                        <li><span class="formula-inline">p_{\mathrm{atm}}</span> = <span data-i18n="totalPressure.formulas.pAtm">atmospheric pressure (≈1&nbsp;bar at sea level)</span></li>
                         <li><span class="formula-inline">\rho</span> = <span data-i18n="totalPressure.formulas.rho">water density (≈1025&nbsp;kg/m³ for seawater)</span></li>
                         <li><span class="formula-inline">g</span> = <span data-i18n="totalPressure.formulas.g">gravitational acceleration (9.81&nbsp;m/s²)</span></li>
                         <li><span class="formula-inline">h</span> = <span data-i18n="totalPressure.formulas.hDepth">depth in meters</span></li>
@@ -249,18 +249,18 @@
                     <h4 data-i18n="totalPressure.formulas.simplified">Simplified Formula (Sea Level)</h4>
                     <p data-i18n="totalPressure.formulas.simplifiedDesc">For diving at sea level, we use the simplified formula:</p>
                     <div class="formula" id="formula-simplified-pressure">
-                        P_{amb} = 1 + \frac{depth}{10} \text{ bar}
+                        p_{\mathrm{amb}} = 1 + \frac{depth}{10} \text{ bar}
                     </div>
                     <p data-i18n="totalPressure.formulas.simplifiedNote">This approximation works well for recreational diving calculations.</p>
 
                     <h4 data-i18n="totalPressure.formulas.altitudeFormula">Atmospheric Pressure vs Altitude</h4>
                     <p data-i18n="totalPressure.formulas.altitudeFormulaDesc">Atmospheric pressure decreases exponentially with altitude:</p>
                     <div class="formula" id="formula-altitude-pressure">
-                        P_{atm}(h) = P_0 \cdot e^{-\frac{h}{H}}
+                        p_{\mathrm{atm}}(h) = p_0 \cdot e^{-\frac{h}{H}}
                     </div>
                     <p data-i18n="totalPressure.formulas.altitudeWhere">Where:</p>
                     <ul>
-                        <li><span class="formula-inline">P_0</span> = <span data-i18n="totalPressure.formulas.p0">1.01325&nbsp;bar (sea level pressure)</span></li>
+                        <li><span class="formula-inline">p_0</span> = <span data-i18n="totalPressure.formulas.p0">1.01325&nbsp;bar (sea level pressure)</span></li>
                         <li><span class="formula-inline">h</span> = <span data-i18n="totalPressure.formulas.hAlt">altitude in meters</span></li>
                         <li><span class="formula-inline">H</span> <span data-i18n="totalPressure.formulas.scaleHeight">≈ 8500&nbsp;m (scale height of atmosphere)</span></li>
                     </ul>
@@ -324,18 +324,18 @@
                     <h4 data-i18n="gasConsumption.formula.consumedTitle">Gas Consumed at Depth</h4>
                     <p data-i18n="gasConsumption.formula.consumedDesc">The gas consumption at any depth can be calculated as:</p>
                     <div class="formula" id="formula-gas-consumption">
-                        \text{Consumption} = SAC \times P_{amb} \times t
+                        \text{Consumption} = SAC \times p_{\mathrm{amb}} \times t
                     </div>
                     <p data-i18n="gasConsumption.formula.consumedWhere">Where:</p>
                     <ul>
                         <li><span class="formula-inline">SAC</span> = <span data-i18n="gasConsumption.formula.sacVar">Surface Air Consumption (L/min at surface)</span></li>
-                        <li><span class="formula-inline">P_{amb}</span> = <span data-i18n="gasConsumption.formula.pAmbVar">Ambient pressure in bar (1 + depth/10)</span></li>
+                        <li><span class="formula-inline">p_{\mathrm{amb}}</span> = <span data-i18n="gasConsumption.formula.pAmbVar">Ambient pressure in bar (1 + depth/10)</span></li>
                         <li><span class="formula-inline">t</span> = <span data-i18n="gasConsumption.formula.tVar">Time at depth (minutes)</span></li>
                     </ul>
 
                     <h4 data-i18n="gasConsumption.formula.availableTitle">Available Gas in Cylinder</h4>
                     <div class="formula" id="formula-gas-available">
-                        \text{Gas Available} = V_{cylinder} \times (P_{start} - P_{reserve})
+                        \text{Gas Available} = V_{cylinder} \times (p_{\mathrm{start}} - p_{\mathrm{reserve}})
                     </div>
                     <p data-i18n="gasConsumption.formula.availableExample">For a 12&nbsp;L cylinder at 200&nbsp;bar with 50&nbsp;bar reserve:</p>
                     <p data-i18n="gasConsumption.formula.availableResult">Available gas = 12 × (200 - 50) = <strong>1800 liters</strong></p>
@@ -367,23 +367,23 @@
 
                     <h4 data-i18n="gasConsumptionChart.sacCalc.formulaTitle">SAC Calculation Formula</h4>
                     <div class="formula" id="formula-sac-calculation">
-                        SAC = \frac{\Delta P \times V_{cyl}}{t \times P_{avg}}
+                        SAC = \frac{\Delta P \times V_{cyl}}{t \times p_{\mathrm{avg}}}
                     </div>
                     <p data-i18n="gasConsumptionChart.sacCalc.where">Where:</p>
                     <ul>
                         <li><span class="formula-inline">\Delta P</span> = <span data-i18n="gasConsumptionChart.sacCalc.deltaP">Pressure drop (start - end pressure in bar)</span></li>
                         <li><span class="formula-inline">V_{cyl}</span> = <span data-i18n="gasConsumptionChart.sacCalc.vCyl">Cylinder volume (liters)</span></li>
                         <li><span class="formula-inline">t</span> = <span data-i18n="gasConsumptionChart.sacCalc.t">Dive time (minutes)</span></li>
-                        <li><span class="formula-inline">P_{avg}</span> = <span data-i18n="gasConsumptionChart.sacCalc.pAvg">Average ambient pressure = 1 + (avg depth / 10)</span></li>
+                        <li><span class="formula-inline">p_{\mathrm{avg}}</span> = <span data-i18n="gasConsumptionChart.sacCalc.pAvg">Average ambient pressure = 1 + (avg depth / 10)</span></li>
                     </ul>
 
                     <h4 data-i18n="gasConsumptionChart.sacCalc.exampleTitle">Example Calculation</h4>
                     <p data-i18n="gasConsumptionChart.sacCalc.exampleIntro">After a dive you note:</p>
                     <ul>
                         <li data-i18n="gasConsumptionChart.sacCalc.exampleCyl">Cylinder: 12&nbsp;L</li>
-                        <li data-i18n="gasConsumptionChart.sacCalc.examplePressure">Start pressure: 200&nbsp;bar, End pressure: 80&nbsp;bar → <strong>ΔP = 120&nbsp;bar</strong></li>
+                        <li data-i18n="gasConsumptionChart.sacCalc.examplePressure">Start pressure: 200&nbsp;bar, End pressure: 80&nbsp;bar → <strong>Δp = 120&nbsp;bar</strong></li>
                         <li data-i18n="gasConsumptionChart.sacCalc.exampleTime">Dive time: 45 minutes</li>
-                        <li data-i18n="gasConsumptionChart.sacCalc.exampleDepth">Average depth: 15&nbsp;m → <strong>P<sub>avg</sub> = 1 + 15/10 = 2.5&nbsp;bar</strong></li>
+                        <li data-i18n="gasConsumptionChart.sacCalc.exampleDepth">Average depth: 15&nbsp;m → <strong><var>p</var><sub>avg</sub> = 1 + 15/10 = 2.5&nbsp;bar</strong></li>
                     </ul>
                     <details class="solution-reveal">
                         <summary data-i18n="gasConsumptionChart.sacCalc.showSolution">Try it yourself first — click to reveal the solution</summary>
@@ -468,18 +468,18 @@
                 <div class="math-content">
                     <h4 data-i18n="daltonsLaw.formula.totalPressure">Total Pressure</h4>
                     <div class="formula" id="formula-dalton-total">
-                        P_{total} = P_{N_2} + P_{O_2}
+                        p_{\mathrm{total}} = p_{\mathrm{N_2}} + p_{\mathrm{O_2}}
                     </div>
 
                     <h4 data-i18n="daltonsLaw.formula.ppCalc">Partial Pressure Calculation</h4>
                     <div class="formula" id="formula-partial-pressure">
-                        pp_x = f_x \times P_{amb}
+                        pp_x = f_x \times p_{\mathrm{amb}}
                     </div>
                     <p data-i18n="daltonsLaw.formula.where">Where:</p>
                     <ul>
                         <li><span class="formula-inline">pp_x</span> = <span data-i18n="daltonsLaw.formula.ppx">partial pressure of gas x (bar)</span></li>
                         <li><span class="formula-inline">f_x</span> = <span data-i18n="daltonsLaw.formula.fx">fraction of gas x in the mixture (decimal, e.g., 0.21 for 21%)</span></li>
-                        <li><span class="formula-inline">P_{amb}</span> = <span data-i18n="daltonsLaw.formula.pAmb">ambient pressure (bar), calculated as 1 + depth/10</span></li>
+                        <li><span class="formula-inline">p_{\mathrm{amb}}</span> = <span data-i18n="daltonsLaw.formula.pAmb">ambient pressure (bar), calculated as 1 + depth/10</span></li>
                     </ul>
                     <p data-i18n="daltonsLaw.formula.note"><em>Note: This is the <strong>operational</strong> formula used for MOD and gas limits throughout this section.</em></p>
                 </div>
@@ -524,13 +524,13 @@
                 <p data-i18n="daltonsLaw.operational.intro">There are two common contexts for partial pressure calculations:</p>
 
                 <h4 data-i18n="daltonsLaw.operational.opTitle">Operational (MOD / gas limits)</h4>
-                <div class="formula">ppO_2 = F_{O_2} \times P_{amb}</div>
+                <div class="formula">ppO_2 = F_{O_2} \times p_{\mathrm{amb}}</div>
                 <p data-i18n="daltonsLaw.operational.opDesc">Used for Maximum Operating Depth (MOD) and oxygen toxicity limits. No water vapour subtraction.</p>
 
                 <h4 data-i18n="daltonsLaw.operational.physTitle">Physiological (tissue kinetics)</h4>
-                <div class="formula">pp_{inert} = F_{inert} \times (P_{amb} - P_{H_2O})</div>
+                <div class="formula">pp_{inert} = F_{inert} \times (p_{\mathrm{amb}} - p_{\mathrm{H_2O}})</div>
                 <p data-i18n="daltonsLaw.operational.physDesc">When calculating alveolar gas pressures for tissue loading models, we subtract water vapour pressure because the lungs humidify inspired air:</p>
-                <div class="formula">P_{H_2O} = 0{,}0627 \text{ bar při 37 °C}</div>
+                <div class="formula">p_{\mathrm{H_2O}} = 0{,}0627 \text{ bar při 37 °C}</div>
                 <p data-i18n="daltonsLaw.operational.physNote">This ~6% reduction appears in the Bühlmann equations for tissue saturation calculations. We will need this in further sections and stating it here for completeness.</p>
             </div>
         </section>

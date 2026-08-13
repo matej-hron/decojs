@@ -3601,6 +3601,23 @@ describe('i18n notation - canvas strings must not contain HTML entities', () => 
     }
 
 
+    // Pressure is p, lowercase and italic (ČSN EN ISO 80000-1 ch. 7). The
+    // project used to write P<sub>amb</sub>, P_{amb} and P_amb. The subscript
+    // is deliberately NOT translated here — localising indexes needs the chart
+    // labels moved into i18n first, which is a separate task.
+    const badPressure = /\bP(?:<sub>[^<]{1,12}<\/sub>|_\{?[A-Za-z][A-Za-z0-9,]*\}?)|ΔP\b/;
+
+    test('locales: pressure symbol is lowercase p, never capital P', () => {
+        const bad = [];
+        for (const loc of LOCALES) {
+            for (const [k, v] of flatten(load(loc))) {
+                if (SKIP_KEYS.has(k.split('.').pop())) continue;
+                if (badPressure.test(v)) bad.push(`${loc} ${k} = ${v.slice(0, 70)}`);
+            }
+        }
+        expect(bad).toEqual([]);
+    });
+
     test('quiz data: no &nbsp; entity and no plain space before a unit', () => {
         const files = readdirSync(new URL('../data/', import.meta.url))
             .filter((f) => f.startsWith('quiz-') && f.endsWith('.json'));
