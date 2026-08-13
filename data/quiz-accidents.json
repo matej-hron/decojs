@@ -625,7 +625,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "Nesprávné je tvrzení d) - hypoxie nastává při poklesu <var>p</var><sub>O₂</sub> pod cca 16 kPa (0.16 bar), nikoliv 21 kPa. Při 21 kPa je normální atmosférický parciální tlak kyslíku."
+      "explanation": "Nesprávné je tvrzení d) - hypoxie nastává při poklesu <var>p</var><sub>O₂</sub> pod cca 16 kPa (0,16 bar), nikoliv 21 kPa. Při 21 kPa je normální atmosférický parciální tlak kyslíku."
     },
     {
       "id": 26,
@@ -650,7 +650,7 @@
         }
       ],
       "correct": "c",
-      "explanation": "V 90 m je absolutní tlak 10 bar, takže 2% O₂ dává <var>p</var><sub>O₂</sub> = 0.2 bar (20 kPa), což je dostatečné pro dýchání a nezpůsobuje hypoxii."
+      "explanation": "V 90 m je absolutní tlak 10 bar, takže 2% O₂ dává <var>p</var><sub>O₂</sub> = 0,2 bar (20 kPa), což je dostatečné pro dýchání a nezpůsobuje hypoxii."
     },
     {
       "id": 27,
@@ -800,7 +800,7 @@
         }
       ],
       "correct": "c",
-      "explanation": "Pro bezpečné dýchání potřebujeme <var>p</var><sub>O₂</sub> alespoň 0.16 bar. V 30 m je absolutní tlak 4 bar, takže 4% × 4 = 0.16 bar (16 kPa), což je minimální bezpečná hodnota."
+      "explanation": "Pro bezpečné dýchání potřebujeme <var>p</var><sub>O₂</sub> alespoň 0,16 bar. V 30 m je absolutní tlak 4 bar, takže 4% × 4 = 0,16 bar (16 kPa), což je minimální bezpečná hodnota."
     },
     {
       "id": 33,
@@ -825,7 +825,7 @@
         }
       ],
       "correct": "b",
-      "explanation": "Bezvědomí hrozí při poklesu <var>p</var><sub>O₂</sub> pod 10 kPa (0.1 bar). Hranice 16 kPa je minimum pro normální funkci, pod 10 kPa nastává ztráta vědomí."
+      "explanation": "Bezvědomí hrozí při poklesu <var>p</var><sub>O₂</sub> pod 10 kPa (0,1 bar). Hranice 16 kPa je minimum pro normální funkci, pod 10 kPa nastává ztráta vědomí."
     },
     {
       "id": 34,
@@ -875,7 +875,7 @@
         }
       ],
       "correct": "b",
-      "explanation": "Hypoxie nastává při poklesu <var>p</var><sub>O₂</sub> pod 16 kPa (0.16 bar). To je minimální parciální tlak kyslíku potřebný pro normální fungování organismu."
+      "explanation": "Hypoxie nastává při poklesu <var>p</var><sub>O₂</sub> pod 16 kPa (0,16 bar). To je minimální parciální tlak kyslíku potřebný pro normální fungování organismu."
     },
     {
       "id": 36,

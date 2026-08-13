@@ -102,7 +102,7 @@
             "pAmb": "presión ambiente total",
             "pAtm": "presión atmosférica (≈1 bar a nivel del mar)",
             "rho": "densidad del agua (≈1025 kg/m³ para agua salada)",
-            "g": "aceleración de la gravedad (9.81 m/s²)",
+            "g": "aceleración de la gravedad (9,81 m/s²)",
             "hDepth": "profundidad en metros",
             "simplified": "Fórmula simplificada (nivel del mar)",
             "simplifiedDesc": "Para bucear a nivel del mar usamos la fórmula simplificada:",
@@ -110,7 +110,7 @@
             "altitudeFormula": "Presión atmosférica según la altitud",
             "altitudeFormulaDesc": "La presión atmosférica disminuye de forma exponencial con la altitud:",
             "altitudeWhere": "Donde:",
-            "p0": "1.01325 bar (presión a nivel del mar)",
+            "p0": "1,01325 bar (presión a nivel del mar)",
             "hAlt": "altitud en metros",
             "scaleHeight": "≈ 8500 m (altura característica de la atmósfera)"
         }
@@ -164,7 +164,7 @@
             "exampleCyl": "Botella: 12 L",
             "examplePressure": "Presión inicial: 200 bar, presión final: 80 bar → <strong>Δp = 120 bar</strong>",
             "exampleTime": "Tiempo de inmersión: 45 minutos",
-            "exampleDepth": "Profundidad media: 15 m → <strong><var>p</var><sub>media</sub> = 1 + 15/10 = 2.5 bar</strong>",
+            "exampleDepth": "Profundidad media: 15 m → <strong><var>p</var><sub>media</sub> = 1 + 15/10 = 2,5 bar</strong>",
             "showSolution": "Pruébalo primero — haz clic para revelar la solución",
             "exampleResult": "Este buceador tiene una tasa SAC de <strong>12.8 L/min</strong> — ¡bastante eficiente! Los buceadores recreativos típicos se sitúan entre 12 y 25 L/min según su forma física, experiencia y condiciones.",
             "tipsTitle": "Consejos para una medición precisa",
@@ -217,8 +217,8 @@
             "thFraction": "Fracción",
             "thCalculation": "Cálculo",
             "thPP": "Presión parcial",
-            "o2PP": "0.84 bar",
-            "n2PP": "3.16 bar",
+            "o2PP": "0,84 bar",
+            "n2PP": "3,16 bar",
             "show": "mostrar"
         },
         "operational": {
@@ -255,9 +255,9 @@
             "intro": "La MOD es la mayor profundidad a la que puedes bucear con seguridad con una mezcla concreta sin superar el límite de <var>p</var><sub>O₂</sub>. Se calcula a partir de la fracción de oxígeno y la <var>p</var><sub>O₂</sub> máxima deseada.",
             "formulaSummary": "Fórmula de la MOD",
             "where": "Donde:",
-            "ppO2Max": "presión parcial máxima permitida (habitualmente 1.4 bar)",
+            "ppO2Max": "presión parcial máxima permitida (habitualmente 1,4 bar)",
             "fO2": "fracción de oxígeno en el gas (decimal)",
-            "exercisesTitle": "Ejercicios: calcula la MOD (<var>p</var><sub>O₂</sub> = 1.4 bar)",
+            "exercisesTitle": "Ejercicios: calcula la MOD (<var>p</var><sub>O₂</sub> = 1,4 bar)",
             "exGas": "Gas",
             "exCalc": "Cálculo",
             "showAnswer": "mostrar",
@@ -304,25 +304,25 @@
             "thSymptoms": "Síntomas",
             "thRelevance": "Relevancia en buceo",
             "cnsType": "<strong>Toxicidad del SNC</strong>",
-            "cnsCause": "<var>p</var><sub>O₂</sub> elevada (>1.6 bar)",
+            "cnsCause": "<var>p</var><sub>O₂</sub> elevada (>1,6 bar)",
             "cnsSymptoms": "Convulsiones, espasmos, visión en túnel, sacudidas",
             "cnsRelevance": "Peligro inmediato; puede causar ahogamiento",
             "pulmonaryType": "<strong>Toxicidad pulmonar</strong>",
-            "pulmonaryCause": "Exposición prolongada (<var>p</var><sub>O₂</sub> >0.5 bar)",
+            "pulmonaryCause": "Exposición prolongada (<var>p</var><sub>O₂</sub> >0,5 bar)",
             "pulmonarySymptoms": "Dolor torácico, tos, dificultad respiratoria",
             "pulmonaryRelevance": "Relevante en exposiciones largas y rebreathers"
         },
         "cnsOtu": {
             "title": "Seguimiento de CNS y OTU",
             "toggleLabel": "Mostrar detalles",
-            "disclaimer": "<em>⚠️ Contenido avanzado. Para el buceo recreativo basta con mantenerse por debajo de 1.4 bar de <var>p</var><sub>O₂</sub>. El seguimiento de CNS/OTU se utiliza sobre todo en buceo técnico con exposiciones prolongadas al oxígeno.</em>",
+            "disclaimer": "<em>⚠️ Contenido avanzado. Para el buceo recreativo basta con mantenerse por debajo de 1,4 bar de <var>p</var><sub>O₂</sub>. El seguimiento de CNS/OTU se utiliza sobre todo en buceo técnico con exposiciones prolongadas al oxígeno.</em>",
             "cnsTitle": "Reloj CNS (Sistema Nervioso Central)",
             "cnsDesc": "El reloj CNS contabiliza tu exposición como porcentaje del tiempo máximo admisible a cada nivel de <var>p</var><sub>O₂</sub>. Al llegar al 100 % has alcanzado el límite recomendado.",
             "thPPO2": "<var>p</var><sub>O₂</sub> (bar)",
             "thNOAAMax": "Tiempo máx. NOAA",
             "thCNSPerMin": "CNS % por minuto",
             "otuTitle": "OTU (Unidades de Tolerancia al Oxígeno)",
-            "otuDesc": "Los OTU contabilizan la exposición pulmonar acumulada al oxígeno. La fórmula se aplica cuando la <var>p</var><sub>O₂</sub> supera los 0.5 bar:",
+            "otuDesc": "Los OTU contabilizan la exposición pulmonar acumulada al oxígeno. La fórmula se aplica cuando la <var>p</var><sub>O₂</sub> supera los 0,5 bar:",
             "otuLimits": "Límites diarios: <strong>300 OTU</strong> (una sola inmersión), <strong>850 OTU</strong> (total del día)"
         },
         "symptoms": {
@@ -414,7 +414,7 @@
                 "desc": "La presión parcial de nitrógeno en los alvéolos tiene en cuenta la presión del vapor de agua:",
                 "where": "Donde:",
                 "pAmb": "presión ambiente a profundidad (bar)",
-                "pH2O": "presión del vapor de agua ≈ 0.0627 bar a 37 °C",
+                "pH2O": "presión del vapor de agua ≈ 0,0627 bar a 37 °C",
                 "fN2": "fracción de nitrógeno en el gas respirable (0.79 para aire)"
             }
         },
@@ -456,7 +456,7 @@
             "definition": "El <strong>medio tiempo (periodo de semisaturación)</strong> de un tejido es el tiempo que tarda en alcanzar el 50 % de saturación (o el 50 % de desaturación) para una diferencia de presión dada. Tras cada periodo de medio tiempo:",
             "bar1": "1 medio tiempo: 50 %",
             "bar2": "2 medios tiempos: 75 %",
-            "bar3": "3 medios tiempos: 87.5 %",
+            "bar3": "3 medios tiempos: 87,5 %",
             "bar4": "6 medios tiempos: ~98 % (saturado)",
             "example": "Un compartimento de 5 minutos alcanza el 50 % de saturación en 5 minutos; ¡uno de 635 minutos tarda más de 10 horas!",
             "gradientTitle": "El efecto del gradiente de presión",
@@ -468,13 +468,13 @@
             "intro": "Estas gráficas muestran cómo la diferencia de presión afecta a las velocidades de saturación y desaturación.",
             "ongassing": {
                 "title": "Absorción (descenso)",
-                "desc": "El tejido parte del equilibrio en superficie (~0.79 bar <var>p</var><sub>N₂</sub>). Ajusta la profundidad objetivo para ver cómo diferencias de presión mayores implican una carga absoluta más rápida.",
+                "desc": "El tejido parte del equilibrio en superficie (~0,79 bar <var>p</var><sub>N₂</sub>). Ajusta la profundidad objetivo para ver cómo diferencias de presión mayores implican una carga absoluta más rápida.",
                 "depthLabel": "Profundidad objetivo:"
             },
             "offgassing": {
                 "title": "Desgasificación (ascenso hasta la superficie)",
                 "desc": "El tejido parte saturado a la profundidad seleccionada. Mismo medio tiempo, misma ecuación: solo se invierte. Las curvas son espejos perfectos.",
-                "info": "Saturado a <strong id=\"offgassing-depth-display\">30 m</strong> → Superficie (~0.79 bar)"
+                "info": "Saturado a <strong id=\"offgassing-depth-display\">30 m</strong> → Superficie (~0,79 bar)"
             },
             "footnote": "ℹ️ Ambas gráficas usan la misma profundidad y la misma fórmula de medio tiempo. La absorción y la desgasificación son simétricas — solo cambia el sentido.",
             "math": {
@@ -506,7 +506,7 @@
         "buhlmannCompartments": {
             "title": "Los compartimentos ZH-L16 de Bühlmann",
             "intro": "El modelo Bühlmann ZH-L16 utiliza <strong>16 compartimentos teóricos</strong> — son <em>constructos matemáticos</em> ajustados a datos experimentales, no tejidos anatómicos literales. Cubren un rango de medios tiempos diseñado para modelar todo el espectro de comportamientos tisulares:",
-            "fast": "<strong>Compartimentos rápidos (5–12.5 min)</strong> — se saturan en minutos, pero también liberan gas deprisa",
+            "fast": "<strong>Compartimentos rápidos (5–12,5 min)</strong> — se saturan en minutos, pero también liberan gas deprisa",
             "medium": "<strong>Compartimentos medios (18.5–77 min)</strong> — equilibrio entre carga y desgasificación",
             "slow": "<strong>Compartimentos lentos (109–635 min)</strong> — pueden tardar horas en saturarse por completo",
             "controllingTitle": "El compartimento de control",
@@ -995,7 +995,7 @@
         "whyTitle": "💡 ¿Por qué ocurre esto?",
         "whyText1": "Las moléculas de gas se mueven más rápido a mayor temperatura y chocan con más fuerza contra las paredes de la botella, aumentando la presión. Como la botella es rígida (volumen constante), toda la energía cinética extra se traduce directamente en más presión.",
         "whyText2": "<strong>Consejo práctico:</strong> los compresores generan un calor notable al llenar — el gas dentro de una botella recién cargada puede estar 40-50 °C por encima del ambiente. Si cargas a 200 bar en una tienda cálida y luego buceas en un lago frío, no te sorprendas si ves solo ~180 bar en el manómetro. No es una fuga — es física.",
-        "whyRuleOfThumb": "<strong>Regla práctica:</strong> ~0.6 bar de cambio por cada 1 °C a 200 bar de presión de trabajo.",
+        "whyRuleOfThumb": "<strong>Regla práctica:</strong> ~0,6 bar de cambio por cada 1 °C a 200 bar de presión de trabajo.",
         "formulaTitle": "Ley de Gay-Lussac (proceso isocórico)",
         "formulaNote": "la relación presión/temperatura es constante a volumen constante (T en Kelvin)",
         "formulaRearranged": "Reordenada:",
@@ -1421,15 +1421,15 @@
             "intro": "Los cálculos de descompresión usan el algoritmo <strong>Bühlmann ZH-L16</strong> con los siguientes parámetros y supuestos:",
             "variants": {
                 "title": "Variantes del modelo",
-                "a": "<strong>ZH-L16A:</strong> valores experimentales originales, medio tiempo TC1 = 4.0 min",
-                "b": "<strong>ZH-L16B:</strong> modificado para tablas impresas, medio tiempo TC1 = 5.0 min",
-                "c": "<strong>ZH-L16C:</strong> modificado para ordenadores de buceo (por defecto), medio tiempo TC1 = 5.0 min"
+                "a": "<strong>ZH-L16A:</strong> valores experimentales originales, medio tiempo TC1 = 4,0 min",
+                "b": "<strong>ZH-L16B:</strong> modificado para tablas impresas, medio tiempo TC1 = 5,0 min",
+                "c": "<strong>ZH-L16C:</strong> modificado para ordenadores de buceo (por defecto), medio tiempo TC1 = 5,0 min"
             },
             "constants": {
                 "title": "Constantes",
-                "surfacePressure": "Presión en superficie: 1.0 bar",
-                "waterVapor": "Presión del vapor de agua: 0.0627 bar (47 mmHg a 37 °C)",
-                "pressurePer10m": "Presión por cada 10 m de profundidad: 1.0 bar (agua salada)",
+                "surfacePressure": "Presión en superficie: 1,0 bar",
+                "waterVapor": "Presión del vapor de agua: 0,0627 bar (47 mmHg a 37 °C)",
+                "pressurePer10m": "Presión por cada 10 m de profundidad: 1,0 bar (agua salada)",
                 "descentRate": "Velocidad de descenso: 20 m/min",
                 "ascentRate": "Velocidad de ascenso: 10 m/min",
                 "stopIncrement": "Incremento entre paradas deco: 3 m"
@@ -1451,7 +1451,7 @@
             "validation": {
                 "title": "Validación",
                 "intro": "La implementación se ha contrastado con:",
-                "decotengu": "<strong>DecoTengu:</strong> la carga tisular coincide con un margen inferior al 0.02 %",
+                "decotengu": "<strong>DecoTengu:</strong> la carga tisular coincide con un margen inferior al 0,02 %",
                 "buhlmann": "<strong>Tablas impresas de Bühlmann:</strong> los programas de deco coinciden dentro de la tolerancia esperada",
                 "note": "<em>Nota:</em> nuestros cálculos pueden dar tiempos de deco un 10-25 % más cortos que las tablas impresas. Es lo esperado — las tablas impresas incluyen márgenes de seguridad y redondean al alza de forma conservadora. Esta herramienta muestra la salida directa del algoritmo con fines educativos."
             }
@@ -1478,7 +1478,7 @@
             "item4": "<strong>Bühlmann, A.A.</strong> (1984). <em>Decompression–Decompression Sickness.</em> Berlín: Springer-Verlag. — La obra original que describe el algoritmo ZH-L16.",
             "item5": "<strong>Wikipedia</strong>. <a href=\"https://en.wikipedia.org/wiki/B%C3%BChlmann_decompression_algorithm\" target=\"_blank\" rel=\"noopener\">Bühlmann decompression algorithm</a> — Visión general del algoritmo, los medios tiempos de los compartimentos tisulares y los valores-M.",
             "item6": "<strong>Wienke, B.R.</strong> <a href=\"https://aquatec.wordpress.com/wp-content/uploads/2011/03/decompression-theory.pdf\" target=\"_blank\" rel=\"noopener\">Decompression Theory (PDF)</a> — Introducción exhaustiva a la física y la fisiología de la descompresión.",
-            "item7": "<strong>Ecuación del gas alveolar</strong>: el modelo tiene en cuenta la presión del vapor de agua a la temperatura corporal (37 °C) = 47 mmHg ≈ 0.0627 bar, que reduce la presión parcial efectiva de los gases inspirados. <a href=\"https://en.wikipedia.org/wiki/Alveolar_gas_equation\" target=\"_blank\" rel=\"noopener\">Wikipedia: Alveolar gas equation</a>",
+            "item7": "<strong>Ecuación del gas alveolar</strong>: el modelo tiene en cuenta la presión del vapor de agua a la temperatura corporal (37 °C) = 47 mmHg ≈ 0,0627 bar, que reduce la presión parcial efectiva de los gases inspirados. <a href=\"https://en.wikipedia.org/wiki/Alveolar_gas_equation\" target=\"_blank\" rel=\"noopener\">Wikipedia: Alveolar gas equation</a>",
             "item8": "<strong>Schreiner, H.R.</strong> (1971). <em>Safe Limits of Exposure to Increased Pressure.</em> — Derivación de la ecuación de Schreiner para calcular la carga gaseosa durante cambios lineales de presión.",
             "item9": "<strong>Strany potápěčské</strong>. <a href=\"https://stranypotapecske.cz\" target=\"_blank\" rel=\"noopener\">stranypotapecske.cz</a> — Un completo portal checo de buceo y recurso comunitario gestionado por Zdeněk Šraier. Ofrece una amplia biblioteca de reseñas de libros, artículos educativos sobre física del buceo y teoría de la descompresión, base de datos de condiciones de inmersión, reseñas de material y materiales formativos. Un recurso muy valioso para los buceadores de habla checa de cualquier nivel."
         }
