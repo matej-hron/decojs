@@ -59,20 +59,30 @@ každou přes všechny soubory z Kroku 1.
 | 1 | číslo + jednotka | `20m`, `20 m` (obyčejná mezera) | `20&nbsp;m` v HTML, `20`+U+00A0+`m` v JSON |
 | 1b | oddělovač tisíců | `600 000 Pa` (obyčejná mezera) | `600`+nbsp+`000`+nbsp+`Pa` — přepínač `--thousands` |
 | 2 | desetinná tečka v CZ | `2.81 bar` | `2,81` + nedělitelná mezera + `bar` |
-| 3 | značka tlaku | `P_{amb}`, `ppO2`, `T_{1/2}` | `p_{\mathrm{amb}}`, *p*<sub>O₂</sub>, *t*<sub>1/2</sub> — hromadně `psym.py` |
+| 3 | značka tlaku | `P_{amb}`, `P<sub>amb</sub>`, `p<sub>amb</sub>` bez kurzívy | `p_{\mathrm{amb}}`, `<var>p</var><sub>amb</sub>` — hromadně `psym.py` |
+| 3b | parciální tlak | `<em>pp</em>O₂`, `ppO2`, `F_{O_2}` | `<var>p</var><sub>O₂</sub>`, `f_{\mathrm{O_2}}` — hromadně `ppres.py` |
 | 4 | kurzíva značky | `<em>p</em>` **jako značka** | `<var>p</var>` |
 | 5 | zkratky | GF/MOD/NDL/SAC/OTU kurzívou | stojatě |
 
-Třídu 1 nehledej ručně — má hotový nástroj, který zná výjimky (`12litrový`,
-`60°`, `12l lahev`, skloňované názvy) a nesahá do vzorců KaTeX ani do
-`<script>`:
+Třídy 1, 3 a 3b nehledej ručně — mají hotové nástroje, které znají výjimky
+(`12litrový`, `60°`, skloňované názvy) a nesahají do `<script>` ani do
+identifikátorů (`options.ppO2` je proměnná, ne značka):
 
 ```bash
-python3 docs/notation/tools/nbsp.py --check --words -v <soubory>
+python3 docs/notation/tools/nbsp.py  --check --words -v <soubory>   # třída 1
+python3 docs/notation/tools/psym.py  --check -v <soubory>           # třída 3
+python3 docs/notation/tools/ppres.py --check -v <soubory>           # třída 3b
 ```
 
-Výstup si projdi po řádcích **dřív, než pustíš `--fix`**. Nástroj řeší jen
-třídu 1; třídy 2–5 zůstávají na tobě.
+`ppres.py` pusť **před** `psym.py` — sloučí značku s navazujícím indexem
+(`ppN₂<sub>tissue</sub>` → `<sub>N₂,tissue</sub>`), což už `psym.py` neumí.
+
+U parciálních tlaků platí výjimka z §4 glossáře: `ppO₂` **smí zůstat**
+v popiscích grafů a varovných hláškách — na canvasu se HTML nevykreslí.
+Nástroj to respektuje sám, neobcházej ho ručně.
+
+Výstup si projdi po řádcích **dřív, než pustíš `--fix`**. Třídy 2, 4 a 5
+zůstávají na tobě — u nich rozhoduje význam, ne tvar.
 
 Po opravě ověř, že se změnily opravdu jen mezery:
 
@@ -155,7 +165,7 @@ a `*.json: U+00A0 between value and unit` v `tests/run-tests.mjs`.
 ## Krok 3 — Ověření
 
 ```bash
-npm test          # musí projít celé (273/273)
+npm test          # musí projít celé (287/287)
 git diff --stat   # sedí seznam souborů z Kroku 1?
 
 # diff nesmí obsahovat formátovací šum
@@ -192,7 +202,7 @@ Norma: <odkaz do style-guide.md, proč je nový tvar správný>
 ## Ponecháno záměrně
 - `60°` (úhel se píše bez mezery), `12litrový` (složenina)
 
-**Testy:** 273/273 ✅
+**Testy:** 287/287 ✅
 ```
 
 Report musí odpovídat na otázku „co jsi kontroloval a nenašel", ne jen

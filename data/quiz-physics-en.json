@@ -1053,7 +1053,7 @@
         { "key": "d", "text": "Partial pressures of gases in air do not depend on the total air pressure." }
       ],
       "correct": "d",
-      "explanation": "Partial pressure depends on the total pressure. <em>p</em>O₂ = fO₂ × p_total. As depth (and pressure) increase, every partial pressure increases as well. That is why oxygen becomes toxic at depth."
+      "explanation": "Partial pressure depends on the total pressure. <var>p</var><sub>O₂</sub> = <var>f</var><sub>O₂</sub> × <var>p</var><sub>total</sub>. As depth (and pressure) increase, every partial pressure increases as well. That is why oxygen becomes toxic at depth."
     },
     {
       "id": 82,
@@ -1066,7 +1066,7 @@
         { "key": "d", "text": "30 metres" }
       ],
       "correct": "d",
-      "explanation": "Minimum <em>p</em>O₂ = 16 kPa = 0.16 bar. Required total pressure = 0.16 / 0.04 = 4 bar. That corresponds to 30 m. Shallower than that, <em>p</em>O₂ would be too low (hypoxia)."
+      "explanation": "Minimum <var>p</var><sub>O₂</sub> = 16 kPa = 0.16 bar. Required total pressure = 0.16 / 0.04 = 4 bar. That corresponds to 30 m. Shallower than that, <var>p</var><sub>O₂</sub> would be too low (hypoxia)."
     },
     {
       "id": 83,
@@ -1092,7 +1092,7 @@
         { "key": "d", "text": "150 kPa" }
       ],
       "correct": "a",
-      "explanation": "An oxygen rebreather contains 100% O₂. At 15 m the absolute pressure is 2.5 bar = 250 kPa. <em>p</em>O₂ = 1.0 × 250 = 250 kPa. That is a dangerously high value (oxygen toxicity)."
+      "explanation": "An oxygen rebreather contains 100% O₂. At 15 m the absolute pressure is 2.5 bar = 250 kPa. <var>p</var><sub>O₂</sub> = 1.0 × 250 = 250 kPa. That is a dangerously high value (oxygen toxicity)."
     },
     {
       "id": 85,
@@ -1105,7 +1105,7 @@
         { "key": "d", "text": "14.7 kPa and 63 kPa" }
       ],
       "correct": "b",
-      "explanation": "At the surface: <em>p</em>O₂ = 0.21 × 70 = 14.7 kPa. At 20 m: total pressure = 70 + 200 = 270 kPa, <em>p</em>O₂ = 0.21 × 270 = 56.7 kPa."
+      "explanation": "At the surface: <var>p</var><sub>O₂</sub> = 0.21 × 70 = 14.7 kPa. At 20 m: total pressure = 70 + 200 = 270 kPa, <var>p</var><sub>O₂</sub> = 0.21 × 270 = 56.7 kPa."
     },
     {
       "id": 86,
@@ -1131,7 +1131,7 @@
         { "key": "d", "text": "oxygen 200 kPa, nitrogen 500 kPa, helium 300 kPa" }
       ],
       "correct": "a",
-      "explanation": "At 70 m the absolute pressure is 8 bar = 800 kPa. <em>p</em>O₂ = 0.20 × 800 = 160 kPa. <em>p</em>N₂ = 0.50 × 800 = 400 kPa. <em>p</em>He = 0.30 × 800 = 240 kPa."
+      "explanation": "At 70 m the absolute pressure is 8 bar = 800 kPa. <var>p</var><sub>O₂</sub> = 0.20 × 800 = 160 kPa. <var>p</var><sub>N₂</sub> = 0.50 × 800 = 400 kPa. <var>p</var><sub>He</sub> = 0.30 × 800 = 240 kPa."
     },
     {
       "id": 88,
@@ -1144,7 +1144,7 @@
         { "key": "d", "text": "88 metres" }
       ],
       "correct": "c",
-      "explanation": "Total pressure = 160 / 0.21 = 762 kPa ≈ 7.6 bar. Depth = (7.6 − 1) × 10 = 66 m. This is the MOD for air at <em>p</em>O₂ = 1.6 bar."
+      "explanation": "Total pressure = 160 / 0.21 = 762 kPa ≈ 7.6 bar. Depth = (7.6 − 1) × 10 = 66 m. This is the MOD for air at <var>p</var><sub>O₂</sub> = 1.6 bar."
     },
     {
       "id": 89,
@@ -1157,7 +1157,7 @@
         { "key": "d", "text": "depends on depth (e.g. at 10 m oxygen 42 kPa, nitrogen 156 kPa)" }
       ],
       "correct": "b",
-      "explanation": "The cylinder pressure is 15 MPa, independent of depth. <em>p</em>O₂ = 0.21 × 15 = 3.15 MPa. <em>p</em>N₂ = 0.78 × 15 = 11.7 MPa. Partial pressures inside the cylinder are constant."
+      "explanation": "The cylinder pressure is 15 MPa, independent of depth. <var>p</var><sub>O₂</sub> = 0.21 × 15 = 3.15 MPa. <var>p</var><sub>N₂</sub> = 0.78 × 15 = 11.7 MPa. Partial pressures inside the cylinder are constant."
     },
     {
       "id": 90,
@@ -1209,7 +1209,7 @@
         { "key": "d", "text": "Oxygen binds to haemoglobin and thereby displaces bound nitrogen." }
       ],
       "correct": "b",
-      "explanation": "When breathing pure O₂, <em>p</em>N₂ in the lungs is almost zero. This creates the maximum pressure gradient between tissues (saturated with N₂) and the lungs, which speeds up nitrogen off-gassing."
+      "explanation": "When breathing pure O₂, <var>p</var><sub>N₂</sub> in the lungs is almost zero. This creates the maximum pressure gradient between tissues (saturated with N₂) and the lungs, which speeds up nitrogen off-gassing."
     },
     {
       "id": 94,
@@ -1235,7 +1235,7 @@
         { "key": "d", "text": "312 kPa" }
       ],
       "correct": "d",
-      "explanation": "<em>p</em>N₂ at the surface = 78 kPa. At 40 m (5 bar): <em>p</em>N₂ = 0.78 × 500 = 390 kPa. After 30 min (2 half-times) the tissue has on-gassed to 75%. Δp = 390 − 78 = 312 kPa. On-gassing = 78 + 0.75×312 = 312 kPa."
+      "explanation": "<var>p</var><sub>N₂</sub> at the surface = 78 kPa. At 40 m (5 bar): <var>p</var><sub>N₂</sub> = 0.78 × 500 = 390 kPa. After 30 min (2 half-times) the tissue has on-gassed to 75%. Δp = 390 − 78 = 312 kPa. On-gassing = 78 + 0.75×312 = 312 kPa."
     },
     {
       "id": 96,
@@ -1248,7 +1248,7 @@
         { "key": "d", "text": "195 kPa" }
       ],
       "correct": "d",
-      "explanation": "<em>p</em>N₂ at the surface = 78 kPa. At 30 m (4 bar): <em>p</em>N₂ = 0.78 × 400 = 312 kPa. After 1 half-time the tissue on-gasses to 50% of the difference. Δp = 312 − 78 = 234 kPa. On-gassing = 78 + 0.5×234 = 195 kPa."
+      "explanation": "<var>p</var><sub>N₂</sub> at the surface = 78 kPa. At 30 m (4 bar): <var>p</var><sub>N₂</sub> = 0.78 × 400 = 312 kPa. After 1 half-time the tissue on-gasses to 50% of the difference. Δp = 312 − 78 = 234 kPa. On-gassing = 78 + 0.5×234 = 195 kPa."
     },
     {
       "id": 97,
@@ -1261,7 +1261,7 @@
         { "key": "d", "text": "A: 253.5 kPa, B: 195 kPa" }
       ],
       "correct": "d",
-      "explanation": "<em>p</em>N₂ at 30 m = 312 kPa, Δp = 234 kPa. A (40 min = 2 half-times, 75%): 78 + 0.75×234 = 253.5 kPa. B (40 min = 1 half-time, 50%): 78 + 0.5×234 = 195 kPa."
+      "explanation": "<var>p</var><sub>N₂</sub> at 30 m = 312 kPa, Δp = 234 kPa. A (40 min = 2 half-times, 75%): 78 + 0.75×234 = 253.5 kPa. B (40 min = 1 half-time, 50%): 78 + 0.5×234 = 195 kPa."
     },
     {
       "id": 98,
@@ -1274,7 +1274,7 @@
         { "key": "d", "text": "312 kPa" }
       ],
       "correct": "b",
-      "explanation": "<em>p</em>N₂ at 30 m = 312 kPa, initial = 78 kPa, Δp = 234 kPa. After 2 half-times: 50% + 25% = 75% on-gassing. <em>p</em>N₂ = 78 + 0.75×234 = 253.5 kPa."
+      "explanation": "<var>p</var><sub>N₂</sub> at 30 m = 312 kPa, initial = 78 kPa, Δp = 234 kPa. After 2 half-times: 50% + 25% = 75% on-gassing. <var>p</var><sub>N₂</sub> = 78 + 0.75×234 = 253.5 kPa."
     },
     {
       "id": 99,
@@ -1287,7 +1287,7 @@
         { "key": "d", "text": "319.5 kPa" }
       ],
       "correct": "d",
-      "explanation": "Initial <em>p</em>N₂ = 78 kPa. At 70 m (8 bar) with 50% N₂: <em>p</em>N₂ = 0.5 × 800 = 400 kPa. Δp = 322 kPa. After 30 min (2 half-times, 75%): 78 + 0.75×322 = 319.5 kPa."
+      "explanation": "Initial <var>p</var><sub>N₂</sub> = 78 kPa. At 70 m (8 bar) with 50% N₂: <var>p</var><sub>N₂</sub> = 0.5 × 800 = 400 kPa. Δp = 322 kPa. After 30 min (2 half-times, 75%): 78 + 0.75×322 = 319.5 kPa."
     },
     {
       "id": 100,

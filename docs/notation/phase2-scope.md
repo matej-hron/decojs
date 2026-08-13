@@ -125,10 +125,10 @@ Nedělitelné mezery jsou jen jedna z pěti tříd. Zbývá:
 
 | Třída | Odhad | Issue |
 |---|---|---|
-| Parciální tlaky: 8 různých zápisů, 170× ASCII `2` místo `₂` | 354 výskytů, 21 souborů | #61 |
+| ~~Parciální tlaky: 8 různých zápisů~~ | ~~354 v 21 souborech~~ (skutečně 205 v 20) | **hotovo** |
 | ~~`P_amb` velkým písmenem~~ | ~~183 v 25 souborech~~ | **hotovo** |
 | `<em>` jako značka místo `<var>` | 105 (a 110 legitimních zvýraznění nechat) | #56 |
-| `T_{1/2}` → `t_{1/2}` | 15–17 v 8–10 souborech | #62 |
+| `T_{1/2}` → `t_{1/2}` | 15–17 v 8–10 souborech — **změřeno 0**, viz níže | #62 |
 | ~~Oddělovač tisíců obyčejnou mezerou (`600 000 Pa`)~~ | ~~198 v 6 souborech~~ | **hotovo** |
 
 ### Oddělovač tisíců — hotovo
@@ -207,3 +207,74 @@ editaci a report.
 
 Po každém PR: `npm test` (280+), `git diff --stat` == `git diff -w --stat`,
 bump verze v `sw.js` i `css/styles.css`.
+
+### Parciální tlaky — hotovo
+
+Nástroj `docs/notation/tools/ppres.py`, 205 oprav ve 20 souborech (PR #88).
+Doplňkově 51 oprav `psym.py` (malé `p` s indexem, ale bez kurzívy).
+
+Glossary §4 tuhle třídu nerozhoduje plošně, ale podmíněně:
+
+> `ppO₂` je hovorové synonymum, ne značka. Kanonicky *p*<sub>O₂</sub>.
+> `ppO₂` **smí zůstat** ve varovných hláškách a popiscích grafů; **ve vzorci nikdy**.
+
+Ta výjimka není libovůle. Popisky jdou na canvas Chart.js a do `alert()`, kde se
+HTML nevykreslí — kurzívu ani dolní index tam zapsat nelze a `ppO₂` je nejmenší
+zlo. Nástroj proto opravuje jen text, o kterém **umí dokázat**, že končí
+v `innerHTML`. 25 popisků grafů, legend a varování zůstalo záměrně beze změny.
+
+#### Co bylo v jakém tvaru
+
+| Povrch | Před | Po |
+|---|---|---|
+| česká próza | `<em>pp</em>O₂` | `<var>p</var><sub>O₂</sub>` |
+| anglická/španělská próza | `<em>p</em>O₂`, `ppO₂` | totéž |
+| KaTeX | `ppO_2`, `pp_{inert}`, `F_{O_2}` | `p_{\mathrm{O_2}}`, `f_{\mathrm{inert}}` |
+| HTML vzorec | `p<sub>amb</sub>` (stojatě) | `<var>p</var><sub>amb</sub>` |
+| canvas / varování | `ppO₂ (bar)` | beze změny (výjimka výše) |
+
+Objemový zlomek se sjednotil zároveň: glossary §4 má *f*, projekt psal `F_{O_2}`
+(velké `F` je značka síly).
+
+#### Tři důkazy, na kterých nástroj stojí
+
+1. **HTML tag v hodnotě dokazuje `innerHTML`** — jinak by uživatel tu značku
+   viděl doslova.
+2. **Klíč v `data-i18n` dokazuje `innerHTML`** — `js/i18n.js:99` dělá
+   `el.innerHTML = translated` bez výjimky. Tohle je průkaznější než bod 1:
+   `<th data-i18n="…">ppO₂ (bar)</th>` žádný tag nemá, a přesto je to HTML.
+   Výjimka `page.title` jde do `document.title`, což je prostý text.
+3. **`<sub>` uvnitř zóny „formula“ dokazuje HTML vzorec, ne KaTeX** — v KaTeX
+   zdroji by ta značka nedávala smysl. Bez tohohle rozlišení propadlo 51 výskytů
+   `p<sub>amb</sub>` v `.formula` blocích.
+
+#### Sink je vlastnost klíče, ne jazykové mutace
+
+První verze nástroje rozhodovala podle jednotlivé hodnoty. Výsledek: čeština
+`<em>pp</em>N₂ v našich plicích` se opravila, angličtina `The ppN₂ in our lungs`
+ne — tentýž klíč, tentýž DOM, jiný výsledek. Přesně ta disparita, kterou má
+sjednocení odstranit. Nástroj proto sjednocuje důkaz přes celou jazykovou
+rodinu (`locales/{cs,en,es}.json`, `data/quiz-X{,-en,-es}.json`). Rozdíl:
+139 → 171 oprav.
+
+#### Co odhalil až test a prohlížeč
+
+- **Dvojitý dolní index.** `ppN₂<sub>max</sub>` se změnilo na
+  `<var>p</var><sub>N₂</sub><sub>max</sub>` — dva sousední `<sub>`. Chytil to
+  regresní test. Víceslovný index se odděluje čárkou: `<sub>N₂,max</sub>`.
+- **Pozor na `sub + sub` jako detektor.** CSS sousední kombinátor ignoruje
+  textové uzly, takže `<sub>amb</sub> + GF × (M − <sub>amb</sub>)` hlásí falešně
+  pozitivní nález. Skutečná kontrola je `previousSibling.nodeName === 'SUB'`.
+- **Text hned za tagem propadal.** Lookbehind vylučoval `>`, takže `<li>ppN₂`
+  se neopravilo, zatímco totéž uprostřed věty ano. `>` se vyloučit nesmí, `<`
+  ano (`<p>O₂` není parciální tlak).
+
+#### Kvízy: doslovnost citací SPČR zůstala
+
+Všech 27 českých výskytů bylo ve `explanation` — v našem výkladu, ne v zadání
+otázky ani v možnostech odpovědí. Znění zkouškových otázek se nezměnilo.
+
+### `T_{1/2}` — změřeno 0 výskytů
+
+Odhad 15–17 se nepotvrdil; `grep` na `T_{1/2}` i `T_1/2` vrací nulu. Než se
+issue #62 zavře, je potřeba prohledat jiné tvary: `t½`, `halfTime`, `poločas`.

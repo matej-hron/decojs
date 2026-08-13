@@ -195,7 +195,7 @@
                             <rect x="0" y="0" width="100" height="80" rx="8" class="stage-box stage-regulator" />
                             <text x="50" y="35" text-anchor="middle" class="stage-icon" style="font-size: 14px; font-weight: 600;" data-i18n="tissueLoading.gasExchange.svg.tank">TANK</text>
                             <text x="50" y="55" text-anchor="middle" class="stage-label" data-i18n="tissueLoading.gasExchange.svg.breathingGas">Breathing Gas</text>
-                            <text x="50" y="72" text-anchor="middle" class="stage-value" id="reg-pressure">ppN₂ = 3.16</text>
+                            <text x="50" y="72" text-anchor="middle" class="stage-value" id="reg-pressure"><var>p</var><sub>N₂</sub> = 3.16</text>
                         </g>
 
                         <!-- Arrow 1: Regulator → Alveoli -->
@@ -234,7 +234,7 @@
                             <rect x="0" y="0" width="100" height="80" rx="8" class="stage-box stage-lungs" />
                             <text x="50" y="30" text-anchor="middle" class="stage-icon">🫁</text>
                             <text x="50" y="55" text-anchor="middle" class="stage-label" data-i18n="tissueLoading.gasExchange.svg.alveoli">Alveoli</text>
-                            <text x="50" y="72" text-anchor="middle" class="stage-value" id="alv-pressure">ppN₂ = 3.10</text>
+                            <text x="50" y="72" text-anchor="middle" class="stage-value" id="alv-pressure"><var>p</var><sub>N₂</sub> = 3.10</text>
                         </g>
 
                         <!-- Arrow 2: Alveoli → Blood -->
@@ -271,7 +271,7 @@
                             <rect x="0" y="0" width="100" height="80" rx="8" class="stage-box stage-blood" />
                             <text x="50" y="30" text-anchor="middle" class="stage-icon">💉</text>
                             <text x="50" y="55" text-anchor="middle" class="stage-label" data-i18n="tissueLoading.gasExchange.svg.blood">Blood</text>
-                            <text x="50" y="72" text-anchor="middle" class="stage-value" id="blood-pressure">ppN₂ = 2.5</text>
+                            <text x="50" y="72" text-anchor="middle" class="stage-value" id="blood-pressure"><var>p</var><sub>N₂</sub> = 2.5</text>
                         </g>
 
                         <!-- Arrow 3: Blood → Tissues -->
@@ -365,7 +365,7 @@
                         becomes <strong>higher than in your tissues</strong>, so gas flows <em>into</em> tissues.
                         All compartments begin absorbing nitrogen, but <strong>fast tissues fill first</strong>.
                     </p>
-                    <p class="phase-formula">ppN₂<sub>tissue</sub> &lt; ppN₂<sub>alveolar</sub> → <strong>On-gassing</strong></p>
+                    <p class="phase-formula"><var>p</var><sub>N₂,tissue</sub> &lt; <var>p</var><sub>N₂,alveolar</sub> → <strong>On-gassing</strong></p>
                 </div>
             </div>
         </section>
@@ -394,13 +394,13 @@
                         pressure exceeds alveolar pressure, the gradient reverses and gas flows <em>out</em> —
                         this is <strong>off-gassing</strong>.
                     </p>
-                    <p class="phase-formula">ppN₂<sub>tissue</sub> &gt; ppN₂<sub>alveolar</sub> → <strong>Off-gassing</strong></p>
+                    <p class="phase-formula"><var>p</var><sub>N₂,tissue</sub> &gt; <var>p</var><sub>N₂,alveolar</sub> → <strong>Off-gassing</strong></p>
                     <p data-i18n="tissueLoading.saturationDynamics.ascent.text2">
                         But there's another threshold: when tissue nitrogen pressure exceeds <strong>ambient pressure</strong>,
                         the tissue is <em>supersaturated</em>. This is when we need to be careful — the dissolved gas
                         wants to come out of solution and could form bubbles.
                     </p>
-                    <p class="phase-formula">ppN₂<sub>tissue</sub> &gt; p<sub>ambient</sub> → <strong>Supersaturation</strong> ⚠️</p>
+                    <p class="phase-formula"><var>p</var><sub>N₂,tissue</sub> &gt; <var>p</var><sub>ambient</sub> → <strong>Supersaturation</strong> ⚠️</p>
                 </div>
             </div>
         </section>
@@ -514,13 +514,13 @@
             <div class="concept-card">
                 <div class="half-time-chart-grid">
                     <div class="half-time-chart-wrapper">
-                        <p class="chart-description" data-i18n="tissueLoading.halfTimeCharts.ongassing.desc">Tissue starts at surface equilibrium (~0.79&nbsp;bar ppN₂).
+                        <p class="chart-description" data-i18n="tissueLoading.halfTimeCharts.ongassing.desc">Tissue starts at surface equilibrium (~0.79&nbsp;bar <var>p</var><sub>N₂</sub>).
                            Adjust target depth to see how bigger pressure differences mean faster absolute loading.</p>
                         <div class="chart-controls-inline">
                             <label for="ongassing-depth" data-i18n="tissueLoading.halfTimeCharts.ongassing.depthLabel">Target Depth:</label>
                             <input type="range" id="ongassing-depth" min="10" max="50" value="30" step="5" />
                             <span id="ongassing-depth-value">30&nbsp;m</span>
-                            <span id="ongassing-ppn2-value">(ppN₂ = 3.16&nbsp;bar)</span>
+                            <span id="ongassing-ppn2-value">(<var>p</var><sub>N₂</sub> = 3.16&nbsp;bar)</span>
                         </div>
                         <div class="chart-container-small">
                             <canvas id="ongassing-chart"></canvas>

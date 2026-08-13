@@ -34,10 +34,17 @@ from nbsp import html_masked_ranges, walk, SKIP_KEYS  # noqa: E402
 # Popisný index (slovo nebo zkratka) se v KaTeX sází stojatě přes \mathrm.
 # Číslice a jednopísmenné indexy typu P_1, P_2 zůstávají bez \mathrm -
 # \mathrm{2} je zbytečné, číslice jsou stojatě samy o sobě.
+# Index může být české slovo (`P_celkový`). Bez diakritiky v třídě by `\b`
+# za `celkov` nenastalo - `v` i `ý` jsou oba \w - a shoda by propadla.
+CZL = "A-Za-záčďéěíňóřšťúůýžÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ"
 KATEX = re.compile(r"\bP_\{([A-Za-z][A-Za-z0-9,]*)\}")
 KATEX_DIGIT = re.compile(r"\bP_\{(\d+)\}|\bP_(\d)\b")
 HTML_SUB = re.compile(r"\bP(<sub>[^<]{1,12}</sub>)")
-PLAIN = re.compile(r"\bP_([A-Za-z][A-Za-z0-9]*)\b")
+# Malé `p` s indexem, ale bez kurzívy: `p<sub>amb</sub>`. Značka veličiny se
+# sází kurzívou (ISO 80000-1 čl. 7), takže samotné zmenšení písmene nestačí.
+# Vylučuje se `p` uvnitř slova i název tagu (`<p><sub>`).
+HTML_SUB_LOWER = re.compile(r"(?<![\w<])p(<sub>[^<]{1,14}</sub>)")
+PLAIN = re.compile(r"\bP_([%s][%s0-9]*)\b" % (CZL, CZL))
 DELTA = re.compile(r"ΔP\b")
 
 
@@ -57,6 +64,7 @@ def fix_text(s, html_ok):
     )
     if html_ok:
         s = HTML_SUB.sub(bump(lambda m: "<var>p</var>" + m.group(1)), s)
+        s = HTML_SUB_LOWER.sub(bump(lambda m: "<var>p</var>" + m.group(1)), s)
     else:
         s = HTML_SUB.sub(bump(lambda m: "p" + m.group(1)), s)
     s = PLAIN.sub(bump(lambda m: "p_" + m.group(1)), s)
@@ -64,8 +72,11 @@ def fix_text(s, html_ok):
     return s, n[0]
 
 
-def process_html(raw, report, label):
+def process_html(raw, report, label, pats=None, fixer=None):
     """V HTML se opravuje jen text, který uživatel vidí.
+
+    `pats` a `fixer` jsou volitelné, aby zónový skener mohl použít i jiný
+    nástroj (ppres.py) - zóny jsou stejné, mění se jen hledaný tvar.
 
     Zóny se nedají převzít z nbsp.py beze změny. Tamní `html_allowed`
     maskuje i vnitřek každého tagu, což je u mezer správně, ale tady ne -
@@ -96,7 +107,8 @@ def process_html(raw, report, label):
     out = []
     last = 0
     n = 0
-    pats = [KATEX, KATEX_DIGIT, HTML_SUB, PLAIN, DELTA]
+    pats = pats or [KATEX, KATEX_DIGIT, HTML_SUB, HTML_SUB_LOWER, PLAIN, DELTA]
+    fixer = fixer or fix_text
     hits = sorted({(m.start(), m.end()) for p in pats for m in p.finditer(raw)})
     merged = []
     for s, e in hits:
@@ -111,7 +123,11 @@ def process_html(raw, report, label):
         if z in ("skip", "tag"):
             continue
         frag = raw[s:e]
-        new, k = fix_text(frag, html_ok=(z == "text"))
+        # Zóna "formula" pokrývá dvě různé věci: zdroj KaTeXu a vzorec vysázený
+        # přímo v HTML. Rozliší je důkaz - `<sub>` v shodě může být jen HTML,
+        # v KaTeX zdroji by ta značka nedávala smysl. Tam <var> vložit smíme.
+        html_ok = z == "text" or (z == "formula" and "<sub>" in frag)
+        new, k = fixer(frag, html_ok=html_ok)
         if k:
             out.append(raw[last:s])
             out.append(new)
@@ -133,18 +149,22 @@ CANVAS_HINT = re.compile(
 )
 
 
-def process_json(raw, report, label):
+def process_json(raw, report, label, fixer=None, html_ok_for=None):
     data = json.loads(raw)
     edits = {}
     n = 0
+    fixer = fixer or fix_text
     for key, value in walk(data):
         if key.rsplit(".", 1)[-1].split("[")[0] in SKIP_KEYS:
             continue
         # Hodnota, která už obsahuje <sub>, prokazatelně končí v innerHTML -
         # jinak by se ta značka uživateli ukazovala doslova. Takové hodnotě
         # smíme <var> přidat. Bez <sub> to jistotu nemáme.
-        html_ok = "<sub>" in value and not CANVAS_HINT.search(key)
-        new, k = fix_text(value, html_ok)
+        if html_ok_for:
+            html_ok = html_ok_for(key, value)
+        else:
+            html_ok = "<sub>" in value and not CANVAS_HINT.search(key)
+        new, k = fixer(value, html_ok)
         if not k:
             continue
         n += k

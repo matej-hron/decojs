@@ -1775,7 +1775,7 @@
         }
       ],
       "correct": "a",
-      "explanation": "Kyslík se váže na hemoglobin chemickou vratnou vazbou. V plicích se naváže (vysoký <em>p</em>O₂), v tkáních se uvolní (nízký <em>p</em>O₂). Oxid uhelnatý se váže nevratně, proto je jedovatý."
+      "explanation": "Kyslík se váže na hemoglobin chemickou vratnou vazbou. V plicích se naváže (vysoký <var>p</var><sub>O₂</sub>), v tkáních se uvolní (nízký <var>p</var><sub>O₂</sub>). Oxid uhelnatý se váže nevratně, proto je jedovatý."
     },
     {
       "id": 72,

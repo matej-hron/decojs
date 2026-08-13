@@ -369,10 +369,10 @@
         <!-- Live formula -->
         <div class="haldane-formula">
             <div class="formula-symbolic">
-                <span class="term term-result">p<sub>t</sub>(t)</span> =
-                <span class="term term-palv">p<sub>alv</sub></span> +
-                (<span class="term term-pt0">p<sub>t,0</sub></span>
-                − <span class="term term-palv">p<sub>alv</sub></span>) ·
+                <span class="term term-result"><var>p</var><sub>t</sub>(t)</span> =
+                <span class="term term-palv"><var>p</var><sub>alv</sub></span> +
+                (<span class="term term-pt0"><var>p</var><sub>t,0</sub></span>
+                − <span class="term term-palv"><var>p</var><sub>alv</sub></span>) ·
                 e<sup>−<span class="term term-k">k</span><span class="term term-t">t</span></sup>
             </div>
             <div class="formula-substituted">
@@ -385,14 +385,14 @@
         <div class="term-row">
             <div class="term-card palv">
                 <div class="name" data-i18n="sandbox.haldane.cards.palv.name"><var>p</var><sub>alv</sub> | alveolar N<sub>2</sub> pressure</div>
-                <div class="formula" id="palvSymbolic">= (p<sub>amb</sub> − 0.0627) · F<sub>N₂</sub></div>
+                <div class="formula" id="palvSymbolic">= (<var>p</var><sub>amb</sub> − 0.0627) · F<sub>N₂</sub></div>
                 <div class="formula" id="palvSubst">= (4.0133 − 0.0627) · 0.7902</div>
                 <div class="value"><span id="palvValue">3.1218</span> bar</div>
                 <div class="why" data-i18n="sandbox.haldane.cards.palv.why">What the lungs are pushing into the blood at target depth.</div>
             </div>
             <div class="term-card pt0">
                 <div class="name" data-i18n="sandbox.haldane.cards.pt0.name"><var>p</var><sub>t,0</sub> | tissue pressure at t=0</div>
-                <div class="formula" id="pt0Symbolic">= (p<sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub></div>
+                <div class="formula" id="pt0Symbolic">= (<var>p</var><sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub></div>
                 <div class="formula" id="pt0Subst">= (1.0133 − 0.0627) · 0.7902</div>
                 <div class="value"><span id="pt0Value">0.7510</span> bar</div>
                 <div class="why" data-i18n="sandbox.haldane.cards.pt0.why">Where this compartment started, assumed equilibrated at start depth.</div>

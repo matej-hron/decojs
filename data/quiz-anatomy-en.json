@@ -923,7 +923,7 @@
         { "key": "d", "text": "hormonal binding" }
       ],
       "correct": "a",
-      "explanation": "Oxygen binds to haemoglobin via a reversible chemical bond. In the lungs (high <em>p</em>O₂) it binds, in the tissues (low <em>p</em>O₂) it is released. Carbon monoxide binds irreversibly, which is why it is so toxic."
+      "explanation": "Oxygen binds to haemoglobin via a reversible chemical bond. In the lungs (high <var>p</var><sub>O₂</sub>) it binds, in the tissues (low <var>p</var><sub>O₂</sub>) it is released. Carbon monoxide binds irreversibly, which is why it is so toxic."
     },
     {
       "id": 72,

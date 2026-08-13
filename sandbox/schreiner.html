@@ -410,12 +410,12 @@
         <!-- Live formula -->
         <div class="haldane-formula">
             <div class="formula-symbolic">
-                <span class="term term-result">p<sub>t</sub>(t)</span> =
-                <span class="term term-palv">p<sub>alv,0</sub></span> +
+                <span class="term term-result"><var>p</var><sub>t</sub>(t)</span> =
+                <span class="term term-palv"><var>p</var><sub>alv,0</sub></span> +
                 <span class="term term-r">R</span> ·
                 (<span class="term term-t">t</span> − 1/<span class="term term-k">k</span>) −
-                (<span class="term term-palv">p<sub>alv,0</sub></span> −
-                <span class="term term-pt0">p<sub>t,0</sub></span> −
+                (<span class="term term-palv"><var>p</var><sub>alv,0</sub></span> −
+                <span class="term term-pt0"><var>p</var><sub>t,0</sub></span> −
                 <span class="term term-r">R</span>/<span class="term term-k">k</span>) ·
                 e<sup>−<span class="term term-k">k</span><span class="term term-t">t</span></sup>
             </div>
@@ -430,14 +430,14 @@
         <div class="term-row">
             <div class="term-card palv">
                 <div class="name" data-i18n="sandbox.schreiner.cards.palv0.name"><var>p</var><sub>alv,0</sub> | alveolar N<sub>2</sub> at start depth</div>
-                <div class="formula" id="palv0Symbolic">= (p<sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub></div>
+                <div class="formula" id="palv0Symbolic">= (<var>p</var><sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub></div>
                 <div class="formula" id="palv0Subst">= (4.0133 − 0.0627) · 0.7902</div>
                 <div class="value"><span id="palv0Value">3.1217</span> bar</div>
                 <div class="why" data-i18n="sandbox.schreiner.cards.palv0.why">Starting alveolar pressure. Slope-zero point of the moving alveolar source.</div>
             </div>
             <div class="term-card pt0">
                 <div class="name" data-i18n="sandbox.schreiner.cards.pt0.name"><var>p</var><sub>t,0</sub> | tissue pressure at t=0</div>
-                <div class="formula" id="pt0Symbolic">= (p<sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub></div>
+                <div class="formula" id="pt0Symbolic">= (<var>p</var><sub>amb,start</sub> − 0.0627) · F<sub>N₂</sub></div>
                 <div class="formula" id="pt0Subst">= (4.0133 − 0.0627) · 0.7902</div>
                 <div class="value"><span id="pt0Value">3.1217</span> bar</div>
                 <div class="why" data-i18n="sandbox.schreiner.cards.pt0.why">Tissue assumed equilibrated at start depth → equals <var>p</var><sub>alv,0</sub>.</div>
@@ -471,7 +471,7 @@
             <div class="decomp-row">
                 <div class="decomp-card">
                     <div class="name" data-i18n="sandbox.schreiner.decomp.moving.name">Moving alveolar source</div>
-                    <div class="formula">= p<sub>alv,0</sub> + R · t</div>
+                    <div class="formula">= <var>p</var><sub>alv,0</sub> + R · t</div>
                     <div class="formula" id="termMovingSubst">= 3.1217 + (−0.7902) · 0.00</div>
                     <div class="value"><span id="termMovingValue">3.1217</span> bar</div>
                     <div class="why" data-i18n="sandbox.schreiner.decomp.moving.why">Where the alveolar source is right now (linear in t).</div>
@@ -485,7 +485,7 @@
                 </div>
                 <div class="decomp-card">
                     <div class="name" data-i18n="sandbox.schreiner.decomp.decay.name">Decaying initial gap</div>
-                    <div class="formula">= (p<sub>alv,0</sub> − p<sub>t,0</sub> − R/k) · e<sup>−kt</sup></div>
+                    <div class="formula">= (<var>p</var><sub>alv,0</sub> − <var>p</var><sub>t,0</sub> − R/k) · e<sup>−kt</sup></div>
                     <div class="formula" id="termDecaySubst">= 30.74 · 1.0000</div>
                     <div class="value"><span id="termDecayValue">30.74</span> bar</div>
                     <div class="why" data-i18n="sandbox.schreiner.decomp.decay.why">The initial offset between actual Pt and the tracking line — settles exponentially toward zero.</div>

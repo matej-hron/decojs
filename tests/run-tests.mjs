@@ -3635,8 +3635,38 @@ describe('i18n notation - canvas strings must not contain HTML entities', () => 
         expect(spaces).toEqual([]);
     });
 
-    test('all locales agree on which keys exist', () => {
-        // Known gap: the Spanish privacy policy has not been translated yet.
+    // Partial pressure: glossary §4 says `ppO₂` is a colloquial synonym, not a
+    // symbol. It may stay in warnings and chart labels — those render on a
+    // canvas where `<var>` cannot be used — but never where HTML is rendered.
+    const badPartial = /<em>pp?<\/em>\s*(?:O|N|CO|H)|<var>p<\/var>\s*<sub>[^<]*<\/sub>\s*<sub>|\bpp_\{|\bpp(?:O|N|CO)_\d|\bF_\{/;
+
+    test('quiz data: partial pressure is p with a subscript, never <em>pp</em>', () => {
+        const files = readdirSync(new URL('../data/', import.meta.url))
+            .filter((f) => f.startsWith('quiz-') && f.endsWith('.json'));
+        const bad = [];
+        for (const f of files) {
+            const json = JSON.parse(
+                readFileSync(new URL(`../data/${f}`, import.meta.url), 'utf8')
+            );
+            for (const [k, v] of flatten(json)) {
+                if (badPartial.test(v)) bad.push(`${f} ${k} = ${v.slice(0, 70)}`);
+            }
+        }
+        expect(bad).toEqual([]);
+    });
+
+    test('locales: partial pressure is p with a subscript wherever HTML renders', () => {
+        const bad = [];
+        for (const loc of LOCALES) {
+            for (const [k, v] of flatten(load(loc))) {
+                if (SKIP_KEYS.has(k.split('.').pop())) continue;
+                if (badPartial.test(v)) bad.push(`${loc} ${k} = ${v.slice(0, 70)}`);
+            }
+        }
+        expect(bad).toEqual([]);
+    });
+
+    test('all locales agree on which keys exist', () => {        // Known gap: the Spanish privacy policy has not been translated yet.
         // The test still fails on any NEW divergence outside this prefix.
         const KNOWN_UNTRANSLATED = /^privacy\./;
         const keysOf = (l) => new Set(flatten(load(l)).map(([k]) => k));
