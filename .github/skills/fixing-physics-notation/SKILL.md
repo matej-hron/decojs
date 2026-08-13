@@ -118,6 +118,28 @@ zbylých `toFixed()` po souborech, takže nové volání test pojmenuje.
 Pozor: hodnota přiřazená do proměnné a použitá o řádek dál vypadá neškodně.
 Konzole to pozná (`<line> attribute y1: Expected length, "11,82"`), grep ne.
 
+## Statické číslo v šabloně: vyber správný nástroj
+
+Grep najde jen část. Zbytek jsou čísla napsaná natvrdo v HTML — v tabulkách,
+v KaTeX vzorcích a v ukázkových hodnotách, které JS přepíše. Každý z těch
+sinků se opravuje jinak:
+
+| Co to je | Oprava |
+|---|---|
+| buňka tabulky s daty (`<td>12.3</td>`) | vygeneruj `<tbody>` z pole přes `fmtNum()` |
+| buňka s rozsahem (`< 0.16`, `0.16 – 0.50`) | `localizeNumbersIn(element)` |
+| KaTeX zdroj | `localizeLatex(src)` před `katex.render()` |
+| konstanta ve vzorci (`0.0627`, `0.6931`) | importuj ji (`WATER_VAPOR_PRESSURE`, `Math.LN2`) a proženi `fmtNum()` |
+| placeholder, který JS přepíše | napiš `…`, ne ukázkovou hodnotu |
+
+Poslední řádek je snadné přehlédnout: `<div id="pt0Subst">= (1.0133 − 0.0627)
+· 0.7902</div>` vypadá jako hotový obsah, ale je to mrtvý anglický řetězec.
+Kontrola v prohlížeči: po načtení nesmí na stránce zůstat žádné `…`.
+
+**Značky v SVG.** `<svg><text><var>p</var><sub>N₂</sub></text></svg>` nefunguje —
+SVG HTML značky nezná a parser je vystrčí ven z grafiky, takže text skončí
+jako volný uzel v okolním `<div>`. Uvnitř SVG piš `<tspan>`, nebo prostý text.
+
 ## Locale JSON uprav jako text, ne jako JSON
 
 Skript výše slouží **jen k vyhledání** chyb. Na zápis ho nepoužívej.
@@ -202,7 +224,7 @@ Nech kontrolu vypsat, **kolik** nálezů vůbec prošla — nula nalezených č�
 vypadá stejně jako nula chyb.
 
 ```bash
-npm test          # musí projít celé (302/302)
+npm test          # musí projít celé (307/307)
 git diff --stat   # sedí seznam souborů z Kroku 1?
 
 # diff nesmí obsahovat formátovací šum
@@ -239,7 +261,7 @@ Norma: <odkaz do style-guide.md, proč je nový tvar správný>
 ## Ponecháno záměrně
 - `60°` (úhel se píše bez mezery), `12litrový` (složenina)
 
-**Testy:** 302/302 ✅
+**Testy:** 307/307 ✅
 ```
 
 Report musí odpovídat na otázku „co jsi kontroloval a nenašel", ne jen

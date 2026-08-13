@@ -524,7 +524,7 @@
                 </div>
                 <div class="mv-term-card pamb">
                     <div class="name" data-i18n="sandbox.mvalues.top.cards.pAmb.name"><var>p</var><sub>amb</sub> | ambient pressure</div>
-                    <div class="formula">= 1.01325 + depth · 0.1</div>
+                    <div class="formula" id="mvPambFormula">= 1.01325 + depth · 0.1</div>
                     <div class="value"><span id="mvPambValue">4.0133</span> bar</div>
                     <div class="why" data-i18n="sandbox.mvalues.top.cards.pAmb.why">The horizontal axis of the M-line. Each meter of depth adds 0.1&nbsp;bar.</div>
                 </div>
@@ -565,7 +565,7 @@
                 </div>
                 <div class="formula-line">
                     <span class="term-db">b</span>(<span class="term-th"><var>t</var><sub>1/2</sub></span>) =
-                    1.005 − <span class="term-th"><var>t</var><sub>1/2</sub></span><sup>−1/2</sup>
+                    <span id="mvBIntercept">1.005</span> − <span class="term-th"><var>t</var><sub>1/2</sub></span><sup>−1/2</sup>
                 </div>
             </div>
 
@@ -584,7 +584,7 @@
                 </div>
                 <div class="mv-deriv-card db">
                     <div class="name" data-i18n="sandbox.mvalues.bottom.cards.b.name">b(<var>t</var><sub>1/2</sub>) | analytical slope</div>
-                    <div class="formula">= 1.005 − <var>t</var><sub>1/2</sub><sup>−1/2</sup></div>
+                    <div class="formula" id="mvDerivBFormula">= 1.005 − <var>t</var><sub>1/2</sub><sup>−1/2</sup></div>
                     <div class="value"><span id="mvDerivB">0.8126</span></div>
                     <div class="delta" id="mvDerivBDelta"></div>
                     <div class="why" data-i18n="sandbox.mvalues.bottom.cards.b.why">Identical across A/B/C except TC1 (whose <var>t</var><sub>1/2</sub> swap also swaps b).</div>
@@ -681,7 +681,7 @@
     <!-- Top playground: inputs, formula, term cards -->
     <script type="module">
         import { COMPARTMENTS, ZHL16_VARIANTS, setZHL16Variant, getCompartmentsForVariant } from '../js/tissueCompartments.js';
-        import { getMValue, getAmbientPressure, SURFACE_PRESSURE } from '../js/decoModel.js';
+        import { getMValue, getAmbientPressure, SURFACE_PRESSURE, PRESSURE_PER_METER } from '../js/decoModel.js';
         import { translate } from '../js/i18n.js';
 
         import { fmtNum } from '../js/format.js';
@@ -722,6 +722,22 @@
         els.derivA = document.getElementById('mvDerivA');
         els.derivADelta = document.getElementById('mvDerivADelta');
         els.derivB = document.getElementById('mvDerivB');
+
+        // Statické vzorce s konstantami — čísla se lokalizují, značky zůstávají.
+        function renderStaticFormulas() {
+            const pamb = document.getElementById('mvPambFormula');
+            if (pamb) {
+                pamb.innerHTML = `= ${fmtNum(SURFACE_PRESSURE, 5)} + depth · ${fmtNum(PRESSURE_PER_METER, 1)}`;
+            }
+            const intercept = document.getElementById('mvBIntercept');
+            if (intercept) {
+                intercept.textContent = fmtNum(B_INTERCEPT, 3);
+            }
+            const derivB = document.getElementById('mvDerivBFormula');
+            if (derivB) {
+                derivB.innerHTML = `= ${fmtNum(B_INTERCEPT, 3)} − <var>t</var><sub>1/2</sub><sup>−1/2</sup>`;
+            }
+        }
         els.derivBDelta = document.getElementById('mvDerivBDelta');
         els.compPrev = document.getElementById('mvCompPrev');
         els.compNext = document.getElementById('mvCompNext');
@@ -760,8 +776,11 @@
             return 2 * Math.pow(t, -1 / 3);
         }
 
+        // Analytický koeficient b podle Bühlmanna: b = B_INTERCEPT − t_1/2^(−1/2)
+        const B_INTERCEPT = 1.005;
+
         function computeBFromHalfTime(t) {
-            return 1.005 - Math.pow(t, -0.5);
+            return B_INTERCEPT - Math.pow(t, -0.5);
         }
 
         function findStandardCompartmentByHalfTime(t, comps) {
@@ -1320,6 +1339,7 @@
         els.halfTime.value = state.halfTime.toFixed(1);
 
         populateCompartments();
+        renderStaticFormulas();
         recompute();
 
         // Top-chart legend hover: emphasize the matching line on the chart, dim the rest.

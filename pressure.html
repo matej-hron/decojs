@@ -192,37 +192,7 @@
                                 <th data-i18n="totalPressure.altitude.thExample">Example Location</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td data-i18n="totalPressure.altitude.seaLevel">Sea level</td>
-                                <td>1.013</td>
-                                <td data-i18n="totalPressure.altitude.seaLevelExample">Ocean, coastal lakes</td>
-                            </tr>
-                            <tr>
-                                <td data-i18n="totalPressure.altitude.300m">300&nbsp;m</td>
-                                <td>0.977</td>
-                                <td data-i18n="totalPressure.altitude.300mExample">Low hills</td>
-                            </tr>
-                            <tr>
-                                <td data-i18n="totalPressure.altitude.700m">700&nbsp;m</td>
-                                <td>0.932</td>
-                                <td data-i18n="totalPressure.altitude.700mExample">Mountain lakes</td>
-                            </tr>
-                            <tr>
-                                <td data-i18n="totalPressure.altitude.1500m">1500&nbsp;m</td>
-                                <td>0.845</td>
-                                <td data-i18n="totalPressure.altitude.1500mExample">High altitude lakes</td>
-                            </tr>
-                            <tr>
-                                <td data-i18n="totalPressure.altitude.2500m">2500&nbsp;m</td>
-                                <td>0.747</td>
-                                <td data-i18n="totalPressure.altitude.2500mExample">Lake Titicaca</td>
-                            </tr>
-                            <tr>
-                                <td data-i18n="totalPressure.altitude.3000m">3000&nbsp;m</td>
-                                <td>0.701</td>
-                                <td data-i18n="totalPressure.altitude.3000mExample">Extreme altitude diving</td>
-                            </tr>
+                        <tbody id="altitude-table-body">
                         </tbody>
                     </table>
                     <p class="note" data-i18n="totalPressure.altitude.note">⚠️ Altitude diving requires special procedures and decompression adjustments.</p>
@@ -502,20 +472,8 @@
                             <th data-i18n="daltonsLaw.example.thPP">Partial Pressure</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>O₂</td>
-                            <td>0.21</td>
-                            <td><details class="inline-answer"><summary data-i18n="daltonsLaw.example.show">show</summary>0.21 × 4</details></td>
-                            <td><details class="inline-answer"><summary data-i18n="daltonsLaw.example.show">show</summary><strong data-i18n="daltonsLaw.example.o2PP">0.84&nbsp;bar</strong></details></td>
-                        </tr>
-                        <tr>
-                            <td>N₂</td>
-                            <td>0.79</td>
-                            <td><details class="inline-answer"><summary data-i18n="daltonsLaw.example.show">show</summary>0.79 × 4</details></td>
-                            <td><details class="inline-answer"><summary data-i18n="daltonsLaw.example.show">show</summary><strong data-i18n="daltonsLaw.example.n2PP">3.16&nbsp;bar</strong></details></td>
-                        </tr>
-                    </tbody>
+                    <tbody id="dalton-example-body">
+                        </tbody>
                 </table>
             </div>
 
@@ -545,7 +503,7 @@
                     Oxygen becomes toxic at elevated partial pressures. The body responds differently
                     to various <var>p</var><sub>O₂</sub> levels:
                 </p>
-                <table class="data-table">
+                <table class="data-table" id="ppo2-limits-table">
                     <thead>
                         <tr>
                             <th data-i18n="partialPressureLimits.oxygenLimits.thPPO2"><var>p</var><sub>O₂</sub> (bar)</th>
@@ -649,7 +607,7 @@
                     earlier, others later. Cold, stress, and fatigue increase narcosis.</em></p>
                 </div>
 
-                <table class="data-table">
+                <table class="data-table" id="ppn2-limits-table">
                     <thead>
                         <tr>
                             <th data-i18n="partialPressureLimits.nitrogenLimits.thPPN2"><var>p</var><sub>N₂</sub> (bar)</th>
@@ -851,7 +809,7 @@
         import { initTooltipShortcut } from './js/components/tooltipShortcut.js';
         import { initI18n, createLanguageSwitcher } from './js/i18n.js';
 
-        import { fmtNum } from './js/format.js';
+        import { fmtNum, localizeNumbersIn, localizeLatex } from './js/format.js';
         // =====================================================================
         // DIVE PROFILE DEFINITIONS FOR THIS PAGE
         // =====================================================================
@@ -1167,6 +1125,62 @@
             { name: 'EAN40', fo2: 0.40 }
         ];
 
+        // Tlaky v nadmořských výškách. Hodnoty jsou tabulkové, ne dopočítané —
+        // JS je jen formátuje podle jazyka (desetinná čárka v češtině).
+        const ALTITUDE_ROWS = [
+            { altKey: 'totalPressure.altitude.seaLevel', alt: 'Sea level', p: 1.013, exKey: 'totalPressure.altitude.seaLevelExample', ex: 'Ocean, coastal lakes' },
+            { altKey: 'totalPressure.altitude.300m', alt: '300&nbsp;m', p: 0.977, exKey: 'totalPressure.altitude.300mExample', ex: 'Low hills' },
+            { altKey: 'totalPressure.altitude.700m', alt: '700&nbsp;m', p: 0.932, exKey: 'totalPressure.altitude.700mExample', ex: 'Mountain lakes' },
+            { altKey: 'totalPressure.altitude.1500m', alt: '1500&nbsp;m', p: 0.845, exKey: 'totalPressure.altitude.1500mExample', ex: 'High altitude lakes' },
+            { altKey: 'totalPressure.altitude.2500m', alt: '2500&nbsp;m', p: 0.747, exKey: 'totalPressure.altitude.2500mExample', ex: 'Lake Titicaca' },
+            { altKey: 'totalPressure.altitude.3000m', alt: '3000&nbsp;m', p: 0.701, exKey: 'totalPressure.altitude.3000mExample', ex: 'Extreme altitude diving' }
+        ];
+
+        // Daltonův příklad: vzduch ve 30 m. Zlomky i součiny se počítají,
+        // aby se čísla formátovala podle jazyka a nemohla se rozejít.
+        const DALTON_DEPTH = 30;
+        const DALTON_GASES = [
+            { label: 'O₂', fraction: 0.21 },
+            { label: 'N₂', fraction: 0.79 },
+        ];
+
+        function renderDaltonTable() {
+            const tbody = document.getElementById('dalton-example-body');
+            if (!tbody) return;
+            const pAmb = 1 + DALTON_DEPTH / 10;
+            const showKey = 'daltonsLaw.example.show';
+            return tbody.innerHTML = DALTON_GASES.map((g) => {
+                const f = fmtNum(g.fraction, 2);
+                const pp = fmtNum(g.fraction * pAmb, 2);
+                const answer = (body) =>
+                    `<td><details class="inline-answer"><summary data-i18n="${showKey}">show</summary>${body}</details></td>`;
+                return `<tr>
+                    <td>${g.label}</td>
+                    <td>${f}</td>
+                    ${answer(`${f} × ${fmtNum(pAmb)}`)}
+                    ${answer(`<strong>${pp}&nbsp;bar</strong>`)}
+                </tr>`;
+            }).join('');
+        }
+
+        // Statické tabulky rozsahů (`< 0,16`, `0,16 – 0,50`) — přepisuje se
+        // jen oddělovač, počet desetinných míst zůstává.
+        function localizeStaticTables() {
+            ['ppo2-limits-table', 'ppn2-limits-table'].forEach((id) => {
+                localizeNumbersIn(document.getElementById(id));
+            });
+        }
+
+        function renderAltitudeTable() {
+            const tbody = document.getElementById('altitude-table-body');
+            if (!tbody) return;
+            tbody.innerHTML = ALTITUDE_ROWS.map((r) => `<tr>
+                <td data-i18n="${r.altKey}">${r.alt}</td>
+                <td>${fmtNum(r.p, 3)}</td>
+                <td data-i18n="${r.exKey}">${r.ex}</td>
+            </tr>`).join('');
+        }
+
         function renderModTable() {
             const tbody = document.querySelector('#mod-exercise-table tbody');
             if (!tbody) return;
@@ -1255,7 +1269,7 @@
                 // Store original LaTeX source on first render
                 if (!el.dataset.latex) el.dataset.latex = el.textContent;
                 try {
-                    katex.render(el.dataset.latex, el, { displayMode: true });
+                    katex.render(localizeLatex(el.dataset.latex), el, { displayMode: true });
                 } catch (e) {
                     console.warn('KaTeX error:', e);
                 }
@@ -1265,7 +1279,7 @@
             document.querySelectorAll('.formula-inline').forEach(el => {
                 if (!el.dataset.latex) el.dataset.latex = el.textContent;
                 try {
-                    katex.render(el.dataset.latex, el, { displayMode: false });
+                    katex.render(localizeLatex(el.dataset.latex), el, { displayMode: false });
                 } catch (e) {
                     console.warn('KaTeX inline error:', e);
                 }
@@ -1279,6 +1293,9 @@
         setupSandboxLinks();
         setupCNSToggle();
         setupNarcosisSwitch();
+        renderAltitudeTable();
+        renderDaltonTable();
+        localizeStaticTables();
         renderModTable();
         renderMathFormulas();
 

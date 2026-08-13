@@ -86,9 +86,9 @@ function updatePhase(phase, svg) {
         particlesAscent.forEach(p => p.style.display = 'none');
         
         // Update pressure values
-        if (regPressure) regPressure.textContent = 'ppN₂ = 3.16';
-        if (alvPressure) alvPressure.textContent = 'ppN₂ = 3.10';
-        if (bloodPressure) bloodPressure.textContent = 'ppN₂ = 2.5';
+        if (regPressure) regPressure.textContent = `ppN₂ = ${fmtNum(3.16, 2)}`;
+        if (alvPressure) alvPressure.textContent = `ppN₂ = ${fmtNum(3.10, 2)}`;
+        if (bloodPressure) bloodPressure.textContent = `ppN₂ = ${fmtNum(2.5, 1)}`;
         
         // Update legend
         if (flowDirection) flowDirection.textContent = '→ Gas flows from HIGH to LOW pressure';
@@ -115,9 +115,9 @@ function updatePhase(phase, svg) {
         particlesAscent.forEach(p => p.style.display = '');
         
         // Update pressure values (tissues now higher than ambient)
-        if (regPressure) regPressure.textContent = 'ppN₂ = 0.79';
-        if (alvPressure) alvPressure.textContent = 'ppN₂ = 0.74';
-        if (bloodPressure) bloodPressure.textContent = 'ppN₂ = 1.2';
+        if (regPressure) regPressure.textContent = `ppN₂ = ${fmtNum(0.79, 2)}`;
+        if (alvPressure) alvPressure.textContent = `ppN₂ = ${fmtNum(0.74, 2)}`;
+        if (bloodPressure) bloodPressure.textContent = `ppN₂ = ${fmtNum(1.2, 1)}`;
         
         // Update legend - reversed: now tissues are HIGH
         if (flowDirection) flowDirection.textContent = '← Gas flows from HIGH to LOW pressure (tissues supersaturated)';
@@ -341,7 +341,7 @@ function updateOngassingChart() {
     const targetPpN2 = getSaturatedTissuePpN2(currentDepth);
     
     if (depthValue) depthValue.textContent = `${currentDepth}m`;
-    if (ppn2Value) ppn2Value.textContent = `(ppN₂ = ${fmtNum(targetPpN2, 2)} bar)`;
+    if (ppn2Value) ppn2Value.innerHTML = `(<var>p</var><sub>N₂</sub> = ${fmtNum(targetPpN2, 2)}&nbsp;bar)`;
     
     const data = calculateOngassing(targetPpN2);
     
