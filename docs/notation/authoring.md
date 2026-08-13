@@ -499,7 +499,8 @@ okrajový případ, je to **jediná cesta** pro tlak.
 
 ### 6.5 `js/format.js` — fáze 2, zatím neexistuje
 
-> Tento modul **zatím neexistuje** v `js/`. Instaluje ho fáze 2 (viz plán fáze 2). Diagnóza současného stavu: `js/i18n.js` neobsahuje žádnou logiku
+> Tento modul **zatím neexistuje** v `js/`. Instaluje ho až fáze 2.
+> Diagnóza současného stavu: `js/i18n.js` neobsahuje žádnou logiku
 > formátování čísel; každý graf volá `.toFixed()` přímo na místě formátování a výsledek
 > (s tečkou bez ohledu na jazyk) předává do vlastní kopie obecného `fmt()` — pomocníka
 > nahrazujícího `{0}`/`{1}` zástupné symboly v textu, který sám o sobě s čísly nijak
