@@ -968,8 +968,8 @@
         "fillPressure": "Plnicí tlak (bar)",
         "cylinderVolume": "Objem lahve (L)",
         "temperature": "Teplota",
-        "initialTemp": "Počáteční teplota T<sub>1</sub> (°C)",
-        "finalTemp": "Konečná teplota T<sub>2</sub> (°C)",
+        "initialTemp": "Počáteční teplota <var>T</var><sub>1</sub> (°C)",
+        "finalTemp": "Konečná teplota <var>T</var><sub>2</sub> (°C)",
         "calculatePrompt": "Nastavte scénář, spočítejte <var>p</var><sub>2</sub>, a pak klikněte pro ověření.",
         "showResult": "Zobrazit výsledek",
         "finalPressure": "Výsledný tlak <var>p</var><sub>2</sub>",
@@ -1058,8 +1058,8 @@
             "datasetCeiling": "Strop (m)",
             "datasetAmbientPressure": "Okolní tlak (bar)",
             "datasetAlveolarPpN2": "Alveolární ppN₂ (bar)",
-            "datasetPpO2": "ppO₂ (bar)",
-            "datasetPpN2": "ppN₂ (bar)",
+            "datasetPpO2": "pO₂ (bar)",
+            "datasetPpN2": "pN₂ (bar)",
             "datasetGasBar": "{0} (bar)",
             "avg": "PRŮM: {0} m",
             "max": "MAX: {0} m",
@@ -1095,7 +1095,7 @@
             "gfCorridorTC": "GF koridor TC{0}",
             "trailTC": "Stopa TC{0}",
             "ambientLine": "Přímka okolního tlaku (y = x)",
-            "alveolarPN2": "Alveolární <var>p</var><sub>N₂</sub>",
+            "alveolarPN2": "Alveolární pN₂",
             "alveolarPN2WithGases": "Alveolární pN₂ ({0})",
             "alveolarPN2Percent": "Alveolární pN₂ ({0} %)",
             "surfaceLine": "Hladina (1 bar)",
@@ -1290,7 +1290,7 @@
         "ppN2Narcosis": "pN₂ {0} bar — pravděpodobné hloubkové opojení (> {1})",
         "chartLabels": {
             "pAmb": "pAmb (okolní)",
-            "pN2Alveolar": "<var>p</var><sub>N₂</sub> alveolární",
+            "pN2Alveolar": "pN₂ alveolární",
             "tcFast": "TC1 rychlá (5 min)",
             "tcMed": "TC5 střední (27 min)",
             "tcSlow": "TC12 pomalá (239 min)"
@@ -1444,7 +1444,7 @@
                 "haldane": "<strong>Haldaneova rovnice:</strong> Sycení tkání při konstantní hloubce",
                 "schreiner": "<strong>Schreinerova rovnice:</strong> Sycení tkání při změně hloubky",
                 "mvalue": "<strong>M-hodnota:</strong> M = a + <var>p</var><sub>amb</sub> / b",
-                "adjustedM": "<strong>Upravená M-hodnota:</strong> M<sub>adj</sub> = <var>p</var><sub>amb</sub> + GF × (M − <var>p</var><sub>amb</sub>)"
+                "adjustedM": "<strong>Upravená M-hodnota:</strong> <var>M</var><sub>upr</sub> = <var>p</var><sub>amb</sub> + GF × (<var>M</var> − <var>p</var><sub>amb</sub>)"
             },
             "validation": {
                 "title": "Validace",
@@ -1540,7 +1540,7 @@
             "options": {
                 "showCeiling": "Zobrazit strop",
                 "showAmbient": "Zobrazit okolní tlak",
-                "showPartialPressures": "Zobrazit parciální tlaky (<var>p</var><sub>O₂</sub>/ppN₂)",
+                "showPartialPressures": "Zobrazit parciální tlaky (<var>p</var><sub>O₂</sub>/<var>p</var><sub>N₂</sub>)",
                 "showTissueLoading": "Zobrazit sycení tkání",
                 "showGasConsumption": "Zobrazit spotřebu plynu",
                 "showGasSwitches": "Zobrazit přepnutí plynu",
@@ -1638,7 +1638,7 @@
             },
             "resultTitle": "Vyrovnání dokončeno",
             "formulaTitle": "Boyleův zákon",
-            "formula": "<var>p</var><sub>konec</sub> = (<var>p</var><sub>A</sub> × V<sub>A</sub> + <var>p</var><sub>B</sub> × V<sub>B</sub>) / (V<sub>A</sub> + V<sub>B</sub>)",
+            "formula": "<var>p</var><sub>konec</sub> = (<var>p</var><sub>A</sub> × <var>V</var><sub>A</sub> + <var>p</var><sub>B</sub> × <var>V</var><sub>B</sub>) / (<var>V</var><sub>A</sub> + <var>V</var><sub>B</sub>)",
             "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely. Založeno na předpokladech ideálního plynového zákona."
         },
         "haldane": {
@@ -1667,7 +1667,7 @@
                 "saturation": "Sycení"
             },
             "gas": {
-                "air": "Vzduch (F<sub>N₂</sub> = 0,79)"
+                "air": "Vzduch (<var>f</var><sub>N₂</sub> = 0,79)"
             },
             "mvalue": {
                 "title": "Kontrola M-hodnoty",
@@ -1719,7 +1719,7 @@
                 "simplifiedShort": "Zjednodušeně"
             },
             "gas": {
-                "air": "Vzduch (F<sub>N₂</sub> = 0,79)"
+                "air": "Vzduch (<var>f</var><sub>N₂</sub> = 0,79)"
             },
             "simplifiedHint": "přibližně",
             "barToggle": "ovládání",

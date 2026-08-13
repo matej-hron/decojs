@@ -1040,7 +1040,7 @@ export class DiveProfileChart {
         if (this.options.showPartialPressures) {
             // ppO2
             datasets.push({
-                label: translate('chart.profile.datasetPpO2', 'ppO₂ (bar)'),
+                label: translate('chart.profile.datasetPpO2', 'pO₂ (bar)'),
                 data: results.timePoints.map((t, i) => {
                     const n2 = results.n2Fractions[i];
                     const o2 = 1 - n2; // Simplified - assumes no helium
@@ -1060,7 +1060,7 @@ export class DiveProfileChart {
             
             // ppN2
             datasets.push({
-                label: translate('chart.profile.datasetPpN2', 'ppN₂ (bar)'),
+                label: translate('chart.profile.datasetPpN2', 'pN₂ (bar)'),
                 data: results.timePoints.map((t, i) => ({
                     x: t,
                     y: results.ambientPressures[i] * results.n2Fractions[i]

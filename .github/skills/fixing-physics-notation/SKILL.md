@@ -139,6 +139,73 @@ mezeru U+0020. A ověř kontrolu zaseknutím vady, ne jen tím, že je zelená.
 **Slepé místo prohlížeče:** text v `<option>` a v atributech procházení DOM
 nevidí. Měření v prohlížeči proto doplň statickým testem nad zdrojáky.
 
+## Kurzíva značky: opravuj celý vzorec, ne jen tlak
+
+Fáze 1 zavedla `<var>` a opravila *p*. Ostatní veličiny často zůstaly stojatě —
+a to **uvnitř téhož řádku**, takže vzorec míchá obojí:
+
+```html
+<!-- špatně: p je kurzívou, V stojatě -->
+<var>p</var><sub>A</sub> × V<sub>A</sub>
+<!-- správně -->
+<var>p</var><sub>A</sub> × <var>V</var><sub>A</sub>
+```
+
+Rychlé vyhledání: v řádku zahoď už opravené `<var>…</var>` a co zbude s indexem,
+je podezřelé.
+
+```bash
+python3 - <<'PY'
+import re, os
+SKIP = ('/.git', 'node_modules', '/docs')
+for root, _, fs in os.walk('.'):
+    if any(x in root for x in SKIP):
+        continue
+    for f in sorted(fs):
+        ok = f.endswith(('.html', '.js')) or (f.endswith('.json') and 'locales' in root)
+        if not ok:
+            continue
+        path = os.path.join(root, f)
+        for i, line in enumerate(open(path, encoding='utf-8'), 1):
+            if '<sub>' not in line:
+                continue
+            rest = re.sub(r'<var>[^<]*</var>', '\u00a7', line)
+            bad = re.findall(r'(?<![\w\u00a7>&;])([A-Za-z])<sub>', rest)
+            if bad:
+                print(f'{path}:{i} {sorted(set(bad))}  {line.strip()[:90]}')
+PY
+```
+
+**Tři skupiny falešných nálezů**, které se neopravují:
+
+- `N<sub>2</sub>`, `O<sub>2</sub>`, `CO<sub>2</sub>` — chemický vzorec, stojatě
+- `GF<sub>lo</sub>`, `TC1`, `MOD`, `TTS` — zkratky, stojatě
+- písmeno navazující na jiné písmeno — není to osamocená značka
+
+**Velikost písmene rozhoduje o významu.** Objemový zlomek je *f*<sub>N₂</sub>
+(glosář §4); velké *F* je v §2 síla. `F<sub>N₂</sub>` je tedy chyba dvakrát —
+stojatě i velkým písmenem.
+
+## Markup, který skončí na canvasu, se vypíše doslova
+
+`locales/*.json` markup obecně snese, protože `applyTranslations()` používá
+`innerHTML`. **Klíč čtený z `js/charts/*` ale ne** — Chart.js ho kreslí na
+canvas jako `label` datasetu. Fáze 2 tam našla čtyři klíče, kvůli kterým
+anglická legenda zobrazovala `<var>p</var><sub>O₂</sub> (bar)` i s tagy.
+
+Než do locale klíče vložíš `<var>`, zjisti, kdo ho čte:
+
+```bash
+grep -rn "chart.profile.datasetPpO2" js/ | grep -v node_modules
+```
+
+Je-li to `label:` grafu, `<option>` nebo `title=`, piš prostý text: `pO₂`.
+
+**Chybu chytila jazyková parita, ne oko.** Test „počet `<var>` musí být
+v `cs`/`en`/`es` stejný" spadl na rozdílu 79 : 80 : 81 a odhalil jak únik na
+canvas, tak zapomenutou značku v jednom jazyce. Parita je levný a nečekaně
+účinný test — ke každé třídě jeden.
+
 ## Statické číslo v šabloně: vyber správný nástroj
 
 Grep najde jen část. Zbytek jsou čísla napsaná natvrdo v HTML — v tabulkách,
@@ -245,7 +312,7 @@ Nech kontrolu vypsat, **kolik** nálezů vůbec prošla — nula nalezených č�
 vypadá stejně jako nula chyb.
 
 ```bash
-npm test          # musí projít celé (310/310)
+npm test          # musí projít celé (314/314)
 git diff --stat   # sedí seznam souborů z Kroku 1?
 
 # diff nesmí obsahovat formátovací šum
@@ -282,7 +349,7 @@ Norma: <odkaz do style-guide.md, proč je nový tvar správný>
 ## Ponecháno záměrně
 - `60°` (úhel se píše bez mezery), `12litrový` (složenina)
 
-**Testy:** 310/310 ✅
+**Testy:** 314/314 ✅
 ```
 
 Report musí odpovídat na otázku „co jsi kontroloval a nenašel", ne jen

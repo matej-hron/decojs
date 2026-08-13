@@ -718,14 +718,14 @@
 
             // Term cards — symbolic + substituted + value
             const palv0Symbolic = state.simplified
-                ? `= (D<sub>start</sub>/10 + 1) · F<sub>N₂</sub>`
-                : `= (<var>p</var><sub>amb,start</sub> − ${fmtNum(WATER_VAPOR_PRESSURE, 4)}) · F<sub>N₂</sub>`;
+                ? `= (<var>D</var><sub>start</sub>/10 + 1) · <var>f</var><sub>N₂</sub>`
+                : `= (<var>p</var><sub>amb,start</sub> − ${fmtNum(WATER_VAPOR_PRESSURE, 4)}) · <var>f</var><sub>N₂</sub>`;
             const pt0Symbolic = palv0Symbolic;
             const palv0Subst = state.simplified
                 ? `= (${fmtNum(state.startDepth)}/10 + 1) · ${fmtNum(F)}`
                 : `= (${fmtNum(pAmbStart, 4)} − ${fmtNum(WATER_VAPOR_PRESSURE, 4)}) · ${fmtNum(F, 4)}`;
             const pt0Subst = palv0Subst;
-            const rSymbolic = `= F<sub>N₂</sub> · depth_rate · ${fmtNum(BAR_PER_METRE, 1)}`;
+            const rSymbolic = `= <var>f</var><sub>N₂</sub> · <var>v</var> · ${fmtNum(BAR_PER_METRE, 1)}`;
             const rSubst = `= ${fmtNum(F, 4)} · (${fmtNum(state.depthRate)}) · ${fmtNum(BAR_PER_METRE, 1)}`;
 
             document.getElementById('palv0Symbolic').innerHTML = palv0Symbolic;

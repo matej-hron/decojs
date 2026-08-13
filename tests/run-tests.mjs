@@ -3949,6 +3949,99 @@ describe('notation - half-time symbol t_1/2', () => {
     });
 });
 
+describe('notation - quantity symbols are italic', () => {
+    // ČSN EN ISO 80000-1 kap. 7: značka veličiny se sází kurzívou, popisný
+    // i chemický index stojatě. V HTML je nositelem kurzívy <var>.
+    const SHIPPED = [
+        'about.html', 'pressure.html', 'tissue-loading.html', 'm-values.html',
+        'gradient-factors.html', 'sandbox/gas-law.html', 'sandbox/transfilling.html',
+        'sandbox/haldane.html', 'sandbox/schreiner.html', 'sandbox/gradient-factors.html',
+        'sandbox/m-values.html', 'locales/cs.json', 'locales/en.json', 'locales/es.json',
+    ];
+    // Písmena, která jsou v glosáři značkou veličiny. Chemické značky (N, O, He…)
+    // sem nepatří — ty jsou stojatě správně.
+    const QUANTITY = 'MTVFDpvahkbcnfRSqm';
+
+    test('no quantity symbol carries an index outside <var>', () => {
+        const offenders = [];
+        for (const rel of SHIPPED) {
+            const text = readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
+            text.split('\n').forEach((line, i) => {
+                // Už správně zapsané <var>x</var> vyřadíme, ať nestíní zbytek řádku.
+                const rest = line.replace(/<var>[^<]*<\/var>/g, '\u00a7');
+                for (const m of rest.matchAll(/([A-Za-z])<sub>([^<]*)<\/sub>/g)) {
+                    const [, sym, idx] = m;
+                    if (!QUANTITY.includes(sym)) continue;
+                    // Chemický vzorec: značka prvku s číselným indexem (N<sub>2</sub>).
+                    if (/^\d+$/.test(idx)) {
+                        const before = rest.slice(0, m.index);
+                        if (/(?:^|[^A-Za-z])(?:N|O|H|C|F|S|P)$/.test(before + sym)) continue;
+                    }
+                    // Zkratka (GF, TC, MOD…) se sází stojatě.
+                    if (/[A-Z]{2}$/.test(rest.slice(0, m.index + 1))) continue;
+                    // Předchází-li písmeno další písmeno, není to osamocená značka.
+                    if (/[A-Za-z\u00a7]$/.test(rest.slice(0, m.index))) continue;
+                    offenders.push(`${rel}:${i + 1}  ${sym}<sub>${idx}</sub>`);
+                }
+            });
+        }
+        expect(offenders).toEqual([]);
+    });
+
+    test('gas fraction uses the canonical lowercase f, never a capital F', () => {
+        // Glosář §4: objemový zlomek je *f*(N₂). Velké F je v §2 síla.
+        const offenders = [];
+        for (const rel of SHIPPED) {
+            const text = readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
+            text.split('\n').forEach((line, i) => {
+                if (/F<sub>(?:N|O|He)/.test(line) || /F<sub>N\u2082/.test(line)) {
+                    offenders.push(`${rel}:${i + 1}  ${line.trim().slice(0, 70)}`);
+                }
+            });
+        }
+        expect(offenders).toEqual([]);
+    });
+
+    test('no i18n key drawn on a chart canvas carries HTML markup', () => {
+        // authoring.md §5b: Chart.js kreslí popisek na canvas, kde se markup
+        // nevykreslí — uživatel by uviděl doslova <var>p</var>.
+        const chartSources = [
+            'js/charts/DiveProfileChart.js', 'js/charts/MValueChart.js',
+            'js/charts/chartTypes.js', 'js/components/TissueSaturationSim.js',
+        ];
+        const keys = new Set();
+        for (const rel of chartSources) {
+            const src = readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
+            for (const m of src.matchAll(/translate\('([\w.]+)'/g)) keys.add(m[1]);
+        }
+        expect(keys.size > 0).toBe(true);
+
+        const offenders = [];
+        for (const lang of ['cs', 'en', 'es']) {
+            const dict = JSON.parse(readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8'));
+            for (const key of keys) {
+                const value = key.split('.').reduce((o, p) => (o && typeof o === 'object' ? o[p] : undefined), dict);
+                if (typeof value !== 'string') continue;
+                if (/<\/?(?:var|sub|sup|em|strong|br|span)\b/.test(value)) {
+                    offenders.push(`${lang} ${key}: ${value.slice(0, 60)}`);
+                }
+            }
+        }
+        expect(offenders).toEqual([]);
+    });
+
+    test('all three languages italicise the same number of symbols', () => {
+        const counts = ['cs', 'en', 'es'].map(lang => {
+            const raw = readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8');
+            return (raw.match(/<var>/g) || []).length;
+        });
+        // Jazyková parita: chybí-li oprava v jednom jazyce, čísla se rozejdou.
+        expect(counts[0]).toBe(counts[1]);
+        expect(counts[1]).toBe(counts[2]);
+        expect(counts[0] > 0).toBe(true);
+    });
+});
+
 describe('format - decimal separator at runtime', () => {
     test('decimalSeparator follows the language, region subtag ignored', () => {
         expect(decimalSeparator('cs')).toBe(',');

@@ -968,8 +968,8 @@
         "fillPressure": "Presión de llenado (bar)",
         "cylinderVolume": "Volumen de la botella (L)",
         "temperature": "Temperatura",
-        "initialTemp": "Temperatura inicial T<sub>1</sub> (°C)",
-        "finalTemp": "Temperatura final T<sub>2</sub> (°C)",
+        "initialTemp": "Temperatura inicial <var>T</var><sub>1</sub> (°C)",
+        "finalTemp": "Temperatura final <var>T</var><sub>2</sub> (°C)",
         "calculatePrompt": "Configura el escenario, calcula <var>p</var><sub>2</sub> y pulsa abajo para comprobar tu respuesta.",
         "showResult": "Mostrar resultado",
         "finalPressure": "Presión final <var>p</var><sub>2</sub>",
@@ -1058,8 +1058,8 @@
             "datasetCeiling": "Techo (m)",
             "datasetAmbientPressure": "Presión ambiente (bar)",
             "datasetAlveolarPpN2": "ppN₂ alveolar (bar)",
-            "datasetPpO2": "<var>p</var><sub>O₂</sub> (bar)",
-            "datasetPpN2": "<var>p</var><sub>N₂</sub> (bar)",
+            "datasetPpO2": "pO₂ (bar)",
+            "datasetPpN2": "pN₂ (bar)",
             "datasetGasBar": "{0} (bar)",
             "avg": "MED: {0} m",
             "max": "MÁX: {0} m",
@@ -1095,7 +1095,7 @@
             "gfCorridorTC": "Corredor GF TC{0}",
             "trailTC": "Traza TC{0}",
             "ambientLine": "Línea de presión ambiente (y = x)",
-            "alveolarPN2": "<var>p</var><sub>N₂</sub> alveolar",
+            "alveolarPN2": "pN₂ alveolar",
             "alveolarPN2WithGases": "pN₂ alveolar ({0})",
             "alveolarPN2Percent": "pN₂ alveolar ({0} %)",
             "surfaceLine": "Superficie (1 bar)",
@@ -1290,7 +1290,7 @@
         "ppN2Narcosis": "pN₂ {0} bar — narcosis de nitrógeno probable (> {1})",
         "chartLabels": {
             "pAmb": "pAmb (ambiente)",
-            "pN2Alveolar": "<var>p</var><sub>N₂</sub> alveolar",
+            "pN2Alveolar": "pN₂ alveolar",
             "tcFast": "TC1 rápido (5 min)",
             "tcMed": "TC5 medio (27 min)",
             "tcSlow": "TC12 lento (239 min)"
@@ -1444,7 +1444,7 @@
                 "haldane": "<strong>Ecuación de Haldane:</strong> carga tisular a profundidad constante",
                 "schreiner": "<strong>Ecuación de Schreiner:</strong> carga tisular durante cambios de profundidad",
                 "mvalue": "<strong>Valor-M:</strong> M = a + <var>p</var><sub>amb</sub> / b",
-                "adjustedM": "<strong>Valor-M ajustado:</strong> M<sub>aj</sub> = <var>p</var><sub>amb</sub> + GF × (M − <var>p</var><sub>amb</sub>)"
+                "adjustedM": "<strong>Valor-M ajustado:</strong> <var>M</var><sub>aj</sub> = <var>p</var><sub>amb</sub> + GF × (<var>M</var> − <var>p</var><sub>amb</sub>)"
             },
             "validation": {
                 "title": "Validación",
@@ -1504,7 +1504,7 @@
             "options": {
                 "showCeiling": "Mostrar techo",
                 "showAmbient": "Mostrar presión ambiente",
-                "showPartialPressures": "Mostrar presiones parciales (<var>p</var><sub>O₂</sub>/ppN₂)",
+                "showPartialPressures": "Mostrar presiones parciales (<var>p</var><sub>O₂</sub>/<var>p</var><sub>N₂</sub>)",
                 "showTissueLoading": "Mostrar carga tisular",
                 "showGasConsumption": "Mostrar consumo de gas",
                 "showGasSwitches": "Mostrar cambios de gas",
@@ -1602,7 +1602,7 @@
             },
             "resultTitle": "Igualación completa",
             "formulaTitle": "Ley de Boyle",
-            "formula": "<var>p</var><sub>final</sub> = (<var>p</var><sub>A</sub> × V<sub>A</sub> + <var>p</var><sub>B</sub> × V<sub>B</sub>) / (V<sub>A</sub> + V<sub>B</sub>)",
+            "formula": "<var>p</var><sub>final</sub> = (<var>p</var><sub>A</sub> × <var>V</var><sub>A</sub> + <var>p</var><sub>B</sub> × <var>V</var><sub>B</sub>) / (<var>V</var><sub>A</sub> + <var>V</var><sub>B</sub>)",
             "disclaimer": "<strong>Aviso:</strong> Solo con fines educativos. Basado en las hipótesis de gas ideal."
         },
         "haldane": {
@@ -1631,7 +1631,7 @@
                 "saturation": "Saturación"
             },
             "gas": {
-                "air": "Aire (F<sub>N₂</sub> = 0.79)"
+                "air": "Aire (<var>f</var><sub>N₂</sub> = 0.79)"
             },
             "mvalue": {
                 "title": "Comprobación del valor M",
@@ -1683,7 +1683,7 @@
                 "simplifiedShort": "Simplificado"
             },
             "gas": {
-                "air": "Aire (F<sub>N₂</sub> = 0.79)"
+                "air": "Aire (<var>f</var><sub>N₂</sub> = 0.79)"
             },
             "simplifiedHint": "aproximadamente",
             "barToggle": "controles",

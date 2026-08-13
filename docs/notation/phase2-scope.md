@@ -546,3 +546,56 @@ oddělovačů, 0 chyb v konzoli. Ověřeno i přepnutí jazyka za běhu bez relo
 `toLocaleString()` — 6 volání, řídí se locale prohlížeče, ne jazykem aplikace.
 Týká se seskupování tisíců v `sandbox/cascade-filling.html`. Malý rozsah,
 samostatný úkol.
+
+### Kurzíva a velikost značky veličiny — hotovo
+
+ČSN EN ISO 80000-1 kap. 7 žádá značku veličiny kurzívou. Fáze 1 zavedla `<var>`
+a opravila tlak *p*, ostatní veličiny ale zůstaly stojatě — a to **uvnitř týchž
+vzorců**, takže `<var>p</var><sub>A</sub> × V<sub>A</sub>` míchalo obojí na
+jednom řádku.
+
+| Značka | Kde | Počet | Oprava |
+|---|---|---|---|
+| *M* (M‑hodnota) | `about.html`, `sandbox/gradient-factors.html`, 3 jazyky | 12 | `<var>M</var>`; v češtině index `upr` podle glosáře §3 |
+| *T* (teplota) | `sandbox/gas-law.html`, 3 jazyky | 11 | `<var>T</var>` |
+| *V* (objem) | `sandbox/transfilling.html`, 3 jazyky | 16 | `<var>V</var>` |
+| *f* (objemový zlomek) | sandboxy Haldane a Schreiner, 3 jazyky | 13 | velké stojaté `F` → `<var>f</var>` (glosář §4) |
+| *D* (hloubka) | sandboxy Haldane a Schreiner | 3 | `<var>D</var>` |
+| *v* (rychlost) | `sandbox/schreiner.html` | 1 | identifikátor `depth_rate` ve vysázeném vzorci → `<var>v</var>` |
+
+**Chemická značka se needituje.** `N<sub>2</sub>` v „alveolární tlak N₂" je
+vzorec, ne veličina; stojaté N je správně. Stejně tak zkratky `GF<sub>lo</sub>`,
+`TC1`, `MOD`. Kontrola je musí umět vyloučit, jinak hlásí falešné nálezy —
+prohlížečová sonda jich napoprvé ohlásila tři, všechny na `GF`.
+
+**Angličtina psala `M - p`** obyčejným spojovníkem místo znaku minus U+2212;
+čeština a španělština měly správně. Sjednoceno na `−`.
+
+#### Vedlejší nález: markup unikal na canvas
+
+Test jazykové parity (počet `<var>` musí v `cs`/`en`/`es` souhlasit) spadl a
+odhalil **živou chybu na webu**: čtyři klíče popisků grafů nesly HTML, ale
+Chart.js je kreslí na canvas, kde se markup nevykreslí. Anglická a španělská
+legenda tedy zobrazovala doslova `<var>p</var><sub>O₂</sub> (bar)`.
+
+Podle authoring.md §5b je canvas sink jen pro text. Devět řetězců převedeno na
+prostý `pO₂` / `pN₂`; čeština při té příležitosti ztratila legacy dvojité `pp`.
+Přibyl test, který projde všechny klíče volané z `js/charts/*` a
+`TissueSaturationSim.js` a zakáže v nich značkovací prvky.
+
+Ve stejném duchu byl opraven i popisek přepínače parciálních tlaků — měl
+`<var>p</var><sub>O₂</sub>/ppN₂`, tedy jednu polovinu opravenou a druhou ne.
+
+**Měřeno v prohlížeči:** 167 indexů na 24 stránkách × 2 jazyky, 0 závad.
+Sonda je negativně ověřená (se zaseknutou vadou hlásí nález) a popisky
+datasetů byly odečteny přímo z instancí Chart.js po zapnutí přepínače.
+
+**Zbývá (jiná třída).**
+- `ppO₂` / `ppN₂` jako běžný text mimo grafy — 184 výskytů, z toho většina jsou
+  identifikátory v kódu, které se přejmenovat nesmějí. Samostatný úkol.
+- *D* vs. *h* pro hloubku: glosář §2 uvádí *h*, sandboxy píší *D* podle potápěčské
+  literatury. Tady se opravila jen kurzíva, volba písmene je otázka na garanta.
+- `GF<sub>lo</sub>` / `GF<sub>hi</sub>` proti glosářovému `GF<sub>low</sub>` /
+  `GF<sub>high</sub>` — zkratka zkratky, není to chyba sazby.
+
+**Testy:** 314/314 (4 nové).
