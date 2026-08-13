@@ -127,8 +127,8 @@
                     <thead>
                         <tr>
                             <th data-i18n="tissueLoading.henrysLaw.thGas">Gas</th>
-                            <th data-i18n="tissueLoading.henrysLaw.thBloodSolubility">Solubility in Blood<br><small>(ml/L per bar, 37°C)</small></th>
-                            <th data-i18n="tissueLoading.henrysLaw.thFatSolubility">Solubility in Fat<br><small>(ml/L per bar, 37°C)</small></th>
+                            <th data-i18n="tissueLoading.henrysLaw.thBloodSolubility">Solubility in Blood<br><small>(ml/L per bar, 37&nbsp;°C)</small></th>
+                            <th data-i18n="tissueLoading.henrysLaw.thFatSolubility">Solubility in Fat<br><small>(ml/L per bar, 37&nbsp;°C)</small></th>
                             <th data-i18n="tissueLoading.henrysLaw.thFatBloodRatio">Fat:Blood Ratio</th>
                         </tr>
                     </thead>
@@ -347,7 +347,7 @@
                         <p data-i18n="tissueLoading.gasExchange.alveolarFormula.where">Where:</p>
                         <ul>
                             <li><span class="formula-inline">P_{amb}</span> = <span data-i18n="tissueLoading.gasExchange.alveolarFormula.pAmb">ambient pressure at depth (bar)</span></li>
-                            <li><span class="formula-inline">P_{H_2O}</span> = <span data-i18n="tissueLoading.gasExchange.alveolarFormula.pH2O">water vapor pressure ≈ 0.0627 bar at 37°C</span></li>
+                            <li><span class="formula-inline">P_{H_2O}</span> = <span data-i18n="tissueLoading.gasExchange.alveolarFormula.pH2O">water vapor pressure ≈ 0.0627&nbsp;bar at 37&nbsp;°C</span></li>
                             <li><span class="formula-inline">f_{N_2}</span> = <span data-i18n="tissueLoading.gasExchange.alveolarFormula.fN2">fraction of nitrogen in breathing gas (0.79 for air)</span></li>
                         </ul>
                     </div>
@@ -447,7 +447,7 @@
                 </div>
 
                 <p data-i18n="tissueLoading.bubbleMechanics.sliderHint">
-                    Use the slider to ascend from 30m. Watch how reducing ambient pressure
+                    Use the slider to ascend from 30&nbsp;m. Watch how reducing ambient pressure
                     tips the balance — larger bubbles cross the critical radius first.
                 </p>
             </div>
@@ -500,7 +500,7 @@
                     more gas in absolute terms.
                 </p>
                 <p data-i18n="tissueLoading.halfTimeConcept.gradientText2">
-                    <strong>Example:</strong> If a tissue needs to off-gas 2 bar of nitrogen, switching from air
+                    <strong>Example:</strong> If a tissue needs to off-gas 2&nbsp;bar of nitrogen, switching from air
                     (79% N₂) to Nitrox 50 (50% N₂) or pure O₂ (0% N₂) creates a much larger pressure gradient,
                     so each half-time removes more gas — this is why oxygen-rich mixes accelerate decompression!
                 </p>
@@ -514,13 +514,13 @@
             <div class="concept-card">
                 <div class="half-time-chart-grid">
                     <div class="half-time-chart-wrapper">
-                        <p class="chart-description" data-i18n="tissueLoading.halfTimeCharts.ongassing.desc">Tissue starts at surface equilibrium (~0.79 bar ppN₂).
+                        <p class="chart-description" data-i18n="tissueLoading.halfTimeCharts.ongassing.desc">Tissue starts at surface equilibrium (~0.79&nbsp;bar ppN₂).
                            Adjust target depth to see how bigger pressure differences mean faster absolute loading.</p>
                         <div class="chart-controls-inline">
                             <label for="ongassing-depth" data-i18n="tissueLoading.halfTimeCharts.ongassing.depthLabel">Target Depth:</label>
                             <input type="range" id="ongassing-depth" min="10" max="50" value="30" step="5" />
-                            <span id="ongassing-depth-value">30m</span>
-                            <span id="ongassing-ppn2-value">(ppN₂ = 3.16 bar)</span>
+                            <span id="ongassing-depth-value">30&nbsp;m</span>
+                            <span id="ongassing-ppn2-value">(ppN₂ = 3.16&nbsp;bar)</span>
                         </div>
                         <div class="chart-container-small">
                             <canvas id="ongassing-chart"></canvas>
@@ -540,7 +540,7 @@
                         <p class="chart-description" data-i18n="tissueLoading.halfTimeCharts.offgassing.desc">Tissue starts saturated at the selected depth.
                            Same half-time, same equation—just inverted. The curves are perfect mirrors.</p>
                         <div class="chart-controls-inline">
-                            <span id="offgassing-info" data-i18n="tissueLoading.halfTimeCharts.offgassing.info">Saturated @ <strong id="offgassing-depth-display">30m</strong> → Surface (~0.79 bar)</span>
+                            <span id="offgassing-info" data-i18n="tissueLoading.halfTimeCharts.offgassing.info">Saturated @ <strong id="offgassing-depth-display">30&nbsp;m</strong> → Surface (~0.79&nbsp;bar)</span>
                         </div>
                         <div class="chart-container-small">
                             <canvas id="offgassing-chart"></canvas>
@@ -588,7 +588,7 @@
                     <div class="formula" id="formula-pressure">
                         P_{amb} = 1.0 + \frac{depth}{10} \text{ bar}
                     </div>
-                    <p data-i18n="tissueLoading.halfTimeCharts.math.pressureDesc">Every 10 meters of seawater adds approximately 1 bar of pressure.</p>
+                    <p data-i18n="tissueLoading.halfTimeCharts.math.pressureDesc">Every 10 meters of seawater adds approximately 1&nbsp;bar of pressure.</p>
                 </div>
                 </details>
             </div>
@@ -629,9 +629,9 @@
                     They span a range of half-times designed to model the full spectrum of tissue behaviors:
                 </p>
                 <ul>
-                    <li data-i18n="tissueLoading.buhlmannCompartments.fast"><strong>Fast compartments (5–12.5 min)</strong> — saturate in minutes, but also release gas quickly</li>
-                    <li data-i18n="tissueLoading.buhlmannCompartments.medium"><strong>Medium compartments (18.5–77 min)</strong> — balance between loading and off-gassing</li>
-                    <li data-i18n="tissueLoading.buhlmannCompartments.slow"><strong>Slow compartments (109–635 min)</strong> — can take hours to fully saturate</li>
+                    <li data-i18n="tissueLoading.buhlmannCompartments.fast"><strong>Fast compartments (5–12.5&nbsp;min)</strong> — saturate in minutes, but also release gas quickly</li>
+                    <li data-i18n="tissueLoading.buhlmannCompartments.medium"><strong>Medium compartments (18.5–77&nbsp;min)</strong> — balance between loading and off-gassing</li>
+                    <li data-i18n="tissueLoading.buhlmannCompartments.slow"><strong>Slow compartments (109–635&nbsp;min)</strong> — can take hours to fully saturate</li>
                 </ul>
             </div>
         </section>

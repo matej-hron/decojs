@@ -33,7 +33,7 @@
         "keyTerms": "Klíčové pojmy",
         "descent": {
             "label": "Sestup",
-            "text": "Fáze od opuštění hladiny do dosažení plánované hloubky. Doporučená rychlost: ≤18–20&nbsp;m/min."
+            "text": "Fáze od opuštění hladiny do dosažení plánované hloubky. Doporučená rychlost: ≤18–20 m/min."
         },
         "bottomTime": {
             "label": "Čas na dně",
@@ -45,7 +45,7 @@
         },
         "ascent": {
             "label": "Výstup",
-            "text": "Návrat k hladině. Rychlost by neměla překročit 9–10&nbsp;m/min, aby se zabránilo tvorbě bublin."
+            "text": "Návrat k hladině. Rychlost by neměla překročit 9–10 m/min, aby se zabránilo tvorbě bublin."
         },
         "tdt": {
             "label": "Celková doba ponoru (TDT)",
@@ -57,7 +57,7 @@
         },
         "safetyStop": {
             "label": "Bezpečnostní zastávka",
-            "text": "Dobrovolná 3minutová pauza v hloubce 3–5 m během výstupu pro bezpečné odvětrání přebytečného dusíku."
+            "text": "Dobrovolná 3minutová pauza v hloubce 3–5 m během výstupu pro bezpečné odvětrání přebytečného dusíku."
         },
         "surfaceInterval": {
             "label": "Povrchový interval (SI)",
@@ -70,27 +70,27 @@
         "whatCreates": {
             "title": "Co vytváří tlak pod vodou?",
             "intro": "Celkový tlak, kterému je potápěč pod vodou vystaven, pochází ze dvou zdrojů:",
-            "atmospheric": "<strong>Atmosférický tlak</strong> — Váha sloupce vzduchu nad vámi. Na hladině moře je to přibližně <strong>1 bar</strong> — standardní tlak na hladině moře je definován jako 1,01325 bar.",
-            "hydrostatic": "<strong>Hydrostatický tlak</strong> — Váha vodního sloupce nad vámi. V mořské vodě přidává přibližně <strong>1 bar na každých 10 metrů</strong> hloubky.",
-            "summary": "Proto v hloubce 10 m na vás působí celkový tlak 2 bary (1 bar atmosférický + 1 bar vody), v 20 m jsou to 3 bary, v 30 m 4 bary atd."
+            "atmospheric": "<strong>Atmosférický tlak</strong> — Váha sloupce vzduchu nad vámi. Na hladině moře je to přibližně <strong>1 bar</strong> — standardní tlak na hladině moře je definován jako 1,01325 bar.",
+            "hydrostatic": "<strong>Hydrostatický tlak</strong> — Váha vodního sloupce nad vámi. V mořské vodě přidává přibližně <strong>1 bar na každých 10 metrů</strong> hloubky.",
+            "summary": "Proto v hloubce 10 m na vás působí celkový tlak 2 bary (1 bar atmosférický + 1 bar vody), v 20 m jsou to 3 bary, v 30 m 4 bary atd."
         },
         "altitude": {
             "summary": "Atmosférický tlak v různých nadmořských výškách",
-            "intro": "Atmosférický tlak klesá s nadmořskou výškou. Pokud se potápíte v horském jezeře, začínáte na hladině s méně než 1 barem:",
+            "intro": "Atmosférický tlak klesá s nadmořskou výškou. Pokud se potápíte v horském jezeře, začínáte na hladině s méně než 1 barem:",
             "thAltitude": "Nadmořská výška",
             "thPressure": "Tlak (bar)",
             "thExample": "Příklad",
             "seaLevel": "Hladina moře",
             "seaLevelExample": "Moře, pobřežní jezera",
-            "300m": "300 m",
+            "300m": "300 m",
             "300mExample": "Nízké kopce",
-            "700m": "700 m",
+            "700m": "700 m",
             "700mExample": "Horská jezera",
-            "1500m": "1500 m",
+            "1500m": "1500 m",
             "1500mExample": "Vysokohorská jezera",
-            "2500m": "2500 m",
+            "2500m": "2500 m",
             "2500mExample": "Jezero Titicaca",
-            "3000m": "3000 m",
+            "3000m": "3000 m",
             "3000mExample": "Potápění v extrémní výšce",
             "note": "⚠️ Potápění ve výšce vyžaduje speciální postupy a úpravy dekomprese."
         },
@@ -100,9 +100,9 @@
             "totalAmbientDesc": "Celkový tlak v jakékoli hloubce je součtem atmosférického a hydrostatického tlaku:",
             "totalAmbientWhere": "Kde:",
             "pAmb": "celkový okolní tlak",
-            "pAtm": "atmosférický tlak (≈1 bar na hladině moře)",
-            "rho": "hustota vody (≈1025 kg/m³ pro mořskou vodu)",
-            "g": "gravitační zrychlení (9,81&nbsp;m/s²)",
+            "pAtm": "atmosférický tlak (≈1 bar na hladině moře)",
+            "rho": "hustota vody (≈1025 kg/m³ pro mořskou vodu)",
+            "g": "gravitační zrychlení (9,81 m/s²)",
             "hDepth": "hloubka v metrech",
             "simplified": "Zjednodušený vzorec (hladina moře)",
             "simplifiedDesc": "Pro potápění na hladině moře používáme zjednodušený vzorec:",
@@ -110,9 +110,9 @@
             "altitudeFormula": "Atmosférický tlak vs. nadmořská výška",
             "altitudeFormulaDesc": "Atmosférický tlak klesá exponenciálně s nadmořskou výškou:",
             "altitudeWhere": "Kde:",
-            "p0": "1,01325 bar (tlak na hladině moře)",
+            "p0": "1,01325 bar (tlak na hladině moře)",
             "hAlt": "nadmořská výška v metrech",
-            "scaleHeight": "≈ 8500 m (měřítková výška atmosféry)"
+            "scaleHeight": "≈ 8500 m (měřítková výška atmosféry)"
         }
     },
     "pressureChart": {
@@ -122,18 +122,18 @@
         "title": "Spotřeba plynu",
         "whyDepth": {
             "title": "Vliv hloubky na spotřebu plynu",
-            "text1": "Podle <strong>Boyle-Mariottova zákona</strong> platí, že s rostoucím tlakem se objem plynu úměrně zmenšuje. Pod vodou to znamená, že dýcháte <em>stlačený</em> vzduch z lahve. V hloubce 10 m (2 bary) každý nádech odebere dvojnásobné množství molekul plynu ve srovnání s hladinou.",
+            "text1": "Podle <strong>Boyle-Mariottova zákona</strong> platí, že s rostoucím tlakem se objem plynu úměrně zmenšuje. Pod vodou to znamená, že dýcháte <em>stlačený</em> vzduch z lahve. V hloubce 10 m (2 bary) každý nádech odebere dvojnásobné množství molekul plynu ve srovnání s hladinou.",
             "text2": "Proto hlubší ponory spotřebovávají vaši zásobu plynu rychleji — dýcháte stejný objem vzduchu, ale ten obsahuje více molekul plynu v důsledku komprese."
         },
         "sac": {
             "title": "Spotřeba vzduchu na hladině (SAC)",
-            "text1": "<strong>SAC</strong> (též nazývaná RMV — respirační minutový objem) je množství plynu, které spotřebujete za minutu na hladině. Pro účely plánování používáme typickou hodnotu <strong>20 l/min</strong> pro klidné potápění, i když skutečná spotřeba se liší podle zátěže, stresu a individuálních faktorů.",
+            "text1": "<strong>SAC</strong> (též nazývaná RMV — respirační minutový objem) je množství plynu, které spotřebujete za minutu na hladině. Pro účely plánování používáme typickou hodnotu <strong>20 l/min</strong> pro klidné potápění, i když skutečná spotřeba se liší podle zátěže, stresu a individuálních faktorů.",
             "text2": "V hloubce je vaše skutečná spotřeba: <strong>SAC × okolní tlak</strong>",
-            "surface": "Hladina (1 bar): 20 l/min",
-            "10m": "10 m (2 bary): 40 l/min",
-            "20m": "20 m (3 bary): 60 l/min",
-            "30m": "30 m (4 bary): 80 l/min",
-            "40m": "40 m (5 barů): 100 l/min"
+            "surface": "Hladina (1 bar): 20 l/min",
+            "10m": "10 m (2 bary): 40 l/min",
+            "20m": "20 m (3 bary): 60 l/min",
+            "30m": "30 m (4 bary): 80 l/min",
+            "40m": "40 m (5 barů): 100 l/min"
         },
         "formula": {
             "summary": "Vzorec spotřeby plynu",
@@ -144,8 +144,8 @@
             "pAmbVar": "Okolní tlak v barech (1 + hloubka/10)",
             "tVar": "Čas v hloubce (minuty)",
             "availableTitle": "Dostupný objem plynu v lahvi",
-            "availableExample": "Pro 12l lahev při 200 barech s rezervou 50 barů:",
-            "availableResult": "Dostupný plyn = 12 × (200 − 50) = <strong>1800 litrů</strong>"
+            "availableExample": "Pro 12l lahev při 200 barech s rezervou 50 barů:",
+            "availableResult": "Dostupný plyn = 12 × (200 − 50) = <strong>1800 litrů</strong>"
         }
     },
     "gasConsumptionChart": {
@@ -161,12 +161,12 @@
             "pAvg": "Průměrný okolní tlak = 1 + (průměrná hloubka / 10)",
             "exampleTitle": "Příklad výpočtu",
             "exampleIntro": "Po ponoru si zaznamenáte:",
-            "exampleCyl": "Lahev: 12 l",
-            "examplePressure": "Počáteční tlak: 200 bar, konečný tlak: 80 bar → <strong>ΔP = 120 bar</strong>",
-            "exampleTime": "Doba ponoru: 45 minut",
-            "exampleDepth": "Průměrná hloubka: 15 m → <strong>P<sub>avg</sub> = 1 + 15/10 = 2,5 bar</strong>",
+            "exampleCyl": "Lahev: 12 l",
+            "examplePressure": "Počáteční tlak: 200 bar, konečný tlak: 80 bar → <strong>ΔP = 120 bar</strong>",
+            "exampleTime": "Doba ponoru: 45 minut",
+            "exampleDepth": "Průměrná hloubka: 15 m → <strong>P<sub>avg</sub> = 1 + 15/10 = 2,5 bar</strong>",
             "showSolution": "Zkus si to nejdřív spočítat — klikni pro zobrazení řešení",
-            "exampleResult": "Tento potápěč má SAC <strong>12,8 l/min</strong> — poměrně efektivní! Typičtí rekreační potápěči mají 12–25 l/min v závislosti na kondici, zkušenostech a podmínkách.",
+            "exampleResult": "Tento potápěč má SAC <strong>12,8 l/min</strong> — poměrně efektivní! Typičtí rekreační potápěči mají 12–25 l/min v závislosti na kondici, zkušenostech a podmínkách.",
             "tipsTitle": "Tipy pro přesné měření",
             "tip1": "Použijte potápěčský počítač, který zaznamenává průměrnou hloubku, nebo ji vypočítejte z profilu",
             "tip2": "Měřte během několika ponorů, abyste získali spolehlivý průměr",
@@ -211,14 +211,14 @@
             "note": "<em>Poznámka: Toto je <strong>operační</strong> vzorec používaný pro MOD a limity plynů v celé této části.</em>"
         },
         "example": {
-            "title": "Příklad: Vzduch v hloubce 30 metrů",
-            "intro": "V hloubce 30 metrů je okolní tlak <strong>4 bary</strong> (1 + 30/10). Pro vzduch:",
+            "title": "Příklad: Vzduch v hloubce 30 metrů",
+            "intro": "V hloubce 30 metrů je okolní tlak <strong>4 bary</strong> (1 + 30/10). Pro vzduch:",
             "thGas": "Plyn",
             "thFraction": "Podíl",
             "thCalculation": "Výpočet",
             "thPP": "Parciální tlak",
-            "o2PP": "0,84 bar",
-            "n2PP": "3,16 bar",
+            "o2PP": "0,84 bar",
+            "n2PP": "3,16 bar",
             "show": "zobrazit"
         },
         "operational": {
@@ -255,9 +255,9 @@
             "intro": "MOD je maximální hloubka, do které se můžete bezpečně ponořit s danou dýchací směsí, aniž byste překročili limit <em>pp</em>O₂. Vypočítá se z podílu kyslíku a požadovaného maximálního <em>pp</em>O₂.",
             "formulaSummary": "Vzorec MOD",
             "where": "Kde:",
-            "ppO2Max": "maximální povolený parciální tlak (typicky 1,4 bar)",
+            "ppO2Max": "maximální povolený parciální tlak (typicky 1,4 bar)",
             "fO2": "podíl kyslíku v plynu (desetinné číslo)",
-            "exercisesTitle": "Cvičení: Vypočítejte MOD (<em>pp</em>O₂ = 1,4 bar)",
+            "exercisesTitle": "Cvičení: Vypočítejte MOD (<em>pp</em>O₂ = 1,4 bar)",
             "exGas": "Směs",
             "exCalc": "Výpočet",
             "showAnswer": "ukázat",
@@ -268,11 +268,11 @@
             "title": "Limity dusíku (<em>pp</em>N₂) — Narkóza",
             "intro": "Dusík se při zvýšených parciálních tlacích stává narkotickým, což způsobuje zhoršený úsudek, euforii a zpomalené reakce — podobně jako intoxikace alkoholem.",
             "martiniTitle": "Pravidlo Martini",
-            "martiniIntro": "Populární pomůcka: každých 10 metrů hloubky na vzduchu odpovídá zhruba jednomu martini na lačný žaludek. V 30 m se můžete cítit, jako byste vypili 3 martini!",
-            "martini10": "10 m — 1 martini",
-            "martini20": "20 m — 2 martini",
-            "martini30": "30 m — 3 martini",
-            "martini40": "40 m — 4 martini",
+            "martiniIntro": "Populární pomůcka: každých 10 metrů hloubky na vzduchu odpovídá zhruba jednomu martini na lačný žaludek. V 30 m se můžete cítit, jako byste vypili 3 martini!",
+            "martini10": "10 m — 1 martini",
+            "martini20": "20 m — 2 martini",
+            "martini30": "30 m — 3 martini",
+            "martini40": "40 m — 4 martini",
             "martiniNote": "<em>Poznámka: Individuální citlivost se výrazně liší. Někteří potápěči pociťují účinky dříve, jiní později. Chlad, stres a únava narkózu zesilují.</em>",
             "thPPN2": "<em>pp</em>N₂ (bar)",
             "thEquivDepth": "Ekvivalentní hloubka (vzduch)",
@@ -304,25 +304,25 @@
             "thSymptoms": "Příznaky",
             "thRelevance": "Význam pro potápění",
             "cnsType": "<strong>Toxicita CNS</strong>",
-            "cnsCause": "Vysoký <em>pp</em>O₂ (>1,6 bar)",
+            "cnsCause": "Vysoký <em>pp</em>O₂ (>1,6 bar)",
             "cnsSymptoms": "Křeče, tunelové vidění, záškuby",
             "cnsRelevance": "Bezprostřední nebezpečí, může způsobit utonutí",
             "pulmonaryType": "<strong>Plicní toxicita</strong>",
-            "pulmonaryCause": "Dlouhodobá expozice (<em>pp</em>O₂ >0,5 bar)",
+            "pulmonaryCause": "Dlouhodobá expozice (<em>pp</em>O₂ >0,5 bar)",
             "pulmonarySymptoms": "Bolest na hrudi, kašel, dechové obtíže",
             "pulmonaryRelevance": "Relevantní při dlouhých expozicích, rebreathery"
         },
         "cnsOtu": {
             "title": "Sledování CNS a OTU",
             "toggleLabel": "Zobrazit podrobnosti",
-            "disclaimer": "<em>⚠️ Toto je pokročilý obsah. Pro rekreační potápění stačí dodržovat <em>pp</em>O₂ pod 1,4 bar. Sledování CNS/OTU se používá především v technickém potápění s prodlouženými expozicemi kyslíku.</em>",
+            "disclaimer": "<em>⚠️ Toto je pokročilý obsah. Pro rekreační potápění stačí dodržovat <em>pp</em>O₂ pod 1,4 bar. Sledování CNS/OTU se používá především v technickém potápění s prodlouženými expozicemi kyslíku.</em>",
             "cnsTitle": "CNS (centrální nervový systém) hodiny",
             "cnsDesc": "CNS hodiny sledují vaši expozici jako procento maximálního povoleného času při dané úrovni <em>pp</em>O₂. Při 100 % jste dosáhli doporučeného limitu.",
             "thPPO2": "<em>pp</em>O₂ (bar)",
             "thNOAAMax": "Max. čas NOAA",
             "thCNSPerMin": "CNS % za min",
             "otuTitle": "OTU (jednotky kyslíkové tolerance)",
-            "otuDesc": "OTU sledují kumulativní plicní expozici kyslíku. Vzorec se použije, když <em>pp</em>O₂ překročí 0,5 bar:",
+            "otuDesc": "OTU sledují kumulativní plicní expozici kyslíku. Vzorec se použije, když <em>pp</em>O₂ překročí 0,5 bar:",
             "otuLimits": "Denní limity: <strong>300 OTU</strong> (jeden ponor), <strong>850 OTU</strong> (celkový denní)"
         },
         "symptoms": {
@@ -382,8 +382,8 @@
             "o2reason2": "Většina kyslíku v krvi je <strong>vázána na hemoglobin</strong> v červených krvinkách, nikoli volně rozpuštěna",
             "text3": "Plyn, který musíme pečlivě sledovat, je <strong>dusík (N₂)</strong> — je inertní (tělo ho nevyužívá) a tvoří 78 % vzduchu. Pro technické potápěče používající trimix platí pro <strong>hélium (He)</strong> stejné principy, ale s odlišnými vlastnostmi rozpustnosti.",
             "thGas": "Plyn",
-            "thBloodSolubility": "Rozpustnost v krvi<br><small>(ml/l na bar, 37 °C)</small>",
-            "thFatSolubility": "Rozpustnost v tuku<br><small>(ml/l na bar, 37 °C)</small>",
+            "thBloodSolubility": "Rozpustnost v krvi<br><small>(ml/l na bar, 37 °C)</small>",
+            "thFatSolubility": "Rozpustnost v tuku<br><small>(ml/l na bar, 37 °C)</small>",
             "thFatBloodRatio": "Poměr tuk:krev",
             "nitrogen": "Dusík (N₂)",
             "helium": "Hélium (He)",
@@ -414,7 +414,7 @@
                 "desc": "Parciální tlak dusíku v plicních sklípcích zohledňuje tlak vodní páry:",
                 "where": "Kde:",
                 "pAmb": "okolní tlak v hloubce (bar)",
-                "pH2O": "tlak vodní páry ≈ 0,0627 bar při 37 °C",
+                "pH2O": "tlak vodní páry ≈ 0,0627 bar při 37 °C",
                 "fN2": "podíl dusíku v dýchací směsi (0,79 pro vzduch)"
             }
         },
@@ -448,7 +448,7 @@
             "pSurface": "<strong>Povrchové napětí (2γ/r)</strong> — Laplaceův tlak, který rovněž bublinu stlačuje. Menší bubliny mají <em>větší</em> povrchové napětí.",
             "pTissue": "<strong>Tenze rozpuštěných plynů (P<sub>tissue</sub>)</strong> — celkový tlak plynů rozpuštěných v okolní tkáni, který tlačí plyn <em>dovnitř</em> bubliny",
             "insight": "Když <strong>P<sub>tissue</sub> &gt; P<sub>amb</sub> + 2γ/r</strong>, plyn difunduje do bubliny a ta <strong>roste</strong>. Jak roste, <em>r</em> se zvětšuje, povrchové napětí <em>klesá</em>, což růst ještě urychluje — <strong>pozitivní zpětná vazba</strong>.",
-            "sliderHint": "Použijte posuvník pro výstup z 30 m. Sledujte, jak snížení okolního tlaku naruší rovnováhu — větší bubliny překročí kritický poloměr jako první."
+            "sliderHint": "Použijte posuvník pro výstup z 30 m. Sledujte, jak snížení okolního tlaku naruší rovnováhu — větší bubliny překročí kritický poloměr jako první."
         },
         "halfTimeConcept": {
             "title": "Koncept poločasu sycení",
@@ -458,23 +458,23 @@
             "bar2": "2 poločasy: 75 %",
             "bar3": "3 poločasy: 87,5 %",
             "bar4": "6 poločasů: ~98 % (nasyceno)",
-            "example": "Kompartment s poločasem 5 minut dosáhne 50% nasycení za 5 minut; kompartment s poločasem 635 minut potřebuje přes 10 hodin!",
+            "example": "Kompartment s poločasem 5 minut dosáhne 50% nasycení za 5 minut; kompartment s poločasem 635 minut potřebuje přes 10 hodin!",
             "gradientTitle": "Vliv tlakového gradientu",
             "gradientText1": "Poločas tkáně je konstantní — vždy trvá stejně dlouho, než se uzavře <strong>50 % rozdílu</strong> mezi aktuálním tlakem tkáně a cílovým tlakem. Ale když je tento rozdíl větší, 50 % představuje v absolutních číslech více plynu.",
-            "gradientText2": "<strong>Příklad:</strong> Pokud tkáň potřebuje odvětrat 2 bary dusíku, přepnutí ze vzduchu (79 % N₂) na Nitrox 50 (50 % N₂) nebo čistý O₂ (0 % N₂) vytvoří mnohem větší tlakový gradient, takže každý poločas odstraní více plynu — proto směsi bohaté na kyslík urychlují dekompresi!"
+            "gradientText2": "<strong>Příklad:</strong> Pokud tkáň potřebuje odvětrat 2 bary dusíku, přepnutí ze vzduchu (79 % N₂) na Nitrox 50 (50 % N₂) nebo čistý O₂ (0 % N₂) vytvoří mnohem větší tlakový gradient, takže každý poločas odstraní více plynu — proto směsi bohaté na kyslík urychlují dekompresi!"
         },
         "halfTimeCharts": {
             "title": "Interaktivně: tlakový rozdíl a poločasy",
             "intro": "Tyto grafy ukazují, jak tlakový rozdíl ovlivňuje rychlost sycení a vysycování.",
             "ongassing": {
                 "title": "Sycení (sestup)",
-                "desc": "Tkáň začíná v rovnováze na hladině (~0,79 bar <em>pp</em>N₂). Upravte cílovou hloubku a sledujte, jak větší tlakový rozdíl znamená rychlejší absolutní sycení.",
+                "desc": "Tkáň začíná v rovnováze na hladině (~0,79 bar <em>pp</em>N₂). Upravte cílovou hloubku a sledujte, jak větší tlakový rozdíl znamená rychlejší absolutní sycení.",
                 "depthLabel": "Cílová hloubka:"
             },
             "offgassing": {
                 "title": "Vysycování (výstup na hladinu)",
                 "desc": "Tkáň začíná nasycena ve zvolené hloubce. Stejný poločas, stejná rovnice — jen obrácená. Křivky jsou dokonalé zrcadlové obrazy.",
-                "info": "Nasyceno v <strong id=\"offgassing-depth-display\">30 m</strong> → Hladina (~0,79 bar)"
+                "info": "Nasyceno v <strong id=\"offgassing-depth-display\">30 m</strong> → Hladina (~0,79 bar)"
             },
             "footnote": "ℹ️ Oba grafy používají stejnou hloubku a stejný vzorec poločasu. Sycení a vysycování jsou symetrické — mění se pouze směr.",
             "math": {
@@ -492,7 +492,7 @@
                 "schreinerDesc": "Během výstupu nebo sestupu konstantní rychlostí:",
                 "rDesc": "je rychlost změny alveolárního tlaku (kladná při sestupu).",
                 "pressureTitle": "Tlak v hloubce",
-                "pressureDesc": "Každých 10 metrů mořské vody přidává přibližně 1 bar tlaku."
+                "pressureDesc": "Každých 10 metrů mořské vody přidává přibližně 1 bar tlaku."
             }
         },
         "tissueHeterogeneity": {
@@ -506,9 +506,9 @@
         "buhlmannCompartments": {
             "title": "Bühlmannovy kompartmenty ZH-L16",
             "intro": "Bühlmannův model ZH-L16 používá <strong>16 teoretických kompartmentů</strong> — jsou to <em>matematické konstrukce</em> přizpůsobené experimentálním datům, nikoli doslovné anatomické tkáně. Pokrývají rozsah poločasů navržený tak, aby modeloval celé spektrum chování tkání:",
-            "fast": "<strong>Rychlé kompartmenty (5–12,5 min)</strong> — nasytí se za minuty, ale také rychle uvolňují plyn",
-            "medium": "<strong>Střední kompartmenty (18,5–77 min)</strong> — rovnováha mezi sycením a vysycováním",
-            "slow": "<strong>Pomalé kompartmenty (109–635 min)</strong> — plné nasycení může trvat hodiny",
+            "fast": "<strong>Rychlé kompartmenty (5–12,5 min)</strong> — nasytí se za minuty, ale také rychle uvolňují plyn",
+            "medium": "<strong>Střední kompartmenty (18,5–77 min)</strong> — rovnováha mezi sycením a vysycováním",
+            "slow": "<strong>Pomalé kompartmenty (109–635 min)</strong> — plné nasycení může trvat hodiny",
             "controllingTitle": "Řídící kompartment",
             "controlling": "V jakémkoli okamžiku ponoru je <strong>řídící kompartment</strong> ten, který je nejblíže svému limitu kritického přesycení — tento kompartment určuje váš dekompresní strop."
         },
@@ -614,12 +614,12 @@
             "text1": "Když tkáňový tlak přesáhne okolní tlak, jsme ve stavu zvaném <strong>přesycení</strong>. Představte si to jako perlivý nápoj — CO₂ je rozpuštěný pod tlakem. Otevřete lahev (snížíte tlak) a bubliny se začnou tvořit.",
             "text2": "Totéž se děje v našich tkáních, pokud vystoupáme příliš rychle. Ale zde je fascinující objev: tělo dokáže tolerovat <em>určitou míru</em> přesycení bez tvorby nebezpečných bublin. Otázka zní: <strong>kolik?</strong>",
             "haldaneDesc": "Poměr celkového okolního tlaku",
-            "haldaneMath": "(2 bary → 1 bar, bezpečné z 10 m, jen vzduch)",
+            "haldaneMath": "(2 bary → 1 bar, bezpečné z 10 m, jen vzduch)",
             "workmanValue": "Pro každou tkáň, pro každou hloubku",
             "workmanDesc": "Každý kompartment má svůj vlastní limit",
             "workmanMath": "(N₂ i He, 1965)",
             "historySummary": "📚 Historie: jak jsme objevili bezpečné limity",
-            "haldaneHistory": "Skotský fyziolog pozoroval, že dělníci v tunelech a kesonech se stlačeným vzduchem mohli bezpečně dekomprimovat z 2 barů na 1 bar (absolutně, poměr 2:1). To se stalo základem stupňovité dekomprese. <em>Poznámka: tento poměr 2:1 byl odvozen z experimentů pouze se vzduchem — pro jiné směsi (trimix, heliox) platí jiné tolerance kvůli odlišným vlastnostem rozpustnosti a difuze hélia.</em>",
+            "haldaneHistory": "Skotský fyziolog pozoroval, že dělníci v tunelech a kesonech se stlačeným vzduchem mohli bezpečně dekomprimovat z 2 barů na 1 bar (absolutně, poměr 2:1). To se stalo základem stupňovité dekomprese. <em>Poznámka: tento poměr 2:1 byl odvozen z experimentů pouze se vzduchem — pro jiné směsi (trimix, heliox) platí jiné tolerance kvůli odlišným vlastnostem rozpustnosti a difuze hélia.</em>",
             "workmanHistory": "Výzkumník amerického námořnictva, který rozpoznal, že jediný pevný poměr nedokáže zachytit celý obraz. Různé tkáňové kompartmenty tolerují různé úrovně přesycení a tyto tolerance se mění s hloubkou. Zavedl pojem <strong>„M-hodnota“</strong> (Maximum value) — maximální tolerovatelný tlak inertního plynu ve tkáni při jakékoli dané hloubce. Workman jako první vyvinul M-hodnoty jak pro dusík, <em>tak pro hélium</em> (1965), čímž umožnil plánování dekomprese pro hluboké ponory s heliox směsí.",
             "workmanInsight": "Klíčový poznatek Workmana: rychlejší tkáně (mozek, krev) tolerují vyšší přesycení než pomalejší tkáně (tuk, kosti) — a tolerovaný poměr se také mění s hloubkou."
         },
@@ -629,8 +629,8 @@
             "intro": "Švýcarský lékař <strong>prof. Albert A. Bühlmann</strong> toto rozvinul ve svém algoritmu ZH-L16. Místo jediného poměru pro všechny tkáně definoval specifické toleranční limity pro každý ze 16 tkáňových kompartmentů.",
             "coreConceptTitle": "Základní koncept",
             "coreConceptText": "Každý tkáňový kompartment má svou vlastní <strong>M-value linii</strong>, která definuje maximální tolerovatelný tkáňový tlak pro jakýkoli daný okolní tlak. Toto je limit — překročte ho a tvorba bublin se stává pravděpodobnou.",
-            "fasterTissues": "<strong>Rychlejší tkáně</strong> (krátké poločasy jako 5 min) → tolerují VÍCE přesycení",
-            "slowerTissues": "<strong>Pomalejší tkáně</strong> (dlouhé poločasy jako 635 min) → tolerují MÉNĚ přesycení",
+            "fasterTissues": "<strong>Rychlejší tkáně</strong> (krátké poločasy jako 5 min) → tolerují VÍCE přesycení",
+            "slowerTissues": "<strong>Pomalejší tkáně</strong> (dlouhé poločasy jako 635 min) → tolerují MÉNĚ přesycení",
             "formulaSummary": "📐 Vzorec M-hodnot",
             "formulaIntro": "Bühlmannův vzorec M-hodnoty pro každý kompartment:",
             "formulaWhere": "Kde:",
@@ -668,7 +668,7 @@
         },
         "example1": {
             "title": "Příklad 1: Bezpečný ponor",
-            "desc": "Tento ponor zahrnuje 10minutovou bezpečnostní zastávku v 3 m. Všimněte si, jak tkáňový tlak zůstává po celou dobu výstupu bezpečně pod M-value linií.",
+            "desc": "Tento ponor zahrnuje 10minutovou bezpečnostní zastávku v 3 m. Všimněte si, jak tkáňový tlak zůstává po celou dobu výstupu bezpečně pod M-value linií.",
             "profileTitle": "Profil ponoru",
             "ppDiagramTitle": "Diagram M-value"
         },
@@ -681,7 +681,7 @@
             "ppDiagramTitle": "Diagram M-value",
             "legendSummary": "📖 Legenda grafu",
             "legendAmbient": "<strong>Modrá plná (linie okolního tlaku):</strong> y = x. Nad ní = tkáň je přesycena.",
-            "legendSurface": "<strong>Šedá čárkovaná (hladina):</strong> x = 1 bar. Při dosažení hladiny musíte být pod M-hodnotou.",
+            "legendSurface": "<strong>Šedá čárkovaná (hladina):</strong> x = 1 bar. Při dosažení hladiny musíte být pod M-hodnotou.",
             "legendMValue": "<strong>Barevná čárkovaná (M-hodnota):</strong> Kritický limit pro každou tkáň. Každý tkáňový kompartment má svou vlastní barvu.",
             "legendTrail": "<strong>Stopa:</strong> Trajektorie, kterou bod tkáně vykreslil během ponoru."
         },
@@ -689,7 +689,7 @@
             "title": "Koeficienty M-hodnot ZH-L16A",
             "viewTable": "Zobrazit tabulku koeficientů",
             "thHalfTime": "Poločas (min)",
-            "footnote": "* M₀ = a + 1/b = Maximální tolerovatelný tkáňový tlak na hladině (okolní tlak 1 bar)"
+            "footnote": "* M₀ = a + 1/b = Maximální tolerovatelný tkáňový tlak na hladině (okolní tlak 1 bar)"
         }
     },
     "gradientFactors": {
@@ -748,7 +748,7 @@
             "discovery": {
                 "title": "Objev Richarda Pylea",
                 "cardTitle": "Pozorování sběratele ryb",
-                "text1": "V 80. letech byl <strong>Richard Pyle</strong> mořský biolog sbírající vzorky ryb z hloubek mezi 50–70 metry. Všiml si něčeho zvláštního ohledně své únavy po ponorech.",
+                "text1": "V 80. letech byl <strong>Richard Pyle</strong> mořský biolog sbírající vzorky ryb z hloubek mezi 50–70 metry. Všiml si něčeho zvláštního ohledně své únavy po ponorech.",
                 "insight": "<strong>Vzorec:</strong> Při ponorech, kdy chytal ryby, musel zastavit v přechodných hloubkách, aby <strong>odvětral jejich plynový měchýř</strong> (aby jim nepraskl během výstupu). Po těchto ponorech se cítil skvěle. Při ponorech bez ryb — a tedy bez přechodných zastávek — byl unavený.",
                 "text2": "Pyle náhodou zjistil, že krátké zastávky v hloubkách <em>hlubších</em>, než vyžadoval jeho dekompresní plán, měly znatelný vliv na to, jak se cítil."
             },
@@ -757,15 +757,15 @@
                 "intro": "Pyle formalizoval své pozorování do metody:",
                 "step1": "Vypočítejte konvenční dekompresní plán",
                 "step2": "První hluboká zastávka = <strong>v polovině</strong> mezi maximální hloubkou a první povinnou dekompresní zastávkou",
-                "step3": "Zůstaňte 2–3 minuty",
-                "step4": "Pokud je mezera k další zastávce stále >9 m (30 ft), přidejte další zastávku v polovině",
-                "exampleTitle": "Příklad: ponor na 60 m, první dekompresní zastávka v 15 m",
+                "step3": "Zůstaňte 2–3 minuty",
+                "step4": "Pokud je mezera k další zastávce stále >9 m (30 ft), přidejte další zastávku v polovině",
+                "exampleTitle": "Příklad: ponor na 60 m, první dekompresní zastávka v 15 m",
                 "stop1Label": "1. Pyle zastávka:",
-                "stop1Value": "(60 + 15) ÷ 2 = <strong>38 m</strong>",
+                "stop1Value": "(60 + 15) ÷ 2 = <strong>38 m</strong>",
                 "stop2Label": "2. Pyle zastávka:",
-                "stop2Value": "(38 + 15) ÷ 2 = <strong>27 m</strong>",
+                "stop2Value": "(38 + 15) ÷ 2 = <strong>27 m</strong>",
                 "stop3Label": "3. Pyle zastávka:",
-                "stop3Value": "(27 + 15) ÷ 2 = <strong>21 m</strong>",
+                "stop3Value": "(27 + 15) ÷ 2 = <strong>21 m</strong>",
                 "vpmConnection": "Zajímavé je, že Pyle později zjistil, že jeho empirický vzorec velmi přesně odpovídal <strong>modelu proměnlivé propustnosti (VPM)</strong> — dekompresnímu algoritmu založenému na bublinách, který nezávisle předpovídal podobné profily s hlubokými zastávkami."
             },
             "bridge": {
@@ -815,13 +815,13 @@
             "nedu": {
                 "cardTitle": "Studie NEDU, která vše změnila",
                 "text1": "Po léta byly hluboké zastávky považovány za prospěšné na základě Pyleových pozorování a teorie bublinových modelů. Pak přišlo důkladné testování.",
-                "text2": "<strong>Experimentální potápěčská jednotka amerického námořnictva (NEDU)</strong> provedla rozsáhlou srovnávací studii: stejný ponor (170 fsw/30 min), stejná celková dekompresní doba, ale odlišné profily:",
+                "text2": "<strong>Experimentální potápěčská jednotka amerického námořnictva (NEDU)</strong> provedla rozsáhlou srovnávací studii: stejný ponor (170 fsw/30 min), stejná celková dekompresní doba, ale odlišné profily:",
                 "shallowLabel": "Mělké zastávky",
                 "shallowValue": "3 DCS ze 192 ponorů",
-                "shallowDesc": "První zastávka ve 40 fsw (12 m)",
+                "shallowDesc": "První zastávka ve 40 fsw (12 m)",
                 "deepLabel": "Hluboké zastávky",
                 "deepValue": "11 DCS ze 198 ponorů",
-                "deepDesc": "První zastávka v 70 fsw (21 m)",
+                "deepDesc": "První zastávka v 70 fsw (21 m)",
                 "result": "Hluboké zastávky vedly k <span style=\"color: var(--danger-color);\">3,6× více DCS</span> u stejného ponoru!"
             },
             "backfire": {
@@ -831,7 +831,7 @@
                 "text2": "Hluboké zastávky snižují tlakový gradient pro vysycování. Čím hlouběji zůstáváte, tím menší je rozdíl mezi tkáňovým a okolním tlakem — a právě tento gradient řídí odvod plynu.",
                 "nuanceTitle": "Realita je složitější",
                 "nuanceIntro": "To neznamená, že všechny hluboké zastávky jsou špatné:",
-                "nuance1": "<strong>Velmi krátké zastávky</strong> (Pyleovy původní 2–3 minuty) mohou být stále prospěšné",
+                "nuance1": "<strong>Velmi krátké zastávky</strong> (Pyleovy původní 2–3 minuty) mohou být stále prospěšné",
                 "nuance2": "Studie NEDU používala prodloužené hluboké zastávky s výrazným přesunem dekompresního času do hloubky",
                 "nuance3": "Extrémně agresivní profily hlubokých zastávek (GF 30/85) se dnes nedoporučují",
                 "nuance4": "Mírná konzervativnost (GF 70/85) přidává bezpečnost bez nadměrných hlubokých zastávek"
@@ -845,13 +845,13 @@
                 "thDiveType": "Typ potápění",
                 "thDepthDuration": "Hloubka a délka",
                 "row1type": "Rekreační ponor",
-                "row1depth": "do 40 m, kratší dekomprese",
+                "row1depth": "do 40 m, kratší dekomprese",
                 "row2type": "Intenzivní potápění",
                 "row2typeSub": "opakované ponory nebo na safari",
-                "row2depth": "do 40 m, kratší dekomprese",
+                "row2depth": "do 40 m, kratší dekomprese",
                 "row3type": "Hluboký ponor",
                 "row3typeSub": "zítra se nepotápět",
-                "row3depth": "pod 60 m, jeden ponor",
+                "row3depth": "pod 60 m, jeden ponor",
                 "row4type": "Krizová situace",
                 "row4typeSub": "bailout, přepnout pod vodou na Freedomu",
                 "row4depth": "vhodnou delší dobu se nepotápět",
@@ -861,7 +861,7 @@
                 "row6typeSub": "implicitně",
                 "row7type": "Freedom",
                 "row7typeSub": "moje nastavení",
-                "row7depth": "do 40 m, kratší dekomprese",
+                "row7depth": "do 40 m, kratší dekomprese",
                 "row8type": "Bühlmannovy tabulky ZH-L16",
                 "credit": "Referenční tabulka od Jirky Hovorky."
             },
@@ -895,7 +895,7 @@
                 "text": "CMAS doporučuje <strong>GF Low = GF High</strong> na dusíkových ponorech — typicky <strong>90/90</strong>, se snížením na <strong>85/85</strong> nebo <strong>80/80</strong> při rizikových faktorech (věk, únava, chlad, námaha). Asymetrické GF vynucují hluboké zastávky a více nezávislých studií zjistilo, že to <em>zvyšuje</em> výskyt DCS na vzduchu/nitroxu:",
                 "bullet1": "Francouzské námořnictvo (2005) — hluboké zastávky zvýšily riziko DCS na vzduchových deko ponorech",
                 "bullet2": "U.S. Navy NEDU (2011) — „přesun času ze zastávek mělčích na hlubší zvyšuje výskyt DCS u vzduchové dekomprese“",
-                "bullet3": "Belgické vojsko (2023) — tovární nastavení 30/70 bylo nebezpečné pro vzduchový ponor do 60 m"
+                "bullet3": "Belgické vojsko (2023) — tovární nastavení 30/70 bylo nebezpečné pro vzduchový ponor do 60 m"
             },
             "pointHelium": {
                 "title": "2. Pro hélium (trimix/heliox) jsou asymetrické GF stále na místě",
@@ -978,8 +978,8 @@
         "pressureChange": "Změna tlaku ΔP",
         "usableGasChange": "Změna použitelného plynu",
         "gasChangeSub": "povrchové litry (ΔP × objem)",
-        "diveTimeChange": "Změna času ponoru ve 20 m",
-        "diveTimeSub": "Spotřeba vzduchu na hladině (SAC) 20 l/min při 3 bar (1+20/10)",
+        "diveTimeChange": "Změna času ponoru ve 20 m",
+        "diveTimeSub": "Spotřeba vzduchu na hladině (SAC) 20 l/min při 3 bar (1+20/10)",
         "safety": {
             "withinWorking": "V rámci pracovního tlaku ({0} bar)",
             "aboveWorking": "Překračuje pracovní tlak! {0} bar (zkušební tlak: {1} bar)",
@@ -987,15 +987,15 @@
         },
         "tempRange": "Teplotní rozsah",
         "tempRefs": {
-            "ice": "0°C Led",
-            "room": "20°C Místnost",
-            "body": "37°C Tělo",
-            "hotCar": "60°C Horké auto"
+            "ice": "0 °C Led",
+            "room": "20 °C Místnost",
+            "body": "37 °C Tělo",
+            "hotCar": "60 °C Horké auto"
         },
         "whyTitle": "💡 Proč se to děje?",
         "whyText1": "Molekuly plynu se při vyšší teplotě pohybují rychleji a narážejí na stěny lahve s větší silou, čímž zvyšují tlak. Protože lahev je tuhá (konstantní objem), veškerá kinetická energie se přímo přemění na vyšší tlak.",
-        "whyText2": "<strong>Praktický tip:</strong> Kompresory při plnění generují značné teplo — plyn v čerstvě naplněné lahvi může mít o 40–50 °C více než okolí. Pokud naplníte lahev na 200 bar v teplé plnírně a ponoříte se do studeného jezera, nedivte se, že na manometru uvidíte jen asi 180 bar. To není únik — to je fyzika.",
-        "whyRuleOfThumb": "<strong>Orientační pravidlo:</strong> ~0,6 bar změna na 1 °C při pracovním tlaku 200 bar.",
+        "whyText2": "<strong>Praktický tip:</strong> Kompresory při plnění generují značné teplo — plyn v čerstvě naplněné lahvi může mít o 40–50 °C více než okolí. Pokud naplníte lahev na 200 bar v teplé plnírně a ponoříte se do studeného jezera, nedivte se, že na manometru uvidíte jen asi 180 bar. To není únik — to je fyzika.",
+        "whyRuleOfThumb": "<strong>Orientační pravidlo:</strong> ~0,6 bar změna na 1 °C při pracovním tlaku 200 bar.",
         "formulaTitle": "Gay-Lussacův zákon (izochorický děj)",
         "formulaNote": "poměr tlaku a teploty je konstantní při konstantním objemu (T v Kelvinech)",
         "formulaRearranged": "Přeuspořádáno:",
@@ -1172,7 +1172,7 @@
             "hint": "První plyn je dýchací plyn na dně. Přidejte dekompresní plyny pro vícesložkové potápění.",
             "addDecoGas": "Přidat dekompresní plyn",
             "gasSwitchStop": "Zastávka při změně plynu:",
-            "switchNoStop": "0 min (bez zastávky)",
+            "switchNoStop": "0 min (bez zastávky)",
             "switchNMin": "{0} min",
             "switchHint": "Čas na ověření plynu, nádechy a signalizaci buddymu při každé hloubce změny plynu."
         },
@@ -1190,11 +1190,11 @@
             "presetBuhlmann": "Bühlmann",
             "presetBuhlmannTitle": "Čisté Bühlmannovy tabulky, bez konzervatismu",
             "presetRecreational": "Rekreační",
-            "presetRecreationalTitle": "Rekreační: ≤40 m, krátká deko",
+            "presetRecreationalTitle": "Rekreační: ≤40 m, krátká deko",
             "presetIntensive": "Intenzivní",
             "presetIntensiveTitle": "Intenzivní: opakované ponory, safari",
             "presetDeep": "Hluboký",
-            "presetDeepTitle": "Hluboký: >60 m, jeden ponor",
+            "presetDeepTitle": "Hluboký: >60 m, jeden ponor",
             "presetBailout": "Bailout",
             "presetBailoutTitle": "Bailout: nouzová situace",
             "presetDecoPlanner": "Deco Planner",
@@ -1205,17 +1205,17 @@
             "tableDepth": "Hloubka",
             "tableGfLow": "GF Low",
             "tableGfHigh": "GF High",
-            "rowRecDepth": "≤40 m, krátká deko",
+            "rowRecDepth": "≤40 m, krátká deko",
             "rowIntensive": "Intenzivní / safari",
-            "rowIntensiveDepth": "≤40 m, opakované ponory",
+            "rowIntensiveDepth": "≤40 m, opakované ponory",
             "rowDeep": "Hluboký jednorázový ponor",
-            "rowDeepDepth": ">60 m, jeden ponor",
+            "rowDeepDepth": ">60 m, jeden ponor",
             "rowBailout": "Bailout / nouze",
             "rowDecoPlanner": "Deco Planner výchozí",
             "rowFreedom": "Freedom výchozí",
             "rowBuhlmannTables": "Bühlmannovy tabulky",
-            "continuousDeco": "Spojitá deko (bez mřížky 3 m/1 min)",
-            "continuousWarning": "⚠️ Produkuje nepraktické profily pouze pro demonstraci. Ukazuje čistý výstup Bühlmannova modelu bez standardního zaokrouhlování na 3 m/1 min."
+            "continuousDeco": "Spojitá deko (bez mřížky 3 m/1 min)",
+            "continuousWarning": "⚠️ Produkuje nepraktické profily pouze pro demonstraci. Ukazuje čistý výstup Bühlmannova modelu bez standardního zaokrouhlování na 3 m/1 min."
         },
         "sac": {
             "title": "Spotřeba plynu",
@@ -1223,7 +1223,7 @@
             "bottom": "SAC na dně (l/min):",
             "deco": "Deko SAC (l/min):",
             "reserve": "Rezerva (bar):",
-            "typicalHint": "Typické SAC: 15–20 l/min (v klidu), 25–30 l/min (při práci)."
+            "typicalHint": "Typické SAC: 15–20 l/min (v klidu), 25–30 l/min (při práci)."
         },
         "waypoints": {
             "dive1Plan": "Plán ponoru 1",
@@ -1236,8 +1236,8 @@
             "colGas": "Plyn",
             "colActions": "Akce",
             "addWaypoint": "Přidat bod",
-            "timeDown": "−1 min",
-            "timeUp": "+1 min",
+            "timeDown": "−1 min",
+            "timeUp": "+1 min",
             "insertAfter": "Vložit za",
             "addRepetitiveDive": "Přidat opakovaný ponor",
             "addRepetitiveHint": "Přidat druhý ponor po povrchovém intervalu"
@@ -1267,7 +1267,7 @@
         },
         "validation": {
             "firstWaypointTime": "Ponor {0}: První bod musí být v čase 0",
-            "firstWaypointDepth": "Ponor {0}: První bod by měl být na hladině (0 m)"
+            "firstWaypointDepth": "Ponor {0}: První bod by měl být na hladině (0 m)"
         }
     },
     "divePlan": {
@@ -1293,9 +1293,9 @@
         "chartLabels": {
             "pAmb": "pAmb (okolní)",
             "pN2Alveolar": "pN₂ alveolární",
-            "tcFast": "TC1 rychlá (5 min)",
-            "tcMed": "TC5 střední (27 min)",
-            "tcSlow": "TC12 pomalá (239 min)"
+            "tcFast": "TC1 rychlá (5 min)",
+            "tcMed": "TC5 střední (27 min)",
+            "tcSlow": "TC12 pomalá (239 min)"
         },
         "tooltipLabel": "{0}: {1} bar"
     },
@@ -1401,7 +1401,7 @@
         "title": "O tomto projektu",
         "subtitle": "Experimentální výukový nástroj pro porozumění dekompresní teorii",
         "wip": {
-            "title": "🚧&nbsp;Rozpracováno",
+            "title": "🚧 Rozpracováno",
             "text": "Tento projekt je <strong>rozpracovaný</strong> a zatím nebyl nikým revidován. Obsah, výpočty a informace zde uvedené mohou obsahovat chyby nebo nepřesnosti. Používejte je dle vlastního uvážení."
         },
         "disclaimer": {
@@ -1421,18 +1421,18 @@
             "intro": "Dekompresní výpočty používají algoritmus <strong>Bühlmann ZH-L16</strong> s následujícími parametry a předpoklady:",
             "variants": {
                 "title": "Varianty modelu",
-                "a": "<strong>ZH-L16A:</strong> Původní experimentální hodnoty, poločas TC1 = 4,0 min",
-                "b": "<strong>ZH-L16B:</strong> Upraveno pro tištěné tabulky, poločas TC1 = 5,0 min",
-                "c": "<strong>ZH-L16C:</strong> Upraveno pro potápěčské počítače (výchozí), poločas TC1 = 5,0 min"
+                "a": "<strong>ZH-L16A:</strong> Původní experimentální hodnoty, poločas TC1 = 4,0 min",
+                "b": "<strong>ZH-L16B:</strong> Upraveno pro tištěné tabulky, poločas TC1 = 5,0 min",
+                "c": "<strong>ZH-L16C:</strong> Upraveno pro potápěčské počítače (výchozí), poločas TC1 = 5,0 min"
             },
             "constants": {
                 "title": "Konstanty",
-                "surfacePressure": "Tlak na hladině: 1,0 bar",
-                "waterVapor": "Tlak vodní páry: 0,0627 bar (47 mmHg při 37 °C)",
-                "pressurePer10m": "Tlak na 10 m hloubky: 1,0 bar (mořská voda)",
-                "descentRate": "Rychlost sestupu: 20&nbsp;m/min",
-                "ascentRate": "Rychlost výstupu: 10&nbsp;m/min",
-                "stopIncrement": "Krok dekompresních zastávek: 3 m"
+                "surfacePressure": "Tlak na hladině: 1,0 bar",
+                "waterVapor": "Tlak vodní páry: 0,0627 bar (47 mmHg při 37 °C)",
+                "pressurePer10m": "Tlak na 10 m hloubky: 1,0 bar (mořská voda)",
+                "descentRate": "Rychlost sestupu: 20 m/min",
+                "ascentRate": "Rychlost výstupu: 10 m/min",
+                "stopIncrement": "Krok dekompresních zastávek: 3 m"
             },
             "gf": {
                 "title": "Gradient faktory",
@@ -1478,7 +1478,7 @@
             "item4": "<strong>Bühlmann, A.A.</strong> (1984). <em>Decompression–Decompression Sickness.</em> Berlin: Springer-Verlag. — Původní dílo popisující algoritmus ZH-L16.",
             "item5": "<strong>Wikipedia</strong>. <a href=\"https://en.wikipedia.org/wiki/B%C3%BChlmann_decompression_algorithm\" target=\"_blank\" rel=\"noopener\">Bühlmann decompression algorithm</a> — Přehled algoritmu, poločasů tkáňových kompartmentů a M-hodnot.",
             "item6": "<strong>Wienke, B.R.</strong> <a href=\"https://aquatec.wordpress.com/wp-content/uploads/2011/03/decompression-theory.pdf\" target=\"_blank\" rel=\"noopener\">Decompression Theory (PDF)</a> — Komplexní úvod do fyziky a fyziologie dekomprese.",
-            "item7": "<strong>Alveolární plynová rovnice</strong>: Model zohledňuje tlak vodní páry při tělesné teplotě (37 °C) = 47 mmHg ≈ 0,0627 bar, který snižuje efektivní parciální tlak vdechovaných plynů. <a href=\"https://en.wikipedia.org/wiki/Alveolar_gas_equation\" target=\"_blank\" rel=\"noopener\">Wikipedia: Alveolar gas equation</a>",
+            "item7": "<strong>Alveolární plynová rovnice</strong>: Model zohledňuje tlak vodní páry při tělesné teplotě (37 °C) = 47 mmHg ≈ 0,0627 bar, který snižuje efektivní parciální tlak vdechovaných plynů. <a href=\"https://en.wikipedia.org/wiki/Alveolar_gas_equation\" target=\"_blank\" rel=\"noopener\">Wikipedia: Alveolar gas equation</a>",
             "item8": "<strong>Schreiner, H.R.</strong> (1971). <em>Safe Limits of Exposure to Increased Pressure.</em> — Odvození Schreinerovy rovnice pro výpočet sycení plyny při lineárních změnách tlaku.",
             "item9": "<strong>Strany potápěčské</strong>. <a href=\"https://stranypotapecske.cz\" target=\"_blank\" rel=\"noopener\">stranypotapecske.cz</a> — Komplexní český potápěčský portál a komunitní zdroj pod vedením Zdeňka Šraiera. Obsahuje rozsáhlou knihovnu recenzí knih, vzdělávací články o fyzice potápění a dekompresní teorii, databázi podmínek potápěčských lokalit, recenze výstroje a výukové materiály. Nepostradatelný zdroj pro česky mluvící potápěče na všech úrovních."
         }
@@ -1570,7 +1570,7 @@
             "subtitle": "Pohybujte potápěčem, měňte dýchací směs, nechte plynout čas — a sledujte, jak se parciální tlaky dusíku exponenciálně přibližují k okolnímu tlaku.",
             "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Fyzikální hřiště ukazující, jak sycení tkání dusíkem reaguje na změny hloubky a dýchací směsi. Nejde o plánovač ponorů.",
             "depth": "Hloubka",
-            "depthHint": "0–40 m. Změny jsou okamžité.",
+            "depthHint": "0–40 m. Změny jsou okamžité.",
             "gas": "Dýchací směs",
             "gases": {
                 "air": "Vzduch (21/79)",
@@ -1584,8 +1584,8 @@
             "speedHint": "1× = 1 simulovaná minuta za reálnou sekundu.",
             "time": "Čas",
             "timeButtons": {
-                "back": "◀ 1 min",
-                "forward": "1 min ▶",
+                "back": "◀ 1 min",
+                "forward": "1 min ▶",
                 "reset": "Reset"
             },
             "keyboardHint": "Klávesnice: ← / → krok, mezerník pro přehrání/pozastavení.",
@@ -1596,9 +1596,9 @@
                 "pO2": "pO₂",
                 "pN2Inspired": "pN₂ vdechovaný",
                 "pN2Alveolar": "pN₂ alveolární",
-                "tcFast": "TC1 • rychlý (5 min)",
-                "tcMed": "TC5 • střední (27 min)",
-                "tcSlow": "TC12 • pomalý (239 min)",
+                "tcFast": "TC1 • rychlý (5 min)",
+                "tcMed": "TC5 • střední (27 min)",
+                "tcSlow": "TC12 • pomalý (239 min)",
                 "time": "Simulační čas"
             },
             "alertOk": "Vše v pořádku",
@@ -1617,17 +1617,17 @@
                 "customVolume": "Vlastní objem (l)"
             },
             "volumes": {
-                "pony": "3 l (Pony)",
-                "al40": "5,5 l (AL40)",
-                "al50": "7 l (AL50)",
-                "single10": "10 l (Single)",
-                "al80": "11 l (AL80)",
-                "single12": "12 l (Single)",
-                "single15": "15 l (Single)",
-                "single18": "18 l (Single)",
-                "doubles7": "2×7 l (dvojče)",
-                "doubles10": "2×10 l (dvojče)",
-                "doubles12": "2×12 l (dvojče)",
+                "pony": "3 l (Pony)",
+                "al40": "5,5 l (AL40)",
+                "al50": "7 l (AL50)",
+                "single10": "10 l (Single)",
+                "al80": "11 l (AL80)",
+                "single12": "12 l (Single)",
+                "single15": "15 l (Single)",
+                "single18": "18 l (Single)",
+                "doubles7": "2×7 l (dvojče)",
+                "doubles10": "2×10 l (dvojče)",
+                "doubles12": "2×12 l (dvojče)",
                 "custom": "Vlastní…"
             },
             "buttons": {
@@ -1798,7 +1798,7 @@
                     },
                     "pAmb": {
                         "name": "P<sub>amb</sub> | okolní tlak",
-                        "why": "Hodnota na vodorovné ose M-grafu. Každý metr hloubky přidá 0,1 bar."
+                        "why": "Hodnota na vodorovné ose M-grafu. Každý metr hloubky přidá 0,1 bar."
                     },
                     "b": {
                         "name": "b | sklon tkáně",
@@ -1814,14 +1814,14 @@
                     "xAxis": "P_amb (bar)",
                     "yAxis": "P_t (bar)",
                     "legendAmbient": "Přímka okolního tlaku (y = x)",
-                    "legendSurface": "Hladina (P_amb = 1,013 bar)"
+                    "legendSurface": "Hladina (P_amb = 1,013 bar)"
                 },
                 "legend": {
                     "variantA": "ZH-L16A (dlouhá čárka)",
                     "variantB": "ZH-L16B (krátká čárka)",
                     "variantC": "ZH-L16C (plná)",
                     "ambient": "Přímka okolního tlaku (y = x)",
-                    "surface": "Hladina (P_amb = 1,013 bar)"
+                    "surface": "Hladina (P_amb = 1,013 bar)"
                 }
             },
             "variantBar": {
@@ -1986,10 +1986,10 @@
         },
         "cascade": {
             "title": "Kaskádová plnicí stanice",
-            "subtitle": "Kliknutím na ventily propojte lahve a poté plňte (max. 3 hadice, limit 200 bar)",
+            "subtitle": "Kliknutím na ventily propojte lahve a poté plňte (max. 3 hadice, limit 200 bar)",
             "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Simuluje kaskádové plnění pomocí Boyleova zákona.",
             "setupHeading": "Nastavení",
-            "cascadeBank": "Kaskádová baterie (4 × 50 l)",
+            "cascadeBank": "Kaskádová baterie (4 × 50 l)",
             "targetCylinders": "Cílové lahve",
             "controlsHeading": "Ovládání",
             "remaining": "Zbývá:",
@@ -2009,14 +2009,14 @@
                 "12": "12 lahví"
             },
             "volumes": {
-                "al50": "7 l (AL50)",
-                "single10": "10 l (Single)",
-                "al80": "11 l (AL80)",
-                "single12": "12 l (Single)",
-                "single15": "15 l (Single)"
+                "al50": "7 l (AL50)",
+                "single10": "10 l (Single)",
+                "al80": "11 l (AL80)",
+                "single12": "12 l (Single)",
+                "single15": "15 l (Single)"
             },
             "startPressures": {
-                "empty": "0 bar (prázdná)"
+                "empty": "0 bar (prázdná)"
             },
             "buttons": {
                 "reset": "Resetovat vše",

@@ -10,12 +10,18 @@ Závazné znění: [`docs/notation/glossary.md`](../../docs/notation/glossary.md
 ## Pět pravidel
 
 1. **Značka veličiny kurzívou, jednotka stojatě.** `<var>p</var><sub>celk</sub>`, `bar` nikdy kurzívou.
-2. **Mezi číslem a jednotkou `&nbsp;`.** Správně `20&nbsp;m`; ✗ nikdy `20m`, `20 m` ani `&#8239;`/U+202F.
+2. **Mezi číslem a jednotkou nedělitelná mezera.** V HTML `20&nbsp;m`, v JSON doslovné U+00A0; ✗ nikdy `20m`, `20 m` ani `&#8239;`/U+202F.
 3. **V češtině desetinná čárka.** Správně `2,81&nbsp;bar`; ✗ nikdy `2.81 bar`.
 4. **Tlak je malé *p*.** Parciální tlak *p*<sub>O₂</sub>, ne `ppO2`.
 5. **Víceznakové zkratky stojatě.** GF, MOD, NDL, SAC, OTU.
 
 Proč malé *p* (pravidlo 4): [style-guide.md](../../docs/notation/style-guide.md#rozhodnutí-projektu).
+
+**`&nbsp;` patří jen do `*.html`.** V `locales/*.json` a `data/*.json` se píše
+doslovné U+00A0 — tentýž řetězec může skončit na canvasu Chart.js nebo
+v `textContent`, kde by se entita vypsala uživateli i se středníkem. Hromadnou
+opravu udělá `python3 docs/notation/tools/nbsp.py --check --words -v <soubory>`;
+podrobnosti v [authoring.md §6.1](../../docs/notation/authoring.md).
 
 ## Špatně × správně
 

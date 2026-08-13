@@ -56,36 +56,35 @@ každou přes všechny soubory z Kroku 1.
 
 | # | Třída | Hledej | Oprav na |
 |---|---|---|---|
-| 1 | číslo + jednotka | `20m`, `20 m` (obyčejná mezera) | `20&nbsp;m` |
-| 2 | desetinná tečka v CZ | `2.81 bar` | `2,81&nbsp;bar` |
+| 1 | číslo + jednotka | `20m`, `20 m` (obyčejná mezera) | `20&nbsp;m` v HTML, `20`+U+00A0+`m` v JSON |
+| 2 | desetinná tečka v CZ | `2.81 bar` | `2,81` + nedělitelná mezera + `bar` |
 | 3 | značka tlaku | `P_{amb}`, `ppO2`, `T_{1/2}` | `p_{\mathrm{amb}}`, *p*<sub>O₂</sub>, *t*<sub>1/2</sub> |
 | 4 | kurzíva značky | `<em>p</em>` **jako značka** | `<var>p</var>` |
 | 5 | zkratky | GF/MOD/NDL/SAC/OTU kurzívou | stojatě |
 
-Vyhledávací příkaz na třídu 1 a 2 (nejčastěji přehlížené):
+Třídu 1 nehledej ručně — má hotový nástroj, který zná výjimky (`12litrový`,
+`60°`, `12l lahev`, skloňované názvy) a nesahá do vzorců KaTeX ani do
+`<script>`:
+
+```bash
+python3 docs/notation/tools/nbsp.py --check --words -v <soubory>
+```
+
+Výstup si projdi po řádcích **dřív, než pustíš `--fix`**. Nástroj řeší jen
+třídu 1; třídy 2–5 zůstávají na tobě.
+
+Po opravě ověř, že se změnily opravdu jen mezery:
 
 ```bash
 python3 - <<'PY'
-import json,re,sys
-UNIT=r'(?:m|cm|mm|km|l|h|min|s|bar|kPa|MPa|Pa|°C|%|msw|fsw)'
-pat=re.compile(r'(\d)(\s|&nbsp;|\u00a0|)('+UNIT+r')\b')
-PREFIX='totalPressure'          # z Kroku 1
-for loc in ('cs','en','es'):
-    d=json.load(open(f'locales/{loc}.json')).get(PREFIX,{})
-    def walk(o,p=''):
-        if isinstance(o,dict):
-            for k,v in o.items(): yield from walk(v,f'{p}.{k}' if p else k)
-        elif isinstance(o,str): yield p,o
-    for k,v in walk(d):
-        for m in pat.finditer(v):
-            sep=m.group(2)
-            if sep not in ('&nbsp;','\u00a0'):
-                print(f'{loc} {k}: ...{v[max(0,m.start()-30):m.end()+8]}...')
+import subprocess
+norm=lambda t:t.replace('&nbsp;','').replace('\u00a0','').replace(' ','')
+for f in subprocess.run(['git','diff','--name-only'],capture_output=True,text=True).stdout.split():
+    old=subprocess.run(['git','show',f'HEAD:{f}'],capture_output=True,text=True).stdout
+    ok=norm(old)==norm(open(f,encoding='utf-8').read())
+    print(f'{f:34} {"jen mezery OK" if ok else "JINA ZMENA - zkontroluj"}')
 PY
 ```
-
-Po opravách spusť kontrolu nezlomitelných mezer, je-li k dispozici:
-`python3 nbsp-check.py <soubory>`.
 
 ## Locale JSON uprav jako text, ne jako JSON
 
@@ -111,6 +110,7 @@ Obě čísla se musí shodovat. Liší-li se, změnil jsi formátování.
 Jsou to **správné** zápisy; jejich změna je regrese:
 
 - `12litrový`, `15litrová` — složené přídavné jméno, bez mezery
+- `12l lahev` — zkrácené „12litrová lahev", tedy táž složenina
 - `60°`, `180°` — úhel a azimut se píší bez mezery (`data/quiz-vessel.json` jich má 71)
 - `32%` jako přívlastek vs. `32 %` jako podstatné jméno — obojí správně, jinde
 - `kPa` a doslovné znění v kvízech — citace SPČR, cituje se verbatim
@@ -120,28 +120,35 @@ Jsou to **správné** zápisy; jejich změna je regrese:
   Oprav jen mezeru, tvar slova nech být — jinak vznikne negramatická věta.
 - `<em>` v běžné próze — v projektu je ~110 legitimních zvýraznění.
   Na `<var>` převádíš **jen** `<em>`, který nese značku veličiny.
-- `&#8239;` / U+202F — nepoužívej; projekt používá výhradně `&nbsp;`
+- `&#8239;` / U+202F — nepoužívej vůbec, ani v HTML
 
-## Pozor: `&nbsp;` platí jen tam, kde se renderuje HTML
+## Oddělovač podle typu souboru, ne podle sinku
 
-`data-i18n` prvky se plní přes `el.innerHTML` (`js/i18n.js`), takže tam je
-`&nbsp;` správně. **Řetězce kreslené na canvas se ale nedekódují** — do popisku
-grafu by se vypsalo doslova „20&nbsp;m/min".
-
-| Cesta řetězce | Použij |
+| Soubor | Použij |
 |---|---|
-| `data-i18n` → `innerHTML` | `&nbsp;` |
-| `translate()` → Chart.js `content`, `label`, `title` (canvas) | literál U+00A0 |
-| `document.title`, `alert()`, `aria-label` | literál U+00A0 |
+| `*.html` | `&nbsp;` |
+| `locales/*.json`, `data/*.json` | **doslovné U+00A0** |
 
-Než vložíš `&nbsp;` do locale klíče, dohledej, kdo ho čte:
+V datech se entita nepoužívá vůbec. Tentýž locale klíč může skončit
+v `innerHTML` (dekóduje), na canvasu Chart.js, v `textContent` (`js/quiz.js`)
+i v atributu `title` — a jen ta první cesta entitu dekóduje. Do popisku grafu
+by se vypsalo doslova „20&nbsp;m/min"; přesně to řešil PR #82.
+
+U+00A0 se vykreslí správně všude a **přežije, když někdo později změní sink**.
+Neklasifikuj klíče podle toho, kdo je zrovna čte — ta klasifikace tichem
+zestárne.
+
+Hromadnou opravu udělá `docs/notation/tools/nbsp.py`, který oddělovač volí
+podle přípony sám:
 
 ```bash
-grep -rn "chart.profile.descentRate" --include=*.js --include=*.html . | grep -v node_modules
+python3 docs/notation/tools/nbsp.py --check --words -v <soubory>   # náhled
+python3 docs/notation/tools/nbsp.py --fix   --words    <soubory>   # zápis
 ```
 
-Klíče pod `chart.*` jsou zpravidla canvas. Hlídá to test
-`tests/i18n-notation.test.js`.
+`--words` zapne i skloňované názvy jednotek („2 bary") a uplatní se jen
+na české soubory. Hlídají to testy `*.json: no &nbsp; entity`
+a `*.json: U+00A0 between value and unit` v `tests/run-tests.mjs`.
 
 ## Krok 3 — Ověření
 
