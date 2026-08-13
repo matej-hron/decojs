@@ -522,14 +522,14 @@
             <div class="control-section">
                 <h3 data-i18n="gasLaw.temperature">Temperature</h3>
                 <div class="input-group">
-                    <label data-i18n="gasLaw.initialTemp">Initial temperature T<sub>1</sub> (&deg;C)</label>
+                    <label data-i18n="gasLaw.initialTemp">Initial temperature <var>T</var><sub>1</sub> (&deg;C)</label>
                     <div class="input-row">
                         <input type="range" id="t1Slider" min="-10" max="80" value="20">
                         <input type="number" id="t1Input" min="-10" max="80" value="20">
                     </div>
                 </div>
                 <div class="input-group">
-                    <label data-i18n="gasLaw.finalTemp">Final temperature T<sub>2</sub> (&deg;C)</label>
+                    <label data-i18n="gasLaw.finalTemp">Final temperature <var>T</var><sub>2</sub> (&deg;C)</label>
                     <div class="input-row">
                         <input type="range" id="t2Slider" min="-10" max="80" value="4">
                         <input type="number" id="t2Input" min="-10" max="80" value="4">
@@ -624,12 +624,12 @@
             <div class="formula-section">
                 <h4 data-i18n="gasLaw.formulaTitle">Gay-Lussac's Law (Isochoric Process)</h4>
                 <div class="formula formula-basic">
-                    <var>p</var><sub>1</sub> / T<sub>1</sub> = <var>p</var><sub>2</sub> / T<sub>2</sub>
+                    <var>p</var><sub>1</sub> / <var>T</var><sub>1</sub> = <var>p</var><sub>2</sub> / <var>T</var><sub>2</sub>
                 </div>
                 <div class="formula-basic-note" data-i18n="gasLaw.formulaNote">pressure / temperature ratio is constant at constant volume (T in Kelvin)</div>
                 <div class="formula-rearranged-label" data-i18n="gasLaw.formulaRearranged">Rearranged:</div>
                 <div class="formula formula-general">
-                    <var>p</var><sub>2</sub> = <var>p</var><sub>1</sub> &times; T<sub>2</sub> / T<sub>1</sub>
+                    <var>p</var><sub>2</sub> = <var>p</var><sub>1</sub> &times; <var>T</var><sub>2</sub> / <var>T</var><sub>1</sub>
                 </div>
                 <div class="formula formula-step" id="formulaKelvin"></div>
                 <div class="formula formula-computed" id="formulaComputed"></div>
@@ -970,8 +970,8 @@
 
             // === Formula ===
             formulaKelvin.innerHTML =
-                `T<sub>1</sub> = ${t1C}\u00B0C + 273.15 = ${fmtNum(t1K, 2)} K &nbsp;&nbsp;|&nbsp;&nbsp; ` +
-                `T<sub>2</sub> = ${t2C}\u00B0C + 273.15 = ${fmtNum(t2K, 2)} K`;
+                `<var>T</var><sub>1</sub> = ${t1C}\u00B0C + 273.15 = ${fmtNum(t1K, 2)} K &nbsp;&nbsp;|&nbsp;&nbsp; ` +
+                `<var>T</var><sub>2</sub> = ${t2C}\u00B0C + 273.15 = ${fmtNum(t2K, 2)} K`;
 
             formulaComputed.innerHTML =
                 `<var>p</var><sub>2</sub> = ${p1} &times; ${fmtNum(t2K, 2)} / ${fmtNum(t1K, 2)} = <strong>${fmtNum(p2, 1)}\u00a0bar</strong>`;

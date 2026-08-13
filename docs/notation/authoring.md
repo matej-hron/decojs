@@ -362,6 +362,14 @@ sinkem.**
 | SVG `<text>` | `<tspan font-style="italic">t</tspan><tspan dy="3" font-size="0.72em">1/2</tspan>` | SVG nezná `<var>` ani `<sub>` |
 | `<option>`, `title=`, canvas | `t½` | obsah je podle HTML specifikace **jen text**, markup se nevykreslí |
 
+**Popisky grafů jsou canvas, i když jdou přes `locales/*.json`.** Klíč čtený
+v `js/charts/*` nebo v `TissueSaturationSim.js` končí jako `label` datasetu
+Chart.js. Fáze 2 tam našla čtyři klíče s `<var>`, které anglická a španělská
+legenda vypisovala doslova. Kontrolu drží test „no i18n key drawn on a chart
+canvas carries HTML markup": posbírá klíče z `translate('…')` v grafových
+modulech a zakáže v nich značkovací prvky. Přidáváš-li graf, přidej jeho soubor
+do seznamu `chartSources`.
+
 Než někam vložíš markup, **ověř sink**. `locales/*.json` ho snese, protože
 `applyTranslations()` v `js/i18n.js` přiřazuje `el.innerHTML`; kdyby týž klíč
 četl `textContent` nebo Chart.js, uživatel by uviděl `<var>t</var>` jako text.
