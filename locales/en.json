@@ -162,9 +162,9 @@
             "exampleTitle": "Example Calculation",
             "exampleIntro": "After a dive you note:",
             "exampleCyl": "Cylinder: 12 L",
-            "examplePressure": "Start pressure: 200 bar, End pressure: 80 bar → <strong>ΔP = 120 bar</strong>",
+            "examplePressure": "Start pressure: 200 bar, End pressure: 80 bar → <strong>Δp = 120 bar</strong>",
             "exampleTime": "Dive time: 45 minutes",
-            "exampleDepth": "Average depth: 15 m → <strong>P<sub>avg</sub> = 1 + 15/10 = 2.5 bar</strong>",
+            "exampleDepth": "Average depth: 15 m → <strong><var>p</var><sub>avg</sub> = 1 + 15/10 = 2.5 bar</strong>",
             "showSolution": "Try it yourself first — click to reveal the solution",
             "exampleResult": "This diver has a SAC rate of <strong>12.8 L/min</strong> — quite efficient! Typical recreational divers range from 12-25 L/min depending on fitness, experience, and conditions.",
             "tipsTitle": "Tips for Accurate Measurement",
@@ -444,10 +444,10 @@
             "title": "What Happens to Bubbles During Ascent?",
             "cardTitle": "Why Do Bubbles Grow?",
             "intro": "A gas bubble in tissue has three pressures acting on it:",
-            "pAmb": "<strong>Ambient pressure (P<sub>amb</sub>)</strong> — pushes the bubble inward",
+            "pAmb": "<strong>Ambient pressure (<var>p</var><sub>amb</sub>)</strong> — pushes the bubble inward",
             "pSurface": "<strong>Surface tension (2γ/r)</strong> — the Laplace pressure, also squeezes the bubble. Smaller bubbles have <em>more</em> surface tension.",
-            "pTissue": "<strong>Dissolved gas tension (P<sub>tissue</sub>)</strong> — the total pressure of gases dissolved in surrounding tissue, pushing gas <em>into</em> the bubble",
-            "insight": "When <strong>P<sub>tissue</sub> &gt; P<sub>amb</sub> + 2γ/r</strong>, gas diffuses into the bubble and it <strong>grows</strong>. As it grows, <em>r</em> increases, surface tension <em>drops</em>, making growth even easier — a <strong>positive feedback loop</strong>.",
+            "pTissue": "<strong>Dissolved gas tension (<var>p</var><sub>tissue</sub>)</strong> — the total pressure of gases dissolved in surrounding tissue, pushing gas <em>into</em> the bubble",
+            "insight": "When <strong><var>p</var><sub>tissue</sub> &gt; <var>p</var><sub>amb</sub> + 2γ/r</strong>, gas diffuses into the bubble and it <strong>grows</strong>. As it grows, <em>r</em> increases, surface tension <em>drops</em>, making growth even easier — a <strong>positive feedback loop</strong>.",
             "sliderHint": "Use the slider to ascend from 30 m. Watch how reducing ambient pressure tips the balance — larger bubbles cross the critical radius first."
         },
         "halfTimeConcept": {
@@ -586,10 +586,10 @@
         },
         "chartFormula": {
             "summary": "📐 Show the M-value formula",
-            "intro": "Bühlmann's limit for each tissue at ambient pressure P<sub>amb</sub>:",
+            "intro": "Bühlmann's limit for each tissue at ambient pressure <var>p</var><sub>amb</sub>:",
             "where": "Where:",
             "varM": "<strong>M</strong> — maximum tolerable tissue inert-gas pressure (bar)",
-            "varPamb": "<strong>P<sub>amb</sub></strong> — ambient pressure (bar)",
+            "varPamb": "<strong><var>p</var><sub>amb</sub></strong> — ambient pressure (bar)",
             "varAB": "<strong>a, b</strong> — ZH-L16 coefficients for the tissue",
             "note": "The chart plots each tissue's M-value as a red line. Tissue pressure above its line means the ceiling has been violated."
         },
@@ -635,7 +635,7 @@
             "formulaIntro": "Bühlmann's M-value formula for each compartment:",
             "formulaWhere": "Where:",
             "formulaM": "<strong>M</strong> = Maximum tolerable tissue inert gas pressure (bar)",
-            "formulaPamb": "<strong>P<sub>amb</sub></strong> = Ambient pressure at current depth (bar)",
+            "formulaPamb": "<strong><var>p</var><sub>amb</sub></strong> = Ambient pressure at current depth (bar)",
             "formulaA": "<strong>a</strong> = Intercept coefficient (bar) — tissue-specific",
             "formulaB": "<strong>b</strong> = Slope coefficient (dimensionless) — tissue-specific",
             "formulaHint": "The \"a\" coefficient is the y-intercept — the maximum tolerable tissue pressure at zero gauge pressure (surface). Faster tissues have higher \"a\" values, meaning they can handle more supersaturation.",
@@ -714,7 +714,7 @@
             "where": "Where:",
             "varMPrime": "<strong>M'</strong> — allowed ceiling pressure after GF scaling (bar)",
             "varGF": "<strong>GF</strong> — ramped from GF Low (50%) at pAnchor to GF High (80%) at the surface",
-            "varM": "<strong>M</strong> — Bühlmann raw M-value = a + P<sub>amb</sub> / b",
+            "varM": "<strong>M</strong> — Bühlmann raw M-value = a + <var>p</var><sub>amb</sub> / b",
             "note100": "At GF 100/100 the green corridor collapses onto the red M-value line — no conservatism is added.",
             "note5080": "The green band shows M' across the dive — it sits below the red M-line, shrinking toward the ambient line near the surface."
         },
@@ -936,11 +936,11 @@
     },
     "gfChart": {
         "formulaSummary": "📐 Show the GF% formula",
-        "formulaIntro": "Instantaneous Gradient Factor for a tissue at ambient pressure P<sub>amb</sub>:",
-        "formulaMValue": "Bühlmann M-value at P<sub>amb</sub>: <strong>M(P<sub>amb</sub>) = a + P<sub>amb</sub> / b</strong>",
+        "formulaIntro": "Instantaneous Gradient Factor for a tissue at ambient pressure <var>p</var><sub>amb</sub>:",
+        "formulaMValue": "Bühlmann M-value at <var>p</var><sub>amb</sub>: <strong>M(<var>p</var><sub>amb</sub>) = a + <var>p</var><sub>amb</sub> / b</strong>",
         "formulaWhere": "Where:",
-        "varPtissue": "<strong>P<sub>tissue</sub></strong> — tissue inert-gas pressure (bar)",
-        "varPamb": "<strong>P<sub>amb</sub></strong> — ambient pressure = 1 + depth/10 (bar)",
+        "varPtissue": "<strong><var>p</var><sub>tissue</sub></strong> — tissue inert-gas pressure (bar)",
+        "varPamb": "<strong><var>p</var><sub>amb</sub></strong> — ambient pressure = 1 + depth/10 (bar)",
         "varAB": "<strong>a, b</strong> — ZH-L16 Bühlmann coefficients for that tissue",
         "varGF": "<strong>GF</strong> — 0 % at ambient (fully saturated, no gradient), 100 % at the M-value (Bühlmann limit)",
         "rampNote": "During ascent the <em>allowed</em> GF is ramped linearly from GF Low at the pAnchor depth to GF High at the surface. The green corridor in the chart shows that allowed region."
@@ -972,12 +972,12 @@
         "temperature": "Temperature",
         "initialTemp": "Initial temperature T<sub>1</sub> (°C)",
         "finalTemp": "Final temperature T<sub>2</sub> (°C)",
-        "calculatePrompt": "Set up your scenario, calculate P<sub>2</sub>, then click below to check your answer.",
+        "calculatePrompt": "Set up your scenario, calculate <var>p</var><sub>2</sub>, then click below to check your answer.",
         "showResult": "Show Result",
-        "finalPressure": "Final Pressure P<sub>2</sub>",
-        "pressureChange": "Pressure Change ΔP",
+        "finalPressure": "Final Pressure <var>p</var><sub>2</sub>",
+        "pressureChange": "Pressure Change Δp",
         "usableGasChange": "Usable Gas Change",
-        "gasChangeSub": "equivalent surface liters (ΔP × volume)",
+        "gasChangeSub": "equivalent surface liters (Δp × volume)",
         "diveTimeChange": "Dive Time Change at 20 m",
         "diveTimeSub": "Surface Air Consumption 20 L/min at 3 bar (1+20/10)",
         "safety": {
@@ -1445,8 +1445,8 @@
                 "title": "Equations",
                 "haldane": "<strong>Haldane equation:</strong> Tissue loading at constant depth",
                 "schreiner": "<strong>Schreiner equation:</strong> Tissue loading during depth changes",
-                "mvalue": "<strong>M-value:</strong> M = a + P<sub>amb</sub> / b",
-                "adjustedM": "<strong>Adjusted M-value:</strong> M<sub>adj</sub> = P<sub>amb</sub> + GF × (M - P<sub>amb</sub>)"
+                "mvalue": "<strong>M-value:</strong> M = a + <var>p</var><sub>amb</sub> / b",
+                "adjustedM": "<strong>Adjusted M-value:</strong> M<sub>adj</sub> = <var>p</var><sub>amb</sub> + GF × (M - <var>p</var><sub>amb</sub>)"
             },
             "validation": {
                 "title": "Validation",
@@ -1640,7 +1640,7 @@
             },
             "resultTitle": "Equalization Complete",
             "formulaTitle": "Boyle's Law",
-            "formula": "P<sub>final</sub> = (P<sub>A</sub> × V<sub>A</sub> + P<sub>B</sub> × V<sub>B</sub>) / (V<sub>A</sub> + V<sub>B</sub>)",
+            "formula": "<var>p</var><sub>final</sub> = (<var>p</var><sub>A</sub> × V<sub>A</sub> + <var>p</var><sub>B</sub> × V<sub>B</sub>) / (V<sub>A</sub> + V<sub>B</sub>)",
             "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only. Based on ideal gas law assumptions."
         },
         "haldane": {
@@ -1679,11 +1679,11 @@
             },
             "cards": {
                 "palv": {
-                    "name": "P<sub>alv</sub> | alveolar N<sub>2</sub> pressure",
+                    "name": "<var>p</var><sub>alv</sub> | alveolar N<sub>2</sub> pressure",
                     "why": "What the lungs are pushing into the blood at target depth."
                 },
                 "pt0": {
-                    "name": "P<sub>t,0</sub> | tissue pressure at t=0",
+                    "name": "<var>p</var><sub>t,0</sub> | tissue pressure at t=0",
                     "why": "Where this compartment started, assumed equilibrated at start depth."
                 },
                 "k": {
@@ -1736,12 +1736,12 @@
             },
             "cards": {
                 "palv0": {
-                    "name": "P<sub>alv,0</sub> | alveolar N<sub>2</sub> at start depth",
+                    "name": "<var>p</var><sub>alv,0</sub> | alveolar N<sub>2</sub> at start depth",
                     "why": "Starting alveolar pressure. Slope-zero point of the moving alveolar source."
                 },
                 "pt0": {
-                    "name": "P<sub>t,0</sub> | tissue pressure at t=0",
-                    "why": "Tissue assumed equilibrated at start depth → equals P<sub>alv,0</sub>."
+                    "name": "<var>p</var><sub>t,0</sub> | tissue pressure at t=0",
+                    "why": "Tissue assumed equilibrated at start depth → equals <var>p</var><sub>alv,0</sub>."
                 },
                 "r": {
                     "name": "R | alveolar pressure rate",
@@ -1797,7 +1797,7 @@
                         "why": "Y-intercept of the M-line. Higher = more supersaturation tolerated at the surface."
                     },
                     "pAmb": {
-                        "name": "P<sub>amb</sub> | ambient pressure",
+                        "name": "<var>p</var><sub>amb</sub> | ambient pressure",
                         "why": "The horizontal axis of the M-line. Each meter of depth adds 0.1 bar."
                     },
                     "b": {
@@ -1811,17 +1811,17 @@
                     }
                 },
                 "chart": {
-                    "xAxis": "P_amb (bar)",
-                    "yAxis": "P_t (bar)",
+                    "xAxis": "p_amb (bar)",
+                    "yAxis": "p_t (bar)",
                     "legendAmbient": "Ambient line (y = x)",
-                    "legendSurface": "Surface (P_amb = 1.013 bar)"
+                    "legendSurface": "Surface (p_amb = 1.013 bar)"
                 },
                 "legend": {
                     "variantA": "ZH-L16A (long dash)",
                     "variantB": "ZH-L16B (short dash)",
                     "variantC": "ZH-L16C (solid)",
                     "ambient": "Ambient line (y = x)",
-                    "surface": "Surface (P_amb = 1.013 bar)"
+                    "surface": "Surface (p_amb = 1.013 bar)"
                 }
             },
             "variantBar": {
@@ -1893,10 +1893,10 @@
                 "heading": "Visualisation",
                 "corridor": {
                     "title": "Panel 1 — GF corridor (formula 1)",
-                    "legendRamp": "GF(P_amb) ramp",
+                    "legendRamp": "GF(p_amb) ramp",
                     "legendAnchor": "pAnchor (first stop)",
                     "legendDepth": "current depth",
-                    "legendPlan": "GF(P<sub>amb</sub>) at current depth",
+                    "legendPlan": "GF(<var>p</var><sub>amb</sub>) at current depth",
                     "legendActual": "actual tissue saturation"
                 },
                 "pp": {
@@ -1905,7 +1905,7 @@
                     "legendMAdj": "M_adj (curved)",
                     "legendChord": "linear chord (reference)",
                     "legendAmbient": "ambient (y = x)",
-                    "legendTissue": "tissue P_t",
+                    "legendTissue": "tissue p_t",
                     "legendCeiling": "ceiling"
                 }
             },
@@ -1914,7 +1914,7 @@
                 "compartment": "Tissue compartment (TC)",
                 "variant": "Variant",
                 "depth": "Current depth (m)",
-                "tissuePt": "Tissue P_t (bar)",
+                "tissuePt": "Tissue p_t (bar)",
                 "gf": "GF (%)",
                 "gfHi": "GF Hi (%)",
                 "gfLo": "GF Lo (%)",
@@ -1923,7 +1923,7 @@
                 "compartmentShort": "Compartment",
                 "variantShort": "Variant",
                 "depthShort": "Depth",
-                "tissueShort": "P_t",
+                "tissueShort": "p_t",
                 "gfShort": "GF",
                 "gfHiShort": "GF Hi",
                 "gfLoShort": "GF Lo",
@@ -1938,7 +1938,7 @@
             },
             "cards": {
                 "gf": {
-                    "name": "GF(P<sub>amb</sub>)",
+                    "name": "GF(<var>p</var><sub>amb</sub>)",
                     "sub": "interpolated from formula 1"
                 },
                 "actual": {

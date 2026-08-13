@@ -126,7 +126,7 @@ Nedělitelné mezery jsou jen jedna z pěti tříd. Zbývá:
 | Třída | Odhad | Issue |
 |---|---|---|
 | Parciální tlaky: 8 různých zápisů, 170× ASCII `2` místo `₂` | 354 výskytů, 21 souborů | #61 |
-| `P_amb` velkým písmenem | 183 v 25 souborech | #62 |
+| ~~`P_amb` velkým písmenem~~ | ~~183 v 25 souborech~~ | **hotovo** |
 | `<em>` jako značka místo `<var>` | 105 (a 110 legitimních zvýraznění nechat) | #56 |
 | `T_{1/2}` → `t_{1/2}` | 15–17 v 8–10 souborech | #62 |
 | ~~Oddělovač tisíců obyčejnou mezerou (`600 000 Pa`)~~ | ~~198 v 6 souborech~~ | **hotovo** |
@@ -151,6 +151,53 @@ Dvě věci, které vzor musí umět:
 - **`600 000 Pa` obsahuje obě třídy naráz.** Kdyby se řešily zvlášť,
   nález tisíců by překryl nález jednotky a mezera před `Pa` by zůstala
   obyčejná. Nález tisíců proto navazující jednotku pohltí.
+
+### Značka tlaku — hotovo
+
+Opraveno 271 výskytů. Velké `P` bylo ve třech tvarech a každý má jiný cíl,
+protože každý končí v jiném vykreslovači:
+
+| Povrch | Bylo | Je | Proč zrovna takhle |
+|---|---|---|---|
+| HTML / `innerHTML` | `P<sub>amb</sub>` | `<var>p</var><sub>amb</sub>` | `<var>` je kurzíva se sémantikou, `<sub>` jako sourozenec zůstane stojatě |
+| KaTeX | `P_{amb}` | `p_{\mathrm{amb}}` | bez `\mathrm` by se index vysázel kurzívou |
+| prostý text (canvas, SVG) | `P_amb` | `p_amb` | HTML se tam nevykreslí; opravitelná je jen velikost písmene |
+
+**Index se nepřekládá.** Glossary §3 chce český index (`p_okol`), ale sama si
+poznamenává, že popisky grafů jsou sdílené přes CZ/EN/ES a lokalizace indexů
+si vyžádá jejich převod do i18n. To je samostatná úloha; tady se mění jen
+velikost a řez značky.
+
+**Známé omezení:** na canvasu a v SVG nelze zapnout kurzívu uprostřed řetězce,
+takže `p_amb (bar)` zůstává stojatě. Popisek ovládacího prvku vedle grafu
+(`sandbox.gradientFactors.controls.tissuePt`) je proto schválně taky `p_t`,
+ne `<var>p</var><sub>t</sub>` — jinak by dvě sousední popisky vypadaly jinak.
+
+Doplněno CSS z `authoring.md` §2 (`var` kurzívou, `var sub` zpět stojatě,
+`.unit`/`.chem`/`.qty-abbr`, `.qty` nezlomitelné). Do té doby v projektu
+nebyl ani jeden `<var>` a pravidla v CSS chyběla, přestože je dokument
+předepisoval.
+
+**Co našel až prohlížeč, ne grep:** popisek osy `P_amb (bar)` byl natvrdo
+v inline `<script>` (`sandbox/m-values.html:998`) a přebíjel opravenou i18n
+hodnotu. Stejně tak dva fallbacky v `translate()` a šablonové literály
+skládané do `innerHTML`. Statická kontrola je hlásit nemohla, protože leží
+v zóně, kam nástroj schválně nesahá.
+
+### Vývojářský povrch se schválně nemění
+
+Velké `P` zůstává v JSDoc komentářích (40 výskytů v `js/`) a ve vývojářské
+wiki (86 výskytů). Není to opomenutí:
+
+- Oponent hodnotí **produkt**, ne zdrojový kód.
+- Jde o jeden souvislý povrch. Kdyby se převedl jen kód a wiki ne, citace
+  `file:line` ve wiki přestanou odpovídat — a rozejitá wiki je podle
+  `CLAUDE.md` horší než žádná.
+- Přejmenování v komentářích nemá žádný uživatelský efekt a zdvojnásobilo
+  by diff, ve kterém by se ztratily skutečné změny sazby.
+
+Identifikátory (`pAmb`, `PPO2_DECO_LIMIT`, `options.ppO2`) se nemění nikdy —
+to je refaktoring, ne sazba.
 
 ## Pracovní postup
 

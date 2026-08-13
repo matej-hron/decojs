@@ -1110,7 +1110,7 @@ export class GFChart {
                             label: (context) => {
                                 const label = context.dataset.label || '';
                                 return fmt(
-                                    translate('chart.gf.tooltipLabel', '{0}: P_amb={1} bar, GF={2}%'),
+                                    translate('chart.gf.tooltipLabel', '{0}: p_amb={1} bar, GF={2}%'),
                                     label, context.parsed.x.toFixed(2), context.parsed.y.toFixed(1)
                                 );
                             }

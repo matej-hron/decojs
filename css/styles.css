@@ -2091,7 +2091,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.40";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.41";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -5159,4 +5159,42 @@ textarea.form-input {
     width: 100% !important;
     height: 100% !important;
     display: block;
+}
+
+/* =========================================================================
+   Sazba fyzikálních veličin — ČSN EN ISO 80000-1 kap. 7
+   Předpis a odůvodnění: docs/notation/authoring.md §2
+   Pozor: `var(--x)` jinde v tomto souboru je vyhledání CSS proměnné,
+   ne selektor prvku <var>. Nezaměňovat.
+   ========================================================================= */
+var {
+    font-style: italic;
+}
+
+/* Popisný index uvnitř <var> zpět na stojaté (zdědil by kurzívu).
+   Doporučený zápis <var>p</var><sub>amb</sub> má <sub> jako sourozence,
+   takže ho toto pravidlo nepotřebuje — je tu pro zápis s indexem uvnitř. */
+var sub,
+var sup {
+    font-style: normal;
+}
+
+/* Výjimka: index, který je sám proměnnou, je zase kurzívou. */
+var sub var,
+var sup var {
+    font-style: italic;
+}
+
+/* Jednotky, chemické vzorce a zkratky se sázejí vždy stojatě. */
+.unit,
+.chem,
+.qty-abbr {
+    font-style: normal;
+    font-variant: normal;
+    text-decoration: none;
+}
+
+/* Hodnota a jednotka se nesmí rozdělit na konci řádku. */
+.qty {
+    white-space: nowrap;
 }

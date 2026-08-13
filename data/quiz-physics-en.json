@@ -1053,7 +1053,7 @@
         { "key": "d", "text": "Partial pressures of gases in air do not depend on the total air pressure." }
       ],
       "correct": "d",
-      "explanation": "Partial pressure depends on the total pressure. <em>p</em>O₂ = fO₂ × P_total. As depth (and pressure) increase, every partial pressure increases as well. That is why oxygen becomes toxic at depth."
+      "explanation": "Partial pressure depends on the total pressure. <em>p</em>O₂ = fO₂ × p_total. As depth (and pressure) increase, every partial pressure increases as well. That is why oxygen becomes toxic at depth."
     },
     {
       "id": 82,

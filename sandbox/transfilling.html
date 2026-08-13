@@ -474,7 +474,7 @@
             <div class="formula-section">
                 <h4 data-i18n="sandbox.transfill.formulaTitle">Boyle's Law</h4>
                 <div class="formula formula-general" data-i18n="sandbox.transfill.formula">
-                    P<sub>final</sub> = (P<sub>A</sub> × V<sub>A</sub> + P<sub>B</sub> × V<sub>B</sub>) / (V<sub>A</sub> + V<sub>B</sub>)
+                    p<sub>final</sub> = (p<sub>A</sub> × V<sub>A</sub> + p<sub>B</sub> × V<sub>B</sub>) / (V<sub>A</sub> + V<sub>B</sub>)
                 </div>
                 <div class="formula formula-computed hidden" id="formulaComputed"></div>
             </div>
@@ -671,7 +671,7 @@
                     resultSection.classList.remove('hidden');
 
                     // Show formula with initial values
-                    formulaComputed.innerHTML = `P<sub>final</sub> = (${Math.round(pressureA)} × ${volumeA} + ${Math.round(pressureB)} × ${volumeB}) / (${volumeA} + ${volumeB}) = <strong>${finalPressure.toFixed(1)} bar</strong>`;
+                    formulaComputed.innerHTML = `<var>p</var><sub>final</sub> = (${Math.round(pressureA)} × ${volumeA} + ${Math.round(pressureB)} × ${volumeB}) / (${volumeA} + ${volumeB}) = <strong>${finalPressure.toFixed(1)} bar</strong>`;
                     formulaComputed.classList.remove('hidden');
                 }
             }

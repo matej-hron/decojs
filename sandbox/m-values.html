@@ -502,9 +502,9 @@
 
             <div class="mvalues-formula">
                 <div class="formula-symbolic">
-                    <span class="term term-result">M</span>(<span class="term term-pamb">P<sub>amb</sub></span>) =
+                    <span class="term term-result">M</span>(<span class="term term-pamb">p<sub>amb</sub></span>) =
                     <span class="term term-a">a</span> +
-                    <span class="term term-pamb">P<sub>amb</sub></span> /
+                    <span class="term term-pamb">p<sub>amb</sub></span> /
                     <span class="term term-b">b</span>
                 </div>
                 <div class="formula-substituted">
@@ -523,7 +523,7 @@
                     <div class="why" data-i18n="sandbox.mvalues.top.cards.a.why">Y-intercept of the M-line. Higher = more supersaturation tolerated at the surface.</div>
                 </div>
                 <div class="mv-term-card pamb">
-                    <div class="name" data-i18n="sandbox.mvalues.top.cards.pAmb.name">P<sub>amb</sub> | ambient pressure</div>
+                    <div class="name" data-i18n="sandbox.mvalues.top.cards.pAmb.name"><var>p</var><sub>amb</sub> | ambient pressure</div>
                     <div class="formula">= 1.01325 + depth · 0.1</div>
                     <div class="value"><span id="mvPambValue">4.0133</span> bar</div>
                     <div class="why" data-i18n="sandbox.mvalues.top.cards.pAmb.why">The horizontal axis of the M-line. Each meter of depth adds 0.1&nbsp;bar.</div>
@@ -536,7 +536,7 @@
                 </div>
                 <div class="mv-term-card m">
                     <div class="name" data-i18n="sandbox.mvalues.top.cards.m.name">M | tolerated tissue pressure</div>
-                    <div class="formula">= a + P<sub>amb</sub> / b</div>
+                    <div class="formula">= a + p<sub>amb</sub> / b</div>
                     <div class="value"><span id="mvMValue2">5.5588</span> bar</div>
                     <div class="variant-compare" id="mvMCompare"></div>
                     <div class="why" data-i18n="sandbox.mvalues.top.cards.m.why">Above this, the algorithm flags supersaturation as unsafe.</div>
@@ -551,7 +551,7 @@
                 <span class="item" data-hover-variant="B"><span class="swatch dashed swatch-variant"></span><span data-i18n="sandbox.mvalues.top.legend.variantB">ZH-L16B (short dash)</span></span>
                 <span class="item" data-hover-variant="C"><span class="swatch swatch-variant"></span><span data-i18n="sandbox.mvalues.top.legend.variantC">ZH-L16C (solid)</span></span>
                 <span class="item" data-hover-line="ambient"><span class="swatch dashed" style="color:#2980b9;"></span><span data-i18n="sandbox.mvalues.top.legend.ambient">Ambient line (y = x)</span></span>
-                <span class="item" data-hover-line="surface"><span class="swatch dashed" style="color:#7f8c8d;"></span><span data-i18n="sandbox.mvalues.top.legend.surface">Surface (P_amb = 1.013&nbsp;bar)</span></span>
+                <span class="item" data-hover-line="surface"><span class="swatch dashed" style="color:#7f8c8d;"></span><span data-i18n="sandbox.mvalues.top.legend.surface">Surface (p_amb = 1.013&nbsp;bar)</span></span>
             </div>
         </section>
         <section class="mvalues-section derivation">
@@ -995,14 +995,14 @@
             const xLabel = svgEl('text', {
                 x: (CHART_W + PAD_L) / 2, y: CHART_H - 4, class: 'mv-chart-label', 'text-anchor': 'middle',
             });
-            xLabel.textContent = 'P_amb (bar)';
+            xLabel.textContent = 'p_amb (bar)';
             svg.appendChild(xLabel);
             const yLabelMid = (PAD_T + CHART_H - PAD_B) / 2;
             const yLabel = svgEl('text', {
                 x: 12, y: yLabelMid, class: 'mv-chart-label', 'text-anchor': 'middle',
                 transform: `rotate(-90, 12, ${yLabelMid})`,
             });
-            yLabel.textContent = 'P_t (bar)';
+            yLabel.textContent = 'p_t (bar)';
             svg.appendChild(yLabel);
 
             // Ambient line y = x

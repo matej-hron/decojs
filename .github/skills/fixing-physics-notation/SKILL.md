@@ -59,7 +59,7 @@ každou přes všechny soubory z Kroku 1.
 | 1 | číslo + jednotka | `20m`, `20 m` (obyčejná mezera) | `20&nbsp;m` v HTML, `20`+U+00A0+`m` v JSON |
 | 1b | oddělovač tisíců | `600 000 Pa` (obyčejná mezera) | `600`+nbsp+`000`+nbsp+`Pa` — přepínač `--thousands` |
 | 2 | desetinná tečka v CZ | `2.81 bar` | `2,81` + nedělitelná mezera + `bar` |
-| 3 | značka tlaku | `P_{amb}`, `ppO2`, `T_{1/2}` | `p_{\mathrm{amb}}`, *p*<sub>O₂</sub>, *t*<sub>1/2</sub> |
+| 3 | značka tlaku | `P_{amb}`, `ppO2`, `T_{1/2}` | `p_{\mathrm{amb}}`, *p*<sub>O₂</sub>, *t*<sub>1/2</sub> — hromadně `psym.py` |
 | 4 | kurzíva značky | `<em>p</em>` **jako značka** | `<var>p</var>` |
 | 5 | zkratky | GF/MOD/NDL/SAC/OTU kurzívou | stojatě |
 
