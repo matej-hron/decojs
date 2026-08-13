@@ -249,6 +249,7 @@
     import { previewNdl } from '../js/ndlPreview.js';
     import { GF_PRESETS } from '../js/gfPresets.js';
     import { getTripFromUrl, updateUrlWithTrip, getTripShareUrl } from '../js/tripUrl.js';
+    import { fmtNum } from '../js/format.js';
 
     const air = [{ id: 'bottom', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0,
                    cylinderVolume: 12, startPressure: 200 }];
@@ -492,7 +493,7 @@
       const cols = COMPARTMENTS.map(c => {
         const raw = per[c.id] || 0;
         const fill = Math.min(100, raw);
-        return `<span class="presat-col" data-tip="#${c.id} · ${c.halfTime} min · ${Math.round(raw)}%">
+        return `<span class="presat-col" data-tip="#${c.id} · ${fmtNum(c.halfTime)} min · ${Math.round(raw)}%">
                   <span class="presat-fill" style="height:${fill}%;background:${c.color};"></span>
                 </span>`;
       }).join('');

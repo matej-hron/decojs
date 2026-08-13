@@ -6,6 +6,7 @@
 
 import { COMPARTMENTS } from './tissueCompartments.js';
 
+import { fmtNum } from './format.js';
 let chart = null;
 
 /**
@@ -203,14 +204,14 @@ export function renderChart(canvas, results, visibleCompartments = null, gasSwit
                 },
                 tooltip: {
                     callbacks: {
-                        title: (items) => `Time: ${items[0].parsed.x.toFixed(1)} min`,
+                        title: (items) => `Time: ${fmtNum(items[0].parsed.x, 1)} min`,
                         label: (context) => {
                             const label = context.dataset.label || '';
                             const value = context.parsed.y;
                             if (label === 'Depth (m)') {
-                                return `${label}: ${value.toFixed(1)}m`;
+                                return `${label}: ${fmtNum(value, 1)}m`;
                             }
-                            return `${label}: ${value.toFixed(3)} bar`;
+                            return `${label}: ${fmtNum(value, 3)} bar`;
                         }
                     }
                 }

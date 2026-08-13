@@ -26,6 +26,7 @@ import { COMPARTMENTS } from '../tissueCompartments.js';
 import { PREDEFINED_GASES } from '../diveSetup.js';
 import { translate } from '../i18n.js';
 
+import { fmtNum } from '../format.js';
 /** Helper: replace {0}, {1}, ... placeholders with the given values. */
 function fmt(str, ...values) {
     return String(str).replace(/\{(\d+)\}/g, (_, i) => {
@@ -291,15 +292,15 @@ export class TissueSaturationSim {
         const pN2Alv = getAlveolarN2Pressure(ambient, gas.n2);
         const pO2 = ambient * gas.o2;
 
-        this.readouts.depth.textContent = `${depth.toFixed(1)} m`;
-        this.readouts.pAmb.textContent  = `${ambient.toFixed(2)} bar`;
+        this.readouts.depth.textContent = `${fmtNum(depth, 1)} m`;
+        this.readouts.pAmb.textContent  = `${fmtNum(ambient, 2)} bar`;
         this.readouts.gas.textContent   = gas.name;
-        this.readouts.pO2.textContent   = `${pO2.toFixed(2)} bar`;
-        this.readouts.pN2Insp.textContent = `${pN2Insp.toFixed(2)} bar`;
-        this.readouts.pN2Alv.textContent  = `${pN2Alv.toFixed(2)} bar`;
-        this.readouts.pFast.textContent = `${tissues[TRACKED_COMPARTMENT_IDS[0]].toFixed(2)} bar`;
-        this.readouts.pMed.textContent  = `${tissues[TRACKED_COMPARTMENT_IDS[1]].toFixed(2)} bar`;
-        this.readouts.pSlow.textContent = `${tissues[TRACKED_COMPARTMENT_IDS[2]].toFixed(2)} bar`;
+        this.readouts.pO2.textContent   = `${fmtNum(pO2, 2)} bar`;
+        this.readouts.pN2Insp.textContent = `${fmtNum(pN2Insp, 2)} bar`;
+        this.readouts.pN2Alv.textContent  = `${fmtNum(pN2Alv, 2)} bar`;
+        this.readouts.pFast.textContent = `${fmtNum(tissues[TRACKED_COMPARTMENT_IDS[0]], 2)} bar`;
+        this.readouts.pMed.textContent  = `${fmtNum(tissues[TRACKED_COMPARTMENT_IDS[1]], 2)} bar`;
+        this.readouts.pSlow.textContent = `${fmtNum(tissues[TRACKED_COMPARTMENT_IDS[2]], 2)} bar`;
 
         this._colourPpO2(pO2);
     }
@@ -322,24 +323,24 @@ export class TissueSaturationSim {
             alerts.push({ level: 'critical',
                 text: fmt(translate('tissueSim.ppO2OxygenToxicity',
                     'pO₂ {0} bar — oxygen toxicity (deco limit {1})'),
-                    pO2.toFixed(2), PPO2_DECO_LIMIT) });
+                    fmtNum(pO2, 2), PPO2_DECO_LIMIT) });
         } else if (pO2 > PPO2_REC_LIMIT) {
             alerts.push({ level: 'warn',
                 text: fmt(translate('tissueSim.ppO2AboveRec',
                     'pO₂ {0} bar — above recreational limit {1}'),
-                    pO2.toFixed(2), PPO2_REC_LIMIT) });
+                    fmtNum(pO2, 2), PPO2_REC_LIMIT) });
         }
         if (pO2 < PPO2_HYPOXIA) {
             alerts.push({ level: 'critical',
                 text: fmt(translate('tissueSim.ppO2Hypoxic',
                     'pO₂ {0} bar — hypoxic (< {1})'),
-                    pO2.toFixed(2), PPO2_HYPOXIA) });
+                    fmtNum(pO2, 2), PPO2_HYPOXIA) });
         }
         if (pN2Insp > PPN2_NARCOSIS) {
             alerts.push({ level: 'warn',
                 text: fmt(translate('tissueSim.ppN2Narcosis',
                     'pN₂ {0} bar — nitrogen narcosis likely (> {1})'),
-                    pN2Insp.toFixed(2), PPN2_NARCOSIS) });
+                    fmtNum(pN2Insp, 2), PPN2_NARCOSIS) });
         }
         const okText = translate('tissueSim.alertOk', 'All clear');
         this.alertsEl.innerHTML = alerts.length === 0
@@ -422,7 +423,7 @@ export class TissueSaturationSim {
                         callbacks: {
                             label: (ctx) => fmt(
                                 translate('tissueSim.tooltipLabel', '{0}: {1} bar'),
-                                ctx.dataset.label, ctx.parsed.y.toFixed(2)
+                                ctx.dataset.label, fmtNum(ctx.parsed.y, 2)
                             )
                         }
                     }

@@ -569,20 +569,20 @@
             <div class="result-grid">
                 <div class="result-card">
                     <div class="result-label" data-i18n="gasLaw.finalPressure">Final Pressure <var>p</var><sub>2</sub></div>
-                    <div class="result-value large" id="finalPressure">189.1&nbsp;bar</div>
+                    <div class="result-value large" id="finalPressure">—</div>
                 </div>
                 <div class="result-card">
                     <div class="result-label" data-i18n="gasLaw.pressureChange">Pressure Change &Delta;P</div>
-                    <div class="result-value" id="deltaP">-10.9&nbsp;bar</div>
+                    <div class="result-value" id="deltaP">—</div>
                 </div>
                 <div class="result-card">
                     <div class="result-label" data-i18n="gasLaw.usableGasChange">Usable Gas Change</div>
-                    <div class="result-value" id="gasChange">-130.8&nbsp;L</div>
+                    <div class="result-value" id="gasChange">—</div>
                     <div class="result-sub" id="gasChangeSub" data-i18n="gasLaw.gasChangeSub">equivalent surface liters (&Delta;P &times; volume)</div>
                 </div>
                 <div class="result-card">
                     <div class="result-label" data-i18n="gasLaw.diveTimeChange">Dive Time Change at 20&nbsp;m</div>
-                    <div class="result-value" id="timeChange">-2.2&nbsp;min</div>
+                    <div class="result-value" id="timeChange">—</div>
                     <div class="result-sub" data-i18n="gasLaw.diveTimeSub">Surface Air Consumption 20&nbsp;L/min at 3&nbsp;bar (1+20/10)</div>
                 </div>
             </div>
@@ -654,7 +654,8 @@
         initI18n();
     </script>
 
-    <script>
+    <script type="module">
+        import { fmtNum } from '../js/format.js';
         // === DOM Elements ===
         const scenarioSelect = document.getElementById('scenarioSelect');
         const pressureSlider = document.getElementById('pressureSlider');
@@ -899,7 +900,7 @@
             const fillPercent = Math.min(100, Math.max(0, (p1 / maxDisplay) * 100));
             cylinderFill.style.height = fillPercent + '%';
             cylinderFill.style.background = getFillColor(t1C);
-            cylPressure.textContent = p1.toFixed(1) + ' bar';
+            cylPressure.textContent = fmtNum(p1, 1) + ' bar';
             cylTemp.textContent = t1C + ' \u00B0C';
             cylVolume.textContent = vol + ' L';
         }
@@ -932,24 +933,24 @@
             const fillPercent = Math.min(100, Math.max(0, (p2 / maxDisplay) * 100));
             cylinderFill.style.height = fillPercent + '%';
             cylinderFill.style.background = getFillColor(t2C);
-            cylPressure.textContent = p2.toFixed(1) + ' bar';
+            cylPressure.textContent = fmtNum(p2, 1) + ' bar';
             cylTemp.textContent = t2C + ' \u00B0C';
             cylVolume.textContent = vol + ' L';
 
             // === Result cards ===
-            finalPressureEl.textContent = p2.toFixed(1) + ' bar';
+            finalPressureEl.textContent = fmtNum(p2, 1) + ' bar';
 
             const dpSign = deltaP >= 0 ? '+' : '';
-            deltaPEl.textContent = dpSign + deltaP.toFixed(1) + ' bar';
+            deltaPEl.textContent = dpSign + fmtNum(deltaP, 1) + ' bar';
             deltaPEl.className = 'result-value ' + (deltaP >= 0 ? 'positive' : 'negative');
 
             const glSign = gasChangeLiters >= 0 ? '+' : '';
-            gasChangeEl.textContent = glSign + gasChangeLiters.toFixed(0) + ' L';
+            gasChangeEl.textContent = glSign + fmtNum(gasChangeLiters, 0) + ' L';
             gasChangeEl.className = 'result-value ' + (gasChangeLiters >= 0 ? 'positive' : 'negative');
-            gasChangeSub.innerHTML = `${dpSign}${deltaP.toFixed(1)} bar &times; ${vol} L`;
+            gasChangeSub.innerHTML = `${dpSign}${fmtNum(deltaP, 1)} bar &times; ${vol} L`;
 
             const tSign = timeDelta >= 0 ? '+' : '';
-            timeChangeEl.textContent = tSign + timeDelta.toFixed(1) + ' min';
+            timeChangeEl.textContent = tSign + fmtNum(timeDelta, 1) + ' min';
             timeChangeEl.className = 'result-value ' + (timeDelta >= 0 ? 'positive' : 'negative');
 
             // === Safety indicator ===
@@ -958,10 +959,10 @@
                 safetyIndicator.textContent = i18nStrings.safetyWithin.replace('{0}', WORKING_PRESSURE);
             } else if (p2 <= TEST_PRESSURE) {
                 safetyIndicator.className = 'safety-indicator warning';
-                safetyIndicator.textContent = i18nStrings.safetyAbove.replace('{0}', p2.toFixed(1)).replace('{1}', TEST_PRESSURE);
+                safetyIndicator.textContent = i18nStrings.safetyAbove.replace('{0}', fmtNum(p2, 1)).replace('{1}', TEST_PRESSURE);
             } else {
                 safetyIndicator.className = 'safety-indicator danger';
-                safetyIndicator.textContent = i18nStrings.safetyDanger.replace('{0}', p2.toFixed(1)).replace('{1}', TEST_PRESSURE);
+                safetyIndicator.textContent = i18nStrings.safetyDanger.replace('{0}', fmtNum(p2, 1)).replace('{1}', TEST_PRESSURE);
             }
 
             // === Temperature scale ===
@@ -969,11 +970,11 @@
 
             // === Formula ===
             formulaKelvin.innerHTML =
-                `T<sub>1</sub> = ${t1C}\u00B0C + 273.15 = ${t1K.toFixed(2)} K &nbsp;&nbsp;|&nbsp;&nbsp; ` +
-                `T<sub>2</sub> = ${t2C}\u00B0C + 273.15 = ${t2K.toFixed(2)} K`;
+                `T<sub>1</sub> = ${t1C}\u00B0C + 273.15 = ${fmtNum(t1K, 2)} K &nbsp;&nbsp;|&nbsp;&nbsp; ` +
+                `T<sub>2</sub> = ${t2C}\u00B0C + 273.15 = ${fmtNum(t2K, 2)} K`;
 
             formulaComputed.innerHTML =
-                `<var>p</var><sub>2</sub> = ${p1} &times; ${t2K.toFixed(2)} / ${t1K.toFixed(2)} = <strong>${p2.toFixed(1)} bar</strong>`;
+                `<var>p</var><sub>2</sub> = ${p1} &times; ${fmtNum(t2K, 2)} / ${fmtNum(t1K, 2)} = <strong>${fmtNum(p2, 1)} bar</strong>`;
         }
 
         // === Input syncing ===

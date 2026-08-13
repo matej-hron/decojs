@@ -10,6 +10,7 @@ import { validateProfile, getDiveStats } from './diveProfile.js';
 import { renderChart, toggleCompartment, showAllCompartments, hideAllCompartments, showOnlyCompartments } from './visualization.js';
 import { loadDiveSetup, getDiveSetupWaypoints, getSurfaceInterval, formatDiveSetupSummary, saveDiveSetup, clearCache, getGases, getGasSwitchEvents, getGradientFactors } from './diveSetup.js';
 import { translate } from './i18n.js';
+import { fmtNum } from './format.js';
 
 /** Helper: replace {0}, {1}, ... placeholders with the given values. */
 function fmt(str, ...values) {
@@ -343,7 +344,7 @@ function initReferenceTable() {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td><span class="color-dot" style="background-color: ${comp.color}; display: inline-block;"></span> ${comp.id}</td>
-            <td>${comp.halfTime} min</td>
+            <td>${fmtNum(comp.halfTime)} min</td>
             <td>${getCompartmentCategory(comp.halfTime)}</td>
             <td>${comp.label.split(' - ')[1] || comp.label}</td>
             <td>${timeStr}</td>

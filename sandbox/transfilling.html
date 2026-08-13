@@ -465,9 +465,9 @@
 
             <div class="result-section hidden" id="resultSection">
                 <h3 data-i18n="sandbox.transfill.resultTitle">Equalization Complete</h3>
-                <div class="result-value" id="finalPressure">144.7&nbsp;bar</div>
+                <div class="result-value" id="finalPressure">—</div>
                 <div class="result-detail" id="resultDetail">
-                    Total gas: 2750&nbsp;bar·L (conserved)
+                    —
                 </div>
             </div>
 
@@ -498,7 +498,8 @@
         initI18n();
     </script>
 
-    <script>
+    <script type="module">
+        import { fmtNum } from '../js/format.js';
         // DOM Elements
         const volumeASelect = document.getElementById('volumeA');
         const volumeBSelect = document.getElementById('volumeB');
@@ -666,12 +667,12 @@
                 } else {
                     // Animation complete - show result
                     const totalGas = (pressureA * volumeA) + (pressureB * volumeB);
-                    finalPressureDisplay.textContent = `${finalPressure.toFixed(1)} bar`;
+                    finalPressureDisplay.textContent = `${fmtNum(finalPressure, 1)} bar`;
                     resultDetail.textContent = `Total gas: ${Math.round(totalGas)} bar·L (conserved)`;
                     resultSection.classList.remove('hidden');
 
                     // Show formula with initial values
-                    formulaComputed.innerHTML = `<var>p</var><sub>final</sub> = (${Math.round(pressureA)} × ${volumeA} + ${Math.round(pressureB)} × ${volumeB}) / (${volumeA} + ${volumeB}) = <strong>${finalPressure.toFixed(1)} bar</strong>`;
+                    formulaComputed.innerHTML = `<var>p</var><sub>final</sub> = (${Math.round(pressureA)} × ${volumeA} + ${Math.round(pressureB)} × ${volumeB}) / (${volumeA} + ${volumeB}) = <strong>${fmtNum(finalPressure, 1)} bar</strong>`;
                     formulaComputed.classList.remove('hidden');
                 }
             }

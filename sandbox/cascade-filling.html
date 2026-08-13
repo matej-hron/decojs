@@ -507,7 +507,8 @@
         initI18n();
     </script>
 
-    <script>
+    <script type="module">
+        import { fmtNum } from '../js/format.js';
         // Constants
         const CASCADE_COUNT = 4;
         const CASCADE_VOLUME = 50;
@@ -810,7 +811,7 @@
                     detailsDiv.innerHTML = `
                         <strong>${cascadeLabels}</strong> equalizing
                         <div class="predicted-result">
-                            ${isAnimating ? 'Equalizing...' : 'Will equalize to'} <strong>${eqP.toFixed(1)} bar</strong>
+                            ${isAnimating ? 'Equalizing...' : 'Will equalize to'} <strong>${fmtNum(eqP, 1)} bar</strong>
                         </div>
                     `;
                 } else {
@@ -846,7 +847,7 @@
                     detailsDiv.innerHTML = `
                         <strong>${targetLabels}</strong> equalizing
                         <div class="predicted-result">
-                            ${isAnimating ? 'Equalizing...' : 'Will equalize to'} <strong>${eqP.toFixed(1)} bar</strong>
+                            ${isAnimating ? 'Equalizing...' : 'Will equalize to'} <strong>${fmtNum(eqP, 1)} bar</strong>
                         </div>
                     `;
                 } else {
@@ -898,7 +899,7 @@
             detailsDiv.innerHTML = `
                 <strong>${cascadeLabels}</strong> ${flowDirection} <strong>${targetLabels}</strong>
                 <div class="predicted-result">
-                    ${isAnimating ? 'Equalizing...' : 'Will equalize to'} <strong>${displayP.toFixed(1)} bar</strong>
+                    ${isAnimating ? 'Equalizing...' : 'Will equalize to'} <strong>${fmtNum(displayP, 1)} bar</strong>
                     ${flowingToTarget && rawFinalP > TARGET_MAX_PRESSURE ? ' (200 bar limit on targets)' : ''}
                 </div>
             `;
@@ -1077,12 +1078,12 @@
                     `${Math.round(initialTarget[i])}→${Math.round(Math.min(targetFinal, TARGET_MAX_PRESSURE))}`
                 ).join(', ');
                 logText = `${targetStr} equalized`;
-                detailsText = `Input: ${Math.round(targetInputGas).toLocaleString()} bar-L in ${targetInputVolume} L | Final: ${finalEqPressure.toFixed(1)} bar`;
+                detailsText = `Input: ${Math.round(targetInputGas).toLocaleString()} bar-L in ${targetInputVolume} L | Final: ${fmtNum(finalEqPressure, 1)} bar`;
             } else if (targetIndices.length === 0) {
                 // Cascade-only equalization
                 const cascadeStr = cascadeIndices.map(i => `C${i + 1}`).join(', ');
                 logText = `${cascadeStr} equalized`;
-                detailsText = `Input: ${Math.round(cascadeInputGas).toLocaleString()} bar-L in ${cascadeInputVolume} L | Final: ${finalEqPressure.toFixed(1)} bar`;
+                detailsText = `Input: ${Math.round(cascadeInputGas).toLocaleString()} bar-L in ${cascadeInputVolume} L | Final: ${fmtNum(finalEqPressure, 1)} bar`;
             } else {
                 // Cascade-to-target fill
                 const cascadeStr = cascadeIndices.map(i => `C${i + 1}`).join(', ');
@@ -1097,7 +1098,7 @@
 
                 detailsText = `Input: ${Math.round(totalInputGas).toLocaleString()} bar-L (${totalVolume} L) | ` +
                     `Transferred: ${Math.round(gasTransferred).toLocaleString()} bar-L | ` +
-                    `Final: ${finalEqPressure.toFixed(1)} bar` +
+                    `Final: ${fmtNum(finalEqPressure, 1)} bar` +
                     (targetFinal > TARGET_MAX_PRESSURE ? ` (targets: ${actualTargetFinal} bar)` : '');
             }
 

@@ -752,7 +752,7 @@
     </footer>
 
     <!-- Educational interactive components -->
-    <script src="js/tissueEducation.js"></script>
+    <script src="js/tissueEducation.js" type="module"></script>
 
     <!-- Main chart and reference table -->
     <script type="module">
@@ -763,6 +763,7 @@
         import { initStickyTOC } from './js/components/StickyTOC.js';
         import { initTooltipShortcut } from './js/components/tooltipShortcut.js';
         import { initI18n, createLanguageSwitcher } from './js/i18n.js';
+        import { fmtNum } from './js/format.js';
 
         // =====================================================================
         // DIVE PROFILE DEFINITION FOR THIS PAGE
@@ -854,7 +855,7 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${comp.id}</td>
-                    <td>${comp.halfTime} min</td>
+                    <td>${fmtNum(comp.halfTime)} min</td>
                     <td><span class="category-badge ${category.toLowerCase()}">${translatedCategory}</span></td>
                     <td>${tissueLabel}</td>
                     <td>${timeStr}</td>

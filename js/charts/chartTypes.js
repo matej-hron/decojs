@@ -7,6 +7,7 @@
  * external presentations, etc.)
  */
 
+import { fmtNum } from '../format.js';
 /**
  * @typedef {Object} Gas
  * @property {string} id - Unique gas identifier
@@ -248,7 +249,7 @@ export function validateDiveSetup(setup) {
             }
             const total = (gas.o2 || 0) + (gas.n2 || 0) + (gas.he || 0);
             if (Math.abs(total - 1) > 0.001) {
-                errors.push(`Gas ${i + 1}: gas fractions must sum to 1 (got ${total.toFixed(3)})`);
+                errors.push(`Gas ${i + 1}: gas fractions must sum to 1 (got ${fmtNum(total, 3)})`);
             }
         });
     }
