@@ -205,7 +205,7 @@
         { "key": "a", "text": "before each dive, to the dive leader and/or dive supervisor" },
         { "key": "b", "text": "whenever upgrading a qualification or extending its validity" },
         { "key": "c", "text": "before each dive in difficult conditions (wind, waves, current)" },
-        { "key": "d", "text": "before each dive deeper than 30 m" }
+        { "key": "d", "text": "before each dive deeper than 30 m" }
       ],
       "correct": "b",
       "explanation": "Documents must be submitted whenever a candidate upgrades a qualification or extends its validity."
@@ -475,13 +475,13 @@
       "category": "definice-pravidla",
       "question": "The terms shallow, medium and great depth refer, in this order, to:",
       "options": [
-        { "key": "a", "text": "depths up to 6 m, 6–18 m and over 18 m" },
-        { "key": "b", "text": "depths up to 10 m, 10–20 m and over 20 m" },
-        { "key": "c", "text": "depths up to 10 m, 10–30 m and over 30 m" },
-        { "key": "d", "text": "depths up to 20 m, 20–40 m and over 40 m" }
+        { "key": "a", "text": "depths up to 6 m, 6–18 m and over 18 m" },
+        { "key": "b", "text": "depths up to 10 m, 10–20 m and over 20 m" },
+        { "key": "c", "text": "depths up to 10 m, 10–30 m and over 30 m" },
+        { "key": "d", "text": "depths up to 20 m, 20–40 m and over 40 m" }
       ],
       "correct": "c",
-      "explanation": "Shallow depth is up to 10 m, medium 10–30 m and great over 30 m."
+      "explanation": "Shallow depth is up to 10 m, medium 10–30 m and great over 30 m."
     },
     {
       "id": 38,
@@ -528,8 +528,8 @@
       "question": "Buddy teams may also be formed of buddy pairs (or trios) of trainees put together by the instructor:",
       "options": [
         { "key": "a", "text": "at the trainees' request and/or wish" },
-        { "key": "b", "text": "if the underwater horizontal visibility is at least 6 m" },
-        { "key": "c", "text": "if they are equipped with breathing-gas cylinders of at least 3.6 m³ capacity" },
+        { "key": "b", "text": "if the underwater horizontal visibility is at least 6 m" },
+        { "key": "c", "text": "if they are equipped with breathing-gas cylinders of at least 3.6 m³ capacity" },
         { "key": "d", "text": "depending on the training stage, the actual conditions and with regard to safety" }
       ],
       "correct": "d",
@@ -569,7 +569,7 @@
         { "key": "a", "text": "at least 15 minutes" },
         { "key": "b", "text": "at least 20 minutes" },
         { "key": "c", "text": "20–30 minutes" },
-        { "key": "d", "text": "at least 10 min for SPČR Junior Diver and CMAS One-Star Diver, at least 20 min for CMAS Two-Star Diver and at least 30 min for CMAS Three-Star Diver" }
+        { "key": "d", "text": "at least 10 min for SPČR Junior Diver and CMAS One-Star Diver, at least 20 min for CMAS Two-Star Diver and at least 30 min for CMAS Three-Star Diver" }
       ],
       "correct": "a",
       "explanation": "A dive counted for qualification means at least 15 minutes underwater."
@@ -592,13 +592,13 @@
       "category": "potapec-zakladni",
       "question": "A holder of the Supervised Diver qualification is entitled to:",
       "options": [
-        { "key": "a", "text": "dive in open water to a maximum depth of 12 m, accompanied by a person with a dive-leader qualification" },
-        { "key": "b", "text": "dive in open water to a maximum depth of 10 m, accompanied by a person with at least the CMAS Two-Star Diver qualification" },
-        { "key": "c", "text": "dive in open water to a maximum depth of 10 m with a holder of at least the same qualification (Supervised Diver)" },
+        { "key": "a", "text": "dive in open water to a maximum depth of 12 m, accompanied by a person with a dive-leader qualification" },
+        { "key": "b", "text": "dive in open water to a maximum depth of 10 m, accompanied by a person with at least the CMAS Two-Star Diver qualification" },
+        { "key": "c", "text": "dive in open water to a maximum depth of 10 m with a holder of at least the same qualification (Supervised Diver)" },
         { "key": "d", "text": "dive only in a sheltered water area" }
       ],
       "correct": "a",
-      "explanation": "A Supervised Diver may dive to 12 m accompanied by a person with a dive-leader qualification."
+      "explanation": "A Supervised Diver may dive to 12 m accompanied by a person with a dive-leader qualification."
     },
     {
       "id": 47,
@@ -618,13 +618,13 @@
       "category": "potapec-zakladni",
       "question": "An applicant for Supervised Diver training must, without basic diving equipment or any other aid, swim on the surface:",
       "options": [
-        { "key": "a", "text": "50 m" },
-        { "key": "b", "text": "75 m" },
-        { "key": "c", "text": "100 m" },
-        { "key": "d", "text": "200 m" }
+        { "key": "a", "text": "50 m" },
+        { "key": "b", "text": "75 m" },
+        { "key": "c", "text": "100 m" },
+        { "key": "d", "text": "200 m" }
       ],
       "correct": "a",
-      "explanation": "An applicant for Supervised Diver must swim 50 m without aids."
+      "explanation": "An applicant for Supervised Diver must swim 50 m without aids."
     },
     {
       "id": 49,
@@ -632,7 +632,7 @@
       "question": "Which of the following is NOT among the entry requirements for Supervised Diver training?",
       "options": [
         { "key": "a", "text": "minimum age of 12" },
-        { "key": "b", "text": "swimming 50 m on the surface without basic diving equipment or any other aid" },
+        { "key": "b", "text": "swimming 50 m on the surface without basic diving equipment or any other aid" },
         { "key": "c", "text": "holding a 30-second breath underwater" },
         { "key": "d", "text": "staying afloat for 5 minutes (treading water and/or floating)" }
       ],
@@ -657,7 +657,7 @@
       "category": "potapec-zakladni",
       "question": "A holder of the SPČR Junior Diver qualification is entitled to:",
       "options": [
-        { "key": "a", "text": "dive in open water with holders of CMAS One-Star and/or Two-Star Diver to a maximum depth of 20 m" },
+        { "key": "a", "text": "dive in open water with holders of CMAS One-Star and/or Two-Star Diver to a maximum depth of 20 m" },
         { "key": "b", "text": "after completing 10 open-water dives in total and reaching age 14, apply for crossover training and assessment to the CMAS One-Star Diver qualification" },
         { "key": "c", "text": "take part in dives with holders of the same qualification" },
         { "key": "d", "text": "take part in selected specialty courses" }
@@ -683,13 +683,13 @@
       "category": "potapec-zakladni",
       "question": "An applicant for SPČR Junior Diver training must, without basic diving equipment or any other aid, swim on the surface:",
       "options": [
-        { "key": "a", "text": "300 m" },
-        { "key": "b", "text": "200 m" },
-        { "key": "c", "text": "100 m" },
-        { "key": "d", "text": "50 m" }
+        { "key": "a", "text": "300 m" },
+        { "key": "b", "text": "200 m" },
+        { "key": "c", "text": "100 m" },
+        { "key": "d", "text": "50 m" }
       ],
       "correct": "b",
-      "explanation": "An applicant for SPČR Junior Diver must swim 200 m without aids."
+      "explanation": "An applicant for SPČR Junior Diver must swim 200 m without aids."
     },
     {
       "id": 54,
@@ -723,12 +723,12 @@
       "question": "A holder of the CMAS One-Star Diver qualification is entitled to:",
       "options": [
         { "key": "a", "text": "dive in open water with a holder of SPČR Junior Diver at shallow depths as the legal guardian or a person designated by them" },
-        { "key": "b", "text": "dive in open water with holders of CMAS One-Star and/or Two-Star Diver to a maximum depth of 20 m" },
+        { "key": "b", "text": "dive in open water with holders of CMAS One-Star and/or Two-Star Diver to a maximum depth of 20 m" },
         { "key": "c", "text": "after completing 40 open-water dives, apply for the CMAS Two-Star Diver qualification" },
         { "key": "d", "text": "after age 18, supervise training participants on the instructor's instructions" }
       ],
       "correct": "b",
-      "explanation": "CMAS One-Star Diver may dive with holders of One-Star and/or Two-Star Diver to a maximum of 20 m."
+      "explanation": "CMAS One-Star Diver may dive with holders of One-Star and/or Two-Star Diver to a maximum of 20 m."
     },
     {
       "id": 57,
@@ -736,12 +736,12 @@
       "question": "Entry requirements for CMAS One-Star Diver training are:",
       "options": [
         { "key": "a", "text": "minimum age of 14" },
-        { "key": "b", "text": "swimming 200 m on the surface without basic diving equipment or any other aid" },
+        { "key": "b", "text": "swimming 200 m on the surface without basic diving equipment or any other aid" },
         { "key": "c", "text": "staying afloat for 5 minutes (treading water and/or floating)" },
         { "key": "d", "text": "all answers are correct" }
       ],
       "correct": "d",
-      "explanation": "All answers are correct — age 14, 200 m swim, 5 minutes afloat."
+      "explanation": "All answers are correct — age 14, 200 m swim, 5 minutes afloat."
     },
     {
       "id": 58,
@@ -775,25 +775,25 @@
       "question": "Awarding the CMAS One-Star Diver qualification requires completing:",
       "options": [
         { "key": "a", "text": "at least 5 dives with an instructor in open water at shallow depths" },
-        { "key": "b", "text": "at least 5 dives with an instructor in open water — the first 3 at shallow depths and at least 2 more at 15–20 m" },
+        { "key": "b", "text": "at least 5 dives with an instructor in open water — the first 3 at shallow depths and at least 2 more at 15–20 m" },
         { "key": "c", "text": "at least 5 dives in open water at shallow depths, of which the first 3 with an instructor; the remaining at least 2 may be done with a person with a dive-leader qualification" },
-        { "key": "d", "text": "at least 5 dives in open water, of which the first 3 at shallow depths may be done with a person with a dive-leader qualification, and the remaining at least 2 at 15–20 m must be done with an instructor" }
+        { "key": "d", "text": "at least 5 dives in open water, of which the first 3 at shallow depths may be done with a person with a dive-leader qualification, and the remaining at least 2 at 15–20 m must be done with an instructor" }
       ],
       "correct": "b",
-      "explanation": "For One-Star Diver, 5 dives with an instructor are required — 3 at shallow depths and 2 at 15–20 m."
+      "explanation": "For One-Star Diver, 5 dives with an instructor are required — 3 at shallow depths and 2 at 15–20 m."
     },
     {
       "id": 61,
       "category": "potapec-cmas",
       "question": "A holder of the CMAS Two-Star Diver qualification is entitled to:",
       "options": [
-        { "key": "a", "text": "accompany a holder of Supervised Diver in open water to a maximum depth of 12 m" },
+        { "key": "a", "text": "accompany a holder of Supervised Diver in open water to a maximum depth of 12 m" },
         { "key": "b", "text": "assist with supervising training participants" },
-        { "key": "c", "text": "dive in open water with holders of CMAS One-Star Diver to a maximum depth of 20 m" },
+        { "key": "c", "text": "dive in open water with holders of CMAS One-Star Diver to a maximum depth of 20 m" },
         { "key": "d", "text": "act as a dive leader" }
       ],
       "correct": "c",
-      "explanation": "CMAS Two-Star Diver may dive with holders of One-Star Diver to a maximum of 20 m."
+      "explanation": "CMAS Two-Star Diver may dive with holders of One-Star Diver to a maximum of 20 m."
     },
     {
       "id": 62,
@@ -852,7 +852,7 @@
       "category": "potapec-cmas",
       "question": "A holder of the CMAS Three-Star Diver qualification is entitled to:",
       "options": [
-        { "key": "a", "text": "accompany a holder of Supervised Diver in open water to depths greater than 20 m" },
+        { "key": "a", "text": "accompany a holder of Supervised Diver in open water to depths greater than 20 m" },
         { "key": "b", "text": "assess trainees' knowledge and/or skills during training for Supervised Diver and SPČR Junior Diver" },
         { "key": "c", "text": "supervise training participants on the instructor's instructions" },
         { "key": "d", "text": "all answers are correct" }
@@ -904,9 +904,9 @@
       "category": "potapec-cmas",
       "question": "For the experience required for CMAS Three-Star Diver, dives in more demanding conditions are considered to be:",
       "options": [
-        { "key": "a", "text": "dives in visibility under 2 m" },
-        { "key": "b", "text": "dives in water below 10 °C" },
-        { "key": "c", "text": "dives below 30 m" },
+        { "key": "a", "text": "dives in visibility under 2 m" },
+        { "key": "b", "text": "dives in water below 10 °C" },
+        { "key": "c", "text": "dives below 30 m" },
         { "key": "d", "text": "all answers are correct" }
       ],
       "correct": "d",
@@ -1049,11 +1049,11 @@
       "options": [
         { "key": "a", "text": "attending at least 2 SPČR instructor seminars" },
         { "key": "b", "text": "completing a practical session on oxygen administration as first aid" },
-        { "key": "c", "text": "submerging in basic kit and bringing up a marker from 10 m" },
-        { "key": "d", "text": "bringing a buddy up from 20–30 m using a BCD and towing them on the surface for 50 m" }
+        { "key": "c", "text": "submerging in basic kit and bringing up a marker from 10 m" },
+        { "key": "d", "text": "bringing a buddy up from 20–30 m using a BCD and towing them on the surface for 50 m" }
       ],
       "correct": "c",
-      "explanation": "Submerging in basic kit and retrieving a marker from 10 m is not among the extension conditions."
+      "explanation": "Submerging in basic kit and retrieving a marker from 10 m is not among the extension conditions."
     },
     {
       "id": 82,
@@ -1061,7 +1061,7 @@
       "question": "An applicant who, during the period under review, has trained more than 40 divers within the CMAS/SPČR system including award of the qualification and against whom no justified or substantial complaints have been raised, can extend their instructor qualification by:",
       "options": [
         { "key": "a", "text": "attending one SPČR instructor seminar, provided they completed all the presentations" },
-        { "key": "b", "text": "attending one SPČR instructor seminar, provided they completed practical sessions on resuscitation and oxygen administration as first aid, and demonstrated bringing a buddy up from 20–30 m and towing them 50 m on the surface" },
+        { "key": "b", "text": "attending one SPČR instructor seminar, provided they completed practical sessions on resuscitation and oxygen administration as first aid, and demonstrated bringing a buddy up from 20–30 m and towing them 50 m on the surface" },
         { "key": "c", "text": "a written request addressed to the SPČR Training Committee" },
         { "key": "d", "text": "none of the answers is correct" }
       ],
@@ -1154,7 +1154,7 @@
         { "key": "a", "text": "they completed SPČR training methodology training in the past 3 years" },
         { "key": "b", "text": "they completed at least 80 dives in the past 2 years" },
         { "key": "c", "text": "they attended at least 2 SPČR instructor seminars in the past 5 years" },
-        { "key": "d", "text": "they demonstrated bringing a buddy up from 20–30 m using a BCD and towing them 50 m on the surface within the past 5 years" }
+        { "key": "d", "text": "they demonstrated bringing a buddy up from 20–30 m using a BCD and towing them 50 m on the surface within the past 5 years" }
       ],
       "correct": "a",
       "explanation": "An applicant for One-Star Instructor must show completion of training methodology training in the past 3 years."

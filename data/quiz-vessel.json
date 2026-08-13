@@ -74,11 +74,11 @@
       "options": [
         {"key": "a", "text": "rychlosti rovná 1 námořní míli za hodinu"},
         {"key": "b", "text": "vzdálenosti rovná 1/10 námořní míle"},
-        {"key": "c", "text": "rychlosti rovná 1 km za hodinu"},
-        {"key": "d", "text": "hloubky rovná 1,83 m"}
+        {"key": "c", "text": "rychlosti rovná 1 km za hodinu"},
+        {"key": "d", "text": "hloubky rovná 1,83 m"}
       ],
       "correct": "a",
-      "explanation": "Uzel (knot) je jednotka rychlosti rovná 1 námořní míli za hodinu (1,852 km/h)."
+      "explanation": "Uzel (knot) je jednotka rychlosti rovná 1 námořní míli za hodinu (1,852 km/h)."
     },
     {
       "id": 7,
@@ -98,10 +98,10 @@
       "category": "technika",
       "question": "Při plavbě ve skluzu je oproti výtlačné plavbě:",
       "options": [
-        {"key": "a", "text": "rychlost plavby větší a spotřeba paliva (na 1 km) větší"},
-        {"key": "b", "text": "rychlost plavby větší a spotřeba paliva (na 1 km) menší"},
-        {"key": "c", "text": "rychlost plavby menší a spotřeba paliva (na 1 km) menší"},
-        {"key": "d", "text": "rychlost plavby menší a spotřeba paliva (na 1 km) větší"}
+        {"key": "a", "text": "rychlost plavby větší a spotřeba paliva (na 1 km) větší"},
+        {"key": "b", "text": "rychlost plavby větší a spotřeba paliva (na 1 km) menší"},
+        {"key": "c", "text": "rychlost plavby menší a spotřeba paliva (na 1 km) menší"},
+        {"key": "d", "text": "rychlost plavby menší a spotřeba paliva (na 1 km) větší"}
       ],
       "correct": "b",
       "explanation": "Ve skluzu (planing) je rychlost vyšší a spotřeba na kilometr nižší díky menšímu odporu."
@@ -137,13 +137,13 @@
       "category": "pocasi",
       "question": "Na evropských pobřežích probíhají slapové jevy:",
       "options": [
-        {"key": "a", "text": "přibližně dvakrát za 25 h odliv i příliv"},
-        {"key": "b", "text": "každých 25 h jednou (jeden příliv za 12 h 25 minut)"},
-        {"key": "c", "text": "každých 12 h 25 minut příliv při springu a co 6 hodin při neapu"},
-        {"key": "d", "text": "každých 12 h 25 minut odliv při neapu a co 6 hodin při springu"}
+        {"key": "a", "text": "přibližně dvakrát za 25 h odliv i příliv"},
+        {"key": "b", "text": "každých 25 h jednou (jeden příliv za 12 h 25 minut)"},
+        {"key": "c", "text": "každých 12 h 25 minut příliv při springu a co 6 hodin při neapu"},
+        {"key": "d", "text": "každých 12 h 25 minut odliv při neapu a co 6 hodin při springu"}
       ],
       "correct": "a",
-      "explanation": "Na evropských pobřežích jsou přibližně 2 přílivy a 2 odlivy za cca 25 hodin (slapový den)."
+      "explanation": "Na evropských pobřežích jsou přibližně 2 přílivy a 2 odlivy za cca 25 hodin (slapový den)."
     },
     {
       "id": 12,
@@ -332,10 +332,10 @@
       "category": "kotveni",
       "question": "Délka kotevního lana nafukovacího člunu by měla být:",
       "options": [
-        {"key": "a", "text": "25 m"},
+        {"key": "a", "text": "25 m"},
         {"key": "b", "text": "rovná hloubce nad níž hodláme kotvit"},
         {"key": "c", "text": "alespoň dvojnásobkem hloubky nad níž hodláme kotvit"},
-        {"key": "d", "text": "300 m"}
+        {"key": "d", "text": "300 m"}
       ],
       "correct": "c",
       "explanation": "Kotevní lano by mělo být alespoň dvojnásobkem hloubky pro správný záběr kotvy."
@@ -585,7 +585,7 @@
         {"key": "d", "text": "1 stupni na zemské rovnoběžce"}
       ],
       "correct": "a",
-      "explanation": "Námořní míle odpovídá 1 úhlové minutě na zemském poledníku (přibližně 1852 m)."
+      "explanation": "Námořní míle odpovídá 1 úhlové minutě na zemském poledníku (přibližně 1852 m)."
     },
     {
       "id": 46,

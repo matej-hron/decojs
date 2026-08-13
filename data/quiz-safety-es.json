@@ -33,7 +33,7 @@
       "category": "obecne-smernice",
       "question": "Los buceadores deben respetar:",
       "options": [
-        { "key": "a", "text": "un perfil de inmersión cuya profundidad media no supere los 15 m" },
+        { "key": "a", "text": "un perfil de inmersión cuya profundidad media no supere los 15 m" },
         { "key": "b", "text": "el uso del tubo respirador al nadar en superficie con el equipo autónomo" },
         { "key": "c", "text": "las restricciones aplicables a la cualificación que poseen" },
         { "key": "d", "text": "una pauta de buceo de hasta dos inmersiones diarias" }
@@ -98,10 +98,10 @@
       "category": "zpusobilost",
       "question": "Los buceadores evitan en cualquier caso bucear:",
       "options": [
-        { "key": "a", "text": "con temperaturas inferiores a −10 °C" },
+        { "key": "a", "text": "con temperaturas inferiores a −10 °C" },
         { "key": "b", "text": "si sus capacidades físicas y/o psíquicas están mermadas por el cansancio" },
         { "key": "c", "text": "si no van equipados con un ordenador de buceo" },
-        { "key": "d", "text": "cuando la visibilidad bajo el agua cae por debajo de 2 m" }
+        { "key": "d", "text": "cuando la visibilidad bajo el agua cae por debajo de 2 m" }
       ],
       "correct": "b",
       "explanation": "Los buceadores evitan bucear cuando sus capacidades físicas y/o psíquicas están mermadas por el cansancio."
@@ -127,7 +127,7 @@
         { "key": "a", "text": "deben prestar especial atención al equipo antes de la inmersión" },
         { "key": "b", "text": "deben prestar especial atención a la planificación de las inmersiones" },
         { "key": "c", "text": "evitan en cualquier caso bucear" },
-        { "key": "d", "text": "bucean a profundidad limitada (Buceador CMAS P1 máx. 10 m, P2 máx. 15 m, P3 o instructor máx. 20 m)" }
+        { "key": "d", "text": "bucean a profundidad limitada (Buceador CMAS P1 máx. 10 m, P2 máx. 15 m, P3 o instructor máx. 20 m)" }
       ],
       "correct": "c",
       "explanation": "Los buceadores con capacidades mermadas evitan en cualquier caso bucear."
@@ -151,12 +151,12 @@
       "question": "Marque la afirmación que NO se ajusta a las Normas de Seguridad de la SPČR:",
       "options": [
         { "key": "a", "text": "Los buceadores evitan bucear cuando sus capacidades físicas y/o psíquicas están mermadas por enfermedad, cansancio, consumo de alcohol o drogas u otras circunstancias." },
-        { "key": "b", "text": "Los buceadores evitan bucear cuando la temperatura del agua baja de los 6 °C." },
+        { "key": "b", "text": "Los buceadores evitan bucear cuando la temperatura del agua baja de los 6 °C." },
         { "key": "c", "text": "Los buceadores mantienen continuamente sus destrezas de buceo y su condición física." },
         { "key": "d", "text": "Los buceadores previenen los accidentes mediante la práctica regular, el ejercicio de situaciones críticas y la planificación responsable." }
       ],
       "correct": "b",
-      "explanation": "Las normas no recogen una restricción de bucear cuando la temperatura del agua cae por debajo de 6 °C."
+      "explanation": "Las normas no recogen una restricción de bucear cuando la temperatura del agua cae por debajo de 6 °C."
     },
     {
       "id": 13,
@@ -178,7 +178,7 @@
       "options": [
         { "key": "a", "text": "previenen los accidentes ejercitando la resolución de situaciones críticas" },
         { "key": "b", "text": "mantienen sus destrezas y su condición física en el periodo previo a cada subida de cualificación" },
-        { "key": "c", "text": "evitan en cualquier caso bucear cuando la visibilidad horizontal bajo el agua cae por debajo de 2 m" },
+        { "key": "c", "text": "evitan en cualquier caso bucear cuando la visibilidad horizontal bajo el agua cae por debajo de 2 m" },
         { "key": "d", "text": "todas las respuestas son correctas" }
       ],
       "correct": "a",
@@ -229,7 +229,7 @@
       "question": "El haber completado un curso o formación específicos y respetar las normas de seguridad allí indicadas:",
       "options": [
         { "key": "a", "text": "se exige a todos los buceadores con cualificación CMAS P2 o superior" },
-        { "key": "b", "text": "se exige para bucear en grupos pequeños, con visibilidad bajo el agua inferior a 2 m y a mayor distancia de la costa" },
+        { "key": "b", "text": "se exige para bucear en grupos pequeños, con visibilidad bajo el agua inferior a 2 m y a mayor distancia de la costa" },
         { "key": "c", "text": "no se exige para el buceo bajo hielo" },
         { "key": "d", "text": "se exige para bucear con mezclas respiratorias artificiales, con rebreathers, en espacios cerrados (incluido el buceo bajo hielo) y en otras condiciones difíciles" }
       ],
@@ -320,12 +320,12 @@
       "question": "Marque la afirmación que NO se ajusta a las Normas de Seguridad de la SPČR:",
       "options": [
         { "key": "a", "text": "El equipo de buceo debe ser operativo y adecuado para la inmersión planificada." },
-        { "key": "b", "text": "Para bucear a profundidades superiores a 10 m solo puede usarse equipo con certificado internacional CMAS." },
+        { "key": "b", "text": "Para bucear a profundidades superiores a 10 m solo puede usarse equipo con certificado internacional CMAS." },
         { "key": "c", "text": "Para el buceo en aguas abiertas son imprescindibles el cuchillo de buceo (u otra herramienta adecuada) y el chaleco compensador." },
         { "key": "d", "text": "El traje seco de buceo no se considera chaleco compensador." }
       ],
       "correct": "b",
-      "explanation": "Las normas no exigen un certificado CMAS para el equipo en inmersiones de más de 10 m."
+      "explanation": "Las normas no exigen un certificado CMAS para el equipo en inmersiones de más de 10 m."
     },
     {
       "id": 26,
@@ -373,7 +373,7 @@
       "options": [
         { "key": "a", "text": "al menos uno de la pareja de buceadores" },
         { "key": "b", "text": "cada buceador" },
-        { "key": "c", "text": "cada buceador en inmersiones a más de 10 m" },
+        { "key": "c", "text": "cada buceador en inmersiones a más de 10 m" },
         { "key": "d", "text": "al menos uno del trío de buceadores" }
       ],
       "correct": "b",
@@ -387,7 +387,7 @@
         { "key": "a", "text": "deben estar en posesión de al menos uno de la pareja (o del trío) de buceadores" },
         { "key": "b", "text": "deben estar en posesión de cada buceador" },
         { "key": "c", "text": "los buceadores los llevan según sus posibilidades y criterio" },
-        { "key": "d", "text": "los buceadores los llevan en inmersiones a más de 10 m" }
+        { "key": "d", "text": "los buceadores los llevan en inmersiones a más de 10 m" }
       ],
       "correct": "b",
       "explanation": "Cada buceador debe llevar la fuente alternativa de gas respiratorio y demás equipamiento citado."
@@ -447,7 +447,7 @@
     {
       "id": 35,
       "category": "vystroj",
-      "question": "Cuando la visibilidad horizontal bajo el agua es inferior a 2 m:",
+      "question": "Cuando la visibilidad horizontal bajo el agua es inferior a 2 m:",
       "options": [
         { "key": "a", "text": "se utiliza un cabo guía" },
         { "key": "b", "text": "se recomienda el uso de un foco potente" },
@@ -455,7 +455,7 @@
         { "key": "d", "text": "es necesario evitar el buceo" }
       ],
       "correct": "a",
-      "explanation": "Cuando la visibilidad horizontal bajo el agua es inferior a 2 m se utiliza un cabo guía."
+      "explanation": "Cuando la visibilidad horizontal bajo el agua es inferior a 2 m se utiliza un cabo guía."
     },
     {
       "id": 36,
@@ -464,11 +464,11 @@
       "options": [
         { "key": "a", "text": "en el buceo nocturno" },
         { "key": "b", "text": "en la apnea en aguas confinadas" },
-        { "key": "c", "text": "al bucear a profundidades superiores a 30 m" },
-        { "key": "d", "text": "cuando la visibilidad horizontal bajo el agua es inferior a 2 m" }
+        { "key": "c", "text": "al bucear a profundidades superiores a 30 m" },
+        { "key": "d", "text": "cuando la visibilidad horizontal bajo el agua es inferior a 2 m" }
       ],
       "correct": "d",
-      "explanation": "El cabo guía se utiliza cuando la visibilidad horizontal bajo el agua es inferior a 2 m."
+      "explanation": "El cabo guía se utiliza cuando la visibilidad horizontal bajo el agua es inferior a 2 m."
     },
     {
       "id": 37,
@@ -478,10 +478,10 @@
         { "key": "a", "text": "El equipo debe estar correctamente sujeto, ordenado y utilizado para que no haya peligro de daños y/o enganches." },
         { "key": "b", "text": "El chaleco compensador no debe usarse para sustituir un dispositivo de izado." },
         { "key": "c", "text": "Cada buceador debe llevar aparatos para determinar la profundidad y el tiempo bajo el agua o un ordenador de buceo." },
-        { "key": "d", "text": "Cuando la visibilidad horizontal es inferior a 4 m se utiliza un cabo guía." }
+        { "key": "d", "text": "Cuando la visibilidad horizontal es inferior a 4 m se utiliza un cabo guía." }
       ],
       "correct": "d",
-      "explanation": "Las normas indican el uso del cabo guía con visibilidad inferior a 2 m, no a 4 m."
+      "explanation": "Las normas indican el uso del cabo guía con visibilidad inferior a 2 m, no a 4 m."
     },
     {
       "id": 38,
@@ -528,7 +528,7 @@
       "question": "Los buceadores conocen:",
       "options": [
         { "key": "a", "text": "el uso de profundímetros de respaldo" },
-        { "key": "b", "text": "la reducción de los tiempos sin descompresión a profundidades superiores a 18 m" },
+        { "key": "b", "text": "la reducción de los tiempos sin descompresión a profundidades superiores a 18 m" },
         { "key": "c", "text": "la prolongación de los tiempos de descompresión en inmersiones repetitivas" },
         { "key": "d", "text": "las señales de buceo" }
       ],
@@ -634,7 +634,7 @@
         { "key": "a", "text": "contacto visual permanente" },
         { "key": "b", "text": "la distancia que les permita ayudarse mutuamente en caso de problema" },
         { "key": "c", "text": "una distancia equivalente a la mitad de la visibilidad horizontal bajo el agua" },
-        { "key": "d", "text": "una distancia inferior a 2 m" }
+        { "key": "d", "text": "una distancia inferior a 2 m" }
       ],
       "correct": "b",
       "explanation": "Los buceadores mantienen entre sí la distancia que les permita ayudarse mutuamente en caso de problema."
@@ -644,26 +644,26 @@
       "category": "planovani-ponoru",
       "question": "Los buceadores no superan la profundidad de:",
       "options": [
-        { "key": "a", "text": "30 m" },
-        { "key": "b", "text": "40 m" },
-        { "key": "c", "text": "50 m" },
-        { "key": "d", "text": "60 m" }
+        { "key": "a", "text": "30 m" },
+        { "key": "b", "text": "40 m" },
+        { "key": "c", "text": "50 m" },
+        { "key": "d", "text": "60 m" }
       ],
       "correct": "b",
-      "explanation": "Los buceadores no superan la profundidad de 40 m."
+      "explanation": "Los buceadores no superan la profundidad de 40 m."
     },
     {
       "id": 51,
       "category": "planovani-ponoru",
       "question": "Marque la afirmación que NO se ajusta a las Normas de Seguridad de la SPČR 2016:",
       "options": [
-        { "key": "a", "text": "Los buceadores no superan la profundidad de 30 m." },
+        { "key": "a", "text": "Los buceadores no superan la profundidad de 30 m." },
         { "key": "b", "text": "Los buceadores conocen las señales de buceo." },
         { "key": "c", "text": "Antes de bucear, los buceadores se familiarizan con la forma de avisar a los servicios de emergencia y con la ubicación de la cámara hiperbárica." },
         { "key": "d", "text": "Durante la inmersión y en superficie, los buceadores mantienen entre sí la distancia que les permita ayudarse mutuamente en caso de problema." }
       ],
       "correct": "a",
-      "explanation": "Las normas establecen una profundidad máxima de 40 m, no de 30 m."
+      "explanation": "Las normas establecen una profundidad máxima de 40 m, no de 30 m."
     },
     {
       "id": 52,
@@ -735,7 +735,7 @@
       "category": "planovani-ponoru",
       "question": "Marque la afirmación que NO se ajusta a las Normas de Seguridad de la SPČR 2016:",
       "options": [
-        { "key": "a", "text": "Los buceadores no superan la profundidad de 40 m." },
+        { "key": "a", "text": "Los buceadores no superan la profundidad de 40 m." },
         { "key": "b", "text": "Las inmersiones se organizan para que en el ascenso no haya que realizar descompresión escalonada." },
         { "key": "c", "text": "Tras la inmersión los buceadores evitan la deshidratación." },
         { "key": "d", "text": "Si la descompresión escalonada es inevitable en la inmersión, hay que organizarla de modo que no sea necesario realizar más de dos paradas de descompresión." }
@@ -775,7 +775,7 @@
       "question": "Los buceadores:",
       "options": [
         { "key": "a", "text": "durante la inmersión y en superficie mantienen entre sí la distancia que les permita ayudarse mutuamente en caso de problema" },
-        { "key": "b", "text": "no superan la profundidad de 50 m" },
+        { "key": "b", "text": "no superan la profundidad de 50 m" },
         { "key": "c", "text": "antes de la inmersión realizan una comprobación de pareja centrada en el correcto llenado de las libretas de buceo" },
         { "key": "d", "text": "evitan las paradas de seguridad en inmersiones sin descompresión" }
       ],
@@ -943,7 +943,7 @@
       "category": "organizace-akci",
       "question": "Resulta conveniente elegir un jefe de inmersión entre los participantes:",
       "options": [
-        { "key": "a", "text": "cuando la visibilidad bajo el agua cae por debajo de 2 m" },
+        { "key": "a", "text": "cuando la visibilidad bajo el agua cae por debajo de 2 m" },
         { "key": "b", "text": "al bucear a mayor distancia de la costa" },
         { "key": "c", "text": "en eventos de buceo de mayor envergadura" },
         { "key": "d", "text": "cuando bucean 4 o más buceadores a la vez" }
@@ -1024,7 +1024,7 @@
         { "key": "a", "text": "cada buceador" },
         { "key": "b", "text": "uno de cada dos buceadores (en un buddy team de tres, por dos de los tres)" },
         { "key": "c", "text": "el jefe de inmersión" },
-        { "key": "d", "text": "el instructor durante la formación a más de 10 m" }
+        { "key": "d", "text": "el instructor durante la formación a más de 10 m" }
       ],
       "correct": "a",
       "explanation": "Cada buceador debe llevar un dispositivo para medir la presión del gas respiratorio."
@@ -1047,7 +1047,7 @@
       "category": "doprovodne-plavidlo",
       "question": "Para asegurar el buceo a mayor distancia de la costa se utiliza:",
       "options": [
-        { "key": "a", "text": "un equipo autónomo con una capacidad mínima de 4 m³" },
+        { "key": "a", "text": "un equipo autónomo con una capacidad mínima de 4 m³" },
         { "key": "b", "text": "un chaleco compensador tipo ala" },
         { "key": "c", "text": "una cámara hiperbárica con personal" },
         { "key": "d", "text": "una embarcación de apoyo adecuada" }
@@ -1244,8 +1244,8 @@
       "options": [
         { "key": "a", "text": "los buceadores limitan la búsqueda mutua a unos 30 segundos y, si no se restablece el contacto, continúan la inmersión según el plan original" },
         { "key": "b", "text": "los buceadores limitan la búsqueda mutua a unos 30 segundos y ascienden a la superficie respetando las reglas de un ascenso seguro" },
-        { "key": "c", "text": "es necesario salir de inmediato a una velocidad de hasta 10 m/min" },
-        { "key": "d", "text": "es necesario salir de inmediato a una velocidad de hasta 20 m/min" }
+        { "key": "c", "text": "es necesario salir de inmediato a una velocidad de hasta 10 m/min" },
+        { "key": "d", "text": "es necesario salir de inmediato a una velocidad de hasta 20 m/min" }
       ],
       "correct": "b",
       "explanation": "Si se pierde el contacto, se limita la búsqueda a unos 30 segundos y se sale a la superficie respetando las reglas del ascenso seguro."

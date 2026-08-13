@@ -99,12 +99,12 @@
       "question": "Dýchací trubice:",
       "options": [
         {"key": "a", "text": "musí být vybavena vylévacími ventily"},
-        {"key": "b", "text": "má mít délku do 40 cm a vnitřní průměr asi 2 cm"},
+        {"key": "b", "text": "má mít délku do 40 cm a vnitřní průměr asi 2 cm"},
         {"key": "c", "text": "musí být u náustku ohebná"},
         {"key": "d", "text": "všechny odpovědi jsou správné"}
       ],
       "correct": "b",
-      "explanation": "Optimální délka dýchací trubice je do 40 cm a vnitřní průměr kolem 2 cm pro minimalizaci mrtvého prostoru."
+      "explanation": "Optimální délka dýchací trubice je do 40 cm a vnitřní průměr kolem 2 cm pro minimalizaci mrtvého prostoru."
     },
     {
       "id": 9,
@@ -138,7 +138,7 @@
       "question": "Označte nesprávné tvrzení:",
       "options": [
         {"key": "a", "text": "Přezka zátěžního opasku se dá rozepnout jednou rukou."},
-        {"key": "b", "text": "Popruh zátěžního opasku ze syntetického materiálu bývá obvykle široký 50 mm."},
+        {"key": "b", "text": "Popruh zátěžního opasku ze syntetického materiálu bývá obvykle široký 50 mm."},
         {"key": "c", "text": "Jako závaží nelze používat plastové sáčky s olověnými broky."},
         {"key": "d", "text": "Závaží se na zátěžním opasku rozmisťují symetricky."}
       ],
@@ -397,13 +397,13 @@
       "category": "kompenzatory",
       "question": "Minimální objem kompenzátoru vztlaku pro běžné rekreační potápění by měl být přibližně:",
       "options": [
-        {"key": "a", "text": "5 litrů"},
-        {"key": "b", "text": "15 litrů"},
-        {"key": "c", "text": "25 litrů"},
-        {"key": "d", "text": "35 litrů"}
+        {"key": "a", "text": "5 litrů"},
+        {"key": "b", "text": "15 litrů"},
+        {"key": "c", "text": "25 litrů"},
+        {"key": "d", "text": "35 litrů"}
       ],
       "correct": "b",
-      "explanation": "Pro běžné rekreační potápění je doporučený minimální objem kompenzátoru vztlaku přibližně 15 litrů."
+      "explanation": "Pro běžné rekreační potápění je doporučený minimální objem kompenzátoru vztlaku přibližně 15 litrů."
     },
     {
       "id": 32,
@@ -642,15 +642,15 @@
     {
       "id": 50,
       "category": "plicni-automatiky",
-      "question": "Potápěč dýchá v hloubce 20 m z plicní automatiky, jejíž první stupeň je seřízen na přetlak 10 bar. Tlak v zásobníku činí 180 bar. Jaké celkové (absolutní) tlaky naměříme za uvedených okolností na středotlakém (A) a na vysokotlakém (B) vývodu z 1. stupně této plicní automatiky?",
+      "question": "Potápěč dýchá v hloubce 20 m z plicní automatiky, jejíž první stupeň je seřízen na přetlak 10 bar. Tlak v zásobníku činí 180 bar. Jaké celkové (absolutní) tlaky naměříme za uvedených okolností na středotlakém (A) a na vysokotlakém (B) vývodu z 1. stupně této plicní automatiky?",
       "options": [
-        {"key": "a", "text": "A = 13 bar, B = 180 bar"},
-        {"key": "b", "text": "A = 10 bar, B = 180 bar"},
-        {"key": "c", "text": "A = 7 bar, B = 177 bar"},
-        {"key": "d", "text": "A = 170 bar, B = 180 bar"}
+        {"key": "a", "text": "A = 13 bar, B = 180 bar"},
+        {"key": "b", "text": "A = 10 bar, B = 180 bar"},
+        {"key": "c", "text": "A = 7 bar, B = 177 bar"},
+        {"key": "d", "text": "A = 170 bar, B = 180 bar"}
       ],
       "correct": "a",
-      "explanation": "V 20 m je okolní tlak 3 bar. Středotlak jako přetlak 10 bar + okolní 3 bar = 13 bar absolutního tlaku. HP vývod ukazuje tlak v lahvi = 180 bar."
+      "explanation": "V 20 m je okolní tlak 3 bar. Středotlak jako přetlak 10 bar + okolní 3 bar = 13 bar absolutního tlaku. HP vývod ukazuje tlak v lahvi = 180 bar."
     },
     {
       "id": 51,
@@ -681,15 +681,15 @@
     {
       "id": 53,
       "category": "plicni-automatiky",
-      "question": "Ve středotlakém prostoru vyváženého 1. stupně plicní automatiky seřízeného na přetlak 10 bar je při tlaku vzduchu v zásobníku 7 bar v hloubce 10 m celkový tlak:",
+      "question": "Ve středotlakém prostoru vyváženého 1. stupně plicní automatiky seřízeného na přetlak 10 bar je při tlaku vzduchu v zásobníku 7 bar v hloubce 10 m celkový tlak:",
       "options": [
-        {"key": "a", "text": "17 bar"},
-        {"key": "b", "text": "12 bar"},
-        {"key": "c", "text": "11 bar"},
-        {"key": "d", "text": "7 bar"}
+        {"key": "a", "text": "17 bar"},
+        {"key": "b", "text": "12 bar"},
+        {"key": "c", "text": "11 bar"},
+        {"key": "d", "text": "7 bar"}
       ],
       "correct": "d",
-      "explanation": "Když je tlak v lahvi pouze 7 bar, 1. stupeň je plně otevřen a ve středotlaku je stejný tlak jako v lahvi, tedy 7 bar."
+      "explanation": "Když je tlak v lahvi pouze 7 bar, 1. stupeň je plně otevřen a ve středotlaku je stejný tlak jako v lahvi, tedy 7 bar."
     },
     {
       "id": 54,
@@ -759,7 +759,7 @@
     {
       "id": 59,
       "category": "plicni-automatiky",
-      "question": "Používáme-li primární 2. stupeň plicní automatiky na hadici, dlouhé okolo 150 cm, vede se od 1. stupně tato hadice:",
+      "question": "Používáme-li primární 2. stupeň plicní automatiky na hadici, dlouhé okolo 150 cm, vede se od 1. stupně tato hadice:",
       "options": [
         {"key": "a", "text": "tak, aby tvořila volný oblouk"},
         {"key": "b", "text": "pod pravým podpažím, šikmo přes hrudník a zleva kolem šíje tak, aby 2. stupeň přicházel k potápěči z jeho pravé strany"},
@@ -824,15 +824,15 @@
     {
       "id": 64,
       "category": "lahve",
-      "question": "Tlaková lahev na stlačený vzduch se zkušebním tlakem 300 bar se plní:",
+      "question": "Tlaková lahev na stlačený vzduch se zkušebním tlakem 300 bar se plní:",
       "options": [
-        {"key": "a", "text": "až do 300 bar"},
-        {"key": "b", "text": "až do 200 bar"},
-        {"key": "c", "text": "až do 450 bar"},
-        {"key": "d", "text": "až do 250 bar"}
+        {"key": "a", "text": "až do 300 bar"},
+        {"key": "b", "text": "až do 200 bar"},
+        {"key": "c", "text": "až do 450 bar"},
+        {"key": "d", "text": "až do 250 bar"}
       ],
       "correct": "b",
-      "explanation": "Maximální plnicí tlak je 2/3 zkušebního tlaku. Pro lahev se zkušebním tlakem 300 bar je to 200 bar."
+      "explanation": "Maximální plnicí tlak je 2/3 zkušebního tlaku. Pro lahev se zkušebním tlakem 300 bar je to 200 bar."
     },
     {
       "id": 65,
@@ -852,7 +852,7 @@
       "category": "lahve",
       "question": "Vzduch, který byl v zásobníku dýchacího přístroje skladován několik měsíců:",
       "options": [
-        {"key": "a", "text": "můžeme použít, avšak pouze do hloubky 3 metrů"},
+        {"key": "a", "text": "můžeme použít, avšak pouze do hloubky 3 metrů"},
         {"key": "b", "text": "vypustíme, protože mohlo dojít ke změnám v jeho složení"},
         {"key": "c", "text": "vypustíme, protože může obsahovat oxid uhelnatý jako produkt koroze vnitřku lahve"},
         {"key": "d", "text": "použijeme, protože obsahuje více kyslíku, který vzniká při korozi vnitřku lahve"}
@@ -871,7 +871,7 @@
         {"key": "d", "text": "velikost zkušebního tlaku je rovna polovině maximálního plnicího tlaku"}
       ],
       "correct": "c",
-      "explanation": "Zkušební tlak je 1,5násobek maximálního plnicího tlaku (např. 300 bar zkušební = 200 bar plnicí)."
+      "explanation": "Zkušební tlak je 1,5násobek maximálního plnicího tlaku (např. 300 bar zkušební = 200 bar plnicí)."
     },
     {
       "id": 68,
@@ -1217,12 +1217,12 @@
       "question": "Znečištěné neoprenové obleky:",
       "options": [
         {"key": "a", "text": "necháme chemicky vyčistit"},
-        {"key": "b", "text": "lze prát v běžných pracích prostředcích při teplotě do 40 °C"},
-        {"key": "c", "text": "lze prát v pračce při teplotě do 90 °C"},
+        {"key": "b", "text": "lze prát v běžných pracích prostředcích při teplotě do 40 °C"},
+        {"key": "c", "text": "lze prát v pračce při teplotě do 90 °C"},
         {"key": "d", "text": "lze čistit jen pomocí dezinfekčních a bělicích prostředků"}
       ],
       "correct": "b",
-      "explanation": "Neoprenové obleky lze prát v běžných pracích prostředcích při teplotě do 40 °C."
+      "explanation": "Neoprenové obleky lze prát v běžných pracích prostředcích při teplotě do 40 °C."
     },
     {
       "id": 95,

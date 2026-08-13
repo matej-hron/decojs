@@ -33,7 +33,7 @@
       "category": "obecne-smernice",
       "question": "Potápěči dodržují:",
       "options": [
-        {"key": "a", "text": "takový profil ponoru, aby průměrná hloubka nepřekračovala 15 m"},
+        {"key": "a", "text": "takový profil ponoru, aby průměrná hloubka nepřekračovala 15 m"},
         {"key": "b", "text": "používání dýchací trubice při plavání s přístrojem na hladině"},
         {"key": "c", "text": "omezující podmínky platné pro získaný kvalifikační stupeň"},
         {"key": "d", "text": "potápěčský režim v rozsahu do dvou ponorů za jeden den"}
@@ -101,7 +101,7 @@
         {"key": "a", "text": "při nižších teplotách než minus 10 C"},
         {"key": "b", "text": "jsou-li jejich fyzické a/nebo psychické schopnosti sníženy únavou"},
         {"key": "c", "text": "jestliže nejsou vybaveni potápěčským počítačem"},
-        {"key": "d", "text": "při snížení viditelnosti pod vodou na méně než 2 m"}
+        {"key": "d", "text": "při snížení viditelnosti pod vodou na méně než 2 m"}
       ],
       "correct": "b",
       "explanation": "Potápěči se zásadně vyvarují potápění, jsou-li jejich fyzické a/nebo psychické schopnosti sníženy únavou."
@@ -127,7 +127,7 @@
         {"key": "a", "text": "musejí před ponorem věnovat zvýšenou pozornost výstroji"},
         {"key": "b", "text": "musejí věnovat zvýšenou pozornost plánování ponorů"},
         {"key": "c", "text": "se zásadně vyvarují potápění"},
-        {"key": "d", "text": "se potápějí do omezené hloubky (Potápěč CMAS P1 max. 10m, Potápěč CMAS P2 max. 15 m, Potápěč CMAS P3 nebo instruktor max. 20 m)"}
+        {"key": "d", "text": "se potápějí do omezené hloubky (Potápěč CMAS P1 max. 10 m, Potápěč CMAS P2 max. 15 m, Potápěč CMAS P3 nebo instruktor max. 20 m)"}
       ],
       "correct": "c",
       "explanation": "Potápěči se sníženými schopnostmi se zásadně vyvarují potápění."
@@ -178,7 +178,7 @@
       "options": [
         {"key": "a", "text": "předcházejí potápěčským nehodám procvičováním řešení krizových situací"},
         {"key": "b", "text": "v období před každým zvýšením kvalifikace udržují své potápěčské dovednosti a fyzickou kondici"},
-        {"key": "c", "text": "se zásadně vyvarují potápění při poklesu horizontální viditelnosti pod vodou na méně než 2 m"},
+        {"key": "c", "text": "se zásadně vyvarují potápění při poklesu horizontální viditelnosti pod vodou na méně než 2 m"},
         {"key": "d", "text": "všechny odpovědi jsou správné"}
       ],
       "correct": "a",
@@ -229,7 +229,7 @@
       "question": "Absolvování speciálního kurzu nebo školení a dodržování bezpečnostních pravidel v rámci tohoto kurzu uvedených:",
       "options": [
         {"key": "a", "text": "je zapotřebí pro všechny potápěče s kvalifikací Potápěč CMAS P2 a vyšší"},
-        {"key": "b", "text": "je zapotřebí pro potápění v menších skupinách, pro potápění při snížení viditelnosti pod vodou na méně než 2 m a pro potápění ve větší vzdálenosti od břehu"},
+        {"key": "b", "text": "je zapotřebí pro potápění v menších skupinách, pro potápění při snížení viditelnosti pod vodou na méně než 2 m a pro potápění ve větší vzdálenosti od břehu"},
         {"key": "c", "text": "není zapotřebí pro potápění pod ledem"},
         {"key": "d", "text": "je zapotřebí pro potápění s umělými dýchacími směsmi, s regeneračními dýchacími přístroji (rebreathery), potápění v uzavřených prostorách včetně potápění pod ledem a potápění v jinak obtížných podmínkách"}
       ],
@@ -320,12 +320,12 @@
       "question": "Označte tvrzení, které neodpovídá Bezpečnostním směrnicím SPČR:",
       "options": [
         {"key": "a", "text": "Potápěčská výstroj musí být funkční a účelná z hlediska plánovaného ponoru."},
-        {"key": "b", "text": "Pro potápění do hloubek přes 10 m lze používat pouze výstroj opatřenou mezinárodním certifikátem CMAS."},
+        {"key": "b", "text": "Pro potápění do hloubek přes 10 m lze používat pouze výstroj opatřenou mezinárodním certifikátem CMAS."},
         {"key": "c", "text": "Pro potápění ve volné vodě jsou nezbytnými součástmi výstroje potápěčský nůž (případně jiný vhodný nástroj) a kompenzátor vztlaku."},
         {"key": "d", "text": "Za kompenzátor vztlaku se nepovažuje suchý potápěčský oblek."}
       ],
       "correct": "b",
-      "explanation": "BS neuvádí požadavek na certifikát CMAS pro výstroj při potápění do hloubek přes 10 m."
+      "explanation": "BS neuvádí požadavek na certifikát CMAS pro výstroj při potápění do hloubek přes 10 m."
     },
     {
       "id": 26,
@@ -373,7 +373,7 @@
       "options": [
         {"key": "a", "text": "alespoň jeden z dvojice potápěčů"},
         {"key": "b", "text": "každý potápěč"},
-        {"key": "c", "text": "každý potápěč při potápění do hloubek přes 10 m"},
+        {"key": "c", "text": "každý potápěč při potápění do hloubek přes 10 m"},
         {"key": "d", "text": "alespoň jeden z trojice potápěčů"}
       ],
       "correct": "b",
@@ -387,7 +387,7 @@
         {"key": "a", "text": "musí být vybaven alespoň vždy jeden potápěč ve dvojici (případně trojici)"},
         {"key": "b", "text": "musí být vybaven každý potápěč"},
         {"key": "c", "text": "se potápěči vybavují dle svých možností a vlastního uvážení"},
-        {"key": "d", "text": "se potápěči vybavují pro ponory do větších hloubek než 10 m"}
+        {"key": "d", "text": "se potápěči vybavují pro ponory do větších hloubek než 10 m"}
       ],
       "correct": "b",
       "explanation": "Každý potápěč musí být vybaven alternativním zdrojem dýchacího média a dalším uvedeným vybavením."
@@ -447,7 +447,7 @@
     {
       "id": 35,
       "category": "vystroj",
-      "question": "Při nižší horizontální viditelnosti pod vodou než 2 m:",
+      "question": "Při nižší horizontální viditelnosti pod vodou než 2 m:",
       "options": [
         {"key": "a", "text": "se používá spojovací úvazek"},
         {"key": "b", "text": "se doporučuje použití výkonné svítilny"},
@@ -455,7 +455,7 @@
         {"key": "d", "text": "je zapotřebí se potápění vyvarovat"}
       ],
       "correct": "a",
-      "explanation": "Při nižší horizontální viditelnosti pod vodou než 2 m se používá spojovací úvazek."
+      "explanation": "Při nižší horizontální viditelnosti pod vodou než 2 m se používá spojovací úvazek."
     },
     {
       "id": 36,
@@ -464,11 +464,11 @@
       "options": [
         {"key": "a", "text": "při nočním potápění"},
         {"key": "b", "text": "při potápění na nádech v chráněném vodním prostoru"},
-        {"key": "c", "text": "při potápění do hloubek přes 30 m"},
-        {"key": "d", "text": "při nižší horizontální viditelnosti pod vodou než 2 m"}
+        {"key": "c", "text": "při potápění do hloubek přes 30 m"},
+        {"key": "d", "text": "při nižší horizontální viditelnosti pod vodou než 2 m"}
       ],
       "correct": "d",
-      "explanation": "Spojovací úvazek se používá při nižší horizontální viditelnosti pod vodou než 2 m."
+      "explanation": "Spojovací úvazek se používá při nižší horizontální viditelnosti pod vodou než 2 m."
     },
     {
       "id": 37,
@@ -478,10 +478,10 @@
         {"key": "a", "text": "Potápěčská výstroj musí být řádně upevněná, uspořádaná a používaná tak, aby nehrozilo nebezpečí jejího poškození a/nebo zachycení."},
         {"key": "b", "text": "Kompenzátorem vztlaku nelze nahrazovat zvedací zařízení."},
         {"key": "c", "text": "Přístroji pro určení hloubky a doby pobytu pod vodou nebo potápěčským počítačem musí být vybaven každý potápěč."},
-        {"key": "d", "text": "Při nižší horizontální viditelnosti než 4 m se používá spojovací úvazek."}
+        {"key": "d", "text": "Při nižší horizontální viditelnosti než 4 m se používá spojovací úvazek."}
       ],
       "correct": "d",
-      "explanation": "BS uvádí použití spojovacího úvazku při viditelnosti nižší než 2 m, ne 4 m."
+      "explanation": "BS uvádí použití spojovacího úvazku při viditelnosti nižší než 2 m, ne 4 m."
     },
     {
       "id": 38,
@@ -528,7 +528,7 @@
       "question": "Potápěči jsou obeznámeni:",
       "options": [
         {"key": "a", "text": "s používáním záložních hloubkoměrů"},
-        {"key": "b", "text": "se zkrácením tzv. nulových časů pro hloubky přes 18 m"},
+        {"key": "b", "text": "se zkrácením tzv. nulových časů pro hloubky přes 18 m"},
         {"key": "c", "text": "s prodloužením dekompresních časů u opakovaných ponorů"},
         {"key": "d", "text": "s potápěčskými signály"}
       ],
@@ -634,7 +634,7 @@
         {"key": "a", "text": "nepřetržitý vizuální kontakt"},
         {"key": "b", "text": "takovou vzdálenost, aby si byli schopni vzájemně pomoci v případě problému"},
         {"key": "c", "text": "vzdálenost odpovídající přibližně polovině horizontální viditelnosti pod vodou"},
-        {"key": "d", "text": "vzdálenost do 2 m"}
+        {"key": "d", "text": "vzdálenost do 2 m"}
       ],
       "correct": "b",
       "explanation": "Potápěči mezi sebou udržují takovou vzdálenost, aby si byli schopni vzájemně pomoci v případě problému."
@@ -644,26 +644,26 @@
       "category": "planovani-ponoru",
       "question": "Potápěči nepřekračují hloubku:",
       "options": [
-        {"key": "a", "text": "30 m"},
-        {"key": "b", "text": "40 m"},
-        {"key": "c", "text": "50 m"},
-        {"key": "d", "text": "60 m"}
+        {"key": "a", "text": "30 m"},
+        {"key": "b", "text": "40 m"},
+        {"key": "c", "text": "50 m"},
+        {"key": "d", "text": "60 m"}
       ],
       "correct": "b",
-      "explanation": "Potápěči nepřekračují hloubku 40 m."
+      "explanation": "Potápěči nepřekračují hloubku 40 m."
     },
     {
       "id": 51,
       "category": "planovani-ponoru",
       "question": "Označte tvrzení, které neodpovídá Bezpečnostním směrnicím SPČR 2016:",
       "options": [
-        {"key": "a", "text": "Potápěči nepřekračují hloubku 30 m."},
+        {"key": "a", "text": "Potápěči nepřekračují hloubku 30 m."},
         {"key": "b", "text": "Potápěči jsou obeznámeni s potápěčskými signály."},
         {"key": "c", "text": "Před potápěním se potápěči seznámí se způsobem přivolání první pomoci a s umístěním barokomory."},
         {"key": "d", "text": "Při ponoru i na hladině potápěči mezi sebou udržují takovou vzdálenost, aby si byli schopni vzájemně pomoci v případě problému."}
       ],
       "correct": "a",
-      "explanation": "BS uvádí maximální hloubku 40 m, ne 30 m."
+      "explanation": "BS uvádí maximální hloubku 40 m, ne 30 m."
     },
     {
       "id": 52,
@@ -699,7 +699,7 @@
         {"key": "a", "text": "zajistit přítomnost dekompresní komory s obsluhou"},
         {"key": "b", "text": "zajistit přítomnost lékaře obeznámeného s potápěčskou problematikou"},
         {"key": "c", "text": "organizovat jej tak, aby nemusela být vykonána více než jedna dekompresní zastávka"},
-        {"key": "d", "text": "organizovat jej tak, aby potápěč zůstal nejméně 6 hodin po vynoření pod dohledem lékaře nebo vedoucího potápěče"}
+        {"key": "d", "text": "organizovat jej tak, aby potápěč zůstal nejméně 6 hodin po vynoření pod dohledem lékaře nebo vedoucího potápěče"}
       ],
       "correct": "c",
       "explanation": "Pokud je dekomprese nevyhnutelná, organizuje se ponor tak, aby nemusela být vykonána více než jedna dekompresní zastávka."
@@ -735,7 +735,7 @@
       "category": "planovani-ponoru",
       "question": "Označte tvrzení, které neodpovídá Bezpečnostním směrnicím SPČR 2016:",
       "options": [
-        {"key": "a", "text": "Potápěči nepřekračují hloubku 40 m."},
+        {"key": "a", "text": "Potápěči nepřekračují hloubku 40 m."},
         {"key": "b", "text": "Ponory se organizují tak, aby se při výstupu nemusela vykonávat stupňovitá dekomprese."},
         {"key": "c", "text": "Po ponoru se potápěči vyvarují dehydratace."},
         {"key": "d", "text": "V případě, že stupňovitá dekomprese je při daném ponoru nevyhnutelná, je zapotřebí organizovat jej tak, aby nemusely být vykonány více než dvě dekompresní zastávky."}
@@ -775,7 +775,7 @@
       "question": "Potápěči:",
       "options": [
         {"key": "a", "text": "při ponoru i na hladině mezi sebou udržují takovou vzdálenost, aby si byli schopni vzájemně pomoci v případě problému"},
-        {"key": "b", "text": "nepřekračují hloubku 50 m"},
+        {"key": "b", "text": "nepřekračují hloubku 50 m"},
         {"key": "c", "text": "před zanořením provedou partnerskou kontrolu zaměřenou na řádné vedení potápěčských deníků"},
         {"key": "d", "text": "se vyvarují bezpečnostních zastávek u bezdekompresních ponorů"}
       ],
@@ -800,8 +800,8 @@
       "category": "organizace-akci",
       "question": "Všichni účastníci potápěčské akce většího rozsahu musejí být podrobně seznámeni s účelem a plánem akce:",
       "options": [
-        {"key": "a", "text": "nejméně 48 hodin před takovou akcí"},
-        {"key": "b", "text": "nejméně 24 hodiny před takovou akcí"},
+        {"key": "a", "text": "nejméně 48 hodin před takovou akcí"},
+        {"key": "b", "text": "nejméně 24 hodiny před takovou akcí"},
         {"key": "c", "text": "kdykoliv v průběhu takové akce"},
         {"key": "d", "text": "při jejím zahájení"}
       ],
@@ -943,7 +943,7 @@
       "category": "organizace-akci",
       "question": "Vybrat z řad účastníků vedoucího potápěče je vhodné:",
       "options": [
-        {"key": "a", "text": "při snížení viditelnosti pod vodou na méně než 2 m"},
+        {"key": "a", "text": "při snížení viditelnosti pod vodou na méně než 2 m"},
         {"key": "b", "text": "při potápění ve větší vzdálenosti od břehu"},
         {"key": "c", "text": "při potápěčských akcích většího rozsahu"},
         {"key": "d", "text": "v případech, kdy se potápí 4 nebo více potápěčů najednou"}
@@ -1024,7 +1024,7 @@
         {"key": "a", "text": "každý potápěč"},
         {"key": "b", "text": "každý druhý potápěč (v trojčlenném buddy týmu dva ze tří potápěčů)"},
         {"key": "c", "text": "vedoucí ponoru"},
-        {"key": "d", "text": "instruktor při potápěčském výcviku v hloubkách přes 10 m"}
+        {"key": "d", "text": "instruktor při potápěčském výcviku v hloubkách přes 10 m"}
       ],
       "correct": "a",
       "explanation": "Zařízením pro měření tlaku dýchacího média musí být vybaven každý potápěč."
@@ -1074,7 +1074,7 @@
       "question": "Dobře viditelná vlajka A (Alpha) mezinárodního vlajkového kódu musí na doprovodném plavidle být vystavena:",
       "options": [
         {"key": "a", "text": "nepřetržitě"},
-        {"key": "b", "text": "do 10 minut po vyplutí"},
+        {"key": "b", "text": "do 10 minut po vyplutí"},
         {"key": "c", "text": "po celou dobu plavby"},
         {"key": "d", "text": "po dobu ponoru potápěčů"}
       ],
@@ -1167,7 +1167,7 @@
         {"key": "a", "text": "vede vždy k ohrožení potápěčů, proto je zásadně nepřípustné"},
         {"key": "b", "text": "je přípustné kdykoliv"},
         {"key": "c", "text": "je přípustné, vyžaduje-li to situace; přitom je nutno plout tak, aby nedošlo k ohrožení potápěčů"},
-        {"key": "d", "text": "je přípustné do 10 minut od zanoření"}
+        {"key": "d", "text": "je přípustné do 10 minut od zanoření"}
       ],
       "correct": "c",
       "explanation": "Použití motoru je přípustné, vyžaduje-li to situace, přitom je nutno plout tak, aby nedošlo k ohrožení potápěčů."
@@ -1229,26 +1229,26 @@
       "category": "nouzove-situace",
       "question": "Dojde-li pod vodou ke ztrátě kontaktu s partnerem (partnery):",
       "options": [
-        {"key": "a", "text": "omezí potápěči vzájemné hledání na dobu přibližně 30 sekund a vystoupí na hladinu za dodržení pravidel bezpečného výstupu"},
-        {"key": "b", "text": "omezí potápěči vzájemné hledání na dobu přibližně 5 minut a vystoupí na hladinu za dodržení pravidel bezpečného výstupu"},
+        {"key": "a", "text": "omezí potápěči vzájemné hledání na dobu přibližně 30 sekund a vystoupí na hladinu za dodržení pravidel bezpečného výstupu"},
+        {"key": "b", "text": "omezí potápěči vzájemné hledání na dobu přibližně 5 minut a vystoupí na hladinu za dodržení pravidel bezpečného výstupu"},
         {"key": "c", "text": "je nutno hledat partnera (partnery) do poklesu tlaku v zásobníku dýchacího média na hranici rezervy"},
         {"key": "d", "text": "je nutno zahájit okamžitý nouzový výstup na hladinu"}
       ],
       "correct": "a",
-      "explanation": "Při ztrátě kontaktu s partnerem se hledání omezí na cca 30 sekund a pak bezpečný výstup na hladinu."
+      "explanation": "Při ztrátě kontaktu s partnerem se hledání omezí na cca 30 sekund a pak bezpečný výstup na hladinu."
     },
     {
       "id": 96,
       "category": "nouzove-situace",
       "question": "Dojde-li pod vodou ke ztrátě kontaktu s partnerem (partnery):",
       "options": [
-        {"key": "a", "text": "omezí potápěči vzájemné hledání na dobu přibližně 30 sekund a v případě, že nedošlo k obnovení kontaktu, pokračují v ponoru podle původního plánu"},
-        {"key": "b", "text": "omezí potápěči vzájemné hledání na dobu přibližně 30 sekund a vystoupí na hladinu za dodržení pravidel bezpečného výstupu"},
-        {"key": "c", "text": "je nutné okamžité vynoření rychlostí do 10 m/min"},
-        {"key": "d", "text": "je nutné okamžité vynoření rychlostí do 20 m/min"}
+        {"key": "a", "text": "omezí potápěči vzájemné hledání na dobu přibližně 30 sekund a v případě, že nedošlo k obnovení kontaktu, pokračují v ponoru podle původního plánu"},
+        {"key": "b", "text": "omezí potápěči vzájemné hledání na dobu přibližně 30 sekund a vystoupí na hladinu za dodržení pravidel bezpečného výstupu"},
+        {"key": "c", "text": "je nutné okamžité vynoření rychlostí do 10 m/min"},
+        {"key": "d", "text": "je nutné okamžité vynoření rychlostí do 20 m/min"}
       ],
       "correct": "b",
-      "explanation": "Při ztrátě kontaktu omezit hledání na cca 30 sekund a vystoupit na hladinu za dodržení pravidel bezpečného výstupu."
+      "explanation": "Při ztrátě kontaktu omezit hledání na cca 30 sekund a vystoupit na hladinu za dodržení pravidel bezpečného výstupu."
     },
     {
       "id": 97,
@@ -1257,11 +1257,11 @@
       "options": [
         {"key": "a", "text": "Vyžaduje-li situace použití motoru k pohonu doprovodného plavidla během ponoru, je nutno plout tak, aby nedošlo k ohrožení potápěčů."},
         {"key": "b", "text": "Malými čluny není bezpečné vyplouvat na moře a na velké vodní plochy při stavu hladiny způsobené větrem o síle 4 a více Bf."},
-        {"key": "c", "text": "Dojde-li pod vodou ke ztrátě kontaktu s partnerem, omezí potápěči vzájemné hledání na dobu přibližně 3 – 5 minut a vystoupí na hladinu za dodržení pravidel bezpečného výstupu."},
+        {"key": "c", "text": "Dojde-li pod vodou ke ztrátě kontaktu s partnerem, omezí potápěči vzájemné hledání na dobu přibližně 3 – 5 minut a vystoupí na hladinu za dodržení pravidel bezpečného výstupu."},
         {"key": "d", "text": "V případě zdravotních potíží po ponoru je postiženému nutno poskytnout co nejrychleji první pomoc, podávat kyslík (pokud je to účelné a je k dispozici), zajistit odbornou zdravotnickou pomoc, případně zajistit léčbu v dekompresní komoře."}
       ],
       "correct": "c",
-      "explanation": "BS uvádí omezení hledání na cca 30 sekund, ne 3-5 minut."
+      "explanation": "BS uvádí omezení hledání na cca 30 sekund, ne 3-5 minut."
     },
     {
       "id": 98,

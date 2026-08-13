@@ -99,12 +99,12 @@
       "question": "A snorkel:",
       "options": [
         { "key": "a", "text": "must have purge valves" },
-        { "key": "b", "text": "should be up to 40 cm long with an internal diameter of about 2 cm" },
+        { "key": "b", "text": "should be up to 40 cm long with an internal diameter of about 2 cm" },
         { "key": "c", "text": "must be flexible at the mouthpiece" },
         { "key": "d", "text": "all answers are correct" }
       ],
       "correct": "b",
-      "explanation": "The optimal snorkel length is up to 40 cm with an internal diameter of about 2 cm to minimise dead space."
+      "explanation": "The optimal snorkel length is up to 40 cm with an internal diameter of about 2 cm to minimise dead space."
     },
     {
       "id": 9,
@@ -138,7 +138,7 @@
       "question": "Mark the incorrect statement:",
       "options": [
         { "key": "a", "text": "The buckle of a weight belt can be opened with one hand." },
-        { "key": "b", "text": "The webbing of a synthetic weight belt is usually 50 mm wide." },
+        { "key": "b", "text": "The webbing of a synthetic weight belt is usually 50 mm wide." },
         { "key": "c", "text": "Plastic pouches with lead shot cannot be used as weights." },
         { "key": "d", "text": "Weights are placed symmetrically on the belt." }
       ],
@@ -642,15 +642,15 @@
     {
       "id": 50,
       "category": "plicni-automatiky",
-      "question": "A diver at 20 m breathes from a regulator whose first stage is set to a gauge IP of 10 bar. Cylinder pressure is 180 bar. What absolute pressures will be measured at the IP port (A) and at the HP port (B) of this first stage?",
+      "question": "A diver at 20 m breathes from a regulator whose first stage is set to a gauge IP of 10 bar. Cylinder pressure is 180 bar. What absolute pressures will be measured at the IP port (A) and at the HP port (B) of this first stage?",
       "options": [
-        { "key": "a", "text": "A = 13 bar, B = 180 bar" },
-        { "key": "b", "text": "A = 10 bar, B = 180 bar" },
-        { "key": "c", "text": "A = 7 bar, B = 177 bar" },
-        { "key": "d", "text": "A = 170 bar, B = 180 bar" }
+        { "key": "a", "text": "A = 13 bar, B = 180 bar" },
+        { "key": "b", "text": "A = 10 bar, B = 180 bar" },
+        { "key": "c", "text": "A = 7 bar, B = 177 bar" },
+        { "key": "d", "text": "A = 170 bar, B = 180 bar" }
       ],
       "correct": "a",
-      "explanation": "At 20 m the ambient pressure is 3 bar. IP gauge 10 bar + ambient 3 bar = 13 bar absolute. The HP port shows the cylinder pressure, 180 bar."
+      "explanation": "At 20 m the ambient pressure is 3 bar. IP gauge 10 bar + ambient 3 bar = 13 bar absolute. The HP port shows the cylinder pressure, 180 bar."
     },
     {
       "id": 51,
@@ -681,15 +681,15 @@
     {
       "id": 53,
       "category": "plicni-automatiky",
-      "question": "In the IP chamber of a balanced regulator first stage set to a gauge IP of 10 bar, with cylinder pressure 7 bar at a depth of 10 m, the absolute pressure is:",
+      "question": "In the IP chamber of a balanced regulator first stage set to a gauge IP of 10 bar, with cylinder pressure 7 bar at a depth of 10 m, the absolute pressure is:",
       "options": [
-        { "key": "a", "text": "17 bar" },
-        { "key": "b", "text": "12 bar" },
-        { "key": "c", "text": "11 bar" },
-        { "key": "d", "text": "7 bar" }
+        { "key": "a", "text": "17 bar" },
+        { "key": "b", "text": "12 bar" },
+        { "key": "c", "text": "11 bar" },
+        { "key": "d", "text": "7 bar" }
       ],
       "correct": "d",
-      "explanation": "When cylinder pressure is only 7 bar, the first stage is fully open and the IP chamber holds the same pressure as the cylinder, i.e. 7 bar."
+      "explanation": "When cylinder pressure is only 7 bar, the first stage is fully open and the IP chamber holds the same pressure as the cylinder, i.e. 7 bar."
     },
     {
       "id": 54,
@@ -759,7 +759,7 @@
     {
       "id": 59,
       "category": "plicni-automatiky",
-      "question": "When using a primary second stage on a hose about 150 cm long, the hose is routed from the first stage:",
+      "question": "When using a primary second stage on a hose about 150 cm long, the hose is routed from the first stage:",
       "options": [
         { "key": "a", "text": "in a free loop" },
         { "key": "b", "text": "under the right armpit, diagonally across the chest and around the neck from the left so that the second stage approaches the diver from the right" },
@@ -824,15 +824,15 @@
     {
       "id": 64,
       "category": "lahve",
-      "question": "An air cylinder with a 300 bar test pressure is filled to:",
+      "question": "An air cylinder with a 300 bar test pressure is filled to:",
       "options": [
-        { "key": "a", "text": "300 bar" },
-        { "key": "b", "text": "200 bar" },
-        { "key": "c", "text": "450 bar" },
-        { "key": "d", "text": "250 bar" }
+        { "key": "a", "text": "300 bar" },
+        { "key": "b", "text": "200 bar" },
+        { "key": "c", "text": "450 bar" },
+        { "key": "d", "text": "250 bar" }
       ],
       "correct": "b",
-      "explanation": "The maximum filling pressure is 2/3 of the test pressure. For a cylinder with a 300 bar test pressure that is 200 bar."
+      "explanation": "The maximum filling pressure is 2/3 of the test pressure. For a cylinder with a 300 bar test pressure that is 200 bar."
     },
     {
       "id": 65,
@@ -852,7 +852,7 @@
       "category": "lahve",
       "question": "Air that has been stored for several months in a scuba cylinder:",
       "options": [
-        { "key": "a", "text": "may be used, but only to 3 m" },
+        { "key": "a", "text": "may be used, but only to 3 m" },
         { "key": "b", "text": "should be vented, because its composition may have changed" },
         { "key": "c", "text": "should be vented, because it may contain carbon monoxide as a corrosion product from the cylinder interior" },
         { "key": "d", "text": "may be used, because it contains more oxygen produced by corrosion of the cylinder interior" }
@@ -871,7 +871,7 @@
         { "key": "d", "text": "the test pressure equals half the maximum filling pressure" }
       ],
       "correct": "c",
-      "explanation": "The test pressure is 1.5× the maximum filling pressure (e.g. 300 bar test = 200 bar fill)."
+      "explanation": "The test pressure is 1.5× the maximum filling pressure (e.g. 300 bar test = 200 bar fill)."
     },
     {
       "id": 68,
@@ -1217,12 +1217,12 @@
       "question": "Soiled neoprene suits:",
       "options": [
         { "key": "a", "text": "should be dry-cleaned" },
-        { "key": "b", "text": "can be washed with ordinary detergents at up to 40 °C" },
-        { "key": "c", "text": "can be machine-washed at up to 90 °C" },
+        { "key": "b", "text": "can be washed with ordinary detergents at up to 40 °C" },
+        { "key": "c", "text": "can be machine-washed at up to 90 °C" },
         { "key": "d", "text": "can be cleaned only with disinfectants and bleach" }
       ],
       "correct": "b",
-      "explanation": "Neoprene suits can be washed with ordinary detergents at up to 40 °C."
+      "explanation": "Neoprene suits can be washed with ordinary detergents at up to 40 °C."
     },
     {
       "id": 95,

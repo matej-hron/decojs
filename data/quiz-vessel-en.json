@@ -74,11 +74,11 @@
       "options": [
         {"key": "a", "text": "speed equal to 1 nautical mile per hour"},
         {"key": "b", "text": "distance equal to 1/10 of a nautical mile"},
-        {"key": "c", "text": "speed equal to 1 km per hour"},
-        {"key": "d", "text": "depth equal to 1.83 m"}
+        {"key": "c", "text": "speed equal to 1 km per hour"},
+        {"key": "d", "text": "depth equal to 1.83 m"}
       ],
       "correct": "a",
-      "explanation": "A knot is a unit of speed equal to 1 nautical mile per hour (1.852 km/h)."
+      "explanation": "A knot is a unit of speed equal to 1 nautical mile per hour (1.852 km/h)."
     },
     {
       "id": 7,
@@ -137,10 +137,10 @@
       "category": "pocasi",
       "question": "On European coasts, tidal phenomena occur:",
       "options": [
-        {"key": "a", "text": "approximately twice in 25 h, both ebb and flood"},
-        {"key": "b", "text": "once every 25 h (one flood every 12 h 25 min)"},
-        {"key": "c", "text": "every 12 h 25 min — flood at spring tide and every 6 hours at neap tide"},
-        {"key": "d", "text": "every 12 h 25 min — ebb at neap tide and every 6 hours at spring tide"}
+        {"key": "a", "text": "approximately twice in 25 h, both ebb and flood"},
+        {"key": "b", "text": "once every 25 h (one flood every 12 h 25 min)"},
+        {"key": "c", "text": "every 12 h 25 min — flood at spring tide and every 6 hours at neap tide"},
+        {"key": "d", "text": "every 12 h 25 min — ebb at neap tide and every 6 hours at spring tide"}
       ],
       "correct": "a",
       "explanation": "On European coasts there are roughly 2 high tides and 2 low tides in about 25 hours (one tidal day)."
@@ -332,10 +332,10 @@
       "category": "kotveni",
       "question": "The anchor line of an inflatable boat should be:",
       "options": [
-        {"key": "a", "text": "25 m"},
+        {"key": "a", "text": "25 m"},
         {"key": "b", "text": "equal to the depth over which we intend to anchor"},
         {"key": "c", "text": "at least twice the depth over which we intend to anchor"},
-        {"key": "d", "text": "300 m"}
+        {"key": "d", "text": "300 m"}
       ],
       "correct": "c",
       "explanation": "The anchor line should be at least twice the water depth so the anchor sets properly."
@@ -585,7 +585,7 @@
         {"key": "d", "text": "1 degree along a terrestrial parallel of latitude"}
       ],
       "correct": "a",
-      "explanation": "A nautical mile corresponds to 1 angular minute along a terrestrial meridian (approximately 1852 m)."
+      "explanation": "A nautical mile corresponds to 1 angular minute along a terrestrial meridian (approximately 1852 m)."
     },
     {
       "id": 46,
