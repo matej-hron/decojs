@@ -342,24 +342,51 @@ tam také není podporováno.
 
 ## 6. Čísla — JS formátování
 
-### 6.1 Při psaní: `&nbsp;`, ne U+202F
+### 6.1 Při psaní: `&nbsp;` v HTML, U+00A0 v datech
 
-**Při psaní** (HTML, Markdown, JSX literály) používej entitu `&nbsp;` (U+00A0).
-V HTML a JSON souborech živého produktu jich je 16 existujících výskytů (`git grep -o
-'&nbsp;' -- '*.html' '*.js' '*.json' '*.css' | wc -l`), U+202F ani jeden — je to tedy
-už zavedený autorský vzor, ne nová konvence. Podkladová rešerše fáze 1
-doporučuje `&#8239;` (U+202F) jako typograficky užší variantu preferovanou SI
-Brochure; **toto doporučení projekt záměrně nepřejímá pro autorský text** — viz
-[Rozhodnutí projektu](style-guide.md#rozhodnutí-projektu) a §4.1 v `style-guide.md`.
-Entita se volí místo doslovného znaku i pro U+00A0 samotné: doslovný znak je v diffu
-neviditelný a editor ho snadno nahradí obyčejnou mezerou beze stopy.
+Oddělovač se volí podle toho, **čím řetězec projde na cestě k uživateli**, ne podle
+osobní preference.
+
+| Soubor | Zápis | Proč |
+|---|---|---|
+| `*.html` | `&nbsp;` | autor to píše ručně, prohlížeč to vždy dekóduje, v diffu je to vidět |
+| `locales/*.json`, `data/*.json` | **doslovné U+00A0** | tentýž řetězec může skončit v `innerHTML`, na canvasu Chart.js, v `textContent` i v atributu `title` — entitu dekóduje jen první z nich |
+
+**V datech nesmí být `&nbsp;`.** Locale řetězec neví, kam ho kód pošle:
+`js/i18n.js` ho vloží přes `innerHTML` (entita se dekóduje), ale Chart.js ho vykreslí
+na canvas a `js/quiz.js` ho na dvou místech přiřadí do `textContent` — tam by se
+uživateli vypsalo `20&nbsp;m` i se středníkem. Přesně na to narazil PR #82.
+
+U+00A0 se vykreslí správně ve všech čtyřech případech. Je to jediný tvar, který
+**přežije, když někdo později změní sink** — třeba při běžném zpřísnění `innerHTML`
+na `textContent`. Klasifikovat každý klíč podle sinku by šlo, ale ta klasifikace by
+tichem zestárla; invariant nezestárne.
+
+Hlídají to testy `*.json: no &nbsp; entity` a `*.json: U+00A0 between value and unit`
+v `tests/run-tests.mjs`.
+
+V HTML naopak zůstává entita: doslovné U+00A0 je v diffu neviditelné a editor ho
+snadno nahradí obyčejnou mezerou beze stopy. V JSON tuhle nevýhodu vyváží to, že
+data se needitují tak často a hlídá je test.
+
+Podkladová rešerše fáze 1 doporučuje `&#8239;` (U+202F) jako typograficky užší
+variantu preferovanou SI Brochure; **toto doporučení projekt záměrně nepřejímá** —
+viz [Rozhodnutí projektu](style-guide.md#rozhodnutí-projektu) a §4.1 v `style-guide.md`.
 
 ```html
-<!-- ✅ -->
+<!-- ✅ v HTML -->
 <span class="qty">20&nbsp;m</span>
 <!-- ✗ nikdy takto -->
 <span class="qty">20&#8239;m</span>
 ```
+
+```json
+{ "sac": "Hladina (1 bar): 20 l/min" }
+```
+
+V ukázce výše jsou obě mezery před jednotkou doslovná U+00A0 — v souboru je nepoznáš
+od obyčejné mezery, proto na to je test. Hromadnou opravu umí
+[`tools/nbsp.py`](tools/nbsp.py), který oddělovač volí podle přípony souboru sám.
 
 ### 6.2 Past na straně spotřeby: co doopravdy generuje `Intl.NumberFormat`
 

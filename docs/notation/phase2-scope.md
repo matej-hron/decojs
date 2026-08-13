@@ -14,43 +14,58 @@ i se středníkem.
 
 | Cesta řetězce | Zapiš | Kde to je |
 |---|---|---|
-| `data-i18n` → `el.innerHTML` (`js/i18n.js:99`) | `&nbsp;` | většina locale klíčů |
+| `data-i18n` → `el.innerHTML` (`js/i18n.js:99`) | `&nbsp;` | statické HTML |
 | statický text v `*.html` | `&nbsp;` | všechny stránky |
-| otázky, volby a vysvětlení kvízů → `innerHTML` (`js/quiz.js:199`) | `&nbsp;` | `data/quiz-*.json` |
-| Chart.js na canvas | **U+00A0** | `chart.*`, `tissueSim.tooltipLabel` |
-| `.textContent =` | **U+00A0** | `quiz.buttons.*`, `quiz.runtime.*` |
-| `.title =`, `aria-label`, `placeholder` | **U+00A0** | `chart.tooltips.*` |
+| cokoli v `locales/*.json` a `data/*.json` | **U+00A0** | viz níže |
 | uvnitř KaTeX vzorce | **`\,`** | 1 výskyt v `pressure.html` |
 
-Ověření před editací klíče:
+**V datech se entita nepoužívá vůbec.** Locale klíč ani otázka kvízu neví, kam ji
+kód pošle: `innerHTML` entitu dekóduje, canvas Chart.js, `textContent`
+(`js/quiz.js:187,259`) a atribut `title` (`MValueChart.js`) ne — tam by se
+uživateli vypsalo `20&nbsp;m` i se středníkem. U+00A0 funguje ve všech čtyřech
+případech a **přežije, když někdo později sink změní**. Klasifikovat klíče podle
+současného sinku by šlo, ale ta klasifikace by tichem zestárla.
+
+Hlídají to testy `*.json: no &nbsp; entity` a `*.json: U+00A0 between value
+and unit` v `tests/run-tests.mjs`.
+
+## Nástroj
+
+Třídu 1 (mezera mezi číslem a jednotkou) dělá skript, ne ruční hledání:
 
 ```bash
-grep -rn "<klíč>" --include=*.js --include=*.html . | grep -v node_modules
+python3 docs/notation/tools/nbsp.py --check --words -v <soubory>   # náhled
+python3 docs/notation/tools/nbsp.py --fix   --words    <soubory>   # zápis
 ```
 
-Hlídá to test `i18n notation` v `tests/run-tests.mjs`.
+Oddělovač volí podle přípony souboru sám. Nesahá do `<script>`, `<style>`,
+komentářů, `.formula`, `data-latex` ani `$…$`. Zná výjimky (`12litrový`, `60°`,
+`12l lahev`) a s `--words` opraví i mezeru u skloňovaných názvů („2 bary"),
+aniž by měnil tvar slova. `--words` se uplatní jen na české soubory.
+
 
 ## Rozsah
 
 **3 290 chybějících nedělitelných mezer ve 40 souborech** (3 099 obyčejná
 mezera, 191 slepené). Čísla jsou po vyloučení složenin typu `12litrový`.
 
-### A. Teoretické stránky — dělat první
+### A. Teoretické stránky — **hotovo**
 
 Tohle čte garant a komise.
 
-| Soubor | Výskytů |
+| Soubor | Opraveno |
 |---|---|
-| `pressure.html` | 87 |
-| `tissue-loading.html` | 37 |
+| `pressure.html` | 83 |
 | `gradient-factors.html` | 18 |
+| `tissue-loading.html` | 15 |
+| `about.html` | 13 |
 | `m-values.html` | 12 |
-| `about.html` | 12 |
-| `locales/{cs,en,es}.json` | 194 / 184 / 174 |
+| `locales/cs.json` | 189 |
+| `locales/en.json` | 177 |
+| `locales/es.json` | 173 |
 
-V locales se dělá po prefixech, ne najednou. Největší:
-`sandbox` 28, `warnings` 19, `diveEditor` 19, `gasLaw` 18, `gradientFactors` 17,
-`totalPressure` 16, `gasConsumption` 13, `about` 13, `tissueLoading` 12.
+Zároveň se 22 existujících `&nbsp;` v locales převedlo na U+00A0, aby v datech
+platil jeden tvar.
 
 ### B. Kvízy — dělat druhé
 

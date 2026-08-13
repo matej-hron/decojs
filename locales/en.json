@@ -33,7 +33,7 @@
         "keyTerms": "Key Terms",
         "descent": {
             "label": "Descent",
-            "text": "The phase from leaving the surface until reaching your planned depth. Recommended rate: ≤18–20&nbsp;m/min."
+            "text": "The phase from leaving the surface until reaching your planned depth. Recommended rate: ≤18–20 m/min."
         },
         "bottomTime": {
             "label": "Bottom Time",
@@ -45,7 +45,7 @@
         },
         "ascent": {
             "label": "Ascent",
-            "text": "Return to surface. Rate should not exceed 9–10&nbsp;m/min to prevent bubble formation."
+            "text": "Return to surface. Rate should not exceed 9–10 m/min to prevent bubble formation."
         },
         "tdt": {
             "label": "Total Dive Time (TDT)",
@@ -57,7 +57,7 @@
         },
         "safetyStop": {
             "label": "Safety Stop",
-            "text": "Voluntary 3-minute pause at 3-5m during ascent to allow excess nitrogen to off-gas safely."
+            "text": "Voluntary 3-minute pause at 3-5 m during ascent to allow excess nitrogen to off-gas safely."
         },
         "surfaceInterval": {
             "label": "Surface Interval (SI)",
@@ -70,27 +70,27 @@
         "whatCreates": {
             "title": "What Creates Pressure Underwater?",
             "intro": "The total pressure a diver experiences underwater comes from two sources:",
-            "atmospheric": "<strong>Atmospheric pressure</strong> — The weight of the air column above you. At sea level, this is approximately <strong>1 bar</strong> — the standard pressure at sea level is defined as 1.01325 bar.",
-            "hydrostatic": "<strong>Hydrostatic pressure</strong> — The weight of the water column above you. In seawater, this adds approximately <strong>1 bar per 10 meters</strong> of depth.",
-            "summary": "Therefore, at 10m depth you experience 2 bar total pressure (1 bar atmospheric + 1 bar water), at 20m it's 3 bar, at 30m it's 4 bar, and so on."
+            "atmospheric": "<strong>Atmospheric pressure</strong> — The weight of the air column above you. At sea level, this is approximately <strong>1 bar</strong> — the standard pressure at sea level is defined as 1.01325 bar.",
+            "hydrostatic": "<strong>Hydrostatic pressure</strong> — The weight of the water column above you. In seawater, this adds approximately <strong>1 bar per 10 meters</strong> of depth.",
+            "summary": "Therefore, at 10 m depth you experience 2 bar total pressure (1 bar atmospheric + 1 bar water), at 20 m it's 3 bar, at 30 m it's 4 bar, and so on."
         },
         "altitude": {
             "summary": "Atmospheric Pressure at Different Altitudes",
-            "intro": "Atmospheric pressure decreases with altitude. If you dive in a mountain lake, you start with less than 1 bar at the surface:",
+            "intro": "Atmospheric pressure decreases with altitude. If you dive in a mountain lake, you start with less than 1 bar at the surface:",
             "thAltitude": "Altitude",
             "thPressure": "Pressure (bar)",
             "thExample": "Example Location",
             "seaLevel": "Sea level",
             "seaLevelExample": "Ocean, coastal lakes",
-            "300m": "300 m",
+            "300m": "300 m",
             "300mExample": "Low hills",
-            "700m": "700 m",
+            "700m": "700 m",
             "700mExample": "Mountain lakes",
-            "1500m": "1500 m",
+            "1500m": "1500 m",
             "1500mExample": "High altitude lakes",
-            "2500m": "2500 m",
+            "2500m": "2500 m",
             "2500mExample": "Lake Titicaca",
-            "3000m": "3000 m",
+            "3000m": "3000 m",
             "3000mExample": "Extreme altitude diving",
             "note": "⚠️ Altitude diving requires special procedures and decompression adjustments."
         },
@@ -100,9 +100,9 @@
             "totalAmbientDesc": "The total pressure at any depth is the sum of atmospheric and hydrostatic pressure:",
             "totalAmbientWhere": "Where:",
             "pAmb": "total ambient pressure",
-            "pAtm": "atmospheric pressure (≈1 bar at sea level)",
-            "rho": "water density (≈1025 kg/m³ for seawater)",
-            "g": "gravitational acceleration (9.81&nbsp;m/s²)",
+            "pAtm": "atmospheric pressure (≈1 bar at sea level)",
+            "rho": "water density (≈1025 kg/m³ for seawater)",
+            "g": "gravitational acceleration (9.81 m/s²)",
             "hDepth": "depth in meters",
             "simplified": "Simplified Formula (Sea Level)",
             "simplifiedDesc": "For diving at sea level, we use the simplified formula:",
@@ -110,9 +110,9 @@
             "altitudeFormula": "Atmospheric Pressure vs Altitude",
             "altitudeFormulaDesc": "Atmospheric pressure decreases exponentially with altitude:",
             "altitudeWhere": "Where:",
-            "p0": "1.01325 bar (sea level pressure)",
+            "p0": "1.01325 bar (sea level pressure)",
             "hAlt": "altitude in meters",
-            "scaleHeight": "≈ 8500 m (scale height of atmosphere)"
+            "scaleHeight": "≈ 8500 m (scale height of atmosphere)"
         }
     },
     "pressureChart": {
@@ -122,18 +122,18 @@
         "title": "Gas Consumption",
         "whyDepth": {
             "title": "Why Depth Matters for Gas Supply",
-            "text1": "According to <strong>Boyle-Mariotte's Law</strong>, as pressure increases, the volume of gas decreases proportionally. Underwater, this means you breathe <em>compressed</em> air from your tank. At 10m depth (2 bar), each breath draws twice the amount of gas molecules compared to the surface.",
+            "text1": "According to <strong>Boyle-Mariotte's Law</strong>, as pressure increases, the volume of gas decreases proportionally. Underwater, this means you breathe <em>compressed</em> air from your tank. At 10 m depth (2 bar), each breath draws twice the amount of gas molecules compared to the surface.",
             "text2": "This is why deeper dives consume your gas supply faster—you're breathing the same volume of air, but it contains more gas molecules due to compression."
         },
         "sac": {
             "title": "Surface Air Consumption (SAC)",
-            "text1": "<strong>SAC rate</strong> (also called RMV - Respiratory Minute Volume) is how much gas you breathe per minute at the surface. For planning purposes, we use a typical value of <strong>20 L/min</strong> for relaxed diving, though actual consumption varies based on exertion, stress, and individual factors.",
+            "text1": "<strong>SAC rate</strong> (also called RMV - Respiratory Minute Volume) is how much gas you breathe per minute at the surface. For planning purposes, we use a typical value of <strong>20 L/min</strong> for relaxed diving, though actual consumption varies based on exertion, stress, and individual factors.",
             "text2": "At depth, your actual consumption is: <strong>SAC × Ambient Pressure</strong>",
-            "surface": "Surface (1 bar): 20 L/min",
-            "10m": "10m (2 bar): 40 L/min",
-            "20m": "20m (3 bar): 60 L/min",
-            "30m": "30m (4 bar): 80 L/min",
-            "40m": "40m (5 bar): 100 L/min"
+            "surface": "Surface (1 bar): 20 L/min",
+            "10m": "10 m (2 bar): 40 L/min",
+            "20m": "20 m (3 bar): 60 L/min",
+            "30m": "30 m (4 bar): 80 L/min",
+            "40m": "40 m (5 bar): 100 L/min"
         },
         "formula": {
             "summary": "Gas Consumption Formula",
@@ -144,7 +144,7 @@
             "pAmbVar": "Ambient pressure in bar (1 + depth/10)",
             "tVar": "Time at depth (minutes)",
             "availableTitle": "Available Gas in Cylinder",
-            "availableExample": "For a 12L cylinder at 200 bar with 50 bar reserve:",
+            "availableExample": "For a 12 L cylinder at 200 bar with 50 bar reserve:",
             "availableResult": "Available gas = 12 × (200 - 50) = <strong>1800 liters</strong>"
         }
     },
@@ -161,12 +161,12 @@
             "pAvg": "Average ambient pressure = 1 + (avg depth / 10)",
             "exampleTitle": "Example Calculation",
             "exampleIntro": "After a dive you note:",
-            "exampleCyl": "Cylinder: 12L",
-            "examplePressure": "Start pressure: 200 bar, End pressure: 80 bar → <strong>ΔP = 120 bar</strong>",
+            "exampleCyl": "Cylinder: 12 L",
+            "examplePressure": "Start pressure: 200 bar, End pressure: 80 bar → <strong>ΔP = 120 bar</strong>",
             "exampleTime": "Dive time: 45 minutes",
-            "exampleDepth": "Average depth: 15m → <strong>P<sub>avg</sub> = 1 + 15/10 = 2.5 bar</strong>",
+            "exampleDepth": "Average depth: 15 m → <strong>P<sub>avg</sub> = 1 + 15/10 = 2.5 bar</strong>",
             "showSolution": "Try it yourself first — click to reveal the solution",
-            "exampleResult": "This diver has a SAC rate of <strong>12.8 L/min</strong> — quite efficient! Typical recreational divers range from 12-25 L/min depending on fitness, experience, and conditions.",
+            "exampleResult": "This diver has a SAC rate of <strong>12.8 L/min</strong> — quite efficient! Typical recreational divers range from 12-25 L/min depending on fitness, experience, and conditions.",
             "tipsTitle": "Tips for Accurate Measurement",
             "tip1": "Use a dive computer that logs average depth, or calculate it from your profile",
             "tip2": "Measure over several dives to get a reliable average",
@@ -212,13 +212,13 @@
         },
         "example": {
             "title": "Example: Air at 30 Meters",
-            "intro": "At 30 meters, the ambient pressure is <strong>4 bar</strong> (1 + 30/10). For air:",
+            "intro": "At 30 meters, the ambient pressure is <strong>4 bar</strong> (1 + 30/10). For air:",
             "thGas": "Gas",
             "thFraction": "Fraction",
             "thCalculation": "Calculation",
             "thPP": "Partial Pressure",
-            "o2PP": "0.84 bar",
-            "n2PP": "3.16 bar",
+            "o2PP": "0.84 bar",
+            "n2PP": "3.16 bar",
             "show": "show"
         },
         "operational": {
@@ -255,9 +255,9 @@
             "intro": "The MOD is the deepest you can safely dive with a specific gas mix without exceeding the ppO₂ limit. It's calculated from the oxygen fraction and desired maximum ppO₂.",
             "formulaSummary": "MOD Formula",
             "where": "Where:",
-            "ppO2Max": "maximum allowed partial pressure (typically 1.4 bar)",
+            "ppO2Max": "maximum allowed partial pressure (typically 1.4 bar)",
             "fO2": "oxygen fraction in the gas (decimal)",
-            "exercisesTitle": "Exercises: Calculate the MOD (ppO₂ = 1.4 bar)",
+            "exercisesTitle": "Exercises: Calculate the MOD (ppO₂ = 1.4 bar)",
             "exGas": "Gas",
             "exCalc": "Calculation",
             "showAnswer": "show",
@@ -268,11 +268,11 @@
             "title": "Nitrogen Limits (ppN₂) — Narcosis",
             "intro": "Nitrogen becomes narcotic at elevated partial pressures, causing impaired judgment, euphoria, and slowed reactions—similar to alcohol intoxication.",
             "martiniTitle": "The \"Martini Rule\"",
-            "martiniIntro": "A popular rule of thumb: every 10 meters of depth on air is roughly equivalent to drinking one martini on an empty stomach. At 30m, you might feel like you've had 3 martinis!",
-            "martini10": "10m — 1 martini",
-            "martini20": "20m — 2 martinis",
-            "martini30": "30m — 3 martinis",
-            "martini40": "40m — 4 martinis",
+            "martiniIntro": "A popular rule of thumb: every 10 meters of depth on air is roughly equivalent to drinking one martini on an empty stomach. At 30 m, you might feel like you've had 3 martinis!",
+            "martini10": "10 m — 1 martini",
+            "martini20": "20 m — 2 martinis",
+            "martini30": "30 m — 3 martinis",
+            "martini40": "40 m — 4 martinis",
             "martiniNote": "<em>Note: Individual susceptibility varies greatly. Some divers feel effects earlier, others later. Cold, stress, and fatigue increase narcosis.</em>",
             "thPPN2": "ppN₂ (bar)",
             "thEquivDepth": "Equivalent Depth (Air)",
@@ -304,25 +304,25 @@
             "thSymptoms": "Symptoms",
             "thRelevance": "Diving Relevance",
             "cnsType": "<strong>CNS Toxicity</strong>",
-            "cnsCause": "High ppO₂ (>1.6 bar)",
+            "cnsCause": "High ppO₂ (>1.6 bar)",
             "cnsSymptoms": "Seizures, convulsions, tunnel vision, twitching",
             "cnsRelevance": "Immediate danger, can cause drowning",
             "pulmonaryType": "<strong>Pulmonary Toxicity</strong>",
-            "pulmonaryCause": "Prolonged exposure (ppO₂ >0.5 bar)",
+            "pulmonaryCause": "Prolonged exposure (ppO₂ >0.5 bar)",
             "pulmonarySymptoms": "Chest pain, coughing, breathing difficulty",
             "pulmonaryRelevance": "Relevant for long exposures, rebreathers"
         },
         "cnsOtu": {
             "title": "CNS & OTU Tracking",
             "toggleLabel": "Show Details",
-            "disclaimer": "<em>⚠️ This is advanced content. For recreational diving, simply staying below 1.4 bar ppO₂ is sufficient. CNS/OTU tracking is primarily used in technical diving with extended oxygen exposures.</em>",
+            "disclaimer": "<em>⚠️ This is advanced content. For recreational diving, simply staying below 1.4 bar ppO₂ is sufficient. CNS/OTU tracking is primarily used in technical diving with extended oxygen exposures.</em>",
             "cnsTitle": "CNS (Central Nervous System) Clock",
             "cnsDesc": "The CNS clock tracks your exposure as a percentage of the maximum allowable time at each ppO₂ level. At 100%, you've reached the recommended limit.",
             "thPPO2": "ppO₂ (bar)",
             "thNOAAMax": "NOAA Max Time",
             "thCNSPerMin": "CNS% per min",
             "otuTitle": "OTU (Oxygen Tolerance Units)",
-            "otuDesc": "OTU tracks cumulative pulmonary (lung) oxygen exposure. The formula applies when ppO₂ exceeds 0.5 bar:",
+            "otuDesc": "OTU tracks cumulative pulmonary (lung) oxygen exposure. The formula applies when ppO₂ exceeds 0.5 bar:",
             "otuLimits": "Daily limits: <strong>300 OTU</strong> (single dive), <strong>850 OTU</strong> (total daily)"
         },
         "symptoms": {
@@ -382,8 +382,8 @@
             "o2reason2": "Most oxygen in blood is <strong>bound to hemoglobin</strong> in red blood cells, not freely dissolved",
             "text3": "The gas we must carefully manage is <strong>nitrogen (N₂)</strong> — it's inert (your body doesn't use it) and makes up 78% of air. For technical divers using trimix, <strong>helium (He)</strong> follows the same principles but with different solubility characteristics.",
             "thGas": "Gas",
-            "thBloodSolubility": "Solubility in Blood<br><small>(ml/L per bar, 37°C)</small>",
-            "thFatSolubility": "Solubility in Fat<br><small>(ml/L per bar, 37°C)</small>",
+            "thBloodSolubility": "Solubility in Blood<br><small>(ml/L per bar, 37 °C)</small>",
+            "thFatSolubility": "Solubility in Fat<br><small>(ml/L per bar, 37 °C)</small>",
             "thFatBloodRatio": "Fat:Blood Ratio",
             "nitrogen": "Nitrogen (N₂)",
             "helium": "Helium (He)",
@@ -414,7 +414,7 @@
                 "desc": "The partial pressure of nitrogen in the alveoli accounts for water vapor pressure:",
                 "where": "Where:",
                 "pAmb": "ambient pressure at depth (bar)",
-                "pH2O": "water vapor pressure ≈ 0.0627 bar at 37°C",
+                "pH2O": "water vapor pressure ≈ 0.0627 bar at 37 °C",
                 "fN2": "fraction of nitrogen in breathing gas (0.79 for air)"
             }
         },
@@ -448,7 +448,7 @@
             "pSurface": "<strong>Surface tension (2γ/r)</strong> — the Laplace pressure, also squeezes the bubble. Smaller bubbles have <em>more</em> surface tension.",
             "pTissue": "<strong>Dissolved gas tension (P<sub>tissue</sub>)</strong> — the total pressure of gases dissolved in surrounding tissue, pushing gas <em>into</em> the bubble",
             "insight": "When <strong>P<sub>tissue</sub> &gt; P<sub>amb</sub> + 2γ/r</strong>, gas diffuses into the bubble and it <strong>grows</strong>. As it grows, <em>r</em> increases, surface tension <em>drops</em>, making growth even easier — a <strong>positive feedback loop</strong>.",
-            "sliderHint": "Use the slider to ascend from 30m. Watch how reducing ambient pressure tips the balance — larger bubbles cross the critical radius first."
+            "sliderHint": "Use the slider to ascend from 30 m. Watch how reducing ambient pressure tips the balance — larger bubbles cross the critical radius first."
         },
         "halfTimeConcept": {
             "title": "The Half-Time Concept",
@@ -461,20 +461,20 @@
             "example": "A 5-minute compartment reaches 50% saturation in 5 minutes; a 635-minute compartment takes over 10 hours!",
             "gradientTitle": "The Pressure Gradient Effect",
             "gradientText1": "A tissue's half-time is constant — it always takes the same time to close <strong>50% of the gap</strong> between current tissue pressure and the target. But when that gap is larger, 50% represents more gas in absolute terms.",
-            "gradientText2": "<strong>Example:</strong> If a tissue needs to off-gas 2 bar of nitrogen, switching from air (79% N₂) to Nitrox 50 (50% N₂) or pure O₂ (0% N₂) creates a much larger pressure gradient, so each half-time removes more gas — this is why oxygen-rich mixes accelerate decompression!"
+            "gradientText2": "<strong>Example:</strong> If a tissue needs to off-gas 2 bar of nitrogen, switching from air (79% N₂) to Nitrox 50 (50% N₂) or pure O₂ (0% N₂) creates a much larger pressure gradient, so each half-time removes more gas — this is why oxygen-rich mixes accelerate decompression!"
         },
         "halfTimeCharts": {
             "title": "Interactive: Pressure Delta & Half-Times",
             "intro": "These charts demonstrate how the pressure difference affects saturation and desaturation rates.",
             "ongassing": {
                 "title": "On-gassing (Descent)",
-                "desc": "Tissue starts at surface equilibrium (~0.79 bar ppN₂). Adjust target depth to see how bigger pressure differences mean faster absolute loading.",
+                "desc": "Tissue starts at surface equilibrium (~0.79 bar ppN₂). Adjust target depth to see how bigger pressure differences mean faster absolute loading.",
                 "depthLabel": "Target Depth:"
             },
             "offgassing": {
                 "title": "Off-gassing (Ascent to Surface)",
                 "desc": "Tissue starts saturated at the selected depth. Same half-time, same equation—just inverted. The curves are perfect mirrors.",
-                "info": "Saturated @ <strong id=\"offgassing-depth-display\">30m</strong> → Surface (~0.79 bar)"
+                "info": "Saturated @ <strong id=\"offgassing-depth-display\">30 m</strong> → Surface (~0.79 bar)"
             },
             "footnote": "ℹ️ Both charts use the same depth and the same half-time formula. On-gassing and off-gassing are symmetrical—only the direction changes.",
             "math": {
@@ -492,7 +492,7 @@
                 "schreinerDesc": "During ascent or descent at a constant rate:",
                 "rDesc": "is the rate of change of alveolar pressure (positive for descent).",
                 "pressureTitle": "Pressure at Depth",
-                "pressureDesc": "Every 10 meters of seawater adds approximately 1 bar of pressure."
+                "pressureDesc": "Every 10 meters of seawater adds approximately 1 bar of pressure."
             }
         },
         "tissueHeterogeneity": {
@@ -506,9 +506,9 @@
         "buhlmannCompartments": {
             "title": "Bühlmann's ZH-L16 Compartments",
             "intro": "The Bühlmann ZH-L16 model uses <strong>16 theoretical compartments</strong> — these are <em>mathematical constructs</em> fit to experimental data, not literal anatomical tissues. They span a range of half-times designed to model the full spectrum of tissue behaviors:",
-            "fast": "<strong>Fast compartments (5–12.5 min)</strong> — saturate in minutes, but also release gas quickly",
-            "medium": "<strong>Medium compartments (18.5–77 min)</strong> — balance between loading and off-gassing",
-            "slow": "<strong>Slow compartments (109–635 min)</strong> — can take hours to fully saturate",
+            "fast": "<strong>Fast compartments (5–12.5 min)</strong> — saturate in minutes, but also release gas quickly",
+            "medium": "<strong>Medium compartments (18.5–77 min)</strong> — balance between loading and off-gassing",
+            "slow": "<strong>Slow compartments (109–635 min)</strong> — can take hours to fully saturate",
             "controllingTitle": "The Controlling Compartment",
             "controlling": "At any point during a dive, the <strong>controlling compartment</strong> is the one closest to its critical supersaturation limit — this compartment determines your decompression ceiling."
         },
@@ -614,12 +614,12 @@
             "text1": "When tissue pressure exceeds ambient pressure, we're in a state called <strong>supersaturation</strong>. Think of it like a carbonated drink—the CO₂ is dissolved under pressure. Open the bottle (reduce pressure) and bubbles form.",
             "text2": "The same happens in our tissues if we ascend too fast. But here's the fascinating discovery: the body can tolerate <em>some</em> supersaturation without forming dangerous bubbles. The question is: <strong>how much?</strong>",
             "haldaneDesc": "Total ambient pressure ratio",
-            "haldaneMath": "(2 bar → 1 bar, safe from 10m, air only)",
+            "haldaneMath": "(2 bar → 1 bar, safe from 10 m, air only)",
             "workmanValue": "Per tissue, per depth",
             "workmanDesc": "Each compartment has its own limit",
             "workmanMath": "(N₂ and He, 1965)",
             "historySummary": "📚 The History: How We Discovered Safe Limits",
-            "haldaneHistory": "The Scottish physiologist observed that workers in compressed-air tunnels and caissons could safely decompress from 2 bar to 1 bar absolute (a 2:1 ratio). This became the foundation of staged decompression. <em>Note: this 2:1 ratio was derived from experiments with air only — different gas mixtures (trimix, heliox) have different tolerances due to helium's different solubility and diffusion properties.</em>",
+            "haldaneHistory": "The Scottish physiologist observed that workers in compressed-air tunnels and caissons could safely decompress from 2 bar to 1 bar absolute (a 2:1 ratio). This became the foundation of staged decompression. <em>Note: this 2:1 ratio was derived from experiments with air only — different gas mixtures (trimix, heliox) have different tolerances due to helium's different solubility and diffusion properties.</em>",
             "workmanHistory": "U.S. Navy researcher who recognized that a single fixed ratio couldn't capture the full picture. Different tissue compartments tolerate different levels of supersaturation, and these tolerances change with depth. He coined the term <strong>\"M-value\"</strong> (Maximum value) — the maximum tolerable tissue inert gas pressure at any given depth. Crucially, Workman developed M-values for both nitrogen <em>and</em> helium (1965), enabling decompression planning for heliox deep dives.",
             "workmanInsight": "Workman's key insight: faster tissues (brain, blood) tolerate higher supersaturation than slower tissues (fat, bones) — and the tolerated ratio also varies with depth."
         },
@@ -629,8 +629,8 @@
             "intro": "Swiss physician <strong>Prof. Albert A. Bühlmann</strong> took this further in his ZH-L16 algorithm. Instead of a single ratio for all tissues, he defined specific tolerance limits for each of the 16 tissue compartments.",
             "coreConceptTitle": "The Core Concept",
             "coreConceptText": "Each tissue compartment has its own <strong>M-value line</strong> that defines the maximum tolerable tissue pressure for any given ambient pressure. This is the limit—cross it, and bubble formation becomes likely.",
-            "fasterTissues": "<strong>Faster tissues</strong> (short half-times like 5 min) → tolerate MORE supersaturation",
-            "slowerTissues": "<strong>Slower tissues</strong> (long half-times like 635 min) → tolerate LESS supersaturation",
+            "fasterTissues": "<strong>Faster tissues</strong> (short half-times like 5 min) → tolerate MORE supersaturation",
+            "slowerTissues": "<strong>Slower tissues</strong> (long half-times like 635 min) → tolerate LESS supersaturation",
             "formulaSummary": "📐 The Formula Behind M-Values",
             "formulaIntro": "Bühlmann's M-value formula for each compartment:",
             "formulaWhere": "Where:",
@@ -668,7 +668,7 @@
         },
         "example1": {
             "title": "Example 1: Safe Dive",
-            "desc": "This dive includes a 10-minute safety stop at 3m. Notice how the tissue pressure stays well below the M-value line throughout the ascent.",
+            "desc": "This dive includes a 10-minute safety stop at 3 m. Notice how the tissue pressure stays well below the M-value line throughout the ascent.",
             "profileTitle": "Dive Profile",
             "ppDiagramTitle": "Pressure-Pressure Diagram"
         },
@@ -681,7 +681,7 @@
             "ppDiagramTitle": "Pressure-Pressure Diagram",
             "legendSummary": "📖 Chart Legend",
             "legendAmbient": "<strong>Blue solid (Ambient Line):</strong> y = x. Above this = tissue is supersaturated.",
-            "legendSurface": "<strong>Gray dashed (Surface):</strong> x = 1 bar. Must be below M-value when reaching this.",
+            "legendSurface": "<strong>Gray dashed (Surface):</strong> x = 1 bar. Must be below M-value when reaching this.",
             "legendMValue": "<strong>Colored dashed (M-Value):</strong> Critical limit for each tissue. Each tissue compartment has its own color.",
             "legendTrail": "<strong>Trail:</strong> The path traced by the tissue point throughout the dive."
         },
@@ -689,7 +689,7 @@
             "title": "ZH-L16A M-Value Coefficients",
             "viewTable": "View coefficient table",
             "thHalfTime": "Half-Time (min)",
-            "footnote": "* M₀ = a + 1/b = Maximum tolerable tissue pressure at surface (1 bar ambient)"
+            "footnote": "* M₀ = a + 1/b = Maximum tolerable tissue pressure at surface (1 bar ambient)"
         }
     },
     "gradientFactors": {
@@ -748,7 +748,7 @@
             "discovery": {
                 "title": "Richard Pyle's Discovery",
                 "cardTitle": "The Fish Collector's Observation",
-                "text1": "In the 1980s, <strong>Richard Pyle</strong> was a marine biologist collecting fish specimens from the \"twilight zone\" — depths between 50-70 meters. He noticed something curious about his post-dive fatigue.",
+                "text1": "In the 1980 s, <strong>Richard Pyle</strong> was a marine biologist collecting fish specimens from the \"twilight zone\" — depths between 50-70 meters. He noticed something curious about his post-dive fatigue.",
                 "insight": "<strong>The pattern:</strong> On dives where he caught fish, he had to stop at intermediate depths to <strong>vent their swim bladders</strong> (preventing them from bursting during ascent). After these dives, he felt great. On dives with no fish — and therefore no intermediate stops — he felt fatigued.",
                 "text2": "Pyle had accidentally discovered that brief stops at depths <em>deeper</em> than required by his decompression schedule made a noticeable difference in how he felt."
             },
@@ -758,14 +758,14 @@
                 "step1": "Calculate your conventional decompression schedule",
                 "step2": "First deep stop = <strong>halfway</strong> between max depth and first required deco stop",
                 "step3": "Stay 2-3 minutes",
-                "step4": "If the gap to the next stop is still &gt;9m (30ft), add another halfway stop",
-                "exampleTitle": "Example: 60m dive, first deco stop at 15m",
+                "step4": "If the gap to the next stop is still &gt;9 m (30ft), add another halfway stop",
+                "exampleTitle": "Example: 60 m dive, first deco stop at 15 m",
                 "stop1Label": "1st Pyle stop:",
-                "stop1Value": "(60 + 15) ÷ 2 = <strong>38m</strong>",
+                "stop1Value": "(60 + 15) ÷ 2 = <strong>38 m</strong>",
                 "stop2Label": "2nd Pyle stop:",
-                "stop2Value": "(38 + 15) ÷ 2 = <strong>27m</strong>",
+                "stop2Value": "(38 + 15) ÷ 2 = <strong>27 m</strong>",
                 "stop3Label": "3rd Pyle stop:",
-                "stop3Value": "(27 + 15) ÷ 2 = <strong>21m</strong>",
+                "stop3Value": "(27 + 15) ÷ 2 = <strong>21 m</strong>",
                 "vpmConnection": "Interestingly, Pyle later discovered that his empirical pattern closely matched the <strong>Varying Permeability Model (VPM)</strong> — a bubble-based decompression algorithm that independently predicted similar deep stop profiles."
             },
             "bridge": {
@@ -815,13 +815,13 @@
             "nedu": {
                 "cardTitle": "The NEDU Study That Changed Everything",
                 "text1": "For years, deep stops were considered beneficial based on Pyle's observations and bubble model theory. Then came rigorous testing.",
-                "text2": "The <strong>U.S. Navy Experimental Diving Unit (NEDU)</strong> conducted a large comparative study: same dive (170 fsw/30 min), same total decompression time, but different profiles:",
+                "text2": "The <strong>U.S. Navy Experimental Diving Unit (NEDU)</strong> conducted a large comparative study: same dive (170 fsw/30 min), same total decompression time, but different profiles:",
                 "shallowLabel": "Shallow Stops",
                 "shallowValue": "3 DCS in 192 dives",
-                "shallowDesc": "First stop at 40 fsw (12m)",
+                "shallowDesc": "First stop at 40 fsw (12 m)",
                 "deepLabel": "Deep Stops",
                 "deepValue": "11 DCS in 198 dives",
-                "deepDesc": "First stop at 70 fsw (21m)",
+                "deepDesc": "First stop at 70 fsw (21 m)",
                 "result": "Deep stops resulted in <span style=\"color: var(--danger-color);\">3.6× more DCS</span> for the same dive!"
             },
             "backfire": {
@@ -845,13 +845,13 @@
                 "thDiveType": "Dive type",
                 "thDepthDuration": "Depth & duration",
                 "row1type": "Recreational dive",
-                "row1depth": "up to 40 m, short deco",
+                "row1depth": "up to 40 m, short deco",
                 "row2type": "Intensive diving",
                 "row2typeSub": "repetitive dives or liveaboard",
-                "row2depth": "up to 40 m, short deco",
+                "row2depth": "up to 40 m, short deco",
                 "row3type": "Deep dive",
                 "row3typeSub": "don't dive tomorrow",
-                "row3depth": "below 60 m, single dive",
+                "row3depth": "below 60 m, single dive",
                 "row4type": "Crisis situation",
                 "row4typeSub": "bailout, underwater switch on Freedom",
                 "row4depth": "take a longer break from diving",
@@ -861,7 +861,7 @@
                 "row6typeSub": "default",
                 "row7type": "Freedom",
                 "row7typeSub": "my setting",
-                "row7depth": "up to 40 m, short deco",
+                "row7depth": "up to 40 m, short deco",
                 "row8type": "Bühlmann tables ZH-L16",
                 "credit": "Reference table courtesy of Jirka Hovorka."
             },
@@ -895,7 +895,7 @@
                 "text": "CMAS recommends <strong>GF Low = GF High</strong> on nitrogen dives — typically <strong>90/90</strong>, dropping to <strong>85/85</strong> or <strong>80/80</strong> when risk factors apply (age, fatigue, cold, exertion). Asymmetric GFs force deep stops, and multiple independent studies found this <em>increases</em> DCS incidence on air/nitrox dives:",
                 "bullet1": "French Navy (2005) — deep stops raised DCS risk on air deco dives",
                 "bullet2": "U.S. Navy NEDU (2011) — \"redistribution of stop time from shallow to deep stops increases incidence of DCS in air decompression dives\"",
-                "bullet3": "Belgian Military (2023) — default 30/70 preset was unsafe for 60 m air dives"
+                "bullet3": "Belgian Military (2023) — default 30/70 preset was unsafe for 60 m air dives"
             },
             "pointHelium": {
                 "title": "2. For helium (trimix/heliox), asymmetric GFs are still justified",
@@ -978,8 +978,8 @@
         "pressureChange": "Pressure Change ΔP",
         "usableGasChange": "Usable Gas Change",
         "gasChangeSub": "equivalent surface liters (ΔP × volume)",
-        "diveTimeChange": "Dive Time Change at 20 m",
-        "diveTimeSub": "Surface Air Consumption 20 L/min at 3 bar (1+20/10)",
+        "diveTimeChange": "Dive Time Change at 20 m",
+        "diveTimeSub": "Surface Air Consumption 20 L/min at 3 bar (1+20/10)",
         "safety": {
             "withinWorking": "Within working pressure ({0} bar rated)",
             "aboveWorking": "Above working pressure! {0} bar (test pressure: {1} bar)",
@@ -987,15 +987,15 @@
         },
         "tempRange": "Temperature Range",
         "tempRefs": {
-            "ice": "0°C Ice",
-            "room": "20°C Room",
-            "body": "37°C Body",
-            "hotCar": "60°C Hot car"
+            "ice": "0 °C Ice",
+            "room": "20 °C Room",
+            "body": "37 °C Body",
+            "hotCar": "60 °C Hot car"
         },
         "whyTitle": "💡 Why Does This Happen?",
         "whyText1": "Gas molecules move faster at higher temperatures and hit the cylinder walls harder, increasing pressure. Since the cylinder is rigid (constant volume), all the extra kinetic energy translates directly to higher pressure.",
-        "whyText2": "<strong>Practical tip:</strong> Compressors generate significant heat during filling — gas inside a freshly filled cylinder can be 40–50°C above ambient. If you fill to 200 bar in a warm shop and dive in a cold lake, don't be surprised to see only ~180 bar on your gauge. That's not a leak — it's physics.",
-        "whyRuleOfThumb": "<strong>Rule of thumb:</strong> ~0.6 bar change per 1°C at 200 bar working pressure.",
+        "whyText2": "<strong>Practical tip:</strong> Compressors generate significant heat during filling — gas inside a freshly filled cylinder can be 40–50 °C above ambient. If you fill to 200 bar in a warm shop and dive in a cold lake, don't be surprised to see only ~180 bar on your gauge. That's not a leak — it's physics.",
+        "whyRuleOfThumb": "<strong>Rule of thumb:</strong> ~0.6 bar change per 1 °C at 200 bar working pressure.",
         "formulaTitle": "Gay-Lussac's Law (Isochoric Process)",
         "formulaNote": "pressure / temperature ratio is constant at constant volume (T in Kelvin)",
         "formulaRearranged": "Rearranged:",
@@ -1103,7 +1103,7 @@
             "surfaceLine": "Surface (1 bar)",
             "pAnchor": "pAnchor {0} bar ({1} m)",
             "tooltipLabel": "{0}: p_amb={1}, p_tissue={2} bar",
-            "initialDepthLabel": "0.0 min @ 0m"
+            "initialDepthLabel": "0.0 min @ 0 m"
         },
         "gf": {
             "mValue100": "M-value (100%)",
@@ -1172,7 +1172,7 @@
             "hint": "First gas is bottom gas. Add deco gases for multi-gas diving.",
             "addDecoGas": "Add Deco Gas",
             "gasSwitchStop": "Gas switch stop:",
-            "switchNoStop": "0 min (no stop)",
+            "switchNoStop": "0 min (no stop)",
             "switchNMin": "{0} min",
             "switchHint": "Time to verify gas, take breaths, and signal buddy at each switch depth."
         },
@@ -1190,11 +1190,11 @@
             "presetBuhlmann": "Bühlmann",
             "presetBuhlmannTitle": "Raw Bühlmann tables, no conservatism",
             "presetRecreational": "Recreational",
-            "presetRecreationalTitle": "Recreational: ≤40m, short deco",
+            "presetRecreationalTitle": "Recreational: ≤40 m, short deco",
             "presetIntensive": "Intensive",
             "presetIntensiveTitle": "Intensive: repeat dives, safari",
             "presetDeep": "Deep",
-            "presetDeepTitle": "Deep: >60m, single dive",
+            "presetDeepTitle": "Deep: >60 m, single dive",
             "presetBailout": "Bailout",
             "presetBailoutTitle": "Bailout: emergency",
             "presetDecoPlanner": "Deco Planner",
@@ -1205,17 +1205,17 @@
             "tableDepth": "Depth",
             "tableGfLow": "GF Low",
             "tableGfHigh": "GF High",
-            "rowRecDepth": "≤40m, short deco",
+            "rowRecDepth": "≤40 m, short deco",
             "rowIntensive": "Intensive / safari",
-            "rowIntensiveDepth": "≤40m, repeat dives",
+            "rowIntensiveDepth": "≤40 m, repeat dives",
             "rowDeep": "Deep single dive",
-            "rowDeepDepth": ">60m, one dive",
+            "rowDeepDepth": ">60 m, one dive",
             "rowBailout": "Bailout / emergency",
             "rowDecoPlanner": "Deco Planner default",
             "rowFreedom": "Freedom default",
             "rowBuhlmannTables": "Bühlmann tables",
-            "continuousDeco": "Continuous deco (no 3m/1min grid)",
-            "continuousWarning": "⚠️ Produces impractical profiles for demonstration only. Shows raw Bühlmann model output without standard 3m/1min rounding."
+            "continuousDeco": "Continuous deco (no 3 m/1 min grid)",
+            "continuousWarning": "⚠️ Produces impractical profiles for demonstration only. Shows raw Bühlmann model output without standard 3 m/1 min rounding."
         },
         "sac": {
             "title": "Gas Consumption",
@@ -1223,7 +1223,7 @@
             "bottom": "Bottom SAC (L/min):",
             "deco": "Deco SAC (L/min):",
             "reserve": "Reserve (bar):",
-            "typicalHint": "Typical SAC: 15-20 L/min (relaxed), 25-30 L/min (working)."
+            "typicalHint": "Typical SAC: 15-20 L/min (relaxed), 25-30 L/min (working)."
         },
         "waypoints": {
             "dive1Plan": "Dive 1 Plan",
@@ -1236,8 +1236,8 @@
             "colGas": "Gas",
             "colActions": "Actions",
             "addWaypoint": "Add Waypoint",
-            "timeDown": "-1 min",
-            "timeUp": "+1 min",
+            "timeDown": "-1 min",
+            "timeUp": "+1 min",
             "insertAfter": "Insert after",
             "addRepetitiveDive": "Add Repetitive Dive",
             "addRepetitiveHint": "Add a second dive after a surface interval"
@@ -1267,7 +1267,7 @@
         },
         "validation": {
             "firstWaypointTime": "Dive {0}: First waypoint must be at time 0",
-            "firstWaypointDepth": "Dive {0}: First waypoint should be at surface (0m)"
+            "firstWaypointDepth": "Dive {0}: First waypoint should be at surface (0 m)"
         }
     },
     "divePlan": {
@@ -1293,9 +1293,9 @@
         "chartLabels": {
             "pAmb": "pAmb (ambient)",
             "pN2Alveolar": "pN₂ alveolar",
-            "tcFast": "TC1 fast (5 min)",
-            "tcMed": "TC5 medium (27 min)",
-            "tcSlow": "TC12 slow (239 min)"
+            "tcFast": "TC1 fast (5 min)",
+            "tcMed": "TC5 medium (27 min)",
+            "tcSlow": "TC12 slow (239 min)"
         },
         "tooltipLabel": "{0}: {1} bar"
     },
@@ -1401,7 +1401,7 @@
         "title": "About This Project",
         "subtitle": "An experimental learning tool for understanding decompression theory",
         "wip": {
-            "title": "🚧&nbsp;Work&nbsp;in&nbsp;Progress",
+            "title": "🚧 Work in Progress",
             "text": "This project is a <strong>work in progress</strong> and has not been reviewed by anyone yet. The content, calculations, and information presented here may contain errors or inaccuracies. Use at your own discretion."
         },
         "disclaimer": {
@@ -1421,18 +1421,18 @@
             "intro": "The decompression calculations use the <strong>Bühlmann ZH-L16</strong> algorithm with the following parameters and assumptions:",
             "variants": {
                 "title": "Model Variants",
-                "a": "<strong>ZH-L16A:</strong> Original experimental values, TC1 half-time = 4.0 min",
-                "b": "<strong>ZH-L16B:</strong> Modified for printed tables, TC1 half-time = 5.0 min",
-                "c": "<strong>ZH-L16C:</strong> Modified for dive computers (default), TC1 half-time = 5.0 min"
+                "a": "<strong>ZH-L16A:</strong> Original experimental values, TC1 half-time = 4.0 min",
+                "b": "<strong>ZH-L16B:</strong> Modified for printed tables, TC1 half-time = 5.0 min",
+                "c": "<strong>ZH-L16C:</strong> Modified for dive computers (default), TC1 half-time = 5.0 min"
             },
             "constants": {
                 "title": "Constants",
-                "surfacePressure": "Surface pressure: 1.0 bar",
-                "waterVapor": "Water vapor pressure: 0.0627 bar (47 mmHg at 37°C)",
-                "pressurePer10m": "Pressure per 10m depth: 1.0 bar (saltwater)",
-                "descentRate": "Descent rate: 20&nbsp;m/min",
-                "ascentRate": "Ascent rate: 10&nbsp;m/min",
-                "stopIncrement": "Deco stop increment: 3 m"
+                "surfacePressure": "Surface pressure: 1.0 bar",
+                "waterVapor": "Water vapor pressure: 0.0627 bar (47 mmHg at 37 °C)",
+                "pressurePer10m": "Pressure per 10 m depth: 1.0 bar (saltwater)",
+                "descentRate": "Descent rate: 20 m/min",
+                "ascentRate": "Ascent rate: 10 m/min",
+                "stopIncrement": "Deco stop increment: 3 m"
             },
             "gf": {
                 "title": "Gradient Factors",
@@ -1478,7 +1478,7 @@
             "item4": "<strong>Bühlmann, A.A.</strong> (1984). <em>Decompression–Decompression Sickness.</em> Berlin: Springer-Verlag. — The original work describing the ZH-L16 algorithm.",
             "item5": "<strong>Wikipedia</strong>. <a href=\"https://en.wikipedia.org/wiki/B%C3%BChlmann_decompression_algorithm\" target=\"_blank\" rel=\"noopener\">Bühlmann decompression algorithm</a> — Overview of the algorithm, tissue compartment half-times, and M-values.",
             "item6": "<strong>Wienke, B.R.</strong> <a href=\"https://aquatec.wordpress.com/wp-content/uploads/2011/03/decompression-theory.pdf\" target=\"_blank\" rel=\"noopener\">Decompression Theory (PDF)</a> — Comprehensive introduction to decompression physics and physiology.",
-            "item7": "<strong>Alveolar Gas Equation</strong>: The model accounts for water vapor pressure at body temperature (37°C) = 47 mmHg ≈ 0.0627 bar, which reduces the effective partial pressure of inspired gases. <a href=\"https://en.wikipedia.org/wiki/Alveolar_gas_equation\" target=\"_blank\" rel=\"noopener\">Wikipedia: Alveolar gas equation</a>",
+            "item7": "<strong>Alveolar Gas Equation</strong>: The model accounts for water vapor pressure at body temperature (37 °C) = 47 mmHg ≈ 0.0627 bar, which reduces the effective partial pressure of inspired gases. <a href=\"https://en.wikipedia.org/wiki/Alveolar_gas_equation\" target=\"_blank\" rel=\"noopener\">Wikipedia: Alveolar gas equation</a>",
             "item8": "<strong>Schreiner, H.R.</strong> (1971). <em>Safe Limits of Exposure to Increased Pressure.</em> — Derivation of the Schreiner equation for calculating gas loading during linear pressure changes.",
             "item9": "<strong>Strany potápěčské</strong>. <a href=\"https://stranypotapecske.cz\" target=\"_blank\" rel=\"noopener\">stranypotapecske.cz</a> — A comprehensive Czech diving portal and community resource run by Zdeněk Šraier. Features an extensive library of book reviews, educational articles on diving physics and decompression theory, dive site conditions database, equipment reviews, and training materials. An invaluable resource for Czech-speaking divers at all levels."
         }
@@ -1570,7 +1570,7 @@
             "subtitle": "Move the diver, switch the gas, let time run — and watch nitrogen partial pressures chase ambient exponentially.",
             "disclaimerBanner": "<strong>Educational Use Only</strong> — A physics playground showing how tissue nitrogen loading responds to depth and gas changes. Not a dive planner.",
             "depth": "Depth",
-            "depthHint": "0–40 m. Changes are instantaneous.",
+            "depthHint": "0–40 m. Changes are instantaneous.",
             "gas": "Breathing gas",
             "gases": {
                 "air": "Air (21/79)",
@@ -1584,8 +1584,8 @@
             "speedHint": "1× = 1 sim-minute per real second.",
             "time": "Time",
             "timeButtons": {
-                "back": "◀ 1 min",
-                "forward": "1 min ▶",
+                "back": "◀ 1 min",
+                "forward": "1 min ▶",
                 "reset": "Reset"
             },
             "keyboardHint": "Keyboard: ← / → to step, Space to play/pause.",
@@ -1596,9 +1596,9 @@
                 "pO2": "pO₂",
                 "pN2Inspired": "pN₂ inspired",
                 "pN2Alveolar": "pN₂ alveolar",
-                "tcFast": "TC1 • fast (5 min)",
-                "tcMed": "TC5 • medium (27 min)",
-                "tcSlow": "TC12 • slow (239 min)",
+                "tcFast": "TC1 • fast (5 min)",
+                "tcMed": "TC5 • medium (27 min)",
+                "tcSlow": "TC12 • slow (239 min)",
                 "time": "Sim time"
             },
             "alertOk": "All clear",
@@ -1617,14 +1617,14 @@
                 "customVolume": "Custom volume (L)"
             },
             "volumes": {
-                "pony": "3 L (Pony)",
-                "al40": "5.5 L (AL40)",
-                "al50": "7 L (AL50)",
-                "single10": "10 L (Single)",
-                "al80": "11 L (AL80)",
-                "single12": "12 L (Single)",
-                "single15": "15 L (Single)",
-                "single18": "18 L (Single)",
+                "pony": "3 L (Pony)",
+                "al40": "5.5 L (AL40)",
+                "al50": "7 L (AL50)",
+                "single10": "10 L (Single)",
+                "al80": "11 L (AL80)",
+                "single12": "12 L (Single)",
+                "single15": "15 L (Single)",
+                "single18": "18 L (Single)",
                 "doubles7": "2x7 L (Doubles)",
                 "doubles10": "2x10 L (Doubles)",
                 "doubles12": "2x12 L (Doubles)",
@@ -1692,7 +1692,7 @@
                 },
                 "exp": {
                     "name": "e<sup>−kt</sup> | \"fraction left to go\"",
-                    "why": "1.0 at t=0, decays toward 0. Half-gone every T½."
+                    "why": "1.0 at t=0, decays toward 0. Half-gone every T½."
                 }
             }
         },
@@ -1753,7 +1753,7 @@
                 },
                 "exp": {
                     "name": "e<sup>−kt</sup> | exponential decay factor",
-                    "why": "1.0 at t=0, decays toward 0. Multiplied by the initial-disequilibrium term."
+                    "why": "1.0 at t=0, decays toward 0. Multiplied by the initial-disequilibrium term."
                 }
             },
             "decomp": {
@@ -1798,7 +1798,7 @@
                     },
                     "pAmb": {
                         "name": "P<sub>amb</sub> | ambient pressure",
-                        "why": "The horizontal axis of the M-line. Each meter of depth adds 0.1 bar."
+                        "why": "The horizontal axis of the M-line. Each meter of depth adds 0.1 bar."
                     },
                     "b": {
                         "name": "b | tissue slope",
@@ -1814,14 +1814,14 @@
                     "xAxis": "P_amb (bar)",
                     "yAxis": "P_t (bar)",
                     "legendAmbient": "Ambient line (y = x)",
-                    "legendSurface": "Surface (P_amb = 1.013 bar)"
+                    "legendSurface": "Surface (P_amb = 1.013 bar)"
                 },
                 "legend": {
                     "variantA": "ZH-L16A (long dash)",
                     "variantB": "ZH-L16B (short dash)",
                     "variantC": "ZH-L16C (solid)",
                     "ambient": "Ambient line (y = x)",
-                    "surface": "Surface (P_amb = 1.013 bar)"
+                    "surface": "Surface (P_amb = 1.013 bar)"
                 }
             },
             "variantBar": {
@@ -1986,10 +1986,10 @@
         },
         "cascade": {
             "title": "Cascade Filling Station",
-            "subtitle": "Click valve switches to connect cylinders, then fill (max 3 hoses, 200 bar limit)",
+            "subtitle": "Click valve switches to connect cylinders, then fill (max 3 hoses, 200 bar limit)",
             "disclaimerBanner": "<strong>Educational Use Only</strong> — Simulates cascade filling using Boyle's Law.",
             "setupHeading": "Setup",
-            "cascadeBank": "Cascade Bank (4 x 50 L)",
+            "cascadeBank": "Cascade Bank (4 x 50 L)",
             "targetCylinders": "Target Cylinders",
             "controlsHeading": "Controls",
             "remaining": "Remaining:",
@@ -2009,14 +2009,14 @@
                 "12": "12 cylinders"
             },
             "volumes": {
-                "al50": "7 L (AL50)",
-                "single10": "10 L (Single)",
-                "al80": "11 L (AL80)",
-                "single12": "12 L (Single)",
-                "single15": "15 L (Single)"
+                "al50": "7 L (AL50)",
+                "single10": "10 L (Single)",
+                "al80": "11 L (AL80)",
+                "single12": "12 L (Single)",
+                "single15": "15 L (Single)"
             },
             "startPressures": {
-                "empty": "0 bar (empty)"
+                "empty": "0 bar (empty)"
             },
             "buttons": {
                 "reset": "Reset All",

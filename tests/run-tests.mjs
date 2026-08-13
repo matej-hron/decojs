@@ -190,7 +190,7 @@ import { buildRuntimeRows } from '../js/components/RuntimeTable.js';
 import { computeCalendarLayout } from '../js/calendarLayout.js';
 import { snapClamp, diveBlockLabel } from '../js/components/TripCalendar.js';
 import { previewNdl } from '../js/ndlPreview.js';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { GF_PRESETS } from '../js/gfPresets.js';
 import { encodeTrip, decodeTrip } from '../js/tripUrl.js';
 import { isAndroid } from '../js/appBanner.js';
@@ -3529,7 +3529,7 @@ describe('i18n notation - canvas strings must not contain HTML entities', () => 
     };
 
     // chart.* is rendered by Chart.js onto a canvas, which does not decode HTML.
-    // "20&nbsp;m/min" would be shown to the user literally, entity and all.
+    // No entity of any kind may appear there — not just whitespace ones.
     for (const loc of LOCALES) {
         test(`${loc}.json: no HTML entity under chart.*`, () => {
             const offenders = flatten(load(loc).chart, 'chart')
@@ -3537,14 +3537,52 @@ describe('i18n notation - canvas strings must not contain HTML entities', () => 
                 .map(([k, v]) => `${k} = ${v}`);
             expect(offenders).toEqual([]);
         });
+    }
 
-        test(`${loc}.json: chart.* uses U+00A0 between value and unit`, () => {
-            const offenders = flatten(load(loc).chart, 'chart')
-                .filter(([, v]) => /[\d}] (m\/min|m\/s|bar|min\b|m\b)/.test(v))
-                .map(([k, v]) => `${k} = ${v}`);
-            expect(offenders).toEqual([]);
+    // Data files must not carry HTML entities for whitespace. A locale string
+    // can end up in innerHTML, in Chart.js on a canvas, in .textContent or in a
+    // title attribute, and only the first of those decodes entities. U+00A0
+    // renders correctly in all of them, so it is the one form that survives a
+    // sink being refactored later. See docs/notation/phase2-scope.md.
+    const UNIT = 'mmHg|msw|fsw|kPa|MPa|hPa|mbar|bar|Pa|km|cm³|cm|mm|dm³|m³|ml|mg'
+        + '|kg|min|°C|°F|atm|m|l|L|h|s|g';
+    const CZ = 'áäčďéěíĺľňóôöŕřšťúůüýžÁÄČĎÉĚÍĹĽŇÓÔÖŔŘŠŤÚŮÜÝŽ';
+    // "12l lahev" is short for "12litrová lahev" — a compound adjective, no space.
+    const COMPOUND = /\d+\s?l\s+(lahv|láhv|lahev|láhev)/i;
+    const badSpace = new RegExp(
+        `(?<![\\w.,${CZ}])\\d+(?:[.,]\\d+)? (?:${UNIT})(?![\\w°${CZ}])`
+    );
+    // Czech declines spelled-out unit names ("2 bary", "v 10 metrech"). Only the
+    // space is wrong there; the word form is correct and must not be touched.
+    const CZ_WORDS = 'bar|metr|centimetr|milimetr|kilometr|litr|mililitr|minut'
+        + '|sekund|vteřin|hodin|den|dny|dnů|dní|kilogram|gram|tun|stupň|stupe'
+        + '|procent|promile|atmosfér|pascal|kilopascal';
+    const badWordSpace = new RegExp(
+        `(?<![\\w.,${CZ}])\\d+(?:[.,]\\d+)? (?:${CZ_WORDS})[a-z${CZ}]*\\b`
+    );
+
+    const scanFile = (label, obj, czech) => {
+        const entries = flatten(obj);
+        const entities = entries
+            .filter(([, v]) => /&nbsp;|&#160;|&#xa0;/i.test(v))
+            .map(([k]) => `${label} ${k}`);
+        const spaces = entries
+            .filter(([, v]) => !COMPOUND.test(v)
+                && (badSpace.test(v) || (czech && badWordSpace.test(v))))
+            .map(([k, v]) => `${label} ${k} = ${v.slice(0, 70)}`);
+        return { entities, spaces };
+    };
+
+    for (const loc of LOCALES) {
+        test(`${loc}.json: no &nbsp; entity — data uses literal U+00A0`, () => {
+            expect(scanFile(loc, load(loc)).entities).toEqual([]);
+        });
+
+        test(`${loc}.json: U+00A0 between value and unit, not a plain space`, () => {
+            expect(scanFile(loc, load(loc), loc === 'cs').spaces).toEqual([]);
         });
     }
+
 
     test('all locales agree on which keys exist', () => {
         // Known gap: the Spanish privacy policy has not been translated yet.
