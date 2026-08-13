@@ -524,11 +524,11 @@
                 <p data-i18n="daltonsLaw.operational.intro">There are two common contexts for partial pressure calculations:</p>
 
                 <h4 data-i18n="daltonsLaw.operational.opTitle">Operational (MOD / gas limits)</h4>
-                <div class="formula">ppO_2 = F_{O_2} \times p_{\mathrm{amb}}</div>
+                <div class="formula">p_{\mathrm{O_2}} = f_{\mathrm{O_2}} \times p_{\mathrm{amb}}</div>
                 <p data-i18n="daltonsLaw.operational.opDesc">Used for Maximum Operating Depth (MOD) and oxygen toxicity limits. No water vapour subtraction.</p>
 
                 <h4 data-i18n="daltonsLaw.operational.physTitle">Physiological (tissue kinetics)</h4>
-                <div class="formula">pp_{inert} = F_{inert} \times (p_{\mathrm{amb}} - p_{\mathrm{H_2O}})</div>
+                <div class="formula">p_{\mathrm{inert}} = f_{\mathrm{inert}} \times (p_{\mathrm{amb}} - p_{\mathrm{H_2O}})</div>
                 <p data-i18n="daltonsLaw.operational.physDesc">When calculating alveolar gas pressures for tissue loading models, we subtract water vapour pressure because the lungs humidify inspired air:</p>
                 <div class="formula">p_{\mathrm{H_2O}} = 0{,}0627 \text{ bar při 37 °C}</div>
                 <p data-i18n="daltonsLaw.operational.physNote">This ~6% reduction appears in the Bühlmann equations for tissue saturation calculations. We will need this in further sections and stating it here for completeness.</p>
@@ -540,15 +540,15 @@
             <h2>⚠️ <span data-i18n="partialPressureLimits.title">Partial Pressure Limits</span></h2>
 
             <div class="concept-card warning-card">
-                <h3>🔴 <span data-i18n="partialPressureLimits.oxygenLimits.title">Oxygen Limits (ppO₂)</span></h3>
+                <h3>🔴 <span data-i18n="partialPressureLimits.oxygenLimits.title">Oxygen Limits (<var>p</var><sub>O₂</sub>)</span></h3>
                 <p data-i18n="partialPressureLimits.oxygenLimits.intro">
                     Oxygen becomes toxic at elevated partial pressures. The body responds differently
-                    to various ppO₂ levels:
+                    to various <var>p</var><sub>O₂</sub> levels:
                 </p>
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th data-i18n="partialPressureLimits.oxygenLimits.thPPO2">ppO₂ (bar)</th>
+                            <th data-i18n="partialPressureLimits.oxygenLimits.thPPO2"><var>p</var><sub>O₂</sub> (bar)</th>
                             <th data-i18n="partialPressureLimits.oxygenLimits.thStatus">Status</th>
                             <th data-i18n="partialPressureLimits.oxygenLimits.thNotes">Notes</th>
                         </tr>
@@ -591,25 +591,25 @@
             <div class="concept-card">
                 <p data-i18n="partialPressureLimits.mod.intro">
                     The MOD is the deepest you can safely dive with a specific gas mix without exceeding
-                    the ppO₂ limit. It's calculated from the oxygen fraction and desired maximum ppO₂.
+                    the <var>p</var><sub>O₂</sub> limit. It's calculated from the oxygen fraction and desired maximum <var>p</var><sub>O₂</sub>.
                 </p>
                 <details class="learn-more" open>
                     <summary>🔬 <span data-i18n="partialPressureLimits.mod.formulaSummary">MOD Formula</span></summary>
                     <div class="math-content">
                         <div class="formula" id="formula-mod">
-                            MOD = \left(\frac{ppO_{2,max}}{f_{O_2}} - 1\right) \times 10
+                            MOD = \left(\frac{p_{\mathrm{O_2,max}}}{f_{O_2}} - 1\right) \times 10
                         </div>
                         <p data-i18n="partialPressureLimits.mod.where">Where:</p>
                         <ul>
-                            <li><span class="formula-inline">ppO_{2,max}</span> = <span data-i18n="partialPressureLimits.mod.ppO2Max">maximum allowed partial pressure (typically 1.4&nbsp;bar)</span></li>
+                            <li><span class="formula-inline">p_{\mathrm{O_2,max}}</span> = <span data-i18n="partialPressureLimits.mod.ppO2Max">maximum allowed partial pressure (typically 1.4&nbsp;bar)</span></li>
                             <li><span class="formula-inline">f_{O_2}</span> = <span data-i18n="partialPressureLimits.mod.fO2">oxygen fraction in the gas (decimal)</span></li>
                         </ul>
-                        <h4 data-i18n="partialPressureLimits.mod.exercisesTitle">Exercises: Calculate the MOD (ppO₂ = 1.4&nbsp;bar)</h4>
+                        <h4 data-i18n="partialPressureLimits.mod.exercisesTitle">Exercises: Calculate the MOD (<var>p</var><sub>O₂</sub> = 1.4&nbsp;bar)</h4>
                         <table class="data-table">
                             <thead>
                                 <tr>
                                     <th data-i18n="partialPressureLimits.mod.exGas">Gas</th>
-                                    <th>fO₂</th>
+                                    <th><var>f</var><sub>O₂</sub></th>
                                     <th data-i18n="partialPressureLimits.mod.exCalc">Calculation</th>
                                     <th>MOD</th>
                                 </tr>
@@ -649,7 +649,7 @@
 
         <!-- Nitrogen Narcosis -->
         <section id="nitrogen-narcosis" class="education-section">
-            <h2>🟡 <span data-i18n="partialPressureLimits.nitrogenLimits.title">Nitrogen Limits (ppN₂) — Narcosis</span></h2>
+            <h2>🟡 <span data-i18n="partialPressureLimits.nitrogenLimits.title">Nitrogen Limits (<var>p</var><sub>N₂</sub>) — Narcosis</span></h2>
 
             <div class="concept-card warning-card">
                 <p data-i18n="partialPressureLimits.nitrogenLimits.intro">
@@ -677,7 +677,7 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th data-i18n="partialPressureLimits.nitrogenLimits.thPPN2">ppN₂ (bar)</th>
+                            <th data-i18n="partialPressureLimits.nitrogenLimits.thPPN2"><var>p</var><sub>N₂</sub> (bar)</th>
                             <th data-i18n="partialPressureLimits.nitrogenLimits.thEquivDepth">Equivalent Depth (Air)</th>
                             <th data-i18n="partialPressureLimits.nitrogenLimits.thEffects">Effects</th>
                         </tr>
@@ -707,11 +707,11 @@
                 </table>
 
                 <h4 data-i18n="partialPressureLimits.nitrogenLimits.exercisesTitle">Exercises: Max depth for narcosis limit</h4>
-                <p data-i18n="partialPressureLimits.nitrogenLimits.exercisesHint">Same formula as MOD, but for nitrogen: Max depth = ((ppN₂<sub>max</sub> / fN₂) − 1) × 10</p>
+                <p data-i18n="partialPressureLimits.nitrogenLimits.exercisesHint">Same formula as MOD, but for nitrogen: Max depth = ((<var>p</var><sub>N₂,max</sub> / <var>f</var><sub>N₂</sub>) − 1) × 10</p>
 
                 <span hidden data-i18n="partialPressureLimits.nitrogenLimits.exButModTemplate">but MOD is {mod} m!</span>
                 <div class="ppn2-limit-switch">
-                    <span data-i18n="partialPressureLimits.nitrogenLimits.limitLabel">ppN₂ limit:</span>
+                    <span data-i18n="partialPressureLimits.nitrogenLimits.limitLabel"><var>p</var><sub>N₂</sub> limit:</span>
                     <button class="ppn2-btn active" data-limit="4.0">4.0&nbsp;bar</button>
                     <button class="ppn2-btn" data-limit="3.2">3.2&nbsp;bar</button>
                     <span class="ppn2-note" id="ppn2-note-strict" style="display: none;" data-i18n="partialPressureLimits.nitrogenLimits.strictNote">← stricter limit used by some training agencies</span>
@@ -721,7 +721,7 @@
                     <thead>
                         <tr>
                             <th data-i18n="partialPressureLimits.nitrogenLimits.exGas">Gas</th>
-                            <th>fN₂</th>
+                            <th><var>f</var><sub>N₂</sub></th>
                             <th data-i18n="partialPressureLimits.nitrogenLimits.exCalc">Calculation</th>
                             <th data-i18n="partialPressureLimits.nitrogenLimits.exMaxDepth">Max depth</th>
                         </tr>
@@ -755,13 +755,13 @@
                     <tbody>
                         <tr class="danger-row">
                             <td data-i18n="oxygenToxicity.twoTypes.cnsType"><strong>CNS Toxicity</strong></td>
-                            <td data-i18n="oxygenToxicity.twoTypes.cnsCause">High ppO₂ (&gt;1.6&nbsp;bar)</td>
+                            <td data-i18n="oxygenToxicity.twoTypes.cnsCause">High <var>p</var><sub>O₂</sub> (&gt;1.6&nbsp;bar)</td>
                             <td data-i18n="oxygenToxicity.twoTypes.cnsSymptoms">Seizures, convulsions, tunnel vision, twitching</td>
                             <td data-i18n="oxygenToxicity.twoTypes.cnsRelevance">Immediate danger, can cause drowning</td>
                         </tr>
                         <tr class="warning-row">
                             <td data-i18n="oxygenToxicity.twoTypes.pulmonaryType"><strong>Pulmonary Toxicity</strong></td>
-                            <td data-i18n="oxygenToxicity.twoTypes.pulmonaryCause">Prolonged exposure (ppO₂ &gt;0.5&nbsp;bar)</td>
+                            <td data-i18n="oxygenToxicity.twoTypes.pulmonaryCause">Prolonged exposure (<var>p</var><sub>O₂</sub> &gt;0.5&nbsp;bar)</td>
                             <td data-i18n="oxygenToxicity.twoTypes.pulmonarySymptoms">Chest pain, coughing, breathing difficulty</td>
                             <td data-i18n="oxygenToxicity.twoTypes.pulmonaryRelevance">Relevant for long exposures, rebreathers</td>
                         </tr>
@@ -782,19 +782,19 @@
                 <div class="collapsible-content" id="cns-otu-content" style="display: none;">
                     <p data-i18n="oxygenToxicity.cnsOtu.disclaimer">
                         <em>⚠️ This is advanced content. For recreational diving, simply staying below
-                        1.4&nbsp;bar ppO₂ is sufficient. CNS/OTU tracking is primarily used in technical
+                        1.4&nbsp;bar <var>p</var><sub>O₂</sub> is sufficient. CNS/OTU tracking is primarily used in technical
                         diving with extended oxygen exposures.</em>
                     </p>
 
                     <h4 data-i18n="oxygenToxicity.cnsOtu.cnsTitle">CNS (Central Nervous System) Clock</h4>
                     <p data-i18n="oxygenToxicity.cnsOtu.cnsDesc">
                         The CNS clock tracks your exposure as a percentage of the maximum allowable
-                        time at each ppO₂ level. At 100%, you've reached the recommended limit.
+                        time at each <var>p</var><sub>O₂</sub> level. At 100%, you've reached the recommended limit.
                     </p>
                     <table class="data-table small-table">
                         <thead>
                             <tr>
-                                <th data-i18n="oxygenToxicity.cnsOtu.thPPO2">ppO₂ (bar)</th>
+                                <th data-i18n="oxygenToxicity.cnsOtu.thPPO2"><var>p</var><sub>O₂</sub> (bar)</th>
                                 <th data-i18n="oxygenToxicity.cnsOtu.thNOAAMax">NOAA Max Time</th>
                                 <th data-i18n="oxygenToxicity.cnsOtu.thCNSPerMin">CNS% per min</th>
                             </tr>
@@ -815,10 +815,10 @@
                     <h4 data-i18n="oxygenToxicity.cnsOtu.otuTitle">OTU (Oxygen Tolerance Units)</h4>
                     <p data-i18n="oxygenToxicity.cnsOtu.otuDesc">
                         OTU tracks cumulative pulmonary (lung) oxygen exposure. The formula applies
-                        when ppO₂ exceeds 0.5&nbsp;bar:
+                        when <var>p</var><sub>O₂</sub> exceeds 0.5&nbsp;bar:
                     </p>
                     <div class="formula" id="formula-otu">
-                        OTU = t \times \left(\frac{ppO_2 - 0.5}{0.5}\right)^{0.83}
+                        OTU = t \times \left(\frac{p_{\mathrm{O_2}} - 0.5}{0.5}\right)^{0.83}
                     </div>
                     <p data-i18n="oxygenToxicity.cnsOtu.otuLimits">Daily limits: <strong>300 OTU</strong> (single dive), <strong>850 OTU</strong> (total daily)</p>
                 </div>

@@ -923,7 +923,7 @@
         { "key": "d", "text": "un enlace hormonal" }
       ],
       "correct": "a",
-      "explanation": "El oxígeno se une a la hemoglobina mediante un enlace químico reversible. En los pulmones (alta <em>p</em>O₂) se une, en los tejidos (baja <em>p</em>O₂) se libera. El monóxido de carbono se une de forma irreversible y por eso es venenoso."
+      "explanation": "El oxígeno se une a la hemoglobina mediante un enlace químico reversible. En los pulmones (alta <var>p</var><sub>O₂</sub>) se une, en los tejidos (baja <var>p</var><sub>O₂</sub>) se libera. El monóxido de carbono se une de forma irreversible y por eso es venenoso."
     },
     {
       "id": 72,

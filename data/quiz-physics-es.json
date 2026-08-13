@@ -1053,7 +1053,7 @@
         { "key": "d", "text": "Las presiones parciales de los gases en el aire no dependen de la presión total del aire." }
       ],
       "correct": "d",
-      "explanation": "La presión parcial sí depende de la presión total. <em>p</em>O₂ = fO₂ × p_total. Al aumentar la profundidad (y la presión) crecen también todas las presiones parciales. Por eso el oxígeno es tóxico en profundidad."
+      "explanation": "La presión parcial sí depende de la presión total. <var>p</var><sub>O₂</sub> = <var>f</var><sub>O₂</sub> × <var>p</var><sub>total</sub>. Al aumentar la profundidad (y la presión) crecen también todas las presiones parciales. Por eso el oxígeno es tóxico en profundidad."
     },
     {
       "id": 82,
@@ -1066,7 +1066,7 @@
         { "key": "d", "text": "30 metros" }
       ],
       "correct": "d",
-      "explanation": "<em>p</em>O₂ mínima = 16 kPa = 0,16 bar. Presión total necesaria = 0,16 / 0,04 = 4 bar. Eso corresponde a 30 m. A menor profundidad la <em>p</em>O₂ sería demasiado baja (hipoxia)."
+      "explanation": "<var>p</var><sub>O₂</sub> mínima = 16 kPa = 0,16 bar. Presión total necesaria = 0,16 / 0,04 = 4 bar. Eso corresponde a 30 m. A menor profundidad la <var>p</var><sub>O₂</sub> sería demasiado baja (hipoxia)."
     },
     {
       "id": 83,
@@ -1092,7 +1092,7 @@
         { "key": "d", "text": "150 kPa" }
       ],
       "correct": "a",
-      "explanation": "El equipo de oxígeno contiene 100 % O₂. A 15 m la presión absoluta es 2,5 bar = 250 kPa. <em>p</em>O₂ = 1,0 × 250 = 250 kPa. ¡Un valor peligrosamente alto (toxicidad por O₂)!"
+      "explanation": "El equipo de oxígeno contiene 100 % O₂. A 15 m la presión absoluta es 2,5 bar = 250 kPa. <var>p</var><sub>O₂</sub> = 1,0 × 250 = 250 kPa. ¡Un valor peligrosamente alto (toxicidad por O₂)!"
     },
     {
       "id": 85,
@@ -1105,7 +1105,7 @@
         { "key": "d", "text": "14,7 kPa y 63 kPa" }
       ],
       "correct": "b",
-      "explanation": "En superficie: <em>p</em>O₂ = 0,21 × 70 = 14,7 kPa. A 20 m: presión total = 70 + 200 = 270 kPa, <em>p</em>O₂ = 0,21 × 270 = 56,7 kPa."
+      "explanation": "En superficie: <var>p</var><sub>O₂</sub> = 0,21 × 70 = 14,7 kPa. A 20 m: presión total = 70 + 200 = 270 kPa, <var>p</var><sub>O₂</sub> = 0,21 × 270 = 56,7 kPa."
     },
     {
       "id": 86,
@@ -1131,7 +1131,7 @@
         { "key": "d", "text": "oxígeno 200 kPa, nitrógeno 500 kPa, helio 300 kPa" }
       ],
       "correct": "a",
-      "explanation": "A 70 m la presión absoluta es 8 bar = 800 kPa. <em>p</em>O₂ = 0,20 × 800 = 160 kPa. <em>p</em>N₂ = 0,50 × 800 = 400 kPa. <em>p</em>He = 0,30 × 800 = 240 kPa."
+      "explanation": "A 70 m la presión absoluta es 8 bar = 800 kPa. <var>p</var><sub>O₂</sub> = 0,20 × 800 = 160 kPa. <var>p</var><sub>N₂</sub> = 0,50 × 800 = 400 kPa. <var>p</var><sub>He</sub> = 0,30 × 800 = 240 kPa."
     },
     {
       "id": 88,
@@ -1144,7 +1144,7 @@
         { "key": "d", "text": "88 metros" }
       ],
       "correct": "c",
-      "explanation": "Presión total = 160 / 0,21 = 762 kPa ≈ 7,6 bar. Profundidad = (7,6 − 1) × 10 = 66 m. Esa es la MOD para aire con <em>p</em>O₂ = 1,6 bar."
+      "explanation": "Presión total = 160 / 0,21 = 762 kPa ≈ 7,6 bar. Profundidad = (7,6 − 1) × 10 = 66 m. Esa es la MOD para aire con <var>p</var><sub>O₂</sub> = 1,6 bar."
     },
     {
       "id": 89,
@@ -1157,7 +1157,7 @@
         { "key": "d", "text": "según la profundidad (p. ej. a 10 m: oxígeno 42 kPa, nitrógeno 156 kPa)" }
       ],
       "correct": "b",
-      "explanation": "En la botella la presión es 15 MPa, independiente de la profundidad. <em>p</em>O₂ = 0,21 × 15 = 3,15 MPa. <em>p</em>N₂ = 0,78 × 15 = 11,7 MPa. Las presiones parciales en la botella son constantes."
+      "explanation": "En la botella la presión es 15 MPa, independiente de la profundidad. <var>p</var><sub>O₂</sub> = 0,21 × 15 = 3,15 MPa. <var>p</var><sub>N₂</sub> = 0,78 × 15 = 11,7 MPa. Las presiones parciales en la botella son constantes."
     },
     {
       "id": 90,
@@ -1209,7 +1209,7 @@
         { "key": "d", "text": "El oxígeno se une a la hemoglobina y desplaza el nitrógeno fijado." }
       ],
       "correct": "b",
-      "explanation": "Al respirar O₂ puro, la <em>p</em>N₂ en los pulmones es prácticamente nula. Esto crea el gradiente máximo entre los tejidos (saturados de N₂) y los pulmones, lo que acelera la eliminación del nitrógeno."
+      "explanation": "Al respirar O₂ puro, la <var>p</var><sub>N₂</sub> en los pulmones es prácticamente nula. Esto crea el gradiente máximo entre los tejidos (saturados de N₂) y los pulmones, lo que acelera la eliminación del nitrógeno."
     },
     {
       "id": 94,
@@ -1235,7 +1235,7 @@
         { "key": "d", "text": "312 kPa" }
       ],
       "correct": "d",
-      "explanation": "<em>p</em>N₂ en superficie = 78 kPa. A 40 m (5 bar): <em>p</em>N₂ = 0,78 × 500 = 390 kPa. Tras 30 min (2 períodos) el tejido se satura al 75 %. Δp = 390 − 78 = 312 kPa. Saturación = 78 + 0,75×312 = 312 kPa."
+      "explanation": "<var>p</var><sub>N₂</sub> en superficie = 78 kPa. A 40 m (5 bar): <var>p</var><sub>N₂</sub> = 0,78 × 500 = 390 kPa. Tras 30 min (2 períodos) el tejido se satura al 75 %. Δp = 390 − 78 = 312 kPa. Saturación = 78 + 0,75×312 = 312 kPa."
     },
     {
       "id": 96,
@@ -1248,7 +1248,7 @@
         { "key": "d", "text": "195 kPa" }
       ],
       "correct": "d",
-      "explanation": "<em>p</em>N₂ en superficie = 78 kPa. A 30 m (4 bar): <em>p</em>N₂ = 0,78 × 400 = 312 kPa. Tras 1 período el tejido se satura al 50 % de la diferencia. Δp = 312 − 78 = 234 kPa. Saturación = 78 + 0,5×234 = 195 kPa."
+      "explanation": "<var>p</var><sub>N₂</sub> en superficie = 78 kPa. A 30 m (4 bar): <var>p</var><sub>N₂</sub> = 0,78 × 400 = 312 kPa. Tras 1 período el tejido se satura al 50 % de la diferencia. Δp = 312 − 78 = 234 kPa. Saturación = 78 + 0,5×234 = 195 kPa."
     },
     {
       "id": 97,
@@ -1261,7 +1261,7 @@
         { "key": "d", "text": "A: 253,5 kPa, B: 195 kPa" }
       ],
       "correct": "d",
-      "explanation": "<em>p</em>N₂ a 30 m = 312 kPa, Δp = 234 kPa. A (40 min = 2 períodos, 75 %): 78 + 0,75×234 = 253,5 kPa. B (40 min = 1 período, 50 %): 78 + 0,5×234 = 195 kPa."
+      "explanation": "<var>p</var><sub>N₂</sub> a 30 m = 312 kPa, Δp = 234 kPa. A (40 min = 2 períodos, 75 %): 78 + 0,75×234 = 253,5 kPa. B (40 min = 1 período, 50 %): 78 + 0,5×234 = 195 kPa."
     },
     {
       "id": 98,
@@ -1274,7 +1274,7 @@
         { "key": "d", "text": "312 kPa" }
       ],
       "correct": "b",
-      "explanation": "<em>p</em>N₂ a 30 m = 312 kPa, inicial = 78 kPa, Δp = 234 kPa. Tras 2 períodos: 50 % + 25 % = 75 % de saturación. <em>p</em>N₂ = 78 + 0,75×234 = 253,5 kPa."
+      "explanation": "<var>p</var><sub>N₂</sub> a 30 m = 312 kPa, inicial = 78 kPa, Δp = 234 kPa. Tras 2 períodos: 50 % + 25 % = 75 % de saturación. <var>p</var><sub>N₂</sub> = 78 + 0,75×234 = 253,5 kPa."
     },
     {
       "id": 99,
@@ -1287,7 +1287,7 @@
         { "key": "d", "text": "319,5 kPa" }
       ],
       "correct": "d",
-      "explanation": "<em>p</em>N₂ inicial = 78 kPa. A 70 m (8 bar) con 50 % N₂: <em>p</em>N₂ = 0,5 × 800 = 400 kPa. Δp = 322 kPa. Tras 30 min (2 períodos, 75 %): 78 + 0,75×322 = 319,5 kPa."
+      "explanation": "<var>p</var><sub>N₂</sub> inicial = 78 kPa. A 70 m (8 bar) con 50 % N₂: <var>p</var><sub>N₂</sub> = 0,5 × 800 = 400 kPa. Δp = 322 kPa. Tras 30 min (2 períodos, 75 %): 78 + 0,75×322 = 319,5 kPa."
     },
     {
       "id": 100,

@@ -325,7 +325,7 @@
         { "key": "d", "text": "Hypoxia occurs when the partial pressure of oxygen in the breathing gas falls below 21 kPa." }
       ],
       "correct": "d",
-      "explanation": "Statement (d) is incorrect — hypoxia occurs when <em>p</em>O₂ falls below about 16 kPa (0.16 bar), not 21 kPa. 21 kPa is the normal atmospheric partial pressure of oxygen."
+      "explanation": "Statement (d) is incorrect — hypoxia occurs when <var>p</var><sub>O₂</sub> falls below about 16 kPa (0.16 bar), not 21 kPa. 21 kPa is the normal atmospheric partial pressure of oxygen."
     },
     {
       "id": 26,
@@ -338,7 +338,7 @@
         { "key": "d", "text": "breathing air stored long-term in a steel cylinder" }
       ],
       "correct": "c",
-      "explanation": "At 90 m the absolute pressure is 10 bar, so 2% O₂ gives <em>p</em>O₂ = 0.2 bar (20 kPa), which is sufficient and does not cause hypoxia."
+      "explanation": "At 90 m the absolute pressure is 10 bar, so 2% O₂ gives <var>p</var><sub>O₂</sub> = 0.2 bar (20 kPa), which is sufficient and does not cause hypoxia."
     },
     {
       "id": 27,
@@ -416,7 +416,7 @@
         { "key": "d", "text": "60 metres" }
       ],
       "correct": "c",
-      "explanation": "Safe breathing requires <em>p</em>O₂ of at least 0.16 bar. At 30 m (4 bar) we get 4% × 4 = 0.16 bar (16 kPa), which is the minimum safe value."
+      "explanation": "Safe breathing requires <var>p</var><sub>O₂</sub> of at least 0.16 bar. At 30 m (4 bar) we get 4% × 4 = 0.16 bar (16 kPa), which is the minimum safe value."
     },
     {
       "id": 33,
@@ -429,7 +429,7 @@
         { "key": "d", "text": "21 kPa" }
       ],
       "correct": "b",
-      "explanation": "Loss of consciousness is a risk when <em>p</em>O₂ falls below 10 kPa (0.1 bar). 16 kPa is the minimum for normal function; below 10 kPa, consciousness is lost."
+      "explanation": "Loss of consciousness is a risk when <var>p</var><sub>O₂</sub> falls below 10 kPa (0.1 bar). 16 kPa is the minimum for normal function; below 10 kPa, consciousness is lost."
     },
     {
       "id": 34,
@@ -455,7 +455,7 @@
         { "key": "d", "text": "10 kPa" }
       ],
       "correct": "b",
-      "explanation": "Hypoxia occurs when <em>p</em>O₂ falls below 16 kPa (0.16 bar). This is the minimum partial pressure of oxygen needed for normal body function."
+      "explanation": "Hypoxia occurs when <var>p</var><sub>O₂</sub> falls below 16 kPa (0.16 bar). This is the minimum partial pressure of oxygen needed for normal body function."
     },
     {
       "id": 36,

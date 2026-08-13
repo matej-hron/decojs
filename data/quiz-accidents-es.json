@@ -325,7 +325,7 @@
         { "key": "d", "text": "La hipoxia aparece cuando la presión parcial de oxígeno en el medio respirado cae por debajo de 21 kPa." }
       ],
       "correct": "d",
-      "explanation": "La afirmación d) es incorrecta: la hipoxia aparece cuando la <em>p</em>O₂ cae por debajo de unos 16 kPa (0,16 bar), no de 21 kPa. 21 kPa es la presión parcial de oxígeno atmosférico normal."
+      "explanation": "La afirmación d) es incorrecta: la hipoxia aparece cuando la <var>p</var><sub>O₂</sub> cae por debajo de unos 16 kPa (0,16 bar), no de 21 kPa. 21 kPa es la presión parcial de oxígeno atmosférico normal."
     },
     {
       "id": 26,
@@ -338,7 +338,7 @@
         { "key": "d", "text": "respirar aire almacenado durante mucho tiempo en una botella de acero" }
       ],
       "correct": "c",
-      "explanation": "A 90 m la presión absoluta es 10 bar, por lo que un 2 % de O₂ da <em>p</em>O₂ = 0,2 bar (20 kPa), suficiente para respirar y sin causar hipoxia."
+      "explanation": "A 90 m la presión absoluta es 10 bar, por lo que un 2 % de O₂ da <var>p</var><sub>O₂</sub> = 0,2 bar (20 kPa), suficiente para respirar y sin causar hipoxia."
     },
     {
       "id": 27,
@@ -416,7 +416,7 @@
         { "key": "d", "text": "60 metros" }
       ],
       "correct": "c",
-      "explanation": "Para respirar con seguridad necesitamos una <em>p</em>O₂ de al menos 0,16 bar. A 30 m la presión absoluta es 4 bar, por lo que 4 % × 4 = 0,16 bar (16 kPa), el mínimo seguro."
+      "explanation": "Para respirar con seguridad necesitamos una <var>p</var><sub>O₂</sub> de al menos 0,16 bar. A 30 m la presión absoluta es 4 bar, por lo que 4 % × 4 = 0,16 bar (16 kPa), el mínimo seguro."
     },
     {
       "id": 33,
@@ -429,7 +429,7 @@
         { "key": "d", "text": "21 kPa" }
       ],
       "correct": "b",
-      "explanation": "El riesgo de pérdida de conciencia aparece con <em>p</em>O₂ por debajo de 10 kPa (0,1 bar). 16 kPa es el mínimo para una función normal; por debajo de 10 kPa se pierde el conocimiento."
+      "explanation": "El riesgo de pérdida de conciencia aparece con <var>p</var><sub>O₂</sub> por debajo de 10 kPa (0,1 bar). 16 kPa es el mínimo para una función normal; por debajo de 10 kPa se pierde el conocimiento."
     },
     {
       "id": 34,
@@ -455,7 +455,7 @@
         { "key": "d", "text": "10 kPa" }
       ],
       "correct": "b",
-      "explanation": "La hipoxia aparece con <em>p</em>O₂ por debajo de 16 kPa (0,16 bar). Es la presión parcial mínima necesaria para el funcionamiento normal del organismo."
+      "explanation": "La hipoxia aparece con <var>p</var><sub>O₂</sub> por debajo de 16 kPa (0,16 bar). Es la presión parcial mínima necesaria para el funcionamiento normal del organismo."
     },
     {
       "id": 36,
@@ -741,7 +741,7 @@
         { "key": "d", "text": "500 kPa" }
       ],
       "correct": "b",
-      "explanation": "La toxicidad aguda por oxígeno (hiperoxia) aparece con <em>p</em>O₂ superior a 160 kPa (1,6 bar), que es el límite de seguridad para el buceo."
+      "explanation": "La toxicidad aguda por oxígeno (hiperoxia) aparece con <var>p</var><sub>O₂</sub> superior a 160 kPa (1,6 bar), que es el límite de seguridad para el buceo."
     },
     {
       "id": 58,

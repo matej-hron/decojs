@@ -79,20 +79,28 @@ grep -l '<em>' data/*.json | wc -l   # napříč 9 soubory
 ```
 
 Tato data se vykreslují přes `innerHTML` — `js/quiz.js:196` (otázka a možnosti
-odpovědí) a `js/quiz.js:251` (vysvětlivka po zodpovězení). To znamená, že budoucí
-náhrada `<em>` → `<var>` (fáze 2 §11 krok 4 v rešerši, **ne úkol tohoto dokumentu**) se
-opravdu vykreslí — `innerHTML` neuteče značky, jen je vloží do DOM. Tento dokument
-jen popisuje, jaký zápis má nahradit `<em>pp</em>O₂`: podle §4 glossáře je `pp` ve
-formuli nepřípustné synonymum, takže cílový zápis je `<var>p</var><sub>O₂</sub>`
-(kanonicky), případně pokud se hovorové `pp` v konkrétním textu ponechává vědomě,
-`<span class="qty-abbr">pp</span><var>p</var><sub>O₂</sub>` — ne prostý `<em>`.
+odpovědí) a `js/quiz.js:251` (vysvětlivka po zodpovězení). Náhrada `<em>` → `<var>`
+se tedy opravdu vykreslí — `innerHTML` neuteče značky, jen je vloží do DOM.
 
-## 2. CSS — návrh (fáze 2, zatím neinstalováno)
+**Provedeno (fáze 2, PR #88.)** Podle §4 glossáře je `pp` ve vzorci nepřípustné
+synonymum, takže cílový zápis je `<var>p</var><sub>O₂</sub>`. Čeština psala
+`<em>pp</em>O₂`, angličtina a španělština `<em>p</em>O₂`; sjednoceno na kanonický
+tvar ve všech třech jazycích.
 
-> Tento blok **zatím není v `css/styles.css`**. Instaluje ho fáze 2.
+Dřívější znění tohoto odstavce nabízelo jako alternativu
+`<span class="qty-abbr">pp</span><var>p</var><sub>O₂</sub>`. To je omyl — vysázelo
+by se to jako „pp*p*O₂“, tedy značka dvakrát. Hovorové `pp` se buď ponechá celé
+a bez značky (popisky grafů a varování, viz výjimka v §4 glossáře), nebo se
+nahradí kanonickým tvarem. Míchat obojí nelze.
 
-Ověřeno: `css/styles.css` dnes neobsahuje žádný selektor `var`, `sub` ani `sup` —
-přidání tedy nemůže s ničím kolidovat.
+## 2. CSS — nainstalováno
+
+> Tento blok **je v `css/styles.css`** (na konci souboru). Nainstalovala ho fáze 2,
+> PR #87. Pozor: `var(--x)` jinde v souboru je čtení custom property, ne selektor
+> `var` — jsou to dvě různé věci se stejným názvem.
+
+Před instalací neobsahoval `css/styles.css` žádný selektor `var`, `sub` ani `sup`,
+takže přidání s ničím nekolidovalo.
 
 ```bash
 grep -nE '^\s*(var|sub|sup)\s*[,{]|[^-]\b(var|sub|sup)\s*\{' css/styles.css

@@ -635,7 +635,7 @@
                                 <label><input type="checkbox" id="opt-showAmbientPressure"> <span data-i18n="sandbox.dive.options.showAmbient">Show Ambient Pressure</span></label>
                             </div>
                             <div class="chart-prop-row">
-                                <label><input type="checkbox" id="opt-showPartialPressures"> <span data-i18n="sandbox.dive.options.showPartialPressures">Show Partial Pressures (ppO₂/ppN₂)</span></label>
+                                <label><input type="checkbox" id="opt-showPartialPressures"> <span data-i18n="sandbox.dive.options.showPartialPressures">Show Partial Pressures (<var>p</var><sub>O₂</sub>/ppN₂)</span></label>
                             </div>
                             <div class="chart-prop-row">
                                 <label><input type="checkbox" id="opt-showTissueLoading"> <span data-i18n="sandbox.dive.options.showTissueLoading">Show Tissue Loading</span></label>
@@ -685,7 +685,7 @@
                     <div class="export-config-actions">
                         <button id="export-mvalue-config-btn" class="btn btn-small btn-secondary" data-i18n="sandbox.dive.exportConfig">📋 Export Config</button>
                         <button id="screenshot-mvalue-btn" class="btn btn-small btn-secondary" title="Copy chart as image" data-i18n="sandbox.dive.screenshot">📷 Screenshot</button>
-                        <label style="font-size: 0.8rem; display: inline-flex; align-items: center; gap: 3px; margin-left: 8px;"><input type="checkbox" id="opt-showAlveolarLine"> <span data-i18n="sandbox.dive.options.alveolarPn2">Alveolar pN₂</span></label>
+                        <label style="font-size: 0.8rem; display: inline-flex; align-items: center; gap: 3px; margin-left: 8px;"><input type="checkbox" id="opt-showAlveolarLine"> <span data-i18n="sandbox.dive.options.alveolarPn2">Alveolar <var>p</var><sub>N₂</sub></span></label>
                     </div>
                 </div>
                 <div class="chart-wrapper" id="mvalue-container" style="height: 700px;"></div>
@@ -696,20 +696,20 @@
                 <h3 data-i18n="sandbox.dive.gfChart">📊 GF% Diagram</h3>
                 <details class="solution-reveal chart-formula">
                     <summary data-i18n="gfChart.formulaSummary">📐 Show the GF% formula</summary>
-                    <p data-i18n="gfChart.formulaIntro">Instantaneous Gradient Factor for a tissue at ambient pressure p<sub>amb</sub>:</p>
+                    <p data-i18n="gfChart.formulaIntro">Instantaneous Gradient Factor for a tissue at ambient pressure <var>p</var><sub>amb</sub>:</p>
                     <div class="chart-formula-block">
                         <span class="gfc-frac">
-                            <span class="gfc-num">p<sub>tissue</sub> − p<sub>amb</sub></span>
-                            <span class="gfc-den">M(p<sub>amb</sub>) − p<sub>amb</sub></span>
+                            <span class="gfc-num"><var>p</var><sub>tissue</sub> − <var>p</var><sub>amb</sub></span>
+                            <span class="gfc-den">M(<var>p</var><sub>amb</sub>) − <var>p</var><sub>amb</sub></span>
                         </span>
                         <span class="gfc-eq-lhs">GF =</span>
                         <span class="gfc-eq-rhs">× 100 %</span>
                     </div>
-                    <p class="chart-formula-sub" data-i18n="gfChart.formulaMValue">Bühlmann M-value at p<sub>amb</sub>: <strong>M(p<sub>amb</sub>) = a + p<sub>amb</sub> / b</strong></p>
+                    <p class="chart-formula-sub" data-i18n="gfChart.formulaMValue">Bühlmann M-value at <var>p</var><sub>amb</sub>: <strong>M(<var>p</var><sub>amb</sub>) = a + <var>p</var><sub>amb</sub> / b</strong></p>
                     <p data-i18n="gfChart.formulaWhere">Where:</p>
                     <ul class="chart-formula-legend">
-                        <li data-i18n="gfChart.varPtissue"><strong>p<sub>tissue</sub></strong> — tissue inert-gas pressure (bar)</li>
-                        <li data-i18n="gfChart.varPamb"><strong>p<sub>amb</sub></strong> — ambient pressure = 1 + depth/10 (bar)</li>
+                        <li data-i18n="gfChart.varPtissue"><strong><var>p</var><sub>tissue</sub></strong> — tissue inert-gas pressure (bar)</li>
+                        <li data-i18n="gfChart.varPamb"><strong><var>p</var><sub>amb</sub></strong> — ambient pressure = 1 + depth/10 (bar)</li>
                         <li data-i18n="gfChart.varAB"><strong>a, b</strong> — ZH-L16 Bühlmann coefficients for that tissue</li>
                         <li data-i18n="gfChart.varGF"><strong>GF</strong> — 0 % at ambient (fully saturated, no gradient), 100 % at the M-value (Bühlmann limit)</li>
                     </ul>
