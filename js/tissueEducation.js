@@ -298,7 +298,9 @@ function initOngassingChart() {
                         callback: (value, index) => {
                             // With 0.5 step data: index 0=0T, 2=1T, 4=2T, etc.
                             const t = index / 2;
-                            return Number.isInteger(t) ? `${t}T` : '';
+                            // Canvas: markup se nevykreslí, proto plain-text
+                            // tvar značky poločasu (authoring.md §5b).
+                            return Number.isInteger(t) ? `${t}t\u00bd` : '';
                         }
                     }
                 },
@@ -440,7 +442,9 @@ function initOffgassingChart() {
                         callback: (value, index) => {
                             // With 0.5 step data: index 0=0T, 2=1T, 4=2T, etc.
                             const t = index / 2;
-                            return Number.isInteger(t) ? `${t}T` : '';
+                            // Canvas: markup se nevykreslí, proto plain-text
+                            // tvar značky poločasu (authoring.md §5b).
+                            return Number.isInteger(t) ? `${t}t\u00bd` : '';
                         }
                     }
                 },

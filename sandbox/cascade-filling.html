@@ -508,7 +508,7 @@
     </script>
 
     <script type="module">
-        import { fmtNum } from '../js/format.js';
+        import { fmtNum, fmtGroup } from '../js/format.js';
         // Constants
         const CASCADE_COUNT = 4;
         const CASCADE_VOLUME = 50;
@@ -773,7 +773,7 @@
 
             // Update cascade remaining
             const remaining = cascadePressures.reduce((sum, p) => sum + p * CASCADE_VOLUME, 0);
-            document.getElementById('cascadeRemaining').textContent = remaining.toLocaleString() + ' bar-L';
+            document.getElementById('cascadeRemaining').textContent = fmtGroup(remaining) + ' bar-L';
 
             // No target connections - check for cascade-only equalization
             if (openCascades.length === 0 && openTargets.length === 0) {
@@ -1078,12 +1078,12 @@
                     `${Math.round(initialTarget[i])}→${Math.round(Math.min(targetFinal, TARGET_MAX_PRESSURE))}`
                 ).join(', ');
                 logText = `${targetStr} equalized`;
-                detailsText = `Input: ${Math.round(targetInputGas).toLocaleString()} bar-L in ${targetInputVolume} L | Final: ${fmtNum(finalEqPressure, 1)} bar`;
+                detailsText = `Input: ${fmtGroup(targetInputGas)} bar-L in ${targetInputVolume} L | Final: ${fmtNum(finalEqPressure, 1)} bar`;
             } else if (targetIndices.length === 0) {
                 // Cascade-only equalization
                 const cascadeStr = cascadeIndices.map(i => `C${i + 1}`).join(', ');
                 logText = `${cascadeStr} equalized`;
-                detailsText = `Input: ${Math.round(cascadeInputGas).toLocaleString()} bar-L in ${cascadeInputVolume} L | Final: ${fmtNum(finalEqPressure, 1)} bar`;
+                detailsText = `Input: ${fmtGroup(cascadeInputGas)} bar-L in ${cascadeInputVolume} L | Final: ${fmtNum(finalEqPressure, 1)} bar`;
             } else {
                 // Cascade-to-target fill
                 const cascadeStr = cascadeIndices.map(i => `C${i + 1}`).join(', ');
@@ -1096,8 +1096,8 @@
                     return sum + (actualTargetFinal - initialTarget[i]) * targetVolume;
                 }, 0);
 
-                detailsText = `Input: ${Math.round(totalInputGas).toLocaleString()} bar-L (${totalVolume} L) | ` +
-                    `Transferred: ${Math.round(gasTransferred).toLocaleString()} bar-L | ` +
+                detailsText = `Input: ${fmtGroup(totalInputGas)} bar-L (${totalVolume} L) | ` +
+                    `Transferred: ${fmtGroup(gasTransferred)} bar-L | ` +
                     `Final: ${fmtNum(finalEqPressure, 1)} bar` +
                     (targetFinal > TARGET_MAX_PRESSURE ? ` (targets: ${actualTargetFinal} bar)` : '');
             }

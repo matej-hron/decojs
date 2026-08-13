@@ -117,7 +117,7 @@ function expect(actual) {
 // IMPORT MODULES
 // ============================================================================
 
-import { decimalSeparator, fmtNum } from '../js/format.js';
+import { decimalSeparator, fmtGroup, fmtNum, localeTag } from '../js/format.js';
 import { baseFromStartDate, epochMinToLocalInput, localInputToEpochMin } from '../js/tripTime.js';
 import { addDive, editDive, removeDive, rescheduleDive } from '../js/tripState.js';
 
@@ -3710,6 +3710,54 @@ describe('i18n notation - canvas strings must not contain HTML entities', () => 
             expect(missing).toEqual([]);
             expect(extra).toEqual([]);
         }
+    });
+});
+
+describe('format - thousands grouping follows the app language', () => {
+    // authoring.md §6.2: oddělovač se nesmí psát doslova, liší se podle verze
+    // CLDR. Očekávání se proto bere z formatToParts, ne ze zdrojáku testu.
+    const groupSep = (tag) =>
+        new Intl.NumberFormat(tag).formatToParts(12345).find(p => p.type === 'group').value;
+
+    test('each language groups with its own CLDR separator', () => {
+        for (const lang of ['cs', 'en', 'es']) {
+            const expected = `60${groupSep(localeTag(lang))}000`;
+            expect(fmtGroup(60000, 0, lang)).toBe(expected);
+        }
+    });
+
+    test('czech groups with a non-breaking space, not a plain one', () => {
+        const sep = groupSep(localeTag('cs'));
+        expect(sep.codePointAt(0)).toBe(0x00a0);
+        expect(fmtGroup(60000, 0, 'cs').includes(' ')).toBe(false);
+    });
+
+    test('grouping and the decimal separator agree within a language', () => {
+        // 12 345,7 v češtině: mezera skupinová, čárka desetinná.
+        expect(fmtGroup(12345.67, 1, 'cs').endsWith(`${decimalSeparator('cs')}7`)).toBe(true);
+        expect(fmtGroup(12345.67, 1, 'en').endsWith(`${decimalSeparator('en')}7`)).toBe(true);
+    });
+
+    test('unknown language falls back to english, never to the browser locale', () => {
+        expect(localeTag('de')).toBe(localeTag('en'));
+        expect(localeTag(undefined)).toBe(localeTag('en'));
+    });
+
+    test('no shipped code formats a number with toLocaleString', () => {
+        // toLocaleString(undefined, …) sleduje jazyk prohlížeče, ne aplikace.
+        const files = ['js/charts/chartTheme.js', 'sandbox/cascade-filling.html'];
+        const offenders = [];
+        for (const rel of files) {
+            const text = readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
+            text.split('\n').forEach((line, i) => {
+                const at = line.indexOf('toLocaleString');
+                if (at === -1) return;
+                const comment = line.search(/(?:^|\s)\/\//);
+                if (comment !== -1 && comment < at) return;
+                offenders.push(`${rel}:${i + 1}`);
+            });
+        }
+        expect(offenders).toEqual([]);
     });
 });
 

@@ -187,10 +187,22 @@ a `*.json: U+00A0 between value and unit` v `tests/run-tests.mjs`.
 
 Stránku **otevři v prohlížeči**. Ani jeden ze tří skriptů neuvidí, co se
 vykreslí až za běhu; popisky Chart.js jsou navíc na canvasu, ne v DOM
-(vyvolej je přes `chart.tooltip.setActiveElements()`).
+(vyvolej je přes `chart.tooltip.setActiveElements()`, osy přes
+`chart.scales[...].ticks`).
+
+**Zelená kontrola neznamená nic, dokud neselže na nasazené chybě.** Než
+výsledku uvěříš, rozbij to, co měří, a přesvědč se, že to nahlásí. Dvě planosti,
+které tímhle způsobem padly:
+
+- jazyk se přepíná klíčem `deco-theory-lang`; při jiném klíči běží všechny
+  „české" běhy anglicky a kontrola nemá co najít;
+- výraz vyžadující jednotku v témže textovém uzlu jako číslo mine `<span>2,41</span> bar`.
+
+Nech kontrolu vypsat, **kolik** nálezů vůbec prošla — nula nalezených čísel
+vypadá stejně jako nula chyb.
 
 ```bash
-npm test          # musí projít celé (297/297)
+npm test          # musí projít celé (302/302)
 git diff --stat   # sedí seznam souborů z Kroku 1?
 
 # diff nesmí obsahovat formátovací šum
@@ -227,7 +239,7 @@ Norma: <odkaz do style-guide.md, proč je nový tvar správný>
 ## Ponecháno záměrně
 - `60°` (úhel se píše bez mezery), `12litrový` (složenina)
 
-**Testy:** 297/297 ✅
+**Testy:** 302/302 ✅
 ```
 
 Report musí odpovídat na otázku „co jsi kontroloval a nenašel", ne jen

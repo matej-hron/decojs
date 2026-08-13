@@ -11,9 +11,10 @@
  * under Node, and js/mvalues.js and friends stay free of any dependency on
  * the browser-only i18n layer.
  *
- * Grouping (thousands) is intentionally left alone. The app's numbers are
- * small physical quantities (bar, m, min) where grouping never applies, and
- * introducing it would change output this change is not meant to touch.
+ * `fmtNum` deliberately does no thousands grouping: the app's numbers are
+ * small physical quantities (bar, m, min) where grouping never applies.
+ * Where grouping *is* wanted (bar-litres, chart axes) use `fmtGroup`, which
+ * asks Intl for the CLDR separator instead of guessing it.
  */
 
 /** @type {Set<string>} Languages that use the decimal comma */
@@ -73,4 +74,46 @@ export function fmtNum(value, decimals, lang) {
     const s = decimals === undefined || decimals === null ? String(n) : n.toFixed(decimals);
     const sep = decimalSeparator(lang === undefined ? currentLang() : lang);
     return sep === '.' ? s : s.replace('.', sep);
+}
+
+/** @type {Object<string,string>} Language -> CLDR locale used for grouping */
+const LOCALE_TAGS = { cs: 'cs-CZ', es: 'es-ES', en: 'en-US' };
+
+/**
+ * The CLDR locale tag for a language.
+ *
+ * Only used for grouping. `Intl` needs a region to pick a separator, but the
+ * app only ever knows a language, so the mapping is explicit rather than
+ * letting `Intl` fall back to whatever the *browser* is set to.
+ *
+ * @param {string} lang
+ * @returns {string} BCP 47 locale tag
+ */
+export function localeTag(lang) {
+    return LOCALE_TAGS[primarySubtag(lang)] || LOCALE_TAGS.en;
+}
+
+/**
+ * Format a number with thousands grouping in the given language.
+ *
+ * Czech groups with U+00A0, English with a comma, Spanish with a period —
+ * the values come from CLDR via `Intl`, never hardcoded here (see
+ * docs/notation/authoring.md §6.2: the code point varies by CLDR version).
+ *
+ * As with `fmtNum`, the result is a *display string*: the group separator is
+ * a non-breaking space in Czech, so `parseFloat` would truncate it.
+ *
+ * @param {number} value - The number to format
+ * @param {number} [maxDecimals] - Maximum decimal places (default 0)
+ * @param {string} [lang] - Language tag; defaults to the active language
+ * @returns {string} Grouped, localized number
+ */
+export function fmtGroup(value, maxDecimals = 0, lang) {
+    if (value === null || value === undefined || value === '') return String(value);
+    const n = typeof value === 'number' ? value : Number(value);
+    if (!Number.isFinite(n)) return String(value);
+    return new Intl.NumberFormat(localeTag(lang === undefined ? currentLang() : lang), {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: maxDecimals,
+    }).format(n);
 }
