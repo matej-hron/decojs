@@ -34,6 +34,19 @@ When looking into decompression theory concepts, follow these primary sources:
    - Hearing underwater (Slyšení) - sound speed 1500 m/s vs 330 m/s in air
    - Heat transfer (Přenos tepla) - water conducts heat 25x better than air
 
+## Notation
+
+Physical quantities follow ČSN EN ISO 80000-1 and Czech typographic convention:
+quantity symbols italic, units upright, `&nbsp;` between number and unit, decimal comma
+in Czech, lowercase *p* for pressure.
+
+Full rules: [`docs/notation/`](../docs/notation/). The digest in
+`.github/instructions/notation.instructions.md` loads automatically when you edit HTML,
+wiki pages, quiz data, or chart components.
+
+Introducing a new quantity or symbol? Add it to `docs/notation/glossary.md` in the same
+commit.
+
 ## ⚠️ IMPORTANT: Before Every Push
 
 ### 1. Run Tests

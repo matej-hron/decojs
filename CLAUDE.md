@@ -110,6 +110,25 @@ Treat any change to an exported function signature, an equation, or a numerical 
 - Physics, Anatomy, Accidents, Safety, Training, Equipment, Vessel
 - 7 quizzes, 650+ questions total
 
+## Notation (CRITICAL)
+
+Physical quantities follow ČSN EN ISO 80000-1 and Czech typographic convention. Full rules
+in [`docs/notation/`](docs/notation/): `glossary.md` (which symbol for what),
+`style-guide.md` (why), `authoring.md` (how to type it).
+
+These five are repeated here because Claude Code does not load
+`.github/instructions/notation.instructions.md` — VS Code Copilot and the coding agent do.
+Keep the two lists identical.
+
+1. **Quantity symbol italic, unit upright.** `<var>p</var><sub>celk</sub>`, `bar` never italic.
+2. **`&nbsp;` between number and unit.** Correct: `20&nbsp;m`; ✗ never `20m`, `20 m`, nor `&#8239;`/U+202F.
+3. **Decimal comma in Czech content.** Correct: `2,81&nbsp;bar`; ✗ never `2.81 bar`.
+4. **Pressure is lowercase *p*.** Partial pressure *p*<sub>O₂</sub>, not `ppO2`.
+5. **Multi-letter abbreviations upright.** GF, MOD, NDL, SAC, OTU.
+
+Introducing a new quantity or symbol? Add it to `docs/notation/glossary.md` in the same
+commit. A glossary that has fallen behind is worse than none.
+
 ## Key Conventions
 
 - Quizzes use Czech with proper diacritics (háčky, čárky)
