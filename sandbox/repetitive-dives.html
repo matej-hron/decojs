@@ -288,7 +288,7 @@
     };
     const fmtDur = (m) => {
       const r = Math.round(m);
-      return r >= 60 ? `${Math.floor(r / 60)}h ${r % 60}m` : `${r}m`;
+      return r >= 60 ? `${Math.floor(r / 60)}\u00a0h ${r % 60}\u00a0min` : `${r}\u00a0min`;
     };
     // Escape user-controlled text before interpolating into innerHTML.
     const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
@@ -362,7 +362,7 @@
 
       if (d.invalid) {
         selectedHost.innerHTML = headerHtml
-          + `<div class="dive-meta">${siLine} · ${d.maxDepth}m · invalid</div>`
+          + `<div class="dive-meta">${siLine} · ${d.maxDepth}\u00a0m · invalid</div>`
           + INVALID_NDL_HTML
           + '<h3>Pre-saturation at start (% toward surfacing limit, per tissue)</h3>'
           + (d.surfaceIntervalBefore == null ? '<p>Fresh diver — no residual loading.</p>' : presatStrip(d.startingTissue))
@@ -377,11 +377,11 @@
       const stops = d.profile.decoStops || [];
       const deepest = stops.length ? Math.max(...stops.map(s => s.depth)) : null;
       const presat = d.surfaceIntervalBefore == null ? null : preSaturation(d.startingTissue);
-      const parts = [siLine, `${d.maxDepth}m`, `${Math.round(d.bottomTime)}min bottom`, `${runtime}min runtime`];
+      const parts = [siLine, `${d.maxDepth}\u00a0m`, `${Math.round(d.bottomTime)}\u00a0min bottom`, `${runtime}\u00a0min runtime`];
       if (deco > 0) {
-        parts.push(`+${Math.round(deco)}min deco`);
-        if (deepest != null) parts.push(`first stop ${deepest}m`);
-        parts.push(`TTS ${tts}min`);
+        parts.push(`+${Math.round(deco)}\u00a0min deco`);
+        if (deepest != null) parts.push(`first stop ${deepest}\u00a0m`);
+        parts.push(`TTS ${tts}\u00a0min`);
       } else {
         parts.push('no-deco');
       }

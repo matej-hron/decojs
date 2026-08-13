@@ -659,7 +659,7 @@ export class GFChart {
         if (!this.timeDisplay || !this.calculationResults) return;
         const time = this.calculationResults.timePoints[this.currentTimeIndex] || 0;
         const depth = this.calculationResults.depthPoints[this.currentTimeIndex] || 0;
-        this.timeDisplay.textContent = fmt(translate('chart.timeDisplay', '{0}\u00a0min @ {1}m'), fmtNum(time, 1), fmtNum(depth, 1));
+        this.timeDisplay.textContent = fmt(translate('chart.timeDisplay', '{0}\u00a0min @ {1}\u00a0m'), fmtNum(time, 1), fmtNum(depth, 1));
         this._renderMiniProfile();
     }
 
@@ -969,7 +969,7 @@ export class GFChart {
             // pAnchor vertical line
             if (pAnchor > SURFACE_PRESSURE) {
                 datasets.push({
-                    label: fmt(translate('chart.gf.pAnchor', 'pAnchor {0}\u00a0bar ({1}m)'), fmtNum(pAnchor, 2), fmtNum(((pAnchor - SURFACE_PRESSURE) / 0.1), 1)),
+                    label: fmt(translate('chart.gf.pAnchor', 'pAnchor {0}\u00a0bar ({1}\u00a0m)'), fmtNum(pAnchor, 2), fmtNum(((pAnchor - SURFACE_PRESSURE) / 0.1), 1)),
                     data: [
                         { x: pAnchor, y: -10 },
                         { x: pAnchor, y: 120 }
@@ -1017,7 +1017,7 @@ export class GFChart {
             const currentTissue = results.compartments[comp.id].pressures[timeIndex];
             const currentGF = calculateInstantGF(currentTissue, currentAmbient, comp) * 100;
             datasets.push({
-                label: fmt(translate('chart.mvalue.tcLabel', 'TC{0} ({1}min)'), comp.id, fmtNum(comp.halfTime)),
+                label: fmt(translate('chart.mvalue.tcLabel', 'TC{0} ({1}\u00a0min)'), comp.id, fmtNum(comp.halfTime)),
                 data: [{ x: currentAmbient, y: currentGF }],
                 backgroundColor: comp.color,
                 borderColor: '#fff',

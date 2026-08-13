@@ -599,3 +599,48 @@ datasetů byly odečteny přímo z instancí Chart.js po zapnutí přepínače.
   `GF<sub>high</sub>` — zkratka zkratky, není to chyba sazby.
 
 **Testy:** 314/314 (4 nové).
+
+### Chybějící mezera mezi číslem a jednotkou — hotovo
+
+Předchozí vlna opravila **typ** mezery (obyčejná → nedělitelná). Zbývala místa,
+kde mezera **chybí úplně** — `` `${maxDepth}m` ``, `MOD: {0}m`. Angličtina jich
+měla nejvíc, čeština skoro žádnou, takže se to při české kontrole přehlédlo;
+podle ISO 80000-1 je to ale chyba v každém jazyce.
+
+| Kde | Počet | Oprava |
+|---|---|---|
+| šablonové řetězce v JS a `<script>` | 46 | `}\u00a0m` |
+| překladové vzory `{0}m` v `locales/en.json` | 18 | doslovné U+00A0 |
+| popisky osy v SVG (`js/components/HeroMotion.js`) | 3 | `\u00a0` (řetězec jde do `innerHTML` SVG) |
+| názvy ukázkových profilů (`Simple 30m`) | 3 | `\u00a0` |
+
+**Čtyři místa se neopravovala mezerou, ale značkou.** `` `${hours}h ${mins}m` ``
+používalo `m` ve významu *minuta*. Pouhé doplnění mezery by z „15m" udělalo
+„15 m", tedy metry. ISO 80000-3 má pro minutu značku `min`; tabulka nasycení
+navíc měla `1h 15m` hned vedle sloupce `12,5 min`. Opraveno na `min`.
+
+#### Dva nálezy z minulé vlny
+
+**Escape unikl do HTML.** `pressure.html` měla `{mod}\u00a0m!` v textu prvku
+`<span data-i18n>`, ne uvnitř `<script>`. Escape dekóduje JS, ne HTML parser,
+takže stránka zobrazovala doslova „but MOD is 33,8\u00a0m!". Řetězec se navíc
+čte přes `textContent`, takže správná forma je entita `&nbsp;` — parser ji
+dekóduje a `textContent` vrátí skutečný znak U+00A0.
+
+**Pojmenovaný placeholder minulá vlna neviděla.** Hledala `{0} bar`, ale
+`{mod} m` má jméno, ne číslo. Nový test pokrývá obě formy.
+
+**Proč to statická kontrola nenašla dřív.** Předchozí vlna hledala vzor
+`` }<jednotka> ``. Popisky v `HeroMotion.js` ale nemají placeholder — je to
+literál `>15m</text>` uvnitř SVG šablony. Našel je až průchod DOM v prohlížeči.
+Obráceně platí i to první: prohlížečová sonda napoprvé procházela i textové uzly
+uvnitř `<script>` a hlásila 156 „závad", které byly zdrojový kód. Sonda musí
+`SCRIPT`, `STYLE` a skryté prvky odmítat.
+
+**Měřeno v prohlížeči:** 355 (cs) / 367 (en) dvojic číslo+jednotka na 16
+stránkách, 0 slepených. Sonda negativně ověřená.
+
+**Zbývá (jiná třída).** `sandbox/chart-test.html` zobrazuje ukázky kódu jako
+text; čísla v nich nejsou veličiny a mezera do nich nepatří.
+
+**Testy:** 319/319 (5 nových, každý negativně ověřený).

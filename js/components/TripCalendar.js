@@ -30,9 +30,9 @@ export function snapClamp(rawMin, dayStartMin, dayEndMin, snap) {
 export function diveBlockLabel(d) {
     const name = (d && d.name) ? d.name : (d && d.id ? d.id.toUpperCase() : '?');
     const depth = d ? d.maxDepth : '?';
-    if (d && d.invalid) return `${name} · ${depth}m · ⚠ no-deco N/A`;
+    if (d && d.invalid) return `${name} · ${depth}\u00a0m · ⚠ no-deco N/A`;
     const bt = d ? Math.round(d.bottomTime) : '?';
-    let label = `${name} · ${depth}m · ${bt}min`;
+    let label = `${name} · ${depth}\u00a0m · ${bt}\u00a0min`;
     const deco = (d && d.profile && d.profile.totalDecoTime) || 0;
     if (deco > 0) label += ` · +${Math.round(deco)} deco`;
     else if (d && d.ndlLocked) label += ` · NDL`;

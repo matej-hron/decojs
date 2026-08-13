@@ -1240,7 +1240,7 @@ export function generateProfileName(setup) {
     // Format gas names
     const gasNames = gases.map(g => g.name).join(' + ');
     
-    return `${maxDepth}m ${gasNames}`;
+    return `${maxDepth}\u00a0m ${gasNames}`;
 }
 
 /**
@@ -1259,7 +1259,7 @@ export function formatDiveSetupSummary(setup) {
     const diveCount = setup.dives?.length || 1;
     const diveInfo = diveCount > 1 ? ` (${diveCount} dives)` : '';
     
-    return `${setup.name}: ${maxDepth}m max depth, ${totalTime}\u00a0min total, ${gasNames}${diveInfo}`;
+    return `${setup.name}: ${maxDepth}\u00a0m max depth, ${totalTime}\u00a0min total, ${gasNames}${diveInfo}`;
 }
 /**
  * NOAA CNS Oxygen Toxicity Limits
@@ -1599,7 +1599,7 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
         }
         return `<tr class="${trClass}">` +
             `<td class="dse-plan-phase"><span class="dse-plan-icon">${s.icon}</span> ${s.label}</td>` +
-            `<td class="dse-plan-depth">${s.depth}m</td>` +
+            `<td class="dse-plan-depth">${s.depth}\u00a0m</td>` +
             `<td class="dse-plan-stop">${stopDisplay || stopDisplay === 0 ? stopDisplay : '—'}</td>` +
             `<td class="dse-plan-runtime">${runtimeDisplay}</td>` +
             `<td class="dse-plan-gas">${s.gas}</td>` +

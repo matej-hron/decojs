@@ -196,7 +196,7 @@ function displayProfileSummary(setup) {
         profileLabel.textContent = setup.name || translate('diveEditor.profileDefault', 'Profile:');
     }
     
-    profileHeaderSummary.textContent = `${maxDepth}m max, ${totalTime}\u00a0min, ${gasNames}${diveInfo}`;
+    profileHeaderSummary.textContent = `${maxDepth}\u00a0m max, ${totalTime}\u00a0min, ${gasNames}${diveInfo}`;
     
     // Update switcher selection if needed
     if (profileSwitcher) {
@@ -339,7 +339,7 @@ function initReferenceTable() {
         const saturationTime = Math.round(comp.halfTime * 6); // 6 half-times ≈ 98%
         const hours = Math.floor(saturationTime / 60);
         const mins = saturationTime % 60;
-        const timeStr = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+        const timeStr = hours > 0 ? `${hours}\u00a0h ${mins}\u00a0min` : `${mins}\u00a0min`;
         
         const row = document.createElement('tr');
         row.innerHTML = `

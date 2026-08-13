@@ -79,7 +79,7 @@ export function validateProfile(profile) {
 
         // Safety warnings (not errors)
         if (wp.depth > 60) {
-            errors.push(`Warning: Waypoint ${i + 1} depth (${wp.depth}m) exceeds recreational limits`);
+            errors.push(`Warning: Waypoint ${i + 1} depth (${wp.depth}\u00a0m) exceeds recreational limits`);
         }
     }
 

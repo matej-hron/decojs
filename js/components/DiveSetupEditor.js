@@ -899,7 +899,7 @@ export class DiveSetupEditor extends EventTarget {
                     <span class="dse-cylinder-custom-unit" style="display: ${!cylinderOptions.find(c => c.value === gas.cylinderVolume) ? 'inline' : 'none'};">L</span>
                 </div>
                 <div class="dse-gas-mod">
-                    <span class="dse-hint">${fmt(translate('diveEditor.mod', 'MOD: {0}m (deco: {1}m)'), mod14, mod16)}</span>
+                    <span class="dse-hint">${fmt(translate('diveEditor.mod', 'MOD: {0}\u00a0m (deco: {1}\u00a0m)'), mod14, mod16)}</span>
                 </div>
             </div>
         `;
@@ -995,7 +995,7 @@ export class DiveSetupEditor extends EventTarget {
     _updateGasModDisplay(modDisplay, o2Fraction) {
         const mod14 = calculateMOD(o2Fraction, 1.4);
         const mod16 = calculateMOD(o2Fraction, 1.6);
-        modDisplay.textContent = fmt(translate('diveEditor.mod', 'MOD: {0}m (deco: {1}m)'), mod14, mod16);
+        modDisplay.textContent = fmt(translate('diveEditor.mod', 'MOD: {0}\u00a0m (deco: {1}\u00a0m)'), mod14, mod16);
     }
     
     _addGas() {
@@ -1290,7 +1290,7 @@ export class DiveSetupEditor extends EventTarget {
 
             if (bottomTime <= ndl) {
                 const remaining = ndl - bottomTime;
-                this.elements.ndlStatus.textContent = fmt(translate('diveEditor.ndl.remaining', '✅ {0}min remaining'), remaining);
+                this.elements.ndlStatus.textContent = fmt(translate('diveEditor.ndl.remaining', '✅ {0}\u00a0min remaining'), remaining);
                 this.elements.ndlStatus.className = 'dse-ndl-status dse-ndl-ok';
             } else if (bottomTime <= ndl * 1.1) {
                 this.elements.ndlStatus.textContent = translate('diveEditor.ndl.atLimit', '⚠️ At limit');
@@ -1426,7 +1426,7 @@ export class DiveSetupEditor extends EventTarget {
         const allWaypoints = dives.flatMap(d => d.waypoints);
         const maxDepth = Math.max(...allWaypoints.map(wp => wp.depth), 0);
         const gasNames = this.currentGases.map(g => g.name).join(' + ');
-        const generatedName = `${maxDepth}m ${gasNames}`;
+        const generatedName = `${maxDepth}\u00a0m ${gasNames}`;
         
         // Use saved profile name if available, otherwise generate one
         const profileName = this.currentProfileName || generatedName;

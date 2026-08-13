@@ -206,6 +206,42 @@ v `cs`/`en`/`es` stejný" spadl na rozdílu 79 : 80 : 81 a odhalil jak únik na
 canvas, tak zapomenutou značku v jednom jazyce. Parita je levný a nečekaně
 účinný test — ke každé třídě jeden.
 
+## Chybějící mezera se hledá jinak než špatná mezera
+
+Vzor `` }<jednotka> `` najde jen šablony. Literál uvnitř SVG nebo v názvu
+ukázky (`>15m</text>`, `name: 'Simple 30m'`) placeholder nemá — ten najde až
+průchod DOM v prohlížeči. **Statická kontrola a měření v prohlížeči se
+doplňují; ani jedna sama nestačí.**
+
+Pozor na dvě pasti sondy:
+
+- procházení textových uzlů zabírá i obsah `<script>` — sonda pak hlásí zdrojový
+  kód jako závadu (napoprvé 156 falešných nálezů). Odmítej `SCRIPT`, `STYLE`
+  a skryté prvky.
+- `m` někdy znamená **minutu**, ne metr. `` `${mins}m` `` se neopravuje mezerou —
+  „15 m" by byly metry. ISO 80000-3 má značku `min`; oprav značku, ne mezeru.
+
+## Escape patří do JS, entita do HTML — a spletl se i tenhle skill
+
+`\u00a0` napsané do textu HTML prvku se nedekóduje a vypíše se doslova.
+Reálná regrese: `pressure.html` zobrazovala „but MOD is 33,8\u00a0m!".
+Kontrola, která to chytí:
+
+```bash
+python3 - <<'PY'
+import re, sys
+for path in sys.argv[1:]:
+    src = open(path, encoding='utf-8').read()
+    masked = re.sub(r'<script\b[\s\S]*?</script>|<style\b[\s\S]*?</style>',
+                    lambda m: ' ' * len(m.group(0)), src, flags=re.I)
+    for m in re.finditer(r'\\u00a0', masked):
+        print(f'{path}:{masked[:m.start()].count(chr(10)) + 1}  escape v HTML textu')
+PY
+```
+
+Hledáš-li v `locales/` placeholder s jednotkou, hledej **obě formy**: `{0} m`
+i `{mod} m`. Pojmenovaný placeholder minulé vlně proklouzl.
+
 ## Statické číslo v šabloně: vyber správný nástroj
 
 Grep najde jen část. Zbytek jsou čísla napsaná natvrdo v HTML — v tabulkách,
@@ -312,7 +348,7 @@ Nech kontrolu vypsat, **kolik** nálezů vůbec prošla — nula nalezených č�
 vypadá stejně jako nula chyb.
 
 ```bash
-npm test          # musí projít celé (314/314)
+npm test          # musí projít celé (319/319)
 git diff --stat   # sedí seznam souborů z Kroku 1?
 
 # diff nesmí obsahovat formátovací šum
@@ -349,7 +385,7 @@ Norma: <odkaz do style-guide.md, proč je nový tvar správný>
 ## Ponecháno záměrně
 - `60°` (úhel se píše bez mezery), `12litrový` (složenina)
 
-**Testy:** 314/314 ✅
+**Testy:** 319/319 ✅
 ```
 
 Report musí odpovídat na otázku „co jsi kontroloval a nenašel", ne jen

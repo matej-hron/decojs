@@ -36,9 +36,9 @@ function buildSvg() {
             <line x1="1000" y1="0" x2="1000" y2="200" stroke-dasharray="2 6"/>
         </g>
         <g class="hero-axis">
-            <text x="14"   y="35"  class="hero-axis-label">0m</text>
-            <text x="14"   y="95"  class="hero-axis-label">15m</text>
-            <text x="14"   y="165" class="hero-axis-label">30m</text>
+            <text x="14"   y="35"  class="hero-axis-label">0\u00a0m</text>
+            <text x="14"   y="95"  class="hero-axis-label">15\u00a0m</text>
+            <text x="14"   y="165" class="hero-axis-label">30\u00a0m</text>
             <text x="1186" y="193" class="hero-axis-label" text-anchor="end">time →</text>
         </g>
         <path class="hero-fill" d="${FILL_D}" fill="url(#hero-depth-fill)"/>
