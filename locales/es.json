@@ -1588,9 +1588,9 @@
                 "single12": "12 L (mono)",
                 "single15": "15 L (mono)",
                 "single18": "18 L (mono)",
-                "doubles7": "2x7 L (bibotella)",
-                "doubles10": "2x10 L (bibotella)",
-                "doubles12": "2x12 L (bibotella)",
+                "doubles7": "2×7 L (bibotella)",
+                "doubles10": "2×10 L (bibotella)",
+                "doubles12": "2×12 L (bibotella)",
                 "custom": "Personalizado…"
             },
             "buttons": {
@@ -1952,7 +1952,7 @@
             "subtitle": "Haz clic en las válvulas para conectar botellas y llena (máx. 3 latiguillos, límite de 200 bar)",
             "disclaimerBanner": "<strong>Solo para fines educativos</strong> — Simula el llenado en cascada usando la Ley de Boyle.",
             "setupHeading": "Configuración",
-            "cascadeBank": "Batería de cascada (4 x 50 L)",
+            "cascadeBank": "Batería de cascada (4 × 50 L)",
             "targetCylinders": "Botellas objetivo",
             "controlsHeading": "Controles",
             "remaining": "Restante:",

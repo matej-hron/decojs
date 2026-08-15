@@ -4306,11 +4306,6 @@ describe('notation - units the first nbsp wave never listed', () => {
     // (viz docs/notation/phase2-scope.md) — tenhle test jen hlídá, ať jich
     // nepřibude. Po opravě se číslo snižuje, nikdy nezvyšuje.
     const ALLOWED = {
-        // `2x7 L` — chybí znak násobení × i mezera; navíc jen v en/es, čeština
-        // má správně `2×7 l`. Třída „znak násobení a jazyková parita".
-        'locales/en.json': 3,
-        'locales/es.json': 3,
-        'sandbox/transfilling.html': 6,
         // `16 – 18 C` — chybí značka stupně, `C` je coulomb. Třída „chybějící °".
         'data/quiz-accidents.json': 4,
         'data/quiz-safety.json': 3,
@@ -4391,6 +4386,79 @@ describe('notation - units the first nbsp wave never listed', () => {
         const perFile = collect();
         const stale = Object.keys(ALLOWED).filter(rel => (perFile[rel] || []).length !== ALLOWED[rel]);
         expect(stale).toEqual([]);
+    });
+});
+
+describe('notation - multiplication between numerals uses the multiplication sign', () => {
+    // authoring.md §5: znak násobení je U+00D7, ne písmeno `x`.
+    // Angličtina a španělština si nechaly ASCII `2x7 L` i tam, kde
+    // čeština měla správně `2×7 l` — chyba byla v údaji o objemu dvojčete.
+    const root = new URL('../', import.meta.url);
+    // `x` mezi číslicemi je vždy násobení. Rozměry (`10x20`) i počty
+    // (`2x7`) patří do stejné třídy, takže stačí jediný vzor.
+    const ASCII_X = /\d\s*[xX]\s*\d/;
+
+    const strings = (value, path, out) => {
+        if (typeof value === 'string') out.push([path, value]);
+        else if (Array.isArray(value)) value.forEach((v, i) => strings(v, `${path}[${i}]`, out));
+        else if (value && typeof value === 'object') {
+            for (const [k, v] of Object.entries(value)) strings(v, path ? `${path}.${k}` : k, out);
+        }
+        return out;
+    };
+
+    // Text bez značek, skriptů a ukázek kódu — `translateX(10)` není násobení.
+    const visibleText = (src) => src
+        .replace(/<!--[\s\S]*?-->/g, ' ')
+        .replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, ' ')
+        .replace(/<pre[\s\S]*?<\/pre>|<code[\s\S]*?<\/code>/gi, ' ')
+        .replace(/<[^>]+>/g, ' ');
+
+    const offenders = () => {
+        const found = [];
+        for (const dir of ['locales/', 'data/']) {
+            for (const name of readdirSync(new URL(dir, root))) {
+                if (!name.endsWith('.json')) continue;
+                const rel = `${dir}${name}`;
+                const parsed = JSON.parse(readFileSync(new URL(rel, root), 'utf8'));
+                for (const [key, value] of strings(parsed, '', [])) {
+                    if (ASCII_X.test(value)) found.push(`${rel} ${key}: ${value}`);
+                }
+            }
+        }
+        for (const rel of shippedSources().filter(f => f.endsWith('.html'))) {
+            const text = visibleText(readFileSync(new URL(rel, root), 'utf8'));
+            if (ASCII_X.test(text)) found.push(`${rel}: ${text.match(/.{0,25}\d\s*[xX]\s*\d.{0,15}/)[0].trim()}`);
+        }
+        return found;
+    };
+
+    test('no visible string writes multiplication as the letter x', () => {
+        expect(offenders()).toEqual([]);
+    });
+
+    test('a count designation keeps the multiplication sign non-breaking', () => {
+        // Rozlišuje se výpočet od údaje. Ve vzorci `12 × (200 − 50)` je
+        // obyčejná mezera správně — dlouhý výpočet se zalomit smí.
+        // `4 × 50 l` je ale jeden údaj o objemu a rozpadnout se nesmí;
+        // pozná se podle toho, že hned za ním stojí značka jednotky.
+        const LOOSE = /\d[ ]?\u00d7[ ]?\d+[ ](?:l|L|ml|mL|bar|m|kg)(?![\w\u00e1-\u017e])|\d[ ]\u00d7[ ]?\d+[ \u00a0](?:l|L|ml|mL|bar|m|kg)(?![\w\u00e1-\u017e])/;
+        const found = [];
+        for (const dir of ['locales/', 'data/']) {
+            for (const name of readdirSync(new URL(dir, root))) {
+                if (!name.endsWith('.json')) continue;
+                const rel = `${dir}${name}`;
+                const parsed = JSON.parse(readFileSync(new URL(rel, root), 'utf8'));
+                for (const [key, value] of strings(parsed, '', [])) {
+                    if (LOOSE.test(value)) found.push(`${rel} ${key}: ${value}`);
+                }
+            }
+        }
+        for (const rel of shippedSources().filter(f => f.endsWith('.html'))) {
+            const text = visibleText(readFileSync(new URL(rel, root), 'utf8')).replace(/&nbsp;/g, '\u00a0');
+            if (LOOSE.test(text)) found.push(`${rel}: ${text.match(LOOSE)[0]}`);
+        }
+        expect(found).toEqual([]);
     });
 });
 
