@@ -147,7 +147,7 @@
                         <span class="term-marker safety-stop"></span>
                         <div class="term-content">
                             <strong data-i18n="terminology.safetyStop.label">Safety Stop</strong>
-                            <span data-i18n="terminology.safetyStop.text">Voluntary 3-minute pause at 3-5&nbsp;m during ascent to allow excess nitrogen to off-gas safely.</span>
+                            <span data-i18n="terminology.safetyStop.text">Voluntary 3-minute pause at 3–5&nbsp;m during ascent to allow excess nitrogen to off-gas safely.</span>
                         </div>
                     </div>
                     <div class="term-item">
@@ -308,7 +308,7 @@
                         \text{Gas Available} = V_{\mathrm{cyl}} \times (p_{\mathrm{start}} - p_{\mathrm{reserve}})
                     </div>
                     <p data-i18n="gasConsumption.formula.availableExample">For a 12&nbsp;L cylinder at 200&nbsp;bar with 50&nbsp;bar reserve:</p>
-                    <p data-i18n="gasConsumption.formula.availableResult">Available gas = 12 × (200 - 50) = <strong>1800 liters</strong></p>
+                    <p data-i18n="gasConsumption.formula.availableResult">Available gas = 12 × (200 − 50) = <strong>1800 liters</strong></p>
                 </div>
             </details>
         </section>
@@ -362,7 +362,7 @@
                         </div>
                         <p data-i18n="gasConsumptionChart.sacCalc.exampleResult">
                             This diver has a SAC rate of <strong>12.8&nbsp;L/min</strong> — quite efficient!
-                            Typical recreational divers range from 12-25&nbsp;L/min depending on fitness, experience, and conditions.
+                            Typical recreational divers range from 12–25&nbsp;L/min depending on fitness, experience, and conditions.
                         </p>
                     </details>
 
@@ -519,17 +519,17 @@
                             <td data-i18n="partialPressureLimits.oxygenLimits.hypoxiaNotes">Loss of consciousness, death. Minimum for survival.</td>
                         </tr>
                         <tr class="safe-row">
-                            <td>0.16 – 0.50</td>
+                            <td>0.16–0.50</td>
                             <td>🟢 <span data-i18n="partialPressureLimits.oxygenLimits.normal">Normal</span></td>
                             <td data-i18n="partialPressureLimits.oxygenLimits.normalNotes">Surface breathing range.</td>
                         </tr>
                         <tr class="safe-row">
-                            <td>0.50 – 1.40</td>
+                            <td>0.50–1.40</td>
                             <td>🟢 <span data-i18n="partialPressureLimits.oxygenLimits.safe">Safe for diving</span></td>
                             <td data-i18n="partialPressureLimits.oxygenLimits.safeNotes">Recommended working limit for recreational diving.</td>
                         </tr>
                         <tr class="warning-row">
-                            <td>1.40 – 1.60</td>
+                            <td>1.40–1.60</td>
                             <td>🟡 <span data-i18n="partialPressureLimits.oxygenLimits.caution">Caution</span></td>
                             <td data-i18n="partialPressureLimits.oxygenLimits.cautionNotes">Acceptable for decompression stops only. Limited exposure time.</td>
                         </tr>
@@ -623,13 +623,13 @@
                             <td data-i18n="partialPressureLimits.nitrogenLimits.minimal">Minimal effects for most divers.</td>
                         </tr>
                         <tr class="warning-row">
-                            <td>2.4 – 3.2</td>
-                            <td>20 – 30&nbsp;m</td>
+                            <td>2.4–3.2</td>
+                            <td>20–30&nbsp;m</td>
                             <td data-i18n="partialPressureLimits.nitrogenLimits.mild">Mild euphoria, slight impairment.</td>
                         </tr>
                         <tr class="warning-row">
-                            <td>3.2 – 4.0</td>
-                            <td>30 – 40&nbsp;m</td>
+                            <td>3.2–4.0</td>
+                            <td>30–40&nbsp;m</td>
                             <td data-i18n="partialPressureLimits.nitrogenLimits.noticeable">Noticeable impairment, reduced judgment.</td>
                         </tr>
                         <tr class="danger-row">
@@ -1164,7 +1164,7 @@
             }).join('');
         }
 
-        // Statické tabulky rozsahů (`< 0,16`, `0,16 – 0,50`) — přepisuje se
+        // Statické tabulky rozsahů (`< 0,16`, `0,16–0,50`) — přepisuje se
         // jen oddělovač, počet desetinných míst zůstává.
         function localizeStaticTables() {
             ['ppo2-limits-table', 'ppn2-limits-table'].forEach((id) => {

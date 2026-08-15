@@ -57,7 +57,7 @@
         },
         "safetyStop": {
             "label": "Safety Stop",
-            "text": "Voluntary 3-minute pause at 3-5 m during ascent to allow excess nitrogen to off-gas safely."
+            "text": "Voluntary 3-minute pause at 3–5 m during ascent to allow excess nitrogen to off-gas safely."
         },
         "surfaceInterval": {
             "label": "Surface Interval (SI)",
@@ -145,7 +145,7 @@
             "tVar": "Time at depth (minutes)",
             "availableTitle": "Available Gas in Cylinder",
             "availableExample": "For a 12 L cylinder at 200 bar with 50 bar reserve:",
-            "availableResult": "Available gas = 12 × (200 - 50) = <strong>1800 liters</strong>"
+            "availableResult": "Available gas = 12 × (200 − 50) = <strong>1800 liters</strong>"
         }
     },
     "gasConsumptionChart": {
@@ -166,7 +166,7 @@
             "exampleTime": "Dive time: 45 minutes",
             "exampleDepth": "Average depth: 15 m → <strong><var>p</var><sub>avg</sub> = 1 + 15/10 = 2.5 bar</strong>",
             "showSolution": "Try it yourself first — click to reveal the solution",
-            "exampleResult": "This diver has a SAC rate of <strong>12.8 L/min</strong> — quite efficient! Typical recreational divers range from 12-25 L/min depending on fitness, experience, and conditions.",
+            "exampleResult": "This diver has a SAC rate of <strong>12.8 L/min</strong> — quite efficient! Typical recreational divers range from 12–25 L/min depending on fitness, experience, and conditions.",
             "tipsTitle": "Tips for Accurate Measurement",
             "tip1": "Use a dive computer that logs average depth, or calculate it from your profile",
             "tip2": "Measure over several dives to get a reliable average",
@@ -747,7 +747,7 @@
             "discovery": {
                 "title": "Richard Pyle's Discovery",
                 "cardTitle": "The Fish Collector's Observation",
-                "text1": "In the 1980 s, <strong>Richard Pyle</strong> was a marine biologist collecting fish specimens from the \"twilight zone\" — depths between 50-70 meters. He noticed something curious about his post-dive fatigue.",
+                "text1": "In the 1980 s, <strong>Richard Pyle</strong> was a marine biologist collecting fish specimens from the \"twilight zone\" — depths between 50–70 meters. He noticed something curious about his post-dive fatigue.",
                 "insight": "<strong>The pattern:</strong> On dives where he caught fish, he had to stop at intermediate depths to <strong>vent their swim bladders</strong> (preventing them from bursting during ascent). After these dives, he felt great. On dives with no fish — and therefore no intermediate stops — he felt fatigued.",
                 "text2": "Pyle had accidentally discovered that brief stops at depths <em>deeper</em> than required by his decompression schedule made a noticeable difference in how he felt."
             },
@@ -756,7 +756,7 @@
                 "intro": "Pyle formalized his observation into a method:",
                 "step1": "Calculate your conventional decompression schedule",
                 "step2": "First deep stop = <strong>halfway</strong> between max depth and first required deco stop",
-                "step3": "Stay 2-3 minutes",
+                "step3": "Stay 2–3 minutes",
                 "step4": "If the gap to the next stop is still &gt;9 m (30ft), add another halfway stop",
                 "exampleTitle": "Example: 60 m dive, first deco stop at 15 m",
                 "stop1Label": "1st Pyle stop:",
@@ -806,7 +806,7 @@
             },
             "example5080": {
                 "title": "Visual: GF 50/80 (Conservative)",
-                "desc": "Tissue only allowed to 50-80% of M-value — notice the GF line below the M-value."
+                "desc": "Tissue only allowed to 50–80% of M-value — notice the GF line below the M-value."
             }
         },
         "controversy": {
@@ -830,7 +830,7 @@
                 "text2": "Deep stops reduce the pressure gradient for off-gassing. The deeper you stay, the smaller the difference between tissue pressure and ambient — and that gradient is what drives gas elimination.",
                 "nuanceTitle": "The Nuanced Reality",
                 "nuanceIntro": "This doesn't mean all deep stops are bad:",
-                "nuance1": "<strong>Very brief stops</strong> (Pyle's original 2-3 minutes) may still be beneficial",
+                "nuance1": "<strong>Very brief stops</strong> (Pyle's original 2–3 minutes) may still be beneficial",
                 "nuance2": "The NEDU study used extended deep stops with significant deco time shifted deep",
                 "nuance3": "Extremely aggressive deep stop profiles (GF 30/85) are now discouraged",
                 "nuance4": "Moderate conservatism (GF 70/85) adds safety without excessive deep stops"
@@ -1222,7 +1222,7 @@
             "bottom": "Bottom SAC (L/min):",
             "deco": "Deco SAC (L/min):",
             "reserve": "Reserve (bar):",
-            "typicalHint": "Typical SAC: 15-20 L/min (relaxed), 25-30 L/min (working)."
+            "typicalHint": "Typical SAC: 15–20 L/min (relaxed), 25–30 L/min (working)."
         },
         "waypoints": {
             "dive1Plan": "Dive 1 Plan",
@@ -1455,7 +1455,7 @@
                 "intro": "The implementation has been validated against:",
                 "decotengu": "<strong>DecoTengu:</strong> Tissue loading matches within 0.02%",
                 "buhlmann": "<strong>Bühlmann printed tables:</strong> Deco schedules match within expected tolerance",
-                "note": "<em>Note:</em> Our calculations may produce 10-25% shorter deco times than printed tables. This is expected — printed tables include safety margins and round up conservatively. This tool shows the raw algorithm output for educational purposes."
+                "note": "<em>Note:</em> Our calculations may produce 10–25% shorter deco times than printed tables. This is expected — printed tables include safety margins and round up conservatively. This tool shows the raw algorithm output for educational purposes."
             }
         },
         "author": {

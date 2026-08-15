@@ -4517,6 +4517,71 @@ describe('notation - quantity symbols in formulas are set in italics', () => {
     });
 });
 
+describe('notation - dashes between numerals are the right character', () => {
+    // style-guide §4.3: číselný rozsah se píše pomlčkou U+2013 **bez mezer**
+    // (`10–20 m`); mezery kolem ní patří jen pomlčce větné.
+    // style-guide §4.4: odčítání a záporná čísla mají minus U+2212.
+    // Spojovník U+002D tedy mezi číslicemi nestojí nikdy — jedinou výjimkou
+    // je datum v zápisu ISO 8601, kde spojovník je součástí formátu.
+    const root = new URL('../', import.meta.url);
+
+    // Kód není sázený text: `box-shadow: 0 -2px`, `id="chart-50-80"`
+    // ani ukázka v <pre> se typografií neřídí.
+    const visibleText = (src) => src
+        .replace(/<!--[\s\S]*?-->/g, ' ')
+        .replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, ' ')
+        .replace(/<pre[\s\S]*?<\/pre>|<code[\s\S]*?<\/code>/gi, ' ')
+        .replace(/&nbsp;/g, '\u00a0')
+        .replace(/<[^>]+>/g, ' ');
+
+    const jsonStrings = (value, out) => {
+        if (typeof value === 'string') out.push(value);
+        else if (value && typeof value === 'object') Object.values(value).forEach(v => jsonStrings(v, out));
+        return out;
+    };
+
+    const texts = () => {
+        const out = [];
+        for (const dir of ['locales/', 'data/']) {
+            for (const name of readdirSync(new URL(dir, root))) {
+                if (!name.endsWith('.json')) continue;
+                const parsed = JSON.parse(readFileSync(new URL(`${dir}${name}`, root), 'utf8'));
+                for (const s of jsonStrings(parsed, [])) out.push([`${dir}${name}`, s]);
+            }
+        }
+        for (const rel of shippedSources().filter(f => f.endsWith('.html'))) {
+            out.push([rel, visibleText(readFileSync(new URL(rel, root), 'utf8'))]);
+        }
+        return out;
+    };
+
+    const ISO_DATE = /\d{4}-\d{2}-\d{2}/;
+
+    test('no hyphen stands between two numerals', () => {
+        const found = [];
+        for (const [rel, text] of texts()) {
+            for (const m of text.matchAll(/\d[ \u00a0]*-[ \u00a0]*\d/g)) {
+                const around = text.slice(Math.max(0, m.index - 6), m.index + m[0].length + 6);
+                if (ISO_DATE.test(around)) continue;
+                found.push(`${rel}: …${text.slice(Math.max(0, m.index - 30), m.index + 20).trim()}…`);
+            }
+        }
+        expect(found).toEqual([]);
+    });
+
+    test('a numeric range is closed up, not spaced', () => {
+        // `100 – 120` je špatně dvakrát: čtenáři to nabízí zalomení uprostřed
+        // rozsahu a míchá to zápis s pomlčkou větnou.
+        const found = [];
+        for (const [rel, text] of texts()) {
+            for (const m of text.matchAll(/\d[ \u00a0]+\u2013[ \u00a0]+\d/g)) {
+                found.push(`${rel}: …${text.slice(Math.max(0, m.index - 30), m.index + 20).trim()}…`);
+            }
+        }
+        expect(found).toEqual([]);
+    });
+});
+
 describe('notation - the glossary export the reviewer reads is current', () => {
     // Slovníček se sdílí s garantem jako .docx, protože markdown nečte.
     // U #91 a #98 se `glossary.md` změnil, ale export ne — garant by četl
