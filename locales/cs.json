@@ -1988,7 +1988,7 @@
             "subtitle": "Kliknutím na ventily propojte lahve a poté plňte (max. 3 hadice, limit 200 bar)",
             "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Simuluje kaskádové plnění pomocí Boyleova zákona.",
             "setupHeading": "Nastavení",
-            "cascadeBank": "Kaskádová baterie (4 × 50 l)",
+            "cascadeBank": "Kaskádová baterie (4 × 50 l)",
             "targetCylinders": "Cílové lahve",
             "controlsHeading": "Ovládání",
             "remaining": "Zbývá:",

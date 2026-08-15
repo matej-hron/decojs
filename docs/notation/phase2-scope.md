@@ -820,10 +820,7 @@ od sebe.
 
 ### Zbývá po této vlně
 
-1. **Znak násobení a jazyková parita** — `2x7 L` v `locales/{en,es}.json`
-   a v `<option>` v `sandbox/transfilling.html`. Čeština má správně `2×7 l`,
-   angličtina a španělština si nechaly ASCII `x` i obyčejnou mezeru.
-   Znak násobení je U+00D7 (`authoring.md` §5).
+1. ~~**Znak násobení a jazyková parita**~~ — hotovo ve vlně 7.
 2. **Chybějící značka stupně** — `16 – 18 C`, `pod 6 C`, `minus 10 C`
    v `data/quiz-{accidents,safety,training}.json`. Samotné `C` je coulomb;
    patří tam `°C`. Není to formulační zásah, jen doplnění značky.
@@ -866,3 +863,43 @@ se vykreslí (`getTotalLength() > 0`). Kontrola byla ověřena i obráceně —
 po vrácení vady spolehlivě selže.
 
 **Testy:** 336/336 ✅
+
+## Vlna 7 — znak násobení a jazyková parita
+
+**Verze 0.6.56.**
+
+Údaj o objemu dvojčete byl v každém jazyce jiný. Čeština měla správně
+`2×7 l`, angličtina a španělština si nechaly `2x7 L` — písmeno `x` místo
+znaku násobení a obyčejnou mezeru před značkou litru. Stejná chyba byla
+v šesti `<option>` v `sandbox/transfilling.html`, které slouží jako záloha
+pro případ, že se překlad nenačte.
+
+| Třída | Počet | Před → po |
+|---|---|---|
+| Písmeno `x` místo znaku násobení | 12 | `2x7 L` → `2×7 L` |
+| Obyčejná mezera v údaji o objemu | 12 | `2x7 L` → `2×7 L` |
+| Zalomitelný znak násobení | 3 | `4 × 50 l` → `4 × 50 l` |
+
+Znak násobení je U+00D7 (`authoring.md` §5); písmeno `x` je jiný znak
+s jinou šířkou i významem.
+
+### Výpočet a údaj se rozlišují
+
+Kolem znaku násobení **ve vzorci** obyčejná mezera zůstává — dlouhý výpočet
+`12 × (200 − 50) = 1800 litrů` se zalomit smí a v projektu je takových míst
+třináct. Nedělitelná mezera patří jen tam, kde je `4 × 50 l` **jeden údaj**
+o objemu; ten se rozpadnout nesmí. Test to rozlišuje podle toho, zda za
+výrazem stojí přímo značka jednotky.
+
+### Otázka pro garanta
+
+Čeština sama je v tomto nejednotná: `2×7 l` je napsáno natěsno, ale
+`4 × 50 l` s mezerami. Angličtina a španělština byly srovnány
+**s češtinou**, ne podle vlastního uvážení — sjednotit obě podoby na jednu
+je editorské rozhodnutí, které nechávám na garantovi.
+
+**Ověřeno v prohlížeči:** 21 údajů na dvou stránkách ve třech jazycích;
+žádný už neobsahuje ASCII `x` ani obyčejnou mezeru. Obě nové kontroly byly
+ověřeny i obráceně — každá selže na své vlastní vadě.
+
+**Testy:** 338/338 ✅

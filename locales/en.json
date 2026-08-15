@@ -1624,9 +1624,9 @@
                 "single12": "12 L (Single)",
                 "single15": "15 L (Single)",
                 "single18": "18 L (Single)",
-                "doubles7": "2x7 L (Doubles)",
-                "doubles10": "2x10 L (Doubles)",
-                "doubles12": "2x12 L (Doubles)",
+                "doubles7": "2×7 L (Doubles)",
+                "doubles10": "2×10 L (Doubles)",
+                "doubles12": "2×12 L (Doubles)",
                 "custom": "Custom…"
             },
             "buttons": {
@@ -1988,7 +1988,7 @@
             "subtitle": "Click valve switches to connect cylinders, then fill (max 3 hoses, 200 bar limit)",
             "disclaimerBanner": "<strong>Educational Use Only</strong> — Simulates cascade filling using Boyle's Law.",
             "setupHeading": "Setup",
-            "cascadeBank": "Cascade Bank (4 x 50 L)",
+            "cascadeBank": "Cascade Bank (4 × 50 L)",
             "targetCylinders": "Target Cylinders",
             "controlsHeading": "Controls",
             "remaining": "Remaining:",
