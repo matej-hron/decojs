@@ -4517,6 +4517,111 @@ describe('notation - quantity symbols in formulas are set in italics', () => {
     });
 });
 
+describe('page titles', () => {
+    const root = new URL('../', import.meta.url);
+    const LOCALES = ['cs', 'en', 'es'];
+
+    /**
+     * Stránky, které uživatel může otevřít, tedy mají mít vlastní titulek.
+     * `*-test.html` jsou vývojářské přípravky - neodkazuje na ně nabídka ani
+     * žádná stránka, uživatel se k nim nedostane.
+     */
+    const pages = () => shippedSources()
+        .filter(f => f.endsWith('.html') && !/-test\.html$/.test(f));
+
+    /**
+     * Jazyky, ve kterých stránka zatím přeložená není. Titulek se pak
+     * nenastaví a zůstane `<title>` ze zdroje - to je zamýšlený fallback,
+     * ne chyba. Jakmile překlad přibude, záznam odsud musí zmizet; hlídá
+     * to test níže.
+     */
+    const UNTRANSLATED = { 'privacy.html': ['es'] };
+
+    const resolve = (obj, key) => {
+        let v = obj;
+        for (const part of key.split('.')) {
+            if (!v || typeof v !== 'object' || !(part in v)) return undefined;
+            v = v[part];
+        }
+        return typeof v === 'string' ? v : undefined;
+    };
+
+    const bodyAttrs = (rel) => {
+        const m = readFileSync(new URL(rel, root), 'utf8').match(/<body\b([^>]*)>/);
+        if (!m) return null;
+        const key = m[1].match(/data-i18n-title="([^"]+)"/);
+        const ctx = m[1].match(/data-i18n-title-context="([^"]+)"/);
+        return { key: key && key[1], context: ctx && ctx[1] };
+    };
+
+    test('every shipped page declares its own title key', () => {
+        const missing = pages().filter(rel => {
+            const a = bodyAttrs(rel);
+            return !a || !a.key;
+        });
+        expect(missing).toEqual([]);
+    });
+
+    test('every declared title key resolves in all three languages', () => {
+        // Bez toho by se titulek tiše nenastavil a v záložce by zůstal
+        // anglický <title> ze zdroje.
+        const broken = [];
+        for (const lang of LOCALES) {
+            const t = JSON.parse(readFileSync(new URL(`locales/${lang}.json`, root), 'utf8'));
+            for (const rel of pages()) {
+                const a = bodyAttrs(rel);
+                if (!a || !a.key) continue;
+                if ((UNTRANSLATED[rel] || []).includes(lang)) continue;
+                if (!resolve(t, a.key)) broken.push(`${lang}: ${rel} -> ${a.key}`);
+                if (a.context && !resolve(t, a.context)) broken.push(`${lang}: ${rel} -> ${a.context}`);
+            }
+        }
+        expect(broken).toEqual([]);
+    });
+
+    test('no two pages end up with the same title', () => {
+        // Přesně ta chyba, kvůli které vznikl tenhle blok: jeden sdílený
+        // klíč `page.title` dával všem 23 stránkám jeden titulek.
+        const clashes = [];
+        for (const lang of LOCALES) {
+            const t = JSON.parse(readFileSync(new URL(`locales/${lang}.json`, root), 'utf8'));
+            const seen = new Map();
+            for (const rel of pages()) {
+                const a = bodyAttrs(rel);
+                if (!a || !a.key) continue;
+                const name = resolve(t, a.key);
+                if (!name) continue;
+                const title = [name, a.context && resolve(t, a.context)].filter(Boolean).join(' \u2013 ');
+                if (seen.has(title)) clashes.push(`${lang}: ${rel} == ${seen.get(title)} -> "${title}"`);
+                else seen.set(title, rel);
+            }
+        }
+        expect(clashes).toEqual([]);
+    });
+
+    test('the untranslated list is not padded - every entry is still missing', () => {
+        // Bez toho by seznam přežil svůj důvod a tiše kryl nový překlad.
+        const stale = [];
+        for (const [rel, langs] of Object.entries(UNTRANSLATED)) {
+            const a = bodyAttrs(rel);
+            for (const lang of langs) {
+                const t = JSON.parse(readFileSync(new URL(`locales/${lang}.json`, root), 'utf8'));
+                if (a && a.key && resolve(t, a.key)) stale.push(`${lang}: ${rel} už přeloženo`);
+            }
+        }
+        expect(stale).toEqual([]);
+    });
+
+    test('no page sets document.title on its own', () => {
+        // Ruční override v sandbox/gas-law.html byl obcházkou sdíleného
+        // klíče. Titulek smí nastavovat jen i18n.
+        const offenders = shippedSources()
+            .filter(rel => rel !== 'js/i18n.js')
+            .filter(rel => /document\.title\s*=/.test(readFileSync(new URL(rel, root), 'utf8')));
+        expect(offenders).toEqual([]);
+    });
+});
+
 describe('notation - dashes between numerals are the right character', () => {
     // style-guide §4.3: číselný rozsah se píše pomlčkou U+2013 **bez mezer**
     // (`10–20 m`); mezery kolem ní patří jen pomlčce větné.

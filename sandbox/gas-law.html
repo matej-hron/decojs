@@ -450,7 +450,7 @@
         }
     </style>
 </head>
-<body>
+<body data-i18n-title="nav.sandbox.gasLaw" data-i18n-title-context="nav.sandbox.label">
     <!-- Navigation -->
     <nav class="main-nav">
         <div class="nav-container">
@@ -717,10 +717,6 @@
                 i18nStrings.tempRoom = gl.tempRefs?.room || i18nStrings.tempRoom;
                 i18nStrings.tempBody = gl.tempRefs?.body || i18nStrings.tempBody;
                 i18nStrings.tempHotCar = gl.tempRefs?.hotCar || i18nStrings.tempHotCar;
-                // Override document title with gasLaw-specific title
-                if (gl.page?.title) {
-                    document.title = gl.page.title;
-                }
             } catch (_) { /* keep defaults */ }
         }
 
