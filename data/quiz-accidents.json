@@ -884,19 +884,19 @@
       "options": [
         {
           "key": "a",
-          "text": "16 – 18 C"
+          "text": "16 – 18 °C"
         },
         {
           "key": "b",
-          "text": "20 – 30 C"
+          "text": "20 – 30 °C"
         },
         {
           "key": "c",
-          "text": "37 – 40 C"
+          "text": "37 – 40 °C"
         },
         {
           "key": "d",
-          "text": "45 – 50 C"
+          "text": "45 – 50 °C"
         }
       ],
       "correct": "c",

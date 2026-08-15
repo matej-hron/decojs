@@ -821,9 +821,7 @@ od sebe.
 ### Zbývá po této vlně
 
 1. ~~**Znak násobení a jazyková parita**~~ — hotovo ve vlně 7.
-2. **Chybějící značka stupně** — `16 – 18 C`, `pod 6 C`, `minus 10 C`
-   v `data/quiz-{accidents,safety,training}.json`. Samotné `C` je coulomb;
-   patří tam `°C`. Není to formulační zásah, jen doplnění značky.
+2. ~~**Chybějící značka stupně**~~ — hotovo ve vlně 8.
 3. **`273.15` v běhové šabloně** `sandbox/gas-law.html` — český čtenář vidí
    desetinnou tečku. Test `no display string interpolates a raw decimal
    constant` hlídá jen argumenty `fmt()`, konstantu v šabloně nevidí.
@@ -903,3 +901,44 @@ je editorské rozhodnutí, které nechávám na garantovi.
 ověřeny i obráceně — každá selže na své vlastní vadě.
 
 **Testy:** 338/338 ✅
+
+## Vlna 8 — chybějící značka stupně
+
+**Verze 0.6.57.** Tím je fáze 2 uzavřená: **rozpočet zbylých výskytů je prázdný.**
+
+Osm míst v českých kvízech psalo teplotu bez značky stupně — `16 – 18 C`,
+`pod 6 C`, `minus 10 C`, `pod 10 C`. Samotné `C` je značka coulombu, jednotky
+elektrického náboje; teplota se píše `°C`.
+
+| Soubor | Počet |
+|---|---|
+| `data/quiz-accidents.json` | 4 |
+| `data/quiz-safety.json` | 3 |
+| `data/quiz-training.json` | 1 |
+
+### Proč to není zásah do znění SPČR
+
+U kvízů platí, že se citují doslovně. Zde ale **anglický i španělský překlad
+týchž otázek už `°C` má** — chyběl jen v české předloze. Doplnění značky tedy
+českou verzi srovnává s jejími vlastními překlady; formulace se nemění.
+
+Po opravě mají všechny tři jazyky shodné počty (5 / 3 / 1), což bylo ověřeno
+v prohlížeči.
+
+### Značka `°C` je jeden celek
+
+Přibyly dvě kontroly, které hlídají zbylé dvě podoby téže chyby:
+
+- **`℃` (U+2103) se nepoužívá** — je to kompatibilní znak z bloku CJK,
+  jeho dekompozice je `U+00B0 U+0043`; píšou se rovnou ty dva znaky
+  (`authoring.md` §5).
+- **`20 ° C` s mezerou uvnitř značky** je stejná chyba jako `20 C`.
+
+### Zbývá mimo fázi 2
+
+- **Pomlčka v rozsazích** — čeština píše `16 – 18 °C` s mezerami, angličtina
+  a španělština `16–18 °C` natěsno. `authoring.md` §5 uvádí `10–20 m`, tedy
+  bez mezer. Jiná třída (interpunkce, ne veličina), samostatná vlna.
+- **`273.15`** v běhové šabloně `sandbox/gas-law.html` — desetinná tečka.
+
+**Testy:** 340/340 ✅
