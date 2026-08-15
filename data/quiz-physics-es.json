@@ -33,13 +33,13 @@
       "category": "tlak-jednotky",
       "question": "¿Cuál de los siguientes datos sobre la presión atmosférica media (presión atmosférica normal) es incorrecto?",
       "options": [
-        { "key": "a", "text": "alrededor de 100 000 N/m², es decir, unos 100 kPa" },
+        { "key": "a", "text": "alrededor de 100 000 N/m², es decir, unos 100 kPa" },
         { "key": "b", "text": "entre 900 y 1 100 milibares, es decir, alrededor de 1 bar" },
         { "key": "c", "text": "aproximadamente 0,1 MPa, es decir, 1 000 hPa" },
-        { "key": "d", "text": "alrededor de 100 kbar, es decir, 0,1 Mbar" }
+        { "key": "d", "text": "alrededor de 100 kbar, es decir, 0,1 Mbar" }
       ],
       "correct": "d",
-      "explanation": "100 kbar = 10 000 MPa, una presión enorme (100 000 veces mayor que la atmosférica). La presión atmosférica normal es aproximadamente 1 bar = 0,1 MPa = 100 kPa."
+      "explanation": "100 kbar = 10 000 MPa, una presión enorme (100 000 veces mayor que la atmosférica). La presión atmosférica normal es aproximadamente 1 bar = 0,1 MPa = 100 kPa."
     },
     {
       "id": 4,
@@ -267,13 +267,13 @@
       "category": "fyzika-plynu",
       "question": "La temperatura termodinámica T del punto de congelación del agua es aproximadamente:",
       "options": [
-        { "key": "a", "text": "0 K" },
+        { "key": "a", "text": "0 K" },
         { "key": "b", "text": "−273 °C" },
-        { "key": "c", "text": "273 K" },
-        { "key": "d", "text": "373 K" }
+        { "key": "c", "text": "273 K" },
+        { "key": "d", "text": "373 K" }
       ],
       "correct": "c",
-      "explanation": "El punto de congelación del agua es 0 °C, que corresponde a 273 K (más exactamente 273,15 K). Conversión: T[K] = T[°C] + 273. La opción d) 373 K corresponde al punto de ebullición del agua (100 °C)."
+      "explanation": "El punto de congelación del agua es 0 °C, que corresponde a 273 K (más exactamente 273,15 K). Conversión: T[K] = T[°C] + 273. La opción d) 373 K corresponde al punto de ebullición del agua (100 °C)."
     },
     {
       "id": 22,
@@ -325,7 +325,7 @@
         { "key": "d", "text": "p₂ = p₁ · V₁ · T₂ / T₁ = 20 · 15 · 290 / 320 = etc." }
       ],
       "correct": "a",
-      "explanation": "Proceso isocórico (V = const.): p₁/T₁ = p₂/T₂, es decir, p₂ = p₁·T₂/T₁. Hay que usar temperaturas absolutas: T₁ = 47+273 = 320 K, T₂ = 17+273 = 290 K. Resultado: p₂ = 20·290/320 = 18,1 MPa."
+      "explanation": "Proceso isocórico (V = const.): p₁/T₁ = p₂/T₂, es decir, p₂ = p₁·T₂/T₁. Hay que usar temperaturas absolutas: T₁ = 47+273 = 320 K, T₂ = 17+273 = 290 K. Resultado: p₂ = 20·290/320 = 18,1 MPa."
     },
     {
       "id": 26,
@@ -338,7 +338,7 @@
         { "key": "d", "text": "a 32,7 MPa" }
       ],
       "correct": "b",
-      "explanation": "Proceso isocórico: p₂ = p₁·T₂/T₁. T₁ = 27+273 = 300 K, T₂ = 327+273 = 600 K. p₂ = 10·600/300 = 20 MPa. La temperatura se duplicó (en kelvin), por lo que la presión también."
+      "explanation": "Proceso isocórico: p₂ = p₁·T₂/T₁. T₁ = 27+273 = 300 K, T₂ = 327+273 = 600 K. p₂ = 10·600/300 = 20 MPa. La temperatura se duplicó (en kelvin), por lo que la presión también."
     },
     {
       "id": 27,
@@ -488,13 +488,13 @@
       "category": "vztlak-vystroj",
       "question": "Una cabina de buceo se bajó a 60 m manteniendo en su interior la presión atmosférica normal. ¿Con qué fuerza neta presiona la tapa de la escotilla de salida (de área 1 m²) sobre la superficie de cierre de la cabina?",
       "options": [
-        { "key": "a", "text": "700 000 N" },
-        { "key": "b", "text": "70 000 N" },
-        { "key": "c", "text": "6 000 N" },
-        { "key": "d", "text": "600 000 N" }
+        { "key": "a", "text": "700 000 N" },
+        { "key": "b", "text": "70 000 N" },
+        { "key": "c", "text": "6 000 N" },
+        { "key": "d", "text": "600 000 N" }
       ],
       "correct": "d",
-      "explanation": "Diferencia de presión = presión hidrostática a 60 m = 6 bar = 600 000 Pa. Fuerza F = p × S = 600 000 Pa × 1 m² = 600 000 N (¡unas 60 toneladas!)."
+      "explanation": "Diferencia de presión = presión hidrostática a 60 m = 6 bar = 600 000 Pa. Fuerza F = p × S = 600 000 Pa × 1 m² = 600 000 N (¡unas 60 toneladas!)."
     },
     {
       "id": 39,
@@ -540,13 +540,13 @@
       "category": "vztlak-vystroj",
       "question": "Una campana de buceo tiene un volumen interno completo de 900 L, masa con lastre de 1 010 kg y volumen del propio material de 100 L. ¿Con qué fuerza tirará a 20 m en agua dulce del cabo de suspensión si durante el descenso:\nA. se reponía aire continuamente?\nB. no se reponía aire?",
       "options": [
-        { "key": "a", "text": "A = 100 N, B = 400 N" },
-        { "key": "b", "text": "A = 100 N, B = 6 100 N" },
-        { "key": "c", "text": "A = 6 000 N, B = 7 000 N" },
-        { "key": "d", "text": "A = 100 N, B = 3 100 N" }
+        { "key": "a", "text": "A = 100 N, B = 400 N" },
+        { "key": "b", "text": "A = 100 N, B = 6 100 N" },
+        { "key": "c", "text": "A = 6 000 N, B = 7 000 N" },
+        { "key": "d", "text": "A = 100 N, B = 3 100 N" }
       ],
       "correct": "b",
-      "explanation": "A: aire repuesto: empuje = (900+100)×10 = 10 000 N, peso = 10 100 N, fuerza en el cabo = 100 N. B: aire comprimido a 1/3 (300 L), agua llena 600 L, empuje = 400×10 = 4 000 N, fuerza = 10 100 − 4 000 = 6 100 N."
+      "explanation": "A: aire repuesto: empuje = (900+100)×10 = 10 000 N, peso = 10 100 N, fuerza en el cabo = 100 N. B: aire comprimido a 1/3 (300 L), agua llena 600 L, empuje = 400×10 = 4 000 N, fuerza = 10 100 − 4 000 = 6 100 N."
     },
     {
       "id": 43,
@@ -593,12 +593,12 @@
       "question": "¿Con qué fuerza recibe empuje un objeto de fundición libre, de volumen 10 L, a 40 m en agua dulce (densidad de la fundición 7 500 kg/m³)?",
       "options": [
         { "key": "a", "text": "0,75 MPa" },
-        { "key": "b", "text": "750 N" },
-        { "key": "c", "text": "850 N" },
-        { "key": "d", "text": "100 N" }
+        { "key": "b", "text": "750 N" },
+        { "key": "c", "text": "850 N" },
+        { "key": "d", "text": "100 N" }
       ],
       "correct": "d",
-      "explanation": "Empuje = volumen × densidad del agua × g = 0,01 m³ × 1 000 kg/m³ × 10 m/s² = 100 N. El empuje no depende de la profundidad, solo del volumen sumergido."
+      "explanation": "Empuje = volumen × densidad del agua × g = 0,01 m³ × 1 000 kg/m³ × 10 m/s² = 100 N. El empuje no depende de la profundidad, solo del volumen sumergido."
     },
     {
       "id": 47,
@@ -657,13 +657,13 @@
       "category": "tlak-jednotky",
       "question": "¿Qué fuerza debe tener aproximadamente el muelle de control de una primera etapa compensada del regulador para que, bajo una membrana de diámetro útil 40 mm, se genere una presión intermedia de sobrepresión 1 MPa?",
       "options": [
-        { "key": "a", "text": "130 N" },
-        { "key": "b", "text": "650 N" },
-        { "key": "c", "text": "1 260 N" },
-        { "key": "d", "text": "65 N" }
+        { "key": "a", "text": "130 N" },
+        { "key": "b", "text": "650 N" },
+        { "key": "c", "text": "1 260 N" },
+        { "key": "d", "text": "65 N" }
       ],
       "correct": "c",
-      "explanation": "Área de la membrana S = π × r² = π × 0,02² = 0,001257 m². Fuerza F = p × S = 1 000 000 Pa × 0,001257 m² ≈ 1 257 N ≈ 1 260 N."
+      "explanation": "Área de la membrana S = π × r² = π × 0,02² = 0,001257 m². Fuerza F = p × S = 1 000 000 Pa × 0,001257 m² ≈ 1 257 N ≈ 1 260 N."
     },
     {
       "id": 52,
@@ -709,13 +709,13 @@
       "category": "tlak-jednotky",
       "question": "Una cámara de descompresión a bordo de un buque está presurizada a una profundidad equivalente de 50 m. ¿Con qué fuerza neta presiona la tapa de la cámara, de área 1 m², contra la brida?",
       "options": [
-        { "key": "a", "text": "600 000 N" },
-        { "key": "b", "text": "400 000 N" },
-        { "key": "c", "text": "500 000 N" },
-        { "key": "d", "text": "50 000 N" }
+        { "key": "a", "text": "600 000 N" },
+        { "key": "b", "text": "400 000 N" },
+        { "key": "c", "text": "500 000 N" },
+        { "key": "d", "text": "50 000 N" }
       ],
       "correct": "c",
-      "explanation": "Sobrepresión en la cámara = 50 m = 5 bar = 500 000 Pa (diferencia respecto a la presión atmosférica exterior). Fuerza F = p × S = 500 000 Pa × 1 m² = 500 000 N."
+      "explanation": "Sobrepresión en la cámara = 50 m = 5 bar = 500 000 Pa (diferencia respecto a la presión atmosférica exterior). Fuerza F = p × S = 500 000 Pa × 1 m² = 500 000 N."
     },
     {
       "id": 56,
@@ -737,7 +737,7 @@
       "options": [
         { "key": "a", "text": "Un volumen de 1 metro cúbico (1 m³) contiene 1 000 litros." },
         { "key": "b", "text": "Una presión de 1 MPa es la misma que una de 100 kPa." },
-        { "key": "c", "text": "Una temperatura de 20 °C corresponde aproximadamente a 293 K." },
+        { "key": "c", "text": "Una temperatura de 20 °C corresponde aproximadamente a 293 K." },
         { "key": "d", "text": "Un cuerpo de 1 kg de masa ejerce sobre la superficie terrestre una fuerza de aproximadamente 10 newton (N)." }
       ],
       "correct": "b",
@@ -748,13 +748,13 @@
       "category": "tlak-jednotky",
       "question": "Determine la fuerza con la que se aprieta contra el asiento de la tobera, de sección 10 mm², el obturador de una segunda etapa de regulador de apertura contracorriente, con una presión intermedia ajustada a una sobrepresión de 1 MPa:",
       "options": [
-        { "key": "a", "text": "0,1 N" },
-        { "key": "b", "text": "1 N" },
-        { "key": "c", "text": "10 N" },
-        { "key": "d", "text": "100 N" }
+        { "key": "a", "text": "0,1 N" },
+        { "key": "b", "text": "1 N" },
+        { "key": "c", "text": "10 N" },
+        { "key": "d", "text": "100 N" }
       ],
       "correct": "c",
-      "explanation": "Área S = 10 mm² = 10 × 10⁻⁶ m² = 0,00001 m². Fuerza F = p × S = 1 000 000 Pa × 0,00001 m² = 10 N."
+      "explanation": "Área S = 10 mm² = 10 × 10⁻⁶ m² = 0,00001 m². Fuerza F = p × S = 1 000 000 Pa × 0,00001 m² = 10 N."
     },
     {
       "id": 59,
@@ -774,13 +774,13 @@
       "category": "tlak-jednotky",
       "question": "Determine la fuerza neta de presión que ejerce a 30 m sobre la superficie de apoyo de la carcasa de una videocámara su mirilla de 40 mm de diámetro:",
       "options": [
-        { "key": "a", "text": "3 770 N" },
-        { "key": "b", "text": "503 N" },
-        { "key": "c", "text": "50,3 N" },
-        { "key": "d", "text": "377 N" }
+        { "key": "a", "text": "3 770 N" },
+        { "key": "b", "text": "503 N" },
+        { "key": "c", "text": "50,3 N" },
+        { "key": "d", "text": "377 N" }
       ],
       "correct": "d",
-      "explanation": "Presión hidrostática a 30 m = 3 bar = 300 000 Pa. Área de la mirilla S = π × 0,02² = 0,001257 m². Fuerza F = 300 000 × 0,001257 ≈ 377 N."
+      "explanation": "Presión hidrostática a 30 m = 3 bar = 300 000 Pa. Área de la mirilla S = π × 0,02² = 0,001257 m². Fuerza F = 300 000 × 0,001257 ≈ 377 N."
     },
     {
       "id": 61,

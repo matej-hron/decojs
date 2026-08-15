@@ -4276,6 +4276,116 @@ describe('notation - partial pressure symbol', () => {
     });
 });
 
+describe('notation - units the first nbsp wave never listed', () => {
+    // ISO 80000-1: mezi číslem a značkou jednotky je nedělitelná mezera.
+    // První vlna pracovala se seznamem m|min|bar|kPa|MPa|Pa|msw|fsw a minula
+    // newton, kelvin, kbar, Mbar i mL/L — jen v quiz-physics jich zbylo 165.
+    // Hlídá se proto celá abeceda jednotek, ne jeden ručně psaný výčet.
+    const root = new URL('../', import.meta.url);
+
+    // `OTU` schválně chybí: je to název dávky, ne značka jednotky (glosář §5).
+    // `m`, `l`, `s`, `h` také ne — jednopísmenné značky se v próze nedají
+    // odlišit od českých a španělských předložek („2 s příslušenstvím").
+    const UNITS = ['°C', 'kbar', 'Mbar', 'mL/L', 'kPa', 'MPa', 'msw', 'fsw',
+        'bar', 'min', 'cm', 'mm', 'km', 'Pa', 'kg', 'kJ', 'kW', 'N', 'K', 'J', 'W', 'L', 'C'];
+    const ALT = UNITS.map(u => u.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&')).join('|');
+    const SPACED = new RegExp(`(\\d) (${ALT})(?![\\w\\u00e1-\\u017e\\u00c1-\\u017d²³°])`, 'g');
+    const GLUED = new RegExp(`(\\d)(${ALT})(?![\\w\\u00e1-\\u017e\\u00c1-\\u017d²³°])`, 'g');
+    // `ZH-L16A` je název algoritmu, ne 16 ampér.
+    const ALGO = /ZH-?L\s?16/;
+
+    // Rozpočet zbylých výskytů. Obojí je jiná třída chyby a řeší se zvlášť
+    // (viz docs/notation/phase2-scope.md) — tenhle test jen hlídá, ať jich
+    // nepřibude. Po opravě se číslo snižuje, nikdy nezvyšuje.
+    const ALLOWED = {
+        // `2x7 L` — chybí znak násobení × i mezera; navíc jen v en/es, čeština
+        // má správně `2×7 l`. Třída „znak násobení a jazyková parita".
+        'locales/en.json': 3,
+        'locales/es.json': 3,
+        'sandbox/transfilling.html': 6,
+        // `16 – 18 C` — chybí značka stupně, `C` je coulomb. Třída „chybějící °".
+        'data/quiz-accidents.json': 4,
+        'data/quiz-safety.json': 3,
+        'data/quiz-training.json': 1,
+    };
+
+    const strings = (value, path, out) => {
+        if (typeof value === 'string') out.push([path, value]);
+        else if (Array.isArray(value)) value.forEach((v, i) => strings(v, `${path}[${i}]`, out));
+        else if (value && typeof value === 'object') {
+            for (const [k, v] of Object.entries(value)) strings(v, path ? `${path}.${k}` : k, out);
+        }
+        return out;
+    };
+
+    const dataFiles = () => {
+        const out = [];
+        for (const dir of ['locales/', 'data/']) {
+            for (const name of readdirSync(new URL(dir, root))) {
+                if (name.endsWith('.json')) out.push(`${dir}${name}`);
+            }
+        }
+        return out.sort();
+    };
+
+    // Text, který uživatel opravdu uvidí: bez komentářů, skriptů, stylů
+    // a ukázek kódu. Značky se odstraní, takže se odhalí i případ, kdy je
+    // jednotka v jiném textovém uzlu než číslo — `<span>0,751</span> bar`.
+    const visibleText = (src) => src
+        .replace(/<!--[\s\S]*?-->/g, ' ')
+        .replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, ' ')
+        .replace(/<pre[\s\S]*?<\/pre>|<code[\s\S]*?<\/code>/gi, ' ')
+        .replace(/&nbsp;/g, '\u00a0')
+        .replace(/<[^>]+>/g, ' ');
+
+    const scan = (text, label, into) => {
+        for (const re of [SPACED, GLUED]) {
+            re.lastIndex = 0;
+            let m;
+            while ((m = re.exec(text)) !== null) {
+                const around = text.slice(Math.max(0, m.index - 12), m.index + m[0].length + 4);
+                if (ALGO.test(around)) continue;
+                into.push(`${label}: …${text.slice(Math.max(0, m.index - 30), m.index + m[0].length + 8).trim()}…`);
+            }
+        }
+    };
+
+    const collect = () => {
+        const perFile = {};
+        for (const rel of dataFiles()) {
+            const parsed = JSON.parse(readFileSync(new URL(rel, root), 'utf8'));
+            const found = [];
+            for (const [key, value] of strings(parsed, '', [])) scan(value, key, found);
+            if (found.length) perFile[rel] = found;
+        }
+        for (const rel of shippedSources().filter(f => f.endsWith('.html'))) {
+            const found = [];
+            scan(visibleText(readFileSync(new URL(rel, root), 'utf8')), '(text)', found);
+            if (found.length) perFile[rel] = found;
+        }
+        return perFile;
+    };
+
+    test('no unit symbol is separated from its value by an ordinary space', () => {
+        const perFile = collect();
+        const offenders = [];
+        for (const [rel, found] of Object.entries(perFile)) {
+            const budget = ALLOWED[rel] || 0;
+            if (found.length > budget) offenders.push(`${rel}: ${found.length} > ${budget}\n    ${found.slice(0, 4).join('\n    ')}`);
+        }
+        expect(offenders).toEqual([]);
+    });
+
+    test('the budget is not padded - every allowance is still used', () => {
+        // Rozpočet, který nikdo nečerpá, je jen zapomenutý řádek. Až třídu
+        // „znak násobení" a „chybějící °" opravíme, tenhle test si o smazání
+        // příslušné položky řekne sám.
+        const perFile = collect();
+        const stale = Object.keys(ALLOWED).filter(rel => (perFile[rel] || []).length !== ALLOWED[rel]);
+        expect(stale).toEqual([]);
+    });
+});
+
 describe('notation - the nbsp rule must not reach SVG geometry', () => {
     // PR #94 vkládal U+00A0 mezi číslo a jednotku. Pravidlo pro litr (`l`/`L`)
     // ale chytlo i příkaz `L` v SVG path — `…1200\u00a0L 1200 200…`. SVG parser

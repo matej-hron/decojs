@@ -612,11 +612,11 @@
                 </p>
                 <p style="font-size: 0.9rem; color: var(--text-color); line-height: 1.5; margin: 0.5rem 0;" data-i18n="gasLaw.whyText2">
                     <strong>Practical tip:</strong> Compressors generate significant heat during filling — gas inside a freshly
-                    filled cylinder can be 40–50°C above ambient. If you fill to 200 bar in a warm shop and dive in a cold lake,
-                    don't be surprised to see only ~180 bar on your gauge. That's not a leak — it's physics.
+                    filled cylinder can be 40–50&nbsp;°C above ambient. If you fill to 200&nbsp;bar in a warm shop and dive in a cold lake,
+                    don't be surprised to see only ~180&nbsp;bar on your gauge. That's not a leak — it's physics.
                 </p>
                 <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.5rem 0;" data-i18n="gasLaw.whyRuleOfThumb">
-                    <strong>Rule of thumb:</strong> ~0.6 bar change per 1°C at 200 bar working pressure.
+                    <strong>Rule of thumb:</strong> ~0.6&nbsp;bar change per 1&nbsp;°C at 200&nbsp;bar working pressure.
                 </p>
             </div>
 
@@ -853,11 +853,11 @@
 
             // T1 marker
             const t1Pos = getTempPosition(t1C);
-            markersHTML += `<div class="temp-marker t1-marker" style="left:${t1Pos}%" data-label="T\u2081 ${t1C}\u00B0C"></div>`;
+            markersHTML += `<div class="temp-marker t1-marker" style="left:${t1Pos}%" data-label="T\u2081 ${t1C}\u00a0\u00B0C"></div>`;
 
             // T2 marker
             const t2Pos = getTempPosition(t2C);
-            markersHTML += `<div class="temp-marker t2-marker" style="left:${t2Pos}%" data-label="T\u2082 ${t2C}\u00B0C"></div>`;
+            markersHTML += `<div class="temp-marker t2-marker" style="left:${t2Pos}%" data-label="T\u2082 ${t2C}\u00a0\u00B0C"></div>`;
 
             tempBar.innerHTML = markersHTML;
 
@@ -901,7 +901,7 @@
             cylinderFill.style.height = fillPercent + '%';
             cylinderFill.style.background = getFillColor(t1C);
             cylPressure.textContent = fmtNum(p1, 1) + '\u00a0bar';
-            cylTemp.textContent = t1C + ' \u00B0C';
+            cylTemp.textContent = t1C + '\u00a0\u00B0C';
             cylVolume.textContent = vol + '\u00a0L';
         }
 
@@ -934,7 +934,7 @@
             cylinderFill.style.height = fillPercent + '%';
             cylinderFill.style.background = getFillColor(t2C);
             cylPressure.textContent = fmtNum(p2, 1) + '\u00a0bar';
-            cylTemp.textContent = t2C + ' \u00B0C';
+            cylTemp.textContent = t2C + '\u00a0\u00B0C';
             cylVolume.textContent = vol + '\u00a0L';
 
             // === Result cards ===
@@ -970,8 +970,8 @@
 
             // === Formula ===
             formulaKelvin.innerHTML =
-                `<var>T</var><sub>1</sub> = ${t1C}\u00B0C + 273.15 = ${fmtNum(t1K, 2)} K &nbsp;&nbsp;|&nbsp;&nbsp; ` +
-                `<var>T</var><sub>2</sub> = ${t2C}\u00B0C + 273.15 = ${fmtNum(t2K, 2)} K`;
+                `<var>T</var><sub>1</sub> = ${t1C}\u00a0\u00B0C + 273.15 = ${fmtNum(t1K, 2)}\u00a0K &nbsp;&nbsp;|&nbsp;&nbsp; ` +
+                `<var>T</var><sub>2</sub> = ${t2C}\u00a0\u00B0C + 273.15 = ${fmtNum(t2K, 2)}\u00a0K`;
 
             formulaComputed.innerHTML =
                 `<var>p</var><sub>2</sub> = ${p1} &times; ${fmtNum(t2K, 2)} / ${fmtNum(t1K, 2)} = <strong>${fmtNum(p2, 1)}\u00a0bar</strong>`;

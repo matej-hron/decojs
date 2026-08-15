@@ -33,13 +33,13 @@
       "category": "tlak-jednotky",
       "question": "Which statement about average air pressure (normal atmospheric pressure) is incorrect?",
       "options": [
-        { "key": "a", "text": "around 100,000 N/m², i.e. about 100 kPa" },
+        { "key": "a", "text": "around 100,000 N/m², i.e. about 100 kPa" },
         { "key": "b", "text": "between 900 and 1,100 millibar, i.e. about 1 bar" },
         { "key": "c", "text": "approximately 0.1 MPa, i.e. 1,000 hPa" },
-        { "key": "d", "text": "around 100 kbar, i.e. 0.1 Mbar" }
+        { "key": "d", "text": "around 100 kbar, i.e. 0.1 Mbar" }
       ],
       "correct": "d",
-      "explanation": "100 kbar = 10,000 MPa, which is an enormous pressure (100,000× higher than atmospheric). Normal atmospheric pressure is approximately 1 bar = 0.1 MPa = 100 kPa."
+      "explanation": "100 kbar = 10,000 MPa, which is an enormous pressure (100,000× higher than atmospheric). Normal atmospheric pressure is approximately 1 bar = 0.1 MPa = 100 kPa."
     },
     {
       "id": 4,
@@ -267,13 +267,13 @@
       "category": "fyzika-plynu",
       "question": "The thermodynamic temperature T of the freezing point of water is approximately:",
       "options": [
-        { "key": "a", "text": "0 K" },
+        { "key": "a", "text": "0 K" },
         { "key": "b", "text": "−273 °C" },
-        { "key": "c", "text": "273 K" },
-        { "key": "d", "text": "373 K" }
+        { "key": "c", "text": "273 K" },
+        { "key": "d", "text": "373 K" }
       ],
       "correct": "c",
-      "explanation": "The freezing point of water is 0 °C, which corresponds to 273 K (more precisely 273.15 K). Conversion: T[K] = T[°C] + 273. Option (d), 373 K, is the boiling point of water (100 °C)."
+      "explanation": "The freezing point of water is 0 °C, which corresponds to 273 K (more precisely 273.15 K). Conversion: T[K] = T[°C] + 273. Option (d), 373 K, is the boiling point of water (100 °C)."
     },
     {
       "id": 22,
@@ -325,7 +325,7 @@
         { "key": "d", "text": "p₂ = p₁ · V₁ · T₂ / T₁ = 20 · 15 · 290 / 320 = …" }
       ],
       "correct": "a",
-      "explanation": "Isochoric process (V = const.): p₁/T₁ = p₂/T₂, so p₂ = p₁·T₂/T₁. Absolute temperatures must be used: T₁ = 47 + 273 = 320 K, T₂ = 17 + 273 = 290 K. Result: p₂ = 20·290/320 = 18.1 MPa."
+      "explanation": "Isochoric process (V = const.): p₁/T₁ = p₂/T₂, so p₂ = p₁·T₂/T₁. Absolute temperatures must be used: T₁ = 47 + 273 = 320 K, T₂ = 17 + 273 = 290 K. Result: p₂ = 20·290/320 = 18.1 MPa."
     },
     {
       "id": 26,
@@ -338,7 +338,7 @@
         { "key": "d", "text": "to 32.7 MPa" }
       ],
       "correct": "b",
-      "explanation": "Isochoric process: p₂ = p₁·T₂/T₁. T₁ = 27 + 273 = 300 K, T₂ = 327 + 273 = 600 K. p₂ = 10·600/300 = 20 MPa. Temperature doubled (in kelvins), so pressure doubled too."
+      "explanation": "Isochoric process: p₂ = p₁·T₂/T₁. T₁ = 27 + 273 = 300 K, T₂ = 327 + 273 = 600 K. p₂ = 10·600/300 = 20 MPa. Temperature doubled (in kelvins), so pressure doubled too."
     },
     {
       "id": 27,
@@ -488,13 +488,13 @@
       "category": "vztlak-vystroj",
       "question": "A diving cabin was lowered to 60 m while normal atmospheric pressure was maintained inside. What net force does the lid of an exit hatch of area 1 m² exert on the cabin's sealing surface?",
       "options": [
-        { "key": "a", "text": "700,000 N" },
-        { "key": "b", "text": "70,000 N" },
-        { "key": "c", "text": "6,000 N" },
-        { "key": "d", "text": "600,000 N" }
+        { "key": "a", "text": "700,000 N" },
+        { "key": "b", "text": "70,000 N" },
+        { "key": "c", "text": "6,000 N" },
+        { "key": "d", "text": "600,000 N" }
       ],
       "correct": "d",
-      "explanation": "Pressure differential = hydrostatic pressure at 60 m = 6 bar = 600,000 Pa. Force F = p × S = 600,000 Pa × 1 m² = 600,000 N (about 60 tonnes!)."
+      "explanation": "Pressure differential = hydrostatic pressure at 60 m = 6 bar = 600,000 Pa. Force F = p × S = 600,000 Pa × 1 m² = 600,000 N (about 60 tonnes!)."
     },
     {
       "id": 39,
@@ -540,13 +540,13 @@
       "category": "vztlak-vystroj",
       "question": "A diving bell has a full internal volume of 900 L, total mass with ballast of 1,010 kg, and material volume 100 L. What force will it exert on the suspension line at 20 m in fresh water if during lowering:\nA. air was continuously topped up?\nB. air was not topped up?",
       "options": [
-        { "key": "a", "text": "A = 100 N, B = 400 N" },
-        { "key": "b", "text": "A = 100 N, B = 6,100 N" },
-        { "key": "c", "text": "A = 6,000 N, B = 7,000 N" },
-        { "key": "d", "text": "A = 100 N, B = 3,100 N" }
+        { "key": "a", "text": "A = 100 N, B = 400 N" },
+        { "key": "b", "text": "A = 100 N, B = 6,100 N" },
+        { "key": "c", "text": "A = 6,000 N, B = 7,000 N" },
+        { "key": "d", "text": "A = 100 N, B = 3,100 N" }
       ],
       "correct": "b",
-      "explanation": "A: full of air — buoyancy = (900+100)×10 = 10,000 N, weight = 10,100 N, line force = 100 N. B: air compressed to 1/3 (300 L), water fills 600 L, buoyancy = 400×10 = 4,000 N, line force = 10,100 − 4,000 = 6,100 N."
+      "explanation": "A: full of air — buoyancy = (900+100)×10 = 10,000 N, weight = 10,100 N, line force = 100 N. B: air compressed to 1/3 (300 L), water fills 600 L, buoyancy = 400×10 = 4,000 N, line force = 10,100 − 4,000 = 6,100 N."
     },
     {
       "id": 43,
@@ -593,12 +593,12 @@
       "question": "What buoyant force lifts a free-lying cast-iron object of volume 10 L at 40 m in fresh water (cast-iron density 7,500 kg/m³)?",
       "options": [
         { "key": "a", "text": "0.75 MPa" },
-        { "key": "b", "text": "750 N" },
-        { "key": "c", "text": "850 N" },
-        { "key": "d", "text": "100 N" }
+        { "key": "b", "text": "750 N" },
+        { "key": "c", "text": "850 N" },
+        { "key": "d", "text": "100 N" }
       ],
       "correct": "d",
-      "explanation": "Buoyant force = volume × water density × g = 0.01 m³ × 1,000 kg/m³ × 10 m/s² = 100 N. Buoyancy depends only on the submerged object's volume, not on depth."
+      "explanation": "Buoyant force = volume × water density × g = 0.01 m³ × 1,000 kg/m³ × 10 m/s² = 100 N. Buoyancy depends only on the submerged object's volume, not on depth."
     },
     {
       "id": 47,
@@ -657,13 +657,13 @@
       "category": "tlak-jednotky",
       "question": "Approximately what spring force does a balanced first stage of a regulator need so that the diaphragm of working diameter 40 mm produces an intermediate pressure (gauge) of 1 MPa?",
       "options": [
-        { "key": "a", "text": "130 N" },
-        { "key": "b", "text": "650 N" },
-        { "key": "c", "text": "1,260 N" },
-        { "key": "d", "text": "65 N" }
+        { "key": "a", "text": "130 N" },
+        { "key": "b", "text": "650 N" },
+        { "key": "c", "text": "1,260 N" },
+        { "key": "d", "text": "65 N" }
       ],
       "correct": "c",
-      "explanation": "Diaphragm area S = π × r² = π × 0.02² = 0.001257 m². Force F = p × S = 1,000,000 Pa × 0.001257 m² ≈ 1,257 N ≈ 1,260 N."
+      "explanation": "Diaphragm area S = π × r² = π × 0.02² = 0.001257 m². Force F = p × S = 1,000,000 Pa × 0.001257 m² ≈ 1,257 N ≈ 1,260 N."
     },
     {
       "id": 52,
@@ -709,13 +709,13 @@
       "category": "tlak-jednotky",
       "question": "A recompression chamber on board ship is pressurised to a depth equivalent of 50 m. What net force pushes the door of area 1 m² against the chamber flange?",
       "options": [
-        { "key": "a", "text": "600,000 N" },
-        { "key": "b", "text": "400,000 N" },
-        { "key": "c", "text": "500,000 N" },
-        { "key": "d", "text": "50,000 N" }
+        { "key": "a", "text": "600,000 N" },
+        { "key": "b", "text": "400,000 N" },
+        { "key": "c", "text": "500,000 N" },
+        { "key": "d", "text": "50,000 N" }
       ],
       "correct": "c",
-      "explanation": "Gauge pressure in the chamber = 50 m = 5 bar = 500,000 Pa (the difference relative to outside atmospheric). Force F = p × S = 500,000 Pa × 1 m² = 500,000 N."
+      "explanation": "Gauge pressure in the chamber = 50 m = 5 bar = 500,000 Pa (the difference relative to outside atmospheric). Force F = p × S = 500,000 Pa × 1 m² = 500,000 N."
     },
     {
       "id": 56,
@@ -737,7 +737,7 @@
       "options": [
         { "key": "a", "text": "A volume of 1 cubic metre (1 m³) contains 1,000 litres." },
         { "key": "b", "text": "A pressure of 1 MPa is the same as a pressure of 100 kPa." },
-        { "key": "c", "text": "A temperature of 20 °C corresponds to approximately 293 K." },
+        { "key": "c", "text": "A temperature of 20 °C corresponds to approximately 293 K." },
         { "key": "d", "text": "A 1 kg body exerts a force of approximately 10 newtons (N) at the Earth's surface." }
       ],
       "correct": "b",
@@ -748,13 +748,13 @@
       "category": "tlak-jednotky",
       "question": "Determine the force pressing the upstream-opening poppet of a second-stage regulator against its 10 mm² seat when the intermediate pressure (gauge) is set to 1 MPa:",
       "options": [
-        { "key": "a", "text": "0.1 N" },
-        { "key": "b", "text": "1 N" },
-        { "key": "c", "text": "10 N" },
-        { "key": "d", "text": "100 N" }
+        { "key": "a", "text": "0.1 N" },
+        { "key": "b", "text": "1 N" },
+        { "key": "c", "text": "10 N" },
+        { "key": "d", "text": "100 N" }
       ],
       "correct": "c",
-      "explanation": "Area S = 10 mm² = 10 × 10⁻⁶ m² = 0.00001 m². Force F = p × S = 1,000,000 Pa × 0.00001 m² = 10 N."
+      "explanation": "Area S = 10 mm² = 10 × 10⁻⁶ m² = 0.00001 m². Force F = p × S = 1,000,000 Pa × 0.00001 m² = 10 N."
     },
     {
       "id": 59,
@@ -774,13 +774,13 @@
       "category": "tlak-jednotky",
       "question": "Determine the net pressure force exerted at 30 m by a 40 mm diameter port of a video-camera housing on the housing's mating surface:",
       "options": [
-        { "key": "a", "text": "3,770 N" },
-        { "key": "b", "text": "503 N" },
-        { "key": "c", "text": "50.3 N" },
-        { "key": "d", "text": "377 N" }
+        { "key": "a", "text": "3,770 N" },
+        { "key": "b", "text": "503 N" },
+        { "key": "c", "text": "50.3 N" },
+        { "key": "d", "text": "377 N" }
       ],
       "correct": "d",
-      "explanation": "Hydrostatic pressure at 30 m = 3 bar = 300,000 Pa. Port area S = π × 0.02² = 0.001257 m². Force F = 300,000 × 0.001257 ≈ 377 N."
+      "explanation": "Hydrostatic pressure at 30 m = 3 bar = 300,000 Pa. Port area S = π × 0.02² = 0.001257 m². Force F = 300,000 × 0.001257 ≈ 377 N."
     },
     {
       "id": 61,
@@ -1292,15 +1292,15 @@
     {
       "id": 100,
       "category": "dekomprese-syceni",
-      "question": "At normal atmospheric pressure, approximately 10 millilitres of nitrogen are dissolved per litre of blood (10 mL/L). How much nitrogen will be dissolved in the blood after one on-gassing half-time at 30 m on air?",
+      "question": "At normal atmospheric pressure, approximately 10 millilitres of nitrogen are dissolved per litre of blood (10 mL/L). How much nitrogen will be dissolved in the blood after one on-gassing half-time at 30 m on air?",
       "options": [
-        { "key": "a", "text": "40 mL/L" },
-        { "key": "b", "text": "30 mL/L" },
-        { "key": "c", "text": "20 mL/L" },
-        { "key": "d", "text": "25 mL/L" }
+        { "key": "a", "text": "40 mL/L" },
+        { "key": "b", "text": "30 mL/L" },
+        { "key": "c", "text": "20 mL/L" },
+        { "key": "d", "text": "25 mL/L" }
       ],
       "correct": "d",
-      "explanation": "At 30 m (4 bar) full saturation would dissolve 4× more N₂ = 40 mL/L. After one half-time on-gassing reaches 50% of the difference. Δ = 40 − 10 = 30 mL/L. Dissolved = 10 + 0.5×30 = 25 mL/L."
+      "explanation": "At 30 m (4 bar) full saturation would dissolve 4× more N₂ = 40 mL/L. After one half-time on-gassing reaches 50% of the difference. Δ = 40 − 10 = 30 mL/L. Dissolved = 10 + 0.5×30 = 25 mL/L."
     }
   ]
 }
