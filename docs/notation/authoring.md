@@ -118,15 +118,19 @@ var {
     font-style: italic;
 }
 
-/* Popisné indexy uvnitř <var> zpět na stojaté (dědí kurzívu) */
+/* Popisné indexy stojatě — uvnitř <var> i vedle něj (viz poznámka pod blokem) */
 var sub,
-var sup {
+var sup,
+var + sub,
+var + sup {
     font-style: normal;
 }
 
 /* Výjimka: index, který je sám proměnnou → opět kurzíva */
 var sub var,
-var sup var {
+var sup var,
+var + sub var,
+var + sup var {
     font-style: italic;
 }
 
@@ -147,10 +151,17 @@ var sup var {
 
 > **Klíčový detail:** `font-style` se dědí přes DOM strom, ale `<var>p</var><sub>amb</sub>`
 > (§1.2 vzor 2, **doporučený** zápis) má `<sub>` jako **sourozence** `<var>`, ne potomka —
-> kurzívu tedy vůbec nezdědí a pravidlo `var sub { font-style: normal }` na něj nemá
-> vliv (ani ho nepotřebuje). Pravidlo je nutné jen pro alternativní zápis
+> od `<var>` tedy kurzívu nezdědí a pravidlo `var sub { font-style: normal }` na něj nemá
+> vliv. Pravidlo `var sub` je nutné pro alternativní zápis
 > `<var>p<sub>amb</sub></var>` (index uvnitř `<var>`), který spec také povoluje, ale
 > projekt ho nedoporučuje — viz §1.1.
+>
+> **Nestačí to ale samo o sobě.** Sourozenecký `<sub>` nedědí kurzívu *od `<var>`*,
+> zdědí ji ale od **kteréhokoli kurzívního předka** — typicky `<em>`. V odstavci
+> `<em>… 1,4 bar <var>p</var><sub>O₂</sub> …</em>` se index vysází kurzívou,
+> přestože je značka i index napsaná správně. Proto pravidlo musí pokrývat
+> i sourozence (`var + sub`, `var + sup`); jinak chyba závisí na tom, v jakém
+> odstavci značka náhodou stojí. Odhalil to až prohlížeč, ne kontrola značek.
 
 ## 3. Přístupnost
 

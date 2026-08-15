@@ -4385,6 +4385,66 @@ describe('notation - units the first nbsp wave never listed', () => {
     });
 });
 
+describe('notation - quantity symbols in formulas are set in italics', () => {
+    // Glosář §2: značka veličiny se sází kurzívou, tedy `<var>`.
+    // V odstavci o bublině byly tři různé způsoby v jedné větě: `p` už mělo
+    // `<var>`, `γ` a `r` ve vzorci `2γ/r` neměly nic a `r` v próze mělo `<em>`.
+    const root = new URL('../', import.meta.url);
+
+    const surfaces = () => {
+        const out = [];
+        for (const name of readdirSync(new URL('locales/', root))) {
+            if (name.endsWith('.json')) out.push(`locales/${name}`);
+        }
+        return out.concat(shippedSources().filter(f => f.endsWith('.html')));
+    };
+
+    // Skripty a styly se vynechávají: `Δ` v kódu není sázený text.
+    const content = (src) => src
+        .replace(/<!--[\s\S]*?-->/g, ' ')
+        .replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, ' ');
+
+    test('no <em> is used where the content is a bare quantity symbol', () => {
+        // `<em>klesá</em>` je zvýraznění slovesa a zůstává; `<em>r</em>` je značka.
+        const found = [];
+        for (const rel of surfaces()) {
+            const src = content(readFileSync(new URL(rel, root), 'utf8'));
+            for (const m of src.matchAll(/<em>([^<]{1,3})<\/em>/g)) {
+                if (/^[a-zA-Z\u03b1-\u03c9]$/.test(m[1].trim())) found.push(`${rel}: <em>${m[1]}</em>`);
+            }
+        }
+        expect(found).toEqual([]);
+    });
+
+    test('the surface tension symbol is always italic', () => {
+        // `γ` je značka povrchového napětí, ne dekorace — patří do `<var>`.
+        const found = [];
+        for (const rel of surfaces()) {
+            const src = content(readFileSync(new URL(rel, root), 'utf8'));
+            for (const m of src.matchAll(/\u03b3/g)) {
+                const before = src.slice(Math.max(0, m.index - 5), m.index);
+                if (!before.endsWith('<var>')) {
+                    found.push(`${rel}: …${src.slice(Math.max(0, m.index - 25), m.index + 20)}…`);
+                }
+            }
+        }
+        expect(found).toEqual([]);
+    });
+
+    test('the quantity after the delta operator is lowercase and italic', () => {
+        // ISO 80000-2: `Δ` je operátor a sází se stojatě, ale veličina za ním
+        // je značka — tedy `Δ<var>p</var>`, nikdy `ΔP` ani `Δp`.
+        const found = [];
+        for (const rel of surfaces()) {
+            const src = content(readFileSync(new URL(rel, root), 'utf8'));
+            for (const m of src.matchAll(/(?:&Delta;|\u0394)\s*([A-Za-z])/g)) {
+                found.push(`${rel}: …${src.slice(Math.max(0, m.index - 25), m.index + 25)}…`);
+            }
+        }
+        expect(found).toEqual([]);
+    });
+});
+
 describe('notation - the glossary export the reviewer reads is current', () => {
     // Slovníček se sdílí s garantem jako .docx, protože markdown nečte.
     // U #91 a #98 se `glossary.md` změnil, ale export ne — garant by četl

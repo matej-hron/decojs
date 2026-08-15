@@ -162,7 +162,7 @@
             "exampleTitle": "Příklad výpočtu",
             "exampleIntro": "Po ponoru si zaznamenáte:",
             "exampleCyl": "Lahev: 12 l",
-            "examplePressure": "Počáteční tlak: 200 bar, konečný tlak: 80 bar → <strong>Δp = 120 bar</strong>",
+            "examplePressure": "Počáteční tlak: 200 bar, konečný tlak: 80 bar → <strong>Δ<var>p</var> = 120 bar</strong>",
             "exampleTime": "Doba ponoru: 45 minut",
             "exampleDepth": "Průměrná hloubka: 15 m → <strong><var>p</var><sub>avg</sub> = 1 + 15/10 = 2,5 bar</strong>",
             "showSolution": "Zkus si to nejdřív spočítat — klikni pro zobrazení řešení",
@@ -444,9 +444,9 @@
             "cardTitle": "Proč bubliny rostou?",
             "intro": "Na plynovou bublinu ve tkáni působí tři tlaky:",
             "pAmb": "<strong>Okolní tlak (<var>p</var><sub>amb</sub>)</strong> — stlačuje bublinu zvenku",
-            "pSurface": "<strong>Povrchové napětí (2γ/r)</strong> — Laplaceův tlak, který rovněž bublinu stlačuje. Menší bubliny mají <em>větší</em> povrchové napětí.",
+            "pSurface": "<strong>Povrchové napětí (2<var>γ</var>/<var>r</var>)</strong> — Laplaceův tlak, který rovněž bublinu stlačuje. Menší bubliny mají <em>větší</em> povrchové napětí.",
             "pTissue": "<strong>Tenze rozpuštěných plynů (<var>p</var><sub>tissue</sub>)</strong> — celkový tlak plynů rozpuštěných v okolní tkáni, který tlačí plyn <em>dovnitř</em> bubliny",
-            "insight": "Když <strong><var>p</var><sub>tissue</sub> &gt; <var>p</var><sub>amb</sub> + 2γ/r</strong>, plyn difunduje do bubliny a ta <strong>roste</strong>. Jak roste, <em>r</em> se zvětšuje, povrchové napětí <em>klesá</em>, což růst ještě urychluje — <strong>pozitivní zpětná vazba</strong>.",
+            "insight": "Když <strong><var>p</var><sub>tissue</sub> &gt; <var>p</var><sub>amb</sub> + 2<var>γ</var>/<var>r</var></strong>, plyn difunduje do bubliny a ta <strong>roste</strong>. Jak roste, <var>r</var> se zvětšuje, povrchové napětí <em>klesá</em>, což růst ještě urychluje — <strong>pozitivní zpětná vazba</strong>.",
             "sliderHint": "Použijte posuvník pro výstup z 30 m. Sledujte, jak snížení okolního tlaku naruší rovnováhu — větší bubliny překročí kritický poloměr jako první."
         },
         "halfTimeConcept": {
@@ -974,9 +974,9 @@
         "calculatePrompt": "Nastavte scénář, spočítejte <var>p</var><sub>2</sub>, a pak klikněte pro ověření.",
         "showResult": "Zobrazit výsledek",
         "finalPressure": "Výsledný tlak <var>p</var><sub>2</sub>",
-        "pressureChange": "Změna tlaku Δp",
+        "pressureChange": "Změna tlaku Δ<var>p</var>",
         "usableGasChange": "Změna použitelného plynu",
-        "gasChangeSub": "povrchové litry (Δp × objem)",
+        "gasChangeSub": "povrchové litry (Δ<var>p</var> × objem)",
         "diveTimeChange": "Změna času ponoru ve 20 m",
         "diveTimeSub": "Spotřeba vzduchu na hladině (SAC) 20 l/min při 3 bar (1+20/10)",
         "safety": {

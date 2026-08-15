@@ -162,7 +162,7 @@
             "exampleTitle": "Ejemplo de cálculo",
             "exampleIntro": "Tras una inmersión apuntas:",
             "exampleCyl": "Botella: 12 L",
-            "examplePressure": "Presión inicial: 200 bar, presión final: 80 bar → <strong>Δp = 120 bar</strong>",
+            "examplePressure": "Presión inicial: 200 bar, presión final: 80 bar → <strong>Δ<var>p</var> = 120 bar</strong>",
             "exampleTime": "Tiempo de inmersión: 45 minutos",
             "exampleDepth": "Profundidad media: 15 m → <strong><var>p</var><sub>media</sub> = 1 + 15/10 = 2,5 bar</strong>",
             "showSolution": "Pruébalo primero — haz clic para revelar la solución",
@@ -444,9 +444,9 @@
             "cardTitle": "¿Por qué crecen las burbujas?",
             "intro": "Sobre una burbuja de gas en un tejido actúan tres presiones:",
             "pAmb": "<strong>Presión ambiente (<var>p</var><sub>amb</sub>)</strong> — empuja la burbuja hacia dentro",
-            "pSurface": "<strong>Tensión superficial (2γ/r)</strong> — la presión de Laplace, que también comprime la burbuja. Las burbujas más pequeñas tienen <em>más</em> tensión superficial.",
+            "pSurface": "<strong>Tensión superficial (2<var>γ</var>/<var>r</var>)</strong> — la presión de Laplace, que también comprime la burbuja. Las burbujas más pequeñas tienen <em>más</em> tensión superficial.",
             "pTissue": "<strong>Tensión del gas disuelto (<var>p</var><sub>tejido</sub>)</strong> — la presión total de los gases disueltos en el tejido circundante, que empuja el gas <em>hacia dentro</em> de la burbuja",
-            "insight": "Cuando <strong><var>p</var><sub>tejido</sub> &gt; <var>p</var><sub>amb</sub> + 2γ/r</strong>, el gas se difunde hacia la burbuja y esta <strong>crece</strong>. Al crecer, <em>r</em> aumenta, la tensión superficial <em>disminuye</em> y el crecimiento se vuelve aún más fácil — un <strong>bucle de realimentación positiva</strong>.",
+            "insight": "Cuando <strong><var>p</var><sub>tejido</sub> &gt; <var>p</var><sub>amb</sub> + 2<var>γ</var>/<var>r</var></strong>, el gas se difunde hacia la burbuja y esta <strong>crece</strong>. Al crecer, <var>r</var> aumenta, la tensión superficial <em>disminuye</em> y el crecimiento se vuelve aún más fácil — un <strong>bucle de realimentación positiva</strong>.",
             "sliderHint": "Usa el deslizador para ascender desde 30 m. Observa cómo, al reducir la presión ambiente, el equilibrio se inclina — las burbujas grandes cruzan antes el radio crítico."
         },
         "halfTimeConcept": {
@@ -661,7 +661,7 @@
             "zoneAboveDesc": "⚠️ ¡Sobresaturación crítica!",
             "movementSummary": "🎯 Cómo leer el movimiento",
             "moveDescent": "<strong>Descenso:</strong> te mueves a la <em>derecha</em> (↑ ambiente) y hacia <em>arriba</em> (↑ carga tisular)",
-            "moveAtDepth": "<strong>En el fondo:</strong> misma posición en X; subes lentamente en <em>Y</em> hacia el equilibrio",
+            "moveAtDepth": "<strong>En el fondo:</strong> misma posición en X; <em>subes</em> lentamente en Y hacia el equilibrio",
             "moveAscent": "<strong>Ascenso:</strong> te mueves a la <em>izquierda</em> (↓ ambiente) — aquí es donde entras en sobresaturación",
             "movementWarning": "⚠️ El peligro: ascender demasiado rápido te desplaza a la izquierda más rápido de lo que desgasificas hacia abajo — ¡con riesgo de cruzar por encima de la línea del valor-M!"
         },
@@ -974,9 +974,9 @@
         "calculatePrompt": "Configura el escenario, calcula <var>p</var><sub>2</sub> y pulsa abajo para comprobar tu respuesta.",
         "showResult": "Mostrar resultado",
         "finalPressure": "Presión final <var>p</var><sub>2</sub>",
-        "pressureChange": "Cambio de presión Δp",
+        "pressureChange": "Cambio de presión Δ<var>p</var>",
         "usableGasChange": "Cambio de gas utilizable",
-        "gasChangeSub": "litros equivalentes en superficie (Δp × volumen)",
+        "gasChangeSub": "litros equivalentes en superficie (Δ<var>p</var> × volumen)",
         "diveTimeChange": "Cambio de tiempo de inmersión a 20 m",
         "diveTimeSub": "Consumo de aire en superficie 20 L/min a 3 bar (1+20/10)",
         "safety": {
