@@ -870,7 +870,7 @@
 
                 // Shaded corridor (below the ramp, down to GF=0)
                 const baseY = corrYToPx(0);
-                const path = `M ${surfaceX} ${surfaceY}\u00a0L ${anchorX} ${anchorY}\u00a0L ${anchorX} ${baseY}\u00a0L ${surfaceX} ${baseY} Z`;
+                const path = `M ${surfaceX} ${surfaceY} L ${anchorX} ${anchorY} L ${anchorX} ${baseY} L ${surfaceX} ${baseY} Z`;
                 svg.appendChild(e('path', { d: path, fill: '#16a085', opacity: 0.10 }));
 
                 // Ramp line (surface → pAnchor)

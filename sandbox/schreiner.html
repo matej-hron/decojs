@@ -928,7 +928,7 @@
             chartCurve.setAttribute('d', `M ${pts.join(' L ')}`);
 
             // Palv(t) — straight line from (0, Palv,0) to (tMax, Palv,end)
-            const palvPath = `M ${(xOf(0)).toFixed(2)},${(yOf(pAlv0)).toFixed(2)}\u00a0L ${(xOf(tMax)).toFixed(2)},${(yOf(pAlvEnd)).toFixed(2)}`;
+            const palvPath = `M ${(xOf(0)).toFixed(2)},${(yOf(pAlv0)).toFixed(2)} L ${(xOf(tMax)).toFixed(2)},${(yOf(pAlvEnd)).toFixed(2)}`;
             chartPalv.setAttribute('d', palvPath);
 
             // Baseline at Pt,0

@@ -3888,6 +3888,13 @@ describe('notation - non-breaking space between value and unit at runtime', () =
         'sandbox/cascade-filling.html', 'sandbox/transfilling.html',
     ];
 
+    // Příkaz SVG path `L` je totéž písmeno jako značka litru. `M ${x} L ${y}`
+    // proto vypadá jako číslo bez nedělitelné mezery — a kdyby ji tam někdo
+    // doplnil, cesta se rozpadne (#99). Geometrie se tedy z kontroly vyjímá.
+    const pathCommands = (t) => (t.match(/[MLHVCSQTAZ]\s*(?:-?[\d.]|\$\{)/g) || []).length;
+    const looksLikeGeometry = (line) => pathCommands(line) >= 2
+        && /[Mm]\s*(?:-?[\d.]|\$\{)/.test(line);
+
     const scan = (rel, re) => {
         const text = readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
         const hits = [];
@@ -3897,6 +3904,7 @@ describe('notation - non-breaking space between value and unit at runtime', () =
             if (!m) return;
             const comment = line.search(/(?:^|\s)\/\//);
             if (comment !== -1 && comment < m.index) return;
+            if (/^[MLHVCSQTAZ]$/.test(m[0].slice(-1)) && looksLikeGeometry(line)) return;
             hits.push(`${rel}:${i + 1}  ${line.trim().slice(0, 80)}`);
         });
         return hits;
@@ -4399,8 +4407,15 @@ describe('notation - the nbsp rule must not reach SVG geometry', () => {
         // kde už zbývají jen dva příkazy a řádková heuristika je slepá.
         const offenders = [];
         const NBSP = /\u00a0|\\u00a0|&nbsp;/;
-        const commands = (t) => (t.match(/[MLHVCSQTAZ]\s*-?[\d.]/g) || []).length;
+        // Za příkazem stojí buď číslo, nebo interpolace — `M ${x} L ${y}` je
+        // stejně platná cesta jako `M 6,11 L 474,128`. Verze z #99 počítala
+        // jen číslice, takže obě cesty skládané z proměnných minula.
+        const commands = (t) => (t.match(/[MLHVCSQTAZ]\s*(?:-?[\d.]|\$\{)/g) || []).length;
+        // Cesta prakticky vždy začíná `M`; to je silnější signál než počet
+        // příkazů a udrží práh nízko, aniž by chytal běžné řetězce.
+        const startsWithMove = (t) => /^[`'"]?\s*[Mm]\s*(?:-?[\d.]|\$\{)/.test(t);
         const looksLikePath = (t) => commands(t) >= 3
+            || (commands(t) >= 2 && startsWithMove(t))
             || (commands(t) >= 1 && /\$\{[A-Za-z_]*(?:_D|[Pp]ath)\}/.test(t));
 
         for (const rel of shippedSources()) {
