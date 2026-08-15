@@ -1235,7 +1235,7 @@
         { "key": "d", "text": "312 kPa" }
       ],
       "correct": "d",
-      "explanation": "<var>p</var><sub>N₂</sub> en superficie = 78 kPa. A 40 m (5 bar): <var>p</var><sub>N₂</sub> = 0,78 × 500 = 390 kPa. Tras 30 min (2 períodos) el tejido se satura al 75 %. Δp = 390 − 78 = 312 kPa. Saturación = 78 + 0,75×312 = 312 kPa."
+      "explanation": "<var>p</var><sub>N₂</sub> en superficie = 78 kPa. A 40 m (5 bar): <var>p</var><sub>N₂</sub> = 0,78 × 500 = 390 kPa. Tras 30 min (2 períodos) el tejido se satura al 75 %. Δ<var>p</var> = 390 − 78 = 312 kPa. Saturación = 78 + 0,75×312 = 312 kPa."
     },
     {
       "id": 96,
@@ -1248,7 +1248,7 @@
         { "key": "d", "text": "195 kPa" }
       ],
       "correct": "d",
-      "explanation": "<var>p</var><sub>N₂</sub> en superficie = 78 kPa. A 30 m (4 bar): <var>p</var><sub>N₂</sub> = 0,78 × 400 = 312 kPa. Tras 1 período el tejido se satura al 50 % de la diferencia. Δp = 312 − 78 = 234 kPa. Saturación = 78 + 0,5×234 = 195 kPa."
+      "explanation": "<var>p</var><sub>N₂</sub> en superficie = 78 kPa. A 30 m (4 bar): <var>p</var><sub>N₂</sub> = 0,78 × 400 = 312 kPa. Tras 1 período el tejido se satura al 50 % de la diferencia. Δ<var>p</var> = 312 − 78 = 234 kPa. Saturación = 78 + 0,5×234 = 195 kPa."
     },
     {
       "id": 97,
@@ -1261,7 +1261,7 @@
         { "key": "d", "text": "A: 253,5 kPa, B: 195 kPa" }
       ],
       "correct": "d",
-      "explanation": "<var>p</var><sub>N₂</sub> a 30 m = 312 kPa, Δp = 234 kPa. A (40 min = 2 períodos, 75 %): 78 + 0,75×234 = 253,5 kPa. B (40 min = 1 período, 50 %): 78 + 0,5×234 = 195 kPa."
+      "explanation": "<var>p</var><sub>N₂</sub> a 30 m = 312 kPa, Δ<var>p</var> = 234 kPa. A (40 min = 2 períodos, 75 %): 78 + 0,75×234 = 253,5 kPa. B (40 min = 1 período, 50 %): 78 + 0,5×234 = 195 kPa."
     },
     {
       "id": 98,
@@ -1274,7 +1274,7 @@
         { "key": "d", "text": "312 kPa" }
       ],
       "correct": "b",
-      "explanation": "<var>p</var><sub>N₂</sub> a 30 m = 312 kPa, inicial = 78 kPa, Δp = 234 kPa. Tras 2 períodos: 50 % + 25 % = 75 % de saturación. <var>p</var><sub>N₂</sub> = 78 + 0,75×234 = 253,5 kPa."
+      "explanation": "<var>p</var><sub>N₂</sub> a 30 m = 312 kPa, inicial = 78 kPa, Δ<var>p</var> = 234 kPa. Tras 2 períodos: 50 % + 25 % = 75 % de saturación. <var>p</var><sub>N₂</sub> = 78 + 0,75×234 = 253,5 kPa."
     },
     {
       "id": 99,
@@ -1287,7 +1287,7 @@
         { "key": "d", "text": "319,5 kPa" }
       ],
       "correct": "d",
-      "explanation": "<var>p</var><sub>N₂</sub> inicial = 78 kPa. A 70 m (8 bar) con 50 % N₂: <var>p</var><sub>N₂</sub> = 0,5 × 800 = 400 kPa. Δp = 322 kPa. Tras 30 min (2 períodos, 75 %): 78 + 0,75×322 = 319,5 kPa."
+      "explanation": "<var>p</var><sub>N₂</sub> inicial = 78 kPa. A 70 m (8 bar) con 50 % N₂: <var>p</var><sub>N₂</sub> = 0,5 × 800 = 400 kPa. Δ<var>p</var> = 322 kPa. Tras 30 min (2 períodos, 75 %): 78 + 0,75×322 = 319,5 kPa."
     },
     {
       "id": 100,
@@ -1300,7 +1300,7 @@
         { "key": "d", "text": "25 ml/l" }
       ],
       "correct": "d",
-      "explanation": "A 30 m (4 bar) la saturación completa supondría 4 veces más N₂ = 40 ml/l. Tras un período la saturación es del 50 % de la diferencia. Δ = 40 − 10 = 30 ml/l. Disuelto = 10 + 0,5×30 = 25 ml/l."
+      "explanation": "A 30 m (4 bar) la saturación completa supondría 4 veces más N₂ = 40 ml/l. Tras un período la saturación es del 50 % de la diferencia. Δ<var>V</var> = 40 − 10 = 30 ml/l. Disuelto = 10 + 0,5×30 = 25 ml/l."
     }
   ]
 }

@@ -4391,10 +4391,16 @@ describe('notation - quantity symbols in formulas are set in italics', () => {
     // `<var>`, `γ` a `r` ve vzorci `2γ/r` neměly nic a `r` v próze mělo `<em>`.
     const root = new URL('../', import.meta.url);
 
+    // Kvízová data jsou sázený text jako každý jiný: `js/quiz.js` je vkládá
+    // přes `innerHTML`, takže `<var>` v nich funguje a značky v nich patří
+    // pod stejné pravidlo. První verze téhle kontroly na `data/` nesahala
+    // a přehlédla patnáct `Δp` ve vysvětleních fyzikálního kvízu.
     const surfaces = () => {
         const out = [];
-        for (const name of readdirSync(new URL('locales/', root))) {
-            if (name.endsWith('.json')) out.push(`locales/${name}`);
+        for (const dir of ['locales/', 'data/']) {
+            for (const name of readdirSync(new URL(dir, root))) {
+                if (name.endsWith('.json')) out.push(`${dir}${name}`);
+            }
         }
         return out.concat(shippedSources().filter(f => f.endsWith('.html')));
     };
@@ -4433,11 +4439,15 @@ describe('notation - quantity symbols in formulas are set in italics', () => {
 
     test('the quantity after the delta operator is lowercase and italic', () => {
         // ISO 80000-2: `Δ` je operátor a sází se stojatě, ale veličina za ním
-        // je značka — tedy `Δ<var>p</var>`, nikdy `ΔP` ani `Δp`.
+        // je značka — tedy `Δ<var>p</var>`, nikdy `ΔP` ani `Δp`. Operátor bez
+        // operandu je stejná chyba: `Δ = 40 − 10` nechává veličinu jen v hlavě
+        // pisatele, správně je `Δ<var>V</var> = 40 − 10`.
+        // Výjimkou je popisek kreslený na canvas (`sandbox/m-values.html`),
+        // kde `Δ` stojí samo a značka se vedle něj sází kurzívou v kódu.
         const found = [];
         for (const rel of surfaces()) {
             const src = content(readFileSync(new URL(rel, root), 'utf8'));
-            for (const m of src.matchAll(/(?:&Delta;|\u0394)\s*([A-Za-z])/g)) {
+            for (const m of src.matchAll(/(?:&Delta;|\u0394)\s*([A-Za-z]|=)/g)) {
                 found.push(`${rel}: …${src.slice(Math.max(0, m.index - 25), m.index + 25)}…`);
             }
         }

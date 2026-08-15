@@ -2374,7 +2374,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "<var>p</var><sub>N₂</sub> na hladině = 78 kPa. V 40 m (5 bar): <var>p</var><sub>N₂</sub> = 0,78 × 500 = 390 kPa. Za 30 min (2 poločasy) se tkáň nasytí na 75 %. Δp = 390-78 = 312 kPa. Nasycení = 78 + 0,75×312 = 312 kPa.",
+      "explanation": "<var>p</var><sub>N₂</sub> na hladině = 78 kPa. V 40 m (5 bar): <var>p</var><sub>N₂</sub> = 0,78 × 500 = 390 kPa. Za 30 min (2 poločasy) se tkáň nasytí na 75 %. Δ<var>p</var> = 390-78 = 312 kPa. Nasycení = 78 + 0,75×312 = 312 kPa.",
       "category": "dekomprese-syceni"
     },
     {
@@ -2399,7 +2399,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "<var>p</var><sub>N₂</sub> na hladině = 78 kPa. V 30 m (4 bar): <var>p</var><sub>N₂</sub> = 0,78 × 400 = 312 kPa. Po 1 poločase se tkáň nasytí na 50 % rozdílu. Δp = 312-78 = 234 kPa. Nasycení = 78 + 0,5×234 = 195 kPa.",
+      "explanation": "<var>p</var><sub>N₂</sub> na hladině = 78 kPa. V 30 m (4 bar): <var>p</var><sub>N₂</sub> = 0,78 × 400 = 312 kPa. Po 1 poločase se tkáň nasytí na 50 % rozdílu. Δ<var>p</var> = 312-78 = 234 kPa. Nasycení = 78 + 0,5×234 = 195 kPa.",
       "category": "dekomprese-syceni"
     },
     {
@@ -2424,7 +2424,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "<var>p</var><sub>N₂</sub> v 30 m = 312 kPa, Δp = 234 kPa. A (40 min = 2 poločasy, 75 %): 78 + 0,75×234 = 253,5 kPa. B (40 min = 1 poločas, 50 %): 78 + 0,5×234 = 195 kPa.",
+      "explanation": "<var>p</var><sub>N₂</sub> v 30 m = 312 kPa, Δ<var>p</var> = 234 kPa. A (40 min = 2 poločasy, 75 %): 78 + 0,75×234 = 253,5 kPa. B (40 min = 1 poločas, 50 %): 78 + 0,5×234 = 195 kPa.",
       "category": "dekomprese-syceni"
     },
     {
@@ -2449,7 +2449,7 @@
         }
       ],
       "correct": "b",
-      "explanation": "<var>p</var><sub>N₂</sub> v 30 m = 312 kPa, počáteční = 78 kPa, Δp = 234 kPa. Po 2 poločasech: 50 % + 25 % = 75 % nasycení. <var>p</var><sub>N₂</sub> = 78 + 0,75×234 = 253,5 kPa.",
+      "explanation": "<var>p</var><sub>N₂</sub> v 30 m = 312 kPa, počáteční = 78 kPa, Δ<var>p</var> = 234 kPa. Po 2 poločasech: 50 % + 25 % = 75 % nasycení. <var>p</var><sub>N₂</sub> = 78 + 0,75×234 = 253,5 kPa.",
       "category": "dekomprese-syceni"
     },
     {
@@ -2474,7 +2474,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "Počáteční <var>p</var><sub>N₂</sub> = 78 kPa. V 70 m (8 bar) s 50 % N₂: <var>p</var><sub>N₂</sub> = 0,5 × 800 = 400 kPa. Δp = 322 kPa. Za 30 min (2 poločasy, 75 %): 78 + 0,75×322 = 319,5 kPa.",
+      "explanation": "Počáteční <var>p</var><sub>N₂</sub> = 78 kPa. V 70 m (8 bar) s 50 % N₂: <var>p</var><sub>N₂</sub> = 0,5 × 800 = 400 kPa. Δ<var>p</var> = 322 kPa. Za 30 min (2 poločasy, 75 %): 78 + 0,75×322 = 319,5 kPa.",
       "category": "dekomprese-syceni"
     },
     {
@@ -2499,7 +2499,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "V 30 m (4 bar) by bylo při úplném nasycení 4× více N₂ = 40 ml/l. Po 1 poločasu je nasycení 50 % rozdílu. Δ = 40-10 = 30 ml/l. Rozpuštěno = 10 + 0,5×30 = 25 ml/l.",
+      "explanation": "V 30 m (4 bar) by bylo při úplném nasycení 4× více N₂ = 40 ml/l. Po 1 poločasu je nasycení 50 % rozdílu. Δ<var>V</var> = 40-10 = 30 ml/l. Rozpuštěno = 10 + 0,5×30 = 25 ml/l.",
       "category": "dekomprese-syceni"
     }
   ]
