@@ -20,7 +20,7 @@
     "diveProfile": {
         "title": "Dive Profile Terminology",
         "writtenPlanTitle": "Written Dive Plan",
-        "writtenPlanSubtitle": "(a.k.a. runtime; Divesoft Freedom calls it “profile”)"
+        "writtenPlanSubtitle": "(a.k.a. runtime)"
     },
     "terminology": {
         "reading": {
