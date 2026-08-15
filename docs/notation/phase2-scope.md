@@ -1075,3 +1075,42 @@ pomlčce nezávisí): tabulka ppO₂ ukazuje `0,16–0,50` česky a španělsky,
 `0.16–0.50` anglicky.
 
 **Testy:** 346/346 ✅
+
+---
+
+## Vlna 12 — desetinná konstanta zapsaná natvrdo do zobrazovaného textu
+
+**Třída:** desetinný oddělovač (§2.2 style-guide) — zbylá skulina.
+
+Projekt už měl kontrolu, že se do zobrazovaného textu nedostane číslo
+naformátované mimo `fmt()`. Kontrola se ale dívala jen na **argumenty**
+volání. Konstantu napsanou přímo do šablonového řetězce neviděla.
+
+Kvůli tomu sázela stránka *Gay-Lussacův zákon* v češtině řádek
+
+> `T₁ = 20 °C + 273.15 = 293,15 K`
+
+kde je **tečka i čárka v jednom vzorci** — vlevo konstanta zapsaná ručně,
+vpravo výsledek, který už prošel formátovačem. Právě takový nesoulad je
+na první pohled nejvíc vidět.
+
+| Soubor | Míst | Před → po |
+|---|---|---|
+| `sandbox/gas-law.html` | 2 | `+ 273.15 =` → `+ ${fmtNum(273.15, 2)} =` |
+
+`sandbox/gas-law.html:764` zůstává beze změny — tam je 273,15 součástí
+výpočtu, ne zobrazení. Do kódu se desetinná čárka nepíše.
+
+**Nový test:** *no display markup carries a raw decimal constant*. Bere
+šablonové řetězce, které obsahují značku (tedy míří do `innerHTML`),
+odstraní z nich dosazované výrazy a HTML značky a ve zbylém viditelném
+textu hlásí každé desetinné číslo. Řetězce bez značky se přeskakují —
+tam je desetinné číslo buď CSS (`opacity: 0.9`), nebo hodnota atributu
+(`step="0.1"`, SVG `offset="0.26"`), kde by čárka byla neplatná.
+
+**Ověřeno v prohlížeči:** stránka *Gay-Lussacův zákon* ve všech třech
+jazycích. Vzorec ukazuje `273,15` česky i španělsky a `273.15` anglicky —
+oddělovač je v celém řádku jednotný. Vrácení opravy zpět sondu i test
+skutečně shodí, a jen v češtině a španělštině.
+
+**Testy:** 351/351 ✅

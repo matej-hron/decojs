@@ -121,7 +121,7 @@ export function fmtGroup(value, maxDecimals = 0, lang) {
 /**
  * Localize the decimal separators of numbers already written in the markup.
  *
- * For static tables whose cells are prose-like ranges (`< 0.16`, `0.16 – 0.50`)
+ * For static tables whose cells are prose-like ranges (`< 0.16`, `0.16–0.50`)
  * it would be clumsy to rebuild the whole row from data just to move a comma.
  * This walks the text nodes under `root` and rewrites every `12.34` literal
  * with the active decimal separator, **preserving the digit count** — `0.50`
