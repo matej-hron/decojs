@@ -297,4 +297,17 @@ const doc = new Document({
   }],
 });
 
-Packer.toBuffer(doc).then((b) => { fs.writeFileSync(OUT, b); console.log('wrote', OUT, b.length, 'bytes'); });
+// Otisk předlohy se ukládá vedle dokumentu. Test v run-tests.mjs ho porovnává
+// s aktuálním glossary.md, takže úprava slovníčku bez přegenerování shodí
+// build — jinak školitel dostane tiše zastaralou verzi (stalo se u #91 a #98).
+const stamp = () => {
+  const hash = require('crypto').createHash('sha256')
+    .update(fs.readFileSync(SRC)).digest('hex');
+  fs.writeFileSync(OUT.replace(/\.docx$/, '.sha256'), `${hash}  ${SRC}\n`);
+  return hash.slice(0, 12);
+};
+
+Packer.toBuffer(doc).then((b) => {
+  fs.writeFileSync(OUT, b);
+  console.log('wrote', OUT, b.length, 'bytes; předloha', stamp());
+});
