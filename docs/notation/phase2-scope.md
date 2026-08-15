@@ -696,3 +696,64 @@ simulace, varování sandboxu, popisky grafů), 0 závad. Sonda negativně ově�
 — každá dílčí kontrola musí něco najít, jinak se hlásí jako neprůkazná.
 
 **Testy:** 323/323 (4 nové, každý negativně ověřený).
+
+### Vzorce: popisné indexy stojatě a lokalizovaně — hotovo
+
+Issue #61: garant žádá `p_celk = p_O₂ + p_N₂`, jak se to píše na české škole.
+Glosář §3 to má rozhodnuté od fáze 1, ale vzorce byly **napevno anglicky** —
+KaTeX se sází ze statického LaTeXu v HTML, který se nepřekládá.
+
+**Řešení: jeden anglický zdroj, překlad za běhu.** `localizeLatex()`
+v `js/format.js` už lokalizoval desetinný oddělovač; rozšířen o tabulku
+`UPRIGHT_CS`, která přepisuje obsah `\mathrm{…}`. Do HTML se tedy píše
+kanonický tvar `p_{\mathrm{tot}}` a český čtenář dostane `p_{\mathrm{celk}}`.
+Chemický index (`N_2`, `O_2`) se nepřekládá už tím, že v tabulce není.
+
+| Třída | Počet | Oprava |
+|---|---|---|
+| popisný index anglicky i v češtině | 9 druhů | `\mathrm{tot}` → `celk`, `amb` → `okol`, `t,0` → `tk,0`, … |
+| víceznakový index kurzívou | 4 | `V_{cylinder}` → `V_{\mathrm{cyl}}` |
+| zkratka kurzívou | 5 | `SAC`, `MOD`, `OTU` → `\mathrm{…}` |
+| chemický index kurzívou | 3 | `f_{O_2}` → `f_{\mathrm{O_2}}` |
+| zdvojené `pp` ve vzorci | 2 | `pp_x` → `p_x` (style-guide §2) |
+| nekanonický index | 6 | `hydro` → `h`, `t0` → `t,0`, `alv0` → `alv,0`, `total` → `tot` |
+| velké *P* ve vzorci | 1 | `\Delta P` → `\Delta p` |
+
+**Proč na tom záleží víc, než vypadá.** `V_{cylinder}` KaTeX nevysází jako
+„index cylinder", ale jako **součin kurzívních písmen** *c*·*y*·*l*·*i*·*n*·*d*·*e*·*r*.
+Totéž `SAC` nebo `depth`. ČSN EN ISO 80000-1 kap. 7 to zakazuje ze stejného
+důvodu, z jakého žádá kurzívu u značky: kurzíva *je* nositelem významu.
+
+#### Čtyři vedlejší nálezy
+
+**Vzorce se po přepnutí jazyka nepřesázely.** `pressure.html` sázela KaTeX jen
+po `initI18n()`, `tissue-loading.html` měla posluchač `languagechange`, ale
+překreslovala jen referenční tabulku. Uživatel, který přepnul na češtinu za
+běhu, viděl dál `p_tot` — a také `0.0627` místo `0,0627`, takže chyba se
+netýkala jen této vlny.
+
+**`m-values.html` sázela vzorce v klasickém `<script>`**, který na importy
+modulu nevidí; `localizeLatex` tam byl `undefined` a KaTeX vzorec nevykreslil
+vůbec. Táž třída chyby jako mrtvý panel varování z minulé vlny — proto do
+testu na importy přibyl i `localizeLatex`.
+
+**Čeština prosakovala do anglického vzorce.** `p_{H₂O} = 0{,}0627 \text{ bar
+při 37 °C}` — anglický i španělský čtenář dostal český text a českou čárku.
+Podmínka platnosti patří do popisky pod vzorec (`daltonsLaw.operational.waterVapourAt`,
+nová třída `.formula-caption`), ne do math módu.
+
+**`gradient-factors.html` načítala KaTeX zbytečně.** Stránka nemá jediný vzorec,
+přesto stahovala tři CDN skripty a pouštěla `renderMathInElement` přes celé
+`document.body`. Ověřeno v prohlížeči (0 uzlů `.katex`, 0 znaků `$`) a odstraněno.
+
+**Měřeno v prohlížeči:** 97 sond ve dvou jazycích — 94 vysázených vzorců na
+3 stránkách, cílená kontrola Daltonova vzorce z #61 a **živé přepnutí EN→CS**.
+0 závad. Sonda negativně ověřená; kontrola jazyka indexů se dělá proti celé
+tabulce, ne proti ručnímu výběru.
+
+**Zbývá pro garanta (#62):** značka pro hloubku (*D* vs *h*) a tvar
+`GF`<sub>lo</sub> vs `GF`<sub>low</sub>. Obojí je volba konvence, ne chyba
+zápisu, takže o ní nerozhodujeme sami.
+
+**Testy:** 333/333 (10 nových, každý negativně ověřený).
+

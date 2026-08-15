@@ -226,6 +226,7 @@
             "opDesc": "Používá se pro maximální operační hloubku (MOD) a limity toxicity kyslíku. Bez odečtení vodní páry.",
             "physTitle": "Fyziologický (kinetika tkání)",
             "physDesc": "Při výpočtu alveolárních tlaků plynů pro modely sycení tkání odečítáme tlak vodní páry, protože plíce zvlhčují vdechovaný vzduch:",
+            "waterVapourAt": "při 37 °C (tělesná teplota)",
             "physNote": "Tato ~6% redukce se objevuje v Bühlmannových rovnicích pro výpočty sycení tkání. Budeme ji potřebovat v dalších částech a uvádíme ji zde pro úplnost."
         }
     },

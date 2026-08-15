@@ -4276,6 +4276,126 @@ describe('notation - partial pressure symbol', () => {
     });
 });
 
+describe('notation - descriptive subscripts in formulas', () => {
+    // Glosář §3: popisný index je zkrácené *slovo*, a slova se překládají —
+    // garant to žádá v issue #61 (p_celk = p_O₂ + p_N₂). Chemický index
+    // (O₂, N₂, He) je značka prvku a nemění se nikdy.
+    const root = new URL('../', import.meta.url);
+    const pages = () => shippedSources().filter(f => f.endsWith('.html'));
+    /** Stránky, které opravdu sázejí matematiku. Jinde je `.formula` jen
+     *  stylovací třída s prózou nebo HTML a math-mód se na ni nevztahuje. */
+    const mathPages = () => pages().filter(f => /katex\.render|renderMathInElement/
+        .test(readFileSync(new URL(f, root), 'utf8')));
+    const formulas = (src) => [...src.matchAll(/class="formula(?:-inline)?"[^>]*>([\s\S]*?)<\/(?:div|span)>/g)]
+        .map(m => m[1].trim());
+
+    test('localizeLatex translates descriptive subscripts, never chemical ones', () => {
+        expect(localizeLatex('p_{\\mathrm{tot}} = p_{\\mathrm{N_2}} + p_{\\mathrm{O_2}}', 'cs'))
+            .toBe('p_{\\mathrm{celk}} = p_{\\mathrm{N_2}} + p_{\\mathrm{O_2}}');
+        expect(localizeLatex('p_{\\mathrm{amb}}', 'cs')).toBe('p_{\\mathrm{okol}}');
+        expect(localizeLatex('p_{\\mathrm{t,0}}', 'cs')).toBe('p_{\\mathrm{tk,0}}');
+        expect(localizeLatex('p_{\\mathrm{alv,N_2}}', 'cs')).toBe('p_{\\mathrm{alv,N_2}}');
+    });
+
+    test('English and Spanish keep the source subscripts', () => {
+        for (const lang of ['en', 'es']) {
+            expect(localizeLatex('p_{\\mathrm{tot}}', lang)).toBe('p_{\\mathrm{tot}}');
+            expect(localizeLatex('p_{\\mathrm{amb}}', lang)).toBe('p_{\\mathrm{amb}}');
+        }
+    });
+
+    test('subscript translation composes with the decimal separator', () => {
+        expect(localizeLatex('p_{\\mathrm{amb}} = 1.0 + x', 'cs')).toBe('p_{\\mathrm{okol}} = 1{,}0 + x');
+    });
+
+    test('every multi-letter token in a LaTeX formula is upright', () => {
+        // `V_{cylinder}` i holé `SAC` sází KaTeX jako součin kurzívních písmen.
+        const offenders = [];
+        for (const rel of mathPages()) {
+            for (const f of formulas(readFileSync(new URL(rel, root), 'utf8'))) {
+                const bare = f
+                    .replace(/\\(?:text|mathrm|operatorname)\{[^{}]*\}/g, '')
+                    .replace(/\\[A-Za-z]+/g, '');
+                for (const m of bare.matchAll(/[A-Za-z]{2,}/g)) {
+                    if (m[0] === 'kt') continue;   // e^{-kt} je součin k·t, kurzíva je správně
+                    offenders.push(`${rel}: „${m[0]}" v ${f.slice(0, 45)}`);
+                }
+            }
+        }
+        expect(offenders).toEqual([]);
+    });
+
+    test('every multi-letter subscript in a shipped formula is upright', () => {
+        // `V_{cylinder}` sází KaTeX jako součin kurzívních písmen c·y·l·i·n·d·e·r.
+        // Víceznakový index musí být v \mathrm{}, jinak je to podle ISO 80000-1 chyba.
+        const offenders = [];
+        for (const rel of pages()) {
+            for (const f of formulas(readFileSync(new URL(rel, root), 'utf8'))) {
+                for (const m of f.matchAll(/_\{([^{}]{2,})\}/g)) {
+                    if (/^\\mathrm/.test(m[1]) || /^\d/.test(m[1]) || m[1] === '1/2') continue;
+                    offenders.push(`${rel}: _{${m[1]}}`);
+                }
+            }
+        }
+        expect(offenders).toEqual([]);
+    });
+
+    test('no formula uses the doubled pp or an uppercase P for pressure', () => {
+        // style-guide §2: `ppO₂` je hovorové synonymum a ve vzorci nemá co dělat.
+        const offenders = [];
+        for (const rel of pages()) {
+            for (const f of formulas(readFileSync(new URL(rel, root), 'utf8'))) {
+                if (/\bpp[_A-Z]/.test(f)) offenders.push(`${rel}: zdvojené pp v „${f.slice(0, 45)}"`);
+                if (/(?:^|[^A-Za-z\\])P_\{/.test(f)) offenders.push(`${rel}: velké P v „${f.slice(0, 45)}"`);
+            }
+        }
+        expect(offenders).toEqual([]);
+    });
+
+    test('no formula carries language-specific prose', () => {
+        // `\text{ bar při 37 °C}` v anglickém zdroji uvidí i anglický čtenář —
+        // vzorec se nepřekládá, popiska pod ním ano.
+        const CZECH = /[ěščřžýáíéúůňťď]/i;
+        const offenders = [];
+        for (const rel of pages()) {
+            for (const f of formulas(readFileSync(new URL(rel, root), 'utf8'))) {
+                for (const m of f.matchAll(/\\text\{([^}]*)\}/g)) {
+                    if (CZECH.test(m[1])) offenders.push(`${rel}: \\text{${m[1]}}`);
+                }
+            }
+        }
+        expect(offenders).toEqual([]);
+    });
+
+    test('every math page re-renders its formulas on languagechange', () => {
+        // Popisný index i desetinný oddělovač se řídí jazykem. Bez posluchače
+        // zůstane po přepnutí vysázeno `p_tot = …` i na české stránce.
+        const offenders = [];
+        for (const rel of mathPages()) {
+            const src = readFileSync(new URL(rel, root), 'utf8');
+            const hooks = [...src.matchAll(/languagechange['"]\s*,\s*([\s\S]{0,240}?)\)\s*;/g)]
+                .map(m => m[1]);
+            if (!hooks.some(h => /renderMath(?:Formulas)?|katex\.render/.test(h))) {
+                offenders.push(rel);
+            }
+        }
+        expect(offenders).toEqual([]);
+    });
+
+    test('every page that renders KaTeX routes it through localizeLatex', () => {
+        const offenders = [];
+        for (const rel of pages()) {
+            const src = readFileSync(new URL(rel, root), 'utf8');
+            src.split('\n').forEach((line, i) => {
+                if (line.includes('katex.render(') && !line.includes('localizeLatex(')) {
+                    offenders.push(`${rel}:${i + 1}`);
+                }
+            });
+        }
+        expect(offenders).toEqual([]);
+    });
+});
+
 describe('inline module scripts - helpers are really imported', () => {
     // PR #90 vložil `import { fmtNum } ...` doprostřed template literálu s ukázkou
     // kódu. Import se tím stal pouhým textem, `analyzeDive()` padal na
@@ -4283,7 +4403,7 @@ describe('inline module scripts - helpers are really imported', () => {
     // Testy to nezachytily, protože inline skripty v HTML nikdo nespouští.
     const root = new URL('../', import.meta.url);
     // `fmt` se hlídat nedá — je to i běžný název parametru (gradient-factors.html).
-    const HELPERS = ['fmtNum', 'fmtRange', 'translate'];
+    const HELPERS = ['fmtNum', 'fmtRange', 'translate', 'localizeLatex'];
 
     /** Vyřízne template literály, komentáře a řetězce — zbude spustitelný kód. */
     const executableCode = (src) => src

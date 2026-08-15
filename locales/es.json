@@ -226,6 +226,7 @@
             "opDesc": "Se usa para la profundidad máxima operativa (MOD) y los límites de toxicidad por oxígeno. No se resta la presión del vapor de agua.",
             "physTitle": "Fisiológica (cinética tisular)",
             "physDesc": "Al calcular las presiones parciales alveolares para los modelos de carga tisular, restamos la presión del vapor de agua, porque los pulmones humidifican el aire inspirado:",
+            "waterVapourAt": "a 37 °C (temperatura corporal)",
             "physNote": "Esta reducción de ~6 % aparece en las ecuaciones de Bühlmann para los cálculos de saturación tisular. La necesitaremos en las próximas secciones y la mencionamos aquí por completitud."
         }
     },
