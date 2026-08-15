@@ -58,7 +58,7 @@
       "options": [
         {
           "key": "a",
-          "text": "kolem 100 000 N/m², tj. kolem 100 kPa"
+          "text": "kolem 100 000 N/m², tj. kolem 100 kPa"
         },
         {
           "key": "b",
@@ -70,11 +70,11 @@
         },
         {
           "key": "d",
-          "text": "okolo 100 kbar, tj. 0,1 Mbar"
+          "text": "okolo 100 kbar, tj. 0,1 Mbar"
         }
       ],
       "correct": "d",
-      "explanation": "100 kbar = 10 000 MPa, což je obrovský tlak (100 000× vyšší než atmosférický). Normální atmosférický tlak je přibližně 1 bar = 0,1 MPa = 100 kPa.",
+      "explanation": "100 kbar = 10 000 MPa, což je obrovský tlak (100 000× vyšší než atmosférický). Normální atmosférický tlak je přibližně 1 bar = 0,1 MPa = 100 kPa.",
       "category": "tlak-jednotky"
     },
     {
@@ -508,7 +508,7 @@
       "options": [
         {
           "key": "a",
-          "text": "0 K"
+          "text": "0 K"
         },
         {
           "key": "b",
@@ -516,15 +516,15 @@
         },
         {
           "key": "c",
-          "text": "273 K"
+          "text": "273 K"
         },
         {
           "key": "d",
-          "text": "373 K"
+          "text": "373 K"
         }
       ],
       "correct": "c",
-      "explanation": "Bod tuhnutí vody je 0 °C, což odpovídá 273 K (přesněji 273,15 K). Převod: T[K] = T[°C] + 273. Možnost d) 373 K odpovídá bodu varu vody (100 °C).",
+      "explanation": "Bod tuhnutí vody je 0 °C, což odpovídá 273 K (přesněji 273,15 K). Převod: T[K] = T[°C] + 273. Možnost d) 373 K odpovídá bodu varu vody (100 °C).",
       "category": "fyzika-plynu"
     },
     {
@@ -624,7 +624,7 @@
         }
       ],
       "correct": "a",
-      "explanation": "Izochorický děj (V = konst.): p₁/T₁ = p₂/T₂, tedy p₂ = p₁·T₂/T₁. Musíme použít absolutní teploty: T₁ = 47+273 = 320 K, T₂ = 17+273 = 290 K. Výsledek: p₂ = 20·290/320 = 18,1 MPa.",
+      "explanation": "Izochorický děj (V = konst.): p₁/T₁ = p₂/T₂, tedy p₂ = p₁·T₂/T₁. Musíme použít absolutní teploty: T₁ = 47+273 = 320 K, T₂ = 17+273 = 290 K. Výsledek: p₂ = 20·290/320 = 18,1 MPa.",
       "category": "fyzika-plynu"
     },
     {
@@ -649,7 +649,7 @@
         }
       ],
       "correct": "b",
-      "explanation": "Izochorický děj: p₂ = p₁·T₂/T₁. T₁ = 27+273 = 300 K, T₂ = 327+273 = 600 K. p₂ = 10·600/300 = 20 MPa. Teplota se zdvojnásobila (v Kelvinech), proto se zdvojnásobil i tlak.",
+      "explanation": "Izochorický děj: p₂ = p₁·T₂/T₁. T₁ = 27+273 = 300 K, T₂ = 327+273 = 600 K. p₂ = 10·600/300 = 20 MPa. Teplota se zdvojnásobila (v Kelvinech), proto se zdvojnásobil i tlak.",
       "category": "fyzika-plynu"
     },
     {
@@ -933,23 +933,23 @@
       "options": [
         {
           "key": "a",
-          "text": "700 000 N"
+          "text": "700 000 N"
         },
         {
           "key": "b",
-          "text": "70 000 N"
+          "text": "70 000 N"
         },
         {
           "key": "c",
-          "text": "6 000 N"
+          "text": "6 000 N"
         },
         {
           "key": "d",
-          "text": "600 000 N"
+          "text": "600 000 N"
         }
       ],
       "correct": "d",
-      "explanation": "Tlakový rozdíl = hydrostatický tlak v 60 m = 6 bar = 600 000 Pa. Síla F = p × S = 600 000 Pa × 1 m² = 600 000 N (asi 60 tun!).",
+      "explanation": "Tlakový rozdíl = hydrostatický tlak v 60 m = 6 bar = 600 000 Pa. Síla F = p × S = 600 000 Pa × 1 m² = 600 000 N (asi 60 tun!).",
       "category": "vztlak-vystroj"
     },
     {
@@ -1033,23 +1033,23 @@
       "options": [
         {
           "key": "a",
-          "text": "A = 100 N, B = 400 N"
+          "text": "A = 100 N, B = 400 N"
         },
         {
           "key": "b",
-          "text": "A = 100 N, B = 6 100 N"
+          "text": "A = 100 N, B = 6 100 N"
         },
         {
           "key": "c",
-          "text": "A = 6 000 N, B = 7 000 N"
+          "text": "A = 6 000 N, B = 7 000 N"
         },
         {
           "key": "d",
-          "text": "A = 100 N, B = 3 100 N"
+          "text": "A = 100 N, B = 3 100 N"
         }
       ],
       "correct": "b",
-      "explanation": "A: Plný vzduch – vztlak = (900+100)×10 = 10 000 N, tíha = 10 100 N, síla na lano = 100 N. B: Vzduch stlačen na 1/3 (300 l), voda vyplní 600 l, vztlak = 400×10 = 4 000 N, síla = 10 100 - 4 000 = 6 100 N.",
+      "explanation": "A: Plný vzduch – vztlak = (900+100)×10 = 10 000 N, tíha = 10 100 N, síla na lano = 100 N. B: Vzduch stlačen na 1/3 (300 l), voda vyplní 600 l, vztlak = 400×10 = 4 000 N, síla = 10 100 - 4 000 = 6 100 N.",
       "category": "vztlak-vystroj"
     },
     {
@@ -1137,19 +1137,19 @@
         },
         {
           "key": "b",
-          "text": "750 N"
+          "text": "750 N"
         },
         {
           "key": "c",
-          "text": "850 N"
+          "text": "850 N"
         },
         {
           "key": "d",
-          "text": "100 N"
+          "text": "100 N"
         }
       ],
       "correct": "d",
-      "explanation": "Vztlaková síla = objem × hustota vody × g = 0,01 m³ × 1000 kg/m³ × 10 m/s² = 100 N. Vztlak nezávisí na hloubce, pouze na objemu ponořeného tělesa.",
+      "explanation": "Vztlaková síla = objem × hustota vody × g = 0,01 m³ × 1000 kg/m³ × 10 m/s² = 100 N. Vztlak nezávisí na hloubce, pouze na objemu ponořeného tělesa.",
       "category": "vztlak-vystroj"
     },
     {
@@ -1258,23 +1258,23 @@
       "options": [
         {
           "key": "a",
-          "text": "130 N"
+          "text": "130 N"
         },
         {
           "key": "b",
-          "text": "650 N"
+          "text": "650 N"
         },
         {
           "key": "c",
-          "text": "1 260 N"
+          "text": "1 260 N"
         },
         {
           "key": "d",
-          "text": "65 N"
+          "text": "65 N"
         }
       ],
       "correct": "c",
-      "explanation": "Plocha membrány S = π × r² = π × 0,02² = 0,001257 m². Síla F = p × S = 1 000 000 Pa × 0,001257 m² ≈ 1 257 N ≈ 1 260 N.",
+      "explanation": "Plocha membrány S = π × r² = π × 0,02² = 0,001257 m². Síla F = p × S = 1 000 000 Pa × 0,001257 m² ≈ 1 257 N ≈ 1 260 N.",
       "category": "tlak-jednotky"
     },
     {
@@ -1358,23 +1358,23 @@
       "options": [
         {
           "key": "a",
-          "text": "600 000 N"
+          "text": "600 000 N"
         },
         {
           "key": "b",
-          "text": "400 000 N"
+          "text": "400 000 N"
         },
         {
           "key": "c",
-          "text": "500 000 N"
+          "text": "500 000 N"
         },
         {
           "key": "d",
-          "text": "50 000 N"
+          "text": "50 000 N"
         }
       ],
       "correct": "c",
-      "explanation": "Přetlak v komoře = 50 m = 5 bar = 500 000 Pa (rozdíl oproti atmosférickému tlaku venku). Síla F = p × S = 500 000 Pa × 1 m² = 500 000 N.",
+      "explanation": "Přetlak v komoře = 50 m = 5 bar = 500 000 Pa (rozdíl oproti atmosférickému tlaku venku). Síla F = p × S = 500 000 Pa × 1 m² = 500 000 N.",
       "category": "tlak-jednotky"
     },
     {
@@ -1416,7 +1416,7 @@
         },
         {
           "key": "c",
-          "text": "Teplota 20 °C odpovídá přibližně teplotě 293 K."
+          "text": "Teplota 20 °C odpovídá přibližně teplotě 293 K."
         },
         {
           "key": "d",
@@ -1433,23 +1433,23 @@
       "options": [
         {
           "key": "a",
-          "text": "0,1 N"
+          "text": "0,1 N"
         },
         {
           "key": "b",
-          "text": "1 N"
+          "text": "1 N"
         },
         {
           "key": "c",
-          "text": "10 N"
+          "text": "10 N"
         },
         {
           "key": "d",
-          "text": "100 N"
+          "text": "100 N"
         }
       ],
       "correct": "c",
-      "explanation": "Plocha S = 10 mm² = 10 × 10⁻⁶ m² = 0,00001 m². Síla F = p × S = 1 000 000 Pa × 0,00001 m² = 10 N.",
+      "explanation": "Plocha S = 10 mm² = 10 × 10⁻⁶ m² = 0,00001 m². Síla F = p × S = 1 000 000 Pa × 0,00001 m² = 10 N.",
       "category": "tlak-jednotky"
     },
     {
@@ -1483,23 +1483,23 @@
       "options": [
         {
           "key": "a",
-          "text": "3 770 N"
+          "text": "3 770 N"
         },
         {
           "key": "b",
-          "text": "503 N"
+          "text": "503 N"
         },
         {
           "key": "c",
-          "text": "50,3 N"
+          "text": "50,3 N"
         },
         {
           "key": "d",
-          "text": "377 N"
+          "text": "377 N"
         }
       ],
       "correct": "d",
-      "explanation": "Hydrostatický tlak v 30 m = 3 bar = 300 000 Pa. Plocha průzoru S = π × 0,02² = 0,001257 m². Síla F = 300 000 × 0,001257 ≈ 377 N.",
+      "explanation": "Hydrostatický tlak v 30 m = 3 bar = 300 000 Pa. Plocha průzoru S = π × 0,02² = 0,001257 m². Síla F = 300 000 × 0,001257 ≈ 377 N.",
       "category": "tlak-jednotky"
     },
     {

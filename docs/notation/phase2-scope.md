@@ -781,3 +781,55 @@ uvnitř `<script>`, protože apostrof je v próze běžná interpunkce
 
 **Testy:** 334/334 (1 nový, negativně ověřený).
 
+
+### Jednotky, které první vlna neměla v seznamu — hotovo
+
+První vlna nedělitelných mezer pracovala s výčtem `m|min|bar|kPa|MPa|Pa|msw|fsw`.
+Newton, kelvin, kbar, Mbar ani mL/L v něm nebyly, takže je nikdo nezkontroloval.
+Chyba nebyla v datech, ale v seznamu — proto se teď nehlídá výčet, ale **všechny
+tokeny, které v textu stojí za číslem**. Ten přehled odhalil i to, že drtivá
+většina takových tokenů jsou obyčejná slova („5 let", „3 dives"), a zbylé
+skutečné značky se daly spočítat na prstech.
+
+| Soubor | Opraveno |
+|---|---|
+| `data/quiz-physics{,-en,-es}.json` | 58 / 68 / 58 (N, K, kbar, Mbar, mL/L, Pa) |
+| `sandbox/schreiner.html` | 12 |
+| `sandbox/haldane.html` | 7 |
+| `sandbox/m-values.html` | 6 |
+| `sandbox/gas-law.html` | 12 (próza, `°C`, běhové šablony) |
+
+**Jednotka v jiném textovém uzlu než číslo.** `authoring.md` tenhle případ
+uvádí jako slepé místo a sandbox ho měl plný: `<span id="mvaluePt">0,751</span>
+bar`. Číslo doplňuje JavaScript, jednotka je statický text hned za značkou —
+grep na „číslo + jednotka" nemá co najít. Kontrola proto značky odstraňuje
+a hledá až ve výsledném textu.
+
+**Běhové šablony.** `sandbox/gas-law.html` skládala `${t1C}\u00B0C` (slepené)
+a `t1C + ' \u00B0C'` (obyčejná mezera) — dvě různé chyby ve dvou řádcích
+od sebe.
+
+**Ponecháno záměrně**
+
+- `300 OTU` — OTU je název dávky, ne značka jednotky (glosář §5).
+- `m`, `l`, `s`, `h` samostatně — jednopísmenné značky se v próze nedají
+  odlišit od předložek („kvalifikace P2 s příslušenstvím", „5 h" vs. „5 hodin").
+  Hlídají se jen v šablonách, kde je kontext jednoznačný.
+- `273.15` v `sandbox/gas-law.html` — desetinná tečka v běhové šabloně.
+  Jiná třída, viz níže.
+
+### Zbývá po této vlně
+
+1. **Znak násobení a jazyková parita** — `2x7 L` v `locales/{en,es}.json`
+   a v `<option>` v `sandbox/transfilling.html`. Čeština má správně `2×7 l`,
+   angličtina a španělština si nechaly ASCII `x` i obyčejnou mezeru.
+   Znak násobení je U+00D7 (`authoring.md` §5).
+2. **Chybějící značka stupně** — `16 – 18 C`, `pod 6 C`, `minus 10 C`
+   v `data/quiz-{accidents,safety,training}.json`. Samotné `C` je coulomb;
+   patří tam `°C`. Není to formulační zásah, jen doplnění značky.
+3. **`273.15` v běhové šabloně** `sandbox/gas-law.html` — český čtenář vidí
+   desetinnou tečku. Test `no display string interpolates a raw decimal
+   constant` hlídá jen argumenty `fmt()`, konstantu v šabloně nevidí.
+
+Body 1 a 2 drží v testech **rozpočet** (`ALLOWED`), takže jich nemůže přibýt
+a po opravě si test sám řekne o smazání řádku.
