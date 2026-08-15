@@ -833,3 +833,36 @@ od sebe.
 
 Body 1 a 2 drží v testech **rozpočet** (`ALLOWED`), takže jich nemůže přibýt
 a po opravě si test sám řekne o smazání řádku.
+
+## Vlna 6 — nedělitelná mezera se nesmí dostat do geometrie SVG
+
+**Verze 0.6.55.**
+
+Pravidlo „mezi číslo a jednotku patří nedělitelná mezera" má jednu kolizi:
+značka litru je `l` / `L`, ale `L` je zároveň příkaz *lineto* v atributu `d`
+u SVG. Automatická oprava z vlny #94 proto na třech místech vložila U+00A0
+dovnitř definice křivky. Prohlížeč takový atribut odmítne celý —
+`<path> attribute d: Expected path command` — a graf se nevykreslí vůbec.
+
+| Soubor | Následek |
+|---|---|
+| `js/components/HeroMotion.js` | opraveno už v #99 |
+| `sandbox/schreiner.html` | asymptota *p*<sub>alv</sub> se nekreslila |
+| `sandbox/gradient-factors.html` | tři vadné příkazy — rampa GF se nekreslila vůbec |
+
+### Proč to testy nechytily
+
+Test z #99 poznával křivku podle vzoru „písmeno příkazu a hned číslice".
+Obě zbylá místa ale skládají křivku ze šablony (`M ${x} ${y} L ${a} ${b}`),
+kde po písmeni číslice není — kontrola tam naměřila nulu a mlčky prošla.
+
+Nově se počítá i `${` po písmeni příkazu a samostatně se uznává začátek `M`.
+Souběžně dostala běhová kontrola nedělitelných mezer výjimku pro geometrii,
+aby si obě pravidla neodporovala; výjimka je úzká — obyčejná mezera před `L`
+mimo geometrii (`${objem} L`) se hlásí dál.
+
+**Ověřeno v prohlížeči:** 12 křivek na čtyřech stránkách ve dvou jazycích
+se vykreslí (`getTotalLength() > 0`). Kontrola byla ověřena i obráceně —
+po vrácení vady spolehlivě selže.
+
+**Testy:** 336/336 ✅
