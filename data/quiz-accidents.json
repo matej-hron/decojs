@@ -167,15 +167,15 @@
         },
         {
           "key": "c",
-          "text": "přibližně 100 – 120x za minutu"
+          "text": "přibližně 100–120x za minutu"
         },
         {
           "key": "d",
-          "text": "160 – 180x za minutu"
+          "text": "160–180x za minutu"
         }
       ],
       "correct": "c",
-      "explanation": "Doporučená frekvence srdeční masáže je 100-120 stlačení za minutu podle aktuálních resuscitačních guidelines."
+      "explanation": "Doporučená frekvence srdeční masáže je 100–120 stlačení za minutu podle aktuálních resuscitačních guidelines."
     },
     {
       "id": 8,
@@ -188,11 +188,11 @@
         },
         {
           "key": "b",
-          "text": "frekvencí přibližně 100 – 120x za minutu"
+          "text": "frekvencí přibližně 100–120x za minutu"
         },
         {
           "key": "c",
-          "text": "s hloubkou stlačení 5 – 6 cm"
+          "text": "s hloubkou stlačení 5–6 cm"
         },
         {
           "key": "d",
@@ -200,7 +200,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "Všechny uvedené odpovědi jsou správné - uprostřed hrudníku, frekvencí 100-120/min a hloubkou 5-6 cm."
+      "explanation": "Všechny uvedené odpovědi jsou správné - uprostřed hrudníku, frekvencí 100–120/min a hloubkou 5–6 cm."
     },
     {
       "id": 9,
@@ -209,7 +209,7 @@
       "options": [
         {
           "key": "a",
-          "text": "Při srdeční masáži stlačujeme hrudník postiženého frekvencí přibližně 100 – 120x za minutu."
+          "text": "Při srdeční masáži stlačujeme hrudník postiženého frekvencí přibližně 100–120x za minutu."
         },
         {
           "key": "b",
@@ -217,7 +217,7 @@
         },
         {
           "key": "c",
-          "text": "Masáž srdce provádíme s hloubkou stlačení 5 – 6 cm."
+          "text": "Masáž srdce provádíme s hloubkou stlačení 5–6 cm."
         },
         {
           "key": "d",
@@ -234,15 +234,15 @@
       "options": [
         {
           "key": "a",
-          "text": "přibližně uprostřed hrudní kosti, hloubka stlačení je 5 – 6 cm"
+          "text": "přibližně uprostřed hrudní kosti, hloubka stlačení je 5–6 cm"
         },
         {
           "key": "b",
-          "text": "v jeho levé části frekvencí přibližně 100 – 120x za minutu"
+          "text": "v jeho levé části frekvencí přibližně 100–120x za minutu"
         },
         {
           "key": "c",
-          "text": "tři prsty pod hrudní kostí frekvencí přibližně 100 – 120x za minutu, hloubka stlačení je 4 – 5 cm"
+          "text": "tři prsty pod hrudní kostí frekvencí přibližně 100–120x za minutu, hloubka stlačení je 4–5 cm"
         },
         {
           "key": "d",
@@ -250,7 +250,7 @@
         }
       ],
       "correct": "a",
-      "explanation": "Správně stlačujeme uprostřed hrudní kosti do hloubky 5-6 cm frekvencí 100-120/min."
+      "explanation": "Správně stlačujeme uprostřed hrudní kosti do hloubky 5–6 cm frekvencí 100–120/min."
     },
     {
       "id": 11,
@@ -367,7 +367,7 @@
         },
         {
           "key": "c",
-          "text": "Frekvence stlačování hrudníku při srdeční masáži je 60 – 80x za minutu."
+          "text": "Frekvence stlačování hrudníku při srdeční masáži je 60–80x za minutu."
         },
         {
           "key": "d",
@@ -375,7 +375,7 @@
         }
       ],
       "correct": "c",
-      "explanation": "Nesprávné je tvrzení c) - správná frekvence je 100-120x za minutu, nikoliv 60-80x."
+      "explanation": "Nesprávné je tvrzení c) - správná frekvence je 100–120x za minutu, nikoliv 60–80x."
     },
     {
       "id": 16,
@@ -884,19 +884,19 @@
       "options": [
         {
           "key": "a",
-          "text": "16 – 18 °C"
+          "text": "16–18 °C"
         },
         {
           "key": "b",
-          "text": "20 – 30 °C"
+          "text": "20–30 °C"
         },
         {
           "key": "c",
-          "text": "37 – 40 °C"
+          "text": "37–40 °C"
         },
         {
           "key": "d",
-          "text": "45 – 50 °C"
+          "text": "45–50 °C"
         }
       ],
       "correct": "c",
@@ -1350,7 +1350,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "CO se váže na hemoglobin s afinitou 200-250× vyšší než kyslík, čímž blokuje přenos kyslíku krví a způsobuje tkáňovou hypoxii."
+      "explanation": "CO se váže na hemoglobin s afinitou 200–250× vyšší než kyslík, čímž blokuje přenos kyslíku krví a způsobuje tkáňovou hypoxii."
     },
     {
       "id": 55,

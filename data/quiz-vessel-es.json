@@ -130,7 +130,7 @@
         {"key": "d", "text": "−4° (= 4°W)"}
       ],
       "correct": "d",
-      "explanation": "En 6 años (1992-1998) la declinación aumentó 6×20' = 2°. Original 2°W + 2° = 4°W."
+      "explanation": "En 6 años (1992–1998) la declinación aumentó 6×20' = 2°. Original 2°W + 2° = 4°W."
     },
     {
       "id": 11,
@@ -221,7 +221,7 @@
         {"key": "d", "text": "+2° (= 2°E)"}
       ],
       "correct": "d",
-      "explanation": "En 6 años (1994-2000) la declinación disminuyó 6×30' = 3°. Original 1°W − 3° = 2°E."
+      "explanation": "En 6 años (1994–2000) la declinación disminuyó 6×30' = 3°. Original 1°W − 3° = 2°E."
     },
     {
       "id": 18,
@@ -312,7 +312,7 @@
         {"key": "d", "text": "+2° (= 2°E)"}
       ],
       "correct": "b",
-      "explanation": "En 4 años (1995-1999) la declinación disminuyó 4×30' = 2°. Original 1°W − 2° = 1°E."
+      "explanation": "En 4 años (1995–1999) la declinación disminuyó 4×30' = 2°. Original 1°W − 2° = 1°E."
     },
     {
       "id": 25,

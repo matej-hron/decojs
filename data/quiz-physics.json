@@ -774,7 +774,7 @@
         }
       ],
       "correct": "c",
-      "explanation": "Objem litiny: 750/8000 = 0,094 m³ = 94 l. Vztlaková síla litiny: 94 kg. Potřebný vztlak vaku: 750 - 94 + 15 = 671 kg ≈ 671 l. Minimální vak je tedy 700 l.",
+      "explanation": "Objem litiny: 750/8000 = 0,094 m³ = 94 l. Vztlaková síla litiny: 94 kg. Potřebný vztlak vaku: 750 − 94 + 15 = 671 kg ≈ 671 l. Minimální vak je tedy 700 l.",
       "category": "vztlak-vystroj"
     },
     {
@@ -849,7 +849,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "Oblek o objemu 10 l vytváří vztlak 10 kg. Hmotnost obleku je 2 kg. Čistý vztlak obleku = 10 - 2 = 8 kg. Pro vyvážení potřebuje potápěč 8 kg zátěže.",
+      "explanation": "Oblek o objemu 10 l vytváří vztlak 10 kg. Hmotnost obleku je 2 kg. Čistý vztlak obleku = 10 − 2 = 8 kg. Pro vyvážení potřebuje potápěč 8 kg zátěže.",
       "category": "vztlak-vystroj"
     },
     {
@@ -924,7 +924,7 @@
         }
       ],
       "correct": "a",
-      "explanation": "V 20 m je tlak 3 bar. Objem vzduchu v kompenzátoru se zmenší na 6/3 = 2 l. Ztráta vztlaku = 6 - 2 = 4 l = 4 kg. Pro vyvážení musí odhodit 4 kg zátěže.",
+      "explanation": "V 20 m je tlak 3 bar. Objem vzduchu v kompenzátoru se zmenší na 6/3 = 2 l. Ztráta vztlaku = 6 − 2 = 4 l = 4 kg. Pro vyvážení musí odhodit 4 kg zátěže.",
       "category": "vztlak-vystroj"
     },
     {
@@ -1049,7 +1049,7 @@
         }
       ],
       "correct": "b",
-      "explanation": "A: Plný vzduch – vztlak = (900+100)×10 = 10 000 N, tíha = 10 100 N, síla na lano = 100 N. B: Vzduch stlačen na 1/3 (300 l), voda vyplní 600 l, vztlak = 400×10 = 4 000 N, síla = 10 100 - 4 000 = 6 100 N.",
+      "explanation": "A: Plný vzduch – vztlak = (900+100)×10 = 10 000 N, tíha = 10 100 N, síla na lano = 100 N. B: Vzduch stlačen na 1/3 (300 l), voda vyplní 600 l, vztlak = 400×10 = 4 000 N, síla = 10 100 − 4 000 = 6 100 N.",
       "category": "vztlak-vystroj"
     },
     {
@@ -1174,7 +1174,7 @@
         }
       ],
       "correct": "a",
-      "explanation": "Lahev obsahuje 10×180 = 1800 l vzduchu. V 10 m (2 bar) je to 900 l vztlaku. Objem kostky = 160/8000 = 0,02 m³ = 20 l. Čistá tíha kostky pod vodou = 160-20 = 140 kg. Počet kostek = 900/140 ≈ 6.",
+      "explanation": "Lahev obsahuje 10×180 = 1800 l vzduchu. V 10 m (2 bar) je to 900 l vztlaku. Objem kostky = 160/8000 = 0,02 m³ = 20 l. Čistá tíha kostky pod vodou = 160−20 = 140 kg. Počet kostek = 900/140 ≈ 6.",
       "category": "vztlak-vystroj"
     },
     {
@@ -1549,7 +1549,7 @@
         }
       ],
       "correct": "b",
-      "explanation": "Použitelná zásoba = 18 × (200 - 50) = 18 × 150 = 2700 l. V 20 m (3 bar) spotřeba = 30 × 3 = 90 l/min. Čas = 2700 / 90 = 30 minut.",
+      "explanation": "Použitelná zásoba = 18 × (200 − 50) = 18 × 150 = 2700 l. V 20 m (3 bar) spotřeba = 30 × 3 = 90 l/min. Čas = 2700 / 90 = 30 minut.",
       "category": "spotreba-planovani"
     },
     {
@@ -1649,7 +1649,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "Spotřebovaný vzduch = 10 × (150 - 50) = 1000 l. V 10 m (2 bar) za 20 min. Skutečná spotřeba = 1000/20 = 50 l/min. Hladinová spotřeba = 50/2 = 25 l/min.",
+      "explanation": "Spotřebovaný vzduch = 10 × (150 − 50) = 1000 l. V 10 m (2 bar) za 20 min. Skutečná spotřeba = 1000/20 = 50 l/min. Hladinová spotřeba = 50/2 = 25 l/min.",
       "category": "spotreba-planovani"
     },
     {
@@ -1674,7 +1674,7 @@
         }
       ],
       "correct": "b",
-      "explanation": "Použitelná zásoba = 10 × (200 - 50) = 1500 l. V 15 m (2,5 bar) spotřeba = 30 × 2,5 = 75 l/min. Čas = 1500/75 = 20 minut.",
+      "explanation": "Použitelná zásoba = 10 × (200 − 50) = 1500 l. V 15 m (2,5 bar) spotřeba = 30 × 2,5 = 75 l/min. Čas = 1500/75 = 20 minut.",
       "category": "spotreba-planovani"
     },
     {
@@ -1699,7 +1699,7 @@
         }
       ],
       "correct": "c",
-      "explanation": "Použitelná zásoba = 12 × (200 - 50) = 1800 l. V 20 m (3 bar) spotřeba = 30 × 3 = 90 l/min. Čas = 1800/90 = 20 minut.",
+      "explanation": "Použitelná zásoba = 12 × (200 − 50) = 1800 l. V 20 m (3 bar) spotřeba = 30 × 3 = 90 l/min. Čas = 1800/90 = 20 minut.",
       "category": "spotreba-planovani"
     },
     {
@@ -1724,7 +1724,7 @@
         }
       ],
       "correct": "c",
-      "explanation": "Celkem vzduchu = 15×50 + 18×200 = 750 + 3600 = 4350 l. Po vyrovnání tlak v obou = 4350/(15+18) = 132 bar. Menší přístroj (15 l): zásoba = 15×(132-30) = 1530 l. V 15 m spotřeba = 30×2,5 = 75 l/min. Čas = 1530/75 ≈ 20 min.",
+      "explanation": "Celkem vzduchu = 15×50 + 18×200 = 750 + 3600 = 4350 l. Po vyrovnání tlak v obou = 4350/(15+18) = 132 bar. Menší přístroj (15 l): zásoba = 15×(132−30) = 1530 l. V 15 m spotřeba = 30×2,5 = 75 l/min. Čas = 1530/75 ≈ 20 min.",
       "category": "spotreba-planovani"
     },
     {
@@ -1799,7 +1799,7 @@
         }
       ],
       "correct": "b",
-      "explanation": "30 m (4 bar, 10 min): 30×4×10 = 1200 l. 20 m (3 bar, 5 min): 30×3×5 = 450 l. 10 m (2 bar, 10 min): 30×2×10 = 600 l. Celkem = 2250 l. Použitelný tlak = 200-50 = 150 bar. Objem = 2250/150 = 15 l.",
+      "explanation": "30 m (4 bar, 10 min): 30×4×10 = 1200 l. 20 m (3 bar, 5 min): 30×3×5 = 450 l. 10 m (2 bar, 10 min): 30×2×10 = 600 l. Celkem = 2250 l. Použitelný tlak = 200−50 = 150 bar. Objem = 2250/150 = 15 l.",
       "category": "spotreba-planovani"
     },
     {
@@ -1824,7 +1824,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "A: Zásoba do 10 MPa = 18×(200-100) = 1800 l. V 30 m (4 bar): 30×4 = 120 l/min. Čas = 1800/120 = 15 min. B: Zásoba = 15×100 = 1500 l. V 30 m: 25×4 = 100 l/min. Čas = 1500/100 = 15 min. Oběma stejně za 15 min.",
+      "explanation": "A: Zásoba do 10 MPa = 18×(200−100) = 1800 l. V 30 m (4 bar): 30×4 = 120 l/min. Čas = 1800/120 = 15 min. B: Zásoba = 15×100 = 1500 l. V 30 m: 25×4 = 100 l/min. Čas = 1500/100 = 15 min. Oběma stejně za 15 min.",
       "category": "spotreba-planovani"
     },
     {
@@ -1849,7 +1849,7 @@
         }
       ],
       "correct": "b",
-      "explanation": "Spotřebovaný vzduch = 18 × (160 - 110) = 18 × 50 = 900 l. V 20 m (3 bar) za 10 min. Skutečná spotřeba = 900/10 = 90 l/min. Hladinová spotřeba = 90/3 = 30 l/min.",
+      "explanation": "Spotřebovaný vzduch = 18 × (160 − 110) = 18 × 50 = 900 l. V 20 m (3 bar) za 10 min. Skutečná spotřeba = 900/10 = 90 l/min. Hladinová spotřeba = 90/3 = 30 l/min.",
       "category": "spotreba-planovani"
     },
     {
@@ -1899,7 +1899,7 @@
         }
       ],
       "correct": "c",
-      "explanation": "V 30 m (4 bar) spotřeboval 100 bar. Hladinová spotřeba za čas t = 100/4 = 25 bar-ekvivalent. V 10 m (2 bar) za stejný čas spotřebuje 25×2 = 50 bar. Zbývá 100 - 50 = 50 bar = 5 MPa.",
+      "explanation": "V 30 m (4 bar) spotřeboval 100 bar. Hladinová spotřeba za čas t = 100/4 = 25 bar-ekvivalent. V 10 m (2 bar) za stejný čas spotřebuje 25×2 = 50 bar. Zbývá 100 − 50 = 50 bar = 5 MPa.",
       "category": "spotreba-planovani"
     },
     {
@@ -1924,7 +1924,7 @@
         }
       ],
       "correct": "c",
-      "explanation": "30 m (4 bar, 17 min): 30×4×17 = 2040 l. Výstup 30→5 m (2,5 min, 2,75 bar): 30×2,75×2,5 = 206 l. Deko 5 m (1,5 bar, 3 min): 30×1,5×3 = 135 l. Výstup 5→0 m: ~20 l. Celkem ≈ 2400 l. Použitelný tlak = 200-40 = 160 bar. Objem = 2400/160 = 15 l.",
+      "explanation": "30 m (4 bar, 17 min): 30×4×17 = 2040 l. Výstup 30→5 m (2,5 min, 2,75 bar): 30×2,75×2,5 = 206 l. Deko 5 m (1,5 bar, 3 min): 30×1,5×3 = 135 l. Výstup 5→0 m: ~20 l. Celkem ≈ 2400 l. Použitelný tlak = 200−40 = 160 bar. Objem = 2400/160 = 15 l.",
       "category": "spotreba-planovani"
     },
     {
@@ -1949,7 +1949,7 @@
         }
       ],
       "correct": "b",
-      "explanation": "V 25 m (3,5 bar). A: Zásoba = 18×(200-50) = 2700 l. Spotřeba = 25×3,5 = 87,5 l/min. Čas = 2700/87,5 ≈ 31 min. B: Zásoba = 20×150 = 3000 l. Spotřeba = 30×3,5 = 105 l/min. Čas = 3000/105 ≈ 28,6 min. B dosáhne 5 MPa dříve (před 30 min).",
+      "explanation": "V 25 m (3,5 bar). A: Zásoba = 18×(200−50) = 2700 l. Spotřeba = 25×3,5 = 87,5 l/min. Čas = 2700/87,5 ≈ 31 min. B: Zásoba = 20×150 = 3000 l. Spotřeba = 30×3,5 = 105 l/min. Čas = 3000/105 ≈ 28,6 min. B dosáhne 5 MPa dříve (před 30 min).",
       "category": "spotreba-planovani"
     },
     {
@@ -2199,7 +2199,7 @@
         }
       ],
       "correct": "c",
-      "explanation": "Celkový tlak = 160 / 0,21 = 762 kPa ≈ 7,6 bar. Hloubka = (7,6 - 1) × 10 = 66 m. To je MOD pro vzduch při <var>p</var><sub>O₂</sub> = 1,6 bar.",
+      "explanation": "Celkový tlak = 160 / 0,21 = 762 kPa ≈ 7,6 bar. Hloubka = (7,6 − 1) × 10 = 66 m. To je MOD pro vzduch při <var>p</var><sub>O₂</sub> = 1,6 bar.",
       "category": "dekomprese-syceni"
     },
     {
@@ -2374,7 +2374,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "<var>p</var><sub>N₂</sub> na hladině = 78 kPa. V 40 m (5 bar): <var>p</var><sub>N₂</sub> = 0,78 × 500 = 390 kPa. Za 30 min (2 poločasy) se tkáň nasytí na 75 %. Δ<var>p</var> = 390-78 = 312 kPa. Nasycení = 78 + 0,75×312 = 312 kPa.",
+      "explanation": "<var>p</var><sub>N₂</sub> na hladině = 78 kPa. V 40 m (5 bar): <var>p</var><sub>N₂</sub> = 0,78 × 500 = 390 kPa. Za 30 min (2 poločasy) se tkáň nasytí na 75 %. Δ<var>p</var> = 390−78 = 312 kPa. Nasycení = 78 + 0,75×312 = 312 kPa.",
       "category": "dekomprese-syceni"
     },
     {
@@ -2399,7 +2399,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "<var>p</var><sub>N₂</sub> na hladině = 78 kPa. V 30 m (4 bar): <var>p</var><sub>N₂</sub> = 0,78 × 400 = 312 kPa. Po 1 poločase se tkáň nasytí na 50 % rozdílu. Δ<var>p</var> = 312-78 = 234 kPa. Nasycení = 78 + 0,5×234 = 195 kPa.",
+      "explanation": "<var>p</var><sub>N₂</sub> na hladině = 78 kPa. V 30 m (4 bar): <var>p</var><sub>N₂</sub> = 0,78 × 400 = 312 kPa. Po 1 poločase se tkáň nasytí na 50 % rozdílu. Δ<var>p</var> = 312−78 = 234 kPa. Nasycení = 78 + 0,5×234 = 195 kPa.",
       "category": "dekomprese-syceni"
     },
     {
@@ -2499,7 +2499,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "V 30 m (4 bar) by bylo při úplném nasycení 4× více N₂ = 40 ml/l. Po 1 poločasu je nasycení 50 % rozdílu. Δ<var>V</var> = 40-10 = 30 ml/l. Rozpuštěno = 10 + 0,5×30 = 25 ml/l.",
+      "explanation": "V 30 m (4 bar) by bylo při úplném nasycení 4× více N₂ = 40 ml/l. Po 1 poločasu je nasycení 50 % rozdílu. Δ<var>V</var> = 40−10 = 30 ml/l. Rozpuštěno = 10 + 0,5×30 = 25 ml/l.",
       "category": "dekomprese-syceni"
     }
   ]

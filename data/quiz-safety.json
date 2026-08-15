@@ -1257,11 +1257,11 @@
       "options": [
         {"key": "a", "text": "Vyžaduje-li situace použití motoru k pohonu doprovodného plavidla během ponoru, je nutno plout tak, aby nedošlo k ohrožení potápěčů."},
         {"key": "b", "text": "Malými čluny není bezpečné vyplouvat na moře a na velké vodní plochy při stavu hladiny způsobené větrem o síle 4 a více Bf."},
-        {"key": "c", "text": "Dojde-li pod vodou ke ztrátě kontaktu s partnerem, omezí potápěči vzájemné hledání na dobu přibližně 3 – 5 minut a vystoupí na hladinu za dodržení pravidel bezpečného výstupu."},
+        {"key": "c", "text": "Dojde-li pod vodou ke ztrátě kontaktu s partnerem, omezí potápěči vzájemné hledání na dobu přibližně 3–5 minut a vystoupí na hladinu za dodržení pravidel bezpečného výstupu."},
         {"key": "d", "text": "V případě zdravotních potíží po ponoru je postiženému nutno poskytnout co nejrychleji první pomoc, podávat kyslík (pokud je to účelné a je k dispozici), zajistit odbornou zdravotnickou pomoc, případně zajistit léčbu v dekompresní komoře."}
       ],
       "correct": "c",
-      "explanation": "BS uvádí omezení hledání na cca 30 sekund, ne 3-5 minut."
+      "explanation": "BS uvádí omezení hledání na cca 30 sekund, ne 3–5 minut."
     },
     {
       "id": 98,

@@ -1015,3 +1015,63 @@ nějaké `<var>`; první verze sondy se tím nechala oklamat, protože v téže 
 stálo korektní `<var>p</var><sub>N₂</sub>` o kus dál.
 
 **Testy:** 344/344 ✅
+
+---
+
+## Vlna 11 — pomlčka, spojovník a minus mezi čísly
+
+Tři různé znaky vypadají v editoru skoro stejně a projekt je používal
+promíchaně. Style-guide je přitom rozlišuje jasně:
+
+- **§4.3** číselný rozsah — pomlčka `–` (U+2013) **bez mezer**: `10–20 m`
+- **§4.4** odčítání a záporná čísla — minus `−` (U+2212)
+- spojovník `-` (U+002D) mezi číslicemi **nestojí nikdy**
+
+| Co | Počet | Před → po |
+|---|---|---|
+| Rozsah psaný spojovníkem | 46 | `12-25 l/min` → `12–25 l/min` |
+| Rozsah s mezerami kolem pomlčky | 52 | `100 – 120` → `100–120` |
+| Letopočtový rozsah spojovníkem | 6 | `(1992-1998)` → `(1992–1998)` |
+| Odčítání spojovníkem | 22 | `750 - 94` → `750 − 94` |
+
+### Proč to není rozdělené na dvě dávky
+
+Rozsahy a odčítání jsou dvě pravidla, ale **jedna kontrola**: „mezi
+číslicemi nestojí spojovník". Kdyby se opravily zvlášť, musel by mezitím
+existovat seznam povolených výjimek pro dvacet odčítání v kvízu z fyziky —
+a přesně těch se projekt v této fázi zbavoval. Oprava tedy proběhla najednou.
+
+U odčítání se **měnil jen znak, ne mezery**. Angličtina a španělština už
+minus používaly a obě podoby v nich stály vedle sebe — `15×(132−30)` uvnitř
+závorky a `750 − 94 + 15` v rozepsaném výpočtu. Sjednocovat i mezery by byl
+druhý zásah nad rámec této vlny.
+
+### Co se záměrně nechalo
+
+- **Datum `2026-04-29`** — spojovník je součástí formátu ISO 8601.
+  Kontrola má výjimku a ta je ověřená: chyba napsaná těsně vedle data
+  se pořád najde.
+- **Kód** — `box-shadow: 0 -2px`, `id="profile-chart-50-80"`,
+  `gas.fo2 - 1` a ukázky v `<pre><code>`. Typografie se na kód nevztahuje;
+  jedna z prvních verzí opravného skriptu do JavaScriptu sáhla a zapsala
+  `gas.fo2 − 1`, což by stránku rozbilo. Proto kontrola i skript pracují
+  s viditelným textem, ne se zdrojem.
+
+### Chyba v inventuře, kterou stojí za to připomenout
+
+První soupis vyloučil data vzorem `\d{4}-\d{2}` — jenže ten sedí i na
+`1992-1998`. Šest letopočtových rozsahů v kvízu o plavidle tak zmizelo ze
+seznamu dřív, než se na ně kdokoli podíval. Výjimka pro datum musí být
+napsaná na celý tvar `\d{4}-\d{2}-\d{2}`, ne na jeho začátek.
+
+**Ověřeno v prohlížeči:** 109 vykreslení (3 stránky × 3 jazyky + celý kvíz
+o nehodách), 100 uzavřených rozsahů, nikde spojovník ani rozsah s mezerami.
+Měřil se vykreslený text, takže do kontroly spadly i řetězce skládané za
+běhu — podstrčená chyba do `locales/cs.json` se skutečně objevila.
+
+Zvlášť se ověřovalo, že uzavření mezer nerozbilo běhový převod desetinné
+tečky na čárku (`localizeNumbersIn` pracuje se vzorem `číslo.číslo` a na
+pomlčce nezávisí): tabulka ppO₂ ukazuje `0,16–0,50` česky a španělsky,
+`0.16–0.50` anglicky.
+
+**Testy:** 346/346 ✅

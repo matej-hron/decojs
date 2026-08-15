@@ -575,7 +575,7 @@
         }
       ],
       "correct": "c",
-      "explanation": "Vitální kapacita plic je maximální objem vzduchu, který lze vydechnout po maximálním nádechu. U dospělého člověka činí přibližně 4-5 litrů."
+      "explanation": "Vitální kapacita plic je maximální objem vzduchu, který lze vydechnout po maximálním nádechu. U dospělého člověka činí přibližně 4–5 litrů."
     },
     {
       "id": 24,
@@ -825,7 +825,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "Vitální kapacita plic je objem vzduchu, který lze vydechnout po maximálním nádechu. U dospělého člověka činí přibližně 4-5 litrů."
+      "explanation": "Vitální kapacita plic je objem vzduchu, který lze vydechnout po maximálním nádechu. U dospělého člověka činí přibližně 4–5 litrů."
     },
     {
       "id": 34,
@@ -1059,23 +1059,23 @@
       "options": [
         {
           "key": "a",
-          "text": "10 – 12 litrů krve"
+          "text": "10–12 litrů krve"
         },
         {
           "key": "b",
-          "text": "8 – 10 litrů krve"
+          "text": "8–10 litrů krve"
         },
         {
           "key": "c",
-          "text": "5 – 6 litrů krve"
+          "text": "5–6 litrů krve"
         },
         {
           "key": "d",
-          "text": "2 – 3 litry krve"
+          "text": "2–3 litry krve"
         }
       ],
       "correct": "c",
-      "explanation": "Dospělý člověk má přibližně 5-6 litrů krve, což představuje asi 7-8 % tělesné hmotnosti."
+      "explanation": "Dospělý člověk má přibližně 5–6 litrů krve, což představuje asi 7–8 % tělesné hmotnosti."
     },
     {
       "id": 44,
@@ -1100,7 +1100,7 @@
         }
       ],
       "correct": "d",
-      "explanation": "Srdce přečerpá v klidu přibližně 5 litrů krve za minutu (minutový srdeční výdej). Při námaze se tento objem může zvýšit až na 25-30 litrů."
+      "explanation": "Srdce přečerpá v klidu přibližně 5 litrů krve za minutu (minutový srdeční výdej). Při námaze se tento objem může zvýšit až na 25–30 litrů."
     },
     {
       "id": 45,
@@ -1200,7 +1200,7 @@
         }
       ],
       "correct": "b",
-      "explanation": "Klidová tepová frekvence zdravého dospělého člověka je přibližně 60-80 tepů za minutu, typicky kolem 70. U trénovaných sportovců může být nižší."
+      "explanation": "Klidová tepová frekvence zdravého dospělého člověka je přibližně 60–80 tepů za minutu, typicky kolem 70. U trénovaných sportovců může být nižší."
     },
     {
       "id": 49,
@@ -1350,7 +1350,7 @@
         }
       ],
       "correct": "b",
-      "explanation": "Krevní vlásečnice (kapiláry) jsou nejmenší cévy s průměrem asi 5-10 mikrometrů. Jejich stěna je tvořena jednou vrstvou buněk, což umožňuje výměnu látek s tkáněmi."
+      "explanation": "Krevní vlásečnice (kapiláry) jsou nejmenší cévy s průměrem asi 5–10 mikrometrů. Jejich stěna je tvořena jednou vrstvou buněk, což umožňuje výměnu látek s tkáněmi."
     },
     {
       "id": 55,
@@ -1500,7 +1500,7 @@
         }
       ],
       "correct": "c",
-      "explanation": "Při intenzivní námaze může srdeční výdej vzrůst až na 25-30 litrů za minutu (u trénovaných sportovců). V klidu je to přibližně 5 litrů."
+      "explanation": "Při intenzivní námaze může srdeční výdej vzrůst až na 25–30 litrů za minutu (u trénovaných sportovců). V klidu je to přibližně 5 litrů."
     },
     {
       "id": 61,
@@ -1575,7 +1575,7 @@
         }
       ],
       "correct": "c",
-      "explanation": "Klidová dechová frekvence dospělého člověka je přibližně 12-20 dechů za minutu, typicky kolem 16."
+      "explanation": "Klidová dechová frekvence dospělého člověka je přibližně 12–20 dechů za minutu, typicky kolem 16."
     },
     {
       "id": 64,
@@ -1959,23 +1959,23 @@
       "options": [
         {
           "key": "a",
-          "text": "5 – 6 litrů vzduchu"
+          "text": "5–6 litrů vzduchu"
         },
         {
           "key": "b",
-          "text": "3 – 4 litry vzduchu"
+          "text": "3–4 litry vzduchu"
         },
         {
           "key": "c",
-          "text": "1 – 2 litry vzduchu"
+          "text": "1–2 litry vzduchu"
         },
         {
           "key": "d",
-          "text": "0,3 – 0,5 litru vzduchu"
+          "text": "0,3–0,5 litru vzduchu"
         }
       ],
       "correct": "d",
-      "explanation": "Klidový dechový objem je přibližně 0,5 litru (500 ml). Při námaze se zvyšuje. Vitální kapacita (maximální nádech) je 4-5 litrů."
+      "explanation": "Klidový dechový objem je přibližně 0,5 litru (500 ml). Při námaze se zvyšuje. Vitální kapacita (maximální nádech) je 4–5 litrů."
     },
     {
       "id": 80,
@@ -2259,11 +2259,11 @@
       "options": [
         {
           "key": "a",
-          "text": "10 – 20 metrů"
+          "text": "10–20 metrů"
         },
         {
           "key": "b",
-          "text": "30 – 40 metrů"
+          "text": "30–40 metrů"
         },
         {
           "key": "c",
@@ -2275,7 +2275,7 @@
         }
       ],
       "correct": "b",
-      "explanation": "Hloubkové opojení při dýchání vzduchu nastupuje typicky v hloubce 30-40 metrů. Individuální citlivost se liší a může být ovlivněna dalšími faktory."
+      "explanation": "Hloubkové opojení při dýchání vzduchu nastupuje typicky v hloubce 30–40 metrů. Individuální citlivost se liší a může být ovlivněna dalšími faktory."
     },
     {
       "id": 92,
@@ -2425,7 +2425,7 @@
         }
       ],
       "correct": "c",
-      "explanation": "Normální teplota tělesného jádra je přibližně 37 °C (36,5-37,5 °C). Teplota nad 42 °C nebo pod 28 °C je život ohrožující."
+      "explanation": "Normální teplota tělesného jádra je přibližně 37 °C (36,5–37,5 °C). Teplota nad 42 °C nebo pod 28 °C je život ohrožující."
     },
     {
       "id": 98,

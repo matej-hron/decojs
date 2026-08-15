@@ -57,7 +57,7 @@
         },
         "safetyStop": {
             "label": "Parada de seguridad",
-            "text": "Pausa voluntaria de 3 minutos a 3-5 m durante el ascenso para que el exceso de nitrógeno se desgasifique con seguridad."
+            "text": "Pausa voluntaria de 3 minutos a 3–5 m durante el ascenso para que el exceso de nitrógeno se desgasifique con seguridad."
         },
         "surfaceInterval": {
             "label": "Intervalo en superficie (SI)",
@@ -756,7 +756,7 @@
                 "intro": "Pyle formalizó su observación en un método:",
                 "step1": "Calcula tu programa de descompresión convencional",
                 "step2": "1.ª parada profunda = <strong>a medio camino</strong> entre la profundidad máxima y la primera parada deco exigida",
-                "step3": "Permanece 2-3 minutos",
+                "step3": "Permanece 2–3 minutos",
                 "step4": "Si la distancia hasta la siguiente parada sigue siendo &gt;9 m (30 ft), añade otra parada a medio camino",
                 "exampleTitle": "Ejemplo: inmersión a 60 m, primera parada deco a 15 m",
                 "stop1Label": "1.ª parada de Pyle:",
@@ -806,7 +806,7 @@
             },
             "example5080": {
                 "title": "Visual: GF 50/80 (conservador)",
-                "desc": "El tejido solo puede llegar al 50-80 % del valor-M — fíjate en la línea GF por debajo del valor-M."
+                "desc": "El tejido solo puede llegar al 50–80 % del valor-M — fíjate en la línea GF por debajo del valor-M."
             }
         },
         "controversy": {
@@ -830,7 +830,7 @@
                 "text2": "Las paradas profundas reducen el gradiente de presión para desgasificar. Cuanto más profundo te quedes, menor es la diferencia entre la presión del tejido y la ambiente — y ese gradiente es el que impulsa la eliminación de gas.",
                 "nuanceTitle": "El matiz real",
                 "nuanceIntro": "Esto no significa que todas las paradas profundas sean malas:",
-                "nuance1": "<strong>Las paradas muy breves</strong> (los 2-3 minutos originales de Pyle) pueden seguir siendo beneficiosas",
+                "nuance1": "<strong>Las paradas muy breves</strong> (los 2–3 minutos originales de Pyle) pueden seguir siendo beneficiosas",
                 "nuance2": "El estudio de la NEDU empleó paradas profundas prolongadas, trasladando mucho tiempo de deco a la zona profunda",
                 "nuance3": "Los perfiles muy agresivos de paradas profundas (GF 30/85) se desaconsejan hoy",
                 "nuance4": "Un conservadurismo moderado (GF 70/85) añade seguridad sin paradas profundas excesivas"
@@ -898,7 +898,7 @@
             },
             "pointHelium": {
                 "title": "2. Con helio (trimix/heliox), los GF asimétricos siguen justificados",
-                "text": "En mezclas con helio, forzar algunas paradas más profundas <em>sí</em> ayuda (DCS del oído interno, tejidos rápidos con helio). La CMAS sugiere <strong>GF bajo 30-50, GF alto 70-80</strong> (p. ej., 30/70, 50/80). Esto concuerda con la fila «Inmersión profunda» de la tabla anterior."
+                "text": "En mezclas con helio, forzar algunas paradas más profundas <em>sí</em> ayuda (DCS del oído interno, tejidos rápidos con helio). La CMAS sugiere <strong>GF bajo 30–50, GF alto 70–80</strong> (p. ej., 30/70, 50/80). Esto concuerda con la fila «Inmersión profunda» de la tabla anterior."
             },
             "pointNoStop": {
                 "title": "3. En una inmersión sin deco, el GF bajo no importa",
@@ -993,7 +993,7 @@
         },
         "whyTitle": "💡 ¿Por qué ocurre esto?",
         "whyText1": "Las moléculas de gas se mueven más rápido a mayor temperatura y chocan con más fuerza contra las paredes de la botella, aumentando la presión. Como la botella es rígida (volumen constante), toda la energía cinética extra se traduce directamente en más presión.",
-        "whyText2": "<strong>Consejo práctico:</strong> los compresores generan un calor notable al llenar — el gas dentro de una botella recién cargada puede estar 40-50 °C por encima del ambiente. Si cargas a 200 bar en una tienda cálida y luego buceas en un lago frío, no te sorprendas si ves solo ~180 bar en el manómetro. No es una fuga — es física.",
+        "whyText2": "<strong>Consejo práctico:</strong> los compresores generan un calor notable al llenar — el gas dentro de una botella recién cargada puede estar 40–50 °C por encima del ambiente. Si cargas a 200 bar en una tienda cálida y luego buceas en un lago frío, no te sorprendas si ves solo ~180 bar en el manómetro. No es una fuga — es física.",
         "whyRuleOfThumb": "<strong>Regla práctica:</strong> ~0,6 bar de cambio por cada 1 °C a 200 bar de presión de trabajo.",
         "formulaTitle": "Ley de Gay-Lussac (proceso isocórico)",
         "formulaNote": "la relación presión/temperatura es constante a volumen constante (T en Kelvin)",
@@ -1452,7 +1452,7 @@
                 "intro": "La implementación se ha contrastado con:",
                 "decotengu": "<strong>DecoTengu:</strong> la carga tisular coincide con un margen inferior al 0,02 %",
                 "buhlmann": "<strong>Tablas impresas de Bühlmann:</strong> los programas de deco coinciden dentro de la tolerancia esperada",
-                "note": "<em>Nota:</em> nuestros cálculos pueden dar tiempos de deco un 10-25 % más cortos que las tablas impresas. Es lo esperado — las tablas impresas incluyen márgenes de seguridad y redondean al alza de forma conservadora. Esta herramienta muestra la salida directa del algoritmo con fines educativos."
+                "note": "<em>Nota:</em> nuestros cálculos pueden dar tiempos de deco un 10–25 % más cortos que las tablas impresas. Es lo esperado — las tablas impresas incluyen márgenes de seguridad y redondean al alza de forma conservadora. Esta herramienta muestra la salida directa del algoritmo con fines educativos."
             }
         },
         "author": {
@@ -1533,7 +1533,7 @@
             "subtitle": "Mueve al buceador, cambia el gas, deja correr el tiempo — y observa cómo las presiones parciales de nitrógeno persiguen exponencialmente al ambiente.",
             "disclaimerBanner": "<strong>Solo para fines educativos</strong> — Un juego de física que muestra cómo responde la carga de nitrógeno en los tejidos a la profundidad y a los cambios de gas. No es un planificador de inmersiones.",
             "depth": "Profundidad",
-            "depthHint": "0-40 m. Los cambios son instantáneos.",
+            "depthHint": "0–40 m. Los cambios son instantáneos.",
             "gas": "Gas respirable",
             "gases": {
                 "air": "Aire (21/79)",
