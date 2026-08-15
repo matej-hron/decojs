@@ -4981,6 +4981,31 @@ describe('notation - descriptive subscripts in formulas', () => {
     });
 });
 
+describe('dive plan table - languagechange re-render', () => {
+    // renderDivePlanTableHTML() calls translate() at render time. The very
+    // first call on page load always runs before initI18n() resolves, so it
+    // paints the English fallback regardless of the active language. Every
+    // page that renders this table must re-render it on 'languagechange',
+    // which setLanguage() dispatches once even for that initial load.
+    const root = new URL('../', import.meta.url);
+    const pages = () => shippedSources().filter(f => f.endsWith('.html'));
+    const tablePages = () => pages().filter(f => /renderDivePlanTableHTML\s*\(/
+        .test(readFileSync(new URL(f, root), 'utf8')));
+
+    test('every page rendering the dive plan table re-renders it on languagechange', () => {
+        const offenders = [];
+        for (const rel of tablePages()) {
+            const src = readFileSync(new URL(rel, root), 'utf8');
+            const reRenders = [...src.matchAll(/languagechange/g)].some(m => {
+                const window = src.slice(m.index, m.index + 600);
+                return /renderDivePlanTable|renderPlanTable/.test(window);
+            });
+            if (!reRenders) offenders.push(rel);
+        }
+        expect(offenders).toEqual([]);
+    });
+});
+
 describe('inline module scripts - helpers are really imported', () => {
     // PR #90 vložil `import { fmtNum } ...` doprostřed template literálu s ukázkou
     // kódu. Import se tím stal pouhým textem, `analyzeDive()` padal na

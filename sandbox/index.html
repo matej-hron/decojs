@@ -1983,6 +1983,9 @@ const chart = new DiveProfileChart(
         window._sandboxLastDiveSetup = initialSetup;
 
         // Re-render warnings and gas summary when the user switches language.
+        // Also re-renders the dive plan table: its first render (above) runs
+        // before initI18n() resolves and always paints the English fallback,
+        // and languagechange fires once even on that initial load.
         // (The chart components wire their own languagechange listeners internally.)
         document.addEventListener('languagechange', () => {
             const setup = window._sandboxLastDiveSetup;
@@ -1990,6 +1993,7 @@ const chart = new DiveProfileChart(
             const a = analyzeDive(setup);
             renderWarnings(diveWarningsContainer, a.warnings);
             renderGasSummary(diveGasSummaryContainer, a.gasSummary, setup.reservePressure || 50);
+            renderDivePlanTable(setup);
         });
         
         // =====================================================================

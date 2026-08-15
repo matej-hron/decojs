@@ -88,7 +88,7 @@
                 </p>
             </div>
             <div id="chart-container" class="chart-wrapper" style="height: 600px;"></div>
-            <h4 class="dse-plan-table-heading" style="margin: 1.25rem 0 0.25rem;">📋 <span data-i18n="diveProfile.writtenPlanTitle">Written Dive Plan</span> <span class="dse-plan-table-subtitle" data-i18n="diveProfile.writtenPlanSubtitle">(a.k.a. runtime; Divesoft Freedom calls it “profile”)</span></h4>
+            <h4 class="dse-plan-table-heading" style="margin: 1.25rem 0 0.25rem;">📋 <span data-i18n="diveProfile.writtenPlanTitle">Written Dive Plan</span> <span class="dse-plan-table-subtitle" data-i18n="diveProfile.writtenPlanSubtitle">(a.k.a. runtime)</span></h4>
             <div id="dive-profile-plan-table" class="dse-plan-table-wrapper"></div>
             <a id="profile-sandbox-link" href="sandbox/" class="sandbox-link" target="_blank">
                 🔬 <span data-i18n="sandboxLink">Open in Sandbox →</span>
@@ -897,13 +897,19 @@
         // RunTime plan table under the dive-profile chart (teaches students
         // the same table convention they'll see in the sandbox).
         const planTableContainer = document.getElementById('dive-profile-plan-table');
-        if (planTableContainer) {
+        function renderPlanTable() {
+            if (!planTableContainer) return;
             planTableContainer.innerHTML = renderDivePlanTableHTML(
                 getDiveSetupWaypoints(DECO_PROFILE),
                 DECO_PROFILE.gases,
                 { sacRate: 20, decoSacRate: 15, reserve: 50 }
             );
         }
+        renderPlanTable();
+        // Re-render once translations are ready (this first call runs before
+        // initI18n() resolves, so it paints the English fallback) and again
+        // on every language switch.
+        document.addEventListener('languagechange', renderPlanTable);
 
         // 2. Total Pressure Chart - pressure variant
         const pressureChart = new DiveProfileChart(
