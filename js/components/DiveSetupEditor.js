@@ -104,6 +104,7 @@ const DEFAULT_EDITOR_OPTIONS = {
     showGenerateButton: true,
     showWaypoints: true,
     showValidation: true,
+    showDivePlanPreview: true,  // Render the "Dive N Plan" table inline; set false when a host page renders its own copy elsewhere (e.g. next to a chart)
 };
 
 /**
@@ -1059,6 +1060,7 @@ export class DiveSetupEditor extends EventTarget {
     }
 
     _updateDivePlan(tbody) {
+        if (!this.options.showDivePlanPreview) return;
         const planDiv = tbody === this.elements.waypointsBody
             ? this.elements.divePlan
             : this.elements.divePlan2;

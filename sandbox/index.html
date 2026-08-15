@@ -665,6 +665,8 @@
                     </div>
                 </div>
 
+                <div id="dive-plan-table-container" class="dse-plan-table-wrapper" aria-label="Dive plan table"></div>
+
                 <div class="chart-wrapper" id="dive-profile-container" style="height: 600px;"></div>
 
                 <!-- Dive Warnings & Info Panel -->
@@ -760,7 +762,7 @@
         } from '../js/decoModel.js';
         import { COMPARTMENTS } from '../js/tissueCompartments.js';
         import { getProfileFromUrl, updateUrlWithProfile, getChartModeFromUrl, getCompactProfileFromUrl } from '../js/urlParams.js';
-        import { computeGasConsumption } from '../js/diveSetup.js';
+        import { computeGasConsumption, renderDivePlanTableHTML, getDiveSetupWaypoints } from '../js/diveSetup.js';
         import { translate } from '../js/i18n.js';
         import { fmtNum } from '../js/format.js';
 
@@ -1196,6 +1198,20 @@
         const lastUpdate = document.getElementById('last-update');
         const diveWarningsContainer = document.getElementById('dive-warnings');
         const diveGasSummaryContainer = document.getElementById('dive-gas-summary');
+        const divePlanTableContainer = document.getElementById('dive-plan-table-container');
+
+        // Mirrors DiveSetupEditor's own internal rendering (now suppressed via
+        // showDivePlanPreview: false) so the table can live next to the chart
+        // instead of in the left editor panel.
+        function renderDivePlanTable(diveSetup) {
+            const sacRate = diveSetup.sacRate || 20;
+            const decoSacRate = diveSetup.decoSacRate ?? sacRate;
+            const reserve = diveSetup.reservePressure || 50;
+            divePlanTableContainer.innerHTML = renderDivePlanTableHTML(
+                getDiveSetupWaypoints(diveSetup), diveSetup.gases,
+                { sacRate, decoSacRate, reserve }
+            );
+        }
         
         // Load initial setup - priority: URL profile= > URL v=1 compact > localStorage > default
         const urlProfile = getProfileFromUrl() || await getCompactProfileFromUrl();
@@ -1212,6 +1228,7 @@
                 showMultiDive: false,  // Disabled - charts don't support multi-dive yet
                 showDescription: false,
                 showSurfaceInterval: false,  // Uses default 15min for off-gassing display
+                showDivePlanPreview: false,  // Sandbox renders its own copy above the Dive Profile chart
                 emitOnInput: true
             }
         });
@@ -1262,6 +1279,7 @@
             diveProfileChart.update(diveSetup);
             mvalueChart.update(diveSetup);
             gfChart.update(diveSetup);
+            renderDivePlanTable(diveSetup);
 
             // Analyze dive and render warnings/gas summary
             const { warnings, gasSummary } = analyzeDive(diveSetup);
@@ -1961,6 +1979,7 @@ const chart = new DiveProfileChart(
         const initialAnalysis = analyzeDive(initialSetup);
         renderWarnings(diveWarningsContainer, initialAnalysis.warnings);
         renderGasSummary(diveGasSummaryContainer, initialAnalysis.gasSummary, initialSetup.reservePressure || 50);
+        renderDivePlanTable(initialSetup);
         window._sandboxLastDiveSetup = initialSetup;
 
         // Re-render warnings and gas summary when the user switches language.

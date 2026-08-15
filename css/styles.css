@@ -2098,7 +2098,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.58";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.59";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -2498,6 +2498,36 @@ tr.dse-plan-stop .dse-plan-phase { color: #c0392b; }
 tr.dse-plan-stop { background: rgba(192, 57, 43, 0.06); }
 tr.dse-plan-switch .dse-plan-phase { color: #8e44ad; }
 tr.dse-plan-switch { background: rgba(142, 68, 173, 0.06); }
+
+/* Bottom/Ascent section header rows (Divesoft-style grouping) */
+.dse-plan-table tr.dse-plan-section th {
+    background: rgba(0, 0, 0, 0.08);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted, #666);
+    padding: 0.25rem 0.5rem;
+}
+
+/* Terminal "Hladina"/Surface marker row — informational only */
+.dse-plan-table tr.dse-plan-surface-final {
+    color: var(--text-muted, #666);
+    font-style: italic;
+}
+.dse-plan-table tr.dse-plan-surface-final .dse-plan-phase {
+    font-style: normal;
+}
+
+.dse-plan-footnote {
+    font-size: 0.75rem;
+    color: var(--text-muted, #666);
+    margin: -0.5rem 0 0.75rem;
+}
+
+/* Sandbox: dive plan table rendered above the Dive Profile chart */
+.dse-plan-table-wrapper {
+    margin-bottom: 1rem;
+}
 
 .dse-waypoints-detail summary {
     cursor: pointer;
