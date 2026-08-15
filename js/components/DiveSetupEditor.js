@@ -896,7 +896,7 @@ export class DiveSetupEditor extends EventTarget {
                         value="${gas.cylinderVolume}"
                         style="display: ${!cylinderOptions.find(c => c.value === gas.cylinderVolume) ? 'inline-block' : 'none'}; width: 70px; margin-left: 4px;"
                         title="${translate('diveEditor.gasCard.cylinderVolumeTitle', 'Cylinder volume in liters')}">
-                    <span class="dse-cylinder-custom-unit" style="display: ${!cylinderOptions.find(c => c.value === gas.cylinderVolume) ? 'inline' : 'none'};">L</span>
+                    <span class="dse-cylinder-custom-unit" style="display: ${!cylinderOptions.find(c => c.value === gas.cylinderVolume) ? 'inline' : 'none'};">l</span>
                 </div>
                 <div class="dse-gas-mod">
                     <span class="dse-hint">${fmt(translate('diveEditor.mod', 'MOD: {0}\u00a0m (deco: {1}\u00a0m)'), mod14, mod16)}</span>

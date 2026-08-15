@@ -120,6 +120,8 @@ function expect(actual) {
 import { decimalSeparator, fmtGroup, fmtNum, localeTag, localizeLatex } from '../js/format.js';
 import { baseFromStartDate, epochMinToLocalInput, localInputToEpochMin } from '../js/tripTime.js';
 import { addDive, editDive, removeDive, rescheduleDive } from '../js/tripState.js';
+import { JSDOM } from 'jsdom';
+import { DiveSetupEditor } from '../js/components/DiveSetupEditor.js';
 
 import {
     getDefaultSetup,
@@ -3514,6 +3516,36 @@ describe('TripCalendar - diveBlockLabel', () => {
 // ============================================================================
 // I18N NOTATION
 // ============================================================================
+
+describe('DiveSetupEditor notation', () => {
+    test('cylinder volumes render with lowercase l', () => {
+        const dom = new JSDOM('<!doctype html><body></body>');
+        const previousDocument = globalThis.document;
+        globalThis.document = dom.window.document;
+
+        try {
+            for (const index of [0, 1]) {
+                const card = DiveSetupEditor.prototype._createGasCard.call({}, {
+                    name: index === 0 ? 'Air' : 'EAN50',
+                    o2: index === 0 ? 0.21 : 0.5,
+                    n2: index === 0 ? 0.79 : 0.5,
+                    he: 0,
+                    cylinderVolume: 9.5,
+                    startPressure: 200
+                }, index);
+
+                expect(card.querySelector('.dse-cylinder-custom-unit').textContent).toBe('l');
+                const labels = [...card.querySelectorAll('.dse-gas-cylinder option')]
+                    .map((option) => option.textContent);
+                expect(labels.some((label) => /\d\u00a0l\b/.test(label))).toBe(true);
+                expect(labels.some((label) => /\d(?:\.\d+)?\sL\b/.test(label))).toBe(false);
+            }
+        } finally {
+            globalThis.document = previousDocument;
+            dom.window.close();
+        }
+    });
+});
 
 describe('i18n notation - canvas strings must not contain HTML entities', () => {
     const LOCALES = ['cs', 'en', 'es'];

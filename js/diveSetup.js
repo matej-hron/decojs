@@ -63,13 +63,13 @@ export const PREDEFINED_GASES = [...BOTTOM_GASES, ...DECO_GASES];
  * Volumes are water capacity (actual internal volume).
  */
 export const BOTTOM_CYLINDERS = [
-    { value: 10, label: '10 L (Single)' },
-    { value: 12, label: '12 L (Single)' },
-    { value: 15, label: '15 L (Single)' },
-    { value: 18, label: '18 L (Single)' },
-    { value: 14, label: '2×7 L (Doubles)' },
-    { value: 20, label: '2×10 L (Doubles)' },
-    { value: 24, label: '2×12 L (Doubles)' }
+    { value: 10, label: '10\u00a0l (Single)' },
+    { value: 12, label: '12\u00a0l (Single)' },
+    { value: 15, label: '15\u00a0l (Single)' },
+    { value: 18, label: '18\u00a0l (Single)' },
+    { value: 14, label: '2×7\u00a0l (Doubles)' },
+    { value: 20, label: '2×10\u00a0l (Doubles)' },
+    { value: 24, label: '2×12\u00a0l (Doubles)' }
 ];
 
 /**
@@ -79,10 +79,10 @@ export const BOTTOM_CYLINDERS = [
  * "S" = stage designation (cuft nominal capacity at working pressure)
  */
 export const STAGE_CYLINDERS = [
-    { value: 5.7, label: '5.7 L (S040)' },
-    { value: 7, label: '7 L' },
-    { value: 10, label: '10 L' },
-    { value: 11.1, label: '11.1 L (S080)' }
+    { value: 5.7, label: '5.7\u00a0l (S040)' },
+    { value: 7, label: '7\u00a0l' },
+    { value: 10, label: '10\u00a0l' },
+    { value: 11.1, label: '11.1\u00a0l (S080)' }
 ];
 
 /**
