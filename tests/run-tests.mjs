@@ -4053,6 +4053,61 @@ describe('notation - unit is never glued to the value', () => {
     });
 });
 
+// Zdroje, které se posílají uživateli. Vývojářské odkladiště `test.html` /
+// `test2.html` je nelinkované a mimo sw.js (issue #79).
+const shippedSources = () => {
+    const root = new URL('../', import.meta.url);
+    const files = [];
+    const walkDir = (rel) => {
+        for (const e of readdirSync(new URL(rel, root), { withFileTypes: true })) {
+            const p = `${rel}${e.name}`;
+            if (e.isDirectory()) walkDir(`${p}/`);
+            else if (e.name.endsWith('.js') || e.name.endsWith('.html')) files.push(p);
+        }
+    };
+    walkDir('js/');
+    walkDir('sandbox/');
+    for (const e of readdirSync(root, { withFileTypes: true })) {
+        if (e.isFile() && e.name.endsWith('.html')) files.push(e.name);
+    }
+    return files.filter(f => f !== 'test.html' && f !== 'test2.html');
+};
+
+/**
+ * i18n klíče, jejichž hodnota se kreslí na canvas. Sink se pozná podle
+ * vlastnosti v konfiguraci Chart.js, ne podle jména souboru: jeden soubor
+ * běžně plní canvas i DOM (TissueSaturationSim.js kreslí graf a zároveň sype
+ * hlášky do `alertsEl.innerHTML`), a seznam souborů by zastaral s každým
+ * novým grafem.
+ */
+const canvasBoundKeys = () => {
+    const root = new URL('../', import.meta.url);
+    const DIRECT = [
+        /\blabel:\s*(?:fmt\()?$/,          // popisek datasetu
+        /\bcontent:\s*(?:fmt\()?$/,        // obsah anotace
+        /\.label\s*=\s*$/,                 // přepis popisku při změně jazyka
+        /\btitle:\s*\{[^{}]*\btext:\s*(?:fmt\()?$/,   // titulek osy
+        /\.title\.text\s*=\s*$/,
+    ];
+    const keys = new Set();
+    for (const rel of shippedSources()) {
+        const src = readFileSync(new URL(rel, root), 'utf8');
+        for (const m of src.matchAll(/translate\('([\w.]+)'/g)) {
+            const ctx = src.slice(Math.max(0, m.index - 70), m.index).replace(/\n/g, ' ');
+            if (DIRECT.some(re => re.test(ctx))) keys.add(m[1]);
+        }
+        // Nepřímá cesta: překlad se uloží do proměnné a teprve ta se předá
+        // Chart.js (MValueChart skládá popisek podle dýchaných směsí).
+        const viaVar = new Set();
+        for (const m of src.matchAll(/\b(?:label|content)\s*:\s*(\w+)\s*[,\n]/g)) viaVar.add(m[1]);
+        for (const m of src.matchAll(/\.label\s*=\s*(\w+)\s*;/g)) viaVar.add(m[1]);
+        for (const m of src.matchAll(/(\w+)\s*=\s*(?:fmt\(\s*)?translate\('([\w.]+)'/g)) {
+            if (viaVar.has(m[1])) keys.add(m[2]);
+        }
+    }
+    return keys;
+};
+
 describe('notation - quantity symbols are italic', () => {
     // ČSN EN ISO 80000-1 kap. 7: značka veličiny se sází kurzívou, popisný
     // i chemický index stojatě. V HTML je nositelem kurzívy <var>.
@@ -4109,16 +4164,14 @@ describe('notation - quantity symbols are italic', () => {
     test('no i18n key drawn on a chart canvas carries HTML markup', () => {
         // authoring.md §5b: Chart.js kreslí popisek na canvas, kde se markup
         // nevykreslí — uživatel by uviděl doslova <var>p</var>.
-        const chartSources = [
-            'js/charts/DiveProfileChart.js', 'js/charts/MValueChart.js',
-            'js/charts/chartTypes.js', 'js/components/TissueSaturationSim.js',
-        ];
-        const keys = new Set();
-        for (const rel of chartSources) {
-            const src = readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
-            for (const m of src.matchAll(/translate\('([\w.]+)'/g)) keys.add(m[1]);
-        }
-        expect(keys.size > 0).toBe(true);
+        const keys = canvasBoundKeys();
+        // Sonda nesmí být prázdná — jinak by test prošel i s rozbitým vzorem.
+        expect(keys.size > 20).toBe(true);
+        expect(keys.has('chart.profile.datasetPpO2')).toBe(true);
+        expect(keys.has('tissueSim.chartLabels.pN2Alveolar')).toBe(true);
+        expect(keys.has('chart.mvalue.alveolarPN2WithGases')).toBe(true);
+        // Hlášky pod grafem jdou do innerHTML, ne na canvas — markup tam patří.
+        expect(keys.has('tissueSim.ppO2Hypoxic')).toBe(false);
 
         const offenders = [];
         for (const lang of ['cs', 'en', 'es']) {
@@ -4143,6 +4196,88 @@ describe('notation - quantity symbols are italic', () => {
         expect(counts[0]).toBe(counts[1]);
         expect(counts[1]).toBe(counts[2]);
         expect(counts[0] > 0).toBe(true);
+    });
+});
+
+describe('notation - partial pressure symbol', () => {
+    // Glosář §4: parciální tlak kyslíku je *p*(O₂). Zdvojené „pp" je potápěčský
+    // žargon, ne značka — v ČSN EN ISO 80000-1 pro ni není opora.
+    const root = new URL('../', import.meta.url);
+
+    test('no rendered string uses the doubled pp form', () => {
+        // Rozlišovací znak je dolní index: zobrazovaný text píše O₂ (U+2082),
+        // zatímco identifikátory v kódu píšou ASCII `ppO2` a měnit se nesmějí.
+        const files = [...shippedSources(), 'locales/cs.json', 'locales/en.json', 'locales/es.json'];
+        const offenders = [];
+        for (const rel of files) {
+            const src = readFileSync(new URL(rel, root), 'utf8');
+            src.split('\n').forEach((line, i) => {
+                if (/pp[ON]\u2082/.test(line) || /pp[ON]<sub>2<\/sub>/.test(line)) {
+                    offenders.push(`${rel}:${i + 1}  ${line.trim().slice(0, 70)}`);
+                }
+            });
+        }
+        expect(offenders).toEqual([]);
+    });
+
+    test('a bare pO2 is allowed only where the sink is a canvas', () => {
+        // Na canvas se markup nevykreslí, takže tam je holé `pO₂` správně.
+        // Všude jinde jde řetězec do innerHTML a značka musí být kurzívou.
+        const canvasKeys = canvasBoundKeys();
+        expect(canvasKeys.size > 20).toBe(true);
+
+        const walk = (o, p = '') => Object.entries(o).flatMap(([k, v]) => {
+            const key = p ? `${p}.${k}` : k;
+            if (v && typeof v === 'object') return walk(v, key);
+            return typeof v === 'string' ? [[key, v]] : [];
+        });
+        const offenders = [];
+        for (const lang of ['cs', 'en', 'es']) {
+            const dict = JSON.parse(readFileSync(new URL(`locales/${lang}.json`, root), 'utf8'));
+            for (const [key, value] of walk(dict)) {
+                if (!/(?:^|[^A-Za-z>])p[ON]\u2082/.test(value)) continue;
+                if (canvasKeys.has(key)) continue;
+                offenders.push(`${lang} ${key}: ${value.slice(0, 60)}`);
+            }
+        }
+        expect(offenders).toEqual([]);
+    });
+});
+
+describe('inline module scripts - helpers are really imported', () => {
+    // PR #90 vložil `import { fmtNum } ...` doprostřed template literálu s ukázkou
+    // kódu. Import se tím stal pouhým textem, `analyzeDive()` padal na
+    // ReferenceError a panel varování v sandboxu přestal cokoli vykreslovat.
+    // Testy to nezachytily, protože inline skripty v HTML nikdo nespouští.
+    const root = new URL('../', import.meta.url);
+    // `fmt` se hlídat nedá — je to i běžný název parametru (gradient-factors.html).
+    const HELPERS = ['fmtNum', 'fmtRange', 'translate'];
+
+    /** Vyřízne template literály, komentáře a řetězce — zbude spustitelný kód. */
+    const executableCode = (src) => src
+        .replace(/`(?:\\[\s\S]|[^\\`])*`/g, '``')
+        .replace(/\/\*[\s\S]*?\*\//g, '')
+        .replace(/(^|[^:])\/\/[^\n]*/g, '$1');
+
+    test('every helper called by an inline module script is imported', () => {
+        const offenders = [];
+        for (const rel of shippedSources().filter(f => f.endsWith('.html'))) {
+            const src = readFileSync(new URL(rel, root), 'utf8');
+            for (const block of src.match(/<script type="module">[\s\S]*?<\/script>/g) || []) {
+                const code = executableCode(block);
+                const imported = new Set(
+                    (code.match(/import\s*\{([^}]*)\}\s*from/g) || [])
+                        .flatMap(m => m.replace(/import\s*\{|\}\s*from/g, '').split(','))
+                        .map(s => s.trim().split(/\s+as\s+/).pop())
+                );
+                for (const h of HELPERS) {
+                    if (!new RegExp(`(?:^|[^\\w.])${h}\\s*\\(`, 'm').test(code)) continue;
+                    const local = new RegExp(`(?:function|const|let|var)\\s+${h}\\b`).test(code);
+                    if (!imported.has(h) && !local) offenders.push(`${rel}: volá ${h}(), ale neimportuje ho`);
+                }
+            }
+        }
+        expect(offenders).toEqual([]);
     });
 });
 
@@ -4195,6 +4330,40 @@ describe('format - decimal separator at runtime', () => {
     // Rendered numbers cannot be grepped - they exist only after the page runs.
     // A static budget on the remaining raw toFixed() calls is therefore the
     // only regression guard: every new display number must go through fmtNum.
+    test('no display string interpolates a raw decimal constant', () => {
+        // fmt() jen dosazuje do vzoru — desetinnou čárku neumí. Konstanta
+        // předaná syrově vysází tečku vedle hodnoty, kterou fmtNum už
+        // zlokalizoval: „pO₂ 5,01 bar — toxicita (deko limit 1.6)".
+        const root = new URL('../', import.meta.url);
+        const argsAt = (src, i) => {
+            const out = [];
+            let depth = 0, cur = '';
+            for (; i < src.length; i++) {
+                const c = src[i];
+                if (c === '(' || c === '[' || c === '{') depth++;
+                else if (c === ')' || c === ']' || c === '}') {
+                    if (depth === 0) { out.push(cur); break; }
+                    depth--;
+                }
+                if (c === ',' && depth === 0) { out.push(cur); cur = ''; continue; }
+                cur += c;
+            }
+            return out.map(a => a.trim());
+        };
+        const offenders = [];
+        for (const rel of shippedSources()) {
+            const src = readFileSync(new URL(rel, root), 'utf8');
+            for (const m of src.matchAll(/\bfmt\(/g)) {
+                for (const arg of argsAt(src, m.index + m[0].length).slice(1)) {
+                    if (/^\d+\.\d+$/.test(arg) || /^[A-Z][A-Z0-9_]{3,}$/.test(arg)) {
+                        offenders.push(`${rel}:${src.slice(0, m.index).split('\n').length}  ${arg}`);
+                    }
+                }
+            }
+        }
+        expect(offenders).toEqual([]);
+    });
+
     test('no shipped page formats a display number with raw toFixed', () => {
         const root = new URL('../', import.meta.url);
         // The documented exceptions: contexts where a comma is invalid.

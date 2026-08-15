@@ -329,6 +329,22 @@ python3 docs/notation/tools/nbsp.py --fix   --thousands <soubory> # i tisíce
 na české soubory. Hlídají to testy `*.json: no &nbsp; entity`
 a `*.json: U+00A0 between value and unit` v `tests/run-tests.mjs`.
 
+## Ověřuj v prohlížeči, ne jen ve zdroji
+
+Statická kontrola vidí zdroj, ne to, co uživatel čte. Zelená sonda ale
+**neznamená nic, dokud nespadne na úmyslně zanesené chybě**.
+
+- Každá dílčí kontrola musí vypsat, **kolik shod našla**, a při nule se hlásit
+  jako neprůkazná. Tři sondy v této fázi byly zpočátku prázdné: rozbitá
+  podmínka, panel, který se nikdy nevykreslil, a varování, která se nespustila.
+  Dvě z nich po zprovoznění odhalily skutečnou chybu.
+- **Nikdy nevracej zanesenou chybu přes `git checkout <soubor>`.** Vrátí se
+  stav z HEAD a tiše smaže rozdělanou práci. Zálohuj do `/tmp` a kopíruj zpět.
+- Nedaří-li se stránku rozhýbat ovládacími prvky (sbalený panel, Playwright
+  neumí vyplnit skryté pole), podej jí data **uživatelskou cestou** — sdíleným
+  odkazem `?profile=…` z `js/urlParams.js`.
+- Nezachytávej selhání selektoru přes `.catch(()=>{})`; timeout doběhne celý.
+
 ## Krok 3 — Ověření
 
 Stránku **otevři v prohlížeči**. Ani jeden ze tří skriptů neuvidí, co se

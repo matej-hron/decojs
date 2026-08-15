@@ -135,12 +135,16 @@ export class TissueSaturationSim {
 
     _wireControls() {
         // Depth — slider and number input kept in sync.
+        // Hlášky se počítají ze stejného `state` jako čísla, takže se musí
+        // překreslit spolu s nimi. Bez toho se údaj obarvil jako kritický,
+        // ale text hlášky přišel až s dalším tikem hodin.
         const onDepthChange = (rawVal) => {
             const d = Math.max(0, Math.min(40, Number(rawVal) || 0));
             this.state.depth = d;
             this.depthSlider.value = d;
             this.depthInput.value = d;
             this._renderNumbers();
+            this._renderAlerts();
         };
         this.depthSlider.addEventListener('input', (e) => onDepthChange(e.target.value));
         this.depthInput.addEventListener('input',  (e) => onDepthChange(e.target.value));
@@ -148,6 +152,7 @@ export class TissueSaturationSim {
         this.gasSelect.addEventListener('change', (e) => {
             this.state.gas = this._lookupGas(e.target.value);
             this._renderNumbers();
+            this._renderAlerts();
         });
 
         this.speedButtons.forEach(btn => {
@@ -321,31 +326,31 @@ export class TissueSaturationSim {
         const alerts = [];
         if (pO2 > PPO2_DECO_LIMIT) {
             alerts.push({ level: 'critical',
-                text: fmt(translate('tissueSim.ppO2OxygenToxicity',
-                    'pO₂ {0}\u00a0bar — oxygen toxicity (deco limit {1})'),
-                    fmtNum(pO2, 2), PPO2_DECO_LIMIT) });
+                html: fmt(translate('tissueSim.ppO2OxygenToxicity',
+                    '<var>p</var><sub>O₂</sub> {0}\u00a0bar — oxygen toxicity (deco limit {1})'),
+                    fmtNum(pO2, 2), fmtNum(PPO2_DECO_LIMIT, 1)) });
         } else if (pO2 > PPO2_REC_LIMIT) {
             alerts.push({ level: 'warn',
-                text: fmt(translate('tissueSim.ppO2AboveRec',
-                    'pO₂ {0}\u00a0bar — above recreational limit {1}'),
-                    fmtNum(pO2, 2), PPO2_REC_LIMIT) });
+                html: fmt(translate('tissueSim.ppO2AboveRec',
+                    '<var>p</var><sub>O₂</sub> {0}\u00a0bar — above recreational limit {1}'),
+                    fmtNum(pO2, 2), fmtNum(PPO2_REC_LIMIT, 1)) });
         }
         if (pO2 < PPO2_HYPOXIA) {
             alerts.push({ level: 'critical',
-                text: fmt(translate('tissueSim.ppO2Hypoxic',
-                    'pO₂ {0}\u00a0bar — hypoxic (< {1})'),
-                    fmtNum(pO2, 2), PPO2_HYPOXIA) });
+                html: fmt(translate('tissueSim.ppO2Hypoxic',
+                    '<var>p</var><sub>O₂</sub> {0}\u00a0bar — hypoxic (< {1})'),
+                    fmtNum(pO2, 2), fmtNum(PPO2_HYPOXIA, 2)) });
         }
         if (pN2Insp > PPN2_NARCOSIS) {
             alerts.push({ level: 'warn',
-                text: fmt(translate('tissueSim.ppN2Narcosis',
-                    'pN₂ {0}\u00a0bar — nitrogen narcosis likely (> {1})'),
-                    fmtNum(pN2Insp, 2), PPN2_NARCOSIS) });
+                html: fmt(translate('tissueSim.ppN2Narcosis',
+                    '<var>p</var><sub>N₂</sub> {0}\u00a0bar — nitrogen narcosis likely (> {1})'),
+                    fmtNum(pN2Insp, 2), fmtNum(PPN2_NARCOSIS, 1)) });
         }
         const okText = translate('tissueSim.alertOk', 'All clear');
         this.alertsEl.innerHTML = alerts.length === 0
             ? `<div class="tsim-alert tsim-alert-ok">${okText}</div>`
-            : alerts.map(a => `<div class="tsim-alert tsim-alert-${a.level}">${a.text}</div>`).join('');
+            : alerts.map(a => `<div class="tsim-alert tsim-alert-${a.level}">${a.html}</div>`).join('');
     }
 
     _initChart() {
