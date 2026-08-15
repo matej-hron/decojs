@@ -543,9 +543,11 @@ oddělovačů, 0 chyb v konzoli. Ověřeno i přepnutí jazyka za běhu bez relo
 
 ### Zbývá
 
-`toLocaleString()` — 6 volání, řídí se locale prohlížeče, ne jazykem aplikace.
-Týká se seskupování tisíců v `sandbox/cascade-filling.html`. Malý rozsah,
-samostatný úkol.
+`toLocaleString()` — číselná volání jsou hotová (vlna „skupinový oddělovač"
+a „desetinný oddělovač za běhu"). Zbývají **3 volání pro datum a čas**
+(`js/components/TripCalendar.js`, hlavička kalendáře; `sandbox/index.html`,
+hodiny „poslední aktualizace"). Nejde o zápis veličiny, takže to stojí mimo
+oponentovu výhradu — vede se jako drobný i18n dluh.
 
 ### Kurzíva a velikost značky veličiny — hotovo
 
@@ -644,3 +646,53 @@ stránkách, 0 slepených. Sonda negativně ověřená.
 text; čísla v nich nejsou veličiny a mezera do nich nepatří.
 
 **Testy:** 319/319 (5 nových, každý negativně ověřený).
+
+### Zdvojené „pp" u parciálního tlaku — hotovo
+
+Glosář §4 stanovuje `p`(O₂). Potápěčský žargon `ppO₂` („partial pressure of
+O₂") zdvojuje značku — `p` už *je* tlak, index říká čeho. V ČSN EN ISO 80000-1
+pro to opora není. Ve zdrojích bylo 425 výskytů řetězce `pp`, ale drtivá
+většina z nich se **měnit nesmí**.
+
+| Kategorie | Počet | Zásah |
+|---|---|---|
+| identifikátory v kódu (`maxPpO2Bottom`, `ppO2`) | 158 | žádný |
+| názvy tříd v CSS | 8 | žádný |
+| překladové řetězce v `locales/*.json` | 78 | 45 řádků opraveno |
+| zobrazovaný text v HTML a JS | 83 | 21 opraveno |
+
+**Rozlišovacím znakem je dolní index.** Zobrazovaný text píše `O₂` (U+2082),
+identifikátory píšou ASCII `ppO2`. Pravidlo postavené na U+2082 se kódu
+nedotkne už z principu — právě to udělalo automatickou opravu 425 výskytů
+bezpečnou.
+
+**Kam řetězec teče, rozhoduje o tvaru.** Do `innerHTML` patří
+`<var>p</var><sub>O₂</sub>`; na plátno grafu se značka vykreslit nedá, takže
+tam zůstává holé `pO₂`. Nový test tuto hranici hlídá a rozeznává i případ, kdy
+si `MValueChart.js` překlad nejdřív uloží do proměnné a teprve pak ho použije
+jako `label:`.
+
+#### Tři vedlejší nálezy
+
+**Panel varování v sandboxu byl celý mrtvý.** Automatická úprava v PR #90
+vložila `import { fmtNum } ...` doprostřed **template literálu** s ukázkou
+kódu. Import se tím stal pouhým textem, `analyzeDive()` padal na
+`ReferenceError` a panel varování ani přehled plynů se od té doby nevykreslily.
+Nikdo si toho nevšiml, protože inline skripty v HTML žádný test nespouštěl.
+Import přesunut na začátek modulu; nový test hlídá, že každý pomocník volaný
+inline modulem je skutečně importovaný.
+
+**Upozornění v simulaci tkání se opozdila o tik.** `onDepthChange` a přepnutí
+plynu volaly `_renderNumbers()`, ale ne `_renderAlerts()`. Údaj tedy zčervenal,
+zatímco text upozornění čekal na další tik hodin.
+
+**Limitní konstanty obcházely `fmtNum`.** Česká hláška zněla
+`pO₂ 5,01 bar — toxicita kyslíku (deko limit 1.6)` — tečka vedle čárky v jedné
+větě. Opraveny 4 konstanty; zbylých 100 volání `fmt(` prověřeno, únik byl
+ojedinělý, a přibyl test proti opakování.
+
+**Měřeno v prohlížeči:** 190 sond ve dvou jazycích (SVG popisky, upozornění
+simulace, varování sandboxu, popisky grafů), 0 závad. Sonda negativně ověřená
+— každá dílčí kontrola musí něco najít, jinak se hlásí jako neprůkazná.
+
+**Testy:** 323/323 (4 nové, každý negativně ověřený).

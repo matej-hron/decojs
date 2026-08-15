@@ -762,6 +762,7 @@
         import { getProfileFromUrl, updateUrlWithProfile, getChartModeFromUrl, getCompactProfileFromUrl } from '../js/urlParams.js';
         import { computeGasConsumption } from '../js/diveSetup.js';
         import { translate } from '../js/i18n.js';
+        import { fmtNum } from '../js/format.js';
 
         /** Helper: replace {0}, {1}, ... placeholders with the given values. */
         function fmt(str, ...values) {
@@ -892,7 +893,7 @@
                     type: 'critical',
                     icon: '⚠️',
                     message: fmt(
-                        translate('warnings.cnsToxicityBottom', 'CNS toxicity risk: ppO₂ = {0}\u00a0bar at {1}\u00a0m during bottom (max 1.6)'),
+                        translate('warnings.cnsToxicityBottom', 'CNS toxicity risk: <var>p</var><sub>O₂</sub> = {0}\u00a0bar at {1}\u00a0m during bottom (max 1.6)'),
                         fmtNum(maxPpO2Bottom, 2), fmtNum(maxPpO2BottomDepth, 0)
                     )
                 });
@@ -901,7 +902,7 @@
                     type: 'warning',
                     icon: '⚡',
                     message: fmt(
-                        translate('warnings.highPpO2Bottom', 'High ppO₂: {0}\u00a0bar at {1}\u00a0m during bottom (limit 1.4 for working dives)'),
+                        translate('warnings.highPpO2Bottom', 'High <var>p</var><sub>O₂</sub>: {0}\u00a0bar at {1}\u00a0m during bottom (limit 1.4 for working dives)'),
                         fmtNum(maxPpO2Bottom, 2), fmtNum(maxPpO2BottomDepth, 0)
                     )
                 });
@@ -913,7 +914,7 @@
                     type: 'critical',
                     icon: '⚠️',
                     message: fmt(
-                        translate('warnings.cnsToxicityDeco', 'CNS toxicity risk: ppO₂ = {0}\u00a0bar at {1}\u00a0m during deco (max 1.6)'),
+                        translate('warnings.cnsToxicityDeco', 'CNS toxicity risk: <var>p</var><sub>O₂</sub> = {0}\u00a0bar at {1}\u00a0m during deco (max 1.6)'),
                         fmtNum(maxPpO2Deco, 2), fmtNum(maxPpO2DecoDepth, 0)
                     )
                 });
@@ -924,7 +925,7 @@
                     type: 'critical',
                     icon: '💨',
                     message: fmt(
-                        translate('warnings.hypoxiaRisk', 'Hypoxia risk: ppO₂ = {0}\u00a0bar (min 0.16)'),
+                        translate('warnings.hypoxiaRisk', 'Hypoxia risk: <var>p</var><sub>O₂</sub> = {0}\u00a0bar (min 0.16)'),
                         fmtNum(minPpO2, 2)
                     )
                 });
@@ -936,7 +937,7 @@
                     type: 'warning',
                     icon: '🍺',
                     message: fmt(
-                        translate('warnings.narcosisWarning', 'Narcosis warning: ppN₂ = {0}\u00a0bar at {1}\u00a0m (equivalent to {2}\u00a0m on air)'),
+                        translate('warnings.narcosisWarning', 'Narcosis warning: <var>p</var><sub>N₂</sub> = {0}\u00a0bar at {1}\u00a0m (equivalent to {2}\u00a0m on air)'),
                         fmtNum(maxPpN2, 2), fmtNum(maxPpN2Depth, 0), fmtNum(((maxPpN2 - 0.79) / 0.079), 0)
                     )
                 });
@@ -945,7 +946,7 @@
                     type: 'info',
                     icon: '🍻',
                     message: fmt(
-                        translate('warnings.mildNarcosis', 'Mild narcosis possible: ppN₂ = {0}\u00a0bar at {1}\u00a0m'),
+                        translate('warnings.mildNarcosis', 'Mild narcosis possible: <var>p</var><sub>N₂</sub> = {0}\u00a0bar at {1}\u00a0m'),
                         fmtNum(maxPpN2, 2), fmtNum(maxPpN2Depth, 0)
                     )
                 });
@@ -1579,7 +1580,6 @@
                 return `// Embed this chart in a theory page:
 import { DiveProfileChart } from './charts/DiveProfileChart.js';
 
-        import { fmtNum } from '../js/format.js';
 const config = ${configStr};
 
 const chart = new DiveProfileChart(

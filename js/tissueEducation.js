@@ -86,9 +86,9 @@ function updatePhase(phase, svg) {
         particlesAscent.forEach(p => p.style.display = 'none');
         
         // Update pressure values
-        if (regPressure) regPressure.textContent = `ppN₂ = ${fmtNum(3.16, 2)}`;
-        if (alvPressure) alvPressure.textContent = `ppN₂ = ${fmtNum(3.10, 2)}`;
-        if (bloodPressure) bloodPressure.textContent = `ppN₂ = ${fmtNum(2.5, 1)}`;
+        if (regPressure) regPressure.textContent = fmtNum(3.16, 2);
+        if (alvPressure) alvPressure.textContent = fmtNum(3.10, 2);
+        if (bloodPressure) bloodPressure.textContent = fmtNum(2.5, 1);
         
         // Update legend
         if (flowDirection) flowDirection.textContent = '→ Gas flows from HIGH to LOW pressure';
@@ -115,9 +115,9 @@ function updatePhase(phase, svg) {
         particlesAscent.forEach(p => p.style.display = '');
         
         // Update pressure values (tissues now higher than ambient)
-        if (regPressure) regPressure.textContent = `ppN₂ = ${fmtNum(0.79, 2)}`;
-        if (alvPressure) alvPressure.textContent = `ppN₂ = ${fmtNum(0.74, 2)}`;
-        if (bloodPressure) bloodPressure.textContent = `ppN₂ = ${fmtNum(1.2, 1)}`;
+        if (regPressure) regPressure.textContent = fmtNum(0.79, 2);
+        if (alvPressure) alvPressure.textContent = fmtNum(0.74, 2);
+        if (bloodPressure) bloodPressure.textContent = fmtNum(1.2, 1);
         
         // Update legend - reversed: now tissues are HIGH
         if (flowDirection) flowDirection.textContent = '← Gas flows from HIGH to LOW pressure (tissues supersaturated)';
@@ -227,7 +227,7 @@ function initOngassingChart() {
             labels: initialData.halfTimes.map(t => fmtNum(t, 1)),
             datasets: [
                 {
-                    label: 'Tissue ppN₂',
+                    label: 'Tissue pN₂',
                     data: initialData.pressures,
                     borderColor: '#3498db',
                     backgroundColor: 'rgba(52, 152, 219, 0.1)',
@@ -307,7 +307,7 @@ function initOngassingChart() {
                 y: {
                     title: {
                         display: true,
-                        text: 'ppN₂ (bar)',
+                        text: 'pN₂ (bar)',
                         font: { size: 11 }
                     },
                     min: 0,
@@ -371,7 +371,7 @@ function initOffgassingChart() {
             labels: initialData.halfTimes.map(t => fmtNum(t, 1)),
             datasets: [
                 {
-                    label: 'Tissue ppN₂',
+                    label: 'Tissue pN₂',
                     data: initialData.pressures,
                     borderColor: '#e74c3c',
                     backgroundColor: 'rgba(231, 76, 60, 0.1)',
@@ -451,7 +451,7 @@ function initOffgassingChart() {
                 y: {
                     title: {
                         display: true,
-                        text: 'ppN₂ (bar)',
+                        text: 'pN₂ (bar)',
                         font: { size: 11 }
                     },
                     min: 0,

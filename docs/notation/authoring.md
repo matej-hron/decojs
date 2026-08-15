@@ -362,13 +362,28 @@ sinkem.**
 | SVG `<text>` | `<tspan font-style="italic">t</tspan><tspan dy="3" font-size="0.72em">1/2</tspan>` | SVG nezná `<var>` ani `<sub>` |
 | `<option>`, `title=`, canvas | `t½` | obsah je podle HTML specifikace **jen text**, markup se nevykreslí |
 
-**Popisky grafů jsou canvas, i když jdou přes `locales/*.json`.** Klíč čtený
-v `js/charts/*` nebo v `TissueSaturationSim.js` končí jako `label` datasetu
-Chart.js. Fáze 2 tam našla čtyři klíče s `<var>`, které anglická a španělská
-legenda vypisovala doslova. Kontrolu drží test „no i18n key drawn on a chart
-canvas carries HTML markup": posbírá klíče z `translate('…')` v grafových
-modulech a zakáže v nich značkovací prvky. Přidáváš-li graf, přidej jeho soubor
-do seznamu `chartSources`.
+**Popisky grafů jsou canvas, i když jdou přes `locales/*.json`.** Fáze 2 tam
+našla čtyři klíče s `<var>`, které anglická a španělská legenda vypisovala
+doslova. Kontrolu drží test „no i18n key drawn on a chart canvas carries HTML
+markup".
+
+**O sinku rozhoduje vlastnost Chart.js, ne název souboru.** Canvas je
+`label:`, `content:`, `.label =`, `title: { … text: }` a `.title.text =`.
+Jeden soubor běžně obsluhuje obě plochy — `TissueSaturationSim.js` kreslí graf
+*a* zároveň plní panel upozornění přes `innerHTML`. Dřívější podoba testu
+zakazovala markup v celém „grafovém souboru", což bylo příliš hrubé a nutilo
+to ručně udržovat seznam souborů. Dnes se klasifikuje podle vlastnosti, takže
+nový graf není potřeba nikam zapisovat.
+
+**Pomůž statické kontrole pojmenováním.** Objekty upozornění v
+`TissueSaturationSim.js` nesou vlastnost `html:`, ne `text:` — z názvu je
+cíl (`innerHTML`) zřejmý čtenáři i testu. Samotné `text:` je nejednoznačné,
+používají ho i pole tlačítek.
+
+**Překlad se na canvas může dostat i oklikou.** `MValueChart.js` si překlad
+uloží do proměnné a teprve tu použije jako `label:`. Průchod po volání
+`translate('…')` takový případ mine; detektor proto dělá druhý průchod přes
+proměnné.
 
 Než někam vložíš markup, **ověř sink**. `locales/*.json` ho snese, protože
 `applyTranslations()` v `js/i18n.js` přiřazuje `el.innerHTML`; kdyby týž klíč

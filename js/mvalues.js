@@ -828,7 +828,7 @@ function buildDatasets() {
     // This is where tissue pressure equals alveolar ppN2 (for air: 79% N2)
     const fN2 = N2_FRACTION;
     datasets.push({
-        label: 'Alveolar ppN₂ (y = 0.79x)',
+        label: 'Alveolar pN₂ (y = 0.79x)',
         data: [
             { x: minP, y: minP * fN2 },
             { x: maxP, y: maxP * fN2 }

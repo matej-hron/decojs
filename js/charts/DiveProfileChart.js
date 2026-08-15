@@ -1078,7 +1078,7 @@ export class DiveProfileChart {
         // Alveolar N2 (inspired nitrogen partial pressure) - shown automatically in tissue mode
         if (this.options.showTissueLoading) {
             datasets.push({
-                label: translate('chart.profile.datasetAlveolarPpN2', 'Alveolar ppN₂ (bar)'),
+                label: translate('chart.profile.datasetAlveolarPpN2', 'Alveolar pN₂ (bar)'),
                 data: results.timePoints.map((t, i) => ({
                     x: t,
                     y: getAlveolarN2Pressure(results.ambientPressures[i], results.n2Fractions[i])
@@ -1318,7 +1318,7 @@ export class DiveProfileChart {
                 borderDash: [3, 3],
                 label: {
                     display: true,
-                    content: translate('chart.profile.ppO2Working', 'ppO₂ 1.4 (bottom)'),
+                    content: translate('chart.profile.ppO2Working', 'pO₂ 1.4 (bottom)'),
                     position: 'end',
                     font: { size: 9 }
                 }
@@ -1334,7 +1334,7 @@ export class DiveProfileChart {
                 borderDash: [3, 3],
                 label: {
                     display: true,
-                    content: translate('chart.profile.ppO2Deco', 'ppO₂ 1.6 (deco)'),
+                    content: translate('chart.profile.ppO2Deco', 'pO₂ 1.6 (deco)'),
                     position: 'end',
                     font: { size: 9 }
                 }
@@ -1351,7 +1351,7 @@ export class DiveProfileChart {
                 borderDash: [3, 3],
                 label: {
                     display: true,
-                    content: translate('chart.profile.ppN2Narcosis', 'ppN₂ narcosis (4.0)'),
+                    content: translate('chart.profile.ppN2Narcosis', 'pN₂ narcosis (4.0)'),
                     position: 'start',
                     font: { size: 9 }
                 }
