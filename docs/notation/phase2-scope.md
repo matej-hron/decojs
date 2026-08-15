@@ -127,9 +127,21 @@ Nedělitelné mezery jsou jen jedna z pěti tříd. Zbývá:
 |---|---|---|
 | ~~Parciální tlaky: 8 různých zápisů~~ | ~~354 v 21 souborech~~ (skutečně 205 v 20) | **hotovo** |
 | ~~`P_amb` velkým písmenem~~ | ~~183 v 25 souborech~~ | **hotovo** |
-| `<em>` jako značka místo `<var>` | 105 (a 110 legitimních zvýraznění nechat) | #56 |
+| ~~`<em>` jako značka místo `<var>`~~ | ~~105~~ — **změřeno 0**, viz níže | **hotovo** |
 | `T_{1/2}` → `t_{1/2}` | 15–17 v 8–10 souborech — **změřeno 0**, viz níže | #62 |
 | ~~Oddělovač tisíců obyčejnou mezerou (`600 000 Pa`)~~ | ~~198 v 6 souborech~~ | **hotovo** |
+
+### `<em>` jako značka — hotovo
+
+Původní odhad 105 výskytů byl přestřelený a odkazoval na issue #56, které
+je ve skutečnosti o něčem jiném (parciální tlaky přes koncentraci). Třídu
+uzavřely průběžně vlny 9 až 12; doměření po vlně 12 najde v celém projektu
+**175 `<em>`, z toho 0 značek veličin**. Všechny zbylé jsou zvýrazněná
+běžná slova — `<em>up</em>`, `<em>not</em>`, `<em>ven</em>`, `<em>más</em>`.
+
+Hlídá to test *no `<em>` is used where the content is a bare quantity
+symbol*: hlásí jakékoli `<em>` s jediným písmenem latinky nebo řecké
+abecedy. Delší obsah propouští, protože zvýraznit slovo je legitimní.
 
 ### Oddělovač tisíců — hotovo
 
@@ -1114,3 +1126,41 @@ oddělovač je v celém řádku jednotný. Vrácení opravy zpět sondu i test
 skutečně shodí, a jen v češtině a španělštině.
 
 **Testy:** 351/351 ✅
+
+---
+
+## Stav fáze 2 po vlně 12
+
+Všech pět tříd z úvodní tabulky je uzavřeno a každou hlídá test, takže se
+chyba nemůže vrátit tiše:
+
+| Třída | Stav | Test |
+|---|---|---|
+| Nedělitelná mezera mezi hodnotou a jednotkou | hotovo | *unit is never glued to the value*, *units the first nbsp wave never listed* |
+| Desetinný oddělovač podle jazyka | hotovo | *no display string interpolates a raw decimal constant*, *no display markup carries a raw decimal constant* |
+| Značka tlaku malým písmenem | hotovo | *partial pressure symbol*, *no rendered string uses the doubled pp form* |
+| Kurzíva značky veličiny | hotovo | *quantity symbols are italic*, *quantity symbols in formulas are set in italics* |
+| Zkratky (GF, MOD, NDL) stojatě | hotovo | *every multi-letter token in a LaTeX formula is upright* |
+
+K tomu přibyly třídy, které vyplavaly až během práce: oddělovač tisíců,
+znak násobení, značka stupně, nedělitelná mezera v geometrii SVG, značka
+za operátorem Δ a rozlišení pomlčky, spojovníku a minus.
+
+**Testů celkem: 351.** Z toho notační kontroly tvoří samostatné bloky
+`describe('notation - …')`.
+
+### Co zůstává otevřené
+
+Nic z toho není chyba sazby — jsou to rozhodnutí, která nepřísluší
+vývojáři:
+
+- **#62 — tři dotazy na garanta:** mezera u znaku násobení (`2×7` vs
+  `4 × 50`), značka pro hloubku (*D* vs *h*) a tvar indexu gradient
+  faktorů (`GF_lo` vs `GF_low`). Značka poločasu se měřením ukázala jako
+  bezchybná, čeká se jen na potvrzení tvaru.
+- **Lokalizace indexů** (`p_okol` vs `p_amb`). Glossary §3 chce český
+  index, ale popisky grafů jsou sdílené přes všechny tři jazyky a jejich
+  převod do i18n je samostatná úloha.
+- **Mezery kolem znaku minus.** Projekt používá `(132−30)` i `750 − 94`.
+  Obojí je podle normy přípustné; sjednocení je otázka vkusu, ne správnosti.
+- **Vývojářský povrch** (JSDoc, wiki) se schválně nemění — viz výše.
