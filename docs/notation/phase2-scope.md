@@ -757,3 +757,27 @@ zápisu, takže o ní nerozhodujeme sami.
 
 **Testy:** 333/333 (10 nových, každý negativně ověřený).
 
+### Regrese: nedělitelná mezera v SVG path — opraveno
+
+Vlna „nedělitelná mezera za běhu" (#94) vkládala U+00A0 mezi číslo a jednotku.
+Pravidlo pro **litr** (`l`, `L`) ale chytlo i příkaz `L` v SVG path:
+
+```js
+const FILL_D = `${PROFILE_D}\u00a0L 1200 200 L 0 200 Z`;   // ← rozbité
+```
+
+SVG parser takový řetězec odmítne (`Expected path command`) a **výplň hero
+animace na úvodní stránce se přestala kreslit** — v obou jazycích. Zdroj přitom
+vypadá v pořádku a žádný test ani statická kontrola si toho nevšimly; našel to
+až smoke test, který na každé stránce sbírá chyby konzole.
+
+**Poučení pro další vlny:** jednotka `l`/`L` je jednopísmenná a shoduje se
+s příkazem SVG path i s běžnou zkratkou. Pravidlo na ni musí vylučovat
+geometrické kontexty. Nový test kontroluje **řetězcový literál, ne řádek** —
+nedělitelná mezera sedí typicky hned za interpolací, kde už na řádku zbývají
+jen dva příkazy a řádková heuristika je slepá. V HTML se literály hledají jen
+uvnitř `<script>`, protože apostrof je v próze běžná interpunkce
+(„Boyle's Law").
+
+**Testy:** 334/334 (1 nový, negativně ověřený).
+
