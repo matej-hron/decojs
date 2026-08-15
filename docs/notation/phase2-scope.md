@@ -981,3 +981,37 @@ tuhle možnost vylučovala, a je opravená.
 všechny indexy stojatě, nikde neunikl doslovný `<var>`.
 
 **Testy:** 344/344 ✅
+
+---
+
+## Vlna 10 — kvízová data spadla mimo záběr vlastní kontroly
+
+Kontrola z Vlny 9 prohledávala `locales/` a HTML stránky. **Nesahala na
+`data/`**, kde leží kvízy — a tam zůstalo patnáct `Δp` bez kurzívy.
+
+Že do záběru patří, není názor: `js/quiz.js` vkládá otázky i vysvětlení přes
+`innerHTML` (řádky 68 a 155), takže `<var>` v nich funguje stejně jako jinde,
+a soubory už třináct značek `<var>` obsahovaly. Vysvětlení tak měla v jedné
+větě obojí — `<var>p</var><sub>N₂</sub>` správně a `Δp` o pár slov dál špatně.
+
+| Co | Počet | Před → po |
+|---|---|---|
+| Veličina za operátorem Δ | 15 | `Δp` → `Δ<var>p</var>` |
+| Operátor Δ bez operandu | 3 | `Δ = 40 − 10` → `Δ<var>V</var> = 40 − 10` |
+
+Druhý řádek je jiná chyba než první. `Δ` je operátor rozdílu; samo o sobě
+neoznačuje nic. Ve větě „nasycení je 50 % rozdílu, Δ = 40 − 10 = 30 ml/l"
+si čtenář musí veličinu domyslet — jde o rozpuštěný objem, tedy
+`Δ<var>V</var>`. Kontrola proto nově hlásí i `Δ` následované rovnítkem.
+
+Výjimkou zůstává popisek kreslený na canvas v `sandbox/m-values.html`, kde
+`Δ` stojí samo a značka se vedle něj sází kurzívou přímo v kódu — do HTML
+se tam nedá zasáhnout.
+
+**Ověřeno v prohlížeči:** kvíz projitý celou kategorií „Dekomprese a sycení"
+(21 otázek) ve všech třech jazycích, 18 vysvětlení s `Δ`. Měřil se skutečný
+řez písma značky **bezprostředně za `Δ`** — ne jen to, jestli je ve vysvětlení
+nějaké `<var>`; první verze sondy se tím nechala oklamat, protože v téže větě
+stálo korektní `<var>p</var><sub>N₂</sub>` o kus dál.
+
+**Testy:** 344/344 ✅
