@@ -18,6 +18,9 @@ const SUPPORTED_LANGS = ['en', 'cs', 'es'];
 /** @type {string} localStorage key for language preference */
 const STORAGE_KEY = 'deco-theory-lang';
 
+/** @type {string} Brand suffix appended to every page title */
+const SITE_NAME = 'Deco Theory';
+
 /** @type {Object<string, Object>} Cache of loaded translation data by language */
 const translationCache = {};
 
@@ -86,7 +89,8 @@ function resolveKey(translations, key) {
 /**
  * Apply translations to all elements with `data-i18n` attributes.
  * Sets innerHTML for elements (supports HTML tags in translations).
- * Also updates the page title if a "page.title" key exists.
+ * Also updates the page title from the key named in `<body data-i18n-title>`,
+ * appending the site name. Pages without that attribute keep their HTML title.
  * @param {Object} translations - Translation key-value map
  */
 function applyTranslations(translations) {
@@ -100,10 +104,17 @@ function applyTranslations(translations) {
         }
     });
 
-    // Update page title if available
-    const pageTitle = resolveKey(translations, 'page.title');
-    if (pageTitle) {
-        document.title = pageTitle;
+    // Update the page title from the key this page declares on <body>.
+    // One shared key would put a single page's name into every browser tab;
+    // without a resolvable key the <title> written in the HTML stays.
+    // `data-i18n-title-context` separates pages that share a name - the
+    // Gradient Factors theory page and its sandbox, for instance.
+    const titleKey = document.body && document.body.dataset.i18nTitle;
+    const pageName = titleKey ? resolveKey(translations, titleKey) : undefined;
+    if (pageName) {
+        const contextKey = document.body.dataset.i18nTitleContext;
+        const context = contextKey ? resolveKey(translations, contextKey) : undefined;
+        document.title = [pageName, context, SITE_NAME].filter(Boolean).join(' \u2013 ');
     }
 
     // Update html lang attribute

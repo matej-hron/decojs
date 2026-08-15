@@ -1,7 +1,4 @@
 {
-    "page": {
-        "title": "Presión y presión parcial - Deco Theory"
-    },
     "disclaimer": {
         "text": "<strong>Solo para fines educativos</strong> — Esta herramienta NO está pensada para planificar inmersiones reales. No la uses nunca para bucear. Utiliza siempre ordenadores de buceo certificados, tablas y una formación adecuada."
     },
@@ -692,9 +689,6 @@
         }
     },
     "gradientFactors": {
-        "page": {
-            "title": "Factores de gradiente - Deco Theory"
-        },
         "toc": {
             "greyZone": "Zona gris: burbujas silenciosas",
             "individualVariability": "Variabilidad individual",
@@ -945,9 +939,6 @@
         "rampNote": "Durante el ascenso el GF <em>permitido</em> se interpola linealmente desde GF bajo a la profundidad pAnchor hasta GF alto en superficie. El corredor verde del gráfico muestra esa región permitida."
     },
     "gasLaw": {
-        "page": {
-            "title": "Ley de los gases: temperatura y presión - Deco Theory"
-        },
         "disclaimer": {
             "text": "<strong>Solo para fines educativos</strong> — Esta herramienta demuestra la Ley de Gay-Lussac para botellas rígidas de buceo."
         },
@@ -1309,7 +1300,7 @@
             "haldane": "Ecuación de Haldane",
             "schreiner": "Ecuación de Schreiner",
             "mvalues": "Valores M",
-            "gradientFactors": "Gradient Factors",
+            "gradientFactors": "Factores de gradiente",
             "tissue": "Saturación tisular",
             "transfill": "Transvase de botellas",
             "cascade": "Llenado en cascada",

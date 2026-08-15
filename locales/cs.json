@@ -1,7 +1,4 @@
 {
-    "page": {
-        "title": "Tlak a parciální tlak - Deco Theory"
-    },
     "disclaimer": {
         "text": "<strong>Pouze pro výukové účely</strong> — Tento nástroj NENÍ určen k plánování skutečných ponorů. Nikdy jej nepoužívejte pro reálné potápění. Vždy používejte certifikované potápěčské počítače, tabulky a řádný výcvik."
     },
@@ -692,9 +689,6 @@
         }
     },
     "gradientFactors": {
-        "page": {
-            "title": "Gradient faktory - Deco Theory"
-        },
         "toc": {
             "greyZone": "Šedá zóna: tiché bubliny",
             "individualVariability": "Individuální variabilita",
@@ -945,9 +939,6 @@
         "rampNote": "Během výstupu se <em>povolené</em> GF lineárně interpoluje z GF Low v hloubce pAnchor na GF High na hladině. Zelený koridor v grafu zobrazuje tuto povolenou oblast."
     },
     "gasLaw": {
-        "page": {
-            "title": "Plynový zákon: Teplota a tlak - Deco Theory"
-        },
         "disclaimer": {
             "text": "<strong>Pouze pro výukové účely</strong> — Tento nástroj demonstruje Gay-Lussacův zákon pro potápěčské lahve (konstantní objem)."
         },

@@ -1,7 +1,4 @@
 {
-    "page": {
-        "title": "Pressure & Partial Pressure - Deco Theory"
-    },
     "disclaimer": {
         "text": "<strong>Educational Use Only</strong> — This tool is NOT intended for real dive planning. Never use this for actual dives. Always use certified dive computers, tables, and proper training."
     },
@@ -692,9 +689,6 @@
         }
     },
     "gradientFactors": {
-        "page": {
-            "title": "Gradient Factors - Deco Theory"
-        },
         "toc": {
             "greyZone": "Grey Zone: Silent Bubbles",
             "individualVariability": "Individual Variability",
@@ -945,9 +939,6 @@
         "rampNote": "During ascent the <em>allowed</em> GF is ramped linearly from GF Low at the pAnchor depth to GF High at the surface. The green corridor in the chart shows that allowed region."
     },
     "gasLaw": {
-        "page": {
-            "title": "Gas Law: Temperature & Pressure - Deco Theory"
-        },
         "disclaimer": {
             "text": "<strong>Educational Use Only</strong> — This tool demonstrates Gay-Lussac's Law for rigid scuba cylinders."
         },
