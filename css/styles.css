@@ -2098,7 +2098,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.57";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.58";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -5182,13 +5182,17 @@ var {
    Doporučený zápis <var>p</var><sub>amb</sub> má <sub> jako sourozence,
    takže ho toto pravidlo nepotřebuje — je tu pro zápis s indexem uvnitř. */
 var sub,
-var sup {
+var sup,
+var + sub,
+var + sup {
     font-style: normal;
 }
 
 /* Výjimka: index, který je sám proměnnou, je zase kurzívou. */
 var sub var,
-var sup var {
+var sup var,
+var + sub var,
+var + sup var {
     font-style: italic;
 }
 

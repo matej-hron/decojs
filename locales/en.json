@@ -162,7 +162,7 @@
             "exampleTitle": "Example Calculation",
             "exampleIntro": "After a dive you note:",
             "exampleCyl": "Cylinder: 12 L",
-            "examplePressure": "Start pressure: 200 bar, End pressure: 80 bar → <strong>Δp = 120 bar</strong>",
+            "examplePressure": "Start pressure: 200 bar, End pressure: 80 bar → <strong>Δ<var>p</var> = 120 bar</strong>",
             "exampleTime": "Dive time: 45 minutes",
             "exampleDepth": "Average depth: 15 m → <strong><var>p</var><sub>avg</sub> = 1 + 15/10 = 2.5 bar</strong>",
             "showSolution": "Try it yourself first — click to reveal the solution",
@@ -444,9 +444,9 @@
             "cardTitle": "Why Do Bubbles Grow?",
             "intro": "A gas bubble in tissue has three pressures acting on it:",
             "pAmb": "<strong>Ambient pressure (<var>p</var><sub>amb</sub>)</strong> — pushes the bubble inward",
-            "pSurface": "<strong>Surface tension (2γ/r)</strong> — the Laplace pressure, also squeezes the bubble. Smaller bubbles have <em>more</em> surface tension.",
+            "pSurface": "<strong>Surface tension (2<var>γ</var>/<var>r</var>)</strong> — the Laplace pressure, also squeezes the bubble. Smaller bubbles have <em>more</em> surface tension.",
             "pTissue": "<strong>Dissolved gas tension (<var>p</var><sub>tissue</sub>)</strong> — the total pressure of gases dissolved in surrounding tissue, pushing gas <em>into</em> the bubble",
-            "insight": "When <strong><var>p</var><sub>tissue</sub> &gt; <var>p</var><sub>amb</sub> + 2γ/r</strong>, gas diffuses into the bubble and it <strong>grows</strong>. As it grows, <em>r</em> increases, surface tension <em>drops</em>, making growth even easier — a <strong>positive feedback loop</strong>.",
+            "insight": "When <strong><var>p</var><sub>tissue</sub> &gt; <var>p</var><sub>amb</sub> + 2<var>γ</var>/<var>r</var></strong>, gas diffuses into the bubble and it <strong>grows</strong>. As it grows, <var>r</var> increases, surface tension <em>drops</em>, making growth even easier — a <strong>positive feedback loop</strong>.",
             "sliderHint": "Use the slider to ascend from 30 m. Watch how reducing ambient pressure tips the balance — larger bubbles cross the critical radius first."
         },
         "halfTimeConcept": {
@@ -974,9 +974,9 @@
         "calculatePrompt": "Set up your scenario, calculate <var>p</var><sub>2</sub>, then click below to check your answer.",
         "showResult": "Show Result",
         "finalPressure": "Final Pressure <var>p</var><sub>2</sub>",
-        "pressureChange": "Pressure Change Δp",
+        "pressureChange": "Pressure Change Δ<var>p</var>",
         "usableGasChange": "Usable Gas Change",
-        "gasChangeSub": "equivalent surface liters (Δp × volume)",
+        "gasChangeSub": "equivalent surface liters (Δ<var>p</var> × volume)",
         "diveTimeChange": "Dive Time Change at 20 m",
         "diveTimeSub": "Surface Air Consumption 20 L/min at 3 bar (1+20/10)",
         "safety": {

@@ -942,3 +942,42 @@ Přibyly dvě kontroly, které hlídají zbylé dvě podoby téže chyby:
 - **`273.15`** v běhové šabloně `sandbox/gas-law.html` — desetinná tečka.
 
 **Testy:** 340/340 ✅
+
+## Vlna 9 — značky veličin ve vzorcích kurzívou
+
+**Verze 0.6.58.** Poslední zbytek třídy 4 (`<em>` jako značka).
+
+Odstavec o růstu bubliny zacházel se značkami **třemi různými způsoby v jedné
+větě**: `p` už mělo `<var>`, `γ` a `r` ve vzorci `2γ/r` neměly nic a `r`
+v próze mělo `<em>`, tedy kurzívu bez významu.
+
+| Co | Počet | Před → po |
+|---|---|---|
+| `<em>` použitý jako značka | 4 | `<em>r</em>` → `<var>r</var>` |
+| Značka ve vzorci bez kurzívy | 8 | `2γ/r` → `2<var>γ</var>/<var>r</var>` |
+| Veličina za operátorem Δ | 12 | `Δp` → `Δ<var>p</var>` |
+
+Řecká písmena jsou v obsahu jen dvě: `Δ` (13×) a `γ` (8×). **`Δ` zůstává
+stojatě** — je to operátor, ne veličina (ISO 80000-2); kurzívou se sází až
+značka za ním.
+
+Dva HTML fallbacky v `sandbox/gas-law.html` měly navíc `&Delta;P` s **velkým**
+písmenem, zatímco locales měly správně `Δp`. Samotné doplnění kurzívy by chybu
+nechalo na místě, proto se opravila spolu s ní.
+
+### Co našel až prohlížeč
+
+Index `O₂` se na `pressure.html` vysázel **kurzívou**, přestože značka i index
+byly napsané správně. Příčina nebyla v textu, ale v CSS: pravidlo pokrývalo
+jen `var sub` (index *uvnitř* `<var>`), kdežto doporučený zápis má `<sub>` jako
+**sourozence**. Ten od `<var>` kurzívu opravdu nezdědí — zdědí ji ale od
+kteréhokoli kurzívního předka, a tady stál celý odstavec v `<em>`.
+
+Chyba tedy závisela na tom, v jakém odstavci značka náhodou stála. Doplněno
+`var + sub` / `var + sup`; `authoring.md` §2 mělo u toho místa úvahu, která
+tuhle možnost vylučovala, a je opravená.
+
+**Ověřeno v prohlížeči:** 174 značek na 13 stránkách — všechny kurzívou,
+všechny indexy stojatě, nikde neunikl doslovný `<var>`.
+
+**Testy:** 344/344 ✅
