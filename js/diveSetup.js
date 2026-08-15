@@ -1579,7 +1579,22 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
     // otherwise create a 1-minute discrepancy (e.g., runtime 43 → 47 but
     // raw 3.3 min rounds to 3, missing 1 min).
     const displayRuntimes = segments.map(s => Math.round(s.runtime));
-    const rows = segments.map((s, i) => {
+    // Bottom = descent + bottom-time rows; Ascent = everything after leaving
+    // the bottom (stops, gas switches, ascents). Section header rows are
+    // purely presentational (Divesoft-style grouping) and carry no data.
+    const rowsHtml = [];
+    let bottomHeaderInserted = false;
+    let ascentHeaderInserted = false;
+    segments.forEach((s, i) => {
+        if (!bottomHeaderInserted) {
+            rowsHtml.push(`<tr class="dse-plan-section"><th colspan="6">${translate('divePlan.sectionBottom', 'Bottom')}</th></tr>`);
+            bottomHeaderInserted = true;
+        }
+        if (!ascentHeaderInserted && s.cls !== 'des' && s.cls !== 'bottom') {
+            rowsHtml.push(`<tr class="dse-plan-section"><th colspan="6">${translate('divePlan.sectionAscent', 'Ascent')}</th></tr>`);
+            ascentHeaderInserted = true;
+        }
+
         const tankCell = s.tankBar !== null && s.tankBar !== undefined ? `${s.tankBar}\u00a0bar` : '—';
         const gas = gasList.find(g => g.id === s.gasId);
         const threshold = gas?.reservePressure ?? reserve;
@@ -1597,25 +1612,39 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
         } else {
             stopDisplay = runtimeDisplay - displayRuntimes[i - 1];
         }
-        return `<tr class="${trClass}">` +
+        rowsHtml.push(`<tr class="${trClass}">` +
             `<td class="dse-plan-phase"><span class="dse-plan-icon">${s.icon}</span> ${s.label}</td>` +
             `<td class="dse-plan-depth">${s.depth}\u00a0m</td>` +
             `<td class="dse-plan-stop">${stopDisplay || stopDisplay === 0 ? stopDisplay : '—'}</td>` +
             `<td class="dse-plan-runtime">${runtimeDisplay}</td>` +
             `<td class="dse-plan-gas">${s.gas}</td>` +
             `<td class="dse-plan-tank">${tankCell}</td>` +
-            `</tr>`;
-    }).join('');
+            `</tr>`);
+    });
+
+    // Terminal Hladina/Surface row: purely informational marker that the
+    // dive has ended, not a real segment (blank duration/runtime/gas/tank).
+    rowsHtml.push(`<tr class="dse-plan-surface-final">` +
+        `<td class="dse-plan-phase"><span class="dse-plan-icon">▲</span> ${phaseLabels.surface}</td>` +
+        `<td class="dse-plan-depth">0\u00a0m</td>` +
+        `<td class="dse-plan-stop">—</td>` +
+        `<td class="dse-plan-runtime">—</td>` +
+        `<td class="dse-plan-gas">—</td>` +
+        `<td class="dse-plan-tank">—</td>` +
+        `</tr>`);
+
+    const rows = rowsHtml.join('');
 
     return `<table class="dse-plan-table">` +
         `<thead><tr>` +
         `<th>${translate('divePlan.colPhase', 'Phase')}</th>` +
         `<th>${translate('divePlan.colDepth', 'Depth')}</th>` +
         `<th>${translate('divePlan.colStop', 'Stop')}</th>` +
-        `<th>${translate('divePlan.colRuntime', 'Runtime')}</th>` +
+        `<th>${translate('divePlan.colRuntime', 'Runtime')} *</th>` +
         `<th>${translate('divePlan.colGas', 'Gas')}</th>` +
         `<th>${translate('divePlan.colTank', 'Tank')}</th>` +
         `</tr></thead>` +
         `<tbody>${rows}</tbody>` +
-        `</table>`;
+        `</table>` +
+        `<p class="dse-plan-footnote">* ${translate('divePlan.runtimeFootnote', 'end time of the stage')}</p>`;
 }

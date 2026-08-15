@@ -139,7 +139,8 @@ import {
     getGasSwitchEvents,
     insertGasSwitchWaypoints,
     calculateMOD,
-    computeGasConsumption
+    computeGasConsumption,
+    renderDivePlanTableHTML
 } from '../js/diveSetup.js';
 
 import {
@@ -701,6 +702,67 @@ describe('diveSetup', () => {
             expect(gasSwitchEvents[0].depth).toBe(6);
             expect(gasSwitchEvents[0].toGas.id).toBe('deco');
         });
+    });
+});
+
+describe('diveSetup - renderDivePlanTableHTML', () => {
+    // Same 45m/25min GF 30/70-style multi-stop profile used for the empirical
+    // runtime-semantics verification during design: descent, bottom, ascent
+    // to first stop, four deco stops, final ascent to surface.
+    const waypoints = [
+        { time: 0, depth: 0, gasId: 'air' },
+        { time: 2, depth: 45, gasId: 'air' },
+        { time: 27, depth: 45, gasId: 'air' },
+        { time: 29.5, depth: 12, gasId: 'air' },
+        { time: 34.5, depth: 12, gasId: 'air' },
+        { time: 36, depth: 9, gasId: 'air' },
+        { time: 38.6, depth: 9, gasId: 'air' },
+        { time: 39.6, depth: 6, gasId: 'air' },
+        { time: 45.6, depth: 6, gasId: 'air' },
+        { time: 46.6, depth: 3, gasId: 'air' },
+        { time: 56.6, depth: 3, gasId: 'air' },
+        { time: 57.6, depth: 0, gasId: 'air' },
+    ];
+    const gases = [{ id: 'air', name: 'Air', cylinderVolume: 24, startPressure: 200, reservePressure: 50 }];
+
+    test('renamed Stop column and Runtime footnote marker render', () => {
+        const html = renderDivePlanTableHTML(waypoints, gases, {});
+        expect(html).toContain('<th>Stop</th>');
+        expect(html).toContain('<th>Runtime *</th>');
+        expect(html).toContain('<p class="dse-plan-footnote">* end time of the stage</p>');
+    });
+
+    test('exactly one Bottom and one Ascent section header, Bottom rows precede Ascent rows', () => {
+        const html = renderDivePlanTableHTML(waypoints, gases, {});
+        const bottomCount = (html.match(new RegExp('dse-plan-section"><th colspan="6">Bottom<\\/th>', 'g')) || []).length;
+        const ascentCount = (html.match(new RegExp('dse-plan-section"><th colspan="6">Ascent<\\/th>', 'g')) || []).length;
+        expect(bottomCount).toBe(1);
+        expect(ascentCount).toBe(1);
+        expect(html.indexOf('>Bottom</th>')).toBeLessThan(html.indexOf('>Ascent</th>'));
+        // The Ascent header must come after the des/bottom rows and before the first asc/stop row.
+        const ascentHeaderIdx = html.indexOf('>Ascent</th>');
+        const firstStopRowIdx = html.indexOf('dse-plan-asc');
+        expect(ascentHeaderIdx).toBeLessThan(firstStopRowIdx);
+    });
+
+    test('terminal Surface row is always last with blank/dash cells', () => {
+        const html = renderDivePlanTableHTML(waypoints, gases, {});
+        const rowStart = html.indexOf('<tr class="dse-plan-surface-final">');
+        expect(rowStart).toBeGreaterThan(-1);
+        const rowEnd = html.indexOf('</tbody>', rowStart);
+        const finalRow = html.slice(rowStart, rowEnd);
+        // The final row must be the last <tr> before </tbody> (no other row follows it).
+        expect(finalRow.split('<tr').length).toBe(2);
+        expect(finalRow).toContain('Surface');
+        expect(finalRow).toContain('0\u00a0m');
+        expect((finalRow.match(new RegExp('>—<', 'g')) || []).length).toBe(4); // stop, runtime, gas, tank all dashes
+    });
+
+    test('merge/fold row values are unchanged by the section/footnote additions', () => {
+        const html = renderDivePlanTableHTML(waypoints, gases, {});
+        // "Stop 12m" row: duration 6, runtime 36 (arrival at next level, 9m) —
+        // matches the fold-the-ascent-into-the-preceding-stop behavior.
+        expect(html).toContain('<td class="dse-plan-depth">12\u00a0m</td><td class="dse-plan-stop">6</td><td class="dse-plan-runtime">36</td>');
     });
 });
 
