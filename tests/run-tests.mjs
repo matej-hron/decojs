@@ -4302,15 +4302,10 @@ describe('notation - units the first nbsp wave never listed', () => {
     // `ZH-L16A` je název algoritmu, ne 16 ampér.
     const ALGO = /ZH-?L\s?16/;
 
-    // Rozpočet zbylých výskytů. Obojí je jiná třída chyby a řeší se zvlášť
-    // (viz docs/notation/phase2-scope.md) — tenhle test jen hlídá, ať jich
-    // nepřibude. Po opravě se číslo snižuje, nikdy nezvyšuje.
-    const ALLOWED = {
-        // `16 – 18 C` — chybí značka stupně, `C` je coulomb. Třída „chybějící °".
-        'data/quiz-accidents.json': 4,
-        'data/quiz-safety.json': 3,
-        'data/quiz-training.json': 1,
-    };
+    // Rozpočet je prázdný: všechny třídy z fáze 2 jsou opravené.
+    // Přibude-li nový výskyt, test spadne a rozpočet se nedoplňuje —
+    // opraví se text.
+    const ALLOWED = {};
 
     const strings = (value, path, out) => {
         if (typeof value === 'string') out.push([path, value]);
@@ -4386,6 +4381,43 @@ describe('notation - units the first nbsp wave never listed', () => {
         const perFile = collect();
         const stale = Object.keys(ALLOWED).filter(rel => (perFile[rel] || []).length !== ALLOWED[rel]);
         expect(stale).toEqual([]);
+    });
+});
+
+describe('notation - degree Celsius is written as two characters', () => {
+    // authoring.md §5: ℃ (U+2103) je kompatibilní znak z bloku CJK,
+    // jeho dekompozice je U+00B0 U+0043 — píšou se rovnou ty dva znaky.
+    // Samé `C` je zase coulomb, ne stupeň Celsia; to hlídá kontrola jednotek.
+    const root = new URL('../', import.meta.url);
+
+    test('no file uses the precomposed degree Celsius character', () => {
+        const found = [];
+        for (const dir of ['locales/', 'data/']) {
+            for (const name of readdirSync(new URL(dir, root))) {
+                if (!name.endsWith('.json')) continue;
+                if (readFileSync(new URL(`${dir}${name}`, root), 'utf8').includes('\u2103')) {
+                    found.push(`${dir}${name}`);
+                }
+            }
+        }
+        for (const rel of shippedSources()) {
+            if (readFileSync(new URL(rel, root), 'utf8').includes('\u2103')) found.push(rel);
+        }
+        expect(found).toEqual([]);
+    });
+
+    test('the degree sign is never separated from the C', () => {
+        // `20 ° C` je stejně špatně jako `20 C`; značka je jeden celek `°C`.
+        const found = [];
+        for (const dir of ['locales/', 'data/']) {
+            for (const name of readdirSync(new URL(dir, root))) {
+                if (!name.endsWith('.json')) continue;
+                const rel = `${dir}${name}`;
+                const src = readFileSync(new URL(rel, root), 'utf8');
+                if (/\u00b0[ \u00a0]+C(?![\w\u00e1-\u017e])/.test(src)) found.push(rel);
+            }
+        }
+        expect(found).toEqual([]);
     });
 });
 

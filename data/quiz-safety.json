@@ -98,7 +98,7 @@
       "category": "zpusobilost",
       "question": "Potápěči se zásadně vyvarují potápění:",
       "options": [
-        {"key": "a", "text": "při nižších teplotách než minus 10 C"},
+        {"key": "a", "text": "při nižších teplotách než minus 10 °C"},
         {"key": "b", "text": "jsou-li jejich fyzické a/nebo psychické schopnosti sníženy únavou"},
         {"key": "c", "text": "jestliže nejsou vybaveni potápěčským počítačem"},
         {"key": "d", "text": "při snížení viditelnosti pod vodou na méně než 2 m"}
@@ -151,12 +151,12 @@
       "question": "Označte tvrzení, které neodpovídá Bezpečnostním směrnicím SPČR:",
       "options": [
         {"key": "a", "text": "Potápěči se zásadně vyvarují potápění v případě, jsou-li jejich fyzické a/nebo psychické schopnosti sníženy nemocí, únavou, požitím alkoholu, drog či jinými okolnostmi."},
-        {"key": "b", "text": "Potápěči se zásadně vyvarují potápění při poklesu teploty vody pod 6 C."},
+        {"key": "b", "text": "Potápěči se zásadně vyvarují potápění při poklesu teploty vody pod 6 °C."},
         {"key": "c", "text": "Potápěči průběžně udržují své potápěčské dovednosti a fyzickou kondici."},
         {"key": "d", "text": "Potápěči předcházejí potápěčským nehodám pravidelnou potápěčskou praxí, procvičováním řešení krizových situací a odpovědným plánováním ponorů."}
       ],
       "correct": "b",
-      "explanation": "BS neuvádí omezení potápění při poklesu teploty vody pod 6 C."
+      "explanation": "BS neuvádí omezení potápění při poklesu teploty vody pod 6 °C."
     },
     {
       "id": 13,

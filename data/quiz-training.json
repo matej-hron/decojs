@@ -905,7 +905,7 @@
       "question": "Z hlediska požadované praxe pro udělení kvalifikace CMAS P*** se za ponory v náročnějších podmínkách považují:",
       "options": [
         {"key": "a", "text": "ponory při viditelnosti menší než 2 m"},
-        {"key": "b", "text": "ponory při teplotě vody pod 10 C"},
+        {"key": "b", "text": "ponory při teplotě vody pod 10 °C"},
         {"key": "c", "text": "ponory do hloubek přes 30 m"},
         {"key": "d", "text": "všechny odpovědi jsou správné"}
       ],
