@@ -4276,6 +4276,44 @@ describe('notation - partial pressure symbol', () => {
     });
 });
 
+describe('notation - the nbsp rule must not reach SVG geometry', () => {
+    // PR #94 vkládal U+00A0 mezi číslo a jednotku. Pravidlo pro litr (`l`/`L`)
+    // ale chytlo i příkaz `L` v SVG path — `…1200\u00a0L 1200 200…`. SVG parser
+    // takový řetězec odmítne („Expected path command") a výplň hero animace se
+    // přestala kreslit. Statická kontrola to nenašla, protože zdroj vypadá dobře.
+    const root = new URL('../', import.meta.url);
+
+    test('no SVG path definition contains a non-breaking space', () => {
+        // Kontroluje se řetězcový literál, ne řádek: nedělitelná mezera sedí
+        // často hned za interpolací (`${PROFILE_D}\u00a0L 1200 200 L 0 200 Z`),
+        // kde už zbývají jen dva příkazy a řádková heuristika je slepá.
+        const offenders = [];
+        const NBSP = /\u00a0|\\u00a0|&nbsp;/;
+        const commands = (t) => (t.match(/[MLHVCSQTAZ]\s*-?[\d.]/g) || []).length;
+        const looksLikePath = (t) => commands(t) >= 3
+            || (commands(t) >= 1 && /\$\{[A-Za-z_]*(?:_D|[Pp]ath)\}/.test(t));
+
+        for (const rel of shippedSources()) {
+            const src = readFileSync(new URL(rel, root), 'utf8');
+            // V HTML je apostrof běžná interpunkce („Boyle's Law"), takže se
+            // literály hledají jen v kódu — v .js celém, v .html ve <script>.
+            const code = rel.endsWith('.js')
+                ? src
+                : (src.match(/<script[^>]*>[\s\S]*?<\/script>/g) || []).join('\n');
+            const literals = code.match(/`(?:\\[\s\S]|[^\\`])*`|'(?:\\.|[^\\'\n])*'|"(?:\\.|[^\\"\n])*"/g) || [];
+            for (const lit of literals) {
+                if (!NBSP.test(lit) || !looksLikePath(lit)) continue;
+                offenders.push(`${rel}: ${lit.slice(0, 60)}`);
+            }
+            // atribut d="…" v HTML není řetězcový literál JS
+            for (const m of src.matchAll(/\sd="([^"]*)"/g)) {
+                if (NBSP.test(m[1])) offenders.push(`${rel}: d="${m[1].slice(0, 50)}"`);
+            }
+        }
+        expect(offenders).toEqual([]);
+    });
+});
+
 describe('notation - descriptive subscripts in formulas', () => {
     // Glosář §3: popisný index je zkrácené *slovo*, a slova se překládají —
     // garant to žádá v issue #61 (p_celk = p_O₂ + p_N₂). Chemický index
