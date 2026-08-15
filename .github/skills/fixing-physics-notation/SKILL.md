@@ -139,6 +139,18 @@ mezeru U+0020. A ověř kontrolu zaseknutím vady, ne jen tím, že je zelená.
 **Slepé místo prohlížeče:** text v `<option>` a v atributech procházení DOM
 nevidí. Měření v prohlížeči proto doplň statickým testem nad zdrojáky.
 
+**Nedělitelná mezera nesmí do geometrie.** Jednotka litr je `l`/`L` — jediné
+jednopísmenné značky v projektu, a `L` je zároveň příkaz SVG path. Pravidlo
+„číslo + mezera + jednotka" na `L 1200 200` sedne dokonale a vloží U+00A0
+doprostřed cesty; parser ji pak odmítne (`Expected path command`) a **grafika
+se přestane kreslit, aniž se cokoli vypíše do stránky**. Stalo se to v
+`js/components/HeroMotion.js` (regrese #94, opraveno v #99).
+
+Než pustíš vlnu nedělitelných mezer, vyřaď geometrii — `d`, `points`,
+`viewBox`, `transform` — stejně jako u desetinné čárky výše. Kontrola musí
+skenovat **řetězcové literály, ne řádky**: mezera sedí typicky hned za
+interpolací, kde na řádku zbývají dva příkazy a řádková heuristika je slepá.
+
 ## Kurzíva značky: opravuj celý vzorec, ne jen tlak
 
 Fáze 1 zavedla `<var>` a opravila *p*. Ostatní veličiny často zůstaly stojatě —
@@ -385,8 +397,12 @@ které tímhle způsobem padly:
 Nech kontrolu vypsat, **kolik** nálezů vůbec prošla — nula nalezených čísel
 vypadá stejně jako nula chyb.
 
+Než začneš, změř výchozí stav: `npm test 2>&1 | tail -3`. Na konci musí projít
+**všechny** testy a jejich počet musí být **stejný nebo vyšší** — klesne-li,
+smazal jsi test. Konkrétní číslo sem nepiš, mění se každým PR.
+
 ```bash
-npm test          # musí projít celé (319/319)
+npm test          # musí projít celé, 0 failed
 git diff --stat   # sedí seznam souborů z Kroku 1?
 
 # diff nesmí obsahovat formátovací šum
@@ -423,7 +439,7 @@ Norma: <odkaz do style-guide.md, proč je nový tvar správný>
 ## Ponecháno záměrně
 - `60°` (úhel se píše bez mezery), `12litrový` (složenina)
 
-**Testy:** 319/319 ✅
+**Testy:** <N>/<N> ✅ (<kolik nových, negativně ověřených>)
 ```
 
 Report musí odpovídat na otázku „co jsi kontroloval a nenašel", ne jen
