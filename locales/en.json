@@ -226,6 +226,7 @@
             "opDesc": "Used for Maximum Operating Depth (MOD) and oxygen toxicity limits. No water vapour subtraction.",
             "physTitle": "Physiological (tissue kinetics)",
             "physDesc": "When calculating alveolar gas pressures for tissue loading models, we subtract water vapour pressure because the lungs humidify inspired air:",
+            "waterVapourAt": "at 37 °C (body temperature)",
             "physNote": "This ~6% reduction appears in the Bühlmann equations for tissue saturation calculations. We will need this in further sections and stating it here for completeness."
         }
     },

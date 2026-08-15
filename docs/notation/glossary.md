@@ -83,8 +83,26 @@ ISO 80000 určuje jen to, že popisný index je stojatě; jazyk neřeší. Garan
 | maximální | max | max | *p*<sub>max</sub> | *p*<sub>max</sub> |
 | upravený (s GF) | upr | adj | *M*<sub>upr</sub> | *M*<sub>adj</sub> |
 
-**Důsledek, který zatím neřešíme:** popisky grafů jsou sdílené přes CZ/EN/ES, takže
-lokalizované indexy si vyžádají jejich převedení do i18n. To je práce fáze 2.
+**Slova psaná ve vzorci celá.** Některé indexy nejsou zkratkou, ale běžným slovem;
+ve vzorci se sázejí stojatě a překládají stejně jako zkratky.
+
+| Význam | Zdroj (EN) | CZ | Příklad |
+|---|---|---|---|
+| hloubka | depth | hloubka | *p*<sub>okol</sub> = 1 + hloubka / 10 |
+| lahev | cyl | lahev | *V*<sub>lahev</sub> |
+| počáteční tlak | start | poč | *p*<sub>poč</sub> |
+| rezerva | reserve | rez | *p*<sub>rez</sub> |
+| průměrný | avg | prům | *p*<sub>prům</sub> |
+
+**Zkratky se nepřekládají** (§5): `SAC`, `MOD`, `OTU`, `NDL`, `GF` zůstávají ve všech
+jazycích stejné — ve vzorci ale musí být stojatě (`\mathrm{SAC}`), jinak je KaTeX
+vysází jako součin kurzívních písmen *S*·*A*·*C*.
+
+**Vyřešeno ve fázi 2:** vzorce se sázejí z jednoho anglického zdroje a překládá je
+`localizeLatex()` v `js/format.js` — tabulka `UPRIGHT_CS` je strojovým protějškem
+obou tabulek výše. Do HTML se tedy píše kanonický anglický tvar
+(`p_{\mathrm{tot}}`) a český čtenář dostane `p_{\mathrm{celk}}`. Popisky grafů
+jdou přes `locales/*.json` a řídí se stejným pravidlem.
 
 ## 4. Parciální tlaky a podíly plynů
 

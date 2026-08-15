@@ -1299,6 +1299,13 @@ section h2 {
     overflow-x: auto;
 }
 
+.formula-caption {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted, #666);
+    margin: -0.25rem 0 0.75rem;
+}
+
 .formula-inline {
     background: #f8f9fa;
     padding: 0.1rem 0.3rem;
@@ -2091,7 +2098,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.51";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.52";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================

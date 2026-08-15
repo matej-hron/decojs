@@ -329,6 +329,24 @@ python3 docs/notation/tools/nbsp.py --fix   --thousands <soubory> # i tisíce
 na české soubory. Hlídají to testy `*.json: no &nbsp; entity`
 a `*.json: U+00A0 between value and unit` v `tests/run-tests.mjs`.
 
+## Vzorce: do HTML piš anglicky, překlad dělá `localizeLatex()`
+
+Statický LaTeX v HTML se **nepřekládá**. Popisný index je ale zkrácené slovo
+a slovo se překládat má (glosář §3, issue #61). Proto:
+
+- do HTML patří **kanonický anglický** tvar — `p_{\mathrm{tot}}`, `p_{\mathrm{amb}}`;
+  českou podobu vyrobí `localizeLatex()` z tabulky `UPRIGHT_CS` v `js/format.js`.
+  Napíšeš-li do HTML `p_{\mathrm{celk}}`, angličtina dostane český index.
+- **víceznakový index i zkratka musí být v `\mathrm{}`.** KaTeX vysází holé
+  `V_{cylinder}` nebo `SAC` jako *součin kurzívních písmen*, ne jako slovo.
+- **do `\text{}` nepiš prózu vázanou na jazyk.** „bar při 37 °C" uvidí
+  i anglický čtenář. Podmínka platnosti patří do popisky `.formula-caption`
+  pod vzorcem, tedy do `locales/*.json`.
+- stránka, která sází KaTeX, musí **přesázet i po `languagechange`** — jinak
+  po přepnutí zůstane vysázeno `p_tot` a `0.0627`.
+- `katex.render()` volej vždy přes `localizeLatex(el.dataset.latex)`; ukládej si
+  původní LaTeX do `dataset`, protože po prvním vysázení je `textContent` pryč.
+
 ## Ověřuj v prohlížeči, ne jen ve zdroji
 
 Statická kontrola vidí zdroj, ne to, co uživatel čte. Zelená sonda ale
@@ -344,6 +362,10 @@ Statická kontrola vidí zdroj, ne to, co uživatel čte. Zelená sonda ale
   neumí vyplnit skryté pole), podej jí data **uživatelskou cestou** — sdíleným
   odkazem `?profile=…` z `js/urlParams.js`.
 - Nezachytávej selhání selektoru přes `.catch(()=>{})`; timeout doběhne celý.
+- **Jazykovou kontrolu piš proti tabulce, ne proti ručnímu výběru slov.** Sonda,
+  která hledá jen `total` a `depth`, přehlédne `amb` — a tím i celou třídu.
+- Ověř, že se **jazyk opravdu přepnul** (změnil se i běžný text), než z toho
+  usoudíš, že se vzorec nepřesázel.
 
 ## Krok 3 — Ověření
 

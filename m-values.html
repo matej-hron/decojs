@@ -626,8 +626,12 @@
     <script src="js/nav.js" type="module"></script>
 
     <!-- KaTeX auto-render -->
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
+    <script type="module">
+        // Musí být modul: localizeLatex se importuje, a klasický <script> na
+        // importy modulu nevidí.
+        import { localizeLatex } from './js/format.js';
+
+        function renderMathFormulas() {
             if (typeof renderMathInElement === 'function') {
                 renderMathInElement(document.body, {
                     delimiters: [
@@ -636,13 +640,20 @@
                     ]
                 });
             }
-            // Also render formulas in .formula elements
-            document.querySelectorAll('.formula').forEach(el => {
-                if (typeof katex !== 'undefined') {
-                    katex.render(el.textContent, el, { displayMode: true });
+            document.querySelectorAll('.formula, .formula-inline').forEach(el => {
+                if (typeof katex === 'undefined') return;
+                if (!el.dataset.latex) el.dataset.latex = el.textContent;
+                const displayMode = el.classList.contains('formula');
+                try {
+                    katex.render(localizeLatex(el.dataset.latex), el, { displayMode });
+                } catch (e) {
+                    console.warn('KaTeX error:', e);
                 }
             });
-        });
+        }
+
+        renderMathFormulas();
+        document.addEventListener('languagechange', renderMathFormulas);
     </script>
 </body>
 </html>

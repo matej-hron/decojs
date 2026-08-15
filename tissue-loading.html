@@ -324,13 +324,13 @@
                     <div class="math-content">
                         <p data-i18n="tissueLoading.gasExchange.alveolarFormula.desc">The partial pressure of nitrogen in the alveoli accounts for water vapor pressure:</p>
                         <div class="formula" id="formula-alveolar">
-                            p_{\mathrm{alv,N_2}} = (p_{\mathrm{amb}} - p_{\mathrm{H_2O}}) \times f_{N_2}
+                            p_{\mathrm{alv,N_2}} = (p_{\mathrm{amb}} - p_{\mathrm{H_2O}}) \times f_{\mathrm{N_2}}
                         </div>
                         <p data-i18n="tissueLoading.gasExchange.alveolarFormula.where">Where:</p>
                         <ul>
                             <li><span class="formula-inline">p_{\mathrm{amb}}</span> = <span data-i18n="tissueLoading.gasExchange.alveolarFormula.pAmb">ambient pressure at depth (bar)</span></li>
                             <li><span class="formula-inline">p_{\mathrm{H_2O}}</span> = <span data-i18n="tissueLoading.gasExchange.alveolarFormula.pH2O">water vapor pressure ≈ 0.0627&nbsp;bar at 37&nbsp;°C</span></li>
-                            <li><span class="formula-inline">f_{N_2}</span> = <span data-i18n="tissueLoading.gasExchange.alveolarFormula.fN2">fraction of nitrogen in breathing gas (0.79 for air)</span></li>
+                            <li><span class="formula-inline">f_{\mathrm{N_2}}</span> = <span data-i18n="tissueLoading.gasExchange.alveolarFormula.fN2">fraction of nitrogen in breathing gas (0.79 for air)</span></li>
                         </ul>
                     </div>
                 </details>
@@ -549,26 +549,26 @@
                     <h4 data-i18n="tissueLoading.halfTimeCharts.math.haldaneTitle">Haldane Equation (constant depth)</h4>
                     <p data-i18n="tissueLoading.halfTimeCharts.math.haldaneDesc">When staying at a constant depth, tissue pressure changes according to:</p>
                     <div class="formula" id="formula-haldane">
-                        p_t(t) = p_{\mathrm{alv}} + (p_{\mathrm{t0}} - p_{\mathrm{alv}}) \cdot e^{-kt}
+                        p_{\mathrm{t}}(t) = p_{\mathrm{alv}} + (p_{\mathrm{t,0}} - p_{\mathrm{alv}}) \cdot e^{-kt}
                     </div>
                     <p data-i18n="tissueLoading.halfTimeCharts.math.haldaneWhere">Where:</p>
                     <ul>
-                        <li><span class="formula-inline">p_t(t)</span> = <span data-i18n="tissueLoading.halfTimeCharts.math.pt">tissue N₂ pressure at time t</span></li>
+                        <li><span class="formula-inline">p_{\mathrm{t}}(t)</span> = <span data-i18n="tissueLoading.halfTimeCharts.math.pt">tissue N₂ pressure at time t</span></li>
                         <li><span class="formula-inline">p_{\mathrm{alv}}</span> = <span data-i18n="tissueLoading.halfTimeCharts.math.palv">inspired (alveolar) N₂ pressure</span></li>
-                        <li><span class="formula-inline">p_{\mathrm{t0}}</span> = <span data-i18n="tissueLoading.halfTimeCharts.math.pt0">initial tissue N₂ pressure</span></li>
+                        <li><span class="formula-inline">p_{\mathrm{t,0}}</span> = <span data-i18n="tissueLoading.halfTimeCharts.math.pt0">initial tissue N₂ pressure</span></li>
                         <li><span class="formula-inline">k = \frac{\ln(2)}{t_{1/2}}</span> = <span data-i18n="tissueLoading.halfTimeCharts.math.k">rate constant</span></li>
                     </ul>
 
                     <h4 data-i18n="tissueLoading.halfTimeCharts.math.schreinerTitle">Schreiner Equation (depth change)</h4>
                     <p data-i18n="tissueLoading.halfTimeCharts.math.schreinerDesc">During ascent or descent at a constant rate:</p>
                     <div class="formula" id="formula-schreiner">
-                        p_t(t) = p_{\mathrm{alv0}} + R \cdot (t - \frac{1}{k}) - (p_{\mathrm{alv0}} - p_{\mathrm{t0}} - \frac{R}{k}) \cdot e^{-kt}
+                        p_{\mathrm{t}}(t) = p_{\mathrm{alv,0}} + R \cdot (t - \frac{1}{k}) - (p_{\mathrm{alv,0}} - p_{\mathrm{t,0}} - \frac{R}{k}) \cdot e^{-kt}
                     </div>
                     <p>Where <span class="formula-inline">R</span> <span data-i18n="tissueLoading.halfTimeCharts.math.rDesc">is the rate of change of alveolar pressure (positive for descent).</span></p>
 
                     <h4 data-i18n="tissueLoading.halfTimeCharts.math.pressureTitle">Pressure at Depth</h4>
                     <div class="formula" id="formula-pressure">
-                        p_{\mathrm{amb}} = 1.0 + \frac{depth}{10} \text{ bar}
+                        p_{\mathrm{amb}} = 1.0 + \frac{\mathrm{depth}}{10} \text{ bar}
                     </div>
                     <p data-i18n="tissueLoading.halfTimeCharts.math.pressureDesc">Every 10 meters of seawater adds approximately 1&nbsp;bar of pressure.</p>
                 </div>
@@ -923,8 +923,10 @@
             renderReferenceTable();
         });
 
-        // Re-render reference table when language changes
+        // Re-render reference table and formulas when language changes:
+        // popisné indexy i desetinný oddělovač ve vzorcích se řídí jazykem.
         document.addEventListener('languagechange', () => {
+            renderMathFormulas();
             renderReferenceTable();
         });
     </script>

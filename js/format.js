@@ -151,7 +151,54 @@ export function localizeNumbersIn(root, lang) {
 }
 
 /**
- * Localize decimal separators inside a KaTeX/LaTeX source string.
+ * Descriptive subscripts are abbreviated *words*, so they follow the language —
+ * see `docs/notation/glossary.md` §3, which the garant asked for in issue #61.
+ * Chemical subscripts (O₂, N₂, He) are element symbols and never change.
+ *
+ * The key is the canonical English form written in the HTML source; the value is
+ * the Czech one. Spanish uses the same abbreviations as English (`tot`, `amb`,
+ * `alv`, `atm`), so it needs no table.
+ */
+const UPRIGHT_CS = {
+    tot: 'celk',      // total → celkový
+    amb: 'okol',      // ambient → okolní
+    t: 'tk',          // tissue → tkáňový
+    adj: 'upr',       // adjusted → upravený
+    // Slova psaná ve vzorci celá, ne zkratkou (glosář §3, druhá tabulka)
+    depth: 'hloubka',
+    cyl: 'lahev',
+    start: 'poč',
+    reserve: 'rez',
+    avg: 'prům'
+    // atm, alv, h, max, tol a inert se v obou jazycích zkracují stejně;
+    // zkratky SAC, MOD, OTU a GF se nepřekládají (glosář §5)
+};
+
+/**
+ * Translate the upright, descriptive parts of a LaTeX string into `lang`.
+ *
+ * Only the contents of `\mathrm{…}` are considered — that is by construction the
+ * upright part, whether it sits in a subscript (`p_{\mathrm{amb}}`) or stands on
+ * its own (`\frac{\mathrm{depth}}{10}`). A chemical symbol inside the same group
+ * (`alv,N_2`) passes through because it is not a key in the table, and so do
+ * abbreviations such as `\mathrm{SAC}`, which stay the same in every language.
+ *
+ * @param {string} latex - LaTeX source
+ * @param {string} lang - Language tag
+ * @returns {string} LaTeX with translated subscripts
+ */
+function localizeUpright(latex, lang) {
+    if (!String(lang).toLowerCase().startsWith('cs')) return latex;
+    return latex.replace(/\\mathrm\{([^{}]*)\}/g, (whole, body) => {
+        const parts = body.split(',');
+        const next = parts.map(p => UPRIGHT_CS[p] ?? p);
+        return next.join(',') === body ? whole : `\\mathrm{${next.join(',')}}`;
+    });
+}
+
+/**
+ * Localize a KaTeX/LaTeX source string: decimal separator and descriptive
+ * subscripts.
  *
  * In math mode a bare comma is punctuation and KaTeX inserts a space after it
  * (`0,84` would render as `0, 84`). The decimal comma must be wrapped in a
@@ -159,11 +206,13 @@ export function localizeNumbersIn(root, lang) {
  *
  * @param {string} latex - LaTeX source
  * @param {string} [lang] - Language tag; defaults to the active language
- * @returns {string} LaTeX with localized decimal separators
+ * @returns {string} LaTeX with localized separators and subscripts
  */
 export function localizeLatex(latex, lang) {
     if (typeof latex !== 'string') return latex;
-    const sep = decimalSeparator(lang === undefined ? currentLang() : lang);
-    if (sep === '.') return latex;
-    return latex.replace(/(\d)\.(\d)/g, `$1{${sep}}$2`);
+    const active = lang === undefined ? currentLang() : lang;
+    const out = localizeUpright(latex, active);
+    const sep = decimalSeparator(active);
+    if (sep === '.') return out;
+    return out.replace(/(\d)\.(\d)/g, `$1{${sep}}$2`);
 }
