@@ -8,10 +8,24 @@ s garantem / školitelem, který markdown nečte.
 Po každé změně `glossary.md`:
 
 ```bash
-npm install docx          # není závislost projektu, instaluj mimo repo nebo globálně
-node docs/notation/export/md-to-docx.js docs/notation/glossary.md \
+npm install --no-save docx     # není závislost projektu
+node docs/notation/export/md-to-docx.cjs docs/notation/glossary.md \
      docs/notation/export/slovnicek-velicin.docx
 ```
+
+Přípona je **`.cjs`** schválně: `package.json` má `"type": "module"`, takže
+soubor s `require()` a příponou `.js` skončí na `ReferenceError: require is
+not defined`. (Do #106 tu byl `.js` a dokumentovaný příkaz nešel spustit.)
+
+## Na regeneraci se nesmí zapomenout
+
+Konvertor ukládá vedle dokumentu `slovnicek-velicin.sha256` — otisk předlohy,
+ze které byl vyroben. Test `the exported glossary was generated from the
+current source` ho porovnává s aktuálním `glossary.md`, takže **úprava
+slovníčku bez přegenerování shodí `npm test`**.
+
+Bez té pojistky export tiše zestárl: `glossary.md` se změnil v #91 a #98,
+ale `.docx` zůstal z #81 a garantovi chyběla celá tabulka popisných indexů.
 
 ## Co konvertor dělá navíc
 
@@ -43,4 +57,5 @@ print('OK')
 PY
 ```
 
-Očekávané hodnoty: kurzíva ≈ 121, indexy ≈ 65, uniklý markup **0**.
+Očekávané hodnoty rostou se slovníčkem; podstatné je, že **uniklý markup je 0**
+a že kurzíva i indexy jsou v řádu stovek, resp. desítek (po #106: 130 a 71).

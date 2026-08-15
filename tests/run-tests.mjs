@@ -194,6 +194,7 @@ import { computeCalendarLayout } from '../js/calendarLayout.js';
 import { snapClamp, diveBlockLabel } from '../js/components/TripCalendar.js';
 import { previewNdl } from '../js/ndlPreview.js';
 import { readFileSync, readdirSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { GF_PRESETS } from '../js/gfPresets.js';
 import { encodeTrip, decodeTrip } from '../js/tripUrl.js';
 import { isAndroid } from '../js/appBanner.js';
@@ -4381,6 +4382,25 @@ describe('notation - units the first nbsp wave never listed', () => {
         const perFile = collect();
         const stale = Object.keys(ALLOWED).filter(rel => (perFile[rel] || []).length !== ALLOWED[rel]);
         expect(stale).toEqual([]);
+    });
+});
+
+describe('notation - the glossary export the reviewer reads is current', () => {
+    // Slovníček se sdílí s garantem jako .docx, protože markdown nečte.
+    // U #91 a #98 se `glossary.md` změnil, ale export ne — garant by četl
+    // verzi bez celé nové tabulky popisných indexů. Otisk předlohy leží
+    // vedle dokumentu a přegenerování ho přepíše; tenhle test je porovnává.
+    const root = new URL('../', import.meta.url);
+
+    test('the exported glossary was generated from the current source', () => {
+        const src = readFileSync(new URL('docs/notation/glossary.md', root));
+        const current = createHash('sha256').update(src).digest('hex');
+        const stamped = readFileSync(
+            new URL('docs/notation/export/slovnicek-velicin.sha256', root), 'utf8',
+        ).trim().split(/\s+/)[0];
+        // Při nesouhlasu: node docs/notation/export/md-to-docx.cjs \
+        //   docs/notation/glossary.md docs/notation/export/slovnicek-velicin.docx
+        expect(stamped).toBe(current);
     });
 });
 
