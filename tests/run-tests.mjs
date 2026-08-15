@@ -4996,6 +4996,31 @@ describe('format - decimal separator at runtime', () => {
         expect(offenders).toEqual([]);
     });
 
+    test('no display markup carries a raw decimal constant', () => {
+        // Sesterská chyba k `fmt()` výše: konstanta napsaná rovnou do
+        // šablonového řetězce se do češtiny nedostane. `gas-law.html`
+        // sázel `20 °C + 273.15 = 293,15 K` — tečka i čárka v jednom řádku.
+        const root = new URL('../', import.meta.url);
+        // Řetězec bez značky je CSS (`opacity: 0.9`) nebo poznámka; hodnota
+        // uvnitř značky je atribut (`step="0.1"`, SVG `offset="0.26"`)
+        // a desetinná čárka by tam byla neplatná, ne nesprávná.
+        const SUBST = /\$\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}/g;
+        const offenders = [];
+        for (const rel of shippedSources()) {
+            const src = readFileSync(new URL(rel, root), 'utf8')
+                .replace(/\/\*[\s\S]*?\*\/|<!--[\s\S]*?-->/g, '')
+                .replace(/^\s*\/\/.*$/gm, '');
+            for (const m of src.matchAll(/`(?:[^`\\]|\\.)*`/g)) {
+                if (!/<\w/.test(m[0])) continue;
+                const text = m[0].replace(SUBST, ' ').replace(/<[^>]*>/g, ' ');
+                for (const d of text.matchAll(/(?<![\w.])\d+\.\d+(?![\w])/g)) {
+                    offenders.push(`${rel}:${src.slice(0, m.index).split('\n').length}  ${d[0]}`);
+                }
+            }
+        }
+        expect(offenders).toEqual([]);
+    });
+
     test('no shipped page formats a display number with raw toFixed', () => {
         const root = new URL('../', import.meta.url);
         // The documented exceptions: contexts where a comma is invalid.

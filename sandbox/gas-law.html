@@ -970,8 +970,8 @@
 
             // === Formula ===
             formulaKelvin.innerHTML =
-                `<var>T</var><sub>1</sub> = ${t1C}\u00a0\u00B0C + 273.15 = ${fmtNum(t1K, 2)}\u00a0K &nbsp;&nbsp;|&nbsp;&nbsp; ` +
-                `<var>T</var><sub>2</sub> = ${t2C}\u00a0\u00B0C + 273.15 = ${fmtNum(t2K, 2)}\u00a0K`;
+                `<var>T</var><sub>1</sub> = ${t1C}\u00a0\u00B0C + ${fmtNum(273.15, 2)} = ${fmtNum(t1K, 2)}\u00a0K &nbsp;&nbsp;|&nbsp;&nbsp; ` +
+                `<var>T</var><sub>2</sub> = ${t2C}\u00a0\u00B0C + ${fmtNum(273.15, 2)} = ${fmtNum(t2K, 2)}\u00a0K`;
 
             formulaComputed.innerHTML =
                 `<var>p</var><sub>2</sub> = ${p1} &times; ${fmtNum(t2K, 2)} / ${fmtNum(t1K, 2)} = <strong>${fmtNum(p2, 1)}\u00a0bar</strong>`;
