@@ -1282,9 +1282,11 @@ export class DiveSetupEditor extends EventTarget {
             time: parseFloat(this.elements.safetyStopTime?.value) || DEFAULT_SAFETY_STOP.time
         };
         
-        // NDL uses GF Low since that determines when first stop is required
-        const { ndl, descentTime } = getNDLForDepth(maxDepth, gas, gfLow);
-        const status = getNDLStatus(ndl, descentTime, bottomTime);
+        // NDL uses GF Low since that determines when first stop is required.
+        // Display the whole minutes, classify against the exact value so the badge
+        // cannot disagree with the generated profile.
+        const { ndl, ndlExact } = getNDLForDepth(maxDepth, gas, gfLow);
+        const status = getNDLStatus(ndlExact, bottomTime);
 
         if (status.state === 'unlimited') {
             this.elements.ndlValue.textContent = translate('diveEditor.ndl.infinity', '∞');

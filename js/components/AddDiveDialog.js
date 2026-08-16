@@ -58,10 +58,9 @@ export class AddDiveDialog extends EventTarget {
             timeEl.disabled = !customMode;
             if (!customMode && Number.isFinite(ndl)) timeEl.value = ndl;
             const t = parseFloat(timeEl.value) || 0;
-            // The time field runs from the start of the descent, the NDL is time at
-            // depth, so the descent has to come off before they are compared.
-            // DESCENT_SPEED = 20 m/min, as in tripPlanner.
-            const overNdl = getNDLStatus(ndl, d / 20, t).state === 'deco';
+            // NDL is measured from leaving the surface, same as the time field,
+            // so the two are compared directly.
+            const overNdl = getNDLStatus(ndl, t).state === 'deco';
             hintEl.textContent = (customMode && Number.isFinite(ndl) && overNdl)
                 ? `⚠ deco — exceeds NDL (${ndl}\u00a0min) for this depth at this point in the trip`
                 : (Number.isFinite(ndl) ? `NDL here: ${ndl}\u00a0min` : 'NDL here: no limit (very shallow)');

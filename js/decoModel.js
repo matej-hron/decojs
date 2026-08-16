@@ -597,12 +597,20 @@ const STOP_INCREMENT = 3;
  * @param {Object.<string, number>|null} [initialTissuePressures] - Optional per-compartment
  *   N2 pressure (bar) to seed the descent start from (repetitive-dive pre-saturation);
  *   when null/omitted, starts from surface equilibrium (unchanged behaviour).
- * @returns {{ndl: number, controllingCompartment: number}} NDL in minutes and limiting compartment
+ * @returns {{ndl: number, ndlExact: number, ndlAtDepth: number, ndlAtDepthExact: number,
+ *   controllingCompartment: number, descentTime: number}} `ndl` is the no-decompression
+ *   limit as dive tables report it — the maximum bottom time measured from leaving the
+ *   surface, descent included — so it can be compared with (or assigned to) a bottom time
+ *   directly. `ndlAtDepth` is the same limit counted only from arrival at depth.
  */
 export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0, initialTissuePressures = null) {
     // Very shallow depths have effectively unlimited NDL
     if (depth <= 0) {
-        return { ndl: Infinity, controllingCompartment: null };
+        return {
+            ndl: Infinity, ndlExact: Infinity,
+            ndlAtDepth: Infinity, ndlAtDepthExact: Infinity,
+            controllingCompartment: null, descentTime: 0
+        };
     }
     
     const ambientPressure = getAmbientPressure(depth);
@@ -636,8 +644,13 @@ export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0, initi
     // Use GF Low - this determines when first stop is needed
     const { ceilingDepth: immediateceiling } = getDiveCeiling(afterDescent, gfLow);
     if (immediateceiling > 0) {
-        // Already in deco after descent (very deep dive)
-        return { ndl: 0, controllingCompartment: getDiveCeiling(afterDescent, gfLow).controllingCompartment };
+        // Already in deco after descent (very deep dive) — no no-deco bottom time at all
+        return {
+            ndl: 0, ndlExact: 0,
+            ndlAtDepth: 0, ndlAtDepthExact: 0,
+            controllingCompartment: getDiveCeiling(afterDescent, gfLow).controllingCompartment,
+            descentTime
+        };
     }
     
     // Check if 5 hours is still within NDL (very shallow)
@@ -647,7 +660,11 @@ export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0, initi
     });
     const { ceilingDepth: ceiling5h } = getDiveCeiling(pressuresAt5Hours, gfLow);
     if (ceiling5h === 0) {
-        return { ndl: Infinity, controllingCompartment: null };
+        return {
+            ndl: Infinity, ndlExact: Infinity,
+            ndlAtDepth: Infinity, ndlAtDepthExact: Infinity,
+            controllingCompartment: null, descentTime
+        };
     }
     
     // Binary search with 0.1 min (6 second) precision
@@ -677,13 +694,17 @@ export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0, initi
     });
     const { controllingCompartment } = getDiveCeiling(ndlPressures, gfLow);
     
-    // Return NDL as bottom time (time at depth after descent)
-    // Floor to whole minutes for conservative display, but actual value is minTime
+    // NDL is reported the way dive tables report it: as the maximum bottom time
+    // measured from leaving the surface, i.e. the descent is already included.
+    // Floor to whole minutes for conservative display.
+    const ndlExact = descentTime + minTime;
     return {
-        ndl: Math.floor(minTime),
-        ndlExact: minTime,  // Exact value for debugging/comparison
+        ndl: Math.floor(ndlExact),
+        ndlExact,                       // Exact total, from the start of the dive
+        ndlAtDepth: Math.floor(minTime),
+        ndlAtDepthExact: minTime,       // Time at depth after the descent
         controllingCompartment,
-        descentTime: depth / DESCENT_SPEED  // Exact; caller knows total dive time = descentTime + ndl
+        descentTime
     };
 }
 

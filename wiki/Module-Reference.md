@@ -38,8 +38,8 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 |---|---|---|
 | `haldaneEquation(P0, Palv, t, halfTime)` | 108 | Constant-depth exponential loading. See [Model-02-Haldane-Equation](Model-02-Haldane-Equation.md). |
 | `schreinerEquation(P0, Palv0, R, t, halfTime)` | 125 | Linear-rate loading. See [Model-03-Schreiner-Equation](Model-03-Schreiner-Equation.md). |
-| `simulateDepthTime(tissues, depth, t, n2)` | 700 | Vector-apply Haldane across all 16 compartments |
-| `simulateDepthChange(tissues, startDepth, endDepth, t, n2)` | 722 | Vector-apply Schreiner across all 16 compartments |
+| `simulateDepthTime(tissues, depth, t, n2)` | 721 | Vector-apply Haldane across all 16 compartments |
+| `simulateDepthChange(tissues, startDepth, endDepth, t, n2)` | 743 | Vector-apply Schreiner across all 16 compartments |
 
 **Exports — M-values & ceilings**
 
@@ -65,8 +65,8 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 
 | Signature | Line | Description |
 |---|---|---|
-| `calculateNDL(depth, n2=0.7902, gfLow=1.0, initialTissuePressures=null)` | 602 | Binary search; returns `{ndl, controllingCompartment, descentTime, ndlExact}`. When `initialTissuePressures` is a `{ [compartmentId]: nitrogenPressureBar }` map, the descent starts from that residual tissue state instead of surface equilibrium, yielding a pre-saturation-aware NDL. Defaults to `null` (surface equilibrium; original behaviour unchanged). |
-| `generateDecoSchedule(tissues, depth, n2, gfLow, gfHigh, gases=null, options={})` | 761 | Returns `{stops, gasSwitches, totalTime, totalAscentTime, pAnchor, anchorDepth}`. Throws `DecoCapExceededError` if any stop would exceed `DECO_STOP_MAX_MINUTES`. See [Algo-04-Deco-Stop-Loop](Algo-04-Deco-Stop-Loop.md) and [Algo-05-Multi-Gas-Switching](Algo-05-Multi-Gas-Switching.md). |
+| `calculateNDL(depth, n2=0.7902, gfLow=1.0, initialTissuePressures=null)` | 606 | Binary search; returns `{ndl, ndlExact, ndlAtDepth, ndlAtDepthExact, controllingCompartment, descentTime}`. `ndl` follows the dive-table convention — maximum bottom time **from leaving the surface**, descent included — so it compares directly with a bottom time; `ndlAtDepth` counts only from arrival at depth. When `initialTissuePressures` is a `{ [compartmentId]: nitrogenPressureBar }` map, the descent starts from that residual tissue state instead of surface equilibrium, yielding a pre-saturation-aware NDL. Defaults to `null` (surface equilibrium; original behaviour unchanged). |
+| `generateDecoSchedule(tissues, depth, n2, gfLow, gfHigh, gases=null, options={})` | 782 | Returns `{stops, gasSwitches, totalTime, totalAscentTime, pAnchor, anchorDepth}`. Throws `DecoCapExceededError` if any stop would exceed `DECO_STOP_MAX_MINUTES`. See [Algo-04-Deco-Stop-Loop](Algo-04-Deco-Stop-Loop.md) and [Algo-05-Multi-Gas-Switching](Algo-05-Multi-Gas-Switching.md). |
 
 `generateDecoSchedule` options:
 
@@ -81,7 +81,7 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 
 | Signature | Line | Description |
 |---|---|---|
-| `calculateTissueLoading(profile, surfaceInterval=60, options={})` | 1044 | Main entry: walks the waypoint array at `CALC_INTERVAL` resolution, returns `{timePoints, depthPoints, ambientPressures, compartments: {1:{pressures:[]},…}, n2Fractions}`. Accepts optional `options.initialTissuePressures` — a `{ [compartmentId]: nitrogenPressureBar }` map to seed compartments from a prior dive's residual state instead of surface equilibrium. See [repetitive-dive chaining](#repetitive-dive-chaining-initialTissuePressures). |
+| `calculateTissueLoading(profile, surfaceInterval=60, options={})` | 1065 | Main entry: walks the waypoint array at `CALC_INTERVAL` resolution, returns `{timePoints, depthPoints, ambientPressures, compartments: {1:{pressures:[]},…}, n2Fractions}`. Accepts optional `options.initialTissuePressures` — a `{ [compartmentId]: nitrogenPressureBar }` map to seed compartments from a prior dive's residual state instead of surface equilibrium. See [repetitive-dive chaining](#repetitive-dive-chaining-initialTissuePressures). |
 | `calculateCeilingTimeSeries(results, gfLow, gfHigh=gfLow)` | 453 | Flat array of ceiling depths at each time point |
 | `calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh, providedPAnchor=null)` | 480 | Returns per-compartment ceiling series plus `gfValues` and `pAnchor`; used by M-value and profile charts |
 
@@ -168,10 +168,10 @@ Note: `BOTTOM_GASES[0].n2` is `0.7902`, matching `N2_FRACTION` in `decoModel.js`
 |---|---|---|
 | `loadDiveSetup(path='data/dive-setup.json')` | 145 | async; tries localStorage, falls back to JSON fetch, caches in module scope |
 | `getDefaultSetup()` | 176 | Hardcoded 40 m / 20 min air dive |
-| `clearCache()` | 1238 | Clears the module-level cache |
-| `saveDiveSetup(setup, key='diveSetup')` | 1247 | Persist to localStorage |
-| `loadSavedSetup(key='diveSetup')` | 1260 | Restore from localStorage |
-| `extendDiveSetup(base, overrides)` | 745 | Deep merge with validation |
+| `clearCache()` | 1240 | Clears the module-level cache |
+| `saveDiveSetup(setup, key='diveSetup')` | 1249 | Persist to localStorage |
+| `loadSavedSetup(key='diveSetup')` | 1262 | Restore from localStorage |
+| `extendDiveSetup(base, overrides)` | 747 | Deep merge with validation |
 
 #### Profile generation
 
@@ -179,9 +179,9 @@ Note: `BOTTOM_GASES[0].n2` is `0.7902`, matching `N2_FRACTION` in `decoModel.js`
 |---|---|---|
 | `generateSimpleProfile(maxDepth, bottomTime, safetyStop, options)` | 239 | No-deco profile. Descent 20 m/min, ascent 10 m/min, optional 3 min @ 5 m. |
 | `generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, safetyStop, options)` | 326 | Runs NDL check; if exceeded, calls `generateDecoSchedule()` and splices stops into the waypoint array. Returns `{waypoints, ndl, requiresDeco, decoStops, totalDecoTime, controllingCompartment, pAnchor, anchorDepth}`. Accepts optional `options.initialTissuePressures` — when provided, tissues are seeded from that map and the surface-based NDL early-return is bypassed so the deco scheduler always runs against the actual pre-saturated state. See [repetitive-dive chaining](#repetitive-dive-chaining-initialTissuePressures). |
-| `generateDecoProfileSync(...)` | 562 | Variant accepting a pre-loaded `compartments` array. Does **not** support `options.initialTissuePressures`; callers needing a seeded profile must use `generateDecoProfile`. |
-| `getNDLForDepth(depth, gas, gfLow)` | 700 | Convenience wrapper around `calculateNDL`. Returns the full result, including `descentTime`. |
-| `getNDLStatus(ndl, descentTime, bottomTime)` | 725 | Classifies a dive against its NDL for UI display. Subtracts `descentTime` so bottom time (measured from the start of the descent) and the NDL (time at depth) are on the same clock, then returns `{state: 'unlimited'\|'ok'\|'nearLimit'\|'deco', timeAtDepth, remaining}`. `nearLimit` is the band *below* the limit (`NDL_NEAR_LIMIT_FRACTION` = 0.9), so a genuine deco obligation is never reported as merely "at limit". |
+| `generateDecoProfileSync(...)` | 566 | Variant accepting a pre-loaded `compartments` array. Does **not** support `options.initialTissuePressures`; callers needing a seeded profile must use `generateDecoProfile`. |
+| `getNDLForDepth(depth, gas, gfLow)` | 706 | Convenience wrapper around `calculateNDL`. Returns the full result, including `descentTime`. |
+| `getNDLStatus(ndl, bottomTime)` | 728 | Classifies a dive against its NDL for UI display. Both arguments run from leaving the surface, so they are compared with no correction — subtracting the descent here would count it twice. Returns `{state: 'unlimited'\|'ok'\|'nearLimit'\|'deco', remaining}`. `nearLimit` is the band *below* the limit (`NDL_NEAR_LIMIT_FRACTION` = 0.9), so a genuine deco obligation is never reported as merely "at limit". Callers pass `ndlExact` (not the floored `ndl`) so the badge cannot disagree with the generated profile. |
 
 "Bottom time" means the absolute time at which ascent begins, not time spent at max depth. Descent duration is exact (not rounded); ascent time snaps to 0.1 min unless `continuousDeco=true` (`diveSetup.js:260`).
 
@@ -189,21 +189,21 @@ Note: `BOTTOM_GASES[0].n2` is `0.7902`, matching `N2_FRACTION` in `decoModel.js`
 
 | Signature | Line | Description |
 |---|---|---|
-| `calculateMOD(o2Fraction, maxPpO2=1.4)` | 858 | `floor((ppO₂/o2 − 1) × 10)`, metres |
-| `calculateEND(depth, heFraction=0)` | 871 | `(depth + 10) × (1 − fHe) − 10` |
-| `calculatePartialPressure(depth, gasFraction)` | 883 | `fraction × (1.01325 + depth/10)` |
-| `getGasCylinderVolume(gas)`, `getCylinderVolume(setup)` | 893, 902 | Litres |
-| `getGasStartPressure(gas)` | 912 | bar |
-| `computeGasConsumption(results, gases, sacRate, decoSacRate, reservePressure=50)` | 1390 | Per-gas consumption over the profile |
+| `calculateMOD(o2Fraction, maxPpO2=1.4)` | 860 | `floor((ppO₂/o2 − 1) × 10)`, metres |
+| `calculateEND(depth, heFraction=0)` | 873 | `(depth + 10) × (1 − fHe) − 10` |
+| `calculatePartialPressure(depth, gasFraction)` | 885 | `fraction × (1.01325 + depth/10)` |
+| `getGasCylinderVolume(gas)`, `getCylinderVolume(setup)` | 895, 904 | Litres |
+| `getGasStartPressure(gas)` | 914 | bar |
+| `computeGasConsumption(results, gases, sacRate, decoSacRate, reservePressure=50)` | 1392 | Per-gas consumption over the profile |
 
 #### Oxygen toxicity
 
 | Signature | Line | Description |
 |---|---|---|
-| `NOAA_CNS_LIMITS` | 1310 | Discrete ppO₂ / max-exposure lookup table |
-| `getCNSPerMinute(ppO2)` | 1333 | Percent per minute; 0 if ppO₂ < 0.5 |
-| `calculateOTU(ppO2, timeMinutes)` | 1355 | `t × ((ppO₂ − 0.5)/0.5)^0.83` (NOAA form) |
-| `OTU_LIMITS` | 1363 | Daily / series exposure limits |
+| `NOAA_CNS_LIMITS` | 1312 | Discrete ppO₂ / max-exposure lookup table |
+| `getCNSPerMinute(ppO2)` | 1335 | Percent per minute; 0 if ppO₂ < 0.5 |
+| `calculateOTU(ppO2, timeMinutes)` | 1357 | `t × ((ppO₂ − 0.5)/0.5)^0.83` (NOAA form) |
+| `OTU_LIMITS` | 1365 | Daily / series exposure limits |
 
 Toxicity is informational; not fed back into the deco loop.
 
@@ -211,20 +211,20 @@ Toxicity is informational; not fed back into the deco loop.
 
 | Signature | Line | Description |
 |---|---|---|
-| `getDiveSetupWaypoints(setup)` | 805 | Extracts `dives[0].waypoints` |
-| `getSurfaceInterval(setup)`, `getGFLow(setup)`, `getGFHigh(setup)`, `getGradientFactors(setup)` | 818, 827, 836, 845 | Getters |
-| `getGases(setup)`, `getBottomGasFromSetup(setup)`, `getDecoGasesFromSetup(setup)` | 935, 956, 966 | Gas collections |
-| `getGasAtWaypoint(waypoint, gases)`, `getGasAtTime(waypoints, gases, time)` | 978, 1000 | Active gas lookup |
-| `getGasSwitchEvents(waypoints, gases)` | 1025 | Returns `[{time, depth, fromGas, toGas}]` |
-| `insertGasSwitchWaypoints(waypoints, gases, ascentRate=10, maxPpO2=1.6, gasSwitchTime=0)` | 1060 | Inserts switch waypoints at MOD depths on ascent; rounds to 3 m grid |
+| `getDiveSetupWaypoints(setup)` | 807 | Extracts `dives[0].waypoints` |
+| `getSurfaceInterval(setup)`, `getGFLow(setup)`, `getGFHigh(setup)`, `getGradientFactors(setup)` | 820, 829, 838, 847 | Getters |
+| `getGases(setup)`, `getBottomGasFromSetup(setup)`, `getDecoGasesFromSetup(setup)` | 937, 958, 968 | Gas collections |
+| `getGasAtWaypoint(waypoint, gases)`, `getGasAtTime(waypoints, gases, time)` | 980, 1002 | Active gas lookup |
+| `getGasSwitchEvents(waypoints, gases)` | 1027 | Returns `[{time, depth, fromGas, toGas}]` |
+| `insertGasSwitchWaypoints(waypoints, gases, ascentRate=10, maxPpO2=1.6, gasSwitchTime=0)` | 1062 | Inserts switch waypoints at MOD depths on ascent; rounds to 3 m grid |
 
 #### Presentation helpers
 
 | Signature | Line | Description |
 |---|---|---|
-| `generateProfileName(setup)` | 1276 | Short label for UI |
-| `formatDiveSetupSummary(setup)` | 1292 | Multi-line human summary |
-| `renderDivePlanTableHTML(waypoints, gases, opts)` | 1486 | Returns HTML for the dive-plan table. A gas switch is always billed against the OLD gas for the ascent leg leading into it (never relabels the whole climb with the new gas). If the switch has no dedicated stay (pure in-transit switch), it gets its own zero-duration `switch` marker row; if it has a dedicated stop time at that depth (e.g. `gasSwitchTime` from `generateDecoProfile`), that real duration is kept on a single `switch` row instead of being downgraded to a plain `stop` row. Switch rows never fold into neighbouring rows. |
+| `generateProfileName(setup)` | 1278 | Short label for UI |
+| `formatDiveSetupSummary(setup)` | 1294 | Multi-line human summary |
+| `renderDivePlanTableHTML(waypoints, gases, opts)` | 1488 | Returns HTML for the dive-plan table. A gas switch is always billed against the OLD gas for the ascent leg leading into it (never relabels the whole climb with the new gas). If the switch has no dedicated stay (pure in-transit switch), it gets its own zero-duration `switch` marker row; if it has a dedicated stop time at that depth (e.g. `gasSwitchTime` from `generateDecoProfile`), that real duration is kept on a single `switch` row instead of being downgraded to a plain `stop` row. Switch rows never fold into neighbouring rows. |
 
 #### Defaults
 
@@ -297,7 +297,7 @@ Return value:
 - Per-dive gas selection: `const diveGases = dive.gases ?? gases` at `tripPlanner.js:55`.
 - When an overlap conflict is detected, the overlapping dive is still planned using the previous dive's end tissue state, with no surface off-gassing applied (the conflict entry records the overrun minutes).
 - For the first dive, tissues start at surface equilibrium (no seed is passed).
-- **NDL-locked dives** (`ndlLocked: true` on the input dive): instead of using the caller-supplied `bottomTime`, `planTrip` derives `bottomTime` as the pre-saturation-aware NDL for that position in the trip — `calculateNDL` seeded with the carried-in tissue (`startingTissue`). The result is capped at 99 min (`NDL_LOCK_CAP`) and floored at the descent time (`maxDepth / 20`, matching `generateDecoProfile`'s 20 m/min rate). This ensures a moved NDL-locked dive always shows the same number the add-dialog/`ndlPreview` showed at creation.
+- **NDL-locked dives** (`ndlLocked: true` on the input dive): instead of using the caller-supplied `bottomTime`, `planTrip` derives `bottomTime` as the pre-saturation-aware NDL for that position in the trip — `calculateNDL` seeded with the carried-in tissue (`startingTissue`). The result is capped at 99 min (`NDL_LOCK_CAP`) and checked against the descent time (`maxDepth / 20`, matching `generateDecoProfile`'s 20 m/min rate) so a dive with under a minute of real bottom phase is flagged invalid. This ensures a moved NDL-locked dive always shows the same number the add-dialog/`ndlPreview` showed at creation.
 - **Safety stops disabled for trip dives**: all trip dives are generated with `generateDecoProfile(..., { safetyStop: { enabled: false } })`. No-deco dives' runtime and TTS therefore reflect pure deco obligation without an appended 3 m safety stop.
 - **Invalid NDL-locked dives** (`invalid: true`, `invalidReason: 'ndl-too-short'`): when an NDL-locked dive's actual bottom phase — `min(NDL, NDL_LOCK_CAP) − descentTime` — is under 1 min, the dive is flagged `invalid: true` with `invalidReason: 'ndl-too-short'`. The profile is still generated at the floored bottom time to preserve tissue continuity for subsequent dives, but the UI renders an explanation instead of the (degenerate) dive profile.
 - See [repetitive-dive chaining](#repetitive-dive-chaining-initialTissuePressures) for the `initialTissuePressures` seam used internally.

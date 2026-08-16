@@ -343,7 +343,7 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
     const bottomGas = gases && gases.length > 0 ? gases[0] : { id: 'air', name: 'Air', o2: 0.2098, n2: 0.7902 };
 
     // Calculate NDL for this depth/gas (uses GF Low since that determines first stop)
-    const { ndl, controllingCompartment } = calculateNDL(maxDepth, bottomGas.n2, gfLowDec);
+    const { ndl, ndlExact, controllingCompartment } = calculateNDL(maxDepth, bottomGas.n2, gfLowDec);
 
     // Calculate descent time
     const descentTime = roundUp(maxDepth / DESCENT_SPEED);
@@ -354,14 +354,15 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
     // which reads the actual bottom tissue state (and returns zero stops + a
     // safety stop if no deco is genuinely needed).
     //
-    // bottomTime runs from the start of the descent, but calculateNDL returns the
-    // time allowed *at depth* (it models the descent separately). Comparing the two
-    // directly measures them on different clocks and declares deco descentTime too
-    // early — see calculateNDL, which returns descentTime for exactly this reason.
+    // Both clocks run from leaving the surface: bottomTime is measured from the start
+    // of the descent and calculateNDL reports the NDL the same way (descent included),
+    // so they are compared directly. The comparison uses the exact NDL, not the whole
+    // minutes shown in the UI — flooring the threshold would route the last fraction
+    // of a minute into the deco branch, which then finds nothing to do.
     const seededTissues = options.initialTissuePressures || null;
-    const requiresDeco = (bottomTime - descentTime) > ndl;
+    const exceedsNDL = bottomTime > ndlExact;
 
-    if (!requiresDeco && !seededTissues) {
+    if (!exceedsNDL && !seededTissues) {
         // Within NDL - generate simple profile with safety stop
         const waypoints = generateSimpleProfile(maxDepth, bottomTime, safetyStop, options);
         // Add gasId to first bottom waypoint
@@ -546,6 +547,9 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
     return {
         waypoints,
         ndl,
+        // True whenever the bottom time exceeds the NDL, i.e. the ceiling has left the
+        // surface. Between that moment and the first 3 m stop there is a real but
+        // sub-3 m obligation with an empty stop list — that is not a contradiction.
         requiresDeco: true,
         decoStops: stops,
         totalDecoTime,
@@ -578,7 +582,7 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
     const bottomGas = gases && gases.length > 0 ? gases[0] : { id: 'air', name: 'Air', o2: 0.2098, n2: 0.7902 };
 
     // Calculate NDL (uses GF Low since that determines first stop)
-    const { ndl, controllingCompartment } = calculateNDL(maxDepth, bottomGas.n2, gfLowDec);
+    const { ndl, ndlExact, controllingCompartment } = calculateNDL(maxDepth, bottomGas.n2, gfLowDec);
 
     const descentTime = roundUp(maxDepth / DESCENT_SPEED);
     // NOTE: this sync variant intentionally does NOT support
@@ -587,11 +591,11 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
     // start. Callers needing a seeded profile must use the async
     // generateDecoProfile, which implements that seam.
     //
-    // bottomTime runs from the start of the descent, ndl is the time allowed at
-    // depth — subtract the descent before comparing (same as generateDecoProfile).
-    const requiresDeco = (bottomTime - descentTime) > ndl;
+    // bottomTime and ndlExact are both measured from leaving the surface (calculateNDL
+    // includes the descent), so they are compared directly — same as generateDecoProfile.
+    const exceedsNDL = bottomTime > ndlExact;
 
-    if (!requiresDeco) {
+    if (!exceedsNDL) {
         const waypoints = generateSimpleProfile(maxDepth, bottomTime, safetyStop, options);
         waypoints[1].gasId = bottomGas.id;
 
@@ -681,6 +685,8 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
     return {
         waypoints,
         ndl,
+        // See generateDecoProfile: an empty stop list above the NDL is a legitimate
+        // sub-3 m obligation, not a contradiction.
         requiresDeco: true,
         decoStops: stops,
         totalDecoTime: stops.reduce((sum, s) => sum + s.time, 0),
@@ -710,29 +716,25 @@ export const NDL_NEAR_LIMIT_FRACTION = 0.9;
 /**
  * Classify a dive against its no-decompression limit.
  *
- * Bottom time is measured from the start of the descent (see the glossary entry
- * for "Čas na dně"), while the NDL is the time allowed *at depth*. The two must
- * be brought onto the same clock before they are compared, otherwise the status
- * flips descentTime too early — and the old `bottomTime <= ndl * 1.1` band pushed
- * the deco threshold above the true limit, reporting a genuine decompression
- * obligation as merely "at limit".
+ * Both numbers are measured from the start of the dive: bottom time runs from
+ * leaving the surface, and `calculateNDL` reports the NDL the way dive tables do
+ * — descent included. They are therefore compared directly, with no correction.
+ * Subtracting the descent here would count it twice.
  *
- * @param {number} ndl - No-decompression limit at depth, in minutes (may be Infinity)
- * @param {number} descentTime - Descent time in minutes
- * @param {number} bottomTime - Bottom time in minutes, measured from the start of the descent
- * @returns {{state: 'unlimited'|'ok'|'nearLimit'|'deco', timeAtDepth: number|null, remaining: number}}
+ * @param {number} ndl - No-decompression limit in minutes, from the start of the dive (may be Infinity)
+ * @param {number} bottomTime - Bottom time in minutes, measured from leaving the surface
+ * @returns {{state: 'unlimited'|'ok'|'nearLimit'|'deco', remaining: number}}
  */
-export function getNDLStatus(ndl, descentTime, bottomTime) {
+export function getNDLStatus(ndl, bottomTime) {
     if (!Number.isFinite(ndl)) {
-        return { state: 'unlimited', timeAtDepth: null, remaining: Infinity };
+        return { state: 'unlimited', remaining: Infinity };
     }
-    const timeAtDepth = Math.max(0, bottomTime - descentTime);
-    if (timeAtDepth > ndl) {
-        return { state: 'deco', timeAtDepth, remaining: 0 };
+    if (bottomTime > ndl) {
+        return { state: 'deco', remaining: 0 };
     }
-    const remaining = ndl - timeAtDepth;
-    const state = timeAtDepth > ndl * NDL_NEAR_LIMIT_FRACTION ? 'nearLimit' : 'ok';
-    return { state, timeAtDepth, remaining };
+    const remaining = ndl - bottomTime;
+    const state = bottomTime > ndl * NDL_NEAR_LIMIT_FRACTION ? 'nearLimit' : 'ok';
+    return { state, remaining };
 }
 
 /**
