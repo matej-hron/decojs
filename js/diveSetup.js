@@ -1517,16 +1517,31 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
             // A gas switch taken exactly upon arrival (next.gasId differs from
             // the gas breathed during the climb) must not relabel the whole
             // ascent leg with the new gas — that reads as "already on deco gas
-            // while still 20 m above its MOD". Bill the ascent to the OLD gas,
-            // then add a zero-duration switch marker row for the new one.
+            // while still 20 m above its MOD". Bill the ascent to the OLD gas.
             const transitGasId = wp.gasId || prevGasId;
             const transitGas = gasList.find(g => g.id === transitGasId);
             const gasChanged = next.gasId && transitGasId && next.gasId !== transitGasId;
             pushSeg({ cls: 'asc', icon: '↑', label: phaseLabels.asc, depth: next.depth, stop: duration, runtime, gas: transitGas?.name || '' }, transitGasId);
-            if (gasChanged) {
+            // If the switch has its own configured stop time (a following
+            // waypoint at the SAME depth — e.g. generateDecoProfile's
+            // gasSwitchTime), don't add a zero-duration marker here: let the
+            // stationary branch below render ONE switch row carrying that
+            // real duration, so the table doesn't ignore the configured time.
+            // Only a switch with no dedicated stop (purely in transit, ascent
+            // continues immediately) gets our own instant marker row.
+            const nextNext = waypoints[i + 2];
+            const hasDedicatedSwitchStop = gasChanged && nextNext && nextNext.depth === next.depth;
+            if (gasChanged && !hasDedicatedSwitchStop) {
                 // Blank ('' not 0) Stop cell — this is an instant marker, not
                 // a measured zero-length stop, matching the surface-row convention.
                 pushSeg({ cls: 'switch', icon: '⇄', label: phaseLabels.switch, depth: next.depth, stop: '', runtime, gas: gasName }, next.gasId);
+            }
+            if (hasDedicatedSwitchStop) {
+                // Keep prevGasId at the OLD gas so the upcoming stationary
+                // segment (arrival -> departure at the switch depth) still
+                // sees the change and renders it as a 'switch' row below.
+                prevGasId = transitGasId;
+                continue;
             }
         } else if (next.depth === wp.depth && next.depth > 0) {
             leftMax = true;
