@@ -764,6 +764,51 @@ describe('diveSetup - renderDivePlanTableHTML', () => {
         // matches the fold-the-ascent-into-the-preceding-stop behavior.
         expect(html).toContain('<td class="dse-plan-depth">12\u00a0m</td><td class="dse-plan-stop">6</td><td class="dse-plan-runtime">36</td>');
     });
+
+    // A gas switch taken exactly on arrival during an ascent (no stop at the
+    // switch depth) must not relabel the whole ascent leg with the new gas —
+    // it gets its own zero-duration row instead (Divesoft-style "Profile" table).
+    const twoGases = [
+        { id: 'air', name: 'Air', cylinderVolume: 18, startPressure: 200, reservePressure: 50 },
+        { id: 'ean50', name: 'EAN50', cylinderVolume: 11, startPressure: 200, reservePressure: 50 }
+    ];
+    const switchOnArrivalWaypoints = [
+        { time: 0, depth: 0, gasId: 'air' },
+        { time: 2, depth: 40, gasId: 'air' },
+        { time: 20, depth: 40, gasId: 'air' },
+        { time: 22, depth: 21, gasId: 'ean50' }, // switch exactly on arrival, no stop here
+        { time: 23, depth: 15, gasId: 'ean50' },
+        { time: 24, depth: 15, gasId: 'ean50' },
+        { time: 25, depth: 0, gasId: 'ean50' },
+    ];
+
+    test('gas switch on arrival during ascent gets its own row, ascent leg keeps the OLD gas', () => {
+        const html = renderDivePlanTableHTML(switchOnArrivalWaypoints, twoGases, {});
+        // The ascent leg leading up to the switch depth must still be billed
+        // to Air, not relabeled with the new gas (was the reported bug).
+        expect(html).toContain('<td class="dse-plan-depth">21\u00a0m</td><td class="dse-plan-stop">2</td><td class="dse-plan-runtime">22</td><td class="dse-plan-gas">Air</td>');
+        // A dedicated switch row follows: blank Stop, same runtime as the
+        // ascent, and the NEW gas.
+        expect(html).toContain('<tr class="dse-plan-switch">');
+        expect(html).toContain('<td class="dse-plan-depth">21\u00a0m</td><td class="dse-plan-stop">—</td><td class="dse-plan-runtime">22</td><td class="dse-plan-gas">EAN50</td>');
+        expect((html.match(/dse-plan-switch/g) || []).length).toBe(1);
+    });
+
+    test('gas switch on arrival immediately followed by a stop at the same depth does not duplicate the switch row', () => {
+        // 21m is both the switch depth AND a deco stop — must still produce
+        // exactly one switch row (regression guard for prevGasId lag).
+        const waypoints2 = [
+            { time: 0, depth: 0, gasId: 'air' },
+            { time: 2, depth: 40, gasId: 'air' },
+            { time: 20, depth: 40, gasId: 'air' },
+            { time: 22, depth: 21, gasId: 'ean50' },
+            { time: 25, depth: 21, gasId: 'ean50' },
+            { time: 26, depth: 0, gasId: 'ean50' },
+        ];
+        const html = renderDivePlanTableHTML(waypoints2, twoGases, {});
+        expect((html.match(/dse-plan-switch/g) || []).length).toBe(1);
+        expect(html).toContain('<tr class="dse-plan-stop"><td class="dse-plan-phase"><span class="dse-plan-icon">■</span> Stop</td><td class="dse-plan-depth">21\u00a0m</td><td class="dse-plan-stop">4</td><td class="dse-plan-runtime">26</td><td class="dse-plan-gas">EAN50</td>');
+    });
 });
 
 // ============================================================================
