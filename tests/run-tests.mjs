@@ -794,9 +794,13 @@ describe('diveSetup - renderDivePlanTableHTML', () => {
         expect((html.match(/dse-plan-switch/g) || []).length).toBe(1);
     });
 
-    test('gas switch on arrival immediately followed by a stop at the same depth does not duplicate the switch row', () => {
-        // 21m is both the switch depth AND a deco stop — must still produce
-        // exactly one switch row (regression guard for prevGasId lag).
+    test('gas switch with a dedicated stop time at the switch depth renders as ONE switch row carrying that real duration (not a blank marker + separate Stop row)', () => {
+        // 21m is both the switch depth AND has a dedicated stay (as
+        // generateDecoProfile produces when gasSwitchTime > 0) — the table
+        // must not "ignore" that configured time by downgrading the row to
+        // a plain Stop; it must stay a single Switch row with the real
+        // duration (3 min: 22 -> 25), not split into a zero-duration marker
+        // plus a same-depth Stop row.
         const waypoints2 = [
             { time: 0, depth: 0, gasId: 'air' },
             { time: 2, depth: 40, gasId: 'air' },
@@ -807,7 +811,8 @@ describe('diveSetup - renderDivePlanTableHTML', () => {
         ];
         const html = renderDivePlanTableHTML(waypoints2, twoGases, {});
         expect((html.match(/dse-plan-switch/g) || []).length).toBe(1);
-        expect(html).toContain('<tr class="dse-plan-stop"><td class="dse-plan-phase"><span class="dse-plan-icon">■</span> Stop</td><td class="dse-plan-depth">21\u00a0m</td><td class="dse-plan-stop">4</td><td class="dse-plan-runtime">26</td><td class="dse-plan-gas">EAN50</td>');
+        expect(html).toContain('<tr class="dse-plan-switch"><td class="dse-plan-phase"><span class="dse-plan-icon">⇄</span> Switch</td><td class="dse-plan-depth">21\u00a0m</td><td class="dse-plan-stop">3</td><td class="dse-plan-runtime">25</td><td class="dse-plan-gas">EAN50</td>');
+        expect(html.includes('<tr class="dse-plan-stop"><td class="dse-plan-phase"><span class="dse-plan-icon">■</span> Stop</td><td class="dse-plan-depth">21\u00a0m</td>')).toBe(false);
     });
 });
 
