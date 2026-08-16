@@ -5194,12 +5194,6 @@ describe('format - decimal separator at runtime', () => {
     });
 });
 
-describe('DOCASNY SEED - overeni CI, bude odstraneno', () => {
-    test('tento test ma zamerne spadnout', () => {
-        expect(1 + 1).toBe(3);
-    });
-});
-
 // ============================================================================
 // SUMMARY
 // ============================================================================
