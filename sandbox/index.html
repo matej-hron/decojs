@@ -770,6 +770,7 @@
         import { getProfileFromUrl, updateUrlWithProfile, getChartModeFromUrl, getCompactProfileFromUrl } from '../js/urlParams.js';
         import { computeGasConsumption, renderDivePlanTableHTML, getDiveSetupWaypoints } from '../js/diveSetup.js';
         import { translate } from '../js/i18n.js';
+        import { escHtml } from '../js/utils/escHtml.js';
         import { fmtNum } from '../js/format.js';
 
         /** Helper: replace {0}, {1}, ... placeholders with the given values. */
@@ -1047,9 +1048,9 @@
          */
         function renderWarnings(container, warnings) {
             container.innerHTML = warnings.map(w => `
-                <div class="dive-warning ${w.type}">
-                    <span class="dive-warning-icon">${w.icon}</span>
-                    <span>${w.message}</span>
+                <div class="dive-warning ${escHtml(w.type)}">
+                    <span class="dive-warning-icon">${escHtml(w.icon)}</span>
+                    <span>${escHtml(w.message)}</span>
                 </div>
             `).join('');
         }
@@ -1070,7 +1071,7 @@
                 const usedText = fmt(translate('gasSummary.used', '({0}L used)'), tank.consumed);
                 return `
                     <div class="gas-tank-row">
-                        <span class="gas-tank-name">${tank.name}</span>
+                        <span class="gas-tank-name">${escHtml(tank.name)}</span>
                         <span class="gas-tank-stats">
                             <span>${tank.startPressure} → <span class="${status}">${tank.endPressure}\u00a0bar</span></span>
                             <span>${usedText}</span>
@@ -1332,7 +1333,7 @@
                 const chip = document.createElement('span');
                 chip.className = `profile-chip ${profile.id === activeProfileId ? 'active' : ''}`;
                 chip.innerHTML = `
-                    ${profile.name}
+                    ${escHtml(profile.name)}
                     <span class="chip-delete" title="Delete profile">×</span>
                 `;
                 

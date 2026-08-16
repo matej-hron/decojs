@@ -8,9 +8,8 @@
  */
 import { DiveSetupEditor } from './DiveSetupEditor.js';
 import { baseFromStartDate, epochMinToLocalInput, localInputToEpochMin } from '../tripTime.js';
+import { escHtml } from '../utils/escHtml.js';
 
-// Escape user-controlled text before interpolating into innerHTML.
-const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
 
 export class DiveEditPanel extends EventTarget {
     constructor(container) {
@@ -30,9 +29,9 @@ export class DiveEditPanel extends EventTarget {
         const base = baseFromStartDate(startDate);
 
         this.container.innerHTML = `
-            <div class="dep-header">Editing: ${esc(dive.name || dive.id)}</div>
+            <div class="dep-header">Editing: ${escHtml(dive.name || dive.id)}</div>
             <div class="dep-row">
-                <label>Name <input type="text" class="dep-name" value="${esc(dive.name || '')}"></label>
+                <label>Name <input type="text" class="dep-name" value="${escHtml(dive.name || '')}"></label>
                 <label>Start <input type="datetime-local" class="dep-start" value="${epochMinToLocalInput(dive.startDateTime, base)}"></label>
                 <label class="dep-lock-label"><input type="checkbox" class="dep-ndl-lock"${dive.ndlLocked ? ' checked' : ''}> No-deco (NDL-locked)</label>
                 <button class="dep-remove">Remove dive</button>

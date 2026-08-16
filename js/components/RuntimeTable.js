@@ -5,6 +5,8 @@
  * (`renderRuntimeTable`) so the logic is unit-testable without a browser.
  */
 
+import { escHtml } from '../utils/escHtml.js';
+
 /**
  * Derive ordered runtime rows from an executed dive profile.
  *
@@ -72,7 +74,6 @@ export function renderRuntimeTable(rows) {
     const table = document.createElement('table');
     table.className = 'runtime-table';
     const fmt = (n) => (Math.round(n * 10) / 10);
-    const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
     const phaseLabel = { descent: 'Descent', bottom: 'Bottom', ascent: 'Ascent', stop: 'Deco stop' };
 
     table.innerHTML = `
@@ -86,7 +87,7 @@ export function renderRuntimeTable(rows) {
                     <td>${fmt(r.depth)}</td>
                     <td>${fmt(r.segmentTime)}</td>
                     <td>${fmt(r.runTime)}</td>
-                    <td>${esc(r.gas)}</td>
+                    <td>${escHtml(r.gas)}</td>
                 </tr>`).join('')}
         </tbody>`;
     return table;

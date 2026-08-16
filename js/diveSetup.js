@@ -19,6 +19,7 @@ import {
 
 import { COMPARTMENTS } from './tissueCompartments.js';
 import { translate } from './i18n.js';
+import { escHtml } from './utils/escHtml.js';
 
 // Default path to dive setup JSON
 const DEFAULT_SETUP_PATH = 'data/dive-setup.json';
@@ -1696,11 +1697,11 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
             stopDisplay = runtimeDisplay - displayRuntimes[i - 1];
         }
         rowsHtml.push(`<tr class="${trClass}">` +
-            `<td class="dse-plan-phase"><span class="dse-plan-icon">${s.icon}</span> ${s.label}</td>` +
+            `<td class="dse-plan-phase"><span class="dse-plan-icon">${escHtml(s.icon)}</span> ${escHtml(s.label)}</td>` +
             `<td class="dse-plan-depth">${s.depth}\u00a0m</td>` +
             `<td class="dse-plan-stop">${stopDisplay || stopDisplay === 0 ? stopDisplay : '—'}</td>` +
             `<td class="dse-plan-runtime">${runtimeDisplay}</td>` +
-            `<td class="dse-plan-gas">${s.gas}</td>` +
+            `<td class="dse-plan-gas">${escHtml(s.gas)}</td>` +
             `<td class="dse-plan-tank">${tankCell}</td>` +
             `</tr>`);
     });

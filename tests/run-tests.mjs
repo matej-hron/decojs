@@ -144,6 +144,9 @@ import {
     renderDivePlanTableHTML
 } from '../js/diveSetup.js';
 
+import { escHtml } from '../js/utils/escHtml.js';
+import { decodeDiveSetup, MAX_SHARED_TEXT_LENGTH } from '../js/urlParams.js';
+
 import {
     createDefaultProfile,
     validateProfile,
@@ -5344,6 +5347,129 @@ describe('NDL se meri od zacatku ponoru, ne od prichodu do hloubky (#70)', () =>
                 expect(generateDecoProfile(depth, mid, [AIR], 100, 100, SS).requiresDeco).toBe(false);
             }
         }
+    });
+});
+
+// ============================================================================
+// XSS: escaping sinks + sanitizing the shared-link boundary (issue #65)
+// ============================================================================
+
+describe('escHtml (js/utils/escHtml.js)', () => {
+    test('escapes every character that can break out of HTML or an attribute', () => {
+        expect(escHtml('<img src=x onerror="alert(1)">'))
+            .toBe('&lt;img src=x onerror=&quot;alert(1)&quot;&gt;');
+        expect(escHtml("' onmouseover='alert(1)")).toBe('&#39; onmouseover=&#39;alert(1)');
+        expect(escHtml('a & b')).toBe('a &amp; b');
+    });
+
+    test('& is escaped first so entities are not double-decoded by the browser', () => {
+        // "&lt;" must survive as literal text, not turn back into "<"
+        expect(escHtml('&lt;script&gt;')).toBe('&amp;lt;script&amp;gt;');
+    });
+
+    test('null and undefined become empty string, not the words "null"/"undefined"', () => {
+        expect(escHtml(null)).toBe('');
+        expect(escHtml(undefined)).toBe('');
+    });
+
+    test('leaves harmless text untouched', () => {
+        expect(escHtml('EAN32')).toBe('EAN32');
+        expect(escHtml(21)).toBe('21');
+    });
+});
+
+describe('decodeDiveSetup sanitizes the shared-link boundary (#65)', () => {
+    const encode = (obj) => {
+        const b64 = Buffer.from(JSON.stringify(obj), 'utf8').toString('base64');
+        return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    };
+    const PAYLOAD = '<img src=x onerror="alert(1)">';
+
+    test('strips markup characters from the setup name and description', () => {
+        const out = decodeDiveSetup(encode({
+            name: `Dive ${PAYLOAD}`, description: `Desc ${PAYLOAD}`,
+            gases: [{ id: 'bottom', name: 'Air' }], dives: [{ waypoints: [] }]
+        }));
+        expect(out.name.includes('<')).toBe(false);
+        expect(out.name.includes('>')).toBe(false);
+        expect(out.description.includes('<')).toBe(false);
+    });
+
+    test('strips markup from gas name and gas id', () => {
+        const out = decodeDiveSetup(encode({
+            gases: [{ id: `bottom"${PAYLOAD}`, name: `Air ${PAYLOAD}` }],
+            dives: [{ waypoints: [] }]
+        }));
+        expect(/[<>"']/.test(out.gases[0].name)).toBe(false);
+        expect(/[<>"']/.test(out.gases[0].id)).toBe(false);
+    });
+
+    test('strips markup from waypoint gasId (lands in a value= attribute)', () => {
+        const out = decodeDiveSetup(encode({
+            gases: [{ id: 'bottom', name: 'Air' }],
+            dives: [{ waypoints: [{ time: 0, depth: 0, gasId: `bottom"${PAYLOAD}` }] }]
+        }));
+        expect(/[<>"']/.test(out.dives[0].waypoints[0].gasId)).toBe(false);
+    });
+
+    test('clamps absurdly long free text', () => {
+        const out = decodeDiveSetup(encode({
+            name: 'x'.repeat(5000), gases: [{ id: 'bottom', name: 'Air' }], dives: [{ waypoints: [] }]
+        }));
+        expect(out.name.length).toBe(MAX_SHARED_TEXT_LENGTH);
+    });
+
+    test('leaves a legitimate setup functionally intact', () => {
+        const setup = {
+            name: 'Trimix 40 m', gfLow: 30, gfHigh: 70,
+            gases: [{ id: 'bottom', name: 'EAN32', o2: 0.32, n2: 0.68 }],
+            dives: [{ waypoints: [{ time: 0, depth: 0 }, { time: 2, depth: 40, gasId: 'bottom' }] }]
+        };
+        const out = decodeDiveSetup(encode(setup));
+        expect(out.name).toBe('Trimix 40 m');
+        expect(out.gases[0].id).toBe('bottom');
+        expect(out.gases[0].o2).toBe(0.32);
+        expect(out.gfLow).toBe(30);
+        expect(out.dives[0].waypoints[1].gasId).toBe('bottom');
+    });
+});
+
+describe('guard: user-controlled values reaching innerHTML go through escHtml (#65)', () => {
+    // Fields an attacker controls through a shared ?profile= link or a stored
+    // profile. Escaping at the boundary is defence in depth; the sink is the
+    // control that must hold, so scan the sources rather than trusting review.
+    const TAINTED = /\b(?:gas|g|p|profile|tank|s|w|d|r)\.(?:name|id|gas|message|icon|type|label)\b/;
+    const FILES = [
+        'js/diveSetup.js',
+        'js/components/DiveSetupEditor.js',
+        'js/components/DiveEditPanel.js',
+        'js/components/RuntimeTable.js',
+        'sandbox/index.html',
+        'sandbox/repetitive-dives.html'
+    ];
+
+    for (const rel of FILES) {
+        test(`${rel} escapes every tainted interpolation`, () => {
+            const text = readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
+            const unescaped = [];
+            for (const m of text.matchAll(/\$\{([^{}]*)\}/g)) {
+                const expr = m[1];
+                if (!TAINTED.test(expr)) continue;
+                if (expr.includes('escHtml(')) continue;
+                if (/\?\s*'[^']*'\s*:\s*'[^']*'/.test(expr)) continue;  // ternary yielding literals
+                unescaped.push(expr.trim());
+            }
+            expect(unescaped).toEqual([]);
+        });
+    }
+
+    test('the shared escHtml module is the only escaping helper (no local copies)', () => {
+        const copies = [];
+        for (const rel of FILES) {
+            const text = readFileSync(new URL(`../${rel}`, import.meta.url), 'utf8');
+            if (/const\s+esc\s*=\s*\(/.test(text)) copies.push(rel);
+        }
+        expect(copies).toEqual([]);
     });
 });
 
