@@ -82,12 +82,10 @@ export function planTrip(diveSetup) {
         let invalidReason = null;
         if (dive.ndlLocked) {
             const n2 = (diveGases && diveGases[0]) ? diveGases[0].n2 : N2_FRACTION;
-            // Use the NDL value directly as the bottom time. This is the established
-            // app-wide convention (AddDiveDialog and ndlPreview both feed calculateNDL().ndl
-            // straight into bottomTime), so a moved NDL-locked dive shows the SAME number the
-            // add-dialog showed at creation. calculateNDL returns time-at-depth, so the
-            // resulting in-water bottom phase (bottomTime − descentTime) is conservatively
-            // under the true NDL — do NOT add descentTime here or this diverges from the dialog.
+            // Use the NDL value directly as the bottom time. calculateNDL reports the NDL
+            // the way dive tables do — from leaving the surface, descent included — so it
+            // drops straight into bottomTime with no correction, and a moved NDL-locked
+            // dive shows the SAME number the add-dialog showed at creation.
             const ndl = calculateNDL(dive.maxDepth, n2, gfLow / 100, seed).ndl;
             const capped = Number.isFinite(ndl) ? Math.min(ndl, NDL_LOCK_CAP) : NDL_LOCK_CAP;
             const descentTime = dive.maxDepth / 20;   // DESCENT_SPEED = 20 m/min

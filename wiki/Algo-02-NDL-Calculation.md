@@ -5,7 +5,7 @@ The **No-Decompression Limit** is the maximum bottom time at a given depth such 
 ## Entry point
 
 ```javascript
-// js/decoModel.js:602 (signature)
+// js/decoModel.js:606 (signature)
 export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0, initialTissuePressures = null)
 ```
 
@@ -15,21 +15,30 @@ Returns:
 
 ```javascript
 {
-  ndl: 20,                    // minutes, floor-rounded for display
-  ndlExact: 20.3,             // exact (pre-rounding) value for comparison
+  ndl: 20,                    // minutes from leaving the surface, floor-rounded for display
+  ndlExact: 20.3,             // exact (pre-rounding) value — use this for comparisons
+  ndlAtDepth: 18,             // same limit counted from arrival at depth, floor-rounded
+  ndlAtDepthExact: 18.3,      // exact time at depth
   controllingCompartment: 7,  // TC id whose M-value bites first on direct ascent
   descentTime: 2              // minutes to reach depth at DESCENT_SPEED = 20 m/min
 }
 ```
 
-The NDL returned is **bottom time** — time at maximum depth after descent completes. Total dive duration is `descentTime + ndl`.
+`ndl` follows the convention of published dive tables (PADI, US Navy): it is the maximum **bottom time measured from leaving the surface**, so the descent is already included and `ndlExact === descentTime + ndlAtDepthExact`. It can therefore be compared with — or assigned straight to — a bottom time, with no correction. Subtracting `descentTime` before such a comparison counts the descent twice.
+
+Two rounding rules follow from this:
+
+- **Display** uses `ndl` (whole minutes, rounded down) — that is what a diver would write into a plan.
+- **Classification** (`requiresDeco`, the NDL badge) uses `ndlExact`. Using the floored value as a threshold would push the last fraction of a minute into the decompression branch, which then has no stop to schedule.
+
+`ndlAtDepth` remains available for anything that genuinely reasons about the bottom phase alone.
 
 ## Why $GF_{low}$, not $GF_{high}$
 
 A common confusion: surely NDL should use $GF_{high}$, since that's the surface limit? Not for "first stop becomes mandatory." The moment a first stop is required, the deco algorithm starts enforcing $GF_{low}$ — so that is the threshold at which the no-deco window closes. Using $GF_{high}$ here would overstate the NDL by pretending the entire GF budget is available immediately.
 
 ```javascript
-// js/decoModel.js:664
+// js/decoModel.js:681
 const { ceilingDepth } = getDiveCeiling(testPressures, gfLow);
 ```
 
@@ -38,7 +47,7 @@ Default `gfLow = 1.0` (100 %) — raw Bühlmann, no conservatism. Typical planni
 ## Method — binary search
 
 ```javascript
-// js/decoModel.js:615-629 (descent)
+// js/decoModel.js:623-637 (descent)
 const descentTime = depth / DESCENT_SPEED;
 const descentRate = (alveolarN2 - getAlveolarN2Pressure(SURFACE_PRESSURE, n2Fraction)) / descentTime;
 const afterDescent = {};
@@ -57,7 +66,7 @@ COMPARTMENTS.forEach(comp => {
 Descent is simulated once via Schreiner at `DESCENT_SPEED = 20 m/min` (`js/decoModel.js:578`). That gives tissue state at the start of bottom time. When `initialTissuePressures` is set, `startN2` is read from the seed rather than surface equilibrium.
 
 ```javascript
-// js/decoModel.js:654-669
+// js/decoModel.js:671-686
 while (maxTime - minTime > 0.1) {
     const testTime = (minTime + maxTime) / 2;
     const testPressures = {};

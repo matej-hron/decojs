@@ -5245,26 +5245,39 @@ describe('format - decimal separator at runtime', () => {
     });
 });
 
-describe('NDL a doba sestupu - spolecne hodiny (#70)', () => {
+describe('NDL se meri od zacatku ponoru, ne od prichodu do hloubky (#70)', () => {
     const AIR = { id: 'air', name: 'Air', o2: 0.2098, n2: 0.7902 };
     const SS = { enabled: true, depth: 5, time: 3 };
 
-    test('calculateNDL vraci dobu sestupu, aby ji volajici mohl pripocist', () => {
-        expect(calculateNDL(40, AIR.n2, 1.0).descentTime).toBeCloseTo(2.0, 3);
+    test('calculateNDL vraci NDL od zacatku ponoru, ne cas v hloubce', () => {
+        // Tabulkovy NDL (PADI, US Navy) je maximalni cas na dne mereny od opusteni
+        // hladiny, tedy vcetne sestupu. Stejnou konvenci musi drzet i tato aplikace.
+        const r = calculateNDL(40, AIR.n2, 1.0);
+        expect(r.descentTime).toBeCloseTo(2.0, 3);
+        expect(r.ndlExact).toBeCloseTo(r.descentTime + r.ndlAtDepthExact, 6);
+        expect(r.ndl).toBe(Math.floor(r.ndlExact));
+        expect(r.ndl).toBeGreaterThan(r.ndlAtDepth);
     });
 
-    test('ponor uvnitr NDL neni oznacen za dekompresni, i kdyz cas na dne presahuje NDL', () => {
-        // Cas na dne se v projektu pocita od zacatku sestupu, NDL je cas v hloubce.
-        const { ndl, descentTime } = calculateNDL(40, AIR.n2, 1.0);
-        const bottomTime = ndl + descentTime / 2;
-        const r = generateDecoProfile(40, bottomTime, [AIR], 100, 100, SS);
-        expect(r.requiresDeco).toBe(false);
+    test('NDL lze primo dosadit jako cas na dne, aniz vznikne deco', () => {
+        // AddDiveDialog i tripPlanner sazi NDL rovnou do pole "cas na dne".
+        // S novou konvenci je to spravne bez jakekoli korekce.
+        for (const depth of [12, 18, 24, 30, 40]) {
+            const { ndl } = calculateNDL(depth, AIR.n2, 1.0);
+            expect(generateDecoProfile(depth, ndl, [AIR], 100, 100, SS).requiresDeco).toBe(false);
+            expect(generateDecoProfile(depth, ndl + 1, [AIR], 100, 100, SS).requiresDeco).toBe(true);
+        }
     });
 
-    test('zadny modul neporovnava cas na dne s NDL bez odecteni sestupu', () => {
-        // Cas na dne bezi od zacatku sestupu, NDL je cas v hloubce. Porovnani je
-        // platne jen tehdy, kdyz leva strana sestup odecetla (primo, nebo uz drive
-        // jako timeAtDepth). Jinak se meri na dvou ruznych hodinach.
+    test('cas v hloubce zustava dostupny pro vypocty', () => {
+        const r = calculateNDL(30, AIR.n2, 1.0);
+        expect(r.ndlAtDepthExact).toBeCloseTo(r.ndlExact - r.descentTime, 6);
+        expect(r.ndlAtDepth).toBe(Math.floor(r.ndlAtDepthExact));
+    });
+
+    test('zadny modul neodecita sestup pred porovnanim s NDL', () => {
+        // NDL uz sestup obsahuje. Kdo od casu na dne sestup jeste odecte, zapocita
+        // ho dvakrat a ohlasi deco pozdeji, nez ma.
         const walk = (dirUrl, prefix = '') => readdirSync(dirUrl, { withFileTypes: true })
             .flatMap(e => e.isDirectory()
                 ? walk(new URL(`${e.name}/`, dirUrl), `${prefix}${e.name}/`)
@@ -5273,53 +5286,64 @@ describe('NDL a doba sestupu - spolecne hodiny (#70)', () => {
         for (const [rel, url] of walk(new URL('../js/', import.meta.url))) {
             const src = readFileSync(url, 'utf8')
                 .split('\n').filter(l => !/^\s*(\/\/|\*|\/\*)/.test(l)).join('\n');
-            const re = /(?:>|>=|<=|<)\s*ndl\b/g;
+            const re = /(?:>|>=|<=|<)\s*ndl\b/gi;
             let m;
             while ((m = re.exec(src)) !== null) {
                 const before = src.slice(Math.max(0, m.index - 60), m.index);
-                if (!/descentTime|timeAtDepth/.test(before)) {
+                if (/-\s*(descentTime|d\s*\/\s*20)/.test(before)) {
                     offenders.push(`${rel}: ${before.split('\n').pop().trim()}${m[0]}`);
                 }
             }
-        }
-        expect(offenders).toEqual([]);
-    });
-
-    test('getNDLStatus meri zbyvajici cas v hloubce, ne od hladiny', () => {
-        // 40 m: NDL 7 min v hloubce, sestup 2 min -> pri 8 min od hladiny zbyva 1 min
-        const s = getNDLStatus(7, 2, 8);
-        expect(s.state).toBe('ok');
-        expect(s.remaining).toBeCloseTo(1, 3);
-    });
-
-    test('getNDLStatus hlasi dekompresi presne na hranici, ne o 10 % pozdeji', () => {
-        // driv se porovnavalo bottomTime <= ndl * 1.1, takze skutecna deco povinnost
-        // se jeste hlasila jako "na limitu"
-        const s = getNDLStatus(59, 0.9, 62);   // v hloubce 61,1 min > 59 -> deco
-        expect(s.state).toBe('deco');
-    });
-
-    test('getNDLStatus hlasi blizkost limitu pod nim, ne nad nim', () => {
-        expect(getNDLStatus(10, 0, 9.5).state).toBe('nearLimit');
-        expect(getNDLStatus(10, 0, 10.5).state).toBe('deco');
-    });
-
-    test('getNDLStatus u neomezeneho NDL nepocita', () => {
-        expect(getNDLStatus(Infinity, 0.5, 30).state).toBe('unlimited');
-    });
-
-    test('dekompresni vetev nikdy nehlasi deco bez jedine zastavky', () => {
-        const offenders = [];
-        for (const depth of [12, 18, 24, 30, 40]) {
-            const { ndl, descentTime } = calculateNDL(depth, AIR.n2, 1.0);
-            for (let bt = ndl + 0.01; bt <= ndl + descentTime; bt += descentTime / 5) {
-                const r = generateDecoProfile(depth, bt, [AIR], 100, 100, SS);
-                if (r.requiresDeco && r.decoStops.length === 0) {
-                    offenders.push(`${depth} m / ${bt.toFixed(2)} min`);
+            // ...ani oklikou pres argument getNDLStatus
+            const callRe = /getNDLStatus\s*\(([^)]*)\)/g;
+            while ((m = callRe.exec(src)) !== null) {
+                if (/-\s*(descentTime|d\s*\/\s*20)/.test(m[1])) {
+                    offenders.push(`${rel}: ${m[0]}`);
                 }
             }
         }
         expect(offenders).toEqual([]);
+    });
+
+    test('getNDLStatus porovnava cas na dne s NDL primo, bez korekce', () => {
+        expect(getNDLStatus(20, 8).state).toBe('ok');
+        expect(getNDLStatus(20, 8).remaining).toBeCloseTo(12, 6);
+        expect(getNDLStatus(10, 9.5).state).toBe('nearLimit');
+        expect(getNDLStatus(10, 10.5).state).toBe('deco');
+        expect(getNDLStatus(Infinity, 30).state).toBe('unlimited');
+    });
+
+    test('prah deco zustava fyzikalne stejny jako po #70', () => {
+        // Zmena je v definici a zobrazenem cisle, ne v tom, kdy ponor stava dekompresnim.
+        for (const depth of [18, 24, 30, 40, 50]) {
+            const { descentTime, ndlAtDepthExact, ndlExact } = calculateNDL(depth, AIR.n2, 1.0);
+            // prah je tam, kde byl po #70: sestup + cas v hloubce
+            expect(ndlExact).toBeCloseTo(descentTime + ndlAtDepthExact, 9);
+            // tesne pod prahem -> bez deca, tesne nad -> deco
+            expect(generateDecoProfile(depth, ndlExact - 0.01, [AIR], 100, 100, SS).requiresDeco).toBe(false);
+            expect(generateDecoProfile(depth, ndlExact + 0.01, [AIR], 100, 100, SS).requiresDeco).toBe(true);
+        }
+    });
+
+    test('NDL ve 40 m odpovida radove tabulkove hodnote', () => {
+        // PADI tabulka uvadi pro 40 m ~8 min casu na dne vcetne sestupu.
+        const { ndl } = calculateNDL(40, AIR.n2, 1.0);
+        expect(ndl).toBeGreaterThanOrEqual(8);
+        expect(ndl).toBeLessThanOrEqual(12);
+    });
+
+    test('cele minuty nad zobrazenym NDL jeste nespoustí dekompresni vetev', () => {
+        // Zobrazeny NDL je zaokrouhleny dolu. Kdyby se prah bral z nej, cas na dne
+        // mezi zobrazenym a skutecnym NDL by spadl do dekompresni vetve, ktera tam
+        // nema co planovat.
+        for (const depth of [12, 18, 24, 30, 40]) {
+            const { ndl, ndlExact } = calculateNDL(depth, AIR.n2, 1.0);
+            expect(ndlExact).toBeGreaterThanOrEqual(ndl);
+            const mid = (ndl + ndlExact) / 2;
+            if (mid > ndl) {
+                expect(generateDecoProfile(depth, mid, [AIR], 100, 100, SS).requiresDeco).toBe(false);
+            }
+        }
     });
 });
 
