@@ -223,7 +223,7 @@ Toxicity is informational; not fed back into the deco loop.
 |---|---|---|
 | `generateProfileName(setup)` | 1225 | Short label for UI |
 | `formatDiveSetupSummary(setup)` | 1241 | Multi-line human summary |
-| `renderDivePlanTableHTML(waypoints, gases, opts)` | 1435 | Returns HTML for the dive-plan table. Preserves explicit gas-switch rows; does not fold them into neighbouring rows. |
+| `renderDivePlanTableHTML(waypoints, gases, opts)` | 1445 | Returns HTML for the dive-plan table. A gas switch taken exactly on arrival mid-ascent (no stop at that depth) gets its own zero-duration `switch` row (Divesoft-style), and the ascent leg leading into it is billed to the OLD gas, not the new one. Switch rows never fold into neighbouring rows. |
 
 #### Defaults
 

@@ -611,13 +611,6 @@
             <!-- Dive Profile Chart -->
             <div class="sandbox-chart-container">
                 <h3 data-i18n="sandbox.dive.profileChart">📊 Dive Profile</h3>
-                <div class="chart-controls">
-                    <button id="dpc-depth" class="btn btn-small btn-secondary active" data-i18n="sandbox.dive.chartMode.profile">Profile</button>
-                    <button id="dpc-pressure" class="btn btn-small btn-secondary" data-i18n="sandbox.dive.chartMode.pressure">Pressure</button>
-                    <button id="dpc-gas" class="btn btn-small btn-secondary" data-i18n="sandbox.dive.chartMode.gas">Gas Consumption</button>
-                    <button id="dpc-pp" class="btn btn-small btn-secondary" data-i18n="sandbox.dive.chartMode.partialPressure">Partial Pressure</button>
-                    <button id="dpc-tissue" class="btn btn-small btn-secondary" data-i18n="sandbox.dive.chartMode.tissue">Tissue Loading</button>
-                </div>
 
                 <!-- Chart Properties Panel (Advanced) -->
                 <div class="chart-properties-panel" id="chart-properties-panel">
@@ -666,6 +659,15 @@
                 </div>
 
                 <div id="dive-plan-table-container" class="dse-plan-table-wrapper" aria-label="Dive plan table"></div>
+
+                <!-- What the chart below displays -->
+                <div class="chart-controls">
+                    <button id="dpc-depth" class="btn btn-small btn-secondary active" data-i18n="sandbox.dive.chartMode.profile">Profile</button>
+                    <button id="dpc-pressure" class="btn btn-small btn-secondary" data-i18n="sandbox.dive.chartMode.pressure">Pressure</button>
+                    <button id="dpc-gas" class="btn btn-small btn-secondary" data-i18n="sandbox.dive.chartMode.gas">Gas Consumption</button>
+                    <button id="dpc-pp" class="btn btn-small btn-secondary" data-i18n="sandbox.dive.chartMode.partialPressure">Partial Pressure</button>
+                    <button id="dpc-tissue" class="btn btn-small btn-secondary" data-i18n="sandbox.dive.chartMode.tissue">Tissue Loading</button>
+                </div>
 
                 <div class="chart-wrapper" id="dive-profile-container" style="height: 600px;"></div>
 

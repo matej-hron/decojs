@@ -1477,20 +1477,27 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
         const gasName = activeGas?.name || '';
         const runtime = Math.round(next.time * 10) / 10;
 
-        const pushSeg = (seg) => {
+        // pushSeg attributes gas consumption to gasIdOverride (falling back to
+        // this iteration's activeGasId) so a segment can be billed to a
+        // different gas than the one shown by default — needed below to
+        // charge an ascent leg to the OLD gas while a zero-duration switch
+        // marker right after it introduces the NEW one.
+        const pushSeg = (seg, gasIdOverride) => {
+            const segGasId = gasIdOverride || activeGasId;
+            const segGas = gasList.find(g => g.id === segGasId);
             const isDecoOrSafety = seg.cls === 'stop' || seg.cls === 'safety';
             const sac = isDecoOrSafety ? decoSacRate : sacRate;
             const avgDepth = (wp.depth + next.depth) / 2;
             const avgAmbient = 1 + avgDepth / 10;
-            if (activeGas && activeGas.cylinderVolume > 0 && duration > 0) {
+            if (segGas && segGas.cylinderVolume > 0 && duration > 0) {
                 const litersUsed = sac * avgAmbient * duration;
-                const barDrop = litersUsed / activeGas.cylinderVolume;
-                pressureByGasId[activeGasId] = Math.max(0, pressureByGasId[activeGasId] - barDrop);
+                const barDrop = litersUsed / segGas.cylinderVolume;
+                pressureByGasId[segGasId] = Math.max(0, pressureByGasId[segGasId] - barDrop);
             }
-            seg.tankBar = activeGas && pressureByGasId[activeGasId] !== undefined
-                ? Math.round(pressureByGasId[activeGasId])
+            seg.tankBar = segGas && pressureByGasId[segGasId] !== undefined
+                ? Math.round(pressureByGasId[segGasId])
                 : null;
-            seg.gasId = activeGasId;
+            seg.gasId = segGasId;
             segments.push(seg);
         };
 
@@ -1507,7 +1514,20 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
             pushSeg({ cls: 'asc', icon: '▲', label: phaseLabels.surface, isSurface: true, depth: 0, stop: '', runtime, gas: '' });
         } else if (next.depth < wp.depth) {
             leftMax = true;
-            pushSeg({ cls: 'asc', icon: '↑', label: phaseLabels.asc, depth: next.depth, stop: duration, runtime, gas: gasName });
+            // A gas switch taken exactly upon arrival (next.gasId differs from
+            // the gas breathed during the climb) must not relabel the whole
+            // ascent leg with the new gas — that reads as "already on deco gas
+            // while still 20 m above its MOD". Bill the ascent to the OLD gas,
+            // then add a zero-duration switch marker row for the new one.
+            const transitGasId = wp.gasId || prevGasId;
+            const transitGas = gasList.find(g => g.id === transitGasId);
+            const gasChanged = next.gasId && transitGasId && next.gasId !== transitGasId;
+            pushSeg({ cls: 'asc', icon: '↑', label: phaseLabels.asc, depth: next.depth, stop: duration, runtime, gas: transitGas?.name || '' }, transitGasId);
+            if (gasChanged) {
+                // Blank ('' not 0) Stop cell — this is an instant marker, not
+                // a measured zero-length stop, matching the surface-row convention.
+                pushSeg({ cls: 'switch', icon: '⇄', label: phaseLabels.switch, depth: next.depth, stop: '', runtime, gas: gasName }, next.gasId);
+            }
         } else if (next.depth === wp.depth && next.depth > 0) {
             leftMax = true;
             const gasChanged = wp.gasId && wp.gasId !== prevGasId;
@@ -1517,7 +1537,12 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
                 pushSeg({ cls: 'stop', icon: '■', label: phaseLabels.stop, depth: wp.depth, stop: duration, runtime, gas: gasName });
             }
         }
-        if (wp.gasId) prevGasId = wp.gasId;
+        // prevGasId tracks the gas actually in effect once this leg completes
+        // (== activeGasId), not merely wp.gasId — otherwise a switch taken
+        // exactly on arrival (handled above) would still look "unseen" to
+        // the very next iteration's stationary-switch check and double-fire
+        // a second switch row for a stop starting at that same waypoint.
+        prevGasId = activeGasId;
     }
 
     if (segments.length === 0) return '';
