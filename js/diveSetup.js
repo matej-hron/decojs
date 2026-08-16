@@ -353,8 +353,13 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
     // cannot trust it — skip the early-return and always run the deco scheduler,
     // which reads the actual bottom tissue state (and returns zero stops + a
     // safety stop if no deco is genuinely needed).
+    //
+    // bottomTime runs from the start of the descent, but calculateNDL returns the
+    // time allowed *at depth* (it models the descent separately). Comparing the two
+    // directly measures them on different clocks and declares deco descentTime too
+    // early — see calculateNDL, which returns descentTime for exactly this reason.
     const seededTissues = options.initialTissuePressures || null;
-    const requiresDeco = bottomTime > ndl;
+    const requiresDeco = (bottomTime - descentTime) > ndl;
 
     if (!requiresDeco && !seededTissues) {
         // Within NDL - generate simple profile with safety stop
@@ -581,7 +586,10 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
     // NDL early-return and surface-only tissue init assume a fresh surface
     // start. Callers needing a seeded profile must use the async
     // generateDecoProfile, which implements that seam.
-    const requiresDeco = bottomTime > ndl;
+    //
+    // bottomTime runs from the start of the descent, ndl is the time allowed at
+    // depth — subtract the descent before comparing (same as generateDecoProfile).
+    const requiresDeco = (bottomTime - descentTime) > ndl;
 
     if (!requiresDeco) {
         const waypoints = generateSimpleProfile(maxDepth, bottomTime, safetyStop, options);
@@ -692,6 +700,39 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
 export function getNDLForDepth(depth, gas, gfLow) {
     const n2 = gas?.n2 ?? N2_FRACTION;
     return calculateNDL(depth, n2, gfLow / 100);
+}
+
+/**
+ * Fraction of the NDL above which the dive is reported as approaching the limit.
+ */
+export const NDL_NEAR_LIMIT_FRACTION = 0.9;
+
+/**
+ * Classify a dive against its no-decompression limit.
+ *
+ * Bottom time is measured from the start of the descent (see the glossary entry
+ * for "Čas na dně"), while the NDL is the time allowed *at depth*. The two must
+ * be brought onto the same clock before they are compared, otherwise the status
+ * flips descentTime too early — and the old `bottomTime <= ndl * 1.1` band pushed
+ * the deco threshold above the true limit, reporting a genuine decompression
+ * obligation as merely "at limit".
+ *
+ * @param {number} ndl - No-decompression limit at depth, in minutes (may be Infinity)
+ * @param {number} descentTime - Descent time in minutes
+ * @param {number} bottomTime - Bottom time in minutes, measured from the start of the descent
+ * @returns {{state: 'unlimited'|'ok'|'nearLimit'|'deco', timeAtDepth: number|null, remaining: number}}
+ */
+export function getNDLStatus(ndl, descentTime, bottomTime) {
+    if (!Number.isFinite(ndl)) {
+        return { state: 'unlimited', timeAtDepth: null, remaining: Infinity };
+    }
+    const timeAtDepth = Math.max(0, bottomTime - descentTime);
+    if (timeAtDepth > ndl) {
+        return { state: 'deco', timeAtDepth, remaining: 0 };
+    }
+    const remaining = ndl - timeAtDepth;
+    const state = timeAtDepth > ndl * NDL_NEAR_LIMIT_FRACTION ? 'nearLimit' : 'ok';
+    return { state, timeAtDepth, remaining };
 }
 
 /**

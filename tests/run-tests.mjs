@@ -140,6 +140,7 @@ import {
     insertGasSwitchWaypoints,
     calculateMOD,
     computeGasConsumption,
+    getNDLStatus,
     renderDivePlanTableHTML
 } from '../js/diveSetup.js';
 
@@ -5239,6 +5240,84 @@ describe('format - decimal separator at runtime', () => {
             const n = (src.match(/\.toFixed\(/g) || []).length;
             const allowed = ALLOWED[f] || 0;
             if (n !== allowed) offenders.push(`${f}: ${n} raw toFixed, expected ${allowed}`);
+        }
+        expect(offenders).toEqual([]);
+    });
+});
+
+describe('NDL a doba sestupu - spolecne hodiny (#70)', () => {
+    const AIR = { id: 'air', name: 'Air', o2: 0.2098, n2: 0.7902 };
+    const SS = { enabled: true, depth: 5, time: 3 };
+
+    test('calculateNDL vraci dobu sestupu, aby ji volajici mohl pripocist', () => {
+        expect(calculateNDL(40, AIR.n2, 1.0).descentTime).toBeCloseTo(2.0, 3);
+    });
+
+    test('ponor uvnitr NDL neni oznacen za dekompresni, i kdyz cas na dne presahuje NDL', () => {
+        // Cas na dne se v projektu pocita od zacatku sestupu, NDL je cas v hloubce.
+        const { ndl, descentTime } = calculateNDL(40, AIR.n2, 1.0);
+        const bottomTime = ndl + descentTime / 2;
+        const r = generateDecoProfile(40, bottomTime, [AIR], 100, 100, SS);
+        expect(r.requiresDeco).toBe(false);
+    });
+
+    test('zadny modul neporovnava cas na dne s NDL bez odecteni sestupu', () => {
+        // Cas na dne bezi od zacatku sestupu, NDL je cas v hloubce. Porovnani je
+        // platne jen tehdy, kdyz leva strana sestup odecetla (primo, nebo uz drive
+        // jako timeAtDepth). Jinak se meri na dvou ruznych hodinach.
+        const walk = (dirUrl, prefix = '') => readdirSync(dirUrl, { withFileTypes: true })
+            .flatMap(e => e.isDirectory()
+                ? walk(new URL(`${e.name}/`, dirUrl), `${prefix}${e.name}/`)
+                : (e.name.endsWith('.js') ? [[`${prefix}${e.name}`, new URL(e.name, dirUrl)]] : []));
+        const offenders = [];
+        for (const [rel, url] of walk(new URL('../js/', import.meta.url))) {
+            const src = readFileSync(url, 'utf8')
+                .split('\n').filter(l => !/^\s*(\/\/|\*|\/\*)/.test(l)).join('\n');
+            const re = /(?:>|>=|<=|<)\s*ndl\b/g;
+            let m;
+            while ((m = re.exec(src)) !== null) {
+                const before = src.slice(Math.max(0, m.index - 60), m.index);
+                if (!/descentTime|timeAtDepth/.test(before)) {
+                    offenders.push(`${rel}: ${before.split('\n').pop().trim()}${m[0]}`);
+                }
+            }
+        }
+        expect(offenders).toEqual([]);
+    });
+
+    test('getNDLStatus meri zbyvajici cas v hloubce, ne od hladiny', () => {
+        // 40 m: NDL 7 min v hloubce, sestup 2 min -> pri 8 min od hladiny zbyva 1 min
+        const s = getNDLStatus(7, 2, 8);
+        expect(s.state).toBe('ok');
+        expect(s.remaining).toBeCloseTo(1, 3);
+    });
+
+    test('getNDLStatus hlasi dekompresi presne na hranici, ne o 10 % pozdeji', () => {
+        // driv se porovnavalo bottomTime <= ndl * 1.1, takze skutecna deco povinnost
+        // se jeste hlasila jako "na limitu"
+        const s = getNDLStatus(59, 0.9, 62);   // v hloubce 61,1 min > 59 -> deco
+        expect(s.state).toBe('deco');
+    });
+
+    test('getNDLStatus hlasi blizkost limitu pod nim, ne nad nim', () => {
+        expect(getNDLStatus(10, 0, 9.5).state).toBe('nearLimit');
+        expect(getNDLStatus(10, 0, 10.5).state).toBe('deco');
+    });
+
+    test('getNDLStatus u neomezeneho NDL nepocita', () => {
+        expect(getNDLStatus(Infinity, 0.5, 30).state).toBe('unlimited');
+    });
+
+    test('dekompresni vetev nikdy nehlasi deco bez jedine zastavky', () => {
+        const offenders = [];
+        for (const depth of [12, 18, 24, 30, 40]) {
+            const { ndl, descentTime } = calculateNDL(depth, AIR.n2, 1.0);
+            for (let bt = ndl + 0.01; bt <= ndl + descentTime; bt += descentTime / 5) {
+                const r = generateDecoProfile(depth, bt, [AIR], 100, 100, SS);
+                if (r.requiresDeco && r.decoStops.length === 0) {
+                    offenders.push(`${depth} m / ${bt.toFixed(2)} min`);
+                }
+            }
         }
         expect(offenders).toEqual([]);
     });

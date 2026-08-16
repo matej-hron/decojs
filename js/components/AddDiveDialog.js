@@ -7,6 +7,7 @@
  * Emits 'add' { startDateTime, maxDepth, bottomTime, gases } and 'cancel'.
  */
 import { baseFromStartDate, epochMinToLocalInput, localInputToEpochMin } from '../tripTime.js';
+import { getNDLStatus } from '../diveSetup.js';
 
 export class AddDiveDialog extends EventTarget {
     constructor(container) {
@@ -57,7 +58,11 @@ export class AddDiveDialog extends EventTarget {
             timeEl.disabled = !customMode;
             if (!customMode && Number.isFinite(ndl)) timeEl.value = ndl;
             const t = parseFloat(timeEl.value) || 0;
-            hintEl.textContent = (customMode && Number.isFinite(ndl) && t > ndl)
+            // The time field runs from the start of the descent, the NDL is time at
+            // depth, so the descent has to come off before they are compared.
+            // DESCENT_SPEED = 20 m/min, as in tripPlanner.
+            const overNdl = getNDLStatus(ndl, d / 20, t).state === 'deco';
+            hintEl.textContent = (customMode && Number.isFinite(ndl) && overNdl)
                 ? `⚠ deco — exceeds NDL (${ndl}\u00a0min) for this depth at this point in the trip`
                 : (Number.isFinite(ndl) ? `NDL here: ${ndl}\u00a0min` : 'NDL here: no limit (very shallow)');
         };

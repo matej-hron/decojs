@@ -95,10 +95,11 @@ For default raw Bühlmann ($gfLow = 1.0$) the same dive yields NDL ≈ 21 min �
 NDL is the pivot in the top-level dive planner:
 
 ```javascript
-// js/diveSetup.js:346-373
+// js/diveSetup.js:346-378
 const { ndl, controllingCompartment } = calculateNDL(maxDepth, bottomGas.n2, gfLowDec);
+const descentTime = roundUp(maxDepth / DESCENT_SPEED);
 const seededTissues = options.initialTissuePressures || null;
-const requiresDeco = bottomTime > ndl;
+const requiresDeco = (bottomTime - descentTime) > ndl;
 if (!requiresDeco && !seededTissues) {
     const waypoints = generateSimpleProfile(maxDepth, bottomTime, safetyStop, options);
     waypoints[1].gasId = bottomGas.id;
@@ -110,7 +111,9 @@ if (!requiresDeco && !seededTissues) {
 // else: proceed to generateDecoSchedule()
 ```
 
-If `bottomTime ≤ ndl` **and** no pre-saturated tissue seed is provided, the planner returns a no-stop profile (optionally with a safety stop). Only when deco is unavoidable (or a seed is present) does the expensive `generateDecoSchedule()` pipeline run. The extra `!seededTissues` guard ensures repetitive dives always run the full deco scheduler — see [repetitive-dive chaining](Module-Reference.md#repetitive-dive-chaining-initialtissuepressures).
+`bottomTime` runs from the start of the descent, while `ndl` is the time allowed *at depth*, so the descent must be subtracted before the two are compared. Comparing them directly declared deco `descentTime` too early — at 40 m that is 2 min against a 7 min NDL, a 29 % error. `calculateNDL` returns `descentTime` for precisely this purpose.
+
+If the time **at depth** is within `ndl` **and** no pre-saturated tissue seed is provided, the planner returns a no-stop profile (optionally with a safety stop). Only when deco is unavoidable (or a seed is present) does the expensive `generateDecoSchedule()` pipeline run. The extra `!seededTissues` guard ensures repetitive dives always run the full deco scheduler — see [repetitive-dive chaining](Module-Reference.md#repetitive-dive-chaining-initialtissuepressures).
 
 ## Cross-references
 
