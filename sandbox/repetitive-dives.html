@@ -247,6 +247,7 @@
     import { addDive, editDive, removeDive, rescheduleDive } from '../js/tripState.js';
     import { AddDiveDialog } from '../js/components/AddDiveDialog.js';
     import { previewNdl } from '../js/ndlPreview.js';
+    import { escHtml } from '../js/utils/escHtml.js';
     import { GF_PRESETS } from '../js/gfPresets.js';
     import { getTripFromUrl, updateUrlWithTrip, getTripShareUrl } from '../js/tripUrl.js';
     import { fmtNum } from '../js/format.js';
@@ -290,8 +291,6 @@
       const r = Math.round(m);
       return r >= 60 ? `${Math.floor(r / 60)}\u00a0h ${r % 60}\u00a0min` : `${r}\u00a0min`;
     };
-    // Escape user-controlled text before interpolating into innerHTML.
-    const esc = (s) => String(s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
 
     // planTrip result (updated on every rerender).
     let lastResult = null;
@@ -356,7 +355,7 @@
       const siLine = d.surfaceIntervalBefore == null ? 'first dive' : `SI ${fmtDur(d.surfaceIntervalBefore)}`;
       const headerHtml = `
         <div class="sel-header">
-          <h2>${esc(d.name || d.id.toUpperCase())} — ${fmtClock(d.startDateTime)}</h2>
+          <h2>${escHtml(d.name || d.id.toUpperCase())} — ${fmtClock(d.startDateTime)}</h2>
           <div class="sel-actions"><button class="sel-edit">✎ Edit</button><button class="sel-delete">🗑 Delete</button></div>
         </div>`;
 
@@ -544,7 +543,7 @@
 
     const gfPresetsEl = document.querySelector('.gf-presets');
     gfPresetsEl.innerHTML = GF_PRESETS.map(p =>
-      `<button class="gf-preset-btn" data-gf-low="${p.gfLow}" data-gf-high="${p.gfHigh}" title="${p.title}">${p.label} ${p.gfLow}/${p.gfHigh}</button>`).join('');
+      `<button class="gf-preset-btn" data-gf-low="${p.gfLow}" data-gf-high="${p.gfHigh}" title="${escHtml(p.title)}">${escHtml(p.label)} ${p.gfLow}/${p.gfHigh}</button>`).join('');
     gfPresetsEl.addEventListener('click', (e) => {
       const btn = e.target.closest('.gf-preset-btn');
       if (!btn) return;

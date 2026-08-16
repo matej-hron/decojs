@@ -57,6 +57,7 @@ import {
     DEFAULT_GAS_SWITCH_TIME,
     renderDivePlanTableHTML
 } from '../diveSetup.js';
+import { escHtml } from '../utils/escHtml.js';
 
 import {
     validateDiveSetup,
@@ -384,7 +385,7 @@ export class DiveSetupEditor extends EventTarget {
         this.elements.profileSelect.innerHTML = `
             <option value="">${translate('diveEditor.profiles.selectPlaceholder', '-- Select Profile --')}</option>
             ${this.profiles.map(p => `
-                <option value="${p.id}" ${this.selectedProfileId === p.id ? 'selected' : ''}>${p.name}</option>
+                <option value="${escHtml(p.id)}" ${this.selectedProfileId === p.id ? 'selected' : ''}>${escHtml(p.name)}</option>
             `).join('')}
         `;
     }
@@ -516,7 +517,7 @@ export class DiveSetupEditor extends EventTarget {
                 </div>
                 <div class="dse-gf-presets">
                     <span class="dse-hint">${translate('diveEditor.gf.presetsLabel', 'Presets:')} <span class="dse-gf-info-toggle" title="${translate('diveEditor.gf.presetGuide', 'GF preset guide')}" style="cursor:pointer; text-decoration:underline;">ℹ️</span></span>
-                    ${GF_PRESETS.map(p => `<button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="${p.gfLow}" data-gf-high="${p.gfHigh}" title="${translate(p.titleKey, p.title)}">${translate(p.labelKey, p.label)}</button>`).join('')}
+                    ${GF_PRESETS.map(p => `<button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="${p.gfLow}" data-gf-high="${p.gfHigh}" title="${escHtml(translate(p.titleKey, p.title))}">${escHtml(translate(p.labelKey, p.label))}</button>`).join('')}
                 </div>
                 <div class="dse-gf-info" style="display:none; margin-top:0.5rem; font-size:0.8rem; background:var(--surface-alt, #f5f5f5); border-radius:6px; padding:0.6rem; line-height:1.5;">
                     <table style="width:100%; border-collapse:collapse; font-size:0.78rem;">
@@ -876,7 +877,7 @@ export class DiveSetupEditor extends EventTarget {
                     <label>${translate('diveEditor.gasCard.gasLabel', 'Gas:')}</label>
                     <select class="dse-gas-preset form-select">
                         ${gasOptions.map(g =>
-                            `<option value="${g.id}" ${matchingPreset?.id === g.id ? 'selected' : ''}>${g.name}</option>`
+                            `<option value="${escHtml(g.id)}" ${matchingPreset?.id === g.id ? 'selected' : ''}>${escHtml(g.name)}</option>`
                         ).join('')}
                         <option value="custom" ${!matchingPreset ? 'selected' : ''}>${customOption}</option>
                     </select>
@@ -1031,7 +1032,7 @@ export class DiveSetupEditor extends EventTarget {
             body.querySelectorAll('.dse-wp-gas').forEach(select => {
                 const currentValue = select.value;
                 select.innerHTML = this.currentGases.map(gas => 
-                    `<option value="${gas.id}" ${gas.id === currentValue ? 'selected' : ''}>${gas.name}</option>`
+                    `<option value="${escHtml(gas.id)}" ${gas.id === currentValue ? 'selected' : ''}>${escHtml(gas.name)}</option>`
                 ).join('');
             });
         };
@@ -1080,7 +1081,7 @@ export class DiveSetupEditor extends EventTarget {
     _addWaypointRow(tbody, time = '', depth = '', gasId = '') {
         const row = document.createElement('tr');
         const gasOptions = this.currentGases.map(gas => 
-            `<option value="${gas.id}" ${gas.id === gasId ? 'selected' : ''}>${gas.name}</option>`
+            `<option value="${escHtml(gas.id)}" ${gas.id === gasId ? 'selected' : ''}>${escHtml(gas.name)}</option>`
         ).join('');
         
         row.innerHTML = `
@@ -1179,7 +1180,7 @@ export class DiveSetupEditor extends EventTarget {
         
         const newRow = document.createElement('tr');
         const gasOptions = this.currentGases.map(gas => 
-            `<option value="${gas.id}" ${gas.id === currentGasId ? 'selected' : ''}>${gas.name}</option>`
+            `<option value="${escHtml(gas.id)}" ${gas.id === currentGasId ? 'selected' : ''}>${escHtml(gas.name)}</option>`
         ).join('');
         
         newRow.innerHTML = `

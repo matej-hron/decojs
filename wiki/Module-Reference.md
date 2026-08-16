@@ -158,7 +158,7 @@ Imported by: `main.js`, `mvalues.js`, every chart, `DiveSetupEditor.js`.
 | `DECO_GASES` | 50 | EAN50, EAN80, O₂ 100% |
 | `PREDEFINED_GASES` | 59 | Union of the two above |
 | `BOTTOM_CYLINDERS`, `STAGE_CYLINDERS` | 65, 81 | Cylinder size presets (litres) |
-| `getPredefinedGas(id)`, `getBottomGas(id)`, `getDecoGas(id)` | 118, 127, 136 | ID lookups |
+| `getPredefinedGas(id)`, `getBottomGas(id)`, `getDecoGas(id)` | 119, 128, 137 | ID lookups |
 
 Note: `BOTTOM_GASES[0].n2` is `0.7902`, matching `N2_FRACTION` in `decoModel.js`.
 
@@ -166,22 +166,22 @@ Note: `BOTTOM_GASES[0].n2` is `0.7902`, matching `N2_FRACTION` in `decoModel.js`
 
 | Signature | Line | Description |
 |---|---|---|
-| `loadDiveSetup(path='data/dive-setup.json')` | 145 | async; tries localStorage, falls back to JSON fetch, caches in module scope |
-| `getDefaultSetup()` | 176 | Hardcoded 40 m / 20 min air dive |
-| `clearCache()` | 1240 | Clears the module-level cache |
-| `saveDiveSetup(setup, key='diveSetup')` | 1249 | Persist to localStorage |
-| `loadSavedSetup(key='diveSetup')` | 1262 | Restore from localStorage |
-| `extendDiveSetup(base, overrides)` | 747 | Deep merge with validation |
+| `loadDiveSetup(path='data/dive-setup.json')` | 146 | async; tries localStorage, falls back to JSON fetch, caches in module scope |
+| `getDefaultSetup()` | 177 | Hardcoded 40 m / 20 min air dive |
+| `clearCache()` | 1241 | Clears the module-level cache |
+| `saveDiveSetup(setup, key='diveSetup')` | 1250 | Persist to localStorage |
+| `loadSavedSetup(key='diveSetup')` | 1263 | Restore from localStorage |
+| `extendDiveSetup(base, overrides)` | 748 | Deep merge with validation |
 
 #### Profile generation
 
 | Signature | Line | Description |
 |---|---|---|
-| `generateSimpleProfile(maxDepth, bottomTime, safetyStop, options)` | 239 | No-deco profile. Descent 20 m/min, ascent 10 m/min, optional 3 min @ 5 m. |
-| `generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, safetyStop, options)` | 326 | Runs NDL check; if exceeded, calls `generateDecoSchedule()` and splices stops into the waypoint array. Returns `{waypoints, ndl, requiresDeco, decoStops, totalDecoTime, controllingCompartment, pAnchor, anchorDepth}`. Accepts optional `options.initialTissuePressures` — when provided, tissues are seeded from that map and the surface-based NDL early-return is bypassed so the deco scheduler always runs against the actual pre-saturated state. See [repetitive-dive chaining](#repetitive-dive-chaining-initialTissuePressures). |
-| `generateDecoProfileSync(...)` | 566 | Variant accepting a pre-loaded `compartments` array. Does **not** support `options.initialTissuePressures`; callers needing a seeded profile must use `generateDecoProfile`. |
-| `getNDLForDepth(depth, gas, gfLow)` | 706 | Convenience wrapper around `calculateNDL`. Returns the full result, including `descentTime`. |
-| `getNDLStatus(ndl, bottomTime)` | 728 | Classifies a dive against its NDL for UI display. Both arguments run from leaving the surface, so they are compared with no correction — subtracting the descent here would count it twice. Returns `{state: 'unlimited'\|'ok'\|'nearLimit'\|'deco', remaining}`. `nearLimit` is the band *below* the limit (`NDL_NEAR_LIMIT_FRACTION` = 0.9), so a genuine deco obligation is never reported as merely "at limit". Callers pass `ndlExact` (not the floored `ndl`) so the badge cannot disagree with the generated profile. |
+| `generateSimpleProfile(maxDepth, bottomTime, safetyStop, options)` | 240 | No-deco profile. Descent 20 m/min, ascent 10 m/min, optional 3 min @ 5 m. |
+| `generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, safetyStop, options)` | 327 | Runs NDL check; if exceeded, calls `generateDecoSchedule()` and splices stops into the waypoint array. Returns `{waypoints, ndl, requiresDeco, decoStops, totalDecoTime, controllingCompartment, pAnchor, anchorDepth}`. Accepts optional `options.initialTissuePressures` — when provided, tissues are seeded from that map and the surface-based NDL early-return is bypassed so the deco scheduler always runs against the actual pre-saturated state. See [repetitive-dive chaining](#repetitive-dive-chaining-initialTissuePressures). |
+| `generateDecoProfileSync(...)` | 567 | Variant accepting a pre-loaded `compartments` array. Does **not** support `options.initialTissuePressures`; callers needing a seeded profile must use `generateDecoProfile`. |
+| `getNDLForDepth(depth, gas, gfLow)` | 707 | Convenience wrapper around `calculateNDL`. Returns the full result, including `descentTime`. |
+| `getNDLStatus(ndl, bottomTime)` | 729 | Classifies a dive against its NDL for UI display. Both arguments run from leaving the surface, so they are compared with no correction — subtracting the descent here would count it twice. Returns `{state: 'unlimited'\|'ok'\|'nearLimit'\|'deco', remaining}`. `nearLimit` is the band *below* the limit (`NDL_NEAR_LIMIT_FRACTION` = 0.9), so a genuine deco obligation is never reported as merely "at limit". Callers pass `ndlExact` (not the floored `ndl`) so the badge cannot disagree with the generated profile. |
 
 "Bottom time" means the absolute time at which ascent begins, not time spent at max depth. Descent duration is exact (not rounded); ascent time snaps to 0.1 min unless `continuousDeco=true` (`diveSetup.js:260`).
 
@@ -189,20 +189,20 @@ Note: `BOTTOM_GASES[0].n2` is `0.7902`, matching `N2_FRACTION` in `decoModel.js`
 
 | Signature | Line | Description |
 |---|---|---|
-| `calculateMOD(o2Fraction, maxPpO2=1.4)` | 860 | `floor((ppO₂/o2 − 1) × 10)`, metres |
-| `calculateEND(depth, heFraction=0)` | 873 | `(depth + 10) × (1 − fHe) − 10` |
-| `calculatePartialPressure(depth, gasFraction)` | 885 | `fraction × (1.01325 + depth/10)` |
-| `getGasCylinderVolume(gas)`, `getCylinderVolume(setup)` | 895, 904 | Litres |
-| `getGasStartPressure(gas)` | 914 | bar |
-| `computeGasConsumption(results, gases, sacRate, decoSacRate, reservePressure=50)` | 1392 | Per-gas consumption over the profile |
+| `calculateMOD(o2Fraction, maxPpO2=1.4)` | 861 | `floor((ppO₂/o2 − 1) × 10)`, metres |
+| `calculateEND(depth, heFraction=0)` | 874 | `(depth + 10) × (1 − fHe) − 10` |
+| `calculatePartialPressure(depth, gasFraction)` | 886 | `fraction × (1.01325 + depth/10)` |
+| `getGasCylinderVolume(gas)`, `getCylinderVolume(setup)` | 896, 905 | Litres |
+| `getGasStartPressure(gas)` | 915 | bar |
+| `computeGasConsumption(results, gases, sacRate, decoSacRate, reservePressure=50)` | 1393 | Per-gas consumption over the profile |
 
 #### Oxygen toxicity
 
 | Signature | Line | Description |
 |---|---|---|
 | `NOAA_CNS_LIMITS` | 1312 | Discrete ppO₂ / max-exposure lookup table |
-| `getCNSPerMinute(ppO2)` | 1335 | Percent per minute; 0 if ppO₂ < 0.5 |
-| `calculateOTU(ppO2, timeMinutes)` | 1357 | `t × ((ppO₂ − 0.5)/0.5)^0.83` (NOAA form) |
+| `getCNSPerMinute(ppO2)` | 1336 | Percent per minute; 0 if ppO₂ < 0.5 |
+| `calculateOTU(ppO2, timeMinutes)` | 1358 | `t × ((ppO₂ − 0.5)/0.5)^0.83` (NOAA form) |
 | `OTU_LIMITS` | 1365 | Daily / series exposure limits |
 
 Toxicity is informational; not fed back into the deco loop.
@@ -211,20 +211,20 @@ Toxicity is informational; not fed back into the deco loop.
 
 | Signature | Line | Description |
 |---|---|---|
-| `getDiveSetupWaypoints(setup)` | 807 | Extracts `dives[0].waypoints` |
-| `getSurfaceInterval(setup)`, `getGFLow(setup)`, `getGFHigh(setup)`, `getGradientFactors(setup)` | 820, 829, 838, 847 | Getters |
-| `getGases(setup)`, `getBottomGasFromSetup(setup)`, `getDecoGasesFromSetup(setup)` | 937, 958, 968 | Gas collections |
-| `getGasAtWaypoint(waypoint, gases)`, `getGasAtTime(waypoints, gases, time)` | 980, 1002 | Active gas lookup |
-| `getGasSwitchEvents(waypoints, gases)` | 1027 | Returns `[{time, depth, fromGas, toGas}]` |
-| `insertGasSwitchWaypoints(waypoints, gases, ascentRate=10, maxPpO2=1.6, gasSwitchTime=0)` | 1062 | Inserts switch waypoints at MOD depths on ascent; rounds to 3 m grid |
+| `getDiveSetupWaypoints(setup)` | 808 | Extracts `dives[0].waypoints` |
+| `getSurfaceInterval(setup)`, `getGFLow(setup)`, `getGFHigh(setup)`, `getGradientFactors(setup)` | 821, 830, 839, 848 | Getters |
+| `getGases(setup)`, `getBottomGasFromSetup(setup)`, `getDecoGasesFromSetup(setup)` | 938, 959, 969 | Gas collections |
+| `getGasAtWaypoint(waypoint, gases)`, `getGasAtTime(waypoints, gases, time)` | 981, 1003 | Active gas lookup |
+| `getGasSwitchEvents(waypoints, gases)` | 1028 | Returns `[{time, depth, fromGas, toGas}]` |
+| `insertGasSwitchWaypoints(waypoints, gases, ascentRate=10, maxPpO2=1.6, gasSwitchTime=0)` | 1063 | Inserts switch waypoints at MOD depths on ascent; rounds to 3 m grid |
 
 #### Presentation helpers
 
 | Signature | Line | Description |
 |---|---|---|
-| `generateProfileName(setup)` | 1278 | Short label for UI |
-| `formatDiveSetupSummary(setup)` | 1294 | Multi-line human summary |
-| `renderDivePlanTableHTML(waypoints, gases, opts)` | 1488 | Returns HTML for the dive-plan table. A gas switch is always billed against the OLD gas for the ascent leg leading into it (never relabels the whole climb with the new gas). If the switch has no dedicated stay (pure in-transit switch), it gets its own zero-duration `switch` marker row; if it has a dedicated stop time at that depth (e.g. `gasSwitchTime` from `generateDecoProfile`), that real duration is kept on a single `switch` row instead of being downgraded to a plain `stop` row. Switch rows never fold into neighbouring rows. |
+| `generateProfileName(setup)` | 1279 | Short label for UI |
+| `formatDiveSetupSummary(setup)` | 1295 | Multi-line human summary |
+| `renderDivePlanTableHTML(waypoints, gases, opts)` | 1489 | Returns HTML for the dive-plan table. A gas switch is always billed against the OLD gas for the ascent leg leading into it (never relabels the whole climb with the new gas). If the switch has no dedicated stay (pure in-transit switch), it gets its own zero-duration `switch` marker row; if it has a dedicated stop time at that depth (e.g. `gasSwitchTime` from `generateDecoProfile`), that real duration is kept on a single `switch` row instead of being downgraded to a plain `stop` row. Switch rows never fold into neighbouring rows. |
 
 #### Defaults
 
@@ -243,7 +243,7 @@ Imported by: `js/components/TripCalendar.js` (indirectly, via the sandbox trip-p
 
 | Signature | Line | Description |
 |---|---|---|
-| `planTrip(diveSetup)` | 27 | Plans a sequence of dives; returns `{ dives, conflicts }` |
+| `planTrip(diveSetup)` | 47 | Plans a sequence of dives; returns `{ dives, conflicts }` |
 
 `diveSetup` shape:
 
@@ -332,7 +332,7 @@ Imported by: the repetitive-dive selected-dive panel (sandbox).
 
 | Signature | Line | Description |
 |---|---|---|
-| `preSaturation(tissuePressures)` | 35 | Returns `{ controllingPct, controllingCompartmentId, perCompartmentPct }`. `controllingPct` is the maximum pre-saturation across all 16 compartments (clamped at 0), as a percentage of the way from the surface-saturation baseline to the surfacing M-value. `controllingCompartmentId` is the numeric id of the leading compartment. `perCompartmentPct` is keyed by numeric compartment id. |
+| `preSaturation(tissuePressures)` | 36 | Returns `{ controllingPct, controllingCompartmentId, perCompartmentPct }`. `controllingPct` is the maximum pre-saturation across all 16 compartments (clamped at 0), as a percentage of the way from the surface-saturation baseline to the surfacing M-value. `controllingCompartmentId` is the numeric id of the leading compartment. `perCompartmentPct` is keyed by numeric compartment id. |
 
 `tissuePressures` input shape: `{ [compartmentId]: nitrogenPressureBar }` — the same shape produced by `planTrip` in `tripPlanner.js` (`startingTissue` / `endTissue` fields).
 
@@ -502,11 +502,11 @@ Chart.js theme glue (~200 lines). No state; idempotent.
 
 | Export | Line | Description |
 |---|---|---|
-| `theme()` | 30 | Reads CSS custom properties from `:root`, returns a palette object |
-| `applyChartTheme()` | 62 | Applies defaults to `Chart.defaults` globally |
-| `depthGradient(ctx, area, strong, weak)` | 149 | Canvas gradient helper |
-| `formatAxis(v, decimals=0)` | 166 | Axis-tick formatter |
-| `watchThemeChanges(onChange)` | 180 | Observes `prefers-color-scheme` / data-theme attribute |
+| `theme()` | 32 | Reads CSS custom properties from `:root`, returns a palette object
+| `applyChartTheme()` | 64 | Applies defaults to `Chart.defaults` globally
+| `depthGradient(ctx, area, strong, weak)` | 158 | Canvas gradient helper
+| `formatAxis(v, decimals=0)` | 175 | Axis-tick formatter
+| `watchThemeChanges(onChange)` | 189 | Observes `prefers-color-scheme` / data-theme attribute
 
 ### `chartTypes.js`
 
@@ -517,9 +517,9 @@ Validation and normalisation of `diveSetup` objects for chart consumption (~300 
 | `DEFAULT_ENVIRONMENT` | 146 | Salinity, altitude |
 | `DEFAULT_DIVE_PROFILE_OPTIONS` | 156 | Chart display toggles |
 | `DEFAULT_TISSUE_PRESSURE_OPTIONS` | 184 | Tissue overlay defaults |
-| `mergeOptions(defaults, user)` | 208 | Shallow-per-key deep merge |
-| `validateDiveSetup(setup)` | 230 | Returns `{valid, errors}` |
-| `normalizeDiveSetup(setup)` | 298 | Applies defaults, coerces types, returns a fresh object. Preserves `initialTissuePressures` from the input setup, defaulting to `null` (surface equilibrium). When non-null this value is threaded into each chart's `calculateTissueLoading` call (`DiveProfileChart.js:842`, `MValueChart.js:899`, `GFChart.js:871`) to seed tissues from a prior dive's residual state for repetitive-dive rendering. |
+| `mergeOptions(defaults, user)` | 210 | Shallow-per-key deep merge
+| `validateDiveSetup(setup)` | 232 | Returns `{valid, errors}`
+| `normalizeDiveSetup(setup)` | 300 | Applies defaults, coerces types, returns a fresh object. Preserves `initialTissuePressures` from the input setup, defaulting to `null` (surface equilibrium). When non-null this value is threaded into each chart's `calculateTissueLoading` call (`DiveProfileChart.js:842`, `MValueChart.js:899`, `GFChart.js:871`) to seed tissues from a prior dive's residual state for repetitive-dive rendering.
 
 ### `interactionLock.js`
 
@@ -586,9 +586,9 @@ The constructor wires two delegated listeners on the persistent `container`:
 
 | Signature | Line | Description |
 |---|---|---|
-| `configure({ startDate, dayCount })` | 130 | Updates `this.startDate` and/or `this.window.dayCount` without re-rendering; call before `render` |
-| `render(planResult, selectedDiveId = null)` | 136 | Clears `container.innerHTML`; draws a left hour ruler, exactly `dayCount` day columns (each with a date header and hour gridlines), and dive blocks from the `planTrip` result. `selectedDiveId` marks the matching block with the `tc-selected` CSS class. Dives with `invalid: true` (e.g. `invalidReason: 'ndl-too-short'`) render with the `tc-invalid` CSS class and a `⚠ no-deco N/A` label instead of a normal depth/time annotation. Deco dives receive a two-tone background: `render` sets an inline `linear-gradient(to bottom, …)` whose colour stop sits at `round(bottomTime / runtime * 100)%`, so the lower bottom-phase slice is the solid block blue (`#2980b9`) and the ascent+deco portion above it is a lighter blue (`#5dade2`). The shading is skipped for no-deco, conflicting (`tc-conflict`), and invalid (`tc-invalid`) dives. |
-| `toStartDateTime(dayIndex, minutesOfDay)` | 202 | Converts a `{dayIndex, minutesOfDay}` pair to a trip-relative epoch-minute start (`dayIndex * 1440 + minutesOfDay`). Used by both `createAt` click handling and drag-drop. |
+| `configure({ startDate, dayCount })` | 149 | Updates `this.startDate` and/or `this.window.dayCount` without re-rendering; call before `render`
+| `render(planResult, selectedDiveId = null)` | 155 | Clears `container.innerHTML`; draws a left hour ruler, exactly `dayCount` day columns (each with a date header and hour gridlines), and dive blocks from the `planTrip` result. `selectedDiveId` marks the matching block with the `tc-selected` CSS class. Dives with `invalid: true` (e.g. `invalidReason: 'ndl-too-short'`) render with the `tc-invalid` CSS class and a `⚠ no-deco N/A` label instead of a normal depth/time annotation. Deco dives receive a two-tone background: `render` sets an inline `linear-gradient(to bottom, …)` whose colour stop sits at `round(bottomTime / runtime * 100)%`, so the lower bottom-phase slice is the solid block blue (`#2980b9`) and the ascent+deco portion above it is a lighter blue (`#5dade2`). The shading is skipped for no-deco, conflicting (`tc-conflict`), and invalid (`tc-invalid`) dives.
+| `toStartDateTime(dayIndex, minutesOfDay)` | 229 | Converts a `{dayIndex, minutesOfDay}` pair to a trip-relative epoch-minute start (`dayIndex * 1440 + minutesOfDay`). Used by both `createAt` click handling and drag-drop.
 
 **Events** (CustomEvent dispatched on the instance)
 
@@ -661,7 +661,7 @@ new AddDiveDialog(container)
 
 | Signature | Line | Description |
 |---|---|---|
-| `open(opts)` | 18 | Renders the dialog into `container`. `opts` shape: `{ startDateTime, gases, defaultDepth=18, defaultTime=40, defaultName='', computeNdl }`. Shows a **Name** text input pre-filled from `opts.defaultName` (`AddDiveDialog.js:26`). Calls `computeNdl` on every depth change to update the NDL display and the No-deco bottom-time field. Shows a deco warning when Custom time exceeds NDL. |
+| `open(opts)` | 21 | Renders the dialog into `container`. `opts` shape: `{ startDateTime, gases, defaultDepth=18, defaultTime=40, defaultName='', computeNdl }`. Shows a **Name** text input pre-filled from `opts.defaultName` (`AddDiveDialog.js:26`). Calls `computeNdl` on every depth change to update the NDL display and the No-deco bottom-time field. Shows a deco warning when Custom time exceeds NDL.
 | `close()` | 75 | Clears `container.innerHTML`. |
 
 **Events** (CustomEvent dispatched on the instance)
@@ -695,8 +695,8 @@ new DiveEditPanel(container)
 
 | Signature | Line | Description |
 |---|---|---|
-| `open(dive, startDate)` | 37 | Renders the edit panel for `dive` into `container`. Shows an **"Editing: {name}"** header (`DiveEditPanel.js:48`) and a **Name** text input pre-filled from `dive.name` (`DiveEditPanel.js:50`). `startDate` is an ISO date string (`'YYYY-MM-DD'`) for the trip start, used to re-base the epoch↔datetime-local conversion. Defaults to `'2026-01-01'` when not supplied. Wires change listeners. |
-| `close()` | 111 | Destroys the embedded editor and clears `container` |
+| `open(dive, startDate)` | 22 | Renders the edit panel for `dive` into `container`. Shows an **"Editing: {name}"** header (`DiveEditPanel.js:48`) and a **Name** text input pre-filled from `dive.name` (`DiveEditPanel.js:50`). `startDate` is an ISO date string (`'YYYY-MM-DD'`) for the trip start, used to re-base the epoch↔datetime-local conversion. Defaults to `'2026-01-01'` when not supplied. Wires change listeners.
+| `close()` | 115 | Destroys the embedded editor and clears `container`
 
 **Events** (CustomEvent dispatched on the instance)
 
@@ -725,8 +725,8 @@ Imported by: the repetitive-dive detail view (sandbox).
 
 | Signature | Line | Description |
 |---|---|---|
-| `buildRuntimeRows(profile, gases)` | 19 | Pure function. Derives ordered runtime rows from an executed dive profile. Returns `Array<{ phase, depth, segmentTime, runTime, gas, isStop }>`. |
-| `renderRuntimeTable(rows)` | 71 | DOM-only. Accepts the output of `buildRuntimeRows` and returns an `HTMLTableElement` with class `runtime-table`. |
+| `buildRuntimeRows(profile, gases)` | 21 | Pure function. Derives ordered runtime rows from an executed dive profile. Returns `Array<{ phase, depth, segmentTime, runTime, gas, isStop }>`.
+| `renderRuntimeTable(rows)` | 73 | DOM-only. Accepts the output of `buildRuntimeRows` and returns an `HTMLTableElement` with class `runtime-table`.
 
 `buildRuntimeRows` row shape:
 
@@ -792,12 +792,37 @@ URL-based dive-setup share links.
 
 | Export | Line | Description |
 |---|---|---|
-| `encodeDiveSetup(setup)` | 28 | Compact base64-ish encoding for `?p=…` |
-| `decodeDiveSetup(encoded)` | 70 | Inverse |
-| `getSandboxUrl(setup, options)` | 109 | Produces an "Open in Sandbox" link |
-| `getChartModeFromUrl()` | 133 | Reads `?mode=…` |
-| `getProfileFromUrl()` | 143 | Reads `?p=…` and decodes |
-| `updateUrlWithProfile(setup)` | 155 | `history.replaceState` without reloading |
+| `encodeDiveSetup(setup)` | 28 | Compact base64-ish encoding for `?profile=…` |
+| `decodeDiveSetup(encoded)` | 140 | Inverse; **sanitizes free-text fields** before returning |
+| `MAX_SHARED_TEXT_LENGTH` | 65 | Length cap applied to shared free text |
+| `getSandboxUrl(setup, options)` | 179 | Produces an "Open in Sandbox" link |
+| `getChartModeFromUrl()` | 203 | Reads `?mode=…` |
+| `getProfileFromUrl()` | 213 | Reads `?profile=…` and decodes |
+| `updateUrlWithProfile(setup)` | 225 | `history.replaceState` without reloading |
+| `getCompactProfileFromUrl()` | 260 | Reads the numeric `?v=1&d=…&t=…` form |
+
+A decoded setup is untrusted input. `decodeDiveSetup` strips `<`, `>`, quotes,
+backticks and control characters from `name`, `description`, `id`, every gas
+`name`/`id`/`presetId`, dive `name`/`id` and waypoint `gasId`, and clamps free
+text to `MAX_SHARED_TEXT_LENGTH`. This is a boundary *shape* check, not the
+primary control — HTML escaping happens at each sink via `js/utils/escHtml.js`.
+
+### `js/utils/escHtml.js`
+
+HTML escaping for values interpolated into `innerHTML` templates.
+
+| Export | Line | Description |
+|---|---|---|
+| `escHtml(value)` | 29 | Escapes `& < > " '`; `null`/`undefined` become `''` |
+
+The single escaping helper in the project — three near-identical local copies
+(`DiveEditPanel.js`, `RuntimeTable.js`, `repetitive-dives.html`) were folded into
+it. A guard test in `tests/run-tests.mjs` fails if a local copy reappears, or if a
+user-controlled value reaches an `innerHTML` template without passing through it.
+
+Imported by: `js/diveSetup.js`, `js/components/DiveSetupEditor.js`,
+`js/components/DiveEditPanel.js`, `js/components/RuntimeTable.js`,
+`sandbox/index.html`, `sandbox/repetitive-dives.html`.
 
 ### `js/tripUrl.js`
 
@@ -813,10 +838,10 @@ Imported by: `sandbox/repetitive-dives.html` (direct script import).
 | Signature | Line | Description |
 |---|---|---|
 | `encodeTrip(trip)` | 25 | Returns URL-safe base64 of a minimal trip JSON containing `startDate`, `dayCount`, `gfLow`, `gfHigh`, `gases`, and `dives`. Per-dive `gases` is **omitted** when it equals the trip-level gas array (keeps URLs short); gases are stored minimally as `{id, name, o2, n2, he}`. |
-| `decodeTrip(str)` | 53 | Inverse of `encodeTrip`. Reconstructs the trip: per-dive gas is refilled from the trip-level set when absent (fresh array copy). Re-mints sequential ids `d1`, `d2`, … regardless of the original ids. Returns `null` on **any** malformed input (parse error, missing `dives` or `gases` arrays, empty/null string). |
-| `getTripFromUrl()` | 82 | Reads the `?trip=` param from `window.location.search` and passes it to `decodeTrip`; returns `null` if the param is absent or invalid. |
-| `updateUrlWithTrip(trip)` | 88 | Encodes the trip and writes `?trip=` via `history.replaceState` — no new history entry, no reload. |
-| `getTripShareUrl(trip)` | 95 | Returns the absolute URL string with `?trip=` set for the current page. |
+| `decodeTrip(str)` | 54 | Inverse of `encodeTrip`. Reconstructs the trip: per-dive gas is refilled from the trip-level set when absent (fresh array copy). Re-mints sequential ids `d1`, `d2`, … regardless of the original ids. Returns `null` on **any** malformed input (parse error, missing `dives` or `gases` arrays, empty/null string). |
+| `getTripFromUrl()` | 84 | Reads the `?trip=` param from `window.location.search` and passes it to `decodeTrip`; returns `null` if the param is absent or invalid. |
+| `updateUrlWithTrip(trip)` | 90 | Encodes the trip and writes `?trip=` via `history.replaceState` — no new history entry, no reload. |
+| `getTripShareUrl(trip)` | 97 | Returns the absolute URL string with `?trip=` set for the current page. |
 
 **Page integration (`sandbox/repetitive-dives.html`)**
 
@@ -850,12 +875,12 @@ Legacy Chart.js visualisation used by `main.js`. Modern pages use the class comp
 
 | Export | Line | Description |
 |---|---|---|
-| `renderChart(canvas, results, visibleCompartments, gasSwitchEvents, ceilingDepths)` | 19 | One-shot chart render |
-| `toggleCompartment(id, visible)` | 272 | Show/hide a compartment line |
-| `showOnlyCompartments(ids)` | 289 | Isolate a selection |
-| `showAllCompartments()` | 305 | Reset |
-| `hideAllCompartments()` | 321 | Clear |
-| `getChart()` | 338 | Access the underlying Chart instance |
+| `renderChart(canvas, results, visibleCompartments, gasSwitchEvents, ceilingDepths)` | 20 | One-shot chart render |
+| `toggleCompartment(id, visible)` | 273 | Show/hide a compartment line |
+| `showOnlyCompartments(ids)` | 290 | Isolate a selection |
+| `showAllCompartments()` | 306 | Reset |
+| `hideAllCompartments()` | 322 | Clear |
+| `getChart()` | 339 | Access the underlying Chart instance |
 
 ### `js/quiz.js`
 

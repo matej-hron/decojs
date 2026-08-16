@@ -61,9 +61,79 @@ export function encodeDiveSetup(diveSetup) {
     }
 }
 
+/** Longest accepted free-text field (names, descriptions) from a shared link. */
+export const MAX_SHARED_TEXT_LENGTH = 120;
+
+/**
+ * Clean a free-text field arriving from an untrusted `?profile=` link.
+ *
+ * Angle brackets and quotes are removed rather than escaped: this is a *shape*
+ * check at the trust boundary, and the values also reach non-HTML sinks (chart
+ * labels, `value` attributes). Escaping happens separately at each HTML sink —
+ * `js/utils/escHtml.js` — so a miss here is not on its own exploitable.
+ *
+ * @param {*} value - Raw decoded value.
+ * @returns {string|undefined} Cleaned string, or undefined if not a string.
+ */
+function sanitizeSharedText(value) {
+    if (typeof value !== 'string') return undefined;
+    return value
+        .replace(/[<>"'`]/g, '')
+        .replace(/[\u0000-\u001f\u007f]/g, '')
+        .slice(0, MAX_SHARED_TEXT_LENGTH);
+}
+
+/**
+ * Strip the free-text fields of a decoded dive setup in place.
+ *
+ * Only the fields a sharer can influence are touched; numeric fields are left
+ * to the consumers, which already coerce them.
+ *
+ * @param {Object} setup - Decoded dive setup (mutated).
+ * @returns {Object} The same object.
+ */
+function sanitizeDiveSetup(setup) {
+    for (const key of ['name', 'description', 'id']) {
+        const cleaned = sanitizeSharedText(setup[key]);
+        if (cleaned !== undefined) setup[key] = cleaned;
+    }
+
+    if (Array.isArray(setup.gases)) {
+        for (const gas of setup.gases) {
+            if (!gas || typeof gas !== 'object') continue;
+            for (const key of ['name', 'id', 'presetId']) {
+                const cleaned = sanitizeSharedText(gas[key]);
+                if (cleaned !== undefined) gas[key] = cleaned;
+            }
+        }
+    }
+
+    if (Array.isArray(setup.dives)) {
+        for (const dive of setup.dives) {
+            if (!dive || typeof dive !== 'object') continue;
+            for (const key of ['name', 'id']) {
+                const cleaned = sanitizeSharedText(dive[key]);
+                if (cleaned !== undefined) dive[key] = cleaned;
+            }
+            if (Array.isArray(dive.waypoints)) {
+                for (const wp of dive.waypoints) {
+                    if (!wp || typeof wp !== 'object') continue;
+                    const cleaned = sanitizeSharedText(wp.gasId);
+                    if (cleaned !== undefined) wp.gasId = cleaned;
+                }
+            }
+        }
+    }
+
+    return setup;
+}
+
 /**
  * Decode a URL parameter string back into a dive setup object
- * 
+ *
+ * The result comes from an untrusted URL, so free-text fields are stripped of
+ * markup characters before being returned.
+ *
  * @param {string} encoded - The encoded string from URL
  * @returns {Object|null} Decoded dive setup, or null if invalid
  */
@@ -90,7 +160,7 @@ export function decodeDiveSetup(encoded) {
             return null;
         }
         
-        return setup;
+        return sanitizeDiveSetup(setup);
     } catch (error) {
         console.error('Failed to decode dive setup:', error);
         return null;
