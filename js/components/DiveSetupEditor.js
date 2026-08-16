@@ -52,6 +52,7 @@ import {
     calculateMOD,
     generateDecoProfile,
     getNDLForDepth,
+    getNDLStatus,
     getGases,
     DEFAULT_GAS_SWITCH_TIME,
     renderDivePlanTableHTML
@@ -63,6 +64,7 @@ import {
 } from '../charts/chartTypes.js';
 
 import { translate } from '../i18n.js';
+import { fmtNum } from '../format.js';
 import { GF_PRESETS } from '../gfPresets.js';
 
 /** Helper: replace {0}, {1}, ... placeholders with the given values. */
@@ -1281,20 +1283,21 @@ export class DiveSetupEditor extends EventTarget {
         };
         
         // NDL uses GF Low since that determines when first stop is required
-        const { ndl } = getNDLForDepth(maxDepth, gas, gfLow);
-        
-        if (ndl === Infinity) {
+        const { ndl, descentTime } = getNDLForDepth(maxDepth, gas, gfLow);
+        const status = getNDLStatus(ndl, descentTime, bottomTime);
+
+        if (status.state === 'unlimited') {
             this.elements.ndlValue.textContent = translate('diveEditor.ndl.infinity', '∞');
             this.elements.ndlStatus.textContent = translate('diveEditor.ndl.noLimit', '✅ No limit');
             this.elements.ndlStatus.className = 'dse-ndl-status dse-ndl-ok';
         } else {
             this.elements.ndlValue.textContent = ndl;
 
-            if (bottomTime <= ndl) {
-                const remaining = ndl - bottomTime;
+            if (status.state === 'ok') {
+                const remaining = fmtNum(Math.round(status.remaining * 10) / 10);
                 this.elements.ndlStatus.textContent = fmt(translate('diveEditor.ndl.remaining', '✅ {0}\u00a0min remaining'), remaining);
                 this.elements.ndlStatus.className = 'dse-ndl-status dse-ndl-ok';
-            } else if (bottomTime <= ndl * 1.1) {
+            } else if (status.state === 'nearLimit') {
                 this.elements.ndlStatus.textContent = translate('diveEditor.ndl.atLimit', '⚠️ At limit');
                 this.elements.ndlStatus.className = 'dse-ndl-status dse-ndl-warning';
             } else {
@@ -1304,7 +1307,7 @@ export class DiveSetupEditor extends EventTarget {
         }
         
         // Update deco info
-        if (ndl !== Infinity && bottomTime > ndl) {
+        if (status.state === 'deco') {
             this.elements.decoInfo.style.display = 'inline';
             const continuousDecoNDL = this.elements.continuousDecoCheckbox?.checked ?? false;
             const gasSwitchTimeNDL = parseInt(this.elements.gasSwitchTimeSelect?.value) || 0;

@@ -168,10 +168,10 @@ Note: `BOTTOM_GASES[0].n2` is `0.7902`, matching `N2_FRACTION` in `decoModel.js`
 |---|---|---|
 | `loadDiveSetup(path='data/dive-setup.json')` | 145 | async; tries localStorage, falls back to JSON fetch, caches in module scope |
 | `getDefaultSetup()` | 176 | Hardcoded 40 m / 20 min air dive |
-| `clearCache()` | 1187 | Clears the module-level cache |
-| `saveDiveSetup(setup, key='diveSetup')` | 1196 | Persist to localStorage |
-| `loadSavedSetup(key='diveSetup')` | 1209 | Restore from localStorage |
-| `extendDiveSetup(base, overrides)` | 694 | Deep merge with validation |
+| `clearCache()` | 1238 | Clears the module-level cache |
+| `saveDiveSetup(setup, key='diveSetup')` | 1247 | Persist to localStorage |
+| `loadSavedSetup(key='diveSetup')` | 1260 | Restore from localStorage |
+| `extendDiveSetup(base, overrides)` | 745 | Deep merge with validation |
 
 #### Profile generation
 
@@ -179,8 +179,9 @@ Note: `BOTTOM_GASES[0].n2` is `0.7902`, matching `N2_FRACTION` in `decoModel.js`
 |---|---|---|
 | `generateSimpleProfile(maxDepth, bottomTime, safetyStop, options)` | 239 | No-deco profile. Descent 20 m/min, ascent 10 m/min, optional 3 min @ 5 m. |
 | `generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, safetyStop, options)` | 326 | Runs NDL check; if exceeded, calls `generateDecoSchedule()` and splices stops into the waypoint array. Returns `{waypoints, ndl, requiresDeco, decoStops, totalDecoTime, controllingCompartment, pAnchor, anchorDepth}`. Accepts optional `options.initialTissuePressures` — when provided, tissues are seeded from that map and the surface-based NDL early-return is bypassed so the deco scheduler always runs against the actual pre-saturated state. See [repetitive-dive chaining](#repetitive-dive-chaining-initialTissuePressures). |
-| `generateDecoProfileSync(...)` | 557 | Variant accepting a pre-loaded `compartments` array. Does **not** support `options.initialTissuePressures`; callers needing a seeded profile must use `generateDecoProfile`. |
-| `getNDLForDepth(depth, gas, gfLow)` | 682 | Convenience wrapper around `calculateNDL`. |
+| `generateDecoProfileSync(...)` | 562 | Variant accepting a pre-loaded `compartments` array. Does **not** support `options.initialTissuePressures`; callers needing a seeded profile must use `generateDecoProfile`. |
+| `getNDLForDepth(depth, gas, gfLow)` | 700 | Convenience wrapper around `calculateNDL`. Returns the full result, including `descentTime`. |
+| `getNDLStatus(ndl, descentTime, bottomTime)` | 725 | Classifies a dive against its NDL for UI display. Subtracts `descentTime` so bottom time (measured from the start of the descent) and the NDL (time at depth) are on the same clock, then returns `{state: 'unlimited'\|'ok'\|'nearLimit'\|'deco', timeAtDepth, remaining}`. `nearLimit` is the band *below* the limit (`NDL_NEAR_LIMIT_FRACTION` = 0.9), so a genuine deco obligation is never reported as merely "at limit". |
 
 "Bottom time" means the absolute time at which ascent begins, not time spent at max depth. Descent duration is exact (not rounded); ascent time snaps to 0.1 min unless `continuousDeco=true` (`diveSetup.js:260`).
 
@@ -188,21 +189,21 @@ Note: `BOTTOM_GASES[0].n2` is `0.7902`, matching `N2_FRACTION` in `decoModel.js`
 
 | Signature | Line | Description |
 |---|---|---|
-| `calculateMOD(o2Fraction, maxPpO2=1.4)` | 807 | `floor((ppO₂/o2 − 1) × 10)`, metres |
-| `calculateEND(depth, heFraction=0)` | 820 | `(depth + 10) × (1 − fHe) − 10` |
-| `calculatePartialPressure(depth, gasFraction)` | 832 | `fraction × (1.01325 + depth/10)` |
-| `getGasCylinderVolume(gas)`, `getCylinderVolume(setup)` | 842, 851 | Litres |
-| `getGasStartPressure(gas)` | 861 | bar |
-| `computeGasConsumption(results, gases, sacRate, decoSacRate, reservePressure=50)` | 1339 | Per-gas consumption over the profile |
+| `calculateMOD(o2Fraction, maxPpO2=1.4)` | 858 | `floor((ppO₂/o2 − 1) × 10)`, metres |
+| `calculateEND(depth, heFraction=0)` | 871 | `(depth + 10) × (1 − fHe) − 10` |
+| `calculatePartialPressure(depth, gasFraction)` | 883 | `fraction × (1.01325 + depth/10)` |
+| `getGasCylinderVolume(gas)`, `getCylinderVolume(setup)` | 893, 902 | Litres |
+| `getGasStartPressure(gas)` | 912 | bar |
+| `computeGasConsumption(results, gases, sacRate, decoSacRate, reservePressure=50)` | 1390 | Per-gas consumption over the profile |
 
 #### Oxygen toxicity
 
 | Signature | Line | Description |
 |---|---|---|
-| `NOAA_CNS_LIMITS` | 1259 | Discrete ppO₂ / max-exposure lookup table |
-| `getCNSPerMinute(ppO2)` | 1282 | Percent per minute; 0 if ppO₂ < 0.5 |
-| `calculateOTU(ppO2, timeMinutes)` | 1304 | `t × ((ppO₂ − 0.5)/0.5)^0.83` (NOAA form) |
-| `OTU_LIMITS` | 1312 | Daily / series exposure limits |
+| `NOAA_CNS_LIMITS` | 1310 | Discrete ppO₂ / max-exposure lookup table |
+| `getCNSPerMinute(ppO2)` | 1333 | Percent per minute; 0 if ppO₂ < 0.5 |
+| `calculateOTU(ppO2, timeMinutes)` | 1355 | `t × ((ppO₂ − 0.5)/0.5)^0.83` (NOAA form) |
+| `OTU_LIMITS` | 1363 | Daily / series exposure limits |
 
 Toxicity is informational; not fed back into the deco loop.
 
@@ -210,20 +211,20 @@ Toxicity is informational; not fed back into the deco loop.
 
 | Signature | Line | Description |
 |---|---|---|
-| `getDiveSetupWaypoints(setup)` | 754 | Extracts `dives[0].waypoints` |
-| `getSurfaceInterval(setup)`, `getGFLow(setup)`, `getGFHigh(setup)`, `getGradientFactors(setup)` | 767, 776, 785, 794 | Getters |
-| `getGases(setup)`, `getBottomGasFromSetup(setup)`, `getDecoGasesFromSetup(setup)` | 884, 905, 915 | Gas collections |
-| `getGasAtWaypoint(waypoint, gases)`, `getGasAtTime(waypoints, gases, time)` | 927, 949 | Active gas lookup |
-| `getGasSwitchEvents(waypoints, gases)` | 974 | Returns `[{time, depth, fromGas, toGas}]` |
-| `insertGasSwitchWaypoints(waypoints, gases, ascentRate=10, maxPpO2=1.6, gasSwitchTime=0)` | 1009 | Inserts switch waypoints at MOD depths on ascent; rounds to 3 m grid |
+| `getDiveSetupWaypoints(setup)` | 805 | Extracts `dives[0].waypoints` |
+| `getSurfaceInterval(setup)`, `getGFLow(setup)`, `getGFHigh(setup)`, `getGradientFactors(setup)` | 818, 827, 836, 845 | Getters |
+| `getGases(setup)`, `getBottomGasFromSetup(setup)`, `getDecoGasesFromSetup(setup)` | 935, 956, 966 | Gas collections |
+| `getGasAtWaypoint(waypoint, gases)`, `getGasAtTime(waypoints, gases, time)` | 978, 1000 | Active gas lookup |
+| `getGasSwitchEvents(waypoints, gases)` | 1025 | Returns `[{time, depth, fromGas, toGas}]` |
+| `insertGasSwitchWaypoints(waypoints, gases, ascentRate=10, maxPpO2=1.6, gasSwitchTime=0)` | 1060 | Inserts switch waypoints at MOD depths on ascent; rounds to 3 m grid |
 
 #### Presentation helpers
 
 | Signature | Line | Description |
 |---|---|---|
-| `generateProfileName(setup)` | 1225 | Short label for UI |
-| `formatDiveSetupSummary(setup)` | 1241 | Multi-line human summary |
-| `renderDivePlanTableHTML(waypoints, gases, opts)` | 1445 | Returns HTML for the dive-plan table. A gas switch is always billed against the OLD gas for the ascent leg leading into it (never relabels the whole climb with the new gas). If the switch has no dedicated stay (pure in-transit switch), it gets its own zero-duration `switch` marker row; if it has a dedicated stop time at that depth (e.g. `gasSwitchTime` from `generateDecoProfile`), that real duration is kept on a single `switch` row instead of being downgraded to a plain `stop` row. Switch rows never fold into neighbouring rows. |
+| `generateProfileName(setup)` | 1276 | Short label for UI |
+| `formatDiveSetupSummary(setup)` | 1292 | Multi-line human summary |
+| `renderDivePlanTableHTML(waypoints, gases, opts)` | 1486 | Returns HTML for the dive-plan table. A gas switch is always billed against the OLD gas for the ascent leg leading into it (never relabels the whole climb with the new gas). If the switch has no dedicated stay (pure in-transit switch), it gets its own zero-duration `switch` marker row; if it has a dedicated stop time at that depth (e.g. `gasSwitchTime` from `generateDecoProfile`), that real duration is kept on a single `switch` row instead of being downgraded to a plain `stop` row. Switch rows never fold into neighbouring rows. |
 
 #### Defaults
 
