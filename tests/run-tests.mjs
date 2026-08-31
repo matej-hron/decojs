@@ -147,6 +147,13 @@ import {
 import { escHtml } from '../js/utils/escHtml.js';
 import { decodeDiveSetup, MAX_SHARED_TEXT_LENGTH } from '../js/urlParams.js';
 
+let warningHtml = {};
+try {
+    warningHtml = await import('../js/warningHtml.js');
+} catch {
+    // The TDD regression test below reports the missing production API.
+}
+
 import {
     createDefaultProfile,
     validateProfile,
@@ -5378,6 +5385,30 @@ describe('escHtml (js/utils/escHtml.js)', () => {
     });
 });
 
+describe('warning HTML rendering', () => {
+    test('keeps translated quantity markup while escaping placeholder values', () => {
+        expect(warningHtml.formatWarningHtml).toBeDefined();
+        expect(warningHtml.formatWarningHtml(
+            'Pressure: <var>p</var><sub>N₂</sub>, gas {0}',
+            '<img src=x onerror=alert(1)>'
+        )).toBe('Pressure: <var>p</var><sub>N₂</sub>, gas &lt;img src=x onerror=alert(1)&gt;');
+    });
+
+    test('renders formatted warning HTML without exposing structural fields', () => {
+        expect(warningHtml.renderWarningsHtml).toBeDefined();
+        expect(warningHtml.renderWarningsHtml([{
+            type: 'info" onclick="alert(1)',
+            icon: '<img src=x>',
+            html: '<var>p</var><sub>N₂</sub> = 3,96\u00a0bar'
+        }])).toBe(`
+                <div class="dive-warning info&quot; onclick=&quot;alert(1)">
+                    <span class="dive-warning-icon">&lt;img src=x&gt;</span>
+                    <span><var>p</var><sub>N₂</sub> = 3,96\u00a0bar</span>
+                </div>
+            `);
+    });
+});
+
 describe('decodeDiveSetup sanitizes the shared-link boundary (#65)', () => {
     const encode = (obj) => {
         const b64 = Buffer.from(JSON.stringify(obj), 'utf8').toString('base64');
@@ -5444,6 +5475,7 @@ describe('guard: user-controlled values reaching innerHTML go through escHtml (#
         'js/components/DiveSetupEditor.js',
         'js/components/DiveEditPanel.js',
         'js/components/RuntimeTable.js',
+        'js/warningHtml.js',
         'sandbox/index.html',
         'sandbox/repetitive-dives.html'
     ];

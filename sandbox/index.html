@@ -771,6 +771,7 @@
         import { computeGasConsumption, renderDivePlanTableHTML, getDiveSetupWaypoints } from '../js/diveSetup.js';
         import { translate } from '../js/i18n.js';
         import { escHtml } from '../js/utils/escHtml.js';
+        import { formatWarningHtml, renderWarningsHtml } from '../js/warningHtml.js';
         import { fmtNum } from '../js/format.js';
 
         /** Helper: replace {0}, {1}, ... placeholders with the given values. */
@@ -901,7 +902,7 @@
                 warnings.push({
                     type: 'critical',
                     icon: '⚠️',
-                    message: fmt(
+                    html: formatWarningHtml(
                         translate('warnings.cnsToxicityBottom', 'CNS toxicity risk: <var>p</var><sub>O₂</sub> = {0}\u00a0bar at {1}\u00a0m during bottom (max 1.6)'),
                         fmtNum(maxPpO2Bottom, 2), fmtNum(maxPpO2BottomDepth, 0)
                     )
@@ -910,7 +911,7 @@
                 warnings.push({
                     type: 'warning',
                     icon: '⚡',
-                    message: fmt(
+                    html: formatWarningHtml(
                         translate('warnings.highPpO2Bottom', 'High <var>p</var><sub>O₂</sub>: {0}\u00a0bar at {1}\u00a0m during bottom (limit 1.4 for working dives)'),
                         fmtNum(maxPpO2Bottom, 2), fmtNum(maxPpO2BottomDepth, 0)
                     )
@@ -922,7 +923,7 @@
                 warnings.push({
                     type: 'critical',
                     icon: '⚠️',
-                    message: fmt(
+                    html: formatWarningHtml(
                         translate('warnings.cnsToxicityDeco', 'CNS toxicity risk: <var>p</var><sub>O₂</sub> = {0}\u00a0bar at {1}\u00a0m during deco (max 1.6)'),
                         fmtNum(maxPpO2Deco, 2), fmtNum(maxPpO2DecoDepth, 0)
                     )
@@ -933,7 +934,7 @@
                 warnings.push({
                     type: 'critical',
                     icon: '💨',
-                    message: fmt(
+                    html: formatWarningHtml(
                         translate('warnings.hypoxiaRisk', 'Hypoxia risk: <var>p</var><sub>O₂</sub> = {0}\u00a0bar (min 0.16)'),
                         fmtNum(minPpO2, 2)
                     )
@@ -945,7 +946,7 @@
                 warnings.push({
                     type: 'warning',
                     icon: '🍺',
-                    message: fmt(
+                    html: formatWarningHtml(
                         translate('warnings.narcosisWarning', 'Narcosis warning: <var>p</var><sub>N₂</sub> = {0}\u00a0bar at {1}\u00a0m (equivalent to {2}\u00a0m on air)'),
                         fmtNum(maxPpN2, 2), fmtNum(maxPpN2Depth, 0), fmtNum(((maxPpN2 - 0.79) / 0.079), 0)
                     )
@@ -954,7 +955,7 @@
                 warnings.push({
                     type: 'info',
                     icon: '🍻',
-                    message: fmt(
+                    html: formatWarningHtml(
                         translate('warnings.mildNarcosis', 'Mild narcosis possible: <var>p</var><sub>N₂</sub> = {0}\u00a0bar at {1}\u00a0m'),
                         fmtNum(maxPpN2, 2), fmtNum(maxPpN2Depth, 0)
                     )
@@ -966,7 +967,7 @@
                 warnings.push({
                     type: 'critical',
                     icon: '🚫',
-                    message: fmt(
+                    html: formatWarningHtml(
                         translate('warnings.ceilingViolation', 'Ceiling violation: Surfaced {0}\u00a0m above ceiling ({1} data points)'),
                         fmtNum(maxCeilingViolation, 1), ceilingViolationCount
                     )
@@ -1005,7 +1006,7 @@
                     warnings.push({
                         type: 'critical',
                         icon: '🫁',
-                        message: fmt(
+                        html: formatWarningHtml(
                             translate('warnings.outOfGas', 'Out of gas: {0} runs out during dive (need {1}L, have {2}L)'),
                             tank.name, Math.round(tank.consumed), Math.round(totalLiters)
                         )
@@ -1014,7 +1015,7 @@
                     warnings.push({
                         type: 'critical',
                         icon: '⛽',
-                        message: fmt(
+                        html: formatWarningHtml(
                             translate('warnings.belowReserve', 'Below reserve: {0} ends at {1}\u00a0bar (reserve: {2}\u00a0bar)'),
                             tank.name, Math.round(tank.endPressure), reservePressure
                         )
@@ -1023,7 +1024,7 @@
                     warnings.push({
                         type: 'warning',
                         icon: '📉',
-                        message: fmt(
+                        html: formatWarningHtml(
                             translate('warnings.lowGasMargin', 'Low gas margin: {0} ends at {1}\u00a0bar (close to {2}\u00a0bar reserve)'),
                             tank.name, Math.round(tank.endPressure), reservePressure
                         )
@@ -1036,7 +1037,7 @@
                 warnings.push({
                     type: 'success',
                     icon: '✅',
-                    message: translate('warnings.divePlanGood', 'Dive plan looks good! All parameters within safe limits.')
+                    html: formatWarningHtml(translate('warnings.divePlanGood', 'Dive plan looks good! All parameters within safe limits.'))
                 });
             }
             
@@ -1047,12 +1048,7 @@
          * Render warnings in the container
          */
         function renderWarnings(container, warnings) {
-            container.innerHTML = warnings.map(w => `
-                <div class="dive-warning ${escHtml(w.type)}">
-                    <span class="dive-warning-icon">${escHtml(w.icon)}</span>
-                    <span>${escHtml(w.message)}</span>
-                </div>
-            `).join('');
+            container.innerHTML = renderWarningsHtml(warnings);
         }
         
         /**
