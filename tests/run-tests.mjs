@@ -736,24 +736,23 @@ describe('diveSetup - renderDivePlanTableHTML', () => {
     ];
     const gases = [{ id: 'air', name: 'Air', cylinderVolume: 24, startPressure: 200, reservePressure: 50 }];
 
-    test('renamed Stop column and Runtime footnote marker render', () => {
+    test('both tables repeat the column headings and share one Runtime footnote', () => {
         const html = renderDivePlanTableHTML(waypoints, gases, {});
-        expect(html).toContain('<th>Stop</th>');
-        expect(html).toContain('<th>Runtime *</th>');
+        expect((html.match(/<th>Stop<\/th>/g) || []).length).toBe(2);
+        expect((html.match(/<th>Runtime \*<\/th>/g) || []).length).toBe(2);
         expect(html).toContain('<p class="dse-plan-footnote">* end time of the stage</p>');
     });
 
-    test('exactly one Bottom and one Ascent section header, Bottom rows precede Ascent rows', () => {
+    test('renders separate Bottom and Ascent tables in dive order', () => {
         const html = renderDivePlanTableHTML(waypoints, gases, {});
-        const bottomCount = (html.match(new RegExp('dse-plan-section"><th colspan="6">Bottom<\\/th>', 'g')) || []).length;
-        const ascentCount = (html.match(new RegExp('dse-plan-section"><th colspan="6">Ascent<\\/th>', 'g')) || []).length;
-        expect(bottomCount).toBe(1);
-        expect(ascentCount).toBe(1);
-        expect(html.indexOf('>Bottom</th>')).toBeLessThan(html.indexOf('>Ascent</th>'));
-        // The Ascent header must come after the des/bottom rows and before the first asc/stop row.
-        const ascentHeaderIdx = html.indexOf('>Ascent</th>');
+        expect((html.match(/<table class="dse-plan-table">/g) || []).length).toBe(2);
+        expect((html.match(/<caption>Bottom<\/caption>/g) || []).length).toBe(1);
+        expect((html.match(/<caption>Ascent<\/caption>/g) || []).length).toBe(1);
+        expect(html.indexOf('<caption>Bottom</caption>')).toBeLessThan(html.indexOf('<caption>Ascent</caption>'));
+        const ascentHeaderIdx = html.indexOf('<caption>Ascent</caption>');
         const firstStopRowIdx = html.indexOf('dse-plan-asc');
         expect(ascentHeaderIdx).toBeLessThan(firstStopRowIdx);
+        expect(html.indexOf('dse-plan-bottom')).toBeLessThan(ascentHeaderIdx);
     });
 
     test('terminal Surface row is always last with blank/dash cells', () => {

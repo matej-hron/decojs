@@ -1223,7 +1223,9 @@ export class DiveProfileChart {
                 label: {
                     display: true,
                     content: fmt(translate('chart.profile.reserve', 'RESERVE: {0}\u00a0bar'), reservePressure),
-                    position: 'start',
+                    // Keep this away from the average-depth label, which uses
+                    // the left edge and can land at the same visual height.
+                    position: 'center',
                     backgroundColor: 'rgba(231, 76, 60, 0.9)',
                     color: 'white',
                     font: { size: 10, weight: 'bold' },

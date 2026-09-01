@@ -316,17 +316,18 @@ export class DiveSetupEditor extends EventTarget {
 
         // ===== OUTPUT SECTION =====
 
-        // Waypoints section (Dive 1) - output of generation
-        if (this.options.showWaypoints) {
-            wrapper.appendChild(this._buildWaypointsSection(1));
-        }
+        // Keep waypoint rows mounted as internal profile state even when the
+        // low-level editor is hidden from the host UI.
+        const dive1Waypoints = this._buildWaypointsSection(1);
+        dive1Waypoints.hidden = !this.options.showWaypoints;
+        wrapper.appendChild(dive1Waypoints);
 
         // Multi-dive support
         if (this.options.showMultiDive) {
             wrapper.appendChild(this._buildDive2Controls());
-            if (this.options.showWaypoints) {
-                wrapper.appendChild(this._buildWaypointsSection(2));
-            }
+            const dive2Waypoints = this._buildWaypointsSection(2);
+            dive2Waypoints.hidden = !this.options.showWaypoints;
+            wrapper.appendChild(dive2Waypoints);
         }
 
         // ===== SETTINGS SECTION =====
