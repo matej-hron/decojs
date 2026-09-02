@@ -34,7 +34,7 @@
         },
         "bottomTime": {
             "label": "Tiempo de fondo",
-            "text": "Tiempo total desde el inicio del descenso hasta el comienzo del ascenso final. Incluye la fase de descenso."
+            "text": "Tiempo total desde el inicio del descenso hasta comenzar el ascenso hacia la parada de descompresión más profunda, o directamente hacia la superficie en una inmersión sin descompresión. Incluye el descenso."
         },
         "maxDepth": {
             "label": "Profundidad máxima",
@@ -1263,11 +1263,12 @@
     "divePlan": {
         "colPhase": "Fase",
         "colDepth": "Profundidad",
-        "colStop": "Duración",
-        "colRuntime": "Runtime",
+        "colStop": "Duración (min)",
+        "colRuntime": "Runtime (min)",
         "colGas": "Gas",
         "colTank": "Botella",
-        "runtimeFootnote": "hora de fin de la etapa",
+        "runtimeFootnote": "El runtime es el tiempo transcurrido desde el inicio de la inmersión hasta el final de la etapa.",
+        "descentFootnote": "El modelo calcula continuamente la saturación de los tejidos durante el descenso. Por tanto, el descenso se incluye tanto en el tiempo de fondo como en el cálculo del perfil de descompresión.",
         "sectionBottom": "Fondo",
         "sectionAscent": "Ascenso",
         "phaseDescent": "Des",

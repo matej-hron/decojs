@@ -34,7 +34,7 @@
         },
         "bottomTime": {
             "label": "Čas na dně",
-            "text": "Celkový čas od začátku sestupu do zahájení finálního výstupu. Zahrnuje fázi sestupu."
+            "text": "Celkový čas od zahájení sestupu do zahájení výstupu k nejhlubší dekompresní zastávce, nebo přímo k hladině při bezdekompresním ponoru (v nulovém čase). Zahrnuje sestup."
         },
         "maxDepth": {
             "label": "Maximální hloubka",
@@ -1263,19 +1263,20 @@
     "divePlan": {
         "colPhase": "Fáze",
         "colDepth": "Do / v hloubce",
-        "colStop": "Doba trvání",
-        "colRuntime": "Runtime",
+        "colStop": "Doba trvání (min)",
+        "colRuntime": "Runtime (min)",
         "colGas": "Plyn",
         "colTank": "Láhev",
-        "runtimeFootnote": "čas konce etapy",
+        "runtimeFootnote": "Runtime je průběžný čas od začátku ponoru do konce dané etapy.",
+        "descentFootnote": "Během sestupu model průběžně počítá sycení tkání. Sestup je proto zahrnut do času na dně i do výpočtu dekompresního profilu.",
         "sectionBottom": "Na dně",
         "sectionAscent": "Výstup",
-        "phaseDescent": "Sestup",
-        "phaseBottom": "Dno",
-        "phaseSurface": "Hladina",
-        "phaseAscent": "Výstup",
-        "phaseSwitch": "Změna",
-        "phaseStop": "Zastávka"
+        "phaseDescent": "sestup",
+        "phaseBottom": "dno",
+        "phaseSurface": "hladina",
+        "phaseAscent": "výstup",
+        "phaseSwitch": "změna",
+        "phaseStop": "zastávka"
     },
     "tissueSim": {
         "alertOk": "Vše v pořádku",

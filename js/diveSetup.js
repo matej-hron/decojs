@@ -1715,8 +1715,8 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
         `<thead><tr>` +
             `<th>${translate('divePlan.colPhase', 'Phase')}</th>` +
             `<th>${translate('divePlan.colDepth', 'Depth')}</th>` +
-            `<th>${translate('divePlan.colStop', 'Stop')}</th>` +
-            `<th>${translate('divePlan.colRuntime', 'Runtime')} *</th>` +
+            `<th>${translate('divePlan.colStop', 'Duration (min)')}</th>` +
+            `<th>${translate('divePlan.colRuntime', 'Runtime (min)')} *</th>` +
             `<th>${translate('divePlan.colGas', 'Gas')}</th>` +
             `<th>${translate('divePlan.colTank', 'Tank')}</th>` +
         `</tr></thead>` +
@@ -1727,5 +1727,6 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
         tableHtml(translate('divePlan.sectionBottom', 'Bottom'), bottomRowsHtml) +
         tableHtml(translate('divePlan.sectionAscent', 'Ascent'), ascentRowsHtml) +
         `</div>` +
-        `<p class="dse-plan-footnote">* ${translate('divePlan.runtimeFootnote', 'end time of the stage')}</p>`;
+        `<p class="dse-plan-footnote">* ${translate('divePlan.runtimeFootnote', 'Runtime is the elapsed time from the start of the dive to the end of the stage.')}</p>` +
+        `<p class="dse-plan-footnote">${translate('divePlan.descentFootnote', 'The model continuously calculates tissue on-gassing during descent. Descent is therefore included in both bottom time and the decompression-profile calculation.')}</p>`;
 }

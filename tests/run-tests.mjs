@@ -738,9 +738,10 @@ describe('diveSetup - renderDivePlanTableHTML', () => {
 
     test('both tables repeat the column headings and share one Runtime footnote', () => {
         const html = renderDivePlanTableHTML(waypoints, gases, {});
-        expect((html.match(/<th>Stop<\/th>/g) || []).length).toBe(2);
-        expect((html.match(/<th>Runtime \*<\/th>/g) || []).length).toBe(2);
-        expect(html).toContain('<p class="dse-plan-footnote">* end time of the stage</p>');
+        expect((html.match(/<th>Duration \(min\)<\/th>/g) || []).length).toBe(2);
+        expect((html.match(/<th>Runtime \(min\) \*<\/th>/g) || []).length).toBe(2);
+        expect(html).toContain('<p class="dse-plan-footnote">* Runtime is the elapsed time from the start of the dive to the end of the stage.</p>');
+        expect(html).toContain('<p class="dse-plan-footnote">The model continuously calculates tissue on-gassing during descent. Descent is therefore included in both bottom time and the decompression-profile calculation.</p>');
     });
 
     test('renders separate Bottom and Ascent tables in dive order', () => {
@@ -3641,6 +3642,50 @@ describe('TripCalendar - diveBlockLabel', () => {
 // ============================================================================
 
 describe('DiveSetupEditor notation', () => {
+    test('Czech runtime phase labels use lowercase within table rows', () => {
+        const cs = JSON.parse(readFileSync(new URL('../locales/cs.json', import.meta.url), 'utf8'));
+        const phaseKeys = [
+            'phaseDescent',
+            'phaseBottom',
+            'phaseSurface',
+            'phaseAscent',
+            'phaseSwitch',
+            'phaseStop'
+        ];
+
+        for (const key of phaseKeys) {
+            expect(/^[a-zá-ž]/u.test(cs.divePlan[key])).toBe(true);
+        }
+    });
+
+    test('quick setup explains bottom time on hover and keyboard focus', () => {
+        const dom = new JSDOM('<!doctype html><body></body>');
+        const previousDocument = globalThis.document;
+        globalThis.document = dom.window.document;
+
+        try {
+            const section = DiveSetupEditor.prototype._buildQuickSetup.call({
+                options: {
+                    showGenerateButton: true,
+                    showSafetyStop: false
+                },
+                elements: {},
+                _updateNDLDisplay() {}
+            });
+            const tooltip = section.querySelector('.dse-term-tooltip');
+
+            expect(Boolean(tooltip)).toBe(true);
+            expect(tooltip.getAttribute('data-tooltip')).toBe(
+                'Total time from the start of descent until beginning the ascent to the deepest decompression stop, or directly to the surface on a no-decompression dive. Includes descent.'
+            );
+            expect(tooltip.getAttribute('aria-label')).toBe(tooltip.getAttribute('data-tooltip'));
+            expect(tooltip.getAttribute('tabindex')).toBe('0');
+        } finally {
+            globalThis.document = previousDocument;
+            dom.window.close();
+        }
+    });
+
     test('cylinder volumes render with lowercase l', () => {
         const dom = new JSDOM('<!doctype html><body></body>');
         const previousDocument = globalThis.document;

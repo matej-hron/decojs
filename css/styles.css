@@ -2098,7 +2098,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.71";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.72";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -2257,6 +2257,52 @@ footer a {
 .dse-field label {
     font-size: 0.85rem;
     font-weight: 500;
+}
+
+.dse-term-tooltip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-left: 0.2rem;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    color: var(--primary-color);
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1;
+    cursor: help;
+}
+
+.dse-term-tooltip::after {
+    position: absolute;
+    z-index: 20;
+    left: 50%;
+    bottom: calc(100% + 0.5rem);
+    width: max-content;
+    max-width: min(20rem, 80vw);
+    padding: 0.55rem 0.7rem;
+    border-radius: 4px;
+    background: var(--text-color);
+    color: var(--card-background);
+    box-shadow: var(--shadow);
+    content: attr(data-tooltip);
+    font-size: 0.8rem;
+    font-weight: 400;
+    line-height: 1.35;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 0.25rem);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    white-space: normal;
+}
+
+.dse-term-tooltip:hover::after,
+.dse-term-tooltip:focus-visible::after {
+    opacity: 1;
+    transform: translate(-50%, 0);
 }
 
 .dse-field input[type="number"],
@@ -2509,9 +2555,11 @@ footer a {
 }
 
 tr.dse-plan-des .dse-plan-phase { color: var(--primary-color, #2980b9); }
+tr.dse-plan-des { background: rgba(41, 128, 185, 0.06); }
 tr.dse-plan-bottom .dse-plan-phase { color: #27ae60; }
 tr.dse-plan-bottom { background: rgba(39, 174, 96, 0.06); }
 tr.dse-plan-asc .dse-plan-phase { color: #e67e22; }
+tr.dse-plan-asc { background: rgba(230, 126, 34, 0.06); }
 tr.dse-plan-stop .dse-plan-phase { color: #c0392b; }
 tr.dse-plan-stop { background: rgba(192, 57, 43, 0.06); }
 tr.dse-plan-switch .dse-plan-phase { color: #8e44ad; }
@@ -2519,6 +2567,7 @@ tr.dse-plan-switch { background: rgba(142, 68, 173, 0.06); }
 
 /* Terminal "Hladina"/Surface marker row — informational only */
 .dse-plan-table tr.dse-plan-surface-final {
+    background: rgba(127, 127, 127, 0.06);
     color: var(--text-muted, #666);
     font-style: italic;
 }

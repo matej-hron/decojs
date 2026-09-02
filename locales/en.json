@@ -34,7 +34,7 @@
         },
         "bottomTime": {
             "label": "Bottom Time",
-            "text": "Total time from beginning of descent to start of final ascent. Includes descent phase."
+            "text": "Total time from the start of descent until beginning the ascent to the deepest decompression stop, or directly to the surface on a no-decompression dive. Includes descent."
         },
         "maxDepth": {
             "label": "Maximum Depth",
@@ -1263,11 +1263,12 @@
     "divePlan": {
         "colPhase": "Phase",
         "colDepth": "Depth",
-        "colStop": "Duration",
-        "colRuntime": "Runtime",
+        "colStop": "Duration (min)",
+        "colRuntime": "Runtime (min)",
         "colGas": "Gas",
         "colTank": "Tank",
-        "runtimeFootnote": "end time of the stage",
+        "runtimeFootnote": "Runtime is the elapsed time from the start of the dive to the end of the stage.",
+        "descentFootnote": "The model continuously calculates tissue on-gassing during descent. Descent is therefore included in both bottom time and the decompression-profile calculation.",
         "sectionBottom": "Bottom",
         "sectionAscent": "Ascent",
         "phaseDescent": "Des",

@@ -393,6 +393,10 @@ export class DiveSetupEditor extends EventTarget {
     
     _buildQuickSetup() {
         const section = document.createElement('details');
+        const bottomTimeExplanation = escHtml(translate(
+            'terminology.bottomTime.text',
+            'Total time from the start of descent until beginning the ascent to the deepest decompression stop, or directly to the surface on a no-decompression dive. Includes descent.'
+        ));
         section.className = 'dse-section dse-quick-setup';
         section.open = true;
         section.innerHTML = `
@@ -405,7 +409,12 @@ export class DiveSetupEditor extends EventTarget {
                         <input type="number" class="dse-quick-depth form-input" value="30" min="1" max="100" step="1">
                     </div>
                     <div class="dse-field">
-                        <label>${translate('diveEditor.quickSetup.bottomTime', 'Bottom Time (min):')}</label>
+                        <label>
+                            ${translate('diveEditor.quickSetup.bottomTime', 'Bottom Time (min):')}
+                            <span class="dse-term-tooltip" tabindex="0" role="note"
+                                aria-label="${bottomTimeExplanation}"
+                                data-tooltip="${bottomTimeExplanation}">?</span>
+                        </label>
                         <input type="number" class="dse-quick-time form-input" value="20" min="1" max="120" step="1">
                     </div>
                 </div>
