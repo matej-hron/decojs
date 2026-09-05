@@ -895,8 +895,8 @@ export class DiveSetupEditor extends EventTarget {
                 <div class="dse-gas-row dse-gas-custom" style="display: ${!matchingPreset ? 'flex' : 'none'};">
                     <label>${translate('diveEditor.gasCard.o2', 'O₂:')}</label>
                     <input type="number" class="dse-gas-o2" min="5" max="100" step="1" value="${Math.round(gas.o2 * 100)}">%
-                    <label>${translate('diveEditor.gasCard.he', 'He:')}</label>
-                    <input type="number" class="dse-gas-he" min="0" max="95" step="1" value="${Math.round(gas.he * 100)}">%
+                    <!-- Keep helium in the data model for future support, but do not expose unsupported input. -->
+                    <input type="hidden" class="dse-gas-he" value="${Math.round(gas.he * 100)}">
                 </div>
                 <div class="dse-gas-row">
                     <label>${translate('diveEditor.gasCard.tank', 'Tank:')}</label>

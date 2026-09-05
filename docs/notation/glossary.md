@@ -176,7 +176,8 @@ uvádí při prvním výskytu.
 Další termíny: **kompartment** (přejaté, běžné), **sycení/nasycení tkáně**,
 **vysycování**, **přesycení**, **inertní plyn**, **dekompresní zastávka**,
 **bezpečnostní zastávka**, **rychlost výstupu**, **dusíková narkóza** (hovorově
-*hloubkové opojení*), **kyslíková toxicita**, **M-hodnota**.
+*hloubkové opojení*), **kyslíková toxicita**, **M-hodnota**, **hladinový objem
+plynu** (objem plynu přepočtený na tlak 1&nbsp;bar).
 
 ## 7. Špatně × správně
 

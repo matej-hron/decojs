@@ -951,7 +951,6 @@
         "preset": "Preset",
         "presets": {
             "warmShop": "Warm shop → Cold lake",
-            "hotFill": "Hot fill → Cold quarry",
             "sunDeck": "Sun on deck",
             "fire": "Fire!",
             "custom": "Custom"
@@ -964,16 +963,17 @@
         "finalTemp": "Final temperature <var>T</var><sub>2</sub> (°C)",
         "calculatePrompt": "Set up your scenario, calculate <var>p</var><sub>2</sub>, then click below to check your answer.",
         "showResult": "Show Result",
+        "reset": "Reset to Defaults",
         "finalPressure": "Final Pressure <var>p</var><sub>2</sub>",
         "pressureChange": "Pressure Change Δ<var>p</var>",
-        "usableGasChange": "Usable Gas Change",
-        "gasChangeSub": "equivalent surface liters (Δ<var>p</var> × volume)",
+        "usableGasChange": "Surface Gas Volume Change",
+        "gasChangeSub": "volume at 1 bar (Δ<var>p</var> × cylinder volume ÷ 1 bar)",
         "diveTimeChange": "Dive Time Change at 20 m",
         "diveTimeSub": "Surface Air Consumption 20 L/min at 3 bar (1+20/10)",
         "safety": {
-            "withinWorking": "Within working pressure ({0} bar rated)",
-            "aboveWorking": "Above working pressure! {0} bar (test pressure: {1} bar)",
-            "danger": "DANGER! {0} bar exceeds test pressure ({1} bar)"
+            "withinWorking": "Pressure does not exceed the cylinder's maximum working pressure ({0} bar).",
+            "aboveWorking": "Maximum cylinder working pressure of {0} bar exceeded. Current pressure: {1} bar.",
+            "danger": "DANGER! Current pressure of {0} bar exceeds the cylinder test pressure of {1} bar."
         },
         "tempRange": "Temperature Range",
         "tempRefs": {
@@ -991,7 +991,6 @@
         "formulaRearranged": "Rearranged:",
         "scenarioLabels": {
             "warmShop": "Warm shop to cold lake",
-            "hotFill": "Hot fill to cold quarry",
             "sunDeck": "Sun heating on deck",
             "fire": "Fire scenario"
         },
@@ -1305,7 +1304,8 @@
             "tissue": "Tissue Saturation",
             "transfill": "Cylinder Transfilling",
             "cascade": "Cascade Filling",
-            "gasLaw": "Gas Law: Temp & Pressure"
+            "gasLaw": "Gas Law: Temp & Pressure",
+            "repetitive": "Repetitive Dives"
         },
         "theory": {
             "label": "Theory",
@@ -1348,7 +1348,7 @@
                 "transfill": "Transfilling",
                 "cascade": "Cascade Filling",
                 "gasLaw": "Gas Law",
-                "repetitive": "Repetitive Dives (preview)"
+                "repetitive": "Repetitive Dives"
             },
             "statusStart": "Start Here",
             "pressure": "Pressure & Partial Pressure",

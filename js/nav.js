@@ -20,7 +20,7 @@ const NAV_ITEMS = [
         href: 'sandbox/index.html',
         submenu: [
             { href: 'sandbox/index.html', labelKey: 'nav.sandbox.deco', label: 'Decompression Modelling' },
-            { href: 'sandbox/repetitive-dives.html', labelKey: 'nav.sandbox.repetitive', label: 'Repetitive Dives (preview)' },
+            { href: 'sandbox/repetitive-dives.html', labelKey: 'nav.sandbox.repetitive', label: 'Repetitive Dives' },
             { href: 'sandbox/tissue-saturation.html', labelKey: 'nav.sandbox.tissue', label: 'Tissue Saturation' },
             { href: 'sandbox/haldane.html', labelKey: 'nav.sandbox.haldane', label: 'Haldane Equation' },
             { href: 'sandbox/schreiner.html', labelKey: 'nav.sandbox.schreiner', label: 'Schreiner Equation' },

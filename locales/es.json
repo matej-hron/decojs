@@ -951,7 +951,6 @@
         "preset": "Preajuste",
         "presets": {
             "warmShop": "Tienda cálida → lago frío",
-            "hotFill": "Carga caliente → cantera fría",
             "sunDeck": "Sol en cubierta",
             "fire": "¡Fuego!",
             "custom": "Personalizado"
@@ -964,16 +963,17 @@
         "finalTemp": "Temperatura final <var>T</var><sub>2</sub> (°C)",
         "calculatePrompt": "Configura el escenario, calcula <var>p</var><sub>2</sub> y pulsa abajo para comprobar tu respuesta.",
         "showResult": "Mostrar resultado",
+        "reset": "Restablecer valores predeterminados",
         "finalPressure": "Presión final <var>p</var><sub>2</sub>",
         "pressureChange": "Cambio de presión Δ<var>p</var>",
-        "usableGasChange": "Cambio de gas utilizable",
-        "gasChangeSub": "litros equivalentes en superficie (Δ<var>p</var> × volumen)",
+        "usableGasChange": "Cambio del volumen de gas en superficie",
+        "gasChangeSub": "volumen a 1 bar (Δ<var>p</var> × volumen de la botella ÷ 1 bar)",
         "diveTimeChange": "Cambio de tiempo de inmersión a 20 m",
         "diveTimeSub": "Consumo de aire en superficie 20 L/min a 3 bar (1+20/10)",
         "safety": {
-            "withinWorking": "Dentro de la presión de trabajo ({0} bar nominales)",
-            "aboveWorking": "¡Por encima de la presión de trabajo! {0} bar (presión de prueba: {1} bar)",
-            "danger": "¡PELIGRO! {0} bar supera la presión de prueba ({1} bar)"
+            "withinWorking": "La presión no supera la presión máxima de trabajo de la botella ({0} bar).",
+            "aboveWorking": "Se ha superado la presión máxima de trabajo de la botella de {0} bar. Presión actual: {1} bar.",
+            "danger": "¡PELIGRO! La presión actual de {0} bar supera la presión de prueba de la botella de {1} bar."
         },
         "tempRange": "Rango de temperatura",
         "tempRefs": {
@@ -991,7 +991,6 @@
         "formulaRearranged": "Reordenada:",
         "scenarioLabels": {
             "warmShop": "Tienda cálida a lago frío",
-            "hotFill": "Carga caliente a cantera fría",
             "sunDeck": "Calentamiento por el sol en cubierta",
             "fire": "Escenario de incendio"
         },
@@ -1305,7 +1304,8 @@
             "tissue": "Saturación tisular",
             "transfill": "Transvase de botellas",
             "cascade": "Llenado en cascada",
-            "gasLaw": "Ley de los gases: temp. y presión"
+            "gasLaw": "Ley de los gases: temp. y presión",
+            "repetitive": "Inmersiones repetitivas"
         },
         "theory": {
             "label": "Teoría",
@@ -1348,7 +1348,7 @@
                 "transfill": "Transvase",
                 "cascade": "Llenado en cascada",
                 "gasLaw": "Ley de los gases",
-                "repetitive": "Inmersiones repetitivas (preview)"
+                "repetitive": "Inmersiones repetitivas"
             },
             "statusStart": "Empieza aquí",
             "pressure": "Presión y presión parcial",

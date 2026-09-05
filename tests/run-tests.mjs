@@ -3713,6 +3713,30 @@ describe('DiveSetupEditor notation', () => {
             dom.window.close();
         }
     });
+
+    test('custom gas does not expose unsupported helium input', () => {
+        const dom = new JSDOM('<!doctype html><body></body>');
+        const previousDocument = globalThis.document;
+        globalThis.document = dom.window.document;
+
+        try {
+            const card = DiveSetupEditor.prototype._createGasCard.call({}, {
+                name: 'Custom 21/0',
+                o2: 0.21,
+                n2: 0.79,
+                he: 0,
+                cylinderVolume: 12,
+                startPressure: 200
+            }, 0);
+            const heliumInput = card.querySelector('.dse-gas-he');
+
+            expect(heliumInput?.type).toBe('hidden');
+            expect(card.querySelector('.dse-gas-custom').textContent.includes('He:')).toBe(false);
+        } finally {
+            globalThis.document = previousDocument;
+            dom.window.close();
+        }
+    });
 });
 
 describe('i18n notation - canvas strings must not contain HTML entities', () => {

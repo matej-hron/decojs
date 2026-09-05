@@ -943,7 +943,7 @@
             "text": "<strong>Pouze pro výukové účely</strong> — Tento nástroj demonstruje Gay-Lussacův zákon pro potápěčské lahve (konstantní objem)."
         },
         "header": {
-            "title": "Plynový zákon: Teplota a tlak",
+            "title": "Tlak v lahvi při změně teploty",
             "subtitle": "Jak změna teploty ovlivňuje tlak v potápěčské lahvi (Gay-Lussacův zákon)"
         },
         "setup": "Nastavení",
@@ -951,7 +951,6 @@
         "preset": "Předvolba",
         "presets": {
             "warmShop": "Teplá plnírna → Studené jezero",
-            "hotFill": "Horké plnění → Studený lom",
             "sunDeck": "Slunce na palubě",
             "fire": "Požár!",
             "custom": "Vlastní"
@@ -964,16 +963,17 @@
         "finalTemp": "Konečná teplota <var>T</var><sub>2</sub> (°C)",
         "calculatePrompt": "Nastavte scénář, spočítejte <var>p</var><sub>2</sub>, a pak klikněte pro ověření.",
         "showResult": "Zobrazit výsledek",
+        "reset": "Obnovit výchozí hodnoty",
         "finalPressure": "Výsledný tlak <var>p</var><sub>2</sub>",
         "pressureChange": "Změna tlaku Δ<var>p</var>",
-        "usableGasChange": "Změna použitelného plynu",
-        "gasChangeSub": "povrchové litry (Δ<var>p</var> × objem)",
+        "usableGasChange": "Změna hladinového objemu plynu",
+        "gasChangeSub": "objem při 1 bar (Δ<var>p</var> × objem lahve ÷ 1 bar)",
         "diveTimeChange": "Změna času ponoru ve 20 m",
         "diveTimeSub": "Spotřeba vzduchu na hladině (SAC) 20 l/min při 3 bar (1+20/10)",
         "safety": {
-            "withinWorking": "V rámci pracovního tlaku ({0} bar)",
-            "aboveWorking": "Překračuje pracovní tlak! {0} bar (zkušební tlak: {1} bar)",
-            "danger": "NEBEZPEČÍ! {0} bar překračuje zkušební tlak ({1} bar)"
+            "withinWorking": "Tlak nepřekračuje maximální provozní tlak lahve ({0} bar).",
+            "aboveWorking": "Překročen maximální provozní tlak lahve {0} bar. Aktuální tlak: {1} bar.",
+            "danger": "NEBEZPEČÍ! Aktuální tlak {0} bar překračuje zkušební tlak lahve {1} bar."
         },
         "tempRange": "Teplotní rozsah",
         "tempRefs": {
@@ -991,7 +991,6 @@
         "formulaRearranged": "Přeuspořádáno:",
         "scenarioLabels": {
             "warmShop": "Teplá plnírna do studeného jezera",
-            "hotFill": "Horké plnění do studeného lomu",
             "sunDeck": "Slunce na palubě",
             "fire": "Požár"
         },
@@ -1305,7 +1304,8 @@
             "tissue": "Sycení tkání",
             "transfill": "Přepouštění lahví",
             "cascade": "Kaskádové plnění",
-            "gasLaw": "Plynový zákon: teplota a tlak"
+            "gasLaw": "Tlak v lahvi při změně teploty",
+            "repetitive": "Opakované ponory"
         },
         "theory": {
             "label": "Teorie",
@@ -1347,8 +1347,8 @@
                 "mvalues": "M-hodnoty",
                 "transfill": "Přepouštění",
                 "cascade": "Kaskádové plnění",
-                "gasLaw": "Plynový zákon",
-                "repetitive": "Opakované ponory (preview)"
+                "gasLaw": "Tlak v lahvi při změně teploty",
+                "repetitive": "Opakované ponory"
             },
             "statusStart": "Začněte zde",
             "pressure": "Tlak a parciální tlak",
