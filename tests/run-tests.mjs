@@ -3915,14 +3915,14 @@ describe('Visual algorithm theory page', () => {
         'utf8'
     );
 
-    test('ships the page, controller, navigation entry, and offline assets together', () => {
+    test('keeps the experimental page available directly but hidden from discovery', () => {
         const nav = readFileSync(new URL('../js/nav.js', import.meta.url), 'utf8');
         const sw = readFileSync(new URL('../sw.js', import.meta.url), 'utf8');
         const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
-        expect(nav).toContain("href: 'algorithm.html'");
+        expect(nav.includes("href: 'algorithm.html'")).toBe(false);
         expect(sw).toContain("'./algorithm.html'");
         expect(sw).toContain("'./js/algorithmExplainer.js'");
-        expect(home).toContain('href="algorithm.html"');
+        expect(home.includes('href="algorithm.html"')).toBe(false);
     });
 
     test('gives every chart a fullscreen control', () => {
