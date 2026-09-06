@@ -5,9 +5,12 @@ From the first stop inward to the surface, produce the list of mandatory stops: 
 ## Entry point
 
 ```javascript
-// js/decoModel.js:899 (signature)
+// js/decoModel.js:826 (signature)
 export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, gfLow, gfHigh, gases = null, options = {})
 ```
+
+`options.surfacePressure` controls the surface target, pressure-to-depth
+conversion, GF endpoint, MOD shift, and stop grid for altitude dives.
 
 Returns:
 

@@ -51,7 +51,10 @@ Key steps:
    const gfHighDec = gfHigh / 100;
    ```
 
-2. **Calculate NDL** (`js/diveSetup.js:338`): Calls `calculateNDL(maxDepth, bottomGas.n2, gfLowDec)`. NDL uses GF Low because that is the threshold that determines whether a first deco stop is required.
+2. **Calculate NDL**: Calls `calculateNDL(maxDepth, bottomGas.n2, gfHighDec)`.
+   Each candidate includes a simulated direct ascent on bottom gas; the surfaced
+   tissues are checked at GF High. GF Low is introduced only if that ascent
+   fails and a decompression anchor must be found.
 
 3. **Check if deco is required** (`js/diveSetup.js:345`): `requiresDeco = bottomTime > ndl`. If within NDL, delegates to `generateSimpleProfile()` (`js/diveSetup.js:238`) which builds a descent-bottom-safetyStop-ascent waypoint sequence.
 

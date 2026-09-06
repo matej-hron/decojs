@@ -15,10 +15,10 @@ import { calculateNDL } from './decoModel.js';
 /**
  * @param {Object} trip - { gases, gfLow, gfHigh, dives }
  * @param {Object} candidate - { startDateTime, maxDepth, gases }
- * @param {number} gfLow - GF Low as a percentage (0-100)
+ * @param {number} gfHigh - GF High as a percentage (0-100)
  * @returns {number} pre-saturation-aware NDL in minutes
  */
-export function previewNdl(trip, candidate, gfLow = trip.gfLow ?? 100) {
+export function previewNdl(trip, candidate, gfHigh = trip.gfHigh ?? 100) {
     const withCandidate = addDive(trip, {
         startDateTime: candidate.startDateTime,
         maxDepth: candidate.maxDepth,
@@ -30,5 +30,5 @@ export function previewNdl(trip, candidate, gfLow = trip.gfLow ?? 100) {
     const placed = result.dives.find(d => d.id === newId);
     const seed = placed.startingTissue;
     const n2 = (candidate.gases && candidate.gases[0]) ? candidate.gases[0].n2 : 0.79;
-    return calculateNDL(candidate.maxDepth, n2, gfLow / 100, seed).ndl;
+    return calculateNDL(candidate.maxDepth, n2, gfHigh / 100, seed).ndl;
 }

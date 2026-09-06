@@ -1089,7 +1089,7 @@
             "alveolarPN2": "pN₂ alveolar",
             "alveolarPN2WithGases": "pN₂ alveolar ({0})",
             "alveolarPN2Percent": "pN₂ alveolar ({0} %)",
-            "surfaceLine": "Superficie (1 bar)",
+            "surfaceLine": "Superficie ({0} bar)",
             "pAnchor": "pAnchor {0} bar ({1} m)",
             "tooltipLabel": "{0}: p_amb={1}, p_tejido={2} bar",
             "initialDepthLabel": "0,0 min @ 0 m"
@@ -1205,6 +1205,12 @@
             "rowBuhlmannTables": "Tablas Bühlmann",
             "continuousDeco": "Deco continua (sin rejilla 3 m/1 min)",
             "continuousWarning": "⚠️ Produce perfiles poco prácticos, solo para demostración. Muestra la salida bruta del modelo Bühlmann sin el redondeo estándar a 3 m/1 min."
+        },
+        "environment": {
+            "title": "Entorno",
+            "altitude": "Altitud (m):",
+            "surfacePressure": "Presión atmosférica calculada:",
+            "acclimatizedHint": "Supone que el buceador está completamente aclimatado a esta altitud."
         },
         "sac": {
             "title": "Consumo de gas",

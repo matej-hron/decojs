@@ -42,6 +42,7 @@ export function encodeDiveSetup(diveSetup) {
         // Only include optional properties if they have meaningful values
         if (diveSetup.description) minimal.description = diveSetup.description;
         if (diveSetup.surfaceInterval) minimal.surfaceInterval = diveSetup.surfaceInterval;
+        if (diveSetup.environment) minimal.environment = diveSetup.environment;
 
         const json = JSON.stringify(minimal);
 
@@ -86,8 +87,8 @@ function sanitizeSharedText(value) {
 /**
  * Strip the free-text fields of a decoded dive setup in place.
  *
- * Only the fields a sharer can influence are touched; numeric fields are left
- * to the consumers, which already coerce them.
+ * Free text is cleaned and the altitude environment is constrained to the
+ * range supported by the sandbox.
  *
  * @param {Object} setup - Decoded dive setup (mutated).
  * @returns {Object} The same object.
@@ -121,6 +122,21 @@ function sanitizeDiveSetup(setup) {
                     const cleaned = sanitizeSharedText(wp.gasId);
                     if (cleaned !== undefined) wp.gasId = cleaned;
                 }
+            }
+        }
+    }
+
+    if (setup.environment && typeof setup.environment === 'object') {
+        const altitude = Number(setup.environment.altitude);
+        setup.environment.altitude = Number.isFinite(altitude) && altitude >= 0 && altitude <= 5000
+            ? altitude
+            : 0;
+        if (setup.environment.surfacePressure !== undefined) {
+            const pressure = Number(setup.environment.surfacePressure);
+            if (Number.isFinite(pressure) && pressure >= 0.5 && pressure <= 1.1) {
+                setup.environment.surfacePressure = pressure;
+            } else {
+                delete setup.environment.surfacePressure;
             }
         }
     }

@@ -75,12 +75,14 @@ export function getDiveCeiling(tissuePressures, gf) {
             controllingComp = comp.id;
         }
     }
-    const finalCeiling = Math.max(SURFACE_PRESSURE, maxCeiling);
+    const finalCeiling = Math.max(surfacePressure, maxCeiling);
     // ...
 }
 ```
 
 The compartment winning `maxCeiling` is the **controlling (leading) compartment** at that moment.
+The clamp and pressure-to-depth conversion use the selected dive-site surface
+pressure; `SURFACE_PRESSURE` remains the sea-level default.
 
 ## GF-adjusted M-value
 

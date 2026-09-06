@@ -6,7 +6,7 @@ npm test
 
 Runs `node tests/run-tests.mjs`. No external test framework — `tests/run-tests.mjs` implements `describe`/`test`/`expect` inline (lines 10–140) with matchers `.toBe`, `.toEqual`, `.toBeCloseTo`, `.toBeGreaterThan`, `.toBeLessThan`, `.toHaveProperty`, `.toHaveLength`, `.toBeDefined`. Output is one line per test, then a pass/fail summary.
 
-**386 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
+**408 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
 
 `npm test` is required to pass before every commit per `CLAUDE.md`.
 
@@ -42,9 +42,12 @@ Waypoint-array validation.
 - `calculateRates` classification into descent / ascent / level.
 - `getDiveStats` maxima and totals.
 
-### `tests/decotengu-comparison.test.mjs` (~180 lines)
+### Decotengu matrices in `tests/run-tests.mjs`
 
-The cross-implementation comparison script. Runs as part of `npm test` (included by `run-tests.mjs`) but also runnable standalone: `node tests/decotengu-comparison.test.mjs`.
+The canonical suite directly checks the 3900 sea-level scenarios in
+`tests/decotengu-reference.json` and 15,986 altitude scenarios in
+`tests/decotengu-altitude-reference.json`. The original reporting script remains
+runnable standalone as `node tests/decotengu-comparison.test.mjs`.
 
 Procedural style rather than describe/test — loops over every scenario in `tests/decotengu-reference.json`, reports pass/fail counts, and exits non-zero on regression.
 
@@ -57,6 +60,13 @@ Pinned regression: passing `{gasSwitchTime: 0}` to `generateDecoSchedule` must p
 This is the primary numerical-correctness evidence for the DecoJS algorithm.
 
 **Reference data.** `tests/decotengu-reference.json` holds 3900 pre-generated deco scenarios produced by decotengu v0.14.1 (see [References](References.md#41-decotengu-primary-reference-implementation)). Reference data is regenerated with `python3 scripts/generate_decotengu_reference.py > tests/decotengu-reference.json`.
+
+**Altitude reference data.** `tests/decotengu-altitude-reference.json` adds 15,986
+scenarios at 500, 1000, 1500, and 2500 m. Regenerate it with
+`python3 scripts/generate_decotengu_altitude_reference.py >
+tests/decotengu-altitude-reference.json`. Decotengu receives the absolute
+`engine.surface_pressure`; the normal test run only reads the generated JSON and
+does not require Python or Decotengu.
 
 **Scenario coverage.**
 
@@ -163,6 +173,9 @@ What is currently not covered — honest inventory so callers know where to be c
 - **Keyboard shortcuts.** `MValueChart` and `GFChart` expose arrow-key / space / home / end playback; none of this is tested.
 - **Helium.** `COMPARTMENTS` carries He coefficients but the algorithm lumps He into N₂ via `n2Fraction`. Full trimix (separate He kinetics) is not implemented and not tested. Gas definitions accept `he > 0` but no decotengu-reference scenarios exercise it.
 - **SAC / gas consumption edge cases.** `computeGasConsumption` has basic coverage but not realistic multi-dive or bail-out scenarios.
-- **Altitude / salinity.** `DEFAULT_ENVIRONMENT` in `chartTypes.js` exists but the algorithm uses fixed `SURFACE_PRESSURE = 1.01325`; altitude adjustment is not tested because it is not implemented.
+- **Salinity.** Altitude is covered by standard-atmosphere unit tests, exact
+  sea-level compatibility tests, and 15,986 Decotengu scenarios. Water-density
+  adjustment remains unimplemented; the model still uses the educational
+  `0.1 bar/m` conversion.
 
 Cross-link: see the individual algorithm chapters ([Algo-02-NDL-Calculation](Algo-02-NDL-Calculation.md), [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md), [Algo-04-Deco-Stop-Loop](Algo-04-Deco-Stop-Loop.md), [Algo-05-Multi-Gas-Switching](Algo-05-Multi-Gas-Switching.md)) for which algorithm each test file exercises.

@@ -1089,7 +1089,7 @@
             "alveolarPN2": "Alveolární pN₂",
             "alveolarPN2WithGases": "Alveolární pN₂ ({0})",
             "alveolarPN2Percent": "Alveolární pN₂ ({0} %)",
-            "surfaceLine": "Hladina (1 bar)",
+            "surfaceLine": "Hladina ({0} bar)",
             "pAnchor": "pAnchor {0} bar ({1} m)",
             "tooltipLabel": "{0}: p_amb={1}, p_tkáň={2} bar",
             "initialDepthLabel": "0,0 min @ 0 m"
@@ -1205,6 +1205,12 @@
             "rowBuhlmannTables": "Bühlmannovy tabulky",
             "continuousDeco": "Spojitá deko (bez mřížky 3 m/1 min)",
             "continuousWarning": "⚠️ Produkuje nepraktické profily pouze pro demonstraci. Ukazuje čistý výstup Bühlmannova modelu bez standardního zaokrouhlování na 3 m/1 min."
+        },
+        "environment": {
+            "title": "Prostředí",
+            "altitude": "Nadmořská výška (m):",
+            "surfacePressure": "Vypočtený atmosférický tlak:",
+            "acclimatizedHint": "Předpokládá, že je potápěč na tuto nadmořskou výšku plně aklimatizovaný."
         },
         "sac": {
             "title": "Spotřeba plynu",

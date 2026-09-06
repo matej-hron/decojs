@@ -1,6 +1,13 @@
 # Algo-03 — First Stop and the GF Ramp Anchor
 
-The first decompression stop is where two things coincide: it is the **deepest mandatory stop on the 3 m grid**, and it is the **anchor of the GF ramp**. Same depth, two roles. The deco loop then ascends from there toward the surface.
+Before creating an anchor, DecoJS attempts a direct ascent to the surface on
+the bottom gas and checks the surfaced tissues at $GF_{high}$. A successful
+ascent is an NDL dive and has `anchorDepth = 0`.
+
+If that ascent fails, the algorithm finds the first **decompression level** on
+the 3 m grid and uses it as the GF-ramp anchor. In the adaptive DecoJS stop
+policy this level can have zero waiting time; the first recorded stop can
+therefore be shallower than the anchor.
 
 ## Convention
 
@@ -8,7 +15,7 @@ DecoJS implements the standard Baker GF convention:
 
 > The first stop is the shallowest stop-grid depth at which the dive ceiling at $GF_{low}$ — the maximum ceiling across all 16 compartments — is satisfied after a simulated ascent from current depth.
 
-`pAnchor` is the ambient pressure at that depth. Below it the active GF is clamped at $GF_{low}$; above it the GF ramps linearly to $GF_{high}$ at the surface (see [Model-05-Gradient-Factors](Model-05-Gradient-Factors.md)).
+`pAnchor` is the ambient pressure at that level. Below it the active GF is clamped at $GF_{low}$; above it the GF ramps linearly to $GF_{high}$ at the surface (see [Model-05-Gradient-Factors](Model-05-Gradient-Factors.md)).
 
 ## findFirstStopAtGFLow
 
@@ -16,11 +23,14 @@ DecoJS implements the standard Baker GF convention:
 // js/decoModel.js (signature)
 export function findFirstStopAtGFLow(
     tissuePressures, currentDepth, n2Fraction, gfLow,
-    stopIncrement = STOP_INCREMENT, ascentRate = ASCENT_SPEED, gasSwitchPoints = null
+    stopIncrement = STOP_INCREMENT, ascentRate = ASCENT_SPEED,
+    gasSwitchPoints = null, surfacePressure = SURFACE_PRESSURE
 )
 ```
 
 Returns `{ anchorDepth, pAnchor, tissuesAtAnchor }`.
+The optional surface pressure makes both the simulated ascent and the resulting
+anchor altitude-aware while preserving sea level by default.
 
 ### Method
 
@@ -28,7 +38,7 @@ Iterate the stop grid surface-up. For each candidate depth $d$:
 
 1. Simulate the ascent from `currentDepth` to $d$ (Schreiner integration with gas switches if applicable).
 2. Compute the dive ceiling at $GF_{low}$ — `getDiveCeiling(simTissues, gfLow)`.
-3. If `ceilingDepth ≤ d`, the diver can arrive at $d$ within $GF_{low}$; this is the first stop.
+3. If `ceilingDepth ≤ d`, the diver can arrive at $d$ within $GF_{low}$; this is the anchor level.
 
 ```javascript
 // js/decoModel.js findFirstStopAtGFLow
@@ -92,9 +102,11 @@ function _simulateAscentWithGasSwitches(tissuePressures, fromDepth, toDepth, sta
 }
 ```
 
-### NDL edge case
+### NDL pre-check
 
-If candidate = 0 (surface) already satisfies the ceiling check, the diver is within NDL. `findFirstStopAtGFLow` returns `anchorDepth = 0` and `pAnchor = SURFACE_PRESSURE`. The deco loop then takes the no-deco branch (`js/decoModel.js` no-deco path).
+`generateDecoSchedule` performs the GF High direct-ascent check before calling
+`findFirstStopAtGFLow`. This prevents a non-zero GF Low anchor from being
+created for a dive that can surface without any mandatory stop.
 
 ## Worked example
 

@@ -31,7 +31,7 @@ All depths are in meters, all times in minutes.
 Defined at the top of `js/decoModel.js`:
 
 ```javascript
-// js/decoModel.js:18-30
+// js/decoModel.js:18-56
 export const SURFACE_PRESSURE = 1.01325;       // 1 atm exactly, in bar
 export const WATER_VAPOR_PRESSURE = 0.0627;    // alveolar H2O correction at 37°C, in bar
 export const N2_FRACTION = 0.7902;             // N2 + Ar lumped, per ZH-L convention
@@ -39,6 +39,13 @@ export const PRESSURE_PER_METER = 0.1;         // fresh-water convention, bar/m
 ```
 
 `N2_FRACTION = 0.7902` (not 0.79) is the standard Bühlmann convention — argon (~0.93%) is lumped into the nitrogen compartment because it has similar kinetics. `PRESSURE_PER_METER = 0.1` is the fresh-water value; sea water would be slightly higher but DecoJS uses the rounded educational convention.
+
+`SURFACE_PRESSURE` remains the backward-compatible sea-level default. Altitude-aware
+calculations call `getPressureAtAltitude(altitude)` and pass the resulting absolute
+surface pressure through ambient-pressure conversion, initial tissue saturation, NDL,
+ceilings, the GF ramp, gas consumption, and the decompression scheduler. The standard
+atmosphere is used to convert altitude to pressure; the sandbox currently assumes the
+diver is fully acclimatized to the selected altitude.
 
 ## Chapter TOC
 

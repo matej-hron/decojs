@@ -79,18 +79,18 @@ Tissue barely moved — TC5 is slow relative to a 0.9-min segment. Compare to TC
 `simulateDepthChange()` runs Schreiner across all 16 compartments for a single linear segment:
 
 ```javascript
-// js/decoModel.js:860 (signature)
-export function simulateDepthChange(tissuePressures, startDepth, endDepth, time, n2Fraction)
+// js/decoModel.js:784 (signature)
+export function simulateDepthChange(tissuePressures, startDepth, endDepth, time, n2Fraction, surfacePressure = SURFACE_PRESSURE)
 ```
 
 `calculateTissueLoading()` iterates across an entire waypoint array:
 
 ```javascript
-// js/decoModel.js:1178 (signature)
+// js/decoModel.js:1132 (signature)
 export function calculateTissueLoading(profile, surfaceInterval = 60, options = {})
 ```
 
-It samples at 10-second resolution (`CALC_INTERVAL = 10` s) — for each interval it decides descent/level/ascent and dispatches to Haldane or Schreiner accordingly, threading tissue state forward. Gas switches are respected via the `gasId` field on waypoints.
+It samples at 10-second resolution (`CALC_INTERVAL = 10` s) — for each interval it decides descent/level/ascent and dispatches to Haldane or Schreiner accordingly, threading tissue state forward. Gas switches are respected via the `gasId` field on waypoints. `options.surfacePressure` supplies the local atmospheric pressure for altitude dives.
 
 ## Haldane as degenerate case
 

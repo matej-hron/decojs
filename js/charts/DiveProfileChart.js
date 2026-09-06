@@ -46,6 +46,7 @@ import {
     calculateNDL,
     getAmbientPressure,
     getAlveolarN2Pressure,
+    getSurfacePressure,
     SURFACE_PRESSURE
 } from '../decoModel.js';
 import {
@@ -815,7 +816,7 @@ export class DiveProfileChart {
                 reservePressure,
                 pressures,
                 consumption,
-                rates: [],          // (not used by the drawn chart; left empty for now)
+                rates: shared.rateSeries[gas.id] || [],
                 isActive: (shared.consumedByGasId[gas.id] || 0) > 0
             };
         });
@@ -838,9 +839,14 @@ export class DiveProfileChart {
         const gfLow = (this.diveSetup.gfLow || 100) / 100;
         const gfHigh = (this.diveSetup.gfHigh || 100) / 100;
         const surfaceInterval = this.diveSetup.surfaceInterval || 0;
+        const surfacePressure = getSurfacePressure(this.diveSetup.environment);
         
         // Calculate tissue loading
-        const results = calculateTissueLoading(waypoints, surfaceInterval, { gases, initialTissuePressures: this.diveSetup.initialTissuePressures });
+        const results = calculateTissueLoading(waypoints, surfaceInterval, {
+            gases,
+            initialTissuePressures: this.diveSetup.initialTissuePressures,
+            surfacePressure
+        });
         
         // Calculate ceiling if needed - use detailed version in tissue mode
         let ceilingDepths = null;
@@ -860,7 +866,7 @@ export class DiveProfileChart {
         if (this.options.showNDL) {
             const maxDepth = Math.max(...waypoints.map(wp => wp.depth));
             const bottomGas = gases[0];
-            ndlData = calculateNDL(maxDepth, bottomGas.n2, gfLow);
+            ndlData = calculateNDL(maxDepth, bottomGas.n2, gfHigh, null, surfacePressure);
         }
         
         // Calculate gas consumption if needed

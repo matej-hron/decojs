@@ -5,17 +5,20 @@ Real technical dives carry one bottom gas plus one or more deco gases — EAN50 
 ## MOD calculation
 
 ```javascript
-// js/diveSetup.js:807-811
-export function calculateMOD(o2Fraction, maxPpO2 = 1.4) {
+// js/diveSetup.js
+export function calculateMOD(o2Fraction, maxPpO2 = 1.4, surfacePressure = 1) {
     if (o2Fraction <= 0) return Infinity;
     const maxAmbient = maxPpO2 / o2Fraction;
-    return Math.floor((maxAmbient - 1) * 10);
+    return Math.floor((maxAmbient - surfacePressure) / 0.1);
 }
 ```
 
-$$MOD = \left\lfloor \left(\frac{ppO_2^{max}}{f_{O_2}} - 1\right) \cdot 10 \right\rfloor \text{ m}$$
+$$MOD = \left\lfloor \frac{ppO_2^{max}/f_{O_2} - P_{surface}}{0.1} \right\rfloor \text{ m}$$
 
 Default `maxPpO2 = 1.4` for bottom gas; `1.6` for deco (relaxed because the diver is resting at a stop, not working). `Math.floor` rounds toward shallower — conservative, always-below-MOD.
+The default `surfacePressure = 1` preserves the established sea-level MOD
+convention; the altitude planner shifts this reference by the local atmospheric
+pressure difference.
 
 The deco loop then snaps MOD to the 3 m stop grid:
 

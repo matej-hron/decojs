@@ -19,7 +19,13 @@
  * Pure module — no DOM, no side effects.
  */
 
-import { getMValue, getAmbientPressure, getInitialTissueN2, N2_FRACTION } from './decoModel.js';
+import {
+    getMValue,
+    getAmbientPressure,
+    getInitialTissueN2,
+    N2_FRACTION,
+    SURFACE_PRESSURE
+} from './decoModel.js';
 import { COMPARTMENTS } from './tissueCompartments.js';
 
 /**
@@ -33,12 +39,12 @@ import { COMPARTMENTS } from './tissueCompartments.js';
  *   surfaceSat is the fresh-diver surface N2 tension and M0 is that compartment's
  *   surfacing M-value. Tensions at or below the surface-saturation baseline clamp to 0%.
  */
-export function preSaturation(tissuePressures) {
+export function preSaturation(tissuePressures, surfacePressure = SURFACE_PRESSURE) {
     // Surface-saturation baseline (air at the surface — the gas breathed during a surface
     // interval). The same value for every compartment, since all equilibrate to the
     // inspired surface tension.
-    const baseline = getInitialTissueN2(N2_FRACTION);
-    const surfaceAmbient = getAmbientPressure(0);
+    const baseline = getInitialTissueN2(N2_FRACTION, surfacePressure);
+    const surfaceAmbient = getAmbientPressure(0, surfacePressure);
 
     let controllingPct = 0;
     let controllingCompartmentId = COMPARTMENTS[0].id;

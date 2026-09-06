@@ -14,7 +14,8 @@ import {
     getInitialTissueN2,
     N2_FRACTION,
     SURFACE_PRESSURE,
-    getAmbientPressure
+    getAmbientPressure,
+    getSurfacePressure
 } from './decoModel.js';
 
 import { COMPARTMENTS } from './tissueCompartments.js';
@@ -193,6 +194,7 @@ export function getDefaultSetup() {
         gfLow: 100,   // Gradient Factor Low (percentage)
         gfHigh: 100,  // Gradient Factor High (percentage)
         surfaceInterval: 15,  // Post-dive surface time to show off-gassing
+        environment: { altitude: 0 },
         units: {
             depth: "meters",
             time: "minutes",
@@ -330,6 +332,7 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
     const STOP_INCREMENT = 3;
     // Exact descent time (matches decotengu/divetools).
     const roundUp = (x) => x;
+    const surfacePressure = options.surfacePressure ?? SURFACE_PRESSURE;
 
     // Get safety stop settings with defaults
     const safetyStopEnabled = safetyStop?.enabled ?? DEFAULT_SAFETY_STOP.enabled;
@@ -343,8 +346,10 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
     // Get bottom gas (first gas or air)
     const bottomGas = gases && gases.length > 0 ? gases[0] : { id: 'air', name: 'Air', o2: 0.2098, n2: 0.7902 };
 
-    // Calculate NDL for this depth/gas (uses GF Low since that determines first stop)
-    const { ndl, ndlExact, controllingCompartment } = calculateNDL(maxDepth, bottomGas.n2, gfLowDec);
+    // Calculate NDL from a direct ascent checked at GF High.
+    const { ndl, ndlExact, controllingCompartment } = calculateNDL(
+        maxDepth, bottomGas.n2, gfHighDec, null, surfacePressure
+    );
 
     // Calculate descent time
     const descentTime = roundUp(maxDepth / DESCENT_SPEED);
@@ -382,19 +387,19 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
     // Simulate to end of bottom time and generate deco schedule.
 
     // Initialize tissue pressures (seeded for repetitive dives, else surface).
-    const initialN2 = getInitialTissueN2(bottomGas.n2);
+    const initialN2 = getInitialTissueN2(bottomGas.n2, surfacePressure);
     let tissues = {};
     COMPARTMENTS.forEach(comp => {
         tissues[comp.id] = seededTissues ? seededTissues[comp.id] : initialN2;
     });
     
     // Simulate descent
-    tissues = simulateDepthChange(tissues, 0, maxDepth, descentTime, bottomGas.n2);
+    tissues = simulateDepthChange(tissues, 0, maxDepth, descentTime, bottomGas.n2, surfacePressure);
     
     // Simulate bottom time (from end of descent to bottomTime)
     const actualBottomDuration = bottomTime - descentTime;
     if (actualBottomDuration > 0) {
-        tissues = simulateDepthTime(tissues, maxDepth, actualBottomDuration, bottomGas.n2);
+        tissues = simulateDepthTime(tissues, maxDepth, actualBottomDuration, bottomGas.n2, surfacePressure);
     }
     
     // Generate deco schedule (now returns gasSwitches and pAnchor too)
@@ -548,10 +553,7 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
     return {
         waypoints,
         ndl,
-        // True whenever the bottom time exceeds the NDL, i.e. the ceiling has left the
-        // surface. Between that moment and the first 3 m stop there is a real but
-        // sub-3 m obligation with an empty stop list — that is not a contradiction.
-        requiresDeco: true,
+        requiresDeco: stops.length > 0,
         decoStops: stops,
         totalDecoTime,
         controllingCompartment,
@@ -569,6 +571,7 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
     const ASCENT_SPEED = 10;
     // Exact descent time (matches decotengu/divetools).
     const roundUp = (x) => x;
+    const surfacePressure = options.surfacePressure ?? SURFACE_PRESSURE;
 
     // Get safety stop settings with defaults
     const safetyStopEnabled = safetyStop?.enabled ?? DEFAULT_SAFETY_STOP.enabled;
@@ -582,8 +585,10 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
     // Get bottom gas
     const bottomGas = gases && gases.length > 0 ? gases[0] : { id: 'air', name: 'Air', o2: 0.2098, n2: 0.7902 };
 
-    // Calculate NDL (uses GF Low since that determines first stop)
-    const { ndl, ndlExact, controllingCompartment } = calculateNDL(maxDepth, bottomGas.n2, gfLowDec);
+    // Calculate NDL from a direct ascent checked at GF High.
+    const { ndl, ndlExact, controllingCompartment } = calculateNDL(
+        maxDepth, bottomGas.n2, gfHighDec, null, surfacePressure
+    );
 
     const descentTime = roundUp(maxDepth / DESCENT_SPEED);
     // NOTE: this sync variant intentionally does NOT support
@@ -616,19 +621,19 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
     }
     
     // Initialize tissue pressures
-    const initialN2 = getInitialTissueN2(bottomGas.n2);
+    const initialN2 = getInitialTissueN2(bottomGas.n2, surfacePressure);
     let tissues = {};
     compartments.forEach(comp => {
         tissues[comp.id] = initialN2;
     });
     
     // Simulate descent
-    tissues = simulateDepthChange(tissues, 0, maxDepth, descentTime, bottomGas.n2);
+    tissues = simulateDepthChange(tissues, 0, maxDepth, descentTime, bottomGas.n2, surfacePressure);
     
     // Simulate bottom time
     const actualBottomDuration = bottomTime - descentTime;
     if (actualBottomDuration > 0) {
-        tissues = simulateDepthTime(tissues, maxDepth, actualBottomDuration, bottomGas.n2);
+        tissues = simulateDepthTime(tissues, maxDepth, actualBottomDuration, bottomGas.n2, surfacePressure);
     }
     
     // Generate deco schedule
@@ -686,9 +691,7 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
     return {
         waypoints,
         ndl,
-        // See generateDecoProfile: an empty stop list above the NDL is a legitimate
-        // sub-3 m obligation, not a contradiction.
-        requiresDeco: true,
+        requiresDeco: stops.length > 0,
         decoStops: stops,
         totalDecoTime: stops.reduce((sum, s) => sum + s.time, 0),
         controllingCompartment
@@ -704,9 +707,9 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
  * @param {number} gfLow - GF Low as percentage (0-100), determines first stop
  * @returns {{ndl: number, controllingCompartment: number}}
  */
-export function getNDLForDepth(depth, gas, gfLow) {
+export function getNDLForDepth(depth, gas, gfHigh, surfacePressure = SURFACE_PRESSURE) {
     const n2 = gas?.n2 ?? N2_FRACTION;
-    return calculateNDL(depth, n2, gfLow / 100);
+    return calculateNDL(depth, n2, gfHigh / 100, null, surfacePressure);
 }
 
 /**
@@ -858,10 +861,10 @@ export function getGradientFactors(setup) {
  * @param {number} maxPpO2 - Maximum ppO2 limit (default 1.4 bar)
  * @returns {number} MOD in meters
  */
-export function calculateMOD(o2Fraction, maxPpO2 = 1.4) {
+export function calculateMOD(o2Fraction, maxPpO2 = 1.4, surfacePressure = 1) {
     if (o2Fraction <= 0) return Infinity;
     const maxAmbient = maxPpO2 / o2Fraction;
-    return Math.floor((maxAmbient - 1) * 10);
+    return Math.floor((maxAmbient - surfacePressure) / 0.1);
 }
 
 /**
@@ -883,9 +886,14 @@ export function calculateEND(depth, heFraction = 0) {
  * @param {number} gasFraction - Gas fraction (0-1)
  * @returns {number} Partial pressure in bar
  */
-export function calculatePartialPressure(depth, gasFraction) {
-    const ambient = SURFACE_PRESSURE + depth / 10;
+export function calculatePartialPressure(depth, gasFraction, surfacePressure = SURFACE_PRESSURE) {
+    const ambient = getAmbientPressure(depth, surfacePressure);
     return gasFraction * ambient;
+}
+
+/** Resolve the atmospheric pressure used by a serialized dive setup. */
+export function getDiveSetupSurfacePressure(setup) {
+    return getSurfacePressure(setup?.environment);
 }
 
 /**
@@ -1387,6 +1395,7 @@ export const OTU_LIMITS = {
  *   pressureByGasId: Object,        final remaining pressure (bar), per gas id
  *   consumedByGasId: Object,        L consumed per gas id
  *   pressureSeries:  Object,        per-gas array of remaining pressure at each timepoint (for chart lines)
+ *   rateSeries:      Object,        per-gas consumption rate (L/min) for the interval ending at each timepoint
  *   totalConsumed:   number
  * }}
  */
@@ -1394,13 +1403,15 @@ export function computeGasConsumption(results, gases, sacRate, decoSacRate, rese
     const pressureByGasId = {};
     const consumedByGasId = {};
     const pressureSeries = {};
+    const rateSeries = {};
     for (const g of gases) {
         pressureByGasId[g.id] = g.startPressure ?? 200;
         consumedByGasId[g.id] = 0;
         pressureSeries[g.id] = [];
+        rateSeries[g.id] = [];
     }
     if (!results || !results.timePoints || results.timePoints.length === 0) {
-        return { pressureByGasId, consumedByGasId, pressureSeries, totalConsumed: 0 };
+        return { pressureByGasId, consumedByGasId, pressureSeries, rateSeries, totalConsumed: 0 };
     }
 
     // Build gas-switch time → gasId map
@@ -1411,6 +1422,7 @@ export function computeGasConsumption(results, gases, sacRate, decoSacRate, rese
 
     const maxDepth = Math.max(...results.depthPoints);
     let leftMaxDepth = false;
+    const surfacePressure = results.surfacePressure ?? SURFACE_PRESSURE;
     let gasSwitchActive = false;
     let gasSwitchDepth = null;
     let currentGasId = gases[0]?.id;
@@ -1418,6 +1430,7 @@ export function computeGasConsumption(results, gases, sacRate, decoSacRate, rese
     for (let i = 0; i < results.timePoints.length; i++) {
         const time = results.timePoints[i];
         const depth = results.depthPoints[i];
+        let currentRate = 0;
 
         if (!leftMaxDepth && i > 0 && results.depthPoints[i - 1] >= maxDepth && depth < maxDepth) {
             leftMaxDepth = true;
@@ -1438,9 +1451,10 @@ export function computeGasConsumption(results, gases, sacRate, decoSacRate, rese
             if (gasSwitchActive && depth !== gasSwitchDepth) gasSwitchActive = false;
             if (!(depth === 0 && prevDepth === 0)) {
                 const avgDepth = (depth + prevDepth) / 2;
-                const ambient = SURFACE_PRESSURE + avgDepth / 10;
+                const ambient = getAmbientPressure(avgDepth, surfacePressure);
                 const isDecoStop = leftMaxDepth && depth === prevDepth && depth > 0 && !gasSwitchActive;
                 const sac = isDecoStop ? decoSacRate : sacRate;
+                currentRate = sac * ambient;
                 const consumed = sac * ambient * deltaTime;
                 if (consumedByGasId[currentGasId] !== undefined) {
                     consumedByGasId[currentGasId] += consumed;
@@ -1456,13 +1470,14 @@ export function computeGasConsumption(results, gases, sacRate, decoSacRate, rese
         // Record per-timepoint remaining pressure for chart lines
         for (const g of gases) {
             pressureSeries[g.id].push(pressureByGasId[g.id]);
+            rateSeries[g.id].push(g.id === currentGasId ? currentRate : 0);
         }
     }
 
     let totalConsumed = 0;
     for (const id of Object.keys(consumedByGasId)) totalConsumed += consumedByGasId[id];
 
-    return { pressureByGasId, consumedByGasId, pressureSeries, totalConsumed };
+    return { pressureByGasId, consumedByGasId, pressureSeries, rateSeries, totalConsumed };
 }
 
 /**
@@ -1484,6 +1499,7 @@ export function computeGasConsumption(results, gases, sacRate, decoSacRate, rese
  * @param {number} [opts.sacRate=20]       Bottom/descent/ascent SAC (L/min).
  * @param {number} [opts.decoSacRate=15]   Deco-stop / safety-stop SAC.
  * @param {number} [opts.reserve=50]       Fallback reserve pressure (bar).
+ * @param {number} [opts.surfacePressure]  Atmospheric pressure at the dive site (bar).
  * @returns {string}  HTML for the plan table (or '').
  */
 export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
@@ -1491,6 +1507,8 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
     const sacRate = opts.sacRate ?? 20;
     const decoSacRate = opts.decoSacRate ?? 15;
     const reserve = opts.reserve ?? 50;
+    const surfacePressure = opts.surfacePressure ?? SURFACE_PRESSURE;
+    const consumptionSurfacePressure = 1 + (surfacePressure - SURFACE_PRESSURE);
     const gasList = Array.isArray(gases) ? gases : [];
 
     const maxDepth = Math.max(...waypoints.map(wp => wp.depth));
@@ -1532,7 +1550,7 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
             const isDecoOrSafety = seg.cls === 'stop' || seg.cls === 'safety';
             const sac = isDecoOrSafety ? decoSacRate : sacRate;
             const avgDepth = (wp.depth + next.depth) / 2;
-            const avgAmbient = 1 + avgDepth / 10;
+            const avgAmbient = consumptionSurfacePressure + avgDepth / 10;
             if (segGas && segGas.cylinderVolume > 0 && duration > 0) {
                 const litersUsed = sac * avgAmbient * duration;
                 const barDrop = litersUsed / segGas.cylinderVolume;

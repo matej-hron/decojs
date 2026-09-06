@@ -28,7 +28,11 @@ Any function in `decoModel.js` taking a `gf` parameter expects the 0–1 form.
 
 ## Where the ramp is anchored
 
-DecoJS anchors the GF ramp at **`pAnchor`** — the ambient pressure of the **first decompression stop**, defined as the shallowest stop-grid depth (3 m grid, or 0.1 m in continuous-deco mode) where the dive ceiling at $GF_{low}$ is satisfied after a simulated free ascent from current depth.
+DecoJS first attempts a direct ascent checked at $GF_{high}$. If it succeeds,
+the dive has no decompression anchor. Otherwise `pAnchor` is the ambient
+pressure of the first decompression level: the shallowest stop-grid depth
+(3 m grid, or 0.1 m in continuous-deco mode) where the dive ceiling at
+$GF_{low}$ is satisfied after a simulated free ascent.
 
 That depth depends on the actual tissue state at the moment ascent would begin, so two dives with the same maximum depth but different bottom times produce different `pAnchor` values — which is the intended behaviour, since their ascent ceilings genuinely differ.
 
@@ -51,7 +55,10 @@ The algorithm iterates the stop grid surface-up:
 3. Compute the dive ceiling at $GF_{low}$ — the deepest of the 16 per-compartment ceilings.
 4. If that ceiling is $\le d$, the diver can arrive at $d$ within $GF_{low}$. The first such candidate is the first stop and the GF anchor.
 
-If no candidate satisfies the check, the function falls back to `currentDepth` (degenerate case — should not happen in practice). If the surface candidate ($d = 0$) already satisfies $GF_{low}$, the dive is within NDL and the ramp collapses to $GF = GF_{high}$ everywhere.
+If no candidate satisfies the check, the function falls back to `currentDepth`
+(degenerate case — should not happen in practice). The caller performs the NDL
+ascent first, so this search normally runs only after a direct ascent checked
+at $GF_{high}$ has failed.
 
 Returns:
 
@@ -69,14 +76,14 @@ $$GF(P_{amb}) = \begin{cases} GF_{low} & P_{amb} \ge p_{anchor} \\ GF_{low} + (G
 
 ```javascript
 // js/decoModel.js interpolateGF
-export function interpolateGF(currentAmbient, pAnchor, gfLow, gfHigh) {
+export function interpolateGF(currentAmbient, pAnchor, gfLow, gfHigh, surfacePressure = SURFACE_PRESSURE) {
     if (currentAmbient >= pAnchor) {
         return gfLow;
     }
-    if (currentAmbient <= SURFACE_PRESSURE) {
+    if (currentAmbient <= surfacePressure) {
         return gfHigh;
     }
-    const range = pAnchor - SURFACE_PRESSURE;
+    const range = pAnchor - surfacePressure;
     if (range <= 0) {
         return gfHigh;
     }
@@ -85,7 +92,9 @@ export function interpolateGF(currentAmbient, pAnchor, gfLow, gfHigh) {
 }
 ```
 
-The denominator uses `SURFACE_PRESSURE = 1.01325` (the formula above uses 1.0 for brevity — the code uses the exact constant). The ramp converges to the surface atmospheric pressure, not to 1 bar.
+At sea level the denominator uses `SURFACE_PRESSURE = 1.01325`. At altitude it
+uses the selected local atmospheric pressure, so GF High is reached at the
+actual dive-site surface rather than at sea level.
 
 ## Visual — the GF corridor
 

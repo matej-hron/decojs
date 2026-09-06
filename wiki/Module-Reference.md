@@ -28,9 +28,11 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 
 | Signature | Line | Description |
 |---|---|---|
-| `getAmbientPressure(depth)` | 72 | `SURFACE_PRESSURE + depth × 0.1` |
-| `getAlveolarN2Pressure(ambient, n2=0.7902)` | 84 | `(ambient − 0.0627) × n2Frac` |
-| `getInitialTissueN2(n2=0.7902)` | 93 | Alveolar N₂ at surface (saturation initialiser) |
+| `getPressureAtAltitude(altitude=0)` | 21 | Standard-atmosphere conversion from metres to bar |
+| `getSurfacePressure(environment=null)` | 36 | Resolves explicit `surfacePressure` or derives it from `altitude` |
+| `getAmbientPressure(depth, surfacePressure=1.01325)` | 98 | `surfacePressure + depth × 0.1` |
+| `getAlveolarN2Pressure(ambient, n2=0.7902)` | 110 | `(ambient − 0.0627) × n2Frac` |
+| `getInitialTissueN2(n2=0.7902, surfacePressure=1.01325)` | 119 | Alveolar N₂ at the selected dive-site surface |
 
 **Exports — Kinetics**
 
@@ -38,8 +40,8 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 |---|---|---|
 | `haldaneEquation(P0, Palv, t, halfTime)` | 108 | Constant-depth exponential loading. See [Model-02-Haldane-Equation](Model-02-Haldane-Equation.md). |
 | `schreinerEquation(P0, Palv0, R, t, halfTime)` | 125 | Linear-rate loading. See [Model-03-Schreiner-Equation](Model-03-Schreiner-Equation.md). |
-| `simulateDepthTime(tissues, depth, t, n2)` | 721 | Vector-apply Haldane across all 16 compartments |
-| `simulateDepthChange(tissues, startDepth, endDepth, t, n2)` | 743 | Vector-apply Schreiner across all 16 compartments |
+| `simulateDepthTime(tissues, depth, t, n2, surfacePressure=1.01325)` | 759 | Vector-apply Haldane across all 16 compartments |
+| `simulateDepthChange(tissues, startDepth, endDepth, t, n2, surfacePressure=1.01325)` | 784 | Vector-apply Schreiner across all 16 compartments |
 
 **Exports — M-values & ceilings**
 
@@ -48,8 +50,8 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 | `getMValue(ambient, a, b)` | 145 | `a + ambient/b` — raw Bühlmann limit |
 | `getAdjustedMValue(ambient, a, b, gf)` | 160 | `ambient + gf × (M − ambient)` |
 | `getCompartmentCeiling(Pt, a, b, gf)` | 244 | Minimum ambient pressure this compartment permits |
-| `getDiveCeiling(tissues, gf)` | 260 | Deepest (most-restrictive) ceiling across 16 compartments; returns `{ceiling, ceilingDepth, controllingCompartment}` |
-| `getFirstStopDepth(tissues, gfLow, stopIncrement=3)` | 390 | First mandatory stop rounded up to 3 m grid |
+| `getDiveCeiling(tissues, gf, surfacePressure=1.01325)` | 286 | Deepest (most-restrictive) ceiling across 16 compartments; returns `{ceiling, ceilingDepth, controllingCompartment}` |
+| `getFirstStopDepth(tissues, gfLow, stopIncrement=3, surfacePressure=1.01325)` | 417 | First mandatory stop rounded up to 3 m grid |
 
 **Exports — Gradient factors**
 
@@ -57,16 +59,16 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 |---|---|
 | `calculateInstantGF(Pt, ambient, compartment)` | `(Pt − ambient) / (M − ambient)`, expressed as 0–1 |
 | `calculateMaxGF(tissues, ambient)` | Returns `{gfMax, leadingCompartment, allGFs}` |
-| `findFirstStopAtGFLow(tissues, depth, n2, gfLow, stopIncrement, ascentRate, gasSwitchPoints)` | The convention's first-stop search: shallowest stop-grid depth where the dive ceiling at GF_low is satisfied after simulated ascent. Returns `{anchorDepth, pAnchor, tissuesAtAnchor}`. **The canonical pAnchor source** used by `generateDecoSchedule`, `calculateCeilingTimeSeriesDetailed`, `MValueChart`, and `GFChart`. See [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md). |
-| `interpolateGF(ambient, pAnchor, gfLow, gfHigh)` | Linear ramp from GF-low at pAnchor to GF-high at surface (1.01325 bar) |
+| `findFirstStopAtGFLow(tissues, depth, n2, gfLow, stopIncrement, ascentRate, gasSwitchPoints, surfacePressure)` | The convention's first-stop search: shallowest stop-grid depth where the dive ceiling at GF_low is satisfied after simulated ascent. Returns `{anchorDepth, pAnchor, tissuesAtAnchor}`. **The canonical pAnchor source** used by `generateDecoSchedule`, `calculateCeilingTimeSeriesDetailed`, `MValueChart`, and `GFChart`. See [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md). |
+| `interpolateGF(ambient, pAnchor, gfLow, gfHigh, surfacePressure=1.01325)` | Linear ramp from GF-low at pAnchor to GF-high at the selected surface pressure |
 | `getFirstStopDepth(tissues, gfLow, stopIncrement=3)` | Static (no ascent simulation): rounds the current dive ceiling at GF_low up to the stop grid. Used for quick lookups; the deco scheduler uses `findFirstStopAtGFLow` instead. |
 
 **Exports — NDL & deco scheduling**
 
 | Signature | Line | Description |
 |---|---|---|
-| `calculateNDL(depth, n2=0.7902, gfLow=1.0, initialTissuePressures=null)` | 606 | Binary search; returns `{ndl, ndlExact, ndlAtDepth, ndlAtDepthExact, controllingCompartment, descentTime}`. `ndl` follows the dive-table convention — maximum bottom time **from leaving the surface**, descent included — so it compares directly with a bottom time; `ndlAtDepth` counts only from arrival at depth. When `initialTissuePressures` is a `{ [compartmentId]: nitrogenPressureBar }` map, the descent starts from that residual tissue state instead of surface equilibrium, yielding a pre-saturation-aware NDL. Defaults to `null` (surface equilibrium; original behaviour unchanged). |
-| `generateDecoSchedule(tissues, depth, n2, gfLow, gfHigh, gases=null, options={})` | 782 | Returns `{stops, gasSwitches, totalTime, totalAscentTime, pAnchor, anchorDepth}`. Throws `DecoCapExceededError` if any stop would exceed `DECO_STOP_MAX_MINUTES`. See [Algo-04-Deco-Stop-Loop](Algo-04-Deco-Stop-Loop.md) and [Algo-05-Multi-Gas-Switching](Algo-05-Multi-Gas-Switching.md). |
+| `calculateNDL(depth, n2=0.7902, gfHigh=1.0, initialTissuePressures=null, surfacePressure=1.01325)` | 656 | Binary-searches the maximum bottom runtime whose direct ascent on bottom gas reaches the surface within GF High. Returns `{ndl, ndlExact, ndlAtDepth, ndlAtDepthExact, controllingCompartment, descentTime}`. |
+| `generateDecoSchedule(tissues, depth, n2, gfLow, gfHigh, gases=null, options={})` | 839 | Attempts the same GF High direct ascent before creating a GF Low anchor. Returns `{stops, gasSwitches, totalTime, totalAscentTime, pAnchor, anchorDepth}`. |
 
 `generateDecoSchedule` options:
 
@@ -75,15 +77,16 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 - `ascentRate` (default 10 m/min) — transit between stops
 - `gasSwitchTime` (default 0) — minutes held at switch depth
 - `maxPpO2` (default 1.6) — cap for deco gas MOD
+- `surfacePressure` (default 1.01325 bar) — absolute atmospheric pressure at the dive site
 - `safetyStop` — passed through for safety-stop handling
 
 **Exports — Full-dive simulation**
 
 | Signature | Line | Description |
 |---|---|---|
-| `calculateTissueLoading(profile, surfaceInterval=60, options={})` | 1065 | Main entry: walks the waypoint array at `CALC_INTERVAL` resolution, returns `{timePoints, depthPoints, ambientPressures, compartments: {1:{pressures:[]},…}, n2Fractions}`. Accepts optional `options.initialTissuePressures` — a `{ [compartmentId]: nitrogenPressureBar }` map to seed compartments from a prior dive's residual state instead of surface equilibrium. See [repetitive-dive chaining](#repetitive-dive-chaining-initialTissuePressures). |
-| `calculateCeilingTimeSeries(results, gfLow, gfHigh=gfLow)` | 453 | Flat array of ceiling depths at each time point |
-| `calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh, providedPAnchor=null)` | 480 | Returns per-compartment ceiling series plus `gfValues` and `pAnchor`; used by M-value and profile charts |
+| `calculateTissueLoading(profile, surfaceInterval=60, options={})` | 1132 | Main entry: walks the waypoint array at `CALC_INTERVAL` resolution. `options.surfacePressure` controls ambient pressure and initial equilibrium; the resolved pressure is returned as `results.surfacePressure`. |
+| `calculateCeilingTimeSeries(results, gfLow, gfHigh=gfLow)` | 483 | Flat array of ceiling depths at each time point |
+| `calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh, providedPAnchor=null)` | 510 | Returns per-compartment ceiling series plus `gfValues` and `pAnchor`; reads `results.surfacePressure` |
 
 **Implementation notes**
 
@@ -180,7 +183,7 @@ Note: `BOTTOM_GASES[0].n2` is `0.7902`, matching `N2_FRACTION` in `decoModel.js`
 | `generateSimpleProfile(maxDepth, bottomTime, safetyStop, options)` | 240 | No-deco profile. Descent 20 m/min, ascent 10 m/min, optional 3 min @ 5 m. |
 | `generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, safetyStop, options)` | 327 | Runs NDL check; if exceeded, calls `generateDecoSchedule()` and splices stops into the waypoint array. Returns `{waypoints, ndl, requiresDeco, decoStops, totalDecoTime, controllingCompartment, pAnchor, anchorDepth}`. Accepts optional `options.initialTissuePressures` — when provided, tissues are seeded from that map and the surface-based NDL early-return is bypassed so the deco scheduler always runs against the actual pre-saturated state. See [repetitive-dive chaining](#repetitive-dive-chaining-initialTissuePressures). |
 | `generateDecoProfileSync(...)` | 567 | Variant accepting a pre-loaded `compartments` array. Does **not** support `options.initialTissuePressures`; callers needing a seeded profile must use `generateDecoProfile`. |
-| `getNDLForDepth(depth, gas, gfLow)` | 707 | Convenience wrapper around `calculateNDL`. Returns the full result, including `descentTime`. |
+| `getNDLForDepth(depth, gas, gfHigh)` | 720 | Convenience wrapper around `calculateNDL`. Returns the full result, including `descentTime`. |
 | `getNDLStatus(ndl, bottomTime)` | 729 | Classifies a dive against its NDL for UI display. Both arguments run from leaving the surface, so they are compared with no correction — subtracting the descent here would count it twice. Returns `{state: 'unlimited'\|'ok'\|'nearLimit'\|'deco', remaining}`. `nearLimit` is the band *below* the limit (`NDL_NEAR_LIMIT_FRACTION` = 0.9), so a genuine deco obligation is never reported as merely "at limit". Callers pass `ndlExact` (not the floored `ndl`) so the badge cannot disagree with the generated profile. |
 
 "Bottom time" means the absolute time at which ascent begins, not time spent at max depth. Descent duration is exact (not rounded); ascent time snaps to 0.1 min unless `continuousDeco=true` (`diveSetup.js:260`).
@@ -380,13 +383,13 @@ Imported by: the trip-planner sandbox page (via `AddDiveDialog`).
 
 | Signature | Line | Description |
 |---|---|---|
-| `previewNdl(trip, candidate, gfLow = trip.gfLow ?? 100)` | 21 | Returns the pre-saturation-aware NDL in minutes for a candidate dive. `candidate` shape: `{ startDateTime, maxDepth, gases }`. `gfLow` is a percentage (0–100). |
+| `previewNdl(trip, candidate, gfHigh = trip.gfHigh ?? 100)` | 21 | Returns the pre-saturation-aware NDL in minutes for a candidate dive. `candidate` shape: `{ startDateTime, maxDepth, gases }`. `gfHigh` is a percentage (0–100). |
 
 **Implementation notes**
 
 - Inserts a placeholder dive with `bottomTime: 1` — the value is irrelevant because `startingTissue` depends only on prior dives and the surface gap (`ndlPreview.js:25`).
 - Resolves N₂ fraction from `candidate.gases[0].n2`; falls back to `0.79` when no gases are supplied (`ndlPreview.js:32`).
-- Passes `gfLow / 100` to `calculateNDL` because `calculateNDL` expects a decimal fraction, while the trip config and callers use percentages (`ndlPreview.js:33`).
+- Passes `gfHigh / 100` to `calculateNDL` because `calculateNDL` expects a decimal fraction, while the trip config and callers use percentages (`ndlPreview.js:33`).
 
 ### `js/calendarLayout.js`
 

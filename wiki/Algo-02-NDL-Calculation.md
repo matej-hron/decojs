@@ -5,11 +5,14 @@ The **No-Decompression Limit** is the maximum bottom time at a given depth such 
 ## Entry point
 
 ```javascript
-// js/decoModel.js:606 (signature)
-export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0, initialTissuePressures = null)
+// js/decoModel.js:640 (signature)
+export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfHigh = 1.0, initialTissuePressures = null, surfacePressure = SURFACE_PRESSURE)
 ```
 
 The optional fourth parameter `initialTissuePressures` is a `{ [compartmentId]: nitrogenPressureBar }` map. When provided, descent starts from that pre-saturated tissue state instead of surface equilibrium. Defaults to `null` (original behaviour). See [`js/ndlPreview.js`](Module-Reference.md#jsndlpreviewjs) for the trip-position-aware wrapper that supplies this seed.
+
+The fifth parameter selects the local atmospheric pressure for an acclimatized
+altitude dive. Omitting it preserves the sea-level result.
 
 Returns:
 
@@ -33,16 +36,23 @@ Two rounding rules follow from this:
 
 `ndlAtDepth` remains available for anything that genuinely reasons about the bottom phase alone.
 
-## Why $GF_{low}$, not $GF_{high}$
+## Why $GF_{high}$
 
-A common confusion: surely NDL should use $GF_{high}$, since that's the surface limit? Not for "first stop becomes mandatory." The moment a first stop is required, the deco algorithm starts enforcing $GF_{low}$ — so that is the threshold at which the no-deco window closes. Using $GF_{high}$ here would overstate the NDL by pretending the entire GF budget is available immediately.
+NDL asks whether the diver can ascend directly to the surface without waiting.
+There is no first decompression stop and therefore no anchor at which
+$GF_{low}$ could apply. The ascent is simulated on the bottom gas and the
+surfaced tissues are checked against $GF_{high}$, matching Decotengu's
+`_ndl_ascent` path.
 
 ```javascript
-// js/decoModel.js:681
-const { ceilingDepth } = getDiveCeiling(testPressures, gfLow);
+const surfaced = simulateDepthChange(
+    testPressures, depth, 0, depth / ASCENT_SPEED, n2Fraction, surfacePressure
+);
+const { ceilingDepth } = getDiveCeiling(surfaced, gfHigh, surfacePressure);
 ```
 
-Default `gfLow = 1.0` (100 %) — raw Bühlmann, no conservatism. Typical planning values like $30/85$ pass `gfLow = 0.30`, which tightens NDL substantially.
+Only when this direct ascent fails does the decompression scheduler find a
+$GF_{low}$ anchor and construct the ramp to $GF_{high}$.
 
 ## Method — binary search
 
@@ -82,7 +92,10 @@ while (maxTime - minTime > 0.1) {
 }
 ```
 
-For each candidate $t$, apply Haldane at depth for $t$ minutes, then check if the surface ceiling ($GF_{low}$-adjusted) is still zero. Precision 0.1 min (6 s). Upper bound is clamped to 300 min (5 h).
+For each candidate $t$, apply Haldane at depth, simulate the complete ascent
+with Schreiner, then check the surfaced tissues at $GF_{high}$. The binary
+search uses sub-second precision so `ndlExact` and the profile-generation
+branch cannot disagree. The upper bound is clamped to 300 min (5 h).
 
 Two early exits bracket the search:
 - If ceiling is already > 0 immediately after descent, return `ndl = 0` (very deep dive — descent alone triggers deco).
@@ -90,14 +103,15 @@ Two early exits bracket the search:
 
 ## Worked example
 
-30 m on air, $GF_{low} = 0.30$ (conservative deco-planner setting).
+30 m on air:
 
 - Descent: 30 m at 20 m/min = 1.5 min. Schreiner loads all 16 tissues.
-- After descent, TC7 ($T_{1/2} = 54$ min) is leading at roughly 0.85 bar.
-- Binary search converges on `ndlExact ≈ 15.6 min`; `ndl = 15` (floored).
-- Controlling compartment: TC7 (medium-fast; typical for 20–40 m air dives).
+- At every binary-search candidate, simulate the 3-minute ascent to surface.
+- $GF_{high}=1.00$ gives `ndl = 20` min.
+- $GF_{high}=0.85$ gives `ndl = 15` min.
+- $GF_{high}=0.80$ gives `ndl = 13` min.
 
-For default raw Bühlmann ($gfLow = 1.0$) the same dive yields NDL ≈ 21 min — the conservatism cost of 30/85 is roughly 6 min of bottom time.
+These whole-minute values match Decotengu 0.14.1 for the same profile.
 
 ## Branching in `generateDecoProfile`
 
@@ -105,7 +119,7 @@ NDL is the pivot in the top-level dive planner:
 
 ```javascript
 // js/diveSetup.js:346-378
-const { ndl, controllingCompartment } = calculateNDL(maxDepth, bottomGas.n2, gfLowDec);
+const { ndl, controllingCompartment } = calculateNDL(maxDepth, bottomGas.n2, gfHighDec);
 const descentTime = roundUp(maxDepth / DESCENT_SPEED);
 const seededTissues = options.initialTissuePressures || null;
 const requiresDeco = (bottomTime - descentTime) > ndl;
@@ -120,9 +134,11 @@ if (!requiresDeco && !seededTissues) {
 // else: proceed to generateDecoSchedule()
 ```
 
-`bottomTime` runs from the start of the descent, while `ndl` is the time allowed *at depth*, so the descent must be subtracted before the two are compared. Comparing them directly declared deco `descentTime` too early — at 40 m that is 2 min against a 7 min NDL, a 29 % error. `calculateNDL` returns `descentTime` for precisely this purpose.
-
-If the time **at depth** is within `ndl` **and** no pre-saturated tissue seed is provided, the planner returns a no-stop profile (optionally with a safety stop). Only when deco is unavoidable (or a seed is present) does the expensive `generateDecoSchedule()` pipeline run. The extra `!seededTissues` guard ensures repetitive dives always run the full deco scheduler — see [repetitive-dive chaining](Module-Reference.md#repetitive-dive-chaining-initialtissuepressures).
+Both `bottomTime` and `ndl` run from leaving the surface, so they compare
+directly. If the profile is within NDL and no pre-saturated tissue seed is
+provided, the planner returns a no-stop profile. Seeded profiles run the full
+scheduler, which now performs the same GF High direct-ascent check before
+creating any GF Low anchor.
 
 ## Cross-references
 

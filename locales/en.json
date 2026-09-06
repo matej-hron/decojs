@@ -1089,7 +1089,7 @@
             "alveolarPN2": "Alveolar pN₂",
             "alveolarPN2WithGases": "Alveolar pN₂ ({0})",
             "alveolarPN2Percent": "Alveolar pN₂ ({0}%)",
-            "surfaceLine": "Surface (1 bar)",
+            "surfaceLine": "Surface ({0} bar)",
             "pAnchor": "pAnchor {0} bar ({1} m)",
             "tooltipLabel": "{0}: p_amb={1}, p_tissue={2} bar",
             "initialDepthLabel": "0.0 min @ 0 m"
@@ -1205,6 +1205,12 @@
             "rowBuhlmannTables": "Bühlmann tables",
             "continuousDeco": "Continuous deco (no 3 m/1 min grid)",
             "continuousWarning": "⚠️ Produces impractical profiles for demonstration only. Shows raw Bühlmann model output without standard 3 m/1 min rounding."
+        },
+        "environment": {
+            "title": "Environment",
+            "altitude": "Altitude (m):",
+            "surfacePressure": "Calculated atmospheric pressure:",
+            "acclimatizedHint": "Assumes the diver is fully acclimatized to this altitude."
         },
         "sac": {
             "title": "Gas Consumption",

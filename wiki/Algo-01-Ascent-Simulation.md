@@ -5,9 +5,12 @@ Replay a full dive waypoint array over all 16 ZH-L16 compartments and produce a 
 ## Entry point
 
 ```javascript
-// js/decoModel.js:1040 (signature)
+// js/decoModel.js:1132 (signature)
 export function calculateTissueLoading(profile, surfaceInterval = 60, options = {})
 ```
+
+`options.surfacePressure` selects the local surface pressure. If omitted, the
+entire calculation is identical to the historical sea-level path.
 
 Returns:
 

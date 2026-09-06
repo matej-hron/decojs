@@ -17,6 +17,32 @@ export const CALC_INTERVAL = 10;
 /** Surface atmospheric pressure in bar (1 atm exactly) */
 export const SURFACE_PRESSURE = 1.01325;
 
+/** Calculate standard-atmosphere pressure for an altitude in meters. */
+export function getPressureAtAltitude(altitude = 0) {
+    if (!Number.isFinite(altitude)) {
+        throw new TypeError('Altitude must be a finite number');
+    }
+    const base = 1 - 2.25577e-5 * altitude;
+    if (base <= 0) {
+        throw new RangeError('Altitude is outside the supported standard-atmosphere range');
+    }
+    return SURFACE_PRESSURE * Math.pow(base, 5.25588);
+}
+
+/**
+ * Resolve surface pressure from a dive environment.
+ * An explicit pressure is useful for reference testing; normal UI setups store altitude.
+ */
+export function getSurfacePressure(environment = null) {
+    if (Number.isFinite(environment?.surfacePressure)) {
+        if (environment.surfacePressure <= WATER_VAPOR_PRESSURE) {
+            throw new RangeError('Surface pressure must exceed water-vapour pressure');
+        }
+        return environment.surfacePressure;
+    }
+    return getPressureAtAltitude(environment?.altitude ?? 0);
+}
+
 /** Water vapor pressure at body temperature (37°C) in bar */
 export const WATER_VAPOR_PRESSURE = 0.0627;
 
@@ -69,8 +95,8 @@ export class DecoCapExceededError extends Error {
  * @param {number} depth - Depth in meters
  * @returns {number} Ambient pressure in bar
  */
-export function getAmbientPressure(depth) {
-    return SURFACE_PRESSURE + (depth * PRESSURE_PER_METER);
+export function getAmbientPressure(depth, surfacePressure = SURFACE_PRESSURE) {
+    return surfacePressure + (depth * PRESSURE_PER_METER);
 }
 
 /**
@@ -90,8 +116,8 @@ export function getAlveolarN2Pressure(ambientPressure, n2Fraction = N2_FRACTION)
  * @param {number} [n2Fraction=N2_FRACTION] - Nitrogen fraction in breathing gas (0-1)
  * @returns {number} Initial tissue N2 pressure in bar
  */
-export function getInitialTissueN2(n2Fraction = N2_FRACTION) {
-    return getAlveolarN2Pressure(SURFACE_PRESSURE, n2Fraction);
+export function getInitialTissueN2(n2Fraction = N2_FRACTION, surfacePressure = SURFACE_PRESSURE) {
+    return getAlveolarN2Pressure(surfacePressure, n2Fraction);
 }
 
 /**
@@ -257,7 +283,7 @@ export function getCompartmentCeiling(tissuePressure, a, b, gf) {
  * @returns {{ceiling: number, ceilingDepth: number, controllingCompartment: number}}
  *          ceiling in bar, ceilingDepth in meters (0 if can surface), controlling compartment ID
  */
-export function getDiveCeiling(tissuePressures, gf) {
+export function getDiveCeiling(tissuePressures, gf, surfacePressure = SURFACE_PRESSURE) {
     let maxCeiling = -Infinity;
     let controllingComp = null;
     
@@ -271,10 +297,10 @@ export function getDiveCeiling(tissuePressures, gf) {
     }
     
     // Ceiling can't be below surface (above water)
-    const finalCeiling = Math.max(SURFACE_PRESSURE, maxCeiling);
+    const finalCeiling = Math.max(surfacePressure, maxCeiling);
     
     // Convert ceiling pressure to depth
-    const ceilingDepth = Math.max(0, (finalCeiling - SURFACE_PRESSURE) / PRESSURE_PER_METER);
+    const ceilingDepth = Math.max(0, (finalCeiling - surfacePressure) / PRESSURE_PER_METER);
     
     return {
         ceiling: finalCeiling,
@@ -304,20 +330,20 @@ export function getDiveCeiling(tissuePressures, gf) {
  * @param {number} gfHigh - GF High value (0-1)
  * @returns {number} Interpolated GF (0-1)
  */
-export function interpolateGF(currentAmbient, pAnchor, gfLow, gfHigh) {
+export function interpolateGF(currentAmbient, pAnchor, gfLow, gfHigh, surfacePressure = SURFACE_PRESSURE) {
     // At or deeper than anchor: use GF Low
     if (currentAmbient >= pAnchor) {
         return gfLow;
     }
     
     // At or above surface: use GF High
-    if (currentAmbient <= SURFACE_PRESSURE) {
+    if (currentAmbient <= surfacePressure) {
         return gfHigh;
     }
     
     // Linear interpolation between pAnchor and surface
     // GF = GF_low + (GF_high - GF_low) × (pAnchor - Pamb) / (pAnchor - 1.0)
-    const range = pAnchor - SURFACE_PRESSURE;
+    const range = pAnchor - surfacePressure;
     if (range <= 0) {
         return gfHigh; // Edge case: anchor at surface
     }
@@ -347,7 +373,8 @@ export function interpolateGF(currentAmbient, pAnchor, gfLow, gfHigh) {
  */
 export function findFirstStopAtGFLow(
     tissuePressures, currentDepth, n2Fraction, gfLow,
-    stopIncrement = STOP_INCREMENT, ascentRate = ASCENT_SPEED, gasSwitchPoints = null
+    stopIncrement = STOP_INCREMENT, ascentRate = ASCENT_SPEED, gasSwitchPoints = null,
+    surfacePressure = SURFACE_PRESSURE
 ) {
     const safeGases = gasSwitchPoints && gasSwitchPoints.length > 0 ? gasSwitchPoints : null;
     let anchorDepth = currentDepth;
@@ -356,22 +383,22 @@ export function findFirstStopAtGFLow(
         let simTissues;
         if (safeGases) {
             simTissues = _simulateAscentWithGasSwitches(
-                tissuePressures, currentDepth, candidate, n2Fraction, safeGases
+                tissuePressures, currentDepth, candidate, n2Fraction, safeGases, surfacePressure
             );
         } else {
             const ascentTime = (currentDepth - candidate) / ascentRate;
             simTissues = ascentTime > 0
-                ? simulateDepthChange({ ...tissuePressures }, currentDepth, candidate, ascentTime, n2Fraction)
+                ? simulateDepthChange({ ...tissuePressures }, currentDepth, candidate, ascentTime, n2Fraction, surfacePressure)
                 : { ...tissuePressures };
         }
-        const { ceilingDepth } = getDiveCeiling(simTissues, gfLow);
+        const { ceilingDepth } = getDiveCeiling(simTissues, gfLow, surfacePressure);
         if (ceilingDepth <= candidate + 1e-9) {
             anchorDepth = candidate;
             tissuesAtAnchor = simTissues;
             break;
         }
     }
-    const pAnchor = SURFACE_PRESSURE + anchorDepth * PRESSURE_PER_METER;
+    const pAnchor = surfacePressure + anchorDepth * PRESSURE_PER_METER;
     return { anchorDepth, pAnchor, tissuesAtAnchor };
 }
 
@@ -387,15 +414,15 @@ export function findFirstStopAtGFLow(
  * @param {number} stopIncrement - Stop depth increment in meters (default 3m)
  * @returns {{depth: number, ambient: number, controllingCompartment: number}}
  */
-export function getFirstStopDepth(tissuePressures, gfLow, stopIncrement = 3) {
-    const { ceiling, ceilingDepth, controllingCompartment } = getDiveCeiling(tissuePressures, gfLow);
+export function getFirstStopDepth(tissuePressures, gfLow, stopIncrement = 3, surfacePressure = SURFACE_PRESSURE) {
+    const { ceiling, ceilingDepth, controllingCompartment } = getDiveCeiling(tissuePressures, gfLow, surfacePressure);
     
     // Round up to next stop increment
     const stopDepth = Math.ceil(ceilingDepth / stopIncrement) * stopIncrement;
     
     return {
         depth: stopDepth,
-        ambient: getAmbientPressure(stopDepth),
+        ambient: getAmbientPressure(stopDepth, surfacePressure),
         controllingCompartment
     };
 }
@@ -411,7 +438,10 @@ export function getFirstStopDepth(tissuePressures, gfLow, stopIncrement = 3) {
  * @param {Array} gasSwitchPoints - [{switchDepth, n2}] sorted deepest first
  * @returns {Object} Simulated tissue pressures after ascent
  */
-function _simulateAscentWithGasSwitches(tissuePressures, fromDepth, toDepth, startN2, gasSwitchPoints) {
+function _simulateAscentWithGasSwitches(
+    tissuePressures, fromDepth, toDepth, startN2, gasSwitchPoints,
+    surfacePressure = SURFACE_PRESSURE
+) {
     let tissues = { ...tissuePressures };
     let currentDepth = fromDepth;
     let currentN2 = startN2;
@@ -425,7 +455,7 @@ function _simulateAscentWithGasSwitches(tissuePressures, fromDepth, toDepth, sta
     for (const sp of relevantSwitches) {
         const segmentTime = (currentDepth - sp.switchDepth) / ASCENT_SPEED;
         if (segmentTime > 0) {
-            tissues = simulateDepthChange(tissues, currentDepth, sp.switchDepth, segmentTime, currentN2);
+            tissues = simulateDepthChange(tissues, currentDepth, sp.switchDepth, segmentTime, currentN2, surfacePressure);
         }
         currentDepth = sp.switchDepth;
         currentN2 = sp.n2;
@@ -434,7 +464,7 @@ function _simulateAscentWithGasSwitches(tissuePressures, fromDepth, toDepth, sta
     // Final segment to target depth
     if (currentDepth > toDepth) {
         const segmentTime = (currentDepth - toDepth) / ASCENT_SPEED;
-        tissues = simulateDepthChange(tissues, currentDepth, toDepth, segmentTime, currentN2);
+        tissues = simulateDepthChange(tissues, currentDepth, toDepth, segmentTime, currentN2, surfacePressure);
     }
 
     return tissues;
@@ -481,6 +511,7 @@ export function calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh = gfLo
     const ceilingDepths = [];
     const compartmentCeilings = {};
     const gfValues = [];
+    const surfacePressure = results.surfacePressure ?? SURFACE_PRESSURE;
     
     // Initialize per-compartment ceiling arrays
     for (const compId of Object.keys(results.compartments)) {
@@ -519,7 +550,10 @@ export function calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh = gfLo
             tissuesAtAscentStart[compId] = results.compartments[compId].pressures[ascentStartIndex];
         }
         const n2Fraction = results.n2Fractions ? results.n2Fractions[ascentStartIndex] : N2_FRACTION;
-        ({ pAnchor } = findFirstStopAtGFLow(tissuesAtAscentStart, maxDepthSeen, n2Fraction, gfLow));
+        ({ pAnchor } = findFirstStopAtGFLow(
+            tissuesAtAscentStart, maxDepthSeen, n2Fraction, gfLow,
+            STOP_INCREMENT, ASCENT_SPEED, null, surfacePressure
+        ));
     }
     
     // Process each time point
@@ -546,7 +580,7 @@ export function calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh = gfLo
             gf = gfLow;
         } else {
             // During ascent above pAnchor: interpolate GF
-            gf = interpolateGF(currentAmbient, pAnchor, gfLow, gfHigh);
+            gf = interpolateGF(currentAmbient, pAnchor, gfLow, gfHigh, surfacePressure);
         }
         gfValues.push(gf);
         
@@ -556,7 +590,7 @@ export function calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh = gfLo
             const tissueP = tissuePressures[comp.id];
             const ceilingPressure = getCompartmentCeiling(tissueP, comp.aN2, comp.bN2, gf);
             // Convert to depth (0 if can surface)
-            const ceilingDepth = Math.max(0, (ceilingPressure - SURFACE_PRESSURE) / PRESSURE_PER_METER);
+            const ceilingDepth = Math.max(0, (ceilingPressure - surfacePressure) / PRESSURE_PER_METER);
             compartmentCeilings[comp.id].push(ceilingDepth);
             if (ceilingDepth > maxCeilingDepth) {
                 maxCeilingDepth = ceilingDepth;
@@ -589,11 +623,12 @@ const STOP_INCREMENT = 3;
  * without required decompression stops.
  * 
  * Uses binary search to find maximum time where ceiling = 0 (surface).
- * NDL uses GF Low because that determines when the first stop is required.
+ * A no-decompression ascent is simulated to the surface on the bottom gas and
+ * checked there with GF High, matching Decotengu's NDL-ascent convention.
  * 
  * @param {number} depth - Depth in meters
  * @param {number} n2Fraction - N2 fraction in gas (default 0.79 for air)
- * @param {number} gfLow - GF Low as decimal (0-1), determines first stop ceiling
+ * @param {number} gfHigh - GF High as decimal (0-1), applied at the surface
  * @param {Object.<string, number>|null} [initialTissuePressures] - Optional per-compartment
  *   N2 pressure (bar) to seed the descent start from (repetitive-dive pre-saturation);
  *   when null/omitted, starts from surface equilibrium (unchanged behaviour).
@@ -603,7 +638,26 @@ const STOP_INCREMENT = 3;
  *   surface, descent included — so it can be compared with (or assigned to) a bottom time
  *   directly. `ndlAtDepth` is the same limit counted only from arrival at depth.
  */
-export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0, initialTissuePressures = null) {
+function evaluateDirectAscent(
+    tissuePressures, depth, n2Fraction, gfHigh,
+    surfacePressure = SURFACE_PRESSURE
+) {
+    const ascentTime = depth / ASCENT_SPEED;
+    const surfacedTissues = ascentTime > 0
+        ? simulateDepthChange(
+            tissuePressures, depth, 0, ascentTime, n2Fraction, surfacePressure
+        )
+        : { ...tissuePressures };
+    return {
+        tissues: surfacedTissues,
+        ...getDiveCeiling(surfacedTissues, gfHigh, surfacePressure)
+    };
+}
+
+export function calculateNDL(
+    depth, n2Fraction = N2_FRACTION, gfHigh = 1.0,
+    initialTissuePressures = null, surfacePressure = SURFACE_PRESSURE
+) {
     // Very shallow depths have effectively unlimited NDL
     if (depth <= 0) {
         return {
@@ -613,15 +667,16 @@ export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0, initi
         };
     }
     
-    const ambientPressure = getAmbientPressure(depth);
+    const ambientPressure = getAmbientPressure(depth, surfacePressure);
     const alveolarN2 = getAlveolarN2Pressure(ambientPressure, n2Fraction);
     
     // Initialize tissue pressures at surface saturation
-    const initialN2 = getInitialTissueN2(n2Fraction);
+    const initialN2 = getInitialTissueN2(n2Fraction, surfacePressure);
     
     // Exact descent time at ASCENT_SPEED=20 m/min (matches decotengu/divetools)
     const descentTime = depth / DESCENT_SPEED;
-    const descentRate = (alveolarN2 - getAlveolarN2Pressure(SURFACE_PRESSURE, n2Fraction)) / descentTime;
+    const surfaceAlveolarN2 = getAlveolarN2Pressure(surfacePressure, n2Fraction);
+    const descentRate = (alveolarN2 - surfaceAlveolarN2) / descentTime;
     
     // Get tissue pressures after descent
     const afterDescent = {};
@@ -629,7 +684,7 @@ export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0, initi
         const startN2 = initialTissuePressures ? initialTissuePressures[comp.id] : initialN2;
         afterDescent[comp.id] = schreinerEquation(
             startN2,
-            getAlveolarN2Pressure(SURFACE_PRESSURE, n2Fraction),
+            surfaceAlveolarN2,
             descentRate,
             descentTime,
             comp.halfTime
@@ -640,15 +695,14 @@ export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0, initi
     let minTime = 0;
     let maxTime = 300; // 5 hours max
     
-    // First check if we can surface immediately after descent
-    // Use GF Low - this determines when first stop is needed
-    const { ceilingDepth: immediateceiling } = getDiveCeiling(afterDescent, gfLow);
+    // First check whether the descent alone already prevents a direct ascent.
+    const { ceilingDepth: immediateceiling, controllingCompartment } =
+        evaluateDirectAscent(afterDescent, depth, n2Fraction, gfHigh, surfacePressure);
     if (immediateceiling > 0) {
-        // Already in deco after descent (very deep dive) — no no-deco bottom time at all
         return {
             ndl: 0, ndlExact: 0,
             ndlAtDepth: 0, ndlAtDepthExact: 0,
-            controllingCompartment: getDiveCeiling(afterDescent, gfLow).controllingCompartment,
+            controllingCompartment,
             descentTime
         };
     }
@@ -658,7 +712,8 @@ export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0, initi
     COMPARTMENTS.forEach(comp => {
         pressuresAt5Hours[comp.id] = haldaneEquation(afterDescent[comp.id], alveolarN2, 300, comp.halfTime);
     });
-    const { ceilingDepth: ceiling5h } = getDiveCeiling(pressuresAt5Hours, gfLow);
+    const { ceilingDepth: ceiling5h } =
+        evaluateDirectAscent(pressuresAt5Hours, depth, n2Fraction, gfHigh, surfacePressure);
     if (ceiling5h === 0) {
         return {
             ndl: Infinity, ndlExact: Infinity,
@@ -667,8 +722,9 @@ export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0, initi
         };
     }
     
-    // Binary search with 0.1 min (6 second) precision
-    while (maxTime - minTime > 0.1) {
+    // Sub-second precision keeps the exact threshold and the schedule branch
+    // consistent for callers that compare arbitrary decimal runtimes.
+    while (maxTime - minTime > 0.001) {
         const testTime = (minTime + maxTime) / 2;
         
         // Simulate time at depth
@@ -677,8 +733,10 @@ export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0, initi
             testPressures[comp.id] = haldaneEquation(afterDescent[comp.id], alveolarN2, testTime, comp.halfTime);
         });
         
-        // Check ceiling using GF Low (first stop requirement)
-        const { ceilingDepth } = getDiveCeiling(testPressures, gfLow);
+        // A candidate is within NDL when the simulated direct ascent reaches
+        // the surface within GF High without any mandatory stop.
+        const { ceilingDepth } =
+            evaluateDirectAscent(testPressures, depth, n2Fraction, gfHigh, surfacePressure);
         
         if (ceilingDepth > 0) {
             maxTime = testTime; // Needs deco, reduce time
@@ -692,7 +750,9 @@ export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0, initi
     COMPARTMENTS.forEach(comp => {
         ndlPressures[comp.id] = haldaneEquation(afterDescent[comp.id], alveolarN2, minTime, comp.halfTime);
     });
-    const { controllingCompartment } = getDiveCeiling(ndlPressures, gfLow);
+    const ndlAscent = evaluateDirectAscent(
+        ndlPressures, depth, n2Fraction, gfHigh, surfacePressure
+    );
     
     // NDL is reported the way dive tables report it: as the maximum bottom time
     // measured from leaving the surface, i.e. the descent is already included.
@@ -703,7 +763,7 @@ export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0, initi
         ndlExact,                       // Exact total, from the start of the dive
         ndlAtDepth: Math.floor(minTime),
         ndlAtDepthExact: minTime,       // Time at depth after the descent
-        controllingCompartment,
+        controllingCompartment: ndlAscent.controllingCompartment,
         descentTime
     };
 }
@@ -718,8 +778,11 @@ export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfLow = 1.0, initi
  * @param {number} n2Fraction - N2 fraction in gas
  * @returns {Object} Updated tissue pressures
  */
-export function simulateDepthTime(tissuePressures, depth, time, n2Fraction) {
-    const ambientPressure = getAmbientPressure(depth);
+export function simulateDepthTime(
+    tissuePressures, depth, time, n2Fraction,
+    surfacePressure = SURFACE_PRESSURE
+) {
+    const ambientPressure = getAmbientPressure(depth, surfacePressure);
     const alveolarN2 = getAlveolarN2Pressure(ambientPressure, n2Fraction);
     
     const newPressures = {};
@@ -740,9 +803,12 @@ export function simulateDepthTime(tissuePressures, depth, time, n2Fraction) {
  * @param {number} n2Fraction - N2 fraction in gas
  * @returns {Object} Updated tissue pressures
  */
-export function simulateDepthChange(tissuePressures, startDepth, endDepth, time, n2Fraction) {
-    const startAlveolar = getAlveolarN2Pressure(getAmbientPressure(startDepth), n2Fraction);
-    const endAlveolar = getAlveolarN2Pressure(getAmbientPressure(endDepth), n2Fraction);
+export function simulateDepthChange(
+    tissuePressures, startDepth, endDepth, time, n2Fraction,
+    surfacePressure = SURFACE_PRESSURE
+) {
+    const startAlveolar = getAlveolarN2Pressure(getAmbientPressure(startDepth, surfacePressure), n2Fraction);
+    const endAlveolar = getAlveolarN2Pressure(getAmbientPressure(endDepth, surfacePressure), n2Fraction);
     const rate = (endAlveolar - startAlveolar) / time;
     
     const newPressures = {};
@@ -781,6 +847,11 @@ export function simulateDepthChange(tissuePressures, startDepth, endDepth, time,
  */
 export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, gfLow, gfHigh, gases = null, options = {}) {
     const { switchPpO2 = 1.6, continuousDeco = false, gasSwitchTime = 0 } = options;
+    const surfacePressure = options.surfacePressure ?? SURFACE_PRESSURE;
+    // Keep the existing sea-level MOD convention (nominal 1 bar), while
+    // shifting it by the same pressure delta when altitude changes.
+    const modSurfacePressure = options.modSurfacePressure
+        ?? 1 + (surfacePressure - SURFACE_PRESSURE);
 
     // In continuous mode, use fine-grained resolution for didactic visualization
     const stopIncrement = continuousDeco ? 0.1 : STOP_INCREMENT;
@@ -817,7 +888,7 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
             if (gas.o2 + gas.n2 > 1.001) {
                 continue;
             }
-            const mod = (switchPpO2 / gas.o2 - 1) * 10;
+            const mod = (switchPpO2 / gas.o2 - modSurfacePressure) / PRESSURE_PER_METER;
             // Skip if MOD calculation yields invalid result
             if (!Number.isFinite(mod)) {
                 continue;
@@ -834,12 +905,27 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
         gasSwitchPoints.sort((a, b) => b.switchDepth - a.switchDepth);
     }
 
-    // First-stop search per Baker convention.
-    const { anchorDepth: firstStopFromGFLow, tissuesAtAnchor: tissuesAtStrictFirstStop } =
-        findFirstStopAtGFLow(
+    // Decotengu first attempts a direct ascent on bottom gas and checks the
+    // surfaced tissues at GF High. Only a failed NDL ascent creates a GF Low
+    // anchor and enters staged decompression.
+    const directAscent = evaluateDirectAscent(
+        tissuePressures, currentDepth, n2Fraction, gfHigh, surfacePressure
+    );
+    const firstStopResult = directAscent.ceilingDepth === 0
+        ? {
+            anchorDepth: 0,
+            pAnchor: surfacePressure,
+            tissuesAtAnchor: directAscent.tissues
+        }
+        : findFirstStopAtGFLow(
             tissuePressures, currentDepth, n2Fraction, gfLow, stopIncrement,
-            ASCENT_SPEED, gasSwitchPoints.length > 0 ? gasSwitchPoints : null
+            ASCENT_SPEED, gasSwitchPoints.length > 0 ? gasSwitchPoints : null,
+            surfacePressure
         );
+    const {
+        anchorDepth: firstStopFromGFLow,
+        tissuesAtAnchor: tissuesAtStrictFirstStop
+    } = firstStopResult;
 
     // Track used gases to avoid duplicate switches
     const usedGases = new Set();
@@ -881,7 +967,7 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
     // ambient pressures >= pAnchor the active GF is clamped to GF_low; from
     // pAnchor up to the surface it ramps linearly to GF_high.
     const anchorDepth = firstStopFromGFLow;
-    const pAnchor = SURFACE_PRESSURE + anchorDepth * PRESSURE_PER_METER;
+    const pAnchor = surfacePressure + anchorDepth * PRESSURE_PER_METER;
     let firstStopDepth = firstStopFromGFLow;
     let tissuesAtFirstStop = tissuesAtStrictFirstStop;
     
@@ -902,12 +988,16 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
             if (remainingDepth > switchDepth) {
                 // Ascend to switch depth
                 const segmentTime = (remainingDepth - switchDepth) / ASCENT_SPEED;
-                currentTissues = simulateDepthChange(currentTissues, remainingDepth, switchDepth, segmentTime, currentN2);
+                currentTissues = simulateDepthChange(
+                    currentTissues, remainingDepth, switchDepth, segmentTime, currentN2, surfacePressure
+                );
                 totalAscentTime += segmentTime;
                 remainingDepth = switchDepth;
                 // Switch to best gas at this depth
                 if (switchToBestGas(switchDepth) && gasSwitchTime > 0) {
-                    currentTissues = simulateDepthTime(currentTissues, switchDepth, gasSwitchTime, currentN2);
+                    currentTissues = simulateDepthTime(
+                        currentTissues, switchDepth, gasSwitchTime, currentN2, surfacePressure
+                    );
                     stops.push({ depth: switchDepth, time: gasSwitchTime, gas: currentGasName });
                 }
             }
@@ -915,7 +1005,9 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
         // Final ascent to surface
         if (remainingDepth > 0) {
             const segmentTime = remainingDepth / ASCENT_SPEED;
-            currentTissues = simulateDepthChange(currentTissues, remainingDepth, 0, segmentTime, currentN2);
+            currentTissues = simulateDepthChange(
+                currentTissues, remainingDepth, 0, segmentTime, currentN2, surfacePressure
+            );
             totalAscentTime += segmentTime;
         }
         const totalTime = totalAscentTime + stops.reduce((sum, s) => sum + s.time, 0);
@@ -937,12 +1029,16 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
         if (currentAscentDepth > switchDepth) {
             // Ascend to switch depth
             const segmentTime = (currentAscentDepth - switchDepth) / ASCENT_SPEED;
-            currentTissues = simulateDepthChange(currentTissues, currentAscentDepth, switchDepth, segmentTime, currentN2);
+            currentTissues = simulateDepthChange(
+                currentTissues, currentAscentDepth, switchDepth, segmentTime, currentN2, surfacePressure
+            );
             totalAscentTime += segmentTime;
             currentAscentDepth = switchDepth;
             // Switch to best gas at this depth
             if (switchToBestGas(switchDepth) && gasSwitchTime > 0) {
-                currentTissues = simulateDepthTime(currentTissues, switchDepth, gasSwitchTime, currentN2);
+                currentTissues = simulateDepthTime(
+                    currentTissues, switchDepth, gasSwitchTime, currentN2, surfacePressure
+                );
                 stops.push({ depth: switchDepth, time: gasSwitchTime, gas: currentGasName });
             }
         }
@@ -951,7 +1047,9 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
     // Final segment to first stop
     if (currentAscentDepth > firstStopDepth) {
         const finalSegmentTime = (currentAscentDepth - firstStopDepth) / ASCENT_SPEED;
-        currentTissues = simulateDepthChange(currentTissues, currentAscentDepth, firstStopDepth, finalSegmentTime, currentN2);
+        currentTissues = simulateDepthChange(
+            currentTissues, currentAscentDepth, firstStopDepth, finalSegmentTime, currentN2, surfacePressure
+        );
         totalAscentTime += finalSegmentTime;
     }
     
@@ -969,7 +1067,7 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
     while (depth > 0) {
         // Check for gas switch on arrival
         if (switchToBestGas(depth) && gasSwitchTime > 0) {
-            tissues = simulateDepthTime(tissues, depth, gasSwitchTime, currentN2);
+            tissues = simulateDepthTime(tissues, depth, gasSwitchTime, currentN2, surfacePressure);
             pendingStopTime += gasSwitchTime;
         }
 
@@ -983,8 +1081,11 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
         // off-gassing during the short ascent — we ask "would the current tissue
         // pressures be within the M-line at the next stop, under the next stop's
         // GF". This matches the decotengu convention.
-        const gfThere = interpolateGF(getAmbientPressure(nextStopDepth), pAnchor, gfLow, gfHigh);
-        const { ceilingDepth } = getDiveCeiling(tissues, gfThere);
+        const gfThere = interpolateGF(
+            getAmbientPressure(nextStopDepth, surfacePressure),
+            pAnchor, gfLow, gfHigh, surfacePressure
+        );
+        const { ceilingDepth } = getDiveCeiling(tissues, gfThere, surfacePressure);
 
         if (ceilingDepth <= nextStopDepth) {
             // Can ascend. Record stop if we waited here.
@@ -992,7 +1093,7 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
                 // In continuous mode, enforce minimum stop time
                 if (continuousDeco && pendingStopTime < MIN_STOP_TIME) {
                     const extra = MIN_STOP_TIME - pendingStopTime;
-                    tissues = simulateDepthTime(tissues, depth, extra, currentN2);
+                    tissues = simulateDepthTime(tissues, depth, extra, currentN2, surfacePressure);
                     pendingStopTime = MIN_STOP_TIME;
                 }
                 stops.push({
@@ -1004,12 +1105,14 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
             }
 
             // Ascend to next depth
-            tissues = simulateDepthChange(tissues, depth, nextStopDepth, ascentTime, currentN2);
+            tissues = simulateDepthChange(
+                tissues, depth, nextStopDepth, ascentTime, currentN2, surfacePressure
+            );
             totalAscentTime += ascentTime;
             depth = nextStopDepth;
         } else {
             // Cannot ascend yet - wait at this depth
-            tissues = simulateDepthTime(tissues, depth, timeIncrement, currentN2);
+            tissues = simulateDepthTime(tissues, depth, timeIncrement, currentN2, surfacePressure);
             pendingStopTime = Math.round((pendingStopTime + timeIncrement) * 10) / 10;
 
             if (pendingStopTime > DECO_STOP_MAX_MINUTES) {
@@ -1032,8 +1135,8 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
  * @param {number} maxPpO2 - Maximum ppO2 (default 1.6 for deco)
  * @returns {Object|null} Best gas or null if none valid
  */
-function findBestDecoGas(gases, depth, maxPpO2 = 1.6) {
-    const ambientPressure = getAmbientPressure(depth);
+function findBestDecoGas(gases, depth, maxPpO2 = 1.6, surfacePressure = SURFACE_PRESSURE) {
+    const ambientPressure = getAmbientPressure(depth, surfacePressure);
     
     // Filter gases valid at this depth and sort by N2 (lowest first)
     const validGases = gases
@@ -1070,6 +1173,7 @@ export function calculateTissueLoading(profile, surfaceInterval = 60, options = 
     // Handle gas configuration
     const gases = options.gases || null;
     const defaultN2Fraction = options.n2Fraction || N2_FRACTION;
+    const surfacePressure = options.surfacePressure ?? SURFACE_PRESSURE;
     
     // Helper to get N2 fraction at a given time
     const getN2FractionAtTime = (time) => {
@@ -1103,7 +1207,8 @@ export function calculateTissueLoading(profile, surfaceInterval = 60, options = 
         n2Fractions: [],      // N2 fraction at each time point (for multi-gas)
         gasNames: [],         // Gas name at each time point
         gasSwitches: [],      // Array of {time, depth, gasName} for gas switch events
-        compartments: {}      // Tissue pressures per compartment
+        compartments: {},     // Tissue pressures per compartment
+        surfacePressure       // Surface pressure used for this calculation
     };
 
     // Track gas switches - only detect explicit gasId changes
@@ -1142,7 +1247,7 @@ export function calculateTissueLoading(profile, surfaceInterval = 60, options = 
     // seed each compartment from it instead.
     const currentPressures = {};
     const initialN2Fraction = getN2FractionAtTime(0);
-    const initialN2 = getInitialTissueN2(initialN2Fraction);
+    const initialN2 = getInitialTissueN2(initialN2Fraction, surfacePressure);
     const seededPressures = options.initialTissuePressures || null;
     COMPARTMENTS.forEach(comp => {
         currentPressures[comp.id] = seededPressures
@@ -1214,8 +1319,9 @@ export function calculateTissueLoading(profile, surfaceInterval = 60, options = 
         // Store current state
         results.timePoints.push(currentTime);
         results.depthPoints.push(currentDepth);
-        results.ambientPressures.push(getAmbientPressure(currentDepth));
-        results.alveolarN2Pressures.push(getAlveolarN2Pressure(getAmbientPressure(currentDepth), currentN2Fraction));
+        const ambientAtPoint = getAmbientPressure(currentDepth, surfacePressure);
+        results.ambientPressures.push(ambientAtPoint);
+        results.alveolarN2Pressures.push(getAlveolarN2Pressure(ambientAtPoint, currentN2Fraction));
         results.n2Fractions.push(currentN2Fraction);
         results.gasNames.push(currentGasName);
 
@@ -1275,8 +1381,8 @@ export function calculateTissueLoading(profile, surfaceInterval = 60, options = 
         }
 
         // Update tissue pressures for the step
-        const currentAmbient = getAmbientPressure(currentDepth);
-        const nextAmbient = getAmbientPressure(nextDepth);
+        const currentAmbient = getAmbientPressure(currentDepth, surfacePressure);
+        const nextAmbient = getAmbientPressure(nextDepth, surfacePressure);
         
         // Get N2 fraction for current and next time (handles gas switches)
         const stepN2Fraction = currentTime > lastWaypoint.time 

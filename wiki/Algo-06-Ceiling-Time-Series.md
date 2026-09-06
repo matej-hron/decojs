@@ -5,16 +5,20 @@ A per-timepoint ceiling overlay for chart rendering. This is separate from deco 
 ## Entry points
 
 ```javascript
-// js/decoModel.js:590 (signature)
+// js/decoModel.js:483 (signature)
 export function calculateCeilingTimeSeries(results, gfLow, gfHigh = gfLow)
 ```
 
 Thin wrapper returning only the overall `ceilingDepths` array. Most callers want the detailed version:
 
 ```javascript
-// js/decoModel.js:617 (signature)
+// js/decoModel.js:510 (signature)
 export function calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh = gfLow, providedPAnchor = null)
 ```
+
+Both functions read `results.surfacePressure`, produced by
+`calculateTissueLoading`, so a zero-metre ceiling means the selected altitude
+surface rather than sea level.
 
 Returns:
 

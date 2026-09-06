@@ -57,6 +57,7 @@ import {
     DEFAULT_GAS_SWITCH_TIME,
     renderDivePlanTableHTML
 } from '../diveSetup.js';
+import { getPressureAtAltitude } from '../decoModel.js';
 import { escHtml } from '../utils/escHtml.js';
 
 import {
@@ -94,6 +95,7 @@ const DEFAULT_DECO_SAC_RATE = 15;
 const DEFAULT_EDITOR_OPTIONS = {
     showQuickSetup: true,
     showGradientFactors: true,
+    showEnvironment: true,
     showProfiles: true,
     showImportExport: true,
     showDescription: true,
@@ -302,6 +304,10 @@ export class DiveSetupEditor extends EventTarget {
         // Gradient Factors section (collapsed by default)
         if (this.options.showGradientFactors) {
             wrapper.appendChild(this._buildGradientFactors());
+        }
+
+        if (this.options.showEnvironment) {
+            wrapper.appendChild(this._buildEnvironmentSection());
         }
 
         // SAC Rate section
@@ -674,6 +680,64 @@ export class DiveSetupEditor extends EventTarget {
         return section;
     }
 
+    _buildEnvironmentSection() {
+        const section = document.createElement('details');
+        section.className = 'dse-section dse-environment';
+        section.open = false;
+        section.innerHTML = `
+            <summary>🏔️ ${translate('diveEditor.environment.title', 'Environment')} <span class="dse-summary-hint">(0\u00a0m)</span></summary>
+            <div class="dse-environment-content">
+                <div class="dse-field">
+                    <label>${translate('diveEditor.environment.altitude', 'Altitude (m):')}</label>
+                    <input type="number" class="dse-altitude-input form-input" value="0" min="0" max="5000" step="100">
+                </div>
+                <p class="dse-hint">
+                    ${translate('diveEditor.environment.surfacePressure', 'Calculated surface pressure:')}
+                    <strong class="dse-surface-pressure">${fmtNum(getPressureAtAltitude(0), 5)}\u00a0bar</strong>
+                </p>
+                <p class="dse-hint">${translate(
+                    'diveEditor.environment.acclimatizedHint',
+                    'Assumes the diver is fully acclimatized to this altitude.'
+                )}</p>
+            </div>
+        `;
+
+        this.elements.altitudeInput = section.querySelector('.dse-altitude-input');
+        this.elements.environmentSummaryHint = section.querySelector('.dse-summary-hint');
+        this.elements.surfacePressureValue = section.querySelector('.dse-surface-pressure');
+        this.elements.altitudeInput.addEventListener('input', () => {
+            this._updateEnvironmentDisplay();
+            this._renderGasCards();
+            this._updateNDLDisplay();
+            this._onInputChange();
+        });
+
+        return section;
+    }
+
+    _getAltitude() {
+        const altitude = Number(this.elements.altitudeInput?.value ?? 0);
+        return Number.isFinite(altitude) ? Math.min(5000, Math.max(0, altitude)) : 0;
+    }
+
+    _getSurfacePressure() {
+        return getPressureAtAltitude(this._getAltitude());
+    }
+
+    _getModSurfacePressure() {
+        return 1 + (this._getSurfacePressure() - getPressureAtAltitude(0));
+    }
+
+    _updateEnvironmentDisplay() {
+        const altitude = this._getAltitude();
+        if (this.elements.environmentSummaryHint) {
+            this.elements.environmentSummaryHint.textContent = `(${fmtNum(altitude, 0)}\u00a0m)`;
+        }
+        if (this.elements.surfacePressureValue) {
+            this.elements.surfacePressureValue.textContent = `${fmtNum(getPressureAtAltitude(altitude), 5)}\u00a0bar`;
+        }
+    }
+
     _buildGenerateButton() {
         const section = document.createElement('div');
         section.className = 'dse-section dse-generate-section';
@@ -859,8 +923,9 @@ export class DiveSetupEditor extends EventTarget {
     
     _createGasCard(gas, index) {
         const isBottomGas = index === 0;
-        const mod14 = calculateMOD(gas.o2, 1.4);
-        const mod16 = calculateMOD(gas.o2, 1.6);
+        const modSurfacePressure = this._getModSurfacePressure?.() ?? 1;
+        const mod14 = calculateMOD(gas.o2, 1.4, modSurfacePressure);
+        const mod16 = calculateMOD(gas.o2, 1.6, modSurfacePressure);
         const gasOptions = isBottomGas ? BOTTOM_GASES : DECO_GASES;
         const cylinderOptions = isBottomGas ? BOTTOM_CYLINDERS : STAGE_CYLINDERS;
         
@@ -1007,8 +1072,9 @@ export class DiveSetupEditor extends EventTarget {
     }
     
     _updateGasModDisplay(modDisplay, o2Fraction) {
-        const mod14 = calculateMOD(o2Fraction, 1.4);
-        const mod16 = calculateMOD(o2Fraction, 1.6);
+        const modSurfacePressure = this._getModSurfacePressure?.() ?? 1;
+        const mod14 = calculateMOD(o2Fraction, 1.4, modSurfacePressure);
+        const mod16 = calculateMOD(o2Fraction, 1.6, modSurfacePressure);
         modDisplay.textContent = fmt(translate('diveEditor.mod', 'MOD: {0}\u00a0m (deco: {1}\u00a0m)'), mod14, mod16);
     }
     
@@ -1084,7 +1150,7 @@ export class DiveSetupEditor extends EventTarget {
         const decoSacRate = parseFloat(this.elements.decoSacInput?.value) || DEFAULT_DECO_SAC_RATE;
         const reserve = parseFloat(this.elements.reserveInput?.value) || 50;
         planDiv.innerHTML = renderDivePlanTableHTML(waypoints, this.currentGases, {
-            sacRate, decoSacRate, reserve
+            sacRate, decoSacRate, reserve, surfacePressure: this._getSurfacePressure()
         });
     }
 
@@ -1293,10 +1359,10 @@ export class DiveSetupEditor extends EventTarget {
             time: parseFloat(this.elements.safetyStopTime?.value) || DEFAULT_SAFETY_STOP.time
         };
         
-        // NDL uses GF Low since that determines when first stop is required.
-        // Display the whole minutes, classify against the exact value so the badge
-        // cannot disagree with the generated profile.
-        const { ndl, ndlExact } = getNDLForDepth(maxDepth, gas, gfLow);
+        // NDL simulates a direct ascent and applies GF High at the surface.
+        // Display whole minutes, but classify against the exact threshold.
+        const surfacePressure = this._getSurfacePressure();
+        const { ndl, ndlExact } = getNDLForDepth(maxDepth, gas, gfHigh, surfacePressure);
         const status = getNDLStatus(ndlExact, bottomTime);
 
         if (status.state === 'unlimited') {
@@ -1325,7 +1391,10 @@ export class DiveSetupEditor extends EventTarget {
             const continuousDecoNDL = this.elements.continuousDecoCheckbox?.checked ?? false;
             const gasSwitchTimeNDL = parseInt(this.elements.gasSwitchTimeSelect?.value) || 0;
             try {
-                const result = generateDecoProfile(maxDepth, bottomTime, this.currentGases, gfLow, gfHigh, safetyStop, { continuousDeco: continuousDecoNDL, gasSwitchTime: gasSwitchTimeNDL });
+                const result = generateDecoProfile(
+                    maxDepth, bottomTime, this.currentGases, gfLow, gfHigh, safetyStop,
+                    { continuousDeco: continuousDecoNDL, gasSwitchTime: gasSwitchTimeNDL, surfacePressure }
+                );
                 this.elements.decoTime.textContent = Math.round(result.totalDecoTime * 10) / 10;
             } catch (err) {
                 if (err?.name === 'DecoCapExceededError') {
@@ -1364,9 +1433,13 @@ export class DiveSetupEditor extends EventTarget {
         
         const continuousDeco = this.elements.continuousDecoCheckbox?.checked ?? false;
         const gasSwitchTime = parseInt(this.elements.gasSwitchTimeSelect?.value) || 0;
+        const surfacePressure = this._getSurfacePressure();
         let result;
         try {
-            result = generateDecoProfile(maxDepth, bottomTime, this.currentGases, gfLow, gfHigh, safetyStop, { continuousDeco, gasSwitchTime });
+            result = generateDecoProfile(
+                maxDepth, bottomTime, this.currentGases, gfLow, gfHigh, safetyStop,
+                { continuousDeco, gasSwitchTime, surfacePressure }
+            );
         } catch (err) {
             if (err?.name === 'DecoCapExceededError') {
                 alert(err.message);
@@ -1466,6 +1539,7 @@ export class DiveSetupEditor extends EventTarget {
             sacRate: sacRate,
             decoSacRate: decoSacRate,
             reservePressure: reservePressure,
+            environment: { altitude: this._getAltitude() },
             units: { depth: 'meters', time: 'minutes', pressure: 'bar' },
             continuousDeco: this.elements.continuousDecoCheckbox?.checked ?? false,
             gasSwitchTime: parseInt(this.elements.gasSwitchTimeSelect?.value) || 0
@@ -1483,6 +1557,11 @@ export class DiveSetupEditor extends EventTarget {
         // Surface interval
         if (this.elements.surfaceIntervalInput) {
             this.elements.surfaceIntervalInput.value = setup.surfaceInterval ?? 5;
+        }
+
+        if (this.elements.altitudeInput) {
+            this.elements.altitudeInput.value = setup.environment?.altitude ?? 0;
+            this._updateEnvironmentDisplay();
         }
 
         // SAC rate and reserve
@@ -1635,6 +1714,7 @@ export class DiveSetupEditor extends EventTarget {
             gfLow: DEFAULT_GF_LOW,
             gfHigh: DEFAULT_GF_HIGH,
             surfaceInterval: 5,
+            environment: { altitude: 0 },
             units: { depth: 'meters', time: 'minutes', pressure: 'bar' }
         };
     }

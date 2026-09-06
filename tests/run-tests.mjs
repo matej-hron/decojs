@@ -140,12 +140,13 @@ import {
     insertGasSwitchWaypoints,
     calculateMOD,
     computeGasConsumption,
+    getDiveSetupSurfacePressure,
     getNDLStatus,
     renderDivePlanTableHTML
 } from '../js/diveSetup.js';
 
 import { escHtml } from '../js/utils/escHtml.js';
-import { decodeDiveSetup, MAX_SHARED_TEXT_LENGTH } from '../js/urlParams.js';
+import { encodeDiveSetup, decodeDiveSetup, MAX_SHARED_TEXT_LENGTH } from '../js/urlParams.js';
 
 let warningHtml = {};
 try {
@@ -164,6 +165,8 @@ import {
 
 import {
     SURFACE_PRESSURE,
+    getPressureAtAltitude,
+    getSurfacePressure,
     WATER_VAPOR_PRESSURE,
     N2_FRACTION,
     PRESSURE_PER_METER,
@@ -929,6 +932,19 @@ describe('decoModel', () => {
         test('40m depth is ~5 bar', () => {
             expect(getAmbientPressure(40)).toBeCloseTo(SURFACE_PRESSURE + 4.0, 5);
         });
+
+        test('explicit sea-level environment preserves the default pressure', () => {
+            expect(getSurfacePressure({ altitude: 0 })).toBe(SURFACE_PRESSURE);
+            expect(getSurfacePressure({ surfacePressure: SURFACE_PRESSURE })).toBe(SURFACE_PRESSURE);
+            expect(getAmbientPressure(30, getSurfacePressure({ altitude: 0 })))
+                .toBe(getAmbientPressure(30));
+        });
+
+        test('standard atmosphere matches representative altitude pressures', () => {
+            expect(getPressureAtAltitude(1000)).toBeCloseTo(0.899, 3);
+            expect(getPressureAtAltitude(1500)).toBeCloseTo(0.846, 3);
+            expect(getPressureAtAltitude(2500)).toBeCloseTo(0.747, 3);
+        });
     });
 
     describe('getAlveolarN2Pressure', () => {
@@ -1621,10 +1637,34 @@ describe('decoModel', () => {
             expect(ndlEan32).toBeGreaterThan(ndlAir);
         });
 
-        test('lower GF produces shorter NDL', () => {
+        test('lower GF High produces shorter NDL', () => {
             const { ndl: ndl100 } = calculateNDL(30, 0.79, 1.0);
             const { ndl: ndl85 } = calculateNDL(30, 0.79, 0.85);
             expect(ndl85).toBeLessThan(ndl100);
+        });
+
+        test('matches Decotengu direct-ascent NDL examples at 30 m', () => {
+            expect(calculateNDL(30, 0.79, 1.00).ndl).toBe(20);
+            expect(calculateNDL(30, 0.79, 0.80).ndl).toBe(13);
+            expect(calculateNDL(30, 0.79, 0.85).ndl).toBe(15);
+        });
+
+        test('uses GF High for NDL regardless of GF Low', () => {
+            const gas = [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79 }];
+            const gf30 = generateDecoProfile(30, 10, gas, 30, 80, { enabled: false });
+            const gf50 = generateDecoProfile(30, 10, gas, 50, 80, { enabled: false });
+            expect(gf30.ndl).toBe(gf50.ndl);
+            expect(gf30.ndl).toBe(13);
+        });
+
+        test('30 m / 18 min GF 100 is a no-stop dive after simulated ascent', () => {
+            const gas = [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79 }];
+            const profile = generateDecoProfile(
+                30, 18, gas, 100, 100, { enabled: false }
+            );
+            expect(profile.ndl).toBe(20);
+            expect(profile.requiresDeco).toBe(false);
+            expect(profile.decoStops).toEqual([]);
         });
 
         test('returns controlling compartment', () => {
@@ -1747,6 +1787,31 @@ describe('decoModel', () => {
     // =============================================================================
     
     describe('generateDecoSchedule pAnchor behavior', () => {
+        test('a successful GF High direct ascent has no GF Low anchor', () => {
+            const depth = 15;
+            const bottomTime = 28;
+            const n2 = 0.79;
+            const initial = getInitialTissueN2(n2);
+            const tissues = Object.fromEntries(
+                COMPARTMENTS.map(comp => [comp.id, initial])
+            );
+            const descentTime = depth / 20;
+            let loaded = simulateDepthChange(
+                tissues, 0, depth, descentTime, n2
+            );
+            loaded = simulateDepthTime(
+                loaded, depth, bottomTime - descentTime, n2
+            );
+
+            const schedule = generateDecoSchedule(
+                loaded, depth, n2, 0.50, 0.80,
+                [{ id: 'air', name: 'Air', o2: 0.21, n2 }]
+            );
+
+            expect(schedule.anchorDepth).toBe(0);
+            expect(schedule.stops).toEqual([]);
+        });
+
         test('GF at pAnchor equals GF Low', () => {
             const gfLow = 0.5;
             const gfHigh = 0.8;
@@ -2844,6 +2909,193 @@ describe('computeGasConsumption', () => {
         expect(diff).toBeGreaterThan(150);
         expect(diff).toBeLessThan(170);
     });
+
+    test('exposes per-timepoint rates for the chart tooltip', () => {
+        const { gases, loading } = buildScenario();
+        const gc = computeGasConsumption(loading, gases, 20, 10, 50);
+        const switchStopIndex = loading.timePoints.findIndex((t, i) =>
+            t > 24 && t < 24.9 && loading.depthPoints[i] === 21
+        );
+        const decoStopIndex = loading.timePoints.findIndex((t, i) =>
+            t > 29 && t < 31 && loading.depthPoints[i] === 6
+        );
+
+        expect(switchStopIndex).toBeGreaterThan(0);
+        expect(decoStopIndex).toBeGreaterThan(0);
+        expect(gc.rateSeries.air[switchStopIndex]).toBe(0);
+        expect(gc.rateSeries.ean50[switchStopIndex]).toBeCloseTo(20 * (SURFACE_PRESSURE + 2.1), 4);
+        expect(gc.rateSeries.ean50[decoStopIndex]).toBeCloseTo(10 * (SURFACE_PRESSURE + 0.6), 4);
+        expect(gc.rateSeries.ean50).toHaveLength(loading.timePoints.length);
+    });
+
+    test('uses altitude pressure for gas consumption without changing the SAC', () => {
+        const gases = gasesForSwitchTest();
+        const surfacePressure = getPressureAtAltitude(1500);
+        const waypoints = [
+            { time: 0, depth: 0, gasId: 'air' },
+            { time: 1, depth: 6, gasId: 'air' },
+            { time: 2, depth: 6, gasId: 'air' }
+        ];
+        const loading = calculateTissueLoading(waypoints, 0, { gases, surfacePressure });
+        const gc = computeGasConsumption(loading, gases, 20, 10, 50);
+        const finalIndex = loading.timePoints.length - 1;
+
+        expect(gc.rateSeries.air[finalIndex]).toBeCloseTo(
+            20 * (surfacePressure + 0.6), 4
+        );
+    });
+});
+
+describe('sea-level environment compatibility', () => {
+    const gases = [
+        { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, cylinderVolume: 24, startPressure: 200 },
+        { id: 'ean50', name: 'EAN50', o2: 0.50, n2: 0.50, cylinderVolume: 11, startPressure: 200 }
+    ];
+
+    test('explicit altitude zero produces the unchanged generated profile', () => {
+        const legacy = generateDecoProfile(40, 30, gases, 30, 80, { enabled: false });
+        const explicit = generateDecoProfile(
+            40, 30, gases, 30, 80, { enabled: false },
+            { surfacePressure: getSurfacePressure({ altitude: 0 }) }
+        );
+        expect(explicit).toEqual(legacy);
+    });
+
+    test('explicit sea-level pressure produces unchanged tissue loading', () => {
+        const waypoints = [
+            { time: 0, depth: 0, gasId: 'air' },
+            { time: 2, depth: 40, gasId: 'air' },
+            { time: 30, depth: 40, gasId: 'air' },
+            { time: 34, depth: 0, gasId: 'air' }
+        ];
+        const legacy = calculateTissueLoading(waypoints, 5, { gases });
+        const explicit = calculateTissueLoading(waypoints, 5, {
+            gases,
+            surfacePressure: SURFACE_PRESSURE
+        });
+        expect(explicit).toEqual(legacy);
+    });
+
+    test('setup without environment resolves to the historical surface pressure', () => {
+        expect(getDiveSetupSurfacePressure({})).toBe(SURFACE_PRESSURE);
+        expect(getDiveSetupSurfacePressure({ environment: { altitude: 0 } })).toBe(SURFACE_PRESSURE);
+    });
+});
+
+describe('Decotengu sea-level reference matrix', () => {
+    const reference = JSON.parse(
+        readFileSync(new URL('./decotengu-reference.json', import.meta.url), 'utf8')
+    );
+    const gasConfigs = {
+        air: [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79 }],
+        'air+ean50': [
+            { id: 'air', name: 'Air', o2: 0.21, n2: 0.79 },
+            { id: 'ean50', name: 'EAN50', o2: 0.50, n2: 0.50 }
+        ],
+        'air+o2': [
+            { id: 'air', name: 'Air', o2: 0.21, n2: 0.79 },
+            { id: 'o2', name: 'O2', o2: 1, n2: 0 }
+        ],
+        'air+ean50+o2': [
+            { id: 'air', name: 'Air', o2: 0.21, n2: 0.79 },
+            { id: 'ean50', name: 'EAN50', o2: 0.50, n2: 0.50 },
+            { id: 'o2', name: 'O2', o2: 1, n2: 0 }
+        ]
+    };
+
+    test('all 3900 existing scenarios remain within the established tolerance', () => {
+        setZHL16Variant(ZHL16_VARIANTS.C);
+
+        for (const scenario of reference.scenarios) {
+            const gases = gasConfigs[scenario.gasConfig];
+            const bottomGas = gases[0];
+            const initialN2 = getInitialTissueN2(bottomGas.n2);
+            const tissues = Object.fromEntries(COMPARTMENTS.map(comp => [comp.id, initialN2]));
+            const descentTime = Math.ceil(scenario.depth / 20);
+            let loaded = simulateDepthChange(
+                tissues, 0, scenario.depth, descentTime, bottomGas.n2
+            );
+            const atDepth = scenario.bottomTime - descentTime;
+            if (atDepth > 0) {
+                loaded = simulateDepthTime(loaded, scenario.depth, atDepth, bottomGas.n2);
+            }
+            const schedule = generateDecoSchedule(
+                loaded, scenario.depth, bottomGas.n2,
+                scenario.gfLow / 100, scenario.gfHigh / 100, gases
+            );
+            const totalDeco = schedule.stops.reduce((sum, stop) => sum + stop.time, 0);
+            const tolerance = Math.max(5, scenario.totalDeco * 0.20);
+
+            if (Math.abs(totalDeco - scenario.totalDeco) > tolerance) {
+                throw new Error(
+                    `Decotengu mismatch at ${scenario.depth}m/${scenario.bottomTime}min ` +
+                    `${scenario.gasConfig} GF${scenario.gfLow}/${scenario.gfHigh}: ` +
+                    `reference=${scenario.totalDeco}, actual=${totalDeco}, tolerance=${tolerance}`
+                );
+            }
+        }
+    });
+});
+
+describe('Decotengu altitude reference matrix', () => {
+    const reference = JSON.parse(
+        readFileSync(new URL('./decotengu-altitude-reference.json', import.meta.url), 'utf8')
+    );
+    const gasConfigs = {
+        air: [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79 }],
+        'air+ean50': [
+            { id: 'air', name: 'Air', o2: 0.21, n2: 0.79 },
+            { id: 'ean50', name: 'EAN50', o2: 0.50, n2: 0.50 }
+        ],
+        'air+o2': [
+            { id: 'air', name: 'Air', o2: 0.21, n2: 0.79 },
+            { id: 'o2', name: 'O2', o2: 1, n2: 0 }
+        ],
+        'air+ean50+o2': [
+            { id: 'air', name: 'Air', o2: 0.21, n2: 0.79 },
+            { id: 'ean50', name: 'EAN50', o2: 0.50, n2: 0.50 },
+            { id: 'o2', name: 'O2', o2: 1, n2: 0 }
+        ]
+    };
+
+    test('all 15986 altitude scenarios remain within the established tolerance', () => {
+        setZHL16Variant(ZHL16_VARIANTS.C);
+
+        for (const environment of reference.environments) {
+            const surfacePressure = environment.pressure;
+            for (const scenario of environment.scenarios) {
+                const [depth, bottomTime, gfLow, gfHigh, gasConfig, referenceDeco] = scenario;
+                const gases = gasConfigs[gasConfig];
+                const bottomGas = gases[0];
+                const initialN2 = getInitialTissueN2(bottomGas.n2, surfacePressure);
+                const tissues = Object.fromEntries(COMPARTMENTS.map(comp => [comp.id, initialN2]));
+                const descentTime = depth / 20;
+                let loaded = simulateDepthChange(
+                    tissues, 0, depth, descentTime, bottomGas.n2, surfacePressure
+                );
+                const atDepth = bottomTime - descentTime;
+                if (atDepth > 0) {
+                    loaded = simulateDepthTime(
+                        loaded, depth, atDepth, bottomGas.n2, surfacePressure
+                    );
+                }
+                const schedule = generateDecoSchedule(
+                    loaded, depth, bottomGas.n2, gfLow / 100, gfHigh / 100, gases,
+                    { surfacePressure }
+                );
+                const totalDeco = schedule.stops.reduce((sum, stop) => sum + stop.time, 0);
+                const tolerance = Math.max(5, referenceDeco * 0.20);
+
+                if (Math.abs(totalDeco - referenceDeco) > tolerance) {
+                    throw new Error(
+                        `Decotengu altitude mismatch at ${environment.altitude}\u00a0m, ` +
+                        `${depth}\u00a0m/${bottomTime}\u00a0min ${gasConfig} GF${gfLow}/${gfHigh}: ` +
+                        `reference=${referenceDeco}, actual=${totalDeco}, tolerance=${tolerance}`
+                    );
+                }
+            }
+        }
+    });
 });
 
 describe('calculateTissueLoading - initialTissuePressures seam', () => {
@@ -3440,6 +3692,23 @@ describe('calculateNDL - initialTissuePressures seam', () => {
     });
 });
 
+describe('normalizeDiveSetup - environment preservation', () => {
+    const base = {
+        name: 'Altitude dive',
+        gases: [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79 }],
+        dives: [{ waypoints: [{ time: 0, depth: 0 }, { time: 2, depth: 30 }] }]
+    };
+
+    test('defaults existing profiles to sea level', () => {
+        expect(normalizeDiveSetup(base).environment).toEqual({ altitude: 0 });
+    });
+
+    test('preserves configured altitude', () => {
+        expect(normalizeDiveSetup({ ...base, environment: { altitude: 1500 } }).environment)
+            .toEqual({ altitude: 1500 });
+    });
+});
+
 // ============================================================================
 // ndlPreview
 // ============================================================================
@@ -3671,6 +3940,35 @@ describe('DiveSetupEditor notation', () => {
                 },
                 elements: {},
                 _updateNDLDisplay() {}
+            });
+
+            test('environment control displays pressure derived from altitude', () => {
+                const dom = new JSDOM('<!doctype html><body></body>');
+                const previousDocument = globalThis.document;
+                globalThis.document = dom.window.document;
+
+                try {
+                    const context = {
+                        elements: {},
+                        currentGases: [],
+                        _getAltitude: DiveSetupEditor.prototype._getAltitude,
+                        _getSurfacePressure: DiveSetupEditor.prototype._getSurfacePressure,
+                        _updateEnvironmentDisplay: DiveSetupEditor.prototype._updateEnvironmentDisplay,
+                        _renderGasCards() {},
+                        _updateNDLDisplay() {},
+                        _onInputChange() {}
+                    };
+                    const section = DiveSetupEditor.prototype._buildEnvironmentSection.call(context);
+                    context.elements.altitudeInput.value = '1500';
+                    context.elements.altitudeInput.dispatchEvent(new dom.window.Event('input'));
+
+                    expect(context.elements.environmentSummaryHint.textContent).toBe('(1500\u00a0m)');
+                    expect(context.elements.surfacePressureValue.textContent).toContain('0.845');
+                    expect(context.elements.surfacePressureValue.textContent).toContain('\u00a0bar');
+                } finally {
+                    globalThis.document = previousDocument;
+                    dom.window.close();
+                }
             });
             const tooltip = section.querySelector('.dse-term-tooltip');
 
@@ -5391,11 +5689,11 @@ describe('NDL se meri od zacatku ponoru, ne od prichodu do hloubky (#70)', () =>
         expect(getNDLStatus(Infinity, 30).state).toBe('unlimited');
     });
 
-    test('prah deco zustava fyzikalne stejny jako po #70', () => {
-        // Zmena je v definici a zobrazenem cisle, ne v tom, kdy ponor stava dekompresnim.
+    test('prah NDL odpovida simulovanemu primemu vystupu', () => {
+        // NDL i generator profilu pouzivaji stejny primy vystup na GF High,
+        // takze se jejich rozhodnuti nesmi na presne hranici rozejit.
         for (const depth of [18, 24, 30, 40, 50]) {
             const { descentTime, ndlAtDepthExact, ndlExact } = calculateNDL(depth, AIR.n2, 1.0);
-            // prah je tam, kde byl po #70: sestup + cas v hloubce
             expect(ndlExact).toBeCloseTo(descentTime + ndlAtDepthExact, 9);
             // tesne pod prahem -> bez deca, tesne nad -> deco
             expect(generateDecoProfile(depth, ndlExact - 0.01, [AIR], 100, 100, SS).requiresDeco).toBe(false);
@@ -5477,6 +5775,66 @@ describe('warning HTML rendering', () => {
     });
 });
 
+describe('sandbox dive warnings', () => {
+    const source = readFileSync(new URL('../sandbox/index.html', import.meta.url), 'utf8');
+    const start = source.indexOf('        function analyzeDive(diveSetup) {');
+    const end = source.indexOf('\n        /**\n         * Render warnings in the container', start);
+    const analyzeDiveSource = source.slice(start, end);
+    const analyzeDive = new Function(
+        'calculateTissueLoading',
+        'calculateCeilingTimeSeries',
+        'getAmbientPressure',
+        'getDiveSetupSurfacePressure',
+        'SURFACE_PRESSURE',
+        'computeGasConsumption',
+        'formatWarningHtml',
+        'translate',
+        'fmtNum',
+        `${analyzeDiveSource}\nreturn analyzeDive;`
+    )(
+        (waypoints) => ({
+            timePoints: waypoints.map(wp => wp.time),
+            depthPoints: waypoints.map(wp => wp.depth)
+        }),
+        () => [0, 0, 5, 0],
+        (depth) => 1 + depth / 10,
+        () => SURFACE_PRESSURE,
+        SURFACE_PRESSURE,
+        (_results, gases) => ({
+            consumedByGasId: Object.fromEntries(gases.map(gas => [gas.id, 0])),
+            pressureByGasId: Object.fromEntries(gases.map(gas => [gas.id, gas.startPressure]))
+        }),
+        (template, ...values) => template.replace(/\{(\d+)\}/g, (_match, index) => values[Number(index)]),
+        (_key, fallback) => fallback,
+        (value) => String(value)
+    );
+
+    test('does not classify bottom gas as deco gas merely because a ceiling exists during ascent', () => {
+        const result = analyzeDive({
+            gases: [{
+                id: 'bottom',
+                name: 'EAN36',
+                o2: 0.36,
+                n2: 0.64,
+                he: 0,
+                cylinderVolume: 24,
+                startPressure: 200
+            }],
+            dives: [{
+                waypoints: [
+                    { time: 0, depth: 0, gasId: 'bottom' },
+                    { time: 2, depth: 40, gasId: 'bottom' },
+                    { time: 2.2, depth: 38, gasId: 'bottom' },
+                    { time: 6, depth: 0, gasId: 'bottom' }
+                ]
+            }]
+        });
+
+        expect(result.warnings.some(warning => warning.html.includes('during bottom'))).toBe(true);
+        expect(result.warnings.some(warning => warning.html.includes('during deco'))).toBe(false);
+    });
+});
+
 describe('decodeDiveSetup sanitizes the shared-link boundary (#65)', () => {
     const encode = (obj) => {
         const b64 = Buffer.from(JSON.stringify(obj), 'utf8').toString('base64');
@@ -5516,6 +5874,34 @@ describe('decodeDiveSetup sanitizes the shared-link boundary (#65)', () => {
             name: 'x'.repeat(5000), gases: [{ id: 'bottom', name: 'Air' }], dives: [{ waypoints: [] }]
         }));
         expect(out.name.length).toBe(MAX_SHARED_TEXT_LENGTH);
+    });
+
+    test('preserves valid altitude and rejects an out-of-range shared value', () => {
+        const valid = decodeDiveSetup(encode({
+            environment: { altitude: 1500 },
+            gases: [{ id: 'bottom', name: 'Air' }],
+            dives: [{ waypoints: [] }]
+        }));
+        const invalid = decodeDiveSetup(encode({
+            environment: { altitude: 500000 },
+            gases: [{ id: 'bottom', name: 'Air' }],
+            dives: [{ waypoints: [] }]
+        }));
+
+        expect(valid.environment.altitude).toBe(1500);
+        expect(invalid.environment.altitude).toBe(0);
+    });
+
+    test('round-trips altitude through a generated shared link', () => {
+        const setup = {
+            name: 'Altitude dive',
+            environment: { altitude: 1500 },
+            gases: [{ id: 'bottom', name: 'Air' }],
+            dives: [{ waypoints: [] }]
+        };
+
+        expect(decodeDiveSetup(encodeDiveSetup(setup)).environment)
+            .toEqual({ altitude: 1500 });
     });
 
     test('leaves a legitimate setup functionally intact', () => {

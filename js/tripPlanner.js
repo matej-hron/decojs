@@ -8,7 +8,7 @@
  * Pure module — no DOM, no side effects.
  */
 
-import { generateDecoProfile } from './diveSetup.js';
+import { generateDecoProfile, getDiveSetupSurfacePressure } from './diveSetup.js';
 import { calculateTissueLoading, simulateDepthTime, calculateNDL, N2_FRACTION } from './decoModel.js';
 
 /**
@@ -48,6 +48,7 @@ export function planTrip(diveSetup) {
     const gases = diveSetup.gases;
     const gfLow = diveSetup.gfLow ?? 100;
     const gfHigh = diveSetup.gfHigh ?? 100;
+    const surfacePressure = getDiveSetupSurfacePressure(diveSetup);
 
     const ordered = [...diveSetup.dives].sort((a, b) => a.startDateTime - b.startDateTime);
 
@@ -68,7 +69,7 @@ export function planTrip(diveSetup) {
                 seed = { ...tissue };                       // no off-gassing
             } else {
                 surfaceIntervalBefore = gap;
-                seed = simulateDepthTime(tissue, 0, gap, N2_FRACTION);  // off-gas on air at surface
+                seed = simulateDepthTime(tissue, 0, gap, N2_FRACTION, surfacePressure);
             }
         }
 
@@ -86,7 +87,7 @@ export function planTrip(diveSetup) {
             // the way dive tables do — from leaving the surface, descent included — so it
             // drops straight into bottomTime with no correction, and a moved NDL-locked
             // dive shows the SAME number the add-dialog showed at creation.
-            const ndl = calculateNDL(dive.maxDepth, n2, gfLow / 100, seed).ndl;
+            const ndl = calculateNDL(dive.maxDepth, n2, gfHigh / 100, seed, surfacePressure).ndl;
             const capped = Number.isFinite(ndl) ? Math.min(ndl, NDL_LOCK_CAP) : NDL_LOCK_CAP;
             const descentTime = dive.maxDepth / 20;   // DESCENT_SPEED = 20 m/min
             // If the actual bottom phase (capped − descentTime) is under a minute, there is no
@@ -100,7 +101,10 @@ export function planTrip(diveSetup) {
             bottomTime = Math.max(capped, descentTime);
         }
 
-        const decoOpts = seed ? { initialTissuePressures: seed } : {};
+        const decoOpts = {
+            ...(seed ? { initialTissuePressures: seed } : {}),
+            surfacePressure
+        };
         // Safety stops are disabled for the trip planner: a 3-min stop on no-deco dives inflates
         // runtime/TTS inconsistently across dives and obscures the calendar deco times.
         const profile = generateDecoProfile(

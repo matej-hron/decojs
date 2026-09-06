@@ -513,7 +513,7 @@
         defaultDepth: 18,
         defaultTime: 40,
         defaultName: `Dive ${trip.dives.length + 1}`,
-        computeNdl: (s, d, g) => previewNdl(trip, { startDateTime: s, maxDepth: d, gases: g }, trip.gfLow)
+        computeNdl: (s, d, g) => previewNdl(trip, { startDateTime: s, maxDepth: d, gases: g }, trip.gfHigh)
       });
     });
 

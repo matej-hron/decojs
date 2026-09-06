@@ -50,6 +50,7 @@ import { fmtNum } from '../format.js';
  * @property {number} [gfLow=100] - Gradient Factor Low (0-100 percentage)
  * @property {number} [gfHigh=100] - Gradient Factor High (0-100 percentage)
  * @property {number} [surfaceInterval=60] - Post-dive surface interval in minutes
+ * @property {{altitude?: number, surfacePressure?: number}} [environment] - Dive-site environment
  * @property {Units} [units] - Unit preferences
  * @property {Dive[]} dives - Array of dives (supports repetitive diving)
  */
@@ -146,8 +147,7 @@ import { fmtNum } from '../format.js';
  */
 export const DEFAULT_ENVIRONMENT = {
     altitude: 0,
-    waterDensity: 1.025,
-    surfacePressure: 1.0
+    waterDensity: 1.025
 };
 
 /**
@@ -288,6 +288,13 @@ export function validateDiveSetup(setup) {
     if (setup.gfHigh !== undefined && (setup.gfHigh < 0 || setup.gfHigh > 100)) {
         errors.push('gfHigh must be between 0 and 100');
     }
+
+    if (setup.environment?.altitude !== undefined &&
+        (!Number.isFinite(setup.environment.altitude) ||
+         setup.environment.altitude < 0 ||
+         setup.environment.altitude > 5000)) {
+        errors.push('environment.altitude must be between 0 and 5000 meters');
+    }
     
     return { valid: errors.length === 0, errors };
 }
@@ -316,6 +323,12 @@ export function normalizeDiveSetup(setup) {
         gfLow: setup.gfLow ?? 100,
         gfHigh: setup.gfHigh ?? 100,
         surfaceInterval: setup.surfaceInterval ?? 60,
+        environment: {
+            altitude: setup.environment?.altitude ?? 0,
+            ...(Number.isFinite(setup.environment?.surfacePressure)
+                ? { surfacePressure: setup.environment.surfacePressure }
+                : {})
+        },
         units: {
             depth: setup.units?.depth || 'meters',
             time: setup.units?.time || 'minutes',
