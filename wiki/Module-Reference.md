@@ -88,8 +88,8 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 | Signature | Line | Description |
 |---|---|---|
 | `calculateTissueLoading(profile, surfaceInterval=60, options={})` | 1132 | Main entry: walks the waypoint array at `CALC_INTERVAL` resolution. `options.surfacePressure` controls ambient pressure and initial equilibrium; the resolved pressure is returned as `results.surfacePressure`. |
-| `calculateCeilingTimeSeries(results, gfLow, gfHigh=gfLow)` | 483 | Flat array of ceiling depths at each time point |
-| `calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh, providedPAnchor=null)` | 510 | Returns per-compartment ceiling series plus `gfValues` and `pAnchor`; reads `results.surfacePressure` |
+| `calculateCeilingTimeSeries(results, gfLow, gfHigh=gfLow, providedPAnchor=null)` | 483 | Flat array of ceiling depths at each time point; a surface anchor means GF High applies throughout |
+| `calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh, providedPAnchor=null)` | 510 | Returns per-compartment ceiling series plus `gfValues` and `pAnchor`; performs the GF High direct-ascent decision when no anchor is supplied |
 
 **Implementation notes**
 

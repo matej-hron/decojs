@@ -6,7 +6,9 @@ A per-timepoint ceiling overlay for chart rendering. This is separate from deco 
 
 ```javascript
 // js/decoModel.js:483 (signature)
-export function calculateCeilingTimeSeries(results, gfLow, gfHigh = gfLow)
+export function calculateCeilingTimeSeries(
+    results, gfLow, gfHigh = gfLow, providedPAnchor = null
+)
 ```
 
 Thin wrapper returning only the overall `ceilingDepths` array. Most callers want the detailed version:
@@ -68,11 +70,20 @@ if (pAnchor === null) {
         tissuesAtAscentStart[compId] = results.compartments[compId].pressures[ascentStartIndex];
     }
     const n2Fraction = results.n2Fractions ? results.n2Fractions[ascentStartIndex] : N2_FRACTION;
-    ({ pAnchor } = findFirstStopAtGFLow(tissuesAtAscentStart, maxDepthSeen, n2Fraction, gfLow));
+    const directAscent = evaluateDirectAscent(
+        tissuesAtAscentStart, maxDepthSeen, n2Fraction, gfHigh, surfacePressure
+    );
+    pAnchor = directAscent.ceilingDepth === 0
+        ? surfacePressure
+        : findFirstStopAtGFLow(
+            tissuesAtAscentStart, maxDepthSeen, n2Fraction, gfLow
+        ).pAnchor;
 }
 ```
 
-If the caller passes `providedPAnchor` (e.g., from `generateDecoSchedule`'s return value), it is used verbatim. Otherwise `findFirstStopAtGFLow` is called once on the tissue state at ascent start — the same helper the scheduler uses, so the chart and scheduler always agree on the anchor.
+If the caller passes `providedPAnchor`, it is used verbatim. Otherwise the
+function first performs the scheduler's direct-ascent check at $GF_{high}$.
+Only a failed direct ascent invokes the GF Low first-stop search.
 
 **Why `pAnchor` must come from outside when possible**: it is a property of the *ascent* — of the tissue state right before the diver starts heading up. It is not recomputed per timepoint because that would produce a different value at every sample and cause the displayed ceiling to disagree with the scheduler's ceiling. Passing it in from `generateDecoSchedule` (or having both call sites use `findFirstStopAtGFLow`) guarantees chart-and-scheduler consistency.
 
@@ -95,7 +106,9 @@ for (let i = 0; i < results.timePoints.length; i++) {
     }
 
     let gf;
-    if (!ascentStarted || currentAmbient >= pAnchor) {
+    if (pAnchor <= surfacePressure) {
+        gf = gfHigh;
+    } else if (!ascentStarted || currentAmbient >= pAnchor) {
         gf = gfLow;
     } else {
         gf = interpolateGF(currentAmbient, pAnchor, gfLow, gfHigh);
@@ -118,13 +131,19 @@ for (let i = 0; i < results.timePoints.length; i++) {
 
 Per iteration:
 
-- Decide which GF to use. Before ascent, or at any moment $P_{amb} \ge pAnchor$, use $GF_{low}$. After ascent has started and we are above `pAnchor`, interpolate.
+- Decide which GF to use. A profile without an anchor uses $GF_{high}$
+  throughout. With a real anchor, use $GF_{low}$ before ascent and at or below
+  the anchor; above it, interpolate toward $GF_{high}$.
 - For each of the 16 compartments, call `getCompartmentCeiling` with the active GF. Convert to depth.
 - Overall ceiling is the max (deepest) across all compartments.
 
 ## Pre-ascent behavior
 
-During descent and bottom time, `ascentStarted` is false and `gf = gfLow` regardless of depth. The ceiling is drawn as if the diver were already on the $GF_{low}$ line. This is informational — the diver is not ascending so there is no ceiling to violate at the bottom — but it makes the chart visually consistent: the ceiling line is always present, and the moment ascent starts, the GF ramp kicks in and the ceiling begins tracking upward smoothly.
+For a decompression profile with a real anchor, descent and bottom time use
+$GF_{low}$. For a direct-ascent profile there is no GF ramp, so the complete
+time series uses $GF_{high}$. The displayed value is an instantaneous ceiling
+for the tissue state at that sample; it does not predict the additional
+on/off-gassing that will occur during a future ascent.
 
 ## Visual output
 
@@ -133,7 +152,10 @@ During descent and bottom time, `ascentStarted` is false and `gf = gfLow` regard
 
 ## Consistency with the scheduler
 
-`generateDecoSchedule` returns `pAnchor` in its result (`js/decoModel.js:1136`). The sandbox view passes this value as `providedPAnchor` when calling `calculateCeilingTimeSeriesDetailed`, so the displayed ceiling is computed with the same anchor used to find the actual stops. Without this, the displayed ceiling could disagree with the scheduler at sub-bar resolution — visible as a chart ceiling that "passes through" a planned deco stop.
+`generateDecoSchedule` returns `pAnchor`. `DiveProfileChart` obtains the same
+scheduler decision through `calculateChartGFAnchor` and passes it as
+`providedPAnchor`, so the profile overlay, M-value chart, GF chart, and audit
+all agree about whether a ramp exists.
 
 ## Cross-references
 

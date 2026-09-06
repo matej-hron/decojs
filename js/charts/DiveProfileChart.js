@@ -50,6 +50,7 @@ import {
     SURFACE_PRESSURE
 } from '../decoModel.js';
 import {
+    calculateChartGFAnchor,
     DEFAULT_DIVE_PROFILE_OPTIONS,
     DEFAULT_ENVIRONMENT,
     mergeOptions,
@@ -852,12 +853,17 @@ export class DiveProfileChart {
         let ceilingDepths = null;
         let compartmentCeilings = null;
         if (this.options.showCeiling) {
+            const { pAnchor } = calculateChartGFAnchor(this.diveSetup, results);
             if (this.options.showTissueLoading) {
-                const detailed = calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh);
+                const detailed = calculateCeilingTimeSeriesDetailed(
+                    results, gfLow, gfHigh, pAnchor
+                );
                 ceilingDepths = detailed.ceilingDepths;
                 compartmentCeilings = detailed.compartmentCeilings;
             } else {
-                ceilingDepths = calculateCeilingTimeSeries(results, gfLow, gfHigh);
+                ceilingDepths = calculateCeilingTimeSeries(
+                    results, gfLow, gfHigh, pAnchor
+                );
             }
         }
         

@@ -1531,6 +1531,28 @@ describe('decoModel', () => {
             expect(ceilings[0]).toBe(0);
         });
 
+        test('uses GF High throughout a profile with no decompression anchor', () => {
+            const profile = [
+                { time: 0, depth: 0 },
+                { time: 1.55, depth: 31 },
+                { time: 12, depth: 31 },
+                { time: 15.1, depth: 0 }
+            ];
+            const results = calculateTissueLoading(profile, 0, {
+                gases: [{ id: 'air', name: 'Air', o2: 0.2098, n2: 0.7902 }]
+            });
+            const automatic = calculateCeilingTimeSeries(results, 0.3, 0.8);
+            const withSchedulerAnchor = calculateCeilingTimeSeries(
+                results, 0.3, 0.8, SURFACE_PRESSURE
+            );
+            const endBottomIdx = results.timePoints.findIndex(t => t >= 12);
+
+            expect(automatic[endBottomIdx]).toBeCloseTo(0.56, 1);
+            expect(automatic[endBottomIdx]).toBeLessThan(1);
+            expect(automatic).toEqual(withSchedulerAnchor);
+            expect(automatic[automatic.length - 1]).toBe(0);
+        });
+
         test('ceiling increases during bottom phase', () => {
             const profile = [
                 { time: 0, depth: 0 },

@@ -580,10 +580,15 @@ function _simulateAscentWithGasSwitches(
  * @param {Object} results - Results from calculateTissueLoading()
  * @param {number} gfLow - GF Low value (0-1, where 1 = 100%)
  * @param {number} gfHigh - GF High value (0-1, where 1 = 100%)
+ * @param {number|null} [providedPAnchor=null] - Pre-computed scheduler anchor
  * @returns {number[]} Array of ceiling depths in meters at each time point
  */
-export function calculateCeilingTimeSeries(results, gfLow, gfHigh = gfLow) {
-    const { ceilingDepths } = calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh);
+export function calculateCeilingTimeSeries(
+    results, gfLow, gfHigh = gfLow, providedPAnchor = null
+) {
+    const { ceilingDepths } = calculateCeilingTimeSeriesDetailed(
+        results, gfLow, gfHigh, providedPAnchor
+    );
     return ceilingDepths;
 }
 
@@ -643,19 +648,25 @@ export function calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh = gfLo
         }
     }
     
-    // If pAnchor not provided, compute it via the convention: the first stop
-    // depth (rounded to the 3 m grid) at which the dive ceiling at GF_low is
-    // satisfied after simulated ascent.
+    // If pAnchor is not provided, first apply the same direct-ascent GF High
+    // decision as the scheduler. GF Low only defines an anchor after that fails.
     if (pAnchor === null) {
         const tissuesAtAscentStart = {};
         for (const compId of Object.keys(results.compartments)) {
             tissuesAtAscentStart[compId] = results.compartments[compId].pressures[ascentStartIndex];
         }
         const n2Fraction = results.n2Fractions ? results.n2Fractions[ascentStartIndex] : N2_FRACTION;
-        ({ pAnchor } = findFirstStopAtGFLow(
-            tissuesAtAscentStart, maxDepthSeen, n2Fraction, gfLow,
-            STOP_INCREMENT, ASCENT_SPEED, null, surfacePressure
-        ));
+        const directAscent = evaluateDirectAscent(
+            tissuesAtAscentStart, maxDepthSeen, n2Fraction, gfHigh, surfacePressure
+        );
+        if (directAscent.ceilingDepth === 0) {
+            pAnchor = surfacePressure;
+        } else {
+            ({ pAnchor } = findFirstStopAtGFLow(
+                tissuesAtAscentStart, maxDepthSeen, n2Fraction, gfLow,
+                STOP_INCREMENT, ASCENT_SPEED, null, surfacePressure
+            ));
+        }
     }
     
     // Process each time point
@@ -677,7 +688,9 @@ export function calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh = gfLo
         
         // Determine which GF to use (pAnchor-based ramp)
         let gf;
-        if (!ascentStarted || currentAmbient >= pAnchor) {
+        if (pAnchor <= surfacePressure + 1e-9) {
+            gf = gfHigh;
+        } else if (!ascentStarted || currentAmbient >= pAnchor) {
             // Not yet ascending or at/deeper than pAnchor: use GF Low
             gf = gfLow;
         } else {
