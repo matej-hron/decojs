@@ -1292,6 +1292,26 @@
         "phaseSwitch": "změna",
         "phaseStop": "zastávka"
     },
+    "decisionAudit": {
+        "title": "Jak algoritmus rozhodoval",
+        "summary": "Režim: {0}. Kotva GF: {1} m.",
+        "modeStandard": "standardní",
+        "modeAdaptive": "adaptivní studijní",
+        "modeContinuous": "jemná mřížka",
+        "disclaimer": "Jde o diagnostické vysvětlení této implementace, nikoli o nezávislé bezpečnostní ověření.",
+        "unavailable": "Pro zobrazení rozhodnutí nejprve vygenerujte profil.",
+        "outOfRange": "Audit rozhodování není dostupný, protože profil překročil limit plánovacího algoritmu.",
+        "directPass": "Přímý výstup při GF High {0} % prošel: strop na hladině je čistý (řídicí kompartment {1}).",
+        "directFail": "Přímý výstup při GF High {0} % neprošel: strop {1} m (řídicí kompartment {2}).",
+        "anchorCandidate": "Strop při GF Low je {0} m; kandidát kotvy po zaokrouhlení je {1} m (řídicí kompartment {2}).",
+        "anchorAccepted": "Po výstupu do {0} m je strop při GF Low {1} m; kotva je přijata (řídicí kompartment {2}).",
+        "anchorMoved": "Po výstupu do {0} m je strop při GF Low {1} m; pokračujeme s kandidátem {2} m (řídicí kompartment {3}).",
+        "gasSwitch": "V {0} m přechod na směs {1}.",
+        "gasSwitchWait": "V {0} m přechod na směs {1} a čekání {2} min.",
+        "levelTransit": "Z {0} m do {1} m: GF {2} %, strop {3} m (řídicí kompartment {4}); výstup je povolen bez čekání.",
+        "levelConvention": "V {0} m přidává konvence stupňovitého profilu {1} min. Poté je výstup do {2} m povolen při GF {3} %, stropu {4} m a řídicím kompartmentu {5}.",
+        "levelWait": "V {0} m čekání {1} min: {2} min podle konvence stupňovitého profilu, {3} min podle kontroly stropu a {4} min na změnu směsi. Poté je výstup do {5} m povolen při GF {6} %, stropu {7} m a řídicím kompartmentu {8}."
+    },
     "tissueSim": {
         "alertOk": "Vše v pořádku",
         "ppO2OxygenToxicity": "<var>p</var><sub>O₂</sub> {0} bar — toxicita kyslíku (deko limit {1})",

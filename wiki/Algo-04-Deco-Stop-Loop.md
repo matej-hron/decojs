@@ -21,7 +21,8 @@ Returns:
   totalTime: 18.2,          // minutes: ascent + stops
   totalAscentTime: 5.5,     // minutes spent moving (not stopped)
   pAnchor: 2.40,            // bar
-  anchorDepth: 13.9         // meters
+  anchorDepth: 13.9,        // meters
+  decisionAudit: { ... }    // present only when options.audit === true
 }
 ```
 
@@ -43,6 +44,37 @@ const minimumStopTime = decoMode === DECO_MODES.STANDARD ? 1 : 0;
 
 The legacy `continuousDeco: true` input is still accepted and resolves to
 `continuous`; missing or false legacy values resolve safely to `standard`.
+
+## Decision audit
+
+When `options.audit` is true, the scheduler returns `decisionAudit` with
+structured events rather than preformatted UI strings:
+
+```javascript
+{
+  version: 1,
+  mode: 'standard',
+  anchorDepth: 12,
+  pAnchor: 2.21325,
+  events: [
+    { type: 'direct-ascent', decision: 'decompression', ... },
+    { type: 'anchor-candidate', roundedCeilingDepth: 12, ... },
+    { type: 'anchor-check', candidateDepth: 12, decision: 'accept', ... },
+    { type: 'level-decision', depth: 12, targetDepth: 9, totalWait: 1, ... }
+  ]
+}
+```
+
+The trace distinguishes the mandatory staged-profile minute, additional time
+required by the ceiling check, and gas-switch time. Repeated minute-by-minute
+checks are folded into one `level-decision` event per depth so long schedules do
+not create unbounded presentation output. The Sandbox localizes these events
+only when rendering; the numerical model remains language-independent.
+
+`generateDecisionAudit(setup)` in `js/diveSetup.js` reconstructs the tissue state
+at the end of the generated bottom segment and invokes this opt-in scheduler
+path. Audit-on and audit-off schedules are regression-tested for identical
+stops, gas switches, total time, and anchor.
 
 ## High-level flow
 

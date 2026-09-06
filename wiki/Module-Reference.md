@@ -68,9 +68,10 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 | Signature | Line | Description |
 |---|---|---|
 | `DECO_MODES` | 63 | Frozen mode names: `standard`, `adaptive`, and `continuous`. |
+| `DECISION_AUDIT_VERSION` | 69 | Schema version for structured scheduler decision events. |
 | `getDecoMode(options={})` | 70 | Validates the explicit mode and migrates legacy `continuousDeco`; missing values default to `standard`. |
 | `calculateNDL(depth, n2=0.7902, gfHigh=1.0, initialTissuePressures=null, surfacePressure=1.01325)` | 729 | Binary-searches the maximum bottom runtime whose direct ascent on bottom gas reaches the surface within GF High. Returns `{ndl, ndlExact, ndlAtDepth, ndlAtDepthExact, controllingCompartment, descentTime}`. |
-| `generateDecoSchedule(tissues, depth, n2, gfLow, gfHigh, gases=null, options={})` | 920 | Attempts the same GF High direct ascent before creating a GF Low anchor. Standard mode uses Decotengu-style iterative first-stop discovery and a minimum minute at every active 3 m level. Returns `{stops, gasSwitches, totalTime, totalAscentTime, pAnchor, anchorDepth}`. |
+| `generateDecoSchedule(tissues, depth, n2, gfLow, gfHigh, gases=null, options={})` | 920 | Attempts the same GF High direct ascent before creating a GF Low anchor. Standard mode uses Decotengu-style iterative first-stop discovery and a minimum minute at every active 3 m level. Returns `{stops, gasSwitches, totalTime, totalAscentTime, pAnchor, anchorDepth, decisionAudit}`. |
 
 `generateDecoSchedule` options:
 
@@ -79,6 +80,8 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 - `gasSwitchTime` (default 0) — minutes held at switch depth
 - `switchPpO2` (default 1.6) — cap used for deco gas MOD
 - `surfacePressure` (default 1.01325 bar) — absolute atmospheric pressure at the dive site
+- `audit` (default `false`) — emit versioned structured events for the
+  direct-ascent test, anchor search, gas switches, and per-level decisions
 
 **Exports — Full-dive simulation**
 
@@ -183,6 +186,7 @@ Note: `BOTTOM_GASES[0].n2` is `0.7902`, matching `N2_FRACTION` in `decoModel.js`
 | `generateSimpleProfile(maxDepth, bottomTime, safetyStop, options)` | 240 | No-deco profile. Descent 20 m/min, ascent 10 m/min, optional 3 min @ 5 m. |
 | `generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, safetyStop, options)` | 327 | Runs NDL check; if exceeded, calls `generateDecoSchedule()` and splices stops into the waypoint array. Returns `{waypoints, ndl, requiresDeco, decoStops, totalDecoTime, controllingCompartment, pAnchor, anchorDepth}`. Accepts optional `options.initialTissuePressures` — when provided, tissues are seeded from that map and the surface-based NDL early-return is bypassed so the deco scheduler always runs against the actual pre-saturated state. See [repetitive-dive chaining](#repetitive-dive-chaining-initialTissuePressures). |
 | `generateDecoProfileSync(...)` | 567 | Variant accepting a pre-loaded `compartments` array. Does **not** support `options.initialTissuePressures`; callers needing a seeded profile must use `generateDecoProfile`. |
+| `generateDecisionAudit(setup)` | 832 | Reconstructs the end-of-bottom tissue state for a generated single-dive setup and returns the scheduler's opt-in structured decision audit. |
 | `getNDLForDepth(depth, gas, gfHigh)` | 720 | Convenience wrapper around `calculateNDL`. Returns the full result, including `descentTime`. |
 | `getNDLStatus(ndl, bottomTime)` | 729 | Classifies a dive against its NDL for UI display. Both arguments run from leaving the surface, so they are compared with no correction — subtracting the descent here would count it twice. Returns `{state: 'unlimited'\|'ok'\|'nearLimit'\|'deco', remaining}`. `nearLimit` is the band *below* the limit (`NDL_NEAR_LIMIT_FRACTION` = 0.9), so a genuine deco obligation is never reported as merely "at limit". Callers pass `ndlExact` (not the floored `ndl`) so the badge cannot disagree with the generated profile. |
 

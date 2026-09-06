@@ -612,6 +612,10 @@
             <div class="sandbox-chart-container">
                 <h3 class="dse-plan-table-heading">📋 <span data-i18n="diveProfile.writtenPlanTitle">Written Dive Plan</span> <span class="dse-plan-table-subtitle" data-i18n="diveProfile.writtenPlanSubtitle">(a.k.a. runtime)</span></h3>
                 <div id="dive-plan-table-container" class="dse-plan-table-wrapper" aria-label="Dive plan table"></div>
+                <details class="decision-audit">
+                    <summary>🔎 <span data-i18n="decisionAudit.title">How the algorithm decided</span></summary>
+                    <div id="decision-audit-content"></div>
+                </details>
             </div>
 
             <!-- Dive Profile Chart -->
@@ -774,6 +778,7 @@
             getDiveSetupWaypoints,
             getDiveSetupSurfacePressure
         } from '../js/diveSetup.js';
+        import { renderDecisionAuditHTML } from '../js/components/DecisionAudit.js';
         import { translate } from '../js/i18n.js';
         import { escHtml } from '../js/utils/escHtml.js';
         import { formatWarningHtml, renderWarningsHtml } from '../js/warningHtml.js';
@@ -1199,6 +1204,7 @@
         const diveWarningsContainer = document.getElementById('dive-warnings');
         const diveGasSummaryContainer = document.getElementById('dive-gas-summary');
         const divePlanTableContainer = document.getElementById('dive-plan-table-container');
+        const decisionAuditContent = document.getElementById('decision-audit-content');
 
         // Mirrors DiveSetupEditor's own internal rendering (now suppressed via
         // showDivePlanPreview: false) so the table can live next to the chart
@@ -1212,6 +1218,10 @@
                 getDiveSetupWaypoints(diveSetup), diveSetup.gases,
                 { sacRate, decoSacRate, reserve, surfacePressure }
             );
+        }
+
+        function renderDecisionAudit(audit) {
+            decisionAuditContent.innerHTML = renderDecisionAuditHTML(audit);
         }
         
         // Load initial setup - priority: URL profile= > URL v=1 compact > localStorage > default
@@ -1275,13 +1285,14 @@
 
         // Editor changes → update charts
         editor.addEventListener('change', (e) => {
-            const { diveSetup, valid, errors } = e.detail;
+            const { diveSetup, valid, errors, decisionAudit } = e.detail;
 
             // Update charts
             diveProfileChart.update(diveSetup);
             mvalueChart.update(diveSetup);
             gfChart.update(diveSetup);
             renderDivePlanTable(diveSetup);
+            renderDecisionAudit(decisionAudit);
 
             // Analyze dive and render warnings/gas summary
             const { warnings, gasSummary } = analyzeDive(diveSetup);
@@ -1289,6 +1300,7 @@
             renderGasSummary(diveGasSummaryContainer, gasSummary, diveSetup.reservePressure || 50);
             // Remember last setup so we can re-render warnings on language change.
             window._sandboxLastDiveSetup = diveSetup;
+            window._sandboxLastDecisionAudit = decisionAudit;
             
             // Save to localStorage
             saveCurrentProfile(diveSetup);
@@ -1996,6 +2008,8 @@ const chart = new DiveProfileChart(
         renderWarnings(diveWarningsContainer, initialAnalysis.warnings);
         renderGasSummary(diveGasSummaryContainer, initialAnalysis.gasSummary, initialSetup.reservePressure || 50);
         renderDivePlanTable(initialSetup);
+        renderDecisionAudit(null);
+        window._sandboxLastDecisionAudit = null;
         window._sandboxLastDiveSetup = initialSetup;
 
         // Re-render warnings and gas summary when the user switches language.
@@ -2010,6 +2024,7 @@ const chart = new DiveProfileChart(
             renderWarnings(diveWarningsContainer, a.warnings);
             renderGasSummary(diveGasSummaryContainer, a.gasSummary, setup.reservePressure || 50);
             renderDivePlanTable(setup);
+            renderDecisionAudit(window._sandboxLastDecisionAudit);
         });
         
         // =====================================================================

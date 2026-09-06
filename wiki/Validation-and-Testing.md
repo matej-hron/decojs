@@ -6,7 +6,7 @@ npm test
 
 Runs `node tests/run-tests.mjs`. No external test framework — `tests/run-tests.mjs` implements `describe`/`test`/`expect` inline (lines 10–140) with matchers `.toBe`, `.toEqual`, `.toBeCloseTo`, `.toBeGreaterThan`, `.toBeLessThan`, `.toHaveProperty`, `.toHaveLength`, `.toBeDefined`. Output is one line per test, then a pass/fail summary.
 
-**421 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
+**436 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
 
 `npm test` is required to pass before every commit per `CLAUDE.md`.
 
@@ -51,6 +51,9 @@ runnable standalone as `node tests/decotengu-comparison.test.mjs`.
 
 The standard staged-mode gate also checks schedule structure, not only total
 time: every emitted stop is on the 3 m grid and lasts at least one minute.
+Decision-audit regressions additionally prove that enabling the trace leaves
+stops, gas switches, total time, and anchor unchanged; they cover direct-ascent,
+anchor-selection, and per-level events plus the localized text renderer.
 Across all 19,886 scenarios, the current implementation matches Decotengu's
 exact stop-depth list in 96.1%, the complete depth/time schedule in 82.2%, and
 has a mean absolute total-decompression difference of 0.13 min (maximum 3 min).

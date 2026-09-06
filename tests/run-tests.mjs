@@ -132,6 +132,7 @@ import {
     generateSimpleProfile,
     generateDecoProfile,
     generateDecoProfileSync,
+    generateDecisionAudit,
     clearCache,
     getGases,
     getGasAtWaypoint,
@@ -178,6 +179,7 @@ import {
     DEFAULT_GF_LOW,
     DEFAULT_GF_HIGH,
     DECO_MODES,
+    DECISION_AUDIT_VERSION,
     getDecoMode,
     getAmbientPressure,
     getAlveolarN2Pressure,
@@ -212,6 +214,10 @@ import { planTrip } from '../js/tripPlanner.js';
 import { preSaturation } from '../js/preSaturation.js';
 import { normalizeDiveSetup } from '../js/charts/chartTypes.js';
 import { buildRuntimeRows } from '../js/components/RuntimeTable.js';
+import {
+    buildDecisionAuditLines,
+    renderDecisionAuditHTML
+} from '../js/components/DecisionAudit.js';
 import { computeCalendarLayout } from '../js/calendarLayout.js';
 import { snapClamp, diveBlockLabel } from '../js/components/TripCalendar.js';
 import { previewNdl } from '../js/ndlPreview.js';
@@ -2660,6 +2666,240 @@ describe('Decompression schedule modes', () => {
                 loadedTissues(),
                 33, air[0].n2, 0.3, 0.8, air, { continuousDeco: true }
             ).stops);
+    });
+
+    test('decision audit explains the direct-ascent, anchor, and level decisions', () => {
+        const schedule = generateDecoSchedule(
+            loadedTissues(),
+            33, air[0].n2, 0.3, 0.8, air,
+            { decoMode: DECO_MODES.STANDARD, audit: true }
+        );
+        const audit = schedule.decisionAudit;
+        expect(audit.version).toBe(DECISION_AUDIT_VERSION);
+        expect(audit.events[0].type).toBe('direct-ascent');
+        expect(audit.events[0].decision).toBe('decompression');
+        expect(audit.events.some(event => event.type === 'anchor-candidate')).toBe(true);
+        expect(audit.events.some(event =>
+            event.type === 'anchor-check' && event.decision === 'accept'
+        )).toBe(true);
+        const levels = audit.events.filter(event => event.type === 'level-decision');
+        expect(levels.map(event => event.depth)).toEqual([12, 9, 6, 3]);
+        expect(levels.every(event => event.mandatoryWait === 1)).toBe(true);
+        expect(levels.every(event => event.decision === 'ascend')).toBe(true);
+    });
+
+    test('enabling decision audit does not change the calculated schedule', () => {
+        const withoutAudit = scheduleFor(DECO_MODES.STANDARD);
+        const withAudit = generateDecoSchedule(
+            loadedTissues(),
+            33, air[0].n2, 0.3, 0.8, air,
+            { decoMode: DECO_MODES.STANDARD, audit: true }
+        );
+        expect(withAudit.stops).toEqual(withoutAudit.stops);
+        expect(withAudit.gasSwitches).toEqual(withoutAudit.gasSwitches);
+        expect(withAudit.totalTime).toBe(withoutAudit.totalTime);
+        expect(withAudit.anchorDepth).toBe(withoutAudit.anchorDepth);
+        expect(withoutAudit.decisionAudit).toBe(undefined);
+    });
+
+    test('audit aggregation preserves repeated gas selection at the same level', () => {
+        const gases = [
+            { id: 'air', name: 'Air', o2: 0.21, n2: 0.79 },
+            { id: 'ean50', name: 'EAN50', o2: 0.5, n2: 0.5 },
+            { id: 'o2', name: 'O2', o2: 1, n2: 0 }
+        ];
+        const initialN2 = getInitialTissueN2(gases[0].n2);
+        let tissues = Object.fromEntries(COMPARTMENTS.map(c => [c.id, initialN2]));
+        tissues = simulateDepthChange(tissues, 0, 12, 12 / 20, gases[0].n2);
+        tissues = simulateDepthTime(tissues, 12, 180 - 12 / 20, gases[0].n2);
+        const options = {
+            decoMode: DECO_MODES.STANDARD,
+            gasSwitchTime: 1
+        };
+        const baseline = generateDecoSchedule(
+            tissues, 12, gases[0].n2, 0.3, 0.8, gases, options
+        );
+        const audited = generateDecoSchedule(
+            tissues, 12, gases[0].n2, 0.3, 0.8, gases,
+            { ...options, audit: true }
+        );
+        expect(audited.stops).toEqual(baseline.stops);
+        expect(audited.gasSwitches).toEqual(baseline.gasSwitches);
+        expect(audited.totalTime).toBe(baseline.totalTime);
+    });
+
+    test('builds an audit from the current generated dive setup', () => {
+        const profile = generateDecoProfile(33, 13, air, 30, 80);
+        const audit = generateDecisionAudit({
+            gases: air,
+            gfLow: 30,
+            gfHigh: 80,
+            decoMode: DECO_MODES.STANDARD,
+            environment: { altitude: 0 },
+            dives: [{ waypoints: profile.waypoints }]
+        });
+        expect(audit.version).toBe(DECISION_AUDIT_VERSION);
+        expect(audit.anchorDepth).toBe(12);
+        expect(audit.events.some(event => event.type === 'level-decision')).toBe(true);
+    });
+
+    test('returns the audit from the same profile-generation branch', () => {
+        const baseline = generateDecoProfile(33, 13, air, 30, 80);
+        const audited = generateDecoProfile(
+            33, 13, air, 30, 80, undefined, { audit: true }
+        );
+        expect(audited.waypoints).toEqual(baseline.waypoints);
+        expect(audited.decoStops).toEqual(baseline.decoStops);
+        expect(audited.decisionAudit.anchorDepth).toBe(audited.anchorDepth);
+
+        const ndl = generateDecoProfile(
+            24, 3, air, 30, 80, undefined, { audit: true }
+        );
+        expect(ndl.requiresDeco).toBe(false);
+        expect(ndl.decisionAudit.events.length).toBe(1);
+        expect(ndl.decisionAudit.events[0].decision).toBe('surface');
+    });
+
+    test('uses seeded tissues when auditing a repetitive-dive profile', () => {
+        const seed = Object.fromEntries(COMPARTMENTS.map(compartment => [
+            compartment.id,
+            getInitialTissueN2(air[0].n2) + 0.5
+        ]));
+        const profile = generateDecoProfile(
+            18, 30, air, 30, 80, undefined,
+            { initialTissuePressures: seed }
+        );
+        const audit = generateDecisionAudit({
+            gases: air,
+            gfLow: 30,
+            gfHigh: 80,
+            decoMode: DECO_MODES.STANDARD,
+            initialTissuePressures: seed,
+            environment: { altitude: 0 },
+            dives: [{ waypoints: profile.waypoints }]
+        });
+        expect(audit.anchorDepth).toBe(profile.anchorDepth);
+        expect(audit.events[0].decision).toBe('decompression');
+    });
+
+    test('does not narrate gas switches absent from a generated NDL profile', () => {
+        const gases = [
+            ...air,
+            { id: 'ean50', name: 'EAN50', o2: 0.5, n2: 0.5 }
+        ];
+        const profile = generateDecoProfile(24, 3, gases, 30, 80);
+        expect(profile.requiresDeco).toBe(false);
+        const audit = generateDecisionAudit({
+            gases,
+            gfLow: 30,
+            gfHigh: 80,
+            decoMode: DECO_MODES.STANDARD,
+            environment: { altitude: 0 },
+            dives: [{ waypoints: profile.waypoints }]
+        });
+        expect(audit.events.some(event => event.type === 'gas-switch')).toBe(false);
+        expect(audit.events[0].decision).toBe('surface');
+    });
+
+    test('keeps real scheduler gas switches in seeded no-stop audits', () => {
+        const gases = [
+            ...air,
+            { id: 'ean50', name: 'EAN50', o2: 0.5, n2: 0.5 }
+        ];
+        const seed = Object.fromEntries(COMPARTMENTS.map(compartment => [
+            compartment.id,
+            getInitialTissueN2(air[0].n2)
+        ]));
+        const profile = generateDecoProfile(
+            24, 3, gases, 30, 80, undefined,
+            { initialTissuePressures: seed, gasSwitchTime: 1 }
+        );
+        const audit = generateDecisionAudit({
+            gases,
+            gfLow: 30,
+            gfHigh: 80,
+            gasSwitchTime: 1,
+            decoMode: DECO_MODES.STANDARD,
+            initialTissuePressures: seed,
+            environment: { altitude: 0 },
+            dives: [{ waypoints: profile.waypoints }]
+        });
+        expect(audit.anchorDepth).toBe(0);
+        expect(audit.events.some(event =>
+            event.type === 'gas-switch' && event.phase === 'ascent'
+        )).toBe(true);
+    });
+
+    test('reports the actual next grid candidate in adaptive anchor searches', () => {
+        const audit = generateDecoSchedule(
+            loadedTissues(33, 30),
+            33, air[0].n2, 0.3, 0.8, air,
+            { decoMode: DECO_MODES.ADAPTIVE, audit: true }
+        ).decisionAudit;
+        const firstRejected = audit.events.find(event =>
+            event.type === 'anchor-check' && event.decision !== 'accept'
+        );
+        expect(firstRejected.candidateDepth).toBe(0);
+        expect(firstRejected.nextCandidateDepth).toBe(3);
+    });
+
+    test('renders the structured audit as a concise human-readable explanation', () => {
+        const audit = generateDecoSchedule(
+            loadedTissues(),
+            33, air[0].n2, 0.3, 0.8, air,
+            { decoMode: DECO_MODES.STANDARD, audit: true }
+        ).decisionAudit;
+        const lines = buildDecisionAuditLines(audit);
+        expect(lines.some(line => line.type === 'direct-ascent')).toBe(true);
+        expect(lines.some(line => line.type === 'anchor-check')).toBe(true);
+        expect(lines.some(line => line.type === 'level-decision')).toBe(true);
+        const html = renderDecisionAuditHTML(audit);
+        expect(html).toContain('decision-audit-list');
+        expect(html).toContain('diagnostic explanation');
+    });
+
+    test('wires the audit disclosure and renderer into the offline Sandbox', () => {
+        const sandbox = readFileSync(new URL('../sandbox/index.html', import.meta.url), 'utf8');
+        const sw = readFileSync(new URL('../sw.js', import.meta.url), 'utf8');
+        expect(sandbox).toContain('id="decision-audit-content"');
+        expect(sandbox).toContain("from '../js/components/DecisionAudit.js'");
+        expect(sandbox).toContain('renderDecisionAudit(decisionAudit)');
+        expect(sandbox).toContain('window._sandboxLastDecisionAudit = null');
+        expect(sandbox.includes('calculateDecisionAudit(initialSetup)')).toBe(false);
+        expect(sw).toContain("'./js/components/DecisionAudit.js'");
+    });
+
+    test('clears a generated audit when schedule inputs change', () => {
+        const context = {
+            lastDecisionAudit: { version: 1 },
+            elements: {},
+            options: { emitOnInput: false },
+            _updateSummaryHints() {}
+        };
+        DiveSetupEditor.prototype._onInputChange.call(context);
+        expect(context.lastDecisionAudit).toBe(null);
+        context.lastDecisionAudit = { version: 1 };
+        DiveSetupEditor.prototype._onInputChange.call(context, true);
+        expect(context.lastDecisionAudit).toEqual({ version: 1 });
+    });
+
+    test('clears a generated audit when another profile is loaded', () => {
+        let emittedAudit;
+        const context = {
+            lastDecisionAudit: { version: 1 },
+            _populateFromSetup() {},
+            _emitChange() {
+                emittedAudit = this.lastDecisionAudit;
+            }
+        };
+        DiveSetupEditor.prototype.setDiveSetup.call(context, getDefaultSetup(), true);
+        expect(context.lastDecisionAudit).toBe(null);
+        expect(emittedAudit).toBe(null);
+    });
+
+    test('renders an explicit message for scheduler-limit audit failures', () => {
+        expect(renderDecisionAuditHTML({ error: 'out-of-range' }))
+            .toContain('decision-audit-empty');
     });
 });
 

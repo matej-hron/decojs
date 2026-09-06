@@ -328,7 +328,8 @@ export function generateSimpleProfile(maxDepth, bottomTime, safetyStop = DEFAULT
  *   totalDecoTime: number,
  *   controllingCompartment: number,
  *   pAnchor: number,
- *   anchorDepth: number
+ *   anchorDepth: number,
+ *   decisionAudit?: Object
  * }}
  */
 export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, safetyStop = DEFAULT_SAFETY_STOP, options = {}) {
@@ -378,6 +379,30 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
         const waypoints = generateSimpleProfile(maxDepth, bottomTime, safetyStop, options);
         // Add gasId to first bottom waypoint
         waypoints[1].gasId = bottomGas.id;
+        let decisionAudit;
+        if (options.audit) {
+            const initialN2 = getInitialTissueN2(bottomGas.n2, surfacePressure);
+            let auditTissues = Object.fromEntries(
+                COMPARTMENTS.map(compartment => [compartment.id, initialN2])
+            );
+            auditTissues = simulateDepthChange(
+                auditTissues, 0, maxDepth, descentTime,
+                bottomGas.n2, surfacePressure
+            );
+            if (bottomTime > descentTime) {
+                auditTissues = simulateDepthTime(
+                    auditTissues, maxDepth, bottomTime - descentTime,
+                    bottomGas.n2, surfacePressure
+                );
+            }
+            decisionAudit = generateDecoSchedule(
+                auditTissues, maxDepth, bottomGas.n2,
+                gfLowDec, gfHighDec, gases, { ...options, audit: true }
+            ).decisionAudit;
+            decisionAudit.events = decisionAudit.events.filter(
+                event => event.type === 'direct-ascent'
+            );
+        }
 
         return {
             waypoints,
@@ -385,7 +410,8 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
             requiresDeco: false,
             decoStops: [],
             totalDecoTime: 0,
-            controllingCompartment
+            controllingCompartment,
+            ...(decisionAudit ? { decisionAudit } : {})
         };
     }
 
@@ -408,7 +434,10 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
     }
     
     // Generate deco schedule (now returns gasSwitches and pAnchor too)
-    const { stops, gasSwitches, totalTime: ascentTotalTime, pAnchor, anchorDepth } = generateDecoSchedule(
+    const {
+        stops, gasSwitches, totalTime: ascentTotalTime, pAnchor, anchorDepth,
+        decisionAudit
+    } = generateDecoSchedule(
         tissues, maxDepth, bottomGas.n2, gfLowDec, gfHighDec, gases, options
     );
     
@@ -569,7 +598,8 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
         totalDecoTime,
         controllingCompartment,
         pAnchor,
-        anchorDepth
+        anchorDepth,
+        ...(decisionAudit ? { decisionAudit } : {})
     };
 }
 
@@ -827,6 +857,71 @@ export function getDiveSetupWaypoints(setup) {
         return [];
     }
     return mergeDivesIntoTimeline(setup.dives);
+}
+
+/**
+ * Re-run the decompression scheduler with structured decision tracing enabled.
+ * The Sandbox currently generates a single rectangular bottom segment, so its
+ * end is the last waypoint at maximum depth before ascent starts.
+ *
+ * @param {Object} setup - Dive setup produced by DiveSetupEditor
+ * @returns {Object|null} Versioned decision audit, or null for an incomplete setup
+ */
+export function generateDecisionAudit(setup) {
+    const waypoints = setup?.dives?.[0]?.waypoints;
+    const gases = setup?.gases;
+    if (!Array.isArray(waypoints) || waypoints.length < 3 ||
+        !Array.isArray(gases) || gases.length === 0) {
+        return null;
+    }
+
+    const maxDepth = Math.max(...waypoints.map(waypoint => waypoint.depth));
+    const bottomTime = waypoints
+        .filter(waypoint => Math.abs(waypoint.depth - maxDepth) < 1e-9)
+        .reduce((latest, waypoint) => Math.max(latest, waypoint.time), 0);
+    if (!(maxDepth > 0) || !(bottomTime > 0)) return null;
+
+    const bottomGas = gases[0];
+    const surfacePressure = getDiveSetupSurfacePressure(setup);
+    const initialN2 = getInitialTissueN2(bottomGas.n2, surfacePressure);
+    const seededTissues = setup.initialTissuePressures ?? null;
+    let tissues = Object.fromEntries(
+        COMPARTMENTS.map(compartment => [
+            compartment.id,
+            seededTissues?.[compartment.id] ?? initialN2
+        ])
+    );
+    const descentTime = maxDepth / 20;
+    tissues = simulateDepthChange(
+        tissues, 0, maxDepth, descentTime, bottomGas.n2, surfacePressure
+    );
+    if (bottomTime > descentTime) {
+        tissues = simulateDepthTime(
+            tissues, maxDepth, bottomTime - descentTime,
+            bottomGas.n2, surfacePressure
+        );
+    }
+
+    const schedule = generateDecoSchedule(
+        tissues,
+        maxDepth,
+        bottomGas.n2,
+        (setup.gfLow ?? DEFAULT_GF_LOW) / 100,
+        (setup.gfHigh ?? DEFAULT_GF_HIGH) / 100,
+        gases,
+        {
+            audit: true,
+            decoMode: getDecoMode(setup),
+            gasSwitchTime: setup.gasSwitchTime ?? DEFAULT_GAS_SWITCH_TIME,
+            surfacePressure
+        }
+    );
+    if (!seededTissues && schedule.anchorDepth === 0) {
+        schedule.decisionAudit.events = schedule.decisionAudit.events.filter(
+            event => event.type === 'direct-ascent'
+        );
+    }
+    return schedule.decisionAudit;
 }
 
 /**

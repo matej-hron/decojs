@@ -66,6 +66,8 @@ export const DECO_MODES = Object.freeze({
     CONTINUOUS: 'continuous'
 });
 
+export const DECISION_AUDIT_VERSION = 1;
+
 /** Resolve current and legacy schedule options to a supported mode. */
 export function getDecoMode(options = {}) {
     if (Object.values(DECO_MODES).includes(options.decoMode)) {
@@ -391,7 +393,7 @@ export function interpolateGF(currentAmbient, pAnchor, gfLow, gfHigh, surfacePre
 export function findFirstStopAtGFLow(
     tissuePressures, currentDepth, n2Fraction, gfLow,
     stopIncrement = STOP_INCREMENT, ascentRate = ASCENT_SPEED, gasSwitchPoints = null,
-    surfacePressure = SURFACE_PRESSURE
+    surfacePressure = SURFACE_PRESSURE, recordDecision = null
 ) {
     const safeGases = gasSwitchPoints && gasSwitchPoints.length > 0 ? gasSwitchPoints : null;
     let anchorDepth = currentDepth;
@@ -408,8 +410,18 @@ export function findFirstStopAtGFLow(
                 ? simulateDepthChange({ ...tissuePressures }, currentDepth, candidate, ascentTime, n2Fraction, surfacePressure)
                 : { ...tissuePressures };
         }
-        const { ceilingDepth } = getDiveCeiling(simTissues, gfLow, surfacePressure);
-        if (ceilingDepth <= candidate + 1e-9) {
+        const { ceilingDepth, controllingCompartment } =
+            getDiveCeiling(simTissues, gfLow, surfacePressure);
+        const accepted = ceilingDepth <= candidate + 1e-9;
+        recordDecision?.('anchor-check', {
+            candidateDepth: candidate,
+            ceilingDepth,
+            roundedCeilingDepth: Math.ceil((ceilingDepth - 1e-9) / stopIncrement) * stopIncrement,
+            nextCandidateDepth: Math.min(currentDepth, candidate + stopIncrement),
+            controllingCompartment,
+            decision: accepted ? 'accept' : 'deeper'
+        });
+        if (accepted) {
             anchorDepth = candidate;
             tissuesAtAnchor = simTissues;
             break;
@@ -429,17 +441,19 @@ export function findFirstStopAtGFLow(
  */
 function findFirstStagedStopAtGFLow(
     tissuePressures, currentDepth, n2Fraction, gfLow,
-    stopIncrement, ascentRate, gasSwitchPoints, surfacePressure
+    stopIncrement, ascentRate, gasSwitchPoints, surfacePressure, recordDecision = null
 ) {
-    const roundedCeiling = (tissues) => {
-        const { ceilingDepth } = getDiveCeiling(tissues, gfLow, surfacePressure);
-        return Math.max(
+    const ceilingState = (tissues) => {
+        const { ceilingDepth, controllingCompartment } =
+            getDiveCeiling(tissues, gfLow, surfacePressure);
+        const roundedCeilingDepth = Math.max(
             0,
             Math.min(
                 currentDepth,
                 Math.ceil((ceilingDepth - 1e-9) / stopIncrement) * stopIncrement
             )
         );
+        return { ceilingDepth, roundedCeilingDepth, controllingCompartment };
     };
     const simulateTo = (targetDepth) => {
         if (gasSwitchPoints && gasSwitchPoints.length > 0) {
@@ -457,12 +471,28 @@ function findFirstStagedStopAtGFLow(
             : { ...tissuePressures };
     };
 
-    let anchorDepth = roundedCeiling(tissuePressures);
+    const initialCeiling = ceilingState(tissuePressures);
+    let anchorDepth = initialCeiling.roundedCeilingDepth;
     let tissuesAtAnchor = simulateTo(anchorDepth);
+    recordDecision?.('anchor-candidate', {
+        ceilingDepth: initialCeiling.ceilingDepth,
+        roundedCeilingDepth: anchorDepth,
+        controllingCompartment: initialCeiling.controllingCompartment
+    });
 
     while (anchorDepth > 0) {
-        const nextDepth = roundedCeiling(tissuesAtAnchor);
-        if (nextDepth >= anchorDepth - 1e-9) break;
+        const arrivalCeiling = ceilingState(tissuesAtAnchor);
+        const nextDepth = arrivalCeiling.roundedCeilingDepth;
+        const accepted = nextDepth >= anchorDepth - 1e-9;
+        recordDecision?.('anchor-check', {
+            candidateDepth: anchorDepth,
+            ceilingDepth: arrivalCeiling.ceilingDepth,
+            roundedCeilingDepth: nextDepth,
+            nextCandidateDepth: nextDepth,
+            controllingCompartment: arrivalCeiling.controllingCompartment,
+            decision: accepted ? 'accept' : 'shallower'
+        });
+        if (accepted) break;
         anchorDepth = nextDepth;
         tissuesAtAnchor = simulateTo(anchorDepth);
     }
@@ -915,7 +945,8 @@ export function simulateDepthChange(
  * @param {Array} [gases] - Available gases for switching [{id, n2, o2, name, mod}]
  * @param {Object} [options] - Additional options
  * @param {number} [options.switchPpO2=1.6] - ppO2 used to calculate gas switch depths (MOD)
- * @returns {{stops: Array<{depth: number, time: number, gas: string}>, gasSwitches: Array<{depth: number, gas: string, gasId: string}>, totalTime: number, totalAscentTime: number, pAnchor: number, anchorDepth: number}}
+ * @param {boolean} [options.audit=false] - Include structured decision events
+ * @returns {{stops: Array<{depth: number, time: number, gas: string}>, gasSwitches: Array<{depth: number, gas: string, gasId: string}>, totalTime: number, totalAscentTime: number, pAnchor: number, anchorDepth: number, decisionAudit?: Object}}
  */
 export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, gfLow, gfHigh, gases = null, options = {}) {
     const { switchPpO2 = 1.6, gasSwitchTime = 0 } = options;
@@ -930,6 +961,18 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
     const stopIncrement = continuousDeco ? 0.1 : STOP_INCREMENT;
     const timeIncrement = continuousDeco ? 0.1 : 1;
     const minimumStopTime = decoMode === DECO_MODES.STANDARD ? 1 : 0;
+    const decisionAudit = options.audit ? {
+        version: DECISION_AUDIT_VERSION,
+        mode: decoMode,
+        startDepth: currentDepth,
+        gfLow,
+        gfHigh,
+        surfacePressure,
+        events: []
+    } : null;
+    const recordDecision = (type, data) => {
+        if (decisionAudit) decisionAudit.events.push({ type, ...data });
+    };
 
     const stops = [];
     const gasSwitches = []; // Track gas switches during ascent
@@ -985,6 +1028,12 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
     const directAscent = evaluateDirectAscent(
         tissuePressures, currentDepth, n2Fraction, gfHigh, surfacePressure
     );
+    recordDecision('direct-ascent', {
+        gf: gfHigh,
+        ceilingDepth: directAscent.ceilingDepth,
+        controllingCompartment: directAscent.controllingCompartment,
+        decision: directAscent.ceilingDepth === 0 ? 'surface' : 'decompression'
+    });
     const firstStopResult = directAscent.ceilingDepth === 0
         ? {
             anchorDepth: 0,
@@ -995,12 +1044,12 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
             ? findFirstStagedStopAtGFLow(
                 tissuePressures, currentDepth, n2Fraction, gfLow, stopIncrement,
                 ASCENT_SPEED, gasSwitchPoints.length > 0 ? gasSwitchPoints : null,
-                surfacePressure
+                surfacePressure, recordDecision
             )
             : findFirstStopAtGFLow(
                 tissuePressures, currentDepth, n2Fraction, gfLow, stopIncrement,
                 ASCENT_SPEED, gasSwitchPoints.length > 0 ? gasSwitchPoints : null,
-                surfacePressure
+                surfacePressure, recordDecision
             ));
     const {
         anchorDepth: firstStopFromGFLow,
@@ -1015,7 +1064,7 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
     // This ensures sequential gas switching: EAN50 at 21m before O2 at 6m.
     // NOTE: This is an N2-only model. For trimix (with He), selection logic would need
     // to consider both inert gas fractions and their respective half-times.
-    const switchToBestGas = (atDepth, recordSwitch = true) => {
+    const switchToBestGas = (atDepth, recordSwitch = true, phase = 'ascent') => {
         // Find all eligible gases: within MOD, lower N2 than current, not yet used
         const eligible = gasSwitchPoints.filter(gas => 
             atDepth <= gas.switchDepth && 
@@ -1039,6 +1088,13 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
         usedGases.add(key);
         if (recordSwitch) {
             gasSwitches.push({ depth: atDepth, gas: best.name, gasId: key });
+            recordDecision('gas-switch', {
+                depth: atDepth,
+                gas: best.name,
+                gasId: key,
+                duration: gasSwitchTime,
+                phase
+            });
         }
         return true;
     };
@@ -1048,6 +1104,10 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
     // pAnchor up to the surface it ramps linearly to GF_high.
     const anchorDepth = firstStopFromGFLow;
     const pAnchor = surfacePressure + anchorDepth * PRESSURE_PER_METER;
+    if (decisionAudit) {
+        decisionAudit.anchorDepth = anchorDepth;
+        decisionAudit.pAnchor = pAnchor;
+    }
     let firstStopDepth = firstStopFromGFLow;
     let tissuesAtFirstStop = tissuesAtStrictFirstStop;
     
@@ -1091,7 +1151,10 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
             totalAscentTime += segmentTime;
         }
         const totalTime = totalAscentTime + stops.reduce((sum, s) => sum + s.time, 0);
-        return { stops, gasSwitches, totalTime, totalAscentTime, pAnchor, anchorDepth };
+        return {
+            stops, gasSwitches, totalTime, totalAscentTime, pAnchor, anchorDepth,
+            ...(decisionAudit ? { decisionAudit } : {})
+        };
     }
     
     // Ascend to first stop WITH gas switches at MOD depths
@@ -1140,12 +1203,31 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
     // decompression level, matching Decotengu's operational convention.
     // Study modes only wait when the tissue ceiling mathematically requires it.
     let pendingStopTime = 0; // accumulates wait time at current depth
+    let levelDecision = null;
 
     while (depth > 0) {
-        // Check for gas switch on arrival
-        if (switchToBestGas(depth) && gasSwitchTime > 0) {
-            tissues = simulateDepthTime(tissues, depth, gasSwitchTime, currentN2, surfacePressure);
+        let switchTime = 0;
+        if (switchToBestGas(depth, true, 'level') && gasSwitchTime > 0) {
+            tissues = simulateDepthTime(
+                tissues, depth, gasSwitchTime, currentN2, surfacePressure
+            );
             pendingStopTime += gasSwitchTime;
+            switchTime = gasSwitchTime;
+        }
+
+        if (!levelDecision) {
+            levelDecision = {
+                depth,
+                gas: currentGasName,
+                switchTime,
+                mandatoryWait: 0,
+                additionalWait: 0,
+                initialCeilingDepth: null,
+                initialControllingCompartment: null
+            };
+        } else {
+            levelDecision.gas = currentGasName;
+            levelDecision.switchTime += switchTime;
         }
 
         if (pendingStopTime < minimumStopTime) {
@@ -1154,6 +1236,7 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
                 tissues, depth, mandatoryWait, currentN2, surfacePressure
             );
             pendingStopTime = minimumStopTime;
+            levelDecision.mandatoryWait += mandatoryWait;
         }
 
         // Next candidate depth (one step shallower)
@@ -1170,9 +1253,23 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
             getAmbientPressure(nextStopDepth, surfacePressure),
             pAnchor, gfLow, gfHigh, surfacePressure
         );
-        const { ceilingDepth } = getDiveCeiling(tissues, gfThere, surfacePressure);
+        const { ceilingDepth, controllingCompartment } =
+            getDiveCeiling(tissues, gfThere, surfacePressure);
+        if (levelDecision.initialCeilingDepth === null) {
+            levelDecision.initialCeilingDepth = ceilingDepth;
+            levelDecision.initialControllingCompartment = controllingCompartment;
+        }
 
         if (ceilingDepth <= nextStopDepth) {
+            recordDecision('level-decision', {
+                ...levelDecision,
+                targetDepth: nextStopDepth,
+                targetGF: gfThere,
+                finalCeilingDepth: ceilingDepth,
+                finalControllingCompartment: controllingCompartment,
+                totalWait: pendingStopTime,
+                decision: 'ascend'
+            });
             // Can ascend. Record stop if we waited here.
             if (pendingStopTime > 0) {
                 stops.push({
@@ -1182,6 +1279,7 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
                 });
                 pendingStopTime = 0;
             }
+            levelDecision = null;
 
             // Ascend to next depth
             tissues = simulateDepthChange(
@@ -1193,6 +1291,8 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
             // Cannot ascend yet - wait at this depth
             tissues = simulateDepthTime(tissues, depth, timeIncrement, currentN2, surfacePressure);
             pendingStopTime = Math.round((pendingStopTime + timeIncrement) * 10) / 10;
+            levelDecision.additionalWait =
+                Math.round((levelDecision.additionalWait + timeIncrement) * 10) / 10;
 
             if (pendingStopTime > DECO_STOP_MAX_MINUTES) {
                 throw new DecoCapExceededError(depth, stops, DECO_STOP_MAX_MINUTES);
@@ -1202,7 +1302,10 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
     
     const totalTime = totalAscentTime + stops.reduce((sum, s) => sum + s.time, 0);
     
-    return { stops, gasSwitches, totalTime, totalAscentTime, pAnchor, anchorDepth };
+    return {
+        stops, gasSwitches, totalTime, totalAscentTime, pAnchor, anchorDepth,
+        ...(decisionAudit ? { decisionAudit } : {})
+    };
 }
 
 /**

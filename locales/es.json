@@ -1292,6 +1292,26 @@
         "phaseSwitch": "Cambio",
         "phaseStop": "Parada"
     },
+    "decisionAudit": {
+        "title": "Cómo decidió el algoritmo",
+        "summary": "Modo: {0}. Ancla GF: {1} m.",
+        "modeStandard": "estándar",
+        "modeAdaptive": "adaptativo de estudio",
+        "modeContinuous": "malla fina",
+        "disclaimer": "Esta es una explicación diagnóstica de esta implementación, no una validación de seguridad independiente.",
+        "unavailable": "Genere un perfil para ver las decisiones del cálculo.",
+        "outOfRange": "La auditoría de decisiones no está disponible porque el perfil supera el límite del algoritmo de planificación.",
+        "directPass": "El ascenso directo superó GF High {0}%: no hay techo en la superficie (compartimento controlador {1}).",
+        "directFail": "El ascenso directo no superó GF High {0}%: techo {1} m (compartimento controlador {2}).",
+        "anchorCandidate": "El techo con GF Low es {0} m; el candidato de ancla redondeado es {1} m (compartimento controlador {2}).",
+        "anchorAccepted": "Tras ascender a {0} m, el techo con GF Low es {1} m; se acepta el ancla (compartimento controlador {2}).",
+        "anchorMoved": "Tras ascender a {0} m, el techo con GF Low es {1} m; se continúa con el candidato {2} m (compartimento controlador {3}).",
+        "gasSwitch": "A {0} m se cambia a {1}.",
+        "gasSwitchWait": "A {0} m se cambia a {1} y se esperan {2} min.",
+        "levelTransit": "De {0} m a {1} m: GF {2}%, techo {3} m (compartimento controlador {4}); se permite ascender sin esperar.",
+        "levelConvention": "A {0} m, la convención del perfil escalonado añade {1} min. Después se permite ascender a {2} m con GF {3}%, techo {4} m y compartimento controlador {5}.",
+        "levelWait": "A {0} m se esperan {1} min: {2} min por la convención del perfil escalonado, {3} min por la comprobación del techo y {4} min por el cambio de gas. Después se permite ascender a {5} m con GF {6}%, techo {7} m y compartimento controlador {8}."
+    },
     "tissueSim": {
         "alertOk": "Todo correcto",
         "ppO2OxygenToxicity": "<var>p</var><sub>O₂</sub> {0} bar — toxicidad por oxígeno (límite deco {1})",

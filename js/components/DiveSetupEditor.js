@@ -149,6 +149,7 @@ export class DiveSetupEditor extends EventTarget {
         this.hasDive2 = false;
         this.selectedProfileId = null;
         this.currentProfileName = null; // Stores the loaded profile name
+        this.lastDecisionAudit = null;
         
         // DOM references
         this.elements = {};
@@ -204,6 +205,7 @@ export class DiveSetupEditor extends EventTarget {
         if (!validation.valid) {
             console.warn('DiveSetupEditor: Invalid dive setup', validation.errors);
         }
+        this.lastDecisionAudit = null;
         this.diveSetup = normalizeDiveSetup(diveSetup);
         this._populateFromSetup(this.diveSetup);
         
@@ -1484,7 +1486,7 @@ export class DiveSetupEditor extends EventTarget {
         try {
             result = generateDecoProfile(
                 maxDepth, bottomTime, this.currentGases, gfLow, gfHigh, safetyStop,
-                { decoMode, gasSwitchTime, surfacePressure }
+                { decoMode, gasSwitchTime, surfacePressure, audit: true }
             );
         } catch (err) {
             if (err?.name === 'DecoCapExceededError') {
@@ -1495,7 +1497,8 @@ export class DiveSetupEditor extends EventTarget {
         }
 
         this._loadWaypointsToTable(result.waypoints, this.elements.waypointsBody);
-        this._onInputChange();
+        this.lastDecisionAudit = result.decisionAudit ?? null;
+        this._onInputChange(true);
     }
     
     // =========================================================================
@@ -1768,7 +1771,10 @@ export class DiveSetupEditor extends EventTarget {
     // EVENT HANDLING
     // =========================================================================
     
-    _onInputChange() {
+    _onInputChange(preserveDecisionAudit = false) {
+        if (!preserveDecisionAudit) {
+            this.lastDecisionAudit = null;
+        }
         // Update collapsed section hints
         this._updateSummaryHints();
 
@@ -1815,7 +1821,8 @@ export class DiveSetupEditor extends EventTarget {
             detail: {
                 diveSetup: setup,
                 valid: validation.valid,
-                errors: validation.errors
+                errors: validation.errors,
+                decisionAudit: this.lastDecisionAudit
             }
         }));
     }

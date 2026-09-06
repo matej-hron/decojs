@@ -1292,6 +1292,26 @@
         "phaseSwitch": "Switch",
         "phaseStop": "Stop"
     },
+    "decisionAudit": {
+        "title": "How the algorithm decided",
+        "summary": "Mode: {0}. GF anchor: {1} m.",
+        "modeStandard": "standard",
+        "modeAdaptive": "adaptive study",
+        "modeContinuous": "fine grid",
+        "disclaimer": "This is a diagnostic explanation of this implementation, not an independent safety validation.",
+        "unavailable": "Generate a profile to see the calculation decisions.",
+        "outOfRange": "The decision audit is unavailable because this profile exceeds the scheduler limit.",
+        "directPass": "Direct ascent passed at GF High {0}%: the surface ceiling is clear (controlling compartment {1}).",
+        "directFail": "Direct ascent failed at GF High {0}%: ceiling {1} m (controlling compartment {2}).",
+        "anchorCandidate": "The GF Low ceiling is {0} m; the rounded anchor candidate is {1} m (controlling compartment {2}).",
+        "anchorAccepted": "After ascent to {0} m, the GF Low ceiling is {1} m; the anchor is accepted (controlling compartment {2}).",
+        "anchorMoved": "After ascent to {0} m, the GF Low ceiling is {1} m; continue with candidate {2} m (controlling compartment {3}).",
+        "gasSwitch": "At {0} m switch to {1}.",
+        "gasSwitchWait": "At {0} m switch to {1} and wait {2} min.",
+        "levelTransit": "From {0} m to {1} m: GF {2}%, ceiling {3} m (controlling compartment {4}); ascent is allowed without waiting.",
+        "levelConvention": "At {0} m the staged-profile convention adds {1} min. Ascent to {2} m is then allowed at GF {3}%, ceiling {4} m, controlling compartment {5}.",
+        "levelWait": "At {0} m wait {1} min: {2} min by the staged-profile convention, {3} min from the ceiling check, and {4} min for a gas switch. Ascent to {5} m is then allowed at GF {6}%, ceiling {7} m, controlling compartment {8}."
+    },
     "tissueSim": {
         "alertOk": "All clear",
         "ppO2OxygenToxicity": "<var>p</var><sub>O₂</sub> {0} bar — oxygen toxicity (deco limit {1})",

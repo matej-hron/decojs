@@ -2098,7 +2098,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.77";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.78";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -2296,6 +2296,49 @@ footer a {
     font-size: 0.85rem;
     font-weight: 600;
     line-height: 1.45;
+}
+
+.decision-audit {
+    margin-top: 0.75rem;
+    border-top: 1px solid var(--border-color);
+    padding-top: 0.75rem;
+}
+
+.decision-audit summary {
+    width: fit-content;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.decision-audit summary:hover,
+.decision-audit summary:focus-visible {
+    color: var(--primary-color);
+}
+
+.decision-audit-summary {
+    margin: 0.75rem 0 0.25rem;
+    font-weight: 600;
+}
+
+.decision-audit-disclaimer,
+.decision-audit-empty {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.decision-audit-list {
+    display: grid;
+    gap: 0.45rem;
+    margin: 0.75rem 0 0;
+    padding-left: 1.5rem;
+    font-size: 0.85rem;
+    line-height: 1.45;
+}
+
+.decision-audit-level-decision {
+    padding-top: 0.25rem;
 }
 
 .dse-label {
