@@ -47,14 +47,12 @@ import {
     calculateTissueLoading,
     getMValue,
     getAdjustedMValue,
-    getFirstStopDepth,
-    findFirstStopAtGFLow,
     interpolateGF,
-    N2_FRACTION,
     getSurfacePressure,
     SURFACE_PRESSURE
 } from '../decoModel.js';
 import {
+    calculateChartGFAnchor,
     DEFAULT_ENVIRONMENT,
     mergeOptions,
     validateDiveSetup,
@@ -904,6 +902,11 @@ export class MValueChart {
             initialTissuePressures: this.diveSetup.initialTissuePressures,
             surfacePressure
         });
+        const hasGF = (this.diveSetup.gfLow ?? 100) < 100
+            || (this.diveSetup.gfHigh ?? 100) < 100;
+        this.gfAnchor = hasGF
+            ? calculateChartGFAnchor(this.diveSetup, this.calculationResults)
+            : { pAnchor: surfacePressure, anchorDepth: 0 };
         this._updateTimeDisplay();
     }
     
@@ -1022,49 +1025,7 @@ export class MValueChart {
         let pAnchor = surfacePressure;
         
         if (hasGF && results.depthPoints) {
-            // Find the maximum depth (start of ascent)
-            const maxDepth = Math.max(...results.depthPoints);
-            
-            // Find the last point at max depth (start of ascent) and get tissue pressures there
-            let ascentStartIndex = 0;
-            for (let i = 0; i < results.depthPoints.length; i++) {
-                if (Math.abs(results.depthPoints[i] - maxDepth) < 0.5) {
-                    ascentStartIndex = i;
-                }
-            }
-            
-            // Get tissue pressures at ascent start
-            const tissuePressures = {};
-            for (const compId of Object.keys(results.compartments)) {
-                tissuePressures[compId] = results.compartments[compId].pressures[ascentStartIndex];
-            }
-            
-            // Get N2 fraction from dive setup (first gas or air)
-            const gases = this.diveSetup?.gases || [];
-            const n2Fraction = gases[0]?.n2 ?? N2_FRACTION;
-
-            // Build gas switch points for pAnchor calculation (same as generateDecoSchedule)
-            const switchPpO2 = 1.6;
-            const modSurfacePressure = 1 + (surfacePressure - SURFACE_PRESSURE);
-            const gasSwitchPoints = [];
-            for (const gas of gases.slice(1)) {
-                if (gas.o2 > 0 && Number.isFinite(gas.o2) && Number.isFinite(gas.n2)) {
-                    const mod = (switchPpO2 / gas.o2 - modSurfacePressure) * 10;
-                    if (Number.isFinite(mod)) {
-                        gasSwitchPoints.push({ ...gas, switchDepth: Math.max(0, Math.floor(mod / 3) * 3) });
-                    }
-                }
-            }
-            gasSwitchPoints.sort((a, b) => b.switchDepth - a.switchDepth);
-
-            // Find pAnchor via the convention (rounded first-stop depth that
-            // satisfies the GF_low dive ceiling after simulated ascent).
-            const anchorResult = findFirstStopAtGFLow(
-                tissuePressures, maxDepth, n2Fraction, gfLow, undefined, undefined,
-                gasSwitchPoints.length > 0 ? gasSwitchPoints : null,
-                surfacePressure
-            );
-            pAnchor = anchorResult.pAnchor;
+            pAnchor = this.gfAnchor?.pAnchor ?? surfacePressure;
             
             // Draw vertical line at pAnchor (GF Low anchor depth)
             if (pAnchor > surfacePressure) {
@@ -1150,25 +1111,27 @@ export class MValueChart {
                 // This is a CURVE (not a straight line) because M_adj = P + gf(P) × (M₀(P) - P)
                 // where both gf(P) and (M₀(P) - P) are linear in P, making their product quadratic
                 // Sample multiple points to draw the actual curved limit
-                const corridorData = [];
-                const numPoints = 20;
-                for (let i = 0; i <= numPoints; i++) {
-                    const p = pAnchor - (pAnchor - surfacePressure) * (i / numPoints);
-                    const gf = interpolateGF(p, pAnchor, gfLow, gfHigh, surfacePressure);
-                    const mAdj = getAdjustedMValue(p, comp.aN2, comp.bN2, gf);
-                    corridorData.push({ x: p, y: mAdj });
+                if (pAnchor > surfacePressure) {
+                    const corridorData = [];
+                    const numPoints = 20;
+                    for (let i = 0; i <= numPoints; i++) {
+                        const p = pAnchor - (pAnchor - surfacePressure) * (i / numPoints);
+                        const gf = interpolateGF(p, pAnchor, gfLow, gfHigh, surfacePressure);
+                        const mAdj = getAdjustedMValue(p, comp.aN2, comp.bN2, gf);
+                        corridorData.push({ x: p, y: mAdj });
+                    }
+
+                    datasets.push({
+                        label: fmt(translate('chart.mvalue.gfCorridorTC', 'GF Corridor TC{0}'), comp.id),
+                        data: corridorData,
+                        borderColor: comp.color,
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        fill: false,
+                        showLine: true,
+                        order: 45
+                    });
                 }
-                
-                datasets.push({
-                    label: fmt(translate('chart.mvalue.gfCorridorTC', 'GF Corridor TC{0}'), comp.id),
-                    data: corridorData,
-                    borderColor: comp.color,
-                    borderWidth: 3,
-                    pointRadius: 0,  // No points along the curve, just the line
-                    fill: false,
-                    showLine: true,
-                    order: 45  // Draw on top of M-value lines
-                });
             }
             
             // Trail

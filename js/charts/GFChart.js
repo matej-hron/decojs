@@ -46,14 +46,13 @@ function fmt(str, ...values) {
 import {
     calculateTissueLoading,
     calculateInstantGF,
-    findFirstStopAtGFLow,
     interpolateGF,
     getAmbientPressure,
-    N2_FRACTION,
     getSurfacePressure,
     SURFACE_PRESSURE
 } from '../decoModel.js';
 import {
+    calculateChartGFAnchor,
     DEFAULT_ENVIRONMENT,
     mergeOptions,
     validateDiveSetup,
@@ -876,6 +875,11 @@ export class GFChart {
             initialTissuePressures: this.diveSetup.initialTissuePressures,
             surfacePressure
         });
+        const hasGF = (this.diveSetup.gfLow ?? 100) < 100
+            || (this.diveSetup.gfHigh ?? 100) < 100;
+        this.gfAnchor = hasGF
+            ? calculateChartGFAnchor(this.diveSetup, this.calculationResults)
+            : { pAnchor: surfacePressure, anchorDepth: 0 };
         this._updateTimeDisplay();
     }
 
@@ -915,67 +919,32 @@ export class GFChart {
         let pAnchor = surfacePressure;
 
         if (hasGF && results.depthPoints) {
-            const maxDepth = Math.max(...results.depthPoints);
+            pAnchor = this.gfAnchor?.pAnchor ?? surfacePressure;
 
-            let ascentStartIndex = 0;
-            for (let i = 0; i < results.depthPoints.length; i++) {
-                if (Math.abs(results.depthPoints[i] - maxDepth) < 0.5) {
-                    ascentStartIndex = i;
+            if (pAnchor > surfacePressure) {
+                const corridorUpper = [];
+                const numPoints = 30;
+                for (let i = 0; i <= numPoints; i++) {
+                    const p = surfacePressure + (pAnchor - surfacePressure) * (i / numPoints);
+                    const gf = p >= pAnchor
+                        ? gfLow
+                        : interpolateGF(p, pAnchor, gfLow, gfHigh, surfacePressure);
+                    corridorUpper.push({ x: p, y: gf * 100 });
                 }
+                corridorUpper.push({ x: maxPressure, y: gfLow * 100 });
+
+                datasets.push({
+                    label: translate('chart.gf.gfCorridor', 'GF corridor'),
+                    data: corridorUpper,
+                    borderColor: 'rgba(46, 204, 113, 0.8)',
+                    backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    showLine: true,
+                    fill: { target: { value: 0 }, above: 'rgba(46, 204, 113, 0.1)' },
+                    order: 48
+                });
             }
-
-            const tissuePressures = {};
-            for (const compId of Object.keys(results.compartments)) {
-                tissuePressures[compId] = results.compartments[compId].pressures[ascentStartIndex];
-            }
-
-            const gases = this.diveSetup?.gases || [];
-            const n2Fraction = gases[0]?.n2 ?? N2_FRACTION;
-
-            const switchPpO2 = 1.6;
-            const modSurfacePressure = 1 + (surfacePressure - SURFACE_PRESSURE);
-            const gasSwitchPoints = [];
-            for (const gas of gases.slice(1)) {
-                if (gas.o2 > 0 && Number.isFinite(gas.o2) && Number.isFinite(gas.n2)) {
-                    const mod = (switchPpO2 / gas.o2 - modSurfacePressure) * 10;
-                    if (Number.isFinite(mod)) {
-                        gasSwitchPoints.push({ ...gas, switchDepth: Math.max(0, Math.floor(mod / 3) * 3) });
-                    }
-                }
-            }
-            gasSwitchPoints.sort((a, b) => b.switchDepth - a.switchDepth);
-
-            const anchorResult = findFirstStopAtGFLow(
-                tissuePressures, maxDepth, n2Fraction, gfLow, undefined, undefined,
-                gasSwitchPoints.length > 0 ? gasSwitchPoints : null,
-                surfacePressure
-            );
-            pAnchor = anchorResult.pAnchor;
-
-            // GF corridor (filled band)
-            const corridorUpper = [];
-            const numPoints = 30;
-            for (let i = 0; i <= numPoints; i++) {
-                const p = surfacePressure + (pAnchor - surfacePressure) * (i / numPoints);
-                const gf = p >= pAnchor
-                    ? gfLow
-                    : interpolateGF(p, pAnchor, gfLow, gfHigh, surfacePressure);
-                corridorUpper.push({ x: p, y: gf * 100 });
-            }
-            // Extend corridor beyond pAnchor at gfLow level
-            corridorUpper.push({ x: maxPressure, y: gfLow * 100 });
-
-            datasets.push({
-                label: translate('chart.gf.gfCorridor', 'GF corridor'),
-                data: corridorUpper,
-                borderColor: 'rgba(46, 204, 113, 0.8)',
-                backgroundColor: 'rgba(46, 204, 113, 0.1)',
-                borderWidth: 2,
-                pointRadius: 0,
-                showLine: true,
-                fill: { target: { value: 0 }, above: 'rgba(46, 204, 113, 0.1)' },
-                order: 48
-            });
 
             // pAnchor vertical line
             if (pAnchor > surfacePressure) {

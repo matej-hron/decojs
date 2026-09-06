@@ -212,7 +212,10 @@ import {
 
 import { planTrip } from '../js/tripPlanner.js';
 import { preSaturation } from '../js/preSaturation.js';
-import { normalizeDiveSetup } from '../js/charts/chartTypes.js';
+import {
+    calculateChartGFAnchor,
+    normalizeDiveSetup
+} from '../js/charts/chartTypes.js';
 import { buildRuntimeRows } from '../js/components/RuntimeTable.js';
 import {
     buildDecisionAuditLines,
@@ -3879,6 +3882,135 @@ describe('normalizeDiveSetup - initialTissuePressures preservation', () => {
         const seed = { 1: 1.5, 2: 1.4 };
         const norm = normalizeDiveSetup({ ...base, initialTissuePressures: seed });
         expect(norm.initialTissuePressures).toBe(seed);
+    });
+});
+
+describe('calculateChartGFAnchor', () => {
+    test('shows no anchor or GF ramp when the direct ascent passes at GF High', () => {
+        const gases = [
+            { id: 'air', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0 }
+        ];
+        const setup = {
+            gases,
+            gfLow: 30,
+            gfHigh: 80,
+            decoMode: DECO_MODES.CONTINUOUS,
+            environment: { altitude: 0 },
+            dives: [{
+                waypoints: [
+                    { time: 0, depth: 0, gasId: 'air' },
+                    { time: 1.55, depth: 31, gasId: 'air' },
+                    { time: 12, depth: 31, gasId: 'air' },
+                    { time: 15.1, depth: 0, gasId: 'air' }
+                ]
+            }]
+        };
+        const loading = calculateTissueLoading(
+            setup.dives[0].waypoints,
+            0,
+            { gases, surfacePressure: SURFACE_PRESSURE }
+        );
+
+        expect(calculateChartGFAnchor(setup, loading)).toEqual({
+            pAnchor: SURFACE_PRESSURE,
+            anchorDepth: 0
+        });
+    });
+
+    test('recalculates from a later multilevel hold before the final ascent', () => {
+        const gases = [
+            { id: 'air', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0 }
+        ];
+        const setup = {
+            gases,
+            gfLow: 30,
+            gfHigh: 80,
+            decoMode: DECO_MODES.STANDARD,
+            environment: { altitude: 0 },
+            dives: [{
+                waypoints: [
+                    { time: 0, depth: 0, gasId: 'air' },
+                    { time: 2, depth: 40, gasId: 'air' },
+                    { time: 3, depth: 40, gasId: 'air' },
+                    { time: 5.8, depth: 12, gasId: 'air' },
+                    { time: 125.8, depth: 12, gasId: 'air' },
+                    { time: 127, depth: 0, gasId: 'air' }
+                ]
+            }]
+        };
+        const loading = calculateTissueLoading(
+            setup.dives[0].waypoints,
+            0,
+            { gases, surfacePressure: SURFACE_PRESSURE }
+        );
+
+        expect(calculateChartGFAnchor(setup, loading).anchorDepth).toBe(6);
+    });
+
+    test('preserves the original anchor for a generated staged schedule', () => {
+        const gases = [
+            { id: 'air', name: 'Air', o2: 0.2098, n2: 0.7902, he: 0 }
+        ];
+        const profile = generateDecoProfile(
+            40,
+            25,
+            gases,
+            30,
+            80,
+            { enabled: false },
+            { decoMode: DECO_MODES.STANDARD }
+        );
+        const setup = {
+            gases,
+            gfLow: 30,
+            gfHigh: 80,
+            decoMode: DECO_MODES.STANDARD,
+            environment: { altitude: 0 },
+            dives: [{ waypoints: profile.waypoints }]
+        };
+        const loading = calculateTissueLoading(
+            profile.waypoints,
+            0,
+            { gases, surfacePressure: SURFACE_PRESSURE }
+        );
+
+        expect(calculateChartGFAnchor(setup, loading).anchorDepth)
+            .toBe(profile.anchorDepth);
+    });
+
+    test('preserves a generated multigas anchor with switch duration', () => {
+        const gases = [
+            { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0 },
+            { id: 'ean50', name: 'EAN50', o2: 0.5, n2: 0.5, he: 0 },
+            { id: 'o2', name: 'O2', o2: 1, n2: 0, he: 0 }
+        ];
+        const profile = generateDecoProfile(
+            30,
+            20,
+            gases,
+            30,
+            80,
+            { enabled: false },
+            { decoMode: DECO_MODES.STANDARD, gasSwitchTime: 1 }
+        );
+        const setup = normalizeDiveSetup({
+            gases,
+            gfLow: 30,
+            gfHigh: 80,
+            decoMode: DECO_MODES.STANDARD,
+            gasSwitchTime: 1,
+            environment: { altitude: 0 },
+            dives: [{ waypoints: profile.waypoints }]
+        });
+        const loading = calculateTissueLoading(
+            profile.waypoints,
+            0,
+            { gases: setup.gases, surfacePressure: SURFACE_PRESSURE }
+        );
+
+        expect(setup.gasSwitchTime).toBe(1);
+        expect(calculateChartGFAnchor(setup, loading).anchorDepth)
+            .toBe(profile.anchorDepth);
     });
 });
 

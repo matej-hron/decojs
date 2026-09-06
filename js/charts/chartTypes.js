@@ -8,7 +8,13 @@
  */
 
 import { fmtNum } from '../format.js';
-import { DECO_MODES, getDecoMode } from '../decoModel.js';
+import {
+    DECO_MODES,
+    N2_FRACTION,
+    SURFACE_PRESSURE,
+    generateDecoSchedule,
+    getDecoMode
+} from '../decoModel.js';
 /**
  * @typedef {Object} Gas
  * @property {string} id - Unique gas identifier
@@ -51,6 +57,7 @@ import { DECO_MODES, getDecoMode } from '../decoModel.js';
  * @property {number} [gfLow=100] - Gradient Factor Low (0-100 percentage)
  * @property {number} [gfHigh=100] - Gradient Factor High (0-100 percentage)
  * @property {'standard'|'adaptive'|'continuous'} [decoMode='standard'] - Schedule policy
+ * @property {number} [gasSwitchTime=0] - Minutes spent switching gases
  * @property {number} [surfaceInterval=60] - Post-dive surface interval in minutes
  * @property {{altitude?: number, surfacePressure?: number}} [environment] - Dive-site environment
  * @property {Units} [units] - Unit preferences
@@ -151,6 +158,102 @@ export const DEFAULT_ENVIRONMENT = {
     altitude: 0,
     waterDensity: 1.025
 };
+
+/**
+ * Recalculate the GF anchor from the same scheduler branch used for profiles.
+ * A successful direct ascent returns the surface pressure, meaning no GF ramp.
+ *
+ * @param {Object} diveSetup - Normalized dive setup
+ * @param {Object} tissueLoading - Result from calculateTissueLoading()
+ * @returns {{pAnchor: number, anchorDepth: number}}
+ */
+export function calculateChartGFAnchor(diveSetup, tissueLoading) {
+    const surfacePressure = tissueLoading.surfacePressure ?? SURFACE_PRESSURE;
+    const depthPoints = tissueLoading.depthPoints;
+    if (!depthPoints?.length) {
+        return { pAnchor: surfacePressure, anchorDepth: 0 };
+    }
+
+    const gases = diveSetup.gases || [];
+    const scheduleAt = (depth, index) => {
+        const tissuePressures = {};
+        for (const compId of Object.keys(tissueLoading.compartments)) {
+            tissuePressures[compId] =
+                tissueLoading.compartments[compId].pressures[index];
+        }
+        const n2Fraction = tissueLoading.n2Fractions?.[index]
+            ?? gases[0]?.n2
+            ?? N2_FRACTION;
+        return generateDecoSchedule(
+            tissuePressures,
+            depth,
+            n2Fraction,
+            (diveSetup.gfLow ?? 100) / 100,
+            (diveSetup.gfHigh ?? 100) / 100,
+            gases,
+            {
+                decoMode: getDecoMode(diveSetup),
+                gasSwitchTime: diveSetup.gasSwitchTime ?? 0,
+                surfacePressure
+            }
+        );
+    };
+    const findTimeIndex = (time) => {
+        let bestIndex = 0;
+        let bestDistance = Infinity;
+        for (let i = 0; i < tissueLoading.timePoints.length; i++) {
+            const distance = Math.abs(tissueLoading.timePoints[i] - time);
+            if (distance < bestDistance) {
+                bestIndex = i;
+                bestDistance = distance;
+            }
+        }
+        return bestIndex;
+    };
+
+    const maxDepth = Math.max(...depthPoints);
+    let ascentStartIndex = 0;
+    for (let i = 0; i < depthPoints.length; i++) {
+        if (Math.abs(depthPoints[i] - maxDepth) < 0.5) {
+            ascentStartIndex = i;
+        }
+    }
+    let schedule = scheduleAt(maxDepth, ascentStartIndex);
+
+    const waypoints = diveSetup.dives?.[0]?.waypoints || [];
+    const ascentStartTime = tissueLoading.timePoints[ascentStartIndex];
+    const ascentHolds = [];
+    let lastHoldDeparture = null;
+    for (let i = 1; i < waypoints.length; i++) {
+        const arrival = waypoints[i - 1];
+        const departure = waypoints[i];
+        if (arrival.time < ascentStartTime - 1e-9 ||
+            arrival.depth <= 0 ||
+            Math.abs(arrival.depth - departure.depth) > 1e-9 ||
+            departure.time <= arrival.time) {
+            continue;
+        }
+        ascentHolds.push(arrival.depth);
+        lastHoldDeparture = departure;
+    }
+
+    const uniqueDepths = (depths) => depths.filter(
+        (depth, index) => index === 0 || depth !== depths[index - 1]
+    );
+    const scheduledDepths = uniqueDepths(schedule.stops.map(stop => stop.depth));
+    if (JSON.stringify(uniqueDepths(ascentHolds)) !== JSON.stringify(scheduledDepths) &&
+        lastHoldDeparture) {
+        schedule = scheduleAt(
+            lastHoldDeparture.depth,
+            findTimeIndex(lastHoldDeparture.time)
+        );
+    }
+
+    return {
+        pAnchor: schedule.pAnchor,
+        anchorDepth: schedule.anchorDepth
+    };
+}
 
 /**
  * Default dive profile chart options
@@ -330,6 +433,7 @@ export function normalizeDiveSetup(setup) {
         gfLow: setup.gfLow ?? 100,
         gfHigh: setup.gfHigh ?? 100,
         decoMode: getDecoMode(setup),
+        gasSwitchTime: setup.gasSwitchTime ?? 0,
         surfaceInterval: setup.surfaceInterval ?? 60,
         environment: {
             altitude: setup.environment?.altitude ?? 0,

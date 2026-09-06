@@ -38,6 +38,10 @@ That depth depends on the actual tissue state at the moment ascent would begin, 
 
 At ambient pressures $\ge p_{anchor}$ the active GF is clamped at $GF_{low}$. From $p_{anchor}$ up to the surface it ramps linearly to $GF_{high}$.
 
+The M-value and GF charts obtain this anchor from the same scheduler decision.
+When the direct ascent passes, they therefore show neither a `pAnchor` marker
+nor a GF Low-to-GF High corridor; no decompression ramp exists for that profile.
+
 ## findFirstStopAtGFLow — how pAnchor is computed
 
 ```javascript
