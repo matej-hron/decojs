@@ -1210,8 +1210,8 @@
             "studyShort": "(studijní režim)",
             "intro": "Určuje způsob diskretizace dekompresních zastávek. Pro běžný profil je doporučen standardní režim.",
             "modeLabel": "Dekompresní profil:",
-            "standard": "Standardní staged — doporučeno (3 m / 1 min, nejméně 1 min na úrovni)",
-            "adaptive": "Adaptivní staged — pouze pro studium (3 m / 1 min, bez vynucené zastávky)",
+            "standard": "Standardní stupňovitý profil — doporučeno (3 m / 1 min, nejméně 1 min na úrovni)",
+            "adaptive": "Adaptivní stupňovitý profil — pouze pro studium (3 m / 1 min, bez vynucené zastávky)",
             "continuous": "Jemná mřížka — pouze pro studium (0,1 m / 0,1 min)",
             "warning": "⚠️ Studijní režim: toto není standardní provozní dekompresní profil a může se lišit od potápěčských počítačů. Nepoužívejte jej k plánování skutečného ponoru."
         },
@@ -1334,7 +1334,7 @@
         },
         "intro": {
             "title": "Změňte ponor a sledujte každé rozhodnutí",
-            "text": "Grafy používají stejný kód Bühlmann ZH-L16C jako Sandbox. Porovnávají konvenční staged plán se dvěma studijními alternativami."
+            "text": "Grafy používají stejný kód Bühlmann ZH-L16C jako Sandbox. Porovnávají konvenční stupňovitý plán se dvěma studijními alternativami."
         },
         "controls": {
             "depth": "Maximální hloubka",
@@ -1369,10 +1369,10 @@
             "fineGrid": "0,1 m / 0,1 min",
             "minimum": "Minimální zastávka",
             "use": "Účel",
-            "standard": "Standardní staged",
+            "standard": "Standardní stupňovitý profil",
             "standardMinimum": "1 min na každé aktivní úrovni",
             "standardUse": "Konvenční profil kompatibilní s Decotengu",
-            "adaptive": "Adaptivní staged",
+            "adaptive": "Adaptivní stupňovitý profil",
             "adaptiveUse": "Ukazuje pouze matematicky nutné čekání",
             "continuous": "Jemná mřížka",
             "continuousUse": "Vizualizuje téměř spojitou hranici výstupu",
