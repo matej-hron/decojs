@@ -2098,7 +2098,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.76";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.77";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -2240,6 +2240,50 @@ footer a {
     display: grid;
     gap: 0.75rem;
     margin-top: 0.75rem;
+}
+
+.dse-study-settings {
+    justify-self: end;
+    width: 100%;
+}
+
+.dse-study-trigger {
+    display: flex;
+    width: fit-content;
+    margin-left: auto;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.45rem;
+    border-radius: var(--radius);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.8rem;
+    list-style: none;
+    user-select: none;
+}
+
+.dse-study-trigger::-webkit-details-marker {
+    display: none;
+}
+
+.dse-study-trigger:hover,
+.dse-study-trigger:focus-visible,
+.dse-study-settings.is-active .dse-study-trigger {
+    color: var(--primary-color);
+    background: var(--bg-secondary);
+}
+
+.dse-study-panel {
+    margin-top: 0.5rem;
+}
+
+.dse-study-panel h3 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.dse-study-active {
+    font-weight: 600;
 }
 
 .dse-study-warning {

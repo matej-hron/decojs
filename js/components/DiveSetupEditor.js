@@ -311,10 +311,6 @@ export class DiveSetupEditor extends EventTarget {
             wrapper.appendChild(this._buildGradientFactors());
         }
 
-        if (this.options.showStudySettings) {
-            wrapper.appendChild(this._buildStudySettings());
-        }
-
         if (this.options.showEnvironment) {
             wrapper.appendChild(this._buildEnvironmentSection());
         }
@@ -365,6 +361,11 @@ export class DiveSetupEditor extends EventTarget {
         // Validation errors display
         if (this.options.showValidation) {
             wrapper.appendChild(this._buildValidationErrors());
+        }
+
+        // Keep experimental controls outside the normal planning flow.
+        if (this.options.showStudySettings) {
+            wrapper.appendChild(this._buildStudySettings());
         }
 
         this.container.appendChild(wrapper);
@@ -630,40 +631,45 @@ export class DiveSetupEditor extends EventTarget {
 
     _buildStudySettings() {
         const section = document.createElement('details');
-        section.className = 'dse-section dse-study-settings';
+        section.className = 'dse-study-settings';
         section.open = false;
         section.innerHTML = `
-            <summary>🧪 ${translate('diveEditor.study.title', 'Study settings')}
-                <span class="dse-summary-hint dse-study-summary">${translate('diveEditor.study.standardShort', '(standard)')}</span>
+            <summary class="dse-study-trigger"
+                     title="${translate('diveEditor.study.title', 'Study settings')}"
+                     aria-label="${translate('diveEditor.study.title', 'Study settings')}">
+                <span aria-hidden="true">🧪</span>
+                <span class="dse-study-active" hidden>${translate('diveEditor.study.studyShort', '(study mode)')}</span>
             </summary>
-            <div class="dse-study-content">
-                <p class="dse-hint">
-                    ${translate('diveEditor.study.intro', 'Change how decompression stops are discretized. The standard mode is recommended for conventional dive profiles.')}
-                </p>
-                <div class="dse-field">
-                    <label>${translate('diveEditor.study.modeLabel', 'Decompression profile:')}</label>
-                    <select class="dse-deco-mode-select form-input">
-                        <option value="${DECO_MODES.STANDARD}">${translate('diveEditor.study.standard', 'Standard staged — recommended (3 m / 1 min, minimum 1 min per level)')}</option>
-                        <option value="${DECO_MODES.ADAPTIVE}">${translate('diveEditor.study.adaptive', 'Adaptive staged — study only (3 m / 1 min, no forced stop)')}</option>
-                        <option value="${DECO_MODES.CONTINUOUS}">${translate('diveEditor.study.continuous', 'Fine grid — study only (0.1 m / 0.1 min)')}</option>
-                    </select>
+            <div class="dse-section dse-study-panel">
+                <h3>${translate('diveEditor.study.title', 'Study settings')}</h3>
+                <div class="dse-study-content">
+                    <p class="dse-hint">
+                        ${translate('diveEditor.study.intro', 'Change how decompression stops are discretized. The standard mode is recommended for conventional dive profiles.')}
+                    </p>
+                    <div class="dse-field">
+                        <label>${translate('diveEditor.study.modeLabel', 'Decompression profile:')}</label>
+                        <select class="dse-deco-mode-select form-input">
+                            <option value="${DECO_MODES.STANDARD}">${translate('diveEditor.study.standard', 'Standard staged — recommended (3 m / 1 min, minimum 1 min per level)')}</option>
+                            <option value="${DECO_MODES.ADAPTIVE}">${translate('diveEditor.study.adaptive', 'Adaptive staged — study only (3 m / 1 min, no forced stop)')}</option>
+                            <option value="${DECO_MODES.CONTINUOUS}">${translate('diveEditor.study.continuous', 'Fine grid — study only (0.1 m / 0.1 min)')}</option>
+                        </select>
+                    </div>
+                    <p class="dse-study-warning" hidden>
+                        ${translate('diveEditor.study.warning', '⚠️ Study mode: this is not a standard operational decompression profile and may differ from dive computers. Do not use it to plan a real dive.')}
+                    </p>
                 </div>
-                <p class="dse-study-warning" hidden>
-                    ${translate('diveEditor.study.warning', '⚠️ Study mode: this is not a standard operational decompression profile and may differ from dive computers. Do not use it to plan a real dive.')}
-                </p>
             </div>
         `;
 
         this.elements.decoModeSelect = section.querySelector('.dse-deco-mode-select');
         this.elements.decoModeWarning = section.querySelector('.dse-study-warning');
-        this.elements.decoModeSummary = section.querySelector('.dse-study-summary');
+        this.elements.decoModeActive = section.querySelector('.dse-study-active');
 
         const updateWarning = () => {
             const isStandard = this.elements.decoModeSelect.value === DECO_MODES.STANDARD;
             this.elements.decoModeWarning.hidden = isStandard;
-            this.elements.decoModeSummary.textContent = isStandard
-                ? translate('diveEditor.study.standardShort', '(standard)')
-                : translate('diveEditor.study.studyShort', '(study mode)');
+            this.elements.decoModeActive.hidden = isStandard;
+            section.classList.toggle('is-active', !isStandard);
         };
         this.elements.updateDecoModeWarning = updateWarning;
         this.elements.decoModeSelect.addEventListener('change', () => {

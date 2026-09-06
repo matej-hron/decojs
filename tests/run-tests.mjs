@@ -4137,13 +4137,17 @@ describe('DiveSetupEditor notation', () => {
                 };
                 const section = DiveSetupEditor.prototype._buildStudySettings.call(context);
                 expect(section.open).toBe(false);
+                expect(section.classList.contains('dse-section')).toBe(false);
+                expect(section.querySelector('.dse-study-trigger')).toBeDefined();
                 expect(context.elements.decoModeSelect.value).toBe(DECO_MODES.STANDARD);
                 expect(context.elements.decoModeWarning.hidden).toBe(true);
+                expect(context.elements.decoModeActive.hidden).toBe(true);
 
                 context.elements.decoModeSelect.value = DECO_MODES.ADAPTIVE;
                 context.elements.decoModeSelect.dispatchEvent(new dom.window.Event('change'));
                 expect(context.elements.decoModeWarning.hidden).toBe(false);
-                expect(context.elements.decoModeSummary.textContent).toContain('study');
+                expect(context.elements.decoModeActive.hidden).toBe(false);
+                expect(section.classList.contains('is-active')).toBe(true);
             } finally {
                 globalThis.document = previousDocument;
                 dom.window.close();
