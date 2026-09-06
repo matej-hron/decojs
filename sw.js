@@ -1,5 +1,5 @@
 // Service Worker for Deco Theory PWA
-const CACHE_NAME = 'deco-theory-0.6.74';
+const CACHE_NAME = 'deco-theory-0.6.75';
 
 // Files to cache for offline use
 const STATIC_ASSETS = [
@@ -12,6 +12,7 @@ const STATIC_ASSETS = [
   './tissue-loading.html',
   './m-values.html',
   './gradient-factors.html',
+  './algorithm.html',
   './quiz-anatomy.html',
   './quiz-physics.html',
   './quiz-accidents.html',
@@ -52,6 +53,7 @@ const STATIC_ASSETS = [
   './js/tissueEducation.js',
   './js/visualization.js',
   './js/charts/chartTheme.js',
+  './js/algorithmExplainer.js',
   './js/charts/interactionLock.js',
   './js/charts/chartTypes.js',
   './js/charts/DiveProfileChart.js',

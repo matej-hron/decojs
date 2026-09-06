@@ -67,18 +67,18 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 
 | Signature | Line | Description |
 |---|---|---|
-| `calculateNDL(depth, n2=0.7902, gfHigh=1.0, initialTissuePressures=null, surfacePressure=1.01325)` | 656 | Binary-searches the maximum bottom runtime whose direct ascent on bottom gas reaches the surface within GF High. Returns `{ndl, ndlExact, ndlAtDepth, ndlAtDepthExact, controllingCompartment, descentTime}`. |
-| `generateDecoSchedule(tissues, depth, n2, gfLow, gfHigh, gases=null, options={})` | 839 | Attempts the same GF High direct ascent before creating a GF Low anchor. Returns `{stops, gasSwitches, totalTime, totalAscentTime, pAnchor, anchorDepth}`. |
+| `DECO_MODES` | 63 | Frozen mode names: `standard`, `adaptive`, and `continuous`. |
+| `getDecoMode(options={})` | 70 | Validates the explicit mode and migrates legacy `continuousDeco`; missing values default to `standard`. |
+| `calculateNDL(depth, n2=0.7902, gfHigh=1.0, initialTissuePressures=null, surfacePressure=1.01325)` | 729 | Binary-searches the maximum bottom runtime whose direct ascent on bottom gas reaches the surface within GF High. Returns `{ndl, ndlExact, ndlAtDepth, ndlAtDepthExact, controllingCompartment, descentTime}`. |
+| `generateDecoSchedule(tissues, depth, n2, gfLow, gfHigh, gases=null, options={})` | 920 | Attempts the same GF High direct ascent before creating a GF Low anchor. Standard mode uses Decotengu-style iterative first-stop discovery and a minimum minute at every active 3 m level. Returns `{stops, gasSwitches, totalTime, totalAscentTime, pAnchor, anchorDepth}`. |
 
 `generateDecoSchedule` options:
 
-- `stopIncrement` (default 3 m) — vertical grid; pass 0.1 for continuous mode
-- `timeIncrement` (default 1 min) — stop-time quantum
-- `ascentRate` (default 10 m/min) — transit between stops
+- `decoMode` (default `standard`) — `standard`, `adaptive`, or `continuous`
+- `continuousDeco` — deprecated compatibility alias; only `true` has an effect
 - `gasSwitchTime` (default 0) — minutes held at switch depth
-- `maxPpO2` (default 1.6) — cap for deco gas MOD
+- `switchPpO2` (default 1.6) — cap used for deco gas MOD
 - `surfacePressure` (default 1.01325 bar) — absolute atmospheric pressure at the dive site
-- `safetyStop` — passed through for safety-stop handling
 
 **Exports — Full-dive simulation**
 
@@ -186,7 +186,7 @@ Note: `BOTTOM_GASES[0].n2` is `0.7902`, matching `N2_FRACTION` in `decoModel.js`
 | `getNDLForDepth(depth, gas, gfHigh)` | 720 | Convenience wrapper around `calculateNDL`. Returns the full result, including `descentTime`. |
 | `getNDLStatus(ndl, bottomTime)` | 729 | Classifies a dive against its NDL for UI display. Both arguments run from leaving the surface, so they are compared with no correction — subtracting the descent here would count it twice. Returns `{state: 'unlimited'\|'ok'\|'nearLimit'\|'deco', remaining}`. `nearLimit` is the band *below* the limit (`NDL_NEAR_LIMIT_FRACTION` = 0.9), so a genuine deco obligation is never reported as merely "at limit". Callers pass `ndlExact` (not the floored `ndl`) so the badge cannot disagree with the generated profile. |
 
-"Bottom time" means the absolute time at which ascent begins, not time spent at max depth. Descent duration is exact (not rounded); ascent time snaps to 0.1 min unless `continuousDeco=true` (`diveSetup.js:260`).
+"Bottom time" means the absolute time at which ascent begins, not time spent at max depth. Descent duration is exact (not rounded); ascent time snaps to 0.1 min except in `continuous` study mode.
 
 #### Gas calculations
 

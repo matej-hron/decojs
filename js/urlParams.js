@@ -17,6 +17,8 @@
  *   const url = getSandboxUrl(mySetup);
  */
 
+import { DECO_MODES, getDecoMode } from './decoModel.js';
+
 /**
  * Encode a dive setup object into a URL-safe string
  * Uses base64 encoding of JSON. If the result is too long,
@@ -36,6 +38,7 @@ export function encodeDiveSetup(diveSetup) {
             gases: diveSetup.gases,
             gfLow: diveSetup.gfLow,
             gfHigh: diveSetup.gfHigh,
+            decoMode: getDecoMode(diveSetup),
             dives: diveSetup.dives
         };
 
@@ -64,6 +67,17 @@ export function encodeDiveSetup(diveSetup) {
 
 /** Longest accepted free-text field (names, descriptions) from a shared link. */
 export const MAX_SHARED_TEXT_LENGTH = 120;
+
+/**
+ * Resolve the decompression mode carried by a compact mobile-app link.
+ * Unknown or omitted values use the safe standard schedule.
+ *
+ * @param {URLSearchParams} params
+ * @returns {'standard'|'adaptive'|'continuous'}
+ */
+export function getCompactDecoMode(params) {
+    return getDecoMode({ decoMode: params.get('dm') });
+}
 
 /**
  * Clean a free-text field arriving from an untrusted `?profile=` link.
@@ -140,6 +154,11 @@ function sanitizeDiveSetup(setup) {
             }
         }
     }
+
+    setup.decoMode = Object.values(DECO_MODES).includes(setup.decoMode)
+        ? setup.decoMode
+        : getDecoMode(setup);
+    delete setup.continuousDeco;
 
     return setup;
 }
@@ -266,6 +285,7 @@ export function updateUrlWithProfile(diveSetup) {
  *   zhl  — ZH-L16 variant 'A' | 'B' | 'C' (default: leave editor's current)
  *   sac  — surface SAC L/min (default 20)
  *   cyl  — cylinder volume in liters (default 12)
+ *   dm   — decompression mode: standard | adaptive | continuous
  *   dg   — optional deco gases (multi-gas), each `o2:vol:reserve:start`,
  *          comma-separated, e.g. 50:11.1:30:200,100:7:20:200 (max 3)
  *
@@ -297,6 +317,7 @@ export async function getCompactProfileFromUrl() {
     const sacRate = Number.isFinite(sacRaw) && sacRaw > 0 ? sacRaw : 20;
     const cylinderVolume = Number.isFinite(cylRaw) && cylRaw > 0 ? cylRaw : 12;
     const algorithm = (zhlRaw === 'A' || zhlRaw === 'B' || zhlRaw === 'C') ? zhlRaw : null;
+    const decoMode = getCompactDecoMode(params);
 
     const o2Frac = o2Pct / 100;
     const gasName = o2Pct === 21 ? 'Air' : `EAN${Math.round(o2Pct)}`;
@@ -345,7 +366,9 @@ export async function getCompactProfileFromUrl() {
     let waypoints;
     try {
         const { generateDecoProfile } = await import('./diveSetup.js');
-        const result = generateDecoProfile(d, t, gases, gfLow, gfHigh);
+        const result = generateDecoProfile(
+            d, t, gases, gfLow, gfHigh, undefined, { decoMode }
+        );
         waypoints = result.waypoints;
     } catch (error) {
         console.error('Failed to build compact profile:', error);
@@ -357,6 +380,7 @@ export async function getCompactProfileFromUrl() {
         gases,
         gfLow,
         gfHigh,
+        decoMode,
         sacRate,
         dives: [{ waypoints }]
     };

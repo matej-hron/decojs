@@ -2098,7 +2098,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.74";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.75";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -2234,6 +2234,24 @@ footer a {
     font-size: 0.85rem;
     color: var(--text-muted);
     margin-bottom: 0.5rem;
+}
+
+.dse-study-content {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.dse-study-warning {
+    margin: 0;
+    padding: 0.75rem;
+    border: 2px solid var(--warning-color, #e67e22);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--warning-color, #e67e22) 12%, transparent);
+    color: var(--text-color);
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.45;
 }
 
 .dse-label {

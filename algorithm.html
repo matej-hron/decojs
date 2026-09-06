@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+      (() => {
+        const param = new URLSearchParams(window.location.search).get("scoutTheme");
+        const theme =
+          param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        document.documentElement.setAttribute("data-theme", theme);
+      })();
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How the Algorithm Builds a Schedule - Deco Theory</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+    <link rel="stylesheet" href="css/styles.css?v=6">
+    <style>
+        :root {
+          color-scheme: light;
+          --cp-bg: #f7f4ef;
+          --cp-bg-elevated: #fcfbf8;
+          --cp-surface: #ffffff;
+          --cp-surface-soft: #f5f5f5;
+          --cp-border: #dedede;
+          --cp-border-strong: #919191;
+          --cp-text: #242424;
+          --cp-text-muted: #5c5c5c;
+          --cp-text-soft: #6f6f6f;
+          --cp-accent: #b11f4b;
+          --cp-accent-hover: #9a1a41;
+          --cp-accent-soft: rgba(177, 31, 75, 0.08);
+          --cp-accent-fg: #ffffff;
+          --cp-success: #16a34a;
+          --cp-danger: #dc2626;
+          --cp-warning: #f59e0b;
+          --cp-link: #0078d4;
+          --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+          --cp-overlay: rgba(255, 255, 255, 0.8);
+          --cp-panel: rgba(255, 255, 255, 0.86);
+          --cp-panel-strong: rgba(255, 255, 255, 0.96);
+          --cp-sheen: rgba(255, 255, 255, 0.55);
+          --cp-highlight: rgba(177, 31, 75, 0.12);
+        }
+        html[data-theme="dark"] {
+          color-scheme: dark;
+          --cp-bg: #3d3b3a;
+          --cp-bg-elevated: #343231;
+          --cp-surface: #292929;
+          --cp-surface-soft: #2e2e2e;
+          --cp-border: #474747;
+          --cp-border-strong: #5f5f5f;
+          --cp-text: #dedede;
+          --cp-text-muted: #919191;
+          --cp-text-soft: #b0b0b0;
+          --cp-accent: #fd8ea1;
+          --cp-accent-hover: #fb7b91;
+          --cp-accent-soft: rgba(253, 142, 161, 0.14);
+          --cp-accent-fg: #1a1a1a;
+          --cp-success: #4ade80;
+          --cp-danger: #f87171;
+          --cp-warning: #fbbf24;
+          --cp-link: #4da6ff;
+          --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+          --cp-overlay: rgba(41, 41, 41, 0.88);
+          --cp-panel: rgba(41, 41, 41, 0.72);
+          --cp-panel-strong: rgba(41, 41, 41, 0.96);
+          --cp-sheen: rgba(255, 255, 255, 0.04);
+          --cp-highlight: rgba(253, 142, 161, 0.12);
+        }
+
+        .algorithm-page {
+            color: var(--cp-text);
+            font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .algorithm-page .algorithm-hero,
+        .algorithm-page .algorithm-panel,
+        .algorithm-page .algorithm-step,
+        .algorithm-page .algorithm-chart-card {
+            background: var(--cp-surface);
+            border: 1px solid var(--cp-border);
+            border-radius: 16px;
+            box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+        }
+
+        .algorithm-hero {
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .algorithm-hero p,
+        .algorithm-muted {
+            color: var(--cp-text-muted);
+        }
+
+        .algorithm-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .algorithm-control {
+            display: grid;
+            gap: 8px;
+        }
+
+        .algorithm-control output {
+            color: var(--cp-accent);
+            font-weight: 700;
+        }
+
+        .algorithm-control input {
+            accent-color: var(--cp-accent);
+        }
+
+        .algorithm-pipeline {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            margin: 24px 0;
+        }
+
+        .algorithm-step {
+            position: relative;
+            padding: 18px;
+            min-height: 160px;
+        }
+
+        .algorithm-step::after {
+            content: "→";
+            position: absolute;
+            right: -14px;
+            top: 50%;
+            color: var(--cp-accent);
+            font-size: 24px;
+            font-weight: 700;
+            z-index: 1;
+        }
+
+        .algorithm-step:last-child::after {
+            content: "";
+        }
+
+        .algorithm-step-number {
+            display: inline-grid;
+            place-items: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 0.625rem;
+            background: var(--cp-accent);
+            color: var(--cp-accent-fg);
+            font-weight: 700;
+        }
+
+        .algorithm-step-value {
+            display: block;
+            margin-top: 12px;
+            color: var(--cp-accent);
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .algorithm-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 24px 0;
+        }
+
+        .algorithm-chart-card,
+        .algorithm-panel {
+            padding: 20px;
+        }
+
+        .algorithm-chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .algorithm-chart-shell {
+            position: relative;
+            min-height: 360px;
+        }
+
+        .algorithm-chart-shell canvas {
+            width: 100% !important;
+            height: 360px !important;
+        }
+
+        .algorithm-chart-shell.fullscreen {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            padding: 24px;
+            background: var(--cp-panel-strong);
+        }
+
+        .algorithm-chart-shell.fullscreen canvas {
+            height: calc(100vh - 48px) !important;
+        }
+
+        .algorithm-button {
+            border: 1px solid var(--cp-border-strong);
+            border-radius: 0.625rem;
+            padding: 8px 12px;
+            background: var(--cp-surface-soft);
+            color: var(--cp-text);
+            cursor: pointer;
+            font: inherit;
+        }
+
+        .algorithm-button:hover {
+            border-color: var(--cp-accent);
+            color: var(--cp-accent);
+        }
+
+        .algorithm-exit {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            display: none;
+            z-index: 2;
+        }
+
+        .algorithm-chart-shell.fullscreen .algorithm-exit {
+            display: block;
+        }
+
+        .algorithm-mode-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .algorithm-mode-table th,
+        .algorithm-mode-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--cp-border);
+            text-align: left;
+        }
+
+        .algorithm-mode-table th {
+            color: var(--cp-text-muted);
+        }
+
+        .algorithm-callout {
+            border-left: 4px solid var(--cp-warning);
+            background: var(--cp-surface-soft);
+            padding: 16px;
+            margin: 20px 0;
+        }
+
+        .algorithm-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .algorithm-links a {
+            color: var(--cp-link);
+            font-weight: 600;
+        }
+
+        @media (max-width: 840px) {
+            .algorithm-pipeline {
+                grid-template-columns: 1fr;
+            }
+
+            .algorithm-step::after {
+                content: "↓";
+                right: 50%;
+                top: auto;
+                bottom: -18px;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body data-i18n-title="algorithm.header.title">
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo"><svg class="icon" aria-hidden="true"><use href="icons/sprite.svg#bubble"/></svg> Deco Theory</a>
+            <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links"></ul>
+            <span class="nav-wip-badge"><svg class="icon" aria-hidden="true"><use href="icons/sprite.svg#sparkle"/></svg> Experimental</span>
+        </div>
+    </nav>
+
+    <div class="disclaimer-banner">
+        ⚠️ <span data-i18n="disclaimer.text"><strong>Educational Use Only</strong> — This tool is NOT intended for real dive planning.</span>
+    </div>
+
+    <header>
+        <h1>🧭 <span data-i18n="algorithm.header.title">How the Algorithm Builds a Schedule</span></h1>
+        <p class="subtitle" data-i18n="algorithm.header.subtitle">From one tissue state to a complete decompression profile, one decision at a time</p>
+    </header>
+
+    <main class="education-content algorithm-page">
+        <section class="algorithm-hero">
+            <h2 data-i18n="algorithm.intro.title">Change the dive and watch every decision move</h2>
+            <p data-i18n="algorithm.intro.text">The charts below run the same Bühlmann ZH-L16C code as the Sandbox. They compare the conventional staged schedule with two educational alternatives.</p>
+            <div class="algorithm-controls">
+                <label class="algorithm-control">
+                    <span data-i18n="algorithm.controls.depth">Maximum depth</span>
+                    <input id="algorithm-depth" type="range" min="18" max="60" step="3" value="33">
+                    <output id="algorithm-depth-value">33&nbsp;m</output>
+                </label>
+                <label class="algorithm-control">
+                    <span data-i18n="algorithm.controls.time">Runtime at ascent start</span>
+                    <input id="algorithm-time" type="range" min="8" max="60" step="1" value="13">
+                    <output id="algorithm-time-value">13&nbsp;min</output>
+                </label>
+                <label class="algorithm-control">
+                    <span data-i18n="algorithm.controls.gfLow">GF Low</span>
+                    <input id="algorithm-gf-low" type="range" min="10" max="100" step="5" value="30">
+                    <output id="algorithm-gf-low-value">30</output>
+                </label>
+                <label class="algorithm-control">
+                    <span data-i18n="algorithm.controls.gfHigh">GF High</span>
+                    <input id="algorithm-gf-high" type="range" min="10" max="100" step="5" value="80">
+                    <output id="algorithm-gf-high-value">80</output>
+                </label>
+            </div>
+        </section>
+
+        <section id="algorithm-decisions">
+            <h2 data-i18n="algorithm.pipeline.title">The four decisions</h2>
+            <div class="algorithm-pipeline">
+                <article class="algorithm-step">
+                    <span class="algorithm-step-number">1</span>
+                    <h3 data-i18n="algorithm.pipeline.loadTitle">Load the tissues</h3>
+                    <p data-i18n="algorithm.pipeline.loadText">Schreiner handles descent; Haldane handles time at depth.</p>
+                    <strong class="algorithm-step-value" id="algorithm-load-value"></strong>
+                </article>
+                <article class="algorithm-step">
+                    <span class="algorithm-step-number">2</span>
+                    <h3 data-i18n="algorithm.pipeline.ndlTitle">Try a direct ascent</h3>
+                    <p data-i18n="algorithm.pipeline.ndlText">The simulated surface state is checked against GF High.</p>
+                    <strong class="algorithm-step-value" id="algorithm-ndl-value"></strong>
+                </article>
+                <article class="algorithm-step">
+                    <span class="algorithm-step-number">3</span>
+                    <h3 data-i18n="algorithm.pipeline.anchorTitle">Find the GF Low anchor</h3>
+                    <p data-i18n="algorithm.pipeline.anchorText">Only a failed direct ascent creates a decompression anchor.</p>
+                    <strong class="algorithm-step-value" id="algorithm-anchor-value"></strong>
+                </article>
+                <article class="algorithm-step">
+                    <span class="algorithm-step-number">4</span>
+                    <h3 data-i18n="algorithm.pipeline.stopTitle">Clear each level</h3>
+                    <p data-i18n="algorithm.pipeline.stopText">Wait, test the next shallower level, then move or wait again.</p>
+                    <strong class="algorithm-step-value" id="algorithm-stop-value"></strong>
+                </article>
+            </div>
+        </section>
+
+        <section class="algorithm-grid" id="algorithm-comparison">
+            <article class="algorithm-chart-card">
+                <div class="algorithm-chart-header">
+                    <div>
+                        <h2 data-i18n="algorithm.profile.title">Three profiles, one tissue model</h2>
+                        <p class="algorithm-muted" data-i18n="algorithm.profile.text">The modes differ in scheduling convention, not in Bühlmann tissue kinetics.</p>
+                    </div>
+                    <button class="algorithm-button" data-fullscreen="algorithm-profile-shell" data-i18n="algorithm.fullscreen">Fullscreen</button>
+                </div>
+                <div class="algorithm-chart-shell" id="algorithm-profile-shell">
+                    <canvas id="algorithm-profile-chart"></canvas>
+                    <button class="algorithm-button algorithm-exit" data-exit-fullscreen data-i18n="algorithm.exitFullscreen">Exit fullscreen</button>
+                </div>
+            </article>
+
+            <article class="algorithm-chart-card">
+                <div class="algorithm-chart-header">
+                    <div>
+                        <h2 data-i18n="algorithm.stops.title">Where the minutes go</h2>
+                        <p class="algorithm-muted" data-i18n="algorithm.stops.text">Standard mode emits every active 3&nbsp;m level; adaptive mode records only required waiting.</p>
+                    </div>
+                    <button class="algorithm-button" data-fullscreen="algorithm-stop-shell" data-i18n="algorithm.fullscreen">Fullscreen</button>
+                </div>
+                <div class="algorithm-chart-shell" id="algorithm-stop-shell">
+                    <canvas id="algorithm-stop-chart"></canvas>
+                    <button class="algorithm-button algorithm-exit" data-exit-fullscreen data-i18n="algorithm.exitFullscreen">Exit fullscreen</button>
+                </div>
+            </article>
+        </section>
+
+        <section class="algorithm-panel">
+            <h2 data-i18n="algorithm.modes.title">Why three modes?</h2>
+            <table class="algorithm-mode-table">
+                <thead>
+                    <tr>
+                        <th data-i18n="algorithm.modes.mode">Mode</th>
+                        <th data-i18n="algorithm.modes.grid">Grid</th>
+                        <th data-i18n="algorithm.modes.minimum">Minimum stop</th>
+                        <th data-i18n="algorithm.modes.use">Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-i18n="algorithm.modes.standard">Standard staged</td>
+                        <td data-i18n="algorithm.modes.standardGrid">3&nbsp;m / 1&nbsp;min</td>
+                        <td data-i18n="algorithm.modes.standardMinimum">1 minute at every active level</td>
+                        <td data-i18n="algorithm.modes.standardUse">Conventional profile, compatible with Decotengu</td>
+                    </tr>
+                    <tr>
+                        <td data-i18n="algorithm.modes.adaptive">Adaptive staged</td>
+                        <td data-i18n="algorithm.modes.standardGrid">3&nbsp;m / 1&nbsp;min</td>
+                        <td data-i18n="algorithm.modes.none">None</td>
+                        <td data-i18n="algorithm.modes.adaptiveUse">Shows mathematically necessary waiting only</td>
+                    </tr>
+                    <tr>
+                        <td data-i18n="algorithm.modes.continuous">Fine grid</td>
+                        <td data-i18n="algorithm.modes.fineGrid">0.1&nbsp;m / 0.1&nbsp;min</td>
+                        <td data-i18n="algorithm.modes.none">None</td>
+                        <td data-i18n="algorithm.modes.continuousUse">Visualizes the near-continuous ascent boundary</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="algorithm-callout" data-i18n="algorithm.modes.warning">
+                Study modes are explanatory tools. They do not produce a conventional operational schedule and must not be used for a real dive.
+            </div>
+            <div class="algorithm-links">
+                <a id="algorithm-standard-link" href="sandbox/index.html" data-i18n="algorithm.links.standard">Open standard profile in Sandbox →</a>
+                <a id="algorithm-adaptive-link" href="sandbox/index.html" data-i18n="algorithm.links.adaptive">Open adaptive profile →</a>
+                <a id="algorithm-continuous-link" href="sandbox/index.html" data-i18n="algorithm.links.continuous">Open fine-grid profile →</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p><a href="about.html">About this project</a></p>
+        <p class="version-number"></p>
+    </footer>
+
+    <script type="module" src="js/algorithmExplainer.js"></script>
+    <script type="module" src="js/nav.js"></script>
+</body>
+</html>

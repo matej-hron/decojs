@@ -15,7 +15,9 @@ import {
     N2_FRACTION,
     SURFACE_PRESSURE,
     getAmbientPressure,
-    getSurfacePressure
+    getSurfacePressure,
+    DECO_MODES,
+    getDecoMode
 } from './decoModel.js';
 
 import { COMPARTMENTS } from './tissueCompartments.js';
@@ -193,6 +195,7 @@ export function getDefaultSetup() {
         reservePressure: 50,
         gfLow: 100,   // Gradient Factor Low (percentage)
         gfHigh: 100,  // Gradient Factor High (percentage)
+        decoMode: DECO_MODES.STANDARD,
         surfaceInterval: 15,  // Post-dive surface time to show off-gassing
         environment: { altitude: 0 },
         units: {
@@ -260,7 +263,9 @@ export function generateSimpleProfile(maxDepth, bottomTime, safetyStop = DEFAULT
     const bottomEndTime = bottomTime;
 
     // Snap to 0.1-min precision to avoid IEEE-754 accumulation artifacts.
-    const snap = options.continuousDeco ? (t) => t : (t) => Math.round(t * 10) / 10;
+    const snap = getDecoMode(options) === DECO_MODES.CONTINUOUS
+        ? (t) => t
+        : (t) => Math.round(t * 10) / 10;
 
     if (safetyStopEnabled && maxDepth > safetyStopDepth) {
         // Ascent from max depth to safety stop depth — exact 10 m/min
@@ -502,7 +507,9 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
             }
             const ascentTime = (currentDepth - event.depth) / ASCENT_SPEED;
             currentTime += ascentTime;
-            if (!options.continuousDeco) currentTime = Math.round(currentTime * 10) / 10;
+            if (getDecoMode(options) !== DECO_MODES.CONTINUOUS) {
+                currentTime = Math.round(currentTime * 10) / 10;
+            }
             currentDepth = event.depth;
         }
 
@@ -517,7 +524,9 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
         // Add departure waypoint after full scheduled stay at depth
         if (event.stopTime > 0) {
             currentTime += event.stopTime;
-            if (!options.continuousDeco) currentTime = Math.round(currentTime * 10) / 10;
+            if (getDecoMode(options) !== DECO_MODES.CONTINUOUS) {
+                currentTime = Math.round(currentTime * 10) / 10;
+            }
             waypoints.push({ time: currentTime, depth: event.depth });
         }
     }
@@ -526,7 +535,9 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
     if (currentDepth > 0) {
         const finalAscentTime = currentDepth / ASCENT_SPEED;
         currentTime += finalAscentTime;
-        if (!options.continuousDeco) currentTime = Math.round(currentTime * 10) / 10;
+        if (getDecoMode(options) !== DECO_MODES.CONTINUOUS) {
+            currentTime = Math.round(currentTime * 10) / 10;
+        }
         waypoints.push({ time: currentTime, depth: 0 });
     }
 
@@ -651,7 +662,9 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
     
     // Snap currentTime to 0.1-min precision after each accumulation to avoid
     // IEEE-754 artifacts like 52.099999999999994 that leak into the editor.
-    const snap = options.continuousDeco ? (t) => t : (t) => Math.round(t * 10) / 10;
+    const snap = getDecoMode(options) === DECO_MODES.CONTINUOUS
+        ? (t) => t
+        : (t) => Math.round(t * 10) / 10;
 
     for (const stop of stops) {
         // Exact 10 m/min; fractional preserved so the ascent rate is correct.

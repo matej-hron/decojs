@@ -1202,9 +1202,18 @@
             "rowBailout": "Bailout / emergency",
             "rowDecoPlanner": "Deco Planner default",
             "rowFreedom": "Freedom default",
-            "rowBuhlmannTables": "Bühlmann tables",
-            "continuousDeco": "Continuous deco (no 3 m/1 min grid)",
-            "continuousWarning": "⚠️ Produces impractical profiles for demonstration only. Shows raw Bühlmann model output without standard 3 m/1 min rounding."
+            "rowBuhlmannTables": "Bühlmann tables"
+        },
+        "study": {
+            "title": "Study algorithm settings",
+            "standardShort": "(standard)",
+            "studyShort": "(study mode)",
+            "intro": "Controls how decompression stops are discretized. Standard mode is recommended for conventional profiles.",
+            "modeLabel": "Decompression profile:",
+            "standard": "Standard staged — recommended (3 m / 1 min, minimum 1 min per level)",
+            "adaptive": "Adaptive staged — study only (3 m / 1 min, no forced stop)",
+            "continuous": "Fine grid — study only (0.1 m / 0.1 min)",
+            "warning": "⚠️ Study mode: this is not a standard operational decompression profile and may differ from dive computers. Do not use it to plan a real dive."
         },
         "environment": {
             "title": "Environment",
@@ -1298,6 +1307,82 @@
         },
         "tooltipLabel": "{0}: {1} bar"
     },
+    "algorithm": {
+        "header": {
+            "title": "How the Algorithm Builds a Schedule",
+            "subtitle": "From one tissue state to a complete decompression profile, one decision at a time"
+        },
+        "intro": {
+            "title": "Change the dive and watch every decision move",
+            "text": "The charts use the same Bühlmann ZH-L16C code as the Sandbox. They compare a conventional staged schedule with two educational alternatives."
+        },
+        "controls": {
+            "depth": "Maximum depth",
+            "time": "Runtime at ascent start",
+            "gfLow": "GF Low",
+            "gfHigh": "GF High"
+        },
+        "pipeline": {
+            "title": "The four decisions",
+            "loadTitle": "Load the tissues",
+            "loadText": "Schreiner handles descent; Haldane handles time at constant depth.",
+            "ndlTitle": "Try a direct ascent",
+            "ndlText": "The simulated surface state is checked against GF High.",
+            "anchorTitle": "Find the GF Low anchor",
+            "anchorText": "Only a failed direct ascent creates a decompression anchor.",
+            "stopTitle": "Clear each level",
+            "stopText": "Wait, test the next shallower level, then move or wait again."
+        },
+        "profile": {
+            "title": "Three profiles, one tissue model",
+            "text": "The modes differ in scheduling convention, not in Bühlmann tissue kinetics."
+        },
+        "stops": {
+            "title": "Where the minutes go",
+            "text": "Standard mode emits every active 3 m level; adaptive mode records only required waiting."
+        },
+        "modes": {
+            "title": "Why three modes?",
+            "mode": "Mode",
+            "grid": "Grid",
+            "standardGrid": "3 m / 1 min",
+            "fineGrid": "0.1 m / 0.1 min",
+            "minimum": "Minimum stop",
+            "use": "Purpose",
+            "standard": "Standard staged",
+            "standardMinimum": "1 minute at every active level",
+            "standardUse": "Conventional profile compatible with Decotengu",
+            "adaptive": "Adaptive staged",
+            "adaptiveUse": "Shows mathematically necessary waiting only",
+            "continuous": "Fine grid",
+            "continuousUse": "Visualizes the near-continuous ascent boundary",
+            "none": "None",
+            "warning": "Study modes are explanatory tools. They do not produce a conventional operational schedule and must not be used for a real dive."
+        },
+        "values": {
+            "descent": "descent",
+            "directFailed": "Direct ascent fails",
+            "directPassed": "Direct ascent passes",
+            "noAnchor": "No anchor",
+            "levels": "levels",
+            "noStops": "No mandatory stops"
+        },
+        "chart": {
+            "standard": "Standard",
+            "adaptive": "Adaptive",
+            "continuous": "Fine grid",
+            "timeAxis": "Runtime (min)",
+            "depthAxis": "Depth (m)",
+            "stopAxis": "Stop duration (min)"
+        },
+        "links": {
+            "standard": "Open standard profile in Sandbox →",
+            "adaptive": "Open adaptive profile →",
+            "continuous": "Open fine-grid profile →"
+        },
+        "fullscreen": "Fullscreen",
+        "exitFullscreen": "Exit fullscreen"
+    },
     "nav": {
         "home": "Home",
         "sandbox": {
@@ -1318,7 +1403,8 @@
             "pressure": "Pressure & Depth",
             "tissue": "Tissue Loading",
             "mValues": "M-Values",
-            "gf": "Gradient Factors"
+            "gf": "Gradient Factors",
+            "algorithm": "How a Schedule Is Built"
         },
         "tests": {
             "label": "Tests",
@@ -1366,6 +1452,8 @@
             "mValuesDesc": "Visualize maximum tolerated tissue pressures and how they define safe ascent limits for each compartment.",
             "gradientFactors": "Gradient Factors",
             "gradientFactorsDesc": "Explore how GF Low and GF High settings add conservatism to your decompression schedule.",
+            "algorithm": "How the Decompression Algorithm Works",
+            "algorithmDesc": "Interactively follow the direct-ascent test, GF Low anchor, and construction of each stop.",
             "multiGas": "Multi-Gas Diving",
             "multiGasDesc": "See how switching to oxygen-rich gases during ascent accelerates decompression.",
             "statusComingSoon": "Coming Soon",

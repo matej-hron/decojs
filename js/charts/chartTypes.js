@@ -8,6 +8,7 @@
  */
 
 import { fmtNum } from '../format.js';
+import { DECO_MODES, getDecoMode } from '../decoModel.js';
 /**
  * @typedef {Object} Gas
  * @property {string} id - Unique gas identifier
@@ -49,6 +50,7 @@ import { fmtNum } from '../format.js';
  * @property {number} [decoSacRate=15] - SAC rate for deco gases in liters/min
  * @property {number} [gfLow=100] - Gradient Factor Low (0-100 percentage)
  * @property {number} [gfHigh=100] - Gradient Factor High (0-100 percentage)
+ * @property {'standard'|'adaptive'|'continuous'} [decoMode='standard'] - Schedule policy
  * @property {number} [surfaceInterval=60] - Post-dive surface interval in minutes
  * @property {{altitude?: number, surfacePressure?: number}} [environment] - Dive-site environment
  * @property {Units} [units] - Unit preferences
@@ -289,6 +291,11 @@ export function validateDiveSetup(setup) {
         errors.push('gfHigh must be between 0 and 100');
     }
 
+    if (setup.decoMode !== undefined &&
+        !Object.values(DECO_MODES).includes(setup.decoMode)) {
+        errors.push('decoMode must be standard, adaptive, or continuous');
+    }
+
     if (setup.environment?.altitude !== undefined &&
         (!Number.isFinite(setup.environment.altitude) ||
          setup.environment.altitude < 0 ||
@@ -322,6 +329,7 @@ export function normalizeDiveSetup(setup) {
         reservePressure: setup.reservePressure ?? 50,
         gfLow: setup.gfLow ?? 100,
         gfHigh: setup.gfHigh ?? 100,
+        decoMode: getDecoMode(setup),
         surfaceInterval: setup.surfaceInterval ?? 60,
         environment: {
             altitude: setup.environment?.altitude ?? 0,

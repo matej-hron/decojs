@@ -4,10 +4,11 @@ Before creating an anchor, DecoJS attempts a direct ascent to the surface on
 the bottom gas and checks the surfaced tissues at $GF_{high}$. A successful
 ascent is an NDL dive and has `anchorDepth = 0`.
 
-If that ascent fails, the algorithm finds the first **decompression level** on
-the 3 m grid and uses it as the GF-ramp anchor. In the adaptive DecoJS stop
-policy this level can have zero waiting time; the first recorded stop can
-therefore be shallower than the anchor.
+If that ascent fails, the algorithm finds the first **decompression level** and
+uses it as the GF-ramp anchor. Standard mode uses Decotengu-style iterative
+3 m ceiling steps and therefore holds at the anchor for at least one minute.
+Adaptive and continuous study modes can assign zero waiting time to the anchor;
+their first recorded stop can therefore be shallower.
 
 ## Convention
 
@@ -32,7 +33,7 @@ Returns `{ anchorDepth, pAnchor, tissuesAtAnchor }`.
 The optional surface pressure makes both the simulated ascent and the resulting
 anchor altitude-aware while preserving sea level by default.
 
-### Method
+### Adaptive and continuous study method
 
 Iterate the stop grid surface-up. For each candidate depth $d$:
 
@@ -62,6 +63,14 @@ for (let candidate = 0; candidate <= currentDepth + 1e-9; candidate += stopIncre
     }
 }
 ```
+
+### Standard staged method
+
+Standard mode starts from the current GF Low ceiling rounded up to the 3 m
+grid. It simulates ascent to that level, recomputes and rounds the ceiling, and
+continues only when the new rounded level is shallower. The first level that
+cannot be skipped by this iterative process becomes the anchor and receives the
+standard minimum one-minute stay.
 
 `stopIncrement` is 3 m by default (matching dive-computer practice) and 0.1 m in continuous-deco mode (educational visualization).
 
@@ -104,9 +113,9 @@ function _simulateAscentWithGasSwitches(tissuePressures, fromDepth, toDepth, sta
 
 ### NDL pre-check
 
-`generateDecoSchedule` performs the GF High direct-ascent check before calling
-`findFirstStopAtGFLow`. This prevents a non-zero GF Low anchor from being
-created for a dive that can surface without any mandatory stop.
+`generateDecoSchedule` performs the GF High direct-ascent check before either
+first-stop search. This prevents a non-zero GF Low anchor from being created
+for a dive that can surface without any mandatory stop.
 
 ## Worked example
 

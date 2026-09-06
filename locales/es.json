@@ -1202,9 +1202,18 @@
             "rowBailout": "Bailout / emergencia",
             "rowDecoPlanner": "Deco Planner por defecto",
             "rowFreedom": "Freedom por defecto",
-            "rowBuhlmannTables": "Tablas Bühlmann",
-            "continuousDeco": "Deco continua (sin rejilla 3 m/1 min)",
-            "continuousWarning": "⚠️ Produce perfiles poco prácticos, solo para demostración. Muestra la salida bruta del modelo Bühlmann sin el redondeo estándar a 3 m/1 min."
+            "rowBuhlmannTables": "Tablas Bühlmann"
+        },
+        "study": {
+            "title": "Ajustes de estudio del algoritmo",
+            "standardShort": "(estándar)",
+            "studyShort": "(modo de estudio)",
+            "intro": "Controla cómo se discretizan las paradas de descompresión. Se recomienda el modo estándar para perfiles convencionales.",
+            "modeLabel": "Perfil de descompresión:",
+            "standard": "Escalonado estándar — recomendado (3 m / 1 min, mínimo 1 min por nivel)",
+            "adaptive": "Escalonado adaptativo — solo estudio (3 m / 1 min, sin parada forzada)",
+            "continuous": "Rejilla fina — solo estudio (0,1 m / 0,1 min)",
+            "warning": "⚠️ Modo de estudio: este no es un perfil operativo estándar y puede diferir de los ordenadores de buceo. No lo utilice para planificar una inmersión real."
         },
         "environment": {
             "title": "Entorno",
@@ -1298,6 +1307,82 @@
         },
         "tooltipLabel": "{0}: {1} bar"
     },
+    "algorithm": {
+        "header": {
+            "title": "Cómo construye el algoritmo un plan",
+            "subtitle": "Desde un estado tisular hasta un perfil completo, decisión a decisión"
+        },
+        "intro": {
+            "title": "Cambia la inmersión y observa cada decisión",
+            "text": "Los gráficos utilizan el mismo código Bühlmann ZH-L16C que el Sandbox. Comparan un plan escalonado convencional con dos alternativas educativas."
+        },
+        "controls": {
+            "depth": "Profundidad máxima",
+            "time": "Runtime al iniciar el ascenso",
+            "gfLow": "GF Low",
+            "gfHigh": "GF High"
+        },
+        "pipeline": {
+            "title": "Las cuatro decisiones",
+            "loadTitle": "Cargar los tejidos",
+            "loadText": "Schreiner modela el descenso; Haldane, el tiempo a profundidad constante.",
+            "ndlTitle": "Probar un ascenso directo",
+            "ndlText": "El estado simulado en superficie se comprueba frente a GF High.",
+            "anchorTitle": "Encontrar el ancla GF Low",
+            "anchorText": "Solo un ascenso directo fallido crea un ancla de descompresión.",
+            "stopTitle": "Liberar cada nivel",
+            "stopText": "Espera, prueba el siguiente nivel menos profundo y después asciende o vuelve a esperar."
+        },
+        "profile": {
+            "title": "Tres perfiles, un modelo tisular",
+            "text": "Los modos difieren en la convención del plan, no en la cinética tisular de Bühlmann."
+        },
+        "stops": {
+            "title": "Dónde se emplean los minutos",
+            "text": "El modo estándar emite cada nivel activo de 3 m; el adaptativo registra solo la espera necesaria."
+        },
+        "modes": {
+            "title": "¿Por qué tres modos?",
+            "mode": "Modo",
+            "grid": "Rejilla",
+            "standardGrid": "3 m / 1 min",
+            "fineGrid": "0,1 m / 0,1 min",
+            "minimum": "Parada mínima",
+            "use": "Uso",
+            "standard": "Escalonado estándar",
+            "standardMinimum": "1 minuto en cada nivel activo",
+            "standardUse": "Perfil convencional compatible con Decotengu",
+            "adaptive": "Escalonado adaptativo",
+            "adaptiveUse": "Muestra solo la espera matemáticamente necesaria",
+            "continuous": "Rejilla fina",
+            "continuousUse": "Visualiza el límite de ascenso casi continuo",
+            "none": "Ninguna",
+            "warning": "Los modos de estudio son herramientas explicativas. No producen un plan operativo convencional y no deben usarse para una inmersión real."
+        },
+        "values": {
+            "descent": "descenso",
+            "directFailed": "El ascenso directo falla",
+            "directPassed": "El ascenso directo es válido",
+            "noAnchor": "Sin ancla",
+            "levels": "niveles",
+            "noStops": "Sin paradas obligatorias"
+        },
+        "chart": {
+            "standard": "Estándar",
+            "adaptive": "Adaptativo",
+            "continuous": "Rejilla fina",
+            "timeAxis": "Runtime (min)",
+            "depthAxis": "Profundidad (m)",
+            "stopAxis": "Duración de la parada (min)"
+        },
+        "links": {
+            "standard": "Abrir perfil estándar en el Sandbox →",
+            "adaptive": "Abrir perfil adaptativo →",
+            "continuous": "Abrir perfil de rejilla fina →"
+        },
+        "fullscreen": "Pantalla completa",
+        "exitFullscreen": "Salir de pantalla completa"
+    },
     "nav": {
         "home": "Inicio",
         "sandbox": {
@@ -1318,7 +1403,8 @@
             "pressure": "Presión y profundidad",
             "tissue": "Carga tisular",
             "mValues": "Valores-M",
-            "gf": "Factores de gradiente"
+            "gf": "Factores de gradiente",
+            "algorithm": "Cómo se crea un plan"
         },
         "tests": {
             "label": "Tests",
@@ -1366,6 +1452,8 @@
             "mValuesDesc": "Visualiza las presiones tisulares máximas toleradas y cómo definen los límites seguros de ascenso para cada compartimento.",
             "gradientFactors": "Factores de gradiente",
             "gradientFactorsDesc": "Explora cómo los ajustes GF bajo y GF alto añaden conservadurismo a tu programa de descompresión.",
+            "algorithm": "Cómo funciona el algoritmo de descompresión",
+            "algorithmDesc": "Sigue de forma interactiva la prueba de ascenso directo, el ancla GF Low y la construcción de cada parada.",
             "multiGas": "Buceo con varios gases",
             "multiGasDesc": "Descubre cómo pasar a gases ricos en oxígeno durante el ascenso acelera la descompresión.",
             "statusComingSoon": "Próximamente",

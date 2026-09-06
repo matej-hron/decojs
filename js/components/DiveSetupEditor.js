@@ -57,7 +57,11 @@ import {
     DEFAULT_GAS_SWITCH_TIME,
     renderDivePlanTableHTML
 } from '../diveSetup.js';
-import { getPressureAtAltitude } from '../decoModel.js';
+import {
+    getPressureAtAltitude,
+    DECO_MODES,
+    getDecoMode
+} from '../decoModel.js';
 import { escHtml } from '../utils/escHtml.js';
 
 import {
@@ -95,6 +99,7 @@ const DEFAULT_DECO_SAC_RATE = 15;
 const DEFAULT_EDITOR_OPTIONS = {
     showQuickSetup: true,
     showGradientFactors: true,
+    showStudySettings: true,
     showEnvironment: true,
     showProfiles: true,
     showImportExport: true,
@@ -304,6 +309,10 @@ export class DiveSetupEditor extends EventTarget {
         // Gradient Factors section (collapsed by default)
         if (this.options.showGradientFactors) {
             wrapper.appendChild(this._buildGradientFactors());
+        }
+
+        if (this.options.showStudySettings) {
+            wrapper.appendChild(this._buildStudySettings());
         }
 
         if (this.options.showEnvironment) {
@@ -552,15 +561,6 @@ export class DiveSetupEditor extends EventTarget {
                         <tr><td style="padding:2px 4px;">${translate('diveEditor.gf.rowBuhlmannTables', 'Bühlmann tables')}</td><td></td><td style="text-align:center;">100%</td><td style="text-align:center;">100%</td></tr>
                     </table>
                 </div>
-                <div class="dse-continuous-deco" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color, #ddd);">
-                    <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; cursor: pointer;">
-                        <input type="checkbox" class="dse-continuous-checkbox">
-                        ${translate('diveEditor.gf.continuousDeco', 'Continuous deco (no 3m/1min grid)')}
-                    </label>
-                    <p class="dse-hint dse-continuous-warning" style="display: none; color: var(--warning-color, #e67e22); margin-top: 0.3rem;">
-                        ${translate('diveEditor.gf.continuousWarning', '⚠️ Produces impractical profiles for demonstration only. Shows raw Bühlmann model output without standard 3m/1min rounding.')}
-                    </p>
-                </div>
             </div>
         `;
         
@@ -570,8 +570,6 @@ export class DiveSetupEditor extends EventTarget {
         this.elements.gfHighInput = section.querySelector('.dse-gf-high-input');
         this.elements.algorithmSelect = section.querySelector('.dse-algorithm-select');
         this.elements.gfSummaryHint = section.querySelector('.dse-summary-hint');
-        this.elements.continuousDecoCheckbox = section.querySelector('.dse-continuous-checkbox');
-        this.elements.continuousWarning = section.querySelector('.dse-continuous-warning');
 
         // GF info toggle
         const gfInfoToggle = section.querySelector('.dse-gf-info-toggle');
@@ -581,12 +579,6 @@ export class DiveSetupEditor extends EventTarget {
                 gfInfoPanel.style.display = gfInfoPanel.style.display === 'none' ? 'block' : 'none';
             });
         }
-
-        // Continuous deco toggle
-        this.elements.continuousDecoCheckbox.addEventListener('change', () => {
-            this.elements.continuousWarning.style.display = this.elements.continuousDecoCheckbox.checked ? 'block' : 'none';
-            this._onInputChange();
-        });
 
         // Set initial algorithm value
         this.elements.algorithmSelect.value = getZHL16Variant();
@@ -633,6 +625,54 @@ export class DiveSetupEditor extends EventTarget {
             });
         });
         
+        return section;
+    }
+
+    _buildStudySettings() {
+        const section = document.createElement('details');
+        section.className = 'dse-section dse-study-settings';
+        section.open = false;
+        section.innerHTML = `
+            <summary>🧪 ${translate('diveEditor.study.title', 'Study settings')}
+                <span class="dse-summary-hint dse-study-summary">${translate('diveEditor.study.standardShort', '(standard)')}</span>
+            </summary>
+            <div class="dse-study-content">
+                <p class="dse-hint">
+                    ${translate('diveEditor.study.intro', 'Change how decompression stops are discretized. The standard mode is recommended for conventional dive profiles.')}
+                </p>
+                <div class="dse-field">
+                    <label>${translate('diveEditor.study.modeLabel', 'Decompression profile:')}</label>
+                    <select class="dse-deco-mode-select form-input">
+                        <option value="${DECO_MODES.STANDARD}">${translate('diveEditor.study.standard', 'Standard staged — recommended (3 m / 1 min, minimum 1 min per level)')}</option>
+                        <option value="${DECO_MODES.ADAPTIVE}">${translate('diveEditor.study.adaptive', 'Adaptive staged — study only (3 m / 1 min, no forced stop)')}</option>
+                        <option value="${DECO_MODES.CONTINUOUS}">${translate('diveEditor.study.continuous', 'Fine grid — study only (0.1 m / 0.1 min)')}</option>
+                    </select>
+                </div>
+                <p class="dse-study-warning" hidden>
+                    ${translate('diveEditor.study.warning', '⚠️ Study mode: this is not a standard operational decompression profile and may differ from dive computers. Do not use it to plan a real dive.')}
+                </p>
+            </div>
+        `;
+
+        this.elements.decoModeSelect = section.querySelector('.dse-deco-mode-select');
+        this.elements.decoModeWarning = section.querySelector('.dse-study-warning');
+        this.elements.decoModeSummary = section.querySelector('.dse-study-summary');
+
+        const updateWarning = () => {
+            const isStandard = this.elements.decoModeSelect.value === DECO_MODES.STANDARD;
+            this.elements.decoModeWarning.hidden = isStandard;
+            this.elements.decoModeSummary.textContent = isStandard
+                ? translate('diveEditor.study.standardShort', '(standard)')
+                : translate('diveEditor.study.studyShort', '(study mode)');
+        };
+        this.elements.updateDecoModeWarning = updateWarning;
+        this.elements.decoModeSelect.addEventListener('change', () => {
+            updateWarning();
+            this._onInputChange();
+            this._updateNDLDisplay();
+        });
+        updateWarning();
+
         return section;
     }
 
@@ -1388,12 +1428,12 @@ export class DiveSetupEditor extends EventTarget {
         // Update deco info
         if (status.state === 'deco') {
             this.elements.decoInfo.style.display = 'inline';
-            const continuousDecoNDL = this.elements.continuousDecoCheckbox?.checked ?? false;
+            const decoModeNDL = this.elements.decoModeSelect?.value ?? DECO_MODES.STANDARD;
             const gasSwitchTimeNDL = parseInt(this.elements.gasSwitchTimeSelect?.value) || 0;
             try {
                 const result = generateDecoProfile(
                     maxDepth, bottomTime, this.currentGases, gfLow, gfHigh, safetyStop,
-                    { continuousDeco: continuousDecoNDL, gasSwitchTime: gasSwitchTimeNDL, surfacePressure }
+                    { decoMode: decoModeNDL, gasSwitchTime: gasSwitchTimeNDL, surfacePressure }
                 );
                 this.elements.decoTime.textContent = Math.round(result.totalDecoTime * 10) / 10;
             } catch (err) {
@@ -1431,14 +1471,14 @@ export class DiveSetupEditor extends EventTarget {
             time: parseFloat(this.elements.safetyStopTime?.value) || DEFAULT_SAFETY_STOP.time
         };
         
-        const continuousDeco = this.elements.continuousDecoCheckbox?.checked ?? false;
+        const decoMode = this.elements.decoModeSelect?.value ?? DECO_MODES.STANDARD;
         const gasSwitchTime = parseInt(this.elements.gasSwitchTimeSelect?.value) || 0;
         const surfacePressure = this._getSurfacePressure();
         let result;
         try {
             result = generateDecoProfile(
                 maxDepth, bottomTime, this.currentGases, gfLow, gfHigh, safetyStop,
-                { continuousDeco, gasSwitchTime, surfacePressure }
+                { decoMode, gasSwitchTime, surfacePressure }
             );
         } catch (err) {
             if (err?.name === 'DecoCapExceededError') {
@@ -1541,7 +1581,7 @@ export class DiveSetupEditor extends EventTarget {
             reservePressure: reservePressure,
             environment: { altitude: this._getAltitude() },
             units: { depth: 'meters', time: 'minutes', pressure: 'bar' },
-            continuousDeco: this.elements.continuousDecoCheckbox?.checked ?? false,
+            decoMode: this.elements.decoModeSelect?.value ?? DECO_MODES.STANDARD,
             gasSwitchTime: parseInt(this.elements.gasSwitchTimeSelect?.value) || 0
         };
     }
@@ -1593,10 +1633,9 @@ export class DiveSetupEditor extends EventTarget {
             setZHL16Variant(setup.algorithm);
         }
 
-        // Continuous deco
-        if (this.elements.continuousDecoCheckbox) {
-            this.elements.continuousDecoCheckbox.checked = setup.continuousDeco ?? false;
-            this.elements.continuousWarning.style.display = setup.continuousDeco ? 'block' : 'none';
+        if (this.elements.decoModeSelect) {
+            this.elements.decoModeSelect.value = getDecoMode(setup);
+            this.elements.updateDecoModeWarning();
         }
 
         // Gas switch time

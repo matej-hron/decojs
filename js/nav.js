@@ -39,7 +39,8 @@ const NAV_ITEMS = [
             { href: 'pressure.html', labelKey: 'nav.theory.pressure', label: 'Pressure & Depth' },
             { href: 'tissue-loading.html', labelKey: 'nav.theory.tissue', label: 'Tissue Loading' },
             { href: 'm-values.html', labelKey: 'nav.theory.mValues', label: 'M-Values' },
-            { href: 'gradient-factors.html', labelKey: 'nav.theory.gf', label: 'Gradient Factors' }
+            { href: 'gradient-factors.html', labelKey: 'nav.theory.gf', label: 'Gradient Factors' },
+            { href: 'algorithm.html', labelKey: 'nav.theory.algorithm', label: 'How a Schedule Is Built' }
         ]
     },
     {

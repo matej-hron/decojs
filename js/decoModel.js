@@ -59,6 +59,23 @@ export const PRESSURE_PER_METER = 0.1; // bar per meter
 export const DEFAULT_GF_LOW = 1.0;   // 100%
 export const DEFAULT_GF_HIGH = 1.0;  // 100%
 
+/** Supported decompression schedule policies. */
+export const DECO_MODES = Object.freeze({
+    STANDARD: 'standard',
+    ADAPTIVE: 'adaptive',
+    CONTINUOUS: 'continuous'
+});
+
+/** Resolve current and legacy schedule options to a supported mode. */
+export function getDecoMode(options = {}) {
+    if (Object.values(DECO_MODES).includes(options.decoMode)) {
+        return options.decoMode;
+    }
+    return options.continuousDeco === true
+        ? DECO_MODES.CONTINUOUS
+        : DECO_MODES.STANDARD;
+}
+
 /**
  * Safety cap on a single deco stop. If waiting at one depth exceeds this, the
  * profile is outside the algorithm's usable domain (unreasonable GF for the
@@ -400,6 +417,61 @@ export function findFirstStopAtGFLow(
     }
     const pAnchor = surfacePressure + anchorDepth * PRESSURE_PER_METER;
     return { anchorDepth, pAnchor, tissuesAtAnchor };
+}
+
+/**
+ * Find the first staged stop using Decotengu's iterative 3 m ceiling steps.
+ *
+ * Each candidate is derived from the ceiling at the previously reached level.
+ * This deliberately does not jump directly to the shallowest level that would
+ * be safe after one long ascent, because a conventional staged schedule treats
+ * every reached ceiling level as an active decompression level.
+ */
+function findFirstStagedStopAtGFLow(
+    tissuePressures, currentDepth, n2Fraction, gfLow,
+    stopIncrement, ascentRate, gasSwitchPoints, surfacePressure
+) {
+    const roundedCeiling = (tissues) => {
+        const { ceilingDepth } = getDiveCeiling(tissues, gfLow, surfacePressure);
+        return Math.max(
+            0,
+            Math.min(
+                currentDepth,
+                Math.ceil((ceilingDepth - 1e-9) / stopIncrement) * stopIncrement
+            )
+        );
+    };
+    const simulateTo = (targetDepth) => {
+        if (gasSwitchPoints && gasSwitchPoints.length > 0) {
+            return _simulateAscentWithGasSwitches(
+                tissuePressures, currentDepth, targetDepth, n2Fraction,
+                gasSwitchPoints, surfacePressure
+            );
+        }
+        const ascentTime = (currentDepth - targetDepth) / ascentRate;
+        return ascentTime > 0
+            ? simulateDepthChange(
+                tissuePressures, currentDepth, targetDepth, ascentTime,
+                n2Fraction, surfacePressure
+            )
+            : { ...tissuePressures };
+    };
+
+    let anchorDepth = roundedCeiling(tissuePressures);
+    let tissuesAtAnchor = simulateTo(anchorDepth);
+
+    while (anchorDepth > 0) {
+        const nextDepth = roundedCeiling(tissuesAtAnchor);
+        if (nextDepth >= anchorDepth - 1e-9) break;
+        anchorDepth = nextDepth;
+        tissuesAtAnchor = simulateTo(anchorDepth);
+    }
+
+    return {
+        anchorDepth,
+        pAnchor: surfacePressure + anchorDepth * PRESSURE_PER_METER,
+        tissuesAtAnchor
+    };
 }
 
 /**
@@ -846,16 +918,18 @@ export function simulateDepthChange(
  * @returns {{stops: Array<{depth: number, time: number, gas: string}>, gasSwitches: Array<{depth: number, gas: string, gasId: string}>, totalTime: number, totalAscentTime: number, pAnchor: number, anchorDepth: number}}
  */
 export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, gfLow, gfHigh, gases = null, options = {}) {
-    const { switchPpO2 = 1.6, continuousDeco = false, gasSwitchTime = 0 } = options;
+    const { switchPpO2 = 1.6, gasSwitchTime = 0 } = options;
+    const decoMode = getDecoMode(options);
     const surfacePressure = options.surfacePressure ?? SURFACE_PRESSURE;
     // Keep the existing sea-level MOD convention (nominal 1 bar), while
     // shifting it by the same pressure delta when altitude changes.
     const modSurfacePressure = options.modSurfacePressure
         ?? 1 + (surfacePressure - SURFACE_PRESSURE);
 
-    // In continuous mode, use fine-grained resolution for didactic visualization
+    const continuousDeco = decoMode === DECO_MODES.CONTINUOUS;
     const stopIncrement = continuousDeco ? 0.1 : STOP_INCREMENT;
     const timeIncrement = continuousDeco ? 0.1 : 1;
+    const minimumStopTime = decoMode === DECO_MODES.STANDARD ? 1 : 0;
 
     const stops = [];
     const gasSwitches = []; // Track gas switches during ascent
@@ -917,11 +991,17 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
             pAnchor: surfacePressure,
             tissuesAtAnchor: directAscent.tissues
         }
-        : findFirstStopAtGFLow(
-            tissuePressures, currentDepth, n2Fraction, gfLow, stopIncrement,
-            ASCENT_SPEED, gasSwitchPoints.length > 0 ? gasSwitchPoints : null,
-            surfacePressure
-        );
+        : (decoMode === DECO_MODES.STANDARD
+            ? findFirstStagedStopAtGFLow(
+                tissuePressures, currentDepth, n2Fraction, gfLow, stopIncrement,
+                ASCENT_SPEED, gasSwitchPoints.length > 0 ? gasSwitchPoints : null,
+                surfacePressure
+            )
+            : findFirstStopAtGFLow(
+                tissuePressures, currentDepth, n2Fraction, gfLow, stopIncrement,
+                ASCENT_SPEED, gasSwitchPoints.length > 0 ? gasSwitchPoints : null,
+                surfacePressure
+            ));
     const {
         anchorDepth: firstStopFromGFLow,
         tissuesAtAnchor: tissuesAtStrictFirstStop
@@ -1056,12 +1136,9 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
     tissues = currentTissues;
     depth = firstStopDepth;
     
-    // Deco loop: work up from first stop to surface in stopIncrement steps.
-    // Same logic for both standard (3m) and continuous (0.1m) modes:
-    // At each depth, check if ceiling at DESTINATION (with destination GF) allows ascent.
-    // If not, wait timeIncrement and recheck. Record stops where waitTime > 0.
-    // In continuous mode, enforce minimum 2 min per recorded stop.
-    const MIN_STOP_TIME = continuousDeco ? 2 : 0;
+    // Standard staged schedules spend at least one minute at every active 3 m
+    // decompression level, matching Decotengu's operational convention.
+    // Study modes only wait when the tissue ceiling mathematically requires it.
     let pendingStopTime = 0; // accumulates wait time at current depth
 
     while (depth > 0) {
@@ -1069,6 +1146,14 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
         if (switchToBestGas(depth) && gasSwitchTime > 0) {
             tissues = simulateDepthTime(tissues, depth, gasSwitchTime, currentN2, surfacePressure);
             pendingStopTime += gasSwitchTime;
+        }
+
+        if (pendingStopTime < minimumStopTime) {
+            const mandatoryWait = minimumStopTime - pendingStopTime;
+            tissues = simulateDepthTime(
+                tissues, depth, mandatoryWait, currentN2, surfacePressure
+            );
+            pendingStopTime = minimumStopTime;
         }
 
         // Next candidate depth (one step shallower)
@@ -1090,12 +1175,6 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
         if (ceilingDepth <= nextStopDepth) {
             // Can ascend. Record stop if we waited here.
             if (pendingStopTime > 0) {
-                // In continuous mode, enforce minimum stop time
-                if (continuousDeco && pendingStopTime < MIN_STOP_TIME) {
-                    const extra = MIN_STOP_TIME - pendingStopTime;
-                    tissues = simulateDepthTime(tissues, depth, extra, currentN2, surfacePressure);
-                    pendingStopTime = MIN_STOP_TIME;
-                }
                 stops.push({
                     depth: Math.round(depth * 10) / 10,
                     time: Math.round(pendingStopTime * 10) / 10,

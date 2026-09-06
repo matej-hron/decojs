@@ -1202,9 +1202,18 @@
             "rowBailout": "Bailout / nouze",
             "rowDecoPlanner": "Deco Planner výchozí",
             "rowFreedom": "Freedom výchozí",
-            "rowBuhlmannTables": "Bühlmannovy tabulky",
-            "continuousDeco": "Spojitá deko (bez mřížky 3 m/1 min)",
-            "continuousWarning": "⚠️ Produkuje nepraktické profily pouze pro demonstraci. Ukazuje čistý výstup Bühlmannova modelu bez standardního zaokrouhlování na 3 m/1 min."
+            "rowBuhlmannTables": "Bühlmannovy tabulky"
+        },
+        "study": {
+            "title": "Studijní nastavení algoritmu",
+            "standardShort": "(standardní)",
+            "studyShort": "(studijní režim)",
+            "intro": "Určuje způsob diskretizace dekompresních zastávek. Pro běžný profil je doporučen standardní režim.",
+            "modeLabel": "Dekompresní profil:",
+            "standard": "Standardní staged — doporučeno (3 m / 1 min, nejméně 1 min na úrovni)",
+            "adaptive": "Adaptivní staged — pouze pro studium (3 m / 1 min, bez vynucené zastávky)",
+            "continuous": "Jemná mřížka — pouze pro studium (0,1 m / 0,1 min)",
+            "warning": "⚠️ Studijní režim: toto není standardní provozní dekompresní profil a může se lišit od potápěčských počítačů. Nepoužívejte jej k plánování skutečného ponoru."
         },
         "environment": {
             "title": "Prostředí",
@@ -1298,6 +1307,82 @@
         },
         "tooltipLabel": "{0}: {1} bar"
     },
+    "algorithm": {
+        "header": {
+            "title": "Jak algoritmus sestavuje dekompresní plán",
+            "subtitle": "Od jednoho stavu tkání ke kompletnímu profilu, rozhodnutí po rozhodnutí"
+        },
+        "intro": {
+            "title": "Změňte ponor a sledujte každé rozhodnutí",
+            "text": "Grafy používají stejný kód Bühlmann ZH-L16C jako Sandbox. Porovnávají konvenční staged plán se dvěma studijními alternativami."
+        },
+        "controls": {
+            "depth": "Maximální hloubka",
+            "time": "Runtime při zahájení výstupu",
+            "gfLow": "GF Low",
+            "gfHigh": "GF High"
+        },
+        "pipeline": {
+            "title": "Čtyři rozhodnutí",
+            "loadTitle": "Nasyť tkáně",
+            "loadText": "Schreiner popisuje sestup, Haldane čas v konstantní hloubce.",
+            "ndlTitle": "Zkus přímý výstup",
+            "ndlText": "Simulovaný stav na hladině se kontroluje proti GF High.",
+            "anchorTitle": "Najdi kotvu GF Low",
+            "anchorText": "Dekompresní kotva vznikne pouze tehdy, když přímý výstup selže.",
+            "stopTitle": "Uvolni každou úroveň",
+            "stopText": "Počkej, otestuj další mělčí úroveň a potom vystup nebo znovu čekej."
+        },
+        "profile": {
+            "title": "Tři profily, jeden tkáňový model",
+            "text": "Režimy se liší konvencí plánu, nikoli kinetikou Bühlmannových tkání."
+        },
+        "stops": {
+            "title": "Kam se rozdělují minuty",
+            "text": "Standardní režim vypíše každou aktivní úroveň po 3 m; adaptivní režim pouze skutečně nutné čekání."
+        },
+        "modes": {
+            "title": "Proč tři režimy?",
+            "mode": "Režim",
+            "grid": "Mřížka",
+            "standardGrid": "3 m / 1 min",
+            "fineGrid": "0,1 m / 0,1 min",
+            "minimum": "Minimální zastávka",
+            "use": "Účel",
+            "standard": "Standardní staged",
+            "standardMinimum": "1 min na každé aktivní úrovni",
+            "standardUse": "Konvenční profil kompatibilní s Decotengu",
+            "adaptive": "Adaptivní staged",
+            "adaptiveUse": "Ukazuje pouze matematicky nutné čekání",
+            "continuous": "Jemná mřížka",
+            "continuousUse": "Vizualizuje téměř spojitou hranici výstupu",
+            "none": "Žádná",
+            "warning": "Studijní režimy jsou vysvětlující nástroje. Nevytvářejí konvenční provozní plán a nesmí se používat pro skutečný ponor."
+        },
+        "values": {
+            "descent": "sestup",
+            "directFailed": "Přímý výstup neprojde",
+            "directPassed": "Přímý výstup projde",
+            "noAnchor": "Bez kotvy",
+            "levels": "úrovně",
+            "noStops": "Bez povinných zastávek"
+        },
+        "chart": {
+            "standard": "Standardní",
+            "adaptive": "Adaptivní",
+            "continuous": "Jemná mřížka",
+            "timeAxis": "Runtime (min)",
+            "depthAxis": "Hloubka (m)",
+            "stopAxis": "Délka zastávky (min)"
+        },
+        "links": {
+            "standard": "Otevřít standardní profil v Sandboxu →",
+            "adaptive": "Otevřít adaptivní profil →",
+            "continuous": "Otevřít profil s jemnou mřížkou →"
+        },
+        "fullscreen": "Celá obrazovka",
+        "exitFullscreen": "Ukončit celou obrazovku"
+    },
     "nav": {
         "home": "Domů",
         "sandbox": {
@@ -1318,7 +1403,8 @@
             "pressure": "Tlak a hloubka",
             "tissue": "Sycení tkání",
             "mValues": "M-hodnoty",
-            "gf": "Gradient faktory"
+            "gf": "Gradient faktory",
+            "algorithm": "Jak vzniká dekompresní plán"
         },
         "tests": {
             "label": "Testy",
@@ -1366,6 +1452,8 @@
             "mValuesDesc": "Vizualizace maximálních tolerovaných tlaků ve tkáních a jak určují bezpečné limity výstupu pro každý kompartment.",
             "gradientFactors": "Gradient faktory",
             "gradientFactorsDesc": "Prozkoumejte, jak nastavení GF Low a GF High přidává konzervativnost vašemu dekompresnímu plánu.",
+            "algorithm": "Jak funguje dekompresní algoritmus",
+            "algorithmDesc": "Interaktivně sledujte test přímého výstupu, kotvu GF Low a vznik jednotlivých zastávek.",
             "multiGas": "Potápění s více směsmi",
             "multiGasDesc": "Podívejte se, jak přepnutí na směsi bohaté na kyslík během výstupu urychluje dekompresi.",
             "statusComingSoon": "Připravujeme",

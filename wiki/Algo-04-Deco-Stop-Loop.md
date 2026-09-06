@@ -5,7 +5,7 @@ From the first stop inward to the surface, produce the list of mandatory stops: 
 ## Entry point
 
 ```javascript
-// js/decoModel.js:826 (signature)
+// js/decoModel.js:920 (signature)
 export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, gfLow, gfHigh, gases = null, options = {})
 ```
 
@@ -25,26 +25,34 @@ Returns:
 }
 ```
 
-Two modes are selected by `options.continuousDeco`:
+Three explicit policies are selected by `options.decoMode`:
 
 ```javascript
-// js/decoModel.js:900-904
-const { switchPpO2 = 1.6, continuousDeco = false, gasSwitchTime = 0 } = options;
+const decoMode = getDecoMode(options);
+const continuousDeco = decoMode === DECO_MODES.CONTINUOUS;
 const stopIncrement = continuousDeco ? 0.1 : STOP_INCREMENT;  // 3 m default
 const timeIncrement = continuousDeco ? 0.1 : 1;                // 1 min default
+const minimumStopTime = decoMode === DECO_MODES.STANDARD ? 1 : 0;
 ```
 
-Standard mode produces a 3 m / 1 min staircase matching decotengu and dive-computer output. Continuous mode (0.1 m / 0.1 min) is for educational visualization — the dive profile renders as a smooth curve instead of steps.
+| Mode | Grid | Minimum stay | Purpose |
+|---|---|---|---|
+| `standard` | 3 m / 1 min | 1 min at every active level | Conventional staged schedule; default |
+| `adaptive` | 3 m / 1 min | none | Study mode showing only mathematically required waits |
+| `continuous` | 0.1 m / 0.1 min | none | Fine-grid study visualization |
+
+The legacy `continuousDeco: true` input is still accepted and resolves to
+`continuous`; missing or false legacy values resolve safely to `standard`.
 
 ## High-level flow
 
 ```mermaid
 flowchart TD
   A[Input: tissue state<br/>at bottom end] --> B[Compute gas switch points<br/>MOD, 3m grid, sorted deepest first]
-  B --> C[findFirstStopAtGFLow<br/>with gasSwitchPoints]
-  C --> D{firstStop == 0?}
-  D -- yes --> E[Ascend direct,<br/>switch gases mid-ascent<br/>at their MODs]
-  D -- no --> F[Ascend to first stop<br/>switching gases at MODs<br/>passed en route]
+  B --> C{Direct ascent<br/>passes GF High?}
+  C -- yes --> E[Ascend direct,<br/>switch gases mid-ascent<br/>at their MODs]
+  C -- no --> D[Find GF Low anchor<br/>for selected policy]
+  D --> F[Ascend to first stop<br/>switching gases at MODs<br/>passed en route]
   F --> G[Stop loop: depth → 0<br/>in stopIncrement steps]
   G --> H[At each depth: check ceiling<br/>at destination GF]
   H -- ceiling ≤ next --> I[Record stop, ascend]
@@ -107,17 +115,33 @@ if (currentAscentDepth > firstStopDepth) {
 }
 ```
 
+## First stop policy
+
+The standard mode follows Decotengu's staged first-stop convention. It rounds
+the current GF Low ceiling to the 3 m grid, simulates ascent to that level,
+recomputes the ceiling, and repeats until the next rounded ceiling is the
+current level. This prevents a single long simulated ascent from skipping a
+level that a conventional staged profile treats as active.
+
+Adaptive and continuous study modes retain the shallowest-safe search in
+`findFirstStopAtGFLow`: they may pass through an intermediate level without
+waiting if the longer ascent itself clears the ceiling.
+
 ## The stop loop
 
 ```javascript
-// js/decoModel.js:1081-1132
-const MIN_STOP_TIME = continuousDeco ? 2 : 0;
 let pendingStopTime = 0;
 
 while (depth > 0) {
     if (switchToBestGas(depth) && gasSwitchTime > 0) {
         tissues = simulateDepthTime(tissues, depth, gasSwitchTime, currentN2);
         pendingStopTime += gasSwitchTime;
+    }
+
+    if (pendingStopTime < minimumStopTime) {
+        const mandatoryWait = minimumStopTime - pendingStopTime;
+        tissues = simulateDepthTime(tissues, depth, mandatoryWait, currentN2);
+        pendingStopTime = minimumStopTime;
     }
 
     const nextStopDepth = Math.max(0, Math.round((depth - stopIncrement) * 10) / 10);
@@ -130,11 +154,6 @@ while (depth > 0) {
 
     if (ceilingDepth <= nextStopDepth) {
         if (pendingStopTime > 0) {
-            if (continuousDeco && pendingStopTime < MIN_STOP_TIME) {
-                const extra = MIN_STOP_TIME - pendingStopTime;
-                tissues = simulateDepthTime(tissues, depth, extra, currentN2);
-                pendingStopTime = MIN_STOP_TIME;
-            }
             stops.push({
                 depth: Math.round(depth * 10) / 10,
                 time: Math.round(pendingStopTime * 10) / 10,
@@ -159,8 +178,13 @@ while (depth > 0) {
 Per-iteration logic:
 
 - Compute the GF at the **destination** depth (one step shallower than current). The ramp gives a higher GF as the diver moves toward the surface, so the destination GF is the relevant constraint for "can I move there now?".
+- In standard mode, simulate enough time to reach one minute at the current
+  level before the ascent test. A configured gas-switch stay counts toward this
+  minute; it is not added twice.
 - If the dive ceiling under the destination GF clears `nextStopDepth`, ascend (no Schreiner off-gassing credit is applied to the short inter-stop ascent itself). Otherwise wait `timeIncrement` minutes at depth (Haldane) and re-test.
-- Stops are only recorded if `pendingStopTime > 0` — a stop that the diver merely passes through without waiting does not appear in the list. This is why the first recorded stop can be shallower than `anchorDepth`.
+- In adaptive and continuous study modes, stops are only recorded if tissue
+  loading or gas-switch handling produced positive waiting time. Their first
+  recorded wait may therefore be shallower than `anchorDepth`.
 
 ## Safety cap
 
@@ -186,7 +210,10 @@ If a single stop exceeds 300 min, `DecoCapExceededError` is thrown (`js/decoMode
   - 3 m: 9 min
   - total deco ≈ 19 min, totalTime ≈ 22 min (ascent + stops).
 
-Stop durations grow as the controlling compartment shifts toward slower tissues (TC5 → TC7 → TC9 …). The numbers here are indicative — exact values depend on descent profile and gas-switch timing.
+Stop durations commonly grow toward the surface as the controlling compartment
+shifts toward slower tissues, but monotonic growth is not an algorithmic
+invariant. Gas changes, compartment changes, and one-minute rounding can produce
+an equal or locally shorter shallower stop.
 
 ## Cross-references
 

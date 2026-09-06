@@ -146,7 +146,12 @@ import {
 } from '../js/diveSetup.js';
 
 import { escHtml } from '../js/utils/escHtml.js';
-import { encodeDiveSetup, decodeDiveSetup, MAX_SHARED_TEXT_LENGTH } from '../js/urlParams.js';
+import {
+    encodeDiveSetup,
+    decodeDiveSetup,
+    getCompactDecoMode,
+    MAX_SHARED_TEXT_LENGTH
+} from '../js/urlParams.js';
 
 let warningHtml = {};
 try {
@@ -172,6 +177,8 @@ import {
     PRESSURE_PER_METER,
     DEFAULT_GF_LOW,
     DEFAULT_GF_HIGH,
+    DECO_MODES,
+    getDecoMode,
     getAmbientPressure,
     getAlveolarN2Pressure,
     getInitialTissueN2,
@@ -2598,6 +2605,65 @@ describe('Reference Comparison: Bühlmann Tables', () => {
 });
 
 // ============================================================================
+// DECOMPRESSION SCHEDULE MODES
+// ============================================================================
+
+describe('Decompression schedule modes', () => {
+    const air = [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79 }];
+
+    function loadedTissues(depth = 33, bottomTime = 13) {
+        const initialN2 = getInitialTissueN2(air[0].n2);
+        let tissues = Object.fromEntries(COMPARTMENTS.map(c => [c.id, initialN2]));
+        const descentTime = depth / 20;
+        tissues = simulateDepthChange(tissues, 0, depth, descentTime, air[0].n2);
+        return simulateDepthTime(
+            tissues, depth, bottomTime - descentTime, air[0].n2
+        );
+    }
+
+    function scheduleFor(mode, depth = 33, bottomTime = 13) {
+        return generateDecoSchedule(
+            loadedTissues(depth, bottomTime),
+            depth, air[0].n2, 0.3, 0.8, air, { decoMode: mode }
+        );
+    }
+
+    test('missing mode safely defaults to standard staged decompression', () => {
+        expect(getDecoMode({})).toBe(DECO_MODES.STANDARD);
+        expect(scheduleFor(undefined).stops).toEqual(scheduleFor(DECO_MODES.STANDARD).stops);
+    });
+
+    test('standard mode spends at least one minute at every active 3 m level', () => {
+        const schedule = scheduleFor(DECO_MODES.STANDARD);
+        expect(schedule.anchorDepth).toBe(12);
+        expect(schedule.stops.map(stop => stop.depth)).toEqual([12, 9, 6, 3]);
+        expect(schedule.stops.every(stop => stop.time >= 1)).toBe(true);
+    });
+
+    test('adaptive study mode preserves zero-duration transit levels', () => {
+        const schedule = scheduleFor(DECO_MODES.ADAPTIVE);
+        expect(schedule.anchorDepth).toBe(12);
+        expect(schedule.stops).toEqual([{ depth: 3, time: 2, gas: 'Air' }]);
+    });
+
+    test('continuous study mode uses fine waits without an artificial two-minute minimum', () => {
+        const schedule = scheduleFor(DECO_MODES.CONTINUOUS, 40, 25);
+        expect(schedule.stops.length).toBeGreaterThan(0);
+        expect(schedule.stops.some(stop => stop.time < 2)).toBe(true);
+        expect(schedule.stops.some(stop => stop.depth % 3 !== 0)).toBe(true);
+    });
+
+    test('legacy continuousDeco links still select continuous study mode', () => {
+        expect(getDecoMode({ continuousDeco: true })).toBe(DECO_MODES.CONTINUOUS);
+        expect(scheduleFor(DECO_MODES.CONTINUOUS).stops)
+            .toEqual(generateDecoSchedule(
+                loadedTissues(),
+                33, air[0].n2, 0.3, 0.8, air, { continuousDeco: true }
+            ).stops);
+    });
+});
+
+// ============================================================================
 // CONTINUOUS DECO ACCURACY TESTS
 // ============================================================================
 
@@ -2610,7 +2676,13 @@ describe('Continuous Deco Accuracy', () => {
         const descentTime = Math.ceil(maxDepth / 20);
         tissues = simulateDepthChange(tissues, 0, maxDepth, descentTime, n2);
         tissues = simulateDepthTime(tissues, maxDepth, bottomTime - descentTime, n2);
-        return { schedule: generateDecoSchedule(tissues, maxDepth, n2, gfLow, gfHigh, gases, { continuousDeco: true }), tissues };
+        return {
+            schedule: generateDecoSchedule(
+                tissues, maxDepth, n2, gfLow, gfHigh, gases,
+                { decoMode: DECO_MODES.CONTINUOUS }
+            ),
+            tissues
+        };
     }
 
     // Helper: simulate ascent to a stop and return tissue state at arrival
@@ -3005,13 +3077,16 @@ describe('Decotengu sea-level reference matrix', () => {
 
     test('all 3900 existing scenarios remain within the established tolerance', () => {
         setZHL16Variant(ZHL16_VARIANTS.C);
+        let exactDepthLists = 0;
+        let exactSchedules = 0;
+        let maximumDifference = 0;
 
         for (const scenario of reference.scenarios) {
             const gases = gasConfigs[scenario.gasConfig];
             const bottomGas = gases[0];
             const initialN2 = getInitialTissueN2(bottomGas.n2);
             const tissues = Object.fromEntries(COMPARTMENTS.map(comp => [comp.id, initialN2]));
-            const descentTime = Math.ceil(scenario.depth / 20);
+            const descentTime = scenario.depth / 20;
             let loaded = simulateDepthChange(
                 tissues, 0, scenario.depth, descentTime, bottomGas.n2
             );
@@ -3021,12 +3096,29 @@ describe('Decotengu sea-level reference matrix', () => {
             }
             const schedule = generateDecoSchedule(
                 loaded, scenario.depth, bottomGas.n2,
-                scenario.gfLow / 100, scenario.gfHigh / 100, gases
+                scenario.gfLow / 100, scenario.gfHigh / 100, gases,
+                { decoMode: DECO_MODES.STANDARD }
             );
             const totalDeco = schedule.stops.reduce((sum, stop) => sum + stop.time, 0);
             const tolerance = Math.max(5, scenario.totalDeco * 0.20);
+            const difference = Math.abs(totalDeco - scenario.totalDeco);
+            maximumDifference = Math.max(maximumDifference, difference);
 
-            if (Math.abs(totalDeco - scenario.totalDeco) > tolerance) {
+            if (JSON.stringify(schedule.stops.map(stop => stop.depth)) ===
+                JSON.stringify(scenario.stops.map(stop => stop.depth))) {
+                exactDepthLists++;
+            }
+            if (JSON.stringify(schedule.stops.map(stop => ({
+                depth: stop.depth,
+                time: stop.time
+            }))) === JSON.stringify(scenario.stops)) {
+                exactSchedules++;
+            }
+            if (!schedule.stops.every(stop => stop.depth % 3 === 0 && stop.time >= 1)) {
+                throw new Error(`Non-standard staged stop in ${JSON.stringify(schedule.stops)}`);
+            }
+
+            if (difference > tolerance) {
                 throw new Error(
                     `Decotengu mismatch at ${scenario.depth}m/${scenario.bottomTime}min ` +
                     `${scenario.gasConfig} GF${scenario.gfLow}/${scenario.gfHigh}: ` +
@@ -3034,6 +3126,10 @@ describe('Decotengu sea-level reference matrix', () => {
                 );
             }
         }
+
+        expect(exactDepthLists / reference.scenarios.length).toBeGreaterThan(0.9);
+        expect(exactSchedules / reference.scenarios.length).toBeGreaterThan(0.75);
+        expect(maximumDifference).toBeLessThanOrEqual(3);
     });
 });
 
@@ -3060,11 +3156,19 @@ describe('Decotengu altitude reference matrix', () => {
 
     test('all 15986 altitude scenarios remain within the established tolerance', () => {
         setZHL16Variant(ZHL16_VARIANTS.C);
+        let scenarioCount = 0;
+        let exactDepthLists = 0;
+        let exactSchedules = 0;
+        let maximumDifference = 0;
 
         for (const environment of reference.environments) {
             const surfacePressure = environment.pressure;
             for (const scenario of environment.scenarios) {
-                const [depth, bottomTime, gfLow, gfHigh, gasConfig, referenceDeco] = scenario;
+                const [
+                    depth, bottomTime, gfLow, gfHigh, gasConfig,
+                    referenceDeco, referenceStops
+                ] = scenario;
+                scenarioCount++;
                 const gases = gasConfigs[gasConfig];
                 const bottomGas = gases[0];
                 const initialN2 = getInitialTissueN2(bottomGas.n2, surfacePressure);
@@ -3081,12 +3185,26 @@ describe('Decotengu altitude reference matrix', () => {
                 }
                 const schedule = generateDecoSchedule(
                     loaded, depth, bottomGas.n2, gfLow / 100, gfHigh / 100, gases,
-                    { surfacePressure }
+                    { surfacePressure, decoMode: DECO_MODES.STANDARD }
                 );
                 const totalDeco = schedule.stops.reduce((sum, stop) => sum + stop.time, 0);
                 const tolerance = Math.max(5, referenceDeco * 0.20);
+                const difference = Math.abs(totalDeco - referenceDeco);
+                maximumDifference = Math.max(maximumDifference, difference);
 
-                if (Math.abs(totalDeco - referenceDeco) > tolerance) {
+                if (JSON.stringify(schedule.stops.map(stop => stop.depth)) ===
+                    JSON.stringify(referenceStops.map(stop => stop[0]))) {
+                    exactDepthLists++;
+                }
+                if (JSON.stringify(schedule.stops.map(stop => [stop.depth, stop.time])) ===
+                    JSON.stringify(referenceStops)) {
+                    exactSchedules++;
+                }
+                if (!schedule.stops.every(stop => stop.depth % 3 === 0 && stop.time >= 1)) {
+                    throw new Error(`Non-standard altitude stop in ${JSON.stringify(schedule.stops)}`);
+                }
+
+                if (difference > tolerance) {
                     throw new Error(
                         `Decotengu altitude mismatch at ${environment.altitude}\u00a0m, ` +
                         `${depth}\u00a0m/${bottomTime}\u00a0min ${gasConfig} GF${gfLow}/${gfHigh}: ` +
@@ -3095,6 +3213,10 @@ describe('Decotengu altitude reference matrix', () => {
                 }
             }
         }
+
+        expect(exactDepthLists / scenarioCount).toBeGreaterThan(0.95);
+        expect(exactSchedules / scenarioCount).toBeGreaterThan(0.8);
+        expect(maximumDifference).toBeLessThanOrEqual(3);
     });
 });
 
@@ -3707,6 +3829,19 @@ describe('normalizeDiveSetup - environment preservation', () => {
         expect(normalizeDiveSetup({ ...base, environment: { altitude: 1500 } }).environment)
             .toEqual({ altitude: 1500 });
     });
+
+    test('defaults legacy staged profiles to standard mode', () => {
+        expect(normalizeDiveSetup(base).decoMode).toBe(DECO_MODES.STANDARD);
+        expect(normalizeDiveSetup({ ...base, continuousDeco: false }).decoMode)
+            .toBe(DECO_MODES.STANDARD);
+    });
+
+    test('migrates legacy continuous profiles and preserves explicit study modes', () => {
+        expect(normalizeDiveSetup({ ...base, continuousDeco: true }).decoMode)
+            .toBe(DECO_MODES.CONTINUOUS);
+        expect(normalizeDiveSetup({ ...base, decoMode: DECO_MODES.ADAPTIVE }).decoMode)
+            .toBe(DECO_MODES.ADAPTIVE);
+    });
 });
 
 // ============================================================================
@@ -3770,6 +3905,67 @@ describe('tripState/tripPlanner - dive names', () => {
         const trip = { gases: air, gfLow: 100, gfHigh: 100,
             dives: [{ id: 'd1', name: 'Wreck', startDateTime: 0, maxDepth: 40, bottomTime: 30, gases: air }] };
         expect(planTrip(trip).dives[0].name).toBe('Wreck');
+    });
+});
+
+describe('Visual algorithm theory page', () => {
+    const html = readFileSync(new URL('../algorithm.html', import.meta.url), 'utf8');
+    const script = readFileSync(
+        new URL('../js/algorithmExplainer.js', import.meta.url),
+        'utf8'
+    );
+
+    test('ships the page, controller, navigation entry, and offline assets together', () => {
+        const nav = readFileSync(new URL('../js/nav.js', import.meta.url), 'utf8');
+        const sw = readFileSync(new URL('../sw.js', import.meta.url), 'utf8');
+        const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+        expect(nav).toContain("href: 'algorithm.html'");
+        expect(sw).toContain("'./algorithm.html'");
+        expect(sw).toContain("'./js/algorithmExplainer.js'");
+        expect(home).toContain('href="algorithm.html"');
+    });
+
+    test('gives every chart a fullscreen control', () => {
+        expect((html.match(/<canvas\b/g) || []).length).toBe(2);
+        expect((html.match(/data-fullscreen=/g) || []).length).toBe(2);
+        expect((html.match(/data-exit-fullscreen/g) || []).length).toBe(2);
+    });
+
+    test('uses the same three calculation modes as the planner', () => {
+        expect(script).toContain('DECO_MODES.STANDARD');
+        expect(script).toContain('DECO_MODES.ADAPTIVE');
+        expect(script).toContain('DECO_MODES.CONTINUOUS');
+        expect(script).toContain('generateDecoProfile(');
+    });
+
+    test('has complete algorithm translations in all shipped languages', () => {
+        const localeFiles = ['cs', 'en', 'es'].map(language =>
+            JSON.parse(readFileSync(
+                new URL(`../locales/${language}.json`, import.meta.url),
+                'utf8'
+            ))
+        );
+        const locales = localeFiles.map(locale => locale.algorithm);
+        const keyShape = value => Object.entries(value)
+            .flatMap(([key, child]) => child && typeof child === 'object'
+                ? Object.keys(child).map(subKey => `${key}.${subKey}`)
+                : [key])
+            .sort();
+        expect(keyShape(locales[1])).toEqual(keyShape(locales[0]));
+        expect(keyShape(locales[2])).toEqual(keyShape(locales[0]));
+
+        const sourceKeys = [...new Set([
+            ...[...html.matchAll(/data-i18n(?:-title)?="(algorithm\.[^"]+)"/g)]
+                .map(match => match[1]),
+            ...[...script.matchAll(/translate\('(algorithm\.[^']+)'/g)]
+                .map(match => match[1])
+        ])];
+        for (const locale of localeFiles) {
+            for (const key of sourceKeys) {
+                const value = key.split('.').reduce((node, part) => node?.[part], locale);
+                expect(typeof value).toBe('string');
+            }
+        }
     });
 });
 
@@ -3925,6 +4121,34 @@ describe('DiveSetupEditor notation', () => {
         for (const key of phaseKeys) {
             expect(/^[a-zá-ž]/u.test(cs.divePlan[key])).toBe(true);
         }
+    });
+
+    describe('DiveSetupEditor study settings', () => {
+        test('defaults to standard mode and reveals a warning for study modes', () => {
+            const dom = new JSDOM('<!doctype html><body></body>');
+            const previousDocument = globalThis.document;
+            globalThis.document = dom.window.document;
+
+            try {
+                const context = {
+                    elements: {},
+                    _onInputChange() {},
+                    _updateNDLDisplay() {}
+                };
+                const section = DiveSetupEditor.prototype._buildStudySettings.call(context);
+                expect(section.open).toBe(false);
+                expect(context.elements.decoModeSelect.value).toBe(DECO_MODES.STANDARD);
+                expect(context.elements.decoModeWarning.hidden).toBe(true);
+
+                context.elements.decoModeSelect.value = DECO_MODES.ADAPTIVE;
+                context.elements.decoModeSelect.dispatchEvent(new dom.window.Event('change'));
+                expect(context.elements.decoModeWarning.hidden).toBe(false);
+                expect(context.elements.decoModeSummary.textContent).toContain('study');
+            } finally {
+                globalThis.document = previousDocument;
+                dom.window.close();
+            }
+        });
     });
 
     test('quick setup explains bottom time on hover and keyboard focus', () => {
@@ -4372,7 +4596,8 @@ describe('notation - non-breaking space between value and unit at runtime', () =
         'js/components/DiveSetupEditor.js', 'js/components/TissueSaturationSim.js',
         'js/components/AddDiveDialog.js', 'js/mvalues.js', 'js/diveSetup.js',
         'js/main.js', 'js/visualization.js', 'js/tissueEducation.js', 'js/decoModel.js',
-        'pressure.html', 'tissue-loading.html', 'm-values.html',
+        'js/algorithmExplainer.js', 'pressure.html', 'tissue-loading.html', 'm-values.html',
+        'algorithm.html',
         'sandbox/index.html', 'sandbox/haldane.html', 'sandbox/schreiner.html',
         'sandbox/m-values.html', 'sandbox/gradient-factors.html', 'sandbox/gas-law.html',
         'sandbox/cascade-filling.html', 'sandbox/transfilling.html',
@@ -4518,7 +4743,7 @@ describe('notation - unit is never glued to the value', () => {
         // "MOD is 33,8\u00a0m!" i s escapem.
         const files = [
             'index.html', 'pressure.html', 'tissue-loading.html', 'm-values.html',
-            'gradient-factors.html', 'about.html', 'sandbox/index.html',
+            'gradient-factors.html', 'algorithm.html', 'about.html', 'sandbox/index.html',
             'sandbox/gas-law.html', 'sandbox/haldane.html', 'sandbox/schreiner.html',
             'sandbox/transfilling.html', 'sandbox/m-values.html', 'sandbox/gradient-factors.html',
         ];
@@ -4643,7 +4868,7 @@ describe('notation - quantity symbols are italic', () => {
     // i chemický index stojatě. V HTML je nositelem kurzívy <var>.
     const SHIPPED = [
         'about.html', 'pressure.html', 'tissue-loading.html', 'm-values.html',
-        'gradient-factors.html', 'sandbox/gas-law.html', 'sandbox/transfilling.html',
+        'gradient-factors.html', 'algorithm.html', 'sandbox/gas-law.html', 'sandbox/transfilling.html',
         'sandbox/haldane.html', 'sandbox/schreiner.html', 'sandbox/gradient-factors.html',
         'sandbox/m-values.html', 'locales/cs.json', 'locales/en.json', 'locales/es.json',
     ];
@@ -5902,6 +6127,34 @@ describe('decodeDiveSetup sanitizes the shared-link boundary (#65)', () => {
 
         expect(decodeDiveSetup(encodeDiveSetup(setup)).environment)
             .toEqual({ altitude: 1500 });
+    });
+
+    test('round-trips a study mode and defaults unknown values safely', () => {
+        const setup = {
+            decoMode: DECO_MODES.ADAPTIVE,
+            gases: [{ id: 'bottom', name: 'Air' }],
+            dives: [{ waypoints: [] }]
+        };
+        expect(decodeDiveSetup(encodeDiveSetup(setup)).decoMode)
+            .toBe(DECO_MODES.ADAPTIVE);
+
+        const invalid = decodeDiveSetup(encode({
+            decoMode: 'unsafe-custom-mode',
+            gases: [{ id: 'bottom', name: 'Air' }],
+            dives: [{ waypoints: [] }]
+        }));
+        expect(invalid.decoMode).toBe(DECO_MODES.STANDARD);
+    });
+
+    test('reads Android compact-link study modes and defaults unknown values safely', () => {
+        expect(getCompactDecoMode(new URLSearchParams('dm=adaptive')))
+            .toBe(DECO_MODES.ADAPTIVE);
+        expect(getCompactDecoMode(new URLSearchParams('dm=continuous')))
+            .toBe(DECO_MODES.CONTINUOUS);
+        expect(getCompactDecoMode(new URLSearchParams('dm=unsafe-custom-mode')))
+            .toBe(DECO_MODES.STANDARD);
+        expect(getCompactDecoMode(new URLSearchParams()))
+            .toBe(DECO_MODES.STANDARD);
     });
 
     test('leaves a legitimate setup functionally intact', () => {
