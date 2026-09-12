@@ -6776,7 +6776,7 @@ describe('sandbox dive warnings', () => {
             depthPoints: waypoints.map(wp => wp.depth)
         }),
         () => [0, 0, 5, 0],
-        (depth) => 1 + depth / 10,
+        (depth) => SURFACE_PRESSURE + depth / 10,
         () => SURFACE_PRESSURE,
         SURFACE_PRESSURE,
         (_results, gases) => ({
@@ -6811,6 +6811,43 @@ describe('sandbox dive warnings', () => {
 
         expect(result.warnings.some(warning => warning.html.includes('during bottom'))).toBe(true);
         expect(result.warnings.some(warning => warning.html.includes('during deco'))).toBe(false);
+    });
+
+    test('does not flag the conventional 6 m oxygen switch as exceeding 1.6 bar', () => {
+        const result = analyzeDive({
+            gases: [
+                {
+                    id: 'air',
+                    name: 'Air',
+                    o2: 0.21,
+                    n2: 0.79,
+                    cylinderVolume: 24,
+                    startPressure: 200
+                },
+                {
+                    id: 'o2',
+                    name: 'O2',
+                    o2: 1,
+                    n2: 0,
+                    cylinderVolume: 7,
+                    startPressure: 200
+                }
+            ],
+            dives: [{
+                waypoints: [
+                    { time: 0, depth: 0, gasId: 'air' },
+                    { time: 2, depth: 30, gasId: 'air' },
+                    { time: 25, depth: 30, gasId: 'air' },
+                    { time: 28, depth: 6, gasId: 'o2' },
+                    { time: 32, depth: 6 },
+                    { time: 33, depth: 0 }
+                ]
+            }]
+        });
+
+        expect(result.warnings.some(warning =>
+            warning.html.includes('CNS toxicity risk')
+        )).toBe(false);
     });
 });
 

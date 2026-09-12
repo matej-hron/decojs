@@ -829,8 +829,10 @@
             // ===== Analyze ppO2 and ppN2 =====
             let maxPpO2Bottom = 0;  // During bottom phase (limit 1.4)
             let maxPpO2BottomDepth = 0;
+            let maxOperationalPpO2Bottom = 0;
             let maxPpO2Deco = 0;    // During deco phase (limit 1.6)
             let maxPpO2DecoDepth = 0;
+            let maxOperationalPpO2Deco = 0;
             let minPpO2 = Infinity;
             let maxPpN2 = 0;
             let maxPpN2Depth = 0;
@@ -866,6 +868,7 @@
                 const isDecoGas = gases.indexOf(gas) > 0;
                 const ambient = getAmbientPressure(depth, surfacePressure);
                 const ppO2 = ambient * gas.o2;
+                const operationalPpO2 = (nominalSurfacePressure + depth / 10) * gas.o2;
                 const ppN2 = ambient * gas.n2;
                 
                 // Track ppO2 separately for working vs decompression gases.
@@ -874,11 +877,17 @@
                         maxPpO2Deco = ppO2;
                         maxPpO2DecoDepth = depth;
                     }
+                    maxOperationalPpO2Deco = Math.max(
+                        maxOperationalPpO2Deco, operationalPpO2
+                    );
                 } else {
                     if (ppO2 > maxPpO2Bottom) {
                         maxPpO2Bottom = ppO2;
                         maxPpO2BottomDepth = depth;
                     }
+                    maxOperationalPpO2Bottom = Math.max(
+                        maxOperationalPpO2Bottom, operationalPpO2
+                    );
                 }
                 
                 if (ppO2 < minPpO2) {
@@ -899,7 +908,7 @@
             
             // ===== ppO2 Warnings =====
             // Check bottom phase (limit 1.4 for working)
-            if (maxPpO2Bottom > 1.6) {
+            if (maxOperationalPpO2Bottom > 1.6) {
                 warnings.push({
                     type: 'critical',
                     icon: '⚠️',
@@ -908,7 +917,7 @@
                         fmtNum(maxPpO2Bottom, 2), fmtNum(maxPpO2BottomDepth, 0)
                     )
                 });
-            } else if (maxPpO2Bottom > 1.4) {
+            } else if (maxOperationalPpO2Bottom > 1.4) {
                 warnings.push({
                     type: 'warning',
                     icon: '⚡',
@@ -920,7 +929,7 @@
             }
 
             // Check deco phase (limit 1.6)
-            if (maxPpO2Deco > 1.6) {
+            if (maxOperationalPpO2Deco > 1.6) {
                 warnings.push({
                     type: 'critical',
                     icon: '⚠️',

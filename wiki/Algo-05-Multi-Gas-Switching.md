@@ -43,6 +43,13 @@ Examples at $ppO_2 = 1.6$:
 The editor presents all three values for a deco gas: working MOD, deco MOD,
 and the recommended switch depth snapped down to the 3 m stop grid.
 
+The partial-pressure chart still plots the exact physical value using
+`SURFACE_PRESSURE = 1.01325` at sea level, so pure O₂ at 6&nbsp;m is displayed as
+approximately 1.61&nbsp;bar. Operational limit warnings use the same nominal
+surface-pressure convention as MOD and therefore do not flag the recommended
+6&nbsp;m O₂ switch as an exceedance. Actual exposures deeper than the conventional
+MOD continue to trigger the warning.
+
 ## Gas priority in the deco loop
 
 When multiple deco gases are eligible at a depth (i.e. within MOD and not yet switched), DecoJS picks the one with the **deepest** MOD — the richest gas that's still safe. This enforces sequential switching: EAN50 at 21 m before O₂ at 6 m, never the other way around.
