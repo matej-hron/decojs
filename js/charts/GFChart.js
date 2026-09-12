@@ -880,6 +880,37 @@ export class GFChart {
         );
     }
 
+    _drawCompartmentPointLabels(chart) {
+        const { ctx, chartArea } = chart;
+        if (!chartArea) return;
+        ctx.save();
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#fff';
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.45)';
+        ctx.lineWidth = 2;
+        ctx.lineJoin = 'round';
+
+        chart.data.datasets.forEach((dataset, datasetIndex) => {
+            const id = dataset.gfcCompartmentId;
+            if (!id || !chart.isDatasetVisible(datasetIndex)) return;
+            const point = chart.getDatasetMeta(datasetIndex).data[0];
+            if (!point || point.skip) return;
+            const { x, y } = point.getProps(['x', 'y'], true);
+            if (!Number.isFinite(x) || !Number.isFinite(y)) return;
+            if (
+                x < chartArea.left || x > chartArea.right ||
+                y < chartArea.top || y > chartArea.bottom
+            ) return;
+            const label = String(id);
+            ctx.font = `700 ${label.length > 1 ? 9 : 11}px system-ui, sans-serif`;
+            ctx.strokeText(label, x, y);
+            ctx.fillText(label, x, y);
+        });
+
+        ctx.restore();
+    }
+
     _handleLegendClick(legendItem, legend) {
         const chart = legend.chart;
         const datasetIndex = legendItem.datasetIndex;
@@ -1074,10 +1105,12 @@ export class GFChart {
             datasets.push({
                 label: fmt(translate('chart.mvalue.tcLabel', 'TC{0} ({1}\u00a0min)'), comp.id, fmtNum(comp.halfTime)),
                 data: [{ x: currentAmbient, y: currentGF }],
+                gfcCompartmentId: comp.id,
                 backgroundColor: comp.color,
                 borderColor: '#fff',
                 borderWidth: 2,
-                pointRadius: 8,
+                pointRadius: 10,
+                pointHoverRadius: 11,
                 showLine: false,
                 order: 1
             });
@@ -1156,10 +1189,17 @@ export class GFChart {
         const config = {
             type: 'scatter',
             data: { datasets },
-            plugins: [{
-                id: 'gf-anchor-help',
-                afterDraw: (chart) => this._positionAnchorHelpIcon(chart)
-            }],
+            plugins: [
+                {
+                    id: 'gf-compartment-point-labels',
+                    afterDatasetsDraw: (chart) =>
+                        this._drawCompartmentPointLabels(chart)
+                },
+                {
+                    id: 'gf-anchor-help',
+                    afterDraw: (chart) => this._positionAnchorHelpIcon(chart)
+                }
+            ],
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
