@@ -5925,10 +5925,14 @@ describe('DiveSetupEditor notation', () => {
                     expect(tooltip.getAttribute('aria-label'))
                         .toBe(tooltip.getAttribute('data-tooltip'));
                     expect(tooltip.getAttribute('tabindex')).toBe('0');
-                    expect(context.elements.waterTypeSelect.value)
+                    expect(context.elements.waterTypeInputs.length).toBe(3);
+                    expect([...context.elements.waterTypeInputs]
+                        .find(input => input.checked).value)
                         .toBe(WATER_TYPES.STANDARD);
-                    context.elements.waterTypeSelect.value = WATER_TYPES.SEA;
-                    context.elements.waterTypeSelect.dispatchEvent(
+                    const seaInput = [...context.elements.waterTypeInputs]
+                        .find(input => input.value === WATER_TYPES.SEA);
+                    seaInput.checked = true;
+                    seaInput.dispatchEvent(
                         new dom.window.Event('change')
                     );
                     expect(context.elements.environmentSummaryHint.textContent)

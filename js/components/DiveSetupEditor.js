@@ -90,11 +90,15 @@ function getGasDisplayName(gas) {
 }
 
 function getSelectedWaterType(elements) {
-    const value = elements?.waterTypeSelect?.value;
+    const value = elements?.waterTypeInputs
+        ? [...elements.waterTypeInputs].find(input => input.checked)?.value
+        : elements?.waterTypeSelect?.value;
     return Object.values(WATER_TYPES).includes(value)
         ? value
         : WATER_TYPES.STANDARD;
 }
+
+let editorInstanceCounter = 0;
 
 function formatGasMod(
     o2Fraction,
@@ -184,6 +188,7 @@ export class DiveSetupEditor extends EventTarget {
         super();
         
         this.container = container;
+        this._instanceId = ++editorInstanceCounter;
         this.options = mergeOptions(DEFAULT_EDITOR_OPTIONS, config.options);
         this.profiles = config.profiles || [];
         
@@ -806,6 +811,7 @@ export class DiveSetupEditor extends EventTarget {
 
     _buildEnvironmentSection() {
         const section = document.createElement('details');
+        const waterGroupName = `dse-water-type-${this._instanceId ?? 'standalone'}`;
         const altitudeExplanation = escHtml(translate(
             'diveEditor.environment.altitudeExplanation',
             'Deco Theory converts altitude to atmospheric pressure using the standard atmosphere. The selected water type determines the depth-to-hydrostatic-pressure conversion. The calculation assumes full acclimatization.'
@@ -815,14 +821,23 @@ export class DiveSetupEditor extends EventTarget {
         section.innerHTML = `
             <summary>🏔️ ${translate('diveEditor.environment.title', 'Environment')} <span class="dse-summary-hint">(0\u00a0m)</span></summary>
             <div class="dse-environment-content">
-                <div class="dse-field">
-                    <label>${translate('diveEditor.environment.waterType', 'Water type:')}</label>
-                    <select class="dse-water-type-select form-select">
-                        <option value="standard">${translate('diveEditor.environment.waterStandard', 'Standard EN 13319 (10 m = 1 bar)')}</option>
-                        <option value="fresh">${translate('diveEditor.environment.waterFresh', 'Freshwater')}</option>
-                        <option value="sea">${translate('diveEditor.environment.waterSea', 'Seawater')}</option>
-                    </select>
-                </div>
+                <fieldset class="dse-field dse-water-type-field">
+                    <legend>${translate('diveEditor.environment.waterType', 'Water type:')}</legend>
+                    <div class="dse-water-type-options">
+                        <label class="dse-water-type-option">
+                            <input type="radio" name="${waterGroupName}" value="standard" checked>
+                            <span>${translate('diveEditor.environment.waterStandardChoice', 'EN 13319')}</span>
+                        </label>
+                        <label class="dse-water-type-option">
+                            <input type="radio" name="${waterGroupName}" value="fresh">
+                            <span>${translate('diveEditor.environment.waterFreshChoice', 'Fresh')}</span>
+                        </label>
+                        <label class="dse-water-type-option">
+                            <input type="radio" name="${waterGroupName}" value="sea">
+                            <span>${translate('diveEditor.environment.waterSeaChoice', 'Sea')}</span>
+                        </label>
+                    </div>
+                </fieldset>
                 <div class="dse-field">
                     <label>
                         ${translate('diveEditor.environment.altitude', 'Altitude (m):')}
@@ -844,7 +859,9 @@ export class DiveSetupEditor extends EventTarget {
         `;
 
         this.elements.altitudeInput = section.querySelector('.dse-altitude-input');
-        this.elements.waterTypeSelect = section.querySelector('.dse-water-type-select');
+        this.elements.waterTypeInputs = section.querySelectorAll(
+            '.dse-water-type-option input'
+        );
         this.elements.environmentSummaryHint = section.querySelector('.dse-summary-hint');
         this.elements.surfacePressureValue = section.querySelector('.dse-surface-pressure');
         this.elements.altitudeInput.addEventListener('input', () => {
@@ -853,11 +870,13 @@ export class DiveSetupEditor extends EventTarget {
             this._updateNDLDisplay();
             this._onInputChange();
         });
-        this.elements.waterTypeSelect.addEventListener('change', () => {
-            this._updateEnvironmentDisplay();
-            this._renderGasCards();
-            this._updateNDLDisplay();
-            this._onInputChange();
+        this.elements.waterTypeInputs.forEach(input => {
+            input.addEventListener('change', () => {
+                this._updateEnvironmentDisplay();
+                this._renderGasCards();
+                this._updateNDLDisplay();
+                this._onInputChange();
+            });
         });
 
         return section;
@@ -1754,8 +1773,11 @@ export class DiveSetupEditor extends EventTarget {
 
         if (this.elements.altitudeInput) {
             this.elements.altitudeInput.value = setup.environment?.altitude ?? 0;
-            this.elements.waterTypeSelect.value =
+            const waterType =
                 setup.environment?.waterType ?? WATER_TYPES.STANDARD;
+            this.elements.waterTypeInputs.forEach(input => {
+                input.checked = input.value === waterType;
+            });
             this._updateEnvironmentDisplay();
         }
 
