@@ -506,7 +506,7 @@
             "medium": "<strong>Compartimentos medios (18.5–77 min)</strong> — equilibrio entre carga y desgasificación",
             "slow": "<strong>Compartimentos lentos (109–635 min)</strong> — pueden tardar horas en saturarse por completo",
             "controllingTitle": "El compartimento de control",
-            "controlling": "En cualquier punto de la inmersión, el <strong>compartimento de control</strong> es el que está más cerca de su límite de sobresaturación crítica — ese compartimento determina tu techo de descompresión."
+            "controlling": "A una profundidad determinada, el <strong>compartimento de control</strong> es aquel cuya presión tisular ocupa el porcentaje más alto entre la presión ambiente (0 %) y su valor M (100 %). Por tanto, tiene el GF instantáneo más alto y determina el techo de descompresión."
         },
         "zhl16Variants": {
             "title": "Variantes de ZH-L16: A, B y C",
@@ -932,6 +932,8 @@
         "formulaIntro": "Factor de gradiente instantáneo para un tejido a presión ambiente <var>p</var><sub>amb</sub>:",
         "formulaMValue": "Valor-M de Bühlmann a <var>p</var><sub>amb</sub>: <strong>M(<var>p</var><sub>amb</sub>) = a + <var>p</var><sub>amb</sub> / b</strong>",
         "formulaWhere": "Donde:",
+        "subTissue": "tejido",
+        "subAmbient": "amb",
         "varPtissue": "<strong><var>p</var><sub>tejido</sub></strong> — presión de gas inerte en el tejido (bar)",
         "varPamb": "<strong><var>p</var><sub>amb</sub></strong> — presión ambiente = 1 + profundidad/10 (bar)",
         "varAB": "<strong>a, b</strong> — coeficientes ZH-L16 de Bühlmann del tejido",

@@ -203,6 +203,7 @@ export class GFChart {
         // Fullscreen button
         if (this.options.fullscreenButton) {
             this.fullscreenBtn = document.createElement('button');
+            this.fullscreenBtn.className = 'gfc-fullscreen-btn';
             this.fullscreenBtn.innerHTML = '⛶';
             this.fullscreenBtn.title = translate('chart.tooltips.fullscreen', 'Toggle Fullscreen');
             this.fullscreenBtn.style.cssText = `
@@ -222,7 +223,7 @@ export class GFChart {
                 position: absolute; top: 16px; right: 16px; z-index: 1001;
                 padding: 8px 12px; background: rgba(0,0,0,0.7); color: white;
                 border: none; border-radius: 4px; cursor: pointer;
-                font-size: 20px;
+                font-size: 20px; display: none;
             `;
             this.exitFullscreenBtn.addEventListener('click', () => this._toggleFullscreen());
             this.chartContainer.appendChild(this.exitFullscreenBtn);
@@ -848,7 +849,7 @@ export class GFChart {
         } else {
             document.body.style.overflow = '';
             if (this.fullscreenBtn) this.fullscreenBtn.style.display = '';
-            if (this.exitFullscreenBtn) this.exitFullscreenBtn.style.display = '';
+            if (this.exitFullscreenBtn) this.exitFullscreenBtn.style.display = 'none';
         }
 
         setTimeout(() => this.resize(), 0);
