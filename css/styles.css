@@ -2098,7 +2098,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.82";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.83";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -2182,48 +2182,6 @@ footer a {
     color: var(--text-muted);
     font-size: 0.9em;
 }
-
-/* Generate Section - prominent button between inputs and outputs */
-.dse-generate-section {
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-    border: none;
-    padding: 1rem;
-    text-align: center;
-}
-
-.dse-generate-section .dse-generate-btn {
-    width: 100%;
-    padding: 0.75rem 1.5rem;
-    font-size: 1.1rem;
-    font-weight: 600;
-    background: white;
-    color: var(--primary-color);
-    border: none;
-    border-radius: var(--radius);
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.dse-generate-section .dse-generate-btn:hover {
-    background: rgba(255, 255, 255, 0.9);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.dse-generate-section .dse-ndl-display {
-    margin-top: 0.75rem;
-    background: rgba(255, 255, 255, 0.15);
-    color: white;
-    border-radius: 4px;
-}
-
-.dse-generate-section .dse-ndl-status {
-    color: white;
-}
-
-.dse-generate-section .dse-ndl-ok { color: #a7f3d0; }
-.dse-generate-section .dse-ndl-warning { color: #fde68a; }
-.dse-generate-section .dse-ndl-deco { color: #fca5a5; }
 
 .btn-large {
     padding: 0.75rem 1.5rem;
@@ -2429,6 +2387,11 @@ footer a {
     margin-top: 0.75rem;
 }
 
+.dse-quick-inputs > .dse-generate-btn {
+    width: 100%;
+    margin-top: 0.75rem;
+}
+
 .dse-ndl-display {
     margin-top: 0.75rem;
     padding: 0.5rem;
@@ -2516,6 +2479,18 @@ footer a {
 /* Gradient Factors */
 .dse-gf-content {
     margin-top: 0.75rem;
+}
+
+.dse-gf-settings-title {
+    margin: 1.25rem 0 0.25rem;
+    color: var(--text-color);
+    font-size: 1rem;
+}
+
+.dse-gas-mod .dse-hint {
+    display: block;
+    white-space: pre-line;
+    line-height: 1.5;
 }
 
 .dse-gf-row {

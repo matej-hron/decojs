@@ -11,12 +11,16 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
 
 `options.surfacePressure` controls the surface target, pressure-to-depth
 conversion, GF endpoint, MOD shift, and stop grid for altitude dives.
+For an executable Standard-mode runtime, callers may also pass
+`alignRuntimeDepartures: true` and `runtimeStart` (the absolute runtime at
+bottom departure). The scheduler then waits at each level until both the
+destination ceiling is clear and the departure runtime is a whole minute.
 
 Returns:
 
 ```javascript
 {
-  stops: [{ depth: 9, time: 3, gas: 'Air' }, ...],
+  stops: [{ depth: 9, time: 3.7, gas: 'Air', departureRuntime: 36 }, ...],
   gasSwitches: [{ depth: 21, gas: 'EAN50', gasId: 2 }, ...],
   totalTime: 18.2,          // minutes: ascent + stops
   totalAscentTime: 5.5,     // minutes spent moving (not stopped)
@@ -66,10 +70,11 @@ structured events rather than preformatted UI strings:
 ```
 
 The trace distinguishes the mandatory staged-profile minute, additional time
-required by the ceiling check, and gas-switch time. Repeated minute-by-minute
-checks are folded into one `level-decision` event per depth so long schedules do
-not create unbounded presentation output. The Sandbox localizes these events
-only when rendering; the numerical model remains language-independent.
+required by the ceiling check, runtime-alignment wait, and gas-switch time.
+Repeated minute-by-minute checks are folded into one `level-decision` event per
+depth so long schedules do not create unbounded presentation output. The
+Sandbox localizes these events only when rendering; the numerical model remains
+language-independent.
 
 `generateDecisionAudit(setup)` in `js/diveSetup.js` reconstructs the tissue state
 at the end of the generated bottom segment and invokes this opt-in scheduler
@@ -185,11 +190,21 @@ while (depth > 0) {
     const { ceilingDepth } = getDiveCeiling(tissues, gfThere);
 
     if (ceilingDepth <= nextStopDepth) {
+        // Optional operational mode: wait to the next whole absolute runtime
+        // minute, then loop and re-check the ceiling before departure.
+        if (alignRuntimeDepartures && scheduleRuntime % 1 !== 0) {
+            const alignmentWait = Math.ceil(scheduleRuntime) - scheduleRuntime;
+            tissues = simulateDepthTime(tissues, depth, alignmentWait, currentN2);
+            pendingStopTime += alignmentWait;
+            scheduleRuntime += alignmentWait;
+            continue;
+        }
         if (pendingStopTime > 0) {
             stops.push({
                 depth: Math.round(depth * 10) / 10,
                 time: Math.round(pendingStopTime * 10) / 10,
-                gas: currentGasName
+                gas: currentGasName,
+                departureRuntime: scheduleRuntime
             });
             pendingStopTime = 0;
         }
@@ -214,6 +229,10 @@ Per-iteration logic:
   level before the ascent test. A configured gas-switch stay counts toward this
   minute; it is not added twice.
 - If the dive ceiling under the destination GF clears `nextStopDepth`, ascend (no Schreiner off-gassing credit is applied to the short inter-stop ascent itself). Otherwise wait `timeIncrement` minutes at depth (Haldane) and re-test.
+- With operational runtime alignment enabled, a safe fractional departure is
+  extended to the next whole absolute runtime minute. The loop then recomputes
+  the ceiling from the updated tissue state; extra time at depth is never
+  assumed to be automatically conservative.
 - In adaptive and continuous study modes, stops are only recorded if tissue
   loading or gas-switch handling produced positive waiting time. Their first
   recorded wait may therefore be shallower than `anchorDepth`.
@@ -246,6 +265,11 @@ Stop durations commonly grow toward the surface as the controlling compartment
 shifts toward slower tissues, but monotonic growth is not an algorithmic
 invariant. Gas changes, compartment changes, and one-minute rounding can produce
 an equal or locally shorter shallower stop.
+
+In the Sandbox operational plan, `time` may include a fractional alignment wait
+(for example 1.7 min after arriving at a stop at runtime 34.3). The actionable
+value is `departureRuntime: 36`: leave that depth when the dive computer reaches
+runtime 36. Adaptive and Continuous study modes do not use this alignment.
 
 ## Cross-references
 

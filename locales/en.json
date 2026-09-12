@@ -1131,7 +1131,8 @@
             "outOfRange": "⚠ out of range",
             "infinity": "∞"
         },
-        "mod": "MOD: {0} m (deco: {1} m)",
+        "mod": "MOD: {0} m\ndeco MOD: {1} m\nrecommended switch: {2} m",
+        "modBottom": "MOD: {0} m",
         "profileDefault": "Profile:",
         "customProfile": "✏️ Custom Profile",
         "customProfileNamed": "✏️ {0}",
@@ -1149,6 +1150,7 @@
         "quickSetup": {
             "title": "Quick Setup",
             "hint": "Set depth and bottom time, then click Generate below.",
+            "autoHint": "The profile updates automatically after each change.",
             "maxDepth": "Max Depth (m):",
             "bottomTime": "Bottom Time (min):",
             "safetyStop": "Safety Stop",
@@ -1166,11 +1168,12 @@
             "switchHint": "Time to verify gas, take breaths, and signal buddy at each switch depth."
         },
         "gf": {
-            "title": "Decompression Model",
+            "title": "Decompression Model — Bühlmann",
             "algorithm": "Algorithm:",
             "algorithmExperimental": "experimental",
             "algorithmTables": "tables",
             "algorithmComputers": "computers",
+            "settingsTitle": "Gradient Factor Settings",
             "hint": "GF 100/100 = raw Bühlmann. Lower values = more conservative.",
             "low": "GF Low (%):",
             "high": "GF High (%):",
@@ -1282,6 +1285,7 @@
         "colGas": "Gas",
         "colTank": "Tank",
         "runtimeFootnote": "Runtime is the elapsed time from the start of the dive to the end of the stage.",
+        "runtimeDepartureFootnote": "At decompression stops, runtime is the whole minute when the diver leaves for the next level.",
         "descentFootnote": "The model continuously calculates tissue on-gassing during descent. Descent is therefore included in both bottom time and the decompression-profile calculation.",
         "sectionBottom": "Bottom",
         "sectionAscent": "Ascent",

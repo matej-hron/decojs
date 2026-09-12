@@ -9,13 +9,18 @@ Real technical dives carry one bottom gas plus one or more deco gases — EAN50 
 export function calculateMOD(o2Fraction, maxPpO2 = 1.4, surfacePressure = 1) {
     if (o2Fraction <= 0) return Infinity;
     const maxAmbient = maxPpO2 / o2Fraction;
-    return Math.floor((maxAmbient - surfacePressure) / 0.1);
+    const depth = (maxAmbient - surfacePressure) / 0.1;
+    const nearestMeter = Math.round(depth);
+    const tolerance = Number.EPSILON * Math.max(1, Math.abs(depth)) * 4;
+    return Math.abs(depth - nearestMeter) <= tolerance
+        ? nearestMeter
+        : Math.floor(depth);
 }
 ```
 
 $$MOD = \left\lfloor \frac{ppO_2^{max}/f_{O_2} - P_{surface}}{0.1} \right\rfloor \text{ m}$$
 
-Default `maxPpO2 = 1.4` for bottom gas; `1.6` for deco (relaxed because the diver is resting at a stop, not working). `Math.floor` rounds toward shallower — conservative, always-below-MOD.
+Default `maxPpO2 = 1.4` for bottom gas; `1.6` for deco (relaxed because the diver is resting at a stop, not working). Non-integer depths round toward shallower. Values within floating-point tolerance of an exact integer remain at that integer, so EAN50 correctly reports 18 m at 1.4 bar rather than 17 m.
 The default `surfacePressure = 1` preserves the established sea-level MOD
 convention; the altitude planner shifts this reference by the local atmospheric
 pressure difference.
@@ -34,6 +39,9 @@ Examples at $ppO_2 = 1.6$:
 | EAN50 | 0.50 | 22 | 21 |
 | EAN80 | 0.80 | 10 | 9 |
 | Pure O₂ | 1.00 | 6 | 6 |
+
+The editor presents all three values for a deco gas: working MOD, deco MOD,
+and the recommended switch depth snapped down to the 3 m stop grid.
 
 ## Gas priority in the deco loop
 

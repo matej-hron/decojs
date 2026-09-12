@@ -1216,7 +1216,13 @@
             const surfacePressure = getDiveSetupSurfacePressure(diveSetup);
             divePlanTableContainer.innerHTML = renderDivePlanTableHTML(
                 getDiveSetupWaypoints(diveSetup), diveSetup.gases,
-                { sacRate, decoSacRate, reserve, surfacePressure }
+                {
+                    sacRate,
+                    decoSacRate,
+                    reserve,
+                    surfacePressure,
+                    runtimeConvention: 'departure'
+                }
             );
         }
 
@@ -1241,7 +1247,10 @@
                 showSurfaceInterval: false,  // Uses default 15min for off-gassing display
                 showDivePlanPreview: false,  // Sandbox renders its own copy above the Dive Profile chart
                 showWaypoints: false,  // Runtime supersedes the low-level rectangular-profile editor
-                emitOnInput: true
+                showGenerateButton: false,
+                emitOnInput: true,
+                autoGenerateProfile: true,
+                alignRuntimeDepartures: true
             }
         });
         

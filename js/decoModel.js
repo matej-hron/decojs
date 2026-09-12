@@ -959,7 +959,9 @@ export function simulateDepthChange(
  * @param {Object} [options] - Additional options
  * @param {number} [options.switchPpO2=1.6] - ppO2 used to calculate gas switch depths (MOD)
  * @param {boolean} [options.audit=false] - Include structured decision events
- * @returns {{stops: Array<{depth: number, time: number, gas: string}>, gasSwitches: Array<{depth: number, gas: string, gasId: string}>, totalTime: number, totalAscentTime: number, pAnchor: number, anchorDepth: number, decisionAudit?: Object}}
+ * @param {boolean} [options.alignRuntimeDepartures=false] - Align Standard-mode departures to whole absolute runtime minutes
+ * @param {number} [options.runtimeStart] - Absolute runtime at the start of the ascent
+ * @returns {{stops: Array<{depth: number, time: number, gas: string, departureRuntime?: number}>, gasSwitches: Array<{depth: number, gas: string, gasId: string}>, totalTime: number, totalAscentTime: number, pAnchor: number, anchorDepth: number, decisionAudit?: Object}}
  */
 export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, gfLow, gfHigh, gases = null, options = {}) {
     const { switchPpO2 = 1.6, gasSwitchTime = 0 } = options;
@@ -974,6 +976,9 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
     const stopIncrement = continuousDeco ? 0.1 : STOP_INCREMENT;
     const timeIncrement = continuousDeco ? 0.1 : 1;
     const minimumStopTime = decoMode === DECO_MODES.STANDARD ? 1 : 0;
+    const alignRuntimeDepartures = decoMode === DECO_MODES.STANDARD
+        && options.alignRuntimeDepartures === true
+        && Number.isFinite(options.runtimeStart);
     const decisionAudit = options.audit ? {
         version: DECISION_AUDIT_VERSION,
         mode: decoMode,
@@ -990,6 +995,12 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
     const stops = [];
     const gasSwitches = []; // Track gas switches during ascent
     let totalAscentTime = 0;
+    let scheduleRuntime = alignRuntimeDepartures ? options.runtimeStart : null;
+    const advanceRuntime = (duration) => {
+        if (scheduleRuntime !== null) {
+            scheduleRuntime = Math.round((scheduleRuntime + duration) * 10) / 10;
+        }
+    };
 
     // Clone tissue pressures
     let tissues = { ...tissuePressures };
@@ -1145,13 +1156,57 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
                     currentTissues, remainingDepth, switchDepth, segmentTime, currentN2, surfacePressure
                 );
                 totalAscentTime += segmentTime;
+                advanceRuntime(segmentTime);
                 remainingDepth = switchDepth;
                 // Switch to best gas at this depth
                 if (switchToBestGas(switchDepth) && gasSwitchTime > 0) {
                     currentTissues = simulateDepthTime(
                         currentTissues, switchDepth, gasSwitchTime, currentN2, surfacePressure
                     );
-                    stops.push({ depth: switchDepth, time: gasSwitchTime, gas: currentGasName });
+                    advanceRuntime(gasSwitchTime);
+                    let switchHoldTime = gasSwitchTime;
+                    if (alignRuntimeDepartures) {
+                        const alignmentWait = Math.round(
+                            (Math.ceil(scheduleRuntime - 1e-9) - scheduleRuntime) * 10
+                        ) / 10;
+                        if (alignmentWait > 0) {
+                            currentTissues = simulateDepthTime(
+                                currentTissues, switchDepth, alignmentWait,
+                                currentN2, surfacePressure
+                            );
+                            switchHoldTime += alignmentWait;
+                            advanceRuntime(alignmentWait);
+                        }
+                        const targetGF = interpolateGF(
+                            getAmbientPressure(0, surfacePressure),
+                            pAnchor, gfLow, gfHigh, surfacePressure
+                        );
+                        let targetCeiling = getDiveCeiling(
+                            currentTissues, targetGF, surfacePressure
+                        ).ceilingDepth;
+                        while (targetCeiling > 0) {
+                            currentTissues = simulateDepthTime(
+                                currentTissues, switchDepth, 1,
+                                currentN2, surfacePressure
+                            );
+                            switchHoldTime += 1;
+                            advanceRuntime(1);
+                            if (switchHoldTime > DECO_STOP_MAX_MINUTES) {
+                                throw new DecoCapExceededError(
+                                    switchDepth, stops, DECO_STOP_MAX_MINUTES
+                                );
+                            }
+                            targetCeiling = getDiveCeiling(
+                                currentTissues, targetGF, surfacePressure
+                            ).ceilingDepth;
+                        }
+                    }
+                    stops.push({
+                        depth: switchDepth,
+                        time: Math.round(switchHoldTime * 10) / 10,
+                        gas: currentGasName,
+                        ...(alignRuntimeDepartures ? { departureRuntime: scheduleRuntime } : {})
+                    });
                 }
             }
         }
@@ -1162,6 +1217,7 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
                 currentTissues, remainingDepth, 0, segmentTime, currentN2, surfacePressure
             );
             totalAscentTime += segmentTime;
+            advanceRuntime(segmentTime);
         }
         const totalTime = totalAscentTime + stops.reduce((sum, s) => sum + s.time, 0);
         return {
@@ -1189,13 +1245,57 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
                 currentTissues, currentAscentDepth, switchDepth, segmentTime, currentN2, surfacePressure
             );
             totalAscentTime += segmentTime;
+            advanceRuntime(segmentTime);
             currentAscentDepth = switchDepth;
             // Switch to best gas at this depth
             if (switchToBestGas(switchDepth) && gasSwitchTime > 0) {
                 currentTissues = simulateDepthTime(
                     currentTissues, switchDepth, gasSwitchTime, currentN2, surfacePressure
                 );
-                stops.push({ depth: switchDepth, time: gasSwitchTime, gas: currentGasName });
+                advanceRuntime(gasSwitchTime);
+                let switchHoldTime = gasSwitchTime;
+                if (alignRuntimeDepartures) {
+                    const alignmentWait = Math.round(
+                        (Math.ceil(scheduleRuntime - 1e-9) - scheduleRuntime) * 10
+                    ) / 10;
+                    if (alignmentWait > 0) {
+                        currentTissues = simulateDepthTime(
+                            currentTissues, switchDepth, alignmentWait,
+                            currentN2, surfacePressure
+                        );
+                        switchHoldTime += alignmentWait;
+                        advanceRuntime(alignmentWait);
+                    }
+                    const targetGF = interpolateGF(
+                        getAmbientPressure(firstStopDepth, surfacePressure),
+                        pAnchor, gfLow, gfHigh, surfacePressure
+                    );
+                    let targetCeiling = getDiveCeiling(
+                        currentTissues, targetGF, surfacePressure
+                    ).ceilingDepth;
+                    while (targetCeiling > firstStopDepth) {
+                        currentTissues = simulateDepthTime(
+                            currentTissues, switchDepth, 1,
+                            currentN2, surfacePressure
+                        );
+                        switchHoldTime += 1;
+                        advanceRuntime(1);
+                        if (switchHoldTime > DECO_STOP_MAX_MINUTES) {
+                            throw new DecoCapExceededError(
+                                switchDepth, stops, DECO_STOP_MAX_MINUTES
+                            );
+                        }
+                        targetCeiling = getDiveCeiling(
+                            currentTissues, targetGF, surfacePressure
+                        ).ceilingDepth;
+                    }
+                }
+                stops.push({
+                    depth: switchDepth,
+                    time: Math.round(switchHoldTime * 10) / 10,
+                    gas: currentGasName,
+                    ...(alignRuntimeDepartures ? { departureRuntime: scheduleRuntime } : {})
+                });
             }
         }
     }
@@ -1207,6 +1307,7 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
             currentTissues, currentAscentDepth, firstStopDepth, finalSegmentTime, currentN2, surfacePressure
         );
         totalAscentTime += finalSegmentTime;
+        advanceRuntime(finalSegmentTime);
     }
     
     tissues = currentTissues;
@@ -1225,6 +1326,7 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
                 tissues, depth, gasSwitchTime, currentN2, surfacePressure
             );
             pendingStopTime += gasSwitchTime;
+            advanceRuntime(gasSwitchTime);
             switchTime = gasSwitchTime;
         }
 
@@ -1235,6 +1337,7 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
                 switchTime,
                 mandatoryWait: 0,
                 additionalWait: 0,
+                alignmentWait: 0,
                 initialCeilingDepth: null,
                 initialControllingCompartment: null
             };
@@ -1249,6 +1352,7 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
                 tissues, depth, mandatoryWait, currentN2, surfacePressure
             );
             pendingStopTime = minimumStopTime;
+            advanceRuntime(mandatoryWait);
             levelDecision.mandatoryWait += mandatoryWait;
         }
 
@@ -1274,6 +1378,20 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
         }
 
         if (ceilingDepth <= nextStopDepth) {
+            if (alignRuntimeDepartures) {
+                const alignedRuntime = Math.ceil(scheduleRuntime - 1e-9);
+                const alignmentWait = Math.round((alignedRuntime - scheduleRuntime) * 10) / 10;
+                if (alignmentWait > 0) {
+                    tissues = simulateDepthTime(
+                        tissues, depth, alignmentWait, currentN2, surfacePressure
+                    );
+                    pendingStopTime = Math.round((pendingStopTime + alignmentWait) * 10) / 10;
+                    levelDecision.alignmentWait =
+                        Math.round((levelDecision.alignmentWait + alignmentWait) * 10) / 10;
+                    advanceRuntime(alignmentWait);
+                    continue;
+                }
+            }
             recordDecision('level-decision', {
                 ...levelDecision,
                 targetDepth: nextStopDepth,
@@ -1285,11 +1403,25 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
             });
             // Can ascend. Record stop if we waited here.
             if (pendingStopTime > 0) {
-                stops.push({
-                    depth: Math.round(depth * 10) / 10,
-                    time: Math.round(pendingStopTime * 10) / 10,
-                    gas: currentGasName
-                });
+                const roundedDepth = Math.round(depth * 10) / 10;
+                const previousStop = stops[stops.length - 1];
+                if (previousStop
+                    && previousStop.depth === roundedDepth
+                    && previousStop.gas === currentGasName) {
+                    previousStop.time = Math.round(
+                        (previousStop.time + pendingStopTime) * 10
+                    ) / 10;
+                    if (alignRuntimeDepartures) {
+                        previousStop.departureRuntime = scheduleRuntime;
+                    }
+                } else {
+                    stops.push({
+                        depth: roundedDepth,
+                        time: Math.round(pendingStopTime * 10) / 10,
+                        gas: currentGasName,
+                        ...(alignRuntimeDepartures ? { departureRuntime: scheduleRuntime } : {})
+                    });
+                }
                 pendingStopTime = 0;
             }
             levelDecision = null;
@@ -1299,11 +1431,13 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
                 tissues, depth, nextStopDepth, ascentTime, currentN2, surfacePressure
             );
             totalAscentTime += ascentTime;
+            advanceRuntime(ascentTime);
             depth = nextStopDepth;
         } else {
             // Cannot ascend yet - wait at this depth
             tissues = simulateDepthTime(tissues, depth, timeIncrement, currentN2, surfacePressure);
             pendingStopTime = Math.round((pendingStopTime + timeIncrement) * 10) / 10;
+            advanceRuntime(timeIncrement);
             levelDecision.additionalWait =
                 Math.round((levelDecision.additionalWait + timeIncrement) * 10) / 10;
 
