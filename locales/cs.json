@@ -1221,6 +1221,7 @@
         "environment": {
             "title": "Prostředí",
             "altitude": "Nadmořská výška (m):",
+            "altitudeExplanation": "DecoJS převádí nadmořskou výšku na atmosférický tlak podle standardní atmosféry. Pod vodou k němu přičítá 0,1 bar na každý metr hloubky. Výpočet předpokládá plnou aklimatizaci.",
             "surfacePressure": "Vypočtený atmosférický tlak:",
             "acclimatizedHint": "Předpokládá, že je potápěč na tuto nadmořskou výšku plně aklimatizovaný."
         },
