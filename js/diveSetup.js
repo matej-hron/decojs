@@ -1801,6 +1801,18 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
             }
             previousSegment = segment;
         }
+
+        for (let i = segments.length - 2; i > 0; i--) {
+            const segment = segments[i];
+            const previous = segments[i - 1];
+            const next = segments[i + 1];
+            if (segment.cls === 'asc'
+                && !segment.isSurface
+                && (previous.cls === 'stop' || previous.cls === 'switch')
+                && (next.cls === 'stop' || next.cls === 'switch')) {
+                segments.splice(i, 1);
+            }
+        }
     }
 
     // Fold each inter-stop ascent into the PRECEDING stop row. Effect:
@@ -1941,7 +1953,7 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
         tableHtml(translate('divePlan.sectionAscent', 'Ascent'), ascentRowsHtml) +
         `</div>` +
         `<p class="dse-plan-footnote">* ${practicalRuntime
-            ? translate('divePlan.runtimePracticalFootnote', 'Stop durations are the whole minutes calculated by the model. Allow 20\u00a0seconds for each 3\u00a0m ascent after a stop; runtime is a whole-minute cross-check.')
+            ? translate('divePlan.runtimePracticalFootnote', 'Stop durations are the whole minutes calculated by the model. Intermediate 3\u00a0m ascents are included as 20\u00a0seconds in the whole-minute runtime cross-check.')
             : departureRuntime
                 ? translate('divePlan.runtimeDepartureFootnote', 'At decompression stops, runtime is the whole minute when the diver leaves for the next level. A decimal stop duration is the difference from the exact arrival time; execute the plan using the departure runtime.')
                 : translate('divePlan.runtimeFootnote', 'Runtime is the elapsed time from the start of the dive to the end of the stage.')}</p>` +

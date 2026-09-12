@@ -1286,7 +1286,7 @@
         "colTank": "Tank",
         "runtimeFootnote": "Runtime is the elapsed time from the start of the dive to the end of the stage.",
         "runtimeDepartureFootnote": "At decompression stops, runtime is the whole minute when the diver leaves for the next level. A decimal stop duration is the difference from the exact arrival time; execute the plan using the departure runtime.",
-        "runtimePracticalFootnote": "Stop durations are the whole minutes calculated by the model. Allow 20 seconds for each 3 m ascent after a stop; runtime is a whole-minute cross-check.",
+        "runtimePracticalFootnote": "Stop durations are the whole minutes calculated by the model. Intermediate 3 m ascents are included as 20 seconds in the whole-minute runtime cross-check.",
         "descentFootnote": "The model continuously calculates tissue on-gassing during descent. Descent is therefore included in both bottom time and the decompression-profile calculation.",
         "sectionBottom": "Bottom",
         "sectionAscent": "Ascent",
