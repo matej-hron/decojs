@@ -837,9 +837,13 @@ describe('diveSetup - renderDivePlanTableHTML', () => {
             practicalWaypoints, gases, { runtimeConvention: 'practical' }
         );
 
-        expect(html).toContain('<td class="dse-plan-depth">3\u00a0m</td><td class="dse-plan-stop">2.8</td><td class="dse-plan-runtime">32</td>');
+        expect(html).toContain('<td class="dse-plan-depth">3\u00a0m</td><td class="dse-plan-stop">3</td><td class="dse-plan-runtime">32</td>');
         expect(html).toContain('<td class="dse-plan-depth">3\u00a0m</td><td class="dse-plan-stop">7</td><td class="dse-plan-runtime">39</td>');
-        expect(html).toContain('<td class="dse-plan-depth">0\u00a0m</td><td class="dse-plan-stop">0.3</td><td class="dse-plan-runtime">39</td>');
+        expect(html).toContain('<td class="dse-plan-depth">0\u00a0m</td><td class="dse-plan-stop">20\u00a0s</td><td class="dse-plan-runtime">39</td>');
+        const runtimeValues = [...html.matchAll(
+            /<td class="dse-plan-runtime">([^<]+)<\/td>/g
+        )].map(match => match[1]);
+        expect(runtimeValues.every(value => /^\d+$/.test(value))).toBe(true);
         expect(html).toContain('Allow 20\u00a0seconds for each 3\u00a0m ascent after a stop');
     });
 

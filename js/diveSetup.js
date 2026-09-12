@@ -1788,6 +1788,9 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
                     ? (segment.fromDepth - segment.depth) / 9
                     : segment.stop;
                 segment.stop = Math.round(ascentDuration * 10) / 10;
+                segment.practicalAscentSeconds = followsStop
+                    ? Math.round(ascentDuration * 60)
+                    : null;
                 runningTime += ascentDuration;
                 segment.runtime = runningTime;
             } else if (typeof segment.stop === 'number') {
@@ -1881,7 +1884,12 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
         let stopDisplay;
         if (s.stop === '' || s.stop === undefined || s.stop === null) {
             stopDisplay = '';
-        } else if (departureRuntime || practicalRuntime) {
+        } else if (practicalRuntime && s.practicalAscentSeconds !== null
+            && s.practicalAscentSeconds !== undefined) {
+            stopDisplay = `${s.practicalAscentSeconds}\u00a0s`;
+        } else if (practicalRuntime) {
+            stopDisplay = Math.round(s.stop);
+        } else if (departureRuntime) {
             stopDisplay = fmtNum(s.stop, Number.isInteger(s.stop) ? 0 : 1);
         } else if (i === 0) {
             stopDisplay = Math.round(s.stop);
