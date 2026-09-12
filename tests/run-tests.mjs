@@ -446,7 +446,7 @@ describe('GF chart maximum GF toggle', () => {
             datasets: [
                 { gfcGroup: 'leading-tissue', gfcLegendItem: true },
                 { label: 'TC1' },
-                { label: 'pAnchor' }
+                { label: 'Anchor pressure', gfcAnchor: true }
             ]
         };
         expect(GFChart.prototype._isLegendItemVisible(
@@ -458,14 +458,22 @@ describe('GF chart maximum GF toggle', () => {
             gfLegendData
         )).toBe(false);
         expect(GFChart.prototype._isLegendItemVisible(
-            { datasetIndex: 2, text: 'pAnchor' },
+            { datasetIndex: 2, text: 'Anchor pressure' },
             gfLegendData
         )).toBe(true);
+        const mValueLegendData = {
+            datasets: [
+                { label: 'TC1' },
+                { label: 'Anchor pressure', mvalueAnchor: true }
+            ]
+        };
         expect(MValueChart.prototype._isLegendItemVisible(
-            { text: 'TC1 (5 min)' }
+            { datasetIndex: 0, text: 'TC1 (5 min)' },
+            mValueLegendData
         )).toBe(false);
         expect(MValueChart.prototype._isLegendItemVisible(
-            { text: 'pAnchor' }
+            { datasetIndex: 1, text: 'Anchor pressure' },
+            mValueLegendData
         )).toBe(true);
         expect(GFChart.prototype._formatMaxGFLabel(
             { id: 5 },
@@ -601,6 +609,50 @@ describe('M-value intersection ruler', () => {
                 globalThis.document = originalDocument;
                 dom.window.close();
             }
+    });
+
+    test('renders ruler quantities with semantic symbols and subscripts', () => {
+        const dom = new JSDOM('<!doctype html><body><div id="panel"></div></body>');
+        const originalDocument = globalThis.document;
+        globalThis.document = dom.window.document;
+
+        try {
+            const panel = dom.window.document.getElementById('panel');
+            const compartment = COMPARTMENTS[1];
+            const intersections = calculateMValueRulerIntersections({
+                tissuePressure: 2.82,
+                compartment,
+                gfLow: 0.4,
+                activeGF: 0.4,
+                gfHigh: 0.8,
+                surfacePressure: 1.01325
+            });
+            MValueChart.prototype._renderRulerPanel.call(
+                { rulerPanel: panel },
+                {
+                    compartment,
+                    tissuePressure: 2.82,
+                    activeGF: 0.4,
+                    intersections
+                }
+            );
+
+            const subscripts = [...panel.querySelectorAll('sub')]
+                .map(sub => sub.textContent);
+            expect(panel.querySelectorAll('var').length).toBeGreaterThan(0);
+            expect(subscripts.includes('t')).toBe(true);
+            expect(subscripts.includes('amb')).toBe(true);
+            expect(subscripts.includes('amb,tol')).toBe(true);
+            expect(subscripts.includes('low')).toBe(true);
+            expect(subscripts.includes('high')).toBe(true);
+            expect(panel.innerHTML.includes('p_t')).toBe(false);
+            expect(panel.textContent.includes('\u00a0bar')).toBe(true);
+            expect(panel.textContent.includes('\u00a0m')).toBe(true);
+            expect(panel.textContent.includes('\u00a0%')).toBe(true);
+        } finally {
+            globalThis.document = originalDocument;
+            dom.window.close();
+        }
     });
 });
 

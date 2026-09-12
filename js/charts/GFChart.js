@@ -848,11 +848,10 @@ export class GFChart {
     }
 
     _isLegendItemVisible(legendItem, chartData) {
-        const text = legendItem.text || '';
         const dataset = chartData.datasets[legendItem.datasetIndex];
         const isLeading = dataset?.gfcGroup === 'leading-tissue' &&
             dataset.gfcLegendItem;
-        const isPAnchor = text.startsWith('pAnchor');
+        const isPAnchor = dataset?.gfcAnchor === true;
         return isLeading || isPAnchor;
     }
 
@@ -997,7 +996,8 @@ export class GFChart {
             // pAnchor vertical line
             if (pAnchor > surfacePressure) {
                 datasets.push({
-                    label: fmt(translate('chart.gf.pAnchor', 'pAnchor {0}\u00a0bar ({1}\u00a0m)'), fmtNum(pAnchor, 2), fmtNum(((pAnchor - surfacePressure) / 0.1), 1)),
+                    label: fmt(translate('chart.gf.pAnchor', 'Anchor pressure {0}\u00a0bar ({1}\u00a0m)'), fmtNum(pAnchor, 2), fmtNum(((pAnchor - surfacePressure) / 0.1), 1)),
+                    gfcAnchor: true,
                     data: [
                         { x: pAnchor, y: -10 },
                         { x: pAnchor, y: 120 }
@@ -1154,7 +1154,7 @@ export class GFChart {
                             label: (context) => {
                                 const label = context.dataset.label || '';
                                 return fmt(
-                                    translate('chart.gf.tooltipLabel', '{0}: p_amb={1}\u00a0bar, GF={2}%'),
+                                    translate('chart.gf.tooltipLabel', '{0}: ambient pressure {1}\u00a0bar, GF {2}%'),
                                     label, fmtNum(context.parsed.x, 2), fmtNum(context.parsed.y, 1)
                                 );
                             }

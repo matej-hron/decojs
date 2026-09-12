@@ -1093,14 +1093,11 @@
             "alveolarPN2WithGases": "Alveolární pN₂ ({0})",
             "alveolarPN2Percent": "Alveolární pN₂ ({0} %)",
             "surfaceLine": "Hladina ({0} bar)",
-            "pAnchor": "pAnchor {0} bar ({1} m)",
-            "tooltipLabel": "{0}: p_amb={1}, p_tkáň={2} bar",
-            "rulerHeader": "TC{0} pravítko · p_tk={1} bar",
-            "rulerEquilibrium": "p_tk = p_okol",
-            "rulerGFLow": "GF Low {0} %",
-            "rulerActiveGF": "Aktuální GF {0} % · strop",
-            "rulerGFHigh": "GF High {0} %",
-            "rulerIntersection": "{0}: {1} bar · {2} m",
+            "pAnchor": "Kotevní tlak {0} bar ({1} m)",
+            "tooltipLabel": "{0}: okolní tlak {1} bar, tkáňový tlak {2} bar",
+            "rulerTitle": "pravítko",
+            "rulerActiveGFLabel": "Aktuální GF",
+            "rulerCeiling": "strop",
             "initialDepthLabel": "0,0 min @ 0 m"
         },
         "gf": {
@@ -1108,8 +1105,8 @@
             "gfCorridor": "GF koridor",
             "leadingTissue": "Nejvyšší GF",
             "leadingTC": "Nejvyšší GF: TC{0} ({1} %)",
-            "pAnchor": "pAnchor {0} bar ({1} m)",
-            "tooltipLabel": "{0}: p_amb={1} bar, GF={2} %"
+            "pAnchor": "Kotevní tlak {0} bar ({1} m)",
+            "tooltipLabel": "{0}: okolní tlak {1} bar, GF {2} %"
         }
     },
     "warnings": {
