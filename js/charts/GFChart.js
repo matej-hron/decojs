@@ -928,7 +928,9 @@ export class GFChart {
                     comp
                 ) * 100
             }))
-            .filter((row) => Number.isFinite(row.gfPercent))
+            .filter((row) =>
+                Number.isFinite(row.gfPercent) && row.gfPercent >= 0
+            )
             .sort((a, b) => b.gfPercent - a.gfPercent || a.id - b.id);
     }
 

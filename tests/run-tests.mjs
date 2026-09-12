@@ -547,7 +547,7 @@ describe('GF chart maximum GF toggle', () => {
             compartments: {
                 1: { pressures: [4] },
                 2: { pressures: [3] },
-                3: { pressures: [2] }
+                3: { pressures: [1] }
             }
         };
         const context = {
@@ -561,9 +561,8 @@ describe('GF chart maximum GF toggle', () => {
             2
         );
 
-        expect(ranking.map((row) => row.id)).toEqual([1, 2, 3]);
+        expect(ranking.map((row) => row.id)).toEqual([1, 2]);
         expect(ranking[0].gfPercent).toBeGreaterThan(ranking[1].gfPercent);
-        expect(ranking[1].gfPercent).toBeGreaterThan(ranking[2].gfPercent);
     });
 
     test('renders the GF ranking table only when the chart is wide enough', () => {
