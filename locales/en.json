@@ -1702,6 +1702,88 @@
             "enterProfileNameAlert": "Please enter a profile name",
             "footerDisclaimer": "<strong>Disclaimer:</strong> This is an educational tool only. Do not use for actual dive planning."
         },
+        "repetitive": {
+            "title": "Repetitive Dives — DecoJS Sandbox",
+            "heading": "Repetitive Dive Planner",
+            "intro": "Each panel is one dive in the trip. Surface intervals off-gas the tissues; later dives start pre-saturated and accrue more decompression.",
+            "gfLow": "GF Low",
+            "gfHigh": "GF High",
+            "startDate": "Start date",
+            "days": "Days",
+            "copyTripLink": "Copy trip link",
+            "copied": "Copied!",
+            "air": "Air",
+            "defaultDiveName": "Dive {number}",
+            "diveHeading": "{name} — {date} at {time}",
+            "modes": {
+                "tissue": "Tissue",
+                "partialPressure": "<var>p</var><sub>O₂</sub>/N₂",
+                "ambient": "Ambient",
+                "gas": "Gas use"
+            },
+            "edit": "Edit",
+            "delete": "Delete",
+            "invalidNote": "⚠ No-deco dive not possible here — too pre-saturated. Move it later or unlock to a custom dive.",
+            "preSaturationHeading": "Tissue loading at the start of the dive",
+            "preSaturationExplanation": "Bar height shows each tissue compartment’s share of its surfacing limit. Reference lines mark 50% and 100%; tissues are ordered from fastest to slowest.",
+            "freshDiver": "Fresh diver — no residual loading.",
+            "summary": {
+                "surfaceInterval": "Surface interval",
+                "firstDive": "First dive",
+                "maxDepth": "Maximum depth",
+                "bottomTime": "Bottom time",
+                "totalRuntime": "Total dive time",
+                "decompression": "Decompression",
+                "firstStop": "First stop",
+                "tts": "Ascent time (TTS)",
+                "controllingTissue": "Controlling tissue",
+                "tissueValue": "TC{compartment} · {percent}% of limit",
+                "status": "Status",
+                "invalid": "Invalid profile",
+                "noDeco": "None"
+            },
+            "fullAnalysis": "Full analysis (M-value, GF, runtime)",
+            "mValueLoading": "M-value loading",
+            "gradientFactor": "Gradient factor",
+            "runtime": "Runtime",
+            "fast": "fast",
+            "slow": "slow",
+            "calendar": {
+                "noDecoUnavailable": "⚠ no-deco N/A",
+                "decoMinutes": "+{minutes} deco",
+                "invalidTitle": "No-deco not possible here — too pre-saturated",
+                "conflictTitle": "Overlaps previous dive's deco"
+            },
+            "dialog": {
+                "addDive": "Add dive",
+                "name": "Name",
+                "start": "Start",
+                "maxDepth": "Max depth",
+                "customTime": "Custom time",
+                "noDeco": "No-deco",
+                "cancel": "Cancel",
+                "add": "Add",
+                "exceedsNdl": "⚠ deco — exceeds NDL ({minutes} min) for this depth at this point in the trip",
+                "ndlHere": "NDL here: {minutes} min",
+                "noLimit": "NDL here: no limit (very shallow)"
+            },
+            "editPanel": {
+                "editing": "Editing",
+                "ndlLocked": "No-deco (NDL-locked)",
+                "removeDive": "Remove dive"
+            },
+            "runtimeTable": {
+                "phase": "Phase",
+                "depth": "Depth",
+                "segment": "Seg",
+                "run": "Run",
+                "gas": "Gas",
+                "descent": "Descent",
+                "bottom": "Bottom",
+                "ascent": "Ascent",
+                "decoStop": "Deco stop"
+            }
+        },
         "tissue": {
             "title": "Tissue Saturation Simulator",
             "subtitle": "Move the diver, switch the gas, let time run — and watch nitrogen partial pressures chase ambient exponentially.",

@@ -1666,6 +1666,88 @@
             "enterProfileNameAlert": "Introduce un nombre de perfil",
             "footerDisclaimer": "<strong>Aviso:</strong> Solo con fines educativos. No usar para planificar inmersiones reales."
         },
+        "repetitive": {
+            "title": "Inmersiones sucesivas — entorno DecoJS",
+            "heading": "Planificador de inmersiones sucesivas",
+            "intro": "Cada panel representa una inmersión del viaje. Durante los intervalos en superficie los tejidos eliminan gas; las inmersiones posteriores comienzan con nitrógeno residual y acumulan más descompresión.",
+            "gfLow": "GF bajo",
+            "gfHigh": "GF alto",
+            "startDate": "Fecha de inicio",
+            "days": "Días",
+            "copyTripLink": "Copiar enlace del viaje",
+            "copied": "¡Copiado!",
+            "air": "Aire",
+            "defaultDiveName": "Inmersión {number}",
+            "diveHeading": "{name} — {date} a las {time}",
+            "modes": {
+                "tissue": "Tejidos",
+                "partialPressure": "<var>p</var><sub>O₂</sub>/N₂",
+                "ambient": "Presión ambiente",
+                "gas": "Consumo de gas"
+            },
+            "edit": "Editar",
+            "delete": "Eliminar",
+            "invalidNote": "⚠ Aquí no es posible una inmersión sin descompresión: los tejidos están demasiado saturados. Retrásala o desbloquea un tiempo personalizado.",
+            "preSaturationHeading": "Carga de los tejidos al inicio de la inmersión",
+            "preSaturationExplanation": "La altura de cada barra muestra qué parte del límite de ascenso utiliza el tejido. Las líneas de referencia marcan el 50 % y el 100 %; los tejidos están ordenados del más rápido al más lento.",
+            "freshDiver": "Buceador sin saturación residual.",
+            "summary": {
+                "surfaceInterval": "Intervalo en superficie",
+                "firstDive": "Primera inmersión",
+                "maxDepth": "Profundidad máxima",
+                "bottomTime": "Tiempo de fondo",
+                "totalRuntime": "Tiempo total de inmersión",
+                "decompression": "Descompresión",
+                "firstStop": "Primera parada",
+                "tts": "Tiempo de ascenso (TTS)",
+                "controllingTissue": "Tejido controlador",
+                "tissueValue": "TC{compartment} · {percent} % del límite",
+                "status": "Estado",
+                "invalid": "Perfil no válido",
+                "noDeco": "No necesaria"
+            },
+            "fullAnalysis": "Análisis completo (valor M, GF, tiempo total)",
+            "mValueLoading": "Carga respecto al valor M",
+            "gradientFactor": "Factor de gradiente",
+            "runtime": "Tiempo total",
+            "fast": "rápidos",
+            "slow": "lentos",
+            "calendar": {
+                "noDecoUnavailable": "⚠ sin descompresión N/D",
+                "decoMinutes": "+{minutes} deco",
+                "invalidTitle": "Aquí no es posible una inmersión sin descompresión: saturación excesiva",
+                "conflictTitle": "Se solapa con la descompresión de la inmersión anterior"
+            },
+            "dialog": {
+                "addDive": "Añadir inmersión",
+                "name": "Nombre",
+                "start": "Inicio",
+                "maxDepth": "Profundidad máxima",
+                "customTime": "Tiempo personalizado",
+                "noDeco": "Sin descompresión",
+                "cancel": "Cancelar",
+                "add": "Añadir",
+                "exceedsNdl": "⚠ descompresión — supera el NDL ({minutes} min) para esta profundidad y este momento del viaje",
+                "ndlHere": "NDL aquí: {minutes} min",
+                "noLimit": "NDL aquí: sin límite (muy poca profundidad)"
+            },
+            "editPanel": {
+                "editing": "Editando",
+                "ndlLocked": "Sin descompresión (bloqueada al NDL)",
+                "removeDive": "Eliminar inmersión"
+            },
+            "runtimeTable": {
+                "phase": "Fase",
+                "depth": "Profundidad",
+                "segment": "Tramo",
+                "run": "Total",
+                "gas": "Gas",
+                "descent": "Descenso",
+                "bottom": "Fondo",
+                "ascent": "Ascenso",
+                "decoStop": "Parada deco"
+            }
+        },
         "tissue": {
             "title": "Simulador de saturación tisular",
             "subtitle": "Mueve al buceador, cambia el gas, deja correr el tiempo — y observa cómo las presiones parciales de nitrógeno persiguen exponencialmente al ambiente.",

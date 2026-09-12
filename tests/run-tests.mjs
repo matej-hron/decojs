@@ -228,7 +228,7 @@ import {
     renderDecisionAuditHTML
 } from '../js/components/DecisionAudit.js';
 import { computeCalendarLayout } from '../js/calendarLayout.js';
-import { snapClamp, diveBlockLabel } from '../js/components/TripCalendar.js';
+import { snapClamp, diveBlockLabel, diveTimeRange } from '../js/components/TripCalendar.js';
 import { previewNdl } from '../js/ndlPreview.js';
 import { readFileSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -5822,6 +5822,50 @@ describe('TripCalendar - diveBlockLabel', () => {
     test('falls back to id.toUpperCase() when name absent', () => {
         const d = { id: 'd3', maxDepth: 18, bottomTime: 40, profile: { totalDecoTime: 0, decoStops: [] } };
         expect(diveBlockLabel(d)).toBe('D3 · 18\u00a0m · 40\u00a0min');
+    });
+    test('shows the exact start and end clock times', () => {
+        expect(diveTimeRange({ startDateTime: 14 * 60, endDateTime: 14 * 60 + 57 })).toBe('14:00–14:57');
+    });
+    test('wraps clock times at midnight', () => {
+        expect(diveTimeRange({ startDateTime: 23 * 60 + 30, endDateTime: 24 * 60 + 15 })).toBe('23:30–00:15');
+    });
+});
+
+describe('Repetitive dive planner localization', () => {
+    const locales = ['cs', 'en', 'es'].map(lang =>
+        JSON.parse(readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8'))
+    );
+    const keyShape = (value, prefix = '') => Object.entries(value).flatMap(([key, child]) => {
+        const path = prefix ? `${prefix}.${key}` : key;
+        return child && typeof child === 'object' ? keyShape(child, path) : [path];
+    }).sort();
+
+    test('has the same complete translation namespace in every language', () => {
+        const namespaces = locales.map(locale => locale.sandbox.repetitive);
+        expect(keyShape(namespaces[1])).toEqual(keyShape(namespaces[0]));
+        expect(keyShape(namespaces[2])).toEqual(keyShape(namespaces[0]));
+        expect(keyShape(namespaces[0]).length).toBeGreaterThanOrEqual(50);
+    });
+
+    test('localizes the page and every dynamic planner component', () => {
+        const page = readFileSync(new URL('../sandbox/repetitive-dives.html', import.meta.url), 'utf8');
+        expect(page.includes('data-i18n="sandbox.repetitive.heading"')).toBe(true);
+        expect(page.includes("document.addEventListener('languagechange'")).toBe(true);
+        expect(page.includes('createLanguageSwitcher();')).toBe(true);
+        expect(page.includes('initI18n();')).toBe(true);
+        expect(page.includes('presat-reference-50')).toBe(true);
+        expect(page.includes('presat-reference-100')).toBe(true);
+
+        for (const relative of [
+            '../js/components/TripCalendar.js',
+            '../js/components/AddDiveDialog.js',
+            '../js/components/DiveEditPanel.js',
+            '../js/components/RuntimeTable.js'
+        ]) {
+            const source = readFileSync(new URL(relative, import.meta.url), 'utf8');
+            expect(source.includes("from '../i18n.js'")).toBe(true);
+            expect(source.includes('sandbox.repetitive.')).toBe(true);
+        }
     });
 });
 

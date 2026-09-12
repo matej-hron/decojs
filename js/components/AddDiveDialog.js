@@ -8,6 +8,8 @@
  */
 import { baseFromStartDate, epochMinToLocalInput, localInputToEpochMin } from '../tripTime.js';
 import { getNDLStatus } from '../diveSetup.js';
+import { translate } from '../i18n.js';
+import { escHtml } from '../utils/escHtml.js';
 
 export class AddDiveDialog extends EventTarget {
     constructor(container) {
@@ -23,20 +25,24 @@ export class AddDiveDialog extends EventTarget {
         const depth = opts.defaultDepth ?? 18;
         const time = opts.defaultTime ?? 40;
         const base = baseFromStartDate(opts.startDate);
+        const tr = (key, fallback, values = {}) => Object.entries(values).reduce(
+            (text, [token, value]) => text.replaceAll(`{${token}}`, value),
+            translate(`sandbox.repetitive.${key}`, fallback)
+        );
         this.container.innerHTML = `
           <div class="add-dialog-backdrop">
             <div class="add-dialog">
-              <h3>Add dive</h3>
-              <label>Name <input class="ad-name" type="text" value="${opts.defaultName || ''}"></label>
-              <label>Start <input class="ad-start" type="datetime-local" value="${epochMinToLocalInput(opts.startDateTime, base)}"></label>
-              <label>Max depth <input class="ad-depth" type="number" min="1" max="100" value="${depth}"> m</label>
+              <h3>${tr('dialog.addDive', 'Add dive')}</h3>
+              <label>${tr('dialog.name', 'Name')} <input class="ad-name" type="text" value="${escHtml(opts.defaultName || '')}"></label>
+              <label>${tr('dialog.start', 'Start')} <input class="ad-start" type="datetime-local" value="${epochMinToLocalInput(opts.startDateTime, base)}"></label>
+              <label>${tr('dialog.maxDepth', 'Max depth')} <input class="ad-depth" type="number" min="1" max="100" value="${depth}">\u00a0m</label>
               <div class="ad-modes">
-                <label><input type="radio" name="ad-mode" class="ad-mode-custom" checked> Custom time
-                  <input class="ad-time" type="number" min="1" max="200" value="${time}"> min</label>
-                <label><input type="radio" name="ad-mode" class="ad-mode-ndl"> No-deco (NDL <span class="ad-ndl">–</span> min)</label>
+                <label><input type="radio" name="ad-mode" class="ad-mode-custom" checked> ${tr('dialog.customTime', 'Custom time')}
+                  <input class="ad-time" type="number" min="1" max="200" value="${time}">\u00a0min</label>
+                <label><input type="radio" name="ad-mode" class="ad-mode-ndl"> ${tr('dialog.noDeco', 'No-deco')} (NDL <span class="ad-ndl">–</span>\u00a0min)</label>
               </div>
               <div class="ad-hint"></div>
-              <div class="ad-actions"><button class="ad-cancel">Cancel</button><button class="ad-add">Add</button></div>
+              <div class="ad-actions"><button class="ad-cancel">${tr('dialog.cancel', 'Cancel')}</button><button class="ad-add">${tr('dialog.add', 'Add')}</button></div>
             </div>
           </div>`;
 
@@ -62,8 +68,10 @@ export class AddDiveDialog extends EventTarget {
             // so the two are compared directly.
             const overNdl = getNDLStatus(ndl, t).state === 'deco';
             hintEl.textContent = (customMode && Number.isFinite(ndl) && overNdl)
-                ? `⚠ deco — exceeds NDL (${ndl}\u00a0min) for this depth at this point in the trip`
-                : (Number.isFinite(ndl) ? `NDL here: ${ndl}\u00a0min` : 'NDL here: no limit (very shallow)');
+                ? tr('dialog.exceedsNdl', '⚠ deco — exceeds NDL ({minutes} min) for this depth at this point in the trip', { minutes: ndl })
+                : (Number.isFinite(ndl)
+                    ? tr('dialog.ndlHere', 'NDL here: {minutes} min', { minutes: ndl })
+                    : tr('dialog.noLimit', 'NDL here: no limit (very shallow)'));
         };
 
         startEl.addEventListener('input', refresh);

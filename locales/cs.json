@@ -1702,6 +1702,88 @@
             "enterProfileNameAlert": "Zadejte prosím název profilu",
             "footerDisclaimer": "<strong>Upozornění:</strong> Jedná se pouze o výukový nástroj. Nepoužívejte jej k plánování skutečných ponorů."
         },
+        "repetitive": {
+            "title": "Opakované ponory — pískoviště DecoJS",
+            "heading": "Plánovač opakovaných ponorů",
+            "intro": "Každý panel představuje jeden ponor výpravy. Během povrchových intervalů se tkáně vysycují; do dalších ponorů vstupuje potápěč se zbytkovým dusíkem a narůstá dekomprese.",
+            "gfLow": "GF Low",
+            "gfHigh": "GF High",
+            "startDate": "Datum zahájení",
+            "days": "Dny",
+            "copyTripLink": "Kopírovat odkaz na výpravu",
+            "copied": "Zkopírováno!",
+            "air": "Vzduch",
+            "defaultDiveName": "Ponor {number}",
+            "diveHeading": "{name} — {date} v {time}",
+            "modes": {
+                "tissue": "Tkáně",
+                "partialPressure": "<var>p</var><sub>O₂</sub>/N₂",
+                "ambient": "Okolní tlak",
+                "gas": "Spotřeba plynu"
+            },
+            "edit": "Upravit",
+            "delete": "Smazat",
+            "invalidNote": "⚠ Bezdekompresní ponor zde není možný — tkáně jsou příliš nasycené. Posuňte jej na později nebo odemkněte vlastní čas.",
+            "preSaturationHeading": "Nasycení tkání na začátku ponoru",
+            "preSaturationExplanation": "Výška sloupce ukazuje, jakou část limitu pro vynoření daná tkáň využívá. Referenční čáry označují 50 % a 100 %; tkáně jsou seřazené zleva od nejrychlejší po nejpomalejší.",
+            "freshDiver": "Nenasycený potápěč — bez zbytkového dusíku.",
+            "summary": {
+                "surfaceInterval": "Povrchový interval",
+                "firstDive": "První ponor",
+                "maxDepth": "Maximální hloubka",
+                "bottomTime": "Čas na dně",
+                "totalRuntime": "Celkový čas ponoru",
+                "decompression": "Dekomprese",
+                "firstStop": "První zastávka",
+                "tts": "Čas výstupu (TTS)",
+                "controllingTissue": "Řídicí tkáň",
+                "tissueValue": "TC{compartment} · {percent} % limitu",
+                "status": "Stav",
+                "invalid": "Neplatný profil",
+                "noDeco": "Není nutná"
+            },
+            "fullAnalysis": "Úplná analýza (M-hodnota, GF, runtime)",
+            "mValueLoading": "Zatížení vůči M-hodnotě",
+            "gradientFactor": "Gradient factor",
+            "runtime": "Runtime",
+            "fast": "rychlé",
+            "slow": "pomalé",
+            "calendar": {
+                "noDecoUnavailable": "⚠ bezdekompresní N/A",
+                "decoMinutes": "+{minutes} deko",
+                "invalidTitle": "Bezdekompresní ponor zde není možný — přílišné předsycení",
+                "conflictTitle": "Překrývá se s dekompresí předchozího ponoru"
+            },
+            "dialog": {
+                "addDive": "Přidat ponor",
+                "name": "Název",
+                "start": "Začátek",
+                "maxDepth": "Maximální hloubka",
+                "customTime": "Vlastní čas",
+                "noDeco": "Bezdekompresní",
+                "cancel": "Zrušit",
+                "add": "Přidat",
+                "exceedsNdl": "⚠ dekomprese — překračuje NDL ({minutes} min) pro tuto hloubku a tento okamžik výpravy",
+                "ndlHere": "NDL zde: {minutes} min",
+                "noLimit": "NDL zde: bez omezení (velmi malá hloubka)"
+            },
+            "editPanel": {
+                "editing": "Úprava",
+                "ndlLocked": "Bezdekompresní (uzamčeno na NDL)",
+                "removeDive": "Odstranit ponor"
+            },
+            "runtimeTable": {
+                "phase": "Fáze",
+                "depth": "Hloubka",
+                "segment": "Úsek",
+                "run": "Runtime",
+                "gas": "Směs",
+                "descent": "Sestup",
+                "bottom": "Dno",
+                "ascent": "Výstup",
+                "decoStop": "Dekom. zastávka"
+            }
+        },
         "tissue": {
             "title": "Simulátor sycení tkání",
             "subtitle": "Pohybujte potápěčem, měňte dýchací směs, nechte plynout čas — a sledujte, jak se parciální tlaky dusíku exponenciálně přibližují k okolnímu tlaku.",

@@ -6,6 +6,8 @@
  */
 
 import { escHtml } from '../utils/escHtml.js';
+import { fmtNum } from '../format.js';
+import { translate } from '../i18n.js';
 
 /**
  * Derive ordered runtime rows from an executed dive profile.
@@ -23,7 +25,7 @@ export function buildRuntimeRows(profile, gases) {
     const maxDepth = Math.max(...waypoints.map(wp => wp.depth));
     const gasName = (id) => {
         const g = (gases || []).find(x => x.id === id);
-        return g ? g.name : (gases && gases[0] ? gases[0].name : 'Gas');
+        return g ? g.name : (gases && gases[0] ? gases[0].name : translate('sandbox.repetitive.runtimeTable.gas', 'Gas'));
     };
 
     let currentGasId = (waypoints[0] && waypoints[0].gasId) || (gases && gases[0] && gases[0].id);
@@ -73,12 +75,18 @@ export function buildRuntimeRows(profile, gases) {
 export function renderRuntimeTable(rows) {
     const table = document.createElement('table');
     table.className = 'runtime-table';
-    const fmt = (n) => (Math.round(n * 10) / 10);
-    const phaseLabel = { descent: 'Descent', bottom: 'Bottom', ascent: 'Ascent', stop: 'Deco stop' };
+    const fmt = (n) => fmtNum(n, 1);
+    const tr = (key, fallback) => translate(`sandbox.repetitive.runtimeTable.${key}`, fallback);
+    const phaseLabel = {
+        descent: tr('descent', 'Descent'),
+        bottom: tr('bottom', 'Bottom'),
+        ascent: tr('ascent', 'Ascent'),
+        stop: tr('decoStop', 'Deco stop')
+    };
 
     table.innerHTML = `
         <thead>
-            <tr><th>Phase</th><th>Depth (m)</th><th>Seg (min)</th><th>Run (min)</th><th>Gas</th></tr>
+            <tr><th>${tr('phase', 'Phase')}</th><th>${tr('depth', 'Depth')} (m)</th><th>${tr('segment', 'Seg')} (min)</th><th>${tr('run', 'Run')} (min)</th><th>${tr('gas', 'Gas')}</th></tr>
         </thead>
         <tbody>
             ${rows.map(r => `

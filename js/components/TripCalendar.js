@@ -7,6 +7,7 @@
  *   'selectDive' detail: { diveId }                  — user clicked a block
  */
 import { computeCalendarLayout } from '../calendarLayout.js';
+import { getCurrentLanguage, translate } from '../i18n.js';
 
 const MIN_PER_DAY = 24 * 60;
 const DEFAULT_WINDOW = { dayStartMin: 6 * 60, dayEndMin: 20 * 60, dayCount: 3 };
@@ -30,19 +31,34 @@ export function snapClamp(rawMin, dayStartMin, dayEndMin, snap) {
 export function diveBlockLabel(d) {
     const name = (d && d.name) ? d.name : (d && d.id ? d.id.toUpperCase() : '?');
     const depth = d ? d.maxDepth : '?';
-    if (d && d.invalid) return `${name} · ${depth}\u00a0m · ⚠ no-deco N/A`;
+    const tr = (key, fallback, values = {}) => Object.entries(values).reduce(
+        (text, [token, value]) => text.replaceAll(`{${token}}`, value),
+        translate(`sandbox.repetitive.${key}`, fallback)
+    );
+    if (d && d.invalid) return `${name} · ${depth}\u00a0m · ${tr('calendar.noDecoUnavailable', '⚠ no-deco N/A')}`;
     const bt = d ? Math.round(d.bottomTime) : '?';
     let label = `${name} · ${depth}\u00a0m · ${bt}\u00a0min`;
     const deco = (d && d.profile && d.profile.totalDecoTime) || 0;
-    if (deco > 0) label += ` · +${Math.round(deco)} deco`;
+    if (deco > 0) label += ` · ${tr('calendar.decoMinutes', '+{minutes} deco', { minutes: Math.round(deco) })}`;
     else if (d && d.ndlLocked) label += ` · NDL`;
     return label;
+}
+
+/** Format the exact start/end clock times shown inside a calendar block. */
+export function diveTimeRange(d) {
+    if (!d || !Number.isFinite(d.startDateTime) || !Number.isFinite(d.endDateTime)) return '';
+    const clock = (epochMin) => {
+        const minutes = ((Math.round(epochMin) % MIN_PER_DAY) + MIN_PER_DAY) % MIN_PER_DAY;
+        return `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
+    };
+    return `${clock(d.startDateTime)}–${clock(d.endDateTime)}`;
 }
 
 function formatDayHeader(startDate, dayIndex) {
     const base = (startDate instanceof Date) ? startDate : new Date(startDate + 'T00:00:00');
     const d = new Date(base.getTime() + dayIndex * 24 * 60 * 60 * 1000);
-    return d.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' });
+    const locales = { cs: 'cs-CZ', en: 'en-GB', es: 'es-ES' };
+    return d.toLocaleDateString(locales[getCurrentLanguage()], { weekday: 'short', day: 'numeric', month: 'short' });
 }
 
 export class TripCalendar extends EventTarget {
@@ -207,10 +223,20 @@ export class TripCalendar extends EventTarget {
             block.dataset.diveId = b.diveId;
             block.style.top = b.topPct + '%';
             block.style.height = Math.max(b.heightPct, 2) + '%';
-            block.textContent = diveBlockLabel(d);
+            const timeRange = diveTimeRange(d);
+            if (timeRange) {
+                const time = document.createElement('span');
+                time.className = 'tc-block-time';
+                time.textContent = `${timeRange} · `;
+                block.appendChild(time);
+            }
+            const details = document.createElement('span');
+            details.className = 'tc-block-details';
+            details.textContent = diveBlockLabel(d);
+            block.appendChild(details);
             block.title = (d && d.invalid)
-                ? 'No-deco not possible here — too pre-saturated'
-                : (b.conflict ? 'Overlaps previous dive\'s deco' : '');
+                ? translate('sandbox.repetitive.calendar.invalidTitle', 'No-deco not possible here — too pre-saturated')
+                : (b.conflict ? translate('sandbox.repetitive.calendar.conflictTitle', 'Overlaps previous dive\'s deco') : '');
             // Shade the ascent+deco portion: solid for the bottom phase, lighter above,
             // so the tall part of a deco block visually reads as the "+N deco".
             if (d && !d.invalid && !b.conflict && d.profile && d.profile.totalDecoTime > 0) {

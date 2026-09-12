@@ -9,6 +9,7 @@
 import { DiveSetupEditor } from './DiveSetupEditor.js';
 import { baseFromStartDate, epochMinToLocalInput, localInputToEpochMin } from '../tripTime.js';
 import { escHtml } from '../utils/escHtml.js';
+import { translate } from '../i18n.js';
 
 
 export class DiveEditPanel extends EventTarget {
@@ -27,14 +28,15 @@ export class DiveEditPanel extends EventTarget {
         // Use UTC midnight to match the .getUTC* reads in epochMinToLocalInput, so displayed
         // times are not shifted by the user's local UTC offset.
         const base = baseFromStartDate(startDate);
+        const tr = (key, fallback) => translate(`sandbox.repetitive.${key}`, fallback);
 
         this.container.innerHTML = `
-            <div class="dep-header">Editing: ${escHtml(dive.name || dive.id)}</div>
+            <div class="dep-header">${tr('editPanel.editing', 'Editing')}: ${escHtml(dive.name || dive.id)}</div>
             <div class="dep-row">
-                <label>Name <input type="text" class="dep-name" value="${escHtml(dive.name || '')}"></label>
-                <label>Start <input type="datetime-local" class="dep-start" value="${epochMinToLocalInput(dive.startDateTime, base)}"></label>
-                <label class="dep-lock-label"><input type="checkbox" class="dep-ndl-lock"${dive.ndlLocked ? ' checked' : ''}> No-deco (NDL-locked)</label>
-                <button class="dep-remove">Remove dive</button>
+                <label>${tr('dialog.name', 'Name')} <input type="text" class="dep-name" value="${escHtml(dive.name || '')}"></label>
+                <label>${tr('dialog.start', 'Start')} <input type="datetime-local" class="dep-start" value="${epochMinToLocalInput(dive.startDateTime, base)}"></label>
+                <label class="dep-lock-label"><input type="checkbox" class="dep-ndl-lock"${dive.ndlLocked ? ' checked' : ''}> ${tr('editPanel.ndlLocked', 'No-deco (NDL-locked)')}</label>
+                <button class="dep-remove">${tr('editPanel.removeDive', 'Remove dive')}</button>
             </div>
             <div class="dep-editor"></div>`;
 
