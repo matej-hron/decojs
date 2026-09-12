@@ -1099,6 +1099,7 @@
             "rulerTitle": "ruler",
             "rulerRampGFLabel": "GF on ramp",
             "rulerCeiling": "ceiling",
+            "rulerMValueSuffix": "-value",
             "initialDepthLabel": "0.0 min @ 0 m"
         },
         "gf": {

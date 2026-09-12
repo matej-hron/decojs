@@ -1099,6 +1099,7 @@
             "rulerTitle": "pravítko",
             "rulerRampGFLabel": "GF na rampě",
             "rulerCeiling": "strop",
+            "rulerMValueSuffix": "-hodnota",
             "initialDepthLabel": "0,0 min @ 0 m"
         },
         "gf": {

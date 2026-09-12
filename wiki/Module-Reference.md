@@ -493,7 +493,7 @@ Exports: `class MValueChart`, pure helper `calculateMValueRulerIntersections({ t
 
 Imports same as `DiveProfileChart.js` plus chart-specific helpers. Uses `createInteractionLockBtn` from `interactionLock.js`.
 
-Key methods: `_setupKeyboardShortcuts()` (arrow keys step time, shift+arrow jumps waypoint, space toggles play/pause, home/end jump to start/end, `R` toggles the ruler). The ruler uses `getCompartmentCeiling()` for fixed GF Low/High references and solves the intersection with the interpolated adjusted-M-value ramp between `pAnchor` and the surface. The component controls include the alveolar nitrogen-pressure visibility toggle, so it remains available in fullscreen. Playback loop redraws with `chart.update('none')` to keep the slider smooth.
+Key methods: `_setupKeyboardShortcuts()` (arrow keys step time, shift+arrow jumps waypoint, space toggles play/pause, home/end jump to start/end, `R` toggles the ruler). The ruler uses `getCompartmentCeiling()` for fixed GF Low/High references and solves the intersection with the interpolated adjusted-M-value ramp between `pAnchor` and the surface; at GF 100/100 the three identical GF results collapse into one M-value row. The component controls include the alveolar nitrogen-pressure visibility toggle, so it remains available in fullscreen. Playback loop redraws with `chart.update('none')` to keep the slider smooth.
 
 ### `GFChart.js`
 

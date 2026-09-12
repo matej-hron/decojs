@@ -1099,6 +1099,7 @@
             "rulerTitle": "regla",
             "rulerRampGFLabel": "GF en la rampa",
             "rulerCeiling": "techo",
+            "rulerMValueSuffix": " (valor máximo)",
             "initialDepthLabel": "0,0 min @ 0 m"
         },
         "gf": {

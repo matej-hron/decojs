@@ -674,6 +674,39 @@ describe('M-value intersection ruler', () => {
         }
     });
 
+    test('collapses GF 100/100 references into one M-value row', () => {
+        const dom = new JSDOM('<!doctype html><body><div id="panel"></div></body>');
+        const originalDocument = globalThis.document;
+        globalThis.document = dom.window.document;
+
+        try {
+            const panel = dom.window.document.getElementById('panel');
+            const compartment = COMPARTMENTS[0];
+            const intersections = calculateMValueRulerIntersections({
+                tissuePressure: 2.82,
+                compartment,
+                gfLow: 1,
+                gfHigh: 1,
+                surfacePressure: 1.01325,
+                pAnchor: 1.01325
+            });
+            MValueChart.prototype._renderRulerPanel.call(
+                { rulerPanel: panel },
+                { compartment, tissuePressure: 2.82, intersections }
+            );
+
+            expect(panel.children.length).toBe(3);
+            expect(panel.textContent.includes('GF ramp')).toBe(false);
+            expect(panel.textContent.includes('GFlow')).toBe(false);
+            expect(panel.textContent.includes('GFhigh')).toBe(false);
+            expect([...panel.querySelectorAll('var')]
+                .some(variable => variable.textContent === 'M')).toBe(true);
+        } finally {
+            globalThis.document = originalDocument;
+            dom.window.close();
+        }
+    });
+
     test('keeps the alveolar pressure toggle inside fullscreen controls', () => {
         const dom = new JSDOM('<!doctype html><body><div id="controls"></div></body>');
         const originalDocument = globalThis.document;
