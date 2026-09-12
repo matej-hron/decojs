@@ -12,8 +12,10 @@ import {
     DECO_MODES,
     N2_FRACTION,
     SURFACE_PRESSURE,
+    WATER_TYPES,
     generateDecoSchedule,
-    getDecoMode
+    getDecoMode,
+    getPressurePerMeter
 } from '../decoModel.js';
 /**
  * @typedef {Object} Gas
@@ -59,7 +61,7 @@ import {
  * @property {'standard'|'adaptive'|'continuous'} [decoMode='standard'] - Schedule policy
  * @property {number} [gasSwitchTime=0] - Minutes spent switching gases
  * @property {number} [surfaceInterval=60] - Post-dive surface interval in minutes
- * @property {{altitude?: number, surfacePressure?: number}} [environment] - Dive-site environment
+ * @property {{altitude?: number, waterType?: 'standard'|'fresh'|'sea', surfacePressure?: number}} [environment] - Dive-site environment
  * @property {Units} [units] - Unit preferences
  * @property {Dive[]} dives - Array of dives (supports repetitive diving)
  */
@@ -67,7 +69,7 @@ import {
 /**
  * @typedef {Object} EnvironmentConfig
  * @property {number} [altitude=0] - Altitude in meters above sea level
- * @property {number} [waterDensity=1.025] - Water density (1.0 for fresh, 1.025 for salt)
+ * @property {'standard'|'fresh'|'sea'} [waterType='standard'] - Depth-to-pressure mode
  * @property {number} [surfacePressure=1.0] - Surface atmospheric pressure in bar
  */
 
@@ -156,7 +158,7 @@ import {
  */
 export const DEFAULT_ENVIRONMENT = {
     altitude: 0,
-    waterDensity: 1.025
+    waterType: WATER_TYPES.STANDARD
 };
 
 /**
@@ -169,6 +171,8 @@ export const DEFAULT_ENVIRONMENT = {
  */
 export function calculateChartGFAnchor(diveSetup, tissueLoading) {
     const surfacePressure = tissueLoading.surfacePressure ?? SURFACE_PRESSURE;
+    const pressurePerMeter = tissueLoading.pressurePerMeter
+        ?? getPressurePerMeter(diveSetup.environment);
     const depthPoints = tissueLoading.depthPoints;
     if (!depthPoints?.length) {
         return { pAnchor: surfacePressure, anchorDepth: 0 };
@@ -194,7 +198,8 @@ export function calculateChartGFAnchor(diveSetup, tissueLoading) {
             {
                 decoMode: getDecoMode(diveSetup),
                 gasSwitchTime: diveSetup.gasSwitchTime ?? 0,
-                surfacePressure
+                surfacePressure,
+                pressurePerMeter
             }
         );
     };
@@ -471,6 +476,11 @@ export function normalizeDiveSetup(setup) {
         surfaceInterval: setup.surfaceInterval ?? 60,
         environment: {
             altitude: setup.environment?.altitude ?? 0,
+            waterType: Object.values(WATER_TYPES).includes(
+                setup.environment?.waterType
+            )
+                ? setup.environment.waterType
+                : WATER_TYPES.STANDARD,
             ...(Number.isFinite(setup.environment?.surfacePressure)
                 ? { surfacePressure: setup.environment.surfacePressure }
                 : {})

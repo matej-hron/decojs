@@ -1234,7 +1234,14 @@
         "environment": {
             "title": "Prostředí",
             "altitude": "Nadmořská výška (m):",
-            "altitudeExplanation": "Deco Theory převádí nadmořskou výšku na atmosférický tlak podle standardní atmosféry. Pod vodou k němu přičítá 0,1 bar na každý metr hloubky. Výpočet předpokládá plnou aklimatizaci.",
+            "altitudeExplanation": "Deco Theory převádí nadmořskou výšku na atmosférický tlak podle standardní atmosféry. Převod hloubky na hydrostatický tlak určuje zvolený typ vody. Výpočet předpokládá plnou aklimatizaci.",
+            "waterType": "Typ vody:",
+            "waterStandard": "Standard EN 13319 (10 m = 1 bar)",
+            "waterFresh": "Sladká voda",
+            "waterSea": "Mořská voda",
+            "waterStandardShort": "EN",
+            "waterFreshShort": "sladká",
+            "waterSeaShort": "mořská",
             "surfacePressure": "Vypočtený atmosférický tlak:",
             "acclimatizedHint": "Předpokládá, že je potápěč na tuto nadmořskou výšku plně aklimatizovaný."
         },

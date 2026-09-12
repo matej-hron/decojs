@@ -17,7 +17,7 @@
  *   const url = getSandboxUrl(mySetup);
  */
 
-import { DECO_MODES, getDecoMode } from './decoModel.js';
+import { DECO_MODES, WATER_TYPES, getDecoMode } from './decoModel.js';
 
 /**
  * Encode a dive setup object into a URL-safe string
@@ -140,11 +140,19 @@ function sanitizeDiveSetup(setup) {
         }
     }
 
-    if (setup.environment && typeof setup.environment === 'object') {
+    if (!setup.environment || typeof setup.environment !== 'object') {
+        setup.environment = {};
+    }
+    {
         const altitude = Number(setup.environment.altitude);
         setup.environment.altitude = Number.isFinite(altitude) && altitude >= 0 && altitude <= 5000
             ? altitude
             : 0;
+        setup.environment.waterType = Object.values(WATER_TYPES).includes(
+            setup.environment.waterType
+        )
+            ? setup.environment.waterType
+            : WATER_TYPES.STANDARD;
         if (setup.environment.surfacePressure !== undefined) {
             const pressure = Number(setup.environment.surfacePressure);
             if (Number.isFinite(pressure) && pressure >= 0.5 && pressure <= 1.1) {

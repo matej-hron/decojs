@@ -1,7 +1,7 @@
 /**
  * Comparison test: DecoJS vs decotengu 0.14.1 (ZH-L16C)
  *
- * 3900 pre-generated deco scenarios across:
+ * 3900 stock-conversion scenarios plus 105 controlled water-mode scenarios:
  *   - 16 depths (15m–60m, step 3m)
  *   - 10 bottom times per depth (NDL+3 to NDL+30, step 3min)
  *   - 4 gas configs (air, air+EAN50, air+O2, air+EAN50+O2)
@@ -31,6 +31,8 @@
  * on low-GF_low profiles.
  *
  * Regenerate reference: python3 scripts/generate_decotengu_reference.py > tests/decotengu-reference.json
+ * Regenerate water modes:
+ *   python3 scripts/generate_decotengu_water_reference.py > tests/decotengu-water-reference.json
  */
 
 import { readFileSync } from 'fs';
@@ -40,6 +42,7 @@ import {
     simulateDepthTime,
     generateDecoSchedule,
     getInitialTissueN2,
+    SURFACE_PRESSURE,
 } from '../js/decoModel.js';
 
 // ============================================================================
@@ -48,6 +51,9 @@ import {
 
 const reference = JSON.parse(readFileSync(new URL('./decotengu-reference.json', import.meta.url)));
 const scenarios = reference.scenarios;
+const waterReference = JSON.parse(
+    readFileSync(new URL('./decotengu-water-reference.json', import.meta.url))
+);
 
 // ============================================================================
 // Gas config mapping (decotengu format → our format)
@@ -76,24 +82,47 @@ const GAS_CONFIGS = {
 // Simulate dive and get deco schedule
 // ============================================================================
 
-function getOurDecoSchedule(depth, bottomTime, gases, gfLow, gfHigh) {
+function getOurDecoSchedule(
+    depth,
+    bottomTime,
+    gases,
+    gfLow,
+    gfHigh,
+    pressurePerMeter = null
+) {
     const bottomGas = gases[0];
     const initialN2 = getInitialTissueN2(bottomGas.n2);
     let tissues = {};
     COMPARTMENTS.forEach(c => { tissues[c.id] = initialN2; });
 
     const descentTime = Math.ceil(depth / 20);
-    tissues = simulateDepthChange(tissues, 0, depth, descentTime, bottomGas.n2);
+    tissues = simulateDepthChange(
+        tissues,
+        0,
+        depth,
+        descentTime,
+        bottomGas.n2,
+        SURFACE_PRESSURE,
+        pressurePerMeter ?? 0.1
+    );
 
     const actualBottom = bottomTime - descentTime;
     if (actualBottom > 0) {
-        tissues = simulateDepthTime(tissues, depth, actualBottom, bottomGas.n2);
+        tissues = simulateDepthTime(
+            tissues,
+            depth,
+            actualBottom,
+            bottomGas.n2,
+            SURFACE_PRESSURE,
+            pressurePerMeter ?? 0.1
+        );
     }
 
     const schedule = generateDecoSchedule(
         tissues, depth, bottomGas.n2,
         gfLow / 100, gfHigh / 100,
-        gases
+        gases,
+        pressurePerMeter === null ? {} : { pressurePerMeter }
     );
 
     return {
@@ -137,6 +166,39 @@ for (const sc of scenarios) {
     }
 }
 
+for (const sc of waterReference.scenarios) {
+    const gases = GAS_CONFIGS[sc.gasConfig];
+    const ours = getOurDecoSchedule(
+        sc.depth,
+        sc.bottomTime,
+        gases,
+        sc.gfLow,
+        sc.gfHigh,
+        sc.pressurePerMeter
+    );
+    const tolerance = Math.max(5, sc.totalDeco * 0.20);
+    const diff = ours.totalDeco - sc.totalDeco;
+    const absDiff = Math.abs(diff);
+    allDiffs.push(diff);
+
+    if (absDiff <= tolerance) {
+        passed++;
+    } else {
+        failed++;
+        failures.push({
+            water: sc.waterType,
+            depth: sc.depth,
+            bt: sc.bottomTime,
+            gas: sc.gasConfig,
+            gf: `${sc.gfLow}/${sc.gfHigh}`,
+            ref: sc.totalDeco,
+            ours: ours.totalDeco,
+            diff: absDiff,
+            tolerance: tolerance.toFixed(1),
+        });
+    }
+}
+
 // ============================================================================
 // Report
 // ============================================================================
@@ -145,7 +207,7 @@ const total = passed + failed;
 const absDiffs = allDiffs.map(Math.abs).sort((a, b) => a - b);
 
 console.log('='.repeat(70));
-console.log('DecoJS vs decotengu comparison (ZH-L16C)');
+console.log('DecoJS vs decotengu comparison (ZH-L16C, including water modes)');
 console.log(`Reference: ${reference.generator} | Scenarios: ${total}`);
 console.log(`Tolerance: max(5 min, 20% of reference)`);
 console.log('='.repeat(70));
@@ -167,7 +229,11 @@ if (failures.length > 0) {
     console.log(`Failures (${failures.length}):`);
     failures.sort((a, b) => b.diff - a.diff);
     for (const f of failures.slice(0, 10)) {
-        console.log(`  ${f.depth}m/${f.bt}min ${f.gas} GF${f.gf}: ref=${f.ref} ours=${f.ours} diff=${f.diff} tol=${f.tolerance}`);
+        console.log(
+            `  ${f.water ? `${f.water} ` : ''}${f.depth}m/${f.bt}min ` +
+            `${f.gas} GF${f.gf}: ref=${f.ref} ours=${f.ours} ` +
+            `diff=${f.diff} tol=${f.tolerance}`
+        );
     }
     if (failures.length > 10) console.log(`  ... and ${failures.length - 10} more`);
 }

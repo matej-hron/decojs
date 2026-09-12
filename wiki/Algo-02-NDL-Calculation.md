@@ -6,13 +6,15 @@ The **No-Decompression Limit** is the maximum bottom time at a given depth such 
 
 ```javascript
 // js/decoModel.js:640 (signature)
-export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfHigh = 1.0, initialTissuePressures = null, surfacePressure = SURFACE_PRESSURE)
+export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfHigh = 1.0, initialTissuePressures = null, surfacePressure = SURFACE_PRESSURE, pressurePerMeter = PRESSURE_PER_METER)
 ```
 
 The optional fourth parameter `initialTissuePressures` is a `{ [compartmentId]: nitrogenPressureBar }` map. When provided, descent starts from that pre-saturated tissue state instead of surface equilibrium. Defaults to `null` (original behaviour). See [`js/ndlPreview.js`](Module-Reference.md#jsndlpreviewjs) for the trip-position-aware wrapper that supplies this seed.
 
 The fifth parameter selects the local atmospheric pressure for an acclimatized
 altitude dive. Omitting it preserves the sea-level result.
+The sixth parameter selects the depth-to-pressure conversion. Omitting it
+preserves the EN 13319 default of 0.1&nbsp;bar/m.
 
 Returns:
 

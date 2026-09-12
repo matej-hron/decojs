@@ -1,0 +1,3326 @@
+{
+  "generator": "decotengu 0.14.1",
+  "model": "ZH-L16C",
+  "surfacePressure": 1.01325,
+  "method": "Controlled private override of Engine._meter_to_bar and Engine._p3m; DecoTengu has no public water-density API.",
+  "waterModes": {
+    "standard": 0.1,
+    "fresh": 0.0980665,
+    "sea": 0.1005181625
+  },
+  "skipped": [
+    {
+      "waterType": "standard",
+      "depth": 24,
+      "bottomTime": 25,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air+ean50",
+      "reason": "3.4132500000000006 vs. 3.4132500000000006"
+    },
+    {
+      "waterType": "fresh",
+      "depth": 24,
+      "bottomTime": 25,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air+ean50",
+      "reason": "3.366845999999999 vs. 3.366846"
+    },
+    {
+      "waterType": "sea",
+      "depth": 24,
+      "bottomTime": 25,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air+ean50",
+      "reason": "3.4256858999999995 vs. 3.4256858999999995"
+    }
+  ],
+  "scenarios": [
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 24,
+      "bottomTime": 25,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air",
+      "stops": [],
+      "totalDeco": 0
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 30,
+      "bottomTime": 45,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 6,
+          "time": 5
+        },
+        {
+          "depth": 3,
+          "time": 19
+        }
+      ],
+      "totalDeco": 24
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 40,
+      "bottomTime": 40,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 9,
+          "time": 6
+        },
+        {
+          "depth": 6,
+          "time": 13
+        },
+        {
+          "depth": 3,
+          "time": 27
+        }
+      ],
+      "totalDeco": 46
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 40,
+      "bottomTime": 60,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 12,
+          "time": 6
+        },
+        {
+          "depth": 9,
+          "time": 15
+        },
+        {
+          "depth": 6,
+          "time": 25
+        },
+        {
+          "depth": 3,
+          "time": 47
+        }
+      ],
+      "totalDeco": 93
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 50,
+      "bottomTime": 45,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 15,
+          "time": 5
+        },
+        {
+          "depth": 12,
+          "time": 7
+        },
+        {
+          "depth": 9,
+          "time": 15
+        },
+        {
+          "depth": 6,
+          "time": 25
+        },
+        {
+          "depth": 3,
+          "time": 46
+        }
+      ],
+      "totalDeco": 98
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 50,
+      "bottomTime": 60,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 18,
+          "time": 3
+        },
+        {
+          "depth": 15,
+          "time": 8
+        },
+        {
+          "depth": 12,
+          "time": 15
+        },
+        {
+          "depth": 9,
+          "time": 22
+        },
+        {
+          "depth": 6,
+          "time": 37
+        },
+        {
+          "depth": 3,
+          "time": 73
+        }
+      ],
+      "totalDeco": 158
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 24,
+      "bottomTime": 25,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air+ean50",
+      "stops": [],
+      "totalDeco": 0
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 30,
+      "bottomTime": 45,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 6,
+          "time": 3
+        },
+        {
+          "depth": 3,
+          "time": 13
+        }
+      ],
+      "totalDeco": 16
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 40,
+      "bottomTime": 40,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 9,
+          "time": 4
+        },
+        {
+          "depth": 6,
+          "time": 8
+        },
+        {
+          "depth": 3,
+          "time": 16
+        }
+      ],
+      "totalDeco": 28
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 40,
+      "bottomTime": 60,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 12,
+          "time": 4
+        },
+        {
+          "depth": 9,
+          "time": 9
+        },
+        {
+          "depth": 6,
+          "time": 15
+        },
+        {
+          "depth": 3,
+          "time": 28
+        }
+      ],
+      "totalDeco": 56
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 50,
+      "bottomTime": 45,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 15,
+          "time": 3
+        },
+        {
+          "depth": 12,
+          "time": 5
+        },
+        {
+          "depth": 9,
+          "time": 9
+        },
+        {
+          "depth": 6,
+          "time": 14
+        },
+        {
+          "depth": 3,
+          "time": 26
+        }
+      ],
+      "totalDeco": 57
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 50,
+      "bottomTime": 60,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 18,
+          "time": 2
+        },
+        {
+          "depth": 15,
+          "time": 6
+        },
+        {
+          "depth": 12,
+          "time": 8
+        },
+        {
+          "depth": 9,
+          "time": 13
+        },
+        {
+          "depth": 6,
+          "time": 20
+        },
+        {
+          "depth": 3,
+          "time": 37
+        }
+      ],
+      "totalDeco": 86
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 24,
+      "bottomTime": 25,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air",
+      "stops": [],
+      "totalDeco": 0
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 30,
+      "bottomTime": 45,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 9,
+          "time": 5
+        },
+        {
+          "depth": 6,
+          "time": 9
+        },
+        {
+          "depth": 3,
+          "time": 20
+        }
+      ],
+      "totalDeco": 34
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 40,
+      "bottomTime": 40,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 15,
+          "time": 2
+        },
+        {
+          "depth": 12,
+          "time": 5
+        },
+        {
+          "depth": 9,
+          "time": 8
+        },
+        {
+          "depth": 6,
+          "time": 16
+        },
+        {
+          "depth": 3,
+          "time": 30
+        }
+      ],
+      "totalDeco": 61
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 40,
+      "bottomTime": 60,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 18,
+          "time": 2
+        },
+        {
+          "depth": 15,
+          "time": 5
+        },
+        {
+          "depth": 12,
+          "time": 10
+        },
+        {
+          "depth": 9,
+          "time": 18
+        },
+        {
+          "depth": 6,
+          "time": 29
+        },
+        {
+          "depth": 3,
+          "time": 59
+        }
+      ],
+      "totalDeco": 123
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 50,
+      "bottomTime": 45,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 21,
+          "time": 2
+        },
+        {
+          "depth": 18,
+          "time": 5
+        },
+        {
+          "depth": 15,
+          "time": 6
+        },
+        {
+          "depth": 12,
+          "time": 11
+        },
+        {
+          "depth": 9,
+          "time": 17
+        },
+        {
+          "depth": 6,
+          "time": 30
+        },
+        {
+          "depth": 3,
+          "time": 59
+        }
+      ],
+      "totalDeco": 130
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 50,
+      "bottomTime": 60,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 24,
+          "time": 2
+        },
+        {
+          "depth": 21,
+          "time": 4
+        },
+        {
+          "depth": 18,
+          "time": 8
+        },
+        {
+          "depth": 15,
+          "time": 11
+        },
+        {
+          "depth": 12,
+          "time": 16
+        },
+        {
+          "depth": 9,
+          "time": 28
+        },
+        {
+          "depth": 6,
+          "time": 45
+        },
+        {
+          "depth": 3,
+          "time": 94
+        }
+      ],
+      "totalDeco": 208
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 24,
+      "bottomTime": 25,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air+ean50",
+      "stops": [],
+      "totalDeco": 0
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 30,
+      "bottomTime": 45,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 9,
+          "time": 3
+        },
+        {
+          "depth": 6,
+          "time": 5
+        },
+        {
+          "depth": 3,
+          "time": 12
+        }
+      ],
+      "totalDeco": 20
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 40,
+      "bottomTime": 40,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 15,
+          "time": 1
+        },
+        {
+          "depth": 12,
+          "time": 3
+        },
+        {
+          "depth": 9,
+          "time": 5
+        },
+        {
+          "depth": 6,
+          "time": 9
+        },
+        {
+          "depth": 3,
+          "time": 17
+        }
+      ],
+      "totalDeco": 35
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 40,
+      "bottomTime": 60,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 18,
+          "time": 1
+        },
+        {
+          "depth": 15,
+          "time": 4
+        },
+        {
+          "depth": 12,
+          "time": 6
+        },
+        {
+          "depth": 9,
+          "time": 10
+        },
+        {
+          "depth": 6,
+          "time": 16
+        },
+        {
+          "depth": 3,
+          "time": 29
+        }
+      ],
+      "totalDeco": 66
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 50,
+      "bottomTime": 45,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 21,
+          "time": 2
+        },
+        {
+          "depth": 18,
+          "time": 3
+        },
+        {
+          "depth": 15,
+          "time": 3
+        },
+        {
+          "depth": 12,
+          "time": 6
+        },
+        {
+          "depth": 9,
+          "time": 10
+        },
+        {
+          "depth": 6,
+          "time": 16
+        },
+        {
+          "depth": 3,
+          "time": 28
+        }
+      ],
+      "totalDeco": 68
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 50,
+      "bottomTime": 60,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 24,
+          "time": 2
+        },
+        {
+          "depth": 21,
+          "time": 3
+        },
+        {
+          "depth": 18,
+          "time": 4
+        },
+        {
+          "depth": 15,
+          "time": 6
+        },
+        {
+          "depth": 12,
+          "time": 10
+        },
+        {
+          "depth": 9,
+          "time": 14
+        },
+        {
+          "depth": 6,
+          "time": 23
+        },
+        {
+          "depth": 3,
+          "time": 40
+        }
+      ],
+      "totalDeco": 102
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 24,
+      "bottomTime": 25,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 9,
+          "time": 1
+        },
+        {
+          "depth": 6,
+          "time": 1
+        },
+        {
+          "depth": 3,
+          "time": 1
+        }
+      ],
+      "totalDeco": 3
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 30,
+      "bottomTime": 45,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 12,
+          "time": 3
+        },
+        {
+          "depth": 9,
+          "time": 6
+        },
+        {
+          "depth": 6,
+          "time": 12
+        },
+        {
+          "depth": 3,
+          "time": 26
+        }
+      ],
+      "totalDeco": 47
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 40,
+      "bottomTime": 40,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 18,
+          "time": 2
+        },
+        {
+          "depth": 15,
+          "time": 4
+        },
+        {
+          "depth": 12,
+          "time": 6
+        },
+        {
+          "depth": 9,
+          "time": 10
+        },
+        {
+          "depth": 6,
+          "time": 20
+        },
+        {
+          "depth": 3,
+          "time": 40
+        }
+      ],
+      "totalDeco": 82
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 40,
+      "bottomTime": 60,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 21,
+          "time": 1
+        },
+        {
+          "depth": 18,
+          "time": 5
+        },
+        {
+          "depth": 15,
+          "time": 8
+        },
+        {
+          "depth": 12,
+          "time": 13
+        },
+        {
+          "depth": 9,
+          "time": 21
+        },
+        {
+          "depth": 6,
+          "time": 37
+        },
+        {
+          "depth": 3,
+          "time": 72
+        }
+      ],
+      "totalDeco": 157
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 50,
+      "bottomTime": 45,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 24,
+          "time": 3
+        },
+        {
+          "depth": 21,
+          "time": 4
+        },
+        {
+          "depth": 18,
+          "time": 6
+        },
+        {
+          "depth": 15,
+          "time": 8
+        },
+        {
+          "depth": 12,
+          "time": 14
+        },
+        {
+          "depth": 9,
+          "time": 22
+        },
+        {
+          "depth": 6,
+          "time": 38
+        },
+        {
+          "depth": 3,
+          "time": 75
+        }
+      ],
+      "totalDeco": 170
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 50,
+      "bottomTime": 60,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 27,
+          "time": 2
+        },
+        {
+          "depth": 24,
+          "time": 5
+        },
+        {
+          "depth": 21,
+          "time": 5
+        },
+        {
+          "depth": 18,
+          "time": 9
+        },
+        {
+          "depth": 15,
+          "time": 15
+        },
+        {
+          "depth": 12,
+          "time": 20
+        },
+        {
+          "depth": 9,
+          "time": 33
+        },
+        {
+          "depth": 6,
+          "time": 58
+        },
+        {
+          "depth": 3,
+          "time": 124
+        }
+      ],
+      "totalDeco": 271
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 30,
+      "bottomTime": 45,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 12,
+          "time": 2
+        },
+        {
+          "depth": 9,
+          "time": 3
+        },
+        {
+          "depth": 6,
+          "time": 7
+        },
+        {
+          "depth": 3,
+          "time": 13
+        }
+      ],
+      "totalDeco": 25
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 40,
+      "bottomTime": 40,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 18,
+          "time": 1
+        },
+        {
+          "depth": 15,
+          "time": 2
+        },
+        {
+          "depth": 12,
+          "time": 4
+        },
+        {
+          "depth": 9,
+          "time": 6
+        },
+        {
+          "depth": 6,
+          "time": 10
+        },
+        {
+          "depth": 3,
+          "time": 19
+        }
+      ],
+      "totalDeco": 42
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 40,
+      "bottomTime": 60,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 21,
+          "time": 1
+        },
+        {
+          "depth": 18,
+          "time": 3
+        },
+        {
+          "depth": 15,
+          "time": 4
+        },
+        {
+          "depth": 12,
+          "time": 6
+        },
+        {
+          "depth": 9,
+          "time": 12
+        },
+        {
+          "depth": 6,
+          "time": 18
+        },
+        {
+          "depth": 3,
+          "time": 31
+        }
+      ],
+      "totalDeco": 75
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 50,
+      "bottomTime": 45,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 24,
+          "time": 3
+        },
+        {
+          "depth": 21,
+          "time": 3
+        },
+        {
+          "depth": 18,
+          "time": 3
+        },
+        {
+          "depth": 15,
+          "time": 4
+        },
+        {
+          "depth": 12,
+          "time": 7
+        },
+        {
+          "depth": 9,
+          "time": 11
+        },
+        {
+          "depth": 6,
+          "time": 18
+        },
+        {
+          "depth": 3,
+          "time": 32
+        }
+      ],
+      "totalDeco": 81
+    },
+    {
+      "waterType": "standard",
+      "pressurePerMeter": 0.1,
+      "depth": 50,
+      "bottomTime": 60,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 27,
+          "time": 2
+        },
+        {
+          "depth": 24,
+          "time": 5
+        },
+        {
+          "depth": 21,
+          "time": 3
+        },
+        {
+          "depth": 18,
+          "time": 5
+        },
+        {
+          "depth": 15,
+          "time": 8
+        },
+        {
+          "depth": 12,
+          "time": 10
+        },
+        {
+          "depth": 9,
+          "time": 17
+        },
+        {
+          "depth": 6,
+          "time": 26
+        },
+        {
+          "depth": 3,
+          "time": 46
+        }
+      ],
+      "totalDeco": 122
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 24,
+      "bottomTime": 25,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air",
+      "stops": [],
+      "totalDeco": 0
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 30,
+      "bottomTime": 45,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 6,
+          "time": 4
+        },
+        {
+          "depth": 3,
+          "time": 18
+        }
+      ],
+      "totalDeco": 22
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 40,
+      "bottomTime": 40,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 9,
+          "time": 5
+        },
+        {
+          "depth": 6,
+          "time": 12
+        },
+        {
+          "depth": 3,
+          "time": 26
+        }
+      ],
+      "totalDeco": 43
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 40,
+      "bottomTime": 60,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 12,
+          "time": 6
+        },
+        {
+          "depth": 9,
+          "time": 14
+        },
+        {
+          "depth": 6,
+          "time": 24
+        },
+        {
+          "depth": 3,
+          "time": 45
+        }
+      ],
+      "totalDeco": 89
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 50,
+      "bottomTime": 45,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 15,
+          "time": 4
+        },
+        {
+          "depth": 12,
+          "time": 7
+        },
+        {
+          "depth": 9,
+          "time": 14
+        },
+        {
+          "depth": 6,
+          "time": 24
+        },
+        {
+          "depth": 3,
+          "time": 45
+        }
+      ],
+      "totalDeco": 94
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 50,
+      "bottomTime": 60,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 18,
+          "time": 3
+        },
+        {
+          "depth": 15,
+          "time": 8
+        },
+        {
+          "depth": 12,
+          "time": 14
+        },
+        {
+          "depth": 9,
+          "time": 21
+        },
+        {
+          "depth": 6,
+          "time": 36
+        },
+        {
+          "depth": 3,
+          "time": 68
+        }
+      ],
+      "totalDeco": 150
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 24,
+      "bottomTime": 25,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air+ean50",
+      "stops": [],
+      "totalDeco": 0
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 30,
+      "bottomTime": 45,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 6,
+          "time": 2
+        },
+        {
+          "depth": 3,
+          "time": 12
+        }
+      ],
+      "totalDeco": 14
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 40,
+      "bottomTime": 40,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 9,
+          "time": 4
+        },
+        {
+          "depth": 6,
+          "time": 7
+        },
+        {
+          "depth": 3,
+          "time": 16
+        }
+      ],
+      "totalDeco": 27
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 40,
+      "bottomTime": 60,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 12,
+          "time": 4
+        },
+        {
+          "depth": 9,
+          "time": 9
+        },
+        {
+          "depth": 6,
+          "time": 14
+        },
+        {
+          "depth": 3,
+          "time": 26
+        }
+      ],
+      "totalDeco": 53
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 50,
+      "bottomTime": 45,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 15,
+          "time": 3
+        },
+        {
+          "depth": 12,
+          "time": 5
+        },
+        {
+          "depth": 9,
+          "time": 8
+        },
+        {
+          "depth": 6,
+          "time": 14
+        },
+        {
+          "depth": 3,
+          "time": 25
+        }
+      ],
+      "totalDeco": 55
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 50,
+      "bottomTime": 60,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 18,
+          "time": 2
+        },
+        {
+          "depth": 15,
+          "time": 5
+        },
+        {
+          "depth": 12,
+          "time": 9
+        },
+        {
+          "depth": 9,
+          "time": 11
+        },
+        {
+          "depth": 6,
+          "time": 20
+        },
+        {
+          "depth": 3,
+          "time": 35
+        }
+      ],
+      "totalDeco": 82
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 24,
+      "bottomTime": 25,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air",
+      "stops": [],
+      "totalDeco": 0
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 30,
+      "bottomTime": 45,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 9,
+          "time": 5
+        },
+        {
+          "depth": 6,
+          "time": 8
+        },
+        {
+          "depth": 3,
+          "time": 18
+        }
+      ],
+      "totalDeco": 31
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 40,
+      "bottomTime": 40,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 15,
+          "time": 2
+        },
+        {
+          "depth": 12,
+          "time": 5
+        },
+        {
+          "depth": 9,
+          "time": 7
+        },
+        {
+          "depth": 6,
+          "time": 16
+        },
+        {
+          "depth": 3,
+          "time": 29
+        }
+      ],
+      "totalDeco": 59
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 40,
+      "bottomTime": 60,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 18,
+          "time": 1
+        },
+        {
+          "depth": 15,
+          "time": 6
+        },
+        {
+          "depth": 12,
+          "time": 9
+        },
+        {
+          "depth": 9,
+          "time": 17
+        },
+        {
+          "depth": 6,
+          "time": 28
+        },
+        {
+          "depth": 3,
+          "time": 55
+        }
+      ],
+      "totalDeco": 116
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 50,
+      "bottomTime": 45,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 21,
+          "time": 2
+        },
+        {
+          "depth": 18,
+          "time": 5
+        },
+        {
+          "depth": 15,
+          "time": 6
+        },
+        {
+          "depth": 12,
+          "time": 10
+        },
+        {
+          "depth": 9,
+          "time": 17
+        },
+        {
+          "depth": 6,
+          "time": 29
+        },
+        {
+          "depth": 3,
+          "time": 55
+        }
+      ],
+      "totalDeco": 124
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 50,
+      "bottomTime": 60,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 24,
+          "time": 1
+        },
+        {
+          "depth": 21,
+          "time": 5
+        },
+        {
+          "depth": 18,
+          "time": 7
+        },
+        {
+          "depth": 15,
+          "time": 11
+        },
+        {
+          "depth": 12,
+          "time": 16
+        },
+        {
+          "depth": 9,
+          "time": 26
+        },
+        {
+          "depth": 6,
+          "time": 44
+        },
+        {
+          "depth": 3,
+          "time": 88
+        }
+      ],
+      "totalDeco": 198
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 24,
+      "bottomTime": 25,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air+ean50",
+      "stops": [],
+      "totalDeco": 0
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 30,
+      "bottomTime": 45,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 9,
+          "time": 3
+        },
+        {
+          "depth": 6,
+          "time": 5
+        },
+        {
+          "depth": 3,
+          "time": 11
+        }
+      ],
+      "totalDeco": 19
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 40,
+      "bottomTime": 40,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 15,
+          "time": 1
+        },
+        {
+          "depth": 12,
+          "time": 3
+        },
+        {
+          "depth": 9,
+          "time": 4
+        },
+        {
+          "depth": 6,
+          "time": 9
+        },
+        {
+          "depth": 3,
+          "time": 17
+        }
+      ],
+      "totalDeco": 34
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 40,
+      "bottomTime": 60,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 18,
+          "time": 1
+        },
+        {
+          "depth": 15,
+          "time": 3
+        },
+        {
+          "depth": 12,
+          "time": 6
+        },
+        {
+          "depth": 9,
+          "time": 10
+        },
+        {
+          "depth": 6,
+          "time": 15
+        },
+        {
+          "depth": 3,
+          "time": 28
+        }
+      ],
+      "totalDeco": 63
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 50,
+      "bottomTime": 45,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 21,
+          "time": 1
+        },
+        {
+          "depth": 18,
+          "time": 3
+        },
+        {
+          "depth": 15,
+          "time": 4
+        },
+        {
+          "depth": 12,
+          "time": 6
+        },
+        {
+          "depth": 9,
+          "time": 9
+        },
+        {
+          "depth": 6,
+          "time": 15
+        },
+        {
+          "depth": 3,
+          "time": 27
+        }
+      ],
+      "totalDeco": 65
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 50,
+      "bottomTime": 60,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 24,
+          "time": 1
+        },
+        {
+          "depth": 21,
+          "time": 3
+        },
+        {
+          "depth": 18,
+          "time": 4
+        },
+        {
+          "depth": 15,
+          "time": 6
+        },
+        {
+          "depth": 12,
+          "time": 10
+        },
+        {
+          "depth": 9,
+          "time": 13
+        },
+        {
+          "depth": 6,
+          "time": 22
+        },
+        {
+          "depth": 3,
+          "time": 38
+        }
+      ],
+      "totalDeco": 97
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 24,
+      "bottomTime": 25,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 6,
+          "time": 1
+        },
+        {
+          "depth": 3,
+          "time": 1
+        }
+      ],
+      "totalDeco": 2
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 30,
+      "bottomTime": 45,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 12,
+          "time": 3
+        },
+        {
+          "depth": 9,
+          "time": 6
+        },
+        {
+          "depth": 6,
+          "time": 11
+        },
+        {
+          "depth": 3,
+          "time": 24
+        }
+      ],
+      "totalDeco": 44
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 40,
+      "bottomTime": 40,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 18,
+          "time": 2
+        },
+        {
+          "depth": 15,
+          "time": 4
+        },
+        {
+          "depth": 12,
+          "time": 6
+        },
+        {
+          "depth": 9,
+          "time": 9
+        },
+        {
+          "depth": 6,
+          "time": 19
+        },
+        {
+          "depth": 3,
+          "time": 38
+        }
+      ],
+      "totalDeco": 78
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 40,
+      "bottomTime": 60,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 21,
+          "time": 1
+        },
+        {
+          "depth": 18,
+          "time": 5
+        },
+        {
+          "depth": 15,
+          "time": 7
+        },
+        {
+          "depth": 12,
+          "time": 13
+        },
+        {
+          "depth": 9,
+          "time": 20
+        },
+        {
+          "depth": 6,
+          "time": 35
+        },
+        {
+          "depth": 3,
+          "time": 69
+        }
+      ],
+      "totalDeco": 150
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 50,
+      "bottomTime": 45,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 24,
+          "time": 3
+        },
+        {
+          "depth": 21,
+          "time": 4
+        },
+        {
+          "depth": 18,
+          "time": 5
+        },
+        {
+          "depth": 15,
+          "time": 8
+        },
+        {
+          "depth": 12,
+          "time": 14
+        },
+        {
+          "depth": 9,
+          "time": 20
+        },
+        {
+          "depth": 6,
+          "time": 37
+        },
+        {
+          "depth": 3,
+          "time": 70
+        }
+      ],
+      "totalDeco": 161
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 50,
+      "bottomTime": 60,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 27,
+          "time": 1
+        },
+        {
+          "depth": 24,
+          "time": 5
+        },
+        {
+          "depth": 21,
+          "time": 5
+        },
+        {
+          "depth": 18,
+          "time": 9
+        },
+        {
+          "depth": 15,
+          "time": 14
+        },
+        {
+          "depth": 12,
+          "time": 20
+        },
+        {
+          "depth": 9,
+          "time": 31
+        },
+        {
+          "depth": 6,
+          "time": 54
+        },
+        {
+          "depth": 3,
+          "time": 116
+        }
+      ],
+      "totalDeco": 255
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 30,
+      "bottomTime": 45,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 12,
+          "time": 2
+        },
+        {
+          "depth": 9,
+          "time": 3
+        },
+        {
+          "depth": 6,
+          "time": 6
+        },
+        {
+          "depth": 3,
+          "time": 13
+        }
+      ],
+      "totalDeco": 24
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 40,
+      "bottomTime": 40,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 18,
+          "time": 1
+        },
+        {
+          "depth": 15,
+          "time": 2
+        },
+        {
+          "depth": 12,
+          "time": 4
+        },
+        {
+          "depth": 9,
+          "time": 5
+        },
+        {
+          "depth": 6,
+          "time": 10
+        },
+        {
+          "depth": 3,
+          "time": 18
+        }
+      ],
+      "totalDeco": 40
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 40,
+      "bottomTime": 60,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 21,
+          "time": 1
+        },
+        {
+          "depth": 18,
+          "time": 3
+        },
+        {
+          "depth": 15,
+          "time": 4
+        },
+        {
+          "depth": 12,
+          "time": 6
+        },
+        {
+          "depth": 9,
+          "time": 11
+        },
+        {
+          "depth": 6,
+          "time": 17
+        },
+        {
+          "depth": 3,
+          "time": 31
+        }
+      ],
+      "totalDeco": 73
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 50,
+      "bottomTime": 45,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 24,
+          "time": 3
+        },
+        {
+          "depth": 21,
+          "time": 3
+        },
+        {
+          "depth": 18,
+          "time": 3
+        },
+        {
+          "depth": 15,
+          "time": 4
+        },
+        {
+          "depth": 12,
+          "time": 6
+        },
+        {
+          "depth": 9,
+          "time": 12
+        },
+        {
+          "depth": 6,
+          "time": 17
+        },
+        {
+          "depth": 3,
+          "time": 30
+        }
+      ],
+      "totalDeco": 78
+    },
+    {
+      "waterType": "fresh",
+      "pressurePerMeter": 0.0980665,
+      "depth": 50,
+      "bottomTime": 60,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 27,
+          "time": 1
+        },
+        {
+          "depth": 24,
+          "time": 5
+        },
+        {
+          "depth": 21,
+          "time": 3
+        },
+        {
+          "depth": 18,
+          "time": 5
+        },
+        {
+          "depth": 15,
+          "time": 8
+        },
+        {
+          "depth": 12,
+          "time": 10
+        },
+        {
+          "depth": 9,
+          "time": 16
+        },
+        {
+          "depth": 6,
+          "time": 25
+        },
+        {
+          "depth": 3,
+          "time": 44
+        }
+      ],
+      "totalDeco": 117
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 24,
+      "bottomTime": 25,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air",
+      "stops": [],
+      "totalDeco": 0
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 30,
+      "bottomTime": 45,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 6,
+          "time": 5
+        },
+        {
+          "depth": 3,
+          "time": 19
+        }
+      ],
+      "totalDeco": 24
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 40,
+      "bottomTime": 40,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 9,
+          "time": 6
+        },
+        {
+          "depth": 6,
+          "time": 13
+        },
+        {
+          "depth": 3,
+          "time": 28
+        }
+      ],
+      "totalDeco": 47
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 40,
+      "bottomTime": 60,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 12,
+          "time": 7
+        },
+        {
+          "depth": 9,
+          "time": 14
+        },
+        {
+          "depth": 6,
+          "time": 25
+        },
+        {
+          "depth": 3,
+          "time": 48
+        }
+      ],
+      "totalDeco": 94
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 50,
+      "bottomTime": 45,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 15,
+          "time": 5
+        },
+        {
+          "depth": 12,
+          "time": 7
+        },
+        {
+          "depth": 9,
+          "time": 15
+        },
+        {
+          "depth": 6,
+          "time": 25
+        },
+        {
+          "depth": 3,
+          "time": 47
+        }
+      ],
+      "totalDeco": 99
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 50,
+      "bottomTime": 60,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 18,
+          "time": 3
+        },
+        {
+          "depth": 15,
+          "time": 9
+        },
+        {
+          "depth": 12,
+          "time": 14
+        },
+        {
+          "depth": 9,
+          "time": 22
+        },
+        {
+          "depth": 6,
+          "time": 38
+        },
+        {
+          "depth": 3,
+          "time": 75
+        }
+      ],
+      "totalDeco": 161
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 24,
+      "bottomTime": 25,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air+ean50",
+      "stops": [],
+      "totalDeco": 0
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 30,
+      "bottomTime": 45,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 6,
+          "time": 3
+        },
+        {
+          "depth": 3,
+          "time": 13
+        }
+      ],
+      "totalDeco": 16
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 40,
+      "bottomTime": 40,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 9,
+          "time": 4
+        },
+        {
+          "depth": 6,
+          "time": 8
+        },
+        {
+          "depth": 3,
+          "time": 17
+        }
+      ],
+      "totalDeco": 29
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 40,
+      "bottomTime": 60,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 12,
+          "time": 4
+        },
+        {
+          "depth": 9,
+          "time": 10
+        },
+        {
+          "depth": 6,
+          "time": 15
+        },
+        {
+          "depth": 3,
+          "time": 27
+        }
+      ],
+      "totalDeco": 56
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 50,
+      "bottomTime": 45,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 15,
+          "time": 3
+        },
+        {
+          "depth": 12,
+          "time": 5
+        },
+        {
+          "depth": 9,
+          "time": 9
+        },
+        {
+          "depth": 6,
+          "time": 14
+        },
+        {
+          "depth": 3,
+          "time": 27
+        }
+      ],
+      "totalDeco": 58
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 50,
+      "bottomTime": 60,
+      "gfLow": 100,
+      "gfHigh": 100,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 18,
+          "time": 2
+        },
+        {
+          "depth": 15,
+          "time": 6
+        },
+        {
+          "depth": 12,
+          "time": 9
+        },
+        {
+          "depth": 9,
+          "time": 12
+        },
+        {
+          "depth": 6,
+          "time": 20
+        },
+        {
+          "depth": 3,
+          "time": 38
+        }
+      ],
+      "totalDeco": 87
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 24,
+      "bottomTime": 25,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air",
+      "stops": [],
+      "totalDeco": 0
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 30,
+      "bottomTime": 45,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 12,
+          "time": 1
+        },
+        {
+          "depth": 9,
+          "time": 3
+        },
+        {
+          "depth": 6,
+          "time": 9
+        },
+        {
+          "depth": 3,
+          "time": 21
+        }
+      ],
+      "totalDeco": 34
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 40,
+      "bottomTime": 40,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 15,
+          "time": 2
+        },
+        {
+          "depth": 12,
+          "time": 5
+        },
+        {
+          "depth": 9,
+          "time": 8
+        },
+        {
+          "depth": 6,
+          "time": 17
+        },
+        {
+          "depth": 3,
+          "time": 30
+        }
+      ],
+      "totalDeco": 62
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 40,
+      "bottomTime": 60,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 18,
+          "time": 2
+        },
+        {
+          "depth": 15,
+          "time": 6
+        },
+        {
+          "depth": 12,
+          "time": 10
+        },
+        {
+          "depth": 9,
+          "time": 18
+        },
+        {
+          "depth": 6,
+          "time": 29
+        },
+        {
+          "depth": 3,
+          "time": 60
+        }
+      ],
+      "totalDeco": 125
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 50,
+      "bottomTime": 45,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 21,
+          "time": 2
+        },
+        {
+          "depth": 18,
+          "time": 5
+        },
+        {
+          "depth": 15,
+          "time": 6
+        },
+        {
+          "depth": 12,
+          "time": 11
+        },
+        {
+          "depth": 9,
+          "time": 18
+        },
+        {
+          "depth": 6,
+          "time": 30
+        },
+        {
+          "depth": 3,
+          "time": 60
+        }
+      ],
+      "totalDeco": 132
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 50,
+      "bottomTime": 60,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 24,
+          "time": 2
+        },
+        {
+          "depth": 21,
+          "time": 4
+        },
+        {
+          "depth": 18,
+          "time": 8
+        },
+        {
+          "depth": 15,
+          "time": 11
+        },
+        {
+          "depth": 12,
+          "time": 17
+        },
+        {
+          "depth": 9,
+          "time": 27
+        },
+        {
+          "depth": 6,
+          "time": 46
+        },
+        {
+          "depth": 3,
+          "time": 95
+        }
+      ],
+      "totalDeco": 210
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 24,
+      "bottomTime": 25,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air+ean50",
+      "stops": [],
+      "totalDeco": 0
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 30,
+      "bottomTime": 45,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 9,
+          "time": 3
+        },
+        {
+          "depth": 6,
+          "time": 5
+        },
+        {
+          "depth": 3,
+          "time": 12
+        }
+      ],
+      "totalDeco": 20
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 40,
+      "bottomTime": 40,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 15,
+          "time": 1
+        },
+        {
+          "depth": 12,
+          "time": 3
+        },
+        {
+          "depth": 9,
+          "time": 5
+        },
+        {
+          "depth": 6,
+          "time": 9
+        },
+        {
+          "depth": 3,
+          "time": 18
+        }
+      ],
+      "totalDeco": 36
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 40,
+      "bottomTime": 60,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 18,
+          "time": 1
+        },
+        {
+          "depth": 15,
+          "time": 4
+        },
+        {
+          "depth": 12,
+          "time": 6
+        },
+        {
+          "depth": 9,
+          "time": 10
+        },
+        {
+          "depth": 6,
+          "time": 16
+        },
+        {
+          "depth": 3,
+          "time": 29
+        }
+      ],
+      "totalDeco": 66
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 50,
+      "bottomTime": 45,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 21,
+          "time": 2
+        },
+        {
+          "depth": 18,
+          "time": 3
+        },
+        {
+          "depth": 15,
+          "time": 3
+        },
+        {
+          "depth": 12,
+          "time": 6
+        },
+        {
+          "depth": 9,
+          "time": 11
+        },
+        {
+          "depth": 6,
+          "time": 15
+        },
+        {
+          "depth": 3,
+          "time": 28
+        }
+      ],
+      "totalDeco": 68
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 50,
+      "bottomTime": 60,
+      "gfLow": 60,
+      "gfHigh": 90,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 24,
+          "time": 2
+        },
+        {
+          "depth": 21,
+          "time": 3
+        },
+        {
+          "depth": 18,
+          "time": 4
+        },
+        {
+          "depth": 15,
+          "time": 6
+        },
+        {
+          "depth": 12,
+          "time": 10
+        },
+        {
+          "depth": 9,
+          "time": 15
+        },
+        {
+          "depth": 6,
+          "time": 22
+        },
+        {
+          "depth": 3,
+          "time": 41
+        }
+      ],
+      "totalDeco": 103
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 24,
+      "bottomTime": 25,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 9,
+          "time": 1
+        },
+        {
+          "depth": 6,
+          "time": 1
+        },
+        {
+          "depth": 3,
+          "time": 1
+        }
+      ],
+      "totalDeco": 3
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 30,
+      "bottomTime": 45,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 12,
+          "time": 3
+        },
+        {
+          "depth": 9,
+          "time": 6
+        },
+        {
+          "depth": 6,
+          "time": 13
+        },
+        {
+          "depth": 3,
+          "time": 26
+        }
+      ],
+      "totalDeco": 48
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 40,
+      "bottomTime": 40,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 18,
+          "time": 2
+        },
+        {
+          "depth": 15,
+          "time": 4
+        },
+        {
+          "depth": 12,
+          "time": 6
+        },
+        {
+          "depth": 9,
+          "time": 10
+        },
+        {
+          "depth": 6,
+          "time": 20
+        },
+        {
+          "depth": 3,
+          "time": 41
+        }
+      ],
+      "totalDeco": 83
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 40,
+      "bottomTime": 60,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 21,
+          "time": 1
+        },
+        {
+          "depth": 18,
+          "time": 6
+        },
+        {
+          "depth": 15,
+          "time": 7
+        },
+        {
+          "depth": 12,
+          "time": 14
+        },
+        {
+          "depth": 9,
+          "time": 21
+        },
+        {
+          "depth": 6,
+          "time": 38
+        },
+        {
+          "depth": 3,
+          "time": 74
+        }
+      ],
+      "totalDeco": 161
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 50,
+      "bottomTime": 45,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 27,
+          "time": 1
+        },
+        {
+          "depth": 24,
+          "time": 1
+        },
+        {
+          "depth": 21,
+          "time": 4
+        },
+        {
+          "depth": 18,
+          "time": 6
+        },
+        {
+          "depth": 15,
+          "time": 8
+        },
+        {
+          "depth": 12,
+          "time": 14
+        },
+        {
+          "depth": 9,
+          "time": 21
+        },
+        {
+          "depth": 6,
+          "time": 39
+        },
+        {
+          "depth": 3,
+          "time": 75
+        }
+      ],
+      "totalDeco": 169
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 50,
+      "bottomTime": 60,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air",
+      "stops": [
+        {
+          "depth": 27,
+          "time": 2
+        },
+        {
+          "depth": 24,
+          "time": 5
+        },
+        {
+          "depth": 21,
+          "time": 5
+        },
+        {
+          "depth": 18,
+          "time": 10
+        },
+        {
+          "depth": 15,
+          "time": 14
+        },
+        {
+          "depth": 12,
+          "time": 21
+        },
+        {
+          "depth": 9,
+          "time": 33
+        },
+        {
+          "depth": 6,
+          "time": 59
+        },
+        {
+          "depth": 3,
+          "time": 126
+        }
+      ],
+      "totalDeco": 275
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 30,
+      "bottomTime": 45,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 12,
+          "time": 2
+        },
+        {
+          "depth": 9,
+          "time": 3
+        },
+        {
+          "depth": 6,
+          "time": 7
+        },
+        {
+          "depth": 3,
+          "time": 13
+        }
+      ],
+      "totalDeco": 25
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 40,
+      "bottomTime": 40,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 18,
+          "time": 1
+        },
+        {
+          "depth": 15,
+          "time": 2
+        },
+        {
+          "depth": 12,
+          "time": 4
+        },
+        {
+          "depth": 9,
+          "time": 6
+        },
+        {
+          "depth": 6,
+          "time": 10
+        },
+        {
+          "depth": 3,
+          "time": 20
+        }
+      ],
+      "totalDeco": 43
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 40,
+      "bottomTime": 60,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 21,
+          "time": 1
+        },
+        {
+          "depth": 18,
+          "time": 3
+        },
+        {
+          "depth": 15,
+          "time": 4
+        },
+        {
+          "depth": 12,
+          "time": 7
+        },
+        {
+          "depth": 9,
+          "time": 11
+        },
+        {
+          "depth": 6,
+          "time": 18
+        },
+        {
+          "depth": 3,
+          "time": 32
+        }
+      ],
+      "totalDeco": 76
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 50,
+      "bottomTime": 45,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 27,
+          "time": 1
+        },
+        {
+          "depth": 24,
+          "time": 1
+        },
+        {
+          "depth": 21,
+          "time": 3
+        },
+        {
+          "depth": 18,
+          "time": 3
+        },
+        {
+          "depth": 15,
+          "time": 4
+        },
+        {
+          "depth": 12,
+          "time": 7
+        },
+        {
+          "depth": 9,
+          "time": 12
+        },
+        {
+          "depth": 6,
+          "time": 18
+        },
+        {
+          "depth": 3,
+          "time": 32
+        }
+      ],
+      "totalDeco": 81
+    },
+    {
+      "waterType": "sea",
+      "pressurePerMeter": 0.1005181625,
+      "depth": 50,
+      "bottomTime": 60,
+      "gfLow": 40,
+      "gfHigh": 80,
+      "gasConfig": "air+ean50",
+      "stops": [
+        {
+          "depth": 27,
+          "time": 2
+        },
+        {
+          "depth": 24,
+          "time": 5
+        },
+        {
+          "depth": 21,
+          "time": 3
+        },
+        {
+          "depth": 18,
+          "time": 6
+        },
+        {
+          "depth": 15,
+          "time": 7
+        },
+        {
+          "depth": 12,
+          "time": 10
+        },
+        {
+          "depth": 9,
+          "time": 17
+        },
+        {
+          "depth": 6,
+          "time": 26
+        },
+        {
+          "depth": 3,
+          "time": 47
+        }
+      ],
+      "totalDeco": 123
+    }
+  ]
+}

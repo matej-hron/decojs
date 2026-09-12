@@ -775,6 +775,7 @@
             computeGasConsumption,
             renderDivePlanTableHTML,
             getDiveSetupWaypoints,
+            getDiveSetupPressurePerMeter,
             getDiveSetupSurfacePressure
         } from '../js/diveSetup.js';
         import { renderDecisionAuditHTML } from '../js/components/DecisionAudit.js';
@@ -817,10 +818,15 @@
             const decoSacRate = diveSetup.decoSacRate ?? sacRate; // L/min during deco
             const reservePressure = diveSetup.reservePressure || 50; // bar
             const surfacePressure = getDiveSetupSurfacePressure(diveSetup);
+            const pressurePerMeter = getDiveSetupPressurePerMeter(diveSetup);
             const nominalSurfacePressure = 1 + (surfacePressure - SURFACE_PRESSURE);
             
             // Calculate tissue loading
-            const results = calculateTissueLoading(waypoints, surfaceInterval, { gases, surfacePressure });
+            const results = calculateTissueLoading(waypoints, surfaceInterval, {
+                gases,
+                surfacePressure,
+                pressurePerMeter
+            });
             
             // Calculate ceiling
             const ceilingDepths = calculateCeilingTimeSeries(results, gfLow, gfHigh);
@@ -865,9 +871,13 @@
                 // decompression gases. A ceiling during ascent does not turn
                 // the working gas into a decompression gas.
                 const isDecoGas = gases.indexOf(gas) > 0;
-                const ambient = getAmbientPressure(depth, surfacePressure);
+                const ambient = getAmbientPressure(
+                    depth, surfacePressure, pressurePerMeter
+                );
                 const ppO2 = ambient * gas.o2;
-                const operationalPpO2 = (nominalSurfacePressure + depth / 10) * gas.o2;
+                const operationalPpO2 = (
+                    nominalSurfacePressure + depth * pressurePerMeter
+                ) * gas.o2;
                 const ppN2 = ambient * gas.n2;
                 
                 // Track ppO2 separately for working vs decompression gases.
@@ -958,7 +968,11 @@
                     html: formatWarningHtml(
                         translate('warnings.narcosisWarning', 'Narcosis warning: <var>p</var><sub>N₂</sub> = {0}\u00a0bar at {1}\u00a0m (equivalent to {2}\u00a0m on air)'),
                         fmtNum(maxPpN2, 2), fmtNum(maxPpN2Depth, 0),
-                        fmtNum((maxPpN2 / 0.79 - nominalSurfacePressure) / 0.1, 0)
+                        fmtNum(
+                            (maxPpN2 / 0.79 - nominalSurfacePressure)
+                                / pressurePerMeter,
+                            0
+                        )
                     )
                 });
             } else if (maxPpN2 > 3.2) {
@@ -1222,6 +1236,7 @@
             const decoSacRate = diveSetup.decoSacRate ?? sacRate;
             const reserve = diveSetup.reservePressure || 50;
             const surfacePressure = getDiveSetupSurfacePressure(diveSetup);
+            const pressurePerMeter = getDiveSetupPressurePerMeter(diveSetup);
             divePlanTableContainer.innerHTML = renderDivePlanTableHTML(
                 getDiveSetupWaypoints(diveSetup), diveSetup.gases,
                 {
@@ -1229,6 +1244,7 @@
                     decoSacRate,
                     reserve,
                     surfacePressure,
+                    pressurePerMeter,
                     runtimeConvention: 'practical'
                 }
             );
@@ -1935,6 +1951,7 @@ const chart = new DiveProfileChart(
             const bottomTime = waypoints.length > 2 ? waypoints[2]?.time || 0 : 0;
             const decoMode = setup.decoMode || (setup.continuousDeco ? 'continuous' : 'standard');
             const surfacePressure = getDiveSetupSurfacePressure(setup);
+            const pressurePerMeter = getDiveSetupPressurePerMeter(setup);
 
             // Simulate tissues at end of bottom
             let tissues = {};
@@ -1943,24 +1960,28 @@ const chart = new DiveProfileChart(
             });
             const descentTime = Math.ceil(maxDepth / 20);
             tissues = simulateDepthChange(
-                tissues, 0, maxDepth, descentTime, bottomGas.n2, surfacePressure
+                tissues, 0, maxDepth, descentTime, bottomGas.n2,
+                surfacePressure, pressurePerMeter
             );
             const bt = bottomTime - descentTime;
             if (bt > 0) {
                 tissues = simulateDepthTime(
-                    tissues, maxDepth, bt, bottomGas.n2, surfacePressure
+                    tissues, maxDepth, bt, bottomGas.n2,
+                    surfacePressure, pressurePerMeter
                 );
             }
 
             // Deco schedule
             const schedule = generateDecoSchedule(
                 tissues, maxDepth, bottomGas.n2, gfLow, gfHigh, gases,
-                { decoMode, surfacePressure }
+                { decoMode, surfacePressure, pressurePerMeter }
             );
 
             // Tissue loading via waypoints (as chart sees it)
             const tlResults = calculateTissueLoading(
-                waypoints, setup.surfaceInterval || 5, { gases, surfacePressure }
+                waypoints,
+                setup.surfaceInterval || 5,
+                { gases, surfacePressure, pressurePerMeter }
             );
             let lastDiveIdx = 0;
             for (let i = 0; i < tlResults.depthPoints.length; i++) {

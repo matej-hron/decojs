@@ -1234,7 +1234,14 @@
         "environment": {
             "title": "Environment",
             "altitude": "Altitude (m):",
-            "altitudeExplanation": "Deco Theory converts altitude to atmospheric pressure using the standard atmosphere. Underwater it adds 0.1 bar per metre of depth. The calculation assumes full acclimatization.",
+            "altitudeExplanation": "Deco Theory converts altitude to atmospheric pressure using the standard atmosphere. The selected water type determines the depth-to-hydrostatic-pressure conversion. The calculation assumes full acclimatization.",
+            "waterType": "Water type:",
+            "waterStandard": "Standard EN 13319 (10 m = 1 bar)",
+            "waterFresh": "Freshwater",
+            "waterSea": "Seawater",
+            "waterStandardShort": "EN",
+            "waterFreshShort": "fresh",
+            "waterSeaShort": "sea",
             "surfacePressure": "Calculated atmospheric pressure:",
             "acclimatizedHint": "Assumes the diver is fully acclimatized to this altitude."
         },

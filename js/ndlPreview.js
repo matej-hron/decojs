@@ -11,6 +11,10 @@
 import { planTrip } from './tripPlanner.js';
 import { addDive } from './tripState.js';
 import { calculateNDL } from './decoModel.js';
+import {
+    getDiveSetupPressurePerMeter,
+    getDiveSetupSurfacePressure
+} from './diveSetup.js';
 
 /**
  * @param {Object} trip - { gases, gfLow, gfHigh, dives }
@@ -30,5 +34,12 @@ export function previewNdl(trip, candidate, gfHigh = trip.gfHigh ?? 100) {
     const placed = result.dives.find(d => d.id === newId);
     const seed = placed.startingTissue;
     const n2 = (candidate.gases && candidate.gases[0]) ? candidate.gases[0].n2 : 0.79;
-    return calculateNDL(candidate.maxDepth, n2, gfHigh / 100, seed).ndl;
+    return calculateNDL(
+        candidate.maxDepth,
+        n2,
+        gfHigh / 100,
+        seed,
+        getDiveSetupSurfacePressure(trip),
+        getDiveSetupPressurePerMeter(trip)
+    ).ndl;
 }
