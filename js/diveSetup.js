@@ -23,6 +23,7 @@ import {
 import { COMPARTMENTS } from './tissueCompartments.js';
 import { translate } from './i18n.js';
 import { escHtml } from './utils/escHtml.js';
+import { fmtNum } from './format.js';
 
 // Default path to dive setup JSON
 const DEFAULT_SETUP_PATH = 'data/dive-setup.json';
@@ -438,7 +439,13 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
         stops, gasSwitches, totalTime: ascentTotalTime, pAnchor, anchorDepth,
         decisionAudit
     } = generateDecoSchedule(
-        tissues, maxDepth, bottomGas.n2, gfLowDec, gfHighDec, gases, options
+        tissues, maxDepth, bottomGas.n2, gfLowDec, gfHighDec, gases,
+        {
+            ...options,
+            ...(options.alignRuntimeDepartures
+                ? { runtimeStart: options.runtimeStart ?? bottomTime }
+                : {})
+        }
     );
     
     // Build waypoints from deco schedule
@@ -461,13 +468,21 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
     // First, collect all deco stops
     for (const stop of stops) {
         const stopGas = gases.find(g => g.name === stop.gas);
-        eventsByDepth.set(stop.depth, {
-            depth: stop.depth,
-            stopTime: stop.time,
-            gasId: stopGas?.id,
-            gas: stop.gas,
-            isDecoStop: true
-        });
+        const existing = eventsByDepth.get(stop.depth);
+        if (existing) {
+            existing.stopTime = Math.round((existing.stopTime + stop.time) * 10) / 10;
+            existing.gasId = stopGas?.id ?? existing.gasId;
+            existing.gas = stop.gas;
+            existing.isDecoStop = true;
+        } else {
+            eventsByDepth.set(stop.depth, {
+                depth: stop.depth,
+                stopTime: stop.time,
+                gasId: stopGas?.id,
+                gas: stop.gas,
+                isDecoStop: true
+            });
+        }
     }
     
     // Gas switches at deco stops: update the stop's gasId.
@@ -967,12 +982,18 @@ export function getGradientFactors(setup) {
  * Calculate Maximum Operating Depth (MOD) for a gas mix
  * @param {number} o2Fraction - Oxygen fraction (0-1)
  * @param {number} maxPpO2 - Maximum ppO2 limit (default 1.4 bar)
+ * @param {number} surfacePressure - Surface pressure in bar
  * @returns {number} MOD in meters
  */
 export function calculateMOD(o2Fraction, maxPpO2 = 1.4, surfacePressure = 1) {
     if (o2Fraction <= 0) return Infinity;
     const maxAmbient = maxPpO2 / o2Fraction;
-    return Math.floor((maxAmbient - surfacePressure) / 0.1);
+    const depth = (maxAmbient - surfacePressure) / 0.1;
+    const nearestMeter = Math.round(depth);
+    const tolerance = Number.EPSILON * Math.max(1, Math.abs(depth)) * 4;
+    return Math.abs(depth - nearestMeter) <= tolerance
+        ? nearestMeter
+        : Math.floor(depth);
 }
 
 /**
@@ -1608,6 +1629,7 @@ export function computeGasConsumption(results, gases, sacRate, decoSacRate, rese
  * @param {number} [opts.decoSacRate=15]   Deco-stop / safety-stop SAC.
  * @param {number} [opts.reserve=50]       Fallback reserve pressure (bar).
  * @param {number} [opts.surfacePressure]  Atmospheric pressure at the dive site (bar).
+ * @param {'stage-end'|'departure'|'practical'} [opts.runtimeConvention='stage-end']
  * @returns {string}  HTML for the plan table (or '').
  */
 export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
@@ -1616,6 +1638,8 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
     const decoSacRate = opts.decoSacRate ?? 15;
     const reserve = opts.reserve ?? 50;
     const surfacePressure = opts.surfacePressure ?? SURFACE_PRESSURE;
+    const departureRuntime = opts.runtimeConvention === 'departure';
+    const practicalRuntime = opts.runtimeConvention === 'practical';
     const consumptionSurfacePressure = 1 + (surfacePressure - SURFACE_PRESSURE);
     const gasList = Array.isArray(gases) ? gases : [];
 
@@ -1678,10 +1702,20 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
         } else if (next.depth === 0 && wp.depth === 0) {
             // already at surface — skip
         } else if (next.depth === 0 && wp.depth > 0) {
-            // Final surface ascent — blank stop column; it's just a surfacing
-            // marker, not a deco duration worth showing as a number.
             leftMax = true;
-            pushSeg({ cls: 'asc', icon: '▲', label: phaseLabels.surface, isSurface: true, depth: 0, stop: '', runtime, gas: '' });
+            const transitGasId = wp.gasId || prevGasId;
+            const transitGas = gasList.find(g => g.id === transitGasId);
+            pushSeg({
+                cls: 'asc',
+                icon: '▲',
+                label: phaseLabels.surface,
+                isSurface: true,
+                fromDepth: wp.depth,
+                depth: 0,
+                stop: departureRuntime || practicalRuntime ? duration : '',
+                runtime,
+                gas: departureRuntime || practicalRuntime ? transitGas?.name || '' : ''
+            }, transitGasId);
         } else if (next.depth < wp.depth) {
             leftMax = true;
             // A gas switch taken exactly upon arrival (next.gasId differs from
@@ -1691,7 +1725,16 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
             const transitGasId = wp.gasId || prevGasId;
             const transitGas = gasList.find(g => g.id === transitGasId);
             const gasChanged = next.gasId && transitGasId && next.gasId !== transitGasId;
-            pushSeg({ cls: 'asc', icon: '↑', label: phaseLabels.asc, depth: next.depth, stop: duration, runtime, gas: transitGas?.name || '' }, transitGasId);
+            pushSeg({
+                cls: 'asc',
+                icon: '↑',
+                label: phaseLabels.asc,
+                fromDepth: wp.depth,
+                depth: next.depth,
+                stop: duration,
+                runtime,
+                gas: transitGas?.name || ''
+            }, transitGasId);
             // If the switch has its own configured stop time (a following
             // waypoint at the SAME depth — e.g. generateDecoProfile's
             // gasSwitchTime), don't add a zero-duration marker here: let the
@@ -1732,6 +1775,34 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
 
     if (segments.length === 0) return '';
 
+    if (practicalRuntime) {
+        let runningTime = 0;
+        let previousSegment = null;
+        for (const segment of segments) {
+            if (segment.cls === 'des' || segment.cls === 'bottom') {
+                runningTime = segment.runtime;
+            } else if (segment.cls === 'asc') {
+                const followsStop = previousSegment
+                    && (previousSegment.cls === 'stop' || previousSegment.cls === 'switch');
+                const ascentDuration = followsStop
+                    ? (segment.fromDepth - segment.depth) / 9
+                    : segment.stop;
+                segment.stop = Math.round(ascentDuration * 10) / 10;
+                segment.practicalAscentSeconds = followsStop
+                    ? Math.round(ascentDuration * 60)
+                    : null;
+                runningTime += ascentDuration;
+                segment.runtime = runningTime;
+            } else if (typeof segment.stop === 'number') {
+                runningTime += segment.stop;
+                segment.runtime = runningTime;
+            } else {
+                segment.runtime = runningTime;
+            }
+            previousSegment = segment;
+        }
+    }
+
     // Fold each inter-stop ascent into the PRECEDING stop row. Effect:
     // "Stop 6m 1 min runT 33" means "at runtime 33 the diver reaches the next
     // level (3m) — the 1 min spans arrival-at-6m to arrival-at-3m, the final
@@ -1741,22 +1812,24 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
     // Gas-switch rows never merge — they stay their own line, with the ascent
     // leading INTO them also preserved. This is load-bearing UX for tech
     // diving.
-    for (let i = segments.length - 1; i >= 0; i--) {
-        const seg = segments[i];
-        if (seg.cls !== 'asc') continue;
-        if (seg.isSurface) continue;                 // final surface handled below
-        const prev = segments[i - 1];
-        const next = segments[i + 1];
-        if (!prev || !next) continue;
-        if (prev.cls !== 'stop') continue;           // only merge stop→asc→stop chains
-        if (next.cls !== 'stop') continue;           // do not fold into a switch row
-        // Extend the preceding stop row to absorb the ascent: runtime moves
-        // forward to the ascent's end (arrival at next level), and the
-        // displayed stop duration now covers stay + ascent-out.
-        const ascDuration = seg.runtime - prev.runtime;
-        prev.stop = Math.round(((typeof prev.stop === 'number' ? prev.stop : 0) + ascDuration) * 10) / 10;
-        prev.runtime = seg.runtime;
-        segments.splice(i, 1);
+    if (!departureRuntime && !practicalRuntime) {
+        for (let i = segments.length - 1; i >= 0; i--) {
+            const seg = segments[i];
+            if (seg.cls !== 'asc') continue;
+            if (seg.isSurface) continue;                 // final surface handled below
+            const prev = segments[i - 1];
+            const next = segments[i + 1];
+            if (!prev || !next) continue;
+            if (prev.cls !== 'stop') continue;           // only merge stop→asc→stop chains
+            if (next.cls !== 'stop') continue;           // do not fold into a switch row
+            // Extend the preceding stop row to absorb the ascent: runtime moves
+            // forward to the ascent's end (arrival at next level), and the
+            // displayed stop duration now covers stay + ascent-out.
+            const ascDuration = seg.runtime - prev.runtime;
+            prev.stop = Math.round(((typeof prev.stop === 'number' ? prev.stop : 0) + ascDuration) * 10) / 10;
+            prev.runtime = seg.runtime;
+            segments.splice(i, 1);
+        }
     }
 
     // Drop the final Surface marker and extend the preceding stop so its row
@@ -1773,12 +1846,13 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
     // We skip if the preceding row is a switch — preserves gas-switch row
     // visibility (switches are load-bearing UX for tech diving).
     const lastIdx = segments.length - 1;
-    if (lastIdx >= 1 && segments[lastIdx].isSurface) {
+    if (!departureRuntime && !practicalRuntime
+        && lastIdx >= 1 && segments[lastIdx].isSurface) {
         const prev = segments[lastIdx - 1];
         if (prev && prev.cls === 'stop') {
             prev.runtime = segments[lastIdx].runtime;
-            segments.splice(lastIdx, 1);
         }
+        segments.splice(lastIdx, 1);
     }
 
     // Display runtime rounded to whole minutes (matches Divesoft). To keep
@@ -1800,12 +1874,23 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
         const belowReserve = s.tankBar !== null && s.tankBar !== undefined && s.tankBar <= threshold;
         const trClass = belowReserve ? `dse-plan-${s.cls} danger-row` : `dse-plan-${s.cls}`;
 
-        const runtimeDisplay = displayRuntimes[i];
+        const runtimeDisplay = departureRuntime || practicalRuntime
+            ? (practicalRuntime
+                ? Math.round(s.runtime)
+                : fmtNum(s.runtime, Number.isInteger(s.runtime) ? 0 : 1))
+            : displayRuntimes[i];
         // First row's "stop" is its own duration; subsequent rows derive it
         // from the runtime delta so the table stays internally consistent.
         let stopDisplay;
         if (s.stop === '' || s.stop === undefined || s.stop === null) {
             stopDisplay = '';
+        } else if (practicalRuntime && s.practicalAscentSeconds !== null
+            && s.practicalAscentSeconds !== undefined) {
+            stopDisplay = `${s.practicalAscentSeconds}\u00a0s`;
+        } else if (practicalRuntime) {
+            stopDisplay = Math.round(s.stop);
+        } else if (departureRuntime) {
+            stopDisplay = fmtNum(s.stop, Number.isInteger(s.stop) ? 0 : 1);
         } else if (i === 0) {
             stopDisplay = Math.round(s.stop);
         } else {
@@ -1827,14 +1912,16 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
 
     // Terminal Hladina/Surface row: purely informational marker that the
     // dive has ended, not a real segment (blank duration/runtime/gas/tank).
-    ascentRowsHtml.push(`<tr class="dse-plan-surface-final">` +
-        `<td class="dse-plan-phase"><span class="dse-plan-icon">▲</span> ${phaseLabels.surface}</td>` +
-        `<td class="dse-plan-depth">0\u00a0m</td>` +
-        `<td class="dse-plan-stop">—</td>` +
-        `<td class="dse-plan-runtime">—</td>` +
-        `<td class="dse-plan-gas">—</td>` +
-        `<td class="dse-plan-tank">—</td>` +
-        `</tr>`);
+    if (!departureRuntime && !practicalRuntime) {
+        ascentRowsHtml.push(`<tr class="dse-plan-surface-final">` +
+            `<td class="dse-plan-phase"><span class="dse-plan-icon">▲</span> ${phaseLabels.surface}</td>` +
+            `<td class="dse-plan-depth">0\u00a0m</td>` +
+            `<td class="dse-plan-stop">—</td>` +
+            `<td class="dse-plan-runtime">—</td>` +
+            `<td class="dse-plan-gas">—</td>` +
+            `<td class="dse-plan-tank">—</td>` +
+            `</tr>`);
+    }
 
     const tableHtml = (caption, rows) => `<table class="dse-plan-table">` +
         `<caption>${caption}</caption>` +
@@ -1853,6 +1940,10 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
         tableHtml(translate('divePlan.sectionBottom', 'Bottom'), bottomRowsHtml) +
         tableHtml(translate('divePlan.sectionAscent', 'Ascent'), ascentRowsHtml) +
         `</div>` +
-        `<p class="dse-plan-footnote">* ${translate('divePlan.runtimeFootnote', 'Runtime is the elapsed time from the start of the dive to the end of the stage.')}</p>` +
+        `<p class="dse-plan-footnote">* ${practicalRuntime
+            ? translate('divePlan.runtimePracticalFootnote', 'Stop durations are the whole minutes calculated by the model. Allow 20\u00a0seconds for each 3\u00a0m ascent after a stop; runtime is a whole-minute cross-check.')
+            : departureRuntime
+                ? translate('divePlan.runtimeDepartureFootnote', 'At decompression stops, runtime is the whole minute when the diver leaves for the next level. A decimal stop duration is the difference from the exact arrival time; execute the plan using the departure runtime.')
+                : translate('divePlan.runtimeFootnote', 'Runtime is the elapsed time from the start of the dive to the end of the stage.')}</p>` +
         `<p class="dse-plan-footnote">${translate('divePlan.descentFootnote', 'The model continuously calculates tissue on-gassing during descent. Descent is therefore included in both bottom time and the decompression-profile calculation.')}</p>`;
 }

@@ -6,7 +6,7 @@ npm test
 
 Runs `node tests/run-tests.mjs`. No external test framework — `tests/run-tests.mjs` implements `describe`/`test`/`expect` inline (lines 10–140) with matchers `.toBe`, `.toEqual`, `.toBeCloseTo`, `.toBeGreaterThan`, `.toBeLessThan`, `.toHaveProperty`, `.toHaveLength`, `.toBeDefined`. Output is one line per test, then a pass/fail summary.
 
-**441 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
+**449 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
 
 `npm test` is required to pass before every commit per `CLAUDE.md`.
 
@@ -43,6 +43,11 @@ Waypoint-array validation.
 - `getDiveStats` maxima and totals.
 
 ### Decotengu matrices in `tests/run-tests.mjs`
+
+The sea-level matrix also validates the practical runtime convention across all
+3,900 profiles: model stop durations remain whole minutes, inter-stop ascents
+use 20 seconds per 3 m, total timeline drift stays below 30 seconds, and the
+re-simulated destination ceiling may differ by at most 1 cm.
 
 The canonical suite directly checks the 3900 sea-level scenarios in
 `tests/decotengu-reference.json` and 15,986 altitude scenarios in
@@ -177,7 +182,7 @@ Bug fixes should include a regression test that fails without the fix (per `CLAU
 
 What is currently not covered — honest inventory so callers know where to be careful:
 
-- **UI components.** `DiveSetupEditor` has a narrow jsdom render regression for cylinder-volume notation, but no broader render or interaction coverage. `DiveProfileChart`, `MValueChart`, and `GFChart` have no render tests; Chart.js output is not asserted.
+- **UI components.** `DiveSetupEditor` has narrow jsdom regressions for cylinder-volume notation, bottom/deco MOD labels, and debounced automatic profile generation, but no broader interaction coverage. `DiveProfileChart`, `MValueChart`, and `GFChart` have no render tests; Chart.js output is not asserted.
 - **i18n.** No tests for translation loading, `data-i18n` substitution, or the `languagechange` event fan-out to components.
 - **Keyboard shortcuts.** `MValueChart` and `GFChart` expose arrow-key / space / home / end playback; none of this is tested.
 - **Helium.** `COMPARTMENTS` carries He coefficients but the algorithm lumps He into N₂ via `n2Fraction`. Full trimix (separate He kinetics) is not implemented and not tested. Gas definitions accept `he > 0` but no decotengu-reference scenarios exercise it.

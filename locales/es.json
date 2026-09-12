@@ -1131,7 +1131,8 @@
             "outOfRange": "⚠ fuera de rango",
             "infinity": "∞"
         },
-        "mod": "MOD: {0} m (deco: {1} m)",
+        "mod": "MOD: {0} m\nMOD deco: {1} m\ncambio recomendado: {2} m",
+        "modBottom": "MOD: {0} m",
         "profileDefault": "Perfil:",
         "customProfile": "✏️ Perfil personalizado",
         "customProfileNamed": "✏️ {0}",
@@ -1149,6 +1150,7 @@
         "quickSetup": {
             "title": "Configuración rápida",
             "hint": "Define la profundidad y el tiempo de fondo, y luego haz clic en Generar más abajo.",
+            "autoHint": "El perfil se actualiza automáticamente después de cada cambio.",
             "maxDepth": "Profundidad máxima (m):",
             "bottomTime": "Tiempo de fondo (min):",
             "safetyStop": "Parada de seguridad",
@@ -1166,11 +1168,12 @@
             "switchHint": "Tiempo para verificar el gas, respirar y señalizar al compañero en cada profundidad de cambio."
         },
         "gf": {
-            "title": "Modelo de descompresión",
+            "title": "Modelo de descompresión — Bühlmann",
             "algorithm": "Algoritmo:",
             "algorithmExperimental": "experimental",
             "algorithmTables": "tablas",
             "algorithmComputers": "ordenadores",
+            "settingsTitle": "Configuración de factores de gradiente",
             "hint": "GF 100/100 = Bühlmann puro. Valores más bajos = más conservador.",
             "low": "GF Low (%):",
             "high": "GF High (%):",
@@ -1282,6 +1285,8 @@
         "colGas": "Gas",
         "colTank": "Botella",
         "runtimeFootnote": "El runtime es el tiempo transcurrido desde el inicio de la inmersión hasta el final de la etapa.",
+        "runtimeDepartureFootnote": "En las paradas de descompresión, el runtime es el minuto entero en que el buceador sale hacia el siguiente nivel. Una duración decimal de la parada es la diferencia desde la hora exacta de llegada; el plan se ejecuta según el runtime de salida.",
+        "runtimePracticalFootnote": "Las duraciones de las paradas son los minutos enteros calculados por el modelo. Después de cada parada, reserve 20 segundos para ascender 3 m; el runtime sirve como control redondeado a minutos enteros.",
         "descentFootnote": "El modelo calcula continuamente la saturación de los tejidos durante el descenso. Por tanto, el descenso se incluye tanto en el tiempo de fondo como en el cálculo del perfil de descompresión.",
         "sectionBottom": "Fondo",
         "sectionAscent": "Ascenso",

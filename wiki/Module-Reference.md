@@ -71,7 +71,7 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 | `DECISION_AUDIT_VERSION` | 69 | Schema version for structured scheduler decision events. |
 | `getDecoMode(options={})` | 70 | Validates the explicit mode and migrates legacy `continuousDeco`; missing values default to `standard`. |
 | `calculateNDL(depth, n2=0.7902, gfHigh=1.0, initialTissuePressures=null, surfacePressure=1.01325)` | 729 | Binary-searches the maximum bottom runtime whose direct ascent on bottom gas reaches the surface within GF High. Returns `{ndl, ndlExact, ndlAtDepth, ndlAtDepthExact, controllingCompartment, descentTime}`. |
-| `generateDecoSchedule(tissues, depth, n2, gfLow, gfHigh, gases=null, options={})` | 920 | Attempts the same GF High direct ascent before creating a GF Low anchor. Standard mode uses Decotengu-style iterative first-stop discovery and a minimum minute at every active 3 m level. Returns `{stops, gasSwitches, totalTime, totalAscentTime, pAnchor, anchorDepth, decisionAudit}`. |
+| `generateDecoSchedule(tissues, depth, n2, gfLow, gfHigh, gases=null, options={})` | 966 | Attempts the same GF High direct ascent before creating a GF Low anchor. Standard mode uses Decotengu-style iterative first-stop discovery and a minimum minute at every active 3 m level. With `alignRuntimeDepartures: true` plus absolute `runtimeStart`, each recorded stop also has an integer `departureRuntime`; the alignment wait is tissue-simulated and the destination ceiling is rechecked. Returns `{stops, gasSwitches, totalTime, totalAscentTime, pAnchor, anchorDepth, decisionAudit}`. |
 
 `generateDecoSchedule` options:
 
@@ -184,7 +184,7 @@ Note: `BOTTOM_GASES[0].n2` is `0.7902`, matching `N2_FRACTION` in `decoModel.js`
 | Signature | Line | Description |
 |---|---|---|
 | `generateSimpleProfile(maxDepth, bottomTime, safetyStop, options)` | 240 | No-deco profile. Descent 20 m/min, ascent 10 m/min, optional 3 min @ 5 m. |
-| `generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, safetyStop, options)` | 327 | Runs NDL check; if exceeded, calls `generateDecoSchedule()` and splices stops into the waypoint array. Returns `{waypoints, ndl, requiresDeco, decoStops, totalDecoTime, controllingCompartment, pAnchor, anchorDepth}`. Accepts optional `options.initialTissuePressures` — when provided, tissues are seeded from that map and the surface-based NDL early-return is bypassed so the deco scheduler always runs against the actual pre-saturated state. See [repetitive-dive chaining](#repetitive-dive-chaining-initialTissuePressures). |
+| `generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, safetyStop, options)` | 336 | Runs NDL check; if exceeded, calls `generateDecoSchedule()` and splices stops into the waypoint array. With `options.alignRuntimeDepartures`, it passes `bottomTime` as the default absolute `runtimeStart`. Returns `{waypoints, ndl, requiresDeco, decoStops, totalDecoTime, controllingCompartment, pAnchor, anchorDepth}`. Accepts optional `options.initialTissuePressures` — when provided, tissues are seeded from that map and the surface-based NDL early-return is bypassed so the deco scheduler always runs against the actual pre-saturated state. See [repetitive-dive chaining](#repetitive-dive-chaining-initialTissuePressures). |
 | `generateDecoProfileSync(...)` | 567 | Variant accepting a pre-loaded `compartments` array. Does **not** support `options.initialTissuePressures`; callers needing a seeded profile must use `generateDecoProfile`. |
 | `generateDecisionAudit(setup)` | 832 | Reconstructs the end-of-bottom tissue state for a generated single-dive setup and returns the scheduler's opt-in structured decision audit. |
 | `getNDLForDepth(depth, gas, gfHigh)` | 720 | Convenience wrapper around `calculateNDL`. Returns the full result, including `descentTime`. |
@@ -196,7 +196,7 @@ Note: `BOTTOM_GASES[0].n2` is `0.7902`, matching `N2_FRACTION` in `decoModel.js`
 
 | Signature | Line | Description |
 |---|---|---|
-| `calculateMOD(o2Fraction, maxPpO2=1.4)` | 861 | `floor((ppO₂/o2 − 1) × 10)`, metres |
+| `calculateMOD(o2Fraction, maxPpO2=1.4, surfacePressure=1)` | 972 | MOD in metres; non-integers round down, while exact integer boundaries are preserved within floating-point tolerance |
 | `calculateEND(depth, heFraction=0)` | 874 | `(depth + 10) × (1 − fHe) − 10` |
 | `calculatePartialPressure(depth, gasFraction)` | 886 | `fraction × (1.01325 + depth/10)` |
 | `getGasCylinderVolume(gas)`, `getCylinderVolume(setup)` | 896, 905 | Litres |
@@ -231,7 +231,7 @@ Toxicity is informational; not fed back into the deco loop.
 |---|---|---|
 | `generateProfileName(setup)` | 1279 | Short label for UI |
 | `formatDiveSetupSummary(setup)` | 1295 | Multi-line human summary |
-| `renderDivePlanTableHTML(waypoints, gases, opts)` | 1489 | Returns HTML for the dive-plan table. A gas switch is always billed against the OLD gas for the ascent leg leading into it (never relabels the whole climb with the new gas). If the switch has no dedicated stay (pure in-transit switch), it gets its own zero-duration `switch` marker row; if it has a dedicated stop time at that depth (e.g. `gasSwitchTime` from `generateDecoProfile`), that real duration is kept on a single `switch` row instead of being downgraded to a plain `stop` row. Switch rows never fold into neighbouring rows. |
+| `renderDivePlanTableHTML(waypoints, gases, opts)` | 1627 | Returns HTML for the dive-plan table. `opts.runtimeConvention: 'practical'` keeps the legacy whole-minute model stops, budgets 20 seconds for each 3 m ascent after a stop, and rounds runtime to whole minutes as a cross-check; this is the Sandbox convention. The optional `departure` convention renders scheduler-aligned departure runtimes, while the legacy default remains `stage-end`. A gas switch is always billed against the OLD gas for the ascent leg leading into it (never relabels the whole climb with the new gas). |
 
 #### Defaults
 
@@ -546,7 +546,7 @@ Small helper (~100 lines) that adds a toggle button to lock/unlock Chart.js zoom
 
 `class DiveSetupEditor extends EventTarget` (line 115; ~1700 lines). Embeddable form editor that produces the `diveSetup` JSON consumed by the three chart components.
 
-Default export at line 1674. Emits `change` events with `detail.diveSetup` when the form mutates (configurable via `options.emitOnInput`). Sections: gas management (library + custom), waypoint editor with drag-reorder, gradient-factor sliders with presets (Bühlmann, Conservative, Deco Planner), safety stop, SAC rates, import/export JSON textarea. Re-renders on `languagechange`.
+Default export at line 1674. Emits `change` events with `detail.diveSetup` when the form mutates (configurable via `options.emitOnInput`). `options.autoGenerateProfile` regenerates quick-setup waypoints after a debounced 250 ms delay; the main Sandbox enables it, while embedded editors keep the default `false`. Sections: gas management (library + custom), waypoint editor with drag-reorder, gradient-factor sliders with presets (Bühlmann, Conservative, Deco Planner), safety stop, SAC rates, import/export JSON textarea. Re-renders on `languagechange`.
 
 Multi-dive toggle (`showMultiDive`) exists but only `dives[0]` is rendered by the chart components; see the note in `CLAUDE.md`.
 

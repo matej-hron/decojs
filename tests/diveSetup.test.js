@@ -641,6 +641,11 @@ describe('diveSetup module', () => {
             expect(calculateMOD(1.0, 1.6)).toBe(6);
         });
 
+        test('keeps exact integer MOD for EAN50 despite floating-point error', () => {
+            expect(calculateMOD(0.5, 1.4)).toBe(18);
+            expect(calculateMOD(0.5, 1.6)).toBe(22);
+        });
+
         test('uses default ppO2 of 1.4 if not specified', () => {
             expect(calculateMOD(0.32)).toBe(33);
         });

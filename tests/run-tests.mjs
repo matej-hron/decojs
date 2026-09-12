@@ -606,6 +606,11 @@ describe('diveSetup', () => {
             const mod = calculateMOD(1.0, 1.6);
             expect(mod).toBe(6);
         });
+
+        test('keeps exact integer MOD for EAN50 despite floating-point error', () => {
+            expect(calculateMOD(0.5, 1.4)).toBe(18);
+            expect(calculateMOD(0.5, 1.6)).toBe(22);
+        });
     });
 
     describe('insertGasSwitchWaypoints', () => {
@@ -793,6 +798,53 @@ describe('diveSetup - renderDivePlanTableHTML', () => {
         // "Stop 12m" row: duration 6, runtime 36 (arrival at next level, 9m) —
         // matches the fold-the-ascent-into-the-preceding-stop behavior.
         expect(html).toContain('<td class="dse-plan-depth">12\u00a0m</td><td class="dse-plan-stop">6</td><td class="dse-plan-runtime">36</td>');
+    });
+
+    test('departure runtime convention preserves model stops and renders real ascent segments', () => {
+        const operationalWaypoints = [
+            { time: 0, depth: 0, gasId: 'air' },
+            { time: 2, depth: 45, gasId: 'air' },
+            { time: 27, depth: 45, gasId: 'air' },
+            { time: 30, depth: 12, gasId: 'air' },
+            { time: 35, depth: 12, gasId: 'air' },
+            { time: 35.3, depth: 9, gasId: 'air' },
+            { time: 38, depth: 9, gasId: 'air' },
+            { time: 38.3, depth: 0, gasId: 'air' }
+        ];
+        const html = renderDivePlanTableHTML(
+            operationalWaypoints, gases, { runtimeConvention: 'departure' }
+        );
+
+        expect(html).toContain('<td class="dse-plan-depth">12\u00a0m</td><td class="dse-plan-stop">5</td><td class="dse-plan-runtime">35</td>');
+        expect(html).toContain('<td class="dse-plan-depth">9\u00a0m</td><td class="dse-plan-stop">2.7</td><td class="dse-plan-runtime">38</td>');
+        expect(html).toContain('<td class="dse-plan-depth">12\u00a0m</td><td class="dse-plan-stop">3</td><td class="dse-plan-runtime">30</td>');
+        expect(html).toContain('<td class="dse-plan-depth">9\u00a0m</td><td class="dse-plan-stop">0.3</td><td class="dse-plan-runtime">35.3</td>');
+        expect(html).toContain('<td class="dse-plan-depth">0\u00a0m</td><td class="dse-plan-stop">0.3</td><td class="dse-plan-runtime">38.3</td>');
+        expect(html.includes('dse-plan-surface-final')).toBe(false);
+        expect(html).toContain('runtime is the whole minute when the diver leaves for the next level');
+    });
+
+    test('practical runtime keeps whole model stops and uses 20-second inter-stop ascents', () => {
+        const practicalWaypoints = [
+            { time: 0, depth: 0, gasId: 'air' },
+            { time: 1.55, depth: 31, gasId: 'air' },
+            { time: 29, depth: 31, gasId: 'air' },
+            { time: 31.8, depth: 3, gasId: 'air' },
+            { time: 38.8, depth: 3, gasId: 'air' },
+            { time: 39.1, depth: 0, gasId: 'air' }
+        ];
+        const html = renderDivePlanTableHTML(
+            practicalWaypoints, gases, { runtimeConvention: 'practical' }
+        );
+
+        expect(html).toContain('<td class="dse-plan-depth">3\u00a0m</td><td class="dse-plan-stop">3</td><td class="dse-plan-runtime">32</td>');
+        expect(html).toContain('<td class="dse-plan-depth">3\u00a0m</td><td class="dse-plan-stop">7</td><td class="dse-plan-runtime">39</td>');
+        expect(html).toContain('<td class="dse-plan-depth">0\u00a0m</td><td class="dse-plan-stop">20\u00a0s</td><td class="dse-plan-runtime">39</td>');
+        const runtimeValues = [...html.matchAll(
+            /<td class="dse-plan-runtime">([^<]+)<\/td>/g
+        )].map(match => match[1]);
+        expect(runtimeValues.every(value => /^\d+$/.test(value))).toBe(true);
+        expect(html).toContain('Allow 20\u00a0seconds for each 3\u00a0m ascent after a stop');
     });
 
     // A gas switch taken exactly on arrival during an ascent (no stop at the
@@ -2671,6 +2723,108 @@ describe('Decompression schedule modes', () => {
         expect(schedule.stops.every(stop => stop.time >= 1)).toBe(true);
     });
 
+    test('operational Standard schedules leave every deco stop on a whole runtime minute', () => {
+        const scenarios = [
+            {
+                depth: 33,
+                bottomTime: 13,
+                gases: air,
+                surfacePressure: SURFACE_PRESSURE,
+                gasSwitchTime: 0
+            },
+            {
+                depth: 40,
+                bottomTime: 25,
+                gases: [
+                    ...air,
+                    { id: 'ean50', name: 'EAN50', o2: 0.5, n2: 0.5 }
+                ],
+                surfacePressure: SURFACE_PRESSURE,
+                gasSwitchTime: 1
+            },
+            {
+                depth: 36,
+                bottomTime: 28,
+                gases: [
+                    ...air,
+                    { id: 'o2', name: 'O2', o2: 1, n2: 0 }
+                ],
+                surfacePressure: 0.8,
+                gasSwitchTime: 2
+            },
+            {
+                depth: 36,
+                bottomTime: 15,
+                gases: [
+                    ...air,
+                    { id: 'o2', name: 'O2', o2: 1, n2: 0 }
+                ],
+                surfacePressure: 0.9,
+                gasSwitchTime: 1,
+                gfLow: 70,
+                gfHigh: 70
+            }
+        ];
+
+        for (const scenario of scenarios) {
+            const result = generateDecoProfile(
+                scenario.depth,
+                scenario.bottomTime,
+                scenario.gases,
+                scenario.gfLow ?? 30,
+                scenario.gfHigh ?? 80,
+                { enabled: false },
+                {
+                    decoMode: DECO_MODES.STANDARD,
+                    alignRuntimeDepartures: true,
+                    gasSwitchTime: scenario.gasSwitchTime,
+                    surfacePressure: scenario.surfacePressure,
+                    audit: true
+                }
+            );
+
+            expect(result.decoStops.length).toBeGreaterThan(0);
+            expect(result.decoStops.every(stop =>
+                Number.isInteger(stop.departureRuntime)
+            )).toBe(true);
+            expect(new Set(result.decoStops.map(stop => stop.depth)).size)
+                .toBe(result.decoStops.length);
+            expect(result.decoStops.every(stop =>
+                result.waypoints.some(waypoint =>
+                    waypoint.depth === stop.depth
+                    && waypoint.time === stop.departureRuntime
+                )
+            )).toBe(true);
+
+            const levelDecisions = result.decisionAudit.events.filter(
+                event => event.type === 'level-decision'
+            );
+            expect(levelDecisions.length).toBeGreaterThan(0);
+            expect(levelDecisions.every(event =>
+                event.finalCeilingDepth <= event.targetDepth
+            )).toBe(true);
+        }
+    });
+
+    test('runtime alignment cannot change Adaptive or Continuous study schedules', () => {
+        for (const mode of [DECO_MODES.ADAPTIVE, DECO_MODES.CONTINUOUS]) {
+            const baseline = generateDecoSchedule(
+                loadedTissues(40, 25),
+                40, air[0].n2, 0.3, 0.8, air, { decoMode: mode }
+            );
+            const aligned = generateDecoSchedule(
+                loadedTissues(40, 25),
+                40, air[0].n2, 0.3, 0.8, air,
+                {
+                    decoMode: mode,
+                    alignRuntimeDepartures: true,
+                    runtimeStart: 25
+                }
+            );
+            expect(aligned).toEqual(baseline);
+        }
+    });
+
     test('adaptive study mode preserves zero-duration transit levels', () => {
         const schedule = scheduleFor(DECO_MODES.ADAPTIVE);
         expect(schedule.anchorDepth).toBe(12);
@@ -3395,6 +3549,97 @@ describe('Decotengu sea-level reference matrix', () => {
         expect(exactDepthLists / reference.scenarios.length).toBeGreaterThan(0.9);
         expect(exactSchedules / reference.scenarios.length).toBeGreaterThan(0.75);
         expect(maximumDifference).toBeLessThanOrEqual(3);
+    });
+
+    test('practical runtimes preserve model stops across all 3900 scenarios', () => {
+        setZHL16Variant(ZHL16_VARIANTS.C);
+        let checkedDepartures = 0;
+        let maximumCeilingExcess = 0;
+        let maximumTimelineDifference = 0;
+
+        for (const scenario of reference.scenarios) {
+            const gases = gasConfigs[scenario.gasConfig];
+            const bottomGas = gases[0];
+            const gasById = Object.fromEntries(gases.map(gas => [gas.id, gas]));
+            const result = generateDecoProfile(
+                scenario.depth,
+                scenario.bottomTime,
+                gases,
+                scenario.gfLow,
+                scenario.gfHigh,
+                { enabled: false },
+                { decoMode: DECO_MODES.STANDARD }
+            );
+
+            if (!result.decoStops.every(stop => Number.isInteger(stop.time))) {
+                throw new Error(
+                    `Fractional model stop in ${scenario.depth}m/` +
+                    `${scenario.bottomTime}min GF${scenario.gfLow}/${scenario.gfHigh}`
+                );
+            }
+
+            let tissues = Object.fromEntries(
+                COMPARTMENTS.map(compartment => [
+                    compartment.id,
+                    getInitialTissueN2(bottomGas.n2)
+                ])
+            );
+            let gasId = bottomGas.id;
+            let practicalTime = 0;
+            const waypoints = result.waypoints;
+            const maxDepth = Math.max(...waypoints.map(waypoint => waypoint.depth));
+
+            for (let i = 0; i < waypoints.length - 1; i++) {
+                const current = waypoints[i];
+                const next = waypoints[i + 1];
+                if (current.gasId) gasId = current.gasId;
+                const gas = gasById[gasId] ?? bottomGas;
+                const followsStop = i > 0
+                    && waypoints[i - 1].depth === current.depth
+                    && current.depth > 0
+                    && current.depth < maxDepth
+                    && next.depth < current.depth;
+
+                if (followsStop) {
+                    const targetGF = interpolateGF(
+                        getAmbientPressure(next.depth),
+                        result.pAnchor,
+                        scenario.gfLow / 100,
+                        scenario.gfHigh / 100
+                    );
+                    const ceilingDepth = getDiveCeiling(tissues, targetGF).ceilingDepth;
+                    maximumCeilingExcess = Math.max(
+                        maximumCeilingExcess,
+                        ceilingDepth - next.depth
+                    );
+                    checkedDepartures++;
+                }
+
+                const modelDuration = next.time - current.time;
+                const practicalDuration = followsStop
+                    ? (current.depth - next.depth) / 9
+                    : modelDuration;
+                tissues = current.depth === next.depth
+                    ? simulateDepthTime(
+                        tissues, current.depth, practicalDuration, gas.n2
+                    )
+                    : simulateDepthChange(
+                        tissues, current.depth, next.depth,
+                        practicalDuration, gas.n2
+                    );
+                practicalTime += practicalDuration;
+                if (next.gasId) gasId = next.gasId;
+            }
+
+            maximumTimelineDifference = Math.max(
+                maximumTimelineDifference,
+                practicalTime - waypoints.at(-1).time
+            );
+        }
+
+        expect(checkedDepartures).toBe(17736);
+        expect(maximumCeilingExcess).toBeLessThanOrEqual(0.01);
+        expect(maximumTimelineDifference).toBeLessThanOrEqual(0.5);
     });
 });
 
@@ -4630,6 +4875,82 @@ describe('DiveSetupEditor notation', () => {
             }
         } finally {
             globalThis.document = previousDocument;
+            dom.window.close();
+        }
+    });
+
+    test('bottom gas omits the decompression MOD while deco gas shows it', () => {
+        const dom = new JSDOM('<!doctype html><body></body>');
+        const previousDocument = globalThis.document;
+        globalThis.document = dom.window.document;
+
+        try {
+            const airCard = DiveSetupEditor.prototype._createGasCard.call({}, {
+                name: 'Air', o2: 0.21, n2: 0.79, he: 0,
+                cylinderVolume: 12, startPressure: 200
+            }, 0);
+            const decoCard = DiveSetupEditor.prototype._createGasCard.call({}, {
+                name: 'EAN50', o2: 0.5, n2: 0.5, he: 0,
+                cylinderVolume: 7, startPressure: 200
+            }, 1);
+
+            expect(airCard.querySelector('.dse-gas-mod .dse-hint').textContent).toBe('MOD: 56\u00a0m');
+            expect(decoCard.querySelector('.dse-gas-mod .dse-hint').textContent).toBe(
+                'MOD: 18\u00a0m\ndeco MOD: 22\u00a0m\nrecommended switch: 21\u00a0m'
+            );
+        } finally {
+            globalThis.document = previousDocument;
+            dom.window.close();
+        }
+    });
+
+    test('auto-generation debounces repeated editor changes', () => {
+        const dom = new JSDOM('<!doctype html><body></body>');
+        const previousDocument = globalThis.document;
+        const previousSetTimeout = globalThis.setTimeout;
+        const previousClearTimeout = globalThis.clearTimeout;
+        let scheduledCallback = null;
+        let generated = 0;
+        let cleared = 0;
+
+        globalThis.document = dom.window.document;
+
+        try {
+            const context = {
+                options: { autoGenerateProfile: true, autoGenerateDelay: 250 },
+                elements: {},
+                _autoGenerateTimer: null,
+                _isGeneratingProfile: false,
+                _updateNDLDisplay() {},
+                _scheduleAutoGenerateProfile: DiveSetupEditor.prototype._scheduleAutoGenerateProfile,
+                _generateProfile() { generated++; }
+            };
+            const quickSetup = DiveSetupEditor.prototype._buildQuickSetup.call(context);
+            expect(Boolean(quickSetup.querySelector('.dse-ndl-display'))).toBe(true);
+            expect(quickSetup.querySelector('.dse-generate-btn')).toBeNull();
+
+            globalThis.setTimeout = (callback, delay) => {
+                expect(delay).toBe(250);
+                scheduledCallback = callback;
+                return 42;
+            };
+            globalThis.clearTimeout = (timer) => {
+                expect(timer).toBe(42);
+                cleared++;
+            };
+
+            DiveSetupEditor.prototype._scheduleAutoGenerateProfile.call(context);
+            DiveSetupEditor.prototype._scheduleAutoGenerateProfile.call(context);
+            expect(cleared).toBe(1);
+            expect(generated).toBe(0);
+
+            scheduledCallback();
+            expect(context._autoGenerateTimer).toBeNull();
+            expect(generated).toBe(1);
+        } finally {
+            globalThis.document = previousDocument;
+            globalThis.setTimeout = previousSetTimeout;
+            globalThis.clearTimeout = previousClearTimeout;
             dom.window.close();
         }
     });

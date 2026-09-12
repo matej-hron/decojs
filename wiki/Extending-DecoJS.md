@@ -21,7 +21,7 @@ export const BOTTOM_GASES = [
 ];
 ```
 
-MOD is derived automatically by `calculateMOD()` (`diveSetup.js:807`) whenever the gas is used. The `he` fraction is tracked in the gas record but the decompression algorithm lumps it into the inert-gas calculation via the gas's effective N₂-equivalent; separate helium kinetics are not implemented (see [Validation-and-Testing](Validation-and-Testing.md#test-gaps)).
+MOD is derived automatically by `calculateMOD()` (`diveSetup.js:972`) whenever the gas is used. Exact integer-metre boundaries are preserved within floating-point tolerance; other values round down conservatively. The `he` fraction is tracked in the gas record but the decompression algorithm lumps it into the inert-gas calculation via the gas's effective N₂-equivalent; separate helium kinetics are not implemented (see [Validation-and-Testing](Validation-and-Testing.md#test-gaps)).
 
 The `DiveSetupEditor` picks new gases up automatically — no UI change is needed.
 

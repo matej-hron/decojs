@@ -1131,7 +1131,8 @@
             "outOfRange": "⚠ mimo rozsah",
             "infinity": "∞"
         },
-        "mod": "MOD: {0} m (deko: {1} m)",
+        "mod": "MOD: {0} m\ndekompresní MOD: {1} m\ndoporučené přepnutí: {2} m",
+        "modBottom": "MOD: {0} m",
         "profileDefault": "Profil:",
         "customProfile": "✏️ Vlastní profil",
         "customProfileNamed": "✏️ {0}",
@@ -1149,6 +1150,7 @@
         "quickSetup": {
             "title": "Rychlé nastavení",
             "hint": "Nastavte hloubku a čas na dně, pak klikněte na tlačítko Generovat níže.",
+            "autoHint": "Profil se automaticky aktualizuje po každé změně.",
             "maxDepth": "Maximální hloubka (m):",
             "bottomTime": "Čas na dně (min):",
             "safetyStop": "Bezpečnostní zastávka",
@@ -1166,11 +1168,12 @@
             "switchHint": "Čas na ověření plynu, nádechy a signalizaci buddymu při každé hloubce změny plynu."
         },
         "gf": {
-            "title": "Dekompresní model",
+            "title": "Dekompresní model — Bühlmann",
             "algorithm": "Algoritmus:",
             "algorithmExperimental": "experimentální",
             "algorithmTables": "tabulky",
             "algorithmComputers": "počítače",
+            "settingsTitle": "Nastavení gradient faktorů",
             "hint": "GF 100/100 = čistý Bühlmann. Nižší hodnoty = konzervativnější.",
             "low": "GF Low (%):",
             "high": "GF High (%):",
@@ -1282,6 +1285,8 @@
         "colGas": "Plyn",
         "colTank": "Láhev",
         "runtimeFootnote": "Runtime je průběžný čas od začátku ponoru do konce dané etapy.",
+        "runtimeDepartureFootnote": "U dekompresních zastávek je runtime celá minuta, ve které potápěč odchází do další úrovně. Desetinná doba zastávky je rozdíl od přesného času příjezdu; plán se provádí podle odchodového runtime.",
+        "runtimePracticalFootnote": "Doby zastávek jsou celé minuty vypočtené modelem. Po každé zastávce počítejte 20 sekund na výstup o 3 m; runtime slouží jako kontrola zaokrouhlená na celé minuty.",
         "descentFootnote": "Během sestupu model průběžně počítá sycení tkání. Sestup je proto zahrnut do času na dně i do výpočtu dekompresního profilu.",
         "sectionBottom": "Na dně",
         "sectionAscent": "Výstup",
