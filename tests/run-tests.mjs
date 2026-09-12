@@ -492,6 +492,56 @@ describe('P-P chart fullscreen controls', () => {
 });
 
 describe('GF chart maximum GF toggle', () => {
+    test('draws the compartment number inside each visible current point', () => {
+        const calls = [];
+        const ctx = {
+            save() {},
+            restore() {},
+            strokeText(...args) {
+                calls.push(['stroke', ...args]);
+            },
+            fillText(...args) {
+                calls.push(['fill', ...args]);
+            }
+        };
+        const chart = {
+            ctx,
+            data: {
+                datasets: [
+                    { gfcCompartmentId: 3 },
+                    { gfcCompartmentId: 12 },
+                    { gfcCompartmentId: 16 },
+                    { label: 'Trail TC3' }
+                ]
+            },
+            chartArea: { left: 50, right: 200, top: 50, bottom: 120 },
+            isDatasetVisible(index) {
+                return index !== 1;
+            },
+            getDatasetMeta(index) {
+                return {
+                    data: [{
+                        skip: false,
+                        getProps() {
+                            return index === 2
+                                ? { x: 220, y: 80 }
+                                : { x: 120 + index, y: 80 };
+                        }
+                    }]
+                };
+            }
+        };
+
+        GFChart.prototype._drawCompartmentPointLabels.call({}, chart);
+
+        expect(calls).toEqual([
+            ['stroke', '3', 120, 80],
+            ['fill', '3', 120, 80]
+        ]);
+        expect(ctx.textAlign).toBe('center');
+        expect(ctx.textBaseline).toBe('middle');
+    });
+
     test('toggles the maximum GF trail and point together and preserves the state', () => {
         const visibilityChanges = [];
         const updates = [];
