@@ -59,6 +59,7 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 |---|---|
 | `calculateInstantGF(Pt, ambient, compartment)` | `(Pt − ambient) / (M − ambient)`, expressed as 0–1 |
 | `calculateMaxGF(tissues, ambient)` | Returns `{gfMax, leadingCompartment, allGFs}` across supersaturated tissues; when all tissues satisfy $P_t \le P_{amb}$, returns `gfMax: 0` and `leadingCompartment: null` while preserving raw negative values in `allGFs` |
+| `calculateGFControllingCompartment(tissues, ambient, gf)` | Returns the supersaturated compartment with the deepest ceiling under the active GF; this may differ from the highest instantaneous-GF compartment |
 | `findFirstStopAtGFLow(tissues, depth, n2, gfLow, stopIncrement, ascentRate, gasSwitchPoints, surfacePressure)` | The convention's first-stop search: shallowest stop-grid depth where the dive ceiling at GF_low is satisfied after simulated ascent. Returns `{anchorDepth, pAnchor, tissuesAtAnchor}`. **The canonical pAnchor source** used by `generateDecoSchedule`, `calculateCeilingTimeSeriesDetailed`, `MValueChart`, and `GFChart`. See [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md). |
 | `interpolateGF(ambient, pAnchor, gfLow, gfHigh, surfacePressure=1.01325)` | Linear ramp from GF-low at pAnchor to GF-high at the selected surface pressure |
 | `getFirstStopDepth(tissues, gfLow, stopIncrement=3)` | Static (no ascent simulation): rounds the current dive ceiling at GF_low up to the stop grid. Used for quick lookups; the deco scheduler uses `findFirstStopAtGFLow` instead. |

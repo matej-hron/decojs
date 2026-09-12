@@ -199,7 +199,8 @@ import {
     simulateDepthChange,
     generateDecoSchedule,
     calculateInstantGF,
-    calculateMaxGF
+    calculateMaxGF,
+    calculateGFControllingCompartment
 } from '../js/decoModel.js';
 
 import {
@@ -1793,6 +1794,28 @@ describe('decoModel', () => {
             const result = calculateMaxGF(tissuePressures, 3.1);
             expect(result.gfMax).toBe(0);
             expect(result.leadingCompartment).toBe(null);
+        });
+    });
+
+    describe('calculateGFControllingCompartment', () => {
+        test('uses the deepest active-GF ceiling, not the highest instantaneous GF', () => {
+            const ambientPressure = 2.93;
+            const tissuePressures = Object.fromEntries(
+                COMPARTMENTS.map(comp => [comp.id, ambientPressure])
+            );
+            tissuePressures[1] = 2.95;
+            tissuePressures[2] = 2.94;
+
+            const maxGF = calculateMaxGF(tissuePressures, ambientPressure);
+            const controlling = calculateGFControllingCompartment(
+                tissuePressures,
+                ambientPressure,
+                0.4
+            );
+
+            expect(maxGF.leadingCompartment).toBe(1);
+            expect(controlling.controllingCompartment).toBe(2);
+            expect(controlling.ceilingPressure).toBeGreaterThan(2);
         });
     });
 
