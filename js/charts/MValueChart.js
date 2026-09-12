@@ -143,9 +143,10 @@ import {
 } from '../decoModel.js';
 import {
     calculateChartGFAnchor,
+    createLegendHelpIcon,
     DEFAULT_ENVIRONMENT,
     mergeOptions,
-    setLegendItemHelp,
+    positionLegendHelpIcon,
     validateDiveSetup,
     normalizeDiveSetup
 } from './chartTypes.js';
@@ -190,6 +191,7 @@ export class MValueChart {
         this.chart = null;
         this.canvas = null;
         this.rulerPanel = null;
+        this.anchorHelpIcon = null;
         this.fullscreenBtn = null;
         this.exitFullscreenBtn = null;
         this.wrapper = null;
@@ -300,6 +302,9 @@ export class MValueChart {
         // Canvas - no inline styles, let CSS handle it
         this.canvas = document.createElement('canvas');
         this.chartContainer.appendChild(this.canvas);
+
+        this.anchorHelpIcon = createLegendHelpIcon();
+        this.chartContainer.appendChild(this.anchorHelpIcon);
 
         this.rulerPanel = document.createElement('div');
         this.rulerPanel.className = 'mvc-ruler-panel';
@@ -1231,6 +1236,19 @@ export class MValueChart {
         ctx.restore();
     }
 
+    _positionAnchorHelpIcon(chart) {
+        const help = translate(
+            'chart.tooltips.anchorPressure',
+            'Ambient pressure at the deepest decompression stop. GF Low applies at this point, which anchors the ramp toward GF High at the surface.'
+        );
+        positionLegendHelpIcon(
+            chart,
+            this.anchorHelpIcon,
+            'mvalueAnchor',
+            help
+        );
+    }
+
     _renderRulerPanel(ruler) {
         if (!this.rulerPanel) return;
         if (!ruler) {
@@ -1474,9 +1492,8 @@ export class MValueChart {
             if (pAnchor > surfacePressure) {
                 const anchorDepthM = fmtNum(((pAnchor - surfacePressure) / 0.1), 1);
                 datasets.push({
-                    label: fmt(translate('chart.mvalue.pAnchor', 'Anchor pressure (?) {0}\u00a0bar ({1}\u00a0m)'), fmtNum(pAnchor, 2), anchorDepthM),
+                    label: fmt(translate('chart.mvalue.pAnchor', 'Anchor pressure {0}\u00a0bar ({1}\u00a0m)'), fmtNum(pAnchor, 2), anchorDepthM),
                     mvalueAnchor: true,
-                    anchorLegendHelp: true,
                     data: [
                         { x: pAnchor, y: 0 },
                         { x: pAnchor, y: maxPressure }
@@ -1630,10 +1647,16 @@ export class MValueChart {
         const config = {
             type: 'scatter',
             data: { datasets },
-            plugins: [{
-                id: 'mvalue-intersection-ruler',
-                afterDatasetsDraw: (chart) => this._drawRuler(chart)
-            }],
+            plugins: [
+                {
+                    id: 'mvalue-intersection-ruler',
+                    afterDatasetsDraw: (chart) => this._drawRuler(chart)
+                },
+                {
+                    id: 'mvalue-anchor-help',
+                    afterDraw: (chart) => this._positionAnchorHelpIcon(chart)
+                }
+            ],
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
@@ -1651,18 +1674,7 @@ export class MValueChart {
                         labels: {
                             filter: (item, chartData) =>
                                 this._isLegendItemVisible(item, chartData)
-                        },
-                        onHover: (_event, item, legend) =>
-                            setLegendItemHelp(
-                                item,
-                                legend,
-                                translate(
-                                    'chart.tooltips.anchorPressure',
-                                    'Ambient pressure at the deepest decompression stop. It anchors GF Low as the starting point of the ramp toward GF High at the surface.'
-                                )
-                            ),
-                        onLeave: (_event, item, legend) =>
-                            setLegendItemHelp(item, legend)
+                        }
                     },
                     tooltip: {
                         enabled: resolveChartTooltipEnabled(this.options.interactive, this.canvas),
