@@ -501,7 +501,7 @@ Class component (~1300 lines) plotting instantaneous GF (%) per compartment agai
 
 Exports: `class GFChart` (line 81), factory `createGFChart(container, config)` (line 1311).
 
-Plots `100 × (P_tissue − P_amb) / (a + P_amb/b − P_amb)` per compartment, the 100 % Bühlmann reference line, a shaded corridor from GF-low at pAnchor to GF-high at surface, and a vertical line at pAnchor. Current tissue markers contain their compartment number directly in the coloured circle.
+Plots `100 × (P_tissue − P_amb) / (a + P_amb/b − P_amb)` per compartment, the 100 % Bühlmann reference line, a shaded corridor from GF-low at pAnchor to GF-high at surface, and a vertical line at pAnchor. Current tissue markers contain their compartment number directly in the coloured circle. A responsive right-side table ranks visible compartments by their current instantaneous GF.
 
 ### `chartTheme.js`
 

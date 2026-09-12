@@ -542,6 +542,75 @@ describe('GF chart maximum GF toggle', () => {
         expect(ctx.textBaseline).toBe('middle');
     });
 
+    test('ranks visible compartments by current GF', () => {
+        const results = {
+            compartments: {
+                1: { pressures: [4] },
+                2: { pressures: [3] },
+                3: { pressures: [2] }
+            }
+        };
+        const context = {
+            visibleCompartments: new Set([1, 2, 3])
+        };
+
+        const ranking = GFChart.prototype._calculateCompartmentRanking.call(
+            context,
+            results,
+            0,
+            2
+        );
+
+        expect(ranking.map((row) => row.id)).toEqual([1, 2, 3]);
+        expect(ranking[0].gfPercent).toBeGreaterThan(ranking[1].gfPercent);
+        expect(ranking[1].gfPercent).toBeGreaterThan(ranking[2].gfPercent);
+    });
+
+    test('renders the GF ranking table only when the chart is wide enough', () => {
+        const dom = new JSDOM('<!doctype html><body><aside id="ranking"></aside></body>');
+        const originalDocument = globalThis.document;
+        globalThis.document = dom.window.document;
+        try {
+            const panel = dom.window.document.getElementById('ranking');
+            const context = { rankingPanel: panel };
+            const chart = {
+                width: 1000,
+                chartArea: {
+                    right: 820,
+                    top: 60,
+                    height: 500
+                }
+            };
+            const ranking = [
+                { id: 3, color: '#e67e22', gfPercent: 45.2 },
+                { id: 2, color: '#c0392b', gfPercent: 41.7 }
+            ];
+
+            GFChart.prototype._renderCompartmentRanking.call(
+                context,
+                chart,
+                ranking
+            );
+
+            expect(panel.style.display).toBe('block');
+            expect(panel.querySelectorAll('tbody tr').length).toBe(2);
+            expect(panel.querySelector('caption').textContent).toBe('Tissue ranking');
+            expect(panel.querySelector('tbody').textContent.includes('TC3')).toBe(true);
+            expect(panel.querySelector('tbody').textContent.includes('45.2\u00a0%')).toBe(true);
+
+            chart.width = 700;
+            GFChart.prototype._renderCompartmentRanking.call(
+                context,
+                chart,
+                ranking
+            );
+            expect(panel.style.display).toBe('none');
+        } finally {
+            globalThis.document = originalDocument;
+            dom.window.close();
+        }
+    });
+
     test('toggles the maximum GF trail and point together and preserves the state', () => {
         const visibilityChanges = [];
         const updates = [];

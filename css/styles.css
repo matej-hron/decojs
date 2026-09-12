@@ -1730,6 +1730,58 @@ section h2 {
     max-height: 100%;
 }
 
+.gfc-ranking-panel {
+    position: absolute;
+    z-index: 4;
+    display: none;
+    overflow: auto;
+    box-sizing: border-box;
+    padding: 0.35rem 0.45rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--card-background) 94%, transparent);
+    box-shadow: var(--shadow);
+    color: var(--text-color);
+    font-size: 0.72rem;
+}
+
+.gfc-ranking-panel table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.gfc-ranking-panel caption {
+    padding-bottom: 0.3rem;
+    font-weight: 700;
+    text-align: left;
+}
+
+.gfc-ranking-panel th,
+.gfc-ranking-panel td {
+    padding: 0.12rem 0.2rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--border-color) 65%, transparent);
+    text-align: right;
+    white-space: nowrap;
+}
+
+.gfc-ranking-panel th:nth-child(2),
+.gfc-ranking-panel td:nth-child(2) {
+    text-align: left;
+}
+
+.gfc-ranking-panel tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.gfc-ranking-dot {
+    display: inline-block;
+    width: 0.65rem;
+    height: 0.65rem;
+    border: 1px solid rgb(255 255 255 / 80%);
+    border-radius: 50%;
+    vertical-align: -0.05rem;
+}
+
 .gfc-chart-container .gfc-exit-fullscreen-btn {
     display: none;
 }
@@ -2138,7 +2190,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.114";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.115";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================

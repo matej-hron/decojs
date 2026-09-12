@@ -99,6 +99,7 @@ export class GFChart {
         this.canvas = null;
         this.fullscreenBtn = null;
         this.anchorHelpIcon = null;
+        this.rankingPanel = null;
         this.exitFullscreenBtn = null;
         this.wrapper = null;
         this.chartContainer = null;
@@ -209,6 +210,10 @@ export class GFChart {
 
         this.anchorHelpIcon = createLegendHelpIcon();
         this.chartContainer.appendChild(this.anchorHelpIcon);
+
+        this.rankingPanel = document.createElement('aside');
+        this.rankingPanel.className = 'gfc-ranking-panel';
+        this.chartContainer.appendChild(this.rankingPanel);
 
         // Fullscreen button
         if (this.options.fullscreenButton) {
@@ -911,6 +916,88 @@ export class GFChart {
         ctx.restore();
     }
 
+    _calculateCompartmentRanking(results, timeIndex, currentAmbient) {
+        return COMPARTMENTS
+            .filter((comp) => this.visibleCompartments.has(comp.id))
+            .map((comp) => ({
+                id: comp.id,
+                color: comp.color,
+                gfPercent: calculateInstantGF(
+                    results.compartments[comp.id].pressures[timeIndex],
+                    currentAmbient,
+                    comp
+                ) * 100
+            }))
+            .filter((row) => Number.isFinite(row.gfPercent))
+            .sort((a, b) => b.gfPercent - a.gfPercent || a.id - b.id);
+    }
+
+    _renderCompartmentRanking(chart, ranking) {
+        const panel = this.rankingPanel;
+        if (!panel) return;
+        if (chart.width < 800 || ranking.length === 0) {
+            panel.style.display = 'none';
+            return;
+        }
+
+        const title = translate('chart.gf.rankingTitle', 'Tissue ranking');
+        const rankingKey = `${title}|${ranking
+            .map((row) => `${row.id}:${fmtNum(row.gfPercent, 1)}`)
+            .join('|')}`;
+        if (panel.dataset.rankingKey !== rankingKey) {
+            const table = document.createElement('table');
+            const caption = document.createElement('caption');
+            caption.textContent = title;
+            table.appendChild(caption);
+
+            const head = document.createElement('thead');
+            const headRow = document.createElement('tr');
+            for (const label of [
+                '#',
+                translate('chart.gf.rankingTissue', 'TC'),
+                translate('chart.gf.rankingGF', 'GF')
+            ]) {
+                const cell = document.createElement('th');
+                cell.scope = 'col';
+                cell.textContent = label;
+                headRow.appendChild(cell);
+            }
+            head.appendChild(headRow);
+            table.appendChild(head);
+
+            const body = document.createElement('tbody');
+            ranking.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                const rankCell = document.createElement('td');
+                rankCell.textContent = String(index + 1);
+                tr.appendChild(rankCell);
+
+                const tissueCell = document.createElement('td');
+                const dot = document.createElement('span');
+                dot.className = 'gfc-ranking-dot';
+                dot.style.backgroundColor = row.color;
+                tissueCell.append(dot, ` TC${row.id}`);
+                tr.appendChild(tissueCell);
+
+                const gfCell = document.createElement('td');
+                gfCell.textContent = `${fmtNum(row.gfPercent, 1)}\u00a0%`;
+                tr.appendChild(gfCell);
+                body.appendChild(tr);
+            });
+            table.appendChild(body);
+            panel.replaceChildren(table);
+            panel.dataset.rankingKey = rankingKey;
+            panel.setAttribute('aria-label', title);
+        }
+
+        const left = chart.chartArea.right + 10;
+        panel.style.left = `${left}px`;
+        panel.style.top = `${chart.chartArea.top}px`;
+        panel.style.width = `${Math.max(120, chart.width - left - 8)}px`;
+        panel.style.maxHeight = `${chart.chartArea.height}px`;
+        panel.style.display = 'block';
+    }
+
     _handleLegendClick(legendItem, legend) {
         const chart = legend.chart;
         const datasetIndex = legendItem.datasetIndex;
@@ -1000,6 +1087,11 @@ export class GFChart {
 
         // Get current ambient pressure
         const currentAmbient = results.ambientPressures[timeIndex];
+        const compartmentRanking = this._calculateCompartmentRanking(
+            results,
+            timeIndex,
+            currentAmbient
+        );
 
         // Determine chart bounds
         const maxAmbient = Math.max(...results.ambientPressures);
@@ -1191,6 +1283,15 @@ export class GFChart {
             data: { datasets },
             plugins: [
                 {
+                    id: 'gf-compartment-ranking',
+                    beforeLayout: (chart) => {
+                        chart.options.layout.padding.right =
+                            chart.width >= 800 ? 170 : 0;
+                    },
+                    afterDraw: (chart) =>
+                        this._renderCompartmentRanking(chart, compartmentRanking)
+                },
+                {
                     id: 'gf-compartment-point-labels',
                     afterDatasetsDraw: (chart) =>
                         this._drawCompartmentPointLabels(chart)
@@ -1203,6 +1304,11 @@ export class GFChart {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                layout: {
+                    padding: {
+                        right: 170
+                    }
+                },
                 // Only animate the first build; re-renders (time scrub / compartment
                 // toggle) rebuild the chart and a 50 ms entrance animation on each step
                 // reads as the chart "jumping" while moving through time. `this.chart` is

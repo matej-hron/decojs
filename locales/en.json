@@ -1110,6 +1110,9 @@
             "leadingTissue": "Highest GF",
             "leadingTC": "Highest GF: TC{0} ({1}%)",
             "pAnchor": "Anchor pressure {0} bar ({1} m)",
+            "rankingTitle": "Tissue ranking",
+            "rankingTissue": "TC",
+            "rankingGF": "GF",
             "tooltipLabel": "{0}: ambient pressure {1} bar, GF {2}%"
         }
     },
