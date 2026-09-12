@@ -1738,14 +1738,27 @@ describe('decoModel', () => {
             expect(result.leadingCompartment).toBe(4);
         });
 
-        test('returns negative GF for undersaturated tissues', () => {
+        test('does not select a controlling compartment when all tissues are undersaturated', () => {
             const tissuePressures = {};
             COMPARTMENTS.forEach(comp => {
                 tissuePressures[comp.id] = 0.74;  // Surface equilibrium
             });
             
             const result = calculateMaxGF(tissuePressures, 1.0);
-            expect(result.gfMax).toBeLessThan(0);
+            expect(result.gfMax).toBe(0);
+            expect(result.leadingCompartment).toBe(null);
+            expect(Object.values(result.allGFs).every(gf => gf < 0)).toBe(true);
+        });
+
+        test('does not select a controlling compartment at zero supersaturation', () => {
+            const tissuePressures = {};
+            COMPARTMENTS.forEach(comp => {
+                tissuePressures[comp.id] = 3.1;
+            });
+
+            const result = calculateMaxGF(tissuePressures, 3.1);
+            expect(result.gfMax).toBe(0);
+            expect(result.leadingCompartment).toBe(null);
         });
     });
 

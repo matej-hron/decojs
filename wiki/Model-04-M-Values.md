@@ -125,7 +125,7 @@ export function calculateInstantGF(tissuePressure, ambientPressure, compartment)
 - $GF_{inst} > 1$: violation
 - Negative: undersaturated (still on-gassing)
 
-Used by the GFChart (`js/charts/GFChart.js`) to render real-time saturation fraction per compartment. See also `calculateMaxGF()` at `js/decoModel.js:212` which finds the leading tissue.
+Used by the GFChart (`js/charts/GFChart.js`) to render real-time saturation fraction per compartment. A compartment is considered controlling only when it is supersaturated ($P_t > P_{amb}$). `calculateMaxGF()` therefore returns `leadingCompartment: null` and `gfMax: 0` while every compartment is at or below ambient pressure; negative instantaneous GF values remain available in `allGFs` for visualization.
 
 ## Worked example
 
