@@ -497,6 +497,7 @@ export class MValueChart {
             // Click: switch to this tissue only. Shift+click: toggle (add/remove).
             label.addEventListener('click', (e) => {
                 e.preventDefault();
+                const rulerWasActive = this.rulerCompartmentId !== null;
                 if (e.shiftKey) {
                     // Shift+click: toggle this compartment
                     if (this.visibleCompartments.has(comp.id)) {
@@ -508,6 +509,11 @@ export class MValueChart {
                     // Normal click: switch to this compartment only
                     this.visibleCompartments.clear();
                     this.visibleCompartments.add(comp.id);
+                }
+                if (rulerWasActive) {
+                    this._reconcileRulerCompartment(
+                        e.shiftKey ? null : comp.id
+                    );
                 }
                 this._updateCompartmentCheckboxes();
                 this._render();
@@ -847,7 +853,15 @@ export class MValueChart {
             .find(Boolean);
 
         if (this.rulerCompartmentId && !hoveredId) {
-            this.rulerCompartmentId = null;
+            const soleVisibleId = this.visibleCompartments.size === 1
+                ? [...this.visibleCompartments][0]
+                : null;
+            if (!this.visibleCompartments.has(this.rulerCompartmentId) &&
+                soleVisibleId) {
+                this.rulerCompartmentId = soleVisibleId;
+            } else {
+                this.rulerCompartmentId = null;
+            }
         } else {
             const selectedId = hoveredId ??
                 (this.visibleCompartments.size === 1
@@ -947,12 +961,14 @@ export class MValueChart {
     
     _selectAllCompartments() {
         COMPARTMENTS.forEach(c => this.visibleCompartments.add(c.id));
+        this._reconcileRulerCompartment();
         this._updateCompartmentCheckboxes();
         this._render();
     }
     
     _selectNoCompartments() {
         this.visibleCompartments.clear();
+        this._reconcileRulerCompartment();
         this._updateCompartmentCheckboxes();
         this._render();
     }
@@ -960,6 +976,7 @@ export class MValueChart {
     _selectFastCompartments() {
         this.visibleCompartments.clear();
         COMPARTMENTS.filter(c => c.halfTime <= 12.5).forEach(c => this.visibleCompartments.add(c.id));
+        this._reconcileRulerCompartment();
         this._updateCompartmentCheckboxes();
         this._render();
     }
@@ -967,6 +984,7 @@ export class MValueChart {
     _selectSlowCompartments() {
         this.visibleCompartments.clear();
         COMPARTMENTS.filter(c => c.halfTime >= 109).forEach(c => this.visibleCompartments.add(c.id));
+        this._reconcileRulerCompartment();
         this._updateCompartmentCheckboxes();
         this._render();
     }
@@ -977,9 +995,13 @@ export class MValueChart {
         
         const slowestId = currentIds[currentIds.length - 1];
         if (slowestId >= 16) return;
-        
+
+        const preferredRulerId = this.rulerCompartmentId === null
+            ? null
+            : this.rulerCompartmentId + 1;
         this.visibleCompartments.clear();
         currentIds.forEach(id => this.visibleCompartments.add(id + 1));
+        this._reconcileRulerCompartment(preferredRulerId);
         this._updateCompartmentCheckboxes();
         this._render();
     }
@@ -990,9 +1012,13 @@ export class MValueChart {
         
         const fastestId = currentIds[0];
         if (fastestId <= 1) return;
-        
+
+        const preferredRulerId = this.rulerCompartmentId === null
+            ? null
+            : this.rulerCompartmentId - 1;
         this.visibleCompartments.clear();
         currentIds.forEach(id => this.visibleCompartments.add(id - 1));
+        this._reconcileRulerCompartment(preferredRulerId);
         this._updateCompartmentCheckboxes();
         this._render();
     }
@@ -1015,9 +1041,21 @@ export class MValueChart {
         const currentIds = Array.from(this.visibleCompartments).sort((a, b) => a - b);
         if (currentIds.length > 1) {
             this.visibleCompartments.delete(currentIds[currentIds.length - 1]);
+            this._reconcileRulerCompartment();
             this._updateCompartmentCheckboxes();
             this._render();
         }
+    }
+
+    _reconcileRulerCompartment(preferredId = null) {
+        if (this.rulerCompartmentId === null) return;
+        if (preferredId !== null && this.visibleCompartments.has(preferredId)) {
+            this.rulerCompartmentId = preferredId;
+            return;
+        }
+        if (this.visibleCompartments.has(this.rulerCompartmentId)) return;
+        const remaining = [...this.visibleCompartments].sort((a, b) => a - b);
+        this.rulerCompartmentId = remaining[0] ?? null;
     }
     
     _updateCompartmentCheckboxes() {

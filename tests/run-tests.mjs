@@ -664,7 +664,7 @@ describe('M-value intersection ruler', () => {
             )).toBeCloseTo(2.98, 12);
         });
 
-        test('toggles the hovered tissue or the only visible tissue with R', () => {
+        test('toggles the hovered tissue or the only visible tissue with T', () => {
             const datasets = [
                 { mvalueCompartmentId: 2, mvalueCurrentPoint: true },
                 { label: 'ambient' }
@@ -730,6 +730,27 @@ describe('M-value intersection ruler', () => {
                 globalThis.document = originalDocument;
                 dom.window.close();
             }
+    });
+
+    test('moves an active ruler to the newly selected tissue in one action', () => {
+        const context = {
+            rulerCompartmentId: 1,
+            visibleCompartments: new Set([2])
+        };
+        MValueChart.prototype._reconcileRulerCompartment.call(context, 2);
+        expect(context.rulerCompartmentId).toBe(2);
+
+        context.rulerCompartmentId = 2;
+        context.visibleCompartments = new Set([5]);
+        context.chart = {
+            getActiveElements: () => [],
+            data: { datasets: [] }
+        };
+        let renders = 0;
+        context._render = () => { renders++; };
+        MValueChart.prototype._toggleRuler.call(context);
+        expect(context.rulerCompartmentId).toBe(5);
+        expect(renders).toBe(1);
     });
 
     test('renders ruler quantities with semantic symbols and subscripts', () => {
