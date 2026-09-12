@@ -464,6 +464,14 @@ describe('GF chart controlling tissue toggle', () => {
         expect(MValueChart.prototype._isLegendItemVisible(
             { text: 'pAnchor' }
         )).toBe(true);
+        expect(GFChart.prototype._formatControllingTissueLabel(
+            { id: 5 },
+            81.4
+        )).toBe('Controlling: TC5 (81%)');
+        expect(GFChart.prototype._formatControllingTissueLabel(
+            null,
+            0
+        )).toBe('Controlling tissue');
     });
 });
 

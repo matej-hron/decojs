@@ -859,6 +859,17 @@ export class GFChart {
         return isLeading || isPAnchor;
     }
 
+    _formatControllingTissueLabel(compartment, gfPercent) {
+        if (!compartment) {
+            return translate('chart.gf.leadingTissue', 'Controlling tissue');
+        }
+        return fmt(
+            translate('chart.gf.leadingTC', 'Controlling: TC{0} ({1}%)'),
+            compartment.id,
+            fmtNum(gfPercent, 0)
+        );
+    }
+
     _handleLegendClick(legendItem, legend) {
         const chart = legend.chart;
         const datasetIndex = legendItem.datasetIndex;
@@ -1048,6 +1059,24 @@ export class GFChart {
             });
         });
 
+        const currentTissuePressures = Object.fromEntries(
+            COMPARTMENTS.map(comp => [
+                comp.id,
+                results.compartments[comp.id].pressures[timeIndex]
+            ])
+        );
+        const currentControlling = calculateMaxGF(
+            currentTissuePressures,
+            currentAmbient
+        );
+        const currentControllingComp = COMPARTMENTS.find(
+            comp => comp.id === currentControlling.leadingCompartment
+        );
+        const controllingLabel = this._formatControllingTissueLabel(
+            currentControllingComp,
+            currentControlling.gfMax * 100
+        );
+
         // Controlling tissue envelope - max positive GF% across supersaturated tissues
         if (this.options.showTrail && results.timePoints) {
             const envelopeData = [];
@@ -1067,7 +1096,7 @@ export class GFChart {
                 });
             }
             datasets.push({
-                label: translate('chart.gf.leadingTissue', 'Controlling tissue'),
+                label: controllingLabel,
                 data: envelopeData,
                 gfcGroup: 'leading-tissue',
                 gfcLegendItem: true,
@@ -1083,34 +1112,21 @@ export class GFChart {
         }
 
         // Controlling tissue dot (largest positive GF% at current time)
-        {
-            const tissuePressures = Object.fromEntries(
-                COMPARTMENTS.map(comp => [
-                    comp.id,
-                    results.compartments[comp.id].pressures[timeIndex]
-                ])
-            );
-            const { gfMax, leadingCompartment } =
-                calculateMaxGF(tissuePressures, currentAmbient);
-            const leadingComp = COMPARTMENTS.find(
-                comp => comp.id === leadingCompartment
-            );
-            if (leadingComp) {
-                datasets.push({
-                    label: fmt(translate('chart.gf.leadingTC', 'Controlling: TC{0} ({1}%)'), leadingComp.id, fmtNum(gfMax * 100, 0)),
-                    data: [{ x: currentAmbient, y: gfMax * 100 }],
-                    gfcGroup: 'leading-tissue',
-                    gfcLegendItem: false,
-                    hidden: !this.showLeadingTissue,
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                    borderColor: leadingComp.color,
-                    borderWidth: 3,
-                    pointRadius: 10,
-                    pointStyle: 'circle',
-                    showLine: false,
-                    order: 0
-                });
-            }
+        if (currentControllingComp) {
+            datasets.push({
+                label: controllingLabel,
+                data: [{ x: currentAmbient, y: currentControlling.gfMax * 100 }],
+                gfcGroup: 'leading-tissue',
+                gfcLegendItem: false,
+                hidden: !this.showLeadingTissue,
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                borderColor: currentControllingComp.color,
+                borderWidth: 3,
+                pointRadius: 10,
+                pointStyle: 'circle',
+                showLine: false,
+                order: 0
+            });
         }
 
         const config = {
