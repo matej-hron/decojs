@@ -266,10 +266,12 @@ shifts toward slower tissues, but monotonic growth is not an algorithmic
 invariant. Gas changes, compartment changes, and one-minute rounding can produce
 an equal or locally shorter shallower stop.
 
-In the Sandbox operational plan, `time` may include a fractional alignment wait
-(for example 1.7 min after arriving at a stop at runtime 34.3). The actionable
-value is `departureRuntime: 36`: leave that depth when the dive computer reaches
-runtime 36. Adaptive and Continuous study modes do not use this alignment.
+In the optional departure-aligned schedule, `time` may include a fractional
+alignment wait (for example 1.7 min after arriving at a stop at runtime 34.3).
+The Sandbox instead keeps the legacy whole-minute model stops and applies a
+presentation-only practical runtime convention: 20 seconds per 3 m ascent after
+a stop, with runtime rounded to whole minutes as a cross-check. Adaptive and
+Continuous study modes do not use departure alignment.
 
 ## Cross-references
 

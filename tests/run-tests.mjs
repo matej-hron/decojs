@@ -824,6 +824,25 @@ describe('diveSetup - renderDivePlanTableHTML', () => {
         expect(html).toContain('runtime is the whole minute when the diver leaves for the next level');
     });
 
+    test('practical runtime keeps whole model stops and uses 20-second inter-stop ascents', () => {
+        const practicalWaypoints = [
+            { time: 0, depth: 0, gasId: 'air' },
+            { time: 1.55, depth: 31, gasId: 'air' },
+            { time: 29, depth: 31, gasId: 'air' },
+            { time: 31.8, depth: 3, gasId: 'air' },
+            { time: 38.8, depth: 3, gasId: 'air' },
+            { time: 39.1, depth: 0, gasId: 'air' }
+        ];
+        const html = renderDivePlanTableHTML(
+            practicalWaypoints, gases, { runtimeConvention: 'practical' }
+        );
+
+        expect(html).toContain('<td class="dse-plan-depth">3\u00a0m</td><td class="dse-plan-stop">2.8</td><td class="dse-plan-runtime">32</td>');
+        expect(html).toContain('<td class="dse-plan-depth">3\u00a0m</td><td class="dse-plan-stop">7</td><td class="dse-plan-runtime">39</td>');
+        expect(html).toContain('<td class="dse-plan-depth">0\u00a0m</td><td class="dse-plan-stop">0.3</td><td class="dse-plan-runtime">39</td>');
+        expect(html).toContain('Allow 20\u00a0seconds for each 3\u00a0m ascent after a stop');
+    });
+
     // A gas switch taken exactly on arrival during an ascent (no stop at the
     // switch depth) must not relabel the whole ascent leg with the new gas —
     // it gets its own zero-duration row instead (Divesoft-style "Profile" table).
@@ -3526,6 +3545,97 @@ describe('Decotengu sea-level reference matrix', () => {
         expect(exactDepthLists / reference.scenarios.length).toBeGreaterThan(0.9);
         expect(exactSchedules / reference.scenarios.length).toBeGreaterThan(0.75);
         expect(maximumDifference).toBeLessThanOrEqual(3);
+    });
+
+    test('practical runtimes preserve model stops across all 3900 scenarios', () => {
+        setZHL16Variant(ZHL16_VARIANTS.C);
+        let checkedDepartures = 0;
+        let maximumCeilingExcess = 0;
+        let maximumTimelineDifference = 0;
+
+        for (const scenario of reference.scenarios) {
+            const gases = gasConfigs[scenario.gasConfig];
+            const bottomGas = gases[0];
+            const gasById = Object.fromEntries(gases.map(gas => [gas.id, gas]));
+            const result = generateDecoProfile(
+                scenario.depth,
+                scenario.bottomTime,
+                gases,
+                scenario.gfLow,
+                scenario.gfHigh,
+                { enabled: false },
+                { decoMode: DECO_MODES.STANDARD }
+            );
+
+            if (!result.decoStops.every(stop => Number.isInteger(stop.time))) {
+                throw new Error(
+                    `Fractional model stop in ${scenario.depth}m/` +
+                    `${scenario.bottomTime}min GF${scenario.gfLow}/${scenario.gfHigh}`
+                );
+            }
+
+            let tissues = Object.fromEntries(
+                COMPARTMENTS.map(compartment => [
+                    compartment.id,
+                    getInitialTissueN2(bottomGas.n2)
+                ])
+            );
+            let gasId = bottomGas.id;
+            let practicalTime = 0;
+            const waypoints = result.waypoints;
+            const maxDepth = Math.max(...waypoints.map(waypoint => waypoint.depth));
+
+            for (let i = 0; i < waypoints.length - 1; i++) {
+                const current = waypoints[i];
+                const next = waypoints[i + 1];
+                if (current.gasId) gasId = current.gasId;
+                const gas = gasById[gasId] ?? bottomGas;
+                const followsStop = i > 0
+                    && waypoints[i - 1].depth === current.depth
+                    && current.depth > 0
+                    && current.depth < maxDepth
+                    && next.depth < current.depth;
+
+                if (followsStop) {
+                    const targetGF = interpolateGF(
+                        getAmbientPressure(next.depth),
+                        result.pAnchor,
+                        scenario.gfLow / 100,
+                        scenario.gfHigh / 100
+                    );
+                    const ceilingDepth = getDiveCeiling(tissues, targetGF).ceilingDepth;
+                    maximumCeilingExcess = Math.max(
+                        maximumCeilingExcess,
+                        ceilingDepth - next.depth
+                    );
+                    checkedDepartures++;
+                }
+
+                const modelDuration = next.time - current.time;
+                const practicalDuration = followsStop
+                    ? (current.depth - next.depth) / 9
+                    : modelDuration;
+                tissues = current.depth === next.depth
+                    ? simulateDepthTime(
+                        tissues, current.depth, practicalDuration, gas.n2
+                    )
+                    : simulateDepthChange(
+                        tissues, current.depth, next.depth,
+                        practicalDuration, gas.n2
+                    );
+                practicalTime += practicalDuration;
+                if (next.gasId) gasId = next.gasId;
+            }
+
+            maximumTimelineDifference = Math.max(
+                maximumTimelineDifference,
+                practicalTime - waypoints.at(-1).time
+            );
+        }
+
+        expect(checkedDepartures).toBe(17736);
+        expect(maximumCeilingExcess).toBeLessThanOrEqual(0.01);
+        expect(maximumTimelineDifference).toBeLessThanOrEqual(0.5);
     });
 });
 
