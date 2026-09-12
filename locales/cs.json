@@ -506,7 +506,7 @@
             "medium": "<strong>Střední kompartmenty (18,5–77 min)</strong> — rovnováha mezi sycením a vysycováním",
             "slow": "<strong>Pomalé kompartmenty (109–635 min)</strong> — plné nasycení může trvat hodiny",
             "controllingTitle": "Řídicí kompartment",
-            "controlling": "<strong>Řídicí kompartment</strong> existuje pouze při přesycení, kdy je tkáňový tlak vyšší než okolní tlak. Z přesycených kompartmentů je řídicí ten, jehož tkáňový tlak leží nejvýše v procentech mezi okolním tlakem (0 %) a jeho M-hodnotou (100 %). Má tedy nejvyšší kladné okamžité GF a určuje dekompresní strop."
+            "controlling": "<strong>Řídicí kompartment</strong> je ten, který při použitém GF vytváří nejhlubší tolerovanou hloubku, a tedy určuje dekompresní strop. Nemusí to být kompartment s nejvyšším okamžitým GF %, protože jednotlivé kompartmenty mají odlišné Bühlmannovy koeficienty <var>a</var> a <var>b</var>."
         },
         "zhl16Variants": {
             "title": "Varianty ZH-L16: A, B a C",
@@ -1099,8 +1099,8 @@
         "gf": {
             "mValue100": "M-hodnota (100 %)",
             "gfCorridor": "GF koridor",
-            "leadingTissue": "Řídicí tkáň",
-            "leadingTC": "Řídicí: TC{0} ({1} %)",
+            "leadingTissue": "Nejvyšší GF",
+            "leadingTC": "Nejvyšší GF: TC{0} ({1} %)",
             "pAnchor": "pAnchor {0} bar ({1} m)",
             "tooltipLabel": "{0}: p_amb={1} bar, GF={2} %"
         }

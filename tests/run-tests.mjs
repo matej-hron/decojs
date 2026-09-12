@@ -393,8 +393,8 @@ describe('P-P chart fullscreen controls', () => {
     });
 });
 
-describe('GF chart controlling tissue toggle', () => {
-    test('toggles the controlling trail and point together and preserves the state', () => {
+describe('GF chart maximum GF toggle', () => {
+    test('toggles the maximum GF trail and point together and preserves the state', () => {
         const visibilityChanges = [];
         const updates = [];
         const chart = {
@@ -447,7 +447,7 @@ describe('GF chart controlling tissue toggle', () => {
             ]
         };
         expect(GFChart.prototype._isLegendItemVisible(
-            { datasetIndex: 0, text: 'Controlling tissue' },
+            { datasetIndex: 0, text: 'Highest GF' },
             gfLegendData
         )).toBe(true);
         expect(GFChart.prototype._isLegendItemVisible(
@@ -464,14 +464,14 @@ describe('GF chart controlling tissue toggle', () => {
         expect(MValueChart.prototype._isLegendItemVisible(
             { text: 'pAnchor' }
         )).toBe(true);
-        expect(GFChart.prototype._formatControllingTissueLabel(
+        expect(GFChart.prototype._formatMaxGFLabel(
             { id: 5 },
             81.4
-        )).toBe('Controlling: TC5 (81%)');
-        expect(GFChart.prototype._formatControllingTissueLabel(
+        )).toBe('Highest GF: TC5 (81%)');
+        expect(GFChart.prototype._formatMaxGFLabel(
             null,
             0
-        )).toBe('Controlling tissue');
+        )).toBe('Highest GF');
     });
 });
 

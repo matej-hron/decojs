@@ -125,7 +125,7 @@ export function calculateInstantGF(tissuePressure, ambientPressure, compartment)
 - $GF_{inst} > 1$: violation
 - Negative: undersaturated (still on-gassing)
 
-Used by the GFChart (`js/charts/GFChart.js`) to render real-time saturation fraction per compartment. A compartment is considered controlling only when it is supersaturated ($P_t > P_{amb}$). `calculateMaxGF()` therefore returns `leadingCompartment: null` and `gfMax: 0` while every compartment is at or below ambient pressure; negative instantaneous GF values remain available in `allGFs` for visualization.
+Used by the GFChart (`js/charts/GFChart.js`) to render real-time saturation fraction per compartment. `calculateMaxGF()` identifies the supersaturated compartment with the highest instantaneous GF for the chart's **Highest GF** envelope. This is not necessarily the compartment controlling the decompression ceiling: the controller is the compartment with the deepest tolerated depth under the applied GF, and differing Bühlmann $a$/$b$ coefficients mean the two orderings can diverge.
 
 ## Worked example
 
