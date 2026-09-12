@@ -95,6 +95,7 @@ export class GFChart {
         this.canvas = null;
         this.fullscreenBtn = null;
         this.exitFullscreenBtn = null;
+        this.wrapper = null;
         this.chartContainer = null;
         this.controlsContainer = null;
         this.timelineContainer = null;
@@ -163,9 +164,9 @@ export class GFChart {
         this.container.style.outline = 'none';
 
         // Main wrapper - fills parent container
-        const wrapper = document.createElement('div');
-        wrapper.className = 'gfc-wrapper';
-        wrapper.style.cssText = 'display: flex; flex-direction: column; width: 100%; height: 100%; overflow: hidden;';
+        this.wrapper = document.createElement('div');
+        this.wrapper.className = 'gfc-wrapper';
+        this.wrapper.style.cssText = 'display: flex; flex-direction: column; width: 100%; height: 100%; overflow: hidden;';
 
         // Compartment selector
         if (this.options.compartmentSelector) {
@@ -177,7 +178,7 @@ export class GFChart {
                 align-items: center;
             `;
             this._buildCompartmentSelector();
-            wrapper.appendChild(this.controlsContainer);
+            this.wrapper.appendChild(this.controlsContainer);
         }
 
         // Timeline controls
@@ -188,7 +189,7 @@ export class GFChart {
             background: #f8f9fa; border-radius: 4px; margin-bottom: 8px;
         `;
         this._buildTimelineControls();
-        wrapper.appendChild(this.timelineContainer);
+        this.wrapper.appendChild(this.timelineContainer);
 
         // Chart container - fills remaining height
         this.chartContainer = document.createElement('div');
@@ -251,14 +252,14 @@ export class GFChart {
             { rightOffsetPx: this.options.fullscreenButton ? 80 : 44 }
         );
 
-        wrapper.appendChild(this.chartContainer);
+        this.wrapper.appendChild(this.chartContainer);
 
         // Mini profile canvas
         this.miniProfileCanvas = document.createElement('canvas');
         this.miniProfileCanvas.style.cssText = 'width: 100%; height: 100px; margin-top: 6px; border-radius: 4px; background: var(--surface-alt, #f0f4f8);';
-        wrapper.appendChild(this.miniProfileCanvas);
+        this.wrapper.appendChild(this.miniProfileCanvas);
 
-        this.container.appendChild(wrapper);
+        this.container.appendChild(this.wrapper);
 
         // Set up ResizeObserver
         this._resizeObserver = new ResizeObserver(() => {
@@ -266,7 +267,7 @@ export class GFChart {
                 clearTimeout(this._resizeTimeout);
             }
             this._resizeTimeout = setTimeout(() => {
-                if (!this.chartContainer.classList.contains('gfc-fullscreen')) {
+                if (!this.wrapper.classList.contains('gfc-fullscreen')) {
                     this.resize();
                 }
             }, 50);
@@ -448,7 +449,7 @@ export class GFChart {
     _setupKeyboardShortcuts() {
         this._keyHandler = (e) => {
             if (!this.container.contains(document.activeElement) &&
-                !this.chartContainer.classList.contains('gfc-fullscreen')) {
+                !this.wrapper.classList.contains('gfc-fullscreen')) {
                 return;
             }
 
@@ -514,7 +515,7 @@ export class GFChart {
                     break;
 
                 case 'Escape':
-                    if (this.chartContainer.classList.contains('gfc-fullscreen')) {
+                    if (this.wrapper.classList.contains('gfc-fullscreen')) {
                         this._toggleFullscreen();
                     }
                     break;
@@ -840,7 +841,7 @@ export class GFChart {
     // ============================================================================
 
     _toggleFullscreen() {
-        const isFullscreen = this.chartContainer.classList.toggle('gfc-fullscreen');
+        const isFullscreen = this.wrapper.classList.toggle('gfc-fullscreen');
 
         if (isFullscreen) {
             document.body.style.overflow = 'hidden';

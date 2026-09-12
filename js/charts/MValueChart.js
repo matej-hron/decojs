@@ -100,6 +100,7 @@ export class MValueChart {
         this.canvas = null;
         this.fullscreenBtn = null;
         this.exitFullscreenBtn = null;
+        this.wrapper = null;
         this.chartContainer = null;
         this.controlsContainer = null;
         this.timelineContainer = null;
@@ -168,9 +169,9 @@ export class MValueChart {
         this.container.style.outline = 'none';
         
         // Main wrapper - fills parent container
-        const wrapper = document.createElement('div');
-        wrapper.className = 'mvc-wrapper';
-        wrapper.style.cssText = 'display: flex; flex-direction: column; width: 100%; height: 100%; overflow: hidden;';
+        this.wrapper = document.createElement('div');
+        this.wrapper.className = 'mvc-wrapper';
+        this.wrapper.style.cssText = 'display: flex; flex-direction: column; width: 100%; height: 100%; overflow: hidden;';
         
         // Compartment selector
         if (this.options.compartmentSelector) {
@@ -182,7 +183,7 @@ export class MValueChart {
                 align-items: center;
             `;
             this._buildCompartmentSelector();
-            wrapper.appendChild(this.controlsContainer);
+            this.wrapper.appendChild(this.controlsContainer);
         }
         
         // Timeline controls
@@ -193,7 +194,7 @@ export class MValueChart {
             background: #f8f9fa; border-radius: 4px; margin-bottom: 8px;
         `;
         this._buildTimelineControls();
-        wrapper.appendChild(this.timelineContainer);
+        this.wrapper.appendChild(this.timelineContainer);
 
         // Chart container - fills remaining height
         this.chartContainer = document.createElement('div');
@@ -209,6 +210,7 @@ export class MValueChart {
         // Fullscreen button
         if (this.options.fullscreenButton) {
             this.fullscreenBtn = document.createElement('button');
+            this.fullscreenBtn.className = 'mvc-fullscreen-btn';
             this.fullscreenBtn.innerHTML = '⛶';
             this.fullscreenBtn.title = translate('chart.tooltips.fullscreen', 'Toggle Fullscreen');
             this.fullscreenBtn.style.cssText = `
@@ -228,7 +230,7 @@ export class MValueChart {
                 position: absolute; top: 16px; right: 16px; z-index: 1001;
                 padding: 8px 12px; background: rgba(0,0,0,0.7); color: white;
                 border: none; border-radius: 4px; cursor: pointer;
-                font-size: 20px;
+                font-size: 20px; display: none;
             `;
             this.exitFullscreenBtn.addEventListener('click', () => this._toggleFullscreen());
             this.chartContainer.appendChild(this.exitFullscreenBtn);
@@ -256,14 +258,14 @@ export class MValueChart {
             { rightOffsetPx: this.options.fullscreenButton ? 80 : 44 }
         );
 
-        wrapper.appendChild(this.chartContainer);
+        this.wrapper.appendChild(this.chartContainer);
 
         // Mini profile canvas - shows dive profile with current position marker
         this.miniProfileCanvas = document.createElement('canvas');
         this.miniProfileCanvas.style.cssText = 'width: 100%; height: 100px; margin-top: 6px; border-radius: 4px; background: var(--surface-alt, #f0f4f8);';
-        wrapper.appendChild(this.miniProfileCanvas);
+        this.wrapper.appendChild(this.miniProfileCanvas);
 
-        this.container.appendChild(wrapper);
+        this.container.appendChild(this.wrapper);
         
         // Set up ResizeObserver to automatically resize chart when container changes
         this._resizeObserver = new ResizeObserver(() => {
@@ -273,7 +275,7 @@ export class MValueChart {
             }
             this._resizeTimeout = setTimeout(() => {
                 // Don't resize during fullscreen (we handle that separately)
-                if (!this.chartContainer.classList.contains('mvc-fullscreen')) {
+                if (!this.wrapper.classList.contains('mvc-fullscreen')) {
                     this.resize();
                 }
             }, 50);
@@ -470,8 +472,8 @@ export class MValueChart {
     _setupKeyboardShortcuts() {
         this._keyHandler = (e) => {
             // Only handle if container is focused or we're in fullscreen
-            if (!this.container.contains(document.activeElement) && 
-                !this.chartContainer.classList.contains('mvc-fullscreen')) {
+            if (!this.container.contains(document.activeElement) &&
+                !this.wrapper.classList.contains('mvc-fullscreen')) {
                 return;
             }
             
@@ -538,7 +540,7 @@ export class MValueChart {
                     break;
                     
                 case 'Escape':
-                    if (this.chartContainer.classList.contains('mvc-fullscreen')) {
+                    if (this.wrapper.classList.contains('mvc-fullscreen')) {
                         this._toggleFullscreen();
                     }
                     break;
@@ -864,7 +866,7 @@ export class MValueChart {
     // ============================================================================
     
     _toggleFullscreen() {
-        const isFullscreen = this.chartContainer.classList.toggle('mvc-fullscreen');
+        const isFullscreen = this.wrapper.classList.toggle('mvc-fullscreen');
         
         if (isFullscreen) {
             document.body.style.overflow = 'hidden';
@@ -873,7 +875,7 @@ export class MValueChart {
         } else {
             document.body.style.overflow = '';
             if (this.fullscreenBtn) this.fullscreenBtn.style.display = '';
-            if (this.exitFullscreenBtn) this.exitFullscreenBtn.style.display = '';
+            if (this.exitFullscreenBtn) this.exitFullscreenBtn.style.display = 'none';
         }
         
         // Resize chart after layout change - use the public resize method
