@@ -1285,7 +1285,7 @@
         "colGas": "Gas",
         "colTank": "Botella",
         "runtimeFootnote": "El runtime es el tiempo transcurrido desde el inicio de la inmersión hasta el final de la etapa.",
-        "runtimeDepartureFootnote": "En las paradas de descompresión, el runtime es el minuto entero en que el buceador sale hacia el siguiente nivel.",
+        "runtimeDepartureFootnote": "En las paradas de descompresión, el runtime es el minuto entero en que el buceador sale hacia el siguiente nivel. Una duración decimal de la parada es la diferencia desde la hora exacta de llegada; el plan se ejecuta según el runtime de salida.",
         "descentFootnote": "El modelo calcula continuamente la saturación de los tejidos durante el descenso. Por tanto, el descenso se incluye tanto en el tiempo de fondo como en el cálculo del perfil de descompresión.",
         "sectionBottom": "Fondo",
         "sectionAscent": "Ascenso",

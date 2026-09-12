@@ -800,7 +800,7 @@ describe('diveSetup - renderDivePlanTableHTML', () => {
         expect(html).toContain('<td class="dse-plan-depth">12\u00a0m</td><td class="dse-plan-stop">6</td><td class="dse-plan-runtime">36</td>');
     });
 
-    test('departure runtime convention preserves model stop times and does not fold ascents into them', () => {
+    test('departure runtime convention preserves model stops and renders real ascent segments', () => {
         const operationalWaypoints = [
             { time: 0, depth: 0, gasId: 'air' },
             { time: 2, depth: 45, gasId: 'air' },
@@ -817,7 +817,10 @@ describe('diveSetup - renderDivePlanTableHTML', () => {
 
         expect(html).toContain('<td class="dse-plan-depth">12\u00a0m</td><td class="dse-plan-stop">5</td><td class="dse-plan-runtime">35</td>');
         expect(html).toContain('<td class="dse-plan-depth">9\u00a0m</td><td class="dse-plan-stop">2.7</td><td class="dse-plan-runtime">38</td>');
-        expect(html.includes('<tr class="dse-plan-asc">')).toBe(false);
+        expect(html).toContain('<td class="dse-plan-depth">12\u00a0m</td><td class="dse-plan-stop">3</td><td class="dse-plan-runtime">30</td>');
+        expect(html).toContain('<td class="dse-plan-depth">9\u00a0m</td><td class="dse-plan-stop">0.3</td><td class="dse-plan-runtime">35.3</td>');
+        expect(html).toContain('<td class="dse-plan-depth">0\u00a0m</td><td class="dse-plan-stop">0.3</td><td class="dse-plan-runtime">38.3</td>');
+        expect(html.includes('dse-plan-surface-final')).toBe(false);
         expect(html).toContain('runtime is the whole minute when the diver leaves for the next level');
     });
 

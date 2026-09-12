@@ -1285,7 +1285,7 @@
         "colGas": "Gas",
         "colTank": "Tank",
         "runtimeFootnote": "Runtime is the elapsed time from the start of the dive to the end of the stage.",
-        "runtimeDepartureFootnote": "At decompression stops, runtime is the whole minute when the diver leaves for the next level.",
+        "runtimeDepartureFootnote": "At decompression stops, runtime is the whole minute when the diver leaves for the next level. A decimal stop duration is the difference from the exact arrival time; execute the plan using the departure runtime.",
         "descentFootnote": "The model continuously calculates tissue on-gassing during descent. Descent is therefore included in both bottom time and the decompression-profile calculation.",
         "sectionBottom": "Bottom",
         "sectionAscent": "Ascent",

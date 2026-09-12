@@ -1285,7 +1285,7 @@
         "colGas": "Plyn",
         "colTank": "Láhev",
         "runtimeFootnote": "Runtime je průběžný čas od začátku ponoru do konce dané etapy.",
-        "runtimeDepartureFootnote": "U dekompresních zastávek je runtime celá minuta, ve které potápěč odchází do další úrovně.",
+        "runtimeDepartureFootnote": "U dekompresních zastávek je runtime celá minuta, ve které potápěč odchází do další úrovně. Desetinná doba zastávky je rozdíl od přesného času příjezdu; plán se provádí podle odchodového runtime.",
         "descentFootnote": "Během sestupu model průběžně počítá sycení tkání. Sestup je proto zahrnut do času na dně i do výpočtu dekompresního profilu.",
         "sectionBottom": "Na dně",
         "sectionAscent": "Výstup",
