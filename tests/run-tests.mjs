@@ -235,13 +235,24 @@ import {
 } from '../js/components/tooltipShortcut.js';
 
 describe('Chart tooltip shortcut', () => {
-    test('toggles Map and object chart registries and persists across chart rebuilds', () => {
+    test('toggles only the focused or hovered chart and persists across rebuilds', () => {
         const originalDocument = globalThis.document;
         const originalWindow = globalThis.window;
-        let keydownHandler;
+        const handlers = {};
         const updates = [];
 
-        const makeChart = (id) => ({
+        const makeChart = (id) => {
+            const canvas = {
+                id,
+                closest(selector) {
+                    return selector === 'canvas' ? canvas : null;
+                },
+                contains(target) {
+                    return target === canvas;
+                }
+            };
+            return {
+            canvas,
             options: { plugins: { tooltip: { enabled: true } } },
             config: { options: { plugins: { tooltip: { enabled: true } } } },
             setActiveElements(elements) {
@@ -255,14 +266,21 @@ describe('Chart tooltip shortcut', () => {
             update(mode) {
                 updates.push(`${id}:update:${mode}`);
             }
-        });
+        };
+        };
         const first = makeChart('first');
         const second = makeChart('second');
+        const firstContainer = {
+            tagName: 'DIV',
+            contains(target) {
+                return target === first.canvas;
+            }
+        };
 
         try {
             globalThis.document = {
                 addEventListener(type, handler) {
-                    if (type === 'keydown') keydownHandler = handler;
+                    handlers[type] = handler;
                 }
             };
             globalThis.window = {
@@ -270,24 +288,26 @@ describe('Chart tooltip shortcut', () => {
             };
 
             initTooltipShortcut();
-            keydownHandler({ key: 't', target: { tagName: 'BODY' } });
+            handlers.keydown({ key: 't', target: firstContainer });
 
             expect(first.options.plugins.tooltip.enabled).toBe(false);
             expect(first.config.options.plugins.tooltip.enabled).toBe(false);
-            expect(second.options.plugins.tooltip.enabled).toBe(false);
-            expect(resolveChartTooltipEnabled(true)).toBe(false);
+            expect(second.options.plugins.tooltip.enabled).toBe(true);
+            expect(resolveChartTooltipEnabled(true, first.canvas)).toBe(false);
+            expect(resolveChartTooltipEnabled(true, second.canvas)).toBe(true);
             expect(updates.includes('first:tooltip:0')).toBe(true);
-            expect(updates.includes('second:update:none')).toBe(true);
+            expect(updates.includes('second:update:none')).toBe(false);
 
             globalThis.window.Chart.instances = { first, second };
-            keydownHandler({ key: 'T', target: { tagName: 'BODY' } });
+            handlers.pointerover({ target: second.canvas });
+            handlers.keydown({ key: 'T', target: { tagName: 'BODY' } });
 
-            expect(first.options.plugins.tooltip.enabled).toBe(true);
-            expect(second.config.options.plugins.tooltip.enabled).toBe(true);
-            expect(resolveChartTooltipEnabled(false)).toBe(true);
+            expect(first.options.plugins.tooltip.enabled).toBe(false);
+            expect(second.config.options.plugins.tooltip.enabled).toBe(false);
+            expect(resolveChartTooltipEnabled(true, second.canvas)).toBe(false);
 
-            keydownHandler({ key: 't', target: { tagName: 'INPUT' } });
-            expect(resolveChartTooltipEnabled(false)).toBe(true);
+            handlers.keydown({ key: 't', target: { tagName: 'INPUT' } });
+            expect(resolveChartTooltipEnabled(true, second.canvas)).toBe(false);
         } finally {
             globalThis.document = originalDocument;
             globalThis.window = originalWindow;
