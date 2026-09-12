@@ -1099,8 +1099,8 @@
         "gf": {
             "mValue100": "M-value (100%)",
             "gfCorridor": "GF corridor",
-            "leadingTissue": "Leading tissue",
-            "leadingTC": "Leading: TC{0} ({1}%)",
+            "leadingTissue": "Controlling tissue",
+            "leadingTC": "Controlling: TC{0} ({1}%)",
             "pAnchor": "pAnchor {0} bar ({1} m)",
             "tooltipLabel": "{0}: p_amb={1} bar, GF={2}%"
         }

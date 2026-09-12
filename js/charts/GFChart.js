@@ -107,6 +107,7 @@ export class GFChart {
         this.calculationResults = null;
         this.currentTimeIndex = 0;
         this.visibleCompartments = new Set();
+        this.showLeadingTissue = true;
         this.isPlaying = false;
         this.playInterval = null;
         this.savedZoomState = null;
@@ -836,6 +837,32 @@ export class GFChart {
         });
     }
 
+    _toggleLeadingTissue(chart = this.chart) {
+        this.showLeadingTissue = !this.showLeadingTissue;
+        if (!chart) return;
+
+        chart.data.datasets.forEach((dataset, index) => {
+            if (dataset.gfcGroup === 'leading-tissue') {
+                chart.setDatasetVisibility(index, this.showLeadingTissue);
+            }
+        });
+        chart.update('none');
+    }
+
+    _handleLegendClick(legendItem, legend) {
+        const chart = legend.chart;
+        const datasetIndex = legendItem.datasetIndex;
+        const dataset = chart.data.datasets[datasetIndex];
+
+        if (dataset?.gfcGroup === 'leading-tissue') {
+            this._toggleLeadingTissue(chart);
+            return;
+        }
+
+        chart.setDatasetVisibility(datasetIndex, !chart.isDatasetVisible(datasetIndex));
+        chart.update('none');
+    }
+
     // ============================================================================
     // Fullscreen
     // ============================================================================
@@ -1027,6 +1054,9 @@ export class GFChart {
             datasets.push({
                 label: translate('chart.gf.leadingTissue', 'Leading tissue'),
                 data: envelopeData,
+                gfcGroup: 'leading-tissue',
+                gfcLegendItem: true,
+                hidden: !this.showLeadingTissue,
                 borderColor: 'rgba(0, 0, 0, 0.6)',
                 borderWidth: 2.5,
                 pointRadius: 0,
@@ -1050,6 +1080,9 @@ export class GFChart {
                 datasets.push({
                     label: fmt(translate('chart.gf.leadingTC', 'Leading: TC{0} ({1}%)'), leadingComp.id, fmtNum(maxGF, 0)),
                     data: [{ x: currentAmbient, y: maxGF }],
+                    gfcGroup: 'leading-tissue',
+                    gfcLegendItem: false,
+                    hidden: !this.showLeadingTissue,
                     backgroundColor: 'rgba(0, 0, 0, 0.8)',
                     borderColor: leadingComp.color,
                     borderWidth: 3,
@@ -1077,16 +1110,18 @@ export class GFChart {
                         display: true,
                         position: 'top',
                         labels: {
-                            filter: (item) => {
+                            filter: (item, chartData) => {
                                 const text = item.text || '';
-                                const leadingPrefix = translate('chart.gf.leadingTC', 'Leading: TC').split('TC')[0];
-                                const leadingPrefixEn = 'Leading:';
+                                const dataset = chartData.datasets[item.datasetIndex];
                                 const isTissue = text.startsWith('TC') && text.includes('min');
-                                const isLeading = text.startsWith(leadingPrefix) || text.startsWith(leadingPrefixEn);
+                                const isLeading = dataset?.gfcGroup === 'leading-tissue' &&
+                                    dataset.gfcLegendItem;
                                 const isPAnchor = text.startsWith('pAnchor');
                                 return isTissue || isLeading || isPAnchor;
                             }
-                        }
+                        },
+                        onClick: (_event, legendItem, legend) =>
+                            this._handleLegendClick(legendItem, legend)
                     },
                     tooltip: {
                         enabled: resolveChartTooltipEnabled(this.options.interactive, this.canvas),

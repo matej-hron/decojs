@@ -1099,8 +1099,8 @@
         "gf": {
             "mValue100": "M-hodnota (100 %)",
             "gfCorridor": "GF koridor",
-            "leadingTissue": "Vedoucí tkáň",
-            "leadingTC": "Vedoucí: TC{0} ({1} %)",
+            "leadingTissue": "Řídicí tkáň",
+            "leadingTC": "Řídicí: TC{0} ({1} %)",
             "pAnchor": "pAnchor {0} bar ({1} m)",
             "tooltipLabel": "{0}: p_amb={1} bar, GF={2} %"
         }

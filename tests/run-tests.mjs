@@ -393,6 +393,54 @@ describe('P-P chart fullscreen controls', () => {
     });
 });
 
+describe('GF chart controlling tissue toggle', () => {
+    test('toggles the controlling trail and point together and preserves the state', () => {
+        const visibilityChanges = [];
+        const updates = [];
+        const chart = {
+            data: {
+                datasets: [
+                    { gfcGroup: 'leading-tissue', gfcLegendItem: true },
+                    { gfcGroup: 'leading-tissue', gfcLegendItem: false },
+                    { label: 'TC1' }
+                ]
+            },
+            setDatasetVisibility(index, visible) {
+                visibilityChanges.push([index, visible]);
+            },
+            update(mode) {
+                updates.push(mode);
+            }
+        };
+        const context = {
+            showLeadingTissue: true,
+            chart,
+            _toggleLeadingTissue: GFChart.prototype._toggleLeadingTissue
+        };
+
+        GFChart.prototype._handleLegendClick.call(
+            context,
+            { datasetIndex: 0 },
+            { chart }
+        );
+        expect(context.showLeadingTissue).toBe(false);
+        expect(visibilityChanges).toEqual([[0, false], [1, false]]);
+        expect(updates).toEqual(['none']);
+
+        GFChart.prototype._handleLegendClick.call(
+            context,
+            { datasetIndex: 1 },
+            { chart }
+        );
+        expect(context.showLeadingTissue).toBe(true);
+        expect(visibilityChanges).toEqual([
+            [0, false], [1, false],
+            [0, true], [1, true]
+        ]);
+        expect(updates).toEqual(['none', 'none']);
+    });
+});
+
 // ============================================================================
 // GF PRESETS TESTS
 // ============================================================================
