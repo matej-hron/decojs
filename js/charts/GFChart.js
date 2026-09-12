@@ -456,6 +456,19 @@ export class GFChart {
             }
 
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+
+            if ((e.key === 'f' || e.key === 'F') &&
+                !e.metaKey && !e.ctrlKey && !e.altKey &&
+                this.options.fullscreenButton) {
+                e.preventDefault();
+                this._toggleFullscreen();
+                return;
+            }
+            if (e.key === 'Escape' &&
+                this.wrapper.classList.contains('gfc-fullscreen')) {
+                this._toggleFullscreen();
+                return;
+            }
             if (!this.calculationResults) return;
 
             const maxIndex = this.calculationResults.timePoints.length - 1;
@@ -516,11 +529,6 @@ export class GFChart {
                     }
                     break;
 
-                case 'Escape':
-                    if (this.wrapper.classList.contains('gfc-fullscreen')) {
-                        this._toggleFullscreen();
-                    }
-                    break;
             }
         };
 

@@ -6,7 +6,7 @@ npm test
 
 Runs `node tests/run-tests.mjs`. No external test framework — `tests/run-tests.mjs` implements `describe`/`test`/`expect` inline (lines 10–140) with matchers `.toBe`, `.toEqual`, `.toBeCloseTo`, `.toBeGreaterThan`, `.toBeLessThan`, `.toHaveProperty`, `.toHaveLength`, `.toBeDefined`. Output is one line per test, then a pass/fail summary.
 
-**465 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
+**466 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
 
 `npm test` is required to pass before every commit per `CLAUDE.md`.
 
@@ -184,7 +184,7 @@ What is currently not covered — honest inventory so callers know where to be c
 
 - **UI components.** `DiveSetupEditor` has narrow jsdom regressions for cylinder-volume notation, bottom/deco MOD labels, and debounced automatic profile generation. The P-P charts have focused state and interaction regressions, including timeline synchronization and the M-value intersection ruler, but no pixel-level render tests; Chart.js output is not asserted.
 - **i18n.** No tests for translation loading, `data-i18n` substitution, or the `languagechange` event fan-out to components.
-- **Keyboard shortcuts.** The M-value ruler's `R` shortcut is tested. Arrow-key / space / home / end playback shortcuts are not.
+- **Keyboard shortcuts.** The M-value ruler's `T` shortcut and the fullscreen `F` shortcut in all three chart classes are tested. Arrow-key / space / home / end playback shortcuts are not.
 - **Helium.** `COMPARTMENTS` carries He coefficients but the algorithm lumps He into N₂ via `n2Fraction`. Full trimix (separate He kinetics) is not implemented and not tested. Gas definitions accept `he > 0` but no decotengu-reference scenarios exercise it.
 - **SAC / gas consumption edge cases.** `computeGasConsumption` has basic coverage but not realistic multi-dive or bail-out scenarios.
 - **Salinity.** Altitude is covered by standard-atmosphere unit tests, exact

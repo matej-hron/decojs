@@ -1022,7 +1022,7 @@
         },
         "hints": {
             "compartments": "Klik = vybrat jednu · Shift+klik = přepnout · ←→ krok · Mezerník přehrávání · F režim celé obrazovky",
-            "mvalueCompartments": "Klik = vybrat jednu · Shift+klik = přepnout · ←→ krok · Mezerník přehrávání · R pravítko · F režim celé obrazovky",
+            "mvalueCompartments": "Klik = vybrat jednu · Shift+klik = přepnout · ←→ krok · Mezerník přehrávání · T pravítko · F režim celé obrazovky",
             "arrowShiftArrow": "↑↓ posun, Shift+↑↓ rozšířit/zúžit"
         },
         "tooltips": {
@@ -1097,6 +1097,7 @@
             "pAnchor": "Kotevní tlak {0} bar ({1} m)",
             "tooltipLabel": "{0}: okolní tlak {1} bar, tkáňový tlak {2} bar",
             "rulerTitle": "pravítko",
+            "rulerCurrentPosition": "Aktuální poloha",
             "rulerRampGFLabel": "GF na rampě",
             "rulerCeiling": "strop",
             "rulerMValueSuffix": "-hodnota",

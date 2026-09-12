@@ -210,7 +210,25 @@ export class DiveProfileChart {
 
         this.container.appendChild(this.chartContainer);
         
-        // Handle keyboard events
+        this._setupKeyboardShortcuts();
+
+        // Set up ResizeObserver to automatically resize chart when container changes
+        this._resizeObserver = new ResizeObserver((entries) => {
+            // Debounce resize calls
+            if (this._resizeTimeout) {
+                clearTimeout(this._resizeTimeout);
+            }
+            this._resizeTimeout = setTimeout(() => {
+                // Don't resize during fullscreen (we handle that separately)
+                if (!this.chartContainer.classList.contains('dpc-fullscreen')) {
+                    this.resize();
+                }
+            }, 50);
+        });
+        this._resizeObserver.observe(this.container);
+    }
+
+    _setupKeyboardShortcuts() {
         this._keyHandler = (e) => {
             // Only handle if container is focused or we're in fullscreen
             if (!this.container.contains(document.activeElement) && 
@@ -220,6 +238,19 @@ export class DiveProfileChart {
             
             // Don't handle if typing in an input
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+
+            if ((e.key === 'f' || e.key === 'F') &&
+                !e.metaKey && !e.ctrlKey && !e.altKey &&
+                this.options.fullscreenButton) {
+                e.preventDefault();
+                this._toggleFullscreen();
+                return;
+            }
+            if (e.key === 'Escape' &&
+                this.chartContainer.classList.contains('dpc-fullscreen')) {
+                this._toggleFullscreen();
+                return;
+            }
             
             // Only handle arrow keys in tissue mode
             if (!this.options.showTissueLoading) return;
@@ -242,30 +273,9 @@ export class DiveProfileChart {
                         this._moveCompartmentsFaster();
                     }
                     break;
-                    
-                case 'Escape':
-                    if (this.chartContainer.classList.contains('dpc-fullscreen')) {
-                        this._toggleFullscreen();
-                    }
-                    break;
             }
         };
         document.addEventListener('keydown', this._keyHandler);
-        
-        // Set up ResizeObserver to automatically resize chart when container changes
-        this._resizeObserver = new ResizeObserver((entries) => {
-            // Debounce resize calls
-            if (this._resizeTimeout) {
-                clearTimeout(this._resizeTimeout);
-            }
-            this._resizeTimeout = setTimeout(() => {
-                // Don't resize during fullscreen (we handle that separately)
-                if (!this.chartContainer.classList.contains('dpc-fullscreen')) {
-                    this.resize();
-                }
-            }, 50);
-        });
-        this._resizeObserver.observe(this.container);
     }
     
     /**

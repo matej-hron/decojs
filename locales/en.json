@@ -1022,7 +1022,7 @@
         },
         "hints": {
             "compartments": "Click = select one · Shift+click = toggle · ←→ step · Space play · F fullscreen",
-            "mvalueCompartments": "Click = select one · Shift+click = toggle · ←→ step · Space play · R ruler · F fullscreen",
+            "mvalueCompartments": "Click = select one · Shift+click = toggle · ←→ step · Space play · T ruler · F fullscreen",
             "arrowShiftArrow": "↑↓ move, Shift+↑↓ expand/shrink"
         },
         "tooltips": {
@@ -1097,6 +1097,7 @@
             "pAnchor": "Anchor pressure {0} bar ({1} m)",
             "tooltipLabel": "{0}: ambient pressure {1} bar, tissue pressure {2} bar",
             "rulerTitle": "ruler",
+            "rulerCurrentPosition": "Current position",
             "rulerRampGFLabel": "GF on ramp",
             "rulerCeiling": "ceiling",
             "rulerMValueSuffix": "-value",
