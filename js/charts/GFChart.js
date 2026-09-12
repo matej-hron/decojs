@@ -55,9 +55,10 @@ import {
 } from '../decoModel.js';
 import {
     calculateChartGFAnchor,
+    createLegendHelpIcon,
     DEFAULT_ENVIRONMENT,
     mergeOptions,
-    setLegendItemHelp,
+    positionLegendHelpIcon,
     validateDiveSetup,
     normalizeDiveSetup
 } from './chartTypes.js';
@@ -97,6 +98,7 @@ export class GFChart {
         this.chart = null;
         this.canvas = null;
         this.fullscreenBtn = null;
+        this.anchorHelpIcon = null;
         this.exitFullscreenBtn = null;
         this.wrapper = null;
         this.chartContainer = null;
@@ -204,6 +206,9 @@ export class GFChart {
         // Canvas
         this.canvas = document.createElement('canvas');
         this.chartContainer.appendChild(this.canvas);
+
+        this.anchorHelpIcon = createLegendHelpIcon();
+        this.chartContainer.appendChild(this.anchorHelpIcon);
 
         // Fullscreen button
         if (this.options.fullscreenButton) {
@@ -889,6 +894,19 @@ export class GFChart {
         chart.update('none');
     }
 
+    _positionAnchorHelpIcon(chart) {
+        const help = translate(
+            'chart.tooltips.anchorPressure',
+            'Ambient pressure at the deepest decompression stop. GF Low applies at this point, which anchors the ramp toward GF High at the surface.'
+        );
+        positionLegendHelpIcon(
+            chart,
+            this.anchorHelpIcon,
+            'gfcAnchor',
+            help
+        );
+    }
+
     // ============================================================================
     // Fullscreen
     // ============================================================================
@@ -1005,9 +1023,8 @@ export class GFChart {
             // pAnchor vertical line
             if (pAnchor > surfacePressure) {
                 datasets.push({
-                    label: fmt(translate('chart.gf.pAnchor', 'Anchor pressure (?) {0}\u00a0bar ({1}\u00a0m)'), fmtNum(pAnchor, 2), fmtNum(((pAnchor - surfacePressure) / 0.1), 1)),
+                    label: fmt(translate('chart.gf.pAnchor', 'Anchor pressure {0}\u00a0bar ({1}\u00a0m)'), fmtNum(pAnchor, 2), fmtNum(((pAnchor - surfacePressure) / 0.1), 1)),
                     gfcAnchor: true,
-                    anchorLegendHelp: true,
                     data: [
                         { x: pAnchor, y: -10 },
                         { x: pAnchor, y: 120 }
@@ -1139,6 +1156,10 @@ export class GFChart {
         const config = {
             type: 'scatter',
             data: { datasets },
+            plugins: [{
+                id: 'gf-anchor-help',
+                afterDraw: (chart) => this._positionAnchorHelpIcon(chart)
+            }],
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
@@ -1156,18 +1177,7 @@ export class GFChart {
                                 this._isLegendItemVisible(item, chartData)
                         },
                         onClick: (_event, legendItem, legend) =>
-                            this._handleLegendClick(legendItem, legend),
-                        onHover: (_event, item, legend) =>
-                            setLegendItemHelp(
-                                item,
-                                legend,
-                                translate(
-                                    'chart.tooltips.anchorPressure',
-                                    'Ambient pressure at the deepest decompression stop. It anchors GF Low as the starting point of the ramp toward GF High at the surface.'
-                                )
-                            ),
-                        onLeave: (_event, item, legend) =>
-                            setLegendItemHelp(item, legend)
+                            this._handleLegendClick(legendItem, legend)
                     },
                     tooltip: {
                         enabled: resolveChartTooltipEnabled(this.options.interactive, this.canvas),

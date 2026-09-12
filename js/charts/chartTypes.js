@@ -330,14 +330,37 @@ export function mergeOptions(defaults, userOptions) {
     return result;
 }
 
-export function setLegendItemHelp(legendItem, legend, text = '') {
-    const chart = legend?.chart;
-    const canvas = chart?.canvas;
-    if (!canvas) return;
-    const dataset = chart.data?.datasets?.[legendItem?.datasetIndex];
-    const showHelp = Boolean(text && dataset?.anchorLegendHelp);
-    canvas.title = showHelp ? text : '';
-    canvas.style.cursor = showHelp ? 'help' : '';
+export function createLegendHelpIcon() {
+    const icon = document.createElement('span');
+    icon.className = 'dse-term-tooltip chart-anchor-help';
+    icon.tabIndex = 0;
+    icon.setAttribute('role', 'note');
+    icon.textContent = '?';
+    icon.style.cssText =
+        'display: none; position: absolute; z-index: 12;';
+    icon.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+    });
+    return icon;
+}
+
+export function positionLegendHelpIcon(chart, icon, datasetMarker, text) {
+    const legend = chart.legend;
+    if (!icon || !legend) return;
+    const itemIndex = legend.legendItems.findIndex((item) =>
+        chart.data.datasets[item.datasetIndex]?.[datasetMarker]
+    );
+    const hitBox = legend.legendHitBoxes[itemIndex];
+    if (itemIndex < 0 || !hitBox) {
+        icon.style.display = 'none';
+        return;
+    }
+    icon.setAttribute('aria-label', text);
+    icon.dataset.tooltip = text;
+    icon.style.left = `${hitBox.left + hitBox.width + 5}px`;
+    icon.style.top = `${hitBox.top + Math.max(0, (hitBox.height - 18) / 2)}px`;
+    icon.style.display = 'inline-flex';
 }
 
 /**

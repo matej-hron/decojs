@@ -111,9 +111,11 @@ The GFChart (`js/charts/GFChart.js`) renders the ramp as a shaded band:
 
 The M-value chart renders the same ramp projected onto the P-P diagram: a segment from `(pAnchor, M_adj at GF_low)` to `(1.0 bar, M_adj at GF_high)`. Its `T` ruler evaluates fixed GF Low/High references and solves the horizontal tissue-pressure intersection with this ramp. The solution returns both the tolerated ambient pressure and the interpolated GF at that pressure.
 
-Both P-P charts label the anchor as **Anchor pressure (?)**. Hovering the legend
-item explains that it is the ambient pressure at the deepest decompression stop:
-GF Low applies there and the ramp starts toward GF High at the surface.
+Both P-P charts show a separate information icon next to **Anchor pressure**.
+Hovering or focusing the icon explains that it is the ambient pressure at the
+deepest decompression stop: GF Low applies there and the ramp starts toward GF
+High at the surface. The icon is independent of the clickable legend item, so
+opening its help does not hide the anchor line.
 
 ## Gas-switch wrinkle
 

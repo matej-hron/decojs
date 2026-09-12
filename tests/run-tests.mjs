@@ -214,8 +214,9 @@ import { planTrip } from '../js/tripPlanner.js';
 import { preSaturation } from '../js/preSaturation.js';
 import {
     calculateChartGFAnchor,
+    createLegendHelpIcon,
     normalizeDiveSetup,
-    setLegendItemHelp
+    positionLegendHelpIcon
 } from '../js/charts/chartTypes.js';
 import { buildRuntimeRows } from '../js/components/RuntimeTable.js';
 import {
@@ -579,30 +580,74 @@ describe('GF chart maximum GF toggle', () => {
         )).toBe('Highest GF');
     });
 
-    test('shows anchor-pressure help only for the anchor legend item', () => {
-        const canvas = { title: '', style: {} };
+    test('creates an accessible anchor help icon isolated from chart clicks', () => {
+        const dom = new JSDOM('<!doctype html><body><div id="chart"></div></body>');
+        const originalDocument = globalThis.document;
+        globalThis.document = dom.window.document;
+        try {
+            const container = dom.window.document.getElementById('chart');
+            let chartClicks = 0;
+            container.addEventListener('click', () => chartClicks++);
+            const icon = createLegendHelpIcon();
+            container.appendChild(icon);
+
+            expect(icon.classList.contains('chart-anchor-help')).toBe(true);
+            expect(icon.getAttribute('role')).toBe('note');
+            expect(icon.tabIndex).toBe(0);
+            expect(icon.textContent).toBe('?');
+
+            icon.dispatchEvent(new dom.window.MouseEvent('click', {
+                bubbles: true,
+                cancelable: true
+            }));
+            expect(chartClicks).toBe(0);
+        } finally {
+            globalThis.document = originalDocument;
+            dom.window.close();
+        }
+    });
+
+    test('positions anchor help by marker and hides it without an anchor', () => {
+        const icon = {
+            style: {},
+            dataset: {},
+            setAttribute(name, value) {
+                this[name] = value;
+            }
+        };
         const chart = {
-            canvas,
             data: {
                 datasets: [
                     { label: 'TC1' },
-                    { label: 'Anchor pressure (?)', anchorLegendHelp: true }
+                    { label: 'Anchor pressure', mvalueAnchor: true }
+                ]
+            },
+            legend: {
+                legendItems: [
+                    { datasetIndex: 0 },
+                    { datasetIndex: 1 }
+                ],
+                legendHitBoxes: [
+                    { left: 10, top: 5, width: 40, height: 12 },
+                    { left: 60, top: 5, width: 90, height: 12 }
                 ]
             }
         };
-        const legend = { chart };
-
-        setLegendItemHelp(
-            { datasetIndex: 1 },
-            legend,
+        positionLegendHelpIcon(
+            chart,
+            icon,
+            'mvalueAnchor',
             'Deepest stop anchor explanation'
         );
-        expect(canvas.title).toBe('Deepest stop anchor explanation');
-        expect(canvas.style.cursor).toBe('help');
+        expect(icon.style.display).toBe('inline-flex');
+        expect(icon.style.left).toBe('155px');
+        expect(icon.style.top).toBe('5px');
+        expect(icon['aria-label']).toBe('Deepest stop anchor explanation');
+        expect(icon.dataset.tooltip).toBe('Deepest stop anchor explanation');
 
-        setLegendItemHelp({ datasetIndex: 0 }, legend, 'Ignored');
-        expect(canvas.title).toBe('');
-        expect(canvas.style.cursor).toBe('');
+        delete chart.data.datasets[1].mvalueAnchor;
+        positionLegendHelpIcon(chart, icon, 'mvalueAnchor', 'Ignored');
+        expect(icon.style.display).toBe('none');
     });
 });
 

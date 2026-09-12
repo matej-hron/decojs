@@ -525,7 +525,8 @@ Validation and normalisation of `diveSetup` objects for chart consumption (~300 
 | `DEFAULT_DIVE_PROFILE_OPTIONS` | 156 | Chart display toggles |
 | `DEFAULT_TISSUE_PRESSURE_OPTIONS` | 184 | Tissue overlay defaults |
 | `mergeOptions(defaults, user)` | 210 | Shallow-per-key deep merge
-| `setLegendItemHelp(item, legend, text)` | — | Applies and clears native canvas help text for marked legend datasets
+| `createLegendHelpIcon()` | — | Creates the accessible, click-isolated DOM help icon used next to chart legend items
+| `positionLegendHelpIcon(chart, icon, marker, text)` | — | Positions a DOM help icon next to the legend dataset carrying `marker`, or hides it when absent
 | `validateDiveSetup(setup)` | 232 | Returns `{valid, errors}`
 | `normalizeDiveSetup(setup)` | 300 | Applies defaults, coerces types, returns a fresh object. Preserves `initialTissuePressures` from the input setup, defaulting to `null` (surface equilibrium). When non-null this value is threaded into each chart's `calculateTissueLoading` call (`DiveProfileChart.js:842`, `MValueChart.js:899`, `GFChart.js:871`) to seed tissues from a prior dive's residual state for repetitive-dive rendering.
 

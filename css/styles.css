@@ -2138,7 +2138,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.112";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.113";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -2461,6 +2461,11 @@ footer a {
 .dse-term-tooltip:focus-visible::after {
     opacity: 1;
     transform: translate(-50%, 0);
+}
+
+.chart-anchor-help::after {
+    top: calc(100% + 0.5rem);
+    bottom: auto;
 }
 
 .dse-field input[type="number"],

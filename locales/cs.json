@@ -1095,7 +1095,7 @@
             "alveolarPN2WithGases": "Alveolární pN₂ ({0})",
             "alveolarPN2Percent": "Alveolární pN₂ ({0} %)",
             "surfaceLine": "Hladina ({0} bar)",
-            "pAnchor": "Kotevní tlak (?) {0} bar ({1} m)",
+            "pAnchor": "Kotevní tlak {0} bar ({1} m)",
             "tooltipLabel": "{0}: okolní tlak {1} bar, tkáňový tlak {2} bar",
             "rulerTitle": "pravítko",
             "rulerCurrentPosition": "Aktuální poloha",
@@ -1109,7 +1109,7 @@
             "gfCorridor": "GF koridor",
             "leadingTissue": "Nejvyšší GF",
             "leadingTC": "Nejvyšší GF: TC{0} ({1} %)",
-            "pAnchor": "Kotevní tlak (?) {0} bar ({1} m)",
+            "pAnchor": "Kotevní tlak {0} bar ({1} m)",
             "tooltipLabel": "{0}: okolní tlak {1} bar, GF {2} %"
         }
     },
