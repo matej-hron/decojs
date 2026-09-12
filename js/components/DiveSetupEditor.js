@@ -790,7 +790,7 @@ export class DiveSetupEditor extends EventTarget {
         const section = document.createElement('details');
         const altitudeExplanation = escHtml(translate(
             'diveEditor.environment.altitudeExplanation',
-            'DecoJS converts altitude to atmospheric pressure using the standard atmosphere. Underwater it adds 0.1\u00a0bar per metre of depth. The calculation assumes full acclimatization.'
+            'Deco Theory converts altitude to atmospheric pressure using the standard atmosphere. Underwater it adds 0.1\u00a0bar per metre of depth. The calculation assumes full acclimatization.'
         ));
         section.className = 'dse-section dse-environment';
         section.open = false;

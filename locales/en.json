@@ -1221,7 +1221,7 @@
         "environment": {
             "title": "Environment",
             "altitude": "Altitude (m):",
-            "altitudeExplanation": "DecoJS converts altitude to atmospheric pressure using the standard atmosphere. Underwater it adds 0.1 bar per metre of depth. The calculation assumes full acclimatization.",
+            "altitudeExplanation": "Deco Theory converts altitude to atmospheric pressure using the standard atmosphere. Underwater it adds 0.1 bar per metre of depth. The calculation assumes full acclimatization.",
             "surfacePressure": "Calculated atmospheric pressure:",
             "acclimatizedHint": "Assumes the diver is fully acclimatized to this altitude."
         },
