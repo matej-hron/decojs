@@ -58,14 +58,16 @@ Verification: after two half-times the tissue should have closed 75% of the init
 
 ```javascript
 // js/decoModel.js:759 (signature)
-export function simulateDepthTime(tissuePressures, depth, time, n2Fraction, surfacePressure = SURFACE_PRESSURE)
+export function simulateDepthTime(tissuePressures, depth, time, n2Fraction, surfacePressure = SURFACE_PRESSURE, pressurePerMeter = PRESSURE_PER_METER)
 ```
 
 Iterates over all 16 compartments applying the Haldane equation at constant depth, returning a new `tissues` object. Called from `calculateTissueLoading()` (`js/decoModel.js:1178`) whenever two consecutive waypoints have the same depth.
 
 `surfacePressure` defaults to sea level for backward compatibility. Altitude-aware
 callers pass the local absolute atmospheric pressure, which changes the inspired
-inert-gas pressure at every depth.
+inert-gas pressure at every depth. `pressurePerMeter` defaults to the EN 13319
+conversion and carries the selected freshwater or seawater conversion into the
+constant-depth ambient pressure.
 
 ## Cross-references
 

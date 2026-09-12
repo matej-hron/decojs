@@ -141,6 +141,7 @@ import {
     insertGasSwitchWaypoints,
     calculateMOD,
     computeGasConsumption,
+    getDiveSetupPressurePerMeter,
     getDiveSetupSurfacePressure,
     getNDLStatus,
     renderDivePlanTableHTML
@@ -173,9 +174,12 @@ import {
     SURFACE_PRESSURE,
     getPressureAtAltitude,
     getSurfacePressure,
+    getPressurePerMeter,
     WATER_VAPOR_PRESSURE,
     N2_FRACTION,
     PRESSURE_PER_METER,
+    WATER_DENSITIES,
+    WATER_TYPES,
     DEFAULT_GF_LOW,
     DEFAULT_GF_HIGH,
     DECO_MODES,
@@ -1878,6 +1882,48 @@ describe('decoModel', () => {
             expect(getPressureAtAltitude(1000)).toBeCloseTo(0.899, 3);
             expect(getPressureAtAltitude(1500)).toBeCloseTo(0.846, 3);
             expect(getPressureAtAltitude(2500)).toBeCloseTo(0.747, 3);
+        });
+
+        test('water modes use the declared hydrostatic pressure factors', () => {
+            expect(getPressurePerMeter({ waterType: WATER_TYPES.STANDARD }))
+                .toBe(PRESSURE_PER_METER);
+            expect(getPressurePerMeter({ waterType: WATER_TYPES.FRESH }))
+                .toBeCloseTo(0.0980665, 9);
+            expect(getPressurePerMeter({ waterType: WATER_TYPES.SEA }))
+                .toBeCloseTo(0.1005181625, 9);
+            expect(WATER_DENSITIES[WATER_TYPES.FRESH]).toBe(1000);
+            expect(WATER_DENSITIES[WATER_TYPES.SEA]).toBe(1025);
+        });
+
+        test('water modes change ambient pressure in density order', () => {
+            const fresh = getAmbientPressure(
+                40, SURFACE_PRESSURE,
+                getPressurePerMeter({ waterType: WATER_TYPES.FRESH })
+            );
+            const standard = getAmbientPressure(40);
+            const sea = getAmbientPressure(
+                40, SURFACE_PRESSURE,
+                getPressurePerMeter({ waterType: WATER_TYPES.SEA })
+            );
+            expect(fresh).toBeLessThan(standard);
+            expect(standard).toBeLessThan(sea);
+        });
+
+        test('invalid water configuration fails explicitly', () => {
+            let unsupportedFailed = false;
+            let densityFailed = false;
+            try {
+                getPressurePerMeter({ waterType: 'brine' });
+            } catch {
+                unsupportedFailed = true;
+            }
+            try {
+                getPressurePerMeter({ waterDensity: 0 });
+            } catch {
+                densityFailed = true;
+            }
+            expect(unsupportedFailed).toBe(true);
+            expect(densityFailed).toBe(true);
         });
     });
 
@@ -4330,7 +4376,12 @@ describe('sea-level environment compatibility', () => {
         const legacy = generateDecoProfile(40, 30, gases, 30, 80, { enabled: false });
         const explicit = generateDecoProfile(
             40, 30, gases, 30, 80, { enabled: false },
-            { surfacePressure: getSurfacePressure({ altitude: 0 }) }
+            {
+                surfacePressure: getSurfacePressure({ altitude: 0 }),
+                pressurePerMeter: getPressurePerMeter({
+                    waterType: WATER_TYPES.STANDARD
+                })
+            }
         );
         expect(explicit).toEqual(legacy);
     });
@@ -4353,6 +4404,43 @@ describe('sea-level environment compatibility', () => {
     test('setup without environment resolves to the historical surface pressure', () => {
         expect(getDiveSetupSurfacePressure({})).toBe(SURFACE_PRESSURE);
         expect(getDiveSetupSurfacePressure({ environment: { altitude: 0 } })).toBe(SURFACE_PRESSURE);
+        expect(getDiveSetupPressurePerMeter({})).toBe(PRESSURE_PER_METER);
+    });
+
+    test('freshwater lengthens NDL and MOD while seawater shortens them', () => {
+        const freshFactor = getPressurePerMeter({ waterType: WATER_TYPES.FRESH });
+        const seaFactor = getPressurePerMeter({ waterType: WATER_TYPES.SEA });
+        const freshNdl = calculateNDL(30, N2_FRACTION, 1, null, SURFACE_PRESSURE, freshFactor).ndl;
+        const standardNdl = calculateNDL(30).ndl;
+        const seaNdl = calculateNDL(30, N2_FRACTION, 1, null, SURFACE_PRESSURE, seaFactor).ndl;
+
+        expect(freshNdl).toBeGreaterThanOrEqual(standardNdl);
+        expect(seaNdl).toBeLessThanOrEqual(standardNdl);
+        expect(calculateMOD(0.32, 1.4, SURFACE_PRESSURE, freshFactor))
+            .toBeGreaterThan(calculateMOD(0.32, 1.4));
+        expect(calculateMOD(0.32, 1.4, SURFACE_PRESSURE, seaFactor))
+            .toBeLessThanOrEqual(calculateMOD(0.32, 1.4));
+    });
+
+    test('water density changes gas consumption at the same indicated depth', () => {
+        const waypoints = [
+            { time: 0, depth: 0, gasId: 'air' },
+            { time: 1, depth: 30, gasId: 'air' },
+            { time: 11, depth: 30, gasId: 'air' }
+        ];
+        const consumption = (waterType) => {
+            const loading = calculateTissueLoading(waypoints, 0, {
+                gases,
+                pressurePerMeter: getPressurePerMeter({ waterType })
+            });
+            return computeGasConsumption(loading, gases, 20, 15, 50)
+                .consumedByGasId.air;
+        };
+
+        expect(consumption(WATER_TYPES.FRESH))
+            .toBeLessThan(consumption(WATER_TYPES.STANDARD));
+        expect(consumption(WATER_TYPES.SEA))
+            .toBeGreaterThan(consumption(WATER_TYPES.STANDARD));
     });
 });
 
@@ -4523,6 +4611,106 @@ describe('Decotengu sea-level reference matrix', () => {
         expect(checkedDepartures).toBe(17736);
         expect(maximumCeilingExcess).toBeLessThanOrEqual(0.01);
         expect(maximumTimelineDifference).toBeLessThanOrEqual(0.5);
+    });
+});
+
+describe('Decotengu water-mode reference matrix', () => {
+    const reference = JSON.parse(
+        readFileSync(
+            new URL('./decotengu-water-reference.json', import.meta.url),
+            'utf8'
+        )
+    );
+    const gasConfigs = {
+        air: [{ id: 'air', name: 'Air', o2: 0.21, n2: 0.79 }],
+        'air+ean50': [
+            { id: 'air', name: 'Air', o2: 0.21, n2: 0.79 },
+            { id: 'ean50', name: 'EAN50', o2: 0.50, n2: 0.50 }
+        ]
+    };
+
+    test('records the pinned private override used for all three water modes', () => {
+        expect(reference.generator).toBe('decotengu 0.14.1');
+        expect(reference.method).toContain('Engine._meter_to_bar');
+        expect(reference.method).toContain('Engine._p3m');
+        expect(reference.waterModes).toEqual({
+            standard: 0.1,
+            fresh: 0.0980665,
+            sea: 0.1005181625
+        });
+        expect(reference.skipped).toHaveLength(3);
+        expect(reference.scenarios).toHaveLength(105);
+    });
+
+    test('all EN, freshwater, and seawater scenarios stay within tolerance', () => {
+        setZHL16Variant(ZHL16_VARIANTS.C);
+        const coveredModes = new Set();
+        let maximumDifference = 0;
+
+        for (const scenario of reference.scenarios) {
+            coveredModes.add(scenario.waterType);
+            const gases = gasConfigs[scenario.gasConfig];
+            const bottomGas = gases[0];
+            const pressurePerMeter = scenario.pressurePerMeter;
+            let tissues = Object.fromEntries(
+                COMPARTMENTS.map(compartment => [
+                    compartment.id,
+                    getInitialTissueN2(bottomGas.n2)
+                ])
+            );
+            const descentTime = scenario.depth / 20;
+            tissues = simulateDepthChange(
+                tissues,
+                0,
+                scenario.depth,
+                descentTime,
+                bottomGas.n2,
+                SURFACE_PRESSURE,
+                pressurePerMeter
+            );
+            const atDepth = scenario.bottomTime - descentTime;
+            if (atDepth > 0) {
+                tissues = simulateDepthTime(
+                    tissues,
+                    scenario.depth,
+                    atDepth,
+                    bottomGas.n2,
+                    SURFACE_PRESSURE,
+                    pressurePerMeter
+                );
+            }
+            const schedule = generateDecoSchedule(
+                tissues,
+                scenario.depth,
+                bottomGas.n2,
+                scenario.gfLow / 100,
+                scenario.gfHigh / 100,
+                gases,
+                {
+                    decoMode: DECO_MODES.STANDARD,
+                    pressurePerMeter
+                }
+            );
+            const totalDeco = schedule.stops.reduce(
+                (sum, stop) => sum + stop.time,
+                0
+            );
+            const difference = Math.abs(totalDeco - scenario.totalDeco);
+            const tolerance = Math.max(5, scenario.totalDeco * 0.20);
+            maximumDifference = Math.max(maximumDifference, difference);
+            if (difference > tolerance) {
+                throw new Error(
+                    `Decotengu water mismatch for ${scenario.waterType} at ` +
+                    `${scenario.depth}m/${scenario.bottomTime}min ` +
+                    `${scenario.gasConfig} GF${scenario.gfLow}/${scenario.gfHigh}: ` +
+                    `reference=${scenario.totalDeco}, actual=${totalDeco}, ` +
+                    `tolerance=${tolerance}`
+                );
+            }
+        }
+
+        expect([...coveredModes].sort()).toEqual(['fresh', 'sea', 'standard']);
+        expect(maximumDifference).toBeLessThanOrEqual(3);
     });
 });
 
@@ -5344,12 +5532,25 @@ describe('normalizeDiveSetup - environment preservation', () => {
     };
 
     test('defaults existing profiles to sea level', () => {
-        expect(normalizeDiveSetup(base).environment).toEqual({ altitude: 0 });
+        expect(normalizeDiveSetup(base).environment).toEqual({
+            altitude: 0,
+            waterType: WATER_TYPES.STANDARD
+        });
     });
 
     test('preserves configured altitude', () => {
         expect(normalizeDiveSetup({ ...base, environment: { altitude: 1500 } }).environment)
-            .toEqual({ altitude: 1500 });
+            .toEqual({ altitude: 1500, waterType: WATER_TYPES.STANDARD });
+    });
+
+    test('preserves a configured water type', () => {
+        expect(normalizeDiveSetup({
+            ...base,
+            environment: { altitude: 0, waterType: WATER_TYPES.SEA }
+        }).environment).toEqual({
+            altitude: 0,
+            waterType: WATER_TYPES.SEA
+        });
     });
 
     test('defaults legacy staged profiles to standard mode', () => {
@@ -5712,7 +5913,8 @@ describe('DiveSetupEditor notation', () => {
                     context.elements.altitudeInput.value = '1500';
                     context.elements.altitudeInput.dispatchEvent(new dom.window.Event('input'));
 
-                    expect(context.elements.environmentSummaryHint.textContent).toBe('(1500\u00a0m)');
+                    expect(context.elements.environmentSummaryHint.textContent)
+                        .toBe('(1500\u00a0m · EN)');
                     expect(context.elements.surfacePressureValue.textContent).toContain('0.845');
                     expect(context.elements.surfacePressureValue.textContent).toContain('\u00a0bar');
                     const tooltip = section.querySelector('.dse-term-tooltip');
@@ -5723,6 +5925,14 @@ describe('DiveSetupEditor notation', () => {
                     expect(tooltip.getAttribute('aria-label'))
                         .toBe(tooltip.getAttribute('data-tooltip'));
                     expect(tooltip.getAttribute('tabindex')).toBe('0');
+                    expect(context.elements.waterTypeSelect.value)
+                        .toBe(WATER_TYPES.STANDARD);
+                    context.elements.waterTypeSelect.value = WATER_TYPES.SEA;
+                    context.elements.waterTypeSelect.dispatchEvent(
+                        new dom.window.Event('change')
+                    );
+                    expect(context.elements.environmentSummaryHint.textContent)
+                        .toBe('(1500\u00a0m · sea)');
                 } finally {
                     globalThis.document = previousDocument;
                     dom.window.close();
@@ -7677,6 +7887,7 @@ describe('sandbox dive warnings', () => {
         'calculateTissueLoading',
         'calculateCeilingTimeSeries',
         'getAmbientPressure',
+        'getDiveSetupPressurePerMeter',
         'getDiveSetupSurfacePressure',
         'SURFACE_PRESSURE',
         'computeGasConsumption',
@@ -7691,6 +7902,7 @@ describe('sandbox dive warnings', () => {
         }),
         () => [0, 0, 5, 0],
         (depth) => SURFACE_PRESSURE + depth / 10,
+        () => PRESSURE_PER_METER,
         () => SURFACE_PRESSURE,
         SURFACE_PRESSURE,
         (_results, gases) => ({
@@ -7831,7 +8043,23 @@ describe('decodeDiveSetup sanitizes the shared-link boundary (#65)', () => {
         };
 
         expect(decodeDiveSetup(encodeDiveSetup(setup)).environment)
-            .toEqual({ altitude: 1500 });
+            .toEqual({ altitude: 1500, waterType: WATER_TYPES.STANDARD });
+    });
+
+    test('round-trips valid water types and defaults invalid values', () => {
+        const valid = decodeDiveSetup(encode({
+            environment: { altitude: 0, waterType: WATER_TYPES.FRESH },
+            gases: [],
+            dives: []
+        }));
+        const invalid = decodeDiveSetup(encode({
+            environment: { altitude: 0, waterType: 'brine' },
+            gases: [],
+            dives: []
+        }));
+
+        expect(valid.environment.waterType).toBe(WATER_TYPES.FRESH);
+        expect(invalid.environment.waterType).toBe(WATER_TYPES.STANDARD);
     });
 
     test('round-trips a study mode and defaults unknown values safely', () => {

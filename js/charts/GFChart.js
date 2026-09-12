@@ -51,6 +51,7 @@ import {
     interpolateGF,
     getAmbientPressure,
     getSurfacePressure,
+    getPressurePerMeter,
     SURFACE_PRESSURE
 } from '../decoModel.js';
 import {
@@ -1063,11 +1064,13 @@ export class GFChart {
         const gases = this.diveSetup.gases;
         const surfaceInterval = this.diveSetup.surfaceInterval || 0;
         const surfacePressure = getSurfacePressure(this.diveSetup.environment);
+        const pressurePerMeter = getPressurePerMeter(this.diveSetup.environment);
 
         this.calculationResults = calculateTissueLoading(waypoints, surfaceInterval, {
             gases,
             initialTissuePressures: this.diveSetup.initialTissuePressures,
-            surfacePressure
+            surfacePressure,
+            pressurePerMeter
         });
         const hasGF = (this.diveSetup.gfLow ?? 100) < 100
             || (this.diveSetup.gfHigh ?? 100) < 100;
@@ -1148,7 +1151,18 @@ export class GFChart {
             // pAnchor vertical line
             if (pAnchor > surfacePressure) {
                 datasets.push({
-                    label: fmt(translate('chart.gf.pAnchor', 'Anchor pressure {0}\u00a0bar ({1}\u00a0m)'), fmtNum(pAnchor, 2), fmtNum(((pAnchor - surfacePressure) / 0.1), 1)),
+                    label: fmt(
+                        translate(
+                            'chart.gf.pAnchor',
+                            'Anchor pressure {0}\u00a0bar ({1}\u00a0m)'
+                        ),
+                        fmtNum(pAnchor, 2),
+                        fmtNum(
+                            (pAnchor - surfacePressure)
+                                / this.calculationResults.pressurePerMeter,
+                            1
+                        )
+                    ),
                     gfcAnchor: true,
                     data: [
                         { x: pAnchor, y: -10 },

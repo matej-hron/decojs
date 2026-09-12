@@ -13,9 +13,12 @@ import {
     simulateDepthChange,
     getInitialTissueN2,
     N2_FRACTION,
+    PRESSURE_PER_METER,
     SURFACE_PRESSURE,
     getAmbientPressure,
+    getPressurePerMeter,
     getSurfacePressure,
+    WATER_TYPES,
     DECO_MODES,
     getDecoMode
 } from './decoModel.js';
@@ -198,7 +201,7 @@ export function getDefaultSetup() {
         gfHigh: 100,  // Gradient Factor High (percentage)
         decoMode: DECO_MODES.STANDARD,
         surfaceInterval: 15,  // Post-dive surface time to show off-gassing
-        environment: { altitude: 0 },
+        environment: { altitude: 0, waterType: WATER_TYPES.STANDARD },
         units: {
             depth: "meters",
             time: "minutes",
@@ -340,6 +343,8 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
     // Exact descent time (matches decotengu/divetools).
     const roundUp = (x) => x;
     const surfacePressure = options.surfacePressure ?? SURFACE_PRESSURE;
+    const pressurePerMeter =
+        options.pressurePerMeter ?? getPressurePerMeter();
 
     // Get safety stop settings with defaults
     const safetyStopEnabled = safetyStop?.enabled ?? DEFAULT_SAFETY_STOP.enabled;
@@ -355,7 +360,8 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
 
     // Calculate NDL from a direct ascent checked at GF High.
     const { ndl, ndlExact, controllingCompartment } = calculateNDL(
-        maxDepth, bottomGas.n2, gfHighDec, null, surfacePressure
+        maxDepth, bottomGas.n2, gfHighDec, null, surfacePressure,
+        pressurePerMeter
     );
 
     // Calculate descent time
@@ -388,12 +394,12 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
             );
             auditTissues = simulateDepthChange(
                 auditTissues, 0, maxDepth, descentTime,
-                bottomGas.n2, surfacePressure
+                bottomGas.n2, surfacePressure, pressurePerMeter
             );
             if (bottomTime > descentTime) {
                 auditTissues = simulateDepthTime(
                     auditTissues, maxDepth, bottomTime - descentTime,
-                    bottomGas.n2, surfacePressure
+                    bottomGas.n2, surfacePressure, pressurePerMeter
                 );
             }
             decisionAudit = generateDecoSchedule(
@@ -426,12 +432,18 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
     });
     
     // Simulate descent
-    tissues = simulateDepthChange(tissues, 0, maxDepth, descentTime, bottomGas.n2, surfacePressure);
+    tissues = simulateDepthChange(
+        tissues, 0, maxDepth, descentTime, bottomGas.n2, surfacePressure,
+        pressurePerMeter
+    );
     
     // Simulate bottom time (from end of descent to bottomTime)
     const actualBottomDuration = bottomTime - descentTime;
     if (actualBottomDuration > 0) {
-        tissues = simulateDepthTime(tissues, maxDepth, actualBottomDuration, bottomGas.n2, surfacePressure);
+        tissues = simulateDepthTime(
+            tissues, maxDepth, actualBottomDuration, bottomGas.n2,
+            surfacePressure, pressurePerMeter
+        );
     }
     
     // Generate deco schedule (now returns gasSwitches and pAnchor too)
@@ -442,6 +454,7 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
         tissues, maxDepth, bottomGas.n2, gfLowDec, gfHighDec, gases,
         {
             ...options,
+            pressurePerMeter,
             ...(options.alignRuntimeDepartures
                 ? { runtimeStart: options.runtimeStart ?? bottomTime }
                 : {})
@@ -628,6 +641,8 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
     // Exact descent time (matches decotengu/divetools).
     const roundUp = (x) => x;
     const surfacePressure = options.surfacePressure ?? SURFACE_PRESSURE;
+    const pressurePerMeter =
+        options.pressurePerMeter ?? getPressurePerMeter();
 
     // Get safety stop settings with defaults
     const safetyStopEnabled = safetyStop?.enabled ?? DEFAULT_SAFETY_STOP.enabled;
@@ -643,7 +658,8 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
 
     // Calculate NDL from a direct ascent checked at GF High.
     const { ndl, ndlExact, controllingCompartment } = calculateNDL(
-        maxDepth, bottomGas.n2, gfHighDec, null, surfacePressure
+        maxDepth, bottomGas.n2, gfHighDec, null, surfacePressure,
+        pressurePerMeter
     );
 
     const descentTime = roundUp(maxDepth / DESCENT_SPEED);
@@ -684,16 +700,25 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
     });
     
     // Simulate descent
-    tissues = simulateDepthChange(tissues, 0, maxDepth, descentTime, bottomGas.n2, surfacePressure);
+    tissues = simulateDepthChange(
+        tissues, 0, maxDepth, descentTime, bottomGas.n2, surfacePressure,
+        pressurePerMeter
+    );
     
     // Simulate bottom time
     const actualBottomDuration = bottomTime - descentTime;
     if (actualBottomDuration > 0) {
-        tissues = simulateDepthTime(tissues, maxDepth, actualBottomDuration, bottomGas.n2, surfacePressure);
+        tissues = simulateDepthTime(
+            tissues, maxDepth, actualBottomDuration, bottomGas.n2,
+            surfacePressure, pressurePerMeter
+        );
     }
     
     // Generate deco schedule
-    const { stops } = generateDecoSchedule(tissues, maxDepth, bottomGas.n2, gfLowDec, gfHighDec, gases, options);
+    const { stops } = generateDecoSchedule(
+        tissues, maxDepth, bottomGas.n2, gfLowDec, gfHighDec, gases,
+        { ...options, pressurePerMeter }
+    );
     
     // Build waypoints
     const waypoints = [
@@ -765,9 +790,17 @@ export function generateDecoProfileSync(maxDepth, bottomTime, gases, gfLow, gfHi
  * @param {number} gfLow - GF Low as percentage (0-100), determines first stop
  * @returns {{ndl: number, controllingCompartment: number}}
  */
-export function getNDLForDepth(depth, gas, gfHigh, surfacePressure = SURFACE_PRESSURE) {
+export function getNDLForDepth(
+    depth,
+    gas,
+    gfHigh,
+    surfacePressure = SURFACE_PRESSURE,
+    pressurePerMeter = PRESSURE_PER_METER
+) {
     const n2 = gas?.n2 ?? N2_FRACTION;
-    return calculateNDL(depth, n2, gfHigh / 100, null, surfacePressure);
+    return calculateNDL(
+        depth, n2, gfHigh / 100, null, surfacePressure, pressurePerMeter
+    );
 }
 
 /**
@@ -898,6 +931,7 @@ export function generateDecisionAudit(setup) {
 
     const bottomGas = gases[0];
     const surfacePressure = getDiveSetupSurfacePressure(setup);
+    const pressurePerMeter = getDiveSetupPressurePerMeter(setup);
     const initialN2 = getInitialTissueN2(bottomGas.n2, surfacePressure);
     const seededTissues = setup.initialTissuePressures ?? null;
     let tissues = Object.fromEntries(
@@ -908,12 +942,13 @@ export function generateDecisionAudit(setup) {
     );
     const descentTime = maxDepth / 20;
     tissues = simulateDepthChange(
-        tissues, 0, maxDepth, descentTime, bottomGas.n2, surfacePressure
+        tissues, 0, maxDepth, descentTime, bottomGas.n2, surfacePressure,
+        pressurePerMeter
     );
     if (bottomTime > descentTime) {
         tissues = simulateDepthTime(
             tissues, maxDepth, bottomTime - descentTime,
-            bottomGas.n2, surfacePressure
+            bottomGas.n2, surfacePressure, pressurePerMeter
         );
     }
 
@@ -928,7 +963,8 @@ export function generateDecisionAudit(setup) {
             audit: true,
             decoMode: getDecoMode(setup),
             gasSwitchTime: setup.gasSwitchTime ?? DEFAULT_GAS_SWITCH_TIME,
-            surfacePressure
+            surfacePressure,
+            pressurePerMeter
         }
     );
     if (!seededTissues && schedule.anchorDepth === 0) {
@@ -985,10 +1021,15 @@ export function getGradientFactors(setup) {
  * @param {number} surfacePressure - Surface pressure in bar
  * @returns {number} MOD in meters
  */
-export function calculateMOD(o2Fraction, maxPpO2 = 1.4, surfacePressure = 1) {
+export function calculateMOD(
+    o2Fraction,
+    maxPpO2 = 1.4,
+    surfacePressure = 1,
+    pressurePerMeter = PRESSURE_PER_METER
+) {
     if (o2Fraction <= 0) return Infinity;
     const maxAmbient = maxPpO2 / o2Fraction;
-    const depth = (maxAmbient - surfacePressure) / 0.1;
+    const depth = (maxAmbient - surfacePressure) / pressurePerMeter;
     const nearestMeter = Math.round(depth);
     const tolerance = Number.EPSILON * Math.max(1, Math.abs(depth)) * 4;
     return Math.abs(depth - nearestMeter) <= tolerance
@@ -1015,14 +1056,26 @@ export function calculateEND(depth, heFraction = 0) {
  * @param {number} gasFraction - Gas fraction (0-1)
  * @returns {number} Partial pressure in bar
  */
-export function calculatePartialPressure(depth, gasFraction, surfacePressure = SURFACE_PRESSURE) {
-    const ambient = getAmbientPressure(depth, surfacePressure);
+export function calculatePartialPressure(
+    depth,
+    gasFraction,
+    surfacePressure = SURFACE_PRESSURE,
+    pressurePerMeter = PRESSURE_PER_METER
+) {
+    const ambient = getAmbientPressure(
+        depth, surfacePressure, pressurePerMeter
+    );
     return gasFraction * ambient;
 }
 
 /** Resolve the atmospheric pressure used by a serialized dive setup. */
 export function getDiveSetupSurfacePressure(setup) {
     return getSurfacePressure(setup?.environment);
+}
+
+/** Resolve hydrostatic pressure increase per metre from a serialized setup. */
+export function getDiveSetupPressurePerMeter(setup) {
+    return getPressurePerMeter(setup?.environment);
 }
 
 /**
@@ -1197,7 +1250,15 @@ export function getGasSwitchEvents(waypoints, gases) {
  * @param {number} maxPpO2 - Maximum ppO2 for MOD calculation (default 1.6 for deco)
  * @returns {Array<Object>} Waypoints with gas switches inserted
  */
-export function insertGasSwitchWaypoints(waypoints, gases, ascentRate = 10, maxPpO2 = 1.6, gasSwitchTime = DEFAULT_GAS_SWITCH_TIME) {
+export function insertGasSwitchWaypoints(
+    waypoints,
+    gases,
+    ascentRate = 10,
+    maxPpO2 = 1.6,
+    gasSwitchTime = DEFAULT_GAS_SWITCH_TIME,
+    surfacePressure = 1,
+    pressurePerMeter = PRESSURE_PER_METER
+) {
     if (!waypoints || waypoints.length < 2 || !gases || gases.length < 2) {
         return waypoints;
     }
@@ -1205,7 +1266,9 @@ export function insertGasSwitchWaypoints(waypoints, gases, ascentRate = 10, maxP
     // Calculate MOD for each deco gas
     const decoGases = gases.slice(1).map(gas => ({
         ...gas,
-        mod: calculateMOD(gas.o2, maxPpO2)
+        mod: calculateMOD(
+            gas.o2, maxPpO2, surfacePressure, pressurePerMeter
+        )
     })).sort((a, b) => b.mod - a.mod); // Sort by MOD descending (deeper first)
     
     // Find the bottom gas and max depth
@@ -1552,6 +1615,8 @@ export function computeGasConsumption(results, gases, sacRate, decoSacRate, rese
     const maxDepth = Math.max(...results.depthPoints);
     let leftMaxDepth = false;
     const surfacePressure = results.surfacePressure ?? SURFACE_PRESSURE;
+    const pressurePerMeter =
+        results.pressurePerMeter ?? PRESSURE_PER_METER;
     let gasSwitchActive = false;
     let gasSwitchDepth = null;
     let currentGasId = gases[0]?.id;
@@ -1580,7 +1645,9 @@ export function computeGasConsumption(results, gases, sacRate, decoSacRate, rese
             if (gasSwitchActive && depth !== gasSwitchDepth) gasSwitchActive = false;
             if (!(depth === 0 && prevDepth === 0)) {
                 const avgDepth = (depth + prevDepth) / 2;
-                const ambient = getAmbientPressure(avgDepth, surfacePressure);
+                const ambient = getAmbientPressure(
+                    avgDepth, surfacePressure, pressurePerMeter
+                );
                 const isDecoStop = leftMaxDepth && depth === prevDepth && depth > 0 && !gasSwitchActive;
                 const sac = isDecoStop ? decoSacRate : sacRate;
                 currentRate = sac * ambient;

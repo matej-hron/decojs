@@ -11,6 +11,9 @@ export function calculateTissueLoading(profile, surfaceInterval = 60, options = 
 
 `options.surfacePressure` selects the local surface pressure. If omitted, the
 entire calculation is identical to the historical sea-level path.
+`options.pressurePerMeter` selects the EN 13319, freshwater, or seawater
+depth-to-pressure conversion and is returned as `results.pressurePerMeter` so
+ceilings, charts, and gas consumption reuse the same factor.
 
 Returns:
 
@@ -19,6 +22,7 @@ Returns:
   timePoints: [...],          // minutes, at CALC_INTERVAL (10 s) resolution
   depthPoints: [...],         // meters, interpolated between waypoints
   ambientPressures: [...],    // bar
+  pressurePerMeter: 0.1,      // bar/m, resolved from the selected water type
   alveolarN2Pressures: [...], // bar, post water-vapor correction
   n2Fractions: [...],         // reflects gas switches
   gasNames: [...],

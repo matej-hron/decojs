@@ -52,7 +52,8 @@ export function calculateMValueRulerIntersections({
     gfLow,
     gfHigh,
     surfacePressure,
-    pAnchor
+    pAnchor,
+    pressurePerMeter = PRESSURE_PER_METER
 }) {
     const intersection = (gf) => {
         const pressure = getCompartmentCeiling(
@@ -63,7 +64,7 @@ export function calculateMValueRulerIntersections({
         );
         return {
             pressure,
-            depth: Math.max(0, (pressure - surfacePressure) / PRESSURE_PER_METER),
+            depth: Math.max(0, (pressure - surfacePressure) / pressurePerMeter),
             gf
         };
     };
@@ -106,7 +107,7 @@ export function calculateMValueRulerIntersections({
             pressure,
             depth: Math.max(
                 0,
-                (pressure - surfacePressure) / PRESSURE_PER_METER
+                (pressure - surfacePressure) / pressurePerMeter
             ),
             gf: interpolateGF(
                 pressure,
@@ -123,7 +124,7 @@ export function calculateMValueRulerIntersections({
             pressure: tissuePressure,
             depth: Math.max(
                 0,
-                (tissuePressure - surfacePressure) / PRESSURE_PER_METER
+                (tissuePressure - surfacePressure) / pressurePerMeter
             )
         },
         gfLow: low,
@@ -138,6 +139,7 @@ import {
     getCompartmentCeiling,
     interpolateGF,
     getSurfacePressure,
+    getPressurePerMeter,
     SURFACE_PRESSURE,
     PRESSURE_PER_METER
 } from '../decoModel.js';
@@ -1116,11 +1118,13 @@ export class MValueChart {
         const gases = this.diveSetup.gases;
         const surfaceInterval = this.diveSetup.surfaceInterval || 0;
         const surfacePressure = getSurfacePressure(this.diveSetup.environment);
+        const pressurePerMeter = getPressurePerMeter(this.diveSetup.environment);
         
         this.calculationResults = calculateTissueLoading(waypoints, surfaceInterval, {
             gases,
             initialTissuePressures: this.diveSetup.initialTissuePressures,
-            surfacePressure
+            surfacePressure,
+            pressurePerMeter
         });
         const hasGF = (this.diveSetup.gfLow ?? 100) < 100
             || (this.diveSetup.gfHigh ?? 100) < 100;
@@ -1161,7 +1165,8 @@ export class MValueChart {
                 gfLow,
                 gfHigh,
                 surfacePressure,
-                pAnchor: this.gfAnchor.pAnchor
+                pAnchor: this.gfAnchor.pAnchor,
+                pressurePerMeter: this.calculationResults.pressurePerMeter
             })
         };
     }
@@ -1490,7 +1495,11 @@ export class MValueChart {
             
             // Draw vertical line at pAnchor (GF Low anchor depth)
             if (pAnchor > surfacePressure) {
-                const anchorDepthM = fmtNum(((pAnchor - surfacePressure) / 0.1), 1);
+                const anchorDepthM = fmtNum(
+                    (pAnchor - surfacePressure)
+                        / this.calculationResults.pressurePerMeter,
+                    1
+                );
                 datasets.push({
                     label: fmt(translate('chart.mvalue.pAnchor', 'Anchor pressure {0}\u00a0bar ({1}\u00a0m)'), fmtNum(pAnchor, 2), anchorDepthM),
                     mvalueAnchor: true,

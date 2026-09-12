@@ -119,7 +119,10 @@ for (let i = 0; i < results.timePoints.length; i++) {
     for (const comp of COMPARTMENTS) {
         const tissueP = tissuePressures[comp.id];
         const ceilingPressure = getCompartmentCeiling(tissueP, comp.aN2, comp.bN2, gf);
-        const ceilingDepth = Math.max(0, (ceilingPressure - SURFACE_PRESSURE) / PRESSURE_PER_METER);
+        const ceilingDepth = Math.max(
+            0,
+            (ceilingPressure - surfacePressure) / pressurePerMeter
+        );
         compartmentCeilings[comp.id].push(ceilingDepth);
         if (ceilingDepth > maxCeilingDepth) maxCeilingDepth = ceilingDepth;
     }

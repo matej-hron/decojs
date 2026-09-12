@@ -8,7 +8,11 @@
  * Pure module — no DOM, no side effects.
  */
 
-import { generateDecoProfile, getDiveSetupSurfacePressure } from './diveSetup.js';
+import {
+    generateDecoProfile,
+    getDiveSetupPressurePerMeter,
+    getDiveSetupSurfacePressure
+} from './diveSetup.js';
 import { calculateTissueLoading, simulateDepthTime, calculateNDL, N2_FRACTION } from './decoModel.js';
 
 /**
@@ -49,6 +53,7 @@ export function planTrip(diveSetup) {
     const gfLow = diveSetup.gfLow ?? 100;
     const gfHigh = diveSetup.gfHigh ?? 100;
     const surfacePressure = getDiveSetupSurfacePressure(diveSetup);
+    const pressurePerMeter = getDiveSetupPressurePerMeter(diveSetup);
 
     const ordered = [...diveSetup.dives].sort((a, b) => a.startDateTime - b.startDateTime);
 
@@ -69,7 +74,14 @@ export function planTrip(diveSetup) {
                 seed = { ...tissue };                       // no off-gassing
             } else {
                 surfaceIntervalBefore = gap;
-                seed = simulateDepthTime(tissue, 0, gap, N2_FRACTION, surfacePressure);
+                seed = simulateDepthTime(
+                    tissue,
+                    0,
+                    gap,
+                    N2_FRACTION,
+                    surfacePressure,
+                    pressurePerMeter
+                );
             }
         }
 
@@ -87,7 +99,14 @@ export function planTrip(diveSetup) {
             // the way dive tables do — from leaving the surface, descent included — so it
             // drops straight into bottomTime with no correction, and a moved NDL-locked
             // dive shows the SAME number the add-dialog showed at creation.
-            const ndl = calculateNDL(dive.maxDepth, n2, gfHigh / 100, seed, surfacePressure).ndl;
+            const ndl = calculateNDL(
+                dive.maxDepth,
+                n2,
+                gfHigh / 100,
+                seed,
+                surfacePressure,
+                pressurePerMeter
+            ).ndl;
             const capped = Number.isFinite(ndl) ? Math.min(ndl, NDL_LOCK_CAP) : NDL_LOCK_CAP;
             const descentTime = dive.maxDepth / 20;   // DESCENT_SPEED = 20 m/min
             // If the actual bottom phase (capped − descentTime) is under a minute, there is no
@@ -103,7 +122,8 @@ export function planTrip(diveSetup) {
 
         const decoOpts = {
             ...(seed ? { initialTissuePressures: seed } : {}),
-            surfacePressure
+            surfacePressure,
+            pressurePerMeter
         };
         // Safety stops are disabled for the trip planner: a 3-min stop on no-deco dives inflates
         // runtime/TTS inconsistently across dives and obscures the calendar deco times.

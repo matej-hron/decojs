@@ -1234,7 +1234,14 @@
         "environment": {
             "title": "Entorno",
             "altitude": "Altitud (m):",
-            "altitudeExplanation": "Deco Theory convierte la altitud en presión atmosférica mediante la atmósfera estándar. Bajo el agua añade 0,1 bar por cada metro de profundidad. El cálculo supone una aclimatación completa.",
+            "altitudeExplanation": "Deco Theory convierte la altitud en presión atmosférica mediante la atmósfera estándar. El tipo de agua seleccionado determina la conversión de profundidad a presión hidrostática. El cálculo supone una aclimatación completa.",
+            "waterType": "Tipo de agua:",
+            "waterStandard": "Estándar EN 13319 (10 m = 1 bar)",
+            "waterFresh": "Agua dulce",
+            "waterSea": "Agua de mar",
+            "waterStandardShort": "EN",
+            "waterFreshShort": "dulce",
+            "waterSeaShort": "mar",
             "surfacePressure": "Presión atmosférica calculada:",
             "acclimatizedHint": "Supone que el buceador está completamente aclimatado a esta altitud."
         },

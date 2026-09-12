@@ -24,7 +24,11 @@ Note: $R$ is the **rate of change of alveolar pressure**, not of depth. Convert 
 
 $R$ must reflect the alveolar N₂ rate, which equals the ambient pressure rate scaled by the gas's inert fraction:
 
-$$R = \frac{dP_{alv}}{dt} = f_{N_2} \cdot \frac{dP_{amb}}{dt} = f_{N_2} \cdot \text{(m/min)} \cdot 0.1$$
+$$R = \frac{dP_{alv}}{dt} = f_{N_2} \cdot \frac{dP_{amb}}{dt} = f_{N_2} \cdot \text{(m/min)} \cdot \frac{\rho g}{10^5}$$
+
+The default EN 13319 conversion substitutes exactly 0.1&nbsp;bar/m.
+Freshwater and seawater use
+0.0980665&nbsp;bar/m and 0.1005181625&nbsp;bar/m respectively.
 
 Examples (air, $f_{N_2} = 0.7902$):
 
@@ -80,7 +84,7 @@ Tissue barely moved — TC5 is slow relative to a 0.9-min segment. Compare to TC
 
 ```javascript
 // js/decoModel.js:784 (signature)
-export function simulateDepthChange(tissuePressures, startDepth, endDepth, time, n2Fraction, surfacePressure = SURFACE_PRESSURE)
+export function simulateDepthChange(tissuePressures, startDepth, endDepth, time, n2Fraction, surfacePressure = SURFACE_PRESSURE, pressurePerMeter = PRESSURE_PER_METER)
 ```
 
 `calculateTissueLoading()` iterates across an entire waypoint array:
@@ -90,7 +94,7 @@ export function simulateDepthChange(tissuePressures, startDepth, endDepth, time,
 export function calculateTissueLoading(profile, surfaceInterval = 60, options = {})
 ```
 
-It samples at 10-second resolution (`CALC_INTERVAL = 10` s) — for each interval it decides descent/level/ascent and dispatches to Haldane or Schreiner accordingly, threading tissue state forward. Gas switches are respected via the `gasId` field on waypoints. `options.surfacePressure` supplies the local atmospheric pressure for altitude dives.
+It samples at 10-second resolution (`CALC_INTERVAL = 10` s) — for each interval it decides descent/level/ascent and dispatches to Haldane or Schreiner accordingly, threading tissue state forward. Gas switches are respected via the `gasId` field on waypoints. `options.surfacePressure` supplies the local atmospheric pressure for altitude dives; `options.pressurePerMeter` supplies the selected EN, freshwater, or seawater depth conversion.
 
 ## Haldane as degenerate case
 

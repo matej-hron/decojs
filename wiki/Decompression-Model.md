@@ -35,10 +35,15 @@ Defined at the top of `js/decoModel.js`:
 export const SURFACE_PRESSURE = 1.01325;       // 1 atm exactly, in bar
 export const WATER_VAPOR_PRESSURE = 0.0627;    // alveolar H2O correction at 37°C, in bar
 export const N2_FRACTION = 0.7902;             // N2 + Ar lumped, per ZH-L convention
-export const PRESSURE_PER_METER = 0.1;         // fresh-water convention, bar/m
+export const PRESSURE_PER_METER = 0.1;         // EN 13319 convention, bar/m
 ```
 
-`N2_FRACTION = 0.7902` (not 0.79) is the standard Bühlmann convention — argon (~0.93%) is lumped into the nitrogen compartment because it has similar kinetics. `PRESSURE_PER_METER = 0.1` is the fresh-water value; sea water would be slightly higher but DecoJS uses the rounded educational convention.
+`N2_FRACTION = 0.7902` (not 0.79) is the standard Bühlmann convention — argon (~0.93%) is lumped into the nitrogen compartment because it has similar kinetics.
+`PRESSURE_PER_METER = 0.1` is the default EN 13319 indicated-depth
+convention. `getPressurePerMeter(environment)` also supports freshwater
+(1000&nbsp;kg/m³, 0.0980665&nbsp;bar/m) and seawater (1025&nbsp;kg/m³,
+0.1005181625&nbsp;bar/m). Profiles without `environment.waterType` remain on
+the EN default for backward compatibility.
 
 `SURFACE_PRESSURE` remains the backward-compatible sea-level default. Altitude-aware
 calculations call `getPressureAtAltitude(altitude)` and pass the resulting absolute
@@ -82,10 +87,12 @@ The absolute ambient pressure at depth $d$ is then
 $$
 p_{\mathrm{amb}}(h,d)
 =
-p_{\mathrm{atm}}(h) + 0.1d.
+p_{\mathrm{atm}}(h) + \frac{\rho g d}{10^5}.
 $$
 
-Thus, at an altitude of 2,000&nbsp;m and a depth of 7.5&nbsp;m, DecoJS uses
+The EN mode substitutes exactly 0.1&nbsp;bar/m; the density-based modes use
+$\rho = 1000$&nbsp;kg/m³ or 1025&nbsp;kg/m³ and standard gravity. Thus, in EN mode
+at an altitude of 2,000&nbsp;m and a depth of 7.5&nbsp;m, DecoJS uses
 $p_{\mathrm{amb}} \approx 0.795 + 0.750 = 1.545\ \mathrm{bar}$. This local
 surface pressure is threaded through initial tissue saturation, inspired-gas
 pressure, NDL, ceilings, the GF ramp, MOD adjustment, and decompression

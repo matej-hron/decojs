@@ -6,7 +6,7 @@ npm test
 
 Runs `node tests/run-tests.mjs`. No external test framework — `tests/run-tests.mjs` implements `describe`/`test`/`expect` inline (lines 10–140) with matchers `.toBe`, `.toEqual`, `.toBeCloseTo`, `.toBeGreaterThan`, `.toBeLessThan`, `.toHaveProperty`, `.toHaveLength`, `.toBeDefined`. Output is one line per test, then a pass/fail summary.
 
-**472 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
+**481 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
 
 `npm test` is required to pass before every commit per `CLAUDE.md`.
 
@@ -51,8 +51,10 @@ re-simulated destination ceiling may differ by at most 1 cm.
 
 The canonical suite directly checks the 3900 sea-level scenarios in
 `tests/decotengu-reference.json` and 15,986 altitude scenarios in
-`tests/decotengu-altitude-reference.json`. The original reporting script remains
-runnable standalone as `node tests/decotengu-comparison.test.mjs`.
+`tests/decotengu-altitude-reference.json`. It also checks 105 scenarios split
+equally across EN 13319, freshwater, and seawater in
+`tests/decotengu-water-reference.json`. The reporting script remains runnable
+standalone as `node tests/decotengu-comparison.test.mjs`.
 
 The standard staged-mode gate also checks schedule structure, not only total
 time: every emitted stop is on the 3 m grid and lasts at least one minute.
@@ -81,6 +83,15 @@ scenarios at 500, 1000, 1500, and 2500 m. Regenerate it with
 tests/decotengu-altitude-reference.json`. Decotengu receives the absolute
 `engine.surface_pressure`; the normal test run only reads the generated JSON and
 does not require Python or Decotengu.
+
+**Water-mode reference data.** `tests/decotengu-water-reference.json` adds
+35 scenarios for each of the EN 13319, freshwater, and seawater modes.
+Regenerate it with
+`python3 scripts/generate_decotengu_water_reference.py >
+tests/decotengu-water-reference.json`. DecoTengu 0.14.1 has no public water
+density API, so the pinned generator deliberately overrides both copied private
+conversion fields, `Engine._meter_to_bar` and `Engine._p3m`, and records that
+method plus the exact factor in the JSON metadata.
 
 **Scenario coverage.**
 
@@ -187,9 +198,9 @@ What is currently not covered — honest inventory so callers know where to be c
 - **Keyboard shortcuts.** The M-value ruler's `T` shortcut and the fullscreen `F` shortcut in all three chart classes are tested. Arrow-key / space / home / end playback shortcuts are not.
 - **Helium.** `COMPARTMENTS` carries He coefficients but the algorithm lumps He into N₂ via `n2Fraction`. Full trimix (separate He kinetics) is not implemented and not tested. Gas definitions accept `he > 0` but no decotengu-reference scenarios exercise it.
 - **SAC / gas consumption edge cases.** `computeGasConsumption` has basic coverage but not realistic multi-dive or bail-out scenarios.
-- **Salinity.** Altitude is covered by standard-atmosphere unit tests, exact
-  sea-level compatibility tests, and 15,986 Decotengu scenarios. Water-density
-  adjustment remains unimplemented; the model still uses the educational
-  `0.1 bar/m` conversion.
+- **Water mode.** Unit tests cover the exact EN 13319, freshwater, and seawater
+  factors; compatibility tests prove missing configuration remains exactly
+  equivalent to the historical 0.1&nbsp;bar/m path; URL and editor tests cover
+  selection and fallback; and 105 pinned DecoTengu scenarios cover schedules.
 
 Cross-link: see the individual algorithm chapters ([Algo-02-NDL-Calculation](Algo-02-NDL-Calculation.md), [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md), [Algo-04-Deco-Stop-Loop](Algo-04-Deco-Stop-Loop.md), [Algo-05-Multi-Gas-Switching](Algo-05-Multi-Gas-Switching.md)) for which algorithm each test file exercises.
