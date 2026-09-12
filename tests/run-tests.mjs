@@ -4859,6 +4859,14 @@ describe('DiveSetupEditor notation', () => {
                     expect(context.elements.environmentSummaryHint.textContent).toBe('(1500\u00a0m)');
                     expect(context.elements.surfacePressureValue.textContent).toContain('0.845');
                     expect(context.elements.surfacePressureValue.textContent).toContain('\u00a0bar');
+                    const tooltip = section.querySelector('.dse-term-tooltip');
+                    expect(Boolean(tooltip)).toBe(true);
+                    expect(tooltip.getAttribute('data-tooltip')).toContain(
+                        'standard atmosphere'
+                    );
+                    expect(tooltip.getAttribute('aria-label'))
+                        .toBe(tooltip.getAttribute('data-tooltip'));
+                    expect(tooltip.getAttribute('tabindex')).toBe('0');
                 } finally {
                     globalThis.document = previousDocument;
                     dom.window.close();

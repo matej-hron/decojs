@@ -788,13 +788,22 @@ export class DiveSetupEditor extends EventTarget {
 
     _buildEnvironmentSection() {
         const section = document.createElement('details');
+        const altitudeExplanation = escHtml(translate(
+            'diveEditor.environment.altitudeExplanation',
+            'DecoJS converts altitude to atmospheric pressure using the standard atmosphere. Underwater it adds 0.1\u00a0bar per metre of depth. The calculation assumes full acclimatization.'
+        ));
         section.className = 'dse-section dse-environment';
         section.open = false;
         section.innerHTML = `
             <summary>🏔️ ${translate('diveEditor.environment.title', 'Environment')} <span class="dse-summary-hint">(0\u00a0m)</span></summary>
             <div class="dse-environment-content">
                 <div class="dse-field">
-                    <label>${translate('diveEditor.environment.altitude', 'Altitude (m):')}</label>
+                    <label>
+                        ${translate('diveEditor.environment.altitude', 'Altitude (m):')}
+                        <span class="dse-term-tooltip" tabindex="0" role="note"
+                            aria-label="${altitudeExplanation}"
+                            data-tooltip="${altitudeExplanation}">?</span>
+                    </label>
                     <input type="number" class="dse-altitude-input form-input" value="0" min="0" max="5000" step="100">
                 </div>
                 <p class="dse-hint">

@@ -1221,6 +1221,7 @@
         "environment": {
             "title": "Entorno",
             "altitude": "Altitud (m):",
+            "altitudeExplanation": "DecoJS convierte la altitud en presión atmosférica mediante la atmósfera estándar. Bajo el agua añade 0,1 bar por cada metro de profundidad. El cálculo supone una aclimatación completa.",
             "surfacePressure": "Presión atmosférica calculada:",
             "acclimatizedHint": "Supone que el buceador está completamente aclimatado a esta altitud."
         },
