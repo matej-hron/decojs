@@ -856,12 +856,12 @@ export class GFChart {
         return isLeading || isPAnchor;
     }
 
-    _formatControllingTissueLabel(compartment, gfPercent) {
+    _formatMaxGFLabel(compartment, gfPercent) {
         if (!compartment) {
-            return translate('chart.gf.leadingTissue', 'Controlling tissue');
+            return translate('chart.gf.leadingTissue', 'Highest GF');
         }
         return fmt(
-            translate('chart.gf.leadingTC', 'Controlling: TC{0} ({1}%)'),
+            translate('chart.gf.leadingTC', 'Highest GF: TC{0} ({1}%)'),
             compartment.id,
             fmtNum(gfPercent, 0)
         );
@@ -1062,19 +1062,19 @@ export class GFChart {
                 results.compartments[comp.id].pressures[timeIndex]
             ])
         );
-        const currentControlling = calculateMaxGF(
+        const currentMaxGF = calculateMaxGF(
             currentTissuePressures,
             currentAmbient
         );
-        const currentControllingComp = COMPARTMENTS.find(
-            comp => comp.id === currentControlling.leadingCompartment
+        const currentMaxGFComp = COMPARTMENTS.find(
+            comp => comp.id === currentMaxGF.leadingCompartment
         );
-        const controllingLabel = this._formatControllingTissueLabel(
-            currentControllingComp,
-            currentControlling.gfMax * 100
+        const maxGFLabel = this._formatMaxGFLabel(
+            currentMaxGFComp,
+            currentMaxGF.gfMax * 100
         );
 
-        // Controlling tissue envelope - max positive GF% across supersaturated tissues
+        // Maximum positive GF% envelope across supersaturated tissues
         if (this.options.showTrail && results.timePoints) {
             const envelopeData = [];
             for (let i = 0; i <= timeIndex; i++) {
@@ -1093,7 +1093,7 @@ export class GFChart {
                 });
             }
             datasets.push({
-                label: controllingLabel,
+                label: maxGFLabel,
                 data: envelopeData,
                 gfcGroup: 'leading-tissue',
                 gfcLegendItem: true,
@@ -1108,16 +1108,16 @@ export class GFChart {
             });
         }
 
-        // Controlling tissue dot (largest positive GF% at current time)
-        if (currentControllingComp) {
+        // Compartment with the largest positive GF% at the current time
+        if (currentMaxGFComp) {
             datasets.push({
-                label: controllingLabel,
-                data: [{ x: currentAmbient, y: currentControlling.gfMax * 100 }],
+                label: maxGFLabel,
+                data: [{ x: currentAmbient, y: currentMaxGF.gfMax * 100 }],
                 gfcGroup: 'leading-tissue',
                 gfcLegendItem: false,
                 hidden: !this.showLeadingTissue,
                 backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                borderColor: currentControllingComp.color,
+                borderColor: currentMaxGFComp.color,
                 borderWidth: 3,
                 pointRadius: 10,
                 pointStyle: 'circle',
