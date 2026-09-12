@@ -20,6 +20,7 @@
  *   Up/Down: Move compartment selection to slower/faster tissues
  *   Shift+Up: Expand selection to include slower tissue
  *   Shift+Down: Remove slowest tissue from selection
+ *   R: Toggle the intersection ruler for the hovered/selected tissue
  * 
  * Usage:
  *   import { MValueChart } from './charts/MValueChart.js';
@@ -44,13 +45,52 @@ function fmt(str, ...values) {
         return v === undefined ? '' : String(v);
     });
 }
+
+export function calculateMValueRulerIntersections({
+    tissuePressure,
+    compartment,
+    gfLow,
+    activeGF,
+    gfHigh,
+    surfacePressure
+}) {
+    const intersection = (gf) => {
+        const pressure = getCompartmentCeiling(
+            tissuePressure,
+            compartment.aN2,
+            compartment.bN2,
+            gf
+        );
+        return {
+            pressure,
+            depth: Math.max(0, (pressure - surfacePressure) / PRESSURE_PER_METER),
+            gf
+        };
+    };
+
+    return {
+        equilibrium: {
+            pressure: tissuePressure,
+            depth: Math.max(
+                0,
+                (tissuePressure - surfacePressure) / PRESSURE_PER_METER
+            )
+        },
+        gfLow: intersection(gfLow),
+        activeGF: intersection(activeGF),
+        gfHigh: intersection(gfHigh)
+    };
+}
 import {
     calculateTissueLoading,
     getMValue,
     getAdjustedMValue,
+    getCompartmentCeiling,
     interpolateGF,
+    calculateCeilingTimeSeriesDetailed,
     getSurfacePressure,
-    SURFACE_PRESSURE
+    SURFACE_PRESSURE,
+    PRESSURE_PER_METER
 } from '../decoModel.js';
 import {
     calculateChartGFAnchor,
@@ -113,6 +153,7 @@ export class MValueChart {
         this.calculationResults = null;
         this.currentTimeIndex = 0;
         this.visibleCompartments = new Set();
+        this.rulerCompartmentId = null;
         this.isPlaying = false;
         this.playInterval = null;
         this.savedZoomState = null;
@@ -396,7 +437,10 @@ export class MValueChart {
         // Shortcut legend
         const hint = document.createElement('div');
         hint.style.cssText = 'font-size: 0.7rem; color: var(--text-muted, #888); margin-top: 2px; padding: 0 4px;';
-        hint.textContent = translate('chart.hints.compartments', 'Click = select one · Shift+click = toggle · ←→ step · Space play · F fullscreen');
+        hint.textContent = translate(
+            'chart.hints.mvalueCompartments',
+            'Click = select one · Shift+click = toggle · ←→ step · Space play · R ruler · F fullscreen'
+        );
         this.controlsContainer.appendChild(hint);
     }
     
@@ -537,6 +581,12 @@ export class MValueChart {
                     } else {
                         this._moveCompartmentsFaster();
                     }
+                    break;
+
+                case 'r':
+                case 'R':
+                    e.preventDefault();
+                    this._toggleRuler();
                     break;
                     
                 case 'Escape':
@@ -686,6 +736,28 @@ export class MValueChart {
         const depth = this.calculationResults.depthPoints[this.currentTimeIndex] || 0;
         this.timeDisplay.textContent = fmt(translate('chart.timeDisplay', '{0}\u00a0min @ {1}\u00a0m'), fmtNum(time, 1), fmtNum(depth, 1));
         this._renderMiniProfile();
+    }
+
+    _toggleRuler() {
+        const active = this.chart?.getActiveElements?.() || [];
+        const hoveredId = active
+            .map(({ datasetIndex }) =>
+                this.chart.data.datasets[datasetIndex]?.mvalueCompartmentId
+            )
+            .find(Boolean);
+
+        if (this.rulerCompartmentId && !hoveredId) {
+            this.rulerCompartmentId = null;
+        } else {
+            const selectedId = hoveredId ??
+                (this.visibleCompartments.size === 1
+                    ? [...this.visibleCompartments][0]
+                    : null);
+            if (!selectedId) return;
+            this.rulerCompartmentId =
+                this.rulerCompartmentId === selectedId ? null : selectedId;
+        }
+        this._render();
     }
 
     /**
@@ -911,7 +983,156 @@ export class MValueChart {
         this.gfAnchor = hasGF
             ? calculateChartGFAnchor(this.diveSetup, this.calculationResults)
             : { pAnchor: surfacePressure, anchorDepth: 0 };
+        this.ceilingDetails = calculateCeilingTimeSeriesDetailed(
+            this.calculationResults,
+            (this.diveSetup.gfLow || 100) / 100,
+            (this.diveSetup.gfHigh || 100) / 100,
+            this.gfAnchor.pAnchor
+        );
         this._updateTimeDisplay();
+    }
+
+    _getRulerData() {
+        if (!this.rulerCompartmentId || !this.calculationResults) return null;
+        if (!this.visibleCompartments.has(this.rulerCompartmentId)) return null;
+        const compartment = COMPARTMENTS.find(
+            comp => comp.id === this.rulerCompartmentId
+        );
+        if (!compartment) return null;
+
+        const tissuePressure = this.calculationResults
+            .compartments[compartment.id]
+            .pressures[this.currentTimeIndex];
+        const gfLow = (this.diveSetup.gfLow || 100) / 100;
+        const gfHigh = (this.diveSetup.gfHigh || 100) / 100;
+        const activeGF = this.ceilingDetails?.gfValues[this.currentTimeIndex] ??
+            gfLow;
+        const surfacePressure = this.calculationResults.surfacePressure ??
+            SURFACE_PRESSURE;
+
+        return {
+            compartment,
+            tissuePressure,
+            activeGF,
+            intersections: calculateMValueRulerIntersections({
+                tissuePressure,
+                compartment,
+                gfLow,
+                activeGF,
+                gfHigh,
+                surfacePressure
+            })
+        };
+    }
+
+    _drawRuler(chart) {
+        const ruler = this._getRulerData();
+        if (!ruler) return;
+
+        const { ctx, chartArea, scales } = chart;
+        const y = scales.y.getPixelForValue(ruler.tissuePressure);
+        if (y < chartArea.top || y > chartArea.bottom) return;
+
+        const t = theme();
+        const rows = [
+            {
+                label: translate('chart.mvalue.rulerEquilibrium', 'p_t = p_amb'),
+                value: ruler.intersections.equilibrium,
+                color: t.colors.ambient
+            },
+            {
+                label: fmt(
+                    translate('chart.mvalue.rulerGFLow', 'GF Low {0}%'),
+                    fmtNum(ruler.intersections.gfLow.gf * 100, 0)
+                ),
+                value: ruler.intersections.gfLow,
+                color: '#f39c12'
+            },
+            {
+                label: fmt(
+                    translate('chart.mvalue.rulerActiveGF', 'Current GF {0}% · ceiling'),
+                    fmtNum(ruler.activeGF * 100, 1)
+                ),
+                value: ruler.intersections.activeGF,
+                color: ruler.compartment.color
+            },
+            {
+                label: fmt(
+                    translate('chart.mvalue.rulerGFHigh', 'GF High {0}%'),
+                    fmtNum(ruler.intersections.gfHigh.gf * 100, 0)
+                ),
+                value: ruler.intersections.gfHigh,
+                color: '#9b59b6'
+            }
+        ];
+
+        ctx.save();
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = ruler.compartment.color;
+        ctx.setLineDash([6, 4]);
+        ctx.beginPath();
+        ctx.moveTo(chartArea.left, y);
+        ctx.lineTo(chartArea.right, y);
+        ctx.stroke();
+
+        for (const row of rows) {
+            const x = scales.x.getPixelForValue(row.value.pressure);
+            if (x < chartArea.left || x > chartArea.right) continue;
+            ctx.strokeStyle = row.color;
+            ctx.globalAlpha = 0.55;
+            ctx.setLineDash([3, 4]);
+            ctx.beginPath();
+            ctx.moveTo(x, chartArea.top);
+            ctx.lineTo(x, chartArea.bottom);
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+            ctx.fillStyle = row.color;
+            ctx.beginPath();
+            ctx.arc(x, y, 4, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        const header = fmt(
+            translate('chart.mvalue.rulerHeader', 'TC{0} ruler · p_t={1}\u00a0bar'),
+            ruler.compartment.id,
+            fmtNum(ruler.tissuePressure, 2)
+        );
+        const lines = rows.map(row => fmt(
+            translate('chart.mvalue.rulerIntersection', '{0}: {1}\u00a0bar · {2}\u00a0m'),
+            row.label,
+            fmtNum(row.value.pressure, 2),
+            fmtNum(row.value.depth, 1)
+        ));
+        ctx.font = `600 ${t.sizes.xs}px ${t.fonts.body}`;
+        const panelWidth = Math.max(
+            ctx.measureText(header).width,
+            ...lines.map(line => ctx.measureText(line).width)
+        ) + 24;
+        const lineHeight = t.sizes.xs + 7;
+        const panelHeight = (lines.length + 1) * lineHeight + 14;
+        const panelX = chartArea.left + 10;
+        const panelY = chartArea.top + 10;
+
+        ctx.globalAlpha = 0.92;
+        ctx.fillStyle = t.colors.surface;
+        ctx.fillRect(panelX, panelY, panelWidth, panelHeight);
+        ctx.globalAlpha = 1;
+        ctx.strokeStyle = t.colors.grid;
+        ctx.setLineDash([]);
+        ctx.strokeRect(panelX, panelY, panelWidth, panelHeight);
+
+        ctx.fillStyle = t.colors.text;
+        ctx.fillText(header, panelX + 12, panelY + lineHeight);
+        ctx.font = `500 ${t.sizes.xs}px ${t.fonts.body}`;
+        lines.forEach((line, index) => {
+            ctx.fillStyle = rows[index].color;
+            ctx.fillText(
+                line,
+                panelX + 12,
+                panelY + (index + 2) * lineHeight
+            );
+        });
+        ctx.restore();
     }
     
     _render() {
@@ -1166,6 +1387,8 @@ export class MValueChart {
             datasets.push({
                 label: fmt(translate('chart.mvalue.tcLabel', 'TC{0} ({1}\u00a0min)'), comp.id, fmtNum(comp.halfTime)),
                 data: [{ x: currentAmbient, y: currentTissue }],
+                mvalueCompartmentId: comp.id,
+                mvalueCurrentPoint: true,
                 backgroundColor: comp.color,
                 borderColor: theme().colors.surface,
                 borderWidth: 2,
@@ -1187,6 +1410,10 @@ export class MValueChart {
         const config = {
             type: 'scatter',
             data: { datasets },
+            plugins: [{
+                id: 'mvalue-intersection-ruler',
+                afterDatasetsDraw: (chart) => this._drawRuler(chart)
+            }],
             options: {
                 responsive: true,
                 maintainAspectRatio: false,

@@ -127,6 +127,23 @@ export function calculateInstantGF(tissuePressure, ambientPressure, compartment)
 
 Used by the GFChart (`js/charts/GFChart.js`) to render real-time saturation fraction per compartment. `calculateMaxGF()` identifies the supersaturated compartment with the highest instantaneous GF for the chart's **Highest GF** envelope. This is not necessarily the compartment controlling the decompression ceiling: the controller is the compartment with the deepest tolerated depth under the applied GF, and differing Bühlmann $a$/$b$ coefficients mean the two orderings can diverge.
 
+## Reading horizontal intersections
+
+In the sandbox M-value P-P chart, focus or hover a current tissue point and press
+`R` to lock a horizontal ruler at its current tissue pressure. The ruler reports
+the ambient pressure and equivalent depth where that tissue intersects:
+
+- the equilibrium line, where tissue and ambient pressure are equal;
+- the GF Low limit;
+- the currently applied GF limit;
+- the GF High limit.
+
+The current-GF intersection is the compartment's ceiling at that timeline
+position. It uses the same active GF ramp and `pAnchor` as the ceiling
+time-series calculation, so it can be compared directly with the tissue-loading
+chart. Press `R` again to remove the ruler. If no point is hovered, the shortcut
+uses the tissue when exactly one compartment is visible.
+
 ## Worked example
 
 TC1 under variant C: $a = 1.1696$, $b = 0.5578$. At $P_{amb} = 1.0$ bar (sea level):

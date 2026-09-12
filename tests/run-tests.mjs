@@ -234,7 +234,10 @@ import {
     resolveChartTooltipEnabled
 } from '../js/components/tooltipShortcut.js';
 import { GFChart } from '../js/charts/GFChart.js';
-import { MValueChart } from '../js/charts/MValueChart.js';
+import {
+    MValueChart,
+    calculateMValueRulerIntersections
+} from '../js/charts/MValueChart.js';
 
 describe('Chart tooltip shortcut', () => {
     test('toggles only the focused or hovered chart and persists across rebuilds', () => {
@@ -501,6 +504,103 @@ describe('P-P chart timeline synchronization', () => {
             expect(context.currentTimeIndex).toBe(4);
             expect(notifications).toEqual([3]);
         }
+    });
+});
+
+describe('M-value intersection ruler', () => {
+        test('calculates fixed-GF intersections as compartment ceilings', () => {
+            const compartment = COMPARTMENTS[1];
+            const inputs = {
+                tissuePressure: 3.1,
+                compartment,
+                gfLow: 0.3,
+                activeGF: 0.55,
+                gfHigh: 0.85,
+                surfacePressure: 1.01325
+            };
+            const intersections = calculateMValueRulerIntersections(inputs);
+
+            expect(intersections.equilibrium.pressure).toBeCloseTo(3.1, 12);
+            for (const [key, gf] of [
+                ['gfLow', inputs.gfLow],
+                ['activeGF', inputs.activeGF],
+                ['gfHigh', inputs.gfHigh]
+            ]) {
+                expect(intersections[key].pressure).toBeCloseTo(
+                    getCompartmentCeiling(
+                        inputs.tissuePressure,
+                        compartment.aN2,
+                        compartment.bN2,
+                        gf
+                    ),
+                    12
+                );
+                expect(intersections[key].depth).toBeGreaterThanOrEqual(0);
+            }
+            expect(intersections.gfLow.pressure)
+                .toBeGreaterThan(intersections.activeGF.pressure);
+            expect(intersections.activeGF.pressure)
+                .toBeGreaterThan(intersections.gfHigh.pressure);
+        });
+
+        test('toggles the hovered tissue or the only visible tissue with R', () => {
+            const datasets = [
+                { mvalueCompartmentId: 2, mvalueCurrentPoint: true },
+                { label: 'ambient' }
+            ];
+            const context = {
+                rulerCompartmentId: null,
+                visibleCompartments: new Set([1, 2]),
+                chart: {
+                    getActiveElements: () => [{ datasetIndex: 0 }],
+                    data: { datasets }
+                },
+                _render() {}
+            };
+
+            MValueChart.prototype._toggleRuler.call(context);
+            expect(context.rulerCompartmentId).toBe(2);
+            MValueChart.prototype._toggleRuler.call(context);
+            expect(context.rulerCompartmentId).toBe(null);
+
+            context.chart.getActiveElements = () => [];
+            context.visibleCompartments = new Set([5]);
+            MValueChart.prototype._toggleRuler.call(context);
+            expect(context.rulerCompartmentId).toBe(5);
+            MValueChart.prototype._toggleRuler.call(context);
+            expect(context.rulerCompartmentId).toBe(null);
+
+            const dom = new JSDOM(
+                '<!doctype html><body><div id="container" tabindex="0"></div></body>'
+            );
+            const originalDocument = globalThis.document;
+            globalThis.document = dom.window.document;
+            let toggleCount = 0;
+            const keyboardContext = {
+                container: dom.window.document.getElementById('container'),
+                wrapper: dom.window.document.createElement('div'),
+                calculationResults: { timePoints: [0] },
+                _toggleRuler() { toggleCount++; }
+            };
+            keyboardContext.container.focus();
+
+            try {
+                MValueChart.prototype._setupKeyboardShortcuts.call(keyboardContext);
+                dom.window.document.dispatchEvent(
+                    new dom.window.KeyboardEvent('keydown', {
+                        key: 'R',
+                        bubbles: true
+                    })
+                );
+                expect(toggleCount).toBe(1);
+            } finally {
+                dom.window.document.removeEventListener(
+                    'keydown',
+                    keyboardContext._keyHandler
+                );
+                globalThis.document = originalDocument;
+                dom.window.close();
+            }
     });
 });
 

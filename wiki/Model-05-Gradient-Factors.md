@@ -109,7 +109,7 @@ The GFChart (`js/charts/GFChart.js`) renders the ramp as a shaded band:
 - Linear ramp between.
 - Per-compartment tissue trails show how each compartment's instantaneous GF evolved through the dive. Negative trails represent undersaturation. The black **Highest GF** envelope follows the largest positive instantaneous GF; it is not labeled as the controlling tissue because the compartment with the deepest GF-adjusted ceiling can differ.
 
-The M-value chart in `js/mvalues.js` renders the same ramp projected onto the P-P diagram: a segment from `(pAnchor, M_adj at GF_low)` to `(1.0 bar, M_adj at GF_high)`.
+The M-value chart renders the same ramp projected onto the P-P diagram: a segment from `(pAnchor, M_adj at GF_low)` to `(1.0 bar, M_adj at GF_high)`. Its `R` ruler also evaluates the horizontal tissue-pressure intersection against GF Low, the active interpolated GF, and GF High. The active-GF intersection is that compartment's current ceiling.
 
 ## Gas-switch wrinkle
 
