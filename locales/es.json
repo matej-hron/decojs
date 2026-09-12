@@ -1096,7 +1096,7 @@
             "pAnchor": "Presión de anclaje {0} bar ({1} m)",
             "tooltipLabel": "{0}: presión ambiente {1} bar, presión tisular {2} bar",
             "rulerTitle": "regla",
-            "rulerActiveGFLabel": "GF actual",
+            "rulerRampGFLabel": "GF en la rampa",
             "rulerCeiling": "techo",
             "initialDepthLabel": "0,0 min @ 0 m"
         },

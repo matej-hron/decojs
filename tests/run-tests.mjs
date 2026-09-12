@@ -516,22 +516,21 @@ describe('P-P chart timeline synchronization', () => {
 });
 
 describe('M-value intersection ruler', () => {
-        test('calculates fixed-GF intersections as compartment ceilings', () => {
+        test('calculates fixed-GF and ramp intersections', () => {
             const compartment = COMPARTMENTS[1];
             const inputs = {
                 tissuePressure: 3.1,
                 compartment,
                 gfLow: 0.3,
-                activeGF: 0.55,
                 gfHigh: 0.85,
-                surfacePressure: 1.01325
+                surfacePressure: 1.01325,
+                pAnchor: 2.21325
             };
             const intersections = calculateMValueRulerIntersections(inputs);
 
             expect(intersections.equilibrium.pressure).toBeCloseTo(3.1, 12);
             for (const [key, gf] of [
                 ['gfLow', inputs.gfLow],
-                ['activeGF', inputs.activeGF],
                 ['gfHigh', inputs.gfHigh]
             ]) {
                 expect(intersections[key].pressure).toBeCloseTo(
@@ -545,10 +544,31 @@ describe('M-value intersection ruler', () => {
                 );
                 expect(intersections[key].depth).toBeGreaterThanOrEqual(0);
             }
+        });
+
+        test('finds the TC1 intersection shown by the GF ramp', () => {
+            const intersections = calculateMValueRulerIntersections({
+                tissuePressure: 2.98,
+                compartment: COMPARTMENTS[0],
+                gfLow: 0.4,
+                gfHigh: 0.8,
+                surfacePressure: 1.01325,
+                pAnchor: 2.21325
+            });
+
+            expect(intersections.gfRamp.pressure).toBeCloseTo(1.46665, 5);
+            expect(intersections.gfRamp.depth).toBeCloseTo(4.534, 3);
+            expect(intersections.gfRamp.gf).toBeCloseTo(0.648867, 5);
             expect(intersections.gfLow.pressure)
-                .toBeGreaterThan(intersections.activeGF.pressure);
-            expect(intersections.activeGF.pressure)
+                .toBeGreaterThan(intersections.gfRamp.pressure);
+            expect(intersections.gfRamp.pressure)
                 .toBeGreaterThan(intersections.gfHigh.pressure);
+            expect(getAdjustedMValue(
+                intersections.gfRamp.pressure,
+                COMPARTMENTS[0].aN2,
+                COMPARTMENTS[0].bN2,
+                intersections.gfRamp.gf
+            )).toBeCloseTo(2.98, 12);
         });
 
         test('toggles the hovered tissue or the only visible tissue with R', () => {
@@ -623,16 +643,15 @@ describe('M-value intersection ruler', () => {
                 tissuePressure: 2.82,
                 compartment,
                 gfLow: 0.4,
-                activeGF: 0.4,
                 gfHigh: 0.8,
-                surfacePressure: 1.01325
+                surfacePressure: 1.01325,
+                pAnchor: 2.21325
             });
             MValueChart.prototype._renderRulerPanel.call(
                 { rulerPanel: panel },
                 {
                     compartment,
                     tissuePressure: 2.82,
-                    activeGF: 0.4,
                     intersections
                 }
             );

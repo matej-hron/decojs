@@ -489,11 +489,11 @@ Key methods: `constructor(container, config)`, `_render()`, `update(diveSetup)`,
 
 Class component rendering the pressure-pressure (P-P) M-value diagram with time-slider playback and an optional horizontal intersection ruler.
 
-Exports: `class MValueChart`, pure helper `calculateMValueRulerIntersections({ tissuePressure, compartment, gfLow, activeGF, gfHigh, surfacePressure })`, and factory `createMValueChart(container, config)`.
+Exports: `class MValueChart`, pure helper `calculateMValueRulerIntersections({ tissuePressure, compartment, gfLow, gfHigh, surfacePressure, pAnchor })`, and factory `createMValueChart(container, config)`.
 
 Imports same as `DiveProfileChart.js` plus chart-specific helpers. Uses `createInteractionLockBtn` from `interactionLock.js`.
 
-Key methods: `_setupKeyboardShortcuts()` (arrow keys step time, shift+arrow jumps waypoint, space toggles play/pause, home/end jump to start/end, `R` toggles the ruler). The ruler uses `getCompartmentCeiling()` for GF Low, current active GF, and GF High intersections. Playback loop redraws with `chart.update('none')` to keep the slider smooth.
+Key methods: `_setupKeyboardShortcuts()` (arrow keys step time, shift+arrow jumps waypoint, space toggles play/pause, home/end jump to start/end, `R` toggles the ruler). The ruler uses `getCompartmentCeiling()` for fixed GF Low/High references and solves the intersection with the interpolated adjusted-M-value ramp between `pAnchor` and the surface. Playback loop redraws with `chart.update('none')` to keep the slider smooth.
 
 ### `GFChart.js`
 

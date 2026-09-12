@@ -1096,7 +1096,7 @@
             "pAnchor": "Anchor pressure {0} bar ({1} m)",
             "tooltipLabel": "{0}: ambient pressure {1} bar, tissue pressure {2} bar",
             "rulerTitle": "ruler",
-            "rulerActiveGFLabel": "Current GF",
+            "rulerRampGFLabel": "GF on ramp",
             "rulerCeiling": "ceiling",
             "initialDepthLabel": "0.0 min @ 0 m"
         },

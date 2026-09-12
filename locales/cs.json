@@ -1096,7 +1096,7 @@
             "pAnchor": "Kotevní tlak {0} bar ({1} m)",
             "tooltipLabel": "{0}: okolní tlak {1} bar, tkáňový tlak {2} bar",
             "rulerTitle": "pravítko",
-            "rulerActiveGFLabel": "Aktuální GF",
+            "rulerRampGFLabel": "GF na rampě",
             "rulerCeiling": "strop",
             "initialDepthLabel": "0,0 min @ 0 m"
         },
