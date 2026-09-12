@@ -1,7 +1,7 @@
 /**
  * "T" keyboard shortcut that toggles the Chart.js tooltip for the chart under
- * the pointer or keyboard focus. Idempotent — calling initTooltipShortcut()
- * twice installs only one listener.
+ * the pointer or keyboard focus. MValueChart reserves T for its intersection
+ * ruler. Idempotent — calling initTooltipShortcut() twice installs one listener.
  *
  * Usage:
  *   import { initTooltipShortcut } from './js/components/tooltipShortcut.js';
@@ -64,6 +64,7 @@ export function initTooltipShortcut() {
 
     document.addEventListener('keydown', (e) => {
         if (e.key !== 't' && e.key !== 'T') return;
+        if (e.metaKey || e.ctrlKey || e.altKey) return;
         // Don't hijack the key while typing in a form field
         const tag = e.target && e.target.tagName;
         if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
@@ -81,6 +82,7 @@ export function initTooltipShortcut() {
         const chart = focusedChart || hoveredChart || activeChart ||
             (charts.length === 1 ? charts[0] : null);
         if (!chart) return;
+        if (chart.canvas?.closest?.('.mvc-wrapper')) return;
 
         const currentEnabled = resolveChartTooltipEnabled(
             chart.options?.plugins?.tooltip?.enabled ?? true,

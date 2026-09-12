@@ -238,6 +238,7 @@ import {
     MValueChart,
     calculateMValueRulerIntersections
 } from '../js/charts/MValueChart.js';
+import { DiveProfileChart } from '../js/charts/DiveProfileChart.js';
 
 describe('Chart tooltip shortcut', () => {
     test('toggles only the focused or hovered chart and persists across rebuilds', () => {
@@ -246,7 +247,7 @@ describe('Chart tooltip shortcut', () => {
         const handlers = {};
         const updates = [];
 
-        const makeChart = (id) => {
+        const makeChart = (id, isMValue = false) => {
             const resolvedPlugins = { tooltip: { enabled: true } };
             const options = {};
             Object.defineProperty(options, 'plugins', {
@@ -260,6 +261,7 @@ describe('Chart tooltip shortcut', () => {
             const canvas = {
                 id,
                 closest(selector) {
+                    if (selector === '.mvc-wrapper' && isMValue) return {};
                     return selector === 'canvas' ? canvas : null;
                 },
                 contains(target) {
@@ -290,6 +292,7 @@ describe('Chart tooltip shortcut', () => {
         };
         const first = makeChart('first');
         const second = makeChart('second');
+        const mvalue = makeChart('mvalue', true);
         const firstContainer = {
             tagName: 'DIV',
             contains(target) {
@@ -338,6 +341,23 @@ describe('Chart tooltip shortcut', () => {
 
             handlers.keydown({ key: 't', target: { tagName: 'INPUT' } });
             expect(resolveChartTooltipEnabled(true, second.canvas)).toBe(false);
+
+            const mvalueContainer = {
+                tagName: 'DIV',
+                contains(target) {
+                    return target === mvalue.canvas;
+                }
+            };
+            globalThis.window.Chart.instances = new Map([['mvalue', mvalue]]);
+            handlers.keydown({ key: 'T', target: mvalueContainer });
+            expect(mvalue.options.plugins.tooltip.enabled).toBe(true);
+
+            handlers.keydown({
+                key: 't',
+                metaKey: true,
+                target: mvalueContainer
+            });
+            expect(mvalue.options.plugins.tooltip.enabled).toBe(true);
         } finally {
             globalThis.document = originalDocument;
             globalThis.window = originalWindow;
@@ -392,6 +412,79 @@ describe('P-P chart fullscreen controls', () => {
             globalThis.document = originalDocument;
             globalThis.setTimeout = originalSetTimeout;
             dom.window.close();
+        }
+    });
+
+    test('toggles fullscreen with unmodified F in every chart', () => {
+        const cases = [
+            {
+                ChartClass: MValueChart,
+                fullscreenProperty: 'wrapper',
+                fullscreenClass: 'mvc-fullscreen',
+                extra: { calculationResults: null }
+            },
+            {
+                ChartClass: GFChart,
+                fullscreenProperty: 'wrapper',
+                fullscreenClass: 'gfc-fullscreen',
+                extra: { calculationResults: null }
+            },
+            {
+                ChartClass: DiveProfileChart,
+                fullscreenProperty: 'chartContainer',
+                fullscreenClass: 'dpc-fullscreen',
+                extra: {}
+            }
+        ];
+
+        for (const chartCase of cases) {
+            const dom = new JSDOM(
+                '<!doctype html><body><div id="container" tabindex="0"></div></body>'
+            );
+            const originalDocument = globalThis.document;
+            globalThis.document = dom.window.document;
+            let toggles = 0;
+            const fullscreenElement = dom.window.document.createElement('div');
+            const context = {
+                container: dom.window.document.getElementById('container'),
+                options: {
+                    fullscreenButton: true,
+                    showTissueLoading: false
+                },
+                wrapper: fullscreenElement,
+                chartContainer: fullscreenElement,
+                _toggleFullscreen() { toggles++; },
+                ...chartCase.extra
+            };
+            context[chartCase.fullscreenProperty] = fullscreenElement;
+            context.container.focus();
+
+            try {
+                chartCase.ChartClass.prototype._setupKeyboardShortcuts.call(context);
+                dom.window.document.dispatchEvent(
+                    new dom.window.KeyboardEvent('keydown', {
+                        key: 'F',
+                        bubbles: true
+                    })
+                );
+                expect(toggles).toBe(1);
+
+                dom.window.document.dispatchEvent(
+                    new dom.window.KeyboardEvent('keydown', {
+                        key: 'F',
+                        metaKey: true,
+                        bubbles: true
+                    })
+                );
+                expect(toggles).toBe(1);
+            } finally {
+                dom.window.document.removeEventListener(
+                    'keydown',
+                    context._keyHandler
+                );
+                globalThis.document = originalDocument;
+                dom.window.close();
+            }
         }
     });
 });
@@ -616,7 +709,15 @@ describe('M-value intersection ruler', () => {
                 MValueChart.prototype._setupKeyboardShortcuts.call(keyboardContext);
                 dom.window.document.dispatchEvent(
                     new dom.window.KeyboardEvent('keydown', {
-                        key: 'R',
+                        key: 'T',
+                        bubbles: true
+                    })
+                );
+                expect(toggleCount).toBe(1);
+                dom.window.document.dispatchEvent(
+                    new dom.window.KeyboardEvent('keydown', {
+                        key: 'T',
+                        metaKey: true,
                         bubbles: true
                     })
                 );
@@ -652,6 +753,8 @@ describe('M-value intersection ruler', () => {
                 {
                     compartment,
                     tissuePressure: 2.82,
+                    currentAmbient: 2.21325,
+                    currentDepth: 12,
                     intersections
                 }
             );
@@ -668,6 +771,8 @@ describe('M-value intersection ruler', () => {
             expect(panel.textContent.includes('\u00a0bar')).toBe(true);
             expect(panel.textContent.includes('\u00a0m')).toBe(true);
             expect(panel.textContent.includes('\u00a0%')).toBe(true);
+            expect(panel.textContent.includes('2.21\u00a0bar')).toBe(true);
+            expect(panel.textContent.includes('12.0\u00a0m')).toBe(true);
         } finally {
             globalThis.document = originalDocument;
             dom.window.close();
@@ -692,10 +797,16 @@ describe('M-value intersection ruler', () => {
             });
             MValueChart.prototype._renderRulerPanel.call(
                 { rulerPanel: panel },
-                { compartment, tissuePressure: 2.82, intersections }
+                {
+                    compartment,
+                    tissuePressure: 2.82,
+                    currentAmbient: 1.01325,
+                    currentDepth: 0,
+                    intersections
+                }
             );
 
-            expect(panel.children.length).toBe(3);
+            expect(panel.children.length).toBe(4);
             expect(panel.textContent.includes('GF ramp')).toBe(false);
             expect(panel.textContent.includes('GFlow')).toBe(false);
             expect(panel.textContent.includes('GFhigh')).toBe(false);

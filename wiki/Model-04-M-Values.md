@@ -130,7 +130,7 @@ Used by the GFChart (`js/charts/GFChart.js`) to render real-time saturation frac
 ## Reading horizontal intersections
 
 In the sandbox M-value P-P chart, focus or hover a current tissue point and press
-`R` to lock a horizontal ruler at its current tissue pressure. The ruler reports
+`T` to lock a horizontal ruler at its current tissue pressure. The ruler reports
 the ambient pressure and equivalent depth where that tissue intersects:
 
 - the equilibrium line, where tissue and ambient pressure are equal;
@@ -141,7 +141,7 @@ the ambient pressure and equivalent depth where that tissue intersects:
 The GF-ramp intersection answers how shallow the selected compartment permits an
 ascent while GF increases from GF Low at `pAnchor` toward GF High at the
 surface. Both the tolerated ambient pressure and the GF at that intersection
-are solved together. Press `R` again to remove the ruler. If no point is
+are solved together. Press `T` again to remove the ruler. If no point is
 hovered, the shortcut uses the tissue when exactly one compartment is visible.
 
 ## Worked example

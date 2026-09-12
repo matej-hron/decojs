@@ -20,7 +20,7 @@
  *   Up/Down: Move compartment selection to slower/faster tissues
  *   Shift+Up: Expand selection to include slower tissue
  *   Shift+Down: Remove slowest tissue from selection
- *   R: Toggle the intersection ruler for the hovered/selected tissue
+ *   T: Toggle the intersection ruler for the hovered/selected tissue
  * 
  * Usage:
  *   import { MValueChart } from './charts/MValueChart.js';
@@ -530,7 +530,7 @@ export class MValueChart {
         hint.style.cssText = 'font-size: 0.7rem; color: var(--text-muted, #888); margin-top: 2px; padding: 0 4px;';
         hint.textContent = translate(
             'chart.hints.mvalueCompartments',
-            'Click = select one · Shift+click = toggle · ←→ step · Space play · R ruler · F fullscreen'
+            'Click = select one · Shift+click = toggle · ←→ step · Space play · T ruler · F fullscreen'
         );
         this.controlsContainer.appendChild(hint);
     }
@@ -614,6 +614,19 @@ export class MValueChart {
             
             // Don't handle if typing in an input
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+
+            if ((e.key === 'f' || e.key === 'F') &&
+                !e.metaKey && !e.ctrlKey && !e.altKey &&
+                this.options.fullscreenButton) {
+                e.preventDefault();
+                this._toggleFullscreen();
+                return;
+            }
+            if (e.key === 'Escape' &&
+                this.wrapper.classList.contains('mvc-fullscreen')) {
+                this._toggleFullscreen();
+                return;
+            }
             if (!this.calculationResults) return;
             
             const maxIndex = this.calculationResults.timePoints.length - 1;
@@ -674,17 +687,13 @@ export class MValueChart {
                     }
                     break;
 
-                case 'r':
-                case 'R':
+                case 't':
+                case 'T':
+                    if (e.metaKey || e.ctrlKey || e.altKey) break;
                     e.preventDefault();
                     this._toggleRuler();
                     break;
                     
-                case 'Escape':
-                    if (this.wrapper.classList.contains('mvc-fullscreen')) {
-                        this._toggleFullscreen();
-                    }
-                    break;
             }
         };
         
@@ -1088,6 +1097,10 @@ export class MValueChart {
         const tissuePressure = this.calculationResults
             .compartments[compartment.id]
             .pressures[this.currentTimeIndex];
+        const currentAmbient = this.calculationResults
+            .ambientPressures[this.currentTimeIndex];
+        const currentDepth = this.calculationResults
+            .depthPoints[this.currentTimeIndex];
         const gfLow = (this.diveSetup.gfLow || 100) / 100;
         const gfHigh = (this.diveSetup.gfHigh || 100) / 100;
         const surfacePressure = this.calculationResults.surfacePressure ??
@@ -1096,6 +1109,8 @@ export class MValueChart {
         return {
             compartment,
             tissuePressure,
+            currentAmbient,
+            currentDepth,
             intersections: calculateMValueRulerIntersections({
                 tissuePressure,
                 compartment,
@@ -1232,6 +1247,20 @@ export class MValueChart {
         header.appendChild(quantity('p', tissueSubscript));
         header.append(
             ` = ${valueWithUnit(ruler.tissuePressure, 'bar', 2)}`
+        );
+
+        const currentPosition = addLine('var(--blue-500, #2980b9)', true);
+        currentPosition.append(
+            translate('chart.mvalue.rulerCurrentPosition', 'Current position'),
+            ': '
+        );
+        currentPosition.appendChild(quantity('p', ambientSubscript));
+        currentPosition.append(
+            ` = ${valueWithUnit(ruler.currentAmbient, 'bar', 2)} · `
+        );
+        currentPosition.appendChild(quantity('h'));
+        currentPosition.append(
+            ` = ${valueWithUnit(ruler.currentDepth, 'm', 1)}`
         );
 
         const equilibrium = addLine('var(--amber-500, #f39c12)');
