@@ -1022,6 +1022,7 @@
         },
         "hints": {
             "compartments": "Clic = seleccionar uno · Mayús+clic = alternar · ←→ paso · Espacio reproducir · F pantalla completa",
+            "mvalueCompartments": "Clic = seleccionar uno · Mayús+clic = alternar · ←→ paso · Espacio reproducir · R regla · F pantalla completa",
             "arrowShiftArrow": "↑↓ mover, Mayús+↑↓ ampliar/reducir"
         },
         "tooltips": {
@@ -1094,6 +1095,12 @@
             "surfaceLine": "Superficie ({0} bar)",
             "pAnchor": "pAnchor {0} bar ({1} m)",
             "tooltipLabel": "{0}: p_amb={1}, p_tejido={2} bar",
+            "rulerHeader": "Regla TC{0} · p_tejido={1} bar",
+            "rulerEquilibrium": "p_tejido = p_amb",
+            "rulerGFLow": "GF bajo {0} %",
+            "rulerActiveGF": "GF actual {0} % · techo",
+            "rulerGFHigh": "GF alto {0} %",
+            "rulerIntersection": "{0}: {1} bar · {2} m",
             "initialDepthLabel": "0,0 min @ 0 m"
         },
         "gf": {
