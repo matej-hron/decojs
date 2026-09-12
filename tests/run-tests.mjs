@@ -475,6 +475,35 @@ describe('GF chart controlling tissue toggle', () => {
     });
 });
 
+describe('P-P chart timeline synchronization', () => {
+    test('notifies user changes but not externally synchronized updates', () => {
+        for (const ChartClass of [GFChart, MValueChart]) {
+            const notifications = [];
+            const context = {
+                currentTimeIndex: 3,
+                options: {
+                    onTimeIndexChange(index) {
+                        notifications.push(index);
+                    }
+                },
+                calculationResults: { timePoints: [0, 1, 2, 3, 4] },
+                _updateSliderPosition() {},
+                _updateTimeDisplay() {},
+                _render() {},
+                _stopPlayback() {},
+                _applyTimeIndexChange: ChartClass.prototype._applyTimeIndexChange
+            };
+
+            ChartClass.prototype._applyTimeIndexChange.call(context);
+            expect(notifications).toEqual([3]);
+
+            ChartClass.prototype.setTimeIndex.call(context, 4);
+            expect(context.currentTimeIndex).toBe(4);
+            expect(notifications).toEqual([3]);
+        }
+    });
+});
+
 // ============================================================================
 // GF PRESETS TESTS
 // ============================================================================

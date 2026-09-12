@@ -75,6 +75,7 @@ const DEFAULT_MVALUE_OPTIONS = {
     fullscreenButton: true,
     compartmentSelector: true,
     playbackSpeed: 100,  // ms per frame
+    onTimeIndexChange: null,
     maxPressure: null,   // Override axis max (null = auto-calculate)
     colors: {
         ambient: 'rgba(52, 152, 219, 0.8)',
@@ -431,8 +432,7 @@ export class MValueChart {
             if (!this.calculationResults) return;
             const maxIndex = this.calculationResults.timePoints.length - 1;
             this.currentTimeIndex = Math.round((this.timeSlider.value / 100) * maxIndex);
-            this._updateTimeDisplay();
-            this._render();
+            this._applyTimeIndexChange();
         });
         
         // Time display
@@ -553,32 +553,35 @@ export class MValueChart {
     // ============================================================================
     // Timeline Controls
     // ============================================================================
+
+    _applyTimeIndexChange(notify = true) {
+        this._updateSliderPosition();
+        this._updateTimeDisplay();
+        this._render();
+        if (notify && typeof this.options.onTimeIndexChange === 'function') {
+            this.options.onTimeIndexChange(this.currentTimeIndex);
+        }
+    }
     
     _stepTime(steps) {
         this._stopPlayback();
         if (!this.calculationResults) return;
         const maxIndex = this.calculationResults.timePoints.length - 1;
         this.currentTimeIndex = Math.max(0, Math.min(maxIndex, this.currentTimeIndex + steps));
-        this._updateSliderPosition();
-        this._updateTimeDisplay();
-        this._render();
+        this._applyTimeIndexChange();
     }
     
     _jumpToStart() {
         this._stopPlayback();
         this.currentTimeIndex = 0;
-        this._updateSliderPosition();
-        this._updateTimeDisplay();
-        this._render();
+        this._applyTimeIndexChange();
     }
     
     _jumpToEnd() {
         this._stopPlayback();
         if (!this.calculationResults) return;
         this.currentTimeIndex = this.calculationResults.timePoints.length - 1;
-        this._updateSliderPosition();
-        this._updateTimeDisplay();
-        this._render();
+        this._applyTimeIndexChange();
     }
     
     _findWaypointIndices() {
@@ -616,9 +619,7 @@ export class MValueChart {
         for (const wp of waypoints) {
             if (wp > this.currentTimeIndex) {
                 this.currentTimeIndex = wp;
-                this._updateSliderPosition();
-                this._updateTimeDisplay();
-                this._render();
+                this._applyTimeIndexChange();
                 return;
             }
         }
@@ -631,9 +632,7 @@ export class MValueChart {
         for (let i = waypoints.length - 1; i >= 0; i--) {
             if (waypoints[i] < this.currentTimeIndex) {
                 this.currentTimeIndex = waypoints[i];
-                this._updateSliderPosition();
-                this._updateTimeDisplay();
-                this._render();
+                this._applyTimeIndexChange();
                 return;
             }
         }
@@ -661,9 +660,7 @@ export class MValueChart {
                 return;
             }
             this.currentTimeIndex++;
-            this._updateSliderPosition();
-            this._updateTimeDisplay();
-            this._render();
+            this._applyTimeIndexChange();
         }, this.options.playbackSpeed);
     }
     
@@ -1303,11 +1300,10 @@ export class MValueChart {
      */
     setTimeIndex(index) {
         if (!this.calculationResults) return;
+        this._stopPlayback();
         const maxIndex = this.calculationResults.timePoints.length - 1;
         this.currentTimeIndex = Math.max(0, Math.min(maxIndex, index));
-        this._updateSliderPosition();
-        this._updateTimeDisplay();
-        this._render();
+        this._applyTimeIndexChange(false);
     }
     
     /**

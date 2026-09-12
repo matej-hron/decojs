@@ -1296,6 +1296,13 @@
             }
         });
 
+        mvalueChart.options.onTimeIndexChange = (index) => {
+            gfChart.setTimeIndex(index);
+        };
+        gfChart.options.onTimeIndexChange = (index) => {
+            mvalueChart.setTimeIndex(index);
+        };
+
         // =====================================================================
         // EVENT HANDLERS
         // =====================================================================
