@@ -231,7 +231,7 @@ Toxicity is informational; not fed back into the deco loop.
 |---|---|---|
 | `generateProfileName(setup)` | 1279 | Short label for UI |
 | `formatDiveSetupSummary(setup)` | 1295 | Multi-line human summary |
-| `renderDivePlanTableHTML(waypoints, gases, opts)` | 1627 | Returns HTML for the dive-plan table. `opts.runtimeConvention: 'practical'` keeps the legacy whole-minute model stops, budgets 20 seconds for each 3 m ascent after a stop, and rounds runtime to whole minutes as a cross-check; this is the Sandbox convention. The optional `departure` convention renders scheduler-aligned departure runtimes, while the legacy default remains `stage-end`. A gas switch is always billed against the OLD gas for the ascent leg leading into it (never relabels the whole climb with the new gas). |
+| `renderDivePlanTableHTML(waypoints, gases, opts)` | 1627 | Returns HTML for the dive-plan table. `opts.runtimeConvention: 'practical'` keeps the legacy whole-minute model stops, budgets 20 seconds for each 3 m ascent after a stop, and rounds runtime to whole minutes as a cross-check; intermediate stop-to-stop ascent rows are omitted while their time remains included. The optional `departure` convention renders scheduler-aligned departure runtimes, while the legacy default remains `stage-end`. A gas switch is always billed against the OLD gas for the ascent leg leading into it. |
 
 #### Defaults
 

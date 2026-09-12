@@ -844,7 +844,30 @@ describe('diveSetup - renderDivePlanTableHTML', () => {
             /<td class="dse-plan-runtime">([^<]+)<\/td>/g
         )].map(match => match[1]);
         expect(runtimeValues.every(value => /^\d+$/.test(value))).toBe(true);
-        expect(html).toContain('Allow 20\u00a0seconds for each 3\u00a0m ascent after a stop');
+        expect(html).toContain('Intermediate 3\u00a0m ascents are included as 20\u00a0seconds');
+    });
+
+    test('practical runtime hides intermediate ascent rows without losing their time', () => {
+        const multiStopWaypoints = [
+            { time: 0, depth: 0, gasId: 'air' },
+            { time: 2, depth: 40, gasId: 'air' },
+            { time: 25, depth: 40, gasId: 'air' },
+            { time: 27.5, depth: 15, gasId: 'air' },
+            { time: 29.5, depth: 15, gasId: 'air' },
+            { time: 29.8, depth: 12, gasId: 'air' },
+            { time: 31.8, depth: 12, gasId: 'air' },
+            { time: 32.1, depth: 9, gasId: 'air' },
+            { time: 35.1, depth: 9, gasId: 'air' },
+            { time: 36, depth: 0, gasId: 'air' }
+        ];
+        const html = renderDivePlanTableHTML(
+            multiStopWaypoints, gases, { runtimeConvention: 'practical' }
+        );
+
+        expect((html.match(/<tr class="dse-plan-asc">/g) || []).length).toBe(2);
+        expect((html.match(/<tr class="dse-plan-stop">/g) || []).length).toBe(3);
+        expect(html).toContain('<td class="dse-plan-depth">12\u00a0m</td><td class="dse-plan-stop">2</td><td class="dse-plan-runtime">32</td>');
+        expect(html).toContain('<td class="dse-plan-depth">9\u00a0m</td><td class="dse-plan-stop">3</td><td class="dse-plan-runtime">35</td>');
     });
 
     // A gas switch taken exactly on arrival during an ascent (no stop at the
