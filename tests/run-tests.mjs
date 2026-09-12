@@ -5144,6 +5144,21 @@ describe('M-value notation localization', () => {
     });
 });
 
+describe('Alveolar pressure notation', () => {
+    test('physiological inert-gas formula names its alveolar result', () => {
+        const pressurePage = readFileSync(
+            new URL('../pressure.html', import.meta.url),
+            'utf8'
+        );
+
+        expect(pressurePage.includes(
+            'p_{\\mathrm{alv}} = f_{\\mathrm{inert}} \\times ' +
+            '(p_{\\mathrm{amb}} - p_{\\mathrm{H_2O}})'
+        )).toBe(true);
+        expect(pressurePage.includes('p_{\\mathrm{inert}} =')).toBe(false);
+    });
+});
+
 describe('i18n notation - canvas strings must not contain HTML entities', () => {
     const LOCALES = ['cs', 'en', 'es'];
     const load = (l) => JSON.parse(readFileSync(new URL(`../locales/${l}.json`, import.meta.url), 'utf8'));
