@@ -277,49 +277,6 @@ export function calculateMaxGF(tissuePressures, ambientPressure) {
 }
 
 /**
- * Select the supersaturated compartment with the deepest ceiling at the
- * currently active gradient factor.
- *
- * The highest instantaneous GF and deepest GF-adjusted ceiling are not
- * necessarily produced by the same compartment because each compartment has
- * different Bühlmann a/b coefficients.
- *
- * @param {Object} tissuePressures - Map of compartment ID to tissue pressure (bar)
- * @param {number} ambientPressure - Current ambient pressure (bar)
- * @param {number} gf - Active gradient factor (0-1)
- * @returns {{controllingCompartment: number|null, ceilingPressure: number|null}}
- */
-export function calculateGFControllingCompartment(
-    tissuePressures,
-    ambientPressure,
-    gf
-) {
-    let controllingCompartment = null;
-    let ceilingPressure = -Infinity;
-
-    for (const comp of COMPARTMENTS) {
-        const tissuePressure = tissuePressures[comp.id];
-        if (tissuePressure <= ambientPressure) continue;
-
-        const compartmentCeiling = getCompartmentCeiling(
-            tissuePressure,
-            comp.aN2,
-            comp.bN2,
-            gf
-        );
-        if (compartmentCeiling > ceilingPressure) {
-            ceilingPressure = compartmentCeiling;
-            controllingCompartment = comp.id;
-        }
-    }
-
-    return {
-        controllingCompartment,
-        ceilingPressure: controllingCompartment === null ? null : ceilingPressure
-    };
-}
-
-/**
  * Calculate ceiling (minimum tolerable ambient pressure) for a single compartment
  * This is the shallowest depth where the tissue remains within GF-adjusted limits.
  * 

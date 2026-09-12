@@ -47,8 +47,7 @@ function fmt(str, ...values) {
 import {
     calculateTissueLoading,
     calculateInstantGF,
-    calculateGFControllingCompartment,
-    calculateCeilingTimeSeriesDetailed,
+    calculateMaxGF,
     interpolateGF,
     getAmbientPressure,
     getSurfacePressure,
@@ -932,14 +931,6 @@ export class GFChart {
         this.gfAnchor = hasGF
             ? calculateChartGFAnchor(this.diveSetup, this.calculationResults)
             : { pAnchor: surfacePressure, anchorDepth: 0 };
-        const gfLow = (this.diveSetup.gfLow || 100) / 100;
-        const gfHigh = (this.diveSetup.gfHigh || 100) / 100;
-        this.gfCeilingDetails = calculateCeilingTimeSeriesDetailed(
-            this.calculationResults,
-            gfLow,
-            gfHigh,
-            this.gfAnchor.pAnchor
-        );
         this._updateTimeDisplay();
     }
 
@@ -1074,29 +1065,19 @@ export class GFChart {
                 results.compartments[comp.id].pressures[timeIndex]
             ])
         );
-        const currentActiveGF = this.gfCeilingDetails.gfValues[timeIndex];
-        const currentControlling =
-            calculateGFControllingCompartment(
+        const currentControlling = calculateMaxGF(
             currentTissuePressures,
-            currentAmbient,
-            currentActiveGF
+            currentAmbient
         );
         const currentControllingComp = COMPARTMENTS.find(
-            comp => comp.id === currentControlling.controllingCompartment
+            comp => comp.id === currentControlling.leadingCompartment
         );
-        const currentControllingGF = currentControllingComp
-            ? calculateInstantGF(
-                currentTissuePressures[currentControllingComp.id],
-                currentAmbient,
-                currentControllingComp
-            ) * 100
-            : 0;
         const controllingLabel = this._formatControllingTissueLabel(
             currentControllingComp,
-            currentControllingGF
+            currentControlling.gfMax * 100
         );
 
-        // GF trail of the compartment controlling the active-GF ceiling
+        // Controlling tissue envelope - max positive GF% across supersaturated tissues
         if (this.options.showTrail && results.timePoints) {
             const envelopeData = [];
             for (let i = 0; i <= timeIndex; i++) {
@@ -1107,23 +1088,11 @@ export class GFChart {
                         results.compartments[comp.id].pressures[i]
                     ])
                 );
-                const controlling = calculateGFControllingCompartment(
-                    tissuePressures,
-                    amb,
-                    this.gfCeilingDetails.gfValues[i]
-                );
-                const controllingComp = COMPARTMENTS.find(
-                    comp => comp.id === controlling.controllingCompartment
-                );
+                const { gfMax, leadingCompartment } =
+                    calculateMaxGF(tissuePressures, amb);
                 envelopeData.push({
                     x: amb,
-                    y: controllingComp
-                        ? calculateInstantGF(
-                            tissuePressures[controllingComp.id],
-                            amb,
-                            controllingComp
-                        ) * 100
-                        : null
+                    y: leadingCompartment === null ? null : gfMax * 100
                 });
             }
             datasets.push({
@@ -1142,11 +1111,11 @@ export class GFChart {
             });
         }
 
-        // Current point of the compartment controlling the active-GF ceiling
+        // Controlling tissue dot (largest positive GF% at current time)
         if (currentControllingComp) {
             datasets.push({
                 label: controllingLabel,
-                data: [{ x: currentAmbient, y: currentControllingGF }],
+                data: [{ x: currentAmbient, y: currentControlling.gfMax * 100 }],
                 gfcGroup: 'leading-tissue',
                 gfcLegendItem: false,
                 hidden: !this.showLeadingTissue,
