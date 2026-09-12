@@ -1093,14 +1093,11 @@
             "alveolarPN2WithGases": "pN₂ alveolar ({0})",
             "alveolarPN2Percent": "pN₂ alveolar ({0} %)",
             "surfaceLine": "Superficie ({0} bar)",
-            "pAnchor": "pAnchor {0} bar ({1} m)",
-            "tooltipLabel": "{0}: p_amb={1}, p_tejido={2} bar",
-            "rulerHeader": "Regla TC{0} · p_tejido={1} bar",
-            "rulerEquilibrium": "p_tejido = p_amb",
-            "rulerGFLow": "GF bajo {0} %",
-            "rulerActiveGF": "GF actual {0} % · techo",
-            "rulerGFHigh": "GF alto {0} %",
-            "rulerIntersection": "{0}: {1} bar · {2} m",
+            "pAnchor": "Presión de anclaje {0} bar ({1} m)",
+            "tooltipLabel": "{0}: presión ambiente {1} bar, presión tisular {2} bar",
+            "rulerTitle": "regla",
+            "rulerActiveGFLabel": "GF actual",
+            "rulerCeiling": "techo",
             "initialDepthLabel": "0,0 min @ 0 m"
         },
         "gf": {
@@ -1108,8 +1105,8 @@
             "gfCorridor": "Corredor GF",
             "leadingTissue": "GF máximo",
             "leadingTC": "GF máximo: TC{0} ({1} %)",
-            "pAnchor": "pAnchor {0} bar ({1} m)",
-            "tooltipLabel": "{0}: p_amb={1} bar, GF={2} %"
+            "pAnchor": "Presión de anclaje {0} bar ({1} m)",
+            "tooltipLabel": "{0}: presión ambiente {1} bar, GF {2} %"
         }
     },
     "warnings": {

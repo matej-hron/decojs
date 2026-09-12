@@ -35,7 +35,7 @@ import { COMPARTMENTS } from '../tissueCompartments.js';
 import { applyChartTheme, theme } from './chartTheme.js';
 import { createInteractionLockBtn } from './interactionLock.js';
 import { resolveChartTooltipEnabled } from '../components/tooltipShortcut.js';
-import { translate } from '../i18n.js';
+import { getCurrentLanguage, translate } from '../i18n.js';
 
 import { fmtNum } from '../format.js';
 /** Helper: replace {0}, {1}, ... placeholders with the given values. */
@@ -139,6 +139,7 @@ export class MValueChart {
         this.container = container;
         this.chart = null;
         this.canvas = null;
+        this.rulerPanel = null;
         this.fullscreenBtn = null;
         this.exitFullscreenBtn = null;
         this.wrapper = null;
@@ -248,6 +249,18 @@ export class MValueChart {
         // Canvas - no inline styles, let CSS handle it
         this.canvas = document.createElement('canvas');
         this.chartContainer.appendChild(this.canvas);
+
+        this.rulerPanel = document.createElement('div');
+        this.rulerPanel.className = 'mvc-ruler-panel';
+        this.rulerPanel.style.cssText = `
+            display: none; position: absolute; top: 10px; left: 10px;
+            z-index: 5; padding: 10px 12px; pointer-events: none;
+            background: var(--surface-elevated, #fff);
+            border: 1px solid var(--border, #e1e6ec);
+            color: var(--text, #2c3e50); font-size: var(--text-xs, 0.75rem);
+            line-height: 1.6;
+        `;
+        this.chartContainer.appendChild(this.rulerPanel);
         
         // Fullscreen button
         if (this.options.fullscreenButton) {
@@ -930,8 +943,8 @@ export class MValueChart {
         });
     }
 
-    _isLegendItemVisible(legendItem) {
-        return (legendItem.text || '').startsWith('pAnchor');
+    _isLegendItemVisible(legendItem, chartData) {
+        return chartData?.datasets[legendItem.datasetIndex]?.mvalueAnchor === true;
     }
 
     // ============================================================================
@@ -1027,40 +1040,30 @@ export class MValueChart {
 
     _drawRuler(chart) {
         const ruler = this._getRulerData();
+        this._renderRulerPanel(ruler);
         if (!ruler) return;
 
         const { ctx, chartArea, scales } = chart;
+        this.rulerPanel.style.left = `${chartArea.left + 10}px`;
+        this.rulerPanel.style.top = `${chartArea.top + 10}px`;
         const y = scales.y.getPixelForValue(ruler.tissuePressure);
         if (y < chartArea.top || y > chartArea.bottom) return;
 
         const t = theme();
         const rows = [
             {
-                label: translate('chart.mvalue.rulerEquilibrium', 'p_t = p_amb'),
                 value: ruler.intersections.equilibrium,
                 color: t.colors.ambient
             },
             {
-                label: fmt(
-                    translate('chart.mvalue.rulerGFLow', 'GF Low {0}%'),
-                    fmtNum(ruler.intersections.gfLow.gf * 100, 0)
-                ),
                 value: ruler.intersections.gfLow,
                 color: '#f39c12'
             },
             {
-                label: fmt(
-                    translate('chart.mvalue.rulerActiveGF', 'Current GF {0}% · ceiling'),
-                    fmtNum(ruler.activeGF * 100, 1)
-                ),
                 value: ruler.intersections.activeGF,
                 color: ruler.compartment.color
             },
             {
-                label: fmt(
-                    translate('chart.mvalue.rulerGFHigh', 'GF High {0}%'),
-                    fmtNum(ruler.intersections.gfHigh.gf * 100, 0)
-                ),
                 value: ruler.intersections.gfHigh,
                 color: '#9b59b6'
             }
@@ -1092,47 +1095,102 @@ export class MValueChart {
             ctx.fill();
         }
 
-        const header = fmt(
-            translate('chart.mvalue.rulerHeader', 'TC{0} ruler · p_t={1}\u00a0bar'),
-            ruler.compartment.id,
-            fmtNum(ruler.tissuePressure, 2)
-        );
-        const lines = rows.map(row => fmt(
-            translate('chart.mvalue.rulerIntersection', '{0}: {1}\u00a0bar · {2}\u00a0m'),
-            row.label,
-            fmtNum(row.value.pressure, 2),
-            fmtNum(row.value.depth, 1)
-        ));
-        ctx.font = `600 ${t.sizes.xs}px ${t.fonts.body}`;
-        const panelWidth = Math.max(
-            ctx.measureText(header).width,
-            ...lines.map(line => ctx.measureText(line).width)
-        ) + 24;
-        const lineHeight = t.sizes.xs + 7;
-        const panelHeight = (lines.length + 1) * lineHeight + 14;
-        const panelX = chartArea.left + 10;
-        const panelY = chartArea.top + 10;
-
-        ctx.globalAlpha = 0.92;
-        ctx.fillStyle = t.colors.surface;
-        ctx.fillRect(panelX, panelY, panelWidth, panelHeight);
-        ctx.globalAlpha = 1;
-        ctx.strokeStyle = t.colors.grid;
-        ctx.setLineDash([]);
-        ctx.strokeRect(panelX, panelY, panelWidth, panelHeight);
-
-        ctx.fillStyle = t.colors.text;
-        ctx.fillText(header, panelX + 12, panelY + lineHeight);
-        ctx.font = `500 ${t.sizes.xs}px ${t.fonts.body}`;
-        lines.forEach((line, index) => {
-            ctx.fillStyle = rows[index].color;
-            ctx.fillText(
-                line,
-                panelX + 12,
-                panelY + (index + 2) * lineHeight
-            );
-        });
         ctx.restore();
+    }
+
+    _renderRulerPanel(ruler) {
+        if (!this.rulerPanel) return;
+        if (!ruler) {
+            this.rulerPanel.style.display = 'none';
+            this.rulerPanel.replaceChildren();
+            return;
+        }
+
+        const isCzech = getCurrentLanguage() === 'cs';
+        const tissueSubscript = isCzech ? 'tk' : 't';
+        const ambientSubscript = isCzech ? 'okol' : 'amb';
+        const toleratedSubscript = `${ambientSubscript},tol`;
+        const panel = this.rulerPanel;
+        panel.replaceChildren();
+        panel.style.display = 'block';
+
+        const quantity = (symbol, subscript) => {
+            const fragment = document.createDocumentFragment();
+            const variable = document.createElement('var');
+            variable.textContent = symbol;
+            fragment.appendChild(variable);
+            if (subscript) {
+                const sub = document.createElement('sub');
+                sub.textContent = subscript;
+                fragment.appendChild(sub);
+            }
+            return fragment;
+        };
+        const valueWithUnit = (value, unit, decimals) =>
+            `${fmtNum(value, decimals)}\u00a0${unit}`;
+        const appendPressureAndDepth = (line, value) => {
+            line.appendChild(quantity('p', toleratedSubscript));
+            line.append(
+                ` = ${valueWithUnit(value.pressure, 'bar', 2)} · `
+            );
+            line.appendChild(quantity('h'));
+            line.append(` = ${valueWithUnit(value.depth, 'm', 1)}`);
+        };
+        const addLine = (color, bold = false) => {
+            const line = document.createElement('div');
+            line.style.color = color;
+            if (bold) line.style.fontWeight = '600';
+            panel.appendChild(line);
+            return line;
+        };
+
+        const header = addLine('var(--text, #2c3e50)', true);
+        header.append(
+            `TC${ruler.compartment.id} · `,
+            translate('chart.mvalue.rulerTitle', 'Ruler'),
+            ' · '
+        );
+        header.appendChild(quantity('p', tissueSubscript));
+        header.append(
+            ` = ${valueWithUnit(ruler.tissuePressure, 'bar', 2)}`
+        );
+
+        const equilibrium = addLine('var(--amber-500, #f39c12)');
+        equilibrium.appendChild(quantity('p', tissueSubscript));
+        equilibrium.append(' = ');
+        equilibrium.appendChild(quantity('p', ambientSubscript));
+        equilibrium.append(
+            ` = ${valueWithUnit(ruler.intersections.equilibrium.pressure, 'bar', 2)} · `
+        );
+        equilibrium.appendChild(quantity('h'));
+        equilibrium.append(
+            ` = ${valueWithUnit(ruler.intersections.equilibrium.depth, 'm', 1)}`
+        );
+
+        const gfLow = addLine('#f39c12');
+        gfLow.append('GF');
+        gfLow.appendChild(document.createElement('sub')).textContent = 'low';
+        gfLow.append(
+            ` = ${valueWithUnit(ruler.intersections.gfLow.gf * 100, '%', 0)}: `
+        );
+        appendPressureAndDepth(gfLow, ruler.intersections.gfLow);
+
+        const active = addLine(ruler.compartment.color, true);
+        active.append(
+            translate('chart.mvalue.rulerActiveGFLabel', 'Current GF'),
+            ` = ${valueWithUnit(ruler.activeGF * 100, '%', 1)} · `,
+            translate('chart.mvalue.rulerCeiling', 'ceiling'),
+            ': '
+        );
+        appendPressureAndDepth(active, ruler.intersections.activeGF);
+
+        const gfHigh = addLine('#9b59b6');
+        gfHigh.append('GF');
+        gfHigh.appendChild(document.createElement('sub')).textContent = 'high';
+        gfHigh.append(
+            ` = ${valueWithUnit(ruler.intersections.gfHigh.gf * 100, '%', 0)}: `
+        );
+        appendPressureAndDepth(gfHigh, ruler.intersections.gfHigh);
     }
     
     _render() {
@@ -1256,7 +1314,8 @@ export class MValueChart {
             if (pAnchor > surfacePressure) {
                 const anchorDepthM = fmtNum(((pAnchor - surfacePressure) / 0.1), 1);
                 datasets.push({
-                    label: fmt(translate('chart.mvalue.pAnchor', 'pAnchor {0}\u00a0bar ({1}\u00a0m)'), fmtNum(pAnchor, 2), anchorDepthM),
+                    label: fmt(translate('chart.mvalue.pAnchor', 'Anchor pressure {0}\u00a0bar ({1}\u00a0m)'), fmtNum(pAnchor, 2), anchorDepthM),
+                    mvalueAnchor: true,
                     data: [
                         { x: pAnchor, y: 0 },
                         { x: pAnchor, y: maxPressure }
@@ -1429,7 +1488,8 @@ export class MValueChart {
                         display: true,
                         position: 'top',
                         labels: {
-                            filter: (item) => this._isLegendItemVisible(item)
+                            filter: (item, chartData) =>
+                                this._isLegendItemVisible(item, chartData)
                         }
                     },
                     tooltip: {
@@ -1438,7 +1498,7 @@ export class MValueChart {
                             label: (context) => {
                                 const label = context.dataset.label || '';
                                 return fmt(
-                                    translate('chart.mvalue.tooltipLabel', '{0}: p_amb={1}, p_tissue={2}\u00a0bar'),
+                                    translate('chart.mvalue.tooltipLabel', '{0}: ambient pressure {1}\u00a0bar, tissue pressure {2}\u00a0bar'),
                                     label, fmtNum(context.parsed.x, 2), fmtNum(context.parsed.y, 2)
                                 );
                             }
