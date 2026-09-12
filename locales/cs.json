@@ -1110,6 +1110,9 @@
             "leadingTissue": "Nejvyšší GF",
             "leadingTC": "Nejvyšší GF: TC{0} ({1} %)",
             "pAnchor": "Kotevní tlak {0} bar ({1} m)",
+            "rankingTitle": "Pořadí tkání",
+            "rankingTissue": "TC",
+            "rankingGF": "GF",
             "tooltipLabel": "{0}: okolní tlak {1} bar, GF {2} %"
         }
     },

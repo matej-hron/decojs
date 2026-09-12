@@ -1110,6 +1110,9 @@
             "leadingTissue": "GF máximo",
             "leadingTC": "GF máximo: TC{0} ({1} %)",
             "pAnchor": "Presión de anclaje {0} bar ({1} m)",
+            "rankingTitle": "Clasificación de tejidos",
+            "rankingTissue": "TC",
+            "rankingGF": "GF",
             "tooltipLabel": "{0}: presión ambiente {1} bar, GF {2} %"
         }
     },

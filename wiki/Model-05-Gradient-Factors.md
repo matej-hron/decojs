@@ -108,7 +108,7 @@ The GFChart (`js/charts/GFChart.js`) renders the ramp as a shaded band:
 - Right edge at the surface, height = $GF_{high}$.
 - Linear ramp between.
 - Per-compartment tissue trails show how each compartment's instantaneous GF evolved through the dive. Negative trails represent undersaturation. The black **Highest GF** envelope follows the largest positive instantaneous GF; it is not labeled as the controlling tissue because the compartment with the deepest GF-adjusted ceiling can differ.
-- Each current tissue point carries its compartment number inside the coloured marker, so overlapping points remain identifiable without relying on hover text.
+- Each current tissue point carries its compartment number inside the coloured marker, so overlapping points remain identifiable without relying on hover text. On sufficiently wide charts, a table on the right ranks visible supersaturated tissues by their current instantaneous GF. Negative GF values remain available in the plot but are omitted from the ranking because they represent undersaturation rather than a decompression constraint.
 
 The M-value chart renders the same ramp projected onto the P-P diagram: a segment from `(pAnchor, M_adj at GF_low)` to `(1.0 bar, M_adj at GF_high)`. Its `T` ruler evaluates fixed GF Low/High references and solves the horizontal tissue-pressure intersection with this ramp. The solution returns both the tolerated ambient pressure and the interpolated GF at that pressure.
 
