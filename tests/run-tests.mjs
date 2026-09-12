@@ -438,6 +438,32 @@ describe('GF chart controlling tissue toggle', () => {
             [0, true], [1, true]
         ]);
         expect(updates).toEqual(['none', 'none']);
+
+        const gfLegendData = {
+            datasets: [
+                { gfcGroup: 'leading-tissue', gfcLegendItem: true },
+                { label: 'TC1' },
+                { label: 'pAnchor' }
+            ]
+        };
+        expect(GFChart.prototype._isLegendItemVisible(
+            { datasetIndex: 0, text: 'Controlling tissue' },
+            gfLegendData
+        )).toBe(true);
+        expect(GFChart.prototype._isLegendItemVisible(
+            { datasetIndex: 1, text: 'TC1 (5 min)' },
+            gfLegendData
+        )).toBe(false);
+        expect(GFChart.prototype._isLegendItemVisible(
+            { datasetIndex: 2, text: 'pAnchor' },
+            gfLegendData
+        )).toBe(true);
+        expect(MValueChart.prototype._isLegendItemVisible(
+            { text: 'TC1 (5 min)' }
+        )).toBe(false);
+        expect(MValueChart.prototype._isLegendItemVisible(
+            { text: 'pAnchor' }
+        )).toBe(true);
     });
 });
 

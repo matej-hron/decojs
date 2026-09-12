@@ -860,7 +860,11 @@ export class MValueChart {
             }
         });
     }
-    
+
+    _isLegendItemVisible(legendItem) {
+        return (legendItem.text || '').startsWith('pAnchor');
+    }
+
     // ============================================================================
     // Fullscreen
     // ============================================================================
@@ -1201,12 +1205,7 @@ export class MValueChart {
                         display: true,
                         position: 'top',
                         labels: {
-                            filter: (item) => {
-                                return (item.text.startsWith('TC') &&
-                                       !item.text.startsWith('Trail') &&
-                                       item.text.includes('min')) ||
-                                       item.text.startsWith('pAnchor');
-                            }
+                            filter: (item) => this._isLegendItemVisible(item)
                         }
                     },
                     tooltip: {

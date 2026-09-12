@@ -850,6 +850,15 @@ export class GFChart {
         chart.update('none');
     }
 
+    _isLegendItemVisible(legendItem, chartData) {
+        const text = legendItem.text || '';
+        const dataset = chartData.datasets[legendItem.datasetIndex];
+        const isLeading = dataset?.gfcGroup === 'leading-tissue' &&
+            dataset.gfcLegendItem;
+        const isPAnchor = text.startsWith('pAnchor');
+        return isLeading || isPAnchor;
+    }
+
     _handleLegendClick(legendItem, legend) {
         const chart = legend.chart;
         const datasetIndex = legendItem.datasetIndex;
@@ -1120,15 +1129,8 @@ export class GFChart {
                         display: true,
                         position: 'top',
                         labels: {
-                            filter: (item, chartData) => {
-                                const text = item.text || '';
-                                const dataset = chartData.datasets[item.datasetIndex];
-                                const isTissue = text.startsWith('TC') && text.includes('min');
-                                const isLeading = dataset?.gfcGroup === 'leading-tissue' &&
-                                    dataset.gfcLegendItem;
-                                const isPAnchor = text.startsWith('pAnchor');
-                                return isTissue || isLeading || isPAnchor;
-                            }
+                            filter: (item, chartData) =>
+                                this._isLegendItemVisible(item, chartData)
                         },
                         onClick: (_event, legendItem, legend) =>
                             this._handleLegendClick(legendItem, legend)
