@@ -324,9 +324,20 @@ export function mergeOptions(defaults, userOptions) {
             } else {
                 result[key] = userOptions[key];
             }
+
         }
     }
     return result;
+}
+
+export function setLegendItemHelp(legendItem, legend, text = '') {
+    const chart = legend?.chart;
+    const canvas = chart?.canvas;
+    if (!canvas) return;
+    const dataset = chart.data?.datasets?.[legendItem?.datasetIndex];
+    const showHelp = Boolean(text && dataset?.anchorLegendHelp);
+    canvas.title = showHelp ? text : '';
+    canvas.style.cursor = showHelp ? 'help' : '';
 }
 
 /**

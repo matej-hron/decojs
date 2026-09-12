@@ -214,7 +214,8 @@ import { planTrip } from '../js/tripPlanner.js';
 import { preSaturation } from '../js/preSaturation.js';
 import {
     calculateChartGFAnchor,
-    normalizeDiveSetup
+    normalizeDiveSetup,
+    setLegendItemHelp
 } from '../js/charts/chartTypes.js';
 import { buildRuntimeRows } from '../js/components/RuntimeTable.js';
 import {
@@ -576,6 +577,32 @@ describe('GF chart maximum GF toggle', () => {
             null,
             0
         )).toBe('Highest GF');
+    });
+
+    test('shows anchor-pressure help only for the anchor legend item', () => {
+        const canvas = { title: '', style: {} };
+        const chart = {
+            canvas,
+            data: {
+                datasets: [
+                    { label: 'TC1' },
+                    { label: 'Anchor pressure (?)', anchorLegendHelp: true }
+                ]
+            }
+        };
+        const legend = { chart };
+
+        setLegendItemHelp(
+            { datasetIndex: 1 },
+            legend,
+            'Deepest stop anchor explanation'
+        );
+        expect(canvas.title).toBe('Deepest stop anchor explanation');
+        expect(canvas.style.cursor).toBe('help');
+
+        setLegendItemHelp({ datasetIndex: 0 }, legend, 'Ignored');
+        expect(canvas.title).toBe('');
+        expect(canvas.style.cursor).toBe('');
     });
 });
 
