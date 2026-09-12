@@ -229,6 +229,71 @@ import { createHash } from 'node:crypto';
 import { GF_PRESETS } from '../js/gfPresets.js';
 import { encodeTrip, decodeTrip } from '../js/tripUrl.js';
 import { isAndroid } from '../js/appBanner.js';
+import {
+    initTooltipShortcut,
+    resolveChartTooltipEnabled
+} from '../js/components/tooltipShortcut.js';
+
+describe('Chart tooltip shortcut', () => {
+    test('toggles Map and object chart registries and persists across chart rebuilds', () => {
+        const originalDocument = globalThis.document;
+        const originalWindow = globalThis.window;
+        let keydownHandler;
+        const updates = [];
+
+        const makeChart = (id) => ({
+            options: { plugins: { tooltip: { enabled: true } } },
+            config: { options: { plugins: { tooltip: { enabled: true } } } },
+            setActiveElements(elements) {
+                updates.push(`${id}:active:${elements.length}`);
+            },
+            tooltip: {
+                setActiveElements(elements) {
+                    updates.push(`${id}:tooltip:${elements.length}`);
+                }
+            },
+            update(mode) {
+                updates.push(`${id}:update:${mode}`);
+            }
+        });
+        const first = makeChart('first');
+        const second = makeChart('second');
+
+        try {
+            globalThis.document = {
+                addEventListener(type, handler) {
+                    if (type === 'keydown') keydownHandler = handler;
+                }
+            };
+            globalThis.window = {
+                Chart: { instances: new Map([['first', first], ['second', second]]) }
+            };
+
+            initTooltipShortcut();
+            keydownHandler({ key: 't', target: { tagName: 'BODY' } });
+
+            expect(first.options.plugins.tooltip.enabled).toBe(false);
+            expect(first.config.options.plugins.tooltip.enabled).toBe(false);
+            expect(second.options.plugins.tooltip.enabled).toBe(false);
+            expect(resolveChartTooltipEnabled(true)).toBe(false);
+            expect(updates.includes('first:tooltip:0')).toBe(true);
+            expect(updates.includes('second:update:none')).toBe(true);
+
+            globalThis.window.Chart.instances = { first, second };
+            keydownHandler({ key: 'T', target: { tagName: 'BODY' } });
+
+            expect(first.options.plugins.tooltip.enabled).toBe(true);
+            expect(second.config.options.plugins.tooltip.enabled).toBe(true);
+            expect(resolveChartTooltipEnabled(false)).toBe(true);
+
+            keydownHandler({ key: 't', target: { tagName: 'INPUT' } });
+            expect(resolveChartTooltipEnabled(false)).toBe(true);
+        } finally {
+            globalThis.document = originalDocument;
+            globalThis.window = originalWindow;
+        }
+    });
+});
 
 // ============================================================================
 // GF PRESETS TESTS
