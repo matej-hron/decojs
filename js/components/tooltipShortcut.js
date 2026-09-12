@@ -28,18 +28,13 @@ function getCharts(instances) {
 }
 
 function setTooltipEnabled(chart, enabled) {
-    if (!chart.options) return;
+    const options = chart.config?.options;
+    if (!options) return;
     if (chart.canvas) tooltipStateByCanvas.set(chart.canvas, enabled);
 
-    chart.options.plugins = chart.options.plugins || {};
-    chart.options.plugins.tooltip = chart.options.plugins.tooltip || {};
-    chart.options.plugins.tooltip.enabled = enabled;
-
-    if (chart.config?.options) {
-        chart.config.options.plugins = chart.config.options.plugins || {};
-        chart.config.options.plugins.tooltip = chart.config.options.plugins.tooltip || {};
-        chart.config.options.plugins.tooltip.enabled = enabled;
-    }
+    options.plugins = options.plugins || {};
+    options.plugins.tooltip = options.plugins.tooltip || {};
+    options.plugins.tooltip.enabled = enabled;
 
     if (!enabled) {
         chart.setActiveElements?.([]);
@@ -50,6 +45,7 @@ function setTooltipEnabled(chart, enabled) {
 
 function chartForTarget(charts, target) {
     if (!target) return null;
+    if (target === document.body || target === document.documentElement) return null;
     return charts.find((chart) =>
         chart.canvas === target ||
         target.contains?.(chart.canvas) ||

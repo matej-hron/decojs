@@ -242,6 +242,16 @@ describe('Chart tooltip shortcut', () => {
         const updates = [];
 
         const makeChart = (id) => {
+            const resolvedPlugins = { tooltip: { enabled: true } };
+            const options = {};
+            Object.defineProperty(options, 'plugins', {
+                get() {
+                    return resolvedPlugins;
+                },
+                set() {
+                    throw new Error('Chart.js resolved options must not be replaced');
+                }
+            });
             const canvas = {
                 id,
                 closest(selector) {
@@ -256,7 +266,7 @@ describe('Chart tooltip shortcut', () => {
             };
             return {
             canvas,
-            options: { plugins: { tooltip: { enabled: true } } },
+            options,
             config: { options: { plugins: { tooltip: { enabled: true } } } },
             setActiveElements(elements) {
                 updates.push(`${id}:active:${elements.length}`);
@@ -267,6 +277,8 @@ describe('Chart tooltip shortcut', () => {
                 }
             },
             update(mode) {
+                resolvedPlugins.tooltip.enabled =
+                    this.config.options.plugins.tooltip.enabled;
                 updates.push(`${id}:update:${mode}`);
             }
         };
@@ -279,9 +291,18 @@ describe('Chart tooltip shortcut', () => {
                 return target === first.canvas;
             }
         };
+        const body = {
+            tagName: 'BODY',
+            contains(target) {
+                return target === first.canvas || target === second.canvas;
+            }
+        };
+        const documentElement = { tagName: 'HTML' };
 
         try {
             globalThis.document = {
+                body,
+                documentElement,
                 addEventListener(type, handler) {
                     handlers[type] = handler;
                 }
@@ -304,7 +325,7 @@ describe('Chart tooltip shortcut', () => {
             globalThis.window.Chart.instances = { first, second };
             handlers.pointerover({ target: second.canvas });
             handlers.pointerout?.({ target: second.canvas, relatedTarget: { tagName: 'DIV' } });
-            handlers.keydown({ key: 'T', target: { tagName: 'BODY' } });
+            handlers.keydown({ key: 'T', target: body });
 
             expect(first.options.plugins.tooltip.enabled).toBe(false);
             expect(second.config.options.plugins.tooltip.enabled).toBe(false);
