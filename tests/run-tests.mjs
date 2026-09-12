@@ -673,6 +673,49 @@ describe('M-value intersection ruler', () => {
             dom.window.close();
         }
     });
+
+    test('keeps the alveolar pressure toggle inside fullscreen controls', () => {
+        const dom = new JSDOM('<!doctype html><body><div id="controls"></div></body>');
+        const originalDocument = globalThis.document;
+        globalThis.document = dom.window.document;
+        let renders = 0;
+        const context = {
+            controlsContainer: dom.window.document.getElementById('controls'),
+            options: { showAlveolarLine: false },
+            visibleCompartments: new Set([1]),
+            _selectAllCompartments() {},
+            _selectNoCompartments() {},
+            _selectFastCompartments() {},
+            _selectSlowCompartments() {},
+            _updateCompartmentCheckboxes() {},
+            _render() { renders++; }
+        };
+
+        try {
+            MValueChart.prototype._buildCompartmentSelector.call(context);
+            const control = context.controlsContainer.querySelector(
+                '.mvc-alveolar-toggle'
+            );
+            const checkbox = control.querySelector('input');
+            expect(control.querySelector('var').textContent).toBe('p');
+            expect(control.querySelector('sub').textContent).toBe('N₂');
+            expect(checkbox.checked).toBe(false);
+
+            checkbox.checked = true;
+            checkbox.dispatchEvent(new dom.window.Event('change'));
+            expect(context.options.showAlveolarLine).toBe(true);
+            expect(renders).toBe(1);
+
+            const sandbox = readFileSync(
+                new URL('../sandbox/index.html', import.meta.url),
+                'utf8'
+            );
+            expect(sandbox.includes('opt-showAlveolarLine')).toBe(false);
+        } finally {
+            globalThis.document = originalDocument;
+            dom.window.close();
+        }
+    });
 });
 
 // ============================================================================

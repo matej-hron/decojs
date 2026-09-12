@@ -1090,6 +1090,7 @@
             "trailTC": "Trail TC{0}",
             "ambientLine": "Ambient Line (y = x)",
             "alveolarPN2": "Alveolar pN₂",
+            "alveolarToggle": "Alveolar",
             "alveolarPN2WithGases": "Alveolar pN₂ ({0})",
             "alveolarPN2Percent": "Alveolar pN₂ ({0}%)",
             "surfaceLine": "Surface ({0} bar)",

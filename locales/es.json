@@ -1090,6 +1090,7 @@
             "trailTC": "Traza TC{0}",
             "ambientLine": "Línea de presión ambiente (y = x)",
             "alveolarPN2": "pN₂ alveolar",
+            "alveolarToggle": "Alveolar",
             "alveolarPN2WithGases": "pN₂ alveolar ({0})",
             "alveolarPN2Percent": "pN₂ alveolar ({0} %)",
             "surfaceLine": "Superficie ({0} bar)",
