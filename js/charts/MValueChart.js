@@ -33,6 +33,7 @@
 import { COMPARTMENTS } from '../tissueCompartments.js';
 import { applyChartTheme, theme } from './chartTheme.js';
 import { createInteractionLockBtn } from './interactionLock.js';
+import { resolveChartTooltipEnabled } from '../components/tooltipShortcut.js';
 import { translate } from '../i18n.js';
 
 import { fmtNum } from '../format.js';
@@ -1207,7 +1208,7 @@ export class MValueChart {
                         }
                     },
                     tooltip: {
-                        enabled: this.options.interactive,
+                        enabled: resolveChartTooltipEnabled(this.options.interactive),
                         callbacks: {
                             label: (context) => {
                                 const label = context.dataset.label || '';

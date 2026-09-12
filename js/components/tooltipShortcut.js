@@ -9,6 +9,39 @@
  */
 
 let installed = false;
+let tooltipsEnabled = null;
+
+export function resolveChartTooltipEnabled(defaultEnabled = true) {
+    return tooltipsEnabled ?? defaultEnabled;
+}
+
+function getCharts(instances) {
+    if (!instances) return [];
+    if (typeof instances.values === 'function') {
+        return Array.from(instances.values());
+    }
+    return Object.values(instances);
+}
+
+function setTooltipEnabled(chart, enabled) {
+    if (!chart.options) return;
+
+    chart.options.plugins = chart.options.plugins || {};
+    chart.options.plugins.tooltip = chart.options.plugins.tooltip || {};
+    chart.options.plugins.tooltip.enabled = enabled;
+
+    if (chart.config?.options) {
+        chart.config.options.plugins = chart.config.options.plugins || {};
+        chart.config.options.plugins.tooltip = chart.config.options.plugins.tooltip || {};
+        chart.config.options.plugins.tooltip.enabled = enabled;
+    }
+
+    if (!enabled) {
+        chart.setActiveElements?.([]);
+        chart.tooltip?.setActiveElements?.([], { x: 0, y: 0 });
+    }
+    chart.update('none');
+}
 
 export function initTooltipShortcut() {
     if (installed) return;
@@ -21,24 +54,19 @@ export function initTooltipShortcut() {
         if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
         if (e.target && e.target.isContentEditable) return;
 
-        // Chart.instances is a dict keyed by chart id; cast to array of charts.
         const ChartCtor = typeof window !== 'undefined' ? window.Chart : undefined;
         if (!ChartCtor || !ChartCtor.instances) return;
 
-        const charts = Object.values(ChartCtor.instances);
+        const charts = getCharts(ChartCtor.instances);
         if (charts.length === 0) return;
 
-        // Flip each chart's tooltip.enabled. If different charts are out of sync,
-        // we drive every chart to the inverse of the first one so a single press
-        // visibly changes state everywhere.
         const first = charts[0];
-        const nextEnabled = !(first.options?.plugins?.tooltip?.enabled ?? true);
+        const currentEnabled = tooltipsEnabled ??
+            (first.options?.plugins?.tooltip?.enabled ?? true);
+        tooltipsEnabled = !currentEnabled;
+
         for (const chart of charts) {
-            if (!chart.options) continue;
-            chart.options.plugins = chart.options.plugins || {};
-            chart.options.plugins.tooltip = chart.options.plugins.tooltip || {};
-            chart.options.plugins.tooltip.enabled = nextEnabled;
-            chart.update('none');
+            setTooltipEnabled(chart, tooltipsEnabled);
         }
     });
 }

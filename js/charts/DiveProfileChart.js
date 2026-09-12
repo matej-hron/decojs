@@ -30,6 +30,7 @@
 import { COMPARTMENTS } from '../tissueCompartments.js';
 import { applyChartTheme, depthGradient, theme } from './chartTheme.js';
 import { createInteractionLockBtn } from './interactionLock.js';
+import { resolveChartTooltipEnabled } from '../components/tooltipShortcut.js';
 import { translate } from '../i18n.js';
 
 /** Helper: replace {0}, {1}, ... placeholders with the given values. */
@@ -1392,7 +1393,7 @@ export class DiveProfileChart {
                         position: 'top'
                     },
                     tooltip: {
-                        enabled: this.options.interactive,
+                        enabled: resolveChartTooltipEnabled(this.options.interactive),
                         callbacks: {
                             title: (items) => {
                                 if (items.length > 0) {
