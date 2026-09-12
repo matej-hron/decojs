@@ -107,7 +107,7 @@ The GFChart (`js/charts/GFChart.js`) renders the ramp as a shaded band:
 - Left edge at `pAnchor`, height = $GF_{low}$.
 - Right edge at the surface, height = $GF_{high}$.
 - Linear ramp between.
-- Per-compartment tissue trails show how each compartment's instantaneous GF evolved through the dive. Negative trails represent undersaturation. A controlling tissue exists only when at least one compartment has $P_t > P_{amb}$; among those supersaturated compartments it is the one with the highest positive instantaneous GF.
+- Per-compartment tissue trails show how each compartment's instantaneous GF evolved through the dive. Negative trails represent undersaturation. A controlling tissue exists only when at least one compartment has $P_t > P_{amb}$; among those supersaturated compartments it is the one with the deepest ceiling under the currently active GF. This can differ from the compartment with the highest instantaneous GF because their Bühlmann $a$/$b$ coefficients differ.
 
 The M-value chart in `js/mvalues.js` renders the same ramp projected onto the P-P diagram: a segment from `(pAnchor, M_adj at GF_low)` to `(1.0 bar, M_adj at GF_high)`.
 
