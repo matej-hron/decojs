@@ -5125,6 +5125,25 @@ describe('DiveSetupEditor notation', () => {
     });
 });
 
+describe('M-value notation localization', () => {
+    test('Czech M-value descriptions use the localized ambient-pressure subscript', () => {
+        const cs = JSON.parse(
+            readFileSync(new URL('../locales/cs.json', import.meta.url), 'utf8')
+        );
+        const values = [
+            cs.mValues.chartFormula.intro,
+            cs.mValues.chartFormula.varPamb,
+            cs.mValues.buhlmann.formulaPamb,
+            cs.gradientFactors.chartFormula.varM
+        ];
+
+        for (const value of values) {
+            expect(value.includes('<sub>okol</sub>')).toBe(true);
+            expect(value.includes('<sub>amb</sub>')).toBe(false);
+        }
+    });
+});
+
 describe('i18n notation - canvas strings must not contain HTML entities', () => {
     const LOCALES = ['cs', 'en', 'es'];
     const load = (l) => JSON.parse(readFileSync(new URL(`../locales/${l}.json`, import.meta.url), 'utf8'));
