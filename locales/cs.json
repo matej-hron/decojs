@@ -505,8 +505,8 @@
             "fast": "<strong>Rychlé kompartmenty (5–12,5 min)</strong> — nasytí se za minuty, ale také rychle uvolňují plyn",
             "medium": "<strong>Střední kompartmenty (18,5–77 min)</strong> — rovnováha mezi sycením a vysycováním",
             "slow": "<strong>Pomalé kompartmenty (109–635 min)</strong> — plné nasycení může trvat hodiny",
-            "controllingTitle": "Řídící kompartment",
-            "controlling": "V jakémkoli okamžiku ponoru je <strong>řídící kompartment</strong> ten, který je nejblíže svému limitu kritického přesycení — tento kompartment určuje váš dekompresní strop."
+            "controllingTitle": "Řídicí kompartment",
+            "controlling": "V dané hloubce je <strong>řídicí kompartment</strong> ten, jehož tkáňový tlak leží nejvýše v procentech mezi okolním tlakem (0 %) a jeho M-hodnotou (100 %). Má tedy nejvyšší okamžité GF a určuje dekompresní strop."
         },
         "zhl16Variants": {
             "title": "Varianty ZH-L16: A, B a C",
@@ -929,11 +929,13 @@
     },
     "gfChart": {
         "formulaSummary": "📐 Zobrazit vzorec GF %",
-        "formulaIntro": "Okamžitý Gradient Factor tkáně při okolním tlaku <var>p</var><sub>amb</sub>:",
-        "formulaMValue": "Bühlmannova M-hodnota při <var>p</var><sub>amb</sub>: <strong>M(<var>p</var><sub>amb</sub>) = a + <var>p</var><sub>amb</sub> / b</strong>",
+        "formulaIntro": "Okamžitý Gradient Factor tkáně při okolním tlaku <var>p</var><sub>okol</sub>:",
+        "formulaMValue": "Bühlmannova M-hodnota při <var>p</var><sub>okol</sub>: <strong>M(<var>p</var><sub>okol</sub>) = a + <var>p</var><sub>okol</sub> / b</strong>",
         "formulaWhere": "Kde:",
-        "varPtissue": "<strong><var>p</var><sub>tissue</sub></strong> — tlak inertního plynu v tkáni (bar)",
-        "varPamb": "<strong><var>p</var><sub>amb</sub></strong> — okolní tlak = 1 + hloubka/10 (bar)",
+        "subTissue": "tk",
+        "subAmbient": "okol",
+        "varPtissue": "<strong><var>p</var><sub>tk</sub></strong> — tlak inertního plynu v tkáni (bar)",
+        "varPamb": "<strong><var>p</var><sub>okol</sub></strong> — okolní tlak = 1 + hloubka/10 (bar)",
         "varAB": "<strong>a, b</strong> — Bühlmannovy koeficienty ZH-L16 pro danou tkáň",
         "varGF": "<strong>GF</strong> — 0 % na úrovni okolního tlaku (plně saturováno, nulový gradient), 100 % na M-hodnotě (Bühlmannův limit)",
         "rampNote": "Během výstupu se <em>povolené</em> GF lineárně interpoluje z GF Low v hloubce pAnchor na GF High na hladině. Zelený koridor v grafu zobrazuje tuto povolenou oblast."

@@ -233,6 +233,7 @@ import {
     initTooltipShortcut,
     resolveChartTooltipEnabled
 } from '../js/components/tooltipShortcut.js';
+import { GFChart } from '../js/charts/GFChart.js';
 
 describe('Chart tooltip shortcut', () => {
     test('toggles only the focused or hovered chart and persists across rebuilds', () => {
@@ -336,6 +337,45 @@ describe('Chart tooltip shortcut', () => {
         } finally {
             globalThis.document = originalDocument;
             globalThis.window = originalWindow;
+        }
+    });
+});
+
+describe('GFChart fullscreen controls', () => {
+    test('hides the exit button until the chart enters fullscreen', () => {
+        const dom = new JSDOM('<!doctype html><body><div id="chart"></div></body>');
+        const originalDocument = globalThis.document;
+        const originalSetTimeout = globalThis.setTimeout;
+        globalThis.document = dom.window.document;
+        globalThis.setTimeout = () => 0;
+
+        try {
+            const context = {
+                chartContainer: dom.window.document.getElementById('chart'),
+                fullscreenBtn: { style: {} },
+                exitFullscreenBtn: { style: {} },
+                resize() {}
+            };
+
+            GFChart.prototype._toggleFullscreen.call(context);
+            expect(context.chartContainer.classList.contains('gfc-fullscreen')).toBe(true);
+            expect(context.fullscreenBtn.style.display).toBe('none');
+            expect(context.exitFullscreenBtn.style.display).toBe('block');
+
+            GFChart.prototype._toggleFullscreen.call(context);
+            expect(context.chartContainer.classList.contains('gfc-fullscreen')).toBe(false);
+            expect(context.fullscreenBtn.style.display).toBe('');
+            expect(context.exitFullscreenBtn.style.display).toBe('none');
+
+            const css = readFileSync(
+                new URL('../css/styles.css', import.meta.url),
+                'utf8'
+            );
+            expect(css.includes('.gfc-chart-container.gfc-fullscreen {')).toBe(true);
+        } finally {
+            globalThis.document = originalDocument;
+            globalThis.setTimeout = originalSetTimeout;
+            dom.window.close();
         }
     });
 });
@@ -5141,6 +5181,30 @@ describe('M-value notation localization', () => {
             expect(value.includes('<sub>okol</sub>')).toBe(true);
             expect(value.includes('<sub>amb</sub>')).toBe(false);
         }
+    });
+
+    test('GF formula localizes tissue and ambient pressure subscripts', () => {
+        const load = (lang) => JSON.parse(
+            readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8')
+        );
+        const cs = load('cs');
+        const en = load('en');
+        const es = load('es');
+        const sandbox = readFileSync(
+            new URL('../sandbox/index.html', import.meta.url),
+            'utf8'
+        );
+
+        expect(cs.gfChart.subTissue).toBe('tk');
+        expect(cs.gfChart.subAmbient).toBe('okol');
+        expect(cs.gfChart.varPtissue.includes('<sub>tk</sub>')).toBe(true);
+        expect(cs.gfChart.varPamb.includes('<sub>okol</sub>')).toBe(true);
+        expect(en.gfChart.subTissue).toBe('t');
+        expect(en.gfChart.subAmbient).toBe('amb');
+        expect(es.gfChart.subTissue).toBe('tejido');
+        expect(es.gfChart.subAmbient).toBe('amb');
+        expect(sandbox.includes('data-i18n="gfChart.subTissue"')).toBe(true);
+        expect(sandbox.includes('data-i18n="gfChart.subAmbient"')).toBe(true);
     });
 });
 

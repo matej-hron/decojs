@@ -506,7 +506,7 @@
             "medium": "<strong>Medium compartments (18.5–77 min)</strong> — balance between loading and off-gassing",
             "slow": "<strong>Slow compartments (109–635 min)</strong> — can take hours to fully saturate",
             "controllingTitle": "The Controlling Compartment",
-            "controlling": "At any point during a dive, the <strong>controlling compartment</strong> is the one closest to its critical supersaturation limit — this compartment determines your decompression ceiling."
+            "controlling": "At a given depth, the <strong>controlling compartment</strong> is the one whose tissue pressure lies highest, as a percentage, between ambient pressure (0%) and its M-value (100%). It therefore has the highest instantaneous GF and determines the decompression ceiling."
         },
         "zhl16Variants": {
             "title": "ZH-L16 Variants: A, B, and C",
@@ -932,7 +932,9 @@
         "formulaIntro": "Instantaneous Gradient Factor for a tissue at ambient pressure <var>p</var><sub>amb</sub>:",
         "formulaMValue": "Bühlmann M-value at <var>p</var><sub>amb</sub>: <strong>M(<var>p</var><sub>amb</sub>) = a + <var>p</var><sub>amb</sub> / b</strong>",
         "formulaWhere": "Where:",
-        "varPtissue": "<strong><var>p</var><sub>tissue</sub></strong> — tissue inert-gas pressure (bar)",
+        "subTissue": "t",
+        "subAmbient": "amb",
+        "varPtissue": "<strong><var>p</var><sub>t</sub></strong> — tissue inert-gas pressure (bar)",
         "varPamb": "<strong><var>p</var><sub>amb</sub></strong> — ambient pressure = 1 + depth/10 (bar)",
         "varAB": "<strong>a, b</strong> — ZH-L16 Bühlmann coefficients for that tissue",
         "varGF": "<strong>GF</strong> — 0 % at ambient (fully saturated, no gradient), 100 % at the M-value (Bühlmann limit)",
