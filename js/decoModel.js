@@ -240,22 +240,25 @@ export function calculateInstantGF(tissuePressure, ambientPressure, compartment)
 }
 
 /**
- * Calculate maximum (controlling) Gradient Factor across all tissue compartments.
+ * Calculate maximum Gradient Factor across supersaturated tissue compartments.
  * 
  * GF_max(Pamb) = max over i of GF_i(Pamb)
  * 
- * The leading tissue is the one with the highest instantaneous GF.
+ * A compartment can control decompression only while its tissue pressure
+ * exceeds ambient pressure. If every compartment is undersaturated or exactly
+ * at ambient pressure, there is no leading compartment and gfMax is zero.
  * Note: The leading tissue may change during ascent and deco.
  * 
  * @param {Object} tissuePressures - Map of compartment ID to tissue pressure (bar)
  * @param {number} ambientPressure - Current ambient pressure (bar)
  * @returns {{gfMax: number, leadingCompartment: number, allGFs: Object}}
- *          gfMax: Maximum GF across all tissues
- *          leadingCompartment: ID of the tissue with highest GF
+ *          gfMax: Maximum positive GF, or 0 when no tissue is supersaturated
+ *          leadingCompartment: ID of the supersaturated tissue with highest GF,
+ *                              or null when none is supersaturated
  *          allGFs: Map of compartment ID to its instantaneous GF
  */
 export function calculateMaxGF(tissuePressures, ambientPressure) {
-    let gfMax = -Infinity;
+    let gfMax = 0;
     let leadingCompartment = null;
     const allGFs = {};
     
@@ -264,7 +267,7 @@ export function calculateMaxGF(tissuePressures, ambientPressure) {
         const gf = calculateInstantGF(tissueP, ambientPressure, comp);
         allGFs[comp.id] = gf;
         
-        if (gf > gfMax) {
+        if (tissueP > ambientPressure && gf > gfMax) {
             gfMax = gf;
             leadingCompartment = comp.id;
         }

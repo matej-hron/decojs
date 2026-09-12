@@ -506,7 +506,7 @@
             "medium": "<strong>Medium compartments (18.5–77 min)</strong> — balance between loading and off-gassing",
             "slow": "<strong>Slow compartments (109–635 min)</strong> — can take hours to fully saturate",
             "controllingTitle": "The Controlling Compartment",
-            "controlling": "At a given depth, the <strong>controlling compartment</strong> is the one whose tissue pressure lies highest, as a percentage, between ambient pressure (0%) and its M-value (100%). It therefore has the highest instantaneous GF and determines the decompression ceiling."
+            "controlling": "A <strong>controlling compartment</strong> exists only during supersaturation, when tissue pressure exceeds ambient pressure. Among supersaturated compartments, it is the one whose tissue pressure lies highest, as a percentage, between ambient pressure (0%) and its M-value (100%). It therefore has the highest positive instantaneous GF and determines the decompression ceiling."
         },
         "zhl16Variants": {
             "title": "ZH-L16 Variants: A, B, and C",

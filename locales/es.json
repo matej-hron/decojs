@@ -506,7 +506,7 @@
             "medium": "<strong>Compartimentos medios (18.5–77 min)</strong> — equilibrio entre carga y desgasificación",
             "slow": "<strong>Compartimentos lentos (109–635 min)</strong> — pueden tardar horas en saturarse por completo",
             "controllingTitle": "El compartimento de control",
-            "controlling": "A una profundidad determinada, el <strong>compartimento de control</strong> es aquel cuya presión tisular ocupa el porcentaje más alto entre la presión ambiente (0 %) y su valor M (100 %). Por tanto, tiene el GF instantáneo más alto y determina el techo de descompresión."
+            "controlling": "Un <strong>compartimento de control</strong> solo existe durante la sobresaturación, cuando la presión tisular supera la presión ambiente. Entre los compartimentos sobresaturados, es aquel cuya presión tisular ocupa el porcentaje más alto entre la presión ambiente (0 %) y su valor M (100 %). Por tanto, tiene el GF instantáneo positivo más alto y determina el techo de descompresión."
         },
         "zhl16Variants": {
             "title": "Variantes de ZH-L16: A, B y C",
