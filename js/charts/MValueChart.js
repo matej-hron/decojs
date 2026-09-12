@@ -145,6 +145,7 @@ import {
     calculateChartGFAnchor,
     DEFAULT_ENVIRONMENT,
     mergeOptions,
+    setLegendItemHelp,
     validateDiveSetup,
     normalizeDiveSetup
 } from './chartTypes.js';
@@ -1473,8 +1474,9 @@ export class MValueChart {
             if (pAnchor > surfacePressure) {
                 const anchorDepthM = fmtNum(((pAnchor - surfacePressure) / 0.1), 1);
                 datasets.push({
-                    label: fmt(translate('chart.mvalue.pAnchor', 'Anchor pressure {0}\u00a0bar ({1}\u00a0m)'), fmtNum(pAnchor, 2), anchorDepthM),
+                    label: fmt(translate('chart.mvalue.pAnchor', 'Anchor pressure (?) {0}\u00a0bar ({1}\u00a0m)'), fmtNum(pAnchor, 2), anchorDepthM),
                     mvalueAnchor: true,
+                    anchorLegendHelp: true,
                     data: [
                         { x: pAnchor, y: 0 },
                         { x: pAnchor, y: maxPressure }
@@ -1649,7 +1651,18 @@ export class MValueChart {
                         labels: {
                             filter: (item, chartData) =>
                                 this._isLegendItemVisible(item, chartData)
-                        }
+                        },
+                        onHover: (_event, item, legend) =>
+                            setLegendItemHelp(
+                                item,
+                                legend,
+                                translate(
+                                    'chart.tooltips.anchorPressure',
+                                    'Ambient pressure at the deepest decompression stop. It anchors GF Low as the starting point of the ramp toward GF High at the surface.'
+                                )
+                            ),
+                        onLeave: (_event, item, legend) =>
+                            setLegendItemHelp(item, legend)
                     },
                     tooltip: {
                         enabled: resolveChartTooltipEnabled(this.options.interactive, this.canvas),

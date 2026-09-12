@@ -1027,6 +1027,7 @@
         },
         "tooltips": {
             "fullscreen": "Alternar pantalla completa",
+            "anchorPressure": "Presión ambiente en la parada de descompresión más profunda. En este punto se aplica el GF bajo y comienza la rampa hacia el GF alto en la superficie.",
             "exitFullscreen": "Salir de pantalla completa (Esc)",
             "resetZoom": "Restablecer zoom (doble clic)",
             "jumpStart": "Ir al inicio (Home)",
@@ -1094,7 +1095,7 @@
             "alveolarPN2WithGases": "pN₂ alveolar ({0})",
             "alveolarPN2Percent": "pN₂ alveolar ({0} %)",
             "surfaceLine": "Superficie ({0} bar)",
-            "pAnchor": "Presión de anclaje {0} bar ({1} m)",
+            "pAnchor": "Presión de anclaje (?) {0} bar ({1} m)",
             "tooltipLabel": "{0}: presión ambiente {1} bar, presión tisular {2} bar",
             "rulerTitle": "regla",
             "rulerCurrentPosition": "Posición actual",
@@ -1108,7 +1109,7 @@
             "gfCorridor": "Corredor GF",
             "leadingTissue": "GF máximo",
             "leadingTC": "GF máximo: TC{0} ({1} %)",
-            "pAnchor": "Presión de anclaje {0} bar ({1} m)",
+            "pAnchor": "Presión de anclaje (?) {0} bar ({1} m)",
             "tooltipLabel": "{0}: presión ambiente {1} bar, GF {2} %"
         }
     },
