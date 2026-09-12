@@ -1694,15 +1694,15 @@ section h2 {
     display: none;
 }
 
-.mvc-chart-container.mvc-fullscreen .mvc-fullscreen-btn {
+.mvc-wrapper.mvc-fullscreen .mvc-fullscreen-btn {
     display: none;
 }
 
-.mvc-chart-container.mvc-fullscreen .mvc-exit-fullscreen-btn {
+.mvc-wrapper.mvc-fullscreen .mvc-exit-fullscreen-btn {
     display: block !important;
 }
 
-.mvc-chart-container.mvc-fullscreen {
+.mvc-wrapper.mvc-fullscreen {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
@@ -1734,15 +1734,15 @@ section h2 {
     display: none;
 }
 
-.gfc-chart-container.gfc-fullscreen .gfc-fullscreen-btn {
+.gfc-wrapper.gfc-fullscreen .gfc-fullscreen-btn {
     display: none;
 }
 
-.gfc-chart-container.gfc-fullscreen .gfc-exit-fullscreen-btn {
+.gfc-wrapper.gfc-fullscreen .gfc-exit-fullscreen-btn {
     display: block !important;
 }
 
-.gfc-chart-container.gfc-fullscreen {
+.gfc-wrapper.gfc-fullscreen {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
@@ -2138,7 +2138,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.95";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.96";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================

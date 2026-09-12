@@ -234,6 +234,7 @@ import {
     resolveChartTooltipEnabled
 } from '../js/components/tooltipShortcut.js';
 import { GFChart } from '../js/charts/GFChart.js';
+import { MValueChart } from '../js/charts/MValueChart.js';
 
 describe('Chart tooltip shortcut', () => {
     test('toggles only the focused or hovered chart and persists across rebuilds', () => {
@@ -341,8 +342,8 @@ describe('Chart tooltip shortcut', () => {
     });
 });
 
-describe('GFChart fullscreen controls', () => {
-    test('hides the exit button until the chart enters fullscreen', () => {
+describe('P-P chart fullscreen controls', () => {
+    test('keeps the profile wrapper in fullscreen and restores both buttons', () => {
         const dom = new JSDOM('<!doctype html><body><div id="chart"></div></body>');
         const originalDocument = globalThis.document;
         const originalSetTimeout = globalThis.setTimeout;
@@ -350,28 +351,40 @@ describe('GFChart fullscreen controls', () => {
         globalThis.setTimeout = () => 0;
 
         try {
-            const context = {
-                chartContainer: dom.window.document.getElementById('chart'),
-                fullscreenBtn: { style: {} },
-                exitFullscreenBtn: { style: {} },
-                resize() {}
-            };
+            for (const [ChartClass, fullscreenClass] of [
+                [GFChart, 'gfc-fullscreen'],
+                [MValueChart, 'mvc-fullscreen']
+            ]) {
+                const wrapper = dom.window.document.createElement('div');
+                const miniProfileCanvas = dom.window.document.createElement('canvas');
+                wrapper.appendChild(miniProfileCanvas);
+                const context = {
+                    wrapper,
+                    chartContainer: dom.window.document.getElementById('chart'),
+                    miniProfileCanvas,
+                    fullscreenBtn: { style: {} },
+                    exitFullscreenBtn: { style: {} },
+                    resize() {}
+                };
 
-            GFChart.prototype._toggleFullscreen.call(context);
-            expect(context.chartContainer.classList.contains('gfc-fullscreen')).toBe(true);
-            expect(context.fullscreenBtn.style.display).toBe('none');
-            expect(context.exitFullscreenBtn.style.display).toBe('block');
+                ChartClass.prototype._toggleFullscreen.call(context);
+                expect(context.wrapper.classList.contains(fullscreenClass)).toBe(true);
+                expect(context.wrapper.contains(miniProfileCanvas)).toBe(true);
+                expect(context.fullscreenBtn.style.display).toBe('none');
+                expect(context.exitFullscreenBtn.style.display).toBe('block');
 
-            GFChart.prototype._toggleFullscreen.call(context);
-            expect(context.chartContainer.classList.contains('gfc-fullscreen')).toBe(false);
-            expect(context.fullscreenBtn.style.display).toBe('');
-            expect(context.exitFullscreenBtn.style.display).toBe('none');
+                ChartClass.prototype._toggleFullscreen.call(context);
+                expect(context.wrapper.classList.contains(fullscreenClass)).toBe(false);
+                expect(context.fullscreenBtn.style.display).toBe('');
+                expect(context.exitFullscreenBtn.style.display).toBe('none');
+            }
 
             const css = readFileSync(
                 new URL('../css/styles.css', import.meta.url),
                 'utf8'
             );
-            expect(css.includes('.gfc-chart-container.gfc-fullscreen {')).toBe(true);
+            expect(css.includes('.gfc-wrapper.gfc-fullscreen {')).toBe(true);
+            expect(css.includes('.mvc-wrapper.mvc-fullscreen {')).toBe(true);
         } finally {
             globalThis.document = originalDocument;
             globalThis.setTimeout = originalSetTimeout;
