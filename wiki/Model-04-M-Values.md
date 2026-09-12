@@ -135,14 +135,14 @@ the ambient pressure and equivalent depth where that tissue intersects:
 
 - the equilibrium line, where tissue and ambient pressure are equal;
 - the GF Low limit;
-- the currently applied GF limit;
+- the interpolated GF-ramp limit;
 - the GF High limit.
 
-The current-GF intersection is the compartment's ceiling at that timeline
-position. It uses the same active GF ramp and `pAnchor` as the ceiling
-time-series calculation, so it can be compared directly with the tissue-loading
-chart. Press `R` again to remove the ruler. If no point is hovered, the shortcut
-uses the tissue when exactly one compartment is visible.
+The GF-ramp intersection answers how shallow the selected compartment permits an
+ascent while GF increases from GF Low at `pAnchor` toward GF High at the
+surface. Both the tolerated ambient pressure and the GF at that intersection
+are solved together. Press `R` again to remove the ruler. If no point is
+hovered, the shortcut uses the tissue when exactly one compartment is visible.
 
 ## Worked example
 

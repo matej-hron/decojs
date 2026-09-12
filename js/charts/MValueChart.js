@@ -50,9 +50,9 @@ export function calculateMValueRulerIntersections({
     tissuePressure,
     compartment,
     gfLow,
-    activeGF,
     gfHigh,
-    surfacePressure
+    surfacePressure,
+    pAnchor
 }) {
     const intersection = (gf) => {
         const pressure = getCompartmentCeiling(
@@ -67,6 +67,56 @@ export function calculateMValueRulerIntersections({
             gf
         };
     };
+    const low = intersection(gfLow);
+    const high = intersection(gfHigh);
+
+    let rampedGF;
+    if (pAnchor <= surfacePressure || Math.abs(gfHigh - gfLow) < 1e-12) {
+        rampedGF = low;
+    } else if (low.pressure >= pAnchor) {
+        rampedGF = low;
+    } else if (high.pressure <= surfacePressure) {
+        rampedGF = high;
+    } else {
+        let lower = surfacePressure;
+        let upper = pAnchor;
+        for (let i = 0; i < 80; i++) {
+            const pressure = (lower + upper) / 2;
+            const gf = interpolateGF(
+                pressure,
+                pAnchor,
+                gfLow,
+                gfHigh,
+                surfacePressure
+            );
+            const adjustedM = getAdjustedMValue(
+                pressure,
+                compartment.aN2,
+                compartment.bN2,
+                gf
+            );
+            if (adjustedM < tissuePressure) {
+                lower = pressure;
+            } else {
+                upper = pressure;
+            }
+        }
+        const pressure = (lower + upper) / 2;
+        rampedGF = {
+            pressure,
+            depth: Math.max(
+                0,
+                (pressure - surfacePressure) / PRESSURE_PER_METER
+            ),
+            gf: interpolateGF(
+                pressure,
+                pAnchor,
+                gfLow,
+                gfHigh,
+                surfacePressure
+            )
+        };
+    }
 
     return {
         equilibrium: {
@@ -76,9 +126,9 @@ export function calculateMValueRulerIntersections({
                 (tissuePressure - surfacePressure) / PRESSURE_PER_METER
             )
         },
-        gfLow: intersection(gfLow),
-        activeGF: intersection(activeGF),
-        gfHigh: intersection(gfHigh)
+        gfLow: low,
+        gfRamp: rampedGF,
+        gfHigh: high
     };
 }
 import {
@@ -87,7 +137,6 @@ import {
     getAdjustedMValue,
     getCompartmentCeiling,
     interpolateGF,
-    calculateCeilingTimeSeriesDetailed,
     getSurfacePressure,
     SURFACE_PRESSURE,
     PRESSURE_PER_METER
@@ -996,12 +1045,6 @@ export class MValueChart {
         this.gfAnchor = hasGF
             ? calculateChartGFAnchor(this.diveSetup, this.calculationResults)
             : { pAnchor: surfacePressure, anchorDepth: 0 };
-        this.ceilingDetails = calculateCeilingTimeSeriesDetailed(
-            this.calculationResults,
-            (this.diveSetup.gfLow || 100) / 100,
-            (this.diveSetup.gfHigh || 100) / 100,
-            this.gfAnchor.pAnchor
-        );
         this._updateTimeDisplay();
     }
 
@@ -1018,22 +1061,19 @@ export class MValueChart {
             .pressures[this.currentTimeIndex];
         const gfLow = (this.diveSetup.gfLow || 100) / 100;
         const gfHigh = (this.diveSetup.gfHigh || 100) / 100;
-        const activeGF = this.ceilingDetails?.gfValues[this.currentTimeIndex] ??
-            gfLow;
         const surfacePressure = this.calculationResults.surfacePressure ??
             SURFACE_PRESSURE;
 
         return {
             compartment,
             tissuePressure,
-            activeGF,
             intersections: calculateMValueRulerIntersections({
                 tissuePressure,
                 compartment,
                 gfLow,
-                activeGF,
                 gfHigh,
-                surfacePressure
+                surfacePressure,
+                pAnchor: this.gfAnchor.pAnchor
             })
         };
     }
@@ -1060,7 +1100,7 @@ export class MValueChart {
                 color: '#f39c12'
             },
             {
-                value: ruler.intersections.activeGF,
+                value: ruler.intersections.gfRamp,
                 color: ruler.compartment.color
             },
             {
@@ -1175,14 +1215,14 @@ export class MValueChart {
         );
         appendPressureAndDepth(gfLow, ruler.intersections.gfLow);
 
-        const active = addLine(ruler.compartment.color, true);
-        active.append(
-            translate('chart.mvalue.rulerActiveGFLabel', 'Current GF'),
-            ` = ${valueWithUnit(ruler.activeGF * 100, '%', 1)} · `,
+        const ramp = addLine(ruler.compartment.color, true);
+        ramp.append(
+            translate('chart.mvalue.rulerRampGFLabel', 'GF ramp'),
+            ` = ${valueWithUnit(ruler.intersections.gfRamp.gf * 100, '%', 1)} · `,
             translate('chart.mvalue.rulerCeiling', 'ceiling'),
             ': '
         );
-        appendPressureAndDepth(active, ruler.intersections.activeGF);
+        appendPressureAndDepth(ramp, ruler.intersections.gfRamp);
 
         const gfHigh = addLine('#9b59b6');
         gfHigh.append('GF');
