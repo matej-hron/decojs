@@ -47,6 +47,50 @@ ceilings, the GF ramp, gas consumption, and the decompression scheduler. The sta
 atmosphere is used to convert altitude to pressure; the sandbox currently assumes the
 diver is fully acclimatized to the selected altitude.
 
+### Atmospheric pressure at altitude
+
+The familiar exponential barometric equation
+
+$$
+p_{\mathrm{atm}}(h) = p_0 e^{-h/H}
+$$
+
+is an isothermal approximation: it assumes a constant atmospheric temperature
+and a fixed scale height $H$ (approximately 8.4&nbsp;km). It is useful for
+explaining why pressure decreases approximately exponentially with altitude, but
+it is not the exact equation used by DecoJS.
+
+`getPressureAtAltitude(h)` uses the standard-atmosphere troposphere model, which
+accounts for the standard temperature lapse rate:
+
+$$
+p_{\mathrm{atm}}(h)
+=
+p_0
+\left(1 - 2.25577 \times 10^{-5} h\right)^{5.25588},
+\qquad
+p_0 = 1.01325\ \mathrm{bar}.
+$$
+
+Here $h$ is altitude in metres and $p_{\mathrm{atm}}$ is the absolute
+atmospheric pressure at the dive site's water surface. For example, at
+2,000&nbsp;m the model gives approximately 0.795&nbsp;bar; the exponential
+approximation gives approximately 0.799&nbsp;bar.
+
+The absolute ambient pressure at depth $d$ is then
+
+$$
+p_{\mathrm{amb}}(h,d)
+=
+p_{\mathrm{atm}}(h) + 0.1d.
+$$
+
+Thus, at an altitude of 2,000&nbsp;m and a depth of 7.5&nbsp;m, DecoJS uses
+$p_{\mathrm{amb}} \approx 0.795 + 0.750 = 1.545\ \mathrm{bar}$. This local
+surface pressure is threaded through initial tissue saturation, inspired-gas
+pressure, NDL, ceilings, the GF ramp, MOD adjustment, and decompression
+scheduling.
+
 ## Chapter TOC
 
 1. [Model-01-Compartments](Model-01-Compartments.md) — the 16 ZH-L16 compartments, their half-times, the a/b coefficients, and the A/B/C variants.
