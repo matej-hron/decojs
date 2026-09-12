@@ -3063,12 +3063,16 @@ describe('Decompression schedule modes', () => {
     test('wires the audit disclosure and renderer into the offline Sandbox', () => {
         const sandbox = readFileSync(new URL('../sandbox/index.html', import.meta.url), 'utf8');
         const sw = readFileSync(new URL('../sw.js', import.meta.url), 'utf8');
+        const css = readFileSync(new URL('../css/styles.css', import.meta.url), 'utf8');
         expect(sandbox).toContain('id="decision-audit-content"');
         expect(sandbox).toContain("from '../js/components/DecisionAudit.js'");
         expect(sandbox).toContain('renderDecisionAudit(decisionAudit)');
         expect(sandbox).toContain('window._sandboxLastDecisionAudit = null');
         expect(sandbox.includes('calculateDecisionAudit(initialSetup)')).toBe(false);
         expect(sw).toContain("'./js/components/DecisionAudit.js'");
+        expect(css).toContain('#decision-audit-content {');
+        expect(css).toContain('overflow-y: auto;');
+        expect(css).toContain('counter-reset: decision-step;');
     });
 
     test('clears a generated audit when schedule inputs change', () => {
