@@ -766,8 +766,8 @@ Small UI helpers:
 |---|---|---|
 | `mountHeroMotion(root)` | 82 in `HeroMotion.js` | Landing-page animated background |
 | `initStickyTOC(options)` | 26 in `StickyTOC.js` | Scroll-spy for theory-page TOCs |
-| `initTooltipShortcut()` | `tooltipShortcut.js` | Global `T` shortcut for toggling Chart.js hover tooltips |
-| `resolveChartTooltipEnabled(defaultEnabled=true)` | `tooltipShortcut.js` | Preserves the shortcut state when a chart is rebuilt |
+| `initTooltipShortcut()` | `tooltipShortcut.js` | `T` shortcut for the hovered or focused Chart.js tooltip |
+| `resolveChartTooltipEnabled(defaultEnabled=true, canvas=null)` | `tooltipShortcut.js` | Preserves each canvas's shortcut state when its chart is rebuilt |
 
 ## Utilities
 

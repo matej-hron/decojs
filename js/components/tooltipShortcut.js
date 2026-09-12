@@ -1,7 +1,7 @@
 /**
- * Global "T" keyboard shortcut that toggles Chart.js tooltips on every chart
- * on the current page. Idempotent — calling initTooltipShortcut() twice
- * installs only one listener.
+ * "T" keyboard shortcut that toggles the Chart.js tooltip for the chart under
+ * the pointer or keyboard focus. Idempotent — calling initTooltipShortcut()
+ * twice installs only one listener.
  *
  * Usage:
  *   import { initTooltipShortcut } from './js/components/tooltipShortcut.js';
@@ -9,10 +9,14 @@
  */
 
 let installed = false;
-let tooltipsEnabled = null;
+let hoveredCanvas = null;
+const tooltipStateByCanvas = new WeakMap();
 
-export function resolveChartTooltipEnabled(defaultEnabled = true) {
-    return tooltipsEnabled ?? defaultEnabled;
+export function resolveChartTooltipEnabled(defaultEnabled = true, canvas = null) {
+    if (canvas && tooltipStateByCanvas.has(canvas)) {
+        return tooltipStateByCanvas.get(canvas);
+    }
+    return defaultEnabled;
 }
 
 function getCharts(instances) {
@@ -25,6 +29,7 @@ function getCharts(instances) {
 
 function setTooltipEnabled(chart, enabled) {
     if (!chart.options) return;
+    if (chart.canvas) tooltipStateByCanvas.set(chart.canvas, enabled);
 
     chart.options.plugins = chart.options.plugins || {};
     chart.options.plugins.tooltip = chart.options.plugins.tooltip || {};
@@ -43,9 +48,28 @@ function setTooltipEnabled(chart, enabled) {
     chart.update('none');
 }
 
+function chartForTarget(charts, target) {
+    if (!target) return null;
+    return charts.find((chart) =>
+        chart.canvas === target ||
+        target.contains?.(chart.canvas) ||
+        chart.canvas?.contains?.(target)
+    ) || null;
+}
+
 export function initTooltipShortcut() {
     if (installed) return;
     installed = true;
+
+    document.addEventListener('pointerover', (e) => {
+        const canvas = e.target?.closest?.('canvas');
+        if (canvas) hoveredCanvas = canvas;
+    });
+    document.addEventListener('pointerout', (e) => {
+        if (e.target === hoveredCanvas && e.relatedTarget !== hoveredCanvas) {
+            hoveredCanvas = null;
+        }
+    });
 
     document.addEventListener('keydown', (e) => {
         if (e.key !== 't' && e.key !== 'T') return;
@@ -60,13 +84,15 @@ export function initTooltipShortcut() {
         const charts = getCharts(ChartCtor.instances);
         if (charts.length === 0) return;
 
-        const first = charts[0];
-        const currentEnabled = tooltipsEnabled ??
-            (first.options?.plugins?.tooltip?.enabled ?? true);
-        tooltipsEnabled = !currentEnabled;
+        const focusedChart = chartForTarget(charts, e.target);
+        const hoveredChart = charts.find((chart) => chart.canvas === hoveredCanvas);
+        const chart = focusedChart || hoveredChart || (charts.length === 1 ? charts[0] : null);
+        if (!chart) return;
 
-        for (const chart of charts) {
-            setTooltipEnabled(chart, tooltipsEnabled);
-        }
+        const currentEnabled = resolveChartTooltipEnabled(
+            chart.options?.plugins?.tooltip?.enabled ?? true,
+            chart.canvas
+        );
+        setTooltipEnabled(chart, !currentEnabled);
     });
 }

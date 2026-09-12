@@ -1208,7 +1208,7 @@ export class MValueChart {
                         }
                     },
                     tooltip: {
-                        enabled: resolveChartTooltipEnabled(this.options.interactive),
+                        enabled: resolveChartTooltipEnabled(this.options.interactive, this.canvas),
                         callbacks: {
                             label: (context) => {
                                 const label = context.dataset.label || '';

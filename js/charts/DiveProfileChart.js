@@ -1393,7 +1393,7 @@ export class DiveProfileChart {
                         position: 'top'
                     },
                     tooltip: {
-                        enabled: resolveChartTooltipEnabled(this.options.interactive),
+                        enabled: resolveChartTooltipEnabled(this.options.interactive, this.canvas),
                         callbacks: {
                             title: (items) => {
                                 if (items.length > 0) {
