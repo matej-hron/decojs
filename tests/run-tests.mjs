@@ -249,6 +249,9 @@ describe('Chart tooltip shortcut', () => {
                 },
                 contains(target) {
                     return target === canvas;
+                },
+                matches() {
+                    return false;
                 }
             };
             return {
@@ -300,6 +303,7 @@ describe('Chart tooltip shortcut', () => {
 
             globalThis.window.Chart.instances = { first, second };
             handlers.pointerover({ target: second.canvas });
+            handlers.pointerout?.({ target: second.canvas, relatedTarget: { tagName: 'DIV' } });
             handlers.keydown({ key: 'T', target: { tagName: 'BODY' } });
 
             expect(first.options.plugins.tooltip.enabled).toBe(false);

@@ -9,7 +9,7 @@
  */
 
 let installed = false;
-let hoveredCanvas = null;
+let activeCanvas = null;
 const tooltipStateByCanvas = new WeakMap();
 
 export function resolveChartTooltipEnabled(defaultEnabled = true, canvas = null) {
@@ -63,12 +63,7 @@ export function initTooltipShortcut() {
 
     document.addEventListener('pointerover', (e) => {
         const canvas = e.target?.closest?.('canvas');
-        if (canvas) hoveredCanvas = canvas;
-    });
-    document.addEventListener('pointerout', (e) => {
-        if (e.target === hoveredCanvas && e.relatedTarget !== hoveredCanvas) {
-            hoveredCanvas = null;
-        }
+        if (canvas) activeCanvas = canvas;
     });
 
     document.addEventListener('keydown', (e) => {
@@ -85,8 +80,10 @@ export function initTooltipShortcut() {
         if (charts.length === 0) return;
 
         const focusedChart = chartForTarget(charts, e.target);
-        const hoveredChart = charts.find((chart) => chart.canvas === hoveredCanvas);
-        const chart = focusedChart || hoveredChart || (charts.length === 1 ? charts[0] : null);
+        const hoveredChart = charts.find((chart) => chart.canvas?.matches?.(':hover'));
+        const activeChart = charts.find((chart) => chart.canvas === activeCanvas);
+        const chart = focusedChart || hoveredChart || activeChart ||
+            (charts.length === 1 ? charts[0] : null);
         if (!chart) return;
 
         const currentEnabled = resolveChartTooltipEnabled(
