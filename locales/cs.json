@@ -61,7 +61,7 @@
             "text": "Čas strávený na hladině mezi ponory pro odvětrání dusíku. Delší SI = více odbouraného dusíku."
         }
     },
-    "sandboxLink": "Otevřít v Sandboxu →",
+    "sandboxLink": "Otevřít v Pískovišti →",
     "totalPressure": {
         "title": "Celkový tlak pod vodou",
         "whatCreates": {
@@ -780,7 +780,7 @@
                 "gf0desc": "Žádné přesycení povoleno (nepraktické)",
                 "text2": "Gradient faktor <strong>GF 80 %</strong> znamená, že tkáni dovolíte dosáhnout pouze 80 % vzdálenosti od okolního tlaku k M-value."
             },
-            "sandboxCTA": "Otevřít GF sandbox — pohrajte si s rovnicemi živě →",
+            "sandboxCTA": "Otevřít pískoviště GF — pohrajte si s rovnicemi živě →",
             "lowHigh": {
                 "title": "GF Low a GF High",
                 "intro": "Potápěčské počítače a plánovací software používají <strong>dva</strong> gradient faktory:",
@@ -1334,7 +1334,7 @@
         },
         "intro": {
             "title": "Změňte ponor a sledujte každé rozhodnutí",
-            "text": "Grafy používají stejný kód Bühlmann ZH-L16C jako Sandbox. Porovnávají konvenční stupňovitý plán se dvěma studijními alternativami."
+            "text": "Grafy používají stejný kód Bühlmann ZH-L16C jako Pískoviště. Porovnávají konvenční stupňovitý plán se dvěma studijními alternativami."
         },
         "controls": {
             "depth": "Maximální hloubka",
@@ -1396,7 +1396,7 @@
             "stopAxis": "Délka zastávky (min)"
         },
         "links": {
-            "standard": "Otevřít standardní profil v Sandboxu →",
+            "standard": "Otevřít standardní profil v Pískovišti →",
             "adaptive": "Otevřít adaptivní profil →",
             "continuous": "Otevřít profil s jemnou mřížkou →"
         },
@@ -1406,7 +1406,7 @@
     "nav": {
         "home": "Domů",
         "sandbox": {
-            "label": "Sandbox",
+            "label": "Pískoviště",
             "deco": "Modelování dekomprese",
             "haldane": "Haldaneova rovnice",
             "schreiner": "Schreinerova rovnice",
@@ -1449,7 +1449,7 @@
         },
         "topics": {
             "heading": "Témata",
-            "sandbox": "Sandbox",
+            "sandbox": "Pískoviště",
             "sandboxDesc": "Interaktivní simulátory pro plánování ponorů a výpočty plynů.",
             "sandboxLinks": {
                 "deco": "Modelování dekomprese",
@@ -1629,7 +1629,7 @@
     },
     "sandbox": {
         "dive": {
-            "title": "🎯 Sandbox pro plánování ponoru",
+            "title": "🎯 Pískoviště pro plánování ponoru",
             "subtitle": "Navrhujte profily ponorů a vizualizujte dekompresi v reálném čase",
             "disclaimerBanner": "⚠️ <strong>Pouze pro výukové účely</strong> — Tento nástroj NENÍ určen k plánování skutečných ponorů. Nikdy jej nepoužívejte pro reálné potápění. Vždy používejte certifikované potápěčské počítače, tabulky a řádný výcvik.",
             "setupHeading": "Nastavení ponoru",
@@ -1976,8 +1976,8 @@
                 "heading": "Viz také",
                 "wiki": "Wiki: M-hodnoty (matematika)",
                 "theory": "Stránka teorie M-hodnot (historie + příklady ponorů)",
-                "haldane": "Haldaneův Sandbox (tkáň se přibližuje k okolnímu tlaku)",
-                "schreiner": "Schreinerův Sandbox (tkáň se přibližuje k měnícímu se okolnímu tlaku)"
+                "haldane": "Haldaneovo pískoviště (tkáň se přibližuje k okolnímu tlaku)",
+                "schreiner": "Schreinerovo pískoviště (tkáň se přibližuje k měnícímu se okolnímu tlaku)"
             }
         },
         "gradientFactors": {
@@ -2089,7 +2089,7 @@
                 "heading": "Viz také",
                 "wiki": "Wiki: Model-05 Gradient Factors (matematika)",
                 "theory": "Stránka teorie: deep stops, individuální variabilita, doporučení CMAS",
-                "mvalues": "Sandbox M-hodnot — jak se počítá M-hodnota"
+                "mvalues": "Pískoviště M-hodnot — jak se počítá M-hodnota"
             }
         },
         "cascade": {
