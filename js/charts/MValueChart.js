@@ -198,6 +198,7 @@ export class MValueChart {
         this.timeSlider = null;
         this.timeDisplay = null;
         this.playBtn = null;
+        this.alveolarToggle = null;
         
         // State
         this.calculationResults = null;
@@ -450,6 +451,34 @@ export class MValueChart {
             btnGroup.appendChild(btn);
         });
         this.controlsContainer.appendChild(btnGroup);
+
+        const alveolarLabel = document.createElement('label');
+        alveolarLabel.className = 'mvc-alveolar-toggle';
+        alveolarLabel.style.cssText = `
+            display: inline-flex; align-items: center; gap: 3px;
+            padding: 2px 6px; cursor: pointer; font-size: 12px;
+            white-space: nowrap;
+        `;
+        this.alveolarToggle = document.createElement('input');
+        this.alveolarToggle.type = 'checkbox';
+        this.alveolarToggle.checked = this.options.showAlveolarLine;
+        this.alveolarToggle.addEventListener('change', () => {
+            this.options.showAlveolarLine = this.alveolarToggle.checked;
+            this._render();
+        });
+        const alveolarP = document.createElement('var');
+        alveolarP.textContent = 'p';
+        const alveolarN2 = document.createElement('sub');
+        alveolarN2.textContent = 'N₂';
+        alveolarLabel.append(
+            this.alveolarToggle,
+            document.createTextNode(
+                `${translate('chart.mvalue.alveolarToggle', 'Alveolar')} `
+            ),
+            alveolarP,
+            alveolarN2
+        );
+        this.controlsContainer.appendChild(alveolarLabel);
         
         // Compartment checkboxes
         COMPARTMENTS.forEach(comp => {
@@ -1090,23 +1119,33 @@ export class MValueChart {
         if (y < chartArea.top || y > chartArea.bottom) return;
 
         const t = theme();
+        const usesRawMValue =
+            Math.abs(ruler.intersections.gfLow.gf - 1) < 1e-12 &&
+            Math.abs(ruler.intersections.gfHigh.gf - 1) < 1e-12;
         const rows = [
             {
                 value: ruler.intersections.equilibrium,
                 color: t.colors.ambient
             },
-            {
-                value: ruler.intersections.gfLow,
-                color: '#f39c12'
-            },
-            {
-                value: ruler.intersections.gfRamp,
-                color: ruler.compartment.color
-            },
-            {
-                value: ruler.intersections.gfHigh,
-                color: '#9b59b6'
-            }
+            ...(usesRawMValue
+                ? [{
+                    value: ruler.intersections.gfRamp,
+                    color: ruler.compartment.color
+                }]
+                : [
+                    {
+                        value: ruler.intersections.gfLow,
+                        color: '#f39c12'
+                    },
+                    {
+                        value: ruler.intersections.gfRamp,
+                        color: ruler.compartment.color
+                    },
+                    {
+                        value: ruler.intersections.gfHigh,
+                        color: '#9b59b6'
+                    }
+                ])
         ];
 
         ctx.save();
@@ -1207,30 +1246,43 @@ export class MValueChart {
             ` = ${valueWithUnit(ruler.intersections.equilibrium.depth, 'm', 1)}`
         );
 
-        const gfLow = addLine('#f39c12');
-        gfLow.append('GF');
-        gfLow.appendChild(document.createElement('sub')).textContent = 'low';
-        gfLow.append(
-            ` = ${valueWithUnit(ruler.intersections.gfLow.gf * 100, '%', 0)}: `
-        );
-        appendPressureAndDepth(gfLow, ruler.intersections.gfLow);
+        const usesRawMValue =
+            Math.abs(ruler.intersections.gfLow.gf - 1) < 1e-12 &&
+            Math.abs(ruler.intersections.gfHigh.gf - 1) < 1e-12;
+        if (usesRawMValue) {
+            const mValue = addLine(ruler.compartment.color, true);
+            mValue.appendChild(quantity('M'));
+            mValue.append(
+                translate('chart.mvalue.rulerMValueSuffix', '-value'),
+                ': '
+            );
+            appendPressureAndDepth(mValue, ruler.intersections.gfRamp);
+        } else {
+            const gfLow = addLine('#f39c12');
+            gfLow.append('GF');
+            gfLow.appendChild(document.createElement('sub')).textContent = 'low';
+            gfLow.append(
+                ` = ${valueWithUnit(ruler.intersections.gfLow.gf * 100, '%', 0)}: `
+            );
+            appendPressureAndDepth(gfLow, ruler.intersections.gfLow);
 
-        const ramp = addLine(ruler.compartment.color, true);
-        ramp.append(
-            translate('chart.mvalue.rulerRampGFLabel', 'GF ramp'),
-            ` = ${valueWithUnit(ruler.intersections.gfRamp.gf * 100, '%', 1)} · `,
-            translate('chart.mvalue.rulerCeiling', 'ceiling'),
-            ': '
-        );
-        appendPressureAndDepth(ramp, ruler.intersections.gfRamp);
+            const ramp = addLine(ruler.compartment.color, true);
+            ramp.append(
+                translate('chart.mvalue.rulerRampGFLabel', 'GF ramp'),
+                ` = ${valueWithUnit(ruler.intersections.gfRamp.gf * 100, '%', 1)} · `,
+                translate('chart.mvalue.rulerCeiling', 'ceiling'),
+                ': '
+            );
+            appendPressureAndDepth(ramp, ruler.intersections.gfRamp);
 
-        const gfHigh = addLine('#9b59b6');
-        gfHigh.append('GF');
-        gfHigh.appendChild(document.createElement('sub')).textContent = 'high';
-        gfHigh.append(
-            ` = ${valueWithUnit(ruler.intersections.gfHigh.gf * 100, '%', 0)}: `
-        );
-        appendPressureAndDepth(gfHigh, ruler.intersections.gfHigh);
+            const gfHigh = addLine('#9b59b6');
+            gfHigh.append('GF');
+            gfHigh.appendChild(document.createElement('sub')).textContent = 'high';
+            gfHigh.append(
+                ` = ${valueWithUnit(ruler.intersections.gfHigh.gf * 100, '%', 0)}: `
+            );
+            appendPressureAndDepth(gfHigh, ruler.intersections.gfHigh);
+        }
     }
     
     _render() {

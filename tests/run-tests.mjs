@@ -673,6 +673,82 @@ describe('M-value intersection ruler', () => {
             dom.window.close();
         }
     });
+
+    test('collapses GF 100/100 references into one M-value row', () => {
+        const dom = new JSDOM('<!doctype html><body><div id="panel"></div></body>');
+        const originalDocument = globalThis.document;
+        globalThis.document = dom.window.document;
+
+        try {
+            const panel = dom.window.document.getElementById('panel');
+            const compartment = COMPARTMENTS[0];
+            const intersections = calculateMValueRulerIntersections({
+                tissuePressure: 2.82,
+                compartment,
+                gfLow: 1,
+                gfHigh: 1,
+                surfacePressure: 1.01325,
+                pAnchor: 1.01325
+            });
+            MValueChart.prototype._renderRulerPanel.call(
+                { rulerPanel: panel },
+                { compartment, tissuePressure: 2.82, intersections }
+            );
+
+            expect(panel.children.length).toBe(3);
+            expect(panel.textContent.includes('GF ramp')).toBe(false);
+            expect(panel.textContent.includes('GFlow')).toBe(false);
+            expect(panel.textContent.includes('GFhigh')).toBe(false);
+            expect([...panel.querySelectorAll('var')]
+                .some(variable => variable.textContent === 'M')).toBe(true);
+        } finally {
+            globalThis.document = originalDocument;
+            dom.window.close();
+        }
+    });
+
+    test('keeps the alveolar pressure toggle inside fullscreen controls', () => {
+        const dom = new JSDOM('<!doctype html><body><div id="controls"></div></body>');
+        const originalDocument = globalThis.document;
+        globalThis.document = dom.window.document;
+        let renders = 0;
+        const context = {
+            controlsContainer: dom.window.document.getElementById('controls'),
+            options: { showAlveolarLine: false },
+            visibleCompartments: new Set([1]),
+            _selectAllCompartments() {},
+            _selectNoCompartments() {},
+            _selectFastCompartments() {},
+            _selectSlowCompartments() {},
+            _updateCompartmentCheckboxes() {},
+            _render() { renders++; }
+        };
+
+        try {
+            MValueChart.prototype._buildCompartmentSelector.call(context);
+            const control = context.controlsContainer.querySelector(
+                '.mvc-alveolar-toggle'
+            );
+            const checkbox = control.querySelector('input');
+            expect(control.querySelector('var').textContent).toBe('p');
+            expect(control.querySelector('sub').textContent).toBe('N₂');
+            expect(checkbox.checked).toBe(false);
+
+            checkbox.checked = true;
+            checkbox.dispatchEvent(new dom.window.Event('change'));
+            expect(context.options.showAlveolarLine).toBe(true);
+            expect(renders).toBe(1);
+
+            const sandbox = readFileSync(
+                new URL('../sandbox/index.html', import.meta.url),
+                'utf8'
+            );
+            expect(sandbox.includes('opt-showAlveolarLine')).toBe(false);
+        } finally {
+            globalThis.document = originalDocument;
+            dom.window.close();
+        }
+    });
 });
 
 // ============================================================================

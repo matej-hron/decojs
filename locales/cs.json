@@ -1090,6 +1090,7 @@
             "trailTC": "Stopa TC{0}",
             "ambientLine": "Přímka okolního tlaku (y = x)",
             "alveolarPN2": "Alveolární pN₂",
+            "alveolarToggle": "Alveolární",
             "alveolarPN2WithGases": "Alveolární pN₂ ({0})",
             "alveolarPN2Percent": "Alveolární pN₂ ({0} %)",
             "surfaceLine": "Hladina ({0} bar)",
@@ -1098,6 +1099,7 @@
             "rulerTitle": "pravítko",
             "rulerRampGFLabel": "GF na rampě",
             "rulerCeiling": "strop",
+            "rulerMValueSuffix": "-hodnota",
             "initialDepthLabel": "0,0 min @ 0 m"
         },
         "gf": {
