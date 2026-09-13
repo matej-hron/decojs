@@ -202,6 +202,7 @@ const DEFAULT_MVALUE_OPTIONS = {
     compartmentSelector: true,
     playbackSpeed: 100,  // ms per frame
     onTimeIndexChange: null,
+    onDecisionAuditRequest: null,
     maxPressure: null,   // Override axis max (null = auto-calculate)
     colors: {
         ambient: 'rgba(52, 152, 219, 0.8)',
@@ -575,6 +576,25 @@ export class MValueChart {
             this.controlsContainer.appendChild(label);
         });
 
+        if (typeof this.options.onDecisionAuditRequest === 'function') {
+            const auditBtn = document.createElement('button');
+            auditBtn.type = 'button';
+            auditBtn.className = 'mvc-audit-btn';
+            auditBtn.textContent = translate(
+                'decisionAudit.openButton',
+                '🔎 Audit'
+            );
+            auditBtn.title = translate(
+                'decisionAudit.openHint',
+                'Open decision audit (A)'
+            );
+            auditBtn.addEventListener(
+                'click',
+                () => this.options.onDecisionAuditRequest()
+            );
+            this.controlsContainer.appendChild(auditBtn);
+        }
+
         this.controllingCompartmentStatus = document.createElement('div');
         this.controllingCompartmentStatus.className = 'mvc-controlling-status';
         this.controlsContainer.appendChild(this.controllingCompartmentStatus);
@@ -584,7 +604,7 @@ export class MValueChart {
         hint.style.cssText = 'font-size: 0.7rem; color: var(--text-muted, #888); margin-top: 2px; padding: 0 4px;';
         hint.textContent = translate(
             'chart.hints.mvalueCompartments',
-            'Click = select one · Shift+click = toggle · ←→ step · Space play · T ruler · F fullscreen'
+            'Click = select one · Shift+click = toggle · ←→ step · Space play · T ruler · A audit · F fullscreen'
         );
         this.controlsContainer.appendChild(hint);
     }
@@ -721,6 +741,17 @@ export class MValueChart {
                 this.options.fullscreenButton) {
                 e.preventDefault();
                 this._toggleFullscreen();
+                return;
+            }
+            if ((e.key === 'a' || e.key === 'A') &&
+                !e.metaKey && !e.ctrlKey && !e.altKey &&
+                typeof this.options.onDecisionAuditRequest === 'function') {
+                e.preventDefault();
+                this.options.onDecisionAuditRequest();
+                return;
+            }
+            if (e.key === 'Escape' &&
+                document.querySelector('dialog[open]')) {
                 return;
             }
             if (e.key === 'Escape' &&

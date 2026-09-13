@@ -1032,7 +1032,7 @@
         },
         "hints": {
             "compartments": "Klik = vybrat jednu · Shift+klik = přepnout · ←→ krok · Mezerník přehrávání · F režim celé obrazovky",
-            "mvalueCompartments": "Klik = vybrat jednu · Shift+klik = přepnout · ←→ krok · Mezerník přehrávání · T pravítko · F režim celé obrazovky",
+            "mvalueCompartments": "Klik = vybrat jednu · Shift+klik = přepnout · ←→ krok · Mezerník přehrávání · T pravítko · A audit · F režim celé obrazovky",
             "arrowShiftArrow": "↑↓ posun, Shift+↑↓ rozšířit/zúžit"
         },
         "tooltips": {
@@ -1335,6 +1335,9 @@
     },
     "decisionAudit": {
         "title": "Jak algoritmus rozhodoval",
+        "openButton": "🔎 Audit",
+        "openHint": "Otevřít audit rozhodování (A)",
+        "close": "Zavřít",
         "summary": "Režim: {0}. Kotva GF: {1} m.",
         "modeStandard": "standardní",
         "modeAdaptive": "adaptivní studijní",

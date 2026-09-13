@@ -1032,7 +1032,7 @@
         },
         "hints": {
             "compartments": "Click = select one · Shift+click = toggle · ←→ step · Space play · F fullscreen",
-            "mvalueCompartments": "Click = select one · Shift+click = toggle · ←→ step · Space play · T ruler · F fullscreen",
+            "mvalueCompartments": "Click = select one · Shift+click = toggle · ←→ step · Space play · T ruler · A audit · F fullscreen",
             "arrowShiftArrow": "↑↓ move, Shift+↑↓ expand/shrink"
         },
         "tooltips": {
@@ -1335,6 +1335,9 @@
     },
     "decisionAudit": {
         "title": "How the algorithm decided",
+        "openButton": "🔎 Audit",
+        "openHint": "Open decision audit (A)",
+        "close": "Close",
         "summary": "Mode: {0}. GF anchor: {1} m.",
         "modeStandard": "standard",
         "modeAdaptive": "adaptive study",

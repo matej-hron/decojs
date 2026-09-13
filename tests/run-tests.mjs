@@ -953,10 +953,14 @@ describe('M-value intersection ruler', () => {
             const originalDocument = globalThis.document;
             globalThis.document = dom.window.document;
             let toggleCount = 0;
+            let auditCount = 0;
             const keyboardContext = {
                 container: dom.window.document.getElementById('container'),
                 wrapper: dom.window.document.createElement('div'),
                 calculationResults: { timePoints: [0] },
+                options: {
+                    onDecisionAuditRequest() { auditCount++; }
+                },
                 _toggleRuler() { toggleCount++; }
             };
             keyboardContext.container.focus();
@@ -978,6 +982,13 @@ describe('M-value intersection ruler', () => {
                     })
                 );
                 expect(toggleCount).toBe(1);
+                dom.window.document.dispatchEvent(
+                    new dom.window.KeyboardEvent('keydown', {
+                        key: 'A',
+                        bubbles: true
+                    })
+                );
+                expect(auditCount).toBe(1);
             } finally {
                 dom.window.document.removeEventListener(
                     'keydown',
@@ -4049,12 +4060,15 @@ describe('Decompression schedule modes', () => {
         const sw = readFileSync(new URL('../sw.js', import.meta.url), 'utf8');
         const css = readFileSync(new URL('../css/styles.css', import.meta.url), 'utf8');
         expect(sandbox).toContain('id="decision-audit-content"');
+        expect(sandbox).toContain('id="decision-audit-dialog"');
+        expect(sandbox).toContain('onDecisionAuditRequest: openDecisionAudit');
         expect(sandbox).toContain("from '../js/components/DecisionAudit.js'");
         expect(sandbox).toContain('renderDecisionAudit(decisionAudit)');
         expect(sandbox).toContain('window._sandboxLastDecisionAudit = null');
         expect(sandbox.includes('calculateDecisionAudit(initialSetup)')).toBe(false);
         expect(sw).toContain("'./js/components/DecisionAudit.js'");
-        expect(css).toContain('#decision-audit-content {');
+        expect(css).toContain('#decision-audit-content,');
+        expect(css).toContain('.decision-audit-dialog {');
         expect(css).toContain('overflow-y: auto;');
         expect(css).toContain('counter-reset: decision-step;');
     });

@@ -1728,6 +1728,24 @@ section h2 {
     content: '◆';
 }
 
+.mvc-audit-btn {
+    padding: 2px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: var(--surface-elevated);
+    color: var(--text-color);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.mvc-audit-btn:hover,
+.mvc-audit-btn:focus-visible {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
 .mvc-wrapper.mvc-fullscreen .mvc-fullscreen-btn {
     display: none;
 }
@@ -2300,7 +2318,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.133";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.134";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -2477,7 +2495,8 @@ footer a {
     color: var(--primary-color);
 }
 
-#decision-audit-content {
+#decision-audit-content,
+#decision-audit-dialog-content {
     max-height: min(26rem, 55vh);
     overflow-y: auto;
     margin-top: 0.75rem;
@@ -2485,6 +2504,42 @@ footer a {
     border-radius: var(--radius);
     background: var(--surface-sunken);
     scrollbar-gutter: stable;
+}
+
+.decision-audit-dialog {
+    width: min(56rem, calc(100vw - 2rem));
+    max-height: calc(100vh - 2rem);
+    padding: 0;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background: var(--surface-elevated);
+    color: var(--text-color);
+    box-shadow: 0 1rem 3rem rgb(0 0 0 / 30%);
+}
+
+.decision-audit-dialog::backdrop {
+    background: rgb(0 0 0 / 55%);
+}
+
+.decision-audit-dialog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 0.875rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.decision-audit-dialog-header h2 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+#decision-audit-dialog-content {
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    max-height: calc(100vh - 7rem);
 }
 
 .decision-audit-summary {
@@ -2545,8 +2600,13 @@ footer a {
 }
 
 @media (max-width: 600px) {
-    #decision-audit-content {
+    #decision-audit-content,
+    #decision-audit-dialog-content {
         max-height: min(20rem, 50vh);
+    }
+
+    #decision-audit-dialog-content {
+        max-height: calc(100vh - 6rem);
     }
 
     .decision-audit-list li {

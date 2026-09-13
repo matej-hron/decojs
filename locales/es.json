@@ -1032,7 +1032,7 @@
         },
         "hints": {
             "compartments": "Clic = seleccionar uno · Mayús+clic = alternar · ←→ paso · Espacio reproducir · F pantalla completa",
-            "mvalueCompartments": "Clic = seleccionar uno · Mayús+clic = alternar · ←→ paso · Espacio reproducir · T regla · F pantalla completa",
+            "mvalueCompartments": "Clic = seleccionar uno · Mayús+clic = alternar · ←→ paso · Espacio reproducir · T regla · A auditoría · F pantalla completa",
             "arrowShiftArrow": "↑↓ mover, Mayús+↑↓ ampliar/reducir"
         },
         "tooltips": {
@@ -1335,6 +1335,9 @@
     },
     "decisionAudit": {
         "title": "Cómo decidió el algoritmo",
+        "openButton": "🔎 Auditoría",
+        "openHint": "Abrir la auditoría de decisiones (A)",
+        "close": "Cerrar",
         "summary": "Modo: {0}. Ancla GF: {1} m.",
         "modeStandard": "estándar",
         "modeAdaptive": "adaptativo de estudio",
