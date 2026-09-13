@@ -1109,7 +1109,7 @@
             "tooltipLabel": "{0}: presión ambiente {1} bar, presión tisular {2} bar",
             "rulerTitle": "regla",
             "rulerCurrentPosition": "Posición actual",
-            "rulerRampGFLabel": "GF en la rampa",
+            "rulerRampGFLabel": "Intersección con la rampa GF",
             "rulerCeiling": "techo",
             "rulerMValueSuffix": " (valor máximo)",
             "controllingCompartment": "Compartimento controlador: TC{0} · techo {1} m",

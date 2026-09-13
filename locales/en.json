@@ -1109,7 +1109,7 @@
             "tooltipLabel": "{0}: ambient pressure {1} bar, tissue pressure {2} bar",
             "rulerTitle": "ruler",
             "rulerCurrentPosition": "Current position",
-            "rulerRampGFLabel": "GF on ramp",
+            "rulerRampGFLabel": "GF ramp intersection",
             "rulerCeiling": "ceiling",
             "rulerMValueSuffix": "-value",
             "controllingCompartment": "Controlling compartment: TC{0} · ceiling {1} m",

@@ -1109,7 +1109,7 @@
             "tooltipLabel": "{0}: okolní tlak {1} bar, tkáňový tlak {2} bar",
             "rulerTitle": "pravítko",
             "rulerCurrentPosition": "Aktuální poloha",
-            "rulerRampGFLabel": "GF na rampě",
+            "rulerRampGFLabel": "Průsečík s GF rampou",
             "rulerCeiling": "strop",
             "rulerMValueSuffix": "-hodnota",
             "controllingCompartment": "Řídicí kompartment: TC{0} · strop {1} m",

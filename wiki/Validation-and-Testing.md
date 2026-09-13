@@ -89,6 +89,10 @@ selected, and the current points retain their standard appearance. When the
 ceiling is clear, the chart explicitly reports that no compartment is
 currently controlling decompression.
 
+The ruler labels its self-consistent intersection with the continuous GF ramp
+explicitly, distinguishing it from the scheduler's fixed-GF check at the next
+discrete stop depth.
+
 The M-value chart can open the existing decision audit in a modal with its
 Audit control or the `A` shortcut. Pressing `A` again closes it, including when
 focus is inside the modal. Opening and closing the audit preserves both
