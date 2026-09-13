@@ -1113,7 +1113,6 @@
             "rulerCeiling": "ceiling",
             "rulerMValueSuffix": "-value",
             "controllingCompartment": "Controlling compartment: TC{0} · ceiling {1} m",
-            "controllingPoint": "Controlling TC{0}",
             "noControllingCompartment": "No decompression ceiling at this point",
             "initialDepthLabel": "0.0 min @ 0 m"
         },

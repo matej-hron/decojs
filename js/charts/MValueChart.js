@@ -1734,22 +1734,16 @@ export class MValueChart {
             // either theme; subtle inner glow via shadowBlur lifts the
             // point off the trail without adding visual noise.
             const currentTissue = results.compartments[comp.id].pressures[timeIndex];
-            const isControlling =
-                controllingState.controllingCompartment === comp.id;
             datasets.push({
                 label: fmt(translate('chart.mvalue.tcLabel', 'TC{0} ({1}\u00a0min)'), comp.id, fmtNum(comp.halfTime)),
                 data: [{ x: currentAmbient, y: currentTissue }],
                 mvalueCompartmentId: comp.id,
                 mvalueCurrentPoint: true,
-                mvalueControllingCompartment: isControlling,
                 backgroundColor: comp.color,
-                borderColor: isControlling
-                    ? theme().colors.text
-                    : theme().colors.surface,
-                borderWidth: isControlling ? 4 : 2,
-                pointRadius: isControlling ? 10 : 8,
-                pointHoverRadius: isControlling ? 12 : 10,
-                pointStyle: isControlling ? 'rectRot' : 'circle',
+                borderColor: theme().colors.surface,
+                borderWidth: 2,
+                pointRadius: 8,
+                pointHoverRadius: 10,
                 hoverBorderWidth: 2.5,
                 pointHoverBackgroundColor: comp.color,
                 // Chart.js respects element.point.shadowBlur on newer versions;
@@ -1763,41 +1757,6 @@ export class MValueChart {
             });
         });
 
-        const controllingId = controllingState.controllingCompartment;
-        if (controllingId !== null &&
-            !this.visibleCompartments.has(controllingId)) {
-            const controllingCompartment = COMPARTMENTS.find(
-                comp => comp.id === controllingId
-            );
-            if (controllingCompartment) {
-                datasets.push({
-                    label: fmt(
-                        translate(
-                            'chart.mvalue.controllingPoint',
-                            'Controlling TC{0}'
-                        ),
-                        controllingId
-                    ),
-                    data: [{
-                        x: currentAmbient,
-                        y: results.compartments[controllingId]
-                            .pressures[timeIndex]
-                    }],
-                    mvalueCompartmentId: controllingId,
-                    mvalueCurrentPoint: true,
-                    mvalueControllingCompartment: true,
-                    backgroundColor: controllingCompartment.color,
-                    borderColor: theme().colors.text,
-                    borderWidth: 4,
-                    pointRadius: 10,
-                    pointHoverRadius: 12,
-                    pointStyle: 'rectRot',
-                    showLine: false,
-                    order: 0
-                });
-            }
-        }
-        
         const config = {
             type: 'scatter',
             data: { datasets },

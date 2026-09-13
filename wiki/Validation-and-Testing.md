@@ -84,10 +84,9 @@ causing document-level horizontal overflow.
 
 The reusable M-value chart marks the current controlling compartment only
 when it creates a decompression ceiling at the currently allowed GF. The
-selector highlight and diamond current point do not alter which compartments
-the user selected. If the controlling compartment is hidden, its current point
-still appears as a standalone diamond without adding its line or trail. When
-the ceiling is clear, the chart explicitly reports that no compartment is
+status label and selector highlight do not alter which compartments the user
+selected, and the current points retain their standard appearance. When the
+ceiling is clear, the chart explicitly reports that no compartment is
 currently controlling decompression.
 
 The coefficient-derivation graph labels $a$, including the upright `bar`

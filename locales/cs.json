@@ -1113,7 +1113,6 @@
             "rulerCeiling": "strop",
             "rulerMValueSuffix": "-hodnota",
             "controllingCompartment": "Řídicí kompartment: TC{0} · strop {1} m",
-            "controllingPoint": "Řídicí TC{0}",
             "noControllingCompartment": "V tomto bodě není dekompresní strop",
             "initialDepthLabel": "0,0 min @ 0 m"
         },
