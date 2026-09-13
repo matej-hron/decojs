@@ -6,7 +6,7 @@ npm test
 
 Runs `node tests/run-tests.mjs`. No external test framework — `tests/run-tests.mjs` implements `describe`/`test`/`expect` inline (lines 10–140) with matchers `.toBe`, `.toEqual`, `.toBeCloseTo`, `.toBeGreaterThan`, `.toBeLessThan`, `.toHaveProperty`, `.toHaveLength`, `.toBeDefined`. Output is one line per test, then a pass/fail summary.
 
-**533 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
+**536 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
 
 `npm test` is required to pass before every commit per `CLAUDE.md`.
 
@@ -82,6 +82,32 @@ keep TC2–16 $b$ values identical across variants, and highlight only values
 that differ from ZH-L16A. Its responsive wrapper must scroll locally without
 causing document-level horizontal overflow.
 
+The reusable M-value chart marks the current controlling compartment only
+when it creates the deepest intersection with the continuous GF ramp. The
+status and the selected compartment's ruler therefore use the same ceiling
+definition. The selector highlight does not alter which compartments the user
+selected, and the current points retain their standard appearance. When the
+ceiling is clear, the chart explicitly reports that no compartment is
+currently controlling decompression. If no GF ramp is created, the
+intersection uses GF High. Both the status and ruler panel show the current
+depth. The ruler omits the unused tissue-equals-ambient intersection.
+
+The ruler labels its self-consistent intersection with the continuous GF ramp
+explicitly, distinguishing it from the scheduler's fixed-GF check at the next
+discrete stop depth.
+
+The M-value chart can open the existing decision audit in a modal with its
+Audit control or the `A` shortcut. Pressing `A` again closes it, including when
+focus is inside the modal. Opening and closing the audit preserves both
+fullscreen mode and the selected timeline position. Each audit row separates
+compact phase, runtime, depth, and controlling-compartment columns from the
+longer calculation explanation; hypothetical anchor simulations are labeled
+separately and do not claim a position on the actual runtime.
+Per-level departure rows show the destination and its target-depth GF, while
+the controlling compartment stays in its dedicated column. They deliberately
+omit the intermediate fixed-GF ceiling value so it cannot be confused with the
+chart's continuous GF-ramp ceiling.
+
 The coefficient-derivation graph labels $a$, including the upright `bar`
 unit, and dimensionless $b$ directly in the SVG, positioned beside their
 visible curve ends.
@@ -112,7 +138,8 @@ The standard staged-mode gate also checks schedule structure, not only total
 time: every emitted stop is on the 3 m grid and lasts at least one minute.
 Decision-audit regressions additionally prove that enabling the trace leaves
 stops, gas switches, total time, and anchor unchanged; they cover direct-ascent,
-anchor-selection, and per-level events plus the localized text renderer.
+anchor-selection, and per-level events plus runtime/depth context and the
+localized text renderer.
 Across all 19,886 scenarios, the current implementation matches Decotengu's
 exact stop-depth list in 96.1%, the complete depth/time schedule in 82.2%, and
 has a mean absolute total-decompression difference of 0.13 min (maximum 3 min).

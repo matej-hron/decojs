@@ -455,7 +455,7 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
         {
             ...options,
             pressurePerMeter,
-            ...(options.alignRuntimeDepartures
+            ...(options.audit || options.alignRuntimeDepartures
                 ? { runtimeStart: options.runtimeStart ?? bottomTime }
                 : {})
         }
@@ -963,6 +963,7 @@ export function generateDecisionAudit(setup) {
             audit: true,
             decoMode: getDecoMode(setup),
             gasSwitchTime: setup.gasSwitchTime ?? DEFAULT_GAS_SWITCH_TIME,
+            runtimeStart: bottomTime,
             surfacePressure,
             pressurePerMeter
         }

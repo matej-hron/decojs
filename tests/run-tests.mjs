@@ -242,7 +242,8 @@ import {
 import { GFChart } from '../js/charts/GFChart.js';
 import {
     MValueChart,
-    calculateMValueRulerIntersections
+    calculateMValueRulerIntersections,
+    calculateCurrentControllingCompartment
 } from '../js/charts/MValueChart.js';
 import { DiveProfileChart } from '../js/charts/DiveProfileChart.js';
 
@@ -803,6 +804,111 @@ describe('P-P chart timeline synchronization', () => {
 });
 
 describe('M-value intersection ruler', () => {
+    test('identifies only a compartment that creates a decompression ceiling', () => {
+        const tissuePressures = Object.fromEntries(
+            COMPARTMENTS.map(comp => [comp.id, 0.75])
+        );
+        tissuePressures[1] = 3.1;
+        tissuePressures[8] = 2.4;
+
+        const controlling = calculateCurrentControllingCompartment({
+            tissuePressures,
+            gfLow: 0.3,
+            gfHigh: 0.8,
+            pAnchor: 2.2
+        });
+        expect(controlling.controllingCompartment).toBeDefined();
+        expect(controlling.ceilingDepth).toBeGreaterThan(0);
+
+        const clear = calculateCurrentControllingCompartment({
+            tissuePressures: Object.fromEntries(
+                COMPARTMENTS.map(comp => [comp.id, 0.75])
+            ),
+            gfLow: 0.3,
+            gfHigh: 0.8,
+            pAnchor: 2.2
+        });
+        expect(clear.controllingCompartment).toBe(null);
+        expect(clear.ceilingDepth).toBe(0);
+    });
+
+    test('matches the deepest ruler intersection and uses GF High without a ramp', () => {
+        const pressuresAtNineMeters = Object.fromEntries(
+            COMPARTMENTS.map(comp => [comp.id, 0.75])
+        );
+        pressuresAtNineMeters[3] = 2.58;
+        const atNineMeters = calculateCurrentControllingCompartment({
+            tissuePressures: pressuresAtNineMeters,
+            gfLow: 0.6,
+            gfHigh: 0.9,
+            pAnchor: 1.91325
+        });
+        expect(atNineMeters.controllingCompartment).toBe(3);
+        expect(atNineMeters.ceilingDepth).toBeCloseTo(5.099, 3);
+        expect(atNineMeters.gf).toBeCloseTo(0.73004, 5);
+
+        const pressuresAtSixMeters = Object.fromEntries(
+            COMPARTMENTS.map(comp => [comp.id, 0.75])
+        );
+        pressuresAtSixMeters[4] = 2.19;
+        const atSixMeters = calculateCurrentControllingCompartment({
+            tissuePressures: pressuresAtSixMeters,
+            gfLow: 0.6,
+            gfHigh: 0.9,
+            pAnchor: 1.91325
+        });
+        expect(atSixMeters.controllingCompartment).toBe(4);
+        expect(atSixMeters.ceilingDepth).toBeCloseTo(2.762, 3);
+        expect(atSixMeters.gf).toBeCloseTo(0.80793, 5);
+
+        const noRamp = calculateMValueRulerIntersections({
+            tissuePressure: 2.19,
+            compartment: COMPARTMENTS[3],
+            gfLow: 0.6,
+            gfHigh: 0.9,
+            surfacePressure: SURFACE_PRESSURE,
+            pAnchor: SURFACE_PRESSURE
+        });
+        expect(noRamp.gfRamp.gf).toBe(0.9);
+        expect(noRamp.gfRamp.pressure).toBe(noRamp.gfHigh.pressure);
+    });
+
+    test('marks the controlling selector without changing compartment selection', () => {
+        const dom = new JSDOM(`<!doctype html><body>
+            <div id="controls">
+                <label class="mvc-compartment-option" data-compartment-id="1"></label>
+                <label class="mvc-compartment-option" data-compartment-id="8"></label>
+            </div>
+            <div id="status"></div>
+        </body>`);
+        const context = {
+            controlsContainer: dom.window.document.getElementById('controls'),
+            controllingCompartmentStatus: dom.window.document.getElementById('status')
+        };
+
+        MValueChart.prototype._updateControllingCompartmentIndicator.call(
+            context,
+            { controllingCompartment: 8, ceilingDepth: 6, currentDepth: 9 }
+        );
+        const labels = context.controlsContainer.querySelectorAll('label');
+        expect(labels[0].classList.contains('mvc-controlling-compartment')).toBe(false);
+        expect(labels[1].classList.contains('mvc-controlling-compartment')).toBe(true);
+        expect(labels[1].getAttribute('aria-current')).toBe('true');
+        expect(context.controllingCompartmentStatus.textContent.includes('TC8')).toBe(true);
+        expect(context.controllingCompartmentStatus.textContent.includes('9.0')).toBe(true);
+
+        MValueChart.prototype._updateControllingCompartmentIndicator.call(
+            context,
+            { controllingCompartment: null, ceilingDepth: 0, currentDepth: 0 }
+        );
+        expect(labels[1].classList.contains('mvc-controlling-compartment')).toBe(false);
+        expect(labels[1].hasAttribute('aria-current')).toBe(false);
+        expect(readFileSync(
+            new URL('../js/charts/MValueChart.js', import.meta.url),
+            'utf8'
+        ).includes('intersections.equilibrium')).toBe(false);
+    });
+
         test('calculates fixed-GF and ramp intersections', () => {
             const compartment = COMPARTMENTS[1];
             const inputs = {
@@ -815,7 +921,6 @@ describe('M-value intersection ruler', () => {
             };
             const intersections = calculateMValueRulerIntersections(inputs);
 
-            expect(intersections.equilibrium.pressure).toBeCloseTo(3.1, 12);
             for (const [key, gf] of [
                 ['gfLow', inputs.gfLow],
                 ['gfHigh', inputs.gfHigh]
@@ -891,10 +996,15 @@ describe('M-value intersection ruler', () => {
             const originalDocument = globalThis.document;
             globalThis.document = dom.window.document;
             let toggleCount = 0;
+            let auditCount = 0;
             const keyboardContext = {
                 container: dom.window.document.getElementById('container'),
                 wrapper: dom.window.document.createElement('div'),
                 calculationResults: { timePoints: [0] },
+                options: {
+                    onDecisionAuditRequest() { auditCount++; },
+                    isDecisionAuditOpen() { return auditCount === 1; }
+                },
                 _toggleRuler() { toggleCount++; }
             };
             keyboardContext.container.focus();
@@ -916,6 +1026,21 @@ describe('M-value intersection ruler', () => {
                     })
                 );
                 expect(toggleCount).toBe(1);
+                dom.window.document.dispatchEvent(
+                    new dom.window.KeyboardEvent('keydown', {
+                        key: 'A',
+                        bubbles: true
+                    })
+                );
+                expect(auditCount).toBe(1);
+                keyboardContext.container.blur();
+                dom.window.document.dispatchEvent(
+                    new dom.window.KeyboardEvent('keydown', {
+                        key: 'A',
+                        bubbles: true
+                    })
+                );
+                expect(auditCount).toBe(2);
             } finally {
                 dom.window.document.removeEventListener(
                     'keydown',
@@ -1021,10 +1146,11 @@ describe('M-value intersection ruler', () => {
                 }
             );
 
-            expect(panel.children.length).toBe(4);
+            expect(panel.children.length).toBe(3);
             expect(panel.textContent.includes('GF ramp')).toBe(false);
             expect(panel.textContent.includes('GFlow')).toBe(false);
             expect(panel.textContent.includes('GFhigh')).toBe(false);
+            expect(panel.textContent.includes('pt = pamb')).toBe(false);
             expect([...panel.querySelectorAll('var')]
                 .some(variable => variable.textContent === 'M')).toBe(true);
         } finally {
@@ -3864,7 +3990,10 @@ describe('Decompression schedule modes', () => {
         });
         expect(audit.version).toBe(DECISION_AUDIT_VERSION);
         expect(audit.anchorDepth).toBe(12);
-        expect(audit.events.some(event => event.type === 'level-decision')).toBe(true);
+        expect(audit.runtimeStart).toBe(13);
+        const levelEvent = audit.events.find(event => event.type === 'level-decision');
+        expect(Boolean(levelEvent)).toBe(true);
+        expect(Number.isFinite(levelEvent.runtime)).toBe(true);
     });
 
     test('returns the audit from the same profile-generation branch', () => {
@@ -3971,14 +4100,30 @@ describe('Decompression schedule modes', () => {
         const audit = generateDecoSchedule(
             loadedTissues(),
             33, air[0].n2, 0.3, 0.8, air,
-            { decoMode: DECO_MODES.STANDARD, audit: true }
+            { decoMode: DECO_MODES.STANDARD, audit: true, runtimeStart: 30 }
         ).decisionAudit;
         const lines = buildDecisionAuditLines(audit);
         expect(lines.some(line => line.type === 'direct-ascent')).toBe(true);
         expect(lines.some(line => line.type === 'anchor-check')).toBe(true);
         expect(lines.some(line => line.type === 'level-decision')).toBe(true);
+        expect(lines[0].context.label).toBe('Bottom time');
+        expect(lines[0].context.time).toBe('30.0 min');
+        expect(lines[0].context.depth).toBe('33.0 m');
+        expect(Boolean(lines[0].compartment)).toBe(true);
+        const stopLine = lines.find(line =>
+            line.type === 'level-decision' && line.context.time?.includes('–')
+        );
+        expect(stopLine.context.label).toBe('Decompression stop');
+        expect(Boolean(stopLine.compartment)).toBe(true);
         const html = renderDecisionAuditHTML(audit);
         expect(html).toContain('decision-audit-list');
+        expect(html).toContain('decision-audit-context');
+        expect(html).toContain('decision-audit-context-time');
+        expect(html).toContain('decision-audit-compartment');
+        expect(html).toContain('Controlling compartment');
+        expect(html).toContain('target-depth GF');
+        expect(html.includes('shallowest permitted depth')).toBe(false);
+        expect(html).toContain('decision-audit-text');
         expect(html).toContain('diagnostic explanation');
     });
 
@@ -3987,12 +4132,16 @@ describe('Decompression schedule modes', () => {
         const sw = readFileSync(new URL('../sw.js', import.meta.url), 'utf8');
         const css = readFileSync(new URL('../css/styles.css', import.meta.url), 'utf8');
         expect(sandbox).toContain('id="decision-audit-content"');
+        expect(sandbox).toContain('id="decision-audit-dialog"');
+        expect(sandbox).toContain('onDecisionAuditRequest: toggleDecisionAudit');
+        expect(sandbox).toContain('isDecisionAuditOpen: () => decisionAuditDialog.open');
         expect(sandbox).toContain("from '../js/components/DecisionAudit.js'");
         expect(sandbox).toContain('renderDecisionAudit(decisionAudit)');
         expect(sandbox).toContain('window._sandboxLastDecisionAudit = null');
         expect(sandbox.includes('calculateDecisionAudit(initialSetup)')).toBe(false);
         expect(sw).toContain("'./js/components/DecisionAudit.js'");
-        expect(css).toContain('#decision-audit-content {');
+        expect(css).toContain('#decision-audit-content,');
+        expect(css).toContain('.decision-audit-dialog {');
         expect(css).toContain('overflow-y: auto;');
         expect(css).toContain('counter-reset: decision-step;');
     });

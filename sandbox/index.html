@@ -743,6 +743,18 @@
         </div>
     </div>
 
+    <dialog id="decision-audit-dialog" class="decision-audit-dialog"
+            aria-labelledby="decision-audit-dialog-title">
+        <div class="decision-audit-dialog-header">
+            <h2 id="decision-audit-dialog-title"
+                data-i18n="decisionAudit.title">How the algorithm decided</h2>
+            <button id="decision-audit-dialog-close" type="button"
+                    class="btn btn-small btn-secondary"
+                    data-i18n="decisionAudit.close">Close</button>
+        </div>
+        <div id="decision-audit-dialog-content"></div>
+    </dialog>
+
     <footer>
         <span class="wip-badge" data-i18n="common.wipBadge">Experimental</span>
         <p data-i18n="sandbox.dive.footerDisclaimer">
@@ -1227,6 +1239,9 @@
         const diveGasSummaryContainer = document.getElementById('dive-gas-summary');
         const divePlanTableContainer = document.getElementById('dive-plan-table-container');
         const decisionAuditContent = document.getElementById('decision-audit-content');
+        const decisionAuditDialog = document.getElementById('decision-audit-dialog');
+        const decisionAuditDialogContent = document.getElementById('decision-audit-dialog-content');
+        const decisionAuditDialogClose = document.getElementById('decision-audit-dialog-close');
 
         // Mirrors DiveSetupEditor's own internal rendering (now suppressed via
         // showDivePlanPreview: false) so the table can live next to the chart
@@ -1251,8 +1266,34 @@
         }
 
         function renderDecisionAudit(audit) {
-            decisionAuditContent.innerHTML = renderDecisionAuditHTML(audit);
+            const html = renderDecisionAuditHTML(audit);
+            decisionAuditContent.innerHTML = html;
+            decisionAuditDialogContent.innerHTML = html;
         }
+
+        function closeDecisionAudit() {
+            if (typeof decisionAuditDialog.close === 'function') {
+                decisionAuditDialog.close();
+            } else {
+                decisionAuditDialog.removeAttribute('open');
+            }
+        }
+
+        function toggleDecisionAudit() {
+            if (decisionAuditDialog.open) {
+                closeDecisionAudit();
+                return;
+            }
+            if (typeof decisionAuditDialog.showModal === 'function') {
+                decisionAuditDialog.showModal();
+            } else {
+                decisionAuditDialog.setAttribute('open', '');
+            }
+        }
+
+        decisionAuditDialogClose.addEventListener('click', () => {
+            closeDecisionAudit();
+        });
         
         // Load initial setup - priority: URL profile= > URL v=1 compact > localStorage > default
         const urlProfile = getProfileFromUrl() || await getCompactProfileFromUrl();
@@ -1298,7 +1339,9 @@
                 showGFLines: true,
                 showAmbientLine: true,
                 showTrail: true,
-                compartmentSelector: true
+                compartmentSelector: true,
+                onDecisionAuditRequest: toggleDecisionAudit,
+                isDecisionAuditOpen: () => decisionAuditDialog.open
             }
         });
 

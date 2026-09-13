@@ -1032,7 +1032,7 @@
         },
         "hints": {
             "compartments": "Klik = vybrat jednu · Shift+klik = přepnout · ←→ krok · Mezerník přehrávání · F režim celé obrazovky",
-            "mvalueCompartments": "Klik = vybrat jednu · Shift+klik = přepnout · ←→ krok · Mezerník přehrávání · T pravítko · F režim celé obrazovky",
+            "mvalueCompartments": "Klik = vybrat jednu · Shift+klik = přepnout · ←→ krok · Mezerník přehrávání · T pravítko · A audit · F režim celé obrazovky",
             "arrowShiftArrow": "↑↓ posun, Shift+↑↓ rozšířit/zúžit"
         },
         "tooltips": {
@@ -1108,10 +1108,12 @@
             "pAnchor": "Kotevní tlak {0} bar ({1} m)",
             "tooltipLabel": "{0}: okolní tlak {1} bar, tkáňový tlak {2} bar",
             "rulerTitle": "pravítko",
-            "rulerCurrentPosition": "Aktuální poloha",
-            "rulerRampGFLabel": "GF na rampě",
+            "rulerCurrentPosition": "Aktuální hloubka",
+            "rulerRampGFLabel": "Průsečík s GF rampou",
             "rulerCeiling": "strop",
             "rulerMValueSuffix": "-hodnota",
+            "controllingCompartment": "Aktuální hloubka: {0} m · řídicí kompartment: TC{1} · strop podle GF rampy {2} m",
+            "noControllingCompartment": "Aktuální hloubka: {0} m · bez dekompresního stropu",
             "initialDepthLabel": "0,0 min @ 0 m"
         },
         "gf": {
@@ -1333,6 +1335,9 @@
     },
     "decisionAudit": {
         "title": "Jak algoritmus rozhodoval",
+        "openButton": "🔎 Audit",
+        "openHint": "Otevřít audit rozhodování (A)",
+        "close": "Zavřít",
         "summary": "Režim: {0}. Kotva GF: {1} m.",
         "modeStandard": "standardní",
         "modeAdaptive": "adaptivní studijní",
@@ -1340,16 +1345,23 @@
         "disclaimer": "Jde o diagnostické vysvětlení této implementace, nikoli o nezávislé bezpečnostní ověření.",
         "unavailable": "Pro zobrazení rozhodnutí nejprve vygenerujte profil.",
         "outOfRange": "Audit rozhodování není dostupný, protože profil překročil limit plánovacího algoritmu.",
-        "directPass": "Přímý výstup při GF High {0} % prošel: strop na hladině je čistý (řídicí kompartment {1}).",
-        "directFail": "Přímý výstup při GF High {0} % neprošel: strop {1} m (řídicí kompartment {2}).",
+        "contextBottom": "Čas na dně",
+        "contextAnchorCandidate": "Návrh kotvy",
+        "contextAnchorCheck": "Simulace kotvy",
+        "contextGasSwitch": "Změna směsi",
+        "contextStop": "Dekompresní zastávka",
+        "contextTransit": "Průjezd hladinou",
+        "contextCompartment": "Řídicí kompartment",
+        "directPass": "Po simulovaném přímém výstupu při GF High {0} % je strop na hladině čistý (řídicí kompartment {1}); přímý výstup je povolen.",
+        "directFail": "Po simulovaném přímém výstupu při GF High {0} % zůstává strop {1} m (řídicí kompartment {2}), proto přímý výstup není povolen.",
         "anchorCandidate": "Strop při GF Low je {0} m; kandidát kotvy po zaokrouhlení je {1} m (řídicí kompartment {2}).",
         "anchorAccepted": "Po výstupu do {0} m je strop při GF Low {1} m; kotva je přijata (řídicí kompartment {2}).",
         "anchorMoved": "Po výstupu do {0} m je strop při GF Low {1} m; pokračujeme s kandidátem {2} m (řídicí kompartment {3}).",
         "gasSwitch": "V {0} m přechod na směs {1}.",
         "gasSwitchWait": "V {0} m přechod na směs {1} a čekání {2} min.",
-        "levelTransit": "Z {0} m do {1} m: GF {2} %, strop {3} m (řídicí kompartment {4}); výstup je povolen bez čekání.",
-        "levelConvention": "V {0} m přidává konvence stupňovitého profilu {1} min. Poté je výstup do {2} m povolen při GF {3} %, stropu {4} m a řídicím kompartmentu {5}.",
-        "levelWait": "V {0} m čekání {1} min: {2} min podle konvence stupňovitého profilu, {3} min podle kontroly stropu a {4} min na změnu směsi. Poté je výstup do {5} m povolen při GF {6} %, stropu {7} m a řídicím kompartmentu {8}."
+        "levelTransit": "Přechod z {0} m do {1} m je povolen bez čekání při GF cílové hloubky {2} %.",
+        "levelConvention": "V {0} m přidává konvence stupňovitého profilu {1} min. Poté je výstup do {2} m povolen při GF cílové hloubky {3} %.",
+        "levelWait": "V {0} m čekání {1} min: {2} min podle konvence stupňovitého profilu, {3} min podle kontroly cílové hloubky a {4} min na změnu směsi. Poté je výstup do {5} m povolen při GF cílové hloubky {6} %."
     },
     "tissueSim": {
         "alertOk": "Bez upozornění na parciální tlaky: <var>p</var><sub>O₂</sub> je v rozmezí 0,18–1,4 bar a <var>p</var><sub>N₂</sub> nepřekračuje 4,0 bar.",

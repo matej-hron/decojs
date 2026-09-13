@@ -1032,7 +1032,7 @@
         },
         "hints": {
             "compartments": "Click = select one · Shift+click = toggle · ←→ step · Space play · F fullscreen",
-            "mvalueCompartments": "Click = select one · Shift+click = toggle · ←→ step · Space play · T ruler · F fullscreen",
+            "mvalueCompartments": "Click = select one · Shift+click = toggle · ←→ step · Space play · T ruler · A audit · F fullscreen",
             "arrowShiftArrow": "↑↓ move, Shift+↑↓ expand/shrink"
         },
         "tooltips": {
@@ -1108,10 +1108,12 @@
             "pAnchor": "Anchor pressure {0} bar ({1} m)",
             "tooltipLabel": "{0}: ambient pressure {1} bar, tissue pressure {2} bar",
             "rulerTitle": "ruler",
-            "rulerCurrentPosition": "Current position",
-            "rulerRampGFLabel": "GF on ramp",
+            "rulerCurrentPosition": "Current depth",
+            "rulerRampGFLabel": "GF ramp intersection",
             "rulerCeiling": "ceiling",
             "rulerMValueSuffix": "-value",
+            "controllingCompartment": "Current depth: {0} m · controlling compartment: TC{1} · GF-ramp ceiling {2} m",
+            "noControllingCompartment": "Current depth: {0} m · no decompression ceiling",
             "initialDepthLabel": "0.0 min @ 0 m"
         },
         "gf": {
@@ -1333,6 +1335,9 @@
     },
     "decisionAudit": {
         "title": "How the algorithm decided",
+        "openButton": "🔎 Audit",
+        "openHint": "Open decision audit (A)",
+        "close": "Close",
         "summary": "Mode: {0}. GF anchor: {1} m.",
         "modeStandard": "standard",
         "modeAdaptive": "adaptive study",
@@ -1340,16 +1345,23 @@
         "disclaimer": "This is a diagnostic explanation of this implementation, not an independent safety validation.",
         "unavailable": "Generate a profile to see the calculation decisions.",
         "outOfRange": "The decision audit is unavailable because this profile exceeds the scheduler limit.",
-        "directPass": "Direct ascent passed at GF High {0}%: the surface ceiling is clear (controlling compartment {1}).",
-        "directFail": "Direct ascent failed at GF High {0}%: ceiling {1} m (controlling compartment {2}).",
+        "contextBottom": "Bottom time",
+        "contextAnchorCandidate": "Anchor candidate",
+        "contextAnchorCheck": "Anchor simulation",
+        "contextGasSwitch": "Gas switch",
+        "contextStop": "Decompression stop",
+        "contextTransit": "Level transit",
+        "contextCompartment": "Controlling compartment",
+        "directPass": "After the simulated direct ascent at GF High {0}%, the surface ceiling is clear (controlling compartment {1}); direct ascent is allowed.",
+        "directFail": "After the simulated direct ascent at GF High {0}%, a ceiling of {1} m remains (controlling compartment {2}), so direct ascent is not allowed.",
         "anchorCandidate": "The GF Low ceiling is {0} m; the rounded anchor candidate is {1} m (controlling compartment {2}).",
         "anchorAccepted": "After ascent to {0} m, the GF Low ceiling is {1} m; the anchor is accepted (controlling compartment {2}).",
         "anchorMoved": "After ascent to {0} m, the GF Low ceiling is {1} m; continue with candidate {2} m (controlling compartment {3}).",
         "gasSwitch": "At {0} m switch to {1}.",
         "gasSwitchWait": "At {0} m switch to {1} and wait {2} min.",
-        "levelTransit": "From {0} m to {1} m: GF {2}%, ceiling {3} m (controlling compartment {4}); ascent is allowed without waiting.",
-        "levelConvention": "At {0} m the staged-profile convention adds {1} min. Ascent to {2} m is then allowed at GF {3}%, ceiling {4} m, controlling compartment {5}.",
-        "levelWait": "At {0} m wait {1} min: {2} min by the staged-profile convention, {3} min from the ceiling check, and {4} min for a gas switch. Ascent to {5} m is then allowed at GF {6}%, ceiling {7} m, controlling compartment {8}."
+        "levelTransit": "Ascent from {0} m to {1} m is allowed without waiting at the target-depth GF of {2}%.",
+        "levelConvention": "At {0} m the staged-profile convention adds {1} min. Ascent to {2} m is then allowed at the target-depth GF of {3}%.",
+        "levelWait": "At {0} m wait {1} min: {2} min by the staged-profile convention, {3} min from the target-depth check, and {4} min for a gas switch. Ascent to {5} m is then allowed at the target-depth GF of {6}%."
     },
     "tissueSim": {
         "alertOk": "No partial-pressure warning: <var>p</var><sub>O₂</sub> is 0.18–1.4 bar and <var>p</var><sub>N₂</sub> does not exceed 4.0 bar.",

@@ -72,7 +72,9 @@ export function calculateMValueRulerIntersections({
     const high = intersection(gfHigh);
 
     let rampedGF;
-    if (pAnchor <= surfacePressure || Math.abs(gfHigh - gfLow) < 1e-12) {
+    if (pAnchor <= surfacePressure) {
+        rampedGF = high;
+    } else if (Math.abs(gfHigh - gfLow) < 1e-12) {
         rampedGF = low;
     } else if (low.pressure >= pAnchor) {
         rampedGF = low;
@@ -120,13 +122,6 @@ export function calculateMValueRulerIntersections({
     }
 
     return {
-        equilibrium: {
-            pressure: tissuePressure,
-            depth: Math.max(
-                0,
-                (tissuePressure - surfacePressure) / pressurePerMeter
-            )
-        },
         gfLow: low,
         gfRamp: rampedGF,
         gfHigh: high
@@ -153,6 +148,45 @@ import {
     normalizeDiveSetup
 } from './chartTypes.js';
 
+export function calculateCurrentControllingCompartment({
+    tissuePressures,
+    gfLow,
+    gfHigh,
+    pAnchor,
+    surfacePressure = SURFACE_PRESSURE,
+    pressurePerMeter = PRESSURE_PER_METER
+}) {
+    let controllingCompartment = null;
+    let ceiling = surfacePressure;
+    let ceilingDepth = 0;
+    let gf = pAnchor <= surfacePressure ? gfHigh : gfLow;
+
+    for (const compartment of COMPARTMENTS) {
+        const intersection = calculateMValueRulerIntersections({
+            tissuePressure: tissuePressures[compartment.id],
+            compartment,
+            gfLow,
+            gfHigh,
+            surfacePressure,
+            pAnchor,
+            pressurePerMeter
+        }).gfRamp;
+        if (intersection.depth > ceilingDepth + 1e-9) {
+            controllingCompartment = compartment.id;
+            ceiling = intersection.pressure;
+            ceilingDepth = intersection.depth;
+            gf = intersection.gf;
+        }
+    }
+
+    return {
+        ceiling,
+        ceilingDepth,
+        gf,
+        controllingCompartment
+    };
+}
+
 /**
  * Default options for MValueChart
  */
@@ -169,6 +203,8 @@ const DEFAULT_MVALUE_OPTIONS = {
     compartmentSelector: true,
     playbackSpeed: 100,  // ms per frame
     onTimeIndexChange: null,
+    onDecisionAuditRequest: null,
+    isDecisionAuditOpen: null,
     maxPressure: null,   // Override axis max (null = auto-calculate)
     colors: {
         ambient: 'rgba(52, 152, 219, 0.8)',
@@ -204,6 +240,7 @@ export class MValueChart {
         this.timeDisplay = null;
         this.playBtn = null;
         this.alveolarToggle = null;
+        this.controllingCompartmentStatus = null;
         
         // State
         this.calculationResults = null;
@@ -491,6 +528,8 @@ export class MValueChart {
         // Compartment checkboxes
         COMPARTMENTS.forEach(comp => {
             const label = document.createElement('label');
+            label.className = 'mvc-compartment-option';
+            label.dataset.compartmentId = String(comp.id);
             label.style.cssText = `
                 display: inline-flex; align-items: center; gap: 2px;
                 padding: 2px 6px; border-radius: 3px; cursor: pointer;
@@ -539,14 +578,88 @@ export class MValueChart {
             this.controlsContainer.appendChild(label);
         });
 
+        if (typeof this.options.onDecisionAuditRequest === 'function') {
+            const auditBtn = document.createElement('button');
+            auditBtn.type = 'button';
+            auditBtn.className = 'mvc-audit-btn';
+            auditBtn.textContent = translate(
+                'decisionAudit.openButton',
+                '🔎 Audit'
+            );
+            auditBtn.title = translate(
+                'decisionAudit.openHint',
+                'Open decision audit (A)'
+            );
+            auditBtn.addEventListener(
+                'click',
+                () => this.options.onDecisionAuditRequest()
+            );
+            this.controlsContainer.appendChild(auditBtn);
+        }
+
+        this.controllingCompartmentStatus = document.createElement('div');
+        this.controllingCompartmentStatus.className = 'mvc-controlling-status';
+        this.controlsContainer.appendChild(this.controllingCompartmentStatus);
+
         // Shortcut legend
         const hint = document.createElement('div');
         hint.style.cssText = 'font-size: 0.7rem; color: var(--text-muted, #888); margin-top: 2px; padding: 0 4px;';
         hint.textContent = translate(
             'chart.hints.mvalueCompartments',
-            'Click = select one · Shift+click = toggle · ←→ step · Space play · T ruler · F fullscreen'
+            'Click = select one · Shift+click = toggle · ←→ step · Space play · T ruler · A audit · F fullscreen'
         );
         this.controlsContainer.appendChild(hint);
+    }
+
+    _updateControllingCompartmentIndicator(state) {
+        const controllingId = state?.controllingCompartment ?? null;
+        let statusText;
+        if (controllingId === null) {
+            statusText = fmt(
+                translate(
+                    'chart.mvalue.noControllingCompartment',
+                    'Current depth: {0}\u00a0m · no decompression ceiling'
+                ),
+                fmtNum(state.currentDepth, 1)
+            );
+        } else {
+            const ceilingDecimals = state.ceilingDepth < 0.1 ? 2 : 1;
+            statusText = fmt(
+                translate(
+                    'chart.mvalue.controllingCompartment',
+                    'Current depth: {0}\u00a0m · controlling compartment: TC{1} · GF-ramp ceiling {2}\u00a0m'
+                ),
+                fmtNum(state.currentDepth, 1),
+                controllingId,
+                fmtNum(state.ceilingDepth, ceilingDecimals)
+            );
+        }
+
+        if (this.controllingCompartmentStatus) {
+            this.controllingCompartmentStatus.textContent = statusText;
+            this.controllingCompartmentStatus.classList.toggle(
+                'active',
+                controllingId !== null
+            );
+        }
+
+        this.controlsContainer
+            ?.querySelectorAll('.mvc-compartment-option')
+            .forEach(label => {
+                const isControlling =
+                    Number(label.dataset.compartmentId) === controllingId;
+                label.classList.toggle(
+                    'mvc-controlling-compartment',
+                    isControlling
+                );
+                if (isControlling) {
+                    label.setAttribute('aria-current', 'true');
+                    label.title = statusText;
+                } else {
+                    label.removeAttribute('aria-current');
+                    label.removeAttribute('title');
+                }
+            });
     }
     
     /**
@@ -620,9 +733,13 @@ export class MValueChart {
      */
     _setupKeyboardShortcuts() {
         this._keyHandler = (e) => {
+            const isDecisionAuditOpen =
+                typeof this.options.isDecisionAuditOpen === 'function'
+                && this.options.isDecisionAuditOpen();
             // Only handle if container is focused or we're in fullscreen
             if (!this.container.contains(document.activeElement) &&
-                !this.wrapper.classList.contains('mvc-fullscreen')) {
+                !this.wrapper.classList.contains('mvc-fullscreen') &&
+                !isDecisionAuditOpen) {
                 return;
             }
             
@@ -634,6 +751,17 @@ export class MValueChart {
                 this.options.fullscreenButton) {
                 e.preventDefault();
                 this._toggleFullscreen();
+                return;
+            }
+            if ((e.key === 'a' || e.key === 'A') &&
+                !e.metaKey && !e.ctrlKey && !e.altKey &&
+                typeof this.options.onDecisionAuditRequest === 'function') {
+                e.preventDefault();
+                this.options.onDecisionAuditRequest();
+                return;
+            }
+            if (e.key === 'Escape' &&
+                document.querySelector('dialog[open]')) {
                 return;
             }
             if (e.key === 'Escape' &&
@@ -1182,35 +1310,28 @@ export class MValueChart {
         const y = scales.y.getPixelForValue(ruler.tissuePressure);
         if (y < chartArea.top || y > chartArea.bottom) return;
 
-        const t = theme();
         const usesRawMValue =
             Math.abs(ruler.intersections.gfLow.gf - 1) < 1e-12 &&
             Math.abs(ruler.intersections.gfHigh.gf - 1) < 1e-12;
-        const rows = [
-            {
-                value: ruler.intersections.equilibrium,
-                color: t.colors.ambient
-            },
-            ...(usesRawMValue
-                ? [{
+        const rows = usesRawMValue
+            ? [{
+                value: ruler.intersections.gfRamp,
+                color: ruler.compartment.color
+            }]
+            : [
+                {
+                    value: ruler.intersections.gfLow,
+                    color: '#f39c12'
+                },
+                {
                     value: ruler.intersections.gfRamp,
                     color: ruler.compartment.color
-                }]
-                : [
-                    {
-                        value: ruler.intersections.gfLow,
-                        color: '#f39c12'
-                    },
-                    {
-                        value: ruler.intersections.gfRamp,
-                        color: ruler.compartment.color
-                    },
-                    {
-                        value: ruler.intersections.gfHigh,
-                        color: '#9b59b6'
-                    }
-                ])
-        ];
+                },
+                {
+                    value: ruler.intersections.gfHigh,
+                    color: '#9b59b6'
+                }
+            ];
 
         ctx.save();
         ctx.lineWidth = 1.5;
@@ -1316,25 +1437,13 @@ export class MValueChart {
             translate('chart.mvalue.rulerCurrentPosition', 'Current position'),
             ': '
         );
-        currentPosition.appendChild(quantity('p', ambientSubscript));
-        currentPosition.append(
-            ` = ${valueWithUnit(ruler.currentAmbient, 'bar', 2)} · `
-        );
         currentPosition.appendChild(quantity('h'));
         currentPosition.append(
-            ` = ${valueWithUnit(ruler.currentDepth, 'm', 1)}`
+            ` = ${valueWithUnit(ruler.currentDepth, 'm', 1)} · `
         );
-
-        const equilibrium = addLine('var(--amber-500, #f39c12)');
-        equilibrium.appendChild(quantity('p', tissueSubscript));
-        equilibrium.append(' = ');
-        equilibrium.appendChild(quantity('p', ambientSubscript));
-        equilibrium.append(
-            ` = ${valueWithUnit(ruler.intersections.equilibrium.pressure, 'bar', 2)} · `
-        );
-        equilibrium.appendChild(quantity('h'));
-        equilibrium.append(
-            ` = ${valueWithUnit(ruler.intersections.equilibrium.depth, 'm', 1)}`
+        currentPosition.appendChild(quantity('p', ambientSubscript));
+        currentPosition.append(
+            ` = ${valueWithUnit(ruler.currentAmbient, 'bar', 2)}`
         );
 
         const usesRawMValue =
@@ -1517,6 +1626,23 @@ export class MValueChart {
                 });
             }
         }
+
+        const currentTissuePressures = Object.fromEntries(
+            COMPARTMENTS.map(comp => [
+                comp.id,
+                results.compartments[comp.id].pressures[timeIndex]
+            ])
+        );
+        const controllingState = calculateCurrentControllingCompartment({
+            tissuePressures: currentTissuePressures,
+            gfLow,
+            gfHigh,
+            pAnchor,
+            surfacePressure,
+            pressurePerMeter: results.pressurePerMeter
+        });
+        controllingState.currentDepth = results.depthPoints[timeIndex];
+        this._updateControllingCompartmentIndicator(controllingState);
         
         // For each visible compartment
         COMPARTMENTS.forEach(comp => {
@@ -1652,7 +1778,7 @@ export class MValueChart {
                 order: 1
             });
         });
-        
+
         const config = {
             type: 'scatter',
             data: { datasets },
