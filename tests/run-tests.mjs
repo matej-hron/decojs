@@ -6780,6 +6780,27 @@ describe('pressure page notation follows the glossary', () => {
             'initI18n().then(() => {\n            renderExerciseTables();'
         )).toBe(true);
     });
+
+    test('Czech VENTID-C labels expose the English source words', () => {
+        const cs = JSON.parse(
+            readFileSync(new URL('../locales/cs.json', import.meta.url), 'utf8')
+        );
+        const expected = {
+            v: 'Visual disturbances',
+            e: 'Ear ringing',
+            n: 'Nausea',
+            t: 'Twitching',
+            i: 'Irritability',
+            d: 'Dizziness',
+            c: 'Convulsions'
+        };
+
+        for (const [key, english] of Object.entries(expected)) {
+            expect(cs.oxygenToxicity.symptoms[key]).toContain(
+                `<span lang="en">${english}</span>`
+            );
+        }
+    });
 });
 
 describe('i18n notation - canvas strings must not contain HTML entities', () => {

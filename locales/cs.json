@@ -324,13 +324,13 @@
         "symptoms": {
             "title": "Příznaky toxicity kyslíku na CNS",
             "mnemonic": "Zapamatujte si anglickou mnemotechnickou pomůcku <strong>VENTID-C</strong> (podle anglických názvů příznaků):",
-            "v": "<strong>V</strong> — Poruchy vidění (tunelové vidění)",
-            "e": "<strong>E</strong> — Zvonění v uších (tinnitus)",
-            "n": "<strong>N</strong> — Nevolnost",
-            "t": "<strong>T</strong> — Záškuby (zejména obličejových svalů)",
-            "i": "<strong>I</strong> — Podrážděnost, úzkost",
-            "d": "<strong>D</strong> — Závrať",
-            "c": "<strong>C</strong> — Křeče (nejnebezpečnější)",
+            "v": "<strong>V</strong> — <span lang=\"en\">Visual disturbances</span> — poruchy vidění (tunelové vidění)",
+            "e": "<strong>E</strong> — <span lang=\"en\">Ear ringing</span> — zvonění v uších (tinnitus)",
+            "n": "<strong>N</strong> — <span lang=\"en\">Nausea</span> — nevolnost",
+            "t": "<strong>T</strong> — <span lang=\"en\">Twitching</span> — záškuby (zejména obličejových svalů)",
+            "i": "<strong>I</strong> — <span lang=\"en\">Irritability</span> — podrážděnost, úzkost",
+            "d": "<strong>D</strong> — <span lang=\"en\">Dizziness</span> — závrať",
+            "c": "<strong>C</strong> — <span lang=\"en\">Convulsions</span> — křeče (nejnebezpečnější)",
             "warning": "⚠️ Pokud pocítíte jakýkoli z těchto příznaků, okamžitě signalizujte partnerovi a zahajte výstup. Křeče pod vodou jsou často smrtelné."
         }
     },
