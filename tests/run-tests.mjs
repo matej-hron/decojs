@@ -6739,6 +6739,70 @@ describe('Alveolar pressure notation', () => {
     });
 });
 
+describe('pressure page notation follows the glossary', () => {
+    const pressurePage = readFileSync(
+        new URL('../pressure.html', import.meta.url),
+        'utf8'
+    );
+
+    test('uses registered quantity symbols in formulas', () => {
+        expect(pressurePage.includes('\\Delta p')).toBe(true);
+        expect(pressurePage.includes('\\Delta P')).toBe(false);
+        expect(pressurePage.includes('\\mathrm{depth}')).toBe(false);
+        expect(pressurePage.includes('p_{\\mathrm{atm},0}')).toBe(true);
+        expect(pressurePage.includes('\\text{Consumption}')).toBe(false);
+        expect(pressurePage.includes('\\text{Gas Available}')).toBe(false);
+    });
+
+    test('keeps generated values attached to their units', () => {
+        const moduleScript = pressurePage.match(
+            /<script type="module">([\s\S]*?)<\/script>/
+        )?.[1] ?? '';
+
+        expect(moduleScript.includes('${tank.cylinderVolume}\\u00a0L')).toBe(true);
+        expect(moduleScript.includes('${tank.totalCapacity}\\u00a0L')).toBe(true);
+        expect(moduleScript.includes('${tank.consumed}\\u00a0L')).toBe(true);
+        expect(moduleScript.includes('${ctx.raw}\\u00a0%')).toBe(true);
+        expect(moduleScript.includes('&nbsp;')).toBe(false);
+    });
+
+    test('re-renders dynamic exercise translations after locale changes', () => {
+        expect(pressurePage.includes(
+            "translate(\n                'partialPressureLimits.mod.showAnswer'"
+        )).toBe(true);
+        expect(pressurePage.includes(
+            "translate(\n                'partialPressureLimits.nitrogenLimits.exButModTemplate'"
+        )).toBe(true);
+        expect(pressurePage.includes(
+            "document.addEventListener('languagechange', renderExerciseTables)"
+        )).toBe(true);
+        expect(pressurePage.includes(
+            'initI18n().then(() => {\n            renderExerciseTables();'
+        )).toBe(true);
+    });
+
+    test('Czech VENTID-C labels expose the English source words', () => {
+        const cs = JSON.parse(
+            readFileSync(new URL('../locales/cs.json', import.meta.url), 'utf8')
+        );
+        const expected = {
+            v: 'Visual disturbances',
+            e: 'Ear ringing',
+            n: 'Nausea',
+            t: 'Twitching',
+            i: 'Irritability',
+            d: 'Dizziness',
+            c: 'Convulsions'
+        };
+
+        for (const [key, english] of Object.entries(expected)) {
+            expect(cs.oxygenToxicity.symptoms[key]).toContain(
+                `<span lang="en">${english}</span>`
+            );
+        }
+    });
+});
+
 describe('i18n notation - canvas strings must not contain HTML entities', () => {
     const LOCALES = ['cs', 'en', 'es'];
     const load = (l) => JSON.parse(readFileSync(new URL(`../locales/${l}.json`, import.meta.url), 'utf8'));

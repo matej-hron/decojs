@@ -6,7 +6,7 @@ npm test
 
 Runs `node tests/run-tests.mjs`. No external test framework — `tests/run-tests.mjs` implements `describe`/`test`/`expect` inline (lines 10–140) with matchers `.toBe`, `.toEqual`, `.toBeCloseTo`, `.toBeGreaterThan`, `.toBeLessThan`, `.toHaveProperty`, `.toHaveLength`, `.toBeDefined`. Output is one line per test, then a pass/fail summary.
 
-**536 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
+**540 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
 
 `npm test` is required to pass before every commit per `CLAUDE.md`.
 
@@ -111,6 +111,16 @@ chart's continuous GF-ramp ceiling.
 The coefficient-derivation graph labels $a$, including the upright `bar`
 unit, and dimensionless $b$ directly in the SVG, positioned beside their
 visible curve ends.
+
+The pressure-page notation regressions require glossary-registered quantity
+symbols in formulas (`p`, `h`, `V`, and `Δp`), the explicit initial
+atmospheric-pressure subscript, and non-breaking separators in generated
+volume and percentage values. They also reject language-specific prose used as
+a formula variable. Dynamic MOD and narcosis exercise rows must re-render
+their reveal labels, warning text, and decimal formatting after i18n
+initialization and every language change. The Czech VENTID-C list retains each
+original English symptom name beside its Czech explanation so the initials
+remain meaningful.
 
 The transfilling sandbox regressions require locale-aware runtime formatting,
 the glossary's upright `l` symbol, localized final-pressure subscripts and

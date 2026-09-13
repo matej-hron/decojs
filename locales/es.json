@@ -163,7 +163,7 @@
             "exampleTime": "Tiempo de inmersión: 45 minutos",
             "exampleDepth": "Profundidad media: 15 m → <strong><var>p</var><sub>media</sub> = 1 + 15/10 = 2,5 bar</strong>",
             "showSolution": "Pruébalo primero — haz clic para revelar la solución",
-            "exampleResult": "Este buceador tiene una tasa SAC de <strong>12.8 L/min</strong> — ¡bastante eficiente! Los buceadores recreativos típicos se sitúan entre 12 y 25 L/min según su forma física, experiencia y condiciones.",
+            "exampleResult": "Este buceador tiene una tasa SAC de <strong>12,8 L/min</strong> — ¡bastante eficiente! Los buceadores recreativos típicos se sitúan entre 12 y 25 L/min según su forma física, experiencia y condiciones.",
             "tipsTitle": "Consejos para una medición precisa",
             "tip1": "Usa un ordenador de buceo que registre la profundidad media, o calcúlala a partir de tu perfil",
             "tip2": "Mide en varias inmersiones para obtener una media fiable",
@@ -176,9 +176,9 @@
         "whatsInAir": {
             "title": "¿Qué contiene el aire que respiras?",
             "intro": "El aire que respiramos es una mezcla de gases. Entender su composición es fundamental para el buceo, porque cada gas se comporta de forma distinta bajo presión. Los componentes principales son:",
-            "nitrogen": "<strong>Nitrógeno (N₂)</strong> — 78 % — gas inerte, no interviene en el metabolismo",
-            "oxygen": "<strong>Oxígeno (O₂)</strong> — 21 % — esencial para la vida, pero tóxico a presiones parciales elevadas",
-            "other": "<strong>Otros gases</strong> — 1 % — sobre todo argón (~0,93 %) y CO₂ (~0,04 %), más trazas de neón, helio y metano"
+            "nitrogen": "<strong>Nitrógeno (N₂)</strong> — 78 % — gas inerte, no interviene en el metabolismo",
+            "oxygen": "<strong>Oxígeno (O₂)</strong> — 21 % — esencial para la vida, pero tóxico a presiones parciales elevadas",
+            "other": "<strong>Otros gases</strong> — 1 % — sobre todo argón (~0,93 %) y CO₂ (~0,04 %), más trazas de neón, helio y metano"
         },
         "mixtures": {
             "title": "Mezclas respirables",
@@ -203,7 +203,7 @@
             "ppCalc": "Cálculo de la presión parcial",
             "where": "Donde:",
             "ppx": "presión parcial del gas x (bar)",
-            "fx": "fracción del gas x en la mezcla (decimal; p. ej., 0.21 para 21 %)",
+            "fx": "fracción del gas x en la mezcla (decimal; p. ej., 0,21 para 21 %)",
             "pAmb": "presión ambiente (bar), calculada como 1 + profundidad/10",
             "note": "<em>Nota: esta es la fórmula <strong>operativa</strong> que se usa para la MOD y los límites de gas a lo largo de esta sección.</em>"
         },
@@ -224,7 +224,7 @@
             "physTitle": "Fisiológica (cinética tisular)",
             "physDesc": "Al calcular las presiones parciales alveolares para los modelos de carga tisular, restamos la presión del vapor de agua, porque los pulmones humidifican el aire inspirado:",
             "waterVapourAt": "a 37 °C (temperatura corporal)",
-            "physNote": "Esta reducción de ~6 % aparece en las ecuaciones de Bühlmann para los cálculos de saturación tisular. La necesitaremos en las próximas secciones y la mencionamos aquí por completitud."
+            "physNote": "Esta reducción de ~6 % aparece en las ecuaciones de Bühlmann para los cálculos de saturación tisular. La necesitaremos en las próximas secciones y la mencionamos aquí por completitud."
         }
     },
     "partialPressureLimits": {
@@ -257,7 +257,7 @@
             "exGas": "Gas",
             "exCalc": "Cálculo",
             "showAnswer": "mostrar",
-            "exAir": "Aire (21 % O₂)",
+            "exAir": "Aire (21 % O₂)",
             "exerciseNote": "💡 Fíjate: mayor fracción de O₂ → MOD más somera. Más oxígeno significa que alcanzas antes el límite de toxicidad."
         },
         "nitrogenLimits": {
@@ -313,7 +313,7 @@
             "toggleLabel": "Mostrar detalles",
             "disclaimer": "<em>⚠️ Contenido avanzado. Para el buceo recreativo basta con mantenerse por debajo de 1,4 bar de <var>p</var><sub>O₂</sub>. El seguimiento de CNS/OTU se utiliza sobre todo en buceo técnico con exposiciones prolongadas al oxígeno.</em>",
             "cnsTitle": "Reloj CNS (Sistema Nervioso Central)",
-            "cnsDesc": "El reloj CNS contabiliza tu exposición como porcentaje del tiempo máximo admisible a cada nivel de <var>p</var><sub>O₂</sub>. Al llegar al 100 % has alcanzado el límite recomendado.",
+            "cnsDesc": "El reloj CNS contabiliza tu exposición como porcentaje del tiempo máximo admisible a cada nivel de <var>p</var><sub>O₂</sub>. Al llegar al 100 % has alcanzado el límite recomendado.",
             "thPPO2": "<var>p</var><sub>O₂</sub> (bar)",
             "thNOAAMax": "Tiempo máx. NOAA",
             "thCNSPerMin": "CNS % por minuto",

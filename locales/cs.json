@@ -176,9 +176,9 @@
         "whatsInAir": {
             "title": "Co obsahuje vzduch, který dýcháte?",
             "intro": "Vzduch, který dýcháme, je směsí plynů. Pochopení tohoto složení je pro potápění zásadní, protože každý plyn se pod tlakem chová jinak. Hlavní složky jsou:",
-            "nitrogen": "<strong>Dusík (N₂)</strong> — 78 % — inertní plyn, neúčastní se metabolismu",
-            "oxygen": "<strong>Kyslík (O₂)</strong> — 21 % — nezbytný pro život, ale toxický při vysokých parciálních tlacích",
-            "other": "<strong>Ostatní plyny</strong> — 1 % — hlavně argon (~0,93 %) a CO₂ (~0,04 %), plus stopové množství neonu, helia a metanu"
+            "nitrogen": "<strong>Dusík (N₂)</strong> — 78 % — inertní plyn, neúčastní se metabolismu",
+            "oxygen": "<strong>Kyslík (O₂)</strong> — 21 % — nezbytný pro život, ale toxický při vysokých parciálních tlacích",
+            "other": "<strong>Ostatní plyny</strong> — 1 % — hlavně argon (~0,93 %) a CO₂ (~0,04 %), plus stopové množství neonu, helia a metanu"
         },
         "mixtures": {
             "title": "Dýchací směsi",
@@ -203,7 +203,7 @@
             "ppCalc": "Výpočet parciálního tlaku",
             "where": "Kde:",
             "ppx": "parciální tlak plynu x (bar)",
-            "fx": "podíl plynu x ve směsi (desetinné číslo, např. 0,21 pro 21 %)",
+            "fx": "podíl plynu x ve směsi (desetinné číslo, např. 0,21 pro 21 %)",
             "pAmb": "okolní tlak (bar), vypočítaný jako 1 + hloubka/10",
             "note": "<em>Poznámka: Toto je <strong>operační</strong> vzorec používaný pro MOD a limity plynů v celé této části.</em>"
         },
@@ -257,7 +257,7 @@
             "exGas": "Směs",
             "exCalc": "Výpočet",
             "showAnswer": "ukázat",
-            "exAir": "Vzduch (21 % O₂)",
+            "exAir": "Vzduch (21 % O₂)",
             "exerciseNote": "💡 Všimněte si: vyšší podíl O₂ → menší MOD. Více kyslíku znamená, že limitu toxicity dosáhnete dříve."
         },
         "nitrogenLimits": {
@@ -313,7 +313,7 @@
             "toggleLabel": "Zobrazit podrobnosti",
             "disclaimer": "<em>⚠️ Toto je pokročilý obsah. Pro rekreační potápění stačí dodržovat <var>p</var><sub>O₂</sub> pod 1,4 bar. Sledování CNS/OTU se používá především v technickém potápění s prodlouženými expozicemi kyslíku.</em>",
             "cnsTitle": "CNS (centrální nervový systém) hodiny",
-            "cnsDesc": "CNS hodiny sledují vaši expozici jako procento maximálního povoleného času při dané úrovni <var>p</var><sub>O₂</sub>. Při 100 % jste dosáhli doporučeného limitu.",
+            "cnsDesc": "CNS hodiny sledují vaši expozici jako procento maximálního povoleného času při dané úrovni <var>p</var><sub>O₂</sub>. Při 100 % jste dosáhli doporučeného limitu.",
             "thPPO2": "<var>p</var><sub>O₂</sub> (bar)",
             "thNOAAMax": "Max. čas NOAA",
             "thCNSPerMin": "CNS % za min",
@@ -324,13 +324,13 @@
         "symptoms": {
             "title": "Příznaky toxicity kyslíku na CNS",
             "mnemonic": "Zapamatujte si anglickou mnemotechnickou pomůcku <strong>VENTID-C</strong> (podle anglických názvů příznaků):",
-            "v": "<strong>V</strong> — Poruchy vidění (tunelové vidění)",
-            "e": "<strong>E</strong> — Zvonění v uších (tinnitus)",
-            "n": "<strong>N</strong> — Nevolnost",
-            "t": "<strong>T</strong> — Záškuby (zejména obličejových svalů)",
-            "i": "<strong>I</strong> — Podrážděnost, úzkost",
-            "d": "<strong>D</strong> — Závrať",
-            "c": "<strong>C</strong> — Křeče (nejnebezpečnější)",
+            "v": "<strong>V</strong> — <span lang=\"en\">Visual disturbances</span> — poruchy vidění (tunelové vidění)",
+            "e": "<strong>E</strong> — <span lang=\"en\">Ear ringing</span> — zvonění v uších (tinnitus)",
+            "n": "<strong>N</strong> — <span lang=\"en\">Nausea</span> — nevolnost",
+            "t": "<strong>T</strong> — <span lang=\"en\">Twitching</span> — záškuby (zejména obličejových svalů)",
+            "i": "<strong>I</strong> — <span lang=\"en\">Irritability</span> — podrážděnost, úzkost",
+            "d": "<strong>D</strong> — <span lang=\"en\">Dizziness</span> — závrať",
+            "c": "<strong>C</strong> — <span lang=\"en\">Convulsions</span> — křeče (nejnebezpečnější)",
             "warning": "⚠️ Pokud pocítíte jakýkoli z těchto příznaků, okamžitě signalizujte partnerovi a zahajte výstup. Křeče pod vodou jsou často smrtelné."
         }
     },
