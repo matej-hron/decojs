@@ -102,7 +102,7 @@ export const DECO_MODES = Object.freeze({
     CONTINUOUS: 'continuous'
 });
 
-export const DECISION_AUDIT_VERSION = 1;
+export const DECISION_AUDIT_VERSION = 2;
 
 /** Resolve current and legacy schedule options to a supported mode. */
 export function getDecoMode(options = {}) {
@@ -1091,23 +1091,32 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
     const alignRuntimeDepartures = decoMode === DECO_MODES.STANDARD
         && options.alignRuntimeDepartures === true
         && Number.isFinite(options.runtimeStart);
+    let scheduleRuntime = Number.isFinite(options.runtimeStart)
+        ? options.runtimeStart
+        : null;
     const decisionAudit = options.audit ? {
         version: DECISION_AUDIT_VERSION,
         mode: decoMode,
         startDepth: currentDepth,
+        ...(scheduleRuntime !== null ? { runtimeStart: scheduleRuntime } : {}),
         gfLow,
         gfHigh,
         surfacePressure,
         events: []
     } : null;
     const recordDecision = (type, data) => {
-        if (decisionAudit) decisionAudit.events.push({ type, ...data });
+        if (decisionAudit) {
+            decisionAudit.events.push({
+                type,
+                ...(scheduleRuntime !== null ? { runtime: scheduleRuntime } : {}),
+                ...data
+            });
+        }
     };
 
     const stops = [];
     const gasSwitches = []; // Track gas switches during ascent
     let totalAscentTime = 0;
-    let scheduleRuntime = alignRuntimeDepartures ? options.runtimeStart : null;
     const advanceRuntime = (duration) => {
         if (scheduleRuntime !== null) {
             scheduleRuntime = Math.round((scheduleRuntime + duration) * 10) / 10;

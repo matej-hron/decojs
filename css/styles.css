@@ -2318,7 +2318,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.139";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.140";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -2578,7 +2578,7 @@ footer a {
 
 .decision-audit-list li {
     display: grid;
-    grid-template-columns: 2rem minmax(0, 1fr);
+    grid-template-columns: 2rem minmax(7.5rem, 9rem) 3.5rem minmax(0, 1fr);
     gap: 0.75rem;
     padding: 0.625rem 0.875rem;
     border-bottom: 1px solid var(--border-color);
@@ -2599,6 +2599,34 @@ footer a {
     text-align: right;
 }
 
+.decision-audit-context {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.35;
+}
+
+.decision-audit-context strong {
+    color: var(--text-color);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.decision-audit-text {
+    min-width: 0;
+}
+
+.decision-audit-compartment {
+    color: var(--text-color);
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    text-align: center;
+}
+
 @media (max-width: 600px) {
     #decision-audit-content,
     #decision-audit-dialog-content {
@@ -2610,9 +2638,29 @@ footer a {
     }
 
     .decision-audit-list li {
-        grid-template-columns: 1.5rem minmax(0, 1fr);
+        grid-template-columns: 1.5rem minmax(0, 1fr) 2.75rem;
         gap: 0.5rem;
         padding-inline: 0.625rem;
+    }
+
+    .decision-audit-context {
+        grid-column: 2;
+    }
+
+    .decision-audit-compartment {
+        grid-column: 3;
+        grid-row: 1;
+    }
+
+    .decision-audit-text {
+        grid-column: 2 / 4;
+    }
+
+    .decision-audit-context {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto auto;
+        gap: 0.5rem;
+        align-items: baseline;
     }
 }
 

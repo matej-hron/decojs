@@ -3990,7 +3990,10 @@ describe('Decompression schedule modes', () => {
         });
         expect(audit.version).toBe(DECISION_AUDIT_VERSION);
         expect(audit.anchorDepth).toBe(12);
-        expect(audit.events.some(event => event.type === 'level-decision')).toBe(true);
+        expect(audit.runtimeStart).toBe(13);
+        const levelEvent = audit.events.find(event => event.type === 'level-decision');
+        expect(Boolean(levelEvent)).toBe(true);
+        expect(Number.isFinite(levelEvent.runtime)).toBe(true);
     });
 
     test('returns the audit from the same profile-generation branch', () => {
@@ -4097,14 +4100,28 @@ describe('Decompression schedule modes', () => {
         const audit = generateDecoSchedule(
             loadedTissues(),
             33, air[0].n2, 0.3, 0.8, air,
-            { decoMode: DECO_MODES.STANDARD, audit: true }
+            { decoMode: DECO_MODES.STANDARD, audit: true, runtimeStart: 30 }
         ).decisionAudit;
         const lines = buildDecisionAuditLines(audit);
         expect(lines.some(line => line.type === 'direct-ascent')).toBe(true);
         expect(lines.some(line => line.type === 'anchor-check')).toBe(true);
         expect(lines.some(line => line.type === 'level-decision')).toBe(true);
+        expect(lines[0].context.label).toBe('Bottom time');
+        expect(lines[0].context.time).toBe('30.0 min');
+        expect(lines[0].context.depth).toBe('33.0 m');
+        expect(Boolean(lines[0].compartment)).toBe(true);
+        const stopLine = lines.find(line =>
+            line.type === 'level-decision' && line.context.time?.includes('–')
+        );
+        expect(stopLine.context.label).toBe('Decompression stop');
+        expect(Boolean(stopLine.compartment)).toBe(true);
         const html = renderDecisionAuditHTML(audit);
         expect(html).toContain('decision-audit-list');
+        expect(html).toContain('decision-audit-context');
+        expect(html).toContain('decision-audit-context-time');
+        expect(html).toContain('decision-audit-compartment');
+        expect(html).toContain('Controlling compartment');
+        expect(html).toContain('decision-audit-text');
         expect(html).toContain('diagnostic explanation');
     });
 

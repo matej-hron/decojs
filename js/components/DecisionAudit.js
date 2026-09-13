@@ -12,20 +12,95 @@ function number(value, decimals = 1) {
     return fmtNum(value, decimals);
 }
 
+function buildDecisionContext(event, audit) {
+    let labelKey;
+    let fallbackLabel;
+    let depth;
+    let runtimeStart;
+    let runtimeEnd;
+
+    switch (event.type) {
+        case 'direct-ascent':
+            labelKey = 'contextBottom';
+            fallbackLabel = 'Bottom time';
+            depth = audit.startDepth;
+            runtimeStart = audit.runtimeStart;
+            runtimeEnd = audit.runtimeStart;
+            break;
+        case 'anchor-candidate':
+            labelKey = 'contextAnchorCandidate';
+            fallbackLabel = 'Anchor candidate';
+            depth = event.roundedCeilingDepth;
+            break;
+        case 'anchor-check':
+            labelKey = 'contextAnchorCheck';
+            fallbackLabel = 'Anchor simulation';
+            depth = event.candidateDepth;
+            break;
+        case 'gas-switch':
+            labelKey = 'contextGasSwitch';
+            fallbackLabel = 'Gas switch';
+            depth = event.depth;
+            runtimeStart = event.runtime;
+            runtimeEnd = event.runtime;
+            break;
+        case 'level-decision':
+            depth = event.depth;
+            runtimeEnd = event.runtime;
+            if (event.totalWait > 0) {
+                labelKey = 'contextStop';
+                fallbackLabel = 'Decompression stop';
+                runtimeStart = Number.isFinite(runtimeEnd)
+                    ? Math.round((runtimeEnd - event.totalWait) * 10) / 10
+                    : undefined;
+            } else {
+                labelKey = 'contextTransit';
+                fallbackLabel = 'Level transit';
+                runtimeStart = runtimeEnd;
+            }
+            break;
+        default:
+            return null;
+    }
+
+    const hasTime = Number.isFinite(runtimeStart) && Number.isFinite(runtimeEnd);
+    const time = hasTime
+        ? (Math.abs(runtimeEnd - runtimeStart) > 1e-9
+            ? `${number(runtimeStart)}–${number(runtimeEnd)}\u00a0min`
+            : `${number(runtimeEnd)}\u00a0min`)
+        : null;
+
+    return {
+        label: translate(`decisionAudit.${labelKey}`, fallbackLabel),
+        time,
+        depth: Number.isFinite(depth) ? `${number(depth)}\u00a0m` : null
+    };
+}
+
+function controllingCompartment(event) {
+    if (event.type === 'level-decision') {
+        return event.finalControllingCompartment;
+    }
+    return event.controllingCompartment ?? null;
+}
+
 /**
  * Convert structured scheduler events into localized, human-readable lines.
  *
  * @param {Object|null} audit
- * @returns {Array<{type: string, text: string}>}
+ * @returns {Array<{type: string, text: string, context: Object|null, compartment: string|null}>}
  */
 export function buildDecisionAuditLines(audit) {
     if (!audit?.events) return [];
 
     return audit.events.map(event => {
+        const context = buildDecisionContext(event, audit);
         switch (event.type) {
             case 'direct-ascent':
                 return {
                     type: event.type,
+                    context,
+                    compartment: controllingCompartment(event),
                     text: format(
                         translate(
                             event.decision === 'surface'
@@ -46,6 +121,8 @@ export function buildDecisionAuditLines(audit) {
             case 'anchor-candidate':
                 return {
                     type: event.type,
+                    context,
+                    compartment: controllingCompartment(event),
                     text: format(
                         translate(
                             'decisionAudit.anchorCandidate',
@@ -60,6 +137,8 @@ export function buildDecisionAuditLines(audit) {
             case 'anchor-check':
                 return {
                     type: event.type,
+                    context,
+                    compartment: controllingCompartment(event),
                     text: format(
                         translate(
                             event.decision === 'accept'
@@ -81,6 +160,8 @@ export function buildDecisionAuditLines(audit) {
             case 'gas-switch':
                 return {
                     type: event.type,
+                    context,
+                    compartment: controllingCompartment(event),
                     text: format(
                         translate(
                             event.phase === 'ascent' && event.duration > 0
@@ -100,6 +181,8 @@ export function buildDecisionAuditLines(audit) {
                 if (event.totalWait === 0) {
                     return {
                         type: event.type,
+                        context,
+                        compartment: controllingCompartment(event),
                         text: format(
                             translate(
                                 'decisionAudit.levelTransit',
@@ -118,6 +201,8 @@ export function buildDecisionAuditLines(audit) {
                     event.switchTime === 0) {
                     return {
                         type: event.type,
+                        context,
+                        compartment: controllingCompartment(event),
                         text: format(
                             translate(
                                 'decisionAudit.levelConvention',
@@ -134,6 +219,8 @@ export function buildDecisionAuditLines(audit) {
                 }
                 return {
                     type: event.type,
+                    context,
+                    compartment: controllingCompartment(event),
                     text: format(
                         translate(
                             'decisionAudit.levelWait',
@@ -195,9 +282,31 @@ export function renderDecisionAuditHTML(audit) {
             'This is a diagnostic explanation of this implementation, not an independent safety validation.'
         ))}</p>
         <ol class="decision-audit-list">
-            ${lines.map(line =>
-                `<li class="decision-audit-${line.type}">${escHtml(line.text)}</li>`
-            ).join('')}
+            ${lines.map(line => {
+                const context = line.context
+                    ? `<div class="decision-audit-context">`
+                        + `<strong>${escHtml(line.context.label)}</strong>`
+                        + (line.context.time
+                            ? `<span class="decision-audit-context-time">${escHtml(line.context.time)}</span>`
+                            : '')
+                        + (line.context.depth
+                            ? `<span class="decision-audit-context-depth">${escHtml(line.context.depth)}</span>`
+                            : '')
+                        + `</div>`
+                    : '';
+                const compartmentLabel = translate(
+                    'decisionAudit.contextCompartment',
+                    'Controlling compartment'
+                );
+                const compartment = line.compartment
+                    ? `TC${escHtml(line.compartment)}`
+                    : '—';
+                return `<li class="decision-audit-${line.type}">`
+                    + context
+                    + `<span class="decision-audit-compartment" title="${escHtml(compartmentLabel)}" aria-label="${escHtml(compartmentLabel)}: ${compartment}">${compartment}</span>`
+                    + `<span class="decision-audit-text">${escHtml(line.text)}</span>`
+                    + `</li>`;
+            }).join('')}
         </ol>
     `;
 }

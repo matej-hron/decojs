@@ -99,7 +99,10 @@ discrete stop depth.
 The M-value chart can open the existing decision audit in a modal with its
 Audit control or the `A` shortcut. Pressing `A` again closes it, including when
 focus is inside the modal. Opening and closing the audit preserves both
-fullscreen mode and the selected timeline position.
+fullscreen mode and the selected timeline position. Each audit row separates
+compact phase, runtime, depth, and controlling-compartment columns from the
+longer calculation explanation; hypothetical anchor simulations are labeled
+separately and do not claim a position on the actual runtime.
 
 The coefficient-derivation graph labels $a$, including the upright `bar`
 unit, and dimensionless $b$ directly in the SVG, positioned beside their
@@ -131,7 +134,8 @@ The standard staged-mode gate also checks schedule structure, not only total
 time: every emitted stop is on the 3 m grid and lasts at least one minute.
 Decision-audit regressions additionally prove that enabling the trace leaves
 stops, gas switches, total time, and anchor unchanged; they cover direct-ascent,
-anchor-selection, and per-level events plus the localized text renderer.
+anchor-selection, and per-level events plus runtime/depth context and the
+localized text renderer.
 Across all 19,886 scenarios, the current implementation matches Decotengu's
 exact stop-depth list in 96.1%, the complete depth/time schedule in 82.2%, and
 has a mean absolute total-decompression difference of 0.13 min (maximum 3 min).
