@@ -813,7 +813,6 @@ describe('M-value intersection ruler', () => {
 
         const controlling = calculateCurrentControllingCompartment({
             tissuePressures,
-            currentAmbient: 1.6,
             gfLow: 0.3,
             gfHigh: 0.8,
             pAnchor: 2.2
@@ -825,13 +824,53 @@ describe('M-value intersection ruler', () => {
             tissuePressures: Object.fromEntries(
                 COMPARTMENTS.map(comp => [comp.id, 0.75])
             ),
-            currentAmbient: 5,
             gfLow: 0.3,
             gfHigh: 0.8,
             pAnchor: 2.2
         });
         expect(clear.controllingCompartment).toBe(null);
         expect(clear.ceilingDepth).toBe(0);
+    });
+
+    test('matches the deepest ruler intersection and uses GF High without a ramp', () => {
+        const pressuresAtNineMeters = Object.fromEntries(
+            COMPARTMENTS.map(comp => [comp.id, 0.75])
+        );
+        pressuresAtNineMeters[3] = 2.58;
+        const atNineMeters = calculateCurrentControllingCompartment({
+            tissuePressures: pressuresAtNineMeters,
+            gfLow: 0.6,
+            gfHigh: 0.9,
+            pAnchor: 1.91325
+        });
+        expect(atNineMeters.controllingCompartment).toBe(3);
+        expect(atNineMeters.ceilingDepth).toBeCloseTo(5.099, 3);
+        expect(atNineMeters.gf).toBeCloseTo(0.73004, 5);
+
+        const pressuresAtSixMeters = Object.fromEntries(
+            COMPARTMENTS.map(comp => [comp.id, 0.75])
+        );
+        pressuresAtSixMeters[4] = 2.19;
+        const atSixMeters = calculateCurrentControllingCompartment({
+            tissuePressures: pressuresAtSixMeters,
+            gfLow: 0.6,
+            gfHigh: 0.9,
+            pAnchor: 1.91325
+        });
+        expect(atSixMeters.controllingCompartment).toBe(4);
+        expect(atSixMeters.ceilingDepth).toBeCloseTo(2.762, 3);
+        expect(atSixMeters.gf).toBeCloseTo(0.80793, 5);
+
+        const noRamp = calculateMValueRulerIntersections({
+            tissuePressure: 2.19,
+            compartment: COMPARTMENTS[3],
+            gfLow: 0.6,
+            gfHigh: 0.9,
+            surfacePressure: SURFACE_PRESSURE,
+            pAnchor: SURFACE_PRESSURE
+        });
+        expect(noRamp.gfRamp.gf).toBe(0.9);
+        expect(noRamp.gfRamp.pressure).toBe(noRamp.gfHigh.pressure);
     });
 
     test('marks the controlling selector without changing compartment selection', () => {
@@ -849,14 +888,13 @@ describe('M-value intersection ruler', () => {
 
         MValueChart.prototype._updateControllingCompartmentIndicator.call(
             context,
-            { controllingCompartment: 8, ceilingDepth: 6, gf: 0.6 }
+            { controllingCompartment: 8, ceilingDepth: 6 }
         );
         const labels = context.controlsContainer.querySelectorAll('label');
         expect(labels[0].classList.contains('mvc-controlling-compartment')).toBe(false);
         expect(labels[1].classList.contains('mvc-controlling-compartment')).toBe(true);
         expect(labels[1].getAttribute('aria-current')).toBe('true');
         expect(context.controllingCompartmentStatus.textContent.includes('TC8')).toBe(true);
-        expect(context.controllingCompartmentStatus.textContent.includes('60.0%')).toBe(true);
 
         MValueChart.prototype._updateControllingCompartmentIndicator.call(
             context,

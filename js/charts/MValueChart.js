@@ -72,7 +72,9 @@ export function calculateMValueRulerIntersections({
     const high = intersection(gfHigh);
 
     let rampedGF;
-    if (pAnchor <= surfacePressure || Math.abs(gfHigh - gfLow) < 1e-12) {
+    if (pAnchor <= surfacePressure) {
+        rampedGF = high;
+    } else if (Math.abs(gfHigh - gfLow) < 1e-12) {
         rampedGF = low;
     } else if (low.pressure >= pAnchor) {
         rampedGF = low;
@@ -137,7 +139,6 @@ import {
     getMValue,
     getAdjustedMValue,
     getCompartmentCeiling,
-    getDiveCeiling,
     interpolateGF,
     getSurfacePressure,
     getPressurePerMeter,
@@ -156,33 +157,40 @@ import {
 
 export function calculateCurrentControllingCompartment({
     tissuePressures,
-    currentAmbient,
     gfLow,
     gfHigh,
     pAnchor,
     surfacePressure = SURFACE_PRESSURE,
     pressurePerMeter = PRESSURE_PER_METER
 }) {
-    const gf = interpolateGF(
-        currentAmbient,
-        pAnchor,
-        gfLow,
-        gfHigh,
-        surfacePressure
-    );
-    const ceiling = getDiveCeiling(
-        tissuePressures,
-        gf,
-        surfacePressure,
-        pressurePerMeter
-    );
+    let controllingCompartment = null;
+    let ceiling = surfacePressure;
+    let ceilingDepth = 0;
+    let gf = pAnchor <= surfacePressure ? gfHigh : gfLow;
+
+    for (const compartment of COMPARTMENTS) {
+        const intersection = calculateMValueRulerIntersections({
+            tissuePressure: tissuePressures[compartment.id],
+            compartment,
+            gfLow,
+            gfHigh,
+            surfacePressure,
+            pAnchor,
+            pressurePerMeter
+        }).gfRamp;
+        if (intersection.depth > ceilingDepth + 1e-9) {
+            controllingCompartment = compartment.id;
+            ceiling = intersection.pressure;
+            ceilingDepth = intersection.depth;
+            gf = intersection.gf;
+        }
+    }
+
     return {
-        ...ceiling,
+        ceiling,
+        ceilingDepth,
         gf,
-        controllingCompartment:
-            ceiling.ceilingDepth > 1e-9
-                ? ceiling.controllingCompartment
-                : null
+        controllingCompartment
     };
 }
 
@@ -623,11 +631,10 @@ export class MValueChart {
             statusText = fmt(
                 translate(
                     'chart.mvalue.controllingCompartment',
-                    'Control ceiling at current GF {0}%: {1}\u00a0m · controlling compartment TC{2}'
+                    'Controlling compartment: TC{0} · GF-ramp ceiling {1}\u00a0m'
                 ),
-                fmtNum(state.gf * 100, 1),
-                fmtNum(state.ceilingDepth, ceilingDecimals),
-                controllingId
+                controllingId,
+                fmtNum(state.ceilingDepth, ceilingDecimals)
             );
         }
 
@@ -1650,7 +1657,6 @@ export class MValueChart {
         );
         const controllingState = calculateCurrentControllingCompartment({
             tissuePressures: currentTissuePressures,
-            currentAmbient,
             gfLow,
             gfHigh,
             pAnchor,

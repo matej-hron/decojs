@@ -1112,7 +1112,7 @@
             "rulerRampGFLabel": "GF ramp intersection",
             "rulerCeiling": "ceiling",
             "rulerMValueSuffix": "-value",
-            "controllingCompartment": "Control ceiling at current GF {0}%: {1} m · controlling compartment TC{2}",
+            "controllingCompartment": "Controlling compartment: TC{0} · GF-ramp ceiling {1} m",
             "noControllingCompartment": "No decompression ceiling at this point",
             "initialDepthLabel": "0.0 min @ 0 m"
         },

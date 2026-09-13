@@ -6,7 +6,7 @@ npm test
 
 Runs `node tests/run-tests.mjs`. No external test framework — `tests/run-tests.mjs` implements `describe`/`test`/`expect` inline (lines 10–140) with matchers `.toBe`, `.toEqual`, `.toBeCloseTo`, `.toBeGreaterThan`, `.toBeLessThan`, `.toHaveProperty`, `.toHaveLength`, `.toBeDefined`. Output is one line per test, then a pass/fail summary.
 
-**535 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
+**536 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
 
 `npm test` is required to pass before every commit per `CLAUDE.md`.
 
@@ -83,13 +83,13 @@ that differ from ZH-L16A. Its responsive wrapper must scroll locally without
 causing document-level horizontal overflow.
 
 The reusable M-value chart marks the current controlling compartment only
-when it creates a decompression ceiling at the currently allowed GF. The
-status identifies this value as a control ceiling at the current fixed GF,
-including that GF value, rather than as the continuous-ramp ceiling. The
-selector highlight does not alter which compartments the user selected, and
-the current points retain their standard appearance. When the ceiling is
-clear, the chart explicitly reports that no compartment is currently
-controlling decompression.
+when it creates the deepest intersection with the continuous GF ramp. The
+status and the selected compartment's ruler therefore use the same ceiling
+definition. The selector highlight does not alter which compartments the user
+selected, and the current points retain their standard appearance. When the
+ceiling is clear, the chart explicitly reports that no compartment is
+currently controlling decompression. If no GF ramp is created, the
+intersection uses GF High.
 
 The ruler labels its self-consistent intersection with the continuous GF ramp
 explicitly, distinguishing it from the scheduler's fixed-GF check at the next
