@@ -1342,17 +1342,17 @@
         "levelWait": "V {0} m čekání {1} min: {2} min podle konvence stupňovitého profilu, {3} min podle kontroly stropu a {4} min na změnu směsi. Poté je výstup do {5} m povolen při GF {6} %, stropu {7} m a řídicím kompartmentu {8}."
     },
     "tissueSim": {
-        "alertOk": "Vše v pořádku",
-        "ppO2OxygenToxicity": "<var>p</var><sub>O₂</sub> {0} bar — toxicita kyslíku (deko limit {1})",
-        "ppO2AboveRec": "<var>p</var><sub>O₂</sub> {0} bar — nad rekreační limit {1}",
-        "ppO2Hypoxic": "<var>p</var><sub>O₂</sub> {0} bar — hypoxie (< {1})",
-        "ppN2Narcosis": "<var>p</var><sub>N₂</sub> {0} bar — pravděpodobné hloubkové opojení (> {1})",
+        "alertOk": "Bez upozornění na parciální tlaky: <var>p</var><sub>O₂</sub> je v rozmezí 0,18–1,4 bar a <var>p</var><sub>N₂</sub> nepřekračuje 4,0 bar.",
+        "ppO2OxygenToxicity": "<var>p</var><sub>O₂</sub> {0} bar — toxicita kyslíku (dekompresní limit {1} bar)",
+        "ppO2AboveRec": "<var>p</var><sub>O₂</sub> {0} bar — nad rekreačním limitem {1} bar",
+        "ppO2Hypoxic": "<var>p</var><sub>O₂</sub> {0} bar — hypoxická směs (< {1} bar)",
+        "ppN2Narcosis": "<var>p</var><sub>N₂</sub> {0} bar — pravděpodobné hloubkové opojení (> {1} bar)",
         "chartLabels": {
-            "pAmb": "pAmb (okolní)",
-            "pN2Alveolar": "pN₂ alveolární",
-            "tcFast": "TC1 rychlá (5 min)",
-            "tcMed": "TC5 střední (27 min)",
-            "tcSlow": "TC12 pomalá (239 min)"
+            "pAmb": "Okolní tlak",
+            "pN2Alveolar": "Alveolární pN₂",
+            "tcFast": "TC1 rychlý (poločas 5 min)",
+            "tcMed": "TC5 střední (poločas 27 min)",
+            "tcSlow": "TC12 pomalý (poločas 239 min)"
         },
         "tooltipLabel": "{0}: {1} bar"
     },
@@ -1786,18 +1786,18 @@
         },
         "tissue": {
             "title": "Simulátor sycení tkání",
-            "subtitle": "Pohybujte potápěčem, měňte dýchací směs, nechte plynout čas — a sledujte, jak se parciální tlaky dusíku exponenciálně přibližují k okolnímu tlaku.",
-            "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Fyzikální hřiště ukazující, jak sycení tkání dusíkem reaguje na změny hloubky a dýchací směsi. Nejde o plánovač ponorů.",
+            "subtitle": "Pohybujte potápěčem, měňte dýchanou směs, nechte plynout čas — a sledujte, jak se parciální tlaky dusíku exponenciálně přibližují k okolnímu tlaku.",
+            "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Fyzikální hřiště ukazující, jak sycení tkání dusíkem reaguje na změny hloubky a dýchané směsi. Nejde o plánovač ponorů.",
             "depth": "Hloubka",
             "depthHint": "0–40 m. Změny jsou okamžité.",
-            "gas": "Dýchací směs",
+            "gas": "Dýchaná směs",
             "gases": {
-                "air": "Vzduch (21/79)",
+                "air": "Vzduch (21 % O₂ / 79 % N₂)",
                 "ean32": "EAN32",
                 "ean36": "EAN36",
                 "ean50": "EAN50",
                 "ean80": "EAN80",
-                "o2": "O₂ 100 %"
+                "o2": "100 % O₂"
             },
             "speed": "Rychlost",
             "speedHint": "1× = 1 simulovaná minuta za reálnou sekundu.",
@@ -1810,17 +1810,17 @@
             "keyboardHint": "Klávesnice: ← / → krok, mezerník pro přehrání/pozastavení.",
             "readout": {
                 "depth": "Hloubka",
-                "pAmb": "pAmb",
-                "gas": "Směs",
+                "pAmb": "<var>p</var><sub>okol</sub>",
+                "gas": "Dýchaná směs",
                 "pO2": "<var>p</var><sub>O₂</sub>",
-                "pN2Inspired": "<var>p</var><sub>N₂</sub> vdechovaný",
-                "pN2Alveolar": "<var>p</var><sub>N₂</sub> alveolární",
-                "tcFast": "TC1 • rychlý (5 min)",
-                "tcMed": "TC5 • střední (27 min)",
-                "tcSlow": "TC12 • pomalý (239 min)",
-                "time": "Simulační čas"
+                "pN2Inspired": "Vdechovaný <var>p</var><sub>N₂</sub>",
+                "pN2Alveolar": "Alveolární <var>p</var><sub>N₂</sub>",
+                "tcFast": "TC1 • rychlý • <var>t</var><sub>1/2</sub> = 5 min",
+                "tcMed": "TC5 • střední • <var>t</var><sub>1/2</sub> = 27 min",
+                "tcSlow": "TC12 • pomalý • <var>t</var><sub>1/2</sub> = 239 min",
+                "time": "Čas simulace"
             },
-            "alertOk": "Vše v pořádku",
+            "alertOk": "Bez upozornění na parciální tlaky: <var>p</var><sub>O₂</sub> je v rozmezí 0,18–1,4 bar a <var>p</var><sub>N₂</sub> nepřekračuje 4,0 bar.",
             "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely. Model s jedním inertním plynem (N₂); bez hélia, bez CNS hodin, bez varování na M-hodnoty."
         },
         "transfill": {
@@ -1864,7 +1864,7 @@
         },
         "haldane": {
             "title": "Haldaneova rovnice",
-            "subtitle": "Interaktivní rozbor toho, jak je tkáňový kompartment postupně sycen dusíkem.",
+            "subtitle": "Interaktivní rozbor toho, jak se tlak inertního plynu v tkáňovém kompartmentu mění při sycení a odsycení.",
             "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Interaktivní rozbor Bühlmannovy/Haldaneovy rovnice sycení.",
             "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely. Reálný dekompresní algoritmus používá další logiku.",
             "labels": {
@@ -1884,8 +1884,16 @@
             },
             "simplifiedHint": "přibližně",
             "barToggle": "ovládání",
+            "chartAria": "Tkáňový tlak v čase",
+            "teachingSentence": "<span class=\"word-result\">aktuální tlak</span> = <span class=\"word-start\">počáteční tlak</span> + <span class=\"word-change\">celková změna k rovnováze</span> × <span class=\"word-progress\">dokončená část změny</span>",
+            "symbols": {
+                "tissue": "tk",
+                "tissueInitial": "tk,0",
+                "ambient": "okol",
+                "ambientInitial": "okol,0"
+            },
             "outputs": {
-                "saturation": "Sycení"
+                "saturation": "Průběh sycení"
             },
             "gas": {
                 "air": "Vzduch (<var>f</var><sub>N₂</sub> = 0,79)"
@@ -1897,22 +1905,31 @@
                 "exceeded": "překročeno"
             },
             "cards": {
+                "summary": "Rozbor jednotlivých členů rovnice",
                 "palv": {
-                    "name": "<var>p</var><sub>alv</sub> | alveolární tlak N<sub>2</sub>",
-                    "why": "Co plíce tlačí do krve v cílové hloubce."
+                    "name": "<var>p</var><sub>alv</sub> | rovnovážný alveolární tlak dusíku",
+                    "why": "Tlak, ke kterému se kompartment při zvolené hloubce a směsi postupně přibližuje."
                 },
                 "pt0": {
-                    "name": "<var>p</var><sub>t,0</sub> | tlak ve tkáni v čase t=0",
+                    "name": "<var>p</var><sub>tk,0</sub> | tlak inertního plynu v tkáni v čase <var>t</var> = 0",
                     "why": "Stav, ve kterém kompartment začíná — předpokládá se vyrovnaný s počáteční hloubkou."
                 },
-                "k": {
-                    "name": "k | rychlostní konstanta",
-                    "why": "Rychlejší kompartmenty → větší k → rychleji se přibližují."
+                "change": {
+                    "name": "Δ<var>p</var> = <var>p</var><sub>alv</sub> − <var>p</var><sub>tk,0</sub> | celková změna k rovnováze",
+                    "why": "Při sycení je kladná, při odsycení záporná. Stejný zápis proto funguje v obou směrech."
                 },
-                "exp": {
-                    "name": "e<sup>−kt</sup> | „kolik ještě zbývá“",
-                    "why": "1,0 v čase t=0, klesá k 0. Každý poločas <var>t</var><sub>1/2</sub> ubude polovina."
+                "progress": {
+                    "name": "1 − e<sup>−<var>k</var><var>t</var></sup> | dokončená část změny",
+                    "why": "Na začátku je 0, s časem se blíží k 1. Za každý poločas <var>t</var><sub>1/2</sub> se dokončí polovina toho, co ještě zbývá."
                 }
+            },
+            "limits": {
+                "atZero": "<strong>V čase <var>t</var> = 0</strong>1 − e<sup>0</sup> = 0, proto <var>p</var><sub>tk</sub>(0) = <var>p</var><sub>tk,0</sub>. Tkáň začíná přesně na počátečním tlaku.",
+                "longTime": "<strong>Po dlouhé době</strong>e<sup>−<var>k</var><var>t</var></sup> se blíží k 0, dokončená část změny k 1 a <var>p</var><sub>tk</sub> se asymptoticky blíží k <var>p</var><sub>alv</sub>. Pro účely potápění se při sycení tkáň po šesti poločasech považuje za prakticky plně nasycenou: 1 − e<sup>−<var>k</var> · 6<var>t</var><sub>1/2</sub></sup> ≈ 98,4 %, takže tkáňový tlak překonal 98,4 % počátečního rozdílu do rovnováhy a zbývá 1,6 %."
+            },
+            "canonical": {
+                "summary": "Ekvivalentní odborný zápis",
+                "explanation": "Ustálený tvar sleduje zbývající odchylku od rovnováhy: počáteční odchylka se násobí exponenciálně klesajícím faktorem. Je algebraicky totožný s hlavním výukovým zápisem."
             }
         },
         "schreiner": {

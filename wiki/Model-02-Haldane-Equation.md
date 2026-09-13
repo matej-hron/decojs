@@ -1,67 +1,129 @@
 # Model-02 — Haldane Equation
 
-Applies to **constant-depth segments** (stay at one depth for time $t$). Each compartment's tissue pressure evolves exponentially toward the alveolar inert-gas pressure at that depth.
+Applies to **constant-depth segments** (stay at one depth for time $t$). Each
+compartment's tissue pressure evolves exponentially toward the alveolar inert-gas
+pressure at that depth. The interactive Haldane sandbox presents this first as a
+completed-change model because it is easier to read in both directions:
 
-## Formula as coded
+$$
+p_{\mathrm{t}}(t)
+= p_{\mathrm{t},0}
++ \left(p_{\mathrm{alv}} - p_{\mathrm{t},0}\right)
+  \left(1 - e^{-k t}\right)
+$$
 
-$$P_t(t) = P_{alv} + (P_{t,0} - P_{alv}) \cdot e^{-k t}$$
+In words:
+
+> current pressure = starting pressure + total change toward equilibrium ×
+> completed fraction of the change
+
+The total change $p_{\mathrm{alv}} - p_{\mathrm{t},0}$ is positive during
+on-gassing and negative during off-gassing. The completed fraction
+$1 - e^{-k t}$ starts at 0 and approaches 1, so the same interpretation works
+without changing signs or rules.
+
+## Canonical form as coded
+
+The implementation uses the algebraically equivalent canonical form:
+
+$$
+p_{\mathrm{t}}(t)
+= p_{\mathrm{alv}}
++ \left(p_{\mathrm{t},0} - p_{\mathrm{alv}}\right)e^{-k t}
+$$
 
 ```javascript
-// js/decoModel.js:108-111
+// js/decoModel.js:193-196
 export function haldaneEquation(initialPressure, alveolarPressure, time, halfTime) {
     const k = getRateConstant(halfTime);
     return alveolarPressure + (initialPressure - alveolarPressure) * Math.exp(-k * time);
 }
 ```
 
-Where $k = \ln(2)/T_{1/2}$ (see [Model-01-Compartments](Model-01-Compartments.md#rate-constant)). As $t \to \infty$, $P_t \to P_{alv}$ (full equilibrium). After one half-time, 50% of the remaining gradient has been closed; after two half-times, 75%; after six, ~98.4%.
+The canonical form naturally tracks the remaining deviation from equilibrium:
+
+$$
+p_{\mathrm{t}}(t) - p_{\mathrm{alv}}
+= \left(p_{\mathrm{t},0} - p_{\mathrm{alv}}\right)e^{-k t}
+$$
+
+Where $k = \ln(2)/t_{1/2}$ (see
+[Model-01-Compartments](Model-01-Compartments.md#rate-constant)). At $t = 0$,
+the completed fraction is 0 and $p_{\mathrm{t}}(0) = p_{\mathrm{t},0}$. As
+$t \to \infty$, the exponential term approaches 0, the completed fraction
+approaches 1, and $p_{\mathrm{t}} \to p_{\mathrm{alv}}$. After one half-time,
+50% of the total change has been completed; after two half-times, 75%; after
+six, approximately 98.4%.
 
 ## Alveolar pressure
 
-$P_{alv}$ is not the raw ambient partial pressure of the inert gas — a water-vapor correction is applied at body temperature:
+$p_{\mathrm{alv}}$ is not the raw ambient partial pressure of the inert gas — a
+water-vapor correction is applied at body temperature:
 
-$$P_{alv} = (P_{amb} - P_{H_2O}) \cdot f_{N_2}$$
+$$
+p_{\mathrm{alv}}
+= \left(p_{\mathrm{amb}} - p_{\mathrm{H_2O}}\right)f_{\mathrm{N_2}}
+$$
 
 ```javascript
-// js/decoModel.js:84-86
+// js/decoModel.js:168-170
 export function getAlveolarN2Pressure(ambientPressure, n2Fraction = N2_FRACTION) {
     return (ambientPressure - WATER_VAPOR_PRESSURE) * n2Fraction;
 }
 ```
 
-With $P_{H_2O} = 0.0627$ bar at 37 °C and $f_{N_2} = 0.7902$ for air (see [Decompression-Model](Decompression-Model.md#unit-constants)). On a gas switch, `n2Fraction` changes to the new gas's N₂-equivalent fraction (for trimix, $N_2$ and $He$ fractions are summed as the inert-gas fraction — DecoJS does not track helium kinetics separately).
+With $p_{\mathrm{H_2O}} = 0.0627\ \mathrm{bar}$ at $37\ ^\circ\mathrm{C}$
+and $f_{\mathrm{N_2}} = 0.7902$ for air (see
+[Decompression-Model](Decompression-Model.md#unit-constants)). On a gas switch,
+`n2Fraction` changes to the new gas's N₂-equivalent fraction (for trimix, the
+N₂ and He fractions are summed as the inert-gas fraction — DecoJS does not
+track helium kinetics separately).
 
 ## Worked example
 
-Compartment TC1 (variant C, $T_{1/2} = 5.0$ min), 10 minutes at 20 m on air, starting from surface-equilibrated tissue.
+Compartment TC1 (variant C, $t_{1/2} = 5.0\ \mathrm{min}$), 10 minutes at
+20 m on air, starting from surface-equilibrated tissue.
 
 Rate constant:
-$$k = \frac{\ln 2}{5.0} = 0.13863 \text{ min}^{-1}$$
+$$k = \frac{\ln 2}{5.0} = 0.13863\ \mathrm{min}^{-1}$$
 
 Ambient pressure at 20 m:
-$$P_{amb} = 1.01325 + 20 \cdot 0.1 = 3.01325 \text{ bar}$$
+$$p_{\mathrm{amb}} = 1.01325 + 20 \cdot 0.1 = 3.01325\ \mathrm{bar}$$
 
 Alveolar N₂ at depth:
-$$P_{alv} = (3.01325 - 0.0627) \cdot 0.7902 = 2.3347 \text{ bar}$$
+$$p_{\mathrm{alv}} = (3.01325 - 0.0627) \cdot 0.7902 = 2.3347\ \mathrm{bar}$$
 
 Initial tissue N₂ (surface saturation on air):
-$$P_{t,0} = (1.01325 - 0.0627) \cdot 0.7902 = 0.7510 \text{ bar}$$
+$$p_{\mathrm{t},0} = (1.01325 - 0.0627) \cdot 0.7902 = 0.7510\ \mathrm{bar}$$
 
 Tissue pressure after 10 min (two half-times):
-$$P_t(10) = 2.3347 + (0.7510 - 2.3347) \cdot e^{-0.13863 \cdot 10}$$
-$$= 2.3347 + (-1.5837) \cdot 0.25$$
-$$= 2.3347 - 0.3959 = 1.9388 \text{ bar}$$
+Using the primary teaching form:
 
-Verification: after two half-times the tissue should have closed 75% of the initial $0.7510 \to 2.3347$ gradient (a 1.5837 bar gap). $0.7510 + 0.75 \cdot 1.5837 = 0.7510 + 1.1878 = 1.9388$ bar — matches.
+$$
+p_{\mathrm{t}}(10)
+= 0.7510 + (2.3347 - 0.7510)\left(1 - e^{-0.13863 \cdot 10}\right)
+$$
+$$= 0.7510 + 1.5837 \cdot (1 - 0.25)$$
+$$= 0.7510 + 1.1878 = 1.9388\ \mathrm{bar}$$
+
+Verification with the canonical form gives the same result:
+
+$$
+2.3347 + (0.7510 - 2.3347)e^{-0.13863 \cdot 10}
+= 2.3347 - 1.5837 \cdot 0.25
+= 1.9388\ \mathrm{bar}
+$$
 
 ## Entry point
 
 ```javascript
-// js/decoModel.js:759 (signature)
+// js/decoModel.js:996 (signature)
 export function simulateDepthTime(tissuePressures, depth, time, n2Fraction, surfacePressure = SURFACE_PRESSURE, pressurePerMeter = PRESSURE_PER_METER)
 ```
 
-Iterates over all 16 compartments applying the Haldane equation at constant depth, returning a new `tissues` object. Called from `calculateTissueLoading()` (`js/decoModel.js:1178`) whenever two consecutive waypoints have the same depth.
+Iterates over all 16 compartments applying the Haldane equation at constant depth,
+returning a new `tissues` object. Called from `calculateTissueLoading()`
+(`js/decoModel.js:1645`) whenever two consecutive waypoints have the same depth.
 
 `surfacePressure` defaults to sea level for backward compatibility. Altitude-aware
 callers pass the local absolute atmospheric pressure, which changes the inspired

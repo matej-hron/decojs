@@ -63,11 +63,11 @@ export class TissueSaturationSim {
         this._onLanguageChange = () => {
             const ds = this.chart && this.chart.data && this.chart.data.datasets;
             if (ds) {
-                ds[0].label = translate('tissueSim.chartLabels.pAmb', 'pAmb (ambient)');
-                ds[1].label = translate('tissueSim.chartLabels.pN2Alveolar', 'pN₂ alveolar');
-                ds[2].label = translate('tissueSim.chartLabels.tcFast', 'TC1 fast (5 min)');
-                ds[3].label = translate('tissueSim.chartLabels.tcMed', 'TC5 medium (27 min)');
-                ds[4].label = translate('tissueSim.chartLabels.tcSlow', 'TC12 slow (239 min)');
+                ds[0].label = translate('tissueSim.chartLabels.pAmb', 'Ambient pressure');
+                ds[1].label = translate('tissueSim.chartLabels.pN2Alveolar', 'Alveolar pN₂');
+                ds[2].label = translate('tissueSim.chartLabels.tcFast', 'TC1 fast (half-time 5\u00a0min)');
+                ds[3].label = translate('tissueSim.chartLabels.tcMed', 'TC5 medium (half-time 27\u00a0min)');
+                ds[4].label = translate('tissueSim.chartLabels.tcSlow', 'TC12 slow (half-time 239\u00a0min)');
             }
             if (this.chart && this.chart.options && this.chart.options.scales) {
                 const s = this.chart.options.scales;
@@ -76,6 +76,7 @@ export class TissueSaturationSim {
                 if (s.yDepth && s.yDepth.title) s.yDepth.title.text = translate('chart.axes.depthEquivalent', 'Depth equivalent (m)');
             }
             this._renderAlerts();
+            this._renderNumbers();
             if (this.chart) this.chart.update('none');
         };
         document.addEventListener('languagechange', this._onLanguageChange);
@@ -299,7 +300,8 @@ export class TissueSaturationSim {
 
         this.readouts.depth.textContent = `${fmtNum(depth, 1)}\u00a0m`;
         this.readouts.pAmb.textContent  = `${fmtNum(ambient, 2)}\u00a0bar`;
-        this.readouts.gas.textContent   = gas.name;
+        const selectedGas = this.gasSelect.options[this.gasSelect.selectedIndex];
+        this.readouts.gas.textContent = selectedGas ? selectedGas.textContent : gas.name;
         this.readouts.pO2.textContent   = `${fmtNum(pO2, 2)}\u00a0bar`;
         this.readouts.pN2Insp.textContent = `${fmtNum(pN2Insp, 2)}\u00a0bar`;
         this.readouts.pN2Alv.textContent  = `${fmtNum(pN2Alv, 2)}\u00a0bar`;
@@ -327,27 +329,30 @@ export class TissueSaturationSim {
         if (pO2 > PPO2_DECO_LIMIT) {
             alerts.push({ level: 'critical',
                 html: fmt(translate('tissueSim.ppO2OxygenToxicity',
-                    '<var>p</var><sub>O₂</sub> {0}\u00a0bar — oxygen toxicity (deco limit {1})'),
+                    '<var>p</var><sub>O₂</sub> {0}\u00a0bar — oxygen toxicity (deco limit {1}\u00a0bar)'),
                     fmtNum(pO2, 2), fmtNum(PPO2_DECO_LIMIT, 1)) });
         } else if (pO2 > PPO2_REC_LIMIT) {
             alerts.push({ level: 'warn',
                 html: fmt(translate('tissueSim.ppO2AboveRec',
-                    '<var>p</var><sub>O₂</sub> {0}\u00a0bar — above recreational limit {1}'),
+                    '<var>p</var><sub>O₂</sub> {0}\u00a0bar — above recreational limit {1}\u00a0bar'),
                     fmtNum(pO2, 2), fmtNum(PPO2_REC_LIMIT, 1)) });
         }
         if (pO2 < PPO2_HYPOXIA) {
             alerts.push({ level: 'critical',
                 html: fmt(translate('tissueSim.ppO2Hypoxic',
-                    '<var>p</var><sub>O₂</sub> {0}\u00a0bar — hypoxic (< {1})'),
+                    '<var>p</var><sub>O₂</sub> {0}\u00a0bar — hypoxic (< {1}\u00a0bar)'),
                     fmtNum(pO2, 2), fmtNum(PPO2_HYPOXIA, 2)) });
         }
         if (pN2Insp > PPN2_NARCOSIS) {
             alerts.push({ level: 'warn',
                 html: fmt(translate('tissueSim.ppN2Narcosis',
-                    '<var>p</var><sub>N₂</sub> {0}\u00a0bar — nitrogen narcosis likely (> {1})'),
+                    '<var>p</var><sub>N₂</sub> {0}\u00a0bar — nitrogen narcosis likely (> {1}\u00a0bar)'),
                     fmtNum(pN2Insp, 2), fmtNum(PPN2_NARCOSIS, 1)) });
         }
-        const okText = translate('tissueSim.alertOk', 'All clear');
+        const okText = translate(
+            'tissueSim.alertOk',
+            'No partial-pressure warning: <var>p</var><sub>O₂</sub> is 0.18–1.4\u00a0bar and <var>p</var><sub>N₂</sub> does not exceed 4.0\u00a0bar.'
+        );
         this.alertsEl.innerHTML = alerts.length === 0
             ? `<div class="tsim-alert tsim-alert-ok">${okText}</div>`
             : alerts.map(a => `<div class="tsim-alert tsim-alert-${a.level}">${a.html}</div>`).join('');
@@ -372,14 +377,14 @@ export class TissueSaturationSim {
             data: {
                 datasets: [
                     // pAmb drawn first so fill sits under the other curves.
-                    { label: translate('tissueSim.chartLabels.pAmb', 'pAmb (ambient)'), data: [], borderColor: 'rgba(127,140,141,0.8)',
+                    { label: translate('tissueSim.chartLabels.pAmb', 'Ambient pressure'), data: [], borderColor: 'rgba(127,140,141,0.8)',
                       backgroundColor: 'rgba(127,140,141,0.15)',
                       borderWidth: 2, pointRadius: 0, yAxisID: 'y', fill: true, tension: 0 },
-                    { label: translate('tissueSim.chartLabels.pN2Alveolar', 'pN₂ alveolar'),  data: [], borderColor: '#2c3e50',
+                    { label: translate('tissueSim.chartLabels.pN2Alveolar', 'Alveolar pN₂'),  data: [], borderColor: '#2c3e50',
                       borderDash: [6,4], borderWidth: 1.5, pointRadius: 0, yAxisID: 'y' },
-                    { label: translate('tissueSim.chartLabels.tcFast', 'TC1 fast (5 min)'),     data: [], borderColor: colFast, borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' },
-                    { label: translate('tissueSim.chartLabels.tcMed', 'TC5 medium (27 min)'),  data: [], borderColor: colMed,  borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' },
-                    { label: translate('tissueSim.chartLabels.tcSlow', 'TC12 slow (239 min)'),  data: [], borderColor: colSlow, borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' }
+                    { label: translate('tissueSim.chartLabels.tcFast', 'TC1 fast (half-time 5\u00a0min)'),     data: [], borderColor: colFast, borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' },
+                    { label: translate('tissueSim.chartLabels.tcMed', 'TC5 medium (half-time 27\u00a0min)'),  data: [], borderColor: colMed,  borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' },
+                    { label: translate('tissueSim.chartLabels.tcSlow', 'TC12 slow (half-time 239\u00a0min)'),  data: [], borderColor: colSlow, borderWidth: 2.5, pointRadius: 0, yAxisID: 'y' }
                 ]
             },
             options: {

@@ -1342,17 +1342,17 @@
         "levelWait": "At {0} m wait {1} min: {2} min by the staged-profile convention, {3} min from the ceiling check, and {4} min for a gas switch. Ascent to {5} m is then allowed at GF {6}%, ceiling {7} m, controlling compartment {8}."
     },
     "tissueSim": {
-        "alertOk": "All clear",
-        "ppO2OxygenToxicity": "<var>p</var><sub>O₂</sub> {0} bar — oxygen toxicity (deco limit {1})",
-        "ppO2AboveRec": "<var>p</var><sub>O₂</sub> {0} bar — above recreational limit {1}",
-        "ppO2Hypoxic": "<var>p</var><sub>O₂</sub> {0} bar — hypoxic (< {1})",
-        "ppN2Narcosis": "<var>p</var><sub>N₂</sub> {0} bar — nitrogen narcosis likely (> {1})",
+        "alertOk": "No partial-pressure warning: <var>p</var><sub>O₂</sub> is 0.18–1.4 bar and <var>p</var><sub>N₂</sub> does not exceed 4.0 bar.",
+        "ppO2OxygenToxicity": "<var>p</var><sub>O₂</sub> {0} bar — oxygen toxicity (decompression limit {1} bar)",
+        "ppO2AboveRec": "<var>p</var><sub>O₂</sub> {0} bar — above recreational limit {1} bar",
+        "ppO2Hypoxic": "<var>p</var><sub>O₂</sub> {0} bar — hypoxic mixture (< {1} bar)",
+        "ppN2Narcosis": "<var>p</var><sub>N₂</sub> {0} bar — nitrogen narcosis likely (> {1} bar)",
         "chartLabels": {
-            "pAmb": "pAmb (ambient)",
-            "pN2Alveolar": "pN₂ alveolar",
-            "tcFast": "TC1 fast (5 min)",
-            "tcMed": "TC5 medium (27 min)",
-            "tcSlow": "TC12 slow (239 min)"
+            "pAmb": "Ambient pressure",
+            "pN2Alveolar": "Alveolar pN₂",
+            "tcFast": "TC1 fast (half-time 5 min)",
+            "tcMed": "TC5 medium (half-time 27 min)",
+            "tcSlow": "TC12 slow (half-time 239 min)"
         },
         "tooltipLabel": "{0}: {1} bar"
     },
@@ -1792,12 +1792,12 @@
             "depthHint": "0–40 m. Changes are instantaneous.",
             "gas": "Breathing gas",
             "gases": {
-                "air": "Air (21/79)",
+                "air": "Air (21 % O₂ / 79 % N₂)",
                 "ean32": "EAN32",
                 "ean36": "EAN36",
                 "ean50": "EAN50",
                 "ean80": "EAN80",
-                "o2": "O₂ 100%"
+                "o2": "100 % O₂"
             },
             "speed": "Speed",
             "speedHint": "1× = 1 sim-minute per real second.",
@@ -1810,17 +1810,17 @@
             "keyboardHint": "Keyboard: ← / → to step, Space to play/pause.",
             "readout": {
                 "depth": "Depth",
-                "pAmb": "pAmb",
+                "pAmb": "<var>p</var><sub>amb</sub>",
                 "gas": "Gas",
                 "pO2": "<var>p</var><sub>O₂</sub>",
-                "pN2Inspired": "<var>p</var><sub>N₂</sub> inspired",
-                "pN2Alveolar": "<var>p</var><sub>N₂</sub> alveolar",
-                "tcFast": "TC1 • fast (5 min)",
-                "tcMed": "TC5 • medium (27 min)",
-                "tcSlow": "TC12 • slow (239 min)",
+                "pN2Inspired": "Inspired <var>p</var><sub>N₂</sub>",
+                "pN2Alveolar": "Alveolar <var>p</var><sub>N₂</sub>",
+                "tcFast": "TC1 • fast • <var>t</var><sub>1/2</sub> = 5 min",
+                "tcMed": "TC5 • medium • <var>t</var><sub>1/2</sub> = 27 min",
+                "tcSlow": "TC12 • slow • <var>t</var><sub>1/2</sub> = 239 min",
                 "time": "Sim time"
             },
-            "alertOk": "All clear",
+            "alertOk": "No partial-pressure warning: <var>p</var><sub>O₂</sub> is 0.18–1.4 bar and <var>p</var><sub>N₂</sub> does not exceed 4.0 bar.",
             "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only. Single-inert-gas (N₂) model; no helium, no CNS clock, no M-value warnings."
         },
         "transfill": {
@@ -1884,8 +1884,16 @@
             },
             "simplifiedHint": "napkin formulas",
             "barToggle": "controls",
+            "chartAria": "Tissue pressure over time",
+            "teachingSentence": "<span class=\"word-result\">current pressure</span> = <span class=\"word-start\">starting pressure</span> + <span class=\"word-change\">total change toward equilibrium</span> × <span class=\"word-progress\">completed fraction of the change</span>",
+            "symbols": {
+                "tissue": "t",
+                "tissueInitial": "t,0",
+                "ambient": "amb",
+                "ambientInitial": "amb,0"
+            },
             "outputs": {
-                "saturation": "Saturation"
+                "saturation": "On-gassing progress"
             },
             "gas": {
                 "air": "Air (<var>f</var><sub>N₂</sub> = 0.79)"
@@ -1897,22 +1905,31 @@
                 "exceeded": "exceeded"
             },
             "cards": {
+                "summary": "Equation term breakdown",
                 "palv": {
-                    "name": "<var>p</var><sub>alv</sub> | alveolar N<sub>2</sub> pressure",
-                    "why": "What the lungs are pushing into the blood at target depth."
+                    "name": "<var>p</var><sub>alv</sub> | equilibrium alveolar nitrogen pressure",
+                    "why": "The pressure the compartment gradually approaches at the selected depth and gas."
                 },
                 "pt0": {
-                    "name": "<var>p</var><sub>t,0</sub> | tissue pressure at t=0",
+                    "name": "<var>p</var><sub>t,0</sub> | tissue inert-gas pressure at <var>t</var> = 0",
                     "why": "Where this compartment started, assumed equilibrated at start depth."
                 },
-                "k": {
-                    "name": "k | rate constant",
-                    "why": "Faster compartments → bigger k → catch up sooner."
+                "change": {
+                    "name": "Δ<var>p</var> = <var>p</var><sub>alv</sub> − <var>p</var><sub>t,0</sub> | total change toward equilibrium",
+                    "why": "Positive during on-gassing and negative during off-gassing, so the same form works in both directions."
                 },
-                "exp": {
-                    "name": "e<sup>−kt</sup> | \"fraction left to go\"",
-                    "why": "1.0 at t=0, decays toward 0. Half-gone every <var>t</var><sub>1/2</sub>."
+                "progress": {
+                    "name": "1 − e<sup>−<var>k</var><var>t</var></sup> | completed fraction of the change",
+                    "why": "Zero at the start and approaching one over time. Each half-time <var>t</var><sub>1/2</sub> completes half of what still remains."
                 }
+            },
+            "limits": {
+                "atZero": "<strong>At <var>t</var> = 0</strong>1 − e<sup>0</sup> = 0, so <var>p</var><sub>t</sub>(0) = <var>p</var><sub>t,0</sub>. The tissue starts exactly at its initial pressure.",
+                "longTime": "<strong>After a long time</strong>e<sup>−<var>k</var><var>t</var></sup> approaches 0, the completed fraction approaches 1, and <var>p</var><sub>t</sub> approaches <var>p</var><sub>alv</sub> asymptotically. For diving purposes, an on-gassing tissue is considered practically fully saturated after six half-times: 1 − e<sup>−<var>k</var> · 6<var>t</var><sub>1/2</sub></sup> ≈ 98.4 %, so the tissue pressure has closed 98.4 % of the initial gap to equilibrium, with 1.6 % remaining."
+            },
+            "canonical": {
+                "summary": "Equivalent canonical form",
+                "explanation": "The standard form follows the remaining deviation from equilibrium: the initial deviation is multiplied by an exponentially decreasing factor. It is algebraically identical to the primary teaching form."
             }
         },
         "schreiner": {

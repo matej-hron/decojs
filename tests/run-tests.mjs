@@ -1957,6 +1957,26 @@ describe('decoModel', () => {
             const slow = haldaneEquation(0.74, 3.9, 10, 100);
             expect(fast).toBeGreaterThan(slow);
         });
+
+        test('teaching form is algebraically equivalent during on-gassing and off-gassing', () => {
+            for (const { initial, target, time, halfTime } of [
+                { initial: 0.75, target: 3.12, time: 27, halfTime: 27 },
+                { initial: 3.12, target: 0.75, time: 40, halfTime: 27 }
+            ]) {
+                const k = Math.LN2 / halfTime;
+                const completedFraction = 1 - Math.exp(-k * time);
+                const teaching = initial + (target - initial) * completedFraction;
+                expect(teaching).toBeCloseTo(haldaneEquation(initial, target, time, halfTime), 12);
+            }
+        });
+
+        test('teaching form starts at zero progress and approaches equilibrium', () => {
+            const initial = 0.75;
+            const target = 3.12;
+            expect(1 - Math.exp(0)).toBeCloseTo(0, 12);
+            expect(haldaneEquation(initial, target, 0, 27)).toBeCloseTo(initial, 12);
+            expect(haldaneEquation(initial, target, 27 * 20, 27)).toBeCloseTo(target, 5);
+        });
     });
 
     describe('schreinerEquation', () => {
@@ -5865,6 +5885,75 @@ describe('Repetitive dive planner localization', () => {
             const source = readFileSync(new URL(relative, import.meta.url), 'utf8');
             expect(source.includes("from '../i18n.js'")).toBe(true);
             expect(source.includes('sandbox.repetitive.')).toBe(true);
+        }
+    });
+});
+
+describe('Tissue saturation terminology and notation', () => {
+    const locales = Object.fromEntries(['cs', 'en', 'es'].map(lang => [
+        lang,
+        JSON.parse(readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8'))
+    ]));
+
+    test('uses the requested Czech terminology', () => {
+        expect(locales.cs.sandbox.tissue.gas).toBe('Dýchaná směs');
+        expect(locales.cs.sandbox.tissue.readout.gas).toBe('Dýchaná směs');
+        expect(locales.cs.sandbox.tissue.readout.time).toBe('Čas simulace');
+        expect(locales.cs.tissueSim.alertOk.includes('Vše v pořádku')).toBe(false);
+        expect(locales.cs.tissueSim.alertOk.includes('0,18–1,4\u00a0bar')).toBe(true);
+        expect(locales.cs.tissueSim.alertOk.includes('4,0\u00a0bar')).toBe(true);
+    });
+
+    test('uses glossary symbols for pressure and tissue half-time', () => {
+        expect(locales.cs.sandbox.tissue.readout.pAmb).toBe('<var>p</var><sub>okol</sub>');
+        expect(locales.en.sandbox.tissue.readout.pAmb).toBe('<var>p</var><sub>amb</sub>');
+        for (const locale of Object.values(locales)) {
+            expect(locale.sandbox.tissue.readout.tcFast.includes('<var>t</var><sub>1/2</sub>')).toBe(true);
+            expect(locale.tissueSim.ppO2AboveRec.includes('{1}\u00a0bar')).toBe(true);
+        }
+    });
+});
+
+describe('Haldane sandbox glossary notation', () => {
+    const locales = Object.fromEntries(['cs', 'en', 'es'].map(lang => [
+        lang,
+        JSON.parse(readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8'))
+    ]));
+    const page = readFileSync(new URL('../sandbox/haldane.html', import.meta.url), 'utf8');
+
+    test('localizes descriptive pressure subscripts from the glossary', () => {
+        expect(locales.cs.sandbox.haldane.symbols).toEqual({
+            tissue: 'tk',
+            tissueInitial: 'tk,0',
+            ambient: 'okol',
+            ambientInitial: 'okol,0'
+        });
+        expect(locales.en.sandbox.haldane.symbols.tissue).toBe('t');
+        expect(locales.es.sandbox.haldane.symbols.ambient).toBe('amb');
+    });
+
+    test('uses canonical quantity symbols in static and generated formulas', () => {
+        expect(page.includes('<var>D</var>')).toBe(false);
+        expect(page.includes('<var>h</var><sub>0</sub>')).toBe(true);
+        expect(page.includes('<var>M</var> = <var>a</var>')).toBe(true);
+        expect(page.includes("document.addEventListener('languagechange'")).toBe(true);
+    });
+
+    test('presents the completed-change form first and keeps the canonical form available', () => {
+        expect(page.indexOf('(1 − e<sup>−<var>k</var><var>t</var></sup>)'))
+            .toBeLessThan(page.indexOf('<details class="canonical-form">'));
+        expect(page.includes('sandbox.haldane.teachingSentence')).toBe(true);
+        expect(page.includes('sandbox.haldane.limits.atZero')).toBe(true);
+        expect(page.includes('sandbox.haldane.limits.longTime')).toBe(true);
+        expect(page.includes('sandbox.haldane.canonical.explanation')).toBe(true);
+    });
+
+    test('collapses all equation term cards behind one disclosure by default', () => {
+        expect(page.match(/<details class="term-details">/g)).toHaveLength(1);
+        expect(page.includes('<details class="term-details" open>')).toBe(false);
+        expect(page.match(/<div class="term-card (?:pt0|palv|change|progress)">/g)).toHaveLength(4);
+        for (const locale of Object.values(locales)) {
+            expect(Boolean(locale.sandbox.haldane.cards.summary)).toBe(true);
         }
     });
 });

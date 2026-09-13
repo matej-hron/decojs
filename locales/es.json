@@ -1342,17 +1342,17 @@
         "levelWait": "A {0} m se esperan {1} min: {2} min por la convención del perfil escalonado, {3} min por la comprobación del techo y {4} min por el cambio de gas. Después se permite ascender a {5} m con GF {6}%, techo {7} m y compartimento controlador {8}."
     },
     "tissueSim": {
-        "alertOk": "Todo correcto",
-        "ppO2OxygenToxicity": "<var>p</var><sub>O₂</sub> {0} bar — toxicidad por oxígeno (límite deco {1})",
-        "ppO2AboveRec": "<var>p</var><sub>O₂</sub> {0} bar — por encima del límite recreativo {1}",
-        "ppO2Hypoxic": "<var>p</var><sub>O₂</sub> {0} bar — hipoxia (< {1})",
-        "ppN2Narcosis": "<var>p</var><sub>N₂</sub> {0} bar — narcosis de nitrógeno probable (> {1})",
+        "alertOk": "Sin advertencias de presión parcial: <var>p</var><sub>O₂</sub> está entre 0,18 y 1,4 bar y <var>p</var><sub>N₂</sub> no supera 4,0 bar.",
+        "ppO2OxygenToxicity": "<var>p</var><sub>O₂</sub> {0} bar — toxicidad por oxígeno (límite de descompresión {1} bar)",
+        "ppO2AboveRec": "<var>p</var><sub>O₂</sub> {0} bar — por encima del límite recreativo de {1} bar",
+        "ppO2Hypoxic": "<var>p</var><sub>O₂</sub> {0} bar — mezcla hipóxica (< {1} bar)",
+        "ppN2Narcosis": "<var>p</var><sub>N₂</sub> {0} bar — narcosis de nitrógeno probable (> {1} bar)",
         "chartLabels": {
-            "pAmb": "pAmb (ambiente)",
+            "pAmb": "Presión ambiente",
             "pN2Alveolar": "pN₂ alveolar",
-            "tcFast": "TC1 rápido (5 min)",
-            "tcMed": "TC5 medio (27 min)",
-            "tcSlow": "TC12 lento (239 min)"
+            "tcFast": "TC1 rápido (semiperíodo 5 min)",
+            "tcMed": "TC5 medio (semiperíodo 27 min)",
+            "tcSlow": "TC12 lento (semiperíodo 239 min)"
         },
         "tooltipLabel": "{0}: {1} bar"
     },
@@ -1756,12 +1756,12 @@
             "depthHint": "0–40 m. Los cambios son instantáneos.",
             "gas": "Gas respirable",
             "gases": {
-                "air": "Aire (21/79)",
+                "air": "Aire (21 % O₂ / 79 % N₂)",
                 "ean32": "EAN32",
                 "ean36": "EAN36",
                 "ean50": "EAN50",
                 "ean80": "EAN80",
-                "o2": "O₂ 100 %"
+                "o2": "100 % O₂"
             },
             "speed": "Velocidad",
             "speedHint": "1× = 1 minuto de simulación por segundo real.",
@@ -1774,17 +1774,17 @@
             "keyboardHint": "Teclado: ← / → para avanzar paso a paso, espacio para play/pausa.",
             "readout": {
                 "depth": "Profundidad",
-                "pAmb": "pAmb",
+                "pAmb": "<var>p</var><sub>amb</sub>",
                 "gas": "Gas",
                 "pO2": "<var>p</var><sub>O₂</sub>",
-                "pN2Inspired": "<var>p</var><sub>N₂</sub> inspirada",
+                "pN2Inspired": "<var>p</var><sub>N₂</sub> inspirado",
                 "pN2Alveolar": "<var>p</var><sub>N₂</sub> alveolar",
-                "tcFast": "TC1 • rápido (5 min)",
-                "tcMed": "TC5 • medio (27 min)",
-                "tcSlow": "TC12 • lento (239 min)",
+                "tcFast": "TC1 • rápido • <var>t</var><sub>1/2</sub> = 5 min",
+                "tcMed": "TC5 • medio • <var>t</var><sub>1/2</sub> = 27 min",
+                "tcSlow": "TC12 • lento • <var>t</var><sub>1/2</sub> = 239 min",
                 "time": "Tiempo sim."
             },
-            "alertOk": "Todo en orden",
+            "alertOk": "Sin advertencias de presión parcial: <var>p</var><sub>O₂</sub> está entre 0,18 y 1,4 bar y <var>p</var><sub>N₂</sub> no supera 4,0 bar.",
             "disclaimer": "<strong>Aviso:</strong> Solo con fines educativos. Modelo de un único gas inerte (N₂); sin helio, sin reloj CNS, sin avisos de valor-M."
         },
         "transfill": {
@@ -1848,11 +1848,19 @@
             },
             "simplifiedHint": "aproximadamente",
             "barToggle": "controles",
+            "chartAria": "Presión tisular a lo largo del tiempo",
+            "teachingSentence": "<span class=\"word-result\">presión actual</span> = <span class=\"word-start\">presión inicial</span> + <span class=\"word-change\">cambio total hacia el equilibrio</span> × <span class=\"word-progress\">fracción completada del cambio</span>",
+            "symbols": {
+                "tissue": "t",
+                "tissueInitial": "t,0",
+                "ambient": "amb",
+                "ambientInitial": "amb,0"
+            },
             "outputs": {
-                "saturation": "Saturación"
+                "saturation": "Progreso de saturación"
             },
             "gas": {
-                "air": "Aire (<var>f</var><sub>N₂</sub> = 0.79)"
+                "air": "Aire (<var>f</var><sub>N₂</sub> = 0,79)"
             },
             "mvalue": {
                 "title": "Comprobación del valor M",
@@ -1861,22 +1869,31 @@
                 "exceeded": "excedido"
             },
             "cards": {
+                "summary": "Desglose de los términos de la ecuación",
                 "palv": {
-                    "name": "<var>p</var><sub>alv</sub> | presión alveolar de N<sub>2</sub>",
-                    "why": "Lo que los pulmones empujan a la sangre en la profundidad objetivo."
+                    "name": "<var>p</var><sub>alv</sub> | presión alveolar de nitrógeno en equilibrio",
+                    "why": "La presión a la que se aproxima gradualmente el compartimento con la profundidad y el gas seleccionados."
                 },
                 "pt0": {
-                    "name": "<var>p</var><sub>t,0</sub> | presión tisular en t=0",
+                    "name": "<var>p</var><sub>t,0</sub> | presión del gas inerte en el tejido en <var>t</var> = 0",
                     "why": "Punto de partida del compartimento, supuesto equilibrado a la profundidad inicial."
                 },
-                "k": {
-                    "name": "k | constante de velocidad",
-                    "why": "Compartimentos más rápidos → k mayor → alcanzan antes."
+                "change": {
+                    "name": "Δ<var>p</var> = <var>p</var><sub>alv</sub> − <var>p</var><sub>t,0</sub> | cambio total hacia el equilibrio",
+                    "why": "Es positivo durante la saturación y negativo durante la desaturación, por lo que la misma forma funciona en ambas direcciones."
                 },
-                "exp": {
-                    "name": "e<sup>−kt</sup> | «fracción que falta»",
-                    "why": "1,0 en t=0, decae hacia 0. La mitad desaparece cada <var>t</var><sub>1/2</sub>."
+                "progress": {
+                    "name": "1 − e<sup>−<var>k</var><var>t</var></sup> | fracción completada del cambio",
+                    "why": "Es 0 al inicio y se aproxima a 1 con el tiempo. Cada semiperíodo <var>t</var><sub>1/2</sub> completa la mitad de lo que aún falta."
                 }
+            },
+            "limits": {
+                "atZero": "<strong>En <var>t</var> = 0</strong>1 − e<sup>0</sup> = 0, por lo que <var>p</var><sub>t</sub>(0) = <var>p</var><sub>t,0</sub>. El tejido comienza exactamente en su presión inicial.",
+                "longTime": "<strong>Después de mucho tiempo</strong>e<sup>−<var>k</var><var>t</var></sup> se aproxima a 0, la fracción completada se aproxima a 1 y <var>p</var><sub>t</sub> se aproxima asintóticamente a <var>p</var><sub>alv</sub>. Para fines de buceo, un tejido en saturación se considera prácticamente saturado por completo después de seis semiperíodos: 1 − e<sup>−<var>k</var> · 6<var>t</var><sub>1/2</sub></sup> ≈ 98,4 %, por lo que la presión tisular ha cerrado el 98,4 % de la diferencia inicial hasta el equilibrio y queda un 1,6 %."
+            },
+            "canonical": {
+                "summary": "Forma canónica equivalente",
+                "explanation": "La forma estándar sigue la desviación restante respecto al equilibrio: la desviación inicial se multiplica por un factor que decrece exponencialmente. Es algebraicamente idéntica a la forma didáctica principal."
             }
         },
         "schreiner": {
