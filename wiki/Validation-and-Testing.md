@@ -6,7 +6,7 @@ npm test
 
 Runs `node tests/run-tests.mjs`. No external test framework — `tests/run-tests.mjs` implements `describe`/`test`/`expect` inline (lines 10–140) with matchers `.toBe`, `.toEqual`, `.toBeCloseTo`, `.toBeGreaterThan`, `.toBeLessThan`, `.toHaveProperty`, `.toHaveLength`, `.toBeDefined`. Output is one line per test, then a pass/fail summary.
 
-**538 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
+**539 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
 
 `npm test` is required to pass before every commit per `CLAUDE.md`.
 
@@ -116,7 +116,9 @@ The pressure-page notation regressions require glossary-registered quantity
 symbols in formulas (`p`, `h`, `V`, and `Δp`), the explicit initial
 atmospheric-pressure subscript, and non-breaking separators in generated
 volume and percentage values. They also reject language-specific prose used as
-a formula variable.
+a formula variable. Dynamic MOD and narcosis exercise rows must re-render
+their reveal labels, warning text, and decimal formatting after i18n
+initialization and every language change.
 
 The transfilling sandbox regressions require locale-aware runtime formatting,
 the glossary's upright `l` symbol, localized final-pressure subscripts and

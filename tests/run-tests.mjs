@@ -6765,6 +6765,21 @@ describe('pressure page notation follows the glossary', () => {
         expect(moduleScript.includes('${ctx.raw}\\u00a0%')).toBe(true);
         expect(moduleScript.includes('&nbsp;')).toBe(false);
     });
+
+    test('re-renders dynamic exercise translations after locale changes', () => {
+        expect(pressurePage.includes(
+            "translate(\n                'partialPressureLimits.mod.showAnswer'"
+        )).toBe(true);
+        expect(pressurePage.includes(
+            "translate(\n                'partialPressureLimits.nitrogenLimits.exButModTemplate'"
+        )).toBe(true);
+        expect(pressurePage.includes(
+            "document.addEventListener('languagechange', renderExerciseTables)"
+        )).toBe(true);
+        expect(pressurePage.includes(
+            'initI18n().then(() => {\n            renderExerciseTables();'
+        )).toBe(true);
+    });
 });
 
 describe('i18n notation - canvas strings must not contain HTML entities', () => {
