@@ -959,7 +959,7 @@
         },
         "cylinder": "Lahev",
         "fillPressure": "Plnicí tlak (bar)",
-        "cylinderVolume": "Objem lahve (L)",
+        "cylinderVolume": "Objem lahve (l)",
         "temperature": "Teplota",
         "initialTemp": "Počáteční teplota <var>T</var><sub>1</sub> (°C)",
         "finalTemp": "Konečná teplota <var>T</var><sub>2</sub> (°C)",
@@ -973,6 +973,7 @@
         "diveTimeChange": "Změna času ponoru ve 20 m",
         "diveTimeSub": "Spotřeba vzduchu na hladině (SAC) 20 l/min při 3 bar (1+20/10)",
         "safety": {
+            "initial": "Maximální provozní tlak lahve: {0} bar.",
             "withinWorking": "Tlak nepřekračuje maximální provozní tlak lahve ({0} bar).",
             "aboveWorking": "Překročen maximální provozní tlak lahve {0} bar. Aktuální tlak: {1} bar.",
             "danger": "NEBEZPEČÍ! Aktuální tlak {0} bar překračuje zkušební tlak lahve {1} bar."
@@ -989,8 +990,17 @@
         "whyText2": "<strong>Praktický tip:</strong> Kompresory při plnění generují značné teplo — plyn v čerstvě naplněné lahvi může mít o 40–50 °C více než okolí. Pokud naplníte lahev na 200 bar v teplé plnírně a ponoříte se do studeného jezera, nedivte se, že na manometru uvidíte jen asi 180 bar. To není únik — to je fyzika.",
         "whyRuleOfThumb": "<strong>Orientační pravidlo:</strong> ~0,6 bar změna na 1 °C při pracovním tlaku 200 bar.",
         "formulaTitle": "Gay-Lussacův zákon (izochorický děj)",
-        "formulaNote": "poměr tlaku a teploty je konstantní při konstantním objemu (T v Kelvinech)",
+        "formulaNote": "poměr tlaku a teploty je při konstantním objemu stálý (<var>T</var> v kelvinech)",
         "formulaRearranged": "Přeuspořádáno:",
+        "modelLimitations": {
+            "summary": "Poznámka k přesnosti a omezením modelu",
+            "intro": "Toto pískoviště záměrně používá jednoduchý model ideálního plynu, aby názorně ukázalo vliv teploty na tlak.",
+            "pressureReference": "<strong>Vztažný tlak:</strong> Gay-Lussacův zákon přesně používá absolutní tlak, zatímco manometr lahve ukazuje přetlak vůči atmosféře. Přímé použití údaje manometru je při vysokém tlaku malou aproximací.",
+            "realGas": "<strong>Reálný plyn:</strong> Při vysokých tlacích v lahvi se vzduch ani nitrox nechovají jako ideální plyn. Jejich stlačitelnost závisí na tlaku, teplotě a složení a může výsledek ovlivnit více než aproximace vztažného tlaku.",
+            "thermalState": "<strong>Teplota:</strong> Výpočet předpokládá stejnou teplotu v celém objemu plynu a tepelnou rovnováhu. Čerstvě naplněná nebo rychle ohřívaná lahev může mít výrazné teplotní gradienty.",
+            "cylinderAndGauge": "<strong>Lahev a manometr:</strong> Vnitřní objem lahve se s tlakem a teplotou nepatrně mění a samotný manometr má omezenou přesnost.",
+            "fire": "<strong>Scénář požáru:</strong> Vysoká teplota zároveň snižuje pevnost ocelových i hliníkových lahví. Toto pískoviště modeluje pouze idealizovanou změnu tlaku; neposuzuje celistvost ani bezpečnost lahve při požáru."
+        },
         "scenarioLabels": {
             "warmShop": "Teplá plnírna do studeného jezera",
             "sunDeck": "Slunce na palubě",
@@ -1858,14 +1868,32 @@
                 "cylinderB": "Lahev B"
             },
             "resultTitle": "Vyrovnání dokončeno",
+            "surfaceVolumeValue": "{value} l při 1 bar",
+            "resultDetail": "Hladinový objem plynu při 1 bar: {value}. Zjednodušený model předpokládá stejnou teplotu.",
+            "finalSubscript": "konec",
             "formulaTitle": "Boyleův zákon",
             "formula": "<var>p</var><sub>konec</sub> = (<var>p</var><sub>A</sub> × <var>V</var><sub>A</sub> + <var>p</var><sub>B</sub> × <var>V</var><sub>B</sub>) / (<var>V</var><sub>A</sub> + <var>V</var><sub>B</sub>)",
             "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely. Založeno na předpokladech ideálního plynového zákona."
         },
+        "equationComparison": {
+            "title": "Dva cíle, dvě rovnice",
+            "haldane": {
+                "title": "Haldane — pevný cíl",
+                "step": "V čase <var>t</var> = 0 se alveolární tlak nastaví na novou hodnotu.",
+                "constant": "Potom zůstává konstantní.",
+                "tissue": "Tkáň se k němu exponenciálně přibližuje."
+            },
+            "schreiner": {
+                "title": "Schreiner — pohybující se cíl",
+                "linear": "Alveolární tlak během změny hloubky lineárně roste nebo klesá.",
+                "lag": "Tkáň průběžně reaguje na okamžitý rozdíl tlaků.",
+                "direction": "Samotný směr pohybu neurčuje, zda se tkáň právě sytí, nebo odsycuje."
+            }
+        },
         "haldane": {
             "title": "Haldaneova rovnice",
             "subtitle": "Interaktivní rozbor toho, jak se tlak inertního plynu v tkáňovém kompartmentu mění při sycení a odsycení.",
-            "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Interaktivní rozbor Bühlmannovy/Haldaneovy rovnice sycení.",
+            "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Interaktivní rozbor Bühlmannovy/Haldaneovy rovnice sycení a odsycení.",
             "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely. Reálný dekompresní algoritmus používá další logiku.",
             "labels": {
                 "startDepth": "Počáteční hloubka (m)",
@@ -1885,6 +1913,17 @@
             "simplifiedHint": "přibližně",
             "barToggle": "ovládání",
             "chartAria": "Tkáňový tlak v čase",
+            "mental": {
+                "title": "Situace: cíl se jednou změní a potom zůstává pevný",
+                "intro": "Alveolární cílový tlak je během celého modelovaného úseku konstantní. Tkáňový tlak jej podle svého poločasu plynule dohání.",
+                "chartAria": "Pevný alveolární cíl a odezva tkáňového tlaku",
+                "newTarget": "nový konstantní alveolární cíl",
+                "tissueLine": "tkáňový tlak cíl dohání",
+                "oldTarget": "původní alveolární tlak",
+                "timeAxis": "čas",
+                "pressureAxis": "tlak",
+                "note": "<strong>Svislý skok je idealizace vstupu rovnice.</strong> Nejde o fyzický průběh sestupu ani výstupu; změnu hloubky probíhající v čase modeluje Schreinerova rovnice."
+            },
             "teachingSentence": "<span class=\"word-result\">aktuální tlak</span> = <span class=\"word-start\">počáteční tlak</span> + <span class=\"word-change\">celková změna k rovnováze</span> × <span class=\"word-progress\">dokončená část změny</span>",
             "symbols": {
                 "tissue": "tk",
@@ -1934,7 +1973,7 @@
         },
         "schreiner": {
             "title": "Schreinerova rovnice",
-            "subtitle": "Rozšíření Haldaneovy rovnice o lineární změnu tlaku — sledujte, jak se chování rovnice mění, když se okolní tlak posouvá.",
+            "subtitle": "Interaktivní rozbor toho, jak tkáňový tlak sleduje lineárně se měnící alveolární tlak při sestupu a výstupu.",
             "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Interaktivní rozbor Schreinerovy rovnice pro lineární změny okolního tlaku.",
             "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely. Reálný dekompresní algoritmus používá další logiku.",
             "labels": {
@@ -1954,71 +1993,176 @@
                 "compartmentShort": "TC",
                 "modelShort": "Model",
                 "timeShort": "Čas",
-                "simplifiedShort": "Zjednodušeně"
+                "simplifiedShort": "Přibližné konstanty",
+                "initialStateShort": "Počáteční tkáň"
             },
             "gas": {
                 "air": "Vzduch (<var>f</var><sub>N₂</sub> = 0,79)"
             },
-            "simplifiedHint": "přibližně",
+            "simplifiedHint": "1 bar, bez vodní páry, <var>f</var><sub>N₂</sub> = 0,79",
             "barToggle": "ovládání",
+            "symbols": {
+                "tissue": "tk",
+                "tissueInitial": "tk,0",
+                "ambient": "okol"
+            },
             "outputs": {
-                "saturation": "Sycení",
                 "depth": "Hloubka"
             },
+            "initialStates": {
+                "surface": "vyrovnaná na hladině",
+                "start": "vyrovnaná v počáteční hloubce",
+                "deeper": "vyrovnaná o 5 m hlouběji"
+            },
+            "mental": {
+                "title": "Situace: rovnovážný cíl se pohybuje",
+                "intro": "Během sestupu nebo výstupu se alveolární tlak inertního plynu mění lineárně a tlak v tkáni na tuto změnu reaguje postupně podle poločasu kompartmentu.",
+                "simpleExplanation": "<strong>Začněte počátečním tlakem tkáně.</strong> V základním rovnovážném příkladu je počáteční Haldaneův příspěvek nulový, takže se přidává pouze reakce na pohybující se alveolární cíl.",
+                "initialStateNote": "Zvolený počáteční stav představuje stav, který by v úplném profilu přišel z předchozího úseku ponoru; tato stránka jej pouze modelově vytváří ze zvolené rovnovážné předvolby.",
+                "rateNote": "<var>R</var> je rychlost změny alveolárního tlaku v bar/min, nikoli rychlost změny hloubky v m/min zadaná v ovládání."
+            },
+            "exchange": {
+                "onGassing": "sycení",
+                "offGassing": "odsycení",
+                "equilibrium": "rovnováha"
+            },
+            "chart": {
+                "title": "Alveolární tlak, tlak v tkáni a jejich okamžitý rozdíl",
+                "explanation": "Obě křivky používají stejné skutečné měřítko tlaku. Zelená úsečka ukazuje okamžitý rozdíl, který řídí odezvu tkáně.",
+                "alveolar": "alveolární tlak",
+                "tissue": "skutečný tlak v tkáni",
+                "timeAxis": "čas",
+                "pressureAxis": "tlak",
+                "directionDescent": "↓ sestup: cíl roste",
+                "directionAscent": "↑ výstup: cíl klesá",
+                "directionConstant": "konstantní hloubka: alveolární tlak je stálý"
+            },
+            "composition": {
+                "title": "Základní příklad: počáteční tlak a reakce na pohybující se cíl",
+                "intro": "Sestup začíná na hladině s vyrovnaným tlakem tkáně a alveolárním tlakem. Příspěvek počátečního rozdílu je proto nulový.",
+                "currentValue": "Aktuální hodnota",
+                "initial": {
+                    "title": "1. Počáteční tlak tkáně",
+                    "short": "počáteční stav",
+                    "explanation": "Tlak inertního plynu, se kterým tkáň vstupuje do tohoto úseku ponoru."
+                },
+                "equilibrium": {
+                    "title": "Základní příklad začíná v rovnováze",
+                    "explanation": "<var>p</var><sub>alv,0</sub> = <var>p</var><sub>tk,0</sub>, proto jsou počáteční rozdíl tlaků i jeho Haldaneův příspěvek nulové."
+                },
+                "haldane": {
+                    "title": "2. Haldaneův příspěvek z počátečního rozdílu tlaků",
+                    "short": "Haldaneův příspěvek",
+                    "explanation": "Změna, která by vznikla, kdyby alveolární tlak zůstal po celý úsek na své počáteční hodnotě.",
+                    "initialDifference": "Počáteční rozdíl",
+                    "completedFraction": "Dokončená část změny",
+                    "contribution": "Haldaneův příspěvek",
+                    "bridgeTitle": "Přímé propojení s Haldaneovou rovnicí",
+                    "bridgeExplanation": "Toto je výukový tvar Haldaneovy rovnice pro pevný počáteční alveolární cíl."
+                },
+                "moving": {
+                    "title": "2. Reakce na pohybující se cíl",
+                    "short": "korekce za pohyb cíle",
+                    "explanation": "Alveolární tlak nezůstává na počáteční hodnotě. Tento člen přidává vliv jeho průběžného lineárního pohybu.",
+                    "smallChanges": "Pohybující se cíl si představte jako mnoho malých změn tlaku. Na každou tkáň reaguje stejným exponenciálním způsobem jako v Haldaneově rovnici; jejich součet tvoří tuto korekci.",
+                    "contribution": "Korekce za pohyb cíle",
+                    "zeroNote": "Pro <var>R</var> = 0 je tento příspěvek přesně nulový. Jde o podepsaný příspěvek ke změně tkáně, nikoli o samostatný tlak nebo limit."
+                },
+                "sum": {
+                    "title": "Výsledný tlak v tkáni",
+                    "haldaneLabel": "Haldaneův příspěvek",
+                    "movingLabel": "korekce za pohyb cíle",
+                    "explanation": "Zobrazený výsledek počítá existující implementace Schreinerovy rovnice; tři výukové příspěvky dávají stejnou hodnotu."
+                }
+            },
+            "general": {
+                "summary": "Obecný případ: tkáň nemusí začínat v rovnováze",
+                "explanation": "V úplném ponorovém profilu nemusí tlak tkáně na začátku dalšího úseku odpovídat aktuálnímu alveolárnímu tlaku. Obecný výukový tvar proto obsahuje také Haldaneův příspěvek počátečního rozdílu."
+            },
+            "derivation": {
+                "summary": "Jak z výukového tvaru vznikne kanonický zápis",
+                "intro": "Rozevřete obě závorky, zrušte stejné členy s opačnými znaménky a seskupte zbývající exponenciální členy.",
+                "teaching": "Výukový tvar",
+                "expanded": "Rozevření závorek",
+                "cancellation": "Členy +<var>p</var><sub>tk,0</sub> a −<var>p</var><sub>tk,0</sub> se navzájem zruší.",
+                "grouped": "Seskupení členů",
+                "canonical": "Kanonický zápis"
+            },
+            "mathOrigin": {
+                "summary": "Proč má korekce právě tento tvar?",
+                "explanation": "Lineární změnu alveolárního tlaku lze rozdělit na mnoho velmi malých změn. Každá nastane v jiném čase, a proto má na ovlivnění tkáně jinak dlouhou dobu. Součet těchto exponenciálních reakcí vytvoří korekci za pohyb cíle.",
+                "equationIntro": "Pro čtenáře se znalostí diferenciálního počtu řeší Haldaneova i Schreinerova rovnice stejný diferenciální zákon:"
+            },
+            "canonical": {
+                "explanation": "Tento uzavřený zápis vypočítá přesný výsledek průběžné reakce tkáně bez nutnosti dělit sestup nebo výstup na mnoho malých časových kroků."
+            },
             "mvalue": {
+                "summary": "Souvislost s dekompresním limitem",
                 "title": "Kontrola M-hodnoty",
                 "within": "v limitu",
                 "exceeded": "překročeno"
             },
             "cards": {
+                "summary": "Slovníček symbolů",
                 "palv0": {
                     "name": "<var>p</var><sub>alv,0</sub> | alveolární tlak N<sub>2</sub> v počáteční hloubce",
                     "why": "Počáteční alveolární tlak. Bod nulového sklonu pohyblivého alveolárního zdroje."
                 },
                 "pt0": {
-                    "name": "<var>p</var><sub>t,0</sub> | tlak ve tkáni v čase t=0",
-                    "why": "Tkáň se předpokládá vyrovnaná s počáteční hloubkou → rovná se <var>p</var><sub>alv,0</sub>."
+                    "name": "<var>p</var><sub>t,0</sub> | tlak v tkáni v čase <var>t</var> = 0",
+                    "why": "Zvolený modelový stav představuje tlak tkáně, který by úplný profil předal z předchozího úseku; nemusí se rovnat <var>p</var><sub>alv,0</sub>."
+                },
+                "palv": {
+                    "name": "<var>p</var><sub>alv</sub>(<var>t</var>) | aktuální alveolární tlak",
+                    "why": "Aktuální tlak inertního plynu, který řídí výměnu s tkání."
+                },
+                "pt": {
+                    "name": "<var>p</var><sub>tk</sub>(<var>t</var>) | aktuální tlak v tkáni",
+                    "why": "Aktuální tlak inertního plynu ve zvoleném kompartmentu."
+                },
+                "haldaneContribution": {
+                    "name": "Haldaneův příspěvek",
+                    "why": "Podepsaná změna tlaku tkáně pro pevný počáteční alveolární cíl."
+                },
+                "movingContribution": {
+                    "name": "Korekce za pohyb cíle",
+                    "why": "Podepsaný příspěvek způsobený pohybem alveolárního cíle během úseku."
                 },
                 "r": {
-                    "name": "R | rychlost změny alveolárního tlaku",
-                    "why": "Kladná = sestup (alveolární tlak roste), záporná = výstup. R = 0 → rovnice se redukuje na Haldaneovu."
+                    "name": "<var>R</var> | rychlost změny alveolárního tlaku",
+                    "why": "Kladná při sestupu, záporná při výstupu a nulová v konstantní hloubce. Jednotkou je bar/min."
                 },
                 "k": {
-                    "name": "k | rychlostní konstanta",
-                    "why": "Rychlejší kompartmenty → větší k → rychleji se přibližují."
+                    "name": "<var>k</var> | rychlostní konstanta",
+                    "why": "Rychlejší kompartmenty mají větší rychlostní konstantu a cíl následují rychleji."
+                },
+                "halfTime": {
+                    "name": "<var>t</var><sub>1/2</sub> | poločas kompartmentu",
+                    "why": "Kratší poločas znamená větší rychlostní konstantu a rychlejší odezvu."
                 },
                 "exp": {
-                    "name": "e<sup>−kt</sup> | faktor exponenciálního poklesu",
-                    "why": "1,0 v čase t=0, klesá k 0. Násobí počáteční odchylku od rovnováhy."
-                }
-            },
-            "decomp": {
-                "moving": {
-                    "name": "Pohyblivý alveolární zdroj",
-                    "why": "Kde se právě nachází alveolární zdroj (lineární v čase t)."
-                },
-                "lag": {
-                    "name": "Fázové zpoždění (R/k)",
-                    "why": "Jak hluboko pod (výstup) nebo nad (sestup) zdrojem by se ustálila dokonale sledující tkáň. Odpovídá 1/k minutám sklonu."
-                },
-                "decay": {
-                    "name": "Mizející počáteční rozdíl",
-                    "why": "Počáteční odchylka mezi skutečným <var>p</var><sub>t</sub> a sledovací přímkou — exponenciálně se blíží k nule."
+                    "name": "e<sup>−<var>k</var><var>t</var></sup> | faktor exponenciálního poklesu",
+                    "why": "Začíná na 1 a klesá k 0; nejde o procento nasycení tkáně."
                 }
             }
         },
         "mvalues": {
-            "title": "M-hodnoty",
+            "title": "<var>M</var>-hodnoty",
             "subtitle": "Jak funkce vzniká a jak vypadá pro všech 16 kompartmentů.",
+            "symbols": {
+                "ambient": "okol"
+            },
             "barToggle": "ovládání",
-            "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Interaktivní rozbor Bühlmannova vzorce pro M-hodnotu a původu jeho koeficientů.",
+            "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Interaktivní rozbor Bühlmannova vzorce pro <var>M</var>-hodnotu a původu jeho koeficientů.",
             "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely. Reálný dekompresní algoritmus používá další logiku.",
             "top": {
-                "heading": "Jak M vypadá v této hloubce?",
-                "anchor": "Vyberte hloubku, kompartment a variantu — sledujte, jak se Bühlmannova M-hodnota mění.",
+                "heading": "Jak se <var>M</var>-hodnota mění s okolním tlakem?",
+                "anchor": "Vyberte kompartment a variantu a pohybujte okolním tlakem. Bod ukazuje aktuální <var>M</var>-hodnotu na zvolené <var>M</var>-čáře.",
+                "cardsToggle": "Veličiny ve vzorci a aktuální hodnoty",
                 "inputs": {
-                    "depth": "Hloubka (m)",
-                    "depthShort": "Hloubka (m)",
+                    "ambientPressure": "Okolní tlak <var>p</var><sub>okol</sub> (bar)",
+                    "ambientPressureShort": "<var>p</var><sub>okol</sub> (bar)",
+                    "derivedDepth": "Odvozená hloubka",
                     "compartment": "TC",
                     "viewToggle": {
                         "label": "Zobrazení",
@@ -2028,36 +2172,58 @@
                 },
                 "cards": {
                     "a": {
-                        "name": "a | úsek tkáně na ose y",
+                        "name": "<var>a</var> | úsek <var>M</var>-čáry na ose <var>y</var>",
                         "formula": "vyhledá se podle kompartmentu a varianty",
-                        "why": "Úsek M-čáry na ose y. Vyšší = více tolerovaného přesycení na hladině."
+                        "why": "Úsek <var>M</var>-čáry na ose <var>y</var>. Vyšší hodnota znamená více tolerovaného přesycení na hladině."
                     },
                     "pAmb": {
-                        "name": "<var>p</var><sub>amb</sub> | okolní tlak",
-                        "why": "Hodnota na vodorovné ose M-grafu. Každý metr hloubky přidá 0,1 bar."
+                        "name": "<var>p</var><sub>okol</sub> | okolní tlak",
+                        "why": "Poloha na vodorovné ose <var>M</var>-grafu. Hloubka se z okolního tlaku pouze odvozuje."
                     },
                     "b": {
-                        "name": "b | sklon tkáně",
-                        "formula": "vyhledá se podle kompartmentu (sklon = 1/b)",
-                        "why": "Nižší b → strmější M-čára → větší tolerované přesycení s rostoucí hloubkou."
+                        "name": "<var>b</var> | koeficient sklonu <var>M</var>-čáry",
+                        "formula": "vyhledá se podle kompartmentu (sklon = 1/<var>b</var>)",
+                        "why": "Nižší <var>b</var> → strmější <var>M</var>-čára → větší tolerované přesycení s rostoucí hloubkou."
                     },
                     "m": {
-                        "name": "M | tolerovaný tlak v tkáni",
+                        "name": "<var>M</var> | tolerovaný tlak v tkáni",
                         "why": "Nad touto hodnotou algoritmus označí přesycení za nebezpečné."
                     }
                 },
                 "chart": {
-                    "xAxis": "p_amb (bar)",
-                    "yAxis": "p_t (bar)",
-                    "legendAmbient": "Přímka okolního tlaku (y = x)",
-                    "legendSurface": "Hladina (p_amb = 1,013 bar)"
+                    "xAxis": "<var>p</var><sub>okol</sub> (bar)",
+                    "yAxis": "<var>M</var> (bar)",
+                    "legendSurface": "Hladina (<var>p</var><sub>okol</sub> = 1,013 bar)"
                 },
                 "legend": {
-                    "variantA": "ZH-L16A (dlouhá čárka)",
-                    "variantB": "ZH-L16B (krátká čárka)",
-                    "variantC": "ZH-L16C (plná)",
-                    "ambient": "Přímka okolního tlaku (y = x)",
-                    "surface": "Hladina (p_amb = 1,013 bar)"
+                    "selectedLine": "Zvolená <var>M</var>-čára:",
+                    "currentPoint": "Aktuální okolní tlak a odpovídající <var>M</var>-hodnota",
+                    "surface": "Hladina (<var>p</var><sub>okol</sub> = 1,013 bar)"
+                },
+                "detail": {
+                    "heading": "Zvětšený rozdíl <var>M</var>-hodnot",
+                    "note": "Toto místní měřítko rozdíly zvětšuje; hlavní graf zachovává skutečné tlakové měřítko.",
+                    "relativeToC": "oproti C",
+                    "reference": "referenční hodnota"
+                },
+                "coefficients": {
+                    "heading": "Koeficienty všech kompartmentů",
+                    "notice": "Kompartmenty jsou matematické modely rychlosti sycení, nikoli konkrétní anatomické tkáně. Uvedené příklady jsou pouze orientační analogie.",
+                    "headers": {
+                        "compartment": "Kompartment",
+                        "analogy": "Orientační představa"
+                    },
+                    "metrics": {
+                        "halfTime": "Poločas"
+                    },
+                    "analogies": {
+                        "veryFast": "Velmi rychlé až rychlé, dobře prokrvené; orientačně krev a CNS",
+                        "mediumFast": "Středně rychlé; orientačně svaly a kůže",
+                        "slower": "Pomalejší; orientačně svaly, šlachy a chrupavky",
+                        "slow": "Pomalé; orientačně kosti a tuk",
+                        "verySlow": "Velmi pomalé, hůře prokrvené; orientačně tuková tkáň"
+                    },
+                    "summary": "Varianty B a C většinou mění koeficient <var>a</var>, a tím posouvají <var>M</var>-čáru. Koeficient <var>b</var>, který ovlivňuje její sklon, zůstává pro TC2–16 stejný. Výjimkou je TC1, kde varianty B a C používají jiný poločas, a proto se mění také <var>b</var>."
                 }
             },
             "variantBar": {
@@ -2065,8 +2231,9 @@
                 "shortLabel": "Varianta:"
             },
             "bottom": {
-                "heading": "Odkud pocházejí a a b?",
-                "anchor": "Koeficienty a a b varianty ZH-L16A nejsou odvozeny empiricky — počítají se pouze z poločasu. Varianty B a C jsou manuálně upravené podle statistické korelace z pozorovaných incidentů.",
+                "heading": "Odkud pocházejí <var>a</var> a <var>b</var>?",
+                "anchor": "Koeficienty <var>a</var> a <var>b</var> varianty ZH-L16A se počítají pouze z poločasu. Varianty B a C upravují vybrané kompartmenty.",
+                "cardsToggle": "Odvozené koeficienty a aktuální hodnoty",
                 "inputs": {
                     "halfTime": "Poločas <var>t</var><sub>1/2</sub> (min)",
                     "halfTimeShort": "<var>t</var><sub>1/2</sub> (min)",
@@ -2081,12 +2248,12 @@
                         "why": "Charakteristický čas kompartmentu. Není anatomický — jen vzorek na exponenciální stupnici poločasů."
                     },
                     "a": {
-                        "name": "a(<var>t</var><sub>1/2</sub>) | úsek M-čáry",
-                        "why": "Varianty B a C u některých kompartmentů snižují koeficient a — jediné místo, kde do Bühlmanna vstupuje statistika."
+                        "name": "<var>a</var>(<var>t</var><sub>1/2</sub>) | úsek <var>M</var>-čáry",
+                        "why": "Varianty B a C u některých kompartmentů snižují koeficient <var>a</var>."
                     },
                     "b": {
-                        "name": "b(<var>t</var><sub>1/2</sub>) | sklon M-čáry (1/b)",
-                        "why": "Identické pro A/B/C kromě TC1 (u nějž změna <var>t</var><sub>1/2</sub> mění i b)."
+                        "name": "<var>b</var>(<var>t</var><sub>1/2</sub>) | koeficient sklonu <var>M</var>-čáry (1/<var>b</var>)",
+                        "why": "Shodné pro A/B/C kromě TC1, u nějž změna <var>t</var><sub>1/2</sub> mění i <var>b</var>."
                     }
                 },
                 "delta": {
@@ -2095,17 +2262,10 @@
                     "deltaSymbol": "Δ"
                 },
                 "legend": {
-                    "a": "křivka a(<var>t</var><sub>1/2</sub>) + 16 uložených hodnot (body)",
-                    "b": "křivka b(<var>t</var><sub>1/2</sub>) + 16 uložených hodnot (body)",
+                    "a": "křivka <var>a</var>(<var>t</var><sub>1/2</sub>) + 16 uložených hodnot (body)",
+                    "b": "křivka <var>b</var>(<var>t</var><sub>1/2</sub>) + 16 uložených hodnot (body)",
                     "cursor": "Pozice posuvníku (aktuální <var>t</var><sub>1/2</sub>)"
                 }
-            },
-            "crossLinks": {
-                "heading": "Viz také",
-                "wiki": "Wiki: M-hodnoty (matematika)",
-                "theory": "Stránka teorie M-hodnot (historie + příklady ponorů)",
-                "haldane": "Haldaneovo pískoviště (tkáň se přibližuje k okolnímu tlaku)",
-                "schreiner": "Schreinerovo pískoviště (tkáň se přibližuje k měnícímu se okolnímu tlaku)"
             }
         },
         "gradientFactors": {
@@ -2274,7 +2434,25 @@
                 "fillLog": "Záznam plnění"
             },
             "connectionStatus": {
-                "idle": "Otevřete ventily kaskády a cílové lahve pro propojení"
+                "idle": "Otevřete ventily kaskády a cílové lahve pro propojení",
+                "targetsReady": "Připravené cílové lahve: {count} — otevřete ventil kaskády",
+                "cascadesOpen": "Otevřené lahve kaskády: {count} — otevřete ventily cílových lahví",
+                "equalizing": "vyrovnávání tlaku",
+                "equalizingProgress": "Vyrovnávání…",
+                "willEqualize": "Vyrovná se na",
+                "equalizedAt": "vyrovnáno na {pressure}",
+                "equalized": "vyrovnáno",
+                "targetsAtLimit": "cílové lahve jsou na limitu ({pressure})",
+                "targetLimitNote": " (limit cílových lahví {pressure})"
+            },
+            "surfaceVolumeValue": "{value} l při 1 bar",
+            "log": {
+                "equalized": "vyrovnány",
+                "initialSurfaceVolume": "Počáteční hladinový objem: {value}",
+                "connectedVolume": "Objem propojených lahví: {value}",
+                "transferredSurfaceVolume": "Hladinový objem převedený do cílových lahví: {value}",
+                "finalPressure": "Výsledný tlak: {value}",
+                "targetPressure": "Tlak cílových lahví: {value}"
             },
             "logEmpty": "Zatím žádná plnění",
             "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely."

@@ -40,7 +40,7 @@
             align-items: center;
             transition: transform 0.2s ease;
         }
-        .sandbox-control-bar.collapsed { transform: translateY(calc(100% - 32px)); }
+        .sandbox-control-bar.collapsed { transform: translateY(100%); }
         .sandbox-control-bar-toggle {
             position: absolute;
             top: -28px;
@@ -392,17 +392,60 @@
 
     <!-- Disclaimer -->
     <div class="disclaimer-banner" data-i18n="sandbox.haldane.disclaimerBanner">
-        <strong>Educational Use Only</strong> — Interactive walk-through of the Bühlmann/Haldane on-gassing equation.
+        <strong>Educational Use Only</strong> — Interactive walk-through of the Bühlmann/Haldane equation for on-gassing and off-gassing.
     </div>
 
     <!-- Hero -->
     <header class="hero hero-compact">
         <h1 data-i18n="sandbox.haldane.title">Haldane Equation</h1>
-        <p class="hero-subtitle" data-i18n="sandbox.haldane.subtitle">A live, annotated walk-through of how a tissue compartment on-gasses over time.</p>
+        <p class="hero-subtitle" data-i18n="sandbox.haldane.subtitle">Interactive walk-through of how tissue inert-gas pressure changes during on-gassing and off-gassing.</p>
     </header>
 
     <!-- Layout -->
     <div class="haldane-layout">
+
+        <section class="equation-model-comparison">
+            <h2 data-i18n="sandbox.equationComparison.title">Two targets, two equations</h2>
+            <div class="equation-model-grid">
+                <article class="equation-model-card active">
+                    <h3 data-i18n="sandbox.equationComparison.haldane.title">Haldane — fixed target</h3>
+                    <ul>
+                        <li data-i18n="sandbox.equationComparison.haldane.step">At <var>t</var> = 0, alveolar pressure is set to a new value.</li>
+                        <li data-i18n="sandbox.equationComparison.haldane.constant">It then remains constant.</li>
+                        <li data-i18n="sandbox.equationComparison.haldane.tissue">The tissue approaches it exponentially.</li>
+                    </ul>
+                </article>
+                <article class="equation-model-card">
+                    <h3 data-i18n="sandbox.equationComparison.schreiner.title">Schreiner — moving target</h3>
+                    <ul>
+                        <li data-i18n="sandbox.equationComparison.schreiner.linear">Alveolar pressure rises or falls linearly during a depth change.</li>
+                        <li data-i18n="sandbox.equationComparison.schreiner.lag">The tissue follows the moving target with a delay.</li>
+                        <li data-i18n="sandbox.equationComparison.schreiner.direction">It stays below a rising target and above a falling target.</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <section class="equation-mental-model">
+            <h2 data-i18n="sandbox.haldane.mental.title">Situation: the target changes once, then stays fixed</h2>
+            <p data-i18n="sandbox.haldane.mental.intro">The alveolar target pressure is constant throughout the modeled segment. The tissue pressure smoothly catches up according to its half-time.</p>
+            <svg viewBox="0 0 680 230" role="img" data-i18n-aria-label="sandbox.haldane.mental.chartAria" aria-label="Fixed alveolar target and tissue response">
+                <line x1="58" y1="195" x2="660" y2="195" stroke="currentColor" stroke-width="1"/>
+                <line x1="58" y1="18" x2="58" y2="195" stroke="currentColor" stroke-width="1"/>
+                <line x1="58" y1="164" x2="130" y2="164" stroke="#2980b9" stroke-width="3"/>
+                <line x1="130" y1="164" x2="130" y2="48" stroke="#2980b9" stroke-width="3"/>
+                <line x1="130" y1="48" x2="650" y2="48" stroke="#2980b9" stroke-width="3"/>
+                <path d="M 130 164 C 220 158, 270 92, 365 67 C 455 43, 555 49, 650 48" fill="none" stroke="#e67e22" stroke-width="4"/>
+                <line x1="130" y1="18" x2="130" y2="195" stroke="#7f8c8d" stroke-width="1" stroke-dasharray="4 4"/>
+                <text x="400" y="39" fill="#2980b9" font-size="14" font-weight="600" data-i18n="sandbox.haldane.mental.newTarget">new constant alveolar target</text>
+                <text x="390" y="94" fill="#c9660d" font-size="14" font-weight="600" data-i18n="sandbox.haldane.mental.tissueLine">tissue pressure catches up</text>
+                <text x="62" y="157" fill="#2980b9" font-size="13" data-i18n="sandbox.haldane.mental.oldTarget">original alveolar pressure</text>
+                <text x="118" y="214" fill="#7f8c8d" font-size="13"><tspan font-style="italic">t</tspan> = 0</text>
+                <text x="590" y="214" fill="currentColor" font-size="13" data-i18n="sandbox.haldane.mental.timeAxis">time</text>
+                <text x="18" y="115" fill="currentColor" font-size="13" transform="rotate(-90 18 115)" data-i18n="sandbox.haldane.mental.pressureAxis">pressure</text>
+            </svg>
+            <p class="model-note" data-i18n="sandbox.haldane.mental.note"><strong>The vertical step is an input idealization.</strong> It is not the physical course of a descent or ascent; a depth change that takes time is modeled by the Schreiner equation.</p>
+        </section>
 
         <!-- Live formula -->
         <div class="haldane-formula">
@@ -530,8 +573,8 @@
     </div>
 
     <!-- Fixed control bar — always visible at the bottom of the viewport -->
-    <aside class="sandbox-control-bar" id="halControlBar" aria-label="Sandbox controls">
-        <button type="button" class="sandbox-control-bar-toggle" id="halBarToggle" aria-label="Collapse controls" title="Collapse / expand controls">▼ <span data-i18n="sandbox.haldane.barToggle">controls</span></button>
+    <aside class="sandbox-control-bar collapsed" id="halControlBar" aria-label="Sandbox controls">
+        <button type="button" class="sandbox-control-bar-toggle" id="halBarToggle" aria-label="Collapse controls" title="Collapse / expand controls">▲ <span data-i18n="sandbox.haldane.barToggle">controls</span></button>
 
         <div class="ctrl ctrl-static">
             <span class="lbl" data-i18n="sandbox.haldane.labels.startDepthShort">Start (m)</span>

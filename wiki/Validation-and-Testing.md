@@ -6,7 +6,7 @@ npm test
 
 Runs `node tests/run-tests.mjs`. No external test framework — `tests/run-tests.mjs` implements `describe`/`test`/`expect` inline (lines 10–140) with matchers `.toBe`, `.toEqual`, `.toBeCloseTo`, `.toBeGreaterThan`, `.toBeLessThan`, `.toHaveProperty`, `.toHaveLength`, `.toBeDefined`. Output is one line per test, then a pass/fail summary.
 
-**481 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
+**533 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
 
 `npm test` is required to pass before every commit per `CLAUDE.md`.
 
@@ -55,6 +55,58 @@ The canonical suite directly checks the 3900 sea-level scenarios in
 equally across EN 13319, freshwater, and seawater in
 `tests/decotengu-water-reference.json`. The reporting script remains runnable
 standalone as `node tests/decotengu-comparison.test.mjs`.
+
+The same runner also contains source-level teaching regressions for the Haldane and
+Schreiner sandboxes. They verify fixed-target versus moving-target hierarchy,
+the equilibrium surface start of the single basic Schreiner example, the
+$R = 0$ reduction to Haldane, collapsed general and canonical algebra, and the
+absence of a misleading tissue-saturation percentage. For Schreiner, they
+verify both the simplified equilibrium-start form and the general sum of
+initial tissue pressure, the Haldane contribution, and the moving-target
+correction against `schreinerEquation()` for positive, negative, and zero
+rates, multiple initial pressures, times, and half-times. They also verify the
+step-by-step expansion into the canonical form while keeping calculus outside
+the main teaching path.
+
+The M-value sandbox regressions verify canonical quantity notation, direct
+ambient-pressure control, a fixed 0–10 bar vertical scale, and removal of the
+auxiliary $y = x$ line. In single-compartment mode the main chart must draw
+exactly one line for the selected ZH-L16 variant; the all-compartments mode
+must draw 16 lines from that same variant. A separate magnified panel remains
+the only simultaneous A/B/C comparison and uses the existing `getMValue()`
+calculation for all three values. The four quantity cards and the three
+coefficient-derivation cards each collapse as one group. The generated
+coefficient table must contain all 16 compartments from
+`getCompartmentsForVariant()`, preserve the TC1 half-time and $b$ exception,
+keep TC2–16 $b$ values identical across variants, and highlight only values
+that differ from ZH-L16A. Its responsive wrapper must scroll locally without
+causing document-level horizontal overflow.
+
+The coefficient-derivation graph labels $a$, including the upright `bar`
+unit, and dimensionless $b$ directly in the SVG, positioned beside their
+visible curve ends.
+
+The transfilling sandbox regressions require locale-aware runtime formatting,
+the glossary's upright `l` symbol, localized final-pressure subscripts and
+result explanations, and re-rendering after a language change. Cylinder gas
+content is presented as surface-equivalent volume at the explicit 1 bar
+reference pressure rather than as the less intuitive `bar·l` product.
+
+The cascade-filling sandbox follows the same convention. Its cylinder cards,
+remaining supply, connection states, and structured fill log must use
+locale-aware pressure and volume formatting, preserve decimal pressures, and
+re-render existing log entries when the language changes.
+
+The gas-law sandbox regressions require the glossary's upright `l` symbol,
+locale-aware pressure, temperature, and volume values in generated output,
+localized safety text before and after revealing the result, and re-rendering
+of the hidden cylinder state when the language changes. The expanded fire
+temperature scale must also suppress colliding reference labels while keeping
+the current-temperature markers visible. Its collapsed model-limitations note
+must identify the gauge-versus-absolute pressure difference as a small
+high-pressure approximation, while giving appropriate prominence to real-gas
+behaviour, thermal gradients, cylinder-volume and gauge uncertainty, and the
+loss of cylinder material strength at fire temperatures.
 
 The standard staged-mode gate also checks schedule structure, not only total
 time: every emitted stop is on the 3 m grid and lasts at least one minute.

@@ -959,7 +959,7 @@
         },
         "cylinder": "Botella",
         "fillPressure": "Presión de llenado (bar)",
-        "cylinderVolume": "Volumen de la botella (L)",
+        "cylinderVolume": "Volumen de la botella (l)",
         "temperature": "Temperatura",
         "initialTemp": "Temperatura inicial <var>T</var><sub>1</sub> (°C)",
         "finalTemp": "Temperatura final <var>T</var><sub>2</sub> (°C)",
@@ -971,8 +971,9 @@
         "usableGasChange": "Cambio del volumen de gas en superficie",
         "gasChangeSub": "volumen a 1 bar (Δ<var>p</var> × volumen de la botella ÷ 1 bar)",
         "diveTimeChange": "Cambio de tiempo de inmersión a 20 m",
-        "diveTimeSub": "Consumo de aire en superficie 20 L/min a 3 bar (1+20/10)",
+        "diveTimeSub": "Consumo de aire en superficie 20 l/min a 3 bar (1+20/10)",
         "safety": {
+            "initial": "Presión máxima de trabajo de la botella: {0} bar.",
             "withinWorking": "La presión no supera la presión máxima de trabajo de la botella ({0} bar).",
             "aboveWorking": "Se ha superado la presión máxima de trabajo de la botella de {0} bar. Presión actual: {1} bar.",
             "danger": "¡PELIGRO! La presión actual de {0} bar supera la presión de prueba de la botella de {1} bar."
@@ -989,8 +990,17 @@
         "whyText2": "<strong>Consejo práctico:</strong> los compresores generan un calor notable al llenar — el gas dentro de una botella recién cargada puede estar 40–50 °C por encima del ambiente. Si cargas a 200 bar en una tienda cálida y luego buceas en un lago frío, no te sorprendas si ves solo ~180 bar en el manómetro. No es una fuga — es física.",
         "whyRuleOfThumb": "<strong>Regla práctica:</strong> ~0,6 bar de cambio por cada 1 °C a 200 bar de presión de trabajo.",
         "formulaTitle": "Ley de Gay-Lussac (proceso isocórico)",
-        "formulaNote": "la relación presión/temperatura es constante a volumen constante (T en Kelvin)",
+        "formulaNote": "la relación entre presión y temperatura es constante a volumen constante (<var>T</var> en kelvin)",
         "formulaRearranged": "Reordenada:",
+        "modelLimitations": {
+            "summary": "Nota sobre la precisión y los límites del modelo",
+            "intro": "Este simulador utiliza deliberadamente un modelo sencillo de gas ideal para mostrar cómo afecta la temperatura a la presión.",
+            "pressureReference": "<strong>Referencia de presión:</strong> la ley de Gay-Lussac utiliza estrictamente la presión absoluta, mientras que el manómetro de una botella indica la sobrepresión respecto a la atmósfera. Utilizar directamente la lectura del manómetro es una pequeña aproximación a alta presión.",
+            "realGas": "<strong>Gas real:</strong> a las altas presiones de una botella, ni el aire ni el nitrox se comportan como gases ideales. La compresibilidad depende de la presión, la temperatura y la composición y puede afectar al resultado más que la aproximación de la referencia de presión.",
+            "thermalState": "<strong>Temperatura:</strong> el cálculo supone una temperatura uniforme del gas y equilibrio térmico. Una botella recién llenada o calentada rápidamente puede presentar gradientes de temperatura importantes.",
+            "cylinderAndGauge": "<strong>Botella y manómetro:</strong> el volumen interno de la botella cambia ligeramente con la presión y la temperatura, y el propio manómetro tiene una precisión limitada.",
+            "fire": "<strong>Escenario de incendio:</strong> la temperatura elevada también reduce la resistencia de las botellas de acero y aluminio. Este simulador solo modela un cambio de presión idealizado; no evalúa la integridad ni la seguridad de la botella durante un incendio."
+        },
         "scenarioLabels": {
             "warmShop": "Tienda cálida a lago frío",
             "sunDeck": "Calentamiento por el sol en cubierta",
@@ -1797,20 +1807,20 @@
             "labels": {
                 "volume": "Volumen",
                 "pressure": "Presión (bar)",
-                "customVolume": "Volumen personalizado (L)"
+                "customVolume": "Volumen personalizado (l)"
             },
             "volumes": {
-                "pony": "3 L (Pony)",
-                "al40": "5.5 L (AL40)",
-                "al50": "7 L (AL50)",
-                "single10": "10 L (mono)",
-                "al80": "11 L (AL80)",
-                "single12": "12 L (mono)",
-                "single15": "15 L (mono)",
-                "single18": "18 L (mono)",
-                "doubles7": "2×7 L (bibotella)",
-                "doubles10": "2×10 L (bibotella)",
-                "doubles12": "2×12 L (bibotella)",
+                "pony": "3 l (Pony)",
+                "al40": "5,5 l (AL40)",
+                "al50": "7 l (AL50)",
+                "single10": "10 l (mono)",
+                "al80": "11 l (AL80)",
+                "single12": "12 l (mono)",
+                "single15": "15 l (mono)",
+                "single18": "18 l (mono)",
+                "doubles7": "2×7 l (bibotella)",
+                "doubles10": "2×10 l (bibotella)",
+                "doubles12": "2×12 l (bibotella)",
                 "custom": "Personalizado…"
             },
             "buttons": {
@@ -1822,14 +1832,32 @@
                 "cylinderB": "Botella B"
             },
             "resultTitle": "Igualación completa",
+            "surfaceVolumeValue": "{value} l a 1 bar",
+            "resultDetail": "Volumen equivalente de gas a 1 bar: {value}. El modelo simplificado supone la misma temperatura.",
+            "finalSubscript": "final",
             "formulaTitle": "Ley de Boyle",
             "formula": "<var>p</var><sub>final</sub> = (<var>p</var><sub>A</sub> × <var>V</var><sub>A</sub> + <var>p</var><sub>B</sub> × <var>V</var><sub>B</sub>) / (<var>V</var><sub>A</sub> + <var>V</var><sub>B</sub>)",
             "disclaimer": "<strong>Aviso:</strong> Solo con fines educativos. Basado en las hipótesis de gas ideal."
         },
+        "equationComparison": {
+            "title": "Dos objetivos, dos ecuaciones",
+            "haldane": {
+                "title": "Haldane — objetivo fijo",
+                "step": "En <var>t</var> = 0, la presión alveolar se establece en un nuevo valor.",
+                "constant": "Después permanece constante.",
+                "tissue": "El tejido se aproxima a ella exponencialmente."
+            },
+            "schreiner": {
+                "title": "Schreiner — objetivo móvil",
+                "linear": "La presión alveolar sube o baja linealmente durante un cambio de profundidad.",
+                "lag": "El tejido responde continuamente a la diferencia de presión actual.",
+                "direction": "La dirección del buceador por sí sola no determina si el tejido se está saturando o desaturando."
+            }
+        },
         "haldane": {
             "title": "Ecuación de Haldane",
-            "subtitle": "Recorrido interactivo de cómo un compartimento tisular se satura en el tiempo.",
-            "disclaimerBanner": "<strong>Solo para fines educativos</strong> — Recorrido interactivo de la ecuación de Bühlmann/Haldane de saturación.",
+            "subtitle": "Desglose interactivo de cómo cambia la presión del gas inerte en un compartimento tisular durante la saturación y la desaturación.",
+            "disclaimerBanner": "<strong>Solo para fines educativos</strong> — Recorrido interactivo de la ecuación de Bühlmann/Haldane de saturación y desaturación.",
             "disclaimer": "<strong>Aviso:</strong> Solo para fines educativos. El algoritmo de descompresión real usa lógica adicional.",
             "labels": {
                 "startDepth": "Profundidad inicial (m)",
@@ -1849,6 +1877,17 @@
             "simplifiedHint": "aproximadamente",
             "barToggle": "controles",
             "chartAria": "Presión tisular a lo largo del tiempo",
+            "mental": {
+                "title": "Situación: el objetivo cambia una vez y después permanece fijo",
+                "intro": "La presión alveolar objetivo permanece constante durante todo el segmento modelado. La presión tisular la alcanza gradualmente según su semiperíodo.",
+                "chartAria": "Objetivo alveolar fijo y respuesta de la presión tisular",
+                "newTarget": "nuevo objetivo alveolar constante",
+                "tissueLine": "la presión tisular alcanza el objetivo",
+                "oldTarget": "presión alveolar original",
+                "timeAxis": "tiempo",
+                "pressureAxis": "presión",
+                "note": "<strong>El salto vertical es una idealización de la entrada de la ecuación.</strong> No representa el desarrollo físico de un descenso o ascenso; un cambio de profundidad que transcurre en el tiempo se modela con la ecuación de Schreiner."
+            },
             "teachingSentence": "<span class=\"word-result\">presión actual</span> = <span class=\"word-start\">presión inicial</span> + <span class=\"word-change\">cambio total hacia el equilibrio</span> × <span class=\"word-progress\">fracción completada del cambio</span>",
             "symbols": {
                 "tissue": "t",
@@ -1898,7 +1937,7 @@
         },
         "schreiner": {
             "title": "Ecuación de Schreiner",
-            "subtitle": "Compañera de tasa lineal de la página de Haldane — observa cómo la ecuación evoluciona mientras la presión ambiental se desliza.",
+            "subtitle": "Desglose interactivo de cómo la presión tisular sigue a una presión alveolar que cambia linealmente durante el descenso y el ascenso.",
             "disclaimerBanner": "<strong>Solo para fines educativos</strong> — Recorrido interactivo de la ecuación de Schreiner para cambios lineales de presión ambiental.",
             "disclaimer": "<strong>Aviso:</strong> Solo para fines educativos. El algoritmo de descompresión real usa lógica adicional.",
             "labels": {
@@ -1918,71 +1957,176 @@
                 "compartmentShort": "TC",
                 "modelShort": "Modelo",
                 "timeShort": "Tiempo",
-                "simplifiedShort": "Simplificado"
+                "simplifiedShort": "Constantes aproximadas",
+                "initialStateShort": "Tejido inicial"
             },
             "gas": {
                 "air": "Aire (<var>f</var><sub>N₂</sub> = 0.79)"
             },
-            "simplifiedHint": "aproximadamente",
+            "simplifiedHint": "1 bar, sin vapor de agua, <var>f</var><sub>N₂</sub> = 0,79",
             "barToggle": "controles",
+            "symbols": {
+                "tissue": "t",
+                "tissueInitial": "t,0",
+                "ambient": "amb"
+            },
             "outputs": {
-                "saturation": "Saturación",
                 "depth": "Profundidad"
             },
+            "initialStates": {
+                "surface": "equilibrado en superficie",
+                "start": "equilibrado a la profundidad inicial",
+                "deeper": "equilibrado 5 m más profundo"
+            },
+            "mental": {
+                "title": "Situación: el objetivo de equilibrio se mueve",
+                "intro": "Durante el descenso o el ascenso, la presión alveolar del gas inerte cambia linealmente mientras la presión tisular responde de forma gradual según el semiperíodo del compartimento.",
+                "simpleExplanation": "<strong>Empiece con la presión tisular inicial.</strong> En el ejemplo básico en equilibrio, la contribución inicial de Haldane es cero, por lo que solo se añade la respuesta al objetivo alveolar móvil.",
+                "initialStateNote": "El estado inicial seleccionado representa el estado que llegaría del segmento anterior de la inmersión en un perfil completo; esta página lo construye a partir del preajuste de equilibrio elegido.",
+                "rateNote": "<var>R</var> es la tasa de cambio de la presión alveolar en bar/min, no la tasa de profundidad en m/min introducida en los controles."
+            },
+            "exchange": {
+                "onGassing": "saturación",
+                "offGassing": "desaturación",
+                "equilibrium": "equilibrio"
+            },
+            "chart": {
+                "title": "Presión alveolar, presión tisular y su diferencia actual",
+                "explanation": "Ambas curvas usan la misma escala real de presión. El segmento verde muestra la diferencia actual que impulsa la respuesta del tejido.",
+                "alveolar": "presión alveolar",
+                "tissue": "presión tisular real",
+                "timeAxis": "tiempo",
+                "pressureAxis": "presión",
+                "directionDescent": "↓ descenso: el objetivo sube",
+                "directionAscent": "↑ ascenso: el objetivo baja",
+                "directionConstant": "profundidad constante: presión alveolar constante"
+            },
+            "composition": {
+                "title": "Ejemplo básico: presión inicial y respuesta a un objetivo móvil",
+                "intro": "El descenso comienza en la superficie con las presiones tisular y alveolar igualadas. Por tanto, la contribución de la diferencia inicial es cero.",
+                "currentValue": "Valor actual",
+                "initial": {
+                    "title": "1. Presión tisular inicial",
+                    "short": "estado inicial",
+                    "explanation": "La presión del gas inerte con la que el tejido entra en este segmento de la inmersión."
+                },
+                "equilibrium": {
+                    "title": "El ejemplo básico comienza en equilibrio",
+                    "explanation": "<var>p</var><sub>alv,0</sub> = <var>p</var><sub>t,0</sub>, por lo que la diferencia de presión inicial y su contribución de Haldane son cero."
+                },
+                "haldane": {
+                    "title": "2. Contribución de Haldane por la diferencia de presión inicial",
+                    "short": "contribución de Haldane",
+                    "explanation": "El cambio que se produciría si la presión alveolar permaneciera en su valor inicial durante todo el segmento.",
+                    "initialDifference": "Diferencia inicial",
+                    "completedFraction": "Fracción completada",
+                    "contribution": "Contribución de Haldane",
+                    "bridgeTitle": "Relación directa con Haldane",
+                    "bridgeExplanation": "Esta es la forma didáctica de la ecuación de Haldane para el objetivo alveolar inicial fijo."
+                },
+                "moving": {
+                    "title": "2. Respuesta al objetivo móvil",
+                    "short": "corrección por movimiento",
+                    "explanation": "La presión alveolar no permanece en su valor inicial. Este término añade el efecto de su movimiento lineal continuo.",
+                    "smallChanges": "Imagine el objetivo móvil como muchas pequeñas variaciones de presión. El tejido responde a cada una del mismo modo exponencial que en la ecuación de Haldane; su suma forma esta corrección.",
+                    "contribution": "Corrección por movimiento",
+                    "zeroNote": "Para <var>R</var> = 0, esta contribución es exactamente cero. Es una contribución con signo al cambio tisular, no una presión independiente ni un límite."
+                },
+                "sum": {
+                    "title": "Presión tisular resultante",
+                    "haldaneLabel": "contribución de Haldane",
+                    "movingLabel": "corrección por movimiento",
+                    "explanation": "El resultado mostrado lo calcula la implementación existente de Schreiner; las tres contribuciones didácticas suman el mismo valor."
+                }
+            },
+            "general": {
+                "summary": "Caso general: el tejido puede comenzar fuera del equilibrio",
+                "explanation": "En un perfil de inmersión completo, la presión tisular al inicio de un nuevo segmento no tiene por qué coincidir con la presión alveolar actual. Por ello, la forma didáctica general también incluye la contribución de Haldane debida a la diferencia inicial."
+            },
+            "derivation": {
+                "summary": "Cómo se obtiene la forma canónica a partir de la forma didáctica",
+                "intro": "Desarrolle los dos paréntesis, cancele los términos iguales con signos opuestos y agrupe los términos exponenciales restantes.",
+                "teaching": "Forma didáctica",
+                "expanded": "Desarrollo de los paréntesis",
+                "cancellation": "Los términos +<var>p</var><sub>t,0</sub> y −<var>p</var><sub>t,0</sub> se cancelan.",
+                "grouped": "Agrupación de términos",
+                "canonical": "Forma canónica"
+            },
+            "mathOrigin": {
+                "summary": "¿Por qué la corrección por movimiento tiene esta forma?",
+                "explanation": "Un cambio lineal de la presión alveolar puede dividirse en muchos cambios muy pequeños. Cada uno ocurre en un momento distinto y, por tanto, dispone de un tiempo diferente para afectar al tejido. La suma de esas respuestas exponenciales produce la corrección por movimiento.",
+                "equationIntro": "Para lectores familiarizados con el cálculo diferencial, Haldane y Schreiner resuelven la misma ley diferencial:"
+            },
+            "canonical": {
+                "explanation": "Esta forma cerrada calcula la respuesta tisular continua exacta sin dividir el descenso o ascenso en muchos pasos de tiempo pequeños."
+            },
             "mvalue": {
+                "summary": "Relación con el límite de descompresión",
                 "title": "Comprobación del valor M",
                 "within": "dentro",
                 "exceeded": "excedido"
             },
             "cards": {
+                "summary": "Glosario de símbolos",
                 "palv0": {
                     "name": "<var>p</var><sub>alv,0</sub> | N<sub>2</sub> alveolar a profundidad inicial",
                     "why": "Presión alveolar inicial. Punto de pendiente cero de la fuente alveolar móvil."
                 },
                 "pt0": {
-                    "name": "<var>p</var><sub>t,0</sub> | presión tisular en t=0",
-                    "why": "Tejido supuesto equilibrado a la profundidad inicial → igual a <var>p</var><sub>alv,0</sub>."
+                    "name": "<var>p</var><sub>t,0</sub> | presión tisular en <var>t</var> = 0",
+                    "why": "El estado modelo seleccionado representa una presión tisular que un perfil completo transmitiría desde el segmento anterior; no tiene que ser igual a <var>p</var><sub>alv,0</sub>."
+                },
+                "palv": {
+                    "name": "<var>p</var><sub>alv</sub>(<var>t</var>) | presión alveolar actual",
+                    "why": "La presión actual del gas inerte que impulsa el intercambio con el tejido."
+                },
+                "pt": {
+                    "name": "<var>p</var><sub>t</sub>(<var>t</var>) | presión tisular actual",
+                    "why": "La presión actual del gas inerte en el compartimento seleccionado."
+                },
+                "haldaneContribution": {
+                    "name": "Contribución de Haldane",
+                    "why": "El cambio tisular con signo para un objetivo alveolar inicial fijo."
+                },
+                "movingContribution": {
+                    "name": "Corrección por movimiento",
+                    "why": "La contribución con signo causada por el movimiento del objetivo alveolar durante el segmento."
                 },
                 "r": {
-                    "name": "R | tasa de presión alveolar",
-                    "why": "Positiva = descenso (la alveolar sube), negativa = ascenso. R = 0 → la ecuación se reduce a la de Haldane."
+                    "name": "<var>R</var> | tasa de cambio de la presión alveolar",
+                    "why": "Positiva durante el descenso, negativa durante el ascenso y nula a profundidad constante. Su unidad es bar/min."
                 },
                 "k": {
-                    "name": "k | constante de velocidad",
-                    "why": "Compartimentos más rápidos → k mayor → alcanzan antes."
+                    "name": "<var>k</var> | constante de velocidad",
+                    "why": "Los compartimentos más rápidos tienen una constante mayor y siguen antes al objetivo."
+                },
+                "halfTime": {
+                    "name": "<var>t</var><sub>1/2</sub> | semiperíodo del compartimento",
+                    "why": "Un semiperíodo más corto produce una constante de velocidad mayor y una respuesta más rápida."
                 },
                 "exp": {
-                    "name": "e<sup>−kt</sup> | factor de decaimiento exponencial",
-                    "why": "1,0 en t=0, decae hacia 0. Multiplica al término del desequilibrio inicial."
-                }
-            },
-            "decomp": {
-                "moving": {
-                    "name": "Fuente alveolar móvil",
-                    "why": "Dónde se encuentra ahora mismo la fuente alveolar (lineal en t)."
-                },
-                "lag": {
-                    "name": "Desfase (R/k)",
-                    "why": "Cuán por debajo (ascenso) o por encima (descenso) de la fuente se asentaría un tejido que la siguiera perfectamente. Equivalente a 1/k minutos de pendiente."
-                },
-                "decay": {
-                    "name": "Diferencia inicial decreciente",
-                    "why": "El desfase inicial entre el <var>p</var><sub>t</sub> real y la línea de seguimiento — se aproxima exponencialmente a cero."
+                    "name": "e<sup>−<var>k</var><var>t</var></sup> | factor de decaimiento exponencial",
+                    "why": "Empieza en 1 y decae hacia 0; no es un porcentaje de saturación tisular."
                 }
             }
         },
         "mvalues": {
-            "title": "Valores M",
+            "title": "Valores <var>M</var>",
             "subtitle": "De dónde viene la línea, y cómo se ve para los 16 compartimentos.",
+            "symbols": {
+                "ambient": "amb"
+            },
             "barToggle": "controles",
-            "disclaimerBanner": "<strong>Solo para fines educativos</strong> — Recorrido interactivo de la fórmula de Valor M de Bühlmann y el origen de sus coeficientes.",
+            "disclaimerBanner": "<strong>Solo para fines educativos</strong> — Recorrido interactivo de la fórmula del valor <var>M</var> de Bühlmann y el origen de sus coeficientes.",
             "disclaimer": "<strong>Aviso:</strong> Solo para fines educativos. El algoritmo de descompresión real usa lógica adicional.",
             "top": {
-                "heading": "¿Cómo se ve M a esta profundidad?",
-                "anchor": "Elige una profundidad, un compartimento y una variante — observa la fórmula del Valor M de Bühlmann evaluarse en vivo.",
+                "heading": "¿Cómo cambia el valor <var>M</var> con la presión ambiental?",
+                "anchor": "Elige un compartimento y una variante y mueve la presión ambiental. El punto muestra el valor <var>M</var> actual sobre la línea <var>M</var> seleccionada.",
+                "cardsToggle": "Magnitudes de la fórmula y valores actuales",
                 "inputs": {
-                    "depth": "Profundidad (m)",
-                    "depthShort": "Prof. (m)",
+                    "ambientPressure": "Presión ambiental <var>p</var><sub>amb</sub> (bar)",
+                    "ambientPressureShort": "<var>p</var><sub>amb</sub> (bar)",
+                    "derivedDepth": "Profundidad derivada",
                     "compartment": "TC",
                     "viewToggle": {
                         "label": "Vista",
@@ -1992,36 +2136,58 @@
                 },
                 "cards": {
                     "a": {
-                        "name": "a | intersección del tejido",
+                        "name": "<var>a</var> | intersección de la línea <var>M</var> con el eje <var>y</var>",
                         "formula": "búsqueda por compartimento + variante",
-                        "why": "Intersección con el eje y de la línea M. Mayor = más sobresaturación tolerada en la superficie."
+                        "why": "Intersección de la línea <var>M</var> con el eje <var>y</var>. Un valor mayor significa más sobresaturación tolerada en la superficie."
                     },
                     "pAmb": {
                         "name": "<var>p</var><sub>amb</sub> | presión ambiental",
-                        "why": "Eje horizontal de la línea M. Cada metro de profundidad añade 0,1 bar."
+                        "why": "Posición en el eje horizontal del gráfico <var>M</var>. La profundidad solo se deriva de la presión ambiental."
                     },
                     "b": {
-                        "name": "b | pendiente del tejido",
-                        "formula": "búsqueda por compartimento (pendiente = 1/b)",
-                        "why": "Menor b → línea M más pendiente → más supersaturación tolerada con la profundidad."
+                        "name": "<var>b</var> | coeficiente de pendiente de la línea <var>M</var>",
+                        "formula": "búsqueda por compartimento (pendiente = 1/<var>b</var>)",
+                        "why": "Menor <var>b</var> → línea <var>M</var> más pendiente → más sobresaturación tolerada con la profundidad."
                     },
                     "m": {
-                        "name": "M | presión tisular tolerada",
+                        "name": "<var>M</var> | presión tisular tolerada",
                         "why": "Por encima de esto, el algoritmo marca la sobresaturación como peligrosa."
                     }
                 },
                 "chart": {
-                    "xAxis": "p_amb (bar)",
-                    "yAxis": "p_t (bar)",
-                    "legendAmbient": "Línea ambiental (y = x)",
-                    "legendSurface": "Superficie (p_amb = 1,013 bar)"
+                    "xAxis": "<var>p</var><sub>amb</sub> (bar)",
+                    "yAxis": "<var>M</var> (bar)",
+                    "legendSurface": "Superficie (<var>p</var><sub>amb</sub> = 1,013 bar)"
                 },
                 "legend": {
-                    "variantA": "ZH-L16A (raya larga)",
-                    "variantB": "ZH-L16B (raya corta)",
-                    "variantC": "ZH-L16C (sólida)",
-                    "ambient": "Línea ambiental (y = x)",
-                    "surface": "Superficie (p_amb = 1,013 bar)"
+                    "selectedLine": "Línea <var>M</var> seleccionada:",
+                    "currentPoint": "Presión ambiental actual y valor <var>M</var> correspondiente",
+                    "surface": "Superficie (<var>p</var><sub>amb</sub> = 1,013 bar)"
+                },
+                "detail": {
+                    "heading": "Diferencia ampliada del valor <var>M</var>",
+                    "note": "Esta escala local amplía las diferencias; el gráfico principal conserva la escala de presión real.",
+                    "relativeToC": "frente a C",
+                    "reference": "referencia"
+                },
+                "coefficients": {
+                    "heading": "Coeficientes de todos los compartimentos",
+                    "notice": "Los compartimentos son modelos matemáticos de velocidades de saturación, no tejidos anatómicos concretos. Los ejemplos indicados son solo analogías orientativas.",
+                    "headers": {
+                        "compartment": "Compartimento",
+                        "analogy": "Analogía orientativa"
+                    },
+                    "metrics": {
+                        "halfTime": "Semiperíodo"
+                    },
+                    "analogies": {
+                        "veryFast": "Muy rápidos a rápidos, bien perfundidos; aproximadamente sangre y SNC",
+                        "mediumFast": "Medianamente rápidos; aproximadamente músculos y piel",
+                        "slower": "Más lentos; aproximadamente músculos, tendones y cartílagos",
+                        "slow": "Lentos; aproximadamente huesos y grasa",
+                        "verySlow": "Muy lentos, peor perfundidos; aproximadamente tejido adiposo"
+                    },
+                    "summary": "Las variantes B y C cambian principalmente el coeficiente <var>a</var>, desplazando la línea <var>M</var>. El coeficiente <var>b</var>, que influye en su pendiente, permanece igual para TC2–16. TC1 es la excepción: las variantes B y C usan un semiperíodo diferente, por lo que también cambia <var>b</var>."
                 }
             },
             "variantBar": {
@@ -2029,10 +2195,11 @@
                 "shortLabel": "Variante:"
             },
             "bottom": {
-                "heading": "¿De dónde vienen a y b?",
-                "anchor": "Las a y b de ZH-L16A no se ajustan a datos — se calculan solo a partir del periodo de saturación. Las variantes B y C son ajustes posteriores a compartimentos específicos.",
+                "heading": "¿De dónde vienen <var>a</var> y <var>b</var>?",
+                "anchor": "Los coeficientes <var>a</var> y <var>b</var> de ZH-L16A se calculan solo a partir del semiperíodo. Las variantes B y C ajustan compartimentos seleccionados.",
+                "cardsToggle": "Coeficientes derivados y valores actuales",
                 "inputs": {
-                    "halfTime": "Periodo <var>t</var><sub>1/2</sub> (min)",
+                    "halfTime": "Semiperíodo <var>t</var><sub>1/2</sub> (min)",
                     "halfTimeShort": "<var>t</var><sub>1/2</sub> (min)",
                     "halfTimeExact": "<var>t</var><sub>1/2</sub> exacto",
                     "snapToggle": "Ajustar a compartimentos estándar",
@@ -2041,16 +2208,16 @@
                 },
                 "cards": {
                     "halfTime": {
-                        "name": "<var>t</var><sub>1/2</sub> | periodo de saturación",
+                        "name": "<var>t</var><sub>1/2</sub> | semiperíodo",
                         "why": "Tiempo característico de cada compartimento. No es anatómico — solo un punto de muestreo en un eje exponencial."
                     },
                     "a": {
-                        "name": "a(<var>t</var><sub>1/2</sub>) | intersección analítica",
-                        "why": "Las variantes B y C bajan a en compartimentos específicos — el único lugar donde entra estadística en Bühlmann."
+                        "name": "<var>a</var>(<var>t</var><sub>1/2</sub>) | intersección de la línea <var>M</var>",
+                        "why": "Las variantes B y C reducen <var>a</var> en compartimentos seleccionados."
                     },
                     "b": {
-                        "name": "b(<var>t</var><sub>1/2</sub>) | pendiente analítica",
-                        "why": "Idéntica en A/B/C salvo TC1 (cuyo cambio de <var>t</var><sub>1/2</sub> también cambia b)."
+                        "name": "<var>b</var>(<var>t</var><sub>1/2</sub>) | coeficiente de pendiente de la línea <var>M</var> (1/<var>b</var>)",
+                        "why": "Idéntico en A/B/C salvo TC1, cuyo cambio de <var>t</var><sub>1/2</sub> también cambia <var>b</var>."
                     }
                 },
                 "delta": {
@@ -2059,17 +2226,10 @@
                     "deltaSymbol": "Δ"
                 },
                 "legend": {
-                    "a": "curva a(<var>t</var><sub>1/2</sub>) + 16 valores almacenados (puntos)",
-                    "b": "curva b(<var>t</var><sub>1/2</sub>) + 16 valores almacenados (puntos)",
+                    "a": "curva <var>a</var>(<var>t</var><sub>1/2</sub>) + 16 valores almacenados (puntos)",
+                    "b": "curva <var>b</var>(<var>t</var><sub>1/2</sub>) + 16 valores almacenados (puntos)",
                     "cursor": "Posición del deslizador (<var>t</var><sub>1/2</sub> actual)"
                 }
-            },
-            "crossLinks": {
-                "heading": "Ver también",
-                "wiki": "Wiki: Valores M (la matemática)",
-                "theory": "Página de teoría de Valores M (historia + ejemplos de inmersión)",
-                "haldane": "Sandbox de Haldane (el tejido persigue al ambiente)",
-                "schreiner": "Sandbox de Schreiner (el tejido persigue al ambiente en movimiento)"
             }
         },
         "gradientFactors": {
@@ -2189,7 +2349,7 @@
             "subtitle": "Haz clic en las válvulas para conectar botellas y llena (máx. 3 latiguillos, límite de 200 bar)",
             "disclaimerBanner": "<strong>Solo para fines educativos</strong> — Simula el llenado en cascada usando la Ley de Boyle.",
             "setupHeading": "Configuración",
-            "cascadeBank": "Batería de cascada (4 × 50 L)",
+            "cascadeBank": "Batería de cascada (4 × 50 l)",
             "targetCylinders": "Botellas objetivo",
             "controlsHeading": "Controles",
             "remaining": "Restante:",
@@ -2209,11 +2369,11 @@
                 "12": "12 botellas"
             },
             "volumes": {
-                "al50": "7 L (AL50)",
-                "single10": "10 L (mono)",
-                "al80": "11 L (AL80)",
-                "single12": "12 L (mono)",
-                "single15": "15 L (mono)"
+                "al50": "7 l (AL50)",
+                "single10": "10 l (mono)",
+                "al80": "11 l (AL80)",
+                "single12": "12 l (mono)",
+                "single15": "15 l (mono)"
             },
             "startPressures": {
                 "empty": "0 bar (vacía)"
@@ -2238,7 +2398,25 @@
                 "fillLog": "Registro de llenado"
             },
             "connectionStatus": {
-                "idle": "Abre las válvulas de la cascada y de las botellas objetivo para conectar"
+                "idle": "Abre las válvulas de la cascada y de las botellas objetivo para conectar",
+                "targetsReady": "Botellas objetivo preparadas: {count} — abre una válvula de la cascada",
+                "cascadesOpen": "Botellas de cascada abiertas: {count} — abre las válvulas de las botellas objetivo",
+                "equalizing": "igualando la presión",
+                "equalizingProgress": "Igualando…",
+                "willEqualize": "Se igualará a",
+                "equalizedAt": "igualadas a {pressure}",
+                "equalized": "igualadas",
+                "targetsAtLimit": "las botellas objetivo están en el límite ({pressure})",
+                "targetLimitNote": " (límite de {pressure} para las botellas objetivo)"
+            },
+            "surfaceVolumeValue": "{value} l a 1 bar",
+            "log": {
+                "equalized": "igualadas",
+                "initialSurfaceVolume": "Volumen equivalente inicial a 1 bar: {value}",
+                "connectedVolume": "Volumen de las botellas conectadas: {value}",
+                "transferredSurfaceVolume": "Volumen equivalente transferido a las botellas objetivo: {value}",
+                "finalPressure": "Presión final: {value}",
+                "targetPressure": "Presión de las botellas objetivo: {value}"
             },
             "logEmpty": "Sin llenados aún",
             "disclaimer": "<strong>Aviso:</strong> Solo con fines educativos."

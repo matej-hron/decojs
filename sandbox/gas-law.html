@@ -286,7 +286,7 @@
             height: 30px;
             background: linear-gradient(to right, #3498db, #85c1e9, #f9e79f, #e67e22, #e74c3c);
             border-radius: 4px;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2.25rem;
         }
 
         .temp-marker {
@@ -326,6 +326,17 @@
         .temp-marker.t2-marker::after {
             color: #e74c3c;
             font-weight: 600;
+        }
+
+        .temp-marker.edge-left::after {
+            left: 0;
+            transform: none;
+        }
+
+        .temp-marker.edge-right::after {
+            right: 0;
+            left: auto;
+            transform: none;
         }
 
         .temp-ref-labels {
@@ -380,6 +391,44 @@
         .formula-computed strong {
             color: var(--primary-color);
             font-size: 1.2rem;
+        }
+
+        .model-limitations-details {
+            margin-top: 1rem;
+            text-align: left;
+        }
+
+        .model-limitations-body {
+            padding: 0 1rem 1rem;
+            color: var(--text-color);
+            font-size: 0.88rem;
+            line-height: 1.55;
+        }
+
+        .model-limitations-body p {
+            margin: 0.4rem 0;
+        }
+
+        .model-limitations-body ul {
+            margin: 0.65rem 0;
+            padding-left: 1.25rem;
+        }
+
+        .model-limitations-body li + li {
+            margin-top: 0.45rem;
+        }
+
+        .model-limitations-warning {
+            padding: 0.65rem 0.75rem;
+            border-left: 3px solid var(--warning-color, #e67e22);
+            background: rgba(230, 126, 34, 0.08);
+        }
+
+        @media (max-width: 650px) {
+            .model-limitations-body {
+                padding-right: 0.75rem;
+                padding-left: 0.75rem;
+            }
         }
 
         /* Show Result button */
@@ -513,15 +562,15 @@
                     </div>
                 </div>
                 <div class="input-group">
-                    <label data-i18n="gasLaw.cylinderVolume">Cylinder volume (L)</label>
+                    <label data-i18n="gasLaw.cylinderVolume">Cylinder volume (l)</label>
                     <select id="volumeSelect">
-                        <option value="3">3&nbsp;L</option>
-                        <option value="7">7&nbsp;L</option>
-                        <option value="10">10&nbsp;L</option>
-                        <option value="12" selected>12&nbsp;L</option>
-                        <option value="15">15&nbsp;L</option>
-                        <option value="18">18&nbsp;L</option>
-                        <option value="24">24&nbsp;L</option>
+                        <option value="3">3&nbsp;l</option>
+                        <option value="7">7&nbsp;l</option>
+                        <option value="10">10&nbsp;l</option>
+                        <option value="12" selected>12&nbsp;l</option>
+                        <option value="15">15&nbsp;l</option>
+                        <option value="18">18&nbsp;l</option>
+                        <option value="24">24&nbsp;l</option>
                     </select>
                 </div>
             </div>
@@ -559,11 +608,11 @@
                         <div class="cylinder-fill" id="cylinderFill"></div>
                         <div class="cylinder-overlay">
                             <span class="cyl-pressure" id="cylPressure">189.1&nbsp;bar</span>
-                            <span class="cyl-temp" id="cylTemp">4 &deg;C</span>
+                            <span class="cyl-temp" id="cylTemp">4&nbsp;&deg;C</span>
                         </div>
                     </div>
                     <div class="cylinder-stats">
-                        <div class="volume" id="cylVolume">12&nbsp;L</div>
+                        <div class="volume" id="cylVolume">12&nbsp;l</div>
                     </div>
                 </div>
             </div>
@@ -594,13 +643,13 @@
                 <div class="result-card">
                     <div class="result-label" data-i18n="gasLaw.diveTimeChange">Dive Time Change at 20&nbsp;m</div>
                     <div class="result-value" id="timeChange">—</div>
-                    <div class="result-sub" data-i18n="gasLaw.diveTimeSub">Surface Air Consumption 20&nbsp;L/min at 3&nbsp;bar (1+20/10)</div>
+                    <div class="result-sub" data-i18n="gasLaw.diveTimeSub">Surface Air Consumption 20&nbsp;l/min at 3&nbsp;bar (1+20/10)</div>
                 </div>
             </div>
 
             <!-- Safety indicator -->
-            <div class="safety-indicator safe" id="safetyIndicator">
-                Within working pressure (200&nbsp;bar rated)
+            <div class="safety-indicator safe" id="safetyIndicator" data-i18n="gasLaw.safety.initial">
+                Cylinder maximum working pressure: 200&nbsp;bar.
             </div>
 
             <!-- Temperature scale -->
@@ -637,7 +686,7 @@
                 <div class="formula formula-basic">
                     <var>p</var><sub>1</sub> / <var>T</var><sub>1</sub> = <var>p</var><sub>2</sub> / <var>T</var><sub>2</sub>
                 </div>
-                <div class="formula-basic-note" data-i18n="gasLaw.formulaNote">pressure / temperature ratio is constant at constant volume (T in Kelvin)</div>
+                <div class="formula-basic-note" data-i18n="gasLaw.formulaNote">pressure / temperature ratio is constant at constant volume (<var>T</var> in kelvins)</div>
                 <div class="formula-rearranged-label" data-i18n="gasLaw.formulaRearranged">Rearranged:</div>
                 <div class="formula formula-general">
                     <var>p</var><sub>2</sub> = <var>p</var><sub>1</sub> &times; <var>T</var><sub>2</sub> / <var>T</var><sub>1</sub>
@@ -645,6 +694,20 @@
                 <div class="formula formula-step" id="formulaKelvin"></div>
                 <div class="formula formula-computed" id="formulaComputed"></div>
             </div>
+
+            <details class="advanced-section model-limitations-details" id="modelLimitationsDetails">
+                <summary data-i18n="gasLaw.modelLimitations.summary">Accuracy and limits of this model</summary>
+                <div class="model-limitations-body">
+                    <p data-i18n="gasLaw.modelLimitations.intro">This sandbox intentionally uses a simple ideal-gas model to demonstrate the effect of temperature on pressure.</p>
+                    <ul>
+                        <li data-i18n="gasLaw.modelLimitations.pressureReference"><strong>Pressure reference:</strong> Gay-Lussac's law strictly uses absolute pressure, while a cylinder gauge shows pressure above the atmosphere. Using the gauge reading directly is a small high-pressure approximation.</li>
+                        <li data-i18n="gasLaw.modelLimitations.realGas"><strong>Real gas:</strong> At high cylinder pressures, air and nitrox no longer behave as ideal gases. Their compressibility depends on pressure, temperature, and composition, and can affect the result more than the pressure-reference approximation.</li>
+                        <li data-i18n="gasLaw.modelLimitations.thermalState"><strong>Temperature:</strong> The calculation assumes a uniform gas temperature and thermal equilibrium. A recently filled or rapidly heated cylinder can have substantial temperature gradients.</li>
+                        <li data-i18n="gasLaw.modelLimitations.cylinderAndGauge"><strong>Cylinder and gauge:</strong> The cylinder's internal volume changes slightly with pressure and temperature, and the gauge itself has measurement uncertainty.</li>
+                    </ul>
+                    <p class="model-limitations-warning" data-i18n="gasLaw.modelLimitations.fire"><strong>Fire scenario:</strong> High temperature also reduces the strength of steel and aluminium cylinders. This sandbox models only an idealized pressure change; it does not assess cylinder integrity or safety in a fire.</p>
+                </div>
+            </details>
         </div>
     </div>
 
@@ -698,17 +761,18 @@
 
         // Track whether results are currently revealed
         let resultsRevealed = false;
+        const LITRE_UNIT = 'l';
 
         // === i18n strings (updated on languagechange) ===
         let i18nStrings = {
+            safetyInitial: 'Cylinder maximum working pressure: {0}\u00a0bar.',
             safetyWithin: "Pressure does not exceed the cylinder's maximum working pressure ({0}\u00a0bar).",
             safetyAbove: 'Maximum cylinder working pressure of {0}\u00a0bar exceeded. Current pressure: {1}\u00a0bar.',
             safetyDanger: 'DANGER! Current pressure of {0}\u00a0bar exceeds the cylinder test pressure of {1}\u00a0bar.',
-            tempIce: '0\u00B0C Ice',
-            tempRoom: '20\u00B0C Room',
-            tempBody: '37\u00B0C Body',
-            tempHotCar: '60\u00B0C Hot car',
-            liters: 'L'
+            tempIce: '0\u00a0\u00B0C Ice',
+            tempRoom: '20\u00a0\u00B0C Room',
+            tempBody: '37\u00a0\u00B0C Body',
+            tempHotCar: '60\u00a0\u00B0C Hot car'
         };
 
         /**
@@ -723,6 +787,7 @@
                 const data = await resp.json();
                 const gl = data.gasLaw;
                 if (!gl) return;
+                i18nStrings.safetyInitial = gl.safety?.initial || i18nStrings.safetyInitial;
                 i18nStrings.safetyWithin = gl.safety?.withinWorking || i18nStrings.safetyWithin;
                 i18nStrings.safetyAbove = gl.safety?.aboveWorking || i18nStrings.safetyAbove;
                 i18nStrings.safetyDanger = gl.safety?.danger || i18nStrings.safetyDanger;
@@ -730,7 +795,6 @@
                 i18nStrings.tempRoom = gl.tempRefs?.room || i18nStrings.tempRoom;
                 i18nStrings.tempBody = gl.tempRefs?.body || i18nStrings.tempBody;
                 i18nStrings.tempHotCar = gl.tempRefs?.hotCar || i18nStrings.tempHotCar;
-                i18nStrings.liters = gl.units?.liters || i18nStrings.liters;
             } catch (_) { /* keep defaults */ }
         }
 
@@ -739,12 +803,14 @@
             if (resultsRevealed) {
                 update();
             } else {
+                updateCylinderInitialState();
                 updateTempScale(parseFloat(t1Input.value) || 0, parseFloat(t2Input.value) || 0);
             }
         });
 
         // Initial load of i18n strings
         loadGasLawStrings().then(() => {
+            updateCylinderInitialState();
             updateTempScale(parseFloat(t1Input.value) || 0, parseFloat(t2Input.value) || 0);
         });
 
@@ -862,11 +928,13 @@
 
             // T1 marker
             const t1Pos = getTempPosition(t1C);
-            markersHTML += `<div class="temp-marker t1-marker" style="left:${t1Pos}%" data-label="T\u2081 ${t1C}\u00a0\u00B0C"></div>`;
+            const t1EdgeClass = t1Pos < 8 ? ' edge-left' : t1Pos > 92 ? ' edge-right' : '';
+            markersHTML += `<div class="temp-marker t1-marker${t1EdgeClass}" style="left:${t1Pos}%" data-label="T\u2081 ${fmtNum(t1C)}\u00a0\u00B0C"></div>`;
 
             // T2 marker
             const t2Pos = getTempPosition(t2C);
-            markersHTML += `<div class="temp-marker t2-marker" style="left:${t2Pos}%" data-label="T\u2082 ${t2C}\u00a0\u00B0C"></div>`;
+            const t2EdgeClass = t2Pos < 8 ? ' edge-left' : t2Pos > 92 ? ' edge-right' : '';
+            markersHTML += `<div class="temp-marker t2-marker${t2EdgeClass}" style="left:${t2Pos}%" data-label="T\u2082 ${fmtNum(t2C)}\u00a0\u00B0C"></div>`;
 
             tempBar.innerHTML = markersHTML;
 
@@ -877,6 +945,25 @@
                 refsHTML += `<span class="temp-ref" style="left:${pos}%">${ref.label}</span>`;
             }
             tempRefLabels.innerHTML = refsHTML;
+            hideOverlappingTemperatureReferences();
+        }
+
+        /**
+         * Keep reference labels readable when an expanded scale compresses
+         * ordinary temperatures into a narrow part of the bar.
+         */
+        function hideOverlappingTemperatureReferences() {
+            const labels = [...tempRefLabels.querySelectorAll('.temp-ref')];
+            let previousRight = -Infinity;
+            for (const label of labels) {
+                label.hidden = false;
+                const rect = label.getBoundingClientRect();
+                if (rect.left < previousRight + 8) {
+                    label.hidden = true;
+                } else {
+                    previousRight = rect.right;
+                }
+            }
         }
 
         /**
@@ -910,8 +997,10 @@
             cylinderFill.style.height = fillPercent + '%';
             cylinderFill.style.background = getFillColor(t1C);
             cylPressure.textContent = fmtNum(p1, 1) + '\u00a0bar';
-            cylTemp.textContent = t1C + '\u00a0\u00B0C';
-            cylVolume.textContent = vol + '\u00a0' + i18nStrings.liters;
+            cylTemp.textContent = fmtNum(t1C) + '\u00a0\u00B0C';
+            cylVolume.textContent = fmtNum(vol) + '\u00a0' + LITRE_UNIT;
+            safetyIndicator.className = 'safety-indicator safe';
+            safetyIndicator.textContent = i18nStrings.safetyInitial.replace('{0}', fmtNum(WORKING_PRESSURE));
         }
 
         /**
@@ -931,10 +1020,10 @@
             // Volume change at a reference pressure of 1 bar.
             const gasChangeLiters = deltaP * vol;
 
-            // Time at 20m: ambient = 3 bar, SAC = 20 L/min
-            const sacRate = 20; // L/min
-            const ambient = 3;  // bar at 20m
-            const consumptionRate = sacRate * ambient; // 60 L/min real gas
+            // Time at 20 m: ambient = 3 bar, SAC = 20 l/min
+            const sacRate = 20; // l/min
+            const ambient = 3;  // bar at 20 m
+            const consumptionRate = sacRate * ambient; // 60 l/min real gas
             const timeDelta = gasChangeLiters / consumptionRate;
 
             // === Update cylinder ===
@@ -943,8 +1032,8 @@
             cylinderFill.style.height = fillPercent + '%';
             cylinderFill.style.background = getFillColor(t2C);
             cylPressure.textContent = fmtNum(p2, 1) + '\u00a0bar';
-            cylTemp.textContent = t2C + '\u00a0\u00B0C';
-            cylVolume.textContent = vol + '\u00a0' + i18nStrings.liters;
+            cylTemp.textContent = fmtNum(t2C) + '\u00a0\u00B0C';
+            cylVolume.textContent = fmtNum(vol) + '\u00a0' + LITRE_UNIT;
 
             // === Result cards ===
             finalPressureEl.textContent = fmtNum(p2, 1) + '\u00a0bar';
@@ -954,9 +1043,9 @@
             deltaPEl.className = 'result-value ' + (deltaP >= 0 ? 'positive' : 'negative');
 
             const glSign = gasChangeLiters >= 0 ? '+' : '';
-            gasChangeEl.textContent = glSign + fmtNum(gasChangeLiters, 0) + '\u00a0' + i18nStrings.liters;
+            gasChangeEl.textContent = glSign + fmtNum(gasChangeLiters, 0) + '\u00a0' + LITRE_UNIT;
             gasChangeEl.className = 'result-value ' + (gasChangeLiters >= 0 ? 'positive' : 'negative');
-            gasChangeSub.innerHTML = `${dpSign}${fmtNum(deltaP, 1)}\u00a0bar &times; ${vol}\u00a0${i18nStrings.liters} &divide; 1\u00a0bar`;
+            gasChangeSub.innerHTML = `${dpSign}${fmtNum(deltaP, 1)}\u00a0bar &times; ${fmtNum(vol)}\u00a0${LITRE_UNIT} &divide; 1\u00a0bar`;
 
             const tSign = timeDelta >= 0 ? '+' : '';
             timeChangeEl.textContent = tSign + fmtNum(timeDelta, 1) + '\u00a0min';
@@ -981,11 +1070,11 @@
 
             // === Formula ===
             formulaKelvin.innerHTML =
-                `<var>T</var><sub>1</sub> = ${t1C}\u00a0\u00B0C + ${fmtNum(273.15, 2)} = ${fmtNum(t1K, 2)}\u00a0K &nbsp;&nbsp;|&nbsp;&nbsp; ` +
-                `<var>T</var><sub>2</sub> = ${t2C}\u00a0\u00B0C + ${fmtNum(273.15, 2)} = ${fmtNum(t2K, 2)}\u00a0K`;
+                `<var>T</var><sub>1</sub> = ${fmtNum(t1C)}\u00a0\u00B0C + ${fmtNum(273.15, 2)} = ${fmtNum(t1K, 2)}\u00a0K &nbsp;&nbsp;|&nbsp;&nbsp; ` +
+                `<var>T</var><sub>2</sub> = ${fmtNum(t2C)}\u00a0\u00B0C + ${fmtNum(273.15, 2)} = ${fmtNum(t2K, 2)}\u00a0K`;
 
             formulaComputed.innerHTML =
-                `<var>p</var><sub>2</sub> = ${p1} &times; ${fmtNum(t2K, 2)} / ${fmtNum(t1K, 2)} = <strong>${fmtNum(p2, 1)}\u00a0bar</strong>`;
+                `<var>p</var><sub>2</sub> = ${fmtNum(p1)} &times; ${fmtNum(t2K, 2)} / ${fmtNum(t1K, 2)} = <strong>${fmtNum(p2, 1)}\u00a0bar</strong>`;
         }
 
         // === Input syncing ===

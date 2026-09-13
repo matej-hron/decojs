@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
     <title>Schreiner Equation — Deco Theory</title>
 
     <!-- PWA -->
@@ -17,6 +18,8 @@
         /* Page-specific layout — accumulates over tasks. */
         .haldane-layout {
             max-width: 1100px;
+            width: 100%;
+            box-sizing: border-box;
             margin: 0 auto;
             padding: 1rem;
             padding-bottom: 150px;   /* leave space for the fixed bottom control bar */
@@ -38,7 +41,7 @@
             align-items: center;
             transition: transform 0.2s ease;
         }
-        .sandbox-control-bar.collapsed { transform: translateY(calc(100% - 32px)); }
+        .sandbox-control-bar.collapsed { transform: translateY(100%); }
         .sandbox-control-bar-toggle {
             position: absolute;
             top: -28px;
@@ -135,13 +138,79 @@
             font-variant-numeric: tabular-nums;
         }
         @media (max-width: 700px) {
+            .equation-model-comparison,
+            .equation-mental-model {
+                padding: 0.65rem 0.7rem;
+            }
+            .equation-model-comparison h2,
+            .equation-mental-model h2 {
+                margin-bottom: 0.45rem;
+            }
+            .equation-model-grid {
+                gap: 0.4rem;
+            }
+            .equation-model-card {
+                padding: 0.45rem 0.6rem;
+            }
+            .equation-model-card h3 {
+                margin-bottom: 0.2rem;
+            }
+            .equation-model-card ul {
+                font-size: 0.82rem;
+                line-height: 1.3;
+            }
+            .equation-model-card li {
+                margin: 0.12rem 0;
+            }
+            .chart-heading {
+                font-size: 0.92rem;
+                line-height: 1.25;
+            }
             .sandbox-control-bar {
                 gap: 0.3rem 0.6rem;
                 padding: 0.35rem 0.55rem;
             }
-            .sandbox-control-bar .ctrl input[type="range"] { width: 130px; }
-            .sandbox-control-bar .ctrl { min-width: 90px; }
-            .sandbox-control-bar .outputs { margin-left: 0; }
+            .sandbox-control-bar:not(.collapsed) {
+                flex-direction: column;
+                flex-wrap: nowrap;
+                align-items: stretch;
+                max-height: 75vh;
+                overflow-x: clip;
+                overflow-y: auto;
+                padding-top: 2.1rem;
+            }
+            .sandbox-control-bar:not(.collapsed) .sandbox-control-bar-toggle {
+                position: sticky;
+                top: 0;
+                right: auto;
+                align-self: flex-end;
+                margin-top: -1.8rem;
+                z-index: 1;
+            }
+            .sandbox-control-bar .ctrl,
+            .sandbox-control-bar .ctrl-static,
+            .sandbox-control-bar .outputs {
+                width: 100%;
+                min-width: 0;
+                margin-left: 0;
+                box-sizing: border-box;
+            }
+            .sandbox-control-bar .ctrl input[type="range"],
+            .sandbox-control-bar .ctrl input[type="number"],
+            .sandbox-control-bar .ctrl-static select {
+                width: 100%;
+                max-width: none;
+                box-sizing: border-box;
+            }
+            .sandbox-control-bar .step-btns {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .sandbox-control-bar .outputs {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            .sandbox-control-bar .out-chip { min-width: 0; }
         }
 
         .haldane-formula {
@@ -154,6 +223,14 @@
             font-family: ui-monospace, "SF Mono", Menlo, monospace;
         }
         .formula-symbolic { font-size: 1.4rem; line-height: 2.2; }
+        .formula-words {
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+            font-family: var(--font-body);
+            font-size: 0.92rem;
+            line-height: 1.55;
+        }
+        .formula-words strong { color: var(--text-color); }
         .formula-substituted { font-size: 1rem; color: var(--text-muted); margin-top: 0.4rem; }
         .formula-substituted strong { color: #e67e22; font-size: 1.05em; }
         .term { display: inline-block; padding: 1px 5px; border-radius: 3px; }
@@ -189,51 +266,44 @@
             line-height: 1.45;
         }
         .term-card.palv { border-top-color: #2980b9; }
-        .term-card.pt0  { border-top-color: #e74c3c; }
+        .term-card.pt0  { border-top-color: #e67e22; }
+        .term-card.pt,
+        .term-card.derivative { border-top-color: #e67e22; }
+        .term-card.delta { border-top-color: #16a085; }
         .term-card.r    { border-top-color: #16a085; }
         .term-card.k    { border-top-color: #27ae60; }
+        .term-card.half-time { border-top-color: #27ae60; }
         .term-card.exp  { border-top-color: #9b59b6; }
         .term-card .name    { font-family: ui-monospace, monospace; font-weight: 600; font-size: 0.95rem; }
         .term-card .formula { font-family: ui-monospace, monospace; color: var(--text-muted); font-size: 0.82rem; margin-top: 0.25rem; }
         .term-card .value   { font-family: ui-monospace, monospace; font-weight: 700; color: #2980b9; font-size: 1rem; margin-top: 0.4rem; }
         .term-card .why     { color: var(--text-muted); font-size: 0.8rem; font-style: italic; margin-top: 0.4rem; }
 
-        .decomp-section { margin-bottom: 1rem; }
-        .decomp-header {
-            font-size: 0.78rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            margin-bottom: 0.4rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+        .primary-explanation {
+            padding: 0.65rem 0.75rem;
+            border-left: 4px solid #2980b9;
+            background: rgba(41, 128, 185, 0.08);
+            color: var(--text-color) !important;
         }
-        .decomp-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.6rem;
-        }
-        @media (max-width: 700px) {
-            .decomp-row { grid-template-columns: 1fr; }
-        }
-        .decomp-card {
-            background: var(--card-background);
+
+        .advanced-section {
+            margin: 0.75rem 0 1rem;
+            padding: 0.25rem 0.75rem;
             border: 1px solid var(--border-color);
-            border-top: 2px dashed rgba(127, 140, 141, 0.5);
             border-radius: 4px;
-            padding: 0.55rem 0.7rem;
-            font-size: 0.85rem;
-            line-height: 1.45;
+            background: var(--card-background);
+            min-width: 0;
         }
-        .decomp-card .name    { font-family: ui-monospace, monospace; font-weight: 600; font-size: 0.92rem; color: var(--text-color); }
-        .decomp-card .formula { font-family: ui-monospace, monospace; color: var(--text-muted); font-size: 0.8rem; margin-top: 0.25rem; }
-        .decomp-card .value   { font-family: ui-monospace, monospace; font-weight: 700; color: var(--text-color); font-size: 0.95rem; margin-top: 0.4rem; }
-        .decomp-card .why     { color: var(--text-muted); font-size: 0.78rem; font-style: italic; margin-top: 0.4rem; }
-        .decomp-sum {
-            text-align: center;
-            font-family: ui-monospace, monospace;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-top: 0.6rem;
+        .advanced-section > summary {
+            cursor: pointer;
+            padding: 0.45rem 0;
+            font-weight: 600;
+        }
+        .advanced-section .formula-symbolic,
+        .advanced-section .formula-substituted {
+            max-width: 100%;
+            overflow-x: auto;
+            white-space: nowrap;
         }
 
         .time-row {
@@ -271,8 +341,168 @@
             border-radius: var(--radius);
             padding: 0.5rem;
             margin-bottom: 1rem;
+            min-width: 0;
         }
-        #ptChart { width: 100%; height: 140px; display: block; }
+        .chart-heading { margin: 0 0 0.25rem; font-size: 1rem; }
+        .chart-explanation { margin: 0 0 0.5rem; color: var(--text-muted); font-size: 0.86rem; }
+        #ptChart { width: 100%; height: 230px; display: block; }
+        .chart-line-label { font-size: 13px; font-weight: 600; paint-order: stroke; stroke: var(--card-background); stroke-width: 4px; }
+        .chart-axis-label { font-size: 12px; fill: var(--text-muted); }
+        .chart-direction-label { font-size: 13px; font-weight: 700; fill: var(--text-color); }
+        .chart-delta-label { font-size: 12px; font-weight: 700; fill: #16a085; paint-order: stroke; stroke: var(--card-background); stroke-width: 4px; }
+
+        .contribution-model {
+            margin: 0.85rem 0;
+        }
+        .contribution-model > h2 {
+            margin-bottom: 0.25rem;
+        }
+        .contribution-model > p {
+            margin-top: 0;
+            color: var(--text-muted);
+        }
+        .contribution-steps {
+            display: grid;
+            gap: 0.65rem;
+            margin: 0.85rem 0;
+        }
+        .contribution-step {
+            --contribution-color: var(--border-color);
+            min-width: 0;
+            padding: 0.75rem 0.85rem;
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--contribution-color);
+            border-radius: 4px;
+            background: var(--background-color);
+        }
+        .contribution-step.initial,
+        .contribution-origin.initial { --contribution-color: #e67e22; color: #e67e22; }
+        .contribution-step.haldane,
+        .contribution-origin.haldane { --contribution-color: #2980b9; color: #2980b9; }
+        .contribution-step.moving,
+        .contribution-origin.moving { --contribution-color: #9b59b6; color: #9b59b6; }
+        .contribution-step h3 {
+            margin: 0 0 0.35rem;
+            color: var(--contribution-color);
+            font-size: 0.98rem;
+        }
+        .contribution-step .step-formula,
+        .equation-scroll {
+            max-width: 100%;
+            overflow-x: auto;
+            padding: 0.35rem 0;
+            color: var(--text-color);
+            font-family: ui-monospace, "SF Mono", Menlo, monospace;
+            font-size: 1.05rem;
+            white-space: nowrap;
+        }
+        .contribution-step .step-live-value {
+            display: inline-flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+            margin: 0.2rem 0;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            background: rgba(127, 140, 141, 0.08);
+            color: var(--text-color);
+            font-family: ui-monospace, "SF Mono", Menlo, monospace;
+            font-size: 0.88rem;
+            font-variant-numeric: tabular-nums;
+        }
+        .contribution-step.initial .step-live-value { background: rgba(230, 126, 34, 0.1); }
+        .contribution-step.haldane .step-live-value { background: rgba(41, 128, 185, 0.1); }
+        .contribution-step.moving .step-live-value { background: rgba(155, 89, 182, 0.1); }
+        .contribution-step .step-live-value > span:first-child {
+            color: var(--contribution-color);
+            font-family: var(--font-body);
+            font-weight: 600;
+        }
+        .contribution-step p {
+            margin: 0.25rem 0;
+        }
+        .contribution-calculation {
+            display: grid;
+            gap: 0.2rem;
+            margin: 0.45rem 0;
+            padding: 0.55rem 0.65rem;
+            border-radius: 4px;
+            background: rgba(127, 140, 141, 0.07);
+            font-family: ui-monospace, "SF Mono", Menlo, monospace;
+            font-size: 0.88rem;
+            font-variant-numeric: tabular-nums;
+        }
+        .haldane-bridge {
+            margin-top: 0.55rem;
+            padding: 0.55rem 0.65rem;
+            border-radius: 4px;
+            border-left: 3px solid #2980b9;
+            background: rgba(41, 128, 185, 0.08);
+            font-size: 0.86rem;
+        }
+        .haldane-bridge strong { color: #2980b9; }
+        .contribution-sum {
+            min-width: 0;
+            margin: 0.85rem 0;
+            padding: 0.8rem 0.9rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--card-background);
+        }
+        .contribution-sum h3 {
+            margin: 0 0 0.35rem;
+        }
+        .contribution-sum .numeric-sum {
+            margin-top: 0.45rem;
+            padding: 0.55rem 0.65rem;
+            border-radius: 4px;
+            background: rgba(127, 140, 141, 0.08);
+            font-family: ui-monospace, "SF Mono", Menlo, monospace;
+            font-size: 0.95rem;
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+        .contribution-origin {
+            font-weight: 700;
+        }
+        .algebra-steps {
+            display: grid;
+            gap: 0.75rem;
+            margin: 0.65rem 0;
+        }
+        .algebra-step {
+            min-width: 0;
+            padding: 0.65rem 0.75rem;
+            border-left: 3px solid var(--border-color);
+            background: var(--background-color);
+        }
+        .algebra-step h3 {
+            margin: 0 0 0.3rem;
+            font-size: 0.9rem;
+        }
+        .algebra-cancel {
+            text-decoration: line-through;
+            text-decoration-thickness: 2px;
+        }
+        .contribution-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem 0.8rem;
+            margin: 0.5rem 0;
+            font-size: 0.82rem;
+        }
+        .contribution-legend span::before {
+            content: "";
+            display: inline-block;
+            width: 0.65rem;
+            height: 0.65rem;
+            margin-right: 0.3rem;
+            border-radius: 2px;
+            background: currentColor;
+        }
+        .math-origin {
+            font-size: 0.9rem;
+        }
 
         .mvalue-section {
             background: var(--background-color);
@@ -378,6 +608,12 @@
             margin-top: 0.4rem;
         }
         .mvalue-derivation strong { color: #e67e22; }
+        @media (max-width: 700px) {
+            .chart-line-label { font-size: 17px; }
+            .chart-delta-label,
+            .chart-axis-label { font-size: 15px; }
+            .chart-direction-label { font-size: 16px; }
+        }
     </style>
 </head>
 <body data-i18n-title="nav.sandbox.schreiner" data-i18n-title-context="nav.sandbox.label">
@@ -407,26 +643,206 @@
     <!-- Layout -->
     <div class="haldane-layout">
 
-        <!-- Live formula -->
-        <div class="haldane-formula">
-            <div class="formula-symbolic">
-                <span class="term term-result"><var>p</var><sub>t</sub>(t)</span> =
-                <span class="term term-palv"><var>p</var><sub>alv,0</sub></span> +
-                <span class="term term-r">R</span> ·
-                (<span class="term term-t">t</span> − 1/<span class="term term-k">k</span>) −
-                (<span class="term term-palv"><var>p</var><sub>alv,0</sub></span> −
-                <span class="term term-pt0"><var>p</var><sub>t,0</sub></span> −
-                <span class="term term-r">R</span>/<span class="term term-k">k</span>) ·
-                e<sup>−<span class="term term-k">k</span><span class="term term-t">t</span></sup>
+        <section class="equation-model-comparison">
+            <h2 data-i18n="sandbox.equationComparison.title">Two targets, two equations</h2>
+            <div class="equation-model-grid">
+                <article class="equation-model-card">
+                    <h3 data-i18n="sandbox.equationComparison.haldane.title">Haldane — fixed target</h3>
+                    <ul>
+                        <li data-i18n="sandbox.equationComparison.haldane.step">At <var>t</var> = 0, alveolar pressure is set to a new value.</li>
+                        <li data-i18n="sandbox.equationComparison.haldane.constant">It then remains constant.</li>
+                        <li data-i18n="sandbox.equationComparison.haldane.tissue">The tissue approaches it exponentially.</li>
+                    </ul>
+                </article>
+                <article class="equation-model-card active">
+                    <h3 data-i18n="sandbox.equationComparison.schreiner.title">Schreiner — moving target</h3>
+                    <ul>
+                        <li data-i18n="sandbox.equationComparison.schreiner.linear">Alveolar pressure rises or falls linearly during a depth change.</li>
+                        <li data-i18n="sandbox.equationComparison.schreiner.lag">The tissue continuously responds to the current pressure difference.</li>
+                        <li data-i18n="sandbox.equationComparison.schreiner.direction">The diver's direction alone does not determine whether the tissue is on-gassing or off-gassing.</li>
+                    </ul>
+                </article>
             </div>
-            <div class="formula-substituted">
-                <strong id="ptValue">…</strong>&nbsp;bar = <span id="palv0Num">…</span>
-                + <span id="rNum">…</span> · (<span id="tNum1">…</span> − 1/<span id="kNum1">…</span>)
-                − (<span id="palv0Num2">…</span> − <span id="pt0Num">…</span> − <span id="rNum2">…</span>/<span id="kNum2">…</span>) · <span id="expNum">…</span>
-            </div>
-        </div>
+        </section>
 
-        <!-- Term cards -->
+        <section class="equation-mental-model">
+            <h2 data-i18n="sandbox.schreiner.mental.title">Situation: the equilibrium target moves</h2>
+            <p data-i18n="sandbox.schreiner.mental.intro">During descent or ascent, alveolar pressure changes linearly while tissue pressure responds progressively according to the compartment half-time.</p>
+            <p class="primary-explanation" data-i18n="sandbox.schreiner.mental.simpleExplanation"><strong>Start with the tissue's initial pressure.</strong> In the basic equilibrium example the initial Haldane contribution is zero, so only the response to the moving alveolar target is added.</p>
+            <div class="chart-row">
+                <h3 class="chart-heading" data-i18n="sandbox.schreiner.chart.title">Alveolar pressure, tissue pressure, and their current difference</h3>
+                <p class="chart-explanation" data-i18n="sandbox.schreiner.chart.explanation">Both curves use the same real pressure scale. The green segment shows the current difference that drives the tissue response.</p>
+                <svg id="ptChart" viewBox="0 0 640 220" role="img" aria-label="Alveolar pressure, tissue pressure, and their current difference over time">
+                    <line x1="48" y1="190" x2="628" y2="190" stroke="currentColor" stroke-width="1"/>
+                    <line x1="48" y1="12" x2="48" y2="190" stroke="currentColor" stroke-width="1"/>
+                    <path id="chartPalv" fill="none" stroke="#2980b9" stroke-width="3"/>
+                    <path id="chartCurve" fill="none" stroke="#e67e22" stroke-width="3"/>
+                    <line id="chartDelta" stroke="#16a085" stroke-width="3"/>
+                    <circle id="chartDeltaPalv" r="4" fill="#16a085"/>
+                    <circle id="chartDeltaTissue" r="4" fill="#16a085"/>
+                    <text id="chartDeltaLabel" class="chart-delta-label"></text>
+                    <text id="chartExchangeLabel" class="chart-delta-label"></text>
+                    <g id="chartTicks"></g>
+                    <text id="chartPalvLabel" class="chart-line-label" fill="#2980b9" data-i18n="sandbox.schreiner.chart.alveolar">alveolar pressure</text>
+                    <text id="chartTissueLabel" class="chart-line-label" fill="#e67e22" data-i18n="sandbox.schreiner.chart.tissue">actual tissue pressure</text>
+                    <text id="chartDirectionLabel" class="chart-direction-label"></text>
+                    <text x="570" y="211" class="chart-axis-label" data-i18n="sandbox.schreiner.chart.timeAxis">time</text>
+                    <text x="16" y="115" class="chart-axis-label" transform="rotate(-90 16 115)" data-i18n="sandbox.schreiner.chart.pressureAxis">pressure</text>
+                </svg>
+            </div>
+            <div class="contribution-model" data-teaching-model="basic-moving-target">
+                <h2 data-i18n="sandbox.schreiner.composition.title">Basic example: initial pressure plus the response to a moving target</h2>
+                <p data-i18n="sandbox.schreiner.composition.intro">The descent starts at the surface with tissue and alveolar pressures equal. The initial-difference contribution is therefore zero.</p>
+                <div class="contribution-steps">
+                    <article class="contribution-step initial" data-contribution="initial">
+                        <h3 data-i18n="sandbox.schreiner.composition.initial.title">1. Initial tissue pressure</h3>
+                        <div class="step-formula">
+                            <var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissueInitial">t,0</sub>
+                        </div>
+                        <div class="step-live-value">
+                            <span data-i18n="sandbox.schreiner.composition.currentValue">Current value</span>:
+                            <var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissueInitial">t,0</sub> =
+                            <strong id="contributionInitialValue">…</strong>&nbsp;bar
+                        </div>
+                        <p data-i18n="sandbox.schreiner.composition.initial.explanation">The inert-gas pressure with which the tissue enters this dive segment.</p>
+                    </article>
+
+                    <div class="haldane-bridge" id="initialEquilibriumNote">
+                        <strong data-i18n="sandbox.schreiner.composition.equilibrium.title">The basic example starts in equilibrium</strong>
+                        <p data-i18n="sandbox.schreiner.composition.equilibrium.explanation"><var>p</var><sub>alv,0</sub> = <var>p</var><sub>t,0</sub>, so the initial pressure difference and its Haldane contribution are both zero.</p>
+                    </div>
+
+                    <article class="contribution-step moving" data-contribution="moving">
+                        <h3 data-i18n="sandbox.schreiner.composition.moving.title">2. Reaction to the moving target</h3>
+                        <div class="step-formula">
+                            <var>R</var> · [<var>t</var> −
+                            (1 − e<sup>−<var>k</var><var>t</var></sup>)/<var>k</var>]
+                        </div>
+                        <p data-i18n="sandbox.schreiner.composition.moving.explanation">Alveolar pressure does not remain at its initial value. This term adds the effect of its continuous linear movement.</p>
+                        <p data-i18n="sandbox.schreiner.composition.moving.smallChanges">Imagine the moving target as many small pressure changes. The tissue responds to each one in the same exponential way as in Haldane's equation; their sum forms this correction.</p>
+                        <div class="step-live-value">
+                            <span data-i18n="sandbox.schreiner.composition.moving.contribution">Moving-target correction</span>:
+                            <strong id="movingContributionValue">…</strong>&nbsp;bar
+                        </div>
+                        <p data-i18n="sandbox.schreiner.composition.moving.zeroNote">For <var>R</var> = 0 this contribution is exactly zero. It is a signed contribution to tissue change, not a separate pressure or limit.</p>
+                    </article>
+                </div>
+
+                <div class="contribution-sum">
+                    <h3 data-i18n="sandbox.schreiner.composition.sum.title">Resulting tissue pressure</h3>
+                    <div class="equation-scroll">
+                        <var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissue">t</sub>(<var>t</var>) =
+                        <span class="contribution-origin initial"><var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissueInitial">t,0</sub></span> +
+                        <span class="contribution-origin haldane" id="sumHaldaneLabel" hidden><span data-i18n="sandbox.schreiner.composition.sum.haldaneLabel">Haldane contribution</span> +</span>
+                        <span class="contribution-origin moving" data-i18n="sandbox.schreiner.composition.sum.movingLabel">moving-target correction</span>
+                    </div>
+                    <div class="numeric-sum">
+                        <var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissue">t</sub>(<var>t</var>) =
+                        <span class="contribution-origin initial"><span id="sumInitialValue">…</span>&nbsp;bar</span> +
+                        <span class="contribution-origin haldane" id="sumHaldaneNumeric" hidden><span id="sumHaldaneValue">…</span>&nbsp;bar +</span>
+                        <span class="contribution-origin moving"><span id="sumMovingValue">…</span>&nbsp;bar</span> =
+                        <strong id="sumResultValue">…</strong>&nbsp;bar
+                    </div>
+                    <p data-i18n="sandbox.schreiner.composition.sum.explanation">The displayed result is calculated by the existing Schreiner implementation; the three educational contributions sum to the same value.</p>
+                </div>
+            </div>
+            <p data-i18n="sandbox.schreiner.mental.initialStateNote">The selected initial state represents the state that would be passed in from the preceding dive segment in a complete profile; this page constructs that state from the chosen equilibrium preset.</p>
+            <p class="model-note" data-i18n="sandbox.schreiner.mental.rateNote"><var>R</var> is the rate of change of alveolar pressure in bar/min, not the depth rate in m/min shown in the controls.</p>
+        </section>
+
+        <details class="advanced-section general-case">
+            <summary data-i18n="sandbox.schreiner.general.summary">General case: the tissue may start away from equilibrium</summary>
+            <p data-i18n="sandbox.schreiner.general.explanation">In a complete dive profile, tissue pressure at the start of a new segment need not equal current alveolar pressure. The general teaching form therefore also contains the Haldane contribution from the initial pressure difference.</p>
+            <div class="equation-scroll">
+                <var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissue">t</sub>(<var>t</var>) =
+                <span class="contribution-origin initial"><var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissueInitial">t,0</sub></span> +
+                <span class="contribution-origin haldane">(<var>p</var><sub>alv,0</sub> − <var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissueInitial">t,0</sub>) · (1 − e<sup>−<var>k</var><var>t</var></sup>)</span> +
+                <span class="contribution-origin moving"><var>R</var> · [<var>t</var> − (1 − e<sup>−<var>k</var><var>t</var></sup>)/<var>k</var>]</span>
+            </div>
+            <div class="contribution-calculation">
+                <span><span data-i18n="sandbox.schreiner.composition.haldane.initialDifference">Initial difference</span>:
+                    <strong id="initialDifferenceValue">…</strong>&nbsp;bar</span>
+                <span><span data-i18n="sandbox.schreiner.composition.haldane.completedFraction">Completed fraction</span>:
+                    <strong id="completedFractionValue">…</strong></span>
+                <span><span data-i18n="sandbox.schreiner.composition.haldane.contribution">Haldane contribution</span>:
+                    <strong id="haldaneContributionValue">…</strong>&nbsp;bar</span>
+            </div>
+            <div class="haldane-bridge">
+                <strong data-i18n="sandbox.schreiner.composition.haldane.bridgeTitle">Direct link to Haldane</strong>
+                <div class="equation-scroll">
+                    <var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissue">t</sub>(<var>t</var>) =
+                    <var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissueInitial">t,0</sub> +
+                    (<var>p</var><sub>alv,0</sub> −
+                    <var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissueInitial">t,0</sub>) ·
+                    (1 − e<sup>−<var>k</var><var>t</var></sup>)
+                </div>
+                <p data-i18n="sandbox.schreiner.composition.haldane.bridgeExplanation">This is the teaching form of Haldane's equation for the fixed initial alveolar target.</p>
+            </div>
+        </details>
+
+        <details class="advanced-section algebra-derivation">
+            <summary data-i18n="sandbox.schreiner.derivation.summary">How the teaching form becomes the canonical equation</summary>
+            <p data-i18n="sandbox.schreiner.derivation.intro">Expand the two brackets, cancel equal opposite terms, and group the remaining exponential terms.</p>
+            <div class="contribution-legend">
+                <span class="contribution-origin initial" data-i18n="sandbox.schreiner.composition.initial.short">initial state</span>
+                <span class="contribution-origin haldane" data-i18n="sandbox.schreiner.composition.haldane.short">Haldane contribution</span>
+                <span class="contribution-origin moving" data-i18n="sandbox.schreiner.composition.moving.short">moving-target correction</span>
+            </div>
+            <div class="algebra-steps">
+                <div class="algebra-step" data-algebra-step="teaching">
+                    <h3 data-i18n="sandbox.schreiner.derivation.teaching">Teaching form</h3>
+                    <div class="equation-scroll">
+                        <var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissue">t</sub>(<var>t</var>) =
+                        <span class="contribution-origin initial"><var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissueInitial">t,0</sub></span> +
+                        <span class="contribution-origin haldane">(<var>p</var><sub>alv,0</sub> − <var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissueInitial">t,0</sub>) · (1 − e<sup>−<var>k</var><var>t</var></sup>)</span> +
+                        <span class="contribution-origin moving"><var>R</var> · [<var>t</var> − (1 − e<sup>−<var>k</var><var>t</var></sup>)/<var>k</var>]</span>
+                    </div>
+                </div>
+                <div class="algebra-step" data-algebra-step="expanded">
+                    <h3 data-i18n="sandbox.schreiner.derivation.expanded">Expand the brackets</h3>
+                    <div class="equation-scroll">
+                        <var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissue">t</sub>(<var>t</var>) =
+                        <span class="contribution-origin initial algebra-cancel">+<var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissueInitial">t,0</sub></span>
+                        <span class="contribution-origin haldane">+ <var>p</var><sub>alv,0</sub>
+                        <span class="algebra-cancel">− <var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissueInitial">t,0</sub></span>
+                        − (<var>p</var><sub>alv,0</sub> − <var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissueInitial">t,0</sub>)e<sup>−<var>k</var><var>t</var></sup></span>
+                        <span class="contribution-origin moving">+ <var>R</var>·<var>t</var> − <var>R</var>/<var>k</var> + (<var>R</var>/<var>k</var>)e<sup>−<var>k</var><var>t</var></sup></span>
+                    </div>
+                    <p data-i18n="sandbox.schreiner.derivation.cancellation">The terms +<var>p</var><sub>t,0</sub> and −<var>p</var><sub>t,0</sub> cancel.</p>
+                </div>
+                <div class="algebra-step" data-algebra-step="grouped">
+                    <h3 data-i18n="sandbox.schreiner.derivation.grouped">Group the terms</h3>
+                    <div class="equation-scroll">
+                        <var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissue">t</sub>(<var>t</var>) =
+                        <span class="contribution-origin haldane"><var>p</var><sub>alv,0</sub></span> +
+                        <span class="contribution-origin moving"><var>R</var>·<var>t</var> − <var>R</var>/<var>k</var></span> −
+                        (<span class="contribution-origin haldane"><var>p</var><sub>alv,0</sub> − <var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissueInitial">t,0</sub></span> −
+                        <span class="contribution-origin moving"><var>R</var>/<var>k</var></span>)e<sup>−<var>k</var><var>t</var></sup>
+                    </div>
+                </div>
+                <div class="algebra-step" data-algebra-step="canonical">
+                    <h3 data-i18n="sandbox.schreiner.derivation.canonical">Canonical form</h3>
+                    <p data-i18n="sandbox.schreiner.canonical.explanation">This closed form calculates the exact continuous tissue response without splitting the depth change into many small time steps.</p>
+                    <div class="formula-symbolic equation-scroll">
+                        <var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissue">t</sub>(<var>t</var>) =
+                        <span class="contribution-origin haldane"><var>p</var><sub>alv,0</sub></span> +
+                        <span class="contribution-origin moving"><var>R</var> · (<var>t</var> − 1/<var>k</var>)</span> −
+                        (<span class="contribution-origin haldane"><var>p</var><sub>alv,0</sub> − <var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissueInitial">t,0</sub></span> −
+                        <span class="contribution-origin moving"><var>R</var>/<var>k</var></span>) ·
+                        e<sup>−<var>k</var><var>t</var></sup>
+                    </div>
+                    <div class="formula-substituted">
+                        <strong id="ptValue">…</strong>&nbsp;bar = <span id="palv0Num">…</span>
+                        + <span id="rNum">…</span> · (<span id="tNum1">…</span> − 1/<span id="kNum1">…</span>)
+                        − (<span id="palv0Num2">…</span> − <span id="pt0Num">…</span> − <span id="rNum2">…</span>/<span id="kNum2">…</span>) · <span id="expNum">…</span>
+                    </div>
+                </div>
+            </div>
+        </details>
+
+        <!-- Symbol glossary -->
+        <details class="advanced-section">
+            <summary data-i18n="sandbox.schreiner.cards.summary">Symbol glossary</summary>
         <div class="term-row">
             <div class="term-card palv">
                 <div class="name" data-i18n="sandbox.schreiner.cards.palv0.name"><var>p</var><sub>alv,0</sub> | alveolar N<sub>2</sub> at start depth</div>
@@ -436,115 +852,112 @@
                 <div class="why" data-i18n="sandbox.schreiner.cards.palv0.why">Starting alveolar pressure. Slope-zero point of the moving alveolar source.</div>
             </div>
             <div class="term-card pt0">
-                <div class="name" data-i18n="sandbox.schreiner.cards.pt0.name"><var>p</var><sub>t,0</sub> | tissue pressure at t=0</div>
+                <div class="name" data-i18n="sandbox.schreiner.cards.pt0.name"><var>p</var><sub>t,0</sub> | tissue pressure at <var>t</var> = 0</div>
                 <div class="formula" id="pt0Symbolic">…</div>
                 <div class="formula" id="pt0Subst">…</div>
                 <div class="value"><span id="pt0Value">…</span>&nbsp;bar</div>
-                <div class="why" data-i18n="sandbox.schreiner.cards.pt0.why">Tissue assumed equilibrated at start depth → equals <var>p</var><sub>alv,0</sub>.</div>
+                <div class="why" data-i18n="sandbox.schreiner.cards.pt0.why">The selected model state represents a tissue pressure that a complete profile would pass in from its preceding segment.</div>
+            </div>
+            <div class="term-card palv">
+                <div class="name" data-i18n="sandbox.schreiner.cards.palv.name"><var>p</var><sub>alv</sub>(<var>t</var>) | current alveolar pressure</div>
+                <div class="formula">= <var>p</var><sub>alv,0</sub> + <var>R</var> · <var>t</var></div>
+                <div class="value"><span id="palvCurrentValue">…</span>&nbsp;bar</div>
+                <div class="why" data-i18n="sandbox.schreiner.cards.palv.why">The current inert-gas pressure driving exchange with the tissue.</div>
+            </div>
+            <div class="term-card pt">
+                <div class="name" data-i18n="sandbox.schreiner.cards.pt.name"><var>p</var><sub>t</sub>(<var>t</var>) | current tissue pressure</div>
+                <div class="value"><span id="ptCurrentValue">…</span>&nbsp;bar</div>
+                <div class="why" data-i18n="sandbox.schreiner.cards.pt.why">The current inert-gas pressure in the selected compartment.</div>
+            </div>
+            <div class="term-card palv">
+                <div class="name" data-i18n="sandbox.schreiner.cards.haldaneContribution.name">Haldane contribution</div>
+                <div class="formula">(<var>p</var><sub>alv,0</sub> − <var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissueInitial">t,0</sub>) · (1 − e<sup>−<var>k</var><var>t</var></sup>)</div>
+                <div class="value"><span id="cardHaldaneContributionValue">…</span>&nbsp;bar</div>
+                <div class="why" data-i18n="sandbox.schreiner.cards.haldaneContribution.why">The signed tissue change for a fixed initial alveolar target.</div>
+            </div>
+            <div class="term-card exp">
+                <div class="name" data-i18n="sandbox.schreiner.cards.movingContribution.name">Moving-target correction</div>
+                <div class="formula"><var>R</var> · [<var>t</var> − (1 − e<sup>−<var>k</var><var>t</var></sup>)/<var>k</var>]</div>
+                <div class="value"><span id="cardMovingContributionValue">…</span>&nbsp;bar</div>
+                <div class="why" data-i18n="sandbox.schreiner.cards.movingContribution.why">The signed contribution caused by the alveolar target moving during the segment.</div>
             </div>
             <div class="term-card r">
-                <div class="name" data-i18n="sandbox.schreiner.cards.r.name">R | alveolar pressure rate</div>
+                <div class="name" data-i18n="sandbox.schreiner.cards.r.name"><var>R</var> | alveolar pressure rate</div>
                 <div class="formula" id="rSymbolic">…</div>
                 <div class="formula" id="rSubst">…</div>
                 <div class="value"><span id="rValue">…</span>&nbsp;bar/min</div>
                 <div class="why" data-i18n="sandbox.schreiner.cards.r.why">Positive = descent (alveolar climbing), negative = ascent. R = 0 → equation collapses to Haldane.</div>
             </div>
             <div class="term-card k">
-                <div class="name" data-i18n="sandbox.schreiner.cards.k.name">k | rate constant</div>
+                <div class="name" data-i18n="sandbox.schreiner.cards.k.name"><var>k</var> | rate constant</div>
                 <div class="formula">= ln(2) / <var>t</var><sub>1/2</sub></div>
                 <div class="formula" id="kSubst">…</div>
                 <div class="value"><span id="kValue">…</span>&nbsp;min⁻¹</div>
                 <div class="why" data-i18n="sandbox.schreiner.cards.k.why">Faster compartments → bigger k → catch up sooner.</div>
             </div>
+            <div class="term-card half-time">
+                <div class="name" data-i18n="sandbox.schreiner.cards.halfTime.name"><var>t</var><sub>1/2</sub> | compartment half-time</div>
+                <div class="value"><span id="halfTimeValue">…</span>&nbsp;min</div>
+                <div class="why" data-i18n="sandbox.schreiner.cards.halfTime.why">A shorter half-time gives a larger rate constant and a faster response.</div>
+            </div>
             <div class="term-card exp">
-                <div class="name" data-i18n="sandbox.schreiner.cards.exp.name">e<sup>−kt</sup> | exponential decay factor</div>
-                <div class="formula">= e<sup>−k · t</sup></div>
+                <div class="name" data-i18n="sandbox.schreiner.cards.exp.name">e<sup>−<var>k</var><var>t</var></sup> | exponential decay factor</div>
+                <div class="formula">= e<sup>−<var>k</var> · <var>t</var></sup></div>
                 <div class="formula" id="expSubst">…</div>
                 <div class="value"><span id="expValue">…</span></div>
                 <div class="why" data-i18n="sandbox.schreiner.cards.exp.why">1.0&nbsp;at t=0, decays toward 0. Multiplied by the initial-disequilibrium term.</div>
             </div>
         </div>
+        </details>
 
-        <!-- Three-term decomposition (the formula's structural pieces) -->
-        <div class="decomp-section">
-            <div class="decomp-header">Three-term decomposition · the formula's structural pieces</div>
-            <div class="decomp-row">
-                <div class="decomp-card">
-                    <div class="name" data-i18n="sandbox.schreiner.decomp.moving.name">Moving alveolar source</div>
-                    <div class="formula">= <var>p</var><sub>alv,0</sub> + R · t</div>
-                    <div class="formula" id="termMovingSubst">…</div>
-                    <div class="value"><span id="termMovingValue">…</span>&nbsp;bar</div>
-                    <div class="why" data-i18n="sandbox.schreiner.decomp.moving.why">Where the alveolar source is right now (linear in t).</div>
-                </div>
-                <div class="decomp-card">
-                    <div class="name" data-i18n="sandbox.schreiner.decomp.lag.name">Phase lag (R/k)</div>
-                    <div class="formula">= R / k</div>
-                    <div class="formula" id="termLagSubst">…</div>
-                    <div class="value"><span id="termLagValue">…</span>&nbsp;bar</div>
-                    <div class="why" data-i18n="sandbox.schreiner.decomp.lag.why">How far below (ascent) or above (descent) the source a perfectly-tracking tissue would settle. Equivalent to 1/k minutes of slope.</div>
-                </div>
-                <div class="decomp-card">
-                    <div class="name" data-i18n="sandbox.schreiner.decomp.decay.name">Decaying initial gap</div>
-                    <div class="formula">= (<var>p</var><sub>alv,0</sub> − <var>p</var><sub>t,0</sub> − R/k) · e<sup>−kt</sup></div>
-                    <div class="formula" id="termDecaySubst">…</div>
-                    <div class="value"><span id="termDecayValue">…</span>&nbsp;bar</div>
-                    <div class="why" data-i18n="sandbox.schreiner.decomp.decay.why">The initial offset between actual Pt and the tracking line — settles exponentially toward zero.</div>
-                </div>
+        <details class="advanced-section math-origin">
+            <summary data-i18n="sandbox.schreiner.mathOrigin.summary">Why does the moving-target correction have this form?</summary>
+            <p data-i18n="sandbox.schreiner.mathOrigin.explanation">A linear alveolar-pressure change can be divided into many very small changes. Each occurs at a different time and therefore has a different amount of time to affect the tissue. Adding those exponential responses produces the moving-target correction.</p>
+            <p data-i18n="sandbox.schreiner.mathOrigin.equationIntro">For readers familiar with calculus, both Haldane and Schreiner solve the same differential law:</p>
+            <div class="equation-scroll">
+                d<var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissue">t</sub>/d<var>t</var> =
+                <var>k</var> · [<var>p</var><sub>alv</sub>(<var>t</var>) −
+                <var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissue">t</sub>(<var>t</var>)]
             </div>
-            <div class="decomp-sum"><var>p</var><sub>t</sub>(t) = [moving] − [phase lag] − [decaying gap]</div>
-        </div>
+        </details>
 
-        <!-- Mini Pt(t) chart -->
-        <div class="chart-row">
-            <svg id="ptChart" viewBox="0 0 480 140" preserveAspectRatio="none" aria-label="Pt over time">
-                <!-- Palv(t) — straight sloped line from Palv,0 to Palv,end -->
-                <path id="chartPalv" fill="none" stroke="#2980b9" stroke-dasharray="4 4" stroke-width="1.2" stroke-opacity="0.7"/>
-                <!-- Baseline (Pt,0) — flat dashed red -->
-                <line id="chartBaseline" x1="0" x2="480" stroke="#e74c3c" stroke-dasharray="2 4" stroke-width="1" stroke-opacity="0.5"/>
-                <!-- Curve (Pt(t)) -->
-                <path id="chartCurve" fill="none" stroke="#2c3e50" stroke-width="1.6"/>
-                <!-- Half-time ticks (drawn dynamically; may be empty for short segments) -->
-                <g id="chartTicks"></g>
-                <!-- Cursor -->
-                <line id="chartCursor" stroke="#9b59b6" stroke-width="1.5" y1="0" y2="140"/>
-                <!-- Cursor dot -->
-                <circle id="chartDot" r="3.5" fill="#9b59b6"/>
-            </svg>
-        </div>
         <!-- M-value strip -->
+        <details class="advanced-section">
+            <summary data-i18n="sandbox.schreiner.mvalue.summary">Connection to the decompression limit</summary>
         <div class="mvalue-section">
             <div class="mvalue-header">
                 <span class="mvalue-title" data-i18n="sandbox.schreiner.mvalue.title">M-value check</span>
             </div>
             <div class="mvalue-bar-track">
                 <div class="mvalue-bar"></div>
-                <div class="mvalue-mline"><span class="mvalue-mline-label">M</span></div>
+                <div class="mvalue-mline"><span class="mvalue-mline-label"><var>M</var></span></div>
                 <div class="mvalue-anchor mvalue-anchor-palv" id="mvalueAnchorPalv"><span class="mvalue-anchor-label"><var>p</var><sub>alv</sub></span></div>
-                <div class="mvalue-anchor mvalue-anchor-pamb" id="mvalueAnchorPamb"><span class="mvalue-anchor-label"><var>p</var><sub>amb</sub></span></div>
-                <div class="mvalue-marker" id="mvalueMarker"><span class="mvalue-marker-label"><var>p</var><sub>t</sub></span></div>
+                <div class="mvalue-anchor mvalue-anchor-pamb" id="mvalueAnchorPamb"><span class="mvalue-anchor-label"><var>p</var><sub data-i18n="sandbox.schreiner.symbols.ambient">amb</sub></span></div>
+                <div class="mvalue-marker" id="mvalueMarker"><span class="mvalue-marker-label"><var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissue">t</sub></span></div>
             </div>
             <div class="mvalue-readout">
-                <var>p</var><sub>t</sub> = <span id="mvaluePt">0.7510</span>&nbsp;bar
-                | M = <span id="mValue">2.50</span>&nbsp;bar
+                <var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissue">t</sub> = <span id="mvaluePt">0.7510</span>&nbsp;bar
+                | <var>M</var> = <span id="mValue">2.50</span>&nbsp;bar
                 <span class="mvalue-status" id="mvalueStatus" data-i18n="sandbox.schreiner.mvalue.within">within</span>
             </div>
             <div class="mvalue-derivation" id="mvalueDerivation">
-                M = a + <var>p</var><sub>amb</sub> / b
+                <var>M</var> = <var>a</var> + <var>p</var><sub>amb</sub> / <var>b</var>
             </div>
         </div>
+        </details>
     </div>
 
     <!-- Fixed control bar — always visible at the bottom of the viewport -->
-    <aside class="sandbox-control-bar" id="schControlBar" aria-label="Sandbox controls">
-        <button type="button" class="sandbox-control-bar-toggle" id="schBarToggle" aria-label="Collapse controls" title="Collapse / expand controls">▼ <span data-i18n="sandbox.schreiner.barToggle">controls</span></button>
+    <aside class="sandbox-control-bar collapsed" id="schControlBar" aria-label="Sandbox controls">
+        <button type="button" class="sandbox-control-bar-toggle" id="schBarToggle" aria-label="Collapse controls" title="Collapse / expand controls">▲ <span data-i18n="sandbox.schreiner.barToggle">controls</span></button>
 
         <div class="ctrl ctrl-static">
             <span class="lbl" data-i18n="sandbox.schreiner.labels.startDepthShort">Start (m)</span>
-            <input type="number" id="startDepth" min="0" max="30" step="1" value="30">
+            <input type="number" id="startDepth" min="0" max="30" step="1" value="0">
         </div>
         <div class="ctrl ctrl-static">
             <span class="lbl" data-i18n="sandbox.schreiner.labels.depthRateShort">Rate (m/min)</span>
-            <input type="number" id="depthRate" min="-30" max="30" step="0.5" value="-10">
+            <input type="number" id="depthRate" min="-30" max="30" step="0.5" value="10">
         </div>
         <div class="ctrl ctrl-static">
             <span class="lbl" data-i18n="sandbox.schreiner.labels.segmentTimeShort">Segment (min)</span>
@@ -553,6 +966,14 @@
         <div class="ctrl ctrl-static">
             <span class="lbl" data-i18n="sandbox.schreiner.labels.endDepthShort">End depth</span>
             <span class="ctrl-value" id="endDepthDisplay">0.0&nbsp;m</span>
+        </div>
+        <div class="ctrl ctrl-static">
+            <span class="lbl" data-i18n="sandbox.schreiner.labels.initialStateShort">Initial tissue</span>
+            <select id="initialState">
+                <option value="surface" data-i18n="sandbox.schreiner.initialStates.surface">equilibrated at surface</option>
+                <option value="start" data-i18n="sandbox.schreiner.initialStates.start" selected>equilibrated at start depth</option>
+                <option value="deeper" data-i18n="sandbox.schreiner.initialStates.deeper">equilibrated 5&nbsp;m deeper</option>
+            </select>
         </div>
         <div class="ctrl ctrl-static">
             <span class="lbl" data-i18n="sandbox.schreiner.labels.compartmentShort">TC</span>
@@ -567,10 +988,10 @@
             </select>
         </div>
         <div class="ctrl ctrl-static">
-            <span class="lbl" data-i18n="sandbox.schreiner.labels.simplifiedShort">Simplified</span>
+            <span class="lbl" data-i18n="sandbox.schreiner.labels.simplifiedShort">Approximate constants</span>
             <label class="toggle-row">
                 <input type="checkbox" id="simplifiedToggle">
-                <span data-i18n="sandbox.schreiner.simplifiedHint">napkin</span>
+                <span data-i18n="sandbox.schreiner.simplifiedHint">1&nbsp;bar, no water vapor, <var>f</var><sub>N₂</sub> = 0.79</span>
             </label>
         </div>
 
@@ -591,12 +1012,8 @@
                 <span class="val"><span id="depthValue">…</span>&nbsp;m</span>
             </div>
             <div class="out-chip pt">
-                <span class="lbl"><var>p</var><sub>t</sub></span>
+                <span class="lbl"><var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissue">t</sub></span>
                 <span class="val"><span id="ptChipValue">3.122</span>&nbsp;bar</span>
-            </div>
-            <div class="out-chip sat">
-                <span class="lbl" data-i18n="sandbox.schreiner.outputs.saturation">Saturation</span>
-                <span class="val"><span id="saturationValue">…</span>%</span>
             </div>
         </div>
     </aside>
@@ -613,7 +1030,7 @@
 
     <!-- i18n + state -->
     <script type="module">
-        import { initI18n, createLanguageSwitcher } from '../js/i18n.js';
+        import { initI18n, createLanguageSwitcher, translate } from '../js/i18n.js';
         import { fmtNum } from '../js/format.js';
         import {
             getAmbientPressure,
@@ -649,14 +1066,15 @@
 
         // ---------- State ----------
         const state = {
-            startDepth: 30,       // m
-            depthRate: -10,       // m/min (signed; negative = ascending, positive = descending)
+            startDepth: 0,        // m
+            depthRate: 10,        // m/min (signed; negative = ascending, positive = descending)
             segmentTime: 3,       // min
             compartmentIdx: 4,    // 0-based; UI shows 1-based
             variant: 'ZH-L16C',   // matches values from ZHL16_VARIANTS object
-            t: 0,                 // minutes
+            t: 3,                 // minutes
             n2Fraction: N2_FRACTION,
             simplified: false,
+            initialState: 'start',
         };
 
         // ---------- DOM ----------
@@ -666,7 +1084,18 @@
             segmentTime:  document.getElementById('segmentTime'),
             endDepthDisp: document.getElementById('endDepthDisplay'),
             compartment:  document.getElementById('compartment'),
+            initialState: document.getElementById('initialState'),
         };
+
+        function getInitialTissueState(pAlv0) {
+            if (state.initialState === 'start') {
+                return { pressure: pAlv0, sourceDepth: state.startDepth };
+            }
+            const sourceDepth = state.initialState === 'surface'
+                ? 0
+                : Math.min(40, state.startDepth + 5);
+            return { pressure: alveolar(ambient(sourceDepth)), sourceDepth };
+        }
 
         // ---------- Compartment dropdown ----------
         function populateCompartments() {
@@ -675,6 +1104,14 @@
                 .map((c, i) => `<option value="${i}">${i + 1} | t½ = ${fmtNum(c.halfTime, 1)}\u00a0min</option>`)
                 .join('');
             els.compartment.value = String(state.compartmentIdx);
+        }
+
+        const EQUILIBRIUM_EPSILON = 0.00005;
+
+        function getExchangeState(deltaP) {
+            if (deltaP > EQUILIBRIUM_EPSILON) return 'onGassing';
+            if (deltaP < -EQUILIBRIUM_EPSILON) return 'offGassing';
+            return 'equilibrium';
         }
 
         // ---------- Recompute ----------
@@ -690,9 +1127,18 @@
             const F = state.simplified ? 0.79 : N2_FRACTION;
             const pAmbStart = ambient(state.startDepth);
             const pAlv0 = alveolar(pAmbStart);
-            const pT0 = pAlv0;                              // tissue saturated at start
+            const initialTissue = getInitialTissueState(pAlv0);
+            const pT0 = initialTissue.pressure;
             const R = F * state.depthRate * 0.1;             // bar/min
             const expTerm = Math.exp(-k * state.t);
+            const completedFraction = 1 - expTerm;
+            const initialDifference = pAlv0 - pT0;
+            const haldaneContribution = initialDifference * completedFraction;
+            const movingContribution = R * (
+                state.t - completedFraction / k
+            );
+            const teachingResult = pT0 + haldaneContribution + movingContribution;
+            const hasInitialDifference = Math.abs(initialDifference) > EQUILIBRIUM_EPSILON;
             // Pt(t) via the existing primitive
             const Pt = schreinerEquation(pT0, pAlv0, R, state.t, halfTime);
 
@@ -700,7 +1146,24 @@
             const currentDepth = Math.max(0, state.startDepth + state.depthRate * state.t);
             const pAmbCurrent = ambient(currentDepth);
             const pAlvCurrent = alveolar(pAmbCurrent);
+            const pTissueCurrent = Pt;
+            const deltaP = pAlvCurrent - pTissueCurrent;
+            const tissueRate = k * (pAlvCurrent - pTissueCurrent);
+            const exchangeState = getExchangeState(deltaP);
             const M = getMValue(pAmbCurrent, comp.aN2, comp.bN2);
+
+            document.getElementById('contributionInitialValue').textContent = fmtNum(pT0, 4);
+            document.getElementById('initialDifferenceValue').textContent = fmtNum(initialDifference, 4);
+            document.getElementById('completedFractionValue').textContent = fmtNum(completedFraction, 4);
+            document.getElementById('haldaneContributionValue').textContent = fmtNum(haldaneContribution, 4);
+            document.getElementById('movingContributionValue').textContent = fmtNum(movingContribution, 4);
+            document.getElementById('sumInitialValue').textContent = fmtNum(pT0, 4);
+            document.getElementById('sumHaldaneValue').textContent = fmtNum(haldaneContribution, 4);
+            document.getElementById('sumMovingValue').textContent = fmtNum(movingContribution, 4);
+            document.getElementById('sumResultValue').textContent = fmtNum(Pt, 4);
+            document.getElementById('initialEquilibriumNote').hidden = hasInitialDifference;
+            document.getElementById('sumHaldaneLabel').hidden = !hasInitialDifference;
+            document.getElementById('sumHaldaneNumeric').hidden = !hasInitialDifference;
 
             // Substituted-formula line
             document.getElementById('ptValue').textContent = fmtNum(Pt, 4);
@@ -720,11 +1183,14 @@
             const palv0Symbolic = state.simplified
                 ? `= (<var>D</var><sub>start</sub>/10 + 1) · <var>f</var><sub>N₂</sub>`
                 : `= (<var>p</var><sub>amb,start</sub> − ${fmtNum(WATER_VAPOR_PRESSURE, 4)}) · <var>f</var><sub>N₂</sub>`;
-            const pt0Symbolic = palv0Symbolic;
+            const pAmbTissueStart = ambient(initialTissue.sourceDepth);
+            const pt0Symbolic = `= <var>p</var><sub>alv</sub>(${fmtNum(initialTissue.sourceDepth, 0)}\u00a0m)`;
             const palv0Subst = state.simplified
                 ? `= (${fmtNum(state.startDepth)}/10 + 1) · ${fmtNum(F)}`
                 : `= (${fmtNum(pAmbStart, 4)} − ${fmtNum(WATER_VAPOR_PRESSURE, 4)}) · ${fmtNum(F, 4)}`;
-            const pt0Subst = palv0Subst;
+            const pt0Subst = state.simplified
+                ? `= (${fmtNum(initialTissue.sourceDepth)}/10 + 1) · ${fmtNum(F)}`
+                : `= (${fmtNum(pAmbTissueStart, 4)} − ${fmtNum(WATER_VAPOR_PRESSURE, 4)}) · ${fmtNum(F, 4)}`;
             const rSymbolic = `= <var>f</var><sub>N₂</sub> · <var>v</var> · ${fmtNum(BAR_PER_METRE, 1)}`;
             const rSubst = `= ${fmtNum(F, 4)} · (${fmtNum(state.depthRate)}) · ${fmtNum(BAR_PER_METRE, 1)}`;
 
@@ -741,28 +1207,23 @@
             document.getElementById('kSubst').textContent = `= ${fmtNum(Math.LN2, 4)} / ${fmtNum(halfTime, 1)}`;
             document.getElementById('expValue').textContent = fmtNum(expTerm, 4);
             document.getElementById('expSubst').innerHTML = `= e<sup>−${fmtNum(k, 4)} · ${fmtNum(state.t, 2)}</sup>`;
+            document.getElementById('palvCurrentValue').textContent = fmtNum(pAlvCurrent, 4);
+            document.getElementById('ptCurrentValue').textContent = fmtNum(Pt, 4);
+            document.getElementById('cardHaldaneContributionValue').textContent = fmtNum(haldaneContribution, 4);
+            document.getElementById('cardMovingContributionValue').textContent = fmtNum(movingContribution, 4);
+            document.getElementById('halfTimeValue').textContent = fmtNum(halfTime, 1);
 
-            // Saturation % and current-depth readouts in the time row
-            const saturationPct = (1 - expTerm) * 100;
-            document.getElementById('saturationValue').textContent = fmtNum(saturationPct, 1);
             document.getElementById('depthValue').textContent = fmtNum(currentDepth, 1);
-
-            // Three-term decomposition: Pt = (Palv,0 + R·t) − (R/k) − (Palv,0 − Pt,0 − R/k)·e^−kt
-            const termMoving = pAlv0 + R * state.t;
-            const termLag    = R / k;
-            const termDecay  = (pAlv0 - pT0 - R / k) * expTerm;
-            document.getElementById('termMovingSubst').innerHTML = `= ${fmtNum(pAlv0, 4)} + (${fmtNum(R, 4)}) · ${fmtNum(state.t, 2)}`;
-            document.getElementById('termMovingValue').textContent = fmtNum(termMoving, 4);
-            document.getElementById('termLagSubst').innerHTML = `= ${fmtNum(R, 4)} / ${fmtNum(k, 4)}`;
-            document.getElementById('termLagValue').textContent = fmtNum(termLag, 4);
-            document.getElementById('termDecaySubst').innerHTML = `= (${fmtNum(pAlv0, 4)} − ${fmtNum(pT0, 4)} − ${fmtNum((R/k), 4)}) · ${fmtNum(expTerm, 4)}`;
-            document.getElementById('termDecayValue').textContent = fmtNum(termDecay, 4);
 
             // Stash for chart + M-value strip
             window.__schreiner = {
-                halfTime, k, pT0, pAlv0, R, Pt, M, pAmbStart, pAmbCurrent, pAlvCurrent,
-                expTerm, t: state.t, currentDepth, aN2: comp.aN2, bN2: comp.bN2,
+                halfTime, k, pT0, pAlv0, R, Pt, deltaP, tissueRate, exchangeState,
+                M, pAmbStart, pAmbCurrent, pAlvCurrent,
+                expTerm, completedFraction, initialDifference, haldaneContribution,
+                movingContribution, teachingResult, t: state.t, currentDepth,
+                aN2: comp.aN2, bN2: comp.bN2,
                 segmentTime: state.segmentTime, depthRate: state.depthRate,
+                initialState: state.initialState, initialTissueDepth: initialTissue.sourceDepth,
             };
 
             drawChart();
@@ -816,6 +1277,10 @@
             timeSlider.value = String(state.t);         // sync slider thumb after clamp
             timeValue.textContent = `${fmtNum(state.t, 2)}\u00a0min`;
             updateStepButtons();
+            recompute();
+        });
+        els.initialState.addEventListener('change', () => {
+            state.initialState = els.initialState.value;
             recompute();
         });
         els.compartment.addEventListener('change', () => {
@@ -873,12 +1338,22 @@
         btnPlusTenth.addEventListener('click',  () => setTime(state.t + 0.1));
 
         // ---------- Mini Pt(t) chart ----------
-        const CHART_W = 480, CHART_H = 140, CHART_PAD = 6;
+        const CHART_W = 640;
+        const CHART_H = 220;
+        const CHART_LEFT = 48;
+        const CHART_RIGHT = 12;
+        const CHART_TOP = 12;
+        const CHART_BOTTOM = 30;
         const chartCurve    = document.getElementById('chartCurve');
-        const chartCursor   = document.getElementById('chartCursor');
-        const chartDot      = document.getElementById('chartDot');
         const chartPalv     = document.getElementById('chartPalv');
-        const chartBaseline = document.getElementById('chartBaseline');
+        const chartDelta = document.getElementById('chartDelta');
+        const chartDeltaPalv = document.getElementById('chartDeltaPalv');
+        const chartDeltaTissue = document.getElementById('chartDeltaTissue');
+        const chartPalvLabel = document.getElementById('chartPalvLabel');
+        const chartTissueLabel = document.getElementById('chartTissueLabel');
+        const chartDirectionLabel = document.getElementById('chartDirectionLabel');
+        const chartDeltaLabel = document.getElementById('chartDeltaLabel');
+        const chartExchangeLabel = document.getElementById('chartExchangeLabel');
 
         // Značka poločasu do SVG: t kurzívou + stojatý dolní index 1/2.
         // Kanonický tvar je <var>t</var><sub>1/2</sub>, ale SVG <text> nezná
@@ -903,47 +1378,82 @@
 
 
         function drawChart() {
-            const { halfTime, pT0, pAlv0, R, segmentTime, depthRate } = window.__schreiner;
+            const { halfTime, pT0, pAlv0, R, Pt, deltaP, exchangeState } = window.__schreiner;
             const tMax = Math.max(0.001, parseFloat(timeSlider.max));
-            // Palv at t=0 and at t=segmentTime (linear in time)
-            const pAlvEnd = pAlv0 + R * tMax;
-            // y range: cover Pt0, Palv,0, Palv,end
-            const yMin = Math.min(pT0, pAlv0, pAlvEnd);
-            const yMax = Math.max(pT0, pAlv0, pAlvEnd);
-            const ySpan = (yMax - yMin) || 1;
-            const yLo = yMin - 0.05 * ySpan;
-            const yHi = yMax + 0.05 * ySpan;
 
-            const xOf = (t) => CHART_PAD + (CHART_W - 2 * CHART_PAD) * (t / tMax);
-            const yOf = (p) => CHART_PAD + (CHART_H - 2 * CHART_PAD) * (1 - (p - yLo) / (yHi - yLo));
-
-            // Pt(t) curve via schreinerEquation
-            const pts = [];
+            const xOf = (t) => CHART_LEFT + (CHART_W - CHART_LEFT - CHART_RIGHT) * (t / tMax);
             const N = 120;
+            const samples = [];
             for (let i = 0; i <= N; i++) {
                 const t = (i / N) * tMax;
-                const PtAtT = schreinerEquation(pT0, pAlv0, R, t, halfTime);
-                pts.push(`${(xOf(t)).toFixed(2)},${(yOf(PtAtT)).toFixed(2)}`);
+                samples.push({
+                    t,
+                    pAlv: pAlv0 + R * t,
+                    pTissue: schreinerEquation(pT0, pAlv0, R, t, halfTime),
+                });
             }
-            chartCurve.setAttribute('d', `M ${pts.join(' L ')}`);
+            const pressures = samples.flatMap(sample => [sample.pAlv, sample.pTissue]);
+            const pMin = Math.min(...pressures);
+            const pMax = Math.max(...pressures);
+            const rawSpan = pMax - pMin;
+            const padding = rawSpan > 0 ? rawSpan * 0.1 : 0.1;
+            const yLo = pMin - padding;
+            const yHi = pMax + padding;
+            const yOf = (pressure) => CHART_TOP
+                + (CHART_H - CHART_TOP - CHART_BOTTOM) * (1 - (pressure - yLo) / (yHi - yLo));
+            const pathFor = (key) => samples
+                .map((sample, index) => `${index === 0 ? 'M' : 'L'} ${xOf(sample.t).toFixed(2)},${yOf(sample[key]).toFixed(2)}`)
+                .join(' ');
 
-            // Palv(t) — straight line from (0, Palv,0) to (tMax, Palv,end)
-            const palvPath = `M ${(xOf(0)).toFixed(2)},${(yOf(pAlv0)).toFixed(2)} L ${(xOf(tMax)).toFixed(2)},${(yOf(pAlvEnd)).toFixed(2)}`;
-            chartPalv.setAttribute('d', palvPath);
+            chartPalv.setAttribute('d', pathFor('pAlv'));
+            chartCurve.setAttribute('d', pathFor('pTissue'));
 
-            // Baseline at Pt,0
-            const yPt0 = (yOf(pT0)).toFixed(2);
-            chartBaseline.setAttribute('y1', yPt0);
-            chartBaseline.setAttribute('y2', yPt0);
+            const currentX = xOf(state.t);
+            const pAlvCurrent = pAlv0 + R * state.t;
+            const yAlvCurrent = yOf(pAlvCurrent);
+            const yTissueCurrent = yOf(Pt);
+            for (const element of [chartDeltaPalv, chartDeltaTissue]) {
+                element.setAttribute('cx', currentX);
+            }
+            chartDelta.setAttribute('x1', currentX);
+            chartDelta.setAttribute('x2', currentX);
+            chartDelta.setAttribute('y1', yAlvCurrent);
+            chartDelta.setAttribute('y2', yTissueCurrent);
+            chartDeltaPalv.setAttribute('cy', yAlvCurrent);
+            chartDeltaTissue.setAttribute('cy', yTissueCurrent);
 
-            // Cursor + dot at current t
-            const cursorX = (xOf(state.t)).toFixed(2);
-            chartCursor.setAttribute('x1', cursorX);
-            chartCursor.setAttribute('x2', cursorX);
-            chartCursor.setAttribute('y2', CHART_H);
-            const PtNow = window.__schreiner.Pt;
-            chartDot.setAttribute('cx', cursorX);
-            chartDot.setAttribute('cy', yOf(PtNow).toFixed(2));
+            const deltaLabelX = state.t > tMax * 0.72 ? currentX - 8 : currentX + 8;
+            const deltaAnchor = state.t > tMax * 0.72 ? 'end' : 'start';
+            const deltaMiddleY = (yAlvCurrent + yTissueCurrent) / 2;
+            chartDeltaLabel.setAttribute('x', deltaLabelX);
+            chartDeltaLabel.setAttribute('y', deltaMiddleY - 3);
+            chartDeltaLabel.setAttribute('text-anchor', deltaAnchor);
+            chartDeltaLabel.textContent = `Δp = ${fmtNum(deltaP, 3)}\u00a0bar`;
+            chartExchangeLabel.setAttribute('x', deltaLabelX);
+            chartExchangeLabel.setAttribute('y', deltaMiddleY + 12);
+            chartExchangeLabel.setAttribute('text-anchor', deltaAnchor);
+            chartExchangeLabel.textContent = translate(
+                `sandbox.schreiner.exchange.${exchangeState}`,
+                exchangeState
+            );
+
+            const targetLabelT = tMax * 0.68;
+            const tissueLabelT = tMax * 0.28;
+            const clampLabelY = (value) => Math.max(CHART_TOP + 13, Math.min(CHART_H - CHART_BOTTOM - 5, value));
+            chartPalvLabel.setAttribute('x', CHART_W - 18);
+            chartPalvLabel.setAttribute('text-anchor', 'end');
+            chartTissueLabel.setAttribute('x', xOf(tissueLabelT));
+            chartPalvLabel.setAttribute('y', clampLabelY(yOf(pAlv0 + R * targetLabelT) - 9));
+            chartTissueLabel.setAttribute('y', clampLabelY(
+                yOf(schreinerEquation(pT0, pAlv0, R, tissueLabelT, halfTime)) + 16
+            ));
+            chartDirectionLabel.setAttribute('x', CHART_LEFT + 10);
+            chartDirectionLabel.setAttribute('y', CHART_TOP + 16);
+            chartDirectionLabel.textContent = R > 0
+                ? translate('sandbox.schreiner.chart.directionDescent', '↓ descent: rising target')
+                : R < 0
+                    ? translate('sandbox.schreiner.chart.directionAscent', '↑ ascent: falling target')
+                    : translate('sandbox.schreiner.chart.directionConstant', 'constant depth: fixed target');
 
             // Half-time tick markers — only draw if at least one fits in [0, tMax]
             const ticksGroup = document.getElementById('chartTicks');
@@ -956,8 +1466,8 @@
                 const line = document.createElementNS(SVG_NS, 'line');
                 line.setAttribute('x1', xT);
                 line.setAttribute('x2', xT);
-                line.setAttribute('y1', CHART_PAD);
-                line.setAttribute('y2', CHART_H - CHART_PAD);
+                line.setAttribute('y1', CHART_TOP);
+                line.setAttribute('y2', CHART_H - CHART_BOTTOM);
                 line.setAttribute('stroke', '#7f8c8d');
                 line.setAttribute('stroke-dasharray', '2 3');
                 line.setAttribute('stroke-width', '0.8');
@@ -966,7 +1476,7 @@
 
                 const label = document.createElementNS(SVG_NS, 'text');
                 label.setAttribute('x', xT);
-                label.setAttribute('y', CHART_PAD + 10);
+                label.setAttribute('y', CHART_TOP + 30);
                 label.setAttribute('font-size', '11');
                 label.setAttribute('fill', '#7f8c8d');
                 label.setAttribute('text-anchor', 'middle');
@@ -1015,11 +1525,13 @@
             anchorPalv.style.left = xOfBar(pAlvCurrent);
             anchorPamb.style.left = xOfBar(pAmbCurrent);
             const exceeded = Pt > M;
-            mvalueStatus.textContent = exceeded ? '✗ exceeded' : '✓ within';
+            mvalueStatus.textContent = exceeded
+                ? `✗ ${translate('sandbox.schreiner.mvalue.exceeded', 'exceeded')}`
+                : `✓ ${translate('sandbox.schreiner.mvalue.within', 'within')}`;
             mvalueStatus.classList.toggle('exceeded', exceeded);
             mvalueStatus.classList.toggle('ok', !exceeded);
             const deriv = document.getElementById('mvalueDerivation');
-            deriv.innerHTML = `M = a + <var>p</var><sub>amb</sub>(t) / b = ${fmtNum(aN2, 4)} + ${fmtNum(pAmbCurrent, 4)} / ${fmtNum(bN2, 4)} = <strong>${fmtNum(M, 4)}</strong>`;
+            deriv.innerHTML = `<var>M</var> = <var>a</var> + <var>p</var><sub>amb</sub>(<var>t</var>) / <var>b</var> = ${fmtNum(aN2, 4)} + ${fmtNum(pAmbCurrent, 4)} / ${fmtNum(bN2, 4)} = <strong>${fmtNum(M, 4)}</strong>`;
         }
 
         // ---------- Bottom control bar collapse toggle ----------
@@ -1033,8 +1545,13 @@
         }
 
         // ---------- Init ----------
+        document.addEventListener('languagechange', () => {
+            populateCompartments();
+            recompute();
+        });
+
         createLanguageSwitcher();
-        initI18n();
+        await initI18n();
         populateCompartments();
         clampSegmentTime();
         applyTimeRange();

@@ -1,15 +1,158 @@
 # Model-03 — Schreiner Equation
 
-Applies when the ambient pressure changes at a **constant linear rate** — i.e. descent at a fixed m/min, ascent at a fixed m/min. This is the workhorse of DecoJS: every segment between waypoints except pure level-offs gets dispatched through Schreiner.
+## Fixed target versus moving target
 
-Origin: Schreiner & Kelley 1971 (see [References](References.md#22-schreiner--exponential-gas-uptake-with-changing-pressure)). The closed-form solution of the Haldane ODE with a time-varying alveolar source.
+Haldane and Schreiner describe the same tissue response under different
+alveolar inputs:
 
-## Formula as coded
+| Model | Alveolar input | Tissue response |
+|---|---|---|
+| **Haldane** | constant | the tissue exponentially approaches a fixed pressure |
+| **Schreiner** | changes linearly | the tissue progressively follows a moving pressure |
 
-$$P_t(t) = P_{alv,0} + R \cdot \left(t - \frac{1}{k}\right) - \left(P_{alv,0} - P_{t,0} - \frac{R}{k}\right) \cdot e^{-k t}$$
+The teaching page starts with one deliberately simple descent rather than
+several competing scenarios.
+
+## Basic example
+
+The diver starts at the surface and descends at a constant rate. At
+$t=0$, the selected tissue compartment is in equilibrium with alveolar inert-gas
+pressure:
+
+$$
+p_{\mathrm{t},0}=p_{\mathrm{alv},0}.
+$$
+
+The blue alveolar-pressure curve and orange tissue-pressure curve therefore
+start at the same point. Alveolar pressure then rises linearly:
+
+$$
+p_{\mathrm{alv}}(t)=p_{\mathrm{alv},0}+Rt,
+$$
+
+while tissue pressure responds progressively according to the compartment
+half-time.
+
+The graph uses one common, real pressure scale. Its optional green segment is
+only the current separation of the two physical pressures; no theoretical
+tracking line or independently rescaled value is drawn.
+
+## Main teaching form
+
+Because the basic example starts in equilibrium, its initial pressure
+difference is zero:
+
+$$
+(p_{\mathrm{alv},0}-p_{\mathrm{t},0})
+(1-e^{-kt})=0.
+$$
+
+The main explanation can therefore use only two visible parts:
+
+$$
+p_{\mathrm{t}}(t)
+=
+\underbrace{p_{\mathrm{t},0}}_{\text{initial tissue pressure}}
++
+\underbrace{
+R\left[t-\frac{1-e^{-kt}}{k}\right]
+}_{\text{response to the moving target}}.
+$$
+
+In words:
+
+> Current tissue pressure equals initial tissue pressure plus the response to
+> the linear movement of alveolar pressure.
+
+The moving-target term is a signed **contribution** to tissue-pressure change,
+not a separate pressure, physical limit, or graph line. It is zero when
+$R=0$, positive for positive $R$, and negative for negative $R$.
+
+## Why the moving-target contribution is intuitive
+
+A linear pressure movement can be imagined as many small pressure changes.
+Each change occurs at a different time, so the tissue has a different amount
+of time to respond to it. Each response has the same exponential character as
+the Haldane equation. Adding all those small responses gives:
+
+$$
+R\left[t-\frac{1-e^{-kt}}{k}\right].
+$$
+
+The main page does not require differential or integral calculus to use this
+interpretation.
+
+## General case
+
+In a complete dive profile, tissue pressure passed from the preceding segment
+need not equal current alveolar pressure. The general teaching form therefore
+restores the Haldane contribution from the initial pressure difference:
+
+$$
+p_{\mathrm{t}}(t)
+=p_{\mathrm{t},0}
++(p_{\mathrm{alv},0}-p_{\mathrm{t},0})(1-e^{-kt})
++R\left[t-\frac{1-e^{-kt}}{k}\right].
+$$
+
+The three parts are:
+
+1. initial tissue pressure,
+2. Haldane response to the initial pressure difference,
+3. correction for the linearly moving alveolar target.
+
+The second part is exactly the completed-change form used on the Haldane
+teaching page. When $R=0$, the third part is exactly zero and the general form
+reduces to Haldane:
+
+$$
+p_{\mathrm{t}}(t)
+=p_{\mathrm{t},0}
++(p_{\mathrm{alv},0}-p_{\mathrm{t},0})(1-e^{-kt}).
+$$
+
+## Algebraic equivalence to the canonical form
+
+Expanding the two brackets in the general teaching form gives:
+
+$$
+\begin{aligned}
+p_{\mathrm{t}}(t)
+={}&p_{\mathrm{t},0}
++p_{\mathrm{alv},0}-p_{\mathrm{t},0}\\
+&-(p_{\mathrm{alv},0}-p_{\mathrm{t},0})e^{-kt}\\
+&+Rt-\frac{R}{k}+\frac{R}{k}e^{-kt}.
+\end{aligned}
+$$
+
+The terms $+p_{\mathrm{t},0}$ and $-p_{\mathrm{t},0}$ cancel. Grouping the
+remaining exponential terms gives:
+
+$$
+p_{\mathrm{t}}(t)
+=p_{\mathrm{alv},0}+Rt-\frac{R}{k}
+-\left(p_{\mathrm{alv},0}-p_{\mathrm{t},0}-\frac{R}{k}\right)e^{-kt}.
+$$
+
+Factoring $R$ produces the canonical Schreiner equation:
+
+$$
+p_{\mathrm{t}}(t)
+=p_{\mathrm{alv},0}
++R\left(t-\frac{1}{k}\right)
+-\left(p_{\mathrm{alv},0}-p_{\mathrm{t},0}-\frac{R}{k}\right)e^{-kt}.
+$$
+
+The page colors whole semantic contributions rather than repeated individual
+symbols, so their terms can be followed through expansion and regrouping.
+
+## Production implementation
+
+The displayed tissue pressure is always calculated by the existing production
+primitive:
 
 ```javascript
-// js/decoModel.js:125-130
+// js/decoModel.js:210-215
 export function schreinerEquation(initialPressure, initialAlveolarPressure, rate, time, halfTime) {
     const k = getRateConstant(halfTime);
     const term1 = initialAlveolarPressure + rate * (time - 1/k);
@@ -18,94 +161,73 @@ export function schreinerEquation(initialPressure, initialAlveolarPressure, rate
 }
 ```
 
-Note: $R$ is the **rate of change of alveolar pressure**, not of depth. Convert before calling.
+The teaching contributions are calculated separately only to show their
+current signed values. Tests compare their sum with `schreinerEquation()` over
+positive, negative, and zero rates, multiple initial pressures, times, and
+half-times.
 
-## R conversion
+Origin: Schreiner & Kelley 1971 (see
+[References](References.md#22-schreiner--exponential-gas-uptake-with-changing-pressure)).
 
-$R$ must reflect the alveolar N₂ rate, which equals the ambient pressure rate scaled by the gas's inert fraction:
+## Optional calculus note
 
-$$R = \frac{dP_{alv}}{dt} = f_{N_2} \cdot \frac{dP_{amb}}{dt} = f_{N_2} \cdot \text{(m/min)} \cdot \frac{\rho g}{10^5}$$
+For readers familiar with calculus, Haldane and Schreiner solve the same
+differential law:
 
-The default EN 13319 conversion substitutes exactly 0.1&nbsp;bar/m.
-Freshwater and seawater use
-0.0980665&nbsp;bar/m and 0.1005181625&nbsp;bar/m respectively.
+$$
+\frac{\mathrm{d}p_{\mathrm{t}}}{\mathrm{d}t}
+=k[p_{\mathrm{alv}}(t)-p_{\mathrm{t}}(t)].
+$$
 
-Examples (air, $f_{N_2} = 0.7902$):
+This is kept in a deeper collapsed note and is not required for the main
+teaching path.
 
-| Depth rate (m/min) | Direction | $dP_{amb}/dt$ (bar/min) | $R$ (bar/min) |
-|---|---|---|---|
-| +20 | Descent | +2.0 | +1.5804 |
-| +10 | Descent | +1.0 | +0.7902 |
-| −10 | Ascent | −1.0 | −0.7902 |
-| −9  | Ascent | −0.9 | −0.7112 |
+## Rate and half-time
 
-On EAN32 ($f_{N_2} = 0.68$), the same −10 m/min ascent yields $R = -0.68$ bar/min.
+$R$ is the signed rate of change of **alveolar pressure** in
+$\mathrm{bar\,min^{-1}}$, not the diver's depth rate. For a depth-change rate
+$v$:
 
-## Three-term decomposition
+$$
+R=f_{\mathrm{N_2}}v\frac{\mathrm{d}p_{\mathrm{amb}}}{\mathrm{d}h}.
+$$
 
-Useful as a mental model — rewrite as:
+The compartment rate constant is:
 
-$$P_t(t) = \underbrace{P_{alv,0} + R \cdot t}_{\text{moving alveolar pressure}} \;-\; \underbrace{\frac{R}{k}}_{\text{phase lag}} \;-\; \underbrace{(P_{alv,0} - P_{t,0} - R/k) \cdot e^{-kt}}_{\text{decaying initial disequilibrium}}$$
+$$
+k=\frac{\ln 2}{t_{1/2}}.
+$$
 
-The first two terms together ($P_{alv,0} + R(t - 1/k)$) describe a tissue that perfectly tracks the alveolar pressure but lags by $1/k$ minutes. The third term is the exponential settling of whatever gap existed at $t = 0$.
-
-## Worked example
-
-Ascent from 30 m to 21 m at 10 m/min, TC5 (variant C: $T_{1/2} = 27.0$ min), starting saturated at 30 m on air.
-
-Segment time: $9 / 10 = 0.9$ min.
-
-Rate constant: $k = \ln 2 / 27.0 = 0.02567$ min⁻¹.
-
-Alveolar N₂ at 30 m (start):
-$$P_{alv,0} = (4.01325 - 0.0627) \cdot 0.7902 = 3.1232 \text{ bar}$$
-
-Initial tissue (saturated at 30 m):
-$$P_{t,0} = P_{alv,0} = 3.1232 \text{ bar}$$
-
-Rate: $R = -1.0 \cdot 0.7902 = -0.7902$ bar/min.
-
-Plugging in:
-$$\text{term1} = 3.1232 + (-0.7902) \cdot (0.9 - 1/0.02567)$$
-$$= 3.1232 + (-0.7902) \cdot (0.9 - 38.959)$$
-$$= 3.1232 + (-0.7902) \cdot (-38.059) = 3.1232 + 30.075 = 33.199$$
-
-$$\text{term2} = (3.1232 - 3.1232 - (-0.7902)/0.02567) \cdot e^{-0.02567 \cdot 0.9}$$
-$$= (30.779) \cdot e^{-0.02310}$$
-$$= 30.779 \cdot 0.97717 = 30.076$$
-
-$$P_t(0.9) = 33.199 - 30.076 = 3.123 \text{ bar}$$
-
-Tissue barely moved — TC5 is slow relative to a 0.9-min segment. Compare to TC1 ($T_{1/2} = 5.0$, $k = 0.1386$): the same segment gives $P_t(0.9) \approx 3.077$ bar — a noticeable drop because fast tissues track ambient more tightly.
+A shorter half-time gives a larger $k$ and a faster response.
 
 ## Entry points
 
-`simulateDepthChange()` runs Schreiner across all 16 compartments for a single linear segment:
+`simulateDepthChange()` applies Schreiner to all 16 compartments for one linear
+segment:
 
 ```javascript
-// js/decoModel.js:784 (signature)
-export function simulateDepthChange(tissuePressures, startDepth, endDepth, time, n2Fraction, surfacePressure = SURFACE_PRESSURE, pressurePerMeter = PRESSURE_PER_METER)
+// js/decoModel.js:1024
+export function simulateDepthChange(
+    tissuePressures,
+    startDepth,
+    endDepth,
+    time,
+    n2Fraction,
+    surfacePressure = SURFACE_PRESSURE,
+    pressurePerMeter = PRESSURE_PER_METER
+)
 ```
 
-`calculateTissueLoading()` iterates across an entire waypoint array:
+`calculateTissueLoading()` passes the resulting tissue state through the
+complete waypoint sequence:
 
 ```javascript
-// js/decoModel.js:1132 (signature)
+// js/decoModel.js:1645
 export function calculateTissueLoading(profile, surfaceInterval = 60, options = {})
 ```
 
-It samples at 10-second resolution (`CALC_INTERVAL = 10` s) — for each interval it decides descent/level/ascent and dispatches to Haldane or Schreiner accordingly, threading tissue state forward. Gas switches are respected via the `gasId` field on waypoints. `options.surfacePressure` supplies the local atmospheric pressure for altitude dives; `options.pressurePerMeter` supplies the selected EN, freshwater, or seawater depth conversion.
-
-## Haldane as degenerate case
-
-When $R = 0$:
-
-$$P_t(t) = P_{alv,0} - (P_{alv,0} - P_{t,0}) \cdot e^{-kt} = P_{alv,0} + (P_{t,0} - P_{alv,0}) \cdot e^{-kt}$$
-
-Exactly the Haldane equation. DecoJS still dispatches to `haldaneEquation()` separately on level segments for code clarity — the arithmetic is equivalent either way, but numerical stability is better when you don't pass $R = 0$ into the Schreiner form (avoids the $R/k$ term evaluating to zero via subtraction).
-
 ## Cross-references
 
-- [Model-02-Haldane-Equation](Model-02-Haldane-Equation.md) — the constant-depth specialization.
-- [Algo-01-Ascent-Simulation](Algo-01-Ascent-Simulation.md) — the loop that drives Schreiner through a dive.
-- [References](References.md#22-schreiner--exponential-gas-uptake-with-changing-pressure) — Schreiner & Kelley 1971, plus Baker's "Clearing Up The Confusion About 'Deep Stops'" which derives the same form in modern notation.
+- [Model-02-Haldane-Equation](Model-02-Haldane-Equation.md) — fixed-target form.
+- [Algo-01-Ascent-Simulation](Algo-01-Ascent-Simulation.md) — profile loop.
+- [References](References.md#22-schreiner--exponential-gas-uptake-with-changing-pressure) — source literature.

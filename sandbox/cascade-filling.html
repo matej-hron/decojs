@@ -387,7 +387,7 @@
             <h2 data-i18n="sandbox.cascade.setupHeading">Setup</h2>
 
             <div class="section">
-                <h3 data-i18n="sandbox.cascade.cascadeBank">Cascade Bank (4&nbsp;&#215;&nbsp;50&nbsp;L)</h3>
+                <h3 data-i18n="sandbox.cascade.cascadeBank">Cascade Bank (4&nbsp;&#215;&nbsp;50&nbsp;l)</h3>
                 <div class="input-group">
                     <label data-i18n="sandbox.cascade.labels.initialPressure">Initial Pressure</label>
                     <select id="cascadePressure">
@@ -400,7 +400,7 @@
                 </div>
                 <div class="info-row">
                     <span class="label" data-i18n="sandbox.cascade.remaining">Remaining:</span>
-                    <span class="value" id="cascadeRemaining">60,000&nbsp;bar-L</span>
+                    <span class="value" id="cascadeRemaining">50,000&nbsp;l at 1&nbsp;bar</span>
                 </div>
             </div>
 
@@ -421,11 +421,11 @@
                 <div class="input-group">
                     <label data-i18n="sandbox.cascade.labels.volume">Volume</label>
                     <select id="targetVolume">
-                        <option value="7" data-i18n="sandbox.cascade.volumes.al50">7&nbsp;L (AL50)</option>
-                        <option value="10" data-i18n="sandbox.cascade.volumes.single10">10&nbsp;L (Single)</option>
-                        <option value="11" data-i18n="sandbox.cascade.volumes.al80">11&nbsp;L (AL80)</option>
-                        <option value="12" selected data-i18n="sandbox.cascade.volumes.single12">12&nbsp;L (Single)</option>
-                        <option value="15" data-i18n="sandbox.cascade.volumes.single15">15&nbsp;L (Single)</option>
+                        <option value="7" data-i18n="sandbox.cascade.volumes.al50">7&nbsp;l (AL50)</option>
+                        <option value="10" data-i18n="sandbox.cascade.volumes.single10">10&nbsp;l (Single)</option>
+                        <option value="11" data-i18n="sandbox.cascade.volumes.al80">11&nbsp;l (AL80)</option>
+                        <option value="12" selected data-i18n="sandbox.cascade.volumes.single12">12&nbsp;l (Single)</option>
+                        <option value="15" data-i18n="sandbox.cascade.volumes.single15">15&nbsp;l (Single)</option>
                     </select>
                 </div>
                 <div class="input-group">
@@ -509,6 +509,7 @@
 
     <script type="module">
         import { fmtNum, fmtGroup } from '../js/format.js';
+        import { translate } from '../js/i18n.js';
         // Constants
         const CASCADE_COUNT = 4;
         const CASCADE_VOLUME = 50;
@@ -526,6 +527,7 @@
         let targetVolume = 12;
         let targetCount = 12;
         let fillCount = 0;
+        let fillLogEntries = [];
         let isAnimating = false;
 
         // DOM Elements
@@ -535,6 +537,27 @@
         const targetPressureSelect = document.getElementById('targetPressure');
         const resetBtn = document.getElementById('resetBtn');
         const hoseWarning = document.getElementById('hoseWarning');
+
+        function tr(key, fallback, values = {}) {
+            return Object.entries(values).reduce(
+                (text, [token, value]) => text.replaceAll(`{${token}}`, value),
+                translate(`sandbox.cascade.${key}`, fallback),
+            );
+        }
+
+        function fmtPressure(value) {
+            return `${fmtNum(value, Number.isInteger(value) ? 0 : 1)}\u00a0bar`;
+        }
+
+        function fmtVolume(value) {
+            return `${fmtNum(value, Number.isInteger(value) ? 0 : 1)}\u00a0l`;
+        }
+
+        function fmtSurfaceVolume(value) {
+            return tr('surfaceVolumeValue', '{value}\u00a0l at 1\u00a0bar', {
+                value: fmtGroup(value),
+            });
+        }
 
         /**
          * Calculate equalized pressure for multiple cylinders
@@ -705,8 +728,8 @@
                         <div class="cylinder-fill cascade${isLow ? ' low' : ''}" style="height: ${getFillHeight(pressure)}%"></div>
                     </div>
                     <div class="cylinder-stats">
-                        <div class="pressure">${Math.round(pressure)}\u00a0bar</div>
-                        <div class="volume">${CASCADE_VOLUME}\u00a0L</div>
+                        <div class="pressure">${fmtPressure(pressure)}</div>
+                        <div class="volume">${fmtVolume(CASCADE_VOLUME)}</div>
                     </div>
                 `;
                 container.appendChild(unit);
@@ -743,8 +766,8 @@
                         <div class="cylinder-fill${isFull ? ' full' : ''}" style="height: ${getFillHeight(pressure)}%"></div>
                     </div>
                     <div class="cylinder-stats">
-                        <div class="pressure">${Math.round(pressure)}\u00a0bar</div>
-                        <div class="volume">${targetVolume}\u00a0L</div>
+                        <div class="pressure">${fmtPressure(pressure)}</div>
+                        <div class="volume">${fmtVolume(targetVolume)}</div>
                     </div>
                 `;
                 container.appendChild(unit);
@@ -773,19 +796,26 @@
 
             // Update cascade remaining
             const remaining = cascadePressures.reduce((sum, p) => sum + p * CASCADE_VOLUME, 0);
-            document.getElementById('cascadeRemaining').textContent = fmtGroup(remaining) + '\u00a0bar-L';
+            document.getElementById('cascadeRemaining').textContent = fmtSurfaceVolume(remaining);
 
             // No target connections - check for cascade-only equalization
             if (openCascades.length === 0 && openTargets.length === 0) {
                 statusDiv.className = 'connection-status';
-                detailsDiv.innerHTML = 'Open cascade and target valves to start filling';
+                detailsDiv.textContent = tr(
+                    'connectionStatus.idle',
+                    'Open cascade and target valves to connect',
+                );
                 detailsDiv.className = 'connection-details';
                 return;
             }
 
             if (openCascades.length === 0) {
                 statusDiv.className = 'connection-status';
-                detailsDiv.innerHTML = `${openTargets.length} target(s) ready - open a cascade valve to fill`;
+                detailsDiv.textContent = tr(
+                    'connectionStatus.targetsReady',
+                    'Target cylinders ready: {count} — open a cascade valve to fill',
+                    { count: openTargets.length },
+                );
                 detailsDiv.className = 'connection-details';
                 return;
             }
@@ -809,14 +839,21 @@
                     statusDiv.className = 'connection-status ready';
                     detailsDiv.className = 'connection-details active';
                     detailsDiv.innerHTML = `
-                        <strong>${cascadeLabels}</strong> equalizing
+                        <strong>${cascadeLabels}</strong> ${tr('connectionStatus.equalizing', 'equalizing')}
                         <div class="predicted-result">
-                            ${isAnimating ? 'Equalizing...' : 'Will equalize to'} <strong>${fmtNum(eqP, 1)}\u00a0bar</strong>
+                            ${isAnimating
+                                ? tr('connectionStatus.equalizingProgress', 'Equalizing…')
+                                : tr('connectionStatus.willEqualize', 'Will equalize to')}
+                            <strong>${fmtPressure(eqP)}</strong>
                         </div>
                     `;
                 } else {
                     statusDiv.className = 'connection-status';
-                    detailsDiv.innerHTML = `<strong>${cascadeLabels}</strong> — Equalized at ${Math.round(maxP)}\u00a0bar`;
+                    detailsDiv.innerHTML = `<strong>${cascadeLabels}</strong> — ${tr(
+                        'connectionStatus.equalizedAt',
+                        'equalized at {pressure}',
+                        { pressure: fmtPressure(maxP) },
+                    )}`;
                     detailsDiv.className = 'connection-details';
                 }
                 return;
@@ -824,7 +861,11 @@
 
             if (openTargets.length === 0) {
                 statusDiv.className = 'connection-status';
-                detailsDiv.innerHTML = `${openCascades.length} cascade(s) open - open target valve(s) to fill`;
+                detailsDiv.textContent = tr(
+                    'connectionStatus.cascadesOpen',
+                    'Open cascade cylinders: {count} — open target valves to fill',
+                    { count: openCascades.length },
+                );
                 detailsDiv.className = 'connection-details';
                 return;
             }
@@ -845,14 +886,21 @@
                     statusDiv.className = 'connection-status ready';
                     detailsDiv.className = 'connection-details active';
                     detailsDiv.innerHTML = `
-                        <strong>${targetLabels}</strong> equalizing
+                        <strong>${targetLabels}</strong> ${tr('connectionStatus.equalizing', 'equalizing')}
                         <div class="predicted-result">
-                            ${isAnimating ? 'Equalizing...' : 'Will equalize to'} <strong>${fmtNum(eqP, 1)}\u00a0bar</strong>
+                            ${isAnimating
+                                ? tr('connectionStatus.equalizingProgress', 'Equalizing…')
+                                : tr('connectionStatus.willEqualize', 'Will equalize to')}
+                            <strong>${fmtPressure(eqP)}</strong>
                         </div>
                     `;
                 } else {
                     statusDiv.className = 'connection-status';
-                    detailsDiv.innerHTML = `<strong>${targetLabels}</strong> — Equalized at ${Math.round(maxP)}\u00a0bar`;
+                    detailsDiv.innerHTML = `<strong>${targetLabels}</strong> — ${tr(
+                        'connectionStatus.equalizedAt',
+                        'equalized at {pressure}',
+                        { pressure: fmtPressure(maxP) },
+                    )}`;
                     detailsDiv.className = 'connection-details';
                 }
                 return;
@@ -874,7 +922,9 @@
 
             if (!flowingToTarget && !flowingToCascade) {
                 statusDiv.className = 'connection-status';
-                detailsDiv.innerHTML = `<strong>${cascadeLabels}</strong> ↔ <strong>${targetLabels}</strong> — Equalized`;
+                detailsDiv.innerHTML =
+                    `<strong>${cascadeLabels}</strong> ↔ <strong>${targetLabels}</strong> — ` +
+                    tr('connectionStatus.equalized', 'equalized');
                 detailsDiv.className = 'connection-details';
                 return;
             }
@@ -882,7 +932,13 @@
             // Check if filling to target is blocked by 200 bar limit
             if (flowingToTarget && minTargetP >= TARGET_MAX_PRESSURE && !flowingToCascade) {
                 statusDiv.className = 'connection-status';
-                detailsDiv.innerHTML = `<strong>${cascadeLabels}</strong> ↔ <strong>${targetLabels}</strong> — Targets at limit (200 bar)`;
+                detailsDiv.innerHTML =
+                    `<strong>${cascadeLabels}</strong> ↔ <strong>${targetLabels}</strong> — ` +
+                    tr(
+                        'connectionStatus.targetsAtLimit',
+                        'target cylinders at limit ({pressure})',
+                        { pressure: fmtPressure(TARGET_MAX_PRESSURE) },
+                    );
                 detailsDiv.className = 'connection-details';
                 return;
             }
@@ -899,8 +955,17 @@
             detailsDiv.innerHTML = `
                 <strong>${cascadeLabels}</strong> ${flowDirection} <strong>${targetLabels}</strong>
                 <div class="predicted-result">
-                    ${isAnimating ? 'Equalizing...' : 'Will equalize to'} <strong>${fmtNum(displayP, 1)}\u00a0bar</strong>
-                    ${flowingToTarget && rawFinalP > TARGET_MAX_PRESSURE ? ' (200 bar limit on targets)' : ''}
+                    ${isAnimating
+                        ? tr('connectionStatus.equalizingProgress', 'Equalizing…')
+                        : tr('connectionStatus.willEqualize', 'Will equalize to')}
+                    <strong>${fmtPressure(displayP)}</strong>
+                    ${flowingToTarget && rawFinalP > TARGET_MAX_PRESSURE
+                        ? tr(
+                            'connectionStatus.targetLimitNote',
+                            ' ({pressure} limit for target cylinders)',
+                            { pressure: fmtPressure(TARGET_MAX_PRESSURE) },
+                        )
+                        : ''}
                 </div>
             `;
         }
@@ -1034,78 +1099,107 @@
          */
         function addLogEntry(cascadeIndices, targetIndices, initialCascade, initialTarget, cascadeFinal, targetFinal) {
             fillCount++;
+            fillLogEntries.unshift({
+                step: fillCount,
+                cascadeIndices: [...cascadeIndices],
+                targetIndices: [...targetIndices],
+                initialCascade: [...initialCascade],
+                initialTarget: [...initialTarget],
+                cascadeFinal,
+                targetFinal,
+                targetVolume,
+            });
+            renderFillLog();
+        }
+
+        function renderFillLog() {
             const logDiv = document.getElementById('fillLog');
-
-            const emptyMsg = logDiv.querySelector('.log-empty');
-            if (emptyMsg) emptyMsg.remove();
-
-            // Calculate input volumes (bar-L)
-            let cascadeInputGas = 0;
-            let targetInputGas = 0;
-            let cascadeInputVolume = 0;
-            let targetInputVolume = 0;
-
-            cascadeIndices.forEach(i => {
-                cascadeInputGas += initialCascade[i] * CASCADE_VOLUME;
-                cascadeInputVolume += CASCADE_VOLUME;
-            });
-            targetIndices.forEach(i => {
-                targetInputGas += initialTarget[i] * targetVolume;
-                targetInputVolume += targetVolume;
-            });
-
-            const totalInputGas = cascadeInputGas + targetInputGas;
-            const totalVolume = cascadeInputVolume + targetInputVolume;
-
-            // Calculate final equalized pressure
-            let finalEqPressure;
-            if (cascadeIndices.length === 0) {
-                finalEqPressure = Math.min(targetFinal, TARGET_MAX_PRESSURE);
-            } else if (targetIndices.length === 0) {
-                finalEqPressure = cascadeFinal;
-            } else {
-                // Use the actual final pressure (may be limited by 200 bar on targets)
-                finalEqPressure = cascadeFinal; // cascade shows the true equalization
+            if (fillLogEntries.length === 0) {
+                logDiv.innerHTML = `<div class="log-empty">${tr('logEmpty', 'No fills yet')}</div>`;
+                return;
             }
 
-            let logText;
-            let detailsText;
+            logDiv.innerHTML = fillLogEntries.map(record => {
+                const {
+                    step,
+                    cascadeIndices,
+                    targetIndices,
+                    initialCascade,
+                    initialTarget,
+                    cascadeFinal,
+                    targetFinal,
+                    targetVolume: loggedTargetVolume,
+                } = record;
+                const cascadeInputVolume = cascadeIndices.length * CASCADE_VOLUME;
+                const targetInputVolume = targetIndices.length * loggedTargetVolume;
+                const cascadeInputSurfaceVolume = cascadeIndices.reduce(
+                    (sum, i) => sum + initialCascade[i] * CASCADE_VOLUME,
+                    0,
+                );
+                const targetInputSurfaceVolume = targetIndices.reduce(
+                    (sum, i) => sum + initialTarget[i] * loggedTargetVolume,
+                    0,
+                );
+                const totalInputSurfaceVolume =
+                    cascadeInputSurfaceVolume + targetInputSurfaceVolume;
+                const totalVolume = cascadeInputVolume + targetInputVolume;
+                const finalEqPressure = cascadeIndices.length === 0
+                    ? Math.min(targetFinal, TARGET_MAX_PRESSURE)
+                    : cascadeFinal;
 
-            if (cascadeIndices.length === 0 && targetIndices.length > 0) {
-                // Target-only equalization
-                const targetStr = targetIndices.map(i => `T${i + 1}`).join(', ');
-                const pressureStr = targetIndices.map(i =>
-                    `${Math.round(initialTarget[i])}→${Math.round(Math.min(targetFinal, TARGET_MAX_PRESSURE))}`
-                ).join(', ');
-                logText = `${targetStr} equalized`;
-                detailsText = `Input: ${fmtGroup(targetInputGas)}\u00a0bar-L in ${targetInputVolume}\u00a0L | Final: ${fmtNum(finalEqPressure, 1)}\u00a0bar`;
-            } else if (targetIndices.length === 0) {
-                // Cascade-only equalization
-                const cascadeStr = cascadeIndices.map(i => `C${i + 1}`).join(', ');
-                logText = `${cascadeStr} equalized`;
-                detailsText = `Input: ${fmtGroup(cascadeInputGas)}\u00a0bar-L in ${cascadeInputVolume}\u00a0L | Final: ${fmtNum(finalEqPressure, 1)}\u00a0bar`;
-            } else {
-                // Cascade-to-target fill
-                const cascadeStr = cascadeIndices.map(i => `C${i + 1}`).join(', ');
-                const targetStr = targetIndices.map(i => `T${i + 1}`).join(', ');
-                const actualTargetFinal = Math.min(targetFinal, TARGET_MAX_PRESSURE);
-                logText = `${cascadeStr} → ${targetStr}`;
+                let logText;
+                const detailParts = [
+                    tr(
+                        'log.initialSurfaceVolume',
+                        'Initial surface-equivalent volume: {value}',
+                        { value: fmtSurfaceVolume(totalInputSurfaceVolume) },
+                    ),
+                    tr(
+                        'log.connectedVolume',
+                        'Connected-cylinder volume: {value}',
+                        { value: fmtVolume(totalVolume) },
+                    ),
+                ];
 
-                // Calculate gas transferred to targets
-                const gasTransferred = targetIndices.reduce((sum, i) => {
-                    return sum + (actualTargetFinal - initialTarget[i]) * targetVolume;
-                }, 0);
+                if (cascadeIndices.length === 0) {
+                    const targetLabels = targetIndices.map(i => `T${i + 1}`).join(', ');
+                    logText = `${targetLabels} ${tr('log.equalized', 'equalized')}`;
+                } else if (targetIndices.length === 0) {
+                    const cascadeLabels = cascadeIndices.map(i => `C${i + 1}`).join(', ');
+                    logText = `${cascadeLabels} ${tr('log.equalized', 'equalized')}`;
+                } else {
+                    const cascadeLabels = cascadeIndices.map(i => `C${i + 1}`).join(', ');
+                    const targetLabels = targetIndices.map(i => `T${i + 1}`).join(', ');
+                    const actualTargetFinal = Math.min(targetFinal, TARGET_MAX_PRESSURE);
+                    const transferredSurfaceVolume = targetIndices.reduce(
+                        (sum, i) =>
+                            sum + (actualTargetFinal - initialTarget[i]) * loggedTargetVolume,
+                        0,
+                    );
+                    logText = `${cascadeLabels} → ${targetLabels}`;
+                    detailParts.push(tr(
+                        'log.transferredSurfaceVolume',
+                        'Surface-equivalent volume transferred to targets: {value}',
+                        { value: fmtSurfaceVolume(transferredSurfaceVolume) },
+                    ));
+                    if (Math.abs(actualTargetFinal - finalEqPressure) > 0.05) {
+                        detailParts.push(tr(
+                            'log.targetPressure',
+                            'Target pressure: {value}',
+                            { value: fmtPressure(actualTargetFinal) },
+                        ));
+                    }
+                }
 
-                detailsText = `Input: ${fmtGroup(totalInputGas)}\u00a0bar-L (${totalVolume}\u00a0L) | ` +
-                    `Transferred: ${fmtGroup(gasTransferred)}\u00a0bar-L | ` +
-                    `Final: ${fmtNum(finalEqPressure, 1)}\u00a0bar` +
-                    (targetFinal > TARGET_MAX_PRESSURE ? ` (targets: ${actualTargetFinal}\u00a0bar)` : '');
-            }
+                detailParts.push(tr(
+                    'log.finalPressure',
+                    'Final pressure: {value}',
+                    { value: fmtPressure(finalEqPressure) },
+                ));
 
-            const entry = document.createElement('div');
-            entry.className = 'log-entry';
-            entry.innerHTML = `<span class="step">#${fillCount}</span> ${logText}<br><small style="color: var(--text-muted)">${detailsText}</small>`;
-            logDiv.insertBefore(entry, logDiv.querySelector('.log-entry') || null);
+                return `<div class="log-entry"><span class="step">#${step}</span> ${logText}<br>` +
+                    `<small style="color: var(--text-muted)">${detailParts.join(' · ')}</small></div>`;
+            }).join('');
         }
 
         /**
@@ -1119,9 +1213,10 @@
             targetPressures = Array(targetCount).fill(targetInitialPressure);
             targetValves = Array(targetCount).fill(false);
             fillCount = 0;
+            fillLogEntries = [];
 
-            document.getElementById('fillLog').innerHTML = '<div class="log-empty">No fills yet</div>';
             renderAll();
+            renderFillLog();
         }
 
         /**
@@ -1250,6 +1345,10 @@
         targetCountSelect.addEventListener('change', updateUrl);
         targetVolumeSelect.addEventListener('change', updateUrl);
         targetPressureSelect.addEventListener('change', updateUrl);
+        document.addEventListener('languagechange', () => {
+            renderAll();
+            renderFillLog();
+        });
 
         // Initialize from URL params, then render
         const hasState = applyUrlParams();
@@ -1259,6 +1358,7 @@
         }
         targetValves = Array(targetCount).fill(false);
         renderAll();
+        renderFillLog();
     </script>
 </body>
 </html>

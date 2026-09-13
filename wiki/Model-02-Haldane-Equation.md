@@ -1,9 +1,32 @@
 # Model-02 — Haldane Equation
 
-Applies to **constant-depth segments** (stay at one depth for time $t$). Each
-compartment's tissue pressure evolves exponentially toward the alveolar inert-gas
-pressure at that depth. The interactive Haldane sandbox presents this first as a
-completed-change model because it is easier to read in both directions:
+## Fixed target versus moving target
+
+Haldane and Schreiner describe the same exponential tissue response under two
+different input conditions:
+
+| Model | Alveolar target | Tissue response |
+|---|---|---|
+| **Haldane** | Set to a new value at $t = 0$, then constant | Exponentially approaches the fixed target |
+| **Schreiner** | Changes linearly throughout the segment | Follows the moving target with a delay |
+
+The vertical change shown in the Haldane sandbox is an **idealized change of the
+input alveolar pressure**, not a claim that physical depth changes instantaneously.
+A real descent or ascent takes time and is modeled by the
+[Schreiner equation](Model-03-Schreiner-Equation.md).
+
+## Mental model
+
+Imagine a horizontal target line at $p_{\mathrm{alv}}$. At $t = 0$, that line is
+placed at its new constant value. The tissue starts at $p_{\mathrm{t},0}$ and follows
+a smooth exponential curve toward the line. A faster compartment bends toward it
+more quickly; a slower compartment takes longer.
+
+## Teaching form
+
+This model applies to **constant-depth segments**. The interactive sandbox presents
+the completed-change form first because it reads naturally during both on-gassing
+and off-gassing:
 
 $$
 p_{\mathrm{t}}(t)

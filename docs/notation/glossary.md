@@ -131,8 +131,11 @@ jdou přes `locales/*.json` a řídí se stejným pravidlem.
 | *a* | Bühlmannův koeficient *a* | Bühlmann a-coefficient | bar | ZH-L16 | — | — | — |
 | *b* | Bühlmannův koeficient *b* | Bühlmann b-coefficient | — | ZH-L16 | — | — | — |
 | *p*<sub>alv</sub> | alveolární tlak inertního plynu | alveolar inert gas pressure | bar | Bühlmann | `pAlv` | `alveolarPressure` | 3 × / 4 × |
+| *p*<sub>alv,0</sub> | počáteční alveolární tlak inertního plynu | initial alveolar inert gas pressure | bar | Schreiner | — | — | — |
 | *p*<sub>t</sub> | tlak inertního plynu v tkáni | tissue inert gas pressure | bar | Bühlmann | `pTissue` | `tissuePressure` | 16 × / 9 × |
 | *p*<sub>t,0</sub> | počáteční tlak v tkáni | initial tissue pressure | bar | Schreiner | — | — | — |
+| Δ*p* | okamžitý rozdíl alveolárního a tkáňového tlaku, Δ*p* = *p*<sub>alv</sub> − *p*<sub>t</sub> | instantaneous alveolar–tissue pressure difference | bar | místní značení stránky Schreinerovy rovnice | — | — | — |
+| d*p*<sub>t</sub>/d*t* | okamžitá rychlost změny tlaku inertního plynu v tkáni | instantaneous rate of tissue inert-gas pressure change | bar/min | Haldaneův diferenciální zákon | — | — | — |
 | *p*<sub>amb,tol</sub> | tolerovaný okolní tlak (strop) | tolerated ambient pressure | bar | Bühlmann | — | — | — |
 | *R* | rychlost změny tlaku | rate of pressure change | bar/min | Schreiner | — | — | — |
 | *M* | M-hodnota | M-value | bar | Workman | — | — | — |

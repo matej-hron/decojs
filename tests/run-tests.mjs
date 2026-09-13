@@ -5958,6 +5958,320 @@ describe('Haldane sandbox glossary notation', () => {
     });
 });
 
+describe('Haldane and Schreiner teaching hierarchy', () => {
+    const pages = Object.fromEntries(['haldane', 'schreiner'].map(name => [
+        name,
+        readFileSync(new URL(`../sandbox/${name}.html`, import.meta.url), 'utf8')
+    ]));
+    const locales = Object.fromEntries(['cs', 'en', 'es'].map(lang => [
+        lang,
+        JSON.parse(readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8'))
+    ]));
+
+    test('both pages compare the fixed and moving alveolar targets before equations', () => {
+        for (const page of Object.values(pages)) {
+            const comparison = page.indexOf('sandbox.equationComparison.title');
+            const formula = page.indexOf('<div class="formula-substituted">');
+            expect(comparison).toBeGreaterThan(-1);
+            expect(comparison).toBeLessThan(formula);
+            expect(page.includes('sandbox.equationComparison.haldane.constant')).toBe(true);
+            expect(page.includes('sandbox.equationComparison.schreiner.linear')).toBe(true);
+        }
+    });
+
+    test('Schreiner presents one basic example before the general case and expert algebra', () => {
+        const page = pages.schreiner;
+        const chart = page.indexOf('id="ptChart"');
+        const contributions = page.indexOf('data-teaching-model="basic-moving-target"');
+        const general = page.indexOf('sandbox.schreiner.general.summary');
+        const derivation = page.indexOf('sandbox.schreiner.derivation.summary');
+        const glossary = page.indexOf('sandbox.schreiner.cards.summary');
+        const mathOrigin = page.indexOf('sandbox.schreiner.mathOrigin.summary');
+        expect(page.indexOf('sandbox.schreiner.mental.simpleExplanation')).toBeLessThan(chart);
+        expect(chart).toBeLessThan(contributions);
+        expect(contributions).toBeLessThan(general);
+        expect(general).toBeLessThan(derivation);
+        expect(derivation).toBeLessThan(glossary);
+        expect(glossary).toBeLessThan(mathOrigin);
+        expect(mathOrigin).toBeLessThan(page.indexOf('sandbox.schreiner.mvalue.summary'));
+        expect(page.includes('<details class="advanced-section" open>')).toBe(false);
+    });
+
+    test('keeps the graph physical and labels both pressures and their current difference', () => {
+        const page = pages.schreiner;
+        for (const line of ['chartPalv', 'chartDelta', 'chartCurve']) {
+            expect(page.includes(`id="${line}"`)).toBe(true);
+        }
+        expect(page.includes('id="chartPalvLabel"')).toBe(true);
+        expect(page.includes('id="chartDeltaLabel"')).toBe(true);
+        expect(page.includes('id="chartTissueLabel"')).toBe(true);
+        expect(page.includes('id="chartDeltaPalv"')).toBe(true);
+        expect(page.includes('id="chartDeltaTissue"')).toBe(true);
+        expect(page.includes('id="chartExchangeLabel"')).toBe(true);
+        expect(page.includes('stroke="#2980b9"')).toBe(true);
+        expect(page.includes('stroke="#16a085"')).toBe(true);
+        expect(page.includes('stroke="#e67e22"')).toBe(true);
+    });
+
+    test('the basic example shows initial pressure and moving-target response only', () => {
+        const page = pages.schreiner;
+        const steps = page.indexOf('data-teaching-model="basic-moving-target"');
+        const general = page.indexOf('sandbox.schreiner.general.summary');
+        for (const [name, id] of [
+            ['initial', 'contributionInitialValue'],
+            ['moving', 'movingContributionValue']
+        ]) {
+            expect(page.includes(`data-contribution="${name}"`)).toBe(true);
+            expect(page.includes(`contribution-step ${name}`)).toBe(true);
+            expect(page.includes(`id="${id}"`)).toBe(true);
+            expect(page.includes(`contribution-origin ${name}`)).toBe(true);
+        }
+        const primary = page.slice(steps, general);
+        expect(primary.includes('data-contribution="haldane"')).toBe(false);
+        expect(primary.includes('id="initialEquilibriumNote"')).toBe(true);
+        expect(primary.includes('id="sumHaldaneLabel" hidden')).toBe(true);
+        expect(primary.includes('id="sumHaldaneNumeric" hidden')).toBe(true);
+        expect(page.includes('id="haldaneContributionValue"')).toBe(true);
+        expect(page.includes('(1 − e<sup>−<var>k</var><var>t</var></sup>)')).toBe(true);
+        expect(page.includes('<var>R</var> · [<var>t</var> −')).toBe(true);
+        expect(steps).toBeLessThan(general);
+        for (const locale of Object.values(locales)) {
+            expect(Boolean(locale.sandbox.schreiner.composition.initial.title)).toBe(true);
+            expect(Boolean(locale.sandbox.schreiner.composition.equilibrium.title)).toBe(true);
+            expect(Boolean(locale.sandbox.schreiner.composition.haldane.title)).toBe(true);
+            expect(Boolean(locale.sandbox.schreiner.composition.moving.title)).toBe(true);
+        }
+    });
+
+    test('the three-contribution teaching form equals schreinerEquation', () => {
+        const states = [
+            { pT0: 0.75, pAlv0: 1.0 },
+            { pT0: 1.8, pAlv0: 3.1 },
+            { pT0: 3.4, pAlv0: 2.8 }
+        ];
+        for (const rate of [0.24, -0.3, 0]) {
+            for (const halfTime of [4, 18.5, 54.3, 239]) {
+                const k = Math.LN2 / halfTime;
+                for (const time of [0, 0.5, 2.2, 25]) {
+                    const exp = Math.exp(-k * time);
+                    for (const { pT0, pAlv0 } of states) {
+                        const haldaneContribution = (pAlv0 - pT0) * (1 - exp);
+                        const movingTargetContribution = rate * (
+                            time - (1 - exp) / k
+                        );
+                        const teachingResult = pT0
+                            + haldaneContribution
+                            + movingTargetContribution;
+                        expect(teachingResult).toBeCloseTo(
+                            schreinerEquation(pT0, pAlv0, rate, time, halfTime),
+                            11
+                        );
+                    }
+                }
+            }
+        }
+    });
+
+    test('the equilibrium-start basic form needs only initial pressure and movement correction', () => {
+        const pAlv0 = getAlveolarN2Pressure(getAmbientPressure(0));
+        const pT0 = pAlv0;
+        for (const halfTime of [4, 27, 239]) {
+            const k = Math.LN2 / halfTime;
+            for (const time of [0, 0.5, 3]) {
+                const rate = 0.79;
+                const exp = Math.exp(-k * time);
+                const movementCorrection = rate * (time - (1 - exp) / k);
+                const basicResult = pT0 + movementCorrection;
+                expect((pAlv0 - pT0) * (1 - exp)).toBe(0);
+                expect(basicResult).toBeCloseTo(
+                    schreinerEquation(pT0, pAlv0, rate, time, halfTime),
+                    11
+                );
+            }
+        }
+    });
+
+    test('the moving-target contribution follows the sign of R', () => {
+        const k = Math.LN2 / 27;
+        const time = 3;
+        const movementWindow = time - (1 - Math.exp(-k * time)) / k;
+        expect(movementWindow).toBeGreaterThan(0);
+        expect(0.5 * movementWindow).toBeGreaterThan(0);
+        expect(-0.5 * movementWindow).toBeLessThan(0);
+        expect(0 * movementWindow).toBe(0);
+    });
+
+    test('the pressure difference supports on-gassing, off-gassing, and equilibrium', () => {
+        const samples = [
+            { pT0: 0.7, pAlv0: 2.5, rate: 0.2, time: 1, halfTime: 27, sign: 1 },
+            { pT0: 3.2, pAlv0: 2.5, rate: -0.2, time: 1, halfTime: 27, sign: -1 },
+            { pT0: 2.5, pAlv0: 2.5, rate: 0, time: 4, halfTime: 27, sign: 0 }
+        ];
+
+        for (const sample of samples) {
+            const pTissue = schreinerEquation(
+                sample.pT0,
+                sample.pAlv0,
+                sample.rate,
+                sample.time,
+                sample.halfTime
+            );
+            const deltaP = sample.pAlv0 + sample.rate * sample.time - pTissue;
+            if (sample.sign > 0) expect(deltaP).toBeGreaterThan(0);
+            if (sample.sign < 0) expect(deltaP).toBeLessThan(0);
+            if (sample.sign === 0) expect(deltaP).toBeCloseTo(0, 12);
+        }
+    });
+
+    test('at R = 0 the movement correction is zero and the teaching form is Haldane', () => {
+        for (const { pT0, pAlv0, time, halfTime } of [
+            { pT0: 0.7511, pAlv0: 2.3315, time: 20, halfTime: 27 },
+            { pT0: 3.5, pAlv0: 0.7511, time: 8, halfTime: 5 },
+            { pT0: 1.2, pAlv0: 2.8, time: 120, halfTime: 635 }
+        ]) {
+            const k = Math.LN2 / halfTime;
+            const exp = Math.exp(-k * time);
+            const movingContribution = 0 * (time - (1 - exp) / k);
+            const teachingResult = pT0 + (pAlv0 - pT0) * (1 - exp) + movingContribution;
+            expect(movingContribution).toBe(0);
+            expect(teachingResult).toBeCloseTo(haldaneEquation(pT0, pAlv0, time, halfTime), 12);
+            expect(schreinerEquation(pT0, pAlv0, 0, time, halfTime))
+                .toBeCloseTo(haldaneEquation(pT0, pAlv0, time, halfTime), 12);
+        }
+    });
+
+    test('keeps calculus out of the basic example and general teaching form', () => {
+        const page = pages.schreiner;
+        const primaryStart = page.indexOf('data-teaching-model="basic-moving-target"');
+        const primaryEnd = page.indexOf('sandbox.schreiner.derivation.summary');
+        const primary = page.slice(primaryStart, primaryEnd);
+        expect(primary.includes('d<var>p</var>')).toBe(false);
+        expect(primary.includes('∫')).toBe(false);
+        expect(page.indexOf('sandbox.schreiner.mathOrigin.summary')).toBeGreaterThan(primaryEnd);
+        expect(page.includes('d<var>p</var><sub data-i18n="sandbox.schreiner.symbols.tissue">t</sub>/d<var>t</var>')).toBe(true);
+    });
+
+    test('shows each algebra step and keeps numerical substitution inside the collapsed derivation', () => {
+        const page = pages.schreiner;
+        const canonicalStart = page.indexOf('sandbox.schreiner.derivation.summary');
+        const canonicalEnd = page.indexOf('</details>', canonicalStart);
+        const substitution = page.indexOf('<div class="formula-substituted">');
+        for (const step of ['teaching', 'expanded', 'grouped', 'canonical']) {
+            expect(page.includes(`data-algebra-step="${step}"`)).toBe(true);
+        }
+        for (const origin of ['initial', 'haldane', 'moving']) {
+            expect(page.includes(`contribution-origin ${origin}`)).toBe(true);
+        }
+        expect(page.includes('algebra-cancel')).toBe(true);
+        expect(page.includes('<details class="advanced-section general-case" open>')).toBe(false);
+        expect(page.includes('<details class="advanced-section algebra-derivation" open>')).toBe(false);
+        expect(substitution).toBeGreaterThan(canonicalStart);
+        expect(substitution).toBeLessThan(canonicalEnd);
+    });
+
+    test('fully hides collapsed control contents while leaving only the toggle visible', () => {
+        for (const page of Object.values(pages)) {
+            expect(page.includes('.sandbox-control-bar.collapsed { transform: translateY(100%); }')).toBe(true);
+            expect(page.includes('translateY(calc(100% - 32px))')).toBe(false);
+        }
+    });
+
+    test('every language explains all contributions, Haldane reduction, and algebra', () => {
+        for (const locale of Object.values(locales)) {
+            const schreiner = locale.sandbox.schreiner;
+            expect(schreiner.composition.initial.explanation.length).toBeGreaterThan(30);
+            expect(schreiner.composition.haldane.bridgeExplanation).toContain('Haldane');
+            expect(schreiner.composition.moving.zeroNote).toContain('<var>R</var> = 0');
+            expect(schreiner.composition.sum.explanation.length).toBeGreaterThan(40);
+            expect(schreiner.derivation.expanded.length).toBeGreaterThan(5);
+            expect(schreiner.mathOrigin.explanation.length).toBeGreaterThan(80);
+        }
+    });
+
+    test('the graph uses only physical pressures on one shared scale', () => {
+        const page = pages.schreiner;
+        expect(page.includes('const pressures = samples.flatMap(sample => [sample.pAlv, sample.pTissue]);')).toBe(true);
+        expect(page.includes('chart-scale-note')).toBe(false);
+        expect(page.includes('chartTracking')).toBe(false);
+        expect(page.includes('pTracking')).toBe(false);
+        expect(page.includes('tracking-line')).toBe(false);
+    });
+
+    test('Schreiner calls the existing equation and does not define a second implementation', () => {
+        expect(pages.schreiner.includes('schreinerEquation(pT0, pAlv0, R, state.t, halfTime)')).toBe(true);
+        expect(pages.schreiner.includes('function schreinerEquation')).toBe(false);
+    });
+
+    test('uses one surface-start descent as the basic example and no main scenario presets', () => {
+        const page = pages.schreiner;
+        expect(page.includes('startDepth: 0')).toBe(true);
+        expect(page.includes('depthRate: 10')).toBe(true);
+        expect(page.includes("initialState: 'start'")).toBe(true);
+        expect(page.includes('const SCENARIOS')).toBe(false);
+        expect(page.includes('data-scenario=')).toBe(false);
+        const pAlv0 = getAlveolarN2Pressure(getAmbientPressure(0));
+        const pT0 = getAlveolarN2Pressure(getAmbientPressure(0));
+        expect(pT0).toBe(pAlv0);
+    });
+
+    test('removes the exponential time factor from the primary outputs', () => {
+        for (const locale of Object.values(locales)) {
+            expect(locale.sandbox.schreiner.outputs.saturation).toBe(undefined);
+            expect(locale.sandbox.schreiner.outputs.response).toBe(undefined);
+        }
+        expect(pages.schreiner.includes('id="saturationValue"')).toBe(false);
+        expect(pages.schreiner.includes('id="responseValue"')).toBe(false);
+        expect(pages.schreiner.includes('const responsePct')).toBe(false);
+    });
+
+    test('keeps symbols and both whole contributions in the collapsed glossary', () => {
+        const page = pages.schreiner;
+        expect(page.includes('sandbox.schreiner.cards.haldaneContribution.name')).toBe(true);
+        expect(page.includes('sandbox.schreiner.cards.movingContribution.name')).toBe(true);
+        expect(page.includes('sandbox.schreiner.cards.delta.name')).toBe(false);
+        expect(page.includes('sandbox.schreiner.cards.derivative.name')).toBe(false);
+        for (const locale of Object.values(locales)) {
+            expect(locale.sandbox.schreiner.cards.summary.toLowerCase()).toContain(
+                locale === locales.cs ? 'slovníček' : locale === locales.es ? 'glosario' : 'glossary'
+            );
+            expect(Boolean(locale.sandbox.schreiner.cards.haldaneContribution)).toBe(true);
+            expect(Boolean(locale.sandbox.schreiner.cards.movingContribution)).toBe(true);
+        }
+    });
+
+    test('scenario stories are absent from the main localized teaching content', () => {
+        for (const locale of Object.values(locales)) {
+            expect(locale.sandbox.schreiner.scenarios).toBe(undefined);
+            expect(locale.sandbox.schreiner.general.explanation.length).toBeGreaterThan(70);
+        }
+    });
+
+    test('keeps unfinished sandbox pages out of public discovery surfaces', () => {
+        const nav = readFileSync(new URL('../js/nav.js', import.meta.url), 'utf8');
+        const home = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+        const mvalues = readFileSync(new URL('../sandbox/m-values.html', import.meta.url), 'utf8');
+        const gradientTheory = readFileSync(new URL('../gradient-factors.html', import.meta.url), 'utf8');
+        const gradientSandbox = readFileSync(new URL('../sandbox/gradient-factors.html', import.meta.url), 'utf8');
+        const serviceWorker = readFileSync(new URL('../sw.js', import.meta.url), 'utf8');
+        expect(nav.includes("href: 'sandbox/schreiner.html'")).toBe(false);
+        expect(home.includes('href="sandbox/schreiner.html"')).toBe(false);
+        expect(mvalues.includes('href="schreiner.html"')).toBe(false);
+        expect(serviceWorker.includes("'./sandbox/schreiner.html'")).toBe(false);
+        expect(pages.schreiner.includes('<meta name="robots" content="noindex, nofollow">')).toBe(true);
+        expect(nav.includes("href: 'sandbox/gradient-factors.html'")).toBe(false);
+        expect(home.includes('href="sandbox/gradient-factors.html"')).toBe(false);
+        expect(gradientTheory.includes('href="sandbox/gradient-factors.html"')).toBe(false);
+        expect(serviceWorker.includes("'./sandbox/gradient-factors.html'")).toBe(false);
+        expect(gradientSandbox.includes('<meta name="robots" content="noindex, nofollow">')).toBe(true);
+    });
+
+    test('Haldane fallback text covers both on-gassing and off-gassing', () => {
+        expect(pages.haldane.includes('Bühlmann/Haldane on-gassing equation')).toBe(false);
+        expect(pages.haldane.includes('how a tissue compartment on-gasses over time')).toBe(false);
+        expect(pages.haldane.includes('on-gassing and off-gassing')).toBe(true);
+    });
+});
+
 // ============================================================================
 // I18N NOTATION
 // ============================================================================
@@ -6592,6 +6906,133 @@ describe('format - static numbers in tables and formulas', () => {
         }
         expect(offenders).toEqual([]);
     });
+
+    test('transfilling localizes runtime quantities and uses the glossary litre symbol', () => {
+        const page = readFileSync(new URL('../sandbox/transfilling.html', import.meta.url), 'utf8');
+        expect(page.includes("import { translate } from '../js/i18n.js'")).toBe(true);
+        expect(page.includes('document.addEventListener(\'languagechange\'')).toBe(true);
+        expect(page.includes('fmtInput(volumeA)')).toBe(true);
+        expect(page.includes('Total gas:')).toBe(false);
+        expect(page.includes('\\u00a0L')).toBe(false);
+        expect(page.includes('bar·L')).toBe(false);
+        expect(page.includes('bar·l')).toBe(false);
+        expect(page.includes('surfaceVolumeText(gasA)')).toBe(true);
+        expect(page.includes('`${fmtInput(pressureA)}\\u00a0bar`')).toBe(true);
+        expect(page.includes('pressureAInput.valueAsNumber = finalPressure')).toBe(true);
+        expect(page.includes('pressureBInput.valueAsNumber = finalPressure')).toBe(true);
+
+        for (const lang of ['cs', 'en', 'es']) {
+            const transfill = JSON.parse(
+                readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8'),
+            ).sandbox.transfill;
+            expect(transfill.resultDetail.includes('{value}')).toBe(true);
+            expect(transfill.resultDetail.includes('1 bar')).toBe(true);
+            expect(transfill.surfaceVolumeValue.includes('{value} l')).toBe(true);
+            expect(typeof transfill.finalSubscript).toBe('string');
+            expect(Object.values(transfill.volumes).some(value => /\d L(?:\s|\()/.test(value))).toBe(false);
+        }
+        const es = JSON.parse(readFileSync(new URL('../locales/es.json', import.meta.url), 'utf8'));
+        expect(es.sandbox.transfill.volumes.al40).toContain('5,5 l');
+    });
+
+    test('cascade filling localizes runtime output and uses surface-equivalent volume', () => {
+        const page = readFileSync(new URL('../sandbox/cascade-filling.html', import.meta.url), 'utf8');
+        const script = page.slice(page.lastIndexOf('<script type="module">'));
+        expect(script.includes("import { translate } from '../js/i18n.js'")).toBe(true);
+        expect(script.includes('function fmtPressure(value)')).toBe(true);
+        expect(script.includes('function fmtSurfaceVolume(value)')).toBe(true);
+        expect(script.includes('value: fmtGroup(value)')).toBe(true);
+        expect(script.includes('fillLogEntries.unshift')).toBe(true);
+        expect(script.includes("document.addEventListener('languagechange'")).toBe(true);
+        expect(script.includes('renderFillLog();')).toBe(true);
+        expect(script.includes('bar-L')).toBe(false);
+        expect(script.includes('bar·L')).toBe(false);
+        expect(script.includes('\\u00a0L')).toBe(false);
+        expect(script.includes('Math.round(pressure)')).toBe(false);
+
+        const requiredStatusKeys = [
+            'idle', 'targetsReady', 'cascadesOpen', 'equalizing',
+            'equalizingProgress', 'willEqualize', 'equalizedAt', 'equalized',
+            'targetsAtLimit', 'targetLimitNote',
+        ];
+        const requiredLogKeys = [
+            'equalized', 'initialSurfaceVolume', 'connectedVolume',
+            'transferredSurfaceVolume', 'finalPressure', 'targetPressure',
+        ];
+        for (const lang of ['cs', 'en', 'es']) {
+            const cascade = JSON.parse(
+                readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8'),
+            ).sandbox.cascade;
+            expect(Object.keys(cascade.connectionStatus).sort()).toEqual(requiredStatusKeys.sort());
+            expect(Object.keys(cascade.log).sort()).toEqual(requiredLogKeys.sort());
+            expect(cascade.surfaceVolumeValue.includes('{value} l')).toBe(true);
+            expect(cascade.surfaceVolumeValue.includes('1 bar')).toBe(true);
+            expect(Object.values(cascade.volumes).some(value => /\d L(?:\s|\()/.test(value))).toBe(false);
+        }
+    });
+
+    test('gas-law sandbox localizes runtime quantities and uses glossary notation', () => {
+        const page = readFileSync(new URL('../sandbox/gas-law.html', import.meta.url), 'utf8');
+        expect(page.includes("const LITRE_UNIT = 'l'")).toBe(true);
+        expect(page.includes("liters: 'L'")).toBe(false);
+        expect(page.includes('gl.units?.liters')).toBe(false);
+        expect(page.includes('\\u00a0L')).toBe(false);
+        expect(page.includes('&nbsp;L')).toBe(false);
+        expect(page.includes('fmtNum(t1C)')).toBe(true);
+        expect(page.includes('fmtNum(t2C)')).toBe(true);
+        expect(page.includes('fmtNum(p1)')).toBe(true);
+        expect(page.includes('fmtNum(vol)')).toBe(true);
+        expect(page.includes('updateCylinderInitialState();')).toBe(true);
+        expect(page.includes('data-i18n="gasLaw.safety.initial"')).toBe(true);
+        expect(page.includes('hideOverlappingTemperatureReferences();')).toBe(true);
+        expect(page.includes("label.hidden = true")).toBe(true);
+        expect(page.includes('margin-bottom: 2.25rem')).toBe(true);
+
+        for (const lang of ['cs', 'en', 'es']) {
+            const gasLaw = JSON.parse(
+                readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8'),
+            ).gasLaw;
+            expect(gasLaw.cylinderVolume.endsWith('(l)')).toBe(true);
+            expect(gasLaw.diveTimeSub.includes('20 l/min')).toBe(true);
+            expect(gasLaw.formulaNote.includes('<var>T</var>')).toBe(true);
+            expect(gasLaw.safety.initial.includes('{0} bar')).toBe(true);
+            expect(Object.values(gasLaw.tempRefs).every(value => /\d °C/.test(value))).toBe(true);
+        }
+    });
+
+    test('gas-law limitations note keeps pressure-reference detail in proportion', () => {
+        const page = readFileSync(new URL('../sandbox/gas-law.html', import.meta.url), 'utf8');
+        const details = page.match(
+            /<details class="advanced-section model-limitations-details"[^>]*>[\s\S]*?<\/details>/,
+        )?.[0] || '';
+        expect(details.length > 0).toBe(true);
+        expect(/<details[^>]*\sopen(?:\s|=|>)/.test(details)).toBe(false);
+        expect(page.includes('absolutePressureComparison')).toBe(false);
+        expect(page.includes('updateAbsolutePressureComparison')).toBe(false);
+        expect(page.includes("import { SURFACE_PRESSURE } from '../js/decoModel.js'")).toBe(false);
+
+        const calculateP2Body = page.match(
+            /function calculateP2\(p1, t1C, t2C\) \{([\s\S]*?)\n        \}/,
+        )?.[1] || '';
+        expect(calculateP2Body.includes('return p1 * (t2K / t1K);')).toBe(true);
+        expect(calculateP2Body.includes('SURFACE_PRESSURE')).toBe(false);
+        expect(page.includes('const p2 = calculateP2(p1, t1C, t2C);')).toBe(true);
+
+        const requiredKeys = [
+            'summary', 'intro', 'pressureReference', 'realGas',
+            'thermalState', 'cylinderAndGauge', 'fire',
+        ];
+        for (const lang of ['cs', 'en', 'es']) {
+            const modelLimitations = JSON.parse(
+                readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8'),
+            ).gasLaw.modelLimitations;
+            expect(Object.keys(modelLimitations).sort()).toEqual(requiredKeys.sort());
+            expect(modelLimitations.pressureReference.length > 0).toBe(true);
+            expect(modelLimitations.realGas.length > 0).toBe(true);
+            expect(modelLimitations.realGas.toLowerCase().includes('nitrox')).toBe(true);
+            expect(modelLimitations.fire.length > 0).toBe(true);
+        }
+    });
 });
 
 describe('notation - non-breaking space between value and unit at runtime', () => {
@@ -6929,6 +7370,268 @@ describe('notation - quantity symbols are italic', () => {
             });
         }
         expect(offenders).toEqual([]);
+    });
+
+    test('M-value sandbox italicises quantities in all three languages and SVG labels', () => {
+        const page = readFileSync(new URL('../sandbox/m-values.html', import.meta.url), 'utf8');
+        expect(page.includes('<span class="term term-result"><var>M</var></span>')).toBe(true);
+        expect(page.includes('<span class="term term-a"><var>a</var></span>')).toBe(true);
+        expect(page.includes('<span class="term term-b"><var>b</var></span>')).toBe(true);
+        expect(page.includes("svgPressureLabel(xLabel, ambientSubscript, ' (bar)')")).toBe(true);
+        expect(page.includes("mLabel.textContent = 'M'")).toBe(true);
+        expect(page.includes("xLabel.textContent = 'p_amb (bar)'")).toBe(false);
+        expect(page.includes("yLabel.textContent = 'p_t (bar)'")).toBe(false);
+
+        for (const lang of ['cs', 'en', 'es']) {
+            const dict = JSON.parse(readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8'));
+            const m = dict.sandbox.mvalues;
+            expect(m.top.heading.includes('<var>M</var>')).toBe(true);
+            expect(m.top.cards.a.name.includes('<var>a</var>')).toBe(true);
+            expect(m.top.cards.b.name.includes('<var>b</var>')).toBe(true);
+            expect(m.top.cards.m.name.includes('<var>M</var>')).toBe(true);
+            expect(m.top.chart.xAxis.includes('<var>p</var><sub>')).toBe(true);
+            expect(m.top.chart.yAxis).toBe('<var>M</var> (bar)');
+            expect(m.bottom.heading.includes('<var>a</var>')).toBe(true);
+            expect(m.bottom.heading.includes('<var>b</var>')).toBe(true);
+            expect(m.bottom.cards.a.name.includes('<var>a</var>')).toBe(true);
+            expect(m.bottom.cards.b.name.includes('<var>b</var>')).toBe(true);
+            expect(JSON.stringify(m).includes('p_amb')).toBe(false);
+            expect(JSON.stringify(m).includes('p_t')).toBe(false);
+        }
+    });
+
+    test('M-value sandbox displays pressure results with upright bar units', () => {
+        const page = readFileSync(new URL('../sandbox/m-values.html', import.meta.url), 'utf8');
+        expect(page.includes('<span id="mvANumF">0.6200</span>&nbsp;bar +')).toBe(true);
+        expect(page.includes('<span id="mvPambNumF">4.0133</span>&nbsp;bar /')).toBe(true);
+        expect(page.includes('value.textContent = `${fmtNum(item.value, 4)}\\u00a0bar`')).toBe(true);
+        expect(page.includes('${fmtNum(difference, 4)}\\u00a0bar')).toBe(true);
+        expect(page.includes('${fmtNum(dA, 4)}\\u00a0bar')).toBe(true);
+    });
+
+    test('M-value sandbox draws only the selected variant on a fixed main scale', () => {
+        const page = readFileSync(new URL('../sandbox/m-values.html', import.meta.url), 'utf8');
+        const drawTopChart = page.slice(
+            page.indexOf('function drawTopChart()'),
+            page.indexOf('// ---- Bottom (derivation) chart constants ----'),
+        );
+
+        expect(page.includes('const Y_MIN = 0;')).toBe(true);
+        expect(page.includes('const Y_MAX = 10;')).toBe(true);
+        expect(page.includes('function dynamicYMax')).toBe(false);
+        expect(drawTopChart.includes("VARIANT_COMPS[state.variant][state.compartmentIdx]")).toBe(true);
+        expect(drawTopChart.includes("const comps = VARIANT_COMPS[state.variant]")).toBe(true);
+        expect(drawTopChart.includes("'data-variant': state.variant")).toBe(true);
+        expect(drawTopChart.includes('for (const v of VARIANT_LIST)')).toBe(false);
+        expect(page.includes('mv-chart-ambient')).toBe(false);
+        expect(page.includes('svgVariableEquation')).toBe(false);
+        expect(page.includes('y = x')).toBe(false);
+        expect(page.includes('data-hover-variant')).toBe(false);
+        expect(page.includes('data-hover-line')).toBe(false);
+    });
+
+    test('M-value sandbox controls ambient pressure as the single top-level state', () => {
+        const page = readFileSync(new URL('../sandbox/m-values.html', import.meta.url), 'utf8');
+        expect(page.includes('id="mvAmbientPressure"')).toBe(true);
+        expect(page.includes('id="mvAmbientPressureReadout"')).toBe(true);
+        expect(page.includes('id="mvDerivedDepth"')).toBe(true);
+        expect(page.includes('ambientPressure: getAmbientPressure(30)')).toBe(true);
+        expect(page.includes('const pAmb = state.ambientPressure')).toBe(true);
+        expect(page.includes("els.ambientPressure.addEventListener('input'")).toBe(true);
+        expect(page.includes('id="mvDepth"')).toBe(false);
+        expect(page.includes('state.depth')).toBe(false);
+    });
+
+    test('M-value sandbox keeps coefficients independent of ambient-pressure changes', () => {
+        const page = readFileSync(new URL('../sandbox/m-values.html', import.meta.url), 'utf8');
+        const recompute = page.slice(
+            page.indexOf('function recompute()'),
+            page.indexOf('function updateVariantDetail'),
+        );
+        const pressureHandler = page.slice(
+            page.indexOf("els.ambientPressure.addEventListener('input'"),
+            page.indexOf("els.compartment.addEventListener('change'"),
+        );
+
+        expect(recompute.includes('const a = comp.aN2')).toBe(true);
+        expect(recompute.includes('const b = comp.bN2')).toBe(true);
+        expect(recompute.includes('getMValue(pAmb, a, b)')).toBe(true);
+        expect(pressureHandler.includes('state.ambientPressure =')).toBe(true);
+        expect(pressureHandler.includes('.aN2')).toBe(false);
+        expect(pressureHandler.includes('.bN2')).toBe(false);
+        expect(page.includes('value: getMValue(pAmb, comp.aN2, comp.bN2)')).toBe(true);
+    });
+
+    test('M-value sandbox magnifies all variants only in the comparison detail', () => {
+        const page = readFileSync(new URL('../sandbox/m-values.html', import.meta.url), 'utf8');
+        expect(page.includes('id="mvVariantDetailRows"')).toBe(true);
+        expect(page.includes('function updateVariantDetail(pAmb)')).toBe(true);
+        expect(page.includes('const spread = rawMax - rawMin')).toBe(true);
+        expect(page.includes('const padding = Math.max(spread * 0.25, 0.01)')).toBe(true);
+        expect(page.includes('updateVariantDetail(pAmb);')).toBe(true);
+        expect(page.includes('main graph keeps the true pressure scale')).toBe(true);
+        expect(page.includes('id="mvMCompare"')).toBe(false);
+
+        for (const lang of ['cs', 'en', 'es']) {
+            const dict = JSON.parse(readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8'));
+            expect(dict.sandbox.mvalues.top.detail.heading.includes('<var>M</var>')).toBe(true);
+            expect(typeof dict.sandbox.mvalues.top.detail.note).toBe('string');
+            expect(typeof dict.sandbox.mvalues.top.detail.relativeToC).toBe('string');
+            expect(typeof dict.sandbox.mvalues.top.detail.reference).toBe('string');
+        }
+    });
+
+    test('M-value sandbox top copy and legend have language parity', () => {
+        const dictionaries = ['cs', 'en', 'es'].map(lang =>
+            JSON.parse(readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8'))
+                .sandbox.mvalues.top);
+        const requiredInputKeys = ['ambientPressure', 'ambientPressureShort', 'derivedDepth', 'compartment', 'viewToggle'];
+        const requiredLegendKeys = ['selectedLine', 'currentPoint', 'surface'];
+
+        for (const top of dictionaries) {
+            expect(top.heading.includes('<var>M</var>')).toBe(true);
+            expect(top.anchor.match(/<var>M<\/var>/g).length).toBe(2);
+            expect(Object.keys(top.inputs).sort()).toEqual(requiredInputKeys.sort());
+            expect(Object.keys(top.legend).sort()).toEqual(requiredLegendKeys.sort());
+            expect(JSON.stringify(top).includes('y = x')).toBe(false);
+        }
+    });
+
+    test('M-value quantity cards collapse as one group', () => {
+        const page = readFileSync(new URL('../sandbox/m-values.html', import.meta.url), 'utf8');
+        const group = page.slice(
+            page.indexOf('<details class="mv-term-details">'),
+            page.indexOf('</details>', page.indexOf('<details class="mv-term-details">')) + '</details>'.length,
+        );
+
+        expect((page.match(/<details class="mv-term-details">/g) || []).length).toBe(1);
+        expect((group.match(/class="mv-term-card /g) || []).length).toBe(4);
+        expect(group.includes('<details')).toBe(true);
+        expect(group.slice('<details'.length).includes('<details')).toBe(false);
+        expect(group.includes(' open')).toBe(false);
+
+        for (const lang of ['cs', 'en', 'es']) {
+            const dict = JSON.parse(readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8'));
+            expect(typeof dict.sandbox.mvalues.top.cardsToggle).toBe('string');
+            expect(dict.sandbox.mvalues.top.cardsToggle.length > 0).toBe(true);
+        }
+    });
+
+    test('M-value derivation cards collapse as one group', () => {
+        const page = readFileSync(new URL('../sandbox/m-values.html', import.meta.url), 'utf8');
+        const groupStart = page.indexOf('<details class="mv-deriv-details">');
+        const group = page.slice(
+            groupStart,
+            page.indexOf('</details>', groupStart) + '</details>'.length,
+        );
+
+        expect((page.match(/<details class="mv-deriv-details">/g) || []).length).toBe(1);
+        expect((group.match(/class="mv-deriv-card /g) || []).length).toBe(3);
+        expect(group.slice('<details'.length).includes('<details')).toBe(false);
+        expect(group.includes(' open')).toBe(false);
+
+        for (const lang of ['cs', 'en', 'es']) {
+            const dict = JSON.parse(readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8'));
+            expect(typeof dict.sandbox.mvalues.bottom.cardsToggle).toBe('string');
+            expect(dict.sandbox.mvalues.bottom.cardsToggle.length > 0).toBe(true);
+        }
+    });
+
+    test('M-value derivation chart labels the a and b axes directly', () => {
+        const page = readFileSync(new URL('../sandbox/m-values.html', import.meta.url), 'utf8');
+        const chart = page.slice(
+            page.indexOf('function drawDerivChart()'),
+            page.indexOf('// Wire inputs'),
+        );
+
+        expect(chart.includes("'data-axis-label': 'a'")).toBe(true);
+        expect(chart.includes("'data-axis-label': 'b'")).toBe(true);
+        expect(chart.includes("aAxisLabel.append(aSymbol, document.createTextNode(' (bar)'))")).toBe(true);
+        expect(chart.includes('x: tToPx(aVisibleStartT) - 8')).toBe(true);
+        expect(chart.includes('y: bToPx(bCurveEnd) - 7')).toBe(true);
+        expect(page.includes('const DERIV_PAD_T = 26;')).toBe(true);
+        expect(page.includes('.mv-deriv-axis-label-a { fill: #e74c3c; }')).toBe(true);
+        expect(page.includes('.mv-deriv-axis-label-b { fill: #2980b9; }')).toBe(true);
+    });
+
+    test('M-value coefficient table is generated from all three 16-compartment variants', () => {
+        const page = readFileSync(new URL('../sandbox/m-values.html', import.meta.url), 'utf8');
+        const builder = page.slice(
+            page.indexOf('function buildCoefficientTable()'),
+            page.indexOf('function updateCoefficientTableHighlights()'),
+        );
+        const variants = [
+            getCompartmentsForVariant(ZHL16_VARIANTS.A),
+            getCompartmentsForVariant(ZHL16_VARIANTS.B),
+            getCompartmentsForVariant(ZHL16_VARIANTS.C),
+        ];
+
+        expect(variants.map(comps => comps.length)).toEqual([16, 16, 16]);
+        expect(builder.includes('for (let idx = 0; idx < 16; idx++)')).toBe(true);
+        expect(builder.includes('VARIANT_COMPS[variant][idx]')).toBe(true);
+        expect(builder.includes('comp.halfTime')).toBe(true);
+        expect(builder.includes('comp.aN2')).toBe(true);
+        expect(builder.includes('comp.bN2')).toBe(true);
+        expect(builder.includes('<br')).toBe(false);
+    });
+
+    test('M-value coefficient table data preserves the variant differences', () => {
+        const variantA = getCompartmentsForVariant(ZHL16_VARIANTS.A);
+        const variantB = getCompartmentsForVariant(ZHL16_VARIANTS.B);
+        const variantC = getCompartmentsForVariant(ZHL16_VARIANTS.C);
+
+        expect([variantA[0].halfTime, variantB[0].halfTime, variantC[0].halfTime]).toEqual([4, 5, 5]);
+        expect([variantA[0].bN2, variantB[0].bN2, variantC[0].bN2]).toEqual([0.505, 0.5578, 0.5578]);
+        for (let idx = 1; idx < 16; idx++) {
+            expect(variantB[idx].bN2).toBe(variantA[idx].bN2);
+            expect(variantC[idx].bN2).toBe(variantA[idx].bN2);
+        }
+
+        const changedA = variant =>
+            variant.filter((comp, idx) => comp.aN2 !== variantA[idx].aN2).map(comp => comp.id);
+        expect(changedA(variantB)).toEqual([1, 6, 7, 8, 13]);
+        expect(changedA(variantC)).toEqual([1, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
+    });
+
+    test('M-value coefficient table reacts to selected compartment and variant', () => {
+        const page = readFileSync(new URL('../sandbox/m-values.html', import.meta.url), 'utf8');
+        expect(page.includes("'selected-compartment'")).toBe(true);
+        expect(page.includes('Number(row.dataset.compartment) === state.compartmentIdx + 1')).toBe(true);
+        expect(page.includes("cell.classList.toggle('selected-variant', cell.dataset.variant === state.variant)")).toBe(true);
+        expect(page.includes("valueSpan.classList.add('different-from-a')")).toBe(true);
+        expect(page.includes('updateCoefficientTableHighlights();')).toBe(true);
+        expect(page.includes('buildCoefficientTable();')).toBe(true);
+    });
+
+    test('M-value coefficient table copy and responsive wrapper exist in every language', () => {
+        const page = readFileSync(new URL('../sandbox/m-values.html', import.meta.url), 'utf8');
+        expect(page.includes('class="mv-coeff-table-scroll"')).toBe(true);
+        expect(page.includes('overflow-x: auto')).toBe(true);
+        expect(page.includes('.mv-coeff-table td:first-child')).toBe(true);
+        expect(page.includes('position: sticky')).toBe(true);
+
+        for (const lang of ['cs', 'en', 'es']) {
+            const dict = JSON.parse(readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8'));
+            const table = dict.sandbox.mvalues.top.coefficients;
+            expect(typeof table.heading).toBe('string');
+            expect(typeof table.notice).toBe('string');
+            expect(typeof table.summary).toBe('string');
+            expect(Object.keys(table.analogies).sort()).toEqual(
+                ['mediumFast', 'slow', 'slower', 'veryFast', 'verySlow'],
+            );
+            expect(table.notice.length > 50).toBe(true);
+            expect(table.notice.toLowerCase().includes(lang === 'cs' ? 'nikoli' : lang === 'es' ? 'no tejidos' : 'not specific')).toBe(true);
+        }
+    });
+
+    test('M-value sandbox no longer exposes a See also section', () => {
+        const page = readFileSync(new URL('../sandbox/m-values.html', import.meta.url), 'utf8');
+        expect(page.includes('sandbox.mvalues.crossLinks')).toBe(false);
+        expect(page.includes('Model-04-M-Values')).toBe(false);
+        for (const lang of ['cs', 'en', 'es']) {
+            const dict = JSON.parse(readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8'));
+            expect(dict.sandbox.mvalues.crossLinks).toBe(undefined);
+        }
     });
 
     test('no i18n key drawn on a chart canvas carries HTML markup', () => {
@@ -7830,9 +8533,8 @@ describe('format - decimal separator at runtime', () => {
             'sandbox/haldane.html': 6,
             // <input type="number">.value - a comma is not a valid value
             'sandbox/m-values.html': 5,
-            // 8x SVG geometry, 3x parsed straight back with parseFloat,
-            // 1x circle centre via setAttribute
-            'sandbox/schreiner.html': 12,
+            // 2x SVG path geometry, 3x numeric values parsed back with parseFloat.
+            'sandbox/schreiner.html': 5,
         };
         const files = [];
         const walkDir = (rel) => {

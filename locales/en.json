@@ -959,7 +959,7 @@
         },
         "cylinder": "Cylinder",
         "fillPressure": "Fill pressure (bar)",
-        "cylinderVolume": "Cylinder volume (L)",
+        "cylinderVolume": "Cylinder volume (l)",
         "temperature": "Temperature",
         "initialTemp": "Initial temperature <var>T</var><sub>1</sub> (°C)",
         "finalTemp": "Final temperature <var>T</var><sub>2</sub> (°C)",
@@ -971,8 +971,9 @@
         "usableGasChange": "Surface Gas Volume Change",
         "gasChangeSub": "volume at 1 bar (Δ<var>p</var> × cylinder volume ÷ 1 bar)",
         "diveTimeChange": "Dive Time Change at 20 m",
-        "diveTimeSub": "Surface Air Consumption 20 L/min at 3 bar (1+20/10)",
+        "diveTimeSub": "Surface Air Consumption 20 l/min at 3 bar (1+20/10)",
         "safety": {
+            "initial": "Cylinder maximum working pressure: {0} bar.",
             "withinWorking": "Pressure does not exceed the cylinder's maximum working pressure ({0} bar).",
             "aboveWorking": "Maximum cylinder working pressure of {0} bar exceeded. Current pressure: {1} bar.",
             "danger": "DANGER! Current pressure of {0} bar exceeds the cylinder test pressure of {1} bar."
@@ -989,8 +990,17 @@
         "whyText2": "<strong>Practical tip:</strong> Compressors generate significant heat during filling — gas inside a freshly filled cylinder can be 40–50 °C above ambient. If you fill to 200 bar in a warm shop and dive in a cold lake, don't be surprised to see only ~180 bar on your gauge. That's not a leak — it's physics.",
         "whyRuleOfThumb": "<strong>Rule of thumb:</strong> ~0.6 bar change per 1 °C at 200 bar working pressure.",
         "formulaTitle": "Gay-Lussac's Law (Isochoric Process)",
-        "formulaNote": "pressure / temperature ratio is constant at constant volume (T in Kelvin)",
+        "formulaNote": "the pressure-to-temperature ratio is constant at constant volume (<var>T</var> in kelvins)",
         "formulaRearranged": "Rearranged:",
+        "modelLimitations": {
+            "summary": "Note on model accuracy and limitations",
+            "intro": "This sandbox intentionally uses a simple ideal-gas model to demonstrate how temperature affects pressure.",
+            "pressureReference": "<strong>Pressure reference:</strong> Gay-Lussac's law strictly uses absolute pressure, while a cylinder gauge shows pressure above the atmosphere. Using the gauge reading directly is a small high-pressure approximation.",
+            "realGas": "<strong>Real gas:</strong> At high cylinder pressures, neither air nor nitrox behaves as an ideal gas. Compressibility depends on pressure, temperature, and composition and can affect the result more than the pressure-reference approximation.",
+            "thermalState": "<strong>Temperature:</strong> The calculation assumes a uniform gas temperature and thermal equilibrium. A recently filled or rapidly heated cylinder can have substantial temperature gradients.",
+            "cylinderAndGauge": "<strong>Cylinder and gauge:</strong> The cylinder's internal volume changes slightly with pressure and temperature, and the gauge itself has limited accuracy.",
+            "fire": "<strong>Fire scenario:</strong> High temperature also reduces the strength of steel and aluminium cylinders. This sandbox models only an idealized pressure change; it does not assess cylinder integrity or safety in a fire."
+        },
         "scenarioLabels": {
             "warmShop": "Warm shop to cold lake",
             "sunDeck": "Sun heating on deck",
@@ -1833,20 +1843,20 @@
             "labels": {
                 "volume": "Volume",
                 "pressure": "Pressure (bar)",
-                "customVolume": "Custom volume (L)"
+                "customVolume": "Custom volume (l)"
             },
             "volumes": {
-                "pony": "3 L (Pony)",
-                "al40": "5.5 L (AL40)",
-                "al50": "7 L (AL50)",
-                "single10": "10 L (Single)",
-                "al80": "11 L (AL80)",
-                "single12": "12 L (Single)",
-                "single15": "15 L (Single)",
-                "single18": "18 L (Single)",
-                "doubles7": "2×7 L (Doubles)",
-                "doubles10": "2×10 L (Doubles)",
-                "doubles12": "2×12 L (Doubles)",
+                "pony": "3 l (Pony)",
+                "al40": "5.5 l (AL40)",
+                "al50": "7 l (AL50)",
+                "single10": "10 l (Single)",
+                "al80": "11 l (AL80)",
+                "single12": "12 l (Single)",
+                "single15": "15 l (Single)",
+                "single18": "18 l (Single)",
+                "doubles7": "2×7 l (Doubles)",
+                "doubles10": "2×10 l (Doubles)",
+                "doubles12": "2×12 l (Doubles)",
                 "custom": "Custom…"
             },
             "buttons": {
@@ -1858,14 +1868,32 @@
                 "cylinderB": "Cylinder B"
             },
             "resultTitle": "Equalization Complete",
+            "surfaceVolumeValue": "{value} l at 1 bar",
+            "resultDetail": "Surface-equivalent gas volume at 1 bar: {value}. The simplified model assumes equal temperature.",
+            "finalSubscript": "final",
             "formulaTitle": "Boyle's Law",
             "formula": "<var>p</var><sub>final</sub> = (<var>p</var><sub>A</sub> × <var>V</var><sub>A</sub> + <var>p</var><sub>B</sub> × <var>V</var><sub>B</sub>) / (<var>V</var><sub>A</sub> + <var>V</var><sub>B</sub>)",
             "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only. Based on ideal gas law assumptions."
         },
+        "equationComparison": {
+            "title": "Two targets, two equations",
+            "haldane": {
+                "title": "Haldane — fixed target",
+                "step": "At <var>t</var> = 0, alveolar pressure is set to a new value.",
+                "constant": "It then remains constant.",
+                "tissue": "The tissue approaches it exponentially."
+            },
+            "schreiner": {
+                "title": "Schreiner — moving target",
+                "linear": "Alveolar pressure rises or falls linearly during a depth change.",
+                "lag": "The tissue continuously responds to the current pressure difference.",
+                "direction": "The diver's direction alone does not determine whether the tissue is on-gassing or off-gassing."
+            }
+        },
         "haldane": {
             "title": "Haldane Equation",
-            "subtitle": "A live, annotated walk-through of how a tissue compartment on-gasses over time.",
-            "disclaimerBanner": "<strong>Educational Use Only</strong> — Interactive walk-through of the Bühlmann/Haldane on-gassing equation.",
+            "subtitle": "An interactive breakdown of how inert-gas pressure in a tissue compartment changes during on-gassing and off-gassing.",
+            "disclaimerBanner": "<strong>Educational Use Only</strong> — Interactive walk-through of the Bühlmann/Haldane on-gassing and off-gassing equation.",
             "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only. The actual diving algorithm uses additional logic.",
             "labels": {
                 "startDepth": "Start depth (m)",
@@ -1885,6 +1913,17 @@
             "simplifiedHint": "napkin formulas",
             "barToggle": "controls",
             "chartAria": "Tissue pressure over time",
+            "mental": {
+                "title": "Situation: the target changes once, then stays fixed",
+                "intro": "The alveolar target pressure remains constant throughout the modeled segment. Tissue pressure smoothly catches up according to its half-time.",
+                "chartAria": "Fixed alveolar target and tissue-pressure response",
+                "newTarget": "new constant alveolar target",
+                "tissueLine": "tissue pressure catches up",
+                "oldTarget": "original alveolar pressure",
+                "timeAxis": "time",
+                "pressureAxis": "pressure",
+                "note": "<strong>The vertical step is an input idealization.</strong> It is not the physical course of a descent or ascent; a depth change that takes time is modeled by the Schreiner equation."
+            },
             "teachingSentence": "<span class=\"word-result\">current pressure</span> = <span class=\"word-start\">starting pressure</span> + <span class=\"word-change\">total change toward equilibrium</span> × <span class=\"word-progress\">completed fraction of the change</span>",
             "symbols": {
                 "tissue": "t",
@@ -1934,7 +1973,7 @@
         },
         "schreiner": {
             "title": "Schreiner Equation",
-            "subtitle": "Linear-rate companion to the Haldane page — watch the equation evolve as ambient pressure slides.",
+            "subtitle": "An interactive breakdown of how tissue pressure follows linearly changing alveolar pressure during descent and ascent.",
             "disclaimerBanner": "<strong>Educational Use Only</strong> — Interactive walk-through of the Schreiner equation for linear-rate ambient pressure changes.",
             "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only. The actual diving algorithm uses additional logic.",
             "labels": {
@@ -1954,71 +1993,176 @@
                 "compartmentShort": "TC",
                 "modelShort": "Model",
                 "timeShort": "Time",
-                "simplifiedShort": "Simplified"
+                "simplifiedShort": "Approximate constants",
+                "initialStateShort": "Initial tissue"
             },
             "gas": {
                 "air": "Air (<var>f</var><sub>N₂</sub> = 0.79)"
             },
-            "simplifiedHint": "napkin formulas",
+            "simplifiedHint": "1 bar, no water vapor, <var>f</var><sub>N₂</sub> = 0.79",
             "barToggle": "controls",
+            "symbols": {
+                "tissue": "t",
+                "tissueInitial": "t,0",
+                "ambient": "amb"
+            },
             "outputs": {
-                "saturation": "Saturation",
                 "depth": "Depth"
             },
+            "initialStates": {
+                "surface": "equilibrated at the surface",
+                "start": "equilibrated at start depth",
+                "deeper": "equilibrated 5 m deeper"
+            },
+            "mental": {
+                "title": "Situation: the equilibrium target moves",
+                "intro": "During descent or ascent, alveolar inert-gas pressure changes linearly while tissue pressure responds progressively according to the compartment half-time.",
+                "simpleExplanation": "<strong>Start with the tissue's initial pressure.</strong> In the basic equilibrium example the initial Haldane contribution is zero, so only the response to the moving alveolar target is added.",
+                "initialStateNote": "The selected initial state represents the state that would arrive from the preceding dive segment in a complete profile; this page constructs it from the selected equilibrium preset.",
+                "rateNote": "<var>R</var> is the rate of change of alveolar pressure in bar/min, not the depth rate in m/min entered in the controls."
+            },
+            "exchange": {
+                "onGassing": "on-gassing",
+                "offGassing": "off-gassing",
+                "equilibrium": "equilibrium"
+            },
+            "chart": {
+                "title": "Alveolar pressure, tissue pressure, and their current difference",
+                "explanation": "Both curves use the same real pressure scale. The green segment shows the current difference that drives the tissue response.",
+                "alveolar": "alveolar pressure",
+                "tissue": "actual tissue pressure",
+                "timeAxis": "time",
+                "pressureAxis": "pressure",
+                "directionDescent": "↓ descent: rising target",
+                "directionAscent": "↑ ascent: falling target",
+                "directionConstant": "constant depth: alveolar pressure is constant"
+            },
+            "composition": {
+                "title": "Basic example: initial pressure plus the response to a moving target",
+                "intro": "The descent starts at the surface with tissue and alveolar pressures equal. The initial-difference contribution is therefore zero.",
+                "currentValue": "Current value",
+                "initial": {
+                    "title": "1. Initial tissue pressure",
+                    "short": "initial state",
+                    "explanation": "The inert-gas pressure with which the tissue enters this dive segment."
+                },
+                "equilibrium": {
+                    "title": "The basic example starts in equilibrium",
+                    "explanation": "<var>p</var><sub>alv,0</sub> = <var>p</var><sub>t,0</sub>, so the initial pressure difference and its Haldane contribution are both zero."
+                },
+                "haldane": {
+                    "title": "2. Haldane contribution from the initial pressure difference",
+                    "short": "Haldane contribution",
+                    "explanation": "The change that would occur if alveolar pressure remained at its initial value for the whole segment.",
+                    "initialDifference": "Initial difference",
+                    "completedFraction": "Completed fraction",
+                    "contribution": "Haldane contribution",
+                    "bridgeTitle": "Direct link to Haldane",
+                    "bridgeExplanation": "This is the teaching form of Haldane's equation for the fixed initial alveolar target."
+                },
+                "moving": {
+                    "title": "2. Reaction to the moving target",
+                    "short": "moving-target correction",
+                    "explanation": "Alveolar pressure does not remain at its initial value. This term adds the effect of its continuous linear movement.",
+                    "smallChanges": "Imagine the moving target as many small pressure changes. The tissue responds to each one in the same exponential way as in Haldane's equation; their sum forms this correction.",
+                    "contribution": "Moving-target correction",
+                    "zeroNote": "For <var>R</var> = 0 this contribution is exactly zero. It is a signed contribution to tissue change, not a separate pressure or limit."
+                },
+                "sum": {
+                    "title": "Resulting tissue pressure",
+                    "haldaneLabel": "Haldane contribution",
+                    "movingLabel": "moving-target correction",
+                    "explanation": "The displayed result is calculated by the existing Schreiner implementation; the three educational contributions sum to the same value."
+                }
+            },
+            "general": {
+                "summary": "General case: the tissue may start away from equilibrium",
+                "explanation": "In a complete dive profile, tissue pressure at the start of a new segment need not equal current alveolar pressure. The general teaching form therefore also contains the Haldane contribution from the initial pressure difference."
+            },
+            "derivation": {
+                "summary": "How the teaching form becomes the canonical equation",
+                "intro": "Expand the two brackets, cancel equal opposite terms, and group the remaining exponential terms.",
+                "teaching": "Teaching form",
+                "expanded": "Expand the brackets",
+                "cancellation": "The terms +<var>p</var><sub>t,0</sub> and −<var>p</var><sub>t,0</sub> cancel.",
+                "grouped": "Group the terms",
+                "canonical": "Canonical form"
+            },
+            "mathOrigin": {
+                "summary": "Why does the moving-target correction have this form?",
+                "explanation": "A linear alveolar-pressure change can be divided into many very small changes. Each occurs at a different time and therefore has a different amount of time to affect the tissue. Adding those exponential responses produces the moving-target correction.",
+                "equationIntro": "For readers familiar with calculus, both Haldane and Schreiner solve the same differential law:"
+            },
+            "canonical": {
+                "explanation": "This closed form calculates the exact continuous tissue response without splitting the descent or ascent into many small time steps."
+            },
             "mvalue": {
+                "summary": "Connection to the decompression limit",
                 "title": "M-value check",
                 "within": "within",
                 "exceeded": "exceeded"
             },
             "cards": {
+                "summary": "Symbol glossary",
                 "palv0": {
                     "name": "<var>p</var><sub>alv,0</sub> | alveolar N<sub>2</sub> at start depth",
                     "why": "Starting alveolar pressure. Slope-zero point of the moving alveolar source."
                 },
                 "pt0": {
-                    "name": "<var>p</var><sub>t,0</sub> | tissue pressure at t=0",
-                    "why": "Tissue assumed equilibrated at start depth → equals <var>p</var><sub>alv,0</sub>."
+                    "name": "<var>p</var><sub>t,0</sub> | tissue pressure at <var>t</var> = 0",
+                    "why": "The selected model state represents a tissue pressure that a complete profile would pass in from its preceding segment; it need not equal <var>p</var><sub>alv,0</sub>."
+                },
+                "palv": {
+                    "name": "<var>p</var><sub>alv</sub>(<var>t</var>) | current alveolar pressure",
+                    "why": "The current inert-gas pressure driving exchange with the tissue."
+                },
+                "pt": {
+                    "name": "<var>p</var><sub>t</sub>(<var>t</var>) | current tissue pressure",
+                    "why": "The current inert-gas pressure in the selected compartment."
+                },
+                "haldaneContribution": {
+                    "name": "Haldane contribution",
+                    "why": "The signed tissue change for a fixed initial alveolar target."
+                },
+                "movingContribution": {
+                    "name": "Moving-target correction",
+                    "why": "The signed contribution caused by the alveolar target moving during the segment."
                 },
                 "r": {
-                    "name": "R | alveolar pressure rate",
-                    "why": "Positive = descent (alveolar climbing), negative = ascent. R = 0 → equation collapses to Haldane."
+                    "name": "<var>R</var> | alveolar pressure rate",
+                    "why": "Positive on descent, negative on ascent, and zero at constant depth. Its unit is bar/min."
                 },
                 "k": {
-                    "name": "k | rate constant",
-                    "why": "Faster compartments → bigger k → catch up sooner."
+                    "name": "<var>k</var> | rate constant",
+                    "why": "Faster compartments have a larger rate constant and follow sooner."
+                },
+                "halfTime": {
+                    "name": "<var>t</var><sub>1/2</sub> | compartment half-time",
+                    "why": "A shorter half-time gives a larger rate constant and a faster response."
                 },
                 "exp": {
-                    "name": "e<sup>−kt</sup> | exponential decay factor",
-                    "why": "1.0 at t=0, decays toward 0. Multiplied by the initial-disequilibrium term."
-                }
-            },
-            "decomp": {
-                "moving": {
-                    "name": "Moving alveolar source",
-                    "why": "Where the alveolar source is right now (linear in t)."
-                },
-                "lag": {
-                    "name": "Phase lag (R/k)",
-                    "why": "How far below (ascent) or above (descent) the source a perfectly-tracking tissue would settle. Equivalent to 1/k minutes of slope."
-                },
-                "decay": {
-                    "name": "Decaying initial gap",
-                    "why": "The initial offset between actual <var>p</var><sub>t</sub> and the tracking line — settles exponentially toward zero."
+                    "name": "e<sup>−<var>k</var><var>t</var></sup> | exponential decay factor",
+                    "why": "Starts at 1 and decays toward 0; it is not a tissue saturation percentage."
                 }
             }
         },
         "mvalues": {
-            "title": "M-Values",
+            "title": "<var>M</var>-Values",
             "subtitle": "Where the line comes from, and what it looks like for all 16 compartments.",
+            "symbols": {
+                "ambient": "amb"
+            },
             "barToggle": "controls",
-            "disclaimerBanner": "<strong>Educational Use Only</strong> — Interactive walk-through of Bühlmann's M-value formula and where its coefficients come from.",
+            "disclaimerBanner": "<strong>Educational Use Only</strong> — Interactive walk-through of Bühlmann's <var>M</var>-value formula and where its coefficients come from.",
             "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only. The actual diving algorithm uses additional logic.",
             "top": {
-                "heading": "What does M look like at this depth?",
-                "anchor": "Pick a depth, a compartment, and a variant — see Bühlmann's M-value formula evaluate live.",
+                "heading": "How does the <var>M</var>-value change with ambient pressure?",
+                "anchor": "Choose a compartment and variant, then move the ambient pressure. The point shows the current <var>M</var>-value on the selected <var>M</var>-line.",
+                "cardsToggle": "Formula quantities and current values",
                 "inputs": {
-                    "depth": "Depth (m)",
-                    "depthShort": "Depth (m)",
+                    "ambientPressure": "Ambient pressure <var>p</var><sub>amb</sub> (bar)",
+                    "ambientPressureShort": "<var>p</var><sub>amb</sub> (bar)",
+                    "derivedDepth": "Derived depth",
                     "compartment": "TC",
                     "viewToggle": {
                         "label": "View",
@@ -2028,36 +2172,58 @@
                 },
                 "cards": {
                     "a": {
-                        "name": "a | tissue intercept",
+                        "name": "<var>a</var> | <var>M</var>-line intercept on the <var>y</var>-axis",
                         "formula": "compartment + variant lookup",
-                        "why": "Y-intercept of the M-line. Higher = more supersaturation tolerated at the surface."
+                        "why": "The <var>M</var>-line intercept on the <var>y</var>-axis. A higher value means more supersaturation is tolerated at the surface."
                     },
                     "pAmb": {
                         "name": "<var>p</var><sub>amb</sub> | ambient pressure",
-                        "why": "The horizontal axis of the M-line. Each meter of depth adds 0.1 bar."
+                        "why": "The position on the horizontal axis of the <var>M</var>-graph. Depth is only derived from ambient pressure."
                     },
                     "b": {
-                        "name": "b | tissue slope",
-                        "formula": "compartment lookup (slope = 1/b)",
-                        "why": "Lower b → steeper M-line → more supersaturation tolerated as depth increases."
+                        "name": "<var>b</var> | <var>M</var>-line slope coefficient",
+                        "formula": "compartment lookup (slope = 1/<var>b</var>)",
+                        "why": "Lower <var>b</var> → steeper <var>M</var>-line → more supersaturation tolerated as depth increases."
                     },
                     "m": {
-                        "name": "M | tolerated tissue pressure",
+                        "name": "<var>M</var> | tolerated tissue pressure",
                         "why": "Above this, the algorithm flags supersaturation as unsafe."
                     }
                 },
                 "chart": {
-                    "xAxis": "p_amb (bar)",
-                    "yAxis": "p_t (bar)",
-                    "legendAmbient": "Ambient line (y = x)",
-                    "legendSurface": "Surface (p_amb = 1.013 bar)"
+                    "xAxis": "<var>p</var><sub>amb</sub> (bar)",
+                    "yAxis": "<var>M</var> (bar)",
+                    "legendSurface": "Surface (<var>p</var><sub>amb</sub> = 1.013 bar)"
                 },
                 "legend": {
-                    "variantA": "ZH-L16A (long dash)",
-                    "variantB": "ZH-L16B (short dash)",
-                    "variantC": "ZH-L16C (solid)",
-                    "ambient": "Ambient line (y = x)",
-                    "surface": "Surface (p_amb = 1.013 bar)"
+                    "selectedLine": "Selected <var>M</var>-line:",
+                    "currentPoint": "Current ambient pressure and corresponding <var>M</var>-value",
+                    "surface": "Surface (<var>p</var><sub>amb</sub> = 1.013 bar)"
+                },
+                "detail": {
+                    "heading": "Magnified <var>M</var>-value difference",
+                    "note": "This local scale magnifies the differences; the main graph keeps the true pressure scale.",
+                    "relativeToC": "vs C",
+                    "reference": "reference"
+                },
+                "coefficients": {
+                    "heading": "Coefficients of all compartments",
+                    "notice": "Compartments are mathematical models of saturation rates, not specific anatomical tissues. The examples are only approximate analogies.",
+                    "headers": {
+                        "compartment": "Compartment",
+                        "analogy": "Approximate analogy"
+                    },
+                    "metrics": {
+                        "halfTime": "Half-time"
+                    },
+                    "analogies": {
+                        "veryFast": "Very fast to fast, well perfused; approximately blood and CNS",
+                        "mediumFast": "Medium-fast; approximately muscles and skin",
+                        "slower": "Slower; approximately muscles, tendons, and cartilage",
+                        "slow": "Slow; approximately bones and fat",
+                        "verySlow": "Very slow, less well perfused; approximately fatty tissue"
+                    },
+                    "summary": "Variants B and C mostly change coefficient <var>a</var>, shifting the <var>M</var>-line. Coefficient <var>b</var>, which affects its slope, stays the same for TC2–16. TC1 is the exception: variants B and C use a different half-time, so <var>b</var> changes too."
                 }
             },
             "variantBar": {
@@ -2065,8 +2231,9 @@
                 "shortLabel": "Variant:"
             },
             "bottom": {
-                "heading": "Where do a and b come from?",
-                "anchor": "ZH-L16A's a and b aren't fitted to data — they're computed from half-time alone. Variants B and C are post-hoc adjustments to specific compartments.",
+                "heading": "Where do <var>a</var> and <var>b</var> come from?",
+                "anchor": "ZH-L16A's <var>a</var> and <var>b</var> are computed from half-time alone. Variants B and C adjust selected compartments.",
+                "cardsToggle": "Derived coefficients and current values",
                 "inputs": {
                     "halfTime": "Half-time <var>t</var><sub>1/2</sub> (min)",
                     "halfTimeShort": "<var>t</var><sub>1/2</sub> (min)",
@@ -2081,12 +2248,12 @@
                         "why": "Each compartment's signature time. Not anatomical — a sample point on an exponential axis."
                     },
                     "a": {
-                        "name": "a(<var>t</var><sub>1/2</sub>) | analytical intercept",
-                        "why": "Variants B and C drop a for specific compartments — that's the only place statistics enter Bühlmann."
+                        "name": "<var>a</var>(<var>t</var><sub>1/2</sub>) | <var>M</var>-line intercept",
+                        "why": "Variants B and C lower <var>a</var> for selected compartments."
                     },
                     "b": {
-                        "name": "b(<var>t</var><sub>1/2</sub>) | analytical slope",
-                        "why": "Identical across A/B/C except TC1 (whose <var>t</var><sub>1/2</sub> swap also swaps b)."
+                        "name": "<var>b</var>(<var>t</var><sub>1/2</sub>) | <var>M</var>-line slope coefficient (1/<var>b</var>)",
+                        "why": "Identical across A/B/C except TC1, whose <var>t</var><sub>1/2</sub> change also changes <var>b</var>."
                     }
                 },
                 "delta": {
@@ -2095,17 +2262,10 @@
                     "deltaSymbol": "Δ"
                 },
                 "legend": {
-                    "a": "a(<var>t</var><sub>1/2</sub>) curve + 16 stored values (dots)",
-                    "b": "b(<var>t</var><sub>1/2</sub>) curve + 16 stored values (dots)",
+                    "a": "<var>a</var>(<var>t</var><sub>1/2</sub>) curve + 16 stored values (dots)",
+                    "b": "<var>b</var>(<var>t</var><sub>1/2</sub>) curve + 16 stored values (dots)",
                     "cursor": "Slider position (current <var>t</var><sub>1/2</sub>)"
                 }
-            },
-            "crossLinks": {
-                "heading": "See also",
-                "wiki": "Wiki: M-Values (the math)",
-                "theory": "M-Values theory page (history + dive examples)",
-                "haldane": "Haldane sandbox (tissue chases ambient)",
-                "schreiner": "Schreiner sandbox (tissue chases moving ambient)"
             }
         },
         "gradientFactors": {
@@ -2225,7 +2385,7 @@
             "subtitle": "Click valve switches to connect cylinders, then fill (max 3 hoses, 200 bar limit)",
             "disclaimerBanner": "<strong>Educational Use Only</strong> — Simulates cascade filling using Boyle's Law.",
             "setupHeading": "Setup",
-            "cascadeBank": "Cascade Bank (4 × 50 L)",
+            "cascadeBank": "Cascade Bank (4 × 50 l)",
             "targetCylinders": "Target Cylinders",
             "controlsHeading": "Controls",
             "remaining": "Remaining:",
@@ -2245,11 +2405,11 @@
                 "12": "12 cylinders"
             },
             "volumes": {
-                "al50": "7 L (AL50)",
-                "single10": "10 L (Single)",
-                "al80": "11 L (AL80)",
-                "single12": "12 L (Single)",
-                "single15": "15 L (Single)"
+                "al50": "7 l (AL50)",
+                "single10": "10 l (Single)",
+                "al80": "11 l (AL80)",
+                "single12": "12 l (Single)",
+                "single15": "15 l (Single)"
             },
             "startPressures": {
                 "empty": "0 bar (empty)"
@@ -2274,7 +2434,25 @@
                 "fillLog": "Fill Log"
             },
             "connectionStatus": {
-                "idle": "Open cascade and target valves to connect"
+                "idle": "Open cascade and target valves to connect",
+                "targetsReady": "Target cylinders ready: {count} — open a cascade valve",
+                "cascadesOpen": "Open cascade cylinders: {count} — open target valves",
+                "equalizing": "equalizing pressure",
+                "equalizingProgress": "Equalizing…",
+                "willEqualize": "Will equalize to",
+                "equalizedAt": "equalized at {pressure}",
+                "equalized": "equalized",
+                "targetsAtLimit": "target cylinders are at the limit ({pressure})",
+                "targetLimitNote": " ({pressure} limit for target cylinders)"
+            },
+            "surfaceVolumeValue": "{value} l at 1 bar",
+            "log": {
+                "equalized": "equalized",
+                "initialSurfaceVolume": "Initial surface-equivalent volume: {value}",
+                "connectedVolume": "Connected-cylinder volume: {value}",
+                "transferredSurfaceVolume": "Surface-equivalent volume transferred to targets: {value}",
+                "finalPressure": "Final pressure: {value}",
+                "targetPressure": "Target pressure: {value}"
             },
             "logEmpty": "No fills yet",
             "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only."

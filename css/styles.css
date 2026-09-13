@@ -2141,6 +2141,82 @@ section h2 {
     font-size: 0.95rem;
 }
 
+/* Haldane / Schreiner teaching comparison */
+.equation-model-comparison,
+.equation-mental-model {
+    margin-bottom: 1rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background: var(--card-background);
+}
+
+.equation-model-comparison h2,
+.equation-mental-model h2 {
+    margin: 0 0 0.65rem;
+    font-size: 1.05rem;
+}
+
+.equation-model-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.7rem;
+}
+
+.equation-model-card {
+    padding: 0.7rem 0.8rem;
+    border: 1px solid var(--border-color);
+    border-left: 4px solid #95a5a6;
+    border-radius: 4px;
+    background: var(--background-color);
+}
+
+.equation-model-card.active {
+    border-left-color: #2980b9;
+    background: rgba(41, 128, 185, 0.08);
+}
+
+.equation-model-card h3 {
+    margin: 0 0 0.35rem;
+    font-size: 0.95rem;
+}
+
+.equation-model-card ul {
+    margin: 0;
+    padding-left: 1.15rem;
+    color: var(--text-muted);
+    font-size: 0.84rem;
+    line-height: 1.45;
+}
+
+.equation-mental-model p {
+    margin: 0.35rem 0;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.equation-mental-model svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-top: 0.65rem;
+}
+
+.equation-mental-model .model-note {
+    margin-top: 0.55rem;
+    padding: 0.45rem 0.6rem;
+    border-left: 3px solid #f39c12;
+    background: rgba(243, 156, 18, 0.08);
+    color: var(--text-color);
+    font-size: 0.84rem;
+}
+
+@media (max-width: 650px) {
+    .equation-model-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* Footer */
 footer {
     background: var(--text-color);
@@ -2190,7 +2266,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.119";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.132";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
