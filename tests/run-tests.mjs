@@ -959,7 +959,8 @@ describe('M-value intersection ruler', () => {
                 wrapper: dom.window.document.createElement('div'),
                 calculationResults: { timePoints: [0] },
                 options: {
-                    onDecisionAuditRequest() { auditCount++; }
+                    onDecisionAuditRequest() { auditCount++; },
+                    isDecisionAuditOpen() { return auditCount === 1; }
                 },
                 _toggleRuler() { toggleCount++; }
             };
@@ -989,6 +990,14 @@ describe('M-value intersection ruler', () => {
                     })
                 );
                 expect(auditCount).toBe(1);
+                keyboardContext.container.blur();
+                dom.window.document.dispatchEvent(
+                    new dom.window.KeyboardEvent('keydown', {
+                        key: 'A',
+                        bubbles: true
+                    })
+                );
+                expect(auditCount).toBe(2);
             } finally {
                 dom.window.document.removeEventListener(
                     'keydown',
@@ -4061,7 +4070,8 @@ describe('Decompression schedule modes', () => {
         const css = readFileSync(new URL('../css/styles.css', import.meta.url), 'utf8');
         expect(sandbox).toContain('id="decision-audit-content"');
         expect(sandbox).toContain('id="decision-audit-dialog"');
-        expect(sandbox).toContain('onDecisionAuditRequest: openDecisionAudit');
+        expect(sandbox).toContain('onDecisionAuditRequest: toggleDecisionAudit');
+        expect(sandbox).toContain('isDecisionAuditOpen: () => decisionAuditDialog.open');
         expect(sandbox).toContain("from '../js/components/DecisionAudit.js'");
         expect(sandbox).toContain('renderDecisionAudit(decisionAudit)');
         expect(sandbox).toContain('window._sandboxLastDecisionAudit = null');

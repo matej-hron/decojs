@@ -203,6 +203,7 @@ const DEFAULT_MVALUE_OPTIONS = {
     playbackSpeed: 100,  // ms per frame
     onTimeIndexChange: null,
     onDecisionAuditRequest: null,
+    isDecisionAuditOpen: null,
     maxPressure: null,   // Override axis max (null = auto-calculate)
     colors: {
         ambient: 'rgba(52, 152, 219, 0.8)',
@@ -727,9 +728,13 @@ export class MValueChart {
      */
     _setupKeyboardShortcuts() {
         this._keyHandler = (e) => {
+            const isDecisionAuditOpen =
+                typeof this.options.isDecisionAuditOpen === 'function'
+                && this.options.isDecisionAuditOpen();
             // Only handle if container is focused or we're in fullscreen
             if (!this.container.contains(document.activeElement) &&
-                !this.wrapper.classList.contains('mvc-fullscreen')) {
+                !this.wrapper.classList.contains('mvc-fullscreen') &&
+                !isDecisionAuditOpen) {
                 return;
             }
             

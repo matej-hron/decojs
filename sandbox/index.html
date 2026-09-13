@@ -1271,8 +1271,19 @@
             decisionAuditDialogContent.innerHTML = html;
         }
 
-        function openDecisionAudit() {
-            if (decisionAuditDialog.open) return;
+        function closeDecisionAudit() {
+            if (typeof decisionAuditDialog.close === 'function') {
+                decisionAuditDialog.close();
+            } else {
+                decisionAuditDialog.removeAttribute('open');
+            }
+        }
+
+        function toggleDecisionAudit() {
+            if (decisionAuditDialog.open) {
+                closeDecisionAudit();
+                return;
+            }
             if (typeof decisionAuditDialog.showModal === 'function') {
                 decisionAuditDialog.showModal();
             } else {
@@ -1281,11 +1292,7 @@
         }
 
         decisionAuditDialogClose.addEventListener('click', () => {
-            if (typeof decisionAuditDialog.close === 'function') {
-                decisionAuditDialog.close();
-            } else {
-                decisionAuditDialog.removeAttribute('open');
-            }
+            closeDecisionAudit();
         });
         
         // Load initial setup - priority: URL profile= > URL v=1 compact > localStorage > default
@@ -1333,7 +1340,8 @@
                 showAmbientLine: true,
                 showTrail: true,
                 compartmentSelector: true,
-                onDecisionAuditRequest: openDecisionAudit
+                onDecisionAuditRequest: toggleDecisionAudit,
+                isDecisionAuditOpen: () => decisionAuditDialog.open
             }
         });
 

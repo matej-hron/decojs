@@ -90,7 +90,8 @@ ceiling is clear, the chart explicitly reports that no compartment is
 currently controlling decompression.
 
 The M-value chart can open the existing decision audit in a modal with its
-Audit control or the `A` shortcut. Opening and closing the audit preserves both
+Audit control or the `A` shortcut. Pressing `A` again closes it, including when
+focus is inside the modal. Opening and closing the audit preserves both
 fullscreen mode and the selected timeline position.
 
 The coefficient-derivation graph labels $a$, including the upright `bar`
