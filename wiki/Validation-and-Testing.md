@@ -103,6 +103,10 @@ fullscreen mode and the selected timeline position. Each audit row separates
 compact phase, runtime, depth, and controlling-compartment columns from the
 longer calculation explanation; hypothetical anchor simulations are labeled
 separately and do not claim a position on the actual runtime.
+Per-level departure rows show the destination and its target-depth GF, while
+the controlling compartment stays in its dedicated column. They deliberately
+omit the intermediate fixed-GF ceiling value so it cannot be confused with the
+chart's continuous GF-ramp ceiling.
 
 The coefficient-derivation graph labels $a$, including the upright `bar`
 unit, and dimensionless $b$ directly in the SVG, positioned beside their

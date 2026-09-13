@@ -1359,9 +1359,9 @@
         "anchorMoved": "Po výstupu do {0} m je strop při GF Low {1} m; pokračujeme s kandidátem {2} m (řídicí kompartment {3}).",
         "gasSwitch": "V {0} m přechod na směs {1}.",
         "gasSwitchWait": "V {0} m přechod na směs {1} a čekání {2} min.",
-        "levelTransit": "Z {0} m do {1} m: GF {2} %, strop {3} m (řídicí kompartment {4}); výstup je povolen bez čekání.",
-        "levelConvention": "V {0} m přidává konvence stupňovitého profilu {1} min. Poté je výstup do {2} m povolen při GF {3} %, stropu {4} m a řídicím kompartmentu {5}.",
-        "levelWait": "V {0} m čekání {1} min: {2} min podle konvence stupňovitého profilu, {3} min podle kontroly stropu a {4} min na změnu směsi. Poté je výstup do {5} m povolen při GF {6} %, stropu {7} m a řídicím kompartmentu {8}."
+        "levelTransit": "Přechod z {0} m do {1} m je povolen bez čekání při GF cílové hloubky {2} %.",
+        "levelConvention": "V {0} m přidává konvence stupňovitého profilu {1} min. Poté je výstup do {2} m povolen při GF cílové hloubky {3} %.",
+        "levelWait": "V {0} m čekání {1} min: {2} min podle konvence stupňovitého profilu, {3} min podle kontroly cílové hloubky a {4} min na změnu směsi. Poté je výstup do {5} m povolen při GF cílové hloubky {6} %."
     },
     "tissueSim": {
         "alertOk": "Bez upozornění na parciální tlaky: <var>p</var><sub>O₂</sub> je v rozmezí 0,18–1,4 bar a <var>p</var><sub>N₂</sub> nepřekračuje 4,0 bar.",

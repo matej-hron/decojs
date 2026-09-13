@@ -4121,6 +4121,8 @@ describe('Decompression schedule modes', () => {
         expect(html).toContain('decision-audit-context-time');
         expect(html).toContain('decision-audit-compartment');
         expect(html).toContain('Controlling compartment');
+        expect(html).toContain('target-depth GF');
+        expect(html.includes('shallowest permitted depth')).toBe(false);
         expect(html).toContain('decision-audit-text');
         expect(html).toContain('diagnostic explanation');
     });

@@ -1359,9 +1359,9 @@
         "anchorMoved": "After ascent to {0} m, the GF Low ceiling is {1} m; continue with candidate {2} m (controlling compartment {3}).",
         "gasSwitch": "At {0} m switch to {1}.",
         "gasSwitchWait": "At {0} m switch to {1} and wait {2} min.",
-        "levelTransit": "From {0} m to {1} m: GF {2}%, ceiling {3} m (controlling compartment {4}); ascent is allowed without waiting.",
-        "levelConvention": "At {0} m the staged-profile convention adds {1} min. Ascent to {2} m is then allowed at GF {3}%, ceiling {4} m, controlling compartment {5}.",
-        "levelWait": "At {0} m wait {1} min: {2} min by the staged-profile convention, {3} min from the ceiling check, and {4} min for a gas switch. Ascent to {5} m is then allowed at GF {6}%, ceiling {7} m, controlling compartment {8}."
+        "levelTransit": "Ascent from {0} m to {1} m is allowed without waiting at the target-depth GF of {2}%.",
+        "levelConvention": "At {0} m the staged-profile convention adds {1} min. Ascent to {2} m is then allowed at the target-depth GF of {3}%.",
+        "levelWait": "At {0} m wait {1} min: {2} min by the staged-profile convention, {3} min from the target-depth check, and {4} min for a gas switch. Ascent to {5} m is then allowed at the target-depth GF of {6}%."
     },
     "tissueSim": {
         "alertOk": "No partial-pressure warning: <var>p</var><sub>O₂</sub> is 0.18–1.4 bar and <var>p</var><sub>N₂</sub> does not exceed 4.0 bar.",

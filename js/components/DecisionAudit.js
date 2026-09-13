@@ -186,13 +186,11 @@ export function buildDecisionAuditLines(audit) {
                         text: format(
                             translate(
                                 'decisionAudit.levelTransit',
-                                'From {0}\u00a0m to {1}\u00a0m: GF {2}%, ceiling {3}\u00a0m (compartment {4}); ascent is allowed without waiting.'
+                                'Ascent from {0}\u00a0m to {1}\u00a0m is allowed without waiting at the target-depth GF of {2}%.'
                             ),
                             number(event.depth),
                             number(event.targetDepth),
-                            number(event.targetGF * 100, 1),
-                            number(event.finalCeilingDepth),
-                            event.finalControllingCompartment
+                            number(event.targetGF * 100, 1)
                         )
                     };
                 }
@@ -206,14 +204,12 @@ export function buildDecisionAuditLines(audit) {
                         text: format(
                             translate(
                                 'decisionAudit.levelConvention',
-                                'At {0}\u00a0m the staged-profile convention adds {1}\u00a0min. Ascent to {2}\u00a0m is then allowed at GF {3}% with ceiling {4}\u00a0m (compartment {5}).'
+                                'At {0}\u00a0m the staged-profile convention adds {1}\u00a0min. Ascent to {2}\u00a0m is then allowed at the target-depth GF of {3}%.'
                             ),
                             number(event.depth),
                             number(event.mandatoryWait),
                             number(event.targetDepth),
-                            number(event.targetGF * 100, 1),
-                            number(event.finalCeilingDepth),
-                            event.finalControllingCompartment
+                            number(event.targetGF * 100, 1)
                         )
                     };
                 }
@@ -224,7 +220,7 @@ export function buildDecisionAuditLines(audit) {
                     text: format(
                         translate(
                             'decisionAudit.levelWait',
-                            'At {0}\u00a0m wait {1}\u00a0min: {2}\u00a0min by the staged convention, {3}\u00a0min from the ceiling check, {4}\u00a0min for a gas switch. Then ascent to {5}\u00a0m is allowed at GF {6}% with ceiling {7}\u00a0m (compartment {8}).'
+                            'At {0}\u00a0m wait {1}\u00a0min: {2}\u00a0min by the staged convention, {3}\u00a0min from the target-depth check, and {4}\u00a0min for a gas switch. Ascent to {5}\u00a0m is then allowed at the target-depth GF of {6}%.'
                         ),
                         number(event.depth),
                         number(event.totalWait),
@@ -232,9 +228,7 @@ export function buildDecisionAuditLines(audit) {
                         number(event.additionalWait),
                         number(event.switchTime),
                         number(event.targetDepth),
-                        number(event.targetGF * 100, 1),
-                        number(event.finalCeilingDepth),
-                        event.finalControllingCompartment
+                        number(event.targetGF * 100, 1)
                     )
                 };
 
