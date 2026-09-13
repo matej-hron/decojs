@@ -137,6 +137,7 @@ import {
     getMValue,
     getAdjustedMValue,
     getCompartmentCeiling,
+    getDiveCeiling,
     interpolateGF,
     getSurfacePressure,
     getPressurePerMeter,
@@ -152,6 +153,38 @@ import {
     validateDiveSetup,
     normalizeDiveSetup
 } from './chartTypes.js';
+
+export function calculateCurrentControllingCompartment({
+    tissuePressures,
+    currentAmbient,
+    gfLow,
+    gfHigh,
+    pAnchor,
+    surfacePressure = SURFACE_PRESSURE,
+    pressurePerMeter = PRESSURE_PER_METER
+}) {
+    const gf = interpolateGF(
+        currentAmbient,
+        pAnchor,
+        gfLow,
+        gfHigh,
+        surfacePressure
+    );
+    const ceiling = getDiveCeiling(
+        tissuePressures,
+        gf,
+        surfacePressure,
+        pressurePerMeter
+    );
+    return {
+        ...ceiling,
+        gf,
+        controllingCompartment:
+            ceiling.ceilingDepth > 1e-9
+                ? ceiling.controllingCompartment
+                : null
+    };
+}
 
 /**
  * Default options for MValueChart
@@ -204,6 +237,7 @@ export class MValueChart {
         this.timeDisplay = null;
         this.playBtn = null;
         this.alveolarToggle = null;
+        this.controllingCompartmentStatus = null;
         
         // State
         this.calculationResults = null;
@@ -491,6 +525,8 @@ export class MValueChart {
         // Compartment checkboxes
         COMPARTMENTS.forEach(comp => {
             const label = document.createElement('label');
+            label.className = 'mvc-compartment-option';
+            label.dataset.compartmentId = String(comp.id);
             label.style.cssText = `
                 display: inline-flex; align-items: center; gap: 2px;
                 padding: 2px 6px; border-radius: 3px; cursor: pointer;
@@ -539,6 +575,10 @@ export class MValueChart {
             this.controlsContainer.appendChild(label);
         });
 
+        this.controllingCompartmentStatus = document.createElement('div');
+        this.controllingCompartmentStatus.className = 'mvc-controlling-status';
+        this.controlsContainer.appendChild(this.controllingCompartmentStatus);
+
         // Shortcut legend
         const hint = document.createElement('div');
         hint.style.cssText = 'font-size: 0.7rem; color: var(--text-muted, #888); margin-top: 2px; padding: 0 4px;';
@@ -547,6 +587,53 @@ export class MValueChart {
             'Click = select one · Shift+click = toggle · ←→ step · Space play · T ruler · F fullscreen'
         );
         this.controlsContainer.appendChild(hint);
+    }
+
+    _updateControllingCompartmentIndicator(state) {
+        const controllingId = state?.controllingCompartment ?? null;
+        let statusText;
+        if (controllingId === null) {
+            statusText = translate(
+                'chart.mvalue.noControllingCompartment',
+                'No decompression ceiling at this point'
+            );
+        } else {
+            const ceilingDecimals = state.ceilingDepth < 0.1 ? 2 : 1;
+            statusText = fmt(
+                translate(
+                    'chart.mvalue.controllingCompartment',
+                    'Controlling compartment: TC{0} · ceiling {1}\u00a0m'
+                ),
+                controllingId,
+                fmtNum(state.ceilingDepth, ceilingDecimals)
+            );
+        }
+
+        if (this.controllingCompartmentStatus) {
+            this.controllingCompartmentStatus.textContent = statusText;
+            this.controllingCompartmentStatus.classList.toggle(
+                'active',
+                controllingId !== null
+            );
+        }
+
+        this.controlsContainer
+            ?.querySelectorAll('.mvc-compartment-option')
+            .forEach(label => {
+                const isControlling =
+                    Number(label.dataset.compartmentId) === controllingId;
+                label.classList.toggle(
+                    'mvc-controlling-compartment',
+                    isControlling
+                );
+                if (isControlling) {
+                    label.setAttribute('aria-current', 'true');
+                    label.title = statusText;
+                } else {
+                    label.removeAttribute('aria-current');
+                    label.removeAttribute('title');
+                }
+            });
     }
     
     /**
@@ -1517,6 +1604,23 @@ export class MValueChart {
                 });
             }
         }
+
+        const currentTissuePressures = Object.fromEntries(
+            COMPARTMENTS.map(comp => [
+                comp.id,
+                results.compartments[comp.id].pressures[timeIndex]
+            ])
+        );
+        const controllingState = calculateCurrentControllingCompartment({
+            tissuePressures: currentTissuePressures,
+            currentAmbient,
+            gfLow,
+            gfHigh,
+            pAnchor,
+            surfacePressure,
+            pressurePerMeter: results.pressurePerMeter
+        });
+        this._updateControllingCompartmentIndicator(controllingState);
         
         // For each visible compartment
         COMPARTMENTS.forEach(comp => {
@@ -1630,16 +1734,22 @@ export class MValueChart {
             // either theme; subtle inner glow via shadowBlur lifts the
             // point off the trail without adding visual noise.
             const currentTissue = results.compartments[comp.id].pressures[timeIndex];
+            const isControlling =
+                controllingState.controllingCompartment === comp.id;
             datasets.push({
                 label: fmt(translate('chart.mvalue.tcLabel', 'TC{0} ({1}\u00a0min)'), comp.id, fmtNum(comp.halfTime)),
                 data: [{ x: currentAmbient, y: currentTissue }],
                 mvalueCompartmentId: comp.id,
                 mvalueCurrentPoint: true,
+                mvalueControllingCompartment: isControlling,
                 backgroundColor: comp.color,
-                borderColor: theme().colors.surface,
-                borderWidth: 2,
-                pointRadius: 8,
-                pointHoverRadius: 10,
+                borderColor: isControlling
+                    ? theme().colors.text
+                    : theme().colors.surface,
+                borderWidth: isControlling ? 4 : 2,
+                pointRadius: isControlling ? 10 : 8,
+                pointHoverRadius: isControlling ? 12 : 10,
+                pointStyle: isControlling ? 'rectRot' : 'circle',
                 hoverBorderWidth: 2.5,
                 pointHoverBackgroundColor: comp.color,
                 // Chart.js respects element.point.shadowBlur on newer versions;
@@ -1652,6 +1762,41 @@ export class MValueChart {
                 order: 1
             });
         });
+
+        const controllingId = controllingState.controllingCompartment;
+        if (controllingId !== null &&
+            !this.visibleCompartments.has(controllingId)) {
+            const controllingCompartment = COMPARTMENTS.find(
+                comp => comp.id === controllingId
+            );
+            if (controllingCompartment) {
+                datasets.push({
+                    label: fmt(
+                        translate(
+                            'chart.mvalue.controllingPoint',
+                            'Controlling TC{0}'
+                        ),
+                        controllingId
+                    ),
+                    data: [{
+                        x: currentAmbient,
+                        y: results.compartments[controllingId]
+                            .pressures[timeIndex]
+                    }],
+                    mvalueCompartmentId: controllingId,
+                    mvalueCurrentPoint: true,
+                    mvalueControllingCompartment: true,
+                    backgroundColor: controllingCompartment.color,
+                    borderColor: theme().colors.text,
+                    borderWidth: 4,
+                    pointRadius: 10,
+                    pointHoverRadius: 12,
+                    pointStyle: 'rectRot',
+                    showLine: false,
+                    order: 0
+                });
+            }
+        }
         
         const config = {
             type: 'scatter',

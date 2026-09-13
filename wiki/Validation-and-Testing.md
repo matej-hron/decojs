@@ -6,7 +6,7 @@ npm test
 
 Runs `node tests/run-tests.mjs`. No external test framework — `tests/run-tests.mjs` implements `describe`/`test`/`expect` inline (lines 10–140) with matchers `.toBe`, `.toEqual`, `.toBeCloseTo`, `.toBeGreaterThan`, `.toBeLessThan`, `.toHaveProperty`, `.toHaveLength`, `.toBeDefined`. Output is one line per test, then a pass/fail summary.
 
-**533 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
+**535 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
 
 `npm test` is required to pass before every commit per `CLAUDE.md`.
 
@@ -81,6 +81,14 @@ coefficient table must contain all 16 compartments from
 keep TC2–16 $b$ values identical across variants, and highlight only values
 that differ from ZH-L16A. Its responsive wrapper must scroll locally without
 causing document-level horizontal overflow.
+
+The reusable M-value chart marks the current controlling compartment only
+when it creates a decompression ceiling at the currently allowed GF. The
+selector highlight and diamond current point do not alter which compartments
+the user selected. If the controlling compartment is hidden, its current point
+still appears as a standalone diamond without adding its line or trail. When
+the ceiling is clear, the chart explicitly reports that no compartment is
+currently controlling decompression.
 
 The coefficient-derivation graph labels $a$, including the upright `bar`
 unit, and dimensionless $b$ directly in the SVG, positioned beside their

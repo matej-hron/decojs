@@ -1112,6 +1112,9 @@
             "rulerRampGFLabel": "GF en la rampa",
             "rulerCeiling": "techo",
             "rulerMValueSuffix": " (valor máximo)",
+            "controllingCompartment": "Compartimento controlador: TC{0} · techo {1} m",
+            "controllingPoint": "TC{0} controlador",
+            "noControllingCompartment": "No hay techo de descompresión en este punto",
             "initialDepthLabel": "0,0 min @ 0 m"
         },
         "gf": {

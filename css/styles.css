@@ -1694,6 +1694,40 @@ section h2 {
     display: none;
 }
 
+.mvc-compartment-option {
+    transition: box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.mvc-compartment-option.mvc-controlling-compartment {
+    background: color-mix(in srgb, var(--card-background) 75%, currentColor);
+    box-shadow:
+        0 0 0 2px var(--text-color),
+        0 0 0 4px var(--background-color);
+    font-weight: 700;
+}
+
+.mvc-controlling-status {
+    flex-basis: 100%;
+    margin-top: 2px;
+    padding: 2px 4px;
+    color: var(--text-muted);
+    font-size: 0.72rem;
+}
+
+.mvc-controlling-status::before {
+    content: '◇';
+    margin-right: 0.35rem;
+}
+
+.mvc-controlling-status.active {
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.mvc-controlling-status.active::before {
+    content: '◆';
+}
+
 .mvc-wrapper.mvc-fullscreen .mvc-fullscreen-btn {
     display: none;
 }
@@ -2266,7 +2300,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.132";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.133";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================

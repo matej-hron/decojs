@@ -242,7 +242,8 @@ import {
 import { GFChart } from '../js/charts/GFChart.js';
 import {
     MValueChart,
-    calculateMValueRulerIntersections
+    calculateMValueRulerIntersections,
+    calculateCurrentControllingCompartment
 } from '../js/charts/MValueChart.js';
 import { DiveProfileChart } from '../js/charts/DiveProfileChart.js';
 
@@ -803,6 +804,67 @@ describe('P-P chart timeline synchronization', () => {
 });
 
 describe('M-value intersection ruler', () => {
+    test('identifies only a compartment that creates a decompression ceiling', () => {
+        const tissuePressures = Object.fromEntries(
+            COMPARTMENTS.map(comp => [comp.id, 0.75])
+        );
+        tissuePressures[1] = 3.1;
+        tissuePressures[8] = 2.4;
+
+        const controlling = calculateCurrentControllingCompartment({
+            tissuePressures,
+            currentAmbient: 1.6,
+            gfLow: 0.3,
+            gfHigh: 0.8,
+            pAnchor: 2.2
+        });
+        expect(controlling.controllingCompartment).toBeDefined();
+        expect(controlling.ceilingDepth).toBeGreaterThan(0);
+
+        const clear = calculateCurrentControllingCompartment({
+            tissuePressures: Object.fromEntries(
+                COMPARTMENTS.map(comp => [comp.id, 0.75])
+            ),
+            currentAmbient: 5,
+            gfLow: 0.3,
+            gfHigh: 0.8,
+            pAnchor: 2.2
+        });
+        expect(clear.controllingCompartment).toBe(null);
+        expect(clear.ceilingDepth).toBe(0);
+    });
+
+    test('marks the controlling selector without changing compartment selection', () => {
+        const dom = new JSDOM(`<!doctype html><body>
+            <div id="controls">
+                <label class="mvc-compartment-option" data-compartment-id="1"></label>
+                <label class="mvc-compartment-option" data-compartment-id="8"></label>
+            </div>
+            <div id="status"></div>
+        </body>`);
+        const context = {
+            controlsContainer: dom.window.document.getElementById('controls'),
+            controllingCompartmentStatus: dom.window.document.getElementById('status')
+        };
+
+        MValueChart.prototype._updateControllingCompartmentIndicator.call(
+            context,
+            { controllingCompartment: 8, ceilingDepth: 6 }
+        );
+        const labels = context.controlsContainer.querySelectorAll('label');
+        expect(labels[0].classList.contains('mvc-controlling-compartment')).toBe(false);
+        expect(labels[1].classList.contains('mvc-controlling-compartment')).toBe(true);
+        expect(labels[1].getAttribute('aria-current')).toBe('true');
+        expect(context.controllingCompartmentStatus.textContent.includes('TC8')).toBe(true);
+
+        MValueChart.prototype._updateControllingCompartmentIndicator.call(
+            context,
+            { controllingCompartment: null, ceilingDepth: 0 }
+        );
+        expect(labels[1].classList.contains('mvc-controlling-compartment')).toBe(false);
+        expect(labels[1].hasAttribute('aria-current')).toBe(false);
+    });
+
         test('calculates fixed-GF and ramp intersections', () => {
             const compartment = COMPARTMENTS[1];
             const inputs = {
