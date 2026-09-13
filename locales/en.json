@@ -176,9 +176,9 @@
         "whatsInAir": {
             "title": "What's in the Air You Breathe?",
             "intro": "The air we breathe is a mixture of gases. Understanding this composition is fundamental to diving because each gas behaves differently under pressure. The main components are:",
-            "nitrogen": "<strong>Nitrogen (N₂)</strong> — 78% — inert gas, does not participate in metabolism",
-            "oxygen": "<strong>Oxygen (O₂)</strong> — 21% — essential for life, but toxic at high partial pressures",
-            "other": "<strong>Other gases</strong> — 1% — mainly argon (~0.93%) and CO₂ (~0.04%), plus traces of neon, helium and methane"
+            "nitrogen": "<strong>Nitrogen (N₂)</strong> — 78 % — inert gas, does not participate in metabolism",
+            "oxygen": "<strong>Oxygen (O₂)</strong> — 21 % — essential for life, but toxic at high partial pressures",
+            "other": "<strong>Other gases</strong> — 1 % — mainly argon (~0.93 %) and CO₂ (~0.04 %), plus traces of neon, helium and methane"
         },
         "mixtures": {
             "title": "Breathing Gas Mixtures",
@@ -203,7 +203,7 @@
             "ppCalc": "Partial Pressure Calculation",
             "where": "Where:",
             "ppx": "partial pressure of gas x (bar)",
-            "fx": "fraction of gas x in the mixture (decimal, e.g., 0.21 for 21%)",
+            "fx": "fraction of gas x in the mixture (decimal, e.g., 0.21 for 21 %)",
             "pAmb": "ambient pressure (bar), calculated as 1 + depth/10",
             "note": "<em>Note: This is the <strong>operational</strong> formula used for MOD and gas limits throughout this section.</em>"
         },
@@ -257,7 +257,7 @@
             "exGas": "Gas",
             "exCalc": "Calculation",
             "showAnswer": "show",
-            "exAir": "Air (21% O₂)",
+            "exAir": "Air (21 % O₂)",
             "exerciseNote": "💡 Notice: higher O₂ fraction → shallower MOD. More oxygen means you hit the toxicity limit sooner."
         },
         "nitrogenLimits": {
@@ -313,7 +313,7 @@
             "toggleLabel": "Show Details",
             "disclaimer": "<em>⚠️ This is advanced content. For recreational diving, simply staying below 1.4 bar <var>p</var><sub>O₂</sub> is sufficient. CNS/OTU tracking is primarily used in technical diving with extended oxygen exposures.</em>",
             "cnsTitle": "CNS (Central Nervous System) Clock",
-            "cnsDesc": "The CNS clock tracks your exposure as a percentage of the maximum allowable time at each <var>p</var><sub>O₂</sub> level. At 100%, you've reached the recommended limit.",
+            "cnsDesc": "The CNS clock tracks your exposure as a percentage of the maximum allowable time at each <var>p</var><sub>O₂</sub> level. At 100 %, you've reached the recommended limit.",
             "thPPO2": "<var>p</var><sub>O₂</sub> (bar)",
             "thNOAAMax": "NOAA Max Time",
             "thCNSPerMin": "CNS% per min",

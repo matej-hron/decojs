@@ -219,20 +219,20 @@
                     <h4 data-i18n="totalPressure.formulas.simplified">Simplified Formula (Sea Level)</h4>
                     <p data-i18n="totalPressure.formulas.simplifiedDesc">For diving at sea level, we use the simplified formula:</p>
                     <div class="formula" id="formula-simplified-pressure">
-                        p_{\mathrm{amb}} = 1 + \frac{\mathrm{depth}}{10} \text{ bar}
+                        p_{\mathrm{amb}} = \left(1 + \frac{h}{10\,\mathrm{m}}\right)\mathrm{bar}
                     </div>
                     <p data-i18n="totalPressure.formulas.simplifiedNote">This approximation works well for recreational diving calculations.</p>
 
                     <h4 data-i18n="totalPressure.formulas.altitudeFormula">Atmospheric Pressure vs Altitude</h4>
                     <p data-i18n="totalPressure.formulas.altitudeFormulaDesc">Atmospheric pressure decreases exponentially with altitude:</p>
                     <div class="formula" id="formula-altitude-pressure">
-                        p_{\mathrm{atm}}(h) = p_0 \cdot e^{-\frac{h}{H}}
+                        p_{\mathrm{atm}}(h) = p_{\mathrm{atm},0} \cdot e^{-\frac{h}{8500\,\mathrm{m}}}
                     </div>
                     <p data-i18n="totalPressure.formulas.altitudeWhere">Where:</p>
                     <ul>
-                        <li><span class="formula-inline">p_0</span> = <span data-i18n="totalPressure.formulas.p0">1.01325&nbsp;bar (sea level pressure)</span></li>
+                        <li><span class="formula-inline">p_{\mathrm{atm},0}</span> = <span data-i18n="totalPressure.formulas.p0">1.01325&nbsp;bar (sea level pressure)</span></li>
                         <li><span class="formula-inline">h</span> = <span data-i18n="totalPressure.formulas.hAlt">altitude in meters</span></li>
-                        <li><span class="formula-inline">H</span> <span data-i18n="totalPressure.formulas.scaleHeight">≈ 8500&nbsp;m (scale height of atmosphere)</span></li>
+                        <li data-i18n="totalPressure.formulas.scaleHeight">≈ 8500&nbsp;m (scale height of atmosphere)</li>
                     </ul>
                 </div>
             </details>
@@ -294,7 +294,7 @@
                     <h4 data-i18n="gasConsumption.formula.consumedTitle">Gas Consumed at Depth</h4>
                     <p data-i18n="gasConsumption.formula.consumedDesc">The gas consumption at any depth can be calculated as:</p>
                     <div class="formula" id="formula-gas-consumption">
-                        \text{Consumption} = \mathrm{SAC} \times p_{\mathrm{amb}} \times t
+                        V = \mathrm{SAC} \times p_{\mathrm{amb}} \times t
                     </div>
                     <p data-i18n="gasConsumption.formula.consumedWhere">Where:</p>
                     <ul>
@@ -305,7 +305,7 @@
 
                     <h4 data-i18n="gasConsumption.formula.availableTitle">Available Gas in Cylinder</h4>
                     <div class="formula" id="formula-gas-available">
-                        \text{Gas Available} = V_{\mathrm{cyl}} \times (p_{\mathrm{start}} - p_{\mathrm{reserve}})
+                        V = V_{\mathrm{cyl}} \times (p_{\mathrm{start}} - p_{\mathrm{reserve}})
                     </div>
                     <p data-i18n="gasConsumption.formula.availableExample">For a 12&nbsp;L cylinder at 200&nbsp;bar with 50&nbsp;bar reserve:</p>
                     <p data-i18n="gasConsumption.formula.availableResult">Available gas = 12 × (200 − 50) = <strong>1800 liters</strong></p>
@@ -341,7 +341,7 @@
                     </div>
                     <p data-i18n="gasConsumptionChart.sacCalc.where">Where:</p>
                     <ul>
-                        <li><span class="formula-inline">\Delta P</span> = <span data-i18n="gasConsumptionChart.sacCalc.deltaP">Pressure drop (start - end pressure in bar)</span></li>
+                        <li><span class="formula-inline">\Delta p</span> = <span data-i18n="gasConsumptionChart.sacCalc.deltaP">Pressure drop (start - end pressure in bar)</span></li>
                         <li><span class="formula-inline">V_{\mathrm{cyl}}</span> = <span data-i18n="gasConsumptionChart.sacCalc.vCyl">Cylinder volume (liters)</span></li>
                         <li><span class="formula-inline">t</span> = <span data-i18n="gasConsumptionChart.sacCalc.t">Dive time (minutes)</span></li>
                         <li><span class="formula-inline">p_{\mathrm{avg}}</span> = <span data-i18n="gasConsumptionChart.sacCalc.pAvg">Average ambient pressure = 1 + (avg depth / 10)</span></li>
@@ -358,7 +358,7 @@
                     <details class="solution-reveal">
                         <summary data-i18n="gasConsumptionChart.sacCalc.showSolution">Try it yourself first — click to reveal the solution</summary>
                         <div class="formula" id="formula-sac-example">
-                            \mathrm{SAC} = \frac{120 \times 12}{45 \times 2.5} = \frac{1440}{112.5} = 12.8 \text{ L/min}
+                            \mathrm{SAC} = \frac{120 \times 12}{45 \times 2.5} = \frac{1440}{112.5} = 12.8\,\mathrm{L/min}
                         </div>
                         <p data-i18n="gasConsumptionChart.sacCalc.exampleResult">
                             This diver has a SAC rate of <strong>12.8&nbsp;L/min</strong> — quite efficient!
@@ -388,9 +388,9 @@
                     to diving because each gas behaves differently under pressure. The main components are:
                 </p>
                 <ul>
-                    <li data-i18n="airComposition.whatsInAir.nitrogen"><strong>Nitrogen (N₂)</strong> — 78% — inert gas, does not participate in metabolism</li>
-                    <li data-i18n="airComposition.whatsInAir.oxygen"><strong>Oxygen (O₂)</strong> — 21% — essential for life, but toxic at high partial pressures</li>
-                    <li data-i18n="airComposition.whatsInAir.other"><strong>Other gases</strong> — 1% — mainly argon (~0.93%) and CO₂ (~0.04%), plus traces of neon, helium and methane</li>
+                    <li data-i18n="airComposition.whatsInAir.nitrogen"><strong>Nitrogen (N₂)</strong> — 78&nbsp;% — inert gas, does not participate in metabolism</li>
+                    <li data-i18n="airComposition.whatsInAir.oxygen"><strong>Oxygen (O₂)</strong> — 21&nbsp;% — essential for life, but toxic at high partial pressures</li>
+                    <li data-i18n="airComposition.whatsInAir.other"><strong>Other gases</strong> — 1&nbsp;% — mainly argon (~0.93&nbsp;%) and CO₂ (~0.04&nbsp;%), plus traces of neon, helium and methane</li>
                 </ul>
             </div>
 
@@ -448,7 +448,7 @@
                     <p data-i18n="daltonsLaw.formula.where">Where:</p>
                     <ul>
                         <li><span class="formula-inline">p_x</span> = <span data-i18n="daltonsLaw.formula.ppx">partial pressure of gas x (bar)</span></li>
-                        <li><span class="formula-inline">f_x</span> = <span data-i18n="daltonsLaw.formula.fx">fraction of gas x in the mixture (decimal, e.g., 0.21 for 21%)</span></li>
+                        <li><span class="formula-inline">f_x</span> = <span data-i18n="daltonsLaw.formula.fx">fraction of gas x in the mixture (decimal, e.g., 0.21 for 21&nbsp;%)</span></li>
                         <li><span class="formula-inline">p_{\mathrm{amb}}</span> = <span data-i18n="daltonsLaw.formula.pAmb">ambient pressure (bar), calculated as 1 + depth/10</span></li>
                     </ul>
                     <p data-i18n="daltonsLaw.formula.note"><em>Note: This is the <strong>operational</strong> formula used for MOD and gas limits throughout this section.</em></p>
@@ -488,7 +488,7 @@
                 <h4 data-i18n="daltonsLaw.operational.physTitle">Physiological (tissue kinetics)</h4>
                 <div class="formula">p_{\mathrm{alv}} = f_{\mathrm{inert}} \times (p_{\mathrm{amb}} - p_{\mathrm{H_2O}})</div>
                 <p data-i18n="daltonsLaw.operational.physDesc">When calculating alveolar gas pressures for tissue loading models, we subtract water vapour pressure because the lungs humidify inspired air:</p>
-                <div class="formula">p_{\mathrm{H_2O}} = 0.0627 \text{ bar}</div>
+                <div class="formula">p_{\mathrm{H_2O}} = 0.0627\,\mathrm{bar}</div>
                 <p class="formula-caption" data-i18n="daltonsLaw.operational.waterVapourAt">at 37 °C (body temperature)</p>
                 <p data-i18n="daltonsLaw.operational.physNote">This ~6% reduction appears in the Bühlmann equations for tissue saturation calculations. We will need this in further sections and stating it here for completeness.</p>
             </div>
@@ -734,15 +734,15 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td>1.60</td><td>45&nbsp;min</td><td>2.22%</td></tr>
-                            <tr><td>1.55</td><td>83&nbsp;min</td><td>1.20%</td></tr>
-                            <tr><td>1.50</td><td>120&nbsp;min</td><td>0.83%</td></tr>
-                            <tr><td>1.45</td><td>135&nbsp;min</td><td>0.74%</td></tr>
-                            <tr><td>1.40</td><td>150&nbsp;min</td><td>0.67%</td></tr>
-                            <tr><td>1.35</td><td>165&nbsp;min</td><td>0.61%</td></tr>
-                            <tr><td>1.30</td><td>180&nbsp;min</td><td>0.56%</td></tr>
-                            <tr><td>1.20</td><td>210&nbsp;min</td><td>0.48%</td></tr>
-                            <tr><td>1.10</td><td>240&nbsp;min</td><td>0.42%</td></tr>
+                            <tr><td>1.60</td><td>45&nbsp;min</td><td>2.22&nbsp;%</td></tr>
+                            <tr><td>1.55</td><td>83&nbsp;min</td><td>1.20&nbsp;%</td></tr>
+                            <tr><td>1.50</td><td>120&nbsp;min</td><td>0.83&nbsp;%</td></tr>
+                            <tr><td>1.45</td><td>135&nbsp;min</td><td>0.74&nbsp;%</td></tr>
+                            <tr><td>1.40</td><td>150&nbsp;min</td><td>0.67&nbsp;%</td></tr>
+                            <tr><td>1.35</td><td>165&nbsp;min</td><td>0.61&nbsp;%</td></tr>
+                            <tr><td>1.30</td><td>180&nbsp;min</td><td>0.56&nbsp;%</td></tr>
+                            <tr><td>1.20</td><td>210&nbsp;min</td><td>0.48&nbsp;%</td></tr>
+                            <tr><td>1.10</td><td>240&nbsp;min</td><td>0.42&nbsp;%</td></tr>
                         </tbody>
                     </table>
 
@@ -827,8 +827,8 @@
          */
         const DECO_PROFILE = {
             id: 'class-31m-29min',
-            name: '31m / 29 min (Class Example)',
-            description: 'Reference dive used in class: 31m for 29 min on Air at GF 100/100',
+            name: '31\u00a0m / 29\u00a0min (Class Example)',
+            description: 'Reference dive used in class: 31\u00a0m for 29\u00a0min on Air at GF 100/100',
             gases: DECO_GASES,
             gfLow: 100,
             gfHigh: 100,
@@ -854,8 +854,8 @@
 
         const MULTIGAS_PROFILE = {
             id: 'multigas-30m',
-            name: '30m Multi-Gas Dive',
-            description: 'A 30m dive with EAN50 deco gas',
+            name: '30\u00a0m Multi-Gas Dive',
+            description: 'A 30\u00a0m dive with EAN50 deco gas',
             gases: MULTIGAS_GASES,
             gfLow: 50,
             gfHigh: 80,
@@ -958,9 +958,9 @@
                     <div class="gas-tank-row">
                         <span class="gas-tank-name">${tank.name}</span>
                         <span class="gas-tank-stats">
-                            <span style="color: var(--text-muted); font-size: 0.85rem;">${tank.cylinderVolume}L cylinder · ${tank.totalCapacity}L capacity</span>
+                            <span style="color: var(--text-muted); font-size: 0.85rem;">${tank.cylinderVolume}\u00a0L cylinder · ${tank.totalCapacity}\u00a0L capacity</span>
                             <span>${tank.startPressure} → <span class="${status}">${tank.endPressure}\u00a0bar</span></span>
-                            <span>(${tank.consumed}L used)</span>
+                            <span>(${tank.consumed}\u00a0L used)</span>
                         </span>
                     </div>
                 `;
@@ -970,7 +970,7 @@
                 <h4>⛽ Gas Summary</h4>
                 ${tankRows}
                 <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">
-                    Total: ${Math.round(gasSummary.totalConsumed)}L consumed
+                    Total: ${Math.round(gasSummary.totalConsumed)}\u00a0L consumed
                 </div>
             `;
         }
@@ -994,7 +994,7 @@
                 const cylinderVolume = gas.cylinderVolume || 12;
                 const startPressure = gas.startPressure || 200;
                 gasSummary.tanks.push({
-                    name: gas.name || `${fmtNum((gas.o2 * 100), 0)}%`,
+                    name: gas.name || `${fmtNum((gas.o2 * 100), 0)}\u00a0%`,
                     cylinderVolume,
                     startPressure,
                     endPressure: Math.round(shared.pressureByGasId[gas.id] ?? startPressure),
@@ -1049,7 +1049,7 @@
                         },
                         tooltip: {
                             callbacks: {
-                                label: (ctx) => `${ctx.label}: ${ctx.raw}%`
+                                label: (ctx) => `${ctx.label}: ${ctx.raw}\u00a0%`
                             }
                         }
                     }
@@ -1126,7 +1126,7 @@
         // then follow the active language like every other computed value.
         const MOD_PPO2_LIMIT = 1.4;
         const MOD_GASES = [
-            { name: 'Air (21% O₂)', nameKey: 'partialPressureLimits.mod.exAir', fo2: 0.21 },
+            { name: 'Air (21\u00a0% O₂)', nameKey: 'partialPressureLimits.mod.exAir', fo2: 0.21 },
             { name: 'EAN32', fo2: 0.32 },
             { name: 'EAN36', fo2: 0.36 },
             { name: 'EAN40', fo2: 0.40 }
@@ -1136,11 +1136,11 @@
         // JS je jen formátuje podle jazyka (desetinná čárka v češtině).
         const ALTITUDE_ROWS = [
             { altKey: 'totalPressure.altitude.seaLevel', alt: 'Sea level', p: 1.013, exKey: 'totalPressure.altitude.seaLevelExample', ex: 'Ocean, coastal lakes' },
-            { altKey: 'totalPressure.altitude.300m', alt: '300&nbsp;m', p: 0.977, exKey: 'totalPressure.altitude.300mExample', ex: 'Low hills' },
-            { altKey: 'totalPressure.altitude.700m', alt: '700&nbsp;m', p: 0.932, exKey: 'totalPressure.altitude.700mExample', ex: 'Mountain lakes' },
-            { altKey: 'totalPressure.altitude.1500m', alt: '1500&nbsp;m', p: 0.845, exKey: 'totalPressure.altitude.1500mExample', ex: 'High altitude lakes' },
-            { altKey: 'totalPressure.altitude.2500m', alt: '2500&nbsp;m', p: 0.747, exKey: 'totalPressure.altitude.2500mExample', ex: 'Lake Titicaca' },
-            { altKey: 'totalPressure.altitude.3000m', alt: '3000&nbsp;m', p: 0.701, exKey: 'totalPressure.altitude.3000mExample', ex: 'Extreme altitude diving' }
+            { altKey: 'totalPressure.altitude.300m', alt: '300\u00a0m', p: 0.977, exKey: 'totalPressure.altitude.300mExample', ex: 'Low hills' },
+            { altKey: 'totalPressure.altitude.700m', alt: '700\u00a0m', p: 0.932, exKey: 'totalPressure.altitude.700mExample', ex: 'Mountain lakes' },
+            { altKey: 'totalPressure.altitude.1500m', alt: '1500\u00a0m', p: 0.845, exKey: 'totalPressure.altitude.1500mExample', ex: 'High altitude lakes' },
+            { altKey: 'totalPressure.altitude.2500m', alt: '2500\u00a0m', p: 0.747, exKey: 'totalPressure.altitude.2500mExample', ex: 'Lake Titicaca' },
+            { altKey: 'totalPressure.altitude.3000m', alt: '3000\u00a0m', p: 0.701, exKey: 'totalPressure.altitude.3000mExample', ex: 'Extreme altitude diving' }
         ];
 
         // Daltonův příklad: vzduch ve 30 m. Zlomky i součiny se počítají,
@@ -1165,7 +1165,7 @@
                     <td>${g.label}</td>
                     <td>${f}</td>
                     ${answer(`${f} × ${fmtNum(pAmb)}`)}
-                    ${answer(`<strong>${pp}&nbsp;bar</strong>`)}
+                    ${answer(`<strong>${pp}\u00a0bar</strong>`)}
                 </tr>`;
             }).join('');
         }
@@ -1209,7 +1209,7 @@
                     ${nameCell}
                     <td>${fo2}</td>
                     ${answer(`(${limit} / ${fo2} − 1) × 10`)}
-                    ${answer(`<strong>${mod}&nbsp;m</strong>`)}
+                    ${answer(`<strong>${mod}\u00a0m</strong>`)}
                 </tr>`;
             }).join('');
         }

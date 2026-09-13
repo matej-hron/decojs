@@ -6739,6 +6739,34 @@ describe('Alveolar pressure notation', () => {
     });
 });
 
+describe('pressure page notation follows the glossary', () => {
+    const pressurePage = readFileSync(
+        new URL('../pressure.html', import.meta.url),
+        'utf8'
+    );
+
+    test('uses registered quantity symbols in formulas', () => {
+        expect(pressurePage.includes('\\Delta p')).toBe(true);
+        expect(pressurePage.includes('\\Delta P')).toBe(false);
+        expect(pressurePage.includes('\\mathrm{depth}')).toBe(false);
+        expect(pressurePage.includes('p_{\\mathrm{atm},0}')).toBe(true);
+        expect(pressurePage.includes('\\text{Consumption}')).toBe(false);
+        expect(pressurePage.includes('\\text{Gas Available}')).toBe(false);
+    });
+
+    test('keeps generated values attached to their units', () => {
+        const moduleScript = pressurePage.match(
+            /<script type="module">([\s\S]*?)<\/script>/
+        )?.[1] ?? '';
+
+        expect(moduleScript.includes('${tank.cylinderVolume}\\u00a0L')).toBe(true);
+        expect(moduleScript.includes('${tank.totalCapacity}\\u00a0L')).toBe(true);
+        expect(moduleScript.includes('${tank.consumed}\\u00a0L')).toBe(true);
+        expect(moduleScript.includes('${ctx.raw}\\u00a0%')).toBe(true);
+        expect(moduleScript.includes('&nbsp;')).toBe(false);
+    });
+});
+
 describe('i18n notation - canvas strings must not contain HTML entities', () => {
     const LOCALES = ['cs', 'en', 'es'];
     const load = (l) => JSON.parse(readFileSync(new URL(`../locales/${l}.json`, import.meta.url), 'utf8'));
