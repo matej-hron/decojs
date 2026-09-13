@@ -89,7 +89,8 @@ definition. The selector highlight does not alter which compartments the user
 selected, and the current points retain their standard appearance. When the
 ceiling is clear, the chart explicitly reports that no compartment is
 currently controlling decompression. If no GF ramp is created, the
-intersection uses GF High.
+intersection uses GF High. Both the status and ruler panel show the current
+depth. The ruler omits the unused tissue-equals-ambient intersection.
 
 The ruler labels its self-consistent intersection with the continuous GF ramp
 explicitly, distinguishing it from the scheduler's fixed-GF check at the next

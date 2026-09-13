@@ -1108,12 +1108,12 @@
             "pAnchor": "Anchor pressure {0} bar ({1} m)",
             "tooltipLabel": "{0}: ambient pressure {1} bar, tissue pressure {2} bar",
             "rulerTitle": "ruler",
-            "rulerCurrentPosition": "Current position",
+            "rulerCurrentPosition": "Current depth",
             "rulerRampGFLabel": "GF ramp intersection",
             "rulerCeiling": "ceiling",
             "rulerMValueSuffix": "-value",
-            "controllingCompartment": "Controlling compartment: TC{0} · GF-ramp ceiling {1} m",
-            "noControllingCompartment": "No decompression ceiling at this point",
+            "controllingCompartment": "Current depth: {0} m · controlling compartment: TC{1} · GF-ramp ceiling {2} m",
+            "noControllingCompartment": "Current depth: {0} m · no decompression ceiling",
             "initialDepthLabel": "0.0 min @ 0 m"
         },
         "gf": {

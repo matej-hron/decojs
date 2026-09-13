@@ -1108,12 +1108,12 @@
             "pAnchor": "Kotevní tlak {0} bar ({1} m)",
             "tooltipLabel": "{0}: okolní tlak {1} bar, tkáňový tlak {2} bar",
             "rulerTitle": "pravítko",
-            "rulerCurrentPosition": "Aktuální poloha",
+            "rulerCurrentPosition": "Aktuální hloubka",
             "rulerRampGFLabel": "Průsečík s GF rampou",
             "rulerCeiling": "strop",
             "rulerMValueSuffix": "-hodnota",
-            "controllingCompartment": "Řídicí kompartment: TC{0} · strop podle GF rampy {1} m",
-            "noControllingCompartment": "V tomto bodě není dekompresní strop",
+            "controllingCompartment": "Aktuální hloubka: {0} m · řídicí kompartment: TC{1} · strop podle GF rampy {2} m",
+            "noControllingCompartment": "Aktuální hloubka: {0} m · bez dekompresního stropu",
             "initialDepthLabel": "0,0 min @ 0 m"
         },
         "gf": {

@@ -1108,12 +1108,12 @@
             "pAnchor": "Presión de anclaje {0} bar ({1} m)",
             "tooltipLabel": "{0}: presión ambiente {1} bar, presión tisular {2} bar",
             "rulerTitle": "regla",
-            "rulerCurrentPosition": "Posición actual",
+            "rulerCurrentPosition": "Profundidad actual",
             "rulerRampGFLabel": "Intersección con la rampa GF",
             "rulerCeiling": "techo",
             "rulerMValueSuffix": " (valor máximo)",
-            "controllingCompartment": "Compartimento controlador: TC{0} · techo según la rampa GF {1} m",
-            "noControllingCompartment": "No hay techo de descompresión en este punto",
+            "controllingCompartment": "Profundidad actual: {0} m · compartimento controlador: TC{1} · techo según la rampa GF {2} m",
+            "noControllingCompartment": "Profundidad actual: {0} m · sin techo de descompresión",
             "initialDepthLabel": "0,0 min @ 0 m"
         },
         "gf": {

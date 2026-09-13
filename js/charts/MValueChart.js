@@ -122,13 +122,6 @@ export function calculateMValueRulerIntersections({
     }
 
     return {
-        equilibrium: {
-            pressure: tissuePressure,
-            depth: Math.max(
-                0,
-                (tissuePressure - surfacePressure) / pressurePerMeter
-            )
-        },
         gfLow: low,
         gfRamp: rampedGF,
         gfHigh: high
@@ -622,17 +615,21 @@ export class MValueChart {
         const controllingId = state?.controllingCompartment ?? null;
         let statusText;
         if (controllingId === null) {
-            statusText = translate(
-                'chart.mvalue.noControllingCompartment',
-                'No decompression ceiling at this point'
+            statusText = fmt(
+                translate(
+                    'chart.mvalue.noControllingCompartment',
+                    'Current depth: {0}\u00a0m · no decompression ceiling'
+                ),
+                fmtNum(state.currentDepth, 1)
             );
         } else {
             const ceilingDecimals = state.ceilingDepth < 0.1 ? 2 : 1;
             statusText = fmt(
                 translate(
                     'chart.mvalue.controllingCompartment',
-                    'Controlling compartment: TC{0} · GF-ramp ceiling {1}\u00a0m'
+                    'Current depth: {0}\u00a0m · controlling compartment: TC{1} · GF-ramp ceiling {2}\u00a0m'
                 ),
+                fmtNum(state.currentDepth, 1),
                 controllingId,
                 fmtNum(state.ceilingDepth, ceilingDecimals)
             );
@@ -1313,35 +1310,28 @@ export class MValueChart {
         const y = scales.y.getPixelForValue(ruler.tissuePressure);
         if (y < chartArea.top || y > chartArea.bottom) return;
 
-        const t = theme();
         const usesRawMValue =
             Math.abs(ruler.intersections.gfLow.gf - 1) < 1e-12 &&
             Math.abs(ruler.intersections.gfHigh.gf - 1) < 1e-12;
-        const rows = [
-            {
-                value: ruler.intersections.equilibrium,
-                color: t.colors.ambient
-            },
-            ...(usesRawMValue
-                ? [{
+        const rows = usesRawMValue
+            ? [{
+                value: ruler.intersections.gfRamp,
+                color: ruler.compartment.color
+            }]
+            : [
+                {
+                    value: ruler.intersections.gfLow,
+                    color: '#f39c12'
+                },
+                {
                     value: ruler.intersections.gfRamp,
                     color: ruler.compartment.color
-                }]
-                : [
-                    {
-                        value: ruler.intersections.gfLow,
-                        color: '#f39c12'
-                    },
-                    {
-                        value: ruler.intersections.gfRamp,
-                        color: ruler.compartment.color
-                    },
-                    {
-                        value: ruler.intersections.gfHigh,
-                        color: '#9b59b6'
-                    }
-                ])
-        ];
+                },
+                {
+                    value: ruler.intersections.gfHigh,
+                    color: '#9b59b6'
+                }
+            ];
 
         ctx.save();
         ctx.lineWidth = 1.5;
@@ -1447,25 +1437,13 @@ export class MValueChart {
             translate('chart.mvalue.rulerCurrentPosition', 'Current position'),
             ': '
         );
-        currentPosition.appendChild(quantity('p', ambientSubscript));
-        currentPosition.append(
-            ` = ${valueWithUnit(ruler.currentAmbient, 'bar', 2)} · `
-        );
         currentPosition.appendChild(quantity('h'));
         currentPosition.append(
-            ` = ${valueWithUnit(ruler.currentDepth, 'm', 1)}`
+            ` = ${valueWithUnit(ruler.currentDepth, 'm', 1)} · `
         );
-
-        const equilibrium = addLine('var(--amber-500, #f39c12)');
-        equilibrium.appendChild(quantity('p', tissueSubscript));
-        equilibrium.append(' = ');
-        equilibrium.appendChild(quantity('p', ambientSubscript));
-        equilibrium.append(
-            ` = ${valueWithUnit(ruler.intersections.equilibrium.pressure, 'bar', 2)} · `
-        );
-        equilibrium.appendChild(quantity('h'));
-        equilibrium.append(
-            ` = ${valueWithUnit(ruler.intersections.equilibrium.depth, 'm', 1)}`
+        currentPosition.appendChild(quantity('p', ambientSubscript));
+        currentPosition.append(
+            ` = ${valueWithUnit(ruler.currentAmbient, 'bar', 2)}`
         );
 
         const usesRawMValue =
@@ -1663,6 +1641,7 @@ export class MValueChart {
             surfacePressure,
             pressurePerMeter: results.pressurePerMeter
         });
+        controllingState.currentDepth = results.depthPoints[timeIndex];
         this._updateControllingCompartmentIndicator(controllingState);
         
         // For each visible compartment
