@@ -84,10 +84,12 @@ causing document-level horizontal overflow.
 
 The reusable M-value chart marks the current controlling compartment only
 when it creates a decompression ceiling at the currently allowed GF. The
-status label and selector highlight do not alter which compartments the user
-selected, and the current points retain their standard appearance. When the
-ceiling is clear, the chart explicitly reports that no compartment is
-currently controlling decompression.
+status identifies this value as a control ceiling at the current fixed GF,
+including that GF value, rather than as the continuous-ramp ceiling. The
+selector highlight does not alter which compartments the user selected, and
+the current points retain their standard appearance. When the ceiling is
+clear, the chart explicitly reports that no compartment is currently
+controlling decompression.
 
 The ruler labels its self-consistent intersection with the continuous GF ramp
 explicitly, distinguishing it from the scheduler's fixed-GF check at the next

@@ -623,10 +623,11 @@ export class MValueChart {
             statusText = fmt(
                 translate(
                     'chart.mvalue.controllingCompartment',
-                    'Controlling compartment: TC{0} · ceiling {1}\u00a0m'
+                    'Control ceiling at current GF {0}%: {1}\u00a0m · controlling compartment TC{2}'
                 ),
-                controllingId,
-                fmtNum(state.ceilingDepth, ceilingDecimals)
+                fmtNum(state.gf * 100, 1),
+                fmtNum(state.ceilingDepth, ceilingDecimals),
+                controllingId
             );
         }
 

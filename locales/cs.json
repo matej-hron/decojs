@@ -1112,7 +1112,7 @@
             "rulerRampGFLabel": "Průsečík s GF rampou",
             "rulerCeiling": "strop",
             "rulerMValueSuffix": "-hodnota",
-            "controllingCompartment": "Řídicí kompartment: TC{0} · strop {1} m",
+            "controllingCompartment": "Kontrolní strop při aktuálním GF {0} %: {1} m · řídicí kompartment TC{2}",
             "noControllingCompartment": "V tomto bodě není dekompresní strop",
             "initialDepthLabel": "0,0 min @ 0 m"
         },

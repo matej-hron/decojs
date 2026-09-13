@@ -849,13 +849,14 @@ describe('M-value intersection ruler', () => {
 
         MValueChart.prototype._updateControllingCompartmentIndicator.call(
             context,
-            { controllingCompartment: 8, ceilingDepth: 6 }
+            { controllingCompartment: 8, ceilingDepth: 6, gf: 0.6 }
         );
         const labels = context.controlsContainer.querySelectorAll('label');
         expect(labels[0].classList.contains('mvc-controlling-compartment')).toBe(false);
         expect(labels[1].classList.contains('mvc-controlling-compartment')).toBe(true);
         expect(labels[1].getAttribute('aria-current')).toBe('true');
         expect(context.controllingCompartmentStatus.textContent.includes('TC8')).toBe(true);
+        expect(context.controllingCompartmentStatus.textContent.includes('60.0%')).toBe(true);
 
         MValueChart.prototype._updateControllingCompartmentIndicator.call(
             context,
