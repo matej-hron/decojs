@@ -300,39 +300,40 @@
         }
         .mv-chart-grid {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) 270px;
+            grid-template-columns: minmax(0, 1fr) 360px;
             gap: 0.75rem;
             align-items: stretch;
         }
-        #mvTopChart { width: 100%; height: 280px; display: block; }
+        #mvTopChart { width: 100%; height: clamp(380px, 30vw, 520px); display: block; }
+        #mvTopChart .mv-chart-label { font-size: 13px; }
         .mv-variant-detail {
             min-width: 0;
-            padding: 0.75rem;
+            padding: 1rem;
             border-left: 1px solid var(--border-color);
             background: color-mix(in srgb, var(--card-background) 88%, transparent);
         }
         .mv-variant-detail h3 {
             margin: 0;
-            font-size: 0.9rem;
+            font-size: 1.05rem;
         }
         .mv-detail-pressure {
             margin: 0.25rem 0 0.75rem;
             color: var(--text-muted);
-            font-size: 0.78rem;
+            font-size: 0.9rem;
         }
         .mv-detail-scale {
             display: flex;
             justify-content: space-between;
             margin: 0 5.4rem 0.2rem 1.5rem;
             color: var(--text-muted);
-            font: 0.68rem ui-monospace, monospace;
+            font: 0.78rem ui-monospace, monospace;
         }
         .mv-detail-row {
             display: grid;
-            grid-template-columns: 1.2rem minmax(70px, 1fr) 5rem;
-            gap: 0.35rem;
+            grid-template-columns: 1.5rem minmax(90px, 1fr) 6.5rem;
+            gap: 0.5rem;
             align-items: center;
-            margin: 0.55rem 0;
+            margin: 0.8rem 0;
         }
         .mv-detail-row.active .mv-detail-variant,
         .mv-detail-row.active .mv-detail-value {
@@ -340,26 +341,27 @@
         }
         .mv-detail-variant {
             font-weight: 700;
+            font-size: 1rem;
             text-align: center;
         }
         .mv-detail-track {
             position: relative;
-            height: 8px;
-            border-radius: 4px;
+            height: 10px;
+            border-radius: 5px;
             background: linear-gradient(90deg, var(--border-color), color-mix(in srgb, var(--border-color) 45%, transparent));
         }
         .mv-detail-marker {
             position: absolute;
             top: 50%;
-            width: 10px;
-            height: 10px;
+            width: 12px;
+            height: 12px;
             border: 2px solid white;
             border-radius: 50%;
             transform: translate(-50%, -50%);
             box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
         }
         .mv-detail-value {
-            font: 0.75rem ui-monospace, monospace;
+            font: 0.9rem ui-monospace, monospace;
             text-align: right;
             white-space: nowrap;
         }
@@ -367,13 +369,13 @@
             grid-column: 2 / 4;
             margin-top: -0.35rem;
             color: var(--text-muted);
-            font-size: 0.68rem;
+            font-size: 0.78rem;
             text-align: right;
         }
         .mv-detail-note {
             margin: 0.75rem 0 0;
             color: var(--text-muted);
-            font-size: 0.72rem;
+            font-size: 0.82rem;
             line-height: 1.35;
         }
         .mv-coeff-details {
@@ -614,15 +616,33 @@
             padding: 0.5rem;
             margin-bottom: 1rem;
         }
-        #mvDerivChart { width: 100%; height: 280px; display: block; }
-        .mv-deriv-curve-a { stroke: #e74c3c; stroke-width: 2; fill: none; }
-        .mv-deriv-curve-b { stroke: #2980b9; stroke-width: 2; fill: none; }
+        #mvDerivChart { width: 100%; height: clamp(360px, 32vw, 520px); display: block; }
+        .mv-deriv-curve-a { stroke: #e74c3c; stroke-width: 2.5; fill: none; }
+        .mv-deriv-curve-b { stroke: #2980b9; stroke-width: 2.5; fill: none; }
         .mv-deriv-dot-a   { fill: #e74c3c; stroke: white; stroke-width: 1; }
         .mv-deriv-dot-b   { fill: #2980b9; stroke: white; stroke-width: 1; }
         .mv-deriv-dot-a.selected,
         .mv-deriv-dot-b.selected { stroke: #2c3e50; stroke-width: 2; }
+        .mv-deriv-shift-a,
+        .mv-deriv-shift-b {
+            fill: none;
+            stroke-width: 2;
+            stroke-dasharray: 4,3;
+        }
+        .mv-deriv-shift-a { stroke: #e74c3c; }
+        .mv-deriv-shift-b { stroke: #2980b9; }
+        .mv-deriv-shift-label {
+            font: 700 11px ui-monospace, monospace;
+            paint-order: stroke;
+            stroke: var(--card-background);
+            stroke-width: 3px;
+            stroke-linejoin: round;
+        }
+        .mv-deriv-shift-label.a { fill: #c0392b; }
+        .mv-deriv-shift-label.b { fill: #2471a3; }
         .mv-deriv-cursor  { stroke: #9b59b6; stroke-width: 1; stroke-dasharray: 3,3; }
-        .mv-deriv-axis-label { font-size: 11px; font-weight: 700; }
+        .mv-deriv-axis-label { font-size: 14px; font-weight: 700; }
+        #mvDerivChart .mv-chart-label { font-size: 13px; }
         .mv-deriv-axis-label-a { fill: #e74c3c; }
         .mv-deriv-axis-label-b { fill: #2980b9; }
     </style>
@@ -704,7 +724,7 @@
 
             <div class="mv-chart-row">
                 <div class="mv-chart-grid">
-                    <svg id="mvTopChart" viewBox="0 0 480 280" preserveAspectRatio="xMidYMid meet" aria-label="M-value chart"></svg>
+                    <svg id="mvTopChart" viewBox="0 0 800 420" preserveAspectRatio="xMidYMid meet" aria-label="M-value chart"></svg>
                     <aside class="mv-variant-detail" aria-labelledby="mvVariantDetailHeading">
                         <h3 id="mvVariantDetailHeading" data-i18n="sandbox.mvalues.top.detail.heading">Magnified <var>M</var>-value difference</h3>
                         <div class="mv-detail-pressure">
@@ -805,7 +825,7 @@
             </details>
 
             <div class="mv-deriv-chart-row">
-                <svg id="mvDerivChart" viewBox="0 0 480 280" preserveAspectRatio="xMidYMid meet" aria-label="Derivation chart"></svg>
+                <svg id="mvDerivChart" viewBox="0 0 900 420" preserveAspectRatio="xMidYMid meet" aria-label="Derivation chart"></svg>
             </div>
             <div class="mv-chart-legend" id="mvDerivChartLegend">
                 <span class="item" style="color:#e74c3c;"><span class="swatch"></span><span data-i18n="sandbox.mvalues.bottom.legend.a"><var>a</var>(<var>t</var><sub>1/2</sub>) curve + 16 stored values (dots)</span></span>
@@ -1159,10 +1179,19 @@
             return 'verySlow';
         }
 
-        function appendMetricLine(cell, { label, symbol, subscript, value, unit, differs }) {
+        function appendMetricLine(cell, {
+            label,
+            prefix,
+            symbol,
+            subscript,
+            value,
+            unit,
+            differs,
+        }) {
             const line = document.createElement('span');
             line.className = 'mv-coeff-metric';
             if (label) line.append(document.createTextNode(`${label} `));
+            if (prefix) line.append(document.createTextNode(prefix));
 
             const variable = document.createElement('var');
             variable.textContent = symbol;
@@ -1239,6 +1268,13 @@
                         differs: variant !== ZHL16_VARIANTS.A
                             && comp.bN2 !== reference.bN2,
                     });
+                    appendMetricLine(cell, {
+                        prefix: '1/',
+                        symbol: 'b',
+                        value: fmtNum(1 / comp.bN2, 4),
+                        differs: variant !== ZHL16_VARIANTS.A
+                            && comp.bN2 !== reference.bN2,
+                    });
                     row.append(cell);
                 }
                 els.coefficientsTableBody.append(row);
@@ -1266,12 +1302,12 @@
         }
 
         // ---- Chart constants ----
-        const CHART_W = 480;
-        const CHART_H = 280;
-        const PAD_L = 40;
-        const PAD_R = 12;
-        const PAD_T = 10;
-        const PAD_B = 28;
+        const CHART_W = 800;
+        const CHART_H = 420;
+        const PAD_L = 65;
+        const PAD_R = 25;
+        const PAD_T = 24;
+        const PAD_B = 52;
         const X_MIN = 0;
         const X_MAX = 4.1;
         const Y_MIN = 0;
@@ -1447,19 +1483,19 @@
                 }));
                 svg.appendChild(svgEl('circle', {
                     cx: xToPx(pAmbNow), cy: yToPx(mNow),
-                    r: 5, class: 'mv-chart-marker',
+                    r: 7, class: 'mv-chart-marker',
                     id: 'mvTopChartMarker',
                 }));
             }
         }
 
         // ---- Bottom (derivation) chart constants ----
-        const DERIV_W = 480;
-        const DERIV_H = 280;
-        const DERIV_PAD_L = 40;
-        const DERIV_PAD_R = 40;   // right padding leaves room for the b-axis
-        const DERIV_PAD_T = 26;
-        const DERIV_PAD_B = 32;
+        const DERIV_W = 900;
+        const DERIV_H = 420;
+        const DERIV_PAD_L = 65;
+        const DERIV_PAD_R = 65;   // right padding leaves room for the b-axis
+        const DERIV_PAD_T = 38;
+        const DERIV_PAD_B = 52;
         const A_MIN = 0;
         const A_MAX = 1.5;
         const B_MIN = 0.4;
@@ -1575,6 +1611,70 @@
             svg.appendChild(svgEl('path', { d: pathA, class: 'mv-deriv-curve-a' }));
             svg.appendChild(svgEl('path', { d: pathB, class: 'mv-deriv-curve-b' }));
 
+            // TC1 is the only compartment whose half-time and b differ by variant.
+            // Show both endpoints when TC1 is selected so the A → B/C shift remains visible
+            // even though both b values lie directly on the analytical curve.
+            if (state.compartmentIdx === 0) {
+                const compA = VARIANT_COMPS[ZHL16_VARIANTS.A][0];
+                const compBC = VARIANT_COMPS[ZHL16_VARIANTS.C][0];
+                const defs = svgEl('defs');
+                for (const [id, color] of [
+                    ['mv-shift-arrow-a', '#e74c3c'],
+                    ['mv-shift-arrow-b', '#2980b9'],
+                ]) {
+                    const marker = svgEl('marker', {
+                        id,
+                        markerWidth: 7,
+                        markerHeight: 7,
+                        refX: 6,
+                        refY: 3.5,
+                        orient: 'auto',
+                    });
+                    marker.appendChild(svgEl('path', {
+                        d: 'M 0 0 L 7 3.5 L 0 7 Z',
+                        fill: color,
+                    }));
+                    defs.appendChild(marker);
+                }
+                svg.appendChild(defs);
+
+                const xA = tToPx(compA.halfTime);
+                const xBC = tToPx(compBC.halfTime);
+                for (const [axis, yA, yBC] of [
+                    ['a', aToPx(compA.aN2), aToPx(compBC.aN2)],
+                    ['b', bToPx(compA.bN2), bToPx(compBC.bN2)],
+                ]) {
+                    svg.appendChild(svgEl('line', {
+                        x1: xA,
+                        y1: yA,
+                        x2: xBC,
+                        y2: yBC,
+                        class: `mv-deriv-shift-${axis}`,
+                        'marker-end': `url(#mv-shift-arrow-${axis})`,
+                        'data-tc1-shift': axis,
+                    }));
+
+                    const labelOffset = axis === 'a' ? -10 : 17;
+                    const labelA = svgEl('text', {
+                        x: xA - 7,
+                        y: yA + labelOffset,
+                        class: `mv-deriv-shift-label ${axis}`,
+                        'text-anchor': 'end',
+                    });
+                    labelA.textContent = 'A';
+                    svg.appendChild(labelA);
+
+                    const labelBC = svgEl('text', {
+                        x: xBC + 8,
+                        y: yBC + labelOffset,
+                        class: `mv-deriv-shift-label ${axis}`,
+                        'text-anchor': 'start',
+                    });
+                    labelBC.textContent = 'B/C';
+                    svg.appendChild(labelBC);
+                }
+            }
+
             // Dots at the 16 standard compartment t½'s for the active variant
             const comps = VARIANT_COMPS[state.variant];
             comps.forEach((c, idx) => {
@@ -1583,12 +1683,12 @@
                 const bPy = bToPx(c.bN2);
                 const isSelected = idx === state.compartmentIdx;
                 svg.appendChild(svgEl('circle', {
-                    cx: px, cy: aPy, r: isSelected ? 5 : 3.5,
+                    cx: px, cy: aPy, r: isSelected ? 6 : 4.5,
                     class: 'mv-deriv-dot-a' + (isSelected ? ' selected' : ''),
                     'data-comp': idx, 'data-axis': 'a',
                 }));
                 svg.appendChild(svgEl('circle', {
-                    cx: px, cy: bPy, r: isSelected ? 5 : 3.5,
+                    cx: px, cy: bPy, r: isSelected ? 6 : 4.5,
                     class: 'mv-deriv-dot-b' + (isSelected ? ' selected' : ''),
                     'data-comp': idx, 'data-axis': 'b',
                 }));

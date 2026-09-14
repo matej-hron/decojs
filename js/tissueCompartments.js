@@ -66,28 +66,28 @@ const COMPARTMENT_1_B_N2 = {
  */
 const BASE_COMPARTMENTS = [
     // Group 1: Reds/Oranges (Fast - tissues 1-4)
-    { id: 1,  halfTime: 5.0,   bN2: 0.5578, label: "1 - Brain, Spinal Cord",     color: "#e74c3c" },  // Red (half-time adjusted per variant)
-    { id: 2,  halfTime: 8.0,   bN2: 0.6514, label: "2 - Brain, Spinal Cord",     color: "#c0392b" },  // Dark red
-    { id: 3,  halfTime: 12.5,  bN2: 0.7222, label: "3 - Spinal Cord",            color: "#e67e22" },  // Orange
-    { id: 4,  halfTime: 18.5,  bN2: 0.7825, label: "4 - Muscle, Skin",           color: "#d35400" },  // Burnt orange
+    { id: 1,  halfTime: 5.0,   bN2: 0.5578, label: "1 - Blood, well-perfused organs", color: "#e74c3c" },  // Red (half-time adjusted per variant)
+    { id: 2,  halfTime: 8.0,   bN2: 0.6514, label: "2 - Blood, well-perfused organs", color: "#c0392b" },  // Dark red
+    { id: 3,  halfTime: 12.5,  bN2: 0.7222, label: "3 - Blood, well-perfused organs", color: "#e67e22" },  // Orange
+    { id: 4,  halfTime: 18.5,  bN2: 0.7825, label: "4 - Muscles, skin",              color: "#d35400" },  // Burnt orange
     
     // Group 2: Greens (Medium-fast - tissues 5-8)
-    { id: 5,  halfTime: 27.0,  bN2: 0.8126, label: "5 - Muscle, Skin",           color: "#27ae60" },  // Green
-    { id: 6,  halfTime: 38.3,  bN2: 0.8434, label: "6 - Muscle",                 color: "#1e8449" },  // Dark green
-    { id: 7,  halfTime: 54.3,  bN2: 0.8693, label: "7 - Muscle",                 color: "#2ecc71" },  // Light green
-    { id: 8,  halfTime: 77.0,  bN2: 0.8910, label: "8 - Muscle, Tendons",        color: "#16a085" },  // Teal
+    { id: 5,  halfTime: 27.0,  bN2: 0.8126, label: "5 - Muscles, skin",              color: "#27ae60" },  // Green
+    { id: 6,  halfTime: 38.3,  bN2: 0.8434, label: "6 - Muscles, skin",              color: "#1e8449" },  // Dark green
+    { id: 7,  halfTime: 54.3,  bN2: 0.8693, label: "7 - Muscles, skin",              color: "#2ecc71" },  // Light green
+    { id: 8,  halfTime: 77.0,  bN2: 0.8910, label: "8 - Muscles, skin",              color: "#16a085" },  // Teal
     
     // Group 3: Blues (Medium-slow - tissues 9-12)
-    { id: 9,  halfTime: 109.0, bN2: 0.9092, label: "9 - Tendons, Cartilage",     color: "#3498db" },  // Blue
-    { id: 10, halfTime: 146.0, bN2: 0.9222, label: "10 - Tendons, Bones",        color: "#1a5276" },  // Dark blue
-    { id: 11, halfTime: 187.0, bN2: 0.9319, label: "11 - Bones",                 color: "#5dade2" },  // Light blue
-    { id: 12, halfTime: 239.0, bN2: 0.9403, label: "12 - Bones, Fat",            color: "#2980b9" },  // Medium blue
+    { id: 9,  halfTime: 109.0, bN2: 0.9092, label: "9 - Fat, tendons, cartilage, some bone regions",  color: "#3498db" },  // Blue
+    { id: 10, halfTime: 146.0, bN2: 0.9222, label: "10 - Fat, tendons, cartilage, some bone regions", color: "#1a5276" },  // Dark blue
+    { id: 11, halfTime: 187.0, bN2: 0.9319, label: "11 - Fat, tendons, cartilage, some bone regions", color: "#5dade2" },  // Light blue
+    { id: 12, halfTime: 239.0, bN2: 0.9403, label: "12 - Fat, tendons, cartilage, some bone regions", color: "#2980b9" },  // Medium blue
     
     // Group 4: Purples/Magentas (Slow - tissues 13-16)
-    { id: 13, halfTime: 305.0, bN2: 0.9477, label: "13 - Fat",                   color: "#9b59b6" },  // Purple
-    { id: 14, halfTime: 390.0, bN2: 0.9544, label: "14 - Fat",                   color: "#6c3483" },  // Dark purple
-    { id: 15, halfTime: 498.0, bN2: 0.9602, label: "15 - Fat",                   color: "#d770ad" },  // Pink
-    { id: 16, halfTime: 635.0, bN2: 0.9653, label: "16 - Fat",                   color: "#8e44ad" }   // Violet
+    { id: 13, halfTime: 305.0, bN2: 0.9477, label: "13 - Fat, tendons, cartilage, some bone regions", color: "#9b59b6" },  // Purple
+    { id: 14, halfTime: 390.0, bN2: 0.9544, label: "14 - Fat, tendons, cartilage, some bone regions", color: "#6c3483" },  // Dark purple
+    { id: 15, halfTime: 498.0, bN2: 0.9602, label: "15 - Fat, tendons, cartilage, some bone regions", color: "#d770ad" },  // Pink
+    { id: 16, halfTime: 635.0, bN2: 0.9653, label: "16 - Fat, tendons, cartilage, some bone regions", color: "#8e44ad" }   // Violet
 ];
 
 /**
@@ -224,7 +224,6 @@ export function getRateConstant(halfTime) {
  */
 export function getCompartmentCategory(halfTime) {
     if (halfTime <= 12.5) return "Fast";
-    if (halfTime <= 54.3) return "Medium";
-    if (halfTime <= 146.0) return "Medium-Slow";
+    if (halfTime <= 77) return "Medium";
     return "Slow";
 }

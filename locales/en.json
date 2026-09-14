@@ -536,7 +536,7 @@
             "title": "Bühlmann's ZH-L16 Compartments",
             "intro": "The Bühlmann ZH-L16 model uses <strong>16 theoretical compartments</strong> — these are <em>mathematical constructs</em> fit to experimental data, not literal anatomical tissues. They span a range of half-times designed to model the full spectrum of tissue behaviors:",
             "fast": "<strong>Fast compartments (5–12.5 min)</strong> — saturate in minutes, but also release gas quickly",
-            "medium": "<strong>Medium compartments (18.5–77 min)</strong> — balance between loading and off-gassing",
+            "medium": "<strong>Medium compartments (18.5–77 min)</strong> — respond at an intermediate rate to changes in inert-gas pressure",
             "slow": "<strong>Slow compartments (109–635 min)</strong> — can take hours to fully saturate",
             "controllingTitle": "The Controlling Compartment",
             "controlling": "The <strong>controlling compartment</strong> is the one that produces the deepest tolerated depth under the applied GF and therefore determines the decompression ceiling. It is not necessarily the compartment with the highest instantaneous GF %, because compartments have different Bühlmann <var>a</var> and <var>b</var> coefficients."
@@ -571,32 +571,31 @@
             "title": "Bühlmann ZH-L16C Compartments Reference",
             "thHalfTime": "Half-Time",
             "thCategory": "Category",
-            "thTissueType": "Tissue Type",
+            "thTissueType": "Illustrative Examples",
             "thNumber": "#",
             "thSaturationTime": "Time to Saturate*",
             "footnote": "* Approximate time to reach 98.4% saturation (6 half-times)",
             "categoryFast": "Fast",
             "categoryMedium": "Medium",
-            "categoryMediumSlow": "Medium-Slow",
             "categorySlow": "Slow"
         },
         "tissueLabels": {
-            "1": "Brain, spinal cord",
-            "2": "Brain, spinal cord",
-            "3": "Spinal cord",
+            "1": "Blood, well-perfused organs",
+            "2": "Blood, well-perfused organs",
+            "3": "Blood, well-perfused organs",
             "4": "Muscles, skin",
             "5": "Muscles, skin",
-            "6": "Muscles",
-            "7": "Muscles",
-            "8": "Muscles, tendons",
-            "9": "Tendons, cartilage",
-            "10": "Tendons, bones",
-            "11": "Bones",
-            "12": "Bones, fat",
-            "13": "Fat",
-            "14": "Fat",
-            "15": "Fat",
-            "16": "Fat"
+            "6": "Muscles, skin",
+            "7": "Muscles, skin",
+            "8": "Muscles, skin",
+            "9": "Fat, tendons, cartilage, some bone regions",
+            "10": "Fat, tendons, cartilage, some bone regions",
+            "11": "Fat, tendons, cartilage, some bone regions",
+            "12": "Fat, tendons, cartilage, some bone regions",
+            "13": "Fat, tendons, cartilage, some bone regions",
+            "14": "Fat, tendons, cartilage, some bone regions",
+            "15": "Fat, tendons, cartilage, some bone regions",
+            "16": "Fat, tendons, cartilage, some bone regions"
         }
     },
     "mValues": {
@@ -650,7 +649,7 @@
             "historySummary": "📚 The History: How We Discovered Safe Limits",
             "haldaneHistory": "The Scottish physiologist observed that workers in compressed-air tunnels and caissons could safely decompress from 2 bar to 1 bar absolute (a 2:1 ratio). This became the foundation of staged decompression. <em>Note: this 2:1 ratio was derived from experiments with air only — different gas mixtures (trimix, heliox) have different tolerances due to helium's different solubility and diffusion properties.</em>",
             "workmanHistory": "U.S. Navy researcher who recognized that a single fixed ratio couldn't capture the full picture. Different tissue compartments tolerate different levels of supersaturation, and these tolerances change with depth. He coined the term <strong>\"M-value\"</strong> (Maximum value) — the maximum tolerable tissue inert gas pressure at any given depth. Crucially, Workman developed M-values for both nitrogen <em>and</em> helium (1965), enabling decompression planning for heliox deep dives.",
-            "workmanInsight": "Workman's key insight: faster tissues (brain, blood) tolerate higher supersaturation than slower tissues (fat, bones) — and the tolerated ratio also varies with depth."
+            "workmanInsight": "Workman's key insight: faster compartments — often illustrated by well-perfused tissues such as blood and brain — tolerate higher supersaturation than slower compartments, illustrated by slow-exchanging tissues such as fat, cartilage, and some bone regions. The tolerated ratio also varies with depth."
         },
         "buhlmann": {
             "title": "Bühlmann's Solution",

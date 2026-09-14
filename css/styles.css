@@ -2318,7 +2318,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.147";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.148";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -5160,6 +5160,10 @@ textarea.form-input {
 .sandbox-link:hover {
     text-decoration: underline;
     color: var(--accent-hover, #3498db);
+}
+
+#tissue-chart-section .sandbox-link {
+    margin-top: 4.5rem;
 }
 
 .bubble-sandbox-cta {
