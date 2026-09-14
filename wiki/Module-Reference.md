@@ -120,7 +120,7 @@ Imported by: `decoModel.js`, `diveSetup.js`, `mvalues.js`, `tissueEducation.js`,
 | `setZHL16Variant(variant)` | `(string) => void` | Switch variant and rebuild `COMPARTMENTS` in place |
 | `getCompartmentsForVariant(variant)` | `(string) => Array` | Inspect a variant without mutating global state |
 | `getRateConstant(halfTime)` | `(number) => number` | `ln(2) / halfTime` |
-| `getCompartmentCategory(halfTime)` | `(number) => string` | Returns "Fast" / "Medium" / "Medium-Slow" / "Slow" |
+| `getCompartmentCategory(halfTime)` | `(number) => string` | Returns the educational grouping "Fast" (≤12.5 min), "Medium" (≤77 min), or "Slow" |
 
 **Implementation notes**
 

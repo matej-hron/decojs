@@ -536,7 +536,7 @@
             "title": "Bühlmannovy kompartmenty ZH-L16",
             "intro": "Bühlmannův model ZH-L16 používá <strong>16 teoretických kompartmentů</strong> — jsou to <em>matematické konstrukce</em> přizpůsobené experimentálním datům, nikoli doslovné anatomické tkáně. Pokrývají rozsah poločasů navržený tak, aby modeloval celé spektrum chování tkání:",
             "fast": "<strong>Rychlé kompartmenty (5–12,5 min)</strong> — nasytí se za minuty, ale také rychle uvolňují plyn",
-            "medium": "<strong>Střední kompartmenty (18,5–77 min)</strong> — rovnováha mezi sycením a vysycováním",
+            "medium": "<strong>Střední kompartmenty (18,5–77 min)</strong> — reagují středně rychle na změny tlaku inertního plynu",
             "slow": "<strong>Pomalé kompartmenty (109–635 min)</strong> — plné nasycení může trvat hodiny",
             "controllingTitle": "Řídicí kompartment",
             "controlling": "<strong>Řídicí kompartment</strong> je ten, který při použitém GF vytváří nejhlubší tolerovanou hloubku, a tedy určuje dekompresní strop. Nemusí to být kompartment s nejvyšším okamžitým GF %, protože jednotlivé kompartmenty mají odlišné Bühlmannovy koeficienty <var>a</var> a <var>b</var>."
@@ -571,32 +571,31 @@
             "title": "Referenční tabulka kompartmentů Bühlmann ZH-L16C",
             "thHalfTime": "Poločas",
             "thCategory": "Kategorie",
-            "thTissueType": "Typ tkáně",
+            "thTissueType": "Orientační příklady",
             "thNumber": "#",
             "thSaturationTime": "Doba do nasycení*",
             "footnote": "* Přibližná doba do dosažení 98,4 % nasycení (6 poločasů)",
             "categoryFast": "Rychlé",
             "categoryMedium": "Střední",
-            "categoryMediumSlow": "Středně pomalé",
             "categorySlow": "Pomalé"
         },
         "tissueLabels": {
-            "1": "Mozek, mícha",
-            "2": "Mozek, mícha",
-            "3": "Mícha",
+            "1": "Krev, dobře prokrvené orgány",
+            "2": "Krev, dobře prokrvené orgány",
+            "3": "Krev, dobře prokrvené orgány",
             "4": "Svaly, kůže",
             "5": "Svaly, kůže",
-            "6": "Svaly",
-            "7": "Svaly",
-            "8": "Svaly, šlachy",
-            "9": "Šlachy, chrupavka",
-            "10": "Šlachy, kosti",
-            "11": "Kosti",
-            "12": "Kosti, tuk",
-            "13": "Tuk",
-            "14": "Tuk",
-            "15": "Tuk",
-            "16": "Tuk"
+            "6": "Svaly, kůže",
+            "7": "Svaly, kůže",
+            "8": "Svaly, kůže",
+            "9": "Tuk, šlachy, chrupavka, některé části kostí",
+            "10": "Tuk, šlachy, chrupavka, některé části kostí",
+            "11": "Tuk, šlachy, chrupavka, některé části kostí",
+            "12": "Tuk, šlachy, chrupavka, některé části kostí",
+            "13": "Tuk, šlachy, chrupavka, některé části kostí",
+            "14": "Tuk, šlachy, chrupavka, některé části kostí",
+            "15": "Tuk, šlachy, chrupavka, některé části kostí",
+            "16": "Tuk, šlachy, chrupavka, některé části kostí"
         }
     },
     "mValues": {
@@ -650,7 +649,7 @@
             "historySummary": "📚 Historie: jak jsme objevili bezpečné limity",
             "haldaneHistory": "Skotský fyziolog pozoroval, že dělníci v tunelech a kesonech se stlačeným vzduchem mohli bezpečně dekomprimovat z 2 barů na 1 bar (absolutně, poměr 2:1). To se stalo základem stupňovité dekomprese. <em>Poznámka: tento poměr 2:1 byl odvozen z experimentů pouze se vzduchem — pro jiné směsi (trimix, heliox) platí jiné tolerance kvůli odlišným vlastnostem rozpustnosti a difuze hélia.</em>",
             "workmanHistory": "Výzkumník amerického námořnictva, který rozpoznal, že jediný pevný poměr nedokáže zachytit celý obraz. Různé tkáňové kompartmenty tolerují různé úrovně přesycení a tyto tolerance se mění s hloubkou. Zavedl pojem <strong>„M-hodnota“</strong> (Maximum value) — maximální tolerovatelný tlak inertního plynu ve tkáni při jakékoli dané hloubce. Workman jako první vyvinul M-hodnoty jak pro dusík, <em>tak pro hélium</em> (1965), čímž umožnil plánování dekomprese pro hluboké ponory s heliox směsí.",
-            "workmanInsight": "Klíčový poznatek Workmana: rychlejší tkáně (mozek, krev) tolerují vyšší přesycení než pomalejší tkáně (tuk, kosti) — a tolerovaný poměr se také mění s hloubkou."
+            "workmanInsight": "Klíčový poznatek Workmana: rychlejší kompartmenty — pro představu dobře prokrvené tkáně, například krev a mozek — tolerují vyšší přesycení než pomalejší kompartmenty, které lze přirovnat k pomalu vyměňujícím tkáním, například tuku, chrupavce a některým částem kostí. Tolerovaný poměr se také mění s hloubkou."
         },
         "buhlmann": {
             "title": "Bühlmannovo řešení",

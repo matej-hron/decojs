@@ -211,7 +211,8 @@ import {
     ZHL16_VARIANTS,
     getZHL16Variant,
     setZHL16Variant,
-    getCompartmentsForVariant
+    getCompartmentsForVariant,
+    getCompartmentCategory
 } from '../js/tissueCompartments.js';
 
 import { planTrip } from '../js/tripPlanner.js';
@@ -2132,6 +2133,14 @@ describe('decoModel', () => {
         test('fastest compartment is 4-6 minutes', () => {
             expect(COMPARTMENTS[0].halfTime).toBeGreaterThanOrEqual(4);
             expect(COMPARTMENTS[0].halfTime).toBeLessThanOrEqual(6);
+        });
+
+        test('educational categories use three consistent half-time groups', () => {
+            expect(getCompartmentCategory(12.5)).toBe('Fast');
+            expect(getCompartmentCategory(18.5)).toBe('Medium');
+            expect(getCompartmentCategory(77)).toBe('Medium');
+            expect(getCompartmentCategory(109)).toBe('Slow');
+            expect(getCompartmentCategory(635)).toBe('Slow');
         });
 
         test('all compartments have M-value coefficients (aN2, bN2)', () => {
@@ -7375,6 +7384,7 @@ describe('notation - half-time symbol t_1/2', () => {
 
 describe('tissue loading - notation and sticky layout', () => {
     const tissueHtml = readFileSync(new URL('../tissue-loading.html', import.meta.url), 'utf8');
+    const mValuesHtml = readFileSync(new URL('../m-values.html', import.meta.url), 'utf8');
     const bubbleSandbox = readFileSync(new URL('../sandbox/bubble-mechanics.html', import.meta.url), 'utf8');
     const bubbleModel = readFileSync(new URL('../js/charts/BubbleModel.js', import.meta.url), 'utf8');
     const tissueEducation = readFileSync(new URL('../js/tissueEducation.js', import.meta.url), 'utf8');
@@ -7492,6 +7502,34 @@ describe('tissue loading - notation and sticky layout', () => {
         expect((bubbleModel.match(/pressureShade\((?:pTissue|pBubble), teachingMaxP\)/g) || []).length).toBe(2);
         expect(bubbleModel).toContain("'70,132,178',");
         expect(bubbleModel).toContain('drawPressureSymbol(ctx, symbols.tissue, tissueX, 38');
+    });
+
+    test('Haldane equation links to its dedicated sandbox', () => {
+        expect(tissueHtml).toContain('href="sandbox/haldane.html"');
+        expect(tissueHtml).toContain('data-i18n="sandboxLink">Open in Sandbox →</span>');
+    });
+
+    test('M-value tissue examples are explicitly illustrative, not anatomical assignments', () => {
+        expect(mValuesHtml).toContain('faster compartments — often illustrated by well-perfused tissues');
+        expect(mValuesHtml).toContain('fat, cartilage, and some bone regions');
+        expect(mValuesHtml.includes('faster tissues (brain, blood)')).toBe(false);
+    });
+
+    test('slow compartments share examples without ordering fat after bone', () => {
+        for (const lang of ['cs', 'en', 'es']) {
+            const locale = JSON.parse(
+                readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8')
+            );
+            const slowExamples = Array.from(
+                new Set(
+                    Object.entries(locale.tissueLoading.tissueLabels)
+                        .filter(([id]) => Number(id) >= 9)
+                        .map(([, label]) => label)
+                )
+            );
+            expect(slowExamples).toHaveLength(1);
+        }
+        expect(tissueHtml.includes('Bones, fat')).toBe(false);
     });
 
     test('gas pathway pressure changes between stages, not within each box', () => {
@@ -7775,6 +7813,23 @@ describe('notation - quantity symbols are italic', () => {
         expect(page.includes('data-hover-line')).toBe(false);
     });
 
+    test('M-value main chart and comparison panel use a large readable layout', () => {
+        const page = readFileSync(new URL('../sandbox/m-values.html', import.meta.url), 'utf8');
+        expect(page).toContain('viewBox="0 0 800 420"');
+        expect(page).toContain('height: clamp(380px, 30vw, 520px)');
+        expect(page).toContain('grid-template-columns: minmax(0, 1fr) 360px');
+        expect(page).toContain('const CHART_W = 800');
+        expect(page).toContain('const CHART_H = 420');
+    });
+
+    test('M-value derivation chart uses a large readable drawing area', () => {
+        const page = readFileSync(new URL('../sandbox/m-values.html', import.meta.url), 'utf8');
+        expect(page).toContain('viewBox="0 0 900 420"');
+        expect(page).toContain('height: clamp(360px, 32vw, 520px)');
+        expect(page).toContain('const DERIV_W = 900');
+        expect(page).toContain('const DERIV_H = 420');
+    });
+
     test('M-value sandbox controls ambient pressure as the single top-level state', () => {
         const page = readFileSync(new URL('../sandbox/m-values.html', import.meta.url), 'utf8');
         expect(page.includes('id="mvAmbientPressure"')).toBe(true);
@@ -7894,9 +7949,15 @@ describe('notation - quantity symbols are italic', () => {
         expect(chart.includes("aAxisLabel.append(aSymbol, document.createTextNode(' (bar)'))")).toBe(true);
         expect(chart.includes('x: tToPx(aVisibleStartT) - 8')).toBe(true);
         expect(chart.includes('y: bToPx(bCurveEnd) - 7')).toBe(true);
-        expect(page.includes('const DERIV_PAD_T = 26;')).toBe(true);
+        expect(page.includes('const DERIV_PAD_T = 38;')).toBe(true);
         expect(page.includes('.mv-deriv-axis-label-a { fill: #e74c3c; }')).toBe(true);
         expect(page.includes('.mv-deriv-axis-label-b { fill: #2980b9; }')).toBe(true);
+        expect(chart.includes('if (state.compartmentIdx === 0)')).toBe(true);
+        expect(chart.includes("VARIANT_COMPS[ZHL16_VARIANTS.A][0]")).toBe(true);
+        expect(chart.includes("VARIANT_COMPS[ZHL16_VARIANTS.C][0]")).toBe(true);
+        expect(chart.includes("'data-tc1-shift': axis")).toBe(true);
+        expect(chart.includes("labelA.textContent = 'A'")).toBe(true);
+        expect(chart.includes("labelBC.textContent = 'B/C'")).toBe(true);
     });
 
     test('M-value coefficient table is generated from all three 16-compartment variants', () => {
@@ -7917,6 +7978,8 @@ describe('notation - quantity symbols are italic', () => {
         expect(builder.includes('comp.halfTime')).toBe(true);
         expect(builder.includes('comp.aN2')).toBe(true);
         expect(builder.includes('comp.bN2')).toBe(true);
+        expect(builder.includes("prefix: '1/'")).toBe(true);
+        expect(builder.includes('fmtNum(1 / comp.bN2, 4)')).toBe(true);
         expect(builder.includes('<br')).toBe(false);
     });
 

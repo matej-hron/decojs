@@ -536,7 +536,7 @@
             "title": "Los compartimentos ZH-L16 de Bühlmann",
             "intro": "El modelo Bühlmann ZH-L16 utiliza <strong>16 compartimentos teóricos</strong> — son <em>constructos matemáticos</em> ajustados a datos experimentales, no tejidos anatómicos literales. Cubren un rango de medios tiempos diseñado para modelar todo el espectro de comportamientos tisulares:",
             "fast": "<strong>Compartimentos rápidos (5–12,5 min)</strong> — se saturan en minutos, pero también liberan gas deprisa",
-            "medium": "<strong>Compartimentos medios (18,5–77 min)</strong> — equilibrio entre carga y desgasificación",
+            "medium": "<strong>Compartimentos medios (18,5–77 min)</strong> — responden a una velocidad intermedia a los cambios de presión del gas inerte",
             "slow": "<strong>Compartimentos lentos (109–635 min)</strong> — pueden tardar horas en saturarse por completo",
             "controllingTitle": "El compartimento de control",
             "controlling": "El <strong>compartimento de control</strong> es el que produce la profundidad tolerada más profunda con el GF aplicado y, por tanto, determina el techo de descompresión. No es necesariamente el compartimento con el GF instantáneo más alto, porque los compartimentos tienen distintos coeficientes de Bühlmann <var>a</var> y <var>b</var>."
@@ -571,32 +571,31 @@
             "title": "Referencia de compartimentos Bühlmann ZH-L16C",
             "thHalfTime": "Medio tiempo",
             "thCategory": "Categoría",
-            "thTissueType": "Tipo de tejido",
+            "thTissueType": "Ejemplos orientativos",
             "thNumber": "#",
             "thSaturationTime": "Tiempo hasta saturar*",
             "footnote": "* Tiempo aproximado para alcanzar el 98,4 % de saturación (6 medios tiempos)",
             "categoryFast": "Rápido",
             "categoryMedium": "Medio",
-            "categoryMediumSlow": "Medio-lento",
             "categorySlow": "Lento"
         },
         "tissueLabels": {
-            "1": "Cerebro, médula espinal",
-            "2": "Cerebro, médula espinal",
-            "3": "Médula espinal",
+            "1": "Sangre, órganos bien perfundidos",
+            "2": "Sangre, órganos bien perfundidos",
+            "3": "Sangre, órganos bien perfundidos",
             "4": "Músculos, piel",
             "5": "Músculos, piel",
-            "6": "Músculos",
-            "7": "Músculos",
-            "8": "Músculos, tendones",
-            "9": "Tendones, cartílago",
-            "10": "Tendones, huesos",
-            "11": "Huesos",
-            "12": "Huesos, grasa",
-            "13": "Grasa",
-            "14": "Grasa",
-            "15": "Grasa",
-            "16": "Grasa"
+            "6": "Músculos, piel",
+            "7": "Músculos, piel",
+            "8": "Músculos, piel",
+            "9": "Grasa, tendones, cartílago, algunas regiones óseas",
+            "10": "Grasa, tendones, cartílago, algunas regiones óseas",
+            "11": "Grasa, tendones, cartílago, algunas regiones óseas",
+            "12": "Grasa, tendones, cartílago, algunas regiones óseas",
+            "13": "Grasa, tendones, cartílago, algunas regiones óseas",
+            "14": "Grasa, tendones, cartílago, algunas regiones óseas",
+            "15": "Grasa, tendones, cartílago, algunas regiones óseas",
+            "16": "Grasa, tendones, cartílago, algunas regiones óseas"
         }
     },
     "mValues": {
@@ -650,7 +649,7 @@
             "historySummary": "📚 La historia: cómo descubrimos los límites seguros",
             "haldaneHistory": "El fisiólogo escocés observó que los trabajadores de túneles y cajones de aire comprimido podían descomprimirse con seguridad de 2 bar a 1 bar absoluto (una proporción 2:1). Esto se convirtió en la base de la descompresión por etapas. <em>Nota: esta proporción 2:1 se obtuvo de experimentos solo con aire — mezclas distintas (trimix, heliox) tienen otras tolerancias debido a las diferentes propiedades de solubilidad y difusión del helio.</em>",
             "workmanHistory": "Investigador de la U.S. Navy que se dio cuenta de que una única proporción fija no podía capturar todo el cuadro. Distintos compartimentos tisulares toleran distintos niveles de sobresaturación, y esas tolerancias cambian con la profundidad. Acuñó el término <strong>«valor-M»</strong> (Maximum value) — la presión máxima tolerable de gas inerte en el tejido a cualquier profundidad dada. Es importante que Workman desarrolló valores-M tanto para el nitrógeno <em>como</em> para el helio (1965), lo que permitió planificar la descompresión en inmersiones profundas con heliox.",
-            "workmanInsight": "La idea clave de Workman: los tejidos rápidos (cerebro, sangre) toleran más sobresaturación que los lentos (grasa, huesos) — y la proporción tolerada también varía con la profundidad."
+            "workmanInsight": "La idea clave de Workman: los compartimentos rápidos — ilustrados de forma orientativa por tejidos bien perfundidos como la sangre y el cerebro — toleran más sobresaturación que los compartimentos lentos, comparables con tejidos de intercambio lento como la grasa, el cartílago y algunas regiones óseas. La proporción tolerada también varía con la profundidad."
         },
         "buhlmann": {
             "title": "La solución de Bühlmann",
