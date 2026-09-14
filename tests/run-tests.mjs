@@ -7373,6 +7373,49 @@ describe('notation - half-time symbol t_1/2', () => {
     });
 });
 
+describe('tissue loading - notation and sticky layout', () => {
+    const tissueHtml = readFileSync(new URL('../tissue-loading.html', import.meta.url), 'utf8');
+    const bubbleModel = readFileSync(new URL('../js/charts/BubbleModel.js', import.meta.url), 'utf8');
+
+    test('content is wrapped independently from the sticky table of contents', () => {
+        expect(tissueHtml).toContain('<div class="toc-content">');
+        expect(tissueHtml.indexOf('<div class="toc-content">'))
+            .toBeLessThan(tissueHtml.indexOf('<section id="deco-theory"'));
+        expect(tissueHtml.indexOf('</div>\n    </main>')).toBeGreaterThan(
+            tissueHtml.indexOf('<section id="reference-table"')
+        );
+    });
+
+    test('formulas use glossary symbols and upright mathematical constants', () => {
+        expect(tissueHtml).toContain('\\mathrm{e}^{-kt}');
+        expect(tissueHtml).toContain('\\frac{h}{10\\,\\mathrm{m}}');
+        expect(tissueHtml.includes('\\mathrm{depth}')).toBe(false);
+        expect(tissueHtml.includes('<sub>N₂,tissue</sub>')).toBe(false);
+        expect(tissueHtml.includes('<sub>ambient</sub>')).toBe(false);
+    });
+
+    test('all locales use canonical tissue-pressure subscripts', () => {
+        const expected = {
+            cs: ['<sub>tk</sub>', '<sub>okol</sub>'],
+            en: ['<sub>t</sub>', '<sub>amb</sub>'],
+            es: ['<sub>t</sub>', '<sub>amb</sub>'],
+        };
+        for (const [lang, symbols] of Object.entries(expected)) {
+            const raw = readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8');
+            const tissue = JSON.stringify(JSON.parse(raw).tissueLoading);
+            for (const symbol of symbols) expect(tissue).toContain(symbol);
+            expect(/<sub>(?:tissue|ambient|tejido)<\/sub>/.test(tissue)).toBe(false);
+        }
+    });
+
+    test('bubble canvas avoids prose subscripts and breakable micron units', () => {
+        expect(/p_(?:tissue|bubble)/.test(bubbleModel)).toBe(false);
+        expect(bubbleModel).toContain("'p_t'");
+        expect(bubbleModel).toContain("'p_tk'");
+        expect(bubbleModel).toContain('\\u00a0μm');
+    });
+});
+
 describe('notation - unit is never glued to the value', () => {
     // ISO 80000-1: mezi číslem a značkou jednotky je vždy mezera. Předchozí
     // třída řešila obyčejnou mezeru místo nedělitelné; tahle mezeru, která
@@ -7516,7 +7559,7 @@ const canvasBoundKeys = () => {
     const keys = new Set();
     for (const rel of shippedSources()) {
         const src = readFileSync(new URL(rel, root), 'utf8');
-        for (const m of src.matchAll(/translate\('([\w.]+)'/g)) {
+        for (const m of src.matchAll(/(?:translate|tr)\('([\w.]+)'/g)) {
             const ctx = src.slice(Math.max(0, m.index - 70), m.index).replace(/\n/g, ' ');
             if (DIRECT.some(re => re.test(ctx))) keys.add(m[1]);
         }
@@ -7525,7 +7568,7 @@ const canvasBoundKeys = () => {
         const viaVar = new Set();
         for (const m of src.matchAll(/\b(?:label|content)\s*:\s*(\w+)\s*[,\n]/g)) viaVar.add(m[1]);
         for (const m of src.matchAll(/\.label\s*=\s*(\w+)\s*;/g)) viaVar.add(m[1]);
-        for (const m of src.matchAll(/(\w+)\s*=\s*(?:fmt\(\s*)?translate\('([\w.]+)'/g)) {
+        for (const m of src.matchAll(/(\w+)\s*=\s*(?:fmt\(\s*)?(?:translate|tr)\('([\w.]+)'/g)) {
             if (viaVar.has(m[1])) keys.add(m[2]);
         }
     }

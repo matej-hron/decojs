@@ -77,6 +77,7 @@
             </ul>
         </nav>
 
+        <div class="toc-content">
         <!-- Intro -->
         <section id="deco-theory" class="education-section">
             <h2>📚 <span data-i18n="tissueLoading.decoTheory.title">Why Does This Matter?</span></h2>
@@ -347,9 +348,8 @@
                         becomes <strong>higher than in your tissues</strong>, so gas flows <em>into</em> tissues.
                         All compartments begin absorbing nitrogen, but <strong>fast tissues fill first</strong>.
                     </p>
-                    <p class="phase-formula"><var>p</var><sub>N₂,tissue</sub> &lt; <var>p</var><sub>N₂,alveolar</sub> → <strong>On-gassing</strong></p>
+                    <p class="phase-formula" data-i18n="tissueLoading.saturationDynamics.descent.formula"><var>p</var><sub>t</sub> &lt; <var>p</var><sub>alv</sub> → <strong>On-gassing</strong></p>
                 </div>
-            </div>
         </section>
 
         <!-- Saturation Dynamics: At Depth -->
@@ -363,7 +363,6 @@
                         they would need hours at depth to fully equilibrate.
                     </p>
                 </div>
-            </div>
         </section>
 
         <!-- Saturation Dynamics: Ascent -->
@@ -376,15 +375,14 @@
                         pressure exceeds alveolar pressure, the gradient reverses and gas flows <em>out</em> —
                         this is <strong>off-gassing</strong>.
                     </p>
-                    <p class="phase-formula"><var>p</var><sub>N₂,tissue</sub> &gt; <var>p</var><sub>N₂,alveolar</sub> → <strong>Off-gassing</strong></p>
+                    <p class="phase-formula" data-i18n="tissueLoading.saturationDynamics.ascent.formulaPressure"><var>p</var><sub>t</sub> &gt; <var>p</var><sub>alv</sub> → <strong>Off-gassing</strong></p>
                     <p data-i18n="tissueLoading.saturationDynamics.ascent.text2">
                         But there's another threshold: when tissue nitrogen pressure exceeds <strong>ambient pressure</strong>,
                         the tissue is <em>supersaturated</em>. This is when we need to be careful — the dissolved gas
                         wants to come out of solution and could form bubbles.
                     </p>
-                    <p class="phase-formula"><var>p</var><sub>N₂,tissue</sub> &gt; <var>p</var><sub>ambient</sub> → <strong>Supersaturation</strong> ⚠️</p>
+                    <p class="phase-formula" data-i18n="tissueLoading.saturationDynamics.ascent.formulaSupersaturation"><var>p</var><sub>t</sub> &gt; <var>p</var><sub>amb</sub> → <strong>Supersaturation</strong> ⚠️</p>
                 </div>
-            </div>
         </section>
 
         <!-- Critical Supersaturation -->
@@ -417,12 +415,12 @@
                 <ul style="margin: 1rem 0; padding-left: 1.5rem;">
                     <li data-i18n="tissueLoading.bubbleMechanics.pAmb"><strong>Ambient pressure (<var>p</var><sub>amb</sub>)</strong> — pushes the bubble inward</li>
                     <li data-i18n="tissueLoading.bubbleMechanics.pSurface"><strong>Surface tension (2<var>γ</var>/<var>r</var>)</strong> — the Laplace pressure, also squeezes the bubble. Smaller bubbles have <em>more</em> surface tension.</li>
-                    <li data-i18n="tissueLoading.bubbleMechanics.pTissue"><strong>Dissolved gas tension (<var>p</var><sub>tissue</sub>)</strong> — the total pressure of gases dissolved in surrounding tissue, pushing gas <em>into</em> the bubble</li>
+                    <li data-i18n="tissueLoading.bubbleMechanics.pTissue"><strong>Dissolved gas tension (<var>p</var><sub>t</sub>)</strong> — the total pressure of gases dissolved in surrounding tissue, pushing gas <em>into</em> the bubble</li>
                 </ul>
 
                 <div class="key-insight">
                     <p data-i18n="tissueLoading.bubbleMechanics.insight">
-                        When <strong><var>p</var><sub>tissue</sub> &gt; <var>p</var><sub>amb</sub> + 2<var>γ</var>/<var>r</var></strong>, gas diffuses into the bubble and it <strong>grows</strong>.
+                        When <strong><var>p</var><sub>t</sub> &gt; <var>p</var><sub>amb</sub> + 2<var>γ</var>/<var>r</var></strong>, gas diffuses into the bubble and it <strong>grows</strong>.
                         As it grows, <var>r</var> increases, surface tension <em>drops</em>, making growth even easier —
                         a <strong>positive feedback loop</strong>.
                     </p>
@@ -549,7 +547,7 @@
                     <h4 data-i18n="tissueLoading.halfTimeCharts.math.haldaneTitle">Haldane Equation (constant depth)</h4>
                     <p data-i18n="tissueLoading.halfTimeCharts.math.haldaneDesc">When staying at a constant depth, tissue pressure changes according to:</p>
                     <div class="formula" id="formula-haldane">
-                        p_{\mathrm{t}}(t) = p_{\mathrm{alv}} + (p_{\mathrm{t,0}} - p_{\mathrm{alv}}) \cdot e^{-kt}
+                        p_{\mathrm{t}}(t) = p_{\mathrm{alv}} + (p_{\mathrm{t,0}} - p_{\mathrm{alv}}) \cdot \mathrm{e}^{-kt}
                     </div>
                     <p data-i18n="tissueLoading.halfTimeCharts.math.haldaneWhere">Where:</p>
                     <ul>
@@ -562,13 +560,13 @@
                     <h4 data-i18n="tissueLoading.halfTimeCharts.math.schreinerTitle">Schreiner Equation (depth change)</h4>
                     <p data-i18n="tissueLoading.halfTimeCharts.math.schreinerDesc">During ascent or descent at a constant rate:</p>
                     <div class="formula" id="formula-schreiner">
-                        p_{\mathrm{t}}(t) = p_{\mathrm{alv,0}} + R \cdot (t - \frac{1}{k}) - (p_{\mathrm{alv,0}} - p_{\mathrm{t,0}} - \frac{R}{k}) \cdot e^{-kt}
+                        p_{\mathrm{t}}(t) = p_{\mathrm{alv,0}} + R \cdot (t - \frac{1}{k}) - (p_{\mathrm{alv,0}} - p_{\mathrm{t,0}} - \frac{R}{k}) \cdot \mathrm{e}^{-kt}
                     </div>
                     <p>Where <span class="formula-inline">R</span> <span data-i18n="tissueLoading.halfTimeCharts.math.rDesc">is the rate of change of alveolar pressure (positive for descent).</span></p>
 
                     <h4 data-i18n="tissueLoading.halfTimeCharts.math.pressureTitle">Pressure at Depth</h4>
                     <div class="formula" id="formula-pressure">
-                        p_{\mathrm{amb}} = 1.0 + \frac{\mathrm{depth}}{10} \text{ bar}
+                        p_{\mathrm{amb}} = \left(1 + \frac{h}{10\,\mathrm{m}}\right)\mathrm{bar}
                     </div>
                     <p data-i18n="tissueLoading.halfTimeCharts.math.pressureDesc">Every 10 meters of seawater adds approximately 1&nbsp;bar of pressure.</p>
                 </div>
@@ -726,6 +724,7 @@
             <span hidden data-i18n="tissueLoading.tissueLabels.15">Fat</span>
             <span hidden data-i18n="tissueLoading.tissueLabels.16">Fat</span>
         </section>
+        </div>
     </main>
 
     <footer>
@@ -746,6 +745,7 @@
         import { initTooltipShortcut } from './js/components/tooltipShortcut.js';
         import { initI18n, createLanguageSwitcher } from './js/i18n.js';
         import { fmtNum, localizeLatex } from './js/format.js';
+        import { refreshTissueEducationLanguage } from './js/tissueEducation.js';
 
         // Rozpustnosti plynů — tabulkové hodnoty, JS je jen formátuje podle jazyka.
         const SOLUBILITY_ROWS = [
@@ -910,7 +910,9 @@
 
         // Bubble mechanics interactive
         const bubbleContainer = document.getElementById('bubble-model-container');
-        if (bubbleContainer) new BubbleModel(bubbleContainer, { saturatedDepth: 30 });
+        const bubbleModel = bubbleContainer
+            ? new BubbleModel(bubbleContainer, { saturatedDepth: 30 })
+            : null;
 
         initStickyTOC();
         initTooltipShortcut();
@@ -921,6 +923,8 @@
             // Re-render after translations are applied
             renderMathFormulas();
             renderReferenceTable();
+            refreshTissueEducationLanguage();
+            bubbleModel?.refreshLanguage();
         });
 
         // Re-render reference table and formulas when language changes:
@@ -928,6 +932,8 @@
         document.addEventListener('languagechange', () => {
             renderMathFormulas();
             renderReferenceTable();
+            refreshTissueEducationLanguage();
+            bubbleModel?.refreshLanguage();
         });
     </script>
 

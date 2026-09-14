@@ -2318,7 +2318,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.144";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.145";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -5537,8 +5537,14 @@ textarea.form-input {
         font-weight: 600;
     }
 
-    /* All non-TOC children flow in the main column. */
-    main.with-sticky-toc > :not(.toc) {
+    /* A content wrapper keeps the tall TOC from setting the first section's row height. */
+    main.with-sticky-toc > .toc-content {
+        grid-column: 2;
+        min-width: 0;
+    }
+
+    /* Legacy theory pages without a content wrapper still use the main column. */
+    main.with-sticky-toc > :not(.toc, .toc-content) {
         grid-column: 2;
         margin-left: 0;
         margin-right: 0;
