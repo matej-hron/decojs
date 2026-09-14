@@ -7375,7 +7375,9 @@ describe('notation - half-time symbol t_1/2', () => {
 
 describe('tissue loading - notation and sticky layout', () => {
     const tissueHtml = readFileSync(new URL('../tissue-loading.html', import.meta.url), 'utf8');
+    const bubbleSandbox = readFileSync(new URL('../sandbox/bubble-mechanics.html', import.meta.url), 'utf8');
     const bubbleModel = readFileSync(new URL('../js/charts/BubbleModel.js', import.meta.url), 'utf8');
+    const tissueEducation = readFileSync(new URL('../js/tissueEducation.js', import.meta.url), 'utf8');
 
     test('content is wrapped independently from the sticky table of contents', () => {
         expect(tissueHtml).toContain('<div class="toc-content">');
@@ -7394,6 +7396,22 @@ describe('tissue loading - notation and sticky layout', () => {
         expect(tissueHtml.includes('<sub>ambient</sub>')).toBe(false);
     });
 
+    test('six half-times are shown as 98.4 percent saturation', () => {
+        expect((1 - 2 ** -6) * 100).toBeCloseTo(98.4375, 4);
+        expect(tissueHtml).toContain('6 half-times: 98.4% (saturated)');
+        const expected = {
+            cs: '6 poločasů: 98,4 % (nasyceno)',
+            en: '6 half-times: 98.4% (saturated)',
+            es: '6 medios tiempos: 98,4 % (saturado)',
+        };
+        for (const [lang, text] of Object.entries(expected)) {
+            const locale = JSON.parse(
+                readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8')
+            );
+            expect(locale.tissueLoading.halfTimeConcept.bar4).toBe(text);
+        }
+    });
+
     test('all locales use canonical tissue-pressure subscripts', () => {
         const expected = {
             cs: ['<sub>tk</sub>', '<sub>okol</sub>'],
@@ -7410,9 +7428,80 @@ describe('tissue loading - notation and sticky layout', () => {
 
     test('bubble canvas avoids prose subscripts and breakable micron units', () => {
         expect(/p_(?:tissue|bubble)/.test(bubbleModel)).toBe(false);
-        expect(bubbleModel).toContain("'p_t'");
-        expect(bubbleModel).toContain("'p_tk'");
+        expect(bubbleModel).toContain("czech ? 'okol' : 'amb'");
+        expect(bubbleModel).toContain("czech ? 'tk' : 't'");
+        expect(bubbleModel).toContain('function drawPressureSymbol');
+        expect(bubbleModel).toContain(
+            "drawTextRun(ctx, 'p', cursor, y, { size, weight, italic: true })"
+        );
+        expect(bubbleModel).toContain(
+            "drawTextRun(ctx, 'γ', cursor, y, { size, weight, italic: true })"
+        );
+        expect(bubbleModel).toContain(
+            "drawTextRun(ctx, 'r', cursor, y, { size, weight, italic: true })"
+        );
+        expect(bubbleModel.includes('ctx.fillText(`${symbols.')).toBe(false);
         expect(bubbleModel).toContain('\\u00a0μm');
+    });
+
+    test('bubble growth compares tissue gas tension with pressure inside the bubble', () => {
+        const oldClaims = [
+            'three pressures acting on it',
+            'Na plynovou bublinu ve tkáni působí tři tlaky',
+            'actúan tres presiones',
+            'pushes the bubble inward',
+            'tlačí plyn <em>dovnitř</em> bubliny',
+            'empuja el gas <em>hacia dentro</em>',
+        ];
+        for (const lang of ['cs', 'en', 'es']) {
+            const raw = readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8');
+            const mechanics = JSON.parse(raw).tissueLoading.bubbleMechanics;
+            const text = JSON.stringify(mechanics);
+            for (const claim of oldClaims) expect(text.includes(claim)).toBe(false);
+            expect(mechanics.pSurface).toContain('2<var>γ</var>/<var>r</var>');
+            expect(mechanics.insight).toContain('<strong>');
+        }
+        expect(bubbleModel).toContain('Gas inside the bubble at pAmb + 2γ/r');
+        expect(bubbleModel).toContain('Dissolved gas in surrounding tissue at tension pTissue');
+        expect(bubbleModel.includes('const numArrows')).toBe(false);
+        expect(bubbleModel).toContain("tr('tissueTensionHeading'");
+        expect(bubbleModel).toContain("tr('bubblePressureHeading'");
+        expect(bubbleModel).toContain("tr('diffusionOutShort'");
+    });
+
+    test('large bubble simulation lives in a dedicated unscaled sandbox', () => {
+        expect(tissueHtml).toContain('href="sandbox/bubble-mechanics.html"');
+        expect(tissueHtml.includes('id="bubble-model-container"')).toBe(false);
+        expect(tissueHtml.includes("import { BubbleModel }")).toBe(false);
+        expect(bubbleSandbox).toContain("import { BubbleModel } from '../js/charts/BubbleModel.js'");
+        expect(bubbleSandbox).toContain('mainWidth: 1000');
+        expect(bubbleSandbox).toContain('rowHeight: 120');
+        expect(bubbleSandbox).toContain('teachingWidth: 900');
+        expect(bubbleSandbox.includes('bubble-fullscreen-btn')).toBe(false);
+        expect(bubbleSandbox.includes("classList.toggle('fullscreen')")).toBe(false);
+        expect(bubbleModel).toContain("width: max-content");
+        expect(bubbleModel).toContain("this.mainCanvas.style.cssText = 'border-radius: 8px; flex: none;'");
+        expect((bubbleModel.match(/\{ radius: /g) || []).length).toBe(3);
+        expect(bubbleModel).toContain('{ radius: 0.3');
+        expect(bubbleModel).toContain('{ radius: 1.0');
+        expect(bubbleModel).toContain('{ radius: 3.5');
+        expect(bubbleModel).toContain('const resultColumnW = 165');
+        expect(bubbleModel).toContain('function pressureAlpha(value, maxPressure)');
+        expect(bubbleModel).toContain('function pressureShade(value, maxPressure, strength = 1)');
+        expect(bubbleModel).toContain('const teachingMaxP = 1 + this.saturatedDepth / 10 + pLaplace');
+        expect((bubbleModel.match(/pressureShade\((?:pTissue|pBubble), teachingMaxP\)/g) || []).length).toBe(2);
+        expect(bubbleModel).toContain("'70,132,178',");
+        expect(bubbleModel).toContain('drawPressureSymbol(ctx, symbols.tissue, tissueX, 38');
+    });
+
+    test('gas pathway pressure changes between stages, not within each box', () => {
+        expect(tissueHtml.includes('<linearGradient id="pressureGradient')).toBe(false);
+        expect((tissueHtml.match(/class="pressure-step pressure-step-\d"/g) || []).length).toBe(4);
+        expect(tissueEducation).toContain('PRESSURE_STEP_COLORS');
+        for (const stage of ['stage-regulator', 'stage-lungs', 'stage-blood', 'stage-tissues']) {
+            expect(tissueEducation).toContain(`querySelector('.${stage}')`);
+        }
+        expect(tissueEducation).toContain('[...PRESSURE_STEP_COLORS].reverse()');
     });
 });
 

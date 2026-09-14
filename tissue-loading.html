@@ -160,19 +160,6 @@
                     </div>
 
                     <svg class="gas-pathway-svg" viewBox="0 0 700 220" aria-label="Gas exchange pathway diagram">
-                        <defs>
-                            <!-- Gradient for descent (high pressure on left) -->
-                            <linearGradient id="pressureGradientDescent" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" style="stop-color:#2980b9;stop-opacity:0.9" />
-                                <stop offset="100%" style="stop-color:#2980b9;stop-opacity:0.2" />
-                            </linearGradient>
-                            <!-- Gradient for ascent (high pressure on right / tissues) - same blue, reversed -->
-                            <linearGradient id="pressureGradientAscent" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" style="stop-color:#2980b9;stop-opacity:0.2" />
-                                <stop offset="100%" style="stop-color:#2980b9;stop-opacity:0.9" />
-                            </linearGradient>
-                        </defs>
-
                         <!-- Regulator -->
                         <g class="pathway-stage" transform="translate(30, 60)">
                             <rect x="0" y="0" width="100" height="80" rx="8" class="stage-box stage-regulator" />
@@ -287,34 +274,37 @@
                         </g>
 
                         <!-- Tissues -->
-                        <g class="pathway-stage" transform="translate(510, 40)">
-                            <rect x="0" y="0" width="160" height="120" rx="8" class="stage-box stage-tissues" />
-                            <text x="80" y="25" text-anchor="middle" class="stage-label" style="font-weight: 600;" data-i18n="tissueLoading.gasExchange.svg.tissues">Tissues</text>
-                            <g transform="translate(15, 35)">
-                                <text x="0" y="12" class="tissue-label" data-i18n="tissueLoading.gasExchange.svg.fast">🧠 Fast</text>
-                                <rect x="60" y="0" width="80" height="16" rx="3" fill="#ecf0f1" />
-                                <rect x="60" y="0" width="20" height="16" rx="3" class="tissue-fill tissue-fast" />
+                        <g class="pathway-stage" transform="translate(500, 40)">
+                            <rect x="0" y="0" width="198" height="120" rx="8" class="stage-box stage-tissues" />
+                            <text x="99" y="25" text-anchor="middle" class="stage-label" style="font-weight: 600;" data-i18n="tissueLoading.gasExchange.svg.tissues">Tissues</text>
+                            <g transform="translate(10, 32)">
+                                <text x="0" y="16" class="tissue-label" data-i18n="tissueLoading.gasExchange.svg.fast">🧠 Fast</text>
+                                <rect x="74" y="0" width="110" height="24" rx="4" fill="#ecf0f1" />
+                                <rect x="74" y="0" width="28" height="24" rx="4" class="tissue-fill tissue-fast" />
                             </g>
-                            <g transform="translate(15, 58)">
-                                <text x="0" y="12" class="tissue-label" data-i18n="tissueLoading.gasExchange.svg.medium">💪 Med</text>
-                                <rect x="60" y="0" width="80" height="16" rx="3" fill="#ecf0f1" />
-                                <rect x="60" y="0" width="10" height="16" rx="3" class="tissue-fill tissue-medium" />
+                            <g transform="translate(10, 60)">
+                                <text x="0" y="16" class="tissue-label" data-i18n="tissueLoading.gasExchange.svg.medium">💪 Med</text>
+                                <rect x="74" y="0" width="110" height="24" rx="4" fill="#ecf0f1" />
+                                <rect x="74" y="0" width="14" height="24" rx="4" class="tissue-fill tissue-medium" />
                             </g>
-                            <g transform="translate(15, 81)">
-                                <text x="0" y="12" class="tissue-label" data-i18n="tissueLoading.gasExchange.svg.slow">🦴 Slow</text>
-                                <rect x="60" y="0" width="80" height="16" rx="3" fill="#ecf0f1" />
-                                <rect x="60" y="0" width="5" height="16" rx="3" class="tissue-fill tissue-slow" />
+                            <g transform="translate(10, 88)">
+                                <text x="0" y="16" class="tissue-label" data-i18n="tissueLoading.gasExchange.svg.slow">🦴 Slow</text>
+                                <rect x="74" y="0" width="110" height="24" rx="4" fill="#ecf0f1" />
+                                <rect x="74" y="0" width="7" height="24" rx="4" class="tissue-fill tissue-slow" />
                             </g>
                         </g>
 
-                        <!-- Gradient legend -->
-                        <g transform="translate(30, 175)">
-                            <text x="0" y="12" class="legend-text" data-i18n="tissueLoading.gasExchange.svg.pressureLabel">Pressure:</text>
-                            <text x="60" y="12" class="legend-text legend-high" style="font-weight: 600;" data-i18n="tissueLoading.gasExchange.svg.high">HIGH</text>
-                            <rect x="95" y="2" width="80" height="14" rx="3" class="gradient-bar" />
-                            <text x="180" y="12" class="legend-text legend-low" style="font-weight: 600;" data-i18n="tissueLoading.gasExchange.svg.low">LOW</text>
+                        <!-- Discrete pressure levels along the pathway -->
+                        <g transform="translate(30, 174)">
+                            <text x="0" y="15" class="legend-text" data-i18n="tissueLoading.gasExchange.svg.pressureLabel">Pressure:</text>
+                            <text x="120" y="15" text-anchor="end" class="legend-text legend-pressure-start" style="font-weight: 600;" data-i18n="tissueLoading.gasExchange.svg.high">HIGH</text>
+                            <rect x="132" y="0" width="22" height="18" rx="3" class="pressure-step pressure-step-1" />
+                            <rect x="158" y="0" width="22" height="18" rx="3" class="pressure-step pressure-step-2" />
+                            <rect x="184" y="0" width="22" height="18" rx="3" class="pressure-step pressure-step-3" />
+                            <rect x="210" y="0" width="22" height="18" rx="3" class="pressure-step pressure-step-4" />
+                            <text x="244" y="15" class="legend-text legend-pressure-end" style="font-weight: 600;" data-i18n="tissueLoading.gasExchange.svg.low">LOW</text>
                         </g>
-                        <g transform="translate(30, 195)">
+                        <g transform="translate(30, 201)">
                             <text x="0" y="12" class="legend-text legend-direction" id="flow-direction" data-i18n="tissueLoading.gasExchange.svg.flowDirection">→ Gas flows from HIGH to LOW pressure</text>
                         </g>
                     </svg>
@@ -410,30 +400,31 @@
             <div class="concept-card">
                 <h3 data-i18n="tissueLoading.bubbleMechanics.cardTitle">Why Do Bubbles Grow?</h3>
                 <p data-i18n="tissueLoading.bubbleMechanics.intro">
-                    A gas bubble in tissue has three pressures acting on it:
+                    Whether a gas bubble grows or shrinks depends on the balance between dissolved gas tension
+                    in the surrounding tissue and gas pressure inside the bubble:
                 </p>
                 <ul style="margin: 1rem 0; padding-left: 1.5rem;">
-                    <li data-i18n="tissueLoading.bubbleMechanics.pAmb"><strong>Ambient pressure (<var>p</var><sub>amb</sub>)</strong> — pushes the bubble inward</li>
-                    <li data-i18n="tissueLoading.bubbleMechanics.pSurface"><strong>Surface tension (2<var>γ</var>/<var>r</var>)</strong> — the Laplace pressure, also squeezes the bubble. Smaller bubbles have <em>more</em> surface tension.</li>
-                    <li data-i18n="tissueLoading.bubbleMechanics.pTissue"><strong>Dissolved gas tension (<var>p</var><sub>t</sub>)</strong> — the total pressure of gases dissolved in surrounding tissue, pushing gas <em>into</em> the bubble</li>
+                    <li data-i18n="tissueLoading.bubbleMechanics.pAmb"><strong>Ambient pressure (<var>p</var><sub>amb</sub>)</strong> — forms the baseline of the gas pressure inside the bubble</li>
+                    <li data-i18n="tissueLoading.bubbleMechanics.pSurface"><strong>Laplace pressure (2<var>γ</var>/<var>r</var>)</strong> — because of surface tension, pressure inside the bubble must exceed ambient pressure by this amount. The smaller the bubble, the greater this pressure difference.</li>
+                    <li data-i18n="tissueLoading.bubbleMechanics.pTissue"><strong>Dissolved gas tension (<var>p</var><sub>t</sub>)</strong> — the gas tension in the surrounding tissue that determines the direction of diffusion between tissue and bubble</li>
                 </ul>
 
                 <div class="key-insight">
                     <p data-i18n="tissueLoading.bubbleMechanics.insight">
-                        When <strong><var>p</var><sub>t</sub> &gt; <var>p</var><sub>amb</sub> + 2<var>γ</var>/<var>r</var></strong>, gas diffuses into the bubble and it <strong>grows</strong>.
-                        As it grows, <var>r</var> increases, surface tension <em>drops</em>, making growth even easier —
-                        a <strong>positive feedback loop</strong>.
+                        Gas pressure inside the bubble equals <strong><var>p</var><sub>amb</sub> + 2<var>γ</var>/<var>r</var></strong>.
+                        When <strong><var>p</var><sub>t</sub></strong> is greater, gas diffuses into the bubble and it <strong>grows</strong>;
+                        when it is lower, gas diffuses out and the bubble <strong>shrinks</strong>. As the bubble grows,
+                        <var>r</var> increases and the Laplace pressure <em>drops</em>, making further growth easier.
                     </p>
                 </div>
 
                 <p data-i18n="tissueLoading.bubbleMechanics.sliderHint">
-                    Use the slider to ascend from 30&nbsp;m. Watch how reducing ambient pressure
-                    tips the balance — larger bubbles cross the critical radius first.
+                    Explore the full simulation in the Bubble Mechanics Sandbox. Ascend from 30&nbsp;m
+                    and watch how reducing ambient pressure changes the balance for different bubble sizes.
                 </p>
-            </div>
-
-            <div id="bubble-model-container" style="margin: 1.5rem 0;">
-                <!-- BubbleModel rendered here -->
+                <a href="sandbox/bubble-mechanics.html" class="bubble-sandbox-cta">
+                    🫧 <span data-i18n="tissueLoading.bubbleMechanics.openSandbox">Open Bubble Simulator →</span>
+                </a>
             </div>
         </section>
 
@@ -462,7 +453,7 @@
                         <span class="bar-fill" style="width: 87.5%;" data-i18n="tissueLoading.halfTimeConcept.bar3">3 half-times: 87.5%</span>
                     </div>
                     <div class="half-time-bar">
-                        <span class="bar-fill" style="width: 98.4%;" data-i18n="tissueLoading.halfTimeConcept.bar4">6 half-times: ~98% (saturated)</span>
+                        <span class="bar-fill" style="width: 98.4%;" data-i18n="tissueLoading.halfTimeConcept.bar4">6 half-times: 98.4% (saturated)</span>
                     </div>
                 </div>
                 <p data-i18n="tissueLoading.halfTimeConcept.example">A 5-minute compartment reaches 50% saturation in 5 minutes; a 635-minute compartment takes over 10 hours!</p>
@@ -701,7 +692,7 @@
                     <!-- Rows added by JavaScript -->
                 </tbody>
             </table>
-            <p class="footnote" data-i18n="tissueLoading.referenceTable.footnote">* Approximate time to reach 98% saturation (6 half-times)</p>
+            <p class="footnote" data-i18n="tissueLoading.referenceTable.footnote">* Approximate time to reach 98.4% saturation (6 half-times)</p>
             <!-- Hidden templates for JS-generated table translation -->
             <span hidden data-i18n="tissueLoading.referenceTable.categoryFast">Fast</span>
             <span hidden data-i18n="tissueLoading.referenceTable.categoryMedium">Medium</span>
@@ -738,7 +729,6 @@
     <!-- Main chart and reference table -->
     <script type="module">
         import { DiveProfileChart } from './js/charts/DiveProfileChart.js';
-        import { BubbleModel } from './js/charts/BubbleModel.js';
         import { COMPARTMENTS, getCompartmentCategory } from './js/tissueCompartments.js';
         import { getSandboxUrl } from './js/urlParams.js';
         import { initStickyTOC } from './js/components/StickyTOC.js';
@@ -908,12 +898,6 @@
 
         renderMathFormulas();
 
-        // Bubble mechanics interactive
-        const bubbleContainer = document.getElementById('bubble-model-container');
-        const bubbleModel = bubbleContainer
-            ? new BubbleModel(bubbleContainer, { saturatedDepth: 30 })
-            : null;
-
         initStickyTOC();
         initTooltipShortcut();
 
@@ -924,7 +908,6 @@
             renderMathFormulas();
             renderReferenceTable();
             refreshTissueEducationLanguage();
-            bubbleModel?.refreshLanguage();
         });
 
         // Re-render reference table and formulas when language changes:
@@ -933,7 +916,6 @@
             renderMathFormulas();
             renderReferenceTable();
             refreshTissueEducationLanguage();
-            bubbleModel?.refreshLanguage();
         });
     </script>
 

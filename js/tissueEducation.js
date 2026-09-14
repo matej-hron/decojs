@@ -10,6 +10,7 @@ const WATER_VAPOR_PRESSURE = 0.0627; // bar at 37°C
 const SURFACE_PRESSURE = 1.01325; // 1 atm exactly
 const N2_FRACTION = 0.7902; // N2-equivalent fraction (accounts for argon)
 const SURFACE_ALVEOLAR_N2 = (SURFACE_PRESSURE - WATER_VAPOR_PRESSURE) * N2_FRACTION; // ~0.75 bar
+const PRESSURE_STEP_COLORS = ['#78a8ce', '#91b5d2', '#aec9de', '#d0e1ed'];
 
 function tr(key, fallback, values = {}) {
     return Object.entries(values).reduce(
@@ -61,13 +62,13 @@ function initGasPathway() {
 }
 
 function updatePhase(phase, svg) {
-    const stageBoxes = svg.querySelectorAll('.stage-box');
     const arrowLines = svg.querySelectorAll('.arrow-line');
     const arrowHeadsRight = svg.querySelectorAll('.arrow-head-right');
     const arrowHeadsLeft = svg.querySelectorAll('.arrow-head-left');
     const particlesDescent = svg.querySelectorAll('.particle-descent');
     const particlesAscent = svg.querySelectorAll('.particle-ascent');
-    const gradientBar = svg.querySelector('.gradient-bar');
+    const legendStart = svg.querySelector('.legend-pressure-start');
+    const legendEnd = svg.querySelector('.legend-pressure-end');
     const flowDirection = document.getElementById('flow-direction');
     
     const regPressure = document.getElementById('reg-pressure');
@@ -80,12 +81,14 @@ function updatePhase(phase, svg) {
     
     if (phase === 'descent') {
         // Descent: on-gassing, flow left → right
-        
-        // Update gradient direction (high on left)
-        stageBoxes.forEach(box => {
-            box.style.fill = 'url(#pressureGradientDescent)';
-        });
-        if (gradientBar) gradientBar.style.fill = 'url(#pressureGradientDescent)';
+
+        applyPressureSteps(svg, PRESSURE_STEP_COLORS);
+        if (legendStart) {
+            legendStart.textContent = tr('tissueLoading.gasExchange.svg.high', 'HIGH');
+        }
+        if (legendEnd) {
+            legendEnd.textContent = tr('tissueLoading.gasExchange.svg.low', 'LOW');
+        }
         
         // Show right arrows, hide left
         arrowLines.forEach(line => line.style.stroke = '#2980b9');
@@ -114,12 +117,14 @@ function updatePhase(phase, svg) {
         
     } else {
         // Ascent: off-gassing, flow right → left (tissues are now HIGH)
-        
-        // Update gradient direction (high on right)
-        stageBoxes.forEach(box => {
-            box.style.fill = 'url(#pressureGradientAscent)';
-        });
-        if (gradientBar) gradientBar.style.fill = 'url(#pressureGradientAscent)';
+
+        applyPressureSteps(svg, [...PRESSURE_STEP_COLORS].reverse());
+        if (legendStart) {
+            legendStart.textContent = tr('tissueLoading.gasExchange.svg.low', 'LOW');
+        }
+        if (legendEnd) {
+            legendEnd.textContent = tr('tissueLoading.gasExchange.svg.high', 'HIGH');
+        }
         
         // Show left arrows, hide right
         arrowLines.forEach(line => line.style.stroke = '#2980b9');
@@ -148,6 +153,21 @@ function updatePhase(phase, svg) {
     }
 }
 
+function applyPressureSteps(svg, colors) {
+    const stages = [
+        svg.querySelector('.stage-regulator'),
+        svg.querySelector('.stage-lungs'),
+        svg.querySelector('.stage-blood'),
+        svg.querySelector('.stage-tissues'),
+    ];
+    stages.forEach((stage, index) => {
+        if (stage) stage.style.fill = colors[index];
+    });
+    svg.querySelectorAll('.pressure-step').forEach((step, index) => {
+        step.style.fill = colors[index];
+    });
+}
+
 function animateTissueBars(phase, fast, medium, slow) {
     if (!fast || !medium || !slow) return;
     
@@ -161,9 +181,9 @@ function animateTissueBars(phase, fast, medium, slow) {
         fast.style.transition = 'none';
         medium.style.transition = 'none';
         slow.style.transition = 'none';
-        fast.setAttribute('width', '10');
-        medium.setAttribute('width', '10');
-        slow.setAttribute('width', '10');
+        fast.setAttribute('width', '14');
+        medium.setAttribute('width', '14');
+        slow.setAttribute('width', '14');
         
         // Force reflow
         fast.getBoundingClientRect();
@@ -173,18 +193,18 @@ function animateTissueBars(phase, fast, medium, slow) {
             fast.style.transition = 'width 0.8s ease-out';    // Fast tissue - quick
             medium.style.transition = 'width 2s ease-out';    // Medium tissue - moderate
             slow.style.transition = 'width 4s ease-out';      // Slow tissue - slow
-            fast.setAttribute('width', '70');
-            medium.setAttribute('width', '50');
-            slow.setAttribute('width', '30');
+            fast.setAttribute('width', '96');
+            medium.setAttribute('width', '69');
+            slow.setAttribute('width', '41');
         }, 50);
     } else {
         // Ascent - reset to full (saturated at depth)
         fast.style.transition = 'none';
         medium.style.transition = 'none';
         slow.style.transition = 'none';
-        fast.setAttribute('width', '70');
-        medium.setAttribute('width', '70');
-        slow.setAttribute('width', '70');
+        fast.setAttribute('width', '96');
+        medium.setAttribute('width', '96');
+        slow.setAttribute('width', '96');
         
         // Force reflow
         fast.getBoundingClientRect();
@@ -194,9 +214,9 @@ function animateTissueBars(phase, fast, medium, slow) {
             fast.style.transition = 'width 0.8s ease-out';    // Fast tissue - quick
             medium.style.transition = 'width 2s ease-out';    // Medium tissue - moderate
             slow.style.transition = 'width 4s ease-out';      // Slow tissue - slow
-            fast.setAttribute('width', '10');
-            medium.setAttribute('width', '40');
-            slow.setAttribute('width', '60');
+            fast.setAttribute('width', '14');
+            medium.setAttribute('width', '55');
+            slow.setAttribute('width', '83');
         }, 50);
     }
 }

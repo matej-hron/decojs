@@ -6,7 +6,7 @@ npm test
 
 Runs `node tests/run-tests.mjs`. No external test framework — `tests/run-tests.mjs` implements `describe`/`test`/`expect` inline (lines 10–140) with matchers `.toBe`, `.toEqual`, `.toBeCloseTo`, `.toBeGreaterThan`, `.toBeLessThan`, `.toHaveProperty`, `.toHaveLength`, `.toBeDefined`. Output is one line per test, then a pass/fail summary.
 
-**544 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
+**548 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
 
 `npm test` is required to pass before every commit per `CLAUDE.md`.
 
@@ -126,7 +126,17 @@ The tissue-loading regressions require a content wrapper that prevents the
 sticky table of contents from setting the first section's grid-row height.
 They also enforce canonical localized tissue-pressure subscripts, the
 registered `h`, `γ`, and `r` symbols, upright exponential `e`, non-breaking
-micrometre units in the bubble canvas, and translated chart labels.
+micrometre units in the bubble canvas, and translated chart labels. The gas
+pathway represents its partial-pressure gradient with four discrete stage
+colors, reverses their order during off-gassing, and never paints a gradient
+inside an individual anatomical stage. The bubble explanation distinguishes
+gas pressure inside a bubble (`p_amb + 2γ/r`) from dissolved-gas tension in
+the surrounding tissue, which determines the direction of diffusion. The
+detailed bubble simulation lives in a dedicated responsive sandbox with a
+larger, fixed-size canvas that is never stretched by its layout; the theory
+page links to it instead of embedding the cramped visualization. Canvas formulas draw italic quantity
+symbols and smaller upright localized subscripts instead of exposing code-like
+underscore notation.
 
 The transfilling sandbox regressions require locale-aware runtime formatting,
 the glossary's upright `l` symbol, localized final-pressure subscripts and
