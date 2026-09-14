@@ -403,7 +403,8 @@
                 "pressureLabel": "Pressure:",
                 "high": "HIGH",
                 "low": "LOW",
-                "flowDirection": "→ Gas flows from HIGH to LOW pressure"
+                "flowDirection": "→ Gas flows from HIGH to LOW pressure",
+                "flowDirectionAscent": "← Gas flows from HIGH to LOW pressure (tissues supersaturated)"
             },
             "alveolarFormula": {
                 "summary": "Alveolar Pressure Formula",
@@ -419,7 +420,8 @@
             "intro": "Understanding how tissue loading changes throughout a dive is key to safe decompression:",
             "descent": {
                 "heading": "⬇️ a) Descent — On-gassing",
-                "text": "As you descend, ambient pressure increases. The partial pressure of nitrogen in your lungs becomes <strong>higher than in your tissues</strong>, so gas flows <em>into</em> tissues. All compartments begin absorbing nitrogen, but <strong>fast tissues fill first</strong>."
+                "text": "As you descend, ambient pressure increases. The partial pressure of nitrogen in your lungs becomes <strong>higher than in your tissues</strong>, so gas flows <em>into</em> tissues. All compartments begin absorbing nitrogen, but <strong>fast tissues fill first</strong>.",
+                "formula": "<var>p</var><sub>t</sub> &lt; <var>p</var><sub>alv</sub> → <strong>On-gassing</strong>"
             },
             "atDepth": {
                 "heading": "➡️ b) At Depth — Differential Saturation",
@@ -428,7 +430,9 @@
             "ascent": {
                 "heading": "⬆️ c) Ascent — Off-gassing & Supersaturation",
                 "text1": "As you ascend, the partial pressure of nitrogen in your lungs drops. When tissue nitrogen pressure exceeds alveolar pressure, the gradient reverses and gas flows <em>out</em> — this is <strong>off-gassing</strong>.",
-                "text2": "But there's another threshold: when tissue nitrogen pressure exceeds <strong>ambient pressure</strong>, the tissue is <em>supersaturated</em>. This is when we need to be careful — the dissolved gas wants to come out of solution and could form bubbles."
+                "formulaPressure": "<var>p</var><sub>t</sub> &gt; <var>p</var><sub>alv</sub> → <strong>Off-gassing</strong>",
+                "text2": "But there's another threshold: when tissue nitrogen pressure exceeds <strong>ambient pressure</strong>, the tissue is <em>supersaturated</em>. This is when we need to be careful — the dissolved gas wants to come out of solution and could form bubbles.",
+                "formulaSupersaturation": "<var>p</var><sub>t</sub> &gt; <var>p</var><sub>amb</sub> → <strong>Supersaturation</strong> ⚠️"
             },
             "critical": {
                 "heading": "⚠️ Critical Supersaturation",
@@ -442,9 +446,26 @@
             "intro": "A gas bubble in tissue has three pressures acting on it:",
             "pAmb": "<strong>Ambient pressure (<var>p</var><sub>amb</sub>)</strong> — pushes the bubble inward",
             "pSurface": "<strong>Surface tension (2<var>γ</var>/<var>r</var>)</strong> — the Laplace pressure, also squeezes the bubble. Smaller bubbles have <em>more</em> surface tension.",
-            "pTissue": "<strong>Dissolved gas tension (<var>p</var><sub>tissue</sub>)</strong> — the total pressure of gases dissolved in surrounding tissue, pushing gas <em>into</em> the bubble",
-            "insight": "When <strong><var>p</var><sub>tissue</sub> &gt; <var>p</var><sub>amb</sub> + 2<var>γ</var>/<var>r</var></strong>, gas diffuses into the bubble and it <strong>grows</strong>. As it grows, <var>r</var> increases, surface tension <em>drops</em>, making growth even easier — a <strong>positive feedback loop</strong>.",
-            "sliderHint": "Use the slider to ascend from 30 m. Watch how reducing ambient pressure tips the balance — larger bubbles cross the critical radius first."
+            "pTissue": "<strong>Dissolved gas tension (<var>p</var><sub>t</sub>)</strong> — the total pressure of gases dissolved in surrounding tissue, pushing gas <em>into</em> the bubble",
+            "insight": "When <strong><var>p</var><sub>t</sub> &gt; <var>p</var><sub>amb</sub> + 2<var>γ</var>/<var>r</var></strong>, gas diffuses into the bubble and it <strong>grows</strong>. As it grows, <var>r</var> increases, surface tension <em>drops</em>, making growth even easier — a <strong>positive feedback loop</strong>.",
+            "sliderHint": "Use the slider to ascend from 30 m. Watch how reducing ambient pressure tips the balance — larger bubbles cross the critical radius first.",
+            "model": {
+                "depth": "Depth:",
+                "fixed": "fixed",
+                "critical": "critical",
+                "pushesOut": "pushes OUT",
+                "pushesIn": "pushes IN",
+                "grows": "GROWS ↑",
+                "shrinks": "SHRINKS ↓",
+                "surroundingTissue": "surrounding tissue",
+                "surfaceTension": "surface tension",
+                "gasInside": "gas inside",
+                "bubble": "bubble",
+                "radiusInside": "inside bubble, pushes OUT",
+                "dissolvedGasTension": "dissolved gas tension, pushes IN",
+                "diffusesIn": "→ gas diffuses IN → GROWS",
+                "diffusesOut": "→ gas diffuses OUT → SHRINKS"
+            }
         },
         "halfTimeConcept": {
             "title": "The Half-Time Concept",
@@ -473,6 +494,18 @@
                 "info": "Saturated @ <strong id=\"offgassing-depth-display\">30 m</strong> → Surface (~0.79 bar)"
             },
             "footnote": "ℹ️ Both charts use the same depth and the same half-time formula. On-gassing and off-gassing are symmetrical—only the direction changes.",
+            "chart": {
+                "tissuePressure": "Tissue pN₂",
+                "targetAlveolar": "Target (Alveolar)",
+                "targetSurface": "Target (Surface)",
+                "initialSurface": "Initial (Surface)",
+                "initialDepth": "Initial (Saturated @ {depth})",
+                "halfTimes": "{value} half-times",
+                "saturated": "{value}% saturated",
+                "desaturated": "{value}% desaturated",
+                "timeAxis": "Time (half-times)",
+                "pressureAxis": "pN₂ (bar)"
+            },
             "math": {
                 "summary": "Learn More: The Mathematics",
                 "intro": "The equations behind the curves. Expand to see how Bühlmann modelled tissue pressure at constant depth and during ascent.",

@@ -403,7 +403,8 @@
                 "pressureLabel": "Tlak:",
                 "high": "VYSOKÝ",
                 "low": "NÍZKÝ",
-                "flowDirection": "→ Plyn proudí z místa vyššího tlaku do místa nižšího tlaku"
+                "flowDirection": "→ Plyn proudí z místa vyššího tlaku do místa nižšího tlaku",
+                "flowDirectionAscent": "← Plyn proudí z místa vyššího tlaku do místa nižšího tlaku (tkáně jsou přesycené)"
             },
             "alveolarFormula": {
                 "summary": "Vzorec alveolárního tlaku",
@@ -419,7 +420,8 @@
             "intro": "Pochopení toho, jak se mění sycení tkání v průběhu ponoru, je klíčem k bezpečné dekompresi:",
             "descent": {
                 "heading": "⬇️ a) Sestup — sycení",
-                "text": "Při sestupu roste okolní tlak. Parciální tlak dusíku ve vašich plicích se stává <strong>vyšším než ve tkáních</strong>, takže plyn proudí <em>do</em> tkání. Všechny kompartmenty začínají absorbovat dusík, ale <strong>rychlé tkáně se sytí první</strong>."
+                "text": "Při sestupu roste okolní tlak. Parciální tlak dusíku ve vašich plicích se stává <strong>vyšším než ve tkáních</strong>, takže plyn proudí <em>do</em> tkání. Všechny kompartmenty začínají absorbovat dusík, ale <strong>rychlé tkáně se sytí první</strong>.",
+                "formula": "<var>p</var><sub>tk</sub> &lt; <var>p</var><sub>alv</sub> → <strong>Sycení</strong>"
             },
             "atDepth": {
                 "heading": "➡️ b) V hloubce — rozdílné sycení",
@@ -428,7 +430,9 @@
             "ascent": {
                 "heading": "⬆️ c) Výstup — vysycování a přesycení",
                 "text1": "Při výstupu klesá parciální tlak dusíku ve vašich plicích. Když tlak dusíku ve tkáních překročí alveolární tlak, gradient se obrátí a plyn proudí <em>ven</em> — to je <strong>vysycování</strong>.",
-                "text2": "Je tu ale další práh: když tlak dusíku ve tkáních překročí <strong>okolní tlak</strong>, je tkáň <em>přesycena</em>. V tomto okamžiku musíme být opatrní — rozpuštěný plyn chce přejít z roztoku a mohl by tvořit bubliny."
+                "formulaPressure": "<var>p</var><sub>tk</sub> &gt; <var>p</var><sub>alv</sub> → <strong>Vysycování</strong>",
+                "text2": "Je tu ale další práh: když tlak dusíku ve tkáních překročí <strong>okolní tlak</strong>, je tkáň <em>přesycena</em>. V tomto okamžiku musíme být opatrní — rozpuštěný plyn chce přejít z roztoku a mohl by tvořit bubliny.",
+                "formulaSupersaturation": "<var>p</var><sub>tk</sub> &gt; <var>p</var><sub>okol</sub> → <strong>Přesycení</strong> ⚠️"
             },
             "critical": {
                 "heading": "⚠️ Kritické přesycení",
@@ -440,11 +444,28 @@
             "title": "Co se děje s bublinami během výstupu?",
             "cardTitle": "Proč bubliny rostou?",
             "intro": "Na plynovou bublinu ve tkáni působí tři tlaky:",
-            "pAmb": "<strong>Okolní tlak (<var>p</var><sub>amb</sub>)</strong> — stlačuje bublinu zvenku",
+            "pAmb": "<strong>Okolní tlak (<var>p</var><sub>okol</sub>)</strong> — stlačuje bublinu zvenku",
             "pSurface": "<strong>Povrchové napětí (2<var>γ</var>/<var>r</var>)</strong> — Laplaceův tlak, který rovněž bublinu stlačuje. Menší bubliny mají <em>větší</em> povrchové napětí.",
-            "pTissue": "<strong>Tenze rozpuštěných plynů (<var>p</var><sub>tissue</sub>)</strong> — celkový tlak plynů rozpuštěných v okolní tkáni, který tlačí plyn <em>dovnitř</em> bubliny",
-            "insight": "Když <strong><var>p</var><sub>tissue</sub> &gt; <var>p</var><sub>amb</sub> + 2<var>γ</var>/<var>r</var></strong>, plyn difunduje do bubliny a ta <strong>roste</strong>. Jak roste, <var>r</var> se zvětšuje, povrchové napětí <em>klesá</em>, což růst ještě urychluje — <strong>pozitivní zpětná vazba</strong>.",
-            "sliderHint": "Použijte posuvník pro výstup z 30 m. Sledujte, jak snížení okolního tlaku naruší rovnováhu — větší bubliny překročí kritický poloměr jako první."
+            "pTissue": "<strong>Tenze rozpuštěných plynů (<var>p</var><sub>tk</sub>)</strong> — celkový tlak plynů rozpuštěných v okolní tkáni, který tlačí plyn <em>dovnitř</em> bubliny",
+            "insight": "Když <strong><var>p</var><sub>tk</sub> &gt; <var>p</var><sub>okol</sub> + 2<var>γ</var>/<var>r</var></strong>, plyn difunduje do bubliny a ta <strong>roste</strong>. Jak roste, <var>r</var> se zvětšuje, povrchové napětí <em>klesá</em>, což růst ještě urychluje — <strong>pozitivní zpětná vazba</strong>.",
+            "sliderHint": "Použijte posuvník pro výstup z 30 m. Sledujte, jak snížení okolního tlaku naruší rovnováhu — větší bubliny překročí kritický poloměr jako první.",
+            "model": {
+                "depth": "Hloubka:",
+                "fixed": "stálý",
+                "critical": "kritický",
+                "pushesOut": "tlačí ven",
+                "pushesIn": "tlačí dovnitř",
+                "grows": "ROSTE ↑",
+                "shrinks": "ZMENŠUJE SE ↓",
+                "surroundingTissue": "okolní tkáň",
+                "surfaceTension": "povrchové napětí",
+                "gasInside": "plyn uvnitř",
+                "bubble": "bubliny",
+                "radiusInside": "uvnitř bubliny, tlačí ven",
+                "dissolvedGasTension": "tenze rozpuštěných plynů, tlačí dovnitř",
+                "diffusesIn": "→ plyn difunduje dovnitř → ROSTE",
+                "diffusesOut": "→ plyn difunduje ven → ZMENŠUJE SE"
+            }
         },
         "halfTimeConcept": {
             "title": "Koncept poločasu sycení",
@@ -454,7 +475,7 @@
             "bar2": "2 poločasy: 75 %",
             "bar3": "3 poločasy: 87,5 %",
             "bar4": "6 poločasů: ~98 % (nasyceno)",
-            "example": "Kompartment s poločasem 5 minut dosáhne 50% nasycení za 5 minut; kompartment s poločasem 635 minut potřebuje přes 10 hodin!",
+            "example": "Kompartment s poločasem 5 minut dosáhne 50 % nasycení za 5 minut; kompartment s poločasem 635 minut potřebuje přes 10 hodin!",
             "gradientTitle": "Vliv tlakového gradientu",
             "gradientText1": "Poločas tkáně je konstantní — vždy trvá stejně dlouho, než se uzavře <strong>50 % rozdílu</strong> mezi aktuálním tlakem tkáně a cílovým tlakem. Ale když je tento rozdíl větší, 50 % představuje v absolutních číslech více plynu.",
             "gradientText2": "<strong>Příklad:</strong> Pokud tkáň potřebuje odvětrat 2 bary dusíku, přepnutí ze vzduchu (79 % N₂) na Nitrox 50 (50 % N₂) nebo čistý O₂ (0 % N₂) vytvoří mnohem větší tlakový gradient, takže každý poločas odstraní více plynu — proto směsi bohaté na kyslík urychlují dekompresi!"
@@ -473,6 +494,18 @@
                 "info": "Nasyceno v <strong id=\"offgassing-depth-display\">30 m</strong> → Hladina (~0,79 bar)"
             },
             "footnote": "ℹ️ Oba grafy používají stejnou hloubku a stejný vzorec poločasu. Sycení a vysycování jsou symetrické — mění se pouze směr.",
+            "chart": {
+                "tissuePressure": "Tkáňový pN₂",
+                "targetAlveolar": "Cíl (alveolární)",
+                "targetSurface": "Cíl (hladina)",
+                "initialSurface": "Počátek (hladina)",
+                "initialDepth": "Počátek (nasyceno v {depth})",
+                "halfTimes": "{value} poločasu",
+                "saturated": "{value} % nasyceno",
+                "desaturated": "{value} % vysyceno",
+                "timeAxis": "Čas (poločasy)",
+                "pressureAxis": "pN₂ (bar)"
+            },
             "math": {
                 "summary": "Více informací: matematika",
                 "intro": "Rovnice stojící za křivkami. Rozbalením zobrazíte, jak Bühlmann modeloval tlak ve tkáni při konstantní hloubce a při výstupu.",
@@ -541,7 +574,7 @@
             "thTissueType": "Typ tkáně",
             "thNumber": "#",
             "thSaturationTime": "Doba do nasycení*",
-            "footnote": "* Přibližná doba do dosažení 98% nasycení (6 poločasů)",
+            "footnote": "* Přibližná doba do dosažení 98 % nasycení (6 poločasů)",
             "categoryFast": "Rychlé",
             "categoryMedium": "Střední",
             "categoryMediumSlow": "Středně pomalé",

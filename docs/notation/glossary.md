@@ -51,6 +51,8 @@ Past: *p*<sub>t</sub> (tkáňový tlak, „t" = tissue → stojatě) vs. *c*<sub
 | *n* | látkové množství | amount of substance | mol | — | — | — | — | ISO 80000-9 |
 | *R* | molární plynová konstanta | gas constant | — | SI: J/(mol·K); *R* má i jiný význam, viz §5 | — | — | — | ISO 80000-9 |
 | *c* | koncentrace | concentration | — | SI: mol/m³ | — | — | — | ISO 80000-9 |
+| *γ* | povrchové napětí | surface tension | N/m | v modelu mechaniky bublin | — | — | — | Laplaceův tlak |
+| *r* | poloměr bubliny | bubble radius | μm | SI: m; v modelu mechaniky bublin | — | — | — | geometrie / Laplaceův tlak |
 
 > Odchylky české školy od ISO: plocha *S* (ISO: *A*), tíhová síla *F*<sub>G</sub> nebo *G*
 > (ISO: *F*<sub>g</sub>), vztlak *F*<sub>vz</sub> (mezinárodně *F*<sub>A</sub>). Pro

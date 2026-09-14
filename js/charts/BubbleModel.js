@@ -11,7 +11,20 @@
  */
 
 import { fmtNum } from '../format.js';
+import { translate } from '../i18n.js';
 const GAMMA = 0.018; // Surface tension N/m
+
+function tr(key, fallback) {
+    return translate(`tissueLoading.bubbleMechanics.model.${key}`, fallback);
+}
+
+function pressureSymbols() {
+    const czech = document.documentElement.lang === 'cs';
+    return {
+        ambient: czech ? 'p_okol' : 'p_amb',
+        tissue: czech ? 'p_tk' : 'p_t',
+    };
+}
 
 function laplacePressure(radiusMicrons) {
     const r = radiusMicrons * 1e-6;
@@ -85,10 +98,10 @@ export class BubbleModel {
         const sliderRow = document.createElement('div');
         sliderRow.style.cssText = 'display: flex; align-items: center; gap: 12px; padding: 0 4px;';
 
-        const sliderLabel = document.createElement('span');
-        sliderLabel.textContent = 'Depth:';
-        sliderLabel.style.cssText = 'font-size: 13px; font-weight: 600;';
-        sliderRow.appendChild(sliderLabel);
+        this.sliderLabel = document.createElement('span');
+        this.sliderLabel.textContent = tr('depth', 'Depth:');
+        this.sliderLabel.style.cssText = 'font-size: 13px; font-weight: 600;';
+        sliderRow.appendChild(this.sliderLabel);
 
         this.slider = document.createElement('input');
         this.slider.type = 'range';
@@ -186,17 +199,18 @@ export class BubbleModel {
         const pAmb = this.pAmb;
         const pTissue = this.pTissue;
         const rCrit = criticalRadius(pTissue, pAmb);
+        const symbols = pressureSymbols();
 
         // Header: current values
         ctx.font = '10px sans-serif';
         ctx.textAlign = 'left';
         ctx.fillStyle = '#3498db';
-        ctx.fillText(`p_amb = ${fmtNum(pAmb, 2)}\u00a0bar`, 10, 14);
+        ctx.fillText(`${symbols.ambient} = ${fmtNum(pAmb, 2)}\u00a0bar`, 10, 14);
         ctx.fillStyle = '#2ecc71';
-        ctx.fillText(`p_tissue = ${fmtNum(pTissue, 2)}\u00a0bar (fixed)`, 140, 14);
+        ctx.fillText(`${symbols.tissue} = ${fmtNum(pTissue, 2)}\u00a0bar (${tr('fixed', 'fixed')})`, 140, 14);
         if (rCrit < 100) {
             ctx.fillStyle = '#e74c3c';
-            ctx.fillText(`r_crit = ${fmtNum(rCrit, 2)} μm`, 340, 14);
+            ctx.fillText(`r (${tr('critical', 'critical')}) = ${fmtNum(rCrit, 2)}\u00a0μm`, 340, 14);
         }
 
         // Scale
@@ -219,15 +233,15 @@ export class BubbleModel {
         ctx.fillStyle = '#3498db';
         ctx.fillRect(barLeft, legendY - 8, 8, 8);
         ctx.fillStyle = '#666';
-        ctx.fillText('p_amb', barLeft + 11, legendY - 1);
+        ctx.fillText(symbols.ambient, barLeft + 11, legendY - 1);
         ctx.fillStyle = '#f39c12';
         ctx.fillRect(barLeft + 52, legendY - 8, 8, 8);
         ctx.fillStyle = '#666';
-        ctx.fillText('+ 2γ/r  → pushes OUT', barLeft + 63, legendY - 1);
+        ctx.fillText(`+ 2γ/r  → ${tr('pushesOut', 'pushes OUT')}`, barLeft + 63, legendY - 1);
         ctx.fillStyle = 'rgba(100,200,100,0.5)';
         ctx.fillRect(barLeft + 195, legendY - 8, 8, 8);
         ctx.fillStyle = '#666';
-        ctx.fillText('p_tissue → pushes IN', barLeft + 206, legendY - 1);
+        ctx.fillText(`${symbols.tissue} → ${tr('pushesIn', 'pushes IN')}`, barLeft + 206, legendY - 1);
 
         this.bubbles.forEach((b, i) => {
             const yTop = topPad + i * rowH;
@@ -311,15 +325,15 @@ export class BubbleModel {
             if (clampedR > 18) {
                 // Large bubble — label to the right to avoid overlap
                 ctx.textAlign = 'left';
-                ctx.fillText(`${b.label}  ${b.radius} μm`, bx + clampedR + 4, yCenterBubble + 3);
+                ctx.fillText(`${b.label}  ${fmtNum(b.radius, 1)}\u00a0μm`, bx + clampedR + 4, yCenterBubble + 3);
             } else {
                 ctx.textAlign = 'center';
-                ctx.fillText(`${b.label}  ${b.radius} μm`, bx, yCenterBubble + clampedR + 14);
+                ctx.fillText(`${b.label}  ${fmtNum(b.radius, 1)}\u00a0μm`, bx, yCenterBubble + clampedR + 14);
             }
 
             // === Right: Bars ===
 
-            // Top bar: P_amb + 2γ/r
+            // Top bar: p_amb + 2γ/r
             const barY1 = yCenterBubble - barH - 1;
             const ambW = pAmb * scale;
             const lapW = Math.max(1, pLaplace * scale);
@@ -332,14 +346,14 @@ export class BubbleModel {
             ctx.fillStyle = 'rgba(255,255,255,0.9)';
             ctx.font = '8px sans-serif';
             ctx.textAlign = 'left';
-            if (ambW > 28) ctx.fillText('p_amb', barLeft + 2, barY1 + 10);
+            if (ambW > 28) ctx.fillText(symbols.ambient, barLeft + 2, barY1 + 10);
             if (lapW > 18) ctx.fillText('2γ/r', barLeft + ambW + 2, barY1 + 10);
 
             ctx.fillStyle = '#444';
             ctx.font = '9px sans-serif';
             ctx.fillText(fmtNum(pBubble, 2), barLeft + ambW + lapW + 3, barY1 + 10);
 
-            // Bottom bar: P_tissue
+            // Bottom bar: tissue pressure
             const barY2 = yCenterBubble + 1;
             const tissueW = pTissue * scale;
             ctx.fillStyle = wouldGrow ? 'rgba(231,76,60,0.5)' : 'rgba(46,204,113,0.5)';
@@ -348,7 +362,7 @@ export class BubbleModel {
             ctx.fillStyle = 'rgba(255,255,255,0.9)';
             ctx.font = '8px sans-serif';
             ctx.textAlign = 'left';
-            if (tissueW > 35) ctx.fillText('p_tissue', barLeft + 2, barY2 + 10);
+            if (tissueW > 35) ctx.fillText(symbols.tissue, barLeft + 2, barY2 + 10);
 
             ctx.fillStyle = '#444';
             ctx.font = '9px sans-serif';
@@ -358,7 +372,11 @@ export class BubbleModel {
             ctx.fillStyle = wouldGrow ? '#e74c3c' : '#27ae60';
             ctx.font = 'bold 9px sans-serif';
             ctx.textAlign = 'right';
-            ctx.fillText(wouldGrow ? 'GROWS ↑' : 'SHRINKS ↓', w - 6, yCenterBubble + 4);
+            ctx.fillText(
+                wouldGrow ? tr('grows', 'GROWS ↑') : tr('shrinks', 'SHRINKS ↓'),
+                w - 6,
+                yCenterBubble + 4
+            );
         });
     }
 
@@ -373,6 +391,7 @@ export class BubbleModel {
         const pLaplace = laplacePressure(b.radius);
         const pBubble = pAmb + pLaplace;
         const wouldGrow = pTissue > pBubble;
+        const symbols = pressureSymbols();
 
         const cx = w * 0.28, cy = h / 2;
         const R = 50; // big bubble radius for teaching
@@ -393,7 +412,7 @@ export class BubbleModel {
         ctx.fillStyle = '#2ecc71';
         ctx.font = '9px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('surrounding tissue', cx, cy - R - 48);
+        ctx.fillText(tr('surroundingTissue', 'surrounding tissue'), cx, cy - R - 48);
 
         // Bubble body
         const grad = ctx.createRadialGradient(cx - R * 0.15, cy - R * 0.15, 0, cx, cy, R);
@@ -424,16 +443,16 @@ export class BubbleModel {
         ctx.fillStyle = '#e67e22';
         ctx.font = '9px sans-serif';
         ctx.textAlign = 'left';
-        ctx.fillText('surface tension (2γ/r)', stLabelX, stLabelY + 3);
+        ctx.fillText(`${tr('surfaceTension', 'surface tension')} (2γ/r)`, stLabelX, stLabelY + 3);
 
         // Label inside bubble
         ctx.fillStyle = '#555';
         ctx.font = '10px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('gas inside', cx, cy - 8);
-        ctx.fillText('bubble', cx, cy + 4);
+        ctx.fillText(tr('gasInside', 'gas inside'), cx, cy - 8);
+        ctx.fillText(tr('bubble', 'bubble'), cx, cy + 4);
 
-        // Radial arrows from CENTER outward = P_amb + 2γ/r (pushes OUT)
+        // Radial arrows from center outward = p_amb + 2γ/r.
         const numArrows = 8;
         const innerArrowStart = R * 0.45;
         const innerArrowEnd = R - 5;
@@ -464,7 +483,7 @@ export class BubbleModel {
             ctx.stroke();
         }
 
-        // Outer arrows: from tissue toward surface = P_tissue (pushes IN)
+        // Outer arrows: from tissue toward surface = tissue pressure.
         const outerArrowStart = R + 30;
         const outerArrowEnd = R + 5;
 
@@ -499,10 +518,9 @@ export class BubbleModel {
 
         ctx.textAlign = 'left';
 
-        // Define P_bubble first
         ctx.fillStyle = '#3498db';
         ctx.font = 'bold 11px sans-serif';
-        ctx.fillText(`p_bubble = p_amb + 2γ/r`, tx, ty);
+        ctx.fillText(`${symbols.ambient} + 2γ/r`, tx, ty);
         ty += lineH;
         ctx.font = '10px sans-serif';
         ctx.fillStyle = '#666';
@@ -510,30 +528,39 @@ export class BubbleModel {
         ty += lineH - 4;
         ctx.fillStyle = '#888';
         ctx.font = '9px sans-serif';
-        ctx.fillText(`(r = ${b.radius} μm)  inside bubble, pushes OUT`, tx + 10, ty);
+        ctx.fillText(
+            `(r = ${fmtNum(b.radius, 1)}\u00a0μm)  ${tr('radiusInside', 'inside bubble, pushes OUT')}`,
+            tx + 10,
+            ty
+        );
 
         ty += lineH + 6;
         ctx.fillStyle = '#2ecc71';
         ctx.font = 'bold 11px sans-serif';
-        ctx.fillText(`p_tissue = ${fmtNum(pTissue, 2)}\u00a0bar`, tx, ty);
+        ctx.fillText(`${symbols.tissue} = ${fmtNum(pTissue, 2)}\u00a0bar`, tx, ty);
         ty += lineH;
         ctx.fillStyle = '#888';
         ctx.font = '9px sans-serif';
-        ctx.fillText('dissolved gas tension, pushes IN', tx + 10, ty);
+        ctx.fillText(tr('dissolvedGasTension', 'dissolved gas tension, pushes IN'), tx + 10, ty);
 
         ty += lineH + 8;
         ctx.font = 'bold 12px sans-serif';
         if (wouldGrow) {
             ctx.fillStyle = '#e74c3c';
-            ctx.fillText(`p_tissue > p_bubble`, tx, ty);
+            ctx.fillText(`${symbols.tissue} > ${symbols.ambient} + 2γ/r`, tx, ty);
             ty += lineH;
-            ctx.fillText('→ gas diffuses IN → GROWS', tx, ty);
+            ctx.fillText(tr('diffusesIn', '→ gas diffuses IN → GROWS'), tx, ty);
         } else {
             ctx.fillStyle = '#27ae60';
-            ctx.fillText(`p_tissue < p_bubble`, tx, ty);
+            ctx.fillText(`${symbols.tissue} < ${symbols.ambient} + 2γ/r`, tx, ty);
             ty += lineH;
-            ctx.fillText('→ gas diffuses OUT → SHRINKS', tx, ty);
+            ctx.fillText(tr('diffusesOut', '→ gas diffuses OUT → SHRINKS'), tx, ty);
         }
+    }
+
+    refreshLanguage() {
+        this.sliderLabel.textContent = tr('depth', 'Depth:');
+        this._render();
     }
 
     destroy() {}

@@ -403,7 +403,8 @@
                 "pressureLabel": "Presión:",
                 "high": "ALTA",
                 "low": "BAJA",
-                "flowDirection": "→ El gas fluye de presión ALTA a BAJA"
+                "flowDirection": "→ El gas fluye de presión ALTA a BAJA",
+                "flowDirectionAscent": "← El gas fluye de presión ALTA a BAJA (tejidos sobresaturados)"
             },
             "alveolarFormula": {
                 "summary": "Fórmula de la presión alveolar",
@@ -411,7 +412,7 @@
                 "where": "Donde:",
                 "pAmb": "presión ambiente a profundidad (bar)",
                 "pH2O": "presión del vapor de agua ≈ 0,0627 bar a 37 °C",
-                "fN2": "fracción de nitrógeno en el gas respirable (0.79 para aire)"
+                "fN2": "fracción de nitrógeno en el gas respirable (0,79 para aire)"
             }
         },
         "saturationDynamics": {
@@ -419,7 +420,8 @@
             "intro": "Entender cómo cambia la carga tisular a lo largo de la inmersión es clave para una descompresión segura:",
             "descent": {
                 "heading": "⬇️ a) Descenso — Absorción",
-                "text": "Al descender, la presión ambiente aumenta. La presión parcial de nitrógeno en los pulmones pasa a ser <strong>mayor que en los tejidos</strong>, así que el gas fluye <em>hacia</em> los tejidos. Todos los compartimentos empiezan a absorber nitrógeno, pero los <strong>tejidos rápidos se llenan primero</strong>."
+                "text": "Al descender, la presión ambiente aumenta. La presión parcial de nitrógeno en los pulmones pasa a ser <strong>mayor que en los tejidos</strong>, así que el gas fluye <em>hacia</em> los tejidos. Todos los compartimentos empiezan a absorber nitrógeno, pero los <strong>tejidos rápidos se llenan primero</strong>.",
+                "formula": "<var>p</var><sub>t</sub> &lt; <var>p</var><sub>alv</sub> → <strong>Absorción</strong>"
             },
             "atDepth": {
                 "heading": "➡️ b) En el fondo — Saturación diferencial",
@@ -428,7 +430,9 @@
             "ascent": {
                 "heading": "⬆️ c) Ascenso — Desgasificación y sobresaturación",
                 "text1": "Al ascender, la presión parcial de nitrógeno en los pulmones cae. Cuando la presión de nitrógeno del tejido supera la alveolar, el gradiente se invierte y el gas fluye <em>hacia fuera</em> — esto es la <strong>desgasificación</strong>.",
-                "text2": "Pero hay otro umbral: cuando la presión de nitrógeno del tejido supera la <strong>presión ambiente</strong>, el tejido está <em>sobresaturado</em>. En ese momento hay que tener cuidado — el gas disuelto tiende a salir de la disolución y podría formar burbujas."
+                "formulaPressure": "<var>p</var><sub>t</sub> &gt; <var>p</var><sub>alv</sub> → <strong>Desgasificación</strong>",
+                "text2": "Pero hay otro umbral: cuando la presión de nitrógeno del tejido supera la <strong>presión ambiente</strong>, el tejido está <em>sobresaturado</em>. En ese momento hay que tener cuidado — el gas disuelto tiende a salir de la disolución y podría formar burbujas.",
+                "formulaSupersaturation": "<var>p</var><sub>t</sub> &gt; <var>p</var><sub>amb</sub> → <strong>Sobresaturación</strong> ⚠️"
             },
             "critical": {
                 "heading": "⚠️ Sobresaturación crítica",
@@ -442,9 +446,26 @@
             "intro": "Sobre una burbuja de gas en un tejido actúan tres presiones:",
             "pAmb": "<strong>Presión ambiente (<var>p</var><sub>amb</sub>)</strong> — empuja la burbuja hacia dentro",
             "pSurface": "<strong>Tensión superficial (2<var>γ</var>/<var>r</var>)</strong> — la presión de Laplace, que también comprime la burbuja. Las burbujas más pequeñas tienen <em>más</em> tensión superficial.",
-            "pTissue": "<strong>Tensión del gas disuelto (<var>p</var><sub>tejido</sub>)</strong> — la presión total de los gases disueltos en el tejido circundante, que empuja el gas <em>hacia dentro</em> de la burbuja",
-            "insight": "Cuando <strong><var>p</var><sub>tejido</sub> &gt; <var>p</var><sub>amb</sub> + 2<var>γ</var>/<var>r</var></strong>, el gas se difunde hacia la burbuja y esta <strong>crece</strong>. Al crecer, <var>r</var> aumenta, la tensión superficial <em>disminuye</em> y el crecimiento se vuelve aún más fácil — un <strong>bucle de realimentación positiva</strong>.",
-            "sliderHint": "Usa el deslizador para ascender desde 30 m. Observa cómo, al reducir la presión ambiente, el equilibrio se inclina — las burbujas grandes cruzan antes el radio crítico."
+            "pTissue": "<strong>Tensión del gas disuelto (<var>p</var><sub>t</sub>)</strong> — la presión total de los gases disueltos en el tejido circundante, que empuja el gas <em>hacia dentro</em> de la burbuja",
+            "insight": "Cuando <strong><var>p</var><sub>t</sub> &gt; <var>p</var><sub>amb</sub> + 2<var>γ</var>/<var>r</var></strong>, el gas se difunde hacia la burbuja y esta <strong>crece</strong>. Al crecer, <var>r</var> aumenta, la tensión superficial <em>disminuye</em> y el crecimiento se vuelve aún más fácil — un <strong>bucle de realimentación positiva</strong>.",
+            "sliderHint": "Usa el deslizador para ascender desde 30 m. Observa cómo, al reducir la presión ambiente, el equilibrio se inclina — las burbujas grandes cruzan antes el radio crítico.",
+            "model": {
+                "depth": "Profundidad:",
+                "fixed": "fijo",
+                "critical": "crítico",
+                "pushesOut": "empuja hacia fuera",
+                "pushesIn": "empuja hacia dentro",
+                "grows": "CRECE ↑",
+                "shrinks": "SE ENCOGE ↓",
+                "surroundingTissue": "tejido circundante",
+                "surfaceTension": "tensión superficial",
+                "gasInside": "gas dentro de la",
+                "bubble": "burbuja",
+                "radiusInside": "dentro de la burbuja, empuja hacia fuera",
+                "dissolvedGasTension": "tensión del gas disuelto, empuja hacia dentro",
+                "diffusesIn": "→ el gas se difunde hacia dentro → CRECE",
+                "diffusesOut": "→ el gas se difunde hacia fuera → SE ENCOGE"
+            }
         },
         "halfTimeConcept": {
             "title": "El concepto de medio tiempo",
@@ -473,6 +494,18 @@
                 "info": "Saturado a <strong id=\"offgassing-depth-display\">30 m</strong> → Superficie (~0,79 bar)"
             },
             "footnote": "ℹ️ Ambas gráficas usan la misma profundidad y la misma fórmula de medio tiempo. La absorción y la desgasificación son simétricas — solo cambia el sentido.",
+            "chart": {
+                "tissuePressure": "pN₂ tisular",
+                "targetAlveolar": "Objetivo (alveolar)",
+                "targetSurface": "Objetivo (superficie)",
+                "initialSurface": "Inicial (superficie)",
+                "initialDepth": "Inicial (saturado a {depth})",
+                "halfTimes": "{value} medios tiempos",
+                "saturated": "{value} % saturado",
+                "desaturated": "{value} % desaturado",
+                "timeAxis": "Tiempo (medios tiempos)",
+                "pressureAxis": "pN₂ (bar)"
+            },
             "math": {
                 "summary": "Aprende más: las matemáticas",
                 "intro": "Las ecuaciones detrás de las curvas. Despliega para ver cómo Bühlmann modeló la presión tisular a profundidad constante y durante el ascenso.",
@@ -503,7 +536,7 @@
             "title": "Los compartimentos ZH-L16 de Bühlmann",
             "intro": "El modelo Bühlmann ZH-L16 utiliza <strong>16 compartimentos teóricos</strong> — son <em>constructos matemáticos</em> ajustados a datos experimentales, no tejidos anatómicos literales. Cubren un rango de medios tiempos diseñado para modelar todo el espectro de comportamientos tisulares:",
             "fast": "<strong>Compartimentos rápidos (5–12,5 min)</strong> — se saturan en minutos, pero también liberan gas deprisa",
-            "medium": "<strong>Compartimentos medios (18.5–77 min)</strong> — equilibrio entre carga y desgasificación",
+            "medium": "<strong>Compartimentos medios (18,5–77 min)</strong> — equilibrio entre carga y desgasificación",
             "slow": "<strong>Compartimentos lentos (109–635 min)</strong> — pueden tardar horas en saturarse por completo",
             "controllingTitle": "El compartimento de control",
             "controlling": "El <strong>compartimento de control</strong> es el que produce la profundidad tolerada más profunda con el GF aplicado y, por tanto, determina el techo de descompresión. No es necesariamente el compartimento con el GF instantáneo más alto, porque los compartimentos tienen distintos coeficientes de Bühlmann <var>a</var> y <var>b</var>."

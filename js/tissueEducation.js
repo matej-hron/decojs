@@ -4,11 +4,19 @@
  */
 
 import { fmtNum } from './format.js';
+import { translate } from './i18n.js';
 // Constants
 const WATER_VAPOR_PRESSURE = 0.0627; // bar at 37°C
 const SURFACE_PRESSURE = 1.01325; // 1 atm exactly
 const N2_FRACTION = 0.7902; // N2-equivalent fraction (accounts for argon)
 const SURFACE_ALVEOLAR_N2 = (SURFACE_PRESSURE - WATER_VAPOR_PRESSURE) * N2_FRACTION; // ~0.75 bar
+
+function tr(key, fallback, values = {}) {
+    return Object.entries(values).reduce(
+        (text, [name, value]) => text.replaceAll(`{${name}}`, value),
+        translate(key, fallback)
+    );
+}
 
 // Wait for DOM to be ready
 document.addEventListener('DOMContentLoaded', () => {
@@ -20,6 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
    Gas Pathway Visualization - Manual Toggle Control
    ========================================================================== */
 
+let pathwaySvg = null;
+let currentPathwayPhase = 'descent';
+
 function initGasPathway() {
     const svg = document.querySelector('.gas-pathway-svg');
     const descentBtn = document.getElementById('pathway-descent-btn');
@@ -27,19 +38,19 @@ function initGasPathway() {
     
     if (!svg || !descentBtn || !ascentBtn) return;
     
-    let currentPhase = 'descent';
+    pathwaySvg = svg;
     
     descentBtn.addEventListener('click', () => {
-        if (currentPhase === 'descent') return;
-        currentPhase = 'descent';
+        if (currentPathwayPhase === 'descent') return;
+        currentPathwayPhase = 'descent';
         descentBtn.classList.add('btn-active');
         ascentBtn.classList.remove('btn-active');
         updatePhase('descent', svg);
     });
     
     ascentBtn.addEventListener('click', () => {
-        if (currentPhase === 'ascent') return;
-        currentPhase = 'ascent';
+        if (currentPathwayPhase === 'ascent') return;
+        currentPathwayPhase = 'ascent';
         ascentBtn.classList.add('btn-active');
         descentBtn.classList.remove('btn-active');
         updatePhase('ascent', svg);
@@ -91,7 +102,12 @@ function updatePhase(phase, svg) {
         if (bloodPressure) bloodPressure.textContent = fmtNum(2.5, 1);
         
         // Update legend
-        if (flowDirection) flowDirection.textContent = '→ Gas flows from HIGH to LOW pressure';
+        if (flowDirection) {
+            flowDirection.textContent = tr(
+                'tissueLoading.gasExchange.svg.flowDirection',
+                '→ Gas flows from HIGH to LOW pressure'
+            );
+        }
         
         // Tissues filling
         animateTissueBars('descent', tissueFast, tissueMedium, tissueSlow);
@@ -120,7 +136,12 @@ function updatePhase(phase, svg) {
         if (bloodPressure) bloodPressure.textContent = fmtNum(1.2, 1);
         
         // Update legend - reversed: now tissues are HIGH
-        if (flowDirection) flowDirection.textContent = '← Gas flows from HIGH to LOW pressure (tissues supersaturated)';
+        if (flowDirection) {
+            flowDirection.textContent = tr(
+                'tissueLoading.gasExchange.svg.flowDirectionAscent',
+                '← Gas flows from HIGH to LOW pressure (tissues supersaturated)'
+            );
+        }
         
         // Tissues emptying
         animateTissueBars('ascent', tissueFast, tissueMedium, tissueSlow);
@@ -227,7 +248,7 @@ function initOngassingChart() {
             labels: initialData.halfTimes.map(t => fmtNum(t, 1)),
             datasets: [
                 {
-                    label: 'Tissue pN₂',
+                    label: tr('tissueLoading.halfTimeCharts.chart.tissuePressure', 'Tissue pN₂'),
                     data: initialData.pressures,
                     borderColor: '#3498db',
                     backgroundColor: 'rgba(52, 152, 219, 0.1)',
@@ -236,7 +257,7 @@ function initOngassingChart() {
                     pointRadius: 0
                 },
                 {
-                    label: 'Target (Alveolar)',
+                    label: tr('tissueLoading.halfTimeCharts.chart.targetAlveolar', 'Target (Alveolar)'),
                     data: initialData.halfTimes.map(() => initialTarget),
                     borderColor: '#27ae60',
                     borderDash: [5, 5],
@@ -244,7 +265,7 @@ function initOngassingChart() {
                     fill: false
                 },
                 {
-                    label: 'Initial (Surface)',
+                    label: tr('tissueLoading.halfTimeCharts.chart.initialSurface', 'Initial (Surface)'),
                     data: initialData.halfTimes.map(() => SURFACE_ALVEOLAR_N2),
                     borderColor: '#95a5a6',
                     borderDash: [3, 3],
@@ -272,14 +293,22 @@ function initOngassingChart() {
                 },
                 tooltip: {
                     callbacks: {
-                        title: (items) => `${items[0].label} half-times`,
+                        title: (items) => tr(
+                            'tissueLoading.halfTimeCharts.chart.halfTimes',
+                            '{value} half-times',
+                            { value: items[0].label }
+                        ),
                         label: (item) => {
                             const bar = `${item.dataset.label}: ${fmtNum(item.raw, 2)}\u00a0bar`;
                             if (item.datasetIndex === 0) {
                                 const target = getSaturatedTissuePpN2(currentDepth);
                                 const initial = SURFACE_ALVEOLAR_N2;
                                 const pct = fmtNum(((item.raw - initial) / (target - initial) * 100), 1);
-                                return `${bar} (${pct}% saturated)`;
+                                return `${bar} (${tr(
+                                    'tissueLoading.halfTimeCharts.chart.saturated',
+                                    '{value}% saturated',
+                                    { value: pct }
+                                )})`;
                             }
                             return bar;
                         }
@@ -290,7 +319,7 @@ function initOngassingChart() {
                 x: {
                     title: {
                         display: true,
-                        text: 'Time (half-times)',
+                        text: tr('tissueLoading.halfTimeCharts.chart.timeAxis', 'Time (half-times)'),
                         font: { size: 11 }
                     },
                     ticks: {
@@ -307,7 +336,7 @@ function initOngassingChart() {
                 y: {
                     title: {
                         display: true,
-                        text: 'pN₂ (bar)',
+                        text: tr('tissueLoading.halfTimeCharts.chart.pressureAxis', 'pN₂ (bar)'),
                         font: { size: 11 }
                     },
                     min: 0,
@@ -371,7 +400,7 @@ function initOffgassingChart() {
             labels: initialData.halfTimes.map(t => fmtNum(t, 1)),
             datasets: [
                 {
-                    label: 'Tissue pN₂',
+                    label: tr('tissueLoading.halfTimeCharts.chart.tissuePressure', 'Tissue pN₂'),
                     data: initialData.pressures,
                     borderColor: '#e74c3c',
                     backgroundColor: 'rgba(231, 76, 60, 0.1)',
@@ -380,7 +409,7 @@ function initOffgassingChart() {
                     pointRadius: 0
                 },
                 {
-                    label: 'Target (Surface)',
+                    label: tr('tissueLoading.halfTimeCharts.chart.targetSurface', 'Target (Surface)'),
                     data: initialData.halfTimes.map(() => SURFACE_ALVEOLAR_N2),
                     borderColor: '#27ae60',
                     borderDash: [5, 5],
@@ -388,7 +417,11 @@ function initOffgassingChart() {
                     fill: false
                 },
                 {
-                    label: `Initial (Saturated @ ${currentDepth}\u00a0m)`,
+                    label: tr(
+                        'tissueLoading.halfTimeCharts.chart.initialDepth',
+                        'Initial (Saturated @ {depth})',
+                        { depth: `${currentDepth}\u00a0m` }
+                    ),
                     data: initialData.halfTimes.map(() => initialTissuePpN2),
                     borderColor: '#95a5a6',
                     borderDash: [3, 3],
@@ -416,14 +449,22 @@ function initOffgassingChart() {
                 },
                 tooltip: {
                     callbacks: {
-                        title: (items) => `${items[0].label} half-times`,
+                        title: (items) => tr(
+                            'tissueLoading.halfTimeCharts.chart.halfTimes',
+                            '{value} half-times',
+                            { value: items[0].label }
+                        ),
                         label: (item) => {
                             const bar = `${item.dataset.label}: ${fmtNum(item.raw, 2)}\u00a0bar`;
                             if (item.datasetIndex === 0) {
                                 const initial = getSaturatedTissuePpN2(currentDepth);
                                 const target = SURFACE_ALVEOLAR_N2;
                                 const pct = fmtNum(((initial - item.raw) / (initial - target) * 100), 1);
-                                return `${bar} (${pct}% desaturated)`;
+                                return `${bar} (${tr(
+                                    'tissueLoading.halfTimeCharts.chart.desaturated',
+                                    '{value}% desaturated',
+                                    { value: pct }
+                                )})`;
                             }
                             return bar;
                         }
@@ -434,7 +475,7 @@ function initOffgassingChart() {
                 x: {
                     title: {
                         display: true,
-                        text: 'Time (half-times)',
+                        text: tr('tissueLoading.halfTimeCharts.chart.timeAxis', 'Time (half-times)'),
                         font: { size: 11 }
                     },
                     ticks: {
@@ -451,7 +492,7 @@ function initOffgassingChart() {
                 y: {
                     title: {
                         display: true,
-                        text: 'pN₂ (bar)',
+                        text: tr('tissueLoading.halfTimeCharts.chart.pressureAxis', 'pN₂ (bar)'),
                         font: { size: 11 }
                     },
                     min: 0,
@@ -494,8 +535,38 @@ function updateOffgassingChart() {
         offgassingChart.data.datasets[0].data = data.pressures;
         offgassingChart.data.datasets[1].data = data.halfTimes.map(() => SURFACE_ALVEOLAR_N2);
         offgassingChart.data.datasets[2].data = data.halfTimes.map(() => initialTissuePpN2);
-        offgassingChart.data.datasets[2].label = `Initial (Saturated @ ${currentDepth}\u00a0m)`;
+        offgassingChart.data.datasets[2].label = tr(
+            'tissueLoading.halfTimeCharts.chart.initialDepth',
+            'Initial (Saturated @ {depth})',
+            { depth: `${currentDepth}\u00a0m` }
+        );
         offgassingChart.options.scales.y.max = Math.max(3.5, initialTissuePpN2 + 0.5);
+        offgassingChart.update('none');
+    }
+}
+
+export function refreshTissueEducationLanguage() {
+    if (pathwaySvg) updatePhase(currentPathwayPhase, pathwaySvg);
+
+    if (ongassingChart) {
+        ongassingChart.data.datasets[0].label = tr('tissueLoading.halfTimeCharts.chart.tissuePressure', 'Tissue pN₂');
+        ongassingChart.data.datasets[1].label = tr('tissueLoading.halfTimeCharts.chart.targetAlveolar', 'Target (Alveolar)');
+        ongassingChart.data.datasets[2].label = tr('tissueLoading.halfTimeCharts.chart.initialSurface', 'Initial (Surface)');
+        ongassingChart.options.scales.x.title.text = tr('tissueLoading.halfTimeCharts.chart.timeAxis', 'Time (half-times)');
+        ongassingChart.options.scales.y.title.text = tr('tissueLoading.halfTimeCharts.chart.pressureAxis', 'pN₂ (bar)');
+        ongassingChart.update('none');
+    }
+
+    if (offgassingChart) {
+        offgassingChart.data.datasets[0].label = tr('tissueLoading.halfTimeCharts.chart.tissuePressure', 'Tissue pN₂');
+        offgassingChart.data.datasets[1].label = tr('tissueLoading.halfTimeCharts.chart.targetSurface', 'Target (Surface)');
+        offgassingChart.data.datasets[2].label = tr(
+            'tissueLoading.halfTimeCharts.chart.initialDepth',
+            'Initial (Saturated @ {depth})',
+            { depth: `${currentDepth}\u00a0m` }
+        );
+        offgassingChart.options.scales.x.title.text = tr('tissueLoading.halfTimeCharts.chart.timeAxis', 'Time (half-times)');
+        offgassingChart.options.scales.y.title.text = tr('tissueLoading.halfTimeCharts.chart.pressureAxis', 'pN₂ (bar)');
         offgassingChart.update('none');
     }
 }

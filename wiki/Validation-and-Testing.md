@@ -6,7 +6,7 @@ npm test
 
 Runs `node tests/run-tests.mjs`. No external test framework — `tests/run-tests.mjs` implements `describe`/`test`/`expect` inline (lines 10–140) with matchers `.toBe`, `.toEqual`, `.toBeCloseTo`, `.toBeGreaterThan`, `.toBeLessThan`, `.toHaveProperty`, `.toHaveLength`, `.toBeDefined`. Output is one line per test, then a pass/fail summary.
 
-**540 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
+**544 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
 
 `npm test` is required to pass before every commit per `CLAUDE.md`.
 
@@ -121,6 +121,12 @@ their reveal labels, warning text, and decimal formatting after i18n
 initialization and every language change. The Czech VENTID-C list retains each
 original English symptom name beside its Czech explanation so the initials
 remain meaningful.
+
+The tissue-loading regressions require a content wrapper that prevents the
+sticky table of contents from setting the first section's grid-row height.
+They also enforce canonical localized tissue-pressure subscripts, the
+registered `h`, `γ`, and `r` symbols, upright exponential `e`, non-breaking
+micrometre units in the bubble canvas, and translated chart labels.
 
 The transfilling sandbox regressions require locale-aware runtime formatting,
 the glossary's upright `l` symbol, localized final-pressure subscripts and
