@@ -2318,7 +2318,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.145";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.147";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -4802,7 +4802,7 @@ textarea.form-input {
 .gas-pathway-svg .stage-box {
     stroke: var(--primary-color);
     stroke-width: 2;
-    fill: url(#pressureGradientDescent);
+    fill: #78a8ce;
     transition: fill 0.5s ease;
 }
 
@@ -4832,11 +4832,12 @@ textarea.form-input {
 }
 
 .gas-pathway-svg .legend-text {
-    font-size: 11px;
+    font-size: 14px;
     fill: var(--text-muted);
 }
 
 .gas-pathway-svg .legend-direction {
+    font-size: 12px;
     font-weight: 600;
     fill: var(--primary-color);
 }
@@ -4853,8 +4854,7 @@ textarea.form-input {
     transition: fill 0.3s ease, display 0.3s ease;
 }
 
-.gas-pathway-svg .gradient-bar {
-    fill: url(#pressureGradientDescent);
+.gas-pathway-svg .pressure-step {
     transition: fill 0.5s ease;
 }
 
@@ -5160,6 +5160,26 @@ textarea.form-input {
 .sandbox-link:hover {
     text-decoration: underline;
     color: var(--accent-hover, #3498db);
+}
+
+.bubble-sandbox-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    color: white;
+    background: var(--primary-color);
+    border-radius: var(--radius);
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.bubble-sandbox-cta:hover {
+    color: white;
+    background: var(--primary-dark, #1f6391);
+    transform: translateY(-1px);
 }
 
 /* ==========================================================================

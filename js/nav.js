@@ -22,6 +22,7 @@ const NAV_ITEMS = [
             { href: 'sandbox/index.html', labelKey: 'nav.sandbox.deco', label: 'Decompression Modelling' },
             { href: 'sandbox/repetitive-dives.html', labelKey: 'nav.sandbox.repetitive', label: 'Repetitive Dives' },
             { href: 'sandbox/tissue-saturation.html', labelKey: 'nav.sandbox.tissue', label: 'Tissue Saturation' },
+            { href: 'sandbox/bubble-mechanics.html', labelKey: 'nav.sandbox.bubbles', label: 'Bubble Mechanics' },
             { href: 'sandbox/haldane.html', labelKey: 'nav.sandbox.haldane', label: 'Haldane Equation' },
             { href: 'sandbox/m-values.html', labelKey: 'nav.sandbox.mvalues', label: 'M-Value Sandbox' },
             { href: 'sandbox/transfilling.html', labelKey: 'nav.sandbox.transfill', label: 'Cylinder Transfilling' },

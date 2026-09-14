@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bubble Mechanics Sandbox - Deco Theory</title>
+
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#2980b9">
+    <link rel="icon" type="image/svg+xml" href="../icons/icon.svg">
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <style>
+        .bubble-sandbox-page {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        .bubble-sandbox-instructions {
+            max-width: 80ch;
+            margin: 0 auto 1.25rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .bubble-sandbox-shell {
+            position: relative;
+            padding: 1.25rem;
+            overflow: auto;
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .bubble-sandbox-model {
+            width: max-content;
+            min-width: 100%;
+        }
+
+        .bubble-sandbox-back {
+            display: inline-block;
+            margin-top: 1.25rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .bubble-sandbox-back:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 700px) {
+            .bubble-sandbox-page {
+                padding: 0.75rem;
+            }
+
+            .bubble-sandbox-shell {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body data-i18n-title="sandbox.bubble.title">
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo"><svg class="icon" aria-hidden="true"><use href="../icons/sprite.svg#bubble"/></svg> Deco Theory</a>
+            <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links"></ul>
+        </div>
+    </nav>
+
+    <div class="disclaimer-banner" data-i18n="sandbox.dive.disclaimerBanner">
+        <strong>Educational Use Only</strong> — This tool is not intended for real dive planning.
+    </div>
+
+    <header class="hero hero-compact">
+        <h1 data-i18n="sandbox.bubble.title">🫧 Bubble Mechanics Sandbox</h1>
+        <p class="hero-subtitle" data-i18n="sandbox.bubble.subtitle">
+            See how depth, pressure inside a bubble, and dissolved gas tension determine whether bubbles grow or shrink.
+        </p>
+    </header>
+
+    <main class="bubble-sandbox-page">
+        <p class="bubble-sandbox-instructions" data-i18n="sandbox.bubble.instructions">
+            Use the slider to ascend from 30&nbsp;m toward the surface. The upper diagram explains the pressure balance;
+            the lower view compares three representative initial bubble sizes.
+        </p>
+
+        <section id="bubble-sandbox-shell" class="bubble-sandbox-shell">
+            <div id="bubble-model-container" class="bubble-sandbox-model"></div>
+        </section>
+
+        <a href="../tissue-loading.html#bubble-mechanics" class="bubble-sandbox-back"
+           data-i18n="sandbox.bubble.backToTheory">← Back to Tissue Loading theory</a>
+    </main>
+
+    <footer>
+        <p data-i18n="footer.text">Educational visualization only. Not for dive planning.</p>
+        <span class="version-number"></span>
+    </footer>
+
+    <script type="module">
+        import { BubbleModel } from '../js/charts/BubbleModel.js';
+        import { initI18n, createLanguageSwitcher } from '../js/i18n.js';
+
+        const model = new BubbleModel(
+            document.getElementById('bubble-model-container'),
+            {
+                saturatedDepth: 30,
+                mainWidth: 1000,
+                rowHeight: 120,
+                teachingWidth: 900
+            }
+        );
+
+        createLanguageSwitcher();
+        initI18n().then(() => model.refreshLanguage());
+        document.addEventListener('languagechange', () => model.refreshLanguage());
+    </script>
+    <script src="../js/nav.js" type="module"></script>
+</body>
+</html>
