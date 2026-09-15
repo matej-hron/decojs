@@ -11,15 +11,13 @@ export function calculateCeilingTimeSeries(
 )
 ```
 
-This profile-chart entry point requests `current-depth` mode, preserving the
-staged active-GF ceiling used to visualize the actual ascent. Tissue inspection
-uses the detailed version:
+This wrapper returns the same ramp-ceiling envelope used by the detailed
+per-compartment result:
 
 ```javascript
 // js/decoModel.js:510 (signature)
 export function calculateCeilingTimeSeriesDetailed(
-    results, gfLow, gfHigh = gfLow, providedPAnchor = null,
-    ceilingMode = 'ramp'
+    results, gfLow, gfHigh = gfLow, providedPAnchor = null
 )
 ```
 
@@ -92,7 +90,7 @@ Only a failed direct ascent invokes the GF Low first-stop search.
 
 **Why `pAnchor` must come from outside when possible**: it is a property of the *ascent* — of the tissue state right before the diver starts heading up. It is not recomputed per timepoint because that would produce a different value at every sample and cause the displayed ceiling to disagree with the scheduler's ceiling. Passing it in from `generateDecoSchedule` (or having both call sites use `findFirstStopAtGFLow`) guarantees chart-and-scheduler consistency.
 
-### 3. Per-timepoint ceiling mode
+### 3. Per-timepoint ramp ceiling
 
 ```javascript
 // js/decoModel.js (calculateCeilingTimeSeriesDetailed)
@@ -105,13 +103,11 @@ for (let i = 0; i < results.timePoints.length; i++) {
     let maxCeilingDepth = 0;
     for (const comp of COMPARTMENTS) {
         const tissueP = tissuePressures[comp.id];
-        const intersection = ceilingMode === 'ramp'
-            ? getCompartmentCeilingOnGFRamp(
-                tissueP, comp.aN2, comp.bN2,
-                gfLow, gfHigh, pAnchor,
-                surfacePressure, pressurePerMeter
-            )
-            : getCompartmentCeiling(tissueP, comp.aN2, comp.bN2, currentGF);
+        const intersection = getCompartmentCeilingOnGFRamp(
+            tissueP, comp.aN2, comp.bN2,
+            gfLow, gfHigh, pAnchor,
+            surfacePressure, pressurePerMeter
+        );
         const ceilingDepth = intersection.depth;
         compartmentCeilings[comp.id].push(ceilingDepth);
         if (ceilingDepth > maxCeilingDepth) maxCeilingDepth = ceilingDepth;
@@ -123,39 +119,33 @@ for (let i = 0; i < results.timePoints.length; i++) {
 
 Per iteration:
 
-- In `ramp` mode, solve each compartment's intersection with the complete GF boundary.
+- Solve each compartment's intersection with the complete GF boundary.
   If its fixed-GF-Low ceiling is at or deeper than `pAnchor`, that value is
   valid. If it lies shallower than `pAnchor`, solve the intersection with the
   GF ramp instead.
 - This choice depends on the **ceiling pressure**, not the diver's current
   depth. Once the anchor exists, a bottom-time tissue can therefore already
   have a ceiling on the ramp.
-- In `current-depth` mode, use GF Low before/at the anchor and interpolate GF
-  from the diver's current ambient pressure above it. This is the profile
-  overlay used alongside the staged stop schedule.
 - A profile without an anchor uses $GF_{high}$ throughout. Equal GF Low and
   GF High values reduce to the ordinary fixed-GF calculation.
 - Overall ceiling is the max (deepest) across all compartments.
 
 ## Pre-ascent behavior
 
-In tissue-inspection `ramp` mode, descent and bottom-time samples already use
-the complete piecewise GF boundary. GF Low still determines the anchor, but it
-is not extrapolated into pressures shallower than that anchor.
-
-In profile `current-depth` mode, descent and bottom time retain GF Low so the
-overlay remains aligned with the staged ascent and first-stop presentation.
+Descent and bottom-time samples already use the complete piecewise GF boundary.
+GF Low still determines the anchor, but it is not extrapolated into pressures
+shallower than that anchor.
 For a direct-ascent profile there is no GF ramp, so the complete time series
 uses $GF_{high}$. The displayed value uses the tissue state at that sample; it
 does not predict additional on/off-gassing during a future ascent.
 
 ## Visual output
 
-- **DiveProfileChart profile mode** takes the `current-depth` `ceilingDepths`
-  and draws a red line aligned with the staged ascent.
-- **DiveProfileChart tissue-loading mode** uses `ramp`
-  `compartmentCeilings[compId]`, so each dashed tissue ceiling matches the
-  M-value ruler's complete-GF-boundary intersection.
+- **DiveProfileChart profile mode** draws `ceilingDepths`, the maximum of all
+  16 ramp-intersection ceilings.
+- **DiveProfileChart tissue-loading mode** draws the corresponding
+  `compartmentCeilings[compId]`, so their visible envelope exactly matches the
+  profile ceiling and the M-value ruler.
 
 ## Consistency with the scheduler
 

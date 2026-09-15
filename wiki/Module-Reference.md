@@ -93,8 +93,8 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 | Signature | Line | Description |
 |---|---|---|
 | `calculateTissueLoading(profile, surfaceInterval=60, options={})` | 1645 | Main entry: walks the waypoint array at `CALC_INTERVAL` resolution. `options.surfacePressure` controls atmospheric pressure and initial equilibrium; `options.pressurePerMeter` controls hydrostatic conversion. Both resolved values are returned on `results`. |
-| `calculateCeilingTimeSeries(results, gfLow, gfHigh=gfLow, providedPAnchor=null)` | 483 | Profile-overlay ceilings using staged current-depth GF interpolation; a surface anchor means GF High applies throughout |
-| `calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh, providedPAnchor=null, ceilingMode='ramp')` | 510 | Returns per-compartment ceilings plus `gfValues` and `pAnchor`. `ramp` mode matches the M-value ruler; `current-depth` mode preserves the staged profile overlay. |
+| `calculateCeilingTimeSeries(results, gfLow, gfHigh=gfLow, providedPAnchor=null)` | 483 | Profile ceiling as the envelope of all per-compartment GF-ramp intersections; a surface anchor means GF High applies throughout |
+| `calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh, providedPAnchor=null)` | 510 | Returns the same ramp-ceiling envelope, all per-compartment ramp ceilings, the controlling intersection's `gfValues`, and `pAnchor`. |
 
 **Implementation notes**
 

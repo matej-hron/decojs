@@ -2768,7 +2768,7 @@ describe('decoModel', () => {
             expect(tc1GFLowDepth).toBeCloseTo(6.662, 3);
         });
 
-        test('profile ceiling keeps the staged active-GF behavior', () => {
+        test('profile ceiling is the envelope of the compartment ramp ceilings', () => {
             const profile = [
                 { time: 0, depth: 0 },
                 { time: 2, depth: 40 },
@@ -2776,28 +2776,25 @@ describe('decoModel', () => {
                 { time: 30, depth: 0 }
             ];
             const results = calculateTissueLoading(profile, 0);
-            const ceilingsGFLowOnly = calculateCeilingTimeSeries(
-                results,
-                0.5,
-                0.5
+            const pAnchor = 2.21325;
+            const profileCeilings = calculateCeilingTimeSeries(
+                results, 0.5, 0.85, pAnchor
             );
-            const ceilingsGFInterp = calculateCeilingTimeSeries(
-                results,
-                0.5,
-                0.85
+            const detailed = calculateCeilingTimeSeriesDetailed(
+                results, 0.5, 0.85, pAnchor
             );
 
-            const bottomIdx = results.timePoints.findIndex(t => t >= 15);
-            expect(ceilingsGFLowOnly[bottomIdx])
-                .toBeCloseTo(ceilingsGFInterp[bottomIdx], 1);
-
-            const belowAnchorIdx = results.timePoints.findIndex(t => t >= 25);
-            expect(ceilingsGFLowOnly[belowAnchorIdx])
-                .toBeCloseTo(ceilingsGFInterp[belowAnchorIdx], 1);
-
-            const aboveAnchorIdx = results.timePoints.findIndex(t => t >= 29.5);
-            expect(ceilingsGFInterp[aboveAnchorIdx])
-                .toBeLessThan(ceilingsGFLowOnly[aboveAnchorIdx]);
+            for (let i = 0; i < profileCeilings.length; i++) {
+                const compartmentEnvelope = Math.max(
+                    ...Object.values(detailed.compartmentCeilings)
+                        .map(values => values[i])
+                );
+                expect(profileCeilings[i]).toBeCloseTo(compartmentEnvelope, 12);
+                expect(profileCeilings[i]).toBeCloseTo(
+                    detailed.ceilingDepths[i],
+                    12
+                );
+            }
         });
 
         test('defaults gfHigh to gfLow if not provided', () => {

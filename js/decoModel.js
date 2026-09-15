@@ -731,7 +731,7 @@ export function calculateCeilingTimeSeries(
     results, gfLow, gfHigh = gfLow, providedPAnchor = null
 ) {
     const { ceilingDepths } = calculateCeilingTimeSeriesDetailed(
-        results, gfLow, gfHigh, providedPAnchor, 'current-depth'
+        results, gfLow, gfHigh, providedPAnchor
     );
     return ceilingDepths;
 }
@@ -751,8 +751,6 @@ export function calculateCeilingTimeSeries(
  * @param {number} gfLow - GF Low value (0-1, where 1 = 100%)
  * @param {number} gfHigh - GF High value (0-1, where 1 = 100%)
  * @param {number} [providedPAnchor] - Pre-computed pAnchor from deco schedule (optional)
- * @param {'ramp'|'current-depth'} [ceilingMode='ramp'] - Ramp intersections for
- *        tissue inspection, or the staged active-GF ceiling for the profile
  * @returns {{ceilingDepths: number[], compartmentCeilings: Object, gfValues: number[], pAnchor: number}}
  *          ceilingDepths: overall ceiling at each time point
  *          compartmentCeilings: {compId: number[]} ceiling depth per compartment at each time point
@@ -763,8 +761,7 @@ export function calculateCeilingTimeSeriesDetailed(
     results,
     gfLow,
     gfHigh = gfLow,
-    providedPAnchor = null,
-    ceilingMode = 'ramp'
+    providedPAnchor = null
 ) {
     const ceilingDepths = [];
     const compartmentCeilings = {};
@@ -780,8 +777,6 @@ export function calculateCeilingTimeSeriesDetailed(
     
     // Track maximum depth for pAnchor detection.
     let maxDepthSeen = results.depthPoints[0];
-    let previousDepth = results.depthPoints[0];
-    let ascentStarted = false;
     let pAnchor = providedPAnchor;
     
     // Find max depth
@@ -826,65 +821,28 @@ export function calculateCeilingTimeSeriesDetailed(
     
     // Process each time point
     for (let i = 0; i < results.timePoints.length; i++) {
-        const currentDepth = results.depthPoints[i];
-        const currentAmbient = results.ambientPressures[i];
-
         // Get tissue pressures at this time point
         const tissuePressures = {};
         for (const compId of Object.keys(results.compartments)) {
             tissuePressures[compId] = results.compartments[compId].pressures[i];
         }
 
-        const isAscending = currentDepth < previousDepth;
-        if (isAscending && !ascentStarted && currentDepth < maxDepthSeen) {
-            ascentStarted = true;
-        }
-        let currentGF;
-        if (pAnchor <= surfacePressure + 1e-9) {
-            currentGF = gfHigh;
-        } else if (!ascentStarted || currentAmbient >= pAnchor) {
-            currentGF = gfLow;
-        } else {
-            currentGF = interpolateGF(
-                currentAmbient,
-                pAnchor,
-                gfLow,
-                gfHigh,
-                surfacePressure
-            );
-        }
-
         let maxCeilingDepth = 0;
-        let controllingGF = currentGF;
+        let controllingGF = pAnchor <= surfacePressure + 1e-9
+            ? gfHigh
+            : gfLow;
         for (const comp of COMPARTMENTS) {
             const tissueP = tissuePressures[comp.id];
-            const intersection = ceilingMode === 'ramp'
-                ? getCompartmentCeilingOnGFRamp(
-                    tissueP,
-                    comp.aN2,
-                    comp.bN2,
-                    gfLow,
-                    gfHigh,
-                    pAnchor,
-                    surfacePressure,
-                    pressurePerMeter
-                )
-                : {
-                    pressure: getCompartmentCeiling(
-                        tissueP,
-                        comp.aN2,
-                        comp.bN2,
-                        currentGF
-                    ),
-                    gf: currentGF
-                };
-            if (intersection.depth === undefined) {
-                intersection.depth = Math.max(
-                    0,
-                    (intersection.pressure - surfacePressure)
-                        / pressurePerMeter
-                );
-            }
+            const intersection = getCompartmentCeilingOnGFRamp(
+                tissueP,
+                comp.aN2,
+                comp.bN2,
+                gfLow,
+                gfHigh,
+                pAnchor,
+                surfacePressure,
+                pressurePerMeter
+            );
             const ceilingDepth = intersection.depth;
             compartmentCeilings[comp.id].push(ceilingDepth);
             if (ceilingDepth > maxCeilingDepth) {
@@ -895,7 +853,6 @@ export function calculateCeilingTimeSeriesDetailed(
 
         ceilingDepths.push(maxCeilingDepth);
         gfValues.push(controllingGF);
-        previousDepth = currentDepth;
     }
     
     return { ceilingDepths, compartmentCeilings, gfValues, pAnchor };
