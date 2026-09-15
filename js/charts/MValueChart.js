@@ -71,55 +71,16 @@ export function calculateMValueRulerIntersections({
     const low = intersection(gfLow);
     const high = intersection(gfHigh);
 
-    let rampedGF;
-    if (pAnchor <= surfacePressure) {
-        rampedGF = high;
-    } else if (Math.abs(gfHigh - gfLow) < 1e-12) {
-        rampedGF = low;
-    } else if (low.pressure >= pAnchor) {
-        rampedGF = low;
-    } else if (high.pressure <= surfacePressure) {
-        rampedGF = high;
-    } else {
-        let lower = surfacePressure;
-        let upper = pAnchor;
-        for (let i = 0; i < 80; i++) {
-            const pressure = (lower + upper) / 2;
-            const gf = interpolateGF(
-                pressure,
-                pAnchor,
-                gfLow,
-                gfHigh,
-                surfacePressure
-            );
-            const adjustedM = getAdjustedMValue(
-                pressure,
-                compartment.aN2,
-                compartment.bN2,
-                gf
-            );
-            if (adjustedM < tissuePressure) {
-                lower = pressure;
-            } else {
-                upper = pressure;
-            }
-        }
-        const pressure = (lower + upper) / 2;
-        rampedGF = {
-            pressure,
-            depth: Math.max(
-                0,
-                (pressure - surfacePressure) / pressurePerMeter
-            ),
-            gf: interpolateGF(
-                pressure,
-                pAnchor,
-                gfLow,
-                gfHigh,
-                surfacePressure
-            )
-        };
-    }
+    const rampedGF = getCompartmentCeilingOnGFRamp(
+        tissuePressure,
+        compartment.aN2,
+        compartment.bN2,
+        gfLow,
+        gfHigh,
+        pAnchor,
+        surfacePressure,
+        pressurePerMeter
+    );
 
     return {
         gfLow: low,
@@ -132,6 +93,7 @@ import {
     getMValue,
     getAdjustedMValue,
     getCompartmentCeiling,
+    getCompartmentCeilingOnGFRamp,
     interpolateGF,
     getSurfacePressure,
     getPressurePerMeter,

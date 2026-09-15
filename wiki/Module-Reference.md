@@ -64,6 +64,7 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 | `calculateMaxGF(tissues, ambient)` | Returns `{gfMax, leadingCompartment, allGFs}` across supersaturated tissues; when all tissues satisfy $P_t \le P_{amb}$, returns `gfMax: 0` and `leadingCompartment: null` while preserving raw negative values in `allGFs` |
 | `findFirstStopAtGFLow(tissues, depth, n2, gfLow, stopIncrement, ascentRate, gasSwitchPoints, surfacePressure, recordDecision, pressurePerMeter)` | The convention's first-stop search: shallowest stop-grid depth where the dive ceiling at GF_low is satisfied after simulated ascent. Returns `{anchorDepth, pAnchor, tissuesAtAnchor}`. **The canonical pAnchor source** used by `generateDecoSchedule`, `calculateCeilingTimeSeriesDetailed`, `MValueChart`, and `GFChart`. See [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md). |
 | `interpolateGF(ambient, pAnchor, gfLow, gfHigh, surfacePressure=1.01325)` | Linear ramp from GF-low at pAnchor to GF-high at the selected surface pressure |
+| `getCompartmentCeilingOnGFRamp(tissuePressure, a, b, gfLow, gfHigh, pAnchor, surfacePressure=1.01325, pressurePerMeter=0.1)` | Solves one compartment's ceiling against the complete piecewise GF boundary. Uses GF Low only for an intersection at/deeper than `pAnchor`; otherwise solves the GF-ramp intersection. |
 | `getFirstStopDepth(tissues, gfLow, stopIncrement=3)` | Static (no ascent simulation): rounds the current dive ceiling at GF_low up to the stop grid. Used for quick lookups; the deco scheduler uses `findFirstStopAtGFLow` instead. |
 
 **Exports — NDL & deco scheduling**
@@ -92,8 +93,8 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 | Signature | Line | Description |
 |---|---|---|
 | `calculateTissueLoading(profile, surfaceInterval=60, options={})` | 1645 | Main entry: walks the waypoint array at `CALC_INTERVAL` resolution. `options.surfacePressure` controls atmospheric pressure and initial equilibrium; `options.pressurePerMeter` controls hydrostatic conversion. Both resolved values are returned on `results`. |
-| `calculateCeilingTimeSeries(results, gfLow, gfHigh=gfLow, providedPAnchor=null)` | 483 | Flat array of ceiling depths at each time point; a surface anchor means GF High applies throughout |
-| `calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh, providedPAnchor=null)` | 510 | Returns per-compartment ceiling series plus `gfValues` and `pAnchor`; performs the GF High direct-ascent decision when no anchor is supplied |
+| `calculateCeilingTimeSeries(results, gfLow, gfHigh=gfLow, providedPAnchor=null)` | 483 | Profile-overlay ceilings using staged current-depth GF interpolation; a surface anchor means GF High applies throughout |
+| `calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh, providedPAnchor=null, ceilingMode='ramp')` | 510 | Returns per-compartment ceilings plus `gfValues` and `pAnchor`. `ramp` mode matches the M-value ruler; `current-depth` mode preserves the staged profile overlay. |
 
 **Implementation notes**
 
