@@ -11,16 +11,11 @@ export function calculateCeilingTimeSeries(
 )
 ```
 
-This profile-chart entry point requests `current-depth` mode, preserving the
-staged active-GF ceiling used to visualize the actual ascent. Tissue inspection
-uses the detailed version:
+Thin wrapper returning only the overall `ceilingDepths` array. Most callers want the detailed version:
 
 ```javascript
 // js/decoModel.js:510 (signature)
-export function calculateCeilingTimeSeriesDetailed(
-    results, gfLow, gfHigh = gfLow, providedPAnchor = null,
-    ceilingMode = 'ramp'
-)
+export function calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh = gfLow, providedPAnchor = null)
 ```
 
 Both functions read `results.surfacePressure`, produced by
@@ -36,7 +31,7 @@ Returns:
     1: [0, 0, ..., 1.2, 2.1, ...],
     2: [...], ..., 16: [...]
   },
-  gfValues: [...],             // GF at the controlling ceiling intersection
+  gfValues: [...],             // GF in effect at each time point (for debugging)
   pAnchor: 2.40                // the anchor pressure actually used
 }
 ```
@@ -92,70 +87,71 @@ Only a failed direct ascent invokes the GF Low first-stop search.
 
 **Why `pAnchor` must come from outside when possible**: it is a property of the *ascent* — of the tissue state right before the diver starts heading up. It is not recomputed per timepoint because that would produce a different value at every sample and cause the displayed ceiling to disagree with the scheduler's ceiling. Passing it in from `generateDecoSchedule` (or having both call sites use `findFirstStopAtGFLow`) guarantees chart-and-scheduler consistency.
 
-### 3. Per-timepoint ceiling mode
+### 3. Per-timepoint GF and ceiling
 
 ```javascript
-// js/decoModel.js (calculateCeilingTimeSeriesDetailed)
+// js/decoModel.js:668-710
 for (let i = 0; i < results.timePoints.length; i++) {
+    const currentDepth = results.depthPoints[i];
+    const currentAmbient = results.ambientPressures[i];
+
     const tissuePressures = {};
     for (const compId of Object.keys(results.compartments)) {
         tissuePressures[compId] = results.compartments[compId].pressures[i];
     }
 
+    const isAscending = currentDepth < previousDepth;
+    if (isAscending && !ascentStarted && currentDepth < maxDepthSeen) {
+        ascentStarted = true;
+    }
+
+    let gf;
+    if (pAnchor <= surfacePressure) {
+        gf = gfHigh;
+    } else if (!ascentStarted || currentAmbient >= pAnchor) {
+        gf = gfLow;
+    } else {
+        gf = interpolateGF(currentAmbient, pAnchor, gfLow, gfHigh);
+    }
+    gfValues.push(gf);
+
     let maxCeilingDepth = 0;
     for (const comp of COMPARTMENTS) {
         const tissueP = tissuePressures[comp.id];
-        const intersection = ceilingMode === 'ramp'
-            ? getCompartmentCeilingOnGFRamp(
-                tissueP, comp.aN2, comp.bN2,
-                gfLow, gfHigh, pAnchor,
-                surfacePressure, pressurePerMeter
-            )
-            : getCompartmentCeiling(tissueP, comp.aN2, comp.bN2, currentGF);
-        const ceilingDepth = intersection.depth;
+        const ceilingPressure = getCompartmentCeiling(tissueP, comp.aN2, comp.bN2, gf);
+        const ceilingDepth = Math.max(
+            0,
+            (ceilingPressure - surfacePressure) / pressurePerMeter
+        );
         compartmentCeilings[comp.id].push(ceilingDepth);
         if (ceilingDepth > maxCeilingDepth) maxCeilingDepth = ceilingDepth;
     }
 
     ceilingDepths.push(maxCeilingDepth);
+    previousDepth = currentDepth;
 }
 ```
 
 Per iteration:
 
-- In `ramp` mode, solve each compartment's intersection with the complete GF boundary.
-  If its fixed-GF-Low ceiling is at or deeper than `pAnchor`, that value is
-  valid. If it lies shallower than `pAnchor`, solve the intersection with the
-  GF ramp instead.
-- This choice depends on the **ceiling pressure**, not the diver's current
-  depth. Once the anchor exists, a bottom-time tissue can therefore already
-  have a ceiling on the ramp.
-- In `current-depth` mode, use GF Low before/at the anchor and interpolate GF
-  from the diver's current ambient pressure above it. This is the profile
-  overlay used alongside the staged stop schedule.
-- A profile without an anchor uses $GF_{high}$ throughout. Equal GF Low and
-  GF High values reduce to the ordinary fixed-GF calculation.
+- Decide which GF to use. A profile without an anchor uses $GF_{high}$
+  throughout. With a real anchor, use $GF_{low}$ before ascent and at or below
+  the anchor; above it, interpolate toward $GF_{high}$.
+- For each of the 16 compartments, call `getCompartmentCeiling` with the active GF. Convert to depth.
 - Overall ceiling is the max (deepest) across all compartments.
 
 ## Pre-ascent behavior
 
-In tissue-inspection `ramp` mode, descent and bottom-time samples already use
-the complete piecewise GF boundary. GF Low still determines the anchor, but it
-is not extrapolated into pressures shallower than that anchor.
-
-In profile `current-depth` mode, descent and bottom time retain GF Low so the
-overlay remains aligned with the staged ascent and first-stop presentation.
-For a direct-ascent profile there is no GF ramp, so the complete time series
-uses $GF_{high}$. The displayed value uses the tissue state at that sample; it
-does not predict additional on/off-gassing during a future ascent.
+For a decompression profile with a real anchor, descent and bottom time use
+$GF_{low}$. For a direct-ascent profile there is no GF ramp, so the complete
+time series uses $GF_{high}$. The displayed value is an instantaneous ceiling
+for the tissue state at that sample; it does not predict the additional
+on/off-gassing that will occur during a future ascent.
 
 ## Visual output
 
-- **DiveProfileChart profile mode** takes the `current-depth` `ceilingDepths`
-  and draws a red line aligned with the staged ascent.
-- **DiveProfileChart tissue-loading mode** uses `ramp`
-  `compartmentCeilings[compId]`, so each dashed tissue ceiling matches the
-  M-value ruler's complete-GF-boundary intersection.
+- **DiveProfileChart** (`js/charts/DiveProfileChart.js`) takes `ceilingDepths` and draws a red line. Above the depth curve = safe; crossing the depth curve = violation.
+- **MValueChart** (`js/charts/MValueChart.js`) uses `compartmentCeilings[compId]` to color-code each compartment's ceiling individually, so the user can see which tissue is leading.
 
 ## Consistency with the scheduler
 
