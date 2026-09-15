@@ -5,7 +5,7 @@ A per-timepoint ceiling overlay for chart rendering. This is separate from deco 
 ## Entry points
 
 ```javascript
-// js/decoModel.js:483 (signature)
+// js/decoModel.js:662 (signature)
 export function calculateCeilingTimeSeries(
     results, gfLow, gfHigh = gfLow, providedPAnchor = null
 )
@@ -14,7 +14,7 @@ export function calculateCeilingTimeSeries(
 Thin wrapper returning only the overall `ceilingDepths` array. Most callers want the detailed version:
 
 ```javascript
-// js/decoModel.js:510 (signature)
+// js/decoModel.js:693 (signature)
 export function calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh = gfLow, providedPAnchor = null)
 ```
 
@@ -43,7 +43,7 @@ Returns:
 ### 1. Detect the start of ascent
 
 ```javascript
-// js/decoModel.js:633-648
+// js/decoModel.js:707-728
 let maxDepthSeen = results.depthPoints[0];
 …
 for (let i = 0; i < results.timePoints.length; i++) {
@@ -63,7 +63,7 @@ for (let i = 0; i < results.timePoints.length; i++) {
 ### 2. Compute `pAnchor` once
 
 ```javascript
-// js/decoModel.js (calculateCeilingTimeSeriesDetailed)
+// js/decoModel.js:731-750 (calculateCeilingTimeSeriesDetailed)
 if (pAnchor === null) {
     const tissuesAtAscentStart = {};
     for (const compId of Object.keys(results.compartments)) {
@@ -90,7 +90,7 @@ Only a failed direct ascent invokes the GF Low first-stop search.
 ### 3. Per-timepoint GF and ceiling
 
 ```javascript
-// js/decoModel.js:668-710
+// js/decoModel.js:752-799
 for (let i = 0; i < results.timePoints.length; i++) {
     const currentDepth = results.depthPoints[i];
     const currentAmbient = results.ambientPressures[i];
@@ -140,6 +140,83 @@ Per iteration:
 - For each of the 16 compartments, call `getCompartmentCeiling` with the active GF. Convert to depth.
 - Overall ceiling is the max (deepest) across all compartments.
 
+## Three different ceilings, and why they disagree
+
+This is the single most common source of confusion in the codebase, so it is
+documented here rather than rediscovered. Three places in DecoJS compute
+something called "the ceiling", and they deliberately do **not** agree.
+
+| # | Where | GF evaluated at | Answers |
+|---|---|---|---|
+| 1 | This function (profile + tissue-loading chart) | the **diver's own** ambient pressure | "how shallow could I be *right now*?" |
+| 2 | `generateDecoSchedule` (`js/decoModel.js:1509-1524`) | the **next stop's** ambient pressure | "may I leave this stop for the next one?" |
+| 3 | The M-value / GF corridor in the P–P plane | every pressure along the ramp at once | "where does my tissue point cross the corridor line?" |
+
+### 1 vs 2 — the same convention, one step apart
+
+Both take a GF *from a depth* and then ask for the plain ceiling at that GF:
+
+```javascript
+// scheduler, js/decoModel.js:1509
+const gfThere = interpolateGF(
+    getAmbientPressure(nextStopDepth, surfacePressure, pressurePerMeter),
+    pAnchor, gfLow, gfHigh, surfacePressure
+);
+const { ceilingDepth } = getDiveCeiling(tissues, gfThere, …);
+if (ceilingDepth <= nextStopDepth) { /* ascend */ }
+```
+
+The only difference is *which* depth. The chart uses where the diver is; the
+scheduler uses where the diver wants to go — one stop shallower, hence a
+slightly higher GF, hence a slightly shallower ceiling. **The chart is therefore
+one stop-step more conservative than the scheduler during ascent.**
+
+Consequences, measured on nine profiles (31/29, 30/30, 45/25, 40/20, 18/60,
+50/20, 20/40, 30/20, 55/15, GF 20/80 to 40/85):
+
+- During descent and bottom time there is no ramp yet — both sit at $GF_{low}$,
+  so the two agree exactly.
+- Leaving a stop, the drawn ceiling steps up by 1.0 to 1.6 m in one sample.
+  That step is the GF changing, not the tissues.
+- On two of the nine profiles the drawn ceiling briefly sits *below* the
+  diver's own scheduled stop — 0.17 m on 30 m / 30 min GF 30/80 and 0.01 m on
+  50 m / 20 min GF 20/80. This is the same one-step offset, not a violation of
+  the schedule.
+
+These are known and accepted. Do not "fix" them by moving the chart onto the
+scheduler's next-stop GF: the chart would then draw a ceiling for a depth the
+diver has not reached.
+
+### 1 vs 3 — a definition difference, not a bug
+
+The corridor in the P–P plane is the straight line from
+$(p_{anchor}, GF_{low})$ to $(p_{surface}, GF_{high})$. Reading a ceiling off it
+means solving for the pressure where the tissue's tolerance curve meets that
+line — i.e. applying the ramp at *every* pressure, including pressures the diver
+never ascended to.
+
+This function does not do that. Until ascent begins it holds $GF_{low}$ flat
+(`!ascentStarted` in the GF selection above). On the reference dive
+31 m / 29 min, air, GF 30/80 at the end of the bottom phase:
+
+| | ceiling at t = 29 min |
+|---|---|
+| this function (flat $GF_{low}$) | 13.02 m |
+| corridor intersection (ramp applied everywhere) | 10.06 m |
+
+Roughly 3 m apart, and the corridor value is the *shallower*, more liberal one.
+
+The flat-$GF_{low}$ reading is kept because the corridor reading is
+retro-causal: `pAnchor` exists only because of an ascent that has not happened
+yet, so at t = 9.9 min the corridor would show a 0.00 m ceiling while the
+diver's actual obligation under their own $GF_{low}$ is 7.27 m. A ceiling line
+that drops when you add bottom time is worse than one that disagrees with a
+second chart.
+
+If you are comparing the profile chart against the M-value chart and the numbers
+differ by a couple of metres during the bottom phase, this is why. It is
+expected.
+
 ## Pre-ascent behavior
 
 For a decompression profile with a real anchor, descent and bottom time use
@@ -158,7 +235,15 @@ on/off-gassing that will occur during a future ascent.
 `generateDecoSchedule` returns `pAnchor`. `DiveProfileChart` obtains the same
 scheduler decision through `calculateChartGFAnchor` and passes it as
 `providedPAnchor`, so the profile overlay, M-value chart, GF chart, and audit
-all agree about whether a ramp exists.
+all agree about **whether a ramp exists and where it is anchored**.
+
+They do not all produce the same ceiling *value* — see
+[Three different ceilings](#three-different-ceilings-and-why-they-disagree)
+above. Shared anchor, different readings off it.
+
+One known gap: `js/main.js:402` calls `calculateCeilingTimeSeries` without a
+`providedPAnchor`, so that call site recomputes its own anchor. On multilevel
+profiles it can land on a different anchor than the scheduler.
 
 ## Cross-references
 
