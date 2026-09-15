@@ -6748,6 +6748,28 @@ describe('M-values theory page follows the glossary', () => {
         ])
     );
 
+    test('pressure comparison conditions are localized in all languages', () => {
+        expect(page.includes(
+            'data-i18n="mValues.recap.offgassingCondition"'
+        )).toBe(true);
+        expect(page.includes(
+            'data-i18n="mValues.recap.supersatCondition"'
+        )).toBe(true);
+
+        expect(locales.cs.recap.offgassingCondition)
+            .toBe('Tkáňový tlak > alveolární tlak');
+        expect(locales.cs.recap.supersatCondition)
+            .toBe('Tkáňový tlak > okolní tlak');
+        expect(locales.en.recap.offgassingCondition)
+            .toBe('Tissue pressure > alveolar pressure');
+        expect(locales.en.recap.supersatCondition)
+            .toBe('Tissue pressure > ambient pressure');
+        expect(locales.es.recap.offgassingCondition)
+            .toBe('Presión tisular > presión alveolar');
+        expect(locales.es.recap.supersatCondition)
+            .toBe('Presión tisular > presión ambiente');
+    });
+
     test('formula legends and coefficient table italicise quantity symbols', () => {
         expect(page.includes(
             '<span class="gfc-eq-lhs"><var>M</var> =</span>'

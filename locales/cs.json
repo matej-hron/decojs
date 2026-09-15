@@ -632,7 +632,9 @@
             "ambientLabel": "Okolní tlak",
             "ambientHint": "Celkový tlak v aktuální hloubce",
             "insightTitle": "💡 Klíčový poznatek",
+            "offgassingCondition": "Tkáňový tlak > alveolární tlak",
             "offgassingDesc": "✅ Vysycování — dusík proudí z tkáně do plic. <em>To je žádoucí!</em>",
+            "supersatCondition": "Tkáňový tlak > okolní tlak",
             "supersatDesc": "⚠️ Přesycení — rozpuštěný plyn přesahuje to, co tlak dokáže udržet. <em>Riziko bublin!</em>",
             "challenge": "Výzva: během výstupu <em>chceme</em>, aby tkáňový tlak přesahoval alveolární (kvůli vysycování), ale musíme omezit, o kolik přesahuje okolní tlak (aby se zabránilo tvorbě bublin)."
         },
