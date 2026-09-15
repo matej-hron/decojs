@@ -1256,6 +1256,12 @@ export class MValueChart {
         });
         const hasGF = (this.diveSetup.gfLow ?? 100) < 100
             || (this.diveSetup.gfHigh ?? 100) < 100;
+        // Shared anchor with the scheduler and the profile chart, but NOT a
+        // shared ceiling value: the ruler reads the corridor intersection
+        // (ramp applied at every pressure), while the profile chart holds
+        // GF Low flat until ascent begins. The two differ by a few metres
+        // during the bottom phase by design — see
+        // wiki/Algo-06-Ceiling-Time-Series.md, "Three different ceilings".
         this.gfAnchor = hasGF
             ? calculateChartGFAnchor(this.diveSetup, this.calculationResults)
             : { pAnchor: surfacePressure, anchorDepth: 0 };

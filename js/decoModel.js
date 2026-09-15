@@ -677,8 +677,13 @@ export function calculateCeilingTimeSeries(
  * - At pAnchor (where GF_max = GF_low during ascent): begin GF ramp
  * - During ascent above pAnchor: interpolate toward GF High at surface
  * 
- * The pAnchor is computed dynamically at each time point to ensure
- * correct ceiling visualization that matches the deco scheduler.
+ * The pAnchor is computed ONCE (or supplied by the scheduler) and then held
+ * fixed for the whole series. The GF is evaluated at the DIVER'S OWN ambient
+ * pressure, whereas generateDecoSchedule evaluates it at the NEXT STOP'S
+ * ambient pressure — so this series is one stop-step more conservative during
+ * ascent, and it does not match the P-P corridor intersection during the
+ * bottom phase. Both divergences are intentional and are documented in
+ * wiki/Algo-06-Ceiling-Time-Series.md, "Three different ceilings".
  * 
  * @param {Object} results - Results from calculateTissueLoading()
  * @param {number} gfLow - GF Low value (0-1, where 1 = 100%)
