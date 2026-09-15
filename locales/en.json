@@ -616,9 +616,9 @@
             "summary": "📐 Show the M-value formula",
             "intro": "Bühlmann's limit for each tissue at ambient pressure <var>p</var><sub>amb</sub>:",
             "where": "Where:",
-            "varM": "<strong>M</strong> — maximum tolerable tissue inert-gas pressure (bar)",
+            "varM": "<strong><var>M</var></strong> — maximum tolerable tissue inert-gas pressure (bar)",
             "varPamb": "<strong><var>p</var><sub>amb</sub></strong> — ambient pressure (bar)",
-            "varAB": "<strong>a, b</strong> — ZH-L16 coefficients for the tissue",
+            "varAB": "<strong><var>a</var>, <var>b</var></strong> — ZH-L16 coefficients for the tissue",
             "note": "The chart plots each tissue's M-value as a red line. Tissue pressure above its line means the ceiling has been violated."
         },
         "recap": {
@@ -662,11 +662,11 @@
             "formulaSummary": "📐 The Formula Behind M-Values",
             "formulaIntro": "Bühlmann's M-value formula for each compartment:",
             "formulaWhere": "Where:",
-            "formulaM": "<strong>M</strong> = Maximum tolerable tissue inert gas pressure (bar)",
+            "formulaM": "<strong><var>M</var></strong> = Maximum tolerable tissue inert gas pressure (bar)",
             "formulaPamb": "<strong><var>p</var><sub>amb</sub></strong> = Ambient pressure at current depth (bar)",
-            "formulaA": "<strong>a</strong> = Intercept coefficient (bar) — tissue-specific",
-            "formulaB": "<strong>b</strong> = Slope coefficient (dimensionless) — tissue-specific",
-            "formulaHint": "The \"a\" coefficient is the y-intercept — the maximum tolerable tissue pressure at zero gauge pressure (surface). Faster tissues have higher \"a\" values, meaning they can handle more supersaturation.",
+            "formulaA": "<strong><var>a</var></strong> = Intercept coefficient (bar) — tissue-specific",
+            "formulaB": "<strong><var>b</var></strong> = Slope coefficient (dimensionless) — tissue-specific",
+            "formulaHint": "The <var>a</var> coefficient is the y-intercept: the extrapolated <var>M</var>-value at <var>p</var><sub>amb</sub> = 0 bar absolute. It is not the surfacing limit; at about 1 bar ambient, <var>M</var><sub>0</sub> ≈ <var>a</var> + 1/<var>b</var>. Faster tissues have higher <var>a</var> values, meaning they can handle more supersaturation.",
             "variantsSummary": "📚 ZH-L16 Variants: A, B, and C",
             "variantsIntro": "Bühlmann published three sets of coefficients:",
             "variantA": "<strong>ZH-L16A</strong> — Mathematically derived from half-times. The original, least conservative set. Used for research.",
@@ -682,7 +682,7 @@
             "title": "The Pressure-Pressure Diagram",
             "cardTitle": "Visualizing the Limits",
             "intro": "The chart below plots <strong>Ambient Pressure</strong> (X-axis) against <strong>Tissue N₂ Pressure</strong> (Y-axis). Watch how your tissue compartments move through the different zones during a dive:",
-            "zoneBelowMarker": "Below blue line (y = x)",
+            "zoneBelowMarker": "Below blue line (<var>y</var> = <var>x</var>)",
             "zoneBelowDesc": "Tissue pressure &lt; ambient (not supersaturated)",
             "zoneBetweenMarker": "Between blue & M-value lines",
             "zoneBetweenDesc": "Supersaturated but safe ✓",
@@ -703,13 +703,13 @@
         "example2": {
             "title": "Example 2: Ceiling Violation",
             "ceilingTitle": "What is an Ascent Ceiling?",
-            "ceilingText": "The <strong>ascent ceiling</strong> is the shallowest depth you can ascend to without any tissue exceeding its M-value. If you ascend past the ceiling, tissue pressure crosses the M-value line and dangerous bubble formation becomes likely. Decompression stops keep you at or below this ceiling while tissues off-gas.",
+            "ceilingText": "The <strong>ascent ceiling</strong> is the shallowest permitted depth at the current moment. Ascending above it — to a shallower depth — would cause at least one tissue compartment to exceed its M-value. Decompression stops keep the diver at the ceiling or deeper until off-gassing moves the ceiling closer to the surface.",
             "desc": "<strong>Same dive, but with a direct ascent to surface.</strong> Watch how the tissue pressure crosses above the M-value line — this is a decompression sickness risk!",
             "profileTitle": "Dive Profile",
             "ppDiagramTitle": "Pressure-Pressure Diagram",
             "legendSummary": "📖 Chart Legend",
-            "legendAmbient": "<strong>Blue solid (Ambient Line):</strong> y = x. Above this = tissue is supersaturated.",
-            "legendSurface": "<strong>Gray dashed (Surface):</strong> x = 1 bar. Must be below M-value when reaching this.",
+            "legendAmbient": "<strong>Blue solid (Ambient Line):</strong> <var>y</var> = <var>x</var>. Above this = tissue is supersaturated.",
+            "legendSurface": "<strong>Gray dashed (Surface):</strong> <var>x</var> = 1 bar. Must be below M-value when reaching this.",
             "legendMValue": "<strong>Colored dashed (M-Value):</strong> Critical limit for each tissue. Each tissue compartment has its own color.",
             "legendTrail": "<strong>Trail:</strong> The path traced by the tissue point throughout the dive."
         },
@@ -717,7 +717,7 @@
             "title": "ZH-L16A M-Value Coefficients",
             "viewTable": "View coefficient table",
             "thHalfTime": "Half-Time (min)",
-            "footnote": "* M₀ = a + 1/b = Maximum tolerable tissue pressure at surface (1 bar ambient)"
+            "footnote": "* <var>M</var><sub>0</sub> = <var>a</var> + 1/<var>b</var> = Maximum tolerable tissue pressure at surface (1 bar ambient)"
         }
     },
     "gradientFactors": {

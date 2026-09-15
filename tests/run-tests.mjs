@@ -6733,6 +6733,204 @@ describe('M-value notation localization', () => {
     });
 });
 
+describe('M-values theory page follows the glossary', () => {
+    const page = readFileSync(
+        new URL('../m-values.html', import.meta.url),
+        'utf8'
+    );
+    const locales = Object.fromEntries(
+        ['cs', 'en', 'es'].map(lang => [
+            lang,
+            JSON.parse(readFileSync(
+                new URL(`../locales/${lang}.json`, import.meta.url),
+                'utf8'
+            )).mValues
+        ])
+    );
+
+    test('formula legends and coefficient table italicise quantity symbols', () => {
+        expect(page.includes(
+            '<span class="gfc-eq-lhs"><var>M</var> =</span>'
+        )).toBe(true);
+        expect(page.includes('<span><var>a</var> +</span>')).toBe(true);
+        expect(page.includes('<span class="gfc-den"><var>b</var></span>')).toBe(true);
+        expect(page.includes('<th><var>a</var> (bar)</th>')).toBe(true);
+        expect(page.includes('<th><var>b</var></th>')).toBe(true);
+        expect(page.includes('<th><var>M</var><sub>0</sub> (bar)*</th>')).toBe(true);
+
+        for (const values of Object.values(locales)) {
+            expect(values.chartFormula.varM.includes(
+                '<strong><var>M</var></strong>'
+            )).toBe(true);
+            expect(values.chartFormula.varAB.includes(
+                '<strong><var>a</var>, <var>b</var></strong>'
+            )).toBe(true);
+            expect(values.buhlmann.formulaM.includes(
+                '<strong><var>M</var></strong>'
+            )).toBe(true);
+            expect(values.buhlmann.formulaA.includes(
+                '<strong><var>a</var></strong>'
+            )).toBe(true);
+            expect(values.buhlmann.formulaB.includes(
+                '<strong><var>b</var></strong>'
+            )).toBe(true);
+            expect(values.reference.footnote.includes(
+                '<var>M</var><sub>0</sub> = <var>a</var> + 1/<var>b</var>'
+            )).toBe(true);
+            expect(values.buhlmann.formulaHint.includes('0 bar')).toBe(true);
+            expect(values.buhlmann.formulaHint.includes(
+                '<var>M</var><sub>0</sub>'
+            )).toBe(true);
+            expect(values.buhlmann.formulaHint.includes(
+                '<var>a</var> + 1/<var>b</var>'
+            )).toBe(true);
+        }
+        expect(locales.cs.buhlmann.formulaHint.includes(
+            '<var>p</var><sub>okol</sub>'
+        )).toBe(true);
+        expect(locales.en.buhlmann.formulaHint.includes(
+            '<var>p</var><sub>amb</sub>'
+        )).toBe(true);
+        expect(locales.es.buhlmann.formulaHint.includes(
+            '<var>p</var><sub>amb</sub>'
+        )).toBe(true);
+        expect(page.includes(
+            '<var>p</var><sub>amb</sub> = 0&nbsp;bar absolute'
+        )).toBe(true);
+        expect(page.includes('zero gauge pressure (surface)')).toBe(false);
+    });
+
+    test('localized labels use the correct notation and graph name', () => {
+        expect(locales.cs.recap.alveolarHint.includes('≈0,79')).toBe(true);
+        expect(locales.en.recap.alveolarHint.includes('≈0.79')).toBe(true);
+        expect(locales.es.recap.alveolarHint.includes('≈0,79')).toBe(true);
+
+        for (const key of ['toc', 'diagram', 'example1', 'example2']) {
+            const value = key === 'toc'
+                ? locales.cs.toc.diagram
+                : key === 'diagram'
+                    ? locales.cs.diagram.title
+                    : locales.cs[key].ppDiagramTitle;
+            expect(value).toBe('Tlak–tlakový diagram');
+        }
+    });
+
+    test('ceiling definition is directionally unambiguous in every language', () => {
+        const cs = locales.cs.example2.ceilingText;
+        const en = locales.en.example2.ceilingText;
+        const es = locales.es.example2.ceilingText;
+
+        expect(cs.includes('nejmělčí dovolená hloubka')).toBe(true);
+        expect(cs.includes('do menší hloubky')).toBe(true);
+        expect(cs.includes('v hloubce stropu nebo hlouběji')).toBe(true);
+        expect(cs.includes('nejmenší hloubka, do které můžete vystoupat')).toBe(false);
+
+        expect(en.includes('shallowest permitted depth')).toBe(true);
+        expect(en.includes('to a shallower depth')).toBe(true);
+        expect(en.includes('at the ceiling or deeper')).toBe(true);
+        expect(en.includes('shallowest depth you can ascend to')).toBe(false);
+
+        expect(es.includes('límite más somero permitido')).toBe(true);
+        expect(es.includes('a una profundidad menor')).toBe(true);
+        expect(es.includes('en el techo o a mayor profundidad')).toBe(true);
+        expect(es.includes('profundidad más somera a la que puedes ascender')).toBe(false);
+
+        expect(page.includes('shallowest permitted depth')).toBe(true);
+        expect(page.includes('to a shallower depth')).toBe(true);
+        expect(page.includes('at the ceiling or deeper')).toBe(true);
+        expect(page.includes('shallowest depth you can ascend to')).toBe(false);
+    });
+
+    test('formula explanation links to the dedicated M-value sandbox', () => {
+        const dom = new JSDOM(page);
+        const summary = dom.window.document.querySelector(
+            'summary[data-i18n="mValues.buhlmann.formulaSummary"]'
+        );
+        const link = summary?.parentElement?.querySelector('a.sandbox-link');
+
+        expect(link?.getAttribute('href')).toBe('sandbox/m-values.html');
+        expect(link?.getAttribute('target')).toBe('_blank');
+        expect(link?.querySelector('[data-i18n="sandboxLink"]') !== null).toBe(true);
+        dom.window.close();
+    });
+
+    test('ceiling-violation example displays the compartment that crosses its M-line', () => {
+        const previousVariant = getZHL16Variant();
+        setZHL16Variant(ZHL16_VARIANTS.C);
+        try {
+            const gases = [{
+                id: 'air',
+                name: 'Air',
+                o2: 0.21,
+                n2: 0.79,
+                he: 0,
+                cylinderVolume: 18,
+                startPressure: 200
+            }];
+            const safeWaypoints = [
+                { time: 0, depth: 0, gasId: 'air' },
+                { time: 2, depth: 31, gasId: 'air' },
+                { time: 29, depth: 31, gasId: 'air' },
+                { time: 31.8, depth: 3, gasId: 'air' },
+                { time: 41.8, depth: 3, gasId: 'air' },
+                { time: 42.1, depth: 0, gasId: 'air' }
+            ];
+            const violationWaypoints = [
+                { time: 0, depth: 0, gasId: 'air' },
+                { time: 2, depth: 31, gasId: 'air' },
+                { time: 29, depth: 31, gasId: 'air' },
+                { time: 32.1, depth: 0, gasId: 'air' }
+            ];
+            const safe = calculateTissueLoading(safeWaypoints, 0.1, { gases });
+            const violation = calculateTissueLoading(
+                violationWaypoints, 0.1, { gases }
+            );
+            const lastDelta = (result, compartmentId) => {
+                const compartment = COMPARTMENTS.find(
+                    item => item.id === compartmentId
+                );
+                const index = result.timePoints.length - 1;
+                const tissuePressure =
+                    result.compartments[compartmentId].pressures[index];
+                return tissuePressure - getMValue(
+                    result.ambientPressures[index],
+                    compartment.aN2,
+                    compartment.bN2
+                );
+            };
+            const safeMax = Math.max(
+                ...COMPARTMENTS.map(compartment =>
+                    lastDelta(safe, compartment.id)
+                )
+            );
+            const violationCeilings = calculateCeilingTimeSeries(
+                violation, 1, 1
+            );
+            const dom = new JSDOM(page);
+            const violationProfile = dom.window.document.getElementById(
+                'violation-profile-chart-container'
+            );
+
+            expect(safeMax <= 0).toBe(true);
+            expect(lastDelta(violation, 1) < 0).toBe(true);
+            expect(lastDelta(violation, 3) > 0).toBe(true);
+            expect(violationCeilings.at(-1) > 0).toBe(true);
+            expect(violationProfile?.style.height).toBe('400px');
+            expect(page.includes('showCeiling: true')).toBe(true);
+            expect(page.includes(
+                'const violationMValueChart = new MValueChart'
+            )).toBe(true);
+            expect(page.includes('compartments: [3]')).toBe(true);
+            expect(page.includes(
+                'violationMValueChart.getTimePointCount() - 1'
+            )).toBe(true);
+            dom.window.close();
+        } finally {
+            setZHL16Variant(previousVariant);
+        }
+    });
+});
+
 describe('Alveolar pressure notation', () => {
     test('physiological inert-gas formula names its alveolar result', () => {
         const pressurePage = readFileSync(

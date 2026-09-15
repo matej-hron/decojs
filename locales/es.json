@@ -616,9 +616,9 @@
             "summary": "📐 Mostrar la fórmula del valor-M",
             "intro": "Límite de Bühlmann para cada tejido a presión ambiente <var>p</var><sub>amb</sub>:",
             "where": "Donde:",
-            "varM": "<strong>M</strong> — presión máxima tolerable de gas inerte en el tejido (bar)",
+            "varM": "<strong><var>M</var></strong> — presión máxima tolerable de gas inerte en el tejido (bar)",
             "varPamb": "<strong><var>p</var><sub>amb</sub></strong> — presión ambiente (bar)",
-            "varAB": "<strong>a, b</strong> — coeficientes ZH-L16 del tejido",
+            "varAB": "<strong><var>a</var>, <var>b</var></strong> — coeficientes ZH-L16 del tejido",
             "note": "La gráfica traza el valor-M de cada tejido como una línea roja. Una presión tisular por encima de su línea significa que se ha violado el techo."
         },
         "recap": {
@@ -628,7 +628,7 @@
             "tissueLabel": "Presión de gas inerte en el tejido",
             "tissueHint": "El nitrógeno (o el helio) disuelto en los tejidos del cuerpo",
             "alveolarLabel": "Presión alveolar",
-            "alveolarHint": "La <var>p</var><sub>N₂</sub> en los pulmones (≈0.79 × ambiente para aire)",
+            "alveolarHint": "La <var>p</var><sub>N₂</sub> en los pulmones (≈0,79 × ambiente para aire)",
             "ambientLabel": "Presión ambiente",
             "ambientHint": "Presión total a la profundidad actual",
             "insightTitle": "💡 La idea clave",
@@ -662,11 +662,11 @@
             "formulaSummary": "📐 La fórmula detrás de los valores-M",
             "formulaIntro": "Fórmula del valor-M de Bühlmann para cada compartimento:",
             "formulaWhere": "Donde:",
-            "formulaM": "<strong>M</strong> = presión máxima tolerable de gas inerte en el tejido (bar)",
+            "formulaM": "<strong><var>M</var></strong> = presión máxima tolerable de gas inerte en el tejido (bar)",
             "formulaPamb": "<strong><var>p</var><sub>amb</sub></strong> = presión ambiente a la profundidad actual (bar)",
-            "formulaA": "<strong>a</strong> = coeficiente de intercepción (bar) — específico del tejido",
-            "formulaB": "<strong>b</strong> = coeficiente de pendiente (adimensional) — específico del tejido",
-            "formulaHint": "El coeficiente «a» es la ordenada en el origen — la presión tisular máxima tolerable a presión manométrica cero (superficie). Los tejidos rápidos tienen valores «a» más altos, lo que significa que aguantan más sobresaturación.",
+            "formulaA": "<strong><var>a</var></strong> = coeficiente de intercepción (bar) — específico del tejido",
+            "formulaB": "<strong><var>b</var></strong> = coeficiente de pendiente (adimensional) — específico del tejido",
+            "formulaHint": "El coeficiente <var>a</var> es la ordenada en el origen: el valor <var>M</var> extrapolado cuando <var>p</var><sub>amb</sub> = 0 bar absolutos. No es el límite en superficie; a una presión ambiente de aproximadamente 1 bar, <var>M</var><sub>0</sub> ≈ <var>a</var> + 1/<var>b</var>. Los tejidos rápidos tienen valores <var>a</var> más altos, lo que significa que aguantan más sobresaturación.",
             "variantsSummary": "📚 Variantes de ZH-L16: A, B y C",
             "variantsIntro": "Bühlmann publicó tres juegos de coeficientes:",
             "variantA": "<strong>ZH-L16A</strong> — Deducido matemáticamente a partir de los medios tiempos. El original, el menos conservador. Se usa en investigación.",
@@ -682,7 +682,7 @@
             "title": "El diagrama presión-presión",
             "cardTitle": "Visualizar los límites",
             "intro": "La gráfica de abajo representa la <strong>presión ambiente</strong> (eje X) frente a la <strong>presión de N₂ en el tejido</strong> (eje Y). Observa cómo los compartimentos tisulares se mueven por las distintas zonas durante la inmersión:",
-            "zoneBelowMarker": "Por debajo de la línea azul (y = x)",
+            "zoneBelowMarker": "Por debajo de la línea azul (<var>y</var> = <var>x</var>)",
             "zoneBelowDesc": "Presión tisular &lt; ambiente (no sobresaturado)",
             "zoneBetweenMarker": "Entre la línea azul y la del valor-M",
             "zoneBetweenDesc": "Sobresaturado pero seguro ✓",
@@ -703,13 +703,13 @@
         "example2": {
             "title": "Ejemplo 2: violación del techo",
             "ceilingTitle": "¿Qué es el techo de ascenso?",
-            "ceilingText": "El <strong>techo de ascenso</strong> es la profundidad más somera a la que puedes ascender sin que ningún tejido supere su valor-M. Si asciendes más allá del techo, la presión del tejido cruza la línea del valor-M y la formación de burbujas peligrosas se vuelve probable. Las paradas de descompresión te mantienen en o por debajo de ese techo mientras los tejidos se desgasifican.",
+            "ceilingText": "El <strong>techo de ascenso</strong> es el límite más somero permitido en ese momento. Ascender por encima de él — a una profundidad menor — haría que al menos un compartimento tisular superase su valor-M. Las paradas de descompresión mantienen al buceador en el techo o a mayor profundidad hasta que la desgasificación desplaza el techo hacia la superficie.",
             "desc": "<strong>La misma inmersión, pero con ascenso directo a superficie.</strong> Observa cómo la presión tisular cruza por encima de la línea del valor-M — ¡es un riesgo de enfermedad descompresiva!",
             "profileTitle": "Perfil de inmersión",
             "ppDiagramTitle": "Diagrama presión-presión",
             "legendSummary": "📖 Leyenda del gráfico",
-            "legendAmbient": "<strong>Azul sólido (línea de presión ambiente):</strong> y = x. Por encima = el tejido está sobresaturado.",
-            "legendSurface": "<strong>Gris discontinuo (superficie):</strong> x = 1 bar. Al llegar aquí debes estar por debajo del valor-M.",
+            "legendAmbient": "<strong>Azul sólido (línea de presión ambiente):</strong> <var>y</var> = <var>x</var>. Por encima = el tejido está sobresaturado.",
+            "legendSurface": "<strong>Gris discontinuo (superficie):</strong> <var>x</var> = 1 bar. Al llegar aquí debes estar por debajo del valor-M.",
             "legendMValue": "<strong>Discontinuo de color (valor-M):</strong> límite crítico de cada tejido. Cada compartimento tiene su propio color.",
             "legendTrail": "<strong>Estela:</strong> la trayectoria del punto tisular a lo largo de la inmersión."
         },
@@ -717,7 +717,7 @@
             "title": "Coeficientes del valor-M ZH-L16A",
             "viewTable": "Ver tabla de coeficientes",
             "thHalfTime": "Medio tiempo (min)",
-            "footnote": "* M₀ = a + 1/b = presión tisular máxima tolerable en superficie (1 bar de ambiente)"
+            "footnote": "* <var>M</var><sub>0</sub> = <var>a</var> + 1/<var>b</var> = presión tisular máxima tolerable en superficie (1 bar de ambiente)"
         }
     },
     "gradientFactors": {
