@@ -193,12 +193,10 @@ import {
     getMValue,
     getAdjustedMValue,
     getCompartmentCeiling,
-    getCompartmentCeilingOnGFRamp,
     getDiveCeiling,
     interpolateGF,
     getFirstStopDepth,
     calculateCeilingTimeSeries,
-    calculateCeilingTimeSeriesDetailed,
     calculateTissueLoading,
     calculateNDL,
     simulateDepthTime,
@@ -2723,81 +2721,37 @@ describe('decoModel', () => {
             expect(ceilingsGF70[endBottomIdx]).toBeGreaterThan(ceilingsGF100[endBottomIdx]);
         });
 
-        test('uses the GF-ramp intersection during bottom time once the anchor is known', () => {
-            const compartments = Object.fromEntries(
-                COMPARTMENTS.map(comp => [
-                    comp.id,
-                    { pressures: [comp.id === 1 ? 3.18 : 0.75] }
-                ])
-            );
-            const results = {
-                timePoints: [35],
-                depthPoints: [31],
-                ambientPressures: [4.11325],
-                compartments,
-                surfacePressure: SURFACE_PRESSURE,
-                pressurePerMeter: PRESSURE_PER_METER
-            };
-            const pAnchor = 1.91325;
-            const detailed = calculateCeilingTimeSeriesDetailed(
-                results,
-                0.6,
-                0.9,
-                pAnchor
-            );
-            const tc1Ramp = getCompartmentCeilingOnGFRamp(
-                3.18,
-                COMPARTMENTS[0].aN2,
-                COMPARTMENTS[0].bN2,
-                0.6,
-                0.9,
-                pAnchor
-            );
-            const tc1GFLowPressure = getCompartmentCeiling(
-                3.18,
-                COMPARTMENTS[0].aN2,
-                COMPARTMENTS[0].bN2,
-                0.6
-            );
-            const tc1GFLowDepth =
-                (tc1GFLowPressure - SURFACE_PRESSURE) / PRESSURE_PER_METER;
-
-            expect(detailed.compartmentCeilings[1][0]).toBeCloseTo(4.132, 3);
-            expect(detailed.compartmentCeilings[1][0]).toBeCloseTo(tc1Ramp.depth, 10);
-            expect(detailed.compartmentCeilings[1][0]).toBeLessThan(tc1GFLowDepth);
-            expect(tc1GFLowDepth).toBeCloseTo(6.662, 3);
-        });
-
-        test('profile ceiling keeps the staged active-GF behavior', () => {
+        test('uses GF interpolation during ascent (pAnchor-based)', () => {
+            // Longer dive to build up tissue loading
+            // With pAnchor-based GF interpolation, the GF only changes once the diver
+            // ascends past pAnchor (where GF_max first equals GF_low during ascent).
+            // For this profile with GF 50, pAnchor is around 10m depth.
             const profile = [
                 { time: 0, depth: 0 },
                 { time: 2, depth: 40 },
-                { time: 20, depth: 40 },
-                { time: 30, depth: 0 }
+                { time: 20, depth: 40 },  // Long bottom time
+                { time: 30, depth: 0 }    // Slow ascent (4 m/min)
             ];
             const results = calculateTissueLoading(profile, 0);
-            const ceilingsGFLowOnly = calculateCeilingTimeSeries(
-                results,
-                0.5,
-                0.5
-            );
-            const ceilingsGFInterp = calculateCeilingTimeSeries(
-                results,
-                0.5,
-                0.85
-            );
-
+            
+            // Compare ceiling with only GF Low vs GF Low/High interpolation
+            const ceilingsGFLowOnly = calculateCeilingTimeSeries(results, 0.5, 0.5);  // GF 50/50
+            const ceilingsGFInterp = calculateCeilingTimeSeries(results, 0.5, 0.85); // GF 50/85
+            
+            // During bottom phase (at depth), ceilings should be similar (both use GF Low)
             const bottomIdx = results.timePoints.findIndex(t => t >= 15);
-            expect(ceilingsGFLowOnly[bottomIdx])
-                .toBeCloseTo(ceilingsGFInterp[bottomIdx], 1);
-
+            expect(ceilingsGFLowOnly[bottomIdx]).toBeCloseTo(ceilingsGFInterp[bottomIdx], 1);
+            
+            // During ascent BELOW pAnchor (~10m), ceilings should be similar (both use GF Low only)
+            // At t=25, diver is at ~20m which is still below pAnchor (~10m)
             const belowAnchorIdx = results.timePoints.findIndex(t => t >= 25);
-            expect(ceilingsGFLowOnly[belowAnchorIdx])
-                .toBeCloseTo(ceilingsGFInterp[belowAnchorIdx], 1);
-
+            expect(ceilingsGFLowOnly[belowAnchorIdx]).toBeCloseTo(ceilingsGFInterp[belowAnchorIdx], 1);
+            
+            // Near surface (above pAnchor), GF 50/85 should have shallower ceiling than GF 50/50
+            // because GF High (85%) allows more supersaturation than GF Low (50%)
+            // At t=29.5, diver is at ~2m which is above pAnchor (~10m)
             const aboveAnchorIdx = results.timePoints.findIndex(t => t >= 29.5);
-            expect(ceilingsGFInterp[aboveAnchorIdx])
-                .toBeLessThan(ceilingsGFLowOnly[aboveAnchorIdx]);
+            expect(ceilingsGFInterp[aboveAnchorIdx]).toBeLessThan(ceilingsGFLowOnly[aboveAnchorIdx]);
         });
 
         test('defaults gfHigh to gfLow if not provided', () => {
