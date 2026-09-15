@@ -632,7 +632,9 @@
             "ambientLabel": "Presión ambiente",
             "ambientHint": "Presión total a la profundidad actual",
             "insightTitle": "💡 La idea clave",
+            "offgassingCondition": "Presión tisular > presión alveolar",
             "offgassingDesc": "✅ Desgasificación — el nitrógeno fluye del tejido a los pulmones. <em>¡Esto es bueno!</em>",
+            "supersatCondition": "Presión tisular > presión ambiente",
             "supersatDesc": "⚠️ Sobresaturación — el gas disuelto supera lo que la presión puede contener. <em>¡Riesgo de burbujas!</em>",
             "challenge": "El reto: durante el ascenso <em>queremos</em> que la presión del tejido supere la alveolar (para desgasificar), pero debemos limitar cuánto supera la presión ambiente (para evitar burbujas)."
         },

@@ -632,7 +632,9 @@
             "ambientLabel": "Ambient Pressure",
             "ambientHint": "Total pressure at current depth",
             "insightTitle": "💡 The Key Insight",
+            "offgassingCondition": "Tissue pressure > alveolar pressure",
             "offgassingDesc": "✅ Off-gassing — nitrogen flows from tissue to lungs. <em>This is good!</em>",
+            "supersatCondition": "Tissue pressure > ambient pressure",
             "supersatDesc": "⚠️ Supersaturation — dissolved gas exceeds what pressure can hold. <em>Bubble risk!</em>",
             "challenge": "The challenge: during ascent, we <em>want</em> tissue pressure to exceed alveolar (to off-gas), but we need to limit how much it exceeds ambient pressure (to avoid bubbles)."
         },
