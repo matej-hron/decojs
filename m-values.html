@@ -212,15 +212,20 @@
                         <div class="formula" id="formula-mvalue">M = a + \frac{p_{\mathrm{amb}}}{b}</div>
                         <p data-i18n="mValues.buhlmann.formulaWhere">Where:</p>
                         <ul>
-                            <li data-i18n="mValues.buhlmann.formulaM"><strong>M</strong> = Maximum tolerable tissue inert gas pressure (bar)</li>
+                            <li data-i18n="mValues.buhlmann.formulaM"><strong><var>M</var></strong> = Maximum tolerable tissue inert gas pressure (bar)</li>
                             <li data-i18n="mValues.buhlmann.formulaPamb"><strong><var>p</var><sub>amb</sub></strong> = Ambient pressure at current depth (bar)</li>
-                            <li data-i18n="mValues.buhlmann.formulaA"><strong>a</strong> = Intercept coefficient (bar) — tissue-specific</li>
-                            <li data-i18n="mValues.buhlmann.formulaB"><strong>b</strong> = Slope coefficient (dimensionless) — tissue-specific</li>
+                            <li data-i18n="mValues.buhlmann.formulaA"><strong><var>a</var></strong> = Intercept coefficient (bar) — tissue-specific</li>
+                            <li data-i18n="mValues.buhlmann.formulaB"><strong><var>b</var></strong> = Slope coefficient (dimensionless) — tissue-specific</li>
                         </ul>
                         <p class="hint" style="margin-top: 1rem;" data-i18n="mValues.buhlmann.formulaHint">
-                            The "a" coefficient is the y-intercept — the maximum tolerable tissue pressure at zero gauge pressure (surface).
-                            Faster tissues have higher "a" values, meaning they can handle more supersaturation.
+                            The <var>a</var> coefficient is the y-intercept: the extrapolated <var>M</var>-value at
+                            <var>p</var><sub>amb</sub> = 0&nbsp;bar absolute. It is not the surfacing limit; at about
+                            1&nbsp;bar ambient, <var>M</var><sub>0</sub> ≈ <var>a</var> + 1/<var>b</var>. Faster tissues
+                            have higher <var>a</var> values, meaning they can handle more supersaturation.
                         </p>
+                        <a href="sandbox/m-values.html" class="sandbox-link" target="_blank">
+                            🔬 <span data-i18n="sandboxLink">Open in Sandbox →</span>
+                        </a>
                     </div>
                 </details>
 
@@ -275,7 +280,7 @@
 
                 <div class="diagram-zones">
                     <div class="zone-item zone-offgas">
-                        <span class="zone-marker" data-i18n="mValues.diagram.zoneBelowMarker">Below blue line (y = x)</span>
+                        <span class="zone-marker" data-i18n="mValues.diagram.zoneBelowMarker">Below blue line (<var>y</var> = <var>x</var>)</span>
                         <span class="zone-desc" data-i18n="mValues.diagram.zoneBelowDesc">Tissue pressure &lt; ambient (not supersaturated)</span>
                     </div>
                     <div class="zone-item zone-super">
@@ -323,18 +328,18 @@
                 <summary data-i18n="mValues.chartFormula.summary">📐 Show the M-value formula</summary>
                 <p data-i18n="mValues.chartFormula.intro">Bühlmann's limit for each tissue at ambient pressure <var>p</var><sub>amb</sub>:</p>
                 <div class="chart-formula-block">
-                    <span class="gfc-eq-lhs">M =</span>
-                    <span>a +</span>
+                    <span class="gfc-eq-lhs"><var>M</var> =</span>
+                    <span><var>a</var> +</span>
                     <span class="gfc-frac">
                         <span class="gfc-num"><var>p</var><sub>amb</sub></span>
-                        <span class="gfc-den">b</span>
+                        <span class="gfc-den"><var>b</var></span>
                     </span>
                 </div>
                 <p data-i18n="mValues.chartFormula.where">Where:</p>
                 <ul class="chart-formula-legend">
-                    <li data-i18n="mValues.chartFormula.varM"><strong>M</strong> — maximum tolerable tissue inert-gas pressure (bar)</li>
+                    <li data-i18n="mValues.chartFormula.varM"><strong><var>M</var></strong> — maximum tolerable tissue inert-gas pressure (bar)</li>
                     <li data-i18n="mValues.chartFormula.varPamb"><strong><var>p</var><sub>amb</sub></strong> — ambient pressure (bar)</li>
-                    <li data-i18n="mValues.chartFormula.varAB"><strong>a, b</strong> — ZH-L16 coefficients for the tissue</li>
+                    <li data-i18n="mValues.chartFormula.varAB"><strong><var>a</var>, <var>b</var></strong> — ZH-L16 coefficients for the tissue</li>
                 </ul>
                 <p class="chart-formula-note" data-i18n="mValues.chartFormula.note">The chart plots each tissue's M-value as a red line. Tissue pressure above its line means the ceiling has been violated.</p>
             </details>
@@ -354,10 +359,10 @@
             <div class="key-insight" style="margin-bottom: 1rem;">
                 <h4 data-i18n="mValues.example2.ceilingTitle">What is an Ascent Ceiling?</h4>
                 <p data-i18n="mValues.example2.ceilingText">
-                    The <strong>ascent ceiling</strong> is the shallowest depth you can ascend to without any tissue
-                    exceeding its M-value. If you ascend past the ceiling, tissue pressure crosses the M-value line
-                    and dangerous bubble formation becomes likely. Decompression stops keep you at or below this ceiling
-                    while tissues off-gas.
+                    The <strong>ascent ceiling</strong> is the shallowest permitted depth at the current moment.
+                    Ascending above it — to a shallower depth — would cause at least one tissue compartment to exceed
+                    its M-value. Decompression stops keep the diver at the ceiling or deeper until off-gassing moves
+                    the ceiling closer to the surface.
                 </p>
             </div>
 
@@ -367,7 +372,7 @@
             </p>
 
             <h4 style="margin-top: 1rem; margin-bottom: 0.5rem;">📊 <span data-i18n="mValues.example2.profileTitle">Dive Profile</span></h4>
-            <div id="violation-profile-chart-container" style="height: 250px;">
+            <div id="violation-profile-chart-container" style="height: 400px;">
                 <!-- DiveProfileChart component renders here -->
             </div>
 
@@ -376,18 +381,18 @@
                 <summary data-i18n="mValues.chartFormula.summary">📐 Show the M-value formula</summary>
                 <p data-i18n="mValues.chartFormula.intro">Bühlmann's limit for each tissue at ambient pressure <var>p</var><sub>amb</sub>:</p>
                 <div class="chart-formula-block">
-                    <span class="gfc-eq-lhs">M =</span>
-                    <span>a +</span>
+                    <span class="gfc-eq-lhs"><var>M</var> =</span>
+                    <span><var>a</var> +</span>
                     <span class="gfc-frac">
                         <span class="gfc-num"><var>p</var><sub>amb</sub></span>
-                        <span class="gfc-den">b</span>
+                        <span class="gfc-den"><var>b</var></span>
                     </span>
                 </div>
                 <p data-i18n="mValues.chartFormula.where">Where:</p>
                 <ul class="chart-formula-legend">
-                    <li data-i18n="mValues.chartFormula.varM"><strong>M</strong> — maximum tolerable tissue inert-gas pressure (bar)</li>
+                    <li data-i18n="mValues.chartFormula.varM"><strong><var>M</var></strong> — maximum tolerable tissue inert-gas pressure (bar)</li>
                     <li data-i18n="mValues.chartFormula.varPamb"><strong><var>p</var><sub>amb</sub></strong> — ambient pressure (bar)</li>
-                    <li data-i18n="mValues.chartFormula.varAB"><strong>a, b</strong> — ZH-L16 coefficients for the tissue</li>
+                    <li data-i18n="mValues.chartFormula.varAB"><strong><var>a</var>, <var>b</var></strong> — ZH-L16 coefficients for the tissue</li>
                 </ul>
                 <p class="chart-formula-note" data-i18n="mValues.chartFormula.note">The chart plots each tissue's M-value as a red line. Tissue pressure above its line means the ceiling has been violated.</p>
             </details>
@@ -403,8 +408,8 @@
                 <details class="learn-more">
                     <summary data-i18n="mValues.example2.legendSummary">📖 Chart Legend</summary>
                     <div style="padding: 1rem;">
-                        <p data-i18n="mValues.example2.legendAmbient"><strong>Blue solid (Ambient Line):</strong> y = x. Above this = tissue is supersaturated.</p>
-                        <p data-i18n="mValues.example2.legendSurface"><strong>Gray dashed (Surface):</strong> x = 1&nbsp;bar. Must be below M-value when reaching this.</p>
+                        <p data-i18n="mValues.example2.legendAmbient"><strong>Blue solid (Ambient Line):</strong> <var>y</var> = <var>x</var>. Above this = tissue is supersaturated.</p>
+                        <p data-i18n="mValues.example2.legendSurface"><strong>Gray dashed (Surface):</strong> <var>x</var> = 1&nbsp;bar. Must be below M-value when reaching this.</p>
                         <p data-i18n="mValues.example2.legendMValue"><strong>Colored dashed (M-Value):</strong> Critical limit for each tissue. Each tissue compartment has its own color.</p>
                         <p data-i18n="mValues.example2.legendTrail"><strong>Trail:</strong> The path traced by the tissue point throughout the dive.</p>
                     </div>
@@ -422,16 +427,16 @@
                         <tr>
                             <th>TC#</th>
                             <th data-i18n="mValues.reference.thHalfTime">Half-Time (min)</th>
-                            <th>a (bar)</th>
-                            <th>b</th>
-                            <th>M₀ (bar)*</th>
+                            <th><var>a</var> (bar)</th>
+                            <th><var>b</var></th>
+                            <th><var>M</var><sub>0</sub> (bar)*</th>
                         </tr>
                     </thead>
                     <tbody id="coefficients-body">
                         <!-- Rows added by JavaScript -->
                     </tbody>
                 </table>
-                <p class="footnote" data-i18n="mValues.reference.footnote">* M₀ = a + 1/b = Maximum tolerable tissue pressure at surface (1&nbsp;bar ambient)</p>
+                <p class="footnote" data-i18n="mValues.reference.footnote">* <var>M</var><sub>0</sub> = <var>a</var> + 1/<var>b</var> = Maximum tolerable tissue pressure at surface (1&nbsp;bar ambient)</p>
             </details>
         </section>
     </main>
@@ -563,14 +568,15 @@
             new DiveProfileChart(violationProfileContainer, {
                 diveSetup: ceilingViolationSetup,
                 options: {
+                    showCeiling: true,
                     fullscreenButton: true
                 }
             });
             
-            new MValueChart(violationMValueContainer, {
+            const violationMValueChart = new MValueChart(violationMValueContainer, {
                 diveSetup: ceilingViolationSetup,
                 options: {
-                    compartments: [1],
+                    compartments: [3],
                     compartmentSelector: true,
                     showMValueLines: true,
                     showGFLines: true,
@@ -580,6 +586,9 @@
                     fullscreenButton: true
                 }
             });
+            violationMValueChart.setTimeIndex(
+                violationMValueChart.getTimePointCount() - 1
+            );
         }
         
         // Populate ZH-L16A coefficients table

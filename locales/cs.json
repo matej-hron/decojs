@@ -607,7 +607,7 @@
             "recap": "Co už víme",
             "supersaturation": "Problém přesycení",
             "buhlmann": "Bühlmannovo řešení",
-            "diagram": "Tlak-tlakový diagram",
+            "diagram": "Tlak–tlakový diagram",
             "exampleSafe": "Příklad: bezpečný ponor",
             "exampleViolation": "Příklad: překročení stropu",
             "reference": "Koeficienty ZH-L16A"
@@ -616,9 +616,9 @@
             "summary": "📐 Zobrazit vzorec M-hodnoty",
             "intro": "Bühlmannův limit pro tkáň při okolním tlaku <var>p</var><sub>okol</sub>:",
             "where": "Kde:",
-            "varM": "<strong>M</strong> — maximální tolerovatelný tlak inertního plynu v tkáni (bar)",
+            "varM": "<strong><var>M</var></strong> — maximální tolerovatelný tlak inertního plynu v tkáni (bar)",
             "varPamb": "<strong><var>p</var><sub>okol</sub></strong> — okolní tlak (bar)",
-            "varAB": "<strong>a, b</strong> — Bühlmannovy koeficienty ZH-L16 pro danou tkáň",
+            "varAB": "<strong><var>a</var>, <var>b</var></strong> — Bühlmannovy koeficienty ZH-L16 pro danou tkáň",
             "note": "Graf vykresluje M-hodnotu každé tkáně jako červenou čáru. Tlak tkáně nad touto čárou znamená překročení stropu."
         },
         "recap": {
@@ -662,11 +662,11 @@
             "formulaSummary": "📐 Vzorec M-hodnot",
             "formulaIntro": "Bühlmannův vzorec M-hodnoty pro každý kompartment:",
             "formulaWhere": "Kde:",
-            "formulaM": "<strong>M</strong> = Maximální tolerovatelný tlak inertního plynu ve tkáni (bar)",
+            "formulaM": "<strong><var>M</var></strong> = Maximální tolerovatelný tlak inertního plynu ve tkáni (bar)",
             "formulaPamb": "<strong><var>p</var><sub>okol</sub></strong> = Okolní tlak v aktuální hloubce (bar)",
-            "formulaA": "<strong>a</strong> = Úsek na ose y (bar) — specifický pro tkáň",
-            "formulaB": "<strong>b</strong> = Směrnice (bezrozměrný) — specifická pro tkáň",
-            "formulaHint": "Koeficient „a“ je průsečík s osou y — maximální tolerovatelný tkáňový tlak při nulovém přetlaku (na hladině). Rychlejší tkáně mají vyšší hodnoty „a“, což znamená, že zvládnou větší přesycení.",
+            "formulaA": "<strong><var>a</var></strong> = Úsek na ose y (bar) — specifický pro tkáň",
+            "formulaB": "<strong><var>b</var></strong> = Směrnice (bezrozměrný) — specifická pro tkáň",
+            "formulaHint": "Koeficient <var>a</var> je průsečík s osou y: extrapolovaná <var>M</var>-hodnota při <var>p</var><sub>okol</sub> = 0 bar absolutního tlaku. Nejde o limit na hladině; při okolním tlaku přibližně 1 bar platí <var>M</var><sub>0</sub> ≈ <var>a</var> + 1/<var>b</var>. Rychlejší tkáně mají vyšší hodnoty <var>a</var>, což znamená, že zvládnou větší přesycení.",
             "variantsSummary": "📚 Varianty ZH-L16: A, B a C",
             "variantsIntro": "Bühlmann publikoval tři sady koeficientů:",
             "variantA": "<strong>ZH-L16A</strong> — Matematicky odvozené z poločasů. Původní, nejméně konzervativní sada. Používá se pro výzkum.",
@@ -679,10 +679,10 @@
             "limitationsHint": "Proto existují gradient faktory — aby udržely sycení tkání hluboko pod teoretickým limitem M-hodnoty. Viz stránka <a href=\"gradient-factors.html\">Gradient faktory</a>."
         },
         "diagram": {
-            "title": "Diagram M-value",
+            "title": "Tlak–tlakový diagram",
             "cardTitle": "Vizualizace limitů",
             "intro": "Graf níže zobrazuje <strong>okolní tlak</strong> (osa X) proti <strong>tlaku N₂ ve tkáni</strong> (osa Y). Sledujte, jak se vaše tkáňové kompartmenty pohybují různými zónami během ponoru:",
-            "zoneBelowMarker": "Pod modrou linií (y = x)",
+            "zoneBelowMarker": "Pod modrou linií (<var>y</var> = <var>x</var>)",
             "zoneBelowDesc": "Tkáňový tlak &lt; okolní (bez přesycení)",
             "zoneBetweenMarker": "Mezi modrou a M-value linií",
             "zoneBetweenDesc": "Přesycení, ale bezpečné ✓",
@@ -698,18 +698,18 @@
             "title": "Příklad 1: Bezpečný ponor",
             "desc": "Tento ponor zahrnuje 10minutovou bezpečnostní zastávku v 3 m. Všimněte si, jak tkáňový tlak zůstává po celou dobu výstupu bezpečně pod M-value linií.",
             "profileTitle": "Profil ponoru",
-            "ppDiagramTitle": "Diagram M-value"
+            "ppDiagramTitle": "Tlak–tlakový diagram"
         },
         "example2": {
             "title": "Příklad 2: Překročení stropu",
             "ceilingTitle": "Co je dekompresní strop?",
-            "ceilingText": "<strong>Dekompresní strop</strong> je nejmenší hloubka, do které můžete vystoupat, aniž by jakákoli tkáň překročila svou M-hodnotu. Pokud vystoupáte nad strop, tkáňový tlak překročí M-value linii a tvorba nebezpečných bublin se stává pravděpodobnou. Dekompresní zastávky vás drží na úrovni stropu nebo pod ním, zatímco se tkáně vysycují.",
+            "ceilingText": "<strong>Dekompresní strop</strong> je nejmělčí dovolená hloubka v daném okamžiku. Nad tuto hranici — do menší hloubky — nelze vystoupat, aniž by alespoň jeden tkáňový kompartment překročil svou M-hodnotu. Dekompresní zastávky udržují potápěče v hloubce stropu nebo hlouběji, dokud vysycování neposune strop blíže k hladině.",
             "desc": "<strong>Stejný ponor, ale s přímým výstupem na hladinu.</strong> Sledujte, jak tkáňový tlak překročí M-value linii — toto je riziko dekompresní nemoci!",
             "profileTitle": "Profil ponoru",
-            "ppDiagramTitle": "Diagram M-value",
+            "ppDiagramTitle": "Tlak–tlakový diagram",
             "legendSummary": "📖 Legenda grafu",
-            "legendAmbient": "<strong>Modrá plná (linie okolního tlaku):</strong> y = x. Nad ní = tkáň je přesycena.",
-            "legendSurface": "<strong>Šedá čárkovaná (hladina):</strong> x = 1 bar. Při dosažení hladiny musíte být pod M-hodnotou.",
+            "legendAmbient": "<strong>Modrá plná (linie okolního tlaku):</strong> <var>y</var> = <var>x</var>. Nad ní = tkáň je přesycena.",
+            "legendSurface": "<strong>Šedá čárkovaná (hladina):</strong> <var>x</var> = 1 bar. Při dosažení hladiny musíte být pod M-hodnotou.",
             "legendMValue": "<strong>Barevná čárkovaná (M-hodnota):</strong> Kritický limit pro každou tkáň. Každý tkáňový kompartment má svou vlastní barvu.",
             "legendTrail": "<strong>Stopa:</strong> Trajektorie, kterou bod tkáně vykreslil během ponoru."
         },
@@ -717,7 +717,7 @@
             "title": "Koeficienty M-hodnot ZH-L16A",
             "viewTable": "Zobrazit tabulku koeficientů",
             "thHalfTime": "Poločas (min)",
-            "footnote": "* M₀ = a + 1/b = Maximální tolerovatelný tkáňový tlak na hladině (okolní tlak 1 bar)"
+            "footnote": "* <var>M</var><sub>0</sub> = <var>a</var> + 1/<var>b</var> = Maximální tolerovatelný tkáňový tlak na hladině (okolní tlak 1 bar)"
         }
     },
     "gradientFactors": {
