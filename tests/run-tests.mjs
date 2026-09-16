@@ -6733,6 +6733,131 @@ describe('M-value notation localization', () => {
     });
 });
 
+describe('Gradient-factors theory page follows the glossary', () => {
+    const page = readFileSync(
+        new URL('../gradient-factors.html', import.meta.url),
+        'utf8'
+    );
+    const pageMarkup = page.split('<script type="module">')[0];
+    const dictionaries = Object.fromEntries(
+        ['cs', 'en', 'es'].map(lang => [
+            lang,
+            JSON.parse(readFileSync(
+                new URL(`../locales/${lang}.json`, import.meta.url),
+                'utf8'
+            ))
+        ])
+    );
+    const locales = Object.fromEntries(
+        Object.entries(dictionaries).map(([lang, dict]) => [
+            lang,
+            dict.gradientFactors
+        ])
+    );
+    const visibleKeys = [
+        ...page.matchAll(/data-i18n="(gradientFactors\.[^"]+)"/g)
+    ].map(match => match[1]);
+
+    function valueAt(object, path) {
+        return path.split('.').reduce((value, key) => value[key], object);
+    }
+
+    test('formula and GF limit symbols use the glossary notation', () => {
+        expect(visibleKeys).toHaveLength(164);
+        expect(pageMarkup.includes(
+            'data-i18n="gradientFactors.chartFormula.adjustedSymbol"'
+        )).toBe(true);
+        expect(pageMarkup.includes('<th>GF<sub>low</sub> (%)</th>')).toBe(true);
+        expect(pageMarkup.includes('<th>GF<sub>high</sub> (%)</th>')).toBe(true);
+
+        const adjusted = {
+            cs: '<var>M</var><sub>upr</sub>',
+            en: '<var>M</var><sub>adj</sub>',
+            es: '<var>M</var><sub>adj</sub>'
+        };
+        const mValueKeys = [
+            'greyZone.title',
+            'greyZone.silentBubbles.insight',
+            'greyZone.silentBubbles.text2',
+            'gfExplained.what.text1',
+            'gfExplained.what.gf100value',
+            'gfExplained.what.text2',
+            'gfExplained.example100.desc',
+            'gfExplained.example5080.desc',
+            'chartFormula.summary',
+            'chartFormula.intro',
+            'chartFormula.varM',
+            'chartFormula.note100'
+        ];
+        for (const [lang, values] of Object.entries(locales)) {
+            expect(values.chartFormula.adjustedSymbol).toBe(adjusted[lang]);
+            expect(values.chartFormula.varMPrime.includes(
+                `<strong>${adjusted[lang]}</strong>`
+            )).toBe(true);
+            expect(values.chartFormula.varM.includes(
+                '<strong><var>M</var></strong>'
+            )).toBe(true);
+            expect(values.chartFormula.varM.includes('<var>a</var>')).toBe(true);
+            expect(values.chartFormula.varM.includes('<var>b</var>')).toBe(true);
+            expect(values.chartFormula.varGF.includes('GF<sub>low</sub>')).toBe(true);
+            expect(values.chartFormula.varGF.includes('GF<sub>high</sub>')).toBe(true);
+            expect(values.chartFormula.varGF.includes(
+                '<var>p</var><sub>anchor</sub>'
+            )).toBe(true);
+            expect(/ceiling|strop|techo/i.test([
+                values.chartFormula.intro,
+                values.chartFormula.intro5080,
+                values.chartFormula.varMPrime
+            ].join('\n'))).toBe(false);
+            for (const key of mValueKeys) {
+                expect(valueAt(values, key).includes('<var>M</var>')).toBe(true);
+            }
+
+            const visibleText = visibleKeys
+                .map(key => valueAt(dictionaries[lang], key))
+                .join('\n');
+            expect(/M'|pAnchor|GF (?:Low|High|bajo|alto)/.test(visibleText))
+                .toBe(false);
+        }
+    });
+
+    test('visible numbers use localized decimals and non-breaking unit spacing', () => {
+        const badUnitSpacing =
+            /\d(?:[–-]\d+)? ?(?:%|m|meters?|min(?:utes?)?|ft|fsw)(?![A-Za-z])/;
+
+        for (const [lang, dict] of Object.entries(dictionaries)) {
+            for (const key of visibleKeys) {
+                expect(badUnitSpacing.test(valueAt(dict, key))).toBe(false);
+            }
+            if (lang !== 'en') {
+                const visibleText = visibleKeys
+                    .map(key => valueAt(dict, key))
+                    .join('\n');
+                expect(/\d+\.\d+/.test(visibleText)).toBe(false);
+            }
+        }
+
+        expect(pageMarkup.includes('40–60&nbsp;%')).toBe(true);
+        expect(pageMarkup.includes('100&nbsp;%')).toBe(true);
+        expect(pageMarkup.includes('30&nbsp;ft')).toBe(true);
+    });
+
+    test('Pyle story preserves the systematic search that revealed the fish pattern', () => {
+        expect(locales.cs.pyle.discovery.text1.includes('systematicky')).toBe(true);
+        expect(locales.cs.pyle.discovery.text1.includes('únava')).toBe(true);
+        expect(locales.cs.pyle.discovery.insight.toLowerCase().includes('bez únavy'))
+            .toBe(true);
+
+        expect(locales.en.pyle.discovery.text1.includes('systematically')).toBe(true);
+        expect(locales.en.pyle.discovery.text1.includes('fatigue varied')).toBe(true);
+        expect(locales.en.pyle.discovery.insight.includes('without fatigue')).toBe(true);
+
+        expect(locales.es.pyle.discovery.text1.includes('sistemáticamente')).toBe(true);
+        expect(locales.es.pyle.discovery.text1.includes('fatiga variaba')).toBe(true);
+        expect(locales.es.pyle.discovery.insight.includes('sin fatiga')).toBe(true);
+    });
+});
+
 describe('M-values theory page follows the glossary', () => {
     const page = readFileSync(
         new URL('../m-values.html', import.meta.url),
