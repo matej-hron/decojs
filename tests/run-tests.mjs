@@ -6763,7 +6763,7 @@ describe('Gradient-factors theory page follows the glossary', () => {
     }
 
     test('formula and GF limit symbols use the glossary notation', () => {
-        expect(visibleKeys).toHaveLength(160);
+        expect(visibleKeys).toHaveLength(163);
         expect(pageMarkup.includes(
             'data-i18n="gradientFactors.chartFormula.adjustedSymbol"'
         )).toBe(true);
@@ -6865,6 +6865,51 @@ describe('Gradient-factors theory page follows the glossary', () => {
         expect(locales.cs.cmas.pointSymmetric.sourceLabel).toBe('Zdroj:');
         expect(locales.en.cmas.pointSymmetric.sourceLabel).toBe('Source:');
         expect(locales.es.cmas.pointSymmetric.sourceLabel).toBe('Fuente:');
+    });
+
+    test('each study supporting symmetric air and nitrox GFs has a direct source link', () => {
+        const symmetricStart = pageMarkup.indexOf(
+            'data-i18n="gradientFactors.cmas.pointSymmetric.title"'
+        );
+        const heliumStart = pageMarkup.indexOf(
+            'data-i18n="gradientFactors.cmas.pointHelium.title"'
+        );
+        const symmetricSection = pageMarkup.slice(symmetricStart, heliumStart);
+        const studyUrls = [
+            'https://www.cmas.org/fact-sheets/deep-stops-eng.html',
+            'https://indepthmag.com/wp-content/uploads/2019/10/NEDU_TR_2011-06.pdf',
+            'https://pmc.ncbi.nlm.nih.gov/articles/PMC10735712/'
+        ];
+
+        for (const [index, url] of studyUrls.entries()) {
+            const bulletKey =
+                `data-i18n="gradientFactors.cmas.pointSymmetric.bullet${index + 1}"`;
+            const bulletStart = symmetricSection.indexOf(bulletKey);
+            const nextBulletStart = index < studyUrls.length - 1
+                ? symmetricSection.indexOf(
+                    `data-i18n="gradientFactors.cmas.pointSymmetric.bullet${index + 2}"`
+                )
+                : symmetricSection.indexOf('</ul>');
+            const bulletMarkup = symmetricSection.slice(bulletStart, nextBulletStart);
+
+            expect(bulletStart > -1).toBe(true);
+            expect(nextBulletStart > bulletStart).toBe(true);
+            expect(bulletMarkup.includes(`href="${url}"`)).toBe(true);
+            expect(bulletMarkup.includes('target="_blank" rel="noopener"')).toBe(true);
+            expect(bulletMarkup.includes(
+                'data-i18n="gradientFactors.cmas.pointSymmetric.studyLink"'
+            )).toBe(true);
+        }
+
+        expect(locales.cs.cmas.pointSymmetric.studyLink).toBe('studie ↗');
+        expect(locales.en.cmas.pointSymmetric.studyLink).toBe('study ↗');
+        expect(locales.es.cmas.pointSymmetric.studyLink).toBe('estudio ↗');
+    });
+
+    test('Czech no-decompression heading says GF low does not play a role', () => {
+        expect(locales.cs.cmas.pointNoStop.title).toBe(
+            '3. Při bezdekompresním ponoru GF<sub>low</sub> nehraje roli'
+        );
     });
 
     test('Pyle story preserves the systematic search that revealed the fish pattern', () => {

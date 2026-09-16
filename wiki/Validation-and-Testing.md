@@ -6,7 +6,7 @@ npm test
 
 Runs `node tests/run-tests.mjs`. No external test framework — `tests/run-tests.mjs` implements `describe`/`test`/`expect` inline (lines 10–140) with matchers `.toBe`, `.toEqual`, `.toBeCloseTo`, `.toBeGreaterThan`, `.toBeLessThan`, `.toHaveProperty`, `.toHaveLength`, `.toBeDefined`. Output is one line per test, then a pass/fail summary.
 
-**565 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
+**567 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
 
 `npm test` is required to pass before every commit per `CLAUDE.md`.
 
@@ -24,7 +24,7 @@ The algorithm suite. Directly imports from `js/decoModel.js` and `js/tissueCompa
 - **Tissue loading end-to-end.** `calculateTissueLoading` on simple profiles; verifies monotonicity on descent, exponential shape, and surface equilibration.
 - **Variant switching.** `setZHL16Variant('A'|'B'|'C')` followed by re-checking a reference dive.
 - **M-values theory page.** Verifies glossary markup and locale parity across Czech, English, and Spanish, including the pressure-comparison conditions; checks the formula sandbox link and unambiguous ceiling definition; and proves the direct-ascent example violates TC3 while the safe-stop profile remains below all raw M-value limits.
-- **Gradient-factors theory page.** Verifies canonical quantity symbols, GF subscripts, localized decimals, non-breaking unit spacing, and the sourced Richard Pyle/deep-stop history across Czech, English, and Spanish. The history test distinguishes personal observation, independent bubble models, gradient factors, the scope of the NEDU result, and current uncertainty. A focused source test requires the symmetric air/nitrox GF recommendation to cite the official CMAS fact sheet directly within that recommendation.
+- **Gradient-factors theory page.** Verifies canonical quantity symbols, GF subscripts, localized decimals, non-breaking unit spacing, and the sourced Richard Pyle/deep-stop history across Czech, English, and Spanish. The history test distinguishes personal observation, independent bubble models, gradient factors, the scope of the NEDU result, and current uncertainty. Focused source tests require the symmetric air/nitrox GF recommendation to cite the official CMAS fact sheet directly and each supporting French, NEDU, and Belgian bullet to include its own study link. The Czech no-decompression heading is also checked for natural wording.
 
 ### `tests/diveSetup.test.js` (~650 lines, ~49 tests)
 
