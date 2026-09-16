@@ -6763,7 +6763,7 @@ describe('Gradient-factors theory page follows the glossary', () => {
     }
 
     test('formula and GF limit symbols use the glossary notation', () => {
-        expect(visibleKeys).toHaveLength(164);
+        expect(visibleKeys).toHaveLength(159);
         expect(pageMarkup.includes(
             'data-i18n="gradientFactors.chartFormula.adjustedSymbol"'
         )).toBe(true);
@@ -6839,7 +6839,8 @@ describe('Gradient-factors theory page follows the glossary', () => {
 
         expect(pageMarkup.includes('40–60&nbsp;%')).toBe(true);
         expect(pageMarkup.includes('100&nbsp;%')).toBe(true);
-        expect(pageMarkup.includes('30&nbsp;ft')).toBe(true);
+        expect(pageMarkup.includes('170&nbsp;fsw')).toBe(true);
+        expect(pageMarkup.includes('12&nbsp;m')).toBe(true);
     });
 
     test('Pyle story preserves the systematic search that revealed the fish pattern', () => {
@@ -6855,6 +6856,105 @@ describe('Gradient-factors theory page follows the glossary', () => {
         expect(locales.es.pyle.discovery.text1.includes('sistemáticamente')).toBe(true);
         expect(locales.es.pyle.discovery.text1.includes('fatiga variaba')).toBe(true);
         expect(locales.es.pyle.discovery.insight.includes('sin fatiga')).toBe(true);
+    });
+
+    test('Pyle section presents a sourced history rather than a recommended algorithm', () => {
+        expect(pageMarkup.includes(
+            'href="https://scubatechphilippines.com/scuba_blog/deep-stops-richard-pyle/"'
+        )).toBe(true);
+        expect(pageMarkup.includes(
+            'href="https://indepthmag.com/wp-content/uploads/2019/10/NEDU_TR_2011-06.pdf"'
+        )).toBe(true);
+        for (const obsoleteKey of [
+            'step1',
+            'step2',
+            'step3',
+            'step4',
+            'exampleTitle',
+            'stop1Label',
+            'stop1Value',
+            'stop2Label',
+            'stop2Value',
+            'stop3Label',
+            'stop3Value',
+            'vpmConnection'
+        ]) {
+            expect(pageMarkup.includes(
+                `gradientFactors.pyle.method.${obsoleteKey}`
+            )).toBe(false);
+        }
+        expect(pageMarkup.includes('(60 + 15)')).toBe(false);
+
+        expect(locales.cs.pyle.discovery.insight.startsWith(
+            '<strong>Překvapivé zjištění:</strong>'
+        )).toBe(true);
+
+        const semanticMarkers = {
+            cs: {
+                anecdote: 'nikoli o kontrolovaný experiment',
+                gfIndependent: 'GF však nejsou bublinový model',
+                validation: 'kontrolované důkazy',
+                equalTime: 'stejná celková dekompresní doba',
+                scope: 'vzduchového profilu',
+                retreat: 'ústup od představy'
+            },
+            en: {
+                anecdote: 'not a controlled experiment',
+                gfIndependent: 'GF are not a bubble model',
+                validation: 'controlled evidence',
+                equalTime: 'same total decompression time',
+                scope: 'air profile',
+                retreat: 'retreat from the assumption'
+            },
+            es: {
+                anecdote: 'no un experimento controlado',
+                gfIndependent: 'los GF no son un modelo de burbujas',
+                validation: 'pruebas controladas',
+                equalTime: 'mismo tiempo total de descompresión',
+                scope: 'perfil con aire',
+                retreat: 'retroceso frente a la idea'
+            }
+        };
+
+        for (const values of Object.values(locales)) {
+            expect(values.pyle.method.skepticism).toBeDefined();
+            expect(values.pyle.method.summary).toBeDefined();
+            expect(values.pyle.method.sourceLink).toBeDefined();
+            expect(values.pyle.bridge.text3).toBeDefined();
+            expect(values.controversy.nedu.linkText).toBeDefined();
+            expect(values.controversy.nedu.scope).toBeDefined();
+            expect(values.pyle.bridge.text1.includes('1986')).toBe(true);
+            expect(values.pyle.bridge.text1.includes('1989')).toBe(true);
+            expect(values.pyle.bridge.text1.includes('RGBM')).toBe(true);
+            expect(values.pyle.bridge.text2.includes('GF')).toBe(true);
+            expect(values.controversy.nedu.text1.includes('2005–2011')).toBe(true);
+            expect(values.controversy.nedu.text1.includes('2006')).toBe(true);
+            expect(/changed everything|změnila vše|cambió todo/i.test(
+                values.controversy.nedu.cardTitle
+            )).toBe(false);
+            expect(/beneficial|pomáhají|beneficiosas/i.test(
+                values.pyle.bridge.text1 + values.pyle.bridge.text2
+            )).toBe(false);
+        }
+
+        for (const [lang, markers] of Object.entries(semanticMarkers)) {
+            const values = locales[lang];
+            expect(values.pyle.discovery.text2.includes(markers.anecdote)).toBe(true);
+            expect(values.pyle.bridge.text2.includes(markers.gfIndependent)).toBe(true);
+            expect(values.pyle.bridge.text3.includes(markers.validation)).toBe(true);
+            expect(values.controversy.nedu.text2.includes(markers.equalTime)).toBe(true);
+            expect(values.controversy.nedu.scope.includes(markers.scope)).toBe(true);
+            expect(values.controversy.nedu.scope.includes('trimix')).toBe(true);
+            expect(values.controversy.nedu.aftermath.includes(markers.retreat))
+                .toBe(true);
+        }
+
+        expect(locales.en.controversy.backfire.nuance1.includes('not directly test'))
+            .toBe(true);
+        expect(locales.cs.controversy.backfire.nuance1.includes('přímo netestovala'))
+            .toBe(true);
+        expect(locales.es.controversy.backfire.nuance1.includes('no evaluó directamente'))
+            .toBe(true);
     });
 });
 

@@ -726,7 +726,7 @@
         "toc": {
             "greyZone": "Zona gris: burbujas silenciosas",
             "individualVariability": "Variabilidad individual",
-            "pyleStops": "Paradas de Pyle",
+            "pyleStops": "La historia de Pyle",
             "gfExplained": "Los factores de gradiente explicados",
             "gfLowHigh": "GF<sub>low</sub> y GF<sub>high</sub>",
             "example100": "Ejemplo: GF 100/100",
@@ -777,29 +777,21 @@
                 "title": "El descubrimiento de Richard Pyle",
                 "cardTitle": "La observación del coleccionista de peces",
                 "text1": "En los años 80, <strong>Richard Pyle</strong> observó que la fatiga variaba notablemente de una inmersión a otra. Como llevaba registros meticulosos, buscó sistemáticamente qué diferenciaba las inmersiones tras las que se sentía cansado de aquellas tras las que no.",
-                "insight": "<strong>El patrón:</strong> salía sin fatiga de las inmersiones en las que capturaba un pez. Durante el ascenso tenía que parar a profundidades intermedias para <strong>liberar la presión de su vejiga natatoria</strong> y evitar que estallara. En las inmersiones sin pez — y, por tanto, sin esas paradas intermedias — se sentía fatigado.",
-                "text2": "Pyle había descubierto por casualidad que breves paradas a profundidades <em>mayores</em> que las exigidas por su tabla de descompresión marcaban una diferencia notable en cómo se encontraba después."
+                "insight": "<strong>El hallazgo sorprendente:</strong> salía sin fatiga de las inmersiones en las que capturaba un pez. Durante el ascenso tenía que parar a profundidades intermedias para <strong>liberar la presión de su vejiga natatoria</strong> y evitar que estallara. En las inmersiones sin pez — y, por tanto, sin esas paradas intermedias — se sentía fatigado.",
+                "text2": "La asociación repetida sugería que las paradas breves a una profundidad <em>mayor</em> que la descompresión prescrita podían ser relevantes. Era una observación personal convincente, no un experimento controlado."
             },
             "method": {
-                "title": "Paradas de Pyle",
-                "intro": "Pyle formalizó su observación en un método:",
-                "step1": "Calcula tu programa de descompresión convencional",
-                "step2": "1.ª parada profunda = <strong>a medio camino</strong> entre la profundidad máxima y la primera parada deco exigida",
-                "step3": "Permanece 2–3 min",
-                "step4": "Si la distancia hasta la siguiente parada sigue siendo &gt; 9 m (30 ft), añade otra parada a medio camino",
-                "exampleTitle": "Ejemplo: inmersión a 60 m, primera parada deco a 15 m",
-                "stop1Label": "1.ª parada de Pyle:",
-                "stop1Value": "(60 + 15) ÷ 2 = <strong>38 m</strong>",
-                "stop2Label": "2.ª parada de Pyle:",
-                "stop2Value": "(38 + 15) ÷ 2 = <strong>27 m</strong>",
-                "stop3Label": "3.ª parada de Pyle:",
-                "stop3Value": "(27 + 15) ÷ 2 = <strong>21 m</strong>",
-                "vpmConnection": "Curiosamente, Pyle descubrió después que su patrón empírico coincidía muy de cerca con el <strong>Varying Permeability Model (VPM)</strong> — un algoritmo de descompresión basado en burbujas que, de forma independiente, predecía perfiles de paradas profundas similares."
+                "title": "De la observación a las paradas de Pyle",
+                "intro": "Pyle empezó a introducir deliberadamente paradas intermedias muy breves y más tarde describió un procedimiento empírico sencillo. Consideraba significativa la mejora repetida de cómo se sentía, aunque reconocía que no era fisiólogo de descompresión.",
+                "skepticism": "La idea encontró un escepticismo comprensible. Los programas convencionales de gas disuelto solían llevar al buceador hacia una primera parada menos profunda, y el tiempo adicional en profundidad podía seguir cargando los tejidos más lentos.",
+                "summary": "Las paradas de Pyle son históricamente importantes porque cuestionaron el patrón de ascenso predominante. Su antigua regla práctica pertenece al relato histórico enlazado, no a las recomendaciones actuales para planificar una inmersión.",
+                "sourceLink": "📄 Leer el relato de Richard Pyle →"
             },
             "bridge": {
-                "title": "Del descubrimiento de Pyle a Bühlmann",
-                "text1": "Pyle demostró que las paradas profundas ayudan, y VPM (un modelo de burbujas) explica por qué. Pero ¿y si quieres seguir usando el <strong>modelo de gas disuelto de Bühlmann</strong> — el algoritmo de la mayoría de los ordenadores de buceo — y, aun así, obtener esas paradas profundas beneficiosas?",
-                "text2": "Eso es exactamente lo que ofrecen los <strong>factores de gradiente</strong>. Son una modificación de Bühlmann que te permite ajustar perfiles más conservadores, incluidas primeras paradas más profundas, <em>sin</em> cambiar a un algoritmo completamente distinto."
+                "title": "Cuando la idea se encontró con los modelos",
+                "text1": "El <strong>Varying Permeability Model (VPM)</strong> se había publicado en 1986, antes del artículo de Pyle de 1997. Cuando Pyle conoció el trabajo de David Yount en 1989, reconoció que este modelo de burbujas independiente predecía un inicio de la descompresión igualmente profundo. El posterior Reduced Gradient Bubble Model (RGBM) siguió otra vía basada en burbujas.",
+                "text2": "Los <strong>factores de gradiente (GF)</strong> ofrecieron una vía diferente dentro del modelo de gas disuelto de Bühlmann: un GF<sub>low</sub> bajo puede desplazar la primera parada a mayor profundidad. Sin embargo, los GF no son un modelo de burbujas ni se crearon como demostración del procedimiento de Pyle.",
+                "text3": "La convergencia resultó persuasiva y los perfiles con paradas profundas se extendieron rápidamente entre los buceadores técnicos. Su popularidad, una teoría atractiva y muchas inmersiones aparentemente satisfactorias avanzaron más deprisa que las pruebas controladas de beneficio clínico."
             }
         },
         "gfExplained": {
@@ -841,8 +833,8 @@
         "controversy": {
             "title": "La controversia de las paradas profundas",
             "nedu": {
-                "cardTitle": "El estudio de la NEDU que lo cambió todo",
-                "text1": "Durante años las paradas profundas se consideraron beneficiosas según las observaciones de Pyle y la teoría de los modelos de burbujas. Luego llegaron los tests rigurosos.",
+                "cardTitle": "El estudio NEDU que cambió la visión de las paradas profundas",
+                "text1": "El proyecto abarcó 2005–2011; las inmersiones controladas en cámara se realizaron entre noviembre de 2005 y agosto de 2006, y NEDU publicó su informe final en julio de 2011.",
                 "text2": "La <strong>U.S. Navy Experimental Diving Unit (NEDU)</strong> realizó un gran estudio comparativo: misma inmersión (170 fsw/30 min), mismo tiempo total de descompresión, pero distintos perfiles:",
                 "shallowLabel": "Paradas someras",
                 "shallowValue": "3 DCS en 192 inmersiones",
@@ -850,7 +842,10 @@
                 "deepLabel": "Paradas profundas",
                 "deepValue": "11 DCS en 198 inmersiones",
                 "deepDesc": "1.ª parada a 70 fsw (21 m)",
-                "result": "¡Las paradas profundas produjeron <span style=\"color: var(--danger-color);\">3,6× más DCS</span> en la misma inmersión!"
+                "result": "El programa de paradas profundas produjo <span style=\"color: var(--danger-color);\">significativamente más DCS: 11 casos en 198 inmersiones frente a 3 en 192</span>.",
+                "scope": "El resultado no demuestra que toda parada profunda breve sea perjudicial. Muestra que desplazar a mayor profundidad una parte considerable del mismo tiempo de descompresión empeoró los resultados en este perfil con aire; no puede generalizarse automáticamente a todos los perfiles con trimix.",
+                "aftermath": "NEDU y las revisiones posteriores alejaron las recomendaciones y la práctica de una descompresión excesivamente concentrada en profundidad, especialmente con aire y nitrox. Fue un retroceso frente a la idea de que una parada más profunda es automáticamente más segura, no la demostración de que toda primera parada más profunda sea perjudicial.",
+                "linkText": "📄 Leer el informe primario NEDU TR 11‑06 →"
             },
             "backfire": {
                 "title": "Por qué las paradas profundas pueden ser contraproducentes",
@@ -859,10 +854,10 @@
                 "text2": "Las paradas profundas reducen el gradiente de presión para desgasificar. Cuanto más profundo te quedes, menor es la diferencia entre la presión del tejido y la ambiente — y ese gradiente es el que impulsa la eliminación de gas.",
                 "nuanceTitle": "El matiz real",
                 "nuanceIntro": "Esto no significa que todas las paradas profundas sean malas:",
-                "nuance1": "<strong>Las paradas muy breves</strong> (los 2–3 min originales de Pyle) pueden seguir siendo beneficiosas",
-                "nuance2": "El estudio de la NEDU empleó paradas profundas prolongadas, trasladando mucho tiempo de deco a la zona profunda",
-                "nuance3": "Los perfiles muy agresivos de paradas profundas (GF 30/85) se desaconsejan hoy",
-                "nuance4": "Un conservadurismo moderado (GF 70/85) añade seguridad sin paradas profundas excesivas"
+                "nuance1": "NEDU <strong>no evaluó directamente</strong> las brevísimas paradas intermedias de Pyle; su beneficio clínico sigue sin demostrarse",
+                "nuance2": "NEDU evaluó la redistribución del mismo tiempo total de descompresión, no una simple reducción de la velocidad de ascenso",
+                "nuance3": "Un GF<sub>low</sub> muy bajo puede dar un peso excesivo a las paradas profundas y reducir el tiempo de desaturación a menor profundidad",
+                "nuance4": "Los perfiles con aire/nitrox y con helio deben evaluarse por separado; ningún único ajuste de GF es universalmente el más seguro"
             }
         },
         "practical": {

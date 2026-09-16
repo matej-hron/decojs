@@ -726,7 +726,7 @@
         "toc": {
             "greyZone": "Grey Zone: Silent Bubbles",
             "individualVariability": "Individual Variability",
-            "pyleStops": "Pyle Stops",
+            "pyleStops": "Pyle's Story",
             "gfExplained": "Gradient Factors Explained",
             "gfLowHigh": "GF<sub>low</sub> & GF<sub>high</sub>",
             "example100": "Example: GF 100/100",
@@ -777,29 +777,21 @@
                 "title": "Richard Pyle's Discovery",
                 "cardTitle": "The Fish Collector's Observation",
                 "text1": "In the eighties, <strong>Richard Pyle</strong> noticed that his post-dive fatigue varied markedly from one dive to another. Because he kept meticulous records, he systematically searched for what distinguished the dives after which he felt tired from those after which he did not.",
-                "insight": "<strong>The pattern:</strong> He surfaced without fatigue after dives when he caught a fish. During ascent he had to stop at intermediate depths to <strong>vent its swim bladder</strong> (preventing it from bursting). On dives with no fish — and therefore no intermediate stops — he felt fatigued.",
-                "text2": "Pyle had accidentally discovered that brief stops at depths <em>deeper</em> than required by his decompression schedule made a noticeable difference in how he felt."
+                "insight": "<strong>The surprising finding:</strong> He surfaced without fatigue after dives when he caught a fish. During ascent he had to stop at intermediate depths to <strong>vent its swim bladder</strong> (preventing it from bursting). On dives with no fish — and therefore no intermediate stops — he felt fatigued.",
+                "text2": "The repeated association suggested that brief stops <em>deeper</em> than his prescribed decompression might matter. It was a compelling personal observation, not a controlled experiment."
             },
             "method": {
-                "title": "Pyle Stops",
-                "intro": "Pyle formalized his observation into a method:",
-                "step1": "Calculate your conventional decompression schedule",
-                "step2": "First deep stop = <strong>halfway</strong> between max depth and first required deco stop",
-                "step3": "Stay 2–3 min",
-                "step4": "If the gap to the next stop is still &gt; 9 m (30 ft), add another halfway stop",
-                "exampleTitle": "Example: 60 m dive, first deco stop at 15 m",
-                "stop1Label": "1st Pyle stop:",
-                "stop1Value": "(60 + 15) ÷ 2 = <strong>38 m</strong>",
-                "stop2Label": "2nd Pyle stop:",
-                "stop2Value": "(38 + 15) ÷ 2 = <strong>27 m</strong>",
-                "stop3Label": "3rd Pyle stop:",
-                "stop3Value": "(27 + 15) ÷ 2 = <strong>21 m</strong>",
-                "vpmConnection": "Interestingly, Pyle later discovered that his empirical pattern closely matched the <strong>Varying Permeability Model (VPM)</strong> — a bubble-based decompression algorithm that independently predicted similar deep stop profiles."
+                "title": "From Observation to Pyle Stops",
+                "intro": "Pyle began adding very brief intermediate stops deliberately and later described a simple empirical procedure. He treated the repeated improvement in how he felt as meaningful, while acknowledging that he was not a decompression physiologist.",
+                "skepticism": "The idea met understandable skepticism. Conventional dissolved-gas schedules generally sent divers toward a shallower first stop, and extra time at depth could continue loading slower tissues.",
+                "summary": "Pyle stops are historically important because they challenged the prevailing ascent pattern. His old rule of thumb belongs to the linked historical account, not to current dive-planning guidance.",
+                "sourceLink": "📄 Read Richard Pyle's account →"
             },
             "bridge": {
-                "title": "Bridging Pyle's Discovery to Bühlmann",
-                "text1": "So Pyle showed that deep stops help, and VPM (a bubble model) explains why. But what if you want to keep using <strong>Bühlmann's dissolved-gas model</strong> — the algorithm in most dive computers — while still getting those beneficial deep stops?",
-                "text2": "That's exactly what <strong>Gradient Factors</strong> provide. They're a modification to Bühlmann that lets you dial in more conservative profiles, including deeper first stops, <em>without</em> switching to a completely different algorithm."
+                "title": "When the Idea Met the Models",
+                "text1": "The <strong>Varying Permeability Model (VPM)</strong> had been published in 1986, before Pyle's 1997 article. When Pyle encountered David Yount's work in 1989, he recognized that this independent bubble model predicted a similarly deep start to decompression. The Reduced Gradient Bubble Model (RGBM) later followed another bubble-based path.",
+                "text2": "<strong>Gradient Factors (GF)</strong> offered a different route within Bühlmann's dissolved-gas model: a low GF<sub>low</sub> can move the first stop deeper. GF are not a bubble model, however, and were not created as proof of Pyle's procedure.",
+                "text3": "The convergence was persuasive, and deep-stop profiles spread rapidly through technical diving. Their popularity, plausible theory, and many apparently successful dives advanced faster than controlled evidence of clinical benefit."
             }
         },
         "gfExplained": {
@@ -841,8 +833,8 @@
         "controversy": {
             "title": "The Deep Stops Controversy",
             "nedu": {
-                "cardTitle": "The NEDU Study That Changed Everything",
-                "text1": "For years, deep stops were considered beneficial based on Pyle's observations and bubble model theory. Then came rigorous testing.",
+                "cardTitle": "The NEDU Study That Changed the View of Deep Stops",
+                "text1": "The project covered 2005–2011; the controlled chamber dives were conducted from November 2005 to August 2006, and NEDU issued its final report in July 2011.",
                 "text2": "The <strong>U.S. Navy Experimental Diving Unit (NEDU)</strong> conducted a large comparative study: same dive (170 fsw/30 min), same total decompression time, but different profiles:",
                 "shallowLabel": "Shallow Stops",
                 "shallowValue": "3 DCS in 192 dives",
@@ -850,7 +842,10 @@
                 "deepLabel": "Deep Stops",
                 "deepValue": "11 DCS in 198 dives",
                 "deepDesc": "First stop at 70 fsw (21 m)",
-                "result": "Deep stops resulted in <span style=\"color: var(--danger-color);\">3.6× more DCS</span> for the same dive!"
+                "result": "The deep-stop schedule produced <span style=\"color: var(--danger-color);\">significantly more DCS: 11 cases in 198 dives versus 3 in 192</span>.",
+                "scope": "This result does not prove that every brief deep stop is harmful. It shows that shifting a substantial share of the same decompression time deeper worsened outcomes on this air profile; it cannot automatically be generalized to every trimix profile.",
+                "aftermath": "NEDU and later reviews shifted guidance and practice away from aggressively deep-skewed decompression, especially for air and nitrox. This was a retreat from the assumption that deeper is automatically safer, not proof that every deeper first stop is harmful.",
+                "linkText": "📄 Read the primary NEDU TR 11‑06 report →"
             },
             "backfire": {
                 "title": "Why Deep Stops Can Backfire",
@@ -859,10 +854,10 @@
                 "text2": "Deep stops reduce the pressure gradient for off-gassing. The deeper you stay, the smaller the difference between tissue pressure and ambient — and that gradient is what drives gas elimination.",
                 "nuanceTitle": "The Nuanced Reality",
                 "nuanceIntro": "This doesn't mean all deep stops are bad:",
-                "nuance1": "<strong>Very brief stops</strong> (Pyle's original 2–3 min) may still be beneficial",
-                "nuance2": "The NEDU study used extended deep stops with significant deco time shifted deep",
-                "nuance3": "Extremely aggressive deep stop profiles (GF 30/85) are now discouraged",
-                "nuance4": "Moderate conservatism (GF 70/85) adds safety without excessive deep stops"
+                "nuance1": "NEDU did <strong>not directly test</strong> Pyle's very brief intermediate stops; their clinical benefit remains unproven",
+                "nuance2": "NEDU tested redistribution of the same total decompression time, not simply a slower ascent",
+                "nuance3": "A very low GF<sub>low</sub> can overemphasize deep stops and reduce shallow off-gassing time",
+                "nuance4": "Air/nitrox and helium profiles require separate evaluation; no single GF preset is universally safest"
             }
         },
         "practical": {
