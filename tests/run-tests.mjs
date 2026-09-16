@@ -6763,7 +6763,7 @@ describe('Gradient-factors theory page follows the glossary', () => {
     }
 
     test('formula and GF limit symbols use the glossary notation', () => {
-        expect(visibleKeys).toHaveLength(159);
+        expect(visibleKeys).toHaveLength(160);
         expect(pageMarkup.includes(
             'data-i18n="gradientFactors.chartFormula.adjustedSymbol"'
         )).toBe(true);
@@ -6841,6 +6841,30 @@ describe('Gradient-factors theory page follows the glossary', () => {
         expect(pageMarkup.includes('100&nbsp;%')).toBe(true);
         expect(pageMarkup.includes('170&nbsp;fsw')).toBe(true);
         expect(pageMarkup.includes('12&nbsp;m')).toBe(true);
+    });
+
+    test('symmetric air and nitrox GF guidance cites the official CMAS fact sheet directly', () => {
+        const symmetricStart = pageMarkup.indexOf(
+            'data-i18n="gradientFactors.cmas.pointSymmetric.title"'
+        );
+        const heliumStart = pageMarkup.indexOf(
+            'data-i18n="gradientFactors.cmas.pointHelium.title"'
+        );
+        const symmetricSection = pageMarkup.slice(symmetricStart, heliumStart);
+
+        expect(symmetricStart > -1).toBe(true);
+        expect(heliumStart > symmetricStart).toBe(true);
+        expect(symmetricSection.includes(
+            'data-i18n="gradientFactors.cmas.pointSymmetric.sourceLabel"'
+        )).toBe(true);
+        expect(symmetricSection.includes(
+            'href="https://www.cmas.org/fact-sheets/gradient-factors-gf-and-dive-computers.html"'
+        )).toBe(true);
+        expect(symmetricSection.includes('CMAS Fact Sheet 25‑020/CMAS/TC')).toBe(true);
+
+        expect(locales.cs.cmas.pointSymmetric.sourceLabel).toBe('Zdroj:');
+        expect(locales.en.cmas.pointSymmetric.sourceLabel).toBe('Source:');
+        expect(locales.es.cmas.pointSymmetric.sourceLabel).toBe('Fuente:');
     });
 
     test('Pyle story preserves the systematic search that revealed the fish pattern', () => {
