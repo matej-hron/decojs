@@ -6876,7 +6876,7 @@ describe('Gradient-factors theory page follows the glossary', () => {
         );
         const symmetricSection = pageMarkup.slice(symmetricStart, heliumStart);
         const studyUrls = [
-            'https://www.cmas.org/fact-sheets/deep-stops-eng.html',
+            'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&amp;id=15892549&amp;rettype=abstract&amp;retmode=text',
             'https://indepthmag.com/wp-content/uploads/2019/10/NEDU_TR_2011-06.pdf',
             'https://pmc.ncbi.nlm.nih.gov/articles/PMC10735712/'
         ];
@@ -6900,6 +6900,9 @@ describe('Gradient-factors theory page follows the glossary', () => {
                 'data-i18n="gradientFactors.cmas.pointSymmetric.studyLink"'
             )).toBe(true);
         }
+        expect(symmetricSection.includes(
+            'href="https://www.cmas.org/fact-sheets/deep-stops-eng.html"'
+        )).toBe(false);
 
         expect(locales.cs.cmas.pointSymmetric.studyLink).toBe('studie ↗');
         expect(locales.en.cmas.pointSymmetric.studyLink).toBe('study ↗');
