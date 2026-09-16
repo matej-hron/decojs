@@ -32,7 +32,6 @@ The developer wiki lives in `wiki/` (mirrored to the GitHub wiki). When you chan
 |---|---|
 | `js/decoModel.js` (barrel) + `js/deco/*.js` | `Model-02-Haldane-Equation.md`, `Model-03-Schreiner-Equation.md`, `Model-04-M-Values.md`, `Model-05-Gradient-Factors.md`, `Algo-01-Ascent-Simulation.md` through `Algo-06-Ceiling-Time-Series.md`, `Module-Reference.md` |
 | `js/tissueCompartments.js` | `Model-01-Compartments.md`, `Module-Reference.md` |
-| `js/mvalues.js` | `Model-04-M-Values.md`, `Module-Reference.md` |
 | `js/diveSetup.js` | `Algo-05-Multi-Gas-Switching.md`, `Module-Reference.md`, `Extending-DecoJS.md` |
 | `tests/*` | `Validation-and-Testing.md` (test count, scenario coverage) |
 

@@ -22,7 +22,7 @@ On a P-P diagram (tissue pressure $P_t$ on $y$, ambient pressure $P_{amb}$ on $x
 - $y$-intercept: $a$
 - slope: $1/b$
 
-Above the line = M-value violation. The M-value chart in `js/mvalues.js` draws 16 of these lines in parallel (one per compartment) and plots the tissue state as 16 markers. The widely-used visual intuition: "how high above the ambient line, and how close to the M-value line, is each tissue right now?"
+Above the line = M-value violation. The M-value chart in `js/charts/MValueChart.js` draws 16 of these lines in parallel (one per compartment) and plots the tissue state as 16 markers. The widely-used visual intuition: "how high above the ambient line, and how close to the M-value line, is each tissue right now?"
 
 ## Ceiling — the shallowest safe ambient pressure
 

@@ -700,33 +700,3 @@ export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, 
     };
 }
 
-/**
- * Find the best decompression gas valid at given depth
- * Returns gas with lowest N2 fraction (fastest off-gassing) that's within MOD
- * 
- * @param {Array} gases - Available gases [{n2, o2, name}]
- * @param {number} depth - Current depth in meters
- * @param {number} maxPpO2 - Maximum ppO2 (default 1.6 for deco)
- * @returns {Object|null} Best gas or null if none valid
- */
-function findBestDecoGas(
-    gases,
-    depth,
-    maxPpO2 = 1.6,
-    surfacePressure = SURFACE_PRESSURE,
-    pressurePerMeter = PRESSURE_PER_METER
-) {
-    const ambientPressure = getAmbientPressure(
-        depth, surfacePressure, pressurePerMeter
-    );
-    
-    // Filter gases valid at this depth and sort by N2 (lowest first)
-    const validGases = gases
-        .filter(gas => {
-            const ppO2 = ambientPressure * gas.o2;
-            return ppO2 <= maxPpO2;
-        })
-        .sort((a, b) => a.n2 - b.n2);
-    
-    return validGases[0] || null;
-}

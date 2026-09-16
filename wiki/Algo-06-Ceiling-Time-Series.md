@@ -241,9 +241,6 @@ They do not all produce the same ceiling *value* — see
 [Three different ceilings](#three-different-ceilings-and-why-they-disagree)
 above. Shared anchor, different readings off it.
 
-One known gap: `js/main.js:402` calls `calculateCeilingTimeSeries` without a
-`providedPAnchor`, so that call site recomputes its own anchor. On multilevel
-profiles it can land on a different anchor than the scheduler.
 
 ## Cross-references
 

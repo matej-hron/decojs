@@ -26,7 +26,7 @@ Symbols that are exported from a `js/deco/*.js` module purely so a sibling modul
 Together they implement Haldane and Schreiner kinetics, M-values, gradient-factor interpolation, NDL search, and the deco-stop scheduling loop — the largest body of code in the code base (~1900 lines).
 
 Imports: `COMPARTMENTS`, `getRateConstant` from `tissueCompartments.js`.
-Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `visualization.js`, and every chart in `js/charts/`.
+Imported by: `diveSetup.js`, `tissueEducation.js`, and every chart in `js/charts/`.
 
 **Constants**
 
@@ -125,7 +125,7 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 16 Bühlmann ZH-L16 compartment definitions, runtime-switchable between variants A / B / C.
 
 Imports: none.
-Imported by: `decoModel.js`, `diveSetup.js`, `mvalues.js`, `tissueEducation.js`, every chart, every test file.
+Imported by: `decoModel.js`, `diveSetup.js`, `tissueEducation.js`, every chart, every test file.
 
 **Exports**
 
@@ -148,34 +148,12 @@ Imported by: `decoModel.js`, `diveSetup.js`, `mvalues.js`, `tissueEducation.js`,
 - Default active variant is ZH-L16C (`currentVariant = ZHL16_VARIANTS.C` at line 40). Matches the decotengu default.
 - All times in minutes, pressures in bar. See [Model-01-Compartments](Model-01-Compartments.md) for the full coefficient table.
 
-### `js/mvalues.js`
-
-Standalone page controller for the interactive M-value diagram on `m-values.html`. Not an algorithm module — it orchestrates dataset building for the Chart.js P-P diagram.
-
-Imports: `COMPARTMENTS` from `tissueCompartments.js`; `calculateTissueLoading`, `getAmbientPressure`, `getAdjustedMValue`, `getFirstStopDepth`, etc. from `decoModel.js`; `loadDiveSetup`, `getDiveSetupWaypoints`, `getGases`, `getGradientFactors` from `diveSetup.js`.
-Imported by: `m-values.html` only (direct script tag).
-
-**Exports**
-
-| Name | Description |
-|---|---|
-| `CHART_CONFIG` | Render settings (colours, point sizes, playback speed) |
-| `loadSelectedProfile()` | Fetches profile, runs `calculateTissueLoading`, draws the P-P chart |
-| `populateCoefficientsTable()` | Builds the HTML reference table of ZH-L16 coefficients for the active variant |
-
-**Implementation notes**
-
-- Dataset construction (`buildDatasets`, around line 811) draws the ambient line `y=x`, the alveolar line `y=0.7902·x`, one M-value line per visible compartment, the GF-adjusted corridor (GF-low at pAnchor, GF-high at surface), the tissue trail, and the current-time points.
-- pAnchor for the GF corridor comes from `getFirstStopDepth()` + `interpolateGF()`; see `mvalues.js:869–892`. The same pAnchor is passed into `calculateCeilingTimeSeriesDetailed()` so the chart and the profile ceiling agree.
-- Chart animation is disabled on update (`mvalues.js:1118`) so timeline-slider scrubbing is smooth.
-- Pure UI — no algorithm equations live here. All math delegates to `decoModel.js`.
-
 ### `js/diveSetup.js`
 
 Dive configuration, gas library, profile generation, and gas-switch waypoint insertion. The second-largest module (~1470 lines).
 
 Imports: `calculateNDL`, `generateDecoSchedule`, `simulateDepthTime`, `simulateDepthChange`, `getInitialTissueN2`, and other helpers from `decoModel.js`; `COMPARTMENTS` from `tissueCompartments.js`; `translate` from `i18n.js`.
-Imported by: `main.js`, `mvalues.js`, every chart, `DiveSetupEditor.js`.
+Imported by: every chart, `DiveSetupEditor.js`.
 
 #### Gas definitions
 
@@ -463,23 +441,6 @@ Return value:
 - Block top clips early dives: `visibleStart = Math.max(startMinOfDay, dayStartMin)` (`calendarLayout.js:31`).
 - Dives crossing midnight are clamped to `dayEndMin` for v1 (documented limitation, `calendarLayout.js:29`).
 - `dayCount` is taken directly from `windowConfig.dayCount`; the function no longer derives it from the dives (`calendarLayout.js:20, 45`).
-
-### `js/diveProfile.js`
-
-Waypoint-array validation and statistics. No algorithm content.
-
-Imports: none.
-Imported by: `main.js`.
-
-| Signature | Line | Description |
-|---|---|---|
-| `createDefaultProfile()` | 12 | Hardcoded 40 m × 20 min with 9/6/3 m stops |
-| `validateProfile(profile)` | 32 | Returns `{valid, errors, warnings}` |
-| `parseProfileInput(inputData)` | 105 | Parses `time\tdepth`-style text into waypoint array |
-| `calculateRates(profile)` | 117 | Returns `[{from, to, rate, type: 'descent'|'ascent'|'level'}]` |
-| `getDiveStats(profile)` | 145 | `{maxDepth, totalTime, maxDescentRate, maxAscentRate, waypointCount}` |
-
-First waypoint must be `(time=0, depth=0)`; this is enforced so decompression dives can be detected correctly (`diveProfile.js:45–50`). Depths greater than 60 m and non-surface endings produce warnings, not errors.
 
 ### `js/tissueEducation.js`
 
@@ -886,32 +847,6 @@ Imported by: `sandbox/repetitive-dives.html` (direct script import).
 - Decoding reverses with `decodeURIComponent(escape(atob(str)))` (`tripUrl.js:56`).
 - `sameGases()` at `tripUrl.js:15` compares gases by `id`, `o2`, `n2`, and `he`; the `name` field is intentionally excluded from the equality check so cosmetic renames do not force a per-dive gas copy into the URL.
 - `decodeTrip` validates by checking `Array.isArray(m.dives)` and `Array.isArray(m.gases)` before constructing the result (`tripUrl.js:58`); any other structural issue is caught by the surrounding `try/catch`.
-
-### `js/icons.js`
-
-SVG-sprite helper.
-
-| Export | Line | Description |
-|---|---|---|
-| `iconHTML(name, cls, title)` | 20 | Returns an `<svg><use …/></svg>` string |
-| `iconElement(name, cls, title)` | 37 | Returns a live DOM element |
-
-### `js/main.js`
-
-Entry point for the legacy single-page sandbox view. No exports — executes on module load. Wires `DiveSetupEditor`-less controls directly: loads a setup, validates it with `validateProfile`, runs `calculateTissueLoading`, renders via `visualization.js`.
-
-### `js/visualization.js`
-
-Legacy Chart.js visualisation used by `main.js`. Modern pages use the class components in `js/charts/` instead.
-
-| Export | Line | Description |
-|---|---|---|
-| `renderChart(canvas, results, visibleCompartments, gasSwitchEvents, ceilingDepths)` | 20 | One-shot chart render |
-| `toggleCompartment(id, visible)` | 273 | Show/hide a compartment line |
-| `showOnlyCompartments(ids)` | 290 | Isolate a selection |
-| `showAllCompartments()` | 306 | Reset |
-| `hideAllCompartments()` | 322 | Clear |
-| `getChart()` | 339 | Access the underlying Chart instance |
 
 ### `js/quiz.js`
 
