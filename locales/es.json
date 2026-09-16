@@ -917,6 +917,7 @@
                 "title": "1. Para aire/nitrox, usa GF <em>simétricos</em>",
                 "text": "La CMAS recomienda <strong>GF<sub>low</sub> = GF<sub>high</sub></strong> en inmersiones con nitrógeno — típicamente <strong>90/90</strong>, bajando a <strong>85/85</strong> u <strong>80/80</strong> cuando hay factores de riesgo (edad, fatiga, frío, esfuerzo). Los GF asimétricos fuerzan paradas profundas, y varios estudios independientes han encontrado que esto <em>aumenta</em> la incidencia de DCS en inmersiones con aire/nitrox:",
                 "sourceLabel": "Fuente:",
+                "sourceText": "Alain Foret, presidente del Comité Técnico de la CMAS — recomendaciones sobre factores de gradiente (2025)",
                 "studyLink": "estudio ↗",
                 "bullet1": "Marina Francesa (2005) — las paradas profundas aumentaron el riesgo de DCS en inmersiones con deco de aire",
                 "bullet2": "U.S. Navy NEDU (2011) — «la redistribución del tiempo de parada de las paradas someras a las profundas aumenta la incidencia de DCS en inmersiones con descompresión de aire»",
@@ -934,7 +935,7 @@
                 "title": "4. Revisa el preajuste por defecto de tu ordenador",
                 "text": "Muchos ordenadores de buceo vienen de fábrica con <strong>GF 30/70</strong> — un preajuste elegido para buceo técnico/trimix. La CMAS sostiene que ese mismo preajuste <em>no</em> es el adecuado para aire/nitrox."
             },
-            "linkText": "📄 Leer la hoja informativa de la CMAS →"
+            "linkText": "📄 Leer las recomendaciones de la CMAS →"
         },
         "bubbleModels": {
             "title": "Modelos de burbujas (avanzado)",

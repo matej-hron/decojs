@@ -6763,7 +6763,7 @@ describe('Gradient-factors theory page follows the glossary', () => {
     }
 
     test('formula and GF limit symbols use the glossary notation', () => {
-        expect(visibleKeys).toHaveLength(163);
+        expect(visibleKeys).toHaveLength(164);
         expect(pageMarkup.includes(
             'data-i18n="gradientFactors.chartFormula.adjustedSymbol"'
         )).toBe(true);
@@ -6843,7 +6843,7 @@ describe('Gradient-factors theory page follows the glossary', () => {
         expect(pageMarkup.includes('12&nbsp;m')).toBe(true);
     });
 
-    test('symmetric air and nitrox GF guidance cites the official CMAS fact sheet directly', () => {
+    test('symmetric air and nitrox GF guidance cites an accessible CMAS recommendation source', () => {
         const symmetricStart = pageMarkup.indexOf(
             'data-i18n="gradientFactors.cmas.pointSymmetric.title"'
         );
@@ -6857,14 +6857,30 @@ describe('Gradient-factors theory page follows the glossary', () => {
         expect(symmetricSection.includes(
             'data-i18n="gradientFactors.cmas.pointSymmetric.sourceLabel"'
         )).toBe(true);
-        expect(symmetricSection.includes(
-            'href="https://www.cmas.org/fact-sheets/gradient-factors-gf-and-dive-computers.html"'
-        )).toBe(true);
-        expect(symmetricSection.includes('CMAS Fact Sheet 25‑020/CMAS/TC')).toBe(true);
+        const accessibleSource =
+            'https://plongez.fr/cmas-recommandations-concernant-les-facteurs-de-gradient-gf-et-les-ordinateurs-de-plongee/';
+        expect(pageMarkup.split(`href="${accessibleSource}"`).length - 1).toBe(2);
+        expect(symmetricSection.includes('Alain Foret')).toBe(true);
+        expect(symmetricSection.includes('CMAS Technical Committee')).toBe(true);
+        expect(pageMarkup.includes(
+            'https://www.cmas.org/fact-sheets/gradient-factors-gf-and-dive-computers.html'
+        )).toBe(false);
 
         expect(locales.cs.cmas.pointSymmetric.sourceLabel).toBe('Zdroj:');
         expect(locales.en.cmas.pointSymmetric.sourceLabel).toBe('Source:');
         expect(locales.es.cmas.pointSymmetric.sourceLabel).toBe('Fuente:');
+        expect(locales.cs.cmas.pointSymmetric.sourceText).toBe(
+            'Alain Foret, předseda Technické komise CMAS — doporučení ke gradient faktorům (2025)'
+        );
+        expect(locales.en.cmas.pointSymmetric.sourceText).toBe(
+            'Alain Foret, President of the CMAS Technical Committee — recommendations on Gradient Factors (2025)'
+        );
+        expect(locales.es.cmas.pointSymmetric.sourceText).toBe(
+            'Alain Foret, presidente del Comité Técnico de la CMAS — recomendaciones sobre factores de gradiente (2025)'
+        );
+        expect(locales.cs.cmas.linkText).toBe('📄 Přečti si doporučení CMAS →');
+        expect(locales.en.cmas.linkText).toBe('📄 Read the CMAS recommendations →');
+        expect(locales.es.cmas.linkText).toBe('📄 Leer las recomendaciones de la CMAS →');
     });
 
     test('each study supporting symmetric air and nitrox GFs has a direct source link', () => {
