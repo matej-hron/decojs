@@ -728,34 +728,35 @@
             "individualVariability": "Individuální variabilita",
             "pyleStops": "Pyle zastávky",
             "gfExplained": "Gradient faktory vysvětlené",
-            "gfLowHigh": "GF Low a GF High",
+            "gfLowHigh": "GF<sub>low</sub> a GF<sub>high</sub>",
             "example100": "Příklad: GF 100/100",
             "example5080": "Příklad: GF 50/80",
             "controversy": "Kontroverze hlubokých zastávek",
             "cmas": "Doporučení CMAS (2025)"
         },
         "chartFormula": {
-            "summary": "📐 Zobrazit vzorec M' s gradient faktory",
-            "intro": "Povolený tlak na stropu při GF = 100% odpovídá surové Bühlmannově M-hodnotě:",
-            "intro5080": "Při GF 50/80 se povolený strop mění s hloubkou:",
+            "summary": "📐 Zobrazit vzorec <var>M</var><sub>upr</sub> s gradientovými faktory",
+            "intro": "Při GF = 100 % se upravená <var>M</var>-hodnota rovná surové Bühlmannově <var>M</var>-hodnotě:",
+            "intro5080": "Při GF 50/80 se upravená <var>M</var>-hodnota mění s hloubkou:",
             "where": "Kde:",
-            "varMPrime": "<strong>M'</strong> — povolený tlak na stropu po aplikaci GF (bar)",
-            "varGF": "<strong>GF</strong> — interpolovaný z GF Low (50%) v hloubce pAnchor na GF High (80%) na hladině",
-            "varM": "<strong>M</strong> — surová Bühlmannova M-hodnota = a + <var>p</var><sub>okol</sub> / b",
-            "note100": "Při GF 100/100 zelený koridor splývá s červenou M-čárou — žádná konzervativnost se nepřidává.",
-            "note5080": "Zelený pás zobrazuje M' během ponoru — leží pod červenou M-čárou a směrem k hladině se přibližuje k čáře okolního tlaku."
+            "adjustedSymbol": "<var>M</var><sub>upr</sub>",
+            "varMPrime": "<strong><var>M</var><sub>upr</sub></strong> — maximální povolený tlak inertního plynu v tkáni po aplikaci GF (bar)",
+            "varGF": "<strong>GF</strong> — interpolovaný z GF<sub>low</sub> (50 %) při <var>p</var><sub>anchor</sub> na GF<sub>high</sub> (80 %) na hladině",
+            "varM": "<strong><var>M</var></strong> — surová Bühlmannova <var>M</var>-hodnota = <var>a</var> + <var>p</var><sub>okol</sub> / <var>b</var>",
+            "note100": "Při GF 100/100 zelený koridor splývá s červenou čárou <var>M</var>-hodnoty — žádná konzervativnost se nepřidává.",
+            "note5080": "Zelený pás zobrazuje <var>M</var><sub>upr</sub> během ponoru — leží pod červenou čárou <var>M</var>-hodnoty a směrem k hladině se přibližuje k čáře okolního tlaku."
         },
         "header": {
             "title": "Gradient faktory",
             "subtitle": "Přidání konzervativnosti k dekompresi — a debata o hlubokých zastávkách"
         },
         "greyZone": {
-            "title": "Šedá zóna: proč M-values nestačí",
+            "title": "Šedá zóna: proč <var>M</var>-hodnoty nestačí",
             "silentBubbles": {
                 "title": "Tiché bubliny",
                 "text1": "Studie pomocí dopplerovského ultrazvuku odhalily něco překvapivého: <strong>bubliny se tvoří u potápěčů po většině ponorů</strong>, i když dodržují konzervativní profily bez příznaků DCS.",
-                "insight": "Tyto „tiché bubliny“ (žilní plynové embolie) nevyvolávají žádné příznaky, ale dokazují, že <strong>M-values nepředstavují hranici bez bublin</strong>. Představují <em>tolerovatelnou</em> úroveň tvorby bublin.",
-                "text2": "To znamená, že M-value linie v našem diagramu M-value není ostrá hranice „bezpečné/nebezpečné“. Spíše se jedná o pravděpodobnostní gradient — čím blíže se k ní přiblížíte, tím více bublin vzniká a tím vyšší je vaše riziko."
+                "insight": "Tyto „tiché bubliny“ (žilní plynové embolie) nevyvolávají žádné příznaky, ale dokazují, že <strong><var>M</var>-hodnoty nepředstavují hranici bez bublin</strong>. Představují <em>tolerovatelnou</em> úroveň tvorby bublin.",
+                "text2": "To znamená, že čára <var>M</var>-hodnoty v našem tlakově-tlakovém diagramu není ostrá hranice „bezpečné/nebezpečné“. Spíše se jedná o pravděpodobnostní gradient — čím blíže se k ní přiblížíte, tím více bublin vzniká a tím vyšší je vaše riziko."
             },
             "variability": {
                 "title": "Individuální odlišnosti",
@@ -775,8 +776,8 @@
             "discovery": {
                 "title": "Objev Richarda Pylea",
                 "cardTitle": "Pozorování sběratele ryb",
-                "text1": "V 80. letech byl <strong>Richard Pyle</strong> mořský biolog sbírající vzorky ryb z hloubek mezi 50–70 metry. Všiml si něčeho zvláštního ohledně své únavy po ponorech.",
-                "insight": "<strong>Vzorec:</strong> Při ponorech, kdy chytal ryby, musel zastavit v přechodných hloubkách, aby <strong>odvětral jejich plynový měchýř</strong> (aby jim nepraskl během výstupu). Po těchto ponorech se cítil skvěle. Při ponorech bez ryb — a tedy bez přechodných zastávek — byl unavený.",
+                "text1": "V 80. letech si <strong>Richard Pyle</strong> všiml, že se jeho únava po jednotlivých ponorech výrazně liší. Protože si vedl pečlivé záznamy, začal systematicky hledat, čím se liší ponory, po kterých byl unavený, od těch, po kterých unavený nebyl.",
+                "insight": "<strong>Vzorec:</strong> Bez únavy býval po ponorech, při kterých chytil rybu. Během výstupu musel v mezihloubkách zastavovat a <strong>odvětrávat její plynový měchýř</strong>, aby nepraskl. Při ponorech bez ryby — a tedy bez těchto mezizastávek — se cítil unavený.",
                 "text2": "Pyle náhodou zjistil, že krátké zastávky v hloubkách <em>hlubších</em>, než vyžadoval jeho dekompresní plán, měly znatelný vliv na to, jak se cítil."
             },
             "method": {
@@ -784,8 +785,8 @@
                 "intro": "Pyle formalizoval své pozorování do metody:",
                 "step1": "Vypočítejte konvenční dekompresní plán",
                 "step2": "První hluboká zastávka = <strong>v polovině</strong> mezi maximální hloubkou a první povinnou dekompresní zastávkou",
-                "step3": "Zůstaňte 2–3 minuty",
-                "step4": "Pokud je mezera k další zastávce stále >9 m (30 ft), přidejte další zastávku v polovině",
+                "step3": "Zůstaňte 2–3 min",
+                "step4": "Pokud je mezera k další zastávce stále > 9 m (30 ft), přidejte další zastávku v polovině",
                 "exampleTitle": "Příklad: ponor na 60 m, první dekompresní zastávka v 15 m",
                 "stop1Label": "1. Pyle zastávka:",
                 "stop1Value": "(60 + 15) ÷ 2 = <strong>38 m</strong>",
@@ -805,36 +806,36 @@
             "title": "Gradient faktory: nástroj",
             "what": {
                 "title": "Co jsou gradient faktory?",
-                "text1": "Gradient faktory (GF) jsou způsob, jak přidat <strong>konzervativnost</strong> k Bühlmannovu algoritmu snížením povoleného přesycení. Místo toho, abyste tkáním dovolili dosáhnout 100 % M-value, nastavíte nižší procento.",
-                "gf100label": "GF 100 %",
-                "gf100value": "Plná M-value",
+                "text1": "Gradient faktory (GF) jsou způsob, jak přidat <strong>konzervativnost</strong> k Bühlmannovu algoritmu snížením povoleného přesycení. Místo toho, abyste tkáním dovolili dosáhnout 100 % <var>M</var>-hodnoty, nastavíte nižší procento.",
+                "gf100label": "GF 100 %",
+                "gf100value": "Plná <var>M</var>-hodnota",
                 "gf100desc": "Maximální povolené přesycení (Bühlmannův limit)",
-                "gf0label": "GF 0 %",
+                "gf0label": "GF 0 %",
                 "gf0value": "Okolní tlak",
                 "gf0desc": "Žádné přesycení povoleno (nepraktické)",
-                "text2": "Gradient faktor <strong>GF 80 %</strong> znamená, že tkáni dovolíte dosáhnout pouze 80 % vzdálenosti od okolního tlaku k M-value."
+                "text2": "Gradient faktor <strong>GF 80 %</strong> znamená, že tkáni dovolíte dosáhnout pouze 80 % vzdálenosti od okolního tlaku k <var>M</var>-hodnotě."
             },
             "sandboxCTA": "Otevřít pískoviště GF — pohrajte si s rovnicemi živě →",
             "lowHigh": {
-                "title": "GF Low a GF High",
+                "title": "GF<sub>low</sub> a GF<sub>high</sub>",
                 "intro": "Potápěčské počítače a plánovací software používají <strong>dva</strong> gradient faktory:",
-                "gfLowLabel": "GF Low",
+                "gfLowLabel": "GF<sub>low</sub>",
                 "gfLowDesc": "Řídí <strong>první/nejhlubší</strong> dekompresní zastávku",
-                "gfHighLabel": "GF High",
+                "gfHighLabel": "GF<sub>high</sub>",
                 "gfHighDesc": "Řídí přesycení na <strong>hladině</strong>",
                 "interpolation": "Algoritmus <strong>interpoluje</strong> mezi těmito hodnotami během výstupu:",
-                "interpList1": "U nejhlubší povinné zastávky → platí GF Low",
-                "interpList2": "Na hladině → platí GF High",
+                "interpList1": "U nejhlubší povinné zastávky → platí GF<sub>low</sub>",
+                "interpList2": "Na hladině → platí GF<sub>high</sub>",
                 "interpList3": "Mezi tím → lineární interpolace",
-                "insight": "<strong>Nižší GF Low = hlubší první zastávka</strong> (podobné Pyle zastávkám)<br><strong>Nižší GF High = více času na mělkých zastávkách</strong>"
+                "insight": "<strong>Nižší GF<sub>low</sub> = hlubší první zastávka</strong> (podobné Pyle zastávkám)<br><strong>Nižší GF<sub>high</sub> = více času na mělkých zastávkách</strong>"
             },
             "example100": {
                 "title": "Vizualizace: GF 100/100 (bez konzervativnosti)",
-                "desc": "Čistý Bühlmannův limit — tkáň může dosáhnout 100 % M-value."
+                "desc": "Čistý Bühlmannův limit — tkáň může dosáhnout 100 % <var>M</var>-hodnoty."
             },
             "example5080": {
                 "title": "Vizualizace: GF 50/80 (konzervativní)",
-                "desc": "Tkáň smí dosáhnout jen 50–80 % M-value — všimněte si linie GF pod M-value."
+                "desc": "Tkáň smí dosáhnout jen 50–80 % <var>M</var>-hodnoty — všimněte si linie GF pod <var>M</var>-hodnotou."
             }
         },
         "controversy": {
@@ -858,7 +859,7 @@
                 "text2": "Hluboké zastávky snižují tlakový gradient pro vysycování. Čím hlouběji zůstáváte, tím menší je rozdíl mezi tkáňovým a okolním tlakem — a právě tento gradient řídí odvod plynu.",
                 "nuanceTitle": "Realita je složitější",
                 "nuanceIntro": "To neznamená, že všechny hluboké zastávky jsou špatné:",
-                "nuance1": "<strong>Velmi krátké zastávky</strong> (Pyleovy původní 2–3 minuty) mohou být stále prospěšné",
+                "nuance1": "<strong>Velmi krátké zastávky</strong> (Pyleovy původní 2–3 min) mohou být stále prospěšné",
                 "nuance2": "Studie NEDU používala prodloužené hluboké zastávky s výrazným přesunem dekompresního času do hloubky",
                 "nuance3": "Extrémně agresivní profily hlubokých zastávek (GF 30/85) se dnes nedoporučují",
                 "nuance4": "Mírná konzervativnost (GF 70/85) přidává bezpečnost bez nadměrných hlubokých zastávek"
@@ -909,7 +910,7 @@
                 "title": "Shrnutí",
                 "item1": "Určitá konzervativnost je dobrá — GF 100/100 je příliš agresivní",
                 "item2": "GF 70/85 je rozumný výchozí bod pro většinu potápěčů",
-                "item3": "Velmi nízký GF Low (například 30 %) může být kontraproduktivní",
+                "item3": "Velmi nízký GF<sub>low</sub> (například 30 %) může být kontraproduktivní",
                 "item4": "Více konzervativnosti není vždy lepší — jde o rovnováhu",
                 "item5": "Upravte podle osobních faktorů, podmínek ponoru a zkušeností"
             }
@@ -919,18 +920,18 @@
             "intro": "CMAS v roce 2025 vydala fact sheet shrnující současné poznatky o gradient faktorech. Jejich doporučení se liší od některých hodnot v tabulce výše — stojí za to znát obě perspektivy, než si zvolíš nastavení.",
             "pointSymmetric": {
                 "title": "1. Pro vzduch/nitrox používej <em>symetrické</em> GF",
-                "text": "CMAS doporučuje <strong>GF Low = GF High</strong> na dusíkových ponorech — typicky <strong>90/90</strong>, se snížením na <strong>85/85</strong> nebo <strong>80/80</strong> při rizikových faktorech (věk, únava, chlad, námaha). Asymetrické GF vynucují hluboké zastávky a více nezávislých studií zjistilo, že to <em>zvyšuje</em> výskyt DCS na vzduchu/nitroxu:",
+                "text": "CMAS doporučuje <strong>GF<sub>low</sub> = GF<sub>high</sub></strong> na dusíkových ponorech — typicky <strong>90/90</strong>, se snížením na <strong>85/85</strong> nebo <strong>80/80</strong> při rizikových faktorech (věk, únava, chlad, námaha). Asymetrické GF vynucují hluboké zastávky a více nezávislých studií zjistilo, že to <em>zvyšuje</em> výskyt DCS na vzduchu/nitroxu:",
                 "bullet1": "Francouzské námořnictvo (2005) — hluboké zastávky zvýšily riziko DCS na vzduchových deko ponorech",
                 "bullet2": "U.S. Navy NEDU (2011) — „přesun času ze zastávek mělčích na hlubší zvyšuje výskyt DCS u vzduchové dekomprese“",
                 "bullet3": "Belgické vojsko (2023) — tovární nastavení 30/70 bylo nebezpečné pro vzduchový ponor do 60 m"
             },
             "pointHelium": {
                 "title": "2. Pro hélium (trimix/heliox) jsou asymetrické GF stále na místě",
-                "text": "Na heliových směsích vynucení některých hlubších zastávek <em>pomáhá</em> (DCS vnitřního ucha, rychlé heliové tkáně). CMAS doporučuje <strong>GF Low 30–50, GF High 70–80</strong> (např. 30/70, 50/80). To odpovídá řádku „Hluboký ponor“ v tabulce výše."
+                "text": "Na heliových směsích vynucení některých hlubších zastávek <em>pomáhá</em> (DCS vnitřního ucha, rychlé heliové tkáně). CMAS doporučuje <strong>GF<sub>low</sub> 30–50, GF<sub>high</sub> 70–80</strong> (např. 30/70, 50/80). To odpovídá řádku „Hluboký ponor“ v tabulce výše."
             },
             "pointNoStop": {
-                "title": "3. Na bezdekompresním ponoru GF Low nezáleží",
-                "text": "Neintuitivní, ale důležité: GF Low se uplatní až na <strong>hloubce první deko zastávky</strong>. Pokud ponor nemá povinné zastávky, nastavení <strong>45/95</strong> se chová přesně jako <strong>95/95</strong> — protože neexistuje „první zastávka“, kam by se GF Low ukotvilo. Neočekávej, že konzervativní GF Low ti na čistě rekreačním profilu pomůže."
+                "title": "3. Na bezdekompresním ponoru GF<sub>low</sub> nezáleží",
+                "text": "Neintuitivní, ale důležité: GF<sub>low</sub> se uplatní až v <strong>hloubce první deko zastávky</strong>. Pokud ponor nemá povinné zastávky, nastavení <strong>45/95</strong> se chová přesně jako <strong>95/95</strong> — protože neexistuje „první zastávka“, ke které by se GF<sub>low</sub> ukotvilo. Neočekávej, že konzervativní GF<sub>low</sub> ti na čistě rekreačním profilu pomůže."
             },
             "pointDefaults": {
                 "title": "4. Zkontroluj tovární nastavení počítače",

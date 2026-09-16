@@ -728,34 +728,35 @@
             "individualVariability": "Variabilidad individual",
             "pyleStops": "Paradas de Pyle",
             "gfExplained": "Los factores de gradiente explicados",
-            "gfLowHigh": "GF bajo y GF alto",
+            "gfLowHigh": "GF<sub>low</sub> y GF<sub>high</sub>",
             "example100": "Ejemplo: GF 100/100",
             "example5080": "Ejemplo: GF 50/80",
             "controversy": "La controversia de las paradas profundas",
             "cmas": "Recomendaciones CMAS (2025)"
         },
         "chartFormula": {
-            "summary": "📐 Mostrar la fórmula del valor-M ajustado por GF",
-            "intro": "La presión de techo permitida con GF = 100 % coincide con el valor-M puro de Bühlmann:",
-            "intro5080": "Con GF 50/80 la presión de techo permitida escala con la profundidad:",
+            "summary": "📐 Mostrar la fórmula de <var>M</var><sub>adj</sub> ajustada por GF",
+            "intro": "Con GF = 100 %, el valor-<var>M</var> ajustado coincide con el valor-<var>M</var> puro de Bühlmann:",
+            "intro5080": "Con GF 50/80 el valor-<var>M</var> ajustado cambia con la profundidad:",
             "where": "Donde:",
-            "varMPrime": "<strong>M'</strong> — presión de techo permitida tras aplicar el GF (bar)",
-            "varGF": "<strong>GF</strong> — interpolado desde GF bajo (50 %) a pAnchor hasta GF alto (80 %) en superficie",
-            "varM": "<strong>M</strong> — valor-M puro de Bühlmann = a + <var>p</var><sub>amb</sub> / b",
-            "note100": "Con GF 100/100 el corredor verde se colapsa sobre la línea roja del valor-M — no se añade conservadurismo.",
-            "note5080": "La banda verde muestra M' a lo largo de la inmersión — queda por debajo de la línea roja del valor-M y se estrecha al acercarse a superficie."
+            "adjustedSymbol": "<var>M</var><sub>adj</sub>",
+            "varMPrime": "<strong><var>M</var><sub>adj</sub></strong> — presión máxima permitida del gas inerte en el tejido tras aplicar el GF (bar)",
+            "varGF": "<strong>GF</strong> — interpolado desde GF<sub>low</sub> (50 %) a <var>p</var><sub>anchor</sub> hasta GF<sub>high</sub> (80 %) en superficie",
+            "varM": "<strong><var>M</var></strong> — valor-<var>M</var> puro de Bühlmann = <var>a</var> + <var>p</var><sub>amb</sub> / <var>b</var>",
+            "note100": "Con GF 100/100 el corredor verde se colapsa sobre la línea roja del valor-<var>M</var> — no se añade conservadurismo.",
+            "note5080": "La banda verde muestra <var>M</var><sub>adj</sub> a lo largo de la inmersión — queda por debajo de la línea roja del valor-<var>M</var> y se estrecha al acercarse a superficie."
         },
         "header": {
             "title": "Factores de gradiente",
             "subtitle": "Añadir conservadurismo a la descompresión — y el debate de las paradas profundas"
         },
         "greyZone": {
-            "title": "La zona gris: por qué los valores-M no bastan",
+            "title": "La zona gris: por qué los valores-<var>M</var> no bastan",
             "silentBubbles": {
                 "title": "Burbujas silenciosas",
                 "text1": "Los estudios con ecografía Doppler han revelado algo sorprendente: <strong>se forman burbujas en los buceadores tras la mayoría de las inmersiones</strong>, incluso siguiendo perfiles conservadores sin síntomas de DCS.",
-                "insight": "Estas «burbujas silenciosas» (émbolos gaseosos venosos) son subclínicas — no producen síntomas, pero demuestran que <strong>los valores-M no representan una frontera libre de burbujas</strong>. Representan un nivel <em>tolerable</em> de formación de burbujas.",
-                "text2": "Esto significa que la línea del valor-M en nuestro diagrama presión-presión no es una frontera nítida de «seguro/inseguro». Es más bien un gradiente de probabilidad — cuanto más te acerques, más burbujas se forman y mayor es el riesgo."
+                "insight": "Estas «burbujas silenciosas» (émbolos gaseosos venosos) son subclínicas — no producen síntomas, pero demuestran que <strong>los valores-<var>M</var> no representan una frontera libre de burbujas</strong>. Representan un nivel <em>tolerable</em> de formación de burbujas.",
+                "text2": "Esto significa que la línea del valor-<var>M</var> en nuestro diagrama presión-presión no es una frontera nítida de «seguro/inseguro». Es más bien un gradiente de probabilidad — cuanto más te acerques, más burbujas se forman y mayor es el riesgo."
             },
             "variability": {
                 "title": "Variabilidad individual",
@@ -775,8 +776,8 @@
             "discovery": {
                 "title": "El descubrimiento de Richard Pyle",
                 "cardTitle": "La observación del coleccionista de peces",
-                "text1": "En los años 80, <strong>Richard Pyle</strong> era un biólogo marino que recogía ejemplares de peces en la «zona crepuscular» — profundidades entre 50 y 70 metros. Se dio cuenta de algo curioso sobre su fatiga posinmersión.",
-                "insight": "<strong>El patrón:</strong> en las inmersiones en que capturaba peces tenía que parar a profundidades intermedias para <strong>liberar la presión de sus vejigas natatorias</strong> (para evitar que estallaran al ascender). Tras esas inmersiones se sentía bien. En las inmersiones sin peces — y, por tanto, sin paradas intermedias — se sentía fatigado.",
+                "text1": "En los años 80, <strong>Richard Pyle</strong> observó que la fatiga variaba notablemente de una inmersión a otra. Como llevaba registros meticulosos, buscó sistemáticamente qué diferenciaba las inmersiones tras las que se sentía cansado de aquellas tras las que no.",
+                "insight": "<strong>El patrón:</strong> salía sin fatiga de las inmersiones en las que capturaba un pez. Durante el ascenso tenía que parar a profundidades intermedias para <strong>liberar la presión de su vejiga natatoria</strong> y evitar que estallara. En las inmersiones sin pez — y, por tanto, sin esas paradas intermedias — se sentía fatigado.",
                 "text2": "Pyle había descubierto por casualidad que breves paradas a profundidades <em>mayores</em> que las exigidas por su tabla de descompresión marcaban una diferencia notable en cómo se encontraba después."
             },
             "method": {
@@ -784,8 +785,8 @@
                 "intro": "Pyle formalizó su observación en un método:",
                 "step1": "Calcula tu programa de descompresión convencional",
                 "step2": "1.ª parada profunda = <strong>a medio camino</strong> entre la profundidad máxima y la primera parada deco exigida",
-                "step3": "Permanece 2–3 minutos",
-                "step4": "Si la distancia hasta la siguiente parada sigue siendo &gt;9 m (30 ft), añade otra parada a medio camino",
+                "step3": "Permanece 2–3 min",
+                "step4": "Si la distancia hasta la siguiente parada sigue siendo &gt; 9 m (30 ft), añade otra parada a medio camino",
                 "exampleTitle": "Ejemplo: inmersión a 60 m, primera parada deco a 15 m",
                 "stop1Label": "1.ª parada de Pyle:",
                 "stop1Value": "(60 + 15) ÷ 2 = <strong>38 m</strong>",
@@ -805,36 +806,36 @@
             "title": "Factores de gradiente: la herramienta",
             "what": {
                 "title": "¿Qué son los factores de gradiente?",
-                "text1": "Los factores de gradiente (GF) son una forma de añadir <strong>conservadurismo</strong> al algoritmo de Bühlmann reduciendo la sobresaturación permitida. En lugar de dejar que los tejidos alcancen el 100 % del valor-M, fijas un porcentaje más bajo.",
-                "gf100label": "GF 100 %",
-                "gf100value": "Valor-M completo",
+                "text1": "Los factores de gradiente (GF) son una forma de añadir <strong>conservadurismo</strong> al algoritmo de Bühlmann reduciendo la sobresaturación permitida. En lugar de dejar que los tejidos alcancen el 100 % del valor-<var>M</var>, fijas un porcentaje más bajo.",
+                "gf100label": "GF 100 %",
+                "gf100value": "Valor-<var>M</var> completo",
                 "gf100desc": "Sobresaturación máxima permitida (límite de Bühlmann)",
-                "gf0label": "GF 0 %",
+                "gf0label": "GF 0 %",
                 "gf0value": "Presión ambiente",
                 "gf0desc": "No se permite sobresaturación (inviable)",
-                "text2": "Un factor de gradiente de <strong>GF 80 %</strong> significa que solo permites al tejido alcanzar el 80 % del camino entre la presión ambiente y el valor-M."
+                "text2": "Un factor de gradiente de <strong>GF 80 %</strong> significa que solo permites al tejido alcanzar el 80 % del camino entre la presión ambiente y el valor-<var>M</var>."
             },
             "sandboxCTA": "Abrir GF sandbox — manipula las fórmulas en vivo →",
             "lowHigh": {
-                "title": "GF bajo y GF alto",
+                "title": "GF<sub>low</sub> y GF<sub>high</sub>",
                 "intro": "Los ordenadores de buceo y los programas de planificación usan <strong>dos</strong> factores de gradiente:",
-                "gfLowLabel": "GF bajo",
+                "gfLowLabel": "GF<sub>low</sub>",
                 "gfLowDesc": "Controla la <strong>primera/más profunda</strong> parada deco",
-                "gfHighLabel": "GF alto",
+                "gfHighLabel": "GF<sub>high</sub>",
                 "gfHighDesc": "Controla la sobresaturación en la <strong>superficie</strong>",
                 "interpolation": "El algoritmo <strong>interpola</strong> entre estos valores durante el ascenso:",
-                "interpList1": "En la parada obligatoria más profunda → se aplica el GF bajo",
-                "interpList2": "En la superficie → se aplica el GF alto",
+                "interpList1": "En la parada obligatoria más profunda → se aplica GF<sub>low</sub>",
+                "interpList2": "En la superficie → se aplica GF<sub>high</sub>",
                 "interpList3": "Entre ambos → interpolación lineal",
-                "insight": "<strong>GF bajo más bajo = primera parada más profunda</strong> (similar a las paradas de Pyle)<br><strong>GF alto más bajo = más tiempo en paradas someras</strong>"
+                "insight": "<strong>Un GF<sub>low</sub> menor = primera parada más profunda</strong> (similar a las paradas de Pyle)<br><strong>Un GF<sub>high</sub> menor = más tiempo en paradas someras</strong>"
             },
             "example100": {
                 "title": "Visual: GF 100/100 (sin conservadurismo)",
-                "desc": "Límites puros de Bühlmann — el tejido puede alcanzar el 100 % del valor-M."
+                "desc": "Límites puros de Bühlmann — el tejido puede alcanzar el 100 % del valor-<var>M</var>."
             },
             "example5080": {
                 "title": "Visual: GF 50/80 (conservador)",
-                "desc": "El tejido solo puede llegar al 50–80 % del valor-M — fíjate en la línea GF por debajo del valor-M."
+                "desc": "El tejido solo puede llegar al 50–80 % del valor-<var>M</var> — fíjate en la línea GF por debajo del valor-<var>M</var>."
             }
         },
         "controversy": {
@@ -849,7 +850,7 @@
                 "deepLabel": "Paradas profundas",
                 "deepValue": "11 DCS en 198 inmersiones",
                 "deepDesc": "1.ª parada a 70 fsw (21 m)",
-                "result": "¡Las paradas profundas produjeron <span style=\"color: var(--danger-color);\">3.6× más DCS</span> en la misma inmersión!"
+                "result": "¡Las paradas profundas produjeron <span style=\"color: var(--danger-color);\">3,6× más DCS</span> en la misma inmersión!"
             },
             "backfire": {
                 "title": "Por qué las paradas profundas pueden ser contraproducentes",
@@ -858,7 +859,7 @@
                 "text2": "Las paradas profundas reducen el gradiente de presión para desgasificar. Cuanto más profundo te quedes, menor es la diferencia entre la presión del tejido y la ambiente — y ese gradiente es el que impulsa la eliminación de gas.",
                 "nuanceTitle": "El matiz real",
                 "nuanceIntro": "Esto no significa que todas las paradas profundas sean malas:",
-                "nuance1": "<strong>Las paradas muy breves</strong> (los 2–3 minutos originales de Pyle) pueden seguir siendo beneficiosas",
+                "nuance1": "<strong>Las paradas muy breves</strong> (los 2–3 min originales de Pyle) pueden seguir siendo beneficiosas",
                 "nuance2": "El estudio de la NEDU empleó paradas profundas prolongadas, trasladando mucho tiempo de deco a la zona profunda",
                 "nuance3": "Los perfiles muy agresivos de paradas profundas (GF 30/85) se desaconsejan hoy",
                 "nuance4": "Un conservadurismo moderado (GF 70/85) añade seguridad sin paradas profundas excesivas"
@@ -909,7 +910,7 @@
                 "title": "En resumen",
                 "item1": "Algo de conservadurismo es bueno — GF 100/100 resulta demasiado agresivo",
                 "item2": "GF 70/85 es un buen punto de partida para la mayoría de buceadores",
-                "item3": "Un GF bajo muy reducido (como 30) puede ser contraproducente",
+                "item3": "Un GF<sub>low</sub> muy reducido (como 30 %) puede ser contraproducente",
                 "item4": "Más conservadurismo no siempre es mejor — es cuestión de equilibrio",
                 "item5": "Ajústalo según factores personales, condiciones de la inmersión y experiencia"
             }
@@ -919,18 +920,18 @@
             "intro": "La CMAS publicó en 2025 una hoja informativa que resume la evidencia actual sobre factores de gradiente. Sus recomendaciones difieren de algunos valores de la tabla de arriba — vale la pena conocer ambas perspectivas antes de elegir tus ajustes.",
             "pointSymmetric": {
                 "title": "1. Para aire/nitrox, usa GF <em>simétricos</em>",
-                "text": "La CMAS recomienda <strong>GF bajo = GF alto</strong> en inmersiones con nitrógeno — típicamente <strong>90/90</strong>, bajando a <strong>85/85</strong> u <strong>80/80</strong> cuando hay factores de riesgo (edad, fatiga, frío, esfuerzo). Los GF asimétricos fuerzan paradas profundas, y varios estudios independientes han encontrado que esto <em>aumenta</em> la incidencia de DCS en inmersiones con aire/nitrox:",
+                "text": "La CMAS recomienda <strong>GF<sub>low</sub> = GF<sub>high</sub></strong> en inmersiones con nitrógeno — típicamente <strong>90/90</strong>, bajando a <strong>85/85</strong> u <strong>80/80</strong> cuando hay factores de riesgo (edad, fatiga, frío, esfuerzo). Los GF asimétricos fuerzan paradas profundas, y varios estudios independientes han encontrado que esto <em>aumenta</em> la incidencia de DCS en inmersiones con aire/nitrox:",
                 "bullet1": "Marina Francesa (2005) — las paradas profundas aumentaron el riesgo de DCS en inmersiones con deco de aire",
                 "bullet2": "U.S. Navy NEDU (2011) — «la redistribución del tiempo de parada de las paradas someras a las profundas aumenta la incidencia de DCS en inmersiones con descompresión de aire»",
                 "bullet3": "Ejército Belga (2023) — el preajuste por defecto 30/70 resultó inseguro para inmersiones con aire a 60 m"
             },
             "pointHelium": {
                 "title": "2. Con helio (trimix/heliox), los GF asimétricos siguen justificados",
-                "text": "En mezclas con helio, forzar algunas paradas más profundas <em>sí</em> ayuda (DCS del oído interno, tejidos rápidos con helio). La CMAS sugiere <strong>GF bajo 30–50, GF alto 70–80</strong> (p. ej., 30/70, 50/80). Esto concuerda con la fila «Inmersión profunda» de la tabla anterior."
+                "text": "En mezclas con helio, forzar algunas paradas más profundas <em>sí</em> ayuda (DCS del oído interno, tejidos rápidos con helio). La CMAS sugiere <strong>GF<sub>low</sub> 30–50, GF<sub>high</sub> 70–80</strong> (p. ej., 30/70, 50/80). Esto concuerda con la fila «Inmersión profunda» de la tabla anterior."
             },
             "pointNoStop": {
-                "title": "3. En una inmersión sin deco, el GF bajo no importa",
-                "text": "No es obvio, pero es importante: el GF bajo solo entra en juego en la <strong>profundidad de la primera parada deco</strong>. Si tu inmersión no tiene paradas obligatorias, ajustar <strong>45/95</strong> se comporta exactamente igual que <strong>95/95</strong> — porque no hay «primera parada» a la que anclar el GF bajo. No esperes que un GF bajo conservador te ayude en un perfil puramente recreativo."
+                "title": "3. En una inmersión sin deco, GF<sub>low</sub> no importa",
+                "text": "No es obvio, pero es importante: GF<sub>low</sub> solo entra en juego en la <strong>profundidad de la primera parada deco</strong>. Si tu inmersión no tiene paradas obligatorias, ajustar <strong>45/95</strong> se comporta exactamente igual que <strong>95/95</strong> — porque no hay «primera parada» a la que anclar GF<sub>low</sub>. No esperes que un GF<sub>low</sub> conservador te ayude en un perfil puramente recreativo."
             },
             "pointDefaults": {
                 "title": "4. Revisa el preajuste por defecto de tu ordenador",

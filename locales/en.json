@@ -728,34 +728,35 @@
             "individualVariability": "Individual Variability",
             "pyleStops": "Pyle Stops",
             "gfExplained": "Gradient Factors Explained",
-            "gfLowHigh": "GF Low & GF High",
+            "gfLowHigh": "GF<sub>low</sub> & GF<sub>high</sub>",
             "example100": "Example: GF 100/100",
             "example5080": "Example: GF 50/80",
             "controversy": "Deep-Stop Controversy",
             "cmas": "CMAS Recommendations (2025)"
         },
         "chartFormula": {
-            "summary": "📐 Show the GF-adjusted M-value formula",
-            "intro": "The allowed ceiling pressure at GF = 100% equals Bühlmann's raw M-value:",
-            "intro5080": "At GF 50/80 the allowed ceiling scales with depth:",
+            "summary": "📐 Show the GF-adjusted <var>M</var><sub>adj</sub> formula",
+            "intro": "At GF = 100 %, the adjusted <var>M</var>-value equals Bühlmann's raw <var>M</var>-value:",
+            "intro5080": "At GF 50/80 the adjusted <var>M</var>-value changes with depth:",
             "where": "Where:",
-            "varMPrime": "<strong>M'</strong> — allowed ceiling pressure after GF scaling (bar)",
-            "varGF": "<strong>GF</strong> — ramped from GF Low (50%) at pAnchor to GF High (80%) at the surface",
-            "varM": "<strong>M</strong> — Bühlmann raw M-value = a + <var>p</var><sub>amb</sub> / b",
-            "note100": "At GF 100/100 the green corridor collapses onto the red M-value line — no conservatism is added.",
-            "note5080": "The green band shows M' across the dive — it sits below the red M-line, shrinking toward the ambient line near the surface."
+            "adjustedSymbol": "<var>M</var><sub>adj</sub>",
+            "varMPrime": "<strong><var>M</var><sub>adj</sub></strong> — maximum allowed tissue inert-gas pressure after GF scaling (bar)",
+            "varGF": "<strong>GF</strong> — ramped from GF<sub>low</sub> (50 %) at <var>p</var><sub>anchor</sub> to GF<sub>high</sub> (80 %) at the surface",
+            "varM": "<strong><var>M</var></strong> — Bühlmann raw <var>M</var>-value = <var>a</var> + <var>p</var><sub>amb</sub> / <var>b</var>",
+            "note100": "At GF 100/100 the green corridor collapses onto the red <var>M</var>-value line — no conservatism is added.",
+            "note5080": "The green band shows <var>M</var><sub>adj</sub> across the dive — it sits below the red <var>M</var>-line, shrinking toward the ambient line near the surface."
         },
         "header": {
             "title": "Gradient Factors",
             "subtitle": "Adding conservatism to decompression — and the deep stops debate"
         },
         "greyZone": {
-            "title": "The Grey Zone: Why M-Values Aren't Enough",
+            "title": "The Grey Zone: Why <var>M</var>-Values Aren't Enough",
             "silentBubbles": {
                 "title": "Silent Bubbles",
                 "text1": "Doppler ultrasound studies have revealed something surprising: <strong>bubbles form in divers after most dives</strong>, even when following conservative profiles with no DCS symptoms.",
-                "insight": "These \"silent bubbles\" (venous gas emboli) are sub-clinical — they don't cause symptoms, but they prove that <strong>M-values don't represent a bubble-free boundary</strong>. They represent a <em>tolerable</em> level of bubble formation.",
-                "text2": "This means the M-value line on our pressure-pressure diagram isn't a sharp \"safe/unsafe\" boundary. It's more like a probability gradient — the closer you get, the more bubbles form, and the higher your risk."
+                "insight": "These \"silent bubbles\" (venous gas emboli) are sub-clinical — they don't cause symptoms, but they prove that <strong><var>M</var>-values don't represent a bubble-free boundary</strong>. They represent a <em>tolerable</em> level of bubble formation.",
+                "text2": "This means the <var>M</var>-value line on our pressure-pressure diagram isn't a sharp \"safe/unsafe\" boundary. It's more like a probability gradient — the closer you get, the more bubbles form, and the higher your risk."
             },
             "variability": {
                 "title": "Individual Variability",
@@ -775,8 +776,8 @@
             "discovery": {
                 "title": "Richard Pyle's Discovery",
                 "cardTitle": "The Fish Collector's Observation",
-                "text1": "In the 1980 s, <strong>Richard Pyle</strong> was a marine biologist collecting fish specimens from the \"twilight zone\" — depths between 50–70 meters. He noticed something curious about his post-dive fatigue.",
-                "insight": "<strong>The pattern:</strong> On dives where he caught fish, he had to stop at intermediate depths to <strong>vent their swim bladders</strong> (preventing them from bursting during ascent). After these dives, he felt great. On dives with no fish — and therefore no intermediate stops — he felt fatigued.",
+                "text1": "In the eighties, <strong>Richard Pyle</strong> noticed that his post-dive fatigue varied markedly from one dive to another. Because he kept meticulous records, he systematically searched for what distinguished the dives after which he felt tired from those after which he did not.",
+                "insight": "<strong>The pattern:</strong> He surfaced without fatigue after dives when he caught a fish. During ascent he had to stop at intermediate depths to <strong>vent its swim bladder</strong> (preventing it from bursting). On dives with no fish — and therefore no intermediate stops — he felt fatigued.",
                 "text2": "Pyle had accidentally discovered that brief stops at depths <em>deeper</em> than required by his decompression schedule made a noticeable difference in how he felt."
             },
             "method": {
@@ -784,8 +785,8 @@
                 "intro": "Pyle formalized his observation into a method:",
                 "step1": "Calculate your conventional decompression schedule",
                 "step2": "First deep stop = <strong>halfway</strong> between max depth and first required deco stop",
-                "step3": "Stay 2–3 minutes",
-                "step4": "If the gap to the next stop is still &gt;9 m (30ft), add another halfway stop",
+                "step3": "Stay 2–3 min",
+                "step4": "If the gap to the next stop is still &gt; 9 m (30 ft), add another halfway stop",
                 "exampleTitle": "Example: 60 m dive, first deco stop at 15 m",
                 "stop1Label": "1st Pyle stop:",
                 "stop1Value": "(60 + 15) ÷ 2 = <strong>38 m</strong>",
@@ -805,36 +806,36 @@
             "title": "Gradient Factors: The Tool",
             "what": {
                 "title": "What Are Gradient Factors?",
-                "text1": "Gradient Factors (GF) are a way to add <strong>conservatism</strong> to Bühlmann's algorithm by reducing the allowed supersaturation. Instead of allowing tissues to reach 100% of the M-value, you set a lower percentage.",
-                "gf100label": "GF 100%",
-                "gf100value": "Full M-value",
+                "text1": "Gradient Factors (GF) are a way to add <strong>conservatism</strong> to Bühlmann's algorithm by reducing the allowed supersaturation. Instead of allowing tissues to reach 100 % of the <var>M</var>-value, you set a lower percentage.",
+                "gf100label": "GF 100 %",
+                "gf100value": "Full <var>M</var>-value",
                 "gf100desc": "Maximum allowed supersaturation (Bühlmann's limit)",
-                "gf0label": "GF 0%",
+                "gf0label": "GF 0 %",
                 "gf0value": "Ambient pressure",
                 "gf0desc": "No supersaturation allowed (impractical)",
-                "text2": "A gradient factor of <strong>GF 80%</strong> means you only allow the tissue to reach 80% of the way from ambient pressure to the M-value."
+                "text2": "A gradient factor of <strong>GF 80 %</strong> means you only allow the tissue to reach 80 % of the way from ambient pressure to the <var>M</var>-value."
             },
             "sandboxCTA": "Open GF sandbox — scrub the formulas live →",
             "lowHigh": {
-                "title": "GF Low and GF High",
+                "title": "GF<sub>low</sub> and GF<sub>high</sub>",
                 "intro": "Dive computers and planning software use <strong>two</strong> gradient factors:",
-                "gfLowLabel": "GF Low",
+                "gfLowLabel": "GF<sub>low</sub>",
                 "gfLowDesc": "Controls the <strong>first/deepest</strong> deco stop",
-                "gfHighLabel": "GF High",
+                "gfHighLabel": "GF<sub>high</sub>",
                 "gfHighDesc": "Controls supersaturation at the <strong>surface</strong>",
                 "interpolation": "The algorithm <strong>interpolates</strong> between these values during the ascent:",
-                "interpList1": "At your deepest required stop → GF Low applies",
-                "interpList2": "At the surface → GF High applies",
+                "interpList1": "At your deepest required stop → GF<sub>low</sub> applies",
+                "interpList2": "At the surface → GF<sub>high</sub> applies",
                 "interpList3": "In between → linear interpolation",
-                "insight": "<strong>Lower GF Low = deeper first stop</strong> (similar to Pyle stops)<br><strong>Lower GF High = more time at shallow stops</strong>"
+                "insight": "<strong>Lower GF<sub>low</sub> = deeper first stop</strong> (similar to Pyle stops)<br><strong>Lower GF<sub>high</sub> = more time at shallow stops</strong>"
             },
             "example100": {
                 "title": "Visual: GF 100/100 (No Conservatism)",
-                "desc": "Raw Bühlmann limits — tissue can reach 100% of M-value."
+                "desc": "Raw Bühlmann limits — tissue can reach 100 % of the <var>M</var>-value."
             },
             "example5080": {
                 "title": "Visual: GF 50/80 (Conservative)",
-                "desc": "Tissue only allowed to 50–80% of M-value — notice the GF line below the M-value."
+                "desc": "Tissue only allowed to 50–80 % of the <var>M</var>-value — notice the GF line below the <var>M</var>-value."
             }
         },
         "controversy": {
@@ -858,7 +859,7 @@
                 "text2": "Deep stops reduce the pressure gradient for off-gassing. The deeper you stay, the smaller the difference between tissue pressure and ambient — and that gradient is what drives gas elimination.",
                 "nuanceTitle": "The Nuanced Reality",
                 "nuanceIntro": "This doesn't mean all deep stops are bad:",
-                "nuance1": "<strong>Very brief stops</strong> (Pyle's original 2–3 minutes) may still be beneficial",
+                "nuance1": "<strong>Very brief stops</strong> (Pyle's original 2–3 min) may still be beneficial",
                 "nuance2": "The NEDU study used extended deep stops with significant deco time shifted deep",
                 "nuance3": "Extremely aggressive deep stop profiles (GF 30/85) are now discouraged",
                 "nuance4": "Moderate conservatism (GF 70/85) adds safety without excessive deep stops"
@@ -909,7 +910,7 @@
                 "title": "The Bottom Line",
                 "item1": "Some conservatism is good — GF 100/100 is too aggressive",
                 "item2": "GF 70/85 is a sensible starting point for most divers",
-                "item3": "Very low GF Low (like 30%) can be counterproductive",
+                "item3": "Very low GF<sub>low</sub> (like 30 %) can be counterproductive",
                 "item4": "More conservatism isn't always better — it's about balance",
                 "item5": "Adjust based on personal factors, dive conditions, and experience"
             }
@@ -919,18 +920,18 @@
             "intro": "CMAS published a 2025 fact sheet summarising current evidence on gradient factors. Its advice differs from some of the values in the reference table above — worth knowing both perspectives before you pick your settings.",
             "pointSymmetric": {
                 "title": "1. For air/nitrox, use <em>symmetric</em> GFs",
-                "text": "CMAS recommends <strong>GF Low = GF High</strong> on nitrogen dives — typically <strong>90/90</strong>, dropping to <strong>85/85</strong> or <strong>80/80</strong> when risk factors apply (age, fatigue, cold, exertion). Asymmetric GFs force deep stops, and multiple independent studies found this <em>increases</em> DCS incidence on air/nitrox dives:",
+                "text": "CMAS recommends <strong>GF<sub>low</sub> = GF<sub>high</sub></strong> on nitrogen dives — typically <strong>90/90</strong>, dropping to <strong>85/85</strong> or <strong>80/80</strong> when risk factors apply (age, fatigue, cold, exertion). Asymmetric GFs force deep stops, and multiple independent studies found this <em>increases</em> DCS incidence on air/nitrox dives:",
                 "bullet1": "French Navy (2005) — deep stops raised DCS risk on air deco dives",
                 "bullet2": "U.S. Navy NEDU (2011) — \"redistribution of stop time from shallow to deep stops increases incidence of DCS in air decompression dives\"",
                 "bullet3": "Belgian Military (2023) — default 30/70 preset was unsafe for 60 m air dives"
             },
             "pointHelium": {
                 "title": "2. For helium (trimix/heliox), asymmetric GFs are still justified",
-                "text": "On helium mixes, forcing some deeper stops <em>does</em> help (inner-ear DCS, fast helium tissues). CMAS suggests <strong>GF Low 30–50, GF High 70–80</strong> (e.g. 30/70, 50/80). This aligns with the \"Deep dive\" row of the table above."
+                "text": "On helium mixes, forcing some deeper stops <em>does</em> help (inner-ear DCS, fast helium tissues). CMAS suggests <strong>GF<sub>low</sub> 30–50, GF<sub>high</sub> 70–80</strong> (e.g. 30/70, 50/80). This aligns with the \"Deep dive\" row of the table above."
             },
             "pointNoStop": {
-                "title": "3. On a no-deco dive, GF Low doesn't matter",
-                "text": "Non-obvious but important: GF Low only kicks in at the <strong>first deco stop depth</strong>. If your dive has no mandatory stops, setting <strong>45/95</strong> behaves exactly like <strong>95/95</strong> — because there is no \"first stop\" for GF Low to anchor. Don't expect conservative GF Low to help you on a pure recreational profile."
+                "title": "3. On a no-deco dive, GF<sub>low</sub> doesn't matter",
+                "text": "Non-obvious but important: GF<sub>low</sub> only kicks in at the <strong>first deco stop depth</strong>. If your dive has no mandatory stops, setting <strong>45/95</strong> behaves exactly like <strong>95/95</strong> — because there is no \"first stop\" for GF<sub>low</sub> to anchor. Don't expect conservative GF<sub>low</sub> to help you on a pure recreational profile."
             },
             "pointDefaults": {
                 "title": "4. Check your computer's default preset",
