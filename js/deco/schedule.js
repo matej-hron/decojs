@@ -140,10 +140,529 @@ export function calculateNDL(
     };
 }
 
+function calculateGasSwitchPoints(
+    gases, switchPpO2, modSurfacePressure, pressurePerMeter, stopIncrement
+) {
+    if (!gases || gases.length <= 1) {
+        return [];
+    }
+
+    const gasSwitchPoints = [];
+    for (const gas of gases.slice(1)) {
+        if (!gas.o2 || gas.o2 <= 0 || !Number.isFinite(gas.o2)) {
+            continue;
+        }
+        if (!Number.isFinite(gas.n2) || gas.n2 < 0 || gas.n2 > 1) {
+            continue;
+        }
+        if (gas.o2 + gas.n2 > 1.001) {
+            continue;
+        }
+        const mod = (switchPpO2 / gas.o2 - modSurfacePressure)
+            / pressurePerMeter;
+        if (!Number.isFinite(mod)) {
+            continue;
+        }
+        gasSwitchPoints.push({
+            ...gas,
+            switchDepth: Math.max(
+                0, Math.floor(mod / stopIncrement) * stopIncrement
+            )
+        });
+    }
+    return gasSwitchPoints.sort((a, b) => b.switchDepth - a.switchDepth);
+}
+
+function switchToBestGas(
+    context, atDepth, recordSwitch = true, phase = 'ascent'
+) {
+    // This N2-only selection must include helium loading before trimix can use it.
+    const eligible = context.gasSwitchPoints.filter(gas =>
+        atDepth <= gas.switchDepth
+        && gas.n2 < context.getCurrentN2()
+        && !context.usedGases.has(gas.id ?? gas.name)
+    );
+    if (eligible.length === 0) {
+        return false;
+    }
+
+    const best = eligible.reduce(
+        (a, b) => (b.switchDepth > a.switchDepth ? b : a)
+    );
+    const key = best.id ?? best.name;
+    context.setCurrentGas(best.n2, best.name);
+    context.usedGases.add(key);
+    if (recordSwitch) {
+        context.gasSwitches.push({
+            depth: atDepth,
+            gas: best.name,
+            gasId: key
+        });
+        context.recordDecision('gas-switch', {
+            depth: atDepth,
+            gas: best.name,
+            gasId: key,
+            duration: context.gasSwitchTime,
+            phase
+        });
+    }
+    return true;
+}
+
+function createScheduleContext(
+    currentDepth, n2Fraction, gfLow, gfHigh, gases, options
+) {
+    const { switchPpO2 = 1.6, gasSwitchTime = 0 } = options;
+    const decoMode = getDecoMode(options);
+    const surfacePressure = options.surfacePressure ?? SURFACE_PRESSURE;
+    const pressurePerMeter =
+        options.pressurePerMeter ?? PRESSURE_PER_METER;
+    const modSurfacePressure = options.modSurfacePressure
+        ?? 1 + (surfacePressure - SURFACE_PRESSURE);
+    const continuousDeco = decoMode === DECO_MODES.CONTINUOUS;
+    const stopIncrement = continuousDeco ? 0.1 : STOP_INCREMENT;
+    const timeIncrement = continuousDeco ? 0.1 : 1;
+    const minimumStopTime = decoMode === DECO_MODES.STANDARD ? 1 : 0;
+    const alignRuntimeDepartures = decoMode === DECO_MODES.STANDARD
+        && options.alignRuntimeDepartures === true
+        && Number.isFinite(options.runtimeStart);
+    let scheduleRuntime = Number.isFinite(options.runtimeStart)
+        ? options.runtimeStart
+        : null;
+    let totalAscentTime = 0;
+    let currentN2 = n2Fraction;
+    let currentGasName = gases && gases.length > 0
+        ? gases[0].name
+        : 'Bottom Gas';
+    const decisionAudit = options.audit ? {
+        version: DECISION_AUDIT_VERSION,
+        mode: decoMode,
+        startDepth: currentDepth,
+        ...(scheduleRuntime !== null ? { runtimeStart: scheduleRuntime } : {}),
+        gfLow,
+        gfHigh,
+        surfacePressure,
+        events: []
+    } : null;
+
+    const context = {
+        decoMode,
+        gasSwitchTime,
+        surfacePressure,
+        pressurePerMeter,
+        gfLow,
+        gfHigh,
+        stopIncrement,
+        timeIncrement,
+        minimumStopTime,
+        alignRuntimeDepartures,
+        decisionAudit,
+        stops: [],
+        gasSwitches: [],
+        usedGases: new Set(),
+        gasSwitchPoints: calculateGasSwitchPoints(
+            gases, switchPpO2, modSurfacePressure, pressurePerMeter,
+            stopIncrement
+        ),
+        recordDecision(type, data) {
+            if (decisionAudit) {
+                decisionAudit.events.push({
+                    type,
+                    ...(scheduleRuntime !== null
+                        ? { runtime: scheduleRuntime }
+                        : {}),
+                    ...data
+                });
+            }
+        },
+        advanceRuntime(duration) {
+            if (scheduleRuntime !== null) {
+                scheduleRuntime = Math.round(
+                    (scheduleRuntime + duration) * 10
+                ) / 10;
+            }
+        },
+        addAscentTime(duration) {
+            totalAscentTime += duration;
+        },
+        getTotalAscentTime() {
+            return totalAscentTime;
+        },
+        getScheduleRuntime() {
+            return scheduleRuntime;
+        },
+        getCurrentN2() {
+            return currentN2;
+        },
+        getCurrentGasName() {
+            return currentGasName;
+        },
+        setCurrentGas(n2, name) {
+            currentN2 = n2;
+            currentGasName = name;
+        }
+    };
+    context.switchToBestGas = (
+        atDepth, recordSwitch = true, phase = 'ascent'
+    ) => switchToBestGas(context, atDepth, recordSwitch, phase);
+    return context;
+}
+
+function findScheduleFirstStop(
+    context, tissuePressures, currentDepth, n2Fraction
+) {
+    const directAscent = evaluateDirectAscent(
+        tissuePressures, currentDepth, n2Fraction, context.gfHigh,
+        context.surfacePressure, context.pressurePerMeter
+    );
+    context.recordDecision('direct-ascent', {
+        gf: context.gfHigh,
+        ceilingDepth: directAscent.ceilingDepth,
+        controllingCompartment: directAscent.controllingCompartment,
+        decision: directAscent.ceilingDepth === 0
+            ? 'surface'
+            : 'decompression'
+    });
+    if (directAscent.ceilingDepth === 0) {
+        return {
+            anchorDepth: 0,
+            pAnchor: context.surfacePressure,
+            tissuesAtAnchor: directAscent.tissues
+        };
+    }
+
+    const gasSwitchPoints = context.gasSwitchPoints.length > 0
+        ? context.gasSwitchPoints
+        : null;
+    const findFirstStop = context.decoMode === DECO_MODES.STANDARD
+        ? findFirstStagedStopAtGFLow
+        : findFirstStopAtGFLow;
+    return findFirstStop(
+        tissuePressures, currentDepth, n2Fraction, context.gfLow,
+        context.stopIncrement, ASCENT_SPEED, gasSwitchPoints,
+        context.surfacePressure, context.recordDecision,
+        context.pressurePerMeter
+    );
+}
+
+function ascendScheduleSegment(context, tissues, fromDepth, toDepth) {
+    const segmentTime = (fromDepth - toDepth) / ASCENT_SPEED;
+    const nextTissues = simulateDepthChange(
+        tissues, fromDepth, toDepth, segmentTime, context.getCurrentN2(),
+        context.surfacePressure, context.pressurePerMeter
+    );
+    context.addAscentTime(segmentTime);
+    context.advanceRuntime(segmentTime);
+    return nextTissues;
+}
+
+function holdAfterAscentSwitch(context, tissues, switchDepth, targetDepth) {
+    let currentTissues = simulateDepthTime(
+        tissues, switchDepth, context.gasSwitchTime, context.getCurrentN2(),
+        context.surfacePressure, context.pressurePerMeter
+    );
+    context.advanceRuntime(context.gasSwitchTime);
+    let switchHoldTime = context.gasSwitchTime;
+
+    if (context.alignRuntimeDepartures) {
+        const alignmentWait = Math.round(
+            (Math.ceil(context.getScheduleRuntime() - 1e-9)
+                - context.getScheduleRuntime()) * 10
+        ) / 10;
+        if (alignmentWait > 0) {
+            currentTissues = simulateDepthTime(
+                currentTissues, switchDepth, alignmentWait,
+                context.getCurrentN2(), context.surfacePressure,
+                context.pressurePerMeter
+            );
+            switchHoldTime += alignmentWait;
+            context.advanceRuntime(alignmentWait);
+        }
+
+        const targetGF = interpolateGF(
+            getAmbientPressure(
+                targetDepth, context.surfacePressure, context.pressurePerMeter
+            ),
+            context.pAnchor, context.gfLow, context.gfHigh,
+            context.surfacePressure
+        );
+        let targetCeiling = getDiveCeiling(
+            currentTissues, targetGF, context.surfacePressure,
+            context.pressurePerMeter
+        ).ceilingDepth;
+        while (targetCeiling > targetDepth) {
+            currentTissues = simulateDepthTime(
+                currentTissues, switchDepth, 1, context.getCurrentN2(),
+                context.surfacePressure, context.pressurePerMeter
+            );
+            switchHoldTime += 1;
+            context.advanceRuntime(1);
+            if (switchHoldTime > DECO_STOP_MAX_MINUTES) {
+                throw new DecoCapExceededError(
+                    switchDepth, context.stops, DECO_STOP_MAX_MINUTES
+                );
+            }
+            targetCeiling = getDiveCeiling(
+                currentTissues, targetGF, context.surfacePressure,
+                context.pressurePerMeter
+            ).ceilingDepth;
+        }
+    }
+
+    context.stops.push({
+        depth: switchDepth,
+        time: Math.round(switchHoldTime * 10) / 10,
+        gas: context.getCurrentGasName(),
+        ...(context.alignRuntimeDepartures
+            ? { departureRuntime: context.getScheduleRuntime() }
+            : {})
+    });
+    return currentTissues;
+}
+
+function buildScheduleResult(context) {
+    const totalAscentTime = context.getTotalAscentTime();
+    const totalTime = totalAscentTime
+        + context.stops.reduce((sum, stop) => sum + stop.time, 0);
+    return {
+        stops: context.stops,
+        gasSwitches: context.gasSwitches,
+        totalTime,
+        totalAscentTime,
+        pAnchor: context.pAnchor,
+        anchorDepth: context.anchorDepth,
+        ...(context.decisionAudit
+            ? { decisionAudit: context.decisionAudit }
+            : {})
+    };
+}
+
+function completeDirectAscent(context, tissues, startDepth) {
+    const uniqueSwitchDepths = [
+        ...new Set(context.gasSwitchPoints.map(gas => gas.switchDepth))
+    ].sort((a, b) => b - a);
+
+    let remainingDepth = startDepth;
+    let currentTissues = { ...tissues };
+    for (const switchDepth of uniqueSwitchDepths) {
+        if (remainingDepth <= switchDepth) {
+            continue;
+        }
+        currentTissues = ascendScheduleSegment(
+            context, currentTissues, remainingDepth, switchDepth
+        );
+        remainingDepth = switchDepth;
+        if (context.switchToBestGas(switchDepth) && context.gasSwitchTime > 0) {
+            currentTissues = holdAfterAscentSwitch(
+                context, currentTissues, switchDepth, 0
+            );
+        }
+    }
+
+    if (remainingDepth > 0) {
+        ascendScheduleSegment(context, currentTissues, remainingDepth, 0);
+    }
+    return buildScheduleResult(context);
+}
+
+function ascendToFirstStop(context, tissues, startDepth, firstStopDepth) {
+    const ascentSwitchDepths = [
+        ...new Set(context.gasSwitchPoints.map(gas => gas.switchDepth))
+    ]
+        .filter(depth => depth < startDepth && depth >= firstStopDepth)
+        .sort((a, b) => b - a);
+
+    let currentDepth = startDepth;
+    let currentTissues = { ...tissues };
+    for (const switchDepth of ascentSwitchDepths) {
+        if (currentDepth <= switchDepth) {
+            continue;
+        }
+        currentTissues = ascendScheduleSegment(
+            context, currentTissues, currentDepth, switchDepth
+        );
+        currentDepth = switchDepth;
+        if (context.switchToBestGas(switchDepth) && context.gasSwitchTime > 0) {
+            currentTissues = holdAfterAscentSwitch(
+                context, currentTissues, switchDepth, firstStopDepth
+            );
+        }
+    }
+
+    if (currentDepth > firstStopDepth) {
+        currentTissues = ascendScheduleSegment(
+            context, currentTissues, currentDepth, firstStopDepth
+        );
+    }
+    return currentTissues;
+}
+
+function appendOrMergeStop(context, depth, stopTime) {
+    const roundedDepth = Math.round(depth * 10) / 10;
+    const currentGasName = context.getCurrentGasName();
+    const previousStop = context.stops[context.stops.length - 1];
+    if (previousStop
+        && previousStop.depth === roundedDepth
+        && previousStop.gas === currentGasName) {
+        previousStop.time = Math.round(
+            (previousStop.time + stopTime) * 10
+        ) / 10;
+        if (context.alignRuntimeDepartures) {
+            previousStop.departureRuntime = context.getScheduleRuntime();
+        }
+        return;
+    }
+
+    context.stops.push({
+        depth: roundedDepth,
+        time: Math.round(stopTime * 10) / 10,
+        gas: currentGasName,
+        ...(context.alignRuntimeDepartures
+            ? { departureRuntime: context.getScheduleRuntime() }
+            : {})
+    });
+}
+
+function completeStopLevels(context, initialTissues, firstStopDepth) {
+    let tissues = initialTissues;
+    let depth = firstStopDepth;
+    let pendingStopTime = 0;
+    let levelDecision = null;
+
+    while (depth > 0) {
+        let switchTime = 0;
+        if (context.switchToBestGas(depth, true, 'level')
+            && context.gasSwitchTime > 0) {
+            tissues = simulateDepthTime(
+                tissues, depth, context.gasSwitchTime, context.getCurrentN2(),
+                context.surfacePressure, context.pressurePerMeter
+            );
+            pendingStopTime += context.gasSwitchTime;
+            context.advanceRuntime(context.gasSwitchTime);
+            switchTime = context.gasSwitchTime;
+        }
+
+        if (!levelDecision) {
+            levelDecision = {
+                depth,
+                gas: context.getCurrentGasName(),
+                switchTime,
+                mandatoryWait: 0,
+                additionalWait: 0,
+                alignmentWait: 0,
+                initialCeilingDepth: null,
+                initialControllingCompartment: null
+            };
+        } else {
+            levelDecision.gas = context.getCurrentGasName();
+            levelDecision.switchTime += switchTime;
+        }
+
+        if (pendingStopTime < context.minimumStopTime) {
+            const mandatoryWait = context.minimumStopTime - pendingStopTime;
+            tissues = simulateDepthTime(
+                tissues, depth, mandatoryWait, context.getCurrentN2(),
+                context.surfacePressure, context.pressurePerMeter
+            );
+            pendingStopTime = context.minimumStopTime;
+            context.advanceRuntime(mandatoryWait);
+            levelDecision.mandatoryWait += mandatoryWait;
+        }
+
+        const nextStopDepth = Math.max(
+            0, Math.round((depth - context.stopIncrement) * 10) / 10
+        );
+        const ascentTime = (depth - nextStopDepth) / ASCENT_SPEED;
+        const gfThere = interpolateGF(
+            getAmbientPressure(
+                nextStopDepth, context.surfacePressure, context.pressurePerMeter
+            ),
+            context.pAnchor, context.gfLow, context.gfHigh,
+            context.surfacePressure
+        );
+        const { ceilingDepth, controllingCompartment } = getDiveCeiling(
+            tissues, gfThere, context.surfacePressure, context.pressurePerMeter
+        );
+        if (levelDecision.initialCeilingDepth === null) {
+            levelDecision.initialCeilingDepth = ceilingDepth;
+            levelDecision.initialControllingCompartment =
+                controllingCompartment;
+        }
+
+        if (ceilingDepth <= nextStopDepth) {
+            if (context.alignRuntimeDepartures) {
+                const alignedRuntime = Math.ceil(
+                    context.getScheduleRuntime() - 1e-9
+                );
+                const alignmentWait = Math.round(
+                    (alignedRuntime - context.getScheduleRuntime()) * 10
+                ) / 10;
+                if (alignmentWait > 0) {
+                    tissues = simulateDepthTime(
+                        tissues, depth, alignmentWait, context.getCurrentN2(),
+                        context.surfacePressure, context.pressurePerMeter
+                    );
+                    pendingStopTime = Math.round(
+                        (pendingStopTime + alignmentWait) * 10
+                    ) / 10;
+                    levelDecision.alignmentWait = Math.round(
+                        (levelDecision.alignmentWait + alignmentWait) * 10
+                    ) / 10;
+                    context.advanceRuntime(alignmentWait);
+                    continue;
+                }
+            }
+
+            context.recordDecision('level-decision', {
+                ...levelDecision,
+                targetDepth: nextStopDepth,
+                targetGF: gfThere,
+                finalCeilingDepth: ceilingDepth,
+                finalControllingCompartment: controllingCompartment,
+                totalWait: pendingStopTime,
+                decision: 'ascend'
+            });
+            if (pendingStopTime > 0) {
+                appendOrMergeStop(context, depth, pendingStopTime);
+                pendingStopTime = 0;
+            }
+            levelDecision = null;
+            tissues = simulateDepthChange(
+                tissues, depth, nextStopDepth, ascentTime,
+                context.getCurrentN2(), context.surfacePressure,
+                context.pressurePerMeter
+            );
+            context.addAscentTime(ascentTime);
+            context.advanceRuntime(ascentTime);
+            depth = nextStopDepth;
+            continue;
+        }
+
+        tissues = simulateDepthTime(
+            tissues, depth, context.timeIncrement, context.getCurrentN2(),
+            context.surfacePressure, context.pressurePerMeter
+        );
+        pendingStopTime = Math.round(
+            (pendingStopTime + context.timeIncrement) * 10
+        ) / 10;
+        context.advanceRuntime(context.timeIncrement);
+        levelDecision.additionalWait = Math.round(
+            (levelDecision.additionalWait + context.timeIncrement) * 10
+        ) / 10;
+        if (pendingStopTime > DECO_STOP_MAX_MINUTES) {
+            throw new DecoCapExceededError(
+                depth, context.stops, DECO_STOP_MAX_MINUTES
+            );
+        }
+    }
+
+    return buildScheduleResult(context);
+}
+
 /**
  * Generate a decompression schedule from current tissue state
  * Returns the stops needed to safely reach the surface.
- * 
+ *
  * Gas switch convention:
  * - When deco stops are required: switches occur on arrival at a stop depth,
  *   before waiting begins. The ceiling check during ascent uses the current gas;
@@ -151,11 +670,11 @@ export function calculateNDL(
  * - When no deco stops are required (NDL dive): switches occur mid-ascent at
  *   the gas's MOD (rounded to 3m grid). This allows using richer gases during
  *   ascent even without mandatory stops.
- * 
+ *
  * GF interpolation (pAnchor-based): The pAnchor is the ambient pressure during
  * ascent where GF_max first equals GF_low. The GF ramp runs from gfLow at pAnchor
  * to gfHigh at the surface. This is the correct Bühlmann + GF implementation.
- * 
+ *
  * @param {Object} tissuePressures - Current tissue pressures by compartment ID
  * @param {number} currentDepth - Current depth in meters (ascent start)
  * @param {number} n2Fraction - N2 fraction in current gas
@@ -169,534 +688,31 @@ export function calculateNDL(
  * @param {number} [options.runtimeStart] - Absolute runtime at the start of the ascent
  * @returns {{stops: Array<{depth: number, time: number, gas: string, departureRuntime?: number}>, gasSwitches: Array<{depth: number, gas: string, gasId: string}>, totalTime: number, totalAscentTime: number, pAnchor: number, anchorDepth: number, decisionAudit?: Object}}
  */
-export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, gfLow, gfHigh, gases = null, options = {}) {
-    const { switchPpO2 = 1.6, gasSwitchTime = 0 } = options;
-    const decoMode = getDecoMode(options);
-    const surfacePressure = options.surfacePressure ?? SURFACE_PRESSURE;
-    const pressurePerMeter =
-        options.pressurePerMeter ?? PRESSURE_PER_METER;
-    // Keep the existing sea-level MOD convention (nominal 1 bar), while
-    // shifting it by the same pressure delta when altitude changes.
-    const modSurfacePressure = options.modSurfacePressure
-        ?? 1 + (surfacePressure - SURFACE_PRESSURE);
-
-    const continuousDeco = decoMode === DECO_MODES.CONTINUOUS;
-    const stopIncrement = continuousDeco ? 0.1 : STOP_INCREMENT;
-    const timeIncrement = continuousDeco ? 0.1 : 1;
-    const minimumStopTime = decoMode === DECO_MODES.STANDARD ? 1 : 0;
-    const alignRuntimeDepartures = decoMode === DECO_MODES.STANDARD
-        && options.alignRuntimeDepartures === true
-        && Number.isFinite(options.runtimeStart);
-    let scheduleRuntime = Number.isFinite(options.runtimeStart)
-        ? options.runtimeStart
-        : null;
-    const decisionAudit = options.audit ? {
-        version: DECISION_AUDIT_VERSION,
-        mode: decoMode,
-        startDepth: currentDepth,
-        ...(scheduleRuntime !== null ? { runtimeStart: scheduleRuntime } : {}),
-        gfLow,
-        gfHigh,
-        surfacePressure,
-        events: []
-    } : null;
-    const recordDecision = (type, data) => {
-        if (decisionAudit) {
-            decisionAudit.events.push({
-                type,
-                ...(scheduleRuntime !== null ? { runtime: scheduleRuntime } : {}),
-                ...data
-            });
-        }
-    };
-
-    const stops = [];
-    const gasSwitches = []; // Track gas switches during ascent
-    let totalAscentTime = 0;
-    const advanceRuntime = (duration) => {
-        if (scheduleRuntime !== null) {
-            scheduleRuntime = Math.round((scheduleRuntime + duration) * 10) / 10;
-        }
-    };
-
-    // Clone tissue pressures
-    let tissues = { ...tissuePressures };
-    let depth = currentDepth;
-    let currentN2 = n2Fraction;
-    // Use the bottom gas name if provided, otherwise default to 'Bottom Gas'
-    let currentGasName = (gases && gases.length > 0) ? gases[0].name : 'Bottom Gas';
-    
-    // Helper to get a unique key for a gas (handles missing id)
-    const gasKey = (g) => g.id ?? g.name;
-    
-    // Calculate gas switch depths (MOD at switchPpO2, rounded toward shallower on 3m grid)
-    // Validates gas fractions and clamps switch depth to non-negative values
-    const gasSwitchPoints = [];
-    if (gases && gases.length > 1) {
-        for (const gas of gases.slice(1)) {
-            // Skip gases with invalid o2 fraction
-            if (!gas.o2 || gas.o2 <= 0 || !Number.isFinite(gas.o2)) {
-                continue;
-            }
-            // Skip gases with invalid n2 fraction
-            if (!Number.isFinite(gas.n2) || gas.n2 < 0 || gas.n2 > 1) {
-                continue;
-            }
-            // Skip gases where o2 + n2 > 1 (invalid mix, ignoring He for now)
-            if (gas.o2 + gas.n2 > 1.001) {
-                continue;
-            }
-            const mod =
-                (switchPpO2 / gas.o2 - modSurfacePressure) /
-                pressurePerMeter;
-            // Skip if MOD calculation yields invalid result
-            if (!Number.isFinite(mod)) {
-                continue;
-            }
-            // Round MOD toward shallower (smaller depth = lower ppO2 = safe)
-            // E.g., MOD=22m -> switchDepth=21m
-            const switchDepth = Math.max(0, Math.floor(mod / stopIncrement) * stopIncrement);
-            gasSwitchPoints.push({
-                ...gas,
-                switchDepth
-            });
-        }
-        // Sort by switchDepth descending (deeper first) for iteration order
-        gasSwitchPoints.sort((a, b) => b.switchDepth - a.switchDepth);
-    }
-
-    // Decotengu first attempts a direct ascent on bottom gas and checks the
-    // surfaced tissues at GF High. Only a failed NDL ascent creates a GF Low
-    // anchor and enters staged decompression.
-    const directAscent = evaluateDirectAscent(
-        tissuePressures, currentDepth, n2Fraction, gfHigh, surfacePressure,
-        pressurePerMeter
+export function generateDecoSchedule(
+    tissuePressures, currentDepth, n2Fraction, gfLow, gfHigh,
+    gases = null, options = {}
+) {
+    const context = createScheduleContext(
+        currentDepth, n2Fraction, gfLow, gfHigh, gases, options
     );
-    recordDecision('direct-ascent', {
-        gf: gfHigh,
-        ceilingDepth: directAscent.ceilingDepth,
-        controllingCompartment: directAscent.controllingCompartment,
-        decision: directAscent.ceilingDepth === 0 ? 'surface' : 'decompression'
-    });
-    const firstStopResult = directAscent.ceilingDepth === 0
-        ? {
-            anchorDepth: 0,
-            pAnchor: surfacePressure,
-            tissuesAtAnchor: directAscent.tissues
-        }
-        : (decoMode === DECO_MODES.STANDARD
-            ? findFirstStagedStopAtGFLow(
-                tissuePressures, currentDepth, n2Fraction, gfLow, stopIncrement,
-                ASCENT_SPEED, gasSwitchPoints.length > 0 ? gasSwitchPoints : null,
-                surfacePressure, recordDecision, pressurePerMeter
-            )
-            : findFirstStopAtGFLow(
-                tissuePressures, currentDepth, n2Fraction, gfLow, stopIncrement,
-                ASCENT_SPEED, gasSwitchPoints.length > 0 ? gasSwitchPoints : null,
-                surfacePressure, recordDecision, pressurePerMeter
-            ));
-    const {
-        anchorDepth: firstStopFromGFLow,
-        tissuesAtAnchor: tissuesAtStrictFirstStop
-    } = firstStopResult;
-
-    // Track used gases to avoid duplicate switches
-    const usedGases = new Set();
-    
-    // Helper to switch to next best gas at depth (called on arrival at stop or switch point)
-    // "Next best" means the gas with the deepest MOD (highest switchDepth) among eligible gases.
-    // This ensures sequential gas switching: EAN50 at 21m before O2 at 6m.
-    // NOTE: This is an N2-only model. For trimix (with He), selection logic would need
-    // to consider both inert gas fractions and their respective half-times.
-    const switchToBestGas = (atDepth, recordSwitch = true, phase = 'ascent') => {
-        // Find all eligible gases: within MOD, lower N2 than current, not yet used
-        const eligible = gasSwitchPoints.filter(gas => 
-            atDepth <= gas.switchDepth && 
-            gas.n2 < currentN2 && 
-            !usedGases.has(gasKey(gas))
-        );
-        
-        if (eligible.length === 0) {
-            return false;
-        }
-        
-        // Pick the gas with the deepest MOD (highest switchDepth) - ensures sequential switching
-        // E.g., at 6m, if both EAN50 (MOD 21m) and O2 (MOD 6m) are eligible,
-        // but EAN50 wasn't used yet, this picks EAN50 first.
-        // gasSwitchPoints is already sorted by switchDepth descending, so eligible[0] is deepest
-        const best = eligible.reduce((a, b) => (b.switchDepth > a.switchDepth ? b : a));
-        const key = gasKey(best);
-        
-        currentN2 = best.n2;
-        currentGasName = best.name;
-        usedGases.add(key);
-        if (recordSwitch) {
-            gasSwitches.push({ depth: atDepth, gas: best.name, gasId: key });
-            recordDecision('gas-switch', {
-                depth: atDepth,
-                gas: best.name,
-                gasId: key,
-                duration: gasSwitchTime,
-                phase
-            });
-        }
-        return true;
-    };
-    
-    // Per Baker convention, the GF ramp is anchored AT the first stop. At
-    // ambient pressures >= pAnchor the active GF is clamped to GF_low; from
-    // pAnchor up to the surface it ramps linearly to GF_high.
-    const anchorDepth = firstStopFromGFLow;
-    const pAnchor = surfacePressure + anchorDepth * pressurePerMeter;
-    if (decisionAudit) {
-        decisionAudit.anchorDepth = anchorDepth;
-        decisionAudit.pAnchor = pAnchor;
-    }
-    let firstStopDepth = firstStopFromGFLow;
-    let tissuesAtFirstStop = tissuesAtStrictFirstStop;
-    
-    // If no deco needed (first stop = 0), just ascend with mid-ascent gas switches
-    // Note: In this path, gas switches occur at MOD (rounded to 3m) during continuous
-    // ascent, not at stop depths (since there are no stops).
-    // We iterate through unique switch depths and pick the best gas at each.
-    if (firstStopDepth === 0) {
-        // Get unique switch depths, sorted deepest first
-        const uniqueSwitchDepths = [...new Set(gasSwitchPoints.map(g => g.switchDepth))]
-            .sort((a, b) => b - a);
-        
-        let remainingDepth = depth;
-        // Use tissuesAtFirstStop as starting point (already simulated ascent to surface)
-        // But we need to re-simulate for gas switches at intermediate depths
-        let currentTissues = { ...tissues };
-        for (const switchDepth of uniqueSwitchDepths) {
-            if (remainingDepth > switchDepth) {
-                // Ascend to switch depth
-                const segmentTime = (remainingDepth - switchDepth) / ASCENT_SPEED;
-                currentTissues = simulateDepthChange(
-                    currentTissues, remainingDepth, switchDepth, segmentTime,
-                    currentN2, surfacePressure, pressurePerMeter
-                );
-                totalAscentTime += segmentTime;
-                advanceRuntime(segmentTime);
-                remainingDepth = switchDepth;
-                // Switch to best gas at this depth
-                if (switchToBestGas(switchDepth) && gasSwitchTime > 0) {
-                    currentTissues = simulateDepthTime(
-                        currentTissues, switchDepth, gasSwitchTime, currentN2,
-                        surfacePressure, pressurePerMeter
-                    );
-                    advanceRuntime(gasSwitchTime);
-                    let switchHoldTime = gasSwitchTime;
-                    if (alignRuntimeDepartures) {
-                        const alignmentWait = Math.round(
-                            (Math.ceil(scheduleRuntime - 1e-9) - scheduleRuntime) * 10
-                        ) / 10;
-                        if (alignmentWait > 0) {
-                            currentTissues = simulateDepthTime(
-                                currentTissues, switchDepth, alignmentWait,
-                                currentN2, surfacePressure, pressurePerMeter
-                            );
-                            switchHoldTime += alignmentWait;
-                            advanceRuntime(alignmentWait);
-                        }
-                        const targetGF = interpolateGF(
-                            getAmbientPressure(
-                                0, surfacePressure, pressurePerMeter
-                            ),
-                            pAnchor, gfLow, gfHigh, surfacePressure
-                        );
-                        let targetCeiling = getDiveCeiling(
-                            currentTissues, targetGF, surfacePressure,
-                            pressurePerMeter
-                        ).ceilingDepth;
-                        while (targetCeiling > 0) {
-                            currentTissues = simulateDepthTime(
-                                currentTissues, switchDepth, 1,
-                                currentN2, surfacePressure, pressurePerMeter
-                            );
-                            switchHoldTime += 1;
-                            advanceRuntime(1);
-                            if (switchHoldTime > DECO_STOP_MAX_MINUTES) {
-                                throw new DecoCapExceededError(
-                                    switchDepth, stops, DECO_STOP_MAX_MINUTES
-                                );
-                            }
-                            targetCeiling = getDiveCeiling(
-                                currentTissues, targetGF, surfacePressure,
-                                pressurePerMeter
-                            ).ceilingDepth;
-                        }
-                    }
-                    stops.push({
-                        depth: switchDepth,
-                        time: Math.round(switchHoldTime * 10) / 10,
-                        gas: currentGasName,
-                        ...(alignRuntimeDepartures ? { departureRuntime: scheduleRuntime } : {})
-                    });
-                }
-            }
-        }
-        // Final ascent to surface
-        if (remainingDepth > 0) {
-            const segmentTime = remainingDepth / ASCENT_SPEED;
-            currentTissues = simulateDepthChange(
-                currentTissues, remainingDepth, 0, segmentTime, currentN2,
-                surfacePressure, pressurePerMeter
-            );
-            totalAscentTime += segmentTime;
-            advanceRuntime(segmentTime);
-        }
-        const totalTime = totalAscentTime + stops.reduce((sum, s) => sum + s.time, 0);
-        return {
-            stops, gasSwitches, totalTime, totalAscentTime, pAnchor, anchorDepth,
-            ...(decisionAudit ? { decisionAudit } : {})
-        };
-    }
-    
-    // Ascend to first stop WITH gas switches at MOD depths
-    // Gas switches occur at the gas's MOD during ascent, not just at stop depths.
-    // This ensures EAN50 is used from 21m even when first stop is at 6m.
-    // Get unique switch depths between current depth and first stop, sorted deepest first
-    const ascentSwitchDepths = [...new Set(gasSwitchPoints.map(g => g.switchDepth))]
-        .filter(d => d < depth && d >= firstStopDepth)
-        .sort((a, b) => b - a);  // deepest first
-    
-    let currentAscentDepth = depth;
-    let currentTissues = { ...tissues };
-    
-    for (const switchDepth of ascentSwitchDepths) {
-        if (currentAscentDepth > switchDepth) {
-            // Ascend to switch depth
-            const segmentTime = (currentAscentDepth - switchDepth) / ASCENT_SPEED;
-            currentTissues = simulateDepthChange(
-                currentTissues, currentAscentDepth, switchDepth, segmentTime,
-                currentN2, surfacePressure, pressurePerMeter
-            );
-            totalAscentTime += segmentTime;
-            advanceRuntime(segmentTime);
-            currentAscentDepth = switchDepth;
-            // Switch to best gas at this depth
-            if (switchToBestGas(switchDepth) && gasSwitchTime > 0) {
-                currentTissues = simulateDepthTime(
-                    currentTissues, switchDepth, gasSwitchTime, currentN2,
-                    surfacePressure, pressurePerMeter
-                );
-                advanceRuntime(gasSwitchTime);
-                let switchHoldTime = gasSwitchTime;
-                if (alignRuntimeDepartures) {
-                    const alignmentWait = Math.round(
-                        (Math.ceil(scheduleRuntime - 1e-9) - scheduleRuntime) * 10
-                    ) / 10;
-                    if (alignmentWait > 0) {
-                        currentTissues = simulateDepthTime(
-                            currentTissues, switchDepth, alignmentWait,
-                            currentN2, surfacePressure, pressurePerMeter
-                        );
-                        switchHoldTime += alignmentWait;
-                        advanceRuntime(alignmentWait);
-                    }
-                    const targetGF = interpolateGF(
-                        getAmbientPressure(
-                            firstStopDepth, surfacePressure, pressurePerMeter
-                        ),
-                        pAnchor, gfLow, gfHigh, surfacePressure
-                    );
-                    let targetCeiling = getDiveCeiling(
-                        currentTissues, targetGF, surfacePressure,
-                        pressurePerMeter
-                    ).ceilingDepth;
-                    while (targetCeiling > firstStopDepth) {
-                        currentTissues = simulateDepthTime(
-                            currentTissues, switchDepth, 1,
-                            currentN2, surfacePressure, pressurePerMeter
-                        );
-                        switchHoldTime += 1;
-                        advanceRuntime(1);
-                        if (switchHoldTime > DECO_STOP_MAX_MINUTES) {
-                            throw new DecoCapExceededError(
-                                switchDepth, stops, DECO_STOP_MAX_MINUTES
-                            );
-                        }
-                        targetCeiling = getDiveCeiling(
-                            currentTissues, targetGF, surfacePressure,
-                            pressurePerMeter
-                        ).ceilingDepth;
-                    }
-                }
-                stops.push({
-                    depth: switchDepth,
-                    time: Math.round(switchHoldTime * 10) / 10,
-                    gas: currentGasName,
-                    ...(alignRuntimeDepartures ? { departureRuntime: scheduleRuntime } : {})
-                });
-            }
-        }
+    const { anchorDepth } = findScheduleFirstStop(
+        context, tissuePressures, currentDepth, n2Fraction
+    );
+    context.anchorDepth = anchorDepth;
+    context.pAnchor = context.surfacePressure
+        + anchorDepth * context.pressurePerMeter;
+    if (context.decisionAudit) {
+        context.decisionAudit.anchorDepth = anchorDepth;
+        context.decisionAudit.pAnchor = context.pAnchor;
     }
 
-    // Final segment to first stop
-    if (currentAscentDepth > firstStopDepth) {
-        const finalSegmentTime = (currentAscentDepth - firstStopDepth) / ASCENT_SPEED;
-        currentTissues = simulateDepthChange(
-            currentTissues, currentAscentDepth, firstStopDepth,
-            finalSegmentTime, currentN2, surfacePressure, pressurePerMeter
-        );
-        totalAscentTime += finalSegmentTime;
-        advanceRuntime(finalSegmentTime);
+    const tissues = { ...tissuePressures };
+    if (anchorDepth === 0) {
+        return completeDirectAscent(context, tissues, currentDepth);
     }
-    
-    tissues = currentTissues;
-    depth = firstStopDepth;
-    
-    // Standard staged schedules spend at least one minute at every active 3 m
-    // decompression level, matching Decotengu's operational convention.
-    // Study modes only wait when the tissue ceiling mathematically requires it.
-    let pendingStopTime = 0; // accumulates wait time at current depth
-    let levelDecision = null;
 
-    while (depth > 0) {
-        let switchTime = 0;
-        if (switchToBestGas(depth, true, 'level') && gasSwitchTime > 0) {
-            tissues = simulateDepthTime(
-                tissues, depth, gasSwitchTime, currentN2, surfacePressure,
-                pressurePerMeter
-            );
-            pendingStopTime += gasSwitchTime;
-            advanceRuntime(gasSwitchTime);
-            switchTime = gasSwitchTime;
-        }
-
-        if (!levelDecision) {
-            levelDecision = {
-                depth,
-                gas: currentGasName,
-                switchTime,
-                mandatoryWait: 0,
-                additionalWait: 0,
-                alignmentWait: 0,
-                initialCeilingDepth: null,
-                initialControllingCompartment: null
-            };
-        } else {
-            levelDecision.gas = currentGasName;
-            levelDecision.switchTime += switchTime;
-        }
-
-        if (pendingStopTime < minimumStopTime) {
-            const mandatoryWait = minimumStopTime - pendingStopTime;
-            tissues = simulateDepthTime(
-                tissues, depth, mandatoryWait, currentN2, surfacePressure,
-                pressurePerMeter
-            );
-            pendingStopTime = minimumStopTime;
-            advanceRuntime(mandatoryWait);
-            levelDecision.mandatoryWait += mandatoryWait;
-        }
-
-        // Next candidate depth (one step shallower)
-        const nextStopDepth = Math.max(0, Math.round((depth - stopIncrement) * 10) / 10);
-        const delta = depth - nextStopDepth;
-        const ascentTime = delta / ASCENT_SPEED;
-
-        // Can-we-ascend check: the ceiling at the *destination* GF (one stop
-        // shallower) must clear the destination depth. We do not credit Schreiner
-        // off-gassing during the short ascent — we ask "would the current tissue
-        // pressures be within the M-line at the next stop, under the next stop's
-        // GF". This matches the decotengu convention.
-        const gfThere = interpolateGF(
-            getAmbientPressure(
-                nextStopDepth, surfacePressure, pressurePerMeter
-            ),
-            pAnchor, gfLow, gfHigh, surfacePressure
-        );
-        const { ceilingDepth, controllingCompartment } =
-            getDiveCeiling(
-                tissues, gfThere, surfacePressure, pressurePerMeter
-            );
-        if (levelDecision.initialCeilingDepth === null) {
-            levelDecision.initialCeilingDepth = ceilingDepth;
-            levelDecision.initialControllingCompartment = controllingCompartment;
-        }
-
-        if (ceilingDepth <= nextStopDepth) {
-            if (alignRuntimeDepartures) {
-                const alignedRuntime = Math.ceil(scheduleRuntime - 1e-9);
-                const alignmentWait = Math.round((alignedRuntime - scheduleRuntime) * 10) / 10;
-                if (alignmentWait > 0) {
-                    tissues = simulateDepthTime(
-                        tissues, depth, alignmentWait, currentN2,
-                        surfacePressure, pressurePerMeter
-                    );
-                    pendingStopTime = Math.round((pendingStopTime + alignmentWait) * 10) / 10;
-                    levelDecision.alignmentWait =
-                        Math.round((levelDecision.alignmentWait + alignmentWait) * 10) / 10;
-                    advanceRuntime(alignmentWait);
-                    continue;
-                }
-            }
-            recordDecision('level-decision', {
-                ...levelDecision,
-                targetDepth: nextStopDepth,
-                targetGF: gfThere,
-                finalCeilingDepth: ceilingDepth,
-                finalControllingCompartment: controllingCompartment,
-                totalWait: pendingStopTime,
-                decision: 'ascend'
-            });
-            // Can ascend. Record stop if we waited here.
-            if (pendingStopTime > 0) {
-                const roundedDepth = Math.round(depth * 10) / 10;
-                const previousStop = stops[stops.length - 1];
-                if (previousStop
-                    && previousStop.depth === roundedDepth
-                    && previousStop.gas === currentGasName) {
-                    previousStop.time = Math.round(
-                        (previousStop.time + pendingStopTime) * 10
-                    ) / 10;
-                    if (alignRuntimeDepartures) {
-                        previousStop.departureRuntime = scheduleRuntime;
-                    }
-                } else {
-                    stops.push({
-                        depth: roundedDepth,
-                        time: Math.round(pendingStopTime * 10) / 10,
-                        gas: currentGasName,
-                        ...(alignRuntimeDepartures ? { departureRuntime: scheduleRuntime } : {})
-                    });
-                }
-                pendingStopTime = 0;
-            }
-            levelDecision = null;
-
-            // Ascend to next depth
-            tissues = simulateDepthChange(
-                tissues, depth, nextStopDepth, ascentTime, currentN2,
-                surfacePressure, pressurePerMeter
-            );
-            totalAscentTime += ascentTime;
-            advanceRuntime(ascentTime);
-            depth = nextStopDepth;
-        } else {
-            // Cannot ascend yet - wait at this depth
-            tissues = simulateDepthTime(
-                tissues, depth, timeIncrement, currentN2, surfacePressure,
-                pressurePerMeter
-            );
-            pendingStopTime = Math.round((pendingStopTime + timeIncrement) * 10) / 10;
-            advanceRuntime(timeIncrement);
-            levelDecision.additionalWait =
-                Math.round((levelDecision.additionalWait + timeIncrement) * 10) / 10;
-
-            if (pendingStopTime > DECO_STOP_MAX_MINUTES) {
-                throw new DecoCapExceededError(depth, stops, DECO_STOP_MAX_MINUTES);
-            }
-        }
-    }
-    
-    const totalTime = totalAscentTime + stops.reduce((sum, s) => sum + s.time, 0);
-    
-    return {
-        stops, gasSwitches, totalTime, totalAscentTime, pAnchor, anchorDepth,
-        ...(decisionAudit ? { decisionAudit } : {})
-    };
+    const tissuesAtFirstStop = ascendToFirstStop(
+        context, tissues, currentDepth, anchorDepth
+    );
+    return completeStopLevels(context, tissuesAtFirstStop, anchorDepth);
 }
-

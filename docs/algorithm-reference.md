@@ -72,7 +72,7 @@ Key steps:
 
 6. **Build waypoints from deco schedule** (`js/diveSetup.js:386-502`): Merges deco stops and gas switches into a sorted event list (by depth, descending), then converts to waypoints with proper ascent times. Also decides whether to add a safety stop after deco clears.
 
-### generateDecoSchedule() -- js/deco/schedule.js:21
+### generateDecoSchedule() -- js/deco/schedule.js:691
 
 This is the core deco engine. It receives tissue pressures at end of bottom time and produces deco stops. The algorithm proceeds through these phases:
 
@@ -237,48 +237,49 @@ Three cases (`js/deco/gradients.js:182-199`):
 
 ## 5. Deco Loop
 
-### Overview -- js/deco/schedule.js:21
+### Overview -- js/deco/schedule.js:691
 
-After finding pAnchor and first stop, `generateDecoSchedule()` enters the deco loop. Two modes exist: standard (3m grid) and continuous (0.1m grid).
+After finding pAnchor and first stop, `generateDecoSchedule()` delegates to `completeStopLevels()`. Standard and adaptive modes use a 3m grid; continuous mode uses a 0.1m grid.
 
-### Pre-loop: Gas switch setup -- js/deco/schedule.js:44-74
+### Pre-loop: Gas switch setup -- js/deco/schedule.js:143-174
 
 For each gas beyond the bottom gas:
-1. Calculate MOD: `mod = (switchPpO2 / gas.o2 - 1) * 10` (`js/deco/schedule.js:59`)
-2. Round MOD toward shallower on the stop grid: `Math.floor(mod / stopIncrement) * stopIncrement` (`js/deco/schedule.js:66`)
+1. Calculate MOD: `mod = (switchPpO2 / gas.o2 - modSurfacePressure) / pressurePerMeter` (`js/deco/schedule.js:159`)
+2. Round MOD toward shallower on the stop grid: `Math.floor(mod / stopIncrement) * stopIncrement` (`js/deco/schedule.js:166`)
 3. Store as `gasSwitchPoints` sorted by depth descending.
 
-### switchToBestGas() -- js/deco/schedule.js:90
+### switchToBestGas() -- js/deco/schedule.js:176
 
 Called on arrival at each stop depth. Selects the gas with the deepest MOD among those that:
 - Are within MOD at current depth (`atDepth <= gas.switchDepth`)
 - Have lower N2 than current gas
 - Have not been used yet
 
-This ensures sequential switching (e.g., EAN50 at 21m before O2 at 6m). Uses a "mark as used" set to prevent re-switching (`js/deco/schedule.js:82-115`).
+This ensures sequential switching (e.g., EAN50 at 21m before O2 at 6m). Uses a "mark as used" set to prevent re-switching (`js/deco/schedule.js:176-210`).
 
-### Pre-loop: Ascent to first stop -- js/deco/gasKinetics.js:83-113
+### Pre-loop: Ascent to first stop -- js/deco/schedule.js:468-498
 
 Before the deco loop, the algorithm ascends from bottom depth to first stop. Gas switches occur at MOD depths during this ascent (not just at stop depths). The ascent is simulated segment by segment through each gas switch depth, updating tissue state along the way.
 
 ### Unified Deco Loop -- js/deco/schedule.js
 
-Both standard and continuous modes use identical logic. The only differences are `stopIncrement` (3m vs 0.1m), `timeIncrement` (1min vs 0.1min), and minimum stop time (0 vs 2min).
+All three modes use identical loop logic (`js/deco/schedule.js:526-659`). The differences are `stopIncrement` (3m vs 0.1m), `timeIncrement` (1min vs 0.1min), and minimum stop time (1min in Standard mode, otherwise zero).
 
 ```
 while (depth > 0) {
-    switchToBestGas(depth);
-    nextStopDepth = max(0, depth - stopIncrement);
-    gfAtDestination = interpolateGF(getAmbientPressure(nextStopDepth), pAnchor, gfLow, gfHigh);
+    context.switchToBestGas(depth);
+    nextStopDepth = max(0, depth - context.stopIncrement);
+    gfAtDestination = interpolateGF(
+        getAmbientPressure(nextStopDepth),
+        context.pAnchor, context.gfLow, context.gfHigh
+    );
 
-    // Check if ceiling at DESTINATION (with destination GF) allows ascent
-    testTissues = simulateDepthChange({...tissues}, depth, nextStopDepth, ascentTime, currentN2);
-    { ceilingDepth } = getDiveCeiling(testTissues, gfAtDestination);
+    // Check current tissues against the ceiling at the destination GF.
+    { ceilingDepth } = getDiveCeiling(tissues, gfAtDestination);
 
     if (ceilingDepth <= nextStopDepth) {
         // Can ascend. Record stop if we waited here.
         if (pendingStopTime > 0) {
-            // Enforce min stop time in continuous mode
             stops.push({ depth, time: pendingStopTime, gas: currentGasName });
             pendingStopTime = 0;
         }
@@ -294,15 +295,15 @@ while (depth > 0) {
 
 Key logic:
 - Steps upward by `stopIncrement` (3m standard, 0.1m continuous).
-- At each step, simulates ascent to next shallower depth and checks ceiling there.
+- At each step, checks the current tissue state against the GF evaluated at the next shallower depth. It does not credit off-gassing during that short ascent before permission is granted.
 - GF is always interpolated at the **destination** depth, ensuring stops align with the GF line.
 - If ceiling doesn't permit ascent, waits `timeIncrement` and retries.
 - Stops are recorded only where waiting was required (`pendingStopTime > 0`).
-- In continuous mode, each recorded stop has a minimum duration of 2 minutes.
+- In Standard mode, every active level has a minimum duration of 1 minute.
 
 ### Gas Switching During Deco
 
-`switchToBestGas(depth)` is called at the top of each loop iteration (`js/deco/gasKinetics.js:123` and `js/deco/schedule.js:175`). The gas switch happens *on arrival* at a stop depth, before waiting begins. The stop time at that depth uses the new (richer) gas for tissue simulation.
+`switchToBestGas(depth)` is called at the top of each loop iteration (`js/deco/schedule.js:532`). The gas switch happens *on arrival* at a stop depth, before waiting begins. The stop time at that depth uses the new (richer) gas for tissue simulation.
 
 ---
 
@@ -414,7 +415,7 @@ The unified deco loop checks ceiling at the **destination** depth with the desti
 
 ### N2-only model
 
-The current implementation only tracks nitrogen loading. Helium is declared in gas objects (`he` field) but is not used in any tissue calculations. The `switchToBestGas()` comment explicitly notes this: "This is an N2-only model. For trimix (with He), selection logic would need to consider both inert gas fractions and their respective half-times." (`js/deco/schedule.js:89`)
+The current implementation only tracks nitrogen loading. Helium is declared in gas objects (`he` field) but is not used in any tissue calculations. The gas-selection helper explicitly guards this limitation (`js/deco/schedule.js:180`).
 
 ### Ceiling time series gas-switch awareness
 
@@ -431,7 +432,7 @@ Tissue loading in `calculateTissueLoading()` uses a 10-second interval (`CALC_IN
 
 ### Surface interval gas
 
-During surface interval in `calculateTissueLoading()`, the gas is always air (N2 = 0.79) regardless of what gas the diver was breathing (`js/deco/schedule.js:374`).
+During surface interval in `calculateTissueLoading()`, the gas is always air (N2 = 0.79) regardless of what gas the diver was breathing (`js/deco/profile.js:180-186`).
 
 ---
 

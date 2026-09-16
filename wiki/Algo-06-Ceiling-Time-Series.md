@@ -149,7 +149,7 @@ something called "the ceiling", and they deliberately do **not** agree.
 | # | Where | GF evaluated at | Answers |
 |---|---|---|---|
 | 1 | This function (profile + tissue-loading chart) | the **diver's own** ambient pressure | "how shallow could I be *right now*?" |
-| 2 | `generateDecoSchedule` (`js/deco/schedule.js:600-615`) | the **next stop's** ambient pressure | "may I leave this stop for the next one?" |
+| 2 | `completeStopLevels` (`js/deco/schedule.js:572-591`) | the **next stop's** ambient pressure | "may I leave this stop for the next one?" |
 | 3 | The M-value / GF corridor in the P–P plane | every pressure along the ramp at once | "where does my tissue point cross the corridor line?" |
 
 ### 1 vs 2 — the same convention, one step apart
@@ -157,12 +157,14 @@ something called "the ceiling", and they deliberately do **not** agree.
 Both take a GF *from a depth* and then ask for the plain ceiling at that GF:
 
 ```javascript
-// scheduler, js/deco/schedule.js:600
+// scheduler, js/deco/schedule.js:576
 const gfThere = interpolateGF(
-    getAmbientPressure(nextStopDepth, surfacePressure, pressurePerMeter),
-    pAnchor, gfLow, gfHigh, surfacePressure
+    getAmbientPressure(nextStopDepth, context.surfacePressure, context.pressurePerMeter),
+    context.pAnchor, context.gfLow, context.gfHigh, context.surfacePressure
 );
-const { ceilingDepth } = getDiveCeiling(tissues, gfThere, …);
+const { ceilingDepth } = getDiveCeiling(
+    tissues, gfThere, context.surfacePressure, context.pressurePerMeter
+);
 if (ceilingDepth <= nextStopDepth) { /* ascend */ }
 ```
 
