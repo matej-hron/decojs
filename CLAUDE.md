@@ -30,7 +30,7 @@ The developer wiki lives in `wiki/` (mirrored to the GitHub wiki). When you chan
 
 | Source file | Wiki pages to review |
 |---|---|
-| `js/decoModel.js` | `Model-02-Haldane-Equation.md`, `Model-03-Schreiner-Equation.md`, `Model-04-M-Values.md`, `Model-05-Gradient-Factors.md`, `Algo-01-Ascent-Simulation.md` through `Algo-06-Ceiling-Time-Series.md`, `Module-Reference.md` |
+| `js/decoModel.js` (barrel) + `js/deco/*.js` | `Model-02-Haldane-Equation.md`, `Model-03-Schreiner-Equation.md`, `Model-04-M-Values.md`, `Model-05-Gradient-Factors.md`, `Algo-01-Ascent-Simulation.md` through `Algo-06-Ceiling-Time-Series.md`, `Module-Reference.md` |
 | `js/tissueCompartments.js` | `Model-01-Compartments.md`, `Module-Reference.md` |
 | `js/mvalues.js` | `Model-04-M-Values.md`, `Module-Reference.md` |
 | `js/diveSetup.js` | `Algo-05-Multi-Gas-Switching.md`, `Module-Reference.md`, `Extending-DecoJS.md` |
@@ -59,7 +59,13 @@ Treat any change to an exported function signature, an equation, or a numerical 
    - Generic quiz engine with category filtering and scoring
 
 ### Core Modules
-- `js/decoModel.js` - Haldane/Schreiner equations, M-value calculations
+- `js/decoModel.js` - Barrel re-exporting the deco engine (implementation in `js/deco/`)
+- `js/deco/constants.js`, `config.js`, `environment.js` - Constants, deco modes, ambient pressure
+- `js/deco/gasKinetics.js` - Haldane/Schreiner equations, depth-step simulation
+- `js/deco/gradients.js` - M-values, gradient factors, ceilings
+- `js/deco/ceiling.js` - First-stop search, ceiling time series
+- `js/deco/schedule.js` - NDL and deco-stop schedule generation
+- `js/deco/profile.js` - Full-profile tissue loading
 - `js/tissueCompartments.js` - ZH-L16 compartment data (A/B/C variants)
 - `js/diveSetup.js` - Gas presets, profile generation
 - `js/quiz.js` - Generic quiz engine

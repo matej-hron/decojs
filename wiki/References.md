@@ -93,7 +93,7 @@ Sections: Core Calculations · Data Model · Dive Phases · Dive Profile Expansi
 
 **Schreiner, H. R.; Kelley, P. L.** "A Pragmatic View of Decompression." In C. J. Lambertsen (ed.), *Underwater Physiology IV: Proceedings of the Fourth Symposium on Underwater Physiology*. New York: Academic Press, 1971, pp. 205–219.
 
-Origin of the linear-rate-of-pressure-change form of the Haldane equation used in iterative dive-computer calculations. This is what "the Schreiner equation" refers to in `decoModel.js:125`.
+Origin of the linear-rate-of-pressure-change form of the Haldane equation used in iterative dive-computer calculations. This is what "the Schreiner equation" refers to in `deco/config.js:35`.
 
 Secondary reference which derives and discusses the Schreiner form in modern notation: Baker, "Clearing Up The Confusion About 'Deep Stops'" (§2.4) — contains the worked-out Schreiner equation as it appears in most dive-computer source code.
 
@@ -116,7 +116,7 @@ Explains M-values, surfacing M₀ and slope ΔM, and Bühlmann a/b coefficient d
 
 **Baker, Erik C.** "Clearing Up The Confusion About 'Deep Stops'." 1998. https://www.shearwater.com/wp-content/uploads/2012/08/Deep-Stops.pdf — mirror: https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=eb03802361c6050ec2d0bb250c3db2407602032e
 
-**Introduces Gradient Factors as the mechanism for forcing deeper first stops — this is THE Gradient-Factor paper.** Contains the complete Schreiner equation form used by DecoJS (`decoModel.js:125`).
+**Introduces Gradient Factors as the mechanism for forcing deeper first stops — this is THE Gradient-Factor paper.** Contains the complete Schreiner equation form used by DecoJS (`deco/config.js:35`).
 
 **Baker, Erik C.** "Oxygen Toxicity Calculations." Sometimes circulated as "Deco Lessons" in the decotengu references. No stable publisher URL; mirrored widely. Used by decotengu as its third Baker reference.
 

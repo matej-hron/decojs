@@ -5,7 +5,7 @@ The **No-Decompression Limit** is the maximum bottom time at a given depth such 
 ## Entry point
 
 ```javascript
-// js/decoModel.js:640 (signature)
+// js/deco/ceiling.js:228 (signature)
 export function calculateNDL(depth, n2Fraction = N2_FRACTION, gfHigh = 1.0, initialTissuePressures = null, surfacePressure = SURFACE_PRESSURE, pressurePerMeter = PRESSURE_PER_METER)
 ```
 
@@ -59,7 +59,7 @@ $GF_{low}$ anchor and construct the ramp to $GF_{high}$.
 ## Method — binary search
 
 ```javascript
-// js/decoModel.js:623-637 (descent)
+// js/deco/ceiling.js:211-225 (descent)
 const descentTime = depth / DESCENT_SPEED;
 const descentRate = (alveolarN2 - getAlveolarN2Pressure(SURFACE_PRESSURE, n2Fraction)) / descentTime;
 const afterDescent = {};
@@ -75,10 +75,10 @@ COMPARTMENTS.forEach(comp => {
 });
 ```
 
-Descent is simulated once via Schreiner at `DESCENT_SPEED = 20 m/min` (`js/decoModel.js:578`). That gives tissue state at the start of bottom time. When `initialTissuePressures` is set, `startN2` is read from the seed rather than surface equilibrium.
+Descent is simulated once via Schreiner at `DESCENT_SPEED = 20 m/min` (`js/deco/ceiling.js:167`). That gives tissue state at the start of bottom time. When `initialTissuePressures` is set, `startN2` is read from the seed rather than surface equilibrium.
 
 ```javascript
-// js/decoModel.js:671-686
+// js/deco/ceiling.js:259-274
 while (maxTime - minTime > 0.1) {
     const testTime = (minTime + maxTime) / 2;
     const testPressures = {};

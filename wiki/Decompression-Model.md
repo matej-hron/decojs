@@ -31,7 +31,7 @@ All depths are in meters, all times in minutes.
 Defined at the top of `js/decoModel.js`:
 
 ```javascript
-// js/decoModel.js:18-56
+// js/deco/constants.js:12-24
 export const SURFACE_PRESSURE = 1.01325;       // 1 atm exactly, in bar
 export const WATER_VAPOR_PRESSURE = 0.0627;    // alveolar H2O correction at 37°C, in bar
 export const N2_FRACTION = 0.7902;             // N2 + Ar lumped, per ZH-L convention

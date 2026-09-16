@@ -56,7 +56,7 @@ p_{\mathrm{t}}(t)
 $$
 
 ```javascript
-// js/decoModel.js:193-196
+// js/deco/gasKinetics.js:44-47
 export function haldaneEquation(initialPressure, alveolarPressure, time, halfTime) {
     const k = getRateConstant(halfTime);
     return alveolarPressure + (initialPressure - alveolarPressure) * Math.exp(-k * time);
@@ -89,7 +89,7 @@ p_{\mathrm{alv}}
 $$
 
 ```javascript
-// js/decoModel.js:168-170
+// js/deco/gasKinetics.js:19-21
 export function getAlveolarN2Pressure(ambientPressure, n2Fraction = N2_FRACTION) {
     return (ambientPressure - WATER_VAPOR_PRESSURE) * n2Fraction;
 }
@@ -140,13 +140,13 @@ $$
 ## Entry point
 
 ```javascript
-// js/decoModel.js:996 (signature)
+// js/deco/gasKinetics.js:73 (signature)
 export function simulateDepthTime(tissuePressures, depth, time, n2Fraction, surfacePressure = SURFACE_PRESSURE, pressurePerMeter = PRESSURE_PER_METER)
 ```
 
 Iterates over all 16 compartments applying the Haldane equation at constant depth,
 returning a new `tissues` object. Called from `calculateTissueLoading()`
-(`js/decoModel.js:1645`) whenever two consecutive waypoints have the same depth.
+(`js/deco/profile.js:270-277`) whenever two consecutive waypoints have the same depth.
 
 `surfacePressure` defaults to sea level for backward compatibility. Altitude-aware
 callers pass the local absolute atmospheric pressure, which changes the inspired

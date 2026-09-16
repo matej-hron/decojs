@@ -5,7 +5,7 @@ From the first stop inward to the surface, produce the list of mandatory stops: 
 ## Entry point
 
 ```javascript
-// js/decoModel.js:920 (signature)
+// js/deco/schedule.js:72 (signature)
 export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, gfLow, gfHigh, gases = null, options = {})
 ```
 
@@ -101,7 +101,7 @@ flowchart TD
 ## Gas-switch points
 
 ```javascript
-// js/decoModel.js:922-952
+// js/deco/schedule.js:74-104
 const gasSwitchPoints = [];
 if (gases && gases.length > 1) {
     for (const gas of gases.slice(1)) {
@@ -124,7 +124,7 @@ The result is an array of deco gases, each annotated with a `switchDepth` on the
 The ascent to the first stop is not a single Schreiner segment — it is split at every gas-switch depth that falls between `currentDepth` and `firstStopDepth`. This matters for richer deco gases whose MODs lie above the first stop; e.g., air bottom + EAN50, dive to 40 m, first stop at 12 m — EAN50 gets switched in at 21 m, so the 40 → 21 m and 21 → 12 m segments use different $f_{N_2}$.
 
 ```javascript
-// js/decoModel.js:1044-1074
+// js/deco/schedule.js:381-411
 const ascentSwitchDepths = [...new Set(gasSwitchPoints.map(g => g.switchDepth))]
     .filter(d => d < depth && d >= firstStopDepth)
     .sort((a, b) => b - a);  // deepest first
@@ -240,11 +240,11 @@ Per-iteration logic:
 ## Safety cap
 
 ```javascript
-// js/decoModel.js:42
+// js/deco/environment.js:32
 export const DECO_STOP_MAX_MINUTES = 300;
 ```
 
-If a single stop exceeds 300 min, `DecoCapExceededError` is thrown (`js/decoModel.js:48-61`). This is the algorithm's way of flagging "this profile is outside the usable domain" — typically the GF is too aggressive for the exposure, or the chosen gas cannot off-gas this tissue fast enough. Callers should surface the error rather than present a silently-truncated plan.
+If a single stop exceeds 300 min, `DecoCapExceededError` is thrown (`js/deco/config.js:39-52`). This is the algorithm's way of flagging "this profile is outside the usable domain" — typically the GF is too aggressive for the exposure, or the chosen gas cannot off-gas this tissue fast enough. Callers should surface the error rather than present a silently-truncated plan.
 
 ## Worked example
 

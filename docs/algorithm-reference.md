@@ -59,9 +59,9 @@ Key steps:
 3. **Check if deco is required** (`js/diveSetup.js:345`): `requiresDeco = bottomTime > ndl`. If within NDL, delegates to `generateSimpleProfile()` (`js/diveSetup.js:238`) which builds a descent-bottom-safetyStop-ascent waypoint sequence.
 
 4. **Simulate tissue loading to end of bottom time** (`js/diveSetup.js:365-378`):
-   - Initialize all 16 compartments at surface saturation: `getInitialTissueN2(bottomGas.n2)` (`js/decoModel.js:63`)
-   - Simulate descent with Schreiner equation: `simulateDepthChange(tissues, 0, maxDepth, descentTime, bottomGas.n2)` (`js/decoModel.js:830`)
-   - Simulate bottom time at constant depth with Haldane equation: `simulateDepthTime(tissues, maxDepth, actualBottomDuration, bottomGas.n2)` (`js/decoModel.js:808`)
+   - Initialize all 16 compartments at surface saturation: `getInitialTissueN2(bottomGas.n2)` (`js/deco/constants.js:31`)
+   - Simulate descent with Schreiner equation: `simulateDepthChange(tissues, 0, maxDepth, descentTime, bottomGas.n2)` (`js/deco/ceiling.js:405`)
+   - Simulate bottom time at constant depth with Haldane equation: `simulateDepthTime(tissues, maxDepth, actualBottomDuration, bottomGas.n2)` (`js/deco/ceiling.js:396`)
 
 5. **Generate deco schedule** (`js/diveSetup.js:381-383`):
    ```
@@ -72,7 +72,7 @@ Key steps:
 
 6. **Build waypoints from deco schedule** (`js/diveSetup.js:386-502`): Merges deco stops and gas switches into a sorted event list (by depth, descending), then converts to waypoints with proper ascent times. Also decides whether to add a safety stop after deco clears.
 
-### generateDecoSchedule() -- js/decoModel.js:869
+### generateDecoSchedule() -- js/deco/schedule.js:21
 
 This is the core deco engine. It receives tissue pressures at end of bottom time and produces deco stops. The algorithm proceeds through these phases:
 
@@ -93,7 +93,7 @@ pAnchor is the ambient pressure during a hypothetical *unconstrained* ascent whe
 
 Physically, pAnchor represents the theoretical depth where decompression stress first reaches the GF Low threshold -- the point where, in Baker's model, the diver would need to begin respecting decompression limits.
 
-### findGFLowAnchor() -- js/decoModel.js:227
+### findGFLowAnchor() -- js/deco/gradients.js:17
 
 **Signature:**
 ```
@@ -102,32 +102,32 @@ findGFLowAnchor(tissuePressures, currentDepth, n2Fraction, gfLow, ascentRate = 1
 
 **Algorithm, step by step:**
 
-1. **Check initial condition** (`js/decoModel.js:233-241`): If `GF_max >= gfLow` at the current depth, the diver is already at or beyond the anchor -- return current depth/pressure immediately.
+1. **Check initial condition** (`js/deco/ceiling.js:42-62`): If `GF_max >= gfLow` at the current depth, the diver is already at or beyond the anchor -- return current depth/pressure immediately.
 
-2. **Sort gas switch points** (`js/decoModel.js:244-248`): If `gasSwitchPoints` is provided, sort by `switchDepth` descending (deepest first). Track `currentN2` starting from the input `n2Fraction`.
+2. **Sort gas switch points** (`js/deco/gradients.js:34-38`): If `gasSwitchPoints` is provided, sort by `switchDepth` descending (deepest first). Track `currentN2` starting from the input `n2Fraction`.
 
-3. **Simulate ascent in 0.1 bar steps** (~1 meter) (`js/decoModel.js:256-305`):
+3. **Simulate ascent in 0.1 bar steps** (~1 meter) (`js/deco/gradients.js:42-91`):
    - At each step, compute `nextAmbient = max(SURFACE_PRESSURE, currentAmbient - 0.1)` and corresponding `nextDepth`.
-   - Check for gas switches: if `nextDepth <= sp.switchDepth` for any switch point and the new gas has lower N2, switch to it (`js/decoModel.js:261-265`).
-   - Simulate tissue changes during this segment using `simulateDepthChange()` with the Schreiner equation (`js/decoModel.js:272`).
-   - Calculate `GF_max` at the new pressure using `calculateMaxGF()` (`js/decoModel.js:276`).
+   - Check for gas switches: if `nextDepth <= sp.switchDepth` for any switch point and the new gas has lower N2, switch to it (`js/deco/gradients.js:47-51`).
+   - Simulate tissue changes during this segment using `simulateDepthChange()` with the Schreiner equation (`js/deco/gradients.js:58`).
+   - Calculate `GF_max` at the new pressure using `calculateMaxGF()` (`js/deco/gradients.js:62`).
 
-4. **When GF_max >= gfLow** (`js/decoModel.js:278-298`):
+4. **When GF_max >= gfLow** (`js/deco/gradients.js:64-84`):
    - Identify the leading compartment (highest GF).
    - Calculate the **exact** pAnchor using the compartment ceiling formula:
      ```
      pAnchor = getCompartmentCeiling(tissuePressure, comp.aN2, comp.bN2, gfLow)
      ```
-     Which computes (`js/decoModel.js:331-336`):
+     Which computes (`js/deco/gradients.js:117-122`):
      ```
      P_ceiling = b * (P_tissue - gfLow * a) / (b * (1 - gfLow) + gfLow)
      ```
    - This gives a precise pAnchor (not rounded to step boundaries).
    - Clamp to at least `SURFACE_PRESSURE` (1.0 bar).
 
-5. **If surface reached without hitting GF Low** (`js/decoModel.js:308-315`): Return `pAnchor = SURFACE_PRESSURE` (no deco needed, or GF Low is never reached during ascent).
+5. **If surface reached without hitting GF Low** (`js/deco/gradients.js:94-101`): Return `pAnchor = SURFACE_PRESSURE` (no deco needed, or GF Low is never reached during ascent).
 
-**Key detail -- gas-switch awareness:** The ascent simulation switches gases at MOD depths (`js/decoModel.js:261-265`). This means pAnchor accounts for the off-gassing benefit of richer deco gases. A diver carrying EAN50 will have a shallower pAnchor than one on air only, because the simulation shows tissues off-gassing faster during ascent through the EAN50 range.
+**Key detail -- gas-switch awareness:** The ascent simulation switches gases at MOD depths (`js/deco/gradients.js:47-51`). This means pAnchor accounts for the off-gassing benefit of richer deco gases. A diver carrying EAN50 will have a shallower pAnchor than one on air only, because the simulation shows tissues off-gassing faster during ascent through the EAN50 range.
 
 **Key detail -- unconstrained ascent:** The ascent simulated here is continuous (no stops). This differs from `findFirstStopWithRampedGF()` which tests discrete grid-aligned candidates. This is why pAnchor and first stop depth can differ.
 
@@ -146,7 +146,7 @@ findGFLowAnchor(tissuePressures, currentDepth, n2Fraction, gfLow, ascentRate = 1
 
 ## 3. First Stop Finding
 
-### findFirstStopWithRampedGF() -- js/decoModel.js:505
+### findFirstStopWithRampedGF() -- js/deco/ceiling.js:94
 
 **Signature:**
 ```
@@ -157,23 +157,23 @@ This function finds the shallowest depth on the stop grid where the diver can as
 
 **Algorithm:**
 
-1. **Iterate from surface upward** (`js/decoModel.js:508`):
+1. **Iterate from surface upward** (`js/deco/ceiling.js:97`):
    ```
    for (let candidateDepth = 0; candidateDepth <= currentDepth; candidateDepth += stopIncrement)
    ```
    In standard mode, `stopIncrement = 3` (meters). In continuous mode, `stopIncrement = 0.1`.
 
-2. **For each candidate depth, simulate the ascent** (`js/decoModel.js:512-521`):
-   - If gas switch points exist, use `_simulateAscentWithGasSwitches()` which simulates segment-by-segment through each gas switch depth (`js/decoModel.js:450-477`).
+2. **For each candidate depth, simulate the ascent** (`js/deco/ceiling.js:101-110`):
+   - If gas switch points exist, use `_simulateAscentWithGasSwitches()` which simulates segment-by-segment through each gas switch depth (`js/deco/ceiling.js:39-66`).
    - Otherwise, simulate a single depth change from `currentDepth` to `candidateDepth`.
 
-3. **Compute GF at the candidate depth** (`js/decoModel.js:524-525`):
+3. **Compute GF at the candidate depth** (`js/deco/ceiling.js:113-114`):
    ```
    const gf = interpolateGF(candidateAmbient, pAnchor, gfLow, gfHigh);
    ```
    This uses the pAnchor-based ramp: deeper than pAnchor gets GF Low, shallower gets interpolated toward GF High.
 
-4. **Check ceiling** (`js/decoModel.js:528-531`):
+4. **Check ceiling** (`js/deco/ceiling.js:117-120`):
    ```
    const { ceilingDepth } = getDiveCeiling(simulatedTissues, gf);
    if (ceilingDepth <= candidateDepth) { return ... }
@@ -182,13 +182,13 @@ This function finds the shallowest depth on the stop grid where the diver can as
 
 5. **Return** the shallowest passing candidate, including the simulated tissue state after ascent.
 
-### _simulateAscentWithGasSwitches() -- js/decoModel.js:450
+### _simulateAscentWithGasSwitches() -- js/deco/ceiling.js:39
 
 A helper that breaks the ascent into segments at each gas switch boundary:
 
-1. Filters gas switch points to those between `fromDepth` and `toDepth` (`js/decoModel.js:456-458`).
-2. For each switch point (deep to shallow), simulates ascent to that depth with the current gas, then switches gas (`js/decoModel.js:461-468`).
-3. Simulates the final segment to the target depth (`js/decoModel.js:471-474`).
+1. Filters gas switch points to those between `fromDepth` and `toDepth` (`js/deco/ceiling.js:45-47`).
+2. For each switch point (deep to shallow), simulates ascent to that depth with the current gas, then switches gas (`js/deco/ceiling.js:50-57`).
+3. Simulates the final segment to the target depth (`js/deco/ceiling.js:60-63`).
 
 ### How first stop differs from pAnchor
 
@@ -201,7 +201,7 @@ This means the first stop can be **shallower** than pAnchor. For example, if pAn
 
 ## 4. GF Interpolation
 
-### interpolateGF() -- js/decoModel.js:394
+### interpolateGF() -- js/deco/gradients.js:180
 
 **Signature:**
 ```
@@ -214,7 +214,7 @@ interpolateGF(currentAmbient, pAnchor, gfLow, gfHigh)
 GF(P_amb) = GF_low + (GF_high - GF_low) * (pAnchor - P_amb) / (pAnchor - 1.0)
 ```
 
-Three cases (`js/decoModel.js:396-413`):
+Three cases (`js/deco/gradients.js:182-199`):
 
 1. **At or deeper than pAnchor** (`currentAmbient >= pAnchor`): Returns `gfLow`. The GF ramp has not started yet.
 
@@ -237,31 +237,31 @@ Three cases (`js/decoModel.js:396-413`):
 
 ## 5. Deco Loop
 
-### Overview -- js/decoModel.js:869
+### Overview -- js/deco/schedule.js:21
 
 After finding pAnchor and first stop, `generateDecoSchedule()` enters the deco loop. Two modes exist: standard (3m grid) and continuous (0.1m grid).
 
-### Pre-loop: Gas switch setup -- js/decoModel.js:892-922
+### Pre-loop: Gas switch setup -- js/deco/schedule.js:44-74
 
 For each gas beyond the bottom gas:
-1. Calculate MOD: `mod = (switchPpO2 / gas.o2 - 1) * 10` (`js/decoModel.js:907`)
-2. Round MOD toward shallower on the stop grid: `Math.floor(mod / stopIncrement) * stopIncrement` (`js/decoModel.js:914`)
+1. Calculate MOD: `mod = (switchPpO2 / gas.o2 - 1) * 10` (`js/deco/schedule.js:59`)
+2. Round MOD toward shallower on the stop grid: `Math.floor(mod / stopIncrement) * stopIncrement` (`js/deco/schedule.js:66`)
 3. Store as `gasSwitchPoints` sorted by depth descending.
 
-### switchToBestGas() -- js/decoModel.js:938
+### switchToBestGas() -- js/deco/schedule.js:90
 
 Called on arrival at each stop depth. Selects the gas with the deepest MOD among those that:
 - Are within MOD at current depth (`atDepth <= gas.switchDepth`)
 - Have lower N2 than current gas
 - Have not been used yet
 
-This ensures sequential switching (e.g., EAN50 at 21m before O2 at 6m). Uses a "mark as used" set to prevent re-switching (`js/decoModel.js:930-963`).
+This ensures sequential switching (e.g., EAN50 at 21m before O2 at 6m). Uses a "mark as used" set to prevent re-switching (`js/deco/schedule.js:82-115`).
 
-### Pre-loop: Ascent to first stop -- js/decoModel.js:1006-1036
+### Pre-loop: Ascent to first stop -- js/deco/gasKinetics.js:83-113
 
 Before the deco loop, the algorithm ascends from bottom depth to first stop. Gas switches occur at MOD depths during this ascent (not just at stop depths). The ascent is simulated segment by segment through each gas switch depth, updating tissue state along the way.
 
-### Unified Deco Loop -- js/decoModel.js:1039-1112
+### Unified Deco Loop -- js/deco/schedule.js
 
 Both standard and continuous modes use identical logic. The only differences are `stopIncrement` (3m vs 0.1m), `timeIncrement` (1min vs 0.1min), and minimum stop time (0 vs 2min).
 
@@ -302,13 +302,13 @@ Key logic:
 
 ### Gas Switching During Deco
 
-`switchToBestGas(depth)` is called at the top of each loop iteration (`js/decoModel.js:1046` and `js/decoModel.js:1084`). The gas switch happens *on arrival* at a stop depth, before waiting begins. The stop time at that depth uses the new (richer) gas for tissue simulation.
+`switchToBestGas(depth)` is called at the top of each loop iteration (`js/deco/gasKinetics.js:123` and `js/deco/schedule.js:175`). The gas switch happens *on arrival* at a stop depth, before waiting begins. The stop time at that depth uses the new (richer) gas for tissue simulation.
 
 ---
 
 ## 6. Ceiling Time Series
 
-### calculateCeilingTimeSeriesDetailed() -- js/decoModel.js:587
+### calculateCeilingTimeSeriesDetailed() -- js/deco/ceiling.js:176
 
 This function computes the ceiling depth at every time point from a `calculateTissueLoading()` result. It is used by `DiveProfileChart` to draw the ceiling line on the depth-time chart.
 
@@ -319,11 +319,11 @@ calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh, providedPAnchor = nul
 
 **Algorithm:**
 
-1. **Find max depth and ascent start index** (`js/decoModel.js:604-618`): Scans `results.depthPoints` to find the last index at max depth (within 0.1m tolerance).
+1. **Find max depth and ascent start index** (`js/deco/ceiling.js:192-206`): Scans `results.depthPoints` to find the last index at max depth (within 0.1m tolerance).
 
-2. **Compute pAnchor if not provided** (`js/decoModel.js:622-635`): Extracts tissue pressures and N2 fraction at ascent start, then calls `findGFLowAnchor()`. This replicates the same computation done in `generateDecoSchedule()`.
+2. **Compute pAnchor if not provided** (`js/deco/ceiling.js:210-223`): Extracts tissue pressures and N2 fraction at ascent start, then calls `findGFLowAnchor()`. This replicates the same computation done in `generateDecoSchedule()`.
 
-3. **Process each time point** (`js/decoModel.js:638-680`):
+3. **Process each time point** (`js/deco/ceiling.js:226-268`):
    - Track whether ascent has started (depth decreasing from maximum).
    - Determine GF: before ascent or at/deeper than pAnchor, use GF Low. During ascent above pAnchor, use `interpolateGF()`.
    - Calculate ceiling for each compartment using `getCompartmentCeiling()` with the active GF.
@@ -331,7 +331,7 @@ calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh, providedPAnchor = nul
 
 **Relationship to deco schedule:** The ceiling time series uses the same pAnchor as the deco schedule when `providedPAnchor` is passed. When called without it (e.g., from the chart), it independently recomputes pAnchor from the tissue state at ascent start. The result should match because both use `findGFLowAnchor()` with the same tissue state.
 
-**Note:** The ceiling time series does *not* account for gas switches during the visualization. The N2 fraction used for pAnchor calculation is taken from the ascent start point (`js/decoModel.js:630`), but the per-compartment ceiling computation at each time point does not switch gases. However, the gas switch points *are* passed to `findGFLowAnchor()` in the MValueChart rendering code (`js/charts/MValueChart.js:853-870`).
+**Note:** The ceiling time series does *not* account for gas switches during the visualization. The N2 fraction used for pAnchor calculation is taken from the ascent start point (`js/deco/ceiling.js:218`), but the per-compartment ceiling computation at each time point does not switch gases. However, the gas switch points *are* passed to `findGFLowAnchor()` in the MValueChart rendering code (`js/charts/MValueChart.js:853-870`).
 
 ---
 
@@ -339,7 +339,7 @@ calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh, providedPAnchor = nul
 
 ### MValueChart._calculate() -- js/charts/MValueChart.js:764
 
-Calls `calculateTissueLoading()` with the dive waypoints, surface interval, and gases. This produces a time series of tissue pressures, ambient pressures, and depths at every `CALC_INTERVAL` (10 seconds, `js/decoModel.js:15`).
+Calls `calculateTissueLoading()` with the dive waypoints, surface interval, and gases. This produces a time series of tissue pressures, ambient pressures, and depths at every `CALC_INTERVAL` (10 seconds, `js/deco/constants.js:9`).
 
 ### MValueChart._render() -- js/charts/MValueChart.js:778
 
@@ -406,7 +406,7 @@ In continuous mode, `findFirstStopWithRampedGF()` uses a discrete search with `s
 
 ### findGFLowAnchor simulates unconstrained ascent vs findFirstStopWithRampedGF tests discrete candidates
 
-`findGFLowAnchor` (`js/decoModel.js:227`) ascends in 0.1 bar steps (~1m) without stopping, simulating tissue changes during the ascent. `findFirstStopWithRampedGF` (`js/decoModel.js:505`) simulates a full ascent from current depth to each candidate stop depth, including tissue changes during that ascent. Both account for gas switches. The key difference is that pAnchor reflects the instantaneous GF crossing during continuous ascent, while first stop reflects the ceiling check at discrete grid points with the full GF ramp applied.
+`findGFLowAnchor` (`js/deco/gradients.js:17`) ascends in 0.1 bar steps (~1m) without stopping, simulating tissue changes during the ascent. `findFirstStopWithRampedGF` (`js/deco/ceiling.js:94`) simulates a full ascent from current depth to each candidate stop depth, including tissue changes during that ascent. Both account for gas switches. The key difference is that pAnchor reflects the instantaneous GF crossing during continuous ascent, while first stop reflects the ceiling check at discrete grid points with the full GF ramp applied.
 
 ### Deco loop uses destination GF (both modes)
 
@@ -414,30 +414,30 @@ The unified deco loop checks ceiling at the **destination** depth with the desti
 
 ### N2-only model
 
-The current implementation only tracks nitrogen loading. Helium is declared in gas objects (`he` field) but is not used in any tissue calculations. The `switchToBestGas()` comment explicitly notes this: "This is an N2-only model. For trimix (with He), selection logic would need to consider both inert gas fractions and their respective half-times." (`js/decoModel.js:937`)
+The current implementation only tracks nitrogen loading. Helium is declared in gas objects (`he` field) but is not used in any tissue calculations. The `switchToBestGas()` comment explicitly notes this: "This is an N2-only model. For trimix (with He), selection logic would need to consider both inert gas fractions and their respective half-times." (`js/deco/schedule.js:89`)
 
 ### Ceiling time series gas-switch awareness
 
-The `calculateCeilingTimeSeriesDetailed()` function (`js/decoModel.js:587`) computes pAnchor with gas switch points when called from MValueChart, but the per-time-point ceiling calculation does not dynamically switch the GF based on actual gas changes during the dive. It uses a single pAnchor computed at ascent start. This means the ceiling line is correct for the planned profile but would not adapt if the diver deviated from the plan.
+The `calculateCeilingTimeSeriesDetailed()` function (`js/deco/ceiling.js:176`) computes pAnchor with gas switch points when called from MValueChart, but the per-time-point ceiling calculation does not dynamically switch the GF based on actual gas changes during the dive. It uses a single pAnchor computed at ascent start. This means the ceiling line is correct for the planned profile but would not adapt if the diver deviated from the plan.
 
 ### Calculation interval
 
-Tissue loading in `calculateTissueLoading()` uses a 10-second interval (`CALC_INTERVAL = 10`, `js/decoModel.js:15`). This is the resolution of the time series data used for chart rendering. The deco schedule computation (`generateDecoSchedule`) uses its own simulation with exact segment durations (not discretized to 10 seconds).
+Tissue loading in `calculateTissueLoading()` uses a 10-second interval (`CALC_INTERVAL = 10`, `js/deco/constants.js:9`). This is the resolution of the time series data used for chart rendering. The deco schedule computation (`generateDecoSchedule`) uses its own simulation with exact segment durations (not discretized to 10 seconds).
 
 ### Ascent/descent rates
 
-- Descent: 20 m/min (hardcoded in `generateDecoProfile` at `js/diveSetup.js:320` and `calculateNDL` at `js/decoModel.js:690`)
-- Ascent: 10 m/min (hardcoded in `generateDecoSchedule` at `js/decoModel.js:693`, used for deco schedule and pAnchor calculation)
+- Descent: 20 m/min (hardcoded in `generateDecoProfile` at `js/diveSetup.js:320` and `calculateNDL` at `js/deco/ceiling.js:278`)
+- Ascent: 10 m/min (hardcoded in `generateDecoSchedule` at `js/deco/ceiling.js:281`, used for deco schedule and pAnchor calculation)
 
 ### Surface interval gas
 
-During surface interval in `calculateTissueLoading()`, the gas is always air (N2 = 0.79) regardless of what gas the diver was breathing (`js/decoModel.js:1283`).
+During surface interval in `calculateTissueLoading()`, the gas is always air (N2 = 0.79) regardless of what gas the diver was breathing (`js/deco/schedule.js:374`).
 
 ---
 
 ## Appendix: Key Equations
 
-### Haldane Equation (constant depth) -- js/decoModel.js:78
+### Haldane Equation (constant depth) -- js/deco/environment.js:39
 
 ```
 P_t(t) = P_alv + (P_t0 - P_alv) * e^(-kt)
@@ -445,7 +445,7 @@ P_t(t) = P_alv + (P_t0 - P_alv) * e^(-kt)
 
 Where `k = ln(2) / halfTime` is the rate constant.
 
-### Schreiner Equation (linear depth change) -- js/decoModel.js:95
+### Schreiner Equation (linear depth change) -- js/deco/constants.js:44
 
 ```
 P_t(t) = P_alv0 + R*(t - 1/k) - (P_alv0 - P_t0 - R/k) * e^(-kt)
@@ -453,20 +453,20 @@ P_t(t) = P_alv0 + R*(t - 1/k) - (P_alv0 - P_t0 - R/k) * e^(-kt)
 
 Where `R` is the rate of change of alveolar pressure (bar/min).
 
-### M-Value -- js/decoModel.js:115
+### M-Value -- js/deco/config.js:25
 
 ```
 M = a + P_amb / b
 ```
 
-### GF-Adjusted M-Value -- js/decoModel.js:130
+### GF-Adjusted M-Value -- js/deco/config.js:40
 
 ```
 M_adjusted = P_amb + GF * (M_raw - P_amb)
             = P_amb + GF * (a + P_amb/b - P_amb)
 ```
 
-### Compartment Ceiling -- js/decoModel.js:331
+### Compartment Ceiling -- js/deco/gradients.js:117
 
 ```
 P_ceiling = b * (P_tissue - GF * a) / (b * (1 - GF) + GF)
@@ -474,7 +474,7 @@ P_ceiling = b * (P_tissue - GF * a) / (b * (1 - GF) + GF)
 
 Derived by solving `P_tissue = P_amb + GF * (a + P_amb/b - P_amb)` for `P_amb`.
 
-### Instantaneous Gradient Factor -- js/decoModel.js:155
+### Instantaneous Gradient Factor -- js/deco/environment.js:62
 
 ```
 GF_i(P_amb) = (P_tissue[i] - P_amb) / (M_i(P_amb) - P_amb)
@@ -482,7 +482,7 @@ GF_i(P_amb) = (P_tissue[i] - P_amb) / (M_i(P_amb) - P_amb)
 
 Negative if tissue is undersaturated, >1 if tissue exceeds the raw M-value.
 
-### GF Interpolation -- js/decoModel.js:394
+### GF Interpolation -- js/deco/gradients.js:180
 
 ```
 GF(P_amb) = GF_low + (GF_high - GF_low) * (pAnchor - P_amb) / (pAnchor - 1.0)

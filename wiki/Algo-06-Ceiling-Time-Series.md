@@ -5,7 +5,7 @@ A per-timepoint ceiling overlay for chart rendering. This is separate from deco 
 ## Entry points
 
 ```javascript
-// js/decoModel.js:662 (signature)
+// js/deco/ceiling.js:250 (signature)
 export function calculateCeilingTimeSeries(
     results, gfLow, gfHigh = gfLow, providedPAnchor = null
 )
@@ -14,7 +14,7 @@ export function calculateCeilingTimeSeries(
 Thin wrapper returning only the overall `ceilingDepths` array. Most callers want the detailed version:
 
 ```javascript
-// js/decoModel.js:693 (signature)
+// js/deco/ceiling.js:281 (signature)
 export function calculateCeilingTimeSeriesDetailed(results, gfLow, gfHigh = gfLow, providedPAnchor = null)
 ```
 
@@ -43,7 +43,7 @@ Returns:
 ### 1. Detect the start of ascent
 
 ```javascript
-// js/decoModel.js:707-728
+// js/deco/ceiling.js:295-316
 let maxDepthSeen = results.depthPoints[0];
 …
 for (let i = 0; i < results.timePoints.length; i++) {
@@ -63,7 +63,7 @@ for (let i = 0; i < results.timePoints.length; i++) {
 ### 2. Compute `pAnchor` once
 
 ```javascript
-// js/decoModel.js:731-750 (calculateCeilingTimeSeriesDetailed)
+// js/deco/ceiling.js:319-338 (calculateCeilingTimeSeriesDetailed)
 if (pAnchor === null) {
     const tissuesAtAscentStart = {};
     for (const compId of Object.keys(results.compartments)) {
@@ -90,7 +90,7 @@ Only a failed direct ascent invokes the GF Low first-stop search.
 ### 3. Per-timepoint GF and ceiling
 
 ```javascript
-// js/decoModel.js:752-799
+// js/deco/ceiling.js:340-387
 for (let i = 0; i < results.timePoints.length; i++) {
     const currentDepth = results.depthPoints[i];
     const currentAmbient = results.ambientPressures[i];
@@ -149,7 +149,7 @@ something called "the ceiling", and they deliberately do **not** agree.
 | # | Where | GF evaluated at | Answers |
 |---|---|---|---|
 | 1 | This function (profile + tissue-loading chart) | the **diver's own** ambient pressure | "how shallow could I be *right now*?" |
-| 2 | `generateDecoSchedule` (`js/decoModel.js:1509-1524`) | the **next stop's** ambient pressure | "may I leave this stop for the next one?" |
+| 2 | `generateDecoSchedule` (`js/deco/schedule.js:600-615`) | the **next stop's** ambient pressure | "may I leave this stop for the next one?" |
 | 3 | The M-value / GF corridor in the P–P plane | every pressure along the ramp at once | "where does my tissue point cross the corridor line?" |
 
 ### 1 vs 2 — the same convention, one step apart
@@ -157,7 +157,7 @@ something called "the ceiling", and they deliberately do **not** agree.
 Both take a GF *from a depth* and then ask for the plain ceiling at that GF:
 
 ```javascript
-// scheduler, js/decoModel.js:1509
+// scheduler, js/deco/schedule.js:600
 const gfThere = interpolateGF(
     getAmbientPressure(nextStopDepth, surfacePressure, pressurePerMeter),
     pAnchor, gfLow, gfHigh, surfacePressure

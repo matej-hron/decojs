@@ -6,7 +6,24 @@ All paths are relative to the repository root. Line numbers are kept current per
 
 ### `js/decoModel.js`
 
-Implements Haldane and Schreiner kinetics, M-values, gradient-factor interpolation, NDL search, and the deco-stop scheduling loop. The largest module in the code base (~1300 lines).
+A **barrel module**. Since v0.6.154 the implementation lives in `js/deco/*.js`; `decoModel.js` only re-exports the public surface, so every existing importer keeps working unchanged.
+
+| Module | Lines | Contents |
+|---|---|---|
+| `js/deco/constants.js` | 55 | `CALC_INTERVAL`, `SURFACE_PRESSURE`, `WATER_VAPOR_PRESSURE`, `N2_FRACTION`, `STANDARD_GRAVITY`, `WATER_TYPES`, `WATER_DENSITIES`, `PRESSURE_PER_METER`, `DEFAULT_GF_LOW/HIGH`, `DESCENT_SPEED`, `ASCENT_SPEED`, `STOP_INCREMENT` |
+| `js/deco/config.js` | 52 | `DECO_MODES`, `DECISION_AUDIT_VERSION`, `getDecoMode`, `DECO_STOP_MAX_MINUTES`, `DecoCapExceededError` |
+| `js/deco/environment.js` | 66 | `getPressureAtAltitude`, `getSurfacePressure`, `getPressurePerMeter`, `getAmbientPressure` |
+| `js/deco/gasKinetics.js` | 127 | `getAlveolarN2Pressure`, `getInitialTissueN2`, `haldaneEquation`, `schreinerEquation`, `simulateDepthTime`, `simulateDepthChange` |
+| `js/deco/gradients.js` | 209 | `getMValue`, `getAdjustedMValue`, `calculateInstantGF`, `calculateMaxGF`, `getCompartmentCeiling`, `getDiveCeiling`, `interpolateGF` |
+| `js/deco/ceiling.js` | 437 | `findFirstStopAtGFLow`, `findFirstStagedStopAtGFLow`, `getFirstStopDepth`, `calculateCeilingTimeSeries`, `calculateCeilingTimeSeriesDetailed`, `evaluateDirectAscent` |
+| `js/deco/schedule.js` | 732 | `calculateNDL`, `generateDecoSchedule` |
+| `js/deco/profile.js` | 294 | `calculateTissueLoading` |
+
+The dependency graph is acyclic and flows strictly downwards: `constants` → `config` → `environment` → `gasKinetics` → `gradients` → `ceiling` → `schedule`/`profile`.
+
+Symbols that are exported from a `js/deco/*.js` module purely so a sibling module can use them (`DESCENT_SPEED`, `ASCENT_SPEED`, `STOP_INCREMENT`, `findFirstStagedStopAtGFLow`, `evaluateDirectAscent`) are **not** re-exported by the barrel and remain private to the deco engine.
+
+Together they implement Haldane and Schreiner kinetics, M-values, gradient-factor interpolation, NDL search, and the deco-stop scheduling loop — the largest body of code in the code base (~1900 lines).
 
 Imports: `COMPARTMENTS`, `getRateConstant` from `tissueCompartments.js`.
 Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `visualization.js`, and every chart in `js/charts/`.
@@ -97,11 +114,11 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 
 **Implementation notes**
 
-- Haldane is coded as `Palv + (P0 − Palv) × e^(−k·t)` at `decoModel.js:110`.
-- Schreiner is coded as a three-term form at `decoModel.js:127–129`: constant inert-gas source + exponential offset.
+- Haldane is coded as `Palv + (P0 − Palv) × e^(−k·t)` at `deco/config.js:20`.
+- Schreiner is coded as a three-term form at `deco/config.js:37–39`: constant inert-gas source + exponential offset.
 - `pAnchor` is an ambient-pressure value, not a depth. `findFirstStopAtGFLow` iterates the stop grid surface-up, simulating the ascent to each candidate and checking the dive ceiling at `gfLow` (`getDiveCeiling`). The first depth that passes is the anchor — also the first decompression stop. See [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md).
-- Ascent permission in the deco loop (`decoModel.js:955–968`) checks the GF-adjusted ceiling at the destination stop depth against the destination depth, without Schreiner-crediting the short ascent segment. This matches decotengu's convention.
-- `gasKey()` helper at `decoModel.js:780` normalises gases with or without an `id` field, so the deco loop tolerates both library gases and custom mixes.
+- Ascent permission in the deco loop (`deco/schedule.js:107–120`) checks the GF-adjusted ceiling at the destination stop depth against the destination depth, without Schreiner-crediting the short ascent segment. This matches decotengu's convention.
+- `gasKey()` helper at `deco/ceiling.js:368` normalises gases with or without an `id` field, so the deco loop tolerates both library gases and custom mixes.
 
 ### `js/tissueCompartments.js`
 
@@ -319,7 +336,7 @@ Both `calculateTissueLoading` and `generateDecoProfile` accept an optional `opti
 
 When provided:
 
-- **`calculateTissueLoading`** (`decoModel.js:1118–1129`): seeds each compartment from the map instead of calling `getInitialTissueN2`. Useful for plotting the tissue trajectory of a repetitive dive starting from residual saturation.
+- **`calculateTissueLoading`** (`deco/schedule.js:209–220`): seeds each compartment from the map instead of calling `getInitialTissueN2`. Useful for plotting the tissue trajectory of a repetitive dive starting from residual saturation.
 - **`generateDecoProfile`** (`diveSetup.js:351–373`): seeds the bottom-phase tissues from the map **and** bypasses the surface-based NDL early-return. The NDL computed by `calculateNDL` is a fresh-start figure — it is meaningless when the diver already carries residual nitrogen. By skipping the early-return and always running the full deco scheduler, `generateDecoProfile` computes the actual deco obligation against the pre-saturated tissue state (which may require stops even when bottom time is under the surface NDL).
 
 `generateDecoProfileSync` intentionally does **not** support this option; its NDL early-return and surface-only tissue init assume a fresh surface start.

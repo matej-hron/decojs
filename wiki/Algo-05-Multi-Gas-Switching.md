@@ -31,7 +31,7 @@ slightly shallower one in seawater.
 The deco loop then snaps MOD to the 3 m stop grid:
 
 ```javascript
-// js/decoModel.js:944
+// js/deco/schedule.js:96
 const switchDepth = Math.max(0, Math.floor(mod / stopIncrement) * stopIncrement);
 ```
 
@@ -58,7 +58,7 @@ MOD continue to trigger the warning.
 When multiple deco gases are eligible at a depth (i.e. within MOD and not yet switched), DecoJS picks the one with the **deepest** MOD — the richest gas that's still safe. This enforces sequential switching: EAN50 at 21 m before O₂ at 6 m, never the other way around.
 
 ```javascript
-// js/decoModel.js:968-994
+// js/deco/schedule.js:307-330
 const switchToBestGas = (atDepth, recordSwitch = true) => {
     const eligible = gasSwitchPoints.filter(gas =>
         atDepth <= gas.switchDepth &&
@@ -80,7 +80,7 @@ const switchToBestGas = (atDepth, recordSwitch = true) => {
 };
 ```
 
-`usedGases` is a `Set` preventing re-selection of a gas already switched to. `gasKey(g) = g.id ?? g.name` (`js/decoModel.js:918`) handles gases without an explicit id field. The `gas.n2 < currentN2` guard ensures we never "switch" to a gas with equal or worse inert-gas fraction than the current one.
+`usedGases` is a `Set` preventing re-selection of a gas already switched to. `gasKey(g) = g.id ?? g.name` (`js/deco/schedule.js:70`) handles gases without an explicit id field. The `gas.n2 < currentN2` guard ensures we never "switch" to a gas with equal or worse inert-gas fraction than the current one.
 
 ## Where switches are handled — three layers
 
@@ -91,9 +91,9 @@ The grid-iterating ascent simulation accepts `gasSwitchPoints` and applies them 
 ### 2. Deco scheduler (`generateDecoSchedule`)
 
 Gas switches can occur either:
-- **During ascent to first stop**, at MOD depths that lie between `currentDepth` and `firstStopDepth` (`js/decoModel.js:1044-1064`). Important when a rich deco gas is usable before the first mandatory stop.
-- **On arrival at a stop depth**, via `switchToBestGas(depth)` inside the stop loop (`js/decoModel.js:1086`).
-- **During ascent in a no-deco scenario**, if the dive is within NDL but deco gases are still carried for ascent richness (`js/decoModel.js:1007-1037`).
+- **During ascent to first stop**, at MOD depths that lie between `currentDepth` and `firstStopDepth` (`js/deco/schedule.js:381-401`). Important when a rich deco gas is usable before the first mandatory stop.
+- **On arrival at a stop depth**, via `switchToBestGas(depth)` inside the stop loop (`js/deco/schedule.js:177`).
+- **During ascent in a no-deco scenario**, if the dive is within NDL but deco gases are still carried for ascent richness (`js/deco/gasKinetics.js:84-114`).
 
 ### 3. Waypoint insertion (`insertGasSwitchWaypoints`)
 
@@ -127,7 +127,7 @@ When inserting, the function:
 export const DEFAULT_GAS_SWITCH_TIME = 0;
 ```
 
-Configurable 0–5 min. Zero matches decotengu (an instantaneous switch) — the diver is conceptually assumed to verify the regulator + clear O₂ windows within the natural stop duration. Conventions that add a minute or two at the switch as a safety margin are accommodated by setting `gasSwitchTime > 0` — the time is added to the stop at the switch depth, and tissue loading is simulated for that time on the *new* gas (`js/decoModel.js:1086-1089`).
+Configurable 0–5 min. Zero matches decotengu (an instantaneous switch) — the diver is conceptually assumed to verify the regulator + clear O₂ windows within the natural stop duration. Conventions that add a minute or two at the switch as a safety margin are accommodated by setting `gasSwitchTime > 0` — the time is added to the stop at the switch depth, and tissue loading is simulated for that time on the *new* gas (`js/deco/schedule.js:177-180`).
 
 ## Gas fraction across a switch
 
