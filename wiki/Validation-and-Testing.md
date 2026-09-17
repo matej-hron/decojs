@@ -6,7 +6,7 @@ npm test
 
 Runs `node tests/run-tests.mjs`. No external test framework — `tests/run-tests.mjs` implements `describe`/`test`/`expect` inline (lines 10–140) with matchers `.toBe`, `.toEqual`, `.toBeCloseTo`, `.toBeGreaterThan`, `.toBeLessThan`, `.toHaveProperty`, `.toHaveLength`, `.toBeDefined`. Output is one line per test, then a pass/fail summary.
 
-**585 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
+**586 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
 
 `npm test` is required to pass before every commit per `CLAUDE.md`.
 
@@ -28,6 +28,7 @@ The algorithm suite. Directly imports from `js/decoModel.js` and `js/tissueCompa
 - **Gradient-factor input limits.** Requires both GF values to stay in the 10–100% range across setup validation, compact links, shared repetitive-dive trips, and both planner UIs. Manual values below the limit do not trigger a recalculation and are clamped to 10% when confirmed, preventing `0` from silently becoming `100`.
 - **Gradient-factor UI lock.** Verifies the default-on equality checkbox, two-way GF synchronization, GF Low ≤ GF High correction while unlocked, normalization of reversed imported pairs, and automatic unlock after any preset, deco-gas addition, waypoint deco-gas selection, or asymmetric profile load. It also covers empty GF input recovery and preservation of a manually unlocked state across language changes. The lock remains editor-only and is not serialized into the dive setup.
 - **Dive-plan runtime marker.** Verifies that both split dive-plan tables bind the shared runtime definition to their Runtime heading with a superscript asterisk. Practical mode adds no redundant calculation note; departure mode keeps its execution-specific detail as a separate unmarked note.
+- **Oxygen warning terminology.** Verifies across Czech, English, and Spanish that the 1.4 bar warning describes the bottom-phase limit rather than incorrectly referring to occupational or “working” dives; the phase/gas warning logic remains unchanged.
 - **NDL deco-gas propagation.** Verifies that a no-decompression profile carrying EAN50 and O₂ still switches at the scheduler's MOD depths, applies configured switch time without being reclassified as decompression, preserves a longer safety stop at the same depth, retains gas-switch audit events, and feeds the changed N₂ fractions and tissue pressures into the shared chart calculation.
 
 ### `tests/diveSetup.test.js` (~650 lines, ~49 tests)

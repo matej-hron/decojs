@@ -1163,7 +1163,7 @@
     },
     "warnings": {
         "cnsToxicityBottom": "Riesgo de toxicidad SNC: <var>p</var><sub>O₂</sub> = {0} bar a {1} m en fondo (máx. 1,6)",
-        "highPpO2Bottom": "<var>p</var><sub>O₂</sub> elevado: {0} bar a {1} m en fondo (límite 1,4 para inmersiones con esfuerzo)",
+        "highPpO2Bottom": "<var>p</var><sub>O₂</sub> elevado: {0} bar a {1} m en fondo (límite en la fase de fondo: 1,4)",
         "cnsToxicityDeco": "Riesgo de toxicidad SNC: <var>p</var><sub>O₂</sub> = {0} bar a {1} m durante la deco (máx. 1,6)",
         "hypoxiaRisk": "Riesgo de hipoxia: <var>p</var><sub>O₂</sub> = {0} bar (mín. 0,16)",
         "narcosisWarning": "Aviso de narcosis: <var>p</var><sub>N₂</sub> = {0} bar a {1} m (equivalente a {2} m con aire)",

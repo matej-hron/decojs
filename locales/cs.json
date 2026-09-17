@@ -1163,7 +1163,7 @@
     },
     "warnings": {
         "cnsToxicityBottom": "Riziko toxicity CNS: <var>p</var><sub>O₂</sub> = {0} bar v hloubce {1} m u dna (max. 1,6)",
-        "highPpO2Bottom": "Vysoké <var>p</var><sub>O₂</sub>: {0} bar v hloubce {1} m u dna (limit 1,4 pro pracovní ponory)",
+        "highPpO2Bottom": "Vysoké <var>p</var><sub>O₂</sub>: {0} bar v hloubce {1} m u dna (limit pro pobyt na dně: 1,4)",
         "cnsToxicityDeco": "Riziko toxicity CNS: <var>p</var><sub>O₂</sub> = {0} bar v hloubce {1} m během deko (max. 1,6)",
         "hypoxiaRisk": "Riziko hypoxie: <var>p</var><sub>O₂</sub> = {0} bar (min. 0,16)",
         "narcosisWarning": "Varování – hloubkové opojení: <var>p</var><sub>N₂</sub> = {0} bar v hloubce {1} m (ekvivalent {2} m na vzduchu)",

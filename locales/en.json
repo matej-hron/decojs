@@ -1163,7 +1163,7 @@
     },
     "warnings": {
         "cnsToxicityBottom": "CNS toxicity risk: <var>p</var><sub>O₂</sub> = {0} bar at {1} m during bottom (max 1.6)",
-        "highPpO2Bottom": "High <var>p</var><sub>O₂</sub>: {0} bar at {1} m during bottom (limit 1.4 for working dives)",
+        "highPpO2Bottom": "High <var>p</var><sub>O₂</sub>: {0} bar at {1} m during bottom (bottom-phase limit 1.4)",
         "cnsToxicityDeco": "CNS toxicity risk: <var>p</var><sub>O₂</sub> = {0} bar at {1} m during deco (max 1.6)",
         "hypoxiaRisk": "Hypoxia risk: <var>p</var><sub>O₂</sub> = {0} bar (min 0.16)",
         "narcosisWarning": "Narcosis warning: <var>p</var><sub>N₂</sub> = {0} bar at {1} m (equivalent to {2} m on air)",
