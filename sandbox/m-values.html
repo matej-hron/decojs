@@ -307,6 +307,7 @@
         #mvTopChart { width: 100%; height: clamp(380px, 30vw, 520px); display: block; }
         #mvTopChart .mv-chart-label { font-size: 13px; }
         #mvTopChart .mv-chart-axis-title { font-size: 14px; }
+        #mvTopChart .mv-chart-axis-unit { font-size: 14px; }
         #mvTopChart .mv-chart-interactive { transition: opacity 0.15s ease; }
         #mvTopChart.has-highlight .mv-chart-interactive:not(.is-highlighted) { opacity: 0.14; }
         #mvTopChart .mv-chart-interactive.is-highlighted { opacity: 1; }
@@ -1379,7 +1380,7 @@
             };
             add('p', { 'font-style': 'italic' });
             add(subscript, { dy: '3', 'font-size': '0.72em' });
-            if (suffix) add(suffix, { dy: '-3' });
+            if (suffix) add(suffix, { dy: '-3', class: 'mv-chart-axis-unit' });
             return el;
         }
 
@@ -1446,7 +1447,10 @@
             mLabel.setAttribute('font-style', 'italic');
             mLabel.textContent = 'M';
             yLabel.appendChild(mLabel);
-            yLabel.appendChild(document.createTextNode(' (bar)'));
+            const yUnit = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
+            yUnit.setAttribute('class', 'mv-chart-axis-unit');
+            yUnit.textContent = ' (bar)';
+            yLabel.appendChild(yUnit);
             svg.appendChild(yLabel);
 
             // Surface line (vertical at P_amb = SURFACE_PRESSURE)

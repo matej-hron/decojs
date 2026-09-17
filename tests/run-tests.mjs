@@ -8839,8 +8839,10 @@ describe('notation - quantity symbols are italic', () => {
 
         expect((page.match(/class: 'mv-chart-label mv-chart-axis-title'/g) || []).length).toBe(2);
         expect(page).toContain('#mvTopChart .mv-chart-axis-title { font-size: 14px; }');
+        expect(page).toContain('#mvTopChart .mv-chart-axis-unit { font-size: 14px; }');
         expect(page.includes("svgPressureLabel(xLabel, ambientSubscript, ' (bar)')")).toBe(true);
-        expect(page.includes("yLabel.appendChild(document.createTextNode(' (bar)'))")).toBe(true);
+        expect(page.includes("add(suffix, { dy: '-3', class: 'mv-chart-axis-unit' })")).toBe(true);
+        expect(page.includes("yUnit.setAttribute('class', 'mv-chart-axis-unit')")).toBe(true);
     });
 
     test('M-value main chart and comparison panel use a large readable layout', () => {
