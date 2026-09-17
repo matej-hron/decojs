@@ -8792,7 +8792,7 @@ describe('notation - quantity symbols are italic', () => {
         expect(page.includes('${fmtNum(dA, 4)}\\u00a0bar')).toBe(true);
     });
 
-    test('M-value sandbox draws only the selected variant on a fixed main scale', () => {
+    test('M-value sandbox draws the selected variant and ambient-equilibrium line on a fixed main scale', () => {
         const page = readFileSync(new URL('../sandbox/m-values.html', import.meta.url), 'utf8');
         const drawTopChart = page.slice(
             page.indexOf('function drawTopChart()'),
@@ -8806,11 +8806,41 @@ describe('notation - quantity symbols are italic', () => {
         expect(drawTopChart.includes("const comps = VARIANT_COMPS[state.variant]")).toBe(true);
         expect(drawTopChart.includes("'data-variant': state.variant")).toBe(true);
         expect(drawTopChart.includes('for (const v of VARIANT_LIST)')).toBe(false);
-        expect(page.includes('mv-chart-ambient')).toBe(false);
+        expect(drawTopChart.includes("...(isSelected ? { 'data-highlight-target': 'm-line' } : {})")).toBe(true);
+        expect(page.includes('mv-chart-equilibrium')).toBe(true);
+        expect(drawTopChart.includes('const equilibriumMax = Math.min(X_MAX, Y_MAX)')).toBe(true);
+        expect(drawTopChart.includes("'data-highlight-target': 'equilibrium'")).toBe(true);
         expect(page.includes('svgVariableEquation')).toBe(false);
-        expect(page.includes('y = x')).toBe(false);
+        expect(page.includes('y = x')).toBe(true);
         expect(page.includes('data-hover-variant')).toBe(false);
         expect(page.includes('data-hover-line')).toBe(false);
+    });
+
+    test('M-value chart legend highlights matching SVG elements on hover and keyboard focus', () => {
+        const page = readFileSync(new URL('../sandbox/m-values.html', import.meta.url), 'utf8');
+
+        expect(page.indexOf('id="mvTopChartLegend"')).toBeLessThan(
+            page.indexOf('<details class="mv-coeff-details">')
+        );
+        for (const target of ['m-line', 'equilibrium', 'current-point', 'surface']) {
+            expect(page.includes(`data-highlight="${target}"`)).toBe(true);
+            expect(page.includes(`'data-highlight-target': '${target}'`)).toBe(true);
+        }
+        expect(page.includes('function setTopChartHighlight(target)')).toBe(true);
+        expect(page.includes("addEventListener('pointerenter'")).toBe(true);
+        expect(page.includes("addEventListener('pointerleave'")).toBe(true);
+        expect(page.includes("addEventListener('focus'")).toBe(true);
+        expect(page.includes("addEventListener('blur'")).toBe(true);
+        expect(page.includes("item.matches(':hover, :focus')")).toBe(true);
+    });
+
+    test('M-value chart uses one explicit font size for both pressure-axis titles and units', () => {
+        const page = readFileSync(new URL('../sandbox/m-values.html', import.meta.url), 'utf8');
+
+        expect((page.match(/class: 'mv-chart-label mv-chart-axis-title'/g) || []).length).toBe(2);
+        expect(page).toContain('#mvTopChart .mv-chart-axis-title { font-size: 14px; }');
+        expect(page.includes("svgPressureLabel(xLabel, ambientSubscript, ' (bar)')")).toBe(true);
+        expect(page.includes("yLabel.appendChild(document.createTextNode(' (bar)'))")).toBe(true);
     });
 
     test('M-value main chart and comparison panel use a large readable layout', () => {
@@ -8886,14 +8916,14 @@ describe('notation - quantity symbols are italic', () => {
             JSON.parse(readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8'))
                 .sandbox.mvalues.top);
         const requiredInputKeys = ['ambientPressure', 'ambientPressureShort', 'derivedDepth', 'compartment', 'viewToggle'];
-        const requiredLegendKeys = ['selectedLine', 'currentPoint', 'surface'];
+        const requiredLegendKeys = ['selectedLine', 'currentPoint', 'surface', 'equilibrium'];
 
         for (const top of dictionaries) {
             expect(top.heading.includes('<var>M</var>')).toBe(true);
             expect(top.anchor.match(/<var>M<\/var>/g).length).toBe(2);
             expect(Object.keys(top.inputs).sort()).toEqual(requiredInputKeys.sort());
             expect(Object.keys(top.legend).sort()).toEqual(requiredLegendKeys.sort());
-            expect(JSON.stringify(top).includes('y = x')).toBe(false);
+            expect(top.legend.equilibrium.includes('<var>p</var><sub>')).toBe(true);
         }
     });
 

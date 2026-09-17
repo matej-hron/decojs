@@ -2213,6 +2213,7 @@
                 },
                 "legend": {
                     "selectedLine": "Línea <var>M</var> seleccionada:",
+                    "equilibrium": "Equilibrio: <var>p</var><sub>tejido</sub> = <var>p</var><sub>amb</sub>",
                     "currentPoint": "Presión ambiental actual y valor <var>M</var> correspondiente",
                     "surface": "Superficie (<var>p</var><sub>amb</sub> = 1,013 bar)"
                 },
