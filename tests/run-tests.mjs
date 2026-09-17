@@ -6167,6 +6167,10 @@ describe('Tissue saturation terminology and notation', () => {
         lang,
         JSON.parse(readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8'))
     ]));
+    const source = readFileSync(
+        new URL('../js/components/TissueSaturationSim.js', import.meta.url),
+        'utf8'
+    );
 
     test('uses the requested Czech terminology', () => {
         expect(locales.cs.sandbox.tissue.gas).toBe('Dýchaná směs');
@@ -6184,6 +6188,20 @@ describe('Tissue saturation terminology and notation', () => {
             expect(locale.sandbox.tissue.readout.tcFast.includes('<var>t</var><sub>1/2</sub>')).toBe(true);
             expect(locale.tissueSim.ppO2AboveRec.includes('{1}\u00a0bar')).toBe(true);
         }
+    });
+
+    test('debounces typed depth without delaying slider changes', () => {
+        expect(source).toContain('const DEPTH_INPUT_DEBOUNCE_MS = 250;');
+        expect(source).toContain(
+            "this.depthSlider.addEventListener('input', (e) => applyDepthChange(e.target.value));"
+        );
+        expect(source).toContain(
+            "this.depthInput.addEventListener('input', (e) => scheduleDepthChange(e.target.value));"
+        );
+        expect(source).toContain("this.depthInput.addEventListener('change', flushDepthInput);");
+        expect(source).toContain("this.depthInput.addEventListener('blur', flushDepthInput);");
+        expect(source).toContain("if (e.key === 'Enter') flushDepthInput();");
+        expect(source).toContain('clearTimeout(this.depthInputDebounceHandle);');
     });
 });
 

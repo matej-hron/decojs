@@ -1,8 +1,9 @@
 /**
  * TissueSaturationSim — interactive single-diver physics playground.
  *
- * The learner drives a diver: depth changes and gas switches are
- * applied instantly, tissue saturation follows exponentially. The
+ * The learner drives a diver: slider depth changes and gas switches are
+ * applied instantly, while typed depth waits briefly for input to settle.
+ * Tissue saturation follows exponentially. The
  * simulator composes primitives from decoModel.js and tissueCompartments.js;
  * no new physics is introduced here.
  *
@@ -39,6 +40,7 @@ const TICK_MS = 100;
 const MIN_PER_TICK_AT_1X = 0.1;         // 100 ms tick × 1× = 0.1 sim-min
 const HISTORY_WINDOW_MIN = 45;          // rolling chart window
 const STEP_BUTTON_MINUTES = 1;          // forward/backward button increment
+const DEPTH_INPUT_DEBOUNCE_MS = 250;
 
 // Three representative compartments. Indices into COMPARTMENTS (1-based id).
 const TRACKED_COMPARTMENT_IDS = [1, 5, 12];
@@ -139,7 +141,9 @@ export class TissueSaturationSim {
         // Hlášky se počítají ze stejného `state` jako čísla, takže se musí
         // překreslit spolu s nimi. Bez toho se údaj obarvil jako kritický,
         // ale text hlášky přišel až s dalším tikem hodin.
-        const onDepthChange = (rawVal) => {
+        const applyDepthChange = (rawVal) => {
+            clearTimeout(this.depthInputDebounceHandle);
+            this.depthInputDebounceHandle = null;
             const d = Math.max(0, Math.min(40, Number(rawVal) || 0));
             this.state.depth = d;
             this.depthSlider.value = d;
@@ -147,8 +151,24 @@ export class TissueSaturationSim {
             this._renderNumbers();
             this._renderAlerts();
         };
-        this.depthSlider.addEventListener('input', (e) => onDepthChange(e.target.value));
-        this.depthInput.addEventListener('input',  (e) => onDepthChange(e.target.value));
+        const scheduleDepthChange = (rawVal) => {
+            clearTimeout(this.depthInputDebounceHandle);
+            this.depthInputDebounceHandle = setTimeout(
+                () => applyDepthChange(rawVal),
+                DEPTH_INPUT_DEBOUNCE_MS
+            );
+        };
+        const flushDepthInput = () => {
+            if (!this.depthInputDebounceHandle) return;
+            applyDepthChange(this.depthInput.value);
+        };
+        this.depthSlider.addEventListener('input', (e) => applyDepthChange(e.target.value));
+        this.depthInput.addEventListener('input', (e) => scheduleDepthChange(e.target.value));
+        this.depthInput.addEventListener('change', flushDepthInput);
+        this.depthInput.addEventListener('blur', flushDepthInput);
+        this.depthInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') flushDepthInput();
+        });
 
         this.gasSelect.addEventListener('change', (e) => {
             this.state.gas = this._lookupGas(e.target.value);
@@ -220,6 +240,8 @@ export class TissueSaturationSim {
     }
 
     _reset() {
+        clearTimeout(this.depthInputDebounceHandle);
+        this.depthInputDebounceHandle = null;
         const initialN2 = getInitialTissueN2(this.state.gas.n2);
         this.state.time = 0;
         this.state.depth = 0;
@@ -459,6 +481,7 @@ export class TissueSaturationSim {
 
     destroy() {
         if (this.tickHandle) clearInterval(this.tickHandle);
+        clearTimeout(this.depthInputDebounceHandle);
         if (this._onKey) window.removeEventListener('keydown', this._onKey);
         if (this._onLanguageChange) document.removeEventListener('languagechange', this._onLanguageChange);
         if (this.chart) this.chart.destroy();
