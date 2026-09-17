@@ -10222,6 +10222,25 @@ describe('sandbox dive warnings', () => {
             warning.html.includes('CNS toxicity risk')
         )).toBe(false);
     });
+
+    test('describes the 1.4 bar warning as a bottom-phase limit, not a working-dive limit', () => {
+        const locales = Object.fromEntries(['cs', 'en', 'es'].map(language => [
+            language,
+            JSON.parse(readFileSync(
+                new URL(`../locales/${language}.json`, import.meta.url),
+                'utf8'
+            ))
+        ]));
+
+        expect(source.includes('bottom-phase limit 1.4')).toBe(true);
+        expect(source.includes('limit 1.4 for working dives')).toBe(false);
+        expect(locales.cs.warnings.highPpO2Bottom).toContain('limit pro pobyt na dně: 1,4');
+        expect(locales.en.warnings.highPpO2Bottom).toContain('bottom-phase limit 1.4');
+        expect(locales.es.warnings.highPpO2Bottom).toContain('límite en la fase de fondo: 1,4');
+        expect(locales.cs.warnings.highPpO2Bottom.includes('pracovní ponory')).toBe(false);
+        expect(locales.en.warnings.highPpO2Bottom.includes('working dives')).toBe(false);
+        expect(locales.es.warnings.highPpO2Bottom.includes('inmersiones con esfuerzo')).toBe(false);
+    });
 });
 
 describe('decodeDiveSetup sanitizes the shared-link boundary (#65)', () => {
