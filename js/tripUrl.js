@@ -6,6 +6,8 @@
  * window.location / history.
  */
 
+import { normalizeGradientFactorPercent } from './gfLimits.js';
+
 const URL_PARAM = 'trip';
 
 function minimalGas(g) {
@@ -70,8 +72,8 @@ export function decodeTrip(str) {
         return {
             startDate: m.startDate,
             dayCount: m.dayCount,
-            gfLow: m.gfLow,
-            gfHigh: m.gfHigh,
+            gfLow: normalizeGradientFactorPercent(m.gfLow),
+            gfHigh: normalizeGradientFactorPercent(m.gfHigh),
             gases: tripGases,
             dives
         };

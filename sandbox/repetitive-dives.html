@@ -253,8 +253,8 @@
     <h1 data-i18n="sandbox.repetitive.heading">Repetitive Dive Planner</h1>
     <p data-i18n="sandbox.repetitive.intro">Each panel is one dive in the trip. Surface intervals off-gas the tissues; later dives start pre-saturated and accrue more decompression.</p>
     <div class="trip-config">
-      <label><span data-i18n="sandbox.repetitive.gfLow">GF Low</span> <input id="cfg-gflow" type="number" value="100" min="1" max="100"></label>
-      <label><span data-i18n="sandbox.repetitive.gfHigh">GF High</span> <input id="cfg-gfhigh" type="number" value="100" min="1" max="100"></label>
+      <label><span data-i18n="sandbox.repetitive.gfLow">GF Low</span> <input id="cfg-gflow" type="number" value="100" min="10" max="100"></label>
+      <label><span data-i18n="sandbox.repetitive.gfHigh">GF High</span> <input id="cfg-gfhigh" type="number" value="100" min="10" max="100"></label>
       <span class="gf-presets"></span>
       <label><span data-i18n="sandbox.repetitive.startDate">Start date</span> <input id="cfg-start" type="date" value="2026-06-15"></label>
       <label><span data-i18n="sandbox.repetitive.days">Days</span> <input id="cfg-days" type="number" min="1" max="14" value="3"></label>
@@ -281,6 +281,7 @@
     import { previewNdl } from '../js/ndlPreview.js';
     import { escHtml } from '../js/utils/escHtml.js';
     import { GF_PRESETS } from '../js/gfPresets.js';
+    import { normalizeGradientFactorPercent } from '../js/gfLimits.js';
     import { getTripFromUrl, updateUrlWithTrip, getTripShareUrl } from '../js/tripUrl.js';
     import { fmtNum, localeTag } from '../js/format.js';
     import { getCurrentLanguage, translate } from '../js/i18n.js';
@@ -628,12 +629,16 @@
     });
 
     document.getElementById('cfg-gflow').addEventListener('change', (ev) => {
-      trip = { ...trip, gfLow: +ev.target.value };
+      const gfLow = normalizeGradientFactorPercent(ev.target.value);
+      ev.target.value = gfLow;
+      trip = { ...trip, gfLow };
       rerender();
     });
 
     document.getElementById('cfg-gfhigh').addEventListener('change', (ev) => {
-      trip = { ...trip, gfHigh: +ev.target.value };
+      const gfHigh = normalizeGradientFactorPercent(ev.target.value);
+      ev.target.value = gfHigh;
+      trip = { ...trip, gfHigh };
       rerender();
     });
 

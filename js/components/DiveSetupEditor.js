@@ -74,6 +74,12 @@ import {
 import { translate } from '../i18n.js';
 import { fmtNum } from '../format.js';
 import { GF_PRESETS } from '../gfPresets.js';
+import {
+    MAX_GF_PERCENT,
+    MIN_GF_PERCENT,
+    isGradientFactorPercent,
+    normalizeGradientFactorPercent
+} from '../gfLimits.js';
 
 /** Helper: replace {0}, {1}, ... placeholders with the given values. */
 function fmt(str, ...values) {
@@ -615,13 +621,13 @@ export class DiveSetupEditor extends EventTarget {
                 <div class="dse-gf-row">
                     <div class="dse-field">
                         <label>${translate('diveEditor.gf.low', 'GF Low (%):')}</label>
-                        <input type="range" class="dse-gf-low-slider" min="10" max="100" value="100" step="5">
-                        <input type="number" class="dse-gf-low-input form-input" value="100" min="10" max="100" step="5">
+                        <input type="range" class="dse-gf-low-slider" min="${MIN_GF_PERCENT}" max="${MAX_GF_PERCENT}" value="${DEFAULT_GF_LOW}" step="5">
+                        <input type="number" class="dse-gf-low-input form-input" value="${DEFAULT_GF_LOW}" min="${MIN_GF_PERCENT}" max="${MAX_GF_PERCENT}" step="5">
                     </div>
                     <div class="dse-field">
                         <label>${translate('diveEditor.gf.high', 'GF High (%):')}</label>
-                        <input type="range" class="dse-gf-high-slider" min="10" max="100" value="100" step="5">
-                        <input type="number" class="dse-gf-high-input form-input" value="100" min="10" max="100" step="5">
+                        <input type="range" class="dse-gf-high-slider" min="${MIN_GF_PERCENT}" max="${MAX_GF_PERCENT}" value="${DEFAULT_GF_HIGH}" step="5">
+                        <input type="number" class="dse-gf-high-input form-input" value="${DEFAULT_GF_HIGH}" min="${MIN_GF_PERCENT}" max="${MAX_GF_PERCENT}" step="5">
                     </div>
                 </div>
                 <div class="dse-gf-presets">
@@ -638,7 +644,7 @@ export class DiveSetupEditor extends EventTarget {
                         </tr>
                         <tr><td style="padding:2px 4px;">${translate('diveEditor.gf.presetRecreational', 'Recreational')}</td><td style="padding:2px 4px;">${translate('diveEditor.gf.rowRecDepth', '≤40m, short deco')}</td><td style="text-align:center;">40–60%</td><td style="text-align:center;">80–90%</td></tr>
                         <tr><td style="padding:2px 4px;">${translate('diveEditor.gf.rowIntensive', 'Intensive / safari')}</td><td style="padding:2px 4px;">${translate('diveEditor.gf.rowIntensiveDepth', '≤40m, repeat dives')}</td><td style="text-align:center;">30–40%</td><td style="text-align:center;">70–80%</td></tr>
-                        <tr><td style="padding:2px 4px;">${translate('diveEditor.gf.rowDeep', 'Deep single dive')}</td><td style="padding:2px 4px;">${translate('diveEditor.gf.rowDeepDepth', '>60m, one dive')}</td><td style="text-align:center;">0–50%</td><td style="text-align:center;">80–100%</td></tr>
+                        <tr><td style="padding:2px 4px;">${translate('diveEditor.gf.rowDeep', 'Deep single dive')}</td><td style="padding:2px 4px;">${translate('diveEditor.gf.rowDeepDepth', '>60m, one dive')}</td><td style="text-align:center;">10–50%</td><td style="text-align:center;">80–100%</td></tr>
                         <tr><td style="padding:2px 4px;">${translate('diveEditor.gf.rowBailout', 'Bailout / emergency')}</td><td style="padding:2px 4px;">—</td><td style="text-align:center;">60–80%</td><td style="text-align:center;">80–100%</td></tr>
                         <tr style="border-top:1px solid var(--border-color,#ddd);"><td style="padding:2px 4px;">${translate('diveEditor.gf.rowDecoPlanner', 'Deco Planner default')}</td><td></td><td style="text-align:center;">20%</td><td style="text-align:center;">80%</td></tr>
                         <tr><td style="padding:2px 4px;">${translate('diveEditor.gf.rowFreedom', 'Freedom default')}</td><td></td><td style="text-align:center;">30%</td><td style="text-align:center;">80%</td></tr>
@@ -680,20 +686,41 @@ export class DiveSetupEditor extends EventTarget {
             this.elements.gfLowInput.value = this.elements.gfLowSlider.value;
             this._onInputChange();
         });
-        this.elements.gfLowInput.addEventListener('input', () => {
-            this.elements.gfLowSlider.value = this.elements.gfLowInput.value;
-            this._onInputChange();
-        });
+        const bindGfInput = (input, slider, fallback, updateNDL = false) => {
+            input.addEventListener('input', () => {
+                const value = Number.parseFloat(input.value);
+                if (!isGradientFactorPercent(value)) return;
+
+                slider.value = input.value;
+                this._onInputChange();
+                if (updateNDL) this._updateNDLDisplay();
+            });
+            input.addEventListener('change', () => {
+                const normalized = normalizeGradientFactorPercent(input.value, fallback);
+                if (String(normalized) === input.value) return;
+
+                input.value = String(normalized);
+                slider.value = String(normalized);
+                this._onInputChange();
+                if (updateNDL) this._updateNDLDisplay();
+            });
+        };
+        bindGfInput(
+            this.elements.gfLowInput,
+            this.elements.gfLowSlider,
+            DEFAULT_GF_LOW
+        );
         this.elements.gfHighSlider.addEventListener('input', () => {
             this.elements.gfHighInput.value = this.elements.gfHighSlider.value;
             this._onInputChange();
             this._updateNDLDisplay();
         });
-        this.elements.gfHighInput.addEventListener('input', () => {
-            this.elements.gfHighSlider.value = this.elements.gfHighInput.value;
-            this._onInputChange();
-            this._updateNDLDisplay();
-        });
+        bindGfInput(
+            this.elements.gfHighInput,
+            this.elements.gfHighSlider,
+            DEFAULT_GF_HIGH,
+            true
+        );
         
         // GF presets
         section.querySelectorAll('.dse-gf-preset').forEach(btn => {
@@ -1529,8 +1556,14 @@ export class DiveSetupEditor extends EventTarget {
         const maxDepth = parseFloat(this.elements.quickDepth.value) || 30;
         const bottomTime = parseFloat(this.elements.quickTime.value) || 20;
         const gas = this.currentGases[0] || { n2: 0.79 };
-        const gfLow = parseFloat(this.elements.gfLowInput?.value) || 100;
-        const gfHigh = parseFloat(this.elements.gfHighInput?.value) || 100;
+        const gfLow = normalizeGradientFactorPercent(
+            this.elements.gfLowInput?.value,
+            DEFAULT_GF_LOW
+        );
+        const gfHigh = normalizeGradientFactorPercent(
+            this.elements.gfHighInput?.value,
+            DEFAULT_GF_HIGH
+        );
         
         // Get safety stop settings
         const safetyStop = {
@@ -1617,8 +1650,14 @@ export class DiveSetupEditor extends EventTarget {
             return;
         }
         
-        const gfLow = parseFloat(this.elements.gfLowInput?.value) || DEFAULT_GF_LOW;
-        const gfHigh = parseFloat(this.elements.gfHighInput?.value) || DEFAULT_GF_HIGH;
+        const gfLow = normalizeGradientFactorPercent(
+            this.elements.gfLowInput?.value,
+            DEFAULT_GF_LOW
+        );
+        const gfHigh = normalizeGradientFactorPercent(
+            this.elements.gfHighInput?.value,
+            DEFAULT_GF_HIGH
+        );
         
         // Get safety stop settings
         const safetyStop = {
@@ -1742,8 +1781,14 @@ export class DiveSetupEditor extends EventTarget {
             gases: this.currentGases,
             dives: dives,
             algorithm: this.elements.algorithmSelect?.value || getZHL16Variant(),
-            gfLow: parseInt(this.elements.gfLowInput?.value) || DEFAULT_GF_LOW,
-            gfHigh: parseInt(this.elements.gfHighInput?.value) || DEFAULT_GF_HIGH,
+            gfLow: normalizeGradientFactorPercent(
+                this.elements.gfLowInput?.value,
+                DEFAULT_GF_LOW
+            ),
+            gfHigh: normalizeGradientFactorPercent(
+                this.elements.gfHighInput?.value,
+                DEFAULT_GF_HIGH
+            ),
             surfaceInterval: surfaceInterval,
             sacRate: sacRate,
             decoSacRate: decoSacRate,
@@ -1793,8 +1838,8 @@ export class DiveSetupEditor extends EventTarget {
         }
 
         // Gradient factors
-        const gfLow = setup.gfLow ?? DEFAULT_GF_LOW;
-        const gfHigh = setup.gfHigh ?? DEFAULT_GF_HIGH;
+        const gfLow = normalizeGradientFactorPercent(setup.gfLow, DEFAULT_GF_LOW);
+        const gfHigh = normalizeGradientFactorPercent(setup.gfHigh, DEFAULT_GF_HIGH);
         if (this.elements.gfLowInput) {
             this.elements.gfLowInput.value = gfLow;
             this.elements.gfLowSlider.value = gfLow;

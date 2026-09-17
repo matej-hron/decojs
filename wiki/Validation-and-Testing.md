@@ -6,7 +6,7 @@ npm test
 
 Runs `node tests/run-tests.mjs`. No external test framework — `tests/run-tests.mjs` implements `describe`/`test`/`expect` inline (lines 10–140) with matchers `.toBe`, `.toEqual`, `.toBeCloseTo`, `.toBeGreaterThan`, `.toBeLessThan`, `.toHaveProperty`, `.toHaveLength`, `.toBeDefined`. Output is one line per test, then a pass/fail summary.
 
-**567 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
+**572 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
 
 `npm test` is required to pass before every commit per `CLAUDE.md`.
 
@@ -25,6 +25,7 @@ The algorithm suite. Directly imports from `js/decoModel.js` and `js/tissueCompa
 - **Variant switching.** `setZHL16Variant('A'|'B'|'C')` followed by re-checking a reference dive.
 - **M-values theory page.** Verifies glossary markup and locale parity across Czech, English, and Spanish, including the pressure-comparison conditions; checks the formula sandbox link and unambiguous ceiling definition; and proves the direct-ascent example violates TC3 while the safe-stop profile remains below all raw M-value limits.
 - **Gradient-factors theory page.** Verifies canonical quantity symbols, GF subscripts, localized decimals, non-breaking unit spacing, and the sourced Richard Pyle/deep-stop history across Czech, English, and Spanish. The history test distinguishes personal observation, independent bubble models, gradient factors, the scope of the NEDU result, and current uncertainty. Focused source tests require the symmetric air/nitrox GF recommendation to link to Alain Foret's accessible publication of the CMAS recommendations and each supporting French, NEDU, and Belgian bullet to include its own study link. Direct CMAS URLs that return HTTP 403 are rejected. The French bullet must use the accessible NCBI/PubMed record. The Czech no-decompression heading is also checked for natural wording.
+- **Gradient-factor input limits.** Requires both GF values to stay in the 10–100% range across setup validation, compact links, shared repetitive-dive trips, and both planner UIs. Manual values below the limit do not trigger a recalculation and are clamped to 10% when confirmed, preventing `0` from silently becoming `100`.
 
 ### `tests/diveSetup.test.js` (~650 lines, ~49 tests)
 
