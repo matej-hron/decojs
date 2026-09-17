@@ -1827,7 +1827,8 @@ describe('diveSetup - renderDivePlanTableHTML', () => {
         )].map(match => match[1]);
         expect(runtimeValues.every(value => /^\d+$/.test(value))).toBe(true);
         expect(html).toContain('<p class="dse-plan-footnote">* Runtime is the elapsed time from the start of the dive to the end of the stage.</p>');
-        expect(html).toContain('<p class="dse-plan-footnote">Stop durations are the whole minutes calculated by the model. Intermediate 3\u00a0m ascents are included as 20\u00a0seconds');
+        expect(html.includes('Stop durations are the whole minutes calculated by the model.')).toBe(false);
+        expect(html.includes('Intermediate 3\u00a0m ascents are included as 20\u00a0seconds')).toBe(false);
     });
 
     test('practical runtime hides intermediate ascent rows without losing their time', () => {
