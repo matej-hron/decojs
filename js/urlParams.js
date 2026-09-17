@@ -18,6 +18,9 @@
  */
 
 import { DECO_MODES, WATER_TYPES, getDecoMode } from './decoModel.js';
+import {
+    parseGradientFactorPercent
+} from './gfLimits.js';
 
 /**
  * Encode a dive setup object into a URL-safe string
@@ -320,8 +323,8 @@ export async function getCompactProfileFromUrl() {
     const zhlRaw = params.get('zhl');
 
     const o2Pct = Number.isFinite(o2Raw) && o2Raw >= 5 && o2Raw <= 100 ? o2Raw : 21;
-    const gfLow = Number.isFinite(gfLRaw) && gfLRaw >= 1 && gfLRaw <= 100 ? gfLRaw : 100;
-    const gfHigh = Number.isFinite(gfHRaw) && gfHRaw >= 1 && gfHRaw <= 100 ? gfHRaw : 100;
+    const gfLow = parseGradientFactorPercent(gfLRaw);
+    const gfHigh = parseGradientFactorPercent(gfHRaw);
     const sacRate = Number.isFinite(sacRaw) && sacRaw > 0 ? sacRaw : 20;
     const cylinderVolume = Number.isFinite(cylRaw) && cylRaw > 0 ? cylRaw : 12;
     const algorithm = (zhlRaw === 'A' || zhlRaw === 'B' || zhlRaw === 'C') ? zhlRaw : null;

@@ -17,6 +17,11 @@ import {
     getDecoMode,
     getPressurePerMeter
 } from '../decoModel.js';
+import {
+    MAX_GF_PERCENT,
+    MIN_GF_PERCENT,
+    isGradientFactorPercent
+} from '../gfLimits.js';
 /**
  * @typedef {Object} Gas
  * @property {string} id - Unique gas identifier
@@ -56,8 +61,8 @@ import {
  * @property {number} [reservePressure=50] - Reserve pressure in bar
  * @property {number} [sacRate=20] - Surface Air Consumption rate in liters/min (bottom gas)
  * @property {number} [decoSacRate=15] - SAC rate for deco gases in liters/min
- * @property {number} [gfLow=100] - Gradient Factor Low (0-100 percentage)
- * @property {number} [gfHigh=100] - Gradient Factor High (0-100 percentage)
+ * @property {number} [gfLow=100] - Gradient Factor Low (10-100 percentage)
+ * @property {number} [gfHigh=100] - Gradient Factor High (10-100 percentage)
  * @property {'standard'|'adaptive'|'continuous'} [decoMode='standard'] - Schedule policy
  * @property {number} [gasSwitchTime=0] - Minutes spent switching gases
  * @property {number} [surfaceInterval=60] - Post-dive surface interval in minutes
@@ -425,12 +430,12 @@ export function validateDiveSetup(setup) {
         });
     }
     
-    if (setup.gfLow !== undefined && (setup.gfLow < 0 || setup.gfLow > 100)) {
-        errors.push('gfLow must be between 0 and 100');
+    if (setup.gfLow !== undefined && !isGradientFactorPercent(setup.gfLow)) {
+        errors.push(`gfLow must be between ${MIN_GF_PERCENT} and ${MAX_GF_PERCENT}`);
     }
     
-    if (setup.gfHigh !== undefined && (setup.gfHigh < 0 || setup.gfHigh > 100)) {
-        errors.push('gfHigh must be between 0 and 100');
+    if (setup.gfHigh !== undefined && !isGradientFactorPercent(setup.gfHigh)) {
+        errors.push(`gfHigh must be between ${MIN_GF_PERCENT} and ${MAX_GF_PERCENT}`);
     }
 
     if (setup.decoMode !== undefined &&

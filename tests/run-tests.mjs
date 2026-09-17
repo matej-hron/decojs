@@ -221,8 +221,14 @@ import {
     calculateChartGFAnchor,
     createLegendHelpIcon,
     normalizeDiveSetup,
-    positionLegendHelpIcon
+    positionLegendHelpIcon,
+    validateDiveSetup
 } from '../js/charts/chartTypes.js';
+import {
+    MAX_GF_PERCENT,
+    MIN_GF_PERCENT,
+    parseGradientFactorPercent
+} from '../js/gfLimits.js';
 import { buildRuntimeRows } from '../js/components/RuntimeTable.js';
 import {
     buildDecisionAuditLines,
@@ -5921,6 +5927,28 @@ describe('tripUrl - encode/decode', () => {
         expect(decodeTrip(btoa('{"foo":1}'))).toBe(null);        // valid JSON but no dives/gases array
     });
 
+    test('clamps shared-trip gradient factors to the supported minimum', () => {
+        const trip = {
+            startDate: '2026-06-15',
+            dayCount: 1,
+            gfLow: 0,
+            gfHigh: 9,
+            gases: air,
+            dives: [{
+                id: 'd1',
+                name: 'Dive',
+                startDateTime: 540,
+                maxDepth: 20,
+                bottomTime: 30,
+                gases: air
+            }]
+        };
+        const back = decodeTrip(encodeTrip(trip));
+
+        expect(back.gfLow).toBe(10);
+        expect(back.gfHigh).toBe(10);
+    });
+
     test('round-trips the ndlLocked flag', () => {
         const trip = {
             startDate: '2026-06-15', dayCount: 2, gfLow: 100, gfHigh: 100,
@@ -6435,6 +6463,87 @@ describe('Haldane and Schreiner teaching hierarchy', () => {
 // ============================================================================
 
 describe('DiveSetupEditor notation', () => {
+    describe('gradient factor minimum', () => {
+        test('validation rejects gradient factors below 10 percent', () => {
+            const setup = getDefaultSetup();
+
+            expect(validateDiveSetup({ ...setup, gfLow: 9 }).valid).toBe(false);
+            expect(validateDiveSetup({ ...setup, gfHigh: 0 }).valid).toBe(false);
+            expect(validateDiveSetup({ ...setup, gfLow: 10, gfHigh: 10 }).valid).toBe(true);
+        });
+
+        test('compact gradient factors accept only the 10 to 100 range', () => {
+            expect(parseGradientFactorPercent(0)).toBe(100);
+            expect(parseGradientFactorPercent(9)).toBe(100);
+            expect(parseGradientFactorPercent(10)).toBe(10);
+            expect(parseGradientFactorPercent(100)).toBe(100);
+            expect(parseGradientFactorPercent(101)).toBe(100);
+            expect(parseGradientFactorPercent('')).toBe(100);
+            expect(parseGradientFactorPercent('invalid')).toBe(100);
+        });
+
+        test('manual GF input does not recalculate at zero and clamps to 10 on change', () => {
+            const dom = new JSDOM('<!doctype html><body></body>');
+            const previousDocument = globalThis.document;
+            globalThis.document = dom.window.document;
+
+            try {
+                let changes = 0;
+                const context = {
+                    elements: {},
+                    _onInputChange() {
+                        changes++;
+                    },
+                    _updateNDLDisplay() {}
+                };
+                const section = DiveSetupEditor.prototype._buildGradientFactors.call(context);
+
+                for (const selector of ['.dse-gf-low-input', '.dse-gf-high-input']) {
+                    const input = section.querySelector(selector);
+                    input.value = '0';
+                    input.dispatchEvent(new dom.window.Event('input'));
+                    expect(changes).toBe(0);
+
+                    input.dispatchEvent(new dom.window.Event('change'));
+                    expect(input.value).toBe('10');
+                    expect(changes).toBe(1);
+                    changes = 0;
+                }
+            } finally {
+                globalThis.document = previousDocument;
+                dom.window.close();
+            }
+        });
+
+        test('compact links and the GF guide use the same minimum of 10', () => {
+            const urlParams = readFileSync(
+                new URL('../js/urlParams.js', import.meta.url),
+                'utf8'
+            );
+            const editor = readFileSync(
+                new URL('../js/components/DiveSetupEditor.js', import.meta.url),
+                'utf8'
+            );
+            const repetitivePlanner = readFileSync(
+                new URL('../sandbox/repetitive-dives.html', import.meta.url),
+                'utf8'
+            );
+
+            expect(MIN_GF_PERCENT).toBe(10);
+            expect(MAX_GF_PERCENT).toBe(100);
+            expect(urlParams.includes('parseGradientFactorPercent(gfLRaw)')).toBe(true);
+            expect(urlParams.includes('parseGradientFactorPercent(gfHRaw)')).toBe(true);
+            expect(urlParams.includes('gfLRaw >= 1')).toBe(false);
+            expect(urlParams.includes('gfHRaw >= 1')).toBe(false);
+            expect(editor.includes('>10–50%</td>')).toBe(true);
+            expect(editor.includes('>0–50%</td>')).toBe(false);
+            expect(repetitivePlanner.includes('id="cfg-gflow" type="number" value="100" min="10" max="100"')).toBe(true);
+            expect(repetitivePlanner.includes('id="cfg-gfhigh" type="number" value="100" min="10" max="100"')).toBe(true);
+            expect(repetitivePlanner.includes('normalizeGradientFactorPercent')).toBe(true);
+            expect(repetitivePlanner.includes('min="1" max="100"')).toBe(false);
+        });
+    });
+
     test('Czech runtime phase labels use lowercase within table rows', () => {
         const cs = JSON.parse(readFileSync(new URL('../locales/cs.json', import.meta.url), 'utf8'));
         const phaseKeys = [
