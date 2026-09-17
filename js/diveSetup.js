@@ -2032,14 +2032,19 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
         `<tbody>${rows.join('')}</tbody>` +
         `</table>`;
 
+    const runtimeDetailFootnote = practicalRuntime
+        ? translate('divePlan.runtimePracticalFootnote', 'Stop durations are the whole minutes calculated by the model. Intermediate 3\u00a0m ascents are included as 20\u00a0seconds in the whole-minute runtime cross-check.')
+        : departureRuntime
+            ? translate('divePlan.runtimeDepartureFootnote', 'At decompression stops, runtime is the whole minute when the diver leaves for the next level. A decimal stop duration is the difference from the exact arrival time; execute the plan using the departure runtime.')
+            : '';
+
     return `<div class="dse-plan-tables">` +
         tableHtml(translate('divePlan.sectionBottom', 'Bottom'), bottomRowsHtml) +
         tableHtml(translate('divePlan.sectionAscent', 'Ascent'), ascentRowsHtml) +
         `</div>` +
-        `<p class="dse-plan-footnote">* ${practicalRuntime
-            ? translate('divePlan.runtimePracticalFootnote', 'Stop durations are the whole minutes calculated by the model. Intermediate 3\u00a0m ascents are included as 20\u00a0seconds in the whole-minute runtime cross-check.')
-            : departureRuntime
-                ? translate('divePlan.runtimeDepartureFootnote', 'At decompression stops, runtime is the whole minute when the diver leaves for the next level. A decimal stop duration is the difference from the exact arrival time; execute the plan using the departure runtime.')
-                : translate('divePlan.runtimeFootnote', 'Runtime is the elapsed time from the start of the dive to the end of the stage.')}</p>` +
+        `<p class="dse-plan-footnote">* ${translate('divePlan.runtimeFootnote', 'Runtime is the elapsed time from the start of the dive to the end of the stage.')}</p>` +
+        (runtimeDetailFootnote
+            ? `<p class="dse-plan-footnote">${runtimeDetailFootnote}</p>`
+            : '') +
         `<p class="dse-plan-footnote">${translate('divePlan.descentFootnote', 'The model continuously calculates tissue on-gassing during descent. Descent is therefore included in both bottom time and the decompression-profile calculation.')}</p>`;
 }

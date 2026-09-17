@@ -1801,7 +1801,8 @@ describe('diveSetup - renderDivePlanTableHTML', () => {
         expect(html).toContain('<td class="dse-plan-depth">9\u00a0m</td><td class="dse-plan-stop">0.3</td><td class="dse-plan-runtime">35.3</td>');
         expect(html).toContain('<td class="dse-plan-depth">0\u00a0m</td><td class="dse-plan-stop">0.3</td><td class="dse-plan-runtime">38.3</td>');
         expect(html.includes('dse-plan-surface-final')).toBe(false);
-        expect(html).toContain('runtime is the whole minute when the diver leaves for the next level');
+        expect(html).toContain('<p class="dse-plan-footnote">* Runtime is the elapsed time from the start of the dive to the end of the stage.</p>');
+        expect(html).toContain('<p class="dse-plan-footnote">At decompression stops, runtime is the whole minute when the diver leaves for the next level.');
     });
 
     test('practical runtime keeps whole model stops and uses 20-second inter-stop ascents', () => {
@@ -1825,7 +1826,8 @@ describe('diveSetup - renderDivePlanTableHTML', () => {
             /<td class="dse-plan-runtime">([^<]+)<\/td>/g
         )].map(match => match[1]);
         expect(runtimeValues.every(value => /^\d+$/.test(value))).toBe(true);
-        expect(html).toContain('Intermediate 3\u00a0m ascents are included as 20\u00a0seconds');
+        expect(html).toContain('<p class="dse-plan-footnote">* Runtime is the elapsed time from the start of the dive to the end of the stage.</p>');
+        expect(html).toContain('<p class="dse-plan-footnote">Stop durations are the whole minutes calculated by the model. Intermediate 3\u00a0m ascents are included as 20\u00a0seconds');
     });
 
     test('practical runtime hides intermediate ascent rows without losing their time', () => {
