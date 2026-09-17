@@ -232,9 +232,11 @@ export class DiveSetupEditor extends EventTarget {
         // picks up the new locale. We preserve the current setup from the form
         // so the user's in-progress work isn't lost.
         this._onLanguageChange = () => {
+            const gfLockEnabled = this.elements.gfLockInput?.checked ?? true;
             const currentSetup = this._buildSetupFromForm();
             this._buildDOM();
             this._populateFromSetup(currentSetup);
+            if (!gfLockEnabled) this._disableGfLock();
         };
         document.addEventListener('languagechange', this._onLanguageChange);
     }
@@ -630,6 +632,10 @@ export class DiveSetupEditor extends EventTarget {
                         <input type="number" class="dse-gf-high-input form-input" value="${DEFAULT_GF_HIGH}" min="${MIN_GF_PERCENT}" max="${MAX_GF_PERCENT}" step="5">
                     </div>
                 </div>
+                <label class="dse-checkbox-label dse-gf-lock">
+                    <input type="checkbox" class="dse-gf-lock-input" checked>
+                    ${translate('diveEditor.gf.lockEqual', 'Keep GF High equal to GF Low')}
+                </label>
                 <div class="dse-gf-presets">
                     <span class="dse-hint">${translate('diveEditor.gf.presetsLabel', 'Presets:')} <span class="dse-gf-info-toggle" title="${translate('diveEditor.gf.presetGuide', 'GF preset guide')}" style="cursor:pointer; text-decoration:underline;">ℹ️</span></span>
                     ${GF_PRESETS.map(p => `<button class="btn btn-small btn-secondary dse-gf-preset" data-gf-low="${p.gfLow}" data-gf-high="${p.gfHigh}" title="${escHtml(translate(p.titleKey, p.title))}">${escHtml(translate(p.labelKey, p.label))}</button>`).join('')}
@@ -658,6 +664,7 @@ export class DiveSetupEditor extends EventTarget {
         this.elements.gfLowInput = section.querySelector('.dse-gf-low-input');
         this.elements.gfHighSlider = section.querySelector('.dse-gf-high-slider');
         this.elements.gfHighInput = section.querySelector('.dse-gf-high-input');
+        this.elements.gfLockInput = section.querySelector('.dse-gf-lock-input');
         this.elements.algorithmSelect = section.querySelector('.dse-algorithm-select');
         this.elements.gfSummaryHint = section.querySelector('.dse-summary-hint');
 
@@ -681,50 +688,68 @@ export class DiveSetupEditor extends EventTarget {
             this._updateNDLDisplay();
         });
         
-        // Sync sliders and inputs
-        this.elements.gfLowSlider.addEventListener('input', () => {
-            this.elements.gfLowInput.value = this.elements.gfLowSlider.value;
+        const setGfValue = (side, value) => {
+            this.elements[`gf${side}Input`].value = String(value);
+            this.elements[`gf${side}Slider`].value = String(value);
+        };
+        const applyGfValue = (side, value) => {
+            setGfValue(side, value);
+            const otherSide = side === 'Low' ? 'High' : 'Low';
+            const otherValue = Number.parseFloat(
+                this.elements[`gf${otherSide}Input`].value
+            );
+
+            if (this.elements.gfLockInput.checked ||
+                (side === 'Low' && value > otherValue) ||
+                (side === 'High' && value < otherValue)) {
+                setGfValue(otherSide, value);
+            }
+
             this._onInputChange();
+            this._updateNDLDisplay();
+        };
+
+        this.elements.gfLowSlider.addEventListener('input', () => {
+            applyGfValue('Low', Number.parseFloat(this.elements.gfLowSlider.value));
         });
-        const bindGfInput = (input, slider, fallback, updateNDL = false) => {
+        const bindGfInput = (side, fallback) => {
+            const input = this.elements[`gf${side}Input`];
             input.addEventListener('input', () => {
                 const value = Number.parseFloat(input.value);
                 if (!isGradientFactorPercent(value)) return;
 
-                slider.value = input.value;
-                this._onInputChange();
-                if (updateNDL) this._updateNDLDisplay();
+                applyGfValue(side, value);
             });
             input.addEventListener('change', () => {
                 const normalized = normalizeGradientFactorPercent(input.value, fallback);
                 if (String(normalized) === input.value) return;
 
-                input.value = String(normalized);
-                slider.value = String(normalized);
-                this._onInputChange();
-                if (updateNDL) this._updateNDLDisplay();
+                applyGfValue(side, normalized);
             });
         };
-        bindGfInput(
-            this.elements.gfLowInput,
-            this.elements.gfLowSlider,
-            DEFAULT_GF_LOW
-        );
+        bindGfInput('Low', DEFAULT_GF_LOW);
         this.elements.gfHighSlider.addEventListener('input', () => {
-            this.elements.gfHighInput.value = this.elements.gfHighSlider.value;
-            this._onInputChange();
-            this._updateNDLDisplay();
+            applyGfValue('High', Number.parseFloat(this.elements.gfHighSlider.value));
         });
-        bindGfInput(
-            this.elements.gfHighInput,
-            this.elements.gfHighSlider,
-            DEFAULT_GF_HIGH,
-            true
-        );
+        bindGfInput('High', DEFAULT_GF_HIGH);
+        this.elements.gfLockInput.addEventListener('change', () => {
+            if (!this.elements.gfLockInput.checked) return;
+            const fallback = Number.parseFloat(
+                this.elements.gfLowSlider.value
+            );
+            applyGfValue(
+                'Low',
+                normalizeGradientFactorPercent(
+                    this.elements.gfLowInput.value,
+                    fallback
+                )
+            );
+        });
         
         // GF presets
         section.querySelectorAll('.dse-gf-preset').forEach(btn => {
             btn.addEventListener('click', () => {
+                this._disableGfLock();
                 const gfLow = btn.dataset.gfLow;
                 const gfHigh = btn.dataset.gfHigh;
                 this.elements.gfLowInput.value = gfLow;
@@ -1103,6 +1128,10 @@ export class DiveSetupEditor extends EventTarget {
     
     _renderGasCards() {
         if (!this.elements.gasesList) return;
+
+        if (this.currentGases.length > 1) {
+            this._disableGfLock();
+        }
         
         this.elements.gasesList.innerHTML = '';
         
@@ -1198,6 +1227,7 @@ export class DiveSetupEditor extends EventTarget {
                 customInputs.style.display = 'none';
                 const preset = isBottomGas ? getBottomGas(presetSelect.value) : getDecoGas(presetSelect.value);
                 if (preset) {
+                    if (!isBottomGas) this._disableGfLock();
                     this.currentGases[index] = {
                         ...this.currentGases[index],
                         name: preset.name,
@@ -1238,6 +1268,7 @@ export class DiveSetupEditor extends EventTarget {
         });
         
         const updateCustomGas = () => {
+            if (!isBottomGas) this._disableGfLock();
             const o2 = (parseFloat(o2Input.value) || 21) / 100;
             const he = (parseFloat(heInput.value) || 0) / 100;
             const n2 = Math.max(0, 1 - o2 - he);
@@ -1300,6 +1331,7 @@ export class DiveSetupEditor extends EventTarget {
             startPressure: DEFAULT_START_PRESSURE
         });
         
+        this._disableGfLock();
         this._renderGasCards();
         this._onInputChange();
         this._updateNDLDisplay();
@@ -1318,6 +1350,19 @@ export class DiveSetupEditor extends EventTarget {
         
         updateDropdowns(this.elements.waypointsBody);
         updateDropdowns(this.elements.waypointsBody2);
+    }
+
+    _disableGfLock() {
+        if (this.elements.gfLockInput) {
+            this.elements.gfLockInput.checked = false;
+        }
+    }
+
+    _handleWaypointGasChange(select) {
+        if (select.value !== this.currentGases[0]?.id) {
+            this._disableGfLock();
+        }
+        this._onInputChange();
     }
     
     // =========================================================================
@@ -1382,7 +1427,9 @@ export class DiveSetupEditor extends EventTarget {
         // Event handlers
         row.querySelector('.dse-wp-time').addEventListener('input', () => this._onInputChange());
         row.querySelector('.dse-wp-depth').addEventListener('input', () => this._onInputChange());
-        row.querySelector('.dse-wp-gas').addEventListener('change', () => this._onInputChange());
+        row.querySelector('.dse-wp-gas').addEventListener('change', (event) => {
+            this._handleWaypointGasChange(event.target);
+        });
         
         row.querySelector('.dse-wp-time-down').addEventListener('click', () => {
             this._shiftWaypointTimes(row, -1, tbody);
@@ -1481,7 +1528,9 @@ export class DiveSetupEditor extends EventTarget {
         // Wire up events
         newRow.querySelector('.dse-wp-time').addEventListener('input', () => this._onInputChange());
         newRow.querySelector('.dse-wp-depth').addEventListener('input', () => this._onInputChange());
-        newRow.querySelector('.dse-wp-gas').addEventListener('change', () => this._onInputChange());
+        newRow.querySelector('.dse-wp-gas').addEventListener('change', (event) => {
+            this._handleWaypointGasChange(event.target);
+        });
         newRow.querySelector('.dse-wp-time-down').addEventListener('click', () => {
             this._shiftWaypointTimes(newRow, -1, tbody);
         });
@@ -1838,8 +1887,13 @@ export class DiveSetupEditor extends EventTarget {
         }
 
         // Gradient factors
-        const gfLow = normalizeGradientFactorPercent(setup.gfLow, DEFAULT_GF_LOW);
-        const gfHigh = normalizeGradientFactorPercent(setup.gfHigh, DEFAULT_GF_HIGH);
+        const normalizedGfLow = normalizeGradientFactorPercent(setup.gfLow, DEFAULT_GF_LOW);
+        const normalizedGfHigh = normalizeGradientFactorPercent(setup.gfHigh, DEFAULT_GF_HIGH);
+        const gfLow = Math.min(normalizedGfLow, normalizedGfHigh);
+        const gfHigh = Math.max(normalizedGfLow, normalizedGfHigh);
+        if (this.currentGases.length > 1 || gfLow !== gfHigh) {
+            this._disableGfLock();
+        }
         if (this.elements.gfLowInput) {
             this.elements.gfLowInput.value = gfLow;
             this.elements.gfLowSlider.value = gfLow;

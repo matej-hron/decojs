@@ -1235,6 +1235,7 @@
             "hint": "GF 100/100 = čistý Bühlmann. Nižší hodnoty = konzervativnější.",
             "low": "GF Low (%):",
             "high": "GF High (%):",
+            "lockEqual": "Držet GF High rovný GF Low",
             "presetsLabel": "Předvolby:",
             "presetGuide": "Průvodce GF předvolbami",
             "presetBuhlmann": "Bühlmann",

@@ -2318,7 +2318,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.161";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.162";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -2940,6 +2940,14 @@ footer a {
 
 .dse-gf-row input[type="number"] {
     width: 60px;
+}
+
+.dse-gf-lock {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    cursor: pointer;
 }
 
 .dse-gf-presets {
