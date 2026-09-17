@@ -8873,12 +8873,12 @@ describe('notation - quantity symbols are italic', () => {
 
     test('M-value main chart fills its available column with a square plot', () => {
         const page = readFileSync(new URL('../sandbox/m-values.html', import.meta.url), 'utf8');
-        expect(page).toContain('viewBox="0 0 800 800"');
+        expect(page).toContain('viewBox="0 0 420 420"');
         expect(page).toContain('#mvTopChart { width: 100%; height: auto; aspect-ratio: 1;');
         expect(page).toContain('grid-template-columns: minmax(0, 1fr) 360px');
-        expect(page).toContain('const CHART_W = 800');
+        expect(page).toContain('const CHART_W = 420');
         expect(page).toContain('x: (PAD_L + CHART_W - PAD_R) / 2');
-        expect(page).toContain('const CHART_H = 800');
+        expect(page).toContain('const CHART_H = 420');
     });
 
     test('M-value derivation chart uses a large readable drawing area', () => {
