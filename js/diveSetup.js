@@ -2032,11 +2032,9 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
         `<tbody>${rows.join('')}</tbody>` +
         `</table>`;
 
-    const runtimeDetailFootnote = practicalRuntime
-        ? translate('divePlan.runtimePracticalFootnote', 'Stop durations are the whole minutes calculated by the model. Intermediate 3\u00a0m ascents are included as 20\u00a0seconds in the whole-minute runtime cross-check.')
-        : departureRuntime
-            ? translate('divePlan.runtimeDepartureFootnote', 'At decompression stops, runtime is the whole minute when the diver leaves for the next level. A decimal stop duration is the difference from the exact arrival time; execute the plan using the departure runtime.')
-            : '';
+    const runtimeDetailFootnote = departureRuntime
+        ? translate('divePlan.runtimeDepartureFootnote', 'At decompression stops, runtime is the whole minute when the diver leaves for the next level. A decimal stop duration is the difference from the exact arrival time; execute the plan using the departure runtime.')
+        : '';
 
     return `<div class="dse-plan-tables">` +
         tableHtml(translate('divePlan.sectionBottom', 'Bottom'), bottomRowsHtml) +
