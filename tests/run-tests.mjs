@@ -8845,12 +8845,35 @@ describe('notation - quantity symbols are italic', () => {
         expect(page.includes("yUnit.setAttribute('class', 'mv-chart-axis-unit')")).toBe(true);
     });
 
-    test('M-value main chart and comparison panel use a large readable layout', () => {
+    test('M-value chart renders one bar at the same geometric scale on both axes', () => {
         const page = readFileSync(new URL('../sandbox/m-values.html', import.meta.url), 'utf8');
-        expect(page).toContain('viewBox="0 0 800 420"');
+        const numberConstant = name => Number(
+            page.match(new RegExp(`const ${name} = ([0-9.]+);`))?.[1]
+        );
+        const chartWidth = numberConstant('CHART_W');
+        const chartHeight = numberConstant('CHART_H');
+        const padLeft = numberConstant('PAD_L');
+        const padRight = numberConstant('PAD_R');
+        const padTop = numberConstant('PAD_T');
+        const padBottom = numberConstant('PAD_B');
+        const xMin = numberConstant('X_MIN');
+        const xMax = numberConstant('X_MAX');
+        const yMin = numberConstant('Y_MIN');
+        const yMax = numberConstant('Y_MAX');
+
+        const xPixelsPerBar = (chartWidth - padLeft - padRight) / (xMax - xMin);
+        const yPixelsPerBar = (chartHeight - padTop - padBottom) / (yMax - yMin);
+
+        expect(Math.abs(xPixelsPerBar - yPixelsPerBar)).toBeLessThan(1e-9);
+    });
+
+    test('M-value main chart keeps a tall pressure-proportional plot beside the comparison panel', () => {
+        const page = readFileSync(new URL('../sandbox/m-values.html', import.meta.url), 'utf8');
+        expect(page).toContain('viewBox="0 0 231.04 420"');
         expect(page).toContain('height: clamp(380px, 30vw, 520px)');
         expect(page).toContain('grid-template-columns: minmax(0, 1fr) 360px');
-        expect(page).toContain('const CHART_W = 800');
+        expect(page).toContain('const CHART_W = 231.04');
+        expect(page).toContain('x: (PAD_L + CHART_W - PAD_R) / 2');
         expect(page).toContain('const CHART_H = 420');
     });
 

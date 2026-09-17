@@ -740,7 +740,7 @@
 
             <div class="mv-chart-row">
                 <div class="mv-chart-grid">
-                    <svg id="mvTopChart" viewBox="0 0 800 420" preserveAspectRatio="xMidYMid meet" aria-label="M-value chart"></svg>
+                    <svg id="mvTopChart" viewBox="0 0 231.04 420" preserveAspectRatio="xMidYMid meet" aria-label="M-value chart"></svg>
                     <aside class="mv-variant-detail" aria-labelledby="mvVariantDetailHeading">
                         <h3 id="mvVariantDetailHeading" data-i18n="sandbox.mvalues.top.detail.heading">Magnified <var>M</var>-value difference</h3>
                         <div class="mv-detail-pressure">
@@ -1319,7 +1319,7 @@
         }
 
         // ---- Chart constants ----
-        const CHART_W = 800;
+        const CHART_W = 231.04;
         const CHART_H = 420;
         const PAD_L = 65;
         const PAD_R = 25;
@@ -1433,7 +1433,7 @@
 
             // Axis labels
             const xLabel = svgEl('text', {
-                x: (CHART_W + PAD_L) / 2, y: CHART_H - 4, class: 'mv-chart-label mv-chart-axis-title', 'text-anchor': 'middle',
+                x: (PAD_L + CHART_W - PAD_R) / 2, y: CHART_H - 4, class: 'mv-chart-label mv-chart-axis-title', 'text-anchor': 'middle',
             });
             const ambientSubscript = translate('sandbox.mvalues.symbols.ambient', 'amb');
             svgPressureLabel(xLabel, ambientSubscript, ' (bar)');
