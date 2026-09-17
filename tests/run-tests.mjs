@@ -8864,17 +8864,21 @@ describe('notation - quantity symbols are italic', () => {
         const xPixelsPerBar = (chartWidth - padLeft - padRight) / (xMax - xMin);
         const yPixelsPerBar = (chartHeight - padTop - padBottom) / (yMax - yMin);
 
+        expect(xMax - xMin).toBe(yMax - yMin);
+        expect(chartWidth - padLeft - padRight).toBe(
+            chartHeight - padTop - padBottom
+        );
         expect(Math.abs(xPixelsPerBar - yPixelsPerBar)).toBeLessThan(1e-9);
     });
 
-    test('M-value main chart keeps a tall pressure-proportional plot beside the comparison panel', () => {
+    test('M-value main chart fills its available column with a square plot', () => {
         const page = readFileSync(new URL('../sandbox/m-values.html', import.meta.url), 'utf8');
-        expect(page).toContain('viewBox="0 0 231.04 420"');
-        expect(page).toContain('height: clamp(380px, 30vw, 520px)');
+        expect(page).toContain('viewBox="0 0 800 800"');
+        expect(page).toContain('#mvTopChart { width: 100%; height: auto; aspect-ratio: 1;');
         expect(page).toContain('grid-template-columns: minmax(0, 1fr) 360px');
-        expect(page).toContain('const CHART_W = 231.04');
+        expect(page).toContain('const CHART_W = 800');
         expect(page).toContain('x: (PAD_L + CHART_W - PAD_R) / 2');
-        expect(page).toContain('const CHART_H = 420');
+        expect(page).toContain('const CHART_H = 800');
     });
 
     test('M-value derivation chart uses a large readable drawing area', () => {
