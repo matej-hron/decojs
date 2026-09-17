@@ -381,7 +381,9 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
     const seededTissues = options.initialTissuePressures || null;
     const exceedsNDL = bottomTime > ndlExact;
 
-    if (!exceedsNDL && !seededTissues) {
+    const hasDecoGases = Array.isArray(gases) && gases.length > 1;
+
+    if (!exceedsNDL && !seededTissues && !hasDecoGases) {
         // Within NDL - generate simple profile with safety stop
         const waypoints = generateSimpleProfile(maxDepth, bottomTime, safetyStop, options);
         // Add gasId to first bottom waypoint
@@ -407,7 +409,8 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
                 gfLowDec, gfHighDec, gases, { ...options, audit: true }
             ).decisionAudit;
             decisionAudit.events = decisionAudit.events.filter(
-                event => event.type === 'direct-ascent'
+                event => event.type === 'direct-ascent' ||
+                    event.type === 'gas-switch'
             );
         }
 
@@ -460,6 +463,7 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
                 : {})
         }
     );
+    const mandatoryDecoStops = anchorDepth > 0 ? stops : [];
     
     // Build waypoints from deco schedule
     const waypoints = [
@@ -518,14 +522,22 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
     // 1. Safety stop is enabled
     // 2. Max depth is greater than safety stop depth
     // 3. No deco stop at or below safety stop depth (deco has cleared)
-    const hasDecoAtOrBelowSafetyStop = stops.some(s => s.depth <= safetyStopDepth && s.depth > 0);
+    const hasDecoAtOrBelowSafetyStop = mandatoryDecoStops.some(
+        stop => stop.depth <= safetyStopDepth && stop.depth > 0
+    );
     const needsSafetyStop = safetyStopEnabled && 
                            maxDepth > safetyStopDepth && 
                            !hasDecoAtOrBelowSafetyStop;
     
     if (needsSafetyStop) {
-        // Add safety stop if not already covered by a deco stop
-        if (!eventsByDepth.has(safetyStopDepth)) {
+        const existingEvent = eventsByDepth.get(safetyStopDepth);
+        if (existingEvent) {
+            existingEvent.stopTime = Math.max(
+                existingEvent.stopTime,
+                safetyStopTime
+            );
+            existingEvent.isSafetyStop = true;
+        } else {
             eventsByDepth.set(safetyStopDepth, {
                 depth: safetyStopDepth,
                 stopTime: safetyStopTime,
@@ -616,13 +628,16 @@ export function generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, 
         }
     }
 
-    const totalDecoTime = stops.reduce((sum, s) => sum + s.time, 0);
+    const totalDecoTime = mandatoryDecoStops.reduce(
+        (sum, stop) => sum + stop.time,
+        0
+    );
     
     return {
         waypoints,
         ndl,
-        requiresDeco: stops.length > 0,
-        decoStops: stops,
+        requiresDeco: mandatoryDecoStops.length > 0,
+        decoStops: mandatoryDecoStops,
         totalDecoTime,
         controllingCompartment,
         pAnchor,
@@ -970,7 +985,8 @@ export function generateDecisionAudit(setup) {
     );
     if (!seededTissues && schedule.anchorDepth === 0) {
         schedule.decisionAudit.events = schedule.decisionAudit.events.filter(
-            event => event.type === 'direct-ascent'
+            event => event.type === 'direct-ascent' ||
+                event.type === 'gas-switch'
         );
     }
     return schedule.decisionAudit;

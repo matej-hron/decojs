@@ -120,6 +120,16 @@ When inserting, the function:
 - If there is an existing stop, merges: updates the stop's `gasId` rather than inserting a parallel row.
 - Marks every ascending waypoint with the `currentGasId` so downstream consumers (chart, tissue simulation) pick up the correct $f_{N_2}$.
 
+`generateDecoProfile` uses the full scheduler path whenever one or more deco
+gases are configured, even if the bottom time is within NDL. This keeps the
+profile waypoints, MOD rounding, optional switch time, decision audit, and
+tissue-loading input identical to a decompression profile. The fast
+`generateSimpleProfile` early return is reserved for fresh NDL dives carrying
+only the bottom gas. A timed gas-switch hold does not turn an NDL profile into
+a decompression profile or contribute to `totalDecoTime`. If it coincides with
+a configured safety-stop depth, the combined hold lasts at least as long as
+the safety stop.
+
 ### Gas-switch time
 
 ```javascript
