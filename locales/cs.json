@@ -2249,6 +2249,7 @@
                 },
                 "legend": {
                     "selectedLine": "Zvolená <var>M</var>-čára:",
+                    "equilibrium": "Rovnováha: <var>p</var><sub>tk</sub> = <var>p</var><sub>okol</sub>",
                     "currentPoint": "Aktuální okolní tlak a odpovídající <var>M</var>-hodnota",
                     "surface": "Hladina (<var>p</var><sub>okol</sub> = 1,013 bar)"
                 },

@@ -2249,6 +2249,7 @@
                 },
                 "legend": {
                     "selectedLine": "Selected <var>M</var>-line:",
+                    "equilibrium": "Equilibrium: <var>p</var><sub>t</sub> = <var>p</var><sub>amb</sub>",
                     "currentPoint": "Current ambient pressure and corresponding <var>M</var>-value",
                     "surface": "Surface (<var>p</var><sub>amb</sub> = 1.013 bar)"
                 },

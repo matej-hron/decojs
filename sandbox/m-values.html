@@ -306,6 +306,15 @@
         }
         #mvTopChart { width: 100%; height: clamp(380px, 30vw, 520px); display: block; }
         #mvTopChart .mv-chart-label { font-size: 13px; }
+        #mvTopChart .mv-chart-axis-title { font-size: 14px; }
+        #mvTopChart .mv-chart-interactive { transition: opacity 0.15s ease; }
+        #mvTopChart.has-highlight .mv-chart-interactive:not(.is-highlighted) { opacity: 0.14; }
+        #mvTopChart .mv-chart-interactive.is-highlighted { opacity: 1; }
+        #mvTopChart .mv-chart-mline.is-highlighted { stroke-width: 3.5; }
+        #mvTopChart .mv-chart-equilibrium.is-highlighted,
+        #mvTopChart .mv-chart-surface.is-highlighted,
+        #mvTopChart .mv-chart-current-pressure.is-highlighted { stroke-width: 2.5; }
+        #mvTopChart .mv-chart-marker.is-highlighted { stroke-width: 3; }
         .mv-variant-detail {
             min-width: 0;
             padding: 1rem;
@@ -479,6 +488,7 @@
         .mv-chart-tick { stroke: var(--text-muted); stroke-width: 0.5; }
         .mv-chart-label { fill: var(--text-muted); font-size: 10px; font-family: ui-monospace, monospace; }
         .mv-chart-surface { stroke: #7f8c8d; stroke-width: 1; stroke-dasharray: 2,2; }
+        .mv-chart-equilibrium { stroke: #2980b9; stroke-width: 1.5; stroke-dasharray: 6,4; }
         .mv-chart-mline { fill: none; stroke-width: 2; }
         .mv-chart-mline.faint { stroke-width: 1; stroke-dasharray: 3,3; opacity: 0.5; }
         .mv-chart-current-pressure { stroke: #e67e22; stroke-width: 1; stroke-dasharray: 3,3; opacity: 0.75; }
@@ -500,6 +510,11 @@
             padding: 2px 4px;
             border-radius: 3px;
             cursor: default;
+        }
+        .mv-chart-legend .item[data-highlight] { cursor: pointer; }
+        .mv-chart-legend .item[data-highlight]:focus-visible {
+            outline: 2px solid #2980b9;
+            outline-offset: 2px;
         }
         .mv-chart-legend .swatch {
             display: inline-block;
@@ -759,6 +774,12 @@
                     </aside>
                 </div>
             </div>
+            <div class="mv-chart-legend" id="mvTopChartLegend">
+                <span class="item" data-highlight="m-line" tabindex="0"><span class="swatch" id="mvLegendLineSwatch"></span><span data-i18n="sandbox.mvalues.top.legend.selectedLine">Selected <var>M</var>-line:</span>&nbsp;<strong id="mvLegendVariant">ZH-L16C</strong></span>
+                <span class="item" data-highlight="equilibrium" tabindex="0" style="color:#2980b9;"><span class="swatch dashed"></span><span data-i18n="sandbox.mvalues.top.legend.equilibrium">Equilibrium: <var>p</var><sub>t</sub> = <var>p</var><sub>amb</sub></span></span>
+                <span class="item" data-highlight="current-point" tabindex="0"><span class="swatch dot"></span><span data-i18n="sandbox.mvalues.top.legend.currentPoint">Current ambient pressure and corresponding <var>M</var>-value</span></span>
+                <span class="item" data-highlight="surface" tabindex="0"><span class="swatch dashed" style="color:#7f8c8d;"></span><span data-i18n="sandbox.mvalues.top.legend.surface">Surface (<var>p</var><sub>amb</sub> = 1.013&nbsp;bar)</span></span>
+            </div>
             <details class="mv-coeff-details">
                 <summary data-i18n="sandbox.mvalues.top.coefficients.heading">Coefficients of all compartments</summary>
                 <p class="mv-coeff-notice" data-i18n="sandbox.mvalues.top.coefficients.notice">Compartments are mathematical models of saturation rates, not specific anatomical tissues. The examples are only approximate analogies.</p>
@@ -778,11 +799,6 @@
                 </div>
                 <p class="mv-coeff-summary" data-i18n="sandbox.mvalues.top.coefficients.summary">Variants B and C mostly change coefficient <var>a</var>, shifting the <var>M</var>-line. Coefficient <var>b</var>, which affects its slope, stays the same for TC2–16. TC1 is the exception: variants B and C use a different half-time, so <var>b</var> changes too.</p>
             </details>
-            <div class="mv-chart-legend" id="mvTopChartLegend">
-                <span class="item"><span class="swatch" id="mvLegendLineSwatch"></span><span data-i18n="sandbox.mvalues.top.legend.selectedLine">Selected <var>M</var>-line:</span>&nbsp;<strong id="mvLegendVariant">ZH-L16C</strong></span>
-                <span class="item"><span class="swatch dot"></span><span data-i18n="sandbox.mvalues.top.legend.currentPoint">Current ambient pressure and corresponding <var>M</var>-value</span></span>
-                <span class="item"><span class="swatch dashed" style="color:#7f8c8d;"></span><span data-i18n="sandbox.mvalues.top.legend.surface">Surface (<var>p</var><sub>amb</sub> = 1.013&nbsp;bar)</span></span>
-            </div>
         </section>
         <section class="mvalues-section derivation">
             <h2 data-i18n="sandbox.mvalues.bottom.heading">Where do <var>a</var> and <var>b</var> come from?</h2>
@@ -1416,14 +1432,14 @@
 
             // Axis labels
             const xLabel = svgEl('text', {
-                x: (CHART_W + PAD_L) / 2, y: CHART_H - 4, class: 'mv-chart-label', 'text-anchor': 'middle',
+                x: (CHART_W + PAD_L) / 2, y: CHART_H - 4, class: 'mv-chart-label mv-chart-axis-title', 'text-anchor': 'middle',
             });
             const ambientSubscript = translate('sandbox.mvalues.symbols.ambient', 'amb');
             svgPressureLabel(xLabel, ambientSubscript, ' (bar)');
             svg.appendChild(xLabel);
             const yLabelMid = (PAD_T + CHART_H - PAD_B) / 2;
             const yLabel = svgEl('text', {
-                x: 12, y: yLabelMid, class: 'mv-chart-label', 'text-anchor': 'middle',
+                x: 12, y: yLabelMid, class: 'mv-chart-label mv-chart-axis-title', 'text-anchor': 'middle',
                 transform: `rotate(-90, 12, ${yLabelMid})`,
             });
             const mLabel = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
@@ -1436,7 +1452,17 @@
             // Surface line (vertical at P_amb = SURFACE_PRESSURE)
             svg.appendChild(svgEl('line', {
                 x1: xToPx(SURFACE_PRESSURE), y1: PAD_T, x2: xToPx(SURFACE_PRESSURE), y2: CHART_H - PAD_B,
-                class: 'mv-chart-surface',
+                class: 'mv-chart-surface mv-chart-interactive',
+                'data-highlight-target': 'surface',
+            }));
+
+            // Ambient-equilibrium line y = x.
+            const equilibriumMax = Math.min(X_MAX, Y_MAX);
+            svg.appendChild(svgEl('line', {
+                x1: xToPx(X_MIN), y1: yToPx(Y_MIN),
+                x2: xToPx(equilibriumMax), y2: yToPx(equilibriumMax),
+                class: 'mv-chart-equilibrium mv-chart-interactive',
+                'data-highlight-target': 'equilibrium',
             }));
 
             // M-lines
@@ -1447,10 +1473,11 @@
                 svg.appendChild(svgEl('line', {
                     x1: xToPx(X_MIN), y1: yToPx(m0),
                     x2: xToPx(X_MAX), y2: yToPx(mMax),
-                    class: 'mv-chart-mline',
+                    class: 'mv-chart-mline mv-chart-interactive',
                     stroke: compartmentColor(c),
                     'data-variant': state.variant,
                     'data-compartment': c.id,
+                    'data-highlight-target': 'm-line',
                 }));
             } else {
                 // All 16 lines for active variant
@@ -1462,10 +1489,11 @@
                     svg.appendChild(svgEl('line', {
                         x1: xToPx(X_MIN), y1: yToPx(m0),
                         x2: xToPx(X_MAX), y2: yToPx(mMax),
-                        class: 'mv-chart-mline' + (isSelected ? '' : ' faint'),
+                        class: 'mv-chart-mline mv-chart-interactive' + (isSelected ? '' : ' faint'),
                         stroke: compartmentColor(c),
                         'data-variant': state.variant,
                         'data-compartment': c.id,
+                        ...(isSelected ? { 'data-highlight-target': 'm-line' } : {}),
                     }));
                 });
             }
@@ -1478,16 +1506,43 @@
                 svg.appendChild(svgEl('line', {
                     x1: xToPx(pAmbNow), y1: yToPx(Y_MIN),
                     x2: xToPx(pAmbNow), y2: yToPx(mNow),
-                    class: 'mv-chart-current-pressure',
+                    class: 'mv-chart-current-pressure mv-chart-interactive',
                     id: 'mvTopChartCurrentPressure',
+                    'data-highlight-target': 'current-point',
                 }));
                 svg.appendChild(svgEl('circle', {
                     cx: xToPx(pAmbNow), cy: yToPx(mNow),
-                    r: 7, class: 'mv-chart-marker',
+                    r: 7, class: 'mv-chart-marker mv-chart-interactive',
                     id: 'mvTopChartMarker',
+                    'data-highlight-target': 'current-point',
                 }));
             }
         }
+
+        function setTopChartHighlight(target) {
+            const svg = document.getElementById('mvTopChart');
+            if (!svg) return;
+            svg.classList.toggle('has-highlight', Boolean(target));
+            svg.querySelectorAll('[data-highlight-target]').forEach(element => {
+                element.classList.toggle(
+                    'is-highlighted',
+                    Boolean(target) && element.dataset.highlightTarget === target
+                );
+            });
+        }
+
+        document.querySelectorAll('#mvTopChartLegend [data-highlight]').forEach(item => {
+            const target = item.dataset.highlight;
+            const clearHighlightIfInactive = () => {
+                if (!item.matches(':hover, :focus')) {
+                    setTopChartHighlight(null);
+                }
+            };
+            item.addEventListener('pointerenter', () => setTopChartHighlight(target));
+            item.addEventListener('pointerleave', clearHighlightIfInactive);
+            item.addEventListener('focus', () => setTopChartHighlight(target));
+            item.addEventListener('blur', clearHighlightIfInactive);
+        });
 
         // ---- Bottom (derivation) chart constants ----
         const DERIV_W = 900;
