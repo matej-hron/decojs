@@ -1815,7 +1815,7 @@
             "subtitle": "Mueve al buceador, cambia el gas, deja correr el tiempo — y observa cómo las presiones parciales de nitrógeno persiguen exponencialmente al ambiente.",
             "disclaimerBanner": "<strong>Solo para fines educativos</strong> — Un juego de física que muestra cómo responde la carga de nitrógeno en los tejidos a la profundidad y a los cambios de gas. No es un planificador de inmersiones.",
             "depth": "Profundidad",
-            "depthHint": "0–40 m. Los cambios son instantáneos.",
+            "depthHint": "0–40 m. Los valores escritos se aplican tras una breve pausa; el control deslizante responde al instante.",
             "gas": "Gas respirable",
             "gases": {
                 "air": "Aire (21 % O₂ / 79 % N₂)",

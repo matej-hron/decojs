@@ -1851,7 +1851,7 @@
             "subtitle": "Move the diver, switch the gas, let time run — and watch nitrogen partial pressures chase ambient exponentially.",
             "disclaimerBanner": "<strong>Educational Use Only</strong> — A physics playground showing how tissue nitrogen loading responds to depth and gas changes. Not a dive planner.",
             "depth": "Depth",
-            "depthHint": "0–40 m. Changes are instantaneous.",
+            "depthHint": "0–40 m. Typed values apply after a brief pause; the slider responds immediately.",
             "gas": "Breathing gas",
             "gases": {
                 "air": "Air (21 % O₂ / 79 % N₂)",

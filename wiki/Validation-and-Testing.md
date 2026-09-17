@@ -6,7 +6,7 @@ npm test
 
 Runs `node tests/run-tests.mjs`. No external test framework — `tests/run-tests.mjs` implements `describe`/`test`/`expect` inline (lines 10–140) with matchers `.toBe`, `.toEqual`, `.toBeCloseTo`, `.toBeGreaterThan`, `.toBeLessThan`, `.toHaveProperty`, `.toHaveLength`, `.toBeDefined`. Output is one line per test, then a pass/fail summary.
 
-**589 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
+**590 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
 
 `npm test` is required to pass before every commit per `CLAUDE.md`.
 
@@ -30,6 +30,7 @@ The algorithm suite. Directly imports from `js/decoModel.js` and `js/tissueCompa
 - **Dive-plan runtime marker.** Verifies that both split dive-plan tables bind the shared runtime definition to their Runtime heading with a superscript asterisk. Practical mode adds no redundant calculation note; departure mode keeps its execution-specific detail as a separate unmarked note.
 - **Oxygen warning terminology.** Verifies across Czech, English, and Spanish that the 1.4 bar warning describes the bottom-phase limit rather than incorrectly referring to occupational or “working” dives; the phase/gas warning logic remains unchanged.
 - **M-value sandbox chart interaction.** Verifies the ambient-equilibrium line <var>p</var><sub>t</sub> = <var>p</var><sub>amb</sub>, a full-width square 0–10 bar plot with equal geometric scaling on both pressure axes, hover/focus legend highlighting for all four chart elements, legend placement directly below the graph, and dedicated equal-size SVG spans for the axis-unit labels.
+- **Tissue-saturation depth input.** Verifies that typed depth changes wait for a 250 ms debounce, while slider input remains immediate; change, blur, and Enter flush pending input, and reset/destruction clear pending timers.
 - **NDL deco-gas propagation.** Verifies that a no-decompression profile carrying EAN50 and O₂ still switches at the scheduler's MOD depths, applies configured switch time without being reclassified as decompression, preserves a longer safety stop at the same depth, retains gas-switch audit events, and feeds the changed N₂ fractions and tissue pressures into the shared chart calculation.
 
 ### `tests/diveSetup.test.js` (~650 lines, ~49 tests)

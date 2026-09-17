@@ -1851,7 +1851,7 @@
             "subtitle": "Pohybujte potápěčem, měňte dýchanou směs, nechte plynout čas — a sledujte, jak se parciální tlaky dusíku exponenciálně přibližují k okolnímu tlaku.",
             "disclaimerBanner": "<strong>Pouze pro výukové účely</strong> — Fyzikální hřiště ukazující, jak sycení tkání dusíkem reaguje na změny hloubky a dýchané směsi. Nejde o plánovač ponorů.",
             "depth": "Hloubka",
-            "depthHint": "0–40 m. Změny jsou okamžité.",
+            "depthHint": "0–40 m. Napsaná hodnota se použije po krátké prodlevě; posuvník reaguje okamžitě.",
             "gas": "Dýchaná směs",
             "gases": {
                 "air": "Vzduch (21 % O₂ / 79 % N₂)",
