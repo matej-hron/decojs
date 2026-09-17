@@ -1743,7 +1743,7 @@ describe('diveSetup - renderDivePlanTableHTML', () => {
     test('both tables repeat the column headings and share one Runtime footnote', () => {
         const html = renderDivePlanTableHTML(waypoints, gases, {});
         expect((html.match(/<th>Duration \(min\)<\/th>/g) || []).length).toBe(2);
-        expect((html.match(/<th>Runtime \(min\) \*<\/th>/g) || []).length).toBe(2);
+        expect((html.match(/<th>Runtime \(min\)<sup>\*<\/sup><\/th>/g) || []).length).toBe(2);
         expect(html).toContain('<p class="dse-plan-footnote">* Runtime is the elapsed time from the start of the dive to the end of the stage.</p>');
         expect(html).toContain('<p class="dse-plan-footnote">The model continuously calculates tissue on-gassing during descent. Descent is therefore included in both bottom time and the decompression-profile calculation.</p>');
     });
@@ -1817,6 +1817,7 @@ describe('diveSetup - renderDivePlanTableHTML', () => {
             practicalWaypoints, gases, { runtimeConvention: 'practical' }
         );
 
+        expect(html).toContain('<th>Runtime (min)<sup>*</sup></th>');
         expect(html).toContain('<td class="dse-plan-depth">3\u00a0m</td><td class="dse-plan-stop">3</td><td class="dse-plan-runtime">32</td>');
         expect(html).toContain('<td class="dse-plan-depth">3\u00a0m</td><td class="dse-plan-stop">7</td><td class="dse-plan-runtime">39</td>');
         expect(html).toContain('<td class="dse-plan-depth">0\u00a0m</td><td class="dse-plan-stop">20\u00a0s</td><td class="dse-plan-runtime">39</td>');
@@ -6624,6 +6625,277 @@ describe('DiveSetupEditor notation', () => {
             expect(repetitivePlanner.includes('id="cfg-gfhigh" type="number" value="100" min="10" max="100"')).toBe(true);
             expect(repetitivePlanner.includes('normalizeGradientFactorPercent')).toBe(true);
             expect(repetitivePlanner.includes('min="1" max="100"')).toBe(false);
+        });
+    });
+
+    describe('gradient factor UI lock', () => {
+        function buildHarness() {
+            const dom = new JSDOM('<!doctype html><body></body>');
+            const previousDocument = globalThis.document;
+            globalThis.document = dom.window.document;
+            let changes = 0;
+            let ndlUpdates = 0;
+            const context = Object.assign(Object.create(DiveSetupEditor.prototype), {
+                elements: {},
+                currentGases: [{
+                    id: 'air',
+                    name: 'Air',
+                    o2: 0.21,
+                    n2: 0.79,
+                    he: 0
+                }],
+                options: { maxGases: 4 },
+                _onInputChange() {
+                    changes++;
+                },
+                _updateNDLDisplay() {
+                    ndlUpdates++;
+                },
+                _renderGasCards() {},
+                _updateEnvironmentDisplay() {},
+                _loadWaypointsToTable() {}
+            });
+            const section = DiveSetupEditor.prototype._buildGradientFactors.call(context);
+            return {
+                dom,
+                previousDocument,
+                context,
+                section,
+                get changes() {
+                    return changes;
+                },
+                get ndlUpdates() {
+                    return ndlUpdates;
+                },
+                restore() {
+                    globalThis.document = previousDocument;
+                    dom.window.close();
+                }
+            };
+        }
+
+        test('renders a default-on localized equality lock', () => {
+            const harness = buildHarness();
+            try {
+                const lock = harness.section.querySelector('.dse-gf-lock-input');
+                expect(lock.checked).toBe(true);
+
+                for (const language of ['cs', 'en', 'es']) {
+                    const locale = JSON.parse(readFileSync(
+                        new URL(`../locales/${language}.json`, import.meta.url),
+                        'utf8'
+                    ));
+                    expect(locale.diveEditor.gf.lockEqual.length > 0).toBe(true);
+                }
+            } finally {
+                harness.restore();
+            }
+        });
+
+        test('keeps both values equal while locked and prevents crossing when unlocked', () => {
+            const harness = buildHarness();
+            try {
+                const low = harness.context.elements.gfLowInput;
+                const high = harness.context.elements.gfHighInput;
+                const lock = harness.context.elements.gfLockInput;
+
+                harness.context.elements.gfLowSlider.value = '85';
+                harness.context.elements.gfLowSlider.dispatchEvent(
+                    new harness.dom.window.Event('input')
+                );
+                expect(high.value).toBe('85');
+
+                harness.context.elements.gfHighSlider.value = '75';
+                harness.context.elements.gfHighSlider.dispatchEvent(
+                    new harness.dom.window.Event('input')
+                );
+                expect(low.value).toBe('75');
+
+                lock.checked = false;
+                lock.dispatchEvent(new harness.dom.window.Event('change'));
+                low.value = '90';
+                low.dispatchEvent(new harness.dom.window.Event('input'));
+                expect(high.value).toBe('90');
+
+                high.value = '60';
+                high.dispatchEvent(new harness.dom.window.Event('input'));
+                expect(low.value).toBe('60');
+            } finally {
+                harness.restore();
+            }
+        });
+
+        test('manually enabling the lock copies GF Low to GF High', () => {
+            const harness = buildHarness();
+            try {
+                const low = harness.context.elements.gfLowInput;
+                const high = harness.context.elements.gfHighInput;
+                const lock = harness.context.elements.gfLockInput;
+                lock.checked = false;
+                low.value = '40';
+                high.value = '80';
+
+                lock.checked = true;
+                lock.dispatchEvent(new harness.dom.window.Event('change'));
+
+                expect(high.value).toBe('40');
+                expect(harness.context.elements.gfHighSlider.value).toBe('40');
+            } finally {
+                harness.restore();
+            }
+        });
+
+        test('enabling the lock while GF Low is empty restores its last valid value', () => {
+            const harness = buildHarness();
+            try {
+                const low = harness.context.elements.gfLowInput;
+                const high = harness.context.elements.gfHighInput;
+                const lock = harness.context.elements.gfLockInput;
+
+                low.value = '40';
+                low.dispatchEvent(new harness.dom.window.Event('input'));
+                lock.checked = false;
+                high.value = '80';
+                high.dispatchEvent(new harness.dom.window.Event('input'));
+                low.value = '';
+
+                lock.checked = true;
+                lock.dispatchEvent(new harness.dom.window.Event('change'));
+
+                expect(low.value).toBe('40');
+                expect(high.value).toBe('40');
+                expect(harness.context.elements.gfLowSlider.value).toBe('40');
+                expect(harness.context.elements.gfHighSlider.value).toBe('40');
+            } finally {
+                harness.restore();
+            }
+        });
+
+        test('selecting any GF preset disables the lock', () => {
+            const harness = buildHarness();
+            try {
+                for (const preset of harness.section.querySelectorAll('.dse-gf-preset')) {
+                    harness.context.elements.gfLockInput.checked = true;
+                    preset.click();
+                    expect(harness.context.elements.gfLockInput.checked).toBe(false);
+                }
+            } finally {
+                harness.restore();
+            }
+        });
+
+        test('adding or loading a deco gas and loading asymmetric GF disable the lock', () => {
+            const harness = buildHarness();
+            try {
+                DiveSetupEditor.prototype._addGas.call(harness.context);
+                expect(harness.context.elements.gfLockInput.checked).toBe(false);
+
+                harness.context.currentGases = [harness.context.currentGases[0]];
+                harness.context.elements.gfLockInput.checked = true;
+                DiveSetupEditor.prototype._populateFromSetup.call(harness.context, {
+                    name: 'Asymmetric',
+                    gases: harness.context.currentGases,
+                    gfLow: 30,
+                    gfHigh: 80,
+                    dives: []
+                });
+                expect(harness.context.elements.gfLockInput.checked).toBe(false);
+                expect(harness.context.elements.gfLowInput.value).toBe('30');
+                expect(harness.context.elements.gfHighInput.value).toBe('80');
+
+                harness.context.elements.gfLockInput.checked = true;
+                DiveSetupEditor.prototype._populateFromSetup.call(harness.context, {
+                    name: 'Reversed',
+                    gases: harness.context.currentGases,
+                    gfLow: 90,
+                    gfHigh: 70,
+                    dives: []
+                });
+                expect(harness.context.elements.gfLockInput.checked).toBe(false);
+                expect(harness.context.elements.gfLowInput.value).toBe('70');
+                expect(harness.context.elements.gfHighInput.value).toBe('90');
+
+                DiveSetupEditor.prototype._populateFromSetup.call(harness.context, {
+                    name: 'Symmetric',
+                    gases: harness.context.currentGases,
+                    gfLow: 80,
+                    gfHigh: 80,
+                    dives: []
+                });
+                expect(harness.context.elements.gfLockInput.checked).toBe(false);
+            } finally {
+                harness.restore();
+            }
+        });
+
+        test('selecting a deco gas in either waypoint row disables the lock', () => {
+            const harness = buildHarness();
+            try {
+                harness.context.currentGases.push({
+                    id: 'deco',
+                    name: 'EAN50',
+                    o2: 0.5,
+                    n2: 0.5,
+                    he: 0
+                });
+                const tbody = harness.dom.window.document.createElement('tbody');
+                harness.context._addWaypointRow(tbody, 0, 0, 'air');
+                const originalRow = tbody.querySelector('tr');
+                const originalGas = originalRow.querySelector('.dse-wp-gas');
+
+                originalGas.value = 'deco';
+                originalGas.dispatchEvent(new harness.dom.window.Event('change'));
+                expect(harness.context.elements.gfLockInput.checked).toBe(false);
+
+                harness.context.elements.gfLockInput.checked = true;
+                harness.context._insertWaypointAfter(originalRow, tbody);
+                const insertedGas = tbody.querySelectorAll('.dse-wp-gas')[1];
+                insertedGas.value = 'deco';
+                insertedGas.dispatchEvent(new harness.dom.window.Event('change'));
+                expect(harness.context.elements.gfLockInput.checked).toBe(false);
+            } finally {
+                harness.restore();
+            }
+        });
+
+        test('language changes preserve an explicitly disabled lock', () => {
+            const dom = new JSDOM('<!doctype html><body><div id="editor"></div></body>');
+            const previousDocument = globalThis.document;
+            globalThis.document = dom.window.document;
+
+            try {
+                const editor = new DiveSetupEditor(
+                    dom.window.document.getElementById('editor'),
+                    {
+                        options: {
+                            showProfiles: false,
+                            showQuickSetup: false,
+                            showStudySettings: false,
+                            showEnvironment: false,
+                            showSacRate: false,
+                            showImportExport: false,
+                            showDescription: false,
+                            showSurfaceInterval: false,
+                            showMultiDive: false,
+                            showGenerateButton: false,
+                            showWaypoints: false,
+                            showValidation: false,
+                            showDivePlanPreview: false
+                        }
+                    }
+                );
+                editor.elements.gfLockInput.checked = false;
+
+                dom.window.document.dispatchEvent(
+                    new dom.window.Event('languagechange')
+                );
+
+                expect(editor.elements.gfLockInput.checked).toBe(false);
+                editor.destroy();
+            } finally {
+                globalThis.document = previousDocument;
+                dom.window.close();
+            }
         });
     });
 

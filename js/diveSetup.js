@@ -2025,7 +2025,7 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
             `<th>${translate('divePlan.colPhase', 'Phase')}</th>` +
             `<th>${translate('divePlan.colDepth', 'Depth')}</th>` +
             `<th>${translate('divePlan.colStop', 'Duration (min)')}</th>` +
-            `<th>${translate('divePlan.colRuntime', 'Runtime (min)')} *</th>` +
+            `<th>${translate('divePlan.colRuntime', 'Runtime (min)')}<sup>*</sup></th>` +
             `<th>${translate('divePlan.colGas', 'Gas')}</th>` +
             `<th>${translate('divePlan.colTank', 'Tank')}</th>` +
         `</tr></thead>` +

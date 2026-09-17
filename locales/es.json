@@ -1235,6 +1235,7 @@
             "hint": "GF 100/100 = Bühlmann puro. Valores más bajos = más conservador.",
             "low": "GF Low (%):",
             "high": "GF High (%):",
+            "lockEqual": "Mantener GF High igual a GF Low",
             "presetsLabel": "Preajustes:",
             "presetGuide": "Guía de preajustes GF",
             "presetBuhlmann": "Bühlmann",
