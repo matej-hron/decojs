@@ -143,6 +143,12 @@ Continuous mode enforces `MIN_STOP_TIME = 2 min` per recorded stop (`decoModel.j
 
 Also tunable on the same call: `ascentRate` (default 10 m/min), `gasSwitchTime` (default 0 — minutes held at switch depth), `maxPpO2` (default 1.6 — deco-gas MOD ceiling).
 
+When extending profile generation, keep configured deco gases on the
+`generateDecoSchedule` path even for NDL dives. The generated `gasId` waypoints
+are the shared source for the profile chart, tissue-loading chart, P–P chart,
+GF chart, and decision audit; bypassing the scheduler would make those
+surfaces disagree about the breathing gas.
+
 ## Further reading
 
 - [Module-Reference](Module-Reference.md) — full signatures and line references for every module.

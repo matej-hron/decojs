@@ -3250,6 +3250,89 @@ describe('Gas Switching During Ascent', () => {
             expect(o2Switch).toBeDefined();
             expect(o2Switch.depth).toBe(O2_SWITCH_DEPTH);
         });
+
+        test('generated NDL profile carries EAN50 and O2 switches into its waypoints', () => {
+            const profile = generateDecoProfile(30, 10, gases, 100, 100);
+            const gasIds = profile.waypoints
+                .map(waypoint => waypoint.gasId)
+                .filter(Boolean);
+            const ean50Switch = profile.waypoints.find(
+                waypoint => waypoint.gasId === 'ean50'
+            );
+            const o2Switch = profile.waypoints.find(
+                waypoint => waypoint.gasId === 'o2'
+            );
+
+            expect(profile.requiresDeco).toBe(false);
+            expect(gasIds).toContain('ean50');
+            expect(gasIds).toContain('o2');
+            expect(ean50Switch.depth).toBe(EAN50_SWITCH_DEPTH);
+            expect(o2Switch.depth).toBe(O2_SWITCH_DEPTH);
+        });
+
+        test('tissue-loading data follows the NDL profile gas switches', () => {
+            const profile = generateDecoProfile(30, 10, gases, 100, 100);
+            const switched = calculateTissueLoading(profile.waypoints, 0, { gases });
+            const airOnlyWaypoints = profile.waypoints.map(waypoint => ({
+                ...waypoint,
+                gasId: 'air'
+            }));
+            const airOnly = calculateTissueLoading(airOnlyWaypoints, 0, { gases });
+
+            expect(switched.gasSwitches.map(event => event.gasId)).toContain('ean50');
+            expect(switched.gasSwitches.map(event => event.gasId)).toContain('o2');
+            expect(switched.n2Fractions).toContain(0.5);
+            expect(switched.n2Fractions).toContain(0);
+
+            const finalIndex = switched.timePoints.length - 1;
+            expect(switched.compartments[1].pressures[finalIndex])
+                .toBeLessThan(airOnly.compartments[1].pressures[finalIndex]);
+        });
+
+        test('configured switch time extends an NDL profile at each gas change', () => {
+            const immediate = generateDecoProfile(
+                30, 10, gases, 100, 100, undefined, { gasSwitchTime: 0 }
+            );
+            const timed = generateDecoProfile(
+                30, 10, gases, 100, 100, undefined, { gasSwitchTime: 1 }
+            );
+            const immediateEnd = immediate.waypoints.at(-1).time;
+            const timedEnd = timed.waypoints.at(-1).time;
+
+            expect(timedEnd).toBeCloseTo(immediateEnd + 2, 6);
+            expect(timed.requiresDeco).toBe(false);
+            expect(timed.decoStops).toEqual([]);
+            expect(timed.totalDecoTime).toBe(0);
+        });
+
+        test('gas-switch hold cannot shorten a safety stop at the same depth', () => {
+            const profile = generateDecoProfile(
+                24,
+                3,
+                [gases[0], gases[2]],
+                100,
+                100,
+                { enabled: true, depth: 6, time: 3 },
+                { gasSwitchTime: 1 }
+            );
+            const sixMeterWaypoints = profile.waypoints.filter(
+                waypoint => waypoint.depth === 6
+            );
+
+            expect(profile.requiresDeco).toBe(false);
+            expect(sixMeterWaypoints.at(-1).time - sixMeterWaypoints[0].time)
+                .toBeCloseTo(3, 6);
+        });
+
+        test('profile-generation audit retains NDL gas-switch decisions', () => {
+            const profile = generateDecoProfile(
+                30, 10, gases, 100, 100, undefined, { audit: true }
+            );
+
+            expect(profile.decisionAudit.events.some(
+                event => event.type === 'gas-switch'
+            )).toBe(true);
+        });
     });
     
     describe('Dive with first stop between gas MODs (35m/20min GF 50/80)', () => {
@@ -4050,7 +4133,7 @@ describe('Decompression schedule modes', () => {
         expect(audit.events[0].decision).toBe('decompression');
     });
 
-    test('does not narrate gas switches absent from a generated NDL profile', () => {
+    test('narrates gas switches present in a generated NDL profile', () => {
         const gases = [
             ...air,
             { id: 'ean50', name: 'EAN50', o2: 0.5, n2: 0.5 }
@@ -4065,7 +4148,7 @@ describe('Decompression schedule modes', () => {
             environment: { altitude: 0 },
             dives: [{ waypoints: profile.waypoints }]
         });
-        expect(audit.events.some(event => event.type === 'gas-switch')).toBe(false);
+        expect(audit.events.some(event => event.type === 'gas-switch')).toBe(true);
         expect(audit.events[0].decision).toBe('surface');
     });
 
