@@ -1609,7 +1609,7 @@
             "title": "Co to je?",
             "body": "Jedná se o interaktivní vzdělávací zdroj pro potápěče, kteří chtějí porozumět vědě stojící za jejich potápěčskými počítači. Všechny vizualizace vycházejí z dekompresního modelu <strong>Bühlmann ZH-L16</strong>, jednoho z nejpoužívanějších algoritmů v rekreačním i technickém potápění.",
             "origin": "Projekt DecoJS byl vytvořen jako kandidátská práce pro získání kvalifikace instruktora CMAS I3 v rámci Svazu potápěčů České republiky. Vznikl s odbornou podporou Výcvikové komise SPČR jako interaktivní výuková pomůcka pro instruktory a studenty potápění při výuce dekompresní teorie.",
-            "goal": "Cílem je učinit abstraktní pojmy jako sycení tkání, poločasy a M-hodnoty intuitivnější díky praktickému zkoumání a vizualizaci."
+            "goal": "Cílem je přiblížit abstraktní pojmy, jako jsou sycení tkání, poločasy a M-hodnoty, pomocí interaktivních simulací a názorných vizualizací."
         },
         "algo": {
             "title": "Detaily algoritmu",
