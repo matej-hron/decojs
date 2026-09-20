@@ -6112,6 +6112,39 @@ describe('Tissue saturation terminology and notation', () => {
     });
 });
 
+describe('Project origin and CMAS I3 context', () => {
+    const locales = Object.fromEntries(['cs', 'en', 'es'].map(lang => [
+        lang,
+        JSON.parse(readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8'))
+    ]));
+    const homePage = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+    const aboutPage = readFileSync(new URL('../about.html', import.meta.url), 'utf8');
+
+    test('presents the completed CMAS I3 candidate project and its teaching purpose', () => {
+        expect(homePage).toContain('data-i18n="home.about.origin"');
+        expect(aboutPage).toContain('data-i18n="about.what.origin"');
+
+        const csOrigin = locales.cs.about.what.origin;
+        expect(csOrigin).toContain('kandidátská práce');
+        expect(csOrigin).toContain('CMAS I3');
+        expect(csOrigin).toContain('Svazu potápěčů České republiky');
+        expect(csOrigin).toContain('Výcvikové komise SPČR');
+        expect(csOrigin).toContain('instruktory');
+        expect(csOrigin).toContain('studenty potápění');
+        expect(locales.cs.about.wip.text).toContain('byl během zpracování kandidátské práce <strong>odborně revidován</strong>');
+        expect(locales.en.about.wip.text).toContain('underwent professional review');
+        expect(locales.es.about.wip.text).toContain('fue sometido a revisión profesional');
+
+        for (const locale of Object.values(locales)) {
+            expect(locale.home.about.origin).toBe(locale.about.what.origin);
+            expect(locale.about.what.origin).toContain('CMAS I3');
+            expect(locale.about.wip.text.toLowerCase().includes('not reviewed')).toBe(false);
+            expect(locale.about.wip.text.toLowerCase().includes('nikým revidován')).toBe(false);
+            expect(locale.about.wip.text.toLowerCase().includes('no ha sido revisado')).toBe(false);
+        }
+    });
+});
+
 describe('Haldane sandbox glossary notation', () => {
     const locales = Object.fromEntries(['cs', 'en', 'es'].map(lang => [
         lang,

@@ -1583,6 +1583,7 @@
         "about": {
             "heading": "About This Project",
             "body1": "This is an educational resource for divers who want to understand the science behind their dive computers. All visualizations are based on the <strong>Bühlmann ZH-L16</strong> decompression model, one of the most widely used algorithms in recreational and technical diving.",
+            "origin": "DecoJS was created as a candidate project for qualification as a CMAS I3 instructor within Svaz potápěčů České republiky (SPČR). It was developed with expert support from the SPČR Training Commission as an interactive teaching aid for diving instructors and students learning decompression theory.",
             "disclaimerTitle": "Educational Use Only",
             "disclaimer": "These tools are for learning purposes only. Never use them for actual dive planning. Always rely on properly certified dive computers and tables for real-world diving."
         },
@@ -1595,11 +1596,11 @@
         "subtitle": "An experimental learning tool for understanding decompression theory",
         "wip": {
             "title": "🚧 Work in Progress",
-            "text": "This project is a <strong>work in progress</strong> and has not been reviewed by anyone yet. The content, calculations, and information presented here may contain errors or inaccuracies. Use at your own discretion."
+            "text": "This project <strong>underwent professional review</strong> while the CMAS I3 candidate project was being prepared. Nevertheless, the content, calculations, and information presented here may contain errors or inaccuracies. Use at your own discretion."
         },
         "disclaimer": {
             "title": "⚠️ Important Disclaimer",
-            "intro": "This project was created as a <strong>personal learning exercise</strong> by the author to better understand decompression theory and dive physics. It is an experimental, work-in-progress tool.",
+            "intro": "This project is an <strong>experimental educational tool</strong> for better understanding decompression theory and dive physics.",
             "guarantees": "<strong>No guarantees:</strong> There is no guarantee that the information, calculations, or visualizations provided here are correct or complete.",
             "notForDiving": "<strong>Not for dive planning:</strong> This tool must <em>never</em> be used for actual dive planning or any real diving situation. Always rely on certified dive computers, tables, and proper training.",
             "educational": "<strong>Educational use:</strong> This project may be used for educational purposes by <a href=\"https://deepblue.cz\" target=\"_blank\" rel=\"noopener\">Deepblue diving club</a>."
@@ -1607,6 +1608,7 @@
         "what": {
             "title": "What Is This?",
             "body": "This is an interactive educational resource for divers who want to understand the science behind their dive computers. All visualizations are based on the <strong>Bühlmann ZH-L16</strong> decompression model, one of the most widely used algorithms in recreational and technical diving.",
+            "origin": "DecoJS was created as a candidate project for qualification as a CMAS I3 instructor within Svaz potápěčů České republiky (SPČR). It was developed with expert support from the SPČR Training Commission as an interactive teaching aid for diving instructors and students learning decompression theory.",
             "goal": "The goal is to make abstract concepts like tissue saturation, half-times, and M-values more intuitive through hands-on exploration and visualization."
         },
         "algo": {
