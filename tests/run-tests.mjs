@@ -6224,6 +6224,9 @@ describe('Project origin and CMAS I3 context', () => {
         expect(csOrigin).toContain('Výcvikové komise SPČR');
         expect(csOrigin).toContain('instruktory');
         expect(csOrigin).toContain('studenty potápění');
+        expect(locales.cs.about.wip.text).toContain('byl během zpracování kandidátské práce <strong>odborně revidován</strong>');
+        expect(locales.en.about.wip.text).toContain('underwent professional review');
+        expect(locales.es.about.wip.text).toContain('fue sometido a revisión profesional');
 
         for (const locale of Object.values(locales)) {
             expect(locale.home.about.origin).toBe(locale.about.what.origin);
