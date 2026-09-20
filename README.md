@@ -87,7 +87,7 @@ See `CLAUDE.md` for the full commit checklist (including the wiki-update rule wh
 
 ## Author
 
-**Matej Hron** — CMAS I** instructor at [Deepblue diving club](https://deepblue.cz)
+**Matej Hron** — CMAS I*** instructor at [Deepblue diving club](https://deepblue.cz)
 
 - [matej.hron@gmail.com](mailto:matej.hron@gmail.com)
 - [LinkedIn](https://www.linkedin.com/in/matejhron/)
