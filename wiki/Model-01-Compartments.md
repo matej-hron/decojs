@@ -103,7 +103,7 @@ export function setZHL16Variant(variant) {
 }
 ```
 
-Callers must recalculate any cached tissue loading after switching (the charts in `js/mvalues.js` do this on the variant-select handler).
+Callers must recalculate any cached tissue loading after switching (the charts in `js/charts/MValueChart.js` do this on the variant-select handler).
 
 ## Color coding
 

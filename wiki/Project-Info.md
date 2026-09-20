@@ -43,7 +43,7 @@ Run `npm test` — all 208 tests must pass — then commit alongside the feature
 
 ## Project layout
 
-- `js/` — all application code. Core algorithm in `decoModel.js`, `tissueCompartments.js`, `diveSetup.js`, `diveProfile.js`; UI modules under `js/components/` and `js/charts/`; quiz engine in `quiz.js`; i18n in `i18n.js`; navigation in `nav.js`.
+- `js/` — all application code. Core algorithm in `decoModel.js` (barrel over `js/deco/*`), `tissueCompartments.js`, `diveSetup.js`; UI modules under `js/components/` and `js/charts/`; quiz engine in `quiz.js`; i18n in `i18n.js`; navigation in `nav.js`.
 - `tests/` — test runner and four test files plus the 3900-scenario `decotengu-reference.json`.
 - `data/` — JSON content: the default `dive-setup.json` and per-topic `quiz-*.json` exam banks.
 - `locales/` — `en.json`, `cs.json`, `es.json` translation bundles.

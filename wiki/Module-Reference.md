@@ -6,10 +6,27 @@ All paths are relative to the repository root. Line numbers are kept current per
 
 ### `js/decoModel.js`
 
-Implements Haldane and Schreiner kinetics, M-values, gradient-factor interpolation, NDL search, and the deco-stop scheduling loop. The largest module in the code base (~1300 lines).
+A **barrel module**. Since v0.6.154 the implementation lives in `js/deco/*.js`; `decoModel.js` only re-exports the public surface, so every existing importer keeps working unchanged.
+
+| Module | Lines | Contents |
+|---|---|---|
+| `js/deco/constants.js` | 55 | `CALC_INTERVAL`, `SURFACE_PRESSURE`, `WATER_VAPOR_PRESSURE`, `N2_FRACTION`, `STANDARD_GRAVITY`, `WATER_TYPES`, `WATER_DENSITIES`, `PRESSURE_PER_METER`, `DEFAULT_GF_LOW/HIGH`, `DESCENT_SPEED`, `ASCENT_SPEED`, `STOP_INCREMENT` |
+| `js/deco/config.js` | 52 | `DECO_MODES`, `DECISION_AUDIT_VERSION`, `getDecoMode`, `DECO_STOP_MAX_MINUTES`, `DecoCapExceededError` |
+| `js/deco/environment.js` | 66 | `getPressureAtAltitude`, `getSurfacePressure`, `getPressurePerMeter`, `getAmbientPressure` |
+| `js/deco/gasKinetics.js` | 127 | `getAlveolarN2Pressure`, `getInitialTissueN2`, `haldaneEquation`, `schreinerEquation`, `simulateDepthTime`, `simulateDepthChange` |
+| `js/deco/gradients.js` | 209 | `getMValue`, `getAdjustedMValue`, `calculateInstantGF`, `calculateMaxGF`, `getCompartmentCeiling`, `getDiveCeiling`, `interpolateGF` |
+| `js/deco/ceiling.js` | 437 | `findFirstStopAtGFLow`, `findFirstStagedStopAtGFLow`, `getFirstStopDepth`, `calculateCeilingTimeSeries`, `calculateCeilingTimeSeriesDetailed`, `evaluateDirectAscent` |
+| `js/deco/schedule.js` | 718 | `calculateNDL`, `generateDecoSchedule` |
+| `js/deco/profile.js` | 294 | `calculateTissueLoading` |
+
+The dependency graph is acyclic and flows strictly downwards: `constants` → `config` → `environment` → `gasKinetics` → `gradients` → `ceiling` → `schedule`/`profile`.
+
+Symbols that are exported from a `js/deco/*.js` module purely so a sibling module can use them (`DESCENT_SPEED`, `ASCENT_SPEED`, `STOP_INCREMENT`, `findFirstStagedStopAtGFLow`, `evaluateDirectAscent`) are **not** re-exported by the barrel and remain private to the deco engine.
+
+Together they implement Haldane and Schreiner kinetics, M-values, gradient-factor interpolation, NDL search, and the deco-stop scheduling loop — the largest body of code in the code base (~1900 lines).
 
 Imports: `COMPARTMENTS`, `getRateConstant` from `tissueCompartments.js`.
-Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `visualization.js`, and every chart in `js/charts/`.
+Imported by: `diveSetup.js`, `tissueEducation.js`, and every chart in `js/charts/`.
 
 **Constants**
 
@@ -97,18 +114,18 @@ Imported by: `diveSetup.js`, `mvalues.js`, `main.js`, `tissueEducation.js`, `vis
 
 **Implementation notes**
 
-- Haldane is coded as `Palv + (P0 − Palv) × e^(−k·t)` at `decoModel.js:110`.
-- Schreiner is coded as a three-term form at `decoModel.js:127–129`: constant inert-gas source + exponential offset.
+- Haldane is coded as `Palv + (P0 − Palv) × e^(−k·t)` at `deco/config.js:20`.
+- Schreiner is coded as a three-term form at `deco/config.js:37–39`: constant inert-gas source + exponential offset.
 - `pAnchor` is an ambient-pressure value, not a depth. `findFirstStopAtGFLow` iterates the stop grid surface-up, simulating the ascent to each candidate and checking the dive ceiling at `gfLow` (`getDiveCeiling`). The first depth that passes is the anchor — also the first decompression stop. See [Algo-03-First-Stop-Ramped-GF](Algo-03-First-Stop-Ramped-GF.md).
-- Ascent permission in the deco loop (`decoModel.js:955–968`) checks the GF-adjusted ceiling at the destination stop depth against the destination depth, without Schreiner-crediting the short ascent segment. This matches decotengu's convention.
-- `gasKey()` helper at `decoModel.js:780` normalises gases with or without an `id` field, so the deco loop tolerates both library gases and custom mixes.
+- Ascent permission in the deco loop (`deco/schedule.js:572–591`) checks the GF-adjusted ceiling at the destination stop depth against the destination depth, without Schreiner-crediting the short ascent segment. This matches decotengu's convention.
+- `gasKey()` helper at `deco/ceiling.js:368` normalises gases with or without an `id` field, so the deco loop tolerates both library gases and custom mixes.
 
 ### `js/tissueCompartments.js`
 
 16 Bühlmann ZH-L16 compartment definitions, runtime-switchable between variants A / B / C.
 
 Imports: none.
-Imported by: `decoModel.js`, `diveSetup.js`, `mvalues.js`, `tissueEducation.js`, every chart, every test file.
+Imported by: `decoModel.js`, `diveSetup.js`, `tissueEducation.js`, every chart, every test file.
 
 **Exports**
 
@@ -131,34 +148,12 @@ Imported by: `decoModel.js`, `diveSetup.js`, `mvalues.js`, `tissueEducation.js`,
 - Default active variant is ZH-L16C (`currentVariant = ZHL16_VARIANTS.C` at line 40). Matches the decotengu default.
 - All times in minutes, pressures in bar. See [Model-01-Compartments](Model-01-Compartments.md) for the full coefficient table.
 
-### `js/mvalues.js`
-
-Standalone page controller for the interactive M-value diagram on `m-values.html`. Not an algorithm module — it orchestrates dataset building for the Chart.js P-P diagram.
-
-Imports: `COMPARTMENTS` from `tissueCompartments.js`; `calculateTissueLoading`, `getAmbientPressure`, `getAdjustedMValue`, `getFirstStopDepth`, etc. from `decoModel.js`; `loadDiveSetup`, `getDiveSetupWaypoints`, `getGases`, `getGradientFactors` from `diveSetup.js`.
-Imported by: `m-values.html` only (direct script tag).
-
-**Exports**
-
-| Name | Description |
-|---|---|
-| `CHART_CONFIG` | Render settings (colours, point sizes, playback speed) |
-| `loadSelectedProfile()` | Fetches profile, runs `calculateTissueLoading`, draws the P-P chart |
-| `populateCoefficientsTable()` | Builds the HTML reference table of ZH-L16 coefficients for the active variant |
-
-**Implementation notes**
-
-- Dataset construction (`buildDatasets`, around line 811) draws the ambient line `y=x`, the alveolar line `y=0.7902·x`, one M-value line per visible compartment, the GF-adjusted corridor (GF-low at pAnchor, GF-high at surface), the tissue trail, and the current-time points.
-- pAnchor for the GF corridor comes from `getFirstStopDepth()` + `interpolateGF()`; see `mvalues.js:869–892`. The same pAnchor is passed into `calculateCeilingTimeSeriesDetailed()` so the chart and the profile ceiling agree.
-- Chart animation is disabled on update (`mvalues.js:1118`) so timeline-slider scrubbing is smooth.
-- Pure UI — no algorithm equations live here. All math delegates to `decoModel.js`.
-
 ### `js/diveSetup.js`
 
 Dive configuration, gas library, profile generation, and gas-switch waypoint insertion. The second-largest module (~1470 lines).
 
 Imports: `calculateNDL`, `generateDecoSchedule`, `simulateDepthTime`, `simulateDepthChange`, `getInitialTissueN2`, and other helpers from `decoModel.js`; `COMPARTMENTS` from `tissueCompartments.js`; `translate` from `i18n.js`.
-Imported by: `main.js`, `mvalues.js`, every chart, `DiveSetupEditor.js`.
+Imported by: every chart, `DiveSetupEditor.js`.
 
 #### Gas definitions
 
@@ -319,7 +314,7 @@ Both `calculateTissueLoading` and `generateDecoProfile` accept an optional `opti
 
 When provided:
 
-- **`calculateTissueLoading`** (`decoModel.js:1118–1129`): seeds each compartment from the map instead of calling `getInitialTissueN2`. Useful for plotting the tissue trajectory of a repetitive dive starting from residual saturation.
+- **`calculateTissueLoading`** (`deco/profile.js:106–115`): seeds each compartment from the map instead of calling `getInitialTissueN2`. Useful for plotting the tissue trajectory of a repetitive dive starting from residual saturation.
 - **`generateDecoProfile`** (`diveSetup.js:351–373`): seeds the bottom-phase tissues from the map **and** bypasses the surface-based NDL early-return. The NDL computed by `calculateNDL` is a fresh-start figure — it is meaningless when the diver already carries residual nitrogen. By skipping the early-return and always running the full deco scheduler, `generateDecoProfile` computes the actual deco obligation against the pre-saturated tissue state (which may require stops even when bottom time is under the surface NDL).
 
 `generateDecoProfileSync` intentionally does **not** support this option; its NDL early-return and surface-only tissue init assume a fresh surface start.
@@ -446,23 +441,6 @@ Return value:
 - Block top clips early dives: `visibleStart = Math.max(startMinOfDay, dayStartMin)` (`calendarLayout.js:31`).
 - Dives crossing midnight are clamped to `dayEndMin` for v1 (documented limitation, `calendarLayout.js:29`).
 - `dayCount` is taken directly from `windowConfig.dayCount`; the function no longer derives it from the dives (`calendarLayout.js:20, 45`).
-
-### `js/diveProfile.js`
-
-Waypoint-array validation and statistics. No algorithm content.
-
-Imports: none.
-Imported by: `main.js`.
-
-| Signature | Line | Description |
-|---|---|---|
-| `createDefaultProfile()` | 12 | Hardcoded 40 m × 20 min with 9/6/3 m stops |
-| `validateProfile(profile)` | 32 | Returns `{valid, errors, warnings}` |
-| `parseProfileInput(inputData)` | 105 | Parses `time\tdepth`-style text into waypoint array |
-| `calculateRates(profile)` | 117 | Returns `[{from, to, rate, type: 'descent'|'ascent'|'level'}]` |
-| `getDiveStats(profile)` | 145 | `{maxDepth, totalTime, maxDescentRate, maxAscentRate, waypointCount}` |
-
-First waypoint must be `(time=0, depth=0)`; this is enforced so decompression dives can be detected correctly (`diveProfile.js:45–50`). Depths greater than 60 m and non-surface endings produce warnings, not errors.
 
 ### `js/tissueEducation.js`
 
@@ -869,32 +847,6 @@ Imported by: `sandbox/repetitive-dives.html` (direct script import).
 - Decoding reverses with `decodeURIComponent(escape(atob(str)))` (`tripUrl.js:56`).
 - `sameGases()` at `tripUrl.js:15` compares gases by `id`, `o2`, `n2`, and `he`; the `name` field is intentionally excluded from the equality check so cosmetic renames do not force a per-dive gas copy into the URL.
 - `decodeTrip` validates by checking `Array.isArray(m.dives)` and `Array.isArray(m.gases)` before constructing the result (`tripUrl.js:58`); any other structural issue is caught by the surrounding `try/catch`.
-
-### `js/icons.js`
-
-SVG-sprite helper.
-
-| Export | Line | Description |
-|---|---|---|
-| `iconHTML(name, cls, title)` | 20 | Returns an `<svg><use …/></svg>` string |
-| `iconElement(name, cls, title)` | 37 | Returns a live DOM element |
-
-### `js/main.js`
-
-Entry point for the legacy single-page sandbox view. No exports — executes on module load. Wires `DiveSetupEditor`-less controls directly: loads a setup, validates it with `validateProfile`, runs `calculateTissueLoading`, renders via `visualization.js`.
-
-### `js/visualization.js`
-
-Legacy Chart.js visualisation used by `main.js`. Modern pages use the class components in `js/charts/` instead.
-
-| Export | Line | Description |
-|---|---|---|
-| `renderChart(canvas, results, visibleCompartments, gasSwitchEvents, ceilingDepths)` | 20 | One-shot chart render |
-| `toggleCompartment(id, visible)` | 273 | Show/hide a compartment line |
-| `showOnlyCompartments(ids)` | 290 | Isolate a selection |
-| `showAllCompartments()` | 306 | Reset |
-| `hideAllCompartments()` | 322 | Clear |
-| `getChart()` | 339 | Access the underlying Chart instance |
 
 ### `js/quiz.js`
 

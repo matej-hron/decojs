@@ -7,7 +7,7 @@ An **M-value** is the maximum tolerated inert-gas tissue pressure at a given amb
 $$M(P_{amb}) = a + \frac{P_{amb}}{b}$$
 
 ```javascript
-// js/decoModel.js:145-147
+// js/deco/gradients.js:20-22
 export function getMValue(ambientPressure, a, b) {
     return a + ambientPressure / b;
 }
@@ -22,7 +22,7 @@ On a P-P diagram (tissue pressure $P_t$ on $y$, ambient pressure $P_{amb}$ on $x
 - $y$-intercept: $a$
 - slope: $1/b$
 
-Above the line = M-value violation. The M-value chart in `js/mvalues.js` draws 16 of these lines in parallel (one per compartment) and plots the tissue state as 16 markers. The widely-used visual intuition: "how high above the ambient line, and how close to the M-value line, is each tissue right now?"
+Above the line = M-value violation. The M-value chart in `js/charts/MValueChart.js` draws 16 of these lines in parallel (one per compartment) and plots the tissue state as 16 markers. The widely-used visual intuition: "how high above the ambient line, and how close to the M-value line, is each tissue right now?"
 
 ## Ceiling — the shallowest safe ambient pressure
 
@@ -31,7 +31,7 @@ Rearranging $M = a + P_{amb}/b$ for the case where the tissue sits exactly on th
 $$P_{ceiling} = \frac{b \cdot (P_t - GF \cdot a)}{b \cdot (1 - GF) + GF}$$
 
 ```javascript
-// js/decoModel.js:361-366
+// js/deco/gradients.js:147-152
 export function getCompartmentCeiling(tissuePressure, a, b, gf) {
     // P_ceiling = b × (P_tissue - GF × a) / (b × (1 - GF) + GF)
     const numerator = b * (tissuePressure - gf * a);
@@ -63,7 +63,7 @@ Sanity check: at $GF = 0$ this collapses to $P_{amb} = P_t$ (no supersaturation 
 This is **the central equation for deco-stop depths**. DecoJS evaluates it for each of the 16 compartments and takes the deepest (highest $P_{amb}$) ceiling — that's the depth the diver cannot go shallower than right now:
 
 ```javascript
-// js/decoModel.js:377-401 (body)
+// js/deco/gradients.js:163-187 (body)
 export function getDiveCeiling(tissuePressures, gf) {
     let maxCeiling = -Infinity;
     let controllingComp = null;
@@ -91,7 +91,7 @@ At GF = 1.0 (100%), the raw Bühlmann limit stands. At lower GF, only a fraction
 $$M_{adj}(P_{amb}, GF) = P_{amb} + GF \cdot (M(P_{amb}) - P_{amb})$$
 
 ```javascript
-// js/decoModel.js:160-163
+// js/deco/gradients.js:35-38
 export function getAdjustedMValue(ambientPressure, a, b, gf) {
     const mValue = getMValue(ambientPressure, a, b);
     return ambientPressure + gf * (mValue - ambientPressure);
@@ -109,7 +109,7 @@ Given a current tissue and ambient state, compute the fraction of the supersatur
 $$GF_{inst}(P_t, P_{amb}) = \frac{P_t - P_{amb}}{M(P_{amb}) - P_{amb}}$$
 
 ```javascript
-// js/decoModel.js:185-195
+// js/deco/gasKinetics.js:36-46
 export function calculateInstantGF(tissuePressure, ambientPressure, compartment) {
     const mValue = getMValue(ambientPressure, compartment.aN2, compartment.bN2);
     const denominator = mValue - ambientPressure;

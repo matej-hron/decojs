@@ -152,7 +152,7 @@ The displayed tissue pressure is always calculated by the existing production
 primitive:
 
 ```javascript
-// js/decoModel.js:210-215
+// js/deco/gasKinetics.js:61-66
 export function schreinerEquation(initialPressure, initialAlveolarPressure, rate, time, halfTime) {
     const k = getRateConstant(halfTime);
     const term1 = initialAlveolarPressure + rate * (time - 1/k);
@@ -206,7 +206,7 @@ A shorter half-time gives a larger $k$ and a faster response.
 segment:
 
 ```javascript
-// js/decoModel.js:1024
+// js/deco/gasKinetics.js:101
 export function simulateDepthChange(
     tissuePressures,
     startDepth,
@@ -222,7 +222,7 @@ export function simulateDepthChange(
 complete waypoint sequence:
 
 ```javascript
-// js/decoModel.js:1645
+// js/deco/profile.js:278-286
 export function calculateTissueLoading(profile, surfaceInterval = 60, options = {})
 ```
 

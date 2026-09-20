@@ -163,14 +163,6 @@ try {
 }
 
 import {
-    createDefaultProfile,
-    validateProfile,
-    parseProfileInput,
-    calculateRates,
-    getDiveStats
-} from '../js/diveProfile.js';
-
-import {
     SURFACE_PRESSURE,
     getPressureAtAltitude,
     getSurfacePressure,
@@ -1902,91 +1894,6 @@ describe('diveSetup - renderDivePlanTableHTML', () => {
         expect((html.match(/dse-plan-switch/g) || []).length).toBe(1);
         expect(html).toContain('<tr class="dse-plan-switch"><td class="dse-plan-phase"><span class="dse-plan-icon">⇄</span> Switch</td><td class="dse-plan-depth">21\u00a0m</td><td class="dse-plan-stop">3</td><td class="dse-plan-runtime">25</td><td class="dse-plan-gas">EAN50</td>');
         expect(html.includes('<tr class="dse-plan-stop"><td class="dse-plan-phase"><span class="dse-plan-icon">■</span> Stop</td><td class="dse-plan-depth">21\u00a0m</td>')).toBe(false);
-    });
-});
-
-// ============================================================================
-// DIVE PROFILE TESTS
-// ============================================================================
-
-describe('diveProfile', () => {
-    describe('createDefaultProfile', () => {
-        test('returns an array of waypoints', () => {
-            const profile = createDefaultProfile();
-            expect(Array.isArray(profile)).toBe(true);
-        });
-
-        test('starts at surface', () => {
-            const profile = createDefaultProfile();
-            expect(profile[0].time).toBe(0);
-            expect(profile[0].depth).toBe(0);
-        });
-
-        test('ends at surface', () => {
-            const profile = createDefaultProfile();
-            expect(profile[profile.length - 1].depth).toBe(0);
-        });
-    });
-
-    describe('validateProfile', () => {
-        test('valid profile passes', () => {
-            const result = validateProfile(createDefaultProfile());
-            expect(result.valid).toBe(true);
-        });
-
-        test('rejects non-array', () => {
-            const result = validateProfile('not an array');
-            expect(result.valid).toBe(false);
-        });
-
-        test('rejects less than 2 waypoints', () => {
-            const result = validateProfile([{ time: 0, depth: 0 }]);
-            expect(result.valid).toBe(false);
-        });
-
-        test('rejects profile not starting at time 0', () => {
-            const result = validateProfile([{ time: 5, depth: 0 }, { time: 10, depth: 20 }]);
-            expect(result.valid).toBe(false);
-        });
-
-        test('rejects non-ascending times', () => {
-            const result = validateProfile([
-                { time: 0, depth: 0 },
-                { time: 10, depth: 20 },
-                { time: 5, depth: 10 }
-            ]);
-            expect(result.valid).toBe(false);
-        });
-    });
-
-    describe('calculateRates', () => {
-        test('calculates descent rate', () => {
-            const rates = calculateRates([{ time: 0, depth: 0 }, { time: 2, depth: 40 }]);
-            expect(rates[0].rate).toBe(20);
-            expect(rates[0].type).toBe('descent');
-        });
-
-        test('calculates ascent rate', () => {
-            const rates = calculateRates([{ time: 0, depth: 40 }, { time: 4, depth: 0 }]);
-            expect(rates[0].rate).toBe(10);
-            expect(rates[0].type).toBe('ascent');
-        });
-    });
-
-    describe('getDiveStats', () => {
-        test('returns null for invalid profile', () => {
-            expect(getDiveStats(null)).toBeNull();
-            expect(getDiveStats([])).toBeNull();
-        });
-
-        test('calculates max depth', () => {
-            const stats = getDiveStats([
-                { time: 0, depth: 0 },
-                { time: 10, depth: 40 },
-                { time: 20, depth: 0 }
-            ]);
-            expect(stats.maxDepth).toBe(40);
-        });
     });
 });
 
@@ -8290,8 +8197,11 @@ describe('notation - non-breaking space between value and unit at runtime', () =
         'js/charts/DiveProfileChart.js', 'js/charts/MValueChart.js',
         'js/charts/GFChart.js', 'js/charts/BubbleModel.js',
         'js/components/DiveSetupEditor.js', 'js/components/TissueSaturationSim.js',
-        'js/components/AddDiveDialog.js', 'js/mvalues.js', 'js/diveSetup.js',
-        'js/main.js', 'js/visualization.js', 'js/tissueEducation.js', 'js/decoModel.js',
+        'js/components/AddDiveDialog.js', 'js/diveSetup.js',
+        'js/tissueEducation.js', 'js/decoModel.js',
+        'js/deco/constants.js', 'js/deco/config.js', 'js/deco/environment.js',
+        'js/deco/gasKinetics.js', 'js/deco/gradients.js', 'js/deco/ceiling.js',
+        'js/deco/schedule.js', 'js/deco/profile.js',
         'js/algorithmExplainer.js', 'pressure.html', 'tissue-loading.html', 'm-values.html',
         'algorithm.html',
         'sandbox/index.html', 'sandbox/haldane.html', 'sandbox/schreiner.html',
@@ -8569,8 +8479,8 @@ describe('notation - unit is never glued to the value', () => {
 
     test('no JS template glues a unit straight onto the closing brace', () => {
         const files = [
-            'js/diveSetup.js', 'js/main.js', 'js/mvalues.js', 'js/urlParams.js',
-            'js/visualization.js', 'js/diveProfile.js', 'js/tissueEducation.js',
+            'js/diveSetup.js', 'js/urlParams.js',
+            'js/tissueEducation.js',
             'js/charts/BubbleModel.js', 'js/charts/DiveProfileChart.js',
             'js/charts/GFChart.js', 'js/charts/MValueChart.js',
             'js/components/DiveSetupEditor.js', 'js/components/TripCalendar.js',
@@ -8637,7 +8547,7 @@ describe('notation - unit is never glued to the value', () => {
         // ISO 80000-3: značka minuty je min; m je metr. Tabulka nasycení psala
         // "1h 15m" hned vedle sloupce s "12,5 min".
         const files = [
-            'tissue-loading.html', 'js/main.js', 'js/mvalues.js', 'sandbox/repetitive-dives.html',
+            'tissue-loading.html', 'sandbox/repetitive-dives.html',
         ];
         const offenders = [];
         for (const rel of files) {
@@ -8665,8 +8575,7 @@ describe('notation - unit is never glued to the value', () => {
     });
 });
 
-// Zdroje, které se posílají uživateli. Vývojářské odkladiště `test.html` /
-// `test2.html` je nelinkované a mimo sw.js (issue #79).
+// Zdroje, které se posílají uživateli.
 const shippedSources = () => {
     const root = new URL('../', import.meta.url);
     const files = [];
@@ -8682,7 +8591,7 @@ const shippedSources = () => {
     for (const e of readdirSync(root, { withFileTypes: true })) {
         if (e.isFile() && e.name.endsWith('.html')) files.push(e.name);
     }
-    return files.filter(f => f !== 'test.html' && f !== 'test2.html');
+    return files;
 };
 
 /**
@@ -10034,11 +9943,8 @@ describe('format - decimal separator at runtime', () => {
         for (const e of readdirSync(root, { withFileTypes: true })) {
             if (e.isFile() && e.name.endsWith('.html')) files.push(e.name);
         }
-        // Untranslated developer scratch pages, not linked and not in sw.js.
-        const SCRATCH = new Set(['test.html', 'test2.html']);
         const offenders = [];
         for (const f of files) {
-            if (SCRATCH.has(f)) continue;
             const src = readFileSync(new URL(f, root), 'utf8');
             const n = (src.match(/\.toFixed\(/g) || []).length;
             const allowed = ALLOWED[f] || 0;

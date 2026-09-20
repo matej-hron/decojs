@@ -5,8 +5,11 @@ From the first stop inward to the surface, produce the list of mandatory stops: 
 ## Entry point
 
 ```javascript
-// js/decoModel.js:920 (signature)
-export function generateDecoSchedule(tissuePressures, currentDepth, n2Fraction, gfLow, gfHigh, gases = null, options = {})
+// js/deco/schedule.js:691 (signature)
+export function generateDecoSchedule(
+    tissuePressures, currentDepth, n2Fraction, gfLow, gfHigh,
+    gases = null, options = {}
+)
 ```
 
 `options.surfacePressure` controls the surface target, pressure-to-depth
@@ -101,19 +104,19 @@ flowchart TD
 ## Gas-switch points
 
 ```javascript
-// js/decoModel.js:922-952
-const gasSwitchPoints = [];
-if (gases && gases.length > 1) {
+// js/deco/schedule.js:143-174
+function calculateGasSwitchPoints(gases, switchPpO2, modSurfacePressure, pressurePerMeter, stopIncrement) {
+    const gasSwitchPoints = [];
     for (const gas of gases.slice(1)) {
         if (!gas.o2 || gas.o2 <= 0 || !Number.isFinite(gas.o2)) continue;
         if (!Number.isFinite(gas.n2) || gas.n2 < 0 || gas.n2 > 1) continue;
         if (gas.o2 + gas.n2 > 1.001) continue;
-        const mod = (switchPpO2 / gas.o2 - 1) * 10;
+        const mod = (switchPpO2 / gas.o2 - modSurfacePressure) / pressurePerMeter;
         if (!Number.isFinite(mod)) continue;
         const switchDepth = Math.max(0, Math.floor(mod / stopIncrement) * stopIncrement);
         gasSwitchPoints.push({ ...gas, switchDepth });
     }
-    gasSwitchPoints.sort((a, b) => b.switchDepth - a.switchDepth);
+    return gasSwitchPoints.sort((a, b) => b.switchDepth - a.switchDepth);
 }
 ```
 
@@ -124,32 +127,33 @@ The result is an array of deco gases, each annotated with a `switchDepth` on the
 The ascent to the first stop is not a single Schreiner segment — it is split at every gas-switch depth that falls between `currentDepth` and `firstStopDepth`. This matters for richer deco gases whose MODs lie above the first stop; e.g., air bottom + EAN50, dive to 40 m, first stop at 12 m — EAN50 gets switched in at 21 m, so the 40 → 21 m and 21 → 12 m segments use different $f_{N_2}$.
 
 ```javascript
-// js/decoModel.js:1044-1074
-const ascentSwitchDepths = [...new Set(gasSwitchPoints.map(g => g.switchDepth))]
-    .filter(d => d < depth && d >= firstStopDepth)
+// js/deco/schedule.js:468-498
+const ascentSwitchDepths = [...new Set(context.gasSwitchPoints.map(g => g.switchDepth))]
+    .filter(d => d < startDepth && d >= firstStopDepth)
     .sort((a, b) => b - a);  // deepest first
 
-let currentAscentDepth = depth;
+let currentAscentDepth = startDepth;
 let currentTissues = { ...tissues };
 
 for (const switchDepth of ascentSwitchDepths) {
     if (currentAscentDepth > switchDepth) {
-        const segmentTime = (currentAscentDepth - switchDepth) / ASCENT_SPEED;
-        currentTissues = simulateDepthChange(currentTissues, currentAscentDepth, switchDepth, segmentTime, currentN2);
-        totalAscentTime += segmentTime;
+        currentTissues = ascendScheduleSegment(
+            context, currentTissues, currentAscentDepth, switchDepth
+        );
         currentAscentDepth = switchDepth;
-        if (switchToBestGas(switchDepth) && gasSwitchTime > 0) {
-            currentTissues = simulateDepthTime(currentTissues, switchDepth, gasSwitchTime, currentN2);
-            stops.push({ depth: switchDepth, time: gasSwitchTime, gas: currentGasName });
+        if (context.switchToBestGas(switchDepth) && context.gasSwitchTime > 0) {
+            currentTissues = holdAfterAscentSwitch(
+                context, currentTissues, switchDepth, firstStopDepth
+            );
         }
     }
 }
-
 if (currentAscentDepth > firstStopDepth) {
-    const finalSegmentTime = (currentAscentDepth - firstStopDepth) / ASCENT_SPEED;
-    currentTissues = simulateDepthChange(currentTissues, currentAscentDepth, firstStopDepth, finalSegmentTime, currentN2);
-    totalAscentTime += finalSegmentTime;
+    currentTissues = ascendScheduleSegment(
+        context, currentTissues, currentAscentDepth, firstStopDepth
+    );
 }
+return currentTissues;
 ```
 
 ## First stop policy
@@ -240,11 +244,11 @@ Per-iteration logic:
 ## Safety cap
 
 ```javascript
-// js/decoModel.js:42
+// js/deco/environment.js:32
 export const DECO_STOP_MAX_MINUTES = 300;
 ```
 
-If a single stop exceeds 300 min, `DecoCapExceededError` is thrown (`js/decoModel.js:48-61`). This is the algorithm's way of flagging "this profile is outside the usable domain" — typically the GF is too aggressive for the exposure, or the chosen gas cannot off-gas this tissue fast enough. Callers should surface the error rather than present a silently-truncated plan.
+If a single stop exceeds 300 min, `DecoCapExceededError` is thrown (`js/deco/config.js:39-52`). This is the algorithm's way of flagging "this profile is outside the usable domain" — typically the GF is too aggressive for the exposure, or the chosen gas cannot off-gas this tissue fast enough. Callers should surface the error rather than present a silently-truncated plan.
 
 ## Worked example
 

@@ -139,7 +139,7 @@ generateDecoSchedule(tissues, depth, n2, gfLow, gfHigh, gases, {
 });
 ```
 
-Continuous mode enforces `MIN_STOP_TIME = 2 min` per recorded stop (`decoModel.js:1081`) so the output is not drowned in micro-stops. The deco-time cap `DECO_STOP_MAX_MINUTES = 300` still applies.
+Continuous mode enforces `MIN_STOP_TIME = 2 min` per recorded stop (`deco/schedule.js:172`) so the output is not drowned in micro-stops. The deco-time cap `DECO_STOP_MAX_MINUTES = 300` still applies.
 
 Also tunable on the same call: `ascentRate` (default 10 m/min), `gasSwitchTime` (default 0 — minutes held at switch depth), `maxPpO2` (default 1.6 — deco-gas MOD ceiling).
 

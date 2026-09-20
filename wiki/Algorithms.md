@@ -8,19 +8,19 @@ The orchestration layer that strings together the Haldane / Schreiner equations,
 2. `generateDecoProfile(maxDepth, bottomTime, gases, gfLow, gfHigh, …)` (`js/diveSetup.js:326`) is the top-level entry. It calls `calculateNDL()` first; if $t_{bottom} \le NDL$ it returns a simple no-stop profile. Otherwise it simulates descent + bottom time to get tissue state, then hands off to `generateDecoSchedule()`.
 3. `generateDecoSchedule()` (`js/decoModel.js`) computes gas-switch MODs, calls `findFirstStopAtGFLow()` to determine `pAnchor` and the first stop in one pass, then runs the deco loop to generate the stop list.
 4. Output is a waypoint array (embedded stops + gas switches) plus metadata (total deco time, controlling compartment, `pAnchor`, `anchorDepth`).
-5. Chart rendering replays the waypoints at 10-second resolution via `calculateTissueLoading()` (`js/decoModel.js:1178`) and overlays per-timepoint ceilings via `calculateCeilingTimeSeriesDetailed()` (`js/decoModel.js:617`).
+5. Chart rendering replays the waypoints at 10-second resolution via `calculateTissueLoading()` (`js/deco/schedule.js:269`) and overlays per-timepoint ceilings via `calculateCeilingTimeSeriesDetailed()` (`js/deco/ceiling.js:205`).
 
 ```mermaid
 flowchart TD
   A[generateDecoProfile<br/>diveSetup.js:326] --> B{bottomTime<br/>vs NDL}
   B -- "t ≤ NDL" --> C[generateSimpleProfile]
   B -- "t > NDL" --> D[simulate descent + bottom]
-  D --> E[generateDecoSchedule<br/>decoModel.js:899]
+  D --> E[generateDecoSchedule<br/>deco/schedule.js:51]
   E --> F[findFirstStopAtGFLow<br/>strict GF_low first-stop search]
   F --> H[deco stop loop]
   H --> I[waypoints + stops]
-  I --> J[calculateTissueLoading<br/>decoModel.js:1178]
-  I --> K[calculateCeilingTimeSeriesDetailed<br/>decoModel.js:617]
+  I --> J[calculateTissueLoading<br/>deco/schedule.js:269]
+  I --> K[calculateCeilingTimeSeriesDetailed<br/>deco/ceiling.js:205]
 ```
 
 The pipeline is single-pass per dive setup: tissue state flows forward from surface, `pAnchor` is computed once at ascent start and passed downstream to every function that needs a GF-ramp reference.

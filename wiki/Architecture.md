@@ -46,7 +46,6 @@ graph TD
         Deco[decoModel.js]
         TC[tissueCompartments.js]
         DS[diveSetup.js]
-        DP[diveProfile.js]
         TE[tissueEducation.js]
     end
 
@@ -112,7 +111,6 @@ Observations:
 
 - **`decoModel.js` and `tissueCompartments.js` are the two universal-core modules** — every chart pulls from them.
 - **`diveSetup.js` depends on `decoModel.js`** (it calls `calculateNDL`, `generateDecoSchedule`, `simulateDepthTime`, etc.), so importing `diveSetup` pulls in the whole algorithm.
-- **`diveProfile.js` is standalone** — parsing and validation only, no algorithm imports.
 - **Nothing imports `quiz.js` except quiz pages** — the quiz subsystem is cleanly isolated from the deco algorithm.
 
 ## Rendering: Chart.js on Canvas
