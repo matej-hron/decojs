@@ -1583,6 +1583,7 @@
         "about": {
             "heading": "Sobre este proyecto",
             "body1": "Este es un recurso educativo para buceadores que quieren entender la ciencia que hay detrás de su ordenador de buceo. Todas las visualizaciones se basan en el modelo de descompresión <strong>Bühlmann ZH-L16</strong>, uno de los algoritmos más utilizados en buceo recreativo y técnico.",
+            "origin": "DecoJS se creó como trabajo de candidatura para obtener la cualificación de instructor CMAS I3 en el Svaz potápěčů České republiky (SPČR). Se desarrolló con el apoyo experto de la Comisión de Formación del SPČR como herramienta didáctica interactiva para instructores y estudiantes de buceo que aprenden teoría de descompresión.",
             "disclaimerTitle": "Solo para fines educativos",
             "disclaimer": "Estas herramientas son únicamente con fines de aprendizaje. No las uses nunca para planificar inmersiones reales. Confía siempre en ordenadores de buceo y tablas debidamente certificados."
         },
@@ -1595,11 +1596,11 @@
         "subtitle": "Una herramienta experimental para entender la teoría de la descompresión",
         "wip": {
             "title": "🚧 Trabajo en curso",
-            "text": "Este proyecto es un <strong>trabajo en curso</strong> y aún no ha sido revisado por nadie. El contenido, los cálculos y la información que aquí se presentan pueden contener errores o imprecisiones. Úsalo bajo tu responsabilidad."
+            "text": "Este proyecto se <strong>desarrolla continuamente y se somete a revisión profesional</strong>. No obstante, el contenido, los cálculos y la información presentados aquí pueden contener errores o imprecisiones. Úsalo bajo tu responsabilidad."
         },
         "disclaimer": {
             "title": "⚠️ Aviso importante",
-            "intro": "Este proyecto se creó como un <strong>ejercicio personal de aprendizaje</strong> del autor para comprender mejor la teoría de la descompresión y la física del buceo. Es una herramienta experimental y en construcción.",
+            "intro": "Este proyecto es una <strong>herramienta educativa experimental</strong> para comprender mejor la teoría de la descompresión y la física del buceo.",
             "guarantees": "<strong>Sin garantías:</strong> no hay ninguna garantía de que la información, los cálculos o las visualizaciones que aquí aparecen sean correctos o completos.",
             "notForDiving": "<strong>No para planificar inmersiones:</strong> esta herramienta <em>nunca</em> debe usarse para planificar inmersiones reales ni para ninguna situación de buceo real. Confía siempre en ordenadores de buceo certificados, tablas y una formación adecuada.",
             "educational": "<strong>Uso educativo:</strong> este proyecto puede utilizarse con fines educativos por el <a href=\"https://deepblue.cz\" target=\"_blank\" rel=\"noopener\">club de buceo Deepblue</a>."
@@ -1607,6 +1608,7 @@
         "what": {
             "title": "¿Qué es esto?",
             "body": "Este es un recurso educativo interactivo para buceadores que quieren entender la ciencia que hay detrás de su ordenador de buceo. Todas las visualizaciones se basan en el modelo de descompresión <strong>Bühlmann ZH-L16</strong>, uno de los algoritmos más utilizados en buceo recreativo y técnico.",
+            "origin": "DecoJS se creó como trabajo de candidatura para obtener la cualificación de instructor CMAS I3 en el Svaz potápěčů České republiky (SPČR). Se desarrolló con el apoyo experto de la Comisión de Formación del SPČR como herramienta didáctica interactiva para instructores y estudiantes de buceo que aprenden teoría de descompresión.",
             "goal": "El objetivo es hacer que conceptos abstractos como la saturación tisular, los medios tiempos y los valores-M resulten más intuitivos mediante la exploración y la visualización prácticas."
         },
         "algo": {
