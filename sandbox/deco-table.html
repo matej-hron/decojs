@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dekompresní tabulky — Deco Theory</title>
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#2980b9">
+    <link rel="icon" type="image/svg+xml" href="../icons/icon.svg">
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <style>
+        .deco-table-layout {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 1rem 1rem 3rem;
+        }
+
+        /* ── Input panel ── */
+        .lookup-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem 1.25rem;
+            align-items: flex-end;
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+        .lookup-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        .lookup-field label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .lookup-field input[type="number"] {
+            width: 90px;
+            padding: 0.4rem 0.55rem;
+            font-size: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--background-color);
+            color: var(--text-color);
+            font-variant-numeric: tabular-nums;
+        }
+        .lookup-field input[type="number"]:focus {
+            outline: none;
+            border-color: #2980b9;
+            box-shadow: 0 0 0 2px rgba(41,128,185,0.2);
+        }
+        #lookupBtn {
+            padding: 0.45rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            background: #2980b9;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.15s;
+            white-space: nowrap;
+        }
+        #lookupBtn:hover:not(:disabled) { background: #1f6391; }
+        #lookupBtn:disabled { background: #95a5a6; cursor: not-allowed; }
+        #resetBtn {
+            padding: 0.45rem 0.9rem;
+            font-size: 0.9rem;
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            display: none;
+        }
+        #resetBtn:hover { background: var(--background-color); }
+
+        /* ── Step narrator ── */
+        .step-narrator {
+            display: none;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: var(--card-background);
+            border: 2px solid #2980b9;
+            border-radius: var(--radius);
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(41,128,185,0.12);
+        }
+        .step-narrator.visible { display: flex; flex-direction: column; gap: 0.5rem; }
+        .step-indicator {
+            display: flex;
+            gap: 0.35rem;
+            align-items: center;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+        .step-dot {
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem; font-weight: 700;
+            background: var(--background-color);
+            border: 2px solid var(--border-color);
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+        .step-dot.active { background: #2980b9; border-color: #2980b9; color: #fff; }
+        .step-dot.done   { background: #27ae60; border-color: #27ae60; color: #fff; }
+        .step-dot.connector {
+            width: 20px; height: 2px; border-radius: 0;
+            background: var(--border-color); border: none;
+        }
+        .step-dot.connector.done { background: #27ae60; }
+        .step-text { font-size: 0.93rem; line-height: 1.5; }
+        .step-text strong { color: #2980b9; }
+        .step-btns {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.25rem;
+        }
+        .step-btns button {
+            padding: 0.3rem 0.85rem;
+            font-size: 0.85rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--background-color);
+            cursor: pointer;
+        }
+        .step-btns button:hover { background: var(--card-background); }
+        .step-btns button:disabled { opacity: 0.4; cursor: not-allowed; }
+        #nextStepBtn { background: #2980b9; color: #fff; border-color: #2980b9; }
+        #nextStepBtn:hover:not(:disabled) { background: #1f6391; }
+
+        /* ── Error ── */
+        .lookup-error {
+            display: none;
+            background: rgba(231,76,60,0.08);
+            border: 1px solid rgba(231,76,60,0.4);
+            border-radius: 4px;
+            padding: 0.6rem 0.9rem;
+            font-size: 0.9rem;
+            color: #c0392b;
+            margin-bottom: 1rem;
+        }
+        .lookup-error.visible { display: block; }
+
+        /* ── Result card ── */
+        .result-card {
+            display: none;
+            background: var(--card-background);
+            border: 2px solid #27ae60;
+            border-radius: var(--radius);
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .result-card.visible { display: block; }
+        .result-card h3 { margin: 0 0 0.65rem; font-size: 1rem; font-weight: 700; }
+        .result-card h3.ndl  { color: #27ae60; }
+        .result-card h3.deco { color: #e67e22; }
+        .result-meta {
+            display: flex; flex-wrap: wrap;
+            gap: 0.4rem 1.5rem;
+            font-size: 0.88rem; margin-bottom: 0.75rem; color: var(--text-muted);
+        }
+        .result-meta strong { color: var(--text-color); }
+        .result-stops { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.75rem; }
+        .stop-chip {
+            display: flex; flex-direction: column; align-items: center;
+            padding: 0.45rem 1rem;
+            background: var(--background-color);
+            border: 2px solid #e67e22;
+            border-radius: 6px; min-width: 72px;
+            font-variant-numeric: tabular-nums;
+        }
+        .stop-chip .stop-depth { font-size: 0.72rem; color: var(--text-muted); }
+        .stop-chip .stop-time  { font-size: 1.2rem; font-weight: 700; color: #e67e22; }
+        .stop-chip .stop-unit  { font-size: 0.7rem; color: var(--text-muted); }
+        .ndl-chip {
+            display: inline-flex; align-items: center;
+            padding: 0.45rem 1rem;
+            background: rgba(39,174,96,0.1);
+            border: 2px solid #27ae60;
+            border-radius: 6px; font-size: 0.9rem; font-weight: 600; color: #27ae60;
+        }
+        .result-summary {
+            display: flex; flex-wrap: wrap; gap: 0.4rem 1.5rem;
+            font-size: 0.9rem; padding-top: 0.6rem; border-top: 1px solid var(--border-color);
+        }
+        .result-summary .lbl { color: var(--text-muted); }
+        .result-summary .val { font-weight: 700; }
+
+        /* ── Legend ── */
+        .table-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1.25rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.82rem;
+        }
+        .legend-item {
+            display: flex; align-items: center; gap: 0.4rem;
+        }
+        .legend-swatch {
+            width: 18px; height: 18px; border-radius: 3px;
+            border: 1px solid;
+            flex-shrink: 0;
+        }
+        .legend-swatch.ndl  { background: #fef3c7; border-color: #d97706; }
+        .legend-swatch.deco { background: #ffedd5; border-color: #ea580c; }
+        .legend-swatch.empty{ background: #f1f5f9; border-color: #cbd5e1; }
+
+        /* ── CMAS Grid Table ── */
+        .table-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .deco-grid {
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            font-variant-numeric: tabular-nums;
+            width: 100%;
+        }
+
+        /* Section header row */
+        .deco-grid th.th-depth-header {
+            background: #1e3a5f;
+            color: #fff;
+            font-size: 0.75rem;
+            text-align: center;
+            padding: 0.4rem 0.6rem;
+            border: 1px solid #0f2140;
+        }
+        .deco-grid th.th-ndl-section {
+            background: #d97706;
+            color: #fff;
+            text-align: center;
+            padding: 0.4rem 0.6rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            border: 1px solid #b45309;
+            white-space: nowrap;
+        }
+        .deco-grid th.th-deco-section {
+            background: #c2410c;
+            color: #fff;
+            text-align: center;
+            padding: 0.4rem 0.6rem;
+            font-size: 0.78rem;
+            font-weight: 600;
+            border: 1px solid #9a3412;
+            white-space: nowrap;
+        }
+
+        /* Group-letter header row */
+        .deco-grid th.th-grp {
+            text-align: center;
+            padding: 0.35rem 0.5rem;
+            font-weight: 700;
+            font-size: 0.88rem;
+            min-width: 44px;
+            border: 1px solid;
+        }
+        .deco-grid th.th-grp-ndl {
+            background: #fde68a;
+            color: #78350f;
+            border-color: #d97706;
+        }
+        .deco-grid th.th-grp-deco {
+            background: #fed7aa;
+            color: #7c2d12;
+            border-color: #ea580c;
+        }
+        .deco-grid th.th-grp-boundary {
+            border-left: 3px solid #9a3412 !important;
+        }
+
+        /* Depth label cell */
+        .deco-grid td.depth-label {
+            background: #1e3a5f;
+            color: #fff;
+            font-weight: 700;
+            text-align: center;
+            padding: 0.45rem 0.75rem;
+            border: 1px solid #0f2140;
+            white-space: nowrap;
+            font-size: 0.9rem;
+        }
+
+        /* Group data cells */
+        .deco-grid td.cell-group {
+            text-align: center;
+            padding: 0.35rem 0.45rem;
+            border: 1px solid;
+            min-width: 44px;
+        }
+        .deco-grid td.cell-empty {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+        }
+        .deco-grid td.cell-ndl {
+            background: #fef3c7;
+            color: #78350f;
+            font-weight: 700;
+            border-color: #fcd34d;
+        }
+        .deco-grid td.cell-deco {
+            background: #ffedd5;
+            color: #7c2d12;
+            font-weight: 700;
+            border-color: #fb923c;
+            line-height: 1.3;
+        }
+        .cell-stop-label {
+            display: block;
+            font-size: 0.7em;
+            font-weight: 400;
+            color: #c2410c;
+        }
+
+        /* Boundary left border on group E column */
+        .deco-grid th.th-grp-boundary,
+        .deco-grid td[data-group-idx="4"] {
+            border-left: 3px solid #9a3412 !important;
+        }
+
+        /* START marker */
+        .start-marker {
+            display: block;
+            font-size: 0.58em;
+            font-weight: 700;
+            color: #dc2626;
+            border: 1.5px solid #dc2626;
+            border-radius: 2px;
+            padding: 0 2px;
+            line-height: 1.4;
+            margin-bottom: 1px;
+        }
+
+        /* Highlight states */
+        .deco-grid tr.row-dim td { opacity: 0.22; }
+        .deco-grid td.cell-scan {
+            outline: 2px solid #3b82f6;
+            outline-offset: -2px;
+        }
+        @keyframes found-pulse {
+            0%,100% { outline-color: #059669; }
+            50%      { outline-color: rgba(5,150,105,0.25); }
+        }
+        .deco-grid td.cell-found {
+            background: #d1fae5 !important;
+            color: #065f46 !important;
+            outline: 3px solid #059669;
+            outline-offset: -2px;
+            animation: found-pulse 1.2s ease-in-out infinite;
+        }
+
+        @media (max-width: 640px) {
+            .deco-grid { font-size: 0.78rem; }
+            .deco-grid td.cell-group, .deco-grid th.th-grp { min-width: 34px; padding: 0.3rem 0.25rem; }
+            .deco-grid td.depth-label { padding: 0.35rem 0.45rem; font-size: 0.82rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">Deco Theory</a>
+            <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links"><!-- generated by js/nav.js --></ul>
+            <span class="nav-wip-badge">Experimental</span>
+        </div>
+    </nav>
+
+    <div class="disclaimer-banner">
+        <strong>Pouze pro vzdělávací účely</strong> — Ukázka práce s dekompresními tabulkami ČSAS/CMAS 2018. Neprovádějte ponory na základě tohoto simulátoru.
+    </div>
+
+    <header class="hero hero-compact">
+        <h1>Dekompresní tabulky</h1>
+        <p class="hero-subtitle">Zadej hloubku a čas na dně — simulátor tě krok za krokem provede vyhledáním dekompresního režimu v tabulkách ČSAS/CMAS (platné od 1.&nbsp;1.&nbsp;2018).</p>
+    </header>
+
+    <div class="deco-table-layout">
+
+        <!-- Input panel -->
+        <div class="lookup-panel">
+            <div class="lookup-field">
+                <label for="inputDepth">Hloubka (m)</label>
+                <input type="number" id="inputDepth" min="1" max="40" step="1" value="30" placeholder="např. 30">
+            </div>
+            <div class="lookup-field">
+                <label for="inputTime">Čas na dně (min)</label>
+                <input type="number" id="inputTime" min="1" max="200" step="1" value="20" placeholder="např. 20">
+            </div>
+            <button id="lookupBtn">Vyhledat</button>
+            <button id="resetBtn">Začít znovu</button>
+        </div>
+
+        <!-- Error banner -->
+        <div class="lookup-error" id="lookupError"></div>
+
+        <!-- Step narrator -->
+        <div class="step-narrator" id="stepNarrator">
+            <div class="step-indicator" id="stepIndicator">
+                <div class="step-dot" id="dot1">1</div>
+                <div class="step-dot connector" id="conn1"></div>
+                <div class="step-dot" id="dot2">2</div>
+                <div class="step-dot connector" id="conn2"></div>
+                <div class="step-dot" id="dot3">3</div>
+            </div>
+            <div class="step-text" id="stepText"></div>
+            <div class="step-btns">
+                <button id="prevStepBtn">← Zpět</button>
+                <button id="nextStepBtn">Dále →</button>
+            </div>
+        </div>
+
+        <!-- Result card -->
+        <div class="result-card" id="resultCard">
+            <h3 id="resultTitle"></h3>
+            <div class="result-meta" id="resultMeta"></div>
+            <div class="result-stops" id="resultStops"></div>
+            <div class="result-summary" id="resultSummary"></div>
+        </div>
+
+        <!-- Legend -->
+        <div class="table-legend">
+            <div class="legend-item"><div class="legend-swatch ndl"></div> bezdekompresní (BDL)</div>
+            <div class="legend-item"><div class="legend-swatch deco"></div> dekompresní (zastávka 5&nbsp;m)</div>
+            <div class="legend-item"><div class="legend-swatch empty"></div> mimo rozsah</div>
+        </div>
+
+        <!-- CMAS grid table -->
+        <div class="table-wrapper">
+            <table class="deco-grid" id="decoTable">
+                <thead>
+                    <!-- Row 1: section titles -->
+                    <tr>
+                        <th class="th-depth-header" rowspan="2">Hloubka<br>(m)</th>
+                        <th class="th-ndl-section" colspan="4">max. doba bez dekomprese [min]</th>
+                        <th class="th-deco-section" colspan="8">XX / doba dekompresního ponoru — zastávka 5&nbsp;m [min]</th>
+                    </tr>
+                    <!-- Row 2: group letters -->
+                    <tr id="groupRow">
+                        <!-- populated by JS -->
+                    </tr>
+                </thead>
+                <tbody id="decoTableBody">
+                    <!-- populated by JS -->
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <footer>
+        <span class="wip-badge">Experimental</span>
+        <p><strong>Upozornění:</strong> Pouze pro vzdělávací účely. Pro skutečné plánování ponorů použijte certifikované tabulky a dodržujte výcvik.</p>
+        <span class="version-number"></span>
+    </footer>
+
+    <script src="../js/nav.js" type="module"></script>
+
+    <script type="module">
+        const tableData = await fetch('../data/cmas-deco-tables.json').then(r => r.json());
+        const GROUPS = tableData.groups; // ["A".."L"]
+
+        // ── Build group-letter header row ────────────────────────────────────
+        const groupRow = document.getElementById('groupRow');
+        GROUPS.forEach((g, i) => {
+            const th = document.createElement('th');
+            th.className = 'th-grp ' + (i < 4 ? 'th-grp-ndl' : 'th-grp-deco');
+            if (i === 4) th.classList.add('th-grp-boundary');
+            th.textContent = g;
+            groupRow.appendChild(th);
+        });
+
+        // ── Build table body ─────────────────────────────────────────────────
+        const tbody = document.getElementById('decoTableBody');
+
+        for (const depthRow of tableData.depths) {
+            const tr = document.createElement('tr');
+            tr.dataset.depth = depthRow.depth;
+
+            const tdDepth = document.createElement('td');
+            tdDepth.className = 'depth-label';
+            tdDepth.textContent = depthRow.depth;
+            tr.appendChild(tdDepth);
+
+            depthRow.cells.forEach((cell, i) => {
+                const td = document.createElement('td');
+                td.className = 'cell-group';
+                td.dataset.depth = depthRow.depth;
+                td.dataset.groupIdx = i;
+
+                if (cell === null) {
+                    td.classList.add('cell-empty');
+                } else if (cell.stop5m === 0) {
+                    td.classList.add('cell-ndl');
+                    if (depthRow.depth === 12 && i === 0) {
+                        td.innerHTML = '<span class="start-marker">START</span>' + cell.bottomTime;
+                    } else {
+                        td.textContent = cell.bottomTime;
+                    }
+                } else {
+                    td.classList.add('cell-deco');
+                    td.innerHTML = cell.bottomTime + '<span class="cell-stop-label">↓ ' + cell.stop5m + 'ˈ</span>';
+                }
+
+                tr.appendChild(td);
+            });
+
+            tbody.appendChild(tr);
+        }
+
+        // ── State ─────────────────────────────────────────────────────────────
+        const state = {
+            step: 0,
+            enteredDepth: null,
+            enteredTime: null,
+            targetDepthData: null,   // full depth object
+            result: null,            // { cell, groupIdx }
+        };
+
+        // ── DOM refs ──────────────────────────────────────────────────────────
+        const lookupBtn    = document.getElementById('lookupBtn');
+        const resetBtn     = document.getElementById('resetBtn');
+        const inputDepth   = document.getElementById('inputDepth');
+        const inputTime    = document.getElementById('inputTime');
+        const lookupError  = document.getElementById('lookupError');
+        const stepNarrator = document.getElementById('stepNarrator');
+        const stepText     = document.getElementById('stepText');
+        const nextStepBtn  = document.getElementById('nextStepBtn');
+        const prevStepBtn  = document.getElementById('prevStepBtn');
+        const resultCard   = document.getElementById('resultCard');
+
+        // ── Helpers ───────────────────────────────────────────────────────────
+        function findDepth(entered) {
+            return tableData.depths.find(d => d.depth >= entered) ?? null;
+        }
+
+        function findCell(depthData, enteredTime) {
+            for (let i = 0; i < depthData.cells.length; i++) {
+                const c = depthData.cells[i];
+                if (c !== null && c.bottomTime >= enteredTime) {
+                    return { cell: c, groupIdx: i };
+                }
+            }
+            return null;
+        }
+
+        function getCellTd(depth, groupIdx) {
+            return tbody.querySelector(`td[data-depth="${depth}"][data-group-idx="${groupIdx}"]`);
+        }
+
+        function clearHighlights() {
+            tbody.querySelectorAll('tr').forEach(tr => tr.classList.remove('row-dim'));
+            tbody.querySelectorAll('td').forEach(td => td.classList.remove('cell-scan', 'cell-found'));
+        }
+
+        function updateDots(active) {
+            [1, 2, 3].forEach(i => {
+                const dot = document.getElementById('dot' + i);
+                dot.className = 'step-dot';
+                if (i < active) dot.classList.add('done');
+                else if (i === active) dot.classList.add('active');
+            });
+            [1, 2].forEach(i => {
+                const c = document.getElementById('conn' + i);
+                c.className = 'step-dot connector';
+                if (i < active) c.classList.add('done');
+            });
+        }
+
+        function dimOtherRows() {
+            const d = state.targetDepthData.depth;
+            tbody.querySelectorAll('tr').forEach(tr => {
+                if (parseInt(tr.dataset.depth) !== d) tr.classList.add('row-dim');
+            });
+        }
+
+        // ── Step renderers ────────────────────────────────────────────────────
+        function applyStep1() {
+            clearHighlights();
+            dimOtherRows();
+            const depthRow = tbody.querySelector(`tr[data-depth="${state.targetDepthData.depth}"]`);
+            if (depthRow) depthRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            let text = `Krok 1: Hledáme řádek pro hloubku <strong>${state.targetDepthData.depth}&nbsp;m</strong>.`;
+            if (state.enteredDepth !== state.targetDepthData.depth) {
+                text += ` Hloubka ${state.enteredDepth}&nbsp;m v tabulce přesně není — zaokrouhlujeme na nejbližší vyšší: <strong>${state.targetDepthData.depth}&nbsp;m</strong>.`;
+            }
+            stepText.innerHTML = text;
+        }
+
+        function applyStep2() {
+            clearHighlights();
+            dimOtherRows();
+
+            const { groupIdx } = state.result;
+            const depth = state.targetDepthData.depth;
+
+            for (let i = 0; i <= groupIdx; i++) {
+                const td = getCellTd(depth, i);
+                if (!td || td.classList.contains('cell-empty')) continue;
+                td.classList.add(i < groupIdx ? 'cell-scan' : 'cell-found');
+            }
+            const foundTd = getCellTd(depth, groupIdx);
+            if (foundTd) foundTd.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            const group = GROUPS[groupIdx];
+            stepText.innerHTML = `Krok 2: V řádku <strong>${depth}&nbsp;m</strong> procházíme zleva doprava. Hledáme první políčko s časem ≥ <strong>${state.enteredTime}&nbsp;min</strong>. Nalezeno ve skupině <strong>${group}</strong> — čas na dně <strong>${state.result.cell.bottomTime}&nbsp;min</strong>.`;
+        }
+
+        function applyStep3() {
+            clearHighlights();
+            dimOtherRows();
+
+            const { groupIdx, cell } = state.result;
+            const td = getCellTd(state.targetDepthData.depth, groupIdx);
+            if (td) td.classList.add('cell-found');
+
+            const group = GROUPS[groupIdx];
+            const isNDL = cell.stop5m === 0;
+            const stopText = isNDL
+                ? '<strong>zastávka 5&nbsp;m: žádná</strong> — bezdekompresní ponor'
+                : `<strong>zastávka 5&nbsp;m: ${cell.stop5m}&nbsp;min</strong> — dekompresní ponor`;
+            stepText.innerHTML = `Krok 3: Přečteme políčko. Skupina <strong>${group}</strong>, čas <strong>${cell.bottomTime}&nbsp;min</strong> — ${stopText}.`;
+            nextStepBtn.textContent = 'Výsledek →';
+        }
+
+        function showResult() {
+            clearHighlights();
+            const { groupIdx, cell } = state.result;
+            const td = getCellTd(state.targetDepthData.depth, groupIdx);
+            if (td) td.classList.add('cell-found');
+
+            const group = GROUPS[groupIdx];
+            const isNDL = cell.stop5m === 0;
+
+            document.getElementById('resultTitle').textContent = isNDL
+                ? '✓ Bezdekompresní ponor'
+                : '⚠ Dekompresní ponor — zastávka povinná';
+            document.getElementById('resultTitle').className = isNDL ? 'ndl' : 'deco';
+
+            document.getElementById('resultMeta').innerHTML =
+                `<span><span class="lbl">Hloubka: </span><strong>${state.targetDepthData.depth}&nbsp;m</strong></span>` +
+                `<span><span class="lbl">Dusíková skupina: </span><strong>${group}</strong></span>` +
+                `<span><span class="lbl">Čas na dně: </span><strong>${cell.bottomTime}&nbsp;min</strong>` +
+                (state.enteredTime !== cell.bottomTime
+                    ? ` <em style="color:var(--text-muted);font-size:0.82rem">(zadáno ${state.enteredTime}&nbsp;min, zaokrouhleno na ${cell.bottomTime})</em>`
+                    : '') +
+                `</span>`;
+
+            const stopsEl = document.getElementById('resultStops');
+            if (isNDL) {
+                stopsEl.innerHTML = '<div class="ndl-chip">Bez dekomprese</div>';
+            } else {
+                stopsEl.innerHTML = `<div class="stop-chip"><span class="stop-depth">Zastávka 5&nbsp;m</span><span class="stop-time">${cell.stop5m}</span><span class="stop-unit">min</span></div>`;
+            }
+
+            document.getElementById('resultSummary').innerHTML =
+                `<span><span class="lbl">Typ ponoru: </span><span class="val">${isNDL ? 'Bezdekompresní' : 'Dekompresní'}</span></span>` +
+                `<span><span class="lbl">Dusíková skupina po ponoru: </span><span class="val">${group}</span></span>`;
+
+            resultCard.classList.add('visible');
+            stepNarrator.classList.remove('visible');
+            resetBtn.style.display = '';
+            lookupBtn.disabled = false;
+            resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // ── Main lookup ───────────────────────────────────────────────────────
+        function startLookup() {
+            const enteredDepth = parseInt(inputDepth.value, 10);
+            const enteredTime  = parseInt(inputTime.value, 10);
+
+            lookupError.classList.remove('visible');
+            resultCard.classList.remove('visible');
+            clearHighlights();
+
+            if (isNaN(enteredDepth) || enteredDepth < 1) {
+                return showError('Zadej kladnou hloubku v metrech.');
+            }
+            if (isNaN(enteredTime) || enteredTime < 1) {
+                return showError('Zadej čas na dně v minutách.');
+            }
+            if (enteredDepth < 12) {
+                return showError('Tabulky ČSAS/CMAS 2018 jsou definovány pro hloubky 12–40&nbsp;m.');
+            }
+
+            const targetDepthData = findDepth(enteredDepth);
+            if (!targetDepthData) {
+                return showError(`Hloubka ${enteredDepth}&nbsp;m přesahuje rozsah tabulky (max. 40&nbsp;m).`);
+            }
+
+            const result = findCell(targetDepthData, enteredTime);
+            if (!result) {
+                return showError(`Čas ${enteredTime}&nbsp;min ve hloubce ${targetDepthData.depth}&nbsp;m je mimo rozsah tabulky.`);
+            }
+
+            state.enteredDepth    = enteredDepth;
+            state.enteredTime     = enteredTime;
+            state.targetDepthData = targetDepthData;
+            state.result          = result;
+            state.step            = 1;
+
+            lookupBtn.disabled = true;
+            resetBtn.style.display = '';
+            stepNarrator.classList.add('visible');
+            updateDots(1);
+            applyStep1();
+            prevStepBtn.disabled = true;
+            nextStepBtn.disabled = false;
+            nextStepBtn.textContent = 'Dále →';
+        }
+
+        function showError(msg) {
+            lookupError.innerHTML = msg;
+            lookupError.classList.add('visible');
+        }
+
+        // ── Step navigation ───────────────────────────────────────────────────
+        function advance() {
+            if (state.step === 1) {
+                state.step = 2; updateDots(2); applyStep2(); prevStepBtn.disabled = false;
+            } else if (state.step === 2) {
+                state.step = 3; updateDots(3); applyStep3(); prevStepBtn.disabled = false;
+            } else if (state.step === 3) {
+                state.step = 4; showResult();
+            }
+        }
+
+        function goBack() {
+            if (state.step === 2) {
+                state.step = 1; updateDots(1); applyStep1();
+                prevStepBtn.disabled = true; nextStepBtn.textContent = 'Dále →';
+            } else if (state.step === 3) {
+                state.step = 2; updateDots(2); applyStep2();
+                nextStepBtn.textContent = 'Dále →';
+            }
+        }
+
+        function resetAll() {
+            state.step = 0;
+            clearHighlights();
+            stepNarrator.classList.remove('visible');
+            resultCard.classList.remove('visible');
+            lookupError.classList.remove('visible');
+            lookupBtn.disabled = false;
+            resetBtn.style.display = 'none';
+            nextStepBtn.textContent = 'Dále →';
+        }
+
+        // ── Events ────────────────────────────────────────────────────────────
+        lookupBtn.addEventListener('click', startLookup);
+        nextStepBtn.addEventListener('click', advance);
+        prevStepBtn.addEventListener('click', goBack);
+        resetBtn.addEventListener('click', resetAll);
+        [inputDepth, inputTime].forEach(el => {
+            el.addEventListener('input', () => { if (state.step > 0) resetAll(); });
+            el.addEventListener('keydown', e => { if (e.key === 'Enter' && state.step === 0) startLookup(); });
+        });
+    </script>
+</body>
+</html>
