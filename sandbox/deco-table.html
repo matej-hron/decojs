@@ -585,12 +585,13 @@
         }
 
         // ── Image overlay coordinate map (% of image 654×486 px) ─────────────
-        const IMG_ROW_TOP = { 12:21.81, 15:29.22, 18:36.63, 21:44.03, 24:51.44, 27:58.85, 30:66.26, 33:73.66, 36:81.07, 40:88.48 };
-        const IMG_ROW_H   = 7.41; // row height as % of image height
-        const IMG_COL_L   = [13.76,20.79,27.83,34.86,41.90,48.93,55.96,62.99,70.03,77.06,84.10,91.13];
-        const IMG_COL_W   = 7.03; // column width as % of image width
-        const IMG_DATA_LEFT  = 13.76; // leftmost data column start
-        const IMG_DATA_RIGHT = 98.17; // rightmost data column end
+        // Derived from pixel analysis: 44px columns starting at x=92, 36.5px rows
+        const IMG_ROW_TOP = { 12:20.83, 15:28.34, 18:35.85, 21:43.37, 24:50.87, 27:58.39, 30:65.89, 33:73.41, 36:80.91, 40:88.43 };
+        const IMG_ROW_H   = 7.51; // row height as % of image height (36.5/486)
+        const IMG_COL_L   = [14.07,20.80,27.52,34.25,40.98,47.71,54.43,61.16,67.89,74.62,81.35,88.07];
+        const IMG_COL_W   = 6.73; // column width as % of image width (44/654)
+        const IMG_DATA_LEFT  = 14.07; // leftmost data column start (92/654)
+        const IMG_DATA_RIGHT = 94.80; // rightmost data column end (620/654)
 
         const imgOverlayRow  = document.getElementById('imgOverlayRow');
         const imgOverlayCell = document.getElementById('imgOverlayCell');
