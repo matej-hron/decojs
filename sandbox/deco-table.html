@@ -420,6 +420,49 @@
             font-size: 0.85rem;
         }
         .downloads .dl-note, .downloads .dl-sep { color: var(--text-muted); }
+
+        /* ── Official guide (behind a button) ── */
+        .guide { margin: 0 0 1.25rem; }
+        .guide > summary {
+            display: inline-block;
+            list-style: none;
+            padding: 0.4rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #2980b9;
+            background: var(--card-background);
+            border: 1px solid #2980b9;
+            border-radius: 4px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .guide > summary::-webkit-details-marker { display: none; }
+        .guide > summary::before { content: '▸ '; }
+        .guide[open] > summary::before { content: '▾ '; }
+        .guide[open] > summary { background: #2980b9; color: #fff; }
+        .guide-body {
+            margin-top: 0.6rem;
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1rem 1.25rem;
+            font-size: 0.9rem;
+            line-height: 1.55;
+            max-width: 860px;
+        }
+        .guide-body h3 { font-size: 1rem; margin: 1.1rem 0 0.4rem; }
+        .guide-body h3:first-child { margin-top: 0; }
+        .guide-body p { margin: 0.35rem 0; }
+        .guide-body ul, .guide-body ol { margin: 0.3rem 0; padding-left: 1.4rem; }
+        .guide-body li { margin-bottom: 0.25rem; }
+        .guide-lead { color: var(--text-muted); font-style: italic; }
+        .guide-alert {
+            border-left: 3px solid #c0392b;
+            padding: 0.4rem 0.75rem;
+            background: rgba(231,76,60,0.06);
+        }
+        .guide-columns { columns: 2 16rem; }
+        .guide-source { margin-top: 1rem !important; font-size: 0.8rem; color: var(--text-muted); }
         .image-section-title {
             font-size: 0.82rem;
             text-transform: uppercase;
@@ -522,6 +565,76 @@
             <span class="dl-sep">·</span>
             <a href="../images/cmas-table-2018.png" download="dekompresni-tabulky-SPCR-2018.png">obrázek tabulky pro vzduch (PNG)</a>
         </p>
+
+        <!-- Official guide from the XLS sheet "návod k tabulkám" -->
+        <details class="guide" id="guide">
+            <summary>Návod k tabulkám (SPČR)</summary>
+            <div class="guide-body">
+                <h3>Návod na použití tabulek</h3>
+                <p class="guide-lead">(v případě, že to není zřejmé na první nebo druhý pohled)</p>
+                <ul>
+                    <li>pod nápisem START hledáme dole maximální hloubku ponoru nebo případně nejbližší větší hloubku</li>
+                    <li>vpravo podle šipek najdeme dobu ponoru (od zanoření k počátku výstupu) nebo nejbližší delší hodnotu</li>
+                    <li>až do červeného čísla v kroužku se jedná o bezdekompresní ponor, kdy je možno vystoupit nahoru a uskutečnit jen bezpečnostní zastávku v 5&nbsp;m na dobu 3&nbsp;min</li>
+                    <li>dekompresní zastávka je pro tento typ rekreačních ponorů pouze jedna, a to v 5&nbsp;m, hlubší a delší ponory řeší US Navy tabulky</li>
+                    <li>zastávky v 5&nbsp;m mají výhodu ve vlnách a rovněž je jednodušší se udržet pomocí kompenzátoru vztlaku v 5&nbsp;m než ve 3&nbsp;m</li>
+                    <li>při delší době ponoru (červené číslo v horní polovině buňky) je nutná povinná dekompresní zastávka v 5&nbsp;m po dobu uvedenou bílým číslem v modrém poli ve spodní polovině buňky</li>
+                    <li>rychlost výstupu je 10&nbsp;m/min, určená počítačem, případně nepředbíhat malé bublinky</li>
+                </ul>
+
+                <h3>Opakovaný ponor</h3>
+                <ul>
+                    <li>při dalším ponoru do 24&nbsp;h (tzv. opakovaný ponor) se pohybujeme z buňky prvního ponoru podle šipek směrem dolů tak dlouho, až povrchový interval bude v příslušné buňce</li>
+                    <li>odtud se pohybujeme podle šipek vlevo tak dlouho, až se dostaneme do sloupce s hloubkou dalšího ponoru (zaokrouhlujeme případně na větší hloubku) a zde uvedené číslo +XYZ je časová přirážka v minutách k době dalšího ponoru; hledáme tedy pro další ponor dobu, která je součtem reálné doby ponoru a nalezené časové přirážky +XYZ</li>
+                </ul>
+
+                <h3>Let letadlem</h3>
+                <p>Letět letadlem s přetlakovou kabinou je možné podle počítače nebo podle tabulek</p>
+                <ul>
+                    <li>po jednom ponoru za 12&nbsp;h</li>
+                    <li>po opakovaném nebo vícedenních ponorech až za 24&nbsp;h</li>
+                </ul>
+
+                <h3>Potápění ve větších nadmořských výškách než 300&nbsp;m</h3>
+                <p>se řídí tzv. křížovými korekcemi, kdy se hledá v tabulkách na listě „deko tab hory A4“ větší hloubka ponoru a dekompresní zastávka se realizuje v menší hloubce.</p>
+
+                <h3>Mimořádné situace</h3>
+                <p><strong>Zdržení při výstupu:</strong> tato doba se přičte k době ponoru (čas na dně) a najde se nový dekompresní postup.</p>
+                <p><strong>Neuskutečněná dekomprese nebo příliš rychlý výstup:</strong> postupuje se dle doporučení US Navy.</p>
+                <ol class="guide-steps">
+                    <li>Je-li potápěč bez příznaků dekompresní choroby a je schopen se do 5&nbsp;min vrátit na dekompresní zastávku:
+                        <ol type="a">
+                            <li>Sdělí vedoucímu potápěči opomenutou dekompresi.</li>
+                            <li>Vrátí se na dekompresní zastávku a zůstane tam 1,5násobek původní doby.</li>
+                        </ol>
+                    </li>
+                    <li>Není-li schopen se do 5&nbsp;min vrátit s dýchacím přístrojem na dekompresní zastávku:
+                        <ol type="a">
+                            <li>Musí dýchat na povrchu dle možností minimálně 60&nbsp;min čistý kyslík.</li>
+                            <li>Pakliže se během této doby a po ní neobjeví příznaky dekompresní choroby, musí být pod dohledem a nepotápět se minimálně 12&nbsp;hodin.</li>
+                            <li>Pakliže se během této doby a po ní objeví příznaky dekompresní choroby, musí být s kyslíkem transportován k nejbližšímu zdravotnickému zařízení.</li>
+                        </ol>
+                    </li>
+                </ol>
+                <p class="guide-alert">Příznaky dekompresní choroby (kromě kožní formy) je nutno léčit v barokomoře, do příjezdu zdravotnické pomoci podávat kyslík, izotonické tekutiny (1&nbsp;litr vody / hod.), podat 1/2 tablety Aspirinu, ale ne léky tlumící bolest.</p>
+
+                <h3>Nepříznivé okolnosti</h3>
+                <p>Při dekompresním procesu mohou nepříznivé okolnosti při vysycování přebytečného dusíku i při respektování tabulek nebo počítače způsobit slabou dekompresní chorobu. Řešením je hledat v tabulkách dekompresi v řádku nižším než původně použitém, tj. pro hloubku o 3&nbsp;m větší. U počítače je třeba podle návodu předem nastavit vyšší stupeň konzervatizmu.</p>
+                <p>Přehled nepříznivých okolností:</p>
+                <ol class="guide-columns">
+                    <li>Větší fyzická námaha</li>
+                    <li>Dehydratace</li>
+                    <li>Silné prochlazení</li>
+                    <li>Více tukové tkáně</li>
+                    <li>Rychlý pokles tlaku (letadlo, hory)</li>
+                    <li>Nedokonalý krevní oběh (škrcení řemínky, operace, věk)</li>
+                    <li>PFO (patent foramen ovale, pravolevý zkrat)</li>
+                    <li>Otřesy, vibrace (sport, doprava)</li>
+                </ol>
+
+                <p class="guide-source">Zdroj: Dekompresní tabulky pro potápění SPČR 2018, list „návod k tabulkám“ (JH&nbsp;2017) — <a href="https://www.cmas.cz/soubor-od-1-1-2018-plati-nove-dekompresni-tabulky-318-.xls" target="_blank" rel="noopener">originál XLS</a>.</p>
+            </div>
+        </details>
 
         <!-- Legend -->
         <div class="table-legend">
