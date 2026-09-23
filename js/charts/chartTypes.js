@@ -496,6 +496,8 @@ export function normalizeDiveSetup(setup) {
             pressure: setup.units?.pressure || 'bar'
         },
         dives: setup.dives,
-        initialTissuePressures: setup.initialTissuePressures ?? null
+        initialTissuePressures: setup.initialTissuePressures ?? null,
+        // ZH-L16 variant from a link or imported JSON — the editor applies it on load
+        ...(/^ZH-L16[ABC]$/.test(setup.algorithm) ? { algorithm: setup.algorithm } : {})
     };
 }

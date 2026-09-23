@@ -49,6 +49,7 @@ export function encodeDiveSetup(diveSetup) {
         if (diveSetup.description) minimal.description = diveSetup.description;
         if (diveSetup.surfaceInterval) minimal.surfaceInterval = diveSetup.surfaceInterval;
         if (diveSetup.environment) minimal.environment = diveSetup.environment;
+        if (diveSetup.algorithm) minimal.algorithm = diveSetup.algorithm;
 
         const json = JSON.stringify(minimal);
 

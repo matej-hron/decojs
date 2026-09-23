@@ -10453,6 +10453,19 @@ describe('compact sandbox link (?v=1) — ZH-L16 variant', () => {
             expect(compactVariants[letter]).toBe(`ZH-L16${letter}`);
         });
     }
+    // Regression: normalizeDiveSetup rebuilt the setup without `algorithm`,
+    // so the variant from a link never reached the sandbox editor.
+    test('normalizeDiveSetup keeps a valid ZH-L16 variant', () => {
+        const base = { gases: [{ id: 'air', o2: 0.21, n2: 0.79 }], dives: [] };
+        expect(normalizeDiveSetup({ ...base, algorithm: 'ZH-L16B' }).algorithm).toBe('ZH-L16B');
+        expect(normalizeDiveSetup({ ...base, algorithm: 'B' }).algorithm).toBe(undefined);
+        expect('algorithm' in normalizeDiveSetup(base)).toBe(false);
+    });
+    test('profile= links keep the ZH-L16 variant through encode/decode', () => {
+        const setup = { gases: [{ id: 'air', o2: 0.21, n2: 0.79 }], gfLow: 100, gfHigh: 100,
+                        dives: [{ waypoints: [{ time: 0, depth: 0, gasId: 'air' }] }], algorithm: 'ZH-L16B' };
+        expect(normalizeDiveSetup(decodeDiveSetup(encodeDiveSetup(setup))).algorithm).toBe('ZH-L16B');
+    });
 });
 
 describe('SPČR/CMAS 2018 tables (cmasTables.js)', () => {
