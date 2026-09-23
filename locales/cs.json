@@ -1502,7 +1502,7 @@
             "transfill": "Přepouštění lahví",
             "cascade": "Kaskádové plnění",
             "gasLaw": "Tlak v lahvi při změně teploty",
-            "decoTable": "Dekompresní tabulky ČSAS/CMAS",
+            "decoTable": "Dekompresní tabulky SPČR/CMAS",
             "repetitive": "Opakované ponory"
         },
         "theory": {

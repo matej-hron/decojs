@@ -446,12 +446,12 @@
     </nav>
 
     <div class="disclaimer-banner">
-        <strong>Pouze pro vzdělávací účely</strong> — Ukázka práce s dekompresními tabulkami ČSAS/CMAS 2018. Neprovádějte ponory na základě tohoto simulátoru.
+        <strong>Pouze pro vzdělávací účely</strong> — Ukázka práce s dekompresními tabulkami SPČR/CMAS 2018. Neprovádějte ponory na základě tohoto simulátoru.
     </div>
 
     <header class="hero hero-compact">
         <h1>Dekompresní tabulky</h1>
-        <p class="hero-subtitle">Zadej hloubku a čas na dně — simulátor tě krok za krokem provede tabulkami ČSAS/CMAS (platné od 1.&nbsp;1.&nbsp;2018), včetně opakovaných ponorů.</p>
+        <p class="hero-subtitle">Zadej hloubku a čas na dně — simulátor tě krok za krokem provede tabulkami SPČR/CMAS (platné od 1.&nbsp;1.&nbsp;2018), včetně opakovaných ponorů.</p>
     </header>
 
     <div class="deco-table-layout">
@@ -534,9 +534,9 @@
 
         <!-- Original table with interactive overlay -->
         <div class="image-section">
-            <p class="image-section-title">Originál tabulky ČSAS/CMAS 2018 — stejná cesta na papíře</p>
+            <p class="image-section-title">Originál tabulky SPČR/CMAS 2018 — stejná cesta na papíře</p>
             <div class="image-overlay-container" id="imageContainer">
-                <img src="../images/cmas-table-2018.png" alt="Dekompresní tabulky ČSAS/CMAS 2018 pro vzduch" class="cmas-table-img">
+                <img src="../images/cmas-table-2018.png" alt="Dekompresní tabulky SPČR/CMAS 2018 pro vzduch" class="cmas-table-img">
             </div>
         </div>
 
@@ -832,7 +832,7 @@
 
         const ERRORS = {
             invalid:        () => 'Zadej kladnou hloubku, čas a povrchový interval.',
-            tooDeep:        e => `Tabulky ČSAS/CMAS 2018 končí hloubkou ${e.maxDepth}&nbsp;m.`,
+            tooDeep:        e => `Tabulky SPČR/CMAS 2018 končí hloubkou ${e.maxDepth}&nbsp;m.`,
             timeOutOfRange: e => `Doba ${e.tableTime}&nbsp;min v hloubce ${e.tableDepth}&nbsp;m je mimo rozsah tabulky.`,
             siTooShort:     () => 'Povrchový interval kratší než 10&nbsp;min: oba ponory se počítají jako jeden — sečti doby a použij větší hloubku.',
             siOver24h:      () => 'Po více než 24&nbsp;h už nejde o opakovaný ponor — vyhledej ho jako první ponor.',

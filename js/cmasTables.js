@@ -1,5 +1,5 @@
 /**
- * ČSAS/CMAS 2018 air decompression tables — pure lookup logic.
+ * SPČR/CMAS 2018 air decompression tables — pure lookup logic.
  *
  * The paper table is read clockwise in three parts (data: data/cmas-deco-tables.json):
  *   1. Dive table (top right): depth row → first time ≥ bottom time → repetitive group (column).

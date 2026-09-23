@@ -9526,7 +9526,7 @@ describe('guard: user-controlled values reaching innerHTML go through escHtml (#
     });
 });
 
-describe('ČSAS/CMAS 2018 tables (cmasTables.js)', () => {
+describe('SPČR/CMAS 2018 tables (cmasTables.js)', () => {
     const cmas = JSON.parse(readFileSync(new URL('../data/cmas-deco-tables.json', import.meta.url), 'utf8'));
     const G = cmas.groups;
     const g = letter => G.indexOf(letter);
