@@ -86,8 +86,37 @@
             display: none;
         }
         #resetBtn:hover { background: var(--background-color); }
-        .repeat-panel { display: none; border-color: #2980b9; }
-        .repeat-panel.visible { display: flex; }
+        .plan-panel { flex-direction: column; align-items: stretch; gap: 0.6rem; }
+        .plan-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1.25rem;
+            align-items: flex-end;
+            padding-bottom: 0.6rem;
+            border-bottom: 1px dashed var(--border-color);
+        }
+        .plan-num { font-weight: 700; font-size: 0.9rem; min-width: 7.5rem; align-self: center; }
+        .plan-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+        .btn-secondary, .remove-btn {
+            padding: 0.4rem 0.9rem;
+            font-size: 0.9rem;
+            background: var(--background-color);
+            color: #2980b9;
+            border: 1px dashed #2980b9;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
+        .remove-btn { color: var(--text-muted); border: 1px solid var(--border-color); padding: 0.35rem 0.7rem; }
+        .remove-btn:hover { color: #c0392b; border-color: #c0392b; }
+
+        /* ── Result table ── */
+        .result-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; font-variant-numeric: tabular-nums; }
+        .result-table th, .result-table td { padding: 0.35rem 0.5rem; border-bottom: 1px solid var(--border-color); text-align: left; }
+        .result-table th { font-size: 0.78rem; color: var(--text-muted); font-weight: 600; }
+        .result-table .deco { color: #e67e22; font-weight: 700; }
+        .result-table .ndl  { color: #27ae60; font-weight: 700; }
+        .result-table .grp  { font-weight: 700; }
 
         /* ── Dive log ── */
         .dive-log {
@@ -395,19 +424,26 @@
 
     <div class="deco-table-layout">
 
-        <!-- First dive -->
-        <div class="lookup-panel">
-            <p class="panel-title">1. ponor</p>
-            <div class="lookup-field">
-                <label for="inputDepth">Hloubka (m)</label>
-                <input type="number" id="inputDepth" min="1" max="40" step="1" value="30">
+        <!-- Dive plan: first dive + any number of repetitive dives -->
+        <div class="lookup-panel plan-panel">
+            <p class="panel-title">Plán ponorů</p>
+            <div class="plan-row">
+                <span class="plan-num">1. ponor</span>
+                <div class="lookup-field">
+                    <label for="inputDepth">Hloubka (m)</label>
+                    <input type="number" id="inputDepth" min="1" max="40" step="1" value="30">
+                </div>
+                <div class="lookup-field">
+                    <label for="inputTime">Čas na dně (min)</label>
+                    <input type="number" id="inputTime" min="1" max="200" step="1" value="20">
+                </div>
             </div>
-            <div class="lookup-field">
-                <label for="inputTime">Čas na dně (min)</label>
-                <input type="number" id="inputTime" min="1" max="200" step="1" value="20">
+            <div id="repeatRows"></div>
+            <div class="plan-actions">
+                <button id="addRepeatBtn" class="btn-secondary">+ Opakovaný ponor</button>
+                <button id="lookupBtn" class="btn-primary">Vyhledat</button>
+                <button id="resetBtn">Začít znovu</button>
             </div>
-            <button id="lookupBtn" class="btn-primary">Vyhledat</button>
-            <button id="resetBtn">Začít znovu</button>
         </div>
 
         <!-- Dive log -->
@@ -428,30 +464,8 @@
         <!-- Result -->
         <div class="result-card" id="resultCard">
             <h3 id="resultTitle"></h3>
-            <div class="result-meta" id="resultMeta"></div>
-            <div class="result-stops" id="resultStops"></div>
+            <div class="table-wrapper" id="resultBody"></div>
             <div id="resultNotes"></div>
-        </div>
-
-        <!-- Repetitive dive -->
-        <div class="lookup-panel repeat-panel" id="repeatPanel">
-            <p class="panel-title" id="repeatTitle">Opakovaný ponor</p>
-            <div class="lookup-field">
-                <label for="inputSiH">Povrchový interval</label>
-                <div class="si-inputs">
-                    <input type="number" id="inputSiH" class="narrow" min="0" max="24" step="1" value="1"> h
-                    <input type="number" id="inputSiM" class="narrow" min="0" max="59" step="1" value="0"> min
-                </div>
-            </div>
-            <div class="lookup-field">
-                <label for="inputDepth2">Hloubka (m)</label>
-                <input type="number" id="inputDepth2" min="1" max="40" step="1" value="18">
-            </div>
-            <div class="lookup-field">
-                <label for="inputTime2">Reálný čas na dně (min)</label>
-                <input type="number" id="inputTime2" min="1" max="200" step="1" value="20">
-            </div>
-            <button id="repeatBtn" class="btn-primary">Vyhledat opakovaný ponor</button>
         </div>
 
         <!-- Legend -->
@@ -712,15 +726,15 @@
         // ── State & DOM ──────────────────────────────────────────────────────
         const $ = id => document.getElementById(id);
         const els = {
-            lookupBtn: $('lookupBtn'), resetBtn: $('resetBtn'),
-            depth: $('inputDepth'), time: $('inputTime'),
-            siH: $('inputSiH'), siM: $('inputSiM'), depth2: $('inputDepth2'), time2: $('inputTime2'),
-            repeatBtn: $('repeatBtn'), repeatPanel: $('repeatPanel'), repeatTitle: $('repeatTitle'),
+            lookupBtn: $('lookupBtn'), resetBtn: $('resetBtn'), addRepeatBtn: $('addRepeatBtn'),
+            depth: $('inputDepth'), time: $('inputTime'), repeatRows: $('repeatRows'),
             error: $('lookupError'), narrator: $('stepNarrator'), indicator: $('stepIndicator'),
             text: $('stepText'), next: $('nextStepBtn'), prev: $('prevStepBtn'),
             result: $('resultCard'), log: $('diveLog'),
         };
-        const state = { dives: [], pending: null, steps: [], step: 0 };
+        const MAX_REPEATS = 4;
+        // dives: [{ depth, time, si?, result }]; steps: flat list over all dives, each with .dive
+        const state = { dives: [], steps: [], step: -1, done: false };
 
         const ERRORS = {
             invalid:        () => 'Zadej kladnou hloubku, čas a povrchový interval.',
@@ -731,27 +745,82 @@
             noPenalty:      e => `Pro skupinu ${GROUPS[e.groupIdx]} a hloubku ${e.tableDepth}&nbsp;m tabulka přirážku neuvádí — vyvarujte se opakovaných ponorů hlubších 30&nbsp;m.`,
         };
 
-        function showError(r) {
-            els.error.innerHTML = ERRORS[r.code](r);
-            els.error.classList.add('visible');
+        // ── Plan rows ────────────────────────────────────────────────────────
+        let rowSeq = 0;
+        function addRepeatRow(si = [1, 0], depth = 18, time = 20) {
+            const id = ++rowSeq;
+            const row = document.createElement('div');
+            row.className = 'plan-row repeat';
+            row.innerHTML = `
+                <span class="plan-num"></span>
+                <div class="lookup-field">
+                    <label for="siH${id}">Povrchový interval</label>
+                    <div class="si-inputs">
+                        <input type="number" id="siH${id}" class="narrow" data-f="siH" min="0" max="24" step="1" value="${si[0]}"> h
+                        <input type="number" class="narrow" data-f="siM" min="0" max="59" step="1" value="${si[1]}" aria-label="minuty"> min
+                    </div>
+                </div>
+                <div class="lookup-field">
+                    <label for="depth${id}">Hloubka (m)</label>
+                    <input type="number" id="depth${id}" data-f="depth" min="1" max="40" step="1" value="${depth}">
+                </div>
+                <div class="lookup-field">
+                    <label for="time${id}">Reálný čas na dně (min)</label>
+                    <input type="number" id="time${id}" data-f="time" min="1" max="200" step="1" value="${time}">
+                </div>
+                <button class="remove-btn" aria-label="Odebrat ponor" title="Odebrat ponor">×</button>`;
+            row.querySelector('.remove-btn').addEventListener('click', () => { row.remove(); planChanged(); });
+            wireInputs(row.querySelectorAll('input'));
+            els.repeatRows.appendChild(row);
+            planChanged();
         }
+
+        function renumberRows() {
+            const rows = els.repeatRows.querySelectorAll('.plan-row');
+            rows.forEach((row, i) => { row.querySelector('.plan-num').textContent = `${i + 2}. ponor (opakovaný)`; });
+            els.addRepeatBtn.disabled = rows.length >= MAX_REPEATS;
+        }
+
+        function readPlan() {
+            const int = el => parseInt(el.value, 10);
+            const plan = [{ depth: int(els.depth), time: int(els.time) }];
+            els.repeatRows.querySelectorAll('.plan-row').forEach(row => {
+                const f = name => row.querySelector(`[data-f="${name}"]`);
+                plan.push({
+                    si: (int(f('siH')) || 0) * 60 + (int(f('siM')) || 0),
+                    depth: int(f('depth')),
+                    time: int(f('time')),
+                });
+            });
+            return plan;
+        }
+
+        function planChanged() {
+            renumberRows();
+            if (state.steps.length) resetAll();
+        }
+
+        // ── Walkthrough ──────────────────────────────────────────────────────
+        function currentDive() { return state.steps[state.step].dive; }
 
         function renderIndicator() {
             els.indicator.innerHTML = '';
-            state.steps.forEach((s, i) => {
-                if (i) {
+            const cur = currentDive();
+            const mine = state.steps.map((s, i) => [s, i]).filter(([s]) => s.dive === cur);
+            mine.forEach(([, i], k) => {
+                if (k) {
                     const c = document.createElement('div');
                     c.className = 'step-connector' + (i <= state.step ? ' done' : '');
                     els.indicator.appendChild(c);
                 }
                 const dot = document.createElement('div');
                 dot.className = 'step-dot' + (i < state.step ? ' done' : i === state.step ? ' active' : '');
-                dot.textContent = i + 1;
+                dot.textContent = k + 1;
                 els.indicator.appendChild(dot);
             });
             const part = document.createElement('span');
             part.className = 'step-part';
-            part.textContent = `${state.dives.length + 1}. ponor · část ${state.steps[state.step].part}`;
+            part.textContent = `${cur + 1}. ponor z ${state.dives.length} · část ${state.steps[state.step].part}`;
             els.indicator.appendChild(part);
         }
 
@@ -761,89 +830,89 @@
             els.text.innerHTML = s.text;
             highlight(s.hl);
             els.prev.disabled = state.step === 0;
-            els.next.textContent = state.step === state.steps.length - 1 ? 'Výsledek →' : 'Dále →';
+            const last = state.step === state.steps.length - 1;
+            const endsDive = !last && state.steps[state.step + 1].dive !== s.dive;
+            els.next.textContent = last ? 'Výsledek →' : endsDive ? `${s.dive + 2}. ponor →` : 'Dále →';
+            renderLog(s.dive - (endsDive || last ? 0 : 1));
         }
 
-        function startSteps(dive, r, steps) {
-            state.pending = { ...dive, result: r };
-            state.steps = steps;
-            state.step = 0;
-            els.error.classList.remove('visible');
-            els.result.classList.remove('visible');
-            els.repeatPanel.classList.remove('visible');
-            els.narrator.classList.add('visible');
-            els.lookupBtn.disabled = true;
-            els.resetBtn.style.display = '';
-            renderStep();
-        }
-
-        function renderLog() {
+        /** Log chips for dives 0..upTo (completed so far). */
+        function renderLog(upTo) {
             const parts = [];
-            state.dives.forEach((dv, i) => {
+            state.dives.slice(0, upTo + 1).forEach((dv, i) => {
                 const r = dv.result;
-                if (dv.si !== undefined) {
-                    parts.push(`<span class="log-chip si">PI ${formatHM(dv.si)} → ${GROUPS[r.si.groupIdx]}</span>`);
-                }
+                if (r.si) parts.push(`<span class="log-chip si">PI ${formatHM(dv.si)} → ${GROUPS[r.si.groupIdx]}</span>`);
                 const time = r.penalty ? `${dv.time}+${r.penalty}` : `${dv.time}`;
                 const stop = r.isDeco ? ` · 5&nbsp;m/${r.cell.stop5m}&nbsp;min` : '';
                 parts.push(`<span class="log-chip ${r.isDeco ? 'deco' : 'dive'}">${i + 1}. ${dv.depth}&nbsp;m / ${time}&nbsp;min → <strong>${GROUPS[r.groupIdx]}</strong>${stop}</span>`);
             });
             els.log.innerHTML = parts.join('<span class="log-arrow">→</span>');
-            els.log.classList.toggle('visible', state.dives.length > 0);
+            els.log.classList.toggle('visible', parts.length > 0);
         }
 
         function showResult() {
-            const dive = state.pending;
-            const r = dive.result;
-            state.dives.push(dive);
-            state.pending = null;
-            const num = state.dives.length;
-            highlight({ found: [`p1:${r.depthIdx}:${r.groupIdx}`], label: [`lg:${r.groupIdx}`] });
+            state.done = true;
+            const last = state.dives.at(-1).result;
+            highlight({ found: [`p1:${last.depthIdx}:${last.groupIdx}`], label: [`lg:${last.groupIdx}`] });
+            renderLog(state.dives.length - 1);
 
-            $('resultTitle').textContent = `${num}. ponor — ` + (r.isDeco ? 'dekompresní, zastávka povinná' : 'bez dekomprese');
-            $('resultTitle').className = r.isDeco ? 'deco' : 'ndl';
-            els.result.classList.toggle('deco', r.isDeco);
+            const anyDeco = state.dives.some(dv => dv.result.isDeco);
+            $('resultTitle').textContent = state.dives.length === 1
+                ? (anyDeco ? 'Dekompresní ponor — zastávka povinná' : 'Ponor bez dekomprese')
+                : `Plán ${state.dives.length} ponorů` + (anyDeco ? ' — obsahuje dekompresní ponor' : ' — vše bez dekomprese');
+            $('resultTitle').className = anyDeco ? 'deco' : 'ndl';
+            els.result.classList.toggle('deco', anyDeco);
 
-            const meta = [
-                `<span>Hloubka v tabulce: <strong>${r.tableDepth}&nbsp;m</strong></span>`,
-                `<span>Doba v tabulce: <strong>${r.cell.bottomTime}&nbsp;min</strong>${r.penalty ? ` (${dive.time}&nbsp;+&nbsp;přirážka&nbsp;${r.penalty})` : ''}</span>`,
-                `<span>Skupina po ponoru: <strong>${GROUPS[r.groupIdx]}</strong></span>`,
-            ];
-            if (r.si) meta.unshift(`<span>Po intervalu ${formatHM(dive.si)}: skupina <strong>${GROUPS[r.si.groupIdx]}</strong></span>`);
-            $('resultMeta').innerHTML = meta.join('');
-            $('resultStops').innerHTML = r.isDeco
-                ? `<div class="stop-chip"><span class="stop-depth">zastávka 5&nbsp;m</span><span class="stop-time">${r.cell.stop5m}</span><span class="stop-unit">min</span></div>`
-                : '<div class="ndl-chip">Bez dekomprese · bezpečnostní zastávka 5&nbsp;m / 3&nbsp;min</div>';
+            const rows = state.dives.map((dv, i) => {
+                const r = dv.result;
+                const si = r.si ? `${formatHM(dv.si)} → ${GROUPS[r.si.groupIdx]}` : '—';
+                const time = r.penalty ? `${dv.time}&nbsp;+&nbsp;${r.penalty}&nbsp;= ${r.tableTime}` : `${dv.time}`;
+                const stop = r.isDeco
+                    ? `<span class="deco">zastávka 5&nbsp;m / ${r.cell.stop5m}&nbsp;min</span>`
+                    : '<span class="ndl">bez dekomprese</span>';
+                return `<tr><td>${i + 1}.</td><td>${si}</td><td>${dv.depth}&nbsp;m${dv.depth !== r.tableDepth ? ` (${r.tableDepth})` : ''}</td><td>${time}&nbsp;min</td><td>${stop}</td><td class="grp">${GROUPS[r.groupIdx]}</td></tr>`;
+            }).join('');
+            $('resultBody').innerHTML = `<table class="result-table">
+                <thead><tr><th>Ponor</th><th>Povrch. interval → skupina</th><th>Hloubka (tabulka)</th><th>Doba (+ přirážka)</th><th>Dekomprese</th><th>Skupina po</th></tr></thead>
+                <tbody>${rows}</tbody></table>`;
+
             const notes = [];
-            if (num >= 3 && r.isDeco) notes.push('<p class="result-note warn">Třetí a další ponor dne má být bezdekompresní (podle příkladů SPČR).</p>');
-            if (r.si && r.maxNoDecoTime > 0 && r.isDeco) notes.push(`<p class="result-note">Bez dekomprese bys v ${r.tableDepth}&nbsp;m mohl být max. ${r.maxNoDecoTime}&nbsp;min.</p>`);
-            notes.push('<p class="result-note">Letět letadlem: po jednom ponoru za 12&nbsp;h, po opakovaném za 24&nbsp;h.</p>');
+            if (state.dives.slice(2).some(dv => dv.result.isDeco)) {
+                notes.push('<p class="result-note warn">Třetí a další ponor dne má být bezdekompresní (podle příkladů SPČR).</p>');
+            }
+            notes.push('<p class="result-note">Bezpečnostní zastávka 5&nbsp;m / 3&nbsp;min u každého ponoru. Letět letadlem: po jednom ponoru za 12&nbsp;h, po opakovaném za 24&nbsp;h.</p>');
             $('resultNotes').innerHTML = notes.join('');
 
             els.result.classList.add('visible');
             els.narrator.classList.remove('visible');
-            els.repeatTitle.textContent = `${num + 1}. ponor (opakovaný) — vychází ze skupiny ${GROUPS[r.groupIdx]}`;
-            els.repeatPanel.classList.add('visible');
-            renderLog();
             els.result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
         // ── Actions ──────────────────────────────────────────────────────────
-        function startFirstDive() {
+        function startLookup() {
             resetAll();
-            const dive = { depth: parseInt(els.depth.value, 10), time: parseInt(els.time.value, 10) };
-            const r = lookupDive(table, dive);
-            if (!r.ok) return showError(r);
-            startSteps(dive, r, part1Steps(dive, r));
-        }
-
-        function startRepeatDive() {
-            const prev = state.dives.at(-1);
-            const si = (parseInt(els.siH.value, 10) || 0) * 60 + (parseInt(els.siM.value, 10) || 0);
-            const dive = { depth: parseInt(els.depth2.value, 10), time: parseInt(els.time2.value, 10), si };
-            const r = lookupDive(table, { ...dive, prevGroupIdx: prev.result.groupIdx, surfaceInterval: si });
-            if (!r.ok) return showError(r);
-            startSteps(dive, r, repeatSteps(prev, dive, r));
+            const plan = readPlan();
+            const dives = [];
+            for (const [i, dive] of plan.entries()) {
+                const prev = dives[i - 1];
+                const r = lookupDive(table, prev
+                    ? { ...dive, prevGroupIdx: prev.result.groupIdx, surfaceInterval: dive.si }
+                    : dive);
+                if (!r.ok) {
+                    els.error.innerHTML = `<strong>${i + 1}. ponor:</strong> ` + ERRORS[r.code](r);
+                    els.error.classList.add('visible');
+                    return;
+                }
+                dives.push({ ...dive, result: r });
+            }
+            state.dives = dives;
+            state.steps = dives.flatMap((dv, i) =>
+                (i === 0 ? part1Steps(dv, dv.result) : repeatSteps(dives[i - 1], dv, dv.result))
+                    .map(s => ({ ...s, dive: i })));
+            state.step = 0;
+            els.narrator.classList.add('visible');
+            els.resetBtn.style.display = '';
+            renderStep();
         }
 
         function advance() {
@@ -852,35 +921,41 @@
         }
 
         function goBack() {
-            if (state.step > 0) { state.step--; renderStep(); }
+            if (state.done) {
+                state.done = false;
+                els.result.classList.remove('visible');
+                els.narrator.classList.add('visible');
+                renderStep();
+            } else if (state.step > 0) { state.step--; renderStep(); }
         }
 
         function resetAll() {
             state.dives = [];
-            state.pending = null;
             state.steps = [];
+            state.step = -1;
+            state.done = false;
             clearHighlights();
             els.narrator.classList.remove('visible');
             els.result.classList.remove('visible');
-            els.repeatPanel.classList.remove('visible');
             els.error.classList.remove('visible');
-            els.lookupBtn.disabled = false;
             els.resetBtn.style.display = 'none';
-            renderLog();
+            els.log.classList.remove('visible');
         }
 
-        els.lookupBtn.addEventListener('click', startFirstDive);
-        els.repeatBtn.addEventListener('click', startRepeatDive);
+        function wireInputs(inputs) {
+            inputs.forEach(el => {
+                el.addEventListener('input', () => { if (state.steps.length) resetAll(); });
+                el.addEventListener('keydown', e => { if (e.key === 'Enter') startLookup(); });
+            });
+        }
+
+        els.lookupBtn.addEventListener('click', startLookup);
+        els.addRepeatBtn.addEventListener('click', () => addRepeatRow());
         els.next.addEventListener('click', advance);
         els.prev.addEventListener('click', goBack);
         els.resetBtn.addEventListener('click', resetAll);
-        [els.depth, els.time].forEach(el => {
-            el.addEventListener('input', () => { if (state.dives.length || state.pending) resetAll(); });
-            el.addEventListener('keydown', e => { if (e.key === 'Enter' && !els.lookupBtn.disabled) startFirstDive(); });
-        });
-        [els.siH, els.siM, els.depth2, els.time2].forEach(el => {
-            el.addEventListener('keydown', e => { if (e.key === 'Enter') startRepeatDive(); });
-        });
+        wireInputs([els.depth, els.time]);
+        addRepeatRow();   // start with one repetitive dive so the loop is visible straight away
     </script>
 </body>
 </html>
