@@ -10,10 +10,10 @@
     <link rel="stylesheet" href="../css/styles.css">
 
     <style>
+        /* Full width: the circle table is the point of the page, let it use the screen */
         .deco-table-layout {
-            max-width: 1160px;
             margin: 0 auto;
-            padding: 1rem 1rem 3rem;
+            padding: 1rem clamp(1rem, 2.5vw, 2.5rem) 3rem;
         }
 
         /* ── Input panels ── */
@@ -274,15 +274,18 @@
         /* ── Circle table (digital replica of the paper layout) ── */
         .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
         .deco-grid {
+            width: 100%;
+            min-width: 960px;          /* narrower screens scroll the wrapper instead */
+            table-layout: fixed;       /* all 23 columns equally wide */
             border-collapse: collapse;
-            font-size: 0.8rem;
+            font-size: clamp(0.8rem, 0.78vw, 1.15rem);   /* grows with the screen */
             font-variant-numeric: tabular-nums;
             margin: 0 auto;
         }
         .deco-grid td, .deco-grid th {
             border: 1px solid #94a3b8;
             text-align: center;
-            padding: 0.3rem 0.2rem;
+            padding: 0.35em 0.2em;
             min-width: 40px;
             transition: opacity 0.2s;
         }
@@ -392,7 +395,7 @@
         .deco-grid td.p2, .deco-grid td.p3 { color: #111; }
         .deco-grid td.stripe { background: #FFFF00; border-color: #cccc00; }
         .deco-grid td.plain  { background: #fff; }
-        .deco-grid td.p2 { font-size: 0.72rem; line-height: 1.2; padding: 0.15rem 0.15rem; }
+        .deco-grid td.p2 { font-size: 0.88em; line-height: 1.2; padding: 0.2em 0.15em; }
         .p2 .si-max { display: block; }
         .p2 .si-min { display: block; color: #475569; }
         .deco-grid td.p3 { font-weight: 600; }
@@ -491,7 +494,7 @@
             margin-bottom: 0.5rem;
             font-weight: 600;
         }
-        .image-overlay-container { position: relative; max-width: 900px; margin: 0 auto; }
+        .image-overlay-container { position: relative; max-width: 1480px; margin: 0 auto; }   /* image's natural width */
         .cmas-table-img { display: block; width: 100%; height: auto; }
         .img-hl { position: absolute; pointer-events: none; }
         .img-hl.path   { background: rgba(59,130,246,0.22); }
