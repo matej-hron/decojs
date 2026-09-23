@@ -9605,6 +9605,26 @@ describe('SPČR/CMAS 2018 tables (cmasTables.js)', () => {
         });
     });
 
+    test('every string the page uses exists in cs, en and es', () => {
+        const html = readFileSync(new URL('../sandbox/deco-table.html', import.meta.url), 'utf8');
+        const used = new Set([
+            ...[...html.matchAll(/data-i18n="sandbox\.decoTable\.([\w.]+)"/g)].map(m => m[1]),
+            ...[...html.matchAll(/'((?:steps|plan|narrator|result|errors|downloads|legend|howTo|table|image|guide)\.\w+)'/g)].map(m => m[1]),
+            ...['invalid', 'tooDeep', 'timeOutOfRange', 'siTooShort', 'siOver24h', 'noPenalty'].map(c => `errors.${c}`),
+            ...['colDive', 'colSi', 'colDepth', 'colTime', 'colDeco', 'colGroup'].map(c => `result.${c}`),
+        ]);
+        const missing = [];
+        for (const lang of ['cs', 'en', 'es']) {
+            const t = JSON.parse(readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8'));
+            for (const key of used) {
+                const val = key.split('.').reduce((o, k) => o?.[k], t.sandbox.decoTable);
+                if (typeof val !== 'string') missing.push(`${lang}: ${key}`);
+            }
+        }
+        expect(used.size > 60).toBe(true);
+        expect(missing).toEqual([]);
+    });
+
     test('formatHM', () => {
         expect(formatHM(10)).toBe('0:10');
         expect(formatHM(200)).toBe('3:20');

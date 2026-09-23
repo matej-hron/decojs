@@ -2474,6 +2474,116 @@
             },
             "logEmpty": "Sin llenados aún",
             "disclaimer": "<strong>Aviso:</strong> Solo con fines educativos."
+        },
+        "decoTable": {
+            "disclaimerBanner": "<strong>Solo para fines educativos</strong> — Guía de uso de las tablas de descompresión SPČR/CMAS 2018. No planifiques inmersiones reales con este simulador.",
+            "heading": "Tablas de descompresión",
+            "subtitle": "Introduce la profundidad y el tiempo de fondo: el simulador te guía paso a paso por las tablas SPČR/CMAS (vigentes desde el 1 de enero de 2018), incluidas las inmersiones sucesivas.",
+            "footer": "<strong>Aviso:</strong> Solo para fines educativos. Para planificar inmersiones reales utiliza tablas certificadas y sigue tu formación.",
+            "plan": {
+                "title": "Plan de inmersiones",
+                "dive1": "Inmersión 1",
+                "repeatDive": "Inmersión {n} (sucesiva)",
+                "depth": "Profundidad (m)",
+                "time": "Tiempo de fondo (min)",
+                "realTime": "Tiempo de fondo real (min)",
+                "surfaceInterval": "Intervalo en superficie",
+                "minutes": "minutos",
+                "addRepeat": "+ Inmersión sucesiva",
+                "remove": "Quitar inmersión",
+                "lookup": "Buscar",
+                "reset": "Empezar de nuevo"
+            },
+            "narrator": {
+                "back": "← Atrás",
+                "next": "Siguiente →",
+                "result": "Resultado →",
+                "nextDive": "Inmersión {n} →",
+                "keyHint": "o teclas ← →",
+                "indicator": "Inmersión {n} de {total} · parte {part}"
+            },
+            "steps": {
+                "depthRow": "Parte 1 — La fila de la profundidad <strong>{depth} m</strong>.",
+                "depthRounded": "Parte 1 — La fila de la profundidad <strong>{depth} m</strong> — {entered} m no está en la tabla; la profundidad se redondea siempre a la mayor más próxima.",
+                "timePlain": "buscamos <strong>{total} min</strong>",
+                "timePenalty": "buscamos <strong>{time} + {penalty} = {total} min</strong> (tiempo real + penalización)",
+                "scan": "Recorremos la fila de {depth} m de izquierda a derecha, {timeText}. Primera celda ≥ {total} min: <strong>{cellTime} min</strong>.",
+                "stopDeco": "<strong>inmersión con descompresión</strong> — parada obligatoria de <strong>{stop} min a 5 m</strong> (número en la mitad inferior de la celda)",
+                "stopNdl": "<strong>sin descompresión</strong> — basta con una parada de seguridad de 5 m / 3 min",
+                "read": "Celda de {cellTime} min: {stopText}. La letra bajo la columna es el grupo tras la inmersión: <strong>{group}</strong>.",
+                "down": "Parte 2 — Desde la celda de la inmersión anterior (grupo <strong>{group}</strong>) seguimos las flechas <strong>hacia abajo por la columna {group}</strong> hasta la tabla de intervalos en superficie.",
+                "findSi": "En la columna {group} buscamos la celda que contiene el intervalo en superficie <strong>{si}</strong>. La celda abarca de {from} a {to} → nuevo grupo <strong>{newGroup}</strong> (la letra de la fila).",
+                "left": "Parte 3 — Desde esa celda vamos <strong>hacia la izquierda por la fila {group}</strong> hasta la columna de la profundidad de la siguiente inmersión, <strong>{depth} m</strong>{rounded}. Penalización: <strong>+{penalty} min</strong> — el nitrógeno que aún queda en el cuerpo.",
+                "leftRounded": " ({entered} m redondeado hacia arriba)",
+                "back": "Sumamos la penalización al tiempo real: <strong>{time} + {penalty} = {total} min</strong>. Con este tiempo seguimos la flecha desde la columna de {depth} m <strong>de vuelta a START</strong>, a la fila de <strong>{depth} m</strong> de la parte 1.",
+                "backNdl": " Para seguir sin descompresión, tu tiempo de fondo puede ser como máximo {ndl} − {penalty} = <strong>{max} min</strong>."
+            },
+            "errors": {
+                "divePrefix": "<strong>Inmersión {n}:</strong> ",
+                "invalid": "Introduce una profundidad, un tiempo y un intervalo en superficie positivos.",
+                "tooDeep": "Las tablas SPČR/CMAS 2018 terminan en {maxDepth} m.",
+                "timeOutOfRange": "Un tiempo de {total} min a {depth} m está fuera de la tabla.",
+                "siTooShort": "Intervalo en superficie inferior a 10 min: ambas inmersiones cuentan como una — suma los tiempos y usa la profundidad mayor.",
+                "siOver24h": "Pasadas más de 24 h ya no es una inmersión sucesiva — búscala como primera inmersión.",
+                "noPenalty": "La tabla no indica penalización para el grupo {group} a {depth} m — evita inmersiones sucesivas a más de 30 m."
+            },
+            "result": {
+                "back": "← Volver al último paso",
+                "replay": "Repasar desde la inmersión 1",
+                "titleSingleDeco": "Inmersión con descompresión — parada obligatoria",
+                "titleSingleNdl": "Inmersión sin descompresión",
+                "titlePlanDeco": "Plan de {n} inmersiones — incluye una inmersión con descompresión",
+                "titlePlanNdl": "Plan de {n} inmersiones — todas sin descompresión",
+                "colDive": "Inmersión",
+                "colSi": "Intervalo en superficie → grupo",
+                "colDepth": "Profundidad (tabla)",
+                "colTime": "Tiempo (+ penalización)",
+                "colDeco": "Descompresión",
+                "colGroup": "Grupo después",
+                "stop": "parada 5 m / {stop} min",
+                "noDeco": "sin descompresión",
+                "warnThird": "La tercera inmersión del día y las siguientes deben ser sin descompresión (según los ejercicios de la SPČR).",
+                "notes": "Parada de seguridad de 5 m / 3 min en cada inmersión. Volar: 12 h después de una sola inmersión, 24 h después de inmersiones sucesivas.",
+                "logSi": "IS {si} → {group}"
+            },
+            "downloads": {
+                "label": "Descargar las tablas:",
+                "xls": "original SPČR 2018 (XLS, cmas.cz)",
+                "xlsNote": "— aire, altitud, nitrox EAN32/36, tablilla para plastificar, guía y ejercicios (en checo)",
+                "png": "imagen de la tabla de aire (PNG)"
+            },
+            "legend": {
+                "ndl": "sin descompresión (parada de seguridad 5 m / 3 min)",
+                "limit": "límite sin descompresión",
+                "deco": "inmersión con descompresión — parada a 5 m"
+            },
+            "howTo": {
+                "s1": "Inmersión: en la fila de la profundidad, el primer tiempo ≥ tu tiempo de fondo; el grupo está bajo la columna.",
+                "s2": "Hacia abajo por la columna hasta el intervalo en superficie → nuevo grupo.",
+                "s3": "A la izquierda hasta la columna de la profundidad de la siguiente inmersión → penalización +min.",
+                "s4": "Por la flecha de vuelta a START: tiempo = real + penalización."
+            },
+            "table": {
+                "header": "tiempo de inmersión [min] — redondea la profundidad hacia arriba y el tiempo al valor más largo más próximo",
+                "corner": "Inmersión sucesiva: desde la parte 3 sigue la flecha de vuelta a START. El tiempo que se busca es <strong>tiempo real + penalización</strong>.",
+                "cap3": "penalización [min] ← busca a la izquierda",
+                "cap2": "intervalo en superficie [h:min] ↓ busca hacia abajo (arriba = hasta, abajo = desde)"
+            },
+            "image": {
+                "title": "Tabla original SPČR/CMAS 2018 — el mismo recorrido en papel",
+                "alt": "Tablas de descompresión SPČR/CMAS 2018 para aire"
+            },
+            "guide": {
+                "button": "Guía de las tablas (SPČR)",
+                "use": "<h3>Uso de las tablas</h3>\n<p class=\"guide-lead\">(por si no resulta evidente a primera o segunda vista)</p>\n<ul>\n<li>debajo de la palabra START buscamos hacia abajo la profundidad máxima de la inmersión o, en su caso, la profundidad mayor más próxima</li>\n<li>hacia la derecha, siguiendo las flechas, encontramos el tiempo de inmersión (desde el inicio del descenso hasta el comienzo del ascenso) o el valor más largo más próximo</li>\n<li>hasta el número rojo dentro del círculo se trata de una inmersión sin descompresión: se puede ascender y realizar solo una parada de seguridad a 5 m durante 3 min</li>\n<li>para este tipo de inmersiones recreativas hay una sola parada de descompresión, a 5 m; las inmersiones más profundas y largas se resuelven con las tablas de la US Navy</li>\n<li>las paradas a 5 m son ventajosas con oleaje y además es más fácil mantenerse con el chaleco compensador a 5 m que a 3 m</li>\n<li>con un tiempo de inmersión mayor (número rojo en la mitad superior de la celda) es necesaria una parada de descompresión obligatoria a 5 m durante el tiempo indicado por el número blanco en el campo azul de la mitad inferior de la celda</li>\n<li>la velocidad de ascenso es de 10 m/min, marcada por el ordenador, o bien no adelantar a las burbujas pequeñas</li>\n</ul>",
+                "repeat": "<h3>Inmersión sucesiva</h3>\n<ul>\n<li>en otra inmersión dentro de 24 h (la llamada inmersión sucesiva) nos desplazamos desde la celda de la primera inmersión hacia abajo, siguiendo las flechas, hasta que el intervalo en superficie quede dentro de la celda correspondiente</li>\n<li>desde allí nos desplazamos hacia la izquierda, siguiendo las flechas, hasta llegar a la columna con la profundidad de la siguiente inmersión (redondeando, si es necesario, a la profundidad mayor); el número +XYZ indicado allí es la penalización en minutos para la siguiente inmersión, de modo que para ella buscamos la suma del tiempo real de inmersión y la penalización +XYZ encontrada</li>\n</ul>",
+                "flying": "<h3>Viajar en avión</h3>\n<p>Volar en un avión con cabina presurizada es posible según el ordenador o según las tablas</p>\n<ul>\n<li>12 h después de una sola inmersión</li>\n<li>24 h después de inmersiones sucesivas o de varios días</li>\n</ul>",
+                "altitude": "<h3>Buceo a altitudes superiores a 300 m</h3>\n<p>se rige por las llamadas correcciones cruzadas: en las tablas de la hoja «deko tab hory A4» se busca una profundidad de inmersión mayor y la parada de descompresión se realiza a menor profundidad.</p>",
+                "emergency": "<h3>Situaciones de emergencia</h3>\n<p><strong>Retraso en el ascenso:</strong> este tiempo se suma al tiempo de inmersión (tiempo de fondo) y se busca un nuevo procedimiento de descompresión.</p>\n<p><strong>Descompresión omitida o ascenso demasiado rápido:</strong> se procede según las recomendaciones de la US Navy.</p>\n<ol class=\"guide-steps\">\n<li>Si el buceador no presenta síntomas de enfermedad descompresiva y puede volver a la parada de descompresión en 5 min:\n<ol type=\"a\">\n<li>Comunica al jefe de inmersión la descompresión omitida.</li>\n<li>Vuelve a la parada de descompresión y permanece allí 1,5 veces el tiempo original.</li>\n</ol></li>\n<li>Si no puede volver con el equipo de respiración a la parada de descompresión en 5 min:\n<ol type=\"a\">\n<li>Debe respirar oxígeno puro en superficie, en la medida de lo posible, durante al menos 60 min.</li>\n<li>Si durante este tiempo o después no aparecen síntomas de enfermedad descompresiva, debe permanecer bajo supervisión y no bucear durante al menos 12 horas.</li>\n<li>Si durante este tiempo o después aparecen síntomas de enfermedad descompresiva, debe ser trasladado con oxígeno al centro sanitario más cercano.</li>\n</ol></li>\n</ol>\n<p class=\"guide-alert\">Los síntomas de la enfermedad descompresiva (salvo la forma cutánea) deben tratarse en cámara hiperbárica; hasta la llegada de la ayuda médica se administra oxígeno, líquidos isotónicos (1 litro de agua por hora) y medio comprimido de Aspirina, pero no analgésicos.</p>",
+                "adverse": "<h3>Circunstancias desfavorables</h3>\n<p>Durante la descompresión, las circunstancias desfavorables pueden provocar una enfermedad descompresiva leve al eliminar el exceso de nitrógeno, incluso respetando las tablas o el ordenador. La solución es buscar en las tablas la descompresión en la fila inferior a la utilizada originalmente, es decir, para una profundidad 3 m mayor. En el ordenador hay que ajustar de antemano, según su manual, un nivel de conservadurismo más alto.</p>\n<p>Circunstancias desfavorables:</p>\n<ol class=\"guide-columns\">\n<li>Mayor esfuerzo físico</li>\n<li>Deshidratación</li>\n<li>Enfriamiento intenso</li>\n<li>Más tejido adiposo</li>\n<li>Descenso rápido de la presión (avión, montaña)</li>\n<li>Circulación sanguínea deficiente (correas apretadas, operaciones, edad)</li>\n<li>FOP (foramen oval permeable, cortocircuito derecha-izquierda)</li>\n<li>Golpes, vibraciones (deporte, transporte)</li>\n</ol>",
+                "source": "Fuente: tablas de descompresión SPČR 2018, hoja «návod k tabulkám» (JH 2017), traducido del checo",
+                "sourceLink": "XLS original"
+            }
         }
     },
     "quiz": {

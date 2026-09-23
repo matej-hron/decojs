@@ -2510,6 +2510,116 @@
             },
             "logEmpty": "Zatím žádná plnění",
             "disclaimer": "<strong>Upozornění:</strong> Pouze pro výukové účely."
+        },
+        "decoTable": {
+            "disclaimerBanner": "<strong>Pouze pro vzdělávací účely</strong> — Ukázka práce s dekompresními tabulkami SPČR/CMAS 2018. Neprovádějte ponory na základě tohoto simulátoru.",
+            "heading": "Dekompresní tabulky",
+            "subtitle": "Zadej hloubku a čas na dně — simulátor tě krok za krokem provede tabulkami SPČR/CMAS (platné od 1. 1. 2018), včetně opakovaných ponorů.",
+            "footer": "<strong>Upozornění:</strong> Pouze pro vzdělávací účely. Pro skutečné plánování ponorů použijte certifikované tabulky a dodržujte výcvik.",
+            "plan": {
+                "title": "Plán ponorů",
+                "dive1": "1. ponor",
+                "repeatDive": "{n}. ponor (opakovaný)",
+                "depth": "Hloubka (m)",
+                "time": "Čas na dně (min)",
+                "realTime": "Reálný čas na dně (min)",
+                "surfaceInterval": "Povrchový interval",
+                "minutes": "minuty",
+                "addRepeat": "+ Opakovaný ponor",
+                "remove": "Odebrat ponor",
+                "lookup": "Vyhledat",
+                "reset": "Začít znovu"
+            },
+            "narrator": {
+                "back": "← Zpět",
+                "next": "Dále →",
+                "result": "Výsledek →",
+                "nextDive": "{n}. ponor →",
+                "keyHint": "nebo klávesy ← →",
+                "indicator": "{n}. ponor z {total} · část {part}"
+            },
+            "steps": {
+                "depthRow": "Část 1 — Řádek pro hloubku <strong>{depth} m</strong>.",
+                "depthRounded": "Část 1 — Řádek pro hloubku <strong>{depth} m</strong> — {entered} m v tabulce není, hloubku zaokrouhlujeme vždy na nejbližší větší.",
+                "timePlain": "hledáme dobu <strong>{total} min</strong>",
+                "timePenalty": "hledáme dobu <strong>{time} + {penalty} = {total} min</strong> (reálná doba + přirážka)",
+                "scan": "Procházíme řádek {depth} m zleva doprava, {timeText}. První buňka ≥ {total} min: <strong>{cellTime} min</strong>.",
+                "stopDeco": "<strong>dekompresní ponor</strong> — povinná zastávka <strong>{stop} min v 5 m</strong> (číslo ve spodní polovině buňky)",
+                "stopNdl": "<strong>bez dekomprese</strong> — stačí bezpečnostní zastávka 5 m / 3 min",
+                "read": "Buňka {cellTime} min: {stopText}. Písmeno pod sloupcem je skupina po ponoru: <strong>{group}</strong>.",
+                "down": "Část 2 — Z buňky minulého ponoru (skupina <strong>{group}</strong>) jdeme po šipkách <strong>dolů sloupcem {group}</strong> do tabulky povrchových intervalů.",
+                "findSi": "Ve sloupci {group} hledáme buňku, do které patří povrchový interval <strong>{si}</strong>. Buňka platí od {from} do {to} → nová skupina <strong>{newGroup}</strong> (písmeno řádku).",
+                "left": "Část 3 — Z buňky jdeme <strong>vlevo řádkem {group}</strong> až do sloupce hloubky dalšího ponoru <strong>{depth} m</strong>{rounded}. Časová přirážka: <strong>+{penalty} min</strong> — tolik dusíku v těle ještě zbývá.",
+                "leftRounded": " ({entered} m zaokrouhleno nahoru)",
+                "back": "Přirážku přičteme k reálné době: <strong>{time} + {penalty} = {total} min</strong>. S touto dobou jdeme po šipce ze sloupce {depth} m <strong>zpět na START</strong>, do řádku <strong>{depth} m</strong> v části 1.",
+                "backNdl": " Aby ponor zůstal bez dekomprese, smíš být na dně nejvýš {ndl} − {penalty} = <strong>{max} min</strong>."
+            },
+            "errors": {
+                "divePrefix": "<strong>{n}. ponor:</strong> ",
+                "invalid": "Zadej kladnou hloubku, čas a povrchový interval.",
+                "tooDeep": "Tabulky SPČR/CMAS 2018 končí hloubkou {maxDepth} m.",
+                "timeOutOfRange": "Doba {total} min v hloubce {depth} m je mimo rozsah tabulky.",
+                "siTooShort": "Povrchový interval kratší než 10 min: oba ponory se počítají jako jeden — sečti doby a použij větší hloubku.",
+                "siOver24h": "Po více než 24 h už nejde o opakovaný ponor — vyhledej ho jako první ponor.",
+                "noPenalty": "Pro skupinu {group} a hloubku {depth} m tabulka přirážku neuvádí — vyvarujte se opakovaných ponorů hlubších 30 m."
+            },
+            "result": {
+                "back": "← Zpět na poslední krok",
+                "replay": "Projít znovu od 1. ponoru",
+                "titleSingleDeco": "Dekompresní ponor — zastávka povinná",
+                "titleSingleNdl": "Ponor bez dekomprese",
+                "titlePlanDeco": "Plán {n} ponorů — obsahuje dekompresní ponor",
+                "titlePlanNdl": "Plán {n} ponorů — vše bez dekomprese",
+                "colDive": "Ponor",
+                "colSi": "Povrch. interval → skupina",
+                "colDepth": "Hloubka (tabulka)",
+                "colTime": "Doba (+ přirážka)",
+                "colDeco": "Dekomprese",
+                "colGroup": "Skupina po",
+                "stop": "zastávka 5 m / {stop} min",
+                "noDeco": "bez dekomprese",
+                "warnThird": "Třetí a další ponor dne má být bezdekompresní (podle příkladů SPČR).",
+                "notes": "Bezpečnostní zastávka 5 m / 3 min u každého ponoru. Letět letadlem: po jednom ponoru za 12 h, po opakovaném za 24 h.",
+                "logSi": "PI {si} → {group}"
+            },
+            "downloads": {
+                "label": "Tabulky ke stažení:",
+                "xls": "originál SPČR 2018 (XLS, cmas.cz)",
+                "xlsNote": "— vzduch, hory, nitrox EAN32/36, destička k zatavení, návod a testové příklady (česky)",
+                "png": "obrázek tabulky pro vzduch (PNG)"
+            },
+            "legend": {
+                "ndl": "bez dekomprese (bezpečnostní zastávka 5 m / 3 min)",
+                "limit": "max. doba bez dekomprese",
+                "deco": "dekompresní ponor — zastávka v 5 m"
+            },
+            "howTo": {
+                "s1": "Ponor: v řádku hloubky první čas ≥ době ponoru, skupina je pod sloupcem.",
+                "s2": "Dolů sloupcem k povrchovému intervalu → nová skupina.",
+                "s3": "Vlevo do sloupce hloubky dalšího ponoru → přirážka +min.",
+                "s4": "Po šipce zpět na START: doba = reálná + přirážka."
+            },
+            "table": {
+                "header": "doba ponoru [min] — hloubka zaokrouhli nahoru, čas na nejbližší delší",
+                "corner": "Opakovaný ponor: z části 3 po šipce zpět na START. Doba se hledá jako součet <strong>reálné doby + časové přirážky</strong>.",
+                "cap3": "časová přirážka [min] ← hledej vlevo",
+                "cap2": "povrchový interval [h:min] ↓ hledej dolů (horní = do, dolní = od)"
+            },
+            "image": {
+                "title": "Originál tabulky SPČR/CMAS 2018 — stejná cesta na papíře",
+                "alt": "Dekompresní tabulky SPČR/CMAS 2018 pro vzduch"
+            },
+            "guide": {
+                "button": "Návod k tabulkám (SPČR)",
+                "use": "<h3>Návod na použití tabulek</h3>\n<p class=\"guide-lead\">(v případě, že to není zřejmé na první nebo druhý pohled)</p>\n<ul>\n<li>pod nápisem START hledáme dole maximální hloubku ponoru nebo případně nejbližší větší hloubku</li>\n<li>vpravo podle šipek najdeme dobu ponoru (od zanoření k počátku výstupu) nebo nejbližší delší hodnotu</li>\n<li>až do červeného čísla v kroužku se jedná o bezdekompresní ponor, kdy je možno vystoupit nahoru a uskutečnit jen bezpečnostní zastávku v 5 m na dobu 3 min</li>\n<li>dekompresní zastávka je pro tento typ rekreačních ponorů pouze jedna, a to v 5 m, hlubší a delší ponory řeší US Navy tabulky</li>\n<li>zastávky v 5 m mají výhodu ve vlnách a rovněž je jednodušší se udržet pomocí kompenzátoru vztlaku v 5 m než ve 3 m</li>\n<li>při delší době ponoru (červené číslo v horní polovině buňky) je nutná povinná dekompresní zastávka v 5 m po dobu uvedenou bílým číslem v modrém poli ve spodní polovině buňky</li>\n<li>rychlost výstupu je 10 m/min, určená počítačem, případně nepředbíhat malé bublinky</li>\n</ul>",
+                "repeat": "<h3>Opakovaný ponor</h3>\n<ul>\n<li>při dalším ponoru do 24 h (tzv. opakovaný ponor) se pohybujeme z buňky prvního ponoru podle šipek směrem dolů tak dlouho, až povrchový interval bude v příslušné buňce</li>\n<li>odtud se pohybujeme podle šipek vlevo tak dlouho, až se dostaneme do sloupce s hloubkou dalšího ponoru (zaokrouhlujeme případně na větší hloubku) a zde uvedené číslo +XYZ je časová přirážka v minutách k době dalšího ponoru; hledáme tedy pro další ponor dobu, která je součtem reálné doby ponoru a nalezené časové přirážky +XYZ</li>\n</ul>",
+                "flying": "<h3>Let letadlem</h3>\n<p>Letět letadlem s přetlakovou kabinou je možné podle počítače nebo podle tabulek</p>\n<ul>\n<li>po jednom ponoru za 12 h</li>\n<li>po opakovaném nebo vícedenních ponorech až za 24 h</li>\n</ul>",
+                "altitude": "<h3>Potápění ve větších nadmořských výškách než 300 m</h3>\n<p>se řídí tzv. křížovými korekcemi, kdy se hledá v tabulkách na listě „deko tab hory A4“ větší hloubka ponoru a dekompresní zastávka se realizuje v menší hloubce.</p>",
+                "emergency": "<h3>Mimořádné situace</h3>\n<p><strong>Zdržení při výstupu:</strong> tato doba se přičte k době ponoru (čas na dně) a najde se nový dekompresní postup.</p>\n<p><strong>Neuskutečněná dekomprese nebo příliš rychlý výstup:</strong> postupuje se dle doporučení US Navy.</p>\n<ol class=\"guide-steps\">\n<li>Je-li potápěč bez příznaků dekompresní choroby a je schopen se do 5 min vrátit na dekompresní zastávku:\n<ol type=\"a\">\n<li>Sdělí vedoucímu potápěči opomenutou dekompresi.</li>\n<li>Vrátí se na dekompresní zastávku a zůstane tam 1,5násobek původní doby.</li>\n</ol></li>\n<li>Není-li schopen se do 5 min vrátit s dýchacím přístrojem na dekompresní zastávku:\n<ol type=\"a\">\n<li>Musí dýchat na povrchu dle možností minimálně 60 min čistý kyslík.</li>\n<li>Pakliže se během této doby a po ní neobjeví příznaky dekompresní choroby, musí být pod dohledem a nepotápět se minimálně 12 hodin.</li>\n<li>Pakliže se během této doby a po ní objeví příznaky dekompresní choroby, musí být s kyslíkem transportován k nejbližšímu zdravotnickému zařízení.</li>\n</ol></li>\n</ol>\n<p class=\"guide-alert\">Příznaky dekompresní choroby (kromě kožní formy) je nutno léčit v barokomoře, do příjezdu zdravotnické pomoci podávat kyslík, izotonické tekutiny (1 litr vody / hod.), podat 1/2 tablety Aspirinu, ale ne léky tlumící bolest.</p>",
+                "adverse": "<h3>Nepříznivé okolnosti</h3>\n<p>Při dekompresním procesu mohou nepříznivé okolnosti při vysycování přebytečného dusíku i při respektování tabulek nebo počítače způsobit slabou dekompresní chorobu. Řešením je hledat v tabulkách dekompresi v řádku nižším než původně použitém, tj. pro hloubku o 3 m větší. U počítače je třeba podle návodu předem nastavit vyšší stupeň konzervatizmu.</p>\n<p>Přehled nepříznivých okolností:</p>\n<ol class=\"guide-columns\">\n<li>Větší fyzická námaha</li>\n<li>Dehydratace</li>\n<li>Silné prochlazení</li>\n<li>Více tukové tkáně</li>\n<li>Rychlý pokles tlaku (letadlo, hory)</li>\n<li>Nedokonalý krevní oběh (škrcení řemínky, operace, věk)</li>\n<li>PFO (patent foramen ovale, pravolevý zkrat)</li>\n<li>Otřesy, vibrace (sport, doprava)</li>\n</ol>",
+                "source": "Zdroj: Dekompresní tabulky pro potápění SPČR 2018, list „návod k tabulkám“ (JH 2017)",
+                "sourceLink": "originál XLS"
+            }
         }
     },
     "quiz": {

@@ -2510,6 +2510,116 @@
             },
             "logEmpty": "No fills yet",
             "disclaimer": "<strong>Disclaimer:</strong> For educational purposes only."
+        },
+        "decoTable": {
+            "disclaimerBanner": "<strong>Educational use only</strong> — A walkthrough of the SPČR/CMAS 2018 decompression tables. Do not plan real dives with this simulator.",
+            "heading": "Decompression Tables",
+            "subtitle": "Enter depth and bottom time — the simulator walks you step by step through the SPČR/CMAS tables (valid from 1 January 2018), including repetitive dives.",
+            "footer": "<strong>Disclaimer:</strong> For educational purposes only. For real dive planning use certified tables and follow your training.",
+            "plan": {
+                "title": "Dive plan",
+                "dive1": "Dive 1",
+                "repeatDive": "Dive {n} (repetitive)",
+                "depth": "Depth (m)",
+                "time": "Bottom time (min)",
+                "realTime": "Actual bottom time (min)",
+                "surfaceInterval": "Surface interval",
+                "minutes": "minutes",
+                "addRepeat": "+ Repetitive dive",
+                "remove": "Remove dive",
+                "lookup": "Look up",
+                "reset": "Start over"
+            },
+            "narrator": {
+                "back": "← Back",
+                "next": "Next →",
+                "result": "Result →",
+                "nextDive": "Dive {n} →",
+                "keyHint": "or keys ← →",
+                "indicator": "Dive {n} of {total} · part {part}"
+            },
+            "steps": {
+                "depthRow": "Part 1 — The row for depth <strong>{depth} m</strong>.",
+                "depthRounded": "Part 1 — The row for depth <strong>{depth} m</strong> — {entered} m is not in the table; depth is always rounded up to the next greater one.",
+                "timePlain": "looking for <strong>{total} min</strong>",
+                "timePenalty": "looking for <strong>{time} + {penalty} = {total} min</strong> (actual time + penalty)",
+                "scan": "We go along the {depth} m row from left to right, {timeText}. First cell ≥ {total} min: <strong>{cellTime} min</strong>.",
+                "stopDeco": "<strong>decompression dive</strong> — mandatory stop <strong>{stop} min at 5 m</strong> (number in the lower half of the cell)",
+                "stopNdl": "<strong>no decompression</strong> — a safety stop of 5 m / 3 min is enough",
+                "read": "Cell {cellTime} min: {stopText}. The letter below the column is the group after the dive: <strong>{group}</strong>.",
+                "down": "Part 2 — From the cell of the previous dive (group <strong>{group}</strong>) we follow the arrows <strong>down column {group}</strong> into the surface interval table.",
+                "findSi": "In column {group} we look for the cell that contains the surface interval <strong>{si}</strong>. The cell covers {from} to {to} → new group <strong>{newGroup}</strong> (the row letter).",
+                "left": "Part 3 — From that cell we go <strong>left along row {group}</strong> to the column for the next dive's depth <strong>{depth} m</strong>{rounded}. Time penalty: <strong>+{penalty} min</strong> — the nitrogen still left in the body.",
+                "leftRounded": " ({entered} m rounded up)",
+                "back": "Add the penalty to the actual time: <strong>{time} + {penalty} = {total} min</strong>. With this time we follow the arrow from the {depth} m column <strong>back to START</strong>, to the <strong>{depth} m</strong> row in part 1.",
+                "backNdl": " To stay without decompression, your bottom time may be at most {ndl} − {penalty} = <strong>{max} min</strong>."
+            },
+            "errors": {
+                "divePrefix": "<strong>Dive {n}:</strong> ",
+                "invalid": "Enter a positive depth, time and surface interval.",
+                "tooDeep": "The SPČR/CMAS 2018 tables end at {maxDepth} m.",
+                "timeOutOfRange": "A time of {total} min at {depth} m is beyond the table.",
+                "siTooShort": "Surface interval shorter than 10 min: both dives count as one — add the times and use the greater depth.",
+                "siOver24h": "After more than 24 h it is no longer a repetitive dive — look it up as a first dive.",
+                "noPenalty": "The table gives no penalty for group {group} at {depth} m — avoid repetitive dives deeper than 30 m."
+            },
+            "result": {
+                "back": "← Back to the last step",
+                "replay": "Replay from dive 1",
+                "titleSingleDeco": "Decompression dive — stop required",
+                "titleSingleNdl": "No-decompression dive",
+                "titlePlanDeco": "Plan of {n} dives — includes a decompression dive",
+                "titlePlanNdl": "Plan of {n} dives — all without decompression",
+                "colDive": "Dive",
+                "colSi": "Surface interval → group",
+                "colDepth": "Depth (table)",
+                "colTime": "Time (+ penalty)",
+                "colDeco": "Decompression",
+                "colGroup": "Group after",
+                "stop": "stop 5 m / {stop} min",
+                "noDeco": "no decompression",
+                "warnThird": "The third and any later dive of the day should be a no-decompression dive (per the SPČR exercises).",
+                "notes": "Safety stop 5 m / 3 min on every dive. Flying: 12 h after a single dive, 24 h after repetitive dives.",
+                "logSi": "SI {si} → {group}"
+            },
+            "downloads": {
+                "label": "Download the tables:",
+                "xls": "SPČR 2018 original (XLS, cmas.cz)",
+                "xlsNote": "— air, altitude, nitrox EAN32/36, printable slate, guide and exercises (in Czech)",
+                "png": "image of the air table (PNG)"
+            },
+            "legend": {
+                "ndl": "no decompression (safety stop 5 m / 3 min)",
+                "limit": "no-decompression limit",
+                "deco": "decompression dive — stop at 5 m"
+            },
+            "howTo": {
+                "s1": "Dive: in the depth row, the first time ≥ your bottom time; the group is below the column.",
+                "s2": "Down the column to the surface interval → new group.",
+                "s3": "Left to the column of the next dive's depth → penalty +min.",
+                "s4": "Follow the arrow back to START: time = actual + penalty."
+            },
+            "table": {
+                "header": "dive time [min] — round depth up and time to the next longer value",
+                "corner": "Repetitive dive: from part 3 follow the arrow back to START. The time looked up is <strong>actual time + time penalty</strong>.",
+                "cap3": "time penalty [min] ← look left",
+                "cap2": "surface interval [h:min] ↓ look down (top = to, bottom = from)"
+            },
+            "image": {
+                "title": "Original SPČR/CMAS 2018 table — the same path on paper",
+                "alt": "SPČR/CMAS 2018 air decompression tables"
+            },
+            "guide": {
+                "button": "Guide to the tables (SPČR)",
+                "use": "<h3>How to use the tables</h3>\n<p class=\"guide-lead\">(in case it is not obvious at first or second glance)</p>\n<ul>\n<li>below the word START, look down for the maximum depth of the dive, or the next greater depth</li>\n<li>following the arrows to the right, find the dive time (from descent to the start of the ascent) or the next longer value</li>\n<li>up to the red number in a circle the dive is a no-decompression dive: you can ascend and make only a safety stop at 5 m for 3 min</li>\n<li>for this type of recreational dive there is only one decompression stop, at 5 m; deeper and longer dives are covered by the US Navy tables</li>\n<li>stops at 5 m are easier in waves, and it is also easier to hold 5 m than 3 m with a buoyancy compensator</li>\n<li>for a longer dive time (red number in the upper half of the cell) a mandatory decompression stop at 5 m is required, for the time shown by the white number in the blue field in the lower half of the cell</li>\n<li>the ascent rate is 10 m/min, as set by the dive computer, or do not overtake the small bubbles</li>\n</ul>",
+                "repeat": "<h3>Repetitive dive</h3>\n<ul>\n<li>for another dive within 24 h (a so-called repetitive dive), move from the cell of the first dive down along the arrows until the surface interval falls within the cell</li>\n<li>from there, move left along the arrows until you reach the column with the depth of the next dive (rounding up to a greater depth if needed); the number +XYZ shown there is the time penalty in minutes for the next dive, so for the next dive you look up the sum of the actual dive time and the time penalty +XYZ</li>\n</ul>",
+                "flying": "<h3>Flying</h3>\n<p>Flying in an aircraft with a pressurised cabin is possible according to your dive computer or the tables</p>\n<ul>\n<li>12 h after a single dive</li>\n<li>24 h after repetitive or multi-day diving</li>\n</ul>",
+                "altitude": "<h3>Diving at altitudes above 300 m</h3>\n<p>is governed by so-called cross corrections: in the tables on the sheet “deko tab hory A4” you look up a greater dive depth, and the decompression stop is made at a shallower depth.</p>",
+                "emergency": "<h3>Emergencies</h3>\n<p><strong>Delayed ascent:</strong> the delay is added to the dive time (bottom time) and a new decompression schedule is looked up.</p>\n<p><strong>Omitted decompression or too fast an ascent:</strong> follow the US Navy recommendations.</p>\n<ol class=\"guide-steps\">\n<li>If the diver has no symptoms of decompression sickness and can return to the decompression stop within 5 min:\n<ol type=\"a\">\n<li>Report the omitted decompression to the dive leader.</li>\n<li>Return to the decompression stop and stay there 1.5 times the original time.</li>\n</ol></li>\n<li>If the diver cannot return to the decompression stop with breathing apparatus within 5 min:\n<ol type=\"a\">\n<li>Breathe pure oxygen at the surface for at least 60 min, as far as possible.</li>\n<li>If no symptoms of decompression sickness appear during or after this time, stay under supervision and do not dive for at least 12 hours.</li>\n<li>If symptoms of decompression sickness appear during or after this time, be transported with oxygen to the nearest medical facility.</li>\n</ol></li>\n</ol>\n<p class=\"guide-alert\">Symptoms of decompression sickness (except the skin form) must be treated in a hyperbaric chamber; until medical help arrives give oxygen and isotonic fluids (1 litre of water per hour) and half a tablet of Aspirin, but no painkillers.</p>",
+                "adverse": "<h3>Adverse circumstances</h3>\n<p>During decompression, adverse circumstances can cause mild decompression sickness while excess nitrogen is off-gassed, even when the tables or the dive computer are followed. The remedy is to look up decompression one row lower than originally used, i.e. for a depth 3 m greater. On a dive computer, set a higher conservatism level in advance according to its manual.</p>\n<p>Adverse circumstances:</p>\n<ol class=\"guide-columns\">\n<li>Greater physical exertion</li>\n<li>Dehydration</li>\n<li>Severe chilling</li>\n<li>More body fat</li>\n<li>Rapid drop in pressure (aircraft, mountains)</li>\n<li>Impaired blood circulation (tight straps, surgery, age)</li>\n<li>PFO (patent foramen ovale, right-to-left shunt)</li>\n<li>Shocks, vibration (sport, transport)</li>\n</ol>",
+                "source": "Source: SPČR 2018 decompression tables, sheet “návod k tabulkám” (JH 2017), translated from Czech",
+                "sourceLink": "original XLS"
+            }
         }
     },
     "quiz": {
