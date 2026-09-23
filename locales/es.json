@@ -1502,6 +1502,7 @@
             "transfill": "Transvase de botellas",
             "cascade": "Llenado en cascada",
             "gasLaw": "Ley de los gases: temp. y presión",
+            "decoTable": "Tablas de descompresión CMAS",
             "repetitive": "Inmersiones repetitivas"
         },
         "theory": {

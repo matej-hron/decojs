@@ -239,6 +239,14 @@ import {
     calculateCurrentControllingCompartment
 } from '../js/charts/MValueChart.js';
 import { DiveProfileChart } from '../js/charts/DiveProfileChart.js';
+import {
+    findDepth as cmasFindDepth,
+    surfaceIntervalGroup,
+    residualPenalty,
+    lookupDive,
+    ndlLimitIdx,
+    formatHM,
+} from '../js/cmasTables.js';
 
 describe('Chart tooltip shortcut', () => {
     test('toggles only the focused or hovered chart and persists across rebuilds', () => {
@@ -9515,6 +9523,92 @@ describe('guard: user-controlled values reaching innerHTML go through escHtml (#
             if (/const\s+esc\s*=\s*\(/.test(text)) copies.push(rel);
         }
         expect(copies).toEqual([]);
+    });
+});
+
+describe('ČSAS/CMAS 2018 tables (cmasTables.js)', () => {
+    const cmas = JSON.parse(readFileSync(new URL('../data/cmas-deco-tables.json', import.meta.url), 'utf8'));
+    const G = cmas.groups;
+    const g = letter => G.indexOf(letter);
+
+    describe('part 1 — dive table', () => {
+        test('30 m / 20 min → group F, no deco', () => {
+            const r = lookupDive(cmas, { depth: 30, time: 20 });
+            expect(G[r.groupIdx]).toBe('F');
+            expect(r.isDeco).toBe(false);
+        });
+        test('40 m / 8 min is the NDL limit (D); 9 min → E with 5 min stop', () => {
+            expect(G[lookupDive(cmas, { depth: 40, time: 8 }).groupIdx]).toBe('D');
+            const r = lookupDive(cmas, { depth: 40, time: 9 });
+            expect(G[r.groupIdx]).toBe('E');
+            expect(r.cell.stop5m).toBe(5);
+        });
+        test('depth rounds up to the next row; shallower than 12 m uses 12 m', () => {
+            expect(lookupDive(cmas, { depth: 31, time: 29 }).tableDepth).toBe(33);
+            expect(lookupDive(cmas, { depth: 7, time: 40 }).tableDepth).toBe(12);
+            expect(cmasFindDepth(cmas, 41)).toBe(null);
+        });
+        test('errors: too deep, time out of range', () => {
+            expect(lookupDive(cmas, { depth: 42, time: 5 }).code).toBe('tooDeep');
+            expect(lookupDive(cmas, { depth: 12, time: 151 }).code).toBe('timeOutOfRange');
+        });
+        test('circled NDL limits match the paper table', () => {
+            const limits = cmas.depths.map(d => G[ndlLimitIdx(d)]).join('');
+            expect(limits).toBe('KJIIHGGFED');
+        });
+    });
+
+    describe('part 2 — surface interval', () => {
+        test('every exit group column covers 0:10–24:00 without gaps', () => {
+            for (const exit of G) {
+                const ranges = Object.entries(cmas.surfaceInterval[exit])
+                    .map(([, r]) => r).sort((a, b) => a[0] - b[0]);
+                expect(ranges[0][0]).toBe(10);
+                expect(ranges.at(-1)[1]).toBe(1440);
+                for (let i = 1; i < ranges.length; i++) expect(ranges[i][0]).toBe(ranges[i - 1][1] + 1);
+            }
+        });
+        test('boundaries read from the paper: B 3:20 → B, 3:21 → A; L 9:13 → A', () => {
+            expect(G[surfaceIntervalGroup(cmas, g('B'), 200).groupIdx]).toBe('B');
+            expect(G[surfaceIntervalGroup(cmas, g('B'), 201).groupIdx]).toBe('A');
+            expect(G[surfaceIntervalGroup(cmas, g('L'), 553).groupIdx]).toBe('A');
+            expect(G[surfaceIntervalGroup(cmas, g('L'), 552).groupIdx]).toBe('B');
+            expect(G[surfaceIntervalGroup(cmas, g('L'), 10).groupIdx]).toBe('L');
+        });
+    });
+
+    describe('part 3 — residual nitrogen penalty', () => {
+        test('reads +XYZ from the paper', () => {
+            expect(residualPenalty(cmas, g('A'), 0)).toBe(7);    // A, 12 m
+            expect(residualPenalty(cmas, g('L'), 0)).toBe(161);  // L, 12 m
+            expect(residualPenalty(cmas, g('E'), 2)).toBe(30);   // E, 18 m
+            expect(residualPenalty(cmas, g('J'), 7)).toBe(null); // J, 33 m — not listed
+        });
+    });
+
+    describe('full loop — repetitive dive', () => {
+        test('30 m/20 min (F), 1:00 surface → E, 18 m/20 min → +30 → 50 min → H', () => {
+            const d1 = lookupDive(cmas, { depth: 30, time: 20 });
+            const d2 = lookupDive(cmas, { depth: 18, time: 20, prevGroupIdx: d1.groupIdx, surfaceInterval: 60 });
+            expect(G[d2.si.groupIdx]).toBe('E');
+            expect(d2.penalty).toBe(30);
+            expect(d2.tableTime).toBe(50);
+            expect(G[d2.groupIdx]).toBe('H');
+            expect(d2.maxNoDecoTime).toBe(25);
+        });
+        test('surface interval limits and missing penalty are reported', () => {
+            const base = { depth: 18, time: 20, prevGroupIdx: g('F') };
+            expect(lookupDive(cmas, { ...base, surfaceInterval: 9 }).code).toBe('siTooShort');
+            expect(lookupDive(cmas, { ...base, surfaceInterval: 1441 }).code).toBe('siOver24h');
+            expect(lookupDive(cmas, { depth: 30, time: 5, prevGroupIdx: g('L'), surfaceInterval: 10 }).code)
+                .toBe('noPenalty');
+        });
+    });
+
+    test('formatHM', () => {
+        expect(formatHM(10)).toBe('0:10');
+        expect(formatHM(200)).toBe('3:20');
+        expect(formatHM(1440)).toBe('24:00');
     });
 });
 

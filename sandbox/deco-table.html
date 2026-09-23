@@ -11,12 +11,12 @@
 
     <style>
         .deco-table-layout {
-            max-width: 1120px;
+            max-width: 1160px;
             margin: 0 auto;
             padding: 1rem 1rem 3rem;
         }
 
-        /* ── Input panel ── */
+        /* ── Input panels ── */
         .lookup-panel {
             display: flex;
             flex-wrap: wrap;
@@ -27,6 +27,12 @@
             border-radius: var(--radius);
             padding: 1rem 1.25rem;
             margin-bottom: 1.25rem;
+        }
+        .panel-title {
+            flex-basis: 100%;
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 700;
         }
         .lookup-field {
             display: flex;
@@ -48,12 +54,14 @@
             color: var(--text-color);
             font-variant-numeric: tabular-nums;
         }
+        .lookup-field input.narrow { width: 64px; }
+        .si-inputs { display: flex; align-items: center; gap: 0.3rem; font-size: 0.85rem; color: var(--text-muted); }
         .lookup-field input[type="number"]:focus {
             outline: none;
             border-color: #2980b9;
             box-shadow: 0 0 0 2px rgba(41,128,185,0.2);
         }
-        #lookupBtn {
+        .btn-primary {
             padding: 0.45rem 1.2rem;
             font-size: 0.95rem;
             font-weight: 600;
@@ -65,8 +73,8 @@
             transition: background 0.15s;
             white-space: nowrap;
         }
-        #lookupBtn:hover:not(:disabled) { background: #1f6391; }
-        #lookupBtn:disabled { background: #95a5a6; cursor: not-allowed; }
+        .btn-primary:hover:not(:disabled) { background: #1f6391; }
+        .btn-primary:disabled { background: #95a5a6; cursor: not-allowed; }
         #resetBtn {
             padding: 0.45rem 0.9rem;
             font-size: 0.9rem;
@@ -78,6 +86,31 @@
             display: none;
         }
         #resetBtn:hover { background: var(--background-color); }
+        .repeat-panel { display: none; border-color: #2980b9; }
+        .repeat-panel.visible { display: flex; }
+
+        /* ── Dive log ── */
+        .dive-log {
+            display: none;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.35rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+        }
+        .dive-log.visible { display: flex; }
+        .log-chip {
+            padding: 0.25rem 0.6rem;
+            border-radius: 999px;
+            border: 1px solid var(--border-color);
+            background: var(--card-background);
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+        .log-chip.dive  { border-color: #2980b9; }
+        .log-chip.deco  { border-color: #e67e22; }
+        .log-chip.si    { border-style: dashed; color: var(--text-muted); }
+        .log-arrow { color: var(--text-muted); }
 
         /* ── Step narrator ── */
         .step-narrator {
@@ -97,6 +130,7 @@
             display: flex;
             gap: 0.35rem;
             align-items: center;
+            flex-wrap: wrap;
             font-size: 0.78rem;
             color: var(--text-muted);
         }
@@ -112,18 +146,12 @@
         }
         .step-dot.active { background: #2980b9; border-color: #2980b9; color: #fff; }
         .step-dot.done   { background: #27ae60; border-color: #27ae60; color: #fff; }
-        .step-dot.connector {
-            width: 20px; height: 2px; border-radius: 0;
-            background: var(--border-color); border: none;
-        }
-        .step-dot.connector.done { background: #27ae60; }
+        .step-connector { width: 14px; height: 2px; background: var(--border-color); }
+        .step-connector.done { background: #27ae60; }
+        .step-part { margin-left: 0.5rem; font-weight: 600; color: #2980b9; }
         .step-text { font-size: 0.93rem; line-height: 1.5; }
         .step-text strong { color: #2980b9; }
-        .step-btns {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 0.25rem;
-        }
+        .step-btns { display: flex; gap: 0.5rem; margin-top: 0.25rem; }
         .step-btns button {
             padding: 0.3rem 0.85rem;
             font-size: 0.85rem;
@@ -160,6 +188,7 @@
             margin-bottom: 1rem;
         }
         .result-card.visible { display: block; }
+        .result-card.deco { border-color: #e67e22; }
         .result-card h3 { margin: 0 0 0.65rem; font-size: 1rem; font-weight: 700; }
         .result-card h3.ndl  { color: #27ae60; }
         .result-card h3.deco { color: #e67e22; }
@@ -169,7 +198,7 @@
             font-size: 0.88rem; margin-bottom: 0.75rem; color: var(--text-muted);
         }
         .result-meta strong { color: var(--text-color); }
-        .result-stops { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.75rem; }
+        .result-stops { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.5rem; }
         .stop-chip {
             display: flex; flex-direction: column; align-items: center;
             padding: 0.45rem 1rem;
@@ -188,155 +217,139 @@
             border: 2px solid #27ae60;
             border-radius: 6px; font-size: 0.9rem; font-weight: 600; color: #27ae60;
         }
-        .result-summary {
-            display: flex; flex-wrap: wrap; gap: 0.4rem 1.5rem;
-            font-size: 0.9rem; padding-top: 0.6rem; border-top: 1px solid var(--border-color);
-        }
-        .result-summary .lbl { color: var(--text-muted); }
-        .result-summary .val { font-weight: 700; }
+        .result-note { font-size: 0.85rem; color: var(--text-muted); margin: 0.4rem 0 0; }
+        .result-note.warn { color: #c0392b; font-weight: 600; }
 
-        /* ── Legend ── */
-        .table-legend {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem 1.25rem;
-            margin-bottom: 0.75rem;
-            font-size: 0.82rem;
-        }
-        .legend-item {
-            display: flex; align-items: center; gap: 0.4rem;
-        }
-        .legend-swatch {
-            width: 18px; height: 18px; border-radius: 3px;
-            border: 1px solid;
-            flex-shrink: 0;
-        }
-        .legend-swatch.ndl  { background: #FFFF00; border-color: #cccc00; }
-        .legend-swatch.deco { background: #4472C4; border-color: #2a52a4; }
-        .legend-swatch.empty{ background: #f1f5f9; border-color: #cbd5e1; }
-
-        /* ── CMAS Grid Table ── */
-        .table-wrapper {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
+        /* ── Circle table (digital replica of the paper layout) ── */
+        .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
         .deco-grid {
             border-collapse: collapse;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-variant-numeric: tabular-nums;
-            width: 100%;
+            margin: 0 auto;
+        }
+        .deco-grid td, .deco-grid th {
+            border: 1px solid #94a3b8;
+            text-align: center;
+            padding: 0.3rem 0.2rem;
+            min-width: 40px;
+            transition: opacity 0.2s;
         }
 
-        /* Section header row */
-        .deco-grid th.th-depth-header {
-            background: #1e3a5f;
-            color: #fff;
-            font-size: 0.75rem;
-            text-align: center;
-            padding: 0.4rem 0.6rem;
-            border: 1px solid #0f2140;
-        }
-        .deco-grid th.th-ndl-section {
+        /* header + captions */
+        .deco-grid th.th-p1 {
             background: #fff;
             color: #1e3a5f;
-            text-align: center;
-            padding: 0.4rem 0.6rem;
-            font-size: 0.78rem;
+            font-size: 0.76rem;
             font-weight: 600;
-            border: 1px solid #1e3a5f;
-            white-space: nowrap;
+            border-color: #1e3a5f;
         }
-        .deco-grid th.th-deco-section {
-            background: #0070C0;
-            color: #FFFF00;
-            text-align: center;
-            padding: 0.4rem 0.6rem;
-            font-size: 0.78rem;
-            font-weight: 600;
-            border: 1px solid #005a9e;
-            white-space: nowrap;
-        }
-
-        /* Group-letter header row */
-        .deco-grid th.th-grp {
-            text-align: center;
-            padding: 0.35rem 0.5rem;
-            font-weight: 700;
-            font-size: 0.88rem;
-            min-width: 44px;
-            border: 1px solid;
-        }
-        .deco-grid th.th-grp-ndl {
+        .deco-grid th.th-start {
             background: #FFFF00;
+            color: #0000e6;
+            font-style: italic;
+            font-weight: 800;
+            border: 2px solid #dc2626;
+        }
+        .deco-grid th.th-blank, .deco-grid td.caption-blank { border: none; background: transparent; }
+        .deco-grid td.caption {
+            border: none;
+            font-size: 0.76rem;
+            font-weight: 600;
             color: #1e3a5f;
-            border-color: #cccc00;
+            padding-top: 0.45rem;
         }
-        .deco-grid th.th-grp-deco {
-            background: #4472C4;
-            color: #fff;
-            border-color: #2a52a4;
-        }
-        .deco-grid th.th-grp-boundary {
-            border-left: 3px solid #005a9e !important;
+        .part-badge {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 1.3em; height: 1.3em;
+            border-radius: 50%;
+            background: #1e3a5f; color: #fff;
+            font-size: 0.85em; font-weight: 700;
+            margin-right: 0.3em;
         }
 
-        /* Depth label cell */
-        .deco-grid td.depth-label {
+        /* corner explanation (top-left quadrant, empty on paper) */
+        .deco-grid td.corner {
+            border: none;
+            text-align: left;
+            vertical-align: top;
+            padding: 0.4rem 1rem 0.4rem 0.2rem;
+            font-size: 0.82rem;
+            line-height: 1.45;
+            color: var(--text-color);
+            min-width: 0;
+        }
+        .corner h4 { margin: 0 0 0.4rem; font-size: 0.9rem; }
+        .corner ol { margin: 0; padding-left: 0; list-style: none; }
+        .corner li { margin-bottom: 0.45rem; display: flex; gap: 0.4rem; }
+
+        /* labels */
+        .deco-grid td.lbl-depth, .deco-grid td.lbl-group, .deco-grid td.lbl-m {
             background: #1e3a5f;
             color: #fff;
             font-weight: 700;
-            text-align: center;
-            padding: 0.45rem 0.75rem;
-            border: 1px solid #0f2140;
-            white-space: nowrap;
-            font-size: 0.9rem;
+            border-color: #0f2140;
         }
+        .deco-grid td.lbl-depth { font-style: italic; }
 
-        /* Group data cells */
-        .deco-grid td.cell-group {
-            text-align: center;
-            padding: 0.35rem 0.45rem;
-            border: 1px solid;
-            min-width: 44px;
-        }
-        .deco-grid td.cell-empty {
-            background: #f8fafc;
-            border-color: #e2e8f0;
-        }
-        .deco-grid td.cell-ndl {
-            background: #FFFF00;
-            color: #1e3a5f;
-            font-weight: 700;
-            border-color: #cccc00;
-        }
-        .deco-grid td.cell-ndl-limit {
-            box-shadow: inset 0 0 0 2px #1e3a5f;
-        }
+        /* part 1 cells */
+        .deco-grid td.cell-empty { background: #f8fafc; border-color: #e2e8f0; }
+        .deco-grid td.cell-ndl { background: #FFFF00; color: #1e3a5f; font-weight: 700; border-color: #cccc00; }
+        .deco-grid td.cell-ndl-limit { box-shadow: inset 0 0 0 2px #1e3a5f; }
         .deco-grid td.cell-deco {
             background: #4472C4;
             color: #FFFF00;
             font-weight: 700;
             border-color: #2a52a4;
-            line-height: 1.3;
+            line-height: 1.25;
         }
-        .cell-stop-label {
-            display: block;
-            font-size: 0.7em;
-            font-weight: 400;
-            color: #ff6666;
-        }
+        .cell-stop-label { display: block; font-size: 0.72em; font-weight: 400; color: #ffb3b3; }
 
-        /* Boundary left border on group E column */
-        .deco-grid th.th-grp-boundary,
-        .deco-grid td[data-group-idx="4"] {
-            border-left: 3px solid #005a9e !important;
-        }
+        /* part 2 & 3 cells — striped columns like the paper */
+        .deco-grid td.p2, .deco-grid td.p3 { color: #111; }
+        .deco-grid td.stripe { background: #FFFF00; border-color: #cccc00; }
+        .deco-grid td.plain  { background: #fff; }
+        .deco-grid td.p2 { font-size: 0.72rem; line-height: 1.2; padding: 0.15rem 0.15rem; }
+        .p2 .si-max { display: block; }
+        .p2 .si-min { display: block; color: #475569; }
+        .deco-grid td.p3 { font-weight: 600; }
+        .deco-grid td.p3-na { background: repeating-linear-gradient(45deg, #f1f5f9, #f1f5f9 4px, #e2e8f0 4px, #e2e8f0 8px); }
 
-        /* ── Physical table image overlay ── */
-        .image-section {
-            margin-top: 2rem;
+        /* highlight states (shared by all parts) */
+        .deco-grid.focus td:not(.hl-path):not(.hl-found):not(.hl-label):not(.hl-origin):not(.corner):not(.caption):not(.caption-blank) {
+            opacity: 0.28;
         }
+        .deco-grid td.hl-path  { outline: 2px solid #3b82f6; outline-offset: -2px; }
+        .deco-grid td.hl-label { outline: 3px solid #f59e0b; outline-offset: -3px; }
+        .deco-grid td.hl-origin { outline: 3px dashed #059669; outline-offset: -3px; }
+        @keyframes found-pulse {
+            0%,100% { outline-color: #059669; }
+            50%      { outline-color: rgba(5,150,105,0.25); }
+        }
+        .deco-grid td.hl-found {
+            background: #d1fae5 !important;
+            color: #065f46 !important;
+            outline: 3px solid #059669;
+            outline-offset: -3px;
+            animation: found-pulse 1.2s ease-in-out infinite;
+        }
+        .deco-grid td.hl-found .cell-stop-label, .deco-grid td.hl-found .si-min { color: #065f46; }
+
+        /* ── Legend ── */
+        .table-legend {
+            display: flex; flex-wrap: wrap;
+            gap: 0.5rem 1.25rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.82rem;
+        }
+        .legend-item { display: flex; align-items: center; gap: 0.4rem; }
+        .legend-swatch { width: 18px; height: 18px; border-radius: 3px; border: 1px solid; flex-shrink: 0; }
+        .legend-swatch.ndl   { background: #FFFF00; border-color: #cccc00; }
+        .legend-swatch.limit { background: #FFFF00; border-color: #1e3a5f; box-shadow: inset 0 0 0 2px #1e3a5f; }
+        .legend-swatch.deco  { background: #4472C4; border-color: #2a52a4; }
+
+        /* ── Original table image with overlay ── */
+        .image-section { margin-top: 2rem; }
         .image-section-title {
             font-size: 0.82rem;
             text-transform: uppercase;
@@ -345,75 +358,21 @@
             margin-bottom: 0.5rem;
             font-weight: 600;
         }
-        .image-overlay-container {
-            position: relative;
-            display: inline-block;
-            max-width: 100%;
-        }
-        .cmas-table-img {
-            display: block;
-            max-width: 100%;
-            height: auto;
-        }
-        .img-overlay-row,
-        .img-overlay-cell {
-            position: absolute;
-            pointer-events: none;
-            display: none;
-            border-radius: 2px;
-        }
-        .img-overlay-row {
-            background: rgba(255, 255, 0, 0.22);
-            border: 2px solid rgba(200, 180, 0, 0.65);
-        }
-        .img-overlay-cell {
-            background: rgba(39, 174, 96, 0.38);
-            border: 3px solid #27ae60;
-        }
-        .img-overlay-row.visible,
-        .img-overlay-cell.visible {
-            display: block;
-        }
-
-        /* START marker */
-        .start-marker {
-            display: block;
-            font-size: 0.58em;
-            font-weight: 700;
-            color: #dc2626;
-            border: 1.5px solid #dc2626;
-            border-radius: 2px;
-            padding: 0 2px;
-            line-height: 1.4;
-            margin-bottom: 1px;
-        }
-
-        /* Highlight states */
-        .deco-grid tr.row-dim td { opacity: 0.22; }
-        .deco-grid td.cell-scan {
-            outline: 2px solid #3b82f6;
-            outline-offset: -2px;
-        }
-        @keyframes found-pulse {
-            0%,100% { outline-color: #059669; }
-            50%      { outline-color: rgba(5,150,105,0.25); }
-        }
-        .deco-grid td.cell-found {
-            background: #d1fae5 !important;
-            color: #065f46 !important;
-            outline: 3px solid #059669;
-            outline-offset: -2px;
-            animation: found-pulse 1.2s ease-in-out infinite;
-        }
+        .image-overlay-container { position: relative; max-width: 900px; margin: 0 auto; }
+        .cmas-table-img { display: block; width: 100%; height: auto; }
+        .img-hl { position: absolute; pointer-events: none; }
+        .img-hl.path   { background: rgba(59,130,246,0.22); }
+        .img-hl.label  { border: 3px solid #f59e0b; }
+        .img-hl.origin { border: 3px dashed #059669; }
+        .img-hl.found  { background: rgba(39,174,96,0.35); border: 3px solid #059669; }
 
         @media (max-width: 640px) {
-            .deco-grid { font-size: 0.78rem; }
-            .deco-grid td.cell-group, .deco-grid th.th-grp { min-width: 34px; padding: 0.3rem 0.25rem; }
-            .deco-grid td.depth-label { padding: 0.35rem 0.45rem; font-size: 0.82rem; }
+            .deco-grid { font-size: 0.72rem; }
+            .deco-grid td, .deco-grid th { min-width: 32px; }
         }
     </style>
 </head>
-<body>
+<body data-i18n-title="nav.sandbox.decoTable" data-i18n-title-context="nav.sandbox.label">
     <nav class="main-nav">
         <div class="nav-container">
             <a href="../index.html" class="nav-logo">Deco Theory</a>
@@ -431,37 +390,34 @@
 
     <header class="hero hero-compact">
         <h1>Dekompresní tabulky</h1>
-        <p class="hero-subtitle">Zadej hloubku a čas na dně — simulátor tě krok za krokem provede vyhledáním dekompresního režimu v tabulkách ČSAS/CMAS (platné od 1.&nbsp;1.&nbsp;2018).</p>
+        <p class="hero-subtitle">Zadej hloubku a čas na dně — simulátor tě krok za krokem provede tabulkami ČSAS/CMAS (platné od 1.&nbsp;1.&nbsp;2018), včetně opakovaných ponorů.</p>
     </header>
 
     <div class="deco-table-layout">
 
-        <!-- Input panel -->
+        <!-- First dive -->
         <div class="lookup-panel">
+            <p class="panel-title">1. ponor</p>
             <div class="lookup-field">
                 <label for="inputDepth">Hloubka (m)</label>
-                <input type="number" id="inputDepth" min="1" max="40" step="1" value="30" placeholder="např. 30">
+                <input type="number" id="inputDepth" min="1" max="40" step="1" value="30">
             </div>
             <div class="lookup-field">
                 <label for="inputTime">Čas na dně (min)</label>
-                <input type="number" id="inputTime" min="1" max="200" step="1" value="20" placeholder="např. 20">
+                <input type="number" id="inputTime" min="1" max="200" step="1" value="20">
             </div>
-            <button id="lookupBtn">Vyhledat</button>
+            <button id="lookupBtn" class="btn-primary">Vyhledat</button>
             <button id="resetBtn">Začít znovu</button>
         </div>
 
-        <!-- Error banner -->
+        <!-- Dive log -->
+        <div class="dive-log" id="diveLog"></div>
+
         <div class="lookup-error" id="lookupError"></div>
 
         <!-- Step narrator -->
         <div class="step-narrator" id="stepNarrator">
-            <div class="step-indicator" id="stepIndicator">
-                <div class="step-dot" id="dot1">1</div>
-                <div class="step-dot connector" id="conn1"></div>
-                <div class="step-dot" id="dot2">2</div>
-                <div class="step-dot connector" id="conn2"></div>
-                <div class="step-dot" id="dot3">3</div>
-            </div>
+            <div class="step-indicator" id="stepIndicator"></div>
             <div class="step-text" id="stepText"></div>
             <div class="step-btns">
                 <button id="prevStepBtn">← Zpět</button>
@@ -469,49 +425,61 @@
             </div>
         </div>
 
-        <!-- Result card -->
+        <!-- Result -->
         <div class="result-card" id="resultCard">
             <h3 id="resultTitle"></h3>
             <div class="result-meta" id="resultMeta"></div>
             <div class="result-stops" id="resultStops"></div>
-            <div class="result-summary" id="resultSummary"></div>
+            <div id="resultNotes"></div>
+        </div>
+
+        <!-- Repetitive dive -->
+        <div class="lookup-panel repeat-panel" id="repeatPanel">
+            <p class="panel-title" id="repeatTitle">Opakovaný ponor</p>
+            <div class="lookup-field">
+                <label for="inputSiH">Povrchový interval</label>
+                <div class="si-inputs">
+                    <input type="number" id="inputSiH" class="narrow" min="0" max="24" step="1" value="1"> h
+                    <input type="number" id="inputSiM" class="narrow" min="0" max="59" step="1" value="0"> min
+                </div>
+            </div>
+            <div class="lookup-field">
+                <label for="inputDepth2">Hloubka (m)</label>
+                <input type="number" id="inputDepth2" min="1" max="40" step="1" value="18">
+            </div>
+            <div class="lookup-field">
+                <label for="inputTime2">Reálný čas na dně (min)</label>
+                <input type="number" id="inputTime2" min="1" max="200" step="1" value="20">
+            </div>
+            <button id="repeatBtn" class="btn-primary">Vyhledat opakovaný ponor</button>
         </div>
 
         <!-- Legend -->
         <div class="table-legend">
-            <div class="legend-item"><div class="legend-swatch ndl"></div> bezdekompresní (BDL)</div>
-            <div class="legend-item"><div class="legend-swatch deco"></div> dekompresní (zastávka 5&nbsp;m)</div>
-            <div class="legend-item"><div class="legend-swatch empty"></div> mimo rozsah</div>
+            <div class="legend-item"><div class="legend-swatch ndl"></div> bez dekomprese (bezpečnostní zastávka 5&nbsp;m / 3&nbsp;min)</div>
+            <div class="legend-item"><div class="legend-swatch limit"></div> max. doba bez dekomprese</div>
+            <div class="legend-item"><div class="legend-swatch deco"></div> dekompresní ponor — zastávka v 5&nbsp;m</div>
         </div>
 
-        <!-- CMAS grid table -->
+        <!-- Digital replica of the paper table: one grid, read clockwise -->
         <div class="table-wrapper">
             <table class="deco-grid" id="decoTable">
                 <thead>
-                    <!-- Row 1: section titles -->
                     <tr>
-                        <th class="th-depth-header" rowspan="2">Hloubka<br>(m)</th>
-                        <th class="th-ndl-section" colspan="4">max. doba bez dekomprese [min]</th>
-                        <th class="th-deco-section" colspan="8">XX / doba dekompresního ponoru — zastávka 5&nbsp;m [min]</th>
-                    </tr>
-                    <!-- Row 2: group letters -->
-                    <tr id="groupRow">
-                        <!-- populated by JS -->
+                        <th class="th-blank" colspan="10"></th>
+                        <th class="th-start">START</th>
+                        <th class="th-p1" colspan="12"><span class="part-badge">1</span>doba ponoru [min] — hloubka zaokrouhli nahoru, čas na nejbližší delší</th>
                     </tr>
                 </thead>
-                <tbody id="decoTableBody">
-                    <!-- populated by JS -->
-                </tbody>
+                <tbody id="decoTableBody"></tbody>
             </table>
         </div>
 
-        <!-- Physical table reference image with interactive overlay -->
+        <!-- Original table with interactive overlay -->
         <div class="image-section">
-            <p class="image-section-title">Fyzická tabulka ČSAS/CMAS 2018 — průvodce vyhledáváním</p>
+            <p class="image-section-title">Originál tabulky ČSAS/CMAS 2018 — stejná cesta na papíře</p>
             <div class="image-overlay-container" id="imageContainer">
-                <img src="../images/cmas-table-2018.png" alt="ČSAS/CMAS 2018 dekompresní tabulky" class="cmas-table-img">
-                <div class="img-overlay-row" id="imgOverlayRow"></div>
-                <div class="img-overlay-cell" id="imgOverlayCell"></div>
+                <img src="../images/cmas-table-2018.png" alt="Dekompresní tabulky ČSAS/CMAS 2018 pro vzduch" class="cmas-table-img">
             </div>
         </div>
 
@@ -526,360 +494,392 @@
     <script src="../js/nav.js" type="module"></script>
 
     <script type="module">
-        const tableData = await fetch('../data/cmas-deco-tables.json').then(r => r.json());
-        const GROUPS = tableData.groups; // ["A".."L"]
+        import { lookupDive, ndlLimitIdx, formatHM } from '../js/cmasTables.js';
 
-        // ── Build group-letter header row ────────────────────────────────────
-        const groupRow = document.getElementById('groupRow');
-        GROUPS.forEach((g, i) => {
-            const th = document.createElement('th');
-            th.className = 'th-grp ' + (i < 4 ? 'th-grp-ndl' : 'th-grp-deco');
-            if (i === 4) th.classList.add('th-grp-boundary');
-            th.textContent = g;
-            groupRow.appendChild(th);
+        const table = await fetch('../data/cmas-deco-tables.json').then(r => r.json());
+        const GROUPS = table.groups;
+        const DEPTHS = table.depths.map(d => d.depth);
+        const NG = GROUPS.length, ND = DEPTHS.length;
+
+        // ── Build the circle table ────────────────────────────────────────────
+        // Columns: [part 3 depth columns ×10][label column][groups A–L ×12]
+        // Rows:    [part 1 depth rows ×10][label row][part 2/3 group rows ×12]
+        const tbody = document.getElementById('decoTableBody');
+        const cells = new Map();   // key → <td>, keys shared with the image overlay
+
+        function td(key, className, html = '') {
+            const el = document.createElement('td');
+            if (className) el.className = className;
+            el.innerHTML = html;
+            if (key) cells.set(key, el);
+            return el;
+        }
+
+        table.depths.forEach((row, d) => {
+            const tr = document.createElement('tr');
+            if (d === 0) {
+                const corner = td(null, 'corner', `
+                    <h4>Tabulka se čte po směru hodinových ručiček</h4>
+                    <ol>
+                        <li><span class="part-badge">1</span><span>Ponor: v řádku hloubky najdi první čas ≥ době ponoru. Písmeno skupiny je pod sloupcem.</span></li>
+                        <li><span class="part-badge">2</span><span>Povrchový interval: jdi dolů sloupcem skupiny k buňce, kam interval patří → nová skupina (řádek).</span></li>
+                        <li><span class="part-badge">3</span><span>Časová přirážka: jdi vlevo řádkem do sloupce hloubky dalšího ponoru → +min.</span></li>
+                        <li><span class="part-badge">1</span><span>Další ponor: v části 1 hledej dobu = reálná doba + přirážka.</span></li>
+                    </ol>`);
+                corner.colSpan = ND;
+                corner.rowSpan = ND;
+                tr.appendChild(corner);
+            }
+            tr.appendChild(td(`ld:${d}`, 'lbl-depth', row.depth));
+            const limit = ndlLimitIdx(row);
+            row.cells.forEach((c, g) => {
+                if (c === null) tr.appendChild(td(`p1:${d}:${g}`, 'cell-empty'));
+                else if (c.stop5m === 0) tr.appendChild(td(`p1:${d}:${g}`, 'cell-ndl' + (g === limit ? ' cell-ndl-limit' : ''), c.bottomTime));
+                else tr.appendChild(td(`p1:${d}:${g}`, 'cell-deco', `${c.bottomTime}<span class="cell-stop-label">${c.stop5m}ˈ</span>`));
+            });
+            tbody.appendChild(tr);
         });
 
-        // ── Build table body ─────────────────────────────────────────────────
-        const tbody = document.getElementById('decoTableBody');
+        // Label row: depths for part 3, "m", group letters for parts 1 and 2
+        const labelRow = document.createElement('tr');
+        DEPTHS.forEach((depth, d) => labelRow.appendChild(td(`lp3:${d}`, 'lbl-depth', depth)));
+        labelRow.appendChild(td(null, 'lbl-m', 'm'));
+        GROUPS.forEach((g, i) => labelRow.appendChild(td(`lg:${i}`, 'lbl-group', g)));
+        tbody.appendChild(labelRow);
 
-        for (const depthRow of tableData.depths) {
+        // Group rows: part 3 penalties | group label | part 2 surface intervals
+        GROUPS.forEach((group, n) => {
             const tr = document.createElement('tr');
-            tr.dataset.depth = depthRow.depth;
-
-            const tdDepth = document.createElement('td');
-            tdDepth.className = 'depth-label';
-            tdDepth.textContent = depthRow.depth;
-            tr.appendChild(tdDepth);
-
-            // Find last NDL cell index for this row (to mark the NDL limit)
-            let lastNdlIdx = -1;
-            depthRow.cells.forEach((cell, i) => {
-                if (cell !== null && cell.stop5m === 0) lastNdlIdx = i;
+            table.residualNitrogen[group].forEach((p, d) => {
+                const stripe = d % 2 === 0 ? 'stripe' : 'plain';
+                tr.appendChild(p === null
+                    ? td(`p3:${n}:${d}`, 'p3 p3-na')
+                    : td(`p3:${n}:${d}`, `p3 ${stripe}`, `+${p}`));
             });
-
-            depthRow.cells.forEach((cell, i) => {
-                const td = document.createElement('td');
-                td.className = 'cell-group';
-                td.dataset.depth = depthRow.depth;
-                td.dataset.groupIdx = i;
-
-                if (cell === null) {
-                    td.classList.add('cell-empty');
-                } else if (cell.stop5m === 0) {
-                    td.classList.add('cell-ndl');
-                    if (i === lastNdlIdx) td.classList.add('cell-ndl-limit');
-                    if (depthRow.depth === 12 && i === 0) {
-                        td.innerHTML = '<span class="start-marker">START</span>' + cell.bottomTime;
-                    } else {
-                        td.textContent = cell.bottomTime;
-                    }
-                } else {
-                    td.classList.add('cell-deco');
-                    td.innerHTML = cell.bottomTime + '<span class="cell-stop-label">↓ ' + cell.stop5m + 'ˈ</span>';
-                }
-
-                tr.appendChild(td);
+            tr.appendChild(td(`lr:${n}`, 'lbl-group', group));
+            GROUPS.forEach((exit, e) => {
+                const range = table.surfaceInterval[exit][group];
+                const stripe = e % 2 === 1 ? 'stripe' : 'plain';
+                if (!range) { tr.appendChild(td(`p2:${n}:${e}`, 'p2 cell-empty')); return; }
+                const [min, max] = range;
+                const top = max === 1440 ? '24' : formatHM(max);
+                tr.appendChild(td(`p2:${n}:${e}`, `p2 ${stripe}`,
+                    `<span class="si-max">${top}</span><span class="si-min">${formatHM(min)}</span>`));
             });
-
             tbody.appendChild(tr);
-        }
+        });
 
-        // ── Image overlay coordinate map (% of image 654×486 px) ─────────────
-        // Derived from pixel analysis: 44px columns starting at x=92, 36.5px rows
-        const IMG_ROW_TOP = { 12:20.83, 15:28.34, 18:35.85, 21:43.37, 24:50.87, 27:58.39, 30:65.89, 33:73.41, 36:80.91, 40:88.43 };
-        const IMG_ROW_H   = 7.51; // row height as % of image height (36.5/486)
-        const IMG_COL_L   = [14.07,20.80,27.52,34.25,40.98,47.71,54.43,61.16,67.89,74.62,81.35,88.07];
-        const IMG_COL_W   = 6.73; // column width as % of image width (44/654)
-        const IMG_DATA_LEFT  = 14.07; // leftmost data column start (92/654)
-        const IMG_DATA_RIGHT = 94.80; // rightmost data column end (620/654)
+        const captionRow = document.createElement('tr');
+        const cap3 = td(null, 'caption', '<span class="part-badge">3</span>časová přirážka [min] ← hledej vlevo');
+        cap3.colSpan = ND;
+        const cap2 = td(null, 'caption', '<span class="part-badge">2</span>povrchový interval [h:min] ↓ hledej dolů (horní = do, dolní = od)');
+        cap2.colSpan = NG;
+        captionRow.append(cap3, td(null, 'caption-blank'), cap2);
+        tbody.appendChild(captionRow);
 
-        const imgOverlayRow  = document.getElementById('imgOverlayRow');
-        const imgOverlayCell = document.getElementById('imgOverlayCell');
-
-        function clearOverlay() {
-            imgOverlayRow.classList.remove('visible');
-            imgOverlayCell.classList.remove('visible');
-        }
-
-        function showOverlayRow(depth) {
-            const top = IMG_ROW_TOP[depth];
-            if (top == null) return;
-            imgOverlayRow.style.top    = top + '%';
-            imgOverlayRow.style.height = IMG_ROW_H + '%';
-            imgOverlayRow.style.left   = IMG_DATA_LEFT + '%';
-            imgOverlayRow.style.width  = (IMG_DATA_RIGHT - IMG_DATA_LEFT) + '%';
-            imgOverlayRow.classList.add('visible');
-            imgOverlayCell.classList.remove('visible');
-        }
-
-        function showOverlayCell(depth, groupIdx) {
-            const rowTop  = IMG_ROW_TOP[depth];
-            const colLeft = IMG_COL_L[groupIdx];
-            if (rowTop == null || colLeft == null) return;
-            imgOverlayRow.style.top    = rowTop + '%';
-            imgOverlayRow.style.height = IMG_ROW_H + '%';
-            imgOverlayRow.style.left   = IMG_DATA_LEFT + '%';
-            imgOverlayRow.style.width  = (IMG_DATA_RIGHT - IMG_DATA_LEFT) + '%';
-            imgOverlayRow.classList.add('visible');
-            imgOverlayCell.style.top    = rowTop + '%';
-            imgOverlayCell.style.height = IMG_ROW_H + '%';
-            imgOverlayCell.style.left   = colLeft + '%';
-            imgOverlayCell.style.width  = IMG_COL_W + '%';
-            imgOverlayCell.classList.add('visible');
-        }
-
-        // ── State ─────────────────────────────────────────────────────────────
-        const state = {
-            step: 0,
-            enteredDepth: null,
-            enteredTime: null,
-            targetDepthData: null,   // full depth object
-            result: null,            // { cell, groupIdx }
+        // ── Original image geometry (% of images/cmas-table-2018.png, 1480×1576) ──
+        // Measured from the rendered grid lines; each array holds cell edges.
+        const IMG = {
+            colGroup: [51.757, 55.541, 59.324, 63.108, 66.892, 70.676, 74.459, 78.243, 82.027, 85.811, 89.459, 93.243, 97.027],
+            colDepth: [2.973, 7.297, 11.757, 16.081, 20.405, 24.73, 29.189, 33.514, 37.838, 42.162, 46.554],
+            rowDepth: [9.391, 12.817, 16.117, 19.543, 22.843, 26.269, 29.569, 32.868, 36.294, 39.594, 43.02],
+            rowGroup: [47.208, 50.635, 53.934, 57.36, 60.66, 64.086, 67.386, 70.685, 74.112, 77.411, 80.838, 84.137, 87.5],
+            labelCol: [46.622, 51.757],
         };
+        const LABEL_ROW = [IMG.rowDepth[ND], IMG.rowGroup[0]];
 
-        // ── DOM refs ──────────────────────────────────────────────────────────
-        const lookupBtn    = document.getElementById('lookupBtn');
-        const resetBtn     = document.getElementById('resetBtn');
-        const inputDepth   = document.getElementById('inputDepth');
-        const inputTime    = document.getElementById('inputTime');
-        const lookupError  = document.getElementById('lookupError');
-        const stepNarrator = document.getElementById('stepNarrator');
-        const stepText     = document.getElementById('stepText');
-        const nextStepBtn  = document.getElementById('nextStepBtn');
-        const prevStepBtn  = document.getElementById('prevStepBtn');
-        const resultCard   = document.getElementById('resultCard');
-
-        // ── Helpers ───────────────────────────────────────────────────────────
-        function findDepth(entered) {
-            return tableData.depths.find(d => d.depth >= entered) ?? null;
-        }
-
-        function findCell(depthData, enteredTime) {
-            for (let i = 0; i < depthData.cells.length; i++) {
-                const c = depthData.cells[i];
-                if (c !== null && c.bottomTime >= enteredTime) {
-                    return { cell: c, groupIdx: i };
-                }
+        function imgRect(key) {
+            const [kind, a, b] = key.split(':').map((v, i) => i ? Number(v) : v);
+            const span = (arr, i) => [arr[i], arr[i + 1]];
+            switch (kind) {
+                case 'p1':  return [span(IMG.colGroup, b), span(IMG.rowDepth, a)];
+                case 'p2':  return [span(IMG.colGroup, b), span(IMG.rowGroup, a)];
+                case 'p3':  return [span(IMG.colDepth, b), span(IMG.rowGroup, a)];
+                case 'ld':  return [IMG.labelCol, span(IMG.rowDepth, a)];
+                case 'lr':  return [IMG.labelCol, span(IMG.rowGroup, a)];
+                case 'lg':  return [span(IMG.colGroup, a), LABEL_ROW];
+                case 'lp3': return [span(IMG.colDepth, a), LABEL_ROW];
             }
-            return null;
         }
 
-        function getCellTd(depth, groupIdx) {
-            return tbody.querySelector(`td[data-depth="${depth}"][data-group-idx="${groupIdx}"]`);
-        }
+        // ── Highlighting (digital table + image, same keys) ─────────────────
+        const grid = document.getElementById('decoTable');
+        const imageContainer = document.getElementById('imageContainer');
+        const HL_KINDS = ['path', 'label', 'origin', 'found'];
 
         function clearHighlights() {
-            tbody.querySelectorAll('tr').forEach(tr => tr.classList.remove('row-dim'));
-            tbody.querySelectorAll('td').forEach(td => td.classList.remove('cell-scan', 'cell-found'));
+            grid.classList.remove('focus');
+            cells.forEach(el => el.classList.remove(...HL_KINDS.map(k => 'hl-' + k)));
+            imageContainer.querySelectorAll('.img-hl').forEach(el => el.remove());
         }
 
-        function updateDots(active) {
-            [1, 2, 3].forEach(i => {
-                const dot = document.getElementById('dot' + i);
-                dot.className = 'step-dot';
-                if (i < active) dot.classList.add('done');
-                else if (i === active) dot.classList.add('active');
-            });
-            [1, 2].forEach(i => {
-                const c = document.getElementById('conn' + i);
-                c.className = 'step-dot connector';
-                if (i < active) c.classList.add('done');
-            });
-        }
-
-        function dimOtherRows() {
-            const d = state.targetDepthData.depth;
-            tbody.querySelectorAll('tr').forEach(tr => {
-                if (parseInt(tr.dataset.depth) !== d) tr.classList.add('row-dim');
-            });
-        }
-
-        // ── Step renderers ────────────────────────────────────────────────────
-        function applyStep1() {
+        function highlight(spec) {
             clearHighlights();
-            dimOtherRows();
-            showOverlayRow(state.targetDepthData.depth);
-            const depthRow = tbody.querySelector(`tr[data-depth="${state.targetDepthData.depth}"]`);
-            if (depthRow) depthRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-            let text = `Krok 1: Hledáme řádek pro hloubku <strong>${state.targetDepthData.depth}&nbsp;m</strong>.`;
-            if (state.enteredDepth !== state.targetDepthData.depth) {
-                text += ` Hloubka ${state.enteredDepth}&nbsp;m v tabulce přesně není — zaokrouhlujeme na nejbližší vyšší: <strong>${state.targetDepthData.depth}&nbsp;m</strong>.`;
+            grid.classList.add('focus');
+            for (const kind of HL_KINDS) {
+                for (const key of spec[kind] ?? []) {
+                    cells.get(key)?.classList.add('hl-' + kind);
+                    const [[x0, x1], [y0, y1]] = imgRect(key);
+                    const box = document.createElement('div');
+                    box.className = 'img-hl ' + kind;
+                    Object.assign(box.style, {
+                        left: x0 + '%', width: (x1 - x0) + '%',
+                        top: y0 + '%', height: (y1 - y0) + '%',
+                    });
+                    imageContainer.appendChild(box);
+                }
             }
-            stepText.innerHTML = text;
+            const focus = spec.scrollTo && cells.get(spec.scrollTo);
+            if (focus) focus.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
         }
 
-        function applyStep2() {
-            clearHighlights();
-            dimOtherRows();
-            showOverlayCell(state.targetDepthData.depth, state.result.groupIdx);
+        const range = (from, to) => Array.from({ length: Math.max(0, to - from) }, (_, i) => from + i);
+        const p1Keys = (d, gs) => gs.map(g => `p1:${d}:${g}`);
+        const p1ColBelow = (d, g) => range(d + 1, ND).map(dd => `p1:${dd}:${g}`);
 
-            const { groupIdx } = state.result;
-            const depth = state.targetDepthData.depth;
-
-            for (let i = 0; i <= groupIdx; i++) {
-                const td = getCellTd(depth, i);
-                if (!td || td.classList.contains('cell-empty')) continue;
-                td.classList.add(i < groupIdx ? 'cell-scan' : 'cell-found');
-            }
-            const foundTd = getCellTd(depth, groupIdx);
-            if (foundTd) foundTd.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-            const group = GROUPS[groupIdx];
-            stepText.innerHTML = `Krok 2: V řádku <strong>${depth}&nbsp;m</strong> procházíme zleva doprava. Hledáme první políčko s časem ≥ <strong>${state.enteredTime}&nbsp;min</strong>. Nalezeno ve skupině <strong>${group}</strong> — čas na dně <strong>${state.result.cell.bottomTime}&nbsp;min</strong>.`;
+        // ── Step builders ────────────────────────────────────────────────────
+        function part1Steps(dive, r) {
+            const d = r.depthIdx, g = r.groupIdx, grp = GROUPS[g];
+            const rowKeys = p1Keys(d, range(0, NG));
+            let depthText = `Řádek pro hloubku <strong>${r.tableDepth}&nbsp;m</strong>`;
+            if (dive.depth !== r.tableDepth) {
+                depthText += ` — ${dive.depth}&nbsp;m v tabulce není, hloubku zaokrouhlujeme vždy na nejbližší větší.`;
+            } else depthText += '.';
+            const timeText = r.penalty
+                ? `hledáme dobu <strong>${dive.time}&nbsp;+&nbsp;${r.penalty}&nbsp;=&nbsp;${r.tableTime}&nbsp;min</strong> (reálná doba + přirážka)`
+                : `hledáme dobu <strong>${r.tableTime}&nbsp;min</strong>`;
+            const stopText = r.isDeco
+                ? `<strong>dekompresní ponor</strong> — povinná zastávka <strong>${r.cell.stop5m}&nbsp;min v&nbsp;5&nbsp;m</strong> (číslo ve spodní polovině buňky)`
+                : '<strong>bez dekomprese</strong> — stačí bezpečnostní zastávka 5&nbsp;m / 3&nbsp;min';
+            return [
+                {
+                    part: 1,
+                    text: `Část 1 — ${depthText}`,
+                    hl: { label: [`ld:${d}`], path: rowKeys, scrollTo: `ld:${d}` },
+                },
+                {
+                    part: 1,
+                    text: `Procházíme řádek ${r.tableDepth}&nbsp;m zleva doprava, ${timeText}. První buňka ≥ ${r.tableTime}&nbsp;min: <strong>${r.cell.bottomTime}&nbsp;min</strong>.`,
+                    hl: { label: [`ld:${d}`], path: p1Keys(d, range(0, g)), found: [`p1:${d}:${g}`], scrollTo: `p1:${d}:${g}` },
+                },
+                {
+                    part: 1,
+                    text: `Buňka ${r.cell.bottomTime}&nbsp;min: ${stopText}. Písmeno pod sloupcem je skupina po ponoru: <strong>${grp}</strong>.`,
+                    hl: { label: [`ld:${d}`, `lg:${g}`], path: p1ColBelow(d, g), found: [`p1:${d}:${g}`], scrollTo: `lg:${g}` },
+                },
+            ];
         }
 
-        function applyStep3() {
-            clearHighlights();
-            dimOtherRows();
-            showOverlayCell(state.targetDepthData.depth, state.result.groupIdx);
+        function repeatSteps(prev, dive, r) {
+            const pg = prev.result.groupIdx, pd = prev.result.depthIdx;
+            const n = r.si.groupIdx, d = r.depthIdx;
+            const origin = `p1:${pd}:${pg}`;
+            const colDown = p1ColBelow(pd, pg);
+            const p2Col = range(0, pg + 1).map(row => `p2:${row}:${pg}`);
+            const hasNdl = r.maxNoDecoTime > 0;
+            return [
+                {
+                    part: 2,
+                    text: `Část 2 — Z buňky minulého ponoru (skupina <strong>${GROUPS[pg]}</strong>) jdeme po šipkách <strong>dolů sloupcem ${GROUPS[pg]}</strong> do tabulky povrchových intervalů.`,
+                    hl: { origin: [origin], label: [`lg:${pg}`], path: colDown.concat(p2Col), scrollTo: `lg:${pg}` },
+                },
+                {
+                    part: 2,
+                    text: `Ve sloupci ${GROUPS[pg]} hledáme buňku, do které patří povrchový interval <strong>${formatHM(dive.si)}</strong>. Buňka platí od ${formatHM(r.si.min)} do ${r.si.max === 1440 ? '24:00' : formatHM(r.si.max)} → nová skupina <strong>${GROUPS[n]}</strong> (písmeno řádku).`,
+                    hl: { origin: [`lg:${pg}`], path: range(0, n).map(row => `p2:${row}:${pg}`), found: [`p2:${n}:${pg}`], label: [`lr:${n}`], scrollTo: `p2:${n}:${pg}` },
+                },
+                {
+                    part: 3,
+                    text: `Část 3 — Z buňky jdeme <strong>vlevo řádkem ${GROUPS[n]}</strong> až do sloupce hloubky dalšího ponoru <strong>${r.tableDepth}&nbsp;m</strong>${dive.depth !== r.tableDepth ? ` (${dive.depth}&nbsp;m zaokrouhleno nahoru)` : ''}. Časová přirážka: <strong>+${r.penalty}&nbsp;min</strong> — tolik dusíku v těle ještě zbývá.`,
+                    hl: {
+                        origin: [`p2:${n}:${pg}`],
+                        path: range(n, pg).map(e => `p2:${n}:${e}`).concat(range(d + 1, ND).map(dd => `p3:${n}:${dd}`)),
+                        label: [`lr:${n}`, `lp3:${d}`],
+                        found: [`p3:${n}:${d}`],
+                        scrollTo: `p3:${n}:${d}`,
+                    },
+                },
+                {
+                    part: 1,
+                    text: `Přirážku přičteme k reálné době: <strong>${dive.time}&nbsp;+&nbsp;${r.penalty}&nbsp;=&nbsp;${r.tableTime}&nbsp;min</strong>. S touto dobou jdeme nahoru zpět do části 1, řádek <strong>${r.tableDepth}&nbsp;m</strong>.` +
+                        (hasNdl ? ` Aby ponor zůstal bez dekomprese, smíš být na dně nejvýš ${r.ndl}&nbsp;−&nbsp;${r.penalty}&nbsp;=&nbsp;<strong>${r.maxNoDecoTime}&nbsp;min</strong>.` : ''),
+                    hl: { origin: [`p3:${n}:${d}`], label: [`lp3:${d}`, `ld:${d}`], path: p1Keys(d, range(0, NG)), scrollTo: `ld:${d}` },
+                },
+                ...part1Steps(dive, r).slice(1),
+            ];
+        }
 
-            const { groupIdx, cell } = state.result;
-            const td = getCellTd(state.targetDepthData.depth, groupIdx);
-            if (td) td.classList.add('cell-found');
+        // ── State & DOM ──────────────────────────────────────────────────────
+        const $ = id => document.getElementById(id);
+        const els = {
+            lookupBtn: $('lookupBtn'), resetBtn: $('resetBtn'),
+            depth: $('inputDepth'), time: $('inputTime'),
+            siH: $('inputSiH'), siM: $('inputSiM'), depth2: $('inputDepth2'), time2: $('inputTime2'),
+            repeatBtn: $('repeatBtn'), repeatPanel: $('repeatPanel'), repeatTitle: $('repeatTitle'),
+            error: $('lookupError'), narrator: $('stepNarrator'), indicator: $('stepIndicator'),
+            text: $('stepText'), next: $('nextStepBtn'), prev: $('prevStepBtn'),
+            result: $('resultCard'), log: $('diveLog'),
+        };
+        const state = { dives: [], pending: null, steps: [], step: 0 };
 
-            const group = GROUPS[groupIdx];
-            const isNDL = cell.stop5m === 0;
-            const stopText = isNDL
-                ? '<strong>zastávka 5&nbsp;m: žádná</strong> — bezdekompresní ponor'
-                : `<strong>zastávka 5&nbsp;m: ${cell.stop5m}&nbsp;min</strong> — dekompresní ponor`;
-            stepText.innerHTML = `Krok 3: Přečteme políčko. Skupina <strong>${group}</strong>, čas <strong>${cell.bottomTime}&nbsp;min</strong> — ${stopText}.`;
-            nextStepBtn.textContent = 'Výsledek →';
+        const ERRORS = {
+            invalid:        () => 'Zadej kladnou hloubku, čas a povrchový interval.',
+            tooDeep:        e => `Tabulky ČSAS/CMAS 2018 končí hloubkou ${e.maxDepth}&nbsp;m.`,
+            timeOutOfRange: e => `Doba ${e.tableTime}&nbsp;min v hloubce ${e.tableDepth}&nbsp;m je mimo rozsah tabulky.`,
+            siTooShort:     () => 'Povrchový interval kratší než 10&nbsp;min: oba ponory se počítají jako jeden — sečti doby a použij větší hloubku.',
+            siOver24h:      () => 'Po více než 24&nbsp;h už nejde o opakovaný ponor — vyhledej ho jako první ponor.',
+            noPenalty:      e => `Pro skupinu ${GROUPS[e.groupIdx]} a hloubku ${e.tableDepth}&nbsp;m tabulka přirážku neuvádí — vyvarujte se opakovaných ponorů hlubších 30&nbsp;m.`,
+        };
+
+        function showError(r) {
+            els.error.innerHTML = ERRORS[r.code](r);
+            els.error.classList.add('visible');
+        }
+
+        function renderIndicator() {
+            els.indicator.innerHTML = '';
+            state.steps.forEach((s, i) => {
+                if (i) {
+                    const c = document.createElement('div');
+                    c.className = 'step-connector' + (i <= state.step ? ' done' : '');
+                    els.indicator.appendChild(c);
+                }
+                const dot = document.createElement('div');
+                dot.className = 'step-dot' + (i < state.step ? ' done' : i === state.step ? ' active' : '');
+                dot.textContent = i + 1;
+                els.indicator.appendChild(dot);
+            });
+            const part = document.createElement('span');
+            part.className = 'step-part';
+            part.textContent = `${state.dives.length + 1}. ponor · část ${state.steps[state.step].part}`;
+            els.indicator.appendChild(part);
+        }
+
+        function renderStep() {
+            const s = state.steps[state.step];
+            renderIndicator();
+            els.text.innerHTML = s.text;
+            highlight(s.hl);
+            els.prev.disabled = state.step === 0;
+            els.next.textContent = state.step === state.steps.length - 1 ? 'Výsledek →' : 'Dále →';
+        }
+
+        function startSteps(dive, r, steps) {
+            state.pending = { ...dive, result: r };
+            state.steps = steps;
+            state.step = 0;
+            els.error.classList.remove('visible');
+            els.result.classList.remove('visible');
+            els.repeatPanel.classList.remove('visible');
+            els.narrator.classList.add('visible');
+            els.lookupBtn.disabled = true;
+            els.resetBtn.style.display = '';
+            renderStep();
+        }
+
+        function renderLog() {
+            const parts = [];
+            state.dives.forEach((dv, i) => {
+                const r = dv.result;
+                if (dv.si !== undefined) {
+                    parts.push(`<span class="log-chip si">PI ${formatHM(dv.si)} → ${GROUPS[r.si.groupIdx]}</span>`);
+                }
+                const time = r.penalty ? `${dv.time}+${r.penalty}` : `${dv.time}`;
+                const stop = r.isDeco ? ` · 5&nbsp;m/${r.cell.stop5m}&nbsp;min` : '';
+                parts.push(`<span class="log-chip ${r.isDeco ? 'deco' : 'dive'}">${i + 1}. ${dv.depth}&nbsp;m / ${time}&nbsp;min → <strong>${GROUPS[r.groupIdx]}</strong>${stop}</span>`);
+            });
+            els.log.innerHTML = parts.join('<span class="log-arrow">→</span>');
+            els.log.classList.toggle('visible', state.dives.length > 0);
         }
 
         function showResult() {
-            clearHighlights();
-            showOverlayCell(state.targetDepthData.depth, state.result.groupIdx);
-            const { groupIdx, cell } = state.result;
-            const td = getCellTd(state.targetDepthData.depth, groupIdx);
-            if (td) td.classList.add('cell-found');
+            const dive = state.pending;
+            const r = dive.result;
+            state.dives.push(dive);
+            state.pending = null;
+            const num = state.dives.length;
+            highlight({ found: [`p1:${r.depthIdx}:${r.groupIdx}`], label: [`lg:${r.groupIdx}`] });
 
-            const group = GROUPS[groupIdx];
-            const isNDL = cell.stop5m === 0;
+            $('resultTitle').textContent = `${num}. ponor — ` + (r.isDeco ? 'dekompresní, zastávka povinná' : 'bez dekomprese');
+            $('resultTitle').className = r.isDeco ? 'deco' : 'ndl';
+            els.result.classList.toggle('deco', r.isDeco);
 
-            document.getElementById('resultTitle').textContent = isNDL
-                ? '✓ Bezdekompresní ponor'
-                : '⚠ Dekompresní ponor — zastávka povinná';
-            document.getElementById('resultTitle').className = isNDL ? 'ndl' : 'deco';
+            const meta = [
+                `<span>Hloubka v tabulce: <strong>${r.tableDepth}&nbsp;m</strong></span>`,
+                `<span>Doba v tabulce: <strong>${r.cell.bottomTime}&nbsp;min</strong>${r.penalty ? ` (${dive.time}&nbsp;+&nbsp;přirážka&nbsp;${r.penalty})` : ''}</span>`,
+                `<span>Skupina po ponoru: <strong>${GROUPS[r.groupIdx]}</strong></span>`,
+            ];
+            if (r.si) meta.unshift(`<span>Po intervalu ${formatHM(dive.si)}: skupina <strong>${GROUPS[r.si.groupIdx]}</strong></span>`);
+            $('resultMeta').innerHTML = meta.join('');
+            $('resultStops').innerHTML = r.isDeco
+                ? `<div class="stop-chip"><span class="stop-depth">zastávka 5&nbsp;m</span><span class="stop-time">${r.cell.stop5m}</span><span class="stop-unit">min</span></div>`
+                : '<div class="ndl-chip">Bez dekomprese · bezpečnostní zastávka 5&nbsp;m / 3&nbsp;min</div>';
+            const notes = [];
+            if (num >= 3 && r.isDeco) notes.push('<p class="result-note warn">Třetí a další ponor dne má být bezdekompresní (podle příkladů SPČR).</p>');
+            if (r.si && r.maxNoDecoTime > 0 && r.isDeco) notes.push(`<p class="result-note">Bez dekomprese bys v ${r.tableDepth}&nbsp;m mohl být max. ${r.maxNoDecoTime}&nbsp;min.</p>`);
+            notes.push('<p class="result-note">Letět letadlem: po jednom ponoru za 12&nbsp;h, po opakovaném za 24&nbsp;h.</p>');
+            $('resultNotes').innerHTML = notes.join('');
 
-            document.getElementById('resultMeta').innerHTML =
-                `<span><span class="lbl">Hloubka: </span><strong>${state.targetDepthData.depth}&nbsp;m</strong></span>` +
-                `<span><span class="lbl">Dusíková skupina: </span><strong>${group}</strong></span>` +
-                `<span><span class="lbl">Čas na dně: </span><strong>${cell.bottomTime}&nbsp;min</strong>` +
-                (state.enteredTime !== cell.bottomTime
-                    ? ` <em style="color:var(--text-muted);font-size:0.82rem">(zadáno ${state.enteredTime}&nbsp;min, zaokrouhleno na ${cell.bottomTime})</em>`
-                    : '') +
-                `</span>`;
-
-            const stopsEl = document.getElementById('resultStops');
-            if (isNDL) {
-                stopsEl.innerHTML = '<div class="ndl-chip">Bez dekomprese</div>';
-            } else {
-                stopsEl.innerHTML = `<div class="stop-chip"><span class="stop-depth">Zastávka 5&nbsp;m</span><span class="stop-time">${cell.stop5m}</span><span class="stop-unit">min</span></div>`;
-            }
-
-            document.getElementById('resultSummary').innerHTML =
-                `<span><span class="lbl">Typ ponoru: </span><span class="val">${isNDL ? 'Bezdekompresní' : 'Dekompresní'}</span></span>` +
-                `<span><span class="lbl">Dusíková skupina po ponoru: </span><span class="val">${group}</span></span>`;
-
-            resultCard.classList.add('visible');
-            stepNarrator.classList.remove('visible');
-            resetBtn.style.display = '';
-            lookupBtn.disabled = false;
-            resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            els.result.classList.add('visible');
+            els.narrator.classList.remove('visible');
+            els.repeatTitle.textContent = `${num + 1}. ponor (opakovaný) — vychází ze skupiny ${GROUPS[r.groupIdx]}`;
+            els.repeatPanel.classList.add('visible');
+            renderLog();
+            els.result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
-        // ── Main lookup ───────────────────────────────────────────────────────
-        function startLookup() {
-            const enteredDepth = parseInt(inputDepth.value, 10);
-            const enteredTime  = parseInt(inputTime.value, 10);
-
-            lookupError.classList.remove('visible');
-            resultCard.classList.remove('visible');
-            clearHighlights();
-
-            if (isNaN(enteredDepth) || enteredDepth < 1) {
-                return showError('Zadej kladnou hloubku v metrech.');
-            }
-            if (isNaN(enteredTime) || enteredTime < 1) {
-                return showError('Zadej čas na dně v minutách.');
-            }
-            if (enteredDepth < 12) {
-                return showError('Tabulky ČSAS/CMAS 2018 jsou definovány pro hloubky 12–40&nbsp;m.');
-            }
-
-            const targetDepthData = findDepth(enteredDepth);
-            if (!targetDepthData) {
-                return showError(`Hloubka ${enteredDepth}&nbsp;m přesahuje rozsah tabulky (max. 40&nbsp;m).`);
-            }
-
-            const result = findCell(targetDepthData, enteredTime);
-            if (!result) {
-                return showError(`Čas ${enteredTime}&nbsp;min ve hloubce ${targetDepthData.depth}&nbsp;m je mimo rozsah tabulky.`);
-            }
-
-            state.enteredDepth    = enteredDepth;
-            state.enteredTime     = enteredTime;
-            state.targetDepthData = targetDepthData;
-            state.result          = result;
-            state.step            = 1;
-
-            lookupBtn.disabled = true;
-            resetBtn.style.display = '';
-            stepNarrator.classList.add('visible');
-            updateDots(1);
-            applyStep1();
-            prevStepBtn.disabled = true;
-            nextStepBtn.disabled = false;
-            nextStepBtn.textContent = 'Dále →';
+        // ── Actions ──────────────────────────────────────────────────────────
+        function startFirstDive() {
+            resetAll();
+            const dive = { depth: parseInt(els.depth.value, 10), time: parseInt(els.time.value, 10) };
+            const r = lookupDive(table, dive);
+            if (!r.ok) return showError(r);
+            startSteps(dive, r, part1Steps(dive, r));
         }
 
-        function showError(msg) {
-            lookupError.innerHTML = msg;
-            lookupError.classList.add('visible');
+        function startRepeatDive() {
+            const prev = state.dives.at(-1);
+            const si = (parseInt(els.siH.value, 10) || 0) * 60 + (parseInt(els.siM.value, 10) || 0);
+            const dive = { depth: parseInt(els.depth2.value, 10), time: parseInt(els.time2.value, 10), si };
+            const r = lookupDive(table, { ...dive, prevGroupIdx: prev.result.groupIdx, surfaceInterval: si });
+            if (!r.ok) return showError(r);
+            startSteps(dive, r, repeatSteps(prev, dive, r));
         }
 
-        // ── Step navigation ───────────────────────────────────────────────────
         function advance() {
-            if (state.step === 1) {
-                state.step = 2; updateDots(2); applyStep2(); prevStepBtn.disabled = false;
-            } else if (state.step === 2) {
-                state.step = 3; updateDots(3); applyStep3(); prevStepBtn.disabled = false;
-            } else if (state.step === 3) {
-                state.step = 4; showResult();
-            }
+            if (state.step < state.steps.length - 1) { state.step++; renderStep(); }
+            else showResult();
         }
 
         function goBack() {
-            if (state.step === 2) {
-                state.step = 1; updateDots(1); applyStep1();
-                prevStepBtn.disabled = true; nextStepBtn.textContent = 'Dále →';
-            } else if (state.step === 3) {
-                state.step = 2; updateDots(2); applyStep2();
-                nextStepBtn.textContent = 'Dále →';
-            }
+            if (state.step > 0) { state.step--; renderStep(); }
         }
 
         function resetAll() {
-            state.step = 0;
+            state.dives = [];
+            state.pending = null;
+            state.steps = [];
             clearHighlights();
-            clearOverlay();
-            stepNarrator.classList.remove('visible');
-            resultCard.classList.remove('visible');
-            lookupError.classList.remove('visible');
-            lookupBtn.disabled = false;
-            resetBtn.style.display = 'none';
-            nextStepBtn.textContent = 'Dále →';
+            els.narrator.classList.remove('visible');
+            els.result.classList.remove('visible');
+            els.repeatPanel.classList.remove('visible');
+            els.error.classList.remove('visible');
+            els.lookupBtn.disabled = false;
+            els.resetBtn.style.display = 'none';
+            renderLog();
         }
 
-        // ── Events ────────────────────────────────────────────────────────────
-        lookupBtn.addEventListener('click', startLookup);
-        nextStepBtn.addEventListener('click', advance);
-        prevStepBtn.addEventListener('click', goBack);
-        resetBtn.addEventListener('click', resetAll);
-        [inputDepth, inputTime].forEach(el => {
-            el.addEventListener('input', () => { if (state.step > 0) resetAll(); });
-            el.addEventListener('keydown', e => { if (e.key === 'Enter' && state.step === 0) startLookup(); });
+        els.lookupBtn.addEventListener('click', startFirstDive);
+        els.repeatBtn.addEventListener('click', startRepeatDive);
+        els.next.addEventListener('click', advance);
+        els.prev.addEventListener('click', goBack);
+        els.resetBtn.addEventListener('click', resetAll);
+        [els.depth, els.time].forEach(el => {
+            el.addEventListener('input', () => { if (state.dives.length || state.pending) resetAll(); });
+            el.addEventListener('keydown', e => { if (e.key === 'Enter' && !els.lookupBtn.disabled) startFirstDive(); });
+        });
+        [els.siH, els.siM, els.depth2, els.time2].forEach(el => {
+            el.addEventListener('keydown', e => { if (e.key === 'Enter') startRepeatDive(); });
         });
     </script>
 </body>

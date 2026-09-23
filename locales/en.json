@@ -1502,6 +1502,7 @@
             "transfill": "Cylinder Transfilling",
             "cascade": "Cascade Filling",
             "gasLaw": "Gas Law: Temp & Pressure",
+            "decoTable": "CMAS Decompression Tables",
             "repetitive": "Repetitive Dives"
         },
         "theory": {
