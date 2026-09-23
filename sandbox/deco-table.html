@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dekompresní tabulky — Deco Theory</title>
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#2980b9">
+    <link rel="icon" type="image/svg+xml" href="../icons/icon.svg">
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <style>
+        .deco-table-layout {
+            max-width: 1160px;
+            margin: 0 auto;
+            padding: 1rem 1rem 3rem;
+        }
+
+        /* ── Input panels ── */
+        .lookup-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem 1.25rem;
+            align-items: flex-end;
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+        .panel-title {
+            flex-basis: 100%;
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+        .lookup-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        .lookup-field label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .lookup-field input[type="number"] {
+            width: 90px;
+            padding: 0.4rem 0.55rem;
+            font-size: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--background-color);
+            color: var(--text-color);
+            font-variant-numeric: tabular-nums;
+        }
+        .lookup-field input.narrow { width: 64px; }
+        .si-inputs { display: flex; align-items: center; gap: 0.3rem; font-size: 0.85rem; color: var(--text-muted); }
+        .lookup-field input[type="number"]:focus {
+            outline: none;
+            border-color: #2980b9;
+            box-shadow: 0 0 0 2px rgba(41,128,185,0.2);
+        }
+        .btn-primary {
+            padding: 0.45rem 1.2rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            background: #2980b9;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.15s;
+            white-space: nowrap;
+        }
+        .btn-primary:hover:not(:disabled) { background: #1f6391; }
+        .btn-primary:disabled { background: #95a5a6; cursor: not-allowed; }
+        #resetBtn {
+            padding: 0.45rem 0.9rem;
+            font-size: 0.9rem;
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            display: none;
+        }
+        #resetBtn:hover { background: var(--background-color); }
+        .study-note {
+            margin: 0 0 1rem;
+            padding: 0.65rem 0.9rem;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            background: rgba(243,156,18,0.1);
+            border-left: 4px solid #f39c12;
+            border-radius: 4px;
+        }
+        .plan-panel { flex-direction: column; align-items: stretch; gap: 0.6rem; }
+        .plan-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 1.25rem;
+            align-items: flex-end;
+            padding-bottom: 0.6rem;
+            border-bottom: 1px dashed var(--border-color);
+        }
+        .plan-num { font-weight: 700; font-size: 0.9rem; min-width: 7.5rem; align-self: center; }
+        .plan-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; }
+        .btn-secondary, .remove-btn {
+            padding: 0.4rem 0.9rem;
+            font-size: 0.9rem;
+            background: var(--background-color);
+            color: #2980b9;
+            border: 1px dashed #2980b9;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
+        .remove-btn { color: var(--text-muted); border: 1px solid var(--border-color); padding: 0.35rem 0.7rem; }
+        .remove-btn:hover { color: #c0392b; border-color: #c0392b; }
+
+        /* ── Result table ── */
+        .result-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; font-variant-numeric: tabular-nums; }
+        .result-table th, .result-table td { padding: 0.35rem 0.5rem; border-bottom: 1px solid var(--border-color); text-align: left; }
+        .result-table th { font-size: 0.78rem; color: var(--text-muted); font-weight: 600; }
+        .result-table .deco { color: #e67e22; font-weight: 700; }
+        .result-table .ndl  { color: #27ae60; font-weight: 700; }
+        .result-table .grp  { font-weight: 700; }
+
+        /* ── Dive log ── */
+        .dive-log {
+            display: none;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.35rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+        }
+        .dive-log.visible { display: flex; }
+        .log-chip {
+            padding: 0.25rem 0.6rem;
+            border-radius: 999px;
+            border: 1px solid var(--border-color);
+            background: var(--card-background);
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+        .log-chip.dive  { border-color: #2980b9; }
+        .log-chip.deco  { border-color: #e67e22; }
+        .log-chip.si    { border-style: dashed; color: var(--text-muted); }
+        .log-arrow { color: var(--text-muted); }
+
+        /* ── Step narrator ── */
+        .step-narrator {
+            display: none;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: var(--card-background);
+            border: 2px solid #2980b9;
+            border-radius: var(--radius);
+            padding: 0.75rem 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(41,128,185,0.12);
+        }
+        .step-narrator.visible { display: flex; flex-direction: column; gap: 0.5rem; }
+        .step-indicator {
+            display: flex;
+            gap: 0.35rem;
+            align-items: center;
+            flex-wrap: wrap;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+        .step-dot {
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem; font-weight: 700;
+            background: var(--background-color);
+            border: 2px solid var(--border-color);
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+        .step-dot.active { background: #2980b9; border-color: #2980b9; color: #fff; }
+        .step-dot.done   { background: #27ae60; border-color: #27ae60; color: #fff; }
+        .step-connector { width: 14px; height: 2px; background: var(--border-color); }
+        .step-connector.done { background: #27ae60; }
+        .step-part { margin-left: 0.5rem; font-weight: 600; color: #2980b9; }
+        .step-text { font-size: 0.93rem; line-height: 1.5; }
+        .step-text strong { color: #2980b9; }
+        .step-btns { display: flex; gap: 0.5rem; margin-top: 0.25rem; align-items: center; }
+        .key-hint { font-size: 0.78rem; color: var(--text-muted); }
+        .compare-link {
+            margin: 0.25rem 0 0;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.86rem;
+            line-height: 1.45;
+            background: rgba(41,128,185,0.07);
+            border-left: 3px solid #2980b9;
+            border-radius: 4px;
+        }
+        .compare-link:empty { display: none; }
+        .compare-link a { font-weight: 600; }
+        @media (hover: none) { .key-hint { display: none; } }
+        .step-btns button {
+            padding: 0.3rem 0.85rem;
+            font-size: 0.85rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--background-color);
+            cursor: pointer;
+        }
+        .step-btns button:hover { background: var(--card-background); }
+        .step-btns button:disabled { opacity: 0.4; cursor: not-allowed; }
+        #nextStepBtn { background: #2980b9; color: #fff; border-color: #2980b9; }
+        #nextStepBtn:hover:not(:disabled) { background: #1f6391; }
+
+        /* ── Error ── */
+        .lookup-error {
+            display: none;
+            background: rgba(231,76,60,0.08);
+            border: 1px solid rgba(231,76,60,0.4);
+            border-radius: 4px;
+            padding: 0.6rem 0.9rem;
+            font-size: 0.9rem;
+            color: #c0392b;
+            margin-bottom: 1rem;
+        }
+        .lookup-error.visible { display: block; }
+
+        /* ── Result card ── */
+        .result-card {
+            display: none;
+            background: var(--card-background);
+            border: 2px solid #27ae60;
+            border-radius: var(--radius);
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .result-card.visible { display: block; }
+        .result-card.deco { border-color: #e67e22; }
+        .result-card h3 { margin: 0 0 0.65rem; font-size: 1rem; font-weight: 700; }
+        .result-card h3.ndl  { color: #27ae60; }
+        .result-card h3.deco { color: #e67e22; }
+        .result-meta {
+            display: flex; flex-wrap: wrap;
+            gap: 0.4rem 1.5rem;
+            font-size: 0.88rem; margin-bottom: 0.75rem; color: var(--text-muted);
+        }
+        .result-meta strong { color: var(--text-color); }
+        .result-stops { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.5rem; }
+        .stop-chip {
+            display: flex; flex-direction: column; align-items: center;
+            padding: 0.45rem 1rem;
+            background: var(--background-color);
+            border: 2px solid #e67e22;
+            border-radius: 6px; min-width: 72px;
+            font-variant-numeric: tabular-nums;
+        }
+        .stop-chip .stop-depth { font-size: 0.72rem; color: var(--text-muted); }
+        .stop-chip .stop-time  { font-size: 1.2rem; font-weight: 700; color: #e67e22; }
+        .stop-chip .stop-unit  { font-size: 0.7rem; color: var(--text-muted); }
+        .ndl-chip {
+            display: inline-flex; align-items: center;
+            padding: 0.45rem 1rem;
+            background: rgba(39,174,96,0.1);
+            border: 2px solid #27ae60;
+            border-radius: 6px; font-size: 0.9rem; font-weight: 600; color: #27ae60;
+        }
+        .result-note { font-size: 0.85rem; color: var(--text-muted); margin: 0.4rem 0 0; }
+        .result-note.warn { color: #c0392b; font-weight: 600; }
+
+        /* ── Circle table (digital replica of the paper layout) ── */
+        .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .deco-grid {
+            border-collapse: collapse;
+            font-size: 0.8rem;
+            font-variant-numeric: tabular-nums;
+            margin: 0 auto;
+        }
+        .deco-grid td, .deco-grid th {
+            border: 1px solid #94a3b8;
+            text-align: center;
+            padding: 0.3rem 0.2rem;
+            min-width: 40px;
+            transition: opacity 0.2s;
+        }
+
+        /* header + captions */
+        .deco-grid th.th-p1 {
+            background: #fff;
+            color: #1e3a5f;
+            font-size: 0.76rem;
+            font-weight: 600;
+            border-color: #1e3a5f;
+        }
+        .deco-grid th.th-start {
+            background: #FFFF00;
+            color: #0000e6;
+            font-style: italic;
+            font-weight: 800;
+            border: 2px solid #dc2626;
+        }
+        .deco-grid th.th-blank, .deco-grid td.caption-blank { border: none; background: transparent; }
+        .deco-grid td.caption {
+            border: none;
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: #1e3a5f;
+            padding-top: 0.45rem;
+        }
+        .part-badge {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 1.3em; height: 1.3em;
+            border-radius: 50%;
+            background: #1e3a5f; color: #fff;
+            font-size: 0.85em; font-weight: 700;
+            margin-right: 0.3em;
+        }
+
+        /* how-to strip above the table */
+        .how-to {
+            display: flex; flex-wrap: wrap;
+            gap: 0.3rem 1.2rem;
+            margin: 0 0 0.75rem;
+            padding: 0;
+            list-style: none;
+            font-size: 0.82rem;
+            line-height: 1.4;
+        }
+        .how-to li { display: flex; gap: 0.35rem; align-items: baseline; }
+
+        /* top-left quadrant: arrows from part 3 back to START (as on paper) */
+        .deco-grid td.corner {
+            position: relative;
+            border: none;
+            text-align: left;
+            vertical-align: top;
+            padding: 0.3rem;
+            font-size: 0.78rem;
+            line-height: 1.35;
+            color: var(--text-muted);
+            min-width: 0;
+        }
+        .corner-note { position: relative; z-index: 1; max-width: 38%; }
+        .return-arrows { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+        .ret-arrow { stroke-width: 2; fill: none; transition: opacity 0.2s; }
+        .ret-arrow.orange { stroke: #f39c12; }
+        .ret-arrow.blue   { stroke: #1d4ed8; }
+        .ret-arrow.active { stroke: #059669; stroke-width: 4; }
+        .ah-orange { fill: #f39c12; }
+        .ah-blue   { fill: #1d4ed8; }
+        .ah-green  { fill: #059669; }
+        .deco-grid.focus .ret-arrow:not(.active) { opacity: 0.2; }
+        .img-arrow { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+        .img-arrow line { stroke: #059669; stroke-width: 5; stroke-linecap: round; vector-effect: non-scaling-stroke; opacity: 0.8; }
+
+        .result-actions { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
+        .result-actions button {
+            padding: 0.3rem 0.85rem;
+            font-size: 0.85rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--background-color);
+            cursor: pointer;
+        }
+
+        /* labels */
+        .deco-grid td.lbl-depth, .deco-grid td.lbl-group, .deco-grid td.lbl-m {
+            background: #1e3a5f;
+            color: #fff;
+            font-weight: 700;
+            border-color: #0f2140;
+        }
+        .deco-grid td.lbl-depth { font-style: italic; }
+
+        /* part 1 cells */
+        .deco-grid td.cell-empty { background: #f8fafc; border-color: #e2e8f0; }
+        .deco-grid td.cell-ndl { background: #FFFF00; color: #1e3a5f; font-weight: 700; border-color: #cccc00; }
+        .deco-grid td.cell-ndl-limit { box-shadow: inset 0 0 0 2px #1e3a5f; }
+        .deco-grid td.cell-deco {
+            background: #4472C4;
+            color: #FFFF00;
+            font-weight: 700;
+            border-color: #2a52a4;
+            line-height: 1.25;
+        }
+        .cell-stop-label { display: block; font-size: 0.72em; font-weight: 400; color: #ffb3b3; }
+
+        /* part 2 & 3 cells — striped columns like the paper */
+        .deco-grid td.p2, .deco-grid td.p3 { color: #111; }
+        .deco-grid td.stripe { background: #FFFF00; border-color: #cccc00; }
+        .deco-grid td.plain  { background: #fff; }
+        .deco-grid td.p2 { font-size: 0.72rem; line-height: 1.2; padding: 0.15rem 0.15rem; }
+        .p2 .si-max { display: block; }
+        .p2 .si-min { display: block; color: #475569; }
+        .deco-grid td.p3 { font-weight: 600; }
+        .deco-grid td.p3-na { background: repeating-linear-gradient(45deg, #f1f5f9, #f1f5f9 4px, #e2e8f0 4px, #e2e8f0 8px); }
+
+        /* highlight states (shared by all parts) */
+        .deco-grid.focus td:not(.hl-path):not(.hl-found):not(.hl-label):not(.hl-origin):not(.corner):not(.caption):not(.caption-blank) {
+            opacity: 0.28;
+        }
+        .deco-grid td.hl-path  { outline: 2px solid #3b82f6; outline-offset: -2px; }
+        .deco-grid td.hl-label { outline: 3px solid #f59e0b; outline-offset: -3px; }
+        .deco-grid td.hl-origin { outline: 3px dashed #059669; outline-offset: -3px; }
+        @keyframes found-pulse {
+            0%,100% { outline-color: #059669; }
+            50%      { outline-color: rgba(5,150,105,0.25); }
+        }
+        .deco-grid td.hl-found {
+            background: #d1fae5 !important;
+            color: #065f46 !important;
+            outline: 3px solid #059669;
+            outline-offset: -3px;
+            animation: found-pulse 1.2s ease-in-out infinite;
+        }
+        .deco-grid td.hl-found .cell-stop-label, .deco-grid td.hl-found .si-min { color: #065f46; }
+
+        /* ── Legend ── */
+        .table-legend {
+            display: flex; flex-wrap: wrap;
+            gap: 0.5rem 1.25rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.82rem;
+        }
+        .legend-item { display: flex; align-items: center; gap: 0.4rem; }
+        .legend-swatch { width: 18px; height: 18px; border-radius: 3px; border: 1px solid; flex-shrink: 0; }
+        .legend-swatch.ndl   { background: #FFFF00; border-color: #cccc00; }
+        .legend-swatch.limit { background: #FFFF00; border-color: #1e3a5f; box-shadow: inset 0 0 0 2px #1e3a5f; }
+        .legend-swatch.deco  { background: #4472C4; border-color: #2a52a4; }
+
+        /* ── Original table image with overlay ── */
+        .image-section { margin-top: 2rem; }
+        .downloads {
+            display: flex; flex-wrap: wrap; align-items: baseline;
+            gap: 0.2rem 0.5rem;
+            margin: 0 0 1rem;
+            font-size: 0.85rem;
+        }
+        .downloads .dl-note, .downloads .dl-sep { color: var(--text-muted); }
+
+        /* ── Official guide (behind a button) ── */
+        .guide { margin: 0 0 1.25rem; }
+        .guide > summary {
+            display: inline-block;
+            list-style: none;
+            padding: 0.4rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #2980b9;
+            background: var(--card-background);
+            border: 1px solid #2980b9;
+            border-radius: 4px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .guide > summary::-webkit-details-marker { display: none; }
+        .guide > summary::before { content: '▸ '; }
+        .guide[open] > summary::before { content: '▾ '; }
+        .guide[open] > summary { background: #2980b9; color: #fff; }
+        .guide-body {
+            margin-top: 0.6rem;
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1rem 1.25rem;
+            font-size: 0.9rem;
+            line-height: 1.55;
+            max-width: 860px;
+        }
+        .guide-body h3 { font-size: 1rem; margin: 1.1rem 0 0.4rem; }
+        .guide-body h3:first-child { margin-top: 0; }
+        .guide-body p { margin: 0.35rem 0; }
+        .guide-body ul, .guide-body ol { margin: 0.3rem 0; padding-left: 1.4rem; }
+        .guide-body li { margin-bottom: 0.25rem; }
+        .guide-lead { color: var(--text-muted); font-style: italic; }
+        .guide-alert {
+            border-left: 3px solid #c0392b;
+            padding: 0.4rem 0.75rem;
+            background: rgba(231,76,60,0.06);
+        }
+        .guide-columns { columns: 2 16rem; }
+        .guide-source { margin-top: 1rem !important; font-size: 0.8rem; color: var(--text-muted); }
+        .image-section-title {
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        .image-overlay-container { position: relative; max-width: 900px; margin: 0 auto; }
+        .cmas-table-img { display: block; width: 100%; height: auto; }
+        .img-hl { position: absolute; pointer-events: none; }
+        .img-hl.path   { background: rgba(59,130,246,0.22); }
+        .img-hl.label  { border: 3px solid #f59e0b; }
+        .img-hl.origin { border: 3px dashed #059669; }
+        .img-hl.found  { background: rgba(39,174,96,0.35); border: 3px solid #059669; }
+
+        @media (max-width: 640px) {
+            .deco-grid { font-size: 0.72rem; }
+            .deco-grid td, .deco-grid th { min-width: 32px; }
+        }
+    </style>
+</head>
+<body data-i18n-title="nav.sandbox.decoTable" data-i18n-title-context="nav.sandbox.label">
+    <nav class="main-nav">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">Deco Theory</a>
+            <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links"><!-- generated by js/nav.js --></ul>
+            <span class="nav-wip-badge" data-i18n="common.wipBadge">Experimental</span>
+        </div>
+    </nav>
+
+    <div class="disclaimer-banner" data-i18n="sandbox.decoTable.disclaimerBanner">
+        <strong>Pouze pro vzdělávací účely</strong> — Ukázka práce s dekompresními tabulkami SPČR/CMAS 2018. Neprovádějte ponory na základě tohoto simulátoru.
+    </div>
+
+    <header class="hero hero-compact">
+        <h1 data-i18n="sandbox.decoTable.heading">Dekompresní tabulky</h1>
+        <p class="hero-subtitle" data-i18n="sandbox.decoTable.subtitle">Zadej hloubku a čas na dně — simulátor tě krok za krokem provede tabulkami SPČR/CMAS (platné od 1.&nbsp;1.&nbsp;2018), včetně opakovaných ponorů.</p>
+    </header>
+
+    <div class="deco-table-layout">
+
+        <p class="study-note" data-i18n="sandbox.decoTable.studyNote"><strong>Tato stránka slouží jen k nastudování práce s tabulkami SPČR.</strong> Ponor si naplánuješ jinde: v pískovišti <a href="index.html">Modelování dekomprese</a> (Bühlmann, gradient faktory), sérii ponorů v <a href="repetitive-dives.html">Opakovaných ponorech</a>.</p>
+
+        <!-- Dive plan: first dive + any number of repetitive dives -->
+        <div class="lookup-panel plan-panel">
+            <p class="panel-title" data-i18n="sandbox.decoTable.plan.title">Plán ponorů</p>
+            <div class="plan-row">
+                <span class="plan-num" data-i18n="sandbox.decoTable.plan.dive1">1. ponor</span>
+                <div class="lookup-field">
+                    <label for="inputDepth" data-i18n="sandbox.decoTable.plan.depth">Hloubka (m)</label>
+                    <input type="number" id="inputDepth" min="1" max="40" step="1" value="30">
+                </div>
+                <div class="lookup-field">
+                    <label for="inputTime" data-i18n="sandbox.decoTable.plan.time">Čas na dně (min)</label>
+                    <input type="number" id="inputTime" min="1" max="200" step="1" value="20">
+                </div>
+            </div>
+            <div id="repeatRows"></div>
+            <div class="plan-actions">
+                <button id="addRepeatBtn" class="btn-secondary" data-i18n="sandbox.decoTable.plan.addRepeat">+ Opakovaný ponor</button>
+                <button id="lookupBtn" class="btn-primary" data-i18n="sandbox.decoTable.plan.lookup">Vyhledat</button>
+                <button id="resetBtn" data-i18n="sandbox.decoTable.plan.reset">Začít znovu</button>
+            </div>
+        </div>
+
+        <!-- Dive log -->
+        <div class="dive-log" id="diveLog"></div>
+
+        <div class="lookup-error" id="lookupError"></div>
+
+        <!-- Step narrator -->
+        <div class="step-narrator" id="stepNarrator">
+            <div class="step-indicator" id="stepIndicator"></div>
+            <div class="step-text" id="stepText"></div>
+            <p class="compare-link" id="compareStep"></p>
+            <div class="step-btns">
+                <button id="prevStepBtn" data-i18n="sandbox.decoTable.narrator.back">← Zpět</button>
+                <button id="nextStepBtn">Dále →</button>
+                <span class="key-hint" data-i18n="sandbox.decoTable.narrator.keyHint">nebo klávesy ← →</span>
+            </div>
+        </div>
+
+        <!-- Result -->
+        <div class="result-card" id="resultCard">
+            <h3 id="resultTitle"></h3>
+            <div class="table-wrapper" id="resultBody"></div>
+            <p class="compare-link" id="compareResult"></p>
+            <div id="resultNotes"></div>
+            <div class="result-actions">
+                <button id="resultBackBtn" data-i18n="sandbox.decoTable.result.back">← Zpět na poslední krok</button>
+                <button id="replayBtn" data-i18n="sandbox.decoTable.result.replay">Projít znovu od 1. ponoru</button>
+            </div>
+        </div>
+
+        <!-- Downloads -->
+        <p class="downloads">
+            <strong data-i18n="sandbox.decoTable.downloads.label">Tabulky ke stažení:</strong>
+            <a href="https://www.cmas.cz/soubor-od-1-1-2018-plati-nove-dekompresni-tabulky-318-.xls" target="_blank" rel="noopener" data-i18n="sandbox.decoTable.downloads.xls">originál SPČR 2018 (XLS, cmas.cz)</a>
+            <span class="dl-note" data-i18n="sandbox.decoTable.downloads.xlsNote">— vzduch, hory, nitrox EAN32/36, destička k zatavení, návod a testové příklady</span>
+            <span class="dl-sep">·</span>
+            <a href="../images/cmas-table-2018.png" download="dekompresni-tabulky-SPCR-2018.png" data-i18n="sandbox.decoTable.downloads.png">obrázek tabulky pro vzduch (PNG)</a>
+        </p>
+
+        <!-- Official guide from the XLS sheet "návod k tabulkám" -->
+        <details class="guide" id="guide">
+            <summary data-i18n="sandbox.decoTable.guide.button">Návod k tabulkám (SPČR)</summary>
+            <div class="guide-body">
+                <div data-i18n="sandbox.decoTable.guide.use"></div>
+                <div data-i18n="sandbox.decoTable.guide.repeat"></div>
+                <div data-i18n="sandbox.decoTable.guide.flying"></div>
+                <div data-i18n="sandbox.decoTable.guide.altitude"></div>
+                <div data-i18n="sandbox.decoTable.guide.emergency"></div>
+                <div data-i18n="sandbox.decoTable.guide.adverse"></div>
+                <p class="guide-source"><span data-i18n="sandbox.decoTable.guide.source"></span> — <a href="https://www.cmas.cz/soubor-od-1-1-2018-plati-nove-dekompresni-tabulky-318-.xls" target="_blank" rel="noopener" data-i18n="sandbox.decoTable.guide.sourceLink">originál XLS</a>.</p>
+            </div>
+        </details>
+
+        <!-- Legend -->
+        <div class="table-legend">
+            <div class="legend-item"><div class="legend-swatch ndl"></div> <span data-i18n="sandbox.decoTable.legend.ndl">bez dekomprese (bezpečnostní zastávka 5&nbsp;m / 3&nbsp;min)</span></div>
+            <div class="legend-item"><div class="legend-swatch limit"></div> <span data-i18n="sandbox.decoTable.legend.limit">max. doba bez dekomprese</span></div>
+            <div class="legend-item"><div class="legend-swatch deco"></div> <span data-i18n="sandbox.decoTable.legend.deco">dekompresní ponor — zastávka v 5&nbsp;m</span></div>
+        </div>
+
+        <ol class="how-to">
+            <li><span class="part-badge">1</span><span data-i18n="sandbox.decoTable.howTo.s1">Ponor: v řádku hloubky první čas ≥ době ponoru, skupina je pod sloupcem.</span></li>
+            <li><span class="part-badge">2</span><span data-i18n="sandbox.decoTable.howTo.s2">Dolů sloupcem k povrchovému intervalu → nová skupina.</span></li>
+            <li><span class="part-badge">3</span><span data-i18n="sandbox.decoTable.howTo.s3">Vlevo do sloupce hloubky dalšího ponoru → přirážka +min.</span></li>
+            <li><span class="part-badge">1</span><span data-i18n="sandbox.decoTable.howTo.s4">Po šipce zpět na START: doba = reálná + přirážka.</span></li>
+        </ol>
+
+        <!-- Digital replica of the paper table: one grid, read clockwise -->
+        <div class="table-wrapper">
+            <table class="deco-grid" id="decoTable">
+                <thead>
+                    <tr>
+                        <th class="th-blank" colspan="10"></th>
+                        <th class="th-start">START</th>
+                        <th class="th-p1" colspan="12"><span class="part-badge">1</span><span data-i18n="sandbox.decoTable.table.header">doba ponoru [min] — hloubka zaokrouhli nahoru, čas na nejbližší delší</span></th>
+                    </tr>
+                </thead>
+                <tbody id="decoTableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Original table with interactive overlay -->
+        <div class="image-section">
+            <p class="image-section-title" data-i18n="sandbox.decoTable.image.title">Originál tabulky SPČR/CMAS 2018 — stejná cesta na papíře</p>
+            <div class="image-overlay-container" id="imageContainer">
+                <img src="../images/cmas-table-2018.png" alt="Dekompresní tabulky SPČR/CMAS 2018 pro vzduch" class="cmas-table-img">
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <span class="wip-badge" data-i18n="common.wipBadge">Experimental</span>
+        <p data-i18n="sandbox.decoTable.footer"><strong>Upozornění:</strong> Pouze pro vzdělávací účely. Pro skutečné plánování ponorů použijte certifikované tabulky a dodržujte výcvik.</p>
+        <span class="version-number"></span>
+    </footer>
+
+    <script src="../js/nav.js" type="module"></script>
+
+    <script type="module">
+        import { lookupDive, ndlLimitIdx, formatHM } from '../js/cmasTables.js';
+        import { translate, initI18n, createLanguageSwitcher } from '../js/i18n.js';
+
+        createLanguageSwitcher();
+        const [table] = await Promise.all([
+            fetch('../data/cmas-deco-tables.json').then(r => r.json()),
+            initI18n(),   // strings must be loaded before the table and steps are built
+        ]);
+
+        // Translation helpers: T() for generated text with {token} values,
+        // tSpan() for static bits of generated markup (re-translated by i18n.js on language switch).
+        const T = (key, values = {}) => Object.entries(values).reduce(
+            (text, [token, value]) => text.replaceAll(`{${token}}`, value),
+            translate(`sandbox.decoTable.${key}`, `[${key}]`));
+        const tSpan = key => `<span data-i18n="sandbox.decoTable.${key}">${T(key)}</span>`;
+        const GROUPS = table.groups;
+        const DEPTHS = table.depths.map(d => d.depth);
+        const NG = GROUPS.length, ND = DEPTHS.length;
+
+        // ── Build the circle table ────────────────────────────────────────────
+        // Columns: [part 3 depth columns ×10][label column][groups A–L ×12]
+        // Rows:    [part 1 depth rows ×10][label row][part 2/3 group rows ×12]
+        const tbody = document.getElementById('decoTableBody');
+        const cells = new Map();   // key → <td>, keys shared with the image overlay
+
+        function td(key, className, html = '') {
+            const el = document.createElement('td');
+            if (className) el.className = className;
+            el.innerHTML = html;
+            if (key) cells.set(key, el);
+            return el;
+        }
+
+        let corner;
+        table.depths.forEach((row, d) => {
+            const tr = document.createElement('tr');
+            if (d === 0) {
+                corner = td(null, 'corner', `<div class="corner-note">${tSpan('table.corner')}</div>`);
+                corner.colSpan = ND;
+                corner.rowSpan = ND;
+                tr.appendChild(corner);
+            }
+            tr.appendChild(td(`ld:${d}`, 'lbl-depth', row.depth));
+            const limit = ndlLimitIdx(row);
+            row.cells.forEach((c, g) => {
+                if (c === null) tr.appendChild(td(`p1:${d}:${g}`, 'cell-empty'));
+                else if (c.stop5m === 0) tr.appendChild(td(`p1:${d}:${g}`, 'cell-ndl' + (g === limit ? ' cell-ndl-limit' : ''), c.bottomTime));
+                else tr.appendChild(td(`p1:${d}:${g}`, 'cell-deco', `${c.bottomTime}<span class="cell-stop-label">${c.stop5m}ˈ</span>`));
+            });
+            tbody.appendChild(tr);
+        });
+
+        // Label row: depths for part 3, "m", group letters for parts 1 and 2
+        const labelRow = document.createElement('tr');
+        DEPTHS.forEach((depth, d) => labelRow.appendChild(td(`lp3:${d}`, 'lbl-depth', depth)));
+        labelRow.appendChild(td(null, 'lbl-m', 'm'));
+        GROUPS.forEach((g, i) => labelRow.appendChild(td(`lg:${i}`, 'lbl-group', g)));
+        tbody.appendChild(labelRow);
+
+        // Group rows: part 3 penalties | group label | part 2 surface intervals
+        GROUPS.forEach((group, n) => {
+            const tr = document.createElement('tr');
+            table.residualNitrogen[group].forEach((p, d) => {
+                const stripe = d % 2 === 0 ? 'stripe' : 'plain';
+                tr.appendChild(p === null
+                    ? td(`p3:${n}:${d}`, 'p3 p3-na')
+                    : td(`p3:${n}:${d}`, `p3 ${stripe}`, `+${p}`));
+            });
+            tr.appendChild(td(`lr:${n}`, 'lbl-group', group));
+            GROUPS.forEach((exit, e) => {
+                const range = table.surfaceInterval[exit][group];
+                const stripe = e % 2 === 1 ? 'stripe' : 'plain';
+                if (!range) { tr.appendChild(td(`p2:${n}:${e}`, 'p2 cell-empty')); return; }
+                const [min, max] = range;
+                const top = max === 1440 ? '24' : formatHM(max);
+                tr.appendChild(td(`p2:${n}:${e}`, `p2 ${stripe}`,
+                    `<span class="si-max">${top}</span><span class="si-min">${formatHM(min)}</span>`));
+            });
+            tbody.appendChild(tr);
+        });
+
+        const captionRow = document.createElement('tr');
+        const cap3 = td(null, 'caption', `<span class="part-badge">3</span>${tSpan('table.cap3')}`);
+        cap3.colSpan = ND;
+        const cap2 = td(null, 'caption', `<span class="part-badge">2</span>${tSpan('table.cap2')}`);
+        cap2.colSpan = NG;
+        captionRow.append(cap3, td(null, 'caption-blank'), cap2);
+        tbody.appendChild(captionRow);
+
+        // ── Return arrows: from each part 3 depth column back up to its part 1 row ──
+        const SVG_NS = 'http://www.w3.org/2000/svg';
+        const arrowSvg = document.createElementNS(SVG_NS, 'svg');
+        arrowSvg.classList.add('return-arrows');
+        arrowSvg.innerHTML = '<defs>' + ['orange', 'blue', 'green'].map(c =>
+            `<marker id="ah-${c}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ah-${c}"/></marker>`
+        ).join('') + '</defs>';
+        const arrows = DEPTHS.map((_, d) => {
+            const line = document.createElementNS(SVG_NS, 'line');
+            const color = d % 2 === 0 ? 'orange' : 'blue';   // alternating, as on paper
+            line.classList.add('ret-arrow', color);
+            line.dataset.color = color;
+            line.setAttribute('marker-end', `url(#ah-${color})`);
+            arrowSvg.appendChild(line);
+            return line;
+        });
+        corner.appendChild(arrowSvg);
+
+        function layoutArrows() {
+            const c = corner.getBoundingClientRect();
+            arrowSvg.setAttribute('viewBox', `0 0 ${c.width} ${c.height}`);
+            arrows.forEach((line, d) => {
+                const from = cells.get(`lp3:${d}`).getBoundingClientRect();
+                const to = cells.get(`ld:${d}`).getBoundingClientRect();
+                line.setAttribute('x1', from.left + from.width / 2 - c.left);
+                line.setAttribute('y1', c.height);
+                line.setAttribute('x2', c.width - 1);
+                line.setAttribute('y2', to.top + to.height / 2 - c.top);
+            });
+        }
+        new ResizeObserver(layoutArrows).observe(document.getElementById('decoTable'));
+
+        function setActiveArrow(d) {
+            arrows.forEach((line, i) => {
+                const on = i === d;
+                line.classList.toggle('active', on);
+                line.setAttribute('marker-end', `url(#ah-${on ? 'green' : line.dataset.color})`);
+            });
+        }
+
+        // ── Original image geometry (% of images/cmas-table-2018.png, 1480×1576) ──
+        // Measured from the rendered grid lines; each array holds cell edges.
+        const IMG = {
+            colGroup: [51.757, 55.541, 59.324, 63.108, 66.892, 70.676, 74.459, 78.243, 82.027, 85.811, 89.459, 93.243, 97.027],
+            colDepth: [2.973, 7.297, 11.757, 16.081, 20.405, 24.73, 29.189, 33.514, 37.838, 42.162, 46.554],
+            rowDepth: [9.391, 12.817, 16.117, 19.543, 22.843, 26.269, 29.569, 32.868, 36.294, 39.594, 43.02],
+            rowGroup: [47.208, 50.635, 53.934, 57.36, 60.66, 64.086, 67.386, 70.685, 74.112, 77.411, 80.838, 84.137, 87.5],
+            labelCol: [46.622, 51.757],
+        };
+        const LABEL_ROW = [IMG.rowDepth[ND], IMG.rowGroup[0]];
+
+        function imgRect(key) {
+            const [kind, a, b] = key.split(':').map((v, i) => i ? Number(v) : v);
+            const span = (arr, i) => [arr[i], arr[i + 1]];
+            switch (kind) {
+                case 'p1':  return [span(IMG.colGroup, b), span(IMG.rowDepth, a)];
+                case 'p2':  return [span(IMG.colGroup, b), span(IMG.rowGroup, a)];
+                case 'p3':  return [span(IMG.colDepth, b), span(IMG.rowGroup, a)];
+                case 'ld':  return [IMG.labelCol, span(IMG.rowDepth, a)];
+                case 'lr':  return [IMG.labelCol, span(IMG.rowGroup, a)];
+                case 'lg':  return [span(IMG.colGroup, a), LABEL_ROW];
+                case 'lp3': return [span(IMG.colDepth, a), LABEL_ROW];
+            }
+        }
+
+        // ── Highlighting (digital table + image, same keys) ─────────────────
+        const grid = document.getElementById('decoTable');
+        const imageContainer = document.getElementById('imageContainer');
+        const HL_KINDS = ['path', 'label', 'origin', 'found'];
+
+        function clearHighlights() {
+            grid.classList.remove('focus');
+            cells.forEach(el => el.classList.remove(...HL_KINDS.map(k => 'hl-' + k)));
+            imageContainer.querySelectorAll('.img-hl').forEach(el => el.remove());
+            setActiveArrow(null);
+        }
+
+        /** Trace the paper's diagonal from depth column d (part 3) to depth row d (part 1). */
+        function imageArrow(d) {
+            const mid = (arr, i) => (arr[i] + arr[i + 1]) / 2;
+            const svg = document.createElementNS(SVG_NS, 'svg');
+            svg.classList.add('img-hl', 'img-arrow');
+            svg.setAttribute('viewBox', '0 0 100 100');
+            svg.setAttribute('preserveAspectRatio', 'none');
+            svg.innerHTML = `<line x1="${mid(IMG.colDepth, d)}" y1="${LABEL_ROW[0]}" x2="${IMG.labelCol[0]}" y2="${mid(IMG.rowDepth, d)}"/>`;
+            imageContainer.appendChild(svg);
+        }
+
+        function highlight(spec) {
+            clearHighlights();
+            grid.classList.add('focus');
+            for (const kind of HL_KINDS) {
+                for (const key of spec[kind] ?? []) {
+                    cells.get(key)?.classList.add('hl-' + kind);
+                    const [[x0, x1], [y0, y1]] = imgRect(key);
+                    const box = document.createElement('div');
+                    box.className = 'img-hl ' + kind;
+                    Object.assign(box.style, {
+                        left: x0 + '%', width: (x1 - x0) + '%',
+                        top: y0 + '%', height: (y1 - y0) + '%',
+                    });
+                    imageContainer.appendChild(box);
+                }
+            }
+            if (spec.arrow != null) {
+                setActiveArrow(spec.arrow);
+                imageArrow(spec.arrow);
+            }
+            const focus = spec.scrollTo && cells.get(spec.scrollTo);
+            if (focus) focus.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+        }
+
+        const range = (from, to) => Array.from({ length: Math.max(0, to - from) }, (_, i) => from + i);
+        const p1Keys = (d, gs) => gs.map(g => `p1:${d}:${g}`);
+        const p1ColBelow = (d, g) => range(d + 1, ND).map(dd => `p1:${dd}:${g}`);
+
+        // ── Step builders ────────────────────────────────────────────────────
+        function part1Steps(dive, r) {
+            const d = r.depthIdx, g = r.groupIdx, grp = GROUPS[g];
+            const rowKeys = p1Keys(d, range(0, NG));
+            const v = { depth: r.tableDepth, entered: dive.depth, time: dive.time, penalty: r.penalty,
+                        total: r.tableTime, cellTime: r.cell.bottomTime, stop: r.cell.stop5m, group: grp };
+            const depthText = T(dive.depth !== r.tableDepth ? 'steps.depthRounded' : 'steps.depthRow', v);
+            const timeText = T(r.penalty ? 'steps.timePenalty' : 'steps.timePlain', v);
+            const stopText = T(r.isDeco ? 'steps.stopDeco' : 'steps.stopNdl', v);
+            return [
+                {
+                    part: 1,
+                    text: depthText,
+                    hl: { label: [`ld:${d}`], path: rowKeys, scrollTo: `ld:${d}` },
+                },
+                {
+                    part: 1,
+                    text: T('steps.scan', { ...v, timeText }),
+                    hl: { label: [`ld:${d}`], path: p1Keys(d, range(0, g)), found: [`p1:${d}:${g}`], scrollTo: `p1:${d}:${g}` },
+                },
+                {
+                    part: 1,
+                    text: T('steps.read', { ...v, stopText }),
+                    hl: { label: [`ld:${d}`, `lg:${g}`], path: p1ColBelow(d, g), found: [`p1:${d}:${g}`], scrollTo: `lg:${g}` },
+                },
+            ];
+        }
+
+        function repeatSteps(prev, dive, r) {
+            const pg = prev.result.groupIdx, pd = prev.result.depthIdx;
+            const n = r.si.groupIdx, d = r.depthIdx;
+            const origin = `p1:${pd}:${pg}`;
+            const colDown = p1ColBelow(pd, pg);
+            const p2Col = range(0, pg + 1).map(row => `p2:${row}:${pg}`);
+            const hasNdl = r.maxNoDecoTime > 0;
+            const v = {
+                group: GROUPS[pg], newGroup: GROUPS[n], si: formatHM(dive.si),
+                from: formatHM(r.si.min), to: r.si.max === 1440 ? '24:00' : formatHM(r.si.max),
+                depth: r.tableDepth, entered: dive.depth, time: dive.time, penalty: r.penalty,
+                total: r.tableTime, ndl: r.ndl, max: r.maxNoDecoTime,
+            };
+            return [
+                {
+                    part: 2,
+                    text: T('steps.down', v),
+                    hl: { origin: [origin], label: [`lg:${pg}`], path: colDown.concat(p2Col), scrollTo: `lg:${pg}` },
+                },
+                {
+                    part: 2,
+                    text: T('steps.findSi', v),
+                    hl: { origin: [`lg:${pg}`], path: range(0, n).map(row => `p2:${row}:${pg}`), found: [`p2:${n}:${pg}`], label: [`lr:${n}`], scrollTo: `p2:${n}:${pg}` },
+                },
+                {
+                    part: 3,
+                    text: T('steps.left', { ...v, group: GROUPS[n], rounded: dive.depth !== r.tableDepth ? T('steps.leftRounded', v) : '' }),
+                    hl: {
+                        origin: [`p2:${n}:${pg}`],
+                        path: range(n, pg).map(e => `p2:${n}:${e}`).concat(range(d + 1, ND).map(dd => `p3:${n}:${dd}`)),
+                        label: [`lr:${n}`, `lp3:${d}`],
+                        found: [`p3:${n}:${d}`],
+                        scrollTo: `p3:${n}:${d}`,
+                    },
+                },
+                {
+                    part: 1,
+                    text: T('steps.back', v) + (hasNdl ? T('steps.backNdl', v) : ''),
+                    hl: { origin: [`p3:${n}:${d}`], label: [`lp3:${d}`, `ld:${d}`], path: p1Keys(d, range(0, NG)), arrow: d, scrollTo: `ld:${d}` },
+                },
+                ...part1Steps(dive, r).slice(1),
+            ];
+        }
+
+        // ── State & DOM ──────────────────────────────────────────────────────
+        const $ = id => document.getElementById(id);
+        const els = {
+            lookupBtn: $('lookupBtn'), resetBtn: $('resetBtn'), addRepeatBtn: $('addRepeatBtn'),
+            depth: $('inputDepth'), time: $('inputTime'), repeatRows: $('repeatRows'),
+            error: $('lookupError'), narrator: $('stepNarrator'), indicator: $('stepIndicator'),
+            text: $('stepText'), next: $('nextStepBtn'), prev: $('prevStepBtn'),
+            result: $('resultCard'), log: $('diveLog'),
+        };
+        const MAX_REPEATS = 4;
+        // dives: [{ depth, time, si?, result }]; steps: flat list over all dives, each with .dive
+        const state = { dives: [], steps: [], step: -1, done: false };
+
+        function errorText(r, i) {
+            const v = { maxDepth: r.maxDepth, total: r.tableTime, depth: r.tableDepth, group: GROUPS[r.groupIdx] };
+            return T('errors.divePrefix', { n: i + 1 }) + T(`errors.${r.code}`, v);
+        }
+        let lastError = null;   // [result, diveIdx] — re-rendered on language switch
+
+        // ── Plan rows ────────────────────────────────────────────────────────
+        let rowSeq = 0;
+        function addRepeatRow(si = [1, 0], depth = 18, time = 20) {
+            const id = ++rowSeq;
+            const row = document.createElement('div');
+            row.className = 'plan-row repeat';
+            row.innerHTML = `
+                <span class="plan-num"></span>
+                <div class="lookup-field">
+                    <label for="siH${id}">${tSpan('plan.surfaceInterval')}</label>
+                    <div class="si-inputs">
+                        <input type="number" id="siH${id}" class="narrow" data-f="siH" min="0" max="24" step="1" value="${si[0]}"> h
+                        <input type="number" class="narrow" data-f="siM" min="0" max="59" step="1" value="${si[1]}" aria-label="${T('plan.minutes')}"> min
+                    </div>
+                </div>
+                <div class="lookup-field">
+                    <label for="depth${id}">${tSpan('plan.depth')}</label>
+                    <input type="number" id="depth${id}" data-f="depth" min="1" max="40" step="1" value="${depth}">
+                </div>
+                <div class="lookup-field">
+                    <label for="time${id}">${tSpan('plan.realTime')}</label>
+                    <input type="number" id="time${id}" data-f="time" min="1" max="200" step="1" value="${time}">
+                </div>
+                <button class="remove-btn">×</button>`;
+            row.querySelector('.remove-btn').addEventListener('click', () => { row.remove(); planChanged(); });
+            wireInputs(row.querySelectorAll('input'));
+            els.repeatRows.appendChild(row);
+            planChanged();
+        }
+
+        function renumberRows() {
+            const rows = els.repeatRows.querySelectorAll('.plan-row');
+            rows.forEach((row, i) => {
+                row.querySelector('.plan-num').textContent = T('plan.repeatDive', { n: i + 2 });
+                const remove = row.querySelector('.remove-btn');
+                remove.title = T('plan.remove');
+                remove.setAttribute('aria-label', T('plan.remove'));
+                row.querySelector('[data-f="siM"]').setAttribute('aria-label', T('plan.minutes'));
+            });
+            els.addRepeatBtn.disabled = rows.length >= MAX_REPEATS;
+        }
+
+        function readPlan() {
+            const int = el => parseInt(el.value, 10);
+            const plan = [{ depth: int(els.depth), time: int(els.time) }];
+            els.repeatRows.querySelectorAll('.plan-row').forEach(row => {
+                const f = name => row.querySelector(`[data-f="${name}"]`);
+                plan.push({
+                    si: (int(f('siH')) || 0) * 60 + (int(f('siM')) || 0),
+                    depth: int(f('depth')),
+                    time: int(f('time')),
+                });
+            });
+            return plan;
+        }
+
+        function planChanged() {
+            renumberRows();
+            if (state.steps.length) resetAll();
+        }
+
+        // ── Walkthrough ──────────────────────────────────────────────────────
+        function currentDive() { return state.steps[state.step].dive; }
+
+        function renderIndicator() {
+            els.indicator.innerHTML = '';
+            const cur = currentDive();
+            const mine = state.steps.map((s, i) => [s, i]).filter(([s]) => s.dive === cur);
+            mine.forEach(([, i], k) => {
+                if (k) {
+                    const c = document.createElement('div');
+                    c.className = 'step-connector' + (i <= state.step ? ' done' : '');
+                    els.indicator.appendChild(c);
+                }
+                const dot = document.createElement('div');
+                dot.className = 'step-dot' + (i < state.step ? ' done' : i === state.step ? ' active' : '');
+                dot.textContent = k + 1;
+                els.indicator.appendChild(dot);
+            });
+            const part = document.createElement('span');
+            part.className = 'step-part';
+            part.textContent = T('narrator.indicator', { n: cur + 1, total: state.dives.length, part: state.steps[state.step].part });
+            els.indicator.appendChild(part);
+        }
+
+        function renderStep() {
+            const s = state.steps[state.step];
+            renderIndicator();
+            els.text.innerHTML = s.text;
+            highlight(s.hl);
+            els.prev.disabled = state.step === 0;
+            const last = state.step === state.steps.length - 1;
+            const endsDive = !last && state.steps[state.step + 1].dive !== s.dive;
+            els.next.textContent = last ? T('narrator.result') : endsDive ? T('narrator.nextDive', { n: s.dive + 2 }) : T('narrator.next');
+            renderLog(s.dive - (endsDive || last ? 0 : 1));
+            $('compareStep').innerHTML = s.dive === 0 && (endsDive || last) ? compareLinkHtml() : '';
+        }
+
+        /** Log chips for dives 0..upTo (completed so far). */
+        function renderLog(upTo) {
+            const parts = [];
+            state.dives.slice(0, upTo + 1).forEach((dv, i) => {
+                const r = dv.result;
+                if (r.si) parts.push(`<span class="log-chip si">${T('result.logSi', { si: formatHM(dv.si), group: GROUPS[r.si.groupIdx] })}</span>`);
+                const time = r.penalty ? `${dv.time}+${r.penalty}` : `${dv.time}`;
+                const stop = r.isDeco ? ` · 5&nbsp;m/${r.cell.stop5m}&nbsp;min` : '';
+                parts.push(`<span class="log-chip ${r.isDeco ? 'deco' : 'dive'}">${i + 1}. ${dv.depth}&nbsp;m / ${time}&nbsp;min → <strong>${GROUPS[r.groupIdx]}</strong>${stop}</span>`);
+            });
+            els.log.innerHTML = parts.join('<span class="log-arrow">→</span>');
+            els.log.classList.toggle('visible', parts.length > 0);
+        }
+
+        function showResult({ scroll = true } = {}) {
+            state.done = true;
+            const last = state.dives.at(-1).result;
+            highlight({ found: [`p1:${last.depthIdx}:${last.groupIdx}`], label: [`lg:${last.groupIdx}`] });
+            renderLog(state.dives.length - 1);
+
+            const anyDeco = state.dives.some(dv => dv.result.isDeco);
+            $('resultTitle').textContent = state.dives.length === 1
+                ? T(anyDeco ? 'result.titleSingleDeco' : 'result.titleSingleNdl')
+                : T(anyDeco ? 'result.titlePlanDeco' : 'result.titlePlanNdl', { n: state.dives.length });
+            $('resultTitle').className = anyDeco ? 'deco' : 'ndl';
+            els.result.classList.toggle('deco', anyDeco);
+
+            const rows = state.dives.map((dv, i) => {
+                const r = dv.result;
+                const si = r.si ? `${formatHM(dv.si)} → ${GROUPS[r.si.groupIdx]}` : '—';
+                const time = r.penalty ? `${dv.time}&nbsp;+&nbsp;${r.penalty}&nbsp;= ${r.tableTime}` : `${dv.time}`;
+                const stop = r.isDeco
+                    ? `<span class="deco">${T('result.stop', { stop: r.cell.stop5m })}</span>`
+                    : `<span class="ndl">${T('result.noDeco')}</span>`;
+                return `<tr><td>${i + 1}.</td><td>${si}</td><td>${dv.depth}&nbsp;m${dv.depth !== r.tableDepth ? ` (${r.tableDepth})` : ''}</td><td>${time}&nbsp;min</td><td>${stop}</td><td class="grp">${GROUPS[r.groupIdx]}</td></tr>`;
+            }).join('');
+            $('resultBody').innerHTML = `<table class="result-table">
+                <thead><tr>${['colDive', 'colSi', 'colDepth', 'colTime', 'colDeco', 'colGroup'].map(c => `<th>${T('result.' + c)}</th>`).join('')}</tr></thead>
+                <tbody>${rows}</tbody></table>`;
+
+            const notes = [];
+            if (state.dives.slice(2).some(dv => dv.result.isDeco)) {
+                notes.push(`<p class="result-note warn">${T('result.warnThird')}</p>`);
+            }
+            notes.push(`<p class="result-note">${T('result.notes')}</p>`);
+            $('resultNotes').innerHTML = notes.join('');
+            $('compareResult').innerHTML = compareLinkHtml();
+
+            els.result.classList.add('visible');
+            els.narrator.classList.remove('visible');
+            if (scroll) els.result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // ── Actions ──────────────────────────────────────────────────────────
+        function startLookup() {
+            resetAll();
+            const plan = readPlan();
+            const dives = [];
+            for (const [i, dive] of plan.entries()) {
+                const prev = dives[i - 1];
+                const r = lookupDive(table, prev
+                    ? { ...dive, prevGroupIdx: prev.result.groupIdx, surfaceInterval: dive.si }
+                    : dive);
+                if (!r.ok) {
+                    lastError = [r, i];
+                    els.error.innerHTML = errorText(r, i);
+                    els.error.classList.add('visible');
+                    return;
+                }
+                dives.push({ ...dive, result: r });
+            }
+            state.dives = dives;
+            state.steps = buildSteps(dives);
+            state.step = 0;
+            els.narrator.classList.add('visible');
+            els.resetBtn.style.display = 'inline-block';
+            if (document.activeElement?.matches('input')) document.activeElement.blur();  // so ← → work right away
+            renderStep();
+        }
+
+        // Same first-dive profile in the decompression-modelling sandbox (compact ?v=1 link):
+        // real depth and time, Bühlmann ZH-L16C at GF 100/100.
+        function compareLinkHtml() {
+            const d1 = state.dives[0];
+            if (!d1 || d1.time > 120) return '';   // the compact link accepts at most 120 min
+            const url = `index.html?v=1&d=${d1.depth}&t=${d1.time}&gfL=100&gfH=100&zhl=C`;
+            return `${T('compare.hint')} <a href="${url}">${T('compare.link', { depth: d1.depth, time: d1.time })}</a>`;
+        }
+
+        function buildSteps(dives) {
+            return dives.flatMap((dv, i) =>
+                (i === 0 ? part1Steps(dv, dv.result) : repeatSteps(dives[i - 1], dv, dv.result))
+                    .map(s => ({ ...s, dive: i })));
+        }
+
+        function advance() {
+            if (state.step < state.steps.length - 1) { state.step++; renderStep(); }
+            else showResult();
+        }
+
+        function goBack() {
+            if (state.done) {
+                state.done = false;
+                els.result.classList.remove('visible');
+                els.narrator.classList.add('visible');
+                renderStep();
+            } else if (state.step > 0) { state.step--; renderStep(); }
+        }
+
+        function resetAll() {
+            state.dives = [];
+            state.steps = [];
+            state.step = -1;
+            state.done = false;
+            clearHighlights();
+            els.narrator.classList.remove('visible');
+            els.result.classList.remove('visible');
+            els.error.classList.remove('visible');
+            lastError = null;
+            els.resetBtn.style.display = 'none';
+            els.log.classList.remove('visible');
+        }
+
+        function wireInputs(inputs) {
+            inputs.forEach(el => {
+                el.addEventListener('input', () => { if (state.steps.length) resetAll(); });
+                el.addEventListener('keydown', e => { if (e.key === 'Enter') startLookup(); });
+            });
+        }
+
+        els.lookupBtn.addEventListener('click', startLookup);
+        els.addRepeatBtn.addEventListener('click', () => addRepeatRow());
+        els.next.addEventListener('click', advance);
+        els.prev.addEventListener('click', goBack);
+        els.resetBtn.addEventListener('click', resetAll);
+        $('resultBackBtn').addEventListener('click', goBack);
+
+        // Keyboard: ← / → step through the walkthrough (not while editing a number)
+        document.addEventListener('keydown', e => {
+            if (!state.steps.length || e.altKey || e.ctrlKey || e.metaKey) return;
+            if (e.target instanceof Element && e.target.closest('input, textarea, select')) return;
+            if (e.key === 'ArrowRight' && !state.done) { e.preventDefault(); advance(); }
+            else if (e.key === 'ArrowLeft') { e.preventDefault(); goBack(); }
+        });
+        $('replayBtn').addEventListener('click', () => {
+            state.done = false;
+            state.step = 0;
+            els.result.classList.remove('visible');
+            els.narrator.classList.add('visible');
+            renderStep();
+            els.narrator.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+        wireInputs([els.depth, els.time]);
+
+        // Language switch: static text is handled by i18n.js (data-i18n);
+        // regenerate everything built from T() without losing the walkthrough position.
+        const tableImg = document.querySelector('.cmas-table-img');
+        function retranslate() {
+            tableImg.alt = T('image.alt');
+            renumberRows();
+            if (lastError) els.error.innerHTML = errorText(...lastError);
+            if (state.steps.length) {
+                state.steps = buildSteps(state.dives);
+                if (state.done) showResult({ scroll: false });
+                else renderStep();
+            }
+        }
+        document.addEventListener('languagechange', retranslate);
+        retranslate();
+        addRepeatRow();   // start with one repetitive dive so the loop is visible straight away
+    </script>
+</body>
+</html>
