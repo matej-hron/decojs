@@ -297,20 +297,52 @@
             margin-right: 0.3em;
         }
 
-        /* corner explanation (top-left quadrant, empty on paper) */
+        /* how-to strip above the table */
+        .how-to {
+            display: flex; flex-wrap: wrap;
+            gap: 0.3rem 1.2rem;
+            margin: 0 0 0.75rem;
+            padding: 0;
+            list-style: none;
+            font-size: 0.82rem;
+            line-height: 1.4;
+        }
+        .how-to li { display: flex; gap: 0.35rem; align-items: baseline; }
+
+        /* top-left quadrant: arrows from part 3 back to START (as on paper) */
         .deco-grid td.corner {
+            position: relative;
             border: none;
             text-align: left;
             vertical-align: top;
-            padding: 0.4rem 1rem 0.4rem 0.2rem;
-            font-size: 0.82rem;
-            line-height: 1.45;
-            color: var(--text-color);
+            padding: 0.3rem;
+            font-size: 0.78rem;
+            line-height: 1.35;
+            color: var(--text-muted);
             min-width: 0;
         }
-        .corner h4 { margin: 0 0 0.4rem; font-size: 0.9rem; }
-        .corner ol { margin: 0; padding-left: 0; list-style: none; }
-        .corner li { margin-bottom: 0.45rem; display: flex; gap: 0.4rem; }
+        .corner-note { position: relative; z-index: 1; max-width: 38%; }
+        .return-arrows { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+        .ret-arrow { stroke-width: 2; fill: none; transition: opacity 0.2s; }
+        .ret-arrow.orange { stroke: #f39c12; }
+        .ret-arrow.blue   { stroke: #1d4ed8; }
+        .ret-arrow.active { stroke: #059669; stroke-width: 4; }
+        .ah-orange { fill: #f39c12; }
+        .ah-blue   { fill: #1d4ed8; }
+        .ah-green  { fill: #059669; }
+        .deco-grid.focus .ret-arrow:not(.active) { opacity: 0.2; }
+        .img-arrow { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+        .img-arrow line { stroke: #059669; stroke-width: 5; stroke-linecap: round; vector-effect: non-scaling-stroke; opacity: 0.8; }
+
+        .result-actions { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
+        .result-actions button {
+            padding: 0.3rem 0.85rem;
+            font-size: 0.85rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--background-color);
+            cursor: pointer;
+        }
 
         /* labels */
         .deco-grid td.lbl-depth, .deco-grid td.lbl-group, .deco-grid td.lbl-m {
@@ -466,6 +498,10 @@
             <h3 id="resultTitle"></h3>
             <div class="table-wrapper" id="resultBody"></div>
             <div id="resultNotes"></div>
+            <div class="result-actions">
+                <button id="resultBackBtn">← Zpět na poslední krok</button>
+                <button id="replayBtn">Projít znovu od 1. ponoru</button>
+            </div>
         </div>
 
         <!-- Legend -->
@@ -474,6 +510,13 @@
             <div class="legend-item"><div class="legend-swatch limit"></div> max. doba bez dekomprese</div>
             <div class="legend-item"><div class="legend-swatch deco"></div> dekompresní ponor — zastávka v 5&nbsp;m</div>
         </div>
+
+        <ol class="how-to">
+            <li><span class="part-badge">1</span><span>Ponor: v řádku hloubky první čas ≥ době ponoru, skupina je pod sloupcem.</span></li>
+            <li><span class="part-badge">2</span><span>Dolů sloupcem k povrchovému intervalu → nová skupina.</span></li>
+            <li><span class="part-badge">3</span><span>Vlevo do sloupce hloubky dalšího ponoru → přirážka +min.</span></li>
+            <li><span class="part-badge">1</span><span>Po šipce zpět na START: doba = reálná + přirážka.</span></li>
+        </ol>
 
         <!-- Digital replica of the paper table: one grid, read clockwise -->
         <div class="table-wrapper">
@@ -529,17 +572,12 @@
             return el;
         }
 
+        let corner;
         table.depths.forEach((row, d) => {
             const tr = document.createElement('tr');
             if (d === 0) {
-                const corner = td(null, 'corner', `
-                    <h4>Tabulka se čte po směru hodinových ručiček</h4>
-                    <ol>
-                        <li><span class="part-badge">1</span><span>Ponor: v řádku hloubky najdi první čas ≥ době ponoru. Písmeno skupiny je pod sloupcem.</span></li>
-                        <li><span class="part-badge">2</span><span>Povrchový interval: jdi dolů sloupcem skupiny k buňce, kam interval patří → nová skupina (řádek).</span></li>
-                        <li><span class="part-badge">3</span><span>Časová přirážka: jdi vlevo řádkem do sloupce hloubky dalšího ponoru → +min.</span></li>
-                        <li><span class="part-badge">1</span><span>Další ponor: v části 1 hledej dobu = reálná doba + přirážka.</span></li>
-                    </ol>`);
+                corner = td(null, 'corner',
+                    '<div class="corner-note">Opakovaný ponor: z části 3 po šipce zpět na START. Doba se hledá jako součet <strong>reálné doby + časové přirážky</strong>.</div>');
                 corner.colSpan = ND;
                 corner.rowSpan = ND;
                 tr.appendChild(corner);
@@ -591,6 +629,46 @@
         captionRow.append(cap3, td(null, 'caption-blank'), cap2);
         tbody.appendChild(captionRow);
 
+        // ── Return arrows: from each part 3 depth column back up to its part 1 row ──
+        const SVG_NS = 'http://www.w3.org/2000/svg';
+        const arrowSvg = document.createElementNS(SVG_NS, 'svg');
+        arrowSvg.classList.add('return-arrows');
+        arrowSvg.innerHTML = '<defs>' + ['orange', 'blue', 'green'].map(c =>
+            `<marker id="ah-${c}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ah-${c}"/></marker>`
+        ).join('') + '</defs>';
+        const arrows = DEPTHS.map((_, d) => {
+            const line = document.createElementNS(SVG_NS, 'line');
+            const color = d % 2 === 0 ? 'orange' : 'blue';   // alternating, as on paper
+            line.classList.add('ret-arrow', color);
+            line.dataset.color = color;
+            line.setAttribute('marker-end', `url(#ah-${color})`);
+            arrowSvg.appendChild(line);
+            return line;
+        });
+        corner.appendChild(arrowSvg);
+
+        function layoutArrows() {
+            const c = corner.getBoundingClientRect();
+            arrowSvg.setAttribute('viewBox', `0 0 ${c.width} ${c.height}`);
+            arrows.forEach((line, d) => {
+                const from = cells.get(`lp3:${d}`).getBoundingClientRect();
+                const to = cells.get(`ld:${d}`).getBoundingClientRect();
+                line.setAttribute('x1', from.left + from.width / 2 - c.left);
+                line.setAttribute('y1', c.height);
+                line.setAttribute('x2', c.width - 1);
+                line.setAttribute('y2', to.top + to.height / 2 - c.top);
+            });
+        }
+        new ResizeObserver(layoutArrows).observe(document.getElementById('decoTable'));
+
+        function setActiveArrow(d) {
+            arrows.forEach((line, i) => {
+                const on = i === d;
+                line.classList.toggle('active', on);
+                line.setAttribute('marker-end', `url(#ah-${on ? 'green' : line.dataset.color})`);
+            });
+        }
+
         // ── Original image geometry (% of images/cmas-table-2018.png, 1480×1576) ──
         // Measured from the rendered grid lines; each array holds cell edges.
         const IMG = {
@@ -625,6 +703,18 @@
             grid.classList.remove('focus');
             cells.forEach(el => el.classList.remove(...HL_KINDS.map(k => 'hl-' + k)));
             imageContainer.querySelectorAll('.img-hl').forEach(el => el.remove());
+            setActiveArrow(null);
+        }
+
+        /** Trace the paper's diagonal from depth column d (part 3) to depth row d (part 1). */
+        function imageArrow(d) {
+            const mid = (arr, i) => (arr[i] + arr[i + 1]) / 2;
+            const svg = document.createElementNS(SVG_NS, 'svg');
+            svg.classList.add('img-hl', 'img-arrow');
+            svg.setAttribute('viewBox', '0 0 100 100');
+            svg.setAttribute('preserveAspectRatio', 'none');
+            svg.innerHTML = `<line x1="${mid(IMG.colDepth, d)}" y1="${LABEL_ROW[0]}" x2="${IMG.labelCol[0]}" y2="${mid(IMG.rowDepth, d)}"/>`;
+            imageContainer.appendChild(svg);
         }
 
         function highlight(spec) {
@@ -642,6 +732,10 @@
                     });
                     imageContainer.appendChild(box);
                 }
+            }
+            if (spec.arrow != null) {
+                setActiveArrow(spec.arrow);
+                imageArrow(spec.arrow);
             }
             const focus = spec.scrollTo && cells.get(spec.scrollTo);
             if (focus) focus.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
@@ -715,9 +809,9 @@
                 },
                 {
                     part: 1,
-                    text: `Přirážku přičteme k reálné době: <strong>${dive.time}&nbsp;+&nbsp;${r.penalty}&nbsp;=&nbsp;${r.tableTime}&nbsp;min</strong>. S touto dobou jdeme nahoru zpět do části 1, řádek <strong>${r.tableDepth}&nbsp;m</strong>.` +
+                    text: `Přirážku přičteme k reálné době: <strong>${dive.time}&nbsp;+&nbsp;${r.penalty}&nbsp;=&nbsp;${r.tableTime}&nbsp;min</strong>. S touto dobou jdeme po šipce ze sloupce ${r.tableDepth}&nbsp;m <strong>zpět na START</strong>, do řádku <strong>${r.tableDepth}&nbsp;m</strong> v části 1.` +
                         (hasNdl ? ` Aby ponor zůstal bez dekomprese, smíš být na dně nejvýš ${r.ndl}&nbsp;−&nbsp;${r.penalty}&nbsp;=&nbsp;<strong>${r.maxNoDecoTime}&nbsp;min</strong>.` : ''),
-                    hl: { origin: [`p3:${n}:${d}`], label: [`lp3:${d}`, `ld:${d}`], path: p1Keys(d, range(0, NG)), scrollTo: `ld:${d}` },
+                    hl: { origin: [`p3:${n}:${d}`], label: [`lp3:${d}`, `ld:${d}`], path: p1Keys(d, range(0, NG)), arrow: d, scrollTo: `ld:${d}` },
                 },
                 ...part1Steps(dive, r).slice(1),
             ];
@@ -954,6 +1048,15 @@
         els.next.addEventListener('click', advance);
         els.prev.addEventListener('click', goBack);
         els.resetBtn.addEventListener('click', resetAll);
+        $('resultBackBtn').addEventListener('click', goBack);
+        $('replayBtn').addEventListener('click', () => {
+            state.done = false;
+            state.step = 0;
+            els.result.classList.remove('visible');
+            els.narrator.classList.add('visible');
+            renderStep();
+            els.narrator.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
         wireInputs([els.depth, els.time]);
         addRepeatRow();   // start with one repetitive dive so the loop is visible straight away
     </script>
