@@ -86,6 +86,15 @@
             display: none;
         }
         #resetBtn:hover { background: var(--background-color); }
+        .study-note {
+            margin: 0 0 1rem;
+            padding: 0.65rem 0.9rem;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            background: rgba(243,156,18,0.1);
+            border-left: 4px solid #f39c12;
+            border-radius: 4px;
+        }
         .plan-panel { flex-direction: column; align-items: stretch; gap: 0.6rem; }
         .plan-row {
             display: flex;
@@ -518,6 +527,8 @@
     </header>
 
     <div class="deco-table-layout">
+
+        <p class="study-note" data-i18n="sandbox.decoTable.studyNote"><strong>Tato stránka slouží jen k nastudování práce s tabulkami SPČR.</strong> Ponor si naplánuješ jinde: v pískovišti <a href="index.html">Modelování dekomprese</a> (Bühlmann, gradient faktory), sérii ponorů v <a href="repetitive-dives.html">Opakovaných ponorech</a>.</p>
 
         <!-- Dive plan: first dive + any number of repetitive dives -->
         <div class="lookup-panel plan-panel">

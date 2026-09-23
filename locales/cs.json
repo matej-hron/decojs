@@ -2516,6 +2516,7 @@
             "heading": "Dekompresní tabulky",
             "subtitle": "Zadej hloubku a čas na dně — simulátor tě krok za krokem provede tabulkami SPČR/CMAS (platné od 1. 1. 2018), včetně opakovaných ponorů.",
             "footer": "<strong>Upozornění:</strong> Pouze pro vzdělávací účely. Pro skutečné plánování ponorů použijte certifikované tabulky a dodržujte výcvik.",
+            "studyNote": "<strong>Tato stránka slouží jen k nastudování práce s tabulkami SPČR.</strong> Ponor si naplánuješ jinde: v pískovišti <a href=\"index.html\">Modelování dekomprese</a> (Bühlmann, gradient faktory), sérii ponorů v <a href=\"repetitive-dives.html\">Opakovaných ponorech</a>.",
             "plan": {
                 "title": "Plán ponorů",
                 "dive1": "1. ponor",

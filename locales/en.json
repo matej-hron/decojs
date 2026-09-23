@@ -2516,6 +2516,7 @@
             "heading": "Decompression Tables",
             "subtitle": "Enter depth and bottom time — the simulator walks you step by step through the SPČR/CMAS tables (valid from 1 January 2018), including repetitive dives.",
             "footer": "<strong>Disclaimer:</strong> For educational purposes only. For real dive planning use certified tables and follow your training.",
+            "studyNote": "<strong>This page is only for learning to read the SPČR tables.</strong> To plan a dive, go elsewhere: the <a href=\"index.html\">Decompression Modelling</a> sandbox (Bühlmann, gradient factors), or <a href=\"repetitive-dives.html\">Repetitive Dives</a> for a series of dives.",
             "plan": {
                 "title": "Dive plan",
                 "dive1": "Dive 1",

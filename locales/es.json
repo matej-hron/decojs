@@ -2480,6 +2480,7 @@
             "heading": "Tablas de descompresión",
             "subtitle": "Introduce la profundidad y el tiempo de fondo: el simulador te guía paso a paso por las tablas SPČR/CMAS (vigentes desde el 1 de enero de 2018), incluidas las inmersiones sucesivas.",
             "footer": "<strong>Aviso:</strong> Solo para fines educativos. Para planificar inmersiones reales utiliza tablas certificadas y sigue tu formación.",
+            "studyNote": "<strong>Esta página sirve solo para aprender a leer las tablas SPČR.</strong> Para planificar una inmersión ve a otro sitio: el sandbox <a href=\"index.html\">Modelado de descompresión</a> (Bühlmann, factores de gradiente) o <a href=\"repetitive-dives.html\">Inmersiones repetitivas</a> para una serie de inmersiones.",
             "plan": {
                 "title": "Plan de inmersiones",
                 "dive1": "Inmersión 1",
