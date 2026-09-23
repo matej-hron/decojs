@@ -392,6 +392,7 @@ export async function getCompactProfileFromUrl() {
         sacRate,
         dives: [{ waypoints }]
     };
-    if (algorithm) setup.algorithm = algorithm;
+    // The editor and setZHL16Variant() expect the full name ('ZH-L16C'), not the letter.
+    if (algorithm) setup.algorithm = `ZH-L16${algorithm}`;
     return setup;
 }

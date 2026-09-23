@@ -2609,6 +2609,10 @@
                 "title": "Originál tabulky SPČR/CMAS 2018 — stejná cesta na papíře",
                 "alt": "Dekompresní tabulky SPČR/CMAS 2018 pro vzduch"
             },
+            "compare": {
+                "hint": "Tabulky i potápěčský počítač vycházejí z Haldaneova modelu — podívej se, jaké zastávky pro stejný profil spočítá Bühlmann.",
+                "link": "Otevřít 1. ponor ({depth} m / {time} min) v sandboxu: ZH-L16C, GF 100/100 →"
+            },
             "guide": {
                 "button": "Návod k tabulkám (SPČR)",
                 "use": "<h3>Návod na použití tabulek</h3>\n<p class=\"guide-lead\">(v případě, že to není zřejmé na první nebo druhý pohled)</p>\n<ul>\n<li>pod nápisem START hledáme dole maximální hloubku ponoru nebo případně nejbližší větší hloubku</li>\n<li>vpravo podle šipek najdeme dobu ponoru (od zanoření k počátku výstupu) nebo nejbližší delší hodnotu</li>\n<li>až do červeného čísla v kroužku se jedná o bezdekompresní ponor, kdy je možno vystoupit nahoru a uskutečnit jen bezpečnostní zastávku v 5 m na dobu 3 min</li>\n<li>dekompresní zastávka je pro tento typ rekreačních ponorů pouze jedna, a to v 5 m, hlubší a delší ponory řeší US Navy tabulky</li>\n<li>zastávky v 5 m mají výhodu ve vlnách a rovněž je jednodušší se udržet pomocí kompenzátoru vztlaku v 5 m než ve 3 m</li>\n<li>při delší době ponoru (červené číslo v horní polovině buňky) je nutná povinná dekompresní zastávka v 5 m po dobu uvedenou bílým číslem v modrém poli ve spodní polovině buňky</li>\n<li>rychlost výstupu je 10 m/min, určená počítačem, případně nepředbíhat malé bublinky</li>\n</ul>",

@@ -152,6 +152,7 @@ import {
     encodeDiveSetup,
     decodeDiveSetup,
     getCompactDecoMode,
+    getCompactProfileFromUrl,
     MAX_SHARED_TEXT_LENGTH
 } from '../js/urlParams.js';
 
@@ -9526,6 +9527,25 @@ describe('guard: user-controlled values reaching innerHTML go through escHtml (#
     });
 });
 
+// Regression: zhl=B produced setup.algorithm = 'B', which the sandbox editor's
+// select and setZHL16Variant() do not know — the variant silently fell back to C.
+const compactVariants = {};
+{
+    const originalWindow = globalThis.window;
+    for (const letter of ['A', 'B', 'C']) {
+        globalThis.window = { location: { search: `?v=1&d=30&t=20&gfL=100&gfH=100&zhl=${letter}` } };
+        compactVariants[letter] = (await getCompactProfileFromUrl())?.algorithm;
+    }
+    globalThis.window = originalWindow;
+}
+describe('compact sandbox link (?v=1) — ZH-L16 variant', () => {
+    for (const letter of ['A', 'B', 'C']) {
+        test(`zhl=${letter} → algorithm 'ZH-L16${letter}'`, () => {
+            expect(compactVariants[letter]).toBe(`ZH-L16${letter}`);
+        });
+    }
+});
+
 describe('SPČR/CMAS 2018 tables (cmasTables.js)', () => {
     const cmas = JSON.parse(readFileSync(new URL('../data/cmas-deco-tables.json', import.meta.url), 'utf8'));
     const G = cmas.groups;
@@ -9609,7 +9629,7 @@ describe('SPČR/CMAS 2018 tables (cmasTables.js)', () => {
         const html = readFileSync(new URL('../sandbox/deco-table.html', import.meta.url), 'utf8');
         const used = new Set([
             ...[...html.matchAll(/data-i18n="sandbox\.decoTable\.([\w.]+)"/g)].map(m => m[1]),
-            ...[...html.matchAll(/'((?:steps|plan|narrator|result|errors|downloads|legend|howTo|table|image|guide)\.\w+)'/g)].map(m => m[1]),
+            ...[...html.matchAll(/'((?:steps|plan|narrator|result|errors|downloads|legend|howTo|table|image|guide|compare)\.\w+)'/g)].map(m => m[1]),
             ...['invalid', 'tooDeep', 'timeOutOfRange', 'siTooShort', 'siOver24h', 'noPenalty'].map(c => `errors.${c}`),
             ...['colDive', 'colSi', 'colDepth', 'colTime', 'colDeco', 'colGroup'].map(c => `result.${c}`),
         ]);

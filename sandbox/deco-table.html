@@ -182,6 +182,17 @@
         .step-text strong { color: #2980b9; }
         .step-btns { display: flex; gap: 0.5rem; margin-top: 0.25rem; align-items: center; }
         .key-hint { font-size: 0.78rem; color: var(--text-muted); }
+        .compare-link {
+            margin: 0.25rem 0 0;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.86rem;
+            line-height: 1.45;
+            background: rgba(41,128,185,0.07);
+            border-left: 3px solid #2980b9;
+            border-radius: 4px;
+        }
+        .compare-link:empty { display: none; }
+        .compare-link a { font-weight: 600; }
         @media (hover: none) { .key-hint { display: none; } }
         .step-btns button {
             padding: 0.3rem 0.85rem;
@@ -539,6 +550,7 @@
         <div class="step-narrator" id="stepNarrator">
             <div class="step-indicator" id="stepIndicator"></div>
             <div class="step-text" id="stepText"></div>
+            <p class="compare-link" id="compareStep"></p>
             <div class="step-btns">
                 <button id="prevStepBtn" data-i18n="sandbox.decoTable.narrator.back">← Zpět</button>
                 <button id="nextStepBtn">Dále →</button>
@@ -550,6 +562,7 @@
         <div class="result-card" id="resultCard">
             <h3 id="resultTitle"></h3>
             <div class="table-wrapper" id="resultBody"></div>
+            <p class="compare-link" id="compareResult"></p>
             <div id="resultNotes"></div>
             <div class="result-actions">
                 <button id="resultBackBtn" data-i18n="sandbox.decoTable.result.back">← Zpět na poslední krok</button>
@@ -1018,6 +1031,7 @@
             const endsDive = !last && state.steps[state.step + 1].dive !== s.dive;
             els.next.textContent = last ? T('narrator.result') : endsDive ? T('narrator.nextDive', { n: s.dive + 2 }) : T('narrator.next');
             renderLog(s.dive - (endsDive || last ? 0 : 1));
+            $('compareStep').innerHTML = s.dive === 0 && (endsDive || last) ? compareLinkHtml() : '';
         }
 
         /** Log chips for dives 0..upTo (completed so far). */
@@ -1066,6 +1080,7 @@
             }
             notes.push(`<p class="result-note">${T('result.notes')}</p>`);
             $('resultNotes').innerHTML = notes.join('');
+            $('compareResult').innerHTML = compareLinkHtml();
 
             els.result.classList.add('visible');
             els.narrator.classList.remove('visible');
@@ -1097,6 +1112,15 @@
             els.resetBtn.style.display = 'inline-block';
             if (document.activeElement?.matches('input')) document.activeElement.blur();  // so ← → work right away
             renderStep();
+        }
+
+        // Same first-dive profile in the decompression-modelling sandbox (compact ?v=1 link):
+        // real depth and time, Bühlmann ZH-L16C at GF 100/100.
+        function compareLinkHtml() {
+            const d1 = state.dives[0];
+            if (!d1 || d1.time > 120) return '';   // the compact link accepts at most 120 min
+            const url = `index.html?v=1&d=${d1.depth}&t=${d1.time}&gfL=100&gfH=100&zhl=C`;
+            return `${T('compare.hint')} <a href="${url}">${T('compare.link', { depth: d1.depth, time: d1.time })}</a>`;
         }
 
         function buildSteps(dives) {

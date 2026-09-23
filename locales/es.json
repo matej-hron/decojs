@@ -2573,6 +2573,10 @@
                 "title": "Tabla original SPČR/CMAS 2018 — el mismo recorrido en papel",
                 "alt": "Tablas de descompresión SPČR/CMAS 2018 para aire"
             },
+            "compare": {
+                "hint": "Tanto las tablas como el ordenador de buceo se basan en el modelo de Haldane: mira qué paradas calcula Bühlmann para el mismo perfil.",
+                "link": "Abrir la inmersión 1 ({depth} m / {time} min) en el sandbox: ZH-L16C, GF 100/100 →"
+            },
             "guide": {
                 "button": "Guía de las tablas (SPČR)",
                 "use": "<h3>Uso de las tablas</h3>\n<p class=\"guide-lead\">(por si no resulta evidente a primera o segunda vista)</p>\n<ul>\n<li>debajo de la palabra START buscamos hacia abajo la profundidad máxima de la inmersión o, en su caso, la profundidad mayor más próxima</li>\n<li>hacia la derecha, siguiendo las flechas, encontramos el tiempo de inmersión (desde el inicio del descenso hasta el comienzo del ascenso) o el valor más largo más próximo</li>\n<li>hasta el número rojo dentro del círculo se trata de una inmersión sin descompresión: se puede ascender y realizar solo una parada de seguridad a 5 m durante 3 min</li>\n<li>para este tipo de inmersiones recreativas hay una sola parada de descompresión, a 5 m; las inmersiones más profundas y largas se resuelven con las tablas de la US Navy</li>\n<li>las paradas a 5 m son ventajosas con oleaje y además es más fácil mantenerse con el chaleco compensador a 5 m que a 3 m</li>\n<li>con un tiempo de inmersión mayor (número rojo en la mitad superior de la celda) es necesaria una parada de descompresión obligatoria a 5 m durante el tiempo indicado por el número blanco en el campo azul de la mitad inferior de la celda</li>\n<li>la velocidad de ascenso es de 10 m/min, marcada por el ordenador, o bien no adelantar a las burbujas pequeñas</li>\n</ul>",

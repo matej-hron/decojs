@@ -2609,6 +2609,10 @@
                 "title": "Original SPČR/CMAS 2018 table — the same path on paper",
                 "alt": "SPČR/CMAS 2018 air decompression tables"
             },
+            "compare": {
+                "hint": "Both the tables and a dive computer build on Haldane's model — see which stops Bühlmann computes for the same profile.",
+                "link": "Open dive 1 ({depth} m / {time} min) in the sandbox: ZH-L16C, GF 100/100 →"
+            },
             "guide": {
                 "button": "Guide to the tables (SPČR)",
                 "use": "<h3>How to use the tables</h3>\n<p class=\"guide-lead\">(in case it is not obvious at first or second glance)</p>\n<ul>\n<li>below the word START, look down for the maximum depth of the dive, or the next greater depth</li>\n<li>following the arrows to the right, find the dive time (from descent to the start of the ascent) or the next longer value</li>\n<li>up to the red number in a circle the dive is a no-decompression dive: you can ascend and make only a safety stop at 5 m for 3 min</li>\n<li>for this type of recreational dive there is only one decompression stop, at 5 m; deeper and longer dives are covered by the US Navy tables</li>\n<li>stops at 5 m are easier in waves, and it is also easier to hold 5 m than 3 m with a buoyancy compensator</li>\n<li>for a longer dive time (red number in the upper half of the cell) a mandatory decompression stop at 5 m is required, for the time shown by the white number in the blue field in the lower half of the cell</li>\n<li>the ascent rate is 10 m/min, as set by the dive computer, or do not overtake the small bubbles</li>\n</ul>",
