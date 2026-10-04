@@ -86,6 +86,7 @@
             display: none;
         }
         #resetBtn:hover { background: var(--background-color); }
+        .plan-hint { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
         .study-note {
             margin: 0 0 1rem;
             padding: 0.65rem 0.9rem;
@@ -154,8 +155,8 @@
         .step-narrator {
             display: none;
             position: sticky;
-            top: 0;
-            z-index: 20;
+            top: var(--nav-h, 0px);   /* below the sticky site nav (set from JS) */
+            z-index: 990;             /* under the nav dropdowns (1000+) */
             background: var(--card-background);
             border: 2px solid #2980b9;
             border-radius: var(--radius);
@@ -163,34 +164,161 @@
             margin-bottom: 1rem;
             box-shadow: 0 2px 8px rgba(41,128,185,0.12);
         }
-        .step-narrator.visible { display: flex; flex-direction: column; gap: 0.5rem; }
+        .step-narrator.visible { display: flex; gap: 1rem; }
+        .step-narrator:focus { outline: none; }   /* focused only so screen readers announce it */
+        .guide-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.45rem; }
         .step-indicator {
             display: flex;
-            gap: 0.35rem;
+            gap: 0.35rem 0.5rem;
             align-items: center;
             flex-wrap: wrap;
             font-size: 0.78rem;
             color: var(--text-muted);
         }
+        .dot-group { display: flex; align-items: center; gap: 0.25rem; }
+        .dot-group-label { font-weight: 700; margin-right: 0.1rem; }
+        .dot-divider { width: 1px; height: 18px; background: var(--border-color); }
         .step-dot {
             width: 22px; height: 22px;
+            padding: 0;
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 0.7rem; font-weight: 700;
+            font: inherit; font-size: 0.7rem; font-weight: 700;
             background: var(--background-color);
             border: 2px solid var(--border-color);
             color: var(--text-muted);
             flex-shrink: 0;
+            cursor: pointer;
         }
+        .step-dot:hover { border-color: #2980b9; }
         .step-dot.active { background: #2980b9; border-color: #2980b9; color: #fff; }
         .step-dot.done   { background: #27ae60; border-color: #27ae60; color: #fff; }
-        .step-connector { width: 14px; height: 2px; background: var(--border-color); }
+        .step-connector { width: 10px; height: 2px; background: var(--border-color); }
         .step-connector.done { background: #27ae60; }
-        .step-part { margin-left: 0.5rem; font-weight: 600; color: #2980b9; }
+        .step-part { font-weight: 600; color: #2980b9; }
+        .step-progress { margin-left: auto; font-weight: 600; white-space: nowrap; }
+        .step-narrator .step-title {   /* not the page's serif section heading */
+            margin: 0; padding: 0; border: none;
+            font-family: inherit; letter-spacing: normal;
+            font-size: 1.05rem; font-weight: 700; line-height: 1.3;
+            color: var(--text-color);
+        }
+        .step-eyebrow {
+            display: inline-flex; align-items: center;
+            margin-right: 0.1rem;
+            font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 0.05em; text-transform: uppercase;
+            color: #1e3a5f;
+            vertical-align: 0.1em;
+        }
         .step-text { font-size: 0.93rem; line-height: 1.5; }
         .step-text strong { color: #2980b9; }
-        .step-btns { display: flex; gap: 0.5rem; margin-top: 0.25rem; align-items: center; }
+        .hl-legend {
+            display: flex; flex-wrap: wrap; align-items: center;
+            gap: 0.25rem 0.9rem;
+            margin: 0; padding: 0;
+            list-style: none;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+        .hl-legend li { display: flex; align-items: center; gap: 0.35rem; }
+        .hl-legend .hl-lead { font-weight: 600; }
+        .hl-swatch { width: 16px; height: 12px; border-radius: 2px; flex-shrink: 0; background: var(--background-color); }
+        .hl-swatch.label  { outline: 3px solid #f59e0b; outline-offset: -3px; }
+        .hl-swatch.path   { outline: 2px solid #3b82f6; outline-offset: -2px; }
+        .hl-swatch.origin { outline: 3px dashed #059669; outline-offset: -3px; }
+        .hl-swatch.found  { background: #d1fae5; outline: 3px solid #059669; outline-offset: -3px; }
+        .step-btns { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.15rem; align-items: center; }
         .key-hint { font-size: 0.78rem; color: var(--text-muted); }
+        .more-btn {
+            align-self: flex-start;
+            margin-top: -0.3rem;
+            padding: 0;
+            font: inherit; font-size: 0.8rem; font-weight: 600;
+            color: #2980b9;
+            background: none; border: none;
+            cursor: pointer;
+        }
+        .next-short { display: none; }
+
+        /* Paper inset: a zoomed window onto the original table, panned to the current step */
+        .paper-inset { display: none; margin: 0; flex: 0 0 260px; flex-direction: column; gap: 0.25rem; }
+        .paper-inset figcaption {
+            font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 0.05em; text-transform: uppercase;
+            color: var(--text-muted);
+        }
+        .paper-view {
+            position: relative;
+            width: 260px; height: 170px;
+            overflow: hidden;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            cursor: zoom-in;
+        }
+        .paper-canvas {
+            position: absolute; left: 0; top: 0;
+            width: 260px;
+            transition: transform 0.35s ease, width 0.35s ease;
+        }
+        .paper-canvas img { display: block; width: 100%; height: auto; }
+        .paper-canvas .img-arrow line { stroke-width: 3; }
+        .paper-canvas .img-hl.label, .paper-canvas .img-hl.origin, .paper-canvas .img-hl.found { border-width: 2px; }
+        .paper-toggle { display: none; }
+        .back-to-table {
+            position: fixed; right: 1rem; bottom: 1rem;
+            z-index: 995;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem; font-weight: 600;
+            color: #fff; background: #2980b9;
+            border: none; border-radius: 999px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+            cursor: pointer;
+        }
+        @media (min-width: 900px) {
+            .step-narrator.visible .paper-inset { display: flex; }
+        }
+
+        /* Phones and narrow tablets: the guide is a bottom sheet, the table keeps the top */
+        @media (max-width: 899.98px) {
+            .step-narrator.visible {
+                position: fixed; left: 0; right: 0; bottom: 0; top: auto;
+                max-height: 42vh; overflow-y: auto;
+                border-radius: var(--radius) var(--radius) 0 0;
+                border-width: 2px 0 0; margin: 0;
+                padding: 0.6rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+                box-shadow: 0 -4px 14px rgba(0,0,0,0.15);
+            }
+            .deco-table-layout.walking { padding-bottom: calc(var(--guide-h, 0px) + 1rem); }
+            .guide-main { gap: 0.35rem; }
+            .step-dot { width: 14px; height: 14px; font-size: 0; }
+            .step-connector, .step-part { display: none; }
+            .step-title { font-size: 1rem; }
+            .step-text { font-size: 0.9rem; line-height: 1.45; }
+            .step-text.clamp {
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 4;
+                overflow: hidden;
+            }
+            .hl-legend { font-size: 0.72rem; gap: 0.2rem 0.7rem; }
+            /* the paper toggle swaps the step text for the inset, in the same place */
+            .step-narrator.visible { flex-direction: column; gap: 0.35rem; }
+            .guide-main { display: contents; }
+            .hl-legend, .step-btns { order: 2; }
+            .paper-inset { order: 1; flex: none; }
+            .paper-toggle { display: inline-block; }
+            .step-narrator.paper-on .paper-inset { display: flex; }
+            .step-narrator.paper-on .paper-view { width: 100%; height: 150px; }
+            .step-narrator.paper-on .step-text, .step-narrator.paper-on .more-btn { display: none; }
+            .step-btns .paper-toggle[aria-pressed="true"] { background: #1e3a5f; border-color: #1e3a5f; color: #fff; }
+            .back-to-table { bottom: calc(var(--guide-h, 0px) + 1rem); }
+        }
+        @media (max-width: 400px) {
+            .next-long { display: none; }
+            .next-short { display: inline; }
+        }
         .compare-link {
             margin: 0.25rem 0 0;
             padding: 0.5rem 0.75rem;
@@ -241,6 +369,7 @@
         .result-card.visible { display: block; }
         .result-card.deco { border-color: #e67e22; }
         .result-card h3 { margin: 0 0 0.65rem; font-size: 1rem; font-weight: 700; }
+        .result-card h3:focus { outline: none; }   /* focused on arrival so screen readers read it */
         .result-card h3.ndl  { color: #27ae60; }
         .result-card h3.deco { color: #e67e22; }
         .result-meta {
@@ -420,6 +549,10 @@
             animation: found-pulse 1.2s ease-in-out infinite;
         }
         .deco-grid td.hl-found .cell-stop-label, .deco-grid td.hl-found .si-min { color: #065f46; }
+        @media (prefers-reduced-motion: reduce) {
+            .deco-grid td.hl-found { animation: none; outline-width: 4px; outline-offset: -4px; }
+            .paper-canvas { transition: none; }
+        }
 
         /* ── Legend ── */
         .table-legend {
@@ -553,6 +686,7 @@
                 <button id="lookupBtn" class="btn-primary" data-i18n="sandbox.decoTable.plan.lookup">Vyhledat</button>
                 <button id="resetBtn" data-i18n="sandbox.decoTable.plan.reset">Začít znovu</button>
             </div>
+            <p class="plan-hint" id="planHint" data-i18n="sandbox.decoTable.plan.hint">Stiskni Vyhledat — provedu tě tabulkou krok za krokem.</p>
         </div>
 
         <!-- Dive log -->
@@ -561,20 +695,32 @@
         <div class="lookup-error" id="lookupError"></div>
 
         <!-- Step narrator -->
-        <div class="step-narrator" id="stepNarrator">
-            <div class="step-indicator" id="stepIndicator"></div>
-            <div class="step-text" id="stepText"></div>
-            <p class="compare-link" id="compareStep"></p>
-            <div class="step-btns">
-                <button id="prevStepBtn" data-i18n="sandbox.decoTable.narrator.back">← Zpět</button>
-                <button id="nextStepBtn">Dále →</button>
-                <span class="key-hint" data-i18n="sandbox.decoTable.narrator.keyHint">nebo klávesy ← →</span>
+        <section class="step-narrator" id="stepNarrator" aria-labelledby="stepTitle" tabindex="-1">
+            <div class="guide-main">
+                <div class="step-indicator" id="stepIndicator"></div>
+                <h2 class="step-title" id="stepTitle"></h2>
+                <div class="step-text" id="stepText" aria-live="polite"></div>
+                <button type="button" class="more-btn" id="moreBtn" aria-controls="stepText" aria-expanded="false" hidden></button>
+                <ul class="hl-legend" id="hlLegend"></ul>
+                <div class="step-btns">
+                    <button id="prevStepBtn" data-i18n="sandbox.decoTable.narrator.back">← Zpět</button>
+                    <button id="nextStepBtn">Dále →</button>
+                    <button type="button" class="paper-toggle" id="paperToggle" aria-pressed="false">📄 <span data-i18n="sandbox.decoTable.narrator.paper.toggle">Papír</span></button>
+                    <span class="key-hint" data-i18n="sandbox.decoTable.narrator.keyHint">nebo klávesy ← →</span>
+                </div>
             </div>
-        </div>
+            <figure class="paper-inset" id="paperInset" aria-hidden="true">
+                <figcaption data-i18n="sandbox.decoTable.narrator.paper.caption">Na papíře</figcaption>
+                <div class="paper-view" id="paperView">
+                    <div class="paper-canvas" id="paperCanvas"><img src="../images/cmas-table-2018.png" alt=""></div>
+                </div>
+            </figure>
+        </section>
+        <button type="button" class="back-to-table" id="backToTable" hidden data-i18n="sandbox.decoTable.narrator.paper.backToTable">↑ Zpět k tabulce</button>
 
         <!-- Result -->
         <div class="result-card" id="resultCard">
-            <h3 id="resultTitle"></h3>
+            <h3 id="resultTitle" tabindex="-1"></h3>
             <div class="table-wrapper" id="resultBody"></div>
             <p class="compare-link" id="compareResult"></p>
             <div id="resultNotes"></div>
@@ -811,24 +957,32 @@
         // ── Highlighting (digital table + image, same keys) ─────────────────
         const grid = document.getElementById('decoTable');
         const imageContainer = document.getElementById('imageContainer');
+        const paperView = document.getElementById('paperView');
+        const paperCanvas = document.getElementById('paperCanvas');
+        const overlays = [imageContainer, paperCanvas];   // the big image and the inset get the same boxes
         const HL_KINDS = ['path', 'label', 'origin', 'found'];
 
         function clearHighlights() {
             grid.classList.remove('focus');
             cells.forEach(el => el.classList.remove(...HL_KINDS.map(k => 'hl-' + k)));
-            imageContainer.querySelectorAll('.img-hl').forEach(el => el.remove());
+            overlays.forEach(c => c.querySelectorAll('.img-hl').forEach(el => el.remove()));
             setActiveArrow(null);
         }
 
-        /** Trace the paper's diagonal from depth column d (part 3) to depth row d (part 1). */
+        const imgMid = (arr, i) => (arr[i] + arr[i + 1]) / 2;
+        /** Ends of the paper's diagonal from depth column d (part 3) to depth row d (part 1), in image %. */
+        const arrowEnds = d => [[imgMid(IMG.colDepth, d), LABEL_ROW[0]], [IMG.labelCol[0], imgMid(IMG.rowDepth, d)]];
+
         function imageArrow(d) {
-            const mid = (arr, i) => (arr[i] + arr[i + 1]) / 2;
-            const svg = document.createElementNS(SVG_NS, 'svg');
-            svg.classList.add('img-hl', 'img-arrow');
-            svg.setAttribute('viewBox', '0 0 100 100');
-            svg.setAttribute('preserveAspectRatio', 'none');
-            svg.innerHTML = `<line x1="${mid(IMG.colDepth, d)}" y1="${LABEL_ROW[0]}" x2="${IMG.labelCol[0]}" y2="${mid(IMG.rowDepth, d)}"/>`;
-            imageContainer.appendChild(svg);
+            const [[x1, y1], [x2, y2]] = arrowEnds(d);
+            overlays.forEach(c => {
+                const svg = document.createElementNS(SVG_NS, 'svg');
+                svg.classList.add('img-hl', 'img-arrow');
+                svg.setAttribute('viewBox', '0 0 100 100');
+                svg.setAttribute('preserveAspectRatio', 'none');
+                svg.innerHTML = `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
+                c.appendChild(svg);
+            });
         }
 
         function highlight(spec) {
@@ -838,21 +992,112 @@
                 for (const key of spec[kind] ?? []) {
                     cells.get(key)?.classList.add('hl-' + kind);
                     const [[x0, x1], [y0, y1]] = imgRect(key);
-                    const box = document.createElement('div');
-                    box.className = 'img-hl ' + kind;
-                    Object.assign(box.style, {
-                        left: x0 + '%', width: (x1 - x0) + '%',
-                        top: y0 + '%', height: (y1 - y0) + '%',
+                    overlays.forEach(c => {
+                        const box = document.createElement('div');
+                        box.className = 'img-hl ' + kind;
+                        Object.assign(box.style, {
+                            left: x0 + '%', width: (x1 - x0) + '%',
+                            top: y0 + '%', height: (y1 - y0) + '%',
+                        });
+                        c.appendChild(box);
                     });
-                    imageContainer.appendChild(box);
                 }
             }
             if (spec.arrow != null) {
                 setActiveArrow(spec.arrow);
                 imageArrow(spec.arrow);
             }
-            const focus = spec.scrollTo && cells.get(spec.scrollTo);
-            if (focus) focus.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+            if (spec.focus) {
+                aimPaper(spec);
+                revealCells(spec.focus);
+            }
+        }
+
+        // ── Paper inset camera ───────────────────────────────────────────────
+        const PAPER_W = 1480, PAPER_H = 1576;   // natural size of images/cmas-table-2018.png
+        let paperBox = null;                     // [x, y, w, h] in image %, what the inset shows
+
+        /** Frame the step's focus cells, labels, result (and return arrow) on the paper, padded, never too tight. */
+        function aimPaper(spec) {
+            const keys = new Set([...spec.focus, ...spec.label ?? [], ...spec.found ?? []]);
+            const pts = [...keys].flatMap(k => { const [[x0, x1], [y0, y1]] = imgRect(k); return [[x0, y0], [x1, y1]]; });
+            if (spec.arrow != null) pts.push(...arrowEnds(spec.arrow));
+            const extent = (i, min) => {
+                let lo = Math.min(...pts.map(p => p[i])) - 3, hi = Math.max(...pts.map(p => p[i])) + 3;
+                const grow = Math.max(0, min - (hi - lo)) / 2;
+                return [lo - grow, hi - lo + 2 * grow];
+            };
+            const [x, w] = extent(0, 18), [y, h] = extent(1, 14);
+            paperBox = [x, y, w, h];
+            layoutPaper();
+        }
+
+        function layoutPaper() {
+            const vw = paperView.clientWidth, vh = paperView.clientHeight;
+            if (!paperBox || !vw) return;   // inset hidden (phone with the toggle off)
+            const [x, y, w, h] = paperBox;
+            const scale = Math.min(vw / (w / 100 * PAPER_W), vh / (h / 100 * PAPER_H));
+            const cw = PAPER_W * scale, ch = PAPER_H * scale;
+            const pan = (view, size, centre) => Math.min(0, Math.max(view - size, view / 2 - centre / 100 * size));
+            paperCanvas.style.width = cw + 'px';
+            paperCanvas.style.transform = `translate(${pan(vw, cw, x + w / 2)}px, ${pan(vh, ch, y + h / 2)}px)`;
+        }
+        new ResizeObserver(layoutPaper).observe(paperView);
+
+        // ── Scrolling into the free area (below the nav and the guide) ───────
+        const nav = document.querySelector('.main-nav');
+        const narratorEl = document.getElementById('stepNarrator');
+        const tableWrapper = grid.parentElement;
+        const sheetMode = matchMedia('(max-width: 899.98px)');   // guide is a bottom sheet
+        const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+        const scrollBehavior = () => reduceMotion.matches ? 'auto' : 'smooth';
+        const navHeight = () => nav.getBoundingClientRect().height;
+        const guideHeight = () => narratorEl.classList.contains('visible') ? narratorEl.offsetHeight : 0;
+
+        // CSS needs the heights too: --nav-h for the sticky guide, --guide-h for the sheet padding
+        new ResizeObserver(() => document.documentElement.style.setProperty('--nav-h', navHeight() + 'px')).observe(nav);
+        new ResizeObserver(() => document.documentElement.style.setProperty('--guide-h', guideHeight() + 'px')).observe(narratorEl);
+
+        /** Viewport band not covered by the nav and the guide: [top, bottom] in px. */
+        function freeBand() {
+            return sheetMode.matches
+                ? [navHeight(), innerHeight - guideHeight()]
+                : [navHeight() + guideHeight(), innerHeight];
+        }
+
+        /**
+         * Scroll offset that centres the span [lo, hi] in the band [from, to]. When the span
+         * doesn't fit, it gets as close to centred as it can while the primary [plo, phi]
+         * stays fully inside. 0 when the span is already inside (no jitter between steps).
+         */
+        function centreOffset([lo, hi], [plo, phi], [from, to]) {
+            const pad = 8;
+            if (lo >= from && hi <= to) return 0;
+            const offset = (lo + hi) / 2 - (from + to) / 2;
+            if (hi - lo <= to - from - 2 * pad) return offset;
+            return Math.min(Math.max(offset, phi - to + pad), plo - from - pad);
+        }
+
+        /** Scroll so the cells of a focus set (primary key first) are in the free area. */
+        function revealCells(keys) {
+            const rects = keys.map(k => cells.get(k)?.getBoundingClientRect()).filter(Boolean);
+            if (!rects.length) return;
+            const [p] = rects;
+            const span = (lo, hi) => [Math.min(...rects.map(r => r[lo])), Math.max(...rects.map(r => r[hi]))];
+            const behavior = scrollBehavior();
+            const dy = centreOffset(span('top', 'bottom'), [p.top, p.bottom], freeBand());
+            if (dy) window.scrollTo({ top: scrollY + dy, behavior });
+            if (tableWrapper.scrollWidth > tableWrapper.clientWidth) {
+                const w = tableWrapper.getBoundingClientRect();
+                const dx = centreOffset(span('left', 'right'), [p.left, p.right], [w.left, w.left + tableWrapper.clientWidth]);
+                if (dx) tableWrapper.scrollTo({ left: tableWrapper.scrollLeft + dx, behavior });
+            }
+        }
+
+        /** Scroll an element's top to just below the nav (and the desktop guide, if asked). */
+        function scrollToTop(el, { belowGuide = false } = {}) {
+            const offset = navHeight() + (belowGuide && !sheetMode.matches ? guideHeight() : 0) + 8;
+            window.scrollTo({ top: scrollY + el.getBoundingClientRect().top - offset, behavior: scrollBehavior() });
         }
 
         const range = (from, to) => Array.from({ length: Math.max(0, to - from) }, (_, i) => from + i);
@@ -871,18 +1116,21 @@
             return [
                 {
                     part: 1,
+                    title: T('stepTitle.depth'),
                     text: depthText,
-                    hl: { label: [`ld:${d}`], path: rowKeys, scrollTo: `ld:${d}` },
+                    hl: { label: [`ld:${d}`], path: rowKeys, focus: [`ld:${d}`, ...p1Keys(d, range(0, 3))] },
                 },
                 {
                     part: 1,
+                    title: T('stepTitle.scan'),
                     text: T('steps.scan', { ...v, timeText }),
-                    hl: { label: [`ld:${d}`], path: p1Keys(d, range(0, g)), found: [`p1:${d}:${g}`], scrollTo: `p1:${d}:${g}` },
+                    hl: { label: [`ld:${d}`], path: p1Keys(d, range(0, g)), found: [`p1:${d}:${g}`], focus: [`p1:${d}:${g}`, `ld:${d}`] },
                 },
                 {
                     part: 1,
+                    title: T('stepTitle.read'),
                     text: T('steps.read', { ...v, stopText }),
-                    hl: { label: [`ld:${d}`, `lg:${g}`], path: p1ColBelow(d, g), found: [`p1:${d}:${g}`], scrollTo: `lg:${g}` },
+                    hl: { label: [`ld:${d}`, `lg:${g}`], path: p1ColBelow(d, g), found: [`p1:${d}:${g}`], focus: [`lg:${g}`, `p1:${d}:${g}`] },
                 },
             ];
         }
@@ -903,29 +1151,33 @@
             return [
                 {
                     part: 2,
+                    title: T('stepTitle.down'),
                     text: T('steps.down', v),
-                    hl: { origin: [origin], label: [`lg:${pg}`], path: colDown.concat(p2Col), scrollTo: `lg:${pg}` },
+                    hl: { origin: [origin], label: [`lg:${pg}`], path: colDown.concat(p2Col), focus: [`lg:${pg}`, origin] },
                 },
                 {
                     part: 2,
+                    title: T('stepTitle.findSi'),
                     text: T('steps.findSi', v),
-                    hl: { origin: [`lg:${pg}`], path: range(0, n).map(row => `p2:${row}:${pg}`), found: [`p2:${n}:${pg}`], label: [`lr:${n}`], scrollTo: `p2:${n}:${pg}` },
+                    hl: { origin: [`lg:${pg}`], path: range(0, n).map(row => `p2:${row}:${pg}`), found: [`p2:${n}:${pg}`], label: [`lr:${n}`], focus: [`p2:${n}:${pg}`, `lg:${pg}`, `lr:${n}`] },
                 },
                 {
                     part: 3,
+                    title: T('stepTitle.left'),
                     text: T('steps.left', { ...v, group: GROUPS[n], rounded: dive.depth !== r.tableDepth ? T('steps.leftRounded', v) : '' }),
                     hl: {
                         origin: [`p2:${n}:${pg}`],
                         path: range(n, pg).map(e => `p2:${n}:${e}`).concat(range(d + 1, ND).map(dd => `p3:${n}:${dd}`)),
                         label: [`lr:${n}`, `lp3:${d}`],
                         found: [`p3:${n}:${d}`],
-                        scrollTo: `p3:${n}:${d}`,
+                        focus: [`p3:${n}:${d}`, `lr:${n}`, `lp3:${d}`],
                     },
                 },
                 {
                     part: 1,
+                    title: T('stepTitle.back'),
                     text: T('steps.back', v) + (hasNdl ? T('steps.backNdl', v) : ''),
-                    hl: { origin: [`p3:${n}:${d}`], label: [`lp3:${d}`, `ld:${d}`], path: p1Keys(d, range(0, NG)), arrow: d, scrollTo: `ld:${d}` },
+                    hl: { origin: [`p3:${n}:${d}`], label: [`lp3:${d}`, `ld:${d}`], path: p1Keys(d, range(0, NG)), arrow: d, focus: [`ld:${d}`, `lp3:${d}`, `p3:${n}:${d}`] },
                 },
                 ...part1Steps(dive, r).slice(1),
             ];
@@ -937,12 +1189,15 @@
             lookupBtn: $('lookupBtn'), resetBtn: $('resetBtn'), addRepeatBtn: $('addRepeatBtn'),
             depth: $('inputDepth'), time: $('inputTime'), repeatRows: $('repeatRows'),
             error: $('lookupError'), narrator: $('stepNarrator'), indicator: $('stepIndicator'),
-            text: $('stepText'), next: $('nextStepBtn'), prev: $('prevStepBtn'),
+            title: $('stepTitle'), text: $('stepText'), more: $('moreBtn'), legend: $('hlLegend'),
+            layout: document.querySelector('.deco-table-layout'),
+            paperToggle: $('paperToggle'), backToTable: $('backToTable'), hint: $('planHint'),
+            next: $('nextStepBtn'), prev: $('prevStepBtn'),
             result: $('resultCard'), log: $('diveLog'),
         };
         const MAX_REPEATS = 4;
         // dives: [{ depth, time, si?, result }]; steps: flat list over all dives, each with .dive
-        const state = { dives: [], steps: [], step: -1, done: false };
+        const state = { dives: [], steps: [], step: -1, done: false, expanded: false };
 
         function errorText(r, i) {
             const v = { maxDepth: r.maxDepth, total: r.tableTime, depth: r.tableDepth, group: GROUPS[r.groupIdx] };
@@ -1014,38 +1269,85 @@
         // ── Walkthrough ──────────────────────────────────────────────────────
         function currentDive() { return state.steps[state.step].dive; }
 
+        /** Progress over the whole plan: one group of dots per dive; a dot jumps to its step. */
         function renderIndicator() {
             els.indicator.innerHTML = '';
             const cur = currentDive();
-            const mine = state.steps.map((s, i) => [s, i]).filter(([s]) => s.dive === cur);
-            mine.forEach(([, i], k) => {
-                if (k) {
-                    const c = document.createElement('div');
-                    c.className = 'step-connector' + (i <= state.step ? ' done' : '');
-                    els.indicator.appendChild(c);
+            state.dives.forEach((_, dv) => {
+                if (dv) {
+                    const divider = document.createElement('span');
+                    divider.className = 'dot-divider';
+                    els.indicator.appendChild(divider);
                 }
-                const dot = document.createElement('div');
-                dot.className = 'step-dot' + (i < state.step ? ' done' : i === state.step ? ' active' : '');
-                dot.textContent = k + 1;
-                els.indicator.appendChild(dot);
+                const group = document.createElement('span');
+                group.className = 'dot-group';
+                group.innerHTML = `<span class="dot-group-label">${dv + 1}.</span>`;
+                state.steps.map((s, i) => [s, i]).filter(([s]) => s.dive === dv).forEach(([s, i], k) => {
+                    if (k) {
+                        const c = document.createElement('span');
+                        c.className = 'step-connector' + (i <= state.step ? ' done' : '');
+                        group.appendChild(c);
+                    }
+                    const dot = document.createElement('button');
+                    dot.type = 'button';
+                    dot.tabIndex = -1;   // ← → are the way to move; Tab shouldn't stop on every dot
+                    dot.className = 'step-dot' + (i < state.step ? ' done' : i === state.step ? ' active' : '');
+                    dot.textContent = k + 1;
+                    dot.setAttribute('aria-label', T('narrator.dotLabel', { i: i + 1, title: s.title }));
+                    if (i === state.step) dot.setAttribute('aria-current', 'step');
+                    dot.addEventListener('click', () => { state.step = i; renderStep(); });
+                    group.appendChild(dot);
+                });
+                els.indicator.appendChild(group);
             });
             const part = document.createElement('span');
             part.className = 'step-part';
             part.textContent = T('narrator.indicator', { n: cur + 1, total: state.dives.length, part: state.steps[state.step].part });
-            els.indicator.appendChild(part);
+            const progress = document.createElement('span');
+            progress.className = 'step-progress';
+            progress.textContent = T('narrator.progress', { i: state.step + 1, total: state.steps.length });
+            els.indicator.append(part, progress);
         }
+
+        /** One chip per highlight kind used in this step, same colours as the table. */
+        function renderLegend(hl) {
+            const kinds = ['label', 'path', 'origin', 'found'].filter(k => hl[k]?.length);
+            els.legend.innerHTML = `<li class="hl-lead">${T('narrator.legend.lead')}</li>` + kinds.map(k =>
+                `<li><span class="hl-swatch ${k}"></span>${T('narrator.legend.' + k)}</li>`).join('');
+        }
+
+        const lowerFirst = text => text.charAt(0).toLowerCase() + text.slice(1);
 
         function renderStep() {
             const s = state.steps[state.step];
+            els.backToTable.hidden = true;
             renderIndicator();
+            els.title.innerHTML = `<span class="step-eyebrow">${T('narrator.part', { part: s.part })} ·</span> ${s.title}`;
             els.text.innerHTML = s.text;
+            state.expanded = false;
+            fitStepText();
+            renderLegend(s.hl);
             highlight(s.hl);
             els.prev.disabled = state.step === 0;
             const last = state.step === state.steps.length - 1;
             const endsDive = !last && state.steps[state.step + 1].dive !== s.dive;
-            els.next.textContent = last ? T('narrator.result') : endsDive ? T('narrator.nextDive', { n: s.dive + 2 }) : T('narrator.next');
+            if (last || endsDive) {
+                els.next.textContent = last ? T('narrator.result') : T('narrator.nextDive', { n: s.dive + 2 });
+            } else {
+                const named = T('narrator.nextNamed', { title: lowerFirst(state.steps[state.step + 1].title) });
+                els.next.innerHTML = `<span class="next-long">${named}</span><span class="next-short">${T('narrator.next')}</span>`;
+            }
             renderLog(s.dive - (endsDive || last ? 0 : 1));
-            $('compareStep').innerHTML = s.dive === 0 && (endsDive || last) ? compareLinkHtml() : '';
+        }
+
+        /** In the bottom sheet, clamp the step text to 4 lines with a more/less toggle when it overflows. */
+        function fitStepText() {
+            const sheet = sheetMode.matches;
+            els.text.classList.toggle('clamp', sheet && !state.expanded);
+            const overflows = els.text.scrollHeight > els.text.clientHeight + 1;
+            els.more.hidden = !sheet || !(state.expanded || overflows);
+            els.more.textContent = T(state.expanded ? 'narrator.less' : 'narrator.more');
+            els.more.setAttribute('aria-expanded', state.expanded);
         }
 
         /** Log chips for dives 0..upTo (completed so far). */
@@ -1098,7 +1400,12 @@
 
             els.result.classList.add('visible');
             els.narrator.classList.remove('visible');
-            if (scroll) els.result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            els.layout.classList.remove('walking');
+            els.backToTable.hidden = true;
+            if (scroll) {
+                scrollToTop(els.result);
+                $('resultTitle').focus({ preventScroll: true });
+            }
         }
 
         // ── Actions ──────────────────────────────────────────────────────────
@@ -1123,9 +1430,12 @@
             state.steps = buildSteps(dives);
             state.step = 0;
             els.narrator.classList.add('visible');
+            els.layout.classList.add('walking');
+            els.hint.hidden = true;
             els.resetBtn.style.display = 'inline-block';
             if (document.activeElement?.matches('input')) document.activeElement.blur();  // so ← → work right away
             renderStep();
+            els.narrator.focus({ preventScroll: true });   // screen readers announce the step region
         }
 
         // Same first-dive profile in the decompression-modelling sandbox (compact ?v=1 link):
@@ -1153,6 +1463,7 @@
                 state.done = false;
                 els.result.classList.remove('visible');
                 els.narrator.classList.add('visible');
+                els.layout.classList.add('walking');
                 renderStep();
             } else if (state.step > 0) { state.step--; renderStep(); }
         }
@@ -1164,6 +1475,9 @@
             state.done = false;
             clearHighlights();
             els.narrator.classList.remove('visible');
+            els.layout.classList.remove('walking');
+            els.backToTable.hidden = true;
+            els.hint.hidden = false;
             els.result.classList.remove('visible');
             els.error.classList.remove('visible');
             lastError = null;
@@ -1183,22 +1497,63 @@
         els.next.addEventListener('click', advance);
         els.prev.addEventListener('click', goBack);
         els.resetBtn.addEventListener('click', resetAll);
+        els.more.addEventListener('click', () => { state.expanded = !state.expanded; fitStepText(); });
+        sheetMode.addEventListener('change', () => { if (state.steps.length && !state.done) fitStepText(); });
+
+        // Paper inset: click → the full image below; a floating button brings you back to the step
+        const currentFocus = () => state.steps[state.step]?.hl.focus;
+        paperView.addEventListener('click', () => {
+            scrollToTop(document.querySelector('.image-section'), { belowGuide: true });
+            els.backToTable.hidden = false;
+        });
+        els.backToTable.addEventListener('click', () => {
+            els.backToTable.hidden = true;
+            if (currentFocus()) revealCells(currentFocus());
+        });
+
+        // Phones: the 📄 toggle swaps the step text for the inset (remembered per browser)
+        function setPaper(on) {
+            els.narrator.classList.toggle('paper-on', on);
+            els.paperToggle.setAttribute('aria-pressed', on);
+            try { localStorage.setItem('decoTable.paperInset', on ? '1' : '0'); } catch { /* storage blocked */ }
+            layoutPaper();
+            if (state.steps.length && !state.done) {
+                fitStepText();
+                revealCells(currentFocus());   // the sheet changed height
+            }
+        }
+        els.paperToggle.addEventListener('click', () => setPaper(!els.narrator.classList.contains('paper-on')));
+        try { if (localStorage.getItem('decoTable.paperInset') === '1') setPaper(true); } catch { /* storage blocked */ }
         $('resultBackBtn').addEventListener('click', goBack);
 
-        // Keyboard: ← / → step through the walkthrough (not while editing a number)
+        /** Jump to the first (Home) or last (End) step of the current dive. */
+        function jumpInDive(toEnd) {
+            const dive = currentDive();
+            const idx = state.steps.map((s, i) => s.dive === dive ? i : -1).filter(i => i >= 0);
+            const target = toEnd ? idx.at(-1) : idx[0];
+            if (target !== state.step) { state.step = target; renderStep(); }
+        }
+
+        // Keyboard: ← / → step through the walkthrough, Home / End within the dive,
+        // Esc folds the phone sheet back (not while editing a number)
         document.addEventListener('keydown', e => {
             if (!state.steps.length || e.altKey || e.ctrlKey || e.metaKey) return;
             if (e.target instanceof Element && e.target.closest('input, textarea, select')) return;
             if (e.key === 'ArrowRight' && !state.done) { e.preventDefault(); advance(); }
             else if (e.key === 'ArrowLeft') { e.preventDefault(); goBack(); }
+            else if ((e.key === 'Home' || e.key === 'End') && !state.done) { e.preventDefault(); jumpInDive(e.key === 'End'); }
+            else if (e.key === 'Escape' && sheetMode.matches && !state.done) {
+                if (state.expanded) { state.expanded = false; fitStepText(); }
+                else if (els.narrator.classList.contains('paper-on')) setPaper(false);
+            }
         });
         $('replayBtn').addEventListener('click', () => {
             state.done = false;
             state.step = 0;
             els.result.classList.remove('visible');
             els.narrator.classList.add('visible');
-            renderStep();
-            els.narrator.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            els.layout.classList.add('walking');
+            renderStep();   // scrolls the first step's cells into the free area
         });
         wireInputs([els.depth, els.time]);
 

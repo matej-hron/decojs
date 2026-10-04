@@ -2495,7 +2495,8 @@
                 "addRepeat": "+ Inmersión sucesiva",
                 "remove": "Quitar inmersión",
                 "lookup": "Buscar",
-                "reset": "Empezar de nuevo"
+                "reset": "Empezar de nuevo",
+                "hint": "Pulsa Buscar — te guiaré por la tabla paso a paso."
             },
             "narrator": {
                 "back": "← Atrás",
@@ -2503,20 +2504,38 @@
                 "result": "Resultado →",
                 "nextDive": "Inmersión {n} →",
                 "keyHint": "o teclas ← →",
-                "indicator": "Inmersión {n} de {total} · parte {part}"
+                "indicator": "Inmersión {n} de {total} · parte {part}",
+                "part": "Parte {part}",
+                "progress": "Paso {i} de {total}",
+                "nextNamed": "Siguiente: {title} →",
+                "dotLabel": "Paso {i}: {title}",
+                "legend": {
+                    "lead": "En la tabla:",
+                    "label": "dónde estás (encabezado)",
+                    "path": "tu camino",
+                    "origin": "de dónde vienes",
+                    "found": "resultado de este paso"
+                },
+                "more": "más",
+                "less": "menos",
+                "paper": {
+                    "caption": "En papel",
+                    "toggle": "Papel",
+                    "backToTable": "↑ Volver a la tabla"
+                }
             },
             "steps": {
-                "depthRow": "Parte 1 — La fila de la profundidad <strong>{depth} m</strong>.",
-                "depthRounded": "Parte 1 — La fila de la profundidad <strong>{depth} m</strong> — {entered} m no está en la tabla; la profundidad se redondea siempre a la mayor más próxima.",
+                "depthRow": "La fila de la profundidad <strong>{depth} m</strong>.",
+                "depthRounded": "La fila de la profundidad <strong>{depth} m</strong> — {entered} m no está en la tabla; la profundidad se redondea siempre a la mayor más próxima.",
                 "timePlain": "buscamos <strong>{total} min</strong>",
                 "timePenalty": "buscamos <strong>{time} + {penalty} = {total} min</strong> (tiempo real + penalización)",
                 "scan": "Recorremos la fila de {depth} m de izquierda a derecha, {timeText}. Primera celda ≥ {total} min: <strong>{cellTime} min</strong>.",
                 "stopDeco": "<strong>inmersión con descompresión</strong> — parada obligatoria de <strong>{stop} min a 5 m</strong> (número en la mitad inferior de la celda)",
                 "stopNdl": "<strong>sin descompresión</strong> — basta con una parada de seguridad de 5 m / 3 min",
                 "read": "Celda de {cellTime} min: {stopText}. La letra bajo la columna es el grupo tras la inmersión: <strong>{group}</strong>.",
-                "down": "Parte 2 — Desde la celda de la inmersión anterior (grupo <strong>{group}</strong>) seguimos las flechas <strong>hacia abajo por la columna {group}</strong> hasta la tabla de intervalos en superficie.",
+                "down": "Desde la celda de la inmersión anterior (grupo <strong>{group}</strong>) seguimos las flechas <strong>hacia abajo por la columna {group}</strong> hasta la tabla de intervalos en superficie.",
                 "findSi": "En la columna {group} buscamos la celda que contiene el intervalo en superficie <strong>{si}</strong>. La celda abarca de {from} a {to} → nuevo grupo <strong>{newGroup}</strong> (la letra de la fila).",
-                "left": "Parte 3 — Desde esa celda vamos <strong>hacia la izquierda por la fila {group}</strong> hasta la columna de la profundidad de la siguiente inmersión, <strong>{depth} m</strong>{rounded}. Penalización: <strong>+{penalty} min</strong> — el nitrógeno que aún queda en el cuerpo.",
+                "left": "Desde esa celda vamos <strong>hacia la izquierda por la fila {group}</strong> hasta la columna de la profundidad de la siguiente inmersión, <strong>{depth} m</strong>{rounded}. Penalización: <strong>+{penalty} min</strong> — el nitrógeno que aún queda en el cuerpo.",
                 "leftRounded": " ({entered} m redondeado hacia arriba)",
                 "back": "Sumamos la penalización al tiempo real: <strong>{time} + {penalty} = {total} min</strong>. Con este tiempo seguimos la flecha desde la columna de {depth} m <strong>de vuelta a START</strong>, a la fila de <strong>{depth} m</strong> de la parte 1.",
                 "backNdl": " Para seguir sin descompresión, tu tiempo de fondo puede ser como máximo {ndl} − {penalty} = <strong>{max} min</strong>."
@@ -2590,6 +2609,15 @@
                 "adverse": "<h3>Circunstancias desfavorables</h3>\n<p>Durante la descompresión, las circunstancias desfavorables pueden provocar una enfermedad descompresiva leve al eliminar el exceso de nitrógeno, incluso respetando las tablas o el ordenador. La solución es buscar en las tablas la descompresión en la fila inferior a la utilizada originalmente, es decir, para una profundidad 3 m mayor. En el ordenador hay que ajustar de antemano, según su manual, un nivel de conservadurismo más alto.</p>\n<p>Circunstancias desfavorables:</p>\n<ol class=\"guide-columns\">\n<li>Mayor esfuerzo físico</li>\n<li>Deshidratación</li>\n<li>Enfriamiento intenso</li>\n<li>Más tejido adiposo</li>\n<li>Descenso rápido de la presión (avión, montaña)</li>\n<li>Circulación sanguínea deficiente (correas apretadas, operaciones, edad)</li>\n<li>FOP (foramen oval permeable, cortocircuito derecha-izquierda)</li>\n<li>Golpes, vibraciones (deporte, transporte)</li>\n</ol>",
                 "source": "Fuente: tablas de descompresión SPČR 2018, hoja «návod k tabulkám» (JH 2017), traducido del checo",
                 "sourceLink": "XLS original"
+            },
+            "stepTitle": {
+                "depth": "Busca la fila de profundidad",
+                "scan": "Recorre la fila hacia la derecha",
+                "read": "Lee el grupo bajo la columna",
+                "down": "Baja por la columna",
+                "findSi": "Busca el intervalo en superficie",
+                "left": "Ve a la izquierda hasta la penalización",
+                "back": "Sigue la flecha de vuelta a START"
             }
         }
     },
