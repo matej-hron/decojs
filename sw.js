@@ -1,5 +1,5 @@
 // Service Worker for Deco Theory PWA
-const CACHE_NAME = 'deco-theory-0.6.188';
+const CACHE_NAME = 'deco-theory-0.6.189';
 
 // Files to cache for offline use
 const STATIC_ASSETS = [
@@ -160,6 +160,11 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   // Only handle GET requests
   if (event.request.method !== 'GET') {
+    return;
+  }
+
+  // Videos stream via range requests; let the browser fetch them directly
+  if (event.request.destination === 'video' || event.request.headers.has('range')) {
     return;
   }
 
