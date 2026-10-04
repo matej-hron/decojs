@@ -531,6 +531,7 @@
     <header class="hero hero-compact">
         <h1 data-i18n="gasLaw.header.title">Gas Law: Temperature &amp; Pressure</h1>
         <p class="hero-subtitle" data-i18n="gasLaw.header.subtitle">How temperature changes affect pressure in a rigid scuba cylinder (Gay-Lussac's Law)</p>
+        <div class="video-walkthrough" data-video-base="../videos/gas-law"></div>
     </header>
 
     <!-- Main Layout -->
@@ -730,6 +731,7 @@
 
     <script type="module">
         import { fmtNum } from '../js/format.js';
+        import { initVideoWalkthroughs } from '../js/components/VideoWalkthrough.js';
         // === DOM Elements ===
         const scenarioSelect = document.getElementById('scenarioSelect');
         const pressureSlider = document.getElementById('pressureSlider');
@@ -1118,6 +1120,7 @@
 
         // === Initialize ===
         applyScenario('warm-shop');
+        initVideoWalkthroughs();
     </script>
 </body>
 </html>

@@ -660,6 +660,7 @@
     <header class="hero hero-compact">
         <h1 data-i18n="sandbox.decoTable.heading">Dekompresní tabulky</h1>
         <p class="hero-subtitle" data-i18n="sandbox.decoTable.subtitle">Zadej hloubku a čas na dně — simulátor tě krok za krokem provede tabulkami SPČR/CMAS (platné od 1.&nbsp;1.&nbsp;2018), včetně opakovaných ponorů.</p>
+        <div class="video-walkthrough" data-video-base="../videos/deco-table"></div>
     </header>
 
     <div class="deco-table-layout">
@@ -802,12 +803,14 @@
     <script type="module">
         import { lookupDive, ndlLimitIdx, formatHM } from '../js/cmasTables.js';
         import { translate, initI18n, createLanguageSwitcher } from '../js/i18n.js';
+        import { initVideoWalkthroughs } from '../js/components/VideoWalkthrough.js';
 
         createLanguageSwitcher();
         const [table] = await Promise.all([
             fetch('../data/cmas-deco-tables.json').then(r => r.json()),
             initI18n(),   // strings must be loaded before the table and steps are built
         ]);
+        initVideoWalkthroughs();
 
         // Translation helpers: T() for generated text with {token} values,
         // tSpan() for static bits of generated markup (re-translated by i18n.js on language switch).

@@ -378,6 +378,7 @@
     <header class="hero hero-compact">
         <h1 data-i18n="sandbox.cascade.title">Cascade Filling Station</h1>
         <p class="hero-subtitle" data-i18n="sandbox.cascade.subtitle">Click valve switches to connect cylinders, then fill (max 3 hoses, 200&nbsp;bar limit)</p>
+        <div class="video-walkthrough" data-video-base="../videos/cascade-filling"></div>
     </header>
 
     <!-- Main Layout -->
@@ -510,6 +511,7 @@
     <script type="module">
         import { fmtNum, fmtGroup } from '../js/format.js';
         import { translate } from '../js/i18n.js';
+        import { initVideoWalkthroughs } from '../js/components/VideoWalkthrough.js';
         // Constants
         const CASCADE_COUNT = 4;
         const CASCADE_VOLUME = 50;
@@ -1359,6 +1361,7 @@
         targetValves = Array(targetCount).fill(false);
         renderAll();
         renderFillLog();
+        initVideoWalkthroughs();
     </script>
 </body>
 </html>

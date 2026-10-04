@@ -1045,7 +1045,14 @@
         }
     },
     "common": {
-        "wipBadge": "Experimental"
+        "wipBadge": "Experimental",
+        "video": {
+            "open": "▶ Tutorial en vídeo (EN)",
+            "czech": "Versión checa",
+            "close": "Cerrar",
+            "noteEn": "Narrado en inglés, con subtítulos.",
+            "noteCs": "Narrado en checo, con subtítulos."
+        }
     },
     "units": {
         "min": "min",
@@ -1855,10 +1862,6 @@
         "transfill": {
             "title": "Transvase de botellas",
             "subtitle": "Simula la igualación de presión entre dos botellas conectadas",
-            "video": {
-                "open": "▶ Tutorial en vídeo (90\u00a0s)",
-                "note": "Narrado en inglés, con subtítulos."
-            },
             "disclaimerBanner": "<strong>Solo para fines educativos</strong> — Esta herramienta demuestra la Ley de Boyle para botellas conectadas.",
             "setupHeading": "Configuración de las botellas",
             "cylinderA": "Botella A (fuente)",

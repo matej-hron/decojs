@@ -328,6 +328,9 @@ try {
             '-vf', 'scale=1280:-2', '-q:v', '4', `${target}.jpg`]);
         console.log(`published: ${scenario.publish}.mp4 + .jpg`);
     }
+    // Exit explicitly: onnxruntime (Piper) can abort while tearing down after a
+    // successful render, turning a good run into exit code 134.
+    process.exit(0);
 } catch (err) {
     console.error(`\nFAILED: ${err.message}`);
     process.exit(1);
