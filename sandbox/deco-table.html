@@ -163,34 +163,77 @@
             margin-bottom: 1rem;
             box-shadow: 0 2px 8px rgba(41,128,185,0.12);
         }
-        .step-narrator.visible { display: flex; flex-direction: column; gap: 0.5rem; }
+        .step-narrator.visible { display: flex; gap: 1rem; }
+        .step-narrator:focus { outline: none; }   /* focused only so screen readers announce it */
+        .guide-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.45rem; }
         .step-indicator {
             display: flex;
-            gap: 0.35rem;
+            gap: 0.35rem 0.5rem;
             align-items: center;
             flex-wrap: wrap;
             font-size: 0.78rem;
             color: var(--text-muted);
         }
+        .dot-group { display: flex; align-items: center; gap: 0.25rem; }
+        .dot-group-label { font-weight: 700; margin-right: 0.1rem; }
+        .dot-divider { width: 1px; height: 18px; background: var(--border-color); }
         .step-dot {
             width: 22px; height: 22px;
+            padding: 0;
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 0.7rem; font-weight: 700;
+            font: inherit; font-size: 0.7rem; font-weight: 700;
             background: var(--background-color);
             border: 2px solid var(--border-color);
             color: var(--text-muted);
             flex-shrink: 0;
+            cursor: pointer;
         }
+        .step-dot:hover { border-color: #2980b9; }
         .step-dot.active { background: #2980b9; border-color: #2980b9; color: #fff; }
         .step-dot.done   { background: #27ae60; border-color: #27ae60; color: #fff; }
-        .step-connector { width: 14px; height: 2px; background: var(--border-color); }
+        .step-connector { width: 10px; height: 2px; background: var(--border-color); }
         .step-connector.done { background: #27ae60; }
-        .step-part { margin-left: 0.5rem; font-weight: 600; color: #2980b9; }
+        .step-part { font-weight: 600; color: #2980b9; }
+        .step-progress { margin-left: auto; font-weight: 600; white-space: nowrap; }
+        .step-narrator .step-title {   /* not the page's serif section heading */
+            margin: 0; padding: 0; border: none;
+            font-family: inherit; letter-spacing: normal;
+            font-size: 1.05rem; font-weight: 700; line-height: 1.3;
+            color: var(--text-color);
+        }
+        .step-eyebrow {
+            display: inline-flex; align-items: center;
+            margin-right: 0.1rem;
+            font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 0.05em; text-transform: uppercase;
+            color: #1e3a5f;
+            vertical-align: 0.1em;
+        }
         .step-text { font-size: 0.93rem; line-height: 1.5; }
         .step-text strong { color: #2980b9; }
-        .step-btns { display: flex; gap: 0.5rem; margin-top: 0.25rem; align-items: center; }
+        .hl-legend {
+            display: flex; flex-wrap: wrap; align-items: center;
+            gap: 0.25rem 0.9rem;
+            margin: 0; padding: 0;
+            list-style: none;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+        .hl-legend li { display: flex; align-items: center; gap: 0.35rem; }
+        .hl-legend .hl-lead { font-weight: 600; }
+        .hl-swatch { width: 16px; height: 12px; border-radius: 2px; flex-shrink: 0; background: var(--background-color); }
+        .hl-swatch.label  { outline: 3px solid #f59e0b; outline-offset: -3px; }
+        .hl-swatch.path   { outline: 2px solid #3b82f6; outline-offset: -2px; }
+        .hl-swatch.origin { outline: 3px dashed #059669; outline-offset: -3px; }
+        .hl-swatch.found  { background: #d1fae5; outline: 3px solid #059669; outline-offset: -3px; }
+        .step-btns { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.15rem; align-items: center; }
         .key-hint { font-size: 0.78rem; color: var(--text-muted); }
+        .next-short { display: none; }
+        @media (max-width: 400px) {
+            .next-long { display: none; }
+            .next-short { display: inline; }
+        }
         .compare-link {
             margin: 0.25rem 0 0;
             padding: 0.5rem 0.75rem;
@@ -561,16 +604,19 @@
         <div class="lookup-error" id="lookupError"></div>
 
         <!-- Step narrator -->
-        <div class="step-narrator" id="stepNarrator">
-            <div class="step-indicator" id="stepIndicator"></div>
-            <div class="step-text" id="stepText"></div>
-            <p class="compare-link" id="compareStep"></p>
-            <div class="step-btns">
-                <button id="prevStepBtn" data-i18n="sandbox.decoTable.narrator.back">← Zpět</button>
-                <button id="nextStepBtn">Dále →</button>
-                <span class="key-hint" data-i18n="sandbox.decoTable.narrator.keyHint">nebo klávesy ← →</span>
+        <section class="step-narrator" id="stepNarrator" aria-labelledby="stepTitle" tabindex="-1">
+            <div class="guide-main">
+                <div class="step-indicator" id="stepIndicator"></div>
+                <h2 class="step-title" id="stepTitle"></h2>
+                <div class="step-text" id="stepText" aria-live="polite"></div>
+                <ul class="hl-legend" id="hlLegend"></ul>
+                <div class="step-btns">
+                    <button id="prevStepBtn" data-i18n="sandbox.decoTable.narrator.back">← Zpět</button>
+                    <button id="nextStepBtn">Dále →</button>
+                    <span class="key-hint" data-i18n="sandbox.decoTable.narrator.keyHint">nebo klávesy ← →</span>
+                </div>
             </div>
-        </div>
+        </section>
 
         <!-- Result -->
         <div class="result-card" id="resultCard">
@@ -925,16 +971,19 @@
             return [
                 {
                     part: 1,
+                    title: T('stepTitle.depth'),
                     text: depthText,
                     hl: { label: [`ld:${d}`], path: rowKeys, focus: [`ld:${d}`, ...p1Keys(d, range(0, 3))] },
                 },
                 {
                     part: 1,
+                    title: T('stepTitle.scan'),
                     text: T('steps.scan', { ...v, timeText }),
                     hl: { label: [`ld:${d}`], path: p1Keys(d, range(0, g)), found: [`p1:${d}:${g}`], focus: [`p1:${d}:${g}`, `ld:${d}`] },
                 },
                 {
                     part: 1,
+                    title: T('stepTitle.read'),
                     text: T('steps.read', { ...v, stopText }),
                     hl: { label: [`ld:${d}`, `lg:${g}`], path: p1ColBelow(d, g), found: [`p1:${d}:${g}`], focus: [`lg:${g}`, `p1:${d}:${g}`] },
                 },
@@ -957,16 +1006,19 @@
             return [
                 {
                     part: 2,
+                    title: T('stepTitle.down'),
                     text: T('steps.down', v),
                     hl: { origin: [origin], label: [`lg:${pg}`], path: colDown.concat(p2Col), focus: [`lg:${pg}`, origin] },
                 },
                 {
                     part: 2,
+                    title: T('stepTitle.findSi'),
                     text: T('steps.findSi', v),
                     hl: { origin: [`lg:${pg}`], path: range(0, n).map(row => `p2:${row}:${pg}`), found: [`p2:${n}:${pg}`], label: [`lr:${n}`], focus: [`p2:${n}:${pg}`, `lg:${pg}`, `lr:${n}`] },
                 },
                 {
                     part: 3,
+                    title: T('stepTitle.left'),
                     text: T('steps.left', { ...v, group: GROUPS[n], rounded: dive.depth !== r.tableDepth ? T('steps.leftRounded', v) : '' }),
                     hl: {
                         origin: [`p2:${n}:${pg}`],
@@ -978,6 +1030,7 @@
                 },
                 {
                     part: 1,
+                    title: T('stepTitle.back'),
                     text: T('steps.back', v) + (hasNdl ? T('steps.backNdl', v) : ''),
                     hl: { origin: [`p3:${n}:${d}`], label: [`lp3:${d}`, `ld:${d}`], path: p1Keys(d, range(0, NG)), arrow: d, focus: [`ld:${d}`, `lp3:${d}`] },
                 },
@@ -991,7 +1044,8 @@
             lookupBtn: $('lookupBtn'), resetBtn: $('resetBtn'), addRepeatBtn: $('addRepeatBtn'),
             depth: $('inputDepth'), time: $('inputTime'), repeatRows: $('repeatRows'),
             error: $('lookupError'), narrator: $('stepNarrator'), indicator: $('stepIndicator'),
-            text: $('stepText'), next: $('nextStepBtn'), prev: $('prevStepBtn'),
+            title: $('stepTitle'), text: $('stepText'), legend: $('hlLegend'),
+            next: $('nextStepBtn'), prev: $('prevStepBtn'),
             result: $('resultCard'), log: $('diveLog'),
         };
         const MAX_REPEATS = 4;
@@ -1068,38 +1122,72 @@
         // ── Walkthrough ──────────────────────────────────────────────────────
         function currentDive() { return state.steps[state.step].dive; }
 
+        /** Progress over the whole plan: one group of dots per dive; a dot jumps to its step. */
         function renderIndicator() {
             els.indicator.innerHTML = '';
             const cur = currentDive();
-            const mine = state.steps.map((s, i) => [s, i]).filter(([s]) => s.dive === cur);
-            mine.forEach(([, i], k) => {
-                if (k) {
-                    const c = document.createElement('div');
-                    c.className = 'step-connector' + (i <= state.step ? ' done' : '');
-                    els.indicator.appendChild(c);
+            state.dives.forEach((_, dv) => {
+                if (dv) {
+                    const divider = document.createElement('span');
+                    divider.className = 'dot-divider';
+                    els.indicator.appendChild(divider);
                 }
-                const dot = document.createElement('div');
-                dot.className = 'step-dot' + (i < state.step ? ' done' : i === state.step ? ' active' : '');
-                dot.textContent = k + 1;
-                els.indicator.appendChild(dot);
+                const group = document.createElement('span');
+                group.className = 'dot-group';
+                group.innerHTML = `<span class="dot-group-label">${dv + 1}.</span>`;
+                state.steps.map((s, i) => [s, i]).filter(([s]) => s.dive === dv).forEach(([s, i], k) => {
+                    if (k) {
+                        const c = document.createElement('span');
+                        c.className = 'step-connector' + (i <= state.step ? ' done' : '');
+                        group.appendChild(c);
+                    }
+                    const dot = document.createElement('button');
+                    dot.type = 'button';
+                    dot.tabIndex = -1;   // ← → are the way to move; Tab shouldn't stop on every dot
+                    dot.className = 'step-dot' + (i < state.step ? ' done' : i === state.step ? ' active' : '');
+                    dot.textContent = k + 1;
+                    dot.setAttribute('aria-label', T('narrator.dotLabel', { i: i + 1, title: s.title }));
+                    if (i === state.step) dot.setAttribute('aria-current', 'step');
+                    dot.addEventListener('click', () => { state.step = i; renderStep(); });
+                    group.appendChild(dot);
+                });
+                els.indicator.appendChild(group);
             });
             const part = document.createElement('span');
             part.className = 'step-part';
             part.textContent = T('narrator.indicator', { n: cur + 1, total: state.dives.length, part: state.steps[state.step].part });
-            els.indicator.appendChild(part);
+            const progress = document.createElement('span');
+            progress.className = 'step-progress';
+            progress.textContent = T('narrator.progress', { i: state.step + 1, total: state.steps.length });
+            els.indicator.append(part, progress);
         }
+
+        /** One chip per highlight kind used in this step, same colours as the table. */
+        function renderLegend(hl) {
+            const kinds = ['label', 'path', 'origin', 'found'].filter(k => hl[k]?.length);
+            els.legend.innerHTML = `<li class="hl-lead">${T('narrator.legend.lead')}</li>` + kinds.map(k =>
+                `<li><span class="hl-swatch ${k}"></span>${T('narrator.legend.' + k)}</li>`).join('');
+        }
+
+        const lowerFirst = text => text.charAt(0).toLowerCase() + text.slice(1);
 
         function renderStep() {
             const s = state.steps[state.step];
             renderIndicator();
+            els.title.innerHTML = `<span class="step-eyebrow">${T('narrator.part', { part: s.part })} ·</span> ${s.title}`;
             els.text.innerHTML = s.text;
+            renderLegend(s.hl);
             highlight(s.hl);
             els.prev.disabled = state.step === 0;
             const last = state.step === state.steps.length - 1;
             const endsDive = !last && state.steps[state.step + 1].dive !== s.dive;
-            els.next.textContent = last ? T('narrator.result') : endsDive ? T('narrator.nextDive', { n: s.dive + 2 }) : T('narrator.next');
+            if (last || endsDive) {
+                els.next.textContent = last ? T('narrator.result') : T('narrator.nextDive', { n: s.dive + 2 });
+            } else {
+                const named = T('narrator.nextNamed', { title: lowerFirst(state.steps[state.step + 1].title) });
+                els.next.innerHTML = `<span class="next-long">${named}</span><span class="next-short">${T('narrator.next')}</span>`;
+            }
             renderLog(s.dive - (endsDive || last ? 0 : 1));
-            $('compareStep').innerHTML = s.dive === 0 && (endsDive || last) ? compareLinkHtml() : '';
         }
 
         /** Log chips for dives 0..upTo (completed so far). */

@@ -2539,20 +2539,31 @@
                 "result": "Result →",
                 "nextDive": "Dive {n} →",
                 "keyHint": "or keys ← →",
-                "indicator": "Dive {n} of {total} · part {part}"
+                "indicator": "Dive {n} of {total} · part {part}",
+                "part": "Part {part}",
+                "progress": "Step {i} of {total}",
+                "nextNamed": "Next: {title} →",
+                "dotLabel": "Step {i}: {title}",
+                "legend": {
+                    "lead": "In the table:",
+                    "label": "where you are (header)",
+                    "path": "your path",
+                    "origin": "where you came from",
+                    "found": "result of this step"
+                }
             },
             "steps": {
-                "depthRow": "Part 1 — The row for depth <strong>{depth} m</strong>.",
-                "depthRounded": "Part 1 — The row for depth <strong>{depth} m</strong> — {entered} m is not in the table; depth is always rounded up to the next greater one.",
+                "depthRow": "The row for depth <strong>{depth} m</strong>.",
+                "depthRounded": "The row for depth <strong>{depth} m</strong> — {entered} m is not in the table; depth is always rounded up to the next greater one.",
                 "timePlain": "looking for <strong>{total} min</strong>",
                 "timePenalty": "looking for <strong>{time} + {penalty} = {total} min</strong> (actual time + penalty)",
                 "scan": "We go along the {depth} m row from left to right, {timeText}. First cell ≥ {total} min: <strong>{cellTime} min</strong>.",
                 "stopDeco": "<strong>decompression dive</strong> — mandatory stop <strong>{stop} min at 5 m</strong> (number in the lower half of the cell)",
                 "stopNdl": "<strong>no decompression</strong> — a safety stop of 5 m / 3 min is enough",
                 "read": "Cell {cellTime} min: {stopText}. The letter below the column is the group after the dive: <strong>{group}</strong>.",
-                "down": "Part 2 — From the cell of the previous dive (group <strong>{group}</strong>) we follow the arrows <strong>down column {group}</strong> into the surface interval table.",
+                "down": "From the cell of the previous dive (group <strong>{group}</strong>) we follow the arrows <strong>down column {group}</strong> into the surface interval table.",
                 "findSi": "In column {group} we look for the cell that contains the surface interval <strong>{si}</strong>. The cell covers {from} to {to} → new group <strong>{newGroup}</strong> (the row letter).",
-                "left": "Part 3 — From that cell we go <strong>left along row {group}</strong> to the column for the next dive's depth <strong>{depth} m</strong>{rounded}. Time penalty: <strong>+{penalty} min</strong> — the nitrogen still left in the body.",
+                "left": "From that cell we go <strong>left along row {group}</strong> to the column for the next dive's depth <strong>{depth} m</strong>{rounded}. Time penalty: <strong>+{penalty} min</strong> — the nitrogen still left in the body.",
                 "leftRounded": " ({entered} m rounded up)",
                 "back": "Add the penalty to the actual time: <strong>{time} + {penalty} = {total} min</strong>. With this time we follow the arrow from the {depth} m column <strong>back to START</strong>, to the <strong>{depth} m</strong> row in part 1.",
                 "backNdl": " To stay without decompression, your bottom time may be at most {ndl} − {penalty} = <strong>{max} min</strong>."
@@ -2626,6 +2637,15 @@
                 "adverse": "<h3>Adverse circumstances</h3>\n<p>During decompression, adverse circumstances can cause mild decompression sickness while excess nitrogen is off-gassed, even when the tables or the dive computer are followed. The remedy is to look up decompression one row lower than originally used, i.e. for a depth 3 m greater. On a dive computer, set a higher conservatism level in advance according to its manual.</p>\n<p>Adverse circumstances:</p>\n<ol class=\"guide-columns\">\n<li>Greater physical exertion</li>\n<li>Dehydration</li>\n<li>Severe chilling</li>\n<li>More body fat</li>\n<li>Rapid drop in pressure (aircraft, mountains)</li>\n<li>Impaired blood circulation (tight straps, surgery, age)</li>\n<li>PFO (patent foramen ovale, right-to-left shunt)</li>\n<li>Shocks, vibration (sport, transport)</li>\n</ol>",
                 "source": "Source: SPČR 2018 decompression tables, sheet “návod k tabulkám” (JH 2017), translated from Czech",
                 "sourceLink": "original XLS"
+            },
+            "stepTitle": {
+                "depth": "Find the depth row",
+                "scan": "Scan the row to the right",
+                "read": "Read the group below the column",
+                "down": "Go down the column",
+                "findSi": "Find the surface interval",
+                "left": "Go left to the penalty",
+                "back": "Follow the arrow back to START"
             }
         }
     },

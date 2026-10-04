@@ -2539,20 +2539,31 @@
                 "result": "Výsledek →",
                 "nextDive": "{n}. ponor →",
                 "keyHint": "nebo klávesy ← →",
-                "indicator": "{n}. ponor z {total} · část {part}"
+                "indicator": "{n}. ponor z {total} · část {part}",
+                "part": "Část {part}",
+                "progress": "Krok {i} z {total}",
+                "nextNamed": "Dále: {title} →",
+                "dotLabel": "Krok {i}: {title}",
+                "legend": {
+                    "lead": "V tabulce:",
+                    "label": "kde jsi (záhlaví)",
+                    "path": "tvoje cesta",
+                    "origin": "odkud jdeš",
+                    "found": "výsledek tohoto kroku"
+                }
             },
             "steps": {
-                "depthRow": "Část 1 — Řádek pro hloubku <strong>{depth} m</strong>.",
-                "depthRounded": "Část 1 — Řádek pro hloubku <strong>{depth} m</strong> — {entered} m v tabulce není, hloubku zaokrouhlujeme vždy na nejbližší větší.",
+                "depthRow": "Řádek pro hloubku <strong>{depth} m</strong>.",
+                "depthRounded": "Řádek pro hloubku <strong>{depth} m</strong> — {entered} m v tabulce není, hloubku zaokrouhlujeme vždy na nejbližší větší.",
                 "timePlain": "hledáme dobu <strong>{total} min</strong>",
                 "timePenalty": "hledáme dobu <strong>{time} + {penalty} = {total} min</strong> (reálná doba + přirážka)",
                 "scan": "Procházíme řádek {depth} m zleva doprava, {timeText}. První buňka ≥ {total} min: <strong>{cellTime} min</strong>.",
                 "stopDeco": "<strong>dekompresní ponor</strong> — povinná zastávka <strong>{stop} min v 5 m</strong> (číslo ve spodní polovině buňky)",
                 "stopNdl": "<strong>bez dekomprese</strong> — stačí bezpečnostní zastávka 5 m / 3 min",
                 "read": "Buňka {cellTime} min: {stopText}. Písmeno pod sloupcem je skupina po ponoru: <strong>{group}</strong>.",
-                "down": "Část 2 — Z buňky minulého ponoru (skupina <strong>{group}</strong>) jdeme po šipkách <strong>dolů sloupcem {group}</strong> do tabulky povrchových intervalů.",
+                "down": "Z buňky minulého ponoru (skupina <strong>{group}</strong>) jdeme po šipkách <strong>dolů sloupcem {group}</strong> do tabulky povrchových intervalů.",
                 "findSi": "Ve sloupci {group} hledáme buňku, do které patří povrchový interval <strong>{si}</strong>. Buňka platí od {from} do {to} → nová skupina <strong>{newGroup}</strong> (písmeno řádku).",
-                "left": "Část 3 — Z buňky jdeme <strong>vlevo řádkem {group}</strong> až do sloupce hloubky dalšího ponoru <strong>{depth} m</strong>{rounded}. Časová přirážka: <strong>+{penalty} min</strong> — tolik dusíku v těle ještě zbývá.",
+                "left": "Z buňky jdeme <strong>vlevo řádkem {group}</strong> až do sloupce hloubky dalšího ponoru <strong>{depth} m</strong>{rounded}. Časová přirážka: <strong>+{penalty} min</strong> — tolik dusíku v těle ještě zbývá.",
                 "leftRounded": " ({entered} m zaokrouhleno nahoru)",
                 "back": "Přirážku přičteme k reálné době: <strong>{time} + {penalty} = {total} min</strong>. S touto dobou jdeme po šipce ze sloupce {depth} m <strong>zpět na START</strong>, do řádku <strong>{depth} m</strong> v části 1.",
                 "backNdl": " Aby ponor zůstal bez dekomprese, smíš být na dně nejvýš {ndl} − {penalty} = <strong>{max} min</strong>."
@@ -2626,6 +2637,15 @@
                 "adverse": "<h3>Nepříznivé okolnosti</h3>\n<p>Při dekompresním procesu mohou nepříznivé okolnosti při vysycování přebytečného dusíku i při respektování tabulek nebo počítače způsobit slabou dekompresní chorobu. Řešením je hledat v tabulkách dekompresi v řádku nižším než původně použitém, tj. pro hloubku o 3 m větší. U počítače je třeba podle návodu předem nastavit vyšší stupeň konzervatizmu.</p>\n<p>Přehled nepříznivých okolností:</p>\n<ol class=\"guide-columns\">\n<li>Větší fyzická námaha</li>\n<li>Dehydratace</li>\n<li>Silné prochlazení</li>\n<li>Více tukové tkáně</li>\n<li>Rychlý pokles tlaku (letadlo, hory)</li>\n<li>Nedokonalý krevní oběh (škrcení řemínky, operace, věk)</li>\n<li>PFO (patent foramen ovale, pravolevý zkrat)</li>\n<li>Otřesy, vibrace (sport, doprava)</li>\n</ol>",
                 "source": "Zdroj: Dekompresní tabulky pro potápění SPČR 2018, list „návod k tabulkám“ (JH 2017)",
                 "sourceLink": "originál XLS"
+            },
+            "stepTitle": {
+                "depth": "Najdi řádek hloubky",
+                "scan": "Projdi řádek doprava",
+                "read": "Přečti skupinu pod sloupcem",
+                "down": "Sjeď sloupcem dolů",
+                "findSi": "Najdi povrchový interval",
+                "left": "Jdi vlevo k přirážce",
+                "back": "Po šipce zpět na START"
             }
         }
     },
