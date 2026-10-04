@@ -2495,7 +2495,8 @@
                 "addRepeat": "+ Inmersión sucesiva",
                 "remove": "Quitar inmersión",
                 "lookup": "Buscar",
-                "reset": "Empezar de nuevo"
+                "reset": "Empezar de nuevo",
+                "hint": "Pulsa Buscar — te guiaré por la tabla paso a paso."
             },
             "narrator": {
                 "back": "← Atrás",

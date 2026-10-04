@@ -2531,7 +2531,8 @@
                 "addRepeat": "+ Opakovaný ponor",
                 "remove": "Odebrat ponor",
                 "lookup": "Vyhledat",
-                "reset": "Začít znovu"
+                "reset": "Začít znovu",
+                "hint": "Stiskni Vyhledat — provedu tě tabulkou krok za krokem."
             },
             "narrator": {
                 "back": "← Zpět",

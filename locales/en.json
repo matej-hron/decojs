@@ -2531,7 +2531,8 @@
                 "addRepeat": "+ Repetitive dive",
                 "remove": "Remove dive",
                 "lookup": "Look up",
-                "reset": "Start over"
+                "reset": "Start over",
+                "hint": "Press Look up — I'll walk you through the table step by step."
             },
             "narrator": {
                 "back": "← Back",

@@ -86,6 +86,7 @@
             display: none;
         }
         #resetBtn:hover { background: var(--background-color); }
+        .plan-hint { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
         .study-note {
             margin: 0 0 1rem;
             padding: 0.65rem 0.9rem;
@@ -311,7 +312,7 @@
             .step-narrator.paper-on .paper-inset { display: flex; }
             .step-narrator.paper-on .paper-view { width: 100%; height: 150px; }
             .step-narrator.paper-on .step-text, .step-narrator.paper-on .more-btn { display: none; }
-            .paper-toggle[aria-pressed="true"] { background: #1e3a5f; border-color: #1e3a5f; color: #fff; }
+            .step-btns .paper-toggle[aria-pressed="true"] { background: #1e3a5f; border-color: #1e3a5f; color: #fff; }
             .back-to-table { bottom: calc(var(--guide-h, 0px) + 1rem); }
         }
         @media (max-width: 400px) {
@@ -368,6 +369,7 @@
         .result-card.visible { display: block; }
         .result-card.deco { border-color: #e67e22; }
         .result-card h3 { margin: 0 0 0.65rem; font-size: 1rem; font-weight: 700; }
+        .result-card h3:focus { outline: none; }   /* focused on arrival so screen readers read it */
         .result-card h3.ndl  { color: #27ae60; }
         .result-card h3.deco { color: #e67e22; }
         .result-meta {
@@ -547,6 +549,10 @@
             animation: found-pulse 1.2s ease-in-out infinite;
         }
         .deco-grid td.hl-found .cell-stop-label, .deco-grid td.hl-found .si-min { color: #065f46; }
+        @media (prefers-reduced-motion: reduce) {
+            .deco-grid td.hl-found { animation: none; outline-width: 4px; outline-offset: -4px; }
+            .paper-canvas { transition: none; }
+        }
 
         /* ── Legend ── */
         .table-legend {
@@ -680,6 +686,7 @@
                 <button id="lookupBtn" class="btn-primary" data-i18n="sandbox.decoTable.plan.lookup">Vyhledat</button>
                 <button id="resetBtn" data-i18n="sandbox.decoTable.plan.reset">Začít znovu</button>
             </div>
+            <p class="plan-hint" id="planHint" data-i18n="sandbox.decoTable.plan.hint">Stiskni Vyhledat — provedu tě tabulkou krok za krokem.</p>
         </div>
 
         <!-- Dive log -->
@@ -713,7 +720,7 @@
 
         <!-- Result -->
         <div class="result-card" id="resultCard">
-            <h3 id="resultTitle"></h3>
+            <h3 id="resultTitle" tabindex="-1"></h3>
             <div class="table-wrapper" id="resultBody"></div>
             <p class="compare-link" id="compareResult"></p>
             <div id="resultNotes"></div>
@@ -1184,7 +1191,7 @@
             error: $('lookupError'), narrator: $('stepNarrator'), indicator: $('stepIndicator'),
             title: $('stepTitle'), text: $('stepText'), more: $('moreBtn'), legend: $('hlLegend'),
             layout: document.querySelector('.deco-table-layout'),
-            paperToggle: $('paperToggle'), backToTable: $('backToTable'),
+            paperToggle: $('paperToggle'), backToTable: $('backToTable'), hint: $('planHint'),
             next: $('nextStepBtn'), prev: $('prevStepBtn'),
             result: $('resultCard'), log: $('diveLog'),
         };
@@ -1395,7 +1402,10 @@
             els.narrator.classList.remove('visible');
             els.layout.classList.remove('walking');
             els.backToTable.hidden = true;
-            if (scroll) scrollToTop(els.result);
+            if (scroll) {
+                scrollToTop(els.result);
+                $('resultTitle').focus({ preventScroll: true });
+            }
         }
 
         // ── Actions ──────────────────────────────────────────────────────────
@@ -1421,9 +1431,11 @@
             state.step = 0;
             els.narrator.classList.add('visible');
             els.layout.classList.add('walking');
+            els.hint.hidden = true;
             els.resetBtn.style.display = 'inline-block';
             if (document.activeElement?.matches('input')) document.activeElement.blur();  // so ← → work right away
             renderStep();
+            els.narrator.focus({ preventScroll: true });   // screen readers announce the step region
         }
 
         // Same first-dive profile in the decompression-modelling sandbox (compact ?v=1 link):
@@ -1465,6 +1477,7 @@
             els.narrator.classList.remove('visible');
             els.layout.classList.remove('walking');
             els.backToTable.hidden = true;
+            els.hint.hidden = false;
             els.result.classList.remove('visible');
             els.error.classList.remove('visible');
             lastError = null;
@@ -1513,12 +1526,26 @@
         try { if (localStorage.getItem('decoTable.paperInset') === '1') setPaper(true); } catch { /* storage blocked */ }
         $('resultBackBtn').addEventListener('click', goBack);
 
-        // Keyboard: ← / → step through the walkthrough (not while editing a number)
+        /** Jump to the first (Home) or last (End) step of the current dive. */
+        function jumpInDive(toEnd) {
+            const dive = currentDive();
+            const idx = state.steps.map((s, i) => s.dive === dive ? i : -1).filter(i => i >= 0);
+            const target = toEnd ? idx.at(-1) : idx[0];
+            if (target !== state.step) { state.step = target; renderStep(); }
+        }
+
+        // Keyboard: ← / → step through the walkthrough, Home / End within the dive,
+        // Esc folds the phone sheet back (not while editing a number)
         document.addEventListener('keydown', e => {
             if (!state.steps.length || e.altKey || e.ctrlKey || e.metaKey) return;
             if (e.target instanceof Element && e.target.closest('input, textarea, select')) return;
             if (e.key === 'ArrowRight' && !state.done) { e.preventDefault(); advance(); }
             else if (e.key === 'ArrowLeft') { e.preventDefault(); goBack(); }
+            else if ((e.key === 'Home' || e.key === 'End') && !state.done) { e.preventDefault(); jumpInDive(e.key === 'End'); }
+            else if (e.key === 'Escape' && sheetMode.matches && !state.done) {
+                if (state.expanded) { state.expanded = false; fitStepText(); }
+                else if (els.narrator.classList.contains('paper-on')) setPaper(false);
+            }
         });
         $('replayBtn').addEventListener('click', () => {
             state.done = false;
