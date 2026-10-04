@@ -229,7 +229,41 @@
         .hl-swatch.found  { background: #d1fae5; outline: 3px solid #059669; outline-offset: -3px; }
         .step-btns { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.15rem; align-items: center; }
         .key-hint { font-size: 0.78rem; color: var(--text-muted); }
+        .more-btn {
+            align-self: flex-start;
+            margin-top: -0.3rem;
+            padding: 0;
+            font: inherit; font-size: 0.8rem; font-weight: 600;
+            color: #2980b9;
+            background: none; border: none;
+            cursor: pointer;
+        }
         .next-short { display: none; }
+
+        /* Phones and narrow tablets: the guide is a bottom sheet, the table keeps the top */
+        @media (max-width: 899.98px) {
+            .step-narrator.visible {
+                position: fixed; left: 0; right: 0; bottom: 0; top: auto;
+                max-height: 42vh; overflow-y: auto;
+                border-radius: var(--radius) var(--radius) 0 0;
+                border-width: 2px 0 0; margin: 0;
+                padding: 0.6rem 1rem calc(0.75rem + env(safe-area-inset-bottom));
+                box-shadow: 0 -4px 14px rgba(0,0,0,0.15);
+            }
+            .deco-table-layout.walking { padding-bottom: calc(var(--guide-h, 0px) + 1rem); }
+            .guide-main { gap: 0.35rem; }
+            .step-dot { width: 14px; height: 14px; font-size: 0; }
+            .step-connector, .step-part { display: none; }
+            .step-title { font-size: 1rem; }
+            .step-text { font-size: 0.9rem; line-height: 1.45; }
+            .step-text.clamp {
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                -webkit-line-clamp: 4;
+                overflow: hidden;
+            }
+            .hl-legend { font-size: 0.72rem; gap: 0.2rem 0.7rem; }
+        }
         @media (max-width: 400px) {
             .next-long { display: none; }
             .next-short { display: inline; }
@@ -609,6 +643,7 @@
                 <div class="step-indicator" id="stepIndicator"></div>
                 <h2 class="step-title" id="stepTitle"></h2>
                 <div class="step-text" id="stepText" aria-live="polite"></div>
+                <button type="button" class="more-btn" id="moreBtn" aria-controls="stepText" aria-expanded="false" hidden></button>
                 <ul class="hl-legend" id="hlLegend"></ul>
                 <div class="step-btns">
                     <button id="prevStepBtn" data-i18n="sandbox.decoTable.narrator.back">← Zpět</button>
@@ -922,15 +957,16 @@
         }
 
         /**
-         * Offset that centres [lo, hi] in the band [from, to] — the whole span if it fits,
-         * else just the primary [plo, phi]. 0 when the span (or primary) is already inside.
+         * Scroll offset that centres the span [lo, hi] in the band [from, to]. When the span
+         * doesn't fit, it gets as close to centred as it can while the primary [plo, phi]
+         * stays fully inside. 0 when the span is already inside (no jitter between steps).
          */
         function centreOffset([lo, hi], [plo, phi], [from, to]) {
             const pad = 8;
-            const fits = hi - lo <= to - from - 2 * pad;
-            const [a, b] = fits ? [lo, hi] : [plo, phi];
-            if (a >= from && b <= to) return 0;
-            return (a + b) / 2 - (from + to) / 2;
+            if (lo >= from && hi <= to) return 0;
+            const offset = (lo + hi) / 2 - (from + to) / 2;
+            if (hi - lo <= to - from - 2 * pad) return offset;
+            return Math.min(Math.max(offset, phi - to + pad), plo - from - pad);
         }
 
         /** Scroll so the cells of a focus set (primary key first) are in the free area. */
@@ -1044,13 +1080,14 @@
             lookupBtn: $('lookupBtn'), resetBtn: $('resetBtn'), addRepeatBtn: $('addRepeatBtn'),
             depth: $('inputDepth'), time: $('inputTime'), repeatRows: $('repeatRows'),
             error: $('lookupError'), narrator: $('stepNarrator'), indicator: $('stepIndicator'),
-            title: $('stepTitle'), text: $('stepText'), legend: $('hlLegend'),
+            title: $('stepTitle'), text: $('stepText'), more: $('moreBtn'), legend: $('hlLegend'),
+            layout: document.querySelector('.deco-table-layout'),
             next: $('nextStepBtn'), prev: $('prevStepBtn'),
             result: $('resultCard'), log: $('diveLog'),
         };
         const MAX_REPEATS = 4;
         // dives: [{ depth, time, si?, result }]; steps: flat list over all dives, each with .dive
-        const state = { dives: [], steps: [], step: -1, done: false };
+        const state = { dives: [], steps: [], step: -1, done: false, expanded: false };
 
         function errorText(r, i) {
             const v = { maxDepth: r.maxDepth, total: r.tableTime, depth: r.tableDepth, group: GROUPS[r.groupIdx] };
@@ -1176,6 +1213,8 @@
             renderIndicator();
             els.title.innerHTML = `<span class="step-eyebrow">${T('narrator.part', { part: s.part })} ·</span> ${s.title}`;
             els.text.innerHTML = s.text;
+            state.expanded = false;
+            fitStepText();
             renderLegend(s.hl);
             highlight(s.hl);
             els.prev.disabled = state.step === 0;
@@ -1188,6 +1227,16 @@
                 els.next.innerHTML = `<span class="next-long">${named}</span><span class="next-short">${T('narrator.next')}</span>`;
             }
             renderLog(s.dive - (endsDive || last ? 0 : 1));
+        }
+
+        /** In the bottom sheet, clamp the step text to 4 lines with a more/less toggle when it overflows. */
+        function fitStepText() {
+            const sheet = sheetMode.matches;
+            els.text.classList.toggle('clamp', sheet && !state.expanded);
+            const overflows = els.text.scrollHeight > els.text.clientHeight + 1;
+            els.more.hidden = !sheet || !(state.expanded || overflows);
+            els.more.textContent = T(state.expanded ? 'narrator.less' : 'narrator.more');
+            els.more.setAttribute('aria-expanded', state.expanded);
         }
 
         /** Log chips for dives 0..upTo (completed so far). */
@@ -1240,6 +1289,7 @@
 
             els.result.classList.add('visible');
             els.narrator.classList.remove('visible');
+            els.layout.classList.remove('walking');
             if (scroll) scrollToTop(els.result);
         }
 
@@ -1265,6 +1315,7 @@
             state.steps = buildSteps(dives);
             state.step = 0;
             els.narrator.classList.add('visible');
+            els.layout.classList.add('walking');
             els.resetBtn.style.display = 'inline-block';
             if (document.activeElement?.matches('input')) document.activeElement.blur();  // so ← → work right away
             renderStep();
@@ -1295,6 +1346,7 @@
                 state.done = false;
                 els.result.classList.remove('visible');
                 els.narrator.classList.add('visible');
+                els.layout.classList.add('walking');
                 renderStep();
             } else if (state.step > 0) { state.step--; renderStep(); }
         }
@@ -1306,6 +1358,7 @@
             state.done = false;
             clearHighlights();
             els.narrator.classList.remove('visible');
+            els.layout.classList.remove('walking');
             els.result.classList.remove('visible');
             els.error.classList.remove('visible');
             lastError = null;
@@ -1325,6 +1378,8 @@
         els.next.addEventListener('click', advance);
         els.prev.addEventListener('click', goBack);
         els.resetBtn.addEventListener('click', resetAll);
+        els.more.addEventListener('click', () => { state.expanded = !state.expanded; fitStepText(); });
+        sheetMode.addEventListener('change', () => { if (state.steps.length && !state.done) fitStepText(); });
         $('resultBackBtn').addEventListener('click', goBack);
 
         // Keyboard: ← / → step through the walkthrough (not while editing a number)
@@ -1339,6 +1394,7 @@
             state.step = 0;
             els.result.classList.remove('visible');
             els.narrator.classList.add('visible');
+            els.layout.classList.add('walking');
             renderStep();   // scrolls the first step's cells into the free area
         });
         wireInputs([els.depth, els.time]);

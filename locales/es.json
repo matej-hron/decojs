@@ -2514,7 +2514,9 @@
                     "path": "tu camino",
                     "origin": "de dónde vienes",
                     "found": "resultado de este paso"
-                }
+                },
+                "more": "más",
+                "less": "menos"
             },
             "steps": {
                 "depthRow": "La fila de la profundidad <strong>{depth} m</strong>.",

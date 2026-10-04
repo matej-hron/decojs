@@ -2550,7 +2550,9 @@
                     "path": "tvoje cesta",
                     "origin": "odkud jdeš",
                     "found": "výsledek tohoto kroku"
-                }
+                },
+                "more": "více",
+                "less": "méně"
             },
             "steps": {
                 "depthRow": "Řádek pro hloubku <strong>{depth} m</strong>.",

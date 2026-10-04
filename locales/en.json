@@ -2550,7 +2550,9 @@
                     "path": "your path",
                     "origin": "where you came from",
                     "found": "result of this step"
-                }
+                },
+                "more": "more",
+                "less": "less"
             },
             "steps": {
                 "depthRow": "The row for depth <strong>{depth} m</strong>.",
