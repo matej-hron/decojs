@@ -154,8 +154,8 @@
         .step-narrator {
             display: none;
             position: sticky;
-            top: 0;
-            z-index: 20;
+            top: var(--nav-h, 0px);   /* below the sticky site nav (set from JS) */
+            z-index: 990;             /* under the nav dropdowns (1000+) */
             background: var(--card-background);
             border: 2px solid #2980b9;
             border-radius: var(--radius);
@@ -851,8 +851,62 @@
                 setActiveArrow(spec.arrow);
                 imageArrow(spec.arrow);
             }
-            const focus = spec.scrollTo && cells.get(spec.scrollTo);
-            if (focus) focus.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+            if (spec.focus) revealCells(spec.focus);
+        }
+
+        // ── Scrolling into the free area (below the nav and the guide) ───────
+        const nav = document.querySelector('.main-nav');
+        const narratorEl = document.getElementById('stepNarrator');
+        const tableWrapper = grid.parentElement;
+        const sheetMode = matchMedia('(max-width: 899.98px)');   // guide is a bottom sheet
+        const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+        const scrollBehavior = () => reduceMotion.matches ? 'auto' : 'smooth';
+        const navHeight = () => nav.getBoundingClientRect().height;
+        const guideHeight = () => narratorEl.classList.contains('visible') ? narratorEl.offsetHeight : 0;
+
+        // CSS needs the heights too: --nav-h for the sticky guide, --guide-h for the sheet padding
+        new ResizeObserver(() => document.documentElement.style.setProperty('--nav-h', navHeight() + 'px')).observe(nav);
+        new ResizeObserver(() => document.documentElement.style.setProperty('--guide-h', guideHeight() + 'px')).observe(narratorEl);
+
+        /** Viewport band not covered by the nav and the guide: [top, bottom] in px. */
+        function freeBand() {
+            return sheetMode.matches
+                ? [navHeight(), innerHeight - guideHeight()]
+                : [navHeight() + guideHeight(), innerHeight];
+        }
+
+        /**
+         * Offset that centres [lo, hi] in the band [from, to] — the whole span if it fits,
+         * else just the primary [plo, phi]. 0 when the span (or primary) is already inside.
+         */
+        function centreOffset([lo, hi], [plo, phi], [from, to]) {
+            const pad = 8;
+            const fits = hi - lo <= to - from - 2 * pad;
+            const [a, b] = fits ? [lo, hi] : [plo, phi];
+            if (a >= from && b <= to) return 0;
+            return (a + b) / 2 - (from + to) / 2;
+        }
+
+        /** Scroll so the cells of a focus set (primary key first) are in the free area. */
+        function revealCells(keys) {
+            const rects = keys.map(k => cells.get(k)?.getBoundingClientRect()).filter(Boolean);
+            if (!rects.length) return;
+            const [p] = rects;
+            const span = (lo, hi) => [Math.min(...rects.map(r => r[lo])), Math.max(...rects.map(r => r[hi]))];
+            const behavior = scrollBehavior();
+            const dy = centreOffset(span('top', 'bottom'), [p.top, p.bottom], freeBand());
+            if (dy) window.scrollTo({ top: scrollY + dy, behavior });
+            if (tableWrapper.scrollWidth > tableWrapper.clientWidth) {
+                const w = tableWrapper.getBoundingClientRect();
+                const dx = centreOffset(span('left', 'right'), [p.left, p.right], [w.left, w.left + tableWrapper.clientWidth]);
+                if (dx) tableWrapper.scrollTo({ left: tableWrapper.scrollLeft + dx, behavior });
+            }
+        }
+
+        /** Scroll an element's top to just below the nav (and the desktop guide, if asked). */
+        function scrollToTop(el, { belowGuide = false } = {}) {
+            const offset = navHeight() + (belowGuide && !sheetMode.matches ? guideHeight() : 0) + 8;
+            window.scrollTo({ top: scrollY + el.getBoundingClientRect().top - offset, behavior: scrollBehavior() });
         }
 
         const range = (from, to) => Array.from({ length: Math.max(0, to - from) }, (_, i) => from + i);
@@ -872,17 +926,17 @@
                 {
                     part: 1,
                     text: depthText,
-                    hl: { label: [`ld:${d}`], path: rowKeys, scrollTo: `ld:${d}` },
+                    hl: { label: [`ld:${d}`], path: rowKeys, focus: [`ld:${d}`, ...p1Keys(d, range(0, 3))] },
                 },
                 {
                     part: 1,
                     text: T('steps.scan', { ...v, timeText }),
-                    hl: { label: [`ld:${d}`], path: p1Keys(d, range(0, g)), found: [`p1:${d}:${g}`], scrollTo: `p1:${d}:${g}` },
+                    hl: { label: [`ld:${d}`], path: p1Keys(d, range(0, g)), found: [`p1:${d}:${g}`], focus: [`p1:${d}:${g}`, `ld:${d}`] },
                 },
                 {
                     part: 1,
                     text: T('steps.read', { ...v, stopText }),
-                    hl: { label: [`ld:${d}`, `lg:${g}`], path: p1ColBelow(d, g), found: [`p1:${d}:${g}`], scrollTo: `lg:${g}` },
+                    hl: { label: [`ld:${d}`, `lg:${g}`], path: p1ColBelow(d, g), found: [`p1:${d}:${g}`], focus: [`lg:${g}`, `p1:${d}:${g}`] },
                 },
             ];
         }
@@ -904,12 +958,12 @@
                 {
                     part: 2,
                     text: T('steps.down', v),
-                    hl: { origin: [origin], label: [`lg:${pg}`], path: colDown.concat(p2Col), scrollTo: `lg:${pg}` },
+                    hl: { origin: [origin], label: [`lg:${pg}`], path: colDown.concat(p2Col), focus: [`lg:${pg}`, origin] },
                 },
                 {
                     part: 2,
                     text: T('steps.findSi', v),
-                    hl: { origin: [`lg:${pg}`], path: range(0, n).map(row => `p2:${row}:${pg}`), found: [`p2:${n}:${pg}`], label: [`lr:${n}`], scrollTo: `p2:${n}:${pg}` },
+                    hl: { origin: [`lg:${pg}`], path: range(0, n).map(row => `p2:${row}:${pg}`), found: [`p2:${n}:${pg}`], label: [`lr:${n}`], focus: [`p2:${n}:${pg}`, `lg:${pg}`, `lr:${n}`] },
                 },
                 {
                     part: 3,
@@ -919,13 +973,13 @@
                         path: range(n, pg).map(e => `p2:${n}:${e}`).concat(range(d + 1, ND).map(dd => `p3:${n}:${dd}`)),
                         label: [`lr:${n}`, `lp3:${d}`],
                         found: [`p3:${n}:${d}`],
-                        scrollTo: `p3:${n}:${d}`,
+                        focus: [`p3:${n}:${d}`, `lr:${n}`, `lp3:${d}`],
                     },
                 },
                 {
                     part: 1,
                     text: T('steps.back', v) + (hasNdl ? T('steps.backNdl', v) : ''),
-                    hl: { origin: [`p3:${n}:${d}`], label: [`lp3:${d}`, `ld:${d}`], path: p1Keys(d, range(0, NG)), arrow: d, scrollTo: `ld:${d}` },
+                    hl: { origin: [`p3:${n}:${d}`], label: [`lp3:${d}`, `ld:${d}`], path: p1Keys(d, range(0, NG)), arrow: d, focus: [`ld:${d}`, `lp3:${d}`] },
                 },
                 ...part1Steps(dive, r).slice(1),
             ];
@@ -1098,7 +1152,7 @@
 
             els.result.classList.add('visible');
             els.narrator.classList.remove('visible');
-            if (scroll) els.result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            if (scroll) scrollToTop(els.result);
         }
 
         // ── Actions ──────────────────────────────────────────────────────────
@@ -1197,8 +1251,7 @@
             state.step = 0;
             els.result.classList.remove('visible');
             els.narrator.classList.add('visible');
-            renderStep();
-            els.narrator.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            renderStep();   // scrolls the first step's cells into the free area
         });
         wireInputs([els.depth, els.time]);
 
