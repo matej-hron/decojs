@@ -1,0 +1,31 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:06.353
+Cascade filling: fifteen cylinders from one bank. Which bank cylinder do you open first?
+
+00:00:06.503 --> 00:00:19.983
+The bank: four 50-litre cylinders, full at 300 bar. After a dive weekend: fifteen 12-litre singles at 20 bar. Three hoses, and the fill stops at 200 bar.
+
+00:00:20.133 --> 00:00:28.185
+Connect three tanks and start with the lowest bank cylinder, C1. They equalise at 182.8 bar.
+
+00:00:28.335 --> 00:00:37.464
+Close C1 and top up from C2 to 200 bar. C1 is now part-used; C2 has barely been touched.
+
+00:00:37.614 --> 00:00:46.115
+That is the cascade: each round starts on the lowest cylinder still above the tanks, and finishes on a fuller one.
+
+00:00:46.265 --> 00:01:18.834
+Round after round, the bank drains from the left. The fullest cylinder stays in reserve for the final top-ups.
+
+00:01:18.984 --> 00:01:25.585
+All fifteen tanks reach 200 bar — and C4 still holds about 270 bar.
+
+00:01:25.735 --> 00:01:33.839
+Start every round on the fullest cylinder instead, and only 9 of the 15 tanks reach 200 bar.
+
+00:01:33.989 --> 00:01:42.865
+Ideal gas only: tanks warm up as they fill and read lower once they cool, so real fills go slowly.
+
+00:01:43.015 --> 00:01:48.392
+Try it yourself in the Deco Theory sandbox. Thanks for watching!

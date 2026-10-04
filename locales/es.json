@@ -1047,11 +1047,11 @@
     "common": {
         "wipBadge": "Experimental",
         "video": {
-            "open": "▶ Tutorial en vídeo (EN)",
-            "czech": "Versión checa",
-            "close": "Cerrar",
-            "noteEn": "Narrado en inglés, con subtítulos.",
-            "noteCs": "Narrado en checo, con subtítulos."
+            "open": "▶ Tutorial en vídeo",
+            "note": "Narrado en inglés.",
+            "subtitles": "Subtítulos",
+            "off": "Sin subtítulos",
+            "close": "Cerrar"
         }
     },
     "units": {
@@ -2429,7 +2429,8 @@
                 "6": "6 botellas",
                 "8": "8 botellas",
                 "10": "10 botellas",
-                "12": "12 botellas"
+                "12": "12 botellas",
+                "15": "15 botellas"
             },
             "volumes": {
                 "al50": "7 l (AL50)",

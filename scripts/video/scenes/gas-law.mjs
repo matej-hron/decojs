@@ -204,7 +204,7 @@ export default function gasLaw(lang = 'en') {
         page: 'sandbox/gas-law.html',
         locale: L.locale,
         zoom: 1.25,
-        publish: `videos/gas-law-${lang}`, // -> .mp4 + poster .jpg, embedded in the page
+        publish: `videos/gas-law`, // -> .mp4 + poster .jpg + <lang>.vtt subtitles, embedded in the page
 
         async prepare(p, ui) {
             page = p;

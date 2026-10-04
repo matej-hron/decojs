@@ -1047,11 +1047,11 @@
     "common": {
         "wipBadge": "Experimentální",
         "video": {
-            "open": "▶ Videonávod (EN)",
-            "czech": "Česká verze",
-            "close": "Zavřít",
-            "noteEn": "Namluveno anglicky, s titulky.",
-            "noteCs": "Namluveno česky, s titulky."
+            "open": "▶ Videonávod",
+            "note": "Namluveno anglicky.",
+            "subtitles": "Titulky",
+            "off": "Bez titulků",
+            "close": "Zavřít"
         }
     },
     "units": {
@@ -2465,7 +2465,8 @@
                 "6": "6 lahví",
                 "8": "8 lahví",
                 "10": "10 lahví",
-                "12": "12 lahví"
+                "12": "12 lahví",
+                "15": "15 lahví"
             },
             "volumes": {
                 "al50": "7 l (AL50)",

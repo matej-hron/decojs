@@ -5,14 +5,16 @@
  *   node make-video.mjs scenes/transfilling.mjs [lang]
  *
  * A scenario module exports a scenario object, or a function (lang) -> scenario.
+ * The narration language defaults to English (Kokoro); every language the module
+ * offers also gets a WebVTT subtitle track timed to the narrated scenes.
  *
  * 1. Narration: each scene's `say` text -> WAV (cached in out/cache/). A voice is a
  *    Kokoro id ('bf_emma') or { piper: 'cs_CZ-jirka-medium' } for languages Kokoro lacks.
  * 2. Recording: Playwright drives the real page while CDP screencast captures frames;
  *    each scene lasts max(narration, actions) so picture and voice stay in sync.
- * 3. Mux: ffmpeg turns the variable-rate frames into 30 fps H.264, adds a caption
- *    bar below the page (burned-in subtitles) and lays every narration clip at its
- *    scene's start time. Also writes an .srt for players / YouTube.
+ * 3. Mux: ffmpeg turns the variable-rate frames into 30 fps H.264, adds an empty bar
+ *    below the page for the subtitles and lays every narration clip at its scene's
+ *    start time. Subtitles ship as <name>.<lang>.vtt so the viewer can pick one.
  */
 import { chromium } from 'playwright';
 import { KokoroTTS } from 'kokoro-js';
@@ -32,7 +34,7 @@ const CACHE = path.join(OUT, 'cache');
 // The screencast captures CSS pixels, so record at full width and enlarge the page
 // with body zoom (scenario.zoom) instead of deviceScaleFactor.
 const VIEWPORT = { width: 1920, height: 940 };
-const CAPTION_BAR = 140; // 940 + 140 = 1080
+const CAPTION_BAR = 140; // 940 + 140 = 1080; the player draws subtitles here
 const BAR_COLOUR = '0x0f1e2d';
 const SCENE_GAP_MS = 450; // breathing room after each narration
 const FPS = 30;
@@ -141,9 +143,9 @@ function director(page) {
             const { x, y } = await centre(selector);
             await glide(x, y, ms);
         },
-        async click(selector) {
-            await ui.moveTo(selector);
-            await sleep(180);
+        async click(selector, ms) {
+            await ui.moveTo(selector, ms);
+            await sleep(ms ? 60 : 180);
             await page.mouse.down();
             await page.mouse.up();
         },
@@ -237,32 +239,16 @@ async function record(scenario, framesDir) {
 
 // ---------------------------------------------------------------- mux
 
-function assTime(ms) {
-    const cs = Math.round(ms / 10);
-    const pad = (n) => String(n).padStart(2, '0');
-    return `${Math.floor(cs / 360000)}:${pad(Math.floor(cs / 6000) % 60)}:${pad(Math.floor(cs / 100) % 60)}.${pad(cs % 100)}`;
+function vttTime(ms) {
+    const pad = (n, w = 2) => String(Math.floor(n)).padStart(w, '0');
+    return `${pad(ms / 3600000)}:${pad((ms / 60000) % 60)}:${pad((ms / 1000) % 60)}.${pad(ms % 1000, 3)}`;
 }
 
-/** Captions centred in the bar under the page (alignment 5 + \pos = middle of the bar). */
-function writeAss(file, scenes) {
-    const pos = `\\pos(${VIEWPORT.width / 2},${VIEWPORT.height + CAPTION_BAR / 2})`;
-    fs.writeFileSync(file, [
-        '[Script Info]', 'ScriptType: v4.00+', `PlayResX: ${VIEWPORT.width}`, `PlayResY: ${VIEWPORT.height + CAPTION_BAR}`,
-        'WrapStyle: 0', '',
-        '[V4+ Styles]',
-        'Format: Name, Fontname, Fontsize, PrimaryColour, OutlineColour, BackColour, Bold, Italic, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV',
-        'Style: Caption,Inter,36,&H00FFFFFF,&H00000000,&H00000000,0,0,1,0,0,5,160,160,0', '',
-        '[Events]', 'Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text',
-        ...scenes.map((s) =>
-            `Dialogue: 0,${assTime(s.startMs)},${assTime(s.endMs - 150)},Caption,,0,0,0,,{${pos}\\fad(200,200)}${s.text}`),
-        '',
-    ].join('\n'));
-}
-
-function srtTime(ms) {
-    const h = Math.floor(ms / 3600000), m = Math.floor(ms / 60000) % 60, s = Math.floor(ms / 1000) % 60;
-    const pad = (n, w = 2) => String(n).padStart(w, '0');
-    return `${pad(h)}:${pad(m)}:${pad(s)},${pad(Math.round(ms % 1000), 3)}`;
+/** One cue per scene, timed to the narrated recording. */
+function writeVtt(file, timedScenes, texts) {
+    const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const cues = timedScenes.map((s, i) => `${vttTime(s.startMs)} --> ${vttTime(s.endMs - 150)}\n${esc(texts[i])}\n`);
+    fs.writeFileSync(file, ['WEBVTT', '', ...cues].join('\n'));
 }
 
 function mux(name, scenes, { frames, endMs }) {
@@ -278,10 +264,8 @@ function mux(name, scenes, { frames, endMs }) {
 
     const args = ['-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', list];
     scenes.forEach((s) => args.push('-i', s.wav));
-    const ass = path.join(OUT, `${name}.ass`);
-    writeAss(ass, scenes);
     const video = `[0:v]fps=${FPS},pad=${VIEWPORT.width}:${VIEWPORT.height + CAPTION_BAR}:0:0:color=${BAR_COLOUR},` +
-        `subtitles=${ass}:fontsdir=${path.join(REPO, 'fonts')},format=yuv420p[vout]`;
+        'format=yuv420p[vout]';
     const delays = scenes.map((s, i) => `[${i + 1}:a]adelay=${s.startMs}:all=1[a${i}]`);
     const mix = `${scenes.map((_, i) => `[a${i}]`).join('')}amix=inputs=${scenes.length}:normalize=0,loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000[aout]`;
     const mp4 = path.join(OUT, `${name}.mp4`);
@@ -293,10 +277,6 @@ function mux(name, scenes, { frames, endMs }) {
         '-t', (endMs / 1000).toFixed(3), '-movflags', '+faststart', mp4,
     );
     execFileSync('ffmpeg', args, { stdio: 'inherit' });
-
-    const srt = scenes.map((s, i) =>
-        `${i + 1}\n${srtTime(s.startMs)} --> ${srtTime(s.startMs + s.narrationMs)}\n${s.text}\n`).join('\n');
-    fs.writeFileSync(path.join(OUT, `${name}.srt`), srt);
     return mp4;
 }
 
@@ -308,10 +288,11 @@ try {
     const scenarioFile = path.resolve(process.argv[2] ?? path.join(HERE, 'scenes/transfilling.mjs'));
     const lang = process.argv[3] ?? 'en';
     const { default: exported } = await import(scenarioFile);
-    const scenario = typeof exported === 'function' ? exported(lang) : exported;
-    const name = `${path.basename(scenarioFile, '.mjs')}-${lang}`;
+    const build = typeof exported === 'function' ? exported : () => exported;
+    const scenario = build(lang);
+    const name = path.basename(scenarioFile, '.mjs');
 
-    console.log(`[1/3] narration (${scenario.scenes.length} scenes)`);
+    console.log(`[1/3] narration (${scenario.scenes.length} scenes, ${lang})`);
     await synthesize(scenario.scenes);
     console.log('[2/3] recording');
     const recording = await record(scenario, path.join(OUT, `${name}.frames`));
@@ -319,14 +300,27 @@ try {
     const mp4 = mux(name, scenario.scenes, recording);
     console.log(`done: ${path.relative(process.cwd(), mp4)} (${(recording.endMs / 1000).toFixed(1)} s)`);
 
+    // Subtitles: every language the scenario offers, cued to the narrated scenes.
+    const subtitles = [];
+    for (const l of ['en', 'cs', 'es']) {
+        let texts;
+        try { texts = build(l).scenes.map((s) => s.text); } catch { continue; }
+        if (texts.length !== scenario.scenes.length) throw new Error(`${name}/${l}: ${texts.length} captions for ${scenario.scenes.length} scenes`);
+        const vtt = path.join(OUT, `${name}.${l}.vtt`);
+        writeVtt(vtt, scenario.scenes, texts);
+        subtitles.push([l, vtt]);
+    }
+    console.log(`subtitles: ${subtitles.map(([l]) => l).join(', ')}`);
+
     // Copy to the site and grab the title card as the poster image.
     if (scenario.publish) {
         const target = path.join(REPO, scenario.publish);
         fs.mkdirSync(path.dirname(target), { recursive: true });
         fs.copyFileSync(mp4, `${target}.mp4`);
+        for (const [l, vtt] of subtitles) fs.copyFileSync(vtt, `${target}.${l}.vtt`);
         execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-ss', '1.5', '-i', mp4, '-frames:v', '1',
             '-vf', 'scale=1280:-2', '-q:v', '4', `${target}.jpg`]);
-        console.log(`published: ${scenario.publish}.mp4 + .jpg`);
+        console.log(`published: ${scenario.publish}.mp4 + .jpg + ${subtitles.map(([l]) => `.${l}.vtt`).join(' ')}`);
     }
     // Exit explicitly: onnxruntime (Piper) can abort while tearing down after a
     // successful render, turning a good run into exit code 134.

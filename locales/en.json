@@ -1048,10 +1048,10 @@
         "wipBadge": "Experimental",
         "video": {
             "open": "▶ Video walkthrough",
-            "czech": "Czech version",
-            "close": "Close",
-            "noteEn": "Narrated in English, with captions.",
-            "noteCs": "Narrated in Czech, with captions."
+            "note": "Narrated in English.",
+            "subtitles": "Subtitles",
+            "off": "Off",
+            "close": "Close"
         }
     },
     "units": {
@@ -2465,7 +2465,8 @@
                 "6": "6 cylinders",
                 "8": "8 cylinders",
                 "10": "10 cylinders",
-                "12": "12 cylinders"
+                "12": "12 cylinders",
+                "15": "15 cylinders"
             },
             "volumes": {
                 "al50": "7 l (AL50)",

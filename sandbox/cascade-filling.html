@@ -176,6 +176,8 @@
             flex-direction: column;
             align-items: center;
             gap: 0.25rem;
+            /* Fixed width: pressures like "182.8 bar" must not widen the row and re-wrap the layout mid-fill */
+            width: 4.5rem;
         }
 
         .cylinder-label {
@@ -417,6 +419,7 @@
                         <option value="8" data-i18n="sandbox.cascade.counts.8">8 cylinders</option>
                         <option value="10" data-i18n="sandbox.cascade.counts.10">10 cylinders</option>
                         <option value="12" selected data-i18n="sandbox.cascade.counts.12">12 cylinders</option>
+                        <option value="15" data-i18n="sandbox.cascade.counts.15">15 cylinders</option>
                     </select>
                 </div>
                 <div class="input-group">

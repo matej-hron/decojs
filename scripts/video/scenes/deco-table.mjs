@@ -34,15 +34,15 @@ const LANG = {
             stop: `5${NB}min at 5${NB}m`, group2: 'J',
             resultTitle: 'Plan of 2 dives — includes a decompression dive',
         },
-        intro: { title: 'Decompression Tables', subtitle: 'How to read a dive from the SPČR/CMAS 2018 air tables' },
+        intro: { title: 'Decompression Tables', subtitle: 'How to read a dive from the NOAA air tables (SPČR/CMAS 2018 edition)' },
         outro: {
             title: 'Try it yourself',
             subtitle: 'decotheory.eu → Sandbox → CMAS Decompression Tables',
-            footer: 'EDUCATIONAL USE ONLY · NOT FOR PLANNING REAL DIVES',
+            footer: 'NOAA AIR TABLES · SPČR/CMAS 2018 EDITION',
         },
         lines: [
-            ['The SPČR/CMAS 2018 decompression tables: how do you read a dive from them?',
-                'The Czech CMAS decompression tables. How do you read a dive from them?'],
+            ['The NOAA decompression tables, as published by SPČR/CMAS in 2018: how do you read a dive from them?',
+                'The Noah decompression tables, as published by the Czech diving federation. How do you read a dive from them?'],
             ['Enter your dives at the top. Below is a copy of the paper table, read clockwise in three parts.',
                 'Enter your dives at the top. Below is a copy of the paper table, read clockwise, in three parts.'],
             [`First dive: 25${NB}m for 22${NB}min. Look up.`,
@@ -63,8 +63,8 @@ const LANG = {
                 'Add it to the actual time. Thirty plus thirty is sixty minutes. Then follow the arrow back to START.'],
             [`At 18${NB}m, 60${NB}min is a blue cell: a stop of 5${NB}min at 5${NB}m. Alone, this dive would need none.`,
                 'At eighteen metres, sixty minutes is a blue cell. A stop, five minutes at five metres. Alone, this dive would need none.'],
-            [`Caveat: this is the air table for altitudes up to 300${NB}m, for learning only. Never plan a real dive with it.`,
-                'One caveat. This is the air table, for altitudes up to three hundred metres, for learning only. Never plan a real dive with it.'],
+            [`This table is for air, up to 300${NB}m above sea level. Higher up, use the altitude sheet with its depth corrections.`,
+                'One note. This table is for air, up to three hundred metres above sea level. Higher up, you use the altitude sheet, with its depth corrections.'],
             ['Try it yourself in the Deco Theory sandbox. Thanks for watching!',
                 'Try it yourself, in the Deco Theory sandbox. Thanks for watching!'],
         ],
@@ -79,15 +79,15 @@ const LANG = {
             stop: `5${NB}min v 5${NB}m`, group2: 'J',
             resultTitle: 'Plán 2 ponorů — obsahuje dekompresní ponor',
         },
-        intro: { title: 'Dekompresní tabulky', subtitle: 'Jak v tabulkách SPČR/CMAS 2018 pro vzduch vyhledat ponor' },
+        intro: { title: 'Dekompresní tabulky', subtitle: 'Jak v tabulkách NOAA pro vzduch (vydání SPČR/CMAS 2018) vyhledat ponor' },
         outro: {
             title: 'Vyzkoušejte si to sami',
             subtitle: 'decotheory.eu → Pískoviště → Dekompresní tabulky SPČR/CMAS',
-            footer: 'POUZE PRO VÝUKOVÉ ÚČELY · NEPLÁNUJTE PODLE TOHO SKUTEČNÉ PONORY',
+            footer: 'TABULKY NOAA PRO VZDUCH · VYDÁNÍ SPČR/CMAS 2018',
         },
         lines: [
-            ['Jak číst dekompresní tabulky SPČR/CMAS 2018?',
-                'Jak číst dekompresní tabulky svazu potápěčů?'],
+            ['Jak číst dekompresní tabulky NOAA ve vydání SPČR/CMAS 2018?',
+                'Jak číst dekompresní tabulky Noa, ve vydání svazu potápěčů?'],
             ['Nahoře zadáte ponory, pod tím je kopie papírové tabulky. Čte se po směru hodin.',
                 'Nahoře zadáte ponory, pod tím je kopie papírové tabulky. Čte se po směru hodin.'],
             [`První ponor: 25${NB}m na 22${NB}min. Vyhledat.`,
@@ -108,8 +108,8 @@ const LANG = {
                 'K reálné době. Třicet plus třicet je šedesát minut. Po šipce zpět na START.'],
             [`V 18${NB}m je 60${NB}min modrá buňka: zastávka 5${NB}min v 5${NB}m. Samotný by ponor zastávku nepotřeboval.`,
                 'V osmnácti metrech je šedesát minut modrá buňka. Zastávka pět minut v pěti metrech. Samotný by ponor zastávku nepotřeboval.'],
-            [`Pozor: tabulka pro vzduch do 300${NB}m${NB}n.${NB}m., jen k nácviku. Skutečné ponory podle ní neplánujte.`,
-                'Pozor. Tabulka platí pro vzduch, do tří set metrů nad mořem, a je tu jen k nácviku. Skutečné ponory podle ní neplánujte.'],
+            [`Tabulka platí pro vzduch do 300${NB}m${NB}n.${NB}m. Výš se používá list pro hory s korekcemi hloubky.`,
+                'Jedna poznámka. Tabulka platí pro vzduch, do tří set metrů nad mořem. Výš se používá list pro hory, s korekcemi hloubky.'],
             ['Vyzkoušejte si to sami v pískovišti Deco Theory. Díky za pozornost!',
                 'Vyzkoušejte si to sami v pískovišti. Díky za pozornost!'],
         ],
@@ -227,8 +227,8 @@ export default function decoTable(lang = 'en') {
     return {
         page: 'sandbox/deco-table.html',
         locale: L.locale,
-        zoom: 1.25,
-        publish: `videos/deco-table-${lang}`, // -> .mp4 + poster .jpg, embedded in the page
+        zoom: 1,
+        publish: `videos/deco-table`, // -> .mp4 + poster .jpg + <lang>.vtt subtitles, embedded in the page
 
         async prepare(p, ui) {
             page = p;

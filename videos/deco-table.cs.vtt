@@ -1,0 +1,40 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:07.302
+Jak číst dekompresní tabulky NOAA ve vydání SPČR/CMAS 2018?
+
+00:00:07.452 --> 00:00:14.782
+Nahoře zadáte ponory, pod tím je kopie papírové tabulky. Čte se po směru hodin.
+
+00:00:14.932 --> 00:00:20.057
+První ponor: 25 m na 22 min. Vyhledat.
+
+00:00:20.207 --> 00:00:27.235
+Řádek 25 m chybí, zaokrouhlíme vždy nahoru: na 27 m.
+
+00:00:27.385 --> 00:00:32.712
+Doprava k prvnímu času aspoň 22 min: 25 min.
+
+00:00:32.862 --> 00:00:39.913
+To je tu limit bez dekomprese, stačí bezpečnostní zastávka. Pod sloupcem: skupina G.
+
+00:00:40.063 --> 00:00:47.922
+Opakovaný ponor po 1 h 30 min: 16 m na 30 min.
+
+00:00:48.072 --> 00:00:56.198
+Sloupcem G dolů k buňce, kam patří 1:30. Písmeno řádku je nová skupina: E.
+
+00:00:56.348 --> 00:01:03.149
+Řádkem E vlevo k 18 m, nahoru z 16. Přirážka: +30 min.
+
+00:01:03.299 --> 00:01:10.602
+K reálné době: 30 + 30 = 60 min. Po šipce zpět na START.
+
+00:01:10.752 --> 00:01:22.197
+V 18 m je 60 min modrá buňka: zastávka 5 min v 5 m. Samotný by ponor zastávku nepotřeboval.
+
+00:01:22.347 --> 00:01:32.822
+Tabulka platí pro vzduch do 300 m n. m. Výš se používá list pro hory s korekcemi hloubky.
+
+00:01:32.972 --> 00:01:37.823
+Vyzkoušejte si to sami v pískovišti Deco Theory. Díky za pozornost!
