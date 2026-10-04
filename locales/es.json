@@ -1855,6 +1855,10 @@
         "transfill": {
             "title": "Transvase de botellas",
             "subtitle": "Simula la igualación de presión entre dos botellas conectadas",
+            "video": {
+                "open": "▶ Tutorial en vídeo (90\u00a0s)",
+                "note": "Narrado en inglés, con subtítulos."
+            },
             "disclaimerBanner": "<strong>Solo para fines educativos</strong> — Esta herramienta demuestra la Ley de Boyle para botellas conectadas.",
             "setupHeading": "Configuración de las botellas",
             "cylinderA": "Botella A (fuente)",

@@ -1891,6 +1891,10 @@
         "transfill": {
             "title": "Cylinder Transfilling",
             "subtitle": "Simulate pressure equalization between two connected cylinders",
+            "video": {
+                "open": "▶ Video walkthrough (90\u00a0s)",
+                "note": "Narrated in English, with captions."
+            },
             "disclaimerBanner": "<strong>Educational Use Only</strong> — This tool demonstrates Boyle's Law for connected cylinders.",
             "setupHeading": "Cylinder Setup",
             "cylinderA": "Cylinder A (Source)",

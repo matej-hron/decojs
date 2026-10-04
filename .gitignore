@@ -4,3 +4,4 @@ node_modules/
 .claude-scratch/
 reviews/
 .worktrees/
+scripts/video/out/
