@@ -71,6 +71,7 @@ const STATIC_ASSETS = [
   './js/components/StickyTOC.js',
   './js/components/TissueSaturationSim.js',
   './js/components/tooltipShortcut.js',
+  './js/components/VideoWalkthrough.js',
   './js/tripState.js',
   './js/tripTime.js',
   './js/calendarLayout.js',

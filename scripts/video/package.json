@@ -4,8 +4,7 @@
   "description": "Generates narrated video walkthroughs of DecoJS pages (Playwright + Kokoro/Piper TTS + ffmpeg). Czech needs: brew install espeak-ng",
   "type": "module",
   "scripts": {
-    "transfilling:en": "node make-video.mjs scenes/transfilling.mjs en",
-    "transfilling:cs": "node make-video.mjs scenes/transfilling.mjs cs"
+    "video": "node make-video.mjs"
   },
   "dependencies": {
     "kokoro-js": "^1.2.1",
