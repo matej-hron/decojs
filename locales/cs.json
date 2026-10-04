@@ -2552,7 +2552,12 @@
                     "found": "výsledek tohoto kroku"
                 },
                 "more": "více",
-                "less": "méně"
+                "less": "méně",
+                "paper": {
+                    "caption": "Na papíře",
+                    "toggle": "Papír",
+                    "backToTable": "↑ Zpět k tabulce"
+                }
             },
             "steps": {
                 "depthRow": "Řádek pro hloubku <strong>{depth} m</strong>.",

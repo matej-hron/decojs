@@ -2552,7 +2552,12 @@
                     "found": "result of this step"
                 },
                 "more": "more",
-                "less": "less"
+                "less": "less",
+                "paper": {
+                    "caption": "On paper",
+                    "toggle": "Paper",
+                    "backToTable": "↑ Back to the table"
+                }
             },
             "steps": {
                 "depthRow": "The row for depth <strong>{depth} m</strong>.",

@@ -2516,7 +2516,12 @@
                     "found": "resultado de este paso"
                 },
                 "more": "más",
-                "less": "menos"
+                "less": "menos",
+                "paper": {
+                    "caption": "En papel",
+                    "toggle": "Papel",
+                    "backToTable": "↑ Volver a la tabla"
+                }
             },
             "steps": {
                 "depthRow": "La fila de la profundidad <strong>{depth} m</strong>.",
