@@ -275,6 +275,10 @@ export const DEFAULT_DIVE_PROFILE_OPTIONS = {
     showDecoStops: true,
     showNDL: false,
     showCeiling: false,
+    referenceCeiling: null,
+    referenceCeilingLabel: null,
+    highlightCeilingViolations: false,
+    violationToleranceM: 0.1,
     showAmbientPressure: false,
     showPartialPressures: false,
     showTissueLoading: false,
@@ -290,7 +294,9 @@ export const DEFAULT_DIVE_PROFILE_OPTIONS = {
         ceiling: '#e74c3c',
         ppO2: '#27ae60',
         ppN2: '#9b59b6',
-        ambient: '#f39c12'
+        ambient: '#f39c12',
+        referenceCeiling: '#e67e22',
+        ceilingViolation: '#c0392b'
     }
 };
 

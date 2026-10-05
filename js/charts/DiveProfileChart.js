@@ -1049,6 +1049,9 @@ export class DiveProfileChart {
                 order: 9
             });
         }
+
+        // Recorded-dive overlays (opt-in; no-op unless referenceCeiling / highlightCeilingViolations set)
+        datasets.push(...this._buildRecordedOverlayDatasets(results, ceilingDepths));
         
         // Ambient pressure (if enabled)
         if (this.options.showAmbientPressure) {
@@ -1410,7 +1413,11 @@ export class DiveProfileChart {
                 plugins: {
                     legend: {
                         display: this.options.showLegend !== false,
-                        position: 'top'
+                        position: 'top',
+                        labels: {
+                            // Hide the invisible helper dataset that closes the violation shading
+                            filter: (item) => !item.text.endsWith('(ceiling)')
+                        }
                     },
                     tooltip: {
                         enabled: resolveChartTooltipEnabled(this.options.interactive, this.canvas),
@@ -1584,6 +1591,68 @@ export class DiveProfileChart {
         this._render();
     }
     
+    /**
+     * Extra datasets for recorded dives: the dive computer's own ceiling as a
+     * reference line, and shading where the recorded depth is shallower than
+     * DecoTheory's ceiling. Both are opt-in options; returns [] when off.
+     *
+     * @param {Object} results - calculateTissueLoading() results (time in minutes)
+     * @param {number[]|null} ceilingDepths - DecoTheory ceiling per time point
+     * @returns {Array<Object>} Chart.js datasets
+     */
+    _buildRecordedOverlayDatasets(results, ceilingDepths) {
+        const datasets = [];
+        const { referenceCeiling, colors } = this.options;
+
+        if (Array.isArray(referenceCeiling) && referenceCeiling.length > 0) {
+            datasets.push({
+                label: this.options.referenceCeilingLabel
+                    ?? translate('chart.profile.datasetReferenceCeiling', 'Dive computer ceiling (m)'),
+                data: referenceCeiling.map(p => ({ x: p.t, y: p.depth })),
+                borderColor: colors.referenceCeiling,
+                backgroundColor: 'transparent',
+                fill: false,
+                yAxisID: 'yDepth',
+                tension: 0,
+                pointRadius: 0,
+                borderWidth: 2,
+                borderDash: [2, 3],
+                order: 8,
+            });
+        }
+
+        if (this.options.showCeiling && this.options.highlightCeilingViolations && ceilingDepths) {
+            const tolerance = this.options.violationToleranceM;
+            const violated = results.timePoints.map((_, i) => ceilingDepths[i] - results.depthPoints[i] > tolerance);
+            const label = translate('chart.profile.datasetCeilingViolation', 'Above ceiling');
+            datasets.push({
+                label,
+                data: results.timePoints.map((t, i) => ({ x: t, y: violated[i] ? results.depthPoints[i] : null })),
+                borderColor: colors.ceilingViolation,
+                backgroundColor: colors.ceilingViolation + '55',
+                fill: '+1',
+                spanGaps: false,
+                yAxisID: 'yDepth',
+                pointRadius: 0,
+                borderWidth: 2,
+                order: 7,
+            });
+            datasets.push({
+                label: `${label} (ceiling)`,
+                data: results.timePoints.map((t, i) => ({ x: t, y: violated[i] ? ceilingDepths[i] : null })),
+                borderColor: 'transparent',
+                backgroundColor: 'transparent',
+                fill: false,
+                spanGaps: false,
+                yAxisID: 'yDepth',
+                pointRadius: 0,
+                borderWidth: 0,
+                order: 7,
+            });
+        }
+        return datasets;
+    }
+
     /**
      * Update chart options without changing data
      * @param {Object} options - New chart options

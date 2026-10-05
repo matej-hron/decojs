@@ -10,6 +10,8 @@ import { parseDivesoftDLF } from '../js/import/divesoftDlf.js';
 import { toDiveSetup, prepareRecordedSetup, THIN_TOLERANCE_M } from '../js/import/recordedDive.js';
 import { thinProfile } from '../js/import/thinProfile.js';
 import { analyzeRecordedDive, summarizeRecordedDive, CEILING_VIOLATION_TOLERANCE_M, DECO_CEILING_THRESHOLD_M } from '../js/import/recordedDiveSummary.js';
+import { DiveProfileChart } from '../js/charts/DiveProfileChart.js';
+import { DEFAULT_DIVE_PROFILE_OPTIONS, mergeOptions } from '../js/charts/chartTypes.js';
 
 const FIXTURES = new URL('./fixtures/divesoft/', import.meta.url);
 
@@ -178,5 +180,43 @@ describe('analyzeRecordedDive / summarizeRecordedDive', () => {
         const s = summarizeRecordedDive(analyzeRecordedDive(prepareRecordedSetup(loadDive('00000101')).setup));
         assert.equal(s.deco, null);
         assert.equal(s.aboveCeiling.seconds, 0);
+    });
+});
+
+describe('DiveProfileChart recorded-dive overlays', () => {
+    const results = { timePoints: [0, 1, 2, 3], depthPoints: [10, 5, 2, 0] };
+    const ceilingDepths = [0, 3, 3, 0.05];
+    const build = (options) =>
+        DiveProfileChart.prototype._buildRecordedOverlayDatasets.call(
+            { options: mergeOptions(DEFAULT_DIVE_PROFILE_OPTIONS, options) }, results, ceilingDepths);
+
+    test('defaults leave existing charts unchanged', () => {
+        assert.equal(DEFAULT_DIVE_PROFILE_OPTIONS.referenceCeiling, null);
+        assert.equal(DEFAULT_DIVE_PROFILE_OPTIONS.highlightCeilingViolations, false);
+        assert.deepEqual(build({}), []);
+    });
+
+    test('draws the reference ceiling as a dashed line on the depth axis', () => {
+        const [ds] = build({ referenceCeiling: [{ t: 0, depth: 0 }, { t: 2, depth: 3.1 }], referenceCeilingLabel: 'Freedom ceiling' });
+        assert.equal(ds.label, 'Freedom ceiling');
+        assert.deepEqual(ds.data, [{ x: 0, y: 0 }, { x: 2, y: 3.1 }]);
+        assert.equal(ds.yAxisID, 'yDepth');
+        assert.ok(Array.isArray(ds.borderDash));
+        assert.equal(ds.fill, false);
+    });
+
+    test('shades only where depth is shallower than ceiling minus the tolerance', () => {
+        const sets = build({ showCeiling: true, highlightCeilingViolations: true });
+        assert.equal(sets.length, 2);
+        const [depthEdge, ceilingEdge] = sets;
+        // t=1: depth 5, ceiling 3 -> fine; t=2: depth 2, ceiling 3 -> violation; t=3: 0 vs 0.05 -> within tolerance
+        assert.deepEqual(depthEdge.data.map(p => p.y), [null, null, 2, null]);
+        assert.deepEqual(ceilingEdge.data.map(p => p.y), [null, null, 3, null]);
+        assert.equal(depthEdge.fill, '+1');
+        assert.equal(depthEdge.spanGaps, false);
+    });
+
+    test('violation shading needs the ceiling to be shown', () => {
+        assert.deepEqual(build({ showCeiling: false, highlightCeilingViolations: true }), []);
     });
 });

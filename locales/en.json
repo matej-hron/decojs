@@ -1101,6 +1101,8 @@
         "profile": {
             "datasetDepth": "Depth (m)",
             "datasetCeiling": "Ceiling (m)",
+            "datasetReferenceCeiling": "Dive computer ceiling (m)",
+            "datasetCeilingViolation": "Above ceiling",
             "datasetAmbientPressure": "Ambient Pressure (bar)",
             "datasetAlveolarPpN2": "Alveolar pN₂ (bar)",
             "datasetPpO2": "pO₂ (bar)",

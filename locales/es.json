@@ -1101,6 +1101,8 @@
         "profile": {
             "datasetDepth": "Profundidad (m)",
             "datasetCeiling": "Techo (m)",
+            "datasetReferenceCeiling": "Techo del ordenador (m)",
+            "datasetCeilingViolation": "Por encima del techo",
             "datasetAmbientPressure": "Presión ambiente (bar)",
             "datasetAlveolarPpN2": "pN₂ alveolar (bar)",
             "datasetPpO2": "pO₂ (bar)",

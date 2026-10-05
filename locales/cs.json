@@ -1101,6 +1101,8 @@
         "profile": {
             "datasetDepth": "Hloubka (m)",
             "datasetCeiling": "Strop (m)",
+            "datasetReferenceCeiling": "Strop podle počítače (m)",
+            "datasetCeilingViolation": "Nad stropem",
             "datasetAmbientPressure": "Okolní tlak (bar)",
             "datasetAlveolarPpN2": "Alveolární pN₂ (bar)",
             "datasetPpO2": "pO₂ (bar)",
