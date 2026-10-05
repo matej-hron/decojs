@@ -2665,6 +2665,165 @@
                 "findSi": "Find the surface interval",
                 "left": "Go left to the penalty",
                 "back": "Follow the arrow back to START"
+            },
+            "tabs": {
+                "label": "Page mode",
+                "plan": "Dive plan",
+                "crisis": "Emergencies"
+            },
+            "crisis": {
+                "title": "Emergencies",
+                "intro": "What to do when a dive does not go to plan — following the SPČR 2018 guide.",
+                "pick": "Pick a situation",
+                "tag": {
+                    "table": "table",
+                    "procedure": "procedure"
+                },
+                "scenario": {
+                    "delay": {
+                        "name": "Delayed ascent",
+                        "hint": "The delay is added to the dive time."
+                    },
+                    "omitted": {
+                        "name": "Omitted decompression / fast ascent",
+                        "hint": "Back to the stop within 5 min, or oxygen at the surface."
+                    },
+                    "adverse": {
+                        "name": "Adverse circumstances",
+                        "hint": "Look up decompression one row lower (3 m deeper)."
+                    },
+                    "flying": {
+                        "name": "Flying after diving",
+                        "hint": "12 h after one dive, 24 h after repetitive dives."
+                    }
+                },
+                "input": {
+                    "delay": "Delay during ascent (min)",
+                    "what": "What happened?",
+                    "whatOmitted": "Stop omitted or cut short",
+                    "whatFast": "Ascent too fast",
+                    "canReturn": "Can the diver return to the stop within 5 min?",
+                    "symptoms": "Symptoms of decompression sickness?",
+                    "yes": "yes",
+                    "no": "no",
+                    "factors": "Which circumstances apply?",
+                    "factorsNone": "With no adverse circumstances the normal plan applies.",
+                    "dives": "Dives",
+                    "single": "one dive",
+                    "repeat": "repetitive or multi-day dives"
+                },
+                "examples": "Examples from the SPČR tests:",
+                "examplesPlain": "Examples:",
+                "examplesNote": "An example only fills in the inputs. The page computes the result from the table — it is not an official answer key.",
+                "start": "Walk me through it",
+                "fullText": "Full text in the guide to the tables →",
+                "factor": {
+                    "1": "Greater physical exertion",
+                    "2": "Dehydration",
+                    "3": "Severe chilling",
+                    "4": "More body fat",
+                    "5": "Rapid drop in pressure (aircraft, mountains)",
+                    "6": "Impaired blood circulation (tight straps, surgery, age)",
+                    "7": "PFO (patent foramen ovale, right-to-left shunt)",
+                    "8": "Shocks, vibration (sport, transport)"
+                },
+                "indicator": "{scenario} · {phase}",
+                "nextPhase": "{phase} →",
+                "phase": {
+                    "plan": "Plan",
+                    "delay": "Delay",
+                    "procedure": "Procedure",
+                    "branch1": "Point 1",
+                    "branch2": "Point 2",
+                    "symptoms": "Symptoms",
+                    "normal": "Normally",
+                    "adverse": "Adverse circumstances",
+                    "flying": "Flying"
+                },
+                "stepTitle": {
+                    "addDelay": "Add the delay",
+                    "readNew": "Read the new schedule",
+                    "decide": "Decide: back within 5 min?",
+                    "report": "Report it",
+                    "stopLonger": "Stop 1.5 × longer",
+                    "oxygen": "Oxygen at the surface",
+                    "watch": "Watch for symptoms",
+                    "symptoms": "Symptoms of decompression sickness",
+                    "noDecoStop": "No mandatory stop",
+                    "noteAdverse": "The rule under the table",
+                    "rowBelow": "One row lower",
+                    "noteFlying": "The flying note"
+                },
+                "steps": {
+                    "addDelay": "The ascent was delayed by <strong>{delay} min</strong>. Add the delay to the dive time: <strong>{time} + {delay} = {total} min</strong>, and carry on along the same row. First cell ≥ {total} min: <strong>{cellTime} min</strong>.",
+                    "sameCell": "{total} min still fits in the same cell, <strong>{cellTime} min</strong>.",
+                    "readNew": "New schedule from the {cellTime} min cell: {stopText}. Group below the column: <strong>{group}</strong>.",
+                    "verdict": {
+                        "sameProcedure": "The schedule does not change.",
+                        "becameDeco": "Because of the delay this is now a <strong>decompression dive</strong>.",
+                        "longerStop": "The 5 m stop grows from {from} to <strong>{to} min</strong>."
+                    },
+                    "intro": {
+                        "omitted": "The diver omitted or cut short the {stop} min stop at 5 m.",
+                        "fast": "The diver ascended too fast. The SPČR guide treats this the same as omitted decompression."
+                    },
+                    "decide": {
+                        "canReturn": "No symptoms, and back at the stop within <strong>5 min</strong> → <strong>point 1</strong> applies.",
+                        "cannotReturn": "Cannot get back to the stop with breathing apparatus within 5 min → <strong>point 2</strong> applies.",
+                        "symptoms": "Point 1 applies only to a diver without symptoms. With symptoms of decompression sickness, follow <strong>point 2c</strong>."
+                    },
+                    "report": "Report the omitted decompression to the dive leader (at the surface).",
+                    "stopLonger": "Return to the stop and stay 1.5 times the original time: <strong>{stop} × 1.5 = {raw} → {total} min at 5 m</strong> (rounded up to whole minutes, as in the table).",
+                    "oxygen": "At the surface, breathe <strong>pure oxygen for at least 60 min</strong>, as far as possible.",
+                    "watch": {
+                        "noSymptoms": "No symptoms during or after the oxygen: <strong>stay under supervision and do not dive for at least 12 h</strong>.",
+                        "symptoms": "Symptoms during or after the oxygen: <strong>transport with oxygen to the nearest medical facility</strong>."
+                    },
+                    "symptomsPath": "Point 2c: <strong>transport with oxygen to the nearest medical facility</strong>.",
+                    "firstAid": "Decompression sickness symptoms (except the skin form) are treated in a hyperbaric chamber. Until help arrives: oxygen, fluids 1 l per hour, half a tablet of Aspirin, no painkillers.",
+                    "noDecoStop": "This dive has no mandatory decompression stop, only the 5 m / 3 min safety stop. The SPČR guide gives a procedure only for an omitted <em>decompression</em> stop — ask your instructor.",
+                    "noteAdverse": "Under the table it says: <em>“In adverse circumstances for decompression, look up the depth one row lower.”</em>",
+                    "factors": "This applies to you: {factors}.",
+                    "rowBelow": "Instead of the <strong>{from} m</strong> row, use the next row down: <strong>{to} m</strong>.",
+                    "flying": {
+                        "single": "After <strong>one dive</strong>, fly in a pressurised-cabin aircraft no sooner than <strong>12 h</strong>.",
+                        "repeat": "After <strong>repetitive or multi-day</strong> diving, fly no sooner than <strong>24 h</strong>."
+                    }
+                },
+                "log": {
+                    "delay": "+{delay} min delay",
+                    "oxygen": "O₂ ≥ 60 min",
+                    "transport": "O₂ + transport",
+                    "row": "{depth} m row"
+                },
+                "result": {
+                    "replay": "Walk through again",
+                    "delayTitle": "Delayed ascent — new schedule",
+                    "colCase": "Case",
+                    "colTime": "Time",
+                    "colCell": "Cell",
+                    "colDeco": "Decompression",
+                    "colGroup": "Group",
+                    "colNdl": "No-deco limit",
+                    "rowPlan": "Original plan",
+                    "rowDelayed": "With the delay",
+                    "omittedTitle": "Omitted decompression — procedure",
+                    "branch1Head": "No symptoms, back at the stop within 5 min",
+                    "branch2Head": "Cannot get back to the stop within 5 min",
+                    "notApplicable": "(does not apply here)",
+                    "adverseTitle": "Adverse circumstances — one row lower",
+                    "rowNormal": "Normally ({depth} m row)",
+                    "rowAdverse": "Adverse ({depth} m row)",
+                    "factors": "Circumstances: {factors}.",
+                    "computer": "On a dive computer, set a higher conservatism level in advance, per its manual.",
+                    "flyingTitle": "No flying for {hours} h",
+                    "flyingNote": "Applies to a pressurised-cabin aircraft, by dive computer or the tables. A rapid drop in pressure (aircraft, mountains) is also one of the adverse circumstances."
+                },
+                "errors": {
+                    "delayOutOfRange": "With the delay, {total} min is beyond the {depth} m row of these tables (the guide points to the US Navy tables).",
+                    "noRowBelow": "The {depth} m row is the last in the table — there is no row below it, so this dive cannot be planned with these tables.",
+                    "invalidDelay": "Enter a delay of at least 1 min."
+                }
             }
         }
     },

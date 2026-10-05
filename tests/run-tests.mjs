@@ -10758,6 +10758,19 @@ describe('SPČR/CMAS 2018 tables (cmasTables.js)', () => {
             ...[...html.matchAll(/'((?:steps|plan|narrator|result|errors|downloads|legend|howTo|table|image|guide|compare)\.\w+)'/g)].map(m => m[1]),
             ...['invalid', 'tooDeep', 'timeOutOfRange', 'siTooShort', 'siOver24h', 'noPenalty'].map(c => `errors.${c}`),
             ...['colDive', 'colSi', 'colDepth', 'colTime', 'colDeco', 'colGroup'].map(c => `result.${c}`),
+            // emergencies: literal keys, then the families the code builds from a variable
+            ...[...html.matchAll(/'((?:crisis|tabs)\.[\w.]+\w)'/g)].map(m => m[1]),
+            ...['sameProcedure', 'becameDeco', 'longerStop'].map(v => `crisis.steps.verdict.${v}`),
+            ...['canReturn', 'cannotReturn', 'symptoms'].map(v => `crisis.steps.decide.${v}`),
+            ...['omitted', 'fast'].map(v => `crisis.steps.intro.${v}`),
+            ...['noSymptoms', 'symptoms'].map(v => `crisis.steps.watch.${v}`),
+            ...['single', 'repeat'].map(v => `crisis.steps.flying.${v}`),
+            ...['delayOutOfRange', 'noRowBelow', 'invalidDelay'].map(c => `crisis.errors.${c}`),
+            ...[1, 2, 3, 4, 5, 6, 7, 8].map(i => `crisis.factor.${i}`),
+            ...['plan', 'delay', 'procedure', 'branch1', 'branch2', 'symptoms', 'normal', 'adverse', 'flying'].map(p => `crisis.phase.${p}`),
+            ...['delay', 'omitted', 'adverse', 'flying'].flatMap(id => [`crisis.scenario.${id}.name`, `crisis.scenario.${id}.hint`]),
+            ...['addDelay', 'readNew', 'decide', 'report', 'stopLonger', 'oxygen', 'watch', 'symptoms', 'noDecoStop',
+                'noteAdverse', 'rowBelow', 'noteFlying'].map(k => `crisis.stepTitle.${k}`),
         ]);
         const missing = [];
         for (const lang of ['cs', 'en', 'es']) {
@@ -10767,8 +10780,27 @@ describe('SPČR/CMAS 2018 tables (cmasTables.js)', () => {
                 if (typeof val !== 'string') missing.push(`${lang}: ${key}`);
             }
         }
-        expect(used.size > 60).toBe(true);
+        expect(used.size > 150).toBe(true);
         expect(missing).toEqual([]);
+    });
+
+    test('emergency strings: U+00A0 before units, decimal comma in cs/es', () => {
+        const bad = [];
+        const walk = (node, path, lang) => {
+            if (typeof node === 'string') {
+                if (/[\d}] (m|min|h|l)(?![\p{L}])/u.test(node)) bad.push(`${lang} ${path}: plain space before a unit`);
+                if (lang !== 'en' && /\d\.\d/.test(node)) bad.push(`${lang} ${path}: decimal point`);
+                return;
+            }
+            for (const [k, v] of Object.entries(node)) walk(v, `${path}.${k}`, lang);
+        };
+        for (const lang of ['cs', 'en', 'es']) {
+            const t = JSON.parse(readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8')).sandbox.decoTable;
+            walk(t.crisis, 'crisis', lang);
+            walk(t.tabs, 'tabs', lang);
+            for (const k of ['noteSafety', 'noteFlying', 'noteAdverse']) walk(t.table[k], `table.${k}`, lang);
+        }
+        expect(bad).toEqual([]);
     });
 
     test('formatHM', () => {
