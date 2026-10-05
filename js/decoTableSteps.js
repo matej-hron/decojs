@@ -194,6 +194,37 @@ function omittedSteps(ctx, { inputs, result: r }) {
     return { phases: ['plan', 'procedure', phase], steps };
 }
 
+/**
+ * S2 result card: the guide's whole decision tree, marked for this case. Pure, so the marking is testable.
+ * Branch state: 'chosen' (applies), 'faded' (does not apply — the page adds "(does not apply here)"),
+ * 'neutral' (shown normally: on the symptoms path the diver *can* return, so the "cannot return"
+ * heading is not chosen, but its oxygen and transport items still apply).
+ * Item state: 'chosen', 'faded' (with the note), or 'plain' (inside a faded branch, which carries the note).
+ * @param {object} r — omittedDecoProcedure result with ok: true
+ */
+export function omittedDecisionCard(r) {
+    const b = r.branch;
+    const b1 = b === 1 ? 'chosen' : 'faded';
+    const b2 = b === 2 ? 'chosen' : b === 'symptoms' ? 'neutral' : 'faded';
+    const on = x => x ? 'chosen' : 'faded';
+    const items = (state, keys) => keys.map(key => ({ key, state }));
+    return {
+        lead: b === 'symptoms' ? 'crisis.result.symptomsHead' : null,
+        branches: [
+            { n: 1, head: 'crisis.result.branch1Head', state: b1,
+              items: items(b1 === 'chosen' ? 'chosen' : 'plain', ['crisis.steps.report', 'crisis.steps.stopLonger']) },
+            { n: 2, head: 'crisis.result.branch2Head', state: b2,
+              items: b === 1
+                  ? items('plain', ['crisis.steps.oxygen', 'crisis.steps.watch.noSymptoms', 'crisis.steps.watch.symptoms'])
+                  : [
+                      { key: 'crisis.steps.oxygen', state: 'chosen' },   // oxygen applies on every path with branch 2 or symptoms
+                      { key: 'crisis.steps.watch.noSymptoms', state: on(!r.symptoms) },
+                      { key: 'crisis.steps.watch.symptoms', state: on(r.symptoms) },
+                  ] },
+        ],
+    };
+}
+
 /** S3 — adverse circumstances: the depth row as usual, the footer note, then one row lower. */
 function adverseSteps(ctx, { inputs, result: r }) {
     const { T, NG } = ctx;

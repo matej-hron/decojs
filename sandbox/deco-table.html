@@ -221,6 +221,8 @@
         .branch ol { margin: 0; padding-left: 1.3rem; }
         .branch li { margin-bottom: 0.25rem; }
         .branch.chosen { border: 2px solid #e67e22; background: rgba(230,126,34,0.06); }
+        .branch li.chosen { font-weight: 600; }
+        .decision + .guide-alert, .verdict + .decision { margin-top: 0.6rem; }
         .branch .faded, .branch.faded { opacity: 0.5; }
         .branch.faded .faded { opacity: 1; }
         .sr-note { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
@@ -440,7 +442,7 @@
             .sc-hint { font-size: 0.8rem; }
             .choice label { min-height: 44px; }
             .decision { grid-template-columns: 1fr; }
-            .decision .branch.chosen { order: -1; }
+            .decision .branch.chosen, .decision .branch.neutral { order: -1; }
             .full-text-link { margin-left: 0; flex-basis: 100%; }
         }
         @media (max-width: 400px) {
@@ -1063,7 +1065,7 @@
         import { fmtNum } from '../js/format.js';
         import { translate, initI18n, createLanguageSwitcher } from '../js/i18n.js';
         import { initVideoWalkthroughs } from '../js/components/VideoWalkthrough.js';
-        import { buildSteps, crisisSteps, CRISIS_SCENARIOS } from '../js/decoTableSteps.js';
+        import { buildSteps, crisisSteps, CRISIS_SCENARIOS, omittedDecisionCard } from '../js/decoTableSteps.js';
 
         createLanguageSwitcher();
         const [table] = await Promise.all([
@@ -1830,20 +1832,14 @@
                 if (!r.ok) return { title: T('crisis.result.omittedTitle'), body: `<p class="verdict">${T('crisis.steps.noDecoStop')}</p>` };
                 const v = { stop: r.stop, raw: stepCtx.num(r.extendedStop.raw), total: r.extendedStop.total };
                 const na = `<span class="sr-note"> ${T('crisis.result.notApplicable')}</span>`;
-                const item = (on, html) => `<li class="${on ? 'chosen' : 'faded'}">${html}${on ? '' : na}</li>`;
-                const b2 = r.branch !== 1;
-                const branch = (n, on, head, items) => `<div class="branch ${on ? 'chosen' : 'faded'}">
-                    <h4><span class="branch-num">${n}</span>${T(head)}${on ? '' : na}</h4><ol type="a">${items}</ol></div>`;
+                const card = omittedDecisionCard(r);
+                const item = ({ key, state }) => `<li class="${state}">${T(key, v)}${state === 'faded' ? na : ''}</li>`;
+                const branch = ({ n, head, state, items }) => `<div class="branch ${state}">
+                    <h4><span class="branch-num">${n}</span>${T(head)}${state === 'faded' ? na : ''}</h4><ol type="a">${items.map(item).join('')}</ol></div>`;
                 return {
                     title: T('crisis.result.omittedTitle'),
-                    body: `<div class="decision">
-                        ${branch(1, r.branch === 1, 'crisis.result.branch1Head',
-                            item(true, T('crisis.steps.report')) + item(true, T('crisis.steps.stopLonger', v)))}
-                        ${branch(2, b2, 'crisis.result.branch2Head',
-                            item(r.branch === 2, T('crisis.steps.oxygen'))
-                            + item(r.branch === 2 && !r.symptoms, T('crisis.steps.watch.noSymptoms'))
-                            + item(r.symptoms, T('crisis.steps.watch.symptoms')))}
-                    </div>
+                    body: (card.lead ? `<p class="verdict">${T(card.lead)}</p>` : '')
+                        + `<div class="decision">${card.branches.map(branch).join('')}</div>
                     <p class="guide-alert">${T('crisis.steps.firstAid')}</p>`,
                 };
             }

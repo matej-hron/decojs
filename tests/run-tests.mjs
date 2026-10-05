@@ -257,7 +257,7 @@ import {
     omittedDecoProcedure,
     flyingWaitHours,
 } from '../js/cmasTables.js';
-import { buildSteps as buildDecoTableSteps, crisisSteps } from '../js/decoTableSteps.js';
+import { buildSteps as buildDecoTableSteps, crisisSteps, omittedDecisionCard } from '../js/decoTableSteps.js';
 
 describe('Chart tooltip shortcut', () => {
     test('toggles only the focused or hovered chart and persists across rebuilds', () => {
@@ -10720,6 +10720,32 @@ describe('SPČR/CMAS 2018 tables (cmasTables.js)', () => {
             expect(sym.groupLabels.at(-1)).toBe('crisis.phase.symptoms');
             expect(sym.steps.length).toBe(5);
             expect(Object.keys(sym.steps[4].hl).length).toBe(0);
+        });
+        test('S2 decision card: symptoms but able to return → oxygen and 2c apply, nothing says otherwise', () => {
+            const card = omittedDecisionCard(omittedDecoProcedure(cmas, { depth: 24, time: 51, canReturn: true, symptoms: true }));
+            const [b1, b2] = card.branches;
+            const state = key => b2.items.find(i => i.key === key).state;
+            expect(card.lead).toBe('crisis.result.symptomsHead');
+            expect(b1.state).toBe('faded');
+            expect(b2.state).toBe('neutral');   // the diver *can* return: the "cannot return" heading is not chosen, not faded
+            expect(state('crisis.steps.oxygen')).toBe('chosen');
+            expect(state('crisis.steps.watch.symptoms')).toBe('chosen');
+            expect(state('crisis.steps.watch.noSymptoms')).toBe('faded');
+        });
+        test('S2 decision card: branch 1 and branch 2 marking', () => {
+            const card = (canReturn, symptoms) => omittedDecisionCard(omittedDecoProcedure(cmas, { depth: 24, time: 51, canReturn, symptoms }));
+            const one = card(true, false);
+            expect(one.branches.map(b => b.state)).toEqual(['chosen', 'faded']);
+            expect(one.branches[1].items.every(i => i.state === 'plain')).toBe(true);
+            const two = card(false, false);
+            expect(two.lead).toBe(null);
+            expect(two.branches.map(b => b.state)).toEqual(['faded', 'chosen']);
+            expect(two.branches[1].items.map(i => i.state)).toEqual(['chosen', 'chosen', 'faded']);
+            expect(card(false, true).branches[1].items.map(i => i.state)).toEqual(['chosen', 'faded', 'chosen']);
+            // oxygen is never marked "does not apply" when branch 2 or the symptoms path is taken
+            for (const c of [card(false, false), card(false, true), card(true, true)]) {
+                expect(c.branches[1].items[0].state).toBe('chosen');
+            }
         });
         test('S2 no-deco dive (F3): plan + one step on the safety-stop note, no 1,5×', () => {
             const { steps } = omitted(true, false, 17, 49);

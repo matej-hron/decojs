@@ -2817,7 +2817,8 @@
                     "factors": "Okolnosti: {factors}.",
                     "computer": "U počítače nastav podle návodu předem vyšší stupeň konzervatismu.",
                     "flyingTitle": "Nelétat {hours} h",
-                    "flyingNote": "Platí pro letadlo s přetlakovou kabinou, podle počítače nebo tabulek. Rychlý pokles tlaku (letadlo, hory) je i mezi nepříznivými okolnostmi."
+                    "flyingNote": "Platí pro letadlo s přetlakovou kabinou, podle počítače nebo tabulek. Rychlý pokles tlaku (letadlo, hory) je i mezi nepříznivými okolnostmi.",
+                    "symptomsHead": "<strong>S příznaky dekompresní nemoci</strong> (i když se do 5 min vrátit dokáže) bod 1 neplatí → postup podle <strong>bodu 2c</strong>: kyslík a transport do zdravotnického zařízení."
                 },
                 "errors": {
                     "delayOutOfRange": "Doba se zdržením {total} min je v řádku {depth} m mimo rozsah těchto tabulek (návod odkazuje na tabulky US Navy).",

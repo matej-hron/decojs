@@ -2817,7 +2817,8 @@
                     "factors": "Circumstances: {factors}.",
                     "computer": "On a dive computer, set a higher conservatism level in advance, per its manual.",
                     "flyingTitle": "No flying for {hours} h",
-                    "flyingNote": "Applies to a pressurised-cabin aircraft, by dive computer or the tables. A rapid drop in pressure (aircraft, mountains) is also one of the adverse circumstances."
+                    "flyingNote": "Applies to a pressurised-cabin aircraft, by dive computer or the tables. A rapid drop in pressure (aircraft, mountains) is also one of the adverse circumstances.",
+                    "symptomsHead": "<strong>With symptoms of decompression sickness</strong> (even if the diver could return within 5 min) point 1 does not apply → follow <strong>point 2c</strong>: oxygen and transport to a medical facility."
                 },
                 "errors": {
                     "delayOutOfRange": "With the delay, {total} min is beyond the {depth} m row of these tables (the guide points to the US Navy tables).",

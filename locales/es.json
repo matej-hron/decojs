@@ -2781,7 +2781,8 @@
                     "factors": "Circunstancias: {factors}.",
                     "computer": "En el ordenador, ajusta de antemano un nivel de conservadurismo mayor según su manual.",
                     "flyingTitle": "No volar durante {hours} h",
-                    "flyingNote": "Se aplica a avión con cabina presurizada, según el ordenador o las tablas. La caída rápida de presión (avión, montaña) también figura entre las circunstancias adversas."
+                    "flyingNote": "Se aplica a avión con cabina presurizada, según el ordenador o las tablas. La caída rápida de presión (avión, montaña) también figura entre las circunstancias adversas.",
+                    "symptomsHead": "<strong>Con síntomas de enfermedad descompresiva</strong> (aunque pueda volver en 5 min) el punto 1 no se aplica → sigue el <strong>punto 2c</strong>: oxígeno y traslado a un centro sanitario."
                 },
                 "errors": {
                     "delayOutOfRange": "Con el retraso, {total} min queda fuera de la fila de {depth} m de estas tablas (la guía remite a las tablas de la US Navy).",
