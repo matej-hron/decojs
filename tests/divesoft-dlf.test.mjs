@@ -9,6 +9,14 @@ import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { parseDivesoftDLF, DlfFormatError } from '../js/import/divesoftDlf.js';
+import { toDiveSetup, gasName } from '../js/import/recordedDive.js';
+import {
+    getDiveSetupWaypoints,
+    getDiveSetupSurfacePressure,
+    getDiveSetupPressurePerMeter,
+} from '../js/diveSetup.js';
+import { calculateTissueLoading } from '../js/deco/profile.js';
+import { calculateCeilingTimeSeriesDetailed } from '../js/deco/ceiling.js';
 
 const FIXTURES = new URL('./fixtures/divesoft/', import.meta.url);
 const EXPECTED = JSON.parse(readFileSync(new URL('expected.json', FIXTURES), 'utf8'));
@@ -253,5 +261,82 @@ describe('parseDivesoftDLF: synthetic layouts', () => {
         const dive = parseDivesoftDLF(bytes);
         assert.deepEqual(dive.samples.map(s => s.t), [0]);
         assert.deepEqual(dive.warnings, []);
+    });
+});
+
+describe('toDiveSetup', () => {
+    test('gas names follow DecoTheory conventions', () => {
+        assert.equal(gasName({ o2: 0.21, he: 0 }), 'Air');
+        assert.equal(gasName({ o2: 0.32, he: 0 }), 'EAN32');
+        assert.equal(gasName({ o2: 1, he: 0 }), 'O₂ 100%');
+        assert.equal(gasName({ o2: 0.18, he: 0.45 }), 'Tx 18/45');
+    });
+
+    test('converts a recorded dive into a DiveSetup', () => {
+        const dive = loadDive('00000100');
+        const setup = toDiveSetup(dive);
+        assert.equal(setup.name, 'Divesoft #100 · 2026-09-27');
+        assert.equal(setup.description, 'Imported from 00000100.DLF');
+        assert.deepEqual(setup.gases, [{ id: 'g0', name: 'Air', o2: 0.21, n2: 0.79, he: 0 }]);
+        assert.equal(setup.gfLow, 60);
+        assert.equal(setup.gfHigh, 90);
+        assert.equal(setup.surfaceInterval, 0);
+        assert.deepEqual(setup.environment, { surfacePressure: dive.environment.surfacePressure, waterDensity: 1.028 });
+        const { waypoints } = setup.dives[0];
+        assert.equal(waypoints.length, dive.samples.length + 1);
+        assert.deepEqual(waypoints[0], { time: 0, depth: 0 });
+        assert.deepEqual(waypoints[1], { time: 0, depth: dive.samples[0].depth, gasId: 'g0' });
+        assert.equal(waypoints.at(-1).time, dive.samples.at(-1).t / 60);
+    });
+
+    test('the engine reads the setup with the recorded surface pressure and water density', () => {
+        const setup = toDiveSetup(loadDive('00000100'));
+        assert.ok(Math.abs(getDiveSetupSurfacePressure(setup) - 0.9816) < 1e-9);
+        assert.ok(Math.abs(getDiveSetupPressurePerMeter(setup) - 1028 * 9.80665 / 1e5) < 1e-9);
+        assert.equal(getDiveSetupWaypoints(setup).length, setup.dives[0].waypoints.length);
+    });
+
+    test('replaying dive #100 reproduces the computer ceiling', () => {
+        const dive = loadDive('00000100');
+        const setup = toDiveSetup(dive);
+        const results = calculateTissueLoading(getDiveSetupWaypoints(setup), setup.surfaceInterval, {
+            gases: setup.gases,
+            surfacePressure: getDiveSetupSurfacePressure(setup),
+            pressurePerMeter: getDiveSetupPressurePerMeter(setup),
+        });
+        const { ceilingDepths } = calculateCeilingTimeSeriesDetailed(results, setup.gfLow / 100, setup.gfHigh / 100);
+
+        const devicePeak = Math.max(...dive.samples.map(s => s.ceiling ?? 0));
+        const enginePeak = Math.max(...ceilingDepths);
+        assert.equal(devicePeak, 3.1);
+        assert.ok(Math.abs(enginePeak - devicePeak) <= 1.2, `engine peak ${enginePeak} m vs device ${devicePeak} m`);
+
+        const deviceDecoStart = dive.samples.find(s => s.ceiling > 0).t;
+        const engineDecoStart = results.timePoints[ceilingDepths.findIndex(c => c > 0.05)] * 60;
+        assert.ok(Math.abs(engineDecoStart - deviceDecoStart) <= 90, `engine ${engineDecoStart} s vs device ${deviceDecoStart} s`);
+    });
+
+    test('a gas switch is carried onto the waypoint at the switch time', () => {
+        const dive = parseDivesoftDLF(buildDlf({
+            records: [gasSwitch(0, 21), point(0, 100), point(60, 2100), gasSwitch(120, 50), point(120, 2100), point(180, 600)],
+        }));
+        const setup = toDiveSetup(dive);
+        assert.deepEqual(setup.gases.map(g => g.name), ['Air', 'EAN50']);
+        assert.deepEqual(setup.dives[0].waypoints, [
+            { time: 0, depth: 0 },
+            { time: 0, depth: 1, gasId: 'g0' },
+            { time: 1, depth: 21 },
+            { time: 2, depth: 21, gasId: 'g1' },
+            { time: 3, depth: 6 },
+        ]);
+    });
+
+    test('a header-only dive converts without crashing', () => {
+        const setup = toDiveSetup(parseDivesoftDLF(buildDlf()));
+        assert.deepEqual(setup.dives[0].waypoints, [{ time: 0, depth: 0 }]);
+        assert.equal(setup.gfLow, 100);
+        assert.equal(setup.gfHigh, 100);
+        assert.deepEqual(setup.environment, { surfacePressure: 1.0132 });
+        assert.equal(setup.name, 'Divesoft dive · 2026-06-28');
     });
 });
