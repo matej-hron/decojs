@@ -255,6 +255,28 @@ describe('parseDivesoftDLF: synthetic layouts', () => {
         assert.equal(dive.samples.length, 2);
     });
 
+    test('a gas of 0% O₂ or over 100% total creates no gas and no event', () => {
+        const modeChange = { type: 1, t: 5, u16: { 4: 24 }, u8: { 6: 0, 7: 0, 8: 5 } };
+        const dive = parseDivesoftDLF(buildDlf({ records: [point(0, 100), modeChange, gasSwitch(10, 80, 30), point(20, 200)] }));
+        assert.deepEqual(dive.gases, [{ id: 'g0', o2: 0.21, he: 0, n2: 0.79, role: 'oc' }]);
+        assert.deepEqual(dive.events, []);
+    });
+
+    test('serial number drops NUL padding', () => {
+        const chars = [...'12345678'].map(c => c.charCodeAt(0));
+        const u8 = Object.fromEntries(chars.map((c, i) => [4 + i, c]));
+        const dive = parseDivesoftDLF(buildDlf({ records: [{ type: 6, t: 0, sub: 3, u8 }, point(0, 100)] }));
+        assert.equal(dive.device.serial, '12345678');
+    });
+
+    test('a file cut mid-record warns trailing-bytes', () => {
+        const full = fixtureBytes('00000101');
+        const dive = parseDivesoftDLF(full.subarray(0, full.length - 5));
+        const whole = parseDivesoftDLF(full);
+        assert.ok(dive.warnings.includes('trailing-bytes'));
+        assert.ok(dive.samples.length <= whole.samples.length);
+    });
+
     test('all-0xFF padding records are skipped', () => {
         const bytes = buildDlf({ records: [point(0, 100), point(1, 200)] });
         bytes.fill(0xff, 32 + 16, 32 + 32);
@@ -314,6 +336,15 @@ describe('toDiveSetup', () => {
         const deviceDecoStart = dive.samples.find(s => s.ceiling > 0).t;
         const engineDecoStart = results.timePoints[ceilingDepths.findIndex(c => c > 0.05)] * 60;
         assert.ok(Math.abs(engineDecoStart - deviceDecoStart) <= 90, `engine ${engineDecoStart} s vs device ${deviceDecoStart} s`);
+    });
+
+    test('vendor and file name come from the recorded dive, not a hard-coded brand', () => {
+        const dive = parseDivesoftDLF(buildDlf({ records: [point(0, 100)] }));
+        dive.device.vendor = 'Acme';
+        dive.source = { diveNumber: 7 };
+        const setup = toDiveSetup(dive);
+        assert.match(setup.name, /^Acme #7 · \d{4}-\d{2}-\d{2}$/);
+        assert.equal(setup.description, 'Imported from a dive log');
     });
 
     test('a gas switch is carried onto the waypoint at the switch time', () => {

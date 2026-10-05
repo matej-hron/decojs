@@ -36,6 +36,7 @@ export function gasName({ o2, he }) {
  */
 export function toDiveSetup(dive) {
     const label = dive.source?.diveNumber != null ? `#${dive.source.diveNumber}` : 'dive';
+    const vendor = dive.device?.vendor;
     const date = dive.start?.local?.slice(0, 10) ?? 'unknown date';
 
     const waypoints = [];
@@ -57,8 +58,8 @@ export function toDiveSetup(dive) {
     if (Number.isFinite(dive.environment?.waterDensity)) environment.waterDensity = dive.environment.waterDensity / 1000;
 
     return {
-        name: `Divesoft ${label} · ${date}`,
-        description: `Imported from ${dive.source?.fileName ?? 'a Divesoft dive log'}`,
+        name: `${vendor ?? 'Recorded'} ${label} · ${date}`,
+        description: `Imported from ${dive.source?.fileName ?? 'a dive log'}`,
         gases: dive.gases.map(g => ({ id: g.id, name: gasName(g), o2: g.o2, n2: g.n2, he: g.he })),
         gfLow: dive.deco?.gfLow ?? 100,
         gfHigh: dive.deco?.gfHigh ?? 100,

@@ -140,6 +140,7 @@ export function parseDivesoftDLF(input, { fileName = null, now = Date.now() } = 
     if (view.getUint16(4, true) !== crc16arc(bytes.subarray(6, headerSize))) {
         warnings.push('header-crc-mismatch');
     }
+    if ((bytes.length - headerSize) % RECORD_SIZE !== 0) warnings.push('trailing-bytes');
     const header = readHeader(view, version);
 
     const device = { vendor: 'Divesoft', model: null, serial: null, firmware: null, hardware: null };
@@ -148,6 +149,7 @@ export function parseDivesoftDLF(input, { fileName = null, now = Date.now() } = 
 
     const gases = [];
     const addGas = (o2Pct, hePct, role) => {
+        if (o2Pct === 0 || o2Pct + hePct > 100) return null;
         let gas = gases.find(g => g.o2 === o2Pct / 100 && g.he === hePct / 100 && g.role === role);
         if (!gas) {
             gas = { id: `g${gases.length}`, o2: o2Pct / 100, he: hePct / 100, n2: (100 - o2Pct - hePct) / 100, role };
@@ -200,8 +202,8 @@ export function parseDivesoftDLF(input, { fileName = null, now = Date.now() } = 
         } else if (type === RECORD_CONFIG) {
             const b = i => view.getUint8(offset + i);
             if (sub === CONFIG_SERIAL) {
-                const text = String.fromCharCode(...bytes.subarray(offset + 4, offset + 16));
-                device.serial = `${text.slice(0, 4)}-${text.slice(4)}`;
+                const text = String.fromCharCode(...bytes.subarray(offset + 4, offset + 16)).replace(/\0/g, '').trimEnd();
+                device.serial = text.length >= 12 ? `${text.slice(0, 4)}-${text.slice(4)}` : text;
             } else if (sub === CONFIG_VERSION) {
                 device.model = b(4) === 0 ? 'Freedom' : null;
                 device.hardware = `${b(5)}.${b(6)}`;
@@ -227,7 +229,7 @@ export function parseDivesoftDLF(input, { fileName = null, now = Date.now() } = 
                 const toCcr = code === EVENT_MODE && CCR_MODE_CODES.has(view.getUint8(offset + 8));
                 const role = code === EVENT_DILUENT || toCcr ? 'diluent' : 'oc';
                 const gas = addGas(view.getUint8(offset + 6), view.getUint8(offset + 7), role);
-                events.push({ t, type: 'gasSwitch', gasId: gas.id });
+                if (gas) events.push({ t, type: 'gasSwitch', gasId: gas.id });
             } else if (code === EVENT_CNS) {
                 events.push({ t, type: 'cns', value: view.getUint16(offset + 6, true) / 100 });
             } else if (code === EVENT_SETPOINT_MANUAL || code === EVENT_SETPOINT_AUTO) {

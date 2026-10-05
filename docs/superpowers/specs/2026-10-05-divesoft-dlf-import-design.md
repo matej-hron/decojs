@@ -61,6 +61,7 @@ future backend.
 ## RecordedDive shape
 
 Units: time s (samples, events, duration), depth m, pressure bar, temperature °C,
+water density kg/m³,
 gas fractions 0–1, GF in % (matching DiveSetup). Sample `ndl` and `tts` are whole
 minutes, as the computer displays them.
 
@@ -124,6 +125,7 @@ Errors vs warnings:
 |---|---|
 | File shorter than its header, wrong magic, time backwards > 5 s | throw `DlfFormatError` |
 | Header CRC mismatch | warning `header-crc-mismatch` |
+| File length not a whole number of records | warning `trailing-bytes` |
 | Duplicate seconds / small time backstep | warning with count |
 | Start before 2010-01-01 or more than a day in the future | warning `implausible-date` |
 | Gauge mode with max depth > 200 m | warning `gauge-test-record` |
@@ -142,6 +144,8 @@ Produces a DiveSetup the existing engine accepts:
 - `gfLow`, `gfHigh`: copied (already %).
 - `environment`: `{ surfacePressure, waterDensity }`. The engine's
   `getPressurePerMeter` already honours `waterDensity` when no `waterType` is set.
+  DiveSetup `environment.waterDensity` is kg/L (RecordedDive value / 1000) because the
+  engine computes `waterDensity * 1000 * g / 1e5`.
 - `surfaceInterval`: 0.
 - `dives[0].waypoints`: `{ time: t / 60, depth }` per sample, framed by a surface
   point at time 0 when the first sample is not at the surface. A gas switch sets
@@ -182,3 +186,6 @@ unaffected.
 
 - Report the GF-pair finding to libdivecomputer after checking one dive in Divesoft's
   own app or cloud. Not a blocker for this step.
+- `toDiveSetup` ignores `mode`: CCR/SCR dives would be replayed as open circuit on the diluent. Step 3 must refuse, warn or model them.
+- The surface frame waypoint and the first sample can share time 0 (zero-duration segment). Check chart code that divides by segment duration in step 3.
+- Add a RecordedDive schema version (e.g. `schema: 1`) before step 4 stores records.
