@@ -443,6 +443,9 @@
             .choice label { min-height: 44px; }
             .decision { grid-template-columns: 1fr; }
             .decision .branch.chosen, .decision .branch.neutral { order: -1; }
+            /* footer notes span the whole scrolled grid: keep their text in view and let it wrap */
+            .deco-grid td.note { text-align: left; }
+            .note-text { position: sticky; left: 0.5rem; display: inline-block; max-width: calc(100vw - 3.5rem); white-space: normal; }
             .full-text-link { margin-left: 0; flex-basis: 100%; }
         }
         @media (max-width: 400px) {
@@ -1159,7 +1162,7 @@
         // Footer notes printed under the paper table (highlightable like cells: keys note:*)
         const tfoot = document.getElementById('decoTableFoot');
         const noteRow = (...tds) => { const tr = document.createElement('tr'); tr.append(...tds); tfoot.appendChild(tr); };
-        const note = (name, key, span) => { const el = td(`note:${name}`, `note note-${name}`, tSpan(key)); el.colSpan = span; return el; };
+        const note = (name, key, span) => { const el = td(`note:${name}`, `note note-${name}`, `<span class="note-text">${tSpan(key)}</span>`); el.colSpan = span; return el; };
         const gap = td(null, 'caption-blank note-gap');
         gap.colSpan = ND + 1 + NG;
         noteRow(gap);
