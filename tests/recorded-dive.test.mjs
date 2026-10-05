@@ -11,6 +11,7 @@ import { toDiveSetup, prepareRecordedSetup, THIN_TOLERANCE_M } from '../js/impor
 import { thinProfile } from '../js/import/thinProfile.js';
 import { analyzeRecordedDive, summarizeRecordedDive, CEILING_VIOLATION_TOLERANCE_M, DECO_CEILING_THRESHOLD_M } from '../js/import/recordedDiveSummary.js';
 import { DiveProfileChart } from '../js/charts/DiveProfileChart.js';
+import { isDlfFileName, loadDiveFiles, clampGfPair, deviceGf, canAnalyze } from '../js/components/RecordedDiveAnalysis.js';
 import { DEFAULT_DIVE_PROFILE_OPTIONS, mergeOptions } from '../js/charts/chartTypes.js';
 
 const FIXTURES = new URL('./fixtures/divesoft/', import.meta.url);
@@ -218,5 +219,60 @@ describe('DiveProfileChart recorded-dive overlays', () => {
 
     test('violation shading needs the ceiling to be shown', () => {
         assert.deepEqual(build({ showCeiling: false, highlightCeilingViolations: true }), []);
+    });
+});
+
+describe('RecordedDiveAnalysis helpers', () => {
+    const fakeFile = (name, bytes) => ({ name, arrayBuffer: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) });
+    const fixture = id => new Uint8Array(readFileSync(new URL(`${id}.DLF`, FIXTURES)));
+
+    test('only .dlf files are dive logs', () => {
+        assert.ok(isDlfFileName('00000100.DLF'));
+        assert.ok(isDlfFileName('dive.dlf'));
+        assert.ok(!isDlfFileName('SUMMARY.DSM'));
+        assert.ok(!isDlfFileName('00019302.SSF'));
+        assert.ok(!isDlfFileName('DLF'));
+    });
+
+    test('loads dive logs from a picked computer root folder and ignores everything else', async () => {
+        const files = [
+            fakeFile('SUMMARY.DSM', new Uint8Array(16)),
+            fakeFile('00019302.SSF', new Uint8Array(256)),
+            fakeFile('00000101.DLF', fixture('00000101')),
+            fakeFile('00000100.DLF', fixture('00000100')),
+        ];
+        const { dives, errors } = await loadDiveFiles(files);
+        assert.deepEqual(dives.map(d => d.source.diveNumber), [100, 101]);
+        assert.deepEqual(errors, []);
+    });
+
+    test('a corrupt file is reported and the others still load', async () => {
+        const broken = fixture('00000101');
+        broken[0] = 0;
+        const { dives, errors } = await loadDiveFiles([fakeFile('00000099.DLF', broken), fakeFile('00000100.DLF', fixture('00000100'))]);
+        assert.equal(dives.length, 1);
+        assert.equal(errors.length, 1);
+        assert.equal(errors[0].fileName, '00000099.DLF');
+        assert.ok(errors[0].message.length > 0);
+    });
+
+    test('GF pairs are clamped and never inverted', () => {
+        assert.deepEqual(clampGfPair(60, 90), { gfLow: 60, gfHigh: 90 });
+        assert.deepEqual(clampGfPair(95, 70), { gfLow: 95, gfHigh: 95 });
+        assert.deepEqual(clampGfPair(0, 150), { gfLow: 10, gfHigh: 100 });
+        assert.deepEqual(clampGfPair(33.6, 80.2), { gfLow: 34, gfHigh: 80 });
+    });
+
+    test('device GF falls back to 100/100', () => {
+        assert.deepEqual(deviceGf(loadDive('00000100')), { gfLow: 60, gfHigh: 90 });
+        assert.deepEqual(deviceGf({ deco: { gfLow: null, gfHigh: null } }), { gfLow: 100, gfHigh: 100 });
+    });
+
+    test('only open-circuit dives with samples can be analysed', () => {
+        const dive = loadDive('00000100');
+        assert.ok(canAnalyze(dive));
+        assert.ok(!canAnalyze({ ...dive, mode: 'ccr' }));
+        assert.ok(!canAnalyze({ ...dive, mode: 'gauge' }));
+        assert.ok(!canAnalyze({ ...dive, samples: [] }));
     });
 });
