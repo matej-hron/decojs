@@ -7,6 +7,8 @@
  * already understands, so recorded dives can be replayed by the engine.
  */
 
+import { thinProfile } from './thinProfile.js';
+
 /**
  * Display name for a gas mix, following DecoTheory's naming.
  *
@@ -67,4 +69,30 @@ export function toDiveSetup(dive) {
         environment,
         dives: [{ waypoints }],
     };
+}
+
+/** Depth tolerance (m) used when thinning recorded profiles for analysis. */
+export const THIN_TOLERANCE_M = 0.1;
+
+/**
+ * Prepare a recorded dive for analysis at a chosen GF.
+ *
+ * @param {Object} dive - RecordedDive
+ * @param {{gfLow?: number, gfHigh?: number}} [gf] - GF in %; defaults to the dive's own GF
+ * @returns {{setup: Object, deviceCeiling: Array<{t: number, depth: number}>, samples: Array<Object>}}
+ *   setup: DiveSetup with thinned waypoints; deviceCeiling: the computer's logged
+ *   ceiling (t in minutes, depth in m) for drawing; samples: the dive's samples
+ */
+export function prepareRecordedSetup(dive, { gfLow, gfHigh } = {}) {
+    const base = toDiveSetup(dive);
+    const setup = {
+        ...base,
+        gfLow: Number.isFinite(gfLow) ? gfLow : base.gfLow,
+        gfHigh: Number.isFinite(gfHigh) ? gfHigh : base.gfHigh,
+        dives: [{ waypoints: thinProfile(base.dives[0].waypoints, THIN_TOLERANCE_M) }],
+    };
+    const deviceCeiling = dive.samples
+        .filter(s => Number.isFinite(s.ceiling))
+        .map(s => ({ t: s.t / 60, depth: s.ceiling }));
+    return { setup, deviceCeiling, samples: dive.samples };
 }

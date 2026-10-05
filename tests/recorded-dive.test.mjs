@@ -7,7 +7,7 @@ import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { parseDivesoftDLF } from '../js/import/divesoftDlf.js';
-import { toDiveSetup } from '../js/import/recordedDive.js';
+import { toDiveSetup, prepareRecordedSetup, THIN_TOLERANCE_M } from '../js/import/recordedDive.js';
 import { thinProfile } from '../js/import/thinProfile.js';
 
 const FIXTURES = new URL('./fixtures/divesoft/', import.meta.url);
@@ -39,12 +39,9 @@ describe('thinProfile', () => {
     });
 
     test('never deviates more than the tolerance from the original', () => {
+        const kept = new Set(thin);
         for (const wp of full) {
-            if (thin.includes(wp)) {
-                // Waypoint is kept in the thinned profile, check it's at the expected depth
-                assert.ok(true); // Already included, so it matches exactly
-                continue;
-            }
+            if (kept.has(wp)) continue; // kept waypoints are exact by construction; depthAt is ambiguous at duplicate times (t = 0)
             const dev = Math.abs(depthAt(thin, wp.time) - wp.depth);
             assert.ok(dev <= 0.1 + 1e-9, `deviation ${dev} m at ${wp.time} min`);
         }
@@ -78,5 +75,46 @@ describe('thinProfile', () => {
     test('a straight line collapses to its endpoints', () => {
         const line = Array.from({ length: 11 }, (_, i) => ({ time: i, depth: i * 2 }));
         assert.deepEqual(thinProfile(line, 0.1), [line[0], line[10]]);
+    });
+});
+
+describe('prepareRecordedSetup', () => {
+    test('thins the profile and keeps the device GF by default', () => {
+        const dive = loadDive('00000100');
+        const { setup, samples } = prepareRecordedSetup(dive);
+        assert.equal(THIN_TOLERANCE_M, 0.1);
+        assert.equal(setup.gfLow, 60);
+        assert.equal(setup.gfHigh, 90);
+        const n = setup.dives[0].waypoints.length;
+        assert.ok(n >= 60 && n <= 200, `${n} waypoints`);
+        assert.equal(samples, dive.samples);
+    });
+
+    test('overrides GF without touching the dive', () => {
+        const dive = loadDive('00000100');
+        const { setup } = prepareRecordedSetup(dive, { gfLow: 30, gfHigh: 70 });
+        assert.equal(setup.gfLow, 30);
+        assert.equal(setup.gfHigh, 70);
+        assert.equal(dive.deco.gfLow, 60);
+    });
+
+    test('exposes the logged ceiling in minutes at full resolution', () => {
+        const dive = loadDive('00000100');
+        const { deviceCeiling } = prepareRecordedSetup(dive);
+        assert.equal(deviceCeiling.length, dive.samples.length);
+        const peak = deviceCeiling.reduce((a, b) => (b.depth > a.depth ? b : a));
+        assert.equal(peak.depth, 3.1);
+        const sample = dive.samples.find(s => s.ceiling === 3.1);
+        assert.equal(peak.t, sample.t / 60);
+    });
+
+    test('a dive without device GF or samples does not throw', () => {
+        const dive = loadDive('00000101');
+        const bare = { ...dive, deco: { model: null, gfLow: null, gfHigh: null, gfAlt: null }, samples: [], events: [] };
+        const { setup, deviceCeiling } = prepareRecordedSetup(bare);
+        assert.equal(setup.gfLow, 100);
+        assert.equal(setup.gfHigh, 100);
+        assert.deepEqual(deviceCeiling, []);
+        assert.deepEqual(setup.dives[0].waypoints, [{ time: 0, depth: 0 }]);
     });
 });
