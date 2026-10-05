@@ -2633,7 +2633,10 @@
                 "header": "doba ponoru [min] — hloubka zaokrouhli nahoru, čas na nejbližší delší",
                 "corner": "Opakovaný ponor: z části 3 po šipce zpět na START. Doba se hledá jako součet <strong>reálné doby + časové přirážky</strong>.",
                 "cap3": "časová přirážka [min] ← hledej vlevo",
-                "cap2": "povrchový interval [h:min] ↓ hledej dolů (horní = do, dolní = od)"
+                "cap2": "povrchový interval [h:min] ↓ hledej dolů (horní = do, dolní = od)",
+                "noteSafety": "bezpečnostní zastávka <strong>5 m / 3 min</strong>",
+                "noteFlying": "po 1 ponoru <strong>12 h neletět</strong> · po opakovaném nebo vícedenním <strong>24 h neletět</strong>",
+                "noteAdverse": "Za nepříznivých okolností pro dekompresní proces hledat v tabulce hloubku o jeden řádek nižší"
             },
             "image": {
                 "title": "Originál tabulky SPČR/CMAS 2018 — stejná cesta na papíře",

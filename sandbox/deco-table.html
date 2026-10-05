@@ -501,6 +501,19 @@
             cursor: pointer;
         }
 
+        /* footer notes, as printed under the paper table */
+        .deco-grid tfoot td.note-gap { height: 0.6rem; padding: 0; }
+        .deco-grid td.note {
+            padding: 0.45em 0.6em;
+            background: #fff;
+            color: #111;
+            border: 1px solid #1e293b;
+            font-size: 0.85em;
+            line-height: 1.35;
+        }
+        .deco-grid td.note-safety { border: 2px solid #dc2626; }
+        .deco-grid tfoot td.caption-blank { min-width: 0; }
+
         /* labels */
         .deco-grid td.lbl-depth, .deco-grid td.lbl-group, .deco-grid td.lbl-m {
             background: #1e3a5f;
@@ -782,6 +795,7 @@
                     </tr>
                 </thead>
                 <tbody id="decoTableBody"></tbody>
+                <tfoot id="decoTableFoot"></tfoot>
             </table>
         </div>
 
@@ -897,6 +911,16 @@
         captionRow.append(cap3, td(null, 'caption-blank'), cap2);
         tbody.appendChild(captionRow);
 
+        // Footer notes printed under the paper table (highlightable like cells: keys note:*)
+        const tfoot = document.getElementById('decoTableFoot');
+        const noteRow = (...tds) => { const tr = document.createElement('tr'); tr.append(...tds); tfoot.appendChild(tr); };
+        const note = (name, key, span) => { const el = td(`note:${name}`, `note note-${name}`, tSpan(key)); el.colSpan = span; return el; };
+        const gap = td(null, 'caption-blank note-gap');
+        gap.colSpan = ND + 1 + NG;
+        noteRow(gap);
+        noteRow(note('safety', 'table.noteSafety', ND), td(null, 'caption-blank'), note('flying', 'table.noteFlying', NG));
+        noteRow(note('adverse', 'table.noteAdverse', ND + 1 + NG));
+
         // ── Return arrows: from each part 3 depth column back up to its part 1 row ──
         const SVG_NS = 'http://www.w3.org/2000/svg';
         const arrowSvg = document.createElementNS(SVG_NS, 'svg');
@@ -945,11 +969,18 @@
             rowDepth: [9.391, 12.817, 16.117, 19.543, 22.843, 26.269, 29.569, 32.868, 36.294, 39.594, 43.02],
             rowGroup: [47.208, 50.635, 53.934, 57.36, 60.66, 64.086, 67.386, 70.685, 74.112, 77.411, 80.838, 84.137, 87.5],
             labelCol: [46.622, 51.757],
+            // footer notes: [[x0, x1], [y0, y1]], measured from the boxes' borders
+            note: {
+                safety:  [[2.905, 46.757], [89.911, 94.289]],
+                flying:  [[51.824, 97.297], [90.038, 94.48]],
+                adverse: [[3.108, 97.297], [94.86, 97.525]],
+            },
         };
         const LABEL_ROW = [IMG.rowDepth[ND], IMG.rowGroup[0]];
 
         function imgRect(key) {
-            const [kind, a, b] = key.split(':').map((v, i) => i ? Number(v) : v);
+            const [kind, ...rest] = key.split(':');
+            const [a, b] = kind === 'note' ? rest : rest.map(Number);
             const span = (arr, i) => [arr[i], arr[i + 1]];
             switch (kind) {
                 case 'p1':  return [span(IMG.colGroup, b), span(IMG.rowDepth, a)];
@@ -959,6 +990,7 @@
                 case 'lr':  return [IMG.labelCol, span(IMG.rowGroup, a)];
                 case 'lg':  return [span(IMG.colGroup, a), LABEL_ROW];
                 case 'lp3': return [span(IMG.colDepth, a), LABEL_ROW];
+                case 'note': return IMG.note[a];
             }
         }
 

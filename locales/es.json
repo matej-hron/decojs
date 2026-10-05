@@ -2597,7 +2597,10 @@
                 "header": "tiempo de inmersión [min] — redondea la profundidad hacia arriba y el tiempo al valor más largo más próximo",
                 "corner": "Inmersión sucesiva: desde la parte 3 sigue la flecha de vuelta a START. El tiempo que se busca es <strong>tiempo real + penalización</strong>.",
                 "cap3": "penalización [min] ← busca a la izquierda",
-                "cap2": "intervalo en superficie [h:min] ↓ busca hacia abajo (arriba = hasta, abajo = desde)"
+                "cap2": "intervalo en superficie [h:min] ↓ busca hacia abajo (arriba = hasta, abajo = desde)",
+                "noteSafety": "parada de seguridad <strong>5 m / 3 min</strong>",
+                "noteFlying": "tras 1 inmersión <strong>no volar 12 h</strong> · tras inmersiones sucesivas o de varios días <strong>24 h</strong>",
+                "noteAdverse": "En circunstancias adversas para la descompresión, busca la profundidad una fila más abajo"
             },
             "image": {
                 "title": "Tabla original SPČR/CMAS 2018 — el mismo recorrido en papel",

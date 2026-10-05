@@ -2633,7 +2633,10 @@
                 "header": "dive time [min] — round depth up and time to the next longer value",
                 "corner": "Repetitive dive: from part 3 follow the arrow back to START. The time looked up is <strong>actual time + time penalty</strong>.",
                 "cap3": "time penalty [min] ← look left",
-                "cap2": "surface interval [h:min] ↓ look down (top = to, bottom = from)"
+                "cap2": "surface interval [h:min] ↓ look down (top = to, bottom = from)",
+                "noteSafety": "safety stop <strong>5 m / 3 min</strong>",
+                "noteFlying": "after 1 dive <strong>no flying for 12 h</strong> · after repetitive or multi-day diving <strong>24 h</strong>",
+                "noteAdverse": "In adverse circumstances for decompression, look up the depth one row lower"
             },
             "image": {
                 "title": "Original SPČR/CMAS 2018 table — the same path on paper",
