@@ -1417,9 +1417,11 @@
             const v = { maxDepth: r.maxDepth, total: r.tableTime, depth: r.tableDepth, group: GROUPS[r.groupIdx] };
             return T('errors.divePrefix', { n: i + 1 }) + T(`errors.${r.code}`, v);
         }
-        const CRISIS_ERRORS = ['delayOutOfRange', 'noRowBelow', 'invalidDelay'];
-        function crisisErrorText(r) {
+        const CRISIS_ERRORS = ['delayOutOfRange', 'noRowBelow', 'invalidDelay', 'invalid'];
+        function crisisErrorText(r, id) {
             const v = { maxDepth: r.maxDepth, total: r.total ?? r.tableTime, depth: r.tableDepth };
+            // adverse: the row that ran out is the one *below* the entered depth — say so
+            if (id === 'adverse' && r.code === 'timeOutOfRange') return T('crisis.errors.adverseOutOfRange', v);
             return CRISIS_ERRORS.includes(r.code) ? T(`crisis.errors.${r.code}`, v) : T(`errors.${r.code}`, v);
         }
         let lastError = null;   // () => html — re-rendered on language switch
@@ -1676,8 +1678,10 @@
                 case 'adverse': {
                     const base = lookupDive(table, inputs);
                     const adverse = lookupDive(table, { ...inputs, rowOffset: 1 });
-                    if (adverse.code === 'noRowBelow') return adverse;   // the 40 m row: say so before any time error
-                    return !base.ok ? base : !adverse.ok ? adverse : { ok: true, base, adverse };
+                    // errors from the row actually used (one lower), incl. noRowBelow under the 40 m row;
+                    // the base row cannot fail when the lower one fits (times only shrink down the table)
+                    if (!adverse.ok) return adverse;
+                    return base.ok ? { ok: true, base, adverse } : base;
                 }
                 case 'flying': return { ok: true, hours: flyingWaitHours(inputs) };
             }
@@ -1690,7 +1694,7 @@
             const result = lookupScenario(id, inputs);
             // a no-deco dive in the omitted-decompression scenario is still walked through (the table part)
             if (!result.ok && result.code !== 'noDecoStop') {
-                showError(() => crisisErrorText(result));
+                showError(() => crisisErrorText(result, id));
                 return;
             }
             state.scenario = { id, inputs, result };

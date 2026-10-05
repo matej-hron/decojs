@@ -2825,7 +2825,9 @@
                 "errors": {
                     "delayOutOfRange": "Doba se zdržením {total} min je v řádku {depth} m mimo rozsah těchto tabulek (návod odkazuje na tabulky US Navy).",
                     "noRowBelow": "Řádek {depth} m je v tabulce poslední — o řádek níž už nic není, takový ponor s těmito tabulkami nenaplánuješ.",
-                    "invalidDelay": "Zadej zdržení alespoň 1 min."
+                    "invalidDelay": "Zadej zdržení alespoň 1 min.",
+                    "adverseOutOfRange": "O řádek níž, v řádku {depth} m, je doba {total} min mimo rozsah těchto tabulek (návod odkazuje na tabulky US Navy).",
+                    "invalid": "Zadej kladnou hloubku a čas na dně."
                 }
             }
         }

@@ -10579,6 +10579,8 @@ describe('SPČR/CMAS 2018 tables (cmasTables.js)', () => {
             expect(adverse(40, 5).code).toBe('noRowBelow');
             expect(adverse(38, 10).tableDepth).toBe(40);
             expect(adverse(12, 120).code).toBe('timeOutOfRange');
+            const d2 = adverse(25, 41);   // test task D2: 41 min runs off the 30 m row (one below 27 m)
+            expect([d2.code, d2.tableDepth, d2.tableTime]).toEqual(['timeOutOfRange', 30, 41]);
             expect(adverse(41, 5).code).toBe('tooDeep');
         });
     });
@@ -10796,7 +10798,7 @@ describe('SPČR/CMAS 2018 tables (cmasTables.js)', () => {
             ...['omitted', 'fast'].map(v => `crisis.steps.intro.${v}`),
             ...['noSymptoms', 'symptoms'].map(v => `crisis.steps.watch.${v}`),
             ...['single', 'repeat'].map(v => `crisis.steps.flying.${v}`),
-            ...['delayOutOfRange', 'noRowBelow', 'invalidDelay'].map(c => `crisis.errors.${c}`),
+            ...['delayOutOfRange', 'noRowBelow', 'invalidDelay', 'invalid', 'adverseOutOfRange'].map(c => `crisis.errors.${c}`),
             'narrator.legend.labelNote',
             ...[1, 2, 3, 4, 5, 6, 7, 8].map(i => `crisis.factor.${i}`),
             ...['plan', 'delay', 'procedure', 'branch1', 'branch2', 'symptoms', 'normal', 'adverse', 'flying'].map(p => `crisis.phase.${p}`),

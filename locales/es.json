@@ -2789,7 +2789,9 @@
                 "errors": {
                     "delayOutOfRange": "Con el retraso, {total} min queda fuera de la fila de {depth} m de estas tablas (la guía remite a las tablas de la US Navy).",
                     "noRowBelow": "La fila de {depth} m es la última de la tabla: no hay fila debajo, así que esta inmersión no se puede planificar con estas tablas.",
-                    "invalidDelay": "Introduce un retraso de al menos 1 min."
+                    "invalidDelay": "Introduce un retraso de al menos 1 min.",
+                    "adverseOutOfRange": "Una fila más abajo, en la fila de {depth} m, {total} min queda fuera de estas tablas (la guía remite a las tablas de la US Navy).",
+                    "invalid": "Introduce una profundidad y un tiempo de fondo positivos."
                 }
             }
         }

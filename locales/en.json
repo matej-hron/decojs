@@ -2825,7 +2825,9 @@
                 "errors": {
                     "delayOutOfRange": "With the delay, {total} min is beyond the {depth} m row of these tables (the guide points to the US Navy tables).",
                     "noRowBelow": "The {depth} m row is the last in the table — there is no row below it, so this dive cannot be planned with these tables.",
-                    "invalidDelay": "Enter a delay of at least 1 min."
+                    "invalidDelay": "Enter a delay of at least 1 min.",
+                    "adverseOutOfRange": "One row lower, in the {depth} m row, {total} min is beyond these tables (the guide points to the US Navy tables).",
+                    "invalid": "Enter a positive depth and bottom time."
                 }
             }
         }
