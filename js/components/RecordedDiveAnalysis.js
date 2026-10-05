@@ -80,7 +80,7 @@ export function canAnalyze(dive) {
     return dive.mode === 'oc' && dive.samples.length >= 2;
 }
 
-const t = (key, fallback) => translate(`sandbox.recorded.${key}`, fallback);
+const t = (key, fallback) => translate(`diveLog.${key}`, fallback);
 const fill = (text, ...values) => String(text).replace(/\{(\d+)\}/g, (_, i) => values[Number(i)] ?? '');
 const minSec = s => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}`;
 
@@ -106,34 +106,34 @@ export class RecordedDiveAnalysis {
     _buildDom() {
         this.root.innerHTML = `
             <section class="rda-open rda-card">
-                <label class="rda-picker"><span data-i18n="sandbox.recorded.openFolder">Open a DIVELOG folder</span>
+                <label class="rda-picker"><span data-i18n="diveLog.openFolder">Open a DIVELOG folder</span>
                     <input type="file" id="rda-folder" webkitdirectory></label>
-                <label class="rda-picker"><span data-i18n="sandbox.recorded.openFiles">or pick .DLF files</span>
+                <label class="rda-picker"><span data-i18n="diveLog.openFiles">or pick .DLF files</span>
                     <input type="file" id="rda-files" multiple accept=".dlf,.DLF"></label>
                 <p class="rda-status" id="rda-status"></p>
             </section>
             <section class="rda-list rda-card"><div><table class="rda-table">
                 <thead><tr>
-                    <th data-i18n="sandbox.recorded.colDive">#</th>
-                    <th data-i18n="sandbox.recorded.colStart">Start (device time)</th>
-                    <th data-i18n="sandbox.recorded.colDepth">Max depth</th>
-                    <th data-i18n="sandbox.recorded.colDuration">Duration</th>
-                    <th data-i18n="sandbox.recorded.colMode">Mode</th>
-                    <th data-i18n="sandbox.recorded.colGf">GF</th>
-                    <th data-i18n="sandbox.recorded.colWater">Water</th>
-                    <th data-i18n="sandbox.recorded.colWarnings">Warnings</th>
+                    <th data-i18n="diveLog.colDive">#</th>
+                    <th data-i18n="diveLog.colStart">Start (device time)</th>
+                    <th data-i18n="diveLog.colDepth">Max depth</th>
+                    <th data-i18n="diveLog.colDuration">Duration</th>
+                    <th data-i18n="diveLog.colMode">Mode</th>
+                    <th data-i18n="diveLog.colGf">GF</th>
+                    <th data-i18n="diveLog.colWater">Water</th>
+                    <th data-i18n="diveLog.colWarnings">Warnings</th>
                 </tr></thead>
                 <tbody id="rda-rows"></tbody>
             </table></div></section>
             <section class="rda-analysis" id="rda-analysis" hidden>
                 <div class="rda-controls rda-card">
-                    <h2 data-i18n="sandbox.recorded.gfHeading">Gradient factors</h2>
+                    <h2 data-i18n="diveLog.gfHeading">Gradient factors</h2>
                     <label for="rda-gf-low">GF Low <output id="rda-gf-low-out"></output></label>
                     <input type="range" id="rda-gf-low" min="${MIN_GF_PERCENT}" max="${MAX_GF_PERCENT}" step="1">
                     <label for="rda-gf-high">GF High <output id="rda-gf-high-out"></output></label>
                     <input type="range" id="rda-gf-high" min="${MIN_GF_PERCENT}" max="${MAX_GF_PERCENT}" step="1">
                     <div class="rda-presets" id="rda-presets"></div>
-                    <button type="button" class="btn btn-small btn-secondary" id="rda-reset" data-i18n="sandbox.recorded.resetGf">Reset to device GF</button>
+                    <button type="button" class="btn btn-small btn-secondary" id="rda-reset" data-i18n="diveLog.resetGf">Reset to device GF</button>
                 </div>
                 <div class="rda-summary rda-card" id="rda-summary"></div>
                 <p class="rda-note" id="rda-note" hidden></p>
@@ -143,8 +143,8 @@ export class RecordedDiveAnalysis {
                     <div class="chart-wrapper" id="rda-gf" style="height: 640px;"></div>
                 </div>
                 <details class="rda-help rda-card">
-                    <summary data-i18n="sandbox.recorded.helpHeading">How the ceilings compare</summary>
-                    <p data-i18n="sandbox.recorded.helpText"></p>
+                    <summary data-i18n="diveLog.helpHeading">How the ceilings compare</summary>
+                    <p data-i18n="diveLog.helpText"></p>
                 </details>
             </section>`;
         const $ = id => this.root.querySelector(`#${id}`);

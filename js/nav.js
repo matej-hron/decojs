@@ -21,7 +21,6 @@ const NAV_ITEMS = [
         submenu: [
             { href: 'sandbox/index.html', labelKey: 'nav.sandbox.deco', label: 'Decompression Modelling' },
             { href: 'sandbox/repetitive-dives.html', labelKey: 'nav.sandbox.repetitive', label: 'Repetitive Dives' },
-            { href: 'sandbox/recorded-dive.html', labelKey: 'nav.sandbox.recorded', label: 'Recorded Dives' },
             { href: 'sandbox/tissue-saturation.html', labelKey: 'nav.sandbox.tissue', label: 'Tissue Saturation' },
             { href: 'sandbox/bubble-mechanics.html', labelKey: 'nav.sandbox.bubbles', label: 'Bubble Mechanics' },
             { href: 'sandbox/haldane.html', labelKey: 'nav.sandbox.haldane', label: 'Haldane Equation' },
@@ -73,6 +72,9 @@ function resolveLabel(item) {
     return item.label;
 }
 
+/** One-level page folders that need a '../' prefix for root-relative links */
+const SUBFOLDERS = ['sandbox', 'lab'];
+
 /**
  * Get the current page path from the URL
  * Returns path relative to the project root (e.g., 'index.html' or 'sandbox/index.html')
@@ -80,10 +82,11 @@ function resolveLabel(item) {
 function getCurrentPage() {
     const path = window.location.pathname;
 
-    // Check if we're in a subdirectory like /sandbox/
-    if (path.includes('/sandbox/')) {
+    // Check if we're in a one-level subdirectory like /sandbox/ or /lab/
+    const folder = SUBFOLDERS.find(f => path.includes(`/${f}/`));
+    if (folder) {
         const filename = path.substring(path.lastIndexOf('/') + 1) || 'index.html';
-        return 'sandbox/' + filename;
+        return `${folder}/${filename}`;
     }
 
     const filename = path.substring(path.lastIndexOf('/') + 1) || 'index.html';
@@ -95,8 +98,8 @@ function getCurrentPage() {
  */
 function getPathPrefix() {
     const path = window.location.pathname;
-    // Check if we're in a subdirectory like /sandbox/
-    if (path.includes('/sandbox/')) {
+    // Check if we're in a one-level subdirectory like /sandbox/ or /lab/
+    if (SUBFOLDERS.some(f => path.includes(`/${f}/`))) {
         return '../';
     }
     return '';

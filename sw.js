@@ -31,7 +31,7 @@ const STATIC_ASSETS = [
   './sandbox/editor-test.html',
   './sandbox/repetitive-dives.html',
   './sandbox/deco-table.html',
-  './sandbox/recorded-dive.html',
+  './lab/dive-log.html',
   './data/cmas-deco-tables.json',
   './css/styles.css',
   './fonts/fraunces-latin.woff2',

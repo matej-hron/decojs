@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recorded Dives - Deco Theory</title>
+    <meta name="robots" content="noindex, nofollow">
+    <title>Dive Log - Deco Theory</title>
     <link rel="manifest" href="../manifest.json">
     <meta name="theme-color" content="#2980b9">
     <link rel="icon" type="image/svg+xml" href="../icons/icon.svg">
@@ -34,7 +35,7 @@
         @media (max-width: 900px) { .rda-analysis { grid-template-columns: 1fr; } }
     </style>
 </head>
-<body data-i18n-title="nav.sandbox.recorded" data-i18n-title-context="nav.sandbox.label">
+<body data-i18n-title="diveLog.pageTitle">
     <nav class="main-nav">
         <div class="nav-container">
             <a href="../index.html" class="nav-logo">Deco Theory</a>
@@ -45,19 +46,19 @@
             <span class="nav-wip-badge" data-i18n="common.wipBadge">Experimental</span>
         </div>
     </nav>
-    <div class="disclaimer-banner" data-i18n="sandbox.recorded.disclaimerBanner">
+    <div class="disclaimer-banner" data-i18n="diveLog.disclaimerBanner">
         <strong>Educational Use Only</strong> — Replays dives recorded by a dive computer through DecoTheory's model. Not a substitute for your dive computer.
     </div>
     <header class="hero hero-compact">
-        <h1 data-i18n="sandbox.recorded.title">Recorded Dives</h1>
-        <p class="hero-subtitle" data-i18n="sandbox.recorded.subtitle">Open dives from a Divesoft dive computer and see them in the profile, P-P and GF charts. Change GF to see where the limits would have been.</p>
+        <h1 data-i18n="diveLog.pageTitle">Dive Log</h1>
+        <p class="hero-subtitle" data-i18n="diveLog.subtitle">Open dives from a Divesoft dive computer and see them in the profile, P-P and GF charts. Change GF to see where the limits would have been.</p>
     </header>
     <main>
         <div class="rda-root"></div>
     </main>
     <footer>
         <span class="wip-badge" data-i18n="common.wipBadge">Experimental</span>
-        <p data-i18n="sandbox.recorded.disclaimer"><strong>Disclaimer:</strong> For educational purposes only. Each dive starts from a fresh surface state; earlier dives the same day are not taken into account.</p>
+        <p data-i18n="diveLog.disclaimer"><strong>Disclaimer:</strong> For educational purposes only. Each dive starts from a fresh surface state; earlier dives the same day are not taken into account.</p>
         <span class="version-number"></span>
     </footer>
     <script src="../js/nav.js" type="module"></script>
