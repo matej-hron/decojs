@@ -22,8 +22,9 @@ author cannot hear audio, so check timing via captions/frames.
 
 ## Embedding on a page
 
-One button opens the video in a dialog; before playback the viewer picks the subtitle
-language (preselected from the UI language, remembered per browser).
+One button opens and plays the video in a dialog. Subtitles start in the viewer's last
+choice (first time: the UI language); the dialog bar switches English / Čeština / Off,
+and the choice is remembered per browser.
 
 ```html
 <!-- inside the page hero, under .hero-subtitle -->
