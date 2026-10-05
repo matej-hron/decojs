@@ -28,9 +28,11 @@ export function gasName({ o2, he }) {
  * Samples become waypoints (time in minutes). Each gas switch sets `gasId` on
  * the first waypoint at or after the switch time. A surface waypoint at time 0
  * frames the profile when the first sample is not at the surface.
+ * environment.waterDensity is in kg/L for engine compatibility (getPressurePerMeter
+ * computes waterDensity * 1000 * g / 1e5 to get pressure increase per meter).
  *
  * @param {Object} dive - RecordedDive
- * @returns {Object} DiveSetup
+ * @returns {Object} DiveSetup with environment.waterDensity in kg/L
  */
 export function toDiveSetup(dive) {
     const label = dive.source?.diveNumber != null ? `#${dive.source.diveNumber}` : 'dive';
@@ -50,7 +52,8 @@ export function toDiveSetup(dive) {
 
     const environment = {};
     if (Number.isFinite(dive.environment?.surfacePressure)) environment.surfacePressure = dive.environment.surfacePressure;
-    // DLF waterDensity is in kg/dm³; the engine expects kg/m³, so divide by 1000
+    // RecordedDive waterDensity is kg/m³ (1028 salt, 1000 fresh); DiveSetup and
+    // the engine expect kg/L (1.028, 1.0), so divide by 1000
     if (Number.isFinite(dive.environment?.waterDensity)) environment.waterDensity = dive.environment.waterDensity / 1000;
 
     return {
