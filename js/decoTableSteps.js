@@ -157,7 +157,7 @@ function delaySteps(ctx, { inputs, result: r }) {
 /** S2 — omitted decompression / too-fast ascent. `result` may be the noDecoStop refusal (it carries the lookup). */
 function omittedSteps(ctx, { inputs, result: r }) {
     const { T } = ctx;
-    const L = r.lookup, d = L.depthIdx, g = L.groupIdx, cell = `p1:${d}:${g}`;
+    const L = r.lookup;
     const plan = inPhase(0, part1Steps(ctx, inputs, L));
     if (r.code === 'noDecoStop') {
         return {
@@ -166,10 +166,12 @@ function omittedSteps(ctx, { inputs, result: r }) {
                 part: null, group: 1,
                 title: T('crisis.stepTitle.noDecoStop'),
                 text: T('crisis.steps.noDecoStop'),
-                hl: { label: ['note:safety'], origin: [cell], focus: ['note:safety', cell] },
+                // only the note: the cell (read in the previous step) sits far above it, off screen
+                hl: { label: ['note:safety'], focus: ['note:safety'] },
             }],
         };
     }
+    const d = L.depthIdx, g = L.groupIdx, cell = `p1:${d}:${g}`;
     const v = { stop: r.stop, raw: fmtNum(ctx, r.extendedStop.raw), total: r.extendedStop.total };
     const decide = { 1: 'canReturn', 2: 'cannotReturn', symptoms: 'symptoms' }[r.branch];
     const step = (group, key, text, hl = {}) => ({ part: null, group, title: T(`crisis.stepTitle.${key}`), text, hl });

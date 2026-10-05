@@ -10758,6 +10758,8 @@ describe('SPČR/CMAS 2018 tables (cmasTables.js)', () => {
             const { steps } = omitted(true, false, 17, 49);
             expect(steps.length).toBe(4);
             expect(steps[3].hl.label).toEqual(['note:safety']);
+            expect(steps[3].hl.origin).toBe(undefined);
+            expect(steps[3].hl.focus).toEqual(['note:safety']);
             expect(steps.some(s => s.text.includes('stopLonger'))).toBe(false);
         });
         test('S3 D10: note, row below, found L 50 in the 27 m row', () => {
