@@ -253,6 +253,9 @@ import {
     lookupDive,
     ndlLimitIdx,
     formatHM,
+    lookupDelayedAscent,
+    omittedDecoProcedure,
+    flyingWaitHours,
 } from '../js/cmasTables.js';
 import { buildSteps as buildDecoTableSteps } from '../js/decoTableSteps.js';
 
@@ -10546,6 +10549,102 @@ describe('SPČR/CMAS 2018 tables (cmasTables.js)', () => {
             expect(lookupDive(cmas, { depth: 30, time: 5, prevGroupIdx: g('L'), surfaceInterval: 10 }).code)
                 .toBe('noPenalty');
         });
+    });
+
+    describe('emergencies — adverse circumstances (rowOffset 1)', () => {
+        const adverse = (depth, time) => lookupDive(cmas, { depth, time, rowOffset: 1 });
+        const cellOf = r => `${r.tableDepth} ${G[r.groupIdx]}${r.cell.bottomTime}/${r.cell.stop5m}`;
+        test('test tasks D10, D7, D6, D4: one row lower', () => {
+            expect(cellOf(lookupDive(cmas, { depth: 23, time: 49 }))).toBe('24 K50/10');
+            expect(cellOf(adverse(23, 49))).toBe('27 L50/18');
+            expect(cellOf(lookupDive(cmas, { depth: 36, time: 15 }))).toBe('36 F15/5');
+            expect(cellOf(adverse(36, 15))).toBe('40 J25/10');
+            expect(cellOf(lookupDive(cmas, { depth: 11, time: 95 }))).toBe('12 I100/0');
+            expect(cellOf(adverse(11, 95))).toBe('15 L100/5');
+            expect(cellOf(adverse(35, 25))).toBe('40 J25/10');
+        });
+        test('the base row is reported alongside the shifted one', () => {
+            const r = adverse(23, 49);
+            expect([r.baseDepthIdx, r.baseTableDepth, r.depthIdx]).toEqual([4, 24, 5]);
+            const plain = lookupDive(cmas, { depth: 23, time: 49 });
+            expect([plain.baseDepthIdx, plain.depthIdx]).toEqual([4, 4]);
+        });
+        test('B1, B3: no-deco limit one row lower (18 m: 55 → 45 min)', () => {
+            expect(lookupDive(cmas, { depth: 18, time: 1 }).maxNoDecoTime).toBe(55);
+            expect(adverse(18, 1).maxNoDecoTime).toBe(45);
+            expect(adverse(16, 1).maxNoDecoTime).toBe(45);
+        });
+        test('the 40 m row has no row below; 12 m / 120 min runs off the 15 m row', () => {
+            expect(adverse(38, 10).code).toBe('noRowBelow');
+            expect(adverse(40, 5).code).toBe('noRowBelow');
+            expect(adverse(38, 10).tableDepth).toBe(40);
+            expect(adverse(12, 120).code).toBe('timeOutOfRange');
+            expect(adverse(41, 5).code).toBe('tooDeep');
+        });
+    });
+
+    describe('emergencies — delayed ascent', () => {
+        const delayed = (depth, time, delay) => lookupDelayedAscent(cmas, { depth, time, delay });
+        test('24 m / 35 + 4 min: H 35 no-deco → I 40, 5 min (became deco)', () => {
+            const r = delayed(24, 35, 4);
+            expect([G[r.original.groupIdx], r.original.isDeco]).toEqual(['H', false]);
+            expect([G[r.delayed.groupIdx], r.delayed.cell.stop5m, r.total]).toEqual(['I', 5, 39]);
+            expect(r.verdict).toBe('becameDeco');
+        });
+        test('21 m / 50 + 8 min: J 50/5 → K 60/8 (longer stop)', () => {
+            const r = delayed(21, 50, 8);
+            expect(`${G[r.original.groupIdx]}${r.original.cell.stop5m} ${G[r.delayed.groupIdx]}${r.delayed.cell.stop5m}`).toBe('J5 K8');
+            expect(r.verdict).toBe('longerStop');
+        });
+        test('18 m / 41 + 5 min stays in the H 50 cell (same procedure)', () => {
+            const r = delayed(18, 41, 5);
+            expect(r.original.groupIdx).toBe(r.delayed.groupIdx);
+            expect(r.verdict).toBe('sameProcedure');
+        });
+        test('errors: off the row, no delay, the dive itself invalid', () => {
+            const off = delayed(30, 20, 30);
+            expect([off.code, off.total, off.tableDepth]).toEqual(['delayOutOfRange', 50, 30]);
+            expect(delayed(24, 35, 0).code).toBe('invalidDelay');
+            expect(delayed(45, 10, 2).code).toBe('tooDeep');
+        });
+    });
+
+    describe('emergencies — omitted decompression', () => {
+        const omitted = (depth, time, canReturn = true, symptoms = false) =>
+            omittedDecoProcedure(cmas, { depth, time, canReturn, symptoms });
+        test('test tasks F1, F2, F4, F5, F7, F8, F10: 1,5× the stop, rounded up', () => {
+            const ext = ([d, t]) => { const r = omitted(d, t); return `${r.stop}:${r.extendedStop.raw}:${r.extendedStop.total}`; };
+            expect([[24, 51], [39, 20], [32, 25], [28, 23], [22, 55], [35, 24], [40, 10]].map(ext)).toEqual([
+                '17:25.5:26', '10:15:15', '7:10.5:11', '5:7.5:8', '17:25.5:26', '6:9:9', '5:7.5:8',
+            ]);
+        });
+        test('F3, F6, F9 are no-deco cells → noDecoStop (no 1,5× of the safety stop)', () => {
+            for (const [d, t, cell] of [[17, 49, 'H50'], [14, 59, 'H60'], [26, 19, 'F20']]) {
+                const r = omitted(d, t);
+                expect(r.ok).toBe(false);
+                expect(r.code).toBe('noDecoStop');
+                expect(`${G[r.lookup.groupIdx]}${r.lookup.cell.bottomTime}`).toBe(cell);
+            }
+        });
+        test('branch: can return × symptoms', () => {
+            expect(omitted(24, 51, true, false).branch).toBe(1);
+            expect(omitted(24, 51, false, false).branch).toBe(2);
+            expect(omitted(24, 51, false, true).branch).toBe(2);
+            expect(omitted(24, 51, true, true).branch).toBe('symptoms');
+        });
+        test('no diving for 12 h only on branch 2 without symptoms', () => {
+            expect(omitted(24, 51, false, false).noDiveHours).toBe(12);
+            expect(omitted(24, 51, false, true).noDiveHours).toBe(null);
+            expect(omitted(24, 51, true, false).noDiveHours).toBe(null);
+        });
+        test('lookup errors pass through', () => {
+            expect(omitted(42, 10).code).toBe('tooDeep');
+        });
+    });
+
+    test('emergencies — flying: 12 h after one dive, 24 h after repetitive', () => {
+        expect(flyingWaitHours({ repetitive: false })).toBe(12);
+        expect(flyingWaitHours({ repetitive: true })).toBe(24);
     });
 
     describe('walkthrough steps (decoTableSteps.js)', () => {
