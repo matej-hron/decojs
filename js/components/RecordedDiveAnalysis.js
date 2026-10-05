@@ -299,6 +299,7 @@ export class RecordedDiveAnalysis {
                     options: { compartments: [1, 2, 3, 4, 5, 6], showTrail: true, compartmentSelector: true },
                 }),
             };
+            this._chartsDive = dive;
             this.charts.mvalue.options.onTimeIndexChange = i => this.charts.gf.setTimeIndex(i);
             this.charts.gf.options.onTimeIndexChange = i => this.charts.mvalue.setTimeIndex(i);
             return;
@@ -307,8 +308,13 @@ export class RecordedDiveAnalysis {
             referenceCeiling: deviceCeiling.length ? deviceCeiling : null,
             referenceCeilingLabel: this._deviceCeilingLabel(dive),
         });
+        // Keep the timeline position when only GF changed; reset for a different dive.
+        const index = this._chartsDive === dive ? this.charts.mvalue.currentTimeIndex : 0;
+        this._chartsDive = dive;
         this.charts.mvalue.update(setup);
         this.charts.gf.update(setup);
+        this.charts.mvalue.setTimeIndex(index);
+        this.charts.gf.setTimeIndex(index);
     }
 
     _deviceCeilingLabel(dive) {

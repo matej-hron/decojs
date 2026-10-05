@@ -747,7 +747,15 @@ export class DiveProfileChart {
     }
     
     /**
-     * Add stop labels (deco stops) - always shown regardless of showLabels option
+     * Add stop labels unless the showDecoStops option is false (default: shown).
+     * @private
+     */
+    _addStopLabelsIfEnabled(annotations, waypoints) {
+        if (this.options.showDecoStops !== false) this._addStopLabels(annotations, waypoints);
+    }
+
+    /**
+     * Add stop labels (deco stops) - independent of the showLabels option
      * @private
      */
     _addStopLabels(annotations, waypoints) {
@@ -1242,8 +1250,8 @@ export class DiveProfileChart {
             this._addSurfaceIntervalLabel(annotations, waypoints);
         }
         
-        // Stop labels (deco stops) - always shown
-        this._addStopLabels(annotations, waypoints);
+        // Stop labels (deco stops) - shown unless showDecoStops is false
+        this._addStopLabelsIfEnabled(annotations, waypoints);
         
         // Reserve pressure line (if showing gas consumption)
         if (this.options.showGasConsumption && gasConsumption) {

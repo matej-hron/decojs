@@ -487,11 +487,12 @@ export function normalizeDiveSetup(setup) {
         surfaceInterval: setup.surfaceInterval ?? 60,
         environment: {
             altitude: setup.environment?.altitude ?? 0,
-            waterType: Object.values(WATER_TYPES).includes(
-                setup.environment?.waterType
-            )
-                ? setup.environment.waterType
-                : WATER_TYPES.STANDARD,
+            // A recorded water density (no waterType) is kept; getPressurePerMeter resolves it.
+            ...(Object.values(WATER_TYPES).includes(setup.environment?.waterType)
+                ? { waterType: setup.environment.waterType }
+                : (setup.environment?.waterType === undefined && Number.isFinite(setup.environment?.waterDensity))
+                    ? { waterDensity: setup.environment.waterDensity }
+                    : { waterType: WATER_TYPES.STANDARD }),
             ...(Number.isFinite(setup.environment?.surfacePressure)
                 ? { surfacePressure: setup.environment.surfacePressure }
                 : {})

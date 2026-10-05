@@ -12,7 +12,8 @@ import { thinProfile } from '../js/import/thinProfile.js';
 import { analyzeRecordedDive, summarizeRecordedDive, CEILING_VIOLATION_TOLERANCE_M, DECO_CEILING_THRESHOLD_M } from '../js/import/recordedDiveSummary.js';
 import { DiveProfileChart } from '../js/charts/DiveProfileChart.js';
 import { isDlfFileName, loadDiveFiles, clampGfPair, deviceGf, canAnalyze } from '../js/components/RecordedDiveAnalysis.js';
-import { DEFAULT_DIVE_PROFILE_OPTIONS, mergeOptions } from '../js/charts/chartTypes.js';
+import { getPressurePerMeter } from '../js/deco/environment.js';
+import { DEFAULT_DIVE_PROFILE_OPTIONS, mergeOptions, normalizeDiveSetup } from '../js/charts/chartTypes.js';
 
 const FIXTURES = new URL('./fixtures/divesoft/', import.meta.url);
 
@@ -274,5 +275,36 @@ describe('RecordedDiveAnalysis helpers', () => {
         assert.ok(!canAnalyze({ ...dive, mode: 'ccr' }));
         assert.ok(!canAnalyze({ ...dive, mode: 'gauge' }));
         assert.ok(!canAnalyze({ ...dive, samples: [] }));
+    });
+});
+
+describe('recorded profile chart fixes', () => {
+    test('showDecoStops=false suppresses stop labels; default keeps them', () => {
+        const waypoints = [
+            { time: 0, depth: 0 }, { time: 2, depth: 30 }, { time: 20, depth: 30 },
+            { time: 23, depth: 6 }, { time: 26, depth: 6 }, { time: 28, depth: 0 },
+        ];
+        const run = options => {
+            const self = { options, _addStopLabels: DiveProfileChart.prototype._addStopLabels };
+            const annotations = {};
+            DiveProfileChart.prototype._addStopLabelsIfEnabled.call(self, annotations, waypoints);
+            return Object.keys(annotations).filter(k => k.startsWith('stopLabel'));
+        };
+        assert.equal(run({ showDecoStops: false }).length, 0);
+        assert.ok(run({}).length > 0);
+        assert.ok(run({ showDecoStops: true }).length > 0);
+    });
+
+    test('charts use the recorded water density, matching the summary', () => {
+        const { setup } = prepareRecordedSetup(loadDive('00000100'), { gfLow: 60, gfHigh: 90 });
+        const normalized = normalizeDiveSetup(setup);
+        assert.equal(normalized.environment.waterType, undefined);
+        assert.ok(Math.abs(getPressurePerMeter(normalized.environment) - 1028 * 9.80665 / 1e5) < 1e-9);
+        const peak = analysis => Math.max(...analysis.ceilingDepths);
+        const viaChart = peak(analyzeRecordedDive(normalized));
+        const viaSummary = peak(analyzeRecordedDive(setup));
+        assert.ok(Math.abs(viaChart - viaSummary) < 0.01);
+        // Inputs without a recorded density keep the standard water type.
+        assert.equal(normalizeDiveSetup({ dives: [], gases: [{ o2: 0.21, he: 0 }] }).environment.waterType, 'standard');
     });
 });
