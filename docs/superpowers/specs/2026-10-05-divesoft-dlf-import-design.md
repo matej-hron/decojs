@@ -61,7 +61,8 @@ future backend.
 ## RecordedDive shape
 
 Units: time s (samples, events, duration), depth m, pressure bar, temperature °C,
-gas fractions 0–1, GF in % (matching DiveSetup).
+gas fractions 0–1, GF in % (matching DiveSetup). Sample `ndl` and `tts` are whole
+minutes, as the computer displays them.
 
 ```js
 {
@@ -99,7 +100,7 @@ Field rules:
   `ceiling` is 0 outside deco. `ppO2`, `temp`, `ndl`, `tts` and `ceiling` are
   omitted from a sample when its record does not carry them.
 - `events[].type` covers: `gasSwitch` (with `gasId`), `bookmark`, `safetyStopDone`,
-  `decoStopDone`, `ndlEnded`, `ascentTooFast`, `ceilingViolated`, `cns` (with
+  `decoStopDone`, `safetyStopMissed`, `ndlEnded`, `ascentTooFast`, `ceilingViolated`, `cns` (with
   `value`), `setpoint` (with `value`). Other codes are skipped.
 
 ## Parser behaviour
@@ -159,7 +160,8 @@ per dive: header fields, GF, gas list, sample count, and every 25th sample (t, d
 temp, ceiling, ndl, tts). The generator stays outside the repository; the file is
 checked in as data.
 
-Test cases (`tests/divesoft-dlf.test.mjs`, run by `npm test`):
+Test cases (`tests/divesoft-dlf.test.mjs`, using Node's built-in `node:test`; the
+`npm test` script runs it after `tests/run-tests.mjs`):
 
 1. **Field agreement:** each fixture's header fields, GF pair, gases, sample count and
    sampled points equal `expected.json`.
