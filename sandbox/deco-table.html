@@ -221,6 +221,7 @@
             font-size: 0.78rem;
             color: var(--text-muted);
         }
+        .hl-legend[hidden] { display: none; }
         .hl-legend li { display: flex; align-items: center; gap: 0.35rem; }
         .hl-legend .hl-lead { font-weight: 600; }
         .hl-swatch { width: 16px; height: 12px; border-radius: 2px; flex-shrink: 0; background: var(--background-color); }
@@ -279,6 +280,8 @@
         @media (min-width: 900px) {
             .step-narrator.visible .paper-inset { display: flex; }
         }
+        /* procedure steps point at nothing in the table: no inset, no 📄 toggle */
+        .step-narrator.visible.no-paper .paper-inset, .step-narrator.no-paper .paper-toggle { display: none; }
 
         /* Phones and narrow tablets: the guide is a bottom sheet, the table keeps the top */
         @media (max-width: 899.98px) {
@@ -311,7 +314,7 @@
             .paper-toggle { display: inline-block; }
             .step-narrator.paper-on .paper-inset { display: flex; }
             .step-narrator.paper-on .paper-view { width: 100%; height: 150px; }
-            .step-narrator.paper-on .step-text, .step-narrator.paper-on .more-btn { display: none; }
+            .step-narrator.paper-on:not(.no-paper) .step-text, .step-narrator.paper-on:not(.no-paper) .more-btn { display: none; }
             .step-btns .paper-toggle[aria-pressed="true"] { background: #1e3a5f; border-color: #1e3a5f; color: #fff; }
             .back-to-table { bottom: calc(var(--guide-h, 0px) + 1rem); }
         }
@@ -990,8 +993,12 @@
             });
         }
 
+        const hasTableKeys = spec => HL_KINDS.some(k => spec[k]?.length) || spec.arrow != null;
+
         function highlight(spec) {
             clearHighlights();
+            els.narrator.classList.toggle('no-paper', !hasTableKeys(spec));
+            if (!hasTableKeys(spec)) return;   // a procedure step: nothing in the table to point at
             grid.classList.add('focus');
             for (const kind of HL_KINDS) {
                 for (const key of spec[kind] ?? []) {
@@ -1118,8 +1125,9 @@
             result: $('resultCard'), log: $('diveLog'),
         };
         const MAX_REPEATS = 4;
-        // dives: [{ depth, time, si?, result }]; steps: flat list over all dives, each with .dive
-        const state = { dives: [], steps: [], step: -1, done: false, expanded: false };
+        // dives: [{ depth, time, si?, result }]; steps: flat list, each with .group (a dot group:
+        // one per dive in a plan) labelled by groupLabels
+        const state = { dives: [], steps: [], groupLabels: [], step: -1, done: false, expanded: false };
 
         function errorText(r, i) {
             const v = { maxDepth: r.maxDepth, total: r.tableTime, depth: r.tableDepth, group: GROUPS[r.groupIdx] };
@@ -1189,13 +1197,13 @@
         }
 
         // ── Walkthrough ──────────────────────────────────────────────────────
-        function currentDive() { return state.steps[state.step].dive; }
+        function currentGroup() { return state.steps[state.step].group; }
 
-        /** Progress over the whole plan: one group of dots per dive; a dot jumps to its step. */
+        /** Progress over the whole walkthrough: one group of dots per dive (or phase); a dot jumps to its step. */
         function renderIndicator() {
             els.indicator.innerHTML = '';
-            const cur = currentDive();
-            state.dives.forEach((_, dv) => {
+            const s = state.steps[state.step];
+            state.groupLabels.forEach((label, dv) => {
                 if (dv) {
                     const divider = document.createElement('span');
                     divider.className = 'dot-divider';
@@ -1203,8 +1211,8 @@
                 }
                 const group = document.createElement('span');
                 group.className = 'dot-group';
-                group.innerHTML = `<span class="dot-group-label">${dv + 1}.</span>`;
-                state.steps.map((s, i) => [s, i]).filter(([s]) => s.dive === dv).forEach(([s, i], k) => {
+                group.innerHTML = `<span class="dot-group-label">${label}</span>`;
+                state.steps.map((st, i) => [st, i]).filter(([st]) => st.group === dv).forEach(([st, i], k) => {
                     if (k) {
                         const c = document.createElement('span');
                         c.className = 'step-connector' + (i <= state.step ? ' done' : '');
@@ -1215,7 +1223,7 @@
                     dot.tabIndex = -1;   // ← → are the way to move; Tab shouldn't stop on every dot
                     dot.className = 'step-dot' + (i < state.step ? ' done' : i === state.step ? ' active' : '');
                     dot.textContent = k + 1;
-                    dot.setAttribute('aria-label', T('narrator.dotLabel', { i: i + 1, title: s.title }));
+                    dot.setAttribute('aria-label', T('narrator.dotLabel', { i: i + 1, title: st.title }));
                     if (i === state.step) dot.setAttribute('aria-current', 'step');
                     dot.addEventListener('click', () => { state.step = i; renderStep(); });
                     group.appendChild(dot);
@@ -1224,7 +1232,7 @@
             });
             const part = document.createElement('span');
             part.className = 'step-part';
-            part.textContent = T('narrator.indicator', { n: cur + 1, total: state.dives.length, part: state.steps[state.step].part });
+            part.textContent = T('narrator.indicator', { n: s.group + 1, total: state.groupLabels.length, part: s.part });
             const progress = document.createElement('span');
             progress.className = 'step-progress';
             progress.textContent = T('narrator.progress', { i: state.step + 1, total: state.steps.length });
@@ -1234,6 +1242,7 @@
         /** One chip per highlight kind used in this step, same colours as the table. */
         function renderLegend(hl) {
             const kinds = ['label', 'path', 'origin', 'found'].filter(k => hl[k]?.length);
+            els.legend.hidden = !kinds.length;
             els.legend.innerHTML = `<li class="hl-lead">${T('narrator.legend.lead')}</li>` + kinds.map(k =>
                 `<li><span class="hl-swatch ${k}"></span>${T('narrator.legend.' + k)}</li>`).join('');
         }
@@ -1244,7 +1253,8 @@
             const s = state.steps[state.step];
             els.backToTable.hidden = true;
             renderIndicator();
-            els.title.innerHTML = `<span class="step-eyebrow">${T('narrator.part', { part: s.part })} ·</span> ${s.title}`;
+            const eyebrow = s.part ? T('narrator.part', { part: s.part }) : state.groupLabels[s.group];
+            els.title.innerHTML = `<span class="step-eyebrow">${eyebrow} ·</span> ${s.title}`;
             els.text.innerHTML = s.text;
             state.expanded = false;
             fitStepText();
@@ -1252,14 +1262,14 @@
             highlight(s.hl);
             els.prev.disabled = state.step === 0;
             const last = state.step === state.steps.length - 1;
-            const endsDive = !last && state.steps[state.step + 1].dive !== s.dive;
-            if (last || endsDive) {
-                els.next.textContent = last ? T('narrator.result') : T('narrator.nextDive', { n: s.dive + 2 });
+            const endsGroup = !last && state.steps[state.step + 1].group !== s.group;
+            if (last || endsGroup) {
+                els.next.textContent = last ? T('narrator.result') : T('narrator.nextDive', { n: s.group + 2 });
             } else {
                 const named = T('narrator.nextNamed', { title: lowerFirst(state.steps[state.step + 1].title) });
                 els.next.innerHTML = `<span class="next-long">${named}</span><span class="next-short">${T('narrator.next')}</span>`;
             }
-            renderLog(s.dive - (endsDive || last ? 0 : 1));
+            renderLog(s.group - (endsGroup || last ? 0 : 1));
         }
 
         /** In the bottom sheet, clamp the step text to 4 lines with a more/less toggle when it overflows. */
@@ -1350,6 +1360,7 @@
             }
             state.dives = dives;
             state.steps = buildSteps(stepCtx, dives);
+            state.groupLabels = dives.map((_, i) => `${i + 1}.`);
             state.step = 0;
             els.narrator.classList.add('visible');
             els.layout.classList.add('walking');
@@ -1387,6 +1398,7 @@
         function resetAll() {
             state.dives = [];
             state.steps = [];
+            state.groupLabels = [];
             state.step = -1;
             state.done = false;
             clearHighlights();
@@ -1442,22 +1454,22 @@
         try { if (localStorage.getItem('decoTable.paperInset') === '1') setPaper(true); } catch { /* storage blocked */ }
         $('resultBackBtn').addEventListener('click', goBack);
 
-        /** Jump to the first (Home) or last (End) step of the current dive. */
-        function jumpInDive(toEnd) {
-            const dive = currentDive();
-            const idx = state.steps.map((s, i) => s.dive === dive ? i : -1).filter(i => i >= 0);
+        /** Jump to the first (Home) or last (End) step of the current dive (or phase). */
+        function jumpInGroup(toEnd) {
+            const group = currentGroup();
+            const idx = state.steps.map((s, i) => s.group === group ? i : -1).filter(i => i >= 0);
             const target = toEnd ? idx.at(-1) : idx[0];
             if (target !== state.step) { state.step = target; renderStep(); }
         }
 
-        // Keyboard: ← / → step through the walkthrough, Home / End within the dive,
+        // Keyboard: ← / → step through the walkthrough, Home / End within the dive (phase),
         // Esc folds the phone sheet back (not while editing a number)
         document.addEventListener('keydown', e => {
             if (!state.steps.length || e.altKey || e.ctrlKey || e.metaKey) return;
             if (e.target instanceof Element && e.target.closest('input, textarea, select')) return;
             if (e.key === 'ArrowRight' && !state.done) { e.preventDefault(); advance(); }
             else if (e.key === 'ArrowLeft') { e.preventDefault(); goBack(); }
-            else if ((e.key === 'Home' || e.key === 'End') && !state.done) { e.preventDefault(); jumpInDive(e.key === 'End'); }
+            else if ((e.key === 'Home' || e.key === 'End') && !state.done) { e.preventDefault(); jumpInGroup(e.key === 'End'); }
             else if (e.key === 'Escape' && sheetMode.matches && !state.done) {
                 if (state.expanded) { state.expanded = false; fitStepText(); }
                 else if (els.narrator.classList.contains('paper-on')) setPaper(false);
