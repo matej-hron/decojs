@@ -2558,7 +2558,8 @@
                     "label": "kde jsi (záhlaví)",
                     "path": "tvoje cesta",
                     "origin": "odkud jdeš",
-                    "found": "výsledek tohoto kroku"
+                    "found": "výsledek tohoto kroku",
+                    "labelNote": "kde jsi"
                 },
                 "more": "více",
                 "less": "méně",
@@ -2694,7 +2695,7 @@
                     },
                     "flying": {
                         "name": "Let po potápění",
-                        "hint": "Po jednom ponoru 12 h, po opakovaných 24 h."
+                        "hint": "Po jednom ponoru 12 h, po opakovaných nebo vícedenních 24 h."
                     }
                 },
                 "input": {
@@ -2781,8 +2782,8 @@
                         "symptoms": "Příznaky během kyslíku nebo po něm: <strong>s kyslíkem transport do nejbližšího zdravotnického zařízení</strong>."
                     },
                     "symptomsPath": "Bod 2c: <strong>s kyslíkem transport do nejbližšího zdravotnického zařízení</strong>.",
-                    "firstAid": "Příznaky dekompresní nemoci (kromě kožní formy) se léčí v barokomoře. Do příjezdu pomoci: kyslík, tekutiny 1 l za hodinu, půl tablety Aspirinu, žádné léky tlumící bolest.",
-                    "noDecoStop": "Tento ponor nemá povinnou dekompresní zastávku, jen bezpečnostní 5 m / 3 min. Návod SPČR uvádí postup jen pro vynechanou <em>dekompresní</em> zastávku — zeptej se instruktora.",
+                    "firstAid": "Příznaky dekompresní nemoci (kromě kožní formy) se musí léčit v barokomoře. Do příjezdu pomoci: kyslík, tekutiny 1 l za hodinu, půl tablety Aspirinu, žádné léky tlumící bolest.",
+                    "noDecoStop": "Tento ponor nemá povinnou dekompresní zastávku, jen bezpečnostní 5 m / 3 min. Návod SPČR popisuje postup jen pro ponor s povinnou dekompresní zastávkou — zeptej se instruktora.",
                     "noteAdverse": "Pod tabulkou stojí: <em>„Za nepříznivých okolností pro dekompresní proces hledat v tabulce hloubku o jeden řádek nižší.“</em>",
                     "factors": "Platí to pro tebe: {factors}.",
                     "rowBelow": "Místo řádku <strong>{from} m</strong> použij řádek o jeden níž: <strong>{to} m</strong>.",
@@ -2810,7 +2811,7 @@
                     "rowDelayed": "Se zdržením",
                     "omittedTitle": "Vynechaná dekomprese — postup",
                     "branch1Head": "Bez příznaků a do 5 min zpět na zastávce",
-                    "branch2Head": "Do 5 min se na zastávku vrátit nedokáže",
+                    "branch2Head": "Do 5 min se s dýchacím přístrojem na zastávku vrátit nedokáže",
                     "notApplicable": "(v tomto případě neplatí)",
                     "adverseTitle": "Nepříznivé okolnosti — o řádek níž",
                     "rowNormal": "Běžně (řádek {depth} m)",

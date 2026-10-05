@@ -2522,7 +2522,8 @@
                     "label": "dónde estás (encabezado)",
                     "path": "tu camino",
                     "origin": "de dónde vienes",
-                    "found": "resultado de este paso"
+                    "found": "resultado de este paso",
+                    "labelNote": "dónde estás"
                 },
                 "more": "más",
                 "less": "menos",
@@ -2658,7 +2659,7 @@
                     },
                     "flying": {
                         "name": "Volar después de bucear",
-                        "hint": "12 h tras una inmersión, 24 h tras inmersiones sucesivas."
+                        "hint": "12 h tras una inmersión, 24 h tras inmersiones sucesivas o de varios días."
                     }
                 },
                 "input": {
@@ -2745,8 +2746,8 @@
                         "symptoms": "Síntomas durante o después del oxígeno: <strong>traslado con oxígeno al centro sanitario más cercano</strong>."
                     },
                     "symptomsPath": "Punto 2c: <strong>traslado con oxígeno al centro sanitario más cercano</strong>.",
-                    "firstAid": "Los síntomas de la enfermedad descompresiva (salvo la forma cutánea) se tratan en cámara hiperbárica. Hasta que llegue la ayuda: oxígeno, líquidos 1 l por hora, medio comprimido de Aspirina, ningún analgésico.",
-                    "noDecoStop": "Esta inmersión no tiene parada de descompresión obligatoria, solo la de seguridad 5 m / 3 min. La guía SPČR solo da procedimiento para una parada de <em>descompresión</em> omitida: consulta a tu instructor.",
+                    "firstAid": "Los síntomas de la enfermedad descompresiva (salvo la forma cutánea) deben tratarse en cámara hiperbárica. Hasta que llegue la ayuda: oxígeno, líquidos 1 l por hora, medio comprimido de Aspirina, ningún analgésico.",
+                    "noDecoStop": "Esta inmersión no tiene parada de descompresión obligatoria, solo la de seguridad 5 m / 3 min. La guía SPČR describe el procedimiento solo para una inmersión con parada de descompresión obligatoria: consulta a tu instructor.",
                     "noteAdverse": "Bajo la tabla dice: <em>«En circunstancias adversas para la descompresión, busca la profundidad una fila más abajo.»</em>",
                     "factors": "Esto se aplica a ti: {factors}.",
                     "rowBelow": "En lugar de la fila de <strong>{from} m</strong>, usa la siguiente hacia abajo: <strong>{to} m</strong>.",
@@ -2774,7 +2775,7 @@
                     "rowDelayed": "Con el retraso",
                     "omittedTitle": "Descompresión omitida: procedimiento",
                     "branch1Head": "Sin síntomas y de vuelta en la parada en 5 min",
-                    "branch2Head": "No puede volver a la parada en 5 min",
+                    "branch2Head": "No puede volver a la parada con el equipo en 5 min",
                     "notApplicable": "(no aplica en este caso)",
                     "adverseTitle": "Circunstancias adversas: una fila más abajo",
                     "rowNormal": "Normalmente (fila {depth} m)",

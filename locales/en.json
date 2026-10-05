@@ -2558,7 +2558,8 @@
                     "label": "where you are (header)",
                     "path": "your path",
                     "origin": "where you came from",
-                    "found": "result of this step"
+                    "found": "result of this step",
+                    "labelNote": "where you are"
                 },
                 "more": "more",
                 "less": "less",
@@ -2694,7 +2695,7 @@
                     },
                     "flying": {
                         "name": "Flying after diving",
-                        "hint": "12 h after one dive, 24 h after repetitive dives."
+                        "hint": "12 h after one dive, 24 h after repetitive or multi-day dives."
                     }
                 },
                 "input": {
@@ -2781,8 +2782,8 @@
                         "symptoms": "Symptoms during or after the oxygen: <strong>transport with oxygen to the nearest medical facility</strong>."
                     },
                     "symptomsPath": "Point 2c: <strong>transport with oxygen to the nearest medical facility</strong>.",
-                    "firstAid": "Decompression sickness symptoms (except the skin form) are treated in a hyperbaric chamber. Until help arrives: oxygen, fluids 1 l per hour, half a tablet of Aspirin, no painkillers.",
-                    "noDecoStop": "This dive has no mandatory decompression stop, only the 5 m / 3 min safety stop. The SPČR guide gives a procedure only for an omitted <em>decompression</em> stop — ask your instructor.",
+                    "firstAid": "Decompression sickness symptoms (except the skin form) must be treated in a hyperbaric chamber. Until help arrives: oxygen, fluids 1 l per hour, half a tablet of Aspirin, no painkillers.",
+                    "noDecoStop": "This dive has no mandatory decompression stop, only the 5 m / 3 min safety stop. The SPČR guide describes the procedure only for a dive with a mandatory decompression stop — ask your instructor.",
                     "noteAdverse": "Under the table it says: <em>“In adverse circumstances for decompression, look up the depth one row lower.”</em>",
                     "factors": "This applies to you: {factors}.",
                     "rowBelow": "Instead of the <strong>{from} m</strong> row, use the next row down: <strong>{to} m</strong>.",
@@ -2810,7 +2811,7 @@
                     "rowDelayed": "With the delay",
                     "omittedTitle": "Omitted decompression — procedure",
                     "branch1Head": "No symptoms, back at the stop within 5 min",
-                    "branch2Head": "Cannot get back to the stop within 5 min",
+                    "branch2Head": "Cannot get back to the stop with breathing apparatus within 5 min",
                     "notApplicable": "(does not apply here)",
                     "adverseTitle": "Adverse circumstances — one row lower",
                     "rowNormal": "Normally ({depth} m row)",

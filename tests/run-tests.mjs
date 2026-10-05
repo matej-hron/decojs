@@ -10797,6 +10797,7 @@ describe('SPČR/CMAS 2018 tables (cmasTables.js)', () => {
             ...['noSymptoms', 'symptoms'].map(v => `crisis.steps.watch.${v}`),
             ...['single', 'repeat'].map(v => `crisis.steps.flying.${v}`),
             ...['delayOutOfRange', 'noRowBelow', 'invalidDelay'].map(c => `crisis.errors.${c}`),
+            'narrator.legend.labelNote',
             ...[1, 2, 3, 4, 5, 6, 7, 8].map(i => `crisis.factor.${i}`),
             ...['plan', 'delay', 'procedure', 'branch1', 'branch2', 'symptoms', 'normal', 'adverse', 'flying'].map(p => `crisis.phase.${p}`),
             ...['delay', 'omitted', 'adverse', 'flying'].flatMap(id => [`crisis.scenario.${id}.name`, `crisis.scenario.${id}.hint`]),

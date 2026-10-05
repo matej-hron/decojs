@@ -1537,12 +1537,15 @@
             els.indicator.append(part, progress);
         }
 
+        // a footer note is not a header: "where you are" without "(header)"
+        const legendKey = (kind, hl) => kind === 'label' && hl.label.every(k => k.startsWith('note:')) ? 'labelNote' : kind;
+
         /** One chip per highlight kind used in this step, same colours as the table. */
         function renderLegend(hl) {
             const kinds = ['label', 'path', 'origin', 'found'].filter(k => hl[k]?.length);
             els.legend.hidden = !kinds.length;
             els.legend.innerHTML = `<li class="hl-lead">${T('narrator.legend.lead')}</li>` + kinds.map(k =>
-                `<li><span class="hl-swatch ${k}"></span>${T('narrator.legend.' + k)}</li>`).join('');
+                `<li><span class="hl-swatch ${k}"></span>${T('narrator.legend.' + legendKey(k, hl))}</li>`).join('');
         }
 
         const lowerFirst = text => text.charAt(0).toLowerCase() + text.slice(1);
