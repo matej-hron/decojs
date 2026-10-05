@@ -1,0 +1,40 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:07.302
+The NOAA decompression tables, as published by SPČR/CMAS in 2018: how do you read a dive from them?
+
+00:00:07.452 --> 00:00:14.782
+Enter your dives at the top. Below is a copy of the paper table, read clockwise in three parts.
+
+00:00:14.932 --> 00:00:20.057
+First dive: 25 m for 22 min. Look up.
+
+00:00:20.207 --> 00:00:27.235
+There is no 25 m row, so round up to 27 m. Always up, never down.
+
+00:00:27.385 --> 00:00:32.712
+Go right to the first time of at least 22 min: 25 min.
+
+00:00:32.862 --> 00:00:39.913
+That is the no-decompression limit here: just a safety stop. Below the column: group G.
+
+00:00:40.063 --> 00:00:47.922
+Now a repetitive dive after 1 h 30 min on the surface: 16 m for 30 min.
+
+00:00:48.072 --> 00:00:56.198
+For dive 2, go down column G to the cell holding 1:30. Its row letter is your new group: E.
+
+00:00:56.348 --> 00:01:03.149
+Go left along row E to 18 m, rounded up from 16. Penalty: +30 min.
+
+00:01:03.299 --> 00:01:10.602
+Add it to the actual time: 30 + 30 = 60 min, and follow the arrow back to START.
+
+00:01:10.752 --> 00:01:22.197
+At 18 m, 60 min is a blue cell: a stop of 5 min at 5 m. Alone, this dive would need none.
+
+00:01:22.347 --> 00:01:32.822
+This table is for air, up to 300 m above sea level. Higher up, use the altitude sheet with its depth corrections.
+
+00:01:32.972 --> 00:01:37.823
+Try it yourself in the Deco Theory sandbox. Thanks for watching!

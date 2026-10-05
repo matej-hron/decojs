@@ -1,0 +1,34 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:05.200
+Cylinder transfilling: what actually happens when you connect two cylinders?
+
+00:00:05.350 --> 00:00:14.677
+On the left, you set up two cylinders: A is the source, B receives the gas. On the right, you see how full each one is.
+
+00:00:14.827 --> 00:00:22.855
+Cylinder A is a 12-litre single at 200 bar. Cylinder B is a 7-litre cylinder at 50 bar.
+
+00:00:23.005 --> 00:00:35.683
+The small line under each pressure is the gas inside, as litres at 1 bar: 12 l × 200 bar = 2400 l.
+
+00:00:35.833 --> 00:00:42.285
+Now open the valves. Gas flows from high pressure to low, until both pressures are equal.
+
+00:00:42.435 --> 00:00:53.114
+They meet at about 145 bar — not halfway at 125. The bigger cylinder pulls the result towards its own pressure.
+
+00:00:53.264 --> 00:00:59.565
+The rule is simple: add up the gas in both cylinders, then share it across the total volume.
+
+00:00:59.715 --> 00:01:08.416
+Now a big twinset, 2 × 12 litres at 200 bar, topping up a small 3-litre pony at 50 bar.
+
+00:01:08.566 --> 00:01:15.345
+The pony jumps to over 180 bar. The twinset barely notices the gas it gave away.
+
+00:01:15.495 --> 00:01:26.775
+This is the ideal-gas picture. In reality the receiving cylinder warms up as it fills, so its pressure drops a little once it cools.
+
+00:01:26.925 --> 00:01:31.779
+Try it yourself in the Deco Theory sandbox. Thanks for watching!

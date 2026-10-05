@@ -2318,7 +2318,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.190";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.191";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -5873,12 +5873,6 @@ var + sup var {
     background: rgba(255, 255, 255, 0.28);
 }
 
-.video-open-btn-small {
-    padding: 0.3rem 0.65rem;
-    font-size: 0.75rem;
-    letter-spacing: 0.05em;
-}
-
 .video-dialog {
     width: min(1100px, calc(100vw - 2rem));
     padding: 0;
@@ -5915,4 +5909,43 @@ var + sup var {
     background: transparent;
     border: none;
     cursor: pointer;
+}
+
+.video-dialog-note {
+    flex: 1;
+}
+
+.video-dialog-subs {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.video-sub-btn {
+    padding: 0.15rem 0.6rem;
+    font-size: 0.8rem;
+    color: white;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+.video-sub-btn[aria-pressed="true"] {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: white;
+}
+
+.video-dialog video::cue {
+    font-family: 'Inter', system-ui, sans-serif;
+    /* the player's default is ~5% of the video height; 60% keeps two lines inside the bar */
+    font-size: 60%;
+    color: white;
+    background: transparent;
+}
+
+@media (max-width: 600px) {
+    .video-dialog-bar {
+        flex-wrap: wrap;
+    }
 }

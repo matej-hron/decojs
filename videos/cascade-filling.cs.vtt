@@ -1,0 +1,31 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:06.353
+Kaskádové plnění: patnáct lahví z jedné baterie. Kterou lahev baterie otevřít první?
+
+00:00:06.503 --> 00:00:19.983
+Baterie: čtyři lahve po 50 l, plné na 300 bar. Po víkendu: patnáct Singlů 12 l na 20 bar. Tři hadice, plnění končí na 200 bar.
+
+00:00:20.133 --> 00:00:28.185
+Připojte tři lahve a začněte nejnižší lahví baterie, C1. Tlaky se vyrovnají na 182,8 bar.
+
+00:00:28.335 --> 00:00:37.464
+Zavřete C1 a dotlačte z C2 na 200 bar. C1 je teď načatá, C2 skoro netknutá.
+
+00:00:37.614 --> 00:00:46.115
+To je kaskáda: každé kolo začíná nejnižší lahví, která má ještě víc než plněné lahve, a končí plnější.
+
+00:00:46.265 --> 00:01:18.834
+Kolo za kolem se baterie vyprazdňuje zleva. Nejplnější lahev zůstává v záloze na závěrečné dotlačení.
+
+00:01:18.984 --> 00:01:25.585
+Všech patnáct lahví má 200 bar — a C4 má pořád zhruba 270 bar.
+
+00:01:25.735 --> 00:01:33.839
+Když každé kolo začnete nejplnější lahví, dosáhne 200 bar jen 9 lahví z 15.
+
+00:01:33.989 --> 00:01:42.865
+Model ideálního plynu: lahve se při plnění zahřejí a po vychladnutí ukážou méně, proto se plní pomalu.
+
+00:01:43.015 --> 00:01:48.392
+Vyzkoušejte si to sami v pískovišti Deco Theory. Díky za pozornost!

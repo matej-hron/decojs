@@ -157,7 +157,7 @@ export default function transfilling(lang = 'en') {
         page: 'sandbox/transfilling.html',
         locale: L.locale,
         zoom: 1.25,
-        publish: `videos/transfilling-${lang}`, // -> .mp4 + poster .jpg, embedded in the page
+        publish: `videos/transfilling`, // -> .mp4 + poster .jpg + <lang>.vtt subtitles, embedded in the page
 
         async prepare(page, ui) {
             // Start from "wrong" pressures so the setup scene can drag them into place.
