@@ -2522,7 +2522,8 @@
                     "label": "dónde estás (encabezado)",
                     "path": "tu camino",
                     "origin": "de dónde vienes",
-                    "found": "resultado de este paso"
+                    "found": "resultado de este paso",
+                    "labelNote": "dónde estás"
                 },
                 "more": "más",
                 "less": "menos",
@@ -2597,7 +2598,10 @@
                 "header": "tiempo de inmersión [min] — redondea la profundidad hacia arriba y el tiempo al valor más largo más próximo",
                 "corner": "Inmersión sucesiva: desde la parte 3 sigue la flecha de vuelta a START. El tiempo que se busca es <strong>tiempo real + penalización</strong>.",
                 "cap3": "penalización [min] ← busca a la izquierda",
-                "cap2": "intervalo en superficie [h:min] ↓ busca hacia abajo (arriba = hasta, abajo = desde)"
+                "cap2": "intervalo en superficie [h:min] ↓ busca hacia abajo (arriba = hasta, abajo = desde)",
+                "noteSafety": "parada de seguridad <strong>5 m / 3 min</strong>",
+                "noteFlying": "tras 1 inmersión <strong>no volar 12 h</strong> · tras inmersiones sucesivas o de varios días <strong>24 h</strong>",
+                "noteAdverse": "En circunstancias adversas para la descompresión, busca la profundidad una fila más abajo"
             },
             "image": {
                 "title": "Tabla original SPČR/CMAS 2018 — el mismo recorrido en papel",
@@ -2626,6 +2630,172 @@
                 "findSi": "Busca el intervalo en superficie",
                 "left": "Ve a la izquierda hasta la penalización",
                 "back": "Sigue la flecha de vuelta a START"
+            },
+            "tabs": {
+                "label": "Modo de la página",
+                "plan": "Plan de inmersiones",
+                "crisis": "Situaciones de emergencia"
+            },
+            "crisis": {
+                "title": "Situaciones de emergencia",
+                "intro": "Qué hacer cuando la inmersión no sale según el plan, según la guía SPČR 2018.",
+                "pick": "Elige una situación",
+                "tag": {
+                    "table": "tabla",
+                    "procedure": "procedimiento"
+                },
+                "scenario": {
+                    "delay": {
+                        "name": "Retraso en el ascenso",
+                        "hint": "El retraso se suma al tiempo de inmersión."
+                    },
+                    "omitted": {
+                        "name": "Descompresión omitida / ascenso rápido",
+                        "hint": "Volver a la parada en 5 min, u oxígeno en superficie."
+                    },
+                    "adverse": {
+                        "name": "Circunstancias adversas",
+                        "hint": "Busca la descompresión una fila más abajo (3 m más profundo)."
+                    },
+                    "flying": {
+                        "name": "Volar después de bucear",
+                        "hint": "12 h tras una inmersión, 24 h tras inmersiones sucesivas o de varios días."
+                    }
+                },
+                "input": {
+                    "delay": "Retraso en el ascenso (min)",
+                    "what": "¿Qué pasó?",
+                    "whatOmitted": "Parada omitida o acortada",
+                    "whatFast": "Ascenso demasiado rápido",
+                    "canReturn": "¿Puede volver a la parada en 5 min?",
+                    "symptoms": "¿Síntomas de enfermedad descompresiva?",
+                    "yes": "sí",
+                    "no": "no",
+                    "factors": "¿Qué circunstancias se dan?",
+                    "factorsNone": "Sin circunstancias adversas basta con el plan normal.",
+                    "dives": "Inmersiones",
+                    "single": "una inmersión",
+                    "repeat": "inmersiones sucesivas o de varios días"
+                },
+                "examples": "Ejemplos de los tests SPČR:",
+                "examplesPlain": "Ejemplos:",
+                "examplesNote": "Un ejemplo solo rellena los datos. La página calcula el resultado con la tabla: no es una clave oficial de respuestas.",
+                "start": "Guíame paso a paso",
+                "fullText": "Texto completo en la guía de las tablas →",
+                "factor": {
+                    "1": "Mayor esfuerzo físico",
+                    "2": "Deshidratación",
+                    "3": "Enfriamiento intenso",
+                    "4": "Más tejido adiposo",
+                    "5": "Descenso rápido de la presión (avión, montaña)",
+                    "6": "Circulación sanguínea deficiente (correas apretadas, operaciones, edad)",
+                    "7": "FOP (foramen oval permeable, cortocircuito derecha-izquierda)",
+                    "8": "Golpes, vibraciones (deporte, transporte)"
+                },
+                "indicator": "{scenario} · {phase}",
+                "nextPhase": "{phase} →",
+                "phase": {
+                    "plan": "Plan",
+                    "delay": "Retraso",
+                    "procedure": "Procedimiento",
+                    "branch1": "Punto 1",
+                    "branch2": "Punto 2",
+                    "symptoms": "Síntomas",
+                    "normal": "Normalmente",
+                    "adverse": "Circunstancias adversas",
+                    "flying": "Vuelo"
+                },
+                "stepTitle": {
+                    "addDelay": "Suma el retraso",
+                    "readNew": "Lee el nuevo procedimiento",
+                    "decide": "Decide: ¿de vuelta en 5 min?",
+                    "report": "Avisa",
+                    "stopLonger": "Parada 1,5 veces más larga",
+                    "oxygen": "Oxígeno en superficie",
+                    "watch": "Vigila los síntomas",
+                    "symptoms": "Síntomas de enfermedad descompresiva",
+                    "noDecoStop": "Sin parada obligatoria",
+                    "noteAdverse": "La regla bajo la tabla",
+                    "rowBelow": "Una fila más abajo",
+                    "noteFlying": "La nota sobre volar",
+                    "readStop": "Lee la descompresión"
+                },
+                "steps": {
+                    "addDelay": "El ascenso se retrasó <strong>{delay} min</strong>. Suma el retraso al tiempo de inmersión: <strong>{time} + {delay} = {total} min</strong> y sigue por la misma fila. Primera celda ≥ {total} min: <strong>{cellTime} min</strong>.",
+                    "sameCell": "{total} min aún cabe en la misma celda, <strong>{cellTime} min</strong>.",
+                    "readNew": "Nuevo procedimiento según la celda de {cellTime} min: {stopText}. Grupo bajo la columna: <strong>{group}</strong>.",
+                    "verdict": {
+                        "sameProcedure": "El procedimiento no cambia.",
+                        "becameDeco": "Por el retraso, ahora es una <strong>inmersión con descompresión</strong>.",
+                        "longerStop": "La parada a 5 m pasa de {from} a <strong>{to} min</strong>.",
+                        "sameStopNewGroup": "La descompresión no cambia, pero el grupo tras la inmersión es ahora <strong>{group}</strong> (no {oldGroup}): úsalo para una inmersión sucesiva."
+                    },
+                    "intro": {
+                        "omitted": "El buceador omitió o acortó la parada de {stop} min a 5 m.",
+                        "fast": "El buceador ascendió demasiado rápido. La guía SPČR lo trata igual que una descompresión omitida."
+                    },
+                    "decide": {
+                        "canReturn": "Sin síntomas y de vuelta en la parada en <strong>5 min</strong> → se aplica el <strong>punto 1</strong>.",
+                        "cannotReturn": "No puede volver a la parada con el equipo en 5 min → se aplica el <strong>punto 2</strong>.",
+                        "symptoms": "El punto 1 solo vale sin síntomas. Con síntomas de enfermedad descompresiva se sigue el <strong>punto 2c</strong>."
+                    },
+                    "report": "Comunica la descompresión omitida al jefe de inmersión (en superficie).",
+                    "stopLonger": "Vuelve a la parada y permanece 1,5 veces el tiempo original: <strong>{stop} × 1,5 = {raw} → {total} min a 5 m</strong> (redondeado a minutos enteros hacia arriba, como en la tabla).",
+                    "oxygen": "En superficie respira <strong>oxígeno puro al menos 60 min</strong>, en la medida de lo posible.",
+                    "watch": {
+                        "noSymptoms": "Sin síntomas durante ni después del oxígeno: <strong>bajo supervisión y sin bucear al menos 12 h</strong>.",
+                        "symptoms": "Síntomas durante o después del oxígeno: <strong>traslado con oxígeno al centro sanitario más cercano</strong>."
+                    },
+                    "symptomsPath": "Punto 2c: <strong>traslado con oxígeno al centro sanitario más cercano</strong>.",
+                    "firstAid": "Los síntomas de la enfermedad descompresiva (salvo la forma cutánea) deben tratarse en cámara hiperbárica. Hasta que llegue la ayuda: oxígeno, líquidos 1 l por hora, medio comprimido de Aspirina, ningún analgésico.",
+                    "noDecoStop": "Esta inmersión no tiene parada de descompresión obligatoria, solo la de seguridad 5 m / 3 min. La guía SPČR describe el procedimiento solo para una inmersión con parada de descompresión obligatoria: consulta a tu instructor.",
+                    "noteAdverse": "Bajo la tabla dice: <em>«En circunstancias adversas para la descompresión, busca la profundidad una fila más abajo.»</em>",
+                    "factors": "Esto se aplica a ti: {factors}.",
+                    "rowBelow": "En lugar de la fila de <strong>{from} m</strong>, usa la siguiente hacia abajo: <strong>{to} m</strong>.",
+                    "flying": {
+                        "single": "Tras <strong>una inmersión</strong>, vuela en avión con cabina presurizada no antes de <strong>12 h</strong>.",
+                        "repeat": "Tras inmersiones <strong>sucesivas o de varios días</strong>, vuela no antes de <strong>24 h</strong>."
+                    },
+                    "readAdverse": "Celda de {cellTime} min: {stopText}. La guía no indica qué grupo usar para una inmersión sucesiva tras circunstancias adversas: consulta a tu instructor."
+                },
+                "log": {
+                    "delay": "+{delay} min de retraso",
+                    "oxygen": "O₂ ≥ 60 min",
+                    "transport": "O₂ + traslado",
+                    "row": "fila {depth} m"
+                },
+                "result": {
+                    "replay": "Repetir",
+                    "delayTitle": "Retraso en el ascenso: nuevo procedimiento",
+                    "colCase": "Caso",
+                    "colTime": "Tiempo",
+                    "colCell": "Celda",
+                    "colDeco": "Descompresión",
+                    "colGroup": "Grupo",
+                    "colNdl": "Tiempo máx. sin descompresión",
+                    "rowPlan": "Plan original",
+                    "rowDelayed": "Con el retraso",
+                    "omittedTitle": "Descompresión omitida: procedimiento",
+                    "branch1Head": "Sin síntomas y de vuelta en la parada en 5 min",
+                    "branch2Head": "No puede volver a la parada con el equipo en 5 min",
+                    "notApplicable": "(no aplica en este caso)",
+                    "adverseTitle": "Circunstancias adversas: una fila más abajo",
+                    "rowNormal": "Normalmente (fila {depth} m)",
+                    "rowAdverse": "Adversas (fila {depth} m)",
+                    "factors": "Circunstancias: {factors}.",
+                    "computer": "En el ordenador, ajusta de antemano un nivel de conservadurismo mayor según su manual.",
+                    "flyingTitle": "No volar durante {hours} h",
+                    "flyingNote": "Se aplica a avión con cabina presurizada, según el ordenador o las tablas. La caída rápida de presión (avión, montaña) también figura entre las circunstancias adversas.",
+                    "symptomsHead": "<strong>Con síntomas de enfermedad descompresiva</strong> (aunque pueda volver en 5 min) el punto 1 no se aplica → sigue el <strong>punto 2c</strong>: oxígeno y traslado a un centro sanitario.",
+                    "groupAsk": "no indicado: consulta a tu instructor"
+                },
+                "errors": {
+                    "delayOutOfRange": "Con el retraso, {total} min queda fuera de la fila de {depth} m de estas tablas (la guía remite a las tablas de la US Navy).",
+                    "noRowBelow": "La fila de {depth} m es la última de la tabla: no hay fila debajo, así que esta inmersión no se puede planificar con estas tablas.",
+                    "invalidDelay": "Introduce un retraso de al menos 1 min.",
+                    "adverseOutOfRange": "Una fila más abajo, en la fila de {depth} m, {total} min queda fuera de estas tablas (la guía remite a las tablas de la US Navy).",
+                    "invalid": "Introduce una profundidad y un tiempo de fondo positivos."
+                }
             }
         }
     },

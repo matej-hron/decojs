@@ -75,7 +75,7 @@
         }
         .btn-primary:hover:not(:disabled) { background: #1f6391; }
         .btn-primary:disabled { background: #95a5a6; cursor: not-allowed; }
-        #resetBtn {
+        #resetBtn, .reset-btn {
             padding: 0.45rem 0.9rem;
             font-size: 0.9rem;
             background: transparent;
@@ -85,7 +85,7 @@
             cursor: pointer;
             display: none;
         }
-        #resetBtn:hover { background: var(--background-color); }
+        #resetBtn:hover, .reset-btn:hover { background: var(--background-color); }
         .plan-hint { margin: 0; font-size: 0.85rem; color: var(--text-muted); }
         .study-note {
             margin: 0 0 1rem;
@@ -119,6 +119,125 @@
         .btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
         .remove-btn { color: var(--text-muted); border: 1px solid var(--border-color); padding: 0.35rem 0.7rem; }
         .remove-btn:hover { color: #c0392b; border-color: #c0392b; }
+
+        /* ── Mode tabs: dive plan | emergencies ── */
+        .mode-tabs {
+            display: inline-flex;
+            gap: 3px;
+            padding: 3px;
+            margin-bottom: 0.75rem;
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+        }
+        .mode-tabs button {
+            padding: 0.45rem 1.1rem;
+            font: inherit; font-size: 0.92rem; font-weight: 600;
+            color: var(--text-muted);
+            background: transparent;
+            border: none;
+            border-radius: 999px;
+            cursor: pointer;
+        }
+        .mode-tabs button[aria-selected="true"] { background: #2980b9; color: #fff; }
+        .mode-tabs button:focus-visible { outline: 2px solid #2980b9; outline-offset: 2px; }
+
+        /* ── Emergencies panel ── */
+        .crisis-panel { flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 0.75rem; }
+        .crisis-panel > * { flex: none; }
+        .crisis-panel[hidden], .plan-panel[hidden] { display: none; }
+        .crisis-panel .panel-title + .plan-hint { margin-top: -0.4rem; }
+        .crisis-panel fieldset { margin: 0; padding: 0; border: none; min-width: 0; }
+        .crisis-panel legend { padding: 0; margin-bottom: 0.35rem; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); }
+        .scenario-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 0.5rem; }
+        .scenario-card {
+            position: relative;
+            display: flex; flex-direction: column; gap: 0.2rem;
+            padding: 0.6rem 0.75rem 0.6rem 2.1rem;
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .scenario-card:has(input:checked) { border: 2px solid #2980b9; padding: calc(0.6rem - 1px) calc(0.75rem - 1px) calc(0.6rem - 1px) calc(2.1rem - 1px); background: rgba(41,128,185,0.06); }
+        .scenario-card:has(input:focus-visible) { outline: 2px solid #2980b9; outline-offset: 2px; }
+        .scenario-card input { position: absolute; left: 0.7rem; top: 0.8rem; margin: 0; accent-color: #2980b9; }
+        .sc-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.4rem; }
+        .sc-name { font-weight: 700; font-size: 0.92rem; }
+        .sc-tag {
+            padding: 0 0.4rem;
+            font-size: 0.68rem; font-weight: 700;
+            letter-spacing: 0.04em; text-transform: uppercase;
+            border-radius: 999px;
+        }
+        .sc-tag.table { color: #1e3a5f; background: #fef08a; }
+        .sc-tag.procedure { color: #fff; background: #c0392b; }
+        .sc-hint { font-size: 0.82rem; color: var(--text-muted); line-height: 1.35; }
+        .scenario-inputs { display: flex; flex-wrap: wrap; gap: 0.6rem 1.25rem; align-items: flex-end; }
+        .scenario-inputs[hidden] { display: none; }
+        .choice { display: flex; flex-wrap: wrap; gap: 0.15rem 0.9rem; align-items: center; }
+        .choice legend { width: 100%; }
+        .choice label { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.9rem; cursor: pointer; min-height: 2rem; }
+        .choice input { accent-color: #2980b9; }
+        .factors { flex-basis: 100%; }
+        .factor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); gap: 0 1rem; width: 100%; }
+        .examples { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem 0.5rem; font-size: 0.85rem; }
+        .examples[hidden] { display: none; }
+        .examples-label { font-weight: 600; }
+        .example-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+        .example-chip {
+            padding: 0.2rem 0.65rem;
+            font: inherit; font-size: 0.82rem;
+            font-variant-numeric: tabular-nums;
+            color: #2980b9;
+            background: var(--card-background);
+            border: 1px solid #2980b9;
+            border-radius: 999px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .example-chip:hover { background: rgba(41,128,185,0.08); }
+        .example-chip b { font-weight: 700; }
+        .examples .plan-hint { flex-basis: 100%; font-size: 0.78rem; }
+        .full-text-link { font-size: 0.85rem; font-weight: 600; margin-left: auto; }
+
+        /* ── Emergency results ── */
+        .verdict { margin: 0.6rem 0 0; font-size: 0.92rem; }
+        .group-ask { font-size: 0.82rem; color: var(--text-muted); font-style: italic; }
+        .result-card .guide-alert { margin: 0; font-size: 0.88rem; line-height: 1.45; }
+        .decision { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem; }
+        .branch {
+            padding: 0.6rem 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.88rem; line-height: 1.45;
+        }
+        .branch h4 { margin: 0 0 0.35rem; font-size: 0.92rem; }
+        .branch h4 .branch-num {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 1.4em; height: 1.4em; margin-right: 0.35rem;
+            border-radius: 50%;
+            background: #1e3a5f; color: #fff; font-size: 0.85em;
+        }
+        .branch ol { margin: 0; padding-left: 1.3rem; }
+        .branch li { margin-bottom: 0.25rem; }
+        .branch.chosen { border: 2px solid #e67e22; background: rgba(230,126,34,0.06); }
+        .branch li.chosen { font-weight: 600; }
+        .decision + .guide-alert, .verdict + .decision { margin-top: 0.6rem; }
+        .branch .faded, .branch.faded { opacity: 0.5; }
+        .branch.faded .faded { opacity: 1; }
+        .sr-note { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+        .flying-chip {
+            display: inline-flex; align-items: baseline; gap: 0.4rem;
+            padding: 0.5rem 1.1rem;
+            font-size: 1.25rem; font-weight: 700;
+            color: #c0392b;
+            background: rgba(231,76,60,0.08);
+            border: 2px solid #c0392b;
+            border-radius: 6px;
+        }
+        .result-card.crisis { border-color: #e67e22; }
+        .result-card h3.crisis { color: #e67e22; }
 
         /* ── Result table ── */
         .result-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; font-variant-numeric: tabular-nums; }
@@ -221,6 +340,7 @@
             font-size: 0.78rem;
             color: var(--text-muted);
         }
+        .hl-legend[hidden] { display: none; }
         .hl-legend li { display: flex; align-items: center; gap: 0.35rem; }
         .hl-legend .hl-lead { font-weight: 600; }
         .hl-swatch { width: 16px; height: 12px; border-radius: 2px; flex-shrink: 0; background: var(--background-color); }
@@ -279,6 +399,8 @@
         @media (min-width: 900px) {
             .step-narrator.visible .paper-inset { display: flex; }
         }
+        /* procedure steps point at nothing in the table: no inset, no 📄 toggle */
+        .step-narrator.visible.no-paper .paper-inset, .step-narrator.no-paper .paper-toggle { display: none; }
 
         /* Phones and narrow tablets: the guide is a bottom sheet, the table keeps the top */
         @media (max-width: 899.98px) {
@@ -311,9 +433,21 @@
             .paper-toggle { display: inline-block; }
             .step-narrator.paper-on .paper-inset { display: flex; }
             .step-narrator.paper-on .paper-view { width: 100%; height: 150px; }
-            .step-narrator.paper-on .step-text, .step-narrator.paper-on .more-btn { display: none; }
+            .step-narrator.paper-on:not(.no-paper) .step-text, .step-narrator.paper-on:not(.no-paper) .more-btn { display: none; }
             .step-btns .paper-toggle[aria-pressed="true"] { background: #1e3a5f; border-color: #1e3a5f; color: #fff; }
             .back-to-table { bottom: calc(var(--guide-h, 0px) + 1rem); }
+            .mode-tabs { display: flex; }
+            .mode-tabs button { flex: 1; padding: 0.55rem 0.5rem; }
+            .scenario-grid { grid-template-columns: 1fr; gap: 0.4rem; }
+            .scenario-card { padding-top: 0.45rem; padding-bottom: 0.45rem; }
+            .sc-hint { font-size: 0.8rem; }
+            .choice label { min-height: 44px; }
+            .decision { grid-template-columns: 1fr; }
+            .decision .branch.chosen, .decision .branch.neutral { order: -1; }
+            /* footer notes span the whole scrolled grid: keep their text in view and let it wrap */
+            .deco-grid td.note { text-align: left; }
+            .note-text { position: sticky; left: 0.5rem; display: inline-block; max-width: calc(100vw - 3.5rem); white-space: normal; }
+            .full-text-link { margin-left: 0; flex-basis: 100%; }
         }
         @media (max-width: 400px) {
             .next-long { display: none; }
@@ -498,6 +632,19 @@
             cursor: pointer;
         }
 
+        /* footer notes, as printed under the paper table */
+        .deco-grid tfoot td.note-gap { height: 0.6rem; padding: 0; }
+        .deco-grid td.note {
+            padding: 0.45em 0.6em;
+            background: #fff;
+            color: #111;
+            border: 1px solid #1e293b;
+            font-size: 0.85em;
+            line-height: 1.35;
+        }
+        .deco-grid td.note-safety { border: 2px solid #dc2626; }
+        .deco-grid tfoot td.caption-blank { min-width: 0; }
+
         /* labels */
         .deco-grid td.lbl-depth, .deco-grid td.lbl-group, .deco-grid td.lbl-m {
             background: #1e3a5f;
@@ -667,8 +814,13 @@
 
         <p class="study-note" data-i18n="sandbox.decoTable.studyNote"><strong>Tato stránka slouží jen k nastudování práce s tabulkami SPČR.</strong> Ponor si naplánuješ jinde: v pískovišti <a href="index.html">Modelování dekomprese</a> (Bühlmann, gradient faktory), sérii ponorů v <a href="repetitive-dives.html">Opakovaných ponorech</a>.</p>
 
+        <div class="mode-tabs" role="tablist" aria-label="Plán ponorů / Mimořádné situace" id="modeTabs">
+            <button type="button" role="tab" id="tabPlan" data-mode="plan" aria-controls="planPanel" aria-selected="true" data-i18n="sandbox.decoTable.tabs.plan">Plán ponorů</button>
+            <button type="button" role="tab" id="tabCrisis" data-mode="crisis" aria-controls="crisisPanel" aria-selected="false" tabindex="-1" data-i18n="sandbox.decoTable.tabs.crisis">Mimořádné situace</button>
+        </div>
+
         <!-- Dive plan: first dive + any number of repetitive dives -->
-        <div class="lookup-panel plan-panel">
+        <div class="lookup-panel plan-panel" id="planPanel" role="tabpanel" aria-labelledby="tabPlan">
             <p class="panel-title" data-i18n="sandbox.decoTable.plan.title">Plán ponorů</p>
             <div class="plan-row">
                 <span class="plan-num" data-i18n="sandbox.decoTable.plan.dive1">1. ponor</span>
@@ -688,6 +840,117 @@
                 <button id="resetBtn" data-i18n="sandbox.decoTable.plan.reset">Začít znovu</button>
             </div>
             <p class="plan-hint" id="planHint" data-i18n="sandbox.decoTable.plan.hint">Stiskni Vyhledat — provedu tě tabulkou krok za krokem.</p>
+        </div>
+
+        <!-- Emergencies ("Mimořádné situace" in the SPČR guide): pick a scenario, walk through it -->
+        <div class="lookup-panel crisis-panel" id="crisisPanel" role="tabpanel" aria-labelledby="tabCrisis" hidden>
+            <p class="panel-title" data-i18n="sandbox.decoTable.crisis.title">Mimořádné situace</p>
+            <p class="plan-hint" data-i18n="sandbox.decoTable.crisis.intro"></p>
+            <fieldset class="scenario-picker">
+                <legend data-i18n="sandbox.decoTable.crisis.pick">Vyber situaci</legend>
+                <div class="scenario-grid">
+                    <label class="scenario-card">
+                        <input type="radio" name="scenario" value="delay" checked>
+                        <span class="sc-head"><span class="sc-name" data-i18n="sandbox.decoTable.crisis.scenario.delay.name"></span><span class="sc-tag table" data-i18n="sandbox.decoTable.crisis.tag.table"></span></span>
+                        <span class="sc-hint" data-i18n="sandbox.decoTable.crisis.scenario.delay.hint"></span>
+                    </label>
+                    <label class="scenario-card">
+                        <input type="radio" name="scenario" value="omitted">
+                        <span class="sc-head"><span class="sc-name" data-i18n="sandbox.decoTable.crisis.scenario.omitted.name"></span><span class="sc-tag table" data-i18n="sandbox.decoTable.crisis.tag.table"></span><span class="sc-tag procedure" data-i18n="sandbox.decoTable.crisis.tag.procedure"></span></span>
+                        <span class="sc-hint" data-i18n="sandbox.decoTable.crisis.scenario.omitted.hint"></span>
+                    </label>
+                    <label class="scenario-card">
+                        <input type="radio" name="scenario" value="adverse">
+                        <span class="sc-head"><span class="sc-name" data-i18n="sandbox.decoTable.crisis.scenario.adverse.name"></span><span class="sc-tag table" data-i18n="sandbox.decoTable.crisis.tag.table"></span></span>
+                        <span class="sc-hint" data-i18n="sandbox.decoTable.crisis.scenario.adverse.hint"></span>
+                    </label>
+                    <label class="scenario-card">
+                        <input type="radio" name="scenario" value="flying">
+                        <span class="sc-head"><span class="sc-name" data-i18n="sandbox.decoTable.crisis.scenario.flying.name"></span><span class="sc-tag procedure" data-i18n="sandbox.decoTable.crisis.tag.procedure"></span></span>
+                        <span class="sc-hint" data-i18n="sandbox.decoTable.crisis.scenario.flying.hint"></span>
+                    </label>
+                </div>
+            </fieldset>
+            <div class="scenario-inputs" data-scenario="delay">
+                    <div class="lookup-field">
+                        <label for="delayDepth" data-i18n="sandbox.decoTable.plan.depth"></label>
+                        <input type="number" id="delayDepth" min="1" max="40" step="1" value="24">
+                    </div>
+                    <div class="lookup-field">
+                        <label for="delayTime" data-i18n="sandbox.decoTable.plan.time"></label>
+                        <input type="number" id="delayTime" min="1" max="200" step="1" value="35">
+                    </div>
+                    <div class="lookup-field">
+                        <label for="delayDelay" data-i18n="sandbox.decoTable.crisis.input.delay"></label>
+                        <input type="number" id="delayDelay" min="1" max="60" step="1" value="4">
+                    </div>
+            </div>
+            <div class="scenario-inputs" data-scenario="omitted" hidden>
+                    <div class="lookup-field">
+                        <label for="omittedDepth" data-i18n="sandbox.decoTable.plan.depth"></label>
+                        <input type="number" id="omittedDepth" min="1" max="40" step="1" value="24">
+                    </div>
+                    <div class="lookup-field">
+                        <label for="omittedTime" data-i18n="sandbox.decoTable.plan.time"></label>
+                        <input type="number" id="omittedTime" min="1" max="200" step="1" value="51">
+                    </div>
+                    <fieldset class="choice">
+                        <legend data-i18n="sandbox.decoTable.crisis.input.what"></legend>
+                        <label><input type="radio" name="omittedWhat" value="omitted" checked> <span data-i18n="sandbox.decoTable.crisis.input.whatOmitted"></span></label>
+                        <label><input type="radio" name="omittedWhat" value="fast"> <span data-i18n="sandbox.decoTable.crisis.input.whatFast"></span></label>
+                    </fieldset>
+                    <fieldset class="choice">
+                        <legend data-i18n="sandbox.decoTable.crisis.input.canReturn"></legend>
+                        <label><input type="radio" name="omittedReturn" value="yes" checked> <span data-i18n="sandbox.decoTable.crisis.input.yes"></span></label>
+                        <label><input type="radio" name="omittedReturn" value="no"> <span data-i18n="sandbox.decoTable.crisis.input.no"></span></label>
+                    </fieldset>
+                    <fieldset class="choice">
+                        <legend data-i18n="sandbox.decoTable.crisis.input.symptoms"></legend>
+                        <label><input type="radio" name="omittedSymptoms" value="yes"> <span data-i18n="sandbox.decoTable.crisis.input.yes"></span></label>
+                        <label><input type="radio" name="omittedSymptoms" value="no" checked> <span data-i18n="sandbox.decoTable.crisis.input.no"></span></label>
+                    </fieldset>
+            </div>
+            <div class="scenario-inputs" data-scenario="adverse" hidden>
+                    <div class="lookup-field">
+                        <label for="adverseDepth" data-i18n="sandbox.decoTable.plan.depth"></label>
+                        <input type="number" id="adverseDepth" min="1" max="40" step="1" value="23">
+                    </div>
+                    <div class="lookup-field">
+                        <label for="adverseTime" data-i18n="sandbox.decoTable.plan.time"></label>
+                        <input type="number" id="adverseTime" min="1" max="200" step="1" value="49">
+                    </div>
+                <fieldset class="choice factors">
+                    <legend data-i18n="sandbox.decoTable.crisis.input.factors"></legend>
+                    <div class="factor-grid">
+                        <label><input type="checkbox" name="factor" value="1"> <span data-i18n="sandbox.decoTable.crisis.factor.1"></span></label>
+                        <label><input type="checkbox" name="factor" value="2"> <span data-i18n="sandbox.decoTable.crisis.factor.2"></span></label>
+                        <label><input type="checkbox" name="factor" value="3" checked> <span data-i18n="sandbox.decoTable.crisis.factor.3"></span></label>
+                        <label><input type="checkbox" name="factor" value="4"> <span data-i18n="sandbox.decoTable.crisis.factor.4"></span></label>
+                        <label><input type="checkbox" name="factor" value="5"> <span data-i18n="sandbox.decoTable.crisis.factor.5"></span></label>
+                        <label><input type="checkbox" name="factor" value="6"> <span data-i18n="sandbox.decoTable.crisis.factor.6"></span></label>
+                        <label><input type="checkbox" name="factor" value="7"> <span data-i18n="sandbox.decoTable.crisis.factor.7"></span></label>
+                        <label><input type="checkbox" name="factor" value="8"> <span data-i18n="sandbox.decoTable.crisis.factor.8"></span></label>
+                    </div>
+                </fieldset>
+                <p class="plan-hint factors-none" id="factorsNone" data-i18n="sandbox.decoTable.crisis.input.factorsNone" hidden></p>
+            </div>
+            <div class="scenario-inputs" data-scenario="flying" hidden>
+                    <fieldset class="choice">
+                        <legend data-i18n="sandbox.decoTable.crisis.input.dives"></legend>
+                        <label><input type="radio" name="flyingDives" value="single" checked> <span data-i18n="sandbox.decoTable.crisis.input.single"></span></label>
+                        <label><input type="radio" name="flyingDives" value="repeat"> <span data-i18n="sandbox.decoTable.crisis.input.repeat"></span></label>
+                    </fieldset>
+            </div>
+            <div class="examples" id="examples">
+                <span class="examples-label" id="examplesLabel"></span>
+                <span class="example-chips" id="exampleChips"></span>
+                <p class="plan-hint" data-i18n="sandbox.decoTable.crisis.examplesNote"></p>
+            </div>
+            <div class="plan-actions">
+                <button id="crisisStartBtn" class="btn-primary" data-i18n="sandbox.decoTable.crisis.start">Projít krok za krokem</button>
+                <button id="crisisResetBtn" class="reset-btn" data-i18n="sandbox.decoTable.plan.reset">Začít znovu</button>
+                <a href="#guide-emergency" class="full-text-link" id="crisisFullText" data-i18n="sandbox.decoTable.crisis.fullText"></a>
+            </div>
         </div>
 
         <!-- Dive log -->
@@ -746,10 +1009,10 @@
             <div class="guide-body">
                 <div data-i18n="sandbox.decoTable.guide.use"></div>
                 <div data-i18n="sandbox.decoTable.guide.repeat"></div>
-                <div data-i18n="sandbox.decoTable.guide.flying"></div>
-                <div data-i18n="sandbox.decoTable.guide.altitude"></div>
-                <div data-i18n="sandbox.decoTable.guide.emergency"></div>
-                <div data-i18n="sandbox.decoTable.guide.adverse"></div>
+                <div id="guide-flying" data-i18n="sandbox.decoTable.guide.flying"></div>
+                <div id="guide-altitude" data-i18n="sandbox.decoTable.guide.altitude"></div>
+                <div id="guide-emergency" data-i18n="sandbox.decoTable.guide.emergency"></div>
+                <div id="guide-adverse" data-i18n="sandbox.decoTable.guide.adverse"></div>
                 <p class="guide-source"><span data-i18n="sandbox.decoTable.guide.source"></span> — <a href="https://www.cmas.cz/soubor-od-1-1-2018-plati-nove-dekompresni-tabulky-318-.xls" target="_blank" rel="noopener" data-i18n="sandbox.decoTable.guide.sourceLink">originál XLS</a>.</p>
             </div>
         </details>
@@ -779,6 +1042,7 @@
                     </tr>
                 </thead>
                 <tbody id="decoTableBody"></tbody>
+                <tfoot id="decoTableFoot"></tfoot>
             </table>
         </div>
 
@@ -801,9 +1065,11 @@
     <script src="../js/nav.js" type="module"></script>
 
     <script type="module">
-        import { lookupDive, ndlLimitIdx, formatHM } from '../js/cmasTables.js';
+        import { lookupDive, ndlLimitIdx, formatHM, lookupDelayedAscent, omittedDecoProcedure, flyingWaitHours } from '../js/cmasTables.js';
+        import { fmtNum } from '../js/format.js';
         import { translate, initI18n, createLanguageSwitcher } from '../js/i18n.js';
         import { initVideoWalkthroughs } from '../js/components/VideoWalkthrough.js';
+        import { buildSteps, crisisSteps, CRISIS_SCENARIOS, omittedDecisionCard } from '../js/decoTableSteps.js';
 
         createLanguageSwitcher();
         const [table] = await Promise.all([
@@ -821,6 +1087,8 @@
         const GROUPS = table.groups;
         const DEPTHS = table.depths.map(d => d.depth);
         const NG = GROUPS.length, ND = DEPTHS.length;
+        // what the step builders (js/decoTableSteps.js) need; num() follows the language (1,5 / 1.5)
+        const stepCtx = { T, GROUPS, ND, NG, num: x => fmtNum(x, Number.isInteger(x) ? 0 : 1) };
 
         // ── Build the circle table ────────────────────────────────────────────
         // Columns: [part 3 depth columns ×10][label column][groups A–L ×12]
@@ -892,6 +1160,16 @@
         captionRow.append(cap3, td(null, 'caption-blank'), cap2);
         tbody.appendChild(captionRow);
 
+        // Footer notes printed under the paper table (highlightable like cells: keys note:*)
+        const tfoot = document.getElementById('decoTableFoot');
+        const noteRow = (...tds) => { const tr = document.createElement('tr'); tr.append(...tds); tfoot.appendChild(tr); };
+        const note = (name, key, span) => { const el = td(`note:${name}`, `note note-${name}`, `<span class="note-text">${tSpan(key)}</span>`); el.colSpan = span; return el; };
+        const gap = td(null, 'caption-blank note-gap');
+        gap.colSpan = ND + 1 + NG;
+        noteRow(gap);
+        noteRow(note('safety', 'table.noteSafety', ND), td(null, 'caption-blank'), note('flying', 'table.noteFlying', NG));
+        noteRow(note('adverse', 'table.noteAdverse', ND + 1 + NG));
+
         // ── Return arrows: from each part 3 depth column back up to its part 1 row ──
         const SVG_NS = 'http://www.w3.org/2000/svg';
         const arrowSvg = document.createElementNS(SVG_NS, 'svg');
@@ -940,11 +1218,18 @@
             rowDepth: [9.391, 12.817, 16.117, 19.543, 22.843, 26.269, 29.569, 32.868, 36.294, 39.594, 43.02],
             rowGroup: [47.208, 50.635, 53.934, 57.36, 60.66, 64.086, 67.386, 70.685, 74.112, 77.411, 80.838, 84.137, 87.5],
             labelCol: [46.622, 51.757],
+            // footer notes: [[x0, x1], [y0, y1]], measured from the boxes' borders
+            note: {
+                safety:  [[2.905, 46.757], [89.911, 94.289]],
+                flying:  [[51.824, 97.297], [90.038, 94.48]],
+                adverse: [[3.108, 97.297], [94.86, 97.525]],
+            },
         };
         const LABEL_ROW = [IMG.rowDepth[ND], IMG.rowGroup[0]];
 
         function imgRect(key) {
-            const [kind, a, b] = key.split(':').map((v, i) => i ? Number(v) : v);
+            const [kind, ...rest] = key.split(':');
+            const [a, b] = kind === 'note' ? rest : rest.map(Number);
             const span = (arr, i) => [arr[i], arr[i + 1]];
             switch (kind) {
                 case 'p1':  return [span(IMG.colGroup, b), span(IMG.rowDepth, a)];
@@ -954,6 +1239,7 @@
                 case 'lr':  return [IMG.labelCol, span(IMG.rowGroup, a)];
                 case 'lg':  return [span(IMG.colGroup, a), LABEL_ROW];
                 case 'lp3': return [span(IMG.colDepth, a), LABEL_ROW];
+                case 'note': return IMG.note[a];
             }
         }
 
@@ -988,8 +1274,12 @@
             });
         }
 
+        const hasTableKeys = spec => HL_KINDS.some(k => spec[k]?.length) || spec.arrow != null;
+
         function highlight(spec) {
             clearHighlights();
+            els.narrator.classList.toggle('no-paper', !hasTableKeys(spec));
+            if (!hasTableKeys(spec)) return;   // a procedure step: nothing in the table to point at
             grid.classList.add('focus');
             for (const kind of HL_KINDS) {
                 for (const key of spec[kind] ?? []) {
@@ -1103,89 +1393,6 @@
             window.scrollTo({ top: scrollY + el.getBoundingClientRect().top - offset, behavior: scrollBehavior() });
         }
 
-        const range = (from, to) => Array.from({ length: Math.max(0, to - from) }, (_, i) => from + i);
-        const p1Keys = (d, gs) => gs.map(g => `p1:${d}:${g}`);
-        const p1ColBelow = (d, g) => range(d + 1, ND).map(dd => `p1:${dd}:${g}`);
-
-        // ── Step builders ────────────────────────────────────────────────────
-        function part1Steps(dive, r) {
-            const d = r.depthIdx, g = r.groupIdx, grp = GROUPS[g];
-            const rowKeys = p1Keys(d, range(0, NG));
-            const v = { depth: r.tableDepth, entered: dive.depth, time: dive.time, penalty: r.penalty,
-                        total: r.tableTime, cellTime: r.cell.bottomTime, stop: r.cell.stop5m, group: grp };
-            const depthText = T(dive.depth !== r.tableDepth ? 'steps.depthRounded' : 'steps.depthRow', v);
-            const timeText = T(r.penalty ? 'steps.timePenalty' : 'steps.timePlain', v);
-            const stopText = T(r.isDeco ? 'steps.stopDeco' : 'steps.stopNdl', v);
-            return [
-                {
-                    part: 1,
-                    title: T('stepTitle.depth'),
-                    text: depthText,
-                    hl: { label: [`ld:${d}`], path: rowKeys, focus: [`ld:${d}`, ...p1Keys(d, range(0, 3))] },
-                },
-                {
-                    part: 1,
-                    title: T('stepTitle.scan'),
-                    text: T('steps.scan', { ...v, timeText }),
-                    hl: { label: [`ld:${d}`], path: p1Keys(d, range(0, g)), found: [`p1:${d}:${g}`], focus: [`p1:${d}:${g}`, `ld:${d}`] },
-                },
-                {
-                    part: 1,
-                    title: T('stepTitle.read'),
-                    text: T('steps.read', { ...v, stopText }),
-                    hl: { label: [`ld:${d}`, `lg:${g}`], path: p1ColBelow(d, g), found: [`p1:${d}:${g}`], focus: [`lg:${g}`, `p1:${d}:${g}`] },
-                },
-            ];
-        }
-
-        function repeatSteps(prev, dive, r) {
-            const pg = prev.result.groupIdx, pd = prev.result.depthIdx;
-            const n = r.si.groupIdx, d = r.depthIdx;
-            const origin = `p1:${pd}:${pg}`;
-            const colDown = p1ColBelow(pd, pg);
-            const p2Col = range(0, pg + 1).map(row => `p2:${row}:${pg}`);
-            const hasNdl = r.maxNoDecoTime > 0;
-            const v = {
-                group: GROUPS[pg], newGroup: GROUPS[n], si: formatHM(dive.si),
-                from: formatHM(r.si.min), to: r.si.max === 1440 ? '24:00' : formatHM(r.si.max),
-                depth: r.tableDepth, entered: dive.depth, time: dive.time, penalty: r.penalty,
-                total: r.tableTime, ndl: r.ndl, max: r.maxNoDecoTime,
-            };
-            return [
-                {
-                    part: 2,
-                    title: T('stepTitle.down'),
-                    text: T('steps.down', v),
-                    hl: { origin: [origin], label: [`lg:${pg}`], path: colDown.concat(p2Col), focus: [`lg:${pg}`, origin] },
-                },
-                {
-                    part: 2,
-                    title: T('stepTitle.findSi'),
-                    text: T('steps.findSi', v),
-                    hl: { origin: [`lg:${pg}`], path: range(0, n).map(row => `p2:${row}:${pg}`), found: [`p2:${n}:${pg}`], label: [`lr:${n}`], focus: [`p2:${n}:${pg}`, `lg:${pg}`, `lr:${n}`] },
-                },
-                {
-                    part: 3,
-                    title: T('stepTitle.left'),
-                    text: T('steps.left', { ...v, group: GROUPS[n], rounded: dive.depth !== r.tableDepth ? T('steps.leftRounded', v) : '' }),
-                    hl: {
-                        origin: [`p2:${n}:${pg}`],
-                        path: range(n, pg).map(e => `p2:${n}:${e}`).concat(range(d + 1, ND).map(dd => `p3:${n}:${dd}`)),
-                        label: [`lr:${n}`, `lp3:${d}`],
-                        found: [`p3:${n}:${d}`],
-                        focus: [`p3:${n}:${d}`, `lr:${n}`, `lp3:${d}`],
-                    },
-                },
-                {
-                    part: 1,
-                    title: T('stepTitle.back'),
-                    text: T('steps.back', v) + (hasNdl ? T('steps.backNdl', v) : ''),
-                    hl: { origin: [`p3:${n}:${d}`], label: [`lp3:${d}`, `ld:${d}`], path: p1Keys(d, range(0, NG)), arrow: d, focus: [`ld:${d}`, `lp3:${d}`, `p3:${n}:${d}`] },
-                },
-                ...part1Steps(dive, r).slice(1),
-            ];
-        }
-
         // ── State & DOM ──────────────────────────────────────────────────────
         const $ = id => document.getElementById(id);
         const els = {
@@ -1197,16 +1404,33 @@
             paperToggle: $('paperToggle'), backToTable: $('backToTable'), hint: $('planHint'),
             next: $('nextStepBtn'), prev: $('prevStepBtn'),
             result: $('resultCard'), log: $('diveLog'),
+            tabs: [$('tabPlan'), $('tabCrisis')], planPanel: $('planPanel'), crisisPanel: $('crisisPanel'),
+            crisisStart: $('crisisStartBtn'), crisisReset: $('crisisResetBtn'), fullText: $('crisisFullText'),
+            examples: $('examples'), exampleChips: $('exampleChips'), replay: $('replayBtn'),
         };
         const MAX_REPEATS = 4;
-        // dives: [{ depth, time, si?, result }]; steps: flat list over all dives, each with .dive
-        const state = { dives: [], steps: [], step: -1, done: false, expanded: false };
+        // dives: [{ depth, time, si?, result }]; steps: flat list, each with .group (a dot group:
+        // one per dive in a plan) labelled by groupLabels
+        // mode: 'plan' | 'crisis'; scenario: { id, inputs, result } of the emergency being walked through
+        const state = { mode: 'plan', scenario: null, dives: [], steps: [], groupLabels: [], step: -1, done: false, expanded: false };
 
         function errorText(r, i) {
             const v = { maxDepth: r.maxDepth, total: r.tableTime, depth: r.tableDepth, group: GROUPS[r.groupIdx] };
             return T('errors.divePrefix', { n: i + 1 }) + T(`errors.${r.code}`, v);
         }
-        let lastError = null;   // [result, diveIdx] — re-rendered on language switch
+        const CRISIS_ERRORS = ['delayOutOfRange', 'noRowBelow', 'invalidDelay', 'invalid'];
+        function crisisErrorText(r, id) {
+            const v = { maxDepth: r.maxDepth, total: r.total ?? r.tableTime, depth: r.tableDepth };
+            // adverse: the row that ran out is the one *below* the entered depth — say so
+            if (id === 'adverse' && r.code === 'timeOutOfRange') return T('crisis.errors.adverseOutOfRange', v);
+            return CRISIS_ERRORS.includes(r.code) ? T(`crisis.errors.${r.code}`, v) : T(`errors.${r.code}`, v);
+        }
+        let lastError = null;   // () => html — re-rendered on language switch
+        function showError(render) {
+            lastError = render;
+            els.error.innerHTML = render();
+            els.error.classList.add('visible');
+        }
 
         // ── Plan rows ────────────────────────────────────────────────────────
         let rowSeq = 0;
@@ -1270,13 +1494,13 @@
         }
 
         // ── Walkthrough ──────────────────────────────────────────────────────
-        function currentDive() { return state.steps[state.step].dive; }
+        function currentGroup() { return state.steps[state.step].group; }
 
-        /** Progress over the whole plan: one group of dots per dive; a dot jumps to its step. */
+        /** Progress over the whole walkthrough: one group of dots per dive (or phase); a dot jumps to its step. */
         function renderIndicator() {
             els.indicator.innerHTML = '';
-            const cur = currentDive();
-            state.dives.forEach((_, dv) => {
+            const s = state.steps[state.step];
+            state.groupLabels.forEach((label, dv) => {
                 if (dv) {
                     const divider = document.createElement('span');
                     divider.className = 'dot-divider';
@@ -1284,8 +1508,8 @@
                 }
                 const group = document.createElement('span');
                 group.className = 'dot-group';
-                group.innerHTML = `<span class="dot-group-label">${dv + 1}.</span>`;
-                state.steps.map((s, i) => [s, i]).filter(([s]) => s.dive === dv).forEach(([s, i], k) => {
+                group.innerHTML = `<span class="dot-group-label">${label}</span>`;
+                state.steps.map((st, i) => [st, i]).filter(([st]) => st.group === dv).forEach(([st, i], k) => {
                     if (k) {
                         const c = document.createElement('span');
                         c.className = 'step-connector' + (i <= state.step ? ' done' : '');
@@ -1296,7 +1520,7 @@
                     dot.tabIndex = -1;   // ← → are the way to move; Tab shouldn't stop on every dot
                     dot.className = 'step-dot' + (i < state.step ? ' done' : i === state.step ? ' active' : '');
                     dot.textContent = k + 1;
-                    dot.setAttribute('aria-label', T('narrator.dotLabel', { i: i + 1, title: s.title }));
+                    dot.setAttribute('aria-label', T('narrator.dotLabel', { i: i + 1, title: st.title }));
                     if (i === state.step) dot.setAttribute('aria-current', 'step');
                     dot.addEventListener('click', () => { state.step = i; renderStep(); });
                     group.appendChild(dot);
@@ -1305,18 +1529,26 @@
             });
             const part = document.createElement('span');
             part.className = 'step-part';
-            part.textContent = T('narrator.indicator', { n: cur + 1, total: state.dives.length, part: state.steps[state.step].part });
+            const scenarioName = state.mode === 'crisis' && T(`crisis.scenario.${state.scenario.id}.name`);
+            const phase = state.groupLabels[s.group];
+            part.textContent = !scenarioName ? T('narrator.indicator', { n: s.group + 1, total: state.groupLabels.length, part: s.part })
+                : phase === scenarioName ? phase
+                : T('crisis.indicator', { scenario: scenarioName, phase });
             const progress = document.createElement('span');
             progress.className = 'step-progress';
             progress.textContent = T('narrator.progress', { i: state.step + 1, total: state.steps.length });
             els.indicator.append(part, progress);
         }
 
+        // a footer note is not a header: "where you are" without "(header)"
+        const legendKey = (kind, hl) => kind === 'label' && hl.label.every(k => k.startsWith('note:')) ? 'labelNote' : kind;
+
         /** One chip per highlight kind used in this step, same colours as the table. */
         function renderLegend(hl) {
             const kinds = ['label', 'path', 'origin', 'found'].filter(k => hl[k]?.length);
+            els.legend.hidden = !kinds.length;
             els.legend.innerHTML = `<li class="hl-lead">${T('narrator.legend.lead')}</li>` + kinds.map(k =>
-                `<li><span class="hl-swatch ${k}"></span>${T('narrator.legend.' + k)}</li>`).join('');
+                `<li><span class="hl-swatch ${k}"></span>${T('narrator.legend.' + legendKey(k, hl))}</li>`).join('');
         }
 
         const lowerFirst = text => text.charAt(0).toLowerCase() + text.slice(1);
@@ -1325,7 +1557,8 @@
             const s = state.steps[state.step];
             els.backToTable.hidden = true;
             renderIndicator();
-            els.title.innerHTML = `<span class="step-eyebrow">${T('narrator.part', { part: s.part })} ·</span> ${s.title}`;
+            const eyebrow = s.part ? T('narrator.part', { part: s.part }) : state.groupLabels[s.group];
+            els.title.innerHTML = `<span class="step-eyebrow">${eyebrow} ·</span> ${s.title}`;
             els.text.innerHTML = s.text;
             state.expanded = false;
             fitStepText();
@@ -1333,14 +1566,16 @@
             highlight(s.hl);
             els.prev.disabled = state.step === 0;
             const last = state.step === state.steps.length - 1;
-            const endsDive = !last && state.steps[state.step + 1].dive !== s.dive;
-            if (last || endsDive) {
-                els.next.textContent = last ? T('narrator.result') : T('narrator.nextDive', { n: s.dive + 2 });
+            const endsGroup = !last && state.steps[state.step + 1].group !== s.group;
+            if (last || endsGroup) {
+                els.next.textContent = last ? T('narrator.result')
+                    : state.mode === 'crisis' ? T('crisis.nextPhase', { phase: state.groupLabels[s.group + 1] })
+                    : T('narrator.nextDive', { n: s.group + 2 });
             } else {
                 const named = T('narrator.nextNamed', { title: lowerFirst(state.steps[state.step + 1].title) });
                 els.next.innerHTML = `<span class="next-long">${named}</span><span class="next-short">${T('narrator.next')}</span>`;
             }
-            renderLog(s.dive - (endsDive || last ? 0 : 1));
+            renderLog(s.group - (endsGroup || last ? 0 : 1));
         }
 
         /** In the bottom sheet, clamp the step text to 4 lines with a more/less toggle when it overflows. */
@@ -1353,8 +1588,9 @@
             els.more.setAttribute('aria-expanded', state.expanded);
         }
 
-        /** Log chips for dives 0..upTo (completed so far). */
+        /** Log chips for dives (or emergency phases) 0..upTo (completed so far). */
         function renderLog(upTo) {
+            if (state.mode === 'crisis') return renderCrisisLog(upTo);
             const parts = [];
             state.dives.slice(0, upTo + 1).forEach((dv, i) => {
                 const r = dv.result;
@@ -1368,6 +1604,7 @@
         }
 
         function showResult({ scroll = true } = {}) {
+            if (state.mode === 'crisis') return showCrisisResult({ scroll });
             state.done = true;
             const last = state.dives.at(-1).result;
             highlight({ found: [`p1:${last.depthIdx}:${last.groupIdx}`], label: [`lg:${last.groupIdx}`] });
@@ -1379,6 +1616,7 @@
                 : T(anyDeco ? 'result.titlePlanDeco' : 'result.titlePlanNdl', { n: state.dives.length });
             $('resultTitle').className = anyDeco ? 'deco' : 'ndl';
             els.result.classList.toggle('deco', anyDeco);
+            els.result.classList.remove('crisis');
 
             const rows = state.dives.map((dv, i) => {
                 const r = dv.result;
@@ -1400,7 +1638,10 @@
             notes.push(`<p class="result-note">${T('result.notes')}</p>`);
             $('resultNotes').innerHTML = notes.join('');
             $('compareResult').innerHTML = compareLinkHtml();
+            revealResult(scroll);
+        }
 
+        function revealResult(scroll) {
             els.result.classList.add('visible');
             els.narrator.classList.remove('visible');
             els.layout.classList.remove('walking');
@@ -1411,8 +1652,260 @@
             }
         }
 
+        // ── Emergencies ("Mimořádné situace") ────────────────────────────────
+        const int = el => parseInt(el.value, 10);
+        const radio = name => els.crisisPanel.querySelector(`input[name="${name}"]:checked`)?.value;
+        const selectedScenario = () => radio('scenario');
+        const scenarioInput = (id, f) => $(`${id}${f}`);
+        const GUIDE_BLOCK = { delay: 'guide-emergency', omitted: 'guide-emergency', adverse: 'guide-adverse', flying: 'guide-flying' };
+
+        function readScenario(id) {
+            const n = f => int(scenarioInput(id, f));
+            switch (id) {
+                case 'delay': return { depth: n('Depth'), time: n('Time'), delay: n('Delay') };
+                case 'omitted': return { depth: n('Depth'), time: n('Time'), what: radio('omittedWhat'),
+                                         canReturn: radio('omittedReturn') === 'yes', symptoms: radio('omittedSymptoms') === 'yes' };
+                case 'adverse': return { depth: n('Depth'), time: n('Time'),
+                                         factors: [...els.crisisPanel.querySelectorAll('input[name="factor"]:checked')].map(c => Number(c.value)) };
+                case 'flying': return { repetitive: radio('flyingDives') === 'repeat' };
+            }
+        }
+
+        /** The scenario's table result: `{ ok, … }` from js/cmasTables.js. */
+        function lookupScenario(id, inputs) {
+            switch (id) {
+                case 'delay': return lookupDelayedAscent(table, inputs);
+                case 'omitted': return omittedDecoProcedure(table, inputs);
+                case 'adverse': {
+                    const base = lookupDive(table, inputs);
+                    const adverse = lookupDive(table, { ...inputs, rowOffset: 1 });
+                    // errors from the row actually used (one lower), incl. noRowBelow under the 40 m row;
+                    // the base row cannot fail when the lower one fits (times only shrink down the table)
+                    if (!adverse.ok) return adverse;
+                    return base.ok ? { ok: true, base, adverse } : base;
+                }
+                case 'flying': return { ok: true, hours: flyingWaitHours(inputs) };
+            }
+        }
+
+        function startCrisis() {
+            resetAll();
+            const id = selectedScenario();
+            const inputs = readScenario(id);
+            const result = lookupScenario(id, inputs);
+            // a no-deco dive in the omitted-decompression scenario is still walked through (the table part)
+            if (!result.ok && result.code !== 'noDecoStop') {
+                showError(() => crisisErrorText(result, id));
+                return;
+            }
+            state.scenario = { id, inputs, result };
+            buildCrisisSteps();
+            beginWalkthrough();
+        }
+
+        function buildCrisisSteps() {
+            const { groupLabels, steps } = crisisSteps(stepCtx, state.scenario);
+            state.groupLabels = groupLabels;
+            state.steps = steps;
+        }
+
+        // Example chips: SPČR test tasks (B/D/F sheets) fill the inputs; nothing is answered on the chip
+        const EXAMPLES = {
+            delay: [{ depth: 24, time: 35, delay: 4 }, { depth: 21, time: 50, delay: 8 }, { depth: 18, time: 41, delay: 5 }],
+            omitted: [{ task: 'F1', depth: 24, time: 51 }, { task: 'F2', depth: 39, time: 20 }, { task: 'F5', depth: 28, time: 23 }, { task: 'F3', depth: 17, time: 49 }],
+            adverse: [{ task: 'D10', depth: 23, time: 49 }, { task: 'D7', depth: 36, time: 15 }, { task: 'D6', depth: 11, time: 95 }, { task: 'D4', depth: 35, time: 25 }],
+        };
+
+        function renderExamples() {
+            const id = selectedScenario();
+            const list = EXAMPLES[id] ?? [];
+            els.examples.hidden = !list.length;
+            $('examplesLabel').textContent = T(list.some(e => e.task) ? 'crisis.examples' : 'crisis.examplesPlain');
+            els.exampleChips.innerHTML = list.map((e, i) => {
+                const time = e.delay ? `${e.time} + ${e.delay}` : e.time;
+                return `<button type="button" class="example-chip" data-i="${i}">${e.task ? `<b>${e.task}</b> · ` : ''}${e.depth}&nbsp;m / ${time}&nbsp;min</button>`;
+            }).join('');
+        }
+
+        els.exampleChips.addEventListener('click', e => {
+            const chip = e.target.closest('.example-chip');
+            if (!chip) return;
+            const id = selectedScenario();
+            const ex = EXAMPLES[id][chip.dataset.i];
+            scenarioInput(id, 'Depth').value = ex.depth;
+            scenarioInput(id, 'Time').value = ex.time;
+            if (ex.delay) scenarioInput(id, 'Delay').value = ex.delay;
+            resetAll();
+        });
+
+        function showScenarioInputs() {
+            const id = selectedScenario();
+            els.crisisPanel.querySelectorAll('.scenario-inputs').forEach(el => { el.hidden = el.dataset.scenario !== id; });
+            els.fullText.setAttribute('href', `#${GUIDE_BLOCK[id]}`);
+            renderExamples();
+            updateFactorsHint();
+        }
+
+        function updateFactorsHint() {
+            $('factorsNone').hidden = !!els.crisisPanel.querySelector('input[name="factor"]:checked');
+        }
+
+        els.crisisPanel.addEventListener('change', e => {
+            if (e.target.name === 'scenario') showScenarioInputs();
+            if (e.target.name === 'factor') updateFactorsHint();
+            if (e.target.type === 'radio' || e.target.type === 'checkbox') resetAll();
+        });
+
+        // "Full text →" opens the official guide at the matching block
+        els.fullText.addEventListener('click', e => {
+            e.preventDefault();
+            const target = $(els.fullText.getAttribute('href').slice(1));
+            $('guide').open = true;
+            scrollToTop(target);
+        });
+
+        // ── Mode tabs ────────────────────────────────────────────────────────
+        function setMode(mode, { remember = true } = {}) {
+            state.mode = mode;
+            els.tabs.forEach(tab => {
+                const on = tab.dataset.mode === mode;
+                tab.setAttribute('aria-selected', on);
+                tab.tabIndex = on ? 0 : -1;
+            });
+            els.planPanel.hidden = mode !== 'plan';
+            els.crisisPanel.hidden = mode !== 'crisis';
+            const replayKey = mode === 'crisis' ? 'crisis.result.replay' : 'result.replay';
+            els.replay.dataset.i18n = `sandbox.decoTable.${replayKey}`;   // i18n.js re-translates it on a language switch
+            els.replay.textContent = T(replayKey);
+            resetAll();
+            if (remember) try { localStorage.setItem('decoTable.mode', mode); } catch { /* storage blocked */ }
+        }
+
+        els.tabs.forEach((tab, i) => {
+            tab.addEventListener('click', () => setMode(tab.dataset.mode));
+            tab.addEventListener('keydown', e => {
+                if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+                e.preventDefault();
+                const next = els.tabs[(i + (e.key === 'ArrowRight' ? 1 : -1) + els.tabs.length) % els.tabs.length];
+                next.focus();
+                setMode(next.dataset.mode);
+            });
+        });
+
+        // ── Emergency dive log and result ────────────────────────────────────
+        const chip = (cls, html) => `<span class="log-chip ${cls}">${html}</span>`;
+        const diveChip = (depth, time, r) => chip(r.isDeco ? 'deco' : 'dive',
+            `${depth}&nbsp;m / ${time}&nbsp;min → <strong>${GROUPS[r.groupIdx]}</strong>${r.isDeco ? ` · 5&nbsp;m/${r.cell.stop5m}&nbsp;min` : ''}`);
+
+        /** Chips per phase of the scenario; phases 0..upTo are shown. */
+        function renderCrisisLog(upTo) {
+            const { id, inputs, result: r } = state.scenario;
+            let phases = [];
+            if (id === 'delay') {
+                phases = [[diveChip(inputs.depth, inputs.time, r.original)],
+                          [chip('si', T('crisis.log.delay', { delay: r.delay })), diveChip(inputs.depth, r.total, r.delayed)]];
+            } else if (id === 'omitted') {
+                const what = chip('si', T(inputs.what === 'fast' ? 'crisis.input.whatFast' : 'crisis.input.whatOmitted'));
+                const outcome = r.branch === 1 ? chip('deco', `5&nbsp;m / ${r.extendedStop.total}&nbsp;min`)
+                    : r.branch === 2 && !r.symptoms ? chip('deco', T('crisis.log.oxygen'))
+                    : chip('deco', T('crisis.log.transport'));
+                phases = [[diveChip(inputs.depth, inputs.time, r.lookup)], r.ok ? [what] : [], r.ok ? [outcome] : []];
+            } else if (id === 'adverse') {
+                phases = [[chip('dive', T('crisis.log.row', { depth: r.base.tableDepth }))],
+                          [chip('si', T('crisis.scenario.adverse.name')),   // no group: the guide doesn't give one here
+                           chip(r.adverse.isDeco ? 'deco' : 'dive', `${r.adverse.tableDepth}&nbsp;m / ${inputs.time}&nbsp;min${r.adverse.isDeco ? ` · 5&nbsp;m/${r.adverse.cell.stop5m}&nbsp;min` : ''}`)]];
+            }
+            const parts = phases.slice(0, upTo + 1).flat();
+            els.log.innerHTML = parts.join('<span class="log-arrow">→</span>');
+            els.log.classList.toggle('visible', parts.length > 0);
+        }
+
+        const stopCell = r => r.isDeco
+            ? `<span class="deco">${T('result.stop', { stop: r.cell.stop5m })}</span>`
+            : `<span class="ndl">${T('result.noDeco')}</span>`;
+        const resultTable = (cols, rows) => `<table class="result-table">
+            <thead><tr>${cols.map(c => `<th>${T('crisis.result.' + c)}</th>`).join('')}</tr></thead>
+            <tbody>${rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+        const fullTextLink = id => `<p class="result-note"><a href="#${GUIDE_BLOCK[id]}" class="full-text-link" data-guide>${T('crisis.fullText')}</a></p>`;
+
+        function crisisResultHtml() {
+            const { id, inputs, result: r } = state.scenario;
+            if (id === 'delay') {
+                const o = r.original, n = r.delayed;
+                return {
+                    title: T('crisis.result.delayTitle'),
+                    body: resultTable(['colCase', 'colTime', 'colCell', 'colDeco', 'colGroup'], [
+                        [T('crisis.result.rowPlan'), `${inputs.time}&nbsp;min`, o.cell.bottomTime, stopCell(o), `<b>${GROUPS[o.groupIdx]}</b>`],
+                        [T('crisis.result.rowDelayed'), `${inputs.time}&nbsp;+&nbsp;${r.delay}&nbsp;= ${r.total}&nbsp;min`, n.cell.bottomTime, stopCell(n), `<b>${GROUPS[n.groupIdx]}</b>`],
+                    ]) + `<p class="verdict">${T(`crisis.steps.verdict.${r.verdict}`, { from: o.cell.stop5m, to: n.cell.stop5m, group: GROUPS[n.groupIdx], oldGroup: GROUPS[o.groupIdx] })}</p>`,
+                };
+            }
+            if (id === 'omitted') {
+                if (!r.ok) return { title: T('crisis.result.omittedTitle'), body: `<p class="verdict">${T('crisis.steps.noDecoStop')}</p>` };
+                const v = { stop: r.stop, raw: stepCtx.num(r.extendedStop.raw), total: r.extendedStop.total };
+                const na = `<span class="sr-note"> ${T('crisis.result.notApplicable')}</span>`;
+                const card = omittedDecisionCard(r);
+                const item = ({ key, state }) => `<li class="${state}">${T(key, v)}${state === 'faded' ? na : ''}</li>`;
+                const branch = ({ n, head, state, items }) => `<div class="branch ${state}">
+                    <h4><span class="branch-num">${n}</span>${T(head)}${state === 'faded' ? na : ''}</h4><ol type="a">${items.map(item).join('')}</ol></div>`;
+                return {
+                    title: T('crisis.result.omittedTitle'),
+                    body: (card.lead ? `<p class="verdict">${T(card.lead)}</p>` : '')
+                        + `<div class="decision">${card.branches.map(branch).join('')}</div>
+                    <p class="guide-alert">${T('crisis.steps.firstAid')}</p>`,
+                };
+            }
+            if (id === 'adverse') {
+                const row = (key, x, group) => [T(key, { depth: x.tableDepth }), x.cell.bottomTime, stopCell(x), group,
+                                                x.ndl ? `${x.ndl}&nbsp;min` : '—'];
+                const factors = inputs.factors.map(i => T(`crisis.factor.${i}`)).join(', ');
+                return {
+                    title: T('crisis.result.adverseTitle'),
+                    body: resultTable(['colCase', 'colCell', 'colDeco', 'colGroup', 'colNdl'],
+                                      [row('crisis.result.rowNormal', r.base, `<b>${GROUPS[r.base.groupIdx]}</b>`),
+                                       row('crisis.result.rowAdverse', r.adverse, `<span class="group-ask">${T('crisis.result.groupAsk')}</span>`)])
+                        + `<p class="result-note">${factors ? T('crisis.result.factors', { factors }) : T('crisis.input.factorsNone')}</p>`
+                        + `<p class="result-note">${T('crisis.result.computer')}</p>`,
+                };
+            }
+            return {
+                title: T('crisis.scenario.flying.name'),
+                body: `<p><span class="flying-chip">✈ ${T('crisis.result.flyingTitle', { hours: r.hours })}</span></p>
+                       <p class="result-note">${T('crisis.result.flyingNote')}</p>`,
+            };
+        }
+
+        function showCrisisResult({ scroll = true } = {}) {
+            state.done = true;
+            const { id, result: r } = state.scenario;
+            const final = { delay: r.delayed, omitted: r.lookup, adverse: r.adverse }[id];
+            highlight(final
+                ? { found: [`p1:${final.depthIdx}:${final.groupIdx}`], label: id === 'adverse' ? [] : [`lg:${final.groupIdx}`] }
+                : { label: ['note:flying'] });
+            renderCrisisLog(state.groupLabels.length - 1);
+            const { title, body } = crisisResultHtml();
+            $('resultTitle').textContent = title;
+            $('resultTitle').className = 'crisis';
+            els.result.classList.remove('deco');
+            els.result.classList.add('crisis');
+            $('resultBody').innerHTML = body;
+            $('resultNotes').innerHTML = fullTextLink(id);
+            $('compareResult').innerHTML = '';
+            revealResult(scroll);
+        }
+
+        $('resultNotes').addEventListener('click', e => {
+            const link = e.target.closest('a[data-guide]');
+            if (!link) return;
+            e.preventDefault();
+            $('guide').open = true;
+            scrollToTop($(link.getAttribute('href').slice(1)));
+        });
+
         // ── Actions ──────────────────────────────────────────────────────────
-        function startLookup() {
+        const startLookup = () => state.mode === 'crisis' ? startCrisis() : startPlan();
+
+        function startPlan() {
             resetAll();
             const plan = readPlan();
             const dives = [];
@@ -1422,20 +1915,28 @@
                     ? { ...dive, prevGroupIdx: prev.result.groupIdx, surfaceInterval: dive.si }
                     : dive);
                 if (!r.ok) {
-                    lastError = [r, i];
-                    els.error.innerHTML = errorText(r, i);
-                    els.error.classList.add('visible');
+                    showError(() => errorText(r, i));
                     return;
                 }
                 dives.push({ ...dive, result: r });
             }
             state.dives = dives;
-            state.steps = buildSteps(dives);
+            buildPlanSteps();
+            beginWalkthrough();
+        }
+
+        function buildPlanSteps() {
+            state.steps = buildSteps(stepCtx, state.dives);
+            state.groupLabels = state.dives.map((_, i) => `${i + 1}.`);
+        }
+
+        function beginWalkthrough() {
             state.step = 0;
             els.narrator.classList.add('visible');
             els.layout.classList.add('walking');
             els.hint.hidden = true;
             els.resetBtn.style.display = 'inline-block';
+            els.crisisReset.style.display = 'inline-block';
             if (document.activeElement?.matches('input')) document.activeElement.blur();  // so ← → work right away
             renderStep();
             els.narrator.focus({ preventScroll: true });   // screen readers announce the step region
@@ -1448,12 +1949,6 @@
             if (!d1 || d1.time > 120) return '';   // the compact link accepts at most 120 min
             const url = `index.html?v=1&d=${d1.depth}&t=${d1.time}&gfL=100&gfH=100&zhl=C`;
             return `${T('compare.hint')} <a href="${url}">${T('compare.link', { depth: d1.depth, time: d1.time })}</a>`;
-        }
-
-        function buildSteps(dives) {
-            return dives.flatMap((dv, i) =>
-                (i === 0 ? part1Steps(dv, dv.result) : repeatSteps(dives[i - 1], dv, dv.result))
-                    .map(s => ({ ...s, dive: i })));
         }
 
         function advance() {
@@ -1474,6 +1969,8 @@
         function resetAll() {
             state.dives = [];
             state.steps = [];
+            state.groupLabels = [];
+            state.scenario = null;
             state.step = -1;
             state.done = false;
             clearHighlights();
@@ -1485,6 +1982,7 @@
             els.error.classList.remove('visible');
             lastError = null;
             els.resetBtn.style.display = 'none';
+            els.crisisReset.style.display = 'none';
             els.log.classList.remove('visible');
         }
 
@@ -1529,28 +2027,28 @@
         try { if (localStorage.getItem('decoTable.paperInset') === '1') setPaper(true); } catch { /* storage blocked */ }
         $('resultBackBtn').addEventListener('click', goBack);
 
-        /** Jump to the first (Home) or last (End) step of the current dive. */
-        function jumpInDive(toEnd) {
-            const dive = currentDive();
-            const idx = state.steps.map((s, i) => s.dive === dive ? i : -1).filter(i => i >= 0);
+        /** Jump to the first (Home) or last (End) step of the current dive (or phase). */
+        function jumpInGroup(toEnd) {
+            const group = currentGroup();
+            const idx = state.steps.map((s, i) => s.group === group ? i : -1).filter(i => i >= 0);
             const target = toEnd ? idx.at(-1) : idx[0];
             if (target !== state.step) { state.step = target; renderStep(); }
         }
 
-        // Keyboard: ← / → step through the walkthrough, Home / End within the dive,
+        // Keyboard: ← / → step through the walkthrough, Home / End within the dive (phase),
         // Esc folds the phone sheet back (not while editing a number)
         document.addEventListener('keydown', e => {
             if (!state.steps.length || e.altKey || e.ctrlKey || e.metaKey) return;
-            if (e.target instanceof Element && e.target.closest('input, textarea, select')) return;
+            if (e.target instanceof Element && e.target.closest('input, textarea, select, [role="tab"]')) return;
             if (e.key === 'ArrowRight' && !state.done) { e.preventDefault(); advance(); }
             else if (e.key === 'ArrowLeft') { e.preventDefault(); goBack(); }
-            else if ((e.key === 'Home' || e.key === 'End') && !state.done) { e.preventDefault(); jumpInDive(e.key === 'End'); }
+            else if ((e.key === 'Home' || e.key === 'End') && !state.done) { e.preventDefault(); jumpInGroup(e.key === 'End'); }
             else if (e.key === 'Escape' && sheetMode.matches && !state.done) {
                 if (state.expanded) { state.expanded = false; fitStepText(); }
                 else if (els.narrator.classList.contains('paper-on')) setPaper(false);
             }
         });
-        $('replayBtn').addEventListener('click', () => {
+        els.replay.addEventListener('click', () => {
             state.done = false;
             state.step = 0;
             els.result.classList.remove('visible');
@@ -1559,6 +2057,9 @@
             renderStep();   // scrolls the first step's cells into the free area
         });
         wireInputs([els.depth, els.time]);
+        wireInputs(els.crisisPanel.querySelectorAll('input[type="number"]'));
+        els.crisisStart.addEventListener('click', startCrisis);
+        els.crisisReset.addEventListener('click', resetAll);
 
         // Language switch: static text is handled by i18n.js (data-i18n);
         // regenerate everything built from T() without losing the walkthrough position.
@@ -1566,9 +2067,12 @@
         function retranslate() {
             tableImg.alt = T('image.alt');
             renumberRows();
-            if (lastError) els.error.innerHTML = errorText(...lastError);
+            if (lastError) els.error.innerHTML = lastError();
+            renderExamples();
+            els.tabs[0].parentElement.setAttribute('aria-label', T('tabs.label'));
             if (state.steps.length) {
-                state.steps = buildSteps(state.dives);
+                if (state.mode === 'crisis') buildCrisisSteps();
+                else buildPlanSteps();
                 if (state.done) showResult({ scroll: false });
                 else renderStep();
             }
@@ -1576,6 +2080,17 @@
         document.addEventListener('languagechange', retranslate);
         retranslate();
         addRepeatRow();   // start with one repetitive dive so the loop is visible straight away
+
+        // Start in the remembered tab; ?s=<scenario> deep-links into an emergency
+        const deepLink = new URLSearchParams(location.search).get('s');
+        let startMode = 'plan';
+        try { if (localStorage.getItem('decoTable.mode') === 'crisis') startMode = 'crisis'; } catch { /* storage blocked */ }
+        if (CRISIS_SCENARIOS.includes(deepLink)) {
+            els.crisisPanel.querySelector(`input[name="scenario"][value="${deepLink}"]`).checked = true;
+            startMode = 'crisis';
+        }
+        showScenarioInputs();
+        setMode(startMode, { remember: false });
     </script>
 </body>
 </html>

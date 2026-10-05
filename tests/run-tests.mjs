@@ -253,7 +253,11 @@ import {
     lookupDive,
     ndlLimitIdx,
     formatHM,
+    lookupDelayedAscent,
+    omittedDecoProcedure,
+    flyingWaitHours,
 } from '../js/cmasTables.js';
+import { buildSteps as buildDecoTableSteps, crisisSteps, omittedDecisionCard } from '../js/decoTableSteps.js';
 
 describe('Chart tooltip shortcut', () => {
     test('toggles only the focused or hovered chart and persists across rebuilds', () => {
@@ -10547,13 +10551,265 @@ describe('SPČR/CMAS 2018 tables (cmasTables.js)', () => {
         });
     });
 
+    describe('emergencies — adverse circumstances (rowOffset 1)', () => {
+        const adverse = (depth, time) => lookupDive(cmas, { depth, time, rowOffset: 1 });
+        const cellOf = r => `${r.tableDepth} ${G[r.groupIdx]}${r.cell.bottomTime}/${r.cell.stop5m}`;
+        test('test tasks D10, D7, D6, D4: one row lower', () => {
+            expect(cellOf(lookupDive(cmas, { depth: 23, time: 49 }))).toBe('24 K50/10');
+            expect(cellOf(adverse(23, 49))).toBe('27 L50/18');
+            expect(cellOf(lookupDive(cmas, { depth: 36, time: 15 }))).toBe('36 F15/5');
+            expect(cellOf(adverse(36, 15))).toBe('40 J25/10');
+            expect(cellOf(lookupDive(cmas, { depth: 11, time: 95 }))).toBe('12 I100/0');
+            expect(cellOf(adverse(11, 95))).toBe('15 L100/5');
+            expect(cellOf(adverse(35, 25))).toBe('40 J25/10');
+        });
+        test('the base row is reported alongside the shifted one', () => {
+            const r = adverse(23, 49);
+            expect([r.baseDepthIdx, r.baseTableDepth, r.depthIdx]).toEqual([4, 24, 5]);
+            const plain = lookupDive(cmas, { depth: 23, time: 49 });
+            expect([plain.baseDepthIdx, plain.depthIdx]).toEqual([4, 4]);
+        });
+        test('B1, B3: no-deco limit one row lower (18 m: 55 → 45 min)', () => {
+            expect(lookupDive(cmas, { depth: 18, time: 1 }).maxNoDecoTime).toBe(55);
+            expect(adverse(18, 1).maxNoDecoTime).toBe(45);
+            expect(adverse(16, 1).maxNoDecoTime).toBe(45);
+        });
+        test('the 40 m row has no row below; 12 m / 120 min runs off the 15 m row', () => {
+            expect(adverse(38, 10).code).toBe('noRowBelow');
+            expect(adverse(40, 5).code).toBe('noRowBelow');
+            expect(adverse(38, 10).tableDepth).toBe(40);
+            expect(adverse(12, 120).code).toBe('timeOutOfRange');
+            const d2 = adverse(25, 41);   // test task D2: 41 min runs off the 30 m row (one below 27 m)
+            expect([d2.code, d2.tableDepth, d2.tableTime]).toEqual(['timeOutOfRange', 30, 41]);
+            expect(adverse(41, 5).code).toBe('tooDeep');
+        });
+    });
+
+    describe('emergencies — delayed ascent', () => {
+        const delayed = (depth, time, delay) => lookupDelayedAscent(cmas, { depth, time, delay });
+        test('24 m / 35 + 4 min: H 35 no-deco → I 40, 5 min (became deco)', () => {
+            const r = delayed(24, 35, 4);
+            expect([G[r.original.groupIdx], r.original.isDeco]).toEqual(['H', false]);
+            expect([G[r.delayed.groupIdx], r.delayed.cell.stop5m, r.total]).toEqual(['I', 5, 39]);
+            expect(r.verdict).toBe('becameDeco');
+        });
+        test('21 m / 50 + 8 min: J 50/5 → K 60/8 (longer stop)', () => {
+            const r = delayed(21, 50, 8);
+            expect(`${G[r.original.groupIdx]}${r.original.cell.stop5m} ${G[r.delayed.groupIdx]}${r.delayed.cell.stop5m}`).toBe('J5 K8');
+            expect(r.verdict).toBe('longerStop');
+        });
+        test('18 m / 41 + 5 min stays in the H 50 cell (same procedure)', () => {
+            const r = delayed(18, 41, 5);
+            expect(r.original.groupIdx).toBe(r.delayed.groupIdx);
+            expect(r.verdict).toBe('sameProcedure');
+        });
+        test('24 m / 20 + 4 min: E 20 → F 25, both no-deco — same decompression but a new group', () => {
+            const r = delayed(24, 20, 4);
+            expect(`${G[r.original.groupIdx]} ${G[r.delayed.groupIdx]}`).toBe('E F');
+            expect(r.verdict).toBe('sameStopNewGroup');
+        });
+        test('errors: off the row, no delay, the dive itself invalid', () => {
+            const off = delayed(30, 20, 30);
+            expect([off.code, off.total, off.tableDepth]).toEqual(['delayOutOfRange', 50, 30]);
+            expect(delayed(24, 35, 0).code).toBe('invalidDelay');
+            expect(delayed(45, 10, 2).code).toBe('tooDeep');
+        });
+    });
+
+    describe('emergencies — omitted decompression', () => {
+        const omitted = (depth, time, canReturn = true, symptoms = false) =>
+            omittedDecoProcedure(cmas, { depth, time, canReturn, symptoms });
+        test('test tasks F1, F2, F4, F5, F7, F8, F10: 1,5× the stop, rounded up', () => {
+            const ext = ([d, t]) => { const r = omitted(d, t); return `${r.stop}:${r.extendedStop.raw}:${r.extendedStop.total}`; };
+            expect([[24, 51], [39, 20], [32, 25], [28, 23], [22, 55], [35, 24], [40, 10]].map(ext)).toEqual([
+                '17:25.5:26', '10:15:15', '7:10.5:11', '5:7.5:8', '17:25.5:26', '6:9:9', '5:7.5:8',
+            ]);
+        });
+        test('F3, F6, F9 are no-deco cells → noDecoStop (no 1,5× of the safety stop)', () => {
+            for (const [d, t, cell] of [[17, 49, 'H50'], [14, 59, 'H60'], [26, 19, 'F20']]) {
+                const r = omitted(d, t);
+                expect(r.ok).toBe(false);
+                expect(r.code).toBe('noDecoStop');
+                expect(`${G[r.lookup.groupIdx]}${r.lookup.cell.bottomTime}`).toBe(cell);
+            }
+        });
+        test('branch: can return × symptoms', () => {
+            expect(omitted(24, 51, true, false).branch).toBe(1);
+            expect(omitted(24, 51, false, false).branch).toBe(2);
+            expect(omitted(24, 51, false, true).branch).toBe(2);
+            expect(omitted(24, 51, true, true).branch).toBe('symptoms');
+        });
+        test('no diving for 12 h only on branch 2 without symptoms', () => {
+            expect(omitted(24, 51, false, false).noDiveHours).toBe(12);
+            expect(omitted(24, 51, false, true).noDiveHours).toBe(null);
+            expect(omitted(24, 51, true, false).noDiveHours).toBe(null);
+        });
+        test('lookup errors pass through', () => {
+            expect(omitted(42, 10).code).toBe('tooDeep');
+        });
+    });
+
+    test('emergencies — flying: 12 h after one dive, 24 h after repetitive', () => {
+        expect(flyingWaitHours({ repetitive: false })).toBe(12);
+        expect(flyingWaitHours({ repetitive: true })).toBe(24);
+    });
+
+    describe('walkthrough steps (decoTableSteps.js)', () => {
+        const T = key => key;
+        const ctx = { T, GROUPS: G, ND: cmas.depths.length, NG: G.length };
+        const keys = hl => Object.fromEntries(Object.entries(hl).map(([k, v]) => [k, Array.isArray(v) ? v.join(' ') : v]));
+
+        test('golden: plan 30 m / 20 min, 1:00, 18 m / 20 min — titles and highlights of all 9 steps', () => {
+            const d1 = { depth: 30, time: 20, result: lookupDive(cmas, { depth: 30, time: 20 }) };
+            const d2 = { depth: 18, time: 20, si: 60,
+                result: lookupDive(cmas, { depth: 18, time: 20, prevGroupIdx: d1.result.groupIdx, surfaceInterval: 60 }) };
+            const steps = buildDecoTableSteps(ctx, [d1, d2]);
+            expect(steps.map(s => `${s.dive}${s.group}${s.part} ${s.title}`)).toEqual([
+                '001 stepTitle.depth', '001 stepTitle.scan', '001 stepTitle.read',
+                '112 stepTitle.down', '112 stepTitle.findSi', '113 stepTitle.left', '111 stepTitle.back',
+                '111 stepTitle.scan', '111 stepTitle.read',
+            ]);
+            const row = d => Array.from({ length: 12 }, (_, i) => `p1:${d}:${i}`).join(' ');
+            expect(steps.map(s => keys(s.hl))).toEqual([
+                { label: 'ld:6', path: row(6), focus: 'ld:6 p1:6:0 p1:6:1 p1:6:2' },
+                { label: 'ld:6', path: 'p1:6:0 p1:6:1 p1:6:2 p1:6:3 p1:6:4', found: 'p1:6:5', focus: 'p1:6:5 ld:6' },
+                { label: 'ld:6 lg:5', path: 'p1:7:5 p1:8:5 p1:9:5', found: 'p1:6:5', focus: 'lg:5 p1:6:5' },
+                { origin: 'p1:6:5', label: 'lg:5', path: 'p1:7:5 p1:8:5 p1:9:5 p2:0:5 p2:1:5 p2:2:5 p2:3:5 p2:4:5 p2:5:5', focus: 'lg:5 p1:6:5' },
+                { origin: 'lg:5', path: 'p2:0:5 p2:1:5 p2:2:5 p2:3:5', found: 'p2:4:5', label: 'lr:4', focus: 'p2:4:5 lg:5 lr:4' },
+                { origin: 'p2:4:5', path: 'p2:4:4 p3:4:3 p3:4:4 p3:4:5 p3:4:6 p3:4:7 p3:4:8 p3:4:9', label: 'lr:4 lp3:2', found: 'p3:4:2', focus: 'p3:4:2 lr:4 lp3:2' },
+                { origin: 'p3:4:2', label: 'lp3:2 ld:2', path: row(2), arrow: 2, focus: 'ld:2 lp3:2 p3:4:2' },
+                { label: 'ld:2', path: 'p1:2:0 p1:2:1 p1:2:2 p1:2:3 p1:2:4 p1:2:5 p1:2:6', found: 'p1:2:7', focus: 'p1:2:7 ld:2' },
+                { label: 'ld:2 lg:7', path: 'p1:3:7 p1:4:7 p1:5:7 p1:6:7 p1:7:7 p1:8:7 p1:9:7', found: 'p1:2:7', focus: 'lg:7 p1:2:7' },
+            ]);
+        });
+    });
+
+    describe('emergency walkthroughs (crisisSteps)', () => {
+        const T = key => key;
+        const ctx = { T, GROUPS: G, ND: cmas.depths.length, NG: G.length };
+        const run = (id, inputs, result) => crisisSteps(ctx, { id, inputs, result });
+        const delay = () => run('delay', { depth: 24, time: 35, delay: 4 },
+            lookupDelayedAscent(cmas, { depth: 24, time: 35, delay: 4 }));
+        const omitted = (canReturn, symptoms, depth = 24, time = 51) => run('omitted', { depth, time, what: 'omitted' },
+            omittedDecoProcedure(cmas, { depth, time, canReturn, symptoms }));
+        const adverse = () => run('adverse', { depth: 23, time: 49, factors: [3] }, {
+            base: lookupDive(cmas, { depth: 23, time: 49 }), adverse: lookupDive(cmas, { depth: 23, time: 49, rowOffset: 1 }) });
+        const flying = () => run('flying', { repetitive: false });
+
+        test('S1 delay, 24 m / 35 + 4 min: 5 steps, H 35 → I 40', () => {
+            const { groupLabels, steps } = delay();
+            expect(groupLabels).toEqual(['crisis.phase.plan', 'crisis.phase.delay']);
+            expect(steps.map(s => s.group)).toEqual([0, 0, 0, 1, 1]);
+            expect(steps[3].hl.origin).toEqual(['p1:4:7']);
+            expect(steps[3].hl.found).toEqual(['p1:4:8']);
+            expect(steps[4].hl.label.includes('lg:8')).toBe(true);
+            expect(steps[4].text.includes('crisis.steps.verdict.becameDeco')).toBe(true);
+        });
+        test('S1 delay inside the same cell: no origin, sameCell sentence', () => {
+            const { steps } = run('delay', { depth: 18, time: 41, delay: 5 }, lookupDelayedAscent(cmas, { depth: 18, time: 41, delay: 5 }));
+            expect(steps[3].hl.origin).toBe(undefined);
+            expect(steps[3].text.includes('crisis.steps.sameCell')).toBe(true);
+        });
+        test('S2 F1 branch 1: 6 steps, 1,5× at the L 60 cell', () => {
+            const { groupLabels, steps } = omitted(true, false);
+            expect(groupLabels.at(-1)).toBe('crisis.phase.branch1');
+            expect(steps.length).toBe(6);
+            expect(steps[5].hl.found).toEqual(['p1:4:11']);
+            expect(steps.slice(3).every(s => s.part === null)).toBe(true);
+        });
+        test('S2 branch 2 and the symptoms path point at nothing in the table', () => {
+            const two = omitted(false, false).steps;
+            expect(two.length).toBe(6);
+            expect(two.slice(4).every(s => Object.keys(s.hl).length === 0)).toBe(true);
+            expect(two[5].text).toBe('crisis.steps.watch.noSymptoms');
+            expect(omitted(false, true).steps[5].text.includes('crisis.steps.firstAid')).toBe(true);
+            const sym = omitted(true, true);
+            expect(sym.groupLabels.at(-1)).toBe('crisis.phase.symptoms');
+            expect(sym.steps.length).toBe(5);
+            expect(Object.keys(sym.steps[4].hl).length).toBe(0);
+        });
+        test('S2 decision card: symptoms but able to return → oxygen and 2c apply, nothing says otherwise', () => {
+            const card = omittedDecisionCard(omittedDecoProcedure(cmas, { depth: 24, time: 51, canReturn: true, symptoms: true }));
+            const [b1, b2] = card.branches;
+            const state = key => b2.items.find(i => i.key === key).state;
+            expect(card.lead).toBe('crisis.result.symptomsHead');
+            expect(b1.state).toBe('faded');
+            expect(b2.state).toBe('neutral');   // the diver *can* return: the "cannot return" heading is not chosen, not faded
+            expect(state('crisis.steps.oxygen')).toBe('chosen');
+            expect(state('crisis.steps.watch.symptoms')).toBe('chosen');
+            expect(state('crisis.steps.watch.noSymptoms')).toBe('faded');
+        });
+        test('S2 decision card: branch 1 and branch 2 marking', () => {
+            const card = (canReturn, symptoms) => omittedDecisionCard(omittedDecoProcedure(cmas, { depth: 24, time: 51, canReturn, symptoms }));
+            const one = card(true, false);
+            expect(one.branches.map(b => b.state)).toEqual(['chosen', 'faded']);
+            expect(one.branches[1].items.every(i => i.state === 'plain')).toBe(true);
+            const two = card(false, false);
+            expect(two.lead).toBe(null);
+            expect(two.branches.map(b => b.state)).toEqual(['faded', 'chosen']);
+            expect(two.branches[1].items.map(i => i.state)).toEqual(['chosen', 'chosen', 'faded']);
+            expect(card(false, true).branches[1].items.map(i => i.state)).toEqual(['chosen', 'faded', 'chosen']);
+            // oxygen is never marked "does not apply" when branch 2 or the symptoms path is taken
+            for (const c of [card(false, false), card(false, true), card(true, true)]) {
+                expect(c.branches[1].items[0].state).toBe('chosen');
+            }
+        });
+        test('S2 no-deco dive (F3): plan + one step on the safety-stop note, no 1,5×', () => {
+            const { steps } = omitted(true, false, 17, 49);
+            expect(steps.length).toBe(4);
+            expect(steps[3].hl.label).toEqual(['note:safety']);
+            expect(steps[3].hl.origin).toBe(undefined);
+            expect(steps[3].hl.focus).toEqual(['note:safety']);
+            expect(steps.some(s => s.text.includes('stopLonger'))).toBe(false);
+        });
+        test('S3 D10: note, row below, found L 50 in the 27 m row', () => {
+            const { groupLabels, steps } = adverse();
+            expect(groupLabels).toEqual(['crisis.phase.normal', 'crisis.phase.adverse']);
+            expect(steps.length).toBe(5);
+            expect(steps[1].hl.label).toEqual(['note:adverse']);
+            expect(steps[2].hl.label).toEqual(['ld:5']);
+            expect(steps[2].hl.origin).toEqual(['ld:4']);
+            expect(steps.at(-1).hl.found).toEqual(['p1:5:11']);
+            // no repetitive group is inferred for the adverse row (the guide is silent, OQ6)
+            expect(steps.at(-1).title).toBe('crisis.stepTitle.readStop');
+            expect(steps.at(-1).hl.label.some(k => k.startsWith('lg:'))).toBe(false);
+        });
+        test('S4 flying: one step on the flying note', () => {
+            const { steps } = flying();
+            expect(steps.length).toBe(1);
+            expect(steps[0].hl.label).toEqual(['note:flying']);
+        });
+        test('every highlight key exists in the page key space', () => {
+            const ok = /^(ld:\d|lg:\d+|lr:\d+|lp3:\d|p1:\d:\d+|p2:\d+:\d+|p3:\d+:\d|note:(safety|flying|adverse))$/;
+            const all = [delay(), omitted(true, false), omitted(false, true), omitted(true, true), omitted(true, false, 17, 49), adverse(), flying()]
+                .flatMap(r => r.steps).flatMap(s => ['path', 'label', 'origin', 'found', 'focus'].flatMap(k => s.hl[k] ?? []));
+            expect(all.filter(k => !ok.test(k))).toEqual([]);
+            expect(all.length > 50).toBe(true);
+        });
+    });
+
     test('every string the page uses exists in cs, en and es', () => {
-        const html = readFileSync(new URL('../sandbox/deco-table.html', import.meta.url), 'utf8');
+        const html = readFileSync(new URL('../sandbox/deco-table.html', import.meta.url), 'utf8')
+            + readFileSync(new URL('../js/decoTableSteps.js', import.meta.url), 'utf8');
         const used = new Set([
             ...[...html.matchAll(/data-i18n="sandbox\.decoTable\.([\w.]+)"/g)].map(m => m[1]),
             ...[...html.matchAll(/'((?:steps|plan|narrator|result|errors|downloads|legend|howTo|table|image|guide|compare)\.\w+)'/g)].map(m => m[1]),
             ...['invalid', 'tooDeep', 'timeOutOfRange', 'siTooShort', 'siOver24h', 'noPenalty'].map(c => `errors.${c}`),
             ...['colDive', 'colSi', 'colDepth', 'colTime', 'colDeco', 'colGroup'].map(c => `result.${c}`),
+            // emergencies: literal keys, then the families the code builds from a variable
+            ...[...html.matchAll(/'((?:crisis|tabs)\.[\w.]+\w)'/g)].map(m => m[1]),
+            ...['sameProcedure', 'sameStopNewGroup', 'becameDeco', 'longerStop'].map(v => `crisis.steps.verdict.${v}`),
+            ...['canReturn', 'cannotReturn', 'symptoms'].map(v => `crisis.steps.decide.${v}`),
+            ...['omitted', 'fast'].map(v => `crisis.steps.intro.${v}`),
+            ...['noSymptoms', 'symptoms'].map(v => `crisis.steps.watch.${v}`),
+            ...['single', 'repeat'].map(v => `crisis.steps.flying.${v}`),
+            ...['delayOutOfRange', 'noRowBelow', 'invalidDelay', 'invalid', 'adverseOutOfRange'].map(c => `crisis.errors.${c}`),
+            'narrator.legend.labelNote',
+            ...[1, 2, 3, 4, 5, 6, 7, 8].map(i => `crisis.factor.${i}`),
+            ...['plan', 'delay', 'procedure', 'branch1', 'branch2', 'symptoms', 'normal', 'adverse', 'flying'].map(p => `crisis.phase.${p}`),
+            ...['delay', 'omitted', 'adverse', 'flying'].flatMap(id => [`crisis.scenario.${id}.name`, `crisis.scenario.${id}.hint`]),
+            ...['addDelay', 'readNew', 'decide', 'report', 'stopLonger', 'oxygen', 'watch', 'symptoms', 'noDecoStop',
+                'noteAdverse', 'rowBelow', 'noteFlying'].map(k => `crisis.stepTitle.${k}`),
         ]);
         const missing = [];
         for (const lang of ['cs', 'en', 'es']) {
@@ -10563,8 +10819,27 @@ describe('SPČR/CMAS 2018 tables (cmasTables.js)', () => {
                 if (typeof val !== 'string') missing.push(`${lang}: ${key}`);
             }
         }
-        expect(used.size > 60).toBe(true);
+        expect(used.size > 150).toBe(true);
         expect(missing).toEqual([]);
+    });
+
+    test('emergency strings: U+00A0 before units, decimal comma in cs/es', () => {
+        const bad = [];
+        const walk = (node, path, lang) => {
+            if (typeof node === 'string') {
+                if (/[\d}] (m|min|h|l)(?![\p{L}])/u.test(node)) bad.push(`${lang} ${path}: plain space before a unit`);
+                if (lang !== 'en' && /\d\.\d/.test(node)) bad.push(`${lang} ${path}: decimal point`);
+                return;
+            }
+            for (const [k, v] of Object.entries(node)) walk(v, `${path}.${k}`, lang);
+        };
+        for (const lang of ['cs', 'en', 'es']) {
+            const t = JSON.parse(readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8')).sandbox.decoTable;
+            walk(t.crisis, 'crisis', lang);
+            walk(t.tabs, 'tabs', lang);
+            for (const k of ['noteSafety', 'noteFlying', 'noteAdverse']) walk(t.table[k], `table.${k}`, lang);
+        }
+        expect(bad).toEqual([]);
     });
 
     test('formatHM', () => {

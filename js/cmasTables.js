@@ -13,6 +13,13 @@
 export const MIN_SURFACE_INTERVAL = 10;       // min — shorter intervals are one dive
 export const MAX_SURFACE_INTERVAL = 24 * 60;  // min — after 24 h the dive is not repetitive
 
+// Emergencies ("Mimořádné situace", sheet "návod k tabulkám" of the SPČR 2018 XLS)
+export const OMITTED_STOP_FACTOR = 1.5;               // stay 1,5× the original stop time
+export const OMITTED_RETURN_LIMIT = 5;                // min — back at the stop within 5 min (point 1)
+export const SURFACE_O2_MIN = 60;                     // min — pure O₂ at the surface (point 2a)
+export const NO_DIVE_AFTER_OMITTED = 12;              // h — no diving after point 2b
+export const FLYING_WAIT = { single: 12, repeat: 24 }; // h — after one dive / repetitive or multi-day
+
 /**
  * Round a depth up to the nearest table row. Depths shallower than the first row
  * use the first row (12 m), as the table instructs ("zaokrouhluje se vždy na nejbližší větší hloubku").
@@ -61,17 +68,22 @@ export function residualPenalty(table, groupIdx, depthIdx) {
 
 /**
  * Look up one dive. For a repetitive dive pass the previous dive's exit group and the surface interval.
+ * `rowOffset: 1` reads the row one lower than the depth's own row — adverse circumstances,
+ * "hledat v tabulce hloubku o jeden řádek nižší" (note under the paper table).
  * @param {object} table
- * @param {{depth: number, time: number, prevGroupIdx?: number|null, surfaceInterval?: number|null}} dive
+ * @param {{depth: number, time: number, prevGroupIdx?: number|null, surfaceInterval?: number|null, rowOffset?: number}} dive
  * @returns {object} `{ ok: true, ... }` or `{ ok: false, code }` where code is one of
- *   'invalid', 'tooDeep', 'siTooShort', 'siOver24h', 'noPenalty', 'timeOutOfRange'
+ *   'invalid', 'tooDeep', 'noRowBelow', 'siTooShort', 'siOver24h', 'noPenalty', 'timeOutOfRange'
  */
-export function lookupDive(table, { depth, time, prevGroupIdx = null, surfaceInterval = null }) {
+export function lookupDive(table, { depth, time, prevGroupIdx = null, surfaceInterval = null, rowOffset = 0 }) {
     if (!(depth > 0) || !(time > 0)) return { ok: false, code: 'invalid' };
 
     const found = findDepth(table, depth);
     if (!found) return { ok: false, code: 'tooDeep', maxDepth: table.depths.at(-1).depth };
-    const { depthIdx, depthRow } = found;
+    const baseDepthIdx = found.depthIdx, baseTableDepth = found.depthRow.depth;
+    const depthIdx = baseDepthIdx + rowOffset;
+    if (depthIdx >= table.depths.length) return { ok: false, code: 'noRowBelow', tableDepth: baseTableDepth };
+    const depthRow = table.depths[depthIdx];
 
     let si = null;
     let penalty = 0;
@@ -96,6 +108,8 @@ export function lookupDive(table, { depth, time, prevGroupIdx = null, surfaceInt
         ok: true,
         depthIdx,
         tableDepth: depthRow.depth,
+        baseDepthIdx,
+        baseTableDepth,
         si,
         penalty,
         tableTime,
@@ -105,6 +119,63 @@ export function lookupDive(table, { depth, time, prevGroupIdx = null, surfaceInt
         ndl,
         maxNoDecoTime: ndl - penalty,   // longest real bottom time that stays no-deco
     };
+}
+
+/**
+ * Delay during the ascent: "tato doba se přičte k době ponoru (čas na dně) a najde se nový
+ * dekompresní postup". The whole delay goes to the bottom time, same row; the group comes
+ * from the new cell.
+ * @returns {object} `{ ok: true, original, delayed, delay, total, verdict }` where verdict is
+ *   'sameProcedure' | 'sameStopNewGroup' (same decompression, later cell → new repetitive group) |
+ *   'becameDeco' | 'longerStop'; or `{ ok: false, code }` with code
+ *   'invalidDelay' (delay < 1 min), 'delayOutOfRange' (time + delay past the row's last cell)
+ *   or any lookupDive code for the dive itself.
+ */
+export function lookupDelayedAscent(table, { depth, time, delay }) {
+    const original = lookupDive(table, { depth, time });
+    if (!original.ok) return original;
+    if (!(delay >= 1)) return { ok: false, code: 'invalidDelay' };
+    const total = time + delay;
+    const delayed = lookupDive(table, { depth, time: total });
+    if (!delayed.ok) return { ok: false, code: 'delayOutOfRange', tableDepth: original.tableDepth, total };
+    const verdict = !original.isDeco && delayed.isDeco ? 'becameDeco'
+        : delayed.cell.stop5m > original.cell.stop5m ? 'longerStop'
+        : delayed.groupIdx !== original.groupIdx ? 'sameStopNewGroup'
+        : 'sameProcedure';
+    return { ok: true, original, delayed, delay, total, verdict };
+}
+
+/**
+ * Omitted decompression or too-fast ascent — one procedure in the SPČR guide ("dle doporučení US Navy"):
+ *   branch 1  no symptoms, back at the stop within 5 min → report it, stay 1,5× the original stop
+ *   branch 2  cannot return within 5 min → ≥ 60 min O₂ at the surface; then 12 h no diving
+ *             (no symptoms) or transport with O₂ (symptoms)
+ *   'symptoms' symptoms although able to return → point 1 does not apply, the 2c path does
+ * Only dives with a mandatory stop are covered; a no-deco cell returns code 'noDecoStop'
+ * (with the lookup, so the page can still walk the table).
+ * The extended stop is 1,5× the full original time, rounded up to whole minutes like the table.
+ */
+export function omittedDecoProcedure(table, { depth, time, canReturn, symptoms }) {
+    const lookup = lookupDive(table, { depth, time });
+    if (!lookup.ok) return lookup;
+    const stop = lookup.cell.stop5m;
+    if (stop === 0) return { ok: false, code: 'noDecoStop', lookup };
+    const raw = stop * OMITTED_STOP_FACTOR;
+    const branch = symptoms ? (canReturn ? 'symptoms' : 2) : (canReturn ? 1 : 2);
+    return {
+        ok: true,
+        lookup,
+        stop,
+        extendedStop: { raw, total: Math.ceil(raw) },
+        branch,
+        symptoms: Boolean(symptoms),
+        noDiveHours: branch === 2 && !symptoms ? NO_DIVE_AFTER_OMITTED : null,
+    };
+}
+
+/** Flying in a pressurised cabin: hours to wait after one dive, or after repetitive / multi-day diving. */
+export function flyingWaitHours({ repetitive }) {
+    return repetitive ? FLYING_WAIT.repeat : FLYING_WAIT.single;
 }
 
 /** Minutes → "h:mm" (e.g. 200 → "3:20"). */
