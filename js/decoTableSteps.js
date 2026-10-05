@@ -110,3 +110,144 @@ export function buildSteps(ctx, dives) {
         (i === 0 ? part1Steps(ctx, dv, dv.result) : repeatSteps(ctx, dives[i - 1], dv, dv.result))
             .map(s => ({ ...s, dive: i, group: i })));
 }
+
+// ── Emergencies ("Mimořádné situace") ─────────────────────────────────────
+// Each builder returns { phases, steps }: phases are the dot groups (keys of crisis.phase.*),
+// a step's `group` indexes them. Table steps keep `part: 1`; procedure steps have `part: null`
+// and the narrator shows the phase name instead. Steps with an empty `hl` point at nothing
+// in the table (the page then hides the paper inset).
+// ctx.num(x) formats a number for the active language (decimal comma in cs/es); default String.
+
+const inPhase = (group, steps) => steps.map(s => ({ ...s, group }));
+const fmtNum = (ctx, x) => (ctx.num ?? String)(x);
+
+/** S1 — delay during the ascent: part 1 for the plan, then the same row with time + delay. */
+function delaySteps(ctx, { inputs, result: r }) {
+    const { T, GROUPS } = ctx;
+    const o = r.original, n = r.delayed;
+    const d = o.depthIdx, g0 = o.groupIdx, g1 = n.groupIdx;
+    const found = `p1:${d}:${g1}`;
+    const v = { delay: r.delay, time: inputs.time, total: r.total, cellTime: n.cell.bottomTime,
+                group: GROUPS[g1], from: o.cell.stop5m, to: n.cell.stop5m, stop: n.cell.stop5m };
+    const same = g0 === g1;
+    const stopText = T(n.isDeco ? 'steps.stopDeco' : 'steps.stopNdl', v);
+    return {
+        phases: ['plan', 'delay'],
+        steps: [
+            ...inPhase(0, part1Steps(ctx, inputs, o)),
+            {
+                part: 1, group: 1,
+                title: T('crisis.stepTitle.addDelay'),
+                text: T('crisis.steps.addDelay', v) + (same ? ' ' + T('crisis.steps.sameCell', v) : ''),
+                hl: same
+                    ? { label: [`ld:${d}`], found: [found], focus: [found, `ld:${d}`] }
+                    : { origin: [`p1:${d}:${g0}`], label: [`ld:${d}`], path: p1Keys(d, range(g0 + 1, g1)),
+                        found: [found], focus: [found, `p1:${d}:${g0}`, `ld:${d}`] },
+            },
+            {
+                part: 1, group: 1,
+                title: T('crisis.stepTitle.readNew'),
+                text: T('crisis.steps.readNew', { ...v, stopText }) + ' ' + T(`crisis.steps.verdict.${r.verdict}`, v),
+                hl: { label: [`ld:${d}`, `lg:${g1}`], path: p1ColBelow(ctx, d, g1), found: [found], focus: [`lg:${g1}`, found] },
+            },
+        ],
+    };
+}
+
+/** S2 — omitted decompression / too-fast ascent. `result` may be the noDecoStop refusal (it carries the lookup). */
+function omittedSteps(ctx, { inputs, result: r }) {
+    const { T } = ctx;
+    const L = r.lookup, d = L.depthIdx, g = L.groupIdx, cell = `p1:${d}:${g}`;
+    const plan = inPhase(0, part1Steps(ctx, inputs, L));
+    if (r.code === 'noDecoStop') {
+        return {
+            phases: ['plan', 'procedure'],
+            steps: [...plan, {
+                part: null, group: 1,
+                title: T('crisis.stepTitle.noDecoStop'),
+                text: T('crisis.steps.noDecoStop'),
+                hl: { label: ['note:safety'], origin: [cell], focus: ['note:safety', cell] },
+            }],
+        };
+    }
+    const v = { stop: r.stop, raw: fmtNum(ctx, r.extendedStop.raw), total: r.extendedStop.total };
+    const decide = { 1: 'canReturn', 2: 'cannotReturn', symptoms: 'symptoms' }[r.branch];
+    const step = (group, key, text, hl = {}) => ({ part: null, group, title: T(`crisis.stepTitle.${key}`), text, hl });
+    const atCell = { origin: [cell], focus: [cell] };
+    const steps = [...plan,
+        step(1, 'decide', T(`crisis.steps.intro.${inputs.what}`, v) + ' ' + T(`crisis.steps.decide.${decide}`), atCell)];
+    if (r.branch === 1) {
+        steps.push(
+            step(2, 'report', T('crisis.steps.report'), atCell),
+            step(2, 'stopLonger', T('crisis.steps.stopLonger', v),
+                { label: [`ld:${d}`, `lg:${g}`], found: [cell], focus: [cell, `lg:${g}`] }));
+    } else if (r.branch === 2) {
+        steps.push(
+            step(2, 'oxygen', T('crisis.steps.oxygen')),
+            step(2, 'watch', r.symptoms
+                ? T('crisis.steps.watch.symptoms') + ' ' + T('crisis.steps.firstAid')
+                : T('crisis.steps.watch.noSymptoms')));
+    } else {
+        steps.push(step(2, 'symptoms', T('crisis.steps.symptomsPath') + ' ' + T('crisis.steps.firstAid')));
+    }
+    const phase = { 1: 'branch1', 2: 'branch2', symptoms: 'symptoms' }[r.branch];
+    return { phases: ['plan', 'procedure', phase], steps };
+}
+
+/** S3 — adverse circumstances: the depth row as usual, the footer note, then one row lower. */
+function adverseSteps(ctx, { inputs, result: r }) {
+    const { T, NG } = ctx;
+    const b = r.base, a = r.adverse, d0 = b.depthIdx, d1 = a.depthIdx;
+    const factors = (inputs.factors ?? []).map(i => T(`crisis.factor.${i}`));
+    const [depthStep] = part1Steps(ctx, inputs, b);
+    return {
+        phases: ['normal', 'adverse'],
+        steps: [
+            { ...depthStep, group: 0 },
+            {
+                part: null, group: 1,
+                title: T('crisis.stepTitle.noteAdverse'),
+                text: T('crisis.steps.noteAdverse') + ' ' + (factors.length
+                    ? T('crisis.steps.factors', { factors: factors.join(', ') })
+                    : T('crisis.input.factorsNone')),
+                hl: { label: ['note:adverse'], origin: [`ld:${d0}`], focus: ['note:adverse'] },
+            },
+            {
+                part: 1, group: 1,
+                title: T('crisis.stepTitle.rowBelow'),
+                text: T('crisis.steps.rowBelow', { from: b.tableDepth, to: a.tableDepth }),
+                hl: { origin: [`ld:${d0}`], label: [`ld:${d1}`], path: p1Keys(d1, range(0, NG)), focus: [`ld:${d1}`, `ld:${d0}`] },
+            },
+            ...inPhase(1, part1Steps(ctx, inputs, a).slice(1)),
+        ],
+    };
+}
+
+/** S4 — flying after diving: the footer note on the table. */
+function flyingSteps(ctx, { inputs }) {
+    const { T } = ctx;
+    return {
+        phases: ['flying'],
+        steps: [{
+            part: null, group: 0,
+            title: T('crisis.stepTitle.noteFlying'),
+            text: T(`crisis.steps.flying.${inputs.repetitive ? 'repeat' : 'single'}`),
+            hl: { label: ['note:flying'], focus: ['note:flying'] },
+        }],
+    };
+}
+
+const CRISIS_BUILDERS = { delay: delaySteps, omitted: omittedSteps, adverse: adverseSteps, flying: flyingSteps };
+export const CRISIS_SCENARIOS = Object.keys(CRISIS_BUILDERS);
+
+/**
+ * Steps for one emergency scenario.
+ * @param {object} ctx — as for buildSteps, plus optional num(x)
+ * @param {{id: string, inputs: object, result: object}} scenario — result from the matching
+ *   cmasTables.js function (adverse: `{ base, adverse }`, two lookupDive results; flying: unused)
+ * @returns {{groupLabels: string[], steps: object[]}}
+ */
+export function crisisSteps(ctx, scenario) {
+    const { phases, steps } = CRISIS_BUILDERS[scenario.id](ctx, scenario);
+    return { groupLabels: phases.map(p => ctx.T(`crisis.phase.${p}`)), steps };
+}

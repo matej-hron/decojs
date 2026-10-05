@@ -257,7 +257,7 @@ import {
     omittedDecoProcedure,
     flyingWaitHours,
 } from '../js/cmasTables.js';
-import { buildSteps as buildDecoTableSteps } from '../js/decoTableSteps.js';
+import { buildSteps as buildDecoTableSteps, crisisSteps } from '../js/decoTableSteps.js';
 
 describe('Chart tooltip shortcut', () => {
     test('toggles only the focused or hovered chart and persists across rebuilds', () => {
@@ -10674,6 +10674,79 @@ describe('SPČR/CMAS 2018 tables (cmasTables.js)', () => {
                 { label: 'ld:2', path: 'p1:2:0 p1:2:1 p1:2:2 p1:2:3 p1:2:4 p1:2:5 p1:2:6', found: 'p1:2:7', focus: 'p1:2:7 ld:2' },
                 { label: 'ld:2 lg:7', path: 'p1:3:7 p1:4:7 p1:5:7 p1:6:7 p1:7:7 p1:8:7 p1:9:7', found: 'p1:2:7', focus: 'lg:7 p1:2:7' },
             ]);
+        });
+    });
+
+    describe('emergency walkthroughs (crisisSteps)', () => {
+        const T = key => key;
+        const ctx = { T, GROUPS: G, ND: cmas.depths.length, NG: G.length };
+        const run = (id, inputs, result) => crisisSteps(ctx, { id, inputs, result });
+        const delay = () => run('delay', { depth: 24, time: 35, delay: 4 },
+            lookupDelayedAscent(cmas, { depth: 24, time: 35, delay: 4 }));
+        const omitted = (canReturn, symptoms, depth = 24, time = 51) => run('omitted', { depth, time, what: 'omitted' },
+            omittedDecoProcedure(cmas, { depth, time, canReturn, symptoms }));
+        const adverse = () => run('adverse', { depth: 23, time: 49, factors: [3] }, {
+            base: lookupDive(cmas, { depth: 23, time: 49 }), adverse: lookupDive(cmas, { depth: 23, time: 49, rowOffset: 1 }) });
+        const flying = () => run('flying', { repetitive: false });
+
+        test('S1 delay, 24 m / 35 + 4 min: 5 steps, H 35 → I 40', () => {
+            const { groupLabels, steps } = delay();
+            expect(groupLabels).toEqual(['crisis.phase.plan', 'crisis.phase.delay']);
+            expect(steps.map(s => s.group)).toEqual([0, 0, 0, 1, 1]);
+            expect(steps[3].hl.origin).toEqual(['p1:4:7']);
+            expect(steps[3].hl.found).toEqual(['p1:4:8']);
+            expect(steps[4].hl.label.includes('lg:8')).toBe(true);
+            expect(steps[4].text.includes('crisis.steps.verdict.becameDeco')).toBe(true);
+        });
+        test('S1 delay inside the same cell: no origin, sameCell sentence', () => {
+            const { steps } = run('delay', { depth: 18, time: 41, delay: 5 }, lookupDelayedAscent(cmas, { depth: 18, time: 41, delay: 5 }));
+            expect(steps[3].hl.origin).toBe(undefined);
+            expect(steps[3].text.includes('crisis.steps.sameCell')).toBe(true);
+        });
+        test('S2 F1 branch 1: 6 steps, 1,5× at the L 60 cell', () => {
+            const { groupLabels, steps } = omitted(true, false);
+            expect(groupLabels.at(-1)).toBe('crisis.phase.branch1');
+            expect(steps.length).toBe(6);
+            expect(steps[5].hl.found).toEqual(['p1:4:11']);
+            expect(steps.slice(3).every(s => s.part === null)).toBe(true);
+        });
+        test('S2 branch 2 and the symptoms path point at nothing in the table', () => {
+            const two = omitted(false, false).steps;
+            expect(two.length).toBe(6);
+            expect(two.slice(4).every(s => Object.keys(s.hl).length === 0)).toBe(true);
+            expect(two[5].text).toBe('crisis.steps.watch.noSymptoms');
+            expect(omitted(false, true).steps[5].text.includes('crisis.steps.firstAid')).toBe(true);
+            const sym = omitted(true, true);
+            expect(sym.groupLabels.at(-1)).toBe('crisis.phase.symptoms');
+            expect(sym.steps.length).toBe(5);
+            expect(Object.keys(sym.steps[4].hl).length).toBe(0);
+        });
+        test('S2 no-deco dive (F3): plan + one step on the safety-stop note, no 1,5×', () => {
+            const { steps } = omitted(true, false, 17, 49);
+            expect(steps.length).toBe(4);
+            expect(steps[3].hl.label).toEqual(['note:safety']);
+            expect(steps.some(s => s.text.includes('stopLonger'))).toBe(false);
+        });
+        test('S3 D10: note, row below, found L 50 in the 27 m row', () => {
+            const { groupLabels, steps } = adverse();
+            expect(groupLabels).toEqual(['crisis.phase.normal', 'crisis.phase.adverse']);
+            expect(steps.length).toBe(5);
+            expect(steps[1].hl.label).toEqual(['note:adverse']);
+            expect(steps[2].hl.label).toEqual(['ld:5']);
+            expect(steps[2].hl.origin).toEqual(['ld:4']);
+            expect(steps.at(-1).hl.found).toEqual(['p1:5:11']);
+        });
+        test('S4 flying: one step on the flying note', () => {
+            const { steps } = flying();
+            expect(steps.length).toBe(1);
+            expect(steps[0].hl.label).toEqual(['note:flying']);
+        });
+        test('every highlight key exists in the page key space', () => {
+            const ok = /^(ld:\d|lg:\d+|lr:\d+|lp3:\d|p1:\d:\d+|p2:\d+:\d+|p3:\d+:\d|note:(safety|flying|adverse))$/;
+            const all = [delay(), omitted(true, false), omitted(false, true), omitted(true, true), omitted(true, false, 17, 49), adverse(), flying()]
+                .flatMap(r => r.steps).flatMap(s => ['path', 'label', 'origin', 'found', 'focus'].flatMap(k => s.hl[k] ?? []));
+            expect(all.filter(k => !ok.test(k))).toEqual([]);
+            expect(all.length > 50).toBe(true);
         });
     });
 
