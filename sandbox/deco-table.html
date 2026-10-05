@@ -203,6 +203,7 @@
 
         /* ── Emergency results ── */
         .verdict { margin: 0.6rem 0 0; font-size: 0.92rem; }
+        .group-ask { font-size: 0.82rem; color: var(--text-muted); font-style: italic; }
         .result-card .guide-alert { margin: 0; font-size: 0.88rem; line-height: 1.45; }
         .decision { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem; }
         .branch {
@@ -1811,7 +1812,8 @@
                 phases = [[diveChip(inputs.depth, inputs.time, r.lookup)], r.ok ? [what] : [], r.ok ? [outcome] : []];
             } else if (id === 'adverse') {
                 phases = [[chip('dive', T('crisis.log.row', { depth: r.base.tableDepth }))],
-                          [chip('si', T('crisis.scenario.adverse.name')), diveChip(r.adverse.tableDepth, inputs.time, r.adverse)]];
+                          [chip('si', T('crisis.scenario.adverse.name')),   // no group: the guide doesn't give one here
+                           chip(r.adverse.isDeco ? 'deco' : 'dive', `${r.adverse.tableDepth}&nbsp;m / ${inputs.time}&nbsp;min${r.adverse.isDeco ? ` · 5&nbsp;m/${r.adverse.cell.stop5m}&nbsp;min` : ''}`)]];
             }
             const parts = phases.slice(0, upTo + 1).flat();
             els.log.innerHTML = parts.join('<span class="log-arrow">→</span>');
@@ -1854,13 +1856,14 @@
                 };
             }
             if (id === 'adverse') {
-                const row = (key, x) => [T(key, { depth: x.tableDepth }), x.cell.bottomTime, stopCell(x), `<b>${GROUPS[x.groupIdx]}</b>`,
-                                         x.ndl ? `${x.ndl}&nbsp;min` : '—'];
+                const row = (key, x, group) => [T(key, { depth: x.tableDepth }), x.cell.bottomTime, stopCell(x), group,
+                                                x.ndl ? `${x.ndl}&nbsp;min` : '—'];
                 const factors = inputs.factors.map(i => T(`crisis.factor.${i}`)).join(', ');
                 return {
                     title: T('crisis.result.adverseTitle'),
                     body: resultTable(['colCase', 'colCell', 'colDeco', 'colGroup', 'colNdl'],
-                                      [row('crisis.result.rowNormal', r.base), row('crisis.result.rowAdverse', r.adverse)])
+                                      [row('crisis.result.rowNormal', r.base, `<b>${GROUPS[r.base.groupIdx]}</b>`),
+                                       row('crisis.result.rowAdverse', r.adverse, `<span class="group-ask">${T('crisis.result.groupAsk')}</span>`)])
                         + `<p class="result-note">${factors ? T('crisis.result.factors', { factors }) : T('crisis.input.factorsNone')}</p>`
                         + `<p class="result-note">${T('crisis.result.computer')}</p>`,
                 };
@@ -1877,7 +1880,7 @@
             const { id, result: r } = state.scenario;
             const final = { delay: r.delayed, omitted: r.lookup, adverse: r.adverse }[id];
             highlight(final
-                ? { found: [`p1:${final.depthIdx}:${final.groupIdx}`], label: [`lg:${final.groupIdx}`] }
+                ? { found: [`p1:${final.depthIdx}:${final.groupIdx}`], label: id === 'adverse' ? [] : [`lg:${final.groupIdx}`] }
                 : { label: ['note:flying'] });
             renderCrisisLog(state.groupLabels.length - 1);
             const { title, body } = crisisResultHtml();

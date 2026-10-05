@@ -2717,7 +2717,8 @@
                     "noDecoStop": "Sin parada obligatoria",
                     "noteAdverse": "La regla bajo la tabla",
                     "rowBelow": "Una fila más abajo",
-                    "noteFlying": "La nota sobre volar"
+                    "noteFlying": "La nota sobre volar",
+                    "readStop": "Lee la descompresión"
                 },
                 "steps": {
                     "addDelay": "El ascenso se retrasó <strong>{delay} min</strong>. Suma el retraso al tiempo de inmersión: <strong>{time} + {delay} = {total} min</strong> y sigue por la misma fila. Primera celda ≥ {total} min: <strong>{cellTime} min</strong>.",
@@ -2754,7 +2755,8 @@
                     "flying": {
                         "single": "Tras <strong>una inmersión</strong>, vuela en avión con cabina presurizada no antes de <strong>12 h</strong>.",
                         "repeat": "Tras inmersiones <strong>sucesivas o de varios días</strong>, vuela no antes de <strong>24 h</strong>."
-                    }
+                    },
+                    "readAdverse": "Celda de {cellTime} min: {stopText}. La guía no indica qué grupo usar para una inmersión sucesiva tras circunstancias adversas: consulta a tu instructor."
                 },
                 "log": {
                     "delay": "+{delay} min de retraso",
@@ -2784,7 +2786,8 @@
                     "computer": "En el ordenador, ajusta de antemano un nivel de conservadurismo mayor según su manual.",
                     "flyingTitle": "No volar durante {hours} h",
                     "flyingNote": "Se aplica a avión con cabina presurizada, según el ordenador o las tablas. La caída rápida de presión (avión, montaña) también figura entre las circunstancias adversas.",
-                    "symptomsHead": "<strong>Con síntomas de enfermedad descompresiva</strong> (aunque pueda volver en 5 min) el punto 1 no se aplica → sigue el <strong>punto 2c</strong>: oxígeno y traslado a un centro sanitario."
+                    "symptomsHead": "<strong>Con síntomas de enfermedad descompresiva</strong> (aunque pueda volver en 5 min) el punto 1 no se aplica → sigue el <strong>punto 2c</strong>: oxígeno y traslado a un centro sanitario.",
+                    "groupAsk": "no indicado: consulta a tu instructor"
                 },
                 "errors": {
                     "delayOutOfRange": "Con el retraso, {total} min queda fuera de la fila de {depth} m de estas tablas (la guía remite a las tablas de la US Navy).",

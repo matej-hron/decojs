@@ -233,6 +233,7 @@ function adverseSteps(ctx, { inputs, result: r }) {
     const b = r.base, a = r.adverse, d0 = b.depthIdx, d1 = a.depthIdx;
     const factors = (inputs.factors ?? []).map(i => T(`crisis.factor.${i}`));
     const [depthStep] = part1Steps(ctx, inputs, b);
+    const [, scanStep] = part1Steps(ctx, inputs, a);
     return {
         phases: ['normal', 'adverse'],
         steps: [
@@ -251,7 +252,16 @@ function adverseSteps(ctx, { inputs, result: r }) {
                 text: T('crisis.steps.rowBelow', { from: b.tableDepth, to: a.tableDepth }),
                 hl: { origin: [`ld:${d0}`], label: [`ld:${d1}`], path: p1Keys(d1, range(0, NG)), focus: [`ld:${d1}`, `ld:${d0}`] },
             },
-            ...inPhase(1, part1Steps(ctx, inputs, a).slice(1)),
+            { ...scanStep, group: 1 },
+            {
+                // the guide is silent on the repetitive group under adverse circumstances (OQ6):
+                // read only the decompression, point at no group letter
+                part: 1, group: 1,
+                title: T('crisis.stepTitle.readStop'),
+                text: T('crisis.steps.readAdverse', { cellTime: a.cell.bottomTime,
+                    stopText: T(a.isDeco ? 'steps.stopDeco' : 'steps.stopNdl', { stop: a.cell.stop5m }) }),
+                hl: { label: [`ld:${d1}`], found: [`p1:${d1}:${a.groupIdx}`], focus: [`p1:${d1}:${a.groupIdx}`, `ld:${d1}`] },
+            },
         ],
     };
 }

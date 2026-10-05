@@ -2753,7 +2753,8 @@
                     "noDecoStop": "No mandatory stop",
                     "noteAdverse": "The rule under the table",
                     "rowBelow": "One row lower",
-                    "noteFlying": "The flying note"
+                    "noteFlying": "The flying note",
+                    "readStop": "Read the decompression"
                 },
                 "steps": {
                     "addDelay": "The ascent was delayed by <strong>{delay} min</strong>. Add the delay to the dive time: <strong>{time} + {delay} = {total} min</strong>, and carry on along the same row. First cell ≥ {total} min: <strong>{cellTime} min</strong>.",
@@ -2790,7 +2791,8 @@
                     "flying": {
                         "single": "After <strong>one dive</strong>, fly in a pressurised-cabin aircraft no sooner than <strong>12 h</strong>.",
                         "repeat": "After <strong>repetitive or multi-day</strong> diving, fly no sooner than <strong>24 h</strong>."
-                    }
+                    },
+                    "readAdverse": "Cell {cellTime} min: {stopText}. The guide does not say which group to use for a repetitive dive after adverse circumstances — ask your instructor."
                 },
                 "log": {
                     "delay": "+{delay} min delay",
@@ -2820,7 +2822,8 @@
                     "computer": "On a dive computer, set a higher conservatism level in advance, per its manual.",
                     "flyingTitle": "No flying for {hours} h",
                     "flyingNote": "Applies to a pressurised-cabin aircraft, by dive computer or the tables. A rapid drop in pressure (aircraft, mountains) is also one of the adverse circumstances.",
-                    "symptomsHead": "<strong>With symptoms of decompression sickness</strong> (even if the diver could return within 5 min) point 1 does not apply → follow <strong>point 2c</strong>: oxygen and transport to a medical facility."
+                    "symptomsHead": "<strong>With symptoms of decompression sickness</strong> (even if the diver could return within 5 min) point 1 does not apply → follow <strong>point 2c</strong>: oxygen and transport to a medical facility.",
+                    "groupAsk": "not stated — ask your instructor"
                 },
                 "errors": {
                     "delayOutOfRange": "With the delay, {total} min is beyond the {depth} m row of these tables (the guide points to the US Navy tables).",

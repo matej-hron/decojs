@@ -2753,7 +2753,8 @@
                     "noDecoStop": "Bez povinné zastávky",
                     "noteAdverse": "Pravidlo pod tabulkou",
                     "rowBelow": "O řádek níž",
-                    "noteFlying": "Poznámka o létání"
+                    "noteFlying": "Poznámka o létání",
+                    "readStop": "Přečti dekompresi"
                 },
                 "steps": {
                     "addDelay": "Výstup se zdržel o <strong>{delay} min</strong>. Zdržení přičteme k době ponoru: <strong>{time} + {delay} = {total} min</strong> a pokračujeme stejným řádkem doprava. První buňka ≥ {total} min: <strong>{cellTime} min</strong>.",
@@ -2790,7 +2791,8 @@
                     "flying": {
                         "single": "Po <strong>jednom ponoru</strong> letět letadlem s přetlakovou kabinou nejdřív za <strong>12 h</strong>.",
                         "repeat": "Po <strong>opakovaných nebo vícedenních</strong> ponorech letět nejdřív za <strong>24 h</strong>."
-                    }
+                    },
+                    "readAdverse": "Buňka {cellTime} min: {stopText}. Skupinu pro opakovaný ponor návod pro nepříznivé okolnosti neuvádí — zeptej se instruktora."
                 },
                 "log": {
                     "delay": "+{delay} min zdržení",
@@ -2820,7 +2822,8 @@
                     "computer": "U počítače nastav podle návodu předem vyšší stupeň konzervatismu.",
                     "flyingTitle": "Nelétat {hours} h",
                     "flyingNote": "Platí pro letadlo s přetlakovou kabinou, podle počítače nebo tabulek. Rychlý pokles tlaku (letadlo, hory) je i mezi nepříznivými okolnostmi.",
-                    "symptomsHead": "<strong>S příznaky dekompresní nemoci</strong> (i když se do 5 min vrátit dokáže) bod 1 neplatí → postup podle <strong>bodu 2c</strong>: kyslík a transport do zdravotnického zařízení."
+                    "symptomsHead": "<strong>S příznaky dekompresní nemoci</strong> (i když se do 5 min vrátit dokáže) bod 1 neplatí → postup podle <strong>bodu 2c</strong>: kyslík a transport do zdravotnického zařízení.",
+                    "groupAsk": "neuvedena — zeptej se instruktora"
                 },
                 "errors": {
                     "delayOutOfRange": "Doba se zdržením {total} min je v řádku {depth} m mimo rozsah těchto tabulek (návod odkazuje na tabulky US Navy).",

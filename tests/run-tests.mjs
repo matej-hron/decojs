@@ -10770,6 +10770,9 @@ describe('SPČR/CMAS 2018 tables (cmasTables.js)', () => {
             expect(steps[2].hl.label).toEqual(['ld:5']);
             expect(steps[2].hl.origin).toEqual(['ld:4']);
             expect(steps.at(-1).hl.found).toEqual(['p1:5:11']);
+            // no repetitive group is inferred for the adverse row (the guide is silent, OQ6)
+            expect(steps.at(-1).title).toBe('crisis.stepTitle.readStop');
+            expect(steps.at(-1).hl.label.some(k => k.startsWith('lg:'))).toBe(false);
         });
         test('S4 flying: one step on the flying note', () => {
             const { steps } = flying();
