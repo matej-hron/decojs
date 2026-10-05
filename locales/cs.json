@@ -1556,7 +1556,8 @@
                 "transfill": "Přepouštění",
                 "cascade": "Kaskádové plnění",
                 "gasLaw": "Tlak v lahvi při změně teploty",
-                "repetitive": "Opakované ponory"
+                "repetitive": "Opakované ponory",
+                "recorded": "Zaznamenané ponory"
             },
             "statusStart": "Začněte zde",
             "pressure": "Tlak a parciální tlak",
@@ -1880,9 +1881,10 @@
             "gfHeading": "Gradient faktory",
             "resetGf": "Vrátit GF počítače",
             "summaryHeading": "Při tomto GF",
-            "peakGf": "Nejvyšší GF tkáně",
+            "peakGf": "Nejvyšší GF tkáně během ponoru",
             "peakGfValue": "{0} (kompartment {1} v {2}\u00a0min)",
             "surfaceGf": "Povrchový GF na konci",
+            "surfaceGfNone": "žádná tkáň není přesycená",
             "surfaceGfValue": "{0} (kompartment {1})",
             "aboveCeiling": "Čas nad stropem",
             "aboveCeilingValue": "{0} (až {1}\u00a0m nad stropem)",

@@ -1556,7 +1556,8 @@
                 "transfill": "Transfilling",
                 "cascade": "Cascade Filling",
                 "gasLaw": "Gas Law",
-                "repetitive": "Repetitive Dives"
+                "repetitive": "Repetitive Dives",
+                "recorded": "Recorded Dives"
             },
             "statusStart": "Start Here",
             "pressure": "Pressure & Partial Pressure",
@@ -1880,9 +1881,10 @@
             "gfHeading": "Gradient factors",
             "resetGf": "Reset to device GF",
             "summaryHeading": "At this GF",
-            "peakGf": "Peak tissue GF",
+            "peakGf": "Peak tissue GF during the dive",
             "peakGfValue": "{0} (compartment {1} at {2}\u00a0min)",
             "surfaceGf": "Surface GF at the end",
+            "surfaceGfNone": "no tissue supersaturated",
             "surfaceGfValue": "{0} (compartment {1})",
             "aboveCeiling": "Time above ceiling",
             "aboveCeilingValue": "{0} (up to {1}\u00a0m above)",

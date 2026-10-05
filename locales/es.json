@@ -1556,7 +1556,8 @@
                 "transfill": "Transvase",
                 "cascade": "Llenado en cascada",
                 "gasLaw": "Ley de los gases",
-                "repetitive": "Inmersiones repetitivas"
+                "repetitive": "Inmersiones repetitivas",
+                "recorded": "Inmersiones registradas"
             },
             "statusStart": "Empieza aquí",
             "pressure": "Presión y presión parcial",
@@ -1844,9 +1845,10 @@
             "gfHeading": "Factores de gradiente",
             "resetGf": "Volver a los GF del ordenador",
             "summaryHeading": "Con estos GF",
-            "peakGf": "GF máximo de tejido",
+            "peakGf": "GF máximo de tejido durante la inmersión",
             "peakGfValue": "{0} (compartimento {1} a los {2}\u00a0min)",
             "surfaceGf": "GF de superficie al final",
+            "surfaceGfNone": "ningún tejido sobresaturado",
             "surfaceGfValue": "{0} (compartimento {1})",
             "aboveCeiling": "Tiempo por encima del techo",
             "aboveCeilingValue": "{0} (hasta {1}\u00a0m por encima)",

@@ -11,7 +11,7 @@ import { toDiveSetup, prepareRecordedSetup, THIN_TOLERANCE_M } from '../js/impor
 import { thinProfile } from '../js/import/thinProfile.js';
 import { analyzeRecordedDive, summarizeRecordedDive, CEILING_VIOLATION_TOLERANCE_M, DECO_CEILING_THRESHOLD_M } from '../js/import/recordedDiveSummary.js';
 import { DiveProfileChart } from '../js/charts/DiveProfileChart.js';
-import { isDlfFileName, loadDiveFiles, clampGfPair, deviceGf, canAnalyze } from '../js/components/RecordedDiveAnalysis.js';
+import { isDlfFileName, loadDiveFiles, fetchDemoFiles, clampGfPair, deviceGf, canAnalyze } from '../js/components/RecordedDiveAnalysis.js';
 import { getPressurePerMeter } from '../js/deco/environment.js';
 import { DEFAULT_DIVE_PROFILE_OPTIONS, mergeOptions, normalizeDiveSetup } from '../js/charts/chartTypes.js';
 
@@ -201,10 +201,26 @@ describe('DiveProfileChart recorded-dive overlays', () => {
     test('draws the reference ceiling as a dashed line on the depth axis', () => {
         const [ds] = build({ referenceCeiling: [{ t: 0, depth: 0 }, { t: 2, depth: 3.1 }], referenceCeilingLabel: 'Freedom ceiling' });
         assert.equal(ds.label, 'Freedom ceiling');
-        assert.deepEqual(ds.data, [{ x: 0, y: 0 }, { x: 2, y: 3.1 }]);
         assert.equal(ds.yAxisID, 'yDepth');
         assert.ok(Array.isArray(ds.borderDash));
         assert.equal(ds.fill, false);
+    });
+
+    test('resamples the reference ceiling onto the chart time points', () => {
+        const [ds] = build({ referenceCeiling: [{ t: 0.5, depth: 0 }, { t: 2, depth: 3 }] });
+        assert.deepEqual(ds.data.map(p => p.x), results.timePoints);
+        // clamped before 0.5, linear between, clamped after 2
+        assert.deepEqual(ds.data.map(p => p.y), [0, 1, 3, 3]);
+    });
+
+    test('an empty reference ceiling yields no dataset', () => {
+        assert.deepEqual(build({ referenceCeiling: [] }), []);
+    });
+
+    test('marks the invisible fill helper so it can be hidden by flag', () => {
+        const sets = build({ showCeiling: true, highlightCeilingViolations: true });
+        assert.equal(sets[0].isOverlayHelper, undefined);
+        assert.equal(sets[1].isOverlayHelper, true);
     });
 
     test('shades only where depth is shallower than ceiling minus the tolerance', () => {
@@ -306,5 +322,18 @@ describe('recorded profile chart fixes', () => {
         assert.ok(Math.abs(viaChart - viaSummary) < 0.01);
         // Inputs without a recorded density keep the standard water type.
         assert.equal(normalizeDiveSetup({ dives: [], gases: [{ o2: 0.21, he: 0 }] }).environment.waterType, 'standard');
+    });
+});
+
+describe('fetchDemoFiles', () => {
+    test('fetches each url into a file-like object', async () => {
+        const fetchStub = async () => ({ ok: true, arrayBuffer: async () => new ArrayBuffer(3) });
+        const files = await fetchDemoFiles(['a/b/X.DLF'], fetchStub);
+        assert.equal(files[0].name, 'X.DLF');
+        assert.equal((await files[0].arrayBuffer()).byteLength, 3);
+    });
+    test('throws on a non-ok response', async () => {
+        const fetchStub = async () => ({ ok: false, status: 404 });
+        await assert.rejects(() => fetchDemoFiles(['a/X.DLF'], fetchStub), /404/);
     });
 });

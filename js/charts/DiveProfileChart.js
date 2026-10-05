@@ -65,6 +65,32 @@ import { fmtNum } from '../format.js';
 /**
  * DiveProfileChart - Embeddable dive profile visualization
  */
+/**
+ * Linearly resample a time/depth reference series onto a set of time points,
+ * clamping outside the reference range to the nearest end value.
+ *
+ * @param {Array<{t: number, depth: number}>} reference - ascending by t
+ * @param {number[]} timePoints
+ * @returns {Array<{x: number, y: number}>}
+ */
+function resampleReference(reference, timePoints) {
+    const out = [];
+    let j = 0;
+    const last = reference.length - 1;
+    for (const x of timePoints) {
+        while (j < last && reference[j + 1].t <= x) j++;
+        let y;
+        if (x <= reference[0].t) y = reference[0].depth;
+        else if (j >= last) y = reference[last].depth;
+        else {
+            const a = reference[j], b = reference[j + 1];
+            y = b.t === a.t ? b.depth : a.depth + (b.depth - a.depth) * (x - a.t) / (b.t - a.t);
+        }
+        out.push({ x, y });
+    }
+    return out;
+}
+
 export class DiveProfileChart {
     /**
      * Create a new DiveProfileChart
@@ -1424,7 +1450,7 @@ export class DiveProfileChart {
                         position: 'top',
                         labels: {
                             // Hide the invisible helper dataset that closes the violation shading
-                            filter: (item) => !item.text.endsWith('(ceiling)')
+                            filter: (item, data) => !data?.datasets?.[item.datasetIndex]?.isOverlayHelper
                         }
                     },
                     tooltip: {
@@ -1450,6 +1476,7 @@ export class DiveProfileChart {
                             label: (context) => {
                                 // Hide gas consumption from regular labels (shown in afterBody)
                                 if (context.dataset.isGasConsumption) return null;
+                                if (context.dataset.isOverlayHelper) return null;
                                 const label = context.dataset.label || '';
                                 const value = context.parsed.y;
                                 // Detect unit by checking known translated dataset labels.
@@ -1457,7 +1484,8 @@ export class DiveProfileChart {
                                 const depthKeywords = ['Depth', 'Ceiling',
                                     translate('chart.profile.datasetDepth', 'Depth (m)'),
                                     translate('chart.profile.datasetCeiling', 'Ceiling (m)')];
-                                const isDepth = depthKeywords.some(k => k && label.includes(k));
+                                const isDepth = context.dataset.yAxisID === 'yDepth'
+                                    || depthKeywords.some(k => k && label.includes(k));
                                 const isPressure = label.includes('Pressure') || label.includes('pp')
                                     || label.includes(translate('chart.axes.pressureBar', 'Pressure (bar)'));
                                 if (isDepth) {
@@ -1616,7 +1644,7 @@ export class DiveProfileChart {
             datasets.push({
                 label: this.options.referenceCeilingLabel
                     ?? translate('chart.profile.datasetReferenceCeiling', 'Dive computer ceiling (m)'),
-                data: referenceCeiling.map(p => ({ x: p.t, y: p.depth })),
+                data: resampleReference(referenceCeiling, results.timePoints),
                 borderColor: colors.referenceCeiling,
                 backgroundColor: 'transparent',
                 fill: false,
@@ -1647,6 +1675,7 @@ export class DiveProfileChart {
             });
             datasets.push({
                 label: `${label} (ceiling)`,
+                isOverlayHelper: true,
                 data: results.timePoints.map((t, i) => ({ x: t, y: violated[i] ? ceilingDepths[i] : null })),
                 borderColor: 'transparent',
                 backgroundColor: 'transparent',

@@ -47,6 +47,22 @@ export async function loadDiveFiles(files) {
     return { dives, errors };
 }
 
+/**
+ * Fetch demo DLF files into file-like objects.
+ * @param {string[]} urls
+ * @param {Function} [fetchImpl=fetch]
+ * @returns {Promise<Array<{name: string, arrayBuffer: Function}>>}
+ * @throws {Error} on a failed or non-ok response
+ */
+export async function fetchDemoFiles(urls, fetchImpl = (...a) => fetch(...a)) {
+    return Promise.all(urls.map(async url => {
+        const response = await fetchImpl(url);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const buffer = await response.arrayBuffer();
+        return { name: url.split('/').pop(), arrayBuffer: async () => buffer };
+    }));
+}
+
 /** Clamp a GF pair to the allowed range and make sure GF high is not below GF low. */
 export function clampGfPair(gfLow, gfHigh) {
     const clamp = v => Math.min(MAX_GF_PERCENT, Math.max(MIN_GF_PERCENT, Math.round(Number(v) || 0)));
@@ -159,13 +175,16 @@ export class RecordedDiveAnalysis {
 
     async _loadDemo() {
         if (this.demoFiles.length === 0) return;
-        const files = await Promise.all(this.demoFiles.map(async url => {
-            const response = await fetch(url);
-            return { name: url.split('/').pop(), arrayBuffer: () => response.arrayBuffer() };
-        }));
-        if (this.dives.length > 0) return; // the user picked files meanwhile
-        this.isDemo = true;
-        this._setDives(await loadDiveFiles(files));
+        try {
+            const files = await fetchDemoFiles(this.demoFiles);
+            if (this.dives.length > 0) return; // the user picked files meanwhile
+            const result = await loadDiveFiles(files);
+            this.isDemo = true;
+            this._setDives(result);
+        } catch (error) {
+            if (this.dives.length > 0) return;
+            this._setDives({ dives: [], errors: [{ fileName: this.demoFiles[0]?.split('/').pop() ?? '', message: error.message || String(error) }] });
+        }
     }
 
     _setDives({ dives, errors }) {
@@ -249,12 +268,12 @@ export class RecordedDiveAnalysis {
         const pct = v => `${fmtNum(v * 100, 0)}\u00a0%`;
         const device = deviceGf(dive);
         const rows = [
-            [t('peakGf', 'Peak tissue GF'), s.peakGf
+            [t('peakGf', 'Peak tissue GF during the dive'), s.peakGf
                 ? fill(t('peakGfValue', '{0} (compartment {1} at {2}\u00a0min)'), pct(s.peakGf.value), s.peakGf.compartment, fmtNum(s.peakGf.t, 1))
                 : '–'],
             [t('surfaceGf', 'Surface GF at the end'), s.surfaceGfEnd
                 ? fill(t('surfaceGfValue', '{0} (compartment {1})'), pct(s.surfaceGfEnd.value), s.surfaceGfEnd.compartment)
-                : '–'],
+                : t('surfaceGfNone', 'no tissue supersaturated')],
             [t('aboveCeiling', 'Time above ceiling'), s.aboveCeiling.seconds > 0
                 ? fill(t('aboveCeilingValue', '{0} (up to {1}\u00a0m above)'), minSec(s.aboveCeiling.seconds), fmtNum(s.aboveCeiling.worstM, 1))
                 : t('aboveCeilingNone', 'none — the dive stayed below the ceiling')],
