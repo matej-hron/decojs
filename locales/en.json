@@ -2761,7 +2761,8 @@
                     "verdict": {
                         "sameProcedure": "The schedule does not change.",
                         "becameDeco": "Because of the delay this is now a <strong>decompression dive</strong>.",
-                        "longerStop": "The 5 m stop grows from {from} to <strong>{to} min</strong>."
+                        "longerStop": "The 5 m stop grows from {from} to <strong>{to} min</strong>.",
+                        "sameStopNewGroup": "Decompression does not change, but the group after the dive is now <strong>{group}</strong> (not {oldGroup}) — use it for a repetitive dive."
                     },
                     "intro": {
                         "omitted": "The diver omitted or cut short the {stop} min stop at 5 m.",

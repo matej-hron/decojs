@@ -126,7 +126,8 @@ export function lookupDive(table, { depth, time, prevGroupIdx = null, surfaceInt
  * dekompresní postup". The whole delay goes to the bottom time, same row; the group comes
  * from the new cell.
  * @returns {object} `{ ok: true, original, delayed, delay, total, verdict }` where verdict is
- *   'sameProcedure' | 'becameDeco' | 'longerStop'; or `{ ok: false, code }` with code
+ *   'sameProcedure' | 'sameStopNewGroup' (same decompression, later cell → new repetitive group) |
+ *   'becameDeco' | 'longerStop'; or `{ ok: false, code }` with code
  *   'invalidDelay' (delay < 1 min), 'delayOutOfRange' (time + delay past the row's last cell)
  *   or any lookupDive code for the dive itself.
  */
@@ -139,6 +140,7 @@ export function lookupDelayedAscent(table, { depth, time, delay }) {
     if (!delayed.ok) return { ok: false, code: 'delayOutOfRange', tableDepth: original.tableDepth, total };
     const verdict = !original.isDeco && delayed.isDeco ? 'becameDeco'
         : delayed.cell.stop5m > original.cell.stop5m ? 'longerStop'
+        : delayed.groupIdx !== original.groupIdx ? 'sameStopNewGroup'
         : 'sameProcedure';
     return { ok: true, original, delayed, delay, total, verdict };
 }

@@ -1825,7 +1825,7 @@
                     body: resultTable(['colCase', 'colTime', 'colCell', 'colDeco', 'colGroup'], [
                         [T('crisis.result.rowPlan'), `${inputs.time}&nbsp;min`, o.cell.bottomTime, stopCell(o), `<b>${GROUPS[o.groupIdx]}</b>`],
                         [T('crisis.result.rowDelayed'), `${inputs.time}&nbsp;+&nbsp;${r.delay}&nbsp;= ${r.total}&nbsp;min`, n.cell.bottomTime, stopCell(n), `<b>${GROUPS[n.groupIdx]}</b>`],
-                    ]) + `<p class="verdict">${T(`crisis.steps.verdict.${r.verdict}`, { from: o.cell.stop5m, to: n.cell.stop5m })}</p>`,
+                    ]) + `<p class="verdict">${T(`crisis.steps.verdict.${r.verdict}`, { from: o.cell.stop5m, to: n.cell.stop5m, group: GROUPS[n.groupIdx], oldGroup: GROUPS[o.groupIdx] })}</p>`,
                 };
             }
             if (id === 'omitted') {

@@ -10601,6 +10601,11 @@ describe('SPČR/CMAS 2018 tables (cmasTables.js)', () => {
             expect(r.original.groupIdx).toBe(r.delayed.groupIdx);
             expect(r.verdict).toBe('sameProcedure');
         });
+        test('24 m / 20 + 4 min: E 20 → F 25, both no-deco — same decompression but a new group', () => {
+            const r = delayed(24, 20, 4);
+            expect(`${G[r.original.groupIdx]} ${G[r.delayed.groupIdx]}`).toBe('E F');
+            expect(r.verdict).toBe('sameStopNewGroup');
+        });
         test('errors: off the row, no delay, the dive itself invalid', () => {
             const off = delayed(30, 20, 30);
             expect([off.code, off.total, off.tableDepth]).toEqual(['delayOutOfRange', 50, 30]);
@@ -10786,7 +10791,7 @@ describe('SPČR/CMAS 2018 tables (cmasTables.js)', () => {
             ...['colDive', 'colSi', 'colDepth', 'colTime', 'colDeco', 'colGroup'].map(c => `result.${c}`),
             // emergencies: literal keys, then the families the code builds from a variable
             ...[...html.matchAll(/'((?:crisis|tabs)\.[\w.]+\w)'/g)].map(m => m[1]),
-            ...['sameProcedure', 'becameDeco', 'longerStop'].map(v => `crisis.steps.verdict.${v}`),
+            ...['sameProcedure', 'sameStopNewGroup', 'becameDeco', 'longerStop'].map(v => `crisis.steps.verdict.${v}`),
             ...['canReturn', 'cannotReturn', 'symptoms'].map(v => `crisis.steps.decide.${v}`),
             ...['omitted', 'fast'].map(v => `crisis.steps.intro.${v}`),
             ...['noSymptoms', 'symptoms'].map(v => `crisis.steps.watch.${v}`),

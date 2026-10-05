@@ -2761,7 +2761,8 @@
                     "verdict": {
                         "sameProcedure": "Postup se nemění.",
                         "becameDeco": "Kvůli zdržení je z ponoru <strong>dekompresní ponor</strong>.",
-                        "longerStop": "Zastávka v 5 m se prodlužuje z {from} na <strong>{to} min</strong>."
+                        "longerStop": "Zastávka v 5 m se prodlužuje z {from} na <strong>{to} min</strong>.",
+                        "sameStopNewGroup": "Dekomprese se nemění, ale skupina po ponoru je teď <strong>{group}</strong> (místo {oldGroup}) — s ní počítej u opakovaného ponoru."
                     },
                     "intro": {
                         "omitted": "Potápěč vynechal nebo zkrátil zastávku {stop} min v 5 m.",

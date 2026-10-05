@@ -128,7 +128,7 @@ function delaySteps(ctx, { inputs, result: r }) {
     const d = o.depthIdx, g0 = o.groupIdx, g1 = n.groupIdx;
     const found = `p1:${d}:${g1}`;
     const v = { delay: r.delay, time: inputs.time, total: r.total, cellTime: n.cell.bottomTime,
-                group: GROUPS[g1], from: o.cell.stop5m, to: n.cell.stop5m, stop: n.cell.stop5m };
+                group: GROUPS[g1], oldGroup: GROUPS[g0], from: o.cell.stop5m, to: n.cell.stop5m, stop: n.cell.stop5m };
     const same = g0 === g1;
     const stopText = T(n.isDeco ? 'steps.stopDeco' : 'steps.stopNdl', v);
     return {

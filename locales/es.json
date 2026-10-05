@@ -2725,7 +2725,8 @@
                     "verdict": {
                         "sameProcedure": "El procedimiento no cambia.",
                         "becameDeco": "Por el retraso, ahora es una <strong>inmersión con descompresión</strong>.",
-                        "longerStop": "La parada a 5 m pasa de {from} a <strong>{to} min</strong>."
+                        "longerStop": "La parada a 5 m pasa de {from} a <strong>{to} min</strong>.",
+                        "sameStopNewGroup": "La descompresión no cambia, pero el grupo tras la inmersión es ahora <strong>{group}</strong> (no {oldGroup}): úsalo para una inmersión sucesiva."
                     },
                     "intro": {
                         "omitted": "El buceador omitió o acortó la parada de {stop} min a 5 m.",
