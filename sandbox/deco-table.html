@@ -804,6 +804,7 @@
         import { lookupDive, ndlLimitIdx, formatHM } from '../js/cmasTables.js';
         import { translate, initI18n, createLanguageSwitcher } from '../js/i18n.js';
         import { initVideoWalkthroughs } from '../js/components/VideoWalkthrough.js';
+        import { buildSteps } from '../js/decoTableSteps.js';
 
         createLanguageSwitcher();
         const [table] = await Promise.all([
@@ -821,6 +822,7 @@
         const GROUPS = table.groups;
         const DEPTHS = table.depths.map(d => d.depth);
         const NG = GROUPS.length, ND = DEPTHS.length;
+        const stepCtx = { T, GROUPS, ND, NG };   // what the step builders (js/decoTableSteps.js) need
 
         // ── Build the circle table ────────────────────────────────────────────
         // Columns: [part 3 depth columns ×10][label column][groups A–L ×12]
@@ -1103,89 +1105,6 @@
             window.scrollTo({ top: scrollY + el.getBoundingClientRect().top - offset, behavior: scrollBehavior() });
         }
 
-        const range = (from, to) => Array.from({ length: Math.max(0, to - from) }, (_, i) => from + i);
-        const p1Keys = (d, gs) => gs.map(g => `p1:${d}:${g}`);
-        const p1ColBelow = (d, g) => range(d + 1, ND).map(dd => `p1:${dd}:${g}`);
-
-        // ── Step builders ────────────────────────────────────────────────────
-        function part1Steps(dive, r) {
-            const d = r.depthIdx, g = r.groupIdx, grp = GROUPS[g];
-            const rowKeys = p1Keys(d, range(0, NG));
-            const v = { depth: r.tableDepth, entered: dive.depth, time: dive.time, penalty: r.penalty,
-                        total: r.tableTime, cellTime: r.cell.bottomTime, stop: r.cell.stop5m, group: grp };
-            const depthText = T(dive.depth !== r.tableDepth ? 'steps.depthRounded' : 'steps.depthRow', v);
-            const timeText = T(r.penalty ? 'steps.timePenalty' : 'steps.timePlain', v);
-            const stopText = T(r.isDeco ? 'steps.stopDeco' : 'steps.stopNdl', v);
-            return [
-                {
-                    part: 1,
-                    title: T('stepTitle.depth'),
-                    text: depthText,
-                    hl: { label: [`ld:${d}`], path: rowKeys, focus: [`ld:${d}`, ...p1Keys(d, range(0, 3))] },
-                },
-                {
-                    part: 1,
-                    title: T('stepTitle.scan'),
-                    text: T('steps.scan', { ...v, timeText }),
-                    hl: { label: [`ld:${d}`], path: p1Keys(d, range(0, g)), found: [`p1:${d}:${g}`], focus: [`p1:${d}:${g}`, `ld:${d}`] },
-                },
-                {
-                    part: 1,
-                    title: T('stepTitle.read'),
-                    text: T('steps.read', { ...v, stopText }),
-                    hl: { label: [`ld:${d}`, `lg:${g}`], path: p1ColBelow(d, g), found: [`p1:${d}:${g}`], focus: [`lg:${g}`, `p1:${d}:${g}`] },
-                },
-            ];
-        }
-
-        function repeatSteps(prev, dive, r) {
-            const pg = prev.result.groupIdx, pd = prev.result.depthIdx;
-            const n = r.si.groupIdx, d = r.depthIdx;
-            const origin = `p1:${pd}:${pg}`;
-            const colDown = p1ColBelow(pd, pg);
-            const p2Col = range(0, pg + 1).map(row => `p2:${row}:${pg}`);
-            const hasNdl = r.maxNoDecoTime > 0;
-            const v = {
-                group: GROUPS[pg], newGroup: GROUPS[n], si: formatHM(dive.si),
-                from: formatHM(r.si.min), to: r.si.max === 1440 ? '24:00' : formatHM(r.si.max),
-                depth: r.tableDepth, entered: dive.depth, time: dive.time, penalty: r.penalty,
-                total: r.tableTime, ndl: r.ndl, max: r.maxNoDecoTime,
-            };
-            return [
-                {
-                    part: 2,
-                    title: T('stepTitle.down'),
-                    text: T('steps.down', v),
-                    hl: { origin: [origin], label: [`lg:${pg}`], path: colDown.concat(p2Col), focus: [`lg:${pg}`, origin] },
-                },
-                {
-                    part: 2,
-                    title: T('stepTitle.findSi'),
-                    text: T('steps.findSi', v),
-                    hl: { origin: [`lg:${pg}`], path: range(0, n).map(row => `p2:${row}:${pg}`), found: [`p2:${n}:${pg}`], label: [`lr:${n}`], focus: [`p2:${n}:${pg}`, `lg:${pg}`, `lr:${n}`] },
-                },
-                {
-                    part: 3,
-                    title: T('stepTitle.left'),
-                    text: T('steps.left', { ...v, group: GROUPS[n], rounded: dive.depth !== r.tableDepth ? T('steps.leftRounded', v) : '' }),
-                    hl: {
-                        origin: [`p2:${n}:${pg}`],
-                        path: range(n, pg).map(e => `p2:${n}:${e}`).concat(range(d + 1, ND).map(dd => `p3:${n}:${dd}`)),
-                        label: [`lr:${n}`, `lp3:${d}`],
-                        found: [`p3:${n}:${d}`],
-                        focus: [`p3:${n}:${d}`, `lr:${n}`, `lp3:${d}`],
-                    },
-                },
-                {
-                    part: 1,
-                    title: T('stepTitle.back'),
-                    text: T('steps.back', v) + (hasNdl ? T('steps.backNdl', v) : ''),
-                    hl: { origin: [`p3:${n}:${d}`], label: [`lp3:${d}`, `ld:${d}`], path: p1Keys(d, range(0, NG)), arrow: d, focus: [`ld:${d}`, `lp3:${d}`, `p3:${n}:${d}`] },
-                },
-                ...part1Steps(dive, r).slice(1),
-            ];
-        }
-
         // ── State & DOM ──────────────────────────────────────────────────────
         const $ = id => document.getElementById(id);
         const els = {
@@ -1430,7 +1349,7 @@
                 dives.push({ ...dive, result: r });
             }
             state.dives = dives;
-            state.steps = buildSteps(dives);
+            state.steps = buildSteps(stepCtx, dives);
             state.step = 0;
             els.narrator.classList.add('visible');
             els.layout.classList.add('walking');
@@ -1448,12 +1367,6 @@
             if (!d1 || d1.time > 120) return '';   // the compact link accepts at most 120 min
             const url = `index.html?v=1&d=${d1.depth}&t=${d1.time}&gfL=100&gfH=100&zhl=C`;
             return `${T('compare.hint')} <a href="${url}">${T('compare.link', { depth: d1.depth, time: d1.time })}</a>`;
-        }
-
-        function buildSteps(dives) {
-            return dives.flatMap((dv, i) =>
-                (i === 0 ? part1Steps(dv, dv.result) : repeatSteps(dives[i - 1], dv, dv.result))
-                    .map(s => ({ ...s, dive: i })));
         }
 
         function advance() {
@@ -1568,7 +1481,7 @@
             renumberRows();
             if (lastError) els.error.innerHTML = errorText(...lastError);
             if (state.steps.length) {
-                state.steps = buildSteps(state.dives);
+                state.steps = buildSteps(stepCtx, state.dives);
                 if (state.done) showResult({ scroll: false });
                 else renderStep();
             }

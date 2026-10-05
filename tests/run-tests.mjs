@@ -254,6 +254,7 @@ import {
     ndlLimitIdx,
     formatHM,
 } from '../js/cmasTables.js';
+import { buildSteps as buildDecoTableSteps } from '../js/decoTableSteps.js';
 
 describe('Chart tooltip shortcut', () => {
     test('toggles only the focused or hovered chart and persists across rebuilds', () => {
@@ -10547,8 +10548,39 @@ describe('SPČR/CMAS 2018 tables (cmasTables.js)', () => {
         });
     });
 
+    describe('walkthrough steps (decoTableSteps.js)', () => {
+        const T = key => key;
+        const ctx = { T, GROUPS: G, ND: cmas.depths.length, NG: G.length };
+        const keys = hl => Object.fromEntries(Object.entries(hl).map(([k, v]) => [k, Array.isArray(v) ? v.join(' ') : v]));
+
+        test('golden: plan 30 m / 20 min, 1:00, 18 m / 20 min — titles and highlights of all 9 steps', () => {
+            const d1 = { depth: 30, time: 20, result: lookupDive(cmas, { depth: 30, time: 20 }) };
+            const d2 = { depth: 18, time: 20, si: 60,
+                result: lookupDive(cmas, { depth: 18, time: 20, prevGroupIdx: d1.result.groupIdx, surfaceInterval: 60 }) };
+            const steps = buildDecoTableSteps(ctx, [d1, d2]);
+            expect(steps.map(s => `${s.dive}${s.group}${s.part} ${s.title}`)).toEqual([
+                '001 stepTitle.depth', '001 stepTitle.scan', '001 stepTitle.read',
+                '112 stepTitle.down', '112 stepTitle.findSi', '113 stepTitle.left', '111 stepTitle.back',
+                '111 stepTitle.scan', '111 stepTitle.read',
+            ]);
+            const row = d => Array.from({ length: 12 }, (_, i) => `p1:${d}:${i}`).join(' ');
+            expect(steps.map(s => keys(s.hl))).toEqual([
+                { label: 'ld:6', path: row(6), focus: 'ld:6 p1:6:0 p1:6:1 p1:6:2' },
+                { label: 'ld:6', path: 'p1:6:0 p1:6:1 p1:6:2 p1:6:3 p1:6:4', found: 'p1:6:5', focus: 'p1:6:5 ld:6' },
+                { label: 'ld:6 lg:5', path: 'p1:7:5 p1:8:5 p1:9:5', found: 'p1:6:5', focus: 'lg:5 p1:6:5' },
+                { origin: 'p1:6:5', label: 'lg:5', path: 'p1:7:5 p1:8:5 p1:9:5 p2:0:5 p2:1:5 p2:2:5 p2:3:5 p2:4:5 p2:5:5', focus: 'lg:5 p1:6:5' },
+                { origin: 'lg:5', path: 'p2:0:5 p2:1:5 p2:2:5 p2:3:5', found: 'p2:4:5', label: 'lr:4', focus: 'p2:4:5 lg:5 lr:4' },
+                { origin: 'p2:4:5', path: 'p2:4:4 p3:4:3 p3:4:4 p3:4:5 p3:4:6 p3:4:7 p3:4:8 p3:4:9', label: 'lr:4 lp3:2', found: 'p3:4:2', focus: 'p3:4:2 lr:4 lp3:2' },
+                { origin: 'p3:4:2', label: 'lp3:2 ld:2', path: row(2), arrow: 2, focus: 'ld:2 lp3:2 p3:4:2' },
+                { label: 'ld:2', path: 'p1:2:0 p1:2:1 p1:2:2 p1:2:3 p1:2:4 p1:2:5 p1:2:6', found: 'p1:2:7', focus: 'p1:2:7 ld:2' },
+                { label: 'ld:2 lg:7', path: 'p1:3:7 p1:4:7 p1:5:7 p1:6:7 p1:7:7 p1:8:7 p1:9:7', found: 'p1:2:7', focus: 'lg:7 p1:2:7' },
+            ]);
+        });
+    });
+
     test('every string the page uses exists in cs, en and es', () => {
-        const html = readFileSync(new URL('../sandbox/deco-table.html', import.meta.url), 'utf8');
+        const html = readFileSync(new URL('../sandbox/deco-table.html', import.meta.url), 'utf8')
+            + readFileSync(new URL('../js/decoTableSteps.js', import.meta.url), 'utf8');
         const used = new Set([
             ...[...html.matchAll(/data-i18n="sandbox\.decoTable\.([\w.]+)"/g)].map(m => m[1]),
             ...[...html.matchAll(/'((?:steps|plan|narrator|result|errors|downloads|legend|howTo|table|image|guide|compare)\.\w+)'/g)].map(m => m[1]),

@@ -90,6 +90,7 @@ const STATIC_ASSETS = [
   './js/i18n.js',
   './js/format.js',
   './js/cmasTables.js',
+  './js/decoTableSteps.js',
   './locales/en.json',
   './locales/cs.json',
   './locales/es.json',
