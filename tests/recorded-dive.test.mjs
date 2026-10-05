@@ -9,6 +9,7 @@ import { readFileSync } from 'node:fs';
 import { parseDivesoftDLF } from '../js/import/divesoftDlf.js';
 import { toDiveSetup, prepareRecordedSetup, THIN_TOLERANCE_M } from '../js/import/recordedDive.js';
 import { thinProfile } from '../js/import/thinProfile.js';
+import { analyzeRecordedDive, summarizeRecordedDive, CEILING_VIOLATION_TOLERANCE_M, DECO_CEILING_THRESHOLD_M } from '../js/import/recordedDiveSummary.js';
 
 const FIXTURES = new URL('./fixtures/divesoft/', import.meta.url);
 
@@ -116,5 +117,66 @@ describe('prepareRecordedSetup', () => {
         assert.equal(setup.gfHigh, 100);
         assert.deepEqual(deviceCeiling, []);
         assert.deepEqual(setup.dives[0].waypoints, [{ time: 0, depth: 0 }]);
+    });
+});
+
+describe('analyzeRecordedDive / summarizeRecordedDive', () => {
+    const dive = loadDive('00000100');
+    const summaryAt = (gfLow, gfHigh) =>
+        summarizeRecordedDive(analyzeRecordedDive(prepareRecordedSetup(dive, { gfLow, gfHigh }).setup));
+
+    test('exports the agreed tolerances', () => {
+        assert.equal(CEILING_VIOLATION_TOLERANCE_M, 0.1);
+        assert.equal(DECO_CEILING_THRESHOLD_M, 0.05);
+    });
+
+    test('at the device GF 60/90 the dive stays within limits and has light deco', () => {
+        const s = summaryAt(60, 90);
+        assert.equal(s.aboveCeiling.seconds, 0);
+        assert.equal(s.aboveCeiling.worstM, 0);
+        assert.ok(s.deco, 'deco present');
+        assert.ok(s.deco.maxCeiling > 1.5 && s.deco.maxCeiling < 3, `max ceiling ${s.deco.maxCeiling}`);
+        assert.ok(s.deco.start < s.deco.end);
+    });
+
+    test('GF 30/70 deepens the ceiling but the recorded dive still clears it', () => {
+        const strict = summaryAt(30, 70);
+        const device = summaryAt(60, 90);
+        assert.equal(strict.aboveCeiling.seconds, 0);
+        assert.ok(strict.deco.maxCeiling > device.deco.maxCeiling + 5);
+    });
+
+    test('GF 20/50 puts part of the recorded dive above the ceiling', () => {
+        const s = summaryAt(20, 50);
+        assert.ok(s.aboveCeiling.seconds > 60, `${s.aboveCeiling.seconds} s`);
+        assert.ok(s.aboveCeiling.worstM > 0.3, `${s.aboveCeiling.worstM} m`);
+    });
+
+    test('peak tissue GF does not depend on the GF setting', () => {
+        const a = summaryAt(60, 90).peakGf;
+        const b = summaryAt(20, 50).peakGf;
+        assert.deepEqual(a, b);
+        assert.ok(a.value > 0.3 && a.value < 1.2, `peak GF ${a.value}`);
+        assert.ok(a.compartment >= 1 && a.compartment <= 16);
+    });
+
+    test('surface GF at the end is reported', () => {
+        const s = summaryAt(60, 90);
+        assert.ok(s.surfaceGfEnd);
+        assert.ok(s.surfaceGfEnd.value > 0);
+    });
+
+    test('thinning does not move the peak ceiling by more than 0.1 m', () => {
+        const thinned = analyzeRecordedDive(prepareRecordedSetup(dive).setup);
+        const fullSetup = toDiveSetup(dive);
+        const full = analyzeRecordedDive(fullSetup);
+        const diff = Math.abs(Math.max(...thinned.ceilingDepths) - Math.max(...full.ceilingDepths));
+        assert.ok(diff <= 0.1, `peak ceiling moved ${diff} m`);
+    });
+
+    test('a no-deco dive reports no deco and no violations', () => {
+        const s = summarizeRecordedDive(analyzeRecordedDive(prepareRecordedSetup(loadDive('00000101')).setup));
+        assert.equal(s.deco, null);
+        assert.equal(s.aboveCeiling.seconds, 0);
     });
 });
