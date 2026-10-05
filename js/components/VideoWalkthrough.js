@@ -112,10 +112,29 @@ function relabel(host) {
     host.querySelector('.video-open-btn').textContent = t('open');
 }
 
+/**
+ * Keep fullscreen video in landscape. The installed app's manifest locks portrait, so
+ * without this a phone rotates the fullscreen video back to portrait. Browsers only
+ * allow an orientation lock while fullscreen; unsupported (e.g. iOS) just ignores it.
+ */
+function lockLandscapeInFullscreen() {
+    document.addEventListener('fullscreenchange', () => {
+        const orientation = screen.orientation;
+        if (!orientation?.lock || !video) return;
+        const el = document.fullscreenElement;
+        if (el && (el === video || el.contains(video))) {
+            orientation.lock('landscape').catch(() => {});
+        } else {
+            try { orientation.unlock(); } catch { /* nothing locked */ }
+        }
+    });
+}
+
 /** Render every `.video-walkthrough[data-video-base]` on the page. */
 export function initVideoWalkthroughs() {
     const hosts = [...document.querySelectorAll('.video-walkthrough[data-video-base]')];
     hosts.forEach(render);
+    if (hosts.length) lockLandscapeInFullscreen();
     document.addEventListener('languagechange', () => {
         hosts.forEach(relabel);
         relabelDialog();
