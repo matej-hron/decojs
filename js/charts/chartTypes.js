@@ -275,6 +275,10 @@ export const DEFAULT_DIVE_PROFILE_OPTIONS = {
     showDecoStops: true,
     showNDL: false,
     showCeiling: false,
+    referenceCeiling: null,
+    referenceCeilingLabel: null,
+    highlightCeilingViolations: false,
+    violationToleranceM: 0.1,
     showAmbientPressure: false,
     showPartialPressures: false,
     showTissueLoading: false,
@@ -290,7 +294,9 @@ export const DEFAULT_DIVE_PROFILE_OPTIONS = {
         ceiling: '#e74c3c',
         ppO2: '#27ae60',
         ppN2: '#9b59b6',
-        ambient: '#f39c12'
+        ambient: '#f39c12',
+        referenceCeiling: '#e67e22',
+        ceilingViolation: '#c0392b'
     }
 };
 
@@ -481,11 +487,12 @@ export function normalizeDiveSetup(setup) {
         surfaceInterval: setup.surfaceInterval ?? 60,
         environment: {
             altitude: setup.environment?.altitude ?? 0,
-            waterType: Object.values(WATER_TYPES).includes(
-                setup.environment?.waterType
-            )
-                ? setup.environment.waterType
-                : WATER_TYPES.STANDARD,
+            // A recorded water density (no waterType) is kept; getPressurePerMeter resolves it.
+            ...(Object.values(WATER_TYPES).includes(setup.environment?.waterType)
+                ? { waterType: setup.environment.waterType }
+                : (setup.environment?.waterType === undefined && Number.isFinite(setup.environment?.waterDensity))
+                    ? { waterDensity: setup.environment.waterDensity }
+                    : { waterType: WATER_TYPES.STANDARD }),
             ...(Number.isFinite(setup.environment?.surfacePressure)
                 ? { surfacePressure: setup.environment.surfacePressure }
                 : {})

@@ -1,5 +1,5 @@
 // Service Worker for Deco Theory PWA
-const CACHE_NAME = 'deco-theory-0.6.194';
+const CACHE_NAME = 'deco-theory-0.6.195';
 
 // Files to cache for offline use
 const STATIC_ASSETS = [
@@ -31,6 +31,7 @@ const STATIC_ASSETS = [
   './sandbox/editor-test.html',
   './sandbox/repetitive-dives.html',
   './sandbox/deco-table.html',
+  './lab/dive-log.html',
   './data/cmas-deco-tables.json',
   './css/styles.css',
   './fonts/fraunces-latin.woff2',
@@ -78,6 +79,11 @@ const STATIC_ASSETS = [
   './js/components/TripCalendar.js',
   './js/components/DiveEditPanel.js',
   './js/components/AddDiveDialog.js',
+  './js/components/RecordedDiveAnalysis.js',
+  './js/import/divesoftDlf.js',
+  './js/import/recordedDive.js',
+  './js/import/thinProfile.js',
+  './js/import/recordedDiveSummary.js',
   './js/ndlPreview.js',
   './js/gfLimits.js',
   './js/gfPresets.js',

@@ -65,6 +65,32 @@ import { fmtNum } from '../format.js';
 /**
  * DiveProfileChart - Embeddable dive profile visualization
  */
+/**
+ * Linearly resample a time/depth reference series onto a set of time points,
+ * clamping outside the reference range to the nearest end value.
+ *
+ * @param {Array<{t: number, depth: number}>} reference - ascending by t
+ * @param {number[]} timePoints
+ * @returns {Array<{x: number, y: number}>}
+ */
+function resampleReference(reference, timePoints) {
+    const out = [];
+    let j = 0;
+    const last = reference.length - 1;
+    for (const x of timePoints) {
+        while (j < last && reference[j + 1].t <= x) j++;
+        let y;
+        if (x <= reference[0].t) y = reference[0].depth;
+        else if (j >= last) y = reference[last].depth;
+        else {
+            const a = reference[j], b = reference[j + 1];
+            y = b.t === a.t ? b.depth : a.depth + (b.depth - a.depth) * (x - a.t) / (b.t - a.t);
+        }
+        out.push({ x, y });
+    }
+    return out;
+}
+
 export class DiveProfileChart {
     /**
      * Create a new DiveProfileChart
@@ -747,7 +773,15 @@ export class DiveProfileChart {
     }
     
     /**
-     * Add stop labels (deco stops) - always shown regardless of showLabels option
+     * Add stop labels unless the showDecoStops option is false (default: shown).
+     * @private
+     */
+    _addStopLabelsIfEnabled(annotations, waypoints) {
+        if (this.options.showDecoStops !== false) this._addStopLabels(annotations, waypoints);
+    }
+
+    /**
+     * Add stop labels (deco stops) - independent of the showLabels option
      * @private
      */
     _addStopLabels(annotations, waypoints) {
@@ -1049,6 +1083,9 @@ export class DiveProfileChart {
                 order: 9
             });
         }
+
+        // Recorded-dive overlays (opt-in; no-op unless referenceCeiling / highlightCeilingViolations set)
+        datasets.push(...this._buildRecordedOverlayDatasets(results, ceilingDepths));
         
         // Ambient pressure (if enabled)
         if (this.options.showAmbientPressure) {
@@ -1239,8 +1276,8 @@ export class DiveProfileChart {
             this._addSurfaceIntervalLabel(annotations, waypoints);
         }
         
-        // Stop labels (deco stops) - always shown
-        this._addStopLabels(annotations, waypoints);
+        // Stop labels (deco stops) - shown unless showDecoStops is false
+        this._addStopLabelsIfEnabled(annotations, waypoints);
         
         // Reserve pressure line (if showing gas consumption)
         if (this.options.showGasConsumption && gasConsumption) {
@@ -1410,7 +1447,11 @@ export class DiveProfileChart {
                 plugins: {
                     legend: {
                         display: this.options.showLegend !== false,
-                        position: 'top'
+                        position: 'top',
+                        labels: {
+                            // Hide the invisible helper dataset that closes the violation shading
+                            filter: (item, data) => !data?.datasets?.[item.datasetIndex]?.isOverlayHelper
+                        }
                     },
                     tooltip: {
                         enabled: resolveChartTooltipEnabled(this.options.interactive, this.canvas),
@@ -1435,6 +1476,7 @@ export class DiveProfileChart {
                             label: (context) => {
                                 // Hide gas consumption from regular labels (shown in afterBody)
                                 if (context.dataset.isGasConsumption) return null;
+                                if (context.dataset.isOverlayHelper) return null;
                                 const label = context.dataset.label || '';
                                 const value = context.parsed.y;
                                 // Detect unit by checking known translated dataset labels.
@@ -1442,7 +1484,8 @@ export class DiveProfileChart {
                                 const depthKeywords = ['Depth', 'Ceiling',
                                     translate('chart.profile.datasetDepth', 'Depth (m)'),
                                     translate('chart.profile.datasetCeiling', 'Ceiling (m)')];
-                                const isDepth = depthKeywords.some(k => k && label.includes(k));
+                                const isDepth = context.dataset.yAxisID === 'yDepth'
+                                    || depthKeywords.some(k => k && label.includes(k));
                                 const isPressure = label.includes('Pressure') || label.includes('pp')
                                     || label.includes(translate('chart.axes.pressureBar', 'Pressure (bar)'));
                                 if (isDepth) {
@@ -1584,6 +1627,69 @@ export class DiveProfileChart {
         this._render();
     }
     
+    /**
+     * Extra datasets for recorded dives: the dive computer's own ceiling as a
+     * reference line, and shading where the recorded depth is shallower than
+     * DecoTheory's ceiling. Both are opt-in options; returns [] when off.
+     *
+     * @param {Object} results - calculateTissueLoading() results (time in minutes)
+     * @param {number[]|null} ceilingDepths - DecoTheory ceiling per time point
+     * @returns {Array<Object>} Chart.js datasets
+     */
+    _buildRecordedOverlayDatasets(results, ceilingDepths) {
+        const datasets = [];
+        const { referenceCeiling, colors } = this.options;
+
+        if (Array.isArray(referenceCeiling) && referenceCeiling.length > 0) {
+            datasets.push({
+                label: this.options.referenceCeilingLabel
+                    ?? translate('chart.profile.datasetReferenceCeiling', 'Dive computer ceiling (m)'),
+                data: resampleReference(referenceCeiling, results.timePoints),
+                borderColor: colors.referenceCeiling,
+                backgroundColor: 'transparent',
+                fill: false,
+                yAxisID: 'yDepth',
+                tension: 0,
+                pointRadius: 0,
+                borderWidth: 2,
+                borderDash: [2, 3],
+                order: 8,
+            });
+        }
+
+        if (this.options.showCeiling && this.options.highlightCeilingViolations && ceilingDepths) {
+            const tolerance = this.options.violationToleranceM;
+            const violated = results.timePoints.map((_, i) => ceilingDepths[i] - results.depthPoints[i] > tolerance);
+            const label = translate('chart.profile.datasetCeilingViolation', 'Above ceiling');
+            datasets.push({
+                label,
+                data: results.timePoints.map((t, i) => ({ x: t, y: violated[i] ? results.depthPoints[i] : null })),
+                borderColor: colors.ceilingViolation,
+                backgroundColor: colors.ceilingViolation + '55',
+                fill: '+1',
+                spanGaps: false,
+                yAxisID: 'yDepth',
+                pointRadius: 0,
+                borderWidth: 2,
+                order: 7,
+            });
+            datasets.push({
+                label: `${label} (ceiling)`,
+                isOverlayHelper: true,
+                data: results.timePoints.map((t, i) => ({ x: t, y: violated[i] ? ceilingDepths[i] : null })),
+                borderColor: 'transparent',
+                backgroundColor: 'transparent',
+                fill: false,
+                spanGaps: false,
+                yAxisID: 'yDepth',
+                pointRadius: 0,
+                borderWidth: 0,
+                order: 7,
+            });
+        }
+        return datasets;
+    }
+
     /**
      * Update chart options without changing data
      * @param {Object} options - New chart options
