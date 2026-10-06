@@ -1763,7 +1763,13 @@
             "exportConfig": "📋 Exportovat konfiguraci",
             "screenshot": "📷 Snímek obrazovky",
             "copied": "✓ Zkopírováno!",
-            "mValueChart": "📐 Diagram tlak-tlak",
+            "mValueChart": "📐 Diagram tlak–tlak",
+            "video": {
+                "setup": "Videonávod: zadání ponoru",
+                "runtime": "Videonávod: jak číst runtime",
+                "profile": "Videonávod: jak číst profil ponoru",
+                "pp": "Videonávod: jak číst diagram tlak–tlak"
+            },
             "gfChart": "📊 Diagram GF %",
             "copyDebug": "🔍 Zkopírovat ladicí data",
             "status": {

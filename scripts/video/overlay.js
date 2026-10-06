@@ -57,17 +57,49 @@
         setTimeout(() => r.remove(), 600);
     }
 
-    // Rings follow their targets every frame, so growing panels stay outlined.
+    // Element rings follow their targets every frame, so growing panels stay outlined.
+    // A ring has `els` (one element, or several for a union ring: their bounding box)
+    // or a fixed viewport `rect` (canvas features, which have no element to track).
+    function place(node, b, pad) {
+        Object.assign(node.style, {
+            left: `${b.left - pad}px`, top: `${b.top - pad}px`,
+            width: `${b.width + 2 * pad}px`, height: `${b.height + 2 * pad}px`,
+        });
+    }
+
     function trackRings() {
-        for (const { el, node, pad } of rings) {
-            const b = el.getBoundingClientRect();
-            Object.assign(node.style, {
-                left: `${b.left - pad}px`, top: `${b.top - pad}px`,
-                width: `${b.width + 2 * pad}px`, height: `${b.height + 2 * pad}px`,
-            });
+        for (const { els, node, pad } of rings) {
+            if (!els) continue;
+            const bs = els.map((el) => el.getBoundingClientRect());
+            const left = Math.min(...bs.map((b) => b.left));
+            const top = Math.min(...bs.map((b) => b.top));
+            place(node, {
+                left, top,
+                width: Math.max(...bs.map((b) => b.right)) - left,
+                height: Math.max(...bs.map((b) => b.bottom)) - top,
+            }, pad);
         }
         requestAnimationFrame(trackRings);
     }
+
+    function clearRings() {
+        for (const r of rings) {
+            r.node.classList.remove('on');
+            setTimeout(() => r.node.remove(), 400);
+        }
+        rings = [];
+    }
+
+    function addRing(ring, round = false) {
+        const node = document.createElement('div');
+        node.className = 'vid-ring';
+        if (round) node.style.borderRadius = '50%';
+        root.appendChild(node);
+        rings.push({ ...ring, node });
+        return node;
+    }
+
+    const showRings = () => requestAnimationFrame(() => rings.forEach((r) => r.node.classList.add('on')));
 
     window.__video = {
         card(opts) {
@@ -77,21 +109,28 @@
             card.querySelector('small').textContent = opts.footer ?? '';
             card.classList.add('on');
         },
-        highlight(selectors, pad = 8) {
-            for (const r of rings) {
-                r.node.classList.remove('on');
-                setTimeout(() => r.node.remove(), 400);
-            }
-            rings = [];
-            for (const sel of [].concat(selectors ?? [])) {
+        /** Ring each selector's element (or, with `union`, one ring around all of them). */
+        highlight(selectors, opts = {}) {
+            const { pad = 8, union = false } = typeof opts === 'number' ? { pad: opts } : (opts ?? {});
+            clearRings();
+            const els = [].concat(selectors ?? []).map((sel) => {
                 const el = document.querySelector(sel);
                 if (!el) throw new Error(`highlight: no element for ${sel}`);
-                const node = document.createElement('div');
-                node.className = 'vid-ring';
-                root.appendChild(node);
-                rings.push({ el, node, pad });
+                return el;
+            });
+            if (union && els.length) addRing({ els, pad });
+            else els.forEach((el) => addRing({ els: [el], pad }));
+            showRings();
+        },
+        /** Ring fixed viewport rectangles ({left, top, width, height, round?}); `round` for points (per rect or for all). */
+        ring(rects, opts = {}) {
+            const { pad = 0, round = false } = opts ?? {};
+            clearRings();
+            for (const r of [].concat(rects ?? [])) {
+                const node = addRing({ rect: r, pad }, r.round ?? round);
+                place(node, r, pad);
             }
-            requestAnimationFrame(() => rings.forEach((r) => r.node.classList.add('on')));
+            showRings();
         },
         ripple,
     };

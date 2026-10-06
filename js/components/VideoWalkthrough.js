@@ -10,6 +10,12 @@
  *
  *   import { initVideoWalkthroughs } from '../js/components/VideoWalkthrough.js';
  *   initVideoWalkthroughs();
+ *
+ * Several videos per page: give each host its own base. Next to a section heading use
+ * the compact `video-walkthrough--inline` variant, placed BESIDE the heading (never inside
+ * a [data-i18n] element, whose textContent the i18n pass replaces). Optional
+ * `data-video-title="<i18n key>"` names the video for assistive tech (aria-label + title)
+ * while the visible text stays the generic "▶ Video walkthrough".
  */
 import { translate, getCurrentLanguage } from '../i18n.js';
 
@@ -102,14 +108,30 @@ function open(base) {
     video.play().catch(() => {});
 }
 
+/** Hosts rendered so far; relabelled together when the language changes. */
+const hosts = new Set();
+let listening = false;
+
 function render(host) {
+    if (hosts.has(host)) return;
+    hosts.add(host);
     host.innerHTML = '<button type="button" class="video-open-btn"></button>';
     host.querySelector('button').addEventListener('click', () => open(host.dataset.videoBase));
     relabel(host);
 }
 
 function relabel(host) {
-    host.querySelector('.video-open-btn').textContent = t('open');
+    const button = host.querySelector('.video-open-btn');
+    button.textContent = t('open');
+    const titleKey = host.dataset.videoTitle;
+    const title = titleKey ? translate(titleKey, '') : '';
+    if (title) {
+        button.setAttribute('aria-label', title);
+        button.title = title;
+    } else {
+        button.removeAttribute('aria-label');
+        button.removeAttribute('title');
+    }
 }
 
 /**
@@ -130,11 +152,15 @@ function lockLandscapeInFullscreen() {
     });
 }
 
-/** Render every `.video-walkthrough[data-video-base]` on the page. */
+/**
+ * Render every `.video-walkthrough[data-video-base]` on the page. Safe to call again
+ * (e.g. after adding hosts): rendered hosts are skipped and listeners attach once.
+ */
 export function initVideoWalkthroughs() {
-    const hosts = [...document.querySelectorAll('.video-walkthrough[data-video-base]')];
-    hosts.forEach(render);
-    if (hosts.length) lockLandscapeInFullscreen();
+    document.querySelectorAll('.video-walkthrough[data-video-base]').forEach(render);
+    if (!hosts.size || listening) return;
+    listening = true;
+    lockLandscapeInFullscreen();
     document.addEventListener('languagechange', () => {
         hosts.forEach(relabel);
         relabelDialog();

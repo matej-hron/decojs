@@ -2318,7 +2318,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.195";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.196";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================
@@ -5871,6 +5871,27 @@ var + sup var {
 
 .video-open-btn:hover {
     background: rgba(255, 255, 255, 0.28);
+}
+
+/* Inline variant: next to a section heading on a light panel (the hero style above is
+   white on transparent and would vanish there). */
+.video-walkthrough--inline {
+    margin-top: 0;
+}
+
+.video-walkthrough--inline .video-open-btn {
+    padding: 0.2rem 0.7rem;
+    font-size: 0.8rem;
+    color: var(--primary-color);
+    background: transparent;
+    border-color: var(--primary-color);
+    white-space: nowrap;
+}
+
+.video-walkthrough--inline .video-open-btn:hover,
+.video-walkthrough--inline .video-open-btn:focus-visible {
+    color: white;
+    background: var(--primary-color);
 }
 
 .video-dialog {

@@ -15,6 +15,7 @@ import {
     N2_FRACTION,
     PRESSURE_PER_METER,
     SURFACE_PRESSURE,
+    ASCENT_SPEED as PLANNER_ASCENT_SPEED,
     getAmbientPressure,
     getPressurePerMeter,
     getSurfacePressure,
@@ -1714,6 +1715,8 @@ export function computeGasConsumption(results, gases, sacRate, decoSacRate, rese
  * @param {number} [opts.reserve=50]       Fallback reserve pressure (bar).
  * @param {number} [opts.surfacePressure]  Atmospheric pressure at the dive site (bar).
  * @param {'stage-end'|'departure'|'practical'} [opts.runtimeConvention='stage-end']
+ * @param {number} [opts.ascentRate]  Practical mode: ascent rate (m/min) for moves after a stop;
+ *                                     defaults to the planner's ASCENT_SPEED so table and chart agree.
  * @returns {string}  HTML for the plan table (or '').
  */
 export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
@@ -1724,6 +1727,7 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
     const surfacePressure = opts.surfacePressure ?? SURFACE_PRESSURE;
     const departureRuntime = opts.runtimeConvention === 'departure';
     const practicalRuntime = opts.runtimeConvention === 'practical';
+    const ascentRate = opts.ascentRate ?? PLANNER_ASCENT_SPEED;
     const consumptionSurfacePressure = 1 + (surfacePressure - SURFACE_PRESSURE);
     const gasList = Array.isArray(gases) ? gases : [];
 
@@ -1759,15 +1763,16 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
         // this iteration's activeGasId) so a segment can be billed to a
         // different gas than the one shown by default — needed below to
         // charge an ascent leg to the OLD gas while a zero-duration switch
-        // marker right after it introduces the NEW one.
-        const pushSeg = (seg, gasIdOverride) => {
+        // marker right after it introduces the NEW one. `instant` segments
+        // (that zero-duration marker) take no time, so they consume no gas.
+        const pushSeg = (seg, gasIdOverride, { instant = false } = {}) => {
             const segGasId = gasIdOverride || activeGasId;
             const segGas = gasList.find(g => g.id === segGasId);
             const isDecoOrSafety = seg.cls === 'stop' || seg.cls === 'safety';
             const sac = isDecoOrSafety ? decoSacRate : sacRate;
             const avgDepth = (wp.depth + next.depth) / 2;
             const avgAmbient = consumptionSurfacePressure + avgDepth / 10;
-            if (segGas && segGas.cylinderVolume > 0 && duration > 0) {
+            if (!instant && segGas && segGas.cylinderVolume > 0 && duration > 0) {
                 const litersUsed = sac * avgAmbient * duration;
                 const barDrop = litersUsed / segGas.cylinderVolume;
                 pressureByGasId[segGasId] = Math.max(0, pressureByGasId[segGasId] - barDrop);
@@ -1831,7 +1836,7 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
             if (gasChanged && !hasDedicatedSwitchStop) {
                 // Blank ('' not 0) Stop cell — this is an instant marker, not
                 // a measured zero-length stop, matching the surface-row convention.
-                pushSeg({ cls: 'switch', icon: '⇄', label: phaseLabels.switch, depth: next.depth, stop: '', runtime, gas: gasName }, next.gasId);
+                pushSeg({ cls: 'switch', icon: '⇄', label: phaseLabels.switch, depth: next.depth, stop: '', runtime, gas: gasName }, next.gasId, { instant: true });
             }
             if (hasDedicatedSwitchStop) {
                 // Keep prevGasId at the OLD gas so the upcoming stationary
@@ -1869,7 +1874,7 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
                 const followsStop = previousSegment
                     && (previousSegment.cls === 'stop' || previousSegment.cls === 'switch');
                 const ascentDuration = followsStop
-                    ? (segment.fromDepth - segment.depth) / 9
+                    ? (segment.fromDepth - segment.depth) / ascentRate
                     : segment.stop;
                 segment.stop = Math.round(ascentDuration * 10) / 10;
                 segment.practicalAscentSeconds = followsStop
@@ -1972,7 +1977,15 @@ export function renderDivePlanTableHTML(waypoints, gases, opts = {}) {
 
         const runtimeDisplay = departureRuntime || practicalRuntime
             ? (practicalRuntime
-                ? Math.round(s.runtime)
+                // Ascent rows round UP: a printed runtime must never be
+                // earlier than the model's (leaving a stop early). The
+                // tolerance keeps exact whole minutes that picked up float
+                // error (39.0000001 → 39). Descent/bottom rows keep nearest
+                // rounding — rounding the bottom departure up would extend
+                // the modelled bottom time.
+                ? (s.cls === 'des' || s.cls === 'bottom'
+                    ? Math.round(s.runtime)
+                    : Math.ceil(s.runtime - 1e-6))
                 : fmtNum(s.runtime, Number.isInteger(s.runtime) ? 0 : 1))
             : displayRuntimes[i];
         // First row's "stop" is its own duration; subsequent rows derive it

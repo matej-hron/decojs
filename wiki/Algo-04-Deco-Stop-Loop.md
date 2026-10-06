@@ -273,8 +273,10 @@ an equal or locally shorter shallower stop.
 In the optional departure-aligned schedule, `time` may include a fractional
 alignment wait (for example 1.7 min after arriving at a stop at runtime 34.3).
 The Sandbox instead keeps the legacy whole-minute model stops and applies a
-presentation-only practical runtime convention: 20 seconds per 3 m ascent after
-a stop, with runtime rounded to whole minutes as a cross-check. Adaptive and
+presentation-only practical runtime convention: moves after a stop at the
+planner's `ASCENT_SPEED` (10 m/min, 18 seconds per 3 m, as in the profile chart),
+with ascent runtimes rounded UP to whole minutes so a printed departure is never
+earlier than the model's. Adaptive and
 Continuous study modes do not use departure alignment.
 
 ## Cross-references

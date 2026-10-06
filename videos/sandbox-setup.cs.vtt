@@ -1,0 +1,37 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:04.403
+První díl: jak zadat ponor do dekompresního pískoviště.
+
+00:00:04.553 --> 00:00:11.032
+Vlevo popíšete ponor, plán vpravo se při psaní hned přepočítá.
+
+00:00:11.182 --> 00:00:17.809
+Rychlé nastavení: hloubka 40 m, čas na dně 20 min, počítaný od opuštění hladiny.
+
+00:00:17.959 --> 00:00:27.186
+Čistý Bühlmann dovolí ve 40 m na vzduch 11 min bez zastávek, takže jde o dekompresní ponor: 8 min zastávek.
+
+00:00:27.336 --> 00:00:35.340
+Sledujte sloupec Láhev: jedna 12litrová láhev by skončila na 7 bar a řádky pod rezervou 50 bar zčervenají.
+
+00:00:35.490 --> 00:00:45.917
+Otevřete Plyny a zvolte dvojče 2 × 12 l. MOD vzduchu při pO₂ 1,4 bar je 56 m.
+
+00:00:46.067 --> 00:00:58.220
+Přidejte dekompresní plyn: EAN50 ve stage S080. Jeho deko MOD při pO₂ 1,6 bar je 22 m, plán proto přepne ve 21 m.
+
+00:00:58.370 --> 00:01:04.999
+Méně dusíku znamená rychlejší odsycování: zastávky se zkrátí z 8 na 5 min.
+
+00:01:05.149 --> 00:01:10.930
+Teď nastavíme konzervativnost: gradient faktory 30/70.
+
+00:01:11.080 --> 00:01:24.507
+GF Low 30 posune první zastávku z 6 m na 18 m. GF High 70 omezí přesycení na hladině, takže mělké zastávky se prodlouží: celkem 15 min.
+
+00:01:24.657 --> 00:01:33.085
+Prostředí a Spotřebu plynu necháme ve výchozím stavu: nadmořská výška 0 m, SAC 20 a 15 l/min.
+
+00:01:33.235 --> 00:01:37.719
+Příště: jak číst runtime. Díky za pozornost!

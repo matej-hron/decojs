@@ -1596,6 +1596,11 @@ describe('diveSetup', () => {
             expect(calculateMOD(0.5, 1.4)).toBe(18);
             expect(calculateMOD(0.5, 1.6)).toBe(22);
         });
+
+        test('rounds a fractional deco MOD down, never to the nearest metre', () => {
+            // (1.6 / 0.45 − 1) × 10 = 25.56 m → 25 m (rounding would give 26 m, pO₂ 1.62 bar)
+            expect(calculateMOD(0.45, 1.6)).toBe(25);
+        });
     });
 
     describe('insertGasSwitchWaypoints', () => {
@@ -1810,7 +1815,7 @@ describe('diveSetup - renderDivePlanTableHTML', () => {
         expect(html).toContain('<p class="dse-plan-footnote">At decompression stops, runtime is the whole minute when the diver leaves for the next level.');
     });
 
-    test('practical runtime keeps whole model stops and uses 20-second inter-stop ascents', () => {
+    test('practical runtime keeps whole model stops and uses 18-second (10 m/min) inter-stop ascents', () => {
         const practicalWaypoints = [
             { time: 0, depth: 0, gasId: 'air' },
             { time: 1.55, depth: 31, gasId: 'air' },
@@ -1826,7 +1831,8 @@ describe('diveSetup - renderDivePlanTableHTML', () => {
         expect(html).toContain('<th>Runtime (min)<sup>*</sup></th>');
         expect(html).toContain('<td class="dse-plan-depth">3\u00a0m</td><td class="dse-plan-stop">3</td><td class="dse-plan-runtime">32</td>');
         expect(html).toContain('<td class="dse-plan-depth">3\u00a0m</td><td class="dse-plan-stop">7</td><td class="dse-plan-runtime">39</td>');
-        expect(html).toContain('<td class="dse-plan-depth">0\u00a0m</td><td class="dse-plan-stop">20\u00a0s</td><td class="dse-plan-runtime">39</td>');
+        // Surfaces at 38.8 + 0.3 = 39.1 min → shown as 40 (never earlier than the model).
+        expect(html).toContain('<td class="dse-plan-depth">0\u00a0m</td><td class="dse-plan-stop">18\u00a0s</td><td class="dse-plan-runtime">40</td>');
         const runtimeValues = [...html.matchAll(
             /<td class="dse-plan-runtime">([^<]+)<\/td>/g
         )].map(match => match[1]);
@@ -1834,6 +1840,42 @@ describe('diveSetup - renderDivePlanTableHTML', () => {
         expect(html).toContain('<p class="dse-plan-footnote">* Runtime is the elapsed time from the start of the dive to the end of the stage.</p>');
         expect(html.includes('Stop durations are the whole minutes calculated by the model.')).toBe(false);
         expect(html.includes('Intermediate 3\u00a0m ascents are included as 20\u00a0seconds')).toBe(false);
+    });
+
+    // 40 m bottom, first stop 18 m reached at 22.2 (fractional), 1-min stops
+    // at 18 and 15 m, then straight to the surface.
+    const fractionalStopWaypoints = [
+        { time: 0, depth: 0, gasId: 'air' },
+        { time: 2, depth: 40, gasId: 'air' },
+        { time: 20, depth: 40, gasId: 'air' },
+        { time: 22.2, depth: 18, gasId: 'air' },
+        { time: 23.2, depth: 18, gasId: 'air' },
+        { time: 23.5, depth: 15, gasId: 'air' },
+        { time: 24.5, depth: 15, gasId: 'air' },
+        { time: 26, depth: 0, gasId: 'air' }
+    ];
+
+    test('practical runtime rounds UP, never showing a departure earlier than the model', () => {
+        const html = renderDivePlanTableHTML(
+            fractionalStopWaypoints, gases, { runtimeConvention: 'practical' }
+        );
+        // Leaves 18 m at 23.2 min: the table must say 24, not 23 (12 s early).
+        expect(html).toContain('<td class="dse-plan-depth">18 m</td><td class="dse-plan-stop">1</td><td class="dse-plan-runtime">24</td>');
+        expect(html).toContain('<td class="dse-plan-depth">15 m</td><td class="dse-plan-stop">1</td><td class="dse-plan-runtime">25</td>');
+        // An exact whole minute stays put (26.0 → 26, not 27).
+        expect(html).toContain('<td class="dse-plan-depth">0 m</td><td class="dse-plan-stop">90 s</td><td class="dse-plan-runtime">26</td>');
+    });
+
+    test('practical runtime moves between stops at the planner ascent rate (10 m/min), overridable', () => {
+        const html = renderDivePlanTableHTML(
+            fractionalStopWaypoints, gases, { runtimeConvention: 'practical' }
+        );
+        // 15 m → surface after a stop at 10 m/min = 90 s (was 100 s at a hard-coded 9 m/min).
+        expect(html).toContain('<td class="dse-plan-stop">90 s</td>');
+        const slow = renderDivePlanTableHTML(
+            fractionalStopWaypoints, gases, { runtimeConvention: 'practical', ascentRate: 5 }
+        );
+        expect(slow).toContain('<td class="dse-plan-depth">0 m</td><td class="dse-plan-stop">180 s</td>');
     });
 
     test('practical runtime hides intermediate ascent rows without losing their time', () => {
@@ -1856,7 +1898,8 @@ describe('diveSetup - renderDivePlanTableHTML', () => {
         expect((html.match(/<tr class="dse-plan-asc">/g) || []).length).toBe(2);
         expect((html.match(/<tr class="dse-plan-stop">/g) || []).length).toBe(3);
         expect(html).toContain('<td class="dse-plan-depth">12\u00a0m</td><td class="dse-plan-stop">2</td><td class="dse-plan-runtime">32</td>');
-        expect(html).toContain('<td class="dse-plan-depth">9\u00a0m</td><td class="dse-plan-stop">3</td><td class="dse-plan-runtime">35</td>');
+        // Leaves 9 m at 35.1 min (two 18 s moves) → 36.
+        expect(html).toContain('<td class="dse-plan-depth">9\u00a0m</td><td class="dse-plan-stop">3</td><td class="dse-plan-runtime">36</td>');
     });
 
     // A gas switch taken exactly on arrival during an ascent (no stop at the
@@ -1886,6 +1929,16 @@ describe('diveSetup - renderDivePlanTableHTML', () => {
         expect(html).toContain('<tr class="dse-plan-switch">');
         expect(html).toContain('<td class="dse-plan-depth">21\u00a0m</td><td class="dse-plan-stop">—</td><td class="dse-plan-runtime">22</td><td class="dse-plan-gas">EAN50</td>');
         expect((html.match(/dse-plan-switch/g) || []).length).toBe(1);
+    });
+
+    test('instant switch marker consumes no gas: the ascent is billed to the old gas only', () => {
+        const html = renderDivePlanTableHTML(switchOnArrivalWaypoints, twoGases, {});
+        // Nothing has been breathed from the stage yet, so the switch row
+        // must show its full start pressure (was 185 bar: the 40 -> 21 m
+        // ascent was billed to Air AND again to EAN50 by the marker row).
+        expect(html).toContain('<td class="dse-plan-gas">EAN50</td><td class="dse-plan-tank">200 bar</td>');
+        // Air pays for the ascent exactly once: 20 L/min × 4.06 bar × 2 min / 18 L ≈ 9 bar.
+        expect(html).toContain('<td class="dse-plan-depth">21 m</td><td class="dse-plan-stop">2</td><td class="dse-plan-runtime">22</td><td class="dse-plan-gas">Air</td><td class="dse-plan-tank">84 bar</td>');
     });
 
     test('gas switch with a dedicated stop time at the switch depth renders as ONE switch row carrying that real duration (not a blank marker + separate Stop row)', () => {
@@ -4779,7 +4832,7 @@ describe('Decotengu sea-level reference matrix', () => {
 
                 const modelDuration = next.time - current.time;
                 const practicalDuration = followsStop
-                    ? (current.depth - next.depth) / 9
+                    ? (current.depth - next.depth) / 10 // planner ASCENT_SPEED, as the table uses
                     : modelDuration;
                 tissues = current.depth === next.depth
                     ? simulateDepthTime(
@@ -10848,6 +10901,112 @@ describe('SPČR/CMAS 2018 tables (cmasTables.js)', () => {
         expect(formatHM(1440)).toBe('24:00');
     });
 });
+
+// ============================================================================
+// VIDEO WALKTHROUGHS (js/components/VideoWalkthrough.js)
+// ============================================================================
+
+describe('Sandbox video hosts', () => {
+    const html = readFileSync(new URL('../sandbox/index.html', import.meta.url), 'utf8');
+    const doc = new JSDOM(html).window.document;
+    const hosts = [...doc.querySelectorAll('.video-walkthrough[data-video-base]')];
+    const locales = Object.fromEntries(['en', 'cs', 'es'].map(lang =>
+        [lang, JSON.parse(readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8'))]));
+    const lookup = (obj, key) => key.split('.').reduce((o, k) => o?.[k], obj);
+
+    test('one inline host per section, each naming its own video', () => {
+        expect(hosts.map(h => h.dataset.videoBase)).toEqual([
+            '../videos/sandbox-setup', '../videos/sandbox-runtime',
+            '../videos/sandbox-profile', '../videos/sandbox-pp'
+        ]);
+        expect(hosts.every(h => h.classList.contains('video-walkthrough--inline'))).toBe(true);
+        for (const h of hosts) {
+            for (const lang of ['en', 'cs', 'es']) {
+                expect(typeof lookup(locales[lang], h.dataset.videoTitle)).toBe('string');
+            }
+        }
+    });
+
+    test('hosts sit beside their headings, never inside an i18n-translated element or a heading', () => {
+        for (const h of hosts) {
+            expect(h.closest('[data-i18n], h1, h2, h3')).toBe(null);
+            expect(h.parentElement.querySelector(':scope > h2, :scope > h3') !== null).toBe(true);
+        }
+    });
+
+    test('Czech P-P heading uses an en dash', () => {
+        expect(locales.cs.sandbox.dive.mValueChart).toBe('📐 Diagram tlak–tlak');
+    });
+});
+
+{
+    // VideoWalkthrough relabels on 'languagechange', which setLanguage() fires only
+    // after an async locale fetch, so run that part here and assert synchronously below.
+    // Kept at the end of the file: it loads real translations into the i18n cache.
+    const { initVideoWalkthroughs } = await import('../js/components/VideoWalkthrough.js');
+    const { setLanguage } = await import('../js/i18n.js');
+    const dom = new JSDOM(`<!doctype html><body>
+        <div class="video-walkthrough video-walkthrough--inline" data-video-base="../videos/a" data-video-title="sandbox.dive.video.runtime"></div>
+        <div class="video-walkthrough" data-video-base="../videos/b"></div></body>`,
+    { url: 'http://localhost/sandbox/index.html' });
+    const saved = Object.fromEntries(['document', 'window', 'localStorage', 'fetch', 'CustomEvent']
+        .map(k => [k, Object.getOwnPropertyDescriptor(globalThis, k)]));
+    const set = (k, v) => Object.defineProperty(globalThis, k, { value: v, configurable: true, writable: true });
+    set('document', dom.window.document);
+    set('window', dom.window);
+    set('localStorage', dom.window.localStorage);
+    set('CustomEvent', dom.window.CustomEvent);
+    set('fetch', async (url) => {
+        const file = new URL(`../locales/${String(url).split('/').pop()}`, import.meta.url);
+        return { ok: true, json: async () => JSON.parse(readFileSync(file, 'utf8')) };
+    });
+    const snap = () => [...dom.window.document.querySelectorAll('.video-open-btn')].map(b => ({
+        el: b, text: b.textContent, aria: b.getAttribute('aria-label'), title: b.getAttribute('title')
+    }));
+    let en, again, cs, error = null;
+    try {
+        await setLanguage('en');
+        initVideoWalkthroughs();
+        en = snap();
+        initVideoWalkthroughs();
+        again = snap();
+        await setLanguage('cs');
+        cs = snap();
+        await setLanguage('en');
+    } catch (e) {
+        error = e;
+    } finally {
+        for (const [k, d] of Object.entries(saved)) {
+            if (d) Object.defineProperty(globalThis, k, d); else delete globalThis[k];
+        }
+    }
+
+    describe('VideoWalkthrough component', () => {
+        test('setup ran without errors', () => {
+            expect(error === null ? null : error.message).toBe(null);
+        });
+
+        test('data-video-title names the button for assistive tech; visible text stays generic', () => {
+            expect(en.length).toBe(2);
+            expect(en[0].text).toBe('▶ Video walkthrough');
+            expect(en[0].aria).toBe('Video: reading the runtime table');
+            expect(en[0].title).toBe('Video: reading the runtime table');
+            expect(en[1].aria).toBe(null);
+            expect(en[1].title).toBe(null);
+        });
+
+        test('init is idempotent: rendered hosts keep their single button', () => {
+            expect(again.length).toBe(2);
+            expect(again[0].el === en[0].el && again[1].el === en[1].el).toBe(true);
+        });
+
+        test('relabels the name and text on languagechange', () => {
+            expect(cs[0].aria).toBe('Videonávod: jak číst runtime');
+            expect(cs[0].title).toBe('Videonávod: jak číst runtime');
+            expect(cs[0].text).toBe('▶ Videonávod');
+        });
+    });
+}
 
 // ============================================================================
 // SUMMARY

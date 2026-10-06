@@ -1,0 +1,34 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:03.327
+Part two: reading the runtime table.
+
+00:00:03.477 --> 00:00:13.456
+Same dive: 40 m, 20 min, air, EAN50 for deco, GF 30/70: the plan you copy onto your wetnotes.
+
+00:00:13.606 --> 00:00:20.108
+Each row is one phase: depth, duration, runtime, gas and expected tank pressure.
+
+00:00:20.258 --> 00:00:29.860
+Descent to 40 m takes 2 min, then 18 on the bottom: runtime 20, as bottom time includes the descent.
+
+00:00:30.010 --> 00:00:38.186
+Ascend to 21 m, runtime 22, and switch to EAN50; the stage starts full, at 200 bar.
+
+00:00:38.336 --> 00:00:48.288
+Then a stop every 3 m: 1 min at 18, 15, 12 and 9 m, 4 min at 6 m, 7 min at 3 m.
+
+00:00:48.438 --> 00:00:56.666
+Runtime is the dive clock, in whole minutes, when each step ends. Watch your timer: at 24 you leave 18 m.
+
+00:00:56.816 --> 00:01:05.543
+The last stop, at 3 m, ends at runtime 39; an 18-second ascent to the surface ends the dive.
+
+00:01:05.693 --> 00:01:15.370
+Tank is the expected pressure from your SAC: air is at 114 bar when you switch, the stage ends at 159 bar.
+
+00:01:15.520 --> 00:01:22.373
+The plan is the model alone; real dives add contingency plans and a computer.
+
+00:01:22.523 --> 00:01:27.207
+Next: reading the dive profile chart. Thanks for watching!

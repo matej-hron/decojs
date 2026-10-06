@@ -49,7 +49,8 @@ import {
     getAlveolarN2Pressure,
     getSurfacePressure,
     getPressurePerMeter,
-    SURFACE_PRESSURE
+    SURFACE_PRESSURE,
+    ASCENT_SPEED
 } from '../decoModel.js';
 import {
     calculateChartGFAnchor,
@@ -719,7 +720,7 @@ export class DiveProfileChart {
                 type: 'label',
                 xValue: bottomEnd.time + 1,
                 yValue: maxDepth,
-                content: [fmt(translate('chart.profile.ascentRate', '⬆ {0}\u00a0m/min'), 10)],
+                content: [fmt(translate('chart.profile.ascentRate', '⬆ {0}\u00a0m/min'), fmtNum(ASCENT_SPEED))],
                 backgroundColor: 'rgba(155, 89, 182, 0.9)',
                 color: 'white',
                 font: { size: 10, weight: 'bold' },

@@ -21,7 +21,7 @@ A **barrel module**. Since v0.6.154 the implementation lives in `js/deco/*.js`; 
 
 The dependency graph is acyclic and flows strictly downwards: `constants` → `config` → `environment` → `gasKinetics` → `gradients` → `ceiling` → `schedule`/`profile`.
 
-Symbols that are exported from a `js/deco/*.js` module purely so a sibling module can use them (`DESCENT_SPEED`, `ASCENT_SPEED`, `STOP_INCREMENT`, `findFirstStagedStopAtGFLow`, `evaluateDirectAscent`) are **not** re-exported by the barrel and remain private to the deco engine.
+Symbols that are exported from a `js/deco/*.js` module purely so a sibling module can use them (`DESCENT_SPEED`, `STOP_INCREMENT`, `findFirstStagedStopAtGFLow`, `evaluateDirectAscent`) are **not** re-exported by the barrel and remain private to the deco engine. `ASCENT_SPEED` is re-exported so the dive-plan table (`renderDivePlanTableHTML`, practical runtime) moves between stops at the same rate as the scheduler and the profile chart.
 
 Together they implement Haldane and Schreiner kinetics, M-values, gradient-factor interpolation, NDL search, and the deco-stop scheduling loop — the largest body of code in the code base (~1900 lines).
 
@@ -37,6 +37,7 @@ Imported by: `diveSetup.js`, `tissueEducation.js`, and every chart in `js/charts
 | `WATER_VAPOR_PRESSURE` | `0.0627` | At 37 °C, in bar |
 | `N2_FRACTION` | `0.7902` | Lumps argon with N₂ (standard deco-model convention) |
 | `PRESSURE_PER_METER` | `0.1` | EN 13319 default, bar per metre |
+| `ASCENT_SPEED` | `10` | Planner ascent rate, m/min (scheduler, profile chart, practical plan-table runtime) |
 | `WATER_TYPES` | `standard`, `fresh`, `sea` | Supported depth-to-pressure modes |
 | `WATER_DENSITIES` | 1019.716, 1000, 1025 kg/m³ | Documented reference densities |
 | `DEFAULT_GF_LOW`, `DEFAULT_GF_HIGH` | `1.0`, `1.0` | As fractions (not percentages) |
@@ -230,7 +231,7 @@ Toxicity is informational; not fed back into the deco loop.
 |---|---|---|
 | `generateProfileName(setup)` | 1279 | Short label for UI |
 | `formatDiveSetupSummary(setup)` | 1295 | Multi-line human summary |
-| `renderDivePlanTableHTML(waypoints, gases, opts)` | 1627 | Returns HTML for the dive-plan table. Both split tables mark the Runtime heading with a superscript asterisk tied to the shared definition of runtime. The optional `departure` convention adds its calculation details as a separate unmarked footnote and renders scheduler-aligned departure runtimes, while the legacy default remains `stage-end`. `opts.runtimeConvention: 'practical'` keeps the legacy whole-minute model stops, budgets 20 seconds for each 3 m ascent after a stop, and rounds runtime to whole minutes as a cross-check; intermediate stop-to-stop ascent rows are omitted while their time remains included. A gas switch is always billed against the OLD gas for the ascent leg leading into it. |
+| `renderDivePlanTableHTML(waypoints, gases, opts)` | 1722 | Returns HTML for the dive-plan table. Both split tables mark the Runtime heading with a superscript asterisk tied to the shared definition of runtime. The optional `departure` convention adds its calculation details as a separate unmarked footnote and renders scheduler-aligned departure runtimes, while the legacy default remains `stage-end`. `opts.runtimeConvention: 'practical'` keeps the legacy whole-minute model stops, moves between stops at the planner's `ASCENT_SPEED` (10 m/min, i.e. 18 s per 3 m; override with `opts.ascentRate`) so the table matches the profile chart, and rounds ascent-table runtimes UP to whole minutes (never earlier than the model; descent/bottom rows round to nearest); intermediate stop-to-stop ascent rows are omitted while their time remains included. A gas switch is always billed against the OLD gas for the ascent leg leading into it; the instant Switch marker row that follows consumes no gas, so the new gas's Tank cell shows its untouched pressure. |
 
 #### Defaults
 

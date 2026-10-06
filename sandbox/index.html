@@ -133,6 +133,31 @@
             font-size: 1rem;
             color: var(--text-muted);
         }
+
+        /* Section heading + its video button. The button is a SIBLING of the h3:
+           the i18n pass replaces the textContent of [data-i18n] headings. */
+        .sandbox-section-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.25rem 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .sandbox-section-head h3,
+        .sandbox-chart-container .sandbox-section-head h3 {
+            margin: 0;
+        }
+
+        .editor-header .video-walkthrough--inline {
+            margin-left: auto;
+            margin-right: 0.5rem;
+        }
+
+        .sandbox-editor-panel.collapsed .editor-header .video-walkthrough {
+            display: none;
+        }
         
         .chart-wrapper {
             position: relative;
@@ -586,6 +611,7 @@
         <div class="sandbox-editor-panel" id="editor-panel">
             <div class="editor-header">
                 <h2>⚙️ <span data-i18n="sandbox.dive.setupHeading">Dive Setup</span></h2>
+                <div class="video-walkthrough video-walkthrough--inline" data-video-base="../videos/sandbox-setup" data-video-title="sandbox.dive.video.setup"></div>
                 <button class="collapse-btn" id="collapse-btn" title="Collapse/Expand">◀</button>
             </div>
             <div class="editor-content">
@@ -610,7 +636,10 @@
         <div class="sandbox-charts-panel">
             <!-- Written Dive Plan Table -->
             <div class="sandbox-chart-container">
-                <h3 class="dse-plan-table-heading">📋 <span data-i18n="diveProfile.writtenPlanTitle">Written Dive Plan</span> <span class="dse-plan-table-subtitle" data-i18n="diveProfile.writtenPlanSubtitle">(a.k.a. runtime)</span></h3>
+                <div class="sandbox-section-head">
+                    <h3 class="dse-plan-table-heading">📋 <span data-i18n="diveProfile.writtenPlanTitle">Written Dive Plan</span> <span class="dse-plan-table-subtitle" data-i18n="diveProfile.writtenPlanSubtitle">(a.k.a. runtime)</span></h3>
+                    <div class="video-walkthrough video-walkthrough--inline" data-video-base="../videos/sandbox-runtime" data-video-title="sandbox.dive.video.runtime"></div>
+                </div>
                 <div id="dive-plan-table-container" class="dse-plan-table-wrapper" aria-label="Dive plan table"></div>
                 <details class="decision-audit">
                     <summary>🔎 <span data-i18n="decisionAudit.title">How the algorithm decided</span></summary>
@@ -620,7 +649,10 @@
 
             <!-- Dive Profile Chart -->
             <div class="sandbox-chart-container">
-                <h3 data-i18n="sandbox.dive.profileChart">📊 Dive Profile</h3>
+                <div class="sandbox-section-head">
+                    <h3 data-i18n="sandbox.dive.profileChart">📊 Dive Profile</h3>
+                    <div class="video-walkthrough video-walkthrough--inline" data-video-base="../videos/sandbox-profile" data-video-title="sandbox.dive.video.profile"></div>
+                </div>
 
                 <!-- Chart Properties Panel (Advanced) -->
                 <div class="chart-properties-panel" id="chart-properties-panel">
@@ -692,7 +724,10 @@
 
             <!-- Pressure-Pressure Diagram -->
             <div class="sandbox-chart-container">
-                <h3 data-i18n="sandbox.dive.mValueChart">📐 Pressure-Pressure Diagram</h3>
+                <div class="sandbox-section-head">
+                    <h3 data-i18n="sandbox.dive.mValueChart">📐 Pressure-Pressure Diagram</h3>
+                    <div class="video-walkthrough video-walkthrough--inline" data-video-base="../videos/sandbox-pp" data-video-title="sandbox.dive.video.pp"></div>
+                </div>
                 <div class="export-config-panel">
                     <div class="export-config-actions">
                         <button id="export-mvalue-config-btn" class="btn btn-small btn-secondary" data-i18n="sandbox.dive.exportConfig">📋 Export Config</button>
@@ -795,6 +830,7 @@
         import { escHtml } from '../js/utils/escHtml.js';
         import { formatWarningHtml, renderWarningsHtml } from '../js/warningHtml.js';
         import { fmtNum } from '../js/format.js';
+        import { initVideoWalkthroughs } from '../js/components/VideoWalkthrough.js';
 
         /** Helper: replace {0}, {1}, ... placeholders with the given values. */
         function fmt(str, ...values) {
@@ -1410,6 +1446,7 @@
 
         // 'T' keyboard shortcut toggles tooltips on every chart on the page
         initTooltipShortcut();
+        initVideoWalkthroughs();
 
         // =====================================================================
         // PROFILE LIBRARY UI

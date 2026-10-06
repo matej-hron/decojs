@@ -17,6 +17,7 @@ export {
     WATER_TYPES,
     WATER_DENSITIES,
     PRESSURE_PER_METER,
+    ASCENT_SPEED,
     DEFAULT_GF_LOW,
     DEFAULT_GF_HIGH,
 } from './deco/constants.js';
