@@ -94,6 +94,21 @@ export function intro(lang, n) {
     return { title: s.titles[n - 1], subtitle: s.part(n), footer: s.introFooter };
 }
 
+// Series 2: the other Dive Profile tabs (own part count; series 1's cards stay valid).
+const TABS = {
+    en: { part: (n) => `Dive Profile tabs · part ${n} of 4`,
+        titles: ['The Pressure Tab', 'The Partial Pressure Tab', 'The Gas Consumption Tab', 'The Tissue Loading Tab'] },
+    cs: { part: (n) => `Záložky profilu ponoru · díl ${n} ze 4`,
+        titles: ['Záložka Tlak', 'Záložka Parciální tlak', 'Záložka Spotřeba plynu', 'Záložka Sycení tkání'] },
+};
+
+/** Intro card for series 2 (Dive Profile tabs), part n (1–4). */
+export function introTabs(lang, n) {
+    const t = TABS[lang];
+    if (!t) throw new Error(`sandbox videos: no tab cards for "${lang}" (have: ${Object.keys(TABS).join(', ')})`);
+    return { title: t.titles[n - 1], subtitle: t.part(n), footer: series(lang).introFooter };
+}
+
 /** Outro card; the path is read from the nav labels so it always matches the menu. */
 export function outro(lang) {
     const s = series(lang);
@@ -128,6 +143,14 @@ export async function fitChartFullscreen(page, zoom) {
             width: calc(100vw / ${zoom} - 40px) !important; height: calc(100vh / ${zoom} - 40px) !important;
             outline: 20px solid var(--background-color, white); }`,
     });
+}
+
+/**
+ * Hide the charts' fullscreen ✕ (it covers the top tick of the right-hand axis). Recording
+ * only; it stays clickable for JS. Keep cursor glides out of its 63 × 63 px hit area.
+ */
+export async function hideFullscreenClose(page) {
+    await page.addStyleTag({ content: '.dpc-exit-fullscreen-btn, .mvc-exit-fullscreen-btn { opacity: 0 !important; }' });
 }
 
 /** Let the sticky nav scroll away with the page (more room for a zoomed table). Recording only. */
@@ -269,3 +292,16 @@ export function datasets(page, sel) {
         }));
     `);
 }
+
+/** The sample of a dataset's data nearest to x (e.g. time in min): `sampleAt(ds.data, 20).y`. */
+export function sampleAt(data, x) {
+    return data.reduce((best, q) => (Math.abs(q.x - x) < Math.abs(best.x - x) ? q : best));
+}
+
+/** A dataset from `datasets()` by exact label or RegExp; throws with the available labels if absent. */
+export function pick(all, label) {
+    const d = all.find((x) => (label instanceof RegExp ? label.test(x.label ?? '') : x.label === label));
+    if (!d) throw new Error(`no dataset ${label} (have: ${all.map((x) => x.label).join(', ')})`);
+    return d;
+}
+

@@ -1771,7 +1771,11 @@
                 "setup": "Video: entering a dive",
                 "runtime": "Video: reading the runtime table",
                 "profile": "Video: reading the dive profile",
-                "pp": "Video: reading the P-P diagram"
+                "pp": "Video: reading the P-P diagram",
+                "pressure": "Video: reading the Pressure tab",
+                "partial": "Video: reading the Partial Pressure tab",
+                "gas": "Video: reading the Gas Consumption tab",
+                "tissue": "Video: reading the Tissue Loading tab"
             },
             "gfChart": "📊 GF% Diagram",
             "copyDebug": "🔍 Copy Debug Data",

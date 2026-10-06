@@ -1,0 +1,31 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:05.155
+Dive profile tabs, part three: reading the Gas Consumption tab.
+
+00:00:05.305 --> 00:00:10.576
+Click Gas Consumption and go full screen.
+
+00:00:10.726 --> 00:00:19.481
+Each line is one tank's pressure, read on the right axis: red for the twin 12s of air, dark grey for the EAN50 stage.
+
+00:00:19.632 --> 00:00:28.713
+Both start full at 200 bar. The steeper the line, the faster the tank empties: about 4 bar a minute on the bottom.
+
+00:00:28.863 --> 00:00:36.419
+At 21 m you switch: the air line goes flat at 114 bar, and the stage takes over.
+
+00:00:36.569 --> 00:00:47.473
+The stage line flattens as you go up: about 4 bar a minute at 18 m, 2 at 6 m. A smaller tank drops faster for the same gas.
+
+00:00:47.623 --> 00:00:56.902
+The dashed line marked RESERVE is your 50 bar reserve. Both tanks stay far above it; the stage still holds over 150 bar.
+
+00:00:57.052 --> 00:01:04.633
+The green dotted line is average depth and the red dashed line maximum depth, on the left axis.
+
+00:01:04.784 --> 00:01:13.192
+This assumes a steady SAC; work, cold and stress raise it. Plan reserves by your agency's rules, such as thirds.
+
+00:01:13.342 --> 00:01:17.056
+Next: tissue loading. Thanks for watching!

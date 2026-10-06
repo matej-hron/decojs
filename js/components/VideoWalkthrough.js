@@ -153,6 +153,21 @@ function lockLandscapeInFullscreen() {
 }
 
 /**
+ * Point an existing host at another video (e.g. a section whose content changes with a
+ * tab): updates its base and title key and relabels it. The open dialog is unaffected;
+ * the next click opens the new video.
+ * @param {HTMLElement} host - a `.video-walkthrough` host
+ * @param {{ base: string, title?: string }} video - `data-video-base` and `data-video-title` (i18n key)
+ */
+export function setVideoWalkthrough(host, { base, title }) {
+    if (!host) return;
+    host.dataset.videoBase = base;
+    if (title) host.dataset.videoTitle = title;
+    else delete host.dataset.videoTitle;
+    if (hosts.has(host)) relabel(host);
+}
+
+/**
  * Render every `.video-walkthrough[data-video-base]` on the page. Safe to call again
  * (e.g. after adding hosts): rendered hosts are skipped and listeners attach once.
  */

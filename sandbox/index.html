@@ -651,7 +651,7 @@
             <div class="sandbox-chart-container">
                 <div class="sandbox-section-head">
                     <h3 data-i18n="sandbox.dive.profileChart">📊 Dive Profile</h3>
-                    <div class="video-walkthrough video-walkthrough--inline" data-video-base="../videos/sandbox-profile" data-video-title="sandbox.dive.video.profile"></div>
+                    <div class="video-walkthrough video-walkthrough--inline" id="dive-profile-video" data-video-base="../videos/sandbox-profile" data-video-title="sandbox.dive.video.profile"></div>
                 </div>
 
                 <!-- Chart Properties Panel (Advanced) -->
@@ -830,7 +830,7 @@
         import { escHtml } from '../js/utils/escHtml.js';
         import { formatWarningHtml, renderWarningsHtml } from '../js/warningHtml.js';
         import { fmtNum } from '../js/format.js';
-        import { initVideoWalkthroughs } from '../js/components/VideoWalkthrough.js';
+        import { initVideoWalkthroughs, setVideoWalkthrough } from '../js/components/VideoWalkthrough.js';
 
         /** Helper: replace {0}, {1}, ... placeholders with the given values. */
         function fmt(str, ...values) {
@@ -1553,6 +1553,19 @@
             'dpc-gas': { showCeiling: false, showAmbientPressure: false, showPartialPressures: false, showTissueLoading: false, showGasConsumption: true, showLabels: false }
         };
         
+        // The Dive Profile heading's video button follows the active tab.
+        const profileVideos = {
+            'dpc-depth': { base: '../videos/sandbox-profile', title: 'sandbox.dive.video.profile' },
+            'dpc-pressure': { base: '../videos/sandbox-pressure', title: 'sandbox.dive.video.pressure' },
+            'dpc-pp': { base: '../videos/sandbox-partial', title: 'sandbox.dive.video.partial' },
+            'dpc-gas': { base: '../videos/sandbox-gas', title: 'sandbox.dive.video.gas' },
+            'dpc-tissue': { base: '../videos/sandbox-tissue', title: 'sandbox.dive.video.tissue' }
+        };
+        function syncProfileVideo(btnId) {
+            const video = profileVideos[btnId];
+            if (video) setVideoWalkthrough(document.getElementById('dive-profile-video'), video);
+        }
+
         Object.keys(chartButtons).forEach(btnId => {
             document.getElementById(btnId).addEventListener('click', (e) => {
                 // Update button states
@@ -1566,6 +1579,7 @@
 
                 // Sync the properties panel checkboxes with the new options
                 syncPropertiesPanel(chartButtons[btnId]);
+                syncProfileVideo(btnId);
             });
         });
 
@@ -1589,6 +1603,7 @@
 
                 // Update chart options
                 diveProfileChart.setOptions(chartButtons[btnId]);
+                syncProfileVideo(btnId);
             }
         }
 

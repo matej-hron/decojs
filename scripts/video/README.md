@@ -53,6 +53,11 @@ each button its own accessible name (`aria-label` + `title`, relabelled on langu
 change); the visible text stays `common.video.open`. `initVideoWalkthroughs()` is safe to
 call more than once.
 
+A host whose section changes content (e.g. the Dive Profile chart's tabs) can be
+re-pointed with `setVideoWalkthrough(host, { base, title })`: it updates the base and the
+title key and relabels the button; the next click opens the new video. `sandbox/index.html`
+does this in `syncProfileVideo(btnId)` (map `profileVideos`, one video per tab).
+
 ## Writing a scenario
 
 `scenes/<name>.mjs` default-exports `(lang) => scenario`. Copy
@@ -119,6 +124,8 @@ settle (after entering a chart's fullscreen, also wait ~400 ms for its resizes):
 | `muteChartHover(page)` | recording only: no Chart.js hover tooltips while the visible cursor glides over the charts |
 | `fitChartFullscreen(page, zoom)` | recording only: sizes the charts' CSS fullscreen to the zoomed viewport, so a zoomed chart (larger text) still fits the frame, and keeps the profile canvas uniformly scaled |
 | `unstickNav(page)` | recording only: lets the sticky nav scroll away (more room for a zoomed table) |
+| `hideFullscreenClose(page)` | recording only: hides the charts' fullscreen ✕ (it covers the right axis's top tick); it stays clickable for JS, so keep glides out of its 63 × 63 px area |
+| `sampleAt(data, x)` / `pick(datasets, label \| RegExp)` | the sample nearest to x (e.g. a time) / a dataset by label, throwing with the available labels |
 
 Zoom and canvases: with `zoom` ≠ 1 the generator reports the zoom as `devicePixelRatio`,
 so Chart.js draws canvases at the recorded size instead of upscaling them (sharp chart
@@ -129,7 +136,7 @@ sharper canvases and a different backing-store size for components that read
 against their current videos. The charts' CSS fullscreen ignores body zoom; call `fitChartFullscreen()` in
 `prepare()` when a zoomed scenario uses it.
 
-Selectors: `PROFILE_CANVAS`, `PP_CANVAS`. The module also exports the series dive
+Selectors: `PROFILE_CANVAS`, `PP_CANVAS`. Series 2 (the other Dive Profile tabs) uses `introTabs(lang, n)` for its own "Dive Profile tabs · part n of 4" cards. The module also exports the series dive
 (`DIVE_URL`), `EXPECTED_PLAN` + `assertPlan(page)` (call it in `prepare()`: any change to
 the plan fails the render), and the series cards `intro(lang, n)` / `outro(lang)` (the
 outro path is read from the nav labels in `locales/`).

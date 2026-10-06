@@ -1771,7 +1771,11 @@
                 "setup": "Videonávod: zadání ponoru",
                 "runtime": "Videonávod: jak číst runtime",
                 "profile": "Videonávod: jak číst profil ponoru",
-                "pp": "Videonávod: jak číst diagram tlak–tlak"
+                "pp": "Videonávod: jak číst diagram tlak–tlak",
+                "pressure": "Videonávod: jak číst záložku Tlak",
+                "partial": "Videonávod: jak číst záložku Parciální tlak",
+                "gas": "Videonávod: jak číst záložku Spotřeba plynu",
+                "tissue": "Videonávod: jak číst záložku Sycení tkání"
             },
             "gfChart": "📊 Diagram GF %",
             "copyDebug": "🔍 Zkopírovat ladicí data",

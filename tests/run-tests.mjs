@@ -230,7 +230,7 @@ import {
 import { computeCalendarLayout } from '../js/calendarLayout.js';
 import { snapClamp, diveBlockLabel, diveTimeRange } from '../js/components/TripCalendar.js';
 import { previewNdl } from '../js/ndlPreview.js';
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { GF_PRESETS } from '../js/gfPresets.js';
 import { encodeTrip, decodeTrip } from '../js/tripUrl.js';
@@ -245,7 +245,7 @@ import {
     calculateMValueRulerIntersections,
     calculateCurrentControllingCompartment
 } from '../js/charts/MValueChart.js';
-import { DiveProfileChart } from '../js/charts/DiveProfileChart.js';
+import { DiveProfileChart, GAS_LINE_COLORS } from '../js/charts/DiveProfileChart.js';
 import {
     findDepth as cmasFindDepth,
     surfaceIntervalGroup,
@@ -505,6 +505,104 @@ describe('P-P chart fullscreen controls', () => {
                 dom.window.close();
             }
         }
+    });
+});
+
+describe('Dive profile chart rendering (series dive)', () => {
+    // Renders the real DiveProfileChart in jsdom with a stub Chart that captures the
+    // config, for the 40 m / 20 min air + EAN50 GF 30/70 series dive.
+    const renderProfile = (options, { lang = 'en', compartments = null } = {}) => {
+        const dom = new JSDOM('<!doctype html><html><body><div id="c"></div></body></html>', {
+            url: 'http://localhost/sandbox/index.html'
+        });
+        dom.window.document.documentElement.lang = lang;
+        const saved = Object.fromEntries(['document', 'window', 'getComputedStyle', 'Chart', 'ResizeObserver']
+            .map(k => [k, Object.getOwnPropertyDescriptor(globalThis, k)]));
+        const set = (k, v) => Object.defineProperty(globalThis, k, { value: v, configurable: true, writable: true });
+        const configs = [];
+        const deep = () => new Proxy({}, {
+            get(target, key) {
+                if (typeof key === 'symbol') return undefined;
+                if (!(key in target)) target[key] = deep();
+                return target[key];
+            }
+        });
+        const ChartStub = class {
+            constructor(canvas, config) { configs.push(config); this.config = config; this.options = config.options; }
+            destroy() {}
+            update() {}
+            resize() {}
+        };
+        ChartStub.defaults = deep();
+        try {
+            set('document', dom.window.document);
+            set('window', dom.window);
+            set('getComputedStyle', dom.window.getComputedStyle.bind(dom.window));
+            set('Chart', ChartStub);
+            set('ResizeObserver', class { observe() {} disconnect() {} });
+            const gases = [
+                { id: 'air', name: 'Air', o2: 0.21, n2: 0.79, he: 0, cylinderVolume: 24, startPressure: 200 },
+                { id: 'deco1', name: 'EAN50', o2: 0.5, n2: 0.5, he: 0, cylinderVolume: 11.1, startPressure: 200 }
+            ];
+            const plan = generateDecoProfile(40, 20, gases, 30, 70, { enabled: false }, { decoMode: DECO_MODES.STANDARD });
+            const chart = new DiveProfileChart(dom.window.document.getElementById('c'), {
+                diveSetup: {
+                    name: 'series dive', gases, gfLow: 30, gfHigh: 70,
+                    dives: [{ waypoints: plan.waypoints }],
+                    sacRate: 20, decoSacRate: 15, reservePressure: 50
+                },
+                options
+            });
+            if (compartments) {
+                chart.visibleCompartments = new Set(compartments);
+                chart._render();
+            }
+            return configs.at(-1);
+        } finally {
+            for (const [k, d] of Object.entries(saved)) {
+                if (d) Object.defineProperty(globalThis, k, d); else delete globalThis[k];
+            }
+            dom.window.close();
+        }
+    };
+
+    test('the stage gas tank line does not reuse the depth blue (or the AVG, MAX/reserve, switch colours)', () => {
+        const config = renderProfile({ showGasConsumption: true, showLabels: true, showGasSwitches: true });
+        const byLabel = (re) => config.data.datasets.find(d => re.test(d.label));
+        const depth = byLabel(/^Depth/).borderColor.toLowerCase();
+        const stage = byLabel(/^EAN50 \(bar\)$/).borderColor.toLowerCase();
+        expect(stage === depth).toBe(false);
+        // depth blues, AVG green, MAX/reserve red, gas-switch purple
+        const taken = [depth, '#3498db', '#2980b9', '#2ecc71', '#e74c3c', '#9b59b6'];
+        expect(taken.includes(stage)).toBe(false);
+        expect(byLabel(/^Air \(bar\)$/).borderColor.toLowerCase() === stage).toBe(false);
+    });
+
+    test('no gas in the tank-line palette takes a colour that already means something', () => {
+        // depth blues, AVG greens (#2ecc71, pO₂ #27ae60), gas-switch / pN₂ purple, the
+        // orange of the stop labels and ambient line
+        const taken = ['#3498db', '#2980b9', '#2ecc71', '#27ae60', '#9b59b6', '#f39c12', '#e67e22'];
+        const palette = GAS_LINE_COLORS.map(c => c.toLowerCase());
+        expect(palette.filter(c => taken.includes(c))).toEqual([]);
+        expect(new Set(palette).size).toBe(palette.length);
+    });
+
+    test('the pO₂ 1.4 and 1.6 limit labels sit on opposite sides of their lines (no overlap)', () => {
+        const annotations = renderProfile({ showPartialPressures: true }).options.plugins.annotation.annotations;
+        const working = annotations.ppO2Working.label;
+        const deco = annotations.ppO2Deco.label;
+        // 1.6 (deco) above its line, 1.4 (bottom) below its own: the lines are only 0.2 bar
+        // apart, so two centred labels at the same end overlapped.
+        expect(deco.yAdjust < 0).toBe(true);
+        expect(working.yAdjust > 0).toBe(true);
+        expect(Math.min(-deco.yAdjust, working.yAdjust) >= 10).toBe(true);
+    });
+
+    test('tissue legend half-times use the locale decimal separator (12,5 in Czech)', () => {
+        const label = (lang) => renderProfile({ showTissueLoading: true }, { lang, compartments: [1, 3] })
+            .data.datasets.map(d => d.label).filter(l => /^TC\d/.test(l));
+        expect(label('cs')).toEqual(['TC1 (5 min)', 'TC3 (12,5 min)']);
+        expect(label('en')).toEqual(['TC1 (5 min)', 'TC3 (12.5 min)']);
     });
 });
 
@@ -10934,6 +11032,32 @@ describe('Sandbox video hosts', () => {
         }
     });
 
+    test('the Dive Profile button follows every tab: one video per tab, names in cs/en/es, files published', () => {
+        const block = (name) => {
+            const start = html.indexOf(`const ${name} = {`);
+            expect(start >= 0).toBe(true);
+            return html.slice(start, html.indexOf('};', start));
+        };
+        const tabs = [...block('chartButtons').matchAll(/'(dpc-[a-z]+)':/g)].map(m => m[1]);
+        const videos = Object.fromEntries([...block('profileVideos').matchAll(
+            /'(dpc-[a-z]+)': \{ base: '([^']+)', title: '([^']+)' \}/g)].map(m => [m[1], { base: m[2], title: m[3] }]));
+        expect(tabs.length).toBe(5);
+        expect(Object.keys(videos).sort()).toEqual([...tabs].sort());
+        const host = doc.getElementById('dive-profile-video');
+        expect(host.dataset.videoBase).toBe(videos['dpc-depth'].base);
+        expect(host.dataset.videoTitle).toBe(videos['dpc-depth'].title);
+        expect(html.includes('syncProfileVideo(btnId);')).toBe(true);
+        for (const { base, title } of Object.values(videos)) {
+            for (const lang of ['en', 'cs', 'es']) {
+                expect(typeof lookup(locales[lang], title)).toBe('string');
+            }
+            for (const ext of ['.mp4', '.jpg', '.en.vtt', '.cs.vtt']) {
+                const file = new URL(`../${base.replace('../', '')}${ext}`, import.meta.url);
+                expect(existsSync(file) ? 'published' : `missing ${base}${ext}`).toBe('published');
+            }
+        }
+    });
+
     test('Czech P-P heading uses an en dash', () => {
         expect(locales.cs.sandbox.dive.mValueChart).toBe('📐 Diagram tlak–tlak');
     });
@@ -10943,7 +11067,7 @@ describe('Sandbox video hosts', () => {
     // VideoWalkthrough relabels on 'languagechange', which setLanguage() fires only
     // after an async locale fetch, so run that part here and assert synchronously below.
     // Kept at the end of the file: it loads real translations into the i18n cache.
-    const { initVideoWalkthroughs } = await import('../js/components/VideoWalkthrough.js');
+    const { initVideoWalkthroughs, setVideoWalkthrough } = await import('../js/components/VideoWalkthrough.js');
     const { setLanguage } = await import('../js/i18n.js');
     const dom = new JSDOM(`<!doctype html><body>
         <div class="video-walkthrough video-walkthrough--inline" data-video-base="../videos/a" data-video-title="sandbox.dive.video.runtime"></div>
@@ -10963,7 +11087,7 @@ describe('Sandbox video hosts', () => {
     const snap = () => [...dom.window.document.querySelectorAll('.video-open-btn')].map(b => ({
         el: b, text: b.textContent, aria: b.getAttribute('aria-label'), title: b.getAttribute('title')
     }));
-    let en, again, cs, error = null;
+    let en, again, cs, switched, switchedCs, openedSrc, error = null;
     try {
         await setLanguage('en');
         initVideoWalkthroughs();
@@ -10973,6 +11097,19 @@ describe('Sandbox video hosts', () => {
         await setLanguage('cs');
         cs = snap();
         await setLanguage('en');
+        // A host that follows a tab: re-point it, then open it.
+        const host = dom.window.document.querySelector('.video-walkthrough');
+        setVideoWalkthrough(host, { base: '../videos/c', title: 'sandbox.dive.video.gas' });
+        switched = snap();
+        await setLanguage('cs');
+        switchedCs = snap();
+        await setLanguage('en');
+        const proto = dom.window.HTMLDialogElement?.prototype;
+        if (proto && !proto.showModal) { proto.showModal = function () { this.open = true; }; proto.close = function () { this.open = false; }; }
+        dom.window.HTMLMediaElement.prototype.play = () => Promise.resolve();
+        dom.window.HTMLMediaElement.prototype.pause = () => {};
+        host.querySelector('.video-open-btn').click();
+        openedSrc = dom.window.document.querySelector('dialog.video-dialog video')?.getAttribute('src');
     } catch (e) {
         error = e;
     } finally {
@@ -11004,6 +11141,15 @@ describe('Sandbox video hosts', () => {
             expect(cs[0].aria).toBe('Videonávod: jak číst runtime');
             expect(cs[0].title).toBe('Videonávod: jak číst runtime');
             expect(cs[0].text).toBe('▶ Videonávod');
+        });
+
+        test('setVideoWalkthrough re-points a host: new name (both languages) and the next click opens the new video', () => {
+            expect(switched.length).toBe(2);
+            expect(switched[0].el === en[0].el).toBe(true);
+            expect(switched[0].aria).toBe('Video: reading the Gas Consumption tab');
+            expect(switchedCs[0].aria).toBe('Videonávod: jak číst záložku Spotřeba plynu');
+            expect(switched[0].text).toBe('▶ Video walkthrough');
+            expect(openedSrc).toBe('../videos/c.mp4');
         });
     });
 }
