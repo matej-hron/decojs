@@ -10,6 +10,7 @@ import { parseDivesoftDLF, PARSER_VERSION } from '../js/import/divesoftDlf.js';
 import { diveKey, sha256Hex, listSummary, planSync } from '../js/backend/sync.js';
 import { createSupabaseStore, DiveStoreError } from '../js/backend/supabaseStore.js';
 import { getDiveStore } from '../js/backend/diveStore.js';
+import { loadDiveFiles, summaryToListDive, chainWindow, canAnalyze } from '../js/components/RecordedDiveAnalysis.js';
 
 const FIXTURES = new URL('./fixtures/divesoft/', import.meta.url);
 const bytesOf = id => new Uint8Array(readFileSync(new URL(`${id}.DLF`, FIXTURES)));
@@ -130,6 +131,7 @@ function fakeClient({ user = { id: 'u1', email: 'me@example.com' }, rows = [], f
         calls, files, table,
         auth: {
             async getUser() { return { data: { user }, error: null }; },
+            async getSession() { return { data: { session: user ? { user } : null }, error: null }; },
             async signInWithOtp(args) { calls.push(['otp', args]); return { error: null }; },
             async signOut() { calls.push(['signOut']); return { error: null }; },
             onAuthStateChange(fn) { calls.push(['listen']); return { data: { subscription: { unsubscribe() { calls.push(['unlisten']); } } } }; },
@@ -242,6 +244,58 @@ describe('createSupabaseStore', () => {
 
 describe('getDiveStore', () => {
     test('no store while the config is empty', () => {
-        assert.equal(getDiveStore(), null);
+        let called = false;
+        globalThis.supabase = { createClient() { called = true; return {}; } };
+        try {
+            assert.equal(getDiveStore(), null);
+            assert.equal(getDiveStore(), null);
+            assert.equal(called, false);
+        } finally {
+            delete globalThis.supabase;
+        }
+    });
+});
+
+const fileOf = (name, bytes) => ({ name, arrayBuffer: async () => bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) });
+
+describe('loadDiveFiles items', () => {
+    test('items carry bytes and hash, aligned with dives', async () => {
+        const files = [fileOf('00000101.DLF', bytesOf('00000101')), fileOf('00000100.DLF', bytesOf('00000100')),
+            fileOf('SUMMARY.DSM', new Uint8Array([1, 2])), fileOf('x.SSF', new Uint8Array([3]))];
+        const { dives, items } = await loadDiveFiles(files);
+        assert.equal(items.length, 2);
+        assert.equal(dives.length, 2);
+        for (let i = 0; i < dives.length; i++) {
+            assert.equal(items[i].dive, dives[i]);
+            assert.equal(items[i].sha256, await sha256Hex(items[i].bytes));
+        }
+        assert.equal(dives[0].source.diveNumber, 100);
+    });
+});
+
+describe('summaryToListDive', () => {
+    test('builds a lightweight dive that cannot be analysed yet', () => {
+        const d = summaryToListDive({
+            id: 'a', deviceSerial: 'S1', diveNumber: 7, startLocal: '2026-09-27T12:01:01',
+            summary: { maxDepth: 20, duration: 1800, mode: 'oc', gfLow: 50, gfHigh: 80, waterSetting: 'salt', warnings: ['w'] },
+        });
+        assert.deepEqual(d, {
+            id: 'a', source: { diveNumber: 7, fileName: null }, start: { local: '2026-09-27T12:01:01' },
+            device: { serial: 'S1' }, maxDepth: 20, duration: 1800, mode: 'oc',
+            deco: { gfLow: 50, gfHigh: 80 }, environment: { waterSetting: 'salt' }, warnings: ['w'], samples: null,
+        });
+        assert.equal(canAnalyze(d), false);
+    });
+});
+
+describe('chainWindow', () => {
+    const mk = (local, warnings = []) => ({ start: { local }, warnings });
+    test('keeps dives within a week before the target, drops implausible dates', () => {
+        const target = mk('2026-09-27T12:00:00');
+        const a = mk('2026-09-26T12:00:00');
+        const old = mk('2026-09-10T12:00:00');
+        const later = mk('2026-09-28T12:00:00');
+        const bad = mk('2026-09-26T13:00:00', ['implausible-date']);
+        assert.deepEqual(chainWindow(target, [old, a, bad, target, later]), [a]);
     });
 });

@@ -2898,7 +2898,28 @@
         "startUnreliable": "fresh start — this dive’s date looks wrong, so earlier dives cannot be matched",
         "startNotChainable": "fresh start — an earlier dive could not be modelled",
         "startDisabled": "fresh start — earlier dives are ignored",
-        "startFirst": "fresh start — no earlier dive loaded"
+        "startFirst": "fresh start — no earlier dive loaded",
+        "backend": {
+            "loginHeading": "Your dive log",
+            "emailLabel": "Email",
+            "sendLink": "Send login link",
+            "linkSent": "Check your email for the login link.",
+            "sendAgain": "Send again",
+            "loggedInAs": "Logged in as {0}",
+            "upload": "Upload DIVELOG",
+            "export": "Export",
+            "logout": "Log out",
+            "loading": "Loading…",
+            "progress": "Saving {0} / {1}…",
+            "reportSaved": "{0} new dives saved",
+            "reportUnchanged": "{0} already stored",
+            "reportUpdated": "{0} updated",
+            "reportFailed": "{0} could not be saved: {1}",
+            "unreachable": "Can't reach your dive log. If it hasn't been used for a week, resume the project in the Supabase dashboard.",
+            "linkExpired": "This login link has expired. Send a new one.",
+            "cannotLogin": "This email can't log in here.",
+            "genericError": "Something went wrong. Please try again."
+        }
     },
     "quiz": {
         "languageNotice": "🇬🇧 Translated from the official Czech CMAS/SPČR 2018 exam materials. Use the language switcher to view the Czech original.",
