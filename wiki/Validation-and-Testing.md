@@ -6,7 +6,7 @@ npm test
 
 Runs `node tests/run-tests.mjs`. No external test framework — `tests/run-tests.mjs` implements `describe`/`test`/`expect` inline (lines 10–140) with matchers `.toBe`, `.toEqual`, `.toBeCloseTo`, `.toBeGreaterThan`, `.toBeLessThan`, `.toHaveProperty`, `.toHaveLength`, `.toBeDefined`. Output is one line per test, then a pass/fail summary.
 
-**591 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
+**607 tests pass.** The Jest configuration in `package.json` is vestigial — `test:jest` and `test:watch` still work but are not the canonical runner; the CI gate is `npm test`, run on every pull request by `.github/workflows/ci.yml`.
 
 `npm test` is required to pass before every commit per `CLAUDE.md`.
 
@@ -28,6 +28,8 @@ The algorithm suite. Directly imports from `js/decoModel.js` and `js/tissueCompa
 - **Gradient-factor input limits.** Requires both GF values to stay in the 10–100% range across setup validation, compact links, shared repetitive-dive trips, and both planner UIs. Manual values below the limit do not trigger a recalculation and are clamped to 10% when confirmed, preventing `0` from silently becoming `100`.
 - **Gradient-factor UI lock.** Verifies the default-on equality checkbox, two-way GF synchronization, GF Low ≤ GF High correction while unlocked, normalization of reversed imported pairs, and automatic unlock after any preset, deco-gas addition, waypoint deco-gas selection, or asymmetric profile load. It also covers empty GF input recovery and preservation of a manually unlocked state across language changes. The lock remains editor-only and is not serialized into the dive setup.
 - **Dive-plan runtime marker.** Verifies that both split dive-plan tables bind the shared runtime definition to their Runtime heading with a superscript asterisk. Practical mode adds no redundant calculation note; departure mode keeps its execution-specific detail as a separate unmarked note.
+- **Dive-plan Tank and practical runtime.** The instant gas-switch marker row consumes no gas (the new gas shows its full start pressure); practical runtimes round up on ascent rows, never earlier than the model, and moves between stops use the planner's `ASCENT_SPEED` (10 m/min, overridable via `opts.ascentRate`).
+- **Video walkthroughs.** The sandbox has one inline video host per section, each beside (never inside) its translated heading and naming its video through a `data-video-title` key present in Czech, English, and Spanish; `VideoWalkthrough.js` sets that name as `aria-label`/`title`, relabels it on `languagechange`, and renders each host once even when initialised twice.
 - **Oxygen warning terminology.** Verifies across Czech, English, and Spanish that the 1.4 bar warning describes the bottom-phase limit rather than incorrectly referring to occupational or “working” dives; the phase/gas warning logic remains unchanged.
 - **M-value sandbox chart interaction.** Verifies the ambient-equilibrium line <var>p</var><sub>t</sub> = <var>p</var><sub>amb</sub>, a full-width square 0–10 bar plot with equal geometric scaling on both pressure axes, hover/focus legend highlighting for all four chart elements, legend placement directly below the graph, and dedicated equal-size SVG spans for the axis-unit labels.
 - **Tissue-saturation depth input.** Verifies that typed depth changes wait for a 250 ms debounce, while slider input remains immediate; change, blur, and Enter flush pending input, and reset/destruction clear pending timers.
@@ -56,7 +58,7 @@ Waypoint-array validation.
 
 The sea-level matrix also validates the practical runtime convention across all
 3,900 profiles: model stop durations remain whole minutes, inter-stop ascents
-use 20 seconds per 3 m, total timeline drift stays below 30 seconds, and the
+use the planner's 10 m/min (18 seconds per 3 m), total timeline drift stays below 30 seconds, and the
 re-simulated destination ceiling may differ by at most 1 cm.
 
 The canonical suite directly checks the 3900 sea-level scenarios in

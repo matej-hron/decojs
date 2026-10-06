@@ -9,7 +9,12 @@ tracks (one per language in the scenario), so viewers pick their language.
 cd scripts/video
 npm install                     # once
 npm run video -- scenes/transfilling.mjs
+npm run video -- scenes/transfilling.mjs en --dry   # drive the page, run every check; no TTS, no recording
 ```
+
+`--dry` is the fast loop while writing a scenario: it runs `prepare()` and every scene's
+actions and checks (seconds instead of minutes) and verifies that each language has one
+caption per scene.
 
 Output: `out/<scene>.mp4` + `out/<scene>.<lang>.vtt`, and with `publish` set, copies at
 `videos/<name>.mp4`, `videos/<name>.<lang>.vtt` and a `.jpg` poster (the title card
@@ -37,6 +42,16 @@ initVideoWalkthroughs();
 ```
 
 Labels come from `common.video.*` in `locales/*.json`; styles live in `css/styles.css`.
+
+Several videos on one page (e.g. one per section, as in `sandbox/index.html`): use the
+compact `video-walkthrough--inline` variant (outlined in the primary colour, for light
+panels) and put the host **beside** the heading, never inside it: the i18n pass replaces
+the `textContent` of `[data-i18n]` elements and would delete the button. A flex row such
+as `<div class="sandbox-section-head"><h3 data-i18n="…">…</h3><div class="video-walkthrough
+video-walkthrough--inline" …></div></div>` works. `data-video-title="<i18n key>"` gives
+each button its own accessible name (`aria-label` + `title`, relabelled on language
+change); the visible text stays `common.video.open`. `initVideoWalkthroughs()` is safe to
+call more than once.
 
 ## Writing a scenario
 
@@ -68,7 +83,9 @@ the page into its starting state and show the intro card), `scenes`
 | Helper | Does |
 |---|---|
 | `card({ title, subtitle, footer })` / `card(null)` | full-screen title card on / off |
-| `highlight(sel \| [sels])` / `highlight(null)` | orange ring(s); scrolls them into view first |
+| `highlight(sel \| [sels], { union? })` / `highlight(null)` | orange ring(s) that follow their elements; scrolls them into view first. `union: true` draws one ring around all matches (e.g. a range of table rows) |
+| `ring(rect \| [rects], { round?, pad? })` / `ring(null)` | ring fixed viewport rectangles `{left, top, width, height, round?}` (per-rect `round` mixes boxes and circles) — for things without a selector, like canvas chart features; `round: true` for points. `ring(null)` and `highlight(null)` both clear every ring |
+| `glideTo(x, y, ms?)` | glide the visible cursor to viewport coordinates |
 | `reveal(sel)` | smooth-scroll the element between the sticky nav and the bottom edge |
 | `moveTo(sel, ms?)` / `click(sel, ms?)` | glide the visible cursor (default 700 ms); click with a ripple |
 | `select(sel, value)` | pulse + set a `<select>` (native dropdowns are not captured) |
@@ -78,3 +95,41 @@ the page into its starting state and show the intro card), `scenes`
 
 Viewport is 1920×940 CSS px; captions live in a 140 px bar below it, so content
 can use the full height. The sticky `.main-nav` covers the top ~75 px.
+
+Element rings track their target every frame, but a target that is *replaced* (e.g. a
+table rebuilt with `innerHTML` after an edit) leaves the ring behind: `highlight(null)`
+before the edit and highlight again afterwards.
+
+## Pointing at Chart.js charts
+
+Canvas content has no selectors. `lib/sandbox.mjs` (shared by the `sandbox-*` series)
+computes viewport boxes from the live chart instance, ready for `ui.ring()` /
+`ui.glideTo()`; each helper first waits two animation frames + 150 ms for the chart to
+settle (after entering a chart's fullscreen, also wait ~400 ms for its resizes):
+
+| Helper | Returns |
+|---|---|
+| `annotationBox(page, canvasSel, id, { part: 'label'? })` | box of a chartjs-plugin-annotation element (or its label), plus its `content` |
+| `dataPoint(page, canvasSel, x, y, { xScale, yScale })` | `{x, y}` of a data value (profile chart: `yScale: 'yDepth'`) |
+| `dataRect(page, canvasSel, x0, y0, x1, y1, …)` | box between two data corners, clipped to the plot area |
+| `scaleBox(page, canvasSel, id)` / `chartAreaBox(page, canvasSel)` | an axis with ticks and title / the plot area |
+| `legendBox(page, canvasSel, i, { match? })` | a legend item (by index or RegExp source), plus its `text` |
+| `datasets(page, canvasSel)` | `[{label, hidden, data:[{x,y}]}]` for numeric checks |
+| `dataPoints(page, canvasSel, [{x, y}], …)` | many data values → viewport points in one call (one settle), for cursor paths along a curve |
+| `muteChartHover(page)` | recording only: no Chart.js hover tooltips while the visible cursor glides over the charts |
+| `fitChartFullscreen(page, zoom)` | recording only: sizes the charts' CSS fullscreen to the zoomed viewport, so a zoomed chart (larger text) still fits the frame, and keeps the profile canvas uniformly scaled |
+| `unstickNav(page)` | recording only: lets the sticky nav scroll away (more room for a zoomed table) |
+
+Zoom and canvases: with `zoom` ≠ 1 the generator reports the zoom as `devicePixelRatio`,
+so Chart.js draws canvases at the recorded size instead of upscaling them (sharp chart
+text). This applies to **every** scenario with `zoom` ≠ 1, including the older
+ones (transfilling, cascade filling, gas law, deco table at 1.25): their next render gets
+sharper canvases and a different backing-store size for components that read
+`devicePixelRatio` (MValueChart, GFChart, the bubble model), so expect a pixel diff
+against their current videos. The charts' CSS fullscreen ignores body zoom; call `fitChartFullscreen()` in
+`prepare()` when a zoomed scenario uses it.
+
+Selectors: `PROFILE_CANVAS`, `PP_CANVAS`. The module also exports the series dive
+(`DIVE_URL`), `EXPECTED_PLAN` + `assertPlan(page)` (call it in `prepare()`: any change to
+the plan fails the render), and the series cards `intro(lang, n)` / `outro(lang)` (the
+outro path is read from the nav labels in `locales/`).

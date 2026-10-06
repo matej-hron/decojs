@@ -3,6 +3,7 @@
  * Narrated video walkthrough generator.
  *
  *   node make-video.mjs scenes/transfilling.mjs [lang]
+ *   node make-video.mjs scenes/transfilling.mjs [lang] --dry   # drive the page + run every check; no audio/video
  *
  * A scenario module exports a scenario object, or a function (lang) -> scenario.
  * The narration language defaults to English (Kokoro); every language the module
@@ -117,10 +118,17 @@ function director(page) {
     const ui = {
         wait: sleep,
         card: (opts) => page.evaluate((o) => window.__video.card(o), opts ?? null),
-        async highlight(sel) {
+        /** Ring element(s); `{ union: true }` draws one ring around all of them. */
+        async highlight(sel, opts = {}) {
             if (sel) await ui.reveal(sel);
-            await page.evaluate((s) => window.__video.highlight(s), sel ?? null);
+            await page.evaluate(([s, o]) => window.__video.highlight(s, o), [sel ?? null, opts]);
         },
+        /** Ring viewport rectangle(s) {left, top, width, height, round?}, e.g. canvas features; null clears. */
+        async ring(rects, opts = {}) {
+            await page.evaluate(([r, o]) => window.__video.ring(r, o), [rects ?? null, opts]);
+        },
+        /** Glide the visible cursor to viewport coordinates (canvas points have no selector). */
+        glideTo: (x, y, ms) => glide(x, y, ms),
         /** Smooth-scroll just enough to show the selectors between the sticky nav and the bottom edge. */
         async reveal(sel, ms = 700) {
             const { from, dy } = await page.evaluate(([sels, h]) => {
@@ -188,13 +196,19 @@ function director(page) {
 
 // ---------------------------------------------------------------- recording
 
-async function record(scenario, framesDir) {
+async function record(scenario, framesDir, { dry = false } = {}) {
     const server = await serve(REPO);
     const browser = await chromium.launch();
     const context = await browser.newContext({
         viewport: VIEWPORT, locale: scenario.locale ?? 'en-US', serviceWorkers: 'block',
     });
     await context.addInitScript({ path: path.join(HERE, 'overlay.js') });
+    // Body zoom enlarges the page, but a canvas keeps its CSS-pixel backing store and
+    // would be upscaled (blurry chart text). Report the zoom as the device pixel ratio,
+    // so Chart.js renders canvases at the recorded size.
+    if ((scenario.zoom ?? 1) !== 1) {
+        await context.addInitScript((z) => Object.defineProperty(window, 'devicePixelRatio', { get: () => z, configurable: true }), scenario.zoom);
+    }
     const page = await context.newPage();
     page.on('pageerror', (e) => console.error('  page error:', e.message));
     await page.goto(`http://localhost:${server.address().port}/${scenario.page}`);
@@ -205,9 +219,19 @@ async function record(scenario, framesDir) {
     await scenario.prepare?.(page, ui);
     await sleep(800); // let the first card fade in before capture starts
 
+    const frames = [];
+    if (dry) {
+        for (const [i, scene] of scenario.scenes.entries()) {
+            console.log(`  scene ${i + 1}/${scenario.scenes.length} (dry)`);
+            await scene.run?.(ui);
+            await sleep(300);
+        }
+        await browser.close();
+        server.close();
+        return null;
+    }
     fs.rmSync(framesDir, { recursive: true, force: true });
     fs.mkdirSync(framesDir, { recursive: true });
-    const frames = [];
     const cdp = await context.newCDPSession(page);
     cdp.on('Page.screencastFrame', ({ data, sessionId }) => {
         const file = path.join(framesDir, `${String(frames.length).padStart(5, '0')}.jpg`);
@@ -285,13 +309,27 @@ function mux(name, scenes, { frames, endMs }) {
 // kokoro-js's bundled espeak rethrows uncaught errors with its whole minified source;
 // catch here so a failed render prints just the message.
 try {
-    const scenarioFile = path.resolve(process.argv[2] ?? path.join(HERE, 'scenes/transfilling.mjs'));
-    const lang = process.argv[3] ?? 'en';
+    const dry = process.argv.includes('--dry');
+    const args = process.argv.slice(2).filter((a) => a !== '--dry');
+    const scenarioFile = path.resolve(args[0] ?? path.join(HERE, 'scenes/transfilling.mjs'));
+    const lang = args[1] ?? 'en';
     const { default: exported } = await import(scenarioFile);
     const build = typeof exported === 'function' ? exported : () => exported;
     const scenario = build(lang);
     const name = path.basename(scenarioFile, '.mjs');
 
+    if (dry) {
+        // Captions of every language must still line up with the scenes.
+        for (const l of ['en', 'cs']) {
+            let n;
+            try { n = build(l).scenes.length; } catch { continue; }
+            if (n !== scenario.scenes.length) throw new Error(`${name}/${l}: ${n} captions for ${scenario.scenes.length} scenes`);
+        }
+        console.log(`dry run (${scenario.scenes.length} scenes, ${lang})`);
+        await record(scenario, null, { dry: true });
+        console.log('dry run passed: every action and check ran');
+        process.exit(0);
+    }
     console.log(`[1/3] narration (${scenario.scenes.length} scenes, ${lang})`);
     await synthesize(scenario.scenes);
     console.log('[2/3] recording');

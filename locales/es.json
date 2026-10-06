@@ -1726,6 +1726,12 @@
             "screenshot": "📷 Captura",
             "copied": "✓ ¡Copiado!",
             "mValueChart": "📐 Diagrama presión-presión",
+            "video": {
+                "setup": "Vídeo: cómo introducir una inmersión",
+                "runtime": "Vídeo: cómo leer la tabla de runtime",
+                "profile": "Vídeo: cómo leer el perfil de inmersión",
+                "pp": "Vídeo: cómo leer el diagrama P-P"
+            },
             "gfChart": "📊 Diagrama GF %",
             "copyDebug": "🔍 Copiar datos de depuración",
             "status": {

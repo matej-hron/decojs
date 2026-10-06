@@ -1,0 +1,37 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:04.403
+Part one: entering a dive into the decompression sandbox.
+
+00:00:04.553 --> 00:00:11.032
+Describe the dive on the left; the plan on the right recalculates as you type.
+
+00:00:11.182 --> 00:00:17.809
+Quick setup: 40 m deep, bottom time 20 min, counted from leaving the surface.
+
+00:00:17.959 --> 00:00:27.186
+Raw Bühlmann allows 11 min at 40 m on air without stops, so this is a deco dive: 8 min of stops.
+
+00:00:27.336 --> 00:00:35.340
+Watch the Tank column: one 12-litre cylinder would end at 7 bar, and rows below the 50-bar reserve turn red.
+
+00:00:35.490 --> 00:00:45.917
+Open Gases and switch to twin 12-litre cylinders. Air's MOD at pO₂ 1.4 bar is 56 m.
+
+00:00:46.067 --> 00:00:58.220
+Add a deco gas: EAN50 in an S080 stage. Its deco MOD at pO₂ 1.6 bar is 22 m, so the plan switches at 21 m.
+
+00:00:58.370 --> 00:01:04.999
+Less nitrogen means faster off-gassing: the stops shrink from 8 to 5 min.
+
+00:01:05.149 --> 00:01:10.930
+Now set the conservatism: gradient factors 30/70.
+
+00:01:11.080 --> 00:01:24.507
+GF Low 30 moves the first stop from 6 m to 18 m. GF High 70 limits supersaturation at the surface, so the shallow stops grow: 15 min in total.
+
+00:01:24.657 --> 00:01:33.085
+Environment and Gas consumption keep their defaults: altitude 0 m, SAC 20 and 15 L/min.
+
+00:01:33.235 --> 00:01:37.719
+Next: reading the runtime table. Thanks for watching!
