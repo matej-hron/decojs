@@ -231,6 +231,12 @@ describe('createSupabaseStore', () => {
         assert.ok(client.calls.some(c => c[0] === 'signOut'));
     });
 
+    test('currentUser rejects as unreachable when getSession fails over the network', async () => {
+        const client = fakeClient();
+        client.auth.getSession = async () => ({ data: { session: null }, error: { message: 'Failed to fetch' } });
+        await assert.rejects(createSupabaseStore(client).currentUser(), e => e instanceof DiveStoreError && e.kind === 'unreachable');
+    });
+
     test('exportAll returns the original files and all records', async () => {
         const client = fakeClient();
         const store = createSupabaseStore(client);
@@ -243,16 +249,24 @@ describe('createSupabaseStore', () => {
 });
 
 describe('getDiveStore', () => {
-    test('no store while the config is empty', () => {
+    const fake = () => ({});
+    test('no store while url or key is empty; the factory is not called', () => {
         let called = false;
-        globalThis.supabase = { createClient() { called = true; return {}; } };
-        try {
-            assert.equal(getDiveStore(), null);
-            assert.equal(getDiveStore(), null);
-            assert.equal(called, false);
-        } finally {
-            delete globalThis.supabase;
-        }
+        const factory = () => { called = true; return fake(); };
+        assert.equal(getDiveStore({ url: '', key: '', factory }), null);
+        assert.equal(getDiveStore({ url: 'https://x.supabase.co', key: '', factory }), null);
+        assert.equal(called, false);
+    });
+
+    test('no store without a client factory', () => {
+        assert.equal(getDiveStore({ url: 'https://x.supabase.co', key: 'k', factory: undefined }), null);
+    });
+
+    test('creates a store from url, key and factory', () => {
+        const seen = [];
+        const store = getDiveStore({ url: 'https://x.supabase.co', key: 'k', factory: (...a) => { seen.push(a); return fakeClient(); } });
+        assert.equal(typeof store.listDives, 'function');
+        assert.deepEqual(seen, [['https://x.supabase.co', 'k']]);
     });
 });
 

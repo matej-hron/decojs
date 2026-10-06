@@ -55,7 +55,8 @@ export function createSupabaseStore(client) {
     return {
         async currentUser() {
             // getSession reads local storage (no network), so an unreachable backend is not mistaken for "logged out".
-            const { data } = await client.auth.getSession();
+            const { data, error } = await client.auth.getSession();
+            if (error) throw fail(error);
             const user = data?.session?.user;
             return user ? { id: user.id, email: user.email } : null;
         },

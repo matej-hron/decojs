@@ -125,16 +125,25 @@ export function canAnalyze(dive) {
 const t = (key, fallback) => translate(`diveLog.${key}`, fallback);
 const JSZIP_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.2/jszip.min.js';
 
-/** Load JSZip on demand (once). */
+let jsZipPromise = null;
+
+/** Load JSZip on demand (the script is appended at most once). */
 function loadJsZip() {
     if (globalThis.JSZip) return Promise.resolve(globalThis.JSZip);
-    return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = JSZIP_URL;
-        script.onload = () => resolve(globalThis.JSZip);
-        script.onerror = () => reject(new Error('Could not load JSZip'));
-        document.head.appendChild(script);
-    });
+    if (!jsZipPromise) {
+        jsZipPromise = new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = JSZIP_URL;
+            script.onload = () => resolve(globalThis.JSZip);
+            script.onerror = () => {
+                script.remove();
+                jsZipPromise = null;
+                reject(new Error('Could not load JSZip'));
+            };
+            document.head.appendChild(script);
+        });
+    }
+    return jsZipPromise;
 }
 const fill = (text, ...values) => String(text).replace(/\{(\d+)\}/g, (_, i) => values[Number(i)] ?? '');
 const minSec = s => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}`;
@@ -156,6 +165,7 @@ export class RecordedDiveAnalysis {
         this.current = null;
         this.report = null;
         this.busy = null;
+        this.working = false;
         this.accountMsg = null;
         this.email = '';
         this.linkSent = false;
@@ -178,7 +188,12 @@ export class RecordedDiveAnalysis {
     // ---- Account bar and server mode ----
 
     _initStore() {
-        if (/error_code=otp_expired/.test(globalThis.location?.hash ?? '')) this.accountMsg = { key: 'linkExpired', fallback: 'This login link has expired. Send a new one.' };
+        if (/error_code=otp_expired/.test(globalThis.location?.hash ?? '')) {
+            this.accountMsg = { key: 'linkExpired', fallback: 'This login link has expired. Send a new one.' };
+            try {
+                history.replaceState(null, '', location.pathname + location.search);
+            } catch { /* keep the hash */ }
+        }
         this._renderAccount();
         this.store.onAuthChange(user => this._onUser(user));
         this.store.currentUser().then(user => this._onUser(user), error => {
@@ -218,6 +233,8 @@ export class RecordedDiveAnalysis {
     }
 
     async _loadServer() {
+        this.isDemo = false;
+        this.full.clear();
         this.busy = { key: 'loading', fallback: 'Loading…' };
         this._setDives({ dives: [], errors: [] });
         try {
@@ -246,8 +263,8 @@ export class RecordedDiveAnalysis {
             el.innerHTML = `
                 <span class="rda-account-who">${escHtml(fill(t('backend.loggedInAs', 'Logged in as {0}'), this.user.email))}</span>
                 <label class="btn btn-small btn-secondary rda-upload"><span>${label('upload', 'Upload DIVELOG')}</span>
-                    <input type="file" id="rda-upload" webkitdirectory class="rda-visually-hidden"></label>
-                <button type="button" class="btn btn-small btn-secondary" id="rda-export">${label('export', 'Export')}</button>
+                    <input type="file" id="rda-upload" webkitdirectory class="rda-visually-hidden"${this.working ? ' disabled' : ''}></label>
+                <button type="button" class="btn btn-small btn-secondary" id="rda-export"${this.working ? ' disabled' : ''}>${label('export', 'Export')}</button>
                 <button type="button" class="btn btn-small btn-secondary" id="rda-logout">${label('logout', 'Log out')}</button>
                 ${msg}`;
             el.querySelector('#rda-upload').addEventListener('change', e => this._upload(e.target));
@@ -283,7 +300,8 @@ export class RecordedDiveAnalysis {
         } catch (error) {
             console.error(error);
             this.linkSent = false;
-            this.accountMsg = error instanceof DiveStoreError && error.kind === 'auth'
+            const rateLimited = /429|only request this after|rate limit/i.test(error?.message ?? '');
+            this.accountMsg = !rateLimited && error instanceof DiveStoreError && error.kind === 'auth'
                 ? { key: 'cannotLogin', fallback: 'This email can\'t log in here.' }
                 : null;
             if (this.accountMsg) this._renderAccount();
@@ -300,11 +318,19 @@ export class RecordedDiveAnalysis {
         }
     }
 
+    _setWorking(on) {
+        this.working = on;
+        this._renderAccount();
+    }
+
     async _upload(input) {
-        const picked = await loadDiveFiles(input.files);
+        if (this.working) return;
+        const files = Array.from(input.files);
         input.value = '';
+        this._setWorking(true);
         this.report = null;
         try {
+            const picked = await loadDiveFiles(files);
             this.busy = { key: 'progress', fallback: 'Saving {0} / {1}…', args: [0, picked.items.length] };
             this._renderList();
             const plan = planSync(picked.items, await this.store.listDives());
@@ -321,15 +347,19 @@ export class RecordedDiveAnalysis {
                 failed: [...saved.failed, ...picked.errors],
             };
             this.busy = null;
-            await this._loadServer();
+            if (this.serverMode) await this._loadServer();
         } catch (error) {
             this.busy = null;
             this._storeError(error);
             this._renderList();
+        } finally {
+            this._setWorking(false);
         }
     }
 
     async _export() {
+        if (this.working) return;
+        this._setWorking(true);
         try {
             const { files, dives } = await this.store.exportAll();
             const JSZip = await loadJsZip();
@@ -346,6 +376,8 @@ export class RecordedDiveAnalysis {
             setTimeout(() => URL.revokeObjectURL(link.href), 10000);
         } catch (error) {
             this._storeError(error);
+        } finally {
+            this._setWorking(false);
         }
     }
 
