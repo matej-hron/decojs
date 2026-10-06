@@ -10,6 +10,7 @@
 import { parseDivesoftDLF } from '../import/divesoftDlf.js';
 import { prepareRecordedSetup } from '../import/recordedDive.js';
 import { analyzeRecordedDive, summarizeRecordedDive, CEILING_VIOLATION_TOLERANCE_M } from '../import/recordedDiveSummary.js';
+import { startStateFor } from '../import/diveChain.js';
 import { MIN_GF_PERCENT, MAX_GF_PERCENT } from '../gfLimits.js';
 import { GF_PRESETS } from '../gfPresets.js';
 import { translate } from '../i18n.js';
@@ -98,6 +99,8 @@ export class RecordedDiveAnalysis {
         this.selected = null;
         this.gf = { gfLow: 100, gfHigh: 100 };
         this.charts = null;
+        this.chainEnabled = true;
+        this.startStates = new Map();
         this._buildDom();
         document.addEventListener('languagechange', () => this._renderAll());
         this._loadDemo();
@@ -134,6 +137,8 @@ export class RecordedDiveAnalysis {
                     <input type="range" id="rda-gf-high" min="${MIN_GF_PERCENT}" max="${MAX_GF_PERCENT}" step="1">
                     <div class="rda-presets" id="rda-presets"></div>
                     <button type="button" class="btn btn-small btn-secondary" id="rda-reset" data-i18n="diveLog.resetGf">Reset to device GF</button>
+                    <label class="rda-chain-toggle"><input type="checkbox" id="rda-chain" checked>
+                        <span data-i18n="diveLog.chainToggle">Include earlier dives (repetitive diving)</span></label>
                 </div>
                 <div class="rda-summary rda-card" id="rda-summary"></div>
                 <p class="rda-note" id="rda-note" hidden></p>
@@ -165,6 +170,10 @@ export class RecordedDiveAnalysis {
         this.el.gfLow.addEventListener('input', onSlider);
         this.el.gfHigh.addEventListener('input', onSlider);
         this.el.reset.addEventListener('click', () => this.selected && this._setGf(deviceGf(this.selected)));
+        $('rda-chain').addEventListener('change', e => {
+            this.chainEnabled = e.target.checked;
+            this._renderAnalysis();
+        });
         this.el.presets.innerHTML = GF_PRESETS.map(p =>
             `<button type="button" class="btn btn-small btn-secondary" data-gf-low="${p.gfLow}" data-gf-high="${p.gfHigh}">${escHtml(translate(p.labelKey, p.label))}</button>`).join('');
         this.el.presets.addEventListener('click', e => {
@@ -191,6 +200,7 @@ export class RecordedDiveAnalysis {
         this.dives = dives;
         this.errors = errors;
         this.selected = null;
+        this.startStates = new Map();
         this._renderList();
         if (dives.length > 0) this._select(dives.at(-1));
         else this.el.analysis.hidden = true;
@@ -259,15 +269,48 @@ export class RecordedDiveAnalysis {
         }
         this.el.charts.hidden = false;
         const { setup, deviceCeiling } = prepareRecordedSetup(dive, this.gf);
+        const start = this.chainEnabled ? this._startState(dive) : null;
+        setup.initialTissuePressures = start?.initialTissuePressures ?? null;
         const summary = summarizeRecordedDive(analyzeRecordedDive(setup));
-        this._renderSummary(dive, summary);
+        this._renderSummary(dive, summary, start);
         this._renderCharts(setup, deviceCeiling, dive);
     }
 
-    _renderSummary(dive, s) {
+    /** Start state from earlier loaded dives; independent of GF, so cached per dive. */
+    _startState(dive) {
+        if (!this.startStates.has(dive)) this.startStates.set(dive, startStateFor(dive, this.dives));
+        return this.startStates.get(dive);
+    }
+
+    _describeStart(start) {
+        if (!start) return t('startDisabled', 'fresh start — earlier dives are ignored');
+        const hours = min => fmtNum(min / 60, 1);
+        switch (start.reason) {
+            case 'chained': {
+                const numbers = start.chain.map(c => `#${c.dive.source.diveNumber ?? '?'}`).join(', ');
+                return fill(t('startChained', 'carries nitrogen from {0} ({1}); last surface interval {2}\u00a0h'),
+                    fill(t('startChainCount', '{0} earlier dive(s)'), start.chain.length), numbers, hours(start.chain.at(-1).surfaceIntervalMin));
+            }
+            case 'long-gap':
+                return fill(t('startLongGap', 'fresh start — previous dive {0}\u00a0days earlier'), fmtNum(start.previousGapMin / 1440, 0));
+            case 'settled':
+                return fill(t('startSettled', 'fresh start — tissues settled during {0}\u00a0h at the surface'), hours(start.previousGapMin));
+            case 'clock-overlap':
+                return t('startClock', 'fresh start — the previous dive overlaps in time (dive computer clock)');
+            case 'unreliable-date':
+                return t('startUnreliable', 'fresh start — this dive’s date looks wrong, so earlier dives cannot be matched');
+            case 'not-chainable':
+                return t('startNotChainable', 'fresh start — an earlier dive could not be modelled');
+            default:
+                return t('startFirst', 'fresh start — no earlier dive loaded');
+        }
+    }
+
+    _renderSummary(dive, s, start) {
         const pct = v => `${fmtNum(v * 100, 0)}\u00a0%`;
         const device = deviceGf(dive);
         const rows = [
+            [t('startState', 'Start state'), this._describeStart(start)],
             [t('peakGf', 'Peak tissue GF during the dive'), s.peakGf
                 ? fill(t('peakGfValue', '{0} (compartment {1} at {2}\u00a0min)'), pct(s.peakGf.value), s.peakGf.compartment, fmtNum(s.peakGf.t, 1))
                 : '–'],

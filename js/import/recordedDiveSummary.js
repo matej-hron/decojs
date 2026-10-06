@@ -34,6 +34,7 @@ export function analyzeRecordedDive(setup) {
         gases: setup.gases,
         surfacePressure: getDiveSetupSurfacePressure(setup),
         pressurePerMeter: getDiveSetupPressurePerMeter(setup),
+        initialTissuePressures: setup.initialTissuePressures ?? undefined,
     });
     const { pAnchor } = calculateChartGFAnchor(setup, results);
     const ceilingDepths = calculateCeilingTimeSeries(results, setup.gfLow / 100, setup.gfHigh / 100, pAnchor);
