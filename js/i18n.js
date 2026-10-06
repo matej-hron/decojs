@@ -29,12 +29,12 @@ let currentLanguage = DEFAULT_LANG;
 
 /**
  * Detect the path prefix for locales based on current page location.
- * Handles pages in subdirectories (e.g., sandbox/).
+ * Handles pages in subdirectories (e.g., sandbox/, lab/).
  * @returns {string} Path prefix ('' or '../')
  */
 function getLocalePrefix() {
     const path = window.location.pathname;
-    if (path.includes('/sandbox/')) {
+    if (['/sandbox/', '/lab/'].some(f => path.includes(f))) {
         return '../';
     }
     return '';

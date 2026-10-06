@@ -1101,6 +1101,8 @@
         "profile": {
             "datasetDepth": "Hloubka (m)",
             "datasetCeiling": "Strop (m)",
+            "datasetReferenceCeiling": "Strop podle počítače (m)",
+            "datasetCeilingViolation": "Nad stropem",
             "datasetAmbientPressure": "Okolní tlak (bar)",
             "datasetAlveolarPpN2": "Alveolární pN₂ (bar)",
             "datasetPpO2": "pO₂ (bar)",
@@ -2564,7 +2566,8 @@
                     "label": "kde jsi (záhlaví)",
                     "path": "tvoje cesta",
                     "origin": "odkud jdeš",
-                    "found": "výsledek tohoto kroku"
+                    "found": "výsledek tohoto kroku",
+                    "labelNote": "kde jsi"
                 },
                 "more": "více",
                 "less": "méně",
@@ -2639,7 +2642,10 @@
                 "header": "doba ponoru [min] — hloubka zaokrouhli nahoru, čas na nejbližší delší",
                 "corner": "Opakovaný ponor: z části 3 po šipce zpět na START. Doba se hledá jako součet <strong>reálné doby + časové přirážky</strong>.",
                 "cap3": "časová přirážka [min] ← hledej vlevo",
-                "cap2": "povrchový interval [h:min] ↓ hledej dolů (horní = do, dolní = od)"
+                "cap2": "povrchový interval [h:min] ↓ hledej dolů (horní = do, dolní = od)",
+                "noteSafety": "bezpečnostní zastávka <strong>5 m / 3 min</strong>",
+                "noteFlying": "po 1 ponoru <strong>12 h neletět</strong> · po opakovaném nebo vícedenním <strong>24 h neletět</strong>",
+                "noteAdverse": "Za nepříznivých okolností pro dekompresní proces hledat v tabulce hloubku o jeden řádek nižší"
             },
             "image": {
                 "title": "Originál tabulky SPČR/CMAS 2018 — stejná cesta na papíře",
@@ -2668,8 +2674,213 @@
                 "findSi": "Najdi povrchový interval",
                 "left": "Jdi vlevo k přirážce",
                 "back": "Po šipce zpět na START"
+            },
+            "tabs": {
+                "label": "Režim stránky",
+                "plan": "Plán ponorů",
+                "crisis": "Mimořádné situace"
+            },
+            "crisis": {
+                "title": "Mimořádné situace",
+                "intro": "Co dělat, když ponor neproběhne podle plánu — podle návodu SPČR 2018.",
+                "pick": "Vyber situaci",
+                "tag": {
+                    "table": "tabulka",
+                    "procedure": "postup"
+                },
+                "scenario": {
+                    "delay": {
+                        "name": "Zdržení při výstupu",
+                        "hint": "Doba zdržení se přičte k době ponoru."
+                    },
+                    "omitted": {
+                        "name": "Vynechaná dekomprese / rychlý výstup",
+                        "hint": "Do 5 min zpět na zastávku, nebo kyslík na hladině."
+                    },
+                    "adverse": {
+                        "name": "Nepříznivé okolnosti",
+                        "hint": "Dekompresi hledáš o řádek níž (o 3 m hlouběji)."
+                    },
+                    "flying": {
+                        "name": "Let po potápění",
+                        "hint": "Po jednom ponoru 12 h, po opakovaných nebo vícedenních 24 h."
+                    }
+                },
+                "input": {
+                    "delay": "Zdržení při výstupu (min)",
+                    "what": "Co se stalo?",
+                    "whatOmitted": "Vynechaná nebo zkrácená zastávka",
+                    "whatFast": "Příliš rychlý výstup",
+                    "canReturn": "Dokáže se do 5 min vrátit na zastávku?",
+                    "symptoms": "Příznaky dekompresní nemoci?",
+                    "yes": "ano",
+                    "no": "ne",
+                    "factors": "Které okolnosti platí?",
+                    "factorsNone": "Bez nepříznivých okolností stačí běžný plán.",
+                    "dives": "Ponory",
+                    "single": "jeden ponor",
+                    "repeat": "opakované nebo vícedenní ponory"
+                },
+                "examples": "Příklady z testů SPČR:",
+                "examplesPlain": "Příklady:",
+                "examplesNote": "Příklad jen vyplní zadání. Výsledek počítá stránka z tabulky — není to oficiální klíč k testům.",
+                "start": "Projít krok za krokem",
+                "fullText": "Celé znění v Návodu k tabulkám →",
+                "factor": {
+                    "1": "Větší fyzická námaha",
+                    "2": "Dehydratace",
+                    "3": "Silné prochlazení",
+                    "4": "Více tukové tkáně",
+                    "5": "Rychlý pokles tlaku (letadlo, hory)",
+                    "6": "Nedokonalý krevní oběh (škrcení řemínky, operace, věk)",
+                    "7": "PFO (patent foramen ovale, pravolevý zkrat)",
+                    "8": "Otřesy, vibrace (sport, doprava)"
+                },
+                "indicator": "{scenario} · {phase}",
+                "nextPhase": "{phase} →",
+                "phase": {
+                    "plan": "Plán",
+                    "delay": "Zdržení",
+                    "procedure": "Postup",
+                    "branch1": "Bod 1",
+                    "branch2": "Bod 2",
+                    "symptoms": "Příznaky",
+                    "normal": "Běžně",
+                    "adverse": "Nepříznivé okolnosti",
+                    "flying": "Let"
+                },
+                "stepTitle": {
+                    "addDelay": "Přičti zdržení",
+                    "readNew": "Přečti nový postup",
+                    "decide": "Rozhodni: zpět do 5 min?",
+                    "report": "Nahlas to",
+                    "stopLonger": "Zastávka 1,5× delší",
+                    "oxygen": "Kyslík na hladině",
+                    "watch": "Sleduj příznaky",
+                    "symptoms": "Příznaky dekompresní nemoci",
+                    "noDecoStop": "Bez povinné zastávky",
+                    "noteAdverse": "Pravidlo pod tabulkou",
+                    "rowBelow": "O řádek níž",
+                    "noteFlying": "Poznámka o létání",
+                    "readStop": "Přečti dekompresi"
+                },
+                "steps": {
+                    "addDelay": "Výstup se zdržel o <strong>{delay} min</strong>. Zdržení přičteme k době ponoru: <strong>{time} + {delay} = {total} min</strong> a pokračujeme stejným řádkem doprava. První buňka ≥ {total} min: <strong>{cellTime} min</strong>.",
+                    "sameCell": "{total} min se ještě vejde do stejné buňky <strong>{cellTime} min</strong>.",
+                    "readNew": "Nový postup podle buňky {cellTime} min: {stopText}. Skupina pod sloupcem: <strong>{group}</strong>.",
+                    "verdict": {
+                        "sameProcedure": "Postup se nemění.",
+                        "becameDeco": "Kvůli zdržení je z ponoru <strong>dekompresní ponor</strong>.",
+                        "longerStop": "Zastávka v 5 m se prodlužuje z {from} na <strong>{to} min</strong>.",
+                        "sameStopNewGroup": "Dekomprese se nemění, ale skupina po ponoru je teď <strong>{group}</strong> (místo {oldGroup}) — s ní počítej u opakovaného ponoru."
+                    },
+                    "intro": {
+                        "omitted": "Potápěč vynechal nebo zkrátil zastávku {stop} min v 5 m.",
+                        "fast": "Potápěč vystoupal příliš rychle. Návod SPČR to řeší stejně jako vynechanou dekompresi."
+                    },
+                    "decide": {
+                        "canReturn": "Je bez příznaků a do <strong>5 min</strong> se dokáže vrátit na zastávku → platí <strong>bod 1</strong>.",
+                        "cannotReturn": "Do 5 min se s dýchacím přístrojem na zastávku vrátit nedokáže → platí <strong>bod 2</strong>.",
+                        "symptoms": "Bod 1 platí jen pro potápěče bez příznaků. S příznaky dekompresní nemoci se postupuje podle <strong>bodu 2c</strong>."
+                    },
+                    "report": "Vynechanou dekompresi ohlásí vedoucímu ponoru (na hladině).",
+                    "stopLonger": "Vrátí se na zastávku a zůstane tam 1,5násobek původní doby: <strong>{stop} × 1,5 = {raw} → {total} min v 5 m</strong> (zaokrouhleno nahoru na celé minuty, jako v tabulce).",
+                    "oxygen": "Na hladině dýchá podle možností <strong>čistý kyslík nejméně 60 min</strong>.",
+                    "watch": {
+                        "noSymptoms": "Bez příznaků během kyslíku ani po něm: <strong>pod dohledem a nepotápět se nejméně 12 h</strong>.",
+                        "symptoms": "Příznaky během kyslíku nebo po něm: <strong>s kyslíkem transport do nejbližšího zdravotnického zařízení</strong>."
+                    },
+                    "symptomsPath": "Bod 2c: <strong>s kyslíkem transport do nejbližšího zdravotnického zařízení</strong>.",
+                    "firstAid": "Příznaky dekompresní nemoci (kromě kožní formy) se musí léčit v barokomoře. Do příjezdu pomoci: kyslík, tekutiny 1 l za hodinu, půl tablety Aspirinu, žádné léky tlumící bolest.",
+                    "noDecoStop": "Tento ponor nemá povinnou dekompresní zastávku, jen bezpečnostní 5 m / 3 min. Návod SPČR popisuje postup jen pro ponor s povinnou dekompresní zastávkou — zeptej se instruktora.",
+                    "noteAdverse": "Pod tabulkou stojí: <em>„Za nepříznivých okolností pro dekompresní proces hledat v tabulce hloubku o jeden řádek nižší.“</em>",
+                    "factors": "Platí to pro tebe: {factors}.",
+                    "rowBelow": "Místo řádku <strong>{from} m</strong> použij řádek o jeden níž: <strong>{to} m</strong>.",
+                    "flying": {
+                        "single": "Po <strong>jednom ponoru</strong> letět letadlem s přetlakovou kabinou nejdřív za <strong>12 h</strong>.",
+                        "repeat": "Po <strong>opakovaných nebo vícedenních</strong> ponorech letět nejdřív za <strong>24 h</strong>."
+                    },
+                    "readAdverse": "Buňka {cellTime} min: {stopText}. Skupinu pro opakovaný ponor návod pro nepříznivé okolnosti neuvádí — zeptej se instruktora."
+                },
+                "log": {
+                    "delay": "+{delay} min zdržení",
+                    "oxygen": "O₂ ≥ 60 min",
+                    "transport": "O₂ + transport",
+                    "row": "řádek {depth} m"
+                },
+                "result": {
+                    "replay": "Projít znovu",
+                    "delayTitle": "Zdržení při výstupu — nový postup",
+                    "colCase": "Případ",
+                    "colTime": "Doba",
+                    "colCell": "Buňka",
+                    "colDeco": "Dekomprese",
+                    "colGroup": "Skupina",
+                    "colNdl": "Max. doba bez dekomprese",
+                    "rowPlan": "Původní plán",
+                    "rowDelayed": "Se zdržením",
+                    "omittedTitle": "Vynechaná dekomprese — postup",
+                    "branch1Head": "Bez příznaků a do 5 min zpět na zastávce",
+                    "branch2Head": "Do 5 min se s dýchacím přístrojem na zastávku vrátit nedokáže",
+                    "notApplicable": "(v tomto případě neplatí)",
+                    "adverseTitle": "Nepříznivé okolnosti — o řádek níž",
+                    "rowNormal": "Běžně (řádek {depth} m)",
+                    "rowAdverse": "Nepříznivé okolnosti (řádek {depth} m)",
+                    "factors": "Okolnosti: {factors}.",
+                    "computer": "U počítače nastav podle návodu předem vyšší stupeň konzervatismu.",
+                    "flyingTitle": "Nelétat {hours} h",
+                    "flyingNote": "Platí pro letadlo s přetlakovou kabinou, podle počítače nebo tabulek. Rychlý pokles tlaku (letadlo, hory) je i mezi nepříznivými okolnostmi.",
+                    "symptomsHead": "<strong>S příznaky dekompresní nemoci</strong> (i když se do 5 min vrátit dokáže) bod 1 neplatí → postup podle <strong>bodu 2c</strong>: kyslík a transport do zdravotnického zařízení.",
+                    "groupAsk": "neuvedena — zeptej se instruktora"
+                },
+                "errors": {
+                    "delayOutOfRange": "Doba se zdržením {total} min je v řádku {depth} m mimo rozsah těchto tabulek (návod odkazuje na tabulky US Navy).",
+                    "noRowBelow": "Řádek {depth} m je v tabulce poslední — o řádek níž už nic není, takový ponor s těmito tabulkami nenaplánuješ.",
+                    "invalidDelay": "Zadej zdržení alespoň 1 min.",
+                    "adverseOutOfRange": "O řádek níž, v řádku {depth} m, je doba {total} min mimo rozsah těchto tabulek (návod odkazuje na tabulky US Navy).",
+                    "invalid": "Zadej kladnou hloubku a čas na dně."
+                }
             }
         }
+    },
+    "diveLog": {
+        "pageTitle": "Deník ponorů",
+        "subtitle": "Otevřete ponory z počítače Divesoft a prohlédněte si je v grafu profilu, P-P diagramu a grafu GF. Změnou GF uvidíte, kde by ležely limity.",
+        "disclaimerBanner": "<strong>Pouze pro výuku</strong> — Přehrává ponory zaznamenané počítačem přes model DecoTheory. Nenahrazuje váš potápěčský počítač.",
+        "disclaimer": "<strong>Upozornění:</strong> Pouze pro výuku. Každý ponor začíná z odsyceného stavu; dřívější ponory téhož dne se nezapočítávají.",
+        "openFolder": "Otevřít složku DIVELOG",
+        "openFiles": "nebo vybrat soubory .DLF",
+        "demoNote": "Zobrazují se ukázkové ponory. Výše otevřete svou složku DIVELOG.",
+        "noDives": "Žádné záznamy ponorů. Vyberte složku DIVELOG z počítače nebo její soubory .DLF.",
+        "unreadable": "Soubor {0} nelze přečíst: {1}",
+        "colDive": "#",
+        "colStart": "Začátek (čas počítače)",
+        "colDepth": "Max. hloubka",
+        "colDuration": "Doba",
+        "colMode": "Režim",
+        "colGf": "GF",
+        "colWater": "Voda",
+        "colWarnings": "Upozornění",
+        "gfHeading": "Gradient faktory",
+        "resetGf": "Vrátit GF počítače",
+        "summaryHeading": "Při tomto GF",
+        "peakGf": "Nejvyšší GF tkáně během ponoru",
+        "peakGfValue": "{0} (kompartment {1} v {2}\u00a0min)",
+        "surfaceGf": "Povrchový GF na konci",
+        "surfaceGfNone": "žádná tkáň není přesycená",
+        "surfaceGfValue": "{0} (kompartment {1})",
+        "aboveCeiling": "Čas nad stropem",
+        "aboveCeilingValue": "{0} (až {1}\u00a0m nad stropem)",
+        "aboveCeilingNone": "žádný — ponor zůstal pod stropem",
+        "decoObligation": "Dekompresní povinnost",
+        "decoValue": "nejhlubší strop {0}\u00a0m, od {1} do {2}\u00a0min",
+        "noDeco": "bez dekomprese",
+        "gfDiffers": "GF {0}/{1} se liší od GF {2}/{3}, který použil počítač. Jeho čárkovaný strop stále odpovídá jeho GF.",
+        "nonOcNote": "Analýza zatím podporuje jen ponory na otevřeném okruhu (tento ponor: {0}).",
+        "noSamplesNote": "Tento záznam nemá hloubkový profil.",
+        "deviceCeilingLabel": "Strop podle počítače, GF {0}/{1} (m)",
+        "helpHeading": "Jak se stropy liší",
+        "helpText": "Plný strop počítá DecoTheory pro zvolený GF: drží GF Low až do začátku výstupu a pak přechází ke GF High. Čárkovaný strop zaznamenal počítač se svým GF a podle svého pravidla; při dekompresních ponorech během výstupu obvykle mizí rychleji. Změna GF nemění vaše tkáně — jen to, kde leží limit."
     },
     "quiz": {
         "languageNotice": "🇨🇿 Otázky jsou v <strong>češtině</strong> a odpovídají oficiálním materiálům ke zkouškám CMAS/SPČR. Překladu jsme se vyhnuli, abychom předešli chybám v odborné terminologii.",

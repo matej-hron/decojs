@@ -1,0 +1,1732 @@
+{
+ "00000092": {
+  "start": "2026-07-17T07:31:51",
+  "duration": 1644,
+  "maxDepth": 13.24,
+  "minTemp": 11.9,
+  "mode": "oc",
+  "surfacePressure": 0.9607,
+  "waterSetting": "salt",
+  "gfLow": 60,
+  "gfHigh": 90,
+  "gfAlt": [
+   80,
+   95
+  ],
+  "serial": "7044-00006107",
+  "firmware": "1.16.1",
+  "hardware": "3.0",
+  "gases": [
+   "21/0"
+  ],
+  "sampleCount": 319,
+  "duplicateSeconds": 1,
+  "timeBacksteps": 0,
+  "points": [
+   {
+    "t": 0,
+    "depth": 1.94,
+    "temp": 21.8,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 0
+   },
+   {
+    "t": 93,
+    "depth": 2.88,
+    "temp": 21.6,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 131,
+    "depth": 3.99,
+    "temp": 21.3,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 195,
+    "depth": 5.45,
+    "temp": 20.6,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 459,
+    "depth": 5.9,
+    "temp": 19.6,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 600,
+    "depth": 7.15,
+    "temp": 18.6,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 634,
+    "depth": 8.24,
+    "temp": 18.2,
+    "ceiling": 0,
+    "ndl": 832,
+    "tts": 1
+   },
+   {
+    "t": 679,
+    "depth": 9.37,
+    "temp": 17.4,
+    "ceiling": 0,
+    "ndl": 546,
+    "tts": 1
+   },
+   {
+    "t": 750,
+    "depth": 10.65,
+    "temp": 16.1,
+    "ceiling": 0,
+    "ndl": 223,
+    "tts": 1
+   },
+   {
+    "t": 870,
+    "depth": 11.76,
+    "temp": 14,
+    "ceiling": 0,
+    "ndl": 147,
+    "tts": 2
+   },
+   {
+    "t": 1076,
+    "depth": 10.22,
+    "temp": 13.1,
+    "ceiling": 0,
+    "ndl": 237,
+    "tts": 1
+   },
+   {
+    "t": 1282,
+    "depth": 13.18,
+    "temp": 12.2,
+    "ceiling": 0,
+    "ndl": 95,
+    "tts": 2
+   },
+   {
+    "t": 1440,
+    "depth": 5.37,
+    "temp": 14.3,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   }
+  ],
+  "events": [
+   {
+    "t": 0,
+    "type": "gasSwitch",
+    "gasId": "g0"
+   },
+   {
+    "t": 1551,
+    "type": "safetyStopMissed"
+   },
+   {
+    "t": 1611,
+    "type": "safetyStopDone"
+   }
+  ]
+ },
+ "00000093": {
+  "start": "2026-07-17T08:22:29",
+  "duration": 398,
+  "maxDepth": 4.05,
+  "minTemp": 21,
+  "mode": "oc",
+  "surfacePressure": 0.9562,
+  "waterSetting": "salt",
+  "gfLow": 60,
+  "gfHigh": 90,
+  "gfAlt": [
+   80,
+   95
+  ],
+  "serial": "7044-00006107",
+  "firmware": "1.16.1",
+  "hardware": "3.0",
+  "gases": [
+   "21/0"
+  ],
+  "sampleCount": 52,
+  "duplicateSeconds": 0,
+  "timeBacksteps": 0,
+  "points": [
+   {
+    "t": 0,
+    "depth": 1.6,
+    "temp": 22.1,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 0
+   },
+   {
+    "t": 264,
+    "depth": 3.31,
+    "temp": 21.2,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 392,
+    "depth": 0.37,
+    "temp": 21,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 0
+   }
+  ],
+  "events": [
+   {
+    "t": 0,
+    "type": "gasSwitch",
+    "gasId": "g0"
+   }
+  ]
+ },
+ "00000094": {
+  "start": "2026-07-17T08:39:42",
+  "duration": 1780,
+  "maxDepth": 18.64,
+  "minTemp": 9.2,
+  "mode": "oc",
+  "surfacePressure": 0.9618,
+  "waterSetting": "salt",
+  "gfLow": 60,
+  "gfHigh": 90,
+  "gfAlt": [
+   80,
+   95
+  ],
+  "serial": "7044-00006107",
+  "firmware": "1.16.1",
+  "hardware": "3.0",
+  "gases": [
+   "21/0"
+  ],
+  "sampleCount": 290,
+  "duplicateSeconds": 0,
+  "timeBacksteps": 0,
+  "points": [
+   {
+    "t": 0,
+    "depth": 1.91,
+    "temp": 21.8,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 0
+   },
+   {
+    "t": 50,
+    "depth": 3.75,
+    "temp": 21.6,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 83,
+    "depth": 6.91,
+    "temp": 21.2,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 113,
+    "depth": 9.93,
+    "temp": 20.2,
+    "ceiling": 0,
+    "ndl": 319,
+    "tts": 1
+   },
+   {
+    "t": 139,
+    "depth": 14.25,
+    "temp": 18.8,
+    "ceiling": 0,
+    "ndl": 107,
+    "tts": 2
+   },
+   {
+    "t": 199,
+    "depth": 16.51,
+    "temp": 14.7,
+    "ceiling": 0,
+    "ndl": 56,
+    "tts": 2
+   },
+   {
+    "t": 237,
+    "depth": 17.65,
+    "temp": 12.9,
+    "ceiling": 0,
+    "ndl": 40,
+    "tts": 2
+   },
+   {
+    "t": 454,
+    "depth": 14.09,
+    "temp": 9.2,
+    "ceiling": 0,
+    "ndl": 72,
+    "tts": 2
+   },
+   {
+    "t": 722,
+    "depth": 16.08,
+    "temp": 11.4,
+    "ceiling": 0,
+    "ndl": 50,
+    "tts": 2
+   },
+   {
+    "t": 948,
+    "depth": 10.47,
+    "temp": 10.8,
+    "ceiling": 0,
+    "ndl": 198,
+    "tts": 1
+   },
+   {
+    "t": 1456,
+    "depth": 10.93,
+    "temp": 11.6,
+    "ceiling": 0,
+    "ndl": 141,
+    "tts": 1
+   },
+   {
+    "t": 1694,
+    "depth": 3.66,
+    "temp": 17.2,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   }
+  ],
+  "events": [
+   {
+    "t": 0,
+    "type": "gasSwitch",
+    "gasId": "g0"
+   },
+   {
+    "t": 1708,
+    "type": "safetyStopMissed"
+   },
+   {
+    "t": 1767,
+    "type": "safetyStopDone"
+   }
+  ]
+ },
+ "00000095": {
+  "start": "2026-07-17T11:29:41",
+  "duration": 1872,
+  "maxDepth": 12.95,
+  "minTemp": 13,
+  "mode": "oc",
+  "surfacePressure": 0.956,
+  "waterSetting": "salt",
+  "gfLow": 60,
+  "gfHigh": 90,
+  "gfAlt": [
+   80,
+   95
+  ],
+  "serial": "7044-00006107",
+  "firmware": "1.16.1",
+  "hardware": "3.0",
+  "gases": [
+   "21/0"
+  ],
+  "sampleCount": 273,
+  "duplicateSeconds": 1,
+  "timeBacksteps": 0,
+  "points": [
+   {
+    "t": 0,
+    "depth": 1.52,
+    "temp": 21.8,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 0
+   },
+   {
+    "t": 28,
+    "depth": 4.24,
+    "temp": 21.7,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 72,
+    "depth": 6.08,
+    "temp": 21.2,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 497,
+    "depth": 5.23,
+    "temp": 19.5,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 791,
+    "depth": 6.89,
+    "temp": 19.3,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 1063,
+    "depth": 7.57,
+    "temp": 19,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 1097,
+    "depth": 9.46,
+    "temp": 18.3,
+    "ceiling": 0,
+    "ndl": 594,
+    "tts": 1
+   },
+   {
+    "t": 1132,
+    "depth": 10.91,
+    "temp": 17.3,
+    "ceiling": 0,
+    "ndl": 207,
+    "tts": 1
+   },
+   {
+    "t": 1381,
+    "depth": 11.43,
+    "temp": 14.6,
+    "ceiling": 0,
+    "ndl": 168,
+    "tts": 1
+   },
+   {
+    "t": 1410,
+    "depth": 12.8,
+    "temp": 14.2,
+    "ceiling": 0,
+    "ndl": 111,
+    "tts": 2
+   },
+   {
+    "t": 1617,
+    "depth": 5.81,
+    "temp": 14.9,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   }
+  ],
+  "events": [
+   {
+    "t": 0,
+    "type": "gasSwitch",
+    "gasId": "g0"
+   },
+   {
+    "t": 1799,
+    "type": "safetyStopDone"
+   }
+  ]
+ },
+ "00000096": {
+  "start": "2026-07-18T03:37:15",
+  "duration": 3763,
+  "maxDepth": 12.29,
+  "minTemp": 13.2,
+  "mode": "oc",
+  "surfacePressure": 0.9613,
+  "waterSetting": "salt",
+  "gfLow": 60,
+  "gfHigh": 90,
+  "gfAlt": [
+   80,
+   95
+  ],
+  "serial": "7044-00006107",
+  "firmware": "1.16.1",
+  "hardware": "3.0",
+  "gases": [
+   "21/0"
+  ],
+  "sampleCount": 363,
+  "duplicateSeconds": 0,
+  "timeBacksteps": 0,
+  "points": [
+   {
+    "t": 0,
+    "depth": 2.37,
+    "temp": 21.9,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 0
+   },
+   {
+    "t": 345,
+    "depth": 2.6,
+    "temp": 21.9,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 438,
+    "depth": 3.57,
+    "temp": 21.4,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 490,
+    "depth": 4.73,
+    "temp": 21.1,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 579,
+    "depth": 5.5,
+    "temp": 20.3,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 647,
+    "depth": 7.56,
+    "temp": 19.8,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 750,
+    "depth": 7.24,
+    "temp": 18.3,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 979,
+    "depth": 9.02,
+    "temp": 17.8,
+    "ceiling": 0,
+    "ndl": 514,
+    "tts": 1
+   },
+   {
+    "t": 1654,
+    "depth": 5.93,
+    "temp": 18.6,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 2393,
+    "depth": 6.1,
+    "temp": 18.5,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 2871,
+    "depth": 9.25,
+    "temp": 17.1,
+    "ceiling": 0,
+    "ndl": 476,
+    "tts": 1
+   },
+   {
+    "t": 2922,
+    "depth": 10.94,
+    "temp": 16.3,
+    "ceiling": 0,
+    "ndl": 274,
+    "tts": 1
+   },
+   {
+    "t": 3026,
+    "depth": 12.27,
+    "temp": 14.3,
+    "ceiling": 0,
+    "ndl": 124,
+    "tts": 2
+   },
+   {
+    "t": 3311,
+    "depth": 4.95,
+    "temp": 16.7,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 3718,
+    "depth": 4.61,
+    "temp": 19.1,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   }
+  ],
+  "events": [
+   {
+    "t": 0,
+    "type": "gasSwitch",
+    "gasId": "g0"
+   },
+   {
+    "t": 3425,
+    "type": "safetyStopDone"
+   }
+  ]
+ },
+ "00000097": {
+  "start": "2026-07-18T08:11:41",
+  "duration": 2728,
+  "maxDepth": 18.83,
+  "minTemp": 8.1,
+  "mode": "oc",
+  "surfacePressure": 0.9739,
+  "waterSetting": "salt",
+  "gfLow": 60,
+  "gfHigh": 90,
+  "gfAlt": [
+   80,
+   95
+  ],
+  "serial": "7044-00006107",
+  "firmware": "1.16.1",
+  "hardware": "3.0",
+  "gases": [
+   "21/0"
+  ],
+  "sampleCount": 379,
+  "duplicateSeconds": 0,
+  "timeBacksteps": 0,
+  "points": [
+   {
+    "t": 0,
+    "depth": 1.48,
+    "temp": 21.5,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 0
+   },
+   {
+    "t": 34,
+    "depth": 2.75,
+    "temp": 21.3,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 107,
+    "depth": 4.05,
+    "temp": 21.2,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 142,
+    "depth": 5.54,
+    "temp": 21,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 168,
+    "depth": 7.87,
+    "temp": 20.7,
+    "ceiling": 0,
+    "ndl": 922,
+    "tts": 1
+   },
+   {
+    "t": 193,
+    "depth": 10.21,
+    "temp": 19.9,
+    "ceiling": 0,
+    "ndl": 403,
+    "tts": 1
+   },
+   {
+    "t": 231,
+    "depth": 12.13,
+    "temp": 18.2,
+    "ceiling": 0,
+    "ndl": 163,
+    "tts": 2
+   },
+   {
+    "t": 257,
+    "depth": 15.08,
+    "temp": 16.7,
+    "ceiling": 0,
+    "ndl": 103,
+    "tts": 2
+   },
+   {
+    "t": 311,
+    "depth": 17.15,
+    "temp": 13.7,
+    "ceiling": 0,
+    "ndl": 52,
+    "tts": 2
+   },
+   {
+    "t": 429,
+    "depth": 18.62,
+    "temp": 10.2,
+    "ceiling": 0,
+    "ndl": 38,
+    "tts": 2
+   },
+   {
+    "t": 697,
+    "depth": 16.48,
+    "temp": 8.3,
+    "ceiling": 0,
+    "ndl": 50,
+    "tts": 2
+   },
+   {
+    "t": 987,
+    "depth": 11.85,
+    "temp": 11.1,
+    "ceiling": 0,
+    "ndl": 146,
+    "tts": 1
+   },
+   {
+    "t": 1419,
+    "depth": 8.92,
+    "temp": 13.1,
+    "ceiling": 0,
+    "ndl": 462,
+    "tts": 1
+   },
+   {
+    "t": 1920,
+    "depth": 9.34,
+    "temp": 14.9,
+    "ceiling": 0,
+    "ndl": 346,
+    "tts": 1
+   },
+   {
+    "t": 2396,
+    "depth": 8.3,
+    "temp": 17,
+    "ceiling": 0,
+    "ndl": 733,
+    "tts": 1
+   },
+   {
+    "t": 2721,
+    "depth": 1.3,
+    "temp": 19.3,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 0
+   }
+  ],
+  "events": [
+   {
+    "t": 0,
+    "type": "gasSwitch",
+    "gasId": "g0"
+   },
+   {
+    "t": 2668,
+    "type": "safetyStopMissed"
+   }
+  ]
+ },
+ "00000098": {
+  "start": "2026-07-18T11:41:57",
+  "duration": 3350,
+  "maxDepth": 13.19,
+  "minTemp": 13.2,
+  "mode": "oc",
+  "surfacePressure": 0.9693,
+  "waterSetting": "salt",
+  "gfLow": 60,
+  "gfHigh": 90,
+  "gfAlt": [
+   80,
+   95
+  ],
+  "serial": "7044-00006107",
+  "firmware": "1.16.1",
+  "hardware": "3.0",
+  "gases": [
+   "21/0"
+  ],
+  "sampleCount": 463,
+  "duplicateSeconds": 0,
+  "timeBacksteps": 0,
+  "points": [
+   {
+    "t": 0,
+    "depth": 1.51,
+    "temp": 21.3,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 0
+   },
+   {
+    "t": 70,
+    "depth": 3.1,
+    "temp": 21.2,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 120,
+    "depth": 4.27,
+    "temp": 21,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 147,
+    "depth": 6.18,
+    "temp": 20.9,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 469,
+    "depth": 6.32,
+    "temp": 18.7,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 726,
+    "depth": 7.87,
+    "temp": 18.5,
+    "ceiling": 0,
+    "ndl": 872,
+    "tts": 1
+   },
+   {
+    "t": 781,
+    "depth": 10.68,
+    "temp": 17.8,
+    "ceiling": 0,
+    "ndl": 353,
+    "tts": 1
+   },
+   {
+    "t": 1153,
+    "depth": 8.96,
+    "temp": 13.5,
+    "ceiling": 0,
+    "ndl": 394,
+    "tts": 1
+   },
+   {
+    "t": 1411,
+    "depth": 3.95,
+    "temp": 17.9,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 1558,
+    "depth": 4.67,
+    "temp": 19.6,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 1714,
+    "depth": 1.07,
+    "temp": 19.4,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 1950,
+    "depth": 5.13,
+    "temp": 19.6,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 2241,
+    "depth": 3.23,
+    "temp": 20.4,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 2345,
+    "depth": 11.64,
+    "temp": 18.5,
+    "ceiling": 0,
+    "ndl": 161,
+    "tts": 1
+   },
+   {
+    "t": 2377,
+    "depth": 12.89,
+    "temp": 16.9,
+    "ceiling": 0,
+    "ndl": 117,
+    "tts": 2
+   },
+   {
+    "t": 2660,
+    "depth": 10.91,
+    "temp": 13.2,
+    "ceiling": 0,
+    "ndl": 177,
+    "tts": 1
+   },
+   {
+    "t": 2816,
+    "depth": 5.99,
+    "temp": 16.1,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 2983,
+    "depth": 2.32,
+    "temp": 18.6,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 3250,
+    "depth": 4.27,
+    "temp": 19.6,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   }
+  ],
+  "events": [
+   {
+    "t": 0,
+    "type": "gasSwitch",
+    "gasId": "g0"
+   },
+   {
+    "t": 1418,
+    "type": "safetyStopMissed"
+   },
+   {
+    "t": 2919,
+    "type": "safetyStopMissed"
+   },
+   {
+    "t": 2926,
+    "type": "safetyStopMissed"
+   },
+   {
+    "t": 2972,
+    "type": "safetyStopMissed"
+   },
+   {
+    "t": 2980,
+    "type": "safetyStopMissed"
+   }
+  ]
+ },
+ "00000099": {
+  "start": "2006-07-19T09:59:05",
+  "duration": 5392,
+  "maxDepth": 24.31,
+  "minTemp": 6.5,
+  "mode": "oc",
+  "surfacePressure": 0.9726,
+  "waterSetting": "salt",
+  "gfLow": 60,
+  "gfHigh": 90,
+  "gfAlt": [
+   80,
+   95
+  ],
+  "serial": "7044-00006107",
+  "firmware": "1.16.1",
+  "hardware": "3.0",
+  "gases": [
+   "21/0"
+  ],
+  "sampleCount": 825,
+  "duplicateSeconds": 1,
+  "timeBacksteps": 0,
+  "points": [
+   {
+    "t": 0,
+    "depth": 2.06,
+    "temp": 21.4,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 0
+   },
+   {
+    "t": 435,
+    "depth": 2.39,
+    "temp": 20.8,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 461,
+    "depth": 4.61,
+    "temp": 20.8,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 491,
+    "depth": 5.62,
+    "temp": 20.7,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 626,
+    "depth": 6.41,
+    "temp": 19.8,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 807,
+    "depth": 0.22,
+    "temp": 19.2,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 1120,
+    "depth": 6.78,
+    "temp": 20.5,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 1273,
+    "depth": 3.15,
+    "temp": 20.4,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 1433,
+    "depth": 1.56,
+    "temp": 19.9,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 0
+   },
+   {
+    "t": 1657,
+    "depth": 5.91,
+    "temp": 19.9,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 1817,
+    "depth": 3.68,
+    "temp": 20.3,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 1857,
+    "depth": 8.96,
+    "temp": 20.1,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 1885,
+    "depth": 11.05,
+    "temp": 19,
+    "ceiling": 0,
+    "ndl": 240,
+    "tts": 1
+   },
+   {
+    "t": 1943,
+    "depth": 12.03,
+    "temp": 16.4,
+    "ceiling": 0,
+    "ndl": 164,
+    "tts": 2
+   },
+   {
+    "t": 2003,
+    "depth": 11.99,
+    "temp": 14.7,
+    "ceiling": 0,
+    "ndl": 131,
+    "tts": 2
+   },
+   {
+    "t": 2135,
+    "depth": 13.94,
+    "temp": 13.1,
+    "ceiling": 0,
+    "ndl": 90,
+    "tts": 2
+   },
+   {
+    "t": 2213,
+    "depth": 16.79,
+    "temp": 11.9,
+    "ceiling": 0,
+    "ndl": 62,
+    "tts": 2
+   },
+   {
+    "t": 2371,
+    "depth": 17.65,
+    "temp": 9.1,
+    "ceiling": 0,
+    "ndl": 39,
+    "tts": 2
+   },
+   {
+    "t": 2497,
+    "depth": 9.31,
+    "temp": 11,
+    "ceiling": 0,
+    "ndl": 431,
+    "tts": 1
+   },
+   {
+    "t": 2767,
+    "depth": 3.72,
+    "temp": 18.2,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 3160,
+    "depth": 3.33,
+    "temp": 20.7,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 3433,
+    "depth": 4.99,
+    "temp": 19.6,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 3734,
+    "depth": 0.76,
+    "temp": 20.4,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 0
+   },
+   {
+    "t": 3832,
+    "depth": 10.02,
+    "temp": 20,
+    "ceiling": 0,
+    "ndl": 535,
+    "tts": 1
+   },
+   {
+    "t": 3889,
+    "depth": 18.07,
+    "temp": 16.2,
+    "ceiling": 0,
+    "ndl": 40,
+    "tts": 2
+   },
+   {
+    "t": 4165,
+    "depth": 18.51,
+    "temp": 8.9,
+    "ceiling": 0,
+    "ndl": 30,
+    "tts": 2
+   },
+   {
+    "t": 4196,
+    "depth": 19.81,
+    "temp": 8.6,
+    "ceiling": 0,
+    "ndl": 25,
+    "tts": 2
+   },
+   {
+    "t": 4238,
+    "depth": 21.51,
+    "temp": 8.3,
+    "ceiling": 0,
+    "ndl": 20,
+    "tts": 2
+   },
+   {
+    "t": 4266,
+    "depth": 23.15,
+    "temp": 8,
+    "ceiling": 0,
+    "ndl": 15,
+    "tts": 3
+   },
+   {
+    "t": 4356,
+    "depth": 23.97,
+    "temp": 7.3,
+    "ceiling": 0,
+    "ndl": 12,
+    "tts": 3
+   },
+   {
+    "t": 4594,
+    "depth": 22.71,
+    "temp": 6.6,
+    "ceiling": 0,
+    "ndl": 10,
+    "tts": 3
+   },
+   {
+    "t": 4881,
+    "depth": 15.85,
+    "temp": 7,
+    "ceiling": 0,
+    "ndl": 25,
+    "tts": 2
+   },
+   {
+    "t": 5085,
+    "depth": 6.93,
+    "temp": 12.1,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   }
+  ],
+  "events": [
+   {
+    "t": 0,
+    "type": "gasSwitch",
+    "gasId": "g0"
+   },
+   {
+    "t": 807,
+    "type": "ascentTooFast"
+   },
+   {
+    "t": 807,
+    "type": "ascentTooFast"
+   },
+   {
+    "t": 2721,
+    "type": "safetyStopDone"
+   },
+   {
+    "t": 5288,
+    "type": "safetyStopDone"
+   }
+  ]
+ },
+ "00000100": {
+  "start": "2026-09-27T12:01:01",
+  "duration": 3109,
+  "maxDepth": 38.56,
+  "minTemp": 4.8,
+  "mode": "oc",
+  "surfacePressure": 0.9816,
+  "waterSetting": "salt",
+  "gfLow": 60,
+  "gfHigh": 90,
+  "gfAlt": [
+   80,
+   95
+  ],
+  "serial": "7044-00006107",
+  "firmware": "1.16.1",
+  "hardware": "3.0",
+  "gases": [
+   "21/0"
+  ],
+  "sampleCount": 682,
+  "duplicateSeconds": 1,
+  "timeBacksteps": 0,
+  "points": [
+   {
+    "t": 0,
+    "depth": 2.21,
+    "temp": 18.5,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 0
+   },
+   {
+    "t": 37,
+    "depth": 3.93,
+    "temp": 18.1,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 91,
+    "depth": 5.18,
+    "temp": 17.8,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 119,
+    "depth": 6.34,
+    "temp": 17.7,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 159,
+    "depth": 7.58,
+    "temp": 17.6,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 220,
+    "depth": 9.82,
+    "temp": 15.4,
+    "ceiling": 0,
+    "ndl": 397,
+    "tts": 1
+   },
+   {
+    "t": 267,
+    "depth": 11.17,
+    "temp": 13.5,
+    "ceiling": 0,
+    "ndl": 234,
+    "tts": 1
+   },
+   {
+    "t": 293,
+    "depth": 13.97,
+    "temp": 12.4,
+    "ceiling": 0,
+    "ndl": 106,
+    "tts": 2
+   },
+   {
+    "t": 318,
+    "depth": 16.56,
+    "temp": 11.2,
+    "ceiling": 0,
+    "ndl": 69,
+    "tts": 2
+   },
+   {
+    "t": 347,
+    "depth": 18.59,
+    "temp": 10.1,
+    "ceiling": 0,
+    "ndl": 42,
+    "tts": 2
+   },
+   {
+    "t": 375,
+    "depth": 20.93,
+    "temp": 9.2,
+    "ceiling": 0,
+    "ndl": 30,
+    "tts": 2
+   },
+   {
+    "t": 401,
+    "depth": 22.33,
+    "temp": 8.5,
+    "ceiling": 0,
+    "ndl": 23,
+    "tts": 3
+   },
+   {
+    "t": 494,
+    "depth": 23.06,
+    "temp": 6.9,
+    "ceiling": 0,
+    "ndl": 21,
+    "tts": 3
+   },
+   {
+    "t": 582,
+    "depth": 23.89,
+    "temp": 6.2,
+    "ceiling": 0,
+    "ndl": 17,
+    "tts": 3
+   },
+   {
+    "t": 629,
+    "depth": 25.49,
+    "temp": 5.9,
+    "ceiling": 0,
+    "ndl": 12,
+    "tts": 3
+   },
+   {
+    "t": 671,
+    "depth": 27.71,
+    "temp": 5.7,
+    "ceiling": 0,
+    "ndl": 9,
+    "tts": 3
+   },
+   {
+    "t": 696,
+    "depth": 30.8,
+    "temp": 5.6,
+    "ceiling": 0,
+    "ndl": 7,
+    "tts": 3
+   },
+   {
+    "t": 723,
+    "depth": 32.14,
+    "temp": 5.5,
+    "ceiling": 0,
+    "ndl": 5,
+    "tts": 4
+   },
+   {
+    "t": 784,
+    "depth": 33.36,
+    "temp": 5.2,
+    "ceiling": 0,
+    "ndl": 4,
+    "tts": 4
+   },
+   {
+    "t": 854,
+    "depth": 35.03,
+    "temp": 5.1,
+    "ceiling": 0,
+    "ndl": 2,
+    "tts": 4
+   },
+   {
+    "t": 879,
+    "depth": 37.29,
+    "temp": 5.1,
+    "ceiling": 0,
+    "ndl": 1,
+    "tts": 4
+   },
+   {
+    "t": 929,
+    "depth": 38.26,
+    "temp": 5,
+    "ceiling": 0,
+    "ndl": 0,
+    "tts": 4
+   },
+   {
+    "t": 1237,
+    "depth": 30.42,
+    "temp": 4.8,
+    "ceiling": 2.4,
+    "ndl": 0,
+    "tts": 4
+   },
+   {
+    "t": 1492,
+    "depth": 22.24,
+    "temp": 4.8,
+    "ceiling": 3,
+    "ndl": 0,
+    "tts": 6
+   },
+   {
+    "t": 1755,
+    "depth": 13.88,
+    "temp": 5.4,
+    "ceiling": 1.9,
+    "ndl": 0,
+    "tts": 5
+   },
+   {
+    "t": 2152,
+    "depth": 8.06,
+    "temp": 13.2,
+    "ceiling": 0,
+    "ndl": 867,
+    "tts": 1
+   },
+   {
+    "t": 2540,
+    "depth": 6.24,
+    "temp": 12.3,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 3025,
+    "depth": 0.97,
+    "temp": 17.1,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 0
+   }
+  ],
+  "events": [
+   {
+    "t": 0,
+    "type": "gasSwitch",
+    "gasId": "g0"
+   },
+   {
+    "t": 983,
+    "type": "ndlEnded"
+   },
+   {
+    "t": 2730,
+    "type": "safetyStopDone"
+   }
+  ]
+ },
+ "00000101": {
+  "start": "2026-09-27T16:21:22",
+  "duration": 3402,
+  "maxDepth": 10.1,
+  "minTemp": 13.8,
+  "mode": "oc",
+  "surfacePressure": 0.9941,
+  "waterSetting": "salt",
+  "gfLow": 60,
+  "gfHigh": 90,
+  "gfAlt": [
+   80,
+   95
+  ],
+  "serial": "7044-00006107",
+  "firmware": "1.16.1",
+  "hardware": "3.0",
+  "gases": [
+   "21/0"
+  ],
+  "sampleCount": 358,
+  "duplicateSeconds": 0,
+  "timeBacksteps": 0,
+  "points": [
+   {
+    "t": 0,
+    "depth": 1.39,
+    "temp": 20.8,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 0
+   },
+   {
+    "t": 67,
+    "depth": 2.14,
+    "temp": 19.9,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 189,
+    "depth": 2.78,
+    "temp": 19,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 236,
+    "depth": 3.82,
+    "temp": 18.7,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 275,
+    "depth": 4.76,
+    "temp": 18.5,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 313,
+    "depth": 5.84,
+    "temp": 18.3,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 356,
+    "depth": 6.74,
+    "temp": 18.2,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 407,
+    "depth": 7.55,
+    "temp": 18.1,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 558,
+    "depth": 8.52,
+    "temp": 17.7,
+    "ceiling": 0,
+    "ndl": 745,
+    "tts": 1
+   },
+   {
+    "t": 792,
+    "depth": 9.42,
+    "temp": 17.2,
+    "ceiling": 0,
+    "ndl": 454,
+    "tts": 1
+   },
+   {
+    "t": 1182,
+    "depth": 9.16,
+    "temp": 14.3,
+    "ceiling": 0,
+    "ndl": 453,
+    "tts": 1
+   },
+   {
+    "t": 1818,
+    "depth": 4.74,
+    "temp": 17.6,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 1993,
+    "depth": 0.42,
+    "temp": 18.2,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 0
+   },
+   {
+    "t": 2870,
+    "depth": 2.91,
+    "temp": 18,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   },
+   {
+    "t": 3327,
+    "depth": 2.41,
+    "temp": 18.1,
+    "ceiling": 0,
+    "ndl": null,
+    "tts": 1
+   }
+  ],
+  "events": [
+   {
+    "t": 0,
+    "type": "gasSwitch",
+    "gasId": "g0"
+   },
+   {
+    "t": 1886,
+    "type": "safetyStopMissed"
+   },
+   {
+    "t": 1902,
+    "type": "safetyStopDone"
+   }
+  ]
+ }
+}
