@@ -1,0 +1,34 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:05.002
+Dive profile tabs, part four: reading the Tissue Loading tab.
+
+00:00:05.152 --> 00:00:16.135
+Click Tissue Loading. Compartment 1, the fastest, is shown; tick 5 to compare a slower one, then go full screen.
+
+00:00:16.285 --> 00:00:24.640
+Solid lines are the nitrogen in each compartment, on the right axis. The purple dashed line is the nitrogen you breathe in.
+
+00:00:24.790 --> 00:00:31.443
+Below the purple line a tissue takes up nitrogen; above it, the tissue gives it off.
+
+00:00:31.593 --> 00:00:39.998
+On the bottom, compartment 1 almost catches up, at about 3.7 bar. Compartment 5 reaches only about 2.
+
+00:00:40.148 --> 00:00:50.502
+Compartment 1 starts off-gassing as soon as you ascend; compartment 5 only once the switch to EAN50 drops the purple line.
+
+00:00:50.652 --> 00:00:58.780
+The orange dashed line is ambient pressure. A tissue above it is supersaturated, as on the pressure–pressure diagram.
+
+00:00:58.930 --> 00:01:12.533
+On the surface, compartment 1 is already below the orange line, compartment 5 still above it: supersaturated. Both are above the purple line, so both keep off-gassing after the dive.
+
+00:01:12.683 --> 00:01:21.136
+Thin dotted lines are each compartment's ceiling, on the depth axis; the deepest of all sixteen is the Profile tab's ceiling.
+
+00:01:21.286 --> 00:01:26.690
+Compartments are a mathematical model, not real body tissues.
+
+00:01:26.840 --> 00:01:31.851
+That's all the tabs. Try them yourself in the sandbox. Thanks for watching!

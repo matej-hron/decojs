@@ -63,6 +63,14 @@ import {
 import { computeGasConsumption } from '../diveSetup.js';
 
 import { fmtNum } from '../format.js';
+
+/**
+ * Tank-pressure line colours, one per gas in order. None may reuse a colour that already
+ * means something on the chart: the depth blue, the AVG green, the gas-switch / pN₂ purple,
+ * or the orange of the stop labels and ambient line. (The second, usually the stage gas,
+ * used to get the depth blue #3498db.)
+ */
+export const GAS_LINE_COLORS = ['#e74c3c', '#34495e', '#16a085', '#7f8c8d', '#8e5a2b'];
 /**
  * DiveProfileChart - Embeddable dive profile visualization
  */
@@ -1021,7 +1029,7 @@ export class DiveProfileChart {
                 
                 const pressureData = results.compartments[comp.id].pressures;
                 datasets.push({
-                    label: fmt(translate('chart.mvalue.tcLabel', 'TC{0} ({1}\u00a0min)'), comp.id, comp.halfTime),
+                    label: fmt(translate('chart.mvalue.tcLabel', 'TC{0} ({1}\u00a0min)'), comp.id, fmtNum(comp.halfTime)),
                     data: results.timePoints.map((t, i) => ({
                         x: t,
                         y: pressureData[i]
@@ -1167,7 +1175,7 @@ export class DiveProfileChart {
         
         // Gas consumption (if enabled)
         if (this.options.showGasConsumption && gasConsumption) {
-            const gasColors = ['#e74c3c', '#3498db', '#27ae60', '#9b59b6', '#f39c12'];
+            const gasColors = GAS_LINE_COLORS;
             let colorIndex = 0;
             
             Object.entries(gasConsumption).forEach(([gasId, gasData]) => {
@@ -1393,6 +1401,9 @@ export class DiveProfileChart {
                     display: true,
                     content: translate('chart.profile.ppO2Working', 'pO₂ 1.4 (bottom)'),
                     position: 'end',
+                    // Below its line: the 1.6 label sits above its own, 0.2 bar higher,
+                    // so the two never overlap.
+                    yAdjust: 11,
                     font: { size: 9 }
                 }
             };
@@ -1409,6 +1420,7 @@ export class DiveProfileChart {
                     display: true,
                     content: translate('chart.profile.ppO2Deco', 'pO₂ 1.6 (deco)'),
                     position: 'end',
+                    yAdjust: -11,
                     font: { size: 9 }
                 }
             };
