@@ -147,6 +147,8 @@ create table public.dives (
 );
 
 alter table public.dives enable row level security;
+-- Needed when the project was created with "Automatically expose new tables" off:
+grant select, insert, update, delete on table public.dives to authenticated;
 
 create policy "owner reads and writes own dives" on public.dives
     for all to authenticated

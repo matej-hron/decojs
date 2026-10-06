@@ -31,7 +31,7 @@ This is a one-time setup. You need a Supabase account and a new project in the *
 
 1. Go to **Project Settings** → **API**.
 2. Copy your **Project URL** (e.g. `https://abcdefg.supabase.co`).
-3. Copy your **anon public key** (the public key, NOT the service role key).
+3. Copy your **Publishable key** (`sb_publishable_…`; older projects: anon public key). Never the service role / secret key.
 4. Open `js/backend/config.js` and fill in:
    ```js
    export const SUPABASE_URL = 'https://your-project.supabase.co';
