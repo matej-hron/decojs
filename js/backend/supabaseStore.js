@@ -35,6 +35,11 @@ function toSummaryRow(r) {
     };
 }
 
+/** `2026-09-27T12:01:01` becomes `20260927120101` (part of the storage path, so each dive has its own file). */
+function compactStart(local) {
+    return String(local).replace(/[-:T]/g, '');
+}
+
 /**
  * @param {Object} client - A Supabase client (supabase.createClient(url, anonKey))
  * @returns {Object} DiveStore
@@ -79,7 +84,7 @@ export function createSupabaseStore(client) {
         },
 
         async listDives() {
-            const { data, error } = await client.from(TABLE).select(LIST_COLUMNS).order('start_local');
+            const { data, error } = await client.from(TABLE).select(LIST_COLUMNS).order('dive_number').order('start_local');
             if (error) throw fail(error);
             return data.map(toSummaryRow);
         },
@@ -97,7 +102,7 @@ export function createSupabaseStore(client) {
             for (const it of items) {
                 const fileName = it.dive.source.fileName ?? `${it.dive.source.diveNumber ?? 'dive'}.DLF`;
                 const serial = it.dive.device?.serial ?? 'unknown';
-                const path = `${user.id}/${serial}/${fileName}`;
+                const path = `${user.id}/${serial}/${compactStart(it.dive.start.local)}_${fileName}`;
                 const upload = await client.storage.from(BUCKET).upload(path, it.bytes, {
                     upsert: true, contentType: 'application/octet-stream',
                 });
@@ -142,10 +147,17 @@ export function createSupabaseStore(client) {
         },
 
         async exportAll() {
-            const { data, error } = await client.from(TABLE).select('file_path, record').order('start_local');
+            const { data, error } = await client.from(TABLE).select('file_path, start_local, record')
+                .order('dive_number').order('start_local');
             if (error) throw fail(error);
             const files = [];
-            for (const r of data) files.push({ name: r.file_path.split('/').pop(), bytes: await readFile(r.file_path) });
+            const used = new Set();
+            for (const r of data) {
+                let name = r.record?.source?.fileName ?? r.file_path.split('/').pop();
+                if (used.has(name)) name = `${compactStart(r.start_local)}_${name}`;
+                used.add(name);
+                files.push({ name, bytes: await readFile(r.file_path) });
+            }
             return { files, dives: data.map(r => r.record) };
         },
     };

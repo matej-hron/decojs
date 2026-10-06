@@ -2863,6 +2863,8 @@
         "startNotChainable": "inicio limpio — una inmersión anterior no se puede modelar",
         "startDisabled": "inicio limpio — se ignoran las inmersiones anteriores",
         "startFirst": "inicio limpio — no hay ninguna inmersión anterior cargada",
+        "mode": {"oc": "OC", "ccr": "CCR", "scr": "SCR", "gauge": "Profundímetro", "freedive": "Apnea", "unknown": "Desconocido"},
+        "water": {"salt": "Salada", "fresh": "Dulce"},
         "backend": {
             "loginHeading": "Tu diario de inmersiones",
             "emailLabel": "Correo electrónico",

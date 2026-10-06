@@ -10,7 +10,7 @@ import { parseDivesoftDLF, PARSER_VERSION } from '../js/import/divesoftDlf.js';
 import { diveKey, sha256Hex, listSummary, planSync } from '../js/backend/sync.js';
 import { createSupabaseStore, DiveStoreError } from '../js/backend/supabaseStore.js';
 import { getDiveStore } from '../js/backend/diveStore.js';
-import { loadDiveFiles, summaryToListDive, chainWindow, canAnalyze } from '../js/components/RecordedDiveAnalysis.js';
+import { loadDiveFiles, summaryToListDive, chainWindow, canAnalyze, codeLabel, diveNumberLabel, translateStatic } from '../js/components/RecordedDiveAnalysis.js';
 
 const FIXTURES = new URL('./fixtures/divesoft/', import.meta.url);
 const bytesOf = id => new Uint8Array(readFileSync(new URL(`${id}.DLF`, FIXTURES)));
@@ -106,7 +106,7 @@ function fakeClient({ user = { id: 'u1', email: 'me@example.com' }, rows = [], f
         const q = {
             _filters: [], _select: '*',
             select(cols) { this._select = cols; return this; },
-            order() { return this; },
+            order(col) { calls.push(['order', col]); return this; },
             eq(col, val) { this._filters.push([col, val]); return this; },
             single() { this._single = true; return this; },
             async then(resolve) {
@@ -161,7 +161,7 @@ describe('createSupabaseStore', () => {
         assert.deepEqual(report, { saved: 1, updated: 0, failed: [] });
         const [up, ups] = client.calls.filter(c => c[0] === 'upload' || c[0] === 'upsert');
         assert.equal(up[0], 'upload');
-        assert.equal(up[2], 'u1/7044-00006107/00000100.DLF');
+        assert.equal(up[2], 'u1/7044-00006107/20260927120101_00000100.DLF');
         assert.equal(up[3].upsert, true);
         assert.equal(ups[0], 'upsert');
         assert.equal(ups[3].onConflict, 'owner,device_serial,dive_number,start_local');
@@ -170,11 +170,24 @@ describe('createSupabaseStore', () => {
         assert.equal(r.device_serial, '7044-00006107');
         assert.equal(r.dive_number, 100);
         assert.equal(r.start_local, '2026-09-27T12:01:01');
-        assert.equal(r.file_path, 'u1/7044-00006107/00000100.DLF');
+        assert.equal(r.file_path, 'u1/7044-00006107/20260927120101_00000100.DLF');
         assert.equal(r.file_sha256, it.sha256);
         assert.equal(r.parser_version, 1);
         assert.deepEqual(r.summary, listSummary(it.dive));
         assert.equal(r.record.schema, 1);
+    });
+
+    test('two dives with the same number and different start never share a file', async () => {
+        const client = fakeClient();
+        const store = createSupabaseStore(client);
+        const a = await item('00000100');
+        const b = { ...a, dive: { ...a.dive, start: { ...a.dive.start, local: '2026-09-28T08:00:00' } } };
+        await store.saveDives([{ ...a, action: 'upload' }, { ...b, action: 'upload' }]);
+        const paths = client.calls.filter(c => c[0] === 'upload').map(c => c[2]);
+        assert.equal(new Set(paths).size, 2);
+        assert.equal(client.table.length, 2);
+        const out = await store.exportAll();
+        assert.deepEqual(out.files.map(f => f.name).sort(), ['20260928080000_00000100.DLF', '00000100.DLF'].sort());
     });
 
     test('a failed upload is reported and the rest continue', async () => {
@@ -196,6 +209,7 @@ describe('createSupabaseStore', () => {
         const [rowOut] = await store.listDives();
         assert.deepEqual(Object.keys(rowOut).sort(), ['deviceSerial', 'diveNumber', 'fileSha256', 'id', 'parserVersion', 'startLocal', 'summary']);
         assert.equal(rowOut.diveNumber, 100);
+        assert.deepEqual(client.calls.filter(c => c[0] === 'order').map(c => c[1]), ['dive_number', 'start_local']);
         const full = await store.loadDive(rowOut.id);
         assert.equal(full.maxDepth, 38.56);
         assert.equal(full.samples.length, it.dive.samples.length);
@@ -311,5 +325,37 @@ describe('chainWindow', () => {
         const later = mk('2026-09-28T12:00:00');
         const bad = mk('2026-09-26T13:00:00', ['implausible-date']);
         assert.deepEqual(chainWindow(target, [old, a, bad, target, later]), [a]);
+    });
+});
+
+describe('list labels', () => {
+    const tr = (key, fb) => ({ 'diveLog.mode.oc': 'OC', 'diveLog.water.salt': 'Slaná' }[key] ?? fb);
+    test('codeLabel translates known codes, keeps unknown ones, dashes absent ones', () => {
+        assert.equal(codeLabel('mode', 'oc', tr), 'OC');
+        assert.equal(codeLabel('water', 'salt', tr), 'Slaná');
+        assert.equal(codeLabel('water', 'brackish', tr), 'brackish');
+        assert.equal(codeLabel('water', null, tr), '–');
+    });
+
+    test('diveNumberLabel shows a dash for number 0 without a file name', () => {
+        assert.equal(diveNumberLabel({ source: { diveNumber: 0, fileName: null } }), '–');
+        assert.equal(diveNumberLabel({ source: { diveNumber: 0, fileName: 'a.DLF' } }), 'a.DLF');
+        assert.equal(diveNumberLabel({ source: { diveNumber: 7, fileName: 'a.DLF' } }), '7');
+        assert.equal(diveNumberLabel({ source: { diveNumber: null, fileName: 'a.DLF' } }), 'a.DLF');
+    });
+});
+
+describe('translateStatic', () => {
+    const el = (key, html) => {
+        const data = {};
+        return { dataset: data, innerHTML: html, getAttribute: () => key };
+    };
+    test('keeps the English fallback for later re-translations', () => {
+        const a = el('diveLog.helpText', '<b>x</b>');
+        const root = { querySelectorAll: () => [a] };
+        translateStatic(root, (k, fb) => `cs:${fb}`);
+        assert.equal(a.innerHTML, 'cs:<b>x</b>');
+        translateStatic(root, (k, fb) => fb);
+        assert.equal(a.innerHTML, '<b>x</b>');
     });
 });

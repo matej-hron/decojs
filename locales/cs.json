@@ -2899,6 +2899,8 @@
         "startNotChainable": "čistý start — dřívější ponor nelze namodelovat",
         "startDisabled": "čistý start — dřívější ponory se nezapočítávají",
         "startFirst": "čistý start — není načten žádný dřívější ponor",
+        "mode": {"oc": "OC", "ccr": "CCR", "scr": "SCR", "gauge": "Hloubkoměr", "freedive": "Freediving", "unknown": "Neznámý"},
+        "water": {"salt": "Slaná", "fresh": "Sladká"},
         "backend": {
             "loginHeading": "Váš deník ponorů",
             "emailLabel": "E-mail",

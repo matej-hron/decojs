@@ -123,6 +123,35 @@ export function canAnalyze(dive) {
 }
 
 const t = (key, fallback) => translate(`diveLog.${key}`, fallback);
+
+/**
+ * Translate the `[data-i18n]` elements under `root` (js/i18n.js only does this once at load).
+ * The element's first innerHTML is kept as the English fallback.
+ * @param {{querySelectorAll: Function}} root
+ * @param {(key: string, fallback: string) => string} [translateFn]
+ */
+export function translateStatic(root, translateFn = translate) {
+    for (const el of root.querySelectorAll('[data-i18n]')) {
+        if (el.dataset.i18nFallback === undefined) el.dataset.i18nFallback = el.innerHTML;
+        el.innerHTML = translateFn(el.getAttribute('data-i18n'), el.dataset.i18nFallback);
+    }
+}
+
+/**
+ * Readable label for a mode or water-setting code; unknown codes stay raw, absent ones show a dash.
+ * @param {'mode'|'water'} kind
+ * @param {string|null|undefined} code
+ */
+export function codeLabel(kind, code, translateFn = translate) {
+    if (code == null || code === '') return '–';
+    return translateFn(`diveLog.${kind}.${code}`, String(code));
+}
+
+/** The # column: the dive number, or the file name / a dash when the dive has none (server rows use 0). */
+export function diveNumberLabel(dive) {
+    const n = dive.source.diveNumber;
+    return n ? String(n) : (dive.source.fileName ?? '–');
+}
 const JSZIP_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.2/jszip.min.js';
 
 let jsZipPromise = null;
@@ -180,6 +209,7 @@ export class RecordedDiveAnalysis {
         this.chainEnabled = true;
         this.startStates = new Map();
         this._buildDom();
+        translateStatic(this.root);
         document.addEventListener('languagechange', () => this._renderAll());
         if (this.store) this._initStore();
         else this._loadDemo();
@@ -342,7 +372,8 @@ export class RecordedDiveAnalysis {
                 this.busy = { key: 'progress', fallback: 'Saving {0} / {1}…', args: [done, total] };
                 this._renderList();
             });
-            this.report = {
+            const nothingFound = picked.items.length === 0 && picked.errors.length === 0;
+            this.report = nothingFound ? null : {
                 saved: saved.saved, updated: saved.updated, unchanged: plan.unchanged.length,
                 failed: [...saved.failed, ...picked.errors],
             };
@@ -530,6 +561,7 @@ export class RecordedDiveAnalysis {
     }
 
     _renderAll() {
+        translateStatic(this.root);
         this._renderAccount();
         this._renderList();
         this._renderAnalysis();
@@ -562,13 +594,13 @@ export class RecordedDiveAnalysis {
             if (dive === this.selected) tr.classList.add('rda-selected');
             const gf = dive.deco?.gfLow != null ? `${dive.deco.gfLow}/${dive.deco.gfHigh}` : '–';
             tr.innerHTML = `
-                <td>${escHtml(String(dive.source.diveNumber ?? dive.source.fileName))}</td>
+                <td>${escHtml(diveNumberLabel(dive))}</td>
                 <td>${escHtml(dive.start.local.replace('T', ' '))}</td>
                 <td class="num">${fmtNum(dive.maxDepth, 1)}\u00a0m</td>
                 <td class="num">${minSec(dive.duration)}</td>
-                <td>${escHtml(dive.mode)}</td>
+                <td>${escHtml(codeLabel('mode', dive.mode))}</td>
                 <td>${gf}</td>
-                <td>${escHtml(dive.environment.waterSetting ?? '–')}</td>
+                <td>${escHtml(codeLabel('water', dive.environment.waterSetting))}</td>
                 <td class="rda-warn">${escHtml(dive.warnings.join(', '))}</td>`;
             tr.tabIndex = 0;
             tr.addEventListener('click', () => this._select(dive));

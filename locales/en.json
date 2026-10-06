@@ -2899,6 +2899,8 @@
         "startNotChainable": "fresh start — an earlier dive could not be modelled",
         "startDisabled": "fresh start — earlier dives are ignored",
         "startFirst": "fresh start — no earlier dive loaded",
+        "mode": {"oc": "OC", "ccr": "CCR", "scr": "SCR", "gauge": "Gauge", "freedive": "Freedive", "unknown": "Unknown"},
+        "water": {"salt": "Salt", "fresh": "Fresh"},
         "backend": {
             "loginHeading": "Your dive log",
             "emailLabel": "Email",
