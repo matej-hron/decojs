@@ -13,6 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
     <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js"></script>
     <style>
         .rda-card { background: var(--surface, #fff); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
         .rda-list > div { overflow-x: auto; }
@@ -32,6 +33,14 @@
         .rda-summary dt { color: var(--text-subtle); }
         .rda-note, .rda-charts, .rda-help { grid-column: 1 / -1; }
         .rda-charts { display: grid; gap: 1rem; }
+        .rda-account[hidden], .rda-analysis[hidden], .rda-charts[hidden] { display: none; }
+        .rda-account { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+        .rda-account-msg { flex-basis: 100%; margin: 0; color: var(--text-subtle); font-size: 0.9rem; }
+        .rda-login { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+        .rda-login label { display: flex; gap: 0.4rem; align-items: center; }
+        .rda-upload { cursor: pointer; }
+        .rda-upload:focus-within { outline: 2px solid var(--primary-color, #2980b9); outline-offset: 2px; }
+        .rda-visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
         @media (max-width: 900px) { .rda-analysis { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -69,9 +78,10 @@
     </script>
     <script type="module">
         import { RecordedDiveAnalysis } from '../js/components/RecordedDiveAnalysis.js';
+        import { getDiveStore } from '../js/backend/diveStore.js';
         const demoFiles = Array.from({ length: 10 }, (_, i) =>
             `../tests/fixtures/divesoft/${String(92 + i).padStart(8, '0')}.DLF`);
-        new RecordedDiveAnalysis(document.querySelector('.rda-root'), { demoFiles });
+        new RecordedDiveAnalysis(document.querySelector('.rda-root'), { demoFiles, store: getDiveStore() });
     </script>
 </body>
 </html>

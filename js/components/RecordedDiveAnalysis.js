@@ -4,13 +4,16 @@
  * Opens Divesoft .DLF dive logs, lists them, and shows the selected dive in
  * DecoTheory's profile, P-P (M-value) and GF charts. GF sliders redraw the
  * limits over the fixed recorded profile; the summary panel reports how close
- * the dive came to them. Dives live only in the open page.
+ * the dive came to them. Without a dive store, dives live only in the open page;
+ * with one (and a logged-in user) they are uploaded to and listed from the server.
  */
 
 import { parseDivesoftDLF } from '../import/divesoftDlf.js';
 import { prepareRecordedSetup } from '../import/recordedDive.js';
 import { analyzeRecordedDive, summarizeRecordedDive, CEILING_VIOLATION_TOLERANCE_M } from '../import/recordedDiveSummary.js';
-import { startStateFor } from '../import/diveChain.js';
+import { startStateFor, CHAIN_MAX_GAP_MIN } from '../import/diveChain.js';
+import { sha256Hex, planSync } from '../backend/sync.js';
+import { DiveStoreError } from '../backend/supabaseStore.js';
 import { MIN_GF_PERCENT, MAX_GF_PERCENT } from '../gfLimits.js';
 import { GF_PRESETS } from '../gfPresets.js';
 import { translate } from '../i18n.js';
@@ -26,26 +29,64 @@ export function isDlfFileName(name) {
  * Parse every .DLF file among `files`; skip everything else.
  *
  * @param {Iterable<{name: string, arrayBuffer: () => Promise<ArrayBuffer>}>} files
- * @returns {Promise<{dives: Object[], errors: Array<{fileName: string, message: string}>}>}
+ * @returns {Promise<{dives: Object[], items: Array<{dive: Object, bytes: Uint8Array, sha256: string}>, errors: Array<{fileName: string, message: string}>}>}
+ *   `items` holds the raw bytes and hash of each dive, in the same order as `dives`.
  */
 export async function loadDiveFiles(files) {
-    const dives = [];
+    const items = [];
     const errors = [];
     for (const file of files) {
         if (!isDlfFileName(file.name)) continue;
         try {
-            dives.push(parseDivesoftDLF(await file.arrayBuffer(), { fileName: file.name }));
+            const bytes = new Uint8Array(await file.arrayBuffer());
+            const dive = parseDivesoftDLF(bytes, { fileName: file.name });
+            items.push({ dive, bytes, sha256: await sha256Hex(bytes) });
         } catch (error) {
             errors.push({ fileName: file.name, message: error.message || String(error) });
         }
     }
-    dives.sort((a, b) => {
+    items.sort((x, y) => {
+        const a = x.dive;
+        const b = y.dive;
         const na = a.source.diveNumber ?? Infinity;
         const nb = b.source.diveNumber ?? Infinity;
         if (na !== nb) return na - nb;
         return a.start.local.localeCompare(b.start.local);
     });
-    return { dives, errors };
+    return { dives: items.map(i => i.dive), items, errors };
+}
+
+/**
+ * A lightweight dive for the list, built from a stored summary row (no samples yet).
+ * @param {Object} row - Summary row from the dive store
+ */
+export function summaryToListDive(row) {
+    const s = row.summary ?? {};
+    return {
+        id: row.id,
+        source: { diveNumber: row.diveNumber, fileName: null },
+        start: { local: row.startLocal },
+        device: { serial: row.deviceSerial },
+        maxDepth: s.maxDepth,
+        duration: s.duration,
+        mode: s.mode,
+        deco: { gfLow: s.gfLow, gfHigh: s.gfHigh },
+        environment: { waterSetting: s.waterSetting },
+        warnings: s.warnings ?? [],
+        samples: null,
+    };
+}
+
+/**
+ * The list dives that started within the chain limit before `target`, excluding unreliable dates.
+ * @param {Object} target - Dive (full or list dive)
+ * @param {Object[]} listDives
+ */
+export function chainWindow(target, listDives) {
+    const ms = d => Date.parse(`${d.start.local}Z`);
+    const end = ms(target);
+    return listDives.filter(d => d !== target && !d.warnings.includes('implausible-date')
+        && ms(d) < end && end - ms(d) <= CHAIN_MAX_GAP_MIN * 60000);
 }
 
 /**
@@ -78,21 +119,87 @@ export function deviceGf(dive) {
 
 /** Only open-circuit dives with a profile can be analysed. */
 export function canAnalyze(dive) {
-    return dive.mode === 'oc' && dive.samples.length >= 2;
+    return dive.mode === 'oc' && (dive.samples?.length ?? 0) >= 2;
 }
 
 const t = (key, fallback) => translate(`diveLog.${key}`, fallback);
+
+/**
+ * Translate the `[data-i18n]` elements under `root` (js/i18n.js only does this once at load).
+ * The element's first innerHTML is kept as the English fallback.
+ * @param {{querySelectorAll: Function}} root
+ * @param {(key: string, fallback: string) => string} [translateFn]
+ */
+export function translateStatic(root, translateFn = translate) {
+    for (const el of root.querySelectorAll('[data-i18n]')) {
+        if (el.dataset.i18nFallback === undefined) el.dataset.i18nFallback = el.innerHTML;
+        el.innerHTML = translateFn(el.getAttribute('data-i18n'), el.dataset.i18nFallback);
+    }
+}
+
+/**
+ * Readable label for a mode or water-setting code; unknown codes stay raw, absent ones show a dash.
+ * @param {'mode'|'water'} kind
+ * @param {string|null|undefined} code
+ */
+export function codeLabel(kind, code, translateFn = translate) {
+    if (code == null || code === '') return '–';
+    return translateFn(`diveLog.${kind}.${code}`, String(code));
+}
+
+/** The # column: the dive number, or the file name / a dash when the dive has none (server rows use 0). */
+export function diveNumberLabel(dive) {
+    const n = dive.source.diveNumber;
+    return n ? String(n) : (dive.source.fileName ?? '–');
+}
+const JSZIP_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.2/jszip.min.js';
+
+let jsZipPromise = null;
+
+/** Load JSZip on demand (the script is appended at most once). */
+function loadJsZip() {
+    if (globalThis.JSZip) return Promise.resolve(globalThis.JSZip);
+    if (!jsZipPromise) {
+        jsZipPromise = new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = JSZIP_URL;
+            script.onload = () => resolve(globalThis.JSZip);
+            script.onerror = () => {
+                script.remove();
+                jsZipPromise = null;
+                reject(new Error('Could not load JSZip'));
+            };
+            document.head.appendChild(script);
+        });
+    }
+    return jsZipPromise;
+}
 const fill = (text, ...values) => String(text).replace(/\{(\d+)\}/g, (_, i) => values[Number(i)] ?? '');
 const minSec = s => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}`;
 
 export class RecordedDiveAnalysis {
     /**
      * @param {HTMLElement} root - Element the page UI is built in
-     * @param {{demoFiles?: string[]}} [config] - URLs of example .DLF files loaded when nothing is picked
+     * @param {{demoFiles?: string[], store?: Object|null}} [config] - URLs of example .DLF files loaded when
+     *   nothing is picked; the dive store (null without a configured backend)
      */
-    constructor(root, { demoFiles = [] } = {}) {
+    constructor(root, { demoFiles = [], store = null } = {}) {
         this.root = root;
         this.demoFiles = demoFiles;
+        this.store = store;
+        this.user = null;
+        this.serverMode = false;
+        this.serverFailed = false;
+        this.full = new Map();
+        this.current = null;
+        this.report = null;
+        this.busy = null;
+        this.working = false;
+        this.accountMsg = null;
+        this.email = '';
+        this.linkSent = false;
+        this._userKnown = false;
+        this._selectToken = 0;
         this.dives = [];
         this.errors = [];
         this.isDemo = false;
@@ -102,16 +209,223 @@ export class RecordedDiveAnalysis {
         this.chainEnabled = true;
         this.startStates = new Map();
         this._buildDom();
+        translateStatic(this.root);
         document.addEventListener('languagechange', () => this._renderAll());
-        this._loadDemo();
+        if (this.store) this._initStore();
+        else this._loadDemo();
+    }
+
+    // ---- Account bar and server mode ----
+
+    _initStore() {
+        if (/error_code=otp_expired/.test(globalThis.location?.hash ?? '')) {
+            this.accountMsg = { key: 'linkExpired', fallback: 'This login link has expired. Send a new one.' };
+            try {
+                history.replaceState(null, '', location.pathname + location.search);
+            } catch { /* keep the hash */ }
+        }
+        this._renderAccount();
+        this.store.onAuthChange(user => this._onUser(user));
+        this.store.currentUser().then(user => this._onUser(user), error => {
+            this._storeError(error);
+            this._onUser(null);
+        });
+    }
+
+    _onUser(user) {
+        const same = this._userKnown && (user?.id ?? null) === (this.user?.id ?? null);
+        this._userKnown = true;
+        if (same) return;
+        this.user = user;
+        this.serverMode = Boolean(user);
+        this.serverFailed = false;
+        this.report = null;
+        this.full.clear();
+        if (user) {
+            this.accountMsg = null;
+            this.linkSent = false;
+            this._renderAccount();
+            this._loadServer();
+        } else {
+            this._renderAccount();
+            this._setDives({ dives: [], errors: [] });
+            this._loadDemo();
+        }
+    }
+
+    /** Explain a store failure; details only go to the console. */
+    _storeError(error) {
+        console.error(error);
+        this.accountMsg = error instanceof DiveStoreError && error.kind === 'unreachable'
+            ? { key: 'unreachable', fallback: 'Can\'t reach your dive log. If it hasn\'t been used for a week, resume the project in the Supabase dashboard.' }
+            : { key: 'genericError', fallback: 'Something went wrong. Please try again.' };
+        this._renderAccount();
+    }
+
+    async _loadServer() {
+        this.isDemo = false;
+        this.full.clear();
+        this.busy = { key: 'loading', fallback: 'Loading…' };
+        this._setDives({ dives: [], errors: [] });
+        try {
+            const rows = await this.store.listDives();
+            this.busy = null;
+            if (!this.serverMode) return;
+            this._setDives({ dives: rows.map(summaryToListDive), errors: [] });
+            this.store.reparseOutdated(rows).catch(error => console.error(error));
+        } catch (error) {
+            this.busy = null;
+            this.serverFailed = true;
+            this._storeError(error);
+            this._renderAccount();
+            this._renderList();
+            this._loadDemo();
+        }
+    }
+
+    _renderAccount() {
+        if (!this.store) return;
+        const el = this.root.querySelector('#rda-account');
+        el.hidden = false;
+        const msg = this.accountMsg ? `<p class="rda-account-msg">${escHtml(t(`backend.${this.accountMsg.key}`, this.accountMsg.fallback))}</p>` : '';
+        const label = (key, fallback) => escHtml(t(`backend.${key}`, fallback));
+        if (this.user) {
+            el.innerHTML = `
+                <span class="rda-account-who">${escHtml(fill(t('backend.loggedInAs', 'Logged in as {0}'), this.user.email))}</span>
+                <label class="btn btn-small btn-secondary rda-upload"><span>${label('upload', 'Upload DIVELOG')}</span>
+                    <input type="file" id="rda-upload" webkitdirectory class="rda-visually-hidden"${this.working ? ' disabled' : ''}></label>
+                <button type="button" class="btn btn-small btn-secondary" id="rda-export"${this.working ? ' disabled' : ''}>${label('export', 'Export')}</button>
+                <button type="button" class="btn btn-small btn-secondary" id="rda-logout">${label('logout', 'Log out')}</button>
+                ${msg}`;
+            el.querySelector('#rda-upload').addEventListener('change', e => this._upload(e.target));
+            el.querySelector('#rda-export').addEventListener('click', () => this._export());
+            el.querySelector('#rda-logout').addEventListener('click', () => this._logout());
+        } else {
+            el.innerHTML = `
+                <strong>${label('loginHeading', 'Your dive log')}</strong>
+                <form class="rda-login" id="rda-login">
+                    <label>${label('emailLabel', 'Email')}
+                        <input type="email" id="rda-email" required autocomplete="email" value="${escHtml(this.email)}"></label>
+                    <button type="submit" class="btn btn-small btn-secondary">${label(this.linkSent ? 'sendAgain' : 'sendLink', this.linkSent ? 'Send again' : 'Send login link')}</button>
+                </form>
+                ${this.linkSent ? `<p class="rda-account-msg">${label('linkSent', 'Check your email for the login link.')}</p>` : ''}
+                ${msg}`;
+            const input = el.querySelector('#rda-email');
+            input.addEventListener('input', () => { this.email = input.value; });
+            el.querySelector('#rda-login').addEventListener('submit', e => {
+                e.preventDefault();
+                this._sendLink(input.value.trim());
+            });
+        }
+    }
+
+    async _sendLink(email) {
+        if (!email) return;
+        this.email = email;
+        try {
+            await this.store.sendLoginLink(email, `${location.origin}${location.pathname}`);
+            this.linkSent = true;
+            this.accountMsg = null;
+            this._renderAccount();
+        } catch (error) {
+            console.error(error);
+            this.linkSent = false;
+            const rateLimited = /429|only request this after|rate limit/i.test(error?.message ?? '');
+            this.accountMsg = !rateLimited && error instanceof DiveStoreError && error.kind === 'auth'
+                ? { key: 'cannotLogin', fallback: 'This email can\'t log in here.' }
+                : null;
+            if (this.accountMsg) this._renderAccount();
+            else this._storeError(error);
+        }
+    }
+
+    async _logout() {
+        try {
+            await this.store.signOut();
+            this._onUser(null);
+        } catch (error) {
+            this._storeError(error);
+        }
+    }
+
+    _setWorking(on) {
+        this.working = on;
+        this._renderAccount();
+    }
+
+    async _upload(input) {
+        if (this.working) return;
+        const files = Array.from(input.files);
+        input.value = '';
+        this._setWorking(true);
+        this.report = null;
+        try {
+            const picked = await loadDiveFiles(files);
+            this.busy = { key: 'progress', fallback: 'Saving {0} / {1}…', args: [0, picked.items.length] };
+            this._renderList();
+            const plan = planSync(picked.items, await this.store.listDives());
+            const batch = [
+                ...plan.upload.map(i => ({ ...i, action: 'upload' })),
+                ...plan.update.map(i => ({ ...i, action: 'update' })),
+            ];
+            const saved = await this.store.saveDives(batch, (done, total) => {
+                this.busy = { key: 'progress', fallback: 'Saving {0} / {1}…', args: [done, total] };
+                this._renderList();
+            });
+            const nothingFound = picked.items.length === 0 && picked.errors.length === 0;
+            this.report = nothingFound ? null : {
+                saved: saved.saved, updated: saved.updated, unchanged: plan.unchanged.length,
+                failed: [...saved.failed, ...picked.errors],
+            };
+            this.busy = null;
+            if (this.serverMode) await this._loadServer();
+        } catch (error) {
+            this.busy = null;
+            this._storeError(error);
+            this._renderList();
+        } finally {
+            this._setWorking(false);
+        }
+    }
+
+    async _export() {
+        if (this.working) return;
+        this._setWorking(true);
+        try {
+            const { files, dives } = await this.store.exportAll();
+            const JSZip = await loadJsZip();
+            const zip = new JSZip();
+            for (const f of files) zip.file(`DIVELOG/${f.name}`, f.bytes);
+            zip.file('dives.json', JSON.stringify(dives, null, 1));
+            const blob = await zip.generateAsync({ type: 'blob' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `dive-log-${new Date().toISOString().slice(0, 10)}.zip`;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            setTimeout(() => URL.revokeObjectURL(link.href), 10000);
+        } catch (error) {
+            this._storeError(error);
+        } finally {
+            this._setWorking(false);
+        }
+    }
+
+    /** Full record for a list dive (cached); already-full dives are returned as they are. */
+    async _fullDive(dive) {
+        if (dive.samples !== null) return dive;
+        if (!this.full.has(dive.id)) this.full.set(dive.id, await this.store.loadDive(dive.id));
+        return this.full.get(dive.id);
     }
 
     _buildDom() {
         this.root.innerHTML = `
+            <section class="rda-account rda-card" id="rda-account" hidden></section>
             <section class="rda-open rda-card">
-                <label class="rda-picker"><span data-i18n="diveLog.openFolder">Open a DIVELOG folder</span>
+                <label class="rda-picker" id="rda-pick-folder"><span data-i18n="diveLog.openFolder">Open a DIVELOG folder</span>
                     <input type="file" id="rda-folder" webkitdirectory></label>
-                <label class="rda-picker"><span data-i18n="diveLog.openFiles">or pick .DLF files</span>
+                <label class="rda-picker" id="rda-pick-files"><span data-i18n="diveLog.openFiles">or pick .DLF files</span>
                     <input type="file" id="rda-files" multiple accept=".dlf,.DLF"></label>
                 <p class="rda-status" id="rda-status"></p>
             </section>
@@ -169,7 +483,7 @@ export class RecordedDiveAnalysis {
         const onSlider = () => this._setGf(clampGfPair(this.el.gfLow.value, this.el.gfHigh.value));
         this.el.gfLow.addEventListener('input', onSlider);
         this.el.gfHigh.addEventListener('input', onSlider);
-        this.el.reset.addEventListener('click', () => this.selected && this._setGf(deviceGf(this.selected)));
+        this.el.reset.addEventListener('click', () => this.current && this._setGf(deviceGf(this.current)));
         $('rda-chain').addEventListener('change', e => {
             this.chainEnabled = e.target.checked;
             this._renderAnalysis();
@@ -200,16 +514,41 @@ export class RecordedDiveAnalysis {
         this.dives = dives;
         this.errors = errors;
         this.selected = null;
+        this.current = null;
+        this._selectToken++;
         this.startStates = new Map();
         this._renderList();
         if (dives.length > 0) this._select(dives.at(-1));
         else this.el.analysis.hidden = true;
     }
 
-    _select(dive) {
+    async _select(dive) {
         this.selected = dive;
         this._renderList();
-        this._setGf(deviceGf(dive));
+        const token = ++this._selectToken;
+        if (this.serverMode || dive.samples === null) {
+            this.current = null;
+            this.el.analysis.hidden = false;
+            this.el.charts.hidden = true;
+            this.el.summary.innerHTML = '';
+            this.el.note.hidden = false;
+            this.el.note.textContent = t('backend.loading', 'Loading…');
+            try {
+                const full = await this._fullDive(dive);
+                if (canAnalyze(full)) {
+                    const window = await Promise.all(chainWindow(dive, this.dives).map(d => this._fullDive(d)));
+                    this.startStates.set(full, startStateFor(full, [...window, full]));
+                }
+                if (token !== this._selectToken) return;
+                this.current = full;
+            } catch (error) {
+                if (token === this._selectToken) this._storeError(error);
+                return;
+            }
+        } else {
+            this.current = dive;
+        }
+        this._setGf(deviceGf(this.current));
     }
 
     _setGf(gf) {
@@ -222,14 +561,30 @@ export class RecordedDiveAnalysis {
     }
 
     _renderAll() {
+        translateStatic(this.root);
+        this._renderAccount();
         this._renderList();
         this._renderAnalysis();
     }
 
     _renderList() {
         const statusParts = [];
+        const hidePickers = this.serverMode && !this.serverFailed;
+        this.root.querySelector('#rda-pick-folder').hidden = hidePickers;
+        this.root.querySelector('#rda-pick-files').hidden = hidePickers;
+        if (this.busy) statusParts.push(fill(t(`backend.${this.busy.key}`, this.busy.fallback), ...(this.busy.args ?? [])));
+        if (this.report) {
+            const r = this.report;
+            if (r.saved) statusParts.push(fill(t('backend.reportSaved', '{0} new dives saved'), r.saved));
+            if (r.updated) statusParts.push(fill(t('backend.reportUpdated', '{0} updated'), r.updated));
+            if (r.unchanged) statusParts.push(fill(t('backend.reportUnchanged', '{0} already stored'), r.unchanged));
+            if (r.failed.length) {
+                statusParts.push(fill(t('backend.reportFailed', '{0} could not be saved: {1}'), r.failed.length,
+                    r.failed.map(f => `${f.fileName} (${f.message})`).join('; ')));
+            }
+        }
         if (this.isDemo) statusParts.push(t('demoNote', 'Showing example dives. Open your own DIVELOG folder above.'));
-        if (this.dives.length === 0) statusParts.push(t('noDives', 'No dive logs found. Pick the DIVELOG folder from the dive computer, or its .DLF files.'));
+        if (this.dives.length === 0 && !this.busy) statusParts.push(t('noDives', 'No dive logs found. Pick the DIVELOG folder from the dive computer, or its .DLF files.'));
         for (const e of this.errors) statusParts.push(fill(t('unreadable', 'Could not read {0}: {1}'), e.fileName, e.message));
         this.el.status.innerHTML = statusParts.map(s => `<span>${escHtml(s)}</span>`).join('<br>');
 
@@ -239,13 +594,13 @@ export class RecordedDiveAnalysis {
             if (dive === this.selected) tr.classList.add('rda-selected');
             const gf = dive.deco?.gfLow != null ? `${dive.deco.gfLow}/${dive.deco.gfHigh}` : '–';
             tr.innerHTML = `
-                <td>${escHtml(String(dive.source.diveNumber ?? dive.source.fileName))}</td>
+                <td>${escHtml(diveNumberLabel(dive))}</td>
                 <td>${escHtml(dive.start.local.replace('T', ' '))}</td>
                 <td class="num">${fmtNum(dive.maxDepth, 1)}\u00a0m</td>
                 <td class="num">${minSec(dive.duration)}</td>
-                <td>${escHtml(dive.mode)}</td>
+                <td>${escHtml(codeLabel('mode', dive.mode))}</td>
                 <td>${gf}</td>
-                <td>${escHtml(dive.environment.waterSetting ?? '–')}</td>
+                <td>${escHtml(codeLabel('water', dive.environment.waterSetting))}</td>
                 <td class="rda-warn">${escHtml(dive.warnings.join(', '))}</td>`;
             tr.tabIndex = 0;
             tr.addEventListener('click', () => this._select(dive));
@@ -255,14 +610,14 @@ export class RecordedDiveAnalysis {
     }
 
     _renderAnalysis() {
-        const dive = this.selected;
+        const dive = this.current;
         if (!dive) return;
         this.el.analysis.hidden = false;
         if (!canAnalyze(dive)) {
             this.el.charts.hidden = true;
             this.el.summary.innerHTML = '';
             this.el.note.hidden = false;
-            this.el.note.textContent = dive.samples.length < 2
+            this.el.note.textContent = (dive.samples?.length ?? 0) < 2
                 ? t('noSamplesNote', 'This log has no depth profile to analyse.')
                 : fill(t('nonOcNote', 'Analysis currently supports open-circuit dives only (this dive: {0}).'), dive.mode);
             return;
@@ -278,8 +633,8 @@ export class RecordedDiveAnalysis {
 
     /** Start state from earlier loaded dives; independent of GF, so cached per dive. */
     _startState(dive) {
-        if (!this.startStates.has(dive)) this.startStates.set(dive, startStateFor(dive, this.dives));
-        return this.startStates.get(dive);
+        if (!this.startStates.has(dive) && !this.serverMode) this.startStates.set(dive, startStateFor(dive, this.dives));
+        return this.startStates.get(dive) ?? null;
     }
 
     _describeStart(start) {

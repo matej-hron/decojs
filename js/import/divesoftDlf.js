@@ -10,6 +10,12 @@
  * docs/superpowers/specs/2026-10-05-divesoft-dlf-import-design.md.
  */
 
+/** Version of this parser's output; stored with each saved dive so it can be re-parsed later. */
+export const PARSER_VERSION = 1;
+
+/** Version of the RecordedDive shape. */
+const RECORD_SCHEMA = 1;
+
 const MAGIC = { 0x45766944: 1, 0x45566944: 2 }; // "DivE", "DiVE"
 const HEADER_SIZE = { 1: 32, 2: 64 };
 const RECORD_SIZE = 16;
@@ -251,6 +257,7 @@ export function parseDivesoftDLF(input, { fileName = null, now = Date.now() } = 
     if (samples.length === 0) warnings.push('no-samples');
 
     return {
+        schema: RECORD_SCHEMA,
         source: { format: 'divesoft-dlf', formatVersion: version, fileName, diveNumber: diveNumberFromName(fileName) },
         device,
         start: { local: new Date(localMs).toISOString().slice(0, 19), utcOffsetMin: header.utcOffsetMin },

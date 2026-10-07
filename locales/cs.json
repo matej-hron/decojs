@@ -2898,7 +2898,30 @@
         "startUnreliable": "čistý start — datum ponoru vypadá chybně, dřívější ponory nelze přiřadit",
         "startNotChainable": "čistý start — dřívější ponor nelze namodelovat",
         "startDisabled": "čistý start — dřívější ponory se nezapočítávají",
-        "startFirst": "čistý start — není načten žádný dřívější ponor"
+        "startFirst": "čistý start — není načten žádný dřívější ponor",
+        "mode": {"oc": "OC", "ccr": "CCR", "scr": "SCR", "gauge": "Hloubkoměr", "freedive": "Freediving", "unknown": "Neznámý"},
+        "water": {"salt": "Slaná", "fresh": "Sladká"},
+        "backend": {
+            "loginHeading": "Váš deník ponorů",
+            "emailLabel": "E-mail",
+            "sendLink": "Poslat přihlašovací odkaz",
+            "linkSent": "Přihlašovací odkaz najdete v e-mailu.",
+            "sendAgain": "Poslat znovu",
+            "loggedInAs": "Přihlášen jako {0}",
+            "upload": "Nahrát DIVELOG",
+            "export": "Export",
+            "logout": "Odhlásit",
+            "loading": "Načítám…",
+            "progress": "Ukládám {0} / {1}…",
+            "reportSaved": "Uloženo nových ponorů: {0}",
+            "reportUnchanged": "Již uloženo: {0}",
+            "reportUpdated": "Aktualizováno: {0}",
+            "reportFailed": "Nepodařilo se uložit {0}: {1}",
+            "unreachable": "Deník ponorů není dostupný. Pokud se týden nepoužíval, obnovte projekt v administraci Supabase.",
+            "linkExpired": "Platnost odkazu vypršela. Pošlete si nový.",
+            "cannotLogin": "Tento e-mail se zde nemůže přihlásit.",
+            "genericError": "Něco se pokazilo. Zkuste to prosím znovu."
+        }
     },
     "quiz": {
         "languageNotice": "🇨🇿 Otázky jsou v <strong>češtině</strong> a odpovídají oficiálním materiálům ke zkouškám CMAS/SPČR. Překladu jsme se vyhnuli, abychom předešli chybám v odborné terminologii.",

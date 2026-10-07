@@ -2862,7 +2862,30 @@
         "startUnreliable": "inicio limpio — la fecha de esta inmersión parece errónea; no se pueden enlazar las anteriores",
         "startNotChainable": "inicio limpio — una inmersión anterior no se puede modelar",
         "startDisabled": "inicio limpio — se ignoran las inmersiones anteriores",
-        "startFirst": "inicio limpio — no hay ninguna inmersión anterior cargada"
+        "startFirst": "inicio limpio — no hay ninguna inmersión anterior cargada",
+        "mode": {"oc": "OC", "ccr": "CCR", "scr": "SCR", "gauge": "Profundímetro", "freedive": "Apnea", "unknown": "Desconocido"},
+        "water": {"salt": "Salada", "fresh": "Dulce"},
+        "backend": {
+            "loginHeading": "Tu diario de inmersiones",
+            "emailLabel": "Correo electrónico",
+            "sendLink": "Enviar enlace de acceso",
+            "linkSent": "Revisa tu correo: te hemos enviado el enlace de acceso.",
+            "sendAgain": "Enviar de nuevo",
+            "loggedInAs": "Sesión iniciada como {0}",
+            "upload": "Subir DIVELOG",
+            "export": "Exportar",
+            "logout": "Cerrar sesión",
+            "loading": "Cargando…",
+            "progress": "Guardando {0} / {1}…",
+            "reportSaved": "{0} inmersiones nuevas guardadas",
+            "reportUnchanged": "{0} ya guardadas",
+            "reportUpdated": "{0} actualizadas",
+            "reportFailed": "No se pudieron guardar {0}: {1}",
+            "unreachable": "No se puede acceder a tu diario. Si no se ha usado en una semana, reanuda el proyecto en el panel de Supabase.",
+            "linkExpired": "Este enlace ha caducado. Solicita uno nuevo.",
+            "cannotLogin": "Este correo no puede iniciar sesión aquí.",
+            "genericError": "Algo ha fallado. Inténtalo de nuevo."
+        }
     },
     "quiz": {
         "languageNotice": "🇪🇸 Traducido a partir de los materiales oficiales del examen CMAS/SPČR 2018 en checo. Use el selector de idioma para ver la versión original en checo.",
