@@ -2899,6 +2899,7 @@
                 "saveFailed": "No se pudo guardar el sitio. Inténtalo de nuevo.",
                 "locationDenied": "La ubicación no está disponible. Toca el mapa.",
                 "mapFailed": "No se pudo cargar el mapa. Comprueba tu conexión.",
+                "mapLoading": "El mapa todavía se está cargando…",
                 "search": "Buscar",
                 "searchLabel": "Buscar lugar",
                 "searchPlaceholder": "Lugar o 49,79 13,40",

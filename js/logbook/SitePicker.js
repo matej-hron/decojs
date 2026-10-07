@@ -193,7 +193,8 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
 
         let mapApi = null; // { L } once Leaflet has loaded
         let lastSearchAt = 0;
-        let searching = false;
+        let mapFailed = false;
+        let searchSeq = 0; // the newest submit wins; older responses are dropped
         const showStatus = text => {
             resultsEl.hidden = !text && listEl.hidden;
             statusEl.textContent = text;
@@ -237,7 +238,13 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
         searchForm.addEventListener('submit', async e => {
             e.preventDefault();
             const query = searchForm.elements.q.value.trim();
-            if (!query || searching || !mapApi) return;
+            if (!query) return;
+            const seq = ++searchSeq;
+            if (!mapApi) {
+                showStatus(mapFailed ? ts('mapFailed', 'The map could not be loaded. Check your connection.')
+                    : ts('mapLoading', 'The map is still loading…'));
+                return;
+            }
             const coords = parseCoordinates(query);
             if (coords) {
                 listEl.hidden = true;
@@ -246,28 +253,26 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
                 goTo(coords.lat, coords.lon, null);
                 return;
             }
-            searching = true;
+            const stale = () => closed || seq !== searchSeq;
             try {
                 const wait = lastSearchAt + SEARCH_MIN_INTERVAL_MS - Date.now();
                 listEl.hidden = true;
                 creditEl.hidden = true;
                 showStatus(ts('searching', 'Searching…'));
+                lastSearchAt = Math.max(Date.now(), lastSearchAt + SEARCH_MIN_INTERVAL_MS); // reserve the slot
                 if (wait > 0) await new Promise(r => setTimeout(r, wait));
-                if (closed) return;
-                lastSearchAt = Date.now();
+                if (stale()) return;
                 const response = await fetch(nominatimUrl(query, getCurrentLanguage()), { signal: signal ?? undefined });
                 if (!response.ok) throw new Error(`Nominatim ${response.status}`);
                 const places = await response.json();
-                if (closed) return;
+                if (stale()) return;
                 if (!Array.isArray(places) || places.length === 0) { showStatus(ts('noResults', 'No places found')); return; }
                 showStatus('');
                 renderResults(places);
             } catch (error) {
-                if (closed) return;
+                if (stale()) return;
                 console.error(error);
                 showStatus(ts('searchFailed', 'Search is not available right now. Check your connection or tap the map.'));
-            } finally {
-                searching = false;
             }
         });
 
@@ -336,6 +341,7 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
             });
         }).catch(error => {
             console.error(error);
+            mapFailed = true;
             if (!closed) setError(ts('mapFailed', 'The map could not be loaded. Check your connection.'));
         });
 

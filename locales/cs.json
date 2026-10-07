@@ -2935,6 +2935,7 @@
                 "saveFailed": "Místo se nepodařilo uložit. Zkuste to prosím znovu.",
                 "locationDenied": "Poloha není dostupná. Klepněte do mapy.",
                 "mapFailed": "Mapu se nepodařilo načíst. Zkontrolujte připojení.",
+                "mapLoading": "Mapa se ještě načítá…",
                 "search": "Hledat",
                 "searchLabel": "Hledat místo",
                 "searchPlaceholder": "Místo nebo 49,79 13,40",

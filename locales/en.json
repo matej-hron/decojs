@@ -2935,6 +2935,7 @@
                 "saveFailed": "The site could not be saved. Please try again.",
                 "locationDenied": "Location is not available. Tap the map instead.",
                 "mapFailed": "The map could not be loaded. Check your connection.",
+                "mapLoading": "The map is still loading…",
                 "search": "Search",
                 "searchLabel": "Search for a place",
                 "searchPlaceholder": "Place or 49.79, 13.40",
