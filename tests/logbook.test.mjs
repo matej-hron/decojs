@@ -16,7 +16,7 @@ import { localeTag } from '../js/format.js';
 import { parseRoute, routeHref } from '../js/logbook/router.js';
 import { resizeTarget, isSupportedImage, exifTimestamp } from '../js/logbook/photo.js';
 import { detailRows, isHttpsUrl } from '../js/logbook/EntryDetail.js';
-import { siteFromForm } from '../js/logbook/SitePicker.js';
+import { siteFromForm, parseCoordinates } from '../js/logbook/SitePicker.js';
 import { createSupabaseStore, DiveStoreError } from '../js/backend/supabaseStore.js';
 import { NewDive } from '../js/logbook/NewDive.js';
 import { LogbookApp } from '../js/logbook/LogbookApp.js';
@@ -1031,6 +1031,23 @@ describe('detail helpers', () => {
         assert.equal(isHttpsUrl('javascript:alert(1)'), false);
         assert.equal(isHttpsUrl('https://'), false);
         assert.equal(isHttpsUrl(''), false);
+    });
+
+    test('parseCoordinates accepts common forms', () => {
+        const want = { lat: 49.7856, lon: 13.4012 };
+        for (const text of ['49.7856, 13.4012', '49.7856 13.4012', '49,7856 13,4012', '  49.7856,13.4012 ', '49.7856N 13.4012E', 'N 49.7856 E 13.4012', '49.7856° N, 13.4012° E']) {
+            assert.deepEqual(parseCoordinates(text), want, text);
+        }
+    });
+    test('parseCoordinates uses hemisphere letters for sign', () => {
+        assert.deepEqual(parseCoordinates('33.5S 70.6W'), { lat: -33.5, lon: -70.6 });
+        assert.deepEqual(parseCoordinates('S33,5 W70,6'), { lat: -33.5, lon: -70.6 });
+        assert.deepEqual(parseCoordinates('-33.5, -70.6'), { lat: -33.5, lon: -70.6 });
+    });
+    test('parseCoordinates rejects out of range, garbage and place names', () => {
+        for (const text of ['91, 10', '10, 181', '-90.5 10', '', 'Lake Como', 'abc def', '49.7856', '1 2 3', '49N 13N', '12.5E 13.4E', null, undefined]) {
+            assert.equal(parseCoordinates(text), null, String(text));
+        }
     });
 
     test('siteFromForm builds a site row', () => {

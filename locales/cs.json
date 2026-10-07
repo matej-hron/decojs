@@ -2934,7 +2934,14 @@
                 "pinRequired": "Klepnutím do mapy umístěte místo.",
                 "saveFailed": "Místo se nepodařilo uložit. Zkuste to prosím znovu.",
                 "locationDenied": "Poloha není dostupná. Klepněte do mapy.",
-                "mapFailed": "Mapu se nepodařilo načíst. Zkontrolujte připojení."
+                "mapFailed": "Mapu se nepodařilo načíst. Zkontrolujte připojení.",
+                "search": "Hledat",
+                "searchLabel": "Hledat místo",
+                "searchPlaceholder": "Místo nebo 49,79 13,40",
+                "searching": "Hledám…",
+                "noResults": "Nic nenalezeno",
+                "searchFailed": "Hledání teď není dostupné. Zkontrolujte připojení nebo klepněte do mapy.",
+                "searchCredit": "Vyhledávání: Nominatim / OpenStreetMap"
             },
             "detail": {
                 "edit": "Upravit",

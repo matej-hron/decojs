@@ -2934,7 +2934,14 @@
                 "pinRequired": "Tap the map to place the site.",
                 "saveFailed": "The site could not be saved. Please try again.",
                 "locationDenied": "Location is not available. Tap the map instead.",
-                "mapFailed": "The map could not be loaded. Check your connection."
+                "mapFailed": "The map could not be loaded. Check your connection.",
+                "search": "Search",
+                "searchLabel": "Search for a place",
+                "searchPlaceholder": "Place or 49.79, 13.40",
+                "searching": "Searching…",
+                "noResults": "No places found",
+                "searchFailed": "Search is not available right now. Check your connection or tap the map.",
+                "searchCredit": "Search by Nominatim / OpenStreetMap"
             },
             "detail": {
                 "edit": "Edit",

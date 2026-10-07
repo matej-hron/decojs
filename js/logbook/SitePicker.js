@@ -7,7 +7,7 @@
 
 import { parseDecimal } from './entryModel.js';
 import { loadScript } from './photo.js';
-import { translate } from '../i18n.js';
+import { translate, getCurrentLanguage } from '../i18n.js';
 import { escHtml } from '../utils/escHtml.js';
 
 const LEAFLET_JS = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js';
@@ -54,6 +54,52 @@ export function siteFromForm(form, pin) {
 }
 
 /**
+ * Parse pasted coordinates such as `49.7856, 13.4012`, `49,7856 13,4012` or
+ * `49.7856N 13.4012E`. Decimal commas and N/S/E/W prefixes or suffixes are accepted;
+ * S and W make the value negative. Null when the text is not a valid latitude/longitude pair.
+ * @param {string} text
+ * @returns {{lat: number, lon: number}|null}
+ */
+export function parseCoordinates(text) {
+    if (typeof text !== 'string') return null;
+    const clean = text.replace(/[°º]/g, ' ').trim();
+    if (!clean || !/^[\s\d.,;+\-NSEWnsew]+$/.test(clean)) return null;
+    const tokens = clean.match(/[NSEWnsew]|[+-]?\d+(?:[.,]\d+)?/g) ?? [];
+    const nums = [];
+    let pending = null;
+    for (const tok of tokens) {
+        if (/^[a-z]$/i.test(tok)) {
+            const letter = tok.toUpperCase();
+            const prev = nums[nums.length - 1];
+            if (prev && !prev.letter) prev.letter = letter;
+            else if (!pending) pending = letter;
+            else return null;
+        } else {
+            nums.push({ value: Number(tok.replace(',', '.')), letter: pending });
+            pending = null;
+        }
+    }
+    if (pending || nums.length !== 2 || nums.some(n => !Number.isFinite(n.value))) return null;
+    let [first, second] = nums;
+    if (first.letter || second.letter) {
+        if (!first.letter || !second.letter) return null;
+        if ('EW'.includes(first.letter)) [first, second] = [second, first];
+        if (!'NS'.includes(first.letter) || !'EW'.includes(second.letter)) return null;
+        first = { value: Math.abs(first.value) * (first.letter === 'S' ? -1 : 1) };
+        second = { value: Math.abs(second.value) * (second.letter === 'W' ? -1 : 1) };
+    }
+    const lat = first.value;
+    const lon = second.value;
+    if (lat < -90 || lat > 90 || lon < -180 || lon > 180) return null;
+    return { lat, lon };
+}
+
+/** Nominatim usage policy: at most one request per second. */
+export const SEARCH_MIN_INTERVAL_MS = 1000;
+export const nominatimUrl = (query, lang) =>
+    `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=5&q=${encodeURIComponent(query)}&accept-language=${encodeURIComponent(lang)}`;
+
+/**
  * Open the picker.
  * @param {{store: Object, sites?: Object[], initial?: Object|null, initialName?: string, signal?: AbortSignal}} options
  * `signal` closes the picker (as a cancel) when aborted.
@@ -72,6 +118,15 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
                 <strong>${escHtml(ts('title', 'Pick the site on the map'))}</strong>
                 <button type="button" class="btn btn-secondary" data-act="locate">${escHtml(ts('locate', 'Use my location'))}</button>
                 <button type="button" class="btn btn-secondary" data-act="cancel">${escHtml(ts('cancel', 'Cancel'))}</button>
+            </div>
+            <form class="lb-picker-search" role="search" novalidate>
+                <input type="search" name="q" autocomplete="off" enterkeyhint="search" aria-label="${escHtml(ts('searchLabel', 'Search for a place'))}" placeholder="${escHtml(ts('searchPlaceholder', 'Place or 49.79, 13.40'))}">
+                <button type="submit" class="btn btn-secondary">${escHtml(ts('search', 'Search'))}</button>
+            </form>
+            <div class="lb-picker-results" hidden>
+                <p class="lb-picker-status" role="status" hidden></p>
+                <ul class="lb-picker-result-list" hidden></ul>
+                <p class="lb-picker-credit" hidden>${escHtml(ts('searchCredit', 'Search by Nominatim / OpenStreetMap'))}</p>
             </div>
             <div class="lb-picker-map" role="application" aria-label="${escHtml(ts('map', 'Map'))}"></div>
             <form class="lb-picker-form" novalidate>
@@ -98,7 +153,12 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
         let pin = null;
         let userMoved = false;
         let closed = false;
-        const form = overlay.querySelector('form');
+        const form = overlay.querySelector('.lb-picker-form');
+        const searchForm = overlay.querySelector('.lb-picker-search');
+        const resultsEl = overlay.querySelector('.lb-picker-results');
+        const statusEl = resultsEl.querySelector('.lb-picker-status');
+        const listEl = resultsEl.querySelector('.lb-picker-result-list');
+        const creditEl = resultsEl.querySelector('.lb-picker-credit');
         const errorEl = overlay.querySelector('.lb-form-error');
         const setError = text => { errorEl.textContent = text; errorEl.hidden = !text; };
 
@@ -131,6 +191,86 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
             setError('');
         };
 
+        let mapApi = null; // { L } once Leaflet has loaded
+        let lastSearchAt = 0;
+        let searching = false;
+        const showStatus = text => {
+            resultsEl.hidden = !text && listEl.hidden;
+            statusEl.textContent = text;
+            statusEl.hidden = !text;
+        };
+        const goTo = (lat, lon, bbox) => {
+            const { L } = mapApi;
+            placePin(L, lat, lon);
+            if (bbox) map.flyToBounds(L.latLngBounds([bbox[0], bbox[2]], [bbox[1], bbox[3]]), { maxZoom: 16 });
+            else map.flyTo([lat, lon], 14);
+            userMoved = true;
+        };
+        const prefillName = displayName => {
+            const nameInput = form.elements.name;
+            const first = String(displayName ?? '').split(',')[0].trim();
+            if (first && !nameInput.value.trim()) nameInput.value = first;
+        };
+        const renderResults = places => {
+            listEl.replaceChildren();
+            for (const place of places) {
+                const li = document.createElement('li');
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.textContent = place.display_name;
+                btn.addEventListener('click', () => {
+                    const lat = Number(place.lat);
+                    const lon = Number(place.lon);
+                    if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
+                    const bb = Array.isArray(place.boundingbox) ? place.boundingbox.map(Number) : null;
+                    goTo(lat, lon, bb && bb.length === 4 && bb.every(Number.isFinite) ? bb : null);
+                    prefillName(place.display_name);
+                    resultsEl.hidden = true;
+                });
+                li.appendChild(btn);
+                listEl.appendChild(li);
+            }
+            listEl.hidden = places.length === 0;
+            creditEl.hidden = places.length === 0;
+            resultsEl.hidden = false;
+        };
+        searchForm.addEventListener('submit', async e => {
+            e.preventDefault();
+            const query = searchForm.elements.q.value.trim();
+            if (!query || searching || !mapApi) return;
+            const coords = parseCoordinates(query);
+            if (coords) {
+                listEl.hidden = true;
+                creditEl.hidden = true;
+                showStatus('');
+                goTo(coords.lat, coords.lon, null);
+                return;
+            }
+            searching = true;
+            try {
+                const wait = lastSearchAt + SEARCH_MIN_INTERVAL_MS - Date.now();
+                listEl.hidden = true;
+                creditEl.hidden = true;
+                showStatus(ts('searching', 'Searching…'));
+                if (wait > 0) await new Promise(r => setTimeout(r, wait));
+                if (closed) return;
+                lastSearchAt = Date.now();
+                const response = await fetch(nominatimUrl(query, getCurrentLanguage()), { signal: signal ?? undefined });
+                if (!response.ok) throw new Error(`Nominatim ${response.status}`);
+                const places = await response.json();
+                if (closed) return;
+                if (!Array.isArray(places) || places.length === 0) { showStatus(ts('noResults', 'No places found')); return; }
+                showStatus('');
+                renderResults(places);
+            } catch (error) {
+                if (closed) return;
+                console.error(error);
+                showStatus(ts('searchFailed', 'Search is not available right now. Check your connection or tap the map.'));
+            } finally {
+                searching = false;
+            }
+        });
+
         form.addEventListener('submit', async e => {
             e.preventDefault();
             const data = Object.fromEntries(new FormData(form));
@@ -154,6 +294,7 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
 
         loadLeaflet().then(L => {
             if (closed) return;
+            mapApi = { L };
             const mapEl = overlay.querySelector('.lb-picker-map');
             map = L.map(mapEl, { zoomControl: true });
             L.tileLayer(TILE_URL, { maxZoom: 19, attribution: TILE_ATTRIBUTION }).addTo(map);

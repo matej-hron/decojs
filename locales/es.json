@@ -2898,7 +2898,14 @@
                 "pinRequired": "Toca el mapa para colocar el sitio.",
                 "saveFailed": "No se pudo guardar el sitio. Inténtalo de nuevo.",
                 "locationDenied": "La ubicación no está disponible. Toca el mapa.",
-                "mapFailed": "No se pudo cargar el mapa. Comprueba tu conexión."
+                "mapFailed": "No se pudo cargar el mapa. Comprueba tu conexión.",
+                "search": "Buscar",
+                "searchLabel": "Buscar lugar",
+                "searchPlaceholder": "Lugar o 49,79 13,40",
+                "searching": "Buscando…",
+                "noResults": "No se encontró ningún lugar",
+                "searchFailed": "La búsqueda no está disponible ahora. Revisa tu conexión o toca el mapa.",
+                "searchCredit": "Búsqueda por Nominatim / OpenStreetMap"
             },
             "detail": {
                 "edit": "Editar",
