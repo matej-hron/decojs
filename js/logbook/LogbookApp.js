@@ -174,7 +174,7 @@ export class LogbookApp {
         try {
             await this.ensured;
             const [entries, sites, photos] = await Promise.all([
-                this.store.listEntries(), this.store.listSites(), this.store.listPhotoMedia().catch(() => []),
+                this.store.listEntries(), this.store.listSites(), this.store.listPhotoMedia().catch(error => { console.error(error); return []; }),
             ]);
             if (token !== this._viewToken) return;
             this.entries = entries;
@@ -182,7 +182,7 @@ export class LogbookApp {
             const first = new Map();
             for (const m of photos) if (m.path && !first.has(m.entry_id)) first.set(m.entry_id, m.path);
             this._renderList();
-            const urls = await this.store.photoUrls([...first.values()]).catch(() => new Map());
+            const urls = await this.store.photoUrls([...first.values()]).catch(error => { console.error(error); return new Map(); });
             if (token !== this._viewToken) return;
             this.thumbs = new Map([...first].filter(([, path]) => urls.has(path)).map(([id, path]) => [id, urls.get(path)]));
             this._renderList();
@@ -239,7 +239,17 @@ export class LogbookApp {
         this.msg = [error instanceof DiveStoreError && error.kind === 'unreachable'
             ? tb('unreachable', 'Can\'t reach your dive log. If it hasn\'t been used for a week, resume the project in the Supabase dashboard.')
             : tb('genericError', 'Something went wrong. Please try again.')];
-        if (!this.destroyed && this.user && parseRoute(location.hash).name === 'list') this._renderList();
+        if (this.destroyed || !this.user) return;
+        if (parseRoute(location.hash).name === 'list') this._renderList();
+        else this._showMessage(this.msg[0]);
+    }
+
+    /** Show a plain message in the current (non-list) view. */
+    _showMessage(text) {
+        this.analysis?.destroy();
+        this.analysis = null;
+        this.view.innerHTML = `<section class="rda-card lb-message"><p>${escHtml(text)}</p>
+            <p><a href="${routeHref({ name: 'list' })}">${escHtml(tl('toList', 'Back to the list'))}</a></p></section>`;
     }
 
     _setWorking(on) {
@@ -263,11 +273,15 @@ export class LogbookApp {
         this.msg = [];
         this._setWorking(true);
         try {
-            const { report } = await uploadDivelog(this.store, files, (done, total) => {
+            const { report, ensureError } = await uploadDivelog(this.store, files, (done, total) => {
                 this.msg = [fill(tb('progress', 'Saving {0} / {1}…'), done, total)];
                 if (parseRoute(location.hash).name === 'list') this._renderList();
             });
             this.msg = this._reportLines(report);
+            if (ensureError) {
+                this._storeError(ensureError);
+                this.msg = [...this._reportLines(report), ...this.msg];
+            }
             this.working = false;
             if (parseRoute(location.hash).name === 'list') this._showList(++this._viewToken);
         } catch (error) {

@@ -232,12 +232,14 @@ export class RecordedDiveAnalysis {
         this._renderAccount();
         this._unsubscribe = this.store.onAuthChange(user => this._onUser(user));
         this.store.currentUser().then(user => this._onUser(user), error => {
+            if (this.destroyed) return;
             this._storeError(error);
             this._onUser(null);
         });
     }
 
     _onUser(user) {
+        if (this.destroyed) return;
         const same = this._userKnown && (user?.id ?? null) === (this.user?.id ?? null);
         this._userKnown = true;
         if (same) return;
@@ -261,6 +263,7 @@ export class RecordedDiveAnalysis {
     /** Explain a store failure; details only go to the console. */
     _storeError(error) {
         console.error(error);
+        if (this.destroyed) return;
         this.accountMsg = error instanceof DiveStoreError && error.kind === 'unreachable'
             ? { key: 'unreachable', fallback: 'Can\'t reach your dive log. If it hasn\'t been used for a week, resume the project in the Supabase dashboard.' }
             : { key: 'genericError', fallback: 'Something went wrong. Please try again.' };
@@ -283,6 +286,7 @@ export class RecordedDiveAnalysis {
             this.busy = null;
             if (this.destroyed) return;
             this.serverFailed = true;
+            if (this.focusRecordingId) this.focusMissing = true;
             this._storeError(error);
             this._renderAccount();
             this._renderList();
@@ -291,6 +295,7 @@ export class RecordedDiveAnalysis {
     }
 
     _renderAccount() {
+        if (this.destroyed) return;
         if (!this.store || this.embedded) return;
         const el = this.root.querySelector('#rda-account');
         el.hidden = false;
@@ -490,17 +495,20 @@ export class RecordedDiveAnalysis {
         if (this.demoFiles.length === 0) return;
         try {
             const files = await fetchDemoFiles(this.demoFiles);
+            if (this.destroyed) return;
             if (this.dives.length > 0) return; // the user picked files meanwhile
             const result = await loadDiveFiles(files);
+            if (this.destroyed) return;
             this.isDemo = true;
             this._setDives(result);
         } catch (error) {
-            if (this.dives.length > 0) return;
+            if (this.destroyed || this.dives.length > 0) return;
             this._setDives({ dives: [], errors: [{ fileName: this.demoFiles[0]?.split('/').pop() ?? '', message: error.message || String(error) }] });
         }
     }
 
     _setDives({ dives, errors }) {
+        if (this.destroyed) return;
         this.dives = dives;
         this.errors = errors;
         this.selected = null;
@@ -508,7 +516,13 @@ export class RecordedDiveAnalysis {
         this._selectToken++;
         this.startStates = new Map();
         this._renderList();
-        if (dives.length > 0) this._select(dives.find(d => d.id === this.focusRecordingId) ?? dives.at(-1));
+        this.focusMissing = false;
+        const focus = this.focusRecordingId ? dives.find(d => d.id === this.focusRecordingId) : null;
+        if (this.focusRecordingId && !focus) {
+            this.focusMissing = true; // never show an unrelated dive in its place
+            this.el.analysis.hidden = true;
+            this._renderList();
+        } else if (dives.length > 0) this._select(focus ?? dives.at(-1));
         else this.el.analysis.hidden = true;
     }
 
@@ -543,6 +557,7 @@ export class RecordedDiveAnalysis {
     }
 
     _setGf(gf) {
+        if (this.destroyed) return;
         this.gf = gf;
         this.el.gfLow.value = gf.gfLow;
         this.el.gfHigh.value = gf.gfHigh;
@@ -560,6 +575,7 @@ export class RecordedDiveAnalysis {
     }
 
     _renderList() {
+        if (this.destroyed) return;
         const statusParts = [];
         const hidePickers = this.embedded || (this.serverMode && !this.serverFailed);
         this.root.querySelector('#rda-pick-folder').hidden = hidePickers;
@@ -575,6 +591,7 @@ export class RecordedDiveAnalysis {
                     r.failed.map(f => `${f.fileName} (${f.message})`).join('; ')));
             }
         }
+        if (this.focusMissing) statusParts.push(t('logbook.notFound', 'Dive not found'));
         if (this.embedded && this.accountMsg) statusParts.push(t(`backend.${this.accountMsg.key}`, this.accountMsg.fallback));
         if (this.isDemo) statusParts.push(t('demoNote', 'Showing example dives. Open your own DIVELOG folder above.'));
         if (this.dives.length === 0 && !this.busy) statusParts.push(t('noDives', 'No dive logs found. Pick the DIVELOG folder from the dive computer, or its .DLF files.'));
@@ -603,6 +620,7 @@ export class RecordedDiveAnalysis {
     }
 
     _renderAnalysis() {
+        if (this.destroyed) return;
         const dive = this.current;
         if (!dive) return;
         this.el.analysis.hidden = false;

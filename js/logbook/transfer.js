@@ -46,7 +46,7 @@ export function downloadBlob(blob, fileName) {
  * @param {Object} store - Dive store
  * @param {Iterable<{name: string, arrayBuffer: Function}>} files
  * @param {(done: number, total: number) => void} [onProgress] - called as each dive is saved; called with (0, total) first
- * @returns {Promise<{report: ({saved: number, updated: number, unchanged: number, failed: Array}|null), items: Object[]}>}
+ * @returns {Promise<{ensureError: (Error|null), report: ({saved: number, updated: number, unchanged: number, failed: Array}|null), items: Object[]}>}
  *   `report` is null when the files held nothing to read at all.
  */
 export async function uploadDivelog(store, files, onProgress = () => {}) {
@@ -58,13 +58,18 @@ export async function uploadDivelog(store, files, onProgress = () => {}) {
         ...plan.update.map(i => ({ ...i, action: 'update' })),
     ];
     const saved = await store.saveDives(batch, onProgress);
-    await store.ensureEntries();
+    let ensureError = null;
+    try {
+        await store.ensureEntries();
+    } catch (error) {
+        ensureError = error; // the dives are saved; let the page report that and the failure
+    }
     const nothingFound = picked.items.length === 0 && picked.errors.length === 0;
     const report = nothingFound ? null : {
         saved: saved.saved, updated: saved.updated, unchanged: plan.unchanged.length,
         failed: [...saved.failed, ...picked.errors],
     };
-    return { report, items: picked.items };
+    return { report, items: picked.items, ensureError };
 }
 
 /**

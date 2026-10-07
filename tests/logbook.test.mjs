@@ -521,6 +521,17 @@ describe('transfer', () => {
         assert.equal(ensured, false);
     });
 
+    test('uploadDivelog keeps the save report when ensureEntries fails', async () => {
+        const store = {
+            listDives: async () => [],
+            saveDives: async batch => ({ saved: batch.length, updated: 0, failed: [] }),
+            ensureEntries: async () => { throw new Error('entries down'); },
+        };
+        const { report, ensureError } = await uploadDivelog(store, [fileOf('00000100')]);
+        assert.equal(report.saved, 1);
+        assert.match(ensureError.message, /entries down/);
+    });
+
     test('exportZip adds DIVELOG files, dives.json and logbook.json', async () => {
         const added = new Map();
         class FakeZip {
@@ -540,5 +551,70 @@ describe('transfer', () => {
             entries: [{ id: 'e1' }, { id: 'e2' }], sites: [{ id: 's1', name: 'Abyss' }], media: [{ id: 'm1', entry_id: 'e1' }],
         });
         assert.deepEqual(download, ['BLOB', 'dive-log-2026-10-07.zip']);
+    });
+});
+
+const { RecordedDiveAnalysis } = await import('../js/components/RecordedDiveAnalysis.js');
+
+describe('RecordedDiveAnalysis lifecycle (jsdom)', () => {
+    async function withDom(fn) {
+        const { JSDOM } = await import('jsdom');
+        const dom = new JSDOM('<!doctype html><body><div id="root"></div></body>', { url: 'http://localhost/lab/dive-log.html' });
+        const saved = {};
+        for (const k of ['window', 'document', 'location', 'history']) {
+            saved[k] = Object.getOwnPropertyDescriptor(globalThis, k);
+            Object.defineProperty(globalThis, k, { value: dom.window[k], configurable: true, writable: true });
+        }
+        try {
+            return await fn(dom.window.document.getElementById('root'));
+        } finally {
+            for (const [k, d] of Object.entries(saved)) {
+                if (d) Object.defineProperty(globalThis, k, d); else delete globalThis[k];
+            }
+        }
+    }
+    const tick = () => new Promise(r => setTimeout(r, 20));
+
+    test('auth events and demo loading after destroy() do not throw', async () => {
+        await withDom(async root => {
+            let listener;
+            const store = {
+                onAuthChange: l => { listener = l; return () => {}; },
+                currentUser: async () => null,
+                listDives: async () => [],
+            };
+            const rda = new RecordedDiveAnalysis(root, { store, demoFiles: [] });
+            rda.destroy();
+            const errors = [];
+            const onRejection = e => errors.push(e);
+            process.on('unhandledRejection', onRejection);
+            try {
+                listener({ id: 'u1', email: 'a@b.c' });
+                listener(null);
+                rda._setDives({ dives: [], errors: [] });
+                rda._renderList();
+                await tick();
+            } finally {
+                process.off('unhandledRejection', onRejection);
+            }
+            assert.deepEqual(errors, []);
+        });
+    });
+
+    test('embedded with a focus id that is not stored shows "not found", not another dive', async () => {
+        await withDom(async root => {
+            const dive = diveOf('00000100');
+            const store = {
+                listDives: async () => [{ id: 'r1', deviceSerial: 'x', diveNumber: 100, startLocal: dive.start.local, parserVersion: 99, summary: { maxDepth: 1, duration: 60, mode: 'oc' } }],
+                loadDive: async () => { throw new Error('must not load'); },
+                reparseOutdated: async () => 0,
+            };
+            const rda = new RecordedDiveAnalysis(root, { store, embedded: true, focusRecordingId: 'stale' });
+            await tick();
+            assert.equal(rda.current, null);
+            assert.equal(root.querySelector('#rda-analysis').hidden, true);
+            assert.match(root.querySelector('#rda-status').textContent, /Dive not found/);
+            rda.destroy();
+        });
     });
 });
