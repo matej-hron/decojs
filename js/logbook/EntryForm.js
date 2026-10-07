@@ -6,7 +6,7 @@
  * The helpers at the top are pure (no DOM) and are covered by tests.
  */
 
-import { normalizeEntry, nextLogNumber, parseDecimal, DETAIL_KEYS } from './entryModel.js';
+import { normalizeEntry, nextLogNumber, parseDecimal, parseDuration, formatDuration, hasUserDetails, DETAIL_KEYS } from './entryModel.js';
 import { openSitePicker } from './SitePicker.js';
 import { translate } from '../i18n.js';
 import { currentLang, decimalSeparator } from '../format.js';
@@ -42,11 +42,7 @@ const fill = (text, ...values) => String(text).replace(/\{(\d+)\}/g, (_, i) => v
 
 // ---- Pure helpers ----
 
-/** Whole minutes with up to two decimals, so the stored seconds survive an edit. */
-export function formatDuration(seconds) {
-    if (seconds === null || seconds === undefined || !Number.isFinite(Number(seconds))) return '';
-    return String(Math.round((Number(seconds) / 60) * 100) / 100);
-}
+export { formatDuration };
 
 /**
  * The `{o2, he}` fractions for a gas choice; null when nothing valid is chosen.
@@ -71,7 +67,7 @@ export function invalidNumberFields(values) {
     const check = (key, labelKey) => {
         const v = key === null ? null : values[key];
         if (v === null || v === undefined || String(v).trim() === '') return;
-        if (parseDecimal(v) === null) bad.push(labelKey);
+        if ((key === 'duration_min' ? parseDuration(v) : parseDecimal(v)) === null) bad.push(labelKey);
     };
     const core = { log_number: 'number', duration_min: 'duration', max_depth_m: 'depth', water_temp_c: 'waterTemp', vis_shallow_m: 'visShallow', vis_deep_m: 'visDeep' };
     for (const [k, label] of Object.entries(core)) check(k, label);
@@ -110,7 +106,7 @@ export function formValuesFromEntry(entry, { comma = false } = {}) {
         log_number: text(entry.log_number),
         dive_date: text(entry.dive_date),
         entry_time: text(entry.entry_time).slice(0, 5),
-        duration_min: comma ? formatDuration(entry.duration_s).replace('.', ',') : formatDuration(entry.duration_s),
+        duration_min: formatDuration(entry.duration_s),
         max_depth_m: num(entry.max_depth_m),
         site_id: entry.site_id ?? null,
         buddies: [...(entry.buddies ?? [])],
@@ -245,11 +241,7 @@ export class EntryForm {
     }
 
     _detailsOpen() {
-        const d = this.values.details;
-        return Object.values(DETAIL_KEYS).flat().some(k => {
-            const v = d[k];
-            return Array.isArray(v) ? v.length > 0 : v !== undefined && v !== null && v !== '';
-        });
+        return hasUserDetails(this.values.details);
     }
 
     render() {
@@ -272,9 +264,12 @@ export class EntryForm {
                         ${this._input('entry_time', 'time', v.entry_time, { type: 'time' })}
                     </div>
                     <div class="lb-row">
-                        ${this._input('duration_min', 'duration', v.duration_min, { mode: 'decimal' })}
+                        ${this._input('duration_min', 'duration', v.duration_min)}
                         ${this._input('max_depth_m', 'depth', v.max_depth_m, { mode: 'decimal' })}
+                    </div>
+                    <div class="lb-row">
                         ${this._input('water_temp_c', 'waterTemp', v.water_temp_c, { mode: 'decimal' })}
+                        ${detailNum('surfaceTempC')}
                     </div>
                     <div class="lb-field lb-site">
                         <span>${escHtml(tf('site'))}</span>
@@ -313,7 +308,7 @@ export class EntryForm {
                     <summary>${escHtml(tf('more'))}</summary>
                     <h3>${escHtml(tf('conditions'))}</h3>
                     <div class="lb-row">
-                        ${detailNum('surfaceTempC')}${detailNum('airTempC')}
+                        ${detailNum('airTempC')}
                     </div>
                     <div class="lb-row">
                         ${this._select('weather', 'weather', CHOICES.weather, d.weather)}
@@ -425,7 +420,7 @@ export class EntryForm {
         const buddyInput = c.querySelector('[name="buddy"]');
         if (buddyInput) buddyInput.value = '';
         const d = v.details;
-        for (const key of Object.values(DETAIL_KEYS).flat()) {
+        for (const key of ['surfaceTempC', ...Object.values(DETAIL_KEYS).flat()]) {
             if (key === 'tags') continue;
             const el = c.querySelector(`[name="d.${key}"]`);
             if (el) d[key] = el.value;

@@ -10,6 +10,7 @@ import { parseDivesoftDLF } from '../js/import/divesoftDlf.js';
 import {
     entryFromRecording, orderRecordingsForNumbering, nextLogNumber, parseDecimal,
     normalizeEntry, needsDetails, DETAIL_KEYS, formatDiveDate, entriesOnDate,
+    surfaceTempFromSamples, avgDepthFromSamples, hasUserDetails, parseDuration, formatDuration,
 } from '../js/logbook/entryModel.js';
 import { localeTag } from '../js/format.js';
 import { parseRoute, routeHref } from '../js/logbook/router.js';
@@ -20,7 +21,7 @@ import { createSupabaseStore, DiveStoreError } from '../js/backend/supabaseStore
 import { NewDive } from '../js/logbook/NewDive.js';
 import { LogbookApp } from '../js/logbook/LogbookApp.js';
 import { uploadDivelog, exportZip } from '../js/logbook/transfer.js';
-import { formValuesFromEntry, gasFromForm, formatDuration, recordingsOnDate, invalidNumberFields, EntryForm } from '../js/logbook/EntryForm.js';
+import { formValuesFromEntry, gasFromForm, recordingsOnDate, invalidNumberFields, EntryForm } from '../js/logbook/EntryForm.js';
 
 const FIXTURES = new URL('./fixtures/divesoft/', import.meta.url);
 const diveOf = id => parseDivesoftDLF(new Uint8Array(readFileSync(new URL(`${id}.DLF`, FIXTURES))), { fileName: `${id}.DLF` });
@@ -36,6 +37,31 @@ describe('entryFromRecording', () => {
         assert.equal(e.water_temp_c, 4.8);
         assert.equal(e.details.stops, 'deco');
         assert.equal(e.details.computer, 'Divesoft Freedom 7044-00006107');
+    });
+
+    test('surface temperature and average depth come from the profile', () => {
+        const e = entryFromRecording(diveOf('00000100'));
+        assert.equal(e.details.surfaceTempC, 18.5);
+        assert.equal(e.water_temp_c, 4.8);
+        assert.ok(Math.abs(e.details.avgDepthM - 16.1) <= 0.2, String(e.details.avgDepthM));
+        const f = entryFromRecording(diveOf('00000092'));
+        assert.equal(f.details.surfaceTempC, 21.8);
+        assert.ok(Math.abs(f.details.avgDepthM - 7.7) <= 0.2, String(f.details.avgDepthM));
+    });
+
+    test('surfaceTempFromSamples: early shallow first, then anywhere shallow, else omitted', () => {
+        const s = (t, depth, temp) => ({ t, depth, ...(temp === undefined ? {} : { temp }) });
+        assert.equal(surfaceTempFromSamples([s(0, 1, 18), s(60, 5, 19.04), s(300, 30, 25), s(700, 3, 30)]), 19);
+        assert.equal(surfaceTempFromSamples([s(0, 10, 18), s(700, 3, 15.26), s(800, 2, 14), s(900, 2)]), 15.3);
+        assert.equal(surfaceTempFromSamples([s(0, 10, 18), s(100, 3)]), undefined);
+        assert.equal(surfaceTempFromSamples([]), undefined);
+    });
+
+    test('avgDepthFromSamples: time-weighted trapezoid, needs two samples', () => {
+        assert.equal(avgDepthFromSamples([{ t: 0, depth: 0 }, { t: 100, depth: 20 }, { t: 200, depth: 0 }]), 10);
+        assert.equal(avgDepthFromSamples([{ t: 0, depth: 10 }]), undefined);
+        const e = entryFromRecording({ ...diveOf('00000100'), avgDepth: 12.3 });
+        assert.equal(e.details.avgDepthM, 12.3);
     });
 
     test('a no-deco dive with a safety stop', () => {
@@ -90,6 +116,20 @@ describe('form normalisation', () => {
         assert.equal(row.notes, null);
         assert.deepEqual(row.details, { futureKey: 'kept', weather: 'sun' });
         for (const v of Object.values(row)) assert.ok(!Number.isNaN(v));
+    });
+
+    test('normalizeEntry reads m:ss durations to exact seconds', () => {
+        assert.equal(normalizeEntry({ duration_min: '51:49' }).duration_s, 3109);
+        assert.equal(normalizeEntry({ duration_min: '' }).duration_s, null);
+    });
+
+    test('hasUserDetails ignores computer-derived keys', () => {
+        assert.equal(hasUserDetails({}), false);
+        assert.equal(hasUserDetails({ computer: 'X', stops: 'deco', avgDepthM: 16, surfaceTempC: 18, computerFillVersion: 1 }), false);
+        assert.equal(hasUserDetails({ stops: 'deco', weather: 'sun' }), true);
+        assert.equal(hasUserDetails({ tags: [] }), false);
+        assert.equal(hasUserDetails({ tags: ['night'] }), true);
+        assert.equal(hasUserDetails({ unknownKey: 'x' }), false);
     });
 
     test('needsDetails', () => {
@@ -277,6 +317,56 @@ function fakeLogbookClient({ user = { id: 'u1', email: 'me@example.com' }, table
 
 const recordingRow = (id, n, start, dive) => ({
     id, owner: 'u1', device_serial: '7044-00006107', dive_number: n, start_local: start, record: dive,
+});
+
+describe('logbook store: fillComputerFields', () => {
+    const setup = (details = {}) => {
+        const client = fakeLogbookClient({ tables: { dives: [recordingRow('r100', 100, '2026-09-27T12:01:01', diveOf('00000100'))] } });
+        client.db.log_entries.push({ id: 'e1', owner: 'u1', log_number: 1, dive_date: '2026-09-27', recording_id: 'r100', buddies: [], details });
+        return { client, store: createSupabaseStore(client), entry: client.db.log_entries[0] };
+    };
+
+    test('fills missing values, keeps others, marks the version', async () => {
+        const { store, entry } = setup({ weather: 'sun' });
+        assert.equal(await store.fillComputerFields(), 1);
+        assert.equal(entry.details.surfaceTempC, 18.5);
+        assert.ok(Math.abs(entry.details.avgDepthM - 16.1) <= 0.2);
+        assert.equal(entry.details.weather, 'sun');
+        assert.equal(entry.details.computerFillVersion, 1);
+    });
+
+    test('never overwrites a value that is there', async () => {
+        const { store, entry } = setup({ surfaceTempC: 12 });
+        await store.fillComputerFields();
+        assert.equal(entry.details.surfaceTempC, 12);
+        assert.ok(entry.details.avgDepthM > 0);
+    });
+
+    test('a second run does nothing, also after the user cleared a value', async () => {
+        const { client, store, entry } = setup();
+        await store.fillComputerFields();
+        delete entry.details.avgDepthM;
+        const before = client.calls.length;
+        assert.equal(await store.fillComputerFields(), 0);
+        assert.ok(!client.calls.slice(before).some(c => c[0] === 'update'));
+        assert.equal(entry.details.avgDepthM, undefined);
+    });
+
+    test('entries without a recording or with nothing missing are left alone', async () => {
+        const { client, store } = setup({ surfaceTempC: 1, avgDepthM: 2 });
+        client.db.log_entries.push({ id: 'e2', owner: 'u1', log_number: 2, dive_date: '2026-09-28', recording_id: null, buddies: [], details: {} });
+        assert.equal(await store.fillComputerFields(), 0);
+        assert.deepEqual(client.db.log_entries[1].details, {});
+        assert.ok(!client.calls.some(c => c[0] === 'update'));
+    });
+
+    test('a failure is logged and counted as zero, not thrown', async () => {
+        const { client, store } = setup();
+        client.from = () => { throw new Error('boom'); };
+        const orig = console.error;
+        console.error = () => {};
+        try { assert.equal(await store.fillComputerFields(), 0); } finally { console.error = orig; }
+    });
 });
 
 describe('logbook store: entries', () => {
@@ -695,13 +785,27 @@ describe('RecordedDiveAnalysis lifecycle (jsdom)', () => {
 });
 
 describe('entry form helpers', () => {
-    test('formatDuration gives minutes that round-trip to the stored seconds', () => {
+    test('formatDuration gives m:ss that round-trips to the stored seconds', () => {
         assert.equal(formatDuration(null), '');
-        assert.equal(formatDuration(2700), '45');
-        assert.equal(formatDuration(3109), '51.82');
-        for (const s of [59, 3109, 2701, 7]) {
+        assert.equal(formatDuration(2700), '45:00');
+        assert.equal(formatDuration(3109), '51:49');
+        assert.equal(formatDuration(7), '0:07');
+        for (const s of [59, 3109, 2701, 7, 0, 7261]) {
             assert.equal(normalizeEntry({ duration_min: formatDuration(s) }).duration_s, s);
         }
+    });
+
+    test('parseDuration accepts m:ss, whole and decimal minutes', () => {
+        assert.equal(parseDuration('51:49'), 3109);
+        assert.equal(parseDuration(' 51 '), 3060);
+        assert.equal(parseDuration('51,8'), 3108);
+        assert.equal(parseDuration('51.82'), 3109);
+        assert.equal(parseDuration('0:07'), 7);
+        assert.equal(parseDuration(''), null);
+        assert.equal(parseDuration('abc'), null);
+        assert.equal(parseDuration('5:75'), null);
+        assert.equal(parseDuration('5:'), null);
+        assert.equal(parseDuration('-3'), null);
     });
 
     test('gasFromForm', () => {
@@ -889,11 +993,12 @@ describe('detail helpers', () => {
 
     test('core rows carry units, empty values are hidden', () => {
         const { core } = detailRows(entry, t);
-        assert.deepEqual(core.map(r => r.key), ['duration', 'depth', 'gas', 'waterTemp', 'buddies']);
+        assert.deepEqual(core.map(r => r.key), ['duration', 'depth', 'gas', 'waterTemp', 'surfaceTempC', 'buddies']);
         assert.equal(core.find(r => r.key === 'depth').value, '38.6\u00a0m');
-        assert.equal(core.find(r => r.key === 'duration').value, '52\u00a0min');
+        assert.equal(core.find(r => r.key === 'duration').value, '51:49\u00a0min');
         assert.equal(core.find(r => r.key === 'gas').value, 'EAN32');
         assert.equal(core.find(r => r.key === 'waterTemp').value, '4.8\u00a0\u00b0C');
+        assert.equal(core.find(r => r.key === 'surfaceTempC').value, '12\u00a0\u00b0C');
         assert.equal(core.find(r => r.key === 'buddies').value, 'Ann, Bob');
     });
 

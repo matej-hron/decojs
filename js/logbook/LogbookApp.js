@@ -104,7 +104,7 @@ export class LogbookApp {
         this.root.appendChild(this.view);
         window.addEventListener('hashchange', this._onHash);
         document.addEventListener('languagechange', this._onLanguage);
-        this.ensured = this.store.ensureEntries().catch(error => this._storeError(error, { background: true }));
+        this.ensured = this.store.ensureEntries().then(() => this.store.fillComputerFields?.()).catch(error => this._storeError(error, { background: true }));
         this._renderRoute();
     }
 

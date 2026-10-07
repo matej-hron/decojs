@@ -6,7 +6,7 @@
  */
 
 import { CHOICES, TAGS } from './EntryForm.js';
-import { DETAIL_KEYS, formatDiveDate } from './entryModel.js';
+import { DETAIL_KEYS, formatDiveDate, formatDuration } from './entryModel.js';
 import { routeHref } from './router.js';
 import { readExif, resizeImage, isSupportedImage } from './photo.js';
 import { loadLeaflet, TILE_URL, TILE_ATTRIBUTION } from './SitePicker.js';
@@ -52,10 +52,12 @@ export function detailRows(entry, t) {
     };
     const num = (v, decimals, unit) => (v === null || v === undefined ? null : `${fmtNum(v, decimals)}${NB}${unit}`);
 
-    add(core, 'duration', num(entry.duration_s === null || entry.duration_s === undefined ? null : entry.duration_s / 60, 0, 'min'));
+    add(core, 'duration', formatDuration(entry.duration_s) === '' ? null : `${formatDuration(entry.duration_s)}${NB}min`);
     add(core, 'depth', num(entry.max_depth_m, 1, 'm'));
     add(core, 'gas', entry.gas && Number.isFinite(entry.gas.o2) ? gasName({ o2: entry.gas.o2, he: entry.gas.he ?? 0 }) : null);
     add(core, 'waterTemp', num(entry.water_temp_c, 1, '°C'));
+    const surface = entry.details?.surfaceTempC;
+    add(core, 'surfaceTempC', !present(surface) ? null : Number.isFinite(Number(surface)) ? `${fmtNum(surface)}${NB}°C` : String(surface));
     add(core, 'visShallow', num(entry.vis_shallow_m, 1, 'm'));
     add(core, 'visDeep', num(entry.vis_deep_m, 1, 'm'));
     add(core, 'buddies', entry.buddies?.length ? entry.buddies.join(', ') : null);

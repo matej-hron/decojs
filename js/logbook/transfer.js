@@ -61,6 +61,7 @@ export async function uploadDivelog(store, files, onProgress = () => {}) {
     let ensureError = null;
     try {
         await store.ensureEntries();
+        await store.fillComputerFields?.();
     } catch (error) {
         ensureError = error; // the dives are saved; let the page report that and the failure
     }

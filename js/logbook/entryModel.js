@@ -25,10 +25,56 @@ export function entriesOnDate(entries, date) {
 
 /** "More details" keys, grouped as in the form. */
 export const DETAIL_KEYS = Object.freeze({
-    conditions: ['surfaceTempC', 'airTempC', 'weather', 'current', 'waves'],
+    conditions: ['airTempC', 'weather', 'current', 'waves'],
     equipment: ['cylinderL', 'cylinderMaterial', 'pressureStartBar', 'pressureEndBar', 'weightsKg', 'suit', 'suitMm', 'computer'],
     dive: ['entry', 'avgDepthM', 'stops', 'tags', 'guide', 'rating'],
 });
+
+/** Detail keys a dive computer fills in; they do not count as something the diver typed. */
+const COMPUTER_KEYS = new Set(['computer', 'stops', 'avgDepthM', 'surfaceTempC', 'computerFillVersion']);
+
+/** True when `details` holds a value the diver entered (computer-derived keys and unknown keys do not count). */
+export function hasUserDetails(details) {
+    const d = details ?? {};
+    return Object.values(DETAIL_KEYS).flat().filter(k => !COMPUTER_KEYS.has(k)).some(k => {
+        const v = d[k];
+        return Array.isArray(v) ? v.length > 0 : v !== undefined && v !== null && v !== '';
+    });
+}
+
+const round1 = n => Math.round(n * 10) / 10;
+
+/**
+ * Warmest temperature in shallow water (depth <= 6 m): within the first 10 minutes if any,
+ * else anywhere in the dive. Undefined when no sample qualifies.
+ * @param {Array<{t: number, depth: number, temp?: number}>} samples
+ */
+export function surfaceTempFromSamples(samples) {
+    const shallow = (samples ?? []).filter(s => s.depth <= 6 && Number.isFinite(s.temp));
+    const early = shallow.filter(s => s.t <= 600);
+    const pool = early.length ? early : shallow;
+    return pool.length ? round1(Math.max(...pool.map(s => s.temp))) : undefined;
+}
+
+/** Time-weighted average depth (trapezoid rule over the whole dive); undefined for fewer than 2 samples. */
+export function avgDepthFromSamples(samples) {
+    const s = samples ?? [];
+    if (s.length < 2) return undefined;
+    let area = 0;
+    for (let i = 1; i < s.length; i++) area += ((s[i].depth + s[i - 1].depth) / 2) * (s[i].t - s[i - 1].t);
+    const total = s[s.length - 1].t;
+    return total > 0 ? round1(area / total) : undefined;
+}
+
+/** The `surfaceTempC` / `avgDepthM` detail values a recording yields (only those that exist). */
+export function computerFieldsFromRecording(dive) {
+    const out = {};
+    const surface = surfaceTempFromSamples(dive.samples);
+    if (surface !== undefined) out.surfaceTempC = surface;
+    const avg = Number.isFinite(dive.avgDepth) ? dive.avgDepth : avgDepthFromSamples(dive.samples);
+    if (avg !== undefined) out.avgDepthM = avg;
+    return out;
+}
 
 /**
  * Logbook fields a dive computer recording can fill in.
@@ -42,7 +88,7 @@ export function entryFromRecording(dive) {
     const device = [dive.device?.vendor, dive.device?.model, dive.device?.serial].filter(Boolean).join(' ');
     const details = { stops: hasDeco ? 'deco' : hasSafety ? 'safety' : 'none' };
     if (device) details.computer = device;
-    if (Number.isFinite(dive.avgDepth)) details.avgDepthM = dive.avgDepth;
+    Object.assign(details, computerFieldsFromRecording(dive));
     return {
         dive_date: date,
         entry_time: time ?? null,
@@ -78,6 +124,28 @@ export function parseDecimal(value) {
     return Number.isFinite(n) ? n : null;
 }
 
+/** Seconds as `m:ss` (minutes may exceed 59), so the stored seconds survive an edit; '' for none. */
+export function formatDuration(seconds) {
+    if (seconds === null || seconds === undefined || !Number.isFinite(Number(seconds))) return '';
+    const total = Math.round(Number(seconds));
+    return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, '0')}`;
+}
+
+/** Seconds from `m:ss`, whole minutes or decimal minutes (comma or point); null when empty or invalid. */
+export function parseDuration(value) {
+    if (value === null || value === undefined) return null;
+    const text = String(value).trim();
+    if (text === '') return null;
+    const clock = /^(\d+):(\d{1,2})$/.exec(text);
+    if (clock) {
+        const sec = Number(clock[2]);
+        return sec < 60 ? Number(clock[1]) * 60 + sec : null;
+    }
+    if (!/^\d+([.,]\d*)?$|^[.,]\d+$/.test(text)) return null;
+    const minutes = parseDecimal(text);
+    return minutes === null ? null : Math.round(minutes * 60);
+}
+
 const emptyText = v => (typeof v === 'string' ? (v.trim() === '' ? null : v.trim()) : v ?? null);
 
 function cleanDetails(details) {
@@ -92,18 +160,18 @@ function cleanDetails(details) {
 
 /**
  * Turn form values into a log_entries row.
- * @param {Object} form - raw form values (strings), `duration_min` in minutes
+ * @param {Object} form - raw form values (strings), `duration_min` as `m:ss` or minutes
  * @param {Object} [previousDetails] - details stored before; unknown keys are kept
  */
 export function normalizeEntry(form, previousDetails = {}) {
-    const minutes = parseDecimal(form.duration_min);
+    const seconds = parseDuration(form.duration_min);
     const buddies = [...new Set((form.buddies ?? []).map(b => String(b).trim()).filter(Boolean))];
     const number = parseDecimal(form.log_number);
     return {
         log_number: number === null ? null : Math.round(number),
         dive_date: emptyText(form.dive_date),
         entry_time: emptyText(form.entry_time),
-        duration_s: minutes === null ? null : Math.round(minutes * 60),
+        duration_s: seconds,
         max_depth_m: parseDecimal(form.max_depth_m),
         site_id: emptyText(form.site_id),
         buddies,

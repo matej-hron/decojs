@@ -6,7 +6,7 @@
 
 import { parseDivesoftDLF, PARSER_VERSION } from '../import/divesoftDlf.js';
 import { listSummary } from './sync.js';
-import { entryFromRecording, orderRecordingsForNumbering } from '../logbook/entryModel.js';
+import { entryFromRecording, orderRecordingsForNumbering, computerFieldsFromRecording } from '../logbook/entryModel.js';
 
 export const BUCKET = 'dive-logs';
 export const TABLE = 'dives';
@@ -320,6 +320,49 @@ export function createSupabaseStore(client) {
                 next++;
             }
             return created;
+        },
+
+        /**
+         * One-time backfill of the profile-derived `surfaceTempC` / `avgDepthM` for entries linked to a
+         * recording. Only missing keys are set; `computerFillVersion` makes later runs skip the entry.
+         * Failures are logged, never thrown. Returns the number of entries changed.
+         */
+        async fillComputerFields() {
+            try {
+                const entries = await client.from(ENTRIES).select('id, recording_id, details');
+                if (entries.error) throw fail(entries.error);
+                const todo = entries.data.filter(e => {
+                    const d = e.details ?? {};
+                    return e.recording_id && !(d.computerFillVersion >= 1)
+                        && (d.surfaceTempC === undefined || d.surfaceTempC === null || d.avgDepthM === undefined || d.avgDepthM === null);
+                });
+                if (!todo.length) return 0;
+                const recs = await client.from(TABLE).select('id, record').in('id', todo.map(e => e.recording_id));
+                if (recs.error) throw fail(recs.error);
+                const recordOf = new Map(recs.data.map(r => [r.id, r.record]));
+                let changed = 0;
+                for (const e of todo) {
+                    try {
+                        const record = recordOf.get(e.recording_id);
+                        if (!record) continue;
+                        const derived = computerFieldsFromRecording(record);
+                        const details = { ...(e.details ?? {}), computerFillVersion: 1 };
+                        let added = false;
+                        for (const [k, v] of Object.entries(derived)) {
+                            if (details[k] === undefined || details[k] === null) { details[k] = v; added = true; }
+                        }
+                        const { error } = await client.from(ENTRIES).update({ details, updated_at: new Date().toISOString() }).eq('id', e.id);
+                        if (error) throw fail(error);
+                        if (added) changed++;
+                    } catch (error) {
+                        console.error('fillComputerFields: entry skipped', error);
+                    }
+                }
+                return changed;
+            } catch (error) {
+                console.error('fillComputerFields failed', error);
+                return 0;
+            }
         },
 
         listMedia,
