@@ -10,6 +10,8 @@ import { DiveStoreError } from '../backend/supabaseStore.js';
 import { uploadDivelog, exportZip } from './transfer.js';
 import { parseRoute, routeHref } from './router.js';
 import { needsDetails } from './entryModel.js';
+import { EntryForm } from './EntryForm.js';
+import { NewDive } from './NewDive.js';
 import { translate } from '../i18n.js';
 import { fmtNum } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
@@ -45,6 +47,7 @@ export class LogbookApp {
         this.ensured = null;
         this.destroyed = false;
         this._viewToken = 0;
+        this.form = null; // the mounted EntryForm or NewDive step
         this._onHash = () => this._renderRoute();
         this._onLanguage = () => this._onLanguageChange();
         if (!store) {
@@ -108,12 +111,20 @@ export class LogbookApp {
         window.removeEventListener('hashchange', this._onHash);
         document.removeEventListener('languagechange', this._onLanguage);
         this._viewToken++;
+        this._unmountForm();
         this._unmountAnalysis();
         this.entries = null;
     }
 
+    _unmountForm() {
+        this.form?.destroy();
+        this.form = null;
+    }
+
     _onLanguageChange() {
-        if (this.user && parseRoute(location.hash).name !== 'analysis') this._renderRoute();
+        const name = parseRoute(location.hash).name;
+        if (this.user && this.form && (name === 'new' || name === 'edit')) this.form.relabel(); // keep what was typed
+        else if (this.user && name !== 'analysis') this._renderRoute();
         else translateStatic(this.view);
     }
 
@@ -122,14 +133,15 @@ export class LogbookApp {
     _renderRoute() {
         if (this.destroyed || !this.user) return;
         this._unmountAnalysis();
+        this._unmountForm();
         const token = ++this._viewToken;
         const route = parseRoute(location.hash);
         switch (route.name) {
             case 'list': this._showList(token); break;
             case 'analysis': this._showAnalysis(route.id, token); break;
-            case 'detail':
-            case 'edit':
-            case 'new': this._showPlaceholder(route); break;
+            case 'detail': this._showDetail(route, token); break;
+            case 'edit': this._showEdit(route.id, token); break;
+            case 'new': this._showNew(); break;
             default: this._showNotFound();
         }
     }
@@ -140,11 +152,67 @@ export class LogbookApp {
             <p><a href="${routeHref({ name: 'list' })}">${escHtml(tl('toList', 'Back to the list'))}</a></p></section>`;
     }
 
-    _showPlaceholder(route) {
-        const heading = route.name === 'new' ? `<h2>${escHtml(tl('newDive', '+ New dive').replace(/^\+\s*/, ''))}</h2>` : '';
-        this.view.innerHTML = `<section class="rda-card lb-message">${heading}
+    async _showDetail(route, token) {
+        this.view.innerHTML = `<p class="rda-account-msg">${escHtml(tb('loading', 'Loading…'))}</p>`;
+        let entry;
+        try {
+            entry = await this._findEntry(route.id);
+        } catch (error) {
+            if (token === this._viewToken) this._storeError(error);
+            return;
+        }
+        if (token !== this._viewToken) return;
+        if (!entry) this._showNotFound();
+        else this._showPlaceholder();
+    }
+
+    async _findEntry(id) {
+        return this.entries?.find(e => e.id === id) ?? await this.store.getEntry(id);
+    }
+
+    _showPlaceholder() {
+        this.view.innerHTML = `<section class="rda-card lb-message">
             <p>${escHtml(tl('comingSoon', 'This screen is coming soon.'))}</p>
             <p><a href="${routeHref({ name: 'list' })}">${escHtml(tl('toList', 'Back to the list'))}</a></p></section>`;
+    }
+
+    // ---- New and edit ----
+
+    _showNew() {
+        this.view.innerHTML = '<div class="lb-form-host"></div>';
+        const host = this.view.firstChild;
+        const token = this._viewToken;
+        this.form = new NewDive(host, {
+            store: this.store,
+            onChoose: ({ prefill, recordingId }) => {
+                if (token !== this._viewToken) return;
+                this._unmountForm();
+                this.form = new EntryForm(host, {
+                    store: this.store, prefill, recordingId,
+                    onSaved: entry => { this.entries = null; location.hash = routeHref({ name: 'detail', id: entry.id }); },
+                    onCancel: () => { location.hash = routeHref({ name: 'list' }); },
+                });
+            },
+        });
+    }
+
+    async _showEdit(id, token) {
+        this.view.innerHTML = `<p class="rda-account-msg">${escHtml(tb('loading', 'Loading…'))}</p>`;
+        let entry;
+        try {
+            entry = await this._findEntry(id);
+        } catch (error) {
+            if (token === this._viewToken) this._storeError(error);
+            return;
+        }
+        if (token !== this._viewToken) return;
+        if (!entry) {
+            this._showNotFound();
+            return;
+        }
+        const back = () => { this.entries = null; location.hash = routeHref({ name: 'detail', id }); };
+        this.view.innerHTML = '<div class="lb-form-host"></div>';
+        this.form = new EntryForm(this.view.firstChild, { store: this.store, entry, onSaved: back, onCancel: back });
     }
 
     async _showAnalysis(id, token) {

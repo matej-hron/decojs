@@ -58,6 +58,37 @@
         .lb-bar .btn, .lb-back a { min-height: 44px; display: inline-flex; align-items: center; }
         .lb-back { margin: 0; }
         .lb-analysis { padding: 0; }
+        .lb-form, .lb-newdive { display: grid; gap: 1rem; min-width: 0; }
+        .lb-form h2, .lb-form h3, .lb-newdive h2, .lb-newdive h3 { margin: 0; }
+        .lb-form-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem; align-items: start; }
+        .lb-core, .lb-more { display: grid; gap: 0.75rem; min-width: 0; padding: 0; margin: 0; border: 0; box-shadow: none; background: none; }
+        .lb-more summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+        .lb-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; align-items: end; min-width: 0; }
+        .lb-field { display: grid; gap: 0.25rem; min-width: 0; margin: 0; padding: 0; border: 0; }
+        .lb-field > span, .lb-field > legend { font-size: 0.9rem; color: var(--text-subtle); padding: 0; }
+        .lb-field input[type="text"], .lb-field input[type="date"], .lb-field input[type="time"], .lb-field select, .lb-field textarea {
+            width: 100%; box-sizing: border-box; min-height: 44px; padding: 0.4rem 0.6rem; font: inherit;
+            color: var(--text-color); background: var(--surface, #fff); border: 1px solid var(--border-color, var(--border)); border-radius: 6px;
+        }
+        .lb-site-row { display: flex; gap: 0.5rem; min-width: 0; }
+        .lb-site-row input { flex: 1; min-width: 0; }
+        .lb-radios, .lb-chips { display: flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; }
+        .lb-radio { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 44px; }
+        .lb-radio input { width: 1.25rem; height: 1.25rem; }
+        .lb-chips:empty { display: none; }
+        .lb-chip { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0 0.25rem 0 0.75rem; border: 1px solid var(--border-color, var(--border)); border-radius: 999px; min-height: 36px; }
+        .lb-chip-x { min-width: 44px; min-height: 44px; border: 0; background: none; font-size: 1.25rem; cursor: pointer; color: inherit; }
+        .lb-form-error { margin: 0; color: var(--error-color, #c0392b); font-weight: 600; }
+        .lb-form-error[hidden], .lb-field[hidden] { display: none; }
+        .lb-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+        .lb-actions .btn { min-height: 44px; display: inline-flex; align-items: center; text-decoration: none; }
+        .lb-picks { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+        .lb-pick { width: 100%; min-height: 44px; text-align: left; }
+        .lb-file { cursor: pointer; }
+        .lb-file:focus-within { outline: 2px solid var(--primary-color, #2980b9); outline-offset: 2px; }
+        @media (min-width: 721px) {
+            .lb-form-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+        }
         @media (max-width: 720px) {
             .lb-cards { grid-template-columns: 1fr; }
             .lb-new { position: fixed; right: 1rem; bottom: 1rem; margin: 0; z-index: 20; padding: 0 1.25rem; border-radius: 999px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); }

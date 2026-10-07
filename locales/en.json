@@ -2911,7 +2911,119 @@
             "number": "#{0}",
             "comingSoon": "This screen is coming soon.",
             "toList": "Back to the list",
-            "photo": "Photo"
+            "photo": "Photo",
+            "duplicateNumber": "Number {0} is already used.",
+            "form": {
+                "newTitle": "New dive",
+                "editTitle": "Edit dive",
+                "number": "Log number",
+                "date": "Date",
+                "time": "Time",
+                "duration": "Duration (min)",
+                "site": "Site",
+                "pickOnMap": "Pick on map",
+                "depth": "Max depth (m)",
+                "buddies": "Buddies",
+                "buddyAdd": "Add buddy",
+                "buddyRemove": "Remove {0}",
+                "gas": "Gas",
+                "gasAir": "Air",
+                "gasEan": "EAN",
+                "gasTx": "Trimix",
+                "gasNone": "Not set",
+                "gasO2": "O₂ (%)",
+                "gasHe": "He (%)",
+                "gasInvalid": "Check the gas mix.",
+                "waterTemp": "Water temperature (°C)",
+                "visShallow": "Visibility, shallow (m)",
+                "visDeep": "Visibility, deep (m)",
+                "notes": "Notes",
+                "more": "More details",
+                "conditions": "Conditions",
+                "equipment": "Equipment",
+                "dive": "Dive",
+                "surfaceTempC": "Surface temperature (°C)",
+                "airTempC": "Air temperature (°C)",
+                "weather": "Weather",
+                "current": "Current",
+                "waves": "Waves",
+                "cylinderL": "Cylinder volume (l)",
+                "cylinderMaterial": "Cylinder material",
+                "pressureStartBar": "Start pressure (bar)",
+                "pressureEndBar": "End pressure (bar)",
+                "weightsKg": "Weights (kg)",
+                "suit": "Suit",
+                "suitMm": "Suit thickness (mm)",
+                "computer": "Dive computer",
+                "entry": "Entry",
+                "avgDepthM": "Average depth (m)",
+                "stops": "Stops",
+                "tags": "Tags",
+                "tagsOther": "Other tags (comma separated)",
+                "guide": "Guide or instructor",
+                "rating": "Rating (1–5)",
+                "choose": "–",
+                "save": "Save",
+                "saving": "Saving…",
+                "cancel": "Cancel",
+                "dateRequired": "Enter the date of the dive.",
+                "choices": {
+                    "weather": {
+                        "sun": "Sun",
+                        "clouds": "Clouds",
+                        "rain": "Rain",
+                        "wind": "Wind"
+                    },
+                    "current": {
+                        "none": "None",
+                        "light": "Light",
+                        "moderate": "Moderate",
+                        "strong": "Strong"
+                    },
+                    "waves": {
+                        "calm": "Calm",
+                        "small": "Small",
+                        "rough": "Rough"
+                    },
+                    "cylinderMaterial": {
+                        "steel": "Steel",
+                        "aluminium": "Aluminium"
+                    },
+                    "suit": {
+                        "wet": "Wet",
+                        "dry": "Dry"
+                    },
+                    "entry": {
+                        "shore": "Shore",
+                        "boat": "Boat"
+                    },
+                    "stops": {
+                        "none": "None",
+                        "safety": "Safety stop",
+                        "deco": "Decompression"
+                    },
+                    "tags": {
+                        "night": "Night",
+                        "wreck": "Wreck",
+                        "cave": "Cave",
+                        "ice": "Ice",
+                        "training": "Training",
+                        "deep": "Deep",
+                        "drift": "Drift"
+                    }
+                }
+            },
+            "new": {
+                "date": "Date of the dive",
+                "fromComputer": "From your dive computer on this day",
+                "noneFound": "No dive computer dives found for this day.",
+                "without": "Without dive computer",
+                "folderUse": "Use dive computer folder",
+                "folderChoose": "Choose DIVELOG folder",
+                "folderAllow": "Allow access to the saved folder",
+                "folderError": "Could not read the folder.",
+                "inFolder": "in the folder, not saved yet"
+            }
         },
         "backend": {
             "loginHeading": "Your dive log",

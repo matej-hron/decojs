@@ -2911,7 +2911,119 @@
             "number": "č. {0}",
             "comingSoon": "Tato obrazovka bude brzy k dispozici.",
             "toList": "Zpět na seznam",
-            "photo": "Fotka"
+            "photo": "Fotka",
+            "duplicateNumber": "Číslo {0} je již použito.",
+            "form": {
+                "newTitle": "Nový ponor",
+                "editTitle": "Upravit ponor",
+                "number": "Číslo v logbooku",
+                "date": "Datum",
+                "time": "Čas",
+                "duration": "Délka (min)",
+                "site": "Lokalita",
+                "pickOnMap": "Vybrat na mapě",
+                "depth": "Maximální hloubka (m)",
+                "buddies": "Parťáci",
+                "buddyAdd": "Přidat parťáka",
+                "buddyRemove": "Odebrat {0}",
+                "gas": "Plyn",
+                "gasAir": "Vzduch",
+                "gasEan": "EAN",
+                "gasTx": "Trimix",
+                "gasNone": "Nezadáno",
+                "gasO2": "O₂ (%)",
+                "gasHe": "He (%)",
+                "gasInvalid": "Zkontrolujte směs plynu.",
+                "waterTemp": "Teplota vody (°C)",
+                "visShallow": "Viditelnost, mělce (m)",
+                "visDeep": "Viditelnost, hluboko (m)",
+                "notes": "Poznámky",
+                "more": "Další podrobnosti",
+                "conditions": "Podmínky",
+                "equipment": "Výstroj",
+                "dive": "Ponor",
+                "surfaceTempC": "Teplota na hladině (°C)",
+                "airTempC": "Teplota vzduchu (°C)",
+                "weather": "Počasí",
+                "current": "Proud",
+                "waves": "Vlny",
+                "cylinderL": "Objem lahve (l)",
+                "cylinderMaterial": "Materiál lahve",
+                "pressureStartBar": "Tlak na začátku (bar)",
+                "pressureEndBar": "Tlak na konci (bar)",
+                "weightsKg": "Zátěž (kg)",
+                "suit": "Oblek",
+                "suitMm": "Tloušťka obleku (mm)",
+                "computer": "Potápěčský počítač",
+                "entry": "Vstup",
+                "avgDepthM": "Průměrná hloubka (m)",
+                "stops": "Zastávky",
+                "tags": "Štítky",
+                "tagsOther": "Další štítky (oddělené čárkou)",
+                "guide": "Průvodce nebo instruktor",
+                "rating": "Hodnocení (1–5)",
+                "choose": "–",
+                "save": "Uložit",
+                "saving": "Ukládám…",
+                "cancel": "Zrušit",
+                "dateRequired": "Zadejte datum ponoru.",
+                "choices": {
+                    "weather": {
+                        "sun": "Slunečno",
+                        "clouds": "Oblačno",
+                        "rain": "Déšť",
+                        "wind": "Vítr"
+                    },
+                    "current": {
+                        "none": "Žádný",
+                        "light": "Slabý",
+                        "moderate": "Střední",
+                        "strong": "Silný"
+                    },
+                    "waves": {
+                        "calm": "Klid",
+                        "small": "Malé",
+                        "rough": "Silné"
+                    },
+                    "cylinderMaterial": {
+                        "steel": "Ocel",
+                        "aluminium": "Hliník"
+                    },
+                    "suit": {
+                        "wet": "Mokrý",
+                        "dry": "Suchý"
+                    },
+                    "entry": {
+                        "shore": "Z břehu",
+                        "boat": "Z lodi"
+                    },
+                    "stops": {
+                        "none": "Žádné",
+                        "safety": "Bezpečnostní",
+                        "deco": "Dekompresní"
+                    },
+                    "tags": {
+                        "night": "Noční",
+                        "wreck": "Vrak",
+                        "cave": "Jeskyně",
+                        "ice": "Led",
+                        "training": "Výcvik",
+                        "deep": "Hluboký",
+                        "drift": "Proudový"
+                    }
+                }
+            },
+            "new": {
+                "date": "Datum ponoru",
+                "fromComputer": "Z vašeho počítače v tento den",
+                "noneFound": "Pro tento den nejsou žádné ponory z počítače.",
+                "without": "Bez počítače",
+                "folderUse": "Použít složku s počítačem",
+                "folderChoose": "Vybrat složku DIVELOG",
+                "folderAllow": "Povolit přístup k uložené složce",
+                "folderError": "Složku se nepodařilo přečíst.",
+                "inFolder": "ve složce, zatím neuloženo"
+            }
         },
         "backend": {
             "loginHeading": "Váš deník ponorů",

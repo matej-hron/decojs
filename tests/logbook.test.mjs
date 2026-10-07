@@ -15,6 +15,7 @@ import { parseRoute, routeHref } from '../js/logbook/router.js';
 import { resizeTarget, isSupportedImage } from '../js/logbook/photo.js';
 import { createSupabaseStore, DiveStoreError } from '../js/backend/supabaseStore.js';
 import { uploadDivelog, exportZip } from '../js/logbook/transfer.js';
+import { formValuesFromEntry, gasFromForm, formatDuration, recordingsOnDate } from '../js/logbook/EntryForm.js';
 
 const FIXTURES = new URL('./fixtures/divesoft/', import.meta.url);
 const diveOf = id => parseDivesoftDLF(new Uint8Array(readFileSync(new URL(`${id}.DLF`, FIXTURES))), { fileName: `${id}.DLF` });
@@ -616,5 +617,84 @@ describe('RecordedDiveAnalysis lifecycle (jsdom)', () => {
             assert.match(root.querySelector('#rda-status').textContent, /Dive not found/);
             rda.destroy();
         });
+    });
+});
+
+describe('entry form helpers', () => {
+    test('formatDuration gives minutes that round-trip to the stored seconds', () => {
+        assert.equal(formatDuration(null), '');
+        assert.equal(formatDuration(2700), '45');
+        assert.equal(formatDuration(3109), '51.82');
+        for (const s of [59, 3109, 2701, 7]) {
+            assert.equal(normalizeEntry({ duration_min: formatDuration(s) }).duration_s, s);
+        }
+    });
+
+    test('gasFromForm', () => {
+        assert.deepEqual(gasFromForm({ kind: 'air' }), { o2: 0.21, he: 0 });
+        assert.deepEqual(gasFromForm({ kind: 'ean', o2: '32' }), { o2: 0.32, he: 0 });
+        assert.deepEqual(gasFromForm({ kind: 'ean', o2: '32,5' }), { o2: 0.325, he: 0 });
+        assert.deepEqual(gasFromForm({ kind: 'tx', o2: '18', he: '45' }), { o2: 0.18, he: 0.45 });
+        assert.deepEqual(gasFromForm({ kind: 'tx', o2: '18', he: '' }), { o2: 0.18, he: 0 });
+        assert.equal(gasFromForm({ kind: 'ean', o2: '' }), null);
+        assert.equal(gasFromForm({ kind: 'tx', o2: '60', he: '50' }), null);
+        assert.equal(gasFromForm({ kind: 'ean', o2: '0' }), null);
+        assert.equal(gasFromForm({ kind: '' }), null);
+    });
+
+    test('formValuesFromEntry round-trips through normalizeEntry', () => {
+        const entry = {
+            log_number: 12, dive_date: '2026-10-01', entry_time: '09:30:00', duration_s: 2700,
+            max_depth_m: 18.4, site_id: 's1', buddies: ['Petr'], gas: { o2: 0.32, he: 0 },
+            water_temp_c: 14.5, vis_shallow_m: 8, vis_deep_m: null, notes: 'ok',
+            details: { weather: 'sun', tags: ['night'], rating: 4, futureKey: 'kept' },
+        };
+        const form = formValuesFromEntry(entry);
+        assert.equal(form.gasKind, 'ean');
+        assert.equal(form.gasO2, '32');
+        assert.equal(form.entry_time, '09:30');
+        assert.equal(form.vis_deep_m, '');
+        const back = normalizeEntry({ ...form, gas: gasFromForm({ kind: form.gasKind, o2: form.gasO2, he: form.gasHe }) }, entry.details);
+        assert.deepEqual({ ...back, entry_time: entry.entry_time }, { ...entry });
+    });
+
+    test('formValuesFromEntry detects air, trimix and unset gas, and uses a comma on request', () => {
+        assert.equal(formValuesFromEntry({ gas: { o2: 0.21, he: 0 } }).gasKind, 'air');
+        const tx = formValuesFromEntry({ gas: { o2: 0.18, he: 0.45 } });
+        assert.deepEqual([tx.gasKind, tx.gasO2, tx.gasHe], ['tx', '18', '45']);
+        assert.equal(formValuesFromEntry({ gas: null }).gasKind, '');
+        assert.equal(formValuesFromEntry({ max_depth_m: 18.4 }, { comma: true }).max_depth_m, '18,4');
+    });
+
+    test('recordingsOnDate lists unlinked recordings of that day, in time order', () => {
+        const rows = [
+            { id: 'b', startLocal: '2026-09-27T16:21:22' },
+            { id: 'a', startLocal: '2026-09-27T12:01:01' },
+            { id: 'c', startLocal: '2026-09-28T08:00:00' },
+            { id: 'd', startLocal: '2026-09-27T10:00:00' },
+        ];
+        const entries = [{ recording_id: 'd' }, { recording_id: null }];
+        assert.deepEqual(recordingsOnDate(rows, entries, '2026-09-27').map(r => r.id), ['a', 'b']);
+        assert.deepEqual(recordingsOnDate(rows, entries, '2026-01-01'), []);
+    });
+});
+
+describe('form strings', () => {
+    const keysOf = (o, prefix = '') => Object.entries(o).flatMap(([k, v]) =>
+        (v && typeof v === 'object' ? keysOf(v, `${prefix}${k}.`) : [`${prefix}${k}`])).sort();
+    const load = lang => JSON.parse(readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8')).diveLog.logbook;
+
+    test('en, cs and es have the same logbook keys, none empty', () => {
+        const en = keysOf(load('en'));
+        assert.ok(en.includes('form.choices.weather.sun') && en.includes('duplicateNumber'));
+        for (const lang of ['cs', 'es']) assert.deepEqual(keysOf(load(lang)), en, lang);
+    });
+
+    test('every EntryForm label key exists', () => {
+        const form = load('en').form;
+        const src = readFileSync(new URL('../js/logbook/EntryForm.js', import.meta.url), 'utf8');
+        for (const [, key] of src.matchAll(/(?:tf|_input\([^,]+,)\s*\(?'([A-Za-z]+)'/g)) {
+            assert.ok(key in form, key);
+        }
     });
 });

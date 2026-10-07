@@ -2875,7 +2875,119 @@
             "number": "n.º {0}",
             "comingSoon": "Esta pantalla estará disponible pronto.",
             "toList": "Volver a la lista",
-            "photo": "Foto"
+            "photo": "Foto",
+            "duplicateNumber": "El número {0} ya está en uso.",
+            "form": {
+                "newTitle": "Nueva inmersión",
+                "editTitle": "Editar inmersión",
+                "number": "Número de registro",
+                "date": "Fecha",
+                "time": "Hora",
+                "duration": "Duración (min)",
+                "site": "Sitio",
+                "pickOnMap": "Elegir en el mapa",
+                "depth": "Profundidad máxima (m)",
+                "buddies": "Compañeros",
+                "buddyAdd": "Añadir compañero",
+                "buddyRemove": "Quitar {0}",
+                "gas": "Gas",
+                "gasAir": "Aire",
+                "gasEan": "EAN",
+                "gasTx": "Trimix",
+                "gasNone": "Sin indicar",
+                "gasO2": "O₂ (%)",
+                "gasHe": "He (%)",
+                "gasInvalid": "Revisa la mezcla de gas.",
+                "waterTemp": "Temperatura del agua (°C)",
+                "visShallow": "Visibilidad, poca profundidad (m)",
+                "visDeep": "Visibilidad, profundo (m)",
+                "notes": "Notas",
+                "more": "Más detalles",
+                "conditions": "Condiciones",
+                "equipment": "Equipo",
+                "dive": "Inmersión",
+                "surfaceTempC": "Temperatura en superficie (°C)",
+                "airTempC": "Temperatura del aire (°C)",
+                "weather": "Tiempo",
+                "current": "Corriente",
+                "waves": "Oleaje",
+                "cylinderL": "Volumen de la botella (l)",
+                "cylinderMaterial": "Material de la botella",
+                "pressureStartBar": "Presión inicial (bar)",
+                "pressureEndBar": "Presión final (bar)",
+                "weightsKg": "Lastre (kg)",
+                "suit": "Traje",
+                "suitMm": "Grosor del traje (mm)",
+                "computer": "Ordenador de buceo",
+                "entry": "Entrada",
+                "avgDepthM": "Profundidad media (m)",
+                "stops": "Paradas",
+                "tags": "Etiquetas",
+                "tagsOther": "Otras etiquetas (separadas por comas)",
+                "guide": "Guía o instructor",
+                "rating": "Valoración (1–5)",
+                "choose": "–",
+                "save": "Guardar",
+                "saving": "Guardando…",
+                "cancel": "Cancelar",
+                "dateRequired": "Indica la fecha de la inmersión.",
+                "choices": {
+                    "weather": {
+                        "sun": "Sol",
+                        "clouds": "Nubes",
+                        "rain": "Lluvia",
+                        "wind": "Viento"
+                    },
+                    "current": {
+                        "none": "Ninguna",
+                        "light": "Débil",
+                        "moderate": "Moderada",
+                        "strong": "Fuerte"
+                    },
+                    "waves": {
+                        "calm": "Calma",
+                        "small": "Pequeñas",
+                        "rough": "Fuertes"
+                    },
+                    "cylinderMaterial": {
+                        "steel": "Acero",
+                        "aluminium": "Aluminio"
+                    },
+                    "suit": {
+                        "wet": "Húmedo",
+                        "dry": "Seco"
+                    },
+                    "entry": {
+                        "shore": "Desde la orilla",
+                        "boat": "Desde barco"
+                    },
+                    "stops": {
+                        "none": "Ninguna",
+                        "safety": "Seguridad",
+                        "deco": "Descompresión"
+                    },
+                    "tags": {
+                        "night": "Nocturno",
+                        "wreck": "Pecio",
+                        "cave": "Cueva",
+                        "ice": "Hielo",
+                        "training": "Formación",
+                        "deep": "Profundo",
+                        "drift": "A la deriva"
+                    }
+                }
+            },
+            "new": {
+                "date": "Fecha de la inmersión",
+                "fromComputer": "De tu ordenador de buceo este día",
+                "noneFound": "No hay inmersiones del ordenador para este día.",
+                "without": "Sin ordenador",
+                "folderUse": "Usar la carpeta del ordenador",
+                "folderChoose": "Elegir la carpeta DIVELOG",
+                "folderAllow": "Permitir el acceso a la carpeta guardada",
+                "folderError": "No se pudo leer la carpeta.",
+                "inFolder": "en la carpeta, aún sin guardar"
+            }
         },
         "backend": {
             "loginHeading": "Tu diario de inmersiones",
