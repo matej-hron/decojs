@@ -70,6 +70,12 @@ export function createSupabaseStore(client) {
         return new Uint8Array(await data.arrayBuffer());
     }
 
+    async function listMedia(entryId) {
+        const { data, error } = await client.from(MEDIA).select('*').eq('entry_id', entryId).order('created_at');
+        if (error) throw fail(error);
+        return data;
+    }
+
     return {
         async currentUser() {
             // getSession reads local storage (no network), so an unreachable backend is not mistaken for "logged out".
@@ -201,7 +207,7 @@ export function createSupabaseStore(client) {
         },
 
         async deleteEntry(id) {
-            const media = await this.listMedia(id);
+            const media = await listMedia(id);
             const paths = media.filter(m => m.kind === 'photo' && m.path).map(m => m.path);
             if (paths.length) {
                 const { error } = await client.storage.from(PHOTO_BUCKET).remove(paths);
@@ -229,9 +235,22 @@ export function createSupabaseStore(client) {
         async listBuddies() {
             const { data, error } = await client.from(ENTRIES).select('buddies');
             if (error) throw fail(error);
-            const counts = new Map();
-            for (const r of data) for (const name of r.buddies ?? []) counts.set(name, (counts.get(name) ?? 0) + 1);
-            return [...counts.entries()].sort((a, b) => b[1] - a[1]).map(([name]) => name);
+            const groups = new Map(); // normalised key -> { total, spellings: Map(spelling -> count) }
+            for (const r of data) {
+                for (const raw of r.buddies ?? []) {
+                    const name = String(raw).trim().replace(/\s+/g, ' ');
+                    if (!name) continue;
+                    const key = name.toLocaleLowerCase();
+                    const g = groups.get(key) ?? { total: 0, spellings: new Map() };
+                    g.total++;
+                    g.spellings.set(name, (g.spellings.get(name) ?? 0) + 1);
+                    groups.set(key, g);
+                }
+            }
+            const best = g => [...g.spellings.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0][0];
+            return [...groups.values()].map(g => ({ total: g.total, name: best(g) }))
+                .sort((a, b) => b.total - a.total || a.name.localeCompare(b.name))
+                .map(g => g.name);
         },
 
         async ensureEntries() {
@@ -258,8 +277,19 @@ export function createSupabaseStore(client) {
             for (const r of ordered) {
                 const record = recordOf.get(r.id);
                 if (!record) continue;
+                let fields;
+                try {
+                    fields = entryFromRecording(record);
+                } catch {
+                    try {
+                        fields = entryFromRecording({ ...record, start: { ...record.start, local: r.startLocal } });
+                    } catch (error) {
+                        console.warn(`Skipping recording ${r.id}: cannot build a logbook entry`, error);
+                        continue;
+                    }
+                }
                 const insert = number => client.from(ENTRIES).insert({
-                    ...entryFromRecording(record), owner: user.id, recording_id: r.id, log_number: number,
+                    ...fields, owner: user.id, recording_id: r.id, log_number: number,
                 });
                 let { error } = await insert(next);
                 if (isUnique(error, NUMBER_KEY)) {
@@ -276,8 +306,11 @@ export function createSupabaseStore(client) {
             return created;
         },
 
-        async listMedia(entryId) {
-            const { data, error } = await client.from(MEDIA).select('*').eq('entry_id', entryId).order('created_at');
+        listMedia,
+
+        /** Photo media rows of all entries, oldest first (for list thumbnails). */
+        async listPhotoMedia() {
+            const { data, error } = await client.from(MEDIA).select('*').eq('kind', 'photo').order('created_at');
             if (error) throw fail(error);
             return data;
         },

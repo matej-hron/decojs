@@ -2901,6 +2901,18 @@
         "startFirst": "fresh start — no earlier dive loaded",
         "mode": {"oc": "OC", "ccr": "CCR", "scr": "SCR", "gauge": "Gauge", "freedive": "Freedive", "unknown": "Unknown"},
         "water": {"salt": "Salt", "fresh": "Fresh"},
+        "logbook": {
+            "newDive": "+ New dive",
+            "siteNotSet": "Site not set",
+            "addDetails": "Add details",
+            "back": "← Back",
+            "notFound": "Dive not found",
+            "emptyList": "No dives yet. Upload your DIVELOG folder or add a dive by hand.",
+            "number": "#{0}",
+            "comingSoon": "This screen is coming soon.",
+            "toList": "Back to the list",
+            "photo": "Photo"
+        },
         "backend": {
             "loginHeading": "Your dive log",
             "emailLabel": "Email",

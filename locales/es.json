@@ -2865,6 +2865,18 @@
         "startFirst": "inicio limpio — no hay ninguna inmersión anterior cargada",
         "mode": {"oc": "OC", "ccr": "CCR", "scr": "SCR", "gauge": "Profundímetro", "freedive": "Apnea", "unknown": "Desconocido"},
         "water": {"salt": "Salada", "fresh": "Dulce"},
+        "logbook": {
+            "newDive": "+ Nueva inmersión",
+            "siteNotSet": "Sitio sin indicar",
+            "addDetails": "Añadir detalles",
+            "back": "← Atrás",
+            "notFound": "Inmersión no encontrada",
+            "emptyList": "Aún no hay inmersiones. Sube tu carpeta DIVELOG o añade una inmersión a mano.",
+            "number": "n.º {0}",
+            "comingSoon": "Esta pantalla estará disponible pronto.",
+            "toList": "Volver a la lista",
+            "photo": "Foto"
+        },
         "backend": {
             "loginHeading": "Tu diario de inmersiones",
             "emailLabel": "Correo electrónico",

@@ -14,6 +14,7 @@ import {
 import { parseRoute, routeHref } from '../js/logbook/router.js';
 import { resizeTarget, isSupportedImage } from '../js/logbook/photo.js';
 import { createSupabaseStore, DiveStoreError } from '../js/backend/supabaseStore.js';
+import { uploadDivelog, exportZip } from '../js/logbook/transfer.js';
 
 const FIXTURES = new URL('./fixtures/divesoft/', import.meta.url);
 const diveOf = id => parseDivesoftDLF(new Uint8Array(readFileSync(new URL(`${id}.DLF`, FIXTURES))), { fileName: `${id}.DLF` });
@@ -291,12 +292,26 @@ describe('logbook store: entries', () => {
         assert.equal(sites[1].lat, 49.1);
     });
 
-    test('listBuddies: distinct names, most used first', async () => {
+    test('listBuddies: distinct names, most used first, ties by name', async () => {
         const store = createSupabaseStore(fakeLogbookClient());
         await store.saveEntry({ ...base, log_number: 1, buddies: ['Jirka', 'Petr'] });
         await store.saveEntry({ ...base, log_number: 2, buddies: ['Petr'] });
         await store.saveEntry({ ...base, log_number: 3, buddies: ['Petr', 'Anna'] });
-        assert.deepEqual(await store.listBuddies(), ['Petr', 'Jirka', 'Anna']);
+        assert.deepEqual(await store.listBuddies(), ['Petr', 'Anna', 'Jirka']);
+    });
+
+    test('listBuddies groups case- and whitespace-insensitively, keeps the most frequent spelling', async () => {
+        const store = createSupabaseStore(fakeLogbookClient());
+        await store.saveEntry({ ...base, log_number: 1, buddies: ['petr', 'Anna'] });
+        await store.saveEntry({ ...base, log_number: 2, buddies: ['Petr'] });
+        await store.saveEntry({ ...base, log_number: 3, buddies: [' Petr ', 'anna'] });
+        await store.saveEntry({ ...base, log_number: 4, buddies: ['Petr', 'Zora', 'Beda'] });
+        // Petr: 3x "Petr"-ish (Petr, ' Petr '->Petr, Petr) vs 1x petr -> "Petr"; Anna 2 (Anna, anna tie -> first by name order)
+        const names = await store.listBuddies();
+        assert.equal(names.length, 4);
+        assert.equal(names[0], 'Petr');
+        assert.equal(names[1].toLowerCase(), 'anna');
+        assert.deepEqual(names.slice(2), ['Beda', 'Zora']);
     });
 });
 
@@ -333,6 +348,33 @@ describe('logbook store: ensureEntries', () => {
         assert.deepEqual(client.db.log_entries.map(e => e.recording_id).sort(), ['r099', 'r100', 'r101']);
         assert.equal(new Set(client.db.log_entries.map(e => e.log_number)).size, 3);
         assert.equal(counts[0] + counts[1], 3);
+    });
+
+    test('a record without start.local falls back to the row start_local; an unusable one is skipped with a warning', async () => {
+        const good = diveOf('00000100');
+        const noStart = { ...structuredClone(good), start: {} };
+        const broken = { ...structuredClone(good), start: undefined };
+        const dives = [
+            recordingRow('a', 1, '2026-05-01T10:00:00', noStart),
+            recordingRow('b', 2, null, broken),
+            recordingRow('c', 3, '2026-05-02T10:00:00', good),
+        ];
+        const client = fakeLogbookClient({ tables: { dives } });
+        const store = createSupabaseStore(client);
+        const warn = console.warn;
+        const warnings = [];
+        console.warn = (...a) => warnings.push(a);
+        try {
+            assert.equal(await store.ensureEntries(), 2);
+        } finally {
+            console.warn = warn;
+        }
+        const byRec = Object.fromEntries(client.db.log_entries.map(e => [e.recording_id, e]));
+        assert.equal(byRec.a.dive_date, '2026-05-01');
+        assert.equal(byRec.a.entry_time, '10:00:00');
+        assert.equal(byRec.b, undefined);
+        assert.equal(byRec.c.dive_date, '2026-09-27');
+        assert.equal(warnings.length, 1);
     });
 
     test('a log-number race retries once with a fresh maximum', async () => {
@@ -393,6 +435,16 @@ describe('logbook store: media', () => {
         assert.equal((await store.listMedia(entry.id)).length, 0);
     });
 
+    test('listPhotoMedia returns photo rows of every entry, not video links', async () => {
+        const store = createSupabaseStore(fakeLogbookClient());
+        const a = await store.saveEntry({ dive_date: '2026-09-27', log_number: 1 });
+        const b = await store.saveEntry({ dive_date: '2026-09-28', log_number: 2 });
+        const pa = await store.addPhoto(a.id, { blob: new Blob(['x']), width: 1, height: 1 });
+        await store.addVideoLink(a.id, 'https://youtu.be/x');
+        const pb = await store.addPhoto(b.id, { blob: new Blob(['y']), width: 1, height: 1 });
+        assert.deepEqual((await store.listPhotoMedia()).map(m => m.id).sort(), [pa.id, pb.id].sort());
+    });
+
     test('photoUrls maps paths to signed URLs valid for an hour', async () => {
         const client = fakeLogbookClient();
         const store = createSupabaseStore(client);
@@ -411,12 +463,82 @@ describe('logbook store: media', () => {
         const [entry] = await store.listEntries();
         const photo = await store.addPhoto(entry.id, { blob: new Blob(['x']), width: 1, height: 1 });
         await store.addVideoLink(entry.id, 'https://youtu.be/x');
-        await store.deleteEntry(entry.id);
+        const { deleteEntry } = store; // works detached from the store object
+        await deleteEntry(entry.id);
         assert.equal(client.db.log_entries.length, 0);
         assert.equal(client.db.media.length, 0);
         assert.equal(client.db.dives.length, 1);
         assert.equal(client.files.has(`dive-photos/${photo.path}`), false);
         const removed = client.calls.find(c => c[0] === 'remove');
         assert.deepEqual(removed[2], [photo.path]);
+    });
+});
+
+describe('transfer', () => {
+    const fileOf = id => ({
+        name: `${id}.DLF`,
+        arrayBuffer: async () => { const b = readFileSync(new URL(`${id}.DLF`, FIXTURES)); return b.buffer.slice(b.byteOffset, b.byteOffset + b.byteLength); },
+    });
+
+    test('uploadDivelog saves new dives, then ensures entries, and reports', async () => {
+        const order = [];
+        const store = {
+            listDives: async () => { order.push('list'); return []; },
+            saveDives: async (batch, onProgress) => {
+                order.push(`save:${batch.length}`);
+                batch.forEach((_, i) => onProgress(i + 1, batch.length));
+                return { saved: batch.length, updated: 0, failed: [] };
+            },
+            ensureEntries: async () => { order.push('ensure'); return 2; },
+        };
+        const progress = [];
+        const { report, items } = await uploadDivelog(store, [fileOf('00000100'), fileOf('00000101'), { name: 'notes.txt', arrayBuffer: async () => new ArrayBuffer(0) }], (d, t) => progress.push([d, t]));
+        assert.deepEqual(order, ['list', 'save:2', 'ensure']);
+        assert.equal(items.length, 2);
+        assert.deepEqual(report, { saved: 2, updated: 0, unchanged: 0, failed: [] });
+        assert.deepEqual(progress, [[0, 2], [1, 2], [2, 2]]);
+    });
+
+    test('uploadDivelog with nothing readable has no report but still ensures entries', async () => {
+        let ensured = 0;
+        const store = {
+            listDives: async () => [], saveDives: async () => ({ saved: 0, updated: 0, failed: [] }),
+            ensureEntries: async () => { ensured++; },
+        };
+        const { report } = await uploadDivelog(store, [{ name: 'a.txt', arrayBuffer: async () => new ArrayBuffer(0) }]);
+        assert.equal(report, null);
+        assert.equal(ensured, 1);
+    });
+
+    test('uploadDivelog does not create entries when saving fails', async () => {
+        let ensured = false;
+        const store = {
+            listDives: async () => [],
+            saveDives: async () => { throw new Error('boom'); },
+            ensureEntries: async () => { ensured = true; },
+        };
+        await assert.rejects(() => uploadDivelog(store, [fileOf('00000100')]), /boom/);
+        assert.equal(ensured, false);
+    });
+
+    test('exportZip adds DIVELOG files, dives.json and logbook.json', async () => {
+        const added = new Map();
+        class FakeZip {
+            file(name, data) { added.set(name, data); }
+            async generateAsync() { return 'BLOB'; }
+        }
+        const store = {
+            exportAll: async () => ({ files: [{ name: 'A.DLF', bytes: new Uint8Array([1]) }], dives: [{ n: 1 }] }),
+            listEntries: async () => [{ id: 'e1' }, { id: 'e2' }],
+            listSites: async () => [{ id: 's1', name: 'Abyss' }],
+            listMedia: async id => (id === 'e1' ? [{ id: 'm1', entry_id: 'e1' }] : []),
+        };
+        let download;
+        await exportZip(store, { loadZip: async () => FakeZip, download: (blob, name) => { download = [blob, name]; }, now: new Date('2026-10-07T10:00:00Z') });
+        assert.deepEqual([...added.keys()], ['DIVELOG/A.DLF', 'dives.json', 'logbook.json']);
+        assert.deepEqual(JSON.parse(added.get('logbook.json')), {
+            entries: [{ id: 'e1' }, { id: 'e2' }], sites: [{ id: 's1', name: 'Abyss' }], media: [{ id: 'm1', entry_id: 'e1' }],
+        });
+        assert.deepEqual(download, ['BLOB', 'dive-log-2026-10-07.zip']);
     });
 });
