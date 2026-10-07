@@ -7,6 +7,7 @@
  */
 
 import { normalizeEntry, nextLogNumber, parseDecimal, DETAIL_KEYS } from './entryModel.js';
+import { openSitePicker } from './SitePicker.js';
 import { translate } from '../i18n.js';
 import { currentLang, decimalSeparator } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
@@ -17,7 +18,7 @@ const NBSP = ' ';
 const NUMERIC_DETAILS = new Set(['surfaceTempC', 'airTempC', 'cylinderL', 'pressureStartBar', 'pressureEndBar', 'weightsKg', 'suitMm', 'avgDepthM']);
 
 /** Choice lists of the details section. */
-const CHOICES = Object.freeze({
+export const CHOICES = Object.freeze({
     weather: ['sun', 'clouds', 'rain', 'wind'],
     current: ['none', 'light', 'moderate', 'strong'],
     waves: ['calm', 'small', 'rough'],
@@ -26,7 +27,7 @@ const CHOICES = Object.freeze({
     entry: ['shore', 'boat'],
     stops: ['none', 'safety', 'deco'],
 });
-const TAGS = Object.freeze(['night', 'wreck', 'cave', 'ice', 'training', 'deep', 'drift']);
+export const TAGS = Object.freeze(['night', 'wreck', 'cave', 'ice', 'training', 'deep', 'drift']);
 
 /** Unit hints for the detail inputs (the unit is also in the label). */
 const DETAIL_INPUT = Object.freeze({
@@ -278,7 +279,7 @@ export class EntryForm {
                         <span>${escHtml(tf('site'))}</span>
                         <div class="lb-site-row">
                             <input type="text" name="site" value="${escHtml(this.siteName)}" list="lb-sites" autocomplete="off" aria-label="${escHtml(tf('site'))}">
-                            <button type="button" class="btn btn-secondary" id="lb-pick-map" disabled>${escHtml(tf('pickOnMap'))}</button>
+                            <button type="button" class="btn btn-secondary" id="lb-pick-map">${escHtml(tf('pickOnMap'))}</button>
                         </div>
                         <datalist id="lb-sites"></datalist>
                     </div>
@@ -362,6 +363,7 @@ export class EntryForm {
     _wire() {
         const c = this.container;
         c.querySelector('[name="site"]').addEventListener('input', () => { this.siteTouched = true; });
+        c.querySelector('#lb-pick-map').addEventListener('click', () => this._pickOnMap());
         c.querySelector('form').addEventListener('submit', e => {
             e.preventDefault();
             this._save();
@@ -442,6 +444,28 @@ export class EntryForm {
             else out[key] = value;
         }
         return out;
+    }
+
+    /** Open the map picker; a chosen or newly saved site fills the site field. */
+    async _pickOnMap() {
+        const input = this.container.querySelector('[name="site"]');
+        if (!input || this._picking) return;
+        this._picking = true;
+        try {
+            this.siteName = input.value;
+            const current = this.sites.find(s => s.id === this.siteId && s.name === input.value.trim());
+            const site = await openSitePicker({ store: this.store, sites: this.sites, initial: current ?? null });
+            if (!site || this.destroyed) return;
+            if (!this.sites.some(s => s.id === site.id)) this.sites.push(site);
+            this.siteId = site.id;
+            this.siteName = site.name;
+            this.siteTouched = true;
+            const field = this.container.querySelector('[name="site"]');
+            if (field) field.value = site.name;
+            this._fillList('lb-sites', this.sites.map(s => s.name));
+        } finally {
+            this._picking = false;
+        }
     }
 
     async _resolveSiteId() {

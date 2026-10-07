@@ -12,6 +12,7 @@ import { parseRoute, routeHref } from './router.js';
 import { needsDetails } from './entryModel.js';
 import { EntryForm } from './EntryForm.js';
 import { NewDive } from './NewDive.js';
+import { EntryDetail } from './EntryDetail.js';
 import { translate } from '../i18n.js';
 import { fmtNum } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
@@ -123,7 +124,7 @@ export class LogbookApp {
 
     _onLanguageChange() {
         const name = parseRoute(location.hash).name;
-        if (this.user && this.form && (name === 'new' || name === 'edit')) this.form.relabel(); // keep what was typed
+        if (this.user && this.form && (name === 'new' || name === 'edit' || name === 'detail')) this.form.relabel(); // keep what was typed
         else if (this.user && name !== 'analysis') this._renderRoute();
         else translateStatic(this.view);
     }
@@ -163,17 +164,17 @@ export class LogbookApp {
         }
         if (token !== this._viewToken) return;
         if (!entry) this._showNotFound();
-        else this._showPlaceholder();
+        else {
+            this.view.innerHTML = '<div class="lb-form-host"></div>';
+            this.form = new EntryDetail(this.view.firstChild, {
+                store: this.store, entry,
+                onDeleted: () => { this.entries = null; location.hash = routeHref({ name: 'list' }); },
+            });
+        }
     }
 
     async _findEntry(id) {
         return this.entries?.find(e => e.id === id) ?? await this.store.getEntry(id);
-    }
-
-    _showPlaceholder() {
-        this.view.innerHTML = `<section class="rda-card lb-message">
-            <p>${escHtml(tl('comingSoon', 'This screen is coming soon.'))}</p>
-            <p><a href="${routeHref({ name: 'list' })}">${escHtml(tl('toList', 'Back to the list'))}</a></p></section>`;
     }
 
     // ---- New and edit ----

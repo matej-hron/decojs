@@ -13,6 +13,8 @@ import {
 } from '../js/logbook/entryModel.js';
 import { parseRoute, routeHref } from '../js/logbook/router.js';
 import { resizeTarget, isSupportedImage } from '../js/logbook/photo.js';
+import { detailRows, isHttpsUrl } from '../js/logbook/EntryDetail.js';
+import { siteFromForm } from '../js/logbook/SitePicker.js';
 import { createSupabaseStore, DiveStoreError } from '../js/backend/supabaseStore.js';
 import { uploadDivelog, exportZip } from '../js/logbook/transfer.js';
 import { formValuesFromEntry, gasFromForm, formatDuration, recordingsOnDate, invalidNumberFields, EntryForm } from '../js/logbook/EntryForm.js';
@@ -802,5 +804,62 @@ describe('entry form validation and races (jsdom)', () => {
             await tick();
             assert.deepEqual(order, ['dives']); // a failed ensure does not block the page
         });
+    });
+});
+
+describe('detail helpers', () => {
+    const t = key => `<${key}>`;
+    const entry = {
+        max_depth_m: 38.56, duration_s: 3109, gas: { o2: 0.32, he: 0 }, water_temp_c: 4.8,
+        vis_shallow_m: null, vis_deep_m: undefined, buddies: ['Ann', 'Bob'], notes: '  ',
+        details: { surfaceTempC: 12, weather: 'sun', cylinderL: 12, stops: 'deco', tags: ['wreck', 'custom'], rating: 4, guide: '', unknownKey: 'x' },
+    };
+
+    test('core rows carry units, empty values are hidden', () => {
+        const { core } = detailRows(entry, t);
+        assert.deepEqual(core.map(r => r.key), ['duration', 'depth', 'gas', 'waterTemp', 'buddies']);
+        assert.equal(core.find(r => r.key === 'depth').value, '38.6\u00a0m');
+        assert.equal(core.find(r => r.key === 'duration').value, '52\u00a0min');
+        assert.equal(core.find(r => r.key === 'gas').value, 'EAN32');
+        assert.equal(core.find(r => r.key === 'waterTemp').value, '4.8\u00a0\u00b0C');
+        assert.equal(core.find(r => r.key === 'buddies').value, 'Ann, Bob');
+    });
+
+    test('details are grouped, choices translated, unknown keys ignored', () => {
+        const { groups } = detailRows(entry, t);
+        assert.deepEqual(groups.map(g => g.group), ['conditions', 'equipment', 'dive']);
+        const dive = groups.find(g => g.group === 'dive').rows;
+        assert.deepEqual(dive.map(r => r.key), ['stops', 'tags', 'rating']);
+        assert.equal(dive.find(r => r.key === 'stops').value, '<form.choices.stops.deco>');
+        assert.equal(dive.find(r => r.key === 'tags').value, '<form.choices.tags.wreck>, custom');
+        assert.equal(dive.find(r => r.key === 'rating').value, '4\u00a0/\u00a05');
+        assert.equal(groups.find(g => g.group === 'equipment').rows[0].value, '12\u00a0l');
+    });
+
+    test('an empty entry has no rows and no groups', () => {
+        const r = detailRows({ buddies: [], details: {} }, t);
+        assert.deepEqual(r.core, []);
+        assert.deepEqual(r.groups, []);
+        assert.equal(r.notes, null);
+    });
+
+    test('notes are trimmed and returned separately', () => {
+        assert.equal(detailRows({ notes: ' nice \n dive ', details: {} }, t).notes, 'nice \n dive');
+    });
+
+    test('isHttpsUrl accepts only https links', () => {
+        assert.equal(isHttpsUrl('https://youtu.be/x'), true);
+        assert.equal(isHttpsUrl(' https://example.com/a b '), false);
+        assert.equal(isHttpsUrl('http://example.com'), false);
+        assert.equal(isHttpsUrl('javascript:alert(1)'), false);
+        assert.equal(isHttpsUrl('https://'), false);
+        assert.equal(isHttpsUrl(''), false);
+    });
+
+    test('siteFromForm builds a site row', () => {
+        assert.deepEqual(siteFromForm({ name: ' Blue Hole ', water: 'salt', altitude: '1,5' }, { lat: 1.23456789, lon: 2 }),
+            { name: 'Blue Hole', lat: 1.23456789, lon: 2, water: 'salt', altitude_m: 2 });
+        assert.deepEqual(siteFromForm({ name: 'X', water: '', altitude: '' }, null), { name: 'X', lat: null, lon: null, water: null, altitude_m: null });
+        assert.equal(siteFromForm({ name: '  ' }, null), null);
     });
 });
