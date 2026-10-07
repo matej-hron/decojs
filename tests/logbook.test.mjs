@@ -1322,7 +1322,7 @@ describe('LogbookApp background errors (jsdom)', () => {
                 assert.equal(window.location.hash, '#/', 'a table row toggles instead of navigating');
                 root.querySelector('[data-pick="e3"]').click();
                 root.querySelector('.lb-seg[data-view="list"]').click();
-                assert.equal(root.querySelectorAll('.lb-row.lb-selected').length, 2);
+                assert.equal(root.querySelectorAll('.lb-dive-row.lb-selected').length, 2);
                 assert.match(root.querySelector('.lb-count').textContent, /^2 selected$/);
                 // confirmation
                 root.querySelector('#lb-bulk-delete').click();
@@ -1347,7 +1347,7 @@ describe('LogbookApp background errors (jsdom)', () => {
                 assert.match(summary, /Deleted 1 dive\./);
                 assert.match(summary, /#2 \(boom\)/);
                 assert.equal(root.querySelector('.lb-pick'), null, 'select mode is left after deleting');
-                assert.equal(root.querySelectorAll('.lb-row').length, 1, 'the list reloaded');
+                assert.equal(root.querySelectorAll('.lb-dive-row').length, 1, 'the list reloaded');
                 root.querySelector('#lb-bulk-close').click();
                 assert.equal(root.querySelector('.lb-bulk').textContent.trim(), '');
                 // cancel leaves select mode and clears
@@ -1383,7 +1383,7 @@ describe('LogbookApp background errors (jsdom)', () => {
                 await tick(120);
                 assert.equal(root.querySelector('.lb-seg[aria-pressed="true"]').dataset.view, 'list');
                 assert.match(root.querySelector('.lb-month-head').textContent, /Září 2026 · 2 /);
-                const row = root.querySelector('.lb-row');
+                const row = root.querySelector('.lb-dive-row');
                 assert.ok(row.getAttribute('href').startsWith('#/dive/'));
                 assert.match(root.textContent, /18,5\u00A0m · 42:15 · 9,0\u00A0m · 4,8\u00A0°C · EAN32/);
                 assert.match(root.textContent, /with Eva · night/);

@@ -505,7 +505,7 @@ export class LogbookApp {
             : entry.recording_id ? `<span class="lb-row-media lb-spark" data-rec="${escHtml(entry.recording_id)}" aria-hidden="true"></span>`
                 : '<span class="lb-row-media" aria-hidden="true"></span>';
         const head = [formatWeekdayDate(entry.dive_date, currentLang()), this._timeText(entry)].filter(Boolean).join(' · ');
-        const [open, close] = this._wrap(entry, 'rda-card lb-card lb-row');
+        const [open, close] = this._wrap(entry, 'rda-card lb-card lb-dive-row');
         return `${open}${this._pick(entry)}${media}
             <div class="lb-card-body">
                 <div class="lb-row-head"><strong>${escHtml(fill(tl('number', '#{0}'), entry.log_number ?? '–'))}</strong>
