@@ -163,7 +163,7 @@ create policy "owner reads and writes own dive files" on storage.objects
     with check (bucket_id = 'dive-logs' and (storage.foldername(name))[1] = auth.uid()::text);
 ```
 
-File path: `<user id>/<device serial>/<file name>` (e.g. `…/7044-00006107/00000100.DLF`).
+File path: `<user id>/<device serial>/<compact start>_<file name>` (e.g. `…/7044-00006107/20260927120101_00000100.DLF`), unique per dive key. Rows stored before this rule keep their original path.
 
 `saveDives` uploads the file first (upsert), then upserts the row on the unique key, so a
 failure between the two is repaired by the next sync.
