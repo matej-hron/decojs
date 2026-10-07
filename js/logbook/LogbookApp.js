@@ -114,10 +114,13 @@ export class LogbookApp {
 
     _mountAnalysis() {
         this.root.innerHTML = '';
-        this.analysis = new RecordedDiveAnalysis(this.root, { demoFiles: this.demoFiles, store: this.store });
+        // With a backend, logged-out visitors see only the login form: no example dives, no pickers.
+        this.root.classList.toggle('rda-login-only', !!this.store);
+        this.analysis = new RecordedDiveAnalysis(this.root, { demoFiles: this.store ? [] : this.demoFiles, store: this.store });
     }
 
     _unmountAnalysis() {
+        this.root.classList.remove('rda-login-only');
         this.analysis?.destroy();
         this.analysis = null;
     }
