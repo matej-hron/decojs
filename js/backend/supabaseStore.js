@@ -329,7 +329,7 @@ export function createSupabaseStore(client) {
          */
         async fillComputerFields() {
             try {
-                const entries = await client.from(ENTRIES).select('id, recording_id, details');
+                const entries = await client.from(ENTRIES).select('id, recording_id, details, updated_at');
                 if (entries.error) throw fail(entries.error);
                 const todo = entries.data.filter(e => {
                     const d = e.details ?? {};
@@ -351,7 +351,8 @@ export function createSupabaseStore(client) {
                         for (const [k, v] of Object.entries(derived)) {
                             if (details[k] === undefined || details[k] === null) { details[k] = v; added = true; }
                         }
-                        const { error } = await client.from(ENTRIES).update({ details, updated_at: new Date().toISOString() }).eq('id', e.id);
+                        const { error } = await client.from(ENTRIES).update({ details, updated_at: new Date().toISOString() })
+                            .eq('id', e.id).eq('updated_at', e.updated_at); // skip if edited meanwhile
                         if (error) throw fail(error);
                         if (added) changed++;
                     } catch (error) {

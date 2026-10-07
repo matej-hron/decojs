@@ -412,7 +412,7 @@ export class RecordedDiveAnalysis {
     _buildDom() {
         this.root.innerHTML = `
             <section class="rda-account rda-card" id="rda-account" hidden></section>
-            <section class="rda-open rda-card">
+            <section class="rda-open rda-card" id="rda-open">
                 <label class="rda-picker" id="rda-pick-folder"><span data-i18n="diveLog.openFolder">Open a DIVELOG folder</span>
                     <input type="file" id="rda-folder" webkitdirectory></label>
                 <label class="rda-picker" id="rda-pick-files"><span data-i18n="diveLog.openFiles">or pick .DLF files</span>
@@ -597,6 +597,7 @@ export class RecordedDiveAnalysis {
         if (this.dives.length === 0 && !this.busy) statusParts.push(t('noDives', 'No dive logs found. Pick the DIVELOG folder from the dive computer, or its .DLF files.'));
         for (const e of this.errors) statusParts.push(fill(t('unreadable', 'Could not read {0}: {1}'), e.fileName, e.message));
         this.el.status.innerHTML = statusParts.map(s => `<span>${escHtml(s)}</span>`).join('<br>');
+        this.root.querySelector('#rda-open').hidden = hidePickers && statusParts.length === 0; // no empty card
 
         this.el.rows.innerHTML = '';
         for (const dive of this.dives) {
