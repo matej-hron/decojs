@@ -1146,6 +1146,19 @@ export class GFChart {
                     fill: { target: { value: 0 }, above: 'rgba(46, 204, 113, 0.1)' },
                     order: 48
                 });
+            } else {
+                // No deco stop from the deepest point: the limit is GF High at every pressure
+                // (same rule as the ceiling calculation and the M-value chart).
+                datasets.push({
+                    label: translate('chart.gf.gfCorridor', 'GF corridor'),
+                    data: [{ x: 0, y: gfHigh * 100 }, { x: maxPressure, y: gfHigh * 100 }],
+                    borderColor: 'rgba(46, 204, 113, 0.8)',
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    showLine: true,
+                    fill: { target: { value: 0 }, above: 'rgba(46, 204, 113, 0.1)' },
+                    order: 48
+                });
             }
 
             // pAnchor vertical line
