@@ -1195,7 +1195,7 @@ describe('LogbookApp background errors (jsdom)', () => {
                 assert.match(root.textContent, /with Eva · night/);
                 assert.ok(root.textContent.includes('First line') && !root.textContent.includes('second'));
                 assert.ok(root.querySelector('.lb-badge'), 'add details marker');
-                if (typeof IntersectionObserver === 'undefined') assert.ok(loads.includes('r1'), 'no observer: loads directly');
+                if (typeof IntersectionObserver === 'undefined') assert.equal(loads.length, 0, 'no observer: no profile downloads');
                 // table
                 root.querySelector('.lb-seg[data-view="table"]').click();
                 assert.equal(window.localStorage.getItem('decojs.logbook.view'), 'table');

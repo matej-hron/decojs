@@ -411,6 +411,7 @@ export class LogbookApp {
         this.viewMode = mode;
         try { localStorage.setItem(VIEW_KEY, mode); } catch { /* remembered for this visit only */ }
         this._renderList();
+        this.view.querySelector(`.lb-seg[data-view="${mode}"]`)?.focus(); // re-render must not drop keyboard focus
     }
 
     _sortBy(key) {
@@ -418,7 +419,12 @@ export class LogbookApp {
         this.sort = this.sort.key === key
             ? { key, dir: this.sort.dir === 'asc' ? 'desc' : 'asc' }
             : { key, dir: key === 'number' || key === 'date' || numeric ? 'desc' : 'asc' };
+        const scroller = this.view.querySelector('.lb-table')?.parentElement;
+        const scrollLeft = scroller?.scrollLeft ?? 0;
         this._renderList();
+        const again = this.view.querySelector('.lb-table')?.parentElement;
+        if (again) again.scrollLeft = scrollLeft; // keep the column the user scrolled to
+        this.view.querySelector(`.lb-sort[data-sort="${key}"]`)?.focus();
     }
 
     // ---- Lazy depth sparklines (List view, rows without a photo) ----
@@ -435,10 +441,7 @@ export class LogbookApp {
         for (const el of slots) if (this.sparks.has(el.dataset.rec)) this._paintSpark(el);
         const pending = slots.filter(el => !this.sparks.has(el.dataset.rec));
         if (!pending.length) return;
-        if (typeof IntersectionObserver === 'undefined') {
-            pending.forEach(el => this._enqueueSpark(el));
-            return;
-        }
+        if (typeof IntersectionObserver === 'undefined') return; // no lazy loading: skip profiles rather than load every dive
         this._sparkObserver = new IntersectionObserver(items => {
             for (const item of items) {
                 if (!item.isIntersecting) continue;
@@ -460,15 +463,19 @@ export class LogbookApp {
             if (!el.isConnected) continue;
             const id = el.dataset.rec;
             if (this.sparks.has(id)) { this._paintSpark(el); continue; }
+            this._sparkLoads ??= new Map();
+            const inFlight = this._sparkLoads.get(id);
+            if (inFlight) { inFlight.then(() => { if (el.isConnected) this._paintSpark(el); }); continue; } // same dive already loading
             this._sparkActive++;
-            this.store.loadDive(id)
+            const load = this.store.loadDive(id)
                 .then(dive => sparklinePath(dive?.samples, SPARK_W, SPARK_H), () => '')
                 .catch(() => '')
                 .then(path => {
                     this.sparks.set(id, path);
                     if (el.isConnected) this._paintSpark(el);
                 })
-                .finally(() => { this._sparkActive--; if (!this.destroyed) this._pumpSparks(); });
+                .finally(() => { this._sparkLoads.delete(id); this._sparkActive--; if (!this.destroyed) this._pumpSparks(); });
+            this._sparkLoads.set(id, load);
         }
     }
 
