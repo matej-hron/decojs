@@ -477,6 +477,53 @@ describe('logbook store: media', () => {
     });
 });
 
+describe('logbook store: deleted entries stay deleted', () => {
+    const dives = () => [recordingRow('r100', 100, '2026-09-27T12:01:01', diveOf('00000100'))];
+
+    test('deleteEntry dismisses the recording so ensureEntries does not recreate it', async () => {
+        const client = fakeLogbookClient({ tables: { dives: dives() } });
+        const store = createSupabaseStore(client);
+        assert.equal(await store.ensureEntries(), 1);
+        const [entry] = await store.listEntries();
+        await store.deleteEntry(entry.id);
+        assert.equal(client.db.dives[0].logbook_dismissed, true);
+        assert.equal(await store.ensureEntries(), 0);
+        assert.equal(client.db.log_entries.length, 0);
+    });
+
+    test('the recording is dismissed before the entry is deleted', async () => {
+        const client = fakeLogbookClient({ tables: { dives: dives() } });
+        const store = createSupabaseStore(client);
+        await store.ensureEntries();
+        const [entry] = await store.listEntries();
+        client.calls.length = 0;
+        await store.deleteEntry(entry.id);
+        const kinds = client.calls.filter(c => (c[0] === 'update' && c[1] === 'dives') || (c[0] === 'delete' && c[1] === 'log_entries')).map(c => `${c[0]}:${c[1]}`);
+        assert.deepEqual(kinds, ['update:dives', 'delete:log_entries']);
+    });
+
+    test('logging a dismissed recording again clears the flag', async () => {
+        const client = fakeLogbookClient({ tables: { dives: dives() } });
+        const store = createSupabaseStore(client);
+        await store.ensureEntries();
+        const [entry] = await store.listEntries();
+        await store.deleteEntry(entry.id);
+        await store.saveEntry({ dive_date: '2026-09-27', log_number: 1, recording_id: 'r100' });
+        assert.equal(client.db.dives[0].logbook_dismissed, false);
+        assert.equal(await store.ensureEntries(), 0);
+    });
+
+    test('saving an entry for a recording linked meanwhile reports recording-linked', async () => {
+        const client = fakeLogbookClient({ tables: { dives: dives() } });
+        const store = createSupabaseStore(client);
+        await store.ensureEntries();
+        await assert.rejects(
+            store.saveEntry({ dive_date: '2026-09-27', log_number: 50, recording_id: 'r100' }),
+            e => e instanceof DiveStoreError && e.kind === 'recording-linked',
+        );
+    });
+});
+
 describe('transfer', () => {
     const fileOf = id => ({
         name: `${id}.DLF`,

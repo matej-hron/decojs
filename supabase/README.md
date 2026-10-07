@@ -62,4 +62,9 @@ You can upgrade to avoid this, but for personal use, the pause is harmless.
 
 ## Logbook (step 4c)
 
-Run `supabase/migrations/0002_logbook.sql` in the SQL editor (after `0001_dive_log.sql`). It creates the `sites`, `log_entries` and `media` tables with owner-only row level security, and the private `dive-photos` storage bucket with an owner-folder policy.
+Run these in the SQL editor, in order, after `0001_dive_log.sql`:
+
+1. `supabase/migrations/0002_logbook.sql` creates the `sites`, `log_entries` and `media` tables with owner-only row level security, and the private `dive-photos` storage bucket with an owner-folder policy.
+2. `supabase/migrations/0003_logbook_dismissed.sql` adds `dives.logbook_dismissed` (so a deleted entry is not recreated from its recording) and limits the `dive-photos` bucket to JPEG files of at most 10 MiB.
+
+**Run both migrations in Supabase BEFORE the code is deployed to `main`.** Once the new code is live, the logged-in page fails without these tables and the column.

@@ -201,12 +201,28 @@ export function createSupabaseStore(client) {
             const { data, error } = await q.select().single();
             if (error) {
                 if (isUnique(error, NUMBER_KEY)) throw new DiveStoreError('duplicate-number', error.message);
+                if (isUnique(error, RECORDING_KEY)) throw new DiveStoreError('recording-linked', error.message);
                 throw fail(error);
+            }
+            if (row.recording_id) {
+                // Logging a dismissed recording on purpose: it may be listed by ensureEntries again later.
+                const { error: flagError } = await client.from(TABLE).update({ logbook_dismissed: false }).eq('id', row.recording_id);
+                if (flagError) console.warn('Could not clear logbook_dismissed', flagError);
             }
             return data;
         },
 
         async deleteEntry(id) {
+            // Dismiss the recording BEFORE deleting the entry: if the dismissal fails nothing is lost and the
+            // user can retry; the other order could leave an entry-less, undismissed recording that
+            // ensureEntries would recreate on the next login.
+            const found = await client.from(ENTRIES).select('recording_id').eq('id', id).maybeSingle();
+            if (found.error) throw fail(found.error);
+            const entry = found.data;
+            if (entry?.recording_id) {
+                const { error } = await client.from(TABLE).update({ logbook_dismissed: true }).eq('id', entry.recording_id);
+                if (error) throw fail(error);
+            }
             const media = await listMedia(id);
             const paths = media.filter(m => m.kind === 'photo' && m.path).map(m => m.path);
             if (paths.length) {
@@ -255,12 +271,12 @@ export function createSupabaseStore(client) {
 
         async ensureEntries() {
             const user = await requireUser();
-            const recs = await client.from(TABLE).select('id, dive_number, start_local');
+            const recs = await client.from(TABLE).select('id, dive_number, start_local, logbook_dismissed');
             if (recs.error) throw fail(recs.error);
             const linked = await client.from(ENTRIES).select('recording_id, log_number');
             if (linked.error) throw fail(linked.error);
             const have = new Set(linked.data.map(e => e.recording_id).filter(Boolean));
-            const missing = recs.data.filter(r => !have.has(r.id));
+            const missing = recs.data.filter(r => !have.has(r.id) && !r.logbook_dismissed);
             if (!missing.length) return 0;
             const full = await client.from(TABLE).select('id, record').in('id', missing.map(r => r.id));
             if (full.error) throw fail(full.error);
