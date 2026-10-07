@@ -264,7 +264,8 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
                         console.warn('Mapy.com search failed, using Nominatim:', mapyError?.message); // message never contains the URL
                     }
                 }
-                if (!places) {
+                if (!places?.length) { // Mapy failed or found nothing: try OpenStreetMap
+                    credit = ts('searchCredit', 'Search by Nominatim / OpenStreetMap');
                     await waitForSlot('nominatim');
                     if (stale()) return;
                     places = await searchNominatim(query);
@@ -314,6 +315,7 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
                 a.target = '_blank';
                 a.rel = 'noopener';
                 a.innerHTML = `<img src="${MAPY_LOGO}" alt="Mapy.com" height="30">`;
+                L.DomEvent.disableClickPropagation(a); // a click on the logo must not place a pin
                 return a;
             };
             const choices = { [ts('layerMap', 'Map')]: outdoor, [ts('layerAerial', 'Aerial')]: aerial };
@@ -332,12 +334,12 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
                 logo.remove();
                 map.removeLayer(outdoor);
                 map.removeLayer(aerial);
+                if (map.getZoom() > 19) map.setZoom(19); // OSM tiles stop at 19
                 osm.addTo(map);
             };
             // Tiles answer 401/403 with an error picture, which Leaflet sees as success: probe the key once.
             fetch(mapyProbeUrl('outdoor', MAPY_API_KEY)).then(r => { if (!r.ok) fallBack(); }, fallBack);
-            outdoor.on('tileerror', fallBack);
-            aerial.eachLayer(l => l.on('tileerror', fallBack));
+            // Single tile errors (e.g. no aerial imagery at that zoom abroad) are not a reason to drop Mapy.
         };
 
         loadLeaflet().then(L => {
