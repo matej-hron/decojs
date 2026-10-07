@@ -348,7 +348,7 @@ export class LogbookApp {
     _pick(entry) {
         if (!this.selecting) return '';
         const label = fill(tl('bulk.pick', 'Select dive {0}'), entry.log_number ?? '–');
-        return `<input type="checkbox" class="lb-pick" data-pick-box="${escHtml(entry.id)}" aria-label="${escHtml(label)}"${this.selected.has(entry.id) ? ' checked' : ''}>`;
+        return `<input type="checkbox" class="lb-select-box" data-pick-box="${escHtml(entry.id)}" aria-label="${escHtml(label)}"${this.selected.has(entry.id) ? ' checked' : ''}>`;
     }
 
     _enterSelect() {

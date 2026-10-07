@@ -1294,9 +1294,9 @@ describe('LogbookApp background errors (jsdom)', () => {
             try {
                 const app = new LogbookApp(root, { store });
                 await tick(80);
-                assert.equal(root.querySelector('.lb-pick'), null);
+                assert.equal(root.querySelector('.lb-select-box'), null);
                 root.querySelector('#lb-select').click();
-                assert.equal(root.querySelectorAll('.lb-pick').length, 3);
+                assert.equal(root.querySelectorAll('.lb-select-box').length, 3);
                 assert.equal(root.querySelector('.lb-cards a'), null, 'cards stop being links');
                 assert.equal(root.querySelector('#lb-bulk-delete').disabled, true);
                 assert.match(root.querySelector('.lb-count').textContent, /^0 selected$/);
@@ -1346,7 +1346,7 @@ describe('LogbookApp background errors (jsdom)', () => {
                 const summary = root.querySelector('.lb-bulk').textContent;
                 assert.match(summary, /Deleted 1 dive\./);
                 assert.match(summary, /#2 \(boom\)/);
-                assert.equal(root.querySelector('.lb-pick'), null, 'select mode is left after deleting');
+                assert.equal(root.querySelector('.lb-select-box'), null, 'select mode is left after deleting');
                 assert.equal(root.querySelectorAll('.lb-dive-row').length, 1, 'the list reloaded');
                 root.querySelector('#lb-bulk-close').click();
                 assert.equal(root.querySelector('.lb-bulk').textContent.trim(), '');
@@ -1354,7 +1354,7 @@ describe('LogbookApp background errors (jsdom)', () => {
                 root.querySelector('#lb-select').click();
                 root.querySelector('[data-pick="e3"]').click();
                 root.querySelector('#lb-select-cancel').click();
-                assert.equal(root.querySelector('.lb-pick'), null);
+                assert.equal(root.querySelector('.lb-select-box'), null);
                 root.querySelector('#lb-select').click();
                 assert.match(root.querySelector('.lb-count').textContent, /^0 selected$/);
                 app.destroy();
