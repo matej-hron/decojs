@@ -12,4 +12,4 @@ export const SUPABASE_ANON_KEY = 'sb_publishable_oZwZubI38f4uq1_WGs9XVw_eRPqi2kr
  * in the Mapy developer portal (https://developer.mapy.com). Leave empty to use
  * OpenStreetMap tiles and Nominatim search only.
  */
-export const MAPY_API_KEY = '';
+export const MAPY_API_KEY = 'hBKGazzcJwbaw4xYumPCvWKkHEY6_TI41JtyhGHFuNs';
