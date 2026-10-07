@@ -2912,6 +2912,25 @@
             "number": "#{0}",
             "comingSoon": "This screen is coming soon.",
             "toList": "Back to the list",
+            "views": {
+                "label": "Dive list view",
+                "tiles": "Tiles",
+                "list": "List",
+                "table": "Table",
+                "with": "with {0}",
+                "monthHeader": "{0} · {1}",
+                "sortBy": "Sort by {0}",
+                "columns": {
+                    "number": "#",
+                    "date": "Date",
+                    "site": "Site",
+                    "maxDepth": "Max depth",
+                    "duration": "Duration",
+                    "avgDepth": "Avg depth",
+                    "temp": "Temp. (bottom)",
+                    "buddies": "Buddies"
+                }
+            },
             "photo": {
                 "alt": "Photo",
                 "unsupported": "{0}: save as JPEG first",

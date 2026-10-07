@@ -2876,6 +2876,25 @@
             "number": "n.º {0}",
             "comingSoon": "Esta pantalla estará disponible pronto.",
             "toList": "Volver a la lista",
+            "views": {
+                "label": "Vista de la lista de inmersiones",
+                "tiles": "Mosaico",
+                "list": "Lista",
+                "table": "Tabla",
+                "with": "con {0}",
+                "monthHeader": "{0} · {1}",
+                "sortBy": "Ordenar por {0}",
+                "columns": {
+                    "number": "#",
+                    "date": "Fecha",
+                    "site": "Sitio",
+                    "maxDepth": "Prof. máx.",
+                    "duration": "Duración",
+                    "avgDepth": "Prof. media",
+                    "temp": "Temp. (fondo)",
+                    "buddies": "Compañeros"
+                }
+            },
             "photo": {
                 "alt": "Foto",
                 "unsupported": "{0}: guárdala primero como JPEG",

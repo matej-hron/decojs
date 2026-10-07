@@ -54,6 +54,29 @@
         .lb-facts { font-variant-numeric: tabular-nums; }
         .lb-thumb { width: 72px; height: 72px; object-fit: cover; border-radius: 6px; flex: none; background: var(--surface-sunken); }
         .lb-badge { justify-self: start; font-size: 0.8rem; padding: 0.1rem 0.5rem; border-radius: 999px; border: 1px solid var(--warning-color); color: var(--warning-color); }
+        .lb-switch { display: inline-flex; justify-self: start; border: 1px solid var(--border-color, #c8ccd0); border-radius: 8px; overflow: hidden; }
+        .lb-seg { min-height: 44px; padding: 0 1rem; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+        .lb-seg + .lb-seg { border-left: 1px solid var(--border-color, #c8ccd0); }
+        .lb-seg[aria-pressed="true"] { background: var(--primary-color, #2980b9); color: #fff; }
+        .lb-month { display: grid; gap: 0.5rem; }
+        .lb-month-head { margin: 0.5rem 0 0; font-size: 1.05rem; }
+        .lb-rows { display: grid; gap: 0.5rem; }
+        .lb-row { align-items: stretch; }
+        .lb-row-media { width: 96px; height: 56px; flex: none; border-radius: 6px; background: var(--surface-sunken); color: var(--primary-color, #2980b9); display: block; overflow: hidden; }
+        .lb-row-media svg { display: block; width: 100%; height: 100%; }
+        .lb-row-head { display: flex; flex-wrap: wrap; gap: 0.1rem 0.6rem; align-items: baseline; }
+        .lb-row-site { font-weight: 600; }
+        .lb-row-site.lb-muted { font-weight: normal; }
+        .lb-notes { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; overflow-wrap: normal; }
+        .lb-table-wrap { overflow-x: auto; max-width: 100%; }
+        .lb-table { border-collapse: collapse; width: 100%; min-width: 640px; font-variant-numeric: tabular-nums; }
+        .lb-table th, .lb-table td { padding: 0.5rem 0.6rem; text-align: left; border-bottom: 1px solid var(--border-color, #dde0e3); white-space: nowrap; }
+        .lb-table .lb-num { text-align: right; }
+        .lb-table tbody tr { cursor: pointer; }
+        .lb-table tbody tr:hover { background: var(--surface-sunken); }
+        .lb-table td a { color: inherit; }
+        .lb-sort { min-height: 44px; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; font-weight: 600; cursor: pointer; }
+        .lb-sort-mark { display: inline-block; min-width: 1em; font-size: 0.75em; }
         .lb-new { margin-left: auto; min-height: 44px; display: inline-flex; align-items: center; }
         .lb-bar .btn, .lb-back a { min-height: 44px; display: inline-flex; align-items: center; }
         .lb-back { margin: 0; }

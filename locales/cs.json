@@ -2912,6 +2912,25 @@
             "number": "č. {0}",
             "comingSoon": "Tato obrazovka bude brzy k dispozici.",
             "toList": "Zpět na seznam",
+            "views": {
+                "label": "Zobrazení seznamu ponorů",
+                "tiles": "Dlaždice",
+                "list": "Seznam",
+                "table": "Tabulka",
+                "with": "s {0}",
+                "monthHeader": "{0} · {1}",
+                "sortBy": "Seřadit podle: {0}",
+                "columns": {
+                    "number": "#",
+                    "date": "Datum",
+                    "site": "Lokalita",
+                    "maxDepth": "Max. hloubka",
+                    "duration": "Doba ponoru",
+                    "avgDepth": "Prům. hloubka",
+                    "temp": "Teplota (dno)",
+                    "buddies": "Parťáci"
+                }
+            },
             "photo": {
                 "alt": "Fotka",
                 "unsupported": "{0}: nejdřív uložte jako JPEG",

@@ -1166,6 +1166,52 @@ describe('LogbookApp background errors (jsdom)', () => {
         });
     });
 
+    test('list and table views render, remember the choice, load sparklines lazily and sort', async () => {
+        await withDom(async root => {
+            globalThis.localStorage = window.localStorage;
+            window.localStorage.setItem('decojs.logbook.view', 'list');
+            window.location.hash = '#/';
+            document.documentElement.lang = 'cs';
+            const loads = [];
+            const entries = [
+                { id: 'e1', log_number: 1, dive_date: '2026-09-02', entry_time: '09:00:00', duration_s: 2535, max_depth_m: 18.5, recording_id: 'r1', buddies: ['Eva'], details: { avgDepthM: 9, tags: ['night'] }, notes: 'First line\nsecond', site_id: 's1', gas: { o2: 0.32, he: 0 }, water_temp_c: 4.8 },
+                { id: 'e2', log_number: 2, dive_date: '2026-09-05', max_depth_m: 30, buddies: [], details: {} },
+            ];
+            const store = baseStore({
+                ensureEntries: async () => 0, listEntries: async () => entries,
+                listSites: async () => [{ id: 's1', name: 'Hemmoor' }],
+                loadDive: async id => { loads.push(id); return { samples: [{ t: 0, depth: 0 }, { t: 60, depth: 10 }, { t: 120, depth: 0 }] }; },
+            });
+            try {
+                const app = new LogbookApp(root, { store });
+                await tick(120);
+                assert.equal(root.querySelector('.lb-seg[aria-pressed="true"]').dataset.view, 'list');
+                assert.match(root.querySelector('.lb-month-head').textContent, /Září 2026 · 2 /);
+                const row = root.querySelector('.lb-row');
+                assert.ok(row.getAttribute('href').startsWith('#/dive/'));
+                assert.match(root.textContent, /18,5\u00A0m · 42:15 · 9,0\u00A0m · 4,8\u00A0°C · EAN32/);
+                assert.match(root.textContent, /with Eva · night/);
+                assert.ok(root.textContent.includes('First line') && !root.textContent.includes('second'));
+                assert.ok(root.querySelector('.lb-badge'), 'add details marker');
+                if (typeof IntersectionObserver === 'undefined') assert.ok(loads.includes('r1'), 'no observer: loads directly');
+                // table
+                root.querySelector('.lb-seg[data-view="table"]').click();
+                assert.equal(window.localStorage.getItem('decojs.logbook.view'), 'table');
+                assert.equal(root.querySelectorAll('.lb-table tbody tr').length, 2);
+                assert.equal(root.querySelector('th[aria-sort="descending"] .lb-sort').dataset.sort, 'number');
+                root.querySelector('.lb-sort[data-sort="maxDepth"]').click();
+                assert.equal(root.querySelector('th[aria-sort="descending"] .lb-sort').dataset.sort, 'maxDepth');
+                assert.equal(root.querySelector('.lb-table tbody tr td').textContent.trim(), '2');
+                root.querySelector('.lb-sort[data-sort="maxDepth"]').click();
+                assert.equal(root.querySelector('th[aria-sort="ascending"] .lb-sort-mark').textContent, '▲');
+                root.querySelector('.lb-seg[data-view="tiles"]').click();
+                assert.equal(root.querySelectorAll('.lb-cards .lb-card').length, 2);
+                assert.ok(root.querySelector('#lb-sites'), 'the Sites link stays');
+                app.destroy();
+            } finally { delete globalThis.localStorage; document.documentElement.lang = 'en'; }
+        });
+    });
+
     test('a recording-linked save error shows an inline message and keeps the values', async () => {
         await withDom(async root => {
             const store = baseStore({
@@ -1353,5 +1399,94 @@ describe('SitesPage helpers', () => {
     test('diveCountText uses a plural form', () => {
         assert.match(diveCountText(1, 'en'), /1/);
         assert.match(diveCountText(0, 'en'), /0/);
+    });
+});
+
+// ---- List and table views ----
+
+import { groupByMonth, sortEntries, gasLabel, sparklinePath, entryFacts, firstLine, formatWeekdayDate } from '../js/logbook/listViews.js';
+
+describe('list views', () => {
+    const E = (o) => ({ id: o.id ?? String(o.log_number), buddies: [], details: {}, ...o });
+    const entries = [
+        E({ log_number: 1, dive_date: '2026-08-30', entry_time: '10:00', max_depth_m: 20, duration_s: 2400 }),
+        E({ log_number: 3, dive_date: '2026-09-02', entry_time: '09:00', max_depth_m: 12.5, duration_s: 3000, site_id: 'b', buddies: ['Zed'] }),
+        E({ log_number: 2, dive_date: '2026-09-02', entry_time: '14:00', max_depth_m: null, duration_s: 600, site_id: 'a' }),
+        E({ log_number: 4, dive_date: '2026-09-20', entry_time: null, max_depth_m: 30, duration_s: null, details: { avgDepthM: 9 } }),
+    ];
+    const sites = new Map([['a', { id: 'a', name: 'Alpha' }], ['b', { id: 'b', name: 'beta' }]]);
+
+    test('groupByMonth groups newest first with localized labels', () => {
+        const g = groupByMonth(entries, 'en-GB');
+        assert.deepEqual(g.map(x => x.key), ['2026-09', '2026-08']);
+        assert.equal(g[0].label, 'September 2026');
+        assert.deepEqual(g[0].entries.map(e => e.log_number), [4, 2, 3]);
+        assert.match(groupByMonth(entries, 'cs-CZ')[0].label, /září 2026/i);
+        assert.deepEqual(groupByMonth([], 'en'), []);
+    });
+    test('groupByMonth puts entries without a date in a trailing group', () => {
+        const g = groupByMonth([...entries, E({ log_number: 9, dive_date: null })], 'en');
+        assert.equal(g.at(-1).key, '');
+        assert.equal(g.at(-1).entries.length, 1);
+    });
+
+    test('sortEntries sorts numerically, toggles direction, missing last', () => {
+        const nums = (key, dir) => sortEntries(entries, key, dir, sites).map(e => e.log_number);
+        assert.deepEqual(nums('number', 'desc'), [4, 3, 2, 1]);
+        assert.deepEqual(nums('number', 'asc'), [1, 2, 3, 4]);
+        assert.deepEqual(nums('maxDepth', 'asc'), [3, 1, 4, 2]);
+        assert.deepEqual(nums('maxDepth', 'desc'), [4, 1, 3, 2]);
+        assert.deepEqual(nums('duration', 'desc'), [3, 1, 2, 4]);
+        assert.deepEqual(nums('avgDepth', 'desc'), [4, 3, 2, 1]);
+        assert.deepEqual(nums('date', 'asc'), [1, 3, 2, 4]);
+    });
+    test('sortEntries sorts site names case-insensitively and buddies as text; input untouched', () => {
+        const copy = entries.slice();
+        const s = sortEntries(entries, 'site', 'asc', sites).map(e => e.log_number);
+        assert.deepEqual(s.slice(0, 2), [2, 3]);
+        assert.deepEqual(sortEntries(entries, 'buddies', 'desc', sites)[0].log_number, 3);
+        assert.deepEqual(entries, copy);
+    });
+
+    test('gasLabel', () => {
+        assert.equal(gasLabel({ o2: 0.21, he: 0 }), 'Air');
+        assert.equal(gasLabel({ o2: 0.32 }), 'EAN32');
+        assert.equal(gasLabel({ o2: 0.18, he: 0.45 }), 'Tx 18/45');
+        assert.equal(gasLabel(null), '');
+        assert.equal(gasLabel({}), '');
+    });
+
+    test('sparklinePath handles degenerate input and inverts depth', () => {
+        assert.equal(sparklinePath([], 120, 48), '');
+        assert.equal(sparklinePath(null, 120, 48), '');
+        assert.equal(sparklinePath([{ t: 0, depth: 0 }], 120, 48), '');
+        const p = sparklinePath([{ t: 0, depth: 0 }, { t: 60, depth: 10 }, { t: 120, depth: 0 }], 120, 48);
+        assert.match(p, /^M[\d.]+,[\d.]+( L[\d.]+,[\d.]+)+$/);
+        const ys = [...p.matchAll(/,([\d.]+)/g)].map(m => Number(m[1]));
+        assert.ok(ys[1] > ys[0], 'deeper is lower on screen');
+        assert.ok(ys.every(y => y >= 0 && y <= 48));
+        assert.equal(sparklinePath([{ t: 0, depth: 0 }, { t: 0, depth: 0 }], 120, 48), '');
+        assert.ok(sparklinePath(Array.from({ length: 5000 }, (_, i) => ({ t: i, depth: i % 30 })), 120, 48).split(' L').length <= 130);
+    });
+
+    test('entryFacts omits missing values and uses the supplied number formatter', () => {
+        const num = (v, d) => v.toFixed(d).replace('.', ',');
+        const f = entryFacts(E({ max_depth_m: 18.5, duration_s: 2535, water_temp_c: 4.8, gas: { o2: 0.32, he: 0 }, details: { avgDepthM: 9.04, surfaceTempC: 18.5 } }), num);
+        assert.deepEqual(f, ['18,5 m', '42:15', '9,0 m', '4,8 / 18,5 °C', 'EAN32']);
+        assert.deepEqual(entryFacts(E({ max_depth_m: 10 }), num), ['10,0 m']);
+        assert.deepEqual(entryFacts(E({ water_temp_c: 5 }), num), ['5,0 °C']);
+        assert.deepEqual(entryFacts(E({}), num), []);
+    });
+
+    test('formatWeekdayDate shows the weekday and ignores non-dates', () => {
+        assert.match(formatWeekdayDate('2026-09-02', 'en'), /Wed/);
+        assert.match(formatWeekdayDate('2026-09-02', 'cs'), /st/);
+        assert.equal(formatWeekdayDate('x', 'en'), 'x');
+        assert.equal(formatWeekdayDate(null, 'en'), '');
+    });
+
+    test('firstLine takes the first non-empty line', () => {
+        assert.equal(firstLine('\n  hello\nworld'), 'hello');
+        assert.equal(firstLine(null), '');
     });
 });
