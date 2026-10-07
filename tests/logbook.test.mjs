@@ -601,6 +601,110 @@ describe('logbook store: media', () => {
     });
 });
 
+describe('logbook store: deleteEntries (bulk)', () => {
+    const withFile = (id, n, start, serial) => ({ ...recordingRow(id, n, start, diveOf(serial)), file_path: `u1/${id}.dlf` });
+    const setup = async () => {
+        const dives = [
+            withFile('r100', 100, '2026-09-27T12:01:01', '00000100'),
+            withFile('r101', 101, '2026-09-28T12:01:01', '00000099'),
+            withFile('r102', 102, '2026-09-29T12:01:01', '00000092'),
+        ];
+        const client = fakeLogbookClient({ tables: { dives } });
+        client.files.set('dive-logs/u1/r100.dlf', 'a');
+        client.files.set('dive-logs/u1/r101.dlf', 'b');
+        client.files.set('dive-logs/u1/r102.dlf', 'c');
+        const store = createSupabaseStore(client);
+        await store.ensureEntries();
+        const entries = await store.listEntries();
+        return { client, store, entries };
+    };
+
+    test('without recordings: entries and photos go, recordings are dismissed and kept', async () => {
+        const { client, store, entries } = await setup();
+        const photo = await store.addPhoto(entries[0].id, { blob: new Blob(['x']), width: 1, height: 1 });
+        const result = await store.deleteEntries([entries[0].id, entries[1].id]);
+        assert.deepEqual(result, { deleted: 2, failed: [] });
+        assert.equal(client.db.log_entries.length, 1);
+        assert.equal(client.db.dives.length, 3);
+        assert.equal(client.db.dives.filter(d => d.logbook_dismissed).length, 2);
+        assert.equal(client.files.has(`dive-photos/${photo.path}`), false);
+        assert.equal(client.files.has('dive-logs/u1/r100.dlf'), true);
+    });
+
+    test('with recordings: entries, dives rows and files go and ensureEntries recreates nothing', async () => {
+        const { client, store, entries } = await setup();
+        const result = await store.deleteEntries(entries.map(e => e.id), { withRecordings: true });
+        assert.deepEqual(result, { deleted: 3, failed: [] });
+        assert.equal(client.db.log_entries.length, 0);
+        assert.equal(client.db.dives.length, 0);
+        const removed = client.calls.filter(c => c[0] === 'remove' && c[1] === 'dive-logs').map(c => c[2]);
+        assert.deepEqual(removed.flat().sort(), ['u1/r100.dlf', 'u1/r101.dlf', 'u1/r102.dlf']);
+        assert.equal([...client.files.keys()].filter(k => k.startsWith('dive-logs/')).length, 0);
+        assert.equal(await store.ensureEntries(), 0);
+    });
+
+    test('with recordings: the recording is dismissed before its entry goes, and the row goes last', async () => {
+        const { client, store, entries } = await setup();
+        client.calls.length = 0;
+        await store.deleteEntries([entries[0].id], { withRecordings: true });
+        const kinds = client.calls
+            .filter(c => (c[0] === 'update' && c[1] === 'dives') || (c[0] === 'delete') || (c[0] === 'remove' && c[1] === 'dive-logs'))
+            .map(c => `${c[0]}:${c[1]}`);
+        assert.deepEqual(kinds, ['update:dives', 'delete:log_entries', 'remove:dive-logs', 'delete:dives']);
+    });
+
+    test('with recordings: an entry without a recording is simply deleted', async () => {
+        const { client, store } = await setup();
+        const manual = await store.saveEntry({ dive_date: '2026-01-01', log_number: 90 });
+        const result = await store.deleteEntries([manual.id], { withRecordings: true });
+        assert.deepEqual(result, { deleted: 1, failed: [] });
+        assert.equal(client.db.dives.length, 3);
+        assert.equal(client.calls.some(c => c[0] === 'remove' && c[1] === 'dive-logs'), false);
+    });
+
+    test('a missing recording file does not fail the delete', async () => {
+        const { client, store, entries } = await setup();
+        client.storage.from = (orig => bucket => ({ ...orig(bucket), remove: async () => ({ data: null, error: { message: 'Object not found', statusCode: '404' } }) }))(client.storage.from);
+        const result = await store.deleteEntries([entries[0].id], { withRecordings: true });
+        assert.equal(result.deleted, 1);
+        assert.equal(client.db.dives.length, 2);
+    });
+
+    test('a failure is reported and the rest continues; progress counts every dive', async () => {
+        const { client, store, entries } = await setup();
+        const origFrom = client.from;
+        client.from = table => {
+            const q = origFrom(table);
+            if (table === 'log_entries') {
+                const del = q.delete.bind(q);
+                q.delete = function () {
+                    const r = del();
+                    const eq = r.eq.bind(r);
+                    r.eq = (col, val) => {
+                        if (val === entries[1].id) r._run = async () => ({ data: null, error: { message: 'boom' } });
+                        return eq(col, val);
+                    };
+                    return r;
+                };
+            }
+            return q;
+        };
+        const progress = [];
+        const result = await store.deleteEntries(entries.map(e => e.id), { onProgress: (done, total) => progress.push([done, total]) });
+        assert.equal(result.deleted, 2);
+        assert.equal(result.failed.length, 1);
+        assert.equal(result.failed[0].id, entries[1].id);
+        assert.match(result.failed[0].message, /boom/);
+        assert.equal(client.db.log_entries.length, 1);
+        assert.deepEqual(progress, [[0, 3], [1, 3], [2, 3], [3, 3]]);
+    });
+
+    test('no ids is a no-op', async () => {
+        const { store } = await setup();
+        assert.deepEqual(await store.deleteEntries([]), { deleted: 0, failed: [] });
+    });
+});
+
 describe('logbook store: deleted entries stay deleted', () => {
     const dives = () => [recordingRow('r100', 100, '2026-09-27T12:01:01', diveOf('00000100'))];
 
@@ -1165,6 +1269,96 @@ describe('LogbookApp background errors (jsdom)', () => {
             await tick(80);
             assert.equal(root.querySelector('.lb-date').textContent, '27. 9. 2026');
             app.destroy();
+        });
+    });
+
+    test('select mode: toggling, selection kept across views and sorting, confirmation, progress and summary', async () => {
+        await withDom(async root => {
+            globalThis.localStorage = window.localStorage;
+            window.localStorage.setItem('decojs.logbook.view', 'tiles');
+            window.location.hash = '#/';
+            const entries = [1, 2, 3].map(n => ({ id: `e${n}`, log_number: n, dive_date: `2026-09-0${n}`, max_depth_m: 10 + n, buddies: [], details: {} }));
+            const calls = [];
+            let release;
+            const gate = new Promise(r => { release = r; });
+            const store = baseStore({
+                ensureEntries: async () => 0, listEntries: async () => entries.filter(e => !calls.flatMap(c => c.ids).includes(e.id)),
+                deleteEntries: async (ids, opts) => {
+                    calls.push({ ids, ...opts });
+                    opts.onProgress(0, ids.length);
+                    await gate;
+                    opts.onProgress(2, ids.length);
+                    return { deleted: 1, failed: [{ id: 'e2', message: 'boom' }] };
+                },
+            });
+            try {
+                const app = new LogbookApp(root, { store });
+                await tick(80);
+                assert.equal(root.querySelector('.lb-pick'), null);
+                root.querySelector('#lb-select').click();
+                assert.equal(root.querySelectorAll('.lb-pick').length, 3);
+                assert.equal(root.querySelector('.lb-cards a'), null, 'cards stop being links');
+                assert.equal(root.querySelector('#lb-bulk-delete').disabled, true);
+                assert.match(root.querySelector('.lb-count').textContent, /^0 selected$/);
+                // clicking a card toggles instead of navigating
+                root.querySelector('[data-pick="e1"]').click();
+                assert.equal(window.location.hash, '#/');
+                assert.match(root.querySelector('.lb-count').textContent, /^1 selected$/);
+                assert.equal(root.querySelector('#lb-bulk-delete').disabled, false);
+                root.querySelector('[data-pick-box="e2"]').click(); // the checkbox itself
+                assert.match(root.querySelector('.lb-count').textContent, /^2 selected$/);
+                root.querySelector('#lb-select-all').click();
+                assert.match(root.querySelector('.lb-count').textContent, /^3 selected$/);
+                root.querySelector('#lb-select-none').click();
+                assert.match(root.querySelector('.lb-count').textContent, /^0 selected$/);
+                root.querySelector('[data-pick="e1"]').click();
+                root.querySelector('[data-pick="e2"]').click();
+                // selection survives the other views and sorting
+                root.querySelector('.lb-seg[data-view="table"]').click();
+                assert.equal(root.querySelectorAll('.lb-table tbody tr.lb-selected').length, 2);
+                root.querySelector('.lb-sort[data-sort="maxDepth"]').click();
+                assert.equal(root.querySelectorAll('.lb-table tbody tr.lb-selected').length, 2);
+                root.querySelector('.lb-table tbody tr[data-pick="e3"]').click();
+                assert.equal(window.location.hash, '#/', 'a table row toggles instead of navigating');
+                root.querySelector('[data-pick="e3"]').click();
+                root.querySelector('.lb-seg[data-view="list"]').click();
+                assert.equal(root.querySelectorAll('.lb-row.lb-selected').length, 2);
+                assert.match(root.querySelector('.lb-count').textContent, /^2 selected$/);
+                // confirmation
+                root.querySelector('#lb-bulk-delete').click();
+                const text = root.querySelector('.lb-bulk').textContent;
+                assert.match(text, /Delete 2 dives \(#2, #1\)\?/);
+                assert.match(text, /Uploading the DIVELOG again brings them back as new dives/);
+                assert.equal(root.querySelector('#lb-bulk-rec').checked, false);
+                root.querySelector('#lb-bulk-no').click();
+                assert.equal(root.querySelector('.lb-bulk').textContent.trim(), '');
+                assert.equal(calls.length, 0);
+                assert.match(root.querySelector('.lb-count').textContent, /^2 selected$/, 'cancel keeps the selection');
+                root.querySelector('#lb-bulk-delete').click();
+                root.querySelector('#lb-bulk-rec').click();
+                root.querySelector('#lb-bulk-yes').click();
+                await tick(10);
+                assert.match(root.querySelector('.lb-bulk').textContent, /Deleting 1 \/ 2…/);
+                assert.deepEqual(calls[0].ids, ['e2', 'e1']);
+                assert.equal(calls[0].withRecordings, true);
+                release();
+                await tick(80);
+                const summary = root.querySelector('.lb-bulk').textContent;
+                assert.match(summary, /Deleted 1 dive\./);
+                assert.match(summary, /#2 \(boom\)/);
+                assert.equal(root.querySelector('.lb-pick'), null, 'select mode is left after deleting');
+                assert.equal(root.querySelectorAll('.lb-row').length, 1, 'the list reloaded');
+                root.querySelector('#lb-bulk-close').click();
+                assert.equal(root.querySelector('.lb-bulk').textContent.trim(), '');
+                // cancel leaves select mode and clears
+                root.querySelector('#lb-select').click();
+                root.querySelector('[data-pick="e3"]').click();
+                root.querySelector('#lb-select-cancel').click();
+                assert.equal(root.querySelector('.lb-pick'), null);
+                root.querySelector('#lb-select').click();
+                assert.match(root.querySelector('.lb-count').textContent, /^0 selected$/);
+                app.destroy();
+            } finally { delete globalThis.localStorage; }
         });
     });
 

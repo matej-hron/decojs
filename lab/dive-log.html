@@ -58,6 +58,16 @@
         .lb-seg { min-height: 44px; padding: 0 1rem; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }
         .lb-seg + .lb-seg { border-left: 1px solid var(--border-color, #c8ccd0); }
         .lb-seg[aria-pressed="true"] { background: var(--primary-color, #2980b9); color: #fff; }
+        .lb-toolbar { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+        .lb-selectbar { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+        .lb-count { font-weight: 600; margin-right: 0.25rem; }
+        .lb-bulk:empty { display: none; }
+        .lb-bulk[hidden] { display: none; }
+        .lb-check { display: flex; gap: 0.5rem; align-items: flex-start; }
+        .lb-check input { margin-top: 0.25rem; }
+        .lb-pick { width: 22px; height: 22px; flex: none; margin: 0.1rem 0.25rem 0 0; cursor: pointer; }
+        .lb-selectable { cursor: pointer; }
+        .lb-selected { background: var(--surface-sunken); outline: 2px solid var(--primary-color, #2980b9); outline-offset: -2px; }
         .lb-month { display: grid; gap: 0.5rem; }
         .lb-month-head { margin: 0.5rem 0 0; font-size: 1.05rem; }
         .lb-rows { display: grid; gap: 0.5rem; }

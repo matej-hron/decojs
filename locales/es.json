@@ -2895,6 +2895,22 @@
                     "buddies": "Compañeros"
                 }
             },
+            "bulk": {
+            "select": "Seleccionar",
+            "selectAll": "Seleccionar todo",
+            "none": "Ninguna",
+            "selected": "{0} seleccionadas",
+            "delete": "Eliminar…",
+            "cancel": "Cancelar",
+            "pick": "Seleccionar inmersión {0}",
+            "confirm": "¿Eliminar {0} ({1})?",
+            "withRecordings": "Eliminar también las grabaciones del ordenador. Al subir de nuevo el DIVELOG volverán como inmersiones nuevas.",
+            "confirmYes": "Eliminar",
+            "progress": "Eliminando {0} / {1}…",
+            "done": "Eliminadas: {0}.",
+            "failed": "No se pudieron eliminar {0}: {1}",
+            "close": "Cerrar"
+            },
             "photo": {
                 "alt": "Foto",
                 "unsupported": "{0}: guárdala primero como JPEG",

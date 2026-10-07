@@ -77,7 +77,7 @@ export function createSupabaseStore(client) {
         return data;
     }
 
-    return {
+    const store = {
         async currentUser() {
             // getSession reads local storage (no network), so an unreachable backend is not mistaken for "logged out".
             const { data, error } = await client.auth.getSession();
@@ -232,6 +232,48 @@ export function createSupabaseStore(client) {
             }
             const { error } = await client.from(ENTRIES).delete().eq('id', id);
             if (error) throw fail(error);
+        },
+
+        /**
+         * Delete several entries one after another; a failure is recorded and the rest continue.
+         * Per entry: deleteEntry first (dismisses the recording, removes photos, deletes the entry), and only
+         * then, with `withRecordings`, the recording's file and row, so ensureEntries can never recreate it midway.
+         * @param {string[]} ids
+         * @param {{withRecordings?: boolean, onProgress?: (done: number, total: number) => void}} [options]
+         * @returns {Promise<{deleted: number, failed: {id: string, message: string}[]}>}
+         */
+        async deleteEntries(ids, { withRecordings = false, onProgress } = {}) {
+            const total = ids.length;
+            const failed = [];
+            let deleted = 0;
+            onProgress?.(0, total);
+            for (let i = 0; i < total; i++) {
+                const id = ids[i];
+                try {
+                    let recordingId = null;
+                    if (withRecordings) {
+                        const found = await client.from(ENTRIES).select('recording_id').eq('id', id).maybeSingle();
+                        if (found.error) throw fail(found.error);
+                        recordingId = found.data?.recording_id ?? null;
+                    }
+                    await store.deleteEntry(id);
+                    if (recordingId) {
+                        const rec = await client.from(TABLE).select('file_path').eq('id', recordingId).maybeSingle();
+                        if (rec.error) throw fail(rec.error);
+                        if (rec.data?.file_path) {
+                            const { error } = await client.storage.from(BUCKET).remove([rec.data.file_path]);
+                            if (error && !/not.?found|404/i.test(`${error.message ?? ''} ${error.statusCode ?? ''}`)) throw fail(error, 'storage');
+                        }
+                        const gone = await client.from(TABLE).delete().eq('id', recordingId);
+                        if (gone.error) throw fail(gone.error);
+                    }
+                    deleted++;
+                } catch (error) {
+                    failed.push({ id, message: error?.message ?? String(error) });
+                }
+                onProgress?.(i + 1, total);
+            }
+            return { deleted, failed };
         },
 
         async listSites() {
@@ -447,4 +489,5 @@ export function createSupabaseStore(client) {
             return urls;
         },
     };
+    return store;
 }

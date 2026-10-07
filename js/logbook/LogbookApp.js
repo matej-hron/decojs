@@ -70,6 +70,9 @@ export class LogbookApp {
         this.form = null; // the mounted EntryForm or NewDive step
         this.viewMode = loadView(); // tiles | list | table
         this.sort = { key: 'number', dir: 'desc' };
+        this.selecting = false; // select mode of the list
+        this.selected = new Set(); // entry ids; survives view switches and sorting
+        this.bulk = null; // null | { phase: 'confirm'|'running'|'done', withRecordings, done, total, numbers, result }
         this.sparks = new Map(); // recording id -> SVG path ('' when none or failed)
         this._sparkQueue = [];
         this._sparkActive = 0;
@@ -317,7 +320,8 @@ export class LogbookApp {
         const facts = cardFacts(entry);
         const buddies = (entry.buddies ?? []).join(', ');
         const thumb = this.thumbs.get(entry.id);
-        return `<a class="rda-card lb-card" href="${routeHref({ name: 'detail', id: entry.id })}">
+        const [open, close] = this._wrap(entry, 'rda-card lb-card');
+        return `${open}${this._pick(entry)}
             ${thumb ? `<img class="lb-thumb" src="${escHtml(thumb)}" alt="" loading="lazy">` : ''}
             <div class="lb-card-body">
                 <div class="lb-card-head"><strong>${escHtml(fill(tl('number', '#{0}'), entry.log_number ?? '–'))}</strong>
@@ -326,7 +330,157 @@ export class LogbookApp {
                 ${facts.length ? `<div class="lb-facts">${escHtml(facts.join(' · '))}</div>` : ''}
                 ${buddies ? `<div class="lb-buddies lb-muted">${escHtml(buddies)}</div>` : ''}
                 ${needsDetails(entry) ? `<span class="lb-badge">${escHtml(tl('addDetails', 'Add details'))}</span>` : ''}
-            </div></a>`;
+            </div>${close}`;
+    }
+
+    // ---- Select mode ----
+
+    /** The element around a dive: a link, or in select mode a plain box that toggles the selection. */
+    _wrap(entry, cls) {
+        if (!this.selecting) return [`<a class="${cls}" href="${routeHref({ name: 'detail', id: entry.id })}">`, '</a>'];
+        const on = this.selected.has(entry.id);
+        return [`<div class="${cls} lb-selectable${on ? ' lb-selected' : ''}" data-pick="${escHtml(entry.id)}">`, '</div>'];
+    }
+
+    _pick(entry) {
+        if (!this.selecting) return '';
+        const label = fill(tl('bulk.pick', 'Select dive {0}'), entry.log_number ?? '–');
+        return `<input type="checkbox" class="lb-pick" data-pick-box="${escHtml(entry.id)}" aria-label="${escHtml(label)}"${this.selected.has(entry.id) ? ' checked' : ''}>`;
+    }
+
+    _enterSelect() {
+        this.selecting = true;
+        this._renderList();
+        this.view.querySelector('#lb-select-all')?.focus();
+    }
+
+    _leaveSelect() {
+        this.selecting = false;
+        this.selected.clear();
+        this.bulk = this.bulk?.phase === 'done' ? this.bulk : null;
+        this._renderList();
+        this.view.querySelector('#lb-select')?.focus();
+    }
+
+    _setPicked(ids, on) {
+        for (const id of ids) on ? this.selected.add(id) : this.selected.delete(id);
+        this._syncSelection();
+    }
+
+    /** Update checkboxes, highlights, counter and buttons in place (no re-render: keeps focus and scroll). */
+    _syncSelection() {
+        const total = this.entries?.length ?? 0;
+        this.view.querySelectorAll('[data-pick]').forEach(el => el.classList.toggle('lb-selected', this.selected.has(el.dataset.pick)));
+        this.view.querySelectorAll('[data-pick-box]').forEach(el => { el.checked = this.selected.has(el.dataset.pickBox); });
+        const count = this.view.querySelector('.lb-count');
+        if (count) count.textContent = fill(tl('bulk.selected', '{0} selected'), this.selected.size);
+        const del = this.view.querySelector('#lb-bulk-delete');
+        if (del) del.disabled = this.selected.size === 0 || !!this.bulk;
+        const all = this.view.querySelector('#lb-select-all');
+        if (all) all.disabled = this.selected.size === total;
+    }
+
+    _onPickClick(e) {
+        if (!this.selecting || this.bulk?.phase === 'running') return;
+        const box = e.target.closest('[data-pick-box]');
+        const holder = e.target.closest('[data-pick]');
+        if (box) { this._setPicked([box.dataset.pickBox], box.checked); return; }
+        if (!holder) return;
+        e.preventDefault(); // a link inside a table row must not navigate
+        this._setPicked([holder.dataset.pick], !this.selected.has(holder.dataset.pick));
+    }
+
+    _renderSelectBar() {
+        if (!this.entries?.length) return '';
+        const busy = this.bulk?.phase === 'running';
+        if (!this.selecting) return `<button type="button" class="btn btn-small btn-secondary" id="lb-select">${escHtml(tl('bulk.select', 'Select'))}</button>`;
+        return `<div class="lb-selectbar" role="group">
+            <span class="lb-count" aria-live="polite">${escHtml(fill(tl('bulk.selected', '{0} selected'), this.selected.size))}</span>
+            <button type="button" class="btn btn-small btn-secondary" id="lb-select-all"${busy || this.selected.size === this.entries.length ? ' disabled' : ''}>${escHtml(tl('bulk.selectAll', 'Select all'))}</button>
+            <button type="button" class="btn btn-small btn-secondary" id="lb-select-none"${busy ? ' disabled' : ''}>${escHtml(tl('bulk.none', 'None'))}</button>
+            <button type="button" class="btn btn-small btn-danger" id="lb-bulk-delete"${busy || this.bulk || !this.selected.size ? ' disabled' : ''}>${escHtml(tl('bulk.delete', 'Delete…'))}</button>
+            <button type="button" class="btn btn-small btn-secondary" id="lb-select-cancel"${busy ? ' disabled' : ''}>${escHtml(tl('bulk.cancel', 'Cancel'))}</button></div>`;
+    }
+
+    _numberOf(id) {
+        return this.entries?.find(e => e.id === id)?.log_number ?? null;
+    }
+
+    _openConfirm() {
+        if (!this.selected.size || this.bulk) return;
+        const picked = (this.entries ?? []).filter(e => this.selected.has(e.id))
+            .sort((a, b) => (b.log_number ?? 0) - (a.log_number ?? 0));
+        this.bulk = {
+            phase: 'confirm', withRecordings: false, done: 0, total: picked.length, result: null,
+            ids: picked.map(e => e.id), numbers: picked.map(e => e.log_number ?? '–'),
+        };
+        this._renderBulk();
+        this.view.querySelector('#lb-bulk-no')?.focus();
+        this._syncSelection();
+    }
+
+    _bulkHtml() {
+        const b = this.bulk;
+        if (!b) return '';
+        if (b.phase === 'confirm') {
+            const shown = b.numbers.slice(0, 10).map(n => `#${n}`).join(', ') + (b.numbers.length > 10 ? ', …' : '');
+            return `<div class="lb-confirm" role="alertdialog" aria-label="${escHtml(tl('bulk.delete', 'Delete…'))}">
+                <p>${escHtml(fill(tl('bulk.confirm', 'Delete {0} ({1})?'), diveCountText(b.total), shown))}</p>
+                <label class="lb-check"><input type="checkbox" id="lb-bulk-rec"${b.withRecordings ? ' checked' : ''}>
+                    <span>${escHtml(tl('bulk.withRecordings', 'Also delete the computer recordings. Uploading the DIVELOG again brings them back as new dives.'))}</span></label>
+                <div class="lb-actions"><button type="button" class="btn btn-danger" id="lb-bulk-yes">${escHtml(tl('bulk.confirmYes', 'Delete'))}</button>
+                <button type="button" class="btn btn-secondary" id="lb-bulk-no">${escHtml(tl('bulk.cancel', 'Cancel'))}</button></div></div>`;
+        }
+        if (b.phase === 'running') {
+            return `<div class="lb-confirm"><p role="status">${escHtml(fill(tl('bulk.progress', 'Deleting {0} / {1}…'), Math.min(b.done + 1, b.total), b.total))}</p></div>`;
+        }
+        const failed = b.result.failed;
+        return `<div class="lb-confirm"><p role="status">${escHtml(fill(tl('bulk.done', 'Deleted {0}.'), diveCountText(b.result.deleted)))}</p>
+            ${failed.length ? `<p class="lb-form-error" role="alert">${escHtml(fill(tl('bulk.failed', '{0} could not be deleted: {1}'), diveCountText(failed.length),
+                failed.map(f => `#${b.numberById.get(f.id) ?? '–'} (${f.message})`).join('; ')))}</p>` : ''}
+            <div class="lb-actions"><button type="button" class="btn btn-secondary" id="lb-bulk-close">${escHtml(tl('bulk.close', 'Close'))}</button></div></div>`;
+    }
+
+    /** Fill the panel in place and wire its buttons. */
+    _renderBulk() {
+        const host = this.view.querySelector('.lb-bulk');
+        if (!host) return;
+        host.innerHTML = this._bulkHtml();
+        this._wireBulk(host);
+    }
+
+    _wireBulk(host) {
+        host.querySelector('#lb-bulk-rec')?.addEventListener('change', e => { this.bulk.withRecordings = e.target.checked; });
+        host.querySelector('#lb-bulk-no')?.addEventListener('click', () => { this.bulk = null; this._renderBulk(); this._syncSelection(); this.view.querySelector('#lb-bulk-delete')?.focus(); });
+        host.querySelector('#lb-bulk-yes')?.addEventListener('click', () => this._runBulk());
+        host.querySelector('#lb-bulk-close')?.addEventListener('click', () => { this.bulk = null; this._renderBulk(); this.view.querySelector('#lb-select')?.focus(); });
+    }
+
+    async _runBulk() {
+        const b = this.bulk;
+        if (!b || b.phase !== 'confirm') return;
+        b.phase = 'running';
+        b.numberById = new Map(b.ids.map((id, i) => [id, b.numbers[i]]));
+        this.working = true;
+        this._renderList(); // disables the account buttons and the selection bar
+        try {
+            b.result = await this.store.deleteEntries(b.ids, {
+                withRecordings: b.withRecordings,
+                onProgress: (done, total) => {
+                    b.done = done; b.total = total;
+                    if (!this.destroyed && b.phase === 'running') this._renderBulk();
+                },
+            });
+        } catch (error) {
+            b.result = { deleted: 0, failed: b.ids.map(id => ({ id, message: error?.message ?? String(error) })) };
+        }
+        this.working = false;
+        b.phase = 'done';
+        this.selecting = false;
+        this.selected.clear();
+        this.entries = null;
+        if (this.destroyed || !this.user) return;
+        if (parseRoute(location.hash).name === 'list') this._showList(++this._viewToken);
     }
 
     // ---- List view ----
@@ -351,7 +505,8 @@ export class LogbookApp {
             : entry.recording_id ? `<span class="lb-row-media lb-spark" data-rec="${escHtml(entry.recording_id)}" aria-hidden="true"></span>`
                 : '<span class="lb-row-media" aria-hidden="true"></span>';
         const head = [formatWeekdayDate(entry.dive_date, currentLang()), this._timeText(entry)].filter(Boolean).join(' · ');
-        return `<a class="rda-card lb-card lb-row" href="${routeHref({ name: 'detail', id: entry.id })}">${media}
+        const [open, close] = this._wrap(entry, 'rda-card lb-card lb-row');
+        return `${open}${this._pick(entry)}${media}
             <div class="lb-card-body">
                 <div class="lb-row-head"><strong>${escHtml(fill(tl('number', '#{0}'), entry.log_number ?? '–'))}</strong>
                     <span class="lb-date">${escHtml(head)}</span>
@@ -360,7 +515,7 @@ export class LogbookApp {
                 ${people ? `<div class="lb-muted">${escHtml(people)}</div>` : ''}
                 ${notes ? `<div class="lb-muted lb-notes">${escHtml(notes)}</div>` : ''}
                 ${needsDetails(entry) ? `<span class="lb-badge">${escHtml(tl('addDetails', 'Add details'))}</span>` : ''}
-            </div></a>`;
+            </div>${close}`;
     }
 
     _renderRows() {
@@ -372,7 +527,8 @@ export class LogbookApp {
 
     _renderTable() {
         const sorted = sortEntries(this.entries, this.sort.key, this.sort.dir, this.sites);
-        const head = TABLE_COLUMNS.map(([key, numeric]) => {
+        const pickHead = this.selecting ? `<th scope="col"><span class="rda-visually-hidden">${escHtml(tl('bulk.select', 'Select'))}</span></th>` : '';
+        const head = pickHead + TABLE_COLUMNS.map(([key, numeric]) => {
             const active = this.sort.key === key;
             const label = tl(`views.columns.${key}`, key);
             const aria = active ? (this.sort.dir === 'asc' ? 'ascending' : 'descending') : 'none';
@@ -388,9 +544,11 @@ export class LogbookApp {
             const m = v => (Number.isFinite(Number(v)) && v !== null ? `${fmtNum(Number(v), 1)}${nb}m` : dash);
             const temp = Number.isFinite(Number(e.water_temp_c)) && e.water_temp_c !== null ? `${fmtNum(Number(e.water_temp_c), 1)}${nb}°C` : dash;
             const dur = e.duration_s != null ? formatDuration(e.duration_s) || dash : dash;
-            return `<tr data-href="${href}">
-                <td class="lb-num"><a href="${href}">${escHtml(String(e.log_number ?? dash))}</a></td>
-                <td><a href="${href}">${escHtml(formatDiveDate(e.dive_date, lang) || dash)}</a></td>
+            const pick = this.selecting ? `<td>${this._pick(e)}</td>` : '';
+            const link = (h, text) => (this.selecting ? escHtml(text) : `<a href="${h}">${escHtml(text)}</a>`);
+            return `<tr ${this.selecting ? `data-pick="${escHtml(e.id)}" class="lb-selectable${this.selected.has(e.id) ? ' lb-selected' : ''}"` : `data-href="${href}"`}>${pick}
+                <td class="lb-num">${link(href, String(e.log_number ?? dash))}</td>
+                <td>${link(href, formatDiveDate(e.dive_date, lang) || dash)}</td>
                 <td${site ? '' : ' class="lb-muted"'}>${escHtml(site || tl('siteNotSet', 'Site not set'))}</td>
                 <td class="lb-num">${escHtml(m(e.max_depth_m))}</td>
                 <td class="lb-num">${escHtml(dur)}</td>
@@ -403,7 +561,8 @@ export class LogbookApp {
 
     _renderSwitch() {
         const buttons = VIEWS.map(v => `<button type="button" class="lb-seg" data-view="${v}" aria-pressed="${v === this.viewMode}">${escHtml(tl(`views.${v}`, v))}</button>`).join('');
-        return `<div class="lb-switch" role="group" aria-label="${escHtml(tl('views.label', 'Dive list view'))}">${buttons}</div>`;
+        return `<div class="lb-toolbar"><div class="lb-switch" role="group" aria-label="${escHtml(tl('views.label', 'Dive list view'))}">${buttons}</div>
+            ${this._renderSelectBar()}</div>`;
     }
 
     _setViewMode(mode) {
@@ -496,13 +655,21 @@ export class LogbookApp {
                     : `<div class="lb-cards">${this.entries.map(e => this._card(e)).join('')}</div>`;
             body = this._renderSwitch() + list;
         }
-        this.view.innerHTML = this._renderBar() + body;
+        this.view.innerHTML = `${this._renderBar()}<div class="lb-bulk"></div>${body}`;
+        this._renderBulk();
         this.view.querySelectorAll('.lb-seg').forEach(b => b.addEventListener('click', () => this._setViewMode(b.dataset.view)));
         this.view.querySelectorAll('.lb-sort').forEach(b => b.addEventListener('click', () => this._sortBy(b.dataset.sort)));
         this.view.querySelector('.lb-table tbody')?.addEventListener('click', e => {
+            if (this.selecting) return;
             const row = e.target.closest('tr[data-href]');
             if (row && !e.target.closest('a')) location.hash = row.dataset.href;
         });
+        this.view.querySelector('#lb-select')?.addEventListener('click', () => this._enterSelect());
+        this.view.querySelector('#lb-select-all')?.addEventListener('click', () => this._setPicked(this.entries.map(en => en.id), true));
+        this.view.querySelector('#lb-select-none')?.addEventListener('click', () => this._setPicked(this.entries.map(en => en.id), false));
+        this.view.querySelector('#lb-select-cancel')?.addEventListener('click', () => this._leaveSelect());
+        this.view.querySelector('#lb-bulk-delete')?.addEventListener('click', () => this._openConfirm());
+        this.view.querySelectorAll('.lb-cards, .lb-rows, .lb-table tbody').forEach(el => el.addEventListener('click', e => this._onPickClick(e)));
         if (this.viewMode === 'list' && this.entries?.length) this._watchSparks();
         this.view.querySelector('#lb-upload').addEventListener('change', e => this._upload(e.target));
         this.view.querySelector('#lb-export').addEventListener('click', () => this._export());

@@ -2931,6 +2931,22 @@
                     "buddies": "Buddies"
                 }
             },
+            "bulk": {
+            "select": "Select",
+            "selectAll": "Select all",
+            "none": "None",
+            "selected": "{0} selected",
+            "delete": "Delete…",
+            "cancel": "Cancel",
+            "pick": "Select dive {0}",
+            "confirm": "Delete {0} ({1})?",
+            "withRecordings": "Also delete the computer recordings. Uploading the DIVELOG again brings them back as new dives.",
+            "confirmYes": "Delete",
+            "progress": "Deleting {0} / {1}…",
+            "done": "Deleted {0}.",
+            "failed": "{0} could not be deleted: {1}",
+            "close": "Close"
+            },
             "photo": {
                 "alt": "Photo",
                 "unsupported": "{0}: save as JPEG first",

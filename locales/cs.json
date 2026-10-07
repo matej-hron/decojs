@@ -2931,6 +2931,22 @@
                     "buddies": "Parťáci"
                 }
             },
+            "bulk": {
+            "select": "Vybrat",
+            "selectAll": "Vybrat vše",
+            "none": "Žádné",
+            "selected": "Vybráno: {0}",
+            "delete": "Smazat…",
+            "cancel": "Zrušit",
+            "pick": "Vybrat ponor {0}",
+            "confirm": "Smazat {0} ({1})?",
+            "withRecordings": "Smazat také záznamy z počítače. Po opětovném nahrání DIVELOGu se vrátí jako nové ponory.",
+            "confirmYes": "Smazat",
+            "progress": "Mažu {0} / {1}…",
+            "done": "Smazáno: {0}.",
+            "failed": "Nepodařilo se smazat {0}: {1}",
+            "close": "Zavřít"
+            },
             "photo": {
                 "alt": "Fotka",
                 "unsupported": "{0}: nejdřív uložte jako JPEG",
