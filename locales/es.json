@@ -2964,7 +2964,8 @@
                 "deleteTitle": "Eliminar",
                 "delete": "Eliminar",
                 "deleteConfirm": "¿Eliminar el sitio {0}? No se puede deshacer.",
-                "mergeFirst": "Primero fusiónalo con otro sitio."
+                "mergeFirst": "Primero fusiónalo con otro sitio.",
+                "inUseNow": "Ahora hay inmersiones que usan este sitio. Recarga la página y combínalo con otro sitio."
             },
             "detail": {
                 "edit": "Editar",

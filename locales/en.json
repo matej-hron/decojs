@@ -3000,7 +3000,8 @@
                 "deleteTitle": "Delete",
                 "delete": "Delete",
                 "deleteConfirm": "Delete the site {0}? This cannot be undone.",
-                "mergeFirst": "Merge it into another site first."
+                "mergeFirst": "Merge it into another site first.",
+                "inUseNow": "Dives use this site now. Reload and merge it into another site instead."
             },
             "detail": {
                 "edit": "Edit",

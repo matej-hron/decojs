@@ -3000,7 +3000,8 @@
                 "deleteTitle": "Smazat",
                 "delete": "Smazat",
                 "deleteConfirm": "Smazat místo {0}? Nelze vrátit zpět.",
-                "mergeFirst": "Nejdřív ho sloučte s jiným místem."
+                "mergeFirst": "Nejdřív ho sloučte s jiným místem.",
+                "inUseNow": "Toto místo teď používají ponory. Načtěte stránku znovu a místo toho ho slučte s jiným místem."
             },
             "detail": {
                 "edit": "Upravit",

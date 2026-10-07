@@ -108,6 +108,7 @@ export class SitesPage {
     }
 
     _errorText(error) {
+        if (error instanceof DiveStoreError && error.kind === 'site-in-use') return ts('inUseNow', 'Dives use this site now. Reload and merge it into another site instead.');
         return error instanceof DiveStoreError && error.kind === 'unreachable'
             ? tb('unreachable', 'Can\'t reach your dive log. If it hasn\'t been used for a week, resume the project in the Supabase dashboard.')
             : tb('genericError', 'Something went wrong. Please try again.');

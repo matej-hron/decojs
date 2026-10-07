@@ -244,6 +244,7 @@ function fakeLogbookClient({ user = { id: 'u1', email: 'me@example.com' }, table
             order(col, opts = {}) { this._order.push([col, opts.ascending !== false]); calls.push(['order', table, col, opts.ascending !== false]); return this; },
             eq(col, val) { this._filters.push(r => r[col] === val); return this; },
             in(col, vals) { this._filters.push(r => vals.includes(r[col])); return this; },
+            range(from, to) { this._range = [from, to]; return this; },
             single() { this._single = 'single'; return this; },
             maybeSingle() { this._single = 'maybe'; return this; },
             insert(payload) { this._mode = 'insert'; this._payload = payload; return this; },
@@ -263,6 +264,7 @@ function fakeLogbookClient({ user = { id: 'u1', email: 'me@example.com' }, table
                     for (const [col, asc] of this._order.slice().reverse()) {
                         rows.sort((a, b) => (a[col] < b[col] ? -1 : a[col] > b[col] ? 1 : 0) * (asc ? 1 : -1));
                     }
+                    if (this._range) rows = rows.slice(this._range[0], this._range[1] + 1);
                     return shape(rows);
                 }
                 if (this._mode === 'insert') {
@@ -1379,6 +1381,20 @@ describe('site store methods', () => {
         const client = seed();
         await createSupabaseStore(client).deleteSite('s3');
         assert.deepEqual(client.db.sites.map(s => s.id), ['s1', 's2']);
+    });
+
+    test('deleteSite refuses a site that dives still use, checked on the server', async () => {
+        const client = seed();
+        client.db.log_entries.push({ id: 'late', owner: 'u1', site_id: 's3', log_number: 999, dive_date: '2026-10-07', buddies: [], details: {} });
+        await assert.rejects(() => createSupabaseStore(client).deleteSite('s3'), e => e instanceof DiveStoreError && e.kind === 'site-in-use');
+        assert.ok(client.db.sites.some(s => s.id === 's3'));
+    });
+
+    test('siteUsage counts beyond the first 1000 rows', async () => {
+        const client = seed();
+        for (let i = 0; i < 1500; i++) client.db.log_entries.push({ id: `bulk-${i}`, owner: 'u1', site_id: 's3', log_number: 2000 + i, dive_date: '2026-01-01', buddies: [], details: {} });
+        const usage = await createSupabaseStore(client).siteUsage();
+        assert.equal(usage.get('s3'), 1500);
     });
 });
 

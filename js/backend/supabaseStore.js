@@ -15,6 +15,7 @@ const ENTRIES = 'log_entries';
 const SITES = 'sites';
 const MEDIA = 'media';
 const PHOTO_URL_SECONDS = 3600;
+const PAGE = 1000; // PostgREST returns at most this many rows per request
 const CONFLICT_KEY = 'owner,device_serial,dive_number,start_local';
 const LIST_COLUMNS = 'id, device_serial, dive_number, start_local, file_sha256, parser_version, summary, file_path';
 
@@ -250,11 +251,13 @@ export function createSupabaseStore(client) {
 
         /** Map(siteId -> number of dives using it); sites without dives are absent. */
         async siteUsage() {
-            const { data, error } = await client.from(ENTRIES).select('site_id');
-            if (error) throw fail(error);
             const usage = new Map();
-            for (const r of data) if (r.site_id) usage.set(r.site_id, (usage.get(r.site_id) ?? 0) + 1);
-            return usage;
+            for (let from = 0; ; from += PAGE) { // PostgREST returns at most 1000 rows per request
+                const { data, error } = await client.from(ENTRIES).select('site_id').order('id').range(from, from + PAGE - 1);
+                if (error) throw fail(error);
+                for (const r of data) if (r.site_id) usage.set(r.site_id, (usage.get(r.site_id) ?? 0) + 1);
+                if (data.length < PAGE) return usage;
+            }
         },
 
         /** Move every dive of `fromId` to `intoId`, then delete `fromId`. Moving first means a failure never loses the link. */
@@ -267,6 +270,10 @@ export function createSupabaseStore(client) {
         },
 
         async deleteSite(id) {
+            // Check on the server: the page's count may be stale, and deleting would unlink those dives.
+            const used = await client.from(ENTRIES).select('id').eq('site_id', id).range(0, 0);
+            if (used.error) throw fail(used.error);
+            if (used.data.length) throw new DiveStoreError('site-in-use', 'Dives still use this site');
             const { error } = await client.from(SITES).delete().eq('id', id);
             if (error) throw fail(error);
         },
