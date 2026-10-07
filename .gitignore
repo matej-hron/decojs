@@ -5,3 +5,4 @@ node_modules/
 reviews/
 .worktrees/
 scripts/video/out/
+_site/
