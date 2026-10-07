@@ -2903,6 +2903,7 @@
         "water": {"salt": "Salt", "fresh": "Fresh"},
         "logbook": {
             "newDive": "+ New dive",
+            "alreadyLogged": "Already in your logbook",
             "siteNotSet": "Site not set",
             "addDetails": "Add details",
             "back": "← Back",
@@ -2989,6 +2990,7 @@
             "folderUnavailable": "Connect the dive computer to see its dives.",
             "folderDenied": "Access to the folder was not allowed.",
             "form": {
+                "recordingLinked": "This dive computer dive is already in your logbook.",
                 "newTitle": "New dive",
                 "editTitle": "Edit dive",
                 "number": "Log number",

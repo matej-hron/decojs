@@ -546,7 +546,8 @@ export class EntryForm {
             console.error(error);
             if (this.destroyed) return;
             this._setSaving(false);
-            if (error?.kind === 'duplicate-number') this._setError(fill(tl('duplicateNumber', 'Number {0} is already used.'), number ?? v.log_number));
+            if (error?.kind === 'recording-linked') this._setError(tf('recordingLinked'));
+            else if (error?.kind === 'duplicate-number') this._setError(fill(tl('duplicateNumber', 'Number {0} is already used.'), number ?? v.log_number));
             else if (error?.kind === 'unreachable') this._setError(tb('unreachable'));
             else this._setError(tb('genericError'));
         }

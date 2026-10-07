@@ -8,7 +8,7 @@
 
 import { loadDiveFiles } from '../components/RecordedDiveAnalysis.js';
 import { planSync, diveKey } from '../backend/sync.js';
-import { entryFromRecording } from './entryModel.js';
+import { entryFromRecording, entriesOnDate } from './entryModel.js';
 import { recordingsOnDate } from './EntryForm.js';
 import { routeHref } from './router.js';
 import { translate } from '../i18n.js';
@@ -177,6 +177,14 @@ export class NewDive {
         return [...server, ...local].sort((a, b) => a.start.localeCompare(b.start));
     }
 
+    /** "#31 · 12:01 · 38,6 m" for an existing entry. */
+    _describeEntry(e) {
+        const parts = [translate('diveLog.logbook.number', '#{0}').replace('{0}', e.log_number ?? '–')];
+        if (e.entry_time) parts.push(String(e.entry_time).slice(0, 5));
+        if (e.max_depth_m != null) parts.push(`${fmtNum(e.max_depth_m, 1)}${NBSP}m`);
+        return parts.join(' · ');
+    }
+
     // ---- Rendering ----
 
     render() {
@@ -188,6 +196,10 @@ export class NewDive {
             body = `<ul class="lb-picks">${list.map((c, i) => `<li><button type="button" class="btn btn-secondary lb-pick" data-i="${i}"${this.busy ? ' disabled' : ''}>
                 <strong>${escHtml(c.label)}</strong>${c.fromFolder ? `<span class="lb-muted"> · ${escHtml(tn('inFolder'))}</span>` : ''}</button></li>`).join('')}</ul>`;
         }
+        const logged = this.loading ? [] : entriesOnDate(this.entries, this.date);
+        const loggedHtml = logged.length ? `<h3>${escHtml(tl('alreadyLogged'))}</h3>
+            <ul class="lb-logged">${logged.map(e => `<li><a href="${routeHref({ name: 'detail', id: e.id })}">${escHtml(this._describeEntry(e))}</a>
+                · <a href="${routeHref({ name: 'edit', id: e.id })}">${escHtml(translate('diveLog.logbook.detail.edit', 'Edit'))}</a></li>`).join('')}</ul>` : '';
         let folderControl = '';
         if (!this.loading) {
             if (this.folder === 'permission') folderControl = `<button type="button" class="btn btn-secondary" id="nd-allow">${escHtml(tn('folderAllow'))}</button>`;
@@ -204,6 +216,7 @@ export class NewDive {
                 <input type="date" id="nd-date" value="${escHtml(this.date)}"></label>
             <h3>${escHtml(tn('fromComputer'))}</h3>
             ${body}
+            ${loggedHtml}
             ${this.hint ? `<p class="lb-muted">${escHtml(this.hint)}</p>` : ''}
             <p class="lb-form-error" role="alert"${this.error ? '' : ' hidden'}>${escHtml(this.error)}</p>
             <div class="lb-actions">

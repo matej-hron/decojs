@@ -9,12 +9,12 @@ import { RecordedDiveAnalysis, translateStatic } from '../components/RecordedDiv
 import { DiveStoreError } from '../backend/supabaseStore.js';
 import { uploadDivelog, exportZip } from './transfer.js';
 import { parseRoute, routeHref } from './router.js';
-import { needsDetails } from './entryModel.js';
+import { needsDetails, formatDiveDate } from './entryModel.js';
 import { EntryForm } from './EntryForm.js';
 import { NewDive } from './NewDive.js';
 import { EntryDetail } from './EntryDetail.js';
 import { translate } from '../i18n.js';
-import { fmtNum } from '../format.js';
+import { fmtNum, currentLang } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
 
 const tb = (key, fallback) => translate(`diveLog.backend.${key}`, fallback);
@@ -104,7 +104,7 @@ export class LogbookApp {
         this.root.appendChild(this.view);
         window.addEventListener('hashchange', this._onHash);
         document.addEventListener('languagechange', this._onLanguage);
-        this.ensured = this.store.ensureEntries().catch(error => this._storeError(error));
+        this.ensured = this.store.ensureEntries().catch(error => this._storeError(error, { background: true }));
         this._renderRoute();
     }
 
@@ -282,7 +282,7 @@ export class LogbookApp {
             ${thumb ? `<img class="lb-thumb" src="${escHtml(thumb)}" alt="" loading="lazy">` : ''}
             <div class="lb-card-body">
                 <div class="lb-card-head"><strong>${escHtml(fill(tl('number', '#{0}'), entry.log_number ?? '–'))}</strong>
-                    <span class="lb-date">${escHtml(entry.dive_date ?? '')}</span></div>
+                    <span class="lb-date">${escHtml(formatDiveDate(entry.dive_date, currentLang()))}</span></div>
                 <div class="lb-site${site ? '' : ' lb-muted'}">${escHtml(site || tl('siteNotSet', 'Site not set'))}</div>
                 ${facts.length ? `<div class="lb-facts">${escHtml(facts.join(' · '))}</div>` : ''}
                 ${buddies ? `<div class="lb-buddies lb-muted">${escHtml(buddies)}</div>` : ''}
@@ -303,18 +303,37 @@ export class LogbookApp {
 
     // ---- Account actions ----
 
-    _storeError(error) {
+    /**
+     * Remember and show a store failure. A failure of the current view's own load replaces the view with a
+     * message; a background failure (login-time ensureEntries, upload, export, logout) never does: the list
+     * re-renders with the message, any other view gets a banner and keeps what the user is working on.
+     */
+    _storeError(error, { background = false } = {}) {
         console.error(error);
         this.msg = [error instanceof DiveStoreError && error.kind === 'unreachable'
             ? tb('unreachable', 'Can\'t reach your dive log. If it hasn\'t been used for a week, resume the project in the Supabase dashboard.')
             : tb('genericError', 'Something went wrong. Please try again.')];
         if (this.destroyed || !this.user) return;
         if (parseRoute(location.hash).name === 'list') this._renderList();
+        else if (background) this._showBanner(this.msg[0]);
         else this._showMessage(this.msg[0]);
+    }
+
+    /** A non-destructive notice above the current view. */
+    _showBanner(text) {
+        let banner = this.view.querySelector(':scope > .lb-banner');
+        if (!banner) {
+            banner = document.createElement('p');
+            banner.className = 'lb-banner rda-account-msg';
+            banner.setAttribute('role', 'alert');
+            this.view.prepend(banner);
+        }
+        banner.textContent = text;
     }
 
     /** Show a plain message in the current (non-list) view. */
     _showMessage(text) {
+        this._unmountForm();
         this.analysis?.destroy();
         this.analysis = null;
         this.view.innerHTML = `<section class="rda-card lb-message"><p>${escHtml(text)}</p>
@@ -331,7 +350,7 @@ export class LogbookApp {
             await this.store.signOut();
             this._setUser(null);
         } catch (error) {
-            this._storeError(error);
+            this._storeError(error, { background: true });
         }
     }
 
@@ -348,13 +367,13 @@ export class LogbookApp {
             });
             this.msg = this._reportLines(report);
             if (ensureError) {
-                this._storeError(ensureError);
+                this._storeError(ensureError, { background: true });
                 this.msg = [...this._reportLines(report), ...this.msg];
             }
             this.working = false;
             if (parseRoute(location.hash).name === 'list') this._showList(++this._viewToken);
         } catch (error) {
-            this._storeError(error);
+            this._storeError(error, { background: true });
         } finally {
             this._setWorking(false);
         }
@@ -379,7 +398,7 @@ export class LogbookApp {
         try {
             await exportZip(this.store);
         } catch (error) {
-            this._storeError(error);
+            this._storeError(error, { background: true });
         } finally {
             this._setWorking(false);
         }

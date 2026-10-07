@@ -2867,6 +2867,7 @@
         "water": {"salt": "Salada", "fresh": "Dulce"},
         "logbook": {
             "newDive": "+ Nueva inmersión",
+            "alreadyLogged": "Ya en tu diario",
             "siteNotSet": "Sitio sin indicar",
             "addDetails": "Añadir detalles",
             "back": "← Atrás",
@@ -2953,6 +2954,7 @@
             "folderUnavailable": "Conecta el ordenador de buceo para ver sus inmersiones.",
             "folderDenied": "No se permitió el acceso a la carpeta.",
             "form": {
+                "recordingLinked": "Esta inmersión del ordenador ya está en tu diario.",
                 "newTitle": "Nueva inmersión",
                 "editTitle": "Editar inmersión",
                 "number": "Número de registro",

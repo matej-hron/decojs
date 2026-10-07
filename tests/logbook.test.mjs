@@ -9,13 +9,16 @@ import { readFileSync } from 'node:fs';
 import { parseDivesoftDLF } from '../js/import/divesoftDlf.js';
 import {
     entryFromRecording, orderRecordingsForNumbering, nextLogNumber, parseDecimal,
-    normalizeEntry, needsDetails, DETAIL_KEYS,
+    normalizeEntry, needsDetails, DETAIL_KEYS, formatDiveDate, entriesOnDate,
 } from '../js/logbook/entryModel.js';
+import { localeTag } from '../js/format.js';
 import { parseRoute, routeHref } from '../js/logbook/router.js';
 import { resizeTarget, isSupportedImage, exifTimestamp } from '../js/logbook/photo.js';
 import { detailRows, isHttpsUrl } from '../js/logbook/EntryDetail.js';
 import { siteFromForm } from '../js/logbook/SitePicker.js';
 import { createSupabaseStore, DiveStoreError } from '../js/backend/supabaseStore.js';
+import { NewDive } from '../js/logbook/NewDive.js';
+import { LogbookApp } from '../js/logbook/LogbookApp.js';
 import { uploadDivelog, exportZip } from '../js/logbook/transfer.js';
 import { formValuesFromEntry, gasFromForm, formatDuration, recordingsOnDate, invalidNumberFields, EntryForm } from '../js/logbook/EntryForm.js';
 
@@ -99,6 +102,28 @@ describe('form normalisation', () => {
         assert.ok(DETAIL_KEYS.conditions.includes('weather'));
         assert.ok(DETAIL_KEYS.equipment.includes('weightsKg'));
         assert.ok(DETAIL_KEYS.dive.includes('rating'));
+    });
+});
+
+describe('dates and same-day entries', () => {
+    test('formatDiveDate shows a calendar date in the language, without time-zone shifting', () => {
+        assert.equal(formatDiveDate('2026-09-27', 'cs'), '27. 9. 2026');
+        assert.equal(formatDiveDate('2026-09-27', 'en'), new Intl.DateTimeFormat(localeTag('en'), { dateStyle: 'medium', timeZone: 'UTC' }).format(new Date(Date.UTC(2026, 8, 27))));
+        assert.equal(formatDiveDate('2026-01-01', 'cs'), '1. 1. 2026');
+        assert.equal(formatDiveDate('', 'cs'), '');
+        assert.equal(formatDiveDate(null, 'cs'), '');
+        assert.equal(formatDiveDate('garbage', 'cs'), 'garbage');
+    });
+
+    test('entriesOnDate picks the entries of that day ordered by time', () => {
+        const entries = [
+            { id: 'a', dive_date: '2026-09-27', entry_time: '16:21:22' },
+            { id: 'b', dive_date: '2026-09-28', entry_time: '08:00:00' },
+            { id: 'c', dive_date: '2026-09-27', entry_time: '12:01:01' },
+            { id: 'd', dive_date: '2026-09-27', entry_time: null },
+        ];
+        assert.deepEqual(entriesOnDate(entries, '2026-09-27').map(e => e.id), ['d', 'c', 'a']);
+        assert.deepEqual(entriesOnDate(entries, '2026-10-01'), []);
     });
 });
 
@@ -924,5 +949,111 @@ describe('exifTimestamp', () => {
     test('invalid dates give null', () => {
         assert.equal(exifTimestamp(null, '+02:00'), null);
         assert.equal(exifTimestamp(new Date(NaN)), null);
+    });
+});
+
+describe('LogbookApp background errors (jsdom)', () => {
+    async function withDom(fn) {
+        const { JSDOM } = await import('jsdom');
+        const dom = new JSDOM('<!doctype html><body><div id="root"></div></body>', { url: 'http://localhost/lab/dive-log.html#/new' });
+        const saved = {};
+        for (const k of ['window', 'document', 'location', 'history']) {
+            saved[k] = Object.getOwnPropertyDescriptor(globalThis, k);
+            Object.defineProperty(globalThis, k, { value: dom.window[k], configurable: true, writable: true });
+        }
+        try {
+            return await fn(dom.window.document.getElementById('root'));
+        } finally {
+            for (const [k, d] of Object.entries(saved)) {
+                if (d) Object.defineProperty(globalThis, k, d); else delete globalThis[k];
+            }
+        }
+    }
+    const tick = (ms = 30) => new Promise(r => setTimeout(r, ms));
+    const baseStore = extra => ({
+        onAuthChange: () => () => {},
+        currentUser: async () => ({ id: 'u1', email: 'me@example.com' }),
+        listDives: async () => [], listEntries: async () => [], listSites: async () => [],
+        listPhotoMedia: async () => [], photoUrls: async () => new Map(),
+        ...extra,
+    });
+
+    test('a failing login-time ensureEntries keeps the open form and shows a banner', async () => {
+        await withDom(async root => {
+            const origError = console.error;
+            console.error = () => {};
+            try {
+                const app = new LogbookApp(root, { store: baseStore({
+                    ensureEntries: async () => { await tick(10); throw new Error('down'); },
+                }) });
+                await tick(80);
+                assert.ok(root.querySelector('.lb-newdive'), 'the form stays');
+                assert.ok(root.querySelector('.lb-banner'), 'a banner explains');
+                assert.equal(root.querySelector('.lb-message'), null);
+                app.destroy();
+            } finally { console.error = origError; }
+        });
+    });
+
+    test('a failing load of the current view replaces it with a message', async () => {
+        await withDom(async root => {
+            window.location.hash = '#/dive/abc';
+            const origError = console.error;
+            console.error = () => {};
+            try {
+                const app = new LogbookApp(root, { store: baseStore({
+                    ensureEntries: async () => 0,
+                    getEntry: async () => { throw new Error('down'); },
+                }) });
+                await tick(80);
+                assert.ok(root.querySelector('.lb-message'));
+                app.destroy();
+            } finally { console.error = origError; }
+        });
+    });
+
+    test('New dive lists entries already in the logbook for the chosen date; the list shows localized dates', async () => {
+        await withDom(async root => {
+            const entries = [{ id: 'e31', log_number: 31, dive_date: '2026-09-27', entry_time: '12:01:01', max_depth_m: 38.6, buddies: [], details: {} }];
+            const store = baseStore({ listEntries: async () => entries });
+            const nd = new NewDive(root, { store, onChoose() {} });
+            await tick();
+            nd.date = '2026-09-27';
+            nd.render();
+            const links = [...root.querySelectorAll('.lb-logged a')].map(a => a.getAttribute('href'));
+            assert.deepEqual(links, ['#/dive/e31', '#/dive/e31/edit']);
+            assert.match(root.querySelector('.lb-logged').textContent, /#31 · 12:01 · 38.6/);
+            nd.date = '2026-01-02';
+            nd.render();
+            assert.equal(root.querySelector('.lb-logged'), null);
+            nd.destroy();
+
+            window.location.hash = '#/';
+            document.documentElement.lang = 'cs';
+            const app = new LogbookApp(root, { store: baseStore({ ensureEntries: async () => 0, listEntries: async () => entries }) });
+            await tick(80);
+            assert.equal(root.querySelector('.lb-date').textContent, '27. 9. 2026');
+            app.destroy();
+        });
+    });
+
+    test('a recording-linked save error shows an inline message and keeps the values', async () => {
+        await withDom(async root => {
+            const store = baseStore({
+                listBuddies: async () => [],
+                saveEntry: async () => { throw new DiveStoreError('recording-linked', 'dup'); },
+            });
+            const origError = console.error;
+            console.error = () => {};
+            try {
+                new EntryForm(root, { store, prefill: { dive_date: '2026-09-27' }, recordingId: 'r1', onSaved() {}, onCancel() {} });
+                await tick();
+                root.querySelector('input[name="notes"], textarea[name="notes"]')?.setAttribute('data-x', '1');
+                root.querySelector('form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+                await tick();
+            } finally { console.error = origError; }
+            assert.match(root.querySelector('.lb-form-error').textContent, /recordingLinked/);
+            assert.equal(root.querySelector('input[type="date"]').value, '2026-09-27');
+        });
     });
 });

@@ -2903,6 +2903,7 @@
         "water": {"salt": "Slaná", "fresh": "Sladká"},
         "logbook": {
             "newDive": "+ Nový ponor",
+            "alreadyLogged": "Už v deníku",
             "siteNotSet": "Lokalita nezadána",
             "addDetails": "Doplnit podrobnosti",
             "back": "← Zpět",
@@ -2989,6 +2990,7 @@
             "folderUnavailable": "Připojte potápěčský počítač, aby se zobrazily jeho ponory.",
             "folderDenied": "Přístup ke složce nebyl povolen.",
             "form": {
+                "recordingLinked": "Tento ponor z počítače už v deníku je.",
                 "newTitle": "Nový ponor",
                 "editTitle": "Upravit ponor",
                 "number": "Číslo v logbooku",

@@ -161,7 +161,7 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
             const located = sites.filter(s => Number.isFinite(s.lat) && Number.isFinite(s.lon));
             for (const site of located) {
                 L.circleMarker([site.lat, site.lon], { radius: 10, color: '#fff', weight: 2, fillColor: '#2980b9', fillOpacity: 0.95 })
-                    .bindTooltip(site.name).addTo(map)
+                    .bindTooltip(escHtml(site.name)).addTo(map)
                     .on('click', ev => { L.DomEvent.stopPropagation(ev); close(site); });
             }
             map.on('click', ev => placePin(L, ev.latlng.lat, ev.latlng.lng));

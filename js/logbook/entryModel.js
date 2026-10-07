@@ -3,6 +3,26 @@
  * and normalising form input. Pure: no DOM, no network.
  */
 
+import { localeTag } from '../format.js';
+
+/**
+ * A `YYYY-MM-DD` dive date shown for the language (cs "27. 9. 2026"). Parsed as a calendar date and
+ * formatted in UTC so no time-zone shift can move it by a day. Anything else is returned as given.
+ */
+export function formatDiveDate(date, lang) {
+    if (!date) return '';
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(date));
+    if (!m) return String(date);
+    const d = new Date(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3])));
+    return new Intl.DateTimeFormat(localeTag(lang), { dateStyle: 'medium', timeZone: 'UTC' }).format(d);
+}
+
+/** Entries of one calendar day, earliest first (entries without a time first). */
+export function entriesOnDate(entries, date) {
+    return entries.filter(e => e.dive_date === date)
+        .sort((a, b) => String(a.entry_time ?? '').localeCompare(String(b.entry_time ?? '')));
+}
+
 /** "More details" keys, grouped as in the form. */
 export const DETAIL_KEYS = Object.freeze({
     conditions: ['surfaceTempC', 'airTempC', 'weather', 'current', 'waves'],

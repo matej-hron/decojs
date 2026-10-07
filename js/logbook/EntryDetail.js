@@ -6,13 +6,13 @@
  */
 
 import { CHOICES, TAGS } from './EntryForm.js';
-import { DETAIL_KEYS } from './entryModel.js';
+import { DETAIL_KEYS, formatDiveDate } from './entryModel.js';
 import { routeHref } from './router.js';
 import { readExif, resizeImage, isSupportedImage } from './photo.js';
 import { loadLeaflet, TILE_URL, TILE_ATTRIBUTION } from './SitePicker.js';
 import { gasName } from '../import/recordedDive.js';
 import { translate } from '../i18n.js';
-import { fmtNum } from '../format.js';
+import { fmtNum, currentLang } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
 
 const NB = ' ';
@@ -191,11 +191,12 @@ export class EntryDetail {
         const e = this.entry;
         const { core, groups, notes } = detailRows(e, label);
         const time = e.entry_time ? String(e.entry_time).slice(0, 5) : '';
-        const head = [fill(label('number'), e.log_number ?? '–'), e.dive_date, time].filter(Boolean).join(' · ');
+        const head = [fill(label('number'), e.log_number ?? '–'), formatDiveDate(e.dive_date, currentLang()), time].filter(Boolean).join(' · ');
         const dl = rows => `<dl class="lb-dl">${rows.map(r => `<div><dt>${escHtml(r.label)}</dt><dd>${escHtml(r.value)}</dd></div>`).join('')}</dl>`;
         const hasCoords = this.site && Number.isFinite(this.site.lat) && Number.isFinite(this.site.lon);
+        // Until the sites are loaded show an ellipsis; a site that is not found after loading counts as not set.
         const siteLine = e.site_id
-            ? (this.site ? this.site.name : '…')
+            ? (this.site ? this.site.name : (this.loaded ? null : '…'))
             : null;
         this.main.innerHTML = `
             <p class="lb-back"><a href="${routeHref({ name: 'list' })}">${escHtml(label('back'))}</a></p>
