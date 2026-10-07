@@ -91,6 +91,7 @@ const STATIC_ASSETS = [
   './js/backend/diveStore.js',
   './js/logbook/entryModel.js',
   './js/logbook/router.js',
+  './js/logbook/geo.js',
   './js/logbook/SitePicker.js',
   './js/logbook/EntryDetail.js',
   './js/logbook/EntryForm.js',

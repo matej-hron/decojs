@@ -2942,7 +2942,10 @@
                 "searching": "Hledám…",
                 "noResults": "Nic nenalezeno",
                 "searchFailed": "Hledání teď není dostupné. Zkontrolujte připojení nebo klepněte do mapy.",
-                "searchCredit": "Vyhledávání: Nominatim / OpenStreetMap"
+                "searchCredit": "Vyhledávání: Nominatim / OpenStreetMap",
+                "searchCreditMapy": "Vyhledávání: Mapy.com",
+                "layerMap": "Mapa",
+                "layerAerial": "Letecká"
             },
             "detail": {
                 "edit": "Upravit",

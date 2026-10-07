@@ -7,6 +7,10 @@
 
 import { parseDecimal } from './entryModel.js';
 import { loadScript } from './photo.js';
+import { parseCoordinates, mapySuggestUrl, mapyTileUrl, mapyProbeUrl, placesFromMapy, placesFromNominatim } from './geo.js';
+import { MAPY_API_KEY } from '../backend/config.js';
+
+export { parseCoordinates };
 import { translate, getCurrentLanguage } from '../i18n.js';
 import { escHtml } from '../utils/escHtml.js';
 
@@ -14,7 +18,16 @@ const LEAFLET_JS = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet
 const LEAFLET_CSS = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css';
 export const TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 export const TILE_ATTRIBUTION = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+const MAPY_LOGO = 'https://api.mapy.com/img/api/logo.svg';
+const MAPY_COPYRIGHT = '<a href="https://api.mapy.com/copyright" target="_blank" rel="noopener">Seznam.cz a.s. a další</a>';
+const MAPY_ATTRIBUTION = `${MAPY_COPYRIGHT}, ${'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}`;
+const LAYER_STORAGE_KEY = 'decojs.logbook.mapLayer';
+/** Mapy.com allows 100 requests per second per key; keep typing-speed submits well below that. */
+export const MAPY_MIN_INTERVAL_MS = 250;
 const DEFAULT_VIEW = Object.freeze({ lat: 49.8, lon: 15.5, zoom: 6 });
+
+const readLayerChoice = () => { try { return localStorage.getItem(LAYER_STORAGE_KEY) === 'aerial' ? 'aerial' : 'map'; } catch { return 'map'; } };
+const saveLayerChoice = choice => { try { localStorage.setItem(LAYER_STORAGE_KEY, choice); } catch { /* storage unavailable */ } };
 
 const ts = (key, fallback) => translate(`diveLog.logbook.site.${key}`, fallback ?? key);
 
@@ -51,47 +64,6 @@ export function siteFromForm(form, pin) {
         water: form.water === 'salt' || form.water === 'fresh' ? form.water : null,
         altitude_m: altitude === null ? null : Math.round(altitude),
     };
-}
-
-/**
- * Parse pasted coordinates such as `49.7856, 13.4012`, `49,7856 13,4012` or
- * `49.7856N 13.4012E`. Decimal commas and N/S/E/W prefixes or suffixes are accepted;
- * S and W make the value negative. Null when the text is not a valid latitude/longitude pair.
- * @param {string} text
- * @returns {{lat: number, lon: number}|null}
- */
-export function parseCoordinates(text) {
-    if (typeof text !== 'string') return null;
-    const clean = text.replace(/[°º]/g, ' ').trim();
-    if (!clean || !/^[\s\d.,;+\-NSEWnsew]+$/.test(clean)) return null;
-    const tokens = clean.match(/[NSEWnsew]|[+-]?\d+(?:[.,]\d+)?/g) ?? [];
-    const nums = [];
-    let pending = null;
-    for (const tok of tokens) {
-        if (/^[a-z]$/i.test(tok)) {
-            const letter = tok.toUpperCase();
-            const prev = nums[nums.length - 1];
-            if (prev && !prev.letter) prev.letter = letter;
-            else if (!pending) pending = letter;
-            else return null;
-        } else {
-            nums.push({ value: Number(tok.replace(',', '.')), letter: pending });
-            pending = null;
-        }
-    }
-    if (pending || nums.length !== 2 || nums.some(n => !Number.isFinite(n.value))) return null;
-    let [first, second] = nums;
-    if (first.letter || second.letter) {
-        if (!first.letter || !second.letter) return null;
-        if ('EW'.includes(first.letter)) [first, second] = [second, first];
-        if (!'NS'.includes(first.letter) || !'EW'.includes(second.letter)) return null;
-        first = { value: Math.abs(first.value) * (first.letter === 'S' ? -1 : 1) };
-        second = { value: Math.abs(second.value) * (second.letter === 'W' ? -1 : 1) };
-    }
-    const lat = first.value;
-    const lon = second.value;
-    if (lat < -90 || lat > 90 || lon < -180 || lon > 180) return null;
-    return { lat, lon };
 }
 
 /** Nominatim usage policy: at most one request per second. */
@@ -192,7 +164,15 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
         };
 
         let mapApi = null; // { L } once Leaflet has loaded
-        let lastSearchAt = 0;
+        const lastSearchAt = { mapy: 0, nominatim: 0 };
+        const MIN_INTERVAL = { mapy: MAPY_MIN_INTERVAL_MS, nominatim: SEARCH_MIN_INTERVAL_MS };
+        let mapyActive = false; // Mapy.com layers and search are in use (key set and not failed)
+        /** Wait for the provider's rate-limit slot; the slot is reserved immediately so racing submits queue up. */
+        const waitForSlot = async provider => {
+            const wait = lastSearchAt[provider] + MIN_INTERVAL[provider] - Date.now();
+            lastSearchAt[provider] = Math.max(Date.now(), lastSearchAt[provider] + MIN_INTERVAL[provider]);
+            if (wait > 0) await new Promise(r => setTimeout(r, wait));
+        };
         let mapFailed = false;
         let searchSeq = 0; // the newest submit wins; older responses are dropped
         const showStatus = text => {
@@ -207,33 +187,43 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
             else map.flyTo([lat, lon], 14);
             userMoved = true;
         };
-        const prefillName = displayName => {
+        const prefillName = name => {
             const nameInput = form.elements.name;
-            const first = String(displayName ?? '').split(',')[0].trim();
+            const first = String(name ?? '').split(',')[0].trim();
             if (first && !nameInput.value.trim()) nameInput.value = first;
         };
-        const renderResults = places => {
+        const renderResults = (places, creditText) => {
             listEl.replaceChildren();
             for (const place of places) {
                 const li = document.createElement('li');
                 const btn = document.createElement('button');
                 btn.type = 'button';
-                btn.textContent = place.display_name;
+                if (place.detail && place.detail !== place.name) {
+                    const strong = document.createElement('strong');
+                    strong.textContent = place.name;
+                    const small = document.createElement('small');
+                    small.textContent = place.detail;
+                    btn.append(strong, document.createElement('br'), small);
+                } else {
+                    btn.textContent = place.name;
+                }
                 btn.addEventListener('click', () => {
-                    const lat = Number(place.lat);
-                    const lon = Number(place.lon);
-                    if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
-                    const bb = Array.isArray(place.boundingbox) ? place.boundingbox.map(Number) : null;
-                    goTo(lat, lon, bb && bb.length === 4 && bb.every(Number.isFinite) ? bb : null);
-                    prefillName(place.display_name);
+                    goTo(place.lat, place.lon, place.bbox);
+                    prefillName(place.name);
                     resultsEl.hidden = true;
                 });
                 li.appendChild(btn);
                 listEl.appendChild(li);
             }
+            creditEl.textContent = creditText;
             listEl.hidden = places.length === 0;
             creditEl.hidden = places.length === 0;
             resultsEl.hidden = false;
+        };
+        const searchNominatim = async query => {
+            const response = await fetch(nominatimUrl(query, getCurrentLanguage()), { signal: signal ?? undefined });
+            if (!response.ok) throw new Error(`Nominatim ${response.status}`);
+            return placesFromNominatim(await response.json());
         };
         searchForm.addEventListener('submit', async e => {
             e.preventDefault();
@@ -255,20 +245,34 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
             }
             const stale = () => closed || seq !== searchSeq;
             try {
-                const wait = lastSearchAt + SEARCH_MIN_INTERVAL_MS - Date.now();
                 listEl.hidden = true;
                 creditEl.hidden = true;
                 showStatus(ts('searching', 'Searching…'));
-                lastSearchAt = Math.max(Date.now(), lastSearchAt + SEARCH_MIN_INTERVAL_MS); // reserve the slot
-                if (wait > 0) await new Promise(r => setTimeout(r, wait));
+                let places = null;
+                let credit = ts('searchCredit', 'Search by Nominatim / OpenStreetMap');
+                if (mapyActive) {
+                    try {
+                        await waitForSlot('mapy');
+                        if (stale()) return;
+                        const center = map.getCenter();
+                        const response = await fetch(mapySuggestUrl(query, { lang: getCurrentLanguage(), apiKey: MAPY_API_KEY, center: { lat: center.lat, lon: center.lng } }), { signal: signal ?? undefined });
+                        if (!response.ok) throw new Error(`Mapy.com suggest ${response.status}`);
+                        places = placesFromMapy(await response.json());
+                        credit = ts('searchCreditMapy', 'Search by Mapy.com');
+                    } catch (mapyError) {
+                        if (stale()) return;
+                        console.warn('Mapy.com search failed, using Nominatim:', mapyError?.message); // message never contains the URL
+                    }
+                }
+                if (!places) {
+                    await waitForSlot('nominatim');
+                    if (stale()) return;
+                    places = await searchNominatim(query);
+                }
                 if (stale()) return;
-                const response = await fetch(nominatimUrl(query, getCurrentLanguage()), { signal: signal ?? undefined });
-                if (!response.ok) throw new Error(`Nominatim ${response.status}`);
-                const places = await response.json();
-                if (stale()) return;
-                if (!Array.isArray(places) || places.length === 0) { showStatus(ts('noResults', 'No places found')); return; }
+                if (places.length === 0) { showStatus(ts('noResults', 'No places found')); return; }
                 showStatus('');
-                renderResults(places);
+                renderResults(places, credit);
             } catch (error) {
                 if (stale()) return;
                 console.error(error);
@@ -297,12 +301,51 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
             }
         });
 
+        const setupLayers = L => {
+            const osm = L.tileLayer(TILE_URL, { maxZoom: 19, attribution: TILE_ATTRIBUTION });
+            if (!MAPY_API_KEY) { osm.addTo(map); return; }
+            const mapyLayer = (mapset, extra = {}) => L.tileLayer(mapyTileUrl(mapset, MAPY_API_KEY), { maxZoom: 20, attribution: MAPY_ATTRIBUTION, ...extra });
+            const outdoor = mapyLayer('outdoor');
+            const aerial = L.layerGroup([mapyLayer('aerial'), mapyLayer('names-overlay', { attribution: '' })]);
+            const logo = L.control({ position: 'bottomleft' });
+            logo.onAdd = () => {
+                const a = L.DomUtil.create('a', 'lb-mapy-logo');
+                a.href = 'https://mapy.com/';
+                a.target = '_blank';
+                a.rel = 'noopener';
+                a.innerHTML = `<img src="${MAPY_LOGO}" alt="Mapy.com" height="30">`;
+                return a;
+            };
+            const choices = { [ts('layerMap', 'Map')]: outdoor, [ts('layerAerial', 'Aerial')]: aerial };
+            const switcher = L.control.layers(choices, null, { position: 'topright', collapsed: true });
+            (readLayerChoice() === 'aerial' ? aerial : outdoor).addTo(map);
+            switcher.addTo(map);
+            logo.addTo(map);
+            mapyActive = true;
+            map.on('baselayerchange', ev => saveLayerChoice(ev.layer === aerial ? 'aerial' : 'map'));
+            let fellBack = false;
+            const fallBack = () => {
+                if (fellBack || closed) return;
+                fellBack = true;
+                mapyActive = false;
+                switcher.remove();
+                logo.remove();
+                map.removeLayer(outdoor);
+                map.removeLayer(aerial);
+                osm.addTo(map);
+            };
+            // Tiles answer 401/403 with an error picture, which Leaflet sees as success: probe the key once.
+            fetch(mapyProbeUrl('outdoor', MAPY_API_KEY)).then(r => { if (!r.ok) fallBack(); }, fallBack);
+            outdoor.on('tileerror', fallBack);
+            aerial.eachLayer(l => l.on('tileerror', fallBack));
+        };
+
         loadLeaflet().then(L => {
             if (closed) return;
             mapApi = { L };
             const mapEl = overlay.querySelector('.lb-picker-map');
             map = L.map(mapEl, { zoomControl: true });
-            L.tileLayer(TILE_URL, { maxZoom: 19, attribution: TILE_ATTRIBUTION }).addTo(map);
+            setupLayers(L);
 
             const located = sites.filter(s => Number.isFinite(s.lat) && Number.isFinite(s.lon));
             for (const site of located) {

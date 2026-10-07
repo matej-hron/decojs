@@ -2942,7 +2942,10 @@
                 "searching": "Searching…",
                 "noResults": "No places found",
                 "searchFailed": "Search is not available right now. Check your connection or tap the map.",
-                "searchCredit": "Search by Nominatim / OpenStreetMap"
+                "searchCredit": "Search by Nominatim / OpenStreetMap",
+                "searchCreditMapy": "Search by Mapy.com",
+                "layerMap": "Map",
+                "layerAerial": "Aerial"
             },
             "detail": {
                 "edit": "Edit",

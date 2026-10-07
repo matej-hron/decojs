@@ -17,6 +17,7 @@ import { parseRoute, routeHref } from '../js/logbook/router.js';
 import { resizeTarget, isSupportedImage, exifTimestamp } from '../js/logbook/photo.js';
 import { detailRows, isHttpsUrl } from '../js/logbook/EntryDetail.js';
 import { siteFromForm, parseCoordinates } from '../js/logbook/SitePicker.js';
+import { mapySuggestUrl, mapyTileUrl, placesFromMapy, placesFromNominatim, mapyLang } from '../js/logbook/geo.js';
 import { createSupabaseStore, DiveStoreError } from '../js/backend/supabaseStore.js';
 import { NewDive } from '../js/logbook/NewDive.js';
 import { LogbookApp } from '../js/logbook/LogbookApp.js';
@@ -1177,5 +1178,60 @@ describe('LogbookApp background errors (jsdom)', () => {
             assert.match(root.querySelector('.lb-form-error').textContent, /recordingLinked/);
             assert.equal(root.querySelector('input[type="date"]').value, '2026-09-27');
         });
+    });
+});
+
+describe('logbook geo helpers (Mapy.com, Nominatim)', () => {
+    test('mapyTileUrl builds a Leaflet template and encodes the key', () => {
+        assert.equal(mapyTileUrl('outdoor', 'K 1'), 'https://api.mapy.com/v1/maptiles/outdoor/256/{z}/{x}/{y}?apikey=K%201');
+        assert.equal(mapyTileUrl('aerial', 'k'), 'https://api.mapy.com/v1/maptiles/aerial/256/{z}/{x}/{y}?apikey=k');
+    });
+    test('mapyLang maps UI language to cs/en/es, else en', () => {
+        assert.equal(mapyLang('cs'), 'cs');
+        assert.equal(mapyLang('es'), 'es');
+        assert.equal(mapyLang('de'), 'en');
+        assert.equal(mapyLang(undefined), 'en');
+    });
+    test('mapySuggestUrl sets query, lang, limit, key and lon,lat bias', () => {
+        const url = new URL(mapySuggestUrl('Hodonín lom', { lang: 'cs', apiKey: 'KEY', center: { lat: 49.1, lon: 17.1 } }));
+        assert.equal(url.origin + url.pathname, 'https://api.mapy.com/v1/suggest');
+        assert.equal(url.searchParams.get('query'), 'Hodonín lom');
+        assert.equal(url.searchParams.get('lang'), 'cs');
+        assert.equal(url.searchParams.get('limit'), '6');
+        assert.equal(url.searchParams.get('apikey'), 'KEY');
+        assert.equal(url.searchParams.get('preferNear'), '17.1,49.1');
+    });
+    test('mapySuggestUrl omits bias without a valid centre and falls back to en', () => {
+        const url = new URL(mapySuggestUrl('x', { lang: 'xx', apiKey: 'K', center: { lat: NaN, lon: 1 } }));
+        assert.equal(url.searchParams.has('preferNear'), false);
+        assert.equal(url.searchParams.get('lang'), 'en');
+        assert.equal(new URL(mapySuggestUrl('x', { apiKey: 'K' })).searchParams.has('preferNear'), false);
+    });
+    test('placesFromMapy normalizes items; bbox is minLon,minLat,maxLon,maxLat -> [south,north,west,east]', () => {
+        const json = { items: [
+            { name: 'Praha', label: 'Hlavní město', location: 'Česko', position: { lon: 14.4, lat: 50.08 }, bbox: [14.22, 49.94, 14.70, 50.17] },
+            { name: 'Lom', label: 'Lom', position: { lon: 17, lat: 48.9 } },
+        ] };
+        assert.deepEqual(placesFromMapy(json), [
+            { name: 'Praha', detail: 'Hlavní město, Česko', lat: 50.08, lon: 14.4, bbox: [49.94, 50.17, 14.22, 14.70] },
+            { name: 'Lom', detail: 'Lom', lat: 48.9, lon: 17, bbox: null },
+        ]);
+    });
+    test('placesFromMapy drops garbage and bad bboxes', () => {
+        for (const bad of [null, undefined, 'x', {}, { items: 'x' }, { items: [] }]) assert.deepEqual(placesFromMapy(bad), []);
+        const out = placesFromMapy({ items: [null, 5, { name: 'a' }, { name: 'b', position: { lon: 'x', lat: 1 } },
+            { name: 'ok', position: { lon: 1, lat: 2 }, bbox: [1, 2, 3] }, { position: { lon: 1, lat: 2 } }] });
+        assert.deepEqual(out, [{ name: 'ok', detail: '', lat: 2, lon: 1, bbox: null }]);
+    });
+    test('placesFromNominatim uses the same shape; boundingbox is already south,north,west,east', () => {
+        const json = [
+            { display_name: 'Hodonín, Jihomoravský kraj, Česko', lat: '48.85', lon: '17.13', boundingbox: ['48.8', '48.9', '17.1', '17.2'] },
+            { display_name: 'Nowhere', lat: '1', lon: '2' },
+        ];
+        assert.deepEqual(placesFromNominatim(json), [
+            { name: 'Hodonín', detail: 'Hodonín, Jihomoravský kraj, Česko', lat: 48.85, lon: 17.13, bbox: [48.8, 48.9, 17.1, 17.2] },
+            { name: 'Nowhere', detail: 'Nowhere', lat: 1, lon: 2, bbox: null },
+        ]);
+        for (const bad of [null, {}, 'x', [null, { lat: 'a', lon: 1, display_name: 'z' }]]) assert.deepEqual(placesFromNominatim(bad), []);
     });
 });

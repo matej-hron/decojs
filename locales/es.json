@@ -2906,7 +2906,10 @@
                 "searching": "Buscando…",
                 "noResults": "No se encontró ningún lugar",
                 "searchFailed": "La búsqueda no está disponible ahora. Revisa tu conexión o toca el mapa.",
-                "searchCredit": "Búsqueda por Nominatim / OpenStreetMap"
+                "searchCredit": "Búsqueda por Nominatim / OpenStreetMap",
+                "searchCreditMapy": "Búsqueda por Mapy.com",
+                "layerMap": "Mapa",
+                "layerAerial": "Aérea"
             },
             "detail": {
                 "edit": "Editar",
