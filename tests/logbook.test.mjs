@@ -13,6 +13,7 @@ import {
 } from '../js/logbook/entryModel.js';
 import { parseRoute, routeHref } from '../js/logbook/router.js';
 import { resizeTarget, isSupportedImage } from '../js/logbook/photo.js';
+import { createSupabaseStore, DiveStoreError } from '../js/backend/supabaseStore.js';
 
 const FIXTURES = new URL('./fixtures/divesoft/', import.meta.url);
 const diveOf = id => parseDivesoftDLF(new Uint8Array(readFileSync(new URL(`${id}.DLF`, FIXTURES))), { fileName: `${id}.DLF` });
@@ -124,5 +125,298 @@ describe('photos', () => {
         assert.ok(isSupportedImage('photo.WEBP'));
         assert.ok(!isSupportedImage('image/heic'));
         assert.ok(!isSupportedImage('IMG_1.HEIC'));
+    });
+});
+
+
+// ---------------------------------------------------------------------------
+// Fake Supabase client for the logbook store (in memory, realistic unique errors)
+// ---------------------------------------------------------------------------
+
+const UNIQUE = {
+    log_entries: [
+        { name: 'log_entries_recording_id_key', cols: ['recording_id'], skipNull: true },
+        { name: 'log_entries_owner_log_number_key', cols: ['owner', 'log_number'] },
+    ],
+};
+
+function fakeLogbookClient({ user = { id: 'u1', email: 'me@example.com' }, tables = {} } = {}) {
+    const db = { dives: [], log_entries: [], sites: [], media: [], ...tables };
+    const files = new Map();
+    const calls = [];
+    let seq = 0;
+
+    function violation(table, row, ignoreId) {
+        for (const u of UNIQUE[table] ?? []) {
+            if (u.skipNull && u.cols.some(c => row[c] == null)) continue;
+            const clash = db[table].find(r => r.id !== ignoreId && u.cols.every(c => r[c] === row[c]));
+            if (clash) {
+                return {
+                    code: '23505',
+                    message: `duplicate key value violates unique constraint "${u.name}"`,
+                    details: `Key (${u.cols.join(', ')})=(${u.cols.map(c => row[c]).join(', ')}) already exists.`,
+                };
+            }
+        }
+        return null;
+    }
+
+    function builder(table) {
+        const q = {
+            _mode: 'select', _filters: [], _order: [], _payload: null, _single: null,
+            select() { return this; },
+            order(col, opts = {}) { this._order.push([col, opts.ascending !== false]); calls.push(['order', table, col, opts.ascending !== false]); return this; },
+            eq(col, val) { this._filters.push(r => r[col] === val); return this; },
+            in(col, vals) { this._filters.push(r => vals.includes(r[col])); return this; },
+            single() { this._single = 'single'; return this; },
+            maybeSingle() { this._single = 'maybe'; return this; },
+            insert(payload) { this._mode = 'insert'; this._payload = payload; return this; },
+            update(patch) { this._mode = 'update'; this._payload = patch; return this; },
+            delete() { this._mode = 'delete'; return this; },
+            then(resolve, reject) { return this._run().then(resolve, reject); },
+            async _run() {
+                await null; // let concurrent callers interleave
+                const shape = rows => {
+                    if (!this._single) return { data: rows, error: null };
+                    if (rows.length === 1 || (this._single === 'maybe' && rows.length <= 1)) return { data: rows[0] ?? null, error: null };
+                    return { data: null, error: { code: this._single === 'single' ? 'PGRST116' : 'PGRST116', message: 'JSON object requested, multiple (or no) rows returned' } };
+                };
+                const match = () => db[table].filter(r => this._filters.every(f => f(r)));
+                if (this._mode === 'select') {
+                    let rows = match().map(r => ({ ...r }));
+                    for (const [col, asc] of this._order.slice().reverse()) {
+                        rows.sort((a, b) => (a[col] < b[col] ? -1 : a[col] > b[col] ? 1 : 0) * (asc ? 1 : -1));
+                    }
+                    return shape(rows);
+                }
+                if (this._mode === 'insert') {
+                    const inserted = [];
+                    for (const p of [].concat(this._payload)) {
+                        const row = { id: `${table}-${++seq}`, owner: user.id, buddies: [], details: {}, ...p };
+                        const error = violation(table, row);
+                        if (error) { calls.push(['insert-failed', table, row, error.message]); return { data: null, error }; }
+                        db[table].push(row);
+                        calls.push(['insert', table, row]);
+                        inserted.push({ ...row });
+                    }
+                    return shape(inserted);
+                }
+                if (this._mode === 'update') {
+                    const rows = match();
+                    const patched = [];
+                    for (const r of rows) {
+                        const next = { ...r, ...this._payload };
+                        const error = violation(table, next, r.id);
+                        if (error) return { data: null, error };
+                        Object.assign(r, this._payload);
+                        patched.push({ ...r });
+                    }
+                    calls.push(['update', table, this._payload]);
+                    return shape(patched);
+                }
+                const gone = match();
+                db[table] = db[table].filter(r => !gone.includes(r));
+                if (table === 'log_entries') db.media = db.media.filter(m => !gone.some(g => g.id === m.entry_id));
+                calls.push(['delete', table, gone.map(g => g.id)]);
+                return { data: null, error: null };
+            },
+        };
+        return q;
+    }
+
+    return {
+        calls, files, db,
+        auth: {
+            async getUser() { return { data: { user }, error: null }; },
+            async getSession() { return { data: { session: user ? { user } : null }, error: null }; },
+        },
+        from: builder,
+        storage: {
+            from(bucket) {
+                return {
+                    async upload(path, body, opts) { calls.push(['upload', bucket, path, opts]); files.set(`${bucket}/${path}`, body); return { data: { path }, error: null }; },
+                    async remove(paths) { calls.push(['remove', bucket, paths]); paths.forEach(p => files.delete(`${bucket}/${p}`)); return { data: [], error: null }; },
+                    async createSignedUrls(paths, seconds) {
+                        calls.push(['sign', bucket, paths, seconds]);
+                        return { data: paths.map(path => ({ path, signedUrl: `https://signed.example/${bucket}/${path}?t=1`, error: null })), error: null };
+                    },
+                };
+            },
+        },
+    };
+}
+
+const recordingRow = (id, n, start, dive) => ({
+    id, owner: 'u1', device_serial: '7044-00006107', dive_number: n, start_local: start, record: dive,
+});
+
+describe('logbook store: entries', () => {
+    const base = { dive_date: '2026-09-27', log_number: 1 };
+
+    test('saveEntry inserts, then updates by id; getEntry reads it back', async () => {
+        const client = fakeLogbookClient();
+        const store = createSupabaseStore(client);
+        const saved = await store.saveEntry({ ...base, max_depth_m: 20 });
+        assert.equal(saved.log_number, 1);
+        assert.equal(saved.owner, 'u1');
+        const updated = await store.saveEntry({ max_depth_m: 25 }, saved.id);
+        assert.equal(updated.max_depth_m, 25);
+        assert.equal(updated.dive_date, '2026-09-27');
+        assert.equal((await store.getEntry(saved.id)).max_depth_m, 25);
+        assert.equal(await store.getEntry('nope'), null);
+        assert.equal(client.db.log_entries.length, 1);
+    });
+
+    test('listEntries is ordered by log number, newest first', async () => {
+        const store = createSupabaseStore(fakeLogbookClient());
+        for (const n of [2, 5, 3]) await store.saveEntry({ dive_date: '2026-01-01', log_number: n });
+        assert.deepEqual((await store.listEntries()).map(e => e.log_number), [5, 3, 2]);
+    });
+
+    test('a duplicate log number is reported as duplicate-number', async () => {
+        const store = createSupabaseStore(fakeLogbookClient());
+        await store.saveEntry({ ...base });
+        await assert.rejects(() => store.saveEntry({ ...base }), e => e instanceof DiveStoreError && e.kind === 'duplicate-number');
+        const other = await store.saveEntry({ ...base, log_number: 2 });
+        await assert.rejects(() => store.saveEntry({ log_number: 1 }, other.id), e => e.kind === 'duplicate-number');
+    });
+
+    test('sites are listed by name; saveSite inserts and updates', async () => {
+        const store = createSupabaseStore(fakeLogbookClient());
+        const b = await store.saveSite({ name: 'Zlatý kopec' });
+        await store.saveSite({ name: 'Abyss' });
+        await store.saveSite({ lat: 49.1 }, b.id);
+        const sites = await store.listSites();
+        assert.deepEqual(sites.map(s => s.name), ['Abyss', 'Zlatý kopec']);
+        assert.equal(sites[1].lat, 49.1);
+    });
+
+    test('listBuddies: distinct names, most used first', async () => {
+        const store = createSupabaseStore(fakeLogbookClient());
+        await store.saveEntry({ ...base, log_number: 1, buddies: ['Jirka', 'Petr'] });
+        await store.saveEntry({ ...base, log_number: 2, buddies: ['Petr'] });
+        await store.saveEntry({ ...base, log_number: 3, buddies: ['Petr', 'Anna'] });
+        assert.deepEqual(await store.listBuddies(), ['Petr', 'Jirka', 'Anna']);
+    });
+});
+
+describe('logbook store: ensureEntries', () => {
+    async function setup() {
+        const dives = [
+            recordingRow('r100', 100, '2026-09-27T12:01:01', diveOf('00000100')),
+            recordingRow('r099', 99, '2006-07-19T09:59:05', diveOf('00000099')),
+            recordingRow('r101', 101, '2026-09-27T16:21:22', diveOf('00000101')),
+        ];
+        const client = fakeLogbookClient({ tables: { dives } });
+        return { client, store: createSupabaseStore(client) };
+    }
+
+    test('creates entries for unlinked recordings, numbered after the max in device order', async () => {
+        const { client, store } = await setup();
+        client.db.log_entries.push({ id: 'e1', owner: 'u1', log_number: 7, dive_date: '2026-09-27', recording_id: 'r100', buddies: [], details: {} });
+        assert.equal(await store.ensureEntries(), 2);
+        const byRec = Object.fromEntries(client.db.log_entries.map(e => [e.recording_id, e]));
+        assert.equal(byRec.r099.log_number, 8);
+        assert.equal(byRec.r101.log_number, 9);
+        assert.equal(byRec.r099.dive_date, '2006-07-19');
+        assert.equal(byRec.r099.owner, 'u1');
+        assert.deepEqual(byRec.r101.gas, entryFromRecording(diveOf('00000101')).gas);
+        assert.equal(byRec.r101.details.computer, entryFromRecording(diveOf('00000101')).details.computer);
+        assert.equal(await store.ensureEntries(), 0);
+        assert.equal(client.db.log_entries.length, 3);
+    });
+
+    test('two concurrent runs end with exactly one entry per recording', async () => {
+        const { client, store } = await setup();
+        const counts = await Promise.all([store.ensureEntries(), store.ensureEntries()]);
+        assert.equal(client.db.log_entries.length, 3);
+        assert.deepEqual(client.db.log_entries.map(e => e.recording_id).sort(), ['r099', 'r100', 'r101']);
+        assert.equal(new Set(client.db.log_entries.map(e => e.log_number)).size, 3);
+        assert.equal(counts[0] + counts[1], 3);
+    });
+
+    test('a log-number race retries once with a fresh maximum', async () => {
+        const { client, store } = await setup();
+        // another session takes number 1 between our read of the max and our insert
+        const realFrom = client.from;
+        let raced = false;
+        client.from = table => {
+            const q = realFrom(table);
+            if (table === 'log_entries') {
+                const insert = q.insert.bind(q);
+                q.insert = payload => {
+                    if (!raced) {
+                        raced = true;
+                        client.db.log_entries.push({ id: 'x', owner: 'u1', log_number: payload.log_number, dive_date: '2026-01-01', recording_id: null, buddies: [], details: {} });
+                    }
+                    return insert(payload);
+                };
+            }
+            return q;
+        };
+        assert.equal(await store.ensureEntries(), 3);
+        assert.ok(client.calls.some(c => c[0] === 'insert-failed' && /owner_log_number_key/.test(c[3])));
+        assert.equal(client.db.log_entries.filter(e => e.recording_id).length, 3);
+        assert.equal(new Set(client.db.log_entries.map(e => e.log_number)).size, 4);
+    });
+});
+
+describe('logbook store: media', () => {
+    test('addPhoto uploads under <uid>/<entry>/<media>.jpg and stores a media row', async () => {
+        const client = fakeLogbookClient();
+        const store = createSupabaseStore(client);
+        const entry = await store.saveEntry({ dive_date: '2026-09-27', log_number: 1 });
+        const blob = new Blob([new Uint8Array([1, 2, 3])], { type: 'image/jpeg' });
+        const media = await store.addPhoto(entry.id, { blob, width: 800, height: 600, takenAt: '2026-09-27T12:30:00Z', lat: 49.1, lon: 16.6 });
+        const up = client.calls.find(c => c[0] === 'upload');
+        assert.equal(up[1], 'dive-photos');
+        assert.match(up[2], new RegExp(`^u1/${entry.id}/[0-9a-f-]{36}\\.jpg$`));
+        assert.equal(up[3].contentType, 'image/jpeg');
+        assert.equal(media.path, up[2]);
+        assert.equal(media.id, up[2].split('/')[2].replace('.jpg', ''));
+        assert.equal(media.kind, 'photo');
+        assert.equal(media.entry_id, entry.id);
+        assert.deepEqual([media.width, media.height, media.taken_at, media.lat, media.lon], [800, 600, '2026-09-27T12:30:00Z', 49.1, 16.6]);
+        assert.deepEqual((await store.listMedia(entry.id)).map(m => m.id), [media.id]);
+    });
+
+    test('addVideoLink and deleteMedia', async () => {
+        const client = fakeLogbookClient();
+        const store = createSupabaseStore(client);
+        const entry = await store.saveEntry({ dive_date: '2026-09-27', log_number: 1 });
+        const v = await store.addVideoLink(entry.id, 'https://youtu.be/x', 'wreck');
+        assert.deepEqual([v.kind, v.url, v.caption], ['video_link', 'https://youtu.be/x', 'wreck']);
+        const photo = await store.addPhoto(entry.id, { blob: new Blob(['x']), width: 1, height: 1 });
+        await store.deleteMedia(photo);
+        assert.ok(client.calls.some(c => c[0] === 'remove' && c[2][0] === photo.path));
+        await store.deleteMedia(v);
+        assert.equal((await store.listMedia(entry.id)).length, 0);
+    });
+
+    test('photoUrls maps paths to signed URLs valid for an hour', async () => {
+        const client = fakeLogbookClient();
+        const store = createSupabaseStore(client);
+        const urls = await store.photoUrls(['u1/e/a.jpg', 'u1/e/b.jpg']);
+        assert.equal(urls.get('u1/e/a.jpg'), 'https://signed.example/dive-photos/u1/e/a.jpg?t=1');
+        assert.equal(urls.size, 2);
+        assert.equal(client.calls.find(c => c[0] === 'sign')[3], 3600);
+        assert.equal((await store.photoUrls([])).size, 0);
+    });
+
+    test('deleteEntry removes the entry, its media and photo files, but keeps the recording', async () => {
+        const dives = [recordingRow('r100', 100, '2026-09-27T12:01:01', diveOf('00000100'))];
+        const client = fakeLogbookClient({ tables: { dives } });
+        const store = createSupabaseStore(client);
+        await store.ensureEntries();
+        const [entry] = await store.listEntries();
+        const photo = await store.addPhoto(entry.id, { blob: new Blob(['x']), width: 1, height: 1 });
+        await store.addVideoLink(entry.id, 'https://youtu.be/x');
+        await store.deleteEntry(entry.id);
+        assert.equal(client.db.log_entries.length, 0);
+        assert.equal(client.db.media.length, 0);
+        assert.equal(client.db.dives.length, 1);
+        assert.equal(client.files.has(`dive-photos/${photo.path}`), false);
+        const removed = client.calls.find(c => c[0] === 'remove');
+        assert.deepEqual(removed[2], [photo.path]);
     });
 });

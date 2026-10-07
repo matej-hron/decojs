@@ -59,3 +59,7 @@ Supabase's free tier pauses a project after 7 days without database activity. If
 3. The page will work again immediately.
 
 You can upgrade to avoid this, but for personal use, the pause is harmless.
+
+## Logbook (step 4c)
+
+Run `supabase/migrations/0002_logbook.sql` in the SQL editor (after `0001_dive_log.sql`). It creates the `sites`, `log_entries` and `media` tables with owner-only row level security, and the private `dive-photos` storage bucket with an owner-folder policy.
