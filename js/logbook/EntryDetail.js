@@ -105,6 +105,8 @@ export class EntryDetail {
         this.onError = onError;
         this.destroyed = false;
         this.site = null;
+        this.loaded = false;
+        this._urlRetried = false;
         this.media = [];
         this.urls = new Map();
         this.confirm = null; // { kind: 'entry' } | { kind: 'media', media }
@@ -149,6 +151,7 @@ export class EntryDetail {
                 this.store.listMedia(this.entry.id),
             ]);
             if (this.destroyed) return;
+            this.loaded = true;
             this.site = sites.find(s => s.id === this.entry.site_id) ?? null;
             this.media = media;
             this.renderMain();
@@ -252,6 +255,14 @@ export class EntryDetail {
             <button type="button" class="lb-chip-x" data-remove="${escHtml(m.id)}" aria-label="${escHtml(td('removeVideo', 'Remove link'))}">×</button></li>`).join('');
         this.mediaEl.innerHTML = `${photos.length ? `<h3>${escHtml(td('photos', 'Photos'))}</h3><div class="lb-photos">${grid}</div>` : ''}
             ${videos.length ? `<h3>${escHtml(td('videos', 'Videos'))}</h3><ul class="lb-videos">${links}</ul>` : ''}`;
+        for (const img of this.mediaEl.querySelectorAll('.lb-photo img')) {
+            img.addEventListener('load', () => { this._urlRetried = false; });
+            img.addEventListener('error', () => {
+                if (this._urlRetried || this.destroyed) return; // signed URLs expire after an hour
+                this._urlRetried = true;
+                this._loadUrls();
+            });
+        }
         for (const b of this.mediaEl.querySelectorAll('[data-open]')) b.addEventListener('click', () => this._openViewer(b.dataset.open));
         for (const b of this.mediaEl.querySelectorAll('[data-remove]')) {
             b.addEventListener('click', () => {

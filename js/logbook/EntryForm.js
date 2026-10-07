@@ -173,6 +173,7 @@ export class EntryForm {
 
     destroy() {
         this.destroyed = true;
+        this._pickAbort?.abort(); // Back navigation must not leave the picker overlay behind
         this.container.innerHTML = '';
     }
 
@@ -454,9 +455,11 @@ export class EntryForm {
         try {
             this.siteName = input.value;
             const current = this.sites.find(s => s.id === this.siteId && s.name === input.value.trim());
-            const site = await openSitePicker({ store: this.store, sites: this.sites, initial: current ?? null });
+            this._pickAbort = new AbortController();
+            const site = await openSitePicker({ store: this.store, sites: this.sites, initial: current ?? null, initialName: input.value.trim(), signal: this._pickAbort.signal });
             if (!site || this.destroyed) return;
-            if (!this.sites.some(s => s.id === site.id)) this.sites.push(site);
+            const at = this.sites.findIndex(s => s.id === site.id);
+            if (at >= 0) this.sites[at] = site; else this.sites.push(site);
             this.siteId = site.id;
             this.siteName = site.name;
             this.siteTouched = true;

@@ -55,10 +55,11 @@ export function siteFromForm(form, pin) {
 
 /**
  * Open the picker.
- * @param {{store: Object, sites?: Object[], initial?: Object|null}} options
+ * @param {{store: Object, sites?: Object[], initial?: Object|null, initialName?: string, signal?: AbortSignal}} options
+ * `signal` closes the picker (as a cancel) when aborted.
  * @returns {Promise<Object|null>} the chosen or saved site, or null when cancelled
  */
-export function openSitePicker({ store, sites = [], initial = null }) {
+export function openSitePicker({ store, sites = [], initial = null, initialName = '', signal = null }) {
     return new Promise(resolve => {
         const previousFocus = document.activeElement;
         const overlay = document.createElement('div');
@@ -104,6 +105,7 @@ export function openSitePicker({ store, sites = [], initial = null }) {
         const close = result => {
             if (closed) return;
             closed = true;
+            signal?.removeEventListener('abort', onAbort);
             document.removeEventListener('keydown', onKey, true);
             map?.remove();
             overlay.remove();
@@ -114,7 +116,11 @@ export function openSitePicker({ store, sites = [], initial = null }) {
         const onKey = e => {
             if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); close(null); }
         };
+        const onAbort = () => close(null);
         document.addEventListener('keydown', onKey, true);
+        if (signal?.aborted) { close(null); return; }
+        signal?.addEventListener('abort', onAbort);
+        form.elements.name.value = initialName;
         for (const b of overlay.querySelectorAll('[data-act="cancel"]')) b.addEventListener('click', () => close(null));
 
         const placePin = (L, lat, lon) => {
@@ -134,7 +140,9 @@ export function openSitePicker({ store, sites = [], initial = null }) {
             const submit = form.querySelector('[type="submit"]');
             submit.disabled = true;
             try {
-                const saved = await store.saveSite(row);
+                // A known site that only lacks coordinates gets them instead of a duplicate.
+                const known = sites.find(s => s.name.toLocaleLowerCase() === row.name.toLocaleLowerCase() && !(Number.isFinite(s.lat) && Number.isFinite(s.lon)));
+                const saved = known ? await store.saveSite(row, known.id) : await store.saveSite(row);
                 close(saved);
             } catch (error) {
                 console.error(error);

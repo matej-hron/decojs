@@ -12,7 +12,7 @@ import {
     normalizeEntry, needsDetails, DETAIL_KEYS,
 } from '../js/logbook/entryModel.js';
 import { parseRoute, routeHref } from '../js/logbook/router.js';
-import { resizeTarget, isSupportedImage } from '../js/logbook/photo.js';
+import { resizeTarget, isSupportedImage, exifTimestamp } from '../js/logbook/photo.js';
 import { detailRows, isHttpsUrl } from '../js/logbook/EntryDetail.js';
 import { siteFromForm } from '../js/logbook/SitePicker.js';
 import { createSupabaseStore, DiveStoreError } from '../js/backend/supabaseStore.js';
@@ -861,5 +861,21 @@ describe('detail helpers', () => {
             { name: 'Blue Hole', lat: 1.23456789, lon: 2, water: 'salt', altitude_m: 2 });
         assert.deepEqual(siteFromForm({ name: 'X', water: '', altitude: '' }, null), { name: 'X', lat: null, lon: null, water: null, altitude_m: null });
         assert.equal(siteFromForm({ name: '  ' }, null), null);
+    });
+});
+
+describe('exifTimestamp', () => {
+    const wall = new Date(2026, 8, 27, 12, 1, 1); // 12:01:01 in whatever zone the runner uses
+    test('the camera offset decides the instant, not the uploader zone', () => {
+        assert.equal(exifTimestamp(wall, '+02:00'), '2026-09-27T10:01:01.000Z');
+        assert.equal(exifTimestamp(wall, '-05:30'), '2026-09-27T17:31:01.000Z');
+    });
+    test('without a valid offset the local interpretation is kept', () => {
+        assert.equal(exifTimestamp(wall), wall.toISOString());
+        assert.equal(exifTimestamp(wall, 'junk'), wall.toISOString());
+    });
+    test('invalid dates give null', () => {
+        assert.equal(exifTimestamp(null, '+02:00'), null);
+        assert.equal(exifTimestamp(new Date(NaN)), null);
     });
 });

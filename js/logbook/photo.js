@@ -37,6 +37,26 @@ function loadExifr() {
     return exifrPromise;
 }
 
+const OFFSET = /^[+-]\d{2}:\d{2}$/;
+
+/**
+ * ISO timestamp of an EXIF capture time. EXIF stores wall-clock time without a zone and
+ * exifr reads it as a Date in the uploader's zone, so the wall-clock fields are taken from
+ * the local getters and combined with the camera's offset (OffsetTimeOriginal/OffsetTime).
+ * Without an offset we can only assume the uploader's zone (today's behaviour).
+ * @param {Date|*} date
+ * @param {string|null} [offset] e.g. "+02:00"
+ * @returns {string|null}
+ */
+export function exifTimestamp(date, offset = null) {
+    if (!(date instanceof Date) || Number.isNaN(date.getTime())) return null;
+    if (typeof offset !== 'string' || !OFFSET.test(offset)) return date.toISOString();
+    const p = (n, w = 2) => String(n).padStart(w, '0');
+    const wall = `${p(date.getFullYear(), 4)}-${p(date.getMonth() + 1)}-${p(date.getDate())}T${p(date.getHours())}:${p(date.getMinutes())}:${p(date.getSeconds())}`;
+    const t = new Date(`${wall}${offset}`);
+    return Number.isNaN(t.getTime()) ? date.toISOString() : t.toISOString();
+}
+
 /**
  * Capture time and GPS position of a photo. Any failure gives nulls: a photo
  * without EXIF is still a photo.
@@ -49,8 +69,8 @@ export async function readExif(file) {
         const exifr = await loadExifr();
         const tags = await exifr.parse(file);
         if (!tags) return none;
-        const when = tags.DateTimeOriginal ?? tags.CreateDate;
-        const takenAt = when instanceof Date && !Number.isNaN(when.getTime()) ? when.toISOString() : null;
+        const original = tags.DateTimeOriginal;
+        const takenAt = exifTimestamp(original ?? tags.CreateDate, original ? (tags.OffsetTimeOriginal ?? tags.OffsetTime) : (tags.OffsetTimeDigitized ?? tags.OffsetTime));
         const ok = Number.isFinite(tags.latitude) && Number.isFinite(tags.longitude);
         return { takenAt, lat: ok ? tags.latitude : null, lon: ok ? tags.longitude : null };
     } catch (error) {
@@ -66,10 +86,16 @@ export async function readExif(file) {
  * @returns {Promise<{blob: Blob, width: number, height: number}>}
  */
 export async function resizeImage(file) {
-    const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
+    let bitmap;
+    try {
+        bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
+    } catch (error) {
+        if (!(error instanceof TypeError)) throw error;
+        bitmap = await createImageBitmap(file); // engines that do not know the option
+    }
+    const canvas = document.createElement('canvas');
     try {
         const { width, height } = resizeTarget(bitmap.width, bitmap.height);
-        const canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
@@ -81,5 +107,6 @@ export async function resizeImage(file) {
         return { blob, width, height };
     } finally {
         bitmap.close?.();
+        canvas.width = canvas.height = 0; // release the pixel memory at once
     }
 }
