@@ -3206,6 +3206,7 @@
             "unreachable": "Can't reach your dive log. If it hasn't been used for a week, resume the project in the Supabase dashboard.",
             "linkExpired": "This login link has expired. Send a new one.",
             "cannotLogin": "This email can't log in here.",
+            "tooManyLinks": "Too many login emails were sent. Wait up to an hour and try again.",
             "genericError": "Something went wrong. Please try again."
         }
     },

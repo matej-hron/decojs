@@ -343,9 +343,11 @@ export class RecordedDiveAnalysis {
             console.error(error);
             this.linkSent = false;
             const rateLimited = /429|only request this after|rate limit/i.test(error?.message ?? '');
-            this.accountMsg = !rateLimited && error instanceof DiveStoreError && error.kind === 'auth'
-                ? { key: 'cannotLogin', fallback: 'This email can\'t log in here.' }
-                : null;
+            this.accountMsg = rateLimited
+                ? { key: 'tooManyLinks', fallback: 'Too many login emails were sent. Wait up to an hour and try again.' }
+                : error instanceof DiveStoreError && error.kind === 'auth'
+                    ? { key: 'cannotLogin', fallback: 'This email can\'t log in here.' }
+                    : null;
             if (this.accountMsg) this._renderAccount();
             else this._storeError(error);
         }

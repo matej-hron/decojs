@@ -3206,6 +3206,7 @@
             "unreachable": "Deník ponorů není dostupný. Pokud se týden nepoužíval, obnovte projekt v administraci Supabase.",
             "linkExpired": "Platnost odkazu vypršela. Pošlete si nový.",
             "cannotLogin": "Tento e-mail se zde nemůže přihlásit.",
+            "tooManyLinks": "Bylo odesláno příliš mnoho přihlašovacích e-mailů. Počkejte až hodinu a zkuste to znovu.",
             "genericError": "Něco se pokazilo. Zkuste to prosím znovu."
         }
     },
