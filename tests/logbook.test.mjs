@@ -17,9 +17,10 @@ import { parseRoute, routeHref } from '../js/logbook/router.js';
 import { resizeTarget, isSupportedImage, exifTimestamp } from '../js/logbook/photo.js';
 import { detailRows, isHttpsUrl } from '../js/logbook/EntryDetail.js';
 import { siteFromForm, parseCoordinates } from '../js/logbook/SitePicker.js';
-import { mapySuggestUrl, mapyTileUrl, placesFromMapy, placesFromNominatim, mapyLang } from '../js/logbook/geo.js';
+import { mapySuggestUrl, mapyTileUrl, placesFromMapy, placesFromNominatim, mapyLang, distanceMeters, duplicateNameCounts, nearbySameNameSite } from '../js/logbook/geo.js';
 import { createSupabaseStore, DiveStoreError } from '../js/backend/supabaseStore.js';
 import { NewDive } from '../js/logbook/NewDive.js';
+import { sortSites, parseAltitude, diveCountText } from '../js/logbook/SitesPage.js';
 import { LogbookApp } from '../js/logbook/LogbookApp.js';
 import { uploadDivelog, exportZip } from '../js/logbook/transfer.js';
 import { formValuesFromEntry, gasFromForm, recordingsOnDate, invalidNumberFields, EntryForm } from '../js/logbook/EntryForm.js';
@@ -176,6 +177,11 @@ describe('router', () => {
         assert.deepEqual(parseRoute('#/dive/abc-1'), { name: 'detail', id: 'abc-1' });
         assert.deepEqual(parseRoute('#/dive/abc-1/edit'), { name: 'edit', id: 'abc-1' });
         assert.deepEqual(parseRoute('#/dive/abc-1/analysis'), { name: 'analysis', id: 'abc-1' });
+        assert.deepEqual(parseRoute('#/sites'), { name: 'sites' });
+        assert.deepEqual(parseRoute('#/site/s-1'), { name: 'site', id: 's-1' });
+        assert.deepEqual(parseRoute('#/site/'), { name: 'notFound' });
+        assert.equal(routeHref({ name: 'sites' }), '#/sites');
+        assert.equal(routeHref({ name: 'site', id: 's-1' }), '#/site/s-1');
         assert.deepEqual(parseRoute('#/nonsense/x'), { name: 'notFound' });
         assert.deepEqual(parseRoute('#error_code=otp_expired'), { name: 'list' });
         assert.equal(routeHref({ name: 'edit', id: 'abc-1' }), '#/dive/abc-1/edit');
@@ -1233,5 +1239,119 @@ describe('logbook geo helpers (Mapy.com, Nominatim)', () => {
             { name: 'Nowhere', detail: 'Nowhere', lat: 1, lon: 2, bbox: null },
         ]);
         for (const bad of [null, {}, 'x', [null, { lat: 'a', lon: 1, display_name: 'z' }]]) assert.deepEqual(placesFromNominatim(bad), []);
+    });
+});
+
+
+describe('sites page helpers', () => {
+    test('distanceMeters is a haversine distance', () => {
+        const a = { lat: 49.8, lon: 15.5 };
+        assert.equal(distanceMeters(a, a), 0);
+        // one degree of latitude is about 111.2 km
+        assert.ok(Math.abs(distanceMeters({ lat: 0, lon: 0 }, { lat: 1, lon: 0 }) - 111195) < 100);
+        // Prague to Brno, about 185 km
+        const d = distanceMeters({ lat: 50.0755, lon: 14.4378 }, { lat: 49.1951, lon: 16.6068 });
+        assert.ok(d > 183000 && d < 187000, String(d));
+        assert.ok(Math.abs(distanceMeters(a, { lat: 50, lon: 16 }) - distanceMeters({ lat: 50, lon: 16 }, a)) < 1e-6);
+    });
+
+    test('duplicateNameCounts groups names case-insensitively and trimmed, keeping only groups of two or more', () => {
+        const counts = duplicateNameCounts([
+            { id: 1, name: 'Barbora' }, { id: 2, name: ' barbora ' }, { id: 3, name: 'Hamr' },
+            { id: 4, name: 'Orlík' }, { id: 5, name: 'ORLÍK' }, { id: 6, name: 'orlík' },
+        ]);
+        assert.equal(counts.get('barbora'), 2);
+        assert.equal(counts.get('orlík'), 3);
+        assert.ok(!counts.has('hamr'));
+        assert.equal(duplicateNameCounts([]).size, 0);
+    });
+
+    test('nearbySameNameSite finds a same-named site with a position within the limit', () => {
+        const sites = [
+            { id: 'a', name: 'Barbora', lat: 50.0, lon: 13.0 },
+            { id: 'b', name: 'barbora ', lat: 50.0, lon: 13.001 },      // about 71 m east
+            { id: 'c', name: 'Barbora', lat: null, lon: null },
+            { id: 'd', name: 'Hamr', lat: 50.0, lon: 13.0001 },
+        ];
+        const hit = nearbySameNameSite(sites, 'BARBORA', { lat: 50.0, lon: 13.0012 }, 300);
+        assert.equal(hit.site.id, 'b');
+        assert.ok(hit.distance > 10 && hit.distance < 100);
+        assert.equal(nearbySameNameSite(sites, 'Barbora', { lat: 51, lon: 13 }, 300), null);
+        assert.equal(nearbySameNameSite(sites, 'Nowhere', { lat: 50, lon: 13 }, 300), null);
+    });
+});
+
+describe('site store methods', () => {
+    const seed = () => fakeLogbookClient({ tables: {
+        sites: [{ id: 's1', name: 'A' }, { id: 's2', name: 'B' }, { id: 's3', name: 'C' }],
+        log_entries: [
+            { id: 'e1', log_number: 1, site_id: 's1' }, { id: 'e2', log_number: 2, site_id: 's1' },
+            { id: 'e3', log_number: 3, site_id: 's2' }, { id: 'e4', log_number: 4, site_id: null },
+        ],
+    } });
+
+    test('siteUsage counts dives per site', async () => {
+        const store = createSupabaseStore(seed());
+        const usage = await store.siteUsage();
+        assert.equal(usage.get('s1'), 2);
+        assert.equal(usage.get('s2'), 1);
+        assert.ok(!usage.has('s3'));
+        assert.ok(!usage.has(null));
+    });
+
+    test('mergeSite moves the dives first, then deletes the source site', async () => {
+        const client = seed();
+        const store = createSupabaseStore(client);
+        await store.mergeSite('s1', 's3');
+        assert.deepEqual(client.db.log_entries.map(e => e.site_id), ['s3', 's3', 's2', null]);
+        assert.deepEqual(client.db.sites.map(s => s.id), ['s2', 's3']);
+        const ops = client.calls.filter(c => ['update', 'delete'].includes(c[0]) && (c[1] === 'log_entries' || c[1] === 'sites'));
+        assert.deepEqual(ops.map(c => `${c[0]}:${c[1]}`), ['update:log_entries', 'delete:sites']);
+    });
+
+    test('mergeSite keeps the source site when moving the dives fails', async () => {
+        const client = seed();
+        const real = client.from;
+        client.from = table => {
+            const q = real(table);
+            if (table === 'log_entries') q.update = () => ({ eq: async () => ({ error: { message: 'boom' } }) });
+            return q;
+        };
+        const store = createSupabaseStore(client);
+        await assert.rejects(() => store.mergeSite('s1', 's3'), e => e instanceof DiveStoreError);
+        assert.ok(client.db.sites.some(s => s.id === 's1'));
+        assert.equal(client.db.log_entries[0].site_id, 's1');
+    });
+
+    test('mergeSite refuses to merge a site into itself', async () => {
+        const client = seed();
+        await assert.rejects(() => createSupabaseStore(client).mergeSite('s1', 's1'), DiveStoreError);
+        assert.equal(client.db.sites.length, 3);
+    });
+
+    test('deleteSite removes the site', async () => {
+        const client = seed();
+        await createSupabaseStore(client).deleteSite('s3');
+        assert.deepEqual(client.db.sites.map(s => s.id), ['s1', 's2']);
+    });
+});
+
+describe('SitesPage helpers', () => {
+    test('sortSites orders by name, locale-aware and case-insensitive', () => {
+        const names = sortSites([{ id: '1', name: 'Zlatý' }, { id: '2', name: 'abyss' }, { id: '3', name: 'Čeřen' }, { id: '4', name: 'Barbora' }], 'cs').map(s => s.name);
+        assert.deepEqual(names, ['abyss', 'Barbora', 'Čeřen', 'Zlatý']);
+    });
+
+    test('parseAltitude accepts whole metres, empty is none, anything else is invalid', () => {
+        assert.deepEqual(parseAltitude(''), { ok: true, value: null });
+        assert.deepEqual(parseAltitude(' 420 '), { ok: true, value: 420 });
+        assert.deepEqual(parseAltitude('-3'), { ok: true, value: -3 });
+        assert.deepEqual(parseAltitude('1,5'), { ok: false });
+        assert.deepEqual(parseAltitude('abc'), { ok: false });
+    });
+
+    test('diveCountText uses a plural form', () => {
+        assert.match(diveCountText(1, 'en'), /1/);
+        assert.match(diveCountText(0, 'en'), /0/);
     });
 });

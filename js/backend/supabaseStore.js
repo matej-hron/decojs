@@ -248,6 +248,29 @@ export function createSupabaseStore(client) {
             return data;
         },
 
+        /** Map(siteId -> number of dives using it); sites without dives are absent. */
+        async siteUsage() {
+            const { data, error } = await client.from(ENTRIES).select('site_id');
+            if (error) throw fail(error);
+            const usage = new Map();
+            for (const r of data) if (r.site_id) usage.set(r.site_id, (usage.get(r.site_id) ?? 0) + 1);
+            return usage;
+        },
+
+        /** Move every dive of `fromId` to `intoId`, then delete `fromId`. Moving first means a failure never loses the link. */
+        async mergeSite(fromId, intoId) {
+            if (!fromId || !intoId || fromId === intoId) throw new DiveStoreError('unknown', 'Cannot merge a site into itself');
+            const moved = await client.from(ENTRIES).update({ site_id: intoId }).eq('site_id', fromId);
+            if (moved.error) throw fail(moved.error);
+            const { error } = await client.from(SITES).delete().eq('id', fromId);
+            if (error) throw fail(error);
+        },
+
+        async deleteSite(id) {
+            const { error } = await client.from(SITES).delete().eq('id', id);
+            if (error) throw fail(error);
+        },
+
         async listBuddies() {
             const { data, error } = await client.from(ENTRIES).select('buddies');
             if (error) throw fail(error);

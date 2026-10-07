@@ -105,3 +105,42 @@ export function placesFromNominatim(json) {
     }
     return out;
 }
+
+const EARTH_RADIUS_M = 6371008.8;
+const toRad = deg => (deg * Math.PI) / 180;
+
+/** Great-circle (haversine) distance in metres between two `{lat, lon}` points. */
+export function distanceMeters(a, b) {
+    const dLat = toRad(b.lat - a.lat);
+    const dLon = toRad(b.lon - a.lon);
+    const h = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(dLon / 2) ** 2;
+    return 2 * EARTH_RADIUS_M * Math.asin(Math.min(1, Math.sqrt(h)));
+}
+
+/** Key for comparing site names: trimmed, case-insensitive. */
+export const siteNameKey = name => String(name ?? '').trim().toLocaleLowerCase();
+
+/** Map(nameKey -> count) for names shared by two or more sites. */
+export function duplicateNameCounts(sites) {
+    const all = new Map();
+    for (const s of sites) {
+        const key = siteNameKey(s.name);
+        all.set(key, (all.get(key) ?? 0) + 1);
+    }
+    return new Map([...all].filter(([, n]) => n > 1));
+}
+
+/**
+ * The nearest site with the same name (trimmed, case-insensitive) and a position within `limitM` metres of `pin`.
+ * @returns {{site: Object, distance: number}|null}
+ */
+export function nearbySameNameSite(sites, name, pin, limitM = 300) {
+    const key = siteNameKey(name);
+    let best = null;
+    for (const site of sites) {
+        if (siteNameKey(site.name) !== key || !Number.isFinite(site.lat) || !Number.isFinite(site.lon)) continue;
+        const distance = distanceMeters(pin, site);
+        if (distance <= limitM && (!best || distance < best.distance)) best = { site, distance };
+    }
+    return best;
+}

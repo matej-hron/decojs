@@ -13,6 +13,7 @@ import { needsDetails, formatDiveDate } from './entryModel.js';
 import { EntryForm } from './EntryForm.js';
 import { NewDive } from './NewDive.js';
 import { EntryDetail } from './EntryDetail.js';
+import { SitesPage } from './SitesPage.js';
 import { translate } from '../i18n.js';
 import { fmtNum, currentLang } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
@@ -124,7 +125,7 @@ export class LogbookApp {
 
     _onLanguageChange() {
         const name = parseRoute(location.hash).name;
-        if (this.user && this.form && (name === 'new' || name === 'edit' || name === 'detail')) this.form.relabel(); // keep what was typed
+        if (this.user && this.form && (name === 'new' || name === 'edit' || name === 'detail' || name === 'sites' || name === 'site')) this.form.relabel(); // keep what was typed
         else if (this.user && name !== 'analysis') this._renderRoute();
         else translateStatic(this.view);
     }
@@ -143,6 +144,8 @@ export class LogbookApp {
             case 'detail': this._showDetail(route, token); break;
             case 'edit': this._showEdit(route.id, token); break;
             case 'new': this._showNew(); break;
+            case 'sites': this._showSites(null); break;
+            case 'site': this._showSites(route.id); break;
             default: this._showNotFound();
         }
     }
@@ -175,6 +178,17 @@ export class LogbookApp {
 
     async _findEntry(id) {
         return this.entries?.find(e => e.id === id) ?? await this.store.getEntry(id);
+    }
+
+    // ---- Sites ----
+
+    _showSites(siteId) {
+        this.view.innerHTML = '<div class="lb-form-host"></div>';
+        this.form = new SitesPage(this.view.firstChild, {
+            store: this.store, siteId,
+            onDone: () => { this.entries = null; location.hash = routeHref({ name: 'sites' }); },
+            onMissing: () => { location.hash = routeHref({ name: 'sites' }); },
+        });
     }
 
     // ---- New and edit ----
@@ -267,6 +281,7 @@ export class LogbookApp {
             <label class="btn btn-small btn-secondary rda-upload"><span>${escHtml(tb('upload', 'Upload DIVELOG'))}</span>
                 <input type="file" id="lb-upload" webkitdirectory class="rda-visually-hidden"${busy ? ' disabled' : ''}></label>
             <button type="button" class="btn btn-small btn-secondary" id="lb-export"${busy ? ' disabled' : ''}>${escHtml(tb('export', 'Export'))}</button>
+            <a class="btn btn-small btn-secondary" id="lb-sites" href="${routeHref({ name: 'sites' })}">${escHtml(tl('sites.title', 'Sites'))}</a>
             <button type="button" class="btn btn-small btn-secondary" id="lb-logout">${escHtml(tb('logout', 'Log out'))}</button>
             <a class="btn btn-small lb-new" href="${routeHref({ name: 'new' })}">${escHtml(tl('newDive', '+ New dive'))}</a>
             ${this.msg.length ? `<p class="rda-account-msg">${this.msg.map(m => `<span>${escHtml(m)}</span>`).join('<br>')}</p>` : ''}

@@ -7,7 +7,7 @@
 
 import { parseDecimal } from './entryModel.js';
 import { loadScript } from './photo.js';
-import { parseCoordinates, mapySuggestUrl, mapyTileUrl, mapyProbeUrl, placesFromMapy, placesFromNominatim } from './geo.js';
+import { parseCoordinates, nearbySameNameSite, mapySuggestUrl, mapyTileUrl, mapyProbeUrl, placesFromMapy, placesFromNominatim } from './geo.js';
 import { MAPY_API_KEY } from '../backend/config.js';
 
 export { parseCoordinates };
@@ -24,6 +24,9 @@ const MAPY_ATTRIBUTION = `${MAPY_COPYRIGHT}, ${'&copy; <a href="https://www.open
 const LAYER_STORAGE_KEY = 'decojs.logbook.mapLayer';
 /** Mapy.com allows 100 requests per second per key; keep typing-speed submits well below that. */
 export const MAPY_MIN_INTERVAL_MS = 250;
+/** A new site this close to a same-named one is probably the same place. */
+export const DUPLICATE_RADIUS_M = 300;
+const fill = (text, ...values) => String(text).replace(/\{(\d+)\}/g, (_, i) => values[Number(i)] ?? '');
 const DEFAULT_VIEW = Object.freeze({ lat: 49.8, lon: 15.5, zoom: 6 });
 
 const readLayerChoice = () => { try { return localStorage.getItem(LAYER_STORAGE_KEY) === 'aerial' ? 'aerial' : 'map'; } catch { return 'map'; } };
@@ -73,11 +76,13 @@ export const nominatimUrl = (query, lang) =>
 
 /**
  * Open the picker.
- * @param {{store: Object, sites?: Object[], initial?: Object|null, initialName?: string, signal?: AbortSignal}} options
+ * @param {{store: Object, sites?: Object[], initial?: Object|null, initialName?: string, editSite?: Object|null, signal?: AbortSignal}} options
  * `signal` closes the picker (as a cancel) when aborted.
+ * `editSite` opens the picker in edit mode: the form is prefilled from that site, other sites are not selectable,
+ * and saving updates that very site (no duplicate guard, no merge by name).
  * @returns {Promise<Object|null>} the chosen or saved site, or null when cancelled
  */
-export function openSitePicker({ store, sites = [], initial = null, initialName = '', signal = null }) {
+export function openSitePicker({ store, sites = [], initial = null, initialName = '', editSite = null, signal = null }) {
     return new Promise(resolve => {
         const previousFocus = document.activeElement;
         const overlay = document.createElement('div');
@@ -111,7 +116,14 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
                     <label class="lb-field"><span>${escHtml(ts('altitude', 'Altitude (m)'))}</span><input type="text" name="altitude" inputmode="decimal" autocomplete="off"></label>
                 </div>
                 <p class="lb-form-error" role="alert" hidden></p>
-                <div class="lb-actions">
+                <div class="lb-confirm lb-dup" role="alertdialog" hidden>
+                    <p class="lb-dup-text"></p>
+                    <div class="lb-actions">
+                        <button type="button" class="btn btn-primary" data-act="dup-use"></button>
+                        <button type="button" class="btn btn-secondary" data-act="dup-new">${escHtml(ts('duplicateNew', 'Save as new'))}</button>
+                    </div>
+                </div>
+                <div class="lb-actions lb-picker-actions">
                     <button type="submit" class="btn btn-primary">${escHtml(ts('save', 'Save site'))}</button>
                     <button type="button" class="btn btn-secondary" data-act="cancel">${escHtml(ts('cancel', 'Cancel'))}</button>
                 </div>
@@ -132,7 +144,9 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
         const listEl = resultsEl.querySelector('.lb-picker-result-list');
         const creditEl = resultsEl.querySelector('.lb-picker-credit');
         const errorEl = overlay.querySelector('.lb-form-error');
+        const dupEl = overlay.querySelector('.lb-dup');
         const setError = text => { errorEl.textContent = text; errorEl.hidden = !text; };
+        const hideDup = () => { dupEl.hidden = true; };
 
         const close = result => {
             if (closed) return;
@@ -152,7 +166,12 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
         document.addEventListener('keydown', onKey, true);
         if (signal?.aborted) { close(null); return; }
         signal?.addEventListener('abort', onAbort);
-        form.elements.name.value = initialName;
+        form.elements.name.value = editSite ? editSite.name ?? '' : initialName;
+        if (editSite) {
+            form.elements.water.value = editSite.water ?? '';
+            form.elements.altitude.value = editSite.altitude_m ?? '';
+            form.querySelector('.lb-picker-hint').textContent = ts('editHint', 'Tap the map to move the pin, then save.');
+        }
         for (const b of overlay.querySelectorAll('[data-act="cancel"]')) b.addEventListener('click', () => close(null));
 
         const placePin = (L, lat, lon) => {
@@ -161,6 +180,7 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
             if (pinMarker) pinMarker.setLatLng([lat, lon]);
             else pinMarker = L.circleMarker([lat, lon], { radius: 11, color: '#fff', weight: 3, fillColor: '#d62d20', fillOpacity: 1, className: 'lb-picker-pin' }).addTo(map);
             setError('');
+            hideDup();
         };
 
         let mapApi = null; // { L } once Leaflet has loaded
@@ -281,18 +301,37 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
             }
         });
 
+        let dupUse = null;
+        let skipGuard = false;
+        dupEl.querySelector('[data-act="dup-use"]').addEventListener('click', () => close(dupUse));
+        dupEl.querySelector('[data-act="dup-new"]').addEventListener('click', () => { skipGuard = true; form.requestSubmit(); });
+        form.elements.name.addEventListener('input', hideDup);
         form.addEventListener('submit', async e => {
             e.preventDefault();
             const data = Object.fromEntries(new FormData(form));
             const row = siteFromForm(data, pin);
             if (!row) { setError(ts('nameRequired', 'Enter a name for the site.')); return; }
             if (!pin) { setError(ts('pinRequired', 'Tap the map to place the site.')); return; }
+            if (!editSite && !skipGuard) {
+                const near = nearbySameNameSite(sites, row.name, pin, DUPLICATE_RADIUS_M);
+                if (near) {
+                    dupEl.querySelector('.lb-dup-text').textContent = fill(
+                        ts('duplicateText', 'A site named {0} is already here ({1}\u00a0m away).'), near.site.name, Math.round(near.distance));
+                    dupEl.querySelector('[data-act="dup-use"]').textContent = ts('duplicateUse', 'Use it');
+                    dupUse = near.site;
+                    dupEl.hidden = false;
+                    return;
+                }
+            }
+            skipGuard = false;
+            hideDup();
             const submit = form.querySelector('[type="submit"]');
             submit.disabled = true;
             try {
                 // A known site that only lacks coordinates gets them instead of a duplicate.
-                const known = sites.find(s => s.name.toLocaleLowerCase() === row.name.toLocaleLowerCase() && !(Number.isFinite(s.lat) && Number.isFinite(s.lon)));
-                const saved = known ? await store.saveSite(row, known.id) : await store.saveSite(row);
+                const known = editSite ? null : sites.find(s => s.name.toLocaleLowerCase() === row.name.toLocaleLowerCase() && !(Number.isFinite(s.lat) && Number.isFinite(s.lon)));
+                const saved = editSite ? await store.saveSite(row, editSite.id)
+                    : known ? await store.saveSite(row, known.id) : await store.saveSite(row);
                 close(saved);
             } catch (error) {
                 console.error(error);
@@ -351,14 +390,18 @@ export function openSitePicker({ store, sites = [], initial = null, initialName 
 
             const located = sites.filter(s => Number.isFinite(s.lat) && Number.isFinite(s.lon));
             for (const site of located) {
-                L.circleMarker([site.lat, site.lon], { radius: 10, color: '#fff', weight: 2, fillColor: '#2980b9', fillOpacity: 0.95 })
-                    .bindTooltip(escHtml(site.name)).addTo(map)
-                    .on('click', ev => { L.DomEvent.stopPropagation(ev); close(site); });
+                if (editSite && site.id === editSite.id) continue; // the pin stands for it
+                const marker = L.circleMarker([site.lat, site.lon], { radius: 10, color: '#fff', weight: 2, fillColor: '#2980b9', fillOpacity: 0.95, interactive: !editSite })
+                    .bindTooltip(escHtml(site.name)).addTo(map);
+                if (!editSite) marker.on('click', ev => { L.DomEvent.stopPropagation(ev); close(site); });
             }
             map.on('click', ev => placePin(L, ev.latlng.lat, ev.latlng.lng));
             map.on('dragstart zoomstart', () => { userMoved = true; });
 
-            if (initial && Number.isFinite(initial.lat) && Number.isFinite(initial.lon)) {
+            if (editSite && Number.isFinite(editSite.lat) && Number.isFinite(editSite.lon)) {
+                placePin(L, editSite.lat, editSite.lon);
+                map.setView([editSite.lat, editSite.lon], 14);
+            } else if (initial && Number.isFinite(initial.lat) && Number.isFinite(initial.lon)) {
                 map.setView([initial.lat, initial.lon], 13);
             } else if (located.length === 1) {
                 map.setView([located[0].lat, located[0].lon], 11);
