@@ -2877,6 +2877,8 @@
             "toList": "Volver a la lista",
             "photo": "Foto",
             "duplicateNumber": "El número {0} ya está en uso.",
+            "folderUnavailable": "Conecta el ordenador de buceo para ver sus inmersiones.",
+            "folderDenied": "No se permitió el acceso a la carpeta.",
             "form": {
                 "newTitle": "Nueva inmersión",
                 "editTitle": "Editar inmersión",
@@ -2927,6 +2929,8 @@
                 "guide": "Guía o instructor",
                 "rating": "Valoración (1–5)",
                 "choose": "–",
+                "invalidNumber": "{0}: introduce un número",
+                "numberRequired": "Introduce el número de la inmersión.",
                 "save": "Guardar",
                 "saving": "Guardando…",
                 "cancel": "Cancelar",

@@ -21,6 +21,7 @@ const STORE = 'handles';
 const KEY = 'divelog';
 
 const tn = key => translate(`diveLog.logbook.new.${key}`, key);
+const tl = key => translate(`diveLog.logbook.${key}`, key);
 const tb = key => translate(`diveLog.backend.${key}`, key);
 
 // ---- Folder handle in IndexedDB (verified in a browser) ----
@@ -83,7 +84,8 @@ export class NewDive {
      * @param {Object} options.store - dive store
      * @param {(choice: {prefill: Object, recordingId: ?string}) => void} options.onChoose
      */
-    constructor(container, { store, onChoose }) {
+    constructor(container, { store, onChoose, ready = null }) {
+        this.ready = ready;
         this.container = container;
         this.store = store;
         this.onChoose = onChoose;
@@ -93,6 +95,7 @@ export class NewDive {
         this.loading = true;
         this.busy = false;
         this.error = '';
+        this.hint = '';
         this.folder = 'unsupported'; // unsupported | none | permission | ready
         this.handle = null;
         this.folderItems = [];
@@ -111,6 +114,8 @@ export class NewDive {
     }
 
     async _init() {
+        await Promise.resolve(this.ready).catch(() => {}); // entries for new recordings may still be created
+        if (this.destroyed) return;
         try {
             [this.rows, this.entries] = await Promise.all([this.store.listDives(), this.store.listEntries()]);
         } catch (error) {
@@ -123,11 +128,11 @@ export class NewDive {
             if (this.handle) {
                 try {
                     const perm = await this.handle.queryPermission({ mode: 'read' });
-                    if (perm === 'granted') await this._readFolder();
+                    if (perm === 'granted') await this._readFolder(true);
                     else this.folder = 'permission';
                 } catch (error) {
                     console.error(error);
-                    this.handle = null;
+                    this.hint = tl('folderUnavailable');
                 }
             }
         }
@@ -136,14 +141,16 @@ export class NewDive {
         this.render();
     }
 
-    async _readFolder() {
+    async _readFolder(soft = false) {
+        this.hint = '';
         try {
             const files = await collectFiles(this.handle);
             this.folderItems = (await loadDiveFiles(files)).items;
             this.folder = 'ready';
         } catch (error) {
             console.error(error);
-            this.error = tn('folderError');
+            if (soft) this.hint = tl('folderUnavailable'); // e.g. the computer is not plugged in
+            else this.error = tn('folderError');
             this.folder = 'none';
         }
     }
@@ -184,8 +191,9 @@ export class NewDive {
         let folderControl = '';
         if (!this.loading) {
             if (this.folder === 'permission') folderControl = `<button type="button" class="btn btn-secondary" id="nd-allow">${escHtml(tn('folderAllow'))}</button>`;
-            else if (this.folder === 'none') folderControl = `<button type="button" class="btn btn-secondary" id="nd-folder">${escHtml(tn('folderUse'))}</button>`;
-            else if (this.folder === 'unsupported') {
+            if (this.folder === 'permission' || this.folder === 'none' || this.folder === 'ready') {
+                folderControl += `<button type="button" class="btn btn-secondary" id="nd-folder">${escHtml(tn('folderUse'))}</button>`;
+            } else if (this.folder === 'unsupported') {
                 folderControl = `<label class="btn btn-secondary lb-file"><span>${escHtml(tn('folderChoose'))}</span>
                     <input type="file" id="nd-files" webkitdirectory multiple class="rda-visually-hidden"></label>`;
             }
@@ -196,6 +204,7 @@ export class NewDive {
                 <input type="date" id="nd-date" value="${escHtml(this.date)}"></label>
             <h3>${escHtml(tn('fromComputer'))}</h3>
             ${body}
+            ${this.hint ? `<p class="lb-muted">${escHtml(this.hint)}</p>` : ''}
             <p class="lb-form-error" role="alert"${this.error ? '' : ' hidden'}>${escHtml(this.error)}</p>
             <div class="lb-actions">
                 ${folderControl}
@@ -240,6 +249,7 @@ export class NewDive {
         try {
             const perm = await this.handle.requestPermission({ mode: 'read' });
             if (perm === 'granted') await this._readFolder();
+            else if (perm === 'denied') this.error = tl('folderDenied');
         } catch (error) {
             console.error(error);
             this.error = tn('folderError');

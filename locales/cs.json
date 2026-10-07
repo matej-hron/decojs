@@ -2913,6 +2913,8 @@
             "toList": "Zpět na seznam",
             "photo": "Fotka",
             "duplicateNumber": "Číslo {0} je již použito.",
+            "folderUnavailable": "Připojte potápěčský počítač, aby se zobrazily jeho ponory.",
+            "folderDenied": "Přístup ke složce nebyl povolen.",
             "form": {
                 "newTitle": "Nový ponor",
                 "editTitle": "Upravit ponor",
@@ -2963,6 +2965,8 @@
                 "guide": "Průvodce nebo instruktor",
                 "rating": "Hodnocení (1–5)",
                 "choose": "–",
+                "invalidNumber": "{0}: zadejte číslo",
+                "numberRequired": "Zadejte číslo ponoru v deníku.",
                 "save": "Uložit",
                 "saving": "Ukládám…",
                 "cancel": "Zrušit",

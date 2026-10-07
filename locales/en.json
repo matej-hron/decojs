@@ -2913,6 +2913,8 @@
             "toList": "Back to the list",
             "photo": "Photo",
             "duplicateNumber": "Number {0} is already used.",
+            "folderUnavailable": "Connect the dive computer to see its dives.",
+            "folderDenied": "Access to the folder was not allowed.",
             "form": {
                 "newTitle": "New dive",
                 "editTitle": "Edit dive",
@@ -2963,6 +2965,8 @@
                 "guide": "Guide or instructor",
                 "rating": "Rating (1–5)",
                 "choose": "–",
+                "invalidNumber": "{0}: enter a number",
+                "numberRequired": "Enter the logbook number.",
                 "save": "Save",
                 "saving": "Saving…",
                 "cancel": "Cancel",

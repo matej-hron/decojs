@@ -183,7 +183,7 @@ export class LogbookApp {
         const host = this.view.firstChild;
         const token = this._viewToken;
         this.form = new NewDive(host, {
-            store: this.store,
+            store: this.store, ready: this.ensured,
             onChoose: ({ prefill, recordingId }) => {
                 if (token !== this._viewToken) return;
                 this._unmountForm();

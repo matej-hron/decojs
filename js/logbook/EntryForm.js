@@ -61,6 +61,28 @@ export function gasFromForm({ kind, o2, he }) {
     return { o2: frac(o2Pct), he: frac(hePct) };
 }
 
+/**
+ * Label keys of the numeric fields whose non-blank text is not a number.
+ * @param {Object} values - form values (core strings and `details`)
+ */
+export function invalidNumberFields(values) {
+    const bad = [];
+    const check = (key, labelKey) => {
+        const v = key === null ? null : values[key];
+        if (v === null || v === undefined || String(v).trim() === '') return;
+        if (parseDecimal(v) === null) bad.push(labelKey);
+    };
+    const core = { log_number: 'number', duration_min: 'duration', max_depth_m: 'depth', water_temp_c: 'waterTemp', vis_shallow_m: 'visShallow', vis_deep_m: 'visDeep' };
+    for (const [k, label] of Object.entries(core)) check(k, label);
+    if (values.gasKind === 'ean' || values.gasKind === 'tx') check('gasO2', 'gasO2');
+    if (values.gasKind === 'tx') check('gasHe', 'gasHe');
+    for (const key of [...NUMERIC_DETAILS, 'rating']) {
+        const v = values.details?.[key];
+        if (v !== null && v !== undefined && String(v).trim() !== '' && parseDecimal(v) === null) bad.push(key);
+    }
+    return bad;
+}
+
 const pct = fraction => String(Math.round(fraction * 10000) / 100);
 
 /**
@@ -79,9 +101,9 @@ export function formValuesFromEntry(entry, { comma = false } = {}) {
     if (gas) {
         const o2 = Math.round(gas.o2 * 100);
         const he = Math.round(gas.he * 100);
-        if (he > 0) [gasKind, gasO2, gasHe] = ['tx', pct(gas.o2), pct(gas.he)];
+        if (he > 0) [gasKind, gasO2, gasHe] = ['tx', num(pct(gas.o2)), num(pct(gas.he))];
         else if (o2 === 21) gasKind = 'air';
-        else [gasKind, gasO2] = ['ean', pct(gas.o2)];
+        else [gasKind, gasO2] = ['ean', num(pct(gas.o2))];
     }
     return {
         log_number: text(entry.log_number),
@@ -140,6 +162,7 @@ export class EntryForm {
         this.buddyNames = [];
         this.nextNumber = null;
         this.siteName = '';
+        this.siteTouched = false; // true once the user edits the site field
         this.siteId = entry?.site_id ?? prefill.site_id ?? null;
         this.comma = decimalSeparator(currentLang()) === ',';
         this.values = formValuesFromEntry(entry ?? prefill, { comma: this.comma });
@@ -161,22 +184,30 @@ export class EntryForm {
 
     async _loadSuggestions() {
         try {
-            const [sites, buddies, entries] = await Promise.all([
+            // Independent calls: one failing must not hide the others (suggestions are a convenience).
+            const [sites, buddies, entries] = await Promise.allSettled([
                 this.store.listSites(), this.store.listBuddies(), this.store.listEntries(),
             ]);
             if (this.destroyed) return;
-            this.sites = sites;
-            this.buddyNames = buddies;
-            this.nextNumber = nextLogNumber(entries);
-            const site = this.siteId ? sites.find(s => s.id === this.siteId) : null;
-            const siteInput = this.container.querySelector('[name="site"]');
-            if (site && siteInput && siteInput.value === '') siteInput.value = this.siteName = site.name;
-            this._fillList('lb-sites', sites.map(s => s.name));
-            this._fillList('lb-buddy-names', buddies);
-            const numberInput = this.container.querySelector('[name="log_number"]');
-            if (numberInput && !this.entry) numberInput.placeholder = String(this.nextNumber);
+            for (const r of [sites, buddies, entries]) if (r.status === 'rejected') console.error(r.reason);
+            if (sites.status === 'fulfilled') {
+                this.sites = sites.value;
+                const site = this.siteId ? this.sites.find(s => s.id === this.siteId) : null;
+                const siteInput = this.container.querySelector('[name="site"]');
+                if (site && siteInput && siteInput.value === '' && !this.siteTouched) siteInput.value = this.siteName = site.name;
+                this._fillList('lb-sites', this.sites.map(s => s.name));
+            }
+            if (buddies.status === 'fulfilled') {
+                this.buddyNames = buddies.value;
+                this._fillList('lb-buddy-names', this.buddyNames);
+            }
+            if (entries.status === 'fulfilled') {
+                this.nextNumber = nextLogNumber(entries.value);
+                const numberInput = this.container.querySelector('[name="log_number"]');
+                if (numberInput && !this.entry) numberInput.placeholder = String(this.nextNumber);
+            }
         } catch (error) {
-            console.error(error); // suggestions are a convenience; the form works without them
+            console.error(error);
         }
     }
 
@@ -256,7 +287,7 @@ export class EntryForm {
                         <div class="lb-chips">${v.buddies.map((b, i) => `<span class="lb-chip">${escHtml(b)}<button type="button" class="lb-chip-x" data-buddy="${i}" aria-label="${escHtml(fill(tf('buddyRemove'), b))}">×</button></span>`).join('')}</div>
                         <div class="lb-site-row">
                             <input type="text" name="buddy" list="lb-buddy-names" autocomplete="off" placeholder="${escHtml(tf('buddyAdd'))}" aria-label="${escHtml(tf('buddyAdd'))}">
-                            <button type="button" class="btn btn-secondary" id="lb-add-buddy">+</button>
+                            <button type="button" class="btn btn-secondary" id="lb-add-buddy" aria-label="${escHtml(tf('buddyAdd'))}">+</button>
                         </div>
                         <datalist id="lb-buddy-names"></datalist>
                     </div>
@@ -330,6 +361,7 @@ export class EntryForm {
 
     _wire() {
         const c = this.container;
+        c.querySelector('[name="site"]').addEventListener('input', () => { this.siteTouched = true; });
         c.querySelector('form').addEventListener('submit', e => {
             e.preventDefault();
             this._save();
@@ -414,7 +446,7 @@ export class EntryForm {
 
     async _resolveSiteId() {
         const name = this.siteName.trim();
-        if (!name) return null;
+        if (!name) return this.siteTouched ? null : this.siteId; // untouched and not loaded yet: keep the stored site
         const known = this.sites.find(s => s.id === this.siteId);
         if (known && known.name === name) return known.id;
         const match = this.sites.find(s => s.name.toLocaleLowerCase() === name.toLocaleLowerCase());
@@ -449,6 +481,16 @@ export class EntryForm {
         this._setError('');
         if (!v.dive_date) {
             this._setError(tf('dateRequired'));
+            return;
+        }
+        const bad = invalidNumberFields(v);
+        if (bad.length) {
+            const label = key => tf(key).replace(/\u00a0\(.*\)$/, '');
+            this._setError(fill(tf('invalidNumber'), label(bad[0])));
+            return;
+        }
+        if (this.entry && !String(v.log_number).trim()) {
+            this._setError(tf('numberRequired'));
             return;
         }
         const gas = gasFromForm({ kind: v.gasKind, o2: v.gasO2, he: v.gasHe });

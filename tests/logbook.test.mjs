@@ -15,7 +15,7 @@ import { parseRoute, routeHref } from '../js/logbook/router.js';
 import { resizeTarget, isSupportedImage } from '../js/logbook/photo.js';
 import { createSupabaseStore, DiveStoreError } from '../js/backend/supabaseStore.js';
 import { uploadDivelog, exportZip } from '../js/logbook/transfer.js';
-import { formValuesFromEntry, gasFromForm, formatDuration, recordingsOnDate } from '../js/logbook/EntryForm.js';
+import { formValuesFromEntry, gasFromForm, formatDuration, recordingsOnDate, invalidNumberFields, EntryForm } from '../js/logbook/EntryForm.js';
 
 const FIXTURES = new URL('./fixtures/divesoft/', import.meta.url);
 const diveOf = id => parseDivesoftDLF(new Uint8Array(readFileSync(new URL(`${id}.DLF`, FIXTURES))), { fileName: `${id}.DLF` });
@@ -696,5 +696,111 @@ describe('form strings', () => {
         for (const [, key] of src.matchAll(/(?:tf|_input\([^,]+,)\s*\(?'([A-Za-z]+)'/g)) {
             assert.ok(key in form, key);
         }
+    });
+});
+
+describe('entry form validation and races (jsdom)', () => {
+    async function withDom(fn) {
+        const { JSDOM } = await import('jsdom');
+        const dom = new JSDOM('<!doctype html><body><div id="root"></div></body>', { url: 'http://localhost/lab/dive-log.html' });
+        const saved = {};
+        for (const k of ['window', 'document', 'location', 'history']) {
+            saved[k] = Object.getOwnPropertyDescriptor(globalThis, k);
+            Object.defineProperty(globalThis, k, { value: dom.window[k], configurable: true, writable: true });
+        }
+        try {
+            return await fn(dom.window.document.getElementById('root'));
+        } finally {
+            for (const [k, d] of Object.entries(saved)) {
+                if (d) Object.defineProperty(globalThis, k, d); else delete globalThis[k];
+            }
+        }
+    }
+    const tick = () => new Promise(r => setTimeout(r, 20));
+    const entry = { id: 'e1', log_number: 5, dive_date: '2026-10-01', site_id: 's1', buddies: [], details: {} };
+
+    test('invalidNumberFields flags non-blank text that is not a number', () => {
+        const base = formValuesFromEntry({});
+        assert.deepEqual(invalidNumberFields(base), []);
+        assert.deepEqual(invalidNumberFields({ ...base, max_depth_m: '18,4', duration_min: ' ' }), []);
+        assert.deepEqual(invalidNumberFields({ ...base, max_depth_m: '18 m', log_number: 'abc' }), ['number', 'depth']);
+        assert.deepEqual(invalidNumberFields({ ...base, details: { cylinderL: '1 234', rating: 'x' } }), ['cylinderL', 'rating']);
+        assert.deepEqual(invalidNumberFields({ ...base, gasKind: 'air', gasO2: 'zz' }), []);
+    });
+
+    test('saving an edit before suggestions load keeps the stored site', async () => {
+        await withDom(async root => {
+            const saves = [];
+            const store = {
+                listSites: () => new Promise(() => {}), // never resolves
+                listBuddies: async () => { throw new Error('down'); },
+                listEntries: async () => [],
+                saveSite: async () => assert.fail('must not create a site'),
+                saveEntry: async (row, id) => { saves.push([row, id]); return { id, ...row }; },
+            };
+            let saved = null;
+            const origError = console.error;
+            console.error = () => {};
+            try {
+                new EntryForm(root, { store, entry, onSaved: e => { saved = e; }, onCancel() {} });
+                root.querySelector('form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+                await tick();
+            } finally { console.error = origError; }
+            assert.ok(saved);
+            assert.equal(saves[0][0].site_id, 's1');
+        });
+    });
+
+    test('clearing the site field on purpose removes the site; an invalid number blocks the save', async () => {
+        await withDom(async root => {
+            const saves = [];
+            const store = {
+                listSites: async () => [{ id: 's1', name: 'Hamr' }], listBuddies: async () => [], listEntries: async () => [],
+                saveEntry: async (row, id) => { saves.push(row); return { id, ...row }; },
+            };
+            new EntryForm(root, { store, entry, onSaved() {}, onCancel() {} });
+            await tick();
+            const site = root.querySelector('[name="site"]');
+            assert.equal(site.value, 'Hamr');
+            root.querySelector('[name="max_depth_m"]').value = '18 m';
+            root.querySelector('form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+            await tick();
+            assert.equal(saves.length, 0);
+            assert.equal(root.querySelector('[name="max_depth_m"]').value, '18 m');
+            assert.ok(!root.querySelector('.lb-form-error').hidden);
+            root.querySelector('[name="max_depth_m"]').value = '18,4';
+            root.querySelector('[name="log_number"]').value = '';
+            root.querySelector('form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+            await tick();
+            assert.equal(saves.length, 0); // edit needs a number
+            root.querySelector('[name="log_number"]').value = '5';
+            site.value = '';
+            site.dispatchEvent(new window.Event('input'));
+            root.querySelector('form').dispatchEvent(new window.Event('submit', { cancelable: true }));
+            await tick();
+            assert.equal(saves[0].site_id, null);
+            assert.equal(saves[0].max_depth_m, 18.4);
+        });
+    });
+
+    test('NewDive waits for the entry creation before listing recordings', async () => {
+        await withDom(async root => {
+            const { NewDive } = await import('../js/logbook/NewDive.js');
+            const order = [];
+            let release;
+            const ready = new Promise(r => { release = r; });
+            const store = { listDives: async () => { order.push('dives'); return []; }, listEntries: async () => [] };
+            new NewDive(root, { store, onChoose() {}, ready });
+            await tick();
+            assert.deepEqual(order, []);
+            release();
+            await tick();
+            assert.deepEqual(order, ['dives']);
+            const failing = new Promise((_, rej) => rej(new Error('ensure failed')));
+            order.length = 0;
+            new NewDive(root, { store, onChoose() {}, ready: failing });
+            await tick();
+            assert.deepEqual(order, ['dives']); // a failed ensure does not block the page
+        });
     });
 });
