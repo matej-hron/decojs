@@ -12,7 +12,8 @@ import { parseDivesoftDLF } from '../import/divesoftDlf.js';
 import { prepareRecordedSetup } from '../import/recordedDive.js';
 import { analyzeRecordedDive, summarizeRecordedDive, CEILING_VIOLATION_TOLERANCE_M } from '../import/recordedDiveSummary.js';
 import { startStateFor, CHAIN_MAX_GAP_MIN } from '../import/diveChain.js';
-import { sha256Hex, planSync } from '../backend/sync.js';
+import { sha256Hex } from '../backend/sync.js';
+import { uploadDivelog, exportZip } from '../logbook/transfer.js';
 import { DiveStoreError } from '../backend/supabaseStore.js';
 import { MIN_GF_PERCENT, MAX_GF_PERCENT } from '../gfLimits.js';
 import { GF_PRESETS } from '../gfPresets.js';
@@ -152,39 +153,23 @@ export function diveNumberLabel(dive) {
     const n = dive.source.diveNumber;
     return n ? String(n) : (dive.source.fileName ?? '–');
 }
-const JSZIP_URL = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.2/jszip.min.js';
-
-let jsZipPromise = null;
-
-/** Load JSZip on demand (the script is appended at most once). */
-function loadJsZip() {
-    if (globalThis.JSZip) return Promise.resolve(globalThis.JSZip);
-    if (!jsZipPromise) {
-        jsZipPromise = new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = JSZIP_URL;
-            script.onload = () => resolve(globalThis.JSZip);
-            script.onerror = () => {
-                script.remove();
-                jsZipPromise = null;
-                reject(new Error('Could not load JSZip'));
-            };
-            document.head.appendChild(script);
-        });
-    }
-    return jsZipPromise;
-}
 const fill = (text, ...values) => String(text).replace(/\{(\d+)\}/g, (_, i) => values[Number(i)] ?? '');
 const minSec = s => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}`;
 
 export class RecordedDiveAnalysis {
     /**
      * @param {HTMLElement} root - Element the page UI is built in
-     * @param {{demoFiles?: string[], store?: Object|null}} [config] - URLs of example .DLF files loaded when
-     *   nothing is picked; the dive store (null without a configured backend)
+     * @param {{demoFiles?: string[], store?: Object|null, embedded?: boolean, focusRecordingId?: string|null}} [config]
+     *   URLs of example .DLF files loaded when nothing is picked; the dive store (null without a configured
+     *   backend). `embedded` (inside the logbook, user already logged in): no account bar, no pickers, dives
+     *   come from the store. `focusRecordingId`: the stored recording selected once loaded (its list is then hidden).
      */
-    constructor(root, { demoFiles = [], store = null } = {}) {
+    constructor(root, { demoFiles = [], store = null, embedded = false, focusRecordingId = null } = {}) {
         this.root = root;
+        this.embedded = embedded;
+        this.focusRecordingId = focusRecordingId;
+        this.destroyed = false;
+        this._unsubscribe = null;
         this.demoFiles = demoFiles;
         this.store = store;
         this.user = null;
@@ -210,9 +195,29 @@ export class RecordedDiveAnalysis {
         this.startStates = new Map();
         this._buildDom();
         translateStatic(this.root);
-        document.addEventListener('languagechange', () => this._renderAll());
-        if (this.store) this._initStore();
+        this._onLanguage = () => this._renderAll();
+        document.addEventListener('languagechange', this._onLanguage);
+        if (this.embedded && this.store) {
+            this.user = { id: null, email: '' };
+            this.serverMode = true;
+            this._userKnown = true;
+            this._loadServer();
+        } else if (this.store) this._initStore();
         else this._loadDemo();
+    }
+
+    /** Remove listeners and charts; the instance is unusable afterwards. */
+    destroy() {
+        this.destroyed = true;
+        this._selectToken++;
+        document.removeEventListener('languagechange', this._onLanguage);
+        this._unsubscribe?.();
+        this._unsubscribe = null;
+        if (this.charts) {
+            for (const chart of Object.values(this.charts)) chart.destroy?.();
+            this.charts = null;
+        }
+        this.root.innerHTML = '';
     }
 
     // ---- Account bar and server mode ----
@@ -225,14 +230,16 @@ export class RecordedDiveAnalysis {
             } catch { /* keep the hash */ }
         }
         this._renderAccount();
-        this.store.onAuthChange(user => this._onUser(user));
+        this._unsubscribe = this.store.onAuthChange(user => this._onUser(user));
         this.store.currentUser().then(user => this._onUser(user), error => {
+            if (this.destroyed) return;
             this._storeError(error);
             this._onUser(null);
         });
     }
 
     _onUser(user) {
+        if (this.destroyed) return;
         const same = this._userKnown && (user?.id ?? null) === (this.user?.id ?? null);
         this._userKnown = true;
         if (same) return;
@@ -256,10 +263,12 @@ export class RecordedDiveAnalysis {
     /** Explain a store failure; details only go to the console. */
     _storeError(error) {
         console.error(error);
+        if (this.destroyed) return;
         this.accountMsg = error instanceof DiveStoreError && error.kind === 'unreachable'
             ? { key: 'unreachable', fallback: 'Can\'t reach your dive log. If it hasn\'t been used for a week, resume the project in the Supabase dashboard.' }
             : { key: 'genericError', fallback: 'Something went wrong. Please try again.' };
         this._renderAccount();
+        if (this.embedded && !this.destroyed) this._renderList();
     }
 
     async _loadServer() {
@@ -270,21 +279,24 @@ export class RecordedDiveAnalysis {
         try {
             const rows = await this.store.listDives();
             this.busy = null;
-            if (!this.serverMode) return;
+            if (!this.serverMode || this.destroyed) return;
             this._setDives({ dives: rows.map(summaryToListDive), errors: [] });
             this.store.reparseOutdated(rows).catch(error => console.error(error));
         } catch (error) {
             this.busy = null;
+            if (this.destroyed) return;
             this.serverFailed = true;
+            if (this.focusRecordingId) this.focusMissing = true;
             this._storeError(error);
             this._renderAccount();
             this._renderList();
-            this._loadDemo();
+            if (!this.embedded) this._loadDemo();
         }
     }
 
     _renderAccount() {
-        if (!this.store) return;
+        if (this.destroyed) return;
+        if (!this.store || this.embedded) return;
         const el = this.root.querySelector('#rda-account');
         el.hidden = false;
         const msg = this.accountMsg ? `<p class="rda-account-msg">${escHtml(t(`backend.${this.accountMsg.key}`, this.accountMsg.fallback))}</p>` : '';
@@ -360,23 +372,13 @@ export class RecordedDiveAnalysis {
         this._setWorking(true);
         this.report = null;
         try {
-            const picked = await loadDiveFiles(files);
-            this.busy = { key: 'progress', fallback: 'Saving {0} / {1}…', args: [0, picked.items.length] };
+            this.busy = { key: 'progress', fallback: 'Saving {0} / {1}…', args: [0, 0] };
             this._renderList();
-            const plan = planSync(picked.items, await this.store.listDives());
-            const batch = [
-                ...plan.upload.map(i => ({ ...i, action: 'upload' })),
-                ...plan.update.map(i => ({ ...i, action: 'update' })),
-            ];
-            const saved = await this.store.saveDives(batch, (done, total) => {
+            const { report } = await uploadDivelog(this.store, files, (done, total) => {
                 this.busy = { key: 'progress', fallback: 'Saving {0} / {1}…', args: [done, total] };
                 this._renderList();
             });
-            const nothingFound = picked.items.length === 0 && picked.errors.length === 0;
-            this.report = nothingFound ? null : {
-                saved: saved.saved, updated: saved.updated, unchanged: plan.unchanged.length,
-                failed: [...saved.failed, ...picked.errors],
-            };
+            this.report = report;
             this.busy = null;
             if (this.serverMode) await this._loadServer();
         } catch (error) {
@@ -392,19 +394,7 @@ export class RecordedDiveAnalysis {
         if (this.working) return;
         this._setWorking(true);
         try {
-            const { files, dives } = await this.store.exportAll();
-            const JSZip = await loadJsZip();
-            const zip = new JSZip();
-            for (const f of files) zip.file(`DIVELOG/${f.name}`, f.bytes);
-            zip.file('dives.json', JSON.stringify(dives, null, 1));
-            const blob = await zip.generateAsync({ type: 'blob' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `dive-log-${new Date().toISOString().slice(0, 10)}.zip`;
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-            setTimeout(() => URL.revokeObjectURL(link.href), 10000);
+            await exportZip(this.store);
         } catch (error) {
             this._storeError(error);
         } finally {
@@ -422,7 +412,7 @@ export class RecordedDiveAnalysis {
     _buildDom() {
         this.root.innerHTML = `
             <section class="rda-account rda-card" id="rda-account" hidden></section>
-            <section class="rda-open rda-card">
+            <section class="rda-open rda-card" id="rda-open">
                 <label class="rda-picker" id="rda-pick-folder"><span data-i18n="diveLog.openFolder">Open a DIVELOG folder</span>
                     <input type="file" id="rda-folder" webkitdirectory></label>
                 <label class="rda-picker" id="rda-pick-files"><span data-i18n="diveLog.openFiles">or pick .DLF files</span>
@@ -467,6 +457,11 @@ export class RecordedDiveAnalysis {
                 </details>
             </section>`;
         const $ = id => this.root.querySelector(`#${id}`);
+        if (this.embedded) {
+            $('rda-pick-folder').hidden = true;
+            $('rda-pick-files').hidden = true;
+            if (this.focusRecordingId) this.root.querySelector('.rda-list').hidden = true;
+        }
         this.el = {
             status: $('rda-status'), rows: $('rda-rows'), analysis: $('rda-analysis'),
             gfLow: $('rda-gf-low'), gfHigh: $('rda-gf-high'), gfLowOut: $('rda-gf-low-out'), gfHighOut: $('rda-gf-high-out'),
@@ -500,17 +495,20 @@ export class RecordedDiveAnalysis {
         if (this.demoFiles.length === 0) return;
         try {
             const files = await fetchDemoFiles(this.demoFiles);
+            if (this.destroyed) return;
             if (this.dives.length > 0) return; // the user picked files meanwhile
             const result = await loadDiveFiles(files);
+            if (this.destroyed) return;
             this.isDemo = true;
             this._setDives(result);
         } catch (error) {
-            if (this.dives.length > 0) return;
+            if (this.destroyed || this.dives.length > 0) return;
             this._setDives({ dives: [], errors: [{ fileName: this.demoFiles[0]?.split('/').pop() ?? '', message: error.message || String(error) }] });
         }
     }
 
     _setDives({ dives, errors }) {
+        if (this.destroyed) return;
         this.dives = dives;
         this.errors = errors;
         this.selected = null;
@@ -518,7 +516,13 @@ export class RecordedDiveAnalysis {
         this._selectToken++;
         this.startStates = new Map();
         this._renderList();
-        if (dives.length > 0) this._select(dives.at(-1));
+        this.focusMissing = false;
+        const focus = this.focusRecordingId ? dives.find(d => d.id === this.focusRecordingId) : null;
+        if (this.focusRecordingId && !focus) {
+            this.focusMissing = true; // never show an unrelated dive in its place
+            this.el.analysis.hidden = true;
+            this._renderList();
+        } else if (dives.length > 0) this._select(focus ?? dives.at(-1));
         else this.el.analysis.hidden = true;
     }
 
@@ -526,6 +530,7 @@ export class RecordedDiveAnalysis {
         this.selected = dive;
         this._renderList();
         const token = ++this._selectToken;
+        if (this.destroyed) return;
         if (this.serverMode || dive.samples === null) {
             this.current = null;
             this.el.analysis.hidden = false;
@@ -552,6 +557,7 @@ export class RecordedDiveAnalysis {
     }
 
     _setGf(gf) {
+        if (this.destroyed) return;
         this.gf = gf;
         this.el.gfLow.value = gf.gfLow;
         this.el.gfHigh.value = gf.gfHigh;
@@ -561,6 +567,7 @@ export class RecordedDiveAnalysis {
     }
 
     _renderAll() {
+        if (this.destroyed) return;
         translateStatic(this.root);
         this._renderAccount();
         this._renderList();
@@ -568,8 +575,9 @@ export class RecordedDiveAnalysis {
     }
 
     _renderList() {
+        if (this.destroyed) return;
         const statusParts = [];
-        const hidePickers = this.serverMode && !this.serverFailed;
+        const hidePickers = this.embedded || (this.serverMode && !this.serverFailed);
         this.root.querySelector('#rda-pick-folder').hidden = hidePickers;
         this.root.querySelector('#rda-pick-files').hidden = hidePickers;
         if (this.busy) statusParts.push(fill(t(`backend.${this.busy.key}`, this.busy.fallback), ...(this.busy.args ?? [])));
@@ -583,10 +591,13 @@ export class RecordedDiveAnalysis {
                     r.failed.map(f => `${f.fileName} (${f.message})`).join('; ')));
             }
         }
+        if (this.focusMissing) statusParts.push(t('logbook.notFound', 'Dive not found'));
+        if (this.embedded && this.accountMsg) statusParts.push(t(`backend.${this.accountMsg.key}`, this.accountMsg.fallback));
         if (this.isDemo) statusParts.push(t('demoNote', 'Showing example dives. Open your own DIVELOG folder above.'));
         if (this.dives.length === 0 && !this.busy) statusParts.push(t('noDives', 'No dive logs found. Pick the DIVELOG folder from the dive computer, or its .DLF files.'));
         for (const e of this.errors) statusParts.push(fill(t('unreadable', 'Could not read {0}: {1}'), e.fileName, e.message));
         this.el.status.innerHTML = statusParts.map(s => `<span>${escHtml(s)}</span>`).join('<br>');
+        this.root.querySelector('#rda-open').hidden = hidePickers && statusParts.length === 0; // no empty card
 
         this.el.rows.innerHTML = '';
         for (const dive of this.dives) {
@@ -610,6 +621,7 @@ export class RecordedDiveAnalysis {
     }
 
     _renderAnalysis() {
+        if (this.destroyed) return;
         const dive = this.current;
         if (!dive) return;
         this.el.analysis.hidden = false;
@@ -690,12 +702,14 @@ export class RecordedDiveAnalysis {
     }
 
     async _renderCharts(setup, deviceCeiling, dive) {
+        if (this.destroyed) return;
         if (!this.charts) {
             const [{ DiveProfileChart }, { MValueChart }, { GFChart }] = await Promise.all([
                 import('../charts/DiveProfileChart.js'),
                 import('../charts/MValueChart.js'),
                 import('../charts/GFChart.js'),
             ]);
+            if (this.destroyed) return;
             if (this.charts) return this._renderCharts(setup, deviceCeiling, dive);
             this.charts = {
                 profile: new DiveProfileChart(this.el.profile, {

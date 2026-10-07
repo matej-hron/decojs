@@ -1,0 +1,316 @@
+/**
+ * Sites management: a list of every site (dive count, position, same-name notes) and an edit page
+ * (rename, water, altitude, notes, move the pin, merge into another site, delete an unused one).
+ * Dives reference sites by id, so a rename shows up everywhere without touching the dives.
+ */
+
+import { DiveStoreError } from '../backend/supabaseStore.js';
+import { parseDecimal } from './entryModel.js';
+import { duplicateNameCounts, siteNameKey } from './geo.js';
+import { routeHref } from './router.js';
+import { openSitePicker } from './SitePicker.js';
+import { translate } from '../i18n.js';
+import { currentLang, fmtNum } from '../format.js';
+import { escHtml } from '../utils/escHtml.js';
+
+const ts = (key, fallback) => translate(`diveLog.logbook.sites.${key}`, fallback);
+const tb = (key, fallback) => translate(`diveLog.backend.${key}`, fallback);
+const fill = (text, ...values) => String(text).replace(/\{(\d+)\}/g, (_, i) => values[Number(i)] ?? '');
+
+const hasPosition = s => Number.isFinite(s.lat) && Number.isFinite(s.lon);
+
+/** Sites sorted by name, locale-aware. Pure. */
+export function sortSites(sites, lang = currentLang()) {
+    return [...sites].sort((a, b) => String(a.name).localeCompare(String(b.name), lang, { sensitivity: 'base' }) || String(a.id).localeCompare(String(b.id)));
+}
+
+/** "3 dives" in the plural form of the UI language. */
+export function diveCountText(n, lang = currentLang()) {
+    let category = 'other';
+    try { category = new Intl.PluralRules(lang).select(n); } catch { /* keep other */ }
+    const form = category === 'one' ? 'diveCountOne' : category === 'few' ? 'diveCountFew' : 'diveCountOther';
+    const fallback = { diveCountOne: '{0} dive', diveCountFew: '{0} dives', diveCountOther: '{0} dives' }[form];
+    return fill(ts(form, fallback), n);
+}
+
+/**
+ * Parse the altitude field: empty is none, otherwise a whole number of metres.
+ * @returns {{ok: true, value: number|null}|{ok: false}}
+ */
+export function parseAltitude(text) {
+    if (String(text ?? '').trim() === '') return { ok: true, value: null };
+    const n = parseDecimal(text);
+    return n !== null && Number.isInteger(n) ? { ok: true, value: n } : { ok: false };
+}
+
+const valuesFromSite = site => ({
+    name: site.name ?? '', water: site.water ?? '', altitude: site.altitude_m ?? '', notes: site.notes ?? '',
+});
+
+export class SitesPage {
+    /**
+     * @param {HTMLElement} container
+     * @param {{store: Object, siteId?: string|null, onDone?: () => void, onMissing?: () => void}} options
+     * `siteId` null shows the list, otherwise the edit page of that site. `onDone` is called after save, merge or delete.
+     */
+    constructor(container, { store, siteId = null, onDone = () => {}, onMissing = () => {} }) {
+        this.container = container;
+        this.store = store;
+        this.siteId = siteId;
+        this.onDone = onDone;
+        this.onMissing = onMissing;
+        this.destroyed = false;
+        this.sites = null;
+        this.usage = new Map();
+        this.site = null;
+        this.values = null;
+        this.mergeTarget = '';
+        this.confirm = null; // 'merge' | 'delete'
+        this.busy = false;
+        this.error = '';
+        this._pickAbort = null;
+        this.render();
+        this._load();
+    }
+
+    destroy() {
+        this.destroyed = true;
+        this._pickAbort?.abort();
+        this.container.innerHTML = '';
+    }
+
+    /** Re-render after a language change, keeping what was typed. */
+    relabel() {
+        if (this.destroyed) return;
+        this._readDom();
+        this.render();
+    }
+
+    async _load() {
+        try {
+            const [sites, usage] = await Promise.all([this.store.listSites(), this.store.siteUsage()]);
+            if (this.destroyed) return;
+            this.sites = sites;
+            this.usage = usage;
+            if (this.siteId) {
+                this.site = sites.find(s => s.id === this.siteId) ?? null;
+                if (!this.site) { this.onMissing(); return; }
+                this.values = valuesFromSite(this.site);
+            }
+            this.render();
+        } catch (error) {
+            if (this.destroyed) return;
+            console.error(error);
+            this.loadFailed = true;
+            this.error = this._errorText(error);
+            this.render();
+        }
+    }
+
+    _errorText(error) {
+        if (error instanceof DiveStoreError && error.kind === 'site-in-use') return ts('inUseNow', 'Dives use this site now. Reload and merge it into another site instead.');
+        return error instanceof DiveStoreError && error.kind === 'unreachable'
+            ? tb('unreachable', 'Can\'t reach your dive log. If it hasn\'t been used for a week, resume the project in the Supabase dashboard.')
+            : tb('genericError', 'Something went wrong. Please try again.');
+    }
+
+    _back(href, text) {
+        return `<p class="lb-back"><a href="${href}">${escHtml(text)}</a></p>`;
+    }
+
+    render() {
+        if (this.destroyed) return;
+        if (this.loadFailed) {
+            this.container.innerHTML = `<section class="rda-card lb-message"><p role="alert">${escHtml(this.error)}</p>
+                ${this._back(routeHref({ name: 'list' }), ts('backToLogbook', '← Back to the logbook'))}</section>`;
+            return;
+        }
+        if (!this.sites) {
+            this.container.innerHTML = `<p class="rda-account-msg">${escHtml(tb('loading', 'Loading…'))}</p>`;
+            return;
+        }
+        if (this.siteId) this._renderEdit();
+        else this._renderList();
+    }
+
+    // ---- List ----
+
+    _renderList() {
+        const dupes = duplicateNameCounts(this.sites);
+        const cards = sortSites(this.sites).map(site => {
+            const n = this.usage.get(site.id) ?? 0;
+            const dup = dupes.get(siteNameKey(site.name));
+            return `<a class="rda-card lb-card lb-site-card" href="${routeHref({ name: 'site', id: site.id })}">
+                <div class="lb-card-body">
+                    <div class="lb-card-head"><strong>${escHtml(site.name)}</strong>
+                        <span class="lb-date">${escHtml(diveCountText(n))}</span></div>
+                    ${hasPosition(site) ? '' : `<div class="lb-muted">${escHtml(ts('noPosition', 'No position'))}</div>`}
+                    ${dup ? `<span class="lb-badge">${escHtml(fill(ts('sameName', '{0} sites named {1}'), dup, site.name.trim()))}</span>` : ''}
+                </div></a>`;
+        });
+        this.container.innerHTML = `${this._back(routeHref({ name: 'list' }), ts('backToLogbook', '← Back to the logbook'))}
+            <h2 class="lb-sites-title">${escHtml(ts('title', 'Sites'))}</h2>
+            ${cards.length ? `<div class="lb-cards">${cards.join('')}</div>`
+                : `<p class="rda-account-msg">${escHtml(ts('empty', 'No sites yet. Sites are created when you pick a place for a dive.'))}</p>`}`;
+    }
+
+    // ---- Edit ----
+
+    _readDom() {
+        const form = this.container.querySelector('.lb-site-form');
+        if (form && this.values) {
+            this.values = {
+                name: form.elements.name.value, water: form.elements.water.value,
+                altitude: form.elements.altitude.value, notes: form.elements.notes.value,
+            };
+        }
+        const select = this.container.querySelector('#lb-merge-into');
+        if (select) this.mergeTarget = select.value;
+    }
+
+    _others() {
+        return sortSites(this.sites.filter(s => s.id !== this.siteId));
+    }
+
+    _renderEdit() {
+        const v = this.values;
+        const dives = this.usage.get(this.siteId) ?? 0;
+        const others = this._others();
+        const disabled = this.busy ? ' disabled' : '';
+        const position = hasPosition(this.site)
+            ? `${fmtNum(this.site.lat, 5)}, ${fmtNum(this.site.lon, 5)}`
+            : ts('noPosition', 'No position');
+        const target = others.find(s => s.id === this.mergeTarget);
+        let confirmHtml = '';
+        if (this.confirm === 'merge' && target) {
+            confirmHtml = `<div class="lb-confirm" role="alertdialog" aria-label="${escHtml(ts('confirm', 'Confirm'))}">
+                <p>${escHtml(fill(ts('mergeConfirm', 'Move {0} to {1} and delete the site {2}? This cannot be undone.'), diveCountText(dives), target.name, this.site.name))}</p>
+                <div class="lb-actions"><button type="button" class="btn btn-danger" id="lb-confirm-yes"${disabled}>${escHtml(ts('merge', 'Merge'))}</button>
+                <button type="button" class="btn btn-secondary" id="lb-confirm-no">${escHtml(ts('cancel', 'Cancel'))}</button></div></div>`;
+        } else if (this.confirm === 'delete') {
+            confirmHtml = `<div class="lb-confirm" role="alertdialog" aria-label="${escHtml(ts('confirm', 'Confirm'))}">
+                <p>${escHtml(fill(ts('deleteConfirm', 'Delete the site {0}? This cannot be undone.'), this.site.name))}</p>
+                <div class="lb-actions"><button type="button" class="btn btn-danger" id="lb-confirm-yes"${disabled}>${escHtml(ts('delete', 'Delete'))}</button>
+                <button type="button" class="btn btn-secondary" id="lb-confirm-no">${escHtml(ts('cancel', 'Cancel'))}</button></div></div>`;
+        }
+        const mergeBlock = others.length ? `<div class="lb-site-block">
+                <h3>${escHtml(ts('mergeTitle', 'Merge into another site'))}</h3>
+                <label class="lb-field"><span>${escHtml(ts('mergeInto', 'Merge into…'))}</span>
+                    <select id="lb-merge-into"><option value="">–</option>${others.map(s =>
+                        `<option value="${escHtml(s.id)}"${s.id === this.mergeTarget ? ' selected' : ''}>${escHtml(s.name)}</option>`).join('')}</select></label>
+                <div class="lb-actions"><button type="button" class="btn btn-secondary" id="lb-merge"${disabled}>${escHtml(ts('merge', 'Merge'))}</button></div>
+            </div>` : '';
+        const deleteBlock = `<div class="lb-site-block">
+                <h3>${escHtml(ts('deleteTitle', 'Delete'))}</h3>
+                ${dives === 0
+                    ? `<div class="lb-actions"><button type="button" class="btn btn-danger" id="lb-delete"${disabled}>${escHtml(ts('delete', 'Delete'))}</button></div>`
+                    : `<p class="lb-muted">${escHtml(ts('mergeFirst', 'Merge it into another site first.'))}</p>`}
+            </div>`;
+        this.container.innerHTML = `${this._back(routeHref({ name: 'sites' }), ts('backToSites', '← Back to the sites'))}
+            <section class="rda-card lb-form">
+                <h2>${escHtml(this.site.name)}</h2>
+                <p class="lb-muted">${escHtml(diveCountText(dives))}</p>
+                <form class="lb-site-form" novalidate>
+                    <label class="lb-field"><span>${escHtml(ts('name', 'Site name'))}</span>
+                        <input type="text" name="name" value="${escHtml(v.name)}" autocomplete="off"></label>
+                    <div class="lb-row">
+                        <label class="lb-field"><span>${escHtml(ts('water', 'Water'))}</span>
+                            <select name="water"><option value="">–</option>
+                                <option value="salt"${v.water === 'salt' ? ' selected' : ''}>${escHtml(ts('salt', 'Salt'))}</option>
+                                <option value="fresh"${v.water === 'fresh' ? ' selected' : ''}>${escHtml(ts('fresh', 'Fresh'))}</option></select></label>
+                        <label class="lb-field"><span>${escHtml(ts('altitude', 'Altitude (m)'))}</span>
+                            <input type="text" name="altitude" inputmode="numeric" value="${escHtml(v.altitude)}" autocomplete="off"></label>
+                    </div>
+                    <label class="lb-field"><span>${escHtml(ts('notes', 'Notes'))}</span>
+                        <textarea name="notes" rows="3">${escHtml(v.notes)}</textarea></label>
+                    <div class="lb-site-position"><span class="${hasPosition(this.site) ? '' : 'lb-muted'}">${escHtml(position)}</span>
+                        <button type="button" class="btn btn-secondary" id="lb-move-pin"${disabled}>${escHtml(ts('movePin', 'Move pin'))}</button></div>
+                    <p class="lb-form-error" role="alert"${this.error ? '' : ' hidden'}>${escHtml(this.error)}</p>
+                    <div class="lb-actions">
+                        <button type="submit" class="btn btn-primary"${disabled}>${escHtml(ts('save', 'Save'))}</button>
+                        <a class="btn btn-secondary" href="${routeHref({ name: 'sites' })}">${escHtml(ts('cancel', 'Cancel'))}</a>
+                    </div>
+                </form>
+                ${confirmHtml}
+            </section>
+            ${mergeBlock ? `<section class="rda-card lb-form">${mergeBlock}</section>` : ''}
+            <section class="rda-card lb-form">${deleteBlock}</section>`;
+        const q = sel => this.container.querySelector(sel);
+        q('.lb-site-form').addEventListener('submit', e => { e.preventDefault(); this._save(); });
+        q('#lb-move-pin').addEventListener('click', () => this._movePin());
+        q('#lb-merge')?.addEventListener('click', () => this._askMerge());
+        q('#lb-delete')?.addEventListener('click', () => { this._readDom(); this.confirm = 'delete'; this.error = ''; this.render(); });
+        q('#lb-confirm-no')?.addEventListener('click', () => { this._readDom(); this.confirm = null; this.render(); });
+        q('#lb-confirm-yes')?.addEventListener('click', () => (this.confirm === 'merge' ? this._merge() : this._delete()));
+        if (this.confirm) q('#lb-confirm-yes')?.focus();
+    }
+
+    _setError(text) {
+        this.error = text;
+        const el = this.container.querySelector('.lb-site-form .lb-form-error');
+        if (el) { el.textContent = text; el.hidden = !text; }
+    }
+
+    async _run(action) {
+        this.busy = true;
+        this._readDom();
+        this.render();
+        try {
+            await action();
+            return true;
+        } catch (error) {
+            console.error(error);
+            if (!this.destroyed) { this.busy = false; this.confirm = null; this.error = this._errorText(error); this.render(); }
+            return false;
+        }
+    }
+
+    async _save() {
+        this._readDom();
+        const v = this.values;
+        const name = v.name.trim();
+        if (!name) { this._setError(ts('nameRequired', 'Enter a name for the site.')); return; }
+        const altitude = parseAltitude(v.altitude);
+        if (!altitude.ok) { this._setError(ts('altitudeInvalid', 'Enter the altitude as a whole number of metres.')); return; }
+        this.error = '';
+        const ok = await this._run(() => this.store.saveSite({
+            name, water: v.water === 'salt' || v.water === 'fresh' ? v.water : null,
+            altitude_m: altitude.value, notes: v.notes.trim() || null,
+        }, this.siteId));
+        if (ok && !this.destroyed) this.onDone();
+    }
+
+    async _movePin() {
+        this._readDom();
+        this._pickAbort = new AbortController();
+        const picked = await openSitePicker({
+            store: this.store, sites: this.sites, initial: this.site, editSite: this.site, signal: this._pickAbort.signal,
+        });
+        this._pickAbort = null;
+        if (!picked || this.destroyed) return;
+        this.site = picked;
+        this.sites = this.sites.map(s => (s.id === picked.id ? picked : s));
+        // The picker also saved name, water and altitude; unsaved notes stay as typed.
+        this.values = { ...valuesFromSite(picked), notes: this.values.notes };
+        this.error = '';
+        this.render();
+    }
+
+    _askMerge() {
+        this._readDom();
+        if (!this._others().some(s => s.id === this.mergeTarget)) { this._setError(ts('mergePick', 'Choose the site to merge into.')); return; }
+        this.confirm = 'merge';
+        this.error = '';
+        this.render();
+    }
+
+    async _merge() {
+        const ok = await this._run(() => this.store.mergeSite(this.siteId, this.mergeTarget));
+        if (ok && !this.destroyed) this.onDone();
+    }
+
+    async _delete() {
+        const ok = await this._run(() => this.store.deleteSite(this.siteId));
+        if (ok && !this.destroyed) this.onDone();
+    }
+}

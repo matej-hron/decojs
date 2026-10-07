@@ -1,0 +1,421 @@
+/**
+ * Dive detail screen: facts, site with a small map, photos, video links and
+ * the Edit / Analysis / Add photos / Add video link / Delete actions.
+ *
+ * `detailRows` and `isHttpsUrl` are pure and covered by tests.
+ */
+
+import { CHOICES, TAGS } from './EntryForm.js';
+import { DETAIL_KEYS, formatDiveDate, formatDuration } from './entryModel.js';
+import { routeHref } from './router.js';
+import { readExif, resizeImage, isSupportedImage } from './photo.js';
+import { loadLeaflet, TILE_URL, TILE_ATTRIBUTION } from './SitePicker.js';
+import { gasName } from '../import/recordedDive.js';
+import { translate } from '../i18n.js';
+import { fmtNum, currentLang } from '../format.js';
+import { escHtml } from '../utils/escHtml.js';
+
+const NB = ' ';
+const IMAGE_ACCEPT = 'image/jpeg,image/png,image/webp';
+
+/** Unit shown after the value of a numeric detail. */
+const DETAIL_UNITS = Object.freeze({
+    surfaceTempC: '°C', airTempC: '°C', cylinderL: 'l', pressureStartBar: 'bar', pressureEndBar: 'bar',
+    weightsKg: 'kg', suitMm: 'mm', avgDepthM: 'm',
+});
+const NUMERIC = new Set(Object.keys(DETAIL_UNITS));
+
+const present = v => (Array.isArray(v) ? v.length > 0 : v !== null && v !== undefined && !(typeof v === 'string' && v.trim() === ''));
+
+/** True for a well-formed https:// link without whitespace. */
+export function isHttpsUrl(text) {
+    const s = String(text ?? '');
+    if (s === '' || /\s/.test(s)) return false;
+    try {
+        const u = new URL(s);
+        return u.protocol === 'https:' && u.hostname !== '';
+    } catch {
+        return false;
+    }
+}
+
+/**
+ * Rows of the detail card. Empty values are left out.
+ * @param {Object} entry - log_entries row
+ * @param {(key: string) => string} t - label lookup below `diveLog.logbook.`
+ * @returns {{core: {key: string, label: string, value: string}[], groups: {group: string, rows: Object[]}[], notes: string|null}}
+ */
+export function detailRows(entry, t) {
+    const core = [];
+    const add = (list, key, value, labelKey = `detail.label.${key}`) => {
+        if (value !== null) list.push({ key, label: t(labelKey), value });
+    };
+    const num = (v, decimals, unit) => (v === null || v === undefined ? null : `${fmtNum(v, decimals)}${NB}${unit}`);
+
+    add(core, 'duration', formatDuration(entry.duration_s) === '' ? null : `${formatDuration(entry.duration_s)}${NB}min`);
+    add(core, 'depth', num(entry.max_depth_m, 1, 'm'));
+    add(core, 'gas', entry.gas && Number.isFinite(entry.gas.o2) ? gasName({ o2: entry.gas.o2, he: entry.gas.he ?? 0 }) : null);
+    add(core, 'waterTemp', num(entry.water_temp_c, 1, '°C'));
+    const surface = entry.details?.surfaceTempC;
+    add(core, 'surfaceTempC', !present(surface) ? null : Number.isFinite(Number(surface)) ? `${fmtNum(surface)}${NB}°C` : String(surface));
+    add(core, 'visShallow', num(entry.vis_shallow_m, 1, 'm'));
+    add(core, 'visDeep', num(entry.vis_deep_m, 1, 'm'));
+    add(core, 'buddies', entry.buddies?.length ? entry.buddies.join(', ') : null);
+
+    const details = entry.details ?? {};
+    const groups = [];
+    for (const [group, keys] of Object.entries(DETAIL_KEYS)) {
+        const rows = [];
+        for (const key of keys) {
+            const v = details[key];
+            if (!present(v)) continue;
+            let value;
+            if (NUMERIC.has(key)) value = Number.isFinite(Number(v)) ? `${fmtNum(v)}${NB}${DETAIL_UNITS[key]}` : String(v);
+            else if (key === 'rating') value = `${fmtNum(v)}${NB}/${NB}5`;
+            else if (key === 'tags') {
+                value = (Array.isArray(v) ? v : [v]).map(tag => (TAGS.includes(tag) ? t(`form.choices.tags.${tag}`) : String(tag))).join(', ');
+            } else if (CHOICES[key]) value = CHOICES[key].includes(v) ? t(`form.choices.${key}.${v}`) : String(v);
+            else value = String(v);
+            rows.push({ key, label: t(`detail.label.${key}`), value });
+        }
+        if (rows.length) groups.push({ group, rows });
+    }
+    const notes = typeof entry.notes === 'string' && entry.notes.trim() ? entry.notes.trim() : null;
+    return { core, groups, notes };
+}
+
+const td = (key, fallback) => translate(`diveLog.logbook.detail.${key}`, fallback ?? key);
+const tp = (key, fallback) => translate(`diveLog.logbook.photo.${key}`, fallback ?? key);
+const tb = (key, fallback) => translate(`diveLog.backend.${key}`, fallback);
+const fill = (text, ...values) => String(text).replace(/\{(\d+)\}/g, (_, i) => values[Number(i)] ?? '');
+const label = key => translate(`diveLog.logbook.${key}`, key);
+
+export class EntryDetail {
+    /**
+     * @param {HTMLElement} container
+     * @param {Object} options
+     * @param {Object} options.store
+     * @param {Object} options.entry - log_entries row
+     * @param {() => void} options.onDeleted - called after the entry was deleted
+     * @param {(error: Error) => void} [options.onError] - for failures the screen cannot show itself
+     */
+    constructor(container, { store, entry, onDeleted, onError }) {
+        this.container = container;
+        this.store = store;
+        this.entry = entry;
+        this.onDeleted = onDeleted;
+        this.onError = onError;
+        this.destroyed = false;
+        this.site = null;
+        this.loaded = false;
+        this._urlRetried = false;
+        this.media = [];
+        this.urls = new Map();
+        this.confirm = null; // { kind: 'entry' } | { kind: 'media', media }
+        this.videoOpen = false;
+        this.status = ''; // progress line while uploading
+        this.errors = []; // per-file failures
+        this.busy = false;
+        this.map = null;
+        this.viewer = null;
+        this._onKey = e => { if (e.key === 'Escape' && this.viewer) this._closeViewer(); };
+        document.addEventListener('keydown', this._onKey);
+        this.container.innerHTML = `<section class="rda-card lb-detail"><div class="lb-d-main"></div><div class="lb-d-media"></div><div class="lb-d-panel"></div></section>`;
+        this.main = this.container.querySelector('.lb-d-main');
+        this.mediaEl = this.container.querySelector('.lb-d-media');
+        this.panel = this.container.querySelector('.lb-d-panel');
+        this.renderMain();
+        this.renderMedia();
+        this.renderPanel();
+        this._load();
+    }
+
+    destroy() {
+        this.destroyed = true;
+        document.removeEventListener('keydown', this._onKey);
+        this._removeMap();
+        this._closeViewer();
+        this.container.innerHTML = '';
+    }
+
+    /** Re-render texts after a language change. */
+    relabel() {
+        if (this.destroyed) return;
+        this.renderMain();
+        this.renderMedia();
+        this.renderPanel();
+    }
+
+    async _load() {
+        try {
+            const [sites, media] = await Promise.all([
+                this.entry.site_id ? this.store.listSites() : Promise.resolve([]),
+                this.store.listMedia(this.entry.id),
+            ]);
+            if (this.destroyed) return;
+            this.loaded = true;
+            this.site = sites.find(s => s.id === this.entry.site_id) ?? null;
+            this.media = media;
+            this.renderMain();
+            this.renderMedia();
+            await this._loadUrls();
+        } catch (error) {
+            if (!this.destroyed) this._fail(error);
+        }
+    }
+
+    async _loadUrls() {
+        const paths = this.media.filter(m => m.kind === 'photo' && m.path).map(m => m.path);
+        try {
+            this.urls = await this.store.photoUrls(paths);
+        } catch (error) {
+            console.error(error);
+            this.urls = new Map();
+        }
+        if (!this.destroyed) this.renderMedia();
+    }
+
+    _fail(error) {
+        console.error(error);
+        this.errors = [error?.kind === 'unreachable' ? tb('unreachable', 'Can\'t reach your dive log.') : tb('genericError', 'Something went wrong. Please try again.')];
+        this.renderPanel();
+    }
+
+    // ---- Facts and site ----
+
+    _removeMap() {
+        this.map?.remove();
+        this.map = null;
+    }
+
+    renderMain() {
+        this._removeMap();
+        const e = this.entry;
+        const { core, groups, notes } = detailRows(e, label);
+        const time = e.entry_time ? String(e.entry_time).slice(0, 5) : '';
+        const head = [fill(label('number'), e.log_number ?? '–'), formatDiveDate(e.dive_date, currentLang()), time].filter(Boolean).join(' · ');
+        const dl = rows => `<dl class="lb-dl">${rows.map(r => `<div><dt>${escHtml(r.label)}</dt><dd>${escHtml(r.value)}</dd></div>`).join('')}</dl>`;
+        const hasCoords = this.site && Number.isFinite(this.site.lat) && Number.isFinite(this.site.lon);
+        // Until the sites are loaded show an ellipsis; a site that is not found after loading counts as not set.
+        const siteLine = e.site_id
+            ? (this.site ? this.site.name : (this.loaded ? null : '…'))
+            : null;
+        this.main.innerHTML = `
+            <p class="lb-back"><a href="${routeHref({ name: 'list' })}">${escHtml(label('back'))}</a></p>
+            <h2 class="lb-d-head">${escHtml(head)}</h2>
+            ${siteLine ? `<p class="lb-d-site">${escHtml(siteLine)}</p>` : `<p class="lb-d-site lb-muted">${escHtml(label('siteNotSet'))}</p>`}
+            ${hasCoords ? '<div class="lb-d-map" aria-hidden="true"></div>' : ''}
+            ${core.length ? dl(core) : ''}
+            ${notes ? `<p class="lb-d-notes">${escHtml(notes)}</p>` : ''}
+            ${groups.length ? `<details class="lb-d-more"><summary>${escHtml(label('form.more'))}</summary>
+                ${groups.map(g => `<h3>${escHtml(label(`form.${g.group}`))}</h3>${dl(g.rows)}`).join('')}</details>` : ''}
+            <div class="lb-actions lb-d-actions">
+                <a class="btn btn-primary" href="${routeHref({ name: 'edit', id: e.id })}">${escHtml(td('edit', 'Edit'))}</a>
+                ${e.recording_id ? `<a class="btn btn-secondary" href="${routeHref({ name: 'analysis', id: e.id })}">${escHtml(td('analysis', 'Analysis'))}</a>` : ''}
+                <label class="btn btn-secondary lb-file"><span>${escHtml(td('addPhotos', 'Add photos'))}</span>
+                    <input type="file" class="rda-visually-hidden" id="lb-add-photos" accept="${IMAGE_ACCEPT}" multiple></label>
+                <button type="button" class="btn btn-secondary" id="lb-add-video">${escHtml(td('addVideo', 'Add video link'))}</button>
+                <button type="button" class="btn btn-danger" id="lb-delete">${escHtml(td('delete', 'Delete'))}</button>
+            </div>`;
+        const photoInput = this.main.querySelector('#lb-add-photos');
+        photoInput.disabled = this.busy;
+        photoInput.addEventListener('change', () => this._addPhotos(photoInput));
+        this.main.querySelector('#lb-add-video').addEventListener('click', () => { this.videoOpen = true; this.confirm = null; this.renderPanel(); });
+        this.main.querySelector('#lb-delete').addEventListener('click', () => { this.confirm = { kind: 'entry' }; this.videoOpen = false; this.renderPanel(); });
+        if (hasCoords) this._mountMap(this.site);
+    }
+
+    async _mountMap(site) {
+        const el = this.main.querySelector('.lb-d-map');
+        try {
+            const L = await loadLeaflet();
+            if (this.destroyed || this.main.querySelector('.lb-d-map') !== el) return;
+            this.map = L.map(el, { zoomControl: false, dragging: false, scrollWheelZoom: false, doubleClickZoom: false, touchZoom: false, boxZoom: false, keyboard: false });
+            L.tileLayer(TILE_URL, { maxZoom: 19, attribution: TILE_ATTRIBUTION }).addTo(this.map);
+            this.map.setView([site.lat, site.lon], 12);
+            L.circleMarker([site.lat, site.lon], { radius: 9, color: '#fff', weight: 3, fillColor: '#d62d20', fillOpacity: 1 }).addTo(this.map);
+        } catch (error) {
+            console.warn('Site map unavailable', error);
+            el.remove();
+        }
+    }
+
+    // ---- Media ----
+
+    renderMedia() {
+        const photos = this.media.filter(m => m.kind === 'photo');
+        const videos = this.media.filter(m => m.kind === 'video_link');
+        const grid = photos.map(m => {
+            const url = this.urls.get(m.path);
+            return `<figure class="lb-photo">
+                ${url ? `<button type="button" class="lb-photo-open" data-open="${escHtml(m.id)}" aria-label="${escHtml(td('enlarge', 'Enlarge photo'))}"><img src="${escHtml(url)}" alt="${escHtml(tp('alt', 'Photo'))}" loading="lazy"></button>`
+                    : `<div class="lb-photo-wait" aria-hidden="true"></div>`}
+                <button type="button" class="lb-photo-x" data-remove="${escHtml(m.id)}" aria-label="${escHtml(td('removePhoto', 'Remove photo'))}">×</button></figure>`;
+        }).join('');
+        const links = videos.map(m => `<li>${isHttpsUrl(m.url)
+            ? `<a href="${escHtml(m.url)}" target="_blank" rel="noopener noreferrer">${escHtml(m.caption || m.url)}</a>`
+            : `<span>${escHtml(m.caption || m.url || '')}</span>`}
+            <button type="button" class="lb-chip-x" data-remove="${escHtml(m.id)}" aria-label="${escHtml(td('removeVideo', 'Remove link'))}">×</button></li>`).join('');
+        this.mediaEl.innerHTML = `${photos.length ? `<h3>${escHtml(td('photos', 'Photos'))}</h3><div class="lb-photos">${grid}</div>` : ''}
+            ${videos.length ? `<h3>${escHtml(td('videos', 'Videos'))}</h3><ul class="lb-videos">${links}</ul>` : ''}`;
+        for (const img of this.mediaEl.querySelectorAll('.lb-photo img')) {
+            img.addEventListener('load', () => { this._urlRetried = false; });
+            img.addEventListener('error', () => {
+                if (this._urlRetried || this.destroyed) return; // signed URLs expire after an hour
+                this._urlRetried = true;
+                this._loadUrls();
+            });
+        }
+        for (const b of this.mediaEl.querySelectorAll('[data-open]')) b.addEventListener('click', () => this._openViewer(b.dataset.open));
+        for (const b of this.mediaEl.querySelectorAll('[data-remove]')) {
+            b.addEventListener('click', () => {
+                this.confirm = { kind: 'media', media: this.media.find(m => m.id === b.dataset.remove) };
+                this.videoOpen = false;
+                this.renderPanel();
+            });
+        }
+    }
+
+    _openViewer(id) {
+        const m = this.media.find(x => x.id === id);
+        const url = m && this.urls.get(m.path);
+        if (!url) return;
+        this._closeViewer();
+        const v = document.createElement('div');
+        v.className = 'lb-viewer';
+        v.setAttribute('role', 'dialog');
+        v.setAttribute('aria-modal', 'true');
+        v.setAttribute('aria-label', tp('alt', 'Photo'));
+        v.innerHTML = `<img src="${escHtml(url)}" alt="${escHtml(tp('alt', 'Photo'))}"><button type="button" class="lb-viewer-x" aria-label="${escHtml(td('close', 'Close'))}">×</button>`;
+        v.addEventListener('click', () => this._closeViewer());
+        document.body.appendChild(v);
+        v.querySelector('button').focus();
+        this.viewer = v;
+    }
+
+    _closeViewer() {
+        this.viewer?.remove();
+        this.viewer = null;
+    }
+
+    // ---- Panel: confirmations, video form, progress and errors ----
+
+    renderPanel() {
+        const parts = [];
+        if (this.status) parts.push(`<p class="lb-d-status" role="status">${escHtml(this.status)}</p>`);
+        if (this.errors.length) parts.push(`<p class="lb-form-error" role="alert">${this.errors.map(escHtml).join('<br>')}</p>`);
+        if (this.confirm) {
+            const isEntry = this.confirm.kind === 'entry';
+            parts.push(`<div class="lb-confirm" role="alertdialog" aria-label="${escHtml(td('confirm', 'Confirm'))}">
+                <p>${escHtml(isEntry ? td('deleteEntryText', 'Delete this dive and its photos? The dive computer recording is kept.') : td('deleteMediaText', 'Remove this item?'))}</p>
+                <div class="lb-actions"><button type="button" class="btn btn-danger" id="lb-confirm-yes"${this.busy ? ' disabled' : ''}>${escHtml(isEntry ? td('delete', 'Delete') : td('remove', 'Remove'))}</button>
+                <button type="button" class="btn btn-secondary" id="lb-confirm-no">${escHtml(td('cancel', 'Cancel'))}</button></div></div>`);
+        }
+        if (this.videoOpen) {
+            parts.push(`<form class="lb-video-form" novalidate>
+                <label class="lb-field"><span>${escHtml(td('videoUrl', 'Video link (https://…)'))}</span><input type="text" name="url" inputmode="url" autocomplete="off"></label>
+                <label class="lb-field"><span>${escHtml(td('videoCaption', 'Caption (optional)'))}</span><input type="text" name="caption" autocomplete="off"></label>
+                <p class="lb-form-error" role="alert" hidden></p>
+                <div class="lb-actions"><button type="submit" class="btn btn-primary">${escHtml(td('videoSave', 'Add link'))}</button>
+                <button type="button" class="btn btn-secondary" id="lb-video-cancel">${escHtml(td('cancel', 'Cancel'))}</button></div></form>`);
+        }
+        this.panel.innerHTML = parts.join('');
+        this.panel.querySelector('#lb-confirm-no')?.addEventListener('click', () => { this.confirm = null; this.renderPanel(); });
+        this.panel.querySelector('#lb-confirm-yes')?.addEventListener('click', () => this._confirmed());
+        this.panel.querySelector('#lb-video-cancel')?.addEventListener('click', () => { this.videoOpen = false; this.renderPanel(); });
+        this.panel.querySelector('.lb-video-form')?.addEventListener('submit', e => { e.preventDefault(); this._saveVideo(e.target); });
+        if (this.confirm || this.videoOpen) this.panel.querySelector('button, input')?.focus();
+    }
+
+    async _confirmed() {
+        const { kind, media } = this.confirm;
+        this.busy = true;
+        this.errors = [];
+        this.renderPanel();
+        try {
+            if (kind === 'entry') {
+                await this.store.deleteEntry(this.entry.id);
+                if (!this.destroyed) this.onDeleted?.();
+                return;
+            }
+            await this.store.deleteMedia(media);
+            if (this.destroyed) return;
+            this.media = this.media.filter(m => m.id !== media.id);
+            this.confirm = null;
+            this.renderMedia();
+        } catch (error) {
+            if (this.destroyed) return;
+            this._fail(error);
+        }
+        this.busy = false;
+        if (!this.destroyed) this.renderPanel();
+    }
+
+    async _saveVideo(form) {
+        const url = form.elements.url.value.trim();
+        const caption = form.elements.caption.value.trim() || null;
+        const err = form.querySelector('.lb-form-error');
+        if (!isHttpsUrl(url)) {
+            err.textContent = td('videoInvalid', 'Enter a link that starts with https://');
+            err.hidden = false;
+            return;
+        }
+        form.querySelector('[type="submit"]').disabled = true;
+        try {
+            const row = await this.store.addVideoLink(this.entry.id, url, caption);
+            if (this.destroyed) return;
+            this.media = [...this.media, row];
+            this.videoOpen = false;
+            this.renderMedia();
+            this.renderPanel();
+        } catch (error) {
+            console.error(error);
+            if (this.destroyed) return;
+            form.querySelector('[type="submit"]').disabled = false;
+            err.textContent = tb('genericError', 'Something went wrong. Please try again.');
+            err.hidden = false;
+        }
+    }
+
+    async _addPhotos(input) {
+        const files = Array.from(input.files);
+        input.value = '';
+        if (!files.length || this.busy) return;
+        this.busy = true;
+        input.disabled = true;
+        this.errors = [];
+        const failures = [];
+        let added = 0;
+        for (const [i, file] of files.entries()) {
+            if (this.destroyed) return;
+            this.status = fill(tp('progress', 'Uploading {0} / {1}…'), i + 1, files.length);
+            this.renderPanel();
+            if (!isSupportedImage(file.type) && !isSupportedImage(file.name)) {
+                failures.push(fill(tp('unsupported', '{0}: save as JPEG first'), file.name));
+                continue;
+            }
+            try {
+                const exif = await readExif(file); // before resizing: the resized copy has no EXIF
+                const { blob, width, height } = await resizeImage(file);
+                const row = await this.store.addPhoto(this.entry.id, { blob, width, height, ...exif });
+                added++;
+                if (this.destroyed) return;
+                this.media = [...this.media, row];
+            } catch (error) {
+                console.error(error);
+                failures.push(fill(tp('failed', '{0}: could not be uploaded'), file.name));
+            }
+        }
+        if (this.destroyed) return;
+        this.busy = false;
+        this.status = '';
+        this.errors = failures;
+        const fresh = this.main.querySelector('#lb-add-photos');
+        if (fresh) fresh.disabled = false;
+        this.renderPanel();
+        if (added) {
+            this.renderMedia();
+            await this._loadUrls();
+        }
+    }
+}
