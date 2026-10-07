@@ -32,7 +32,7 @@ An educational web application for understanding decompression models used in sc
 - **Pure HTML / CSS / ES Modules** — no build tools, no transpiler, no bundler.
 - **Chart.js** for all dive-profile and tissue-loading visualisations.
 - **KaTeX** for math rendering on theory pages.
-- **GitHub Pages** for hosting at `decotheory.eu`.
+- **GitHub Pages** for hosting at `decotheory.eu`, deployed by `.github/workflows/pages.yml` (only the site files, see `scripts/build-pages.mjs`).
 
 ## Project layout
 

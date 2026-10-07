@@ -51,12 +51,11 @@ function loadView() {
 export class LogbookApp {
     /**
      * @param {HTMLElement} root
-     * @param {{store?: Object|null, demoFiles?: string[]}} [config]
+     * @param {{store?: Object|null}} [config]
      */
-    constructor(root, { store = null, demoFiles = [] } = {}) {
+    constructor(root, { store = null } = {}) {
         this.root = root;
         this.store = store;
-        this.demoFiles = demoFiles;
         this.user = null;
         this.analysis = null; // the mounted RecordedDiveAnalysis (plain or embedded)
         this.entries = null;
@@ -116,7 +115,7 @@ export class LogbookApp {
         this.root.innerHTML = '';
         // With a backend, logged-out visitors see only the login form: no example dives, no pickers.
         this.root.classList.toggle('rda-login-only', !!this.store);
-        this.analysis = new RecordedDiveAnalysis(this.root, { demoFiles: this.store ? [] : this.demoFiles, store: this.store });
+        this.analysis = new RecordedDiveAnalysis(this.root, { store: this.store });
     }
 
     _unmountAnalysis() {

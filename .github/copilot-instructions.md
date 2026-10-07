@@ -3,7 +3,7 @@
 ## Project Overview
 DecoJS is an educational PWA for scuba diving decompression theory, implementing the Bühlmann ZH-L16 algorithm with interactive visualizations.
 
-**Live at:** https://decotheory.eu (GitHub Pages from `main`)
+**Live at:** https://decotheory.eu (GitHub Pages, deployed by `.github/workflows/pages.yml` on every push to `main`)
 
 ## Development Commands
 
@@ -195,6 +195,13 @@ Since the app runs at `/decojs/` (not root), manifest uses absolute paths:
 ### Files Cached for Offline
 All static assets are listed in `sw.js` → `STATIC_ASSETS` array.
 If you add new files, add them to this array.
+
+### What gets published
+Only an allow-list of site files is deployed (`scripts/build-pages.mjs`: top-level `*.html`, `sw.js`,
+`manifest.json`, `CNAME`, `.nojekyll`, and `css/ data/ fonts/ icons/ images/ js/ lab/ locales/ sandbox/ videos/`).
+`tests/`, `docs/`, `supabase/`, `wiki/`, `scripts/`, `resources/` are never served. A new top-level folder
+the site needs must be added to `SITE_DIRS`. The build (also run in CI) fails if a `STATIC_ASSETS` entry or a
+local `href`/`src` in a published page is missing from the output.
 
 ## Update Behavior
 
