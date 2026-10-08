@@ -1168,6 +1168,17 @@
             "rankingTissue": "TC",
             "rankingGF": "GF",
             "tooltipLabel": "{0}: ambient pressure {1} bar, GF {2}%"
+        },
+        "readout": {
+            "hint": "Touch the chart to read its values",
+            "clear": "Clear readout",
+            "ceiling": "ceiling",
+            "noCeiling": "no ceiling",
+            "computer": "computer",
+            "use": "use",
+            "subAmb": "amb",
+            "subTissue": "t",
+            "noPoint": "No point here: touch a line or a dot"
         }
     },
     "warnings": {

@@ -1168,6 +1168,17 @@
             "rankingTissue": "TC",
             "rankingGF": "GF",
             "tooltipLabel": "{0}: presión ambiente {1} bar, GF {2} %"
+        },
+        "readout": {
+            "hint": "Toca el gráfico para ver sus valores",
+            "clear": "Ocultar valores",
+            "ceiling": "techo",
+            "noCeiling": "sin techo",
+            "computer": "ordenador",
+            "use": "consumo",
+            "subAmb": "amb",
+            "subTissue": "t",
+            "noPoint": "Aquí no hay ningún punto: toca una línea o un punto"
         }
     },
     "warnings": {

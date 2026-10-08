@@ -291,6 +291,8 @@ export const DEFAULT_DIVE_PROFILE_OPTIONS = {
     fullscreenButton: true,
     // Phone-portrait layout (host ≤ 600 px): see narrowLayout.js. Opt-in so other pages stay unchanged.
     narrowLayout: false,
+    // Touch screens: value strip above the plot instead of the tooltip (touchReadout.js). Opt-in.
+    touchReadout: false,
     animationDuration: 500,
     colors: {
         depth: '#3498db',

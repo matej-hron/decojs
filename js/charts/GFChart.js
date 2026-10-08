@@ -35,6 +35,7 @@ import { applyChartTheme } from './chartTheme.js';
 import { createInteractionLockBtn } from './interactionLock.js';
 import { narrowChartPlugin, rankingPlacement, syncNarrowClass } from './narrowLayout.js';
 import { resolveChartTooltipEnabled } from '../components/tooltipShortcut.js';
+import { TouchReadout, nearestChartPoint, pointReadoutLines, noPointLines } from './touchReadout.js';
 import { translate } from '../i18n.js';
 
 import { fmtNum } from '../format.js';
@@ -75,6 +76,8 @@ const DEFAULT_GF_OPTIONS = {
     fullscreenButton: true,
     // Phone-portrait layout (host ≤ 600 px): see narrowLayout.js. Opt-in so other pages stay unchanged.
     narrowLayout: false,
+    // Touch screens: value strip above the plot instead of the tooltip (touchReadout.js). Opt-in.
+    touchReadout: false,
     compartmentSelector: true,
     playbackSpeed: 100,
     onTimeIndexChange: null,
@@ -272,6 +275,16 @@ export class GFChart {
         );
 
         this.wrapper.appendChild(this.chartContainer);
+        if (this.options.touchReadout) {
+            this.touchReadout = new TouchReadout({
+                host: this.container, before: this.chartContainer, canvas: this.canvas,
+                getChart: () => this.chart, mode: 'point',
+                resolve: (chart, anchor) => {
+                    const p = nearestChartPoint(chart, anchor);
+                    return p ? { lines: pointReadoutLines('gf', p), marker: p.marker } : { lines: noPointLines(), marker: null };
+                },
+            });
+        }
 
         // Mini profile canvas
         this.miniProfileCanvas = document.createElement('canvas');
@@ -1360,11 +1373,14 @@ export class GFChart {
             });
         }
 
+        // Opt-in touch readout replaces the tooltip on touch screens (js/charts/touchReadout.js).
+        const readoutOn = this.touchReadout?.sync() ?? false;
         const config = {
             type: 'scatter',
             data: { datasets },
             plugins: [
                 ...(this.options.narrowLayout ? [narrowChartPlugin] : []),
+                ...(this.touchReadout ? [this.touchReadout.plugin] : []),
                 {
                     id: 'gf-compartment-ranking',
                     beforeLayout: (chart) => {
@@ -1387,6 +1403,8 @@ export class GFChart {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                // Touch: no hover highlight (it would stick where the finger lifted); legend taps still work.
+                ...(readoutOn ? { events: ['click'], hover: { mode: 'nearest', intersect: true } } : {}),
                 layout: {
                     padding: {
                         right: 170
@@ -1409,7 +1427,7 @@ export class GFChart {
                             this._handleLegendClick(legendItem, legend)
                     },
                     tooltip: {
-                        enabled: resolveChartTooltipEnabled(this.options.interactive, this.canvas),
+                        enabled: !readoutOn && resolveChartTooltipEnabled(this.options.interactive, this.canvas),
                         callbacks: {
                             label: (context) => {
                                 const label = context.dataset.label || '';
@@ -1601,6 +1619,7 @@ export class GFChart {
         }
 
         document.removeEventListener('keydown', this._keyHandler);
+        this.touchReadout?.destroy();
         if (this._onLanguageChange) {
             document.removeEventListener('languagechange', this._onLanguageChange);
             this._onLanguageChange = null;

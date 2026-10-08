@@ -32,6 +32,7 @@ import { applyChartTheme, depthGradient, theme } from './chartTheme.js';
 import { createInteractionLockBtn } from './interactionLock.js';
 import { narrowChartPlugin, syncNarrowClass } from './narrowLayout.js';
 import { resolveChartTooltipEnabled } from '../components/tooltipShortcut.js';
+import { TouchReadout, nearestIndex, profileReadoutView, profileReadoutLines } from './touchReadout.js';
 import { translate } from '../i18n.js';
 
 /** Helper: replace {0}, {1}, ... placeholders with the given values. */
@@ -46,6 +47,7 @@ import {
     calculateCeilingTimeSeries,
     calculateCeilingTimeSeriesDetailed,
     calculateNDL,
+    calculateMaxGF,
     getAmbientPressure,
     getAlveolarN2Pressure,
     getSurfacePressure,
@@ -247,6 +249,13 @@ export class DiveProfileChart {
         );
 
         this.container.appendChild(this.chartContainer);
+        if (this.options.touchReadout) {
+            this.touchReadout = new TouchReadout({
+                host: this.container, before: this.chartContainer, canvas: this.canvas,
+                getChart: () => this.chart, mode: 'time',
+                resolve: (chart, anchor) => this._readoutAt(chart, anchor),
+            });
+        }
         
         this._setupKeyboardShortcuts();
 
@@ -980,6 +989,13 @@ export class DiveProfileChart {
         this._timePoints = results.timePoints;
         this._gasSwitches = results.gasSwitches || [];
         this._bottomGasName = gases[0]?.name || 'Air';
+        if (this.touchReadout) {
+            const ref = this.options.referenceCeiling;
+            this._readoutData = {
+                results, ceilingDepths, gasConsumption,
+                deviceCeiling: Array.isArray(ref) && ref.length ? resampleReference(ref, results.timePoints) : null,
+            };
+        }
 
         // Calculate axis bounds
         const maxDepth = Math.max(...waypoints.map(wp => wp.depth));
@@ -1447,13 +1463,19 @@ export class DiveProfileChart {
         }
         
         // Chart configuration
+        // Opt-in touch readout replaces the tooltip on touch screens (js/charts/touchReadout.js).
+        const readoutOn = this.touchReadout?.sync() ?? false;
         const config = {
             type: 'line',
             data: { datasets },
-            ...(this.options.narrowLayout ? { plugins: [narrowChartPlugin] } : {}),
+            ...(this.options.narrowLayout || this.touchReadout
+                ? { plugins: [this.options.narrowLayout && narrowChartPlugin, this.touchReadout?.plugin].filter(Boolean) }
+                : {}),
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                // Touch: no hover highlight (it would stick where the finger lifted); legend taps still work.
+                ...(readoutOn ? { events: ['click'], hover: { mode: 'nearest', intersect: true } } : {}),
                 animation: {
                     duration: this.isFirstRender ? this.options.animationDuration : 0
                 },
@@ -1471,18 +1493,12 @@ export class DiveProfileChart {
                         }
                     },
                     tooltip: {
-                        enabled: resolveChartTooltipEnabled(this.options.interactive, this.canvas),
+                        enabled: !readoutOn && resolveChartTooltipEnabled(this.options.interactive, this.canvas),
                         callbacks: {
                             title: (items) => {
                                 if (items.length > 0) {
                                     const time = items[0].parsed.x;
-                                    // Find active gas at this time
-                                    let gasName = this._bottomGasName || 'Air';
-                                    if (this._gasSwitches) {
-                                        for (const sw of this._gasSwitches) {
-                                            if (time >= sw.time) gasName = sw.gasName;
-                                        }
-                                    }
+                                    const gasName = this._gasAt(time);
                                     return [
                                         fmt(translate('chart.profile.tooltipTime', 'Time: {0}\u00a0min'), fmtNum(time, 1)),
                                         fmt(translate('chart.profile.tooltipGas', 'Gas: {0}'), gasName)
@@ -1624,6 +1640,56 @@ export class DiveProfileChart {
         }
     }
     
+    /** Gas breathed at `time` (min): the bottom gas until the last switch at or before it. */
+    _gasAt(time) {
+        let gasName = this._bottomGasName || 'Air';
+        for (const sw of this._gasSwitches ?? []) {
+            if (time >= sw.time) gasName = sw.gasName;
+        }
+        return gasName;
+    }
+
+    /** Touch readout at the time point nearest `anchor.x` (see js/charts/touchReadout.js). */
+    _readoutAt(chart, anchor) {
+        const d = this._readoutData;
+        const i = nearestIndex(d?.results.timePoints, anchor.x);
+        if (i < 0) return null;
+        const { results, ceilingDepths, gasConsumption, deviceCeiling } = d;
+        const t = results.timePoints[i];
+        const pAmb = results.ambientPressures[i];
+        const n2 = results.n2Fractions[i];
+        const tissueAt = id => results.compartments[id]?.pressures[i];
+        const tissues = {};
+        for (const id of Object.keys(results.compartments)) tissues[id] = tissueAt(id);
+        const { gfMax, leadingCompartment } = calculateMaxGF(tissues, pAmb);
+        const cylinders = Object.values(gasConsumption ?? {}).filter(g => g.isActive && Number.isFinite(g.pressures[i]));
+        const snap = {
+            t, pAmb,
+            depth: results.depthPoints[i],
+            gas: this._gasAt(t),
+            ceiling: ceilingDepths?.[i] ?? null,
+            deviceCeiling: deviceCeiling?.[i]?.y ?? null,
+            gf: leadingCompartment === null ? null : { value: gfMax, compartment: leadingCompartment },
+            pO2: pAmb * (1 - n2),  // simplified like the pO₂ line: no helium
+            pN2: pAmb * n2,
+            tissues: [...this.visibleCompartments].sort((a, b) => a - b)
+                .map(id => ({ id, p: tissueAt(id) })).filter(c => Number.isFinite(c.p)),
+            rate: cylinders.map(g => g.rates[i]).find(rate => rate > 0) ?? null,
+            cylinders: cylinders.map(g => ({ name: g.name, bar: g.pressures[i] })),
+        };
+        // A dot where each drawn line crosses the crosshair
+        const points = [];
+        chart.data.datasets.forEach((ds, di) => {
+            const el = chart.getDatasetMeta(di).data[i];
+            if (ds.isOverlayHelper || !chart.isDatasetVisible(di) || !el || el.skip || !Number.isFinite(ds.data[i]?.y)) return;
+            if (typeof ds.borderColor === 'string' && ds.borderColor !== 'transparent') points.push({ x: el.x, y: el.y, color: ds.borderColor });
+        });
+        return {
+            lines: profileReadoutLines(profileReadoutView(this.options), snap),
+            marker: { x: chart.scales.x.getPixelForValue(t), points },
+        };
+    }
+
     /**
      * Update the chart with new dive setup
      * @param {Object} diveSetup - New dive setup configuration
@@ -1746,6 +1812,7 @@ export class DiveProfileChart {
         }
         
         document.removeEventListener('keydown', this._keyHandler);
+        this.touchReadout?.destroy();
         if (this._onLanguageChange) {
             document.removeEventListener('languagechange', this._onLanguageChange);
             this._onLanguageChange = null;
