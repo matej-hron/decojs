@@ -382,3 +382,114 @@ describe('translateStatic', () => {
         assert.equal(a.innerHTML, '<b>x</b>');
     });
 });
+
+/** A fake Supabase client that honours eq/in/range/delete/select and storage list/remove, for the delete-all flow. */
+function wipeClient({ user = { id: 'u1', email: 'me@example.com' }, tables, storage, failTable = null } = {}) {
+    const calls = [];
+    const query = name => {
+        const q = {
+            _f: [], _op: 'select', _range: null,
+            select() { return this; },
+            delete() { this._op = 'delete'; return this; },
+            eq(c, v) { this._f.push(r => r[c] === v); return this; },
+            in(c, vs) { this._f.push(r => vs.includes(r[c])); return this; },
+            order() { return this; },
+            range(a, b) { this._range = [a, b]; return this; },
+            then(resolve) {
+                if (failTable === name && this._op === 'delete') return resolve({ data: null, error: { message: `cannot delete ${name}` } });
+                const rows = tables[name];
+                const hit = rows.filter(r => this._f.every(f => f(r)));
+                if (this._op === 'delete') {
+                    tables[name] = rows.filter(r => !hit.includes(r));
+                    calls.push(['delete', name, hit.length]);
+                    return resolve({ data: hit.map(r => ({ id: r.id })), error: null });
+                }
+                const part = this._range ? hit.slice(this._range[0], this._range[1] + 1) : hit;
+                return resolve({ data: part, error: null });
+            },
+        };
+        return q;
+    };
+    return {
+        calls, tables, buckets: storage,
+        auth: { async getUser() { return { data: { user }, error: null }; } },
+        from: query,
+        storage: {
+            from(bucket) {
+                const files = storage[bucket];
+                return {
+                    async list(prefix) {
+                        const dir = prefix ? `${prefix}/` : '';
+                        const seen = new Map();
+                        for (const p of files.keys()) {
+                            if (!p.startsWith(dir)) continue;
+                            const rest = p.slice(dir.length);
+                            const [head, ...tail] = rest.split('/');
+                            seen.set(head, tail.length ? { name: head, id: null } : { name: head, id: p });
+                        }
+                        return { data: [...seen.values()], error: null };
+                    },
+                    async remove(paths) {
+                        calls.push(['remove', bucket, paths.length]);
+                        for (const p of paths) files.delete(p);
+                        return { data: paths.map(name => ({ name })), error: null };
+                    },
+                };
+            },
+        },
+    };
+}
+
+describe('deleteAllMyData', () => {
+    const seed = () => ({
+        tables: {
+            dives: [
+                { id: 'd1', owner: 'u1', file_path: 'u1/S/a.DLF' }, { id: 'd2', owner: 'u1', file_path: 'u1/S/b.DLF' },
+                { id: 'dx', owner: 'u2', file_path: 'u2/S/z.DLF' },
+            ],
+            log_entries: [
+                { id: 'e1', owner: 'u1', recording_id: 'd1' }, { id: 'e2', owner: 'u1', recording_id: null },
+                { id: 'ex', owner: 'u2', recording_id: 'dx' },
+            ],
+            sites: [{ id: 's1', owner: 'u1' }, { id: 'sx', owner: 'u2' }],
+            media: [
+                { id: 'm1', entry_id: 'e1', kind: 'photo', path: 'u1/e1/p.jpg' },
+                { id: 'm2', entry_id: 'e2', kind: 'video_link', url: 'https://example.com/v' },
+                { id: 'mx', entry_id: 'ex', kind: 'photo', path: 'u2/ex/p.jpg' },
+            ],
+        },
+        storage: {
+            'dive-logs': new Map([['u1/S/a.DLF', 1], ['u1/S/b.DLF', 1], ['u1/S/orphan.DLF', 1], ['u2/S/z.DLF', 1]]),
+            'dive-photos': new Map([['u1/e1/p.jpg', 1], ['u1/e1/lost.jpg', 1], ['u2/ex/p.jpg', 1]]),
+        },
+    });
+
+    test('empties every table and bucket for this owner only', async () => {
+        const client = wipeClient(seed());
+        const store = createSupabaseStore(client);
+        const steps = [];
+        const report = await store.deleteAllMyData({ onProgress: s => steps.push(s) });
+        assert.deepEqual(client.tables.dives.map(r => r.id), ['dx']);
+        assert.deepEqual(client.tables.log_entries.map(r => r.id), ['ex']);
+        assert.deepEqual(client.tables.sites.map(r => r.id), ['sx']);
+        assert.deepEqual(client.tables.media.map(r => r.id), ['mx']);
+        assert.deepEqual([...client.buckets['dive-logs'].keys()], ['u2/S/z.DLF']);
+        assert.deepEqual([...client.buckets['dive-photos'].keys()], ['u2/ex/p.jpg']);
+        assert.deepEqual(report, { entries: 2, sites: 1, recordings: 2, photos: 2, media: 2, failed: [] });
+        assert.deepEqual(steps, ['photos', 'entries', 'sites', 'recordings']);
+    });
+
+    test('a failing step is reported and does not stop the others', async () => {
+        const client = wipeClient({ ...seed(), failTable: 'sites' });
+        const report = await createSupabaseStore(client).deleteAllMyData();
+        assert.equal(report.failed.length, 1);
+        assert.equal(report.failed[0].step, 'sites');
+        assert.equal(client.tables.log_entries.filter(r => r.owner === 'u1').length, 0);
+        assert.equal(client.tables.dives.filter(r => r.owner === 'u1').length, 0);
+    });
+
+    test('requires a logged-in user', async () => {
+        const client = wipeClient({ ...seed(), user: null });
+        await assert.rejects(createSupabaseStore(client).deleteAllMyData(), { kind: 'auth' });
+    });
+});

@@ -8167,14 +8167,12 @@ describe('i18n notation - canvas strings must not contain HTML entities', () => 
         expect(bad).toEqual([]);
     });
 
-    test('all locales agree on which keys exist', () => {        // Known gap: the Spanish privacy policy has not been translated yet.
-        // The test still fails on any NEW divergence outside this prefix.
-        const KNOWN_UNTRANSLATED = /^privacy\./;
+    test('all locales agree on which keys exist', () => {
         const keysOf = (l) => new Set(flatten(load(l)).map(([k]) => k));
         const cs = keysOf('cs');
         for (const loc of ['en', 'es']) {
             const have = keysOf(loc);
-            const missing = [...cs].filter((k) => !have.has(k) && !KNOWN_UNTRANSLATED.test(k));
+            const missing = [...cs].filter((k) => !have.has(k));
             const extra = [...have].filter((k) => !cs.has(k));
             expect(missing).toEqual([]);
             expect(extra).toEqual([]);
@@ -9546,7 +9544,7 @@ describe('page titles', () => {
      * ne chyba. Jakmile překlad přibude, záznam odsud musí zmizet; hlídá
      * to test níže.
      */
-    const UNTRANSLATED = { 'privacy.html': ['es'] };
+    const UNTRANSLATED = {};
 
     const resolve = (obj, key) => {
         let v = obj;
