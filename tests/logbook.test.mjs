@@ -1000,6 +1000,27 @@ describe('RecordedDiveAnalysis lifecycle (jsdom)', () => {
         });
     });
 
+    test('logged-out card has a Google button that calls the store, and an OAuth error in the URL is shown then cleaned', async () => {
+        await withDom(async root => {
+            history.replaceState(null, '', '/lab/dive-log.html?error=server_error&error_description=Signups+not+allowed+for+this+instance');
+            const calls = [];
+            const store = {
+                onAuthChange: () => () => {},
+                currentUser: async () => null,
+                listDives: async () => [],
+                signInWithGoogle: async url => { calls.push(url); },
+            };
+            const rda = new RecordedDiveAnalysis(root, { store, demoFiles: [] });
+            await tick();
+            assert.match(root.querySelector('#rda-account').textContent, /Google account can't log in/);
+            assert.equal(location.search, '');
+            root.querySelector('#rda-google').click();
+            await tick();
+            assert.deepEqual(calls, ['http://localhost/lab/dive-log.html']);
+            rda.destroy();
+        });
+    });
+
     test('embedded with a focus id that is not stored shows "not found", not another dive', async () => {
         await withDom(async root => {
             const dive = diveOf('00000100');

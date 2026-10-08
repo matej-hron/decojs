@@ -22,6 +22,26 @@ import { translate } from '../i18n.js';
 import { fmtNum } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
 
+const GOOGLE_G = '<svg class="rda-google-g" viewBox="0 0 48 48" width="20" height="20" aria-hidden="true" focusable="false"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>';
+
+/**
+ * Map an auth redirect's error (URL hash or query: error, error_code, error_description) to an account message.
+ * Returns null when the URL carries no auth error.
+ */
+
+export function authRedirectMessage(hash = '', search = '') {
+    const params = new URLSearchParams(String(hash).replace(/^#/, ''));
+    for (const [k, v] of new URLSearchParams(String(search).replace(/^\?/, ''))) if (!params.has(k)) params.set(k, v);
+    const code = params.get('error_code') ?? '';
+    const error = params.get('error') ?? '';
+    if (!code && !error) return null;
+    const text = `${code} ${error} ${params.get('error_description') ?? ''}`;
+    if (code === 'otp_expired') return { key: 'linkExpired', fallback: 'This login link has expired. Send a new one.' };
+    if (/signups? not allowed|user_not_found/i.test(text)) return { key: 'cannotLoginGoogle', fallback: 'This Google account can\'t log in here.' };
+    if (error === 'access_denied') return { key: 'googleCancelled', fallback: 'Google sign-in was cancelled.' };
+    return { key: 'genericError', fallback: 'Something went wrong. Please try again.' };
+}
+
 /** True for file names that look like Divesoft dive logs. */
 export function isDlfFileName(name) {
     return /.\.dlf$/i.test(name ?? '');
@@ -260,11 +280,15 @@ export class RecordedDiveAnalysis {
     // ---- Account bar and server mode ----
 
     _initStore() {
-        if (/error_code=otp_expired/.test(globalThis.location?.hash ?? '')) {
-            this.accountMsg = { key: 'linkExpired', fallback: 'This login link has expired. Send a new one.' };
+        const authError = authRedirectMessage(globalThis.location?.hash, globalThis.location?.search);
+        if (authError) {
+            this.accountMsg = authError;
             try {
-                history.replaceState(null, '', location.pathname + location.search);
-            } catch { /* keep the hash */ }
+                const rest = new URLSearchParams(location.search);
+                for (const k of ['error', 'error_code', 'error_description']) rest.delete(k);
+                const query = rest.toString();
+                history.replaceState(null, '', location.pathname + (query ? `?${query}` : ''));
+            } catch { /* keep the URL */ }
         }
         this._renderAccount();
         this._unsubscribe = this.store.onAuthChange(user => this._onUser(user));
@@ -352,6 +376,8 @@ export class RecordedDiveAnalysis {
         } else {
             el.innerHTML = `
                 <strong>${label('loginHeading', 'Your dive log')}</strong>
+                <button type="button" class="rda-google" id="rda-google">${GOOGLE_G}<span>${label('continueGoogle', 'Continue with Google')}</span></button>
+                <p class="rda-or" aria-hidden="true"><span>${label('orEmail', 'or use an email link')}</span></p>
                 <form class="rda-login" id="rda-login">
                     <label>${label('emailLabel', 'Email')}
                         <input type="email" id="rda-email" required autocomplete="email" value="${escHtml(this.email)}"></label>
@@ -359,12 +385,26 @@ export class RecordedDiveAnalysis {
                 </form>
                 ${this.linkSent ? `<p class="rda-account-msg">${label('linkSent', 'Check your email for the login link.')}</p>` : ''}
                 ${msg}`;
+            el.querySelector('#rda-google').addEventListener('click', () => this._googleLogin());
             const input = el.querySelector('#rda-email');
             input.addEventListener('input', () => { this.email = input.value; });
             el.querySelector('#rda-login').addEventListener('submit', e => {
                 e.preventDefault();
                 this._sendLink(input.value.trim());
             });
+        }
+    }
+
+    async _googleLogin() {
+        try {
+            await this.store.signInWithGoogle(`${location.origin}${location.pathname}`);
+        } catch (error) {
+            console.error(error);
+            this.accountMsg = error instanceof DiveStoreError && error.kind === 'auth'
+                ? { key: 'cannotLoginGoogle', fallback: 'This Google account can\'t log in here.' }
+                : null;
+            if (this.accountMsg) this._renderAccount();
+            else this._storeError(error);
         }
     }
 

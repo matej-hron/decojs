@@ -91,6 +91,11 @@ export function createSupabaseStore(client) {
             if (error) throw fail(error, 'auth');
         },
 
+        async signInWithGoogle(redirectTo) {
+            const { error } = await client.auth.signInWithOAuth({ provider: 'google', options: { redirectTo } });
+            if (error) throw fail(error, 'auth');
+        },
+
         async signOut() {
             const { error } = await client.auth.signOut();
             if (error) throw fail(error);
