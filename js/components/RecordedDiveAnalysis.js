@@ -858,16 +858,16 @@ export class RecordedDiveAnalysis {
                         ...this._profileOptions(deviceCeiling, dive),
                         showDecoStops: false, showGasSwitches: true,
                         violationToleranceM: CEILING_VIOLATION_TOLERANCE_M,
-                        narrowLayout: true,
+                        narrowLayout: true, touchReadout: true,
                     },
                 }),
                 mvalue: new MValueChart(this.el.mvalue, {
                     diveSetup: setup,
-                    options: { compartments: [1], showMValueLines: true, showGFLines: true, showAmbientLine: true, showTrail: true, compartmentSelector: true, narrowLayout: true },
+                    options: { compartments: [1], showMValueLines: true, showGFLines: true, showAmbientLine: true, showTrail: true, compartmentSelector: true, narrowLayout: true, touchReadout: true },
                 }),
                 gf: new GFChart(this.el.gfChart, {
                     diveSetup: setup,
-                    options: { compartments: [1, 2, 3, 4, 5, 6], showTrail: true, compartmentSelector: true, narrowLayout: true },
+                    options: { compartments: [1, 2, 3, 4, 5, 6], showTrail: true, compartmentSelector: true, narrowLayout: true, touchReadout: true },
                 }),
             };
             this._chartsDive = dive;

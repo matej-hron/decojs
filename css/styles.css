@@ -1710,6 +1710,111 @@ section h2 {
     display: none;
 }
 
+/* Touch readout (js/charts/touchReadout.js, opt-in): value strip above a chart on touch screens */
+.chart-readout-on:has(> .dpc-chart-container) {
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-readout-on > .dpc-chart-container {
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+/* Vertical swipes scroll (and pinch zooms) the page; taps and horizontal drags move the readout.
+   !important: hammer.js (zoom plugin) writes touch-action inline on every chart rebuild. */
+.chart-readout-on canvas {
+    touch-action: pan-y pinch-zoom !important;
+}
+
+.chart-readout {
+    flex: none;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    box-sizing: border-box;
+    min-height: calc(2lh + 0.5rem); /* two lines reserved: no jump while dragging */
+    margin-bottom: 4px;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface-sunken);
+    color: var(--text);
+    font-size: 0.8125rem;
+    line-height: 1.35;
+    font-variant-numeric: tabular-nums;
+}
+
+.chart-readout[hidden],
+.chart-readout-clear[hidden] {
+    display: none;
+}
+
+.chart-readout-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.chart-readout-line {
+    overflow: hidden;
+    white-space: nowrap; /* exactly two lines: a third would resize the plot mid-drag */
+    text-overflow: ellipsis;
+}
+
+.chart-readout-line:first-child {
+    font-weight: 600;
+}
+
+/* Fullscreen profile: the strip moves into the overlay, over the time-axis title */
+.dpc-fullscreen > .chart-readout {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1001;
+    margin: 0;
+}
+
+.chart-readout-seg {
+    white-space: nowrap;
+}
+
+.chart-readout-sep,
+.chart-readout-empty {
+    color: var(--text-subtle);
+}
+
+.chart-readout-empty {
+    align-items: center;
+}
+
+.chart-readout var {
+    font-style: italic;
+}
+
+.chart-readout sub {
+    font-size: 0.75em;
+    line-height: 0;
+}
+
+.chart-readout-clear {
+    flex: none;
+    width: 32px;
+    height: 32px;
+    margin: -0.125rem -0.375rem -0.125rem 0;
+    padding: 0;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--text-subtle);
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.chart-readout-clear:focus-visible {
+    outline: 2px solid var(--focus-ring);
+}
+
 .mvc-compartment-option {
     transition: box-shadow 0.15s ease, background-color 0.15s ease;
 }
@@ -2334,7 +2439,7 @@ footer a {
 }
 
 .version-number::after {
-    content: "0.6.212";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
+    content: "0.6.213";  /* ← UPDATE THIS with every push (keep in sync with sw.js) */
 }
 
 /* ==========================================================================

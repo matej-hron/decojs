@@ -1168,6 +1168,17 @@
             "rankingTissue": "TC",
             "rankingGF": "GF",
             "tooltipLabel": "{0}: okolní tlak {1} bar, GF {2} %"
+        },
+        "readout": {
+            "hint": "Hodnoty zobrazíte dotykem grafu",
+            "clear": "Skrýt hodnoty",
+            "ceiling": "strop",
+            "noCeiling": "bez stropu",
+            "computer": "počítač",
+            "use": "spotřeba",
+            "subAmb": "okol",
+            "subTissue": "tk",
+            "noPoint": "Tady není žádný bod: dotkněte se čáry nebo tečky"
         }
     },
     "warnings": {
