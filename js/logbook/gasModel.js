@@ -54,11 +54,15 @@ export function cylinderPreset(id) {
     return CYLINDER_PRESETS.find(p => p.id === id) ?? null;
 }
 
-/** Preset id for a legacy volume/material pair: a unique match, 'custom' for other volumes, null without a volume. */
+/**
+ * Preset id for a legacy volume/material pair. Only a single or stage preset with the same volume
+ * and material counts (a legacy 24 l may have been a single cylinder, not a 2×12 l twinset);
+ * anything else is 'custom' so no material or twinset is invented. Null when nothing is known.
+ */
 function presetIdFor(volumeL, material) {
-    if (volumeL === null) return null;
-    const hits = CYLINDER_PRESETS.filter(p => p.volumeL === volumeL && (!material || p.material === material));
-    return hits.length === 1 ? hits[0].id : 'custom';
+    if (volumeL === null) return material ? 'custom' : null;
+    const hit = CYLINDER_PRESETS.find(p => !p.twinL && p.volumeL === volumeL && p.material === material);
+    return hit ? hit.id : 'custom';
 }
 
 /** Preset id of a mix, 'nx' for other nitrox, 'tx' for any helium mix, '' when unknown. */
@@ -143,7 +147,7 @@ export function gasUsage(rows, { durationS, avgDepthM } = {}) {
         const end = toNumber(r.endBar);
         const vol = toNumber(r.volumeL);
         if (start === null || end === null || end > start) return { usedBar: null, usedL: null };
-        const usedBar = start - end;
+        const usedBar = Math.round((start - end) * 100) / 100; // no floating-point noise (200,3 − 50,1)
         return { usedBar, usedL: vol !== null && vol > 0 ? usedBar * vol : null };
     });
     const withBar = out.filter(u => u.usedBar !== null);
@@ -196,8 +200,10 @@ export function gasesFromFormRows(formRows) {
             row.he = preset.he;
         } else if (f.mix === 'nx' || f.mix === 'tx') {
             const o2 = toNumber(f.o2);
-            const he = f.mix === 'tx' ? (toNumber(f.he) ?? 0) : 0;
-            if (o2 === null || o2 <= 0 || o2 > 100 || he < 0 || o2 + he > 100) errors.push({ index, field: 'mix' });
+            const heBlank = f.he === null || f.he === undefined || String(f.he).trim() === '';
+            const he = f.mix === 'tx' ? (heBlank ? 0 : toNumber(f.he)) : 0;
+            // O₂ below 5 % is a typo (e.g. a fraction "0,32" typed for 32 %); the Sandbox uses the same floor.
+            if (o2 === null || he === null || o2 < 5 || o2 > 100 || he < 0 || o2 + he > 100) errors.push({ index, field: 'mix' });
             else {
                 row.o2 = frac(o2);
                 row.he = frac(he);

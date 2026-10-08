@@ -155,7 +155,7 @@ function cleanDetails(details) {
     const out = {};
     for (const [k, v] of Object.entries(details)) {
         if (v === '' || v === null || v === undefined) continue;
-        if (Array.isArray(v) && v.length === 0) continue;
+        if (Array.isArray(v) && v.length === 0 && k !== 'gases') continue; // gases: [] means "cleared on purpose"
         out[k] = v;
     }
     return out;

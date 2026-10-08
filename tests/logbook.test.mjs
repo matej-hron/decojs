@@ -110,6 +110,13 @@ describe('gas model', () => {
         assert.deepEqual(gasesFromEntry(legacy), [{ role: 'bottom', o2: 0.32, he: 0, cylinder: 's12', volumeL: 12, material: 'steel', startBar: 200, endBar: 60 }]);
         const odd = gasesFromEntry({ gas: null, details: { cylinderL: 13 } });
         assert.deepEqual(odd, [{ role: 'bottom', o2: null, he: null, cylinder: 'custom', volumeL: 13, material: null, startBar: null, endBar: null }]);
+        // Nothing is invented: no material without one stored, no twinset for a legacy 24 l, material kept without a volume.
+        assert.deepEqual(gasesFromEntry({ gas: null, details: { cylinderL: 12 } }).map(r => [r.cylinder, r.material]), [['custom', null]]);
+        assert.deepEqual(gasesFromEntry({ gas: null, details: { cylinderL: 24, cylinderMaterial: 'steel' } }).map(r => [r.cylinder, r.volumeL]), [['custom', 24]]);
+        assert.deepEqual(gasesFromEntry({ gas: null, details: { cylinderL: 11.1, cylinderMaterial: 'aluminium' } })[0].cylinder, 'al80');
+        const matOnly = gasesFromEntry({ gas: null, details: { cylinderMaterial: 'aluminium' } });
+        assert.deepEqual(matOnly.map(r => [r.cylinder, r.material]), [['custom', 'aluminium']]);
+        assert.equal(gasesFromFormRows(formRowsFromGases(matOnly)).gases[0].material, 'aluminium');
         assert.deepEqual(gasesFromEntry({ gas: { o2: 0.21, he: 0 }, details: {} }).map(r => [r.o2, r.cylinder]), [[0.21, null]]);
         assert.deepEqual(gasesFromEntry({ gas: null, details: {} }), []);
         const stored = [{ role: 'deco', o2: 0.5, he: 0, cylinder: 'al40', volumeL: 5.7, material: 'aluminium', startBar: 200, endBar: 150 }];
@@ -138,6 +145,7 @@ describe('gas model', () => {
         assert.deepEqual(noVol.rows[0], { usedBar: 100, usedL: null });
         assert.equal(noVol.totalL, null); // a partial sum would understate the gas used
         assert.equal(noVol.sacLpm, null);
+        assert.equal(gasUsage([{ volumeL: 10, startBar: 200.3, endBar: 50.1 }], {}).rows[0].usedBar, 150.2);
         const bad = gasUsage([{ volumeL: 12, startBar: 50, endBar: 200 }], { durationS: 3000, avgDepthM: 20 });
         assert.deepEqual(bad.rows[0], { usedBar: null, usedL: null });
         assert.equal(bad.totalL, null);
@@ -169,8 +177,11 @@ describe('gas model', () => {
             { ...newGasRow('bottom'), mix: 'tx', o2: '60', he: '50' },
             { ...newGasRow('bottom'), startBar: '2oo' },
             { ...newGasRow('bottom'), cylinder: 'custom', volumeL: 'x' },
+            { ...newGasRow('bottom'), mix: 'tx', o2: '18', he: '4S' },
+            { ...newGasRow('bottom'), mix: 'nx', o2: '0,32' },
         ]);
-        assert.deepEqual(bad.errors, [{ index: 0, field: 'mix' }, { index: 1, field: 'mix' }, { index: 2, field: 'startBar' }, { index: 3, field: 'volumeL' }]);
+        assert.deepEqual(bad.errors, [{ index: 0, field: 'mix' }, { index: 1, field: 'mix' }, { index: 2, field: 'startBar' }, { index: 3, field: 'volumeL' },
+            { index: 4, field: 'mix' }, { index: 5, field: 'mix' }]);
         assert.deepEqual(gasesFromFormRows([{ ...newGasRow('bottom'), mix: '' }]).gases[0].o2, null);
     });
 
@@ -1033,7 +1044,7 @@ describe('entry form helpers', () => {
 
     test('formValuesFromEntry gives gas cards, also for a legacy entry', () => {
         const v = formValuesFromEntry({ gas: { o2: 0.32, he: 0 }, details: { cylinderL: 12, pressureStartBar: 200 } });
-        assert.deepEqual(v.gases.map(g => [g.role, g.mix, g.cylinder, g.startBar]), [['bottom', 'ean32', 's12', '200']]);
+        assert.deepEqual(v.gases.map(g => [g.role, g.mix, g.cylinder, g.volumeL, g.startBar]), [['bottom', 'ean32', 'custom', '12', '200']]);
         assert.deepEqual(formValuesFromEntry({ gas: null }).gases, []);
     });
 
@@ -1175,7 +1186,7 @@ describe('entry form validation and races (jsdom)', () => {
             root.querySelector('form').dispatchEvent(new window.Event('submit', { cancelable: true }));
             await tick();
             assert.equal(saves[0].gas, null);
-            assert.equal('gases' in saves[0].details, false);
+            assert.deepEqual(saves[0].details.gases, []); // kept, so the next edit does not refill it from the recording
         });
     });
 
@@ -1184,12 +1195,35 @@ describe('entry form validation and races (jsdom)', () => {
             const record = { gases: [{ id: 'g0', o2: 0.21, he: 0, role: 'oc' }, { id: 'g1', o2: 0.5, he: 0, role: 'oc' }],
                 events: [{ t: 0, type: 'gasSwitch', gasId: 'g0' }, { t: 1800, type: 'gasSwitch', gasId: 'g1' }] };
             const store = { listSites: async () => [], listBuddies: async () => [], listEntries: async () => [], loadDive: async () => record };
-            new EntryForm(root, { store, entry: { ...entry, recording_id: 'r1', gas: { o2: 0.21, he: 0 }, details: { cylinderL: 15, pressureStartBar: 220 } }, onSaved() {}, onCancel() {} });
+            new EntryForm(root, { store, entry: { ...entry, recording_id: 'r1', gas: { o2: 0.21, he: 0 }, details: { cylinderL: 15, cylinderMaterial: 'steel', pressureStartBar: 220 } }, onSaved() {}, onCancel() {} });
             await tick();
             const roles = [...root.querySelectorAll('[name="gas.role"]')].map(s => s.value);
             assert.deepEqual(roles, ['bottom', 'deco']);
             assert.equal(root.querySelector('[name="gas.cylinder"]').value, 's15');
             assert.equal(root.querySelector('[name="gas.startBar"]').value, '220');
+        });
+    });
+
+    test('the recording prefill keeps a corrected mix and a buddy name being typed; a cleared block stays cleared', async () => {
+        await withDom(async root => {
+            const record = { gases: [{ id: 'g0', o2: 0.21, he: 0, role: 'oc' }], events: [] };
+            let release;
+            const loaded = new Promise(r => { release = r; });
+            const store = { listSites: async () => [], listBuddies: async () => [], listEntries: async () => [], loadDive: () => loaded };
+            new EntryForm(root, { store, entry: { ...entry, recording_id: 'r1', gas: { o2: 0.32, he: 0 }, details: {} }, onSaved() {}, onCancel() {} });
+            await tick();
+            root.querySelector('[name="buddy"]').value = 'Pet';
+            release(record);
+            await tick();
+            assert.equal(root.querySelector('[name="gas.mix"]').value, 'ean32');
+            assert.equal(root.querySelector('[name="buddy"]').value, 'Pet');
+            assert.equal(root.querySelectorAll('.lb-chip').length, 0);
+            let calls = 0;
+            const cleared = { ...store, loadDive: async () => { calls++; return record; } };
+            new EntryForm(root, { store: cleared, entry: { ...entry, recording_id: 'r1', gas: null, details: { gases: [] } }, onSaved() {}, onCancel() {} });
+            await tick();
+            assert.equal(calls, 0);
+            assert.equal(root.querySelectorAll('.lb-gas-card').length, 0);
         });
     });
 
@@ -1304,7 +1338,7 @@ describe('detail helpers', () => {
         const t = key => ({ 'detail.roleBottom': 'Bottom', 'detail.roleDeco': 'Deco', 'detail.gasUsed': 'Gas used', 'detail.sac': 'SAC',
             'detail.mixUnknown': '?', 'form.choices.cylinderMaterial.steel': 'steel', 'form.choices.cylinderMaterial.aluminium': 'alu' })[key] ?? key;
         const fmt = (v, d) => (d === undefined ? String(v) : v.toFixed(d));
-        const legacy = gasCards({ gas: { o2: 0.32, he: 0 }, duration_s: 3000, details: { cylinderL: 12, pressureStartBar: 200, pressureEndBar: 80, avgDepthM: 20 } }, t, fmt);
+        const legacy = gasCards({ gas: { o2: 0.32, he: 0 }, duration_s: 3000, details: { cylinderL: 12, cylinderMaterial: 'steel', pressureStartBar: 200, pressureEndBar: 80, avgDepthM: 20 } }, t, fmt);
         assert.deepEqual(legacy.cards.map(c => [c.roleLabel, c.mix, c.cylinder, c.pressures, c.used]),
             [['Bottom', 'EAN32', '12 l, steel', '200 → 80 bar', '−120 bar · 1440 l']]);
         assert.equal(legacy.summary, 'Gas used 1440 l · SAC 9.6 l/min');

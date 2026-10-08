@@ -525,13 +525,21 @@ export class EntryForm {
             if (legacy) {
                 const bottom = rows.find(r => r.role === 'bottom') ?? rows[0];
                 for (const k of ['cylinder', 'volumeL', 'material', 'startBar', 'endBar']) bottom[k] = legacy[k];
-                if (!Number.isFinite(bottom.o2) && Number.isFinite(legacy.o2)) Object.assign(bottom, { o2: legacy.o2, he: legacy.he });
+                // The diver may have corrected the mix the computer was set to: the stored mix wins.
+                if (Number.isFinite(legacy.o2)) Object.assign(bottom, { o2: legacy.o2, he: legacy.he });
             }
-            const active = this.container.contains(document.activeElement) ? document.activeElement.name : null;
+            const el = this.container.contains(document.activeElement) ? document.activeElement : null;
+            const active = el?.name ? { name: el.name, at: [...this.container.querySelectorAll(`[name="${el.name}"]`)].indexOf(el) } : null;
+            // A buddy name being typed must stay text, not turn into a chip because the recording arrived.
+            const buddyInput = this.container.querySelector('[name="buddy"]');
+            const pendingBuddy = buddyInput?.value ?? '';
+            if (buddyInput) buddyInput.value = '';
             this._readDom();
             this.values.gases = formRowsFromGases(rows, { comma: this.comma });
             this.render();
-            if (active) this.container.querySelector(`[name="${active}"]`)?.focus();
+            const buddyAfter = this.container.querySelector('[name="buddy"]');
+            if (buddyAfter) buddyAfter.value = pendingBuddy;
+            if (active) this.container.querySelectorAll(`[name="${active.name}"]`)[Math.max(0, active.at)]?.focus();
         } catch (error) {
             console.error(error);
         }
@@ -656,7 +664,7 @@ export class EntryForm {
         const gas = primaryGas(gases);
         const details = {
             ...this._detailsForSave(),
-            gases: gases.length ? gases : null,
+            gases, // [] is kept: a cleared gas block must not be refilled from the recording on the next edit
             // Legacy single-cylinder keys: the gas rows replace them, so they are removed on save.
             cylinderL: null, cylinderMaterial: null, pressureStartBar: null, pressureEndBar: null,
         };

@@ -105,7 +105,7 @@ export function gasCards(entry, t, fmt) {
         if (known(r.startBar) && known(r.endBar)) pressures = `${fmt(r.startBar)} → ${fmt(r.endBar)}${NB}bar`;
         else if (known(r.startBar)) pressures = `${fmt(r.startBar)}${NB}bar`;
         const used = u.usedBar === null ? ''
-            : `−${fmt(u.usedBar)}${NB}bar${u.usedL === null ? '' : ` · ${fmt(u.usedL, 0)}${NB}l`}`;
+            : `${u.usedBar > 0 ? '−' : ''}${fmt(u.usedBar)}${NB}bar${u.usedL === null ? '' : ` · ${fmt(u.usedL, 0)}${NB}l`}`;
         return {
             role: r.role,
             roleLabel: t(r.role === 'deco' ? 'detail.roleDeco' : 'detail.roleBottom'),
