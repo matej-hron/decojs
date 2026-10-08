@@ -14,13 +14,14 @@ export function nameFromMetadata(user) {
     const meta = user?.user_metadata ?? {};
     const raw = meta.full_name ?? meta.name;
     if (typeof raw !== 'string') return null;
-    const name = raw.trim().slice(0, 60).trim();
+    const name = Array.from(raw.trim()).slice(0, 60).join('').trim(); // code points: never split an emoji
     return name || null;
 }
 
 export function createCommunityApi(client, { requireUser, fail, toSummaryRow, DiveStoreError }) {
     let status = null; // 'yes' | 'no' once known
     let profile; // undefined = not loaded
+    let epoch = 0; // bumped on reset: a request that started before it must not write the cache
     const avatarCache = new Map(); // path -> { url, at }
 
     const rpc = async (name, args) => {
@@ -32,6 +33,7 @@ export function createCommunityApi(client, { requireUser, fail, toSummaryRow, Di
     /** 'yes' | 'no' (definitively absent, cached) | 'unknown' (transient failure, never cached). */
     async function communityAvailability() {
         if (status) return status;
+        const started = epoch;
         let result = 'unknown';
         try {
             const { error, status: http } = await client.from('profiles').select('id').limit(1);
@@ -47,7 +49,7 @@ export function createCommunityApi(client, { requireUser, fail, toSummaryRow, Di
             result = 'no';
             console.info('Community features unavailable', error?.message ?? error);
         }
-        if (result !== 'unknown') status = result;
+        if (result !== 'unknown' && started === epoch) status = result;
         return result;
     }
 
@@ -57,12 +59,14 @@ export function createCommunityApi(client, { requireUser, fail, toSummaryRow, Di
 
     /** Forget everything tied to the signed-in user (call on sign-out and when the user changes). */
     function resetCommunityCache() {
+        epoch++;
         status = null;
         profile = undefined;
         avatarCache.clear();
     }
 
     async function ensureProfile() {
+        const started = epoch;
         if (!await communityStatus()) return null;
         const user = await requireUser();
         const read = () => client.from('profiles').select('*').eq('id', user.id).maybeSingle();
@@ -78,8 +82,8 @@ export function createCommunityApi(client, { requireUser, fail, toSummaryRow, Di
                 data = ins.data;
             }
         }
-        profile = data;
-        return profile;
+        if (started === epoch) profile = data;
+        return data;
     }
 
     async function getMyProfile() {
@@ -88,14 +92,15 @@ export function createCommunityApi(client, { requireUser, fail, toSummaryRow, Di
     }
 
     async function saveProfile(patch) {
+        const started = epoch;
         const user = await requireUser();
         const clean = {};
         for (const k of PROFILE_KEYS) if (k in patch) clean[k] = patch[k];
         const { data, error } = await client.from('profiles')
             .update({ ...clean, updated_at: new Date().toISOString() }).eq('id', user.id).select().single();
         if (error) throw fail(error);
-        profile = data;
-        return profile;
+        if (started === epoch) profile = data;
+        return data;
     }
 
     async function removeAvatarFile(path) {

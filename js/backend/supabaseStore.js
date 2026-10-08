@@ -36,8 +36,6 @@ function fail(error, fallbackKind = 'unknown') {
     return new DiveStoreError(kind, message);
 }
 
-export { fail as storeFail };
-
 /** True for a Postgres unique violation on the named constraint (the name appears in message or details). */
 function isUnique(error, constraint) {
     return error?.code === '23505' && `${error.message ?? ''} ${error.details ?? ''}`.includes(constraint);

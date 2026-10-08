@@ -2913,7 +2913,6 @@
         "mode": {"oc": "OC", "ccr": "CCR", "scr": "SCR", "gauge": "Hloubkoměr", "freedive": "Freediving", "unknown": "Neznámý"},
         "water": {"salt": "Slaná", "fresh": "Sladká"},
         "trail": {
-            "pageTitle": "DecoTrail",
             "tab": {
                 "feed": "Přehled",
                 "list": "Moje ponory",

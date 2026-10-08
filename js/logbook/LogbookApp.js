@@ -36,6 +36,8 @@ import { escHtml } from '../utils/escHtml.js';
 /** Probes per login while the answer is 'unknown': at login, once after PROBE_RETRY_MS, once on a later route change. */
 const PROBE_ATTEMPTS = 3;
 const PROBE_RETRY_MS = 5000;
+/** A probe that has not answered by then counts as 'unknown'. */
+const PROBE_TIMEOUT_MS = 8000;
 /** How long the entry form waits for a probe in flight before it opens without the visibility fields. */
 const FORM_PROBE_WAIT_MS = 3000;
 
@@ -72,7 +74,7 @@ export class LogbookApp {
      * @param {{store?: Object|null, shell?: AppShell|null}} [config]
      *   `shell` defaults to the page's `.tr-tabs` / `.tr-bottom` navigation (none when the page has neither)
      */
-    constructor(root, { store = null, shell } = {}) {
+    constructor(root, { store = null, shell, probeTimeoutMs = PROBE_TIMEOUT_MS } = {}) {
         this.root = root;
         this.store = store;
         this.shell = shell === undefined ? AppShell.fromDocument(globalThis.document) : shell;
@@ -82,6 +84,7 @@ export class LogbookApp {
         this._probe = null; // the probe in flight
         this._probeAttempts = 0;
         this._probeTimer = null;
+        this._probeTimeoutMs = probeTimeoutMs;
         this._session = 0;
         this.analysis = null; // the mounted RecordedDiveAnalysis (plain or embedded)
         this.entries = null;
@@ -128,25 +131,21 @@ export class LogbookApp {
         this._unsubscribe?.();
         this._leaveLogbook();
         this._unmountAnalysis();
+        this.shell?.destroy();
         this.root.innerHTML = '';
     }
 
     // ---- Route and shell ----
 
-    /** The route as the shell sees it: `home` resolved, community routes → My dives without the feature. */
-    _shellRoute() {
-        return resolveRoute(parseRoute(location.hash), this.community);
-    }
-
-    /** The route whose view is shown. */
+    /** The route shown: `home` resolved, community routes → My dives without the feature. */
     _route() {
-        return this._shellRoute();
+        return resolveRoute(parseRoute(location.hash), this.community);
     }
 
     _renderShell() {
         if (!this.shell) return;
         if (!this.user) this.shell.render({ tabs: [] });
-        else this.shell.render({ tabs: shellTabs(this.community), active: activeTab(this._shellRoute().name, this.community) });
+        else this.shell.render({ tabs: shellTabs(this.community), active: activeTab(this._route().name, this.community) });
     }
 
     /**
@@ -166,10 +165,14 @@ export class LogbookApp {
         }
         this._probeAttempts++;
         const session = this._session;
-        const probe = Promise.resolve()
-            .then(ask)
-            .catch(error => { console.error(error); return 'unknown'; })
+        let giveUp;
+        const timeout = new Promise(resolve => { giveUp = setTimeout(() => resolve('unknown'), this._probeTimeoutMs); });
+        const probe = Promise.race([
+            Promise.resolve().then(ask).catch(error => { console.error(error); return 'unknown'; }),
+            timeout,
+        ])
             .then(result => {
+                clearTimeout(giveUp);
                 if (this.destroyed || session !== this._session || this._probe !== probe) return;
                 this._probe = null;
                 if (result === 'yes' || result === 'no') {
@@ -235,10 +238,21 @@ export class LogbookApp {
         document.addEventListener('keydown', this._onDocKey);
         this.view.addEventListener('error', this._onVisualFail, true); // image errors do not bubble
         document.body.classList.add('lb-in', 'tr-logged-in');
-        this._session++;
+        this._resetProbe(); // another user may have signed in directly: forget the previous one's answer
         this.ensured = this.store.ensureEntries().then(() => this.store.fillComputerFields?.()).catch(error => this._storeError(error, { background: true }));
         this._probeCommunity();
         this._renderRoute();
+    }
+
+    /** Forget the community probe and its answer (new login, other user, logout); a probe in flight is ignored. */
+    _resetProbe() {
+        this._session++;
+        clearTimeout(this._probeTimer);
+        this._probeTimer = null;
+        this._probe = null;
+        this._probeAttempts = 0;
+        this._communityKnown = false;
+        this.community = false;
     }
 
     _leaveLogbook() {
@@ -247,13 +261,7 @@ export class LogbookApp {
         document.removeEventListener('click', this._onDocClick);
         document.removeEventListener('keydown', this._onDocKey);
         document.body.classList.remove('lb-in', 'tr-logged-in');
-        this._session++;
-        clearTimeout(this._probeTimer);
-        this._probeTimer = null;
-        this._probe = null;
-        this._probeAttempts = 0;
-        this._communityKnown = false;
-        this.community = false;
+        this._resetProbe();
         this.shell?.render({ tabs: [] });
         this._viewToken++;
         this._stopSparks();
@@ -849,6 +857,8 @@ export class LogbookApp {
     _onVisualError(e) {
         const img = e.target;
         if (img?.tagName !== 'IMG' || !img.classList.contains('lb-visual-img')) return;
+        // Only the My dives list is ours; images of the Feed, member pages and read-only details belong to their views.
+        if (this._route().name !== 'list' || img.closest('.lb-form-host')) return;
         const box = img.closest('.lb-visual');
         const entry = this.entries?.find(en => en.id === box?.dataset.entry);
         if (!box || !entry) return;

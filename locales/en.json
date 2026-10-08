@@ -2913,7 +2913,6 @@
         "mode": {"oc": "OC", "ccr": "CCR", "scr": "SCR", "gauge": "Gauge", "freedive": "Freedive", "unknown": "Unknown"},
         "water": {"salt": "Salt", "fresh": "Fresh"},
         "trail": {
-            "pageTitle": "DecoTrail",
             "tab": {
                 "feed": "Feed",
                 "list": "My dives",

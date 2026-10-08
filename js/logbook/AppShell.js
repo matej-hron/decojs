@@ -17,7 +17,7 @@ const COMMUNITY_ROUTES = new Set(['feed', 'community', 'member', 'memberDive', '
 const TAB_OF_ROUTE = {
     feed: 'feed',
     list: 'list', new: 'list', detail: 'list', edit: 'list', analysis: 'list',
-    community: 'community', member: 'community', memberDive: 'community', memberAnalysis: 'community',
+    community: 'community', member: 'community', memberDive: 'feed', memberAnalysis: 'feed', // a member's dive is usually opened from the Feed
     sites: 'sites', site: 'sites',
     profile: 'profile',
 };

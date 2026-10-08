@@ -353,3 +353,30 @@ test('ensureProfile on a 23505 insert race returns the existing row', async () =
     const p = await createSupabaseStore(client).ensureProfile();
     assert.equal(p.display_name, 'Other tab');
 });
+
+test('nameFromMetadata never splits a surrogate pair at the 60 character cut', () => {
+    const name = nameFromMetadata({ user_metadata: { name: 'x'.repeat(59) + '\u{1F600}tail' } });
+    assert.equal(name, 'x'.repeat(59) + '\u{1F600}');
+    assert.doesNotMatch(name, /[\uD800-\uDBFF](?![\uDC00-\uDFFF])/);
+});
+
+test('a profile read that resolves after the cache reset is not cached', async () => {
+    const client = fakeCommunityClient({ tables: { profiles: [{ id: 'u1', display_name: 'A' }] } });
+    const store = createSupabaseStore(client);
+    await store.communityStatus();
+    let release;
+    const gate = new Promise(r => { release = r; });
+    const getUser = client.auth.getUser;
+    client.auth.getUser = async () => { await gate; return getUser(); };
+    const getSession = client.auth.getSession;
+    client.auth.getSession = async () => { await gate; return getSession(); };
+    const stale = store.ensureProfile();
+    await new Promise(r => setTimeout(r, 5));
+    store.resetCommunityCache();
+    client.auth.getUser = getUser;
+    client.auth.getSession = getSession;
+    client.db.profiles[0].display_name = 'B';
+    release();
+    await stale;
+    assert.equal((await store.getMyProfile()).display_name, 'B', 'A\'s profile was not cached');
+});

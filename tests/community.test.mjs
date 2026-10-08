@@ -162,7 +162,7 @@ test('shellTabs and activeTab', () => {
     assert.deepEqual(shellTabs(false), ['list', 'sites']);
     const cases = {
         feed: 'feed', list: 'list', new: 'list', detail: 'list', edit: 'list', analysis: 'list',
-        community: 'community', member: 'community', memberDive: 'community', memberAnalysis: 'community',
+        community: 'community', member: 'community', memberDive: 'feed', memberAnalysis: 'feed',
         sites: 'sites', site: 'sites', profile: 'profile',
     };
     for (const [name, tab] of Object.entries(cases)) assert.equal(activeTab(name, true), tab, name);
@@ -760,6 +760,75 @@ test('LogbookApp edit form: waits for the community probe in flight and offers t
         const app = new LogbookApp(root, { store, shell: null });
         await new Promise(r => setTimeout(r, 150));
         assert.deepEqual([...root.querySelectorAll('input[name="visibility"]')].map(r => [r.value, r.checked]), [['private', true], ['members', false]]);
+        app.destroy();
+    });
+});
+
+test('LogbookApp: an image error inside the Feed does not make the My dives sparks load recordings', async () => {
+    await withDom(async root => {
+        location.hash = '#/feed';
+        const loaded = [];
+        const store = {
+            onAuthChange: () => () => {}, currentUser: async () => ({ id: 'me', email: 'me@example.com' }),
+            ensureEntries: async () => 0, listEntries: async () => [], listSites: async () => [],
+            listPhotoMedia: async () => [], communityAvailability: async () => 'yes', ensureProfile: async () => ({}),
+            listMembers: async () => [{ id: 'u2', display_name: 'Jana' }],
+            listCommunityEntries: async () => [{ id: 'd1', owner: 'u2', recording_id: 'r1', dive_date: '2026-09-01', max_depth_m: 20, duration_s: 1800, site_id: null, photo_path: 'u2/p.jpg', photo_count: 1, notes: '' }],
+            photoUrls: async () => new Map([['u2/p.jpg', 'https://example.test/p.jpg']]),
+            avatarUrls: async () => new Map(),
+            loadCommunityRecording: async () => null,
+            loadDive: async id => { loaded.push(id); return null; },
+        };
+        const app = new LogbookApp(root, { store, shell: null });
+        await new Promise(r => setTimeout(r, 60));
+        const img = root.querySelector('.tr-feed-card img.lb-visual-img');
+        assert.ok(img, 'the feed card has a picture');
+        img.dispatchEvent(new window.Event('error'));
+        await new Promise(r => setTimeout(r, 40));
+        assert.deepEqual(loaded, []);
+        app.destroy();
+    });
+});
+
+test('LogbookApp: a never-answering community probe times out; an explicit community route falls back to the list', async () => {
+    await withDom(async root => {
+        location.hash = '#/feed';
+        const store = {
+            onAuthChange: () => () => {}, currentUser: async () => ({ id: 'me', email: 'me@example.com' }),
+            ensureEntries: async () => 0, listEntries: async () => [], listSites: async () => [],
+            listPhotoMedia: async () => [], photoUrls: async () => new Map(),
+            communityAvailability: () => new Promise(() => {}),
+        };
+        const app = new LogbookApp(root, { store, shell: null, probeTimeoutMs: 30 });
+        await new Promise(r => setTimeout(r, 10));
+        assert.match(root.textContent, /Loading/);
+        await new Promise(r => setTimeout(r, 60));
+        assert.doesNotMatch(root.textContent, /Loading/);
+        assert.ok(root.querySelector('.lb-list-view'), 'fell back to My dives');
+        app.destroy();
+    });
+});
+
+test('LogbookApp: a direct switch to another user re-probes instead of keeping the previous answer', async () => {
+    await withDom(async root => {
+        location.hash = '#/dives';
+        let notify;
+        let asked = 0;
+        const store = {
+            onAuthChange: cb => { notify = cb; return () => {}; }, currentUser: async () => ({ id: 'a', email: 'a@example.com' }),
+            ensureEntries: async () => 0, listEntries: async () => [], listSites: async () => [],
+            listPhotoMedia: async () => [], photoUrls: async () => new Map(), ensureProfile: async () => ({}),
+            communityAvailability: async () => { asked++; return 'yes'; },
+        };
+        const app = new LogbookApp(root, { store, shell: null });
+        await new Promise(r => setTimeout(r, 20));
+        assert.equal(asked, 1);
+        assert.equal(app.community, true);
+        notify({ id: 'b', email: 'b@example.com' });
+        assert.equal(app.community, false, 'previous answer forgotten');
+        await new Promise(r => setTimeout(r, 20));
+        assert.equal(asked, 2);
+        assert.equal(app.community, true);
         app.destroy();
     });
 });

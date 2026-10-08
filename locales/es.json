@@ -2877,7 +2877,6 @@
         "mode": {"oc": "OC", "ccr": "CCR", "scr": "SCR", "gauge": "Profundímetro", "freedive": "Apnea", "unknown": "Desconocido"},
         "water": {"salt": "Salada", "fresh": "Dulce"},
         "trail": {
-            "pageTitle": "DecoTrail",
             "tab": {
                 "feed": "Novedades",
                 "list": "Inmersiones",

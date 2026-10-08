@@ -174,7 +174,7 @@ export class ProfilePage {
     async _save() {
         if (this.busy || !this.draft) return;
         this._readDom();
-        const name = this.draft.display_name.trim().slice(0, NAME_MAX).trim();
+        const name = Array.from(this.draft.display_name.trim()).slice(0, NAME_MAX).join('').trim();
         const patch = {
             display_name: name || null,
             avatar_preset: this.draft.avatar_preset,
