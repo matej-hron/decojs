@@ -25,8 +25,25 @@ create index if not exists media_entry_idx on public.media (entry_id);
 create index if not exists media_path_idx on public.media (path);
 
 -- ---------------------------------------------------------------------------
--- Profiles: every invited (authenticated) user is a member and can read all profiles.
--- No email here, on purpose.
+-- Who is a member: a logged-in, invited user (not an anonymous sign-in, not deleted or banned).
+-- Sign-ups are off, so every such user was invited from the dashboard.
+-- ---------------------------------------------------------------------------
+
+create or replace function public.is_member()
+returns boolean
+language sql stable security definer set search_path = ''
+as $$
+    select exists (
+        select 1 from auth.users u
+        where u.id = auth.uid()
+          and not coalesce(u.is_anonymous, false)
+          and u.deleted_at is null
+          and (u.banned_until is null or u.banned_until < now())
+    );
+$$;
+
+-- ---------------------------------------------------------------------------
+-- Profiles: every member can read all profiles. No email here, on purpose.
 -- ---------------------------------------------------------------------------
 
 create table if not exists public.profiles (
@@ -44,11 +61,27 @@ alter table public.profiles enable row level security;
 
 revoke all on table public.profiles from anon;
 grant select, insert, update on table public.profiles to authenticated;
+grant all on table public.profiles to service_role;
+
+-- The server keeps the timestamps (clients cannot backdate them).
+create or replace function public.profiles_touch()
+returns trigger
+language plpgsql set search_path = ''
+as $$
+begin
+    new.created_at := case when tg_op = 'INSERT' then now() else old.created_at end;
+    new.updated_at := now();
+    return new;
+end $$;
+
+drop trigger if exists profiles_touch on public.profiles;
+create trigger profiles_touch before insert or update on public.profiles
+    for each row execute function public.profiles_touch();
 
 drop policy if exists "members read profiles" on public.profiles;
 create policy "members read profiles" on public.profiles
     for select to authenticated
-    using (auth.uid() is not null);
+    using (public.is_member());
 
 drop policy if exists "owner creates own profile" on public.profiles;
 create policy "owner creates own profile" on public.profiles
@@ -60,6 +93,17 @@ create policy "owner updates own profile" on public.profiles
     for update to authenticated
     using (id = auth.uid())
     with check (id = auth.uid());
+
+-- A dive inserted without a visibility (e.g. by an older app version) follows the owner's profile
+-- default, not a constant. Set after the column was added, so the backfill above stays 'members'.
+create or replace function public.my_default_visibility()
+returns text
+language sql stable security definer set search_path = ''
+as $$
+    select coalesce((select p.default_visibility from public.profiles p where p.id = auth.uid()), 'members');
+$$;
+
+alter table public.log_entries alter column visibility set default public.my_default_visibility();
 
 -- ---------------------------------------------------------------------------
 -- Read functions for members. security definer = they bypass the owner-only RLS, so each one
@@ -83,7 +127,10 @@ returns table (
 )
 language sql stable security definer set search_path = ''
 as $$
-    select e.id, e.owner, e.log_number, e.dive_date, e.entry_time, e.duration_s,
+    select e.id, e.owner,
+           -- gaps in another member's numbering would reveal their private dives
+           case when e.owner = auth.uid() then e.log_number end,
+           e.dive_date, e.entry_time, e.duration_s,
            e.max_depth_m, e.buddies, e.gas, e.water_temp_c, e.vis_shallow_m,
            e.vis_deep_m, e.details, e.visibility, e.share_location, e.recording_id,
            e.created_at, e.updated_at,
@@ -98,13 +145,13 @@ as $$
         from public.media m
         where m.entry_id = e.id and m.owner = e.owner and m.kind = 'photo' and m.path is not null
     ) ph on true
-    where auth.uid() is not null
+    where public.is_member()
       and (e.owner = auth.uid() or e.visibility in ('members', 'link'))
       and (p_owner is null or e.owner = p_owner)
       and (p_id is null or e.id = p_id)
     order by e.dive_date desc, e.entry_time desc nulls last, e.created_at desc, e.id
     limit least(greatest(coalesce(p_limit, 30), 1), 100)
-    offset greatest(coalesce(p_offset, 0), 0);
+    offset least(greatest(coalesce(p_offset, 0), 0), 10000);
 $$;
 
 create or replace function public.community_media(p_entry_id uuid)
@@ -121,7 +168,7 @@ as $$
     from public.media m
     join public.log_entries e on e.id = m.entry_id and e.owner = m.owner
     where m.entry_id = p_entry_id
-      and auth.uid() is not null
+      and public.is_member()
       and (e.owner = auth.uid() or e.visibility in ('members', 'link'))
     order by m.created_at, m.id;
 $$;
@@ -139,7 +186,7 @@ as $$
     from public.dives d
     join public.log_entries e on e.recording_id = d.id and e.owner = d.owner
     where d.owner = p_owner
-      and auth.uid() is not null
+      and public.is_member()
       and (e.owner = auth.uid() or e.visibility in ('members', 'link'))
     order by d.dive_number, d.start_local;
 $$;
@@ -152,7 +199,7 @@ as $$
     from public.dives d
     join public.log_entries e on e.recording_id = d.id and e.owner = d.owner
     where d.id = p_id
-      and auth.uid() is not null
+      and public.is_member()
       and (e.owner = auth.uid() or e.visibility in ('members', 'link'));
 $$;
 
@@ -186,7 +233,7 @@ as $$
             limit 3
         ) x
     ) ts on true
-    where auth.uid() is not null
+    where public.is_member()
       and (p_id is null or p.id = p_id)
     order by (p.id = auth.uid()) desc, st.last desc nulls last, p.display_name, p.id;
 $$;
@@ -196,7 +243,7 @@ create or replace function public.photo_readable(p_name text)
 returns boolean
 language sql stable security definer set search_path = ''
 as $$
-    select auth.uid() is not null and exists (
+    select public.is_member() and exists (
         select 1
         from public.media m
         join public.log_entries e on e.id = m.entry_id and e.owner = m.owner
@@ -217,7 +264,9 @@ begin
         'public.community_recordings(uuid)',
         'public.community_recording(uuid)',
         'public.community_members(uuid)',
-        'public.photo_readable(text)'
+        'public.photo_readable(text)',
+        'public.is_member()',
+        'public.my_default_visibility()'
     ] loop
         execute format('revoke all on function %s from public, anon', f);
         execute format('grant execute on function %s to authenticated', f);
@@ -237,7 +286,8 @@ create policy "members read photos of visible dives" on storage.objects
 -- Avatars: private bucket, every member reads, each member writes only their own folder.
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values ('avatars', 'avatars', false, 524288, array['image/jpeg'])
-on conflict (id) do nothing;
+on conflict (id) do update
+    set public = false, file_size_limit = excluded.file_size_limit, allowed_mime_types = excluded.allowed_mime_types;
 
 drop policy if exists "members read avatars" on storage.objects;
 create policy "members read avatars" on storage.objects
@@ -249,11 +299,10 @@ create policy "owner uploads own avatar" on storage.objects
     for insert to authenticated
     with check (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);
 
+-- No update policy on purpose: the app uploads each avatar under a new name. An update policy would
+-- let a member move their own file between buckets (old row passes one policy, new row another),
+-- e.g. a DLF into the members-readable avatars bucket, past its size and type limits.
 drop policy if exists "owner updates own avatar" on storage.objects;
-create policy "owner updates own avatar" on storage.objects
-    for update to authenticated
-    using (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text)
-    with check (bucket_id = 'avatars' and (storage.foldername(name))[1] = auth.uid()::text);
 
 drop policy if exists "owner deletes own avatar" on storage.objects;
 create policy "owner deletes own avatar" on storage.objects

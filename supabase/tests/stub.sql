@@ -1,12 +1,18 @@
 -- Minimal stand-in for the parts of Supabase the migrations use (local tests only).
 create role anon nologin;
 create role authenticated nologin;
+create role service_role nologin;
+-- Supabase grants every new function in public to these roles by default; 0004 must revoke it for anon.
+alter default privileges in schema public grant all on functions to anon, authenticated, service_role;
 grant usage on schema public to anon, authenticated;
 create extension if not exists pgcrypto;
 
 create schema auth;
 grant usage on schema auth to anon, authenticated;
-create table auth.users (id uuid primary key);
+create table auth.users (
+    id uuid primary key, is_anonymous boolean not null default false,
+    deleted_at timestamptz, banned_until timestamptz
+);
 -- Supabase reads the JWT subject; tests set it with set_config('request.jwt.claim.sub', …).
 create function auth.uid() returns uuid language sql stable
 as $$ select nullif(current_setting('request.jwt.claim.sub', true), '')::uuid $$;

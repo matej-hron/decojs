@@ -43,6 +43,25 @@ select pg_temp.check(not exists (
     select 1 from pg_proc p where p.pronamespace = 'public'::regnamespace and p.proname like 'community_%'
       and pg_get_function_result(p.oid) ~* '\m(notes|share_token|email)\M'), 'no community function returns notes/share_token/email');
 
+select pg_temp.check(not exists (
+    select 1 from pg_proc p where p.pronamespace = 'public'::regnamespace
+      and p.proname in ('community_entries', 'community_media', 'community_recordings', 'community_recording',
+                        'community_members', 'photo_readable', 'is_member', 'my_default_visibility')
+      and has_function_privilege('anon', p.oid, 'execute')), 'anon cannot execute any community function');
+select pg_temp.check((select count(*) from pg_proc p where p.pronamespace = 'public'::regnamespace
+      and p.proname in ('community_entries', 'community_media', 'community_recordings', 'community_recording',
+                        'community_members', 'photo_readable', 'is_member', 'my_default_visibility')
+      and has_function_privilege('authenticated', p.oid, 'execute')) = 8, 'members can execute the community functions');
+
+-- ---- Logged in but no user id (malformed token) ----
+set role authenticated;
+select set_config('request.jwt.claim.sub', '', false);
+select pg_temp.check((select count(*) from public.community_entries()) = 0, 'no sub: no entries');
+select pg_temp.check((select count(*) from public.community_members()) = 0, 'no sub: no members');
+select pg_temp.check((select count(*) from public.profiles) = 0, 'no sub: no profiles');
+select pg_temp.check(not public.photo_readable('00000000-0000-0000-0000-00000000000a/40000000-0000-0000-0000-000000000001/p1.jpg'), 'no sub: no photo');
+reset role;
+
 -- ---- Logged out ----
 set role anon;
 select set_config('request.jwt.claim.sub', '', false);
@@ -88,6 +107,8 @@ select pg_temp.check(public.community_recording('30000000-0000-0000-0000-0000000
 select pg_temp.check(public.community_recording('30000000-0000-0000-0000-000000000002') is null, 'no record of a private dive');
 select pg_temp.check(public.community_recording('30000000-0000-0000-0000-000000000003') is null, 'no record of an unlinked recording');
 
+select pg_temp.check((select bool_and(log_number is null) from public.community_entries(:'A')), 'B does not see A''s log numbers (gaps would reveal private dives)');
+select pg_temp.check((select total_s = 0 and last_dive_date = '2026-09-03' from public.community_members(:'A')), 'A''s total time and last dive exclude the private dive');
 select pg_temp.check((select dive_count = 3 and deepest_m = 30 and top_sites = array['Open Reef', 'Secret Cove'] from public.community_members(:'A')),
     'A''s stats count only visible dives');
 select pg_temp.check((select count(*) from public.community_members()) = 1, 'members list = profile rows');
@@ -97,6 +118,11 @@ select pg_temp.check((select count(*) from storage.objects where bucket_id = 'di
 select pg_temp.check(not exists (select 1 from storage.objects where name like '%p2.jpg'), 'B cannot read a private dive''s photo');
 select pg_temp.check((select count(*) from storage.objects where bucket_id = 'dive-logs') = 0, 'B cannot read A''s DLF files');
 select pg_temp.check((select count(*) from storage.objects where bucket_id = 'avatars') = 1, 'B reads avatars');
+
+with u as (update storage.objects set name = name where name like '%p1.jpg' returning 1)
+select pg_temp.check((select count(*) from u) = 0, 'B cannot update A''s readable photo');
+with d as (delete from storage.objects where name like '%p1.jpg' returning 1)
+select pg_temp.check((select count(*) from d) = 0, 'B cannot delete A''s readable photo');
 
 -- profiles
 select pg_temp.check((select display_name from public.profiles where id = :'A') = 'Alice', 'B reads A''s profile');
@@ -121,6 +147,22 @@ do $$ begin
     raise exception 'FAILED: B uploaded into A''s avatar folder';
 exception when insufficient_privilege then raise notice 'ok: B cannot upload into A''s avatar folder';
 end $$;
+with u as (update storage.objects set bucket_id = 'dive-photos' where bucket_id = 'avatars' and name = '00000000-0000-0000-0000-00000000000b/avatar-2.jpg' returning 1)
+select pg_temp.check((select count(*) from u) = 0, 'B cannot move own avatar to another bucket');
+insert into storage.objects (bucket_id, name) values ('dive-logs', :'B' || '/S9/x.DLF');
+do $$ begin
+    update storage.objects set bucket_id = 'avatars' where name = '00000000-0000-0000-0000-00000000000b/S9/x.DLF';
+    raise exception 'FAILED: B moved a DLF into the avatars bucket';
+exception when insufficient_privilege then raise notice 'ok: B cannot move a DLF into the avatars bucket';
+end $$;
+do $$ begin
+    insert into storage.objects (bucket_id, name) values ('avatars', '00000000-0000-0000-0000-00000000000a/avatar-1.jpg')
+        on conflict (bucket_id, name) do update set owner = null;
+    raise exception 'FAILED: B upserted into A''s avatar';
+exception when insufficient_privilege then raise notice 'ok: B cannot upsert into A''s avatar';
+end $$;
+update public.profiles set created_at = '2000-01-01' where id = :'B';
+select pg_temp.check((select created_at > '2020-01-01' from public.profiles where id = :'B'), 'profile timestamps are kept by the server');
 with d as (delete from storage.objects where bucket_id = 'avatars' and name like '00000000-0000-0000-0000-00000000000a/%' returning 1)
 select pg_temp.check((select count(*) from d) = 0, 'B cannot delete A''s avatar');
 
@@ -147,7 +189,25 @@ select set_config('request.jwt.claim.sub', :'A', false);
 select pg_temp.check((select count(*) from public.log_entries) = 4, 'A reads all own entries');
 select pg_temp.check((select notes from public.log_entries where id = '40000000-0000-0000-0000-000000000002') = 'SECRET-NOTE-2', 'A reads own notes');
 select pg_temp.check((select count(*) from public.log_entries where owner = :'B') = 0, 'A does not see B''s entries in the table');
-select pg_temp.check((select site_lat = 50.1 from public.community_entries(p_id => '40000000-0000-0000-0000-000000000001')), 'owner sees own coordinates via the RPC');
+select pg_temp.check((select site_lat = 50.1 and log_number = 1 from public.community_entries(p_id => '40000000-0000-0000-0000-000000000001')), 'owner sees own coordinates and numbers via the RPC');
+update public.profiles set default_visibility = 'private' where id = :'A';
+insert into public.log_entries (id, log_number, dive_date) values ('40000000-0000-0000-0000-000000000050', 50, '2026-09-10');
+select pg_temp.check((select visibility from public.log_entries where id = '40000000-0000-0000-0000-000000000050') = 'private', 'insert without visibility follows the profile default');
+delete from public.log_entries where id = '40000000-0000-0000-0000-000000000050';
+update public.profiles set default_visibility = 'members' where id = :'A';
 select pg_temp.check(not exists (select 1 from public.community_entries() where id = '40000000-0000-0000-0000-0000000000b1'), 'A does not see B''s private dive');
 select pg_temp.check((select count(*) from storage.objects where bucket_id = 'dive-photos') = 3, 'A reads own photos');
+reset role;
+
+-- ---- Not a member: anonymous sign-in, banned user ----
+update auth.users set is_anonymous = true where id = '00000000-0000-0000-0000-00000000000c';
+set role authenticated;
+select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-00000000000c', false);
+select pg_temp.check((select count(*) from public.community_entries()) = 0, 'anonymous sign-in sees no dives');
+select pg_temp.check((select count(*) from public.profiles) = 0, 'anonymous sign-in sees no profiles');
+reset role;
+update auth.users set is_anonymous = false, banned_until = now() + interval '1 day' where id = :'B';
+set role authenticated;
+select set_config('request.jwt.claim.sub', :'B', false);
+select pg_temp.check((select count(*) from public.community_entries()) = 0, 'banned member sees no dives');
 reset role;
