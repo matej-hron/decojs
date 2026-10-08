@@ -977,6 +977,14 @@ describe('form strings', () => {
         (v && typeof v === 'object' ? keysOf(v, `${prefix}${k}.`) : [`${prefix}${k}`])).sort();
     const load = lang => JSON.parse(readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8')).diveLog.logbook;
 
+    test('the dive list view is called feed, not list, in every language', () => {
+        for (const lang of ['en', 'cs', 'es']) {
+            const { views } = load(lang);
+            assert.ok(views.feed, lang);
+            assert.equal('list' in views, false, lang);
+        }
+    });
+
     test('en, cs and es have the same logbook keys, none empty', () => {
         const en = keysOf(load('en'));
         assert.ok(en.includes('form.choices.weather.sun') && en.includes('duplicateNumber'));

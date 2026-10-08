@@ -2879,7 +2879,7 @@
             "views": {
                 "label": "Vista de la lista de inmersiones",
                 "tiles": "Mosaico",
-                "list": "Lista",
+                "feed": "Resumen",
                 "table": "Tabla",
                 "with": "con {0}",
                 "monthHeader": "{0} · {1}",
@@ -3149,6 +3149,26 @@
                 "folderAllow": "Permitir el acceso a la carpeta guardada",
                 "folderError": "No se pudo leer la carpeta.",
                 "inFolder": "en la carpeta, aún sin guardar"
+            },
+            "feed": {
+                "untitled": "Inmersión n.º {0}",
+                "untitledNoNumber": "Inmersión",
+                "stats": {
+                    "depth": "Prof. máx.",
+                    "duration": "Tiempo",
+                    "avgDepth": "Prof. media",
+                    "temp": "Agua",
+                    "gas": "Gas"
+                },
+                "morePhotos": "{0} fotos más",
+                "mapAlt": "Mapa de {0}",
+                "profileAlt": "Perfil de profundidad"
+            },
+            "bar": {
+                "title": "Mis inmersiones",
+                "more": "Más acciones",
+                "timeUnderwater": "{0} bajo el agua",
+                "deepest": "máx. {0}"
             }
         },
         "backend": {

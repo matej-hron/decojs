@@ -2915,7 +2915,7 @@
             "views": {
                 "label": "Zobrazení seznamu ponorů",
                 "tiles": "Dlaždice",
-                "list": "Seznam",
+                "feed": "Přehled",
                 "table": "Tabulka",
                 "with": "s {0}",
                 "monthHeader": "{0} · {1}",
@@ -3185,6 +3185,26 @@
                 "folderAllow": "Povolit přístup k uložené složce",
                 "folderError": "Složku se nepodařilo přečíst.",
                 "inFolder": "ve složce, zatím neuloženo"
+            },
+            "feed": {
+                "untitled": "Ponor č. {0}",
+                "untitledNoNumber": "Ponor",
+                "stats": {
+                    "depth": "Max. hloubka",
+                    "duration": "Čas",
+                    "avgDepth": "Prům. hloubka",
+                    "temp": "Voda",
+                    "gas": "Plyn"
+                },
+                "morePhotos": "Další fotky: {0}",
+                "mapAlt": "Mapa: {0}",
+                "profileAlt": "Hloubkový profil"
+            },
+            "bar": {
+                "title": "Moje ponory",
+                "more": "Další akce",
+                "timeUnderwater": "{0} pod vodou",
+                "deepest": "nejhlubší {0}"
             }
         },
         "backend": {
