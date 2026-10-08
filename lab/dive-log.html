@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="robots" content="noindex, nofollow">
-    <title>Dive Log - Deco Theory</title>
+    <title>DecoTrail</title>
     <link rel="manifest" href="../manifest.json">
     <meta name="theme-color" content="#2980b9">
     <link rel="icon" type="image/svg+xml" href="../icons/icon.svg">
@@ -315,7 +315,7 @@
         }
         @media (min-width: 1000px) {
             .lb-list-view { grid-template-columns: 16rem minmax(0, 1fr); column-gap: 2rem; align-items: start; }
-                        .lb-list-view > .lb-bar { position: sticky; z-index: 10; top: 5rem; grid-template-columns: minmax(0, 1fr);
+            .lb-list-view > .lb-bar { position: sticky; z-index: 10; top: calc(var(--tr-bar-h) + 1rem); grid-template-columns: minmax(0, 1fr);
                 padding: 1.25rem; background: var(--surface-elevated); border: 1px solid var(--border); border-radius: var(--radius-lg); }
             .lb-list-view .lb-totals { flex-direction: column; gap: 0.2rem; margin-top: 0.75rem; }
             .lb-list-view .lb-bar-actions { flex-wrap: wrap; }
@@ -323,9 +323,6 @@
             .lb-list-view .lb-menu-pop { left: 0; right: auto; }
         }
         @media (max-width: 720px) {
-            body.lb-in .hero.hero-compact { padding: 0.75rem 1rem; }
-            body.lb-in .hero.hero-compact h1 { margin: 0; font-size: var(--text-lg); }
-            body.lb-in .hero-subtitle { display: none; }
             body.lb-in main { padding-left: 0; padding-right: 0; }
             section.lb-detail { padding: 0; background: none; border: 0; box-shadow: none; }
             .lb-detail .lb-d-head { font-size: var(--text-xl); }
@@ -339,14 +336,13 @@
             .lb-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr)); }
             .lb-actions .btn { justify-content: center; }
             #lb-add-gas { justify-self: stretch; justify-content: center; }
-            .lb-form > .lb-actions { position: sticky; bottom: 0; z-index: 5; margin: 0 -1rem; padding: 0.75rem calc(1rem + env(safe-area-inset-right)) calc(0.75rem + env(safe-area-inset-bottom)) calc(1rem + env(safe-area-inset-left));
+            .lb-form > .lb-actions { position: sticky; bottom: var(--tr-bottom-h); z-index: 5; margin: 0 -1rem; padding: 0.75rem calc(1rem + env(safe-area-inset-right)) calc(0.75rem + env(safe-area-inset-bottom)) calc(1rem + env(safe-area-inset-left));
                 background: var(--surface-elevated); border-top: 1px solid var(--border); }
             .lb-picker-bar { padding-top: calc(0.5rem + env(safe-area-inset-top)); padding-left: calc(0.75rem + env(safe-area-inset-left)); padding-right: calc(0.75rem + env(safe-area-inset-right)); }
             .lb-picker-form { padding-bottom: calc(0.75rem + env(safe-area-inset-bottom)); }
-            body.lb-in .disclaimer-banner { padding: 0.4rem 1rem; font-size: var(--text-xs); }
             .lb-root { padding-bottom: calc(5rem + env(safe-area-inset-bottom)); }
             .lb-bar-title { font-size: var(--text-xl); }
-            .lb-new { position: fixed; right: calc(1rem + env(safe-area-inset-right)); bottom: calc(1rem + env(safe-area-inset-bottom)); z-index: 30; min-height: 56px; padding: 0 1.4rem; border-radius: var(--radius-full); box-shadow: var(--shadow-lg); font-weight: 600; }
+            .lb-new { position: fixed; right: calc(1rem + env(safe-area-inset-right)); bottom: calc(var(--tr-bottom-h) + 1rem); z-index: 30; min-height: 56px; padding: 0 1.4rem; border-radius: var(--radius-full); box-shadow: var(--shadow-lg); font-weight: 600; }
             .lb-selecting .lb-new { display: none; }
             .lb-seg { padding: 0 0.75rem; }
             .lb-select-btn { margin-left: auto; }
@@ -467,37 +463,142 @@
         .rda-root .gfc-ranking-list li { white-space: nowrap; }
         /* ======================= end phone-portrait charts ======================= */
     </style>
+    <style>
+        /* ==========================================================================
+           DecoTrail app shell: top bar, tabs (inline ≥ 721 px, bottom bar on phones), footer.
+           ========================================================================== */
+        :root {
+            --tr-bar-h: 64px;
+            --tr-bottom-h: 0px;
+            --tr-accent: var(--blue-600);
+            --tr-accent-soft: var(--blue-50);
+            --tr-bar-bg: color-mix(in srgb, var(--surface-elevated) 90%, transparent);
+            --tr-mark-sea: var(--blue-200);
+        }
+        :root[data-theme="dark"] {
+            --tr-accent: var(--blue-300);
+            --tr-accent-soft: color-mix(in srgb, var(--blue-400) 18%, transparent);
+            --tr-mark-sea: var(--blue-800);
+        }
+        body { min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
+        .tr-main { flex: 1 0 auto; width: 100%; }
+
+        .tr-top { position: sticky; top: 0; z-index: 50; background: var(--tr-bar-bg); border-bottom: 1px solid var(--border);
+            -webkit-backdrop-filter: saturate(1.4) blur(12px); backdrop-filter: saturate(1.4) blur(12px);
+            padding: env(safe-area-inset-top) 0 0; color: var(--text); text-align: left; } /* header defaults in styles.css are the DecoTheory hero */
+        .tr-top .tr-top-in.nav-container { max-width: 1200px; height: var(--tr-bar-h); margin: 0 auto; flex-wrap: nowrap; justify-content: flex-start; gap: 1.5rem;
+            padding: 0 calc(1rem + env(safe-area-inset-right)) 0 calc(1rem + env(safe-area-inset-left)); position: static; }
+        .tr-brand { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; flex: none; color: var(--text); text-decoration: none;
+            font-family: var(--font-display); font-size: 1.35rem; font-weight: 600; letter-spacing: -0.015em; font-variation-settings: 'opsz' 48; }
+        .tr-brand:hover { color: var(--text); }
+        .tr-brand:focus-visible, .tr-tab:focus-visible, .tr-sibling:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; border-radius: var(--radius-sm); }
+        .tr-mark { flex: none; overflow: visible; }
+        .tr-mark-sea { fill: none; stroke: var(--tr-mark-sea); stroke-width: 1.5; stroke-linecap: round; }
+        .tr-mark-trail { fill: none; stroke: var(--tr-accent); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 0 3.6; }
+        .tr-mark-dot { fill: var(--tr-accent); }
+
+        .tr-tabs { display: flex; align-self: stretch; gap: 0.25rem; min-width: 0; }
+        .tr-tabs[hidden], .tr-bottom[hidden] { display: none; }
+        .tr-tab { position: relative; display: inline-flex; align-items: center; gap: 0.45rem; min-height: 44px; padding: 0 0.75rem;
+            color: var(--text-subtle); text-decoration: none; font-size: var(--text-sm); font-weight: 500; white-space: nowrap;
+            transition: color var(--duration-fast) var(--ease-out); }
+        .tr-tab:hover { color: var(--text); }
+        .tr-tab[aria-current="page"] { color: var(--tr-accent); font-weight: 600; }
+        .tr-tabs .tr-tab .tr-tab-icon { width: 20px; height: 20px; }
+        .tr-tabs .tr-tab::after { content: ''; position: absolute; left: 0.75rem; right: 0.75rem; bottom: -1px; height: 3px; border-radius: 3px 3px 0 0;
+            background: var(--tr-accent); transform: scaleX(0); transition: transform var(--duration-base) var(--ease-out); }
+        .tr-tabs .tr-tab[aria-current="page"]::after { transform: scaleX(1); }
+
+        .tr-top-end { display: flex; align-items: center; gap: 0.5rem; margin-left: auto; flex: none; }
+        .tr-lang { display: contents; }
+        .tr-top .lang-switcher { order: 0; margin: 0; }
+        .tr-top .lang-switcher-toggle { min-height: 44px; min-width: 44px; justify-content: center; padding: 0 0.6rem; border: 1px solid var(--border); border-radius: var(--radius-full);
+            background: transparent; color: var(--text-subtle); }
+        .tr-top .lang-switcher-toggle:hover { color: var(--text); border-color: var(--border-strong); background: var(--surface-sunken); }
+        .tr-top .lang-switcher-menu { background: var(--surface-elevated); border-color: var(--border); box-shadow: var(--shadow-lg); }
+        .tr-top .lang-switcher-option { min-height: 44px; color: var(--text); }
+        .tr-top .lang-switcher-option:hover { background: var(--surface-sunken); color: var(--text); }
+        .tr-top .lang-switcher-option.active { background: var(--tr-accent-soft); color: var(--tr-accent); }
+        .tr-sibling { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 44px; padding: 0 0.25rem; color: var(--text-subtle);
+            text-decoration: none; font-size: var(--text-sm); white-space: nowrap; }
+        .tr-sibling:hover { color: var(--tr-accent); }
+        .tr-sibling-icon { display: none; }
+
+        .tr-bottom { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: grid; grid-template-columns: repeat(var(--tr-tabs, 5), minmax(0, 1fr));
+            padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+            background: var(--tr-bar-bg); border-top: 1px solid var(--border); -webkit-backdrop-filter: saturate(1.4) blur(12px); backdrop-filter: saturate(1.4) blur(12px); }
+        .tr-bottom .tr-tab { flex-direction: column; justify-content: center; gap: 0.2rem; min-height: 56px; padding: 0.35rem 0.15rem 0.3rem;
+            font-size: 0.6875rem; line-height: 1.1; text-align: center; white-space: normal; }
+        .tr-bottom .tr-tab-label { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .tr-bottom .tr-tab::before { content: ''; position: absolute; top: 0; left: 50%; width: 2rem; height: 3px; margin-left: -1rem; border-radius: 0 0 3px 3px;
+            background: var(--tr-accent); transform: scaleX(0); transition: transform var(--duration-base) var(--ease-out); }
+        .tr-bottom .tr-tab[aria-current="page"]::before { transform: scaleX(1); }
+        .tr-bottom .tr-tab[aria-current="page"] .tr-tab-icon { stroke-width: 2.1; }
+
+        .tr-avatar { display: inline-block; flex: none; width: var(--size, 40px); height: var(--size, 40px); border-radius: 50%; overflow: hidden; background: var(--surface-sunken); vertical-align: middle; }
+        .tr-avatar > svg, .tr-avatar > img { display: block; width: 100%; height: 100%; }
+        .tr-avatar > img { object-fit: cover; }
+        .tr-learn { justify-self: start; display: inline-flex; align-items: center; min-height: 44px; color: var(--tr-accent); font-size: var(--text-sm); }
+        .rda-invite { flex-basis: 100%; margin: 0.25rem 0 0; padding-top: 0.75rem; border-top: 1px solid var(--border); color: var(--text-subtle); font-size: var(--text-sm); }
+
+        footer.tr-foot { flex: none; padding: 1.5rem calc(1rem + env(safe-area-inset-right)) calc(1.5rem + var(--tr-bottom-h)) calc(1rem + env(safe-area-inset-left));
+            background: var(--surface-sunken); color: var(--text-subtle); border-top: 1px solid var(--border); font-size: var(--text-sm); text-align: center; }
+        .tr-foot p { max-width: 42rem; margin: 0 auto 0.4rem; }
+        .tr-foot-line { color: var(--text); }
+        .tr-foot a { color: var(--tr-accent); }
+        .tr-foot-note { font-size: var(--text-xs); }
+        .tr-foot .version-number { margin-top: 0.5rem; }
+
+        /* Logged out: just the bar and the login card */
+        body:not(.tr-logged-in) .tr-main { max-width: 34rem; padding-top: clamp(1.5rem, 8vh, 4rem); }
+        body:not(.tr-logged-in) .rda-root > .rda-account { padding: 1.5rem; gap: 1rem; background: var(--surface-elevated); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
+        body:not(.tr-logged-in) .rda-account > strong { flex-basis: 100%; font-family: var(--font-display); font-size: var(--text-xl); font-weight: 600; color: var(--text); }
+
+        @media (max-width: 960px) and (min-width: 721px) {
+            .tr-top .tr-top-in.nav-container { gap: 0.75rem; }
+            .tr-tabs .tr-tab { padding: 0 0.5rem; }
+            .tr-tabs .tr-tab::after { left: 0.5rem; right: 0.5rem; }
+            .tr-tabs .tr-tab .tr-tab-icon { display: none; }
+        }
+        @media (max-width: 720px) {
+            :root { --tr-bar-h: 56px; }
+            body.tr-logged-in { --tr-bottom-h: calc(57px + env(safe-area-inset-bottom)); } /* 56 px tabs + 1 px border */
+            .tr-tabs { display: none; }
+            .tr-brand { font-size: 1.2rem; }
+            .tr-sibling { justify-content: center; min-width: 44px; padding: 0; }
+            .tr-sibling-icon { display: block; }
+            .tr-sibling-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+            body.tr-logged-in .lb-form > .lb-actions { padding-bottom: 0.75rem; }
+            /* Selecting on phones: the select dock takes the bottom edge, the tab bar steps aside */
+            body.tr-logged-in:has(.lb-selecting) { --tr-bottom-h: 0px; }
+            body.tr-logged-in:has(.lb-selecting) .tr-bottom { display: none; }
+        }
+        @media (min-width: 721px) { .tr-bottom { display: none; } }
+        @media (prefers-reduced-motion: reduce) { .tr-tab, .tr-tab::before, .tr-tab::after { transition: none; } }
+    </style>
 </head>
-<body data-i18n-title="diveLog.pageTitle">
-    <nav class="main-nav">
-        <div class="nav-container">
-            <a href="../index.html" class="nav-logo">Deco Theory</a>
-            <button class="nav-hamburger" aria-label="Toggle menu" aria-expanded="false">
-                <span></span><span></span><span></span>
-            </button>
-            <ul class="nav-links"><!-- Generated by js/nav.js --></ul>
-            <span class="nav-wip-badge" data-i18n="common.wipBadge">Experimental</span>
-        </div>
-    </nav>
-    <div class="disclaimer-banner" data-i18n="diveLog.disclaimerBanner">
-        <strong>Educational Use Only</strong> — Replays dives recorded by a dive computer through DecoTheory's model. Not a substitute for your dive computer.
-    </div>
-    <header class="hero hero-compact">
-        <h1 data-i18n="diveLog.pageTitle">Dive Log</h1>
-        <p class="hero-subtitle" data-i18n="diveLog.subtitle">Open dives from a Divesoft dive computer and see them in the profile, P-P and GF charts. Change GF to see where the limits would have been.</p>
-    </header>
-    <main>
-        <div class="rda-root"></div>
-    </main>
-    <footer>
-        <span class="wip-badge" data-i18n="common.wipBadge">Experimental</span>
-        <p data-i18n="diveLog.disclaimer"><strong>Disclaimer:</strong> For educational purposes only. Each dive starts from a fresh surface state; earlier dives the same day are not taken into account.</p>
+<body>
+    <header class="tr-top"><div class="tr-top-in nav-container">
+        <a class="tr-brand" href="#/"><svg class="tr-mark" viewBox="0 0 32 32" width="30" height="30" aria-hidden="true" focusable="false">
+            <path class="tr-mark-sea" d="M2 7.5h28"/>
+            <path class="tr-mark-trail" d="M4 7.5 9.5 22.5h8l2.5-5.5h3.5l1.8-4.5"/>
+            <circle class="tr-mark-dot" cx="27.2" cy="8.6" r="2.9"/>
+        </svg><span>DecoTrail</span></a>
+        <nav class="tr-tabs" aria-label="DecoTrail" hidden></nav>
+        <div class="tr-top-end"><span class="tr-lang"></span><a class="tr-sibling" href="../index.html"><svg class="tr-sibling-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 4h6v6M20 4l-8.5 8.5M18 14v4.5A1.5 1.5 0 0 1 16.5 20h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10"/></svg><span class="tr-sibling-text" data-i18n="diveLog.trail.decotheory">DecoTheory&nbsp;↗</span></a></div>
+    </div></header>
+    <main class="tr-main"><div class="rda-root"></div></main>
+    <nav class="tr-bottom" aria-label="DecoTrail" hidden></nav>
+    <footer class="tr-foot">
+        <p class="tr-foot-line"><span data-i18n="diveLog.trail.footer">DecoTrail — dives explained by</span> <a href="../index.html" data-i18n="diveLog.trail.decotheory">DecoTheory&nbsp;↗</a></p>
+        <p class="tr-foot-note" data-i18n="diveLog.disclaimer"><strong>Disclaimer:</strong> For educational purposes only. Each dive starts from a fresh surface state; earlier dives the same day are not taken into account.</p>
         <span class="version-number"></span>
     </footer>
-    <script src="../js/nav.js" type="module"></script>
     <script type="module">
         import { initI18n, createLanguageSwitcher } from '../js/i18n.js';
-        createLanguageSwitcher();
+        createLanguageSwitcher(); // attaches to .nav-container; the shell keeps it in .tr-lang
+        const switcher = document.querySelector('.tr-top-in > .lang-switcher');
+        if (switcher) document.querySelector('.tr-lang').append(switcher);
         initI18n();
     </script>
     <script type="module">

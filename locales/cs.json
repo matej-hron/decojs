@@ -2912,6 +2912,23 @@
         "startFirst": "čistý start — není načten žádný dřívější ponor",
         "mode": {"oc": "OC", "ccr": "CCR", "scr": "SCR", "gauge": "Hloubkoměr", "freedive": "Freediving", "unknown": "Neznámý"},
         "water": {"salt": "Slaná", "fresh": "Sladká"},
+        "trail": {
+            "pageTitle": "DecoTrail",
+            "tab": {
+                "feed": "Přehled",
+                "list": "Moje ponory",
+                "community": "Komunita",
+                "sites": "Místa",
+                "profile": "Profil"
+            },
+            "decotheory": "DecoTheory ↗",
+            "inviteOnly": "DecoTrail je jen pro zvané. Obraťte se na toho, kdo vás pozval, nebo požádejte o pozvánku.",
+            "notInvited": "Tento účet zatím nemá pozvánku do DecoTrail. Požádejte o ni.",
+            "learnWhy": "Vysvětlení najdete na DecoTheory ↗",
+            "diver": "Potápěč",
+            "you": "Vy",
+            "footer": "DecoTrail — ponory vysvětlené pomocí"
+        },
         "logbook": {
             "newDive": "+ Nový ponor",
             "alreadyLogged": "Už v deníku",
@@ -3255,10 +3272,10 @@
             "reportFailed": "Nepodařilo se uložit {0}: {1}",
             "unreachable": "Deník ponorů není dostupný. Pokud se týden nepoužíval, obnovte projekt v administraci Supabase.",
             "linkExpired": "Platnost odkazu vypršela. Pošlete si nový.",
-            "cannotLogin": "Tento e-mail se zde nemůže přihlásit.",
+            "cannotLogin": "Tento účet zatím nemá pozvánku do DecoTrail. Požádejte o ni.",
             "continueGoogle": "Pokračovat přes Google",
             "orEmail": "nebo použijte e-mailový odkaz",
-            "cannotLoginGoogle": "Tento účet Google se zde nemůže přihlásit.",
+            "cannotLoginGoogle": "Tento účet zatím nemá pozvánku do DecoTrail. Požádejte o ni.",
             "googleCancelled": "Přihlášení přes Google bylo zrušeno.",
             "tooManyLinks": "Bylo odesláno příliš mnoho přihlašovacích e-mailů. Počkejte až hodinu a zkuste to znovu.",
             "genericError": "Něco se pokazilo. Zkuste to prosím znovu."

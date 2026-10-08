@@ -100,14 +100,18 @@ export function fallbackAvatarKey(id) {
 
 /**
  * Avatar markup: the uploaded photo when `url`, else the preset SVG (unknown
- * preset → deterministic fallback from `name`).
- * @param {{preset?: string, url?: string, name?: string, size?: number}} opts
+ * preset → deterministic fallback from `id`, else from `name`). Without a name the
+ * accessible label is the preset's English label.
+ * @param {{preset?: string, url?: string, name?: string, id?: string, size?: number}} opts
  */
-export function avatarHtml({ preset, url, name, size = 40 } = {}) {
-    const px = Number.isFinite(Number(size)) ? Number(size) : 40;
-    const label = escHtml(name ?? '');
+export function avatarHtml({ preset, url, name, id, size = 40 } = {}) {
+    const n = Number(size);
+    const px = Number.isFinite(n) && n > 0 ? n : 40;
+    const key = typeof preset === 'string' && Object.hasOwn(AVATARS, preset) ? preset : fallbackAvatarKey(id ?? name);
+    const shown = typeof name === 'string' ? name.trim() : '';
+    const label = escHtml(shown || AVATARS[key].label.en);
     const inner = url
         ? `<img src="${escHtml(url)}" alt="" loading="lazy" decoding="async">`
-        : (AVATARS[preset] ?? AVATARS[fallbackAvatarKey(name)]).svg;
+        : AVATARS[key].svg;
     return `<span class="tr-avatar" style="--size:${px}px" role="img" aria-label="${label}">${inner}</span>`;
 }

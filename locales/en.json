@@ -2912,6 +2912,23 @@
         "startFirst": "fresh start — no earlier dive loaded",
         "mode": {"oc": "OC", "ccr": "CCR", "scr": "SCR", "gauge": "Gauge", "freedive": "Freedive", "unknown": "Unknown"},
         "water": {"salt": "Salt", "fresh": "Fresh"},
+        "trail": {
+            "pageTitle": "DecoTrail",
+            "tab": {
+                "feed": "Feed",
+                "list": "My dives",
+                "community": "Community",
+                "sites": "Sites",
+                "profile": "Profile"
+            },
+            "decotheory": "DecoTheory ↗",
+            "inviteOnly": "DecoTrail is invite-only. Ask the person who invited you, or ask for an invite.",
+            "notInvited": "This account hasn't been invited to DecoTrail yet. Ask for an invite.",
+            "learnWhy": "Learn why on DecoTheory ↗",
+            "diver": "Diver",
+            "you": "You",
+            "footer": "DecoTrail — dives explained by"
+        },
         "logbook": {
             "newDive": "+ New dive",
             "alreadyLogged": "Already in your logbook",
@@ -3255,10 +3272,10 @@
             "reportFailed": "{0} could not be saved: {1}",
             "unreachable": "Can't reach your dive log. If it hasn't been used for a week, resume the project in the Supabase dashboard.",
             "linkExpired": "This login link has expired. Send a new one.",
-            "cannotLogin": "This email can't log in here.",
+            "cannotLogin": "This account hasn't been invited to DecoTrail yet. Ask for an invite.",
             "continueGoogle": "Continue with Google",
             "orEmail": "or use an email link",
-            "cannotLoginGoogle": "This Google account can't log in here.",
+            "cannotLoginGoogle": "This account hasn't been invited to DecoTrail yet. Ask for an invite.",
             "googleCancelled": "Google sign-in was cancelled.",
             "tooManyLinks": "Too many login emails were sent. Wait up to an hour and try again.",
             "genericError": "Something went wrong. Please try again."

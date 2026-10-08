@@ -1014,7 +1014,7 @@ describe('RecordedDiveAnalysis lifecycle (jsdom)', () => {
             };
             const rda = new RecordedDiveAnalysis(root, { store, demoFiles: [] });
             await tick();
-            assert.match(root.querySelector('#rda-account').textContent, /Google account can't log in/);
+            assert.match(root.querySelector('#rda-account').textContent, /hasn't been invited to DecoTrail yet/);
             assert.equal(location.search, '');
             root.querySelector('#rda-google').click();
             await tick();
@@ -2107,5 +2107,80 @@ describe('feed helpers', () => {
         assert.deepEqual(idx.get('a'), { path: 'a1', count: 2 });
         assert.deepEqual(idx.get('b'), { path: 'b1', count: 1 });
         assert.equal(idx.has('c'), false);
+    });
+});
+
+describe('DecoTrail shell (jsdom)', () => {
+    async function withDom(hash, fn) {
+        const { JSDOM } = await import('jsdom');
+        const dom = new JSDOM('<!doctype html><body><nav class="tr-tabs" hidden></nav><div id="root"></div><nav class="tr-bottom" hidden></nav></body>',
+            { url: `http://localhost/lab/dive-log.html${hash}` });
+        const saved = {};
+        for (const k of ['window', 'document', 'location', 'history']) {
+            saved[k] = Object.getOwnPropertyDescriptor(globalThis, k);
+            Object.defineProperty(globalThis, k, { value: dom.window[k], configurable: true, writable: true });
+        }
+        try {
+            return await fn(dom.window.document.getElementById('root'), dom.window.document);
+        } finally {
+            for (const [k, d] of Object.entries(saved)) {
+                if (d) Object.defineProperty(globalThis, k, d); else delete globalThis[k];
+            }
+        }
+    }
+    const tick = (ms = 40) => new Promise(r => setTimeout(r, ms));
+    const store = extra => {
+        let listener;
+        return {
+            onAuthChange: l => { listener = l; return () => {}; },
+            logout: () => listener(null),
+            currentUser: async () => ({ id: 'u1', email: 'me@example.com' }),
+            ensureEntries: async () => 0,
+            listDives: async () => [], listEntries: async () => [], listSites: async () => [],
+            listPhotoMedia: async () => [], photoUrls: async () => new Map(),
+            ...extra,
+        };
+    };
+    const tabs = doc => [...doc.querySelectorAll('.tr-bottom .tr-tab')].map(a => a.dataset.tab);
+    const current = doc => doc.querySelector('.tr-bottom [aria-current="page"]')?.dataset.tab;
+
+    test('with the community feature: five tabs, home is Feed, profile is ensured', async () => {
+        await withDom('', async (root, doc) => {
+            let ensured = 0;
+            const s = store({ communityStatus: async () => true, ensureProfile: async () => { ensured++; return { id: 'u1' }; } });
+            const app = new LogbookApp(root, { store: s });
+            await tick();
+            assert.deepEqual(tabs(doc), ['feed', 'list', 'community', 'sites', 'profile']);
+            assert.equal(current(doc), 'feed');
+            assert.equal(doc.querySelector('.tr-tabs').hidden, false);
+            assert.equal(doc.querySelector('.tr-tabs [aria-current="page"]').getAttribute('href'), '#/feed');
+            assert.ok(doc.body.classList.contains('tr-logged-in'));
+            assert.equal(ensured, 1);
+            location.hash = '#/sites';
+            await tick();
+            assert.equal(current(doc), 'sites');
+            s.logout();
+            assert.equal(doc.querySelector('.tr-bottom').hidden, true);
+            assert.equal(doc.querySelector('.tr-tabs').innerHTML, '');
+            assert.ok(!doc.body.classList.contains('tr-logged-in'));
+            app.destroy();
+        });
+    });
+
+    test('without the feature (or the method): My dives and Sites, community routes show the list', async () => {
+        for (const extra of [{ communityStatus: async () => false }, {}, { communityStatus: async () => { throw new Error('x'); } }]) {
+            await withDom('#/community', async (root, doc) => {
+                const origError = console.error;
+                console.error = () => {};
+                try {
+                    const app = new LogbookApp(root, { store: store(extra) });
+                    await tick();
+                    assert.deepEqual(tabs(doc), ['list', 'sites']);
+                    assert.equal(current(doc), 'list');
+                    assert.ok(root.querySelector('.lb-list-view'));
+                    app.destroy();
+                } finally { console.error = origError; }
+            });
+        }
     });
 });

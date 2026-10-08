@@ -2876,6 +2876,23 @@
         "startFirst": "inicio limpio — no hay ninguna inmersión anterior cargada",
         "mode": {"oc": "OC", "ccr": "CCR", "scr": "SCR", "gauge": "Profundímetro", "freedive": "Apnea", "unknown": "Desconocido"},
         "water": {"salt": "Salada", "fresh": "Dulce"},
+        "trail": {
+            "pageTitle": "DecoTrail",
+            "tab": {
+                "feed": "Novedades",
+                "list": "Mis inmersiones",
+                "community": "Comunidad",
+                "sites": "Sitios",
+                "profile": "Perfil"
+            },
+            "decotheory": "DecoTheory ↗",
+            "inviteOnly": "DecoTrail es solo por invitación. Pídesela a quien te invitó o solicita una invitación.",
+            "notInvited": "Esta cuenta aún no tiene invitación a DecoTrail. Solicita una invitación.",
+            "learnWhy": "Entiende por qué en DecoTheory ↗",
+            "diver": "Buceador",
+            "you": "Tú",
+            "footer": "DecoTrail — inmersiones explicadas por"
+        },
         "logbook": {
             "newDive": "+ Nueva inmersión",
             "alreadyLogged": "Ya en tu diario",
@@ -3219,10 +3236,10 @@
             "reportFailed": "No se pudieron guardar {0}: {1}",
             "unreachable": "No se puede acceder a tu diario. Si no se ha usado en una semana, reanuda el proyecto en el panel de Supabase.",
             "linkExpired": "Este enlace ha caducado. Solicita uno nuevo.",
-            "cannotLogin": "Este correo no puede iniciar sesión aquí.",
+            "cannotLogin": "Esta cuenta aún no tiene invitación a DecoTrail. Solicita una invitación.",
             "continueGoogle": "Continuar con Google",
             "orEmail": "o usa un enlace por correo",
-            "cannotLoginGoogle": "Esta cuenta de Google no puede iniciar sesión aquí.",
+            "cannotLoginGoogle": "Esta cuenta aún no tiene invitación a DecoTrail. Solicita una invitación.",
             "googleCancelled": "Se canceló el inicio de sesión con Google.",
             "tooManyLinks": "Se han enviado demasiados correos de acceso. Espera hasta una hora y vuelve a intentarlo.",
             "genericError": "Algo ha fallado. Inténtalo de nuevo."

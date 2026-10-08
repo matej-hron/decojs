@@ -9,6 +9,7 @@ import { RecordedDiveAnalysis, translateStatic } from '../components/RecordedDiv
 import { DiveStoreError } from '../backend/supabaseStore.js';
 import { uploadDivelog, exportZip } from './transfer.js';
 import { parseRoute, routeHref } from './router.js';
+import { AppShell, shellTabs, activeTab, resolveRoute } from './AppShell.js';
 import { needsDetails, formatDiveDate, formatDuration } from './entryModel.js';
 import { EntryForm, TAGS } from './EntryForm.js';
 import { NewDive } from './NewDive.js';
@@ -23,11 +24,8 @@ import { translate } from '../i18n.js';
 import { fmtNum, currentLang, localeTag } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
 
-/** The current route; `home` shows the list until the app shell chooses between feed and list. */
-function currentRoute() {
-    const route = parseRoute(location.hash);
-    return route.name === 'home' ? { name: 'list' } : route;
-}
+/** Community routes whose views arrive in later steps; until then they show My dives. */
+const PENDING_VIEWS = new Set(['feed', 'community', 'member', 'memberDive', 'memberAnalysis', 'profile']);
 
 const tb = (key, fallback) => translate(`diveLog.backend.${key}`, fallback);
 const tl = (key, fallback) => translate(`diveLog.logbook.${key}`, fallback);
@@ -62,12 +60,17 @@ function loadView() {
 export class LogbookApp {
     /**
      * @param {HTMLElement} root
-     * @param {{store?: Object|null}} [config]
+     * @param {{store?: Object|null, shell?: AppShell|null}} [config]
+     *   `shell` defaults to the page's `.tr-tabs` / `.tr-bottom` navigation (none when the page has neither)
      */
-    constructor(root, { store = null } = {}) {
+    constructor(root, { store = null, shell } = {}) {
         this.root = root;
         this.store = store;
+        this.shell = shell === undefined ? AppShell.fromDocument(globalThis.document) : shell;
         this.user = null;
+        this.community = false; // whether the community backend (migration 0004) is available
+        this._probing = false;
+        this._session = 0;
         this.analysis = null; // the mounted RecordedDiveAnalysis (plain or embedded)
         this.entries = null;
         this.sites = new Map();
@@ -114,6 +117,43 @@ export class LogbookApp {
         this.root.innerHTML = '';
     }
 
+    // ---- Route and shell ----
+
+    /** The route as the shell sees it: `home` resolved, community routes → My dives without the feature. */
+    _shellRoute() {
+        return resolveRoute(parseRoute(location.hash), this.community);
+    }
+
+    /** The route whose view is shown. */
+    _route() {
+        const route = this._shellRoute();
+        return PENDING_VIEWS.has(route.name) ? { name: 'list' } : route;
+    }
+
+    _renderShell() {
+        if (!this.shell) return;
+        if (!this.user || this._probing) this.shell.render({ tabs: [] });
+        else this.shell.render({ tabs: shellTabs(this.community), active: activeTab(this._shellRoute().name, this.community) });
+    }
+
+    /** Ask the store once per login whether the community backend exists; render the route when known. */
+    _probeCommunity() {
+        const session = this._session;
+        this.community = false;
+        if (typeof this.store.communityStatus !== 'function') return;
+        this._probing = true;
+        Promise.resolve()
+            .then(() => this.store.communityStatus())
+            .catch(error => { console.error(error); return false; })
+            .then(on => {
+                if (this.destroyed || session !== this._session) return;
+                this.community = on === true;
+                this._probing = false;
+                if (this.community) Promise.resolve().then(() => this.store.ensureProfile?.()).catch(error => console.error(error));
+                this._renderRoute();
+            });
+    }
+
     // ---- Switching between the plain page and the logbook ----
 
     _setUser(user) {
@@ -156,7 +196,9 @@ export class LogbookApp {
         document.addEventListener('click', this._onDocClick);
         document.addEventListener('keydown', this._onDocKey);
         this.view.addEventListener('error', this._onVisualFail, true); // image errors do not bubble
-        document.body.classList.add('lb-in');
+        document.body.classList.add('lb-in', 'tr-logged-in');
+        this._session++;
+        this._probeCommunity();
         this.ensured = this.store.ensureEntries().then(() => this.store.fillComputerFields?.()).catch(error => this._storeError(error, { background: true }));
         this._renderRoute();
     }
@@ -166,7 +208,11 @@ export class LogbookApp {
         document.removeEventListener('languagechange', this._onLanguage);
         document.removeEventListener('click', this._onDocClick);
         document.removeEventListener('keydown', this._onDocKey);
-        document.body.classList.remove('lb-in');
+        document.body.classList.remove('lb-in', 'tr-logged-in');
+        this._session++;
+        this._probing = false;
+        this.community = false;
+        this.shell?.render({ tabs: [] });
         this._viewToken++;
         this._stopSparks();
         this._unmountForm();
@@ -180,7 +226,8 @@ export class LogbookApp {
     }
 
     _onLanguageChange() {
-        const name = currentRoute().name;
+        this._renderShell();
+        const name = this._route().name;
         if (this.user && this.form && (name === 'new' || name === 'edit' || name === 'detail' || name === 'sites' || name === 'site')) this.form.relabel(); // keep what was typed
         else if (this.user && name !== 'analysis') this._renderRoute();
         else translateStatic(this.view);
@@ -193,7 +240,12 @@ export class LogbookApp {
         this._unmountAnalysis();
         this._unmountForm();
         const token = ++this._viewToken;
-        const route = currentRoute();
+        this._renderShell();
+        if (this._probing) {
+            this.view.innerHTML = `<p class="rda-account-msg">${escHtml(tb('loading', 'Loading…'))}</p>`;
+            return;
+        }
+        const route = this._route();
         this.view.classList.toggle('lb-list-view', route.name === 'list'); // list layout: sidebar on wide screens
         if (route.name !== 'list') this.view.classList.remove('lb-selecting');
         switch (route.name) {
@@ -290,6 +342,7 @@ export class LogbookApp {
 
     async _showAnalysis(id, token) {
         this.view.innerHTML = `<p class="lb-back"><a href="${routeHref({ name: 'detail', id })}">${escHtml(tl('back', '← Back'))}</a></p>
+            <a class="tr-learn" href="../gradient-factors.html">${escHtml(translate('diveLog.trail.learnWhy', 'Learn why on DecoTheory ↗'))}</a>
             <div class="rda-root lb-analysis"></div>`;
         let entry = this.entries?.find(e => e.id === id);
         try {
@@ -514,7 +567,7 @@ export class LogbookApp {
         this.selected.clear();
         this.entries = null;
         if (this.destroyed || !this.user) return;
-        if (currentRoute().name === 'list') this._showList(++this._viewToken);
+        if (this._route().name === 'list') this._showList(++this._viewToken);
     }
 
     // ---- List view ----
@@ -814,7 +867,7 @@ export class LogbookApp {
             ? tb('unreachable', 'Can\'t reach your dive log. If it hasn\'t been used for a week, resume the project in the Supabase dashboard.')
             : tb('genericError', 'Something went wrong. Please try again.')];
         if (this.destroyed || !this.user) return;
-        if (currentRoute().name === 'list') this._renderList();
+        if (this._route().name === 'list') this._renderList();
         else if (background) this._showBanner(this.msg[0]);
         else this._showMessage(this.msg[0]);
     }
@@ -842,7 +895,7 @@ export class LogbookApp {
 
     _setWorking(on) {
         this.working = on;
-        if (this.user && currentRoute().name === 'list') this._renderList();
+        if (this.user && this._route().name === 'list') this._renderList();
     }
 
     async _logout() {
@@ -863,7 +916,7 @@ export class LogbookApp {
         try {
             const { report, ensureError } = await uploadDivelog(this.store, files, (done, total) => {
                 this.msg = [fill(tb('progress', 'Saving {0} / {1}…'), done, total)];
-                if (currentRoute().name === 'list') this._renderList();
+                if (this._route().name === 'list') this._renderList();
             });
             this.msg = this._reportLines(report);
             if (ensureError) {
@@ -871,7 +924,7 @@ export class LogbookApp {
                 this.msg = [...this._reportLines(report), ...this.msg];
             }
             this.working = false;
-            if (currentRoute().name === 'list') this._showList(++this._viewToken);
+            if (this._route().name === 'list') this._showList(++this._viewToken);
         } catch (error) {
             this._storeError(error, { background: true });
         } finally {

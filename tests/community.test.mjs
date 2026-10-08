@@ -11,6 +11,7 @@ import {
     memberStatsView, countryName, COUNTRY_CODES, entryFromCommunityRow,
 } from '../js/logbook/community.js';
 import { AVATAR_KEYS, AVATARS, fallbackAvatarKey, avatarHtml } from '../js/logbook/avatars.js';
+import { SHELL_TABS, shellTabs, activeTab, resolveRoute } from '../js/logbook/AppShell.js';
 
 const NB = ' ';
 
@@ -139,4 +140,43 @@ test('avatarHtml escapes the name and prefers the uploaded url', () => {
     assert.match(photo, /--size:40px/);
     const unknown = avatarHtml({ preset: 'nope', name: 'abc' });
     assert.ok(unknown.includes(AVATARS[fallbackAvatarKey('abc')].svg));
+});
+
+test('avatarHtml: own-property presets only, sane size, label and id fallbacks', () => {
+    const proto = avatarHtml({ preset: 'constructor', name: 'abc' });
+    assert.doesNotMatch(proto, /undefined/);
+    assert.ok(proto.includes(AVATARS[fallbackAvatarKey('abc')].svg));
+    for (const size of [0, -5, NaN, Infinity, 'x']) assert.match(avatarHtml({ preset: 'reef-01', size }), /--size:40px/);
+    assert.match(avatarHtml({ preset: 'reef-01', size: '48' }), /--size:48px/);
+    assert.match(avatarHtml({ preset: 'reef-02', name: '' }), /aria-label="Fin"/);
+    assert.match(avatarHtml({ preset: 'reef-02', name: '   ' }), /aria-label="Fin"/);
+    const byId = avatarHtml({ preset: null, id: 'user-7', name: 'Petr' });
+    assert.ok(byId.includes(AVATARS[fallbackAvatarKey('user-7')].svg));
+    const key = fallbackAvatarKey('user-7');
+    assert.match(avatarHtml({ id: 'user-7' }), new RegExp(`aria-label="${AVATARS[key].label.en}"`));
+});
+
+test('shellTabs and activeTab', () => {
+    assert.deepEqual(SHELL_TABS, ['feed', 'list', 'community', 'sites', 'profile']);
+    assert.deepEqual(shellTabs(true), ['feed', 'list', 'community', 'sites', 'profile']);
+    assert.deepEqual(shellTabs(false), ['list', 'sites']);
+    const cases = {
+        feed: 'feed', list: 'list', new: 'list', detail: 'list', edit: 'list', analysis: 'list',
+        community: 'community', member: 'community', memberDive: 'community', memberAnalysis: 'community',
+        sites: 'sites', site: 'sites', profile: 'profile',
+    };
+    for (const [name, tab] of Object.entries(cases)) assert.equal(activeTab(name, true), tab, name);
+    assert.equal(activeTab('home', true), 'feed');
+    assert.equal(activeTab('home', false), 'list');
+    assert.equal(activeTab('home'), 'list');
+    assert.equal(activeTab('notFound', true), null);
+});
+
+test('resolveRoute: home and community routes depend on the feature', () => {
+    assert.deepEqual(resolveRoute({ name: 'home' }, true), { name: 'feed' });
+    assert.deepEqual(resolveRoute({ name: 'home' }, false), { name: 'list' });
+    for (const name of ['feed', 'community', 'profile']) assert.deepEqual(resolveRoute({ name }, false), { name: 'list' });
+    assert.deepEqual(resolveRoute({ name: 'member', id: 'x' }, false), { name: 'list' });
+    assert.deepEqual(resolveRoute({ name: 'member', id: 'x' }, true), { name: 'member', id: 'x' });
+    assert.deepEqual(resolveRoute({ name: 'detail', id: 'x' }, false), { name: 'detail', id: 'x' });
 });
