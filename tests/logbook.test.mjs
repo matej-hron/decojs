@@ -292,8 +292,9 @@ describe('dates and same-day entries', () => {
 
 describe('router', () => {
     test('routes', () => {
-        assert.deepEqual(parseRoute(''), { name: 'list' });
-        assert.deepEqual(parseRoute('#/'), { name: 'list' });
+        assert.deepEqual(parseRoute(''), { name: 'home' });
+        assert.deepEqual(parseRoute('#/'), { name: 'home' });
+        assert.deepEqual(parseRoute('#/dives'), { name: 'list' });
         assert.deepEqual(parseRoute('#/new'), { name: 'new' });
         assert.deepEqual(parseRoute('#/dive/abc-1'), { name: 'detail', id: 'abc-1' });
         assert.deepEqual(parseRoute('#/dive/abc-1/edit'), { name: 'edit', id: 'abc-1' });
@@ -304,9 +305,10 @@ describe('router', () => {
         assert.equal(routeHref({ name: 'sites' }), '#/sites');
         assert.equal(routeHref({ name: 'site', id: 's-1' }), '#/site/s-1');
         assert.deepEqual(parseRoute('#/nonsense/x'), { name: 'notFound' });
-        assert.deepEqual(parseRoute('#error_code=otp_expired'), { name: 'list' });
+        assert.deepEqual(parseRoute('#error_code=otp_expired'), { name: 'home' });
         assert.equal(routeHref({ name: 'edit', id: 'abc-1' }), '#/dive/abc-1/edit');
-        assert.equal(routeHref({ name: 'list' }), '#/');
+        assert.equal(routeHref({ name: 'list' }), '#/dives');
+        assert.equal(routeHref({ name: 'home' }), '#/');
     });
 });
 

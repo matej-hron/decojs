@@ -23,6 +23,12 @@ import { translate } from '../i18n.js';
 import { fmtNum, currentLang, localeTag } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
 
+/** The current route; `home` shows the list until the app shell chooses between feed and list. */
+function currentRoute() {
+    const route = parseRoute(location.hash);
+    return route.name === 'home' ? { name: 'list' } : route;
+}
+
 const tb = (key, fallback) => translate(`diveLog.backend.${key}`, fallback);
 const tl = (key, fallback) => translate(`diveLog.logbook.${key}`, fallback);
 const fill = (text, ...values) => String(text).replace(/\{(\d+)\}/g, (_, i) => values[Number(i)] ?? '');
@@ -174,7 +180,7 @@ export class LogbookApp {
     }
 
     _onLanguageChange() {
-        const name = parseRoute(location.hash).name;
+        const name = currentRoute().name;
         if (this.user && this.form && (name === 'new' || name === 'edit' || name === 'detail' || name === 'sites' || name === 'site')) this.form.relabel(); // keep what was typed
         else if (this.user && name !== 'analysis') this._renderRoute();
         else translateStatic(this.view);
@@ -187,7 +193,7 @@ export class LogbookApp {
         this._unmountAnalysis();
         this._unmountForm();
         const token = ++this._viewToken;
-        const route = parseRoute(location.hash);
+        const route = currentRoute();
         this.view.classList.toggle('lb-list-view', route.name === 'list'); // list layout: sidebar on wide screens
         if (route.name !== 'list') this.view.classList.remove('lb-selecting');
         switch (route.name) {
@@ -508,7 +514,7 @@ export class LogbookApp {
         this.selected.clear();
         this.entries = null;
         if (this.destroyed || !this.user) return;
-        if (parseRoute(location.hash).name === 'list') this._showList(++this._viewToken);
+        if (currentRoute().name === 'list') this._showList(++this._viewToken);
     }
 
     // ---- List view ----
@@ -808,7 +814,7 @@ export class LogbookApp {
             ? tb('unreachable', 'Can\'t reach your dive log. If it hasn\'t been used for a week, resume the project in the Supabase dashboard.')
             : tb('genericError', 'Something went wrong. Please try again.')];
         if (this.destroyed || !this.user) return;
-        if (parseRoute(location.hash).name === 'list') this._renderList();
+        if (currentRoute().name === 'list') this._renderList();
         else if (background) this._showBanner(this.msg[0]);
         else this._showMessage(this.msg[0]);
     }
@@ -836,7 +842,7 @@ export class LogbookApp {
 
     _setWorking(on) {
         this.working = on;
-        if (this.user && parseRoute(location.hash).name === 'list') this._renderList();
+        if (this.user && currentRoute().name === 'list') this._renderList();
     }
 
     async _logout() {
@@ -857,7 +863,7 @@ export class LogbookApp {
         try {
             const { report, ensureError } = await uploadDivelog(this.store, files, (done, total) => {
                 this.msg = [fill(tb('progress', 'Saving {0} / {1}…'), done, total)];
-                if (parseRoute(location.hash).name === 'list') this._renderList();
+                if (currentRoute().name === 'list') this._renderList();
             });
             this.msg = this._reportLines(report);
             if (ensureError) {
@@ -865,7 +871,7 @@ export class LogbookApp {
                 this.msg = [...this._reportLines(report), ...this.msg];
             }
             this.working = false;
-            if (parseRoute(location.hash).name === 'list') this._showList(++this._viewToken);
+            if (currentRoute().name === 'list') this._showList(++this._viewToken);
         } catch (error) {
             this._storeError(error, { background: true });
         } finally {
