@@ -96,6 +96,31 @@
         .lb-chip-x { min-width: 44px; min-height: 44px; border: 0; background: none; font-size: 1.25rem; cursor: pointer; color: inherit; }
         .lb-form-error { margin: 0; color: var(--error-color, #c0392b); font-weight: 600; }
         .lb-form-error[hidden], .lb-field[hidden] { display: none; }
+        /* Gas cards: a slim cylinder gauge on the left shows the gas left (end ÷ start pressure). */
+        .lb-gases { gap: 0.75rem; }
+        .lb-gases-empty { margin: 0; color: var(--text-subtle); }
+        .lb-gas-card { --gauge: var(--brand); position: relative; display: grid; gap: 0.6rem; min-width: 0;
+            padding: 0.75rem 0.75rem 0.75rem 1.5rem; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+        .lb-gas-card--deco { --gauge: var(--amber-500); }
+        .lb-gas-gauge { position: absolute; left: 0.5rem; top: 0.75rem; bottom: 0.75rem; width: 10px; box-sizing: border-box; overflow: hidden;
+            border: 1px solid var(--border); border-radius: 5px; background: var(--surface-sunken); }
+        .lb-gas-gauge::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: var(--fill, 100%); background: var(--gauge); }
+        .lb-gas-card--unknown .lb-gas-gauge::after { opacity: 0.4; }
+        .lb-gas-head { display: flex; align-items: center; gap: 0.5rem; min-width: 0; }
+        .lb-gas-head select { min-height: 44px; max-width: 60%; padding: 0.3rem 0.5rem; font: inherit; font-size: 0.9rem;
+            color: var(--text-color); background: var(--surface); border: 1px solid var(--border); border-radius: 6px; }
+        .lb-gas-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .lb-gas-remove { flex: none; width: 44px; height: 44px; margin: -0.25rem -0.25rem -0.25rem 0; border: 0; border-radius: 6px;
+            background: none; color: var(--text-subtle); font-size: 1.4rem; line-height: 1; cursor: pointer; }
+        .lb-gas-remove:hover, .lb-gas-remove:focus-visible { background: var(--surface-sunken); color: var(--text-color); }
+        .lb-gas-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.6rem; min-width: 0; }
+        .lb-gas-card input[aria-invalid="true"] { border-color: var(--danger-color); }
+        .lb-gas-use { margin: 0; font-size: 0.85rem; color: var(--text-subtle); font-variant-numeric: tabular-nums; }
+        .lb-gas-use:empty { display: none; }
+        .lb-gas-summary { margin: 0; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+        .lb-gas-summary[hidden] { display: none; }
+        .lb-gas-hint { display: block; color: var(--text-subtle); }
+        #lb-add-gas { min-height: 44px; justify-self: start; }
         .lb-site-position { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; justify-content: space-between; font-variant-numeric: tabular-nums; }
         .lb-site-position .btn { min-height: 44px; }
         .lb-site-form { display: grid; gap: 0.75rem; min-width: 0; }
@@ -120,6 +145,21 @@
         .lb-d-media:empty, .lb-d-panel:empty, .lb-d-actions:empty { display: none; }
         .lb-d-head, .lb-d-media h3, .lb-d-more h3 { margin: 0; }
         .lb-d-map, .lb-picker-map { background: var(--surface-sunken); }
+        .lb-d-gases { margin: 1rem 0; }
+        .lb-d-gases h3 { margin: 0 0 0.5rem; font-size: 1rem; }
+        .lb-d-gas-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+        @media (min-width: 700px) { .lb-d-gas-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        .lb-d-gas { --gauge: var(--brand); position: relative; min-width: 0; padding: 0.6rem 0.75rem 0.6rem 1.6rem;
+            border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+        .lb-d-gas--deco { --gauge: var(--amber-500); }
+        .lb-d-gas--unknown .lb-gas-gauge::after { opacity: 0.4; }
+        .lb-d-gas .lb-gas-gauge { top: 0.6rem; bottom: 0.6rem; }
+        .lb-d-gas p { margin: 0; }
+        .lb-d-gas-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.5rem; }
+        .lb-d-gas-head strong { font-size: 1.05rem; }
+        .lb-d-gas-role, .lb-d-gas-use { font-size: 0.85rem; color: var(--text-subtle); }
+        .lb-d-gas-line, .lb-d-gas-use, .lb-d-gas-summary { font-variant-numeric: tabular-nums; }
+        .lb-d-gas-summary { margin: 0.5rem 0 0; font-size: 0.9rem; }
         .lb-d-map { height: 220px; border-radius: var(--radius-md); z-index: 0; }
         .lb-d-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
         .lb-d-backlink { min-height: 44px; display: inline-flex; align-items: center; color: var(--brand); font-weight: 500; text-decoration: none; }
@@ -282,6 +322,7 @@
             form.lb-form, section.lb-form, section.lb-newdive { padding: 0; background: none; border: 0; box-shadow: none; }
             .lb-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr)); }
             .lb-actions .btn { justify-content: center; }
+            #lb-add-gas { justify-self: stretch; justify-content: center; }
             .lb-form > .lb-actions { position: sticky; bottom: 0; z-index: 5; margin: 0 -1rem; padding: 0.75rem calc(1rem + env(safe-area-inset-right)) calc(0.75rem + env(safe-area-inset-bottom)) calc(1rem + env(safe-area-inset-left));
                 background: var(--surface-elevated); border-top: 1px solid var(--border); }
             .lb-picker-bar { padding-top: calc(0.5rem + env(safe-area-inset-top)); padding-left: calc(0.75rem + env(safe-area-inset-left)); padding-right: calc(0.75rem + env(safe-area-inset-right)); }

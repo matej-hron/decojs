@@ -11,6 +11,7 @@ import { routeHref } from './router.js';
 import { readExif, resizeImage, isSupportedImage } from './photo.js';
 import { loadLeaflet, TILE_URL, TILE_ATTRIBUTION } from './SitePicker.js';
 import { gasName } from '../import/recordedDive.js';
+import { gasesFromEntry, gasUsage, cylinderText } from './gasModel.js';
 import { diveTitle, feedStats } from './feed.js';
 import { translate } from '../i18n.js';
 import { fmtNum, currentLang } from '../format.js';
@@ -21,7 +22,7 @@ const IMAGE_ACCEPT = 'image/jpeg,image/png,image/webp';
 
 /** Unit shown after the value of a numeric detail. */
 const DETAIL_UNITS = Object.freeze({
-    surfaceTempC: '°C', airTempC: '°C', cylinderL: 'l', pressureStartBar: 'bar', pressureEndBar: 'bar',
+    surfaceTempC: '°C', airTempC: '°C',
     weightsKg: 'kg', suitMm: 'mm', avgDepthM: 'm',
 });
 const NUMERIC = new Set(Object.keys(DETAIL_UNITS));
@@ -83,6 +84,44 @@ export function detailRows(entry, t) {
     }
     const notes = typeof entry.notes === 'string' && entry.notes.trim() ? entry.notes.trim() : null;
     return { core, groups, notes };
+}
+
+/**
+ * Gas cards of the detail screen (new `details.gases` or the legacy single cylinder) and the
+ * consumption summary. Empty strings for what is not known; `fill` is the remaining gas in %.
+ * @param {Object} entry - log_entries row
+ * @param {(key: string) => string} t - label lookup below `diveLog.logbook.`
+ * @param {(value: number, decimals?: number) => string} fmt - number formatting (fmtNum)
+ * @returns {{cards: Object[], summary: ?string}}
+ */
+export function gasCards(entry, t, fmt) {
+    const rows = gasesFromEntry(entry);
+    const usage = gasUsage(rows, { durationS: entry.duration_s, avgDepthM: entry.details?.avgDepthM });
+    const material = m => t(`form.choices.cylinderMaterial.${m}`);
+    const cards = rows.map((r, i) => {
+        const u = usage.rows[i];
+        const known = v => v !== null && v !== undefined;
+        let pressures = '';
+        if (known(r.startBar) && known(r.endBar)) pressures = `${fmt(r.startBar)} → ${fmt(r.endBar)}${NB}bar`;
+        else if (known(r.startBar)) pressures = `${fmt(r.startBar)}${NB}bar`;
+        const used = u.usedBar === null ? ''
+            : `${u.usedBar > 0 ? '−' : ''}${fmt(u.usedBar)}${NB}bar${u.usedL === null ? '' : ` · ${fmt(u.usedL, 0)}${NB}l`}`;
+        return {
+            role: r.role,
+            roleLabel: t(r.role === 'deco' ? 'detail.roleDeco' : 'detail.roleBottom'),
+            mix: Number.isFinite(r.o2) ? gasName({ o2: r.o2, he: r.he ?? 0 }) : t('detail.mixUnknown'),
+            cylinder: cylinderText(r, { fmt, material }),
+            pressures,
+            used,
+            fill: u.usedBar !== null && r.startBar > 0 ? Math.round((r.endBar / r.startBar) * 100) : null,
+        };
+    });
+    let summary = null;
+    if (usage.totalL !== null) {
+        summary = `${t('detail.gasUsed')} ${fmt(usage.totalL, 0)}${NB}l`;
+        if (usage.sacLpm !== null) summary += ` · ${t('detail.sac')} ${fmt(usage.sacLpm, 1)}${NB}l/min`;
+    }
+    return { cards, summary };
 }
 
 const td = (key, fallback) => translate(`diveLog.logbook.detail.${key}`, fallback ?? key);
@@ -210,6 +249,7 @@ export class EntryDetail {
             ? groups.map(g => ({ ...g, rows: g.rows.filter(r => r.key !== 'avgDepthM') })).filter(g => g.rows.length)
             : groups;
         const statLabel = key => translate(`diveLog.logbook.feed.stats.${key}`, STAT_FALLBACK[key]);
+        const gas = gasCards(e, label, fmtNum);
         this.main.innerHTML = `
             <div class="lb-d-top">
                 <a class="lb-d-backlink" href="${routeHref({ name: 'list' })}">${escHtml(label('back'))}</a>
@@ -221,6 +261,13 @@ export class EntryDetail {
             </div>
             ${stats.length ? `<dl class="lb-stats lb-d-stats">${stats.map(st => `<div class="lb-stat"><dt>${escHtml(statLabel(st.key))}</dt>
                 <dd>${escHtml(st.value)}${st.unit ? `<span class="lb-unit">${NB}${escHtml(st.unit)}</span>` : ''}</dd></div>`).join('')}</dl>` : ''}
+            ${gas.cards.length ? `<section class="lb-d-gases" aria-labelledby="lb-d-gases-h"><h3 id="lb-d-gases-h">${escHtml(label('detail.gases'))}</h3>
+                <ul class="lb-d-gas-list">${gas.cards.map(c => `<li class="lb-d-gas${c.role === 'deco' ? ' lb-d-gas--deco' : ''}${c.fill === null ? ' lb-d-gas--unknown' : ''}">
+                    <span class="lb-gas-gauge" aria-hidden="true"${c.fill === null ? '' : ` style="--fill: ${c.fill}%"`}></span>
+                    <p class="lb-d-gas-head"><strong>${escHtml(c.mix)}</strong> <span class="lb-d-gas-role">${escHtml(c.roleLabel)}</span></p>
+                    ${c.cylinder || c.pressures ? `<p class="lb-d-gas-line">${escHtml([c.cylinder, c.pressures].filter(Boolean).join(', '))}</p>` : ''}
+                    ${c.used ? `<p class="lb-d-gas-use">${escHtml(c.used)}</p>` : ''}</li>`).join('')}</ul>
+                ${gas.summary ? `<p class="lb-d-gas-summary">${escHtml(gas.summary)}</p>` : ''}</section>` : ''}
             ${hasCoords ? '<div class="lb-d-map" aria-hidden="true"></div>' : ''}
             ${rest.length ? dl(rest) : ''}
             ${notes ? `<p class="lb-d-notes">${escHtml(notes)}</p>` : ''}
