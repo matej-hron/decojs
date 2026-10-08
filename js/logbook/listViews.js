@@ -4,10 +4,8 @@
  */
 
 import { gasName } from '../import/recordedDive.js';
-import { formatDuration } from './entryModel.js';
 import { localeTag } from '../format.js';
 
-const NB = ' ';
 const DATE = /^(\d{4})-(\d{2})-\d{2}$/;
 const has = v => v !== null && v !== undefined && v !== '' && Number.isFinite(Number(v));
 
@@ -89,32 +87,6 @@ export function sortEntries(entries, key, dir, sitesById) {
 export function gasLabel(gas) {
     if (!gas || !Number.isFinite(gas.o2)) return '';
     return gasName({ o2: gas.o2, he: Number.isFinite(gas.he) ? gas.he : 0 });
-}
-
-/**
- * The facts line of a list row: max depth, duration m:ss, average depth, bottom / surface temperature, gas.
- * Missing values are left out. Numbers go through `num(value, decimals)` (decimal comma in Czech).
- * @param {Object} entry
- * @param {(value: number, decimals: number) => string} num
- * @returns {string[]}
- */
-export function entryFacts(entry, num) {
-    const out = [];
-    if (has(entry.max_depth_m)) out.push(`${num(Number(entry.max_depth_m), 1)}${NB}m`);
-    if (has(entry.duration_s)) out.push(formatDuration(entry.duration_s));
-    const avg = entry.details?.avgDepthM;
-    if (has(avg)) out.push(`${num(Number(avg), 1)}${NB}m`);
-    const temps = [entry.water_temp_c, entry.details?.surfaceTempC].filter(has).map(v => num(Number(v), 1));
-    if (temps.length) out.push(`${temps.join(' / ')}${NB}°C`);
-    const gas = gasLabel(entry.gas);
-    if (gas) out.push(gas);
-    return out;
-}
-
-/** The first non-empty line of a text, trimmed; '' for none. */
-export function firstLine(text) {
-    if (typeof text !== 'string') return '';
-    return text.split(/\r?\n/).map(l => l.trim()).find(Boolean) ?? '';
 }
 
 /**
