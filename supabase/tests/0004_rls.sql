@@ -205,6 +205,7 @@ set role authenticated;
 select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-00000000000c', false);
 select pg_temp.check((select count(*) from public.community_entries()) = 0, 'anonymous sign-in sees no dives');
 select pg_temp.check((select count(*) from public.profiles) = 0, 'anonymous sign-in sees no profiles');
+select pg_temp.check((select count(*) from storage.objects where bucket_id = 'avatars') = 0, 'anonymous sign-in sees no avatars');
 reset role;
 update auth.users set is_anonymous = false, banned_until = now() + interval '1 day' where id = :'B';
 set role authenticated;

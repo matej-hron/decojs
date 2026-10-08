@@ -292,7 +292,7 @@ on conflict (id) do update
 drop policy if exists "members read avatars" on storage.objects;
 create policy "members read avatars" on storage.objects
     for select to authenticated
-    using (bucket_id = 'avatars');
+    using (bucket_id = 'avatars' and public.is_member());
 
 drop policy if exists "owner uploads own avatar" on storage.objects;
 create policy "owner uploads own avatar" on storage.objects
