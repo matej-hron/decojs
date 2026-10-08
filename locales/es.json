@@ -3220,6 +3220,10 @@
             "unreachable": "No se puede acceder a tu diario. Si no se ha usado en una semana, reanuda el proyecto en el panel de Supabase.",
             "linkExpired": "Este enlace ha caducado. Solicita uno nuevo.",
             "cannotLogin": "Este correo no puede iniciar sesión aquí.",
+            "continueGoogle": "Continuar con Google",
+            "orEmail": "o usa un enlace por correo",
+            "cannotLoginGoogle": "Esta cuenta de Google no puede iniciar sesión aquí.",
+            "googleCancelled": "Se canceló el inicio de sesión con Google.",
             "tooManyLinks": "Se han enviado demasiados correos de acceso. Espera hasta una hora y vuelve a intentarlo.",
             "genericError": "Algo ha fallado. Inténtalo de nuevo."
         }

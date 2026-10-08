@@ -3256,6 +3256,10 @@
             "unreachable": "Can't reach your dive log. If it hasn't been used for a week, resume the project in the Supabase dashboard.",
             "linkExpired": "This login link has expired. Send a new one.",
             "cannotLogin": "This email can't log in here.",
+            "continueGoogle": "Continue with Google",
+            "orEmail": "or use an email link",
+            "cannotLoginGoogle": "This Google account can't log in here.",
+            "googleCancelled": "Google sign-in was cancelled.",
             "tooManyLinks": "Too many login emails were sent. Wait up to an hour and try again.",
             "genericError": "Something went wrong. Please try again."
         }

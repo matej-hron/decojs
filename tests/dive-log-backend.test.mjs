@@ -9,6 +9,7 @@ import { readFileSync } from 'node:fs';
 import { parseDivesoftDLF, PARSER_VERSION } from '../js/import/divesoftDlf.js';
 import { diveKey, sha256Hex, listSummary, planSync } from '../js/backend/sync.js';
 import { createSupabaseStore, DiveStoreError } from '../js/backend/supabaseStore.js';
+import { authRedirectMessage } from '../js/components/RecordedDiveAnalysis.js';
 import { getDiveStore } from '../js/backend/diveStore.js';
 import { loadDiveFiles, summaryToListDive, chainWindow, canAnalyze, codeLabel, diveNumberLabel, translateStatic } from '../js/components/RecordedDiveAnalysis.js';
 
@@ -133,6 +134,7 @@ function fakeClient({ user = { id: 'u1', email: 'me@example.com' }, rows = [], f
             async getUser() { return { data: { user }, error: null }; },
             async getSession() { return { data: { session: user ? { user } : null }, error: null }; },
             async signInWithOtp(args) { calls.push(['otp', args]); return { error: null }; },
+            async signInWithOAuth(args) { calls.push(['oauth', args]); return { error: null }; },
             async signOut() { calls.push(['signOut']); return { error: null }; },
             onAuthStateChange(fn) { calls.push(['listen']); return { data: { subscription: { unsubscribe() { calls.push(['unlisten']); } } } }; },
         },
@@ -243,6 +245,27 @@ describe('createSupabaseStore', () => {
         assert.deepEqual(await store.currentUser(), { id: 'u1', email: 'me@example.com' });
         await store.signOut();
         assert.ok(client.calls.some(c => c[0] === 'signOut'));
+    });
+
+    test('Google login starts an OAuth redirect back to the page', async () => {
+        const client = fakeClient();
+        const store = createSupabaseStore(client);
+        await store.signInWithGoogle('https://decotheory.eu/lab/dive-log.html');
+        assert.deepEqual(client.calls.find(c => c[0] === 'oauth')[1], {
+            provider: 'google', options: { redirectTo: 'https://decotheory.eu/lab/dive-log.html' },
+        });
+        client.auth.signInWithOAuth = async () => ({ error: { message: 'nope' } });
+        await assert.rejects(() => store.signInWithGoogle('x'), e => e instanceof DiveStoreError && e.kind === 'auth');
+    });
+
+    test('authRedirectMessage maps auth errors from the URL', () => {
+        assert.equal(authRedirectMessage('', ''), null);
+        assert.equal(authRedirectMessage('#access_token=abc', ''), null);
+        assert.equal(authRedirectMessage('#error=access_denied&error_code=otp_expired', '').key, 'linkExpired');
+        assert.equal(authRedirectMessage('', '?error=server_error&error_description=Signups+not+allowed+for+this+instance').key, 'cannotLoginGoogle');
+        assert.equal(authRedirectMessage('', '?error=server_error&error_code=unexpected_failure&error_description=user_not_found').key, 'cannotLoginGoogle');
+        assert.equal(authRedirectMessage('#error=access_denied&error_description=User+denied', '').key, 'googleCancelled');
+        assert.equal(authRedirectMessage('#error=server_error', '').key, 'genericError');
     });
 
     test('currentUser rejects as unreachable when getSession fails over the network', async () => {
