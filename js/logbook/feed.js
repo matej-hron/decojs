@@ -70,14 +70,28 @@ export function formatTotalTime(seconds, num) {
     return `${h < 10 ? num(h, 1) : num(Math.round(h), 0)}${NB}h`;
 }
 
-/** Map(entryId -> {path, count}) from photo media rows (oldest first): the first photo with a path and how many there are. */
+/**
+ * CSS aspect-ratio for a feed hero frame that follows the photo: landscape up to 16:9, square 1:1,
+ * portrait down to 4:5 (so a tall photo never makes a huge card). Unknown size keeps the 16:10 default.
+ * @returns {string} e.g. '4 / 5'
+ */
+export function photoFrame(width, height) {
+    const w = Number(width), h = Number(height);
+    if (!(w > 0) || !(h > 0)) return '16 / 10';
+    const r = w / h;
+    if (r > 0.95 && r < 1.05) return '1 / 1';
+    const c = Math.min(16 / 9, Math.max(4 / 5, r));
+    return `${Math.round(c * 1000)} / 1000`;
+}
+
+/** Map(entryId -> {path, count, width, height}) from photo media rows (oldest first): the first photo with a path, its size, and how many there are. */
 export function photoIndex(media) {
     const out = new Map();
     for (const m of media ?? []) {
         if (!m?.path) continue;
         const cur = out.get(m.entry_id);
         if (cur) cur.count++;
-        else out.set(m.entry_id, { path: m.path, count: 1 });
+        else out.set(m.entry_id, { path: m.path, count: 1, width: m.width ?? null, height: m.height ?? null });
     }
     return out;
 }
