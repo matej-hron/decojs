@@ -2915,7 +2915,7 @@
             "views": {
                 "label": "Dive list view",
                 "tiles": "Tiles",
-                "list": "List",
+                "feed": "Feed",
                 "table": "Table",
                 "with": "with {0}",
                 "monthHeader": "{0} · {1}",
@@ -3185,6 +3185,26 @@
                 "folderAllow": "Allow access to the saved folder",
                 "folderError": "Could not read the folder.",
                 "inFolder": "in the folder, not saved yet"
+            },
+            "feed": {
+                "untitled": "Dive #{0}",
+                "untitledNoNumber": "Dive",
+                "stats": {
+                    "depth": "Max depth",
+                    "duration": "Time",
+                    "avgDepth": "Avg depth",
+                    "temp": "Water",
+                    "gas": "Gas"
+                },
+                "morePhotos": "{0} more photos",
+                "mapAlt": "Map of {0}",
+                "profileAlt": "Depth profile"
+            },
+            "bar": {
+                "title": "Your dives",
+                "more": "More actions",
+                "timeUnderwater": "{0} underwater",
+                "deepest": "deepest {0}"
             }
         },
         "backend": {

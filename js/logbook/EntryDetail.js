@@ -11,6 +11,7 @@ import { routeHref } from './router.js';
 import { readExif, resizeImage, isSupportedImage } from './photo.js';
 import { loadLeaflet, TILE_URL, TILE_ATTRIBUTION } from './SitePicker.js';
 import { gasName } from '../import/recordedDive.js';
+import { diveTitle, feedStats } from './feed.js';
 import { translate } from '../i18n.js';
 import { fmtNum, currentLang } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
@@ -89,6 +90,8 @@ const tp = (key, fallback) => translate(`diveLog.logbook.photo.${key}`, fallback
 const tb = (key, fallback) => translate(`diveLog.backend.${key}`, fallback);
 const fill = (text, ...values) => String(text).replace(/\{(\d+)\}/g, (_, i) => values[Number(i)] ?? '');
 const label = key => translate(`diveLog.logbook.${key}`, key);
+const TITLE_FALLBACK = { 'feed.untitled': 'Dive #{0}', 'feed.untitledNoNumber': 'Dive' };
+const STAT_FALLBACK = { depth: 'Max depth', duration: 'Time', avgDepth: 'Avg depth', temp: 'Water', gas: 'Gas' };
 
 export class EntryDetail {
     /**
@@ -120,9 +123,10 @@ export class EntryDetail {
         this.viewer = null;
         this._onKey = e => { if (e.key === 'Escape' && this.viewer) this._closeViewer(); };
         document.addEventListener('keydown', this._onKey);
-        this.container.innerHTML = `<section class="rda-card lb-detail"><div class="lb-d-main"></div><div class="lb-d-media"></div><div class="lb-d-panel"></div></section>`;
+        this.container.innerHTML = `<section class="rda-card lb-detail"><div class="lb-d-main"></div><div class="lb-d-media"></div><div class="lb-d-actions"></div><div class="lb-d-panel"></div></section>`;
         this.main = this.container.querySelector('.lb-d-main');
         this.mediaEl = this.container.querySelector('.lb-d-media');
+        this.actionsEl = this.container.querySelector('.lb-d-actions');
         this.panel = this.container.querySelector('.lb-d-panel');
         this.renderMain();
         this.renderMedia();
@@ -193,35 +197,48 @@ export class EntryDetail {
         const e = this.entry;
         const { core, groups, notes } = detailRows(e, label);
         const time = e.entry_time ? String(e.entry_time).slice(0, 5) : '';
-        const head = [fill(label('number'), e.log_number ?? '–'), formatDiveDate(e.dive_date, currentLang()), time].filter(Boolean).join(' · ');
+        const sub = [fill(label('number'), e.log_number ?? '–'), formatDiveDate(e.dive_date, currentLang()), time].filter(Boolean).join(', ');
         const dl = rows => `<dl class="lb-dl">${rows.map(r => `<div><dt>${escHtml(r.label)}</dt><dd>${escHtml(r.value)}</dd></div>`).join('')}</dl>`;
         const hasCoords = this.site && Number.isFinite(this.site.lat) && Number.isFinite(this.site.lon);
         // Until the sites are loaded show an ellipsis; a site that is not found after loading counts as not set.
-        const siteLine = e.site_id
-            ? (this.site ? this.site.name : (this.loaded ? null : '…'))
-            : null;
+        const siteName = e.site_id ? (this.site ? this.site.name : (this.loaded ? null : '…')) : null;
+        const stats = feedStats(e, fmtNum);
+        const statKeys = new Set(['duration', 'depth', 'gas', 'waterTemp']); // shown as big stats
+        const rest = core.filter(r => !statKeys.has(r.key));
+        // The average depth is in the stat row already; leave it out of "More details".
+        const moreGroups = stats.some(st => st.key === 'avgDepth')
+            ? groups.map(g => ({ ...g, rows: g.rows.filter(r => r.key !== 'avgDepthM') })).filter(g => g.rows.length)
+            : groups;
+        const statLabel = key => translate(`diveLog.logbook.feed.stats.${key}`, STAT_FALLBACK[key]);
         this.main.innerHTML = `
-            <p class="lb-back"><a href="${routeHref({ name: 'list' })}">${escHtml(label('back'))}</a></p>
-            <h2 class="lb-d-head">${escHtml(head)}</h2>
-            ${siteLine ? `<p class="lb-d-site">${escHtml(siteLine)}</p>` : `<p class="lb-d-site lb-muted">${escHtml(label('siteNotSet'))}</p>`}
+            <div class="lb-d-top">
+                <a class="lb-d-backlink" href="${routeHref({ name: 'list' })}">${escHtml(label('back'))}</a>
+                <a class="btn btn-primary lb-d-edit" href="${routeHref({ name: 'edit', id: e.id })}">${escHtml(td('edit', 'Edit'))}</a>
+            </div>
+            <div class="lb-d-title">
+                <h2 class="lb-d-head${siteName ? '' : ' lb-untitled'}">${escHtml(siteName ?? diveTitle(e, null, k => translate(`diveLog.logbook.${k}`, TITLE_FALLBACK[k])))}</h2>
+                <p class="lb-d-sub">${escHtml(sub)}${e.site_id || siteName ? '' : `, <span class="lb-muted">${escHtml(label('siteNotSet'))}</span>`}</p>
+            </div>
+            ${stats.length ? `<dl class="lb-stats lb-d-stats">${stats.map(st => `<div class="lb-stat"><dt>${escHtml(statLabel(st.key))}</dt>
+                <dd>${escHtml(st.value)}${st.unit ? `<span class="lb-unit">${NB}${escHtml(st.unit)}</span>` : ''}</dd></div>`).join('')}</dl>` : ''}
             ${hasCoords ? '<div class="lb-d-map" aria-hidden="true"></div>' : ''}
-            ${core.length ? dl(core) : ''}
+            ${rest.length ? dl(rest) : ''}
             ${notes ? `<p class="lb-d-notes">${escHtml(notes)}</p>` : ''}
-            ${groups.length ? `<details class="lb-d-more"><summary>${escHtml(label('form.more'))}</summary>
-                ${groups.map(g => `<h3>${escHtml(label(`form.${g.group}`))}</h3>${dl(g.rows)}`).join('')}</details>` : ''}
-            <div class="lb-actions lb-d-actions">
-                <a class="btn btn-primary" href="${routeHref({ name: 'edit', id: e.id })}">${escHtml(td('edit', 'Edit'))}</a>
+            ${moreGroups.length ? `<details class="lb-d-more"><summary>${escHtml(label('form.more'))}</summary>
+                ${moreGroups.map(g => `<h3>${escHtml(label(`form.${g.group}`))}</h3>${dl(g.rows)}`).join('')}</details>` : ''}
+`;
+        // Below the photos, right above the panel where Delete asks for confirmation.
+        this.actionsEl.innerHTML = `
                 ${e.recording_id ? `<a class="btn btn-secondary" href="${routeHref({ name: 'analysis', id: e.id })}">${escHtml(td('analysis', 'Analysis'))}</a>` : ''}
                 <label class="btn btn-secondary lb-file"><span>${escHtml(td('addPhotos', 'Add photos'))}</span>
                     <input type="file" class="rda-visually-hidden" id="lb-add-photos" accept="${IMAGE_ACCEPT}" multiple></label>
                 <button type="button" class="btn btn-secondary" id="lb-add-video">${escHtml(td('addVideo', 'Add video link'))}</button>
-                <button type="button" class="btn btn-danger" id="lb-delete">${escHtml(td('delete', 'Delete'))}</button>
-            </div>`;
-        const photoInput = this.main.querySelector('#lb-add-photos');
+                <button type="button" class="btn btn-danger lb-d-delete" id="lb-delete">${escHtml(td('delete', 'Delete'))}</button>`;
+        const photoInput = this.actionsEl.querySelector('#lb-add-photos');
         photoInput.disabled = this.busy;
         photoInput.addEventListener('change', () => this._addPhotos(photoInput));
-        this.main.querySelector('#lb-add-video').addEventListener('click', () => { this.videoOpen = true; this.confirm = null; this.renderPanel(); });
-        this.main.querySelector('#lb-delete').addEventListener('click', () => { this.confirm = { kind: 'entry' }; this.videoOpen = false; this.renderPanel(); });
+        this.actionsEl.querySelector('#lb-add-video').addEventListener('click', () => { this.videoOpen = true; this.confirm = null; this.renderPanel(); });
+        this.actionsEl.querySelector('#lb-delete').addEventListener('click', () => { this.confirm = { kind: 'entry' }; this.videoOpen = false; this.renderPanel(); });
         if (hasCoords) this._mountMap(this.site);
     }
 
@@ -410,7 +427,7 @@ export class EntryDetail {
         this.busy = false;
         this.status = '';
         this.errors = failures;
-        const fresh = this.main.querySelector('#lb-add-photos');
+        const fresh = this.actionsEl.querySelector('#lb-add-photos');
         if (fresh) fresh.disabled = false;
         this.renderPanel();
         if (added) {

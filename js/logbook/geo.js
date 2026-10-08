@@ -144,3 +144,20 @@ export function nearbySameNameSite(sites, name, pin, limitM = 300) {
     }
     return best;
 }
+
+const MAPY_STATIC_LANGS = ['cs', 'de', 'el', 'en', 'es', 'fr', 'it', 'nl', 'pl', 'pt', 'ru', 'sk', 'tr', 'uk'];
+const clampPx = n => Math.min(1024, Math.max(10, Math.round(Number(n) || 10)));
+
+/**
+ * Mapy.com static map (v1/static/map) centred on a site with one marker. The image carries the Mapy.com
+ * logo and attribution itself. '' without a key or a valid position.
+ */
+export function mapyStaticMapUrl({ lat, lon, apiKey, width, height, zoom = 12, scale = 1, lang = 'en', mapset = 'outdoor', color = '#2980b9' }) {
+    if (!apiKey || lat === null || lon === null || !Number.isFinite(lat) || !Number.isFinite(lon)) return '';
+    const params = new URLSearchParams({
+        lon: String(lon), lat: String(lat), zoom: String(zoom), width: String(clampPx(width)), height: String(clampPx(height)),
+        scale: String(scale >= 2 ? 2 : 1), mapset, lang: MAPY_STATIC_LANGS.includes(lang) ? lang : 'en', format: 'jpg',
+        markers: `color:${color};size:normal;${lon},${lat}`, apikey: apiKey,
+    });
+    return `${MAPY_BASE}/static/map?${params}`;
+}
