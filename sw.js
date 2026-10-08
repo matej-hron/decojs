@@ -61,6 +61,7 @@ const STATIC_ASSETS = [
   './js/charts/chartTheme.js',
   './js/algorithmExplainer.js',
   './js/charts/interactionLock.js',
+  './js/charts/narrowLayout.js',
   './js/charts/chartTypes.js',
   './js/charts/DiveProfileChart.js',
   './js/charts/MValueChart.js',
