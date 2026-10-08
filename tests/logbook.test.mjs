@@ -24,7 +24,7 @@ import { sortSites, parseAltitude, diveCountText } from '../js/logbook/SitesPage
 import { LogbookApp } from '../js/logbook/LogbookApp.js';
 import { DeleteDataPanel, isConfirmed, summaryLines } from '../js/logbook/DeleteData.js';
 import { uploadDivelog, exportZip } from '../js/logbook/transfer.js';
-import { diveTitle, feedStats, chooseVisual, logbookTotals, formatTotalTime, migrateView, photoIndex, FEED_VIEWS } from '../js/logbook/feed.js';
+import { diveTitle, feedStats, chooseVisual, logbookTotals, formatTotalTime, migrateView, photoIndex, photoFrame, FEED_VIEWS } from '../js/logbook/feed.js';
 import { mapyStaticMapUrl } from '../js/logbook/geo.js';
 import { gasesFromEntry, gasesFromRecording, primaryGas, gasUsage, formRowsFromGases, gasesFromFormRows, newGasRow, cylinderText } from '../js/logbook/gasModel.js';
 import { formValuesFromEntry, recordingsOnDate, invalidNumberFields, EntryForm } from '../js/logbook/EntryForm.js';
@@ -2099,12 +2099,20 @@ describe('feed helpers', () => {
         assert.equal(migrateView('bogus'), 'feed');
         assert.deepEqual(FEED_VIEWS, ['feed', 'tiles', 'table']);
     });
+    test('photoFrame follows the photo aspect within 4:5 .. 16:9', () => {
+        assert.equal(photoFrame(1600, 1000), '1600 / 1000');
+        assert.equal(photoFrame(3000, 1000), '1778 / 1000'); // panorama capped at 16:9
+        assert.equal(photoFrame(1000, 1000), '1 / 1');
+        assert.equal(photoFrame(1080, 1920), '800 / 1000'); // tall portrait capped at 4:5
+        assert.equal(photoFrame(800, 1000), '800 / 1000');
+        assert.equal(photoFrame(null, null), '16 / 10');
+    });
     test('photoIndex keeps the first photo with a path and counts them', () => {
         const idx = photoIndex([
             { entry_id: 'a', path: null }, { entry_id: 'a', path: 'a1' }, { entry_id: 'a', path: 'a2' }, { entry_id: 'b', path: 'b1' },
         ]);
-        assert.deepEqual(idx.get('a'), { path: 'a1', count: 2 });
-        assert.deepEqual(idx.get('b'), { path: 'b1', count: 1 });
+        assert.deepEqual(idx.get('a'), { path: 'a1', count: 2, width: null, height: null });
+        assert.deepEqual(idx.get('b'), { path: 'b1', count: 1, width: null, height: null });
         assert.equal(idx.has('c'), false);
     });
 });
