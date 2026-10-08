@@ -183,6 +183,11 @@
         .lb-d-edit { min-height: 44px; display: inline-flex; align-items: center; text-decoration: none; }
         .lb-detail .lb-d-head { margin: 0; padding: 0; border: 0; color: var(--text); font-size: var(--text-2xl); overflow-wrap: anywhere; }
         .lb-d-sub { margin: 0.25rem 0 0; color: var(--text-subtle); }
+        .lb-d-visibility { margin: 0.25rem 0 0; color: var(--text-subtle); font-size: var(--text-sm); }
+        /* Read-only dive of another member: the author row (as on Feed cards) under the back link */
+        .lb-d-author .tr-author-link { align-items: center; }
+        .lb-d-author .tr-author-av { margin-top: 0; }
+        .lb-d-actions:empty { display: none; } /* read-only dive without a recording: no stray rule */
         .lb-d-stats { gap: 0.75rem 2rem; padding: 0.25rem 0; }
         .lb-d-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; padding-top: 0.5rem; border-top: 1px solid var(--border); }
         .lb-d-actions .btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }

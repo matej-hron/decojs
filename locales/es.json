@@ -2890,6 +2890,12 @@
             "learnWhy": "Entiende por qué en DecoTheory ↗",
             "diver": "Buceador",
             "you": "Tú",
+            "toFeed": "Volver a Novedades",
+            "visibility": {
+                "private": "Privada",
+                "members": "Visible para los miembros",
+                "link": "Enlace público"
+            },
             "community": {
                 "title": "Comunidad",
                 "intro": "Todos aquí fueron invitados. Ven tus inmersiones salvo que las hagas privadas.",

@@ -2926,6 +2926,12 @@
             "learnWhy": "Vysvětlení najdete na DecoTheory ↗",
             "diver": "Potápěč",
             "you": "Vy",
+            "toFeed": "Zpět na přehled",
+            "visibility": {
+                "private": "Soukromý",
+                "members": "Vidí členové",
+                "link": "Veřejný odkaz"
+            },
             "community": {
                 "title": "Komunita",
                 "intro": "Všichni tady dostali pozvánku. Vidí vaše ponory, pokud je nenastavíte jako soukromé.",

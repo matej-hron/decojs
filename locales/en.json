@@ -2926,6 +2926,12 @@
             "learnWhy": "Learn why on DecoTheory ↗",
             "diver": "Diver",
             "you": "You",
+            "toFeed": "Back to the Feed",
+            "visibility": {
+                "private": "Private",
+                "members": "Visible to members",
+                "link": "Public link"
+            },
             "community": {
                 "title": "Community",
                 "intro": "Everyone here was invited. They see your dives unless you make them private.",

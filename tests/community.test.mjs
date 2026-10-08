@@ -477,3 +477,97 @@ test('MemberPage: header, tiles, favourite sites, own Edit profile link, owner-f
         missing.destroy();
     });
 });
+
+// ---- Read-only member dive (memberEntryStore, EntryDetail readOnly) ----
+
+import { memberEntryStore } from '../js/logbook/memberEntryStore.js';
+import { EntryDetail } from '../js/logbook/EntryDetail.js';
+
+const MEMBER_ROW = Object.freeze({
+    id: 'e1', owner: 'u2', log_number: null, dive_date: '2026-09-20', entry_time: '10:15:00', duration_s: 2700, max_depth_m: 31.4,
+    site_id: 's1', site_name: 'Blue <Hole>', site_country: 'MT', site_water: 'salt', site_altitude_m: 0, site_lat: null, site_lon: null,
+    photo_path: 'u2/p1.jpg', photo_count: 2, recording_id: 'r1', visibility: 'members', notes: 'SECRET NOTE',
+});
+
+test('memberEntryStore: entry without notes, only the row site, community calls, no-op reparse', async () => {
+    const calls = [];
+    const store = {
+        listCommunityMedia: async id => { calls.push(['media', id]); return [{ id: 'm1', kind: 'photo', path: 'u2/p1.jpg', lat: null, lon: null }]; },
+        photoUrls: async paths => { calls.push(['urls', paths]); return new Map(); },
+        communityRecordings: async owner => { calls.push(['recs', owner]); return [{ id: 'r1' }]; },
+        loadCommunityRecording: async id => { calls.push(['rec', id]); return { id }; },
+        currentUser: async () => ({ id: 'me' }),
+        listSites: async () => { throw new Error('own sites must not be read'); },
+        reparseOutdated: async () => { throw new Error('must not reparse others'); },
+    };
+    const { entry, site, adapter } = memberEntryStore(store, MEMBER_ROW);
+    assert.equal(entry.notes, null);
+    assert.equal(entry.site_id, 's1');
+    assert.equal(site.name, 'Blue <Hole>');
+    assert.equal(site.lat, null);
+    assert.deepEqual(await adapter.listSites(), [site]);
+    assert.deepEqual((await adapter.listMedia('e1')).map(m => m.id), ['m1']);
+    await adapter.photoUrls(['u2/p1.jpg']);
+    assert.deepEqual(await adapter.listDives(), [{ id: 'r1' }]);
+    assert.deepEqual(await adapter.loadDive('r1'), { id: 'r1' });
+    assert.equal(await adapter.reparseOutdated([{ id: 'r1' }]), 0);
+    assert.deepEqual(await adapter.currentUser(), { id: 'me' });
+    const off = adapter.onAuthChange(() => {});
+    assert.equal(typeof off, 'function');
+    off();
+    assert.deepEqual(calls, [['media', 'e1'], ['urls', ['u2/p1.jpg']], ['recs', 'u2'], ['rec', 'r1']]);
+    assert.deepEqual(await memberEntryStore(store, { ...MEMBER_ROW, site_id: null }).adapter.listSites(), []);
+    for (const write of ['addPhoto', 'deleteMedia', 'deleteEntry', 'addVideoLink', 'updateEntry'])
+        assert.equal(adapter[write], undefined, `${write} is not offered`);
+});
+
+test('EntryDetail readOnly: author row, no edit/delete/upload/notes, photos still open, member analysis link', async () => {
+    await withDom(async host => {
+        const { adapter, entry } = memberEntryStore({
+            listCommunityMedia: async () => [
+                { id: 'm1', kind: 'photo', path: 'u2/p1.jpg' },
+                { id: 'm2', kind: 'video_link', url: 'https://video.test/x', caption: 'Clip' },
+            ],
+            photoUrls: async paths => new Map(paths.map(p => [p, `https://img.test/${p}`])),
+        }, MEMBER_ROW);
+        entry.notes = 'SECRET NOTE'; // even if a caller left notes on the entry, read-only never shows them
+        const author = { name: 'Jana <i>', href: '#/member/u2', avatarHtml: '<span class="tr-avatar"></span>' };
+        const view = new EntryDetail(host, { store: adapter, entry, readOnly: true, author, backHref: '#/member/u2' });
+        await new Promise(r => setTimeout(r, 30));
+        assert.doesNotMatch(host.innerHTML, /SECRET/);
+        assert.equal(host.querySelector('.lb-d-notes'), null);
+        for (const sel of ['.lb-d-edit', '#lb-delete', '#lb-add-photos', '#lb-add-video', '.lb-photo-x', '.lb-chip-x', '[data-remove]', 'input', 'form'])
+            assert.equal(host.querySelector(sel), null, `${sel} hidden`);
+        const link = host.querySelector('.lb-d-author .tr-author-link');
+        assert.equal(link.getAttribute('href'), '#/member/u2');
+        assert.equal(link.querySelector('.tr-author-name').textContent, 'Jana <i>');
+        assert.equal(host.querySelector('.lb-d-backlink').getAttribute('href'), '#/member/u2');
+        const actions = [...host.querySelectorAll('.lb-d-actions a, .lb-d-actions button')];
+        assert.deepEqual(actions.map(a => a.getAttribute('href')), ['#/m/e1/analysis']);
+        assert.equal(host.querySelector('.lb-d-head').textContent, 'Blue <Hole>');
+        assert.doesNotMatch(host.querySelector('.lb-d-sub').textContent, /#/, 'no log number of another diver');
+        assert.equal(host.querySelector('.lb-d-map'), null, 'no map without shared coordinates');
+        assert.equal(host.querySelector('.lb-d-visibility'), null, 'no visibility line on others\' dives');
+        host.querySelector('[data-open="m1"]').click();
+        assert.ok(document.querySelector('.lb-viewer img'));
+        view.destroy();
+    });
+});
+
+test('EntryDetail own: visibility line only when the entry has one', async () => {
+    await withDom(async host => {
+        const store = { listSites: async () => [], listMedia: async () => [], photoUrls: async () => new Map() };
+        const base = { id: 'e9', log_number: 4, dive_date: '2026-09-20', site_id: null, recording_id: null };
+        for (const [visibility, text] of [['private', 'Private'], ['members', 'Visible to members'], ['link', 'Public link']]) {
+            const view = new EntryDetail(host, { store, entry: { ...base, visibility } });
+            assert.equal(host.querySelector('.lb-d-visibility')?.textContent.trim(), text);
+            assert.ok(host.querySelector('.lb-d-edit'));
+            assert.equal(host.querySelector('.lb-d-author'), null);
+            view.destroy();
+        }
+        const plain = new EntryDetail(host, { store, entry: base });
+        assert.equal(host.querySelector('.lb-d-visibility'), null);
+        assert.equal(host.querySelector('.lb-d-backlink').getAttribute('href'), '#/dives');
+        plain.destroy();
+    });
+});

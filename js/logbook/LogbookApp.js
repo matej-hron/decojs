@@ -24,13 +24,16 @@ import { MembersPage } from './MembersPage.js';
 import { MemberPage } from './MemberPage.js';
 import { SparkLoader } from './sparks.js';
 import { CommunityFeed } from './CommunityFeed.js';
+import { memberEntryStore } from './memberEntryStore.js';
+import { displayName } from './community.js';
+import { avatarHtml } from './avatars.js';
 import { MAPY_API_KEY } from '../backend/config.js';
 import { translate } from '../i18n.js';
 import { fmtNum, currentLang, localeTag } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
 
 /** Community routes whose views arrive in later steps; until then they show My dives. */
-const PENDING_VIEWS = new Set(['memberDive', 'memberAnalysis', 'profile']);
+const PENDING_VIEWS = new Set(['profile']);
 /** Probes per login while the answer is 'unknown': at login, once after PROBE_RETRY_MS, once on a later route change. */
 const PROBE_ATTEMPTS = 3;
 const PROBE_RETRY_MS = 5000;
@@ -96,6 +99,9 @@ export class LogbookApp {
         this.selected = new Set(); // entry ids; survives view switches and sorting
         this.bulk = null; // null | { phase: 'confirm'|'running'|'done', withRecordings, done, total, numbers, result }
         this.sparks = new SparkLoader(id => this.store.loadDive(id)); // lazy depth profiles of the list
+        this._hash = null; // the route hash shown, and the one before it (back link of a member's dive)
+        this._prevHash = null;
+        this._memberBack = null; // { id, href }: where a member's dive goes back to, kept while visiting its analysis
         this._onHash = () => { this._probeCommunity(); this._renderRoute(); }; // a route change retries an 'unknown' probe
         this._onLanguage = () => this._onLanguageChange();
         this._onDocClick = e => { if (!e.target.closest?.('.lb-menu')) this._closeMenu(); };
@@ -264,8 +270,8 @@ export class LogbookApp {
     _onLanguageChange() {
         this._renderShell();
         const name = this._route().name;
-        if (this.user && this.form && (name === 'new' || name === 'edit' || name === 'detail' || name === 'sites' || name === 'site' || name === 'feed' || name === 'community' || name === 'member')) this.form.relabel(); // keep what was typed / loaded
-        else if (this.user && name !== 'analysis') this._renderRoute();
+        if (this.user && this.form && (name === 'new' || name === 'edit' || name === 'detail' || name === 'sites' || name === 'site' || name === 'feed' || name === 'community' || name === 'member' || name === 'memberDive')) this.form.relabel(); // keep what was typed / loaded
+        else if (this.user && name !== 'analysis' && name !== 'memberAnalysis') this._renderRoute();
         else translateStatic(this.view);
     }
 
@@ -276,6 +282,10 @@ export class LogbookApp {
         this._unmountAnalysis();
         this._unmountForm();
         const token = ++this._viewToken;
+        if (location.hash !== this._hash) {
+            this._prevHash = this._hash;
+            this._hash = location.hash;
+        }
         this._renderShell();
         if (this._probe && !this._communityKnown && isCommunityRoute(parseRoute(location.hash).name)) {
             // A community route asked for explicitly: wait for the probe instead of flashing My dives.
@@ -297,14 +307,16 @@ export class LogbookApp {
             case 'feed': this._showFeed(); break;
             case 'community': this._showCommunity(); break;
             case 'member': this._showMember(route.id); break;
+            case 'memberDive': this._showMemberDive(route.id, token); break;
+            case 'memberAnalysis': this._showMemberAnalysis(route.id, token); break;
             default: this._showNotFound();
         }
     }
 
-    _showNotFound() {
+    _showNotFound({ href = routeHref({ name: 'list' }), text = tl('toList', 'Back to the list') } = {}) {
         this.view.innerHTML = `<section class="rda-card lb-message">
             <h2>${escHtml(tl('notFound', 'Dive not found'))}</h2>
-            <p><a href="${routeHref({ name: 'list' })}">${escHtml(tl('toList', 'Back to the list'))}</a></p></section>`;
+            <p><a href="${escHtml(href)}">${escHtml(text)}</a></p></section>`;
     }
 
     async _showDetail(route, token) {
@@ -370,6 +382,79 @@ export class LogbookApp {
         });
     }
 
+    // ---- Another member's dive (read-only) and its analysis ----
+
+    /**
+     * The community row of a dive the caller may see; null when missing (not-found shown) or when the
+     * view moved on or the dive is the caller's own (then the URL is replaced by the own route).
+     */
+    async _memberRow(id, token, ownRoute) {
+        this.view.innerHTML = `<p class="rda-account-msg">${escHtml(tb('loading', 'Loading…'))}</p>`;
+        let row;
+        try {
+            row = await this.store.getCommunityEntry(id);
+        } catch (error) {
+            if (token === this._viewToken) this._storeError(error);
+            return null;
+        }
+        if (token !== this._viewToken) return null;
+        if (!row) {
+            this._showNotFound({ href: routeHref({ name: 'feed' }), text: translate('diveLog.trail.toFeed', 'Back to the Feed') });
+            return null;
+        }
+        if (row.owner === this.user.id) {
+            location.replace(routeHref({ name: ownRoute, id })); // the own dive has the full, editable view
+            return null;
+        }
+        return row;
+    }
+
+    /** Back link of a member's dive: their page when it was opened from there, else the Feed. */
+    _memberDiveBack(id, owner) {
+        const prev = parseRoute(this._prevHash ?? '');
+        if (prev.name === 'member' && prev.id === owner) this._memberBack = { id, href: routeHref(prev) };
+        else if (!(prev.name === 'memberAnalysis' && prev.id === id && this._memberBack?.id === id)) this._memberBack = null;
+        return this._memberBack?.href ?? routeHref({ name: 'feed' });
+    }
+
+    async _showMemberDive(id, token) {
+        const row = await this._memberRow(id, token, 'detail');
+        if (!row) return;
+        let member = null;
+        let avatarUrl = null;
+        try {
+            member = await this.store.getMember(row.owner);
+            if (member?.avatar_path && this.store.avatarUrls) {
+                avatarUrl = (await this.store.avatarUrls([member.avatar_path]).catch(error => { console.error(error); return null; }))?.get(member.avatar_path) ?? null;
+            }
+        } catch (error) {
+            console.error(error); // the author row falls back to "Diver" and a preset
+        }
+        if (token !== this._viewToken) return;
+        const name = displayName(member, key => translate(`diveLog.${key}`, 'Diver'));
+        const author = {
+            name, href: routeHref({ name: 'member', id: row.owner }),
+            // The name follows in the same link: the picture is decoration there.
+            avatarHtml: `<span class="tr-author-av" aria-hidden="true">${avatarHtml({ preset: member?.avatar_preset, url: avatarUrl, name, id: row.owner, size: 40 })}</span>`,
+        };
+        const { entry, adapter } = memberEntryStore(this.store, row);
+        this.view.innerHTML = '<div class="lb-form-host"></div>';
+        this.form = new EntryDetail(this.view.firstChild, {
+            store: adapter, entry, readOnly: true, author, backHref: this._memberDiveBack(id, row.owner),
+        });
+    }
+
+    async _showMemberAnalysis(id, token) {
+        const row = await this._memberRow(id, token, 'analysis');
+        if (!row) return;
+        const { entry, adapter } = memberEntryStore(this.store, row);
+        if (!entry.recording_id) {
+            this._showNotFound({ href: routeHref({ name: 'memberDive', id }), text: tl('back', '← Back') });
+            return;
+        }
+        this._mountRecordingAnalysis(routeHref({ name: 'memberDive', id }), adapter, entry);
+    }
+
     /** A mounted view could not load: unmount it (a language change must not re-render it detached), show the error. */
     _viewError(error) {
         this._unmountForm();
@@ -415,10 +500,23 @@ export class LogbookApp {
         this.form = new EntryForm(this.view.firstChild, { store: this.store, entry, onSaved: back, onCancel: back });
     }
 
-    async _showAnalysis(id, token) {
-        this.view.innerHTML = `<p class="lb-back"><a href="${routeHref({ name: 'detail', id })}">${escHtml(tl('back', '← Back'))}</a></p>
+    /** Back link, "Learn why" and the embedded analysis of one recorded dive (own or a member's). */
+    _analysisFrame(backHref) {
+        this.view.innerHTML = `<p class="lb-back"><a href="${escHtml(backHref)}">${escHtml(tl('back', '← Back'))}</a></p>
             <a class="tr-learn" href="../gradient-factors.html">${escHtml(translate('diveLog.trail.learnWhy', 'Learn why on DecoTheory ↗'))}</a>
             <div class="rda-root lb-analysis"></div>`;
+    }
+
+    _mountRecordingAnalysis(backHref, store, entry) {
+        this._analysisFrame(backHref);
+        this.analysis = new RecordedDiveAnalysis(this.view.querySelector('.lb-analysis'), {
+            store, embedded: true, focusRecordingId: entry.recording_id,
+            entryGases: gasesFromEntry(entry),
+        });
+    }
+
+    async _showAnalysis(id, token) {
+        this._analysisFrame(routeHref({ name: 'detail', id }));
         let entry = this.entries?.find(e => e.id === id);
         try {
             if (!entry) entry = await this.store.getEntry(id);
@@ -431,10 +529,7 @@ export class LogbookApp {
             this._showNotFound();
             return;
         }
-        this.analysis = new RecordedDiveAnalysis(this.view.querySelector('.lb-analysis'), {
-            store: this.store, embedded: true, focusRecordingId: entry.recording_id,
-            entryGases: gasesFromEntry(entry),
-        });
+        this._mountRecordingAnalysis(routeHref({ name: 'detail', id }), this.store, entry);
     }
 
     // ---- List ----

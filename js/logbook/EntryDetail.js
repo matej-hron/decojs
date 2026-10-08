@@ -1,6 +1,8 @@
 /**
  * Dive detail screen: facts, site with a small map, photos, video links and
  * the Edit / Analysis / Add photos / Add video link / Delete actions.
+ * With `readOnly` (another member's dive) it shows an author row instead and
+ * offers nothing that writes; notes are never shown then.
  *
  * `detailRows` and `isHttpsUrl` are pure and covered by tests.
  */
@@ -16,6 +18,7 @@ import { diveTitle, feedStats } from './feed.js';
 import { translate } from '../i18n.js';
 import { fmtNum, currentLang } from '../format.js';
 import { escHtml } from '../utils/escHtml.js';
+import { avatarImgFallback } from './avatars.js';
 
 const NB = ' ';
 const IMAGE_ACCEPT = 'image/jpeg,image/png,image/webp';
@@ -131,6 +134,7 @@ const fill = (text, ...values) => String(text).replace(/\{(\d+)\}/g, (_, i) => v
 const label = key => translate(`diveLog.logbook.${key}`, key);
 const TITLE_FALLBACK = { 'feed.untitled': 'Dive #{0}', 'feed.untitledNoNumber': 'Dive' };
 const STAT_FALLBACK = { depth: 'Max depth', duration: 'Time', avgDepth: 'Avg depth', temp: 'Water', gas: 'Gas' };
+const VISIBILITY_FALLBACK = { private: 'Private', members: 'Visible to members', link: 'Public link' };
 
 export class EntryDetail {
     /**
@@ -140,11 +144,17 @@ export class EntryDetail {
      * @param {Object} options.entry - log_entries row
      * @param {() => void} options.onDeleted - called after the entry was deleted
      * @param {(error: Error) => void} [options.onError] - for failures the screen cannot show itself
+     * @param {boolean} [options.readOnly] - another member's dive: no edit, delete, upload or notes
+     * @param {{name: string, avatarHtml: string, href: string}|null} [options.author] - author row (read-only view)
+     * @param {string} [options.backHref] - target of the back link (default: My dives; read-only: the Feed)
      */
-    constructor(container, { store, entry, onDeleted, onError }) {
+    constructor(container, { store, entry, onDeleted, onError, readOnly = false, author = null, backHref = null }) {
         this.container = container;
         this.store = store;
         this.entry = entry;
+        this.readOnly = Boolean(readOnly);
+        this.author = author;
+        this.backHref = backHref ?? routeHref({ name: this.readOnly ? 'feed' : 'list' });
         this.onDeleted = onDeleted;
         this.onError = onError;
         this.destroyed = false;
@@ -162,6 +172,8 @@ export class EntryDetail {
         this.viewer = null;
         this._onKey = e => { if (e.key === 'Escape' && this.viewer) this._closeViewer(); };
         document.addEventListener('keydown', this._onKey);
+        this._onImgError = e => avatarImgFallback(e); // an author photo that fails falls back to the preset
+        this.container.addEventListener('error', this._onImgError, true);
         this.container.innerHTML = `<section class="rda-card lb-detail"><div class="lb-d-main"></div><div class="lb-d-media"></div><div class="lb-d-actions"></div><div class="lb-d-panel"></div></section>`;
         this.main = this.container.querySelector('.lb-d-main');
         this.mediaEl = this.container.querySelector('.lb-d-media');
@@ -176,6 +188,7 @@ export class EntryDetail {
     destroy() {
         this.destroyed = true;
         document.removeEventListener('keydown', this._onKey);
+        this.container.removeEventListener('error', this._onImgError, true);
         this._removeMap();
         this._closeViewer();
         this.container.innerHTML = '';
@@ -234,9 +247,15 @@ export class EntryDetail {
     renderMain() {
         this._removeMap();
         const e = this.entry;
-        const { core, groups, notes } = detailRows(e, label);
+        const { core, groups, notes: ownNotes } = detailRows(e, label);
+        const notes = this.readOnly ? null : ownNotes; // notes are private, whatever the entry object carries
         const time = e.entry_time ? String(e.entry_time).slice(0, 5) : '';
-        const sub = [fill(label('number'), e.log_number ?? '–'), formatDiveDate(e.dive_date, currentLang()), time].filter(Boolean).join(', ');
+        // Another diver's log number is not shared.
+        const number = this.readOnly && (e.log_number === null || e.log_number === undefined) ? '' : fill(label('number'), e.log_number ?? '–');
+        const visibility = !this.readOnly && Object.hasOwn(VISIBILITY_FALLBACK, e.visibility ?? '')
+            ? translate(`diveLog.trail.visibility.${e.visibility}`, VISIBILITY_FALLBACK[e.visibility]) : '';
+        const a = this.readOnly ? this.author : null;
+        const sub = [number, formatDiveDate(e.dive_date, currentLang()), time].filter(Boolean).join(', ');
         const dl = rows => `<dl class="lb-dl">${rows.map(r => `<div><dt>${escHtml(r.label)}</dt><dd>${escHtml(r.value)}</dd></div>`).join('')}</dl>`;
         const hasCoords = this.site && Number.isFinite(this.site.lat) && Number.isFinite(this.site.lon);
         // Until the sites are loaded show an ellipsis; a site that is not found after loading counts as not set.
@@ -252,12 +271,14 @@ export class EntryDetail {
         const gas = gasCards(e, label, fmtNum);
         this.main.innerHTML = `
             <div class="lb-d-top">
-                <a class="lb-d-backlink" href="${routeHref({ name: 'list' })}">${escHtml(label('back'))}</a>
-                <a class="btn btn-primary lb-d-edit" href="${routeHref({ name: 'edit', id: e.id })}">${escHtml(td('edit', 'Edit'))}</a>
+                <a class="lb-d-backlink" href="${escHtml(this.backHref)}">${escHtml(label('back'))}</a>
+                ${this.readOnly ? '' : `<a class="btn btn-primary lb-d-edit" href="${routeHref({ name: 'edit', id: e.id })}">${escHtml(td('edit', 'Edit'))}</a>`}
             </div>
+            ${a ? `<div class="tr-author lb-d-author"><a class="tr-author-link" href="${escHtml(a.href)}">${a.avatarHtml}<span class="tr-author-name">${escHtml(a.name)}</span></a></div>` : ''}
             <div class="lb-d-title">
                 <h2 class="lb-d-head${siteName ? '' : ' lb-untitled'}">${escHtml(siteName ?? diveTitle(e, null, k => translate(`diveLog.logbook.${k}`, TITLE_FALLBACK[k])))}</h2>
                 <p class="lb-d-sub">${escHtml(sub)}${e.site_id || siteName ? '' : `, <span class="lb-muted">${escHtml(label('siteNotSet'))}</span>`}</p>
+                ${visibility ? `<p class="lb-d-visibility lb-d-visibility--${escHtml(e.visibility)}">${escHtml(visibility)}</p>` : ''}
             </div>
             ${stats.length ? `<dl class="lb-stats lb-d-stats">${stats.map(st => `<div class="lb-stat"><dt>${escHtml(statLabel(st.key))}</dt>
                 <dd>${escHtml(st.value)}${st.unit ? `<span class="lb-unit">${NB}${escHtml(st.unit)}</span>` : ''}</dd></div>`).join('')}</dl>` : ''}
@@ -275,8 +296,15 @@ export class EntryDetail {
                 ${moreGroups.map(g => `<h3>${escHtml(label(`form.${g.group}`))}</h3>${dl(g.rows)}`).join('')}</details>` : ''}
 `;
         // Below the photos, right above the panel where Delete asks for confirmation.
+        const analysisLink = e.recording_id
+            ? `<a class="btn btn-secondary" href="${routeHref({ name: this.readOnly ? 'memberAnalysis' : 'analysis', id: e.id })}">${escHtml(td('analysis', 'Analysis'))}</a>` : '';
+        if (this.readOnly) {
+            this.actionsEl.innerHTML = analysisLink;
+            if (hasCoords) this._mountMap(this.site);
+            return;
+        }
         this.actionsEl.innerHTML = `
-                ${e.recording_id ? `<a class="btn btn-secondary" href="${routeHref({ name: 'analysis', id: e.id })}">${escHtml(td('analysis', 'Analysis'))}</a>` : ''}
+                ${analysisLink}
                 <label class="btn btn-secondary lb-file"><span>${escHtml(td('addPhotos', 'Add photos'))}</span>
                     <input type="file" class="rda-visually-hidden" id="lb-add-photos" accept="${IMAGE_ACCEPT}" multiple></label>
                 <button type="button" class="btn btn-secondary" id="lb-add-video">${escHtml(td('addVideo', 'Add video link'))}</button>
@@ -314,12 +342,12 @@ export class EntryDetail {
             return `<figure class="lb-photo">
                 ${url ? `<button type="button" class="lb-photo-open" data-open="${escHtml(m.id)}" aria-label="${escHtml(td('enlarge', 'Enlarge photo'))}"><img src="${escHtml(url)}" alt="${escHtml(tp('alt', 'Photo'))}" loading="lazy"></button>`
                     : `<div class="lb-photo-wait" aria-hidden="true"></div>`}
-                <button type="button" class="lb-photo-x" data-remove="${escHtml(m.id)}" aria-label="${escHtml(td('removePhoto', 'Remove photo'))}">×</button></figure>`;
+                ${this.readOnly ? '' : `<button type="button" class="lb-photo-x" data-remove="${escHtml(m.id)}" aria-label="${escHtml(td('removePhoto', 'Remove photo'))}">×</button>`}</figure>`;
         }).join('');
         const links = videos.map(m => `<li>${isHttpsUrl(m.url)
             ? `<a href="${escHtml(m.url)}" target="_blank" rel="noopener noreferrer">${escHtml(m.caption || m.url)}</a>`
             : `<span>${escHtml(m.caption || m.url || '')}</span>`}
-            <button type="button" class="lb-chip-x" data-remove="${escHtml(m.id)}" aria-label="${escHtml(td('removeVideo', 'Remove link'))}">×</button></li>`).join('');
+            ${this.readOnly ? '' : `<button type="button" class="lb-chip-x" data-remove="${escHtml(m.id)}" aria-label="${escHtml(td('removeVideo', 'Remove link'))}">×</button>`}</li>`).join('');
         this.mediaEl.innerHTML = `${photos.length ? `<h3>${escHtml(td('photos', 'Photos'))}</h3><div class="lb-photos">${grid}</div>` : ''}
             ${videos.length ? `<h3>${escHtml(td('videos', 'Videos'))}</h3><ul class="lb-videos">${links}</ul>` : ''}`;
         for (const img of this.mediaEl.querySelectorAll('.lb-photo img')) {
