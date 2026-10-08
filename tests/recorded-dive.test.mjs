@@ -11,7 +11,7 @@ import { toDiveSetup, prepareRecordedSetup, THIN_TOLERANCE_M } from '../js/impor
 import { thinProfile } from '../js/import/thinProfile.js';
 import { analyzeRecordedDive, summarizeRecordedDive, CEILING_VIOLATION_TOLERANCE_M, DECO_CEILING_THRESHOLD_M } from '../js/import/recordedDiveSummary.js';
 import { DiveProfileChart } from '../js/charts/DiveProfileChart.js';
-import { isDlfFileName, loadDiveFiles, fetchDemoFiles, clampGfPair, deviceGf, canAnalyze, CHART_VIEWS, chartViewOptions } from '../js/components/RecordedDiveAnalysis.js';
+import { isDlfFileName, loadDiveFiles, fetchDemoFiles, clampGfPair, deviceGf, canAnalyze, CHART_VIEWS, chartViewOptions, describeStart, carriedOverOptions } from '../js/components/RecordedDiveAnalysis.js';
 import { getPressurePerMeter } from '../js/deco/environment.js';
 import { DEFAULT_DIVE_PROFILE_OPTIONS, mergeOptions, normalizeDiveSetup } from '../js/charts/chartTypes.js';
 import { matchEntryGases, recordedGasSetup, ASSUMED_SAC_LPM } from '../js/import/recordedGas.js';
@@ -449,5 +449,90 @@ describe('chart views', () => {
                 assert.equal(typeof o[k], 'boolean', `${v.id}.${k}`);
             }
         }
+    });
+});
+
+describe('describeStart (start-state summary)', () => {
+    const locale = lang => JSON.parse(readFileSync(new URL(`../locales/${lang}.json`, import.meta.url), 'utf8'));
+    const translator = lang => {
+        const dict = locale(lang);
+        return (key, fallback) => key.split('.').reduce((o, k) => o?.[k], dict) ?? fallback;
+    };
+    const numbered = n => ({ source: { diveNumber: n } });
+    const preload = [{ id: 10, excessBar: 0.097 }, { id: 11, excessBar: 0.097 }, { id: 12, excessBar: 0.091 },
+        { id: 9, excessBar: 0.089 }, { id: 8, excessBar: 0.068 }, { id: 15, excessBar: 0.059 }, { id: 16, excessBar: 0.048 }];
+    const one = { reason: 'chained', chain: [{ dive: numbered(100), surfaceIntervalMin: 209 }], preload };
+    const many = { reason: 'chained', chain: [{ dive: numbered(92), surfaceIntervalMin: 60 }, { dive: numbered(93), surfaceIntervalMin: 126 }], preload };
+
+    test('en names the dive, the interval and where the nitrogen sits', () => {
+        assert.equal(describeStart(one, translator('en'), 'en'), 'carries nitrogen from #100 (surface interval 3.5\u00a0h), mostly in TC8\u2013TC15');
+        assert.equal(describeStart(many, translator('en'), 'en'), 'carries nitrogen from #92, #93 (last surface interval 2.1\u00a0h), mostly in TC8\u2013TC15');
+    });
+
+    test('cs uses a decimal comma and a no-break space before the unit', () => {
+        assert.equal(describeStart(one, translator('cs'), 'cs'), 'nese dusík z #100 (povrchový interval 3,5\u00a0h), převážně v TC8\u2013TC15');
+    });
+
+    test('es', () => {
+        assert.equal(describeStart(one, translator('es'), 'es'), 'arrastra nitrógeno de #100 (intervalo en superficie 3,5\u00a0h), sobre todo en TC8\u2013TC15');
+    });
+
+    test('without a positive preload the location is left out', () => {
+        assert.equal(describeStart({ ...one, preload: [] }, translator('en'), 'en'), 'carries nitrogen from #100 (surface interval 3.5\u00a0h)');
+    });
+
+    test('fresh starts keep their reasons', () => {
+        assert.equal(describeStart(null, translator('en'), 'en'), 'fresh start — earlier dives are ignored');
+        assert.equal(describeStart({ reason: 'no-earlier-dive', chain: [], preload: [] }, translator('en'), 'en'), 'fresh start — no earlier dive loaded');
+    });
+});
+
+describe('carried-over tissues in the Tissues view', () => {
+    const numbered = n => ({ source: { diveNumber: n } });
+    const preload = [{ id: 10, excessBar: 0.097 }, { id: 11, excessBar: 0.097 }, { id: 12, excessBar: 0.091 }, { id: 9, excessBar: 0.089 }];
+    const en = (key, fallback) => fallback;
+
+    test('marks every preloaded compartment and suggests the three most loaded', () => {
+        const o = carriedOverOptions({ reason: 'chained', chain: [{ dive: numbered(100), surfaceIntervalMin: 209 }], preload }, en);
+        assert.deepEqual(o, { compartments: [10, 11, 12, 9], suggested: [10, 11, 12], label: 'carried over from #100' });
+    });
+
+    test('a chain of dives is labelled first to last', () => {
+        const chain = [92, 93, 94].map(n => ({ dive: numbered(n), surfaceIntervalMin: 60 }));
+        assert.equal(carriedOverOptions({ reason: 'chained', chain, preload }, en).label, 'carried over from #92\u2013#94');
+    });
+
+    test('fresh starts and starts without a positive preload give no option', () => {
+        assert.equal(carriedOverOptions(null, en), null);
+        assert.equal(carriedOverOptions({ reason: 'settled', chain: [], preload: [] }, en), null);
+        assert.equal(carriedOverOptions({ reason: 'chained', chain: [{ dive: numbered(1), surfaceIntervalMin: 9 }], preload: [] }, en), null);
+    });
+
+    const chartStub = carriedOver => ({
+        options: { carriedOver }, visibleCompartments: new Set([1]), _defaultCompartments: [1], _userPickedCompartments: false,
+        tissueControlsContainer: null, _buildTissueControls() {},
+        _applyCompartmentSuggestion: DiveProfileChart.prototype._applyCompartmentSuggestion,
+        _setOptions: DiveProfileChart.prototype._setOptions,
+    });
+
+    test('the chart shows the suggestion until the user picks, and falls back to its default', () => {
+        const c = chartStub(null);
+        c._setOptions({ carriedOver: { compartments: [10, 11, 12, 9], suggested: [10, 11, 12], label: 'x' } });
+        assert.deepEqual([...c.visibleCompartments], [10, 11, 12]);
+        c._setOptions({ carriedOver: null });
+        assert.deepEqual([...c.visibleCompartments], [1]);
+        c._userPickedCompartments = true;
+        c.visibleCompartments = new Set([4]);
+        c._setOptions({ carriedOver: { compartments: [9], suggested: [9], label: 'x' } });
+        assert.deepEqual([...c.visibleCompartments], [4]);
+    });
+
+    test('a GF-only update keeps the selection the suggestion made', () => {
+        const opt = { compartments: [10, 11, 12, 9], suggested: [10, 11, 12], label: 'x' };
+        const c = chartStub(null);
+        c._setOptions({ carriedOver: opt });
+        c.visibleCompartments.add(1); // e.g. a keyboard expand that did not mark the pick
+        c._setOptions({ carriedOver: { ...opt } });
+        assert.deepEqual([...c.visibleCompartments].sort((a, b) => a - b), [1, 10, 11, 12]);
     });
 });

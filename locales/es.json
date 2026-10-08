@@ -1068,7 +1068,8 @@
             "all": "Todo",
             "none": "Ninguno",
             "fast": "Rápido",
-            "slow": "Lento"
+            "slow": "Lento",
+            "preload": "Arrastrado"
         },
         "hints": {
             "compartments": "Clic = seleccionar uno · Mayús+clic = alternar · ←→ paso · Espacio reproducir · F pantalla completa",
@@ -2876,8 +2877,10 @@
         "helpText": "El techo continuo es el de DecoTheory, recalculado para los GF que elijas: mantiene GF Low hasta que empieza el ascenso y luego pasa a GF High. El techo discontinuo es el que registró el ordenador con sus propios GF y su propia regla; en inmersiones con descompresión suele desaparecer antes durante el ascenso. Cambiar los GF nunca cambia tus tejidos, solo dónde se dibuja el límite.",
         "chainToggle": "Incluir inmersiones anteriores (inmersiones sucesivas)",
         "startState": "Estado inicial",
-        "startChained": "arrastra nitrógeno de {0} ({1}); último intervalo en superficie {2} h",
-        "startChainCount": "{0} inmersión(es) anterior(es)",
+        "startChainedOne": "arrastra nitrógeno de {0} (intervalo en superficie {1} h)",
+        "startChainedMany": "arrastra nitrógeno de {0} (último intervalo en superficie {1} h)",
+        "startPreloadIn": ", sobre todo en {0}",
+        "carriedOverFrom": "arrastrado de {0}",
         "startLongGap": "inicio limpio — la inmersión anterior fue hace {0} días",
         "startSettled": "inicio limpio — los tejidos se equilibraron durante {0} h en superficie",
         "startClock": "inicio limpio — la inmersión anterior se solapa en el tiempo (reloj del ordenador)",

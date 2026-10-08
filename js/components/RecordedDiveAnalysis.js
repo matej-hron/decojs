@@ -11,7 +11,7 @@
 import { parseDivesoftDLF } from '../import/divesoftDlf.js';
 import { prepareRecordedSetup } from '../import/recordedDive.js';
 import { analyzeRecordedDive, summarizeRecordedDive, CEILING_VIOLATION_TOLERANCE_M } from '../import/recordedDiveSummary.js';
-import { startStateFor, CHAIN_MAX_GAP_MIN } from '../import/diveChain.js';
+import { startStateFor, preloadFocus, compartmentSpan, CHAIN_MAX_GAP_MIN } from '../import/diveChain.js';
 import { recordedGasSetup, ASSUMED_SAC_LPM, ASSUMED_CYLINDER_L, ASSUMED_START_BAR } from '../import/recordedGas.js';
 import { sha256Hex } from '../backend/sync.js';
 import { uploadDivelog, exportZip } from '../logbook/transfer.js';
@@ -199,6 +199,61 @@ export function translateStatic(root, translateFn = translate) {
 export function codeLabel(kind, code, translateFn = translate) {
     if (code == null || code === '') return '–';
     return translateFn(`diveLog.${kind}.${code}`, String(code));
+}
+
+/**
+ * One line on the tissue state a dive starts from (summary panel).
+ * @param {Object|null} start - from startStateFor; null when chaining is switched off
+ * @param {(key: string, fallback: string) => string} [translateFn]
+ * @param {string} [lang] - number format; the current language when omitted
+ */
+export function describeStart(start, translateFn = translate, lang) {
+    const tr = (key, fallback) => translateFn(`diveLog.${key}`, fallback);
+    if (!start) return tr('startDisabled', 'fresh start — earlier dives are ignored');
+    const hours = min => fmtNum(min / 60, 1, lang);
+    switch (start.reason) {
+        case 'chained': {
+            const numbers = start.chain.map(c => `#${c.dive.source.diveNumber ?? '?'}`).join(', ');
+            const interval = hours(start.chain.at(-1).surfaceIntervalMin);
+            const text = start.chain.length === 1
+                ? fill(tr('startChainedOne', 'carries nitrogen from {0} (surface interval {1}\u00a0h)'), numbers, interval)
+                : fill(tr('startChainedMany', 'carries nitrogen from {0} (last surface interval {1}\u00a0h)'), numbers, interval);
+            const span = compartmentSpan(preloadFocus(start.preload ?? []));
+            return span ? text + fill(tr('startPreloadIn', ', mostly in {0}'), span) : text;
+        }
+        case 'long-gap':
+            return fill(tr('startLongGap', 'fresh start — previous dive {0}\u00a0days earlier'), fmtNum(start.previousGapMin / 1440, 0, lang));
+        case 'settled':
+            return fill(tr('startSettled', 'fresh start — tissues settled during {0}\u00a0h at the surface'), hours(start.previousGapMin));
+        case 'clock-overlap':
+            return tr('startClock', 'fresh start — the previous dive overlaps in time (dive computer clock)');
+        case 'unreliable-date':
+            return tr('startUnreliable', 'fresh start — this dive’s date looks wrong, so earlier dives cannot be matched');
+        case 'not-chainable':
+            return tr('startNotChainable', 'fresh start — an earlier dive could not be modelled');
+        default:
+            return tr('startFirst', 'fresh start — no earlier dive loaded');
+    }
+}
+
+/** How many of the most-loaded compartments the Tissues view shows first for a repetitive dive. */
+export const PRELOAD_SUGGESTED_COUNT = 3;
+
+/**
+ * DiveProfileChart `carriedOver` option for a start state: mark every preloaded compartment at t = 0,
+ * show the most-loaded ones first. Null for a fresh start.
+ * @param {Object|null} start - from startStateFor
+ * @param {(key: string, fallback: string) => string} [translateFn]
+ */
+export function carriedOverOptions(start, translateFn = translate) {
+    if (start?.reason !== 'chained' || !(start.preload?.length > 0)) return null;
+    const numbers = start.chain.map(c => `#${c.dive.source.diveNumber ?? '?'}`);
+    const from = numbers.length === 1 ? numbers[0] : `${numbers[0]}\u2013${numbers.at(-1)}`;
+    return {
+        compartments: start.preload.map(r => r.id),
+        suggested: start.preload.slice(0, PRELOAD_SUGGESTED_COUNT).map(r => r.id).sort((a, b) => a - b),
+        label: fill(translateFn('diveLog.carriedOverFrom', 'carried over from {0}'), from),
+    };
 }
 
 /** The # column: the dive number, or the file name / a dash when the dive has none (server rows use 0). */
@@ -756,7 +811,7 @@ export class RecordedDiveAnalysis {
             this.el.gasNote.hidden = true;
             this.el.gasNote.textContent = '';
         }
-        this._renderCharts(setup, deviceCeiling, dive);
+        this._renderCharts(setup, deviceCeiling, dive, start);
     }
 
     /**
@@ -789,35 +844,11 @@ export class RecordedDiveAnalysis {
         return this.startStates.get(dive) ?? null;
     }
 
-    _describeStart(start) {
-        if (!start) return t('startDisabled', 'fresh start — earlier dives are ignored');
-        const hours = min => fmtNum(min / 60, 1);
-        switch (start.reason) {
-            case 'chained': {
-                const numbers = start.chain.map(c => `#${c.dive.source.diveNumber ?? '?'}`).join(', ');
-                return fill(t('startChained', 'carries nitrogen from {0} ({1}); last surface interval {2}\u00a0h'),
-                    fill(t('startChainCount', '{0} earlier dive(s)'), start.chain.length), numbers, hours(start.chain.at(-1).surfaceIntervalMin));
-            }
-            case 'long-gap':
-                return fill(t('startLongGap', 'fresh start — previous dive {0}\u00a0days earlier'), fmtNum(start.previousGapMin / 1440, 0));
-            case 'settled':
-                return fill(t('startSettled', 'fresh start — tissues settled during {0}\u00a0h at the surface'), hours(start.previousGapMin));
-            case 'clock-overlap':
-                return t('startClock', 'fresh start — the previous dive overlaps in time (dive computer clock)');
-            case 'unreliable-date':
-                return t('startUnreliable', 'fresh start — this dive’s date looks wrong, so earlier dives cannot be matched');
-            case 'not-chainable':
-                return t('startNotChainable', 'fresh start — an earlier dive could not be modelled');
-            default:
-                return t('startFirst', 'fresh start — no earlier dive loaded');
-        }
-    }
-
     _renderSummary(dive, s, start) {
         const pct = v => `${fmtNum(v * 100, 0)}\u00a0%`;
         const device = deviceGf(dive);
         const rows = [
-            [t('startState', 'Start state'), this._describeStart(start)],
+            [t('startState', 'Start state'), describeStart(start)],
             [t('peakGf', 'Peak tissue GF during the dive'), s.peakGf
                 ? fill(t('peakGfValue', '{0} (compartment {1} at {2}\u00a0min)'), pct(s.peakGf.value), s.peakGf.compartment, fmtNum(s.peakGf.t, 1))
                 : '–'],
@@ -841,7 +872,7 @@ export class RecordedDiveAnalysis {
             : '';
     }
 
-    async _renderCharts(setup, deviceCeiling, dive) {
+    async _renderCharts(setup, deviceCeiling, dive, start) {
         if (this.destroyed) return;
         if (!this.charts) {
             const [{ DiveProfileChart }, { MValueChart }, { GFChart }] = await Promise.all([
@@ -850,12 +881,12 @@ export class RecordedDiveAnalysis {
                 import('../charts/GFChart.js'),
             ]);
             if (this.destroyed) return;
-            if (this.charts) return this._renderCharts(setup, deviceCeiling, dive);
+            if (this.charts) return this._renderCharts(setup, deviceCeiling, dive, start);
             this.charts = {
                 profile: new DiveProfileChart(this.el.profile, {
                     diveSetup: setup,
                     options: {
-                        ...this._profileOptions(deviceCeiling, dive),
+                        ...this._profileOptions(deviceCeiling, dive, start),
                         showDecoStops: false, showGasSwitches: true,
                         violationToleranceM: CEILING_VIOLATION_TOLERANCE_M,
                         narrowLayout: true, touchReadout: true,
@@ -875,7 +906,7 @@ export class RecordedDiveAnalysis {
             this.charts.gf.options.onTimeIndexChange = i => this.charts.mvalue.setTimeIndex(i);
             return;
         }
-        this.charts.profile.update(setup, this._profileOptions(deviceCeiling, dive));
+        this.charts.profile.update(setup, this._profileOptions(deviceCeiling, dive, start));
         // Keep the timeline position when only GF changed; reset for a different dive.
         const index = this._chartsDive === dive ? this.charts.mvalue.currentTimeIndex : 0;
         this._chartsDive = dive;
@@ -885,11 +916,15 @@ export class RecordedDiveAnalysis {
         this.charts.gf.setTimeIndex(index);
     }
 
-    _profileOptions(deviceCeiling, dive) {
-        return chartViewOptions(this.view, {
-            referenceCeiling: deviceCeiling.length ? deviceCeiling : null,
-            referenceCeilingLabel: this._deviceCeilingLabel(dive),
-        });
+    _profileOptions(deviceCeiling, dive, start) {
+        return {
+            ...chartViewOptions(this.view, {
+                referenceCeiling: deviceCeiling.length ? deviceCeiling : null,
+                referenceCeilingLabel: this._deviceCeilingLabel(dive),
+            }),
+            narrowDepthBand: true,
+            carriedOver: carriedOverOptions(start),
+        };
     }
 
     _deviceCeilingLabel(dive) {

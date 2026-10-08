@@ -1710,6 +1710,13 @@ section h2 {
     display: none;
 }
 
+/* Tissue view: the arrow-key hint means nothing without a keyboard */
+@media (pointer: coarse) {
+    .dpc-key-hint {
+        display: none;
+    }
+}
+
 /* Touch readout (js/charts/touchReadout.js, opt-in): value strip above a chart on touch screens */
 .chart-readout-on:has(> .dpc-chart-container) {
     display: flex;
