@@ -100,12 +100,17 @@ export function createSupabaseStore(client) {
         },
 
         async signOut() {
+            store.resetCommunityCache();
             const { error } = await client.auth.signOut();
             if (error) throw fail(error);
         },
 
         onAuthChange(listener) {
+            let lastId;
             const { data } = client.auth.onAuthStateChange((_event, session) => {
+                const id = session?.user?.id ?? null;
+                if (lastId !== undefined && id !== lastId) store.resetCommunityCache();
+                lastId = id;
                 listener(session?.user ? { id: session.user.id, email: session.user.email } : null);
             });
             return () => data.subscription.unsubscribe();
@@ -205,9 +210,14 @@ export function createSupabaseStore(client) {
 
         async saveEntry(input, id) {
             let row = input;
-            if (!await store.communityStatus()) {
-                const { visibility, share_location, ...rest } = input; // eslint-disable-line no-unused-vars
-                row = rest;
+            if ('visibility' in input || 'share_location' in input) {
+                // Never guess: stripping on a transient probe failure would save a private dive with the DB default.
+                const availability = await store.communityAvailability();
+                if (availability === 'unknown') throw new DiveStoreError('unreachable', 'Could not check community features; the entry was not saved');
+                if (availability === 'no') {
+                    const { visibility, share_location, ...rest } = input; // eslint-disable-line no-unused-vars
+                    row = rest;
+                }
             }
             const q = id
                 ? client.from(ENTRIES).update({ ...row, updated_at: new Date().toISOString() }).eq('id', id)
@@ -375,7 +385,12 @@ export function createSupabaseStore(client) {
             };
             let next = linked.data.reduce((m, e) => Math.max(m, e.log_number ?? 0), 0) + 1;
             let created = 0;
-            const visibility = await store.defaultVisibility();
+            let visibility = null;
+            try {
+                visibility = await store.defaultVisibility();
+            } catch (error) {
+                console.info('Default visibility unavailable; entries use the database default', error?.message ?? error);
+            }
             for (const r of ordered) {
                 const record = recordOf.get(r.id);
                 if (!record) continue;

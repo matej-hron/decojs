@@ -19,7 +19,7 @@ export function nameFromMetadata(user) {
 }
 
 export function createCommunityApi(client, { requireUser, fail, toSummaryRow, DiveStoreError }) {
-    let status = null; // cached Promise<boolean>
+    let status = null; // 'yes' | 'no' once known
     let profile; // undefined = not loaded
     const avatarCache = new Map(); // path -> { url, at }
 
@@ -29,20 +29,37 @@ export function createCommunityApi(client, { requireUser, fail, toSummaryRow, Di
         return data;
     };
 
-    async function communityStatus() {
-        status ??= (async () => {
-            try {
-                const { error } = await client.from('profiles').select('id').limit(1);
-                if (!error) return true;
-                const quiet = QUIET_CODES.test(error.code ?? '') || error.status === 404;
-                (quiet ? console.info : console.warn)('Community features unavailable', error.message ?? error);
-            } catch (error) {
-                // A client that has no profiles table at all (e.g. a minimal fake) throws; same as a missing table.
-                console.info('Community features unavailable', error?.message ?? error);
+    /** 'yes' | 'no' (definitively absent, cached) | 'unknown' (transient failure, never cached). */
+    async function communityAvailability() {
+        if (status) return status;
+        let result = 'unknown';
+        try {
+            const { error, status: http } = await client.from('profiles').select('id').limit(1);
+            if (!error) result = 'yes';
+            else if (QUIET_CODES.test(error.code ?? '') || http === 404) {
+                result = 'no';
+                console.info('Community features unavailable', error.message ?? error);
+            } else {
+                console.warn('Community probe failed', error.message ?? error);
             }
-            return false;
-        })();
-        return status;
+        } catch (error) {
+            // A client that has no profiles table at all (e.g. a minimal fake) throws; same as a missing table.
+            result = 'no';
+            console.info('Community features unavailable', error?.message ?? error);
+        }
+        if (result !== 'unknown') status = result;
+        return result;
+    }
+
+    async function communityStatus() {
+        return (await communityAvailability()) === 'yes';
+    }
+
+    /** Forget everything tied to the signed-in user (call on sign-out and when the user changes). */
+    function resetCommunityCache() {
+        status = null;
+        profile = undefined;
+        avatarCache.clear();
     }
 
     async function ensureProfile() {
@@ -92,7 +109,13 @@ export function createCommunityApi(client, { requireUser, fail, toSummaryRow, Di
         const path = `${user.id}/avatar-${Date.now()}.jpg`;
         const up = await client.storage.from(AVATAR_BUCKET).upload(path, blob, { contentType: 'image/jpeg' });
         if (up.error) throw fail(up.error, 'storage');
-        const saved = await saveProfile({ avatar_path: path });
+        let saved;
+        try {
+            saved = await saveProfile({ avatar_path: path });
+        } catch (error) {
+            await removeAvatarFile(path);
+            throw error;
+        }
         await removeAvatarFile(previous);
         return saved;
     }
@@ -132,6 +155,8 @@ export function createCommunityApi(client, { requireUser, fail, toSummaryRow, Di
 
     return {
         communityStatus,
+        communityAvailability,
+        resetCommunityCache,
         ensureProfile,
         getMyProfile,
         saveProfile,

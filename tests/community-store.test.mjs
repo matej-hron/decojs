@@ -14,7 +14,8 @@ const UNIQUE = {
     ],
 };
 
-function fakeCommunityClient({ user = { id: 'u1', email: 'me@example.com' }, tables = {}, failTables = [], rpcResults = {}, rpcErrors = {} } = {}) {
+function fakeCommunityClient({ user = { id: 'u1', email: 'me@example.com' }, tables = {}, failTables = [], rpcResults = {}, rpcErrors = {}, transient = 0 } = {}) {
+    let transientLeft = transient;
     const db = { dives: [], log_entries: [], sites: [], media: [], profiles: [], ...tables };
     const files = new Map();
     const calls = [];
@@ -36,6 +37,13 @@ function fakeCommunityClient({ user = { id: 'u1', email: 'me@example.com' }, tab
     }
 
     function builder(table) {
+        if (table === 'profiles' && transientLeft > 0) {
+            transientLeft--;
+            calls.push(['select', table]);
+            const err = { data: null, error: { message: 'TypeError: Failed to fetch' }, status: 0 };
+            const dead = { select() { return dead; }, limit() { return dead; }, then(r, j) { return Promise.resolve(err).then(r, j); } };
+            return dead;
+        }
         if (failTables.includes(table)) {
             calls.push(['select', table]);
             const err = { data: null, error: { code: 'PGRST205', message: `Could not find the table 'public.${table}'` } };
@@ -197,7 +205,7 @@ test('ensureEntries uses the profile default visibility', async () => {
         },
     });
     const store = createSupabaseStore(client);
-    await store.ensureEntries().catch(() => {});
+    await store.ensureEntries();
     const ins = calls.filter(c => c[0] === 'insert' && c[1] === 'log_entries');
     assert.ok(ins.length >= 1, 'expected an inserted entry');
     assert.ok(ins.every(c => c[2].visibility === 'private'));
@@ -275,4 +283,73 @@ test('avatarUrls signs once per path within the cache window', async () => {
     await store.avatarUrls(['u1/a.jpg']);
     assert.equal(calls.filter(c => c[0] === 'sign').length, 1);
     assert.equal(calls.find(c => c[0] === 'sign')[3], 3600);
+});
+
+test('a transient probe error is not cached; the next call probes again', async () => {
+    const { client, calls } = wrap({ transient: 1 });
+    const store = createSupabaseStore(client);
+    const warn = console.warn; console.warn = () => {};
+    try { assert.equal(await store.communityStatus(), false); } finally { console.warn = warn; }
+    assert.equal(await store.communityStatus(), true);
+    assert.equal(profileSelects(calls), 2);
+});
+
+test('saving with visibility during a transient probe error rejects and inserts nothing', async () => {
+    const { client, calls } = wrap({ transient: 2 });
+    const store = createSupabaseStore(client);
+    const warn = console.warn; console.warn = () => {};
+    try {
+        await assert.rejects(store.saveEntry({ log_number: 1, dive_date: '2026-10-01', visibility: 'private' }), e => e.kind === 'unreachable');
+    } finally { console.warn = warn; }
+    assert.ok(!calls.some(c => c[0] === 'insert' && c[1] === 'log_entries'));
+});
+
+test('caches reset on sign-out and when the auth user changes', async () => {
+    const listeners = [];
+    const client = fakeCommunityClient({ tables: { profiles: [{ id: 'u1', display_name: 'A' }] } });
+    client.auth.signOut = async () => ({ error: null });
+    client.auth.onAuthStateChange = cb => { listeners.push(cb); return { data: { subscription: { unsubscribe() {} } } }; };
+    const store = createSupabaseStore(client);
+    store.onAuthChange(() => {});
+    await store.communityStatus();
+    await store.getMyProfile();
+    await store.signOut();
+    await store.communityStatus();
+    assert.equal(profileSelects(client.calls), 3, 'status re-probed + profile re-read after sign-out');
+    const before = profileSelects(client.calls);
+    listeners[0]('SIGNED_IN', { user: { id: 'u1' } });
+    listeners[0]('SIGNED_IN', { user: { id: 'u2' } });
+    await store.communityStatus();
+    assert.equal(profileSelects(client.calls), before + 1);
+});
+
+test('uploadAvatar removes the new object when saving the profile fails', async () => {
+    const { client, calls } = wrap({ tables: { profiles: [{ id: 'u1' }] } });
+    const store = createSupabaseStore(client);
+    await store.getMyProfile();
+    client.db.profiles.length = 0; // update().single() now finds no row
+    await assert.rejects(store.uploadAvatar(new Uint8Array([1])));
+    const up = calls.find(c => c[0] === 'upload');
+    assert.deepEqual(calls.find(c => c[0] === 'remove')[2], [up[2]]);
+});
+
+test('ensureProfile on a 23505 insert race returns the existing row', async () => {
+    const { client, db } = wrap();
+    const origFrom = client.from;
+    let raced = false;
+    client.from = table => {
+        const b = origFrom(table);
+        if (table === 'profiles') {
+            const ins = b.insert.bind(b);
+            b.insert = payload => {
+                if (!raced) { raced = true; db.profiles.push({ id: 'u1', display_name: 'Other tab' }); }
+                b._mode = 'insert-conflict';
+                b._run = async () => ({ data: null, error: { code: '23505', message: 'duplicate key' } });
+                return b;
+            };
+        }
+        return b;
+    };
+    const p = await createSupabaseStore(client).ensureProfile();
+    assert.equal(p.display_name, 'Other tab');
 });
