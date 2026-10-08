@@ -111,11 +111,22 @@
         .lb-file:focus-within { outline: 2px solid var(--primary-color, #2980b9); outline-offset: 2px; }
         .lb-detail { display: grid; gap: 1rem; min-width: 0; }
         .lb-d-main, .lb-d-media, .lb-d-panel { display: grid; gap: 0.75rem; min-width: 0; }
-        .lb-d-media:empty, .lb-d-panel:empty { display: none; }
+        .lb-d-media:empty, .lb-d-panel:empty, .lb-d-actions:empty { display: none; }
         .lb-d-head, .lb-d-media h3, .lb-d-more h3 { margin: 0; }
-        .lb-d-site { margin: 0; font-size: 1.1rem; font-weight: 600; overflow-wrap: anywhere; }
         .lb-d-map, .lb-picker-map { background: var(--surface-sunken); }
-        .lb-d-map { height: 180px; border-radius: 8px; z-index: 0; }
+        .lb-d-map { height: 220px; border-radius: var(--radius-md); z-index: 0; }
+        .lb-d-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+        .lb-d-backlink { min-height: 44px; display: inline-flex; align-items: center; color: var(--brand); font-weight: 500; text-decoration: none; }
+        .lb-d-backlink:hover { text-decoration: underline; }
+        .lb-d-edit { min-height: 44px; display: inline-flex; align-items: center; text-decoration: none; }
+        .lb-detail .lb-d-head { margin: 0; padding: 0; border: 0; color: var(--text); font-size: var(--text-2xl); overflow-wrap: anywhere; }
+        .lb-d-sub { margin: 0.25rem 0 0; color: var(--text-subtle); }
+        .lb-d-stats { gap: 0.75rem 2rem; padding: 0.25rem 0; }
+        .lb-d-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; padding-top: 0.5rem; border-top: 1px solid var(--border); }
+        .lb-d-actions .btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+        .lb-d-actions .btn-danger { margin-left: auto; padding: 0.6rem 1.2rem; font-size: 1rem; }
+        .lb-d-actions .lb-d-delete { background: transparent; color: var(--danger-color); border: 1px solid currentColor; }
+        .lb-d-actions .lb-d-delete:hover { background: var(--danger-color); color: #fff; }
         .lb-d-notes { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
         .lb-dl { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.5rem 1rem; margin: 0; }
         .lb-dl > div { min-width: 0; }
@@ -249,6 +260,12 @@
             body.lb-in .hero.hero-compact h1 { margin: 0; font-size: var(--text-lg); }
             body.lb-in .hero-subtitle { display: none; }
             body.lb-in main { padding-left: 0; padding-right: 0; }
+            section.lb-detail { padding: 0; background: none; border: 0; box-shadow: none; }
+            .lb-detail .lb-d-head { font-size: var(--text-xl); }
+            .lb-d-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6rem 0.75rem; }
+            .lb-d-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .lb-d-actions .btn-danger { grid-column: 1 / -1; margin: 0.5rem 0 0; }
+            .lb-photos { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.35rem; }
             body.lb-in .disclaimer-banner { padding: 0.4rem 1rem; font-size: var(--text-xs); }
             .lb-root { padding-bottom: calc(5rem + env(safe-area-inset-bottom)); }
             .lb-bar-title { font-size: var(--text-xl); }
