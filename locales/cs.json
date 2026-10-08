@@ -2896,6 +2896,7 @@
         },
         "gasNoteLogbook": "Tlaky v lahvích jsou z vašeho záznamu v deníku; průběh mezi nimi je namodelovaný z hloubkového profilu.",
         "gasNoteAssumed": "Pro {0} nejsou údaje o lahvi — předpokládá se SAC {1} l/min a lahev {2} l naplněná na {3} bar. Doplňte do záznamu v deníku počáteční a koncový tlak a uvidíte vlastní spotřebu.",
+        "gasNoteAssumedSac": "Pro {0} chybí koncový tlak — průběh vychází ze zapsaného počátečního tlaku a předpokládá SAC {1} l/min. Doplňte do záznamu v deníku koncový tlak a uvidíte vlastní spotřebu.",
         "helpHeading": "Jak se stropy liší",
         "helpText": "Plný strop počítá DecoTheory pro zvolený GF: drží GF Low až do začátku výstupu a pak přechází ke GF High. Čárkovaný strop zaznamenal počítač se svým GF a podle svého pravidla; při dekompresních ponorech během výstupu obvykle mizí rychleji. Změna GF nemění vaše tkáně — jen to, kde leží limit.",
         "chainToggle": "Započítat dřívější ponory (opakované ponory)",

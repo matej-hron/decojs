@@ -376,6 +376,39 @@ describe('recordedGas', () => {
         assert.equal(gases[0].sacRate, ASSUMED_SAC_LPM);
         assert.equal(gases[1].cylinderVolume, 12);
         assert.deepEqual(assumed, ['Air', 'EAN50']);
+        assert.deepEqual(recordedGasSetup([air, ean50], rows, results).assumedCylinder, ['EAN50']); // Air only lacks the end
+    });
+
+    test('end pressure equal to start is not calibrated; only the SAC is assumed', () => {
+        const rows = [row(0.21, { volumeL: 12, startBar: 200, endBar: 200 }), row(0.5, { volumeL: 7, startBar: 200, endBar: 150 })];
+        const { gases, assumed, assumedCylinder } = recordedGasSetup([air, ean50], rows, results);
+        assert.equal(gases[0].sacRate, ASSUMED_SAC_LPM);
+        assert.equal(gases[0].cylinderVolume, 12);
+        assert.deepEqual(assumed, ['Air']);
+        assert.deepEqual(assumedCylinder, []);
+    });
+
+    const o2 = { id: 'g2', name: 'O2', o2: 1, n2: 0, he: 0 };
+    const airOnly = calculateTissueLoading([{ time: 0, depth: 0, gasId: 'g0' }, { time: 2, depth: 20, gasId: 'g0' }, { time: 30, depth: 20 }, { time: 32, depth: 0 }], 0, { gases: [air, o2] });
+
+    test('a recorded gas never breathed is not reported as assumed', () => {
+        const { assumed, assumedCylinder } = recordedGasSetup([air, o2], [row(0.21, { volumeL: 12, startBar: 200, endBar: 70 })], airOnly);
+        assert.deepEqual(assumed, []);
+        assert.deepEqual(assumedCylinder, []);
+    });
+
+    test('an unknown-mix row goes to the breathed gas, not an unused configured one', () => {
+        // The integrator starts on gases[0], so the unused bottle sits between two breathed gases.
+        const setup = [air, o2, ean50];
+        const twoGas = calculateTissueLoading(waypoints, 0, { gases: setup });
+        const rows = [row(0.21, { volumeL: 12, startBar: 200, endBar: 90 }), row(null, { volumeL: 7, startBar: 200, endBar: 80 })];
+        assert.deepEqual(matchEntryGases(setup, rows, g => g.id !== 'g2'), [rows[0], null, rows[1]]);
+        assert.deepEqual(matchEntryGases(setup, rows), [rows[0], rows[1], null]); // default: setup order
+        const { gases, assumed } = recordedGasSetup(setup, rows, twoGas);
+        assert.deepEqual(assumed, []);
+        const gc = computeGasConsumption(twoGas, gases, 99, 99, 50);
+        assert.ok(Math.abs(gc.pressureByGasId.g1 - 80) < 1e-6);
+        assert.ok(Math.abs(gc.pressureByGasId.g0 - 90) < 1e-6);
     });
 
     test('bad pressures never give a negative or infinite SAC', () => {

@@ -1051,6 +1051,9 @@ describe('RecordedDiveAnalysis lifecycle (jsdom)', () => {
             const note = root.querySelector('#rda-gas-note');
             assert.equal(note.hidden, false);
             assert.match(note.textContent, /assumed SAC 20\u00a0l\/min, 12\u00a0l cylinder filled to 200\u00a0bar/);
+            assert.match(rda._gasNote({ assumed: ['Air', 'EAN50'], assumedCylinder: ['EAN50'] }), /^No cylinder data for EAN50 —/);
+            assert.match(rda._gasNote({ assumed: ['Air'], assumedCylinder: [] }), /^No end pressure for Air — the line assumes SAC 20\u00a0l\/min/);
+            assert.match(rda._gasNote({ assumed: [], assumedCylinder: [] }), /^Cylinder pressures from your logbook entry/);
 
             rda._setGf({ gfLow: 30, gfHigh: 70 });
             last = calls.at(-1);

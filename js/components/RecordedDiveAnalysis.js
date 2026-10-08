@@ -707,9 +707,9 @@ export class RecordedDiveAnalysis {
         const summary = summarizeRecordedDive(analyzeRecordedDive(setup));
         this._renderSummary(dive, summary, start);
         if (this.view === 'gas') {
-            const { gases, assumed } = this._gasSetup(dive, setup);
-            setup.gases = gases;
-            this.el.gasNote.textContent = this._gasNote(assumed);
+            const gas = this._gasSetup(dive, setup);
+            setup.gases = gas.gases;
+            this.el.gasNote.textContent = this._gasNote(gas);
             this.el.gasNote.hidden = false;
         } else {
             this.el.gasNote.hidden = true;
@@ -730,12 +730,16 @@ export class RecordedDiveAnalysis {
         return this.gasCache.get(dive);
     }
 
-    _gasNote(assumed) {
-        if (assumed.length === 0) {
-            return t('gasNoteLogbook', 'Cylinder pressures from your logbook entry; the line between them is modelled from the depth profile.');
+    _gasNote({ assumed, assumedCylinder }) {
+        if (assumedCylinder.length > 0) {
+            return fill(t('gasNoteAssumed', 'No cylinder data for {0} — assumed SAC {1}\u00a0l/min, {2}\u00a0l cylinder filled to {3}\u00a0bar. Add start and end pressure to the logbook entry to see your own.'),
+                assumedCylinder.join(', '), fmtNum(ASSUMED_SAC_LPM, 0), fmtNum(ASSUMED_CYLINDER_L, 0), fmtNum(ASSUMED_START_BAR, 0));
         }
-        return fill(t('gasNoteAssumed', 'No cylinder data for {0} — assumed SAC {1}\u00a0l/min, {2}\u00a0l cylinder filled to {3}\u00a0bar. Add start and end pressure to the logbook entry to see your own.'),
-            assumed.join(', '), fmtNum(ASSUMED_SAC_LPM, 0), fmtNum(ASSUMED_CYLINDER_L, 0), fmtNum(ASSUMED_START_BAR, 0));
+        if (assumed.length > 0) {
+            return fill(t('gasNoteAssumedSac', 'No end pressure for {0} — the line assumes SAC {1}\u00a0l/min from the logged start pressure. Add the end pressure to the logbook entry to see your own.'),
+                assumed.join(', '), fmtNum(ASSUMED_SAC_LPM, 0));
+        }
+        return t('gasNoteLogbook', 'Cylinder pressures from your logbook entry; the line between them is modelled from the depth profile.');
     }
 
     /** Start state from earlier loaded dives; independent of GF, so cached per dive. */
